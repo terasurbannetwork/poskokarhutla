@@ -1,0 +1,539 @@
+{
+ "jumlah_kejadian_pecahan": {
+  "baris": 643,
+  "pct": 4.03,
+  "per_nilai": {
+   "0.5": 379,
+   "0.333": 99,
+   "0.25": 45,
+   "0.091": 22,
+   "0.2": 21,
+   "0.056": 18,
+   "0.167": 18,
+   "1.0": 11
+  },
+  "per_tahun": {
+   "2024": 199,
+   "2025": 364,
+   "2026": 80
+  },
+  "per_jenis": {
+   "banjir": 150,
+   "cuaca ekstrem/angin": 142,
+   "gempa": 128,
+   "karhutla": 105,
+   "longsor": 59,
+   "kebakaran permukiman": 52,
+   "erupsi": 6,
+   "lainnya": 1
+  },
+  "jumlah_kejadian_total_vs_baris": {
+   "baris": 15974,
+   "sum_jk": 16159.5
+  },
+  "contoh": [
+   {
+    "tgl": "2024-02-26",
+    "prov": "Jawa Tengah",
+    "kab": "Brebes",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 56399,
+    "rumah_rusak": 5,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-02-26",
+    "prov": "Jawa Tengah",
+    "kab": "Brebes",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 31380,
+    "rumah_rusak": 5,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2025-03-03",
+    "prov": "Jawa Barat",
+    "kab": "Bogor",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 1,
+    "terdampak_luka_ungsi": 29555,
+    "rumah_rusak": 131,
+    "fasilitas": 7,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2025-12-05",
+    "prov": "Jawa Barat",
+    "kab": "Karawang",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 11250,
+    "rumah_rusak": 0,
+    "fasilitas": 3,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-06-16",
+    "prov": "Sumatera Selatan",
+    "kab": "Ogan Komering Ulu",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 8841,
+    "rumah_rusak": 0,
+    "fasilitas": 1,
+    "is_bencana": true
+   }
+  ]
+ },
+ "jumlah_kejadian_ge2_per_baris": {
+  "baris": 556,
+  "contoh": [
+   {
+    "tgl": "2025-04-23",
+    "prov": "Bengkulu",
+    "kab": "Kepahiang",
+    "jenis": "Tanah Longsor",
+    "jumlah_kejadian": 3.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": false
+   },
+   {
+    "tgl": "2025-04-18",
+    "prov": "Bengkulu",
+    "kab": "Seluma",
+    "jenis": "Kebakaran Gedung dan Permukiman",
+    "jumlah_kejadian": 3.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 30,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2025-12-30",
+    "prov": "Gorontalo",
+    "kab": "Pohuwato",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 3.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 494,
+    "rumah_rusak": 12,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2025-12-04",
+    "prov": "Gorontalo",
+    "kab": "Pohuwato",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 3.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 826,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   }
+  ]
+ },
+ "satu_hari_satu_prov_banyak_kab": {
+  "kunci_dengan_>=5_kab": 182,
+  "kunci_dengan_>=10_kab": 9,
+  "contoh": [
+   {
+    "tgl": "2024-04-28",
+    "prov": "Jawa Barat",
+    "jenis": "Gempabumi",
+    "n_kab": 18
+   },
+   {
+    "tgl": "2025-02-07",
+    "prov": "Sulawesi Selatan",
+    "jenis": "Cuaca Ekstrem",
+    "n_kab": 14
+   },
+   {
+    "tgl": "2025-01-21",
+    "prov": "Jawa Tengah",
+    "jenis": "Banjir",
+    "n_kab": 12
+   },
+   {
+    "tgl": "2025-11-26",
+    "prov": "Aceh",
+    "jenis": "Banjir",
+    "n_kab": 11
+   },
+   {
+    "tgl": "2025-02-06",
+    "prov": "Jawa Barat",
+    "jenis": "Cuaca Ekstrem",
+    "n_kab": 11
+   },
+   {
+    "tgl": "2026-01-24",
+    "prov": "Jawa Timur",
+    "jenis": "Angin Kencang",
+    "n_kab": 11
+   }
+  ]
+ },
+ "dampak_nol_semua": {
+  "baris": 5250,
+  "pct": 32.9,
+  "per_jenis": {
+   "karhutla": 3597,
+   "banjir": 610,
+   "longsor": 363,
+   "cuaca ekstrem/angin": 305,
+   "kebakaran permukiman": 230,
+   "gempa": 66,
+   "gelombang/abrasi": 23,
+   "kekeringan": 21,
+   "lainnya": 18,
+   "erupsi": 17
+  },
+  "pct_is_bencana_true": 69.4
+ },
+ "dampak_nol_is_bencana_true_bukan_karhutla": {
+  "baris": 327,
+  "contoh": [
+   {
+    "tgl": "2024-01-07",
+    "prov": "DKI Jakarta",
+    "kab": "Kota Adm. Jakarta Selatan",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-01-13",
+    "prov": "DKI Jakarta",
+    "kab": "Kota Adm. Jakarta Selatan",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.333,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-12-30",
+    "prov": "Sumatera Utara",
+    "kab": "Kota Padang Sidempuan",
+    "jenis": "Tanah Longsor",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-04-28",
+    "prov": "Sulawesi Selatan",
+    "kab": "Pinrang",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-03-07",
+    "prov": "Jawa Timur",
+    "kab": "Bojonegoro",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   }
+  ]
+ },
+ "karhutla_dibi": {
+  "baris": 3646,
+  "dengan_korban_jiwa_meninggal": 10,
+  "dengan_k2": 17,
+  "dampak_nol_semua": 3597,
+  "pct_dampak_nol": 98.7,
+  "catatan": "DIBI tidak punya kolom luas (ha): K4 tidak bisa diuji; karhutla praktis selalu lolos hanya lewat K4/K5/K6"
+ },
+ "jembatan_rusak": {
+  "baris": 381,
+  "jenis": {
+   "banjir": 312,
+   "longsor": 38,
+   "gempa": 10,
+   "kebakaran permukiman": 8,
+   "erupsi": 4
+  },
+  "satu_jembatan_tanpa_korban_dan_rumah": 49,
+  "contoh": [
+   {
+    "tgl": "2025-11-26",
+    "prov": "Aceh",
+    "kab": "Bener Meriah",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 30,
+    "terdampak_luka_ungsi": 221705,
+    "rumah_rusak": 1972,
+    "fasilitas": 208,
+    "is_bencana": true,
+    "jembatan": 144
+   },
+   {
+    "tgl": "2024-03-07",
+    "prov": "Sumatera Barat",
+    "kab": "Padang Pariaman",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 3,
+    "terdampak_luka_ungsi": 29884,
+    "rumah_rusak": 86,
+    "fasilitas": 104,
+    "is_bencana": true,
+    "jembatan": 103
+   },
+   {
+    "tgl": "2025-11-28",
+    "prov": "Aceh",
+    "kab": "Aceh Utara",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 246,
+    "terdampak_luka_ungsi": 739710,
+    "rumah_rusak": 91286,
+    "fasilitas": 573,
+    "is_bencana": true,
+    "jembatan": 66
+   }
+  ]
+ },
+ "tanggal_terpopuler": [
+  [
+   "02-06",
+   94
+  ],
+  [
+   "01-20",
+   93
+  ],
+  [
+   "03-08",
+   92
+  ],
+  [
+   "02-09",
+   87
+  ],
+  [
+   "01-21",
+   85
+  ]
+ ],
+ "meninggal_tanpa_terdampak_dan_rumah": {
+  "baris": 184,
+  "contoh": [
+   {
+    "tgl": "2024-03-14",
+    "prov": "Bali",
+    "kab": "Tabanan",
+    "jenis": "Tanah Longsor",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 2,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-12-17",
+    "prov": "Papua",
+    "kab": "Jayapura",
+    "jenis": "Cuaca Ekstrem",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 1,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-03-05",
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Belu",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 1,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-10-14",
+    "prov": "Sumatera Barat",
+    "kab": "Agam",
+    "jenis": "Tanah Longsor",
+    "jumlah_kejadian": 1.0,
+    "meninggal": 1,
+    "terdampak_luka_ungsi": 0,
+    "rumah_rusak": 0,
+    "fasilitas": 0,
+    "is_bencana": true
+   }
+  ]
+ },
+ "menderita_mengungsi_vs_jumlah": {
+  "baris_tak_sama": 0,
+  "dari": 15974,
+  "contoh": []
+ },
+ "kekeringan": {
+  "baris": 269,
+  "per_bulan": {
+   "2024-02": 1,
+   "2024-05": 7,
+   "2024-06": 20,
+   "2024-07": 16,
+   "2024-08": 16,
+   "2024-09": 19,
+   "2024-10": 6,
+   "2024-11": 5,
+   "2025-01": 1,
+   "2025-02": 1,
+   "2025-04": 3,
+   "2025-05": 1,
+   "2025-06": 5,
+   "2025-07": 14,
+   "2025-08": 13,
+   "2025-09": 4,
+   "2025-10": 5,
+   "2025-11": 3,
+   "2026-01": 2,
+   "2026-02": 2,
+   "2026-03": 1,
+   "2026-04": 3,
+   "2026-05": 4,
+   "2026-06": 25,
+   "2026-07": 39,
+   "2026-08": 27,
+   "2026-09": 18,
+   "2026-10": 8
+  },
+  "tgl_terpopuler": [
+   [
+    "2024-06-11",
+    6
+   ],
+   [
+    "2026-07-28",
+    4
+   ],
+   [
+    "2024-08-22",
+    3
+   ]
+  ]
+ },
+ "K3_penentu_tunggal_tanpa_korban": 1429,
+ "pecahan_dengan_dampak_besar": {
+  "baris": 82,
+  "contoh": [
+   {
+    "tgl": "2026-08-15",
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Nagekeo",
+    "jenis": "Gempabumi",
+    "jumlah_kejadian": 0.091,
+    "meninggal": 20,
+    "terdampak_luka_ungsi": 78622,
+    "rumah_rusak": 51332,
+    "fasilitas": 748,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2025-09-10",
+    "prov": "Bali",
+    "kab": "Jembrana",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.25,
+    "meninggal": 4,
+    "terdampak_luka_ungsi": 61610,
+    "rumah_rusak": 222,
+    "fasilitas": 14,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2026-08-15",
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Manggarai",
+    "jenis": "Gempabumi",
+    "jumlah_kejadian": 0.091,
+    "meninggal": 62,
+    "terdampak_luka_ungsi": 61116,
+    "rumah_rusak": 23034,
+    "fasilitas": 524,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-09-18",
+    "prov": "Jawa Barat",
+    "kab": "Bandung",
+    "jenis": "Gempabumi",
+    "jumlah_kejadian": 0.167,
+    "meninggal": 1,
+    "terdampak_luka_ungsi": 56489,
+    "rumah_rusak": 6126,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2024-02-26",
+    "prov": "Jawa Tengah",
+    "kab": "Brebes",
+    "jenis": "Banjir",
+    "jumlah_kejadian": 0.5,
+    "meninggal": 0,
+    "terdampak_luka_ungsi": 56399,
+    "rumah_rusak": 5,
+    "fasilitas": 0,
+    "is_bencana": true
+   },
+   {
+    "tgl": "2026-08-15",
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Manggarai Timur",
+    "jenis": "Gempabumi",
+    "jumlah_kejadian": 0.091,
+    "meninggal": 53,
+    "terdampak_luka_ungsi": 51815,
+    "rumah_rusak": 22731,
+    "fasilitas": 563,
+    "is_bencana": true
+   }
+  ]
+ }
+}

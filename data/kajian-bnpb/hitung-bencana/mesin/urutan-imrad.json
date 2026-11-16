@@ -1,0 +1,21 @@
+{
+    "judul":  "Kajian Penghitungan dan Klasifikasi Kejadian Bencana",
+    "folder":  "../naskah-imrad",
+    "berkas":  [
+                   "00-abstrak.md",
+                   "00-ringkasan.md",
+                   "01-pendahuluan.md",
+                   "02-metode.md",
+                   "03-hasil.md",
+                   "04-pembahasan.md",
+                   "05-kesimpulan.md",
+                   "pustaka.md",
+                   "lampiran-a.md",
+                   "lampiran-b.md",
+                   "lampiran-c.md",
+                   "lampiran-d.md",
+                   "lampiran-e.md",
+                   "lampiran-f.md"
+               ],
+    "anak_judul":  "Cara menghitung satu kejadian, syarat masuk hitungan, dan kelas keparahan untuk Satu Data Bencana"
+}

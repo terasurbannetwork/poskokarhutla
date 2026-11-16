@@ -1,0 +1,21 @@
+{
+ "folder": "../naskah-ringkas",
+ "judul": "Ringkasan Kajian Penghitungan dan Klasifikasi Kejadian Bencana",
+ "anak_judul": "Satu kejadian, ambang masuk, dan skala keparahan untuk Satu Data Bencana",
+ "label": "RINGKASAN KAJIAN BNPB",
+ "nama_keluaran": "Ringkasan Kajian Penghitungan dan Klasifikasi Kejadian Bencana",
+ "berkas": [
+  "00-ringkasan.md",
+  "01-masalah.md",
+  "02-kriteria.md",
+  "03-paradoks.md",
+  "04-kerangka.md",
+  "05-hasil-uji.md",
+  "06-usulan.md"
+ ],
+ "tata": {
+  "toc_tingkat": 1,
+  "bab_baru": false,
+  "tinggi_gambar_cm": 9
+ }
+}

@@ -1,0 +1,42 @@
+{
+ "judul": "Urutan kerja kerangka tiga lapis",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "L1: laporan sudah dikelompokkan menjadi satu kejadian?",
+   "ya": "b",
+   "tidak": "u1"
+  },
+  {
+   "id": "b",
+   "tanya": "D: angka dampak sudah memakai versi yang sah?",
+   "ya": "c",
+   "tidak": "u2"
+  },
+  {
+   "id": "c",
+   "tanya": "L2: kejadian memenuhi salah satu kriteria masuk?",
+   "ya": "d",
+   "tidak": "u3"
+  },
+  {
+   "id": "d",
+   "tanya": "L3: indikator dampak sudah dinilai terhadap batas kelas?",
+   "ya": "u4",
+   "tidak": "u5"
+  }
+ ],
+ "ujung": {
+  "u1": "Kelompokkan laporan dulu: buat atau tambah kejadian",
+  "u2": "Tetapkan versi angka dulu",
+  "u3": {
+   "teks": "Simpan sebagai kejadian di bawah ambang",
+   "warna": "slate"
+  },
+  "u4": {
+   "teks": "Tetapkan kelas R, S, B, atau K lalu sajikan (S)",
+   "warna": "navy"
+  },
+  "u5": "Nilai indikator dulu"
+ }
+}

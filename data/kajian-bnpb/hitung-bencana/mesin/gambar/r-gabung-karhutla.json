@@ -1,0 +1,33 @@
+{
+ "jenis": "batang",
+ "kategori": [
+  "Gabung jarak 0,5 km",
+  "Gabung jarak 1 km",
+  "Gabung jarak 2 km"
+ ],
+ "seri": [
+  {
+   "nama": "Jendela 24 jam",
+   "nilai": [
+    61138,
+    49088,
+    38963
+   ],
+   "warna": "navy"
+  },
+  {
+   "nama": "Jendela 72 jam",
+   "nilai": [
+    50039,
+    37953,
+    27322
+   ],
+   "warna": "oranye"
+  }
+ ],
+ "satuan": "kejadian",
+ "tampilkan_nilai": true,
+ "tinggi": 340,
+ "lebar": 760,
+ "catatan": "Data hotspot 15 Oktober sampai 11 November 2026. Jendela 6 jam tidak ditampilkan karena lebih pendek dari jarak antarlintasan satelit (3,4 kali lipat, sampai 94.091)."
+}

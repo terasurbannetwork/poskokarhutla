@@ -1,0 +1,34 @@
+{
+ "2024_2026": {
+  "n_baris_dengan_ha": 1658,
+  "median_ha": 3.0,
+  "di_bawah_1_ha": 102,
+  "tepat_1_ha": 256,
+  "di_atas_1_sampai_di_bawah_2": 114,
+  "tepat_2_ha": 185,
+  "di_atas_2_sampai_5": 410,
+  "tepat_5_ha": 91,
+  "tepat_10_ha": 48,
+  "ha_0_5_sampai_0_99": 64,
+  "ha_1_sampai_1_5": 355,
+  "ge_1": 1556,
+  "ge_2": 1186,
+  "ge_50": 160
+ },
+ "2011_2026": {
+  "n_baris_dengan_ha": 4470,
+  "median_ha": 3.0,
+  "di_bawah_1_ha": 351,
+  "tepat_1_ha": 664,
+  "di_atas_1_sampai_di_bawah_2": 311,
+  "tepat_2_ha": 564,
+  "di_atas_2_sampai_5": 1095,
+  "tepat_5_ha": 262,
+  "tepat_10_ha": 169,
+  "ha_0_5_sampai_0_99": 216,
+  "ha_1_sampai_1_5": 945,
+  "ge_1": 4119,
+  "ge_2": 3144,
+  "ge_50": 375
+ }
+}

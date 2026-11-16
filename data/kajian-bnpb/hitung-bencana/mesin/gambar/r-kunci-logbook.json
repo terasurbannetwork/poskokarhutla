@@ -1,0 +1,33 @@
+{
+ "jenis": "batang",
+ "kategori": [
+  "Kunci tanpa tanggal, jeda 7 hari",
+  "Kunci dengan kabupaten beririsan",
+  "Kunci dengan tanggal"
+ ],
+ "seri": [
+  {
+   "nama": "Jumlah kejadian mentah",
+   "nilai": [
+    2809,
+    3756,
+    3860
+   ],
+   "warna": "oranye"
+  },
+  {
+   "nama": "Kejadian yang lolos ambang",
+   "nilai": [
+    745,
+    756,
+    768
+   ],
+   "warna": "navy"
+  }
+ ],
+ "satuan": "kejadian",
+ "tampilkan_nilai": true,
+ "tinggi": 340,
+ "lebar": 760,
+ "catatan": "Logbook harian Pusdalops, Januari sampai Oktober 2026."
+}

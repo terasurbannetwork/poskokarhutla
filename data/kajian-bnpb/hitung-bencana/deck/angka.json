@@ -1,0 +1,550 @@
+{
+ "angka": {
+  "hs.kali": {
+   "nilai": 2.2,
+   "satuan": "kali",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "hs.kapuas.jarak": {
+   "nilai": 8.9,
+   "satuan": "km",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "hs.kapuas.a": {
+   "nilai": 116,
+   "satuan": "piksel",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "hs.kapuas.b": {
+   "nilai": 19,
+   "satuan": "piksel",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "hs.kapuas.gabung": {
+   "nilai": 690,
+   "satuan": "piksel",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "hs.gabung_p": {
+   "nilai": 0.28,
+   "satuan": "persen",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "hs.piksel_ha": {
+   "nilai": 14,
+   "satuan": "hektare",
+   "pustaka": "hotspot",
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.lolos": {
+   "nilai": 1903,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.tunggal": {
+   "nilai": 973,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.tunggal_p": {
+   "nilai": 51.1,
+   "satuan": "persen",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.pecahan": {
+   "nilai": 643,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.kering_p": {
+   "nilai": 94.6,
+   "satuan": "persen",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.karhutla_p": {
+   "nilai": 1.4,
+   "satuan": "persen",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.kering_n": {
+   "nilai": 129,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.karhutla_n": {
+   "nilai": 1208,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.konsen_1": {
+   "nilai": 85.5,
+   "satuan": "persen",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.tanpa_mati_p": {
+   "nilai": 94.8,
+   "satuan": "persen",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.logika_dan": {
+   "nilai": 96.5,
+   "satuan": "persen",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.ambang_min": {
+   "nilai": 67,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.ambang_maks": {
+   "nilai": 2484,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.rumah_tanpa_korban": {
+   "nilai": 28,
+   "satuan": "baris",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "aceh.mati": {
+   "nilai": 246,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, banjir Aceh Utara 28 November 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "aceh.terdampak": {
+   "nilai": 739710,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, banjir Aceh Utara 28 November 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "aceh.rumah": {
+   "nilai": 91286,
+   "satuan": "unit",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, banjir Aceh Utara 28 November 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "gempa.kab": {
+   "nilai": 11,
+   "satuan": "kabupaten",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "gempa.pecah": {
+   "nilai": 0.091,
+   "satuan": "kejadian",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "gempa.manggarai": {
+   "nilai": 62,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "gempa.nagekeo": {
+   "nilai": 20,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.mentah": {
+   "nilai": 8715,
+   "satuan": "kejadian",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.sel": {
+   "nilai": 27,
+   "satuan": "persen",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.sel_lolos": {
+   "nilai": 3,
+   "satuan": "persen",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.kumulatif": {
+   "nilai": 12523,
+   "satuan": "jiwa",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.terbesar": {
+   "nilai": 609,
+   "satuan": "jiwa",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.susulan": {
+   "nilai": 124,
+   "satuan": "kejadian",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.lolos_akhir": {
+   "nilai": 975,
+   "satuan": "kejadian",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  },
+  "uji.par": {
+   "nilai": 65,
+   "satuan": "paradoks",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "uji.penuh": {
+   "nilai": 42,
+   "satuan": "paradoks",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "uji.sebagian": {
+   "nilai": 23,
+   "satuan": "paradoks",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "uji.adv_berat": {
+   "nilai": 13,
+   "satuan": "kasus",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "uji.hubungan": {
+   "nilai": 239,
+   "satuan": "hubungan",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "uji.gagal_v1": {
+   "nilai": 2,
+   "satuan": "paradoks",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "l2.selisih": {
+   "nilai": 9.3,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kelas.berubah": {
+   "nilai": 1.5,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kelas.cocok_c": {
+   "nilai": 52.7,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kelas.besar_c": {
+   "nilai": 38.6,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kelas.atas_min": {
+   "nilai": 0.4,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kelas.atas_maks": {
+   "nilai": 0.9,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "tren.naik": {
+   "nilai": 174,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "tren.turun": {
+   "nilai": 61,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "tren.bukan_2024": {
+   "nilai": 2.5,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "tren.bukan_2025": {
+   "nilai": 41.4,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "tren.rumah": {
+   "nilai": 227,
+   "satuan": "persen",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "lapis": {
+   "nilai": 3,
+   "satuan": "lapis",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "tahap": {
+   "nilai": 4,
+   "satuan": "tahap",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "juk.terdampak": {
+   "nilai": 50,
+   "satuan": "orang",
+   "pustaka": "juklak",
+   "sumber": "Juklak BNPB Nomor 7 Tahun 2023, salinan tidak resmi",
+   "keyakinan": "resmi"
+  },
+  "juk.kriteria": {
+   "nilai": 6,
+   "satuan": "kriteria",
+   "pustaka": "juklak",
+   "sumber": "Juklak BNPB Nomor 7 Tahun 2023, salinan tidak resmi",
+   "keyakinan": "resmi"
+  },
+  "usul.jumlah": {
+   "nilai": 15,
+   "satuan": "perubahan",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "usul.tampil": {
+   "nilai": 8,
+   "satuan": "perubahan",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "gabung.jam": {
+   "nilai": 48,
+   "satuan": "jam",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "gabung.selesai": {
+   "nilai": 7,
+   "satuan": "hari",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "gabung.maks": {
+   "nilai": 30,
+   "satuan": "hari",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "gabung.gempa": {
+   "nilai": 90,
+   "satuan": "hari",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "kab.persen": {
+   "nilai": 10,
+   "satuan": "persen",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "kolom.baru": {
+   "nilai": 11,
+   "satuan": "kolom",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026, bawaan sementara",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "keputusan": {
+   "nilai": 3,
+   "satuan": "keputusan",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "provinsi.uji": {
+   "nilai": 3,
+   "satuan": "provinsi",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "kelompok": {
+   "nilai": 7,
+   "satuan": "kelompok",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kriteria.diuji": {
+   "nilai": 3,
+   "satuan": "kriteria",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "negara": {
+   "nilai": 5,
+   "satuan": "negara",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "basis": {
+   "nilai": 9,
+   "satuan": "basis data",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "kriteria.ubah": {
+   "nilai": 5,
+   "satuan": "kriteria",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "kriteria.usul": {
+   "nilai": 6,
+   "satuan": "kriteria",
+   "pustaka": "kajian",
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "par.a": {
+   "nilai": 18,
+   "satuan": "paradoks",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "l2.gugur": {
+   "nilai": 700,
+   "satuan": "kejadian",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "gugur.terdampak": {
+   "nilai": 48,
+   "satuan": "orang",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "gugur.rb": {
+   "nilai": 2,
+   "satuan": "unit",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "gugur.rr": {
+   "nilai": 3,
+   "satuan": "unit",
+   "pustaka": "sim",
+   "sumber": "Simulasi kerangka kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "lb.kali": {
+   "nilai": 20.6,
+   "satuan": "kali",
+   "pustaka": "logbook",
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keyakinan": "terverifikasi"
+  }
+ }
+}

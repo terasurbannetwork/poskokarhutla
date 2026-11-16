@@ -1,0 +1,343 @@
+{
+ "p28_kolom_dibi_ada_rupiah": [],
+ "p28_jumlah_kolom_dibi": 26,
+ "p31_selisih_antarversi": [
+  {
+   "kejadian": "jabodetabek2020",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 11569.0,
+   "maks": 433628.0,
+   "rasio": 37.48
+  },
+  {
+   "kejadian": "kerusuhan2025",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 1.0,
+   "maks": 11.0,
+   "rasio": 11.0
+  },
+  {
+   "kejadian": "karhutla2015",
+   "metrik": "luas_ha",
+   "versi": 3,
+   "min": 261060.0,
+   "maks": 2650000.0,
+   "rasio": 10.15
+  },
+  {
+   "kejadian": "sumatra2025",
+   "metrik": "mengungsi",
+   "versi": 3,
+   "min": 195542.0,
+   "maks": 970876.0,
+   "rasio": 4.97
+  },
+  {
+   "kejadian": "sumatra2025",
+   "metrik": "hilang",
+   "versi": 3,
+   "min": 31.0,
+   "maks": 141.0,
+   "rasio": 4.55
+  },
+  {
+   "kejadian": "wamena2019",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 6634.0,
+   "maks": 17367.0,
+   "rasio": 2.62
+  },
+  {
+   "kejadian": "jabodetabek2020",
+   "metrik": "rumah_rusak",
+   "versi": 2,
+   "min": 3245.0,
+   "maks": 7410.0,
+   "rasio": 2.28
+  },
+  {
+   "kejadian": "sumatra2025",
+   "metrik": "meninggal",
+   "versi": 3,
+   "min": 527.0,
+   "maks": 1202.0,
+   "rasio": 2.28
+  },
+  {
+   "kejadian": "sulteng2018",
+   "metrik": "meninggal",
+   "versi": 4,
+   "min": 2077.0,
+   "maks": 4140.0,
+   "rasio": 1.99
+  },
+  {
+   "kejadian": "sulteng2018",
+   "metrik": "hilang",
+   "versi": 3,
+   "min": 705.0,
+   "maks": 1309.0,
+   "rasio": 1.86
+  },
+  {
+   "kejadian": "aceh2004",
+   "metrik": "meninggal",
+   "versi": 3,
+   "min": 126741.0,
+   "maks": 230000.0,
+   "rasio": 1.81
+  },
+  {
+   "kejadian": "sulbar2021",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 60505.0,
+   "maks": 95113.0,
+   "rasio": 1.57
+  },
+  {
+   "kejadian": "seroja2021",
+   "metrik": "hilang",
+   "versi": 2,
+   "min": 34.0,
+   "maks": 47.0,
+   "rasio": 1.38
+  },
+  {
+   "kejadian": "wamena2019",
+   "metrik": "meninggal",
+   "versi": 3,
+   "min": 33.0,
+   "maks": 43.0,
+   "rasio": 1.3
+  },
+  {
+   "kejadian": "selatsunda2018",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 33721.0,
+   "maks": 42325.0,
+   "rasio": 1.26
+  },
+  {
+   "kejadian": "jabodetabek2020",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 51.0,
+   "maks": 61.0,
+   "rasio": 1.2
+  },
+  {
+   "kejadian": "seroja2021",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 154.0,
+   "maks": 184.0,
+   "rasio": 1.19
+  },
+  {
+   "kejadian": "nias2005",
+   "metrik": "meninggal",
+   "versi": 3,
+   "min": 850.0,
+   "maks": 1000.0,
+   "rasio": 1.18
+  },
+  {
+   "kejadian": "plumpang2023",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 17.0,
+   "maks": 19.0,
+   "rasio": 1.12
+  },
+  {
+   "kejadian": "merapi2010",
+   "metrik": "meninggal",
+   "versi": 4,
+   "min": 347.0,
+   "maks": 386.0,
+   "rasio": 1.11
+  },
+  {
+   "kejadian": "lewotobi2024",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 12658.0,
+   "maks": 13671.0,
+   "rasio": 1.08
+  },
+  {
+   "kejadian": "padang2009",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 1117.0,
+   "maks": 1195.0,
+   "rasio": 1.07
+  },
+  {
+   "kejadian": "sulbar2021",
+   "metrik": "meninggal",
+   "versi": 4,
+   "min": 100.0,
+   "maks": 107.0,
+   "rasio": 1.07
+  },
+  {
+   "kejadian": "cianjur2022",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 108720.0,
+   "maks": 115382.0,
+   "rasio": 1.06
+  },
+  {
+   "kejadian": "sulteng2018",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 212719.0,
+   "maks": 223751.0,
+   "rasio": 1.05
+  },
+  {
+   "kejadian": "lombok2018",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 396032.0,
+   "maks": 406202.0,
+   "rasio": 1.03
+  },
+  {
+   "kejadian": "lombok2018",
+   "metrik": "meninggal",
+   "versi": 3,
+   "min": 560.0,
+   "maks": 569.0,
+   "rasio": 1.02
+  },
+  {
+   "kejadian": "cianjur2022",
+   "metrik": "rumah_rusak",
+   "versi": 2,
+   "min": 56548.0,
+   "maks": 57337.0,
+   "rasio": 1.01
+  },
+  {
+   "kejadian": "yogya2006",
+   "metrik": "meninggal",
+   "versi": 4,
+   "min": 5700.0,
+   "maks": 5749.0,
+   "rasio": 1.01
+  },
+  {
+   "kejadian": "mentawai2010",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 445.0,
+   "maks": 447.0,
+   "rasio": 1.0
+  },
+  {
+   "kejadian": "cianjur2022",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 602.0,
+   "maks": 602.0,
+   "rasio": 1.0
+  },
+  {
+   "kejadian": "serasan2023",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 43.0,
+   "maks": 43.0,
+   "rasio": 1.0
+  },
+  {
+   "kejadian": "serasan2023",
+   "metrik": "mengungsi",
+   "versi": 2,
+   "min": 2835.0,
+   "maks": 2835.0,
+   "rasio": 1.0
+  },
+  {
+   "kejadian": "lewotobi2024",
+   "metrik": "meninggal",
+   "versi": 2,
+   "min": 9.0,
+   "maks": 9.0,
+   "rasio": 1.0
+  }
+ ],
+ "p31_ringkas_meninggal": {
+  "n_pasangan": 18,
+  "median_rasio": 1.12,
+  "rasio_ge_1.5": 4,
+  "rasio_sama_1.0": 4
+ },
+ "p31_ringkas_mengungsi": {
+  "n_pasangan": 10,
+  "median_rasio": 1.26,
+  "rasio_ge_1.5": 4,
+  "rasio_sama_1.0": 1
+ },
+ "p31_ringkas_rumah_rusak": {
+  "n_pasangan": 2,
+  "median_rasio": 2.28,
+  "rasio_ge_1.5": 1,
+  "rasio_sama_1.0": 0
+ },
+ "p31_n_kejadian_di_berkas": 29,
+ "p31_total_2026_antarsumber": {
+  "DIBI baris": 3181,
+  "DIBI jumlah_kejadian": 3124.0,
+  "Logbook DOCX V1g": 3756,
+  "Logbook CSV": 3622,
+  "Logbook Koordalops": 2220
+ },
+ "p31_rasio_maks_per_min_total": 1.69,
+ "p31_per_jenis_urutan_DIBI_DOCX_CSV_Koordalops": {
+  "karhutla": {
+   "nilai": [
+    1132,
+    1160,
+    1030,
+    898
+   ],
+   "rasio_maks_min": 1.29
+  },
+  "banjir": {
+   "nilai": [
+    741,
+    794,
+    795,
+    454
+   ],
+   "rasio_maks_min": 1.75
+  },
+  "cuaca": {
+   "nilai": [
+    612,
+    785,
+    777,
+    317
+   ],
+   "rasio_maks_min": 2.48
+  },
+  "kekeringan": {
+   "nilai": [
+    129,
+    137,
+    146,
+    330
+   ],
+   "rasio_maks_min": 2.56
+  }
+ }
+}

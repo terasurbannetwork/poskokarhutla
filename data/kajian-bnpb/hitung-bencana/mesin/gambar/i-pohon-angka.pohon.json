@@ -1,0 +1,16 @@
+{
+ "judul": "Angka mana yang dipakai?",
+ "simpul": [
+  {"id": "a", "tanya": "Angkanya jumlah meninggal atau kerusakan?", "ya": "terakhir", "tidak": "b"},
+  {"id": "b", "tanya": "Angkanya jumlah hilang, luka, terdampak, atau mengungsi?", "ya": "terbesar", "tidak": "c"},
+  {"id": "c", "tanya": "Isiannya kosong?", "ya": "d", "tidak": "pakai"},
+  {"id": "d", "tanya": "BPBD menyatakan nihil?", "ya": "nol", "tidak": "belum"}
+ ],
+ "ujung": {
+  "terakhir": "Nilai laporan terakhir yang sah",
+  "terbesar": "Nilai terbesar selama masa kejadian",
+  "pakai": "Pakai nilainya, sebut sumber dan versi",
+  "nol": "Nol terkonfirmasi",
+  "belum": "Belum didata (bukan nol)"
+ }
+}

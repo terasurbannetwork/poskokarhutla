@@ -1,0 +1,33 @@
+{
+ "jenis": "batang",
+ "kategori": [
+  "2024",
+  "2025",
+  "2026 (sampai 12 November)"
+ ],
+ "seri": [
+  {
+   "nama": "Ambang Juklak 7/2023 (lama)",
+   "nilai": [
+    2556,
+    3647,
+    1332
+   ],
+   "warna": "navy"
+  },
+  {
+   "nama": "Ambang usulan",
+   "nilai": [
+    2285,
+    3324,
+    1226
+   ],
+   "warna": "oranye"
+  }
+ ],
+ "satuan": "kejadian",
+ "tampilkan_nilai": true,
+ "tinggi": 340,
+ "lebar": 760,
+ "catatan": "Rata-rata turun 9,3 persen: 7.535 kejadian lolos ambang lama, 6.835 lolos ambang usulan."
+}

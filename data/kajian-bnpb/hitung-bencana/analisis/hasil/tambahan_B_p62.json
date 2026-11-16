@@ -1,0 +1,24 @@
+{
+ "sk_karhutla_provinsi_2026": 23,
+ "sk_karhutla_semua": 405,
+ "sk_karhutla_siaga": 285,
+ "sk_karhutla_prov_2026_hari_median": 32,
+ "sk_karhutla_prov_2026_hari_maks": 291,
+ "sk_karhutla_prov_2026_lewat_batas_31": 12,
+ "baris_karhutla_DIBI_2026_1jan_12nov": 1168,
+ "baris_dalam_SK_provinsi_siaga_atau_tanggap": 483,
+ "baris_dalam_SK_provinsi_tanggap_saja": 10,
+ "provinsi_dengan_baris_DIBI_dan_SK": [
+  "Jambi",
+  "Jawa Barat",
+  "Jawa Tengah",
+  "Jawa Timur",
+  "Kalimantan Barat",
+  "Kalimantan Tengah",
+  "Kalimantan Timur",
+  "Nusa Tenggara Barat",
+  "Riau",
+  "Sulawesi Barat",
+  "Sumatera Selatan"
+ ]
+}

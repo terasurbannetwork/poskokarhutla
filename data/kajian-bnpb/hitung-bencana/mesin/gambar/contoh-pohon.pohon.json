@@ -1,0 +1,7 @@
+{"judul": "Pohon L1: apakah laporan ini kejadian baru?",
+ "simpul": [
+   {"id": "a", "tanya": "Jenis bahaya sama dengan kejadian aktif di kabupaten ini?", "ya": "b", "tidak": "baru"},
+   {"id": "b", "tanya": "Laporan aktif terakhir kurang dari 7 hari yang lalu?", "ya": "c", "tidak": "baru"},
+   {"id": "c", "tanya": "Lokasi laporan berada dalam jarak gabung dari kejadian aktif?", "ya": "sama", "tidak": "tautan"}
+ ],
+ "ujung": {"baru": "Buka kejadian baru", "sama": "Tambah pengkinian ke kejadian lama", "tautan": {"teks": "Buka kejadian baru dan tautkan ke kejadian lama", "warna": "biru"}}}

@@ -1,0 +1,41 @@
+{
+ "judul": "Pohon L3: kelas keparahan",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "Meninggal+hilang 1.000 atau rumah setara rusak berat 10.000 ke atas? (atau mengungsi 100.000, bila meninggal+hilang atau RBS sudah kelas Sedang) Karhutla: luas terbakar terverifikasi 100.000 ha?",
+   "ya": "K",
+   "tidak": "b"
+  },
+  {
+   "id": "b",
+   "tanya": "Meninggal+hilang 100 atau RBS 1.000 ke atas? (atau mengungsi 10.000, dengan syarat yang sama) Karhutla: 10.000 ha?",
+   "ya": "B",
+   "tidak": "c"
+  },
+  {
+   "id": "c",
+   "tanya": "Meninggal+hilang 10, mengungsi 1.000, atau RBS 100 ke atas? Karhutla: 1.000 ha?",
+   "ya": "S0",
+   "tidak": "d"
+  },
+  {
+   "id": "S0",
+   "tanya": "Pengungsi+terdampak di satu kabupaten 10% penduduk dan paling sedikit 1.000 orang?",
+   "ya": "B",
+   "tidak": "S"
+  },
+  {
+   "id": "d",
+   "tanya": "Pengungsi+terdampak di satu kabupaten 10% penduduk dan paling sedikit 100 orang?",
+   "ya": "S",
+   "tidak": "R"
+  }
+ ],
+ "ujung": {
+  "K": "Katastrofik",
+  "B": "Besar",
+  "S": "Sedang",
+  "R": "Ringan"
+ }
+}

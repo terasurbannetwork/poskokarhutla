@@ -1,0 +1,65 @@
+{
+ "jenis": "tumpuk",
+ "judul": "Sebaran kelas keparahan KJN lolos L2 menurut opsi (2024 sampai 12 Nov 2026)",
+ "sumbu_x": [
+  "a (absolut)",
+  "b (relatif)",
+  "a+b",
+  "c (status)",
+  "d (indeks)",
+  "a v2",
+  "a+b v2"
+ ],
+ "seri": [
+  {
+   "nama": "R",
+   "nilai": [
+    96.3,
+    87.7,
+    95.1,
+    53.2,
+    96.3,
+    96.3,
+    95.1
+   ]
+  },
+  {
+   "nama": "S",
+   "nilai": [
+    3.2,
+    10.4,
+    4.0,
+    8.2,
+    3.2,
+    3.3,
+    4.0
+   ]
+  },
+  {
+   "nama": "B",
+   "nilai": [
+    0.5,
+    1.3,
+    0.8,
+    38.6,
+    0.5,
+    0.3,
+    0.8
+   ]
+  },
+  {
+   "nama": "K",
+   "nilai": [
+    0.1,
+    0.5,
+    0.1,
+    0.0,
+    0.1,
+    0.1,
+    0.1
+   ]
+  }
+ ],
+ "satuan": "persen KJN",
+ "sumber": "DIBI dasbor publik (dibi.bnpb.go.id), ditarik 12 Nov 2026, 1 Jan 2024 s.d. 12 Nov 2026; pengolahan analisis/sim_kerangka.py; penduduk WorldPop (bukan BPS); status darurat BNPB CKAN"
+}

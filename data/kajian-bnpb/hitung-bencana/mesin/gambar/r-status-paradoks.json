@@ -1,0 +1,45 @@
+{
+ "jenis": "tumpuk",
+ "kategori": [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G"
+ ],
+ "seri": [
+  {
+   "nama": "Terjawab penuh",
+   "nilai": [
+    13,
+    9,
+    9,
+    3,
+    2,
+    3,
+    3
+   ],
+   "warna": "navy"
+  },
+  {
+   "nama": "Sebagian",
+   "nilai": [
+    5,
+    5,
+    4,
+    1,
+    3,
+    4,
+    1
+   ],
+   "warna": "oranye"
+  }
+ ],
+ "satuan": "paradoks",
+ "tampilkan_nilai": true,
+ "tinggi": 320,
+ "lebar": 760,
+ "catatan": "Tidak ada paradoks yang gagal. Huruf A sampai G menunjuk kelompok pada Tabel 3.1."
+}

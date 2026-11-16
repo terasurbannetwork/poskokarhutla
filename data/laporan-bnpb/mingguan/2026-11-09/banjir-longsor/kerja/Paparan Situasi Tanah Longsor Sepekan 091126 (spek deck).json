@@ -1,0 +1,34 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Situasi dan Kondisi Wilayah Terdampak Tanah Longsor, 09-11-2026.",
+ "judul_dokumen": "Laporan Situasi dan Kondisi Wilayah Terdampak Tanah Longsor",
+ "kajian": "rehab",
+ "tanggal": "2026-11-09",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\kerja\\Paparan Situasi Tanah Longsor Sepekan 091126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\kerja\\Paparan Situasi Tanah Longsor Sepekan 091126 (isi).pptx",
+   "halaman": 2,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Peta tanah longsor",
+   "label": "Peta tanah longsor",
+   "halaman_tetap": [
+    1
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Paparan Situasi Tanah Longsor Mingguan",
+ "skala_logo_bnpb": 1.1
+}

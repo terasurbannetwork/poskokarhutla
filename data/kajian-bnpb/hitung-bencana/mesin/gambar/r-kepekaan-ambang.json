@@ -1,0 +1,34 @@
+{
+ "jenis": "batang-mendatar",
+ "kategori": [
+  "Lebih longgar (1, 10, 1)",
+  "Juklak saat ini (1, 50, 5)",
+  "Angka 1, 100, 5",
+  "Angka 1, 50, 10",
+  "Angka 3, 100, 10",
+  "Aturan EM-DAT (10 meninggal atau 100 terdampak)",
+  "Angka 10, 500, 50",
+  "Harus memenuhi ketiganya"
+ ],
+ "seri": [
+  {
+   "nama": "Baris lolos",
+   "nilai": [
+    2484,
+    1903,
+    1753,
+    1691,
+    1433,
+    1212,
+    787,
+    67
+   ],
+   "warna": "biru"
+  }
+ ],
+ "satuan": "baris",
+ "tampilkan_nilai": true,
+ "tinggi": 380,
+ "lebar": 760,
+ "catatan": "Tiga angka dalam kurung: batas meninggal, terdampak, dan unit rusak."
+}

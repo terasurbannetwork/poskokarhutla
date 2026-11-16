@@ -1,0 +1,242 @@
+{
+ "jan_okt": {
+  "2024": {
+   "baris": 3058,
+   "sum_jumlah_kejadian": 2951.000000000002,
+   "meninggal": 453
+  },
+  "2025": {
+   "baris": 7746,
+   "sum_jumlah_kejadian": 8092.94999999999,
+   "meninggal": 663
+  },
+  "2026": {
+   "baris": 3181,
+   "sum_jumlah_kejadian": 3123.9999999999995,
+   "meninggal": 556
+  }
+ },
+ "n12": 4185,
+ "jenis12": {
+  "Kebakaran Hutan dan Lahan": {
+   "baris": 1130,
+   "meninggal": 9,
+   "terdampak": 19636,
+   "rumah_rusak": 395
+  },
+  "Banjir": {
+   "baris": 1080,
+   "meninggal": 1252,
+   "terdampak": 8938271,
+   "rumah_rusak": 235737
+  },
+  "Cuaca Ekstrem": {
+   "baris": 622,
+   "meninggal": 25,
+   "terdampak": 69408,
+   "rumah_rusak": 9505
+  },
+  "Tanah Longsor": {
+   "baris": 405,
+   "meninggal": 207,
+   "terdampak": 35274,
+   "rumah_rusak": 1479
+  },
+  "Angin Kencang": {
+   "baris": 270,
+   "meninggal": 7,
+   "terdampak": 19855,
+   "rumah_rusak": 3274
+  },
+  "Kebakaran Gedung dan Permukiman": {
+   "baris": 188,
+   "meninggal": 122,
+   "terdampak": 10203,
+   "rumah_rusak": 1523
+  },
+  "Kekeringan": {
+   "baris": 128,
+   "meninggal": 0,
+   "terdampak": 2099909,
+   "rumah_rusak": 0
+  },
+  "Kebakaran Lahan": {
+   "baris": 70,
+   "meninggal": 0,
+   "terdampak": 11427,
+   "rumah_rusak": 0
+  },
+  "Gempabumi": {
+   "baris": 58,
+   "meninggal": 160,
+   "terdampak": 300095,
+   "rumah_rusak": 141701
+  },
+  "Banjir dan Tanah Longsor": {
+   "baris": 42,
+   "meninggal": 5,
+   "terdampak": 172331,
+   "rumah_rusak": 359
+  },
+  "Banjir Bandang": {
+   "baris": 28,
+   "meninggal": 25,
+   "terdampak": 22789,
+   "rumah_rusak": 573
+  },
+  "Gerakan Tanah": {
+   "baris": 26,
+   "meninggal": 0,
+   "terdampak": 6063,
+   "rumah_rusak": 972
+  },
+  "Angin Topan": {
+   "baris": 23,
+   "meninggal": 0,
+   "terdampak": 2314,
+   "rumah_rusak": 398
+  },
+  "Banjir Genangan": {
+   "baris": 21,
+   "meninggal": 0,
+   "terdampak": 43235,
+   "rumah_rusak": 0
+  },
+  "Banjir Rob": {
+   "baris": 17,
+   "meninggal": 0,
+   "terdampak": 23982,
+   "rumah_rusak": 3
+  },
+  "Erupsi Gunung Api": {
+   "baris": 13,
+   "meninggal": 3,
+   "terdampak": 713253,
+   "rumah_rusak": 232
+  },
+  "Lainnya": {
+   "baris": 10,
+   "meninggal": 11,
+   "terdampak": 44,
+   "rumah_rusak": 1
+  },
+  "Gelombang Pasang / Abrasi": {
+   "baris": 10,
+   "meninggal": 0,
+   "terdampak": 2636,
+   "rumah_rusak": 240
+  },
+  "Abrasi Pantai": {
+   "baris": 8,
+   "meninggal": 0,
+   "terdampak": 651,
+   "rumah_rusak": 5
+  },
+  "Konflik Sosial": {
+   "baris": 8,
+   "meninggal": 46,
+   "terdampak": 6551,
+   "rumah_rusak": 747
+  },
+  "Puting Beliung": {
+   "baris": 7,
+   "meninggal": 0,
+   "terdampak": 1187,
+   "rumah_rusak": 149
+  },
+  "Kebakaran Hutan ": {
+   "baris": 7,
+   "meninggal": 0,
+   "terdampak": 0,
+   "rumah_rusak": 0
+  },
+  "Gagal Teknologi": {
+   "baris": 3,
+   "meninggal": 1,
+   "terdampak": 40,
+   "rumah_rusak": 17
+  },
+  "Gelombang Pasang ": {
+   "baris": 3,
+   "meninggal": 0,
+   "terdampak": 342,
+   "rumah_rusak": 47
+  },
+  "Kecelakaan Industri": {
+   "baris": 2,
+   "meninggal": 16,
+   "terdampak": 85,
+   "rumah_rusak": 0
+  },
+  "Gempa Bumi dan Tsunami": {
+   "baris": 1,
+   "meninggal": 0,
+   "terdampak": 0,
+   "rumah_rusak": 0
+  },
+  "Kekeringan Pertanian": {
+   "baris": 1,
+   "meninggal": 0,
+   "terdampak": 0,
+   "rumah_rusak": 0
+  },
+  "Gempabumi Reruntuhan": {
+   "baris": 1,
+   "meninggal": 0,
+   "terdampak": 1741,
+   "rumah_rusak": 299
+  },
+  "Kebakaran Lahan Gambut ": {
+   "baris": 1,
+   "meninggal": 0,
+   "terdampak": 0,
+   "rumah_rusak": 0
+  },
+  "Banjir Lahar (Lahar)": {
+   "baris": 1,
+   "meninggal": 3,
+   "terdampak": 75,
+   "rumah_rusak": 14
+  },
+  "Epidemi dan Wabah Penyakit": {
+   "baris": 1,
+   "meninggal": 5,
+   "terdampak": 454,
+   "rumah_rusak": 0
+  }
+ },
+ "total12": {
+  "meninggal": 1897,
+  "terdampak": 12501851,
+  "rumah": 397670
+ },
+ "kons": {
+  "meninggal": {
+   "0.1": 35.5,
+   "0.5": 73.9,
+   "1": 85.7,
+   "5": 99.6,
+   "10": 100.0,
+   "25": 100.0,
+   "50": 100.0
+  },
+  "terdampak": {
+   "0.1": 20.0,
+   "0.5": 51.8,
+   "1": 64.4,
+   "5": 90.6,
+   "10": 96.6,
+   "25": 99.5,
+   "50": 100.0
+  },
+  "rumah": {
+   "0.1": 51.9,
+   "0.5": 88.0,
+   "1": 92.9,
+   "5": 97.9,
+   "10": 99.1,
+   "25": 100.0,
+   "50": 100.0
+  }
+ }
+}

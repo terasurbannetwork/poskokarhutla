@@ -172,6 +172,151 @@
     "Sudah surut",
     "selesai"
    ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 27.0,
+    "rumah_dampak": 27.0
+   },
+   "teks": {
+    "dampak": "± 27 KK / 124 jiwa",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Banjir belum surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 8608.0
+   },
+   "teks": {
+    "dampak": "± 8608 KK / 32.272 jiwa",
+    "status_darurat": "-",
+    "kondisi": "Belum surut (tabel rekap)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-01",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 118.0
+   },
+   "teks": {
+    "dampak": "± 118 KK / 376 jiwa",
+    "status_darurat": "-",
+    "kondisi": "Belum surut (tabel rekap)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-09",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Deli Serdang",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 546.0
+   },
+   "teks": {
+    "dampak": "± 546 KK / 2.199 jiwa",
+    "status_darurat": "-",
+    "kondisi": "Belum surut (tabel rekap)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-10-27",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Simalungun",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 15.0
+   },
+   "teks": {
+    "dampak": "± 15 KK",
+    "status_darurat": "-",
+    "kondisi": "Belum surut (tabel rekap)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Toba",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2.0
+   },
+   "teks": {
+    "dampak": "± 2 KK",
+    "status_darurat": "-",
+    "kondisi": "Belum surut (tabel rekap)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
   }
  ],
  "prioritas_baru": [

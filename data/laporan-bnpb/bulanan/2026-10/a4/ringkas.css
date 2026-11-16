@@ -1,0 +1,55 @@
+
+/* versi ringkas 3 lembar: tiap .lembar tepat satu halaman A4 */
+@page{size:A4;margin:0}
+body.rk{font-size:8.9pt;line-height:1.42}
+.rk p{margin:0 0 5pt}
+.lembar{width:210mm;height:297mm;padding:11mm 13mm 9mm;position:relative;overflow:hidden;page-break-after:always;display:flex;flex-direction:column}
+.lembar:last-child{page-break-after:auto}
+.kop1{display:flex;align-items:center;gap:12pt;border-bottom:1.5pt solid var(--navy);padding-bottom:6pt;margin-bottom:8pt}
+.lb1{height:19mm}.lk1{height:9mm;margin-left:auto;align-self:flex-start}
+.k1j{font-size:7.5pt;letter-spacing:2pt;color:var(--oranye);font-weight:700}
+.kop1 h1{margin:1pt 0 2pt;font-size:22pt;color:var(--navy);line-height:1.1}
+.k1s{font-size:9pt;color:var(--teks2)}
+.kop{display:flex;justify-content:space-between;align-items:center;border-bottom:.8pt solid var(--garis);padding-bottom:4pt;margin-bottom:8pt}
+.kop-j{font-weight:700;color:var(--navy);font-size:9pt}.kop-s{font-size:8pt;color:var(--teks2)}
+.kop-l{display:flex;gap:8px;align-items:center}.lk{height:7mm}.lb{height:10mm}
+.kaki{margin-top:auto;display:flex;justify-content:space-between;font-size:6.8pt;color:var(--teks3);border-top:.6pt solid var(--garis);padding-top:3pt}
+.kaki b{color:var(--navy)}
+.rk .tesis{font-size:10.5pt;margin-bottom:6pt}
+.rk .kartu{margin:6pt 0 8pt;gap:6pt}
+.rk .kn{font-size:15pt}
+.hj{font-size:11pt;margin:7pt 0 5pt;display:flex;align-items:center;gap:5pt}
+.rk figure{margin:3pt 0 4pt}
+.rk .dua{gap:10pt}
+.dua-lebar{grid-template-columns:62% 1fr}
+.rk .temuan{gap:7pt 12pt}
+.rk .tm{font-size:8.6pt}
+/* blok per jenis bencana */
+.grid2{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8pt;flex:1;min-height:0}
+.blok{border:.7pt solid var(--garis);border-top:3pt solid var(--w);display:flex;flex-direction:column;min-height:0}
+.bl-h{display:flex;align-items:center;gap:6pt;font-weight:700;color:var(--navy);font-size:10.5pt;padding:5pt 7pt;background:var(--tint)}
+.pt{width:100%;display:block;max-height:47mm;object-fit:contain;background:#fff}
+.bl-dua{display:grid;grid-template-columns:44% 1fr;gap:6pt;padding:0 6pt}
+.bl-dua .pt{max-height:64mm}
+.bl-ang{display:grid;grid-template-columns:repeat(3,1fr);gap:4pt;padding:5pt 7pt}
+.bl-ang.v{grid-template-columns:1fr;padding:5pt 0}
+.ang{display:flex;gap:5pt;align-items:flex-start}
+.av{font-size:12.5pt;font-weight:700;line-height:1.1}
+.al{font-size:7.2pt;color:var(--teks2);line-height:1.25}
+.bl-ak{margin-top:auto;padding:5pt 7pt 6pt;border-top:.6pt solid var(--garis);font-size:8pt;display:grid;gap:3pt}
+.bl-ak p{margin:1pt 0 0;text-align:left;line-height:1.35}
+.bl-ak b.sd,.bl-ak b.ak2{display:flex;align-items:center;gap:3pt;font-size:7.6pt;letter-spacing:.3pt}
+.bl-ak b.ak2{color:var(--oranye)}
+/* lembar 3 */
+.tb.mini2 td{font-size:7.8pt;padding:2.6pt 4pt}.tb.mini2 th{font-size:7pt;padding:3.5pt 4pt}
+.ft2 img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+.ft2 .fk{margin-bottom:4pt}
+.duk{display:grid;gap:4pt}
+.dk{display:flex;gap:7pt;align-items:flex-start;font-size:8.5pt;border-bottom:.5pt solid var(--garis);padding-bottom:4pt;text-align:left}
+.dkm{font-size:7.3pt;color:var(--teks3);margin-top:1pt}
+.rk .arahan{margin:7pt 0 5pt;padding:7pt 10pt;font-size:9.3pt}
+.rk .ttd{margin-top:2pt;font-size:8.6pt}
+.rk .sb{margin-top:4pt}
+
+.rk .kartu .kn{font-size:14pt}
+

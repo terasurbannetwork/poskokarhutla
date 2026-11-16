@@ -1,0 +1,5406 @@
+{
+ "spek": "papsel-kunjungan-rev2",
+ "pesan_kunci": "Sesudah kunjungan kebakaran Papua Selatan lebih kecil dan api besar lebih cepat padam, tetapi diukur dengan persen dan rasio laju penurunannya melambat dan Merauke belum surut.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "papsel-kunjungan-rev2#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    147.63,
+    410.0,
+    130.74,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: kegiatan udara tim BNPB",
+    "Luas terbakar dan kecepatan pemadaman, 21 Oktober sampai 12 November 2026",
+    "Dipresentasikan oleh",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "Jakarta, 13 November 2026",
+    "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": [
+    43.2,
+    290.37,
+    410.0,
+    39.0
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "temuan-grafik",
+   "asal": "papsel-kunjungan-rev2#2",
+   "keluarga": [
+    "api"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "2",
+    "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026; InfoPublik, 30 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "arah"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "kategori.api"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Ringkasan eksekutif: sesudah kunjungan kebakaran Papua Selatan lebih kecil, tetapi laju penurunannya melambat",
+   "pesan": "Ringkasan eksekutif",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     454.3,
+     279.2,
+     "Luas lahan terbakar per hari terus mengecil",
+     "grafik"
+    ],
+    [
+     508.3,
+     220.8,
+     408.5,
+     279.2,
+     "Apa artinya"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     228.8,
+     434.3,
+     261.2
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 3,
+   "jenis": "daftar-isi",
+   "asal": "papsel-kunjungan-rev2#3",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Karhutla Papua Selatan Sebelum dan Sesudah Kunjungan Kepala BNPB",
+    "01",
+    "4–7",
+    "02",
+    "8–11",
+    "03",
+    "12–14",
+    "3"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "pembatas-seksi",
+   "asal": "papsel-kunjungan-rev2#4",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "01",
+    "01",
+    "4–7",
+    "02",
+    "8–11",
+    "03",
+    "12–14",
+    "4"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 5,
+   "jenis": "temuan-visual",
+   "asal": "papsel-kunjungan-rev2#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "5",
+    "01  ",
+    "02  ",
+    "03  ",
+    "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "4F6A88",
+     "skala.netral"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "EEF5FC",
+     "permukaan"
+    ],
+    [
+     "FDF1E8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Luas harian {{angka:ps.laju.seb.luas|persen|arah}} pada sepuluh hari sebelum kunjungan, tetapi hanya {{angka:ps.laju.ses.luas|persen|arah}} pada sepuluh hari sesudahnya",
+   "pesan": "Tren luas terbakar",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     550.4,
+     363,
+     "Luas terbakar dan belum padam harian, Papua Selatan",
+     "grafik"
+    ],
+    [
+     604.4,
+     137,
+     312.4,
+     363,
+     "Rata-rata per sepuluh hari"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     171.0,
+     530.4,
+     319.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 6,
+   "jenis": "temuan-visual",
+   "asal": "papsel-kunjungan-rev2#6",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "olahan BNPB",
+     "sistem_referensi": "WGS84",
+     "catatan": "batas wilayah ilustratif dan tidak resmi"
+    },
+    "resmi": false,
+    "batas": [
+     500.8,
+     155.0,
+     906.8000000000001,
+     423.6838
+    ],
+    "label": [
+     {
+      "teks": "Kontuar",
+      "kotak": [
+       618.0754919752675,
+       381.0605073937684,
+       677.0100818190175,
+       392.2385073937684
+      ]
+     },
+     {
+      "teks": "Kimaam",
+      "kotak": [
+       688.6175698532824,
+       376.6110354194684,
+       748.7529214157823,
+       387.7890354194684
+      ]
+     },
+     {
+      "teks": "Jagebob",
+      "kotak": [
+       795.0925844655919,
+       342.51399500376505,
+       849.6769399343419,
+       353.69199500376504
+      ]
+     }
+    ],
+    "ukuran_label_pt": 8.28
+   },
+   "struktur": [
+    "6",
+    "01  ",
+    "02  ",
+    "03  ",
+    "Sumber batas: olahan BNPB; WGS84; batas wilayah ilustratif dan tidak resmi",
+    "Sumber batas: olahan BNPB; WGS84; batas wilayah ilustratif dan tidak resmi",
+    "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026; lokasi tinjauan dari Renlap rute udara BNPB, 30 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "F1F3F6",
+     "inti"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Hotspot di Jagebob, lokasi tinjauan, {{angka:ps.jgb.ubah|persen|arah}} sesudah kunjungan; api kini terpusat di Kontuar dan Kimaam",
+   "pesan": "Sebaran hotspot bergeser",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "peta",
+    "ikon",
+    "peta"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     436.8,
+     363,
+     "Sepuluh hari sebelum kunjungan",
+     "grafik"
+    ],
+    [
+     490.8,
+     137,
+     426.0,
+     363,
+     "Sepuluh hari sesudah kunjungan",
+     "grafik"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     155.0,
+     416.8,
+     335.0
+    ],
+    [
+     500.8,
+     155.0,
+     406.0,
+     335.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 7,
+   "jenis": "temuan-visual",
+   "asal": "papsel-kunjungan-rev2#7",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "7",
+    "01  ",
+    "02  ",
+    "03  ",
+    "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "arah"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "skala.netral"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "arah"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "EEF5FC",
+     "permukaan"
+    ],
+    [
+     "FDF1E8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Luas terbakar Merauke hanya {{angka:ps.mk.ubah|persen|arah}}, sehingga kini {{angka:ps.mk.porsi|persen}} luas terbakar Papua Selatan ada di Merauke",
+   "pesan": "Penurunan di luar Merauke",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     436.8,
+     363,
+     "Penurunan luas terbakar per kabupaten",
+     "grafik"
+    ],
+    [
+     490.8,
+     137,
+     426.0,
+     363,
+     "Hotspot per kecamatan di Merauke"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     171.0,
+     416.8,
+     319.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 8,
+   "jenis": "pembatas-seksi",
+   "asal": "papsel-kunjungan-rev2#8",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "02",
+    "01",
+    "4–7",
+    "02",
+    "8–11",
+    "03",
+    "12–14",
+    "8"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 9,
+   "jenis": "tabel-peringkat",
+   "asal": "papsel-kunjungan-rev2#9",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "9",
+    "01  ",
+    "02  ",
+    "03  ",
+    "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "EEF5FC",
+     "permukaan"
+    ],
+    [
+     "FDF1E8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Diukur dengan persen dan rasio, kecepatan padam harian setara; yang membaik hanya api yang lama menyala, turun ke {{angka:ps.klw.ses.p9|persen}}",
+   "pesan": "Perbandingan apple to apple",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     576.6,
+     281.7,
+     "Ukuran yang tidak bergantung pada besar kecilnya kebakaran"
+    ],
+    [
+     630.6,
+     137,
+     286.2,
+     281.7,
+     "Mengapa memakai persen dan rasio"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 10,
+   "jenis": "temuan-visual",
+   "asal": "papsel-kunjungan-rev2#10",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "10",
+    "01  ",
+    "02  ",
+    "03  ",
+    "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Tiap hari, belum padam biasanya tinggal {{angka:ps.rb.median.seb|persen}} dari hari sebelumnya sebelum kunjungan dan {{angka:ps.rb.median.ses|persen}} sesudahnya",
+   "pesan": "Rasio harian belum padam",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     524.2,
+     363,
+     "Belum padam dibanding sehari sebelumnya",
+     "grafik"
+    ],
+    [
+     578.2,
+     137,
+     338.6,
+     363,
+     "Cara membaca rasio harian"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     171.0,
+     504.2,
+     319.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 11,
+   "jenis": "temuan-visual",
+   "asal": "papsel-kunjungan-rev2#11",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "11",
+    "01  ",
+    "02  ",
+    "03  ",
+    "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "AEBBCB",
+     "skala.netral"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Dihitung menurut luas, cluster yang menyala lebih dari tiga hari turun dari {{angka:ps.klw.seb.p9|persen}} menjadi {{angka:ps.klw.ses.p9|persen}}",
+   "pesan": "Kecepatan padam cluster",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     480.5,
+     363,
+     "Lama api menyala, dibobot menurut luasnya",
+     "grafik"
+    ],
+    [
+     534.5,
+     137,
+     382.3,
+     363,
+     "Cara mengukur kecepatan padam"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     171.0,
+     460.5,
+     319.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 12,
+   "jenis": "pembatas-seksi",
+   "asal": "papsel-kunjungan-rev2#12",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "03",
+    "01",
+    "4–7",
+    "02",
+    "8–11",
+    "03",
+    "12–14",
+    "12"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 13,
+   "jenis": "temuan-visual",
+   "asal": "papsel-kunjungan-rev2#13",
+   "keluarga": [
+    "api"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "olahan BNPB",
+     "sistem_referensi": "WGS84",
+     "catatan": "batas wilayah ilustratif dan tidak resmi"
+    },
+    "resmi": false,
+    "batas": [
+     53.2,
+     155.0,
+     644.72,
+     432.257
+    ],
+    "label": [
+     {
+      "teks": "Papua Selatan",
+      "kotak": [
+       498.3385038919737,
+       334.40116935168567,
+       604.4019804544737,
+       348.06316935168564
+      ]
+     },
+     {
+      "teks": "Kalimantan Tengah",
+      "kotak": [
+       229.57792509567184,
+       275.9208580404737,
+       358.43610868942187,
+       289.5828580404737
+      ]
+     },
+     {
+      "teks": "Sulawesi Tenggara",
+      "kotak": [
+       333.21586871255573,
+       302.1215457508487,
+       454.70147418130574,
+       315.7835457508487
+      ]
+     },
+     {
+      "teks": "Kalimantan Timur",
+      "kotak": [
+       271.97686345627665,
+       251.33117153259664,
+       387.82432439377664,
+       264.99317153259665
+      ]
+     }
+    ],
+    "ukuran_label_pt": 10.12
+   },
+   "struktur": [
+    "13",
+    "01  ",
+    "02  ",
+    "03  ",
+    "Sumber batas: olahan BNPB; WGS84; batas wilayah ilustratif dan tidak resmi",
+    "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "angka-judul"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "8F3F07",
+     "skala.api"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "skala.api"
+    ],
+    [
+     "E8894A",
+     "skala.api"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "skala.api"
+    ],
+    [
+     "FBE7D6",
+     "skala.api"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Walau turun, Papua Selatan kini provinsi dengan luas terbakar terbesar di Indonesia: {{angka:ps.nas.porsi|persen}} luas nasional sejak awal November",
+   "pesan": "Terluas nasional",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     611.5,
+     363,
+     "Luas terbakar per provinsi, awal sampai pertengahan November",
+     "grafik"
+    ],
+    [
+     665.5,
+     137,
+     251.3,
+     363,
+     "Yang perlu dicatat"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     155.0,
+     591.5,
+     335.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 14,
+   "jenis": "kesimpulan",
+   "asal": "papsel-kunjungan-rev2#14",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "14",
+    "01  ",
+    "02  ",
+    "03  ",
+    "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026; InfoPublik, 30 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Sesudah kunjungan kebakaran lebih kecil dan api besar lebih cepat padam, tetapi laju penurunan melambat dan kecepatan padam harian setara",
+   "pesan": "Kesimpulan dan arahan",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 15,
+   "jenis": "penutup",
+   "asal": "papsel-kunjungan-rev2#15",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    168,
+    410.0,
+    64.32000000000001,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: kegiatan udara tim BNPB",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "117",
+    "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+    "021 2982 7793",
+    "persuratan@bnpb.go.id",
+    "www.bnpb.go.id",
+    "Satu Data Bencana",
+    "@BNPB_Indonesia",
+    "@infoBencanaBNPB",
+    "BNPB Indonesia",
+    "@bnpbindonesia",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "ps.laju.seb.luas",
+   "opsi": "|persen|arah",
+   "tampil": "turun 57%",
+   "nilai": -57,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.laju.ses.luas",
+   "opsi": "|persen|arah",
+   "tampil": "turun 17%",
+   "nilai": -17,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.klw.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 61%",
+   "nilai": 61,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.klw.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 35%",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "csv:data/papsel/ringkas_luas.csv#Luas terbakar per hari",
+   "tampil": "6.646",
+   "nilai": 6646.0,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ringkas_luas.csv#Luas terbakar per hari",
+   "tampil": "4.646",
+   "nilai": 4646.0,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ringkas_luas.csv#Luas terbakar per hari",
+   "tampil": "1.978",
+   "nilai": 1978.0,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ringkas_luas.csv#Luas terbakar per hari",
+   "tampil": "1.649",
+   "nilai": 1649.0,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#2#ubah",
+   "tampil": "turun 75,2%",
+   "nilai": -75.18808305747818,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#2#persen:Tengah Okt",
+   "tampil": "turun 30,1%",
+   "nilai": -30.093289196509176,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#2#persen:Sebelum kunjungan",
+   "tampil": "turun 57,4%",
+   "nilai": -57.42574257425742,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#2#persen:Sesudah kunjungan",
+   "tampil": "turun 16,6%",
+   "nilai": -16.632962588473205,
+   "naskah": "papsel-kunjungan-rev2#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#2"
+  },
+  {
+   "kunci": "ps.laju.seb.luas",
+   "opsi": "|persen|arah",
+   "tampil": "turun 57%",
+   "nilai": -57,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#5"
+  },
+  {
+   "kunci": "ps.laju.ses.luas",
+   "opsi": "|persen|arah",
+   "tampil": "turun 17%",
+   "nilai": -17,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#5"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#5#gambar:1",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "1 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/harian.csv#Luas terbakar",
+   "tampil": "4.286",
+   "nilai": 4286.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/harian.csv#Belum padam",
+   "tampil": "2.954",
+   "nilai": 2954.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "5 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/harian.csv#Luas terbakar",
+   "tampil": "17.227",
+   "nilai": 17227.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "9 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "13 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "17 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "21 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "25 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "29 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "2 Nov",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "6 Nov",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/harian.csv#hari",
+   "tampil": "12 Nov",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/harian.csv#Luas terbakar",
+   "tampil": "255",
+   "nilai": 255.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/harian.csv#Belum padam",
+   "tampil": "153",
+   "nilai": 153.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#luas",
+   "tampil": "6.646",
+   "nilai": 6646.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#belum",
+   "tampil": "4.676",
+   "nilai": 4676.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#hot",
+   "tampil": "3.788",
+   "nilai": 3788.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#luas",
+   "tampil": "4.646",
+   "nilai": 4646.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#belum",
+   "tampil": "3.114",
+   "nilai": 3114.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#hot",
+   "tampil": "2.804",
+   "nilai": 2804.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#luas",
+   "tampil": "1.978",
+   "nilai": 1978.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#belum",
+   "tampil": "1.330",
+   "nilai": 1330.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#hot",
+   "tampil": "1.207",
+   "nilai": 1207.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#luas",
+   "tampil": "1.649",
+   "nilai": 1649.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#belum",
+   "tampil": "1.009",
+   "nilai": 1009.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/dasarian.csv#hot",
+   "tampil": "844",
+   "nilai": 844.0,
+   "naskah": "papsel-kunjungan-rev2#5",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "ps.jgb.ubah",
+   "opsi": "|persen|arah",
+   "tampil": "turun 57%",
+   "nilai": -57,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#6"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#gambar:2",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/papsel/kec_seb.csv#hotspot",
+   "tampil": "1.514",
+   "nilai": 1514.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_seb.csv#hotspot",
+   "tampil": "1.344",
+   "nilai": 1344.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_seb.csv#hotspot",
+   "tampil": "1.252",
+   "nilai": 1252.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-ukuran-1.000",
+   "tampil": "1.000",
+   "nilai": 1000,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-ukuran-500",
+   "tampil": "500",
+   "nilai": 500.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-ukuran-200",
+   "tampil": "200",
+   "nilai": 200,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-skala-utama-0",
+   "tampil": "0",
+   "nilai": 0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-skala-utama-2",
+   "tampil": "100",
+   "nilai": 100,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#gambar:3",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/papsel/kec_ses.csv#hotspot",
+   "tampil": "1.265",
+   "nilai": 1265.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_ses.csv#hotspot",
+   "tampil": "1.093",
+   "nilai": 1093.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_ses.csv#hotspot",
+   "tampil": "644",
+   "nilai": 644.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-ukuran-1.000",
+   "tampil": "1.000",
+   "nilai": 1000,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-ukuran-500",
+   "tampil": "500",
+   "nilai": 500.0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-ukuran-200",
+   "tampil": "200",
+   "nilai": 200,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-skala-utama-0",
+   "tampil": "0",
+   "nilai": 0,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#6#peta-skala-utama-2",
+   "tampil": "100",
+   "nilai": 100,
+   "naskah": "papsel-kunjungan-rev2#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "ps.mk.ubah",
+   "opsi": "|persen|arah",
+   "tampil": "turun 6%",
+   "nilai": -6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#7"
+  },
+  {
+   "kunci": "ps.mk.porsi",
+   "opsi": "|persen",
+   "tampil": "99%",
+   "nilai": 99,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#7"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#7#gambar:4",
+   "tampil": "4",
+   "nilai": 4.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/papsel/kab_turun.csv#turun",
+   "tampil": "6,1",
+   "nilai": 6.1,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kab_turun.csv#turun",
+   "tampil": "94,6",
+   "nilai": 94.6,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kab_turun.csv#turun",
+   "tampil": "88,2",
+   "nilai": 88.2,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kab_turun.csv#turun",
+   "tampil": "84,1",
+   "nilai": 84.1,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "1.252",
+   "nilai": 1252.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "1.265",
+   "nilai": 1265.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "1,0",
+   "nilai": 1.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "1.514",
+   "nilai": 1514.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "644",
+   "nilai": 644.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "57,5",
+   "nilai": -57.5,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "860",
+   "nilai": 860.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "1.093",
+   "nilai": 1093.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "27,1",
+   "nilai": 27.1,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "1.344",
+   "nilai": 1344.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "390",
+   "nilai": 390.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "71,0",
+   "nilai": -71.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "499",
+   "nilai": 499.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "621",
+   "nilai": 621.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "24,4",
+   "nilai": 24.4,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "541",
+   "nilai": 541.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "502",
+   "nilai": 502.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "7,2",
+   "nilai": -7.2,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "556",
+   "nilai": 556.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "481",
+   "nilai": 481.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "13,5",
+   "nilai": -13.5,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "424",
+   "nilai": 424.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "468",
+   "nilai": 468.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "10,4",
+   "nilai": 10.4,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "572",
+   "nilai": 572.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "228",
+   "nilai": 228.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "60,1",
+   "nilai": -60.1,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "316",
+   "nilai": 316.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "407",
+   "nilai": 407.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "28,8",
+   "nilai": 28.8,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "520",
+   "nilai": 520.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "190",
+   "nilai": 190.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "63,5",
+   "nilai": -63.5,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sebelum",
+   "tampil": "248",
+   "nilai": 248.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#sesudah",
+   "tampil": "403",
+   "nilai": 403.0,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/kec_banding.csv#ubah",
+   "tampil": "62,5",
+   "nilai": 62.5,
+   "naskah": "papsel-kunjungan-rev2#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "ps.klw.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 35%",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#9"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "1.978",
+   "nilai": 1978.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "1.649",
+   "nilai": 1649.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "-57",
+   "nilai": -57.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "-17",
+   "nilai": -17.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "-57",
+   "nilai": -57.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "-24",
+   "nilai": -24.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "-57",
+   "nilai": -57.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "-30",
+   "nilai": -30.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "82",
+   "nilai": 82.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "81",
+   "nilai": 81.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "110",
+   "nilai": 110.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "120",
+   "nilai": 120.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "55",
+   "nilai": 55.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "52",
+   "nilai": 52.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "67",
+   "nilai": 67.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "61",
+   "nilai": 61.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "61",
+   "nilai": 61.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "35",
+   "nilai": 35.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "15",
+   "nilai": 15.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "29",
+   "nilai": 29.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sebelum",
+   "tampil": "23",
+   "nilai": 23.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/ukuran.csv#sesudah",
+   "tampil": "15",
+   "nilai": 15.0,
+   "naskah": "papsel-kunjungan-rev2#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+  },
+  {
+   "kunci": "ps.rb.median.seb",
+   "opsi": "|persen",
+   "tampil": "82%",
+   "nilai": 82,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.median.ses",
+   "opsi": "|persen",
+   "tampil": "81%",
+   "nilai": 81,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#10#gambar:5",
+   "tampil": "5",
+   "nilai": 5.0,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "19 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/rasio_harian.csv#Belum padam dibanding kemarin",
+   "tampil": "88",
+   "nilai": 88.0,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "22 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "25 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "28 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/rasio_harian.csv#Belum padam dibanding kemarin",
+   "tampil": "331",
+   "nilai": 331.0,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "31 Okt",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "3 Nov",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "6 Nov",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/papsel/rasio_harian.csv#hari",
+   "tampil": "10 Nov",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/rasio_harian.csv#Belum padam dibanding kemarin",
+   "tampil": "316",
+   "nilai": 316.0,
+   "naskah": "papsel-kunjungan-rev2#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "83%",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rb.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "97%",
+   "nilai": 97,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#10"
+  },
+  {
+   "kunci": "ps.klw.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 61%",
+   "nilai": 61,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.klw.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 35%",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#gambar:6",
+   "tampil": "6",
+   "nilai": 6.0,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#kolomtumpuk-persen:Sebelum kunjungan:Sehari atau kurang",
+   "tampil": "15%",
+   "nilai": 15.147298030001807,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data sistem BNPB dari Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#kolomtumpuk-persen:Sebelum kunjungan:Dua sampai tiga hari",
+   "tampil": "24%",
+   "nilai": 23.797216699801194,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data sistem BNPB dari Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#kolomtumpuk-persen:Sebelum kunjungan:Lebih dari tiga hari",
+   "tampil": "61%",
+   "nilai": 61.055485270196996,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data sistem BNPB dari Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#kolomtumpuk-persen:Sesudah kunjungan:Sehari atau kurang",
+   "tampil": "29%",
+   "nilai": 29.462734490114578,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data sistem BNPB dari Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#kolomtumpuk-persen:Sesudah kunjungan:Dua sampai tiga hari",
+   "tampil": "35%",
+   "nilai": 35.193859822744166,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data sistem BNPB dari Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#11#kolomtumpuk-persen:Sesudah kunjungan:Lebih dari tiga hari",
+   "tampil": "35%",
+   "nilai": 35.34340568714126,
+   "naskah": "papsel-kunjungan-rev2#11",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data sistem BNPB dari Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 23%",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.kl.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 15%",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#11"
+  },
+  {
+   "kunci": "ps.nas.porsi",
+   "opsi": "|persen",
+   "tampil": "25%",
+   "nilai": 25,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#gambar:7",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari urutan spek",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/papsel/nasional_nov.csv#luas",
+   "tampil": "18.465",
+   "nilai": 18465.0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/nasional_nov.csv#luas",
+   "tampil": "13.058",
+   "nilai": 13058.0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/nasional_nov.csv#luas",
+   "tampil": "5.892",
+   "nilai": 5892.0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "csv:data/papsel/nasional_nov.csv#luas",
+   "tampil": "5.705",
+   "nilai": 5705.0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-0-100",
+   "tampil": "100",
+   "nilai": 100,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-1-100",
+   "tampil": "100",
+   "nilai": 100,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-1-999",
+   "tampil": "999",
+   "nilai": 999,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-2-1.000",
+   "tampil": "1.000",
+   "nilai": 1000,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-2-4.999",
+   "tampil": "4.999",
+   "nilai": 4999,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-3-5.000",
+   "tampil": "5.000",
+   "nilai": 5000,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-3-9.999",
+   "tampil": "9.999",
+   "nilai": 9999,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-ambang-4-10.000",
+   "tampil": "10.000",
+   "nilai": 10000,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-skala-utama-0",
+   "tampil": "0",
+   "nilai": 0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-skala-utama-1",
+   "tampil": "500",
+   "nilai": 500.0,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#13#peta-skala-utama-2",
+   "tampil": "1.000",
+   "nilai": 1000,
+   "naskah": "papsel-kunjungan-rev2#13",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.okt.luas",
+   "opsi": "|satuan",
+   "tampil": "134.452 ha",
+   "nilai": 134452,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.ses.hot.hari",
+   "opsi": "|satuan",
+   "tampil": "844 titik",
+   "nilai": 844,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#13"
+  },
+  {
+   "kunci": "ps.seb.luas.hari",
+   "opsi": "|satuan",
+   "tampil": "1.978 ha",
+   "nilai": 1978,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.ses.luas.hari",
+   "opsi": "|satuan",
+   "tampil": "1.649 ha",
+   "nilai": 1649,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.laju.seb.luas",
+   "opsi": "|persen|arah",
+   "tampil": "turun 57%",
+   "nilai": -57,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.laju.ses.luas",
+   "opsi": "|persen|arah",
+   "tampil": "turun 17%",
+   "nilai": -17,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.rb.median.seb",
+   "opsi": "|persen",
+   "tampil": "82%",
+   "nilai": 82,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.rb.median.ses",
+   "opsi": "|persen",
+   "tampil": "81%",
+   "nilai": 81,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.rp.bobot.seb",
+   "opsi": "|persen",
+   "tampil": "55%",
+   "nilai": 55,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.rp.bobot.ses",
+   "opsi": "|persen",
+   "tampil": "52%",
+   "nilai": 52,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.klw.seb.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 61%",
+   "nilai": 61,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.klw.ses.p9",
+   "opsi": "|persen",
+   "tampil": "sekitar 35%",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.luar.porsi",
+   "opsi": "|persen",
+   "tampil": "68%",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.omc.sorti",
+   "opsi": "|satuan",
+   "tampil": "10 sorti",
+   "nilai": 10,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InfoPublik, 30 Okt 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "ps.nas.porsi",
+   "opsi": "|persen",
+   "tampil": "25%",
+   "nilai": 25,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+   "naskah": "papsel-kunjungan-rev2#14"
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#15#kontak:call-center",
+   "tampil": "117",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#15",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:papsel-kunjungan-rev2#15#kontak:telepon",
+   "tampil": "021 2982 7793",
+   "nilai": null,
+   "naskah": "papsel-kunjungan-rev2#15",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  }
+ ],
+ "catatan": [
+  [
+   "papsel-kunjungan-rev2#1",
+   "judul_baris",
+   3
+  ],
+  [
+   "papsel-kunjungan-rev2#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#5",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#6",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#7",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#9",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#10",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#11",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#13",
+   "judul_baris",
+   2
+  ],
+  [
+   "papsel-kunjungan-rev2#14",
+   "judul_baris",
+   2
+  ]
+ ],
+ "keputusan": [],
+ "peringatan": [],
+ "masukan": {
+  "..\\..\\logo-bersama\\kris.png": "d0c25d345951e4c4a3e4444be49d0a41bf58ce3ad1d2be1cc78608ad51ab0c25",
+  "..\\data\\angka.json": "4d9fee630a5c35c40e271b06203a18934ebb95db4ee07d938ba92bb98500be42",
+  "..\\data\\papsel\\dasarian.csv": "5c9db6e3448b8d47e4fc76402fe2b3d29320950787f4140b11c114f4415deb8b",
+  "..\\data\\papsel\\harian.csv": "37b767d5ad5656fa4d96cdcb6b407812480fea26f15e032d5a7f10a67e1f2b79",
+  "..\\data\\papsel\\kab_turun.csv": "dcae628d4b03640a78f544aa12ada9cd21a3bf6eae4514073b52887fc0f88435",
+  "..\\data\\papsel\\kec_banding.csv": "dc0d7a943503aa5c20cbfbfcb7fa630edc4c44698d04dbcbb33723d4398006f5",
+  "..\\data\\papsel\\kec_seb.csv": "59e142d1992e5b3666524d30e14461a41caaa7241bf80a896476b23440994185",
+  "..\\data\\papsel\\kec_ses.csv": "55cd2f128e07b86bf865f44287b47808aad43e5d4d6efedad7479054a8df5277",
+  "..\\data\\papsel\\nasional_nov.csv": "a2c7bfebf6b7d87e19429a7f0123afe33190fcd32b1cd6cbadb650a5dd2d8b2b",
+  "..\\data\\papsel\\rasio_harian.csv": "307fb192f1a51e53c69c8ac9d32b3237d8efde628661ac1f4cd6d8d0cfb7dc47",
+  "..\\data\\papsel\\ringkas_luas.csv": "23af77e599ffb62e252f6bff6606ee1370e7a0bc101d0d8419dd95bcbde8abff",
+  "..\\data\\papsel\\ukuran.csv": "1f7567d58055ed6f3e18de97ae87d6257b65a9a9eb35411f7ddbcaa3569a343e",
+  "..\\data\\papsel\\umur_cluster_luas.csv": "bcce34a98739a0f19ff1511ac8e635fba7809643ac219e209e9c1c59c1712e0e",
+  "..\\foto\\berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
+  "..\\foto\\udara-20.jpg": "e7febbca708f34708900332408235d5c46ddf92c4d8fdfb29d9c9eb26a508e6f",
+  "..\\geo\\kabupaten\\93.json": "028944382a84632daaf48781b3ee7d19c5606bc89ee1e43a65d54ef68e99c9bc",
+  "..\\geo\\provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344",
+  "..\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
+  "..\\peta\\peta-0a2c15c1ab81.png": "c0edd956c48f1367f8eabbe656734a6f920619c4e1fbcae2eff0ad303fff39e6",
+  "..\\peta\\peta-0f0b9c8a879e.png": "0d6f5575b7ba68134e65109e076a2262d1856ed7fb37834d5806b8b2eb445dbd",
+  "..\\peta\\peta-3e027f771504.png": "79cf6cb542c108fbcf8cf63b4cf5ddf3efb45fd2789dbea25b87c36eab290394",
+  "..\\spek\\papsel-kunjungan-rev2.json": "784c787ab0e1ec2da4ae6ccdd3030bd4a2e75cea572acd2f27e7b5c8b7fea9f6",
+  "..\\tema.json": "8e3805f4c400dce42b7b4e3fa84b61ae5e97a66bc6d18ffb796b9a50538529c0",
+  "..\\..\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
+ }
+}

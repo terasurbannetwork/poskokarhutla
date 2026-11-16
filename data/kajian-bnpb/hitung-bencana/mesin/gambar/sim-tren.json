@@ -1,0 +1,45 @@
+{
+ "jenis": "garis",
+ "judul": "Tren Januari sampai Oktober, indeks 2024 = 100",
+ "sumbu_x": [
+  "2024",
+  "2025",
+  "2026"
+ ],
+ "seri": [
+  {
+   "nama": "Jumlah kejadian resmi DIBI",
+   "nilai": [
+    100.0,
+    274.2,
+    105.9
+   ]
+  },
+  {
+   "nama": "KJN lolos L2 v1",
+   "nilai": [
+    100.0,
+    156.3,
+    68.6
+   ]
+  },
+  {
+   "nama": "KJN kelas S ke atas (a+b)",
+   "nilai": [
+    100.0,
+    117.4,
+    58.7
+   ]
+  },
+  {
+   "nama": "Meninggal + hilang",
+   "nilai": [
+    100.0,
+    141.8,
+    113.1
+   ]
+  }
+ ],
+ "satuan": "indeks (2024 = 100)",
+ "sumber": "DIBI dasbor publik (dibi.bnpb.go.id), ditarik 12 Nov 2026, 1 Jan 2024 s.d. 12 Nov 2026; pengolahan analisis/sim_kerangka.py; Jan sampai Okt tiap tahun agar sebanding; 2024 belum lengkap, 2025 mulai memuat baris is_bencana salah"
+}

@@ -1,0 +1,2 @@
+{"jenis": "tumpuk", "kategori": ["K1","K2","K3","K4"],
+ "seri": [{"nama": "Hanya satu kriteria", "nilai": [40, 25, 30, 12]}, {"nama": "Dua kriteria", "nilai": [10, 15, 5, 8]}, {"nama": "Tiga atau lebih", "nilai": [4, 6, 2, 1]}]}

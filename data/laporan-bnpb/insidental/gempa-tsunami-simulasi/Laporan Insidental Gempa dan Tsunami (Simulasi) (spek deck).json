@@ -1,0 +1,107 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Insidental Gempa Bumi dan Tsunami (Simulasi), 09-11-2026.",
+ "judul_dokumen": "Laporan Insidental Gempa Bumi dan Tsunami (Simulasi)",
+ "kajian": "rehab",
+ "tanggal": "2026-11-09",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/insidental/gempa-tsunami-simulasi/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Insidental Gempa Bumi dan Tsunami (Simulasi)",
+   "subjudul": "Kejadian contoh: Gempa M6,8 Selatan Jawa Barat, data contoh untuk uji format",
+   "penyaji": {
+    "nama": "Tim Ahli dan Tim Sus IT BNPB",
+    "jabatan": "Badan Nasional Penanggulangan Bencana"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-tsunami-simulasi\\Laporan Insidental Gempa dan Tsunami (Simulasi) (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Data contoh (simulasi); model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); penduduk WorldPop 2026 per kecamatan"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-tsunami-simulasi\\Laporan Insidental Gempa dan Tsunami (Simulasi) (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Data contoh (simulasi); format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-tsunami-simulasi\\Laporan Insidental Gempa dan Tsunami (Simulasi) (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Data contoh (simulasi); format laporan kaji cepat BPBD dan Pusdalops BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-tsunami-simulasi\\Laporan Insidental Gempa dan Tsunami (Simulasi) (isi).pptx",
+   "halaman": 4,
+   "bagian": 2,
+   "sumber": "Data contoh (simulasi); model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-tsunami-simulasi\\Laporan Insidental Gempa dan Tsunami (Simulasi) (isi).pptx",
+   "halaman": 5,
+   "bagian": 3,
+   "sumber": "Data contoh (simulasi); standar minimum Sphere untuk dasar hitung kebutuhan"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-tsunami-simulasi\\Laporan Insidental Gempa dan Tsunami (Simulasi) (isi).pptx",
+   "halaman": 6,
+   "bagian": 3,
+   "sumber": "Data contoh (simulasi); format rencana operasi tanggap darurat BNPB"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/insidental/gempa-tsunami-simulasi/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Gempa dan peringatan tsunami",
+   "label": "Gempa dan peringatan tsunami",
+   "halaman_tetap": [
+    3,
+    4
+   ]
+  },
+  {
+   "judul": "Dampak dan gempa susulan",
+   "label": "Dampak dan gempa susulan",
+   "halaman_tetap": [
+    5,
+    6
+   ]
+  },
+  {
+   "judul": "Penanganan dan rencana tiga hari",
+   "label": "Penanganan dan rencana tiga hari",
+   "halaman_tetap": [
+    7,
+    8
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Laporan Insidental Gempa Bumi dan Tsunami (Simulasi)",
+ "skala_logo_bnpb": 1.1
+}

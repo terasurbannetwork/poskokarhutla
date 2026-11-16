@@ -1,0 +1,107 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Insidental Erupsi Gunung Api (Simulasi), 09-11-2026.",
+ "judul_dokumen": "Laporan Insidental Erupsi Gunung Api (Simulasi)",
+ "kajian": "rehab",
+ "tanggal": "2026-11-09",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/insidental/gunungapi-simulasi/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Robert Friedman, USAID Indonesia (OFDA), domain publik, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Insidental Erupsi Gunung Api (Simulasi)",
+   "subjudul": "Skenario contoh: Gunung Merapi naik ke Level IV (Awas), data contoh untuk uji format",
+   "penyaji": {
+    "nama": "Tim Ahli dan Tim Sus IT BNPB",
+    "jabatan": "Badan Nasional Penanggulangan Bencana"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gunungapi-simulasi\\Laporan Insidental Erupsi Gunung Api (Simulasi) (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "PVMBG, laporan 8 Nov 2026 pukul 06.00 WIB; Level II dari MAGMA per 8 Nov; arti level Permen ESDM 15/2011"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gunungapi-simulasi\\Laporan Insidental Erupsi Gunung Api (Simulasi) (isi).pptx",
+   "halaman": 2,
+   "bagian": 2,
+   "sumber": "Data contoh (simulasi); status Level III sejak 5 Nov 2020 dari PVMBG"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gunungapi-simulasi\\Laporan Insidental Erupsi Gunung Api (Simulasi) (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Data contoh (simulasi); penduduk WorldPop 2026; KRB PVMBG 2018; batas kecamatan Kemendagri"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gunungapi-simulasi\\Laporan Insidental Erupsi Gunung Api (Simulasi) (isi).pptx",
+   "halaman": 4,
+   "bagian": 2,
+   "sumber": "Data contoh (simulasi); koordinat bandara OurAirports; batas kab/kota Kemendagri"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gunungapi-simulasi\\Laporan Insidental Erupsi Gunung Api (Simulasi) (isi).pptx",
+   "halaman": 5,
+   "bagian": 3,
+   "sumber": "Data contoh (simulasi); penduduk WorldPop 2026; acuan Sphere 2018 dan Perka BNPB 7/2008"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gunungapi-simulasi\\Laporan Insidental Erupsi Gunung Api (Simulasi) (isi).pptx",
+   "halaman": 6,
+   "bagian": 3,
+   "sumber": "Data contoh (simulasi); rekomendasi dan langkah rekaan untuk uji format"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/insidental/gunungapi-simulasi/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Robert Friedman, USAID Indonesia (OFDA), domain publik, Wikimedia Commons"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Status gunung api",
+   "label": "Status gunung api",
+   "halaman_tetap": [
+    3
+   ]
+  },
+  {
+   "judul": "Erupsi Merapi (simulasi)",
+   "label": "Erupsi Merapi (simulasi)",
+   "halaman_tetap": [
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "judul": "Penanganan (simulasi)",
+   "label": "Penanganan (simulasi)",
+   "halaman_tetap": [
+    7,
+    8
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Laporan Insidental Erupsi Gunung Api",
+ "skala_logo_bnpb": 1.1
+}

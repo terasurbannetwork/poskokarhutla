@@ -1,0 +1,816 @@
+{
+ "catatan": "Proksi, bukan luas terbakar. Titik panas bukan api; lihat riset/SIM-KARHUTLA.md untuk keterbatasan.",
+ "data": {
+  "sumber": [
+   "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-22/firms-raw-15-22okt.tar.gz",
+   "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-25/firms-7hari-publik-25okt-0721.tar.gz",
+   "data/laporan-bnpb/generator/cache/raw/VIIRS_*_NRT-<tgl>.csv"
+  ],
+  "rentang_utc": [
+   "2026-10-15T03:19:01.200000+00:00",
+   "2026-11-11T18:37:58.800000+00:00"
+  ],
+  "titik_viirs_sebelum_filter_daratan_dan_buang_kembar": 420428,
+  "titik_di_daratan_indonesia_semua_keyakinan": 311804,
+  "titik_keyakinan_rendah_l": 16316,
+  "titik_nominal_n": 286354,
+  "titik_tinggi_h": 9134,
+  "titik_dipakai_nominal_tinggi": 295488,
+  "piksel_375m_unik_dipakai": 140813,
+  "per_sensor_dipakai": {
+   "S-NPP": 86651,
+   "NOAA-20": 106889,
+   "NOAA-21": 101948
+  },
+  "titik_per_hari_utc": {
+   "15-10": 16178,
+   "16-10": 15034,
+   "17-10": 25062,
+   "18-10": 22823,
+   "19-10": 16158,
+   "20-10": 20051,
+   "21-10": 27252,
+   "22-10": 42137,
+   "23-10": 22548,
+   "24-10": 9848,
+   "25-10": 6179,
+   "26-10": 5704,
+   "27-10": 4340,
+   "28-10": 6700,
+   "29-10": 6891,
+   "30-10": 6140,
+   "31-10": 4074,
+   "01-11": 5059,
+   "02-11": 4221,
+   "03-11": 4470,
+   "04-11": 5090,
+   "05-11": 5236,
+   "06-11": 2423,
+   "07-11": 3263,
+   "08-11": 2200,
+   "09-11": 1753,
+   "10-11": 2109,
+   "11-11": 2545
+  },
+  "catatan_sensor": "S-NPP berhenti didistribusikan FIRMS 1 Nov 2026 13.00 UTC (scripts/data/firms_sumber.py): sesudahnya hanya NOAA-20 dan NOAA-21.",
+  "catatan_hari_parsial": "22 Okt 2026 di S1 parsial (diambil siang), dilengkapi S2; 12 Nov 2026 belum ada."
+ },
+ "grid_9_sel": [
+  {
+   "D_km": 0.5,
+   "W_jam": 6,
+   "kejadian": 94091,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 5.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 4.0,
+   "piksel_unik_maks": 552,
+   "durasi_lebih_7hari": 0,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 0,
+   "lintas_kabupaten": 511,
+   "lintas_provinsi": 50,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 0,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 0,
+   "menyala_lagi_kejadian": 48991,
+   "menyala_lagi_jeda_ge_120j": 5330,
+   "menyala_lagi_jeda_median_jam": 23.649999999999977,
+   "kejadian_ge_50ha_proksi": 12252,
+   "kejadian_ge_100ha_proksi": 3984,
+   "kejadian_titik_tunggal": 53208
+  },
+  {
+   "D_km": 0.5,
+   "W_jam": 24,
+   "kejadian": 61138,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 6.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 4.0,
+   "piksel_unik_maks": 1163,
+   "durasi_lebih_7hari": 169,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 72,
+   "lintas_kabupaten": 305,
+   "lintas_provinsi": 36,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 604,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 148,
+   "menyala_lagi_kejadian": 18157,
+   "menyala_lagi_jeda_ge_120j": 5304,
+   "menyala_lagi_jeda_median_jam": 71.63400000000001,
+   "kejadian_ge_50ha_proksi": 7701,
+   "kejadian_ge_100ha_proksi": 2629,
+   "kejadian_titik_tunggal": 35286
+  },
+  {
+   "D_km": 0.5,
+   "W_jam": 72,
+   "kejadian": 50039,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 6.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 4.0,
+   "piksel_unik_maks": 1373,
+   "durasi_lebih_7hari": 739,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 366,
+   "lintas_kabupaten": 256,
+   "lintas_provinsi": 31,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 875,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 149,
+   "menyala_lagi_kejadian": 8291,
+   "menyala_lagi_jeda_ge_120j": 5406,
+   "menyala_lagi_jeda_median_jam": 144.53299999999996,
+   "kejadian_ge_50ha_proksi": 6950,
+   "kejadian_ge_100ha_proksi": 2516,
+   "kejadian_titik_tunggal": 27885
+  },
+  {
+   "D_km": 1.0,
+   "W_jam": 6,
+   "kejadian": 77367,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 7.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 5.0,
+   "piksel_unik_maks": 560,
+   "durasi_lebih_7hari": 0,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 0,
+   "lintas_kabupaten": 605,
+   "lintas_provinsi": 54,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 0,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 0,
+   "menyala_lagi_kejadian": 47501,
+   "menyala_lagi_jeda_ge_120j": 6605,
+   "menyala_lagi_jeda_median_jam": 23.682999999999993,
+   "kejadian_ge_50ha_proksi": 13013,
+   "kejadian_ge_100ha_proksi": 4657,
+   "kejadian_titik_tunggal": 39092
+  },
+  {
+   "D_km": 1.0,
+   "W_jam": 24,
+   "kejadian": 49088,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 7.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 5.0,
+   "piksel_unik_maks": 1217,
+   "durasi_lebih_7hari": 193,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 88,
+   "lintas_kabupaten": 334,
+   "lintas_provinsi": 37,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 328,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 135,
+   "menyala_lagi_kejadian": 20189,
+   "menyala_lagi_jeda_ge_120j": 6575,
+   "menyala_lagi_jeda_median_jam": 72.0,
+   "kejadian_ge_50ha_proksi": 7714,
+   "kejadian_ge_100ha_proksi": 2869,
+   "kejadian_titik_tunggal": 25910
+  },
+  {
+   "D_km": 1.0,
+   "W_jam": 72,
+   "kejadian": 37953,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 8.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 6.0,
+   "piksel_unik_maks": 1656,
+   "durasi_lebih_7hari": 860,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 439,
+   "lintas_kabupaten": 295,
+   "lintas_provinsi": 32,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 553,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 132,
+   "menyala_lagi_kejadian": 10074,
+   "menyala_lagi_jeda_ge_120j": 6642,
+   "menyala_lagi_jeda_median_jam": 144.75,
+   "kejadian_ge_50ha_proksi": 6874,
+   "kejadian_ge_100ha_proksi": 2764,
+   "kejadian_titik_tunggal": 19015
+  },
+  {
+   "D_km": 2.0,
+   "W_jam": 6,
+   "kejadian": 65402,
+   "titik": 295488,
+   "titik_per_kejadian_median": 2.0,
+   "titik_per_kejadian_p90": 8.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 6.0,
+   "piksel_unik_maks": 819,
+   "durasi_lebih_7hari": 0,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 0,
+   "lintas_kabupaten": 756,
+   "lintas_provinsi": 72,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 0,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 0,
+   "menyala_lagi_kejadian": 46247,
+   "menyala_lagi_jeda_ge_120j": 6801,
+   "menyala_lagi_jeda_median_jam": 23.684000000000083,
+   "kejadian_ge_50ha_proksi": 12865,
+   "kejadian_ge_100ha_proksi": 4968,
+   "kejadian_titik_tunggal": 31194
+  },
+  {
+   "D_km": 2.0,
+   "W_jam": 24,
+   "kejadian": 38963,
+   "titik": 295488,
+   "titik_per_kejadian_median": 1.0,
+   "titik_per_kejadian_p90": 8.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 6.0,
+   "piksel_unik_maks": 1774,
+   "durasi_lebih_7hari": 213,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 109,
+   "lintas_kabupaten": 425,
+   "lintas_provinsi": 51,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 302,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 113,
+   "menyala_lagi_kejadian": 20626,
+   "menyala_lagi_jeda_ge_120j": 6683,
+   "menyala_lagi_jeda_median_jam": 72.0,
+   "kejadian_ge_50ha_proksi": 7175,
+   "kejadian_ge_100ha_proksi": 2890,
+   "kejadian_titik_tunggal": 19515
+  },
+  {
+   "D_km": 2.0,
+   "W_jam": 72,
+   "kejadian": 27322,
+   "titik": 295488,
+   "titik_per_kejadian_median": 2.0,
+   "titik_per_kejadian_p90": 10.0,
+   "piksel_unik_median": 1.0,
+   "piksel_unik_p90": 7.0,
+   "piksel_unik_maks": 2136,
+   "durasi_lebih_7hari": 960,
+   "durasi_lebih_7hari_tanpa_sentuh_tepi": 462,
+   "lintas_kabupaten": 378,
+   "lintas_provinsi": 46,
+   "penggabungan_ada_ge2_kelompok_24j_pertama": 514,
+   "penggabungan_bermakna_ge2_kelompok_ge3px": 125,
+   "menyala_lagi_kejadian": 10088,
+   "menyala_lagi_jeda_ge_120j": 6626,
+   "menyala_lagi_jeda_median_jam": 154.84999999999997,
+   "kejadian_ge_50ha_proksi": 5926,
+   "kejadian_ge_100ha_proksi": 2630,
+   "kejadian_titik_tunggal": 12778
+  }
+ ],
+ "ambang_luas_sel_acuan_D1_W24": {
+  "metode": "luas proksi kejadian = jumlah piksel 375 m unik (kisi titik_unik.SEL, seluruh umur kejadian) x 14,0625 ha. Satu piksel saja sudah 14,06 ha, sehingga ambang 1 ha dan 10 ha tidak menyaring apa pun; ambang efektif pertama = 2 piksel (28,1 ha), 50 ha = 4 piksel (56,25 ha), 100 ha = 8 piksel (112,5 ha).",
+  "total_kejadian": 49088,
+  "total_proksi_ha": 2192681.2,
+  "ambang": {
+   "1": {
+    "kejadian_lolos": 49088,
+    "persen_kejadian": 100.0,
+    "proksi_ha_tercakup": 2192681.2,
+    "persen_proksi_luas_tercakup": 100.0
+   },
+   "10": {
+    "kejadian_lolos": 49088,
+    "persen_kejadian": 100.0,
+    "proksi_ha_tercakup": 2192681.2,
+    "persen_proksi_luas_tercakup": 100.0
+   },
+   "50": {
+    "kejadian_lolos": 7714,
+    "persen_kejadian": 15.71,
+    "proksi_ha_tercakup": 1370334.4,
+    "persen_proksi_luas_tercakup": 62.5
+   },
+   "100": {
+    "kejadian_lolos": 2869,
+    "persen_kejadian": 5.84,
+    "proksi_ha_tercakup": 1033790.6,
+    "persen_proksi_luas_tercakup": 47.15
+   }
+  },
+  "distribusi_piksel_unik": {
+   "50": 1.0,
+   "75": 2.0,
+   "90": 5.0,
+   "95": 8.0,
+   "99": 28.12999999999738,
+   "99.9": 163.73900000002322
+  },
+  "kejadian_1_piksel": 28179,
+  "kejadian_2_3_piksel": 13195,
+  "kejadian_terbesar_piksel": [
+   1217,
+   1203,
+   1200,
+   810,
+   690
+  ],
+  "persen_proksi_dari_10_kejadian_terbesar": 4.87,
+  "persen_proksi_dari_1persen_kejadian_terbesar": 27.12
+ },
+ "sensitivitas_keyakinan_rendah_ikut_D1_W24": {
+  "titik": 311804,
+  "kejadian": 52269,
+  "kejadian_ge_50ha_proksi": 8238,
+  "kejadian_ge_100ha_proksi": 3055,
+  "piksel_unik_median": 1.0,
+  "lintas_kabupaten": 350
+ },
+ "urutan_ambang_sel_acuan_D1_W24": {
+  "definisi": "kelompok harian = deteksi dalam 1 km pada hari kalender WIB yang sama (single-linkage); (a) buang kelompok harian di bawah ambang lalu gabung antarhari (D=1 km, W=24 jam); (b) gabung dulu (kejadian) lalu buang kejadian di bawah ambang. Ambang 1 dan 10 ha tidak menyaring apa pun (1 piksel = 14,06 ha).",
+  "hasil": {
+   "1": {
+    "kelompok_harian_total": 68272,
+    "kelompok_harian_lolos": 68272,
+    "a_ambang_dulu_baru_gabung": 49088,
+    "b_gabung_dulu_baru_ambang": 49088,
+    "selisih_a_minus_b": 0,
+    "selisih_persen_dari_b": 0.0,
+    "proksi_ha_a": 2192681.2,
+    "proksi_ha_b": 2192681.2
+   },
+   "10": {
+    "kelompok_harian_total": 68272,
+    "kelompok_harian_lolos": 68272,
+    "a_ambang_dulu_baru_gabung": 49088,
+    "b_gabung_dulu_baru_ambang": 49088,
+    "selisih_a_minus_b": 0,
+    "selisih_persen_dari_b": 0.0,
+    "proksi_ha_a": 2192681.2,
+    "proksi_ha_b": 2192681.2
+   },
+   "28.125": {
+    "kelompok_harian_total": 68272,
+    "kelompok_harian_lolos": 31046,
+    "a_ambang_dulu_baru_gabung": 20237,
+    "b_gabung_dulu_baru_ambang": 20909,
+    "selisih_a_minus_b": -672,
+    "selisih_persen_dari_b": -3.21,
+    "proksi_ha_a": 1732514.1,
+    "proksi_ha_b": 1796414.1
+   },
+   "50": {
+    "kelompok_harian_total": 68272,
+    "kelompok_harian_lolos": 11907,
+    "a_ambang_dulu_baru_gabung": 6771,
+    "b_gabung_dulu_baru_ambang": 7714,
+    "selisih_a_minus_b": -943,
+    "selisih_persen_dari_b": -12.22,
+    "proksi_ha_a": 1222832.8,
+    "proksi_ha_b": 1370334.4
+   },
+   "100": {
+    "kelompok_harian_total": 68272,
+    "kelompok_harian_lolos": 4440,
+    "a_ambang_dulu_baru_gabung": 2284,
+    "b_gabung_dulu_baru_ambang": 2869,
+    "selisih_a_minus_b": -585,
+    "selisih_persen_dari_b": -20.39,
+    "proksi_ha_a": 837210.9,
+    "proksi_ha_b": 1033790.6
+   }
+  }
+ },
+ "aturan_sistem_kita": {
+  "parameter_harian_py": {
+   "EPS_KM": 1.5,
+   "MIN_PTS": 1,
+   "JENDELA_HARI": 7,
+   "AKTIF_JAM": 72,
+   "AKTIF_GAMBUT_JAM": 168,
+   "jam_st": 48,
+   "eps_adaptif": "min(1,5, max(0,6, 1,5 x piksel terbesar pasangan)) km",
+   "sensor_dan_keyakinan": "VIIRS, nominal dan tinggi",
+   "sumber": "scripts/data/harian.py baris 36, 283-326, 510-575"
+  },
+  "diterapkan_pada_arsip_15okt_11nov_tanpa_jendela_7hari": {
+   "kluster": 45104,
+   "titik_tunggal": 23690,
+   "piksel_median": 1.0,
+   "kluster_ge_50ha_proksi": 7195
+  },
+  "diterapkan_jendela_7hari_berakhir_11nov": {
+   "kluster": 6950,
+   "aktif_deteksi_terakhir_dalam_72j": 2566,
+   "aktif_dalam_168j": 6950
+  },
+  "sel_acuan_D1_W24_arsip_penuh_kejadian": 49088
+ },
+ "validasi_hotspot_json_5_12okt": {
+  "berkas": "public/data/hotspot.json (acuan 2026-10-12T12:27Z, 5-12 Okt 2026) dan public/data/kluster.json",
+  "titik_viirs_nominal_tinggi_7hari": 195254,
+  "kluster_json_jumlah": 12683,
+  "kluster_json_titik_tunggal_n1": 5154,
+  "kluster_json_n_ge_3": 5439,
+  "kluster_json_hari_aktif_ge_7": 389,
+  "rekonstruksi_aturan_sistem_px_0_4_semua": 23936,
+  "rekonstruksi_aktif_72j": 10652,
+  "rekonstruksi_aktif_168j": 23936,
+  "catatan": "hotspot.json tidak menyimpan scan/track, jadi px diisi 0,4 km (eps 0,6 km): rekonstruksi memberi batas atas jumlah kluster; filter level 0 titik tunggal dan cek gunung api tidak direplikasi.",
+  "luas_kluster_json_ha": {
+   "p50": 28.1,
+   "p90": 140.6,
+   "p99": 956.2,
+   "total": 1042111.2
+  },
+  "kluster_json_lolos_ambang_ha": {
+   "1": {
+    "kluster": 12683,
+    "persen_total_luas": 100.0
+   },
+   "10": {
+    "kluster": 12683,
+    "persen_total_luas": 100.0
+   },
+   "50": {
+    "kluster": 3447,
+    "persen_total_luas": 81.23
+   },
+   "100": {
+    "kluster": 1669,
+    "persen_total_luas": 69.16
+   }
+  }
+ },
+ "contoh_nyata_sel_acuan_D1_W24": {
+  "menyatu": [
+   {
+    "mulai_wib": "17-10",
+    "selesai_wib": "26-10",
+    "titik": 4434,
+    "piksel_unik": 690,
+    "proksi_ha": 9703.1,
+    "bagian": [
+     {
+      "pusat_lat_lon": [
+       -2.49,
+       114.37
+      ],
+      "piksel": 116
+     },
+     {
+      "pusat_lat_lon": [
+       -2.41,
+       114.37
+      ],
+      "piksel": 19
+     }
+    ],
+    "jarak_antarbagian_km": 8.9,
+    "kabupaten": [
+     [
+      "Kapuas (Kalimantan Tengah)",
+      4434
+     ]
+    ]
+   },
+   {
+    "mulai_wib": "18-10",
+    "selesai_wib": "24-10",
+    "titik": 1613,
+    "piksel_unik": 479,
+    "proksi_ha": 6735.9,
+    "bagian": [
+     {
+      "pusat_lat_lon": [
+       -1.39,
+       104.05
+      ],
+      "piksel": 81
+     },
+     {
+      "pusat_lat_lon": [
+       -1.39,
+       104.11
+      ],
+      "piksel": 15
+     }
+    ],
+    "jarak_antarbagian_km": 6.7,
+    "kabupaten": [
+     [
+      "Muaro Jambi (Jambi)",
+      1561
+     ],
+     [
+      "Tanjung Jabung Timur (Jambi)",
+      52
+     ]
+    ]
+   },
+   {
+    "mulai_wib": "16-10",
+    "selesai_wib": "26-10",
+    "titik": 838,
+    "piksel_unik": 338,
+    "proksi_ha": 4753.1,
+    "bagian": [
+     {
+      "pusat_lat_lon": [
+       -7.31,
+       138.95
+      ],
+      "piksel": 25
+     },
+     {
+      "pusat_lat_lon": [
+       -7.27,
+       138.95
+      ],
+      "piksel": 29
+     },
+     {
+      "pusat_lat_lon": [
+       -7.26,
+       139.01
+      ],
+      "piksel": 19
+     }
+    ],
+    "jarak_antarbagian_km": 8.6,
+    "kabupaten": [
+     [
+      "Merauke (Papua Selatan)",
+      838
+     ]
+    ]
+   }
+  ],
+  "menyatu_jumlah_kandidat": 105,
+  "terpecah": [
+   {
+    "mulai_wib": "18-10",
+    "selesai_wib": "24-10",
+    "titik": 709,
+    "piksel_unik": 232,
+    "proksi_ha": 3262.5,
+    "bagian": [
+     {
+      "pusat_lat_lon": [
+       -1.66,
+       120.95
+      ],
+      "piksel": 12
+     },
+     {
+      "pusat_lat_lon": [
+       -1.71,
+       120.97
+      ],
+      "piksel": 35
+     }
+    ],
+    "jarak_antarbagian_km": 6.0,
+    "kabupaten": [
+     [
+      "Morowali Utara (Sulawesi Tengah)",
+      637
+     ],
+     [
+      "Tojo Una Una (Sulawesi Tengah)",
+      61
+     ],
+     [
+      "Poso (Sulawesi Tengah)",
+      11
+     ]
+    ]
+   },
+   {
+    "mulai_wib": "22-10",
+    "selesai_wib": "24-10",
+    "titik": 486,
+    "piksel_unik": 170,
+    "proksi_ha": 2390.6,
+    "bagian": [
+     {
+      "pusat_lat_lon": [
+       -2.51,
+       114.57
+      ],
+      "piksel": 87
+     },
+     {
+      "pusat_lat_lon": [
+       -2.51,
+       114.61
+      ],
+      "piksel": 5
+     }
+    ],
+    "jarak_antarbagian_km": 4.4,
+    "kabupaten": [
+     [
+      "Kapuas (Kalimantan Tengah)",
+      486
+     ]
+    ]
+   },
+   {
+    "mulai_wib": "18-10",
+    "selesai_wib": "24-10",
+    "titik": 652,
+    "piksel_unik": 164,
+    "proksi_ha": 2306.2,
+    "bagian": [
+     {
+      "pusat_lat_lon": [
+       -2.36,
+       114.5
+      ],
+      "piksel": 13
+     },
+     {
+      "pusat_lat_lon": [
+       -2.36,
+       114.46
+      ],
+      "piksel": 66
+     }
+    ],
+    "jarak_antarbagian_km": 4.4,
+    "kabupaten": [
+     [
+      "Kapuas (Kalimantan Tengah)",
+      652
+     ]
+    ]
+   }
+  ],
+  "terpecah_jumlah_kandidat": 81,
+  "berpindah": [
+   {
+    "jarak_pusat_awal_ke_akhir_km": 6.8,
+    "mulai_wib": "16-10",
+    "selesai_wib": "24-10",
+    "pusat_awal": [
+     -6.14,
+     140.07
+    ],
+    "pusat_akhir": [
+     -6.2,
+     140.06
+    ],
+    "piksel_unik": 283,
+    "kabupaten": [
+     [
+      "Boven Digoel (Papua Selatan)",
+      507
+     ]
+    ]
+   },
+   {
+    "jarak_pusat_awal_ke_akhir_km": 6.4,
+    "mulai_wib": "16-10",
+    "selesai_wib": "24-10",
+    "pusat_awal": [
+     -7.75,
+     112.62
+    ],
+    "pusat_akhir": [
+     -7.78,
+     112.57
+    ],
+    "piksel_unik": 376,
+    "kabupaten": [
+     [
+      "Pasuruan (Jawa Timur)",
+      643
+     ],
+     [
+      "Malang (Jawa Timur)",
+      270
+     ],
+     [
+      "Kota Batu (Jawa Timur)",
+      56
+     ],
+     [
+      "Mojokerto (Jawa Timur)",
+      52
+     ]
+    ]
+   },
+   {
+    "jarak_pusat_awal_ke_akhir_km": 5.6,
+    "mulai_wib": "20-10",
+    "selesai_wib": "25-10",
+    "pusat_awal": [
+     -2.54,
+     113.07
+    ],
+    "pusat_akhir": [
+     -2.49,
+     113.07
+    ],
+    "piksel_unik": 201,
+    "kabupaten": [
+     [
+      "Kotawaringin Timur (Kalimantan Tengah)",
+      563
+     ]
+    ]
+   }
+  ],
+  "berpindah_median_km_kejadian_ge72j_ge10px": 1.11,
+  "berpindah_jumlah_kejadian_dinilai": 669,
+  "menyala_lagi_D1_W72_jeda_ge_5hari": [
+   {
+    "lokasi_lat_lon": [
+     -3.31,
+     111.93
+    ],
+    "kabupaten": "Kotawaringin Barat (Kalimantan Tengah)",
+    "deteksi_sebelumnya_wib": "24-10",
+    "menyala_lagi_wib": "29-10",
+    "jeda_jam": 120.1,
+    "piksel_unik_kejadian_kedua": 295
+   },
+   {
+    "lokasi_lat_lon": [
+     -2.92,
+     113.93
+    ],
+    "kabupaten": "Pulang Pisau (Kalimantan Tengah)",
+    "deteksi_sebelumnya_wib": "15-10",
+    "menyala_lagi_wib": "26-10",
+    "jeda_jam": 251.2,
+    "piksel_unik_kejadian_kedua": 232
+   },
+   {
+    "lokasi_lat_lon": [
+     -1.46,
+     121.63
+    ],
+    "kabupaten": "Morowali Utara (Sulawesi Tengah)",
+    "deteksi_sebelumnya_wib": "25-10",
+    "menyala_lagi_wib": "31-10",
+    "jeda_jam": 132.1,
+    "piksel_unik_kejadian_kedua": 184
+   }
+  ],
+  "menyala_lagi_D1_W72_jumlah_kejadian_jeda_ge_5hari": 8933,
+  "lintas_kabupaten": [
+   {
+    "mulai_wib": "15-10",
+    "selesai_wib": "26-10",
+    "piksel_unik": 1217,
+    "kabupaten": [
+     [
+      "Seruyan (Kalimantan Tengah)",
+      2741
+     ],
+     [
+      "Kotawaringin Barat (Kalimantan Tengah)",
+      1129
+     ]
+    ],
+    "lintas_provinsi": false
+   },
+   {
+    "mulai_wib": "15-10",
+    "selesai_wib": "26-10",
+    "piksel_unik": 1200,
+    "kabupaten": [
+     [
+      "Seruyan (Kalimantan Tengah)",
+      1457
+     ],
+     [
+      "Kotawaringin Barat (Kalimantan Tengah)",
+      1371
+     ]
+    ],
+    "lintas_provinsi": false
+   },
+   {
+    "mulai_wib": "15-10",
+    "selesai_wib": "26-10",
+    "piksel_unik": 810,
+    "kabupaten": [
+     [
+      "Seruyan (Kalimantan Tengah)",
+      2294
+     ],
+     [
+      "Kotawaringin Timur (Kalimantan Tengah)",
+      516
+     ]
+    ],
+    "lintas_provinsi": false
+   }
+  ],
+  "lintas_kabupaten_kecil_le20px": 251
+ },
+ "ringkasan_sel_acuan_D1_W24": {
+  "kejadian_lintas_kabupaten_persen": 0.68,
+  "kejadian_lintas_kab_dan_ge50ha": 227,
+  "persen_titik_dalam_kejadian_ge_100_piksel": 29.17
+ }
+}

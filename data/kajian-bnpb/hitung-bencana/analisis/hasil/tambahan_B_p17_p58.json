@@ -1,0 +1,42 @@
+{
+ "baris_K2_saja_12bln": 973,
+ "baris_K2_saja_terhubung_ke_penduduk": 959,
+ "rasio_terdampak_per_penduduk_persen": {
+  "p10": 0.006839968672943479,
+  "median": 0.08460768624569105,
+  "p90": 1.5536296485256964,
+  "maks": 103.75287010410396
+ },
+ "penduduk_kab_pada_baris_K2_saja": {
+  "min": 59267,
+  "median": 825709,
+  "maks": 5964481
+ },
+ "K2_saja_bawah_0_1_persen_penduduk": 499,
+ "K2_saja_bawah_1_persen_penduduk": 818,
+ "K2_saja_banjir": 711,
+ "penduduk_kab_seluruh": {
+  "n_kab": 515,
+  "min": 5689,
+  "median": 298572,
+  "maks": 5964481
+ },
+ "menonjol_banjir_200_orang": {
+  "baris_jenis": 1188,
+  "orang_ge_50": 883,
+  "orang_ge_ambang_menonjol": 667,
+  "ambang_menonjol_orang": 200
+ },
+ "menonjol_kekeringan_800_orang": {
+  "baris_jenis": 129,
+  "orang_ge_50": 122,
+  "orang_ge_ambang_menonjol": 96,
+  "ambang_menonjol_orang": 800
+ },
+ "menonjol_longsor_40_orang": {
+  "baris_jenis": 431,
+  "orang_ge_50": 81,
+  "orang_ge_ambang_menonjol": 94,
+  "ambang_menonjol_orang": 40
+ }
+}

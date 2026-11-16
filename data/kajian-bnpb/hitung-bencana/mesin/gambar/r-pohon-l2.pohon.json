@@ -1,0 +1,46 @@
+{
+ "judul": "Pohon L2: apakah kejadian ini masuk hitungan bencana?",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "Penyebabnya salah satu dari 13 jenis bencana?",
+   "ya": "b",
+   "tidak": "luar"
+  },
+  {
+   "id": "b",
+   "tanya": "M1: ada 1 orang meninggal atau hilang akibat langsung?",
+   "ya": "masuk",
+   "tidak": "c"
+  },
+  {
+   "id": "c",
+   "tanya": "M2: ada 50 orang unik luka, mengungsi, atau terdampak langsung?",
+   "ya": "masuk",
+   "tidak": "e"
+  },
+  {
+   "id": "e",
+   "tanya": "M3 atau M4: 5 rumah setara rusak berat, atau 1 fasilitas penting rusak?",
+   "ya": "masuk",
+   "tidak": "f"
+  },
+  {
+   "id": "f",
+   "tanya": "M5: karhutla 2 ha terverifikasi, atau 10 ha sawah atau kebun puso?",
+   "ya": "masuk",
+   "tidak": "g"
+  },
+  {
+   "id": "g",
+   "tanya": "M6: ada SK tanggap darurat yang cocok dengan kejadian ini?",
+   "ya": "masuk",
+   "tidak": "bawah"
+  }
+ ],
+ "ujung": {
+  "masuk": "Bencana; catat kriteria yang terpenuhi",
+  "bawah": "Di bawah ambang (disimpan, tidak dihitung)",
+  "luar": "Bukan kejadian bencana"
+ }
+}

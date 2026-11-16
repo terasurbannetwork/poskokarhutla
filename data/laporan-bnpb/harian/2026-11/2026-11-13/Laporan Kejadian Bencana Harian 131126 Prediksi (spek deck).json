@@ -1,0 +1,16 @@
+{
+ "format": "harian",
+ "pesan_kunci": "Laporan Kejadian Bencana Harian, 13-11-2026.",
+ "judul_dokumen": "Laporan Kejadian Bencana Harian",
+ "kajian": "rehab",
+ "tanggal": "2026-11-13",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-13\\Laporan Kejadian Bencana Harian 131126 Prediksi (isi).pptx",
+   "sumber": "BMKG, 13 sampai 15 Nov 2026; prakiraan banjir dan longsor 12 Nov 2026 14.56 WIB; Open-Meteo, prakiraan hujan 13 sampai 15 Nov 2026",
+   "halaman": 6
+  }
+ ],
+ "panel_sisi": "gelap"
+}

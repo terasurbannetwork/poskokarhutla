@@ -1,0 +1,1896 @@
+{
+ "P32": {
+  "2025": {
+   "baris_dibi (hari x kab x jenis)": {
+    "unit": "baris",
+    "n_unit": 8309,
+    "n_ekstensif": 8289,
+    "n_intensif": 20,
+    "pct_unit_ekstensif": 99.8,
+    "total_meninggal": 2037,
+    "total_rumah_rusak_berat": 73010,
+    "total_rumah_rusak_RB_RS_RR": 293314,
+    "total_terdampak_luka_ungsi": 13103002,
+    "pct_meninggal_di_ekstensif": 39.1,
+    "pct_rumah_rusak_berat_di_ekstensif": 16.4,
+    "pct_rumah_rusak_RBRSRR_di_ekstensif": 26.6,
+    "pct_terdampak_di_ekstensif": 67.4,
+    "pct_mengungsi_di_ekstensif": 20.9,
+    "meninggal_ekstensif": 797,
+    "meninggal_intensif": 1240
+   },
+   "proksi_kejadian provinsi x hari x kategori": {
+    "unit": "provinsi-hari-kategori",
+    "n_unit": 5752,
+    "n_ekstensif": 5738,
+    "n_intensif": 14,
+    "pct_unit_ekstensif": 99.8,
+    "total_meninggal": 2037,
+    "total_rumah_rusak_berat": 73010,
+    "total_rumah_rusak_RB_RS_RR": 293314,
+    "total_terdampak_luka_ungsi": 13103002,
+    "pct_meninggal_di_ekstensif": 35.7,
+    "pct_rumah_rusak_berat_di_ekstensif": 13.8,
+    "pct_rumah_rusak_RBRSRR_di_ekstensif": 22.3,
+    "pct_terdampak_di_ekstensif": 60.3,
+    "pct_mengungsi_di_ekstensif": 20.2,
+    "meninggal_ekstensif": 728,
+    "meninggal_intensif": 1309
+   },
+   "proksi_kejadian nasional x hari x kategori": {
+    "unit": "nasional-hari-kategori",
+    "n_unit": 1773,
+    "n_ekstensif": 1764,
+    "n_intensif": 9,
+    "pct_unit_ekstensif": 99.5,
+    "total_meninggal": 2037,
+    "total_rumah_rusak_berat": 73010,
+    "total_rumah_rusak_RB_RS_RR": 293314,
+    "total_terdampak_luka_ungsi": 13103002,
+    "pct_meninggal_di_ekstensif": 34.1,
+    "pct_rumah_rusak_berat_di_ekstensif": 13.5,
+    "pct_rumah_rusak_RBRSRR_di_ekstensif": 21.7,
+    "pct_terdampak_di_ekstensif": 58.6,
+    "pct_mengungsi_di_ekstensif": 20.1,
+    "meninggal_ekstensif": 694,
+    "meninggal_intensif": 1343
+   }
+  },
+  "12 bulan 13 Nov 2025-12 Nov 2026": {
+   "baris_dibi (hari x kab x jenis)": {
+    "unit": "baris",
+    "n_unit": 4034,
+    "n_ekstensif": 4007,
+    "n_intensif": 27,
+    "pct_unit_ekstensif": 99.3,
+    "total_meninggal": 1897,
+    "total_rumah_rusak_berat": 98236,
+    "total_rumah_rusak_RB_RS_RR": 397670,
+    "total_terdampak_luka_ungsi": 12501851,
+    "pct_meninggal_di_ekstensif": 24.6,
+    "pct_rumah_rusak_berat_di_ekstensif": 8.3,
+    "pct_rumah_rusak_RBRSRR_di_ekstensif": 13.3,
+    "pct_terdampak_di_ekstensif": 63.6,
+    "pct_mengungsi_di_ekstensif": 10.8,
+    "meninggal_ekstensif": 466,
+    "meninggal_intensif": 1431
+   },
+   "proksi_kejadian provinsi x hari x kategori": {
+    "unit": "provinsi-hari-kategori",
+    "n_unit": 2938,
+    "n_ekstensif": 2923,
+    "n_intensif": 15,
+    "pct_unit_ekstensif": 99.5,
+    "total_meninggal": 1897,
+    "total_rumah_rusak_berat": 98236,
+    "total_rumah_rusak_RB_RS_RR": 397670,
+    "total_terdampak_luka_ungsi": 12501851,
+    "pct_meninggal_di_ekstensif": 21.6,
+    "pct_rumah_rusak_berat_di_ekstensif": 6.3,
+    "pct_rumah_rusak_RBRSRR_di_ekstensif": 10.2,
+    "pct_terdampak_di_ekstensif": 56.7,
+    "pct_mengungsi_di_ekstensif": 10.1,
+    "meninggal_ekstensif": 409,
+    "meninggal_intensif": 1488
+   },
+   "proksi_kejadian nasional x hari x kategori": {
+    "unit": "nasional-hari-kategori",
+    "n_unit": 1233,
+    "n_ekstensif": 1223,
+    "n_intensif": 10,
+    "pct_unit_ekstensif": 99.2,
+    "total_meninggal": 1897,
+    "total_rumah_rusak_berat": 98236,
+    "total_rumah_rusak_RB_RS_RR": 397670,
+    "total_terdampak_luka_ungsi": 12501851,
+    "pct_meninggal_di_ekstensif": 19.8,
+    "pct_rumah_rusak_berat_di_ekstensif": 6.1,
+    "pct_rumah_rusak_RBRSRR_di_ekstensif": 9.8,
+    "pct_terdampak_di_ekstensif": 54.9,
+    "pct_mengungsi_di_ekstensif": 10.0,
+    "meninggal_ekstensif": 375,
+    "meninggal_intensif": 1522
+   }
+  },
+  "contoh_gempa_NTT_15_Agu_2026_baris": [
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Manggarai",
+    "meninggal": 62,
+    "rb": 7718,
+    "rr_semua": 23034
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Manggarai Timur",
+    "meninggal": 53,
+    "rb": 7615,
+    "rr_semua": 22731
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Nagekeo",
+    "meninggal": 20,
+    "rb": 5976,
+    "rr_semua": 51332
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Ngada",
+    "meninggal": 6,
+    "rb": 2406,
+    "rr_semua": 11103
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Sikka",
+    "meninggal": 6,
+    "rb": 940,
+    "rr_semua": 4264
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Ende",
+    "meninggal": 3,
+    "rb": 1333,
+    "rr_semua": 9100
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Manggarai Barat",
+    "meninggal": 1,
+    "rb": 3314,
+    "rr_semua": 9742
+   },
+   {
+    "prov": "Nusa Tenggara Timur",
+    "kab": "Sumba Timur",
+    "meninggal": 0,
+    "rb": 0,
+    "rr_semua": 0
+   }
+  ],
+  "contoh_gempa_NTT_total_hari_itu": {
+   "meninggal": 151,
+   "rb": 29303,
+   "baris": 11
+  }
+ },
+ "P34": {
+  "gempa_baris_12bln": 60,
+  "dengan_meninggal_0": 47,
+  "dengan_meninggal_ge1": 13,
+  "lolos_K1K3": 43,
+  "tanpa_dampak_sama_sekali": 10,
+  "kolom_magnitudo_di_DIBI": false,
+  "meninggal_gempa_12bln": 160,
+  "rb_gempa_12bln": 29875,
+  "gempa_baris_terbesar_meninggal": [
+   [
+    62,
+    "2026-08-15",
+    "Manggarai"
+   ],
+   [
+    53,
+    "2026-08-15",
+    "Manggarai Timur"
+   ],
+   [
+    20,
+    "2026-08-15",
+    "Nagekeo"
+   ],
+   [
+    6,
+    "2026-08-15",
+    "Sikka"
+   ],
+   [
+    6,
+    "2026-08-15",
+    "Ngada"
+   ]
+  ]
+ },
+ "P35": {
+  "baris_dibi_per_bulan_2024": {
+   "2024-01": 378,
+   "2024-02": 317,
+   "2024-03": 374,
+   "2024-04": 244,
+   "2024-05": 225,
+   "2024-06": 178,
+   "2024-07": 324,
+   "2024-08": 365,
+   "2024-09": 346,
+   "2024-10": 307,
+   "2024-11": 359,
+   "2024-12": 335
+  },
+  "baris_dibi_per_tahun": {
+   "2024": 3752,
+   "2025": 8946,
+   "2026": 3276
+  },
+  "is_bencana_true_per_tahun": {
+   "2024": 3659,
+   "2025": 5241,
+   "2026": 2505
+  },
+  "is_bencana_false_per_tahun": {
+   "2024": 93,
+   "2025": 3705,
+   "2026": 771
+  },
+  "lolos_K1K3_per_tahun": {
+   "2024": 2609,
+   "2025": 3682,
+   "2026": 1363
+  },
+  "baris_2024_semester1_lawan_semester2": [
+   1716,
+   2036
+  ],
+  "csv_kejadian_per_tahun": {
+   "2011": 131,
+   "2012": 247,
+   "2013": 2201,
+   "2014": 3385,
+   "2015": 3734,
+   "2016": 4596,
+   "2017": 4618,
+   "2018": 4621,
+   "2019": 4719,
+   "2020": 4308,
+   "2021": 3768,
+   "2022": 3119,
+   "2023": 3080,
+   "2024": 3977,
+   "2025": 5899,
+   "2026": 3623
+  },
+  "csv_hari_pencatatan_per_tahun": {
+   "2011": 44,
+   "2012": 67,
+   "2013": 349,
+   "2014": 363,
+   "2015": 364,
+   "2016": 365,
+   "2017": 365,
+   "2018": 365,
+   "2019": 365,
+   "2020": 366,
+   "2021": 342,
+   "2022": 271,
+   "2023": 327,
+   "2024": 365,
+   "2025": 365,
+   "2026": 305
+  },
+  "csv_kejadian_per_hari_pencatatan": {
+   "2013": 6.3,
+   "2014": 9.3,
+   "2015": 10.3,
+   "2016": 12.6,
+   "2017": 12.7,
+   "2018": 12.7,
+   "2019": 12.9,
+   "2020": 11.8,
+   "2021": 11.0,
+   "2022": 11.5,
+   "2023": 9.4,
+   "2024": 10.9,
+   "2025": 16.2
+  }
+ },
+ "P36": {
+  "periode": "1 Jan sampai 31 Okt, 2025 lawan 2026",
+  "nasional": {
+   "2025": {
+    "baris": 7746,
+    "lolos": 2983,
+    "meninggal": 663,
+    "terdampak": 6640475
+   },
+   "2026": {
+    "baris": 3181,
+    "lolos": 1329,
+    "meninggal": 556,
+    "terdampak": 6077817
+   }
+  },
+  "arah": {
+   "baris": {
+    "nasional": [
+     7746,
+     3181
+    ],
+    "nasional_naik": false,
+    "provinsi_naik": 2,
+    "provinsi_turun": 36,
+    "provinsi_sama": 0,
+    "jenis_naik": 1,
+    "jenis_turun": 9,
+    "jenis": {
+     "longsor": [
+      975,
+      312
+     ],
+     "banjir": [
+      2261,
+      741
+     ],
+     "karhutla": [
+      1376,
+      1132
+     ],
+     "cuaca ekstrem/angin": [
+      2040,
+      612
+     ],
+     "kebakaran permukiman": [
+      827,
+      152
+     ],
+     "kekeringan": [
+      47,
+      129
+     ],
+     "lainnya": [
+      53,
+      18
+     ],
+     "gempa": [
+      97,
+      58
+     ],
+     "gelombang/abrasi": [
+      57,
+      17
+     ],
+     "erupsi": [
+      13,
+      10
+     ]
+    }
+   },
+   "lolos": {
+    "nasional": [
+     2983,
+     1329
+    ],
+    "nasional_naik": false,
+    "provinsi_naik": 0,
+    "provinsi_turun": 36,
+    "provinsi_sama": 2,
+    "jenis_naik": 4,
+    "jenis_turun": 6,
+    "jenis": {
+     "longsor": [
+      254,
+      114
+     ],
+     "banjir": [
+      1550,
+      572
+     ],
+     "karhutla": [
+      6,
+      17
+     ],
+     "cuaca ekstrem/angin": [
+      788,
+      351
+     ],
+     "kebakaran permukiman": [
+      276,
+      77
+     ],
+     "kekeringan": [
+      31,
+      122
+     ],
+     "lainnya": [
+      29,
+      15
+     ],
+     "gempa": [
+      25,
+      43
+     ],
+     "gelombang/abrasi": [
+      21,
+      14
+     ],
+     "erupsi": [
+      3,
+      4
+     ]
+    }
+   },
+   "meninggal": {
+    "nasional": [
+     663,
+     556
+    ],
+    "nasional_naik": false,
+    "provinsi_naik": 11,
+    "provinsi_turun": 24,
+    "provinsi_sama": 3,
+    "jenis_naik": 3,
+    "jenis_turun": 6,
+    "jenis": {
+     "longsor": [
+      201,
+      167
+     ],
+     "banjir": [
+      172,
+      70
+     ],
+     "karhutla": [
+      4,
+      9
+     ],
+     "cuaca ekstrem/angin": [
+      68,
+      23
+     ],
+     "kebakaran permukiman": [
+      75,
+      52
+     ],
+     "kekeringan": [
+      0,
+      0
+     ],
+     "lainnya": [
+      132,
+      69
+     ],
+     "gempa": [
+      2,
+      160
+     ],
+     "gelombang/abrasi": [
+      7,
+      0
+     ],
+     "erupsi": [
+      2,
+      6
+     ]
+    }
+   },
+   "terdampak": {
+    "nasional": [
+     6640475,
+     6077817
+    ],
+    "nasional_naik": false,
+    "provinsi_naik": 13,
+    "provinsi_turun": 25,
+    "provinsi_sama": 0,
+    "jenis_naik": 4,
+    "jenis_turun": 6,
+    "jenis": {
+     "longsor": [
+      87906,
+      29536
+     ],
+     "banjir": [
+      5934791,
+      2808124
+     ],
+     "karhutla": [
+      709,
+      31063
+     ],
+     "cuaca ekstrem/angin": [
+      91316,
+      77250
+     ],
+     "kebakaran permukiman": [
+      263370,
+      9382
+     ],
+     "kekeringan": [
+      186038,
+      2099909
+     ],
+     "lainnya": [
+      36307,
+      7153
+     ],
+     "gempa": [
+      14953,
+      301836
+     ],
+     "gelombang/abrasi": [
+      5085,
+      2463
+     ],
+     "erupsi": [
+      20000,
+      711101
+     ]
+    }
+   }
+  },
+  "persen_lolos_jenis": {
+   "nasional_2025": 38.5,
+   "nasional_2026": 41.8,
+   "kelompok_diuji (>=20 baris tiap tahun)": 7,
+   "kelompok_persen_naik": 7,
+   "kelompok_persen_turun": 0,
+   "pembalikan_Simpson": false,
+   "rinci_jenis": {
+    "longsor": [
+     975,
+     26.1,
+     312,
+     36.5
+    ],
+    "banjir": [
+     2261,
+     68.6,
+     741,
+     77.2
+    ],
+    "karhutla": [
+     1376,
+     0.4,
+     1132,
+     1.5
+    ],
+    "cuaca ekstrem/angin": [
+     2040,
+     38.6,
+     612,
+     57.4
+    ],
+    "kebakaran permukiman": [
+     827,
+     33.4,
+     152,
+     50.7
+    ],
+    "kekeringan": [
+     47,
+     66.0,
+     129,
+     94.6
+    ],
+    "gempa": [
+     97,
+     25.8,
+     58,
+     74.1
+    ]
+   }
+  },
+  "persen_lolos_provinsi": {
+   "nasional_2025": 38.5,
+   "nasional_2026": 41.8,
+   "kelompok_diuji (>=20 baris tiap tahun)": 28,
+   "kelompok_persen_naik": 12,
+   "kelompok_persen_turun": 16,
+   "pembalikan_Simpson": false,
+   "rinci_jenis": null
+  },
+  "bagian_karhutla_dalam_baris": {
+   "2025": 17.8,
+   "2026": 35.6
+  },
+  "provinsi_pembalikan_baris_vs_jenis": [
+   [
+    "Jawa Tengah",
+    707,
+    551,
+    5,
+    4
+   ],
+   [
+    "Papua Barat Daya",
+    12,
+    27,
+    3,
+    4
+   ],
+   [
+    "Papua Pegunungan",
+    9,
+    8,
+    3,
+    2
+   ],
+   [
+    "Sulawesi Tengah",
+    185,
+    128,
+    5,
+    4
+   ]
+  ],
+  "is_bencana_true": {
+   "nasional": [
+    4422,
+    2436
+   ],
+   "provinsi_naik": 5,
+   "provinsi_turun": 32,
+   "provinsi_sama": 1
+  }
+ },
+ "P37": {
+  "periode": "12 bulan 13 Nov 2025-12 Nov 2026, 4.185 baris DIBI",
+  "meninggal": {
+   "total": 1897,
+   "n_baris": 4185,
+   "baris_bernilai_nol": 3968,
+   "top1_baris_pct": 13.0,
+   "top5_baris_pct": 40.5,
+   "top10_baris_pct": 57.4,
+   "top1persen_pct": 85.7,
+   "top10persen_pct": 100.0,
+   "baris_untuk_50persen": 8,
+   "median": 0,
+   "rata_rata": 0.5,
+   "maks": 246
+  },
+  "terdampak_luka_ungsi": {
+   "total": 12501851,
+   "n_baris": 4185,
+   "baris_bernilai_nol": 1690,
+   "top1_baris_pct": 5.9,
+   "top5_baris_pct": 23.9,
+   "top10_baris_pct": 37.1,
+   "top1persen_pct": 64.4,
+   "top10persen_pct": 96.6,
+   "baris_untuk_50persen": 19,
+   "median": 10,
+   "rata_rata": 2987.3,
+   "maks": 739710
+  },
+  "rumah_rusak_RB_RS_RR": {
+   "total": 397670,
+   "n_baris": 4185,
+   "baris_bernilai_nol": 2951,
+   "top1_baris_pct": 23.0,
+   "top5_baris_pct": 57.6,
+   "top10_baris_pct": 73.6,
+   "top1persen_pct": 92.9,
+   "top10persen_pct": 99.1,
+   "baris_untuk_50persen": 4,
+   "median": 0,
+   "rata_rata": 95.0,
+   "maks": 91286
+  },
+  "mengungsi": {
+   "total": 1240790,
+   "n_baris": 4185,
+   "baris_bernilai_nol": 3762,
+   "top1_baris_pct": 24.6,
+   "top5_baris_pct": 70.3,
+   "top10_baris_pct": 82.4,
+   "top1persen_pct": 95.9,
+   "top10persen_pct": 100.0,
+   "baris_untuk_50persen": 3,
+   "median": 0,
+   "rata_rata": 296.5,
+   "maks": 304631
+  },
+  "baris_terbesar": {
+   "tgl": "2025-11-28",
+   "kab": "Aceh Utara",
+   "jenis": "Banjir",
+   "meninggal": 246,
+   "terdampak_luka_ungsi": 739710,
+   "rumah_rusak": 91286
+  },
+  "tanpa_baris_terbesar_terdampak": {
+   "terdampak_luka_ungsi": 11762141,
+   "meninggal": 1651
+  },
+  "baris_lolos_tapi_dampak_kecil": {
+   "lolos": 1903,
+   "lolos_dengan_terdampak_lt_1000_dan_meninggal_lt_5_dan_rumah_lt_50": 1245
+  }
+ },
+ "P33": {
+  "catatan": "Penduduk kabupaten/kota = jumlah penduduk kecamatan WorldPop Global2 R2025A tahun 2026 (public/data/penduduk.json), dicocokkan lewat nama; kabupaten tanpa kecocokan nama dibuang.",
+  "baris_12bln_dicocokkan": 3999,
+  "dari": 4185,
+  "baris_lolos_K2_dicocokkan": 1454,
+  "terdampak_pct_penduduk_pada_baris_lolos_K2": {
+   "p10": 0.005,
+   "median": 0.06,
+   "p90": 2.018,
+   "maks": 180.272
+  },
+  "baris_K2_dengan_terdampak_lt_0.1pct_penduduk": 839,
+  "baris_K2_dengan_terdampak_ge_5pct_penduduk": 75,
+  "irisan_20_teratas_absolut_dan_relatif": 13,
+  "20_teratas_relatif": [
+   [
+    "2025-11-26",
+    "Aceh Tamiang",
+    "Banjir",
+    557279,
+    309133,
+    180.3
+   ],
+   [
+    "2025-11-25",
+    "Kota Sibolga",
+    "Banjir",
+    91948,
+    61985,
+    148.3
+   ],
+   [
+    "2025-11-26",
+    "Bener Meriah",
+    "Banjir",
+    221705,
+    171026,
+    129.6
+   ],
+   [
+    "2025-11-26",
+    "Gayo Lues",
+    "Banjir",
+    129021,
+    105190,
+    122.7
+   ],
+   [
+    "2025-11-25",
+    "Aceh Tengah",
+    "Banjir",
+    270664,
+    229623,
+    117.9
+   ],
+   [
+    "2025-11-28",
+    "Aceh Utara",
+    "Banjir",
+    739710,
+    629379,
+    117.5
+   ],
+   [
+    "2025-11-22",
+    "Aceh Timur",
+    "Banjir",
+    495449,
+    456472,
+    108.5
+   ],
+   [
+    "2025-11-23",
+    "Bireuen",
+    "Banjir",
+    490609,
+    465541,
+    105.4
+   ]
+  ],
+  "20_teratas_absolut": [
+   [
+    "2025-11-28",
+    "Aceh Utara",
+    "Banjir",
+    739710,
+    629379,
+    117.5
+   ],
+   [
+    "2026-09-05",
+    "Tanggamus",
+    "Erupsi Gunung Api",
+    710366,
+    688392,
+    103.2
+   ],
+   [
+    "2025-11-26",
+    "Aceh Tamiang",
+    "Banjir",
+    557279,
+    309133,
+    180.3
+   ],
+   [
+    "2025-11-22",
+    "Aceh Timur",
+    "Banjir",
+    495449,
+    456472,
+    108.5
+   ],
+   [
+    "2025-11-23",
+    "Bireuen",
+    "Banjir",
+    490609,
+    465541,
+    105.4
+   ],
+   [
+    "2025-11-26",
+    "Langkat",
+    "Banjir",
+    458748,
+    1139418,
+    40.3
+   ],
+   [
+    "2025-11-26",
+    "Deli Serdang",
+    "Banjir",
+    331111,
+    2060289,
+    16.1
+   ],
+   [
+    "2025-11-24",
+    "Tapanuli Tengah",
+    "Banjir",
+    300878,
+    423643,
+    71.0
+   ]
+  ],
+  "ambang_50_orang_sebagai_pct_penduduk": {
+   "kabupaten_terkecil_penduduk": 0.8789,
+   "median_kabupaten": 0.0167,
+   "kabupaten_terbesar_penduduk": 0.00084
+  },
+  "kabupaten_dalam_data_penduduk": 515,
+  "penduduk_kab_min_median_maks": [
+   5689,
+   298572,
+   5964481
+  ]
+ },
+ "P47": {
+  "epidemi": {
+   "baris": 9,
+   "is_bencana_true": 6,
+   "lolos_K1K3": 6,
+   "meninggal": 34,
+   "terdampak_luka_ungsi": 4604,
+   "rumah_rusak": 6,
+   "per_tahun": {
+    "2024": 2,
+    "2025": 6,
+    "2026": 1
+   },
+   "jenis_asli": {
+    "Epidemi dan Wabah Penyakit": 5,
+    "Epidemi": 1,
+    "Wabah Penyakit": 3
+   },
+   "maks_terdampak": 2010,
+   "maks_meninggal": 14
+  },
+  "gagal teknologi": {
+   "baris": 9,
+   "is_bencana_true": 8,
+   "lolos_K1K3": 8,
+   "meninggal": 88,
+   "terdampak_luka_ungsi": 229,
+   "rumah_rusak": 17,
+   "per_tahun": {
+    "2024": 1,
+    "2025": 3,
+    "2026": 5
+   },
+   "jenis_asli": {
+    "Gagal Teknologi": 7,
+    "Kecelakaan Industri": 2
+   },
+   "maks_terdampak": 104,
+   "maks_meninggal": 63
+  },
+  "konflik sosial": {
+   "baris": 13,
+   "is_bencana_true": 12,
+   "lolos_K1K3": 12,
+   "meninggal": 54,
+   "terdampak_luka_ungsi": 29731,
+   "rumah_rusak": 974,
+   "per_tahun": {
+    "2025": 5,
+    "2026": 8
+   },
+   "jenis_asli": {
+    "Konflik Sosial": 13
+   },
+   "maks_terdampak": 18431,
+   "maks_meninggal": 33
+  },
+  "total_baris_DIBI": 15974,
+  "baris_alam_tersisa_pct": 99.8,
+  "kebakaran_permukiman_pembanding": {
+   "baris": 1105,
+   "lolos_K1K3": 446,
+   "is_bencana_true": 500
+  },
+  "logbook_csv_2026_jenis": {
+   "kebakaran_permukiman": 261,
+   "kegagalan_teknologi": 5,
+   "konflik_sosial": 8,
+   "kecelakaan": 6,
+   "wabah": 2
+  },
+  "logbook_csv_semua_tahun_jenis": {
+   "kecelakaan": 493,
+   "konflik_sosial": 95,
+   "kegagalan_teknologi": 25,
+   "wabah": 27
+  }
+ },
+ "P59": {
+  "DIBI_baris_dengan_n_baris_gt1": 714,
+  "DIBI_n_baris_maks": 12,
+  "logbook_docx_kombinasi_hari_jenis_prov_kab_dengan_gt1_baris": 551,
+  "logbook_docx_maks_baris_per_kombinasi": 6,
+  "logbook_docx_baris_multi_kab": 1234,
+  "logbook_docx_baris_tanpa_kab": 511,
+  "logbook_docx_maks_kab_per_baris": 14,
+  "kluster_hari_pasangan": [
+   {
+    "dari": "2026-10-18",
+    "ke": "2026-10-19",
+    "kluster_hari1": 10058,
+    "kluster_hari2": 8806,
+    "id_yang_sama_ada_di_dua_hari": 8806,
+    "kluster_hari1_punya_tetangga_hari2_dalam_2km": 8161,
+    "tetangga_id_sama": 1,
+    "tetangga_id_beda": 8160,
+    "median_jarak_km_untuk_id_sama": 1332.1,
+    "pct_id_sama_yang_berjarak_gt_20km": 99.6
+   },
+   {
+    "dari": "2026-10-19",
+    "ke": "2026-10-20",
+    "kluster_hari1": 8806,
+    "kluster_hari2": 8941,
+    "id_yang_sama_ada_di_dua_hari": 8806,
+    "kluster_hari1_punya_tetangga_hari2_dalam_2km": 7679,
+    "tetangga_id_sama": 10,
+    "tetangga_id_beda": 7669,
+    "median_jarak_km_untuk_id_sama": 1105.8,
+    "pct_id_sama_yang_berjarak_gt_20km": 98.9
+   },
+   {
+    "dari": "2026-10-20",
+    "ke": "2026-10-21",
+    "kluster_hari1": 8941,
+    "kluster_hari2": 9694,
+    "id_yang_sama_ada_di_dua_hari": 8941,
+    "kluster_hari1_punya_tetangga_hari2_dalam_2km": 7589,
+    "tetangga_id_sama": 1,
+    "tetangga_id_beda": 7588,
+    "median_jarak_km_untuk_id_sama": 1327.5,
+    "pct_id_sama_yang_berjarak_gt_20km": 99.6
+   },
+   {
+    "dari": "2026-10-21",
+    "ke": "2026-10-22",
+    "kluster_hari1": 9694,
+    "kluster_hari2": 10663,
+    "id_yang_sama_ada_di_dua_hari": 9694,
+    "kluster_hari1_punya_tetangga_hari2_dalam_2km": 8400,
+    "tetangga_id_sama": 3,
+    "tetangga_id_beda": 8397,
+    "median_jarak_km_untuk_id_sama": 1249.4,
+    "pct_id_sama_yang_berjarak_gt_20km": 99.5
+   },
+   {
+    "dari": "2026-10-22",
+    "ke": "2026-10-23",
+    "kluster_hari1": 10663,
+    "kluster_hari2": 11078,
+    "id_yang_sama_ada_di_dua_hari": 10663,
+    "kluster_hari1_punya_tetangga_hari2_dalam_2km": 9486,
+    "tetangga_id_sama": 4,
+    "tetangga_id_beda": 9482,
+    "median_jarak_km_untuk_id_sama": 1089.2,
+    "pct_id_sama_yang_berjarak_gt_20km": 99.2
+   },
+   {
+    "dari": "2026-10-23",
+    "ke": "2026-10-24",
+    "kluster_hari1": 11078,
+    "kluster_hari2": 9315,
+    "id_yang_sama_ada_di_dua_hari": 9315,
+    "kluster_hari1_punya_tetangga_hari2_dalam_2km": 9045,
+    "tetangga_id_sama": 3,
+    "tetangga_id_beda": 9042,
+    "median_jarak_km_untuk_id_sama": 1181.4,
+    "pct_id_sama_yang_berjarak_gt_20km": 99.7
+   }
+  ],
+  "kluster_hari_ringkas": {
+   "pasangan_hari": 6,
+   "kluster_dengan_tetangga_2km": 50360,
+   "yang_ber_id_sama": 22,
+   "pct_ber_id_sama": 0.0
+  }
+ },
+ "P42": {
+  "catatan": "Kejadian logbook DOCX kunci V1 (jenis, provinsi, kabupaten, tanggal kejadian), tanggal kejadian 1 Jan-31 Okt 2026; angka dampak dari regex teks bebas. Kelas contoh hanya untuk menguji peka-tidaknya hasil pada saat penetapan kelas, bukan usulan kelas. Kelas terdampak+luka+mengungsi: 0 = di bawah 50, 1 = 50-999, 2 = 1.000 atau lebih. Kelas meninggal: 0 = nol, 1 = 1-9, 2 = 10 atau lebih.",
+  "kelas_k2": {
+   "kejadian": 3860,
+   "multi_hari": 1317,
+   "kelas_awal": {
+    "0": 3395,
+    "1": 288,
+    "2": 177
+   },
+   "kelas_puncak": {
+    "0": 3295,
+    "1": 301,
+    "2": 264
+   },
+   "kelas_akhir": {
+    "0": 3324,
+    "1": 287,
+    "2": 249
+   },
+   "naik_kelas_setelah_laporan_pertama": 137,
+   "pct_naik_dari_multihari": 10.4,
+   "turun_dari_puncak": 32,
+   "pct_turun_dari_multihari": 2.4
+  },
+  "kelas_meninggal": {
+   "kejadian": 3860,
+   "multi_hari": 1317,
+   "kelas_awal": {
+    "0": 3734,
+    "1": 123,
+    "2": 3
+   },
+   "kelas_puncak": {
+    "0": 3699,
+    "1": 155,
+    "2": 6
+   },
+   "kelas_akhir": {
+    "0": 3709,
+    "1": 145,
+    "2": 6
+   },
+   "naik_kelas_setelah_laporan_pertama": 38,
+   "pct_naik_dari_multihari": 2.9,
+   "turun_dari_puncak": 10,
+   "pct_turun_dari_multihari": 0.8
+  },
+  "hari_dari_laporan_pertama_ke_kelas_puncak_k2": {
+   "n": 137,
+   "median": 2,
+   "maks": 121,
+   "p90": 22
+  }
+ },
+ "P61": {
+  "logbook_docx": {
+   "hari_kalender_1Jan_29Okt": 302,
+   "hari_arsip": 302,
+   "hari_arsip_unik": 302,
+   "hari_tanpa_berkas": [],
+   "gagal_urai": {
+    "baris_tak_terurai": 1461
+   },
+   "baris_per_hari_median": 28.0,
+   "baris_per_hari_min": 9,
+   "baris_per_hari_maks": 97,
+   "hari_arsip_tanpa_baris": [],
+   "delapan_hari_baris_paling_sedikit": [
+    [
+     9,
+     "2026-06-08"
+    ],
+    [
+     11,
+     "2026-05-06"
+    ],
+    [
+     12,
+     "2026-03-03"
+    ],
+    [
+     12,
+     "2026-04-25"
+    ],
+    [
+     12,
+     "2026-04-27"
+    ],
+    [
+     12,
+     "2026-05-31"
+    ],
+    [
+     12,
+     "2026-06-14"
+    ],
+    [
+     13,
+     "2026-03-24"
+    ]
+   ],
+   "hari_dengan_baris_kurang_dari_separuh_median": [
+    "2026-03-03",
+    "2026-03-24",
+    "2026-04-25",
+    "2026-04-27",
+    "2026-05-06",
+    "2026-05-30",
+    "2026-05-31",
+    "2026-06-06",
+    "2026-06-08",
+    "2026-06-09",
+    "2026-06-14"
+   ]
+  },
+  "csv_hari_pencatatan": {
+   "2013": {
+    "hari_ada_pencatatan_pertama": 349,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 16,
+    "kejadian_per_tahun_tgl_kejadian": 2201,
+    "kejadian_per_hari_ada_catat": 6.3
+   },
+   "2014": {
+    "hari_ada_pencatatan_pertama": 363,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 2,
+    "kejadian_per_tahun_tgl_kejadian": 3385,
+    "kejadian_per_hari_ada_catat": 9.3
+   },
+   "2015": {
+    "hari_ada_pencatatan_pertama": 364,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 1,
+    "kejadian_per_tahun_tgl_kejadian": 3734,
+    "kejadian_per_hari_ada_catat": 10.3
+   },
+   "2016": {
+    "hari_ada_pencatatan_pertama": 365,
+    "hari_dalam_rentang": 366,
+    "hari_tanpa": 1,
+    "kejadian_per_tahun_tgl_kejadian": 4596,
+    "kejadian_per_hari_ada_catat": 12.6
+   },
+   "2017": {
+    "hari_ada_pencatatan_pertama": 365,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 0,
+    "kejadian_per_tahun_tgl_kejadian": 4618,
+    "kejadian_per_hari_ada_catat": 12.7
+   },
+   "2018": {
+    "hari_ada_pencatatan_pertama": 365,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 0,
+    "kejadian_per_tahun_tgl_kejadian": 4621,
+    "kejadian_per_hari_ada_catat": 12.7
+   },
+   "2019": {
+    "hari_ada_pencatatan_pertama": 365,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 0,
+    "kejadian_per_tahun_tgl_kejadian": 4719,
+    "kejadian_per_hari_ada_catat": 12.9
+   },
+   "2020": {
+    "hari_ada_pencatatan_pertama": 366,
+    "hari_dalam_rentang": 366,
+    "hari_tanpa": 0,
+    "kejadian_per_tahun_tgl_kejadian": 4308,
+    "kejadian_per_hari_ada_catat": 11.8
+   },
+   "2021": {
+    "hari_ada_pencatatan_pertama": 342,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 23,
+    "kejadian_per_tahun_tgl_kejadian": 3768,
+    "kejadian_per_hari_ada_catat": 11.0
+   },
+   "2022": {
+    "hari_ada_pencatatan_pertama": 271,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 94,
+    "kejadian_per_tahun_tgl_kejadian": 3119,
+    "kejadian_per_hari_ada_catat": 11.5
+   },
+   "2023": {
+    "hari_ada_pencatatan_pertama": 327,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 38,
+    "kejadian_per_tahun_tgl_kejadian": 3080,
+    "kejadian_per_hari_ada_catat": 9.4
+   },
+   "2024": {
+    "hari_ada_pencatatan_pertama": 365,
+    "hari_dalam_rentang": 366,
+    "hari_tanpa": 1,
+    "kejadian_per_tahun_tgl_kejadian": 3977,
+    "kejadian_per_hari_ada_catat": 10.9
+   },
+   "2025": {
+    "hari_ada_pencatatan_pertama": 365,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 0,
+    "kejadian_per_tahun_tgl_kejadian": 5899,
+    "kejadian_per_hari_ada_catat": 16.2
+   },
+   "2026": {
+    "hari_ada_pencatatan_pertama": 305,
+    "hari_dalam_rentang": 304,
+    "hari_tanpa": -1,
+    "kejadian_per_tahun_tgl_kejadian": 3623,
+    "kejadian_per_hari_ada_catat": 11.9
+   }
+  },
+  "csv_2021_hari_tanpa_per_bulan": {
+   "2021-04": 1,
+   "2021-05": 1,
+   "2021-08": 4,
+   "2021-09": 3,
+   "2021-11": 3,
+   "2021-12": 11
+  },
+  "csv_2021_rentang_tanpa_terpanjang": [
+   [
+    10,
+    "2021-12-13",
+    "2021-12-22"
+   ],
+   [
+    3,
+    "2021-08-25",
+    "2021-08-27"
+   ],
+   [
+    2,
+    "2021-11-21",
+    "2021-11-22"
+   ],
+   [
+    2,
+    "2021-09-18",
+    "2021-09-19"
+   ]
+  ],
+  "csv_2022_hari_tanpa_per_bulan": {
+   "2022-01": 2,
+   "2022-02": 8,
+   "2022-03": 9,
+   "2022-04": 7,
+   "2022-05": 8,
+   "2022-06": 8,
+   "2022-07": 10,
+   "2022-08": 10,
+   "2022-09": 6,
+   "2022-10": 10,
+   "2022-11": 9,
+   "2022-12": 7
+  },
+  "csv_2022_rentang_tanpa_terpanjang": [
+   [
+    8,
+    "2022-11-07",
+    "2022-11-14"
+   ],
+   [
+    6,
+    "2022-12-20",
+    "2022-12-25"
+   ],
+   [
+    5,
+    "2022-08-06",
+    "2022-08-10"
+   ],
+   [
+    4,
+    "2022-10-29",
+    "2022-11-01"
+   ]
+  ],
+  "csv_2023_hari_tanpa_per_bulan": {
+   "2023-01": 11,
+   "2023-02": 6,
+   "2023-03": 12,
+   "2023-04": 7,
+   "2023-05": 2
+  },
+  "csv_2023_rentang_tanpa_terpanjang": [
+   [
+    6,
+    "2023-04-14",
+    "2023-04-19"
+   ],
+   [
+    6,
+    "2023-03-27",
+    "2023-04-01"
+   ],
+   [
+    6,
+    "2023-03-09",
+    "2023-03-14"
+   ],
+   [
+    6,
+    "2023-01-23",
+    "2023-01-28"
+   ]
+  ],
+  "dibi_hari_dengan_baris": {
+   "2024": {
+    "hari_dengan_baris": 364,
+    "hari_dalam_rentang": 366,
+    "hari_tanpa": 2
+   },
+   "2025": {
+    "hari_dengan_baris": 365,
+    "hari_dalam_rentang": 365,
+    "hari_tanpa": 0
+   },
+   "2026": {
+    "hari_dengan_baris": 316,
+    "hari_dalam_rentang": 316,
+    "hari_tanpa": 0
+   }
+  },
+  "csv_2021_ke_2022": {
+   "kejadian_2021": 3768,
+   "kejadian_2022": 3119,
+   "turun_pct": -17.2,
+   "per_hari_ada_catat_2021": 11.0,
+   "per_hari_ada_catat_2022": 11.5,
+   "per_hari_kalender_2021": 10.3,
+   "per_hari_kalender_2022": 8.5
+  }
+ },
+ "P46": {
+  "snapshot": {
+   "S1": "public/data/dibi_kejadian.json, dibuat 2026-10-28T01:39+07:00, 2025-10-28 s.d. 2026-10-28",
+   "S2": "masukan/dibi_kejadian.json, dibuat 2026-11-11T11:05+07:00, 2025-11-11 s.d. 2026-11-11",
+   "S3": "hasil/dibi_mentah_2024_2026.json, ditarik 2026-11-12T15:04"
+  },
+  "S1_vs_S2_28Okt_vs_11Nov": {
+   "pasangan": "S1 (28 Okt) lawan S2 (11 Nov), tanggal kejadian 13 Nov 2025-20 Okt 2026",
+   "rentang": [
+    "2025-11-13",
+    "2026-10-20"
+   ],
+   "kunci_di_A": 3851,
+   "kunci_di_B": 3855,
+   "kunci_hanya_A": 0,
+   "kunci_hanya_B": 4,
+   "kunci_di_keduanya": 3851,
+   "kunci_di_keduanya_dengan_angka_dampak_berubah": 16,
+   "pct_berubah": 0.4,
+   "kolom_berubah": {
+    "terdampak": 13,
+    "rr_sedang": 1,
+    "rr_ringan": 3,
+    "terendam": 3,
+    "mengungsi": 1,
+    "rr_berat": 1
+   },
+   "total_A": {
+    "meninggal": 1872,
+    "terdampak": 11001235,
+    "mengungsi": 1235499,
+    "rr_berat": 97803,
+    "kejadian": 3864
+   },
+   "total_B": {
+    "meninggal": 1872,
+    "terdampak": 11059904,
+    "mengungsi": 1235503,
+    "rr_berat": 97918,
+    "kejadian": 3868
+   }
+  },
+  "S1_vs_S2_tepi_21_28Okt": {
+   "pasangan": "S1 (28 Okt) lawan S2 (11 Nov), tanggal kejadian 21-28 Okt 2026 (7 hari terakhir snapshot S1)",
+   "rentang": [
+    "2026-10-21",
+    "2026-10-28"
+   ],
+   "kunci_di_A": 48,
+   "kunci_di_B": 73,
+   "kunci_hanya_A": 1,
+   "kunci_hanya_B": 26,
+   "kunci_di_keduanya": 47,
+   "kunci_di_keduanya_dengan_angka_dampak_berubah": 2,
+   "pct_berubah": 4.3,
+   "kolom_berubah": {
+    "rr_ringan": 2,
+    "terendam": 2,
+    "terdampak": 1,
+    "mengungsi": 1
+   },
+   "total_A": {
+    "meninggal": 0,
+    "terdampak": 2630,
+    "mengungsi": 67,
+    "rr_berat": 10,
+    "kejadian": 48
+   },
+   "total_B": {
+    "meninggal": 0,
+    "terdampak": 62015,
+    "mengungsi": 1045,
+    "rr_berat": 34,
+    "kejadian": 73
+   }
+  },
+  "logbook_kunci_hasil_keys": [
+   "sumber",
+   "hari_arsip",
+   "baris_mentah_total",
+   "gagal_urai",
+   "catatan",
+   "varian",
+   "varian_pertama_dilaporkan_Jan_Okt",
+   "dinamika_V1",
+   "per_jenis_Jan_Okt",
+   "durasi_V2_hari_per_jenis",
+   "V2_multi_hari_dengan_tgl_berbeda"
+  ]
+ },
+ "P43": {
+  "catatan": "FIRMS NRT cache generator 24 Okt-12 Nov 2026, hari kalender WIB; sel 375 m seperti scripts/data/titik_unik.py; semua keyakinan; MODIS ikut; tidak disaring ke daratan Indonesia",
+  "hari": {
+   "2026-10-25": {
+    "mentah_semua_satelit": 18604,
+    "lokasi_unik_semua_satelit": 16636,
+    "rasio_mentah_per_unik": 1.12,
+    "mentah_VIIRS": 18169,
+    "unik_VIIRS": 16303,
+    "per_sensor_mentah": {
+     "M": 435,
+     "N": 2139,
+     "N20": 12878,
+     "N21": 3152
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 9581
+   },
+   "2026-10-26": {
+    "mentah_semua_satelit": 8544,
+    "lokasi_unik_semua_satelit": 6945,
+    "rasio_mentah_per_unik": 1.23,
+    "mentah_VIIRS": 8333,
+    "unik_VIIRS": 6809,
+    "per_sensor_mentah": {
+     "M": 211,
+     "N": 2096,
+     "N20": 2843,
+     "N21": 3394
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 456
+   },
+   "2026-10-27": {
+    "mentah_semua_satelit": 9566,
+    "lokasi_unik_semua_satelit": 8313,
+    "rasio_mentah_per_unik": 1.15,
+    "mentah_VIIRS": 9204,
+    "unik_VIIRS": 8008,
+    "per_sensor_mentah": {
+     "M": 362,
+     "N": 2053,
+     "N20": 1748,
+     "N21": 5403
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 126
+   },
+   "2026-10-28": {
+    "mentah_semua_satelit": 8732,
+    "lokasi_unik_semua_satelit": 6600,
+    "rasio_mentah_per_unik": 1.32,
+    "mentah_VIIRS": 7863,
+    "unik_VIIRS": 6014,
+    "per_sensor_mentah": {
+     "M": 869,
+     "N": 2685,
+     "N20": 2549,
+     "N21": 2629
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 473
+   },
+   "2026-10-29": {
+    "mentah_semua_satelit": 6740,
+    "lokasi_unik_semua_satelit": 5278,
+    "rasio_mentah_per_unik": 1.28,
+    "mentah_VIIRS": 6552,
+    "unik_VIIRS": 5123,
+    "per_sensor_mentah": {
+     "M": 188,
+     "N": 2274,
+     "N20": 1865,
+     "N21": 2413
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 177
+   },
+   "2026-10-30": {
+    "mentah_semua_satelit": 8057,
+    "lokasi_unik_semua_satelit": 6209,
+    "rasio_mentah_per_unik": 1.3,
+    "mentah_VIIRS": 7286,
+    "unik_VIIRS": 5605,
+    "per_sensor_mentah": {
+     "M": 771,
+     "N": 2260,
+     "N20": 2754,
+     "N21": 2272
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 245
+   },
+   "2026-10-31": {
+    "mentah_semua_satelit": 6580,
+    "lokasi_unik_semua_satelit": 5243,
+    "rasio_mentah_per_unik": 1.26,
+    "mentah_VIIRS": 6336,
+    "unik_VIIRS": 5068,
+    "per_sensor_mentah": {
+     "M": 244,
+     "N": 2016,
+     "N20": 2556,
+     "N21": 1764
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 297
+   },
+   "2026-11-01": {
+    "mentah_semua_satelit": 5522,
+    "lokasi_unik_semua_satelit": 4362,
+    "rasio_mentah_per_unik": 1.27,
+    "mentah_VIIRS": 5223,
+    "unik_VIIRS": 4123,
+    "per_sensor_mentah": {
+     "M": 299,
+     "N": 1624,
+     "N20": 1755,
+     "N21": 1844
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 168
+   },
+   "2026-11-02": {
+    "mentah_semua_satelit": 6156,
+    "lokasi_unik_semua_satelit": 4749,
+    "rasio_mentah_per_unik": 1.3,
+    "mentah_VIIRS": 5509,
+    "unik_VIIRS": 4255,
+    "per_sensor_mentah": {
+     "M": 647,
+     "N": 1547,
+     "N20": 1851,
+     "N21": 2111
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 248
+   },
+   "2026-11-03": {
+    "mentah_semua_satelit": 4858,
+    "lokasi_unik_semua_satelit": 4063,
+    "rasio_mentah_per_unik": 1.2,
+    "mentah_VIIRS": 4573,
+    "unik_VIIRS": 3837,
+    "per_sensor_mentah": {
+     "M": 285,
+     "N20": 2342,
+     "N21": 2231
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 109
+   },
+   "2026-11-04": {
+    "mentah_semua_satelit": 6771,
+    "lokasi_unik_semua_satelit": 5716,
+    "rasio_mentah_per_unik": 1.18,
+    "mentah_VIIRS": 6092,
+    "unik_VIIRS": 5149,
+    "per_sensor_mentah": {
+     "M": 679,
+     "N20": 3227,
+     "N21": 2865
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 259
+   },
+   "2026-11-05": {
+    "mentah_semua_satelit": 8906,
+    "lokasi_unik_semua_satelit": 7160,
+    "rasio_mentah_per_unik": 1.24,
+    "mentah_VIIRS": 8062,
+    "unik_VIIRS": 6564,
+    "per_sensor_mentah": {
+     "M": 844,
+     "N20": 4846,
+     "N21": 3216
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 285
+   },
+   "2026-11-06": {
+    "mentah_semua_satelit": 2990,
+    "lokasi_unik_semua_satelit": 2632,
+    "rasio_mentah_per_unik": 1.14,
+    "mentah_VIIRS": 2713,
+    "unik_VIIRS": 2395,
+    "per_sensor_mentah": {
+     "M": 277,
+     "N20": 818,
+     "N21": 1895
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 71
+   },
+   "2026-11-07": {
+    "mentah_semua_satelit": 4057,
+    "lokasi_unik_semua_satelit": 3594,
+    "rasio_mentah_per_unik": 1.13,
+    "mentah_VIIRS": 3544,
+    "unik_VIIRS": 3166,
+    "per_sensor_mentah": {
+     "M": 513,
+     "N20": 1656,
+     "N21": 1888
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 126
+   },
+   "2026-11-08": {
+    "mentah_semua_satelit": 3745,
+    "lokasi_unik_semua_satelit": 3280,
+    "rasio_mentah_per_unik": 1.14,
+    "mentah_VIIRS": 3630,
+    "unik_VIIRS": 3181,
+    "per_sensor_mentah": {
+     "M": 115,
+     "N20": 1545,
+     "N21": 2085
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 33
+   },
+   "2026-11-09": {
+    "mentah_semua_satelit": 2120,
+    "lokasi_unik_semua_satelit": 1937,
+    "rasio_mentah_per_unik": 1.09,
+    "mentah_VIIRS": 1862,
+    "unik_VIIRS": 1705,
+    "per_sensor_mentah": {
+     "M": 258,
+     "N20": 943,
+     "N21": 919
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 76
+   },
+   "2026-11-10": {
+    "mentah_semua_satelit": 2630,
+    "lokasi_unik_semua_satelit": 2336,
+    "rasio_mentah_per_unik": 1.13,
+    "mentah_VIIRS": 2422,
+    "unik_VIIRS": 2169,
+    "per_sensor_mentah": {
+     "M": 208,
+     "N20": 1304,
+     "N21": 1118
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 65
+   },
+   "2026-11-11": {
+    "mentah_semua_satelit": 3332,
+    "lokasi_unik_semua_satelit": 2822,
+    "rasio_mentah_per_unik": 1.18,
+    "mentah_VIIRS": 3140,
+    "unik_VIIRS": 2662,
+    "per_sensor_mentah": {
+     "M": 192,
+     "N20": 1725,
+     "N21": 1415
+    },
+    "definisi_BMKG_M_N_N20_tinggi": 54
+   }
+  },
+  "bmkg_lawan_unik_26Okt_11Nov": {
+   "hari": 17,
+   "total_unik": 81239,
+   "total_definisi_BMKG": 3268,
+   "rasio_unik_per_BMKG_min": 14.0,
+   "rasio_unik_per_BMKG_maks": 99.4
+  },
+  "ringkas": {
+   "hari_dihitung": 18,
+   "rasio_mentah_per_unik_min": 1.09,
+   "rasio_mentah_per_unik_maks": 1.32,
+   "rasio_total": 1.2,
+   "total_mentah": 117910,
+   "total_unik_hari_sel": 97875
+  }
+ },
+ "P44": {
+  "hari": {
+   "2026-10-25": {
+    "mentah_SNPP": 2139,
+    "mentah_semua": 18604,
+    "unik_semua": 16636,
+    "unik_tanpa_SNPP": 15326,
+    "pct_unik_tersisa_tanpa_SNPP": 92.1,
+    "pct_mentah_tersisa_tanpa_SNPP": 88.5
+   },
+   "2026-10-26": {
+    "mentah_SNPP": 2096,
+    "mentah_semua": 8544,
+    "unik_semua": 6945,
+    "unik_tanpa_SNPP": 5778,
+    "pct_unik_tersisa_tanpa_SNPP": 83.2,
+    "pct_mentah_tersisa_tanpa_SNPP": 75.5
+   },
+   "2026-10-27": {
+    "mentah_SNPP": 2053,
+    "mentah_semua": 9566,
+    "unik_semua": 8313,
+    "unik_tanpa_SNPP": 7044,
+    "pct_unik_tersisa_tanpa_SNPP": 84.7,
+    "pct_mentah_tersisa_tanpa_SNPP": 78.5
+   },
+   "2026-10-28": {
+    "mentah_SNPP": 2685,
+    "mentah_semua": 8732,
+    "unik_semua": 6600,
+    "unik_tanpa_SNPP": 5115,
+    "pct_unik_tersisa_tanpa_SNPP": 77.5,
+    "pct_mentah_tersisa_tanpa_SNPP": 69.3
+   },
+   "2026-10-29": {
+    "mentah_SNPP": 2274,
+    "mentah_semua": 6740,
+    "unik_semua": 5278,
+    "unik_tanpa_SNPP": 3864,
+    "pct_unik_tersisa_tanpa_SNPP": 73.2,
+    "pct_mentah_tersisa_tanpa_SNPP": 66.3
+   },
+   "2026-10-30": {
+    "mentah_SNPP": 2260,
+    "mentah_semua": 8057,
+    "unik_semua": 6209,
+    "unik_tanpa_SNPP": 4909,
+    "pct_unik_tersisa_tanpa_SNPP": 79.1,
+    "pct_mentah_tersisa_tanpa_SNPP": 71.9
+   },
+   "2026-10-31": {
+    "mentah_SNPP": 2016,
+    "mentah_semua": 6580,
+    "unik_semua": 5243,
+    "unik_tanpa_SNPP": 4035,
+    "pct_unik_tersisa_tanpa_SNPP": 77.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 69.4
+   },
+   "2026-11-01": {
+    "mentah_SNPP": 1624,
+    "mentah_semua": 5522,
+    "unik_semua": 4362,
+    "unik_tanpa_SNPP": 3398,
+    "pct_unik_tersisa_tanpa_SNPP": 77.9,
+    "pct_mentah_tersisa_tanpa_SNPP": 70.6
+   },
+   "2026-11-02": {
+    "mentah_SNPP": 1547,
+    "mentah_semua": 6156,
+    "unik_semua": 4749,
+    "unik_tanpa_SNPP": 3921,
+    "pct_unik_tersisa_tanpa_SNPP": 82.6,
+    "pct_mentah_tersisa_tanpa_SNPP": 74.9
+   },
+   "2026-11-03": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 4858,
+    "unik_semua": 4063,
+    "unik_tanpa_SNPP": 4063,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-04": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 6771,
+    "unik_semua": 5716,
+    "unik_tanpa_SNPP": 5716,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-05": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 8906,
+    "unik_semua": 7160,
+    "unik_tanpa_SNPP": 7160,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-06": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 2990,
+    "unik_semua": 2632,
+    "unik_tanpa_SNPP": 2632,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-07": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 4057,
+    "unik_semua": 3594,
+    "unik_tanpa_SNPP": 3594,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-08": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 3745,
+    "unik_semua": 3280,
+    "unik_tanpa_SNPP": 3280,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-09": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 2120,
+    "unik_semua": 1937,
+    "unik_tanpa_SNPP": 1937,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-10": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 2630,
+    "unik_semua": 2336,
+    "unik_tanpa_SNPP": 2336,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   },
+   "2026-11-11": {
+    "mentah_SNPP": 0,
+    "mentah_semua": 3332,
+    "unik_semua": 2822,
+    "unik_tanpa_SNPP": 2822,
+    "pct_unik_tersisa_tanpa_SNPP": 100.0,
+    "pct_mentah_tersisa_tanpa_SNPP": 100.0
+   }
+  },
+  "ringkas": {
+   "hari_sebelum_1Nov": 7,
+   "hari_sesudah_1Nov": 10,
+   "rata_pct_unik_tersisa_tanpa_SNPP_sebelum": 81.0,
+   "rata_pct_mentah_tersisa_tanpa_SNPP_sebelum": 74.2,
+   "rata_mentah_per_hari_sebelum": 9546.1,
+   "rata_mentah_per_hari_sesudah": 4556.5,
+   "rata_unik_per_hari_sebelum": 7889.1,
+   "rata_unik_per_hari_sesudah": 3828.9,
+   "rata_mentah_SNPP_per_hari_sesudah": 154.7
+  }
+ }
+}

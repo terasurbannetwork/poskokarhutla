@@ -1,0 +1,46 @@
+{
+ "jenis": "tumpuk",
+ "kategori": [
+  "a Ambang absolut",
+  "b Relatif terhadap penduduk",
+  "a dengan penaik relatif (usulan)",
+  "c Mengikuti status darurat"
+ ],
+ "seri": [
+  {
+   "nama": "Sedang",
+   "nilai": [
+    3.2,
+    10.4,
+    4.0,
+    8.2
+   ],
+   "warna": "biru"
+  },
+  {
+   "nama": "Besar",
+   "nilai": [
+    0.5,
+    1.3,
+    0.8,
+    38.6
+   ],
+   "warna": "oranye"
+  },
+  {
+   "nama": "Katastrofik",
+   "nilai": [
+    0.1,
+    0.5,
+    0.1,
+    0.0
+   ],
+   "warna": "merah"
+  }
+ ],
+ "satuan": "% kejadian",
+ "tampilkan_nilai": true,
+ "tinggi": 340,
+ "lebar": 760,
+ "catatan": "Sisanya masuk kelas Ringan. Pada opsi c, 38,6 persen kejadian menjadi Besar hanya karena status darurat berlaku."
+}

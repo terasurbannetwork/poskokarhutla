@@ -1,0 +1,11 @@
+﻿python.exe : PERINGATAN tabel meluap 11 pt
+At C:\Users\USER\AppData\Local\Temp\claude\8477dca2efc2d380\ee932f72-f656-43ed-ba01-cb9604b0d0a7\scratchpad\bangun_semu
+a.ps1:8 char:3
++   & $py buat.py *> bangun.log
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PERINGATAN tabel meluap 11 pt:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-8q_y761j\qa\deck-Paparan Situasi Cuaca Ekstrem Sepekan 
+091126.md (LOLOS)
+D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\mingguan\2026-11-09\cuaca-ekstrem\Paparan Situasi Cuaca Ekstrem Sepekan 091126.pptx

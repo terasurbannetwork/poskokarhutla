@@ -1,0 +1,273 @@
+{
+ "titik_viirs_total": 195254,
+ "baris_dibi_karhutla_5_12okt": 57,
+ "baris_dibi_karhutla_5_15okt": 89,
+ "per_provinsi": [
+  {
+   "kode": "62",
+   "provinsi": "Kalimantan Tengah",
+   "titik": 56626,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "93",
+   "provinsi": "Papua Selatan",
+   "titik": 46905,
+   "dibi_5_12okt": 2,
+   "dibi_5_15okt": 2
+  },
+  {
+   "kode": "16",
+   "provinsi": "Sumatera Selatan",
+   "titik": 24949,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "92",
+   "provinsi": "Papua Barat",
+   "titik": 9309,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "63",
+   "provinsi": "Kalimantan Selatan",
+   "titik": 7472,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "61",
+   "provinsi": "Kalimantan Barat",
+   "titik": 6981,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "64",
+   "provinsi": "Kalimantan Timur",
+   "titik": 6517,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "81",
+   "provinsi": "Maluku",
+   "titik": 5533,
+   "dibi_5_12okt": 1,
+   "dibi_5_15okt": 1
+  },
+  {
+   "kode": "82",
+   "provinsi": "Maluku Utara",
+   "titik": 4127,
+   "dibi_5_12okt": 2,
+   "dibi_5_15okt": 2
+  },
+  {
+   "kode": "15",
+   "provinsi": "Jambi",
+   "titik": 3184,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "53",
+   "provinsi": "Nusa Tenggara Timur",
+   "titik": 2970,
+   "dibi_5_12okt": 1,
+   "dibi_5_15okt": 1
+  },
+  {
+   "kode": "72",
+   "provinsi": "Sulawesi Tengah",
+   "titik": 2911,
+   "dibi_5_12okt": 7,
+   "dibi_5_15okt": 10
+  },
+  {
+   "kode": "73",
+   "provinsi": "Sulawesi Selatan",
+   "titik": 2381,
+   "dibi_5_12okt": 9,
+   "dibi_5_15okt": 14
+  },
+  {
+   "kode": "74",
+   "provinsi": "Sulawesi Tenggara",
+   "titik": 2169,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "19",
+   "provinsi": "Kepulauan Bangka Belitung",
+   "titik": 2038,
+   "dibi_5_12okt": 4,
+   "dibi_5_15okt": 4
+  },
+  {
+   "kode": "18",
+   "provinsi": "Lampung",
+   "titik": 1931,
+   "dibi_5_12okt": 2,
+   "dibi_5_15okt": 2
+  },
+  {
+   "kode": "96",
+   "provinsi": "Papua Barat Daya",
+   "titik": 1920,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "94",
+   "provinsi": "Papua Tengah",
+   "titik": 1403,
+   "dibi_5_12okt": 1,
+   "dibi_5_15okt": 1
+  },
+  {
+   "kode": "52",
+   "provinsi": "Nusa Tenggara Barat",
+   "titik": 1372,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "35",
+   "provinsi": "Jawa Timur",
+   "titik": 1058,
+   "dibi_5_12okt": 8,
+   "dibi_5_15okt": 14
+  },
+  {
+   "kode": "71",
+   "provinsi": "Sulawesi Utara",
+   "titik": 939,
+   "dibi_5_12okt": 3,
+   "dibi_5_15okt": 4
+  },
+  {
+   "kode": "75",
+   "provinsi": "Gorontalo",
+   "titik": 713,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "76",
+   "provinsi": "Sulawesi Barat",
+   "titik": 376,
+   "dibi_5_12okt": 3,
+   "dibi_5_15okt": 4
+  },
+  {
+   "kode": "32",
+   "provinsi": "Jawa Barat",
+   "titik": 309,
+   "dibi_5_12okt": 2,
+   "dibi_5_15okt": 3
+  },
+  {
+   "kode": "95",
+   "provinsi": "Papua Pegunungan",
+   "titik": 305,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "33",
+   "provinsi": "Jawa Tengah",
+   "titik": 244,
+   "dibi_5_12okt": 11,
+   "dibi_5_15okt": 26
+  },
+  {
+   "kode": "91",
+   "provinsi": "Papua",
+   "titik": 126,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "36",
+   "provinsi": "Banten",
+   "titik": 113,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "17",
+   "provinsi": "Bengkulu",
+   "titik": 105,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "14",
+   "provinsi": "Riau",
+   "titik": 98,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "65",
+   "provinsi": "Kalimantan Utara",
+   "titik": 38,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "11",
+   "provinsi": "Aceh",
+   "titik": 27,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "21",
+   "provinsi": "Kepulauan Riau",
+   "titik": 25,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "12",
+   "provinsi": "Sumatera Utara",
+   "titik": 22,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "13",
+   "provinsi": "Sumatera Barat",
+   "titik": 21,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "51",
+   "provinsi": "Bali",
+   "titik": 19,
+   "dibi_5_12okt": 1,
+   "dibi_5_15okt": 1
+  },
+  {
+   "kode": "34",
+   "provinsi": "DI Yogyakarta",
+   "titik": 15,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  },
+  {
+   "kode": "31",
+   "provinsi": "DKI Jakarta",
+   "titik": 3,
+   "dibi_5_12okt": 0,
+   "dibi_5_15okt": 0
+  }
+ ]
+}

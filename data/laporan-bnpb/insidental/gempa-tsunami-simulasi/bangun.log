@@ -1,0 +1,13 @@
+﻿python.exe : laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-1dxbgnhw\qa\deck-Laporan Insidental Gempa 
+dan Tsunami (Simulasi).md (LOLOS)
+At C:\Users\USER\AppData\Local\Temp\claude\8477dca2efc2d380\ee932f72-f656-43ed-ba01-cb9604b0d0a7\scratchpad\bangun_semu
+a.ps1:8 char:3
++   & $py buat.py *> bangun.log
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (laporan QA deck...asi).md (LOLOS):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+MMI maks: {'Cianjur': 5.72, 'Sukabumi': 5.33, 'Garut': 5.18, 'Bandung': 4.7, 'Bandung Barat': 4.45, 'Kota Sukabumi': 4.37, 'Tasikmalaya': 4.23, 'Kota Bandung': 4.1, 'Kota Cimahi': 4.09, 'Lebak': 4.06}
+susulan per 3 jam: [25, 15, 9, 8, 5, 5, 4, 4, 3, 3] peluang: {4.0: (0.8518, 0.9987), 5.0: (0.1155, 0.3467), 6.0: (0.0079, 0.027), 6.8: (0.0009, 0.003)}
+total dampak: [7, 27, 149, 2, 9755, 336, 1096, 3530, 56, 6, 83]
+D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\insidental\gempa-tsunami-simulasi\Laporan Insidental Gempa dan Tsunami (Simulasi).pptx

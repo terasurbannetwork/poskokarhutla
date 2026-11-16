@@ -1,0 +1,130 @@
+{
+ "dibi_gabung_lokal_masukan": {
+  "baris_kab_hari_jenis": 3181,
+  "sum_kejadian": 3181,
+  "berkas": "data/laporan-bnpb/bulanan/2026-10/masukan/dibi_kejadian.json, 1 Jan-31 Okt 2026"
+ },
+ "dibi_mentah_tarikan_baru": {
+  "baris": 3181,
+  "sum_jumlah_kejadian": 3124.0,
+  "is_bencana_true": 2436,
+  "tanpa_karhutla_baris": 2049,
+  "karhutla_baris": 1132,
+  "tanpa_kebakaran_permukiman_baris": 3029,
+  "berkas": "hasil/dibi_mentah_2024_2026.json (tarikan Superset 12 Nov 2026), 1 Jan-31 Okt 2026"
+ },
+ "dibi_per_jenis": {
+  "karhutla": 1132,
+  "banjir": 741,
+  "cuaca ekstrem/angin": 612,
+  "longsor": 312,
+  "kebakaran permukiman": 152,
+  "kekeringan": 129,
+  "gempa": 58,
+  "lainnya": 18,
+  "gelombang/abrasi": 17,
+  "erupsi": 10
+ },
+ "logbook_2026_json_docx": {
+  "kejadian_tgl_Jan_Okt": 3756,
+  "kejadian_tgl_Okt": 284,
+  "per_jenis": {
+   "karhutla": 1160,
+   "banjir": 794,
+   "cuaca": 785,
+   "longsor": 424,
+   "kebakaran_permukiman": 248,
+   "kekeringan": 137,
+   "lainnya": 57,
+   "gempa": 55,
+   "banjir_longsor": 45,
+   "kebakaran_tpa": 32,
+   "erupsi": 11,
+   "gelombang": 8
+  },
+  "berkas": "masukan/logbook_2026.json (kunci jenis,prov,kab,tgl), tgl kejadian 1 Jan-31 Okt 2026",
+  "tgl_di_luar_2026": 71,
+  "total_kejadian_berkas": 3827
+ },
+ "logbook_kejadian_json_koordalops": {
+  "kejadian_total_berkas": 2346,
+  "mulai_atau_terlihat_pertama_Jan_Okt": 2220,
+  "tanpa_mulai": 446,
+  "per_jenis": {
+   "karhutla": 898,
+   "banjir": 454,
+   "kekeringan": 330,
+   "cuaca": 317,
+   "longsor": 120,
+   "banjir_longsor": 29,
+   "banjir_bandang": 23,
+   "gempa": 23,
+   "rob": 13,
+   "gelombang": 10,
+   "erupsi": 3
+  },
+  "berkas": "masukan/logbook_kejadian.json (Laporan Harian Koordalops, 315 laporan 1 Jan-11 Nov 2026)",
+  "catatan": "mulai = tanggal pertama di Kronologis; bila kosong dipakai hari pertama terlihat"
+ },
+ "logbook_csv": {
+  "baris_tgl_kejadian_Jan_Okt": 3622,
+  "per_jenis": {
+   "karhutla": 1030,
+   "banjir": 795,
+   "cuaca": 777,
+   "longsor": 429,
+   "kebakaran_permukiman": 261,
+   "kekeringan": 146,
+   "gempabumi": 54,
+   "omc": 45,
+   "lainnya": 32,
+   "gelombang_pasang": 18,
+   "gunungapi": 14,
+   "konflik_sosial": 8,
+   "kecelakaan": 6,
+   "kegagalan_teknologi": 5,
+   "wabah": 2
+  },
+  "terakhir_dicatat_maks": "2026-11-01",
+  "berkas": "data/pusdalops/logbook_kejadian.csv"
+ },
+ "rekonsiliasi_dalops_dibi_2026": {
+  "n_dalops": 3660,
+  "n_dibi": 3064,
+  "pasangan": 2722,
+  "hanya_dalops": 938,
+  "hanya_dibi": 342,
+  "korban_banding": 113,
+  "korban_sama": 100,
+  "korban_dalops_lebih": 11
+ },
+ "rekonsiliasi_dalops_dibi_nasional_semua_tahun": {
+  "n_dalops": 50006,
+  "n_dibi": 47178,
+  "pasangan": 29449,
+  "hanya_dalops": 20557,
+  "hanya_dibi": 17729
+ },
+ "rekonsiliasi_catatan_cakupan_2026": {
+  "dalops_hari_logbook_2026": 305,
+  "dibi_baris_2026": 3258
+ },
+ "silang_dibi_logbook": {
+  "sel_logbook": 6135,
+  "persen_logbook_ada_di_dibi": 79.5,
+  "sel_dibi": 5492,
+  "persen_dibi_ada_di_logbook": 88.8,
+  "kejadian_logbook": 22620,
+  "kejadian_dibi": 21184,
+  "rasio_logbook_per_dibi": 1.07
+ },
+ "silang_tahun": [
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2022
+ ]
+}

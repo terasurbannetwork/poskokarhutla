@@ -2,6 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "tinjau",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/agents/tinjau_lokal.mjs",
+        "8800"
+      ],
+      "port": 8800,
+      "autoPort": false
+    },
+    {
       "name": "lokal",
       "runtimeExecutable": "node",
       "runtimeArgs": [

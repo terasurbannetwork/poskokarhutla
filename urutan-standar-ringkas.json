@@ -1,0 +1,15 @@
+{
+    "folder":  "../standar-ringkas",
+    "judul":  "Ringkasan Standar Penghitungan dan Klasifikasi Kejadian Bencana",
+    "anak_judul":  "Satu kejadian, syarat masuk hitungan, kelas keparahan, dan angka yang dipakai",
+    "label":  "RINGKASAN UNTUK PIMPINAN",
+    "nama_keluaran":  "Ringkasan Standar Penghitungan dan Klasifikasi Kejadian Bencana",
+    "berkas":  [
+                   "00-ringkasan.md"
+               ],
+    "tata":  {
+                 "toc_tingkat":  1,
+                 "bab_baru":  false,
+                 "tinggi_gambar_cm":  9
+             }
+}

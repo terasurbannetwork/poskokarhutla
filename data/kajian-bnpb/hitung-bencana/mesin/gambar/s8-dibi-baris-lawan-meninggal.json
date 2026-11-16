@@ -1,0 +1,8 @@
+{"jenis":"garis",
+ "judul":"Baris DIBI lawan korban meninggal, Januari sampai Oktober (indeks 2024 = 100)",
+ "sumbu_x":["2024","2025","2026"],
+ "seri":[{"nama":"Baris DIBI (3.058; 7.746; 3.181)","nilai":[100.0,253.3,104.0]},{"nama":"Korban meninggal (453; 663; 556)","nilai":[100.0,146.4,122.7]}],
+ "penanda":[{"x":"2025","teks":"Patah deret: penanda is_bencana mulai dipakai penuh, DIBI 2024 tidak lengkap"}],
+ "satuan":"indeks (2024 = 100)",
+ "catatan":"Baris naik 153 persen dari 2024 ke 2025 sedangkan korban meninggal naik 46 persen; indeks memakai tahun yang datanya paling tidak lengkap sebagai dasar.",
+ "sumber":"Tarikan DIBI 12 November 2026 (baris mentah); analisis/tambahan_H.py; riset/SIM-KRITERIA.md bagian 1.4"}

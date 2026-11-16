@@ -1,0 +1,2510 @@
+{
+ "tanpa_alur": "slide keputusan berbentuk tabel tiga baris agar pilihan A dan B terbaca utuh (naskah 05 subbab 5.5, 13 Nov 2026)",
+ "_catatan": "Dibangun dari spek/bangun_spek_hitung.py.",
+ "arah": "Sesi arah 12 Nov 2026 dijawab \"Ikut semua usulan\": kepada Kepala BNPB, penyaji Alfatehan Septianta, dipaparkan, ringkas 10 slide isi dan lengkap sekitar 24, nada tegas, istilah Inggris seperti di dokumen, cut-off data 12 November 2026 di sumber, penutup Terima Kasih saja, PPTX dan PDF, logo BNPB dan KRIS.",
+ "pesan_kunci": "Jumlah kejadian bencana lebih ditentukan oleh cara menghitung; aturan hitung tiga langkah membuatnya stabil dan dapat diperiksa, dan kajian meminta tiga keputusan.",
+ "judul_dokumen": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana",
+ "subjek_dokumen": "Kajian BNPB, 12 November 2026",
+ "format": "kajian",
+ "kajian": "hitung-bencana",
+ "tanggal": "2026-11-12",
+ "cut_off": "12 Nov 2026",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "judul_penuh": true,
+   "skala_subjudul": 0.9,
+   "foto": "foto/sampul-banjir.jpg",
+   "kredit": "Foto: BNPB, banjir merendam permukiman, laporan situasi harian 17 Okt 2026",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "kota": "Jakarta",
+   "penyaji": {
+    "nama": "Alfatehan Septianta",
+    "jabatan": "Staf Ahli BNPB, bersama Tim Ahli dan Tim Sus IT BNPB"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "kartu-angka",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Ringkasan eksekutif",
+   "cut_off": false,
+   "sumber": "Olahan kajian BNPB atas DIBI dan logbook Pusdalops serta hotspot VIIRS, data sampai 12 Nov 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Pusdalops adalah Pusat Pengendalian Operasi. Cara mencocokkan menentukan laporan harian mana yang dihitung sebagai satu kejadian yang sama. Hotspot VIIRS adalah deteksi api oleh satelit, satu piksel setara sekitar {{angka:hs.piksel_ha}} hektare. Kasus sulit adalah keadaan yang membuat dua petugas menghitung berbeda untuk kejadian yang sama.",
+   "judul": "Jumlah kejadian bencana lebih ditentukan oleh cara menghitung daripada oleh kejadian di lapangan, sehingga kajian mengusulkan aturan hitung tiga langkah",
+   "judul_panel": "Temuan utama",
+   "tesis": "Aturan kita menetapkan kapan kejadian masuk hitungan, tetapi belum menetapkan apa yang dihitung sebagai satu kejadian dan seberapa besar.",
+   "grup": [
+    {
+     "pil": "Empat angka dari tiga sumber data",
+     "nada": "data",
+     "ikon": "data",
+     "kartu": [
+      {
+       "nilai": "{{angka:hs.kali|fmt=1|satuan}}",
+       "label": "selisih kejadian karhutla",
+       "ikon": "karhutla",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:dibi.tunggal_p|fmt=0|satuan}}",
+       "label": "lolos hanya karena terdampak",
+       "ikon": "jiwa",
+       "warna": "oranye"
+      },
+      {
+       "nilai": "{{angka:lb.sel|fmt=0|satuan}}",
+       "label": "selisih kejadian logbook",
+       "ikon": "data",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:dibi.konsen_1|fmt=1|satuan}}",
+       "label": "korban dari catatan teratas",
+       "ikon": "peringatan",
+       "warna": "merah"
+      }
+     ]
+    }
+   ],
+   "temuan": [
+    {
+     "kode": "Temuan A.1",
+     "keyakinan": "terverifikasi",
+     "ikon": "data",
+     "teks": "**Satu kejadian tidak punya definisi.** Satu gempa di {{angka:gempa.kab}} kabupaten tercatat {{angka:gempa.pecah|fmt=3}} kejadian di tiap kabupaten."
+    },
+    {
+     "kode": "Temuan A.2",
+     "keyakinan": "terverifikasi",
+     "ikon": "regulasi",
+     "teks": "**Satu kriteria memegang separuh hitungan.** Sebanyak {{angka:dibi.tunggal_p|fmt=1|satuan}} catatan DIBI yang lolos dalam setahun terakhir lolos hanya karena kriteria terdampak."
+    },
+    {
+     "kode": "Temuan A.3",
+     "keyakinan": "terverifikasi",
+     "ikon": "peringatan",
+     "teks": "**Ambang tidak bisa diterapkan setara.** Kekeringan lolos {{angka:dibi.kering_p|fmt=1|satuan}}, karhutla hanya {{angka:dibi.karhutla_p|fmt=1|satuan}}, terutama karena DIBI tidak menyimpan luas lahan dan status darurat."
+    },
+    {
+     "kode": "Temuan C.1",
+     "keyakinan": "terverifikasi",
+     "ikon": "satu-data",
+     "teks": "**Aturan hitung tiga langkah menjawabnya.** Sebanyak {{angka:uji.penuh}} dari {{angka:uji.par}} kasus sulit terjawab penuh dan tidak ada yang gagal."
+    }
+   ],
+   "pita": {
+    "label": "Tiga keputusan dan satu batas kajian",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "ringkasan",
+      "judul": "Satuan hitung",
+      "isi": "Dua angka bernama: jumlah kejadian dan jumlah catatan kabupaten."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Status darurat dan bantuan",
+      "isi": "Penanda, kecuali surat keputusan (SK) darurat kejadian itu."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Skala keparahan",
+      "isi": "Kelas Ringan sampai Katastrofik sebagai klasifikasi data."
+     },
+     {
+      "ikon": "data",
+      "judul": "Batas kajian",
+      "isi": "Wawancara belum dilakukan; batas syarat dan kelas perlu disesuaikan."
+     }
+    ]
+   },
+   "_bicara": "Kajian ini menjawab pertanyaan yang paling sering diajukan pimpinan, yaitu berapa jumlah kejadian bencana. Jawabannya ternyata lebih ditentukan oleh cara menghitung, karena Juklak 7/2023 hanya mengatur kapan kejadian masuk hitungan, bukan apa yang dihitung sebagai satu kejadian. Empat angka di slide ini menunjukkan akibatnya, dan di akhir paparan kami meminta tiga keputusan."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 1
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Dua api menyatu di Kapuas",
+   "cut_off": false,
+   "rasio": 0.62,
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keterangan": "Hotspot VIIRS adalah deteksi api oleh satelit, satu piksel setara sekitar {{angka:hs.piksel_ha}} hektare. Kasus sulit adalah keadaan yang membuat dua petugas menghitung berbeda untuk kejadian yang sama.",
+   "judul": "Dua kelompok api di Kapuas menyatu menjadi satu kebakaran {{angka:hs.kapuas.gabung}} piksel, tetapi tidak ada aturan yang menjawab satu kejadian atau dua",
+   "utama": {
+    "judul": "Dua kelompok api di Kapuas, Kalimantan Tengah, Oktober 2026",
+    "ikon": "karhutla",
+    "alur": {
+     "skala_huruf": 1.7,
+     "sorot": 2,
+     "label_hasil": "Keadaan",
+     "langkah": [
+      {
+       "judul": "Hari pertama",
+       "pelaku": "Dua kelompok api",
+       "butir": [
+        "Satu kelompok {{angka:hs.kapuas.a}} piksel.",
+        "Kelompok lain {{angka:hs.kapuas.b}} piksel.",
+        "Berjarak {{angka:hs.kapuas.jarak|fmt=1}} kilometer."
+       ],
+       "hasil": "Dua kelompok terpisah."
+      },
+      {
+       "judul": "Beberapa hari kemudian",
+       "pelaku": "Api merambat",
+       "butir": [
+        "Kedua kelompok saling mendekat.",
+        "Deteksi baru mengisi celah di antaranya."
+       ],
+       "hasil": "Satu sebaran api."
+      },
+      {
+       "judul": "Akhir periode",
+       "pelaku": "Satu kebakaran",
+       "butir": [
+        "Akhir: satu kebakaran.",
+        "Tidak ada aturan."
+       ],
+       "hasil": "Belum diatur."
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Dua cara menghitungnya",
+    "ikon": "ringkasan",
+    "nada": "netral",
+    "banding": {
+     "kiri": {
+      "judul": "Dihitung dua"
+     },
+     "kanan": {
+      "judul": "Dihitung satu"
+     },
+     "baris": [
+      {
+       "label": "Jumlah",
+       "kiri": "Dua kejadian",
+       "kanan": "Satu kejadian"
+      },
+      {
+       "label": "Luas",
+       "kiri": "Luas tiap kelompok",
+       "kanan": "Luas gabungan akhir"
+      },
+      {
+       "label": "Risiko",
+       "kiri": "Satu api terhitung ganda",
+       "kanan": "Dua api terhitung satu"
+      }
+     ]
+    }
+   },
+   "_bicara": "Pada Oktober 2026, dua kelompok api di Kapuas, Kalimantan Tengah, berjarak 8,9 kilometer pada hari pertama. Satu kelompok 116 piksel dan satu lagi 19 piksel. Dalam beberapa hari keduanya menyatu menjadi satu kebakaran 690 piksel. Apakah itu satu kejadian atau dua, dan sejak kapan, tidak dijawab aturan mana pun. Kasus seperti ini ada 105 kandidat dalam 28 hari, tetapi kejadian berupa dua api yang menyatu hanya 0,28 persen dari semua kejadian."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Tiga pertanyaan penelitian",
+   "cut_off": false,
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Juklak adalah petunjuk pelaksanaan.",
+   "judul": "Kajian ini menjawab {{angka:pertanyaan}} pertanyaan tentang cara kita menghitung kejadian bencana, dan jawabannya mengubah cara angka dibaca",
+   "utama": {
+    "judul": "Tiga pertanyaan penelitian",
+    "ikon": "ringkasan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Pertanyaan satu: cara menghitung",
+       "isi": "Seberapa besar jumlah kejadian berubah bila cara menghitungnya berubah.",
+       "angka": "{{angka:hs.kali|fmt=1}}",
+       "satuan": "kali selisih karhutla"
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Pertanyaan dua: syarat dalam Juklak",
+       "isi": "Apakah enam kriteria Juklak tahun 2023 menyaring kejadian dengan terukur dan setara antarjenis bencana.",
+       "angka": "{{angka:dibi.tunggal_p|fmt=0}}",
+       "satuan": "persen lolos lewat satu kriteria"
+      },
+      {
+       "ikon": "satu-data",
+       "judul": "Pertanyaan tiga: aturan hitung baru",
+       "isi": "Apakah aturan hitung baru membuat angka lebih stabil dan bermakna. Selisih antar-cara turun dari {{angka:lb.sel|fmt=0}} persen menjadi {{angka:lb.sel_lolos|fmt=0}} persen; kejadian {{angka:l2.selisih|fmt=1}} persen lebih sedikit.",
+       "angka": "{{angka:lb.sel|fmt=0}}",
+       "satuan": "persen selisih antar-cara"
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Jawaban singkat",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "data",
+      "judul": "Cara menghitung",
+      "isi": "Jumlah berubah sangat besar, sampai {{angka:hs.kali|fmt=1|satuan}} pada karhutla."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Syarat dalam Juklak",
+      "isi": "Tidak terukur dan tidak setara antarjenis bencana."
+     },
+     {
+      "ikon": "satu-data",
+      "judul": "Aturan hitung baru",
+      "isi": "Ya, dengan syarat: angka lebih stabil dan bisa diperiksa."
+     }
+    ]
+   },
+   "_bicara": "Kajian ini punya tiga pertanyaan. Pertama, seberapa besar jumlah kejadian berubah bila cara menghitungnya berubah. Kedua, apakah enam kriteria Juklak menyaring kejadian dengan terukur dan setara antarjenis bencana. Ketiga, apakah aturan hitung baru membuat angka lebih stabil dan bermakna. Jawaban singkatnya: jumlah berubah sangat besar, kriteria Juklak tidak terukur dan tidak setara, dan aturan baru lebih stabil dengan beberapa syarat."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 2
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Tiga sumber data",
+   "cut_off": false,
+   "rasio": 0.5,
+   "sumber": "Olahan kajian BNPB atas DIBI dan logbook Pusdalops serta hotspot VIIRS, data sampai 12 Nov 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Pusdalops adalah Pusat Pengendalian Operasi. Hotspot VIIRS adalah deteksi api oleh satelit, satu piksel setara sekitar {{angka:hs.piksel_ha}} hektare. Kasus sulit adalah keadaan yang membuat dua petugas menghitung berbeda untuk kejadian yang sama.",
+   "judul": "Kajian menguji {{angka:dibi.baris}} catatan DIBI dan {{angka:lb.baris}} baris logbook Pusdalops, lalu mengecek karhutla dengan {{angka:hs.deteksi}} titik hotspot",
+   "utama": {
+    "judul": "Tiga sumber data kajian",
+    "ikon": "data",
+    "angka_besar": {
+     "mode": "kartu",
+     "kartu": [
+      {
+       "nilai": "{{angka:dibi.baris}}",
+       "satuan": "catatan",
+       "label": "DIBI",
+       "ket": "Awal 2024 sampai 12 November 2026.",
+       "ikon": "data"
+      },
+      {
+       "nilai": "{{angka:lb.baris}}",
+       "satuan": "baris",
+       "label": "Logbook Pusdalops",
+       "ket": "Laporan harian, Januari sampai Oktober 2026.",
+       "ikon": "satu-data"
+      },
+      {
+       "nilai": "{{angka:hs.deteksi}}",
+       "satuan": "titik",
+       "label": "Hotspot VIIRS",
+       "ket": "15 Oktober sampai 11 November 2026.",
+       "ikon": "karhutla"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Cara menguji tiap pertanyaan",
+    "ikon": "regulasi",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Cara menghitung",
+       "isi": "Hotspot digabung dengan jarak dan selang waktu berbeda, dan logbook dicocokkan dengan lima cara."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Syarat dalam Juklak",
+       "isi": "Enam kriteria diuji pada catatan DIBI setahun terakhir, lalu angka batasnya diubah."
+      },
+      {
+       "ikon": "satu-data",
+       "judul": "Aturan hitung baru",
+       "isi": "Aturan usulan dijalankan pada DIBI dan logbook, dibandingkan dengan Juklak, lalu diuji dengan kasus sulit."
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Catatan tiap sumber",
+    "nada": "hujan",
+    "kolom": [
+     {
+      "ikon": "data",
+      "judul": "DIBI",
+      "isi": "Ditarik dari dasbor publik dan dapat dikoreksi susulan."
+     },
+     {
+      "ikon": "satu-data",
+      "judul": "Logbook",
+      "isi": "Angka dampak diurai dari teks bebas."
+     },
+     {
+      "ikon": "karhutla",
+      "judul": "Hotspot",
+      "isi": "Deteksi satelit; luas terbakar tidak diukur."
+     }
+    ]
+   },
+   "_bicara": "Ada tiga sumber data. DIBI berisi 15.974 catatan dari awal 2024 sampai 12 November 2026. Logbook harian Pusdalops 2026 berisi 9.329 baris. Hotspot satelit VIIRS berisi 295.488 titik dari 15 Oktober sampai 11 November 2026. Tiap pertanyaan diuji dengan cara berbeda, seperti ditunjukkan di panel kanan."
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Lima cara mencocokkan logbook",
+   "cut_off": false,
+   "rasio": 0.64,
+   "sumber": "Uji pencocokan logbook Pusdalops, kajian BNPB, 12 Nov 2026",
+   "keterangan": "Pusdalops adalah Pusat Pengendalian Operasi. Baris harian adalah satu laporan harian di logbook.",
+   "judul": "Logbook dicocokkan dengan {{angka:lima}} cara, dan tiap cara diuji dengan tiga aturan angka korban",
+   "tabel": {
+    "judul_panel": "Dua baris dianggap satu kejadian bila",
+    "ikon": "satu-data",
+    "peringkat": false,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 3,
+    "skala_huruf": 1.3,
+    "baris_maks_pt": 62,
+    "data": {
+     "csv": "data/hitung/lima_cara.csv",
+     "kolom": [
+      {
+       "nama": "cara",
+       "kepala": "Cara",
+       "bobot": 0.8
+      },
+      {
+       "nama": "bila",
+       "kepala": "Syarat",
+       "rata": "l",
+       "bobot": 3.0
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    }
+   },
+   "panel": {
+    "judul": "Tiga aturan angka korban",
+    "ikon": "jiwa",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "naik",
+       "judul": "Nilai terbesar",
+       "isi": "Memakai angka tertinggi selama kejadian."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Jumlah semua laporan",
+       "isi": "Menjumlah angka antarhari."
+      },
+      {
+       "ikon": "kalender",
+       "judul": "Laporan terakhir",
+       "isi": "Memakai angka koreksi terbaru; ini yang dipakai aturan usulan."
+      }
+     ]
+    }
+   },
+   "_bicara": "Logbook Pusdalops dicocokkan dengan lima cara. Cara satu menyamakan jenis bencana, kabupaten, dan tanggal. Cara dua menambah penggabungan kabupaten yang berbatasan dan dipakai arsip logbook 2026. Cara tiga memakai jeda paling lama tujuh hari tanpa melihat tanggal. Cara empat tidak melihat kabupaten. Cara lima tidak mencocokkan sama sekali. Untuk tiap cara, korban dihitung dengan nilai terbesar, jumlah semua laporan, atau laporan terakhir."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 3
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Cara menggabungkan hotspot",
+   "cut_off": false,
+   "rasio": 0.58,
+   "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah",
+   "keterangan": "Hotspot VIIRS adalah deteksi api oleh satelit, satu piksel setara sekitar {{angka:hs.piksel_ha}} hektare. Jendela adalah selang waktu penggabungan dua deteksi.",
+   "judul": "Aturan menggabungkan hotspot saja mengubah jumlah kejadian karhutla {{angka:hs.kali|fmt=1|satuan}} dari data hotspot yang sama",
+   "utama": {
+    "judul": "Jumlah kejadian karhutla menurut cara menggabungkan hotspot",
+    "ikon": "karhutla",
+    "subjudul_grafik": "Kejadian, 15 Oktober sampai 11 November 2026",
+    "s3_baris_kelompok": {
+     "data": {
+      "csv": "data/hitung/gabung.csv",
+      "kolom": [
+       {
+        "nama": "jarak"
+       },
+       {
+        "nama": "j24",
+        "kepala": "Jendela satu hari",
+        "fmt": "0"
+       },
+       {
+        "nama": "j72",
+        "kepala": "Jendela tiga hari",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Hotspot VIIRS, 15 Oktober sampai 11 November 2026, diolah"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Dua api menyatu di Kapuas",
+    "ikon": "karhutla",
+    "nada": "api",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "karhutla",
+       "judul": "Dua kelompok",
+       "isi": "{{angka:hs.kapuas.a}} dan {{angka:hs.kapuas.b}} piksel, berjarak {{angka:hs.kapuas.jarak|fmt=1|satuan}}."
+      },
+      {
+       "ikon": "luas",
+       "judul": "Menyatu",
+       "isi": "Dalam beberapa hari keduanya menjadi satu kebakaran {{angka:hs.kapuas.gabung}} piksel."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Tanpa jawaban",
+       "isi": "Satu kejadian atau dua, dan sejak kapan, tidak diatur aturan mana pun."
+      },
+      {
+       "ikon": "data",
+       "judul": "Pengaruh kecil",
+       "isi": "Hanya {{angka:hs.gabung_p|fmt=2|satuan}} kejadian berupa api yang menyatu; jarak lebih berpengaruh."
+      }
+     ]
+    }
+   },
+   "_bicara": "Kami menghitung kejadian karhutla dari deteksi hotspot satelit selama dua puluh delapan hari. Dua deteksi dianggap satu kejadian bila cukup dekat dalam jarak dan waktu. Dengan jarak dan jendela waktu berbeda, data yang sama menghasilkan 27.322 sampai 61.138 kejadian, selisih 2,2 kali lipat. Tidak ada angka yang benar sendiri; angka hanya bisa dibandingkan bila cara menggabungkannya sama."
+  },
+  {
+   "jenis": "temuan-grafik",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Cara mencocokkan logbook",
+   "cut_off": false,
+   "rasio": 0.56,
+   "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keterangan": "Pusdalops adalah Pusat Pengendalian Operasi. Cara satu sampai lima adalah lima cara mencocokkan laporan harian yang sama menjadi satu kejadian: tanggal sama, kabupaten berbatasan digabung, jeda tujuh hari, kabupaten diabaikan, tanpa pencocokan.",
+   "judul": "Cara mencocokkan laporan harian saja menggeser jumlah kejadian logbook {{angka:lb.sel|satuan}}, dan tanpa pencocokan jumlahnya lebih dari dua kali lipat",
+   "grafik": {
+    "judul_panel": "Jumlah kejadian logbook menurut cara mencocokkan",
+    "ikon": "data",
+    "judul": "**Kejadian mentah**, Jan sampai Okt 2026",
+    "keluarga": "netral",
+    "arah": "horizontal",
+    "seragam": false,
+    "pembanding": false,
+    "ubah": false,
+    "persen_batang": false,
+    "sorot": [
+     "Cara tiga: jeda tujuh hari"
+    ],
+    "data": {
+     "csv": "data/hitung/kunci_logbook.csv",
+     "kolom": [
+      {
+       "nama": "kunci"
+      },
+      {
+       "nama": "kejadian",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah"
+    }
+   },
+   "panel": {
+    "judul": "Mengapa angka logbook mudah menyesatkan",
+    "ikon": "peringatan",
+    "nada": "bahaya",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Cara menentukan",
+       "isi": "Laporan harian yang sama dapat jadi kejadian baru, tergantung cara mencocokkan."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Angka kumulatif",
+       "isi": "Dijumlah: {{angka:lb.kumulatif}}; terbesar: {{angka:lb.terbesar}}; laporan terakhir (aturan usulan): {{angka:lb.terakhir}} korban meninggal."
+      },
+      {
+       "ikon": "kalender",
+       "judul": "Laporan berubah",
+       "isi": "Dari {{angka:lb.lolos_akhir}} kejadian lolos (semua tanggal logbook), {{angka:lb.susulan}} belum lolos di laporan pertama."
+      },
+      {
+       "ikon": "ringkasan",
+       "judul": "Setelah ambang",
+       "isi": "Jumlah yang lolos hanya berubah {{angka:lb.sel_lolos|satuan}} antar-cara mencocokkan."
+      }
+     ]
+    }
+   },
+   "_bicara": "Logbook Pusdalops menghasilkan 2.809 kejadian dengan satu cara pencocokan, 3.860 dengan cara lain, dan 8.715 bila laporan harian tidak dicocokkan sama sekali. Selisih antar-cara mencocokkan 27 persen. Masalah kedua, logbook menulis angka kumulatif; bila semua baris harian dijumlah, korban meninggal menjadi 12.523 korban meninggal; bila tiap kejadian diambil angka terbesarnya lalu dijumlah untuk semua kejadian, totalnya 609 korban meninggal. Aturan usulan memakai nilai laporan terakhir per kejadian, yaitu 565 korban meninggal."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Masalah sama di DIBI dan logbook",
+   "cut_off": false,
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah; Logbook Pusdalops BNPB, Januari sampai Oktober 2026, diolah",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Pusdalops adalah Pusat Pengendalian Operasi. Cara satu sampai lima adalah lima cara mencocokkan laporan harian yang sama menjadi satu kejadian: tanggal sama, kabupaten berbatasan digabung, jeda tujuh hari, kabupaten diabaikan, tanpa pencocokan.",
+   "judul": "Aturan menggabungkan yang tidak jelas juga muncul di DIBI dan logbook, tempat {{angka:dibi.pecahan}} baris DIBI memuat kejadian berupa pecahan",
+   "utama": {
+    "judul": "Tiga bentuk masalah yang sama di data kita",
+    "ikon": "data",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Pecahan di DIBI",
+       "isi": "Satu gempa di {{angka:gempa.kab}} kabupaten tercatat {{angka:gempa.pecah|fmt=3}} kejadian di tiap kabupaten, jadi jumlah kejadian berupa pecahan.",
+       "angka": "{{angka:dibi.pecahan}}",
+       "satuan": "baris pecahan"
+      },
+      {
+       "ikon": "satu-data",
+       "judul": "Cara mencocokkan di logbook",
+       "isi": "Laporan harian yang sama menghasilkan jumlah kejadian berbeda menurut cara mencocokkan; tanpa pencocokan jumlahnya {{angka:lb.mentah}}.",
+       "angka": "{{angka:lb.sel|fmt=0}}",
+       "satuan": "persen selisih"
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Angka kumulatif dijumlah",
+       "isi": "Dijumlah antarhari: {{angka:lb.kumulatif}} korban meninggal; nilai terbesar: {{angka:lb.terbesar}}. Aturan usulan memakai laporan terakhir, angka di kanan.",
+       "angka": "{{angka:lb.terakhir}}",
+       "satuan": "korban meninggal, laporan terakhir"
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Akibatnya bagi pembaca data",
+    "nada": "hujan",
+    "kolom": [
+     {
+      "ikon": "ringkasan",
+      "judul": "Jumlah tidak sebanding",
+      "isi": "Dua angka yang sama-sama disebut jumlah kejadian bisa berselisih jauh."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Daerah terpukul tersembunyi",
+      "isi": "Pecahan menyembunyikan kabupaten yang paling terpukul."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Korban menggelembung",
+      "isi": "Angka kumulatif yang dijumlah menggandakan korban berkali-kali."
+     }
+    ]
+   },
+   "_bicara": "Pola ini bukan khusus karhutla. DIBI memuat 643 baris berpecahan; gempa 15 Agustus 2026 yang melanda 11 kabupaten tercatat 0,091 kejadian di tiap kabupaten. Logbook Pusdalops menghasilkan 2.809 kejadian dengan satu cara pencocokan, 3.860 dengan cara lain, dan 8.715 bila tidak dicocokkan sama sekali. Angka kumulatif yang dijumlah lintas hari menghasilkan 12.523 korban meninggal, padahal nilai terbesar per kejadian hanya 609."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 4
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Vonis enam kriteria",
+   "cut_off": false,
+   "rasio": 0.52,
+   "sumber": "DIBI BNPB, 12 Nov 2026; Juklak tahun 2023",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Juklak adalah petunjuk pelaksanaan. Hanya tiga kriteria yang punya kolom di DIBI. Cara menggabungkan keenam kriteria, yaitu cukup salah satu terpenuhi, dinilai Pertahankan. Penanda tidak berlaku bagi SK tanggap darurat yang menyebut kejadian itu.",
+   "judul": "Hanya {{angka:kriteria.diuji}} dari {{angka:juk.kriteria}} kriteria Juklak yang dapat diuji dengan DIBI, dan {{angka:kriteria.ubah}} kriteria perlu perubahan",
+   "utama": {
+    "judul": "Penilaian kajian untuk tiap kriteria",
+    "ikon": "regulasi",
+    "heatmap": {
+     "mode": "kategori",
+     "skala_huruf": 1.1,
+     "kelas": [
+      {
+       "kunci": "Pertahankan",
+       "token": "skala.air.3"
+      },
+      {
+       "kunci": "Revisi",
+       "token": "skala.emas.3"
+      },
+      {
+       "kunci": "Ganti",
+       "token": "skala.api.3"
+      },
+      {
+       "kunci": "Penanda",
+       "token": "skala.netral.3"
+      }
+     ],
+     "data": {
+      "csv": "data/hitung/vonis.csv",
+      "kolom": [
+       {
+        "nama": "kriteria",
+        "kepala": "Kriteria"
+       },
+       {
+        "nama": "vonis",
+        "kepala": "Penilaian"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Alasan penilaian",
+    "ikon": "ringkasan",
+    "nada": "netral",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "jiwa",
+       "judul": "Terdampak",
+       "isi": "Satu-satunya alasan lolos bagi {{angka:dibi.tunggal_p|fmt=1|satuan}} catatan lolos setahun terakhir, dan istilahnya berbeda antarjuklak."
+      },
+      {
+       "ikon": "rumah",
+       "judul": "Rumah rusak",
+       "isi": "Dari {{angka:rumah.hanya}} catatan lolos karena kriteria ini, {{angka:rumah.kecil}} hanya lima sampai sembilan unit dan {{angka:dibi.rumah_tanpa_korban}} tanpa korban."
+      },
+      {
+       "ikon": "luas",
+       "judul": "Lahan",
+       "isi": "Tidak bisa diuji, karena satu piksel satelit sudah {{angka:hs.piksel_ha}} hektare."
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Administratif",
+       "isi": "Ukuran respons negara yang bersifat melingkar."
+      },
+      {
+       "ikon": "data",
+       "judul": "Cukup salah satu kriteria",
+       "isi": "Bila semua kriteria wajib terpenuhi, kejadian terpangkas {{angka:dibi.logika_dan|fmt=1|satuan}}."
+      }
+     ]
+    }
+   },
+   "_bicara": "Sebuah kejadian masuk hitungan bila memenuhi satu dari enam kriteria. Kajian menguji tiga yang punya kolom di DIBI, yaitu meninggal, terdampak, dan rumah rusak. Kriteria lahan satu hektare tidak bisa diuji karena satu piksel satelit sudah 14 hektare. Permintaan bantuan nasional dan status darurat mengukur respons negara, bukan dampak, jadi usulannya menjadi penanda. Cukup salah satu kriteria dipertahankan karena logika DAN memangkas kejadian 96,5 persen."
+  },
+  {
+   "jenis": "temuan-grafik",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Satu kriteria memegang separuh hitungan",
+   "cut_off": false,
+   "rasio": 0.56,
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Juklak adalah petunjuk pelaksanaan. Satu-satunya alasan lolos berarti hanya kriteria itu yang terpenuhi.",
+   "judul": "Separuh catatan DIBI yang lolos setahun terakhir lolos hanya karena kriteria {{angka:juk.terdampak}} orang terdampak, kriteria yang istilahnya paling kabur",
+   "grafik": {
+    "judul_panel": "Kombinasi kriteria yang meloloskan catatan",
+    "ikon": "regulasi",
+    "judul": "**Persen catatan lolos**, setahun terakhir",
+    "keluarga": "netral",
+    "arah": "horizontal",
+    "seragam": false,
+    "pembanding": false,
+    "ubah": false,
+    "persen_batang": false,
+    "sorot": [
+     "Hanya terdampak"
+    ],
+    "data": {
+     "csv": "data/hitung/penentu.csv",
+     "kolom": [
+      {
+       "nama": "kombinasi"
+      },
+      {
+       "nama": "persen",
+       "fmt": "1"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah"
+    }
+   },
+   "panel": {
+    "judul": "Mengapa kriteria ini bermasalah",
+    "ikon": "peringatan",
+    "nada": "bahaya",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Satu-satunya alasan",
+       "isi": "Dari {{angka:dibi.lolos}} catatan lolos, {{angka:dibi.tunggal}} lolos hanya karena kriteria terdampak."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Dua definisi",
+       "isi": "Juklak tahun 2023 dan Juklak tahun 2022 memakai definisi terdampak berbeda."
+      },
+      {
+       "ikon": "karhutla",
+       "judul": "Kekeringan",
+       "isi": "Lolos {{angka:dibi.kering_p|fmt=1|satuan}} seluruhnya lewat kriteria terdampak."
+      },
+      {
+       "ikon": "jiwa",
+       "judul": "Usulan",
+       "isi": "Terdampak langsung didefinisikan dan satu orang dihitung satu kali."
+      }
+     ]
+    }
+   },
+   "_bicara": "Sebuah kejadian masuk hitungan bila memenuhi satu dari enam kriteria. Dari 1.903 catatan DIBI yang lolos, 973 baris atau 51,1 persen lolos hanya karena kriteria 50 orang terdampak. Kriteria itu pula yang paling kabur, karena Juklak 7/2023 dan Juklak 3/2022 memakai dua definisi berbeda. Tabel di kanan memuat vonis kajian untuk tiap kriteria."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Ambang sama, hasil berbeda per jenis",
+   "cut_off": false,
+   "rasio": 0.58,
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Karhutla diduga rendah karena DIBI tidak memiliki kolom luas lahan dan status darurat.",
+   "judul": "Ambang yang sama meloloskan {{angka:dibi.kering_p|fmt=1|satuan}} catatan kekeringan tetapi hanya {{angka:dibi.karhutla_p|fmt=1|satuan}} catatan karhutla",
+   "utama": {
+    "judul": "Persen catatan DIBI yang lolos ambang, menurut jenis bencana",
+    "ikon": "wilayah",
+    "lollipop": {
+     "sorot": "Karhutla",
+     "satuan": "Persen catatan, setahun sampai 12 November 2026",
+     "skala_huruf": 1.05,
+     "data": {
+      "csv": "data/hitung/lolos_jenis.csv",
+      "kolom": [
+       {
+        "nama": "jenis"
+       },
+       {
+        "nama": "persen",
+        "fmt": "1"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Mengapa karhutla nyaris tidak lolos",
+    "ikon": "karhutla",
+    "nada": "api",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "luas",
+       "judul": "Sebab utama",
+       "isi": "Terutama karena DIBI tidak menyimpan luas lahan dan status darurat."
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Tidak dapat diperiksa",
+       "isi": "Karhutla mungkin masuk lewat kriteria yang tidak tampak bagi pembaca data."
+      },
+      {
+       "ikon": "data",
+       "judul": "Dasar catatan",
+       "isi": "Contoh: {{angka:dibi.kering_n}} catatan kekeringan dan {{angka:dibi.karhutla_n}} catatan karhutla dalam setahun terakhir."
+      }
+     ]
+    }
+   },
+   "_bicara": "Satu set ambang menyaring dengan kekuatan yang sangat berbeda antarjenis bencana. Dari 129 catatan kekeringan, 94,6 persen lolos, sedangkan dari 1.208 catatan karhutla hanya 1,4 persen. Karhutla kemungkinan masuk lewat kriteria luas dan status darurat, tetapi DIBI tidak mencatatnya, sehingga pembaca tidak bisa memeriksa alasannya."
+  },
+  {
+   "jenis": "temuan-grafik",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Kepekaan ambang",
+   "cut_off": false,
+   "rasio": 0.56,
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Tiap skenario mengubah ketiga batas kriteria yang diuji. EM-DAT adalah basis data bencana internasional.",
+   "judul": "Mengubah angka ambang menggeser catatan yang lolos dari {{angka:dibi.ambang_min}} sampai {{angka:dibi.ambang_maks}}, tetapi tidak membuat sistem lebih benar",
+   "grafik": {
+    "judul_panel": "Catatan yang lolos menurut angka ambang",
+    "ikon": "ringkasan",
+    "judul": "**Catatan lolos**, setahun terakhir",
+    "keluarga": "netral",
+    "arah": "horizontal",
+    "seragam": false,
+    "pembanding": false,
+    "ubah": false,
+    "persen_batang": false,
+    "sorot": [
+     "Juklak saat ini"
+    ],
+    "data": {
+     "csv": "data/hitung/kepekaan.csv",
+     "kolom": [
+      {
+       "nama": "skenario"
+      },
+      {
+       "nama": "baris",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah"
+    }
+   },
+   "panel": {
+    "judul": "Angka mana yang tepat",
+    "ikon": "peringatan",
+    "nada": "bahaya",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "peringatan",
+       "judul": "Tidak ada angka benar",
+       "isi": "Angka lain hanya menggeser hasil dan tidak membuktikan yang lebih tepat."
+      },
+      {
+       "ikon": "data",
+       "judul": "Perlu pembanding",
+       "isi": "Perlu kejadian pembanding, misalnya yang memicu status darurat."
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Pembanding belum ada",
+       "isi": "Data kita belum memuatnya, jadi angka bawaan tetap sampai diuji."
+      }
+     ]
+    }
+   },
+   "_bicara": "Aturan sekarang meloloskan 1.903 baris. Angka lain menggesernya ke 67 sampai 2.484 baris. Tidak ada angka yang terbukti lebih tepat, karena angka yang benar hanya bisa dipilih bila ada pembanding, misalnya kejadian yang memicu status darurat atau dana siap pakai. Pembanding itu belum tersedia di data kita, sehingga angka 1, 50, dan 5 tetap bawaan sampai diuji."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Long tail dampak",
+   "cut_off": false,
+   "rasio": 0.56,
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Satu baris adalah satu hari di satu kabupaten untuk satu jenis bencana. Long tail adalah sebaran dengan sedikit kejadian memikul hampir seluruh dampak. Jumlah resmi DIBI Januari sampai Oktober naik jauh lebih tinggi daripada kejadian yang lolos kriteria Juklak, yang naik {{angka:tren.lolos|satuan}}.",
+   "judul": "Satu persen catatan DIBI memikul {{angka:dibi.konsen_1|fmt=1|satuan}} korban meninggal, jadi jumlah kejadian bukan ukuran besar",
+   "utama": {
+    "judul": "Porsi dampak yang dipikul catatan teratas",
+    "ikon": "jiwa",
+    "subjudul_grafik": "Persen dari total, setahun sampai 12 November 2026",
+    "s3_baris_kelompok": {
+     "data": {
+      "csv": "data/hitung/konsentrasi.csv",
+      "kolom": [
+       {
+        "nama": "dampak"
+       },
+       {
+        "nama": "p1",
+        "kepala": "Satu persen catatan teratas",
+        "fmt": "1"
+       },
+       {
+        "nama": "p10",
+        "kepala": "Sepuluh persen catatan teratas",
+        "fmt": "1"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Kejadian kecil dan besar terhitung sama",
+    "ikon": "peringatan",
+    "nada": "bahaya",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "jiwa",
+       "judul": "Banjir Aceh Utara",
+       "isi": "28 November 2025: {{angka:aceh.mati}} meninggal, {{angka:aceh.terdampak}} terdampak, {{angka:aceh.rumah}} rumah rusak."
+      },
+      {
+       "ikon": "data",
+       "judul": "Terhitung sama",
+       "isi": "Kejadian dengan satu korban meninggal juga terhitung satu kejadian di DIBI."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Sebagian besar kosong",
+       "isi": "{{angka:dibi.tanpa_mati_p|fmt=1|satuan}} catatan tidak memuat korban meninggal sama sekali."
+      },
+      {
+       "ikon": "naik",
+       "judul": "Tren menyesatkan",
+       "isi": "Jumlah resmi naik {{angka:tren.naik|satuan}} pada 2025, sebagian besar karena catatan kecil."
+      }
+     ]
+    }
+   },
+   "_bicara": "Cukup salah satu kriteria memberi bobot sama pada satu kejadian dengan satu orang meninggal dan banjir Aceh Utara 28 November 2025 yang memuat 246 meninggal. Keduanya terhitung satu kejadian. Satu persen catatan teratas memikul 85,5 persen korban meninggal, dan 94,8 persen catatan tidak memuat korban meninggal sama sekali."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 5
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Aturan usulan lawan aturan Juklak menurut jenis",
+   "cut_off": false,
+   "rasio": 0.6,
+   "sumber": "Simulasi aturan usulan pada data DIBI, kajian BNPB, 12 Nov 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Jenis lain mencakup kekeringan tetapi tidak karhutla, yang tampil sendiri. Catatan DIBI ({{angka:dibi.baris}} baris) digabung menjadi {{angka:kjn.total}} kejadian nasional menurut langkah satu aturan usulan. Semua kejadian adalah jumlah sebelum syarat masuk dipakai. Tabel jenis bahaya memakai versi akhir aturan, sama dengan sebaran kelas pada slide pilihan skala. Kriteria luas dan SK tanggap darurat tidak terukur di DIBI.",
+   "judul": "Aturan usulan meloloskan {{angka:l2.selisih|fmt=1|satuan}} lebih sedikit kejadian, dan penurunan terbesar ada pada cuaca ekstrem dan longsor",
+   "utama": {
+    "judul": "Kejadian yang masuk hitungan menurut Juklak dan aturan usulan",
+    "ikon": "ringkasan",
+    "s3_baris_kelompok": {
+     "data": {
+      "csv": "data/hitung/l2_tahun.csv",
+      "kolom": [
+       {
+        "nama": "tahun"
+       },
+       {
+        "nama": "lama",
+        "kepala": "Aturan Juklak",
+        "fmt": "0"
+       },
+       {
+        "nama": "usulan",
+        "kepala": "Aturan usulan",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Simulasi kajian pada data DIBI dan logbook, BNPB, 12 November 2026"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Kejadian lolos menurut jenis bahaya",
+    "ikon": "ringkasan",
+    "peringkat": false,
+    "skala_huruf": 1.3,
+    "baris_maks_pt": 46,
+    "data": {
+     "csv": "data/hitung/l2_jenis.csv",
+     "kolom": [
+      {
+       "nama": "jenis",
+       "kepala": "Jenis bahaya"
+      },
+      {
+       "nama": "kjn",
+       "kepala": "Semua kejadian",
+       "fmt": "0"
+      },
+      {
+       "nama": "lama",
+       "kepala": "Juklak",
+       "fmt": "0"
+      },
+      {
+       "nama": "usulan",
+       "kepala": "Usulan",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Simulasi kajian pada data DIBI dan logbook, BNPB, 12 November 2026"
+    },
+    "daftar": [
+     "Karhutla nyaris tidak berubah karena kriteria luas dan SK darurat tidak terukur di DIBI."
+    ]
+   },
+   "_bicara": "Pada data DIBI, kejadian nasional dibentuk dari baris yang berpecahan, lalu diuji dengan ambang lama dan ambang usulan. Ambang usulan meloloskan 6.835 kejadian dibanding 7.535, atau 9,3 persen lebih sedikit. Yang gugur hampir semuanya lolos hanya karena rumah atau fasilitas rusak ringan. Pada logbook, pilihan cara mencocokkan mengubah jumlah mentah 27 persen, tetapi setelah ambang hanya 3 persen.",
+   "ulang_angka_boleh": "keterangan menjelaskan dasar hitung angka tabel"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Yang gugur dan yang masuk",
+   "cut_off": false,
+   "rasio": 0.6,
+   "sumber": "Simulasi kajian pada data DIBI dan logbook, BNPB, 12 November 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Kejadian yang gugur tidak dibuang karena tetap disimpan sebagai kejadian di bawah ambang. Selisih dihitung pada DIBI; sebaran per jenis di slide lain memakai versi akhir aturan.",
+   "judul": "Aturan usulan menggugurkan {{angka:l2.gugur_n}} kejadian dan memasukkan {{angka:l2.baru_n}} kejadian baru, sehingga selisih bersihnya {{angka:l2.gugur}} kejadian",
+   "utama": {
+    "judul": "Contoh kejadian yang gugur dan yang masuk",
+    "ikon": "ringkasan",
+    "banding": {
+     "kiri": {
+      "judul": "Gugur dari hitungan"
+     },
+     "kanan": {
+      "judul": "Masuk hitungan baru"
+     },
+     "baris": [
+      {
+       "label": "Contoh",
+       "kiri": "{{angka:gugur.terdampak}} terdampak, {{angka:gugur.rb}} rumah rusak berat, {{angka:gugur.rr}} rusak ringan",
+       "kanan": "Korban hilang tanpa korban meninggal"
+      },
+      {
+       "label": "Aturan Juklak",
+       "kiri": "Lolos karena lima rumah rusak",
+       "kanan": "Tidak masuk, hilang tidak dihitung"
+      },
+      {
+       "label": "Aturan usulan",
+       "kiri": "Rusak ringan hanya seperempat, jadi tidak cukup",
+       "kanan": "Hilang dihitung seperti meninggal"
+      },
+      {
+       "label": "Definisi terdampak",
+       "kiri": "Definisi terdampak berbeda antarjuklak",
+       "kanan": "Terdampak didefinisikan, satu orang dihitung satu kali"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Yang perlu diingat",
+    "ikon": "peringatan",
+    "nada": "netral",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "naik",
+       "judul": "Selisih bersih",
+       "isi": "{{angka:l2.gugur_n}} kejadian gugur, {{angka:l2.baru_n}} baru masuk: selisih bersih {{angka:l2.gugur}} ({{angka:l2.lama}} menjadi {{angka:l2.usulan}})."
+      },
+      {
+       "ikon": "data",
+       "judul": "Batas bawah",
+       "isi": "Luas dan SK darurat tidak terukur di DIBI."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Disimpan",
+       "isi": "Tetap ada di basis data dengan penanda."
+      },
+      {
+       "ikon": "ringkasan",
+       "judul": "Dasar masuk",
+       "isi": "Tiap kejadian yang masuk mencatat kriteria yang meloloskannya."
+      }
+     ]
+    }
+   },
+   "_bicara": "Ambang usulan meloloskan 6.835 kejadian dibanding 7.535, selisih 700 kejadian. Yang gugur hampir semuanya lolos hanya karena rumah atau fasilitas rusak ringan, misalnya satu kejadian dengan 48 orang terdampak, 2 rumah rusak berat, dan 3 rusak ringan. Yang masuk baru adalah kejadian dengan korban hilang tanpa korban meninggal. Perubahan terbesar justru pada definisi terdampak langsung, lebih dari angka ambangnya."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Pilihan skala keparahan menurut jenis",
+   "cut_off": false,
+   "rasio": 0.58,
+   "sumber": "Simulasi aturan usulan pada data DIBI, kajian BNPB, 12 Nov 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Simulasi versi pertama adalah hitungan awal atas {{angka:kelas.n_v1}} kejadian, sebelum aturan disempurnakan menjadi versi akhir atas {{angka:l2.usulan}} kejadian; skala relatif dan status darurat memakai versi pertama. Label dibulatkan per kelas. Jenis lain di sini mencakup karhutla tetapi tidak kekeringan, jadi berbeda dari slide Juklak dan usulan.",
+   "judul": "Skala usulan menjadikan hanya {{angka:kelas.u_n}} kejadian ({{angka:kelas.u_atas|fmt=1|satuan}}) berkelas Besar atau Katastrofik, sehingga dapat diperiksa satu per satu",
+   "utama": {
+    "judul": "Persen kejadian di kelas Sedang ke atas menurut pilihan skala",
+    "ikon": "peringatan",
+    "tumpuk": {
+     "skala_huruf": 1.4,
+     "warna": [
+      "skala.air.3",
+      "oranye",
+      "merah"
+     ],
+     "data": {
+      "csv": "data/hitung/kelas_opsi.csv",
+      "kolom": [
+       {
+        "nama": "opsi"
+       },
+       {
+        "nama": "sedang",
+        "kepala": "Sedang",
+        "fmt": "1|persen"
+       },
+       {
+        "nama": "besar",
+        "kepala": "Besar",
+        "fmt": "1|persen"
+       },
+       {
+        "nama": "katastrofik",
+        "kepala": "Katastrofik",
+        "fmt": "1|persen"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Simulasi kajian pada data DIBI dan logbook, BNPB, 12 November 2026"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Kelas menurut jenis bahaya, skala absolut",
+    "ikon": "peringatan",
+    "peringkat": false,
+    "skala_huruf": 1.35,
+    "baris_maks_pt": 46,
+    "data": {
+     "csv": "data/hitung/kelas_jenis.csv",
+     "kolom": [
+      {
+       "nama": "jenis",
+       "kepala": "Jenis bahaya"
+      },
+      {
+       "nama": "n",
+       "kepala": "Lolos",
+       "fmt": "0"
+      },
+      {
+       "nama": "s",
+       "kepala": "Sedang",
+       "fmt": "0"
+      },
+      {
+       "nama": "b",
+       "kepala": "Besar",
+       "fmt": "0"
+      },
+      {
+       "nama": "k",
+       "kepala": "Katastrofik",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Simulasi kajian pada data DIBI dan logbook, BNPB, 12 November 2026"
+    },
+    "daftar": [
+     "Usulan menaikkan satu kelas bagi kabupaten kecil: {{angka:kelas.naik_n}} kejadian, {{angka:kelas.berubah|fmt=1|satuan}}. Besar atau Katastrofik: {{angka:kelas.a_n}} ({{angka:kelas.a_v2|fmt=1|satuan}}) pada skala absolut, {{angka:kelas.u_n}} ({{angka:kelas.u_atas|fmt=1|satuan}}) pada usulan."
+    ]
+   },
+   "_bicara": "Empat cara memberi kelas dibandingkan. Skala absolut sederhana dan mudah diperiksa; indeks gabungan memberi hasil yang sama tetapi bobotnya harus dibela. Skala yang mengikuti status darurat, hanya cocok dengan skala absolut pada 52,7 persen kejadian dan menjadikan 38,6 persen kejadian berkelas Besar. Karena itu usulan memakai skala absolut dengan kenaikan kelas.",
+   "ulang_angka_boleh": "keterangan menjelaskan dasar hitung angka tabel"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Tren jumlah kejadian lawan korban",
+   "cut_off": false,
+   "rasio": 0.58,
+   "sumber": "Simulasi aturan usulan pada data DIBI, kajian BNPB, 12 Nov 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Indeks 2024 sama dengan seratus. Slide ini memakai Januari sampai Oktober tiap tahun. Indeks jumlah resmi: {{angka:tren.i25}} pada 2025 dan {{angka:tren.i26}} pada 2026 terhadap 2024, jadi turun {{angka:tren.turun|satuan}} dari 2025 ke 2026.",
+   "judul": "Jumlah resmi DIBI naik {{angka:tren.naik|satuan}} pada 2025 lalu kembali ke tingkat 2024 pada 2026, sedangkan korban bergerak lebih landai",
+   "utama": {
+    "judul": "Jumlah kejadian dan korban, indeks 2024 sama dengan seratus",
+    "ikon": "naik",
+    "s3_baris_kelompok": {
+     "data": {
+      "csv": "data/hitung/tren2.csv",
+      "kolom": [
+       {
+        "nama": "indikator"
+       },
+       {
+        "nama": "y2024",
+        "kepala": "2024",
+        "fmt": "1"
+       },
+       {
+        "nama": "y2025",
+        "kepala": "2025",
+        "fmt": "1"
+       },
+       {
+        "nama": "y2026",
+        "kepala": "2026",
+        "fmt": "1"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Mengapa jumlah menyesatkan",
+    "ikon": "peringatan",
+    "nada": "bahaya",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "peringatan",
+       "judul": "Catatan bukan bencana",
+       "isi": "Dari {{angka:tren.bukan_2024|fmt=1|satuan}} (2024) ke {{angka:tren.bukan_2025|fmt=1|satuan}} (2025)."
+      },
+      {
+       "ikon": "rumah",
+       "judul": "Rumah rusak berat",
+       "isi": "Naik {{angka:tren.rumah|satuan}} pada 2026 karena gempa Agustus walau jumlah kejadian turun."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Deret tidak sebanding",
+       "isi": "Deret lintas 2024 dan 2025 tidak boleh dibaca sebagai tren."
+      }
+     ]
+    }
+   },
+   "_bicara": "Jumlah resmi DIBI naik 174 persen dari 2024 ke 2025, lalu turun 61 persen pada 2026, sedangkan korban meninggal dan hilang bergerak lebih landai. Lonjakan 2025 sebagian besar adalah catatan di bawah ambang, karena catatan bertanda bukan bencana naik dari 2,5 persen pada 2024 menjadi 41,4 persen pada 2025. Pada 2026 rumah setara rusak berat naik 227 persen walaupun jumlah kejadian turun, karena gempa Agustus. Jumlah kejadian tidak boleh dibaca sebagai ukuran keparahan."
+  },
+  {
+   "jenis": "temuan-grafik",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Enam puluh lima kasus sulit",
+   "cut_off": false,
+   "rasio": 0.5,
+   "sumber": "Katalog kasus sulit kajian BNPB, 12 Nov 2026",
+   "keterangan": "Kasus sulit adalah kasus penghitungan yang jawabannya berbeda menurut siapa yang menghitung dan aturan yang dipakai.",
+   "judul": "Kajian mengumpulkan {{angka:uji.par}} kasus sulit dalam {{angka:kelompok}} kelompok, dan kelompok identitas kejadian paling banyak dengan {{angka:par.a}} kasus sulit",
+   "grafik": {
+    "judul_panel": "Jumlah kasus sulit menurut kelompok",
+    "ikon": "ringkasan",
+    "judul": "**Kasus sulit**, menurut kelompok pertanyaan",
+    "keluarga": "netral",
+    "arah": "horizontal",
+    "seragam": false,
+    "pembanding": false,
+    "ubah": false,
+    "persen_batang": false,
+    "sorot": [
+     "Identitas kejadian"
+    ],
+    "data": {
+     "csv": "data/hitung/kelompok_kasus sulit.csv",
+     "kolom": [
+      {
+       "nama": "kelompok"
+      },
+      {
+       "nama": "jumlah",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    }
+   },
+   "panel": {
+    "judul": "Contoh tiap kelompok",
+    "ikon": "data",
+    "peringkat": false,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 2,
+    "skala_huruf": 1.15,
+    "baris_maks_pt": 44,
+    "data": {
+     "csv": "data/hitung/kelompok_contoh.csv",
+     "kolom": [
+      {
+       "nama": "kelompok",
+       "kepala": "Kelompok",
+       "bobot": 0.8
+      },
+      {
+       "nama": "contoh",
+       "kepala": "Contoh singkat",
+       "rata": "l",
+       "bobot": 2.2
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    }
+   },
+   "_bicara": "Kasus sulit di sini berarti kasus penghitungan yang jawabannya berbeda tergantung siapa yang menghitung dan aturan apa yang dipakai. Kajian mengumpulkan 65 kasus dari data DIBI, logbook, hotspot, dan dokumen kerja kita, lalu mengelompokkannya menjadi tujuh kelompok menurut pertanyaan pokoknya. Kelompok terbesar adalah identitas kejadian, yaitu apa yang dihitung sebagai satu kejadian."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Hasil uji kasus sulit",
+   "cut_off": false,
+   "rasio": 0.58,
+   "sumber": "Uji kasus sulit dan kasus uji pemeriksa independen, kajian BNPB, 12 Nov 2026",
+   "keterangan": "Sebagian berarti arahnya ada tetapi masih bergantung pada angka bawaan, data yang belum ada, atau keputusan di luar BNPB. Kasus uji dari pemeriksa dibuat oleh orang yang tidak ikut menulis aturan.",
+   "judul": "Aturan usulan menjawab penuh {{angka:uji.penuh}} dari {{angka:uji.par}} kasus sulit dan tidak ada yang gagal, sedangkan {{angka:uji.sebagian}} lainnya masih sebagian",
+   "utama": {
+    "judul": "Status kasus sulit menurut kelompok",
+    "ikon": "ringkasan",
+    "tumpuk": {
+     "warna": [
+      "navy",
+      "oranye"
+     ],
+     "data": {
+      "csv": "data/hitung/status_kelompok.csv",
+      "kolom": [
+       {
+        "nama": "kelompok"
+       },
+       {
+        "nama": "penuh",
+        "kepala": "Terjawab penuh",
+        "fmt": "0"
+       },
+       {
+        "nama": "sebagian",
+        "kepala": "Sebagian",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Dua uji pada aturan usulan",
+    "ikon": "data",
+    "peringkat": false,
+    "skala_huruf": 2.0,
+    "baris_maks_pt": 110,
+    "data": {
+     "csv": "data/hitung/hasil_uji.csv",
+     "kolom": [
+      {
+       "nama": "uji",
+       "kepala": "Uji"
+      },
+      {
+       "nama": "kasus",
+       "kepala": "Kasus",
+       "fmt": "0"
+      },
+      {
+       "nama": "penuh",
+       "kepala": "Penuh",
+       "fmt": "0"
+      },
+      {
+       "nama": "sebagian",
+       "kepala": "Sebagian",
+       "fmt": "0"
+      },
+      {
+       "nama": "gagal",
+       "kepala": "Gagal",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    },
+    "daftar": [
+     "Versi awal aturan gagal pada {{angka:uji.gagal_v1}} kasus sulit; kini terjawab.",
+     "Kasus uji dari pemeriksa: {{angka:uji.adv_berat}} kasus berat, sudah diperbaiki."
+    ]
+   },
+   "_bicara": "Aturan usulan diuji empat cara: tiap kasus sulit dijawab atau tidak, aturan dicek agar tidak saling bertentangan, aturan dijalankan pada data DIBI dan logbook, dan pemeriksa yang tidak ikut menulis mencoba mematahkannya dengan kasus uji. Dari 65 kasus sulit, 42 terjawab penuh dan 23 sebagian, tanpa yang gagal. Status sebagian berasal dari rincian yang belum ditulis, angka sementara yang belum diuji satu musim penuh, dan data di luar BNPB, bukan dari pertentangan logika. Dari 26 kasus uji pemeriksa, 17 terjawab penuh dan 9 sebagian."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 6
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Pembanding negara",
+   "cut_off": false,
+   "rasio": 0.66,
+   "sumber": "Perbandingan basis data dan negara, Lampiran C kajian BNPB, 12 Nov 2026",
+   "keterangan": "EM-DAT adalah basis data bencana internasional. USGS PAGER adalah sistem perkiraan dampak gempa. FEMA adalah badan penanggulangan darurat Amerika Serikat. Baris FEMA dan Filipina belum terverifikasi: nilai FEMA berasal dari dokumen public inspection, dan teks asli Filipina tidak dibuka.",
+   "judul": "Ada {{angka:pembanding}} pembanding yang memakai satuan kejadian dan ambang berbeda, sehingga jumlah kejadian antarbasis tidak sebanding",
+   "tabel": {
+    "judul_panel": "Pembanding terpilih dan Indonesia",
+    "ikon": "wilayah",
+    "peringkat": false,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 3,
+    "skala_huruf": 1.3,
+    "baris_maks_pt": 70,
+    "data": {
+     "csv": "data/hitung/negara.csv",
+     "kolom": [
+      {
+       "nama": "basis",
+       "kepala": "Basis atau negara",
+       "rata": "l",
+       "bobot": 1.2
+      },
+      {
+       "nama": "satuan",
+       "kepala": "Satuan kejadian",
+       "rata": "l",
+       "bobot": 1.3
+      },
+      {
+       "nama": "ambang",
+       "kepala": "Ambang",
+       "rata": "l",
+       "bobot": 2.0
+      },
+      {
+       "nama": "jenis",
+       "kepala": "Jenis ambang",
+       "rata": "l",
+       "bobot": 1.1
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Lampiran C kajian BNPB"
+    }
+   },
+   "panel": {
+    "judul": "Pelajaran dari pembanding",
+    "ikon": "lembaga",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Satuan berbeda",
+       "isi": "Jumlah kejadian antarbasis tidak dapat dibandingkan langsung."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Bahaya bukan besar",
+       "isi": "Skala bahaya bukan besar bencana."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Respons terhubung",
+       "isi": "PAGER mengaitkan warna dengan respons."
+      }
+     ]
+    }
+   },
+   "_bicara": "Kami membandingkan sembilan basis data dan lima negara dengan Indonesia. Tabel ini menampilkan yang paling relevan: EM-DAT, PAGER, Jepang, Amerika Serikat, dan Filipina. Dua temuan penting. Satuan kejadian berbeda antarbasis, sehingga jumlah kejadian tidak dapat dibandingkan langsung. Dan di antara sumber yang dibuka, hanya EM-DAT dan Indonesia yang memasukkan kriteria administratif, yaitu seruan bantuan atau status darurat, sebagai pintu masuk pencatatan."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Aturan hitung tiga langkah dalam satu halaman",
+   "cut_off": false,
+   "rasio": 0.66,
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. SK adalah surat keputusan. Nomor induk kejadian adalah satu nomor dari Pusdatinkom untuk satu kejadian, dipakai bersama semua kabupaten yang terdampak. Batas syarat dan kelas perlu disesuaikan.",
+   "judul": "Aturan hitung {{angka:lapis}} langkah menentukan satu kejadian lalu syarat masuk dan kelasnya, ditopang dua aturan pendukung untuk angka korban dan penyajian",
+   "utama": {
+    "judul": "Tiga langkah dan dua aturan pendukung",
+    "ikon": "satu-data",
+    "alur": {
+     "skala_huruf": 1.3,
+     "sorot": 0,
+     "label_hasil": "Hasil",
+     "langkah": [
+      {
+       "judul": "Satu kejadian",
+       "pelaku": "Yang dihitung",
+       "butir": [
+        "Satu nomor induk per kejadian.",
+        "Kabupaten tetap punya catatan.",
+        "Ada aturan penggabungan."
+       ],
+       "hasil": "Satu nomor induk."
+      },
+      {
+       "judul": "Syarat masuk",
+       "pelaku": "Masuk atau tidak",
+       "butir": [
+        "Ada enam syarat tertulis.",
+        "Alasan masuk dicatat.",
+        "Kejadian kecil tetap disimpan."
+       ],
+       "hasil": "Masuk atau di bawah ambang."
+      },
+      {
+       "judul": "Kelas keparahan",
+       "pelaku": "Besar kejadian",
+       "butir": [
+        "Ada empat kelas.",
+        "Ringan sampai Katastrofik.",
+        "Kabupaten kecil bisa naik."
+       ],
+       "hasil": "Satu kelas."
+      },
+      {
+       "judul": "Angka korban",
+       "pelaku": "Aturan pendukung",
+       "butir": [
+        "Satu orang satu kategori.",
+        "Angka antarhari tidak dijumlah.",
+        "Nol beda dari belum didata."
+       ],
+       "hasil": "Angka sah."
+      },
+      {
+       "judul": "Penyajian",
+       "pelaku": "Aturan pendukung",
+       "butir": [
+        "Jumlah tampil bersama dampak.",
+        "Tren ditandai bila cara berubah.",
+        "Rilis diberi nomor versi."
+       ],
+       "hasil": "Tabel dan tren."
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Prinsip revisi",
+    "ikon": "regulasi",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "regulasi",
+       "judul": "Sekecil mungkin",
+       "isi": "Susunan Juklak tetap, isi berubah."
+      },
+      {
+       "ikon": "data",
+       "judul": "Tetap disimpan",
+       "isi": "DIBI menyimpannya dengan penanda."
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Cukup Juklak",
+       "isi": "Kriteria kejadian diserahkan ke pengelola data (walidata)."
+      }
+     ]
+    }
+   },
+   "_bicara": "Aturan hitung usulan memisahkan tiga pertanyaan yang selama ini dibebankan pada enam kriteria. Langkah satu menjawab apa yang dihitung sebagai satu kejadian, langkah dua menjawab kapan kejadian masuk hitungan, langkah tiga menjawab seberapa besar kejadian itu. Dua aturan pendukung mengatur angka korban dan cara menyajikannya. Urutan kerjanya: kejadian dibentuk lebih dulu, angka korban ditetapkan, baru syarat masuk dan kelas dinilai."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Gempa sebelum dan sesudah aturan baru",
+   "cut_off": false,
+   "rasio": 0.58,
+   "sumber": "DIBI BNPB, tarikan 12 November 2026, diolah; simulasi kajian BNPB",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Katastrofik adalah kelas keparahan tertinggi usulan.",
+   "judul": "Satu gempa di {{angka:gempa.kab}} kabupaten kini terbaca sebagai satu kejadian nasional dengan {{angka:gempa.kab}} catatan kabupaten, bukan {{angka:gempa.pecah|fmt=3}} kejadian di tiap kabupaten",
+   "utama": {
+    "judul": "Gempa 15 Agustus 2026 menurut aturan lama dan aturan baru",
+    "ikon": "gempa",
+    "banding": {
+     "kiri": {
+      "judul": "Aturan sekarang (DIBI)"
+     },
+     "kanan": {
+      "judul": "Aturan usulan"
+     },
+     "baris": [
+      {
+       "label": "Jumlah kejadian",
+       "kiri": "{{angka:gempa.pecah|fmt=3}} kejadian di tiap kabupaten",
+       "kanan": "Satu kejadian nasional"
+      },
+      {
+       "label": "Catatan kabupaten",
+       "kiri": "Pecahan, tidak ada catatan utuh",
+       "kanan": "{{angka:gempa.kab}} catatan yang menunjuk satu nomor induk"
+      },
+      {
+       "label": "Korban",
+       "kiri": "Manggarai {{angka:gempa.manggarai}} dan Nagekeo {{angka:gempa.nagekeo}} tak tampak",
+       "kanan": "Korban tiap kabupaten tampak di catatannya"
+      },
+      {
+       "label": "Skala keparahan",
+       "kiri": "Tidak ada skala",
+       "kanan": "Katastrofik, menurut dampaknya"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Aturan satu kejadian",
+    "ikon": "wilayah",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "lembaga",
+       "judul": "Nomor induk",
+       "isi": "Satu nomor dari Pusdatinkom untuk satu kejadian, dipakai semua kabupaten terdampak."
+      },
+      {
+       "ikon": "wilayah",
+       "judul": "Catatan kabupaten",
+       "isi": "Tiap kabupaten terdampak tetap punya catatan sendiri."
+      },
+      {
+       "ikon": "karhutla",
+       "judul": "Karhutla",
+       "isi": "Deteksi digabung bila dekat dalam jarak dan {{angka:gabung.jam}} jam, selesai setelah {{angka:gabung.selesai}} hari tanpa deteksi."
+      },
+      {
+       "ikon": "kalender",
+       "judul": "Batas durasi",
+       "isi": "Satu kejadian paling lama {{angka:gabung.maks}} hari, gempa {{angka:gabung.gempa}} hari."
+      }
+     ]
+    }
+   },
+   "_bicara": "Satu kejadian adalah satu rangkaian dampak dari satu bahaya utama yang terhubung dalam ruang dan waktu. Gempa 15 Agustus 2026 melanda 11 kabupaten dan di DIBI tercatat 0,091 kejadian di tiap kabupaten. Manggarai mencatat 62 korban meninggal dan Nagekeo 20, tetapi di kolom jumlah kejadian keduanya hampir tidak tampak. Dalam aturan usulan, gempa itu satu kejadian dengan 11 catatan kabupaten, dan menurut dampaknya berkelas Katastrofik."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Syarat masuk hitungan",
+   "cut_off": false,
+   "sumber": "Kajian BNPB, 12 Nov 2026; Juklak tahun 2023",
+   "keterangan": "Juklak adalah petunjuk pelaksanaan. SK adalah surat keputusan. Angka bobot dan ambang kriteria masih bawaan sementara.",
+   "judul": "Setiap kejadian yang masuk mencatat kriteria yang meloloskannya, dan {{angka:kriteria.usul}} syarat masuk hitungan memperjelas bunyi Juklak",
+   "utama": {
+    "judul": "Syarat masuk hitungan",
+    "ikon": "regulasi",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "jiwa",
+       "judul": "Meninggal atau hilang",
+       "isi": "Akibat langsung bahaya. Hilang ikut dihitung; kematian tidak langsung dicatat terpisah.",
+       "angka": "{{angka:juk.mati}}",
+       "satuan": "jiwa"
+      },
+      {
+       "ikon": "pengungsi",
+       "judul": "Terdampak langsung",
+       "isi": "Orang unik yang terdampak langsung didefinisikan, dan satu orang dihitung satu kali.",
+       "angka": "{{angka:juk.terdampak}}",
+       "satuan": "orang"
+      },
+      {
+       "ikon": "rumah",
+       "judul": "Rumah setara rusak berat",
+       "isi": "Rusak ringan dihitung seperempat dan rusak sedang setengah.",
+       "angka": "{{angka:juk.rumah}}",
+       "satuan": "unit"
+      },
+      {
+       "ikon": "sekolah",
+       "judul": "Fasilitas penting",
+       "isi": "Rusak berat atau sedang, dipisah dari rumah.",
+       "angka": "{{angka:juk.mati}}",
+       "satuan": "fasilitas"
+      },
+      {
+       "ikon": "karhutla",
+       "judul": "Karhutla",
+       "isi": "Luas terverifikasi atau lahan gagal panen (puso); jenis lahan dan sumber luas wajib, hotspot hanya indikasi.",
+       "angka": "{{angka:m5.lahan}}",
+       "satuan": "hektare"
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "SK tanggap darurat",
+       "isi": "Permintaan bantuan dan status darurat menjadi penanda; hanya SK yang menyebut kejadian itu menjadi syarat."
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Cara kriteria dipakai",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "ringkasan",
+      "judul": "Dasar masuk dicatat",
+      "isi": "Tiap kejadian mencatat kriteria yang meloloskannya."
+     },
+     {
+      "ikon": "data",
+      "judul": "Di bawah ambang",
+      "isi": "Kejadian yang tidak memenuhi satu pun tetap disimpan."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Ambang bawaan",
+      "isi": "Angka bobot dan ambang masih bawaan sementara."
+     }
+    ]
+   },
+   "_bicara": "Aturan usulan menetapkan enam syarat masuk hitungan yang ditulis langsung. Ada korban meninggal atau hilang akibat langsung, minimal lima puluh orang terdampak langsung, minimal lima rumah rusak berat atau setaranya, fasilitas penting rusak, karhutla minimal dua hektare terverifikasi atau puso sepuluh hektare, atau ada SK tanggap darurat yang cocok. Kejadian yang tidak memenuhi satu pun tetap disimpan sebagai kejadian di bawah ambang, dan tiap kejadian yang masuk mencatat syarat yang meloloskannya."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Pohon keputusan ambang masuk",
+   "cut_off": false,
+   "sumber": "Aturan hitung usulan, kajian BNPB, 12 Nov 2026",
+   "keterangan": "SK adalah surat keputusan. Pemeriksaan berurutan dari kiri ke kanan. Batas angka masih bawaan sementara.",
+   "judul": "Pohon keputusan memeriksa {{angka:kriteria.usul}} hal secara berurutan, dan kejadian masuk hitungan begitu satu kriteria terpenuhi",
+   "utama": {
+    "judul": "Pemeriksaan ambang masuk, dari kiri ke kanan",
+    "ikon": "regulasi",
+    "alur": {
+     "skala_huruf": 1.7,
+     "sorot": 5,
+     "label_hasil": "Hasil",
+     "langkah": [
+      {
+       "judul": "Jenis bencana",
+       "pelaku": "Pertama",
+       "butir": [
+        "Ya: periksa lanjut.",
+        "Tidak: bukan bencana."
+       ],
+       "hasil": "Bukan bencana."
+      },
+      {
+       "judul": "Korban",
+       "pelaku": "Kedua",
+       "butir": [
+        "Korban langsung.",
+        "Ya: masuk.",
+        "Tidak: lanjut."
+       ],
+       "hasil": "Masuk bila ya."
+      },
+      {
+       "judul": "Terdampak",
+       "pelaku": "Ketiga",
+       "butir": [
+        "Terdampak langsung.",
+        "Ya: masuk.",
+        "Tidak: lanjut."
+       ],
+       "hasil": "Masuk bila ya."
+      },
+      {
+       "judul": "Rumah atau fasilitas",
+       "pelaku": "Keempat",
+       "butir": [
+        "Rumah atau fasilitas rusak.",
+        "Ya: masuk.",
+        "Tidak: lanjut."
+       ],
+       "hasil": "Masuk bila ya."
+      },
+      {
+       "judul": "Karhutla",
+       "pelaku": "Kelima",
+       "butir": [
+        "Luas atau gagal panen.",
+        "Ya: masuk.",
+        "Tidak: lanjut."
+       ],
+       "hasil": "Masuk bila ya."
+      },
+      {
+       "judul": "SK darurat",
+       "pelaku": "Keenam",
+       "butir": [
+        "SK yang cocok.",
+        "Ya: masuk.",
+        "Tidak: di bawah ambang."
+       ],
+       "hasil": "Di bawah ambang."
+      }
+     ]
+    }
+   },
+   "_bicara": "Pohon keputusan ambang masuk dibaca dari kiri. Pertama pastikan penyebabnya salah satu jenis bencana. Lalu kriteria diperiksa satu per satu, dari korban meninggal atau hilang sampai SK tanggap darurat. Kejadian masuk begitu satu kriteria terpenuhi dan dicatat bersama kriteria itu. Kejadian yang tidak memenuhi satu pun disimpan sebagai kejadian di bawah ambang."
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Skala keparahan",
+   "cut_off": false,
+   "rasio": 0.62,
+   "sumber": "Kajian BNPB, 12 Nov 2026; USGS PAGER; simulasi kajian",
+   "keterangan": "PAGER adalah sistem perkiraan dampak gempa USGS. Batas kelas masih bawaan sementara. Kelas Ringan adalah kejadian yang lolos ambang tetapi di bawah Sedang. Batas pengungsi untuk Besar dan Katastrofik hanya berlaku bila korban meninggal atau rumah rusak sudah mencapai Sedang.",
+   "judul": "Batas bawah kelas naik {{angka:kelas.pangkat}} kali lipat dari Sedang ke Besar dan dari Besar ke Katastrofik, dengan syarat tambahan bagi pengungsi",
+   "tabel": {
+    "judul_panel": "Batas bawah tiap kelas menurut indikator tertinggi",
+    "ikon": "peringatan",
+    "peringkat": false,
+    "skala_huruf": 1.9,
+    "baris_maks_pt": 120,
+    "data": {
+     "csv": "data/hitung/kelas_keparahan.csv",
+     "kolom": [
+      {
+       "nama": "kelas",
+       "kepala": "Kelas"
+      },
+      {
+       "nama": "mati",
+       "kepala": "Meninggal dan hilang",
+       "fmt": "0"
+      },
+      {
+       "nama": "ungsi",
+       "kepala": "Mengungsi, puncak",
+       "fmt": "0"
+      },
+      {
+       "nama": "rumah",
+       "kepala": "Rumah setara rusak berat",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "asumsi-kebijakan",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    }
+   },
+   "panel": {
+    "judul": "Aturan penting skala",
+    "ikon": "regulasi",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "jiwa",
+       "judul": "Pengungsi",
+       "isi": "Pengungsi saja paling tinggi Sedang; lebih tinggi perlu indikator lain."
+      },
+      {
+       "ikon": "wilayah",
+       "judul": "Kabupaten kecil",
+       "isi": "Naik satu kelas bila terdampak mencapai {{angka:kab.persen}} persen penduduk."
+      },
+      {
+       "ikon": "pembiayaan",
+       "judul": "Rupiah",
+       "isi": "Rupiah tidak menentukan kelas."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Status",
+       "isi": "Klasifikasi data; penetapan status tetap di kepala daerah."
+      }
+     ]
+    }
+   },
+   "_bicara": "Kelas ditentukan oleh indikator tertinggi yang dicapai, dan batasnya naik sepuluh kali lipat per kelas, mengikuti praktik PAGER milik USGS. Pengungsi saja tidak bisa membuat kelas lebih tinggi dari Sedang. Kabupaten kecil yang terpukul berat naik satu kelas bila pengungsi dan terdampaknya mencapai 10 persen penduduk, dengan lantai tertentu. Rupiah tidak menentukan kelas. Kelas ini klasifikasi data statistik dan tidak menggantikan penetapan status oleh kepala daerah atau Presiden. Batas kelas masih bawaan sementara."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Angka yang sah dan penyajian",
+   "cut_off": false,
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "ulang_angka_boleh": "keterangan menjelaskan dasar hitung angka kartu",
+   "keterangan": "Angka {{angka:lb.kali|fmt=0}} kali: {{angka:lb.kumulatif}} korban meninggal bila semua baris harian dijumlah lawan {{angka:lb.terbesar}} bila tiap kejadian diambil angka terbesarnya, dijumlah untuk semua kejadian logbook Januari sampai Oktober 2026. Aturan usulan memakai nilai laporan terakhir, {{angka:lb.terakhir}}, sehingga jumlah antarhari menjadi {{angka:lb.kali22}} kali dibanding nilai laporan terakhir. Deret adalah rangkaian angka menurut waktu. Patahan deret adalah penanda bahwa aturan berubah sehingga angka sebelum dan sesudahnya tidak sebanding.",
+   "judul": "Aturan angka sah mencegah korban meninggal menggelembung sekitar {{angka:lb.kali|fmt=0}} kali lipat karena penjumlahan antarhari",
+   "rasio": 0.64,
+   "utama": {
+    "judul": "Aturan angka yang sah dan cara menyajikannya",
+    "ikon": "ringkasan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "jiwa",
+       "judul": "Satu orang satu kategori",
+       "isi": "Orang yang sama tidak terhitung dua kali di kategori korban."
+      },
+      {
+       "ikon": "kalender",
+       "judul": "Nilai terakhir dan terbesar",
+       "isi": "Nilai terakhir untuk meninggal dan kerusakan, nilai terbesar untuk lainnya."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Tanpa penjumlahan antarhari",
+       "isi": "Menjumlah angka kumulatif lintas hari dilarang."
+      },
+      {
+       "ikon": "data",
+       "judul": "Kosong bukan nol",
+       "isi": "Angka nol dibedakan dari angka yang belum didata."
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Aturan penyajian",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "ringkasan",
+      "judul": "Jumlah tidak sendirian",
+      "isi": "Selalu didampingi dampak dan sebaran kelas."
+     },
+     {
+      "ikon": "naik",
+      "judul": "Tren diberi tanda",
+      "isi": "Hanya untuk deret yang sebanding; titik saat cara hitung berubah diberi tanda patahan."
+     },
+     {
+      "ikon": "kalender",
+      "judul": "Rilis bernomor versi",
+      "isi": "Angka dirilis bulanan, beku per triwulan."
+     }
+    ]
+   },
+   "panel": {
+    "judul": "Akibat menjumlah antarhari",
+    "ikon": "peringatan",
+    "nada": "bahaya",
+    "angka_besar": {
+     "mode": "kartu",
+     "kartu": [
+      {
+       "nilai": "{{angka:lb.kumulatif}}",
+       "satuan": "korban meninggal",
+       "label": "Dijumlah antarhari",
+       "ket": "Angka kumulatif logbook 2026.",
+       "ikon": "peringatan"
+      },
+      {
+       "nilai": "{{angka:lb.terakhir}}",
+       "satuan": "korban meninggal",
+       "label": "Laporan terakhir",
+       "ket": "Hasil aturan usulan.",
+       "ikon": "kalender"
+      },
+      {
+       "nilai": "{{angka:lb.kali|fmt=0}}",
+       "satuan": "kali",
+       "label": "Dibanding nilai terbesar",
+       "ket": "Nilai terbesar per kejadian.",
+       "ikon": "ringkasan"
+      }
+     ]
+    }
+   },
+   "_bicara": "Aturan angka korban menetapkan satu orang masuk satu kategori sehingga tidak terhitung dua kali. Korban meninggal dan kerusakan memakai nilai terakhir, sedangkan hilang, luka, terdampak, dan mengungsi memakai nilai terbesar selama kejadian. Menjumlah angka antarhari dilarang, karena itulah yang menggelembungkan korban meninggal sekitar 20 kali, dari 609 pada nilai terbesar menjadi 12.523 pada logbook 2026; aturan usulan memakai laporan terakhir, 565. Dalam aturan penyajian, jumlah kejadian tidak pernah sendirian, dan tren hanya untuk deret yang sebanding dengan tanda patahan deret."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 7
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Delapan perubahan Juklak",
+   "cut_off": false,
+   "sumber": "Usulan revisi Juklak tahun 2023, kajian BNPB, 12 Nov 2026",
+   "keterangan": "Juklak adalah petunjuk pelaksanaan. DIBI adalah Data dan Informasi Bencana Indonesia. Pusdatinkom adalah Pusat Data, Informasi, dan Komunikasi Kebencanaan. Tujuh baris merangkum delapan perubahan terpenting, dua di antaranya digabung dalam baris pertama, dari lima belas perubahan yang diusulkan. Tujuh perubahan lain bersifat redaksional atau menyangkut epidemi.",
+   "judul": "Revisi Juklak cukup {{angka:usul.jumlah}} perubahan, dan {{angka:usul.tampil}} yang paling menentukan dirangkum dalam {{angka:ubah.baris}} baris tabel",
+   "utama": {
+    "judul": "Perubahan Juklak yang paling menentukan, beserta alasannya",
+    "ikon": "regulasi",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "regulasi",
+       "judul": "Definisi dan kode",
+       "isi": "Lima definisi baru dan nomor induk kejadian, satu nomor dari Pusdatinkom untuk satu kejadian, dipakai bersama semua kabupaten terdampak."
+      },
+      {
+       "ikon": "jiwa",
+       "judul": "Ambang",
+       "isi": "Enam kriteria diganti kriteria usulan; bantuan dan status darurat menjadi penanda, kecuali SK tanggap darurat.",
+       "angka": "{{angka:dibi.tunggal_p|fmt=0}}",
+       "satuan": "persen catatan dari satu kriteria"
+      },
+      {
+       "ikon": "wilayah",
+       "judul": "Lintas wilayah",
+       "isi": "Jumlah kejadian dan jumlah catatan kabupaten menjadi dua nama hitungan; pecahan dihapus.",
+       "angka": "{{angka:dibi.pecahan}}",
+       "satuan": "baris pecahan di DIBI"
+      },
+      {
+       "ikon": "karhutla",
+       "judul": "Aturan menggabungkan",
+       "isi": "Satu aturan per jenis bahaya untuk menggabungkan dan menutup kejadian.",
+       "angka": "{{angka:hs.kali|fmt=1}}",
+       "satuan": "kali selisih karhutla"
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Skala keparahan",
+       "isi": "Kelas Ringan sampai Katastrofik sebagai klasifikasi data.",
+       "angka": "{{angka:dibi.konsen_1|fmt=1}}",
+       "satuan": "persen korban meninggal"
+      },
+      {
+       "ikon": "kalender",
+       "judul": "Versi angka",
+       "isi": "Rilis bulanan bernomor versi dan beku per triwulan; penjumlahan antarhari dilarang.",
+       "angka": "{{angka:lb.kali|fmt=0}}",
+       "satuan": "kali gelembung korban"
+      },
+      {
+       "ikon": "surel",
+       "judul": "Formulir",
+       "isi": "Kolom nomor induk dan dasar masuk ditambah, agar aturan baru bisa diperiksa.",
+       "angka": "{{angka:kolom.baru}}",
+       "satuan": "kolom baru"
+      }
+     ]
+    }
+   },
+   "_bicara": "Revisi dibuat sekecil mungkin. Susunan Juklak 7/2023 dipertahankan, yang berubah isi ketentuan. Dari 15 perubahan, delapan yang paling menentukan ada di slide ini; tujuh lainnya mengenai redaksi, definisi, dan epidemi. Kejadian di bawah ambang tidak dibuang, karena DIBI sudah menyimpannya dengan penanda sejak 2025. Revisi ini cukup ditetapkan sebagai perubahan Juklak, karena Perban 1/2023 mendelegasikan kriteria kejadian kepada walidata."
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Apa yang berubah bagi BPBD",
+   "cut_off": false,
+   "rasio": 1.0,
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keterangan": "BPBD adalah Badan Penanggulangan Bencana Daerah. Pusdalops adalah Pusat Pengendalian Operasi. Beban kerja nyata per kejadian baru dapat diukur pada tahap uji coba.",
+   "judul": "BPBD mengisi {{angka:kolom.baru}} kolom tambahan per kejadian, dan beban kerja nyata baru dapat diukur pada tahap uji coba",
+   "tabel": {
+    "judul_panel": "Kolom tambahan pada formulir kejadian",
+    "ikon": "surel",
+    "peringkat": true,
+    "skala_huruf": 1.25,
+    "baris_maks_pt": 30,
+    "data": {
+     "csv": "data/hitung/kolom_bpbd.csv",
+     "kolom": [
+      {
+       "nama": "kolom",
+       "kepala": "Kolom baru",
+       "rata": "l",
+       "bobot": 1.2
+      },
+      {
+       "nama": "fungsi",
+       "kepala": "Fungsi",
+       "rata": "l",
+       "bobot": 2.6
+      }
+     ],
+     "keyakinan": "asumsi-kebijakan",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    }
+   },
+   "_bicara": "Bagi BPBD, perubahan terbesar ada di formulir. Ada sebelas kolom tambahan per kejadian, sebagian besar terisi otomatis seperti nomor induk, dasar masuk, dan kelas, sedangkan sisanya berupa pilihan. Tanpa kolom ini aturan baru tidak bisa diperiksa. Beban kerja nyata belum bisa diukur karena wawancara belum dilakukan; waktu per kejadian akan diukur pada tahap uji coba. Fitur dasarnya sudah ada di sistem logbook kita, dan meja data dampak untuk BPBD sudah membedakan nol dari belum didata."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Tahap penerapan",
+   "cut_off": false,
+   "rasio": 0.66,
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keterangan": "Pusdatinkom adalah Pusat Data, Informasi, dan Komunikasi Kebencanaan. Juklak adalah petunjuk pelaksanaan.",
+   "judul": "Penerapan berjalan dalam {{angka:tahap}} tahap, dimulai dari keputusan pimpinan dan uji coba berdampingan di {{angka:provinsi.uji}} provinsi selama satu musim",
+   "utama": {
+    "judul": "Empat tahap penerapan aturan baru",
+    "ikon": "kalender",
+    "alur": {
+     "skala_huruf": 1.65,
+     "sorot": 0,
+     "label_hasil": "Hasil",
+     "langkah": [
+      {
+       "judul": "Keputusan",
+       "pelaku": "Pimpinan BNPB",
+       "butir": [
+        "Jawab pertanyaan.",
+        "Pilih A atau B.",
+        "Bawaan jadi tetap."
+       ],
+       "hasil": "Keputusan tetap."
+      },
+      {
+       "judul": "Uji coba",
+       "pelaku": "Tiga provinsi",
+       "butir": [
+        "Dua aturan berdampingan.",
+        "Tiga provinsi berbeda.",
+        "Satu musim, ada wawancara."
+       ],
+       "hasil": "Beban kerja terukur."
+      },
+      {
+       "judul": "Revisi Juklak",
+       "pelaku": "Pusdatinkom",
+       "butir": [
+        "Perubahan Juklak tahun 2023.",
+        "Metadata DIBI diperbarui.",
+        "Formulir baru disusun."
+       ],
+       "hasil": "Juklak dan formulir baru."
+      },
+      {
+       "judul": "Penerapan nasional",
+       "pelaku": "Semua pencatat",
+       "butir": [
+        "Formulir memakai aturan baru.",
+        "Deret lama dihitung ulang.",
+        "Titik ubah dicatat."
+       ],
+       "hasil": "Deret sebanding."
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Rencana aksi",
+    "ikon": "ringkasan",
+    "nada": "air",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "ringkasan",
+       "judul": "Sudah dilakukan",
+       "isi": "Kajian dan ujinya selesai."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Berikutnya",
+       "isi": "Keputusan pimpinan dahulu, sesudahnya uji coba."
+      },
+      {
+       "ikon": "kalender",
+       "judul": "Satu musim",
+       "isi": "Uji coba berjalan satu musim penuh."
+      }
+     ]
+    }
+   },
+   "_bicara": "Penerapan berjalan dalam empat tahap. Tahap nol adalah keputusan pimpinan atas pertanyaan prioritas. Tahap satu uji coba: aturan baru dan lama berjalan berdampingan di tiga provinsi selama satu musim, disertai wawancara. Tahap dua revisi Juklak dan metadata DIBI. Tahap tiga penerapan nasional, dengan catatan patahan deret. Yang sudah dilakukan adalah kajian dan ujinya, sedangkan wawancara pencatat belum dilakukan."
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Batas kajian",
+   "cut_off": false,
+   "sumber": "Bab Keterbatasan kajian BNPB, 12 Nov 2026",
+   "keterangan": "DIBI adalah Data dan Informasi Bencana Indonesia. Juklak adalah petunjuk pelaksanaan. Hotspot adalah deteksi api oleh satelit. Pernyataan bertanda belum terverifikasi di Lampiran C kajian masih menunggu pengecekan ke sumber primer.",
+   "judul": "Batas kajian: hanya {{angka:kriteria.diuji}} dari {{angka:juk.kriteria}} kriteria yang dapat diuji, dan wawancara dengan pencatat belum dilakukan",
+   "utama": {
+    "judul": "Yang perlu diingat saat membaca hasil",
+    "ikon": "peringatan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "data",
+       "judul": "Data DIBI dan teks Juklak",
+       "isi": "DIBI ditarik dari dasbor publik sampai 12 November 2026 dan dapat dikoreksi; Juklak dibaca dari salinan tidak resmi, lima halaman belum terbaca."
+      },
+      {
+       "ikon": "luas",
+       "judul": "Karhutla batas bawah",
+       "isi": "DIBI tidak menyimpan luas lahan dan status darurat, dan hotspot bukan luas terbakar."
+      },
+      {
+       "ikon": "jiwa",
+       "judul": "Wawancara dan ambang",
+       "isi": "Beban kerja bagi pencatat belum terukur; ambang dan kelas belum disesuaikan dengan respons negara."
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Rujukan belum terverifikasi",
+       "isi": "Sebagian pernyataan di Lampiran C menunggu pengecekan ke sumber primer."
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Arti bagi pembaca",
+    "nada": "hujan",
+    "kolom": [
+     {
+      "ikon": "luas",
+      "judul": "Karhutla",
+      "isi": "Angka yang lolos ambang adalah batas bawah."
+     },
+     {
+      "ikon": "ringkasan",
+      "judul": "Kejadian nasional",
+      "isi": "Hitungan dari DIBI adalah batas atas tanpa nomor induk."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Kelas keparahan",
+      "isi": "Klasifikasi data; tingkat bencana menunggu peraturan presiden."
+     }
+    ]
+   },
+   "_bicara": "Sebelum keputusan, tiga batas kajian perlu disebut. Data DIBI ditarik dari dasbor publik sampai 12 November 2026. Teks Juklak dibaca dari salinan tidak resmi. Hanya tiga dari enam kriteria yang bisa diuji, wawancara belum dilakukan, dan angka ambang serta kelas masih bawaan sementara karena belum disesuaikan dengan respons negara. Sebagian rujukan di Lampiran C juga masih bertanda belum terverifikasi."
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Keputusan yang diminta",
+   "cut_off": false,
+   "rasio": 1.0,
+   "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026",
+   "keterangan": "Juklak adalah petunjuk pelaksanaan. Pilihan A adalah rekomendasi kajian dan pilihan B adalah alternatifnya. Uji coba berjalan satu musim di tiga provinsi yang tipe bencananya berbeda; aturan lama dan baru berjalan berdampingan. Kelas keparahan tidak menggantikan penetapan status oleh kepala daerah atau Presiden.",
+   "judul": "Pimpinan diminta memilih {{angka:keputusan}} hal sebelum uji coba di {{angka:provinsi.uji}} provinsi, dan kajian merekomendasikan pilihan A",
+   "tabel": {
+    "judul_panel": "Tiga keputusan, pilihan A (rekomendasi) dan pilihan B (alternatif), beserta akibatnya",
+    "ikon": "regulasi",
+    "peringkat": true,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 3,
+    "skala_huruf": 1.15,
+    "baris_maks_pt": 100,
+    "data": {
+     "csv": "data/hitung/keputusan.csv",
+     "kolom": [
+      {
+       "nama": "keputusan",
+       "kepala": "Keputusan",
+       "rata": "l",
+       "bobot": 1.1
+      },
+      {
+       "nama": "a",
+       "kepala": "Pilihan A, rekomendasi",
+       "rata": "l",
+       "bobot": 1.6
+      },
+      {
+       "nama": "b",
+       "kepala": "Pilihan B",
+       "rata": "l",
+       "bobot": 1.0
+      },
+      {
+       "nama": "akibat",
+       "kepala": "Akibat",
+       "rata": "l",
+       "bobot": 2.4
+      }
+     ],
+     "keyakinan": "asumsi-kebijakan",
+     "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+    }
+   },
+   "pita": {
+    "label": "Sebelum memilih",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "ringkasan",
+      "judul": "Pilihan A",
+      "isi": "Rekomendasi kajian untuk ketiga keputusan."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Batas kajian",
+      "isi": "Dibahas pada slide batas kajian."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Status darurat",
+      "isi": "Tetap ditetapkan kepala daerah atau Presiden."
+     }
+    ]
+   },
+   "_bicara": "Kami meminta tiga keputusan, dan kajian merekomendasikan pilihan A pada ketiganya. Pertama, satuan hitung: dua angka bernama, jumlah kejadian nasional dan jumlah catatan kabupaten, atau hanya per kabupaten. Kedua, apakah status darurat dan permintaan bantuan menjadi penanda atau tetap menjadi syarat masuk hitungan. Ketiga, apakah kelas keparahan diterapkan sebagai klasifikasi data. Ketiganya harus dijawab sebelum uji coba di tiga provinsi selama satu musim, disusul perubahan Juklak. Kelas ini tidak menggantikan penetapan status oleh kepala daerah atau Presiden. Wawancara belum dilakukan, batas syarat dan kelas perlu disesuaikan, dan data DIBI diambil dari dasbor publik."
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 8
+  },
+  {
+   "jenis": "lampiran-tabel",
+   "jenis_slide": "lampiran",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Daftar kasus sulit",
+   "kode": "A1",
+   "judul_tanpa_kode": true,
+   "judul": "Lampiran daftar kasus sulit penghitungan",
+   "judul_daftar": "Daftar kasus sulit, bagian pertama",
+   "maks_baris": 13,
+   "keterangan": "Kasus sulit adalah keadaan yang membuat dua petugas bisa menghitung berbeda untuk kejadian yang sama. Nomor mengikuti Lampiran A naskah kajian. Jumlah seluruhnya enam puluh lima kasus.",
+   "data": {
+    "csv": "data/hitung/kasus sulit65_a.csv",
+    "kolom": [
+     {
+      "nama": "k1",
+      "kepala": "No"
+     },
+     {
+      "nama": "p1",
+      "kepala": "Kasus sulit",
+      "rata": "l",
+      "bobot": 2.4
+     },
+     {
+      "nama": "k2",
+      "kepala": "No"
+     },
+     {
+      "nama": "p2",
+      "kepala": "Kasus sulit",
+      "rata": "l",
+      "bobot": 2.4
+     },
+     {
+      "nama": "k3",
+      "kepala": "No"
+     },
+     {
+      "nama": "p3",
+      "kepala": "Kasus sulit",
+      "rata": "l",
+      "bobot": 2.4
+     }
+    ],
+    "keyakinan": "terverifikasi",
+    "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+   }
+  },
+  {
+   "jenis": "lampiran-tabel",
+   "jenis_slide": "lampiran",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Daftar kasus sulit lanjutan",
+   "kode": "A2",
+   "judul_tanpa_kode": true,
+   "judul": "Lampiran daftar kasus sulit, bagian kedua",
+   "judul_daftar": "Daftar kasus sulit, bagian kedua",
+   "maks_baris": 13,
+   "keterangan": "Kasus sulit adalah keadaan yang membuat dua petugas bisa menghitung berbeda untuk kejadian yang sama. Nomor mengikuti Lampiran A naskah kajian. Jumlah seluruhnya enam puluh lima kasus.",
+   "data": {
+    "csv": "data/hitung/kasus sulit65_b.csv",
+    "kolom": [
+     {
+      "nama": "k1",
+      "kepala": "No"
+     },
+     {
+      "nama": "p1",
+      "kepala": "Kasus sulit",
+      "rata": "l",
+      "bobot": 2.4
+     },
+     {
+      "nama": "k2",
+      "kepala": "No"
+     },
+     {
+      "nama": "p2",
+      "kepala": "Kasus sulit",
+      "rata": "l",
+      "bobot": 2.4
+     }
+    ],
+    "keyakinan": "terverifikasi",
+    "sumber": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana, BNPB, 12 November 2026"
+   }
+  },
+  {
+   "jenis": "penutup",
+   "foto": "foto/sampul-banjir.jpg",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "kredit": "Foto: BNPB, banjir merendam permukiman, laporan situasi harian 17 Okt 2026",
+   "teks": "Terima Kasih",
+   "laporan": "Kajian Penghitungan dan Klasifikasi Kejadian Bencana"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Masalah dan Pertanyaan",
+   "label": "Masalah"
+  },
+  {
+   "judul": "Data dan Cara Menguji",
+   "label": "Data"
+  },
+  {
+   "judul": "Hasil Satu: Cara Menghitung",
+   "label": "Hasil satu"
+  },
+  {
+   "judul": "Hasil Dua: Syarat dalam Juklak",
+   "label": "Hasil dua"
+  },
+  {
+   "judul": "Hasil Tiga: Aturan Hitung Baru",
+   "label": "Hasil tiga"
+  },
+  {
+   "judul": "Aturan Hitung yang Diusulkan",
+   "label": "Usulan"
+  },
+  {
+   "judul": "Kesimpulan dan Keputusan",
+   "label": "Keputusan"
+  },
+  {
+   "judul": "Lampiran",
+   "label": "Lampiran"
+  }
+ ]
+}

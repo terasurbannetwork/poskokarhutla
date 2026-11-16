@@ -1,0 +1,71 @@
+{
+ "judul": "Pohon 2: kejadian ini masuk hitungan bencana atau tidak?",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "Penyebabnya salah satu dari 14 jenis bencana? (Ketentuan 2.16)",
+   "ya": "b",
+   "tidak": "luar"
+  },
+  {
+   "id": "b",
+   "tanya": "Hanya terdeteksi satelit dan belum diverifikasi? (Ketentuan 3.9 dan 3.11)",
+   "ya": "deteksi",
+   "tidak": "n"
+  },
+  {
+   "id": "n",
+   "tanya": "Epidemi atau konflik sosial? (Ketentuan 3.14)",
+   "ya": "o",
+   "tidak": "s1"
+  },
+  {
+   "id": "o",
+   "tanya": "Ditetapkan otoritas sektor dan ada yang meninggal atau hilang? (Ketentuan 3.14 dan 3.1)",
+   "ya": "masuk",
+   "tidak": "bawah"
+  },
+  {
+   "id": "s1",
+   "tanya": "Ada yang meninggal atau hilang akibat langsung bahaya? (Ketentuan 3.1)",
+   "ya": "masuk",
+   "tidak": "s2"
+  },
+  {
+   "id": "s2",
+   "tanya": "Orang unik yang luka atau sakit, mengungsi, atau terdampak langsung mencapai 50? (Ketentuan 3.2)",
+   "ya": "masuk",
+   "tidak": "s3"
+  },
+  {
+   "id": "s3",
+   "tanya": "Rumah setara rusak berat mencapai 5? (Ketentuan 3.3 dan 5.5)",
+   "ya": "masuk",
+   "tidak": "s4"
+  },
+  {
+   "id": "s4",
+   "tanya": "Ada fasilitas penting rusak berat atau sedang? (Ketentuan 3.4)",
+   "ya": "masuk",
+   "tidak": "s5"
+  },
+  {
+   "id": "s5",
+   "tanya": "Karhutla 2 hektare terbakar terverifikasi atau 10 hektare puso? (Ketentuan 3.5)",
+   "ya": "masuk",
+   "tidak": "s6"
+  },
+  {
+   "id": "s6",
+   "tanya": "Ada SK tanggap darurat yang jenis, wilayah, dan tanggal mulainya cocok? (Ketentuan 3.6 dan 3.15)",
+   "ya": "masuk",
+   "tidak": "bawah"
+  }
+ ],
+ "ujung": {
+  "luar": "Bukan kejadian bencana; tidak dicatat (Ketentuan 3.1)",
+  "deteksi": "Status terdeteksi belum diverifikasi, tanpa nomor induk, tenggang 3 hari (Ketentuan 3.10 dan 3.11)",
+  "masuk": "Masuk hitungan; tulis semua syarat yang terpenuhi di kolom dasar masuk (Ketentuan 3.12)",
+  "bawah": "Kejadian di bawah ambang: disimpan, tidak dijumlah dengan bencana (Ketentuan 3.9)"
+ }
+}

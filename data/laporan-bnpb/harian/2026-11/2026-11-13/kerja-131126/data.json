@@ -1,0 +1,189 @@
+{
+ "hari": "2026-11-13",
+ "cutoff": "2026-11-13T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "belum",
+   "baru": true,
+   "label": "Bencana Banjir",
+   "angka": {
+    "mengungsi": 150.0,
+    "rumah_dampak": 100.0
+   },
+   "teks": {
+    "dampak": "± 150 jiwa terdampak",
+    "status_darurat": "Siaga Darurat TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Banjir berangsur surut Pukul 21.57 WIB TMA 30 - 40 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 8608.0,
+    "mengungsi": 40.0,
+    "rumah_dampak": 8608.0
+   },
+   "teks": {
+    "dampak": "±8.608 KK / 32.272 Jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Sebagian gampong air sudah surut dan meninggalkan genangan kecil dan lumpur.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-01",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "dalam pendataan",
+    "status_darurat": "Tanggap Darurat TMT 09/11/2026 s.d 22/11/2026",
+    "kondisi": "Air belum surut, Jalur Ise–Ise di Kec. Pantan Cuaca, tidak bisa dilalui",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-09",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Langkat",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 835.0,
+    "mengungsi": 336.0,
+    "rumah_dampak": 835.0,
+    "transisi_sd": "2026-12-25"
+   },
+   "teks": {
+    "dampak": "± 835 KK / 3.155 jiwa terdampak (pendataan)",
+    "status_darurat": "Transisi Darurat ke Pemulihan TMT 25/06/2026 s.d 25/12/2026",
+    "kondisi": "Banjir berangsur surut, dan sebagian pengungsi mulai pulang kerumah masing-masing",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Pekalongan",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 12986.0,
+    "jiwa": 41983.0,
+    "tangki": 899.0,
+    "liter": 3693000.0
+   },
+   "teks": {
+    "dampak": "12.986 KK / 41.983 jiwa terdampak",
+    "status_darurat": "Perpanjangan Siaga Darurat TMT 01/06/2026 s.d 31/12/2026",
+    "kondisi": "Jumlah bantuan air bersih sebanyak 899 tangki / 3.693.000 liter telah didistribusikan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-07-27",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "35",
+   "lokasi": "Bondowoso",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 17.0,
+    "rumah": 17.0
+   },
+   "teks": {
+    "dampak": "± 17 KK terdampak",
+    "status_darurat": "",
+    "kondisi": "Situasi saat ini sudah aman terkendali",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Aman terkendali",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "63",
+   "lokasi": "Hulu Sungai Sel.",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {
+    "kk": 13.0,
+    "mengungsi": 21.0,
+    "rumah": 5.0
+   },
+   "teks": {
+    "dampak": "13 KK/21 Jiwa",
+    "status_darurat": "-",
+    "kondisi": "BPBD bersama lintas OPD beserta Camat dan Kepala sedang melakukan penanganan di lapangan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "81",
+  "82",
+  "93"
+ ]
+}

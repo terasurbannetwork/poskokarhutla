@@ -1,0 +1,17 @@
+{
+    "folder":  "../naskah-ringkas-imrad",
+    "judul":  "Ringkasan Kajian Penghitungan dan Klasifikasi Kejadian Bencana",
+    "anak_judul":  "Cara menghitung satu kejadian, syarat masuk hitungan, dan kelas keparahan untuk Satu Data Bencana",
+    "label":  "RINGKASAN KAJIAN BNPB",
+    "nama_keluaran":  "Ringkasan Kajian Penghitungan dan Klasifikasi Kejadian Bencana",
+    "berkas":  [
+                   "00-ringkasan.md",
+                   "01-temuan.md",
+                   "02-rekomendasi.md"
+               ],
+    "tata":  {
+                 "toc_tingkat":  2,
+                 "bab_baru":  false,
+                 "tinggi_gambar_cm":  8
+             }
+}

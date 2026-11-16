@@ -1,0 +1,36 @@
+{
+ "judul": "Pohon 4: angka mana yang dipakai?",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "Hari ini ada laporan untuk kejadian ini? (Ketentuan 5.9)",
+   "ya": "b",
+   "tidak": "kosong"
+  },
+  {
+   "id": "b",
+   "tanya": "Kolom ini terisi pada laporan? (Ketentuan 5.8)",
+   "ya": "c",
+   "tidak": "n"
+  },
+  {
+   "id": "n",
+   "tanya": "BPBD menyatakan nol? (Ketentuan 5.8)",
+   "ya": "nihil",
+   "tidak": "belum"
+  },
+  {
+   "id": "c",
+   "tanya": "Variabelnya meninggal atau kerusakan rumah dan fasilitas? (Ketentuan 5.1)",
+   "ya": "akhir",
+   "tidak": "besar"
+  }
+ ],
+ "ujung": {
+  "kosong": "Tulis tidak ada laporan, bukan nol (Ketentuan 5.9)",
+  "nihil": "Tulis nol dan tandai nihil (Ketentuan 5.8)",
+  "belum": "Tulis belum didata; tidak dijumlah sebagai nol (Ketentuan 5.8)",
+  "akhir": "Pakai nilai laporan terakhir yang sah; jangan menjumlah antarhari (Ketentuan 5.1 dan 5.2)",
+  "besar": "Pakai nilai terbesar selama masa kejadian; satu orang satu kategori (Ketentuan 5.1 dan 5.3)"
+ }
+}

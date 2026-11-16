@@ -1,0 +1,31 @@
+{
+ "jenis": "batang-mendatar",
+ "kategori": [
+  "Hanya terdampak 50 orang",
+  "Terdampak dan rumah rusak",
+  "Hanya rumah atau fasilitas rusak",
+  "Hanya 1 orang meninggal",
+  "Ketiganya",
+  "Meninggal dan terdampak",
+  "Meninggal dan rumah rusak"
+ ],
+ "seri": [
+  {
+   "nama": "Persen dari baris yang lolos",
+   "nilai": [
+    51.1,
+    23.1,
+    14.3,
+    5.6,
+    3.5,
+    1.7,
+    0.6
+   ],
+   "warna": "oranye"
+  }
+ ],
+ "satuan": "%",
+ "tampilkan_nilai": true,
+ "tinggi": 330,
+ "lebar": 760
+}

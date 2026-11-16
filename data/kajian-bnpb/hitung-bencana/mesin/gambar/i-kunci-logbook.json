@@ -1,0 +1,3 @@
+{"jenis":"batang","kategori":["Laporan dicocokkan tanpa tanggal, jeda 7 hari","Laporan dicocokkan lewat kabupaten beririsan","Laporan dicocokkan dengan tanggal"],
+"seri":[{"nama":"Semua kejadian yang tercatat","nilai":[2809,3756,3860],"warna":"oranye"},{"nama":"Kejadian yang lolos syarat usulan kajian","nilai":[745,756,768],"warna":"navy"}],
+"satuan":"kejadian","tampilkan_nilai":true,"tinggi":340,"lebar":760,"catatan":"Catatan harian Pusdalops, Januari sampai Oktober 2026. Jumlah semua kejadian berbeda 27 persen, jumlah yang lolos syarat usulan kajian hanya 3 persen (dengan kriteria Juklak, 865 sampai 924 kejadian, 7 persen)."}

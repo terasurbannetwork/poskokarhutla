@@ -1,0 +1,27 @@
+{
+ "format": "penanganan",
+ "pesan_kunci": "Laporan Penanganan Pengendalian Karhutla, 13-11-2026.",
+ "judul_dokumen": "Laporan Penanganan Pengendalian Karhutla",
+ "kajian": "rehab",
+ "tanggal": "2026-11-13",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-13\\coba-slide3\\Operasi Penanganan Karhutla 131126 (coba tata letak) (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Laporan Penanganan Karhutla Satgas, 13 Nov 2026 (kegiatan 12 Nov 2026)"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Operasi Penanganan",
+   "label": "Operasi",
+   "halaman_tetap": [
+    1
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "skala_logo_bnpb": 1.0
+}

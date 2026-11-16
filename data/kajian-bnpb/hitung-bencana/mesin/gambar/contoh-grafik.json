@@ -1,0 +1,4 @@
+{"jenis": "batang",
+ "kategori": ["Jarak 0,5 km, 6 jam", "Jarak 1 km, 24 jam", "Jarak 2 km, 72 jam"],
+ "seri": [{"nama": "Jumlah kejadian karhutla (ribu)", "nilai": [94.1, 49.1, 27.3], "warna": "navy"}, {"nama": "Pembanding", "nilai": [60, 40, 20], "warna": "oranye"}],
+ "sumbu_y": "ribu kejadian", "tampilkan_nilai": true}

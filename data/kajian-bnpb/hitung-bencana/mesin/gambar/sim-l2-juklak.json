@@ -1,0 +1,37 @@
+{
+ "jenis": "batang",
+ "judul": "KJN lolos ambang: Juklak 7/2023 (K1 sampai K3) lawan L2 usulan v1 dan v2",
+ "sumbu_x": [
+  "2024",
+  "2025",
+  "2026 (s.d. 12 Nov)"
+ ],
+ "seri": [
+  {
+   "nama": "Lolos Juklak",
+   "nilai": [
+    2556,
+    3647,
+    1332
+   ]
+  },
+  {
+   "nama": "Lolos L2 v1",
+   "nilai": [
+    2281,
+    3311,
+    1220
+   ]
+  },
+  {
+   "nama": "Lolos L2 v2",
+   "nilai": [
+    2285,
+    3324,
+    1226
+   ]
+  }
+ ],
+ "satuan": "KJN",
+ "sumber": "DIBI dasbor publik (dibi.bnpb.go.id), ditarik 12 Nov 2026, 1 Jan 2024 s.d. 12 Nov 2026; pengolahan analisis/sim_kerangka.py"
+}

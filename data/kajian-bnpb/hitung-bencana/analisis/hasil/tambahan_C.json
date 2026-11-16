@@ -1,0 +1,341 @@
+{
+ "katalog_bmkg": {
+  "baris_total": 656,
+  "baris_tanpa_magnitudo": 108,
+  "M_ge_7_tahun_2000_2025": 54,
+  "M_ge_7_menulis_tanpa_korban_jiwa_eksplisit": 8,
+  "tanggal_nol_eksplisit": [
+   "2023-01-10 M7.9",
+   "2023-01-18 M7.1",
+   "2020-06-04 M7.1",
+   "2019-07-07 M7.1",
+   "2018-02-26 M7.6",
+   "2016-03-02 M7.8",
+   "2015-07-28 M7.2",
+   "2010-06-13 M7.5"
+  ],
+  "M_ge_7_kolom_korban_kosong_atau_tanpa_angka_meninggal": 26,
+  "baris_menyebut_jantung": 6,
+  "baris_menyebut_jantung_tanggal_M": [
+   "2016-06-02 M6.5",
+   "2013-10-22 M5.4",
+   "2012-04-11 M8.4",
+   "2010-01-10 M5.4",
+   "2007-01-21 M6.7",
+   "2006-12-01 M6.2"
+  ],
+  "baris_menyebut_jantung_M_lt_6": 2
+ },
+ "cianjur_bmkg": {
+  "magnitudo": 5.6,
+  "kedalaman_km": 10.0,
+  "korban_teks": "Korban Meninggal : Diperkirakan mencapai 600 orang, tercatat BNPB sebanyak 334 orang per 7 Desember 2022, pencarian korban secara masif dan aktif dihentikan per 6 Desember 2022 Korban luka-luka : 2.043 orang Pengungsi : 114.683 ji"
+ },
+ "usgs_vs_bmkg": [
+  {
+   "tanggal": "2005-03-28",
+   "nama": "Nias, Sumatera Utara",
+   "m_usgs": 8.6,
+   "m_bmkg": 8.6,
+   "lokasi_bmkg": "Sumatera Utara"
+  },
+  {
+   "tanggal": "2006-05-27",
+   "nama": "Bantul, DI Yogyakarta",
+   "m_usgs": 6.3,
+   "m_bmkg": 5.9,
+   "lokasi_bmkg": "Jawa Tengah"
+  },
+  {
+   "tanggal": "2006-07-17",
+   "nama": "Pangandaran, Jawa Barat",
+   "m_usgs": 7.7,
+   "m_bmkg": 6.8,
+   "lokasi_bmkg": "Selatan Jawa"
+  },
+  {
+   "tanggal": "2009-09-30",
+   "nama": "Padang Pariaman, Sumatera Barat",
+   "m_usgs": 7.6,
+   "m_bmkg": 7.6,
+   "lokasi_bmkg": "Padang"
+  },
+  {
+   "tanggal": "2010-10-25",
+   "nama": "Kepulauan Mentawai, Sumatera Barat",
+   "m_usgs": 7.8,
+   "m_bmkg": 7.2,
+   "lokasi_bmkg": "Sumatra Barat Mentawai"
+  },
+  {
+   "tanggal": "2018-08-05",
+   "nama": "Lombok Utara, Nusa Tenggara Barat",
+   "m_usgs": 6.9,
+   "m_bmkg": 6.9,
+   "lokasi_bmkg": "Lombok Nusa Tenggara Barat"
+  },
+  {
+   "tanggal": "2018-09-28",
+   "nama": "Donggala dan Palu, Sulawesi Tengah",
+   "m_usgs": 7.5,
+   "m_bmkg": 7.4,
+   "lokasi_bmkg": "Donggala-Palu-Sigi Sulawesi Tengah"
+  },
+  {
+   "tanggal": "2021-01-15",
+   "nama": "Majene, Sulawesi Barat",
+   "m_usgs": 6.2,
+   "m_bmkg": 6.2,
+   "lokasi_bmkg": "Majene Sulawesi Barat"
+  }
+ ],
+ "p24_hilang": {
+  "semua_baris_hilang_gt0": 87,
+  "dari": 15974,
+  "jumlah_hilang_semua": 340,
+  "12bln_baris_hilang_gt0": 33,
+  "12bln_dari": 4185,
+  "12bln_jumlah_hilang": 200,
+  "12bln_hilang_dan_meninggal_nol": 9,
+  "12bln_tak_lolos_K1K2K3_tetapi_ada_hilang": 2,
+  "12bln_lolos_jika_hilang_dihitung_di_K1": 2,
+  "12bln_baris_lolos_dasar": 1903,
+  "baris_hilang_terbanyak": [
+   36,
+   "2025-11-23",
+   "Agam",
+   "Banjir"
+  ]
+ },
+ "p25_k2": {
+  "12bln_K2_jumlah_ge50": 1512,
+  "12bln_K2_satu_kategori_ge50": 1500,
+  "12bln_K2_hanya_lolos_karena_dijumlah": 12,
+  "12bln_menderita_dan_mengungsi_sama_sama_gt0": 352,
+  "12bln_luka_dan_mengungsi_sama_sama_gt0": 66,
+  "12bln_K2_jumlah_ge50_tanpa_luka": 1510,
+  "catatan": "DIBI punya kolom menderita_mengungsi = menderita + mengungsi; luka_sakit terpisah"
+ },
+ "p26_kerusakan": {
+  "baris_12bln": 4185,
+  "lolos_dasar_RB+RS+RR+fasilitas_ge5": 1903,
+  "K3_dasar_baris": 792,
+  "K3_hanya_RB_ge5": 247,
+  "lolos_total_jika_K3_hanya_RB": 1674,
+  "lolos_total_jika_K3_RB_dan_RS_saja_plus_fasilitas": 1711,
+  "K3_bobot_jepang_RB1_RS0.5_terendam0.333_ge5": 988,
+  "lolos_total_bobot_jepang_plus_fasilitas": 1703,
+  "K3_hanya_RR_tanpa_RB_RS_ge5": 93,
+  "K3_lolos_hanya_karena_RR_dan_tak_lolos_K1K2": 192,
+  "jembatan_ge10_baris": 25,
+  "jembatan_maks": 144
+ },
+ "p54_terendam": {
+  "baris_terendam_gt0": 876,
+  "terendam_gt0_tak_lolos_dasar": 106,
+  "terendam_ge5_tak_lolos_dasar": 74,
+  "lolos_jika_terendam_dihitung_sebagai_rusak": 1978,
+  "tambahan_baris_jika_terendam_dihitung": 75,
+  "terendam_total_unit": 842774
+ },
+ "p49_nol": {
+  "semua_baris": 15974,
+  "semua_nol": 5250,
+  "tanpa_karhutla_baris": 12328,
+  "tanpa_karhutla_nol": 1653,
+  "tanpa_karhutla_nol_pct": 13.4,
+  "12bln_baris": 4185,
+  "12bln_nol": 1535,
+  "12bln_nol_pct": 36.7,
+  "12bln_tanpa_karhutla_nol_pct": 11.9,
+  "tanpa_karhutla_is_bencana_true_nol": 327,
+  "nol_per_tahun_pct": {
+   "2024": 27.6,
+   "2025": 32.0,
+   "2026": 41.3
+  }
+ },
+ "p53_terdampak_per_jenis_12bln": {
+  "kekeringan": {
+   "n": 129,
+   "median_K2": 3600,
+   "ge50": 122,
+   "ge500": 105,
+   "maks": 246448,
+   "rumah_rusak_nol": 129
+  },
+  "banjir": {
+   "n": 1188,
+   "median_K2": 314.5,
+   "ge50": 883,
+   "ge500": 529,
+   "maks": 739710,
+   "rumah_rusak_nol": 983
+  },
+  "cuaca ekstrem/angin": {
+   "n": 922,
+   "median_K2": 25.0,
+   "ge50": 317,
+   "ge500": 18,
+   "maks": 15370,
+   "rumah_rusak_nol": 254
+  },
+  "longsor": {
+   "n": 431,
+   "median_K2": 8,
+   "ge50": 81,
+   "ge500": 17,
+   "maks": 5000,
+   "rumah_rusak_nol": 236
+  }
+ },
+ "p60_kunci_provinsi_dibandingkan": 33,
+ "p60_luas_nasional_per_tahun": {
+  "2018": {
+   "sipongi_ha": 529267,
+   "gwis_modis_ha": 717282,
+   "rasio_gwis_per_sipongi": 1.36
+  },
+  "2019": {
+   "sipongi_ha": 1649258,
+   "gwis_modis_ha": 2086311,
+   "rasio_gwis_per_sipongi": 1.26
+  },
+  "2020": {
+   "sipongi_ha": 296942,
+   "gwis_modis_ha": 170481,
+   "rasio_gwis_per_sipongi": 0.57
+  },
+  "2021": {
+   "sipongi_ha": 358867,
+   "gwis_modis_ha": 71889,
+   "rasio_gwis_per_sipongi": 0.2
+  },
+  "2022": {
+   "sipongi_ha": 204894,
+   "gwis_modis_ha": 52181,
+   "rasio_gwis_per_sipongi": 0.25
+  },
+  "2023": {
+   "sipongi_ha": 1161193,
+   "gwis_modis_ha": 1110065,
+   "rasio_gwis_per_sipongi": 0.96
+  },
+  "2024": {
+   "sipongi_ha": 376805,
+   "gwis_modis_ha": 134891,
+   "rasio_gwis_per_sipongi": 0.36
+  },
+  "2025": {
+   "sipongi_ha": 359619,
+   "gwis_modis_ha": 98720,
+   "rasio_gwis_per_sipongi": 0.27
+  }
+ },
+ "p60_luas_prov_2023_10_terbesar": [
+  [
+   "62",
+   "Kalimantan Tengah",
+   165896,
+   274055,
+   1.65
+  ],
+  [
+   "91+93+94+95",
+   "Papua",
+   154798,
+   230071,
+   1.49
+  ],
+  [
+   "16",
+   "Sumatera Selatan",
+   132083,
+   227302,
+   1.72
+  ],
+  [
+   "63",
+   "Kalimantan Selatan",
+   190395,
+   104839,
+   0.55
+  ],
+  [
+   "61",
+   "Kalimantan Barat",
+   111848,
+   60019,
+   0.54
+  ],
+  [
+   "53",
+   "Nusa Tenggara Timur",
+   102537,
+   26403,
+   0.26
+  ],
+  [
+   "52",
+   "Nusa Tenggara Barat",
+   66716,
+   26382,
+   0.4
+  ],
+  [
+   "35",
+   "Jawa Timur",
+   49498,
+   18289,
+   0.37
+  ],
+  [
+   "81",
+   "Maluku",
+   45999,
+   24042,
+   0.52
+  ],
+  [
+   "18",
+   "Lampung",
+   6507,
+   41472,
+   6.37
+  ]
+ ],
+ "p60_luas_prov_beda_2x": {
+  "2018": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 25,
+   "beda_dua_kali_atau_lebih": 11
+  },
+  "2019": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 28,
+   "beda_dua_kali_atau_lebih": 6
+  },
+  "2020": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 22,
+   "beda_dua_kali_atau_lebih": 17
+  },
+  "2021": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 19,
+   "beda_dua_kali_atau_lebih": 16
+  },
+  "2022": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 18,
+   "beda_dua_kali_atau_lebih": 17
+  },
+  "2023": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 25,
+   "beda_dua_kali_atau_lebih": 13
+  },
+  "2024": {
+   "provinsi_dengan_luas_ge1000_di_salah_satu_sumber": 23,
+   "beda_dua_kali_atau_lebih": 16
+  }
+ },
+ "p60_catatan": {
+  "sipongi_sumber": "KLHK SiPongi Indikasi Luas Kebakaran per provinsi (opsroom.sipongidata.my.id/api/list/luas-kebakaran/provinsi); indikasi dari titik panas + verifikasi, bukan citra. 2026 baru s/d 2026-07. 2018-2023 id",
+  "gwis_sumber": "GWIS Country Profile (EU JRC/Copernicus), MODIS MCD64A1 C6.1 per GADM 3.6 ADM1, kolom lc_tot; CC BY 4.0 (Keputusan Komisi 2011/833/EU). 64 termasuk Kaltara (65), 91+93+94+95=Papua lama, 92+96=Papua Barat lama; 93 tak terpisahkan. Tahun 2025 terisi s/d 2025-11;"
+ }
+}

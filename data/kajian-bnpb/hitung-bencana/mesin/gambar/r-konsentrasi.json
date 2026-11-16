@@ -1,0 +1,38 @@
+{
+ "jenis": "batang",
+ "kategori": [
+  "1 persen baris teratas",
+  "10 persen baris teratas"
+ ],
+ "seri": [
+  {
+   "nama": "Meninggal",
+   "nilai": [
+    85.5,
+    100.0
+   ],
+   "warna": "navy"
+  },
+  {
+   "nama": "Terdampak, luka, mengungsi",
+   "nilai": [
+    64.0,
+    96.6
+   ],
+   "warna": "oranye"
+  },
+  {
+   "nama": "Rumah rusak",
+   "nilai": [
+    92.8,
+    99.1
+   ],
+   "warna": "biru"
+  }
+ ],
+ "satuan": "% dari total",
+ "tampilkan_nilai": true,
+ "tinggi": 330,
+ "lebar": 760,
+ "catatan": "DIBI 13 November 2025 sampai 12 November 2026: 4.185 baris, 1.897 meninggal."
+}

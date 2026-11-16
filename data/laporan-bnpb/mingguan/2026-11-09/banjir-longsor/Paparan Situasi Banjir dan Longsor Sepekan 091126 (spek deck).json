@@ -1,0 +1,107 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Situasi dan Kondisi Wilayah Terdampak Banjir dan Tanah Longsor, 09-11-2026.",
+ "judul_dokumen": "Laporan Situasi dan Kondisi Wilayah Terdampak Banjir dan Tanah Longsor",
+ "kajian": "rehab",
+ "tanggal": "2026-11-09",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-02/banjir/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Situasi dan Kondisi Wilayah Terdampak Banjir dan Tanah Longsor",
+   "subjudul": "Senin, 2 November s.d. Minggu, 8 November 2026",
+   "penyaji": {
+    "nama": "Tim Ahli dan Tim Sus IT BNPB",
+    "jabatan": "Badan Nasional Penanggulangan Bencana"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\Paparan Situasi Banjir dan Longsor Sepekan 091126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\Paparan Situasi Banjir dan Longsor Sepekan 091126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\Paparan Situasi Banjir dan Longsor Sepekan 091126 (isi).pptx",
+   "halaman": 3,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\Paparan Situasi Banjir dan Longsor Sepekan 091126 (isi).pptx",
+   "halaman": 4,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\bahan\\impor-091126.pptx",
+   "halaman": 2,
+   "bagian": 2,
+   "sumber": "GIS BNPB, 9 Nov 2026 13.34 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\banjir-longsor\\bahan\\impor-091126.pptx",
+   "halaman": 5,
+   "bagian": 3,
+   "sumber": "GIS BNPB, 9 Nov 2026 13.34 WIB; Laporan Dit. Koordalops BNPB, 5 s.d. 9 Nov 2026"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-02/banjir/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi banjir dan longsor sepekan",
+   "label": "Situasi banjir dan longsor sepekan",
+   "halaman_tetap": [
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "judul": "Probabilitas banjir",
+   "label": "Probabilitas banjir",
+   "halaman_tetap": [
+    7
+   ]
+  },
+  {
+   "judul": "Mitigasi",
+   "label": "Mitigasi",
+   "halaman_tetap": [
+    8
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Paparan Situasi Banjir dan Longsor Mingguan",
+ "skala_logo_bnpb": 1.1
+}

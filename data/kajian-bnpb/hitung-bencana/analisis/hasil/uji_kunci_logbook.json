@@ -1,0 +1,521 @@
+{
+ "sumber": "Logbook harian Pusdalops 2026 (arsip lokal DOCX), baris mentah sebelum digabung",
+ "hari_arsip": 302,
+ "baris_mentah_total": 9329,
+ "gagal_urai": {
+  "baris_tak_terurai": 1461
+ },
+ "catatan": [
+  "unit tgl kejadian: Okt 2026 = tgl kejadian di 2026-10; Jan-Okt = 2026-01-01 sampai 2026-10-31 (kejadian bertanggal 2025 dan Nov 2026 tidak dihitung)",
+  "terdampak jiwa = angka 'jiwa terdampak' saja (KK tidak dikonversi); k2 = jiwa terdampak + mengungsi + luka; rumah = RB+RS+RR",
+  "aturan jumlah = jumlah semua baris lintas hari (angka kumulatif ditambahkan berulang), disertakan sebagai pembanding"
+ ],
+ "varian": {
+  "V1 (jenis,prov,kab,tgl)": {
+   "Okt 2026": {
+    "kejadian": 293,
+    "maks": {
+     "md": 7,
+     "jiwa": 77337,
+     "rumah": 827,
+     "ha": 13711
+    },
+    "jumlah": {
+     "md": 9,
+     "jiwa": 177588,
+     "rumah": 2135,
+     "ha": 34031
+    },
+    "terakhir": {
+     "md": 7,
+     "jiwa": 73201,
+     "rumah": 798,
+     "ha": 11638
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 39,
+    "baris_harian": 544
+   },
+   "Jan-Okt 2026": {
+    "kejadian": 3860,
+    "maks": {
+     "md": 609,
+     "jiwa": 3234369,
+     "rumah": 120116,
+     "ha": 2148212
+    },
+    "jumlah": {
+     "md": 12523,
+     "jiwa": 27569899,
+     "rumah": 3555343,
+     "ha": 16622896
+    },
+    "terakhir": {
+     "md": 565,
+     "jiwa": 3000534,
+     "rumah": 44938,
+     "ha": 580308
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 924,
+    "baris_harian": 8715
+   },
+   "semua tgl": {
+    "kejadian": 3935,
+    "maks": {
+     "md": 1905,
+     "jiwa": 7441915,
+     "rumah": 391819,
+     "ha": 2612122
+    },
+    "jumlah": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "terakhir": {
+     "md": 1824,
+     "jiwa": 6508366,
+     "rumah": 309506,
+     "ha": 997942
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 975,
+    "baris_harian": 9329
+   }
+  },
+  "V1g (V1 + gabung kab beririsan)": {
+   "Okt 2026": {
+    "kejadian": 284,
+    "maks": {
+     "md": 7,
+     "jiwa": 77337,
+     "rumah": 732,
+     "ha": 11984
+    },
+    "jumlah": {
+     "md": 9,
+     "jiwa": 177588,
+     "rumah": 2135,
+     "ha": 34031
+    },
+    "terakhir": {
+     "md": 7,
+     "jiwa": 73201,
+     "rumah": 703,
+     "ha": 9891
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 38,
+    "baris_harian": 544
+   },
+   "Jan-Okt 2026": {
+    "kejadian": 3756,
+    "maks": {
+     "md": 606,
+     "jiwa": 3225498,
+     "rumah": 119708,
+     "ha": 1793887
+    },
+    "jumlah": {
+     "md": 12523,
+     "jiwa": 27569899,
+     "rumah": 3555343,
+     "ha": 16622896
+    },
+    "terakhir": {
+     "md": 559,
+     "jiwa": 2989066,
+     "rumah": 44192,
+     "ha": 375182
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 914,
+    "baris_harian": 8715
+   },
+   "semua tgl": {
+    "kejadian": 3827,
+    "maks": {
+     "md": 1902,
+     "jiwa": 7433044,
+     "rumah": 391411,
+     "ha": 2256125
+    },
+    "jumlah": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "terakhir": {
+     "md": 1818,
+     "jiwa": 6496898,
+     "rumah": 308760,
+     "ha": 791144
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 965,
+    "baris_harian": 9329
+   }
+  },
+  "V2 (jenis,prov,kab; jeda<=7hr, tanpa tgl)": {
+   "Okt 2026": {
+    "kejadian": 175,
+    "maks": {
+     "md": 7,
+     "jiwa": 59878,
+     "rumah": 824,
+     "ha": 12739
+    },
+    "jumlah": {
+     "md": 9,
+     "jiwa": 133019,
+     "rumah": 2133,
+     "ha": 32579
+    },
+    "terakhir": {
+     "md": 6,
+     "jiwa": 54429,
+     "rumah": 766,
+     "ha": 10569
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 36,
+    "baris_harian": 444
+   },
+   "Jan-Okt 2026": {
+    "kejadian": 2809,
+    "maks": {
+     "md": 618,
+     "jiwa": 4143224,
+     "rumah": 118056,
+     "ha": 2203689
+    },
+    "jumlah": {
+     "md": 12505,
+     "jiwa": 27545923,
+     "rumah": 3554558,
+     "ha": 16622023
+    },
+    "terakhir": {
+     "md": 583,
+     "jiwa": 3776037,
+     "rumah": 42052,
+     "ha": 607675
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 865,
+    "baris_harian": 8535
+   },
+   "semua tgl": {
+    "kejadian": 2911,
+    "maks": {
+     "md": 2729,
+     "jiwa": 10675982,
+     "rumah": 475209,
+     "ha": 2914391
+    },
+    "jumlah": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "terakhir": {
+     "md": 2653,
+     "jiwa": 9252037,
+     "rumah": 378577,
+     "ha": 1272190
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 942,
+    "baris_harian": 9329
+   }
+  },
+  "V3 (jenis,prov,tgl; tanpa kab)": {
+   "Okt 2026": {
+    "kejadian": 194,
+    "maks": {
+     "md": 7,
+     "jiwa": 69740,
+     "rumah": 686,
+     "ha": 10754
+    },
+    "jumlah": {
+     "md": 9,
+     "jiwa": 177588,
+     "rumah": 2135,
+     "ha": 34031
+    },
+    "terakhir": {
+     "md": 6,
+     "jiwa": 67548,
+     "rumah": 657,
+     "ha": 9346
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 32,
+    "baris_harian": 544
+   },
+   "Jan-Okt 2026": {
+    "kejadian": 2913,
+    "maks": {
+     "md": 603,
+     "jiwa": 3077366,
+     "rumah": 118695,
+     "ha": 1788531
+    },
+    "jumlah": {
+     "md": 12523,
+     "jiwa": 27569899,
+     "rumah": 3555343,
+     "ha": 16622896
+    },
+    "terakhir": {
+     "md": 528,
+     "jiwa": 2742429,
+     "rumah": 41899,
+     "ha": 362307
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 793,
+    "baris_harian": 8715
+   },
+   "semua tgl": {
+    "kejadian": 2971,
+    "maks": {
+     "md": 1747,
+     "jiwa": 6345957,
+     "rumah": 373975,
+     "ha": 2219326
+    },
+    "jumlah": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "terakhir": {
+     "md": 1501,
+     "jiwa": 4872989,
+     "rumah": 223873,
+     "ha": 627180
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 832,
+    "baris_harian": 9329
+   }
+  },
+  "V4 (tanpa dedup, tiap baris harian)": {
+   "Okt 2026": {
+    "kejadian": 544,
+    "maks": {
+     "md": 9,
+     "jiwa": 177588,
+     "rumah": 2135,
+     "ha": 34031
+    },
+    "jumlah": {
+     "md": 9,
+     "jiwa": 177588,
+     "rumah": 2135,
+     "ha": 34031
+    },
+    "terakhir": {
+     "md": 9,
+     "jiwa": 177588,
+     "rumah": 2135,
+     "ha": 34031
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 76,
+    "baris_harian": 544
+   },
+   "Jan-Okt 2026": {
+    "kejadian": 8715,
+    "maks": {
+     "md": 12523,
+     "jiwa": 27569899,
+     "rumah": 3555343,
+     "ha": 16622896
+    },
+    "jumlah": {
+     "md": 12523,
+     "jiwa": 27569899,
+     "rumah": 3555343,
+     "ha": 16622896
+    },
+    "terakhir": {
+     "md": 12523,
+     "jiwa": 27569899,
+     "rumah": 3555343,
+     "ha": 16622896
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 2865,
+    "baris_harian": 8715
+   },
+   "semua tgl": {
+    "kejadian": 9329,
+    "maks": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "jumlah": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "terakhir": {
+     "md": 33473,
+     "jiwa": 98062371,
+     "rumah": 9368040,
+     "ha": 22346393
+    },
+    "lolos_ambang_K1K2K3_aturan_maks": 3421,
+    "baris_harian": 9329
+   }
+  }
+ },
+ "varian_pertama_dilaporkan_Jan_Okt": {
+  "V1 (jenis,prov,kab,tgl)": 3935,
+  "V1g (V1 + gabung kab beririsan)": 3827,
+  "V2 (jenis,prov,kab; jeda<=7hr, tanpa tgl)": 2911,
+  "V3 (jenis,prov,tgl; tanpa kab)": 2971,
+  "V4 (tanpa dedup, tiap baris harian)": 9329
+ },
+ "dinamika_V1": {
+  "grup_V1": 3935,
+  "grup_multi_hari": 1349,
+  "koreksi_turun_grup": {
+   "jiwa": 105,
+   "k2": 136,
+   "salah_satu_dari_4": 157,
+   "rumah": 57,
+   "md": 17
+  },
+  "pct_koreksi_turun_dari_multi_hari": 11.6,
+  "naik_kelas_lolos_hanya_di_laporan_kemudian": 124,
+  "naik_kelas_per_kriteria_pertama_yang_terpenuhi": {
+   "K3": 18,
+   "K2": 87,
+   "K1": 19
+  },
+  "pct_naik_kelas_dari_grup_lolos_akhir": 12.7,
+  "lolos_akhir": 975,
+  "hari_per_grup": {
+   "median": 1,
+   "p90": 3,
+   "maks": 128,
+   "pct_1_hari": 65.7
+  },
+  "selisih_tgl_kejadian_ke_pertama_dilaporkan_hari": {
+   "median": 1,
+   "p90": 3,
+   "p99": 80,
+   "pct_gt3": 7.8,
+   "pct_beda_bulan": 5.9,
+   "negatif_tgl_setelah_laporan": 29,
+   "tgl_bukan_2026_atau_des2025": 46
+  },
+  "selisih_tanpa_pencilan(0..400)": {
+   "n": 3905,
+   "median": 1,
+   "p90": 3,
+   "pct_gt3": 7.9
+  }
+ },
+ "per_jenis_Jan_Okt": {
+  "V1": {
+   "karhutla": 1209,
+   "cuaca": 820,
+   "banjir": 801,
+   "longsor": 425,
+   "kebakaran_permukiman": 252,
+   "kekeringan": 138,
+   "gempa": 60,
+   "lainnya": 57,
+   "banjir_longsor": 45,
+   "kebakaran_tpa": 32,
+   "erupsi": 13,
+   "gelombang": 8
+  },
+  "V2": {
+   "karhutla": 681,
+   "banjir": 611,
+   "cuaca": 541,
+   "longsor": 288,
+   "kekeringan": 270,
+   "kebakaran_permukiman": 222,
+   "gempa": 59,
+   "lainnya": 43,
+   "banjir_longsor": 42,
+   "kebakaran_tpa": 31,
+   "erupsi": 13,
+   "gelombang": 8
+  }
+ },
+ "durasi_V2_hari_per_jenis": {
+  "banjir": {
+   "n": 667,
+   "median": 0,
+   "p90": 8,
+   "maks": 59
+  },
+  "banjir_longsor": {
+   "n": 60,
+   "median": 0.5,
+   "p90": 6,
+   "maks": 58
+  },
+  "cuaca": {
+   "n": 547,
+   "median": 0,
+   "p90": 5,
+   "maks": 124
+  },
+  "erupsi": {
+   "n": 15,
+   "median": 0,
+   "p90": 5,
+   "maks": 9
+  },
+  "gempa": {
+   "n": 59,
+   "median": 0,
+   "p90": 6,
+   "maks": 75
+  },
+  "karhutla": {
+   "n": 687,
+   "median": 0,
+   "p90": 13,
+   "maks": 160
+  },
+  "kebakaran_permukiman": {
+   "n": 223,
+   "median": 0,
+   "p90": 3,
+   "maks": 11
+  },
+  "kebakaran_tpa": {
+   "n": 32,
+   "median": 0.0,
+   "p90": 13,
+   "maks": 27
+  },
+  "kekeringan": {
+   "n": 270,
+   "median": 1.0,
+   "p90": 16,
+   "maks": 136
+  },
+  "lainnya": {
+   "n": 50,
+   "median": 0.0,
+   "p90": 10,
+   "maks": 20
+  },
+  "longsor": {
+   "n": 293,
+   "median": 0,
+   "p90": 7,
+   "maks": 86
+  }
+ },
+ "V2_multi_hari_dengan_tgl_berbeda": {
+  "grup_multi_hari": 1256,
+  "dengan_lebih_dari_1_tgl": 464,
+  "pct": 36.9
+ }
+}

@@ -1,0 +1,3 @@
+{"jenis":"tumpuk","kategori":["Skala absolut","Usulan: skala absolut dengan kenaikan kelas untuk daerah berpenduduk kecil","Skala mengikuti status darurat"],
+"seri":[{"nama":"Sedang","nilai":[3.3,4.0,8.2],"warna":"biru"},{"nama":"Besar","nilai":[0.3,0.8,38.6],"warna":"oranye"},{"nama":"Katastrofik","nilai":[0.1,0.1,0.0],"warna":"merah"}],
+"satuan":"% kejadian","tampilkan_nilai":true,"tinggi":340,"lebar":760,"catatan":"Sisanya masuk kelas Ringan. Pada skala yang mengikuti status darurat, 38,6 persen kejadian menjadi Besar hanya karena status darurat berlaku."}

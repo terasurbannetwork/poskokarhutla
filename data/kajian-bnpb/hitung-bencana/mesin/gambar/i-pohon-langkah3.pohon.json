@@ -1,0 +1,11 @@
+{
+ "judul": "Langkah 3: kelas keparahan",
+ "simpul": [
+  {"id": "a", "tanya": "Meninggal dan hilang 1.000 atau lebih, atau rumah rusak berat dan setaranya 10.000 atau lebih? (atau mengungsi 100.000, bila meninggal dan hilang atau rumah sudah mencapai kelas Sedang) Karhutla: luas terbakar terverifikasi 100.000 hektare?", "ya": "K", "tidak": "b"},
+  {"id": "b", "tanya": "Meninggal dan hilang 100 atau lebih, atau rumah rusak berat dan setaranya 1.000 atau lebih? (atau mengungsi 10.000, dengan syarat yang sama) Karhutla: 10.000 hektare?", "ya": "B", "tidak": "c"},
+  {"id": "c", "tanya": "Meninggal dan hilang 10 atau lebih, mengungsi 1.000 atau lebih, atau rumah rusak berat dan setaranya 100 atau lebih? Karhutla: 1.000 hektare?", "ya": "naik", "tidak": "d"},
+  {"id": "naik", "tanya": "Pengungsi dan terdampak langsung di satu kabupaten mencapai 10 persen penduduk dan minimal 1.000 orang?", "ya": "B", "tidak": "S"},
+  {"id": "d", "tanya": "Pengungsi dan terdampak langsung di satu kabupaten mencapai 10 persen penduduk dan minimal 100 orang?", "ya": "S", "tidak": "R"}
+ ],
+ "ujung": {"K": "Katastrofik", "B": "Besar", "S": "Sedang", "R": "Ringan"}
+}

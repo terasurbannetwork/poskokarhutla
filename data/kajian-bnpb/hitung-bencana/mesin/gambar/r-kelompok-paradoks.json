@@ -1,0 +1,31 @@
+{
+ "jenis": "batang-mendatar",
+ "kategori": [
+  "A Identitas kejadian",
+  "B Ambang masuk",
+  "C Ukuran dan korban",
+  "F Penyajian",
+  "E Klasifikasi besar-kecil",
+  "D Kerugian dan uang",
+  "G Kelembagaan"
+ ],
+ "seri": [
+  {
+   "nama": "Jumlah paradoks",
+   "nilai": [
+    18,
+    14,
+    13,
+    7,
+    5,
+    4,
+    4
+   ],
+   "warna": "navy"
+  }
+ ],
+ "satuan": "",
+ "tampilkan_nilai": true,
+ "tinggi": 300,
+ "lebar": 760
+}

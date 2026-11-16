@@ -1,0 +1,4881 @@
+{
+ "spek": "spek",
+ "pesan_kunci": "Laporan Insidental Gempa Bumi dan Tsunami (Simulasi), 09-11-2026.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "spek#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    132.24,
+    410.0,
+    161.52,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons",
+    "Kejadian contoh: Gempa M6,8 Selatan Jawa Barat, data contoh untuk uji format",
+    "Dipresentasikan oleh",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "Jakarta, 9 November 2026",
+    "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": [
+    43.2,
+    305.76,
+    410.0,
+    39.0
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "daftar-isi",
+   "asal": "spek#2",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Laporan Insidental Gempa Bumi dan Tsunami (Simulasi)",
+    "01",
+    "3–4",
+    "02",
+    "5–6",
+    "03",
+    "7–8",
+    "2"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 3,
+   "jenis": "impor",
+   "asal": "spek#3",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "3",
+    "Data contoh (simulasi); model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); penduduk WorldPop 2026 per kecamatan",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "68A8E0",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "E8894A",
+     "impor"
+    ],
+    [
+     "EEF5FC",
+     "impor"
+    ],
+    [
+     "F4C3A0",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "impor",
+   "asal": "spek#4",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "4",
+    "Data contoh (simulasi); format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "68A8E0",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "impor"
+    ],
+    [
+     "8A6A2E",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C4A262",
+     "impor"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "F4ECDC",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 5,
+   "jenis": "impor",
+   "asal": "spek#5",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "5",
+    "Data contoh (simulasi); format laporan kaji cepat BPBD dan Pusdalops BNPB",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "68A8E0",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 6,
+   "jenis": "impor",
+   "asal": "spek#6",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "6",
+    "Data contoh (simulasi); model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "3F5F80",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "68A8E0",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "EEF5FC",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 7,
+   "jenis": "impor",
+   "asal": "spek#7",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "7",
+    "Data contoh (simulasi); standar minimum Sphere untuk dasar hitung kebutuhan",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 8,
+   "jenis": "impor",
+   "asal": "spek#8",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "8",
+    "Data contoh (simulasi); format rencana operasi tanggap darurat BNPB",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "impor"
+    ],
+    [
+     "2E3440",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "E6EAF0",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 9,
+   "jenis": "penutup",
+   "asal": "spek#9",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    168,
+    410.0,
+    64.32000000000001,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "117",
+    "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+    "021 2982 7793",
+    "persuratan@bnpb.go.id",
+    "www.bnpb.go.id",
+    "Satu Data Bencana",
+    "@BNPB_Indonesia",
+    "@infoBencanaBNPB",
+    "BNPB Indonesia",
+    "@bnpbindonesia",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "turunan:spek#1#kredit:foto0_0.jpg",
+   "tampil": "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Wikimedia Commons, atribusi foto",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor1.1",
+   "tampil": "6,8",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor3.0",
+   "tampil": "38",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor5.0",
+   "tampil": "2,28",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor9.10",
+   "tampil": "4,1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor11.9",
+   "tampil": "5,3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor13.10",
+   "tampil": "5,7",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor15.10",
+   "tampil": "4,4",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor17.10",
+   "tampil": "4,4",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor19.9",
+   "tampil": "4,7",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor21.10",
+   "tampil": "4,2",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor23.9",
+   "tampil": "5,2",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor24.13",
+   "tampil": "25",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor26.0",
+   "tampil": "100",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor32.0",
+   "tampil": "2.278.537",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor34.0",
+   "tampil": "38",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor37.2",
+   "tampil": "0,",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor37.5",
+   "tampil": "14.21.07",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor39.1",
+   "tampil": "6,8",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor39.12",
+   "tampil": "7,0",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor41.0",
+   "tampil": "25",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor43.0",
+   "tampil": "7,92",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor43.8",
+   "tampil": "107,00",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor48.4",
+   "tampil": "5,7",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor49.0",
+   "tampil": "131.045",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor50.0",
+   "tampil": "659.852",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor51.0",
+   "tampil": "1.839.729",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor52.0",
+   "tampil": "2.630.626",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor54.3",
+   "tampil": "5,3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor56.0",
+   "tampil": "925.934",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor57.0",
+   "tampil": "2.004.937",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor58.0",
+   "tampil": "2.930.871",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor60.3",
+   "tampil": "5,2",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor62.0",
+   "tampil": "416.125",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor63.0",
+   "tampil": "2.346.866",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor64.0",
+   "tampil": "2.762.991",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor66.3",
+   "tampil": "4,7",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor68.0",
+   "tampil": "145.581",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor69.0",
+   "tampil": "3.609.947",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor70.0",
+   "tampil": "3.755.528",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor72.4",
+   "tampil": "4,4",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor75.0",
+   "tampil": "1.993.454",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor76.0",
+   "tampil": "1.993.454",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor78.4",
+   "tampil": "4,4",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor81.0",
+   "tampil": "314.355",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor82.0",
+   "tampil": "314.355",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor84.4",
+   "tampil": "4,2",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor87.0",
+   "tampil": "1.977.508",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor88.0",
+   "tampil": "1.977.508",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor90.4",
+   "tampil": "4,1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor93.0",
+   "tampil": "2.635.928",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor94.0",
+   "tampil": "2.635.928",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor96.4",
+   "tampil": "4,1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor99.0",
+   "tampil": "492.926",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor100.0",
+   "tampil": "492.926",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor102.4",
+   "tampil": "4,0",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor105.0",
+   "tampil": "5.964.481",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor106.0",
+   "tampil": "5.964.481",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor108.4",
+   "tampil": "4,0",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor111.0",
+   "tampil": "1.270.326",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor112.0",
+   "tampil": "1.270.326",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor114.4",
+   "tampil": "4,0",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor117.0",
+   "tampil": "1.036.204",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor118.0",
+   "tampil": "1.036.204",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor120.4",
+   "tampil": "4,0",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor123.0",
+   "tampil": "1.069.415",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor124.0",
+   "tampil": "1.069.415",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor127.4",
+   "tampil": "4,1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor130.0",
+   "tampil": "1.440.420",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor131.0",
+   "tampil": "1.440.420",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor132.9",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor136.0",
+   "tampil": "35.218.870",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor137.0",
+   "tampil": "35.218.870",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor138.6",
+   "tampil": "38",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor139.0",
+   "tampil": "131.045",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor140.0",
+   "tampil": "2.147.492",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor141.0",
+   "tampil": "63.215.366",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor142.0",
+   "tampil": "65.493.903",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor154.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor155.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model guncangan Zhao 2006 dan Worden 2012 (scripts/gempa/guncangan.py); Pengolahan data sistem BNPB dari penduduk WorldPop 2026 per kecamatan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor1.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor1.6",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor3.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor5.0",
+   "tampil": "0,6",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor22.21",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor25.31",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor26.0",
+   "tampil": "14.21",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor27.7",
+   "tampil": "7,0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor28.21",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor29.0",
+   "tampil": "14.26",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor30.14",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor31.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor31.13",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor31.22",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor32.0",
+   "tampil": "14.32",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor33.14",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor34.10",
+   "tampil": "6,8",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor35.0",
+   "tampil": "14.58",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor37.0",
+   "tampil": "0,6",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor38.0",
+   "tampil": "15.40",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor39.13",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor40.19",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor41.0",
+   "tampil": "16.45",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor42.12",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor44.0",
+   "tampil": "16.45",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor45.21",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor45.27",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor46.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor47.17",
+   "tampil": "0,3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor47.28",
+   "tampil": "0,6",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor52.0",
+   "tampil": "14.41",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor53.0",
+   "tampil": "0,5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor53.12",
+   "tampil": "14.49",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor58.0",
+   "tampil": "14.44",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor59.0",
+   "tampil": "0,6",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor59.12",
+   "tampil": "14.58",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor64.0",
+   "tampil": "14.47",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor65.0",
+   "tampil": "0,4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor65.12",
+   "tampil": "15.06",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor70.0",
+   "tampil": "14.55",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor76.0",
+   "tampil": "15.02",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor77.0",
+   "tampil": "0,3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor77.12",
+   "tampil": "15.20",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor83.0",
+   "tampil": "14.52",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor84.0",
+   "tampil": "0,3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor84.12",
+   "tampil": "15.12",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor89.0",
+   "tampil": "15.05",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor93.3",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor94.0",
+   "tampil": "14.26",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor95.3",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor96.0",
+   "tampil": "14.32",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor102.0",
+   "tampil": "7.850",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor103.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor103.10",
+   "tampil": "17.30",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor105.0",
+   "tampil": "4.320",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor106.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor106.10",
+   "tampil": "17.45",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor107.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor108.0",
+   "tampil": "5.770",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor109.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor109.10",
+   "tampil": "17.10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor111.0",
+   "tampil": "17.940",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor115.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor116.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format buletin peringatan dini tsunami BMKG InaTEWS (PD-1 sampai PD-4)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor1.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor3.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor5.0",
+   "tampil": "9.755",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor7.0",
+   "tampil": "4.962",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor9.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor10.16",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor12.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor14.0",
+   "tampil": "176",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor15.6",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor15.16",
+   "tampil": "149",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor16.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor18.0",
+   "tampil": "9.755",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor20.0",
+   "tampil": "4.962",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor21.13",
+   "tampil": "336",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor22.0",
+   "tampil": "145",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor27.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor28.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor29.0",
+   "tampil": "62",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor31.0",
+   "tampil": "4.870",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor32.0",
+   "tampil": "186",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor33.0",
+   "tampil": "512",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor34.0",
+   "tampil": "1.430",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor35.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor36.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor37.0",
+   "tampil": "38",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor38.46",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor38.72",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor38.85",
+   "tampil": "70",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor41.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor42.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor43.0",
+   "tampil": "41",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor44.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor45.0",
+   "tampil": "3.215",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor46.0",
+   "tampil": "94",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor47.0",
+   "tampil": "337",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor48.0",
+   "tampil": "1.012",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor49.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor50.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor51.0",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor52.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor55.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor56.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor57.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor59.0",
+   "tampil": "1.460",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor60.0",
+   "tampil": "47",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor61.0",
+   "tampil": "164",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor62.0",
+   "tampil": "588",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor63.0",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor64.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor65.0",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor70.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor71.0",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor73.0",
+   "tampil": "210",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor74.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor75.0",
+   "tampil": "41",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor76.0",
+   "tampil": "236",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor77.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor79.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor80.14",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor80.43",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor85.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor88.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor89.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor90.0",
+   "tampil": "97",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor91.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor93.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor99.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor102.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor103.0",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor104.0",
+   "tampil": "84",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor105.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor107.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor113.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor117.0",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor118.0",
+   "tampil": "61",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor119.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor121.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor128.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor132.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor133.0",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor136.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor138.6",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor139.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor140.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor141.0",
+   "tampil": "149",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor142.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor143.0",
+   "tampil": "9.755",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor144.0",
+   "tampil": "336",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor145.0",
+   "tampil": "1.096",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor146.0",
+   "tampil": "3.530",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor147.0",
+   "tampil": "56",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor148.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor149.0",
+   "tampil": "83",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor179.0",
+   "tampil": "1.840",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor182.0",
+   "tampil": "1.460",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor185.0",
+   "tampil": "1.215",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor197.44",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor201.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#impor202.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format laporan kaji cepat BPBD dan Pusdalops BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor1.0",
+   "tampil": "81",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor2.24",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor3.1",
+   "tampil": "5,3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor4.19",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor4.35",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor5.0",
+   "tampil": "2,7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor7.15",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor7.29",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor8.0",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor9.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor10.0",
+   "tampil": "20",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor11.0",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor12.0",
+   "tampil": "25",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor13.0",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor13.2",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor14.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor15.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor15.2",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor16.0",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor17.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor17.2",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor18.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor19.0",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor19.2",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor20.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor21.0",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor21.3",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor22.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor23.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor23.3",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor24.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor25.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor25.3",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor26.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor27.0",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor27.3",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor28.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor29.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor29.3",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor30.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor31.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor31.3",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor33.1",
+   "tampil": "5,3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor33.11",
+   "tampil": "17.48,",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor33.28",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor34.0",
+   "tampil": "81",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor35.15",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor35.34",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor36.0",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor38.30",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor39.1",
+   "tampil": "4,0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor40.0",
+   "tampil": "85,2",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor41.8",
+   "tampil": "99",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor43.1",
+   "tampil": "5,0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor44.0",
+   "tampil": "11,5",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor45.0",
+   "tampil": "34,7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor47.1",
+   "tampil": "6,0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor48.0",
+   "tampil": "0,8",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor49.0",
+   "tampil": "2,7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor51.1",
+   "tampil": "6,8",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor52.0",
+   "tampil": "0,1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor53.0",
+   "tampil": "0,3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor56.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor58.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor61.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor61.10",
+   "tampil": "17.48",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor62.1",
+   "tampil": "5,3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor63.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor65.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor65.10",
+   "tampil": "14.39",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor66.1",
+   "tampil": "5,0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor67.0",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor69.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor69.10",
+   "tampil": "15.12",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor70.1",
+   "tampil": "4,8",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor71.0",
+   "tampil": "20",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor73.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor73.10",
+   "tampil": "22.05",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor74.1",
+   "tampil": "4,6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor75.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor77.2",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor77.10",
+   "tampil": "03.31",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor78.1",
+   "tampil": "4,4",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor79.0",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor86.28",
+   "tampil": "1989",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor86.74",
+   "tampil": "2,84,",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor86.82",
+   "tampil": "1,19,",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor86.90",
+   "tampil": "0,90",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor86.108",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor88.179",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor89.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor90.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari model Reasenberg dan Jones dengan parameter public/gempa/data/model_susulan.json",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor1.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor3.0",
+   "tampil": "2.214",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor5.0",
+   "tampil": "9.755",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor11.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor11.11",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor11.20",
+   "tampil": "13",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor15.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor15.10",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor15.19",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor19.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor19.10",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor19.19",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor23.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor23.11",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor23.20",
+   "tampil": "13",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor30.0",
+   "tampil": "36",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor33.0",
+   "tampil": "184",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor36.0",
+   "tampil": "112",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor37.10",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor39.0",
+   "tampil": "820",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor42.0",
+   "tampil": "560",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor45.0",
+   "tampil": "96",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor46.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor48.0",
+   "tampil": "148",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor49.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor51.0",
+   "tampil": "74",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor52.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor54.0",
+   "tampil": "184",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor56.6",
+   "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor57.0",
+   "tampil": "2.214",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor61.26",
+   "tampil": "9.755",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor63.0",
+   "tampil": "244",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor64.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor64.20",
+   "tampil": "40",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor67.0",
+   "tampil": "146",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor68.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor71.0",
+   "tampil": "29.265",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor72.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor75.0",
+   "tampil": "196",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor76.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor76.13",
+   "tampil": "50",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor79.0",
+   "tampil": "9.755",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor80.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor83.0",
+   "tampil": "1.073",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor84.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor87.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor88.0",
+   "tampil": "176",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor88.19",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor91.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor92.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor95.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor96.21",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor103.15",
+   "tampil": "120",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor104.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor104.4",
+   "tampil": "21.40",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor106.16",
+   "tampil": "60",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor106.36",
+   "tampil": "2.000",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor107.2",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor107.4",
+   "tampil": "23.10",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor109.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor109.32",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor110.2",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor110.4",
+   "tampil": "06.00",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor112.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor112.36",
+   "tampil": "1.500",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor113.2",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor113.4",
+   "tampil": "09.30",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor117.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#7#impor118.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari standar minimum Sphere untuk dasar hitung kebutuhan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor0.8",
+   "tampil": "72",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor1.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor3.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor4.26",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor4.79",
+   "tampil": "72",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor6.1",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor6.17",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor6.25",
+   "tampil": "20.21",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor27.1",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor27.18",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor27.26",
+   "tampil": "14.21",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor34.20",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor48.1",
+   "tampil": "72",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor48.18",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor48.26",
+   "tampil": "14.21",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor52.10",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor52.42",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor69.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#8#impor70.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#8",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Data contoh (simulasi); Pengolahan data sistem BNPB dari format rencana operasi tanggap darurat BNPB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#9#kredit:foto8_0.jpg",
+   "tampil": "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons",
+   "nilai": null,
+   "naskah": "spek#9",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Wikimedia Commons, atribusi foto",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#9#kontak:call-center",
+   "tampil": "117",
+   "nilai": null,
+   "naskah": "spek#9",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#9#kontak:telepon",
+   "tampil": "021 2982 7793",
+   "nilai": null,
+   "naskah": "spek#9",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  }
+ ],
+ "catatan": [
+  [
+   "spek#1",
+   "judul_baris",
+   3
+  ],
+  [
+   "spek#3",
+   "impor_warna",
+   {
+    "7A8699": "7F93AA"
+   }
+  ],
+  [
+   "spek#4",
+   "impor_warna",
+   {
+    "7A8699": "7F93AA"
+   }
+  ],
+  [
+   "spek#6",
+   "impor_warna",
+   {
+    "7A8699": "7F93AA"
+   }
+  ]
+ ],
+ "keputusan": [],
+ "peringatan": [],
+ "masukan": {
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\logo-bersama\\kris.png": "d0c25d345951e4c4a3e4444be49d0a41bf58ce3ad1d2be1cc78608ad51ab0c25",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\data\\angka.json": "f07d7e3ced9d03ddd72354b534f786e93a3519fc6c3b3317f424f30fd6a72158",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\foto\\berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e01beb88bdb9217a75fcde1568ad206fcd48c6e18589e5a06fa067b73e706255",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
+  "foto0_0.jpg": "db3e3b66b8c825821f2b493d4586bb98878b4a764ce45b5d16d7a3db2efe4a22",
+  "foto8_0.jpg": "db3e3b66b8c825821f2b493d4586bb98878b4a764ce45b5d16d7a3db2efe4a22",
+  "isi.pptx": "5e93ac4128081866d7876c9de06e8a790e5017cf573327ab37b0547d0749ec82",
+  "spek.json": "77de9fa0192c80e98ac18512f0c9a572d3e73130198e6e5a8e43e3e7ecebbadc"
+ }
+}

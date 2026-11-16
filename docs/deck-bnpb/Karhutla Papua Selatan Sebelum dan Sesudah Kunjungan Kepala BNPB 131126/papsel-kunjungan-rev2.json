@@ -1,0 +1,706 @@
+{
+  "_catatan": "Revisi 2: perbandingan apple to apple. Dibangun dari spek/bangun_spek_papsel_rev2.py.",
+  "pesan_kunci": "Sesudah kunjungan kebakaran Papua Selatan lebih kecil dan api besar lebih cepat padam, tetapi diukur dengan persen dan rasio laju penurunannya melambat dan Merauke belum surut.",
+  "judul_dokumen": "Karhutla Papua Selatan Sebelum dan Sesudah Kunjungan Kepala BNPB",
+  "subjek_dokumen": "Luas terbakar dan kecepatan pemadaman",
+  "kajian": "papsel-kunjungan",
+  "format": "kajian",
+  "tanggal": "2026-11-13",
+  "cut_off": "13 Nov 2026, 10.31 WIB",
+  "bagian": [
+    {
+      "judul": "Luas Terbakar",
+      "label": "Luas terbakar"
+    },
+    {
+      "judul": "Kecepatan Pemadaman",
+      "label": "Kecepatan padam"
+    },
+    {
+      "judul": "Posisi Nasional dan Arahan",
+      "label": "Nasional dan arahan"
+    }
+  ],
+  "slide": [
+    {
+      "jenis": "sampul",
+      "layout": "putih",
+      "judul_penuh": true,
+      "skala_subjudul": 0.9,
+      "foto": "foto/udara-20.jpg",
+      "kota": "Jakarta",
+      "kredit": "Foto: kegiatan udara tim BNPB",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+      "subjudul": "Luas terbakar dan kecepatan pemadaman, 21 Oktober sampai 12 November 2026",
+      "penyaji": {
+        "nama": "Tim Ahli dan Tim Sus IT BNPB",
+        "jabatan": "Badan Nasional Penanggulangan Bencana"
+      }
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Ringkasan eksekutif",
+      "rasio": 0.52,
+      "judul": "Ringkasan eksekutif: sesudah kunjungan kebakaran Papua Selatan lebih kecil, tetapi laju penurunannya melambat",
+      "cut_off": false,
+      "grup": [
+        {
+          "pil": "Laju turun luas terbakar per sepuluh hari",
+          "nada": "data",
+          "ikon": "turun",
+          "kartu": [
+            {
+              "nilai": "{{angka:ps.laju.seb.luas|persen|arah}}",
+              "label": "sebelum kunjungan",
+              "ikon": "luas",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:ps.laju.ses.luas|persen|arah}}",
+              "label": "sesudah kunjungan",
+              "ikon": "luas",
+              "warna": "navy"
+            }
+          ]
+        },
+        {
+          "pil": "Luas cluster yang menyala lebih dari tiga hari",
+          "nada": "perhatian",
+          "ikon": "kalender",
+          "kartu": [
+            {
+              "nilai": "{{angka:ps.klw.seb.p9|persen}}",
+              "label": "sebelum kunjungan",
+              "ikon": "karhutla",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:ps.klw.ses.p9|persen}}",
+              "label": "sesudah kunjungan",
+              "ikon": "turun",
+              "warna": "merah"
+            }
+          ]
+        }
+      ],
+      "grafik": {
+        "judul_panel": "Luas lahan terbakar per hari terus mengecil",
+        "ikon": "luas",
+        "keluarga": "api",
+        "judul": "**Luas terbakar**, hektare per hari",
+        "data": {
+          "csv": "data/papsel/ringkas_luas.csv",
+          "kolom": [
+            {
+              "nama": "periode"
+            },
+            {
+              "nama": "Luas terbakar per hari",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+        }
+      },
+      "panel": {
+        "judul": "Apa artinya",
+        "ikon": "ringkasan",
+        "daftar": [
+          "**Kebakaran lebih kecil.** Luas terbakar per hari sesudah kunjungan adalah yang terendah sejak awal Oktober.",
+          "**Kecepatan padam harian setara.** Luas yang padam dalam dua hari {{angka:ps.rp.bobot.seb|persen}} sebelum dan {{angka:ps.rp.bobot.ses|persen}} sesudah kunjungan.",
+          "**Api besar padam lebih cepat.** Cluster yang lama menyala kini jauh lebih sedikit, dihitung menurut luasnya.",
+          "**Penurunan terbesar di luar Merauke.** Sebanyak {{angka:ps.luar.porsi|persen}} penurunan luas berasal dari tiga kabupaten lain.",
+          "**Faktor lain ikut berperan.** Peluang hujan akhir Oktober dan operasi modifikasi cuaca juga menekan api."
+        ]
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026; InfoPublik, 30 Okt 2026"
+    },
+    {
+      "jenis": "daftar-isi"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 1
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "pesan": "Tren luas terbakar",
+      "rasio": 0.63,
+      "judul": "Luas harian {{angka:ps.laju.seb.luas|persen|arah}} pada sepuluh hari sebelum kunjungan, tetapi hanya {{angka:ps.laju.ses.luas|persen|arah}} pada sepuluh hari sesudahnya",
+      "cut_off": false,
+      "utama": {
+        "judul": "Luas terbakar dan belum padam harian, Papua Selatan",
+        "ikon": "luas",
+        "gambar": true,
+        "subjudul_grafik": "Hektare per hari, Oktober sampai pertengahan November 2026",
+        "garis": {
+          "data": {
+            "csv": "data/papsel/harian.csv",
+            "kolom": [
+              {
+                "nama": "hari"
+              },
+              {
+                "nama": "Luas terbakar",
+                "fmt": "0"
+              },
+              {
+                "nama": "Belum padam",
+                "fmt": "0"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+          },
+          "sorot": "Luas terbakar",
+          "zona": {
+            "dari": "1 Nov",
+            "sampai": "12 Nov",
+            "label": "Sesudah kunjungan"
+          },
+          "mulai_nol": true,
+          "skala_huruf": 1.1
+        }
+      },
+      "panel": {
+        "judul": "Rata-rata per sepuluh hari",
+        "ikon": "kalender",
+        "data": {
+          "csv": "data/papsel/dasarian.csv",
+          "kolom": [
+            {
+              "nama": "periode",
+              "kepala": "Periode"
+            },
+            {
+              "nama": "luas",
+              "kepala": "Luas (ha)",
+              "fmt": "0"
+            },
+            {
+              "nama": "belum",
+              "kepala": "Belum padam (ha)",
+              "fmt": "0"
+            },
+            {
+              "nama": "hot",
+              "kepala": "Hotspot",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+          "sorot": [
+            "Awal Nov"
+          ]
+        },
+        "peringkat": false,
+        "skala_huruf": 1.65,
+        "daftar": [
+          "Hari kunjungan tidak ikut dihitung. Periode sebelum dan sesudah sama panjang, masing-masing sepuluh hari.",
+          "Angka sesudah kunjungan lebih kecil, tetapi persen turunnya jauh lebih kecil dari periode sebelumnya.",
+          "Karena itu membandingkan angka akhir saja akan membuat penurunan sesudah kunjungan tampak lebih baik.",
+          "Belum padam adalah bagian luas terbakar yang apinya masih bertahan dari hari sebelumnya."
+        ]
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "pesan": "Sebaran hotspot bergeser",
+      "rasio": 0.5,
+      "ulang_angka_boleh": "dua peta sebanding memakai lingkaran acuan legenda yang sama",
+      "judul": "Hotspot di Jagebob, lokasi tinjauan, {{angka:ps.jgb.ubah|persen|arah}} sesudah kunjungan; api kini terpusat di Kontuar dan Kimaam",
+      "cut_off": false,
+      "utama": {
+        "judul": "Sepuluh hari sebelum kunjungan",
+        "ikon": "karhutla",
+        "gambar": true,
+        "peta": {
+          "mode": "titik",
+          "tingkat": "kabupaten",
+          "wilayah": [
+            "93"
+          ],
+          "satuan": "Hotspot",
+          "label": 3,
+          "skala_huruf": 0.9,
+          "warna_titik": "merah",
+          "data": {
+            "csv": "data/papsel/kec_seb.csv",
+            "kolom": [
+              {
+                "nama": "kecamatan"
+              },
+              {
+                "nama": "hotspot",
+                "kepala": "Hotspot",
+                "fmt": "0"
+              },
+              {
+                "nama": "lon",
+                "fmt": "4"
+              },
+              {
+                "nama": "lat",
+                "fmt": "4"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+          }
+        }
+      },
+      "panel": {
+        "judul": "Sepuluh hari sesudah kunjungan",
+        "ikon": "karhutla",
+        "gambar": true,
+        "peta": {
+          "mode": "titik",
+          "tingkat": "kabupaten",
+          "wilayah": [
+            "93"
+          ],
+          "satuan": "Hotspot",
+          "label": 3,
+          "skala_huruf": 0.9,
+          "warna_titik": "merah",
+          "data": {
+            "csv": "data/papsel/kec_ses.csv",
+            "kolom": [
+              {
+                "nama": "kecamatan"
+              },
+              {
+                "nama": "hotspot",
+                "kepala": "Hotspot",
+                "fmt": "0"
+              },
+              {
+                "nama": "lon",
+                "fmt": "4"
+              },
+              {
+                "nama": "lat",
+                "fmt": "4"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+          }
+        }
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026; lokasi tinjauan dari Renlap rute udara BNPB, 30 Okt 2026"
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "panel",
+      "judul_bentuk": "temuan",
+      "pesan": "Penurunan di luar Merauke",
+      "rasio": 0.5,
+      "judul": "Luas terbakar Merauke hanya {{angka:ps.mk.ubah|persen|arah}}, sehingga kini {{angka:ps.mk.porsi|persen}} luas terbakar Papua Selatan ada di Merauke",
+      "cut_off": false,
+      "utama": {
+        "judul": "Penurunan luas terbakar per kabupaten",
+        "ikon": "wilayah",
+        "gambar": true,
+        "subjudul_grafik": "Persen turun, sepuluh hari sesudah dibanding sepuluh hari sebelum kunjungan",
+        "lollipop": {
+          "data": {
+            "csv": "data/papsel/kab_turun.csv",
+            "kolom": [
+              {
+                "nama": "kab"
+              },
+              {
+                "nama": "turun",
+                "kepala": "Turun (%)",
+                "fmt": "1"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+          },
+          "sorot": "Merauke",
+          "skala_huruf": 1.2
+        }
+      },
+      "panel": {
+        "judul": "Hotspot per kecamatan di Merauke",
+        "ikon": "karhutla",
+        "data": {
+          "csv": "data/papsel/kec_banding.csv",
+          "kolom": [
+            {
+              "nama": "kecamatan",
+              "kepala": "Kecamatan"
+            },
+            {
+              "nama": "sebelum",
+              "kepala": "Sebelum",
+              "fmt": "0"
+            },
+            {
+              "nama": "sesudah",
+              "kepala": "Sesudah",
+              "fmt": "0"
+            },
+            {
+              "nama": "ubah",
+              "kepala": "Perubahan (%)",
+              "fmt": "1|arah"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026",
+          "sorot": [
+            "Jagebob",
+            "Kontuar",
+            "Kimaam"
+          ]
+        },
+        "peringkat": false,
+        "skala_huruf": 1.2,
+        "daftar": [
+          "Hotspot Jagebob turun lebih dari separuh, sedangkan hotspot Kimaam naik sekitar seperempat.",
+          "Kimaam berada di Pulau Yos Sudarso, sehingga regu darat sulit menjangkaunya.",
+          "Luas dihitung hanya dari hotspot berkeyakinan sedang dan tinggi, sehingga turunnya bisa berbeda dari jumlah hotspot."
+        ]
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 2
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "temuan",
+      "pesan": "Perbandingan apple to apple",
+      "rasio": 0.66,
+      "judul": "Diukur dengan persen dan rasio, kecepatan padam harian setara; yang membaik hanya api yang lama menyala, turun ke {{angka:ps.klw.ses.p9|persen}}",
+      "cut_off": false,
+      "tabel": {
+        "judul_panel": "Ukuran yang tidak bergantung pada besar kecilnya kebakaran",
+        "ikon": "data",
+        "peringkat": false,
+        "data": {
+          "csv": "data/papsel/ukuran.csv",
+          "kolom": [
+            {
+              "nama": "ukuran",
+              "kepala": "Ukuran"
+            },
+            {
+              "nama": "sebelum",
+              "kepala": "Sebelum",
+              "fmt": "0"
+            },
+            {
+              "nama": "sesudah",
+              "kepala": "Sesudah",
+              "fmt": "0"
+            },
+            {
+              "nama": "arti",
+              "kepala": "Arti"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026",
+          "sorot": [
+            "Luas api yang menyala lebih dari tiga hari (%)",
+            "Belum padam dibanding kemarin, nilai tengah (%)"
+          ]
+        }
+      },
+      "panel": {
+        "judul": "Mengapa memakai persen dan rasio",
+        "ikon": "ringkasan",
+        "skala_huruf": 1.33,
+        "daftar": [
+          "Kebakaran yang lebih kecil wajar menghasilkan angka akhir lebih kecil, walaupun pemadamannya tidak lebih cepat.",
+          "Persen dan rasio membandingkan tiap periode dengan keadaan awalnya sendiri, sehingga setara.",
+          "Rata-rata berbobot memberi bobot sesuai luas api, sehingga hari dengan api kecil tidak menarik angka berlebihan; cara ini dipakai untuk luas yang padam dalam dua hari.",
+          "Rata-rata biasa ikut ditampilkan sebagai pembanding, tetapi tidak dipakai untuk menarik kesimpulan."
+        ]
+      },
+      "pita": {
+        "label": "Intinya",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "turun",
+            "judul": "Yang melambat",
+            "isi": "Semua laju turun per sepuluh hari lebih kecil sesudah kunjungan."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "Yang setara",
+            "isi": "Kecepatan padam harian, diukur dengan dua cara, hampir sama."
+          },
+          {
+            "ikon": "karhutla",
+            "judul": "Yang membaik",
+            "isi": "Api besar yang lama menyala jauh berkurang."
+          }
+        ]
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026"
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "pesan": "Rasio harian belum padam",
+      "rasio": 0.6,
+      "judul": "Tiap hari, belum padam biasanya tinggal {{angka:ps.rb.median.seb|persen}} dari hari sebelumnya sebelum kunjungan dan {{angka:ps.rb.median.ses|persen}} sesudahnya",
+      "cut_off": false,
+      "utama": {
+        "judul": "Belum padam dibanding sehari sebelumnya",
+        "ikon": "karhutla",
+        "gambar": true,
+        "subjudul_grafik": "Persen, Papua Selatan; di bawah seratus persen berarti api menyusut dari hari sebelumnya",
+        "garis": {
+          "data": {
+            "csv": "data/papsel/rasio_harian.csv",
+            "kolom": [
+              {
+                "nama": "hari"
+              },
+              {
+                "nama": "Belum padam dibanding kemarin",
+                "fmt": "0"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+          },
+          "zona": {
+            "dari": "1 Nov",
+            "sampai": "10 Nov",
+            "label": "Sesudah kunjungan"
+          },
+          "mulai_nol": true,
+          "skala_huruf": 1.1
+        }
+      },
+      "panel": {
+        "judul": "Cara membaca rasio harian",
+        "ikon": "kalender",
+        "daftar": [
+          "Rasio harian adalah luas belum padam pada suatu hari dibagi luas belum padam sehari sebelumnya.",
+          "Nilai tengah dipakai karena beberapa hari melonjak lebih dari tiga kali lipat saat api baru muncul.",
+          "Rata-rata berbobot luas kemarin menghasilkan {{angka:ps.rb.bobot.seb|persen}} dan {{angka:ps.rb.bobot.ses|persen}}, tetapi cara ini hanya ditentukan hari pertama dan terakhir tiap periode, sehingga tidak stabil.",
+          "Ukuran berbobot yang stabil adalah luas yang padam dalam dua hari: {{angka:ps.rp.bobot.seb|persen}} sebelum dan {{angka:ps.rp.bobot.ses|persen}} sesudah kunjungan."
+        ]
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "panel",
+      "judul_bentuk": "temuan",
+      "pesan": "Kecepatan padam cluster",
+      "rasio": 0.55,
+      "judul": "Dihitung menurut luas, cluster yang menyala lebih dari tiga hari turun dari {{angka:ps.klw.seb.p9|persen}} menjadi {{angka:ps.klw.ses.p9|persen}}",
+      "cut_off": false,
+      "utama": {
+        "judul": "Lama api menyala, dibobot menurut luasnya",
+        "ikon": "karhutla",
+        "gambar": true,
+        "subjudul_grafik": "Persen dari luas semua api yang mulai menyala pada tiap periode",
+        "kolom_tumpuk": {
+          "data": {
+            "csv": "data/papsel/umur_cluster_luas.csv",
+            "kolom": [
+              {
+                "nama": "periode"
+              },
+              {
+                "nama": "Sehari atau kurang",
+                "fmt": "0"
+              },
+              {
+                "nama": "Dua sampai tiga hari",
+                "fmt": "0"
+              },
+              {
+                "nama": "Lebih dari tiga hari",
+                "fmt": "0"
+              }
+            ],
+            "keyakinan": "estimasi-model",
+            "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026"
+          },
+          "persen": true,
+          "warna": [
+            "skala.netral.2",
+            "oranye",
+            "merah"
+          ],
+          "skala_huruf": 1.1,
+          "total": false
+        }
+      },
+      "panel": {
+        "judul": "Cara mengukur kecepatan padam",
+        "ikon": "kalender",
+        "daftar": [
+          "Dihitung per jumlah cluster, yang menyala lebih dari tiga hari turun dari {{angka:ps.kl.seb.p9|persen}} menjadi {{angka:ps.kl.ses.p9|persen}}.",
+          "Bobot luas dipakai karena api besar lebih berat ditangani; luas tiap api diambil pada enam hari pertamanya supaya setara.",
+          "Sebelum berarti api yang mulai menyala pada lima hari terakhir Oktober; sesudah berarti lima hari pertama November. Tiap api diamati paling sedikit enam hari.",
+          "Kecepatan padam ini tidak hanya hasil pemadaman; hujan dan habisnya bahan bakar ikut berperan."
+        ]
+      },
+      "sumber": "Cluster hotspot Centurisk BNPB, 21 Okt sampai 12 Nov 2026"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 3
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "pesan": "Terluas nasional",
+      "rasio": 0.7,
+      "judul": "Walau turun, Papua Selatan kini provinsi dengan luas terbakar terbesar di Indonesia: {{angka:ps.nas.porsi|persen}} luas nasional sejak awal November",
+      "cut_off": false,
+      "utama": {
+        "judul": "Luas terbakar per provinsi, awal sampai pertengahan November 2026",
+        "ikon": "wilayah",
+        "gambar": true,
+        "peta": {
+          "mode": "koroplet",
+          "ambang": [
+            100,
+            1000,
+            5000,
+            10000
+          ],
+          "skala": "api",
+          "satuan": "Luas terbakar (ha)",
+          "label": 4,
+          "skala_huruf": 1.1,
+          "data": {
+            "csv": "data/papsel/nasional_nov.csv",
+            "kolom": [
+              {
+                "nama": "provinsi"
+              },
+              {
+                "nama": "luas",
+                "kepala": "Luas (ha)",
+                "fmt": "0"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+          }
+        }
+      },
+      "panel": {
+        "judul": "Yang perlu dicatat",
+        "ikon": "peringatan",
+        "daftar": [
+          "Sejak awal November luas terbakar Papua Selatan melampaui Kalimantan Tengah, yang sepanjang Oktober menjadi provinsi terluas.",
+          "Pada Oktober luasnya {{angka:ps.okt.luas|satuan}}, kedua terbesar sesudah Kalimantan Tengah.",
+          "Hotspot Papua Selatan masih rata-rata {{angka:ps.ses.hot.hari|satuan}} per hari sesudah kunjungan.",
+          "Merauke tetap memerlukan regu darat dan helikopter sampai hujan merata."
+        ]
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB, 13 Nov 2026"
+    },
+    {
+      "jenis": "kesimpulan",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Kesimpulan dan arahan",
+      "judul": "Sesudah kunjungan kebakaran lebih kecil dan api besar lebih cepat padam, tetapi laju penurunan melambat dan kecepatan padam harian setara",
+      "cut_off": false,
+      "skala_isi": 1.3,
+      "kartu": [
+        {
+          "label": "Luas terbakar",
+          "ikon": "luas",
+          "warna": "navy",
+          "judul": "Kebakaran lebih kecil",
+          "isi": "Rata-rata luas terbakar turun dari {{angka:ps.seb.luas.hari|satuan}} menjadi {{angka:ps.ses.luas.hari|satuan}} per hari."
+        },
+        {
+          "label": "Laju turun",
+          "ikon": "turun",
+          "warna": "oranye",
+          "judul": "Penurunan melambat",
+          "isi": "Luas harian {{angka:ps.laju.seb.luas|persen|arah}} sebelum kunjungan, tetapi hanya {{angka:ps.laju.ses.luas|persen|arah}} sesudahnya."
+        },
+        {
+          "label": "Belum padam",
+          "ikon": "karhutla",
+          "warna": "navy",
+          "judul": "Penyusutan harian setara",
+          "isi": "Belum padam biasanya tinggal {{angka:ps.rb.median.seb|persen}} dari kemarin sebelum kunjungan, {{angka:ps.rb.median.ses|persen}} sesudahnya."
+        },
+        {
+          "label": "Padam dua hari",
+          "ikon": "kalender",
+          "warna": "navy",
+          "judul": "Hampir sama",
+          "isi": "Luas yang padam dalam dua hari {{angka:ps.rp.bobot.seb|persen}} sebelum dan {{angka:ps.rp.bobot.ses|persen}} sesudah kunjungan."
+        },
+        {
+          "label": "Api besar",
+          "ikon": "karhutla",
+          "warna": "navy",
+          "judul": "Lebih cepat padam",
+          "isi": "Luas cluster yang menyala lebih dari tiga hari turun dari {{angka:ps.klw.seb.p9|persen}} menjadi {{angka:ps.klw.ses.p9|persen}}."
+        },
+        {
+          "label": "Merauke",
+          "ikon": "wilayah",
+          "warna": "oranye",
+          "judul": "Penurunan di luar Merauke",
+          "isi": "Sebanyak {{angka:ps.luar.porsi|persen}} penurunan luas provinsi berasal dari tiga kabupaten selain Merauke."
+        },
+        {
+          "label": "Faktor lain",
+          "ikon": "cuaca-ekstrem",
+          "warna": "oranye",
+          "judul": "Hujan dan OMC",
+          "isi": "Ada peluang awan hujan di selatan Merauke pada akhir Oktober, dan OMC sudah terbang {{angka:ps.omc.sorti|satuan}} sebelum kunjungan."
+        },
+        {
+          "label": "Nasional",
+          "ikon": "karhutla",
+          "warna": "oranye",
+          "judul": "Terluas di Indonesia",
+          "isi": "Sejak awal November Papua Selatan menyumbang {{angka:ps.nas.porsi|persen}} luas terbakar nasional."
+        }
+      ],
+      "arahan": {
+        "label": "Arahan",
+        "ikon": "peringatan",
+        "teks": "Pertahankan regu darat dan helikopter di Merauke sampai hujan merata, terutama di Kontuar dan Kimaam yang hotspot-nya masih tinggi."
+      },
+      "sumber": "NASA FIRMS, diolah Centurisk BNPB (luas harian dan cluster), 13 Nov 2026; InfoPublik, 30 Okt 2026"
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/udara-20.jpg",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kredit": "Foto: kegiatan udara tim BNPB",
+      "teks": "Terima Kasih",
+      "laporan": "Karhutla Papua Selatan sebelum dan sesudah kunjungan Kepala BNPB"
+    }
+  ]
+}

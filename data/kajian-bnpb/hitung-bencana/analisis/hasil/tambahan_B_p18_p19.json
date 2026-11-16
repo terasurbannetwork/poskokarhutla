@@ -1,0 +1,14 @@
+{
+ "gempa_baris": 60,
+ "gempa_lolos": 43,
+ "gempa_dampak_nol": 10,
+ "gempa_is_bencana_true": 48,
+ "banjir_genangan_baris": 21,
+ "banjir_genangan_lolos": 11,
+ "banjir_genangan_lolos_hanya_K2": 11,
+ "banjir_baris": 1188,
+ "banjir_lolos": 910,
+ "karhutla_baris": 1208,
+ "karhutla_dampak_nol": 1182,
+ "karhutla_is_bencana_true": 1129
+}

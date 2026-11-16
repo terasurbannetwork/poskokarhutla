@@ -1,0 +1,70 @@
+{
+ "jenis_gabungan": {
+  "Banjir": 4886,
+  "Banjir dan Tanah Longsor": 47,
+  "Banjir Bandang": 43,
+  "Tanah Longsor": 1617,
+  "Gempabumi": 218,
+  "Gempa Bumi dan Tsunami": 1,
+  "Tsunami": 2,
+  "Banjir Rob": 27,
+  "Banjir Genangan": 24,
+  "Gerakan Tanah": 29
+ },
+ "jenis_gabungan_total_baris": 15974,
+ "lintas_tahun_31des_1jan_sama_kab_jenis": {
+  "total": 2,
+  "per_jenis": {
+   "Tanah Longsor": 1,
+   "Banjir": 1
+  },
+  "contoh": [
+   [
+    "Lombok Tengah",
+    "2024-12-31"
+   ]
+  ]
+ },
+ "rangkaian_hari_berurutan": {
+  "Kebakaran Hutan dan Lahan": {
+   "n_rangkaian": 2767,
+   "median_hari": 1,
+   "p90_hari": 2,
+   "maks_hari": 22
+  },
+  "Banjir": {
+   "n_rangkaian": 4376,
+   "median_hari": 1,
+   "p90_hari": 1,
+   "maks_hari": 6
+  },
+  "Cuaca Ekstrem": {
+   "n_rangkaian": 2894,
+   "median_hari": 1,
+   "p90_hari": 1,
+   "maks_hari": 7
+  },
+  "Kekeringan": {
+   "n_rangkaian": 266,
+   "median_hari": 1,
+   "p90_hari": 1,
+   "maks_hari": 2
+  }
+ },
+ "banjir_jeda_antar_rangkaian_sama_kab": {
+  "n_pasangan": 3902,
+  "jeda_1_2_hari": 425,
+  "jeda_1_7_hari": 1018,
+  "jeda_8_30_hari": 1099
+ },
+ "karhutla_jeda_antar_rangkaian_sama_kab": {
+  "n_pasangan": 2427,
+  "jeda_1_2_hari": 565,
+  "jeda_1_7_hari": 1182,
+  "jeda_8_30_hari": 655
+ },
+ "pecahan_kelompok_hari_jenis_provinsi_nilai_sama": {
+  "kelompok": 286,
+  "kelompok_dengan_kab_sebanyak_1_per_nilai": 220
+ }
+}

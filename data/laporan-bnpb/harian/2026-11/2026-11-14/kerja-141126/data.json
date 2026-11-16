@@ -1,0 +1,265 @@
+{
+ "hari": "2026-11-14",
+ "cutoff": "2026-11-14T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "Masih dalam pendataan",
+    "status_darurat": "Tanggap Darurat TMT 09/10/2026 s.d 22/11/2026",
+    "kondisi": "Air masih belum surut, dan kondisi Jalur Ise-ise tidak bisa dilalui kendaraan bermotor.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-09",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 654.0,
+    "rumah_dampak": 654.0
+   },
+   "teks": {
+    "dampak": "± 654 KK terdampak (Dalam pendataan)",
+    "status_darurat": "Siaga Darurat TMT 11/11/2026 s.d 31/01/2026",
+    "kondisi": "Banjir masih belum surut di 2 kecamatan (Kec. Sultan Daulat dan Kec. Rundeng).",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tenggara",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 503.0,
+    "rumah_dampak": 503.0
+   },
+   "teks": {
+    "dampak": "503 KK / 1.697 jiwa terdampak  (pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Air belum surut di 5 Desa dari 17 Desa terdampak serta Personel Damkar BPBD Aceh Tenggara membersihkan beberapa lokasi yg sudah surut.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 8608.0,
+    "rumah_dampak": 8608.0
+   },
+   "teks": {
+    "dampak": "±8.608 KK / 32.272 Jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Sebagian gampong air sudah surut dan meninggalkan genangan kecil dan lumpur.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-01",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 231.0,
+    "mengungsi": 53.0,
+    "rumah_dampak": 139.0
+   },
+   "teks": {
+    "dampak": "± 231 KK/ 656 jiwa terdampak",
+    "status_darurat": "Siaga Darurat TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Jalan menuju Kampung Tenggulun tidak bisa dilalui Kendaraan roda 4 dan roda 2, Air sudah menggenangi pemukiman Masyarakat.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Menggenangi",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Toba",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2.0,
+    "rumah_dampak": 2.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "± 2 KK terdampak (Dalam pendataan)",
+    "status_darurat": "Transisi Darurat ke Pemulihan Bencana TMT 1/10/2026 s.d 31/12/2026",
+    "kondisi": "Lokasi terdampak masih dalam penanganan oleh Pemerintah setempat.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Langkat",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 835.0,
+    "rumah_dampak": 835.0,
+    "transisi_sd": "2026-12-25"
+   },
+   "teks": {
+    "dampak": "± 835 KK / 2.755 jiwa terdampak (pendataan)",
+    "status_darurat": "Transisi Darurat ke Pemulihan TMT 25/06/2026 s.d 25/12/2026",
+    "kondisi": "Pengungsi sudah kembali ke rumah masing-masing dan Banjir berangsur surut, TMA ± 10 s.d 50 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "18",
+   "lokasi": "Pesisir Barat",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 100.0,
+    "rumah_dampak": 100.0
+   },
+   "teks": {
+    "dampak": "± 100 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Air masih menggenangi sejumlah rumah warga",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Menggenangi",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "32",
+   "lokasi": "Pangandaran",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 16939.0,
+    "jiwa": 48376.0,
+    "liter": 1752000.0
+   },
+   "teks": {
+    "dampak": "± 16.939 KK / 48.376 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Hingga hari Jumat, 13 November 2026, BPBD Kabupaten Pangandaran telah menyalurkan sebanyak 1.752.000 liter air untuk total 16.939 KK / 48.376 jiwa terdampak kekeringan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "35",
+   "lokasi": "Lumajang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 26.0,
+    "rumah": 26.0
+   },
+   "teks": {
+    "dampak": "± 26 KK terdampak",
+    "status_darurat": "Perpanjangan Status Siaga Darurat TMT 7/10/2026 s.d 1/12/2026",
+    "kondisi": "Dalam penanganan BPBD Kab. Lumajang",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "81",
+  "53",
+  "64",
+  "72",
+  "82",
+  "93"
+ ]
+}

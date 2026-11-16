@@ -1,0 +1,133 @@
+P-01 Menyatu || Pilih opsi A dengan aturan sistem kita sampai Fase 2 memilih jarak dan jendela, rujuk Q-06 dan Q-08. [BAWAAN SEMENTARA] aturan `harian.py` (jarak adaptif sampai 1,5 km, selisih 48 jam), luas dilaporkan sebagai luas gabungan akhir. ---
+P-02 Terpecah || Pilih opsi A: kejadian tidak dipecah karena bentuk; pemecahan hanya bila semua bagian padam penuh lebih dari jeda Q-09. [BAWAAN SEMENTARA] Q-09 (7 hari tanpa laporan aktif). ---
+P-03 Api berpindah (kapal Theseus) || Pilih opsi A dengan penanda segmen wilayah dan segmen waktu; batas umur ditentukan lewat Q-09 dan Q-06. [BAWAAN SEMENTARA] aturan sistem kita (jendela 7 hari) sampai Fase 2 menguji musim penuh. ---
+P-04 Menyala lagi || Pilih opsi A; rujuk Q-09. [BAWAAN SEMENTARA] 7 hari tanpa laporan aktif berarti kejadian baru, dengan jeda lebih panjang untuk gambut ditetapkan di Fase 2. ---
+P-05 Lintas batas || Pilih opsi A; rujuk Q-03. [BAWAAN SEMENTARA] dua angka disajikan dengan nama berbeda; kode kejadian induk dibawa oleh semua baris kabupaten. ---
+P-06 Berulang || Pilih opsi A; rujuk Q-09. [BAWAAN SEMENTARA] 7 hari tanpa laporan aktif berarti kejadian baru. ---
+P-07 Berantai || Pilih opsi A; rujuk Q-10. [BAWAAN SEMENTARA] satu kejadian induk dengan anak per bahaya, korban dicatat sekali pada bahaya penyebab langsung dan dijumlah sekali di induk. ---
+P-08 Susulan || Pilih gabungan A dan B: susulan menjadi episode induk selama dalam jeda Q-09; kejadian baru hanya bila terpisah ruang dan waktu. Rujuk Q-baru-A-3. [BAWAAN SEMENTARA] susulan bagian dari induk selama dalam jeda Q-09. ---
+P-09 Majemuk || Pilih opsi C untuk kejadian majemuk, mengikuti Q-10, dengan tipe utama induk menurut dampak terbesar (Q-baru-A-2). [BAWAAN SEMENTARA] induk dengan anak per bahaya. ---
+P-10 Lambat || Pilih opsi A, dengan opsi C sebagai pengujian silang. Rujuk Q-baru-A-4. [BAWAAN SEMENTARA] satu kejadian per musim per kabupaten, selesai setelah 30 hari tanpa laporan aktif (durasi logbook persentil ke-90 kekeringan 16 hari; angka 30 diuji di Fase 2). ---
+P-11 Lintas tahun || Pilih opsi A; rujuk Q-baru-A-1 dan Q-07. [BAWAAN SEMENTARA] tahun tanggal mulai, dampak dilaporkan pada tahun itu dengan penanda lintas tahun; angka statis dibekukan per rilis. ---
+P-12 Titik lawan wilayah || Pilih opsi A untuk kejadian berluas dan opsi B bila poligon tidak tersedia. Satu kejadian punya satu titik perwakilan, daftar kabupaten, dan sumber luas (P-60). [BAWAAN SEMENTARA] opsi B sampai Q-08 dijawab. ---
+P-38 Tulis ulang harian || Pilih opsi A sebagai tujuan; sampai berjalan, pakai V1g sebagai pembanding dengan nilai terbesar sebagai aturan angka dan jelaskan batasnya. Rujuk Q-07 dan Q-08. [BAWAAN SEMENTARA] nilai terbesar (bukan jumlah) sebagai aturan angka sementara. ---
+P-39 Tanggal kejadian lawan tanggal laporan || Pilih opsi A dengan nomor versi pada tiap rilis statis; rujuk Q-07 dan Q-baru-A-1. [BAWAAN SEMENTARA] tanggal kejadian untuk hitungan, tanggal laporan sebagai metadata, angka statis dibekukan per rilis. ---
+P-48 Pecahan kejadian || Pilih opsi A; rujuk Q-03. [BAWAAN SEMENTARA] dua angka disajikan dengan nama berbeda, pecahan tidak dipakai sebagai satuan penyajian. ---
+P-50 Jenis gabungan || Pilih opsi A: jenis dari 13 kode baku, nama kejadian dari daftar tertutup, dan jenis terkait di kolom terpisah (Q-10, Q-baru-A-2). [BAWAAN SEMENTARA] opsi A. ---
+P-56 Kejadian tanpa wilayah darat || Pilih opsi A (aturan Juklak) dan simpan titik laut. Lingkup kecelakaan pelayaran ditanyakan ke pemilik lewat Q-baru-A-5. [BAWAAN SEMENTARA] opsi A; kecelakaan pelayaran di luar lingkup sampai dikonfirmasi. ---
+P-64 Bahaya dari luar negeri || Rujuk Q-baru-A-6. [BAWAAN SEMENTARA] opsi A: dampak di wilayah kita dicatat dengan penanda "sumber luar negeri" dan rujukan nomor kejadian eksternal. ---
+=== Q lampiran-a-A.md 
+
+- **Q-baru-A-1 Tahun pencatatan kejadian lintas tahun** (P-11, P-39). Pertanyaan: kejadian yang melewati 31 Desember dihitung di tahun mulai atau dibagi menurut tanggal dampak? [BAWAAN SEMENTARA] tahun tanggal mulai, dampak dilaporkan pada tahun itu dengan penanda lintas tahun.
+- **Q-baru-A-2 Aturan memilih tipe utama** (P-07, P-09, P-50). Pertanyaan: siapa dan menurut apa tipe utama kejadian majemuk ditentukan (pemicu awal atau dampak terbesar)? [BAWAAN SEMENTARA] dampak terbesar, ditetapkan Pusdalops dan dapat dikoreksi Pusdatinkom.
+- **Q-baru-A-3 Gempa susulan** (P-08). Pertanyaan: susulan yang merusak lagi adalah episode kejadian induk atau kejadian baru? [BAWAAN SEMENTARA] episode induk selama dalam jeda Q-09; kejadian baru hanya bila terpisah ruang dan waktu.
+- **Q-baru-A-4 Kejadian lambat** (P-10). Pertanyaan: kapan kekeringan, kabut asap, dan abrasi mulai dan selesai? [BAWAAN SEMENTARA] satu kejadian per musim per kabupaten, selesai setelah 30 hari tanpa laporan aktif; angka 30 diuji di Fase 2.
+- **Q-baru-A-5 Lingkup kejadian di laut** (P-56). Pertanyaan: apakah kecelakaan pelayaran dan kapal tenggelam masuk lingkup bencana dan bagaimana kabupaten ditetapkan? [BAWAAN SEMENTARA] di luar lingkup sampai dikonfirmasi; kejadian laut dari 13 jenis memakai wilayah terdampak terdekat.
+- **Q-baru-A-6 Bahaya dari luar negeri** (P-64). Pertanyaan: apakah dampak asap atau abu dari luar negeri di wilayah kita dicatat sebagai kejadian? [BAWAAN SEMENTARA] dicatat dengan penanda "sumber luar negeri" dan rujukan nomor eksternal.
+- **Q-baru-A-7 Identitas kejadian dibawa lintas laporan** (P-38). Pertanyaan: apakah Pusdalops menerbitkan KIB dengan sufiks pada laporan pertama dan membawanya pada pengkinian, sebagai pengganti kunci yang disimpulkan dari teks? [BAWAAN SEMENTARA] ya, sebagai tujuan; V1g dipakai sementara.
+
+P-13 Sorites || Terapkan ambang sesudah kejadian dibentuk (opsi A), dan tetapkan angka ambang luas lewat Q-04 [BAWAAN SEMENTARA: 1 ha belum diganti; Fase 2 menyimulasikan beberapa angka]. ---
+P-14 Iris salami || Uji ambang pada kejadian utuh (opsi A atau C); sajikan dua angka sesuai Q-03 [BAWAAN SEMENTARA: kejadian nasional dan kejadian per kabupaten disajikan dengan nama berbeda]. ---
+P-15 Melingkar || Jadikan K5 dan K6 penanda, bukan pemicu, dengan jalur masuk administratif hanya untuk SK tanggap darurat yang menyebut kejadian tertentu (Q-05 [BAWAAN SEMENTARA: diusulkan menjadi penanda]). ---
+P-16 Insentif (hukum Goodhart) || Pertahankan ambang, tambahkan kolom status verifikasi dan versi angka (Q-07 [BAWAAN SEMENTARA]), dan jangan menyimpulkan penggelembungan sebelum ada pembanding hasil verifikasi. ---
+P-17 Normalisasi || Pertahankan ambang absolut untuk masuk (L2), tambahkan angka per 10.000 penduduk sebagai penanda untuk L3, dan ajukan pertanyaan Q-baru-B-1. ---
+P-18 Bahaya tanpa bencana || Opsi B: bahaya tanpa dampak dicatat sebagai daftar terpisah dan tidak dijumlah dengan kejadian bencana [BAWAAN SEMENTARA]; jawab bersama P-40. ---
+P-19 Bencana tanpa bahaya ekstrem || Opsi C: dampak tetap menjadi dasar masuk, pemicu dicatat sebagai atribut; pertanyaan skala besar-kecil dijawab di L3 (Fase 2). ---
+P-20 Kriteria 4 mencampur jenis lahan || Opsi B untuk Fase 2: ambang per jenis lahan dan bahaya dengan sumber luas wajib; angkanya lewat Q-04 [BAWAAN SEMENTARA: belum diganti, Fase 2 menyimulasikan beberapa angka]. ---
+P-40 Satelit lawan laporan || Opsi B, dengan pertanyaan baru Q-baru-B-3 [BAWAAN SEMENTARA: daftar terpisah, tidak dijumlah dengan kejadian terkonfirmasi]. ---
+P-51 Evakuasi preventif || Opsi B: catat evakuasi preventif terpisah dari K2 [BAWAAN SEMENTARA]; angka empiris menunjukkan efeknya pada jumlah kejadian kecil, sehingga keputusan ini lebih soal pesan kebijakan daripada angka. ---
+P-57 Penyebab manusia || Opsi C: klasifikasi menurut jenis bahaya, penyebab dicatat sebagai atribut baku; ajukan Q-baru-B-4. ---
+P-58 Dua ambang dalam satu lembaga || Opsi B dahulu, bernama berbeda dan saling merujuk, lalu opsi A di Fase 2 bersama L3; ajukan pertanyaan Q-baru-B-2. ---
+P-62 Status payung || Opsi B: hanya SK tanggap darurat yang menyebut kejadian tertentu yang menjadi pemicu; status payung dicatat sebagai konteks (Q-05 [BAWAAN SEMENTARA]). ---
+P-63 Status mendahului kejadian || Opsi B: hanya tanggap darurat dan sesudahnya yang memicu K6; siaga dicatat sebagai konteks (Q-05 [BAWAAN SEMENTARA]). ---
+=== Q lampiran-a-B.md 
+
+- **Q-baru-B-1** Apakah ambang K2 diberi pendamping relatif terhadap penduduk (jumlah terdampak per 10.000 penduduk kabupaten) untuk skala keparahan? [BAWAAN SEMENTARA] ambang absolut tetap untuk masuk; angka per 10.000 penduduk menjadi kolom turunan dan penanda, sumber penduduk resmi ditentukan Pusdatinkom. Terkait P-17.
+- **Q-baru-B-2** Apakah ambang "menonjol" Pusdalops dan ambang masuk Juklak disatukan sebagai dua tingkat resmi, dan siapa menetapkan angka per jenis? [BAWAAN SEMENTARA] dua tangga dipertahankan dengan nama berbeda dan saling merujuk tertulis. Terkait P-58.
+- **Q-baru-B-3** Apakah deteksi satelit yang belum dikonfirmasi BPBD dicatat sebagai daftar resmi terpisah di DIBI, dan berapa lama tenggang verifikasi sebelum masuk kelas "terdeteksi satelit, belum diverifikasi"? [BAWAAN SEMENTARA] daftar terpisah, tidak dijumlah dengan kejadian terkonfirmasi, tenggang 3 hari mengikuti pemeriksaan `karhutla_belum_lapor.json`. Terkait P-40.
+- **Q-baru-B-4** Apakah DIBI menambahkan atribut baku "pemicu dominan" (alam, manusia sengaja, manusia lalai, teknologi) yang diisi saat verifikasi, dan siapa yang menetapkan? [BAWAAN SEMENTARA] atribut ditambahkan, penetapan oleh Pusdatinkom saat verifikasi, tidak mengubah jenis bahaya. Terkait P-57.
+
+
+P-21 Magnitudo lawan dampak || Magnitudo, kedalaman, dan intensitas dicatat sebagai atribut bahaya dan tidak pernah dipakai sebagai ukuran besar-kecil bencana atau ambang masuk (Opsi A), dengan Opsi B ditunjuk sebagai urusan peringatan dini dan bukan klasifikasi.
+P-22 Skala yang dipakai || Opsi B untuk data historis dan Opsi A untuk pencatatan baru: jenis skala dan nama sumber wajib dicatat berdampingan dengan nilainya.
+P-23 Kematian langsung lawan tak langsung || Opsi A untuk K1 dan jumlah korban nasional, dan kematian tak langsung dicatat sebagai kolom terpisah dengan jendela atribusi per jenis (Opsi C) setelah Fase 2; keputusan siapa menetapkan atribusi diajukan sebagai Q-baru-C-1 di bawah.
+P-24 Hilang || Q-baru-C-1: bawaan [BAWAAN SEMENTARA] Opsi C, yaitu hilang dicatat terpisah, berubah menjadi "diduga meninggal" saat operasi pencarian resmi ditutup, dan penyajian nasional menampilkan "meninggal" serta "meninggal dan hilang" berdampingan.
+P-25 Hitung ganda || Opsi C untuk ambang K2 sekarang, dan Opsi A untuk pencatatan baru di meja kejadian dan dampak; Q-baru-C-2 dengan bawaan [BAWAAN SEMENTARA] urutan prioritas satu orang satu kategori.
+P-26 Tingkat kerusakan || Q-baru-C-4 dengan bawaan [BAWAAN SEMENTARA] tidak mengubah bobot sekarang dan menyimulasikan Opsi B dan C pada data 2024 sampai 2026 di Fase 2, sambil mewajibkan tingkat kerusakan disebut dalam bunyi kriteria huruf c.
+P-27 Angka bergerak || Q-07 dengan bawaan [BAWAAN SEMENTARA] yang sudah tercatat (Opsi A), ditambah syarat bahwa tiap angka yang tampil di laporan pimpinan menyebut nomor versi dan tanggalnya.
+P-41 Angka kumulatif || Opsi A, dengan Q-07 sebagai bawaan: puncak untuk variabel stok (mengungsi, terdampak), nilai terakhir untuk variabel yang tidak turun bila benar (meninggal, kerusakan), dan angka jumlah antar-hari dilarang.
+P-49 Kosong lawan nol || Opsi A, sesuai rancangan meja; Q-baru-C-5 dengan bawaan [BAWAAN SEMENTARA] tiga keadaan wajib di formulir BPBD dan pada angka lama "tidak tercatat" diberi tanda, bukan nol.
+P-52 Kematian yang bukan akibat bahaya || Opsi A bersama P-23, dengan Q-baru-C-3 berbawaan [BAWAAN SEMENTARA] BPBD mengusulkan atribusi dan Pusdatinkom memutuskan, searah Q-08.
+P-53 Terancam lawan terdampak || Opsi A, dengan pembagian per jenis ditentukan di L2; terancam dicatat terpisah dan tidak masuk K2.
+P-54 Rumah terendam || Opsi A bersama P-26, sehingga rumah terendam tidak membuat kejadian lolos K3 tetapi penghuninya dicatat sebagai terdampak.
+P-60 Sumber angka luas || Q-04 dengan bawaan [BAWAAN SEMENTARA] ambang luas belum diganti; tambahan Q-baru-C-6: sumber luas yang memicu K4 adalah luas terverifikasi lapangan atau citra beresolusi tinggi, dan luas dari titik panas hanya dicatat sebagai indikasi berlabel. ---
+=== Q lampiran-a-C.md 
+
+- **Q-baru-C-1.** Kapan orang hilang dinyatakan diduga meninggal dan siapa yang menetapkan penutupan pencarian? [BAWAAN SEMENTARA] hilang dicatat terpisah, berubah menjadi "diduga meninggal" saat operasi pencarian resmi ditutup, dan penyajian menampilkan "meninggal" serta "meninggal dan hilang" berdampingan (P-24).
+- **Q-baru-C-2.** Apakah pencatatan baru mengikuti prinsip orang unik, satu orang satu kategori? [BAWAAN SEMENTARA] ya untuk meja kejadian dan dampak (urutan meninggal, hilang, luka, mengungsi, terdampak), dan ambang K2 dibaca per kategori tanpa dijumlah (P-25).
+- **Q-baru-C-3.** Siapa yang menyatakan sebuah kematian akibat bahaya atau bukan? [BAWAAN SEMENTARA] BPBD kabupaten/kota mengusulkan, Pusdatinkom memutuskan, searah Q-08 (P-23, P-52).
+- **Q-baru-C-4.** Apakah K3 memakai bobot tingkat kerusakan? [BAWAAN SEMENTARA] bobot sekarang tidak diubah, dan Fase 2 menyimulasikan K3 hanya RB dan RS serta bobot setara RB (P-26, P-54).
+- **Q-baru-C-5.** Apakah formulir kejadian wajib membedakan nilai, nol terkonfirmasi (nihil), dan belum didata? [BAWAAN SEMENTARA] ya, sesuai rancangan meja `DATA-DAMPAK.md` (P-49).
+- **Q-baru-C-6.** Sumber luas apa yang boleh memicu K4? [BAWAAN SEMENTARA] luas terverifikasi lapangan atau citra beresolusi tinggi, dan luas titik panas hanya indikasi (P-60).
+
+P-28 Bias kekayaan || Rupiah tidak pernah menjadi ambang masuk dan tidak dipakai untuk menyebut bencana besar (Opsi A dan B bersama): rupiah dicatat sebagai keterangan dengan rasio terhadap PDRB atau APBD, dan Q-baru-D-1 ditanyakan ke pemilik.
+P-29 Kerusakan lawan kerugian || Opsi A dan B bersama: logbook mencatat satuan fisik, rupiah dicatat dalam dua kolom terpisah (kerusakan dan kerugian) dengan merujuk Perka 15/2011 untuk metodenya; Q-baru-D-2 untuk keputusan pemilik.
+P-30 Inflasi || Q-baru-D-3 dengan bawaan [BAWAAN SEMENTARA] Opsi A, tahun harga wajib dicatat pada setiap angka rupiah, dan angka lintas tahun tanpa penyesuaian dilarang tampil dalam satu grafik.
+P-31 Banyak penghitung || Opsi A dengan unsur Opsi C: Pusdatinkom sebagai walidata menetapkan satu angka resmi per versi (Q-07 dan Q-08), dan sumber lain tampil berdampingan tanpa dijumlah; Q-baru-D-4 menanyakan sumber utama per variabel. ---
+=== Q lampiran-a-D.md 
+
+- **Q-baru-D-1.** Apakah rupiah dilarang menjadi ambang atau skala keparahan dan hanya menjadi keterangan dengan rasio PDRB atau APBD? [BAWAAN SEMENTARA] ya, rupiah hanya keterangan berasio (P-28).
+- **Q-baru-D-2.** Apakah formulir BPBD wajib memisahkan kerusakan dan kerugian serta merujuk Perka 15/2011? [BAWAAN SEMENTARA] ya, dua kolom terpisah, tidak dijumlahkan dalam logbook (P-29).
+- **Q-baru-D-3.** Indeks mana yang dipakai untuk menyajikan rupiah lintas tahun dalam harga konstan, dan apa tahun dasarnya? [BAWAAN SEMENTARA] tahun harga dicatat pada tiap angka, penyajian lintas tahun memakai harga konstan dengan indeks BPS yang disebut di metadata, indeks tepatnya menunggu keputusan pemilik (P-30).
+- **Q-baru-D-4.** Untuk setiap variabel dampak, sumber mana yang menjadi angka utama dan sumber mana yang pembanding? [BAWAAN SEMENTARA] DIBI (Pusdatinkom) untuk jumlah kejadian dan dampak, sumber lain berdampingan dengan label (P-31).
+
+P-32 Kecil-kecil jadi bukit || Opsi A sebagai penanda turunan di L3, dihitung pada unit kejadian L1 dan bukan pada baris, dengan ambang 30 meninggal atau 600 rumah rusak berat [BAWAAN SEMENTARA] sampai Q-baru-E-3 dijawab. ---
+P-33 Besar menurut siapa || Q-baru-E-1: sajikan dua angka berdampingan, mutlak dan persen penduduk, dan jangan gabung dulu [BAWAAN SEMENTARA]; pilihan Opsi B atau C diputuskan di Fase 2 setelah ada data penduduk resmi BPS dan anggaran daerah. ---
+P-34 "Gempa skala berapa itu besar?" || Jawaban resmi yang diusulkan: tidak ada magnitudo yang otomatis menjadikan gempa bencana besar; besar-kecil diukur dari dampak pada L3, dan magnitudo hanya memicu verifikasi cepat dengan perkiraan dampak (Opsi A dan B digabung). ---
+P-42 Naik kelas di tengah jalan || Opsi D, mengikuti versi angka yang sah dalam Q-07 [BAWAAN SEMENTARA]. ---
+P-65 Respons sebagai ukuran || Opsi A, dengan Opsi C sebagai analisis tambahan; lihat Q-baru-E-2 [BAWAAN SEMENTARA: respons tidak dipakai sebagai ukuran besar-kecil]. ---
+=== Q lampiran-a-E.md 
+
+- **Q-baru-E-1.** Apa pembanding relatif untuk skala keparahan: jumlah penduduk kabupaten saja, anggaran daerah,
+ atau gabungan? [BAWAAN SEMENTARA] jumlah penduduk (angka BPS bila tersedia), disajikan berdampingan dengan angka
+ mutlak, tanpa digabung.
+- **Q-baru-E-2.** Bolehkah kita meminta daftar keputusan status darurat dan dana siap pakai per kejadian dari
+ BNPB untuk menguji respons terhadap dampak? [BAWAAN SEMENTARA] belum diminta; respons hanya penanda.
+- **Q-baru-E-3.** Apakah ambang ekstensif dan intensif GAR 2015 (30 meninggal atau 600 rumah hancur) cukup untuk
+ Indonesia, atau dikalibrasi sendiri? [BAWAAN SEMENTARA] dipakai apa adanya sebagai label analisis, bukan kelas resmi.
+
+P-35 Tren semu || Opsi A dan B digabung: tren hanya pada deret sebanding, dengan korban meninggal sebagai indikator pendamping, dan setiap grafik deret bertanda patahan 2025; terapkan [BAWAAN SEMENTARA] di Q-07. ---
+P-36 Paradoks Simpson || Opsi A dan B: setiap tren nasional terbit bersama jumlah subkelompok yang berlawanan arah, dan mesin menandai pembalikan penuh bila ada [BAWAAN SEMENTARA]. Contoh pembalikan penuh yang sungguh terjadi belum ada; jangan dikarang. Bila diperlukan ilustrasi untuk pelatihan, tandai [ILUSTRASI]. ---
+P-37 Ekor panjang || Opsi A dan C; angka rata-rata dilarang berdiri sendiri pada tabel dampak (aturan penyajian S di Fase 2). ---
+P-43 Hotspot lawan lokasi unik || Opsi A dengan Opsi B untuk perbandingan: setiap angka titik panas wajib memuat nama definisinya dan daftar satelit aktif hari itu. ---
+P-44 Pergantian alat ukur || Opsi A dan B: simpan sensor aktif per hari dan terbitkan deret sambung dengan garis patahan 1 November 2026 [BAWAAN SEMENTARA]. ---
+P-55 Pemekaran wilayah || Opsi A, dengan pertanyaan Q-baru-F-1. ---
+P-61 Hari tanpa laporan || Opsi A; lihat Q-baru-F-2 [BAWAAN SEMENTARA: hari kosong diperlakukan sebagai tidak diketahui sampai Pusdalops menjawab]. ---
+=== Q lampiran-a-F.md 
+
+- **Q-baru-F-1.** Apakah DIBI menyimpan kode wilayah saat kejadian dan batas terkini, atau hanya salah satu?
+ Siapa memelihara tabel konkordansi pemekaran? [BAWAAN SEMENTARA] kami menyimpan keduanya; batas terkini untuk
+ penyajian, batas saat kejadian untuk arsip.
+- **Q-baru-F-2.** Pada tahun-tahun logbook dengan hari kosong (2021 sampai 2023), apakah itu bolong arsip atau
+ memang tidak ada kejadian baru? [BAWAAN SEMENTARA] diperlakukan sebagai tidak diketahui, tidak sebagai nol.
+- **Q-baru-F-3.** Siapa menetapkan definisi baku "titik panas" untuk laporan resmi BNPB: lokasi unik, atau titik
+ mentah? [BAWAAN SEMENTARA] lokasi unik per hari WIB seperti keputusan 25 Oktober 2026, dengan nama definisi
+ tertulis di tiap angka.
+
+P-45 Siapa berwenang menyatakan "satu kejadian" || Q-08: Pusdatinkom memutuskan, BPBD mengusulkan, dan mesin hanya menyarankan dengan jejak [BAWAAN SEMENTARA]. ---
+P-46 Koreksi setelah terbit || Q-07: angka statis dibekukan per rilis dengan nomor versi (Opsi A), dan tabel "angka terbit lawan angka kini" (Opsi C) untuk laporan pimpinan [BAWAAN SEMENTARA]. ---
+P-47 Bencana nonalam dan sosial || Opsi B sebagai arah; lihat Q-baru-G-3 [BAWAAN SEMENTARA: epidemi dan konflik dicatat dengan penetapan otoritas sektor sebagai pintu masuk, ambang K2 tidak berlaku]. ---
+P-59 Banyak sistem identitas || Opsi B untuk arah Juklak, dan Opsi C untuk masa transisi; kode kluster harian tidak pernah dipakai sebagai identitas kejadian (Siklus Bencana menyimpannya hanya sebagai pengenal hari). Lihat Q-baru-G-1 [BAWAAN SEMENTARA]. ---
+=== Q lampiran-a-G.md 
+
+- **Q-baru-G-1.** Siapa menerbitkan nomor induk kejadian (Perban 1/2023 Pasal 8 huruf c butir 3), dan dalam
+ format apa untuk kejadian lintas kabupaten? [BAWAAN SEMENTARA] Pusdatinkom, format induk-anak (satu induk, satu
+ anak per kabupaten), dengan KIB 16 digit tetap sebagai label resmi kabupaten episentrum.
+- **Q-baru-G-2.** Apa periode rilis data statis dan mekanisme versinya (Juklak hlm. 3 sampai 4 tidak mengisi
+ periode)? [BAWAAN SEMENTARA] rilis bulanan bernomor versi, dibekukan per triwulan, koreksi sebagai rilis baru.
+- **Q-baru-G-3.** Apakah epidemi dan konflik sosial memakai ambang yang sama dengan bencana alam, atau pintu
+ masuk berupa penetapan otoritas sektor? [BAWAAN SEMENTARA] penetapan otoritas sektor sebagai pintu masuk,
+ tanpa ambang K2.
+- **Q-baru-G-4.** Bagaimana DIBI mencatat COVID-19 pada 2020 sampai 2023? [BAWAAN SEMENTARA] tidak diketahui;
+ tidak dipakai sebagai contoh sampai Pusdatinkom menjawab.
+

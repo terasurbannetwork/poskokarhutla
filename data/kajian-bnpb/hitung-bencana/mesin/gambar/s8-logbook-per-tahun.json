@@ -1,0 +1,8 @@
+{"jenis":"batang",
+ "judul":"Kejadian logbook Pusdalops per tahun, 2011 sampai 2026 (garis patah deret pada 2013 dan 2025)",
+ "sumbu_x":["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026*"],
+ "seri":[{"nama":"Kejadian menurut tanggal kejadian","nilai":[131,247,2201,3385,3734,4596,4618,4621,4719,4308,3768,3119,3080,3977,5899,3623]}],
+ "penanda":[{"x":"2013","teks":"Patah deret: arsip baru lengkap (349 hari pencatatan, 2012: 67)"},{"x":"2025","teks":"Patah deret: pencatatan per kabupaten makin rinci (kejadian satu laporan turun dari 71,9 ke 67,2 persen)"}],
+ "satuan":"kejadian",
+ "catatan":"*2026 sampai 1 November. Hari pencatatan 2021 sampai 2023 hanya 342, 271, dan 327 dari 365 hari.",
+ "sumber":"data/pusdalops/logbook_kejadian.csv, 56.685 baris; analisis/hasil/logbook_csv.json (per_tahun, hari_pencatatan_per_tahun)"}

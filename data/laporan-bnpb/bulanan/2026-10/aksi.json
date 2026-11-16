@@ -1,0 +1,281 @@
+{
+ "karhutla": {
+  "sumber": "Surat Kepala BNPB 2 Nov 2026; Siaran pers dan laporan situasi harian BNPB, Oktober 2026",
+  "langkah": [
+   {
+    "judul": "Sudah dilakukan",
+    "butir": [
+     "Kepala BNPB memimpin rapat koordinasi karhutla di Palembang dan Batu, lalu menambah armada udara.",
+     "BNPB mengerahkan {{angka:rs.personel}} personel darat di empat provinsi rawan karhutla.",
+     "Operasi modifikasi cuaca (OMC) menjalankan {{angka:omc.sortie}} sorti dengan {{angka:omc.nacl}} kg garam selama paruh kedua Oktober.",
+     "BNPB menerbitkan enam imbauan keselamatan relawan setelah petugas gugur di Bromo."
+    ]
+   },
+   {
+    "judul": "Sedang berjalan",
+    "butir": [
+     "Sebanyak {{angka:rs.armada}} armada udara bertugas, termasuk {{angka:rs.armada.bnpb}} unit BNPB dan {{angka:rs.armada.tni}} unit TNI.",
+     "OMC di Papua Selatan mencapai {{angka:rs.papsel.sorti}} sorti pada hari ketujuh operasi.",
+     "Hotspot Papua Selatan turun dari {{angka:rs.papsel.hot0}} menjadi {{angka:rs.papsel.hot1}} titik menurut laporan BNPB 29 Oktober.",
+     "Status darurat karhutla Papua Selatan dan Kabupaten Merauke diperpanjang."
+    ]
+   },
+   {
+    "judul": "Akan dilakukan",
+    "butir": [
+     "Pesawat OMC disiapkan di Bandara Kertajati untuk karhutla Jawa Barat.",
+     "Patroli terpadu dan deteksi dini diperketat sampai musim hujan merata.",
+     "Warga terus diimbau tidak membakar lahan dan segera melapor bila melihat api."
+    ]
+   }
+  ],
+  "skala": 2.0
+ },
+ "dukungan": {
+  "sumber": "Pengolahan BNPB atas logbook Pusdalops dan GIS BNPB, 12 Nov 2026",
+  "butir": [
+   {
+    "kode": "01",
+    "jenis": "pembiayaan",
+    "langkah": "Dana siap pakai musim hujan",
+    "waktu": "100-hari",
+    "status": "sudah-ada",
+    "rincian": "Dana siap pakai disiagakan untuk banjir dan longsor di kabupaten berpeluang tinggi pada November dan Desember.",
+    "lembaga": [
+     "Kementerian Keuangan",
+     "BNPB"
+    ],
+    "dasar": "{{angka:pr.banjir.des}} kabupaten berpeluang tinggi banjir pada Desember",
+    "risiko": "Penanganan awal banjir tertunda bila menunggu anggaran daerah."
+   },
+   {
+    "kode": "02",
+    "jenis": "regulasi",
+    "langkah": "Penegakan hukum pembakar lahan",
+    "waktu": "100-hari",
+    "status": "dikembangkan",
+    "rincian": "Penyidikan pembakaran lahan dipercepat di provinsi dengan hotspot terbanyak.",
+    "lembaga": [
+     "Polri",
+     "Kementerian Kehutanan",
+     "Kementerian Lingkungan Hidup"
+    ],
+    "dasar": "{{angka:kh.hot}} hotspot pada Oktober",
+    "risiko": "Pembakaran berulang pada kemarau berikutnya bila tidak ada efek jera."
+   },
+   {
+    "kode": "03",
+    "jenis": "data",
+    "langkah": "Laporan karhutla wajib dari daerah rawan",
+    "waktu": "100-hari",
+    "status": "baru",
+    "rincian": "Pemerintah daerah di provinsi dengan hotspot terbanyak diminta melaporkan tiap kejadian karhutla ke BNPB.",
+    "lembaga": [
+     "Kementerian Dalam Negeri",
+     "BNPB"
+    ],
+    "dasar": "{{angka:kh.lapor.top6}} laporan dari enam provinsi dengan hotspot terbanyak",
+    "risiko": "Dampak karhutla terhadap warga tidak tercatat dan bantuan tidak tepat sasaran."
+   },
+   {
+    "kode": "04",
+    "jenis": "infrastruktur",
+    "langkah": "Normalisasi sungai di Sumatera bagian utara",
+    "waktu": "2026-2027",
+    "status": "dikembangkan",
+    "rincian": "Sungai dan tanggul di kabupaten langganan banjir Aceh dan Sumatera Utara dinormalisasi sebelum puncak hujan.",
+    "lembaga": [
+     "Kementerian Pekerjaan Umum",
+     "Pemerintah daerah"
+    ],
+    "dasar": "{{angka:banjir.tdm}} warga terdampak banjir pada Oktober",
+    "risiko": "Banjir berulang di kabupaten yang sama pada Desember sampai Februari."
+   },
+   {
+    "kode": "05",
+    "jenis": "kapasitas",
+    "langkah": "Armada udara siaga peralihan musim",
+    "waktu": "100-hari",
+    "status": "sudah-ada",
+    "rincian": "Helikopter dan pesawat OMC tetap disiagakan sampai hotspot di Kalimantan dan Papua Selatan padam.",
+    "lembaga": [
+     "TNI AU",
+     "BMKG",
+     "BNPB"
+    ],
+    "dasar": "{{angka:omc.sortie}} sorti OMC pada paruh kedua Oktober",
+    "risiko": "Api gambut yang belum padam menyala lagi saat hujan berhenti."
+   }
+  ]
+ },
+ "kesimpulan": {
+  "kartu": [
+   {
+    "label": "Karhutla",
+    "ikon": "karhutla",
+    "warna": "oranye",
+    "judul": "Api belum padam seluruhnya",
+    "isi": "Hotspot turun {{angka:kh.turun.p.abs|fmt=1}} persen dari puncak, tetapi {{angka:kh.belum31}} ha diperkirakan belum padam pada 31 Oktober."
+   },
+   {
+    "label": "Data",
+    "ikon": "data",
+    "warna": "oranye",
+    "judul": "Laporan daerah perlu dilengkapi",
+    "isi": "Provinsi dengan hotspot terbanyak baru mengirim {{angka:kh.lapor.top6}} laporan kejadian karhutla ke BNPB."
+   },
+   {
+    "label": "Banjir",
+    "ikon": "banjir",
+    "warna": "navy",
+    "judul": "Tanggul Langkat perlu diperbaiki",
+    "isi": "Tanggul Langkat yang jebol pada akhir Oktober mengancam {{angka:rs.langkat.rumah}} rumah sebelum puncak hujan."
+   },
+   {
+    "label": "Banjir",
+    "ikon": "peringatan",
+    "warna": "navy",
+    "judul": "Status surut belum lengkap",
+    "isi": "Sebanyak {{angka:banjir.st.tanpa}} kabupaten banjir belum pernah melaporkan status surut."
+   },
+   {
+    "label": "Iklim",
+    "ikon": "kekeringan",
+    "warna": "navy",
+    "judul": "El Nino masih kuat",
+    "isi": "Indeks El Nino di Pasifik bernilai {{angka:iklim.roni|fmt=2}} dan tergolong kuat, sehingga kekeringan dapat berlanjut di Jawa."
+   },
+   {
+    "label": "Prediksi",
+    "ikon": "banjir",
+    "warna": "oranye",
+    "judul": "Banjir tetap mengancam",
+    "isi": "Menurut riwayat kejadian, {{angka:pr.banjir.des}} kabupaten berpeluang tinggi dilanda banjir pada Desember."
+   },
+   {
+    "label": "Prediksi",
+    "ikon": "longsor",
+    "warna": "oranye",
+    "judul": "Longsor meningkat",
+    "isi": "Sebanyak {{angka:pr.longsor.des}} kabupaten berpeluang tinggi dilanda longsor pada Desember."
+   },
+   {
+    "label": "Vulkanologi",
+    "ikon": "gunungapi",
+    "warna": "navy",
+    "judul": "Gunung api Siaga",
+    "isi": "Merapi dan Semeru tetap berstatus Siaga per 1 November bersama Anak Krakatau."
+   }
+  ],
+  "arahan": {
+   "label": "Arahan yang dimohon",
+   "ikon": "ringkasan",
+   "teks": "Persiapan musim hujan dimulai di kabupaten berpeluang tinggi banjir, sambil menuntaskan pemadaman karhutla di Kalimantan dan Papua Selatan."
+  }
+ },
+ "banjir": {
+  "sumber": "Siaran pers dan laporan situasi harian BNPB, Oktober 2026",
+  "langkah": [
+   {
+    "judul": "Sudah dilakukan",
+    "butir": [
+     "BPBD menangani banjir yang berdampak pada {{angka:rs.medan.kk}} kepala keluarga di Medan dan {{angka:rs.binjai.kk}} kepala keluarga di Binjai hingga air surut.",
+     "Ekskavator dikerahkan ke Gayo Lues dan Aceh Tenggara untuk membuka jalan yang tertutup longsor.",
+     "BNPB memutakhirkan data banjir Sumatera Utara dan Aceh serta memperingatkan potensi banjir rob."
+    ]
+   },
+   {
+    "judul": "Sedang berjalan",
+    "butir": [
+     "Sebanyak {{angka:banjir.st.belum}} kabupaten masih dilaporkan belum surut pada akhir Oktober, antara lain Pesisir Selatan dan Nias Selatan.",
+     "Aceh Selatan menetapkan status tanggap darurat banjir sampai 12 November.",
+     "Tim gabungan membersihkan longsor di Dairi yang memutus jalan dan jembatan."
+    ]
+   },
+   {
+    "judul": "Akan dilakukan",
+    "butir": [
+     "Tanggul Langkat yang jebol diperbaiki dengan karung pasir khusus (geobag) untuk melindungi {{angka:rs.langkat.rumah}} rumah.",
+     "BNPB menyiapkan {{angka:rs.rawan.banjir}} kabupaten rawan banjir dan {{angka:rs.rawan.longsor}} rawan longsor.",
+     "Surat edaran Kepala BNPB menetapkan delapan langkah kesiapsiagaan musim hujan."
+    ]
+   }
+  ],
+  "foto": [
+   {
+    "berkas": "foto/web/h-1417.jpg",
+    "keterangan": "Banjir merendam permukiman, laporan 17 Oktober"
+   },
+   {
+    "berkas": "foto/web/h-1229.jpg",
+    "keterangan": "Warga mengungsi, laporan 29 Oktober"
+   }
+  ]
+ },
+ "cuaca": {
+  "sumber": "Siaran pers dan laporan situasi harian BNPB, Oktober 2026",
+  "langkah": [
+   {
+    "judul": "Sudah dilakukan",
+    "butir": [
+     "BPBD menyalurkan {{angka:rs.air.liter}} liter air bersih untuk {{angka:rs.air.kk}} kepala keluarga dengan {{angka:rs.air.tangki}} truk tangki secara bergilir.",
+     "Rumah rusak akibat angin kencang di Jawa Barat dan Jawa Timur didata, dan pohon tumbang dibersihkan."
+    ]
+   },
+   {
+    "judul": "Sedang berjalan",
+    "butir": [
+     "Kabupaten Pasuruan dan Provinsi Jawa Tengah masih berstatus siaga darurat kekeringan.",
+     "Kerusakan akibat angin kencang di Kalimantan Selatan dan Sulawesi Selatan sedang diverifikasi."
+    ]
+   },
+   {
+    "judul": "Akan dilakukan",
+    "butir": [
+     "Daerah mengikuti peringatan dini cuaca BMKG karena angin kencang diprakirakan di banyak provinsi.",
+     "Warga diimbau menghemat dan menampung air bersih selama hujan masih di bawah normal."
+    ]
+   }
+  ],
+  "foto": [
+   {
+    "berkas": "foto/web/h-1230.jpg",
+    "keterangan": "Rumah rusak, laporan 30 Oktober"
+   }
+  ],
+  "skala": 1.95
+ },
+ "geologi": {
+  "sumber": "Siaran pers dan laporan situasi harian BNPB, Oktober 2026; PVMBG Badan Geologi",
+  "langkah": [
+   {
+    "judul": "Sudah dilakukan",
+    "butir": [
+     "Pemerintah daerah Sumba Barat Daya mengaktifkan pos komando untuk menangani rumah rusak akibat gempa.",
+     "BNPB memastikan gempa Tanimbar tidak berpotensi tsunami."
+    ]
+   },
+   {
+    "judul": "Sedang berjalan",
+    "butir": [
+     "Pos pendamping nasional melanjutkan pendataan gempa besar NTT bulan Agustus: {{angka:rs.ntt.rb}} rumah rusak berat.",
+     "PVMBG memantau tiga gunung api yang berstatus Siaga."
+    ]
+   },
+   {
+    "judul": "Akan dilakukan",
+    "butir": [
+     "Warga dilarang memasuki radius bahaya gunung api.",
+     "Warga diimbau menyiapkan tas siaga gempa."
+    ]
+   }
+  ],
+  "foto": [
+   {
+    "berkas": "foto/web/pk-waykambas2.jpg",
+    "keterangan": "Pos pendamping nasional penanganan gempa NTT"
+   }
+  ],
+  "skala": 2.15
+ }
+}

@@ -1,0 +1,6517 @@
+{
+ "meta": {
+  "sumber": "DIBI dasbor publik (dibi.bnpb.go.id/api/v1/chart/data), ditarik 2026-11-12T15:04; baris 15974, tanggal WIB (UTC+7) 2024-01-01 s.d. 2026-11-12",
+  "penduduk": "WorldPop R2025A per kabupaten (public/data/wilayah/*.json, pp.wp; bukan angka BPS), kab berpenduduk 498",
+  "status": "public/data/status_darurat.json (BNPB CKAN), 2481 SK, tanpa SK skala nasional",
+  "cut_opsi_d": [
+   1.1100702615238427,
+   2.0999390549998966,
+   3.7053404147006375
+  ]
+ },
+ "L1": {
+  "2024": {
+   "baris": 3752,
+   "kjn": 3654,
+   "ck": 3752,
+   "resmi_semua": 3636.0,
+   "resmi_is_bencana": 3548.0,
+   "baris_is_bencana": 3659,
+   "kjn_is_bencana": 3566,
+   "bendera": {
+    "satu_baris": 3563,
+    "pecahan_lintas_prov": 2,
+    "pecahan_1_prov": 41,
+    "pecahan_tak_genap": 48
+   },
+   "kjn_resmi_ge2": 1,
+   "per_kategori": {
+    "Banjir": {
+     "baris": 1488,
+     "kjn": 1463,
+     "ck": 1488,
+     "resmi_semua": 1457.0,
+     "resmi_is_bencana": 1420.0
+    },
+    "Cuaca ekstrem": {
+     "baris": 778,
+     "kjn": 762,
+     "ck": 778,
+     "resmi_semua": 755.5,
+     "resmi_is_bencana": 732.5
+    },
+    "Epidemi - Wabah penyakit": {
+     "baris": 2,
+     "kjn": 2,
+     "ck": 2,
+     "resmi_semua": 1.5,
+     "resmi_is_bencana": 1.5
+    },
+    "Erupsi gunung api": {
+     "baris": 9,
+     "kjn": 8,
+     "ck": 9,
+     "resmi_semua": 8.0,
+     "resmi_is_bencana": 8.0
+    },
+    "Gagal teknologi": {
+     "baris": 1,
+     "kjn": 1,
+     "ck": 1,
+     "resmi_semua": 1.0,
+     "resmi_is_bencana": 1.0
+    },
+    "Gelombang pasang / Abrasi": {
+     "baris": 27,
+     "kjn": 27,
+     "ck": 27,
+     "resmi_semua": 27.0,
+     "resmi_is_bencana": 27.0
+    },
+    "Gempabumi": {
+     "baris": 62,
+     "kjn": 20,
+     "ck": 62,
+     "resmi_semua": 18.0,
+     "resmi_is_bencana": 15.0
+    },
+    "Kebakaran hutan dan lahan": {
+     "baris": 991,
+     "kjn": 979,
+     "ck": 991,
+     "resmi_semua": 976.0,
+     "resmi_is_bencana": 973.0
+    },
+    "Kebakaran permukiman": {
+     "baris": 82,
+     "kjn": 82,
+     "ck": 82,
+     "resmi_semua": 83.0,
+     "resmi_is_bencana": 74.0
+    },
+    "Kekeringan": {
+     "baris": 90,
+     "kjn": 90,
+     "ck": 90,
+     "resmi_semua": 90.0,
+     "resmi_is_bencana": 89.0
+    },
+    "Konflik sosial": {
+     "baris": 0,
+     "kjn": 0,
+     "ck": 0,
+     "resmi_semua": 0,
+     "resmi_is_bencana": 0
+    },
+    "Lainnya": {
+     "baris": 0,
+     "kjn": 0,
+     "ck": 0,
+     "resmi_semua": 0,
+     "resmi_is_bencana": 0
+    },
+    "Longsor": {
+     "baris": 222,
+     "kjn": 220,
+     "ck": 222,
+     "resmi_semua": 219.0,
+     "resmi_is_bencana": 207.0
+    },
+    "Tsunami": {
+     "baris": 0,
+     "kjn": 0,
+     "ck": 0,
+     "resmi_semua": 0,
+     "resmi_is_bencana": 0
+    }
+   }
+  },
+  "2025": {
+   "baris": 8946,
+   "kjn": 8763,
+   "ck": 8946,
+   "resmi_semua": 9304.4,
+   "resmi_is_bencana": 5439.4,
+   "baris_is_bencana": 5241,
+   "kjn_is_bencana": 5117,
+   "bendera": {
+    "satu_baris": 8583,
+    "pecahan_1_prov": 98,
+    "pecahan_tak_genap": 80,
+    "pecahan_lintas_prov": 2
+   },
+   "kjn_resmi_ge2": 555,
+   "per_kategori": {
+    "Banjir": {
+     "baris": 2774,
+     "kjn": 2729,
+     "ck": 2774,
+     "resmi_semua": 2994.0,
+     "resmi_is_bencana": 2317.0
+    },
+    "Cuaca ekstrem": {
+     "baris": 2412,
+     "kjn": 2366,
+     "ck": 2412,
+     "resmi_semua": 2434.5,
+     "resmi_is_bencana": 1019.5
+    },
+    "Epidemi - Wabah penyakit": {
+     "baris": 6,
+     "kjn": 6,
+     "ck": 6,
+     "resmi_semua": 7.0,
+     "resmi_is_bencana": 3.0
+    },
+    "Erupsi gunung api": {
+     "baris": 18,
+     "kjn": 16,
+     "ck": 18,
+     "resmi_semua": 21.0,
+     "resmi_is_bencana": 7.0
+    },
+    "Gagal teknologi": {
+     "baris": 3,
+     "kjn": 3,
+     "ck": 3,
+     "resmi_semua": 4.0,
+     "resmi_is_bencana": 3.0
+    },
+    "Gelombang pasang / Abrasi": {
+     "baris": 67,
+     "kjn": 67,
+     "ck": 67,
+     "resmi_semua": 74.0,
+     "resmi_is_bencana": 33.0
+    },
+    "Gempabumi": {
+     "baris": 100,
+     "kjn": 82,
+     "ck": 100,
+     "resmi_semua": 90.2,
+     "resmi_is_bencana": 24.2
+    },
+    "Kebakaran hutan dan lahan": {
+     "baris": 1487,
+     "kjn": 1460,
+     "ck": 1487,
+     "resmi_semua": 1516.8,
+     "resmi_is_bencana": 1301.7
+    },
+    "Kebakaran permukiman": {
+     "baris": 868,
+     "kjn": 844,
+     "ck": 868,
+     "resmi_semua": 881.0,
+     "resmi_is_bencana": 327.0
+    },
+    "Kekeringan": {
+     "baris": 50,
+     "kjn": 50,
+     "ck": 50,
+     "resmi_semua": 56.0,
+     "resmi_is_bencana": 41.0
+    },
+    "Konflik sosial": {
+     "baris": 5,
+     "kjn": 5,
+     "ck": 5,
+     "resmi_semua": 5.0,
+     "resmi_is_bencana": 4.0
+    },
+    "Lainnya": {
+     "baris": 48,
+     "kjn": 48,
+     "ck": 48,
+     "resmi_semua": 49.0,
+     "resmi_is_bencana": 26.0
+    },
+    "Longsor": {
+     "baris": 1106,
+     "kjn": 1086,
+     "ck": 1106,
+     "resmi_semua": 1171.0,
+     "resmi_is_bencana": 332.0
+    },
+    "Tsunami": {
+     "baris": 2,
+     "kjn": 1,
+     "ck": 2,
+     "resmi_semua": 1.0,
+     "resmi_is_bencana": 1.0
+    }
+   }
+  },
+  "2026": {
+   "baris": 3276,
+   "kjn": 3220,
+   "ck": 3276,
+   "resmi_semua": 3219.0,
+   "resmi_is_bencana": 2448.0,
+   "baris_is_bencana": 2505,
+   "kjn_is_bencana": 2449,
+   "bendera": {
+    "satu_baris": 3196,
+    "pecahan_1_prov": 18,
+    "pecahan_lintas_prov": 4,
+    "pecahan_tak_genap": 2
+   },
+   "kjn_resmi_ge2": 0,
+   "per_kategori": {
+    "Banjir": {
+     "baris": 765,
+     "kjn": 763,
+     "ck": 765,
+     "resmi_semua": 763.0,
+     "resmi_is_bencana": 622.0
+    },
+    "Cuaca ekstrem": {
+     "baris": 638,
+     "kjn": 636,
+     "ck": 638,
+     "resmi_semua": 636.0,
+     "resmi_is_bencana": 367.0
+    },
+    "Epidemi - Wabah penyakit": {
+     "baris": 1,
+     "kjn": 1,
+     "ck": 1,
+     "resmi_semua": 1.0,
+     "resmi_is_bencana": 1.0
+    },
+    "Erupsi gunung api": {
+     "baris": 10,
+     "kjn": 10,
+     "ck": 10,
+     "resmi_semua": 10.0,
+     "resmi_is_bencana": 4.0
+    },
+    "Gagal teknologi": {
+     "baris": 5,
+     "kjn": 5,
+     "ck": 5,
+     "resmi_semua": 5.0,
+     "resmi_is_bencana": 5.0
+    },
+    "Gelombang pasang / Abrasi": {
+     "baris": 17,
+     "kjn": 17,
+     "ck": 17,
+     "resmi_semua": 17.0,
+     "resmi_is_bencana": 14.0
+    },
+    "Gempabumi": {
+     "baris": 58,
+     "kjn": 24,
+     "ck": 58,
+     "resmi_semua": 24.0,
+     "resmi_is_bencana": 14.0
+    },
+    "Kebakaran hutan dan lahan": {
+     "baris": 1168,
+     "kjn": 1150,
+     "ck": 1168,
+     "resmi_semua": 1149.0,
+     "resmi_is_bencana": 1085.0
+    },
+    "Kebakaran permukiman": {
+     "baris": 155,
+     "kjn": 155,
+     "ck": 155,
+     "resmi_semua": 155.0,
+     "resmi_is_bencana": 88.0
+    },
+    "Kekeringan": {
+     "baris": 129,
+     "kjn": 129,
+     "ck": 129,
+     "resmi_semua": 129.0,
+     "resmi_is_bencana": 125.0
+    },
+    "Konflik sosial": {
+     "baris": 8,
+     "kjn": 8,
+     "ck": 8,
+     "resmi_semua": 8.0,
+     "resmi_is_bencana": 8.0
+    },
+    "Lainnya": {
+     "baris": 4,
+     "kjn": 4,
+     "ck": 4,
+     "resmi_semua": 4.0,
+     "resmi_is_bencana": 1.0
+    },
+    "Longsor": {
+     "baris": 318,
+     "kjn": 318,
+     "ck": 318,
+     "resmi_semua": 318.0,
+     "resmi_is_bencana": 114.0
+    },
+    "Tsunami": {
+     "baris": 0,
+     "kjn": 0,
+     "ck": 0,
+     "resmi_semua": 0,
+     "resmi_is_bencana": 0
+    }
+   }
+  }
+ },
+ "L1_ket": {
+  "baris_dgn_jumlah_kejadian_ge2": 556,
+  "baris_pecahan": 632,
+  "kjn_pecahan_tak_genap": 130,
+  "jumlah_kjn_total": 15637,
+  "id_kab_bps_cocok_penduduk": 95.7,
+  "kab_unik_dibi": 505,
+  "kab_unik_tanpa_penduduk": [
+   "Adm. Kep. Seribu",
+   "Berau",
+   "Boven Digoel",
+   "Dogiyai",
+   "Fak Fak",
+   "Humbang Hasundutan",
+   "Intan Jaya",
+   "Kaimana",
+   "Karimun",
+   "Keerom",
+   "Kepulauan Anambas",
+   "Kepulauan Yapen",
+   "Konawe Kepulauan",
+   "Kota Banda Aceh",
+   "Kota Dumai"
+  ]
+ },
+ "L2": {
+  "2024": {
+   "baris": 3752,
+   "baris_juklak": 2609,
+   "baris_l2": 2325,
+   "baris_l2b": 2307,
+   "kjn": 3654,
+   "kjn_juklak": 2556,
+   "kjn_l2": 2281,
+   "kjn_l2b": 2267,
+   "kjn_l2_bukan_juklak": 13,
+   "kjn_juklak_bukan_l2": 288,
+   "kjn_dibi_is_bencana": 3566,
+   "selisih_pct_kjn_l2_vs_juklak": -10.8,
+   "selisih_pct_kjn_l2b_vs_juklak": -11.3,
+   "selisih_pct_baris_l2_vs_juklak": -10.9,
+   "juklak_tunggal": {
+    "K1": 114,
+    "K2": 1367,
+    "K3": 486
+   },
+   "l2_tunggal": {
+    "M1": 108,
+    "M2": 35,
+    "M3": 1215,
+    "M4": 216
+   },
+   "l2b_tunggal": {
+    "M1": 113,
+    "M2": 35,
+    "M3": 1267,
+    "M4b": 202
+   },
+   "l2_hanya_fasilitas_tanpa_RBS1": 14,
+   "per_kategori": {
+    "Banjir": {
+     "baris": 1488,
+     "baris_juklak": 1406,
+     "baris_l2": 1401,
+     "baris_l2b": 1396,
+     "kjn": 1463,
+     "kjn_juklak": 1391,
+     "kjn_l2": 1387,
+     "kjn_l2b": 1382,
+     "kjn_l2_bukan_juklak": 8,
+     "kjn_juklak_bukan_l2": 12,
+     "kjn_dibi_is_bencana": 1426,
+     "selisih_pct_kjn_l2_vs_juklak": -0.3,
+     "selisih_pct_kjn_l2b_vs_juklak": -0.6,
+     "selisih_pct_baris_l2_vs_juklak": -0.4,
+     "juklak_tunggal": {
+      "K1": 17,
+      "K2": 1181,
+      "K3": 22
+     },
+     "l2_tunggal": {
+      "M1": 18,
+      "M2": 24,
+      "M3": 994,
+      "M4": 17
+     },
+     "l2b_tunggal": {
+      "M1": 18,
+      "M2": 24,
+      "M3": 1042,
+      "M4b": 12
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 5
+    },
+    "Cuaca ekstrem": {
+     "baris": 778,
+     "baris_juklak": 754,
+     "baris_l2": 531,
+     "baris_l2b": 524,
+     "kjn": 762,
+     "kjn_juklak": 738,
+     "kjn_l2": 523,
+     "kjn_l2b": 516,
+     "kjn_l2_bukan_juklak": 5,
+     "kjn_juklak_bukan_l2": 220,
+     "kjn_dibi_is_bencana": 739,
+     "selisih_pct_kjn_l2_vs_juklak": -29.1,
+     "selisih_pct_kjn_l2b_vs_juklak": -30.1,
+     "selisih_pct_baris_l2_vs_juklak": -29.6,
+     "juklak_tunggal": {
+      "K1": 30,
+      "K2": 41,
+      "K3": 359
+     },
+     "l2_tunggal": {
+      "M1": 28,
+      "M2": 0,
+      "M3": 87,
+      "M4": 146
+     },
+     "l2b_tunggal": {
+      "M1": 30,
+      "M2": 0,
+      "M3": 90,
+      "M4b": 139
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 7
+    },
+    "Epidemi - Wabah penyakit": {
+     "baris": 2,
+     "baris_juklak": 2,
+     "baris_l2": 2,
+     "baris_l2b": 2,
+     "kjn": 2,
+     "kjn_juklak": 2,
+     "kjn_l2": 2,
+     "kjn_l2b": 2,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 2,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 0,
+      "K3": 1
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4": 1
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 1
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Erupsi gunung api": {
+     "baris": 9,
+     "baris_juklak": 9,
+     "baris_l2": 9,
+     "baris_l2b": 9,
+     "kjn": 8,
+     "kjn_juklak": 8,
+     "kjn_l2": 8,
+     "kjn_l2b": 8,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 8,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 2,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 1,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 1,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gagal teknologi": {
+     "baris": 1,
+     "baris_juklak": 1,
+     "baris_l2": 1,
+     "baris_l2b": 1,
+     "kjn": 1,
+     "kjn_juklak": 1,
+     "kjn_l2": 1,
+     "kjn_l2b": 1,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 1,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gelombang pasang / Abrasi": {
+     "baris": 27,
+     "baris_juklak": 27,
+     "baris_l2": 23,
+     "baris_l2b": 23,
+     "kjn": 27,
+     "kjn_juklak": 27,
+     "kjn_l2": 23,
+     "kjn_l2b": 23,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 4,
+     "kjn_dibi_is_bencana": 27,
+     "selisih_pct_kjn_l2_vs_juklak": -14.8,
+     "selisih_pct_kjn_l2b_vs_juklak": -14.8,
+     "selisih_pct_baris_l2_vs_juklak": -14.8,
+     "juklak_tunggal": {
+      "K1": 2,
+      "K2": 12,
+      "K3": 6
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 1,
+      "M3": 11,
+      "M4": 2
+     },
+     "l2b_tunggal": {
+      "M1": 2,
+      "M2": 1,
+      "M3": 11,
+      "M4b": 2
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gempabumi": {
+     "baris": 62,
+     "baris_juklak": 36,
+     "baris_l2": 35,
+     "baris_l2b": 30,
+     "kjn": 20,
+     "kjn_juklak": 17,
+     "kjn_l2": 15,
+     "kjn_l2b": 14,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 2,
+     "kjn_dibi_is_bencana": 17,
+     "selisih_pct_kjn_l2_vs_juklak": -11.8,
+     "selisih_pct_kjn_l2b_vs_juklak": -17.6,
+     "selisih_pct_baris_l2_vs_juklak": -2.8,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 6
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 4
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 3
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 1
+    },
+    "Kebakaran hutan dan lahan": {
+     "baris": 991,
+     "baris_juklak": 6,
+     "baris_l2": 6,
+     "baris_l2b": 6,
+     "kjn": 979,
+     "kjn_juklak": 6,
+     "kjn_l2": 6,
+     "kjn_l2b": 6,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 976,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 3,
+      "K3": 1
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 3,
+      "M4": 1
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 3,
+      "M4b": 1
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Kebakaran permukiman": {
+     "baris": 82,
+     "baris_juklak": 73,
+     "baris_l2": 68,
+     "baris_l2b": 68,
+     "kjn": 82,
+     "kjn_juklak": 73,
+     "kjn_l2": 68,
+     "kjn_l2b": 68,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 5,
+     "kjn_dibi_is_bencana": 73,
+     "selisih_pct_kjn_l2_vs_juklak": -6.8,
+     "selisih_pct_kjn_l2b_vs_juklak": -6.8,
+     "selisih_pct_baris_l2_vs_juklak": -6.8,
+     "juklak_tunggal": {
+      "K1": 14,
+      "K2": 8,
+      "K3": 32
+     },
+     "l2_tunggal": {
+      "M1": 14,
+      "M2": 5,
+      "M3": 2,
+      "M4": 27
+     },
+     "l2b_tunggal": {
+      "M1": 14,
+      "M2": 5,
+      "M3": 2,
+      "M4b": 27
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Kekeringan": {
+     "baris": 90,
+     "baris_juklak": 89,
+     "baris_l2": 89,
+     "baris_l2b": 89,
+     "kjn": 90,
+     "kjn_juklak": 89,
+     "kjn_l2": 89,
+     "kjn_l2b": 89,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 89,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 89,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 89,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 89,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Konflik sosial": {
+     "baris": 0,
+     "baris_juklak": 0,
+     "baris_l2": 0,
+     "baris_l2b": 0,
+     "kjn": 0,
+     "kjn_juklak": 0,
+     "kjn_l2": 0,
+     "kjn_l2b": 0,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 0,
+     "selisih_pct_kjn_l2_vs_juklak": null,
+     "selisih_pct_kjn_l2b_vs_juklak": null,
+     "selisih_pct_baris_l2_vs_juklak": null,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Lainnya": {
+     "baris": 0,
+     "baris_juklak": 0,
+     "baris_l2": 0,
+     "baris_l2b": 0,
+     "kjn": 0,
+     "kjn_juklak": 0,
+     "kjn_l2": 0,
+     "kjn_l2b": 0,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 0,
+     "selisih_pct_kjn_l2_vs_juklak": null,
+     "selisih_pct_kjn_l2b_vs_juklak": null,
+     "selisih_pct_baris_l2_vs_juklak": null,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Longsor": {
+     "baris": 222,
+     "baris_juklak": 206,
+     "baris_l2": 160,
+     "baris_l2b": 159,
+     "kjn": 220,
+     "kjn_juklak": 204,
+     "kjn_l2": 159,
+     "kjn_l2b": 158,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 45,
+     "kjn_dibi_is_bencana": 208,
+     "selisih_pct_kjn_l2_vs_juklak": -22.1,
+     "selisih_pct_kjn_l2b_vs_juklak": -22.5,
+     "selisih_pct_baris_l2_vs_juklak": -22.3,
+     "juklak_tunggal": {
+      "K1": 48,
+      "K2": 31,
+      "K3": 59
+     },
+     "l2_tunggal": {
+      "M1": 44,
+      "M2": 5,
+      "M3": 28,
+      "M4": 18
+     },
+     "l2b_tunggal": {
+      "M1": 46,
+      "M2": 5,
+      "M3": 29,
+      "M4b": 17
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 1
+    },
+    "Tsunami": {
+     "baris": 0,
+     "baris_juklak": 0,
+     "baris_l2": 0,
+     "baris_l2b": 0,
+     "kjn": 0,
+     "kjn_juklak": 0,
+     "kjn_l2": 0,
+     "kjn_l2b": 0,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 0,
+     "selisih_pct_kjn_l2_vs_juklak": null,
+     "selisih_pct_kjn_l2b_vs_juklak": null,
+     "selisih_pct_baris_l2_vs_juklak": null,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    }
+   }
+  },
+  "2025": {
+   "baris": 8946,
+   "baris_juklak": 3682,
+   "baris_l2": 3343,
+   "baris_l2b": 3221,
+   "kjn": 8763,
+   "kjn_juklak": 3647,
+   "kjn_l2": 3311,
+   "kjn_l2b": 3193,
+   "kjn_l2_bukan_juklak": 137,
+   "kjn_juklak_bukan_l2": 473,
+   "kjn_dibi_is_bencana": 5117,
+   "selisih_pct_kjn_l2_vs_juklak": -9.2,
+   "selisih_pct_kjn_l2b_vs_juklak": -12.4,
+   "selisih_pct_baris_l2_vs_juklak": -9.2,
+   "juklak_tunggal": {
+    "K1": 188,
+    "K2": 1801,
+    "K3": 740
+   },
+   "l2_tunggal": {
+    "M1": 197,
+    "M2": 35,
+    "M3": 1639,
+    "M4": 420
+   },
+   "l2b_tunggal": {
+    "M1": 201,
+    "M2": 40,
+    "M3": 1723,
+    "M4b": 302
+   },
+   "l2_hanya_fasilitas_tanpa_RBS1": 118,
+   "per_kategori": {
+    "Banjir": {
+     "baris": 2774,
+     "baris_juklak": 1945,
+     "baris_l2": 1955,
+     "baris_l2b": 1925,
+     "kjn": 2729,
+     "kjn_juklak": 1921,
+     "kjn_l2": 1933,
+     "kjn_l2b": 1903,
+     "kjn_l2_bukan_juklak": 34,
+     "kjn_juklak_bukan_l2": 22,
+     "kjn_dibi_is_bencana": 2111,
+     "selisih_pct_kjn_l2_vs_juklak": 0.6,
+     "selisih_pct_kjn_l2b_vs_juklak": -0.9,
+     "selisih_pct_baris_l2_vs_juklak": 0.5,
+     "juklak_tunggal": {
+      "K1": 30,
+      "K2": 1581,
+      "K3": 40
+     },
+     "l2_tunggal": {
+      "M1": 34,
+      "M2": 27,
+      "M3": 1379,
+      "M4": 51
+     },
+     "l2b_tunggal": {
+      "M1": 34,
+      "M2": 32,
+      "M3": 1454,
+      "M4b": 21
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 30
+    },
+    "Cuaca ekstrem": {
+     "baris": 2412,
+     "baris_juklak": 997,
+     "baris_l2": 733,
+     "baris_l2b": 680,
+     "kjn": 2366,
+     "kjn_juklak": 994,
+     "kjn_l2": 730,
+     "kjn_l2b": 679,
+     "kjn_l2_bukan_juklak": 57,
+     "kjn_juklak_bukan_l2": 321,
+     "kjn_dibi_is_bencana": 992,
+     "selisih_pct_kjn_l2_vs_juklak": -26.6,
+     "selisih_pct_kjn_l2b_vs_juklak": -31.7,
+     "selisih_pct_baris_l2_vs_juklak": -26.5,
+     "juklak_tunggal": {
+      "K1": 47,
+      "K2": 23,
+      "K3": 489
+     },
+     "l2_tunggal": {
+      "M1": 49,
+      "M2": 1,
+      "M3": 74,
+      "M4": 237
+     },
+     "l2b_tunggal": {
+      "M1": 50,
+      "M2": 1,
+      "M3": 78,
+      "M4b": 186
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 51
+    },
+    "Epidemi - Wabah penyakit": {
+     "baris": 6,
+     "baris_juklak": 3,
+     "baris_l2": 3,
+     "baris_l2b": 3,
+     "kjn": 6,
+     "kjn_juklak": 3,
+     "kjn_l2": 3,
+     "kjn_l2b": 3,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 3,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 1,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 1,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 1,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Erupsi gunung api": {
+     "baris": 18,
+     "baris_juklak": 6,
+     "baris_l2": 6,
+     "baris_l2b": 6,
+     "kjn": 16,
+     "kjn_juklak": 6,
+     "kjn_l2": 6,
+     "kjn_l2b": 6,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 6,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 3,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 1,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 1,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gagal teknologi": {
+     "baris": 3,
+     "baris_juklak": 2,
+     "baris_l2": 2,
+     "baris_l2b": 2,
+     "kjn": 3,
+     "kjn_juklak": 2,
+     "kjn_l2": 2,
+     "kjn_l2b": 2,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 2,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gelombang pasang / Abrasi": {
+     "baris": 67,
+     "baris_juklak": 27,
+     "baris_l2": 26,
+     "baris_l2b": 26,
+     "kjn": 67,
+     "kjn_juklak": 27,
+     "kjn_l2": 26,
+     "kjn_l2b": 26,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 1,
+     "kjn_dibi_is_bencana": 29,
+     "selisih_pct_kjn_l2_vs_juklak": -3.7,
+     "selisih_pct_kjn_l2b_vs_juklak": -3.7,
+     "selisih_pct_baris_l2_vs_juklak": -3.7,
+     "juklak_tunggal": {
+      "K1": 2,
+      "K2": 12,
+      "K3": 5
+     },
+     "l2_tunggal": {
+      "M1": 2,
+      "M2": 0,
+      "M3": 13,
+      "M4": 4
+     },
+     "l2b_tunggal": {
+      "M1": 2,
+      "M2": 0,
+      "M3": 13,
+      "M4b": 4
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gempabumi": {
+     "baris": 100,
+     "baris_juklak": 25,
+     "baris_l2": 33,
+     "baris_l2b": 26,
+     "kjn": 82,
+     "kjn_juklak": 22,
+     "kjn_l2": 28,
+     "kjn_l2b": 21,
+     "kjn_l2_bukan_juklak": 7,
+     "kjn_juklak_bukan_l2": 1,
+     "kjn_dibi_is_bencana": 23,
+     "selisih_pct_kjn_l2_vs_juklak": 27.3,
+     "selisih_pct_kjn_l2b_vs_juklak": -4.5,
+     "selisih_pct_baris_l2_vs_juklak": 32.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 4
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 10
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 3
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 7
+    },
+    "Kebakaran hutan dan lahan": {
+     "baris": 1487,
+     "baris_juklak": 7,
+     "baris_l2": 7,
+     "baris_l2b": 7,
+     "kjn": 1460,
+     "kjn_juklak": 7,
+     "kjn_l2": 7,
+     "kjn_l2b": 7,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 1253,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 4,
+      "K2": 3,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 4,
+      "M2": 0,
+      "M3": 3,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 4,
+      "M2": 0,
+      "M3": 3,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Kebakaran permukiman": {
+     "baris": 868,
+     "baris_juklak": 295,
+     "baris_l2": 258,
+     "baris_l2b": 246,
+     "kjn": 844,
+     "kjn_juklak": 293,
+     "kjn_l2": 256,
+     "kjn_l2b": 245,
+     "kjn_l2_bukan_juklak": 11,
+     "kjn_juklak_bukan_l2": 48,
+     "kjn_dibi_is_bencana": 320,
+     "selisih_pct_kjn_l2_vs_juklak": -12.6,
+     "selisih_pct_kjn_l2b_vs_juklak": -16.4,
+     "selisih_pct_baris_l2_vs_juklak": -12.5,
+     "juklak_tunggal": {
+      "K1": 37,
+      "K2": 83,
+      "K3": 87
+     },
+     "l2_tunggal": {
+      "M1": 38,
+      "M2": 1,
+      "M3": 79,
+      "M4": 55
+     },
+     "l2b_tunggal": {
+      "M1": 38,
+      "M2": 1,
+      "M3": 82,
+      "M4b": 44
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 11
+    },
+    "Kekeringan": {
+     "baris": 50,
+     "baris_juklak": 34,
+     "baris_l2": 34,
+     "baris_l2b": 34,
+     "kjn": 50,
+     "kjn_juklak": 34,
+     "kjn_l2": 34,
+     "kjn_l2b": 34,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 36,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 34,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 34,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 34,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Konflik sosial": {
+     "baris": 5,
+     "baris_juklak": 4,
+     "baris_l2": 4,
+     "baris_l2b": 4,
+     "kjn": 5,
+     "kjn_juklak": 4,
+     "kjn_l2": 4,
+     "kjn_l2b": 4,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 4,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 1,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Lainnya": {
+     "baris": 48,
+     "baris_juklak": 28,
+     "baris_l2": 32,
+     "baris_l2b": 30,
+     "kjn": 48,
+     "kjn_juklak": 28,
+     "kjn_l2": 32,
+     "kjn_l2b": 30,
+     "kjn_l2_bukan_juklak": 4,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 25,
+     "selisih_pct_kjn_l2_vs_juklak": 14.3,
+     "selisih_pct_kjn_l2b_vs_juklak": 7.1,
+     "selisih_pct_baris_l2_vs_juklak": 14.3,
+     "juklak_tunggal": {
+      "K1": 25,
+      "K2": 2,
+      "K3": 1
+     },
+     "l2_tunggal": {
+      "M1": 27,
+      "M2": 1,
+      "M3": 1,
+      "M4": 3
+     },
+     "l2b_tunggal": {
+      "M1": 27,
+      "M2": 1,
+      "M3": 1,
+      "M4b": 1
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 2
+    },
+    "Longsor": {
+     "baris": 1106,
+     "baris_juklak": 307,
+     "baris_l2": 248,
+     "baris_l2b": 230,
+     "kjn": 1086,
+     "kjn_juklak": 305,
+     "kjn_l2": 249,
+     "kjn_l2b": 232,
+     "kjn_l2_bukan_juklak": 24,
+     "kjn_juklak_bukan_l2": 80,
+     "kjn_dibi_is_bencana": 312,
+     "selisih_pct_kjn_l2_vs_juklak": -18.4,
+     "selisih_pct_kjn_l2b_vs_juklak": -23.9,
+     "selisih_pct_baris_l2_vs_juklak": -19.2,
+     "juklak_tunggal": {
+      "K1": 41,
+      "K2": 57,
+      "K3": 114
+     },
+     "l2_tunggal": {
+      "M1": 41,
+      "M2": 3,
+      "M3": 55,
+      "M4": 60
+     },
+     "l2b_tunggal": {
+      "M1": 44,
+      "M2": 3,
+      "M3": 57,
+      "M4b": 43
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 17
+    },
+    "Tsunami": {
+     "baris": 2,
+     "baris_juklak": 2,
+     "baris_l2": 2,
+     "baris_l2b": 2,
+     "kjn": 1,
+     "kjn_juklak": 1,
+     "kjn_l2": 1,
+     "kjn_l2b": 1,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 1,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 1,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 1,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 1,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    }
+   }
+  },
+  "2026": {
+   "baris": 3276,
+   "baris_juklak": 1363,
+   "baris_l2": 1249,
+   "baris_l2b": 1230,
+   "kjn": 3220,
+   "kjn_juklak": 1332,
+   "kjn_l2": 1220,
+   "kjn_l2b": 1202,
+   "kjn_l2_bukan_juklak": 18,
+   "kjn_juklak_bukan_l2": 130,
+   "kjn_dibi_is_bencana": 2449,
+   "selisih_pct_kjn_l2_vs_juklak": -8.4,
+   "selisih_pct_kjn_l2b_vs_juklak": -9.8,
+   "selisih_pct_baris_l2_vs_juklak": -8.4,
+   "juklak_tunggal": {
+    "K1": 82,
+    "K2": 721,
+    "K3": 169
+   },
+   "l2_tunggal": {
+    "M1": 89,
+    "M2": 16,
+    "M3": 692,
+    "M4": 63
+   },
+   "l2b_tunggal": {
+    "M1": 90,
+    "M2": 17,
+    "M3": 705,
+    "M4b": 45
+   },
+   "l2_hanya_fasilitas_tanpa_RBS1": 18,
+   "per_kategori": {
+    "Banjir": {
+     "baris": 765,
+     "baris_juklak": 586,
+     "baris_l2": 588,
+     "baris_l2b": 583,
+     "kjn": 763,
+     "kjn_juklak": 584,
+     "kjn_l2": 586,
+     "kjn_l2b": 581,
+     "kjn_l2_bukan_juklak": 4,
+     "kjn_juklak_bukan_l2": 2,
+     "kjn_dibi_is_bencana": 622,
+     "selisih_pct_kjn_l2_vs_juklak": 0.3,
+     "selisih_pct_kjn_l2b_vs_juklak": -0.5,
+     "selisih_pct_baris_l2_vs_juklak": 0.3,
+     "juklak_tunggal": {
+      "K1": 8,
+      "K2": 491,
+      "K3": 4
+     },
+     "l2_tunggal": {
+      "M1": 8,
+      "M2": 12,
+      "M3": 426,
+      "M4": 7
+     },
+     "l2b_tunggal": {
+      "M1": 8,
+      "M2": 13,
+      "M3": 436,
+      "M4b": 2
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 5
+    },
+    "Cuaca ekstrem": {
+     "baris": 638,
+     "baris_juklak": 367,
+     "baris_l2": 278,
+     "baris_l2b": 272,
+     "kjn": 636,
+     "kjn_juklak": 365,
+     "kjn_l2": 277,
+     "kjn_l2b": 271,
+     "kjn_l2_bukan_juklak": 6,
+     "kjn_juklak_bukan_l2": 94,
+     "kjn_dibi_is_bencana": 367,
+     "selisih_pct_kjn_l2_vs_juklak": -24.1,
+     "selisih_pct_kjn_l2b_vs_juklak": -25.8,
+     "selisih_pct_baris_l2_vs_juklak": -24.3,
+     "juklak_tunggal": {
+      "K1": 14,
+      "K2": 50,
+      "K3": 110
+     },
+     "l2_tunggal": {
+      "M1": 16,
+      "M2": 0,
+      "M3": 94,
+      "M4": 23
+     },
+     "l2b_tunggal": {
+      "M1": 16,
+      "M2": 0,
+      "M3": 94,
+      "M4b": 17
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 6
+    },
+    "Epidemi - Wabah penyakit": {
+     "baris": 1,
+     "baris_juklak": 1,
+     "baris_l2": 1,
+     "baris_l2b": 1,
+     "kjn": 1,
+     "kjn_juklak": 1,
+     "kjn_l2": 1,
+     "kjn_l2b": 1,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 1,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Erupsi gunung api": {
+     "baris": 10,
+     "baris_juklak": 4,
+     "baris_l2": 4,
+     "baris_l2b": 4,
+     "kjn": 10,
+     "kjn_juklak": 4,
+     "kjn_l2": 4,
+     "kjn_l2b": 4,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 4,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 2,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 1,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 1,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gagal teknologi": {
+     "baris": 5,
+     "baris_juklak": 5,
+     "baris_l2": 3,
+     "baris_l2b": 3,
+     "kjn": 5,
+     "kjn_juklak": 5,
+     "kjn_l2": 3,
+     "kjn_l2b": 3,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 2,
+     "kjn_dibi_is_bencana": 5,
+     "selisih_pct_kjn_l2_vs_juklak": -40.0,
+     "selisih_pct_kjn_l2b_vs_juklak": -40.0,
+     "selisih_pct_baris_l2_vs_juklak": -40.0,
+     "juklak_tunggal": {
+      "K1": 2,
+      "K2": 0,
+      "K3": 2
+     },
+     "l2_tunggal": {
+      "M1": 2,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 2,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gelombang pasang / Abrasi": {
+     "baris": 17,
+     "baris_juklak": 14,
+     "baris_l2": 13,
+     "baris_l2b": 13,
+     "kjn": 17,
+     "kjn_juklak": 14,
+     "kjn_l2": 13,
+     "kjn_l2b": 13,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 1,
+     "kjn_dibi_is_bencana": 14,
+     "selisih_pct_kjn_l2_vs_juklak": -7.1,
+     "selisih_pct_kjn_l2b_vs_juklak": -7.1,
+     "selisih_pct_baris_l2_vs_juklak": -7.1,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 9,
+      "K3": 1
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 10,
+      "M4": 1
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 10,
+      "M4b": 1
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Gempabumi": {
+     "baris": 58,
+     "baris_juklak": 43,
+     "baris_l2": 43,
+     "baris_l2b": 40,
+     "kjn": 24,
+     "kjn_juklak": 16,
+     "kjn_l2": 17,
+     "kjn_l2b": 15,
+     "kjn_l2_bukan_juklak": 1,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 14,
+     "selisih_pct_kjn_l2_vs_juklak": 6.2,
+     "selisih_pct_kjn_l2b_vs_juklak": -6.2,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 1,
+      "K3": 2
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 1,
+      "M4": 3
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 1,
+      "M4b": 1
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 2
+    },
+    "Kebakaran hutan dan lahan": {
+     "baris": 1168,
+     "baris_juklak": 17,
+     "baris_l2": 19,
+     "baris_l2b": 18,
+     "kjn": 1150,
+     "kjn_juklak": 17,
+     "kjn_l2": 19,
+     "kjn_l2b": 18,
+     "kjn_l2_bukan_juklak": 2,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 1086,
+     "selisih_pct_kjn_l2_vs_juklak": 11.8,
+     "selisih_pct_kjn_l2b_vs_juklak": 5.9,
+     "selisih_pct_baris_l2_vs_juklak": 11.8,
+     "juklak_tunggal": {
+      "K1": 5,
+      "K2": 9,
+      "K3": 2
+     },
+     "l2_tunggal": {
+      "M1": 6,
+      "M2": 1,
+      "M3": 7,
+      "M4": 3
+     },
+     "l2b_tunggal": {
+      "M1": 6,
+      "M2": 1,
+      "M3": 7,
+      "M4b": 2
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 1
+    },
+    "Kebakaran permukiman": {
+     "baris": 155,
+     "baris_juklak": 78,
+     "baris_l2": 72,
+     "baris_l2b": 71,
+     "kjn": 155,
+     "kjn_juklak": 78,
+     "kjn_l2": 72,
+     "kjn_l2b": 71,
+     "kjn_l2_bukan_juklak": 1,
+     "kjn_juklak_bukan_l2": 7,
+     "kjn_dibi_is_bencana": 88,
+     "selisih_pct_kjn_l2_vs_juklak": -7.7,
+     "selisih_pct_kjn_l2b_vs_juklak": -9.0,
+     "selisih_pct_baris_l2_vs_juklak": -7.7,
+     "juklak_tunggal": {
+      "K1": 20,
+      "K2": 11,
+      "K3": 19
+     },
+     "l2_tunggal": {
+      "M1": 24,
+      "M2": 2,
+      "M3": 9,
+      "M4": 14
+     },
+     "l2b_tunggal": {
+      "M1": 24,
+      "M2": 2,
+      "M3": 9,
+      "M4b": 13
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 1
+    },
+    "Kekeringan": {
+     "baris": 129,
+     "baris_juklak": 122,
+     "baris_l2": 122,
+     "baris_l2b": 122,
+     "kjn": 129,
+     "kjn_juklak": 122,
+     "kjn_l2": 122,
+     "kjn_l2b": 122,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 125,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 122,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 122,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 122,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Konflik sosial": {
+     "baris": 8,
+     "baris_juklak": 8,
+     "baris_l2": 8,
+     "baris_l2b": 8,
+     "kjn": 8,
+     "kjn_juklak": 8,
+     "kjn_l2": 8,
+     "kjn_l2b": 8,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 8,
+     "selisih_pct_kjn_l2_vs_juklak": 0.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 0.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    },
+    "Lainnya": {
+     "baris": 4,
+     "baris_juklak": 1,
+     "baris_l2": 2,
+     "baris_l2b": 1,
+     "kjn": 4,
+     "kjn_juklak": 1,
+     "kjn_l2": 2,
+     "kjn_l2b": 1,
+     "kjn_l2_bukan_juklak": 1,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 1,
+     "selisih_pct_kjn_l2_vs_juklak": 100.0,
+     "selisih_pct_kjn_l2b_vs_juklak": 0.0,
+     "selisih_pct_baris_l2_vs_juklak": 100.0,
+     "juklak_tunggal": {
+      "K1": 1,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4": 1
+     },
+     "l2b_tunggal": {
+      "M1": 1,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 1
+    },
+    "Longsor": {
+     "baris": 318,
+     "baris_juklak": 117,
+     "baris_l2": 96,
+     "baris_l2b": 94,
+     "kjn": 318,
+     "kjn_juklak": 117,
+     "kjn_l2": 96,
+     "kjn_l2b": 94,
+     "kjn_l2_bukan_juklak": 3,
+     "kjn_juklak_bukan_l2": 24,
+     "kjn_dibi_is_bencana": 114,
+     "selisih_pct_kjn_l2_vs_juklak": -17.9,
+     "selisih_pct_kjn_l2b_vs_juklak": -19.7,
+     "selisih_pct_baris_l2_vs_juklak": -17.9,
+     "juklak_tunggal": {
+      "K1": 29,
+      "K2": 26,
+      "K3": 29
+     },
+     "l2_tunggal": {
+      "M1": 30,
+      "M2": 0,
+      "M3": 23,
+      "M4": 11
+     },
+     "l2b_tunggal": {
+      "M1": 30,
+      "M2": 0,
+      "M3": 26,
+      "M4b": 9
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 2
+    },
+    "Tsunami": {
+     "baris": 0,
+     "baris_juklak": 0,
+     "baris_l2": 0,
+     "baris_l2b": 0,
+     "kjn": 0,
+     "kjn_juklak": 0,
+     "kjn_l2": 0,
+     "kjn_l2b": 0,
+     "kjn_l2_bukan_juklak": 0,
+     "kjn_juklak_bukan_l2": 0,
+     "kjn_dibi_is_bencana": 0,
+     "selisih_pct_kjn_l2_vs_juklak": null,
+     "selisih_pct_kjn_l2b_vs_juklak": null,
+     "selisih_pct_baris_l2_vs_juklak": null,
+     "juklak_tunggal": {
+      "K1": 0,
+      "K2": 0,
+      "K3": 0
+     },
+     "l2_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4": 0
+     },
+     "l2b_tunggal": {
+      "M1": 0,
+      "M2": 0,
+      "M3": 0,
+      "M4b": 0
+     },
+     "l2_hanya_fasilitas_tanpa_RBS1": 0
+    }
+   }
+  },
+  "semua": {
+   "baris": 15974,
+   "baris_juklak": 7654,
+   "baris_l2": 6917,
+   "baris_l2b": 6758,
+   "kjn": 15637,
+   "kjn_juklak": 7535,
+   "kjn_l2": 6812,
+   "kjn_l2b": 6662,
+   "kjn_l2_bukan_juklak": 168,
+   "kjn_juklak_bukan_l2": 891,
+   "kjn_dibi_is_bencana": 11132,
+   "selisih_pct_kjn_l2_vs_juklak": -9.6,
+   "selisih_pct_kjn_l2b_vs_juklak": -11.6,
+   "selisih_pct_baris_l2_vs_juklak": -9.6,
+   "juklak_tunggal": {
+    "K1": 384,
+    "K2": 3889,
+    "K3": 1395
+   },
+   "l2_tunggal": {
+    "M1": 394,
+    "M2": 86,
+    "M3": 3546,
+    "M4": 699
+   },
+   "l2b_tunggal": {
+    "M1": 404,
+    "M2": 92,
+    "M3": 3695,
+    "M4b": 549
+   },
+   "l2_hanya_fasilitas_tanpa_RBS1": 150
+  },
+  "jan_okt": {
+   "2024": {
+    "baris": 3058,
+    "baris_juklak": 1956,
+    "baris_l2": 1764,
+    "baris_l2b": 1748,
+    "kjn": 2965,
+    "kjn_juklak": 1908,
+    "kjn_l2": 1724,
+    "kjn_l2b": 1712,
+    "kjn_l2_bukan_juklak": 12,
+    "kjn_juklak_bukan_l2": 196,
+    "kjn_dibi_is_bencana": 2894,
+    "selisih_pct_kjn_l2_vs_juklak": -9.6,
+    "selisih_pct_kjn_l2b_vs_juklak": -10.3,
+    "selisih_pct_baris_l2_vs_juklak": -9.8,
+    "juklak_tunggal": {
+     "K1": 86,
+     "K2": 1049,
+     "K3": 340
+    },
+    "l2_tunggal": {
+     "M1": 81,
+     "M2": 24,
+     "M3": 935,
+     "M4": 158
+    },
+    "l2b_tunggal": {
+     "M1": 86,
+     "M2": 24,
+     "M3": 972,
+     "M4b": 146
+    },
+    "l2_hanya_fasilitas_tanpa_RBS1": 12
+   },
+   "2025": {
+    "baris": 7746,
+    "baris_juklak": 2983,
+    "baris_l2": 2725,
+    "baris_l2b": 2619,
+    "kjn": 7565,
+    "kjn_juklak": 2949,
+    "kjn_l2": 2694,
+    "kjn_l2b": 2592,
+    "kjn_l2_bukan_juklak": 122,
+    "kjn_juklak_bukan_l2": 377,
+    "kjn_dibi_is_bencana": 4300,
+    "selisih_pct_kjn_l2_vs_juklak": -8.6,
+    "selisih_pct_kjn_l2b_vs_juklak": -12.1,
+    "selisih_pct_baris_l2_vs_juklak": -8.6,
+    "juklak_tunggal": {
+     "K1": 157,
+     "K2": 1482,
+     "K3": 610
+    },
+    "l2_tunggal": {
+     "M1": 164,
+     "M2": 32,
+     "M3": 1321,
+     "M4": 366
+    },
+    "l2b_tunggal": {
+     "M1": 168,
+     "M2": 36,
+     "M3": 1393,
+     "M4b": 264
+    },
+    "l2_hanya_fasilitas_tanpa_RBS1": 102
+   },
+   "2026": {
+    "baris": 3181,
+    "baris_juklak": 1329,
+    "baris_l2": 1212,
+    "baris_l2b": 1197,
+    "kjn": 3125,
+    "kjn_juklak": 1298,
+    "kjn_l2": 1183,
+    "kjn_l2b": 1169,
+    "kjn_l2_bukan_juklak": 14,
+    "kjn_juklak_bukan_l2": 129,
+    "kjn_dibi_is_bencana": 2380,
+    "selisih_pct_kjn_l2_vs_juklak": -8.9,
+    "selisih_pct_kjn_l2b_vs_juklak": -9.9,
+    "selisih_pct_baris_l2_vs_juklak": -8.8,
+    "juklak_tunggal": {
+     "K1": 81,
+     "K2": 710,
+     "K3": 166
+    },
+    "l2_tunggal": {
+     "M1": 87,
+     "M2": 16,
+     "M3": 678,
+     "M4": 57
+    },
+    "l2b_tunggal": {
+     "M1": 88,
+     "M2": 16,
+     "M3": 690,
+     "M4b": 43
+    },
+    "l2_hanya_fasilitas_tanpa_RBS1": 14
+   }
+  },
+  "is_bencana_vs": {
+   "2024": {
+    "baris_is_bencana_true": 3659,
+    "true_dan_juklak": 2608,
+    "true_dan_l2": 2312,
+    "false_dan_juklak": 1,
+    "false_dan_l2": 13,
+    "false_total": 93
+   },
+   "2025": {
+    "baris_is_bencana_true": 5241,
+    "true_dan_juklak": 3595,
+    "true_dan_l2": 3142,
+    "false_dan_juklak": 87,
+    "false_dan_l2": 201,
+    "false_total": 3705
+   },
+   "2026": {
+    "baris_is_bencana_true": 2505,
+    "true_dan_juklak": 1332,
+    "true_dan_l2": 1212,
+    "false_dan_juklak": 31,
+    "false_dan_l2": 37,
+    "false_total": 771
+   }
+  },
+  "contoh_l2_bukan_juklak": [
+   {
+    "wilayah": "Kota Ternate (Maluku Utara)",
+    "tgl": "2026-10-02",
+    "kategori": "Kebakaran hutan dan lahan",
+    "meninggal": 0,
+    "hilang": 2,
+    "luka": 1,
+    "menderita": 0,
+    "mengungsi": 0,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Badung (Bali)",
+    "tgl": "2026-11-02",
+    "kategori": "Longsor",
+    "meninggal": 0,
+    "hilang": 2,
+    "luka": 0,
+    "menderita": 0,
+    "mengungsi": 0,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Mahakam Ulu (Kalimantan Timur)",
+    "tgl": "2025-09-04",
+    "kategori": "Lainnya",
+    "meninggal": 0,
+    "hilang": 1,
+    "luka": 0,
+    "menderita": 3,
+    "mengungsi": 0,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Bone Bolango (Gorontalo)",
+    "tgl": "2024-06-22",
+    "kategori": "Banjir",
+    "meninggal": 0,
+    "hilang": 1,
+    "luka": 2,
+    "menderita": 2,
+    "mengungsi": 0,
+    "RB": 1,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 1.0,
+    "fasilitas": 1
+   },
+   {
+    "wilayah": "Cianjur (Jawa Barat)",
+    "tgl": "2025-05-16",
+    "kategori": "Cuaca ekstrem",
+    "meninggal": 0,
+    "hilang": 1,
+    "luka": 0,
+    "menderita": 1,
+    "mengungsi": 0,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Bintan (Kepulauan Riau)",
+    "tgl": "2024-01-04",
+    "kategori": "Banjir",
+    "meninggal": 0,
+    "hilang": 1,
+    "luka": 1,
+    "menderita": 0,
+    "mengungsi": 0,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   }
+  ],
+  "contoh_juklak_bukan_l2": [
+   {
+    "wilayah": "Waropen (Papua)",
+    "tgl": "2026-03-19",
+    "kategori": "Gelombang pasang / Abrasi",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 48,
+    "mengungsi": 48,
+    "RB": 2,
+    "RS": 0,
+    "RR": 3,
+    "RBS": 2.75,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Kota Cimahi (Jawa Barat)",
+    "tgl": "2025-04-07",
+    "kategori": "Longsor",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 46,
+    "mengungsi": 46,
+    "RB": 3,
+    "RS": 0,
+    "RR": 1,
+    "RBS": 3.25,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Kota Adm. Jakarta Pusat (DKI Jakarta)",
+    "tgl": "2025-01-28",
+    "kategori": "Kebakaran permukiman",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 3,
+    "menderita": 46,
+    "mengungsi": 46,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Kota Adm. Jakarta Utara (DKI Jakarta)",
+    "tgl": "2025-12-28",
+    "kategori": "Kebakaran permukiman",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 43,
+    "mengungsi": 37,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Bogor (Jawa Barat)",
+    "tgl": "2026-02-14",
+    "kategori": "Longsor",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 36,
+    "mengungsi": 40,
+    "RB": 0,
+    "RS": 0,
+    "RR": 3,
+    "RBS": 0.75,
+    "fasilitas": 0
+   },
+   {
+    "wilayah": "Bogor (Jawa Barat)",
+    "tgl": "2025-11-04",
+    "kategori": "Cuaca ekstrem",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 42,
+    "menderita": 29,
+    "mengungsi": 0,
+    "RB": 1,
+    "RS": 2,
+    "RR": 2,
+    "RBS": 2.5,
+    "fasilitas": 0
+   }
+  ],
+  "juklak_bukan_l2_penentu": {
+   "K3": 868,
+   "K2": 12,
+   "K2K3": 11
+  },
+  "l2_bukan_juklak_penentu": {
+   "M1": 9,
+   "M4": 158,
+   "M1M4": 1
+  }
+ },
+ "L3": {
+  "opsi": {
+   "a": {
+    "semua": {
+     "n": 6812,
+     "R": 6560,
+     "S": 216,
+     "B": 32,
+     "K": 4,
+     "pct": {
+      "R": 96.3,
+      "S": 3.2,
+      "B": 0.5,
+      "K": 0.1
+     }
+    },
+    "2024": {
+     "n": 2281,
+     "R": 2192,
+     "S": 74,
+     "B": 15,
+     "K": 0,
+     "pct": {
+      "R": 96.1,
+      "S": 3.2,
+      "B": 0.7,
+      "K": 0.0
+     }
+    },
+    "2025": {
+     "n": 3311,
+     "R": 3184,
+     "S": 108,
+     "B": 16,
+     "K": 3,
+     "pct": {
+      "R": 96.2,
+      "S": 3.3,
+      "B": 0.5,
+      "K": 0.1
+     }
+    },
+    "2026": {
+     "n": 1220,
+     "R": 1184,
+     "S": 34,
+     "B": 1,
+     "K": 1,
+     "pct": {
+      "R": 97.0,
+      "S": 2.8,
+      "B": 0.1,
+      "K": 0.1
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3906,
+      "R": 3744,
+      "S": 133,
+      "B": 26,
+      "K": 3,
+      "pct": {
+       "R": 95.9,
+       "S": 3.4,
+       "B": 0.7,
+       "K": 0.1
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1530,
+      "R": 1510,
+      "S": 20,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 98.7,
+       "S": 1.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 9,
+      "S": 8,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 50.0,
+       "S": 44.4,
+       "B": 5.6,
+       "K": 0.0
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 62,
+      "R": 62,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 48,
+      "S": 8,
+      "B": 3,
+      "K": 1,
+      "pct": {
+       "R": 80.0,
+       "S": 13.3,
+       "B": 5.0,
+       "K": 1.7
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 31,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.9,
+       "S": 3.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 396,
+      "R": 384,
+      "S": 12,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.0,
+       "S": 3.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 245,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 8,
+      "S": 4,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 33,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.1,
+       "S": 2.9,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 504,
+      "R": 477,
+      "S": 25,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 94.6,
+       "S": 5.0,
+       "B": 0.4,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   },
+   "b": {
+    "semua": {
+     "n": 6812,
+     "R": 5976,
+     "S": 708,
+     "B": 91,
+     "K": 37,
+     "pct": {
+      "R": 87.7,
+      "S": 10.4,
+      "B": 1.3,
+      "K": 0.5
+     }
+    },
+    "2024": {
+     "n": 2281,
+     "R": 1960,
+     "S": 278,
+     "B": 35,
+     "K": 8,
+     "pct": {
+      "R": 85.9,
+      "S": 12.2,
+      "B": 1.5,
+      "K": 0.4
+     }
+    },
+    "2025": {
+     "n": 3311,
+     "R": 2976,
+     "S": 272,
+     "B": 43,
+     "K": 20,
+     "pct": {
+      "R": 89.9,
+      "S": 8.2,
+      "B": 1.3,
+      "K": 0.6
+     }
+    },
+    "2026": {
+     "n": 1220,
+     "R": 1040,
+     "S": 158,
+     "B": 13,
+     "K": 9,
+     "pct": {
+      "R": 85.2,
+      "S": 13.0,
+      "B": 1.1,
+      "K": 0.7
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3906,
+      "R": 3205,
+      "S": 595,
+      "B": 78,
+      "K": 28,
+      "pct": {
+       "R": 82.1,
+       "S": 15.2,
+       "B": 2.0,
+       "K": 0.7
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1530,
+      "R": 1523,
+      "S": 6,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 99.5,
+       "S": 0.4,
+       "B": 0.1,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 6,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 8,
+      "S": 7,
+      "B": 1,
+      "K": 2,
+      "pct": {
+       "R": 44.4,
+       "S": 38.9,
+       "B": 5.6,
+       "K": 11.1
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 6,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 62,
+      "R": 60,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.8,
+       "S": 3.2,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 50,
+      "S": 9,
+      "B": 0,
+      "K": 1,
+      "pct": {
+       "R": 83.3,
+       "S": 15.0,
+       "B": 0.0,
+       "K": 1.7
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 30,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 93.8,
+       "S": 6.2,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 396,
+      "R": 385,
+      "S": 9,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 97.2,
+       "S": 2.3,
+       "B": 0.5,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 165,
+      "S": 65,
+      "B": 9,
+      "K": 6,
+      "pct": {
+       "R": 67.3,
+       "S": 26.5,
+       "B": 3.7,
+       "K": 2.4
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 9,
+      "S": 3,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 75.0,
+       "S": 25.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 33,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.1,
+       "S": 2.9,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 504,
+      "R": 495,
+      "S": 9,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 98.2,
+       "S": 1.8,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   },
+   "a+b": {
+    "semua": {
+     "n": 6812,
+     "R": 6479,
+     "S": 273,
+     "B": 56,
+     "K": 4,
+     "pct": {
+      "R": 95.1,
+      "S": 4.0,
+      "B": 0.8,
+      "K": 0.1
+     }
+    },
+    "2024": {
+     "n": 2281,
+     "R": 2166,
+     "S": 91,
+     "B": 24,
+     "K": 0,
+     "pct": {
+      "R": 95.0,
+      "S": 4.0,
+      "B": 1.1,
+      "K": 0.0
+     }
+    },
+    "2025": {
+     "n": 3311,
+     "R": 3149,
+     "S": 129,
+     "B": 30,
+     "K": 3,
+     "pct": {
+      "R": 95.1,
+      "S": 3.9,
+      "B": 0.9,
+      "K": 0.1
+     }
+    },
+    "2026": {
+     "n": 1220,
+     "R": 1164,
+     "S": 53,
+     "B": 2,
+     "K": 1,
+     "pct": {
+      "R": 95.4,
+      "S": 4.3,
+      "B": 0.2,
+      "K": 0.1
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3906,
+      "R": 3681,
+      "S": 174,
+      "B": 48,
+      "K": 3,
+      "pct": {
+       "R": 94.2,
+       "S": 4.5,
+       "B": 1.2,
+       "K": 0.1
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1530,
+      "R": 1509,
+      "S": 21,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 98.6,
+       "S": 1.4,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 8,
+      "S": 8,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 44.4,
+       "S": 44.4,
+       "B": 11.1,
+       "K": 0.0
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 62,
+      "R": 62,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 48,
+      "S": 8,
+      "B": 3,
+      "K": 1,
+      "pct": {
+       "R": 80.0,
+       "S": 13.3,
+       "B": 5.0,
+       "K": 1.7
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 31,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.9,
+       "S": 3.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 396,
+      "R": 383,
+      "S": 12,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 96.7,
+       "S": 3.0,
+       "B": 0.3,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 230,
+      "S": 15,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 93.9,
+       "S": 6.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 8,
+      "S": 4,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 33,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.1,
+       "S": 2.9,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 504,
+      "R": 477,
+      "S": 25,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 94.6,
+       "S": 5.0,
+       "B": 0.4,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   },
+   "c": {
+    "semua": {
+     "n": 6812,
+     "R": 3627,
+     "S": 558,
+     "B": 2627,
+     "K": 0,
+     "pct": {
+      "R": 53.2,
+      "S": 8.2,
+      "B": 38.6,
+      "K": 0.0
+     }
+    },
+    "2024": {
+     "n": 2281,
+     "R": 1262,
+     "S": 218,
+     "B": 801,
+     "K": 0,
+     "pct": {
+      "R": 55.3,
+      "S": 9.6,
+      "B": 35.1,
+      "K": 0.0
+     }
+    },
+    "2025": {
+     "n": 3311,
+     "R": 1865,
+     "S": 283,
+     "B": 1163,
+     "K": 0,
+     "pct": {
+      "R": 56.3,
+      "S": 8.5,
+      "B": 35.1,
+      "K": 0.0
+     }
+    },
+    "2026": {
+     "n": 1220,
+     "R": 500,
+     "S": 57,
+     "B": 663,
+     "K": 0,
+     "pct": {
+      "R": 41.0,
+      "S": 4.7,
+      "B": 54.3,
+      "K": 0.0
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3906,
+      "R": 2015,
+      "S": 386,
+      "B": 1505,
+      "K": 0,
+      "pct": {
+       "R": 51.6,
+       "S": 9.9,
+       "B": 38.5,
+       "K": 0.0
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1530,
+      "R": 743,
+      "S": 93,
+      "B": 694,
+      "K": 0,
+      "pct": {
+       "R": 48.6,
+       "S": 6.1,
+       "B": 45.4,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 6,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 13,
+      "S": 4,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 72.2,
+       "S": 22.2,
+       "B": 5.6,
+       "K": 0.0
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 6,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 62,
+      "R": 55,
+      "S": 3,
+      "B": 4,
+      "K": 0,
+      "pct": {
+       "R": 88.7,
+       "S": 4.8,
+       "B": 6.5,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 45,
+      "S": 11,
+      "B": 4,
+      "K": 0,
+      "pct": {
+       "R": 75.0,
+       "S": 18.3,
+       "B": 6.7,
+       "K": 0.0
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 14,
+      "S": 4,
+      "B": 14,
+      "K": 0,
+      "pct": {
+       "R": 43.8,
+       "S": 12.5,
+       "B": 43.8,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 396,
+      "R": 396,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 102,
+      "S": 22,
+      "B": 121,
+      "K": 0,
+      "pct": {
+       "R": 41.6,
+       "S": 9.0,
+       "B": 49.4,
+       "K": 0.0
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 12,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 34,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 504,
+      "R": 185,
+      "S": 35,
+      "B": 284,
+      "K": 0,
+      "pct": {
+       "R": 36.7,
+       "S": 6.9,
+       "B": 56.3,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   },
+   "d": {
+    "semua": {
+     "n": 6812,
+     "R": 6560,
+     "S": 216,
+     "B": 32,
+     "K": 4,
+     "pct": {
+      "R": 96.3,
+      "S": 3.2,
+      "B": 0.5,
+      "K": 0.1
+     }
+    },
+    "2024": {
+     "n": 2281,
+     "R": 2186,
+     "S": 85,
+     "B": 10,
+     "K": 0,
+     "pct": {
+      "R": 95.8,
+      "S": 3.7,
+      "B": 0.4,
+      "K": 0.0
+     }
+    },
+    "2025": {
+     "n": 3311,
+     "R": 3196,
+     "S": 91,
+     "B": 21,
+     "K": 3,
+     "pct": {
+      "R": 96.5,
+      "S": 2.7,
+      "B": 0.6,
+      "K": 0.1
+     }
+    },
+    "2026": {
+     "n": 1220,
+     "R": 1178,
+     "S": 40,
+     "B": 1,
+     "K": 1,
+     "pct": {
+      "R": 96.6,
+      "S": 3.3,
+      "B": 0.1,
+      "K": 0.1
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3906,
+      "R": 3756,
+      "S": 122,
+      "B": 25,
+      "K": 3,
+      "pct": {
+       "R": 96.2,
+       "S": 3.1,
+       "B": 0.6,
+       "K": 0.1
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1530,
+      "R": 1519,
+      "S": 11,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 99.3,
+       "S": 0.7,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 6,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 9,
+      "S": 7,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 50.0,
+       "S": 38.9,
+       "B": 11.1,
+       "K": 0.0
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 6,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 62,
+      "R": 60,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.8,
+       "S": 3.2,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 49,
+      "S": 8,
+      "B": 2,
+      "K": 1,
+      "pct": {
+       "R": 81.7,
+       "S": 13.3,
+       "B": 3.3,
+       "K": 1.7
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 31,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.9,
+       "S": 3.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 396,
+      "R": 373,
+      "S": 23,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 94.2,
+       "S": 5.8,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 245,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 6,
+      "S": 5,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 50.0,
+       "S": 41.7,
+       "B": 8.3,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 34,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 504,
+      "R": 465,
+      "S": 37,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 92.3,
+       "S": 7.3,
+       "B": 0.4,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   }
+  },
+  "matriks": {
+   "a_vs_b": {
+    "baris": "kelas ka (R,S,B,K)",
+    "kolom": "kelas kb (R,S,B,K)",
+    "m": [
+     [
+      5855,
+      624,
+      66,
+      15
+     ],
+     [
+      118,
+      74,
+      18,
+      6
+     ],
+     [
+      3,
+      10,
+      7,
+      12
+     ],
+     [
+      0,
+      0,
+      0,
+      4
+     ]
+    ],
+    "sama_pct": 87.2,
+    "f1_lebih_tinggi": 1.9,
+    "f2_lebih_tinggi": 10.9
+   },
+   "a_vs_c": {
+    "baris": "kelas ka (R,S,B,K)",
+    "kolom": "kelas kc (R,S,B,K)",
+    "m": [
+     [
+      3536,
+      514,
+      2510,
+      0
+     ],
+     [
+      89,
+      33,
+      94,
+      0
+     ],
+     [
+      2,
+      11,
+      19,
+      0
+     ],
+     [
+      0,
+      0,
+      4,
+      0
+     ]
+    ],
+    "sama_pct": 52.7,
+    "f1_lebih_tinggi": 1.6,
+    "f2_lebih_tinggi": 45.8
+   },
+   "a+b_vs_a": {
+    "baris": "kelas kab_ (R,S,B,K)",
+    "kolom": "kelas ka (R,S,B,K)",
+    "m": [
+     [
+      6479,
+      0,
+      0,
+      0
+     ],
+     [
+      81,
+      192,
+      0,
+      0
+     ],
+     [
+      0,
+      24,
+      32,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      4
+     ]
+    ],
+    "sama_pct": 98.5,
+    "f1_lebih_tinggi": 1.5,
+    "f2_lebih_tinggi": 0.0
+   },
+   "a_vs_d": {
+    "baris": "kelas ka (R,S,B,K)",
+    "kolom": "kelas kd (R,S,B,K)",
+    "m": [
+     [
+      6466,
+      94,
+      0,
+      0
+     ],
+     [
+      93,
+      112,
+      11,
+      0
+     ],
+     [
+      1,
+      10,
+      21,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      4
+     ]
+    ],
+    "sama_pct": 96.9,
+    "f1_lebih_tinggi": 1.5,
+    "f2_lebih_tinggi": 1.5
+   }
+  },
+  "ket": {
+   "n_l2": 6812,
+   "kjn_tanpa_penduduk_kab": 229,
+   "kjn_porsi_ge10": 128,
+   "kjn_porsi_ge30": 37,
+   "kjn_porsi_gt100": 10,
+   "naik_oleh_penaik_relatif": 105,
+   "tanpa_status_pct_semua": 53.2,
+   "tanpa_status_pct_ketat": 57.9,
+   "tanpa_status_pct_per_tahun": {
+    "2024": 55.3,
+    "2025": 56.3,
+    "2026": 41.0
+   },
+   "tanpa_status_pct_semua_kjn": 53.5,
+   "tanpa_status_hanya_kategori_alam_ada_di_sk": 49.9,
+   "sk_per_tahun_mulai": {
+    "2026": 452,
+    "2025": 847,
+    "2024": 617,
+    "2023": 263,
+    "2022": 19,
+    "2021": 12,
+    "2020": 148,
+    "2019": 111,
+    "2018": 12
+   },
+   "kelas_b_k_tanpa_status": 2,
+   "kelas_b_k_total_a": 36,
+   "kelas_r_dengan_status_prov": 2510,
+   "d_beda_dari_a": 3.1,
+   "d_cut": [
+    1.1100702615238427,
+    2.0999390549998966,
+    3.7053404147006375
+   ],
+   "l2b_n": 6662,
+   "l2_n": 6812
+  },
+  "pada_l2b": {
+   "a": {
+    "n": 6662,
+    "R": 6410,
+    "S": 216,
+    "B": 32,
+    "K": 4,
+    "pct": {
+     "R": 96.2,
+     "S": 3.2,
+     "B": 0.5,
+     "K": 0.1
+    }
+   },
+   "a+b": {
+    "n": 6662,
+    "R": 6329,
+    "S": 273,
+    "B": 56,
+    "K": 4,
+    "pct": {
+     "R": 95.0,
+     "S": 4.1,
+     "B": 0.8,
+     "K": 0.1
+    }
+   }
+  },
+  "top15_a+b": [
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Utara (Aceh)",
+    "tgl": "2025-11-28",
+    "kategori": "Banjir",
+    "meninggal": 246,
+    "hilang": 5,
+    "luka": 2015,
+    "menderita": 433064,
+    "mengungsi": 304631,
+    "RB": 13588,
+    "RS": 25611,
+    "RR": 52087,
+    "RBS": 39415.25,
+    "fasilitas": 1063,
+    "porsi_pct": 167.3,
+    "skor_d": 4.16
+   },
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Bima, Ende, Kepulauan Selayar dan 8 kab lain (Nusa Tenggara Barat, Nusa Tenggara Timur, Sulawesi Selatan)",
+    "tgl": "2026-08-15",
+    "kategori": "Gempabumi",
+    "meninggal": 151,
+    "hilang": 0,
+    "luka": 1787,
+    "menderita": 103934,
+    "mengungsi": 171271,
+    "RB": 29303,
+    "RS": 34460,
+    "RR": 67568,
+    "RBS": 63425.0,
+    "fasilitas": 6450,
+    "porsi_pct": 49.34,
+    "skor_d": 4.073
+   },
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Tamiang (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 101,
+    "hilang": 0,
+    "luka": 18,
+    "menderita": 295174,
+    "mengungsi": 262087,
+    "RB": 16193,
+    "RS": 9366,
+    "RR": 15174,
+    "RBS": 24669.5,
+    "fasilitas": 1231,
+    "porsi_pct": 612.09,
+    "skor_d": 3.94
+   },
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Timur (Aceh)",
+    "tgl": "2025-11-22",
+    "kategori": "Banjir",
+    "meninggal": 58,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 290582,
+    "mengungsi": 204867,
+    "RB": 5017,
+    "RS": 5458,
+    "RR": 12239,
+    "RBS": 10805.75,
+    "fasilitas": 329,
+    "porsi_pct": 252.22,
+    "skor_d": 3.705
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Pesisir Selatan (Sumatera Barat)",
+    "tgl": "2024-03-07",
+    "kategori": "Banjir",
+    "meninggal": 25,
+    "hilang": 5,
+    "luka": 0,
+    "menderita": 82896,
+    "mengungsi": 76178,
+    "RB": 1183,
+    "RS": 4325,
+    "RR": 4663,
+    "RBS": 4511.25,
+    "fasilitas": 19,
+    "porsi_pct": 40.02,
+    "skor_d": 3.343
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Bireuen (Aceh)",
+    "tgl": "2025-11-23",
+    "kategori": "Banjir",
+    "meninggal": 40,
+    "hilang": 3,
+    "luka": 4,
+    "menderita": 473042,
+    "mengungsi": 17563,
+    "RB": 3884,
+    "RS": 37,
+    "RR": 4938,
+    "RBS": 5137.0,
+    "fasilitas": 428,
+    "porsi_pct": 395.42,
+    "skor_d": 3.2
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Pidie Jaya (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 29,
+    "hilang": 0,
+    "luka": 1823,
+    "menderita": 82922,
+    "mengungsi": 20114,
+    "RB": 3567,
+    "RS": 2451,
+    "RR": 4718,
+    "RBS": 5972.0,
+    "fasilitas": 352,
+    "porsi_pct": 65.08,
+    "skor_d": 3.186
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "meninggal+hilang; RBS",
+    "wilayah": "Tapanuli Tengah (Sumatera Utara)",
+    "tgl": "2025-11-24",
+    "kategori": "Banjir",
+    "meninggal": 130,
+    "hilang": 34,
+    "luka": 11,
+    "menderita": 296453,
+    "mengungsi": 4414,
+    "RB": 2220,
+    "RS": 2052,
+    "RR": 4654,
+    "RBS": 4409.5,
+    "fasilitas": 64,
+    "porsi_pct": 212.01,
+    "skor_d": 3.169
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Tengah (Aceh)",
+    "tgl": "2025-11-25",
+    "kategori": "Banjir",
+    "meninggal": 25,
+    "hilang": 3,
+    "luka": 58,
+    "menderita": 234710,
+    "mengungsi": 35896,
+    "RB": 2303,
+    "RS": 500,
+    "RR": 1763,
+    "RBS": 2993.75,
+    "fasilitas": 254,
+    "porsi_pct": 66.12,
+    "skor_d": 3.165
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Bener Meriah (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 30,
+    "hilang": 14,
+    "luka": 12,
+    "menderita": 183043,
+    "mengungsi": 38650,
+    "RB": 1341,
+    "RS": 156,
+    "RR": 475,
+    "RBS": 1537.75,
+    "fasilitas": 272,
+    "porsi_pct": 136.05,
+    "skor_d": 3.143
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "S",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "meninggal+hilang; RBS",
+    "wilayah": "Agam (Sumatera Barat)",
+    "tgl": "2025-11-23",
+    "kategori": "Banjir",
+    "meninggal": 197,
+    "hilang": 36,
+    "luka": 255,
+    "menderita": 18279,
+    "mengungsi": 4311,
+    "RB": 1107,
+    "RS": 99,
+    "RR": 179,
+    "RBS": 1201.25,
+    "fasilitas": 142,
+    "porsi_pct": 5.76,
+    "skor_d": 3.028
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "RBS",
+    "wilayah": "Tapanuli Selatan (Sumatera Utara)",
+    "tgl": "2025-11-25",
+    "kategori": "Banjir",
+    "meninggal": 93,
+    "hilang": 4,
+    "luka": 160,
+    "menderita": 279974,
+    "mengungsi": 3650,
+    "RB": 2137,
+    "RS": 137,
+    "RR": 187,
+    "RBS": 2252.25,
+    "fasilitas": 89,
+    "porsi_pct": 93.08,
+    "skor_d": 2.969
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Gayo Lues (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 5,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 109115,
+    "mengungsi": 19906,
+    "RB": 4049,
+    "RS": 778,
+    "RR": 730,
+    "RBS": 4620.5,
+    "fasilitas": 92,
+    "porsi_pct": 127.8,
+    "skor_d": 2.914
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "B",
+    "kelas_c": "R",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Flores Timur (Nusa Tenggara Timur)",
+    "tgl": "2024-11-03",
+    "kategori": "Erupsi gunung api",
+    "meninggal": 9,
+    "hilang": 0,
+    "luka": 63,
+    "menderita": 16086,
+    "mengungsi": 12658,
+    "RB": 2384,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 2384.0,
+    "fasilitas": 119,
+    "porsi_pct": 17.54,
+    "skor_d": 2.827
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "S",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "RBS",
+    "wilayah": "Aceh Tenggara (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 14,
+    "hilang": 1,
+    "luka": 3,
+    "menderita": 16097,
+    "mengungsi": 5633,
+    "RB": 2413,
+    "RS": 927,
+    "RR": 1120,
+    "RBS": 3156.5,
+    "fasilitas": 128,
+    "porsi_pct": 9.91,
+    "skor_d": 2.818
+   }
+  ],
+  "top10_relatif": [
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Tamiang (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 101,
+    "hilang": 0,
+    "luka": 18,
+    "menderita": 295174,
+    "mengungsi": 262087,
+    "RB": 16193,
+    "RS": 9366,
+    "RR": 15174,
+    "RBS": 24669.5,
+    "fasilitas": 1231,
+    "porsi_pct": 612.09,
+    "skor_d": 3.94
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Bireuen (Aceh)",
+    "tgl": "2025-11-23",
+    "kategori": "Banjir",
+    "meninggal": 40,
+    "hilang": 3,
+    "luka": 4,
+    "menderita": 473042,
+    "mengungsi": 17563,
+    "RB": 3884,
+    "RS": 37,
+    "RR": 4938,
+    "RBS": 5137.0,
+    "fasilitas": 428,
+    "porsi_pct": 395.42,
+    "skor_d": 3.2
+   },
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Timur (Aceh)",
+    "tgl": "2025-11-22",
+    "kategori": "Banjir",
+    "meninggal": 58,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 290582,
+    "mengungsi": 204867,
+    "RB": 5017,
+    "RS": 5458,
+    "RR": 12239,
+    "RBS": 10805.75,
+    "fasilitas": 329,
+    "porsi_pct": 252.22,
+    "skor_d": 3.705
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "meninggal+hilang; RBS",
+    "wilayah": "Tapanuli Tengah (Sumatera Utara)",
+    "tgl": "2025-11-24",
+    "kategori": "Banjir",
+    "meninggal": 130,
+    "hilang": 34,
+    "luka": 11,
+    "menderita": 296453,
+    "mengungsi": 4414,
+    "RB": 2220,
+    "RS": 2052,
+    "RR": 4654,
+    "RBS": 4409.5,
+    "fasilitas": 64,
+    "porsi_pct": 212.01,
+    "skor_d": 3.169
+   },
+   {
+    "kelas_ab": "K",
+    "kelas_a": "K",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "K",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Aceh Utara (Aceh)",
+    "tgl": "2025-11-28",
+    "kategori": "Banjir",
+    "meninggal": 246,
+    "hilang": 5,
+    "luka": 2015,
+    "menderita": 433064,
+    "mengungsi": 304631,
+    "RB": 13588,
+    "RS": 25611,
+    "RR": 52087,
+    "RBS": 39415.25,
+    "fasilitas": 1063,
+    "porsi_pct": 167.3,
+    "skor_d": 4.16
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "S",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "R",
+    "penentu": "meninggal+hilang; penaik relatif 157.3% penduduk kab 1212",
+    "wilayah": "Deli Serdang (Sumatera Utara)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 17,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 331111,
+    "mengungsi": 0,
+    "RB": 3,
+    "RS": 68,
+    "RR": 42,
+    "RBS": 47.5,
+    "fasilitas": 0,
+    "porsi_pct": 157.26,
+    "skor_d": 0.98
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Bener Meriah (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 30,
+    "hilang": 14,
+    "luka": 12,
+    "menderita": 183043,
+    "mengungsi": 38650,
+    "RB": 1341,
+    "RS": 156,
+    "RR": 475,
+    "RBS": 1537.75,
+    "fasilitas": 272,
+    "porsi_pct": 136.05,
+    "skor_d": 3.143
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi; RBS",
+    "wilayah": "Gayo Lues (Aceh)",
+    "tgl": "2025-11-26",
+    "kategori": "Banjir",
+    "meninggal": 5,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 109115,
+    "mengungsi": 19906,
+    "RB": 4049,
+    "RS": 778,
+    "RR": 730,
+    "RBS": 4620.5,
+    "fasilitas": 92,
+    "porsi_pct": 127.8,
+    "skor_d": 2.914
+   },
+   {
+    "kelas_ab": "B",
+    "kelas_a": "B",
+    "kelas_b": "K",
+    "kelas_c": "B",
+    "kelas_d": "B",
+    "penentu": "mengungsi",
+    "wilayah": "Pidie (Aceh)",
+    "tgl": "2025-11-27",
+    "kategori": "Banjir",
+    "meninggal": 1,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 77646,
+    "mengungsi": 25824,
+    "RB": 143,
+    "RS": 15,
+    "RR": 18,
+    "RBS": 155.0,
+    "fasilitas": 52,
+    "porsi_pct": 127.02,
+    "skor_d": 2.302
+   },
+   {
+    "kelas_ab": "S",
+    "kelas_a": "R",
+    "kelas_b": "K",
+    "kelas_c": "R",
+    "kelas_d": "R",
+    "penentu": "penaik relatif 111.0% penduduk kab 7413",
+    "wilayah": "Muna Barat (Sulawesi Tenggara)",
+    "tgl": "2026-07-05",
+    "kategori": "Kekeringan",
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "menderita": 93085,
+    "mengungsi": 0,
+    "RB": 0,
+    "RS": 0,
+    "RR": 0,
+    "RBS": 0.0,
+    "fasilitas": 0,
+    "porsi_pct": 111.0,
+    "skor_d": 0.0
+   }
+  ],
+  "gempa": {
+   "kjn_gempa_total": 126,
+   "kjn_gempa_l2": 60,
+   "sebaran_a": {
+    "R": 48,
+    "B": 3,
+    "S": 8,
+    "K": 1
+   },
+   "sebaran_ab": {
+    "R": 48,
+    "B": 3,
+    "S": 8,
+    "K": 1
+   },
+   "sebaran_b": {
+    "R": 50,
+    "S": 9,
+    "K": 1
+   },
+   "kelas_B_atau_K_menurut_a": 4,
+   "kelas_B_atau_K_menurut_ab": 4,
+   "kelas_B_atau_K_menurut_b": 1,
+   "daftar": [
+    {
+     "wilayah": "Bima, Ende, Kepulauan Selayar dan 8 kab lain (Nusa Tenggara Barat, Nusa Tenggara Timur, Sulawesi Selatan)",
+     "tgl": "2026-08-15",
+     "kategori": "Gempabumi",
+     "meninggal": 151,
+     "hilang": 0,
+     "luka": 1787,
+     "menderita": 103934,
+     "mengungsi": 171271,
+     "RB": 29303,
+     "RS": 34460,
+     "RR": 67568,
+     "RBS": 63425.0,
+     "fasilitas": 6450,
+     "kelas_a": "K",
+     "kelas_ab": "K",
+     "kelas_b": "K",
+     "L2": true,
+     "magnitudo": null,
+     "katalog_id": null,
+     "ket_katalog": "tanggal setelah akhir katalog",
+     "magnitudo_emsc_manual": {
+      "m": 7.7,
+      "waktu_utc": "2026-08-14T21:58",
+      "lat": -8.374,
+      "lon": 121.358,
+      "kedalaman_km": 20.0
+     }
+    },
+    {
+     "wilayah": "Bojonegoro, Gresik, Kota Surabaya dan 5 kab lain (Jawa Tengah, Jawa Timur)",
+     "tgl": "2024-03-22",
+     "kategori": "Gempabumi",
+     "meninggal": 0,
+     "hilang": 0,
+     "luka": 8,
+     "menderita": 12499,
+     "mengungsi": 34154,
+     "RB": 943,
+     "RS": 1618,
+     "RR": 3941,
+     "RBS": 2737.25,
+     "fasilitas": 642,
+     "kelas_a": "B",
+     "kelas_ab": "B",
+     "kelas_b": "S",
+     "L2": true,
+     "magnitudo": 5.9,
+     "katalog_id": "KM0032",
+     "ket_katalog": "BMKG Katalog Signifikan & Merusak 1821-2025 (berakhir 2025-12-28)"
+    },
+    {
+     "wilayah": "Bandung, Bandung Barat, Bogor dan 3 kab lain (Jawa Barat)",
+     "tgl": "2024-09-18",
+     "kategori": "Gempabumi",
+     "meninggal": 1,
+     "hilang": 0,
+     "luka": 143,
+     "menderita": 51878,
+     "mengungsi": 11026,
+     "RB": 897,
+     "RS": 1739,
+     "RR": 3636,
+     "RBS": 2675.5,
+     "fasilitas": 92,
+     "kelas_a": "B",
+     "kelas_ab": "B",
+     "kelas_b": "S",
+     "L2": true,
+     "magnitudo": 4.9,
+     "katalog_id": "KM0049",
+     "ket_katalog": "BMKG Katalog Signifikan & Merusak 1821-2025 (berakhir 2025-12-28)"
+    },
+    {
+     "wilayah": "Donggala, Kota Palu, Parigi Moutong dan 2 kab lain (Sulawesi Tengah)",
+     "tgl": "2026-06-16",
+     "kategori": "Gempabumi",
+     "meninggal": 3,
+     "hilang": 0,
+     "luka": 128,
+     "menderita": 12096,
+     "mengungsi": 0,
+     "RB": 270,
+     "RS": 1199,
+     "RR": 6083,
+     "RBS": 2390.25,
+     "fasilitas": 783,
+     "kelas_a": "B",
+     "kelas_ab": "B",
+     "kelas_b": "S",
+     "L2": true,
+     "magnitudo": null,
+     "katalog_id": null,
+     "ket_katalog": "tanggal setelah akhir katalog",
+     "magnitudo_emsc_manual": {
+      "m": 6.7,
+      "waktu_utc": "2026-06-16T03:27",
+      "lat": -1.131,
+      "lon": 120.195,
+      "kedalaman_km": 10.0
+     }
+    }
+   ],
+   "kelas_S_ringkas": [
+    {
+     "tgl": "2024-04-28",
+     "prov": "Jawa Barat",
+     "magnitudo": 6.2,
+     "md": 0,
+     "mengungsi": 31,
+     "RBS": 491.0
+    },
+    {
+     "tgl": "2025-05-23",
+     "prov": "Bengkulu",
+     "magnitudo": 6.0,
+     "md": 0,
+     "mengungsi": 266,
+     "RBS": 222.8
+    },
+    {
+     "tgl": "2025-06-22",
+     "prov": "Maluku",
+     "magnitudo": null,
+     "md": 0,
+     "mengungsi": 0,
+     "RBS": 107.8
+    },
+    {
+     "tgl": "2025-07-04",
+     "prov": "Maluku",
+     "magnitudo": null,
+     "md": 0,
+     "mengungsi": 12,
+     "RBS": 141.2
+    },
+    {
+     "tgl": "2025-10-01",
+     "prov": "Jawa Timur",
+     "magnitudo": 6.0,
+     "md": 0,
+     "mengungsi": 1306,
+     "RBS": 265.0
+    },
+    {
+     "tgl": "2026-04-02",
+     "prov": "Maluku Utara, Sulawesi Utara",
+     "magnitudo": null,
+     "md": 2,
+     "mengungsi": 2062,
+     "RBS": 196.5
+    },
+    {
+     "tgl": "2026-04-09",
+     "prov": "Nusa Tenggara Timur",
+     "magnitudo": null,
+     "md": 0,
+     "mengungsi": 0,
+     "RBS": 190.8
+    },
+    {
+     "tgl": "2026-06-08",
+     "prov": "Sulawesi Utara",
+     "magnitudo": null,
+     "md": 0,
+     "mengungsi": 1160,
+     "RBS": 376.8
+    }
+   ],
+   "kelas_S_n": 8
+  }
+ },
+ "v2": {
+  "L2": {
+   "2024": {
+    "kjn": 3654,
+    "juklak": 2556,
+    "l2_v1": 2281,
+    "l2_v2": 2285,
+    "v2_bukan_juklak": 13,
+    "juklak_bukan_v2": 284,
+    "tunggal_v2": {
+     "M1": 108,
+     "M2": 1373,
+     "M3": 138,
+     "M4": 48
+    },
+    "selisih_pct_v2_vs_juklak": -10.6,
+    "per_kategori": {
+     "Banjir": {
+      "kjn": 1463,
+      "juklak": 1391,
+      "l2_v1": 1387,
+      "l2_v2": 1388
+     },
+     "Cuaca ekstrem": {
+      "kjn": 762,
+      "juklak": 738,
+      "l2_v1": 523,
+      "l2_v2": 524
+     },
+     "Epidemi - Wabah penyakit": {
+      "kjn": 2,
+      "juklak": 2,
+      "l2_v1": 2,
+      "l2_v2": 2
+     },
+     "Erupsi gunung api": {
+      "kjn": 8,
+      "juklak": 8,
+      "l2_v1": 8,
+      "l2_v2": 8
+     },
+     "Gagal teknologi": {
+      "kjn": 1,
+      "juklak": 1,
+      "l2_v1": 1,
+      "l2_v2": 1
+     },
+     "Gelombang pasang / Abrasi": {
+      "kjn": 27,
+      "juklak": 27,
+      "l2_v1": 23,
+      "l2_v2": 23
+     },
+     "Gempabumi": {
+      "kjn": 20,
+      "juklak": 17,
+      "l2_v1": 15,
+      "l2_v2": 15
+     },
+     "Kebakaran hutan dan lahan": {
+      "kjn": 979,
+      "juklak": 6,
+      "l2_v1": 6,
+      "l2_v2": 6
+     },
+     "Kebakaran permukiman": {
+      "kjn": 82,
+      "juklak": 73,
+      "l2_v1": 68,
+      "l2_v2": 68
+     },
+     "Kekeringan": {
+      "kjn": 90,
+      "juklak": 89,
+      "l2_v1": 89,
+      "l2_v2": 89
+     },
+     "Konflik sosial": {
+      "kjn": 0,
+      "juklak": 0,
+      "l2_v1": 0,
+      "l2_v2": 0
+     },
+     "Lainnya": {
+      "kjn": 0,
+      "juklak": 0,
+      "l2_v1": 0,
+      "l2_v2": 0
+     },
+     "Longsor": {
+      "kjn": 220,
+      "juklak": 204,
+      "l2_v1": 159,
+      "l2_v2": 161
+     },
+     "Tsunami": {
+      "kjn": 0,
+      "juklak": 0,
+      "l2_v1": 0,
+      "l2_v2": 0
+     }
+    }
+   },
+   "2025": {
+    "kjn": 8763,
+    "juklak": 3647,
+    "l2_v1": 3311,
+    "l2_v2": 3324,
+    "v2_bukan_juklak": 137,
+    "juklak_bukan_v2": 460,
+    "tunggal_v2": {
+     "M1": 196,
+     "M2": 1812,
+     "M3": 155,
+     "M4": 216
+    },
+    "selisih_pct_v2_vs_juklak": -8.9,
+    "per_kategori": {
+     "Banjir": {
+      "kjn": 2729,
+      "juklak": 1921,
+      "l2_v1": 1933,
+      "l2_v2": 1935
+     },
+     "Cuaca ekstrem": {
+      "kjn": 2366,
+      "juklak": 994,
+      "l2_v1": 730,
+      "l2_v2": 735
+     },
+     "Epidemi - Wabah penyakit": {
+      "kjn": 6,
+      "juklak": 3,
+      "l2_v1": 3,
+      "l2_v2": 3
+     },
+     "Erupsi gunung api": {
+      "kjn": 16,
+      "juklak": 6,
+      "l2_v1": 6,
+      "l2_v2": 6
+     },
+     "Gagal teknologi": {
+      "kjn": 3,
+      "juklak": 2,
+      "l2_v1": 2,
+      "l2_v2": 2
+     },
+     "Gelombang pasang / Abrasi": {
+      "kjn": 67,
+      "juklak": 27,
+      "l2_v1": 26,
+      "l2_v2": 26
+     },
+     "Gempabumi": {
+      "kjn": 82,
+      "juklak": 22,
+      "l2_v1": 28,
+      "l2_v2": 28
+     },
+     "Kebakaran hutan dan lahan": {
+      "kjn": 1460,
+      "juklak": 7,
+      "l2_v1": 7,
+      "l2_v2": 7
+     },
+     "Kebakaran permukiman": {
+      "kjn": 844,
+      "juklak": 293,
+      "l2_v1": 256,
+      "l2_v2": 260
+     },
+     "Kekeringan": {
+      "kjn": 50,
+      "juklak": 34,
+      "l2_v1": 34,
+      "l2_v2": 34
+     },
+     "Konflik sosial": {
+      "kjn": 5,
+      "juklak": 4,
+      "l2_v1": 4,
+      "l2_v2": 4
+     },
+     "Lainnya": {
+      "kjn": 48,
+      "juklak": 28,
+      "l2_v1": 32,
+      "l2_v2": 32
+     },
+     "Longsor": {
+      "kjn": 1086,
+      "juklak": 305,
+      "l2_v1": 249,
+      "l2_v2": 251
+     },
+     "Tsunami": {
+      "kjn": 1,
+      "juklak": 1,
+      "l2_v1": 1,
+      "l2_v2": 1
+     }
+    }
+   },
+   "2026": {
+    "kjn": 3220,
+    "juklak": 1332,
+    "l2_v1": 1220,
+    "l2_v2": 1226,
+    "v2_bukan_juklak": 18,
+    "juklak_bukan_v2": 124,
+    "tunggal_v2": {
+     "M1": 89,
+     "M2": 761,
+     "M3": 31,
+     "M4": 27
+    },
+    "selisih_pct_v2_vs_juklak": -8.0,
+    "per_kategori": {
+     "Banjir": {
+      "kjn": 763,
+      "juklak": 584,
+      "l2_v1": 586,
+      "l2_v2": 587
+     },
+     "Cuaca ekstrem": {
+      "kjn": 636,
+      "juklak": 365,
+      "l2_v1": 277,
+      "l2_v2": 278
+     },
+     "Epidemi - Wabah penyakit": {
+      "kjn": 1,
+      "juklak": 1,
+      "l2_v1": 1,
+      "l2_v2": 1
+     },
+     "Erupsi gunung api": {
+      "kjn": 10,
+      "juklak": 4,
+      "l2_v1": 4,
+      "l2_v2": 4
+     },
+     "Gagal teknologi": {
+      "kjn": 5,
+      "juklak": 5,
+      "l2_v1": 3,
+      "l2_v2": 3
+     },
+     "Gelombang pasang / Abrasi": {
+      "kjn": 17,
+      "juklak": 14,
+      "l2_v1": 13,
+      "l2_v2": 14
+     },
+     "Gempabumi": {
+      "kjn": 24,
+      "juklak": 16,
+      "l2_v1": 17,
+      "l2_v2": 17
+     },
+     "Kebakaran hutan dan lahan": {
+      "kjn": 1150,
+      "juklak": 17,
+      "l2_v1": 19,
+      "l2_v2": 19
+     },
+     "Kebakaran permukiman": {
+      "kjn": 155,
+      "juklak": 78,
+      "l2_v1": 72,
+      "l2_v2": 72
+     },
+     "Kekeringan": {
+      "kjn": 129,
+      "juklak": 122,
+      "l2_v1": 122,
+      "l2_v2": 122
+     },
+     "Konflik sosial": {
+      "kjn": 8,
+      "juklak": 8,
+      "l2_v1": 8,
+      "l2_v2": 8
+     },
+     "Lainnya": {
+      "kjn": 4,
+      "juklak": 1,
+      "l2_v1": 2,
+      "l2_v2": 2
+     },
+     "Longsor": {
+      "kjn": 318,
+      "juklak": 117,
+      "l2_v1": 96,
+      "l2_v2": 99
+     },
+     "Tsunami": {
+      "kjn": 0,
+      "juklak": 0,
+      "l2_v1": 0,
+      "l2_v2": 0
+     }
+    }
+   },
+   "semua": {
+    "kjn": 15637,
+    "juklak": 7535,
+    "l2_v1": 6812,
+    "l2_v2": 6835,
+    "v2_bukan_juklak": 168,
+    "juklak_bukan_v2": 868,
+    "tunggal_v2": {
+     "M1": 393,
+     "M2": 3946,
+     "M3": 324,
+     "M4": 291
+    },
+    "selisih_pct_v2_vs_juklak": -9.3,
+    "per_kategori": {
+     "Banjir": {
+      "kjn": 4955,
+      "juklak": 3896,
+      "l2_v1": 3906,
+      "l2_v2": 3910
+     },
+     "Cuaca ekstrem": {
+      "kjn": 3764,
+      "juklak": 2097,
+      "l2_v1": 1530,
+      "l2_v2": 1537
+     },
+     "Epidemi - Wabah penyakit": {
+      "kjn": 9,
+      "juklak": 6,
+      "l2_v1": 6,
+      "l2_v2": 6
+     },
+     "Erupsi gunung api": {
+      "kjn": 34,
+      "juklak": 18,
+      "l2_v1": 18,
+      "l2_v2": 18
+     },
+     "Gagal teknologi": {
+      "kjn": 9,
+      "juklak": 8,
+      "l2_v1": 6,
+      "l2_v2": 6
+     },
+     "Gelombang pasang / Abrasi": {
+      "kjn": 111,
+      "juklak": 68,
+      "l2_v1": 62,
+      "l2_v2": 63
+     },
+     "Gempabumi": {
+      "kjn": 126,
+      "juklak": 55,
+      "l2_v1": 60,
+      "l2_v2": 60
+     },
+     "Kebakaran hutan dan lahan": {
+      "kjn": 3589,
+      "juklak": 30,
+      "l2_v1": 32,
+      "l2_v2": 32
+     },
+     "Kebakaran permukiman": {
+      "kjn": 1081,
+      "juklak": 444,
+      "l2_v1": 396,
+      "l2_v2": 400
+     },
+     "Kekeringan": {
+      "kjn": 269,
+      "juklak": 245,
+      "l2_v1": 245,
+      "l2_v2": 245
+     },
+     "Konflik sosial": {
+      "kjn": 13,
+      "juklak": 12,
+      "l2_v1": 12,
+      "l2_v2": 12
+     },
+     "Lainnya": {
+      "kjn": 52,
+      "juklak": 29,
+      "l2_v1": 34,
+      "l2_v2": 34
+     },
+     "Longsor": {
+      "kjn": 1624,
+      "juklak": 626,
+      "l2_v1": 504,
+      "l2_v2": 511
+     },
+     "Tsunami": {
+      "kjn": 1,
+      "juklak": 1,
+      "l2_v1": 1,
+      "l2_v2": 1
+     }
+    }
+   }
+  },
+  "L3": {
+   "a_v2": {
+    "semua": {
+     "n": 6835,
+     "R": 6583,
+     "S": 226,
+     "B": 22,
+     "K": 4,
+     "pct": {
+      "R": 96.3,
+      "S": 3.3,
+      "B": 0.3,
+      "K": 0.1
+     }
+    },
+    "2024": {
+     "n": 2285,
+     "R": 2196,
+     "S": 82,
+     "B": 7,
+     "K": 0,
+     "pct": {
+      "R": 96.1,
+      "S": 3.6,
+      "B": 0.3,
+      "K": 0.0
+     }
+    },
+    "2025": {
+     "n": 3324,
+     "R": 3197,
+     "S": 110,
+     "B": 14,
+     "K": 3,
+     "pct": {
+      "R": 96.2,
+      "S": 3.3,
+      "B": 0.4,
+      "K": 0.1
+     }
+    },
+    "2026": {
+     "n": 1226,
+     "R": 1190,
+     "S": 34,
+     "B": 1,
+     "K": 1,
+     "pct": {
+      "R": 97.1,
+      "S": 2.8,
+      "B": 0.1,
+      "K": 0.1
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3910,
+      "R": 3748,
+      "S": 143,
+      "B": 16,
+      "K": 3,
+      "pct": {
+       "R": 95.9,
+       "S": 3.7,
+       "B": 0.4,
+       "K": 0.1
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1537,
+      "R": 1517,
+      "S": 20,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 98.7,
+       "S": 1.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 9,
+      "S": 8,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 50.0,
+       "S": 44.4,
+       "B": 5.6,
+       "K": 0.0
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 63,
+      "R": 63,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 48,
+      "S": 8,
+      "B": 3,
+      "K": 1,
+      "pct": {
+       "R": 80.0,
+       "S": 13.3,
+       "B": 5.0,
+       "K": 1.7
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 31,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.9,
+       "S": 3.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 400,
+      "R": 388,
+      "S": 12,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.0,
+       "S": 3.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 245,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 8,
+      "S": 4,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 33,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.1,
+       "S": 2.9,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 511,
+      "R": 484,
+      "S": 25,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 94.7,
+       "S": 4.9,
+       "B": 0.4,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   },
+   "a+b_v2": {
+    "semua": {
+     "n": 6835,
+     "R": 6502,
+     "S": 276,
+     "B": 53,
+     "K": 4,
+     "pct": {
+      "R": 95.1,
+      "S": 4.0,
+      "B": 0.8,
+      "K": 0.1
+     }
+    },
+    "2024": {
+     "n": 2285,
+     "R": 2170,
+     "S": 93,
+     "B": 22,
+     "K": 0,
+     "pct": {
+      "R": 95.0,
+      "S": 4.1,
+      "B": 1.0,
+      "K": 0.0
+     }
+    },
+    "2025": {
+     "n": 3324,
+     "R": 3162,
+     "S": 130,
+     "B": 29,
+     "K": 3,
+     "pct": {
+      "R": 95.1,
+      "S": 3.9,
+      "B": 0.9,
+      "K": 0.1
+     }
+    },
+    "2026": {
+     "n": 1226,
+     "R": 1170,
+     "S": 53,
+     "B": 2,
+     "K": 1,
+     "pct": {
+      "R": 95.4,
+      "S": 4.3,
+      "B": 0.2,
+      "K": 0.1
+     }
+    },
+    "per_kategori": {
+     "Banjir": {
+      "n": 3910,
+      "R": 3685,
+      "S": 177,
+      "B": 45,
+      "K": 3,
+      "pct": {
+       "R": 94.2,
+       "S": 4.5,
+       "B": 1.2,
+       "K": 0.1
+      }
+     },
+     "Cuaca ekstrem": {
+      "n": 1537,
+      "R": 1516,
+      "S": 21,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 98.6,
+       "S": 1.4,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Epidemi - Wabah penyakit": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Erupsi gunung api": {
+      "n": 18,
+      "R": 8,
+      "S": 8,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 44.4,
+       "S": 44.4,
+       "B": 11.1,
+       "K": 0.0
+      }
+     },
+     "Gagal teknologi": {
+      "n": 6,
+      "R": 4,
+      "S": 2,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gelombang pasang / Abrasi": {
+      "n": 63,
+      "R": 63,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Gempabumi": {
+      "n": 60,
+      "R": 48,
+      "S": 8,
+      "B": 3,
+      "K": 1,
+      "pct": {
+       "R": 80.0,
+       "S": 13.3,
+       "B": 5.0,
+       "K": 1.7
+      }
+     },
+     "Kebakaran hutan dan lahan": {
+      "n": 32,
+      "R": 31,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 96.9,
+       "S": 3.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Kebakaran permukiman": {
+      "n": 400,
+      "R": 387,
+      "S": 12,
+      "B": 1,
+      "K": 0,
+      "pct": {
+       "R": 96.8,
+       "S": 3.0,
+       "B": 0.2,
+       "K": 0.0
+      }
+     },
+     "Kekeringan": {
+      "n": 245,
+      "R": 230,
+      "S": 15,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 93.9,
+       "S": 6.1,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Konflik sosial": {
+      "n": 12,
+      "R": 8,
+      "S": 4,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 66.7,
+       "S": 33.3,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Lainnya": {
+      "n": 34,
+      "R": 33,
+      "S": 1,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 97.1,
+       "S": 2.9,
+       "B": 0.0,
+       "K": 0.0
+      }
+     },
+     "Longsor": {
+      "n": 511,
+      "R": 484,
+      "S": 25,
+      "B": 2,
+      "K": 0,
+      "pct": {
+       "R": 94.7,
+       "S": 4.9,
+       "B": 0.4,
+       "K": 0.0
+      }
+     },
+     "Tsunami": {
+      "n": 1,
+      "R": 1,
+      "S": 0,
+      "B": 0,
+      "K": 0,
+      "pct": {
+       "R": 100.0,
+       "S": 0.0,
+       "B": 0.0,
+       "K": 0.0
+      }
+     }
+    }
+   },
+   "a_v1_pada_L2v2": {
+    "n": 6835,
+    "R": 6583,
+    "S": 216,
+    "B": 32,
+    "K": 4,
+    "pct": {
+     "R": 96.3,
+     "S": 3.2,
+     "B": 0.5,
+     "K": 0.1
+    }
+   },
+   "a+b_v1_pada_L2v2": {
+    "n": 6835,
+    "R": 6502,
+    "S": 273,
+    "B": 56,
+    "K": 4,
+    "pct": {
+     "R": 95.1,
+     "S": 4.0,
+     "B": 0.8,
+     "K": 0.1
+    }
+   },
+   "matriks_a_v1_vs_a_v2": [
+    [
+     6583,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     216,
+     0,
+     0
+    ],
+    [
+     0,
+     10,
+     22,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     4
+    ]
+   ],
+   "matriks_ab_v2_vs_a_v2": [
+    [
+     6502,
+     0,
+     0,
+     0
+    ],
+    [
+     81,
+     195,
+     0,
+     0
+    ],
+    [
+     0,
+     31,
+     22,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     4
+    ]
+   ],
+   "naik_penaik_relatif_v2": 112,
+   "kena_batas_mengungsi_saja": 10,
+   "top15_ab2": [
+    {
+     "kelas_ab2": "K",
+     "kelas_a2": "K",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Aceh Utara (Aceh)",
+     "tgl": "2025-11-28",
+     "kategori": "Banjir",
+     "meninggal": 246,
+     "hilang": 5,
+     "luka": 2015,
+     "menderita": 433064,
+     "mengungsi": 304631,
+     "RB": 13588,
+     "RS": 25611,
+     "RR": 52087,
+     "RBS": 39415.25,
+     "fasilitas": 1063,
+     "porsi_pct": 167.3
+    },
+    {
+     "kelas_ab2": "K",
+     "kelas_a2": "K",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Bima, Ende, Kepulauan Selayar dan 8 kab lain (Nusa Tenggara Barat, Nusa Tenggara Timur, Sulawesi Selatan)",
+     "tgl": "2026-08-15",
+     "kategori": "Gempabumi",
+     "meninggal": 151,
+     "hilang": 0,
+     "luka": 1787,
+     "menderita": 103934,
+     "mengungsi": 171271,
+     "RB": 29303,
+     "RS": 34460,
+     "RR": 67568,
+     "RBS": 63425.0,
+     "fasilitas": 6450,
+     "porsi_pct": 49.34
+    },
+    {
+     "kelas_ab2": "K",
+     "kelas_a2": "K",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Aceh Tamiang (Aceh)",
+     "tgl": "2025-11-26",
+     "kategori": "Banjir",
+     "meninggal": 101,
+     "hilang": 0,
+     "luka": 18,
+     "menderita": 295174,
+     "mengungsi": 262087,
+     "RB": 16193,
+     "RS": 9366,
+     "RR": 15174,
+     "RBS": 24669.5,
+     "fasilitas": 1231,
+     "porsi_pct": 612.09
+    },
+    {
+     "kelas_ab2": "K",
+     "kelas_a2": "K",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Aceh Timur (Aceh)",
+     "tgl": "2025-11-22",
+     "kategori": "Banjir",
+     "meninggal": 58,
+     "hilang": 0,
+     "luka": 0,
+     "menderita": 290582,
+     "mengungsi": 204867,
+     "RB": 5017,
+     "RS": 5458,
+     "RR": 12239,
+     "RBS": 10805.75,
+     "fasilitas": 329,
+     "porsi_pct": 252.22
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Pesisir Selatan (Sumatera Barat)",
+     "tgl": "2024-03-07",
+     "kategori": "Banjir",
+     "meninggal": 25,
+     "hilang": 5,
+     "luka": 0,
+     "menderita": 82896,
+     "mengungsi": 76178,
+     "RB": 1183,
+     "RS": 4325,
+     "RR": 4663,
+     "RBS": 4511.25,
+     "fasilitas": 19,
+     "porsi_pct": 40.02
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Bireuen (Aceh)",
+     "tgl": "2025-11-23",
+     "kategori": "Banjir",
+     "meninggal": 40,
+     "hilang": 3,
+     "luka": 4,
+     "menderita": 473042,
+     "mengungsi": 17563,
+     "RB": 3884,
+     "RS": 37,
+     "RR": 4938,
+     "RBS": 5137.0,
+     "fasilitas": 428,
+     "porsi_pct": 395.42
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Pidie Jaya (Aceh)",
+     "tgl": "2025-11-26",
+     "kategori": "Banjir",
+     "meninggal": 29,
+     "hilang": 0,
+     "luka": 1823,
+     "menderita": 82922,
+     "mengungsi": 20114,
+     "RB": 3567,
+     "RS": 2451,
+     "RR": 4718,
+     "RBS": 5972.0,
+     "fasilitas": 352,
+     "porsi_pct": 65.08
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Tapanuli Tengah (Sumatera Utara)",
+     "tgl": "2025-11-24",
+     "kategori": "Banjir",
+     "meninggal": 130,
+     "hilang": 34,
+     "luka": 11,
+     "menderita": 296453,
+     "mengungsi": 4414,
+     "RB": 2220,
+     "RS": 2052,
+     "RR": 4654,
+     "RBS": 4409.5,
+     "fasilitas": 64,
+     "porsi_pct": 212.01
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Aceh Tengah (Aceh)",
+     "tgl": "2025-11-25",
+     "kategori": "Banjir",
+     "meninggal": 25,
+     "hilang": 3,
+     "luka": 58,
+     "menderita": 234710,
+     "mengungsi": 35896,
+     "RB": 2303,
+     "RS": 500,
+     "RR": 1763,
+     "RBS": 2993.75,
+     "fasilitas": 254,
+     "porsi_pct": 66.12
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Bener Meriah (Aceh)",
+     "tgl": "2025-11-26",
+     "kategori": "Banjir",
+     "meninggal": 30,
+     "hilang": 14,
+     "luka": 12,
+     "menderita": 183043,
+     "mengungsi": 38650,
+     "RB": 1341,
+     "RS": 156,
+     "RR": 475,
+     "RBS": 1537.75,
+     "fasilitas": 272,
+     "porsi_pct": 136.05
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Agam (Sumatera Barat)",
+     "tgl": "2025-11-23",
+     "kategori": "Banjir",
+     "meninggal": 197,
+     "hilang": 36,
+     "luka": 255,
+     "menderita": 18279,
+     "mengungsi": 4311,
+     "RB": 1107,
+     "RS": 99,
+     "RR": 179,
+     "RBS": 1201.25,
+     "fasilitas": 142,
+     "porsi_pct": 5.76
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Tapanuli Selatan (Sumatera Utara)",
+     "tgl": "2025-11-25",
+     "kategori": "Banjir",
+     "meninggal": 93,
+     "hilang": 4,
+     "luka": 160,
+     "menderita": 279974,
+     "mengungsi": 3650,
+     "RB": 2137,
+     "RS": 137,
+     "RR": 187,
+     "RBS": 2252.25,
+     "fasilitas": 89,
+     "porsi_pct": 93.08
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "RBS; mengungsi",
+     "wilayah": "Gayo Lues (Aceh)",
+     "tgl": "2025-11-26",
+     "kategori": "Banjir",
+     "meninggal": 5,
+     "hilang": 0,
+     "luka": 0,
+     "menderita": 109115,
+     "mengungsi": 19906,
+     "RB": 4049,
+     "RS": 778,
+     "RR": 730,
+     "RBS": 4620.5,
+     "fasilitas": 92,
+     "porsi_pct": 127.8
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "RBS; mengungsi",
+     "wilayah": "Flores Timur (Nusa Tenggara Timur)",
+     "tgl": "2024-11-03",
+     "kategori": "Erupsi gunung api",
+     "meninggal": 9,
+     "hilang": 0,
+     "luka": 63,
+     "menderita": 16086,
+     "mengungsi": 12658,
+     "RB": 2384,
+     "RS": 0,
+     "RR": 0,
+     "RBS": 2384.0,
+     "fasilitas": 119,
+     "porsi_pct": 17.54
+    },
+    {
+     "kelas_ab2": "B",
+     "kelas_a2": "B",
+     "penentu": "meninggal+hilang; RBS; mengungsi",
+     "wilayah": "Aceh Tenggara (Aceh)",
+     "tgl": "2025-11-26",
+     "kategori": "Banjir",
+     "meninggal": 14,
+     "hilang": 1,
+     "luka": 3,
+     "menderita": 16097,
+     "mengungsi": 5633,
+     "RB": 2413,
+     "RS": 927,
+     "RR": 1120,
+     "RBS": 3156.5,
+     "fasilitas": 128,
+     "porsi_pct": 9.91
+    }
+   ],
+   "gempa": {
+    "l2v2": 60,
+    "sebaran_a2": {
+     "R": 48,
+     "B": 3,
+     "S": 8,
+     "K": 1
+    },
+    "sebaran_ab2": {
+     "R": 48,
+     "B": 3,
+     "S": 8,
+     "K": 1
+    },
+    "B_atau_K_ab2": [
+     {
+      "kelas_ab2": "B",
+      "kelas_a2": "B",
+      "penentu": "RBS; mengungsi",
+      "wilayah": "Bojonegoro, Gresik, Kota Surabaya dan 5 kab lain (Jawa Tengah, Jawa Timur)",
+      "tgl": "2024-03-22",
+      "kategori": "Gempabumi",
+      "meninggal": 0,
+      "hilang": 0,
+      "luka": 8,
+      "menderita": 12499,
+      "mengungsi": 34154,
+      "RB": 943,
+      "RS": 1618,
+      "RR": 3941,
+      "RBS": 2737.25,
+      "fasilitas": 642,
+      "porsi_pct": 3.56,
+      "magnitudo": 5.9
+     },
+     {
+      "kelas_ab2": "B",
+      "kelas_a2": "B",
+      "penentu": "RBS; mengungsi",
+      "wilayah": "Bandung, Bandung Barat, Bogor dan 3 kab lain (Jawa Barat)",
+      "tgl": "2024-09-18",
+      "kategori": "Gempabumi",
+      "meninggal": 1,
+      "hilang": 0,
+      "luka": 143,
+      "menderita": 51878,
+      "mengungsi": 11026,
+      "RB": 897,
+      "RS": 1739,
+      "RR": 3636,
+      "RBS": 2675.5,
+      "fasilitas": 92,
+      "porsi_pct": 1.54,
+      "magnitudo": 4.9
+     },
+     {
+      "kelas_ab2": "B",
+      "kelas_a2": "B",
+      "penentu": "RBS",
+      "wilayah": "Donggala, Kota Palu, Parigi Moutong dan 2 kab lain (Sulawesi Tengah)",
+      "tgl": "2026-06-16",
+      "kategori": "Gempabumi",
+      "meninggal": 3,
+      "hilang": 0,
+      "luka": 128,
+      "menderita": 12096,
+      "mengungsi": 0,
+      "RB": 270,
+      "RS": 1199,
+      "RR": 6083,
+      "RBS": 2390.25,
+      "fasilitas": 783,
+      "porsi_pct": 4.57,
+      "magnitudo": null,
+      "magnitudo_emsc_manual": {
+       "m": 6.7,
+       "waktu_utc": "2026-06-16T03:27",
+       "lat": -1.131,
+       "lon": 120.195,
+       "kedalaman_km": 10.0
+      }
+     },
+     {
+      "kelas_ab2": "K",
+      "kelas_a2": "K",
+      "penentu": "meninggal+hilang; RBS; mengungsi",
+      "wilayah": "Bima, Ende, Kepulauan Selayar dan 8 kab lain (Nusa Tenggara Barat, Nusa Tenggara Timur, Sulawesi Selatan)",
+      "tgl": "2026-08-15",
+      "kategori": "Gempabumi",
+      "meninggal": 151,
+      "hilang": 0,
+      "luka": 1787,
+      "menderita": 103934,
+      "mengungsi": 171271,
+      "RB": 29303,
+      "RS": 34460,
+      "RR": 67568,
+      "RBS": 63425.0,
+      "fasilitas": 6450,
+      "porsi_pct": 49.34,
+      "magnitudo": null,
+      "magnitudo_emsc_manual": {
+       "m": 7.7,
+       "waktu_utc": "2026-08-14T21:58",
+       "lat": -8.374,
+       "lon": 121.358,
+       "kedalaman_km": 20.0
+      }
+     }
+    ]
+   }
+  },
+  "tren_jan_okt": {
+   "2024": {
+    "kjn_l2_v2": 1725,
+    "kjn_S_ke_atas_ab2": 92,
+    "kjn_B_ke_atas_ab2": 19
+   },
+   "2025": {
+    "kjn_l2_v2": 2702,
+    "kjn_S_ke_atas_ab2": 108,
+    "kjn_B_ke_atas_ab2": 5
+   },
+   "2026": {
+    "kjn_l2_v2": 1189,
+    "kjn_S_ke_atas_ab2": 54,
+    "kjn_B_ke_atas_ab2": 3
+   }
+  },
+  "tren_tahun_berjalan": {
+   "2024": {
+    "kjn_l2_v2": 2285,
+    "kjn_S_ke_atas_ab2": 115
+   },
+   "2025": {
+    "kjn_l2_v2": 3324,
+    "kjn_S_ke_atas_ab2": 162
+   },
+   "2026": {
+    "kjn_l2_v2": 1226,
+    "kjn_S_ke_atas_ab2": 56
+   }
+  }
+ },
+ "tren": {
+  "jan_okt": {
+   "2024": {
+    "baris": 3058,
+    "kjn": 2965,
+    "resmi_semua": 2951.0,
+    "resmi_is_bencana": 2880.0,
+    "kjn_l2": 1724,
+    "kjn_kelas_S_ke_atas_ab": 92,
+    "kjn_kelas_B_ke_atas_ab": 21,
+    "kjn_kelas_S_ke_atas_a": 73,
+    "kjn_juklak": 1908,
+    "meninggal": 453,
+    "hilang": 57,
+    "md": 510,
+    "mengungsi": 482778,
+    "rbs": 27030.0,
+    "md_pada_kjn_l2": 510,
+    "kejadian_non_karhutla_resmi": 1994.0,
+    "sampai": "2024-10-31"
+   },
+   "2025": {
+    "baris": 7746,
+    "kjn": 7565,
+    "resmi_semua": 8092.9,
+    "resmi_is_bencana": 4613.0,
+    "kjn_l2": 2694,
+    "kjn_kelas_S_ke_atas_ab": 108,
+    "kjn_kelas_B_ke_atas_ab": 6,
+    "kjn_kelas_S_ke_atas_a": 80,
+    "kjn_juklak": 2949,
+    "meninggal": 663,
+    "hilang": 60,
+    "md": 723,
+    "mengungsi": 193266,
+    "rbs": 23145.0,
+    "md_pada_kjn_l2": 723,
+    "kejadian_non_karhutla_resmi": 6688.2,
+    "sampai": "2025-10-31"
+   },
+   "2026": {
+    "baris": 3181,
+    "kjn": 3125,
+    "resmi_semua": 3124.0,
+    "resmi_is_bencana": 2379.0,
+    "kjn_l2": 1183,
+    "kjn_kelas_S_ke_atas_ab": 54,
+    "kjn_kelas_B_ke_atas_ab": 3,
+    "kjn_kelas_S_ke_atas_a": 36,
+    "kjn_juklak": 1298,
+    "meninggal": 556,
+    "hilang": 21,
+    "md": 577,
+    "mengungsi": 255737,
+    "rbs": 75590.0,
+    "md_pada_kjn_l2": 577,
+    "kejadian_non_karhutla_resmi": 2011.0,
+    "sampai": "2026-10-31"
+   }
+  },
+  "tahun_berjalan": {
+   "2024": {
+    "baris": 3752,
+    "kjn": 3654,
+    "resmi_semua": 3636.0,
+    "resmi_is_bencana": 3548.0,
+    "kjn_l2": 2281,
+    "kjn_kelas_S_ke_atas_ab": 115,
+    "kjn_kelas_B_ke_atas_ab": 24,
+    "kjn_kelas_S_ke_atas_a": 89,
+    "kjn_juklak": 2556,
+    "meninggal": 579,
+    "hilang": 65,
+    "md": 644,
+    "mengungsi": 531638,
+    "rbs": 35090.0,
+    "md_pada_kjn_l2": 644,
+    "kejadian_non_karhutla_resmi": 2660.0,
+    "sampai": "2024-12-31"
+   },
+   "2025": {
+    "baris": 8946,
+    "kjn": 8763,
+    "resmi_semua": 9304.4,
+    "resmi_is_bencana": 5439.4,
+    "kjn_l2": 3311,
+    "kjn_kelas_S_ke_atas_ab": 162,
+    "kjn_kelas_B_ke_atas_ab": 33,
+    "kjn_kelas_S_ke_atas_a": 127,
+    "kjn_juklak": 3647,
+    "meninggal": 2037,
+    "hilang": 252,
+    "md": 2289,
+    "mengungsi": 1182569,
+    "rbs": 144570.0,
+    "md_pada_kjn_l2": 2289,
+    "kejadian_non_karhutla_resmi": 7787.7,
+    "sampai": "2025-12-31"
+   },
+   "2026": {
+    "baris": 3276,
+    "kjn": 3220,
+    "resmi_semua": 3219.0,
+    "resmi_is_bencana": 2448.0,
+    "kjn_l2": 1220,
+    "kjn_kelas_S_ke_atas_ab": 56,
+    "kjn_kelas_B_ke_atas_ab": 3,
+    "kjn_kelas_S_ke_atas_a": 36,
+    "kjn_juklak": 1332,
+    "meninggal": 557,
+    "hilang": 23,
+    "md": 580,
+    "mengungsi": 256553,
+    "rbs": 75906.0,
+    "md_pada_kjn_l2": 580,
+    "kejadian_non_karhutla_resmi": 2070.0,
+    "sampai": "2026-11-12"
+   }
+  },
+  "perubahan_pct_jan_okt": {
+   "baris": {
+    "2024_ke_2025": 153.3,
+    "2025_ke_2026": -58.9
+   },
+   "kjn": {
+    "2024_ke_2025": 155.1,
+    "2025_ke_2026": -58.7
+   },
+   "resmi_semua": {
+    "2024_ke_2025": 174.2,
+    "2025_ke_2026": -61.4
+   },
+   "resmi_is_bencana": {
+    "2024_ke_2025": 60.2,
+    "2025_ke_2026": -48.4
+   },
+   "kjn_l2": {
+    "2024_ke_2025": 56.3,
+    "2025_ke_2026": -56.1
+   },
+   "kjn_kelas_S_ke_atas_ab": {
+    "2024_ke_2025": 17.4,
+    "2025_ke_2026": -50.0
+   },
+   "kjn_kelas_B_ke_atas_ab": {
+    "2024_ke_2025": -71.4,
+    "2025_ke_2026": -50.0
+   },
+   "kjn_juklak": {
+    "2024_ke_2025": 54.6,
+    "2025_ke_2026": -56.0
+   },
+   "md": {
+    "2024_ke_2025": 41.8,
+    "2025_ke_2026": -20.2
+   },
+   "mengungsi": {
+    "2024_ke_2025": -60.0,
+    "2025_ke_2026": 32.3
+   },
+   "rbs": {
+    "2024_ke_2025": -14.4,
+    "2025_ke_2026": 226.6
+   },
+   "md_pada_kjn_l2": {
+    "2024_ke_2025": 41.8,
+    "2025_ke_2026": -20.2
+   }
+  },
+  "patahan_is_bencana": {
+   "2024": {
+    "baris": 3752,
+    "false": 93,
+    "false_pct": 2.5,
+    "false_per_kategori": {
+     "Banjir": 37,
+     "Cuaca ekstrem": 23,
+     "Longsor": 12,
+     "Kebakaran permukiman": 9,
+     "Gempabumi": 8,
+     "Kebakaran hutan dan lahan": 3
+    }
+   },
+   "2025": {
+    "baris": 8946,
+    "false": 3705,
+    "false_pct": 41.4,
+    "false_per_kategori": {
+     "Cuaca ekstrem": 1390,
+     "Longsor": 787,
+     "Banjir": 625,
+     "Kebakaran permukiman": 529,
+     "Kebakaran hutan dan lahan": 215,
+     "Gempabumi": 67
+    }
+   },
+   "2026": {
+    "baris": 3276,
+    "false": 771,
+    "false_pct": 23.5,
+    "false_per_kategori": {
+     "Cuaca ekstrem": 269,
+     "Longsor": 204,
+     "Banjir": 141,
+     "Kebakaran permukiman": 67,
+     "Kebakaran hutan dan lahan": 64,
+     "Gempabumi": 10
+    }
+   }
+  },
+  "baris_per_bulan": {
+   "2024": [
+    378,
+    317,
+    374,
+    244,
+    225,
+    178,
+    324,
+    365,
+    346,
+    307,
+    359,
+    335
+   ],
+   "2025": [
+    1101,
+    935,
+    867,
+    593,
+    866,
+    487,
+    869,
+    791,
+    664,
+    573,
+    588,
+    612
+   ],
+   "2026": [
+    455,
+    344,
+    385,
+    293,
+    234,
+    151,
+    267,
+    329,
+    375,
+    348,
+    95,
+    0
+   ]
+  },
+  "kjn_l2_per_bulan": {
+   "2024": [
+    290,
+    212,
+    241,
+    152,
+    193,
+    135,
+    118,
+    96,
+    125,
+    162,
+    274,
+    283
+   ],
+   "2025": [
+    468,
+    305,
+    394,
+    225,
+    281,
+    175,
+    184,
+    216,
+    198,
+    248,
+    306,
+    311
+   ],
+   "2026": [
+    220,
+    153,
+    172,
+    150,
+    131,
+    71,
+    83,
+    57,
+    66,
+    80,
+    37,
+    0
+   ]
+  },
+  "md_per_bulan": {
+   "2024": [
+    29,
+    40,
+    89,
+    55,
+    122,
+    24,
+    69,
+    31,
+    30,
+    21,
+    78,
+    56
+   ],
+   "2025": [
+    158,
+    60,
+    70,
+    42,
+    105,
+    35,
+    40,
+    33,
+    150,
+    30,
+    1454,
+    112
+   ],
+   "2026": [
+    149,
+    33,
+    37,
+    57,
+    62,
+    8,
+    17,
+    166,
+    33,
+    15,
+    3,
+    0
+   ]
+  },
+  "md_konsentrasi": {
+   "2024": {
+    "md": 644,
+    "top5": 158,
+    "top5_info": [
+     [
+      "2024-05-12",
+      "Erupsi gunung api",
+      "Sumatera Barat",
+      42
+     ],
+     [
+      "2024-07-07",
+      "Longsor",
+      "Gorontalo",
+      42
+     ],
+     [
+      "2024-03-07",
+      "Banjir",
+      "Sumatera Barat",
+      30
+     ],
+     [
+      "2024-05-12",
+      "Banjir",
+      "Sumatera Barat",
+      24
+     ],
+     [
+      "2024-04-14",
+      "Longsor",
+      "Sulawesi Selatan",
+      20
+     ]
+    ]
+   },
+   "2025": {
+    "md": 2289,
+    "top5": 846,
+    "top5_info": [
+     [
+      "2025-11-28",
+      "Banjir",
+      "Aceh",
+      251
+     ],
+     [
+      "2025-11-23",
+      "Banjir",
+      "Sumatera Barat",
+      233
+     ],
+     [
+      "2025-11-24",
+      "Banjir",
+      "Sumatera Utara",
+      164
+     ],
+     [
+      "2025-11-26",
+      "Banjir",
+      "Aceh",
+      101
+     ],
+     [
+      "2025-11-25",
+      "Banjir",
+      "Sumatera Utara",
+      97
+     ]
+    ]
+   },
+   "2026": {
+    "md": 580,
+    "top5": 312,
+    "top5_info": [
+     [
+      "2026-08-15",
+      "Gempabumi",
+      "Nusa Tenggara Barat, Nusa Tenggara Timur",
+      151
+     ],
+     [
+      "2026-01-24",
+      "Longsor",
+      "Jawa Barat",
+      94
+     ],
+     [
+      "2026-05-07",
+      "Konflik sosial",
+      "Papua Pegunungan",
+      33
+     ],
+     [
+      "2026-01-05",
+      "Banjir",
+      "Sulawesi Utara",
+      19
+     ],
+     [
+      "2026-04-28",
+      "Gagal teknologi",
+      "Jawa Barat",
+      15
+     ]
+    ]
+   }
+  }
+ },
+ "logbook": {
+  "V2": {
+   "kjn": 2809,
+   "l2": 745,
+   "juklak": 838,
+   "l2_bukan_juklak": 3,
+   "juklak_bukan_l2": 96,
+   "md": 643,
+   "mengungsi": 319595,
+   "rbs": 17470.0,
+   "penentu_tunggal_l2": {
+    "M1": 83,
+    "M2": 26,
+    "M3": 398,
+    "M4": 89
+   },
+   "per_jenis": {
+    "banjir": {
+     "kjn": 611,
+     "l2": 255
+    },
+    "banjir_longsor": {
+     "kjn": 42,
+     "l2": 13
+    },
+    "cuaca": {
+     "kjn": 541,
+     "l2": 119
+    },
+    "erupsi": {
+     "kjn": 13,
+     "l2": 1
+    },
+    "gelombang": {
+     "kjn": 8,
+     "l2": 2
+    },
+    "gempa": {
+     "kjn": 59,
+     "l2": 19
+    },
+    "karhutla": {
+     "kjn": 681,
+     "l2": 9
+    },
+    "kebakaran_permukiman": {
+     "kjn": 222,
+     "l2": 60
+    },
+    "kebakaran_tpa": {
+     "kjn": 31,
+     "l2": 3
+    },
+    "kekeringan": {
+     "kjn": 270,
+     "l2": 189
+    },
+    "lainnya": {
+     "kjn": 43,
+     "l2": 18
+    },
+    "longsor": {
+     "kjn": 288,
+     "l2": 57
+    }
+   }
+  },
+  "V1g": {
+   "kjn": 3756,
+   "l2": 756,
+   "juklak": 895,
+   "l2_bukan_juklak": 3,
+   "juklak_bukan_l2": 142,
+   "md": 619,
+   "mengungsi": 331065,
+   "rbs": 18457.0,
+   "penentu_tunggal_l2": {
+    "M1": 93,
+    "M2": 29,
+    "M3": 347,
+    "M4": 111
+   },
+   "per_jenis": {
+    "banjir": {
+     "kjn": 794,
+     "l2": 318
+    },
+    "banjir_longsor": {
+     "kjn": 45,
+     "l2": 13
+    },
+    "cuaca": {
+     "kjn": 785,
+     "l2": 155
+    },
+    "erupsi": {
+     "kjn": 11,
+     "l2": 1
+    },
+    "gelombang": {
+     "kjn": 8,
+     "l2": 2
+    },
+    "gempa": {
+     "kjn": 55,
+     "l2": 14
+    },
+    "karhutla": {
+     "kjn": 1160,
+     "l2": 10
+    },
+    "kebakaran_permukiman": {
+     "kjn": 248,
+     "l2": 60
+    },
+    "kebakaran_tpa": {
+     "kjn": 32,
+     "l2": 4
+    },
+    "kekeringan": {
+     "kjn": 137,
+     "l2": 96
+    },
+    "lainnya": {
+     "kjn": 57,
+     "l2": 16
+    },
+    "longsor": {
+     "kjn": 424,
+     "l2": 67
+    }
+   }
+  },
+  "V1": {
+   "kjn": 3860,
+   "l2": 768,
+   "juklak": 909,
+   "l2_bukan_juklak": 3,
+   "juklak_bukan_l2": 144,
+   "md": 625,
+   "mengungsi": 332361,
+   "rbs": 18800.0,
+   "penentu_tunggal_l2": {
+    "M1": 95,
+    "M2": 30,
+    "M3": 350,
+    "M4": 112
+   },
+   "per_jenis": {
+    "banjir": {
+     "kjn": 801,
+     "l2": 323
+    },
+    "banjir_longsor": {
+     "kjn": 45,
+     "l2": 13
+    },
+    "cuaca": {
+     "kjn": 820,
+     "l2": 156
+    },
+    "erupsi": {
+     "kjn": 13,
+     "l2": 1
+    },
+    "gelombang": {
+     "kjn": 8,
+     "l2": 2
+    },
+    "gempa": {
+     "kjn": 60,
+     "l2": 19
+    },
+    "karhutla": {
+     "kjn": 1209,
+     "l2": 10
+    },
+    "kebakaran_permukiman": {
+     "kjn": 252,
+     "l2": 61
+    },
+    "kebakaran_tpa": {
+     "kjn": 32,
+     "l2": 4
+    },
+    "kekeringan": {
+     "kjn": 138,
+     "l2": 96
+    },
+    "lainnya": {
+     "kjn": 57,
+     "l2": 16
+    },
+    "longsor": {
+     "kjn": 425,
+     "l2": 67
+    }
+   }
+  },
+  "logbook_2026.json": {
+   "kejadian_total_berkas": 3827,
+   "kejadian_tgl_2026_01_10": 3756,
+   "keterangan": "kunci (jenis, prov, kab, tgl) dengan angka maks lintas hari; V1 di atas mereproduksinya dari baris harian"
+  },
+  "baris_harian_mentah": 9329,
+  "dibi_2026_jan_okt": {
+   "baris": 3181,
+   "kjn": 3125,
+   "resmi": 3124.0,
+   "kjn_l2": 1183,
+   "md": 577
+  },
+  "dibi_2026_jan_okt_non_karhutla": {
+   "kjn": 2011,
+   "kjn_l2": 1164
+  }
+ }
+}

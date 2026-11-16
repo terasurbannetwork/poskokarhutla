@@ -1,0 +1,12 @@
+﻿python.exe : laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-vbhcsxj8\qa\deck-Laporan Insidental Erupsi 
+Gunung Api (Simulasi).md (LOLOS)
+At C:\Users\USER\AppData\Local\Temp\claude\8477dca2efc2d380\ee932f72-f656-43ed-ba01-cb9604b0d0a7\scratchpad\bangun_semu
+a.ps1:8 char:3
++   & $py buat.py *> bangun.log
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (laporan QA deck...asi).md (LOLOS):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+kab abu: [('Sleman', 'Tebal', 0.18, 0), ('Magelang', 'Tebal', 0.34, 1), ('Kulon Progo', 'Sedang', 0.61, 23), ('Purworejo', 'Sedang', 0.93, 35), ('Kebumen', 'Tipis', 0.45, 67)]
+pengungsi: 130040 {'Sleman': 25040, 'Magelang': 31940, 'Klaten': 18760, 'Boyolali': 54300}
+D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\insidental\gunungapi-simulasi\Laporan Insidental Erupsi Gunung Api (Simulasi).pptx

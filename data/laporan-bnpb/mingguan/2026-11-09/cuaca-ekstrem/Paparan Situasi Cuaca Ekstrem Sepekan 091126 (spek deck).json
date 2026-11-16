@@ -1,0 +1,105 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Situasi Cuaca Ekstrem, 09-11-2026.",
+ "judul_dokumen": "Laporan Situasi Cuaca Ekstrem",
+ "kajian": "rehab",
+ "tanggal": "2026-11-09",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-09/cuaca-ekstrem/bahan/sampul.jpg"
+   ],
+   "kredit": "Citra: NASA LANCE/MODIS Aqua, Siklon Tropis Seroja 2021, domain publik, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Situasi Cuaca Ekstrem",
+   "subjudul": "Senin, 2 November s.d. Minggu, 8 November 2026",
+   "penyaji": {
+    "nama": "Tim Ahli dan Tim Sus IT BNPB",
+    "jabatan": "Badan Nasional Penanggulangan Bencana"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\cuaca-ekstrem\\Paparan Situasi Cuaca Ekstrem Sepekan 091126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\cuaca-ekstrem\\Paparan Situasi Cuaca Ekstrem Sepekan 091126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\cuaca-ekstrem\\Paparan Situasi Cuaca Ekstrem Sepekan 091126 (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Laporan harian Dit. Koordalops BNPB dan laporan pagi BMKG, 2 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\cuaca-ekstrem\\Paparan Situasi Cuaca Ekstrem Sepekan 091126 (isi).pptx",
+   "halaman": 4,
+   "bagian": 3,
+   "sumber": "Laporan pagi BMKG, 9 Nov 2026; prakiraan hujan dan muka laut Open-Meteo olahan Tim Sus IT BNPB, terbit 9 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\cuaca-ekstrem\\Paparan Situasi Cuaca Ekstrem Sepekan 091126 (isi).pptx",
+   "halaman": 5,
+   "bagian": 4,
+   "sumber": "Laporan harian Dit. Koordalops BNPB dan laporan pagi BMKG, 2 s.d. 9 Nov 2026"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-09/cuaca-ekstrem/bahan/sampul.jpg"
+   ],
+   "kredit": "Citra: NASA LANCE/MODIS Aqua, Siklon Tropis Seroja 2021, domain publik, Wikimedia Commons"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Kejadian cuaca ekstrem sepekan",
+   "label": "Kejadian cuaca ekstrem sepekan",
+   "halaman_tetap": [
+    3,
+    4
+   ]
+  },
+  {
+   "judul": "Peringatan dini BMKG",
+   "label": "Peringatan dini BMKG",
+   "halaman_tetap": [
+    5
+   ]
+  },
+  {
+   "judul": "Prakiraan cuaca ke depan",
+   "label": "Prakiraan cuaca ke depan",
+   "halaman_tetap": [
+    6
+   ]
+  },
+  {
+   "judul": "Rekomendasi tindak lanjut",
+   "label": "Rekomendasi tindak lanjut",
+   "halaman_tetap": [
+    7
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Paparan Situasi Cuaca Ekstrem Mingguan",
+ "skala_logo_bnpb": 1.1
+}

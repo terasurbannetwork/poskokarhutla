@@ -1,0 +1,12 @@
+ukuran,sebelum,sesudah,arti
+"Luas terbakar, rata-rata per hari (ha)",933,71,"Lebih kecil, belum setara"
+Perubahan luas per sepuluh hari (%),330,-92,Berbalik turun
+Perubahan belum padam per sepuluh hari (%),809,-96,Berbalik turun
+Perubahan hotspot per sepuluh hari (%),179,-91,Berbalik turun
+Pembanding: perubahan luas provinsi yang tidak dikunjungi (%),-14,-58,Penurunan makin cepat
+Pembanding tanpa hari celah satelit (%),-16,-60,Penurunan makin cepat
+"Perubahan luas, tanpa hari celah satelit (%)",538,-97,Berbalik turun
+"Belum padam dibanding kemarin, nilai tengah (%)",113,40,Membaik
+"Belum padam dibanding kemarin, rata-rata biasa (%)",168,38,Terdistorsi hari lonjakan
+"Luas yang padam dalam dua hari, berbobot (%)",46,65,Membaik
+Belum padam dibanding luas terbakar (%),62,36,Membaik

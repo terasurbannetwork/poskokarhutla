@@ -1,0 +1,2292 @@
+{
+ "catatan": [
+  "K4 (lahan >=1 ha), K5, K6 tidak ada di DIBI",
+  "satuan = baris DIBI mentah (hari x kabupaten x jenis x kategori x is_bencana), bukan jumlah_kejadian (pecahan)",
+  "K2 = menderita + luka + mengungsi (dijumlah); K3 = rumah rusak B+S+R + pendidikan + ibadat + kesehatan + kantor + jembatan; fasum_rusak terpisah",
+  "2024 DIBI tidak lengkap (3.752 baris vs 8.946 di 2025)"
+ ],
+ "ringkas_periode": {
+  "2024": {
+   "n": 3752,
+   "lolos_min1": 2609,
+   "pct_lolos": 69.5,
+   "tidak_satu_pun": 1143,
+   "pct_tidak": 30.5,
+   "per_kriteria": {
+    "K2": 1971,
+    "K3": 1072,
+    "K1": 222
+   },
+   "hanya_satu_kriteria": {
+    "K2": 1385,
+    "K3": 511,
+    "K1": 115
+   },
+   "kombinasi": {
+    "K2": 1385,
+    "tidak ada": 1143,
+    "K3": 511,
+    "K2+K3": 491,
+    "K1": 115,
+    "K1+K2+K3": 58,
+    "K1+K2": 37,
+    "K1+K3": 12
+   }
+  },
+  "2025": {
+   "n": 8946,
+   "lolos_min1": 3682,
+   "pct_lolos": 41.2,
+   "tidak_satu_pun": 5264,
+   "pct_tidak": 58.8,
+   "per_kriteria": {
+    "K1": 329,
+    "K2": 2727,
+    "K3": 1630
+   },
+   "hanya_satu_kriteria": {
+    "K1": 191,
+    "K3": 748,
+    "K2": 1822
+   },
+   "kombinasi": {
+    "tidak ada": 5264,
+    "K2": 1822,
+    "K2+K3": 783,
+    "K3": 748,
+    "K1": 191,
+    "K1+K2+K3": 83,
+    "K1+K2": 39,
+    "K1+K3": 16
+   }
+  },
+  "2026 (1 Jan-12 Nov)": {
+   "n": 3276,
+   "lolos_min1": 1363,
+   "pct_lolos": 41.6,
+   "tidak_satu_pun": 1913,
+   "pct_tidak": 58.4,
+   "per_kriteria": {
+    "K2": 1093,
+    "K3": 525,
+    "K1": 152
+   },
+   "hanya_satu_kriteria": {
+    "K2": 727,
+    "K3": 177,
+    "K1": 83
+   },
+   "kombinasi": {
+    "tidak ada": 1913,
+    "K2": 727,
+    "K2+K3": 307,
+    "K3": 177,
+    "K1": 83,
+    "K1+K2+K3": 31,
+    "K1+K2": 28,
+    "K1+K3": 10
+   }
+  },
+  "12 bulan (13 Nov 2025-12 Nov 2026)": {
+   "n": 4185,
+   "lolos_min1": 1903,
+   "pct_lolos": 45.5,
+   "tidak_satu_pun": 2282,
+   "pct_tidak": 54.5,
+   "per_kriteria": {
+    "K2": 1512,
+    "K3": 792,
+    "K1": 217
+   },
+   "hanya_satu_kriteria": {
+    "K1": 106,
+    "K2": 973,
+    "K3": 273
+   },
+   "kombinasi": {
+    "tidak ada": 2282,
+    "K2": 973,
+    "K2+K3": 440,
+    "K3": 273,
+    "K1": 106,
+    "K1+K2+K3": 67,
+    "K1+K2": 32,
+    "K1+K3": 12
+   }
+  },
+  "semua 2024-2026": {
+   "n": 15974,
+   "lolos_min1": 7654,
+   "pct_lolos": 47.9,
+   "tidak_satu_pun": 8320,
+   "pct_tidak": 52.1,
+   "per_kriteria": {
+    "K2": 5791,
+    "K3": 3227,
+    "K1": 703
+   },
+   "hanya_satu_kriteria": {
+    "K2": 3934,
+    "K3": 1436,
+    "K1": 389
+   },
+   "kombinasi": {
+    "tidak ada": 8320,
+    "K2": 3934,
+    "K2+K3": 1581,
+    "K3": 1436,
+    "K1": 389,
+    "K1+K2+K3": 172,
+    "K1+K2": 104,
+    "K1+K3": 38
+   }
+  }
+ },
+ "per_jenis 12 bulan (13 Nov 2025-12 Nov 2026)": {
+  "karhutla": {
+   "n": 1208,
+   "lolos_min1": 17,
+   "pct_lolos": 1.4,
+   "tidak_satu_pun": 1191,
+   "pct_tidak": 98.6,
+   "per_kriteria": {
+    "K1": 5,
+    "K2": 10,
+    "K3": 3
+   },
+   "hanya_satu_kriteria": {
+    "K1": 5,
+    "K2": 9,
+    "K3": 2
+   },
+   "kombinasi": {
+    "tidak ada": 1191,
+    "K2": 9,
+    "K1": 5,
+    "K3": 2,
+    "K2+K3": 1
+   }
+  },
+  "banjir": {
+   "n": 1188,
+   "lolos_min1": 910,
+   "pct_lolos": 76.6,
+   "tidak_satu_pun": 278,
+   "pct_tidak": 23.4,
+   "per_kriteria": {
+    "K1": 82,
+    "K2": 883,
+    "K3": 154
+   },
+   "hanya_satu_kriteria": {
+    "K2": 717,
+    "K3": 13,
+    "K1": 13
+   },
+   "kombinasi": {
+    "K2": 717,
+    "tidak ada": 278,
+    "K2+K3": 98,
+    "K1+K2+K3": 42,
+    "K1+K2": 26,
+    "K3": 13,
+    "K1": 13,
+    "K1+K3": 1
+   }
+  },
+  "cuaca ekstrem/angin": {
+   "n": 922,
+   "lolos_min1": 519,
+   "pct_lolos": 56.3,
+   "tidak_satu_pun": 403,
+   "pct_tidak": 43.7,
+   "per_kriteria": {
+    "K2": 317,
+    "K3": 441,
+    "K1": 27
+   },
+   "hanya_satu_kriteria": {
+    "K1": 21,
+    "K2": 56,
+    "K3": 178
+   },
+   "kombinasi": {
+    "tidak ada": 403,
+    "K2+K3": 258,
+    "K3": 178,
+    "K2": 56,
+    "K1": 21,
+    "K1+K3": 3,
+    "K1+K2+K3": 2,
+    "K1+K2": 1
+   }
+  },
+  "longsor": {
+   "n": 431,
+   "lolos_min1": 157,
+   "pct_lolos": 36.4,
+   "tidak_satu_pun": 274,
+   "pct_tidak": 63.6,
+   "per_kriteria": {
+    "K1": 38,
+    "K2": 81,
+    "K3": 86
+   },
+   "hanya_satu_kriteria": {
+    "K2": 39,
+    "K3": 45,
+    "K1": 30
+   },
+   "kombinasi": {
+    "tidak ada": 274,
+    "K3": 45,
+    "K2": 39,
+    "K2+K3": 35,
+    "K1": 30,
+    "K1+K2+K3": 5,
+    "K1+K2": 2,
+    "K1+K3": 1
+   }
+  },
+  "kebakaran permukiman": {
+   "n": 188,
+   "lolos_min1": 92,
+   "pct_lolos": 48.9,
+   "tidak_satu_pun": 96,
+   "pct_tidak": 51.1,
+   "per_kriteria": {
+    "K3": 52,
+    "K1": 34,
+    "K2": 39
+   },
+   "hanya_satu_kriteria": {
+    "K3": 23,
+    "K1": 25,
+    "K2": 14
+   },
+   "kombinasi": {
+    "tidak ada": 96,
+    "K1": 25,
+    "K3": 23,
+    "K2+K3": 21,
+    "K2": 14,
+    "K1+K3": 5,
+    "K1+K2+K3": 3,
+    "K1+K2": 1
+   }
+  },
+  "kekeringan": {
+   "n": 129,
+   "lolos_min1": 122,
+   "pct_lolos": 94.6,
+   "tidak_satu_pun": 7,
+   "pct_tidak": 5.4,
+   "per_kriteria": {
+    "K2": 122
+   },
+   "hanya_satu_kriteria": {
+    "K2": 122
+   },
+   "kombinasi": {
+    "K2": 122,
+    "tidak ada": 7
+   }
+  },
+  "gempa": {
+   "n": 60,
+   "lolos_min1": 43,
+   "pct_lolos": 71.7,
+   "tidak_satu_pun": 17,
+   "pct_tidak": 28.3,
+   "per_kriteria": {
+    "K3": 38,
+    "K1": 13,
+    "K2": 31
+   },
+   "hanya_satu_kriteria": {
+    "K3": 9,
+    "K2": 3,
+    "K1": 2
+   },
+   "kombinasi": {
+    "K2+K3": 18,
+    "tidak ada": 17,
+    "K1+K2+K3": 10,
+    "K3": 9,
+    "K2": 3,
+    "K1": 2,
+    "K1+K3": 1
+   }
+  },
+  "lainnya": {
+   "n": 24,
+   "lolos_min1": 20,
+   "pct_lolos": 83.3,
+   "tidak_satu_pun": 4,
+   "pct_tidak": 16.7,
+   "per_kriteria": {
+    "K1": 16,
+    "K3": 9,
+    "K2": 8
+   },
+   "hanya_satu_kriteria": {
+    "K1": 9,
+    "K3": 2
+   },
+   "kombinasi": {
+    "K1": 9,
+    "tidak ada": 4,
+    "K1+K2+K3": 4,
+    "K3": 2,
+    "K1+K2": 2,
+    "K2+K3": 2,
+    "K1+K3": 1
+   }
+  },
+  "gelombang/abrasi": {
+   "n": 21,
+   "lolos_min1": 17,
+   "pct_lolos": 81.0,
+   "tidak_satu_pun": 4,
+   "pct_tidak": 19.0,
+   "per_kriteria": {
+    "K2": 16,
+    "K3": 7
+   },
+   "hanya_satu_kriteria": {
+    "K2": 10,
+    "K3": 1
+   },
+   "kombinasi": {
+    "K2": 10,
+    "K2+K3": 6,
+    "tidak ada": 4,
+    "K3": 1
+   }
+  },
+  "erupsi": {
+   "n": 14,
+   "lolos_min1": 6,
+   "pct_lolos": 42.9,
+   "tidak_satu_pun": 8,
+   "pct_tidak": 57.1,
+   "per_kriteria": {
+    "K2": 5,
+    "K3": 2,
+    "K1": 2
+   },
+   "hanya_satu_kriteria": {
+    "K2": 3,
+    "K1": 1
+   },
+   "kombinasi": {
+    "tidak ada": 8,
+    "K2": 3,
+    "K2+K3": 1,
+    "K1+K2+K3": 1,
+    "K1": 1
+   }
+  }
+ },
+ "per_jenis semua 2024-2026": {
+  "banjir": {
+   "n": 5027,
+   "lolos_min1": 3937,
+   "pct_lolos": 78.3,
+   "tidak_satu_pun": 1090,
+   "pct_tidak": 21.7,
+   "per_kriteria": {
+    "K2": 3807,
+    "K3": 509,
+    "K1": 238
+   },
+   "hanya_satu_kriteria": {
+    "K2": 3287,
+    "K1": 57,
+    "K3": 69
+   },
+   "kombinasi": {
+    "K2": 3287,
+    "tidak ada": 1090,
+    "K2+K3": 343,
+    "K1+K2+K3": 93,
+    "K1+K2": 84,
+    "K3": 69,
+    "K1": 57,
+    "K1+K3": 4
+   }
+  },
+  "cuaca ekstrem/angin": {
+   "n": 3828,
+   "lolos_min1": 2118,
+   "pct_lolos": 55.3,
+   "tidak_satu_pun": 1710,
+   "pct_tidak": 44.7,
+   "per_kriteria": {
+    "K3": 1906,
+    "K2": 1042,
+    "K1": 126
+   },
+   "hanya_satu_kriteria": {
+    "K3": 971,
+    "K2": 119,
+    "K1": 92
+   },
+   "kombinasi": {
+    "tidak ada": 1710,
+    "K3": 971,
+    "K2+K3": 902,
+    "K2": 119,
+    "K1": 92,
+    "K1+K2+K3": 20,
+    "K1+K3": 13,
+    "K1+K2": 1
+   }
+  },
+  "karhutla": {
+   "n": 3646,
+   "lolos_min1": 30,
+   "pct_lolos": 0.8,
+   "tidak_satu_pun": 3616,
+   "pct_tidak": 99.2,
+   "per_kriteria": {
+    "K3": 5,
+    "K2": 17,
+    "K1": 10
+   },
+   "hanya_satu_kriteria": {
+    "K3": 3,
+    "K2": 15,
+    "K1": 10
+   },
+   "kombinasi": {
+    "tidak ada": 3616,
+    "K2": 15,
+    "K1": 10,
+    "K3": 3,
+    "K2+K3": 2
+   }
+  },
+  "longsor": {
+   "n": 1646,
+   "lolos_min1": 630,
+   "pct_lolos": 38.3,
+   "tidak_satu_pun": 1016,
+   "pct_tidak": 61.7,
+   "per_kriteria": {
+    "K2": 295,
+    "K3": 390,
+    "K1": 162
+   },
+   "hanya_satu_kriteria": {
+    "K3": 207,
+    "K1": 119,
+    "K2": 114
+   },
+   "kombinasi": {
+    "tidak ada": 1016,
+    "K3": 207,
+    "K2+K3": 147,
+    "K1": 119,
+    "K2": 114,
+    "K1+K2+K3": 27,
+    "K1+K3": 9,
+    "K1+K2": 7
+   }
+  },
+  "kebakaran permukiman": {
+   "n": 1105,
+   "lolos_min1": 446,
+   "pct_lolos": 40.4,
+   "tidak_satu_pun": 659,
+   "pct_tidak": 59.6,
+   "per_kriteria": {
+    "K2": 227,
+    "K3": 270,
+    "K1": 95
+   },
+   "hanya_satu_kriteria": {
+    "K3": 139,
+    "K1": 71,
+    "K2": 103
+   },
+   "kombinasi": {
+    "tidak ada": 659,
+    "K3": 139,
+    "K2+K3": 109,
+    "K2": 103,
+    "K1": 71,
+    "K1+K2+K3": 13,
+    "K1+K3": 9,
+    "K1+K2": 2
+   }
+  },
+  "kekeringan": {
+   "n": 269,
+   "lolos_min1": 245,
+   "pct_lolos": 91.1,
+   "tidak_satu_pun": 24,
+   "pct_tidak": 8.9,
+   "per_kriteria": {
+    "K2": 245
+   },
+   "hanya_satu_kriteria": {
+    "K2": 245
+   },
+   "kombinasi": {
+    "K2": 245,
+    "tidak ada": 24
+   }
+  },
+  "gempa": {
+   "n": 222,
+   "lolos_min1": 106,
+   "pct_lolos": 47.7,
+   "tidak_satu_pun": 116,
+   "pct_tidak": 52.3,
+   "per_kriteria": {
+    "K3": 98,
+    "K2": 71,
+    "K1": 15
+   },
+   "hanya_satu_kriteria": {
+    "K3": 31,
+    "K2": 6,
+    "K1": 2
+   },
+   "kombinasi": {
+    "tidak ada": 116,
+    "K2+K3": 54,
+    "K3": 31,
+    "K1+K2+K3": 11,
+    "K2": 6,
+    "K1+K3": 2,
+    "K1": 2
+   }
+  },
+  "gelombang/abrasi": {
+   "n": 111,
+   "lolos_min1": 68,
+   "pct_lolos": 61.3,
+   "tidak_satu_pun": 43,
+   "pct_tidak": 38.7,
+   "per_kriteria": {
+    "K3": 30,
+    "K2": 52,
+    "K1": 5
+   },
+   "hanya_satu_kriteria": {
+    "K3": 12,
+    "K2": 33,
+    "K1": 4
+   },
+   "kombinasi": {
+    "tidak ada": 43,
+    "K2": 33,
+    "K2+K3": 18,
+    "K3": 12,
+    "K1": 4,
+    "K1+K2": 1
+   }
+  },
+  "lainnya": {
+   "n": 83,
+   "lolos_min1": 55,
+   "pct_lolos": 66.3,
+   "tidak_satu_pun": 28,
+   "pct_tidak": 33.7,
+   "per_kriteria": {
+    "K1": 45,
+    "K3": 12,
+    "K2": 17
+   },
+   "hanya_satu_kriteria": {
+    "K1": 33,
+    "K3": 4,
+    "K2": 4
+   },
+   "kombinasi": {
+    "K1": 33,
+    "tidak ada": 28,
+    "K1+K2": 6,
+    "K1+K2+K3": 5,
+    "K3": 4,
+    "K2": 4,
+    "K2+K3": 2,
+    "K1+K3": 1
+   }
+  },
+  "erupsi": {
+   "n": 37,
+   "lolos_min1": 19,
+   "pct_lolos": 51.4,
+   "tidak_satu_pun": 18,
+   "pct_tidak": 48.6,
+   "per_kriteria": {
+    "K2": 18,
+    "K3": 7,
+    "K1": 7
+   },
+   "hanya_satu_kriteria": {
+    "K2": 8,
+    "K1": 1
+   },
+   "kombinasi": {
+    "tidak ada": 18,
+    "K2": 8,
+    "K2+K3": 4,
+    "K1+K2": 3,
+    "K1+K2+K3": 3,
+    "K1": 1
+   }
+  }
+ },
+ "per_jenis 2025": {
+  "banjir": {
+   "n": 2774,
+   "lolos_min1": 1945,
+   "pct_lolos": 70.1,
+   "tidak_satu_pun": 829,
+   "pct_tidak": 29.9,
+   "per_kriteria": {
+    "K2": 1868,
+    "K3": 282,
+    "K1": 120
+   },
+   "hanya_satu_kriteria": {
+    "K2": 1599,
+    "K3": 42,
+    "K1": 32
+   },
+   "kombinasi": {
+    "K2": 1599,
+    "tidak ada": 829,
+    "K2+K3": 184,
+    "K1+K2+K3": 53,
+    "K3": 42,
+    "K1+K2": 32,
+    "K1": 32,
+    "K1+K3": 3
+   }
+  },
+  "cuaca ekstrem/angin": {
+   "n": 2412,
+   "lolos_min1": 997,
+   "pct_lolos": 41.3,
+   "tidak_satu_pun": 1415,
+   "pct_tidak": 58.7,
+   "per_kriteria": {
+    "K1": 58,
+    "K2": 455,
+    "K3": 925
+   },
+   "hanya_satu_kriteria": {
+    "K1": 48,
+    "K3": 490,
+    "K2": 24
+   },
+   "kombinasi": {
+    "tidak ada": 1415,
+    "K3": 490,
+    "K2+K3": 425,
+    "K1": 48,
+    "K2": 24,
+    "K1+K2+K3": 6,
+    "K1+K3": 4
+   }
+  },
+  "karhutla": {
+   "n": 1487,
+   "lolos_min1": 7,
+   "pct_lolos": 0.5,
+   "tidak_satu_pun": 1480,
+   "pct_tidak": 99.5,
+   "per_kriteria": {
+    "K2": 3,
+    "K1": 4
+   },
+   "hanya_satu_kriteria": {
+    "K2": 3,
+    "K1": 4
+   },
+   "kombinasi": {
+    "tidak ada": 1480,
+    "K1": 4,
+    "K2": 3
+   }
+  },
+  "longsor": {
+   "n": 1106,
+   "lolos_min1": 307,
+   "pct_lolos": 27.8,
+   "tidak_satu_pun": 799,
+   "pct_tidak": 72.2,
+   "per_kriteria": {
+    "K3": 209,
+    "K2": 144,
+    "K1": 61
+   },
+   "hanya_satu_kriteria": {
+    "K3": 117,
+    "K2": 57,
+    "K1": 41
+   },
+   "kombinasi": {
+    "tidak ada": 799,
+    "K3": 117,
+    "K2+K3": 72,
+    "K2": 57,
+    "K1": 41,
+    "K1+K2+K3": 15,
+    "K1+K3": 5
+   }
+  },
+  "kebakaran permukiman": {
+   "n": 868,
+   "lolos_min1": 295,
+   "pct_lolos": 34.0,
+   "tidak_satu_pun": 573,
+   "pct_tidak": 66.0,
+   "per_kriteria": {
+    "K3": 173,
+    "K2": 167,
+    "K1": 49
+   },
+   "hanya_satu_kriteria": {
+    "K3": 88,
+    "K1": 37,
+    "K2": 84
+   },
+   "kombinasi": {
+    "tidak ada": 573,
+    "K3": 88,
+    "K2": 84,
+    "K2+K3": 74,
+    "K1": 37,
+    "K1+K2+K3": 8,
+    "K1+K3": 3,
+    "K1+K2": 1
+   }
+  },
+  "gempa": {
+   "n": 102,
+   "lolos_min1": 27,
+   "pct_lolos": 26.5,
+   "tidak_satu_pun": 75,
+   "pct_tidak": 73.5,
+   "per_kriteria": {
+    "K2": 21,
+    "K3": 25,
+    "K1": 1
+   },
+   "hanya_satu_kriteria": {
+    "K3": 5,
+    "K2": 2
+   },
+   "kombinasi": {
+    "tidak ada": 75,
+    "K2+K3": 19,
+    "K3": 5,
+    "K2": 2,
+    "K1+K3": 1
+   }
+  },
+  "gelombang/abrasi": {
+   "n": 67,
+   "lolos_min1": 27,
+   "pct_lolos": 40.3,
+   "tidak_satu_pun": 40,
+   "pct_tidak": 59.7,
+   "per_kriteria": {
+    "K2": 20,
+    "K3": 13,
+    "K1": 2
+   },
+   "hanya_satu_kriteria": {
+    "K1": 2,
+    "K2": 12,
+    "K3": 5
+   },
+   "kombinasi": {
+    "tidak ada": 40,
+    "K2": 12,
+    "K2+K3": 8,
+    "K3": 5,
+    "K1": 2
+   }
+  },
+  "lainnya": {
+   "n": 62,
+   "lolos_min1": 37,
+   "pct_lolos": 59.7,
+   "tidak_satu_pun": 25,
+   "pct_tidak": 40.3,
+   "per_kriteria": {
+    "K1": 32,
+    "K2": 9,
+    "K3": 2
+   },
+   "hanya_satu_kriteria": {
+    "K3": 1,
+    "K1": 27,
+    "K2": 4
+   },
+   "kombinasi": {
+    "K1": 27,
+    "tidak ada": 25,
+    "K1+K2": 4,
+    "K2": 4,
+    "K3": 1,
+    "K1+K2+K3": 1
+   }
+  },
+  "kekeringan": {
+   "n": 50,
+   "lolos_min1": 34,
+   "pct_lolos": 68.0,
+   "tidak_satu_pun": 16,
+   "pct_tidak": 32.0,
+   "per_kriteria": {
+    "K2": 34
+   },
+   "hanya_satu_kriteria": {
+    "K2": 34
+   },
+   "kombinasi": {
+    "K2": 34,
+    "tidak ada": 16
+   }
+  },
+  "erupsi": {
+   "n": 18,
+   "lolos_min1": 6,
+   "pct_lolos": 33.3,
+   "tidak_satu_pun": 12,
+   "pct_tidak": 66.7,
+   "per_kriteria": {
+    "K2": 6,
+    "K3": 1,
+    "K1": 2
+   },
+   "hanya_satu_kriteria": {
+    "K2": 3
+   },
+   "kombinasi": {
+    "tidak ada": 12,
+    "K2": 3,
+    "K1+K2": 2,
+    "K2+K3": 1
+   }
+  }
+ },
+ "is_bencana_vs_kriteria": {
+  "semua": {
+   "is_bencana=True,kriteria=False": 3870,
+   "is_bencana=True,kriteria=True": 7535,
+   "is_bencana=False,kriteria=False": 4450,
+   "is_bencana=False,kriteria=True": 119
+  },
+  "per_jenis": {
+   "karhutla": {
+    "is_b=True,krit=False": 3335,
+    "is_b=True,krit=True": 29,
+    "is_b=False,krit=False": 281,
+    "is_b=False,krit=True": 1
+   },
+   "banjir": {
+    "is_b=True,krit=True": 3913,
+    "is_b=False,krit=False": 779,
+    "is_b=True,krit=False": 311,
+    "is_b=False,krit=True": 24
+   },
+   "longsor": {
+    "is_b=True,krit=True": 612,
+    "is_b=False,krit=False": 985,
+    "is_b=True,krit=False": 31,
+    "is_b=False,krit=True": 18
+   },
+   "cuaca ekstrem/angin": {
+    "is_b=True,krit=True": 2097,
+    "is_b=False,krit=False": 1661,
+    "is_b=True,krit=False": 49,
+    "is_b=False,krit=True": 21
+   },
+   "gempa": {
+    "is_b=True,krit=False": 33,
+    "is_b=True,krit=True": 104,
+    "is_b=False,krit=False": 83,
+    "is_b=False,krit=True": 2
+   },
+   "kekeringan": {
+    "is_b=True,krit=True": 245,
+    "is_b=False,krit=False": 19,
+    "is_b=True,krit=False": 5
+   },
+   "kebakaran permukiman": {
+    "is_b=True,krit=True": 396,
+    "is_b=False,krit=False": 555,
+    "is_b=True,krit=False": 104,
+    "is_b=False,krit=True": 50
+   },
+   "gelombang/abrasi": {
+    "is_b=True,krit=True": 68,
+    "is_b=False,krit=False": 41,
+    "is_b=True,krit=False": 2
+   },
+   "erupsi": {
+    "is_b=True,krit=True": 19,
+    "is_b=False,krit=False": 18
+   },
+   "lainnya": {
+    "is_b=True,krit=True": 52,
+    "is_b=False,krit=False": 28,
+    "is_b=False,krit=True": 3
+   }
+  }
+ },
+ "is_bencana_profil": {
+  "is_bencana_true": {
+   "n": 11405,
+   "lolos_min1": 7535,
+   "pct_lolos": 66.1,
+   "tidak_satu_pun": 3870,
+   "pct_tidak": 33.9,
+   "per_kriteria": {
+    "K2": 5722,
+    "K3": 3159,
+    "K1": 695
+   },
+   "hanya_satu_kriteria": {
+    "K2": 3890,
+    "K3": 1393,
+    "K1": 382
+   },
+   "kombinasi": {
+    "K2": 3890,
+    "tidak ada": 3870,
+    "K2+K3": 1557,
+    "K3": 1393,
+    "K1": 382,
+    "K1+K2+K3": 171,
+    "K1+K2": 104,
+    "K1+K3": 38
+   }
+  },
+  "is_bencana_false": {
+   "n": 4569,
+   "lolos_min1": 119,
+   "pct_lolos": 2.6,
+   "tidak_satu_pun": 4450,
+   "pct_tidak": 97.4,
+   "per_kriteria": {
+    "K3": 68,
+    "K2": 69,
+    "K1": 8
+   },
+   "hanya_satu_kriteria": {
+    "K3": 43,
+    "K2": 44,
+    "K1": 7
+   },
+   "kombinasi": {
+    "tidak ada": 4450,
+    "K2": 44,
+    "K3": 43,
+    "K2+K3": 24,
+    "K1": 7,
+    "K1+K2+K3": 1
+   }
+  },
+  "false_dengan_meninggal": 8,
+  "false_dengan_k2": 69,
+  "false_dengan_k3": 68
+ },
+ "is_bencana_per_tahun": {
+  "2024": {
+   "true": 3659,
+   "false": 93
+  },
+  "2025": {
+   "true": 5241,
+   "false": 3705
+  },
+  "2026": {
+   "true": 2505,
+   "false": 771
+  }
+ },
+ "kepekaan 12 bulan (13 Nov 2025-12 Nov 2026)": {
+  "total": {
+   "n": 4185,
+   "basis_K1K2K3": 1903,
+   "K1_saja": {
+    "1": 217,
+    "3": 65,
+    "10": 33
+   },
+   "K2_saja": {
+    "10": 2095,
+    "50": 1512,
+    "100": 1207,
+    "500": 700
+   },
+   "K3_saja": {
+    "1": 1291,
+    "5": 792,
+    "10": 540,
+    "50": 180
+   },
+   "gabungan_ATAU": {
+    "K1=1,K2=50,K3=5": 1903,
+    "K1=3,K2=100,K3=10": 1433,
+    "K1=10,K2=500,K3=50": 787,
+    "K1=1,K2=10,K3=1": 2484,
+    "K1=1,K2=100,K3=5": 1753,
+    "K1=1,K2=50,K3=1": 2289,
+    "K1=1,K2=50,K3=10": 1691
+   },
+   "EMDAT": 1212
+  },
+  "per_jenis": {
+   "karhutla": {
+    "n": 1208,
+    "basis_K1K2K3": 17,
+    "K1_saja": {
+     "1": 5,
+     "3": 1,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 12,
+     "50": 10,
+     "100": 10,
+     "500": 4
+    },
+    "K3_saja": {
+     "1": 8,
+     "5": 3,
+     "10": 1,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 17,
+     "K1=3,K2=100,K3=10": 11,
+     "K1=10,K2=500,K3=50": 4,
+     "K1=1,K2=10,K3=1": 22,
+     "K1=1,K2=100,K3=5": 17,
+     "K1=1,K2=50,K3=1": 21,
+     "K1=1,K2=50,K3=10": 15
+    },
+    "EMDAT": 10
+   },
+   "banjir": {
+    "n": 1188,
+    "basis_K1K2K3": 910,
+    "K1_saja": {
+     "1": 82,
+     "3": 27,
+     "10": 21
+    },
+    "K2_saja": {
+     "10": 971,
+     "50": 883,
+     "100": 783,
+     "500": 529
+    },
+    "K3_saja": {
+     "1": 244,
+     "5": 154,
+     "10": 134,
+     "50": 80
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 910,
+     "K1=3,K2=100,K3=10": 796,
+     "K1=10,K2=500,K3=50": 547,
+     "K1=1,K2=10,K3=1": 1005,
+     "K1=1,K2=100,K3=5": 818,
+     "K1=1,K2=50,K3=1": 934,
+     "K1=1,K2=50,K3=10": 902
+    },
+    "EMDAT": 783
+   },
+   "cuaca ekstrem/angin": {
+    "n": 922,
+    "basis_K1K2K3": 519,
+    "K1_saja": {
+     "1": 27,
+     "3": 1,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 602,
+     "50": 317,
+     "100": 175,
+     "500": 18
+    },
+    "K3_saja": {
+     "1": 674,
+     "5": 441,
+     "10": 293,
+     "50": 60
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 519,
+     "K1=3,K2=100,K3=10": 325,
+     "K1=10,K2=500,K3=50": 67,
+     "K1=1,K2=10,K3=1": 801,
+     "K1=1,K2=100,K3=5": 491,
+     "K1=1,K2=50,K3=1": 744,
+     "K1=1,K2=50,K3=10": 381
+    },
+    "EMDAT": 175
+   },
+   "longsor": {
+    "n": 431,
+    "basis_K1K2K3": 157,
+    "K1_saja": {
+     "1": 38,
+     "3": 12,
+     "10": 3
+    },
+    "K2_saja": {
+     "10": 208,
+     "50": 81,
+     "100": 50,
+     "500": 17
+    },
+    "K3_saja": {
+     "1": 198,
+     "5": 86,
+     "10": 38,
+     "50": 6
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 157,
+     "K1=3,K2=100,K3=10": 76,
+     "K1=10,K2=500,K3=50": 19,
+     "K1=1,K2=10,K3=1": 295,
+     "K1=1,K2=100,K3=5": 143,
+     "K1=1,K2=50,K3=1": 252,
+     "K1=1,K2=50,K3=10": 117
+    },
+    "EMDAT": 50
+   },
+   "kebakaran permukiman": {
+    "n": 188,
+    "basis_K1K2K3": 92,
+    "K1_saja": {
+     "1": 34,
+     "3": 9,
+     "10": 4
+    },
+    "K2_saja": {
+     "10": 102,
+     "50": 39,
+     "100": 26,
+     "500": 2
+    },
+    "K3_saja": {
+     "1": 99,
+     "5": 52,
+     "10": 27,
+     "50": 7
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 92,
+     "K1=3,K2=100,K3=10": 43,
+     "K1=10,K2=500,K3=50": 11,
+     "K1=1,K2=10,K3=1": 139,
+     "K1=1,K2=100,K3=5": 84,
+     "K1=1,K2=50,K3=1": 123,
+     "K1=1,K2=50,K3=10": 74
+    },
+    "EMDAT": 30
+   },
+   "kekeringan": {
+    "n": 129,
+    "basis_K1K2K3": 122,
+    "K1_saja": {
+     "1": 0,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 123,
+     "50": 122,
+     "100": 121,
+     "500": 105
+    },
+    "K3_saja": {
+     "1": 0,
+     "5": 0,
+     "10": 0,
+     "50": 0
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 122,
+     "K1=3,K2=100,K3=10": 121,
+     "K1=10,K2=500,K3=50": 105,
+     "K1=1,K2=10,K3=1": 123,
+     "K1=1,K2=100,K3=5": 121,
+     "K1=1,K2=50,K3=1": 122,
+     "K1=1,K2=50,K3=10": 122
+    },
+    "EMDAT": 121
+   },
+   "gempa": {
+    "n": 60,
+    "basis_K1K2K3": 43,
+    "K1_saja": {
+     "1": 13,
+     "3": 7,
+     "10": 3
+    },
+    "K2_saja": {
+     "10": 39,
+     "50": 31,
+     "100": 23,
+     "500": 15
+    },
+    "K3_saja": {
+     "1": 44,
+     "5": 38,
+     "10": 34,
+     "50": 21
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 43,
+     "K1=3,K2=100,K3=10": 36,
+     "K1=10,K2=500,K3=50": 22,
+     "K1=1,K2=10,K3=1": 50,
+     "K1=1,K2=100,K3=5": 42,
+     "K1=1,K2=50,K3=1": 48,
+     "K1=1,K2=50,K3=10": 39
+    },
+    "EMDAT": 23
+   },
+   "lainnya": {
+    "n": 24,
+    "basis_K1K2K3": 20,
+    "K1_saja": {
+     "1": 16,
+     "3": 6,
+     "10": 2
+    },
+    "K2_saja": {
+     "10": 12,
+     "50": 8,
+     "100": 7,
+     "500": 3
+    },
+    "K3_saja": {
+     "1": 13,
+     "5": 9,
+     "10": 8,
+     "50": 3
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 20,
+     "K1=3,K2=100,K3=10": 11,
+     "K1=10,K2=500,K3=50": 5,
+     "K1=1,K2=10,K3=1": 23,
+     "K1=1,K2=100,K3=5": 20,
+     "K1=1,K2=50,K3=1": 22,
+     "K1=1,K2=50,K3=10": 19
+    },
+    "EMDAT": 8
+   },
+   "gelombang/abrasi": {
+    "n": 21,
+    "basis_K1K2K3": 17,
+    "K1_saja": {
+     "1": 0,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 19,
+     "50": 16,
+     "100": 8,
+     "500": 3
+    },
+    "K3_saja": {
+     "1": 9,
+     "5": 7,
+     "10": 3,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 17,
+     "K1=3,K2=100,K3=10": 8,
+     "K1=10,K2=500,K3=50": 3,
+     "K1=1,K2=10,K3=1": 19,
+     "K1=1,K2=100,K3=5": 11,
+     "K1=1,K2=50,K3=1": 17,
+     "K1=1,K2=50,K3=10": 16
+    },
+    "EMDAT": 8
+   },
+   "erupsi": {
+    "n": 14,
+    "basis_K1K2K3": 6,
+    "K1_saja": {
+     "1": 2,
+     "3": 2,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 7,
+     "50": 5,
+     "100": 4,
+     "500": 4
+    },
+    "K3_saja": {
+     "1": 2,
+     "5": 2,
+     "10": 2,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 6,
+     "K1=3,K2=100,K3=10": 6,
+     "K1=10,K2=500,K3=50": 4,
+     "K1=1,K2=10,K3=1": 7,
+     "K1=1,K2=100,K3=5": 6,
+     "K1=1,K2=50,K3=1": 6,
+     "K1=1,K2=50,K3=10": 6
+    },
+    "EMDAT": 4
+   }
+  }
+ },
+ "kepekaan 2025": {
+  "total": {
+   "n": 8946,
+   "basis_K1K2K3": 3682,
+   "K1_saja": {
+    "1": 329,
+    "3": 87,
+    "10": 34
+   },
+   "K2_saja": {
+    "10": 4010,
+    "50": 2727,
+    "100": 2213,
+    "500": 1176
+   },
+   "K3_saja": {
+    "1": 3586,
+    "5": 1630,
+    "10": 1056,
+    "50": 289
+   },
+   "gabungan_ATAU": {
+    "K1=1,K2=50,K3=5": 3682,
+    "K1=3,K2=100,K3=10": 2753,
+    "K1=10,K2=500,K3=50": 1336,
+    "K1=1,K2=10,K3=1": 5709,
+    "K1=1,K2=100,K3=5": 3448,
+    "K1=1,K2=50,K3=1": 5398,
+    "K1=1,K2=50,K3=10": 3169
+   },
+   "EMDAT": 2221
+  },
+  "per_jenis": {
+   "banjir": {
+    "n": 2774,
+    "basis_K1K2K3": 1945,
+    "K1_saja": {
+     "1": 120,
+     "3": 39,
+     "10": 22
+    },
+    "K2_saja": {
+     "10": 2068,
+     "50": 1868,
+     "100": 1657,
+     "500": 1015
+    },
+    "K3_saja": {
+     "1": 527,
+     "5": 282,
+     "10": 235,
+     "50": 120
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 1945,
+     "K1=3,K2=100,K3=10": 1710,
+     "K1=10,K2=500,K3=50": 1053,
+     "K1=1,K2=10,K3=1": 2178,
+     "K1=1,K2=100,K3=5": 1763,
+     "K1=1,K2=50,K3=1": 2034,
+     "K1=1,K2=50,K3=10": 1925
+    },
+    "EMDAT": 1658
+   },
+   "cuaca ekstrem/angin": {
+    "n": 2412,
+    "basis_K1K2K3": 997,
+    "K1_saja": {
+     "1": 58,
+     "3": 1,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 1065,
+     "50": 455,
+     "100": 262,
+     "500": 31
+    },
+    "K3_saja": {
+     "1": 1937,
+     "5": 925,
+     "10": 591,
+     "50": 121
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 997,
+     "K1=3,K2=100,K3=10": 608,
+     "K1=10,K2=500,K3=50": 126,
+     "K1=1,K2=10,K3=1": 2044,
+     "K1=1,K2=100,K3=5": 987,
+     "K1=1,K2=50,K3=1": 1982,
+     "K1=1,K2=50,K3=10": 673
+    },
+    "EMDAT": 262
+   },
+   "karhutla": {
+    "n": 1487,
+    "basis_K1K2K3": 7,
+    "K1_saja": {
+     "1": 4,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 5,
+     "50": 3,
+     "100": 2,
+     "500": 0
+    },
+    "K3_saja": {
+     "1": 2,
+     "5": 0,
+     "10": 0,
+     "50": 0
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 7,
+     "K1=3,K2=100,K3=10": 2,
+     "K1=10,K2=500,K3=50": 0,
+     "K1=1,K2=10,K3=1": 10,
+     "K1=1,K2=100,K3=5": 6,
+     "K1=1,K2=50,K3=1": 9,
+     "K1=1,K2=50,K3=10": 7
+    },
+    "EMDAT": 2
+   },
+   "longsor": {
+    "n": 1106,
+    "basis_K1K2K3": 307,
+    "K1_saja": {
+     "1": 61,
+     "3": 24,
+     "10": 6
+    },
+    "K2_saja": {
+     "10": 405,
+     "50": 144,
+     "100": 96,
+     "500": 30
+    },
+    "K3_saja": {
+     "1": 556,
+     "5": 209,
+     "10": 107,
+     "50": 17
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 307,
+     "K1=3,K2=100,K3=10": 169,
+     "K1=10,K2=500,K3=50": 39,
+     "K1=1,K2=10,K3=1": 696,
+     "K1=1,K2=100,K3=5": 289,
+     "K1=1,K2=50,K3=1": 624,
+     "K1=1,K2=50,K3=10": 218
+    },
+    "EMDAT": 100
+   },
+   "kebakaran permukiman": {
+    "n": 868,
+    "basis_K1K2K3": 295,
+    "K1_saja": {
+     "1": 49,
+     "3": 12,
+     "10": 3
+    },
+    "K2_saja": {
+     "10": 354,
+     "50": 167,
+     "100": 116,
+     "500": 49
+    },
+    "K3_saja": {
+     "1": 489,
+     "5": 173,
+     "10": 88,
+     "50": 18
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 295,
+     "K1=3,K2=100,K3=10": 168,
+     "K1=10,K2=500,K3=50": 63,
+     "K1=1,K2=10,K3=1": 613,
+     "K1=1,K2=100,K3=5": 279,
+     "K1=1,K2=50,K3=1": 588,
+     "K1=1,K2=50,K3=10": 220
+    },
+    "EMDAT": 119
+   },
+   "gempa": {
+    "n": 102,
+    "basis_K1K2K3": 27,
+    "K1_saja": {
+     "1": 1,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 30,
+     "50": 21,
+     "100": 19,
+     "500": 9
+    },
+    "K3_saja": {
+     "1": 42,
+     "5": 25,
+     "10": 23,
+     "50": 10
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 27,
+     "K1=3,K2=100,K3=10": 24,
+     "K1=10,K2=500,K3=50": 11,
+     "K1=1,K2=10,K3=1": 44,
+     "K1=1,K2=100,K3=5": 26,
+     "K1=1,K2=50,K3=1": 44,
+     "K1=1,K2=50,K3=10": 25
+    },
+    "EMDAT": 19
+   },
+   "gelombang/abrasi": {
+    "n": 67,
+    "basis_K1K2K3": 27,
+    "K1_saja": {
+     "1": 2,
+     "3": 1,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 29,
+     "50": 20,
+     "100": 12,
+     "500": 4
+    },
+    "K3_saja": {
+     "1": 26,
+     "5": 13,
+     "10": 9,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 27,
+     "K1=3,K2=100,K3=10": 17,
+     "K1=10,K2=500,K3=50": 5,
+     "K1=1,K2=10,K3=1": 41,
+     "K1=1,K2=100,K3=5": 21,
+     "K1=1,K2=50,K3=1": 37,
+     "K1=1,K2=50,K3=10": 24
+    },
+    "EMDAT": 12
+   },
+   "lainnya": {
+    "n": 62,
+    "basis_K1K2K3": 37,
+    "K1_saja": {
+     "1": 32,
+     "3": 10,
+     "10": 3
+    },
+    "K2_saja": {
+     "10": 12,
+     "50": 9,
+     "100": 9,
+     "500": 6
+    },
+    "K3_saja": {
+     "1": 6,
+     "5": 2,
+     "10": 2,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 37,
+     "K1=3,K2=100,K3=10": 15,
+     "K1=10,K2=500,K3=50": 7,
+     "K1=1,K2=10,K3=1": 41,
+     "K1=1,K2=100,K3=5": 37,
+     "K1=1,K2=50,K3=1": 40,
+     "K1=1,K2=50,K3=10": 37
+    },
+    "EMDAT": 9
+   },
+   "kekeringan": {
+    "n": 50,
+    "basis_K1K2K3": 34,
+    "K1_saja": {
+     "1": 0,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 35,
+     "50": 34,
+     "100": 34,
+     "500": 26
+    },
+    "K3_saja": {
+     "1": 0,
+     "5": 0,
+     "10": 0,
+     "50": 0
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 34,
+     "K1=3,K2=100,K3=10": 34,
+     "K1=10,K2=500,K3=50": 26,
+     "K1=1,K2=10,K3=1": 35,
+     "K1=1,K2=100,K3=5": 34,
+     "K1=1,K2=50,K3=1": 34,
+     "K1=1,K2=50,K3=10": 34
+    },
+    "EMDAT": 34
+   },
+   "erupsi": {
+    "n": 18,
+    "basis_K1K2K3": 6,
+    "K1_saja": {
+     "1": 2,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 7,
+     "50": 6,
+     "100": 6,
+     "500": 6
+    },
+    "K3_saja": {
+     "1": 1,
+     "5": 1,
+     "10": 1,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 6,
+     "K1=3,K2=100,K3=10": 6,
+     "K1=10,K2=500,K3=50": 6,
+     "K1=1,K2=10,K3=1": 7,
+     "K1=1,K2=100,K3=5": 6,
+     "K1=1,K2=50,K3=1": 6,
+     "K1=1,K2=50,K3=10": 6
+    },
+    "EMDAT": 6
+   }
+  }
+ },
+ "kepekaan semua 2024-2026": {
+  "total": {
+   "n": 15974,
+   "basis_K1K2K3": 7654,
+   "K1_saja": {
+    "1": 703,
+    "3": 169,
+    "10": 51
+   },
+   "K2_saja": {
+    "10": 7852,
+    "50": 5791,
+    "100": 4734,
+    "500": 2640
+   },
+   "K3_saja": {
+    "1": 5793,
+    "5": 3227,
+    "10": 2105,
+    "50": 576
+   },
+   "gabungan_ATAU": {
+    "K1=1,K2=50,K3=5": 7654,
+    "K1=3,K2=100,K3=10": 5810,
+    "K1=10,K2=500,K3=50": 2958,
+    "K1=1,K2=10,K3=1": 10194,
+    "K1=1,K2=100,K3=5": 7159,
+    "K1=1,K2=50,K3=1": 9708,
+    "K1=1,K2=50,K3=10": 6686
+   },
+   "EMDAT": 4748
+  },
+  "per_jenis": {
+   "banjir": {
+    "n": 5027,
+    "basis_K1K2K3": 3937,
+    "K1_saja": {
+     "1": 238,
+     "3": 58,
+     "10": 26
+    },
+    "K2_saja": {
+     "10": 4096,
+     "50": 3807,
+     "100": 3412,
+     "500": 2164
+    },
+    "K3_saja": {
+     "1": 944,
+     "5": 509,
+     "10": 395,
+     "50": 186
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 3937,
+     "K1=3,K2=100,K3=10": 3492,
+     "K1=10,K2=500,K3=50": 2216,
+     "K1=1,K2=10,K3=1": 4257,
+     "K1=1,K2=100,K3=5": 3586,
+     "K1=1,K2=50,K3=1": 4046,
+     "K1=1,K2=50,K3=10": 3903
+    },
+    "EMDAT": 3413
+   },
+   "cuaca ekstrem/angin": {
+    "n": 3828,
+    "basis_K1K2K3": 2118,
+    "K1_saja": {
+     "1": 126,
+     "3": 5,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 2075,
+     "50": 1042,
+     "100": 604,
+     "500": 81
+    },
+    "K3_saja": {
+     "1": 3116,
+     "5": 1906,
+     "10": 1248,
+     "50": 273
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 2118,
+     "K1=3,K2=100,K3=10": 1322,
+     "K1=10,K2=500,K3=50": 288,
+     "K1=1,K2=10,K3=1": 3390,
+     "K1=1,K2=100,K3=5": 2063,
+     "K1=1,K2=50,K3=1": 3279,
+     "K1=1,K2=50,K3=10": 1483
+    },
+    "EMDAT": 604
+   },
+   "karhutla": {
+    "n": 3646,
+    "basis_K1K2K3": 30,
+    "K1_saja": {
+     "1": 10,
+     "3": 1,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 22,
+     "50": 17,
+     "100": 15,
+     "500": 4
+    },
+    "K3_saja": {
+     "1": 14,
+     "5": 5,
+     "10": 2,
+     "50": 1
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 30,
+     "K1=3,K2=100,K3=10": 17,
+     "K1=10,K2=500,K3=50": 4,
+     "K1=1,K2=10,K3=1": 40,
+     "K1=1,K2=100,K3=5": 29,
+     "K1=1,K2=50,K3=1": 38,
+     "K1=1,K2=50,K3=10": 27
+    },
+    "EMDAT": 15
+   },
+   "longsor": {
+    "n": 1646,
+    "basis_K1K2K3": 630,
+    "K1_saja": {
+     "1": 162,
+     "3": 56,
+     "10": 12
+    },
+    "K2_saja": {
+     "10": 710,
+     "50": 295,
+     "100": 186,
+     "500": 61
+    },
+    "K3_saja": {
+     "1": 861,
+     "5": 390,
+     "10": 203,
+     "50": 32
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 630,
+     "K1=3,K2=100,K3=10": 331,
+     "K1=10,K2=500,K3=50": 79,
+     "K1=1,K2=10,K3=1": 1135,
+     "K1=1,K2=100,K3=5": 589,
+     "K1=1,K2=50,K3=1": 1029,
+     "K1=1,K2=50,K3=10": 471
+    },
+    "EMDAT": 194
+   },
+   "kebakaran permukiman": {
+    "n": 1105,
+    "basis_K1K2K3": 446,
+    "K1_saja": {
+     "1": 95,
+     "3": 20,
+     "10": 4
+    },
+    "K2_saja": {
+     "10": 485,
+     "50": 227,
+     "100": 156,
+     "500": 52
+    },
+    "K3_saja": {
+     "1": 640,
+     "5": 270,
+     "10": 144,
+     "50": 33
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 446,
+     "K1=3,K2=100,K3=10": 242,
+     "K1=10,K2=500,K3=50": 79,
+     "K1=1,K2=10,K3=1": 806,
+     "K1=1,K2=100,K3=5": 420,
+     "K1=1,K2=50,K3=1": 766,
+     "K1=1,K2=50,K3=10": 338
+    },
+    "EMDAT": 160
+   },
+   "kekeringan": {
+    "n": 269,
+    "basis_K1K2K3": 245,
+    "K1_saja": {
+     "1": 0,
+     "3": 0,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 248,
+     "50": 245,
+     "100": 243,
+     "500": 212
+    },
+    "K3_saja": {
+     "1": 0,
+     "5": 0,
+     "10": 0,
+     "50": 0
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 245,
+     "K1=3,K2=100,K3=10": 243,
+     "K1=10,K2=500,K3=50": 212,
+     "K1=1,K2=10,K3=1": 248,
+     "K1=1,K2=100,K3=5": 243,
+     "K1=1,K2=50,K3=1": 245,
+     "K1=1,K2=50,K3=10": 245
+    },
+    "EMDAT": 243
+   },
+   "gempa": {
+    "n": 222,
+    "basis_K1K2K3": 106,
+    "K1_saja": {
+     "1": 15,
+     "3": 7,
+     "10": 3
+    },
+    "K2_saja": {
+     "10": 106,
+     "50": 71,
+     "100": 56,
+     "500": 34
+    },
+    "K3_saja": {
+     "1": 143,
+     "5": 98,
+     "10": 79,
+     "50": 41
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 106,
+     "K1=3,K2=100,K3=10": 82,
+     "K1=10,K2=500,K3=50": 44,
+     "K1=1,K2=10,K3=1": 153,
+     "K1=1,K2=100,K3=5": 103,
+     "K1=1,K2=50,K3=1": 149,
+     "K1=1,K2=50,K3=10": 87
+    },
+    "EMDAT": 56
+   },
+   "gelombang/abrasi": {
+    "n": 111,
+    "basis_K1K2K3": 68,
+    "K1_saja": {
+     "1": 5,
+     "3": 2,
+     "10": 0
+    },
+    "K2_saja": {
+     "10": 67,
+     "50": 52,
+     "100": 29,
+     "500": 8
+    },
+    "K3_saja": {
+     "1": 49,
+     "5": 30,
+     "10": 17,
+     "50": 2
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 68,
+     "K1=3,K2=100,K3=10": 37,
+     "K1=10,K2=500,K3=50": 9,
+     "K1=1,K2=10,K3=1": 84,
+     "K1=1,K2=100,K3=5": 52,
+     "K1=1,K2=50,K3=1": 78,
+     "K1=1,K2=50,K3=10": 60
+    },
+    "EMDAT": 29
+   },
+   "lainnya": {
+    "n": 83,
+    "basis_K1K2K3": 55,
+    "K1_saja": {
+     "1": 45,
+     "3": 15,
+     "10": 5
+    },
+    "K2_saja": {
+     "10": 23,
+     "50": 17,
+     "100": 16,
+     "500": 9
+    },
+    "K3_saja": {
+     "1": 19,
+     "5": 12,
+     "10": 10,
+     "50": 4
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 55,
+     "K1=3,K2=100,K3=10": 25,
+     "K1=10,K2=500,K3=50": 12,
+     "K1=1,K2=10,K3=1": 61,
+     "K1=1,K2=100,K3=5": 55,
+     "K1=1,K2=50,K3=1": 59,
+     "K1=1,K2=50,K3=10": 53
+    },
+    "EMDAT": 17
+   },
+   "erupsi": {
+    "n": 37,
+    "basis_K1K2K3": 19,
+    "K1_saja": {
+     "1": 7,
+     "3": 5,
+     "10": 1
+    },
+    "K2_saja": {
+     "10": 20,
+     "50": 18,
+     "100": 17,
+     "500": 15
+    },
+    "K3_saja": {
+     "1": 7,
+     "5": 7,
+     "10": 7,
+     "50": 4
+    },
+    "gabungan_ATAU": {
+     "K1=1,K2=50,K3=5": 19,
+     "K1=3,K2=100,K3=10": 19,
+     "K1=10,K2=500,K3=50": 15,
+     "K1=1,K2=10,K3=1": 20,
+     "K1=1,K2=100,K3=5": 19,
+     "K1=1,K2=50,K3=1": 19,
+     "K1=1,K2=50,K3=10": 19
+    },
+    "EMDAT": 17
+   }
+  }
+ },
+ "logika_ATAU_12bln": {
+  "n": 4185,
+  "lolos_hanya_K3": 273,
+  "lolos_K3_dan_nol_korban_sama_sekali": 28,
+  "lolos_K3_5_sd_9_tanpa_K1_K2": 212,
+  "lolos_hanya_K1": 106,
+  "lolos_hanya_K1_tepat_1_meninggal": 71,
+  "lolos_hanya_K2": 973,
+  "lolos_hanya_K2_50_sd_99": 150,
+  "lolos_semua_tiga": 67,
+  "lolos_dua_dari_tiga": 551,
+  "fasum_saja_lolos_baru_jika_fasum_dihitung": 0,
+  "jembatan_rusak_baris": 96,
+  "jembatan_penentu_K3": 6,
+  "terendam_tanpa_rusak_dan_tak_lolos": 100
+ },
+ "konsentrasi": {
+  "12 bulan (13 Nov 2025-12 Nov 2026)": {
+   "meninggal": {
+    "total": 1897,
+    "n": 4185,
+    "pct_dari_1pct_teratas": 85.5,
+    "pct_dari_10pct_teratas": 100.0,
+    "baris_nol": 3968,
+    "maks": 246
+   },
+   "tot_terdampak": {
+    "total": 12501851,
+    "n": 4185,
+    "pct_dari_1pct_teratas": 64.0,
+    "pct_dari_10pct_teratas": 96.6,
+    "baris_nol": 1690,
+    "maks": 739710
+   },
+   "mengungsi": {
+    "total": 1240790,
+    "n": 4185,
+    "pct_dari_1pct_teratas": 95.8,
+    "pct_dari_10pct_teratas": 100.0,
+    "baris_nol": 3762,
+    "maks": 304631
+   },
+   "rr": {
+    "total": 397670,
+    "n": 4185,
+    "pct_dari_1pct_teratas": 92.8,
+    "pct_dari_10pct_teratas": 99.1,
+    "baris_nol": 2951,
+    "maks": 91286
+   },
+   "k3n": {
+    "total": 405979,
+    "n": 4185,
+    "pct_dari_1pct_teratas": 92.7,
+    "pct_dari_10pct_teratas": 99.0,
+    "baris_nol": 2894,
+    "maks": 91859
+   }
+  },
+  "2025": {
+   "meninggal": {
+    "total": 2037,
+    "n": 8946,
+    "pct_dari_1pct_teratas": 85.0,
+    "pct_dari_10pct_teratas": 100.0,
+    "baris_nol": 8617,
+    "maks": 246
+   },
+   "tot_terdampak": {
+    "total": 13103002,
+    "n": 8946,
+    "pct_dari_1pct_teratas": 67.1,
+    "pct_dari_10pct_teratas": 96.2,
+    "baris_nol": 3594,
+    "maks": 739710
+   },
+   "mengungsi": {
+    "total": 1182569,
+    "n": 8946,
+    "pct_dari_1pct_teratas": 95.6,
+    "pct_dari_10pct_teratas": 100.0,
+    "baris_nol": 8167,
+    "maks": 304631
+   },
+   "rr": {
+    "total": 293314,
+    "n": 8946,
+    "pct_dari_1pct_teratas": 86.5,
+    "pct_dari_10pct_teratas": 97.3,
+    "baris_nol": 5564,
+    "maks": 91286
+   },
+   "k3n": {
+    "total": 298630,
+    "n": 8946,
+    "pct_dari_1pct_teratas": 86.2,
+    "pct_dari_10pct_teratas": 97.1,
+    "baris_nol": 5360,
+    "maks": 91859
+   }
+  },
+  "semua 2024-2026": {
+   "meninggal": {
+    "total": 3173,
+    "n": 15974,
+    "pct_dari_1pct_teratas": 78.0,
+    "pct_dari_10pct_teratas": 100.0,
+    "baris_nol": 15271,
+    "maks": 246
+   },
+   "tot_terdampak": {
+    "total": 27407743,
+    "n": 15974,
+    "pct_dari_1pct_teratas": 57.4,
+    "pct_dari_10pct_teratas": 94.4,
+    "baris_nol": 6364,
+    "maks": 739710
+   },
+   "mengungsi": {
+    "total": 1970760,
+    "n": 15974,
+    "pct_dari_1pct_teratas": 92.5,
+    "pct_dari_10pct_teratas": 100.0,
+    "baris_nol": 14399,
+    "maks": 304631
+   },
+   "rr": {
+    "total": 537291,
+    "n": 15974,
+    "pct_dari_1pct_teratas": 85.1,
+    "pct_dari_10pct_teratas": 97.0,
+    "baris_nol": 10501,
+    "maks": 91286
+   },
+   "k3n": {
+    "total": 548778,
+    "n": 15974,
+    "pct_dari_1pct_teratas": 84.9,
+    "pct_dari_10pct_teratas": 96.8,
+    "baris_nol": 10181,
+    "maks": 91859
+   }
+  }
+ },
+ "is_bencana_x_tahun_x_kriteria": {
+  "2024 semua": {
+   "is_b=False,krit=False": 92,
+   "is_b=False,krit=True": 1,
+   "is_b=True,krit=False": 1051,
+   "is_b=True,krit=True": 2608
+  },
+  "2024 tanpa karhutla": {
+   "is_b=False,krit=False": 89,
+   "is_b=False,krit=True": 1,
+   "is_b=True,krit=False": 69,
+   "is_b=True,krit=True": 2602
+  },
+  "2025 semua": {
+   "is_b=False,krit=False": 3618,
+   "is_b=False,krit=True": 87,
+   "is_b=True,krit=False": 1646,
+   "is_b=True,krit=True": 3595
+  },
+  "2025 tanpa karhutla": {
+   "is_b=False,krit=False": 3403,
+   "is_b=False,krit=True": 87,
+   "is_b=True,krit=False": 381,
+   "is_b=True,krit=True": 3588
+  },
+  "2026 semua": {
+   "is_b=False,krit=False": 740,
+   "is_b=False,krit=True": 31,
+   "is_b=True,krit=False": 1173,
+   "is_b=True,krit=True": 1332
+  },
+  "2026 tanpa karhutla": {
+   "is_b=False,krit=False": 677,
+   "is_b=False,krit=True": 30,
+   "is_b=True,krit=False": 85,
+   "is_b=True,krit=True": 1316
+  }
+ },
+ "is_bencana_per_jenis_2025_2026": {
+  "longsor": {
+   "is_b=False,krit=False": 973,
+   "is_b=False,krit=True": 18,
+   "is_b=True,krit=False": 27,
+   "is_b=True,krit=True": 406
+  },
+  "cuaca ekstrem/angin": {
+   "is_b=False,krit=False": 1638,
+   "is_b=False,krit=True": 21,
+   "is_b=True,krit=False": 48,
+   "is_b=True,krit=True": 1343
+  },
+  "banjir": {
+   "is_b=False,krit=False": 743,
+   "is_b=False,krit=True": 23,
+   "is_b=True,krit=False": 265,
+   "is_b=True,krit=True": 2508
+  },
+  "karhutla": {
+   "is_b=False,krit=False": 278,
+   "is_b=False,krit=True": 1,
+   "is_b=True,krit=False": 2353,
+   "is_b=True,krit=True": 23
+  },
+  "kebakaran permukiman": {
+   "is_b=False,krit=False": 546,
+   "is_b=False,krit=True": 50,
+   "is_b=True,krit=False": 104,
+   "is_b=True,krit=True": 323
+  },
+  "kekeringan": {
+   "is_b=False,krit=False": 18,
+   "is_b=True,krit=False": 5,
+   "is_b=True,krit=True": 156
+  },
+  "lainnya": {
+   "is_b=False,krit=False": 28,
+   "is_b=False,krit=True": 3,
+   "is_b=True,krit=True": 49
+  },
+  "gempa": {
+   "is_b=False,krit=False": 75,
+   "is_b=False,krit=True": 2,
+   "is_b=True,krit=False": 15,
+   "is_b=True,krit=True": 68
+  },
+  "erupsi": {
+   "is_b=False,krit=False": 18,
+   "is_b=True,krit=True": 10
+  },
+  "gelombang/abrasi": {
+   "is_b=False,krit=False": 41,
+   "is_b=True,krit=False": 2,
+   "is_b=True,krit=True": 41
+  }
+ }
+}

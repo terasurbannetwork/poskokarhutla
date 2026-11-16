@@ -1,0 +1,32 @@
+{
+ "banjir": {
+  "kejadian": 4261,
+  "dengan_ha": 652,
+  "median_ha": 73.0,
+  "ge_1_ha": 649
+ },
+ "kekeringan": {
+  "kejadian": 268,
+  "dengan_ha": 11,
+  "median_ha": 1400.0,
+  "ge_1_ha": 11
+ },
+ "karhutla": {
+  "kejadian": 1809,
+  "dengan_ha": 1658,
+  "median_ha": 3.0,
+  "ge_1_ha": 1556
+ },
+ "longsor": {
+  "kejadian": 2236,
+  "dengan_ha": 34,
+  "median_ha": 10.0,
+  "ge_1_ha": 32
+ },
+ "cuaca": {
+  "kejadian": 3458,
+  "dengan_ha": 5,
+  "median_ha": 80.0,
+  "ge_1_ha": 5
+ }
+}

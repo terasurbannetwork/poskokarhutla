@@ -1,0 +1,16 @@
+{
+ "judul": "Langkah 2: apakah kejadian ini masuk hitungan bencana?",
+ "simpul": [
+  {"id": "a", "tanya": "Penyebabnya salah satu dari 13 jenis bencana?", "ya": "b", "tidak": "luar"},
+  {"id": "b", "tanya": "Ada korban meninggal atau hilang akibat langsung bahaya (minimal 1 orang)?", "ya": "masuk", "tidak": "c"},
+  {"id": "c", "tanya": "Minimal 50 orang berbeda yang luka, mengungsi, atau terdampak langsung (tiga kelompok dijumlah, satu orang sekali)?", "ya": "masuk", "tidak": "e"},
+  {"id": "e", "tanya": "Minimal 5 rumah rusak berat atau setaranya, atau minimal 1 fasilitas penting (daftar tertutup) rusak berat atau sedang?", "ya": "masuk", "tidak": "f"},
+  {"id": "f", "tanya": "Karhutla minimal 2 hektare terverifikasi, atau minimal 10 hektare sawah atau kebun puso?", "ya": "masuk", "tidak": "g"},
+  {"id": "g", "tanya": "Ada SK tanggap darurat yang menyebut jenis, wilayah, dan tanggal kejadian ini?", "ya": "masuk", "tidak": "bawah"}
+ ],
+ "ujung": {
+  "masuk": "Bencana; catat syarat yang terpenuhi",
+  "bawah": "Kejadian di bawah threshold (disimpan, tidak dihitung)",
+  "luar": "Bukan kejadian bencana"
+ }
+}

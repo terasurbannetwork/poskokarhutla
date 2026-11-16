@@ -1,0 +1,3 @@
+{"jenis": "garis", "kategori": ["2020","2021","2022","2023","2024","2025"],
+ "seri": [{"nama": "Kejadian", "nilai": [3200, 4100, 3900, 4800, 5200, 4900], "warna": "navy"}, {"nama": "Lolos ambang", "nilai": [1400, 1700, 1650, 2100, 2300, 2150], "warna": "oranye"}],
+ "garis_acuan": {"nilai": 3000, "label": "acuan 3.000"}}

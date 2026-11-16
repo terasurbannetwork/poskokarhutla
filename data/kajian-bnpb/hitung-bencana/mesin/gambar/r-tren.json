@@ -1,0 +1,51 @@
+{
+ "jenis": "garis",
+ "sumbu_x": [
+  "2024",
+  "2025",
+  "2026"
+ ],
+ "seri": [
+  {
+   "nama": "Jumlah kejadian resmi DIBI",
+   "nilai": [
+    100.0,
+    274.2,
+    105.9
+   ],
+   "warna": "oranye"
+  },
+  {
+   "nama": "Kejadian lolos ambang usulan",
+   "nilai": [
+    100.0,
+    156.3,
+    68.6
+   ],
+   "warna": "biru"
+  },
+  {
+   "nama": "Kejadian kelas Sedang ke atas",
+   "nilai": [
+    100.0,
+    117.4,
+    58.7
+   ],
+   "warna": "slate"
+  },
+  {
+   "nama": "Meninggal dan hilang",
+   "nilai": [
+    100.0,
+    141.8,
+    113.1
+   ],
+   "warna": "navy"
+  }
+ ],
+ "satuan": "indeks 2024 = 100",
+ "tampilkan_nilai": true,
+ "tinggi": 360,
+ "lebar": 760,
+ "catatan": "Januari sampai Oktober tiap tahun agar sebanding."
+}

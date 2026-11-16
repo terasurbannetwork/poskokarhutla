@@ -1,0 +1,48 @@
+{
+ "judul": "Pohon L1: laporan ini kejadian baru atau pengkinian?",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "Laporan membawa nomor induk kejadian?",
+   "ya": "sama",
+   "tidak": "b"
+  },
+  {
+   "id": "b",
+   "tanya": "Ada kejadian aktif dengan jenis bahaya sama di kabupaten ini atau kabupaten bersinggungan?",
+   "ya": "c",
+   "tidak": "d"
+  },
+  {
+   "id": "c",
+   "tanya": "Laporan aktif terakhir masih dalam jeda (karhutla, banjir: 7 hari, hari tertutup awan tidak dihitung; gempa: 30 hari) dan kejadian belum melewati batas durasi (30 hari; gempa 90 hari)?",
+   "ya": "e",
+   "tidak": "f"
+  },
+  {
+   "id": "e",
+   "tanya": "Lokasi masih terhubung (karhutla 1,5 km; banjir satu sistem hujan atau DAS)?",
+   "ya": "usul",
+   "tidak": "baru"
+  },
+  {
+   "id": "d",
+   "tanya": "Bahaya ini dipicu kejadian aktif lain (tsunami, longsor akibat banjir)?",
+   "ya": "anak",
+   "tidak": "baru"
+  },
+  {
+   "id": "f",
+   "tanya": "Kejadian lama masih aktif tetapi sudah melewati batas durasi?",
+   "ya": "lanjut",
+   "tidak": "baru"
+  }
+ ],
+ "ujung": {
+  "sama": "Pengkinian kejadian itu",
+  "usul": "Gabung (karhutla otomatis oleh mesin, dapat dibatalkan); kasus lain diusulkan, Pusdatinkom memutuskan",
+  "baru": "Buka kejadian baru (nomor usulan)",
+  "anak": "Buka anak dari kejadian induk",
+  "lanjut": "Buka kejadian baru bertaut \"lanjutan dari\""
+ }
+}

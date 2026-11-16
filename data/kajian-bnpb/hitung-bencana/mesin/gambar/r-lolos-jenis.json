@@ -1,0 +1,36 @@
+{
+ "jenis": "batang-mendatar",
+ "kategori": [
+  "Kekeringan",
+  "Gelombang pasang dan abrasi",
+  "Banjir",
+  "Gempa bumi",
+  "Cuaca ekstrem",
+  "Kebakaran permukiman",
+  "Erupsi gunung api",
+  "Tanah longsor",
+  "Karhutla"
+ ],
+ "seri": [
+  {
+   "nama": "Persen baris lolos",
+   "nilai": [
+    94.6,
+    81.0,
+    76.6,
+    71.7,
+    56.3,
+    48.9,
+    42.9,
+    36.4,
+    1.4
+   ],
+   "warna": "navy"
+  }
+ ],
+ "satuan": "%",
+ "tampilkan_nilai": true,
+ "tinggi": 380,
+ "lebar": 760,
+ "catatan": "Karhutla hanya 1,4 persen karena luas lahan, permintaan bantuan, dan status darurat tidak tercatat di DIBI."
+}

@@ -1,0 +1,145 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Standar Penghitungan dan Klasifikasi Kejadian Bencana</title><style>@font-face{font-family:Roboto;src:url(file:///C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/fonts/Roboto-Regular.ttf);font-weight:400}
+@font-face{font-family:Roboto;src:url(file:///C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/fonts/Roboto-Medium.ttf);font-weight:500}
+@font-face{font-family:Roboto;src:url(file:///C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/fonts/Roboto-Bold.ttf);font-weight:700}
+@page{size:A4;margin:24mm 17mm 20mm 17mm}
+@page sampul{margin:0}
+:root{--navy:#051C2C;--oranye:#D9600B;--biru:#2F86D1;--merah:#C8102E;--teks:#1A1A1A;--teks2:#2E3440;--teks3:#6B7280;--garis:#BFC5CC;--tint:#F1F3F6;--tintapi:#FBE7D6;--tintair:#DCEBF8}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--teks);font-family:Roboto,sans-serif;font-size:10pt;line-height:1.5}
+body{overflow-wrap:break-word}
+p{margin:0 0 7pt;text-align:justify;hyphens:auto}
+b{font-weight:700;color:var(--navy)}
+code{font-family:Consolas,'Courier New',monospace;font-size:.88em;background:var(--tint);padding:0 2pt;border-radius:2pt;color:var(--teks2)}
+.hal{page-break-before:always}
+.mk{font-size:1pt;color:#fff;line-height:0}
+/* sampul */
+.sampul{page:sampul;width:210mm;height:297mm;display:flex;flex-direction:column;page-break-after:always;overflow:hidden}
+.sp-foto{height:116mm;background-size:cover;background-position:center 40%;position:relative;flex:0 0 auto}
+.sp-lg{position:absolute;top:14mm;left:18mm;background:#fff;border-radius:6px;padding:4mm 4.5mm}
+.sp-lg img{height:19mm;display:block}
+.sp-lg2{position:absolute;top:14mm;right:18mm;background:#fff;border-radius:6px;padding:5mm 6mm}
+.sp-lg2 img{height:11mm;display:block}
+.sp-kredit{position:absolute;bottom:3mm;right:6mm;left:6mm;color:#fff;font-size:6.8pt;text-shadow:0 0 3px #000;text-align:right}
+.sp-teks{flex:1;padding:13mm 18mm 12mm 18mm;display:flex;flex-direction:column;background:linear-gradient(180deg,#fff 0%,#F3F5F8 100%)}
+.sp-jenis{font-size:9pt;letter-spacing:2.4pt;color:var(--oranye);font-weight:700}
+.sp-judul{font-size:29pt;line-height:1.12;color:var(--navy);margin:3mm 0 4mm;font-weight:700}
+.sp-sub{font-size:11.5pt;color:var(--teks2);line-height:1.4}
+.sp-garis{height:1pt;background:var(--garis);margin:8mm 0 6mm}
+.sp-baris{display:flex;gap:10mm}
+.sp-kepada,.sp-oleh{font-size:9.5pt;color:var(--teks2);line-height:1.45;flex:1}
+.sp-kepada b,.sp-oleh b{font-size:10.5pt;display:block;margin-top:1mm}
+.isian{display:inline-block;min-width:60mm;border:1pt dashed var(--oranye);background:#FFF6EE;color:var(--oranye)!important;padding:1.5mm 3mm;border-radius:3pt;font-weight:700}
+.pil-tgl{align-self:flex-start;background:var(--navy);color:#fff;border-radius:20pt;padding:4pt 14pt;font-size:9.5pt;font-weight:700;margin-top:8mm}
+.sp-kaki{margin-top:auto;font-size:8pt;color:var(--biru)}
+/* judul */
+.bab{--w:var(--navy);border-left:6pt solid var(--w);background:var(--tint);padding:8pt 12pt;font-size:17pt;line-height:1.25;font-weight:700;color:var(--navy);margin:0 0 12pt;break-after:avoid}
+.bab span.lb{display:block;font-size:8.5pt;letter-spacing:2pt;color:var(--oranye);font-weight:700}
+h2{font-size:13pt;color:var(--navy);margin:16pt 0 7pt;padding-bottom:3pt;border-bottom:1.2pt solid var(--navy);break-after:avoid}
+h3{font-size:11pt;color:var(--navy);margin:12pt 0 5pt;break-after:avoid}
+h4{font-size:10pt;color:var(--oranye);margin:9pt 0 4pt;break-after:avoid}
+.judul-daftar{font-size:20pt;color:var(--navy);margin:0 0 10pt;font-weight:700}
+/* daftar isi */
+.toc{list-style:none;padding:0;margin:0}
+.toc li{padding:2.6pt 0;color:var(--navy)}
+.toc a{display:flex;align-items:baseline;gap:4pt;color:inherit;text-decoration:none}
+.toc li.t1{font-weight:700;font-size:10.5pt;margin-top:6pt;border-top:.6pt solid var(--garis);padding-top:5pt}
+.toc li.t1:first-child{border-top:0;margin-top:0}
+.toc li.t2{font-size:9pt;padding-left:14pt;color:var(--teks2);font-weight:400}
+.toc .tt{flex:0 1 auto}
+.toc .dt{flex:1 1 auto;border-bottom:.8pt dotted var(--garis);transform:translateY(-2pt);min-width:10pt}
+.toc em{font-style:normal;color:var(--oranye);font-weight:700;flex:0 0 auto}
+/* kotak khusus */
+.kotak-info{margin:10pt 0;background:var(--tintair);border-left:4pt solid var(--biru);padding:9pt 12pt;font-size:9.5pt}
+.kotak-info p:last-child,.catatan p:last-child{margin-bottom:0}
+.tesis{font-size:12.5pt;font-weight:500;color:var(--navy);border-left:4pt solid var(--oranye);padding:4pt 10pt;text-align:left;line-height:1.45;margin:6pt 0 10pt}
+.catatan{font-size:8.5pt;color:var(--teks2);background:var(--tint);padding:6pt 10pt;border-radius:3pt;margin:7pt 0 10pt;line-height:1.4}
+.catatan .cl{display:block;font-size:7pt;letter-spacing:1.4pt;color:var(--oranye);font-weight:700;text-transform:uppercase;margin-bottom:2pt}
+.catatan p{text-align:justify;font-size:8.5pt;margin-bottom:3pt}
+.kartu{display:grid;gap:8pt;margin:9pt 0 11pt;break-inside:avoid}
+.k1{grid-template-columns:1fr}.k2{grid-template-columns:repeat(2,1fr)}.k3{grid-template-columns:repeat(3,1fr)}.k4{grid-template-columns:repeat(4,1fr)}
+.kt{border-top:3pt solid var(--navy);background:var(--tint);padding:6pt 8pt}
+.kn{font-size:17pt;font-weight:700;line-height:1.15}
+.k3 .kn,.k4 .kn{font-size:15pt}
+.kl{font-size:8pt;color:var(--teks2);line-height:1.3;margin-top:2pt}
+.temuan{display:grid;grid-template-columns:1fr 1fr;gap:9pt 14pt;margin:8pt 0 10pt}
+.tm{display:flex;gap:8pt;font-size:9.3pt;line-height:1.45;break-inside:avoid}
+.tmk{flex:0 0 20pt;height:20pt;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:9pt}
+.tm b.th{display:block;margin-bottom:1pt}
+.tm p{font-size:9.2pt;margin-bottom:3pt}
+.kep{border-left:4pt solid var(--oranye);background:#FFF9F4;padding:8pt 12pt;margin:8pt 0;break-inside:avoid}
+.kep .kh{font-weight:700;color:var(--navy);font-size:10.5pt;margin-bottom:3pt}
+.kep p{margin-bottom:4pt}
+.aksi{display:grid;gap:8pt;margin:8pt 0}
+.a2{grid-template-columns:repeat(2,1fr)}.a3{grid-template-columns:repeat(3,1fr)}.a1{grid-template-columns:1fr}.a4{grid-template-columns:repeat(2,1fr)}
+.ak{border:.6pt solid var(--garis);background:#FAFBFC;font-size:8.8pt;break-inside:avoid}
+.ak.akan{border:1.2pt solid var(--oranye)}
+.akh{background:var(--teks2);color:#fff;font-weight:700;padding:5pt 8pt;font-size:9.5pt}
+.ak:nth-child(1) .akh{background:#7F93AA}.ak:nth-child(2) .akh{background:#4F6A88}.ak.akan .akh{background:var(--oranye)}
+.ak .isi{padding:5pt 8pt}
+.ak ul{margin:0;padding-left:12pt}.ak li{margin-bottom:3pt;line-height:1.4}
+.ak p{font-size:8.8pt;text-align:left;margin-bottom:3pt}
+blockquote{margin:8pt 0 10pt 6pt;padding:5pt 12pt;border-left:3pt solid var(--garis);background:#FAFBFC;font-style:italic;color:var(--teks2)}
+blockquote p{margin:0}
+pre{font-family:Consolas,'Courier New',monospace;font-size:8pt;background:var(--tint);padding:6pt 9pt;border-radius:3pt;white-space:pre-wrap;margin:7pt 0}
+/* daftar */
+.li{display:flex;gap:5pt;margin:0 0 4pt 0;text-align:justify}
+.li .no{flex:0 0 14pt;font-weight:700;color:var(--oranye)}
+.li .bt{flex:0 0 8pt;color:var(--oranye);font-weight:700}
+.li>div{flex:1 1 auto;min-width:0}
+.li.s1{margin-left:20pt}
+.li.s1 .bt{color:var(--teks3)}
+.ls{margin:0 0 6pt}
+/* tabel */
+figure{margin:8pt 0 10pt;break-inside:auto}
+figure.fg{break-inside:avoid}
+figcaption{font-size:9pt;color:var(--teks2);margin-bottom:4pt;font-weight:500;break-after:avoid;text-align:left}
+figcaption .lab{color:var(--oranye);font-weight:700}
+.sb{font-size:7.5pt;color:var(--teks3);margin-top:3pt;font-style:italic;text-align:left}
+.sb b{color:var(--teks3);font-style:normal}
+.tb{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8.6pt}
+.tb th{background:var(--navy);color:#fff;font-weight:700;font-size:7.4pt;letter-spacing:.4pt;text-transform:uppercase;padding:5pt 5pt;text-align:center;vertical-align:middle}
+.tb td{padding:4pt 5pt;border-bottom:.5pt solid var(--garis);vertical-align:top;text-align:left;overflow-wrap:anywhere}
+.tb td.r{text-align:right}.tb td.c{text-align:center}
+.tb thead{display:table-header-group}
+.tb tr{break-inside:avoid}
+.tb.n6 td{font-size:7.8pt;padding:3pt 4pt}.tb.n6 th{font-size:6.8pt}
+.tb.n7 td{font-size:7.2pt;padding:3pt 3.5pt}.tb.n7 th{font-size:6.4pt}
+img.gbr{display:block;margin:0 auto;max-width:100%;max-height:215mm}
+/* paradoks */
+.pd{margin:14pt 0 12pt}
+.pd-h{display:flex;align-items:center;gap:9pt;background:var(--navy);color:#fff;padding:6pt 10pt;break-after:avoid}
+.pd-k{background:var(--oranye);color:#fff;font-weight:700;font-size:10pt;padding:2pt 8pt;border-radius:2pt;letter-spacing:.6pt}
+.pd-n{font-weight:700;font-size:12.5pt;color:#fff}
+.pd-m{background:var(--tintapi);padding:4pt 10pt;font-size:8.3pt;color:var(--teks2);break-after:avoid;line-height:1.4}
+.pd-m b{color:var(--navy)}
+.pd-b{border-left:2.5pt solid var(--oranye);padding:7pt 0 0 10pt;margin-left:0}
+.pd-b .li .no{color:var(--oranye)}
+.pd-b .tb{margin:2pt 0 6pt}
+.pd-b figure{margin:2pt 0 6pt}
+.pd-b .ls{margin-bottom:2pt}
+
+/* catatan akhir bab: angka superskrip di teks <-> daftar Catatan di akhir berkas naskah */
+sup.cr{font-size:.68em;line-height:0;vertical-align:super}
+a.cr{color:var(--oranye);text-decoration:none;font-weight:700}
+.cn{margin:14pt 0 0;padding-top:5pt;border-top:.6pt solid var(--garis);font-size:7.2pt;line-height:1.35;color:var(--teks2)}
+.cn-j{font-size:7pt;letter-spacing:1.4pt;color:var(--oranye);font-weight:700;text-transform:uppercase;margin-bottom:3pt}
+.cn-i{display:flex;gap:5pt;margin-bottom:2pt;break-inside:avoid}
+.cn-n{flex:0 0 14pt;color:var(--oranye);font-weight:700;text-decoration:none}
+.cn-t{flex:1 1 auto;min-width:0;font-family:Consolas,'Courier New',monospace;font-size:6.8pt;overflow-wrap:anywhere;word-break:break-all;text-align:left}
+</style></head><body><section class="sampul">
+<div class="sp-foto" style="background-image:url('file:///C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-bulanan/foto/web/h-1417.jpg')">
+ <div class="sp-lg"><img src="file:///C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png"></div>
+ <div class="sp-lg2"><img src="file:///D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/generator/sampul/media/kris-logo.png"></div>
+ <div class="sp-kredit">Foto: BNPB, banjir merendam permukiman, Oktober 2026 (laporan situasi harian BNPB, dikutip dari pemberitaan)</div>
+</div>
+<div class="sp-teks">
+ <div class="sp-jenis">RANCANGAN STANDAR BNPB</div>
+ <h1 class="sp-judul">Standar Penghitungan dan Klasifikasi Kejadian Bencana</h1>
+ <div class="sp-sub">Definisi, cara menghitung, syarat masuk, dan kelas keparahan kejadian bencana untuk Satu Data Bencana</div>
+ <div class="sp-garis"></div>
+ <div class="sp-baris">
+  <div class="sp-oleh">Disusun oleh<b>Tim Ahli dan Tim Sus IT BNPB</b></div>
+ </div>
+ <div class="pil-tgl">Jakarta, 13 November 2026</div>
+ <div class="sp-kaki">&copy; 2026 Badan Nasional Penanggulangan Bencana<br><i>Ketangguhan Bangsa dalam Menghadapi Bencana</i></div>
+</div></section></body></html>

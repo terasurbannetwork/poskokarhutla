@@ -1,0 +1,7 @@
+{"jenis":"batang",
+ "judul":"Porsi dampak yang dipikul kejadian teratas, DIBI 12 bulan (4.185 baris)",
+ "sumbu_x":["1 persen baris teratas (sekitar 42 baris)","10 persen baris teratas (sekitar 419 baris)"],
+ "seri":[{"nama":"Meninggal","nilai":[85.5,100.0]},{"nama":"Terdampak, luka, mengungsi","nilai":[64.0,96.6]},{"nama":"Rumah rusak (berat, sedang, ringan)","nilai":[92.8,99.1]}],
+ "satuan":"persen dari total",
+ "catatan":"Total 12 bulan: 1.897 meninggal; 12.501.851 terdampak, luka, atau mengungsi; 397.670 rumah rusak. Satu baris (banjir Aceh Utara, 28 November 2025) memikul 13,0 persen meninggal.",
+ "sumber":"Tarikan DIBI 12 November 2026, 13 November 2025 sampai 12 November 2026; riset/SIM-KRITERIA.md bagian 3; analisis/tambahan_H.py"}

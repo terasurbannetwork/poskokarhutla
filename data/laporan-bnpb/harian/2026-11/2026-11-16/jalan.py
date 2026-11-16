@@ -74,6 +74,19 @@ wa = wa_harian.koordalops(wa_normal(open(f'{S}/wa-koordalops.txt', encoding='utf
 w['pm'] = [r for r in w['pm'] if r[0] != 'Pekanbaru']
 for x in wa['kejadian']:   # 16 Nov: "Tanah Longsor dan Banjir di Kab. Aceh Tengah" (1 MD tertimbun longsor) terurai sebagai banjir
     if x['lokasi'] == 'Aceh Tengah': x['jenis'] = 'longsor'
+# 16 Nov pemilik ("aceh singkil dlu aja"): banjir Aceh Singkil tidak ada di WA Koordalops 15-16 Nov; ditambahkan sebagai masih berlangsung.
+# Angka dari WA Koordalops 15 Nov (±27 KK / 124 jiwa, Kejadian Baru, entri 7 laphar 14 Nov) dan tabel rekap kiriman pemilik (Belum surut). MULAI = laphar 14 Nov.
+# Aceh Tamiang tetap angka WA hari ini (pemilik: "ikut hari ini dlu aja"), bukan tabel rekap (5.785 KK).
+wa['kejadian'].append({'jenis': 'banjir', 'prov': '11', 'lokasi': 'Aceh Singkil', 'status': 'belum', 'baru': False, 'label': 'Banjir',
+                       'angka': {'kk': 27.0, 'rumah_dampak': 27.0}, 'teks': {'dampak': '± 27 KK / 124 jiwa', 'status_darurat': 'Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027', 'kondisi': 'Banjir belum surut', 'pengungsi': ''}})
+wa['menonjol'] += 1
+# 16 Nov pemilik ("masukin dlu aja semua deh"): lima kejadian "Belum surut" dari tabel rekap kiriman pemilik yang tidak ada di WA 15-16 Nov.
+# Angka KK/jiwa dari tabel itu; MULAI dari arsip: Pidie Jaya 1 Nov (laporan 14 Nov), Gayo Lues 9 Nov (WA 9 Nov, TD TMT 09/11), Deli Serdang 27 Okt
+# (TD TMT 27/10 s.d. 09/11, WA 7 dan 9 Nov), Simalungun 13 Nov (entri 10 laphar 13 Nov), Toba 13 Nov (laporan 14 Nov).
+for prov_, lok_, kk_, jiwa_ in (('11', 'Pidie Jaya', 8608, '32.272'), ('11', 'Gayo Lues', 118, '376'), ('12', 'Deli Serdang', 546, '2.199'), ('12', 'Simalungun', 15, ''), ('12', 'Toba', 2, '')):
+    wa['kejadian'].append({'jenis': 'banjir', 'prov': prov_, 'lokasi': lok_, 'status': 'belum', 'baru': False, 'label': 'Banjir', 'angka': {'kk': float(kk_)},
+                           'teks': {'dampak': f"± {kk_} KK" + (f" / {jiwa_} jiwa" if jiwa_ else ''), 'status_darurat': '-', 'kondisi': 'Belum surut (tabel rekap)', 'pengungsi': ''}})
+    wa['menonjol'] += 1
 ke = os.path.join(OUT, 'kerja-161126')   # data.json laporan 071126 asli (riwayat lampiran) tidak ditimpa
 # 4 Nov pemilik: bangun ulang hari yang sama tanpa unduh ulang (folder kerja/web sudah ada); SEGAR=1 memaksa unduh segar
 harian.SIMPAN = satelit.SIMPAN = os.path.isdir(os.path.join(ke, 'web')) and os.environ.get('SEGAR') != '1'
@@ -238,7 +251,7 @@ wa['laporan'] -= n_kh; print('tanpa karhutla: laporan', wa['laporan'], 'menonjol
 # Kejadian baru Rokan Hilir dan Pesisir Selatan: Laphar 15 Nov.
 # 16 Nov sore: laporan 15 Nov (harian/2026-11/2026-11-15, dibuat di mesin lain, baru masuk lewat pull) menulis Aceh Barat mulai 1 Nov (WA 2 Nov, gelombang yang sama)
 # dan Aceh Tengah kejadian baru 14 Nov (laphar 14 Nov); MULAI di sini disamakan supaya laporan berurutan konsisten
-BERLANGSUNG = {'Kota Subulussalam': '2026-11-13', 'Aceh Tamiang': '2026-11-12', 'Aceh Tenggara': '2026-11-13', 'Aceh Barat': '2026-11-01', 'Aceh Tengah': '2026-11-14'}
+BERLANGSUNG = {'Pidie Jaya': '2026-11-01', 'Gayo Lues': '2026-11-09', 'Deli Serdang': '2026-10-27', 'Simalungun': '2026-11-13', 'Toba': '2026-11-13', 'Aceh Singkil': '2026-11-14', 'Kota Subulussalam': '2026-11-13', 'Aceh Tamiang': '2026-11-12', 'Aceh Tenggara': '2026-11-13', 'Aceh Barat': '2026-11-01', 'Aceh Tengah': '2026-11-14'}
 MULAI_BARU = {'Rokan Hilir': '2026-11-15', 'Pesisir Selatan': '2026-11-15'}
 # label WA "Kejadian Baru" padahal kejadian lama (atasan 11 Nov: Blora = kejadian 9 Nov, KK bertambah) -> bukan baru, dan bencananya sudah lewat
 for x in D['kejadian'] + wa['kejadian']:
@@ -253,7 +266,7 @@ print('sudah selesai, dibuang:', lama, '| tampil:', [(x['jenis'], x['lokasi'], x
 # 7 Nov pemilik ("yang banjir cek masih ada apa udah surut", "pake label pill ya, termasuk yg kk dll nya"): pil KONDISI per kejadian dari
 # Kondisi Mutakhir laphar Koordalops 6 Nov (sampai 7 Nov 07.00 WIB); jenis pil: selesai, surut (masih genangan), tangani, waspada
 # 11 Nov: pil KONDISI dari Kondisi Mutakhir WA Koordalops 10 Nov 07.00 s.d. 11 Nov 07.00 WIB (Revisi 14 tanpa kolom Kondisi, tetap diisi)
-KONDISI = {'Kota Subulussalam': ('Belum surut', 'waspada'), 'Aceh Tenggara': ('Sebagian surut', 'surut'), 'Aceh Tamiang': ('TMA fluktuatif', 'waspada'),
+KONDISI = {'Pidie Jaya': ('Belum surut', 'waspada'), 'Gayo Lues': ('Belum surut', 'waspada'), 'Deli Serdang': ('Belum surut', 'waspada'), 'Simalungun': ('Belum surut', 'waspada'), 'Toba': ('Belum surut', 'waspada'), 'Aceh Singkil': ('Belum surut', 'waspada'), 'Kota Subulussalam': ('Belum surut', 'waspada'), 'Aceh Tenggara': ('Sebagian surut', 'surut'), 'Aceh Tamiang': ('TMA fluktuatif', 'waspada'),
            'Aceh Barat': ('TMA fluktuatif', 'waspada'), 'Aceh Tengah': ('Belum surut', 'waspada'), 'Rokan Hilir': ('Belum surut', 'waspada'),
            'Pesisir Selatan': ('Sudah surut', 'selesai')}   # Kondisi Mutakhir WA 15-16 Nov
 for x in D['kejadian']:
@@ -441,9 +454,9 @@ if AWAL:   # pil "10 KK mengungsi" menempel pil kondisi pada lebar kolom 9 Nov: 
         # 11 Nov atasan ("Yang akan dilakukan BNPB harusnya tally dengan jenis bencana yang ditampilkan"): satu kartu per jenis
         # 11 Nov pemilik ("jangan pakai klausa/frasa nanggung, gunakan kalimat yang baik dan mudah dipahami"): judul = jenis bencana, isi = kalimat utuh
         dk.JUDUL_STRIP = 'RENCANA AKSI'   # 11 Nov pemilik: "jangan apa yang dilakukan BNPB, tapi Rencana Aksi"
-        # WA Koordalops 16 Nov: banjir Aceh Barat 147 + Subulussalam 1.897 + Aceh Tamiang 4.397 + Aceh Tenggara 503 + Rokan Hilir 4.403 = 11.347 KK
+        # WA Koordalops 16 Nov: banjir Aceh Barat 147 + Subulussalam 1.897 + Aceh Tamiang 4.397 + Aceh Tenggara 503 + Rokan Hilir 4.403 + Aceh Singkil 27 + Pidie Jaya 8.608 + Gayo Lues 118 + Deli Serdang 546 + Simalungun 15 + Toba 2 = 20.663 KK
         # (Pesisir Selatan 2.280 jiwa tanpa KK); pengungsi Subulussalam 70 KK + Aceh Tamiang 784 KK = 854 KK; Aceh Tengah 1 MD, 2 ruas jalan nasional
-        dk.STRIP_KARTU = [('banjir_putih', 'Banjir', 'Memantau banjir di tiga provinsi yang berdampak pada ±11.347 KK.'),
+        dk.STRIP_KARTU = [('banjir_putih', 'Banjir', 'Memantau banjir di empat provinsi yang berdampak pada ±20.663 KK.'),
                           ('tenda_putih', 'Pengungsi', 'Memantau layanan ±854 KK pengungsi di Aceh Tamiang dan Kota Subulussalam.'),
                           ('longsor_putih', 'Tanah longsor', 'Memantau pembukaan dua ruas jalan nasional yang terdampak di Aceh Tengah.')]
         dk.PERINGATAN_KET = True   # 11 Nov pemilik: keterangan ikon kalender (periode berlaku) dan jam (waktu diukur)

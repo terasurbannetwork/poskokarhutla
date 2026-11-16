@@ -1,0 +1,41 @@
+{
+ "judul": "Pohon 3: kelas berapa kejadian ini?",
+ "simpul": [
+  {
+   "id": "a",
+   "tanya": "Meninggal dan hilang 1.000, rumah setara rusak berat 10.000, atau karhutla 100.000 hektare? Pengungsi 100.000 hanya bila indikator lain sudah Sedang. (Ketentuan 4.1 dan 4.4)",
+   "ya": "K",
+   "tidak": "b"
+  },
+  {
+   "id": "b",
+   "tanya": "Meninggal dan hilang 100, rumah setara rusak berat 1.000, atau karhutla 10.000 hektare? Pengungsi 10.000 dengan syarat yang sama. (Ketentuan 4.1 dan 4.4)",
+   "ya": "B",
+   "tidak": "c"
+  },
+  {
+   "id": "c",
+   "tanya": "Meninggal dan hilang 10, mengungsi 1.000, rumah setara rusak berat 100, atau karhutla 1.000 hektare? (Ketentuan 4.1 dan 4.3)",
+   "ya": "s0",
+   "tidak": "d"
+  },
+  {
+   "id": "s0",
+   "tanya": "Di satu kabupaten, mengungsi ditambah terdampak langsung mencapai 10 persen penduduk dan paling sedikit 1.000 orang? (Ketentuan 4.5 dan 4.6)",
+   "ya": "B",
+   "tidak": "S"
+  },
+  {
+   "id": "d",
+   "tanya": "Di satu kabupaten, mengungsi ditambah terdampak langsung mencapai 10 persen penduduk dan paling sedikit 100 orang? (Ketentuan 4.5 dan 4.6)",
+   "ya": "S",
+   "tidak": "R"
+  }
+ ],
+ "ujung": {
+  "K": "Katastrofik; tulis indikator penentu (Ketentuan 4.2)",
+  "B": "Besar; tulis indikator penentu (Ketentuan 4.2)",
+  "S": "Sedang; tulis indikator penentu (Ketentuan 4.2)",
+  "R": "Ringan; kelas sementara sampai kelas akhir (Ketentuan 4.8)"
+ }
+}

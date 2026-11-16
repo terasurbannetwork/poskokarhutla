@@ -1,0 +1,45 @@
+{
+ "jenis": "batang",
+ "judul": "Baris DIBI, KJN bentukan, dan jumlah kejadian resmi per tahun",
+ "sumbu_x": [
+  "2024",
+  "2025",
+  "2026 (s.d. 12 Nov)"
+ ],
+ "seri": [
+  {
+   "nama": "Baris DIBI (CK)",
+   "nilai": [
+    3752,
+    8946,
+    3276
+   ]
+  },
+  {
+   "nama": "KJN bentukan",
+   "nilai": [
+    3654,
+    8763,
+    3220
+   ]
+  },
+  {
+   "nama": "Jumlah kejadian resmi (semua baris)",
+   "nilai": [
+    3636.0,
+    9304.4,
+    3219.0
+   ]
+  },
+  {
+   "nama": "Jumlah kejadian resmi (is_bencana benar)",
+   "nilai": [
+    3548.0,
+    5439.4,
+    2448.0
+   ]
+  }
+ ],
+ "satuan": "kejadian",
+ "sumber": "DIBI dasbor publik (dibi.bnpb.go.id), ditarik 12 Nov 2026, 1 Jan 2024 s.d. 12 Nov 2026; pengolahan analisis/sim_kerangka.py"
+}

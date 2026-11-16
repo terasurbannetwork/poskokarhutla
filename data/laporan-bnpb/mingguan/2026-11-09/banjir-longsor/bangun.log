@@ -1,0 +1,11 @@
+﻿python.exe : laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-gd3uhfhv\qa\deck-Paparan Situasi Banjir 
+Sepekan 091126.md (LOLOS)
+At line:1 char:866
++ ... .* -ErrorAction SilentlyContinue; & $py buat.py *> bangun.log; "== $w ...
++                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (laporan QA deck...1126.md (LOLOS):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-4bg2oqbl\qa\deck-Paparan Situasi Tanah Longsor Sepekan 
+091126.md (LOLOS)
+D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\mingguan\2026-11-09\banjir-longsor\Revisi 6

@@ -1,0 +1,25 @@
+{
+    "folder":  "../standar",
+    "judul":  "Standar Penghitungan dan Klasifikasi Kejadian Bencana",
+    "anak_judul":  "Definisi, cara menghitung, syarat masuk, dan kelas keparahan kejadian bencana untuk Satu Data Bencana",
+    "label":  "RANCANGAN STANDAR BNPB",
+    "nama_keluaran":  "Standar Penghitungan dan Klasifikasi Kejadian Bencana",
+    "berkas":  [
+                   "00-pengantar.md",
+                   "01-definisi.md",
+                   "02-satu-kejadian.md",
+                   "03-syarat-masuk.md",
+                   "04-kelas.md",
+                   "05-angka.md",
+                   "06-penyajian.md",
+                   "07-tata-kelola.md",
+                   "08-pohon.md",
+                   "09-formulir.md",
+                   "10-contoh.md",
+                   "11-bukti.md",
+                   "12-uji.md",
+                   "13-teks-juklak.md",
+                   "pustaka.md",
+        "lampiran-a.md"
+               ]
+}

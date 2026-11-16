@@ -1,0 +1,105 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Situasi Kekeringan, 09-11-2026.",
+ "judul_dokumen": "Laporan Situasi Kekeringan",
+ "kajian": "rehab",
+ "tanggal": "2026-11-09",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-09/kekeringan/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Crisco 1492, CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Situasi Kekeringan",
+   "subjudul": "Senin, 2 November s.d. Minggu, 8 November 2026",
+   "penyaji": {
+    "nama": "Tim Ahli dan Tim Sus IT BNPB",
+    "jabatan": "Badan Nasional Penanggulangan Bencana"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\kekeringan\\Paparan Situasi Kekeringan Sepekan 091126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 3 s.d. 8 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\kekeringan\\Paparan Situasi Kekeringan Sepekan 091126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 2,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 3 s.d. 8 Nov 2026; Sphere Handbook 2018"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\kekeringan\\Paparan Situasi Kekeringan Sepekan 091126 (isi).pptx",
+   "halaman": 3,
+   "bagian": 3,
+   "sumber": "Open-Meteo (model hujan gabungan, diambil 12 Nov 2026), diolah Tim Ahli BNPB; BMKG, prakiraan 9 s.d. 12 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\kekeringan\\Paparan Situasi Kekeringan Sepekan 091126 (isi).pptx",
+   "halaman": 4,
+   "bagian": 3,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 3 s.d. 8 Nov 2026; Open-Meteo (model hujan gabungan, diambil 12 Nov 2026), diolah Tim Ahli BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-09\\kekeringan\\Paparan Situasi Kekeringan Sepekan 091126 (isi).pptx",
+   "halaman": 5,
+   "bagian": 4,
+   "sumber": "Laporan Dit. Koordalops BNPB, laporan harian 3 s.d. 8 Nov 2026; analisis halaman 2 s.d. 4"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-09/kekeringan/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Crisco 1492, CC BY-SA 4.0, Wikimedia Commons"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi kekeringan sepekan",
+   "label": "Situasi kekeringan sepekan",
+   "halaman_tetap": [
+    3
+   ]
+  },
+  {
+   "judul": "Distribusi air bersih",
+   "label": "Distribusi air bersih",
+   "halaman_tetap": [
+    4
+   ]
+  },
+  {
+   "judul": "Hujan dan status darurat",
+   "label": "Hujan dan status darurat",
+   "halaman_tetap": [
+    5,
+    6
+   ]
+  },
+  {
+   "judul": "Rekomendasi",
+   "label": "Rekomendasi",
+   "halaman_tetap": [
+    7
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Paparan Situasi Kekeringan Mingguan",
+ "skala_logo_bnpb": 1.1
+}

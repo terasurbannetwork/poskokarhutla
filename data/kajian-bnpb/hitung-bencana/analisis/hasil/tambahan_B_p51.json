@@ -1,0 +1,24 @@
+{
+ "lolos_hanya_K2_semua": 973,
+ "lolos_hanya_karena_mengungsi": 21,
+ "per_kategori_mengungsi": {
+  "Banjir": 16,
+  "Kebakaran permukiman": 2,
+  "Longsor": 1,
+  "Kebakaran hutan dan lahan": 1,
+  "Erupsi gunung api": 1
+ },
+ "per_kategori_K2_saja": {
+  "Banjir": 717,
+  "Kekeringan": 122,
+  "Cuaca ekstrem": 56,
+  "Longsor": 39,
+  "Kebakaran permukiman": 14,
+  "Gelombang pasang / Abrasi": 10,
+  "Kebakaran hutan dan lahan": 9,
+  "Erupsi gunung api": 3,
+  "Gempabumi": 3
+ },
+ "erupsi_baris": 14,
+ "erupsi_lolos_karena_mengungsi": 1
+}
