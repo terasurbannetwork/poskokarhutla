@@ -93,7 +93,7 @@ const Laporan = (() => {
     kepala(c) {
       const {D, S} = c, brj = c.brj(S.hari), kodes = Object.keys(D.prov).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
       const hari = `<select data-set="hari" aria-label="Hari laporan">${[...D.hari].reverse().map(h => `<option value="${esc(h)}"${h === S.hari ? " selected" : ""}>${esc(tgl(h, 1))}${c.brj(h) ? " (berjalan)" : ""}</option>`).join("")}</select>`;
-      return `<section class="lp-kep" aria-live="polite"><div class="lp-jd"><h1>${esc(D.judul)}</h1><div class="lp-pils"><span class="lp-pil ${brj ? "sm" : "ok"}">${brj ? "Hari berjalan, belum final" : "Hari final"}</span><span class="lp-pil">Cut-off ${esc(wkt(D.cutoff))}</span></div></div>
+      return `<section class="lp-kep" aria-live="polite"><div class="lp-jd"><h1>${esc(D.judul)}</h1><div class="lp-pils"><span class="lp-pil ${brj ? "sm" : "ok"}" title="${brj ? "Hari ini belum selesai; angka masih bisa bertambah sampai pukul 24.00 WIB" : "Hari sudah selesai; angka tidak berubah lagi"}">${brj ? "Data masih bertambah" : "Data lengkap"}</span><span class="lp-pil">Cut-off ${esc(wkt(D.cutoff))}</span></div></div>
         <div class="lp-aksi">${hari}${kodes.length && !c.f ? Kartu.selProv("prov", "Seluruh Indonesia", kodes, k => D.prov[k].nama, S) : ""}<button type="button" class="lp-cetak" id="lpCetak" aria-label="Cetak PDF" title="Cetak PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg></button></div></section>`; },
     ring(c) {
       const {D, S, u, i, n} = c, s = A(c.sr, u.k, n), ub = ubah(u, s[i], i > 0 ? s[i - 1] : null), b = D.hari[i - 1];
