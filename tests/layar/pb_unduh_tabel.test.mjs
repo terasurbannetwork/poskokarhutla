@@ -105,7 +105,8 @@ test("gerbang statis mesin: tanpa pemisah titik tengah, tanpa warna literal, tan
   const h = baca("public/index.html"), i = h.indexOf('src="/inti/unduh_tabel.js"'), j = h.indexOf('src="unduh_tabel.js"');
   assert.ok(i > 0 && j > i, "urutan skrip"); assert.ok(h.indexOf('src="/inti/unduh.js"') < i);
 });
-test("registri: unduh_tabel hanya boleh menyala di bencana yang punya adaptor (karhutla, gempa; PB-71 dst. menambah)", () => {
+test("registri: unduh_tabel hanya boleh menyala di bencana yang punya adaptor (karhutla: public/unduh_tabel.js; lainnya: public/<id>/unduh.js)", () => {
   const r = JSON.parse(baca("public/bencana.json")); const daftar = Array.isArray(r) ? r : (r.bencana || Object.values(r));
-  for (const b of daftar) if (b && b.kemampuan && b.kemampuan.layar && b.kemampuan.layar.unduh_tabel === true) assert.ok(["karhutla", "gempa"].includes(b.id), b.id + " menyala tanpa adaptor");
+  for (const b of daftar) if (b && b.kemampuan && b.kemampuan.layar && b.kemampuan.layar.unduh_tabel === true)
+    assert.ok(b.id === "karhutla" ? fs.existsSync(new URL("../../public/unduh_tabel.js", import.meta.url)) : fs.existsSync(new URL(`../../public/${b.id}/unduh.js`, import.meta.url)) && /UnduhTabel|unduhTabel|unduh_tabel/.test(baca(`public/${b.id}/unduh.js`)), b.id + " menyala tanpa adaptor");
 });

@@ -51,6 +51,9 @@
 <link rel="stylesheet" href="gunungapi.css">
 <link rel="stylesheet" href="../inti/kartu.css">
 <link rel="stylesheet" href="../inti/peringatan-berita.css">
+<link rel="stylesheet" href="../inti/brief.css">
+<link rel="stylesheet" href="../inti/kalender.css">
+<link rel="stylesheet" href="../unduh_tabel.css">
 <link rel="stylesheet" href="sim.css">
 </head>
 <body>
@@ -81,9 +84,11 @@
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
           <div class="seg penuh" role="group" aria-label="Level" id="levelSeg" style="box-shadow:none;margin-bottom:8px"></div>
+          <div id="pilihTanggal" style="width:100%;margin-bottom:8px"></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari gunung atau provinsi" autocomplete="off" aria-label="Cari gunung api">
+            <div class="hasil card" id="hasil" hidden></div>
           </div>
         </div>
         <div class="rows" id="rows" role="list"></div>
@@ -138,12 +143,18 @@
 <script src="../inti/tip.js"></script><script src="../inti/geser_lapis.js" defer></script>
 <script src="../inti/peluang.js"></script>
 <script src="../inti/tabel.js"></script>
+<script src="../inti/unduh.js"></script>
+<script src="../inti/unduh_tabel.js"></script>
+<script src="unduh.js"></script>
 <script src="../inti/peringatan-berita.js"></script>
 <script>PeringatanBerita.pasang("#pbBerita","gunungapi")</script>
 <script src="../inti/peta/nasa.js"></script>
 <script src="angka.js"></script>
 <script src="app.js"></script>
+<script src="../inti/kalender.js"></script>
+<script src="../inti/pilih_tanggal.js"></script>
 <script src="peta.js"></script>
+<script src="tanggal.js"></script>
 <script src="kejadian.js"></script>
 <script src="insight.js"></script>
 <script src="tren.js"></script>
@@ -157,6 +168,11 @@
 <script src="sapa.js"></script>
 <script src="../bagikan.js" defer></script>
 <script src="bagikan.js" defer></script>
+<script src="../inti/brief.js" defer></script>
+<script src="../inti/cari.js" defer></script>
+<script src="../inti/profil_kab.js" defer></script>
+<script src="brief.js" defer></script>
+<script src="cari.js" defer></script>
 <script src="../persetujuan.js" defer></script>
 <script src="../jejak.js" data-halaman="gunungapi" defer></script>
 <script src="../kaki.js" defer></script>

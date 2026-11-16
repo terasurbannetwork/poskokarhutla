@@ -766,12 +766,20 @@ export default {
         "pencegahan": false,
         "prioritas": false,
         "layar": {
-          "unduh_tabel": false,
-          "brief": false,
-          "pilih_tanggal": false,
-          "profil_kab": false,
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
           "tab_operasi": false,
-          "cari": [],
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
           "ukuran_provinsi": []
         }
       }
@@ -1278,13 +1286,25 @@ export default {
         "pencegahan": false,
         "prioritas": false,
         "layar": {
-          "unduh_tabel": false,
-          "brief": false,
-          "pilih_tanggal": false,
-          "profil_kab": false,
-          "tab_operasi": false,
-          "cari": [],
-          "ukuran_provinsi": []
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "cari": [
+            "kab",
+            "desa",
+            "bandara",
+            "bpbd",
+            "posko",
+            "faskes",
+            "sekolah"
+          ],
+          "ukuran_provinsi": [
+            "radius",
+            "erupsi",
+            "tinggi"
+          ]
         }
       }
     },
@@ -1442,13 +1462,25 @@ export default {
         "pencegahan": false,
         "prioritas": false,
         "layar": {
-          "unduh_tabel": false,
-          "brief": false,
-          "pilih_tanggal": false,
-          "profil_kab": false,
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
           "tab_operasi": false,
-          "cari": [],
-          "ukuran_provinsi": []
+          "cari": [
+            "desa",
+            "kab",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "status",
+            "spi",
+            "jiwa"
+          ]
         }
       }
     },
