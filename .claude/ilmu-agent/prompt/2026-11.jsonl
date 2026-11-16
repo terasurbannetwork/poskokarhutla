@@ -4110,3 +4110,130 @@
 {"t":"2026-11-15T22:28:08.651+07:00","sesi":"d8dce098","prompt":"lanjut terus","label":[],"berkas":[]}
 {"t":"2026-11-15T22:28:25.788+07:00","sesi":"f1911c18","prompt":"lanjut terus","label":[],"berkas":[]}
 {"t":"2026-11-15T22:33:10.610+07:00","sesi":"9279d7e6","prompt":"<bash-input>npx wrangler d1 migrations apply poskowarga --remote -c wrangler.jsonc</bash-input><bash-stdout> ⛅️ wrangler 4.151.0 (update available 4.162.0)\n───────────────────────────────────────────────\nResource location: remote\n\nMigrations to be applied:\n┌───────────────────────────────┐\n│ name                          │\n├───────────────────────────────┤\n│ 0131_paritas_dokumen.sql      │\n├───────────────────────────────┤\n│ 0133_masuk.sql                │\n├───────────────────────────────┤\n│ 0134_titik_pengungsian.sql    │\n├───────────────────────────────┤\n│ 0135_meja_pengungsi_titik.sql │\n├───────────────────────────────┤\n│ 0136_masuk_indeks.sql         │\n├───────────────────────────────┤\n│ 0137_peringatan_x.sql         │\n├───────────────────────────────┤\n│ 0138_orang_akun.sql           │\n├───────────────────────────────┤\n│ 0139_orang_tinjau.sql         │\n├───────────────────────────────┤\n│ 0140_masuk_indeks_anggota.sql │\n├───────────────────────────────┤\n│ 0141_lifeline.sql             │\n├───────────────────────────────┤\n│ 0142_lifeline_indeks.sql      │\n├───────────────────────────────┤\n│ 0143_tiga_w.sql               │\n├───────────────────────────────┤\n│ 0144_masuk_indeks_hapus.sql   │\n├───────────────────────────────┤\n│ 0145_masuk_kode_akun.sql      │\n├───────────────────────────────┤\n│ 0146_indeks_fk_kejadian.sql   │\n├───────────────────────────────┤\n│ 0147_kaji_ulang.sql           │\n├───────────────────────────────┤\n│ 0148_pembiayaan.sql           │\n├───────────────────────────────┤\n│ 0149_pemetaan_relawan.sql     │\n└───────────────────────────────┘\n? About to apply 18 migration(s)\nYour database may not be available to serve requests during the migration, continue? › (Y/n)\n[This command was still running in the terminal pane (tab 0) when its output was captured; it keeps running there, where the user can see and interact with it. Use read_terminal with tab_id \"0\" to check on it.]</bash-stdout><bash-stderr></bash-stderr>","label":["warga-api"],"berkas":["wrangler.jsonc","0131_paritas_dokumen.sql","0133_masuk.sql","0134_titik_pengungsian.sql","0135_meja_pengungsi_titik.sql","0136_masuk_indeks.sql","0137_peringatan_x.sql","0138_orang_akun.sql","0139_orang_tinjau.sql","0140_masuk_indeks_anggota.sql","0141_lifeline.sql","0142_lifeline_indeks.sql","0143_tiga_w.sql","0144_masuk_indeks_hapus.sql","0145_masuk_kode_akun.sql","0146_indeks_fk_kejadian.sql","0147_kaji_ulang.sql","0148_pembiayaan.sql","0149_pemetaan_relawan.sql"]}
+{"t":"2026-11-03T10:56:14.670+07:00","sesi":"c28eed2c","prompt":"ganti jadi bnpbbirohok ya password dan usernya","label":[],"berkas":[]}
+{"t":"2026-11-13T11:17:16.109+07:00","sesi":"b4e3b6f7","prompt":"<cross-session-message from=\"[token]\" from-name=\"Analisis Awal\">\n<\\~agent-message from=\"affade3bfe0d2bbb0\">\nPerbaikan terakhir selesai. Kedua deck lolos gerbang dan QA (ringkas 13 halaman, lengkap 44), semua slide yang berubah sudah dilihat, grep istilah terlarang nol, tidak ada proses latar tersisa. Berkas ada di data\\kajian-bnpb\\hitung-bencana\\keluaran\\. (1) Ringkas h9: kartu 700 dibuang, sisa 27 dan 3 persen. (2) 52,7 persen tampil di panel ringkas h10 dan lengkap h23; keterangan menyebut simulasi versi pertama (6.812 kejadian). (3) Ringkas: judul bagian Pertanyaan Satu, Dua, Tiga kini memuat isi pertanyaan. (4) \"korban meninggal\" menggantikan \"jiwa\"; 124 dari 975 menyebut semua tanggal logbook. (5) Lengkap h33: judul disamakan dengan tabel. (6) Alur: huruf diperbesar, sebagian ruang kosong masih ada.\n<\\~/agent-message>\n</cross-session-message>","label":[],"berkas":[]}
+{"t":"2026-11-13T11:38:50.838+07:00","sesi":"7b96008d","prompt":"buat yang itb, bikin 2 proposal lagi\n\n* 1 arahnya ke pendidikan\n* 1 arahnya ke penerapan teknologi, coba angkat yang di daerah jabar dlu aja, misal tentang megathrust atau sesar lembang","label":[],"berkas":[]}
+{"t":"2026-11-13T11:42:49.979+07:00","sesi":"adfacea0","prompt":"coba ini ada ga di repo","label":[],"berkas":[]}
+{"t":"2026-11-13T11:56:42.675+07:00","sesi":"adfacea0","prompt":"Sekarang buat laporan tentang:\n\n* Data karhutla di Papsel, terutama luas terbakarnya\n* Kecepatan pemadamannya\n   * Compare sebelum kepala BNPB datang ke Papsel dengan setelah kepala BNPB datang ke Papsel\n\n\nTanggal datangnya coba kamu cari aja di repo atau berita BNPB\n\nBuat dalam deck ya\n\nKetiga file yang kamu sebutkan tadi bisa dipakai juga kalau sekiranya akan berguna","label":[],"berkas":[]}
+{"t":"2026-11-13T11:58:54.485+07:00","sesi":"adfacea0","prompt":"coba masukan juga tampilan peta ya, entah sebaran luas terbakar atau hotspot atau firespot atau cluster, atur2 dlu aja","label":["model-sebaran","pipa-data"],"berkas":[]}
+{"t":"2026-11-13T12:06:12.954+07:00","sesi":"ee932f72","prompt":"coba di repo kamu rapihin folder data/laporan-bnpb dong, berantakan banget liatnya, susah navigasinya\n\ncoba kamu sampaikan dlu rencananya sebelum eksekusi","label":[],"berkas":[]}
+{"t":"2026-11-13T12:33:39.651+07:00","sesi":"7b96008d","prompt":"btw kenapa yang itb x paragon isinya fokus ke perempuan ya?","label":[],"berkas":[]}
+{"t":"2026-11-13T12:37:55.838+07:00","sesi":"adfacea0","prompt":"Kalau belum, buat slide Ringkasan Eksekutifnya (1 slide) ya, pakai chart dan bahasa yang mudah dipahami oleh stakeholder","label":[],"berkas":[]}
+{"t":"2026-11-13T12:49:59.141+07:00","sesi":"7b96008d","prompt":"ya, coba ubah","label":[],"berkas":[]}
+{"t":"2026-11-13T13:48:58.939+07:00","sesi":"adfacea0","prompt":"ini warnain","label":[],"berkas":[]}
+{"t":"2026-11-13T13:49:15.430+07:00","sesi":"adfacea0","prompt":"ini aneh bgt grafiknya","label":[],"berkas":[]}
+{"t":"2026-11-13T13:52:17.365+07:00","sesi":"8135ccf2","prompt":"itu besaran per harinya dihitung dari rata2 per hari kah?","label":[],"berkas":[]}
+{"t":"2026-11-13T13:54:01.076+07:00","sesi":"adfacea0","prompt":"abis itu coba buat versi revisi baru (file baru)\n\ncoba kamu cari evaluasi itu perbandingannya udah apple to apple belum\n\nmisal katakanlah sebelum kedatangan bapak itu ada 20k hotspot dan bisa turun ke 5k, terus setelah kedatangan bapak itu ada 5k hotspot dan turun ke 2000, meskipun titik akhirnya lebih kecil, tapi kayaknya dari jumlah dan persentasenya ngga kan, nah kamu coba cek dan benerin yang kayak gitu2nya\n\nterus atasan saya tuh sempet ngomong tp belum saya pelajari lagi, dia bilang \"coba tiap harinya hitung rata2 yuang belum padam berapa dari hari sebelumnya\"\n\nterus sempet singgung weighted method tapi belum terlalu nangkep maksudnya apa","label":["pipa-data"],"berkas":[]}
+{"t":"2026-11-13T14:13:17.456+07:00","sesi":"901825d6","prompt":"bukan awam juga sih, tapi multibackground","label":[],"berkas":[]}
+{"t":"2026-11-13T14:32:27.945+07:00","sesi":"adfacea0","prompt":"abis itu kamu buat juga untuk daerah lain yang sebelumnya bapak kunjungi:\n\n* lampung\n* jawa timur\n* kalteng dan kaltim\n* sumsel","label":[],"berkas":[]}
+{"t":"2026-11-13T14:34:40.440+07:00","sesi":"adfacea0","prompt":"btw itu gaada info hari kunjungannya kapan kah yang di slide papsel? bingung","label":[],"berkas":[]}
+{"t":"2026-11-13T14:35:06.471+07:00","sesi":"adfacea0","prompt":"ini juga bingung","label":[],"berkas":[]}
+{"t":"2026-11-13T15:00:10.650+07:00","sesi":"adfacea0","prompt":"sambil kamu bikin juga untuk yang nasional yaa, jadi hitungannya dari tanggal pak kepala yang baru dilantik di tanggal 15 oktober\n\nkamu lihat kayak 4 minggu sebelum dan 4 minggu sesudahnya\n\nterus kata atasanku ini:\n\n* ada info scr nasionalnya\n* per provinsi\n* top provinsi (yang sedang karhutla)\n* non top provinsi\n* weighted method per daerah","label":[],"berkas":[]}
+{"t":"2026-11-13T15:04:45.422+07:00","sesi":"adfacea0","prompt":"terus buat yang tadi laporan per daerah, wording judulnya jangan \"sebelum dan sesudah\" tapi \"pengaruh kunjungan\"","label":[],"berkas":[]}
+{"t":"2026-11-13T15:08:12.911+07:00","sesi":"acc2a73d","prompt":"Coba buat deck paparan kepala BNPB untuk studium generale di itb\n\njudulnnya hubungin ttg sains/riset/teknologi/inovasi untuk manajemen bencana\n\njelasin:\n\n[tempelan 953 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-13T15:22:46.472+07:00","sesi":"acc2a73d","prompt":"Ikut usulan semua","label":[],"berkas":[]}
+{"t":"2026-11-13T15:40:31.694+07:00","sesi":"2dd890ef","prompt":"coba buat laporan karhutla hari ini, udah bisa dibuat belum ya?\n\nbuat kalau datanya emang udah lengkap meski label cut off 18.00\n\n[tempelan 12132 karakter]\n\n[tempelan 21023 karakter]\n\n[tempelan 367 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-13T16:21:00.334+07:00","sesi":"adfacea0","prompt":"berakhlak di cover gausah","label":[],"berkas":[]}
+{"t":"2026-11-13T16:21:23.128+07:00","sesi":"adfacea0","prompt":"Jangan luas harian nasional:\n\nLuas lahan terbakar harian secara nasional","label":[],"berkas":[]}
+{"t":"2026-11-13T16:21:35.476+07:00","sesi":"adfacea0","prompt":"Coba poles lagi tampilannya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:23:18.684+07:00","sesi":"adfacea0","prompt":"ini bukan label gaya visual kita","label":[],"berkas":[]}
+{"t":"2026-11-13T16:23:18.917+07:00","sesi":"adfacea0","prompt":"ini membingungkan","label":[],"berkas":[]}
+{"t":"2026-11-13T16:23:19.109+07:00","sesi":"adfacea0","prompt":"coba kasih penanda kapan dilantiknya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:24:02.900+07:00","sesi":"adfacea0","prompt":"ini bingungin\n\nhari celah satelit\n\nwtf is that\n\nini laporan dibuat untuk banyak orang paham","label":[],"berkas":[]}
+{"t":"2026-11-13T16:24:19.946+07:00","sesi":"adfacea0","prompt":"perbagus","label":[],"berkas":[]}
+{"t":"2026-11-13T16:25:05.295+07:00","sesi":"adfacea0","prompt":"kasih indikator visualnya biar gampang lihat naik/turun atau bagus/ngganya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:25:21.165+07:00","sesi":"adfacea0","prompt":"bagusin deh intinnya itu tabel","label":[],"berkas":[]}
+{"t":"2026-11-13T16:25:51.568+07:00","sesi":"adfacea0","prompt":"bahasanya membingungkan\n\npoles tampilannya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:26:01.013+07:00","sesi":"adfacea0","prompt":"uji celah satelit ini apa anjr","label":[],"berkas":[]}
+{"t":"2026-11-13T16:26:58.849+07:00","sesi":"adfacea0","prompt":"2 hari tuh 2 hari apaa? bingung bgt pembandingnya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:26:59.076+07:00","sesi":"adfacea0","prompt":"setara pola musim? maksudnya?","label":[],"berkas":[]}
+{"t":"2026-11-13T16:26:59.302+07:00","sesi":"adfacea0","prompt":"coba gunakan bahasa lengkap, jangan frasa/klausa nanggung","label":[],"berkas":[]}
+{"t":"2026-11-13T16:27:49.900+07:00","sesi":"adfacea0","prompt":"ini bahasanya membingungkan","label":[],"berkas":[]}
+{"t":"2026-11-13T16:28:02.606+07:00","sesi":"adfacea0","prompt":"coba rombak lagi penggunaan bahasanya\n\njgn ada bahasa nanggung, terutama frasa/klausa yg galengkap yg menjadi ujung gitu, pusing saya bacanya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:28:37.137+07:00","sesi":"adfacea0","prompt":"poles semua slide","label":[],"berkas":[]}
+{"t":"2026-11-13T16:29:05.611+07:00","sesi":"adfacea0","prompt":"coba tampilin top 5","label":[],"berkas":[]}
+{"t":"2026-11-13T16:30:03.423+07:00","sesi":"adfacea0","prompt":"poin? wtf is poin?","label":[],"berkas":[]}
+{"t":"2026-11-13T16:32:48.480+07:00","sesi":"adfacea0","prompt":"jujur ini saya bingung whats the point of poin","label":[],"berkas":[]}
+{"t":"2026-11-13T16:32:48.663+07:00","sesi":"adfacea0","prompt":"bahasanya jangan provinsi top dong","label":[],"berkas":[]}
+{"t":"2026-11-13T16:34:47.825+07:00","sesi":"adfacea0","prompt":"jujur bingung takeawaynya apa dari ini","label":[],"berkas":[]}
+{"t":"2026-11-13T16:36:00.304+07:00","sesi":"2dd890ef","prompt":"masih belum ya?","label":[],"berkas":[]}
+{"t":"2026-11-13T16:38:43.719+07:00","sesi":"adfacea0","prompt":"tanggung bgt ini bahasanya, jd bingung","label":[],"berkas":[]}
+{"t":"2026-11-13T16:38:58.622+07:00","sesi":"adfacea0","prompt":"jujur poin2 ini bikin bingung","label":[],"berkas":[]}
+{"t":"2026-11-13T16:39:14.720+07:00","sesi":"adfacea0","prompt":"itu juga grafiknya bikin bingung","label":[],"berkas":[]}
+{"t":"2026-11-13T16:39:14.923+07:00","sesi":"adfacea0","prompt":"layoutnya berantakan juga","label":[],"berkas":[]}
+{"t":"2026-11-13T16:40:37.792+07:00","sesi":"adfacea0","prompt":"D:\\Project\\Work\\BNPB\\poskokarhutla\\docs\\deck-bnpb\\Pengaruh Kunjungan Kepala BNPB terhadap Karhutla Daerah 131126\n\nCoba cek dari deck2 ini, kira2 ada yg bisa ditambah lagi ga untuk bagian pengaruh kunjungan","label":[],"berkas":[]}
+{"t":"2026-11-13T16:40:56.254+07:00","sesi":"adfacea0","prompt":"ini nanggung bgt anjing bahasanya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:45:46.373+07:00","sesi":"2dd890ef","prompt":"emang modis tuh terpakai ya datanya? penting kah?","label":[],"berkas":[]}
+{"t":"2026-11-13T16:45:53.887+07:00","sesi":"acc2a73d","prompt":"Ya, poles lagi","label":[],"berkas":[]}
+{"t":"2026-11-13T16:46:33.683+07:00","sesi":"adfacea0","prompt":"poles sampai semuanya bernilai 4 ya","label":[],"berkas":[]}
+{"t":"2026-11-13T16:57:10.122+07:00","sesi":"adfacea0","prompt":"eh bukan, bukan edit yang daerah, ini kan lagi fokus slide nasionalll astagaaaa\nitu lanjutin dlu yang nasionall","label":[],"berkas":[]}
+{"t":"2026-11-13T16:57:41.271+07:00","sesi":"adfacea0","prompt":"<!-- reply 1 -->\n> D:\\Project\\Work\\BNPB\\poskokarhutla\\docs\\deck-bnpb\\Pengaruh Kunjungan Kepala BNPB terhadap Karhutla Daerah 131126\n> \n> Coba cek dari deck2 ini, kira2 ada yg bisa ditambah lagi ga untuk bagian pengaruh kunjungan\n\nmaksudnya ini tuh untuk ditambah ke deck yang nasional, ada ga kira2 yang bisa diambil dari sanaa, bukan saya nyuruh edit deck daerah","label":[],"berkas":[]}
+{"t":"2026-11-13T16:58:13.564+07:00","sesi":"adfacea0","prompt":"semua","label":[],"berkas":[]}
+{"t":"2026-11-13T16:58:28.714+07:00","sesi":"adfacea0","prompt":"poles slidenya sampai semua bernilai 4 ya","label":[],"berkas":[]}
+{"t":"2026-11-13T17:02:43.412+07:00","sesi":"c2174e87","prompt":"atasan saya bilang salah satu benefit di bnpb itu dapet surat rekomendasi, emang untuk apa?","label":[],"berkas":[]}
+{"t":"2026-11-13T17:03:16.559+07:00","sesi":"acc2a73d","prompt":"tambahin foto2 ya di slide2nya biar ga polos2 banget","label":[],"berkas":[]}
+{"t":"2026-11-13T17:09:31.736+07:00","sesi":"2dd890ef","prompt":"masih? berapa lama lagi","label":[],"berkas":[]}
+{"t":"2026-11-13T17:18:52.511+07:00","sesi":"adfacea0","prompt":"bisa lanjut? kenapa ada auth gagal mulu","label":[],"berkas":[]}
+{"t":"2026-11-13T17:34:09.152+07:00","sesi":"2dd890ef","prompt":"ini coba margin atasnya gedein biar jelas section mana section mananya","label":[],"berkas":[]}
+{"t":"2026-11-13T17:39:30.700+07:00","sesi":"2dd890ef","prompt":"spacingnya ga rapii","label":[],"berkas":[]}
+{"t":"2026-11-13T17:42:00.647+07:00","sesi":"2dd890ef","prompt":"ini coba2 aja ya, buat versi baru dari slide 3, buat versi yang lebih bagus untuk desain dan layoutnya\n\nkamu bangun decknya untuk slide 3 aja","label":[],"berkas":[]}
+{"t":"2026-11-13T17:44:57.425+07:00","sesi":"adfacea0","prompt":"ini pakai label","label":[],"berkas":[]}
+{"t":"2026-11-13T17:46:56.937+07:00","sesi":"adfacea0","prompt":"ini ubah jadi key takeaways judulnya\n\ntermasuk untuk slide2 lain yang konteksnya serupa seperti ini ya","label":[],"berkas":[]}
+{"t":"2026-11-13T17:46:57.130+07:00","sesi":"adfacea0","prompt":"tambahin tampilan grafik perbandingan di slide ini","label":[],"berkas":[]}
+{"t":"2026-11-13T17:46:57.337+07:00","sesi":"adfacea0","prompt":"ini hapus","label":[],"berkas":[]}
+{"t":"2026-11-13T17:47:23.963+07:00","sesi":"adfacea0","prompt":"ini bikin center dan bikin jadi label","label":[],"berkas":[]}
+{"t":"2026-11-13T17:48:28.262+07:00","sesi":"adfacea0","prompt":"tambahkan dokumentasi","label":[],"berkas":[]}
+{"t":"2026-11-13T17:49:24.583+07:00","sesi":"2dd890ef","prompt":"ini ganti\n\nmasih pake desain lama ya","label":[],"berkas":[]}
+{"t":"2026-11-13T17:50:28.025+07:00","sesi":"adfacea0","prompt":"pake label","label":[],"berkas":[]}
+{"t":"2026-11-13T17:50:28.206+07:00","sesi":"adfacea0","prompt":"justify??","label":[],"berkas":[]}
+{"t":"2026-11-13T17:50:59.061+07:00","sesi":"adfacea0","prompt":"ini judul2 cardnya nanggung, jadi ga nangkep\n\nga lazim dan aneh juga bahasanya \"masih sama\", \"tetap turun\", dll apanya????","label":[],"berkas":[]}
+{"t":"2026-11-13T17:51:38.128+07:00","sesi":"2dd890ef","prompt":"panel armada udara hapus, panel modif cuaca gedein aja","label":[],"berkas":[]}
+{"t":"2026-11-13T17:54:29.349+07:00","sesi":"adfacea0","prompt":"buat yang ini petanya bisa ada di bagian kiri, stacking atas bawah ajaa, bagian kanannya jadi chart","label":[],"berkas":[]}
+{"t":"2026-11-13T18:04:27.198+07:00","sesi":"20322e8f","prompt":"deck tentang ini ada dimana ya?","label":[],"berkas":[]}
+{"t":"2026-11-13T18:06:55.235+07:00","sesi":"2dd890ef","prompt":"@\"C:\\Users\\USER\\Desktop\\Data Gelar Kekuatan Satgas Udara Karhutla-1.xlsx\"\ncoba masukin lagi armada pakai data yang ini","label":[],"berkas":[]}
+{"t":"2026-11-13T18:07:12.787+07:00","sesi":"adfacea0","prompt":"berapa lama lagi ya","label":[],"berkas":[]}
+{"t":"2026-11-13T18:09:49.562+07:00","sesi":"adfacea0","prompt":"halo?","label":[],"berkas":[]}
+{"t":"2026-11-13T18:21:39.170+07:00","sesi":"adfacea0","prompt":"<!-- reply 1 -->\n> ini bikin center dan bikin jadi label\n\nini maksudnya label tuh label yang didesain lohh, yang pake pill\n\nbukan ditambah kata \"turun\"","label":[],"berkas":[]}
+{"t":"2026-11-14T08:05:53.075+07:00","sesi":"b47d98cc","prompt":"buat laporan bencana hari ini\n\n[tempelan 9271 karakter]\n\n[tempelan 5549 karakter]\n\n[tempelan 3328 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-14T08:27:33.027+07:00","sesi":"b47d98cc","prompt":"ada ga ya cara cepet bikin laporan bencana tanpa buka claude","label":[],"berkas":[]}
+{"t":"2026-11-14T09:21:11.259+07:00","sesi":"b47d98cc","prompt":"ini bisa ditampilin semua ga","label":[],"berkas":[]}
+{"t":"2026-11-16T09:05:08.129+07:00","sesi":"5ac9a754","prompt":"buat laporan bencana hari ini\n\n[tempelan 3209 karakter]\n\n[tempelan 5801 karakter]\n\n[tempelan 8546 karakter]\n\nbtw kalau di slide 1 ada kkayak \"dan 9 lainnya\", itu sebutin aja lgsg daerahnya ya","label":[],"berkas":[]}
+{"t":"2026-11-16T09:24:21.638+07:00","sesi":"5ac9a754","prompt":"ini kamu buatnya pakai referensi darimana?","label":[],"berkas":[]}
+{"t":"2026-11-16T09:25:27.113+07:00","sesi":"5ac9a754","prompt":"jelek.\n\ncoba kamu buat berdasarkan laporan tgl 15 revisi 5 aja","label":[],"berkas":[]}
+{"t":"2026-11-16T09:27:57.540+07:00","sesi":"5ac9a754","prompt":"eh sorry tgl 14 revisi 5 maksudnya","label":[],"berkas":[]}
+{"t":"2026-11-16T09:30:45.026+07:00","sesi":"5ac9a754","prompt":"ini beneran di pekanbaru segini? wajar ga? itu data darimana/","label":[],"berkas":[]}
+{"t":"2026-11-16T09:35:37.635+07:00","sesi":"5ac9a754","prompt":"Biarkan apa adanya","label":[],"berkas":[]}
+{"t":"2026-11-16T09:35:49.151+07:00","sesi":"5ac9a754","prompt":"mana filenya","label":[],"berkas":[]}
+{"t":"2026-11-16T09:36:37.472+07:00","sesi":"5ac9a754","prompt":"ini kenapa strip? masih pendataan atau gimana?","label":[],"berkas":[]}
+{"t":"2026-11-16T09:39:36.932+07:00","sesi":"bf8d7e07","prompt":"coba buat tabel juga konsentrasi pm2.5 dari klasifikasi rendah sampai berbahaya itu segimana\n\nbuat sampai sampai besaran yg menurutmu udah di titik ga masuk akal","label":[],"berkas":[]}
+{"t":"2026-11-16T09:42:15.216+07:00","sesi":"5ac9a754","prompt":"coba menurutmu ini wajar ga kayak gini di pekanbaru?","label":[],"berkas":[]}
+{"t":"2026-11-16T09:48:47.455+07:00","sesi":"5ac9a754","prompt":"kalau dari centurisk gimana?","label":[],"berkas":[]}
+{"t":"2026-11-16T09:53:07.799+07:00","sesi":"5ac9a754","prompt":"hapus aja yang pekanbaru","label":[],"berkas":[]}
+{"t":"2026-11-16T09:54:21.907+07:00","sesi":"8c6f3bb7","prompt":"kok lama?","label":[],"berkas":[]}
+{"t":"2026-11-16T09:56:02.227+07:00","sesi":"8c6f3bb7","prompt":"section kebutuhan dan jalur logistik hapus aja","label":[],"berkas":[]}
+{"t":"2026-11-16T09:57:58.459+07:00","sesi":"8c6f3bb7","prompt":"<!-- reply 2 -->\n> Pindahkan slide 5 ke lampiran\n\nini pindahin aja di lampiran\n\nlampiran gausah masuk daftar isi dan tab indicator ya\n\n<!-- reply -->\n> Slide 4 dan 6 (longsor) punya pola yang sama, jadi perlakuannya sebaiknya sama.\n\nya, setuju","label":["longsor"],"berkas":[]}
+{"t":"2026-11-16T09:58:33.506+07:00","sesi":"8c6f3bb7","prompt":"tambahin lampiran yang kayak gini juga ya","label":[],"berkas":[]}
+{"t":"2026-11-16T09:59:11.124+07:00","sesi":"8c6f3bb7","prompt":"ini jadi peta banjir dan longsor","label":["banjir","longsor"],"berkas":[]}
+{"t":"2026-11-16T09:59:19.196+07:00","sesi":"8c6f3bb7","prompt":"buat di folder revisi baru ya","label":[],"berkas":[]}
+{"t":"2026-11-16T09:59:33.458+07:00","sesi":"8c6f3bb7","prompt":"sekalian aja buat untuk tanggal 9 sampai 15","label":[],"berkas":[]}
+{"t":"2026-11-16T09:59:57.498+07:00","sesi":"5ac9a754","prompt":"ini apa maksudnya ya?","label":[],"berkas":[]}
+{"t":"2026-11-16T10:03:09.210+07:00","sesi":"5ac9a754","prompt":"@\"C:\\Users\\USER\\Desktop\\Paparan Kebencanaan Sumatera Utara 161126.pdf\"\nbuat yang ini bukan","label":[],"berkas":[]}
+{"t":"2026-11-16T10:04:21.501+07:00","sesi":"3a7c567e","prompt":"ini bisa diperbaiki ga agar tidak numpuk2","label":[],"berkas":[]}
+{"t":"2026-11-16T10:04:43.770+07:00","sesi":"5ac9a754","prompt":"tapi sebelum itu, ini ada di repo ga ya laporan sumut tuh?","label":[],"berkas":[]}
+{"t":"2026-11-16T10:06:06.907+07:00","sesi":"5ac9a754","prompt":"apa mending bikin sesi baru ya?","label":[],"berkas":[]}
+{"t":"2026-11-16T10:08:36.960+07:00","sesi":"f1098962","prompt":"eh ini ada di repo gaa?","label":[],"berkas":[]}
+{"t":"2026-11-16T10:08:57.345+07:00","sesi":"f1098962","prompt":"kalau gaada, kerjainnya di repo, buat dulu folder yang sesuai di repo","label":[],"berkas":[]}
+{"t":"2026-11-16T10:09:17.477+07:00","sesi":"f1098962","prompt":"@\"C:\\Users\\USER\\Desktop\\Paparan Kebencanaan Aceh 161126.pdf\" @\"C:\\Users\\USER\\Desktop\\Paparan Kebencanaan Aceh 161126.pptx\"\ntermasuk yang aceh juga tolong dicek juga ya\\","label":[],"berkas":[]}
+{"t":"2026-11-16T10:09:25.703+07:00","sesi":"f1098962","prompt":"@\"C:\\Users\\USER\\Desktop\\Paparan Kebencanaan Sumatera Utara 161126.pptx\"\nini ppt yang sumut kalau butuh","label":[],"berkas":[]}
+{"t":"2026-11-16T10:15:38.937+07:00","sesi":"3a7c567e","prompt":"stripnya center dong","label":[],"berkas":[]}
+{"t":"2026-11-16T10:19:10.176+07:00","sesi":"3a7c567e","prompt":"Oke, sepertinya generator laporan bencana dan laporan karhutla untuk bot WA itu outdated deh\n\nBisa ga kamu sesuain supaya sesuai sama laporan yang terkini kita buat?","label":["wa-bot"],"berkas":[]}
+{"t":"2026-11-16T10:22:57.122+07:00","sesi":"8c6f3bb7","prompt":"ini judulnya bikin to the point aja","label":[],"berkas":[]}
+{"t":"2026-11-16T10:37:02.419+07:00","sesi":"8c6f3bb7","prompt":"Yes, add them","label":[],"berkas":[]}
+{"t":"2026-11-16T10:40:08.577+07:00","sesi":"f1098962","prompt":"ini benerin","label":[],"berkas":[]}
+{"t":"2026-11-16T10:40:53.592+07:00","sesi":"f1098962","prompt":"ini spacingnya benerin dong, yang atas mepet","label":[],"berkas":[]}
+{"t":"2026-11-16T10:42:50.538+07:00","sesi":"f1098962","prompt":"sumpah saya bingung sama kamu, yang aceh kemana?","label":[],"berkas":[]}
+{"t":"2026-11-16T10:43:18.256+07:00","sesi":"f1098962","prompt":"coba di daftar isi ada pemisah yang sumut dan aceh, terus antara slide sumut dan aceh itu ada batasnya","label":[],"berkas":[]}
+{"t":"2026-11-16T10:43:37.712+07:00","sesi":"f1098962","prompt":"ini spacingnya dan itu nambrak antara teks dan gambar","label":[],"berkas":[]}
+{"t":"2026-11-16T10:43:47.224+07:00","sesi":"f1098962","prompt":"berapa menit km butuh?","label":[],"berkas":[]}
+{"t":"2026-11-16T10:50:15.262+07:00","sesi":"8c6f3bb7","prompt":"Commit perubahan working tree dengan pesan yang jelas.","label":[],"berkas":[]}
+{"t":"2026-11-16T10:50:24.042+07:00","sesi":"8c6f3bb7","prompt":"lgsg push","label":[],"berkas":[]}
