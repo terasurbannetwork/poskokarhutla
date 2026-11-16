@@ -37,11 +37,12 @@ const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["damp
 const TAB_SEMBUNYI = new Set(["informasi"]);
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 function bukaTab(id, dorong = true) {
+  if (id === "operasi" && !$("#p-operasi")) id = "peta";   /* tab Operasi hanya ada bila operasi.js menyisipkannya (PB-86, F-40) */
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/pesisir/" + (id === "peta" ? "" : id) + location.search);
   nanti(() => { if (id === "peta" && typeof peta !== "undefined" && peta) peta.resize();
-    ({insight: Insight, tren: Tren, dampak: Dampak, foto: window.Foto, tentang: Tentang, informasi: window.Informasi})[id]?.render(); });
+    ({insight: Insight, tren: Tren, dampak: Dampak, foto: window.Foto, tentang: Tentang, informasi: window.Informasi, operasi: window.PesisirOperasi})[id]?.render(); });
 }
 $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(([k, n]) => `<button data-t="${k}" aria-current="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
 { const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
@@ -132,7 +133,9 @@ function barisPanel(q) {
 function renderPanel() {
   const q = ($("#cari").value || "").trim().toLowerCase(), T = tersedia(), M = [["abrasi", "Abrasi"], ["rob", "Rob"], ["pasang", "Pasang"], ["ombak", "Ombak"]];
   $("#panelMode").innerHTML = M.map(([k, n]) => `<button data-m="${k}" aria-pressed="${S.mode === k}"${T[k] ? "" : " disabled"}>${n}</button>`).join("");
-  $("#rows").innerHTML = barisPanel(q); }
+  const unduh = window.UnduhTabel?.tombol() || "";   /* hanya bila registri menyalakan kemampuan.layar.unduh_tabel (PB-86, F-34) */
+  $("#rows").innerHTML = (unduh ? `<div style="display:flex;justify-content:flex-end;padding:0 2px 6px">${unduh}</div>` : "") + barisPanel(q);
+  window.PilihTanggal?.gambar(); }
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || b.disabled) return; S.mode = b.dataset.m;
   $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   Peta.mode?.();   /* centang lapis dan visibilitas urgent; legenda dan daftar menyusul */
@@ -151,6 +154,9 @@ function renderHari() { $("#hariSeg").innerHTML = `<div class="seg penuh" role="
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = b.dataset.h;
   $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { renderPanel(); Peta.segarkan(); }); });
 $("#lapisBtn").addEventListener("click", () => $("#lapis").classList.toggle("buka"));
+
+/* PB-86 (F-40): tab Operasi, tersembunyi untuk tamu; logika dan probe hak baca di operasi.js (dimuat di sini supaya index.html tidak berubah). */
+{ const s = document.createElement("script"); s.src = "operasi.js?v=1"; s.onload = () => window.PesisirOperasi?.pasang(); document.head.append(s); }
 
 /* ================================================================ mulai */
 (async () => {

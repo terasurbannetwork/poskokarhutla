@@ -53,6 +53,17 @@ const Dampak = (() => {
     opsi("../banjir/data/paparan_kab.json").then(pk => { PK = pk?.kab ? pk : null;
       const aman = f => { try { return f() || ""; } catch (e) { console.error(e); return ""; } };
       const h = [pita("rob", "Rob dan penduduk", "rob", aman(kartuRob) + aman(kartuRiwayat)), pita("abrasi", "Abrasi pantai", "abrasi", aman(kartuAbrasi))].filter(x => x.includes("ex-std"));
-      el.innerHTML = h.length ? h.join("") : `<p class="kosong">Data dampak pesisir belum tersedia.</p>`; }); }
+      el.innerHTML = h.length ? h.join("") : `<p class="kosong">Data dampak pesisir belum tersedia.</p>`;
+      unduh(); sinyal(el); }); }
+  /* tombol unduh tabel (F-34): hanya bila registri menyalakan kemampuan.layar.unduh_tabel; digambar ulang saat registri selesai terbaca */
+  function unduh() { const el = $("#dampak"), t = window.UnduhTabel?.tombol() || ""; if (!el || !el.querySelector(".ex-std")) return;
+    let b = el.querySelector("#dkUnduh"); if (!t) { b?.remove(); return; }
+    if (!b) { b = document.createElement("div"); b.id = "dkUnduh"; b.style.cssText = "display:flex;justify-content:flex-end;padding:0 2px 6px"; el.prepend(b); }
+    b.innerHTML = t; }
+  window.DampakUnduh = unduh;
+  /* kartu Sinyal komunikasi (F-41, PB-81.2): hanya konteks provinsi, awal di provinsi kab/kota berstatus rob teratas; digerbangi kemampuan.layar.sinyal */
+  function sinyal(el) { if (typeof SinyalInti === "undefined") return;
+    const kode = {}; Object.entries(S.meta?.prov || {}).forEach(([k, n]) => kode[n] = k);
+    SinyalInti.pasang(el, {id: "pesisir", prov: () => { const D = S.rob ? Pesisir.dampakRob(S.rob, null, HARI_INI(), kode) : null; return D?.daftar[0] ? kode[D.daftar[0].prov] : null; }}); }
   return {render};
 })();
