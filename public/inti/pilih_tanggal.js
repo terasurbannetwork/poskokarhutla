@@ -46,6 +46,8 @@ function html() {
   const s2 = A.riwayat ? `<div class="seg penuh" role="group" aria-label="Real Time atau Riwayat" data-pt-mode><button type="button" data-ptm="0" aria-pressed="${!R}">Real Time</button><button type="button" data-ptm="1" aria-pressed="${R}">Riwayat</button></div>` : "";
   return `<div style="display:flex;flex-direction:column;gap:5px;width:100%">${s1}${s2}</div>`;
 }
+/* memilih tanggal mengembalikan mode ke Real Time */
+function lepasRiwayat() { if (T && R) { R = false; tunda(() => A.riwayat && A.riwayat.ubah(false)); } }
 function gambar() {
   if (!A || !IZIN) return; const h = A.host(); if (!h) return; const x = html();
   if (x === terakhir && h.firstChild) return;   // DOM ditulis ulang hanya bila isinya berubah (fokus papan ketik tetap)
@@ -53,8 +55,8 @@ function gambar() {
   if (!h._pt) { h._pt = true;
     h.addEventListener("click", e => { const m = e.target.closest("[data-ptm]"), b = e.target.closest("[data-pt]");
       if (m) { const baru = m.dataset.ptm === "1"; if (baru === R) return; R = baru; gambar(); return tunda(() => A.riwayat.ubah(R)); }
-      if (b && !b.disabled) { T = T === b.dataset.pt ? null : b.dataset.pt; gambar(); const t = T; tunda(() => A.ubah(t)); } });
-    h.addEventListener("change", e => { if (!e.target.matches("[data-pt-lain]")) return; T = e.target.value || null; gambar(); const t = T; tunda(() => A.ubah(t)); }); }
+      if (b && !b.disabled) { T = T === b.dataset.pt ? null : b.dataset.pt; lepasRiwayat(); gambar(); const t = T; tunda(() => A.ubah(t)); } });
+    h.addEventListener("change", e => { if (!e.target.matches("[data-pt-lain]")) return; T = e.target.value || null; lepasRiwayat(); gambar(); const t = T; tunda(() => A.ubah(t)); }); }
 }
 /* tanggal terpilih yang datanya hilang (data hidup bergeser) dilepas, bukan dibiarkan menggantung */
 function segar() { if (T && !daftarTanggal(A?.tanggal() || [], Date.now()).some(x => x.iso === T)) { T = null; tunda(() => A.ubah(null)); } gambar(); }

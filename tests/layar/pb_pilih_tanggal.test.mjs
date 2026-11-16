@@ -65,3 +65,18 @@ test("kode mesin menyebut kemampuan dan pilih_tanggal (gerbang bencana); adaptor
   const s = baca("public/inti/pilih_tanggal.js"); assert.ok(s.includes("kemampuan") && s.includes("pilih_tanggal") && s.includes("nanti"));
   assert.ok(baca("public/gempa/tanggal.js").includes("PilihTanggal.pasang"));
 });
+
+test("memilih tanggal saat Riwayat aktif mengembalikan mode ke Real Time (adaptor riwayat.ubah(false) dipanggil)", async () => {
+  const P = dunia({daftar: [reg("gempa", true)]}), dengar = {}, host = {innerHTML: "", firstChild: null, addEventListener: (n, f) => { dengar[n] = f; }};
+  const panggil = []; const riw = {ubah: r => panggil.push(["riw", r])};
+  P.pasang({id: "gempa", host: () => host, tanggal: () => [Date.now()], ubah: i => panggil.push(["tgl", i]), riwayat: riw}); await tunggu();
+  dengar.click({target: {closest: s => s === "[data-ptm]" ? {dataset: {ptm: "1"}} : null}}); await tunggu();
+  assert.equal(P.riwayat(), true); assert.deepEqual(panggil, [["riw", true]]);
+  dengar.click({target: {closest: s => s === "[data-pt]" ? {dataset: {pt: "2026-11-16"}, disabled: false} : null}}); await tunggu();
+  assert.equal(P.riwayat(), false); assert.equal(P.terpilih(), "2026-11-16");
+  assert.deepEqual(panggil.slice(1).map(x => x.join(":")).sort(), ["riw:false", "tgl:2026-11-16"]);
+  assert.match(host.innerHTML, /data-ptm="0" aria-pressed="true"/);
+});
+test("adaptor gempa: memilih tanggal melepas S.riwayat; Real Time memakai urut ukuran aktif", () => {
+  const t = baca("public/gempa/tanggal.js"); assert.match(t, /if \(iso && S\.riwayat\) S\.riwayat = false/); assert.match(t, /ukAktif\(\)\.kunci/);
+});

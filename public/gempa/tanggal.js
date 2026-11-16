@@ -11,8 +11,8 @@ const segar = () => { S.hal = 0; Peta.segarkan(); renderDaftar(); renderPita(); 
 
 PilihTanggal.pasang({id: "gempa", host: () => host,
   tanggal: () => (S.gempa || []).map(g => g.t),
-  ubah: iso => { S.tanggal = iso; segar(); },
-  get riwayat() { return S.riwProv ? {ubah: r => { S.riwayat = r; S.urut = {k: "n", turun: true}; renderDaftar(); }} : null; }});
+  ubah: iso => { S.tanggal = iso; if (iso && S.riwayat) S.riwayat = false; segar(); },
+  get riwayat() { return S.riwProv ? {ubah: r => { S.riwayat = r; S.urut = {k: !r && typeof ukAktif === "function" ? ukAktif().kunci : "n", turun: true}; renderDaftar(); }} : null; }});
 /* riwayat per provinsi dimuat sekali, di luar jalur kritis; segmen Riwayat muncul bila datanya ada */
 const ambil = () => typeof muatJSON === "function" && muatJSON("data/riwayat_prov.json").then(p => { if (p?.prov) { S.riwProv = p.prov; PilihTanggal.gambar(); } }).catch(() => {});
 typeof nanti === "function" ? nanti(ambil) : setTimeout(ambil, 0);
