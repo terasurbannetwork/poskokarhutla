@@ -16,3 +16,8 @@ test("jenis baru: tiap butir punya rujukan paralel, tanpa 'aman', tanpa titik te
 test("tindakanUntuk jenis tak dikenal kosong; tsunami tingkat 1 jatuh ke tingkat terendah", () => {
   assert.deepEqual(tindakanUntuk("pesisir", 2), []); assert.equal(tindakanUntuk("tsunami", 1), BENCANA.tsunami.tindakan[2]);
 });
+test("udara (PB-38a): tiap tingkat 1..3 ada tindakan, tiap butir bersumber Kemenkes, gambar ada", async () => {
+  const u = BENCANA.udara; assert.ok(u);
+  for (const t of [1, 2, 3]) { assert.ok(u.tindakan[t]?.length, `tingkat ${t}`); for (const r of u.rujukan[t]) assert.match(r, /^Kemenkes, \d{1,2} \w+ \d{4}, ".+" \(kemkes\.go\.id\)$/); }
+  assert.ok((await import("node:fs")).existsSync(new URL(`../../public/img/${u.gambar}`, import.meta.url)));
+});

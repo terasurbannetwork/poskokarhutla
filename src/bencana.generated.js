@@ -1129,7 +1129,7 @@ export default {
           "kunci": [
             "udara"
           ],
-          "tangga": false
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "udara",

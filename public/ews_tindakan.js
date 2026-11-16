@@ -86,6 +86,22 @@ export const BENCANA = {
       3: ["Matikan listrik bila air mulai masuk rumah.", "Ungsikan anak, lansia, dan ternak ke tempat yang lebih tinggi.",
         "Jangan menyeberang jalan yang tergenang air laut berarus."],
     }},
+  /* Udara (PB-38a). Tingkat BAWAAN SEMENTARA Q37 (rancangan agent): 1 = ISPU PM2,5 Tidak sehat (Permen LHK P.14/2020), 2 = Sangat tidak sehat, 3 = Berbahaya; label resmi kategori tampil di samping tingkat.
+     Hanya anjuran warga dari siaran resmi Kemenkes; tiap butir punya rujukan paralel (dijaga tests/layar/ews_tindakan.test.mjs). Anjuran khusus tingkat ISPU, tindakan sekolah, dan tindakan dinas
+     tidak ada dalam sumber yang dibaca, jadi tidak ditulis; "Kemenkes" di bawah = tiga halaman siaran Kemenkes di rujukan, bukan Permenkes. Dua siaran bertentangan soal N95 untuk kelompok rentan
+     (2015: tidak dianjurkan; 2026: dianjurkan bila harus keluar): butir memakai siaran 2026 yang terbaru, pertentangannya menunggu keputusan pemilik. */
+  udara: {nama: "Kualitas udara", pendek: "Udara", warna: "#6b6f7a", gambar: "bencana-karhutla.jpg",
+    sumber: "PM2,5 rata-rata 24 jam stasiun BMKG, dipetakan ke kategori ISPU Permen LHK P.14/2020 (hitungan Centurisk97, bukan ISPU resmi)",
+    tindakan: {
+      1: ["Pakai masker saat kualitas udara memburuk dan batasi kegiatan di luar ruangan.", "Periksa indeks kualitas udara secara mandiri lewat aplikasi resmi.", "Jangan menyepelekan gejala pernapasan ringan."],
+      2: ["Kalau tidak perlu, jangan keluar rumah, terutama balita, ibu hamil, dan orang tua.", "Bila harus keluar, pakai masker N95 dan pastikan terpasang tanpa celah di sisi atas, bawah, maupun samping.", "Masker bedah menyaring partikel besar, tidak partikel kecil; tidak ada masker yang melindungi dari semua gas asap.", "Segera ke puskesmas bila mulai sesak napas."],
+      3: ["Kalau tidak perlu, jangan keluar rumah, terutama balita, ibu hamil, dan orang tua.", "Bila harus keluar, pakai masker N95 dan pastikan terpasang tanpa celah di sisi atas, bawah, maupun samping.", "Gejala berat: segera cari pertolongan medis ke puskesmas atau rumah sakit terdekat sebelum kondisi memburuk."],
+    },
+    rujukan: {
+      1: ["Kemenkes, 21 Agustus 2026, \"Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla\" (kemkes.go.id)", "Kemenkes, 21 Agustus 2026, \"Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla\" (kemkes.go.id)", "Kemenkes, 21 Agustus 2026, \"Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla\" (kemkes.go.id)"],
+      2: ["Kemenkes, 23 Oktober 2026, \"Kemenkes Perkuat Perlindungan Kesehatan Warga Terdampak Kabut Asap di Palangka Raya\" (kemkes.go.id)", "Kemenkes, 23 Oktober 2026, \"Kemenkes Perkuat Perlindungan Kesehatan Warga Terdampak Kabut Asap di Palangka Raya\" (kemkes.go.id)", "Kemenkes, 15 Oktober 2015, \"Penggunaan Masker Pada Asap Kebakaran Hutan\" (kemkes.go.id)", "Kemenkes, 23 Oktober 2026, \"Kemenkes Perkuat Perlindungan Kesehatan Warga Terdampak Kabut Asap di Palangka Raya\" (kemkes.go.id)"],
+      3: ["Kemenkes, 23 Oktober 2026, \"Kemenkes Perkuat Perlindungan Kesehatan Warga Terdampak Kabut Asap di Palangka Raya\" (kemkes.go.id)", "Kemenkes, 23 Oktober 2026, \"Kemenkes Perkuat Perlindungan Kesehatan Warga Terdampak Kabut Asap di Palangka Raya\" (kemkes.go.id)", "Kemenkes, 21 Agustus 2026, \"Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla\" (kemkes.go.id)"],
+    }},
   /* Butir dari Permen ESDM 15/2011 lewat MAGMA PVMBG (public/gunungapi/data/pedoman_krb.json). Level II Waspada = 1, III Siaga = 2, IV Awas = 3.
      rujukan[tingkat][i] = sumber butir ke-i; dijaga tests/layar/ews_tindakan.test.mjs. */
   gunungapi: {nama: "Gunung api", pendek: "Gunung api", warna: "#b5523b", gambar: "bencana-gunungapi.jpg",
