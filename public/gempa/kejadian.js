@@ -5,7 +5,7 @@
 const Kejadian = {
   st: {urut: "mulai", turun: true, hal: 0, rentang: "30", tgl: null},   /* tgl = satu tanggal WIB dari kalender; null = rentang */
   RENTANG: [["7", "7 hari"], ["14", "14 hari"], ["30", "30 hari"]],   /* pemilih waktu (pemilik, 16 Nov 2026); data API paling jauh 30 hari */ PER: 10, aktif: null, _ia: false,
-  KOL: [["kode", "Kode"], ["nama", "Gempa utama"], ["m", "Kekuatan", 1], ["sus", "Susulan", 1], ["mulai", "Mulai"], ["aktif", "Status"]],
+  KOL: [["kode", "Kode"], ["nama", "Gempa utama"], ["m", "Kekuatan", 1], ["sus", "Susulan", 1, "Gempa lebih kecil (di bawah M 5) yang jatuh di jendela jarak dan waktu gempa utama (Uhrhammer 1986, paling lama 35 hari). Batas bawah: hanya gempa kecil yang tercatat di sumber katalog kami yang dihitung."], ["mulai", "Mulai"], ["aktif", "Status"]],
   nilai: (k, c) => c === "sus" ? Math.max(0, k.jumlah - 1) : c === "aktif" ? +k.aktif : c === "mulai" ? Date.parse(k.mulai) : c === "nama" ? wilayahPendek(k.nama) : k[c],
   sel: (k, c) => c === "kode" ? `<b translate="no">${esc(k.kode)}</b>` : c === "nama" ? `<span translate="no">${esc(wilayahPendek(k.nama))}</span>` : c === "m" ? pilM(k.m) : c === "sus" ? fmt(Math.max(0, k.jumlah - 1))
     : c === "mulai" ? `<span translate="no">${esc(waktuGempa(k.mulai))}</span>` : `<span class="pill pm" style="--w:${k.aktif ? "#d4572f" : "#7d8794"}">${k.aktif ? "Aktif" : "Selesai"}</span>`,
@@ -16,7 +16,7 @@ const Kejadian = {
     const seg = Kartu.seg("rentang", this.RENTANG, st.tgl ? {} : st), tb = `<button type="button" class="kj-tgl" data-kj-tgl aria-haspopup="dialog" aria-pressed="${!!st.tgl}">${IKAL}${st.tgl ? esc(this.pendek(st.tgl)) : "Pilih tanggal"}</button>`;
     const alat = `<div class="kj-alat"><span class="kj-alat-l">Rentang waktu</span>${seg}${tb}</div>`, ket = st.tgl ? "tanggal " + this.pendek(st.tgl) : st.rentang + " hari terakhir";
     if (!R.length) return alat + `<div class="kosong">Tidak ada kejadian gempa ${ket}.</div>`;
-    return alat + `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num]) => `<th class="${num ? "n" : ""}" aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+    return alat + `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num, tt]) => `<th class="${num ? "n" : ""}"${tt ? ` title="${esc(tt)}"` : ""} aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}<p class="fnd">Sumber: BMKG, USGS. ${st.tgl ? "Kejadian yang mulai " + this.pendek(st.tgl) : st.rentang + " hari terakhir"}, per ${esc(jamWIB(new Date(Sus._daftar?.t || Date.now()).toISOString()))}</p>`; },
   wib: t => new Date(Date.parse(t) + 7 * 36e5).toISOString().slice(0, 10),
   pendek: iso => new Date(iso + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}),
