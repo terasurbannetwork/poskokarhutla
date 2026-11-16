@@ -1066,7 +1066,7 @@ def main():
     susun += [{'halaman': n, 'sumber': sumber()} for n in range(n_isi + 1, n_isi + 1 + n_l1 + n_l2 + 1)]
     foto = os.path.join(LB, 'mingguan/2026-11-02/banjir', 'bahan', 'sampul.jpg').replace(os.sep, '/')
     kredit = 'Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons'
-    susun.append({'jenis': 'penutup', 'layout': 'putih', 'foto': [foto], 'kredit': kredit, 'penyaji': PENYAJI})   # penutup tetap bernama tim
+    # pemilik 16 Nov 2026 ("cover belakang juga gausah"): tanpa slide penutup; deck berakhir di lampiran
     tetap = {}
     for no, b in enumerate(susun, 1):
         if b.get('bagian'):
