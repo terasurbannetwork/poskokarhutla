@@ -73,7 +73,7 @@
 .al-isi{padding:12px 16px 4px;display:grid;gap:8px}
 .al-pil{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none}
 .al-p{display:inline-flex;align-items:center;font-style:normal;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;background:color-mix(in oklab,var(--w) 16%,var(--card,#fff));color:var(--t,color-mix(in oklab,var(--w) 55%,#000))}
-.al-bar{position:fixed;z-index:59;right:16px;bottom:16px;width:min(420px,calc(100vw - 32px));display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;pointer-events:none}
+.al-bar{position:fixed;z-index:59;right:16px;bottom:16px;width:min(420px,calc(100vw - 32px));display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;pointer-events:none}.al-bar[hidden]{display:none}
 .al-bar:empty{display:none}
 .al-pl{pointer-events:auto;flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line,#d5dbe3);border-radius:999px;background:var(--card,#fff);color:var(--ink,#0b2545);font:700 12.5px/1.2 var(--font,system-ui);box-shadow:0 2px 8px rgb(0 0 0 / .18);cursor:pointer;white-space:nowrap}
 .al-pl svg{width:14px;height:14px;flex:none}
@@ -113,7 +113,13 @@
       `<button type="button" class="al-pl al-pl-${esc(k.tertinggi)}" data-pl="${esc(k.jenis)}" aria-label="${esc(`Peringatan ${k.label}: buka`)}">${LONCENG}${esc(k.label)}</button>`).join("");
   }
   /* strip pil memakai jangkar kartu (kanan bawah); bila kartu terbuka, strip naik di atasnya. Tinggi kartu berubah (bagian operator datang belakangan), jadi diikuti ResizeObserver. */
-  const taruh = () => { if (bar) bar.style.bottom = (el && el.isConnected ? el.offsetHeight + 24 : 16) + "px"; };
+  /* laci rincian (#laci.on, kanan layar) terbuka: pil bergeser ke kiri laci supaya tidak menutup isinya; di layar sempit laci menutupi lebar penuh, pil tetap */
+  let amatiLaci = null;
+  const geserLaci = () => { const lc = document.querySelector?.("#laci"); if (!lc) return "";
+    if (!amatiLaci && window.MutationObserver) { amatiLaci = new MutationObserver(() => taruh()); amatiLaci.observe(lc, {attributes: true, attributeFilter: ["class"]}); }   /* dipasang malas: #laci bisa belum ada saat alarm.js dimuat */
+    if (!lc.classList.contains("on") || innerWidth <= 600) return ""; const k = lc.getBoundingClientRect().left; return k > 200 ? Math.round(innerWidth - k + 16) + "px" : ""; };
+  const taruh = () => { if (!bar) return; bar.style.bottom = (el && el.isConnected ? el.offsetHeight + 24 : 16) + "px"; bar.style.right = geserLaci();
+    bar.hidden = innerWidth <= 600 && !!document.querySelector?.("#laci.on"); };   /* layar sempit: laci selebar layar, pil disembunyikan selama laci terbuka */
   let amati = null;
   function bukaPil(jenis) {
     const k = kelompokPil(ringkas.filter(a => a.jenis === jenis))[0]; if (!k) return;

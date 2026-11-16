@@ -43,7 +43,12 @@ const NamaWil = {
 };
 const rapiTempat = r => { if (r !== r.toUpperCase() || !/[A-Z]/.test(r)) return r; const p = r.split("-").map(x => x.trim()).filter(Boolean); if (p.length > 1 && (/^[A-Z]{2,5}$/.test(p[p.length - 1]) || PROV_BMKG.has(p[p.length - 1]))) p.pop();
   return p.map(x => x === "KAB" ? "Kab." : NamaWil.nama(NamaWil.skuas(x)) || x[0] + x.slice(1).toLowerCase()).join(" ").replace(/^Kab\. /, "Kab. "); };
-const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa( berada di)?\s*/i, "").replace(/(Barat|Timur)(Laut|Daya)\b/g, "$1 $2").replace(/^((?:(?:darat|laut)\s+)?\d+\s*km\s+(?:utara|timur laut|timur|tenggara|selatan|barat daya|barat laut|barat)\s+)(\S.*)$/i, (_, h, r) => h.toLowerCase() + rapiTempat(r)).trim(); /* arah huruf kecil seperti laci: "60 km timur laut Labuanbajo" */ if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
+/* USGS menulis "115 km ESE of Bitung, Indonesia": arah 16 mata angin dibulatkan ke 8 arah BMKG, ", Indonesia" dibuang (ID saja; EN tetap teks USGS) */
+const ARAH_USGS = {N: "utara", NNE: "utara", NE: "timur laut", ENE: "timur laut", E: "timur", ESE: "timur", SE: "tenggara", SSE: "tenggara",
+  S: "selatan", SSW: "selatan", SW: "barat daya", WSW: "barat daya", W: "barat", WNW: "barat", NW: "barat laut", NNW: "barat laut"};
+const usgsID = t => { if (window.BAHASA === "en") return String(t || "").replace(/, Indonesia$/, "");
+  const m = String(t || "").match(/^(\d+)\s*km\s+([NSEW]{1,3})\s+of\s+(.+?)(?:,\s*Indonesia)?$/); return m && ARAH_USGS[m[2]] ? `${m[1]} km ${ARAH_USGS[m[2]]} ${m[3]}` : String(t || "").replace(/, Indonesia$/, ""); };
+const wilayahPendek = t => { const s = usgsID(String(t || "").replace(/^Pusat gempa( berada di)?\s*/i, "")).replace(/(Barat|Timur)(Laut|Daya)\b/g, "$1 $2").replace(/^((?:(?:darat|laut)\s+)?\d+\s*km\s+(?:utara|timur laut|timur|tenggara|selatan|barat daya|barat laut|barat)\s+)(\S.*)$/i, (_, h, r) => h.toLowerCase() + rapiTempat(r)).trim(); /* arah huruf kecil seperti laci: "60 km timur laut Labuanbajo" */ if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
   /* EN: "darat 21 km Barat Daya Kota Bogor" -> "21 km SW of Kota Bogor (onshore)"; nama tempat BMKG tetap apa adanya */
   const m = window.BAHASA === "en" && s.match(/^(darat|laut)?\s*(\d+)\s*km\s+(utara|timur\s?laut|timur|tenggara|selatan|barat\s?daya|barat\s?laut|barat)\s+(.+)$/i);
   if (m) return `${m[2]} km ${ARAH_EN[m[3].toLowerCase().replace(/\s/g, "")]} of ${m[4]}${m[1] ? (/^d/i.test(m[1]) ? " (onshore)" : " (offshore)") : ""}`;

@@ -22,6 +22,38 @@
 /* laci: bagian lanjutan (susulan, paparan, gelombang) */
 .lc-lanjut{display:grid;gap:10px}
 .lc-sek{display:grid;gap:6px}
+/* laci gempa: tiap bagian lanjutan satu kartu; label kiri, nilai rata kanan, tanpa belang baris (16 Nov 2026) */
+#laci .lc-sek:has(> .lc-h){border:1px solid var(--line);border-radius:10px;padding:10px 12px;gap:8px;background:var(--card)}
+#laci .lc-sek:has(> [data-j="Kontak BPBD"]){display:none}
+#laci table.tb2 tbody tr:nth-child(even){background:none}
+#laci table.tb2 td{padding:7px 0;vertical-align:middle}
+#laci table.tb2 td:first-child{color:var(--ink2)}
+#laci table.tb2 td.n{text-align:right;padding-left:12px;color:var(--ink)}
+#laci .lc-v{font-family:var(--display);font-weight:700;font-size:14px}
+#laci .lc-sub{display:block;font-size:11px;font-weight:500;color:var(--ink2)}
+#laci .lc-skor{display:inline-flex;align-items:center;gap:8px}
+#laci .lc-sek .fnd{margin:0;font-size:11.5px;line-height:1.45;color:var(--ink2)}
+#laci .lc-src{font-size:10.5px!important}
+#laci .lc-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lc-kls{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--ink2)}
+.lc-kls span{display:inline-flex;align-items:center;gap:5px}
+.lc-kls span.on{color:var(--ink);font-weight:700}
+.lc-kls i{width:8px;height:8px;border-radius:50%;background:var(--w)}
+/* daftar gempa satu provinsi: ringkasan, lokasi dua baris dengan rincian, riwayat provinsi */
+.gk-per{margin:0 2px 6px;font-size:12px;font-weight:700;color:var(--ink)}
+.gk-ring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 8px}
+.gk-ring div{border:1px solid var(--line);border-radius:8px;padding:7px 9px;display:grid;gap:1px}
+.gk-ring b{font-family:var(--display);font-size:16px;color:var(--ink)}
+.gk-ring span{font-size:11px;color:var(--ink2)}
+.tb.tb-g{align-items:start;padding-top:8px;padding-bottom:8px}
+.tb .kom.gk{flex-direction:column;align-items:flex-start;gap:2px}
+.gk-t{white-space:normal;line-height:1.3;font-weight:600}
+.gk-s{font-size:11px;line-height:1.3;color:var(--ink2)}
+.gk-rw{margin-top:12px;padding:10px 4px 0;border-top:1px solid var(--line);display:grid;gap:4px;font-size:12px;color:var(--ink2)}
+.gk-rw p{margin:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.gk-rw p:empty{display:none}
+.gk-rw b{color:var(--ink)}
+.gk-rw-h{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
 .lc-mmi{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--w)}
 .lc-sim{align-self:start;justify-self:start}
 /* A24: kontak BPBD dibuat tetapi disembunyikan, sama seperti "Respons terdekat" karhutla (data kantor lama, nomor perlu dicek) */

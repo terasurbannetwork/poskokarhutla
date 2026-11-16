@@ -212,12 +212,28 @@ function renderDaftar() {
     box.innerHTML = (seg || unduh ? `<div style="display:flex;align-items:center;gap:8px;padding:0 2px 6px">${seg ? `<div style="flex:1;min-width:0">${seg}</div>` : ""}${unduh ? `<div style="margin-left:auto">${unduh}</div>` : ""}</div>` : "") + kepala(G, [["nama", "Provinsi"], ["n", "Gempa", "n"], ["mmi", "Dirasakan", "n"], ["m", "Terbesar"]]) +
       baris.map((p, i) => `<button class="tb" data-k="${esc(p.k)}" style="grid-template-columns:${G}"><span class="rk">${i + 1}</span><span class="kom"><b>${esc(p.nama)}</b></span><span class="n"><b>${fmt(p.n)}</b></span><span class="n">${p.mmi ? fmt(p.mmi) : "–"}</span><span>${pilM(p.m)}</span></button>`).join("");
     return; }
-  const G = "20px minmax(0,2.4fr) minmax(70px,.9fr) minmax(80px,1.2fr)", per = 20;
+  const G = "20px minmax(0,2.4fr) minmax(64px,.8fr) minmax(84px,1fr)", per = 20;
   const isi = d.filter(g => (g.prov || "-") === j[0]).sort((a, b) => arah * (u.k === "m" ? a.m - b.m : a.t - b.t) || b.t - a.t);
   S.hal = Math.min(S.hal, Math.max(0, Math.ceil(isi.length / per) - 1));
-  box.innerHTML = kepala(G, [[null, "Lokasi"], ["m", "Kekuatan"], ["t", "Waktu"]]) +
-    isi.slice(S.hal * per, S.hal * per + per).map((g, i) => `<button class="tb" data-g="${esc(g.id)}" style="grid-template-columns:${G}"><span class="rk">${S.hal * per + i + 1}</span><span class="kom">${esc(wilayahPendek(g.wilayah))}</span><span>${pilM(g.m)}</span><span class="n">${esc(jamPendek(g.waktu))}</span></button>`).join("") +
-    paginasi(S.hal, isi.length, per, "gempa"); }
+  /* baris kedua per gempa: kedalaman, dirasakan, status tsunami BMKG; tanpa teks bila datanya tidak ada */
+  const rinci = g => { const x = [g.dalam != null && `kedalaman ${fmt(g.dalam)} km`, g.mmi_maks > 0 && `dirasakan MMI ${ROMAWI[Math.min(12, Math.max(1, Math.round(g.mmi_maks)))]}`,
+    (g.tsunami?.kode ?? 0) >= 1 && "berpotensi tsunami (BMKG)"].filter(Boolean).join(", "); return x ? x[0].toUpperCase() + x.slice(1) : ""; };
+  /* nama kab BMKG ("HALMAHERASELATAN") baru rapi sesudah kamus NamaWil dimuat: muat sekali saat daftar provinsi dibuka, lalu gambar ulang */
+  if (typeof NamaWil !== "undefined" && !NamaWil.kamus && !renderDaftar._kamus) { renderDaftar._kamus = 1; NamaWil.siap().then(() => { if (S.jalur.length) nanti(renderDaftar); }); }
+  box.innerHTML = ringkasProv(j[0], isi) + kepala(G, [[null, "Lokasi"], ["m", "Kekuatan"], ["t", "Waktu"]]) +
+    isi.slice(S.hal * per, S.hal * per + per).map((g, i) => { const r = rinci(g); return `<button class="tb tb-g" data-g="${esc(g.id)}" style="grid-template-columns:${G}"><span class="rk">${S.hal * per + i + 1}</span><span class="kom gk"><span class="gk-t">${esc(wilayahPendek(g.wilayah))}</span>${r ? `<small class="gk-s">${esc(r)}</small>` : ""}</span><span>${pilM(g.m)}</span><span class="n">${esc(jamPendek(g.waktu))}</span></button>`; }).join("") +
+    (isi.length > per ? paginasi(S.hal, isi.length, per, "gempa") : "") + riwayatSingkat(j[0]); }
+/* ringkasan di atas daftar gempa satu provinsi: periode yang sedang dipilih dan tiga angka dari daftar itu sendiri (tanpa hitungan baru) */
+function ringkasProv(k, isi) {
+  const per = S.tanggal ? "pada " + new Date(S.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "Asia/Jakarta"}) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir";
+  const kuat = isi.reduce((a, g) => !a || g.m > a.m ? g : a, null), rasa = isi.filter(g => g.mmi_maks > 0).length;
+  const kotak = (v, l) => `<div><b>${v}</b><span>${l}</span></div>`;
+  return `<p class="gk-per">${esc(namaProv(k))}, ${esc(per)}</p><div class="gk-ring">${kotak(fmt(isi.length), "gempa")}${kotak(kuat ? esc(mTulis(kuat.m)) : "–", "terkuat")}${kotak(fmt(rasa), "dirasakan warga")}</div>`; }
+/* riwayat provinsi di bawah daftar: M 5+ sejak 1900 (riwayat_prov.json) dan indeks risiko (risiko.json), diisi bila datanya sudah dimuat */
+function riwayatSingkat(k) {
+  const r = riwayatProv().find(x => x.k === k), id = "gkRisiko" + k;
+  if (typeof Risiko !== "undefined") Risiko.prov(k).then(v => { const el = document.getElementById(id); if (el && v) el.innerHTML = `Indeks risiko riwayat <b>${fmt(v.skor)} dari 100</b> <span class="lc-mmi" style="--w:${v.w};color:${v.skor < 30 ? "#3b3320" : "#fff"}">${esc(v.kelas)}</span>`; }).catch(() => {});
+  return `<div class="gk-rw"><p class="gk-rw-h">Riwayat provinsi</p>${r ? `<p><b>${fmt(r.n)}</b> gempa M 5+ sejak 1900, terbesar <b>${esc(mTulis(r.m))}</b></p>` : ""}<p id="${id}"></p></div>`; }
 /* pilih ukuran provinsi (segmen atau kepala kolom): urut ikut ukuran, warna peta dan legenda mengikuti; render berat ditunda */
 function pilihUkuran(slug) { const u = KAT_UKURAN.find(x => x.slug === slug); if (!u || !(S.ukuranIzin || []).some(x => x.slug === slug)) return false;
   S.ukuran = slug; S.urut = {k: u.kunci, turun: true}; S.hal = 0; renderDaftar(); nanti(() => { Peta.aturWilayah(); renderLegenda(); }); return true; }
