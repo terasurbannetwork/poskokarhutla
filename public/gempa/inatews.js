@@ -151,9 +151,9 @@ const Ina = {
   daftarMMI(mm) { const A = [...mm].sort((a, b) => b.nilai - a.nilai), M = 3, ch = x => `<span class="ina-mi">${this.pilMMI(x.mmi, x.nilai)}<span translate="no">${esc(x.wilayah)}</span></span>`;
     const lagi = A.slice(M); return `<div class="ina-mm">${A.slice(0, M).map(ch).join("")}${lagi.length ? `<span class="ina-mi ina-mi-lagi" title="${esc(lagi.map(x => x.wilayah + " (MMI " + x.mmi + ")").join(", "))}">+${lagi.length} lainnya</span>` : ""}</div>`; },
   /* Riwayat: teks bebas katalog PDF BMKG dibaca jadi ringkasan visual; teks lengkap tetap di title. Tidak menebak: yang tidak terbaca tidak ditampilkan sebagai angka. */
-  ROM: {I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10, XI: 11, XII: 12},
+  ROMN: {I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10, XI: 11, XII: 12},
   selDirasakan(t) { if (!t) return ["–", -1]; const teks = String(t).replace(/�/g, "-");
-    let mx = 0, rm = ""; if (/MMI|SIG/i.test(teks)) for (const m of teks.matchAll(/\b(XII|XI|X|IX|VIII|VII|VI|V|IV|III|II)\b/g)) { const n = this.ROM[m[1]]; if (n > mx) { mx = n; rm = m[1]; } }
+    let mx = 0, rm = ""; if (/MMI|SIG/i.test(teks)) for (const m of teks.matchAll(/\b(XII|XI|X|IX|VIII|VII|VI|V|IV|III|II)\b/g)) { const n = this.ROMN[m[1]]; if (n > mx) { mx = n; rm = m[1]; } }
     const wil = teks.replace(/^[\s\-–•]+/, "").split(/\s*\b(?:XII|XI|X|IX|VIII|VII|VI|V|IV|III|II)\b|\(|Pusat gempa/)[0].replace(/\s+(?:dengan|daerah).*$/i, "").replace(/[\s:,.\-–]+$/, "");
     return [`<span class="ina-rk" title="${esc(teks)}">${mx ? this.pilMMI(rm, mx) : ""}<span class="ina-rk-t">${esc(wil || teks)}</span></span>`, mx || 0]; },
   selKorban(t) { if (!t) return ["–", -1]; const teks = String(t), jml = re => { let j = 0, ada = false; for (const m of teks.matchAll(re)) { const n = +m[1].replace(/\./g, ""); if (Number.isFinite(n)) { j += n; ada = true; } } return ada ? j : null; };

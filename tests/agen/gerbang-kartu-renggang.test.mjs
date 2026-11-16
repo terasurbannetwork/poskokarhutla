@@ -14,7 +14,7 @@ for (const f of css) {
   for (const m of s.matchAll(/([^{}]+)\{([^{}]*)\}/g)) aturan.push({f, sel: m[1].trim(), isi: m[2]});
 }
 /* wadah yang belum diperiksa saat gerbang lahir; hapus barisnya begitu wadahnya diberi gap atau terbukti berisi satu kartu */
-const SISA = new Set(["#insight .ct-bab", "#satelit", "#posko", "#tren", "#dampak", "#laporan #insight", ".sp-slot", ".sp-kartu-tautan"]);
+const SISA = new Set(["#insight .ct-bab", "#satelit", "#posko", "#laporan #insight", ".sp-slot", ".sp-kartu-tautan"]);
 
 test("kartu.css: kartu .ex yang bersebelahan diberi jarak minimal 16px", () => {
   const r = aturan.find(a => a.f === "public/inti/kartu.css" && a.sel.split(",").some(x => /^\.ex(\.ex-std)?\+\.ex$/.test(x.replace(/\s+/g, ""))));
