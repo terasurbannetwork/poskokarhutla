@@ -80,3 +80,35 @@ test("ketik: ketikan lama dibatalkan (debounce)", async () => {
   const r = await new Promise(ok => g.CariLuas.ketik("rsud", x => { if (!x.memuat) ok(x); }));
   assert.equal(lama, 0); assert.equal(r.hasil[0].n, "RSUD Cianjur");
 });
+const tunggu = (g, q) => new Promise(ok => g.CariLuas.ketik(q, r => { if (!r.memuat) ok(r); }));
+test("muat gagal di tengah indeks tidak menggandakan item sesudah dimuat ulang", async () => {
+  const reg = {bencana: [{id: "gempa", kemampuan: {layar: {cari: ["faskes"]}}}]};
+  const bagus = [{t: "rs", nama: "RSUD Cianjur", prov: "32", lon: 107.1, lat: -6.8}];
+  const berkas = {"/data/fasilitas.json": [...bagus, null]};   // baris kedua melempar saat dipetakan
+  const {g, diminta} = dunia({reg, berkas}); g.CariLuas.tema({id: "gempa", nama: k => k, terbang() {}});
+  assert.deepEqual(lurus((await tunggu(g, "cianjur")).hasil), []);   // gagal: tidak ada item setengah jadi
+  berkas["/data/fasilitas.json"] = bagus;
+  const r = await tunggu(g, "cianjur"); assert.equal(r.hasil.length, 1);
+  assert.equal(diminta.filter(u => u === "/data/fasilitas.json").length, 2);
+  assert.equal((await tunggu(g, "cianjur")).hasil.length, 1);   // ketikan ulang tetap satu item
+});
+test("sekolah (lapisan besar) baru dimuat pada 3 huruf", async () => {
+  const reg = {bencana: [{id: "gempa", kemampuan: {layar: {cari: ["sekolah", "faskes"]}}}]};
+  const {g, diminta} = dunia({reg, berkas: BERKAS}); g.CariLuas.tema({id: "gempa", nama: k => k, terbang() {}});
+  await tunggu(g, "ci");
+  assert.ok(!diminta.includes("/data/sekolah.json")); assert.ok(diminta.includes("/data/fasilitas.json"));
+  const r = await tunggu(g, "cia");
+  assert.ok(diminta.includes("/data/sekolah.json")); assert.ok(r.hasil.some(h => h.t === "sekolah"));
+  assert.equal((await tunggu(g, "ci")).hasil.some(h => h.t === "sekolah"), false);   // 2 huruf: sekolah tidak ikut
+});
+test("pemindaian bertahap = pemindaian penuh, juga dari himpunan cocok sebelumnya; ketikan baru membatalkan", async () => {
+  const {M} = dunia();
+  const xs = Array.from({length: 45000}, (_, k) => item(M, k % 3 ? "desa" : "sekolah", `Desa ${k % 7 ? "Sukamaju" : "Cianjur"} ${k}`, "Kab"));
+  const penuh = M.cocok(xs, "cianjur 1", {lapisan: ["desa", "sekolah"]});
+  const a = await M.cocokBertahap(xs, "cianjur", {lapisan: ["desa", "sekolah"]});
+  const b = await M.cocokBertahap(a.lolos, "cianjur 1", {lapisan: ["desa", "sekolah"]});   // diperpanjang: pindai hanya yang cocok tadi
+  assert.ok(a.lolos.length < xs.length);
+  assert.deepEqual(b.hasil.map(i => i.n), penuh.map(i => i.n));
+  assert.deepEqual((await M.cocokBertahap(xs, "cianjur 1", {lapisan: ["desa", "sekolah"]})).hasil.map(i => i.n), penuh.map(i => i.n));
+  assert.equal(await M.cocokBertahap(xs, "cianjur", {}, () => true), null);   // dibatalkan di tengah
+});

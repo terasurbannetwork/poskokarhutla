@@ -75,3 +75,26 @@ test("gerbang registri: hanya kemampuan.layar.brief true yang memasang tombol", 
 test("kode mesin menyebut kemampuan dan brief (gerbang bencana)", () => {
   const s = baca("public/inti/brief.js"); assert.ok(s.includes("kemampuan") && s.includes("brief"));
 });
+test("baris tabel melebihi halaman dipotong dengan catatan 'dan N lain'", () => {
+  const {g} = dunia(null), M = g.Brief.model, n = M.MAKS.tabel1 + 5;
+  const t = {judul: "T", kolom: ["A", "B"], baris: Array.from({length: n}, (_, k) => ["Prov " + k, k]), satuan: "provinsi"};
+  const h = teks(M.tabel(t, M.MAKS.tabel1));
+  assert.equal((M.tabel(t, M.MAKS.tabel1).match(/<tr>/g) || []).length, M.MAKS.tabel1 + 1);   // +1 baris kepala
+  assert.ok(h.includes("dan 5 provinsi lain")); assert.ok(h.includes("Prov " + (M.MAKS.tabel1 - 1))); assert.ok(!h.includes("Prov " + M.MAKS.tabel1 + " "));
+  assert.ok(!teks(M.tabel({...t, baris: t.baris.slice(0, 3)}, M.MAKS.tabel1)).includes(" lain"));   // yang muat tidak diberi catatan
+  const hl = M.html({tabel1: t, tabel2: t, daftar: {item: Array.from({length: M.MAKS.daftar + 2}, (_, k) => "butir " + k)}});
+  assert.equal(halaman(hl), 2); assert.ok(teks(hl).includes("dan 2 butir lain"));
+});
+test("cetak: menunggu data siap lalu mencetak; bila tak siap, tidak mencetak dan tombol memberi pesan", async () => {
+  const {g} = dunia(null); let siap = false, dicetak = 0, data = 0;
+  g.print = () => dicetak++;
+  const tb = {innerHTML: "ikon", title: "Unduh", textContent: "", disabled: false};
+  g.document.querySelector = q => q === "[data-brief]" ? tb : null;
+  g.document.getElementById = () => null; g.document.createElement = () => ({}); g.document.body.appendChild = () => {};
+  g.Brief.tema({id: "gempa", siap: () => siap, data: async () => (data++, {nama: "Gempa"})});
+  const p = g.Brief.cetak(); await new Promise(r => setTimeout(r, 20));
+  assert.equal(tb.textContent, "Menyiapkan…"); assert.equal(tb.disabled, true); assert.equal(dicetak, 0);
+  siap = true; await p; await new Promise(r => setTimeout(r, 80));
+  assert.equal(data, 1); assert.equal(dicetak, 1); assert.equal(tb.innerHTML, "ikon"); assert.equal(tb.disabled, false);
+  siap = false; assert.equal(await g.Brief.model.tungguSiap(200), false);
+});
