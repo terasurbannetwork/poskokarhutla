@@ -114,6 +114,18 @@ jobs:
         timeout-minutes: 45
         run: python3 scripts/kekeringan/embung.py uji && python3 scripts/kekeringan/embung.py
 
+      # Mentah gunung api (krb.geojson, wiup_*, pop_piksel) memakai kunci lintas- yang SAMA dengan lintas.yml: KRB ESDM sering mati, dan salinan
+      # cache membuat paparan tetap bisa dihitung. Jalur HARUS sama persis dengan lintas.yml (PB-68.10).
+      - name: Pulihkan data mentah gunung api
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/raw/kekeringan
+            data/raw/kekeringan_hujan.json
+            data/raw/gunungapi
+          key: lintas-${{ github.run_id }}
+          restore-keys: lintas-
+
       # paparan.py (KRB ESDM, InaRISK, Overpass) lalu citra.py (Sentinel-2 STAC): citra.py menjaga kolom `citra` di paparan.json, jadi urutannya ini.
       # KRB ESDM mati = gunung tanpa KRB jatuh ke InaRISK/cincin radius (paparan.py:16), bukan dikarang.
       - name: Paparan dan citra gunung api (boleh gagal)
@@ -129,12 +141,28 @@ jobs:
           python3 scripts/gunungapi/paparan.py uji && { python3 scripts/gunungapi/paparan.py || echo "::warning title=gunungapi-paparan::paparan.py gagal; berkas lamanya dibiarkan"; }
           python3 scripts/gunungapi/citra.py uji && { python3 scripts/gunungapi/citra.py || echo "::warning title=gunungapi-citra::citra.py gagal; berkas lamanya dibiarkan"; }
 
+      # Indeks risiko riwayat letusan (GVP) bulanan; dulu tanpa jadwal sehingga risiko.json beku (19 Okt 2026). Keluaran di-commit di langkah di bawah.
+      - name: Indeks risiko riwayat letusan gunung api (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: python3 scripts/gunungapi/risiko.py uji && { python3 scripts/gunungapi/risiko.py || echo "::warning title=gunungapi-risiko::risiko.py gagal; berkas lamanya dibiarkan"; }
+
       # Piksel penduduk per gunung untuk simulasi (pop_grid.py membaca cache pop_piksel.json dari paparan.py, atau TIF WorldPop bila belum ada).
       - name: Piksel penduduk gunung api (boleh gagal)
         continue-on-error: true
         timeout-minutes: 30
         run: |
           python3 scripts/gunungapi/pop_grid.py && python3 scripts/gunungapi/pop_grid.py --uji
+
+      - name: Simpan data mentah gunung api
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/raw/kekeringan
+            data/raw/kekeringan_hujan.json
+            data/raw/gunungapi
+          key: lintas-${{ github.run_id }}
 
       # Abrasi garis pantai tahunan (Landsat via Planetary Computer): hanya Februari atau dispatch tangan; cache adegan supaya tahun berikutnya hanya membaca adegan baru.
       - name: Bulan abrasi?
@@ -168,7 +196,7 @@ jobs:
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/citra public/gunungapi/data/pop public/pesisir/data/abrasi.json"
+          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/risiko.json public/gunungapi/data/citra public/gunungapi/data/pop public/pesisir/data/abrasi.json"
           for f in $B; do [ ! -e "$f" ] || git add "$f"; done
           git checkout -- public/gempa/data public/kekeringan/data public/gunungapi/data public/pesisir/data
           git diff --cached --quiet && { echo "lapisan bulanan tidak berubah"; exit 0; }
@@ -231,3 +259,8 @@ jobs:
           done
           echo "::error title=Push panen bulanan gagal::git push ke main gagal 3x"
           exit 1
+
+      # Penjaga data beku (PB-68.10): langkah `continue-on-error` di atas menelan galat, jadi periksa umur berkas keluaran di akhir. Merah = galat.
+      - name: Periksa data tidak beku
+        if: always()
+        run: python3 scripts/agents/cek_basi.py statis
