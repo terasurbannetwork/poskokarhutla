@@ -27,10 +27,12 @@ nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align
 @media (max-width:1340px) and (min-width:1281px){nav.tabs button svg,nav.tabs a.tab-ln svg{display:none}}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
-.lainnya{flex:none}
-.lainnya summary{list-style:none;display:flex;align-items:center;gap:6px;color:#fff;opacity:.78;padding:8px 13px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+.lainnya{flex:none;display:flex;align-items:center}
+.lainnya summary{list-style:none;display:flex;align-items:center;gap:7px;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:14.5px;line-height:inherit;white-space:nowrap;cursor:pointer}
+@media (max-width:1500px){.lainnya summary{padding:8px 12px;gap:6px;font-size:13.5px}}
+@media (min-width:1501px){nav.tabs:has(> button:nth-of-type(9)) .lainnya summary{padding:8px 12px;gap:6px}}
 .lainnya summary::-webkit-details-marker{display:none}
-.lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;margin-top:-3px;transform:rotate(45deg)}
 .lainnya summary:hover,.lainnya[open] summary{opacity:1;background:oklch(100% 0 0 / .08)}
 .lainnya:has(button[aria-current="page"]) summary{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
