@@ -206,8 +206,17 @@ def ganti_operasi(s, op):
         assert f'<a:t>{pendek[n]}</a:t>' in s and f'<a:t>{v:,}</a:t>'.replace(',', '.') in s, f'personel {n} {v} beda dengan templat: isi ulang halaman personel'
     pat, wb = sum(r[1] for r in ARMADA), sum(r[2] for r in ARMADA)
     omc = {n: o for n, o in op['omc'].items() if o['sortie'] or o['sasaran']}   # Kalsel 26 Okt: disasar Hercules yang terbang dari Kalteng
-    ada = [n for n, *_ in OMC_BARIS if n in omc] or [n for n, *_ in OMC_BARIS if (op['omc'].get(n) or {}).get('hujan')]   # 15 Nov 2026: OMC nihil di semua provinsi, baris = provinsi yang hujannya dilaporkan   # baris templat tanpa OMC dibuang (Kalbar 26 Okt; pemilik 27 Okt 2026)
-    hujan = [n for n in ada if op['omc'][n].get('hujan')]
+    # baris templat tanpa OMC dibuang (Kalbar 26 Okt; pemilik 27 Okt 2026); 15 Nov 2026: OMC nihil di semua provinsi, baris = provinsi yang hujannya dilaporkan.
+    # Pemilik 16 Nov 2026 ("Ya, tambahkan"): provinsi di luar 4 baris templat (Jambi, Riau) mengisi baris templat yang kosong, namanya diganti.
+    TPL = [n for n, *_ in OMC_BARIS]
+    pilih = [n for n in TPL if n in omc] + [n for n in omc if n not in TPL]
+    if not pilih:
+        pilih = [n for n in TPL if (op['omc'].get(n) or {}).get('hujan')] + [n for n, o in op['omc'].items() if n not in TPL and o.get('hujan')]
+    if len(pilih) > len(TPL): print('PERINGATAN panel OMC hanya 4 baris; tidak tampil:', pilih[len(TPL):]); pilih = pilih[:len(TPL)]
+    bebas, slot = [n for n in TPL if n not in pilih], {}   # slot: nama baris templat -> provinsi yang tampil di baris itu
+    for n in pilih: slot[n if n in TPL else bebas.pop(0)] = n
+    ada = [t for n in pilih for t, v in slot.items() if v == n]   # nama baris templat, urut tampil
+    hujan = [n for n in pilih if op['omc'][n].get('hujan')]
     hujan_wa = [n for n, o in op['omc'].items() if o.get('hujan')]   # subjudul: semua provinsi yang hujannya dilaporkan WA, bukan hanya 4 baris OMC
     s = teks(s, '51', str(pat + wb)); s = teks(s, '4 provinsi', 'OMC#'); s = teks(s, '3 provinsi', f'{len(hujan_wa)} provinsi'); s = teks(s, 'OMC#', f'{len(omc)} provinsi')   # penanda: hasil pertama bisa sama dengan teks kedua
     s = teks(s, '15', str(pat)); s = teks(s, '36', str(wb))
@@ -221,7 +230,8 @@ def ganti_operasi(s, op):
     lama_sas = ['Ketapang, Kayong Utara', 'Barito Selatan, Seruyan, Kotawaringin Timur dan Barat', 'Ogan Ilir, OKI, Banyuasin, Palembang', 'Tabalong, Banjar, Barito Kuala']
     lama_has = ['13 kab/kota, termasuk 2 sasaran', 'di 4 kabupaten sasaran', 'Ogan Ilir dan Lahat', 'radar BMKG 24 jam']
     for (nama, yt, yp, yd), ls, lh in zip(OMC_BARIS, lama_sas, lama_has):
-        o = op['omc'].get(nama) or {'sortie': 0, 'hujan': None, 'sasaran': ''}
+        if slot.get(nama, nama) != nama: s = ubah_sp(s, 795528, yt, teks_baru=slot[nama])   # nama provinsi baris templat diganti
+        o = op['omc'].get(slot.get(nama, nama)) or {'sortie': 0, 'hujan': None, 'sasaran': ''}
         s = teks(s, ls, daftar_sasaran(o['sasaran']) if o['sasaran'] else 'tidak ada sortie')
         h = o['hujan']
         label = label_hujan(h) if h else 'BELUM HUJAN'
