@@ -3,22 +3,27 @@
 /* Tabel kejadian G (gempa utama M 5+ dan susulannya, /api/gempa/kejadian, 30 hari) dengan kolom standar: kepala gelap, bisa diurut, paginasi (A10).
    Klik baris = peta + laci gempa utama + titik susulan + lapisan isoseismal MMI (model guncangan, perkiraan). Tautan bersih: /gempa/k/G0016. */
 const Kejadian = {
-  st: {urut: "mulai", turun: true, hal: 0}, PER: 10, aktif: null, _ia: false,
+  st: {urut: "mulai", turun: true, hal: 0, rentang: "30"},
+  RENTANG: [["7", "7 hari"], ["14", "14 hari"], ["30", "30 hari"]],   /* pemilih waktu (pemilik, 16 Nov 2026); data API paling jauh 30 hari */ PER: 10, aktif: null, _ia: false,
   KOL: [["kode", "Kode"], ["nama", "Gempa utama"], ["m", "Kekuatan", 1], ["sus", "Susulan", 1], ["mulai", "Mulai"], ["aktif", "Status"]],
   nilai: (k, c) => c === "sus" ? Math.max(0, k.jumlah - 1) : c === "aktif" ? +k.aktif : c === "mulai" ? Date.parse(k.mulai) : c === "nama" ? wilayahPendek(k.nama) : k[c],
   sel: (k, c) => c === "kode" ? `<b translate="no">${esc(k.kode)}</b>` : c === "nama" ? `<span translate="no">${esc(wilayahPendek(k.nama))}</span>` : c === "m" ? pilM(k.m) : c === "sus" ? fmt(Math.max(0, k.jumlah - 1))
     : c === "mulai" ? `<span translate="no">${esc(waktuGempa(k.mulai))}</span>` : `<span class="pill pm" style="--w:${k.aktif ? "#d4572f" : "#7d8794"}">${k.aktif ? "Aktif" : "Selesai"}</span>`,
   tabel() {
-    const st = this.st, s = st.turun ? -1 : 1, R = [...this.K].sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
+    const st = this.st, s = st.turun ? -1 : 1, batas = Date.now() - +st.rentang * 864e5, R = this.K.filter(k => Date.parse(k.mulai) >= batas).sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / this.PER) - 1));
-    return `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num]) => `<th class="${num ? "n" : ""}" aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
-      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}<p class="fnd">Sumber: BMKG, USGS. 30 hari terakhir, per ${esc(jamWIB(new Date(Sus._daftar?.t || Date.now()).toISOString()))}</p>`; },
-  gambarTabel() { const el = $("#kejadian"); el.innerHTML = this.tabel(); pengurutKepala(this.st, el.querySelector("thead"), () => nanti(() => this.gambarTabel())); },
+    const alat = `<div class="kj-alat"><span class="kj-alat-l">Rentang waktu</span>${Kartu.seg("rentang", this.RENTANG, st)}</div>`;
+    if (!R.length) return alat + `<div class="kosong">Tidak ada kejadian gempa ${st.rentang} hari terakhir.</div>`;
+    return alat + `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num]) => `<th class="${num ? "n" : ""}" aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}<p class="fnd">Sumber: BMKG, USGS. ${st.rentang} hari terakhir, per ${esc(jamWIB(new Date(Sus._daftar?.t || Date.now()).toISOString()))}</p>`; },
+  gambarTabel() { const el = $("#kejadian"); el.innerHTML = this.tabel(); const th = el.querySelector("thead"); if (th) pengurutKepala(this.st, th, () => nanti(() => this.gambarTabel())); },
   async render() {
     const el = $("#kejadian"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
       /* paginasi hanya untuk klik (Tab/panah tidak mengganti halaman); baris untuk klik, Enter, atau Spasi */
-      const buka = e => { const h = e.type === "click" && e.target.closest("[data-h]");
+      const buka = e => { const rg = e.type === "click" && e.target.closest('button[data-set="rentang"]');
+        if (rg) { if (rg.dataset.v === this.st.rentang) return; this.st.rentang = rg.dataset.v; this.st.hal = 0; return nanti(() => this.gambarTabel()); }
+        const h = e.type === "click" && e.target.closest("[data-h]");
         if (h) { if (h.disabled) return; const a = +h.dataset.h; this.st.hal = a; el.querySelectorAll(".pgn-b").forEach(b => { b.classList.toggle("on", b === h && !b.disabled); if (b !== h) b.removeAttribute("aria-current"); }); h.setAttribute("aria-current", "page");
           return nanti(() => { this.gambarTabel(); el.querySelector(`.pgn-b[data-h="${a}"]`)?.focus(); }); }
         const r = e.target.closest("tr[data-kode]"); if (r && (e.type === "click" || e.key === "Enter" || e.key === " ")) { e.preventDefault(); this.buka(r.dataset.kode); } };

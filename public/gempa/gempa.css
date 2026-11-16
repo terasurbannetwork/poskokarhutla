@@ -112,3 +112,8 @@
 .lc-lb b{font-weight:700;color:var(--ink);text-align:right}
 .lc-luar{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:600;color:var(--brand2);text-decoration:none}
 .lc-luar:hover{background:var(--surface)}
+
+/* tab Kejadian: pemilih rentang waktu di atas tabel */
+#kejadian .kj-alat{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 0 12px}
+#kejadian .kj-alat-l{font-size:12.5px;font-weight:600;color:var(--ink2)}
+#kejadian .kj-alat .seg{flex:none}
