@@ -73,9 +73,9 @@ M.BANJIR = [
 
 # (prov, kab, lokasi, mulai, md, hilang, kk, kerusakan, kondisi_teks, kabar, masih[, [(label, teks) tambahan untuk tabel ringkas]])
 M.LONGSOR = [
-    ('Aceh', 'Aceh Tengah', 'Kampung Arul Badak; longsor disertai banjir', None, 1, D, D, '2 ruas jalan nasional terdampak',
-     'Korban hilang ditemukan meninggal dunia 15 Nov; air belum surut dan jalan Kampung Arul Badak belum bisa dilalui', '15 Nov', True,
-     [('Status', 'Siaga Darurat Provinsi 11 Nov 2026 s.d. 31 Jan 2027'), ('Pengungsi', 'nihil')]),
+    ('Aceh', 'Aceh Tengah', 'Kampung Arul Badak', None, 1, D, D, '2 ruas jalan nasional terdampak',
+     'Longsor disertai banjir; korban hilang ditemukan meninggal dunia 15 Nov; air belum surut dan jalan Kampung Arul Badak belum bisa dilalui', '15 Nov', True,
+     [('Status', 'Siaga Darurat Provinsi 11 Nov 2026 s.d. 31 Jan 2027'), ('Pengungsi', 'tidak ada pengungsian')]),   # WA 16 Nov "Pengungsi: Nihil"; pemilik 16 Nov: tulis "tidak ada pengungsian"
     ('Kalimantan Selatan', 'Hulu Sungai Selatan', 'Lokasi belum disebut dalam laporan', '12 Nov', D, D, 13, '5 rumah rusak berat',
      'BPBD bersama perangkat daerah dan aparat kecamatan menangani di lapangan', '12 Nov', True,
      [('Terdampak', '13 KK, 21 jiwa'), ('Pengungsi', '21 jiwa mengungsi mandiri di rumah sanak saudara')]),

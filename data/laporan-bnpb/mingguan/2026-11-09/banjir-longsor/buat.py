@@ -551,11 +551,20 @@ def s_peta_longsor(Dk):
     for prov in dict.fromkeys(r[0] for r in LONGSOR):
         baris.append(('prov', prov))
         for r in (r for r in LONGSOR if r[0] == prov):
-            nama = ('runs', [R(r[1], 9.19, TEKS, True), '\n', R(r[2], 7.5, TEKS3)])
+            nama = ('runs', [R(r[1], 9.19, TEKS, True), '\n', R(lokasi_longsor(r), 7.5, TEKS3)])
             baris.append(('data', [nama, r[3] or '–', r[9], f0(r[4]), f0(r[5]), f0(r[6]),
                                    ('pil', 'Masih ditangani' if r[10] else 'Tertangani', r[10], 8.6)]))
     baris.append(('total', [f'Total {len(LONGSOR)} kejadian', '', '', md, hl, f0(sum(r[6] or 0 for r in LONGSOR)), '']))
     tabel(k, 471.3, 101, kol, baris, maks=46)
+
+
+def lokasi_longsor(r):
+    """Pemilik 16 Nov 2026: lokasi yang tidak disebut laporan ditulis nama kab/kotanya, bukan 'Lokasi belum disebut dalam laporan'."""
+    return r[1] if not r[2] or r[2].startswith('Lokasi belum disebut') else r[2]
+
+
+IKON_ISIAN = {'LOKASI': 'wilayah', 'KERUSAKAN': 'infrastruktur', 'PENANGANAN': 'tanggap-darurat', 'STATUS': 'regulasi',
+              'TERDAMPAK': 'jiwa', 'PENGUNGSI': 'pengungsi'}
 
 
 def kartu_longsor(k, md, hl):
@@ -564,41 +573,95 @@ def kartu_longsor(k, md, hl):
     Rincian lengkap tetap di lampiran L2."""
     x0, w, y0, bawah = 471.3, 445.5, 101, 462
     n = len(LONGSOR); gap = 10
-    h = min(200, (bawah - y0 - gap * (n - 1)) / n)
+    UBIN = 'F3F5F8'   # tint.netral.muda
+    # pemilik 16 Nov 2026 ("kalau ada >1 pakai bulleted point, jgn inline"): isi berisi beberapa hal (dipisah ";") jadi butir per baris
+    butir = lambda t: [s.strip()[0].upper() + s.strip()[1:] for s in t.split(';') if s.strip()]
+    # taksiran baris Roboto 8,8 pt: 0,47 em per huruf (baris_teks deck 021126 dikalibrasi untuk 7,5 pt dan terlalu hati-hati di sini)
+    nbar = lambda s, lebar, tanda: max(1, -(-(len(s) + (2 if tanda else 0)) * 8.8 * 0.44 // (lebar - 10)))   # 0,44 em: kalibrasi render kartu 16 Nov
+    baris_t = lambda t, lebar: sum(nbar(s, lebar, len(butir(t)) > 1) for s in butir(t))
+
+    def rancang(r):
+        """Baris isian kartu dan tinggi tiap baris; tinggi kartu dihitung dari isinya (16 Nov: kartu sama tinggi memotong isi)."""
+        tambah = list(r[11] if len(r) > 11 else [])
+        kisi = [[('LOKASI', lokasi_longsor(r)), ('KERUSAKAN', r[7])]]
+        for n_ in range(0, len(tambah), 2):
+            kisi.append([(lab.upper(), t[0].upper() + t[1:]) for lab, t in tambah[n_:n_ + 2]])
+        kisi.append([('PENANGANAN', r[8])])   # pemilik 16 Nov 2026: penanganan di bawah, garis aksen tidak di tengah kartu
+        out = []
+        for baris in kisi:
+            kw = (w - 20 - 12 * (len(baris) - 1)) / len(baris)
+            out.append((baris, kw, max((baris_t(t, kw - (8 if lab == 'PENANGANAN' else 0)) if lab != 'LOKASI' else nbar(t, kw, False))
+                                       for lab, t in baris) * 11 + 10))
+        return out, 81 + sum(t + 3 for *_, t in out) + 14
+    rancangan = [rancang(r) for r in LONGSOR]
+    ruang = bawah - y0 - gap * (n - 1)
+    perlu = [p for _, p in rancangan]
+    lebih = max(0, ruang - sum(perlu)) / n
+    hs = [p + lebih for p in perlu] if sum(perlu) <= ruang else [p * ruang / sum(perlu) for p in perlu]
     for i, r in enumerate(LONGSOR):
-        y = y0 + i * (h + gap)
+        y = y0 + sum(hs[:i]) + gap * i
+        h = hs[i]
         masih = r[10]
         warna, tint = (MERAH, PITA_MERAH) if masih else (BIRU, PITA_BIRU)
         k.bulat(x0, y, w, h, PUTIH, GARIS_INSET, radius=5)
-        k.bulat(x0, y, w, 30, tint, radius=5)
-        k.kotak(x0, y + 22, w, 8, tint)   # kepala bersudut bulat hanya di atas
-        k.kotak(x0 + 8, y + 5, 20, 20, warna, bentuk=MSO_SHAPE.OVAL)
-        k.gambar(ikon('longsor'), x0 + 12.5, y + 9.5, 11, 11)
-        k.teks(x0 + 34, y, 300, 30, [R(r[1], 12, TEKS, True), R('   ' + r[0], 8.5, TEKS3)], bungkus=False)
+        # kepala: ikon, nama besar, baris kecil provinsi dan kabar terakhir; pil status solid di kanan
+        k.bulat(x0, y, w, 36, tint, radius=5)
+        k.kotak(x0, y + 28, w, 8, tint)   # sudut bulat hanya di atas
+        k.kotak(x0 + 9, y + 7, 22, 22, warna, bentuk=MSO_SHAPE.OVAL)
+        k.gambar(ikon('longsor'), x0 + 14, y + 12, 12, 12)
+        k.teks(x0 + 38, y + 3, 280, 17, [R(r[1], 12.5, TEKS, True)], bungkus=False)
+        k.teks(x0 + 38, y + 20, 280, 12, [R(f'{r[0]}, kabar terakhir {r[9]}', 7.5, TEKS3)], bungkus=False)
         st = 'Masih ditangani' if masih else 'Tertangani'
-        k.teks(x0 + w - 130, y, 120, 30, [R(st, 9, MERAH if masih else BIRU_TUA, True)], rata='r', bungkus=False)
-        # deret angka
-        ys = y + 36
-        sel = [('Meninggal', f0(r[4])), ('Hilang', f0(r[5])), ('KK terdampak', f0(r[6])), ('Mulai', r[3] or '–'), ('Kabar terakhir', r[9])]
-        lw = (w - 16) / len(sel)
-        for j, (lab, v) in enumerate(sel):
-            xx = x0 + 8 + j * lw
-            k.teks(xx, ys, lw, 18, [R(v, 14, NAVY if v != '–' else TEKS3, True)], rata='c', bungkus=False)
-            k.teks(xx, ys + 18, lw, 10, [R(lab, 7, TEKS3)], rata='c', bungkus=False)
-            if j:
-                k.garis(xx, ys + 3, xx, ys + 26, GARIS_INSET, 0.75)
-        k.garis(x0 + 8, ys + 34, x0 + w - 8, ys + 34, GARIS_INSET, 0.75)
-        # baris berlabel
-        isi = [('Lokasi', r[2]), ('Kerusakan', r[7]), ('Penanganan', r[8])] + list(r[11] if len(r) > 11 else [])
-        yy = ys + 40
-        for lab, teks in isi:
-            nb = B.baris_teks(teks, w - 100, 8.5)
-            hh = 11.5 * nb
-            if yy + hh > y + h - 4:
+        pw = len(st) * 8.5 * 0.53 + 30
+        k.bulat(x0 + w - pw - 10, y + 9, pw, 18, warna)
+        k.gambar(ikon('peringatan' if masih else 'rumah'), x0 + w - pw - 2, y + 13, 10, 10)
+        k.teks(x0 + w - pw + 12, y + 9, pw - 20, 18, [R(st, 8.5, PUTIH, True)], bungkus=False)
+        # ubin angka: korban jiwa merah bila ada; tanda "–" kecil dan abu supaya tidak terbaca sebagai angka kosong yang besar
+        ys = y + 42
+        # pemilik 16 Nov 2026 ("coba kasih icon"): bulatan berikon di kiri tiap ubin; merah = korban jiwa ada, abu = tidak ada data
+        sel = [('Meninggal', r[4], True, 'jiwa'), ('Hilang', r[5], True, 'tanggap-darurat'), ('KK terdampak', r[6], False, 'rumah'),
+               ('Tanggal kejadian', r[3], False, 'kalender')]   # pemilik 16 Nov 2026: bukan "Mulai"
+        gw = 6; lw = (w - 20 - gw * (len(sel) - 1)) / len(sel)
+        for j, (lab, v, korban, konsep) in enumerate(sel):
+            xx = x0 + 10 + j * (lw + gw)
+            k.bulat(xx, ys, lw, 32, UBIN, radius=3)
+            kosong = v in (None, '')
+            k.kotak(xx + 7, ys + 6, 20, 20, 'A9B4C2' if kosong else (MERAH if korban else NAVY), bentuk=MSO_SHAPE.OVAL)
+            k.gambar(ikon(konsep), xx + 11.5, ys + 10.5, 11, 11)
+            if kosong:
+                isi_v = [R('–', 11, TEKS3, False)]
+            else:
+                isi_v = [R(v if isinstance(v, str) else f0(v), 13, MERAH if korban else NAVY, True)]
+            k.teks(xx + 33, ys + 1, lw - 36, 17, isi_v, bungkus=False)
+            k.teks(xx + 33, ys + 18, lw - 36, 11, [R(lab, 7, TEKS3)], bungkus=False)
+        # isian: label kecil kapital berikon di atas isinya; penanganan selebar kartu dengan garis aksen, di dasar kartu
+        yy = ys + 39
+        for baris, kw, tinggi in rancangan[i][0]:
+            if baris[0][0] == 'PENANGANAN':   # ditambatkan ke dasar kartu: jarak bawah sama di semua kartu
+                yy = max(yy, y + h - 12 - tinggi)
+            if yy + tinggi > y + h + 2:
                 break
-            k.teks(x0 + 10, yy, 76, hh, [R(lab, 8.5, TEKS, True)], jangkar='t', bungkus=False)
-            k.teks(x0 + 88, yy, w - 98, hh, [R(teks, 8.5, TEKS)], jangkar='t', spasi=0.95)
-            yy += hh + 3
+            for j, (lab, t) in enumerate(baris):
+                xx = x0 + 10 + j * (kw + 12)
+                if lab == 'PENANGANAN':
+                    k.kotak(xx, yy, 2.5, tinggi - 2, warna)
+                    xx += 8; kw_ = kw - 8
+                else:
+                    kw_ = kw
+                # pemilik 16 Nov 2026 ("coba kasih icon"): ikon kecil navy di depan tiap label isian
+                k.gambar(ikon(IKON_ISIAN.get(lab, 'data'), 'navy'), xx, yy, 8.5, 8.5)
+                tampil = {'PENANGANAN': 'CATATAN PENANGANAN'}.get(lab, lab)   # pemilik 16 Nov 2026
+                k.teks(xx + 12, yy, kw_ - 12, 9, [R(tampil, 6.8, TEKS3, True, 0.6)], bungkus=False)
+                bs = butir(t) if lab != 'LOKASI' else [t]   # pemilik 16 Nov 2026: lokasi tidak berbutir
+                if len(bs) > 1:
+                    for m_, s_ in enumerate(bs):
+                        nb_s = nbar(s_, kw_, True)
+                        yb = yy + 10 + sum(nbar(q, kw_, True) for q in bs[:m_]) * 11
+                        k.kotak(xx + 2, yb + 4.2, 3.2, 3.2, warna if lab == 'PENANGANAN' else NAVY, bentuk=MSO_SHAPE.OVAL)
+                        k.teks(xx + 10, yb, kw_ - 10, nb_s * 11 + 1, [R(s_, 8.8, TEKS)], jangkar='t', spasi=0.95)
+                else:
+                    k.teks(xx, yy + 10, kw_, tinggi - 10, [R(bs[0] if bs else t, 8.8, TEKS)], jangkar='t', spasi=0.95)
+            yy += tinggi + 3
     # pita total
     k.bulat(x0, 470, w, 26, NAVY, radius=4)
     k.teks(x0 + 10, 470, 200, 26, [R(f'Total {len(LONGSOR)} kejadian', 9.5, PUTIH, True)], bungkus=False)
@@ -672,7 +735,7 @@ def s_rincian_longsor(Dk):
     for prov in dict.fromkeys(r[0] for r in LONGSOR):
         baris.append(('prov', prov))
         for r in (r for r in LONGSOR if r[0] == prov):
-            baris.append(('data', [('runs', [R(r[1], 9, TEKS, True)]), rt(r[2], 8.5), r[3] or '–', f0(r[4]), f0(r[5]), f0(r[6]), rt(r[7], 8.5),
+            baris.append(('data', [('runs', [R(r[1], 9, TEKS, True)]), rt(lokasi_longsor(r), 8.5), r[3] or '–', f0(r[4]), f0(r[5]), f0(r[6]), rt(r[7], 8.5),
                                    ('runs', [R('Masih ditangani. ' if r[10] else 'Tertangani. ', 8.5, MERAH if r[10] else BIRU_TUA, True), R(r[8], 8.5, TEKS)]),
                                    r[9]]))
     baris.append(('total', [f'Total {len(LONGSOR)} kejadian', '', '', sum(r[4] or 0 for r in LONGSOR), sum(r[5] or 0 for r in LONGSOR),
