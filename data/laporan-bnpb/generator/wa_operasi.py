@@ -129,10 +129,10 @@ def operasi(teks):
         so = re.search(r'\*(\d+) sortie', isi)
         if not so:   # rincian per pesawat tanpa total (Kalteng 11 Nov): "*PK-FPU sebanyak 2.000 kg NaCl*, serta *PK-SNL sebanyak 1 sortie/1.000 kg NaCl*";
             # pesawat yang menyemai tanpa angka sortie dihitung 1 sortie (batas bawah)
-            per = re.findall(r'PK-\w+ sebanyak (?:(\d+) sortie/)?[\d.]+ kg', harian)
+            per = re.findall(r'(?:PK-\w+|A-\d+) sebanyak (?:(\d+) sortie/)?[\d.]+ kg', harian)   # A-\d+: pesawat TNI AU (CASA A-2104)
             so = re.match(r'(\d+)', str(sum(int(n or 1) for n in per))) if per else None
         so = so or re.search(r'sebanyak \*?(\d+) sortie', harian)   # "*CASA A-2104 sebanyak 1 sortie*" (Sumsel 14 Nov): angka tidak di awal cetak tebal
-        sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran|kg (?:NaCl|dry ice)\* (?:di|untuk)) \*([^*]+)\*', isi.split('Hujan')[0])   # "di *X*" hanya sesudah muatan ("1.000 kg NaCl* di *Muara Enim*", Sumsel 29 Okt), bukan "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
+        sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran|untuk sasaran|kg (?:NaCl|dry ice)\* (?:di|untuk)) \*([^*]+)\*', isi.split('Hujan')[0])   # "di *X*" hanya sesudah muatan ("1.000 kg NaCl* di *Muara Enim*", Sumsel 29 Okt), bukan "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
         sas = [k for i, k in enumerate(sas) if not any(a.endswith(' ' + k) and a[:-len(k)].strip()[:1].islower() for a in sas[:i])]   # "Palembang" sesudah "wilayah timur Palembang" (Sumsel 29 Okt); "OKU" sesudah "OKU Timur" dan "Banyuasin" sesudah "Musi Banyuasin" tetap (Sumsel 3 Nov)
         hujan = None
