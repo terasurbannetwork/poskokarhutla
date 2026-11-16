@@ -122,7 +122,22 @@ Setiap fitur: kode F-n, bencana yang disentuh, peran pengguna, keluaran. "Semua"
 | F-32 | Mobile 375 px terukur ulang (C32) dan kredit serta lisensi data (F04) | semua | publik | laporan ukur dan halaman kredit |
 | F-33 | Sisa temuan rusak audit yang masih ada sesudah grep ulang (RISET bagian 4): dummy tersisa, kepala kartu kalimat temuan di longsor, salinan nyasar; teks basi berita dan plafon ilmu agent sudah beres per 15 Nov | semua | pengerja pemilik | berkas bersih; gerbang hijau |
 
-Jumlah: 33 fitur. Tiap fitur menjadi satu atau lebih tiket (TIKET.md, kode PB-*) dan menunggu paket dokumen lengkap (AGENTS.md 3.7).
+### W8 Layar publik setara karhutla (K12, D15, D16)
+
+Acuan: fitur yang tampil di laman karhutla (`public/index.html`) per audit layar 16 Nov 2026. Gempa adalah pilot; kekeringan, gunung api, dan cuaca menyusul sesudah pemilik menyetujui bentuknya di `/gempa`.
+
+| Kode | Fitur | Bencana | Peran | Keluaran |
+| --- | --- | --- | --- | --- |
+| F-34 | Unduh tabel yang tampil di layar ke Excel, Word, PDF, dan PNG dari satu mesin; karhutla pindah dari `public/unduh_tabel.js` ke mesin ini | karhutla, gempa, kekeringan, gunung api, cuaca | publik, Pusdalops | tombol unduh di kepala tabel; berkas bernama `<bencana>-<tabel>-<tanggal>` |
+| F-35 | Brief pimpinan dua halaman A4 per bencana, cetak lewat peramban; angka dari data halaman, kalimat kebijakan tidak ditulis mesin | gempa, kekeringan, gunung api, cuaca; karhutla pindah sesudah pilot | pimpinan | tombol Unduh brief |
+| F-36 | Pemilih tanggal (Hari ini, Kemarin, Tanggal lain) dan pilihan Real Time/Riwayat di panel peta, hanya untuk tanggal yang datanya ada (D16) | gempa, kekeringan, gunung api, cuaca | publik | panel peta |
+| F-37 | Profil kab/kota dan riwayat bencana daerah dari klik peta atau hasil cari, memakai `public/inti/profil_wilayah.js` yang sudah dipakai karhutla dan banjir | gempa, kekeringan, gunung api, cuaca | publik, BPBD | dialog profil |
+| F-38 | Kotak cari luas: provinsi, kab/kota, desa, faskes, sekolah, bandara, posko, BPBD; lapisan khusus karhutla (konsesi, Daops) tidak ikut | gempa, kekeringan, gunung api, cuaca; karhutla pindah sesudah pilot | publik | kotak cari panel |
+| F-39 | Tabel provinsi dengan beberapa ukuran yang bisa dipilih; gempa: Gempa M 5+, Dirasakan, Terbesar, Jiwa terpapar (status tanpa Siaga, K12 (c)); bencana lain ditetapkan di tiketnya dari data yang ada | gempa, kekeringan, gunung api, cuaca | publik | panel provinsi |
+| F-40 | Kemampuan registri yang sudah menyala tampil di laman bencana: tab Operasi (renlap dan titik operasi) untuk sesi yang boleh membaca rute operasi, serta tangga tindakan saat tingkat peringatan berubah | gempa, gunung api; kekeringan dan cuaca bila registrinya menyala | Pusdalops, BPBD | tab Operasi tersembunyi untuk tamu |
+| F-41 | Lanjutan sesudah pilot: lapisan peta per kab/kota, banding citra dan timelapse lewat jalur citra yang ada, sinyal komunikasi lewat mesin Status Lifeline (AGENTS.md 2.19) | sesuai data per bencana | publik | lapisan dan kartu; tiap butir hanya bila datanya ada (D16) |
+
+Jumlah: 41 fitur. Tiap fitur menjadi satu atau lebih tiket (TIKET.md, kode PB-*) dan menunggu paket dokumen lengkap (AGENTS.md 3.7).
 
 ## 5. Di luar lingkup
 
@@ -161,6 +176,7 @@ Berlaku untuk semua tiket paket ini (dari aturan pemilik di `KEPUTUSAN-PARITAS.m
 | F1 fondasi | W1 sampai W4 generik, dengan karhutla dan banjir sebagai pemakai pertama | hitungan ADA karhutla dan banjir tidak turun; uji generik hijau; tinjauan pemilik di `http://localhost:8800` |
 | F2 pasang per bencana | menyalakan kemampuan F1 per bencana lewat `public/bencana.json` | Belum = 0 per bencana yang selesai |
 | F3 lanjutan | W5, W6, W7 | target ADA akhir F3 pada bagian 3 |
+| F4 layar publik | W8: perbaikan cepat audit 16 Nov, pilot gempa, lalu kekeringan, gunung api, cuaca (K12) | pemilik menyetujui `/gempa` di `http://localhost:8800` sebelum tiga bencana lain dinyalakan; karhutla tidak mundur |
 
 Urutan bencana di F2 (D5), menurut celah audit terbesar: **longsor, pesisir, udara, kekeringan, cuaca, gempa dan tsunami, gunung api, banjir**. Alasan: celah audit terbesar didahulukan (komponen belum atau sebagian: longsor 75, pesisir 72, kekeringan 40, udara 38, cuaca 38, gempa 36, gunung api 29), dengan dua penyesuaian: udara sebelum kekeringan karena rantai asap yang sudah ada dan kemiripan W3, dan banjir (35) paling akhir karena ia sudah menjadi pemakai pertama pembuktian generik di F1 (D4). Urutan dikunci oleh D5 dan tidak diubah tanpa keputusan pemilik.
 

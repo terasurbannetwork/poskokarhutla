@@ -460,6 +460,7 @@ Pemilik dari `node scripts/agents/ilmu.mjs pemilik <berkas>` (15 Nov 2026; berka
 | F-29, F-30 | `scripts/umum/<data>.py` (baru); `.github/workflows/*.yml`; `tests/agen/gerbang-uji-skrip.test.mjs` (baru) | `pipa-umum`, `mekanik-mesin`, `penulis-gerbang` |
 | F-31, F-32 | `public/i18n.js`, `public/i18n/en.json`, halaman kredit | `layar-peta`, `inti-layar` |
 | F-33 | berkas di RISET.md bagian 4 temuan rusak | pengerja pemilik berkas |
+| F-34 sampai F-41 (W8) | `public/inti/unduh_tabel.js`, `unduh_tabel.css`, `brief.js`, `brief.css`, `pilih_tanggal.js`, `cari.js` (baru); `public/inti/tabel.js`, `gaya.css`, `alarm.js` (ubah); adaptor `public/<id>/unduh.js`, `brief.js` (baru) dan `peta.js`, `tab.js` (ubah); `public/bencana.json`, `scripts/umum/bencana.py` (ubah); `src/bencana.generated.js` (bangkitan) | `inti-layar`; pengerja bencana untuk `public/<id>/`; `pipa-umum`; `warga-api` |
 | Registri | `public/bencana.json` (ubah), `scripts/umum/bencana.py` (ubah), `src/bencana.generated.js` (dibangkitkan) | `inti-layar`, `pipa-umum`, `warga-api` |
 
 Folder baru di `public/` atau `scripts/` TIDAK dibuat: semua berkas masuk folder yang sudah punya paket (`public/inti`, `public/bnpb`, `scripts/umum`, `src`). Bila pengerja menemukan butuh folder baru, gerbang `gerbang-paket-modul` menolak tanpa paket (AGENTS.md 3.7).
@@ -485,7 +486,38 @@ Mock tidak dipakai sebagai bukti untuk perilaku di luar TypeScript. Tiap uji men
 | Skrip Python: `uji` untuk `renlap.py`, `ekonomi.py`, `prioritas.py`, `pb_ringkas.py` | self-check | `python3 scripts/umum/<x>.py uji` |
 | Tiap layar baru ada di gerbang dasbor dan gerbang kartu | gerbang | `tests/agen/gerbang-dasbor.test.mjs`, `gerbang-kartu-std.test.mjs`, `gerbang-tanpa-kesimpulan.test.mjs` |
 
-## 12. Pertanyaan untuk KEPUTUSAN
+## 12. Layar publik setara karhutla (W8, F-34 sampai F-41)
+
+Tidak ada rute Worker, tabel D1, migrasi, atau berkas `public/data/` baru di W8 (D16). Semua kerja di layar statis dan registri.
+
+### 12.1 Mesin dan adaptor
+
+| Fitur | Mesin (`inti-layar`) | Adaptor per bencana | Asal sekarang |
+| --- | --- | --- | --- |
+| F-34 unduh tabel | `public/inti/unduh_tabel.js` dan `.css` (baru), memakai `window.unduhBlob` dari `public/inti/unduh.js` | `public/<id>/unduh.js`: daftar `{nama, kolom, baris}` yang dibaca dari tabel yang tampil, tanpa menghitung ulang | `public/unduh_tabel.js` (karhutla, membaca `#rows`); pustaka dimuat malas dari cdnjs dan jsdelivr seperti sekarang |
+| F-35 brief pimpinan | `public/inti/brief.js` dan `.css` (baru): dua halaman A4 lewat `window.print` dan lembar gaya cetak | `public/<id>/brief.js`: `Brief.tema[id] = {siap, data}`, pola `Bagikan.tema` | lembar cetak di `public/ringkasan.js:505-547` (`cetak` dan `hCetak`, karhutla) |
+| F-36 pemilih tanggal | `public/inti/pilih_tanggal.js` (baru): segmen Hari ini, Kemarin, Tanggal lain (`<select>` native) dan Real Time/Riwayat | adaptor menyerahkan daftar tanggal yang datanya ada dan fungsi saring | pemilih hari titik panas di `public/index.html` (komentar di `:1321`, segmen Real Time/Riwayat di `:1550`; karhutla) |
+| F-37 profil kab/kota | `public/inti/profil_wilayah.js` (sudah ada, karhutla dan banjir) | adaptor hanya memasang klik peta dan hasil cari ke `ProfilWilayah` | sudah ada |
+| F-38 cari luas | `public/inti/cari.js` (baru) dengan daftar lapisan dari registri | adaptor memilih lapisan; lapisan konsesi dan Daops tetap di `public/cari.js` karhutla | `public/cari.js` |
+| F-39 tabel provinsi multi-ukuran | `public/inti/tabel.js` (sudah ada) ditambah segmen ukuran | adaptor menyerahkan ukuran dan nilainya | panel karhutla `public/index.html:1894` |
+| F-41 lanjutan | tidak ada mesin baru: lapisan per kab/kota memakai `public/peta_kab.js` yang dipindah ke inti bila dipakai; citra memakai `public/inti/citra_ubin.js`; sinyal memakai mesin Status Lifeline | per tiket anak PB-81 | `public/peta_kab.js`, `public/banding.js`, `public/timelapse.js`, `public/sinyal.js` |
+| F-40 tab Operasi | `public/inti/renlap.js` dan `public/inti/pb_titik.js` (sudah ada, PB-17 dan PB-18) | `public/<id>/tab.js` menambah tab `operasi` yang tersembunyi untuk tamu | `public/operasi_peta.js:243-248` |
+
+### 12.2 Registri
+
+Kunci baru `kemampuan.layar` di `public/bencana.json`, contoh gempa:
+
+```json
+"layar": {"unduh_tabel": true, "brief": true, "pilih_tanggal": true, "profil_kab": true, "cari": ["desa", "faskes", "sekolah", "bandara", "posko", "bpbd"], "ukuran_provinsi": ["gempa_m5", "dirasakan", "terbesar", "jiwa_terpapar"], "tab_operasi": true}
+```
+
+`scripts/umum/bencana.py` `galat_kemampuan` diperluas untuk memeriksa bentuk `layar` (bool dan list string), lalu `python3 -I scripts/umum/bencana.py js` (fungsi `bangkitkan`) menulis ulang `src/bencana.generated.js` (pemilik `warga-api`). Semua bawaan `false` atau kosong; tiap tiket pasang menyalakan kuncinya sendiri.
+
+### 12.3 Karhutla tidak mundur
+
+Karhutla pindah ke mesin inti hanya di tiket tersendiri (PB-70 untuk unduh tabel, PB-80 untuk brief, cari, pemilih tanggal, dan segmen ukuran). Sampai PB-80 selesai, mesin lama dan mesin inti berdampingan sebagai pengecualian bertanggal di D15. Bukti: berkas Excel, Word, PDF, dan PNG yang dihasilkan sebelum dan sesudah pindah memuat baris dan kolom yang sama untuk tanggal yang sama, dibandingkan oleh uji di `tests/layar/`.
+
+## 13. Pertanyaan untuk KEPUTUSAN
 
 > Catatan orkestrator 15 Nov 2026: pertanyaan di bagian ini sudah dipindah ke KEPUTUSAN-PARITAS.md (Q1 sampai Q37) dan dinomori ulang di sana. Bila isi atau bawaan berbeda, KEPUTUSAN yang berlaku. Untuk rute layar baru berlaku Q13 (papan status darurat dilebur ke `siaga.html`, pembuat dokumen di `/bnpb/sitrep`, dashboard pimpinan `/bnpb/pimpinan`); panel kiri berlaku D12.
 

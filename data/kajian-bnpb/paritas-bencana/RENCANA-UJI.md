@@ -58,6 +58,14 @@ Fitur PRD bagian 4. Satu fitur dapat dikerjakan beberapa tiket; fitur selesai bi
 | F-31 | Layar dan peringatan dua bahasa | PB-64 | `pb_i18n` |
 | F-32 | Tanpa gulir horizontal di 375 px; halaman kredit ada | PB-65 | ukur peramban |
 | F-33 | Sisa temuan rusak audit nol | PB-66 | `npm run uji:agen` |
+| F-34 | Berkas Excel, Word, PDF, PNG memuat baris dan kolom yang sama dengan tabel di layar; karhutla tidak berubah sesudah pindah ke mesin inti | PB-70, PB-71, PB-79a-c | `tests/layar/pb_unduh_tabel.test.mjs` |
+| F-35 | Brief dua halaman A4; tiap angka sama dengan angka di halaman pada saat yang sama; tanpa kalimat kebijakan buatan mesin | PB-72, PB-79a-c, PB-80 | `tests/layar/pb_brief.test.mjs` |
+| F-36 | Hanya tanggal yang datanya ada yang bisa dipilih; ganti tanggal tidak membekukan layar | PB-73, PB-79a-c | `tests/layar/pb_pilih_tanggal.test.mjs`, `inp-reviewer` |
+| F-37 | Klik kab/kota di peta dan hasil cari membuka profil yang sama dengan karhutla dan banjir | PB-74, PB-79a-c | `tests/layar/pb_profil_kab.test.mjs` |
+| F-38 | Cari mengembalikan desa, faskes, sekolah, bandara, posko, BPBD; karhutla tetap menemukan konsesi dan Daops | PB-75, PB-79a-c, PB-80 | `tests/layar/pb_cari.test.mjs` |
+| F-39 | Tiap ukuran tabel provinsi menjumlah dari data halaman; gempa tanpa tingkat Siaga | PB-76, PB-79a-c | `tests/layar/pb_ukuran_provinsi.test.mjs` |
+| F-40 | Tab Operasi tidak ada di DOM yang terlihat untuk tamu; muncul untuk sesi yang boleh membaca rute operasi; tangga tindakan tampil saat tingkat peringatan berubah untuk bencana yang `ews.tangga`-nya menyala (gunung api di PB-79b, gempa sesudah PB-44) | PB-77, PB-79a-c | `tests/layar/pb_tab_operasi.test.mjs` |
+| F-41 | Tiap lapisan atau kartu lanjutan punya sumber data bertanggal | PB-81 | per tiket anak |
 
 ## 3. Kriteria terima per tiket
 
@@ -153,6 +161,28 @@ Templat "a" (operasi dan renlap): registri bencana menyalakan `operasi` dan `ren
 | PB-66 | grep ulang dijalankan dulu dan hasilnya ditulis; semua temuan RISET bagian 4 yang masih ada nol (butir yang sudah beres per 15 Nov tidak dikerjakan) | `npm run uji:agen` |
 | PB-67 | tabel target PRD bagian 3 dibandingkan dengan keluaran skrip; selisih dan baris tertahan Q ditulis | `node scripts/agents/paritas.mjs` |
 
+### 3.4 Fase F4 (layar publik, K12)
+
+| Tiket | Kriteria terima | Perintah bukti |
+| ----- | --------------- | -------------- |
+| PB-68.1 | nama wilayah di tab Kejadian dan kartu Cerita sama dengan bentuk di tab Simulasi (contoh "Seram Bagian Timur", bukan "Serambagiantimur"); kartu fasilitas ganda tidak diubah (K14); kartu bukan gempa tidak tampil di Insight; angka laporan menyebut sumbernya | `node --test tests/gempa/nama_wilayah.test.mjs`; tinjau `/gempa/kejadian` |
+| PB-68.2 | pop-up Situasi cuaca menyebut tanggal hari ini bila data memuat hari ini, diuji dengan pemuatan nowcast yang ditunda; kepala kartu nama seksi | `node --test tests/cuaca/sapa_hari.test.mjs`, gerbang `gerbang-tanpa-kesimpulan`; tinjau `/cuaca` |
+| PB-68.3 | `/kekeringan/simulasi` tanpa galat 404 di konsol; laporan tanpa nama kab ganda; judul hujan dan isi tabel sejalan; tabel kab memuat semua kab dengan status | konsol peramban; tinjau `/kekeringan/laporan.html` |
+| PB-68.4 | kolom tanggal di tab Kejadian gunung api berlabel sesuai artinya; judul tabel laporan tanpa satuan ganda; tanpa 404 citra | konsol peramban; tinjau `/gunungapi/kejadian` |
+| PB-68.5 | tiap berkas yang basi di audit 16 Nov dibuat ulang oleh jadwalnya, atau alasan berhenti ditulis di laporan tiket | `gh run list` per workflow; tanggal `dibuat` di berkas |
+| PB-68.6 | jam data terlihat di kepala keempat laman pada lebar 900 sampai 1500 px, sama dengan karhutla; di bawah 900 px tetap tersembunyi seperti karhutla | ukur peramban 1280 px |
+| PB-68.7 | alarm jenis lain tampil sebagai pil yang bisa dibuka; jenis yang sama tetap kartu penuh (K13); pil tidak menutup panel di 375 px | ukur peramban 375 px |
+| PB-68.8 | gempa susulan di bawah M 5 tertaut ke gempa utamanya; jumlah susulan di tab Kejadian bukan selalu 0; aturan tautan lolos uji balik atau tampil berpil hipotesis (D6) | `node --test tests/warga/gempa*.test.mjs`, `validasi-model` |
+| PB-68.9 | tab Tentang di tiap laman bencana memuat isi bencana itu | tinjau tab Tentang empat laman |
+| PB-69 | fungsi `periksa` di `scripts/umum/bencana.py` menolak `kemampuan.layar` berbentuk salah; semua entri bawaan mati; `src/bencana.generated.js` segar | `python3 -I scripts/umum/bencana.py uji`, `npm run uji:agen` |
+| PB-70 | berkas karhutla sebelum dan sesudah pindah sama baris dan kolomnya; `public/unduh_tabel.js` dihapus atau tinggal adaptor | `node --test tests/layar/pb_unduh_tabel.test.mjs` |
+| PB-71 sampai PB-77 | kriteria fitur F-34 sampai F-40 untuk gempa | uji `tests/layar/pb_*.test.mjs` per fitur |
+| PB-78 | pemilik menyetujui `/gempa`; catatan tinjauannya ditulis di laporan | tinjau `http://localhost:8800/gempa` |
+| PB-79a-c | kriteria F-34 sampai F-40 untuk kekeringan, gunung api, cuaca, sejauh datanya ada (D16) | uji `tests/layar/pb_*.test.mjs` dengan id bencana itu |
+| PB-80 | brief, cari, pemilih tanggal, dan segmen ukuran karhutla dari mesin inti; isi dan perilakunya tidak berubah; mesin lama karhutla dihapus atau tinggal adaptor | `node --test tests/layar/pb_brief.test.mjs tests/layar/pb_cari.test.mjs tests/layar/pb_pilih_tanggal.test.mjs tests/layar/pb_ukuran_provinsi.test.mjs` |
+| PB-81 | per tiket anak | per tiket anak |
+| PB-82 | keputusan pemilik tentang letak kartu ditulis; bila dipindah, kartu tampil di satu tab saja | tinjau `/gempa/insight` dan `/gempa/dampak` |
+
 ## 4. Gerbang yang diperbarui
 
 Gerbang tidak dilemahkan untuk meloloskan tiket (AGENTS.md bagian 9); yang ditambah hanya entri.
@@ -172,6 +202,7 @@ Gerbang tidak dilemahkan untuk meloloskan tiket (AGENTS.md bagian 9); yang ditam
 | Gerbang paket modul | `tests/agen/gerbang-paket-modul.test.mjs` | tidak ada folder baru di `public/` atau `scripts/` tanpa paket | semua |
 | Gerbang ilmu agent | `tests/agen/gerbang-ilmu-agent.test.mjs` | tiap berkas kode baru tepat satu pemilik; ilmu agent diperbarui lewat `ilmu.mjs kasus`; plafon 40 KB | semua, PB-66 |
 | Registri cakupan Worker | `tests/warga/cakupan.json` | tiap rute `/api/pb/*` dan tiap tabel `pb_*`, `tugas_bencana_x` masuk `diuji` dengan potongan nama uji yang ada; jalur tanpa garis bawah | PB-05, PB-10, PB-12, PB-16, PB-20, PB-22, PB-27, PB-28, PB-30 |
+| Gerbang kartu, kesimpulan, token warna (F4) | `gerbang-kartu-std.test.mjs`, `gerbang-tanpa-kesimpulan.test.mjs`, `gerbang-token-warna.test.mjs` | kartu dan CSS baru W8 (`public/inti/unduh_tabel.css`, `brief.css`) tanpa literal warna di luar `tema.css`; kartu yang disentuh PB-68.x dan PB-79 masuk daftar bersih | PB-68.1 sampai PB-68.4, PB-70 sampai PB-80 |
 | Migrasi beku | `tests/warga/migrasi_beku.json` dan `migrasi_beku.test.mjs` | hash 0130, 0131, D13 sesudah pemilik menerapkan; migrasi yang sudah jalan tidak disunting | PB-05, PB-20, PB-21 |
 
 Gerbang INP: `gerbang-inp-transisi` yang disebut standar pemilik (`~/.claude/INP.md`) tidak ditemukan sebagai berkas di `tests/agen`; pemeriksaan INP dilakukan agent `inp-reviewer` di tiap tiket layar sebagai pemeriksa wajib (AGENTS.md bagian 6) ditambah uji handler yang disebut di kriteria PB-02, PB-27, PB-31.
@@ -189,6 +220,7 @@ Generik tidak boleh memundurkan modul matang. Syarat berlaku di tiap tiket PB-07
 | Uji banjir | `npm run uji:banjir` | hijau |
 | Hitungan ADA | `node scripts/agents/paritas.mjs` dibanding hitungan acuan beku | ADA karhutla dan banjir tidak turun (PRD 3 dan 8) |
 | Tanpa tabel baru | uji dengan migrasi 0130 belum diterapkan: karhutla dan tujuh jenis lama tetap jalan, jenis longsor dan pesisir menjawab 503 pesan migrasi | `pb_skema.test.mjs` |
+| Layar karhutla (F4) | `tests/layar/pb_unduh_tabel.test.mjs`, `pb_brief.test.mjs`, `pb_cari.test.mjs`, `pb_pilih_tanggal.test.mjs`, `pb_ukuran_provinsi.test.mjs` dengan id karhutla, dijalankan di PB-70 dan PB-80 | keluaran dan perilaku identik sebelum dan sesudah pindah |
 | Peringatan lama | sesudah D13 tabel `peringatan` lama tidak disentuh, barisnya utuh dan jenis lama tetap mengirim | `ews.test.mjs`, `peringatan.test.mjs` |
 
 ## 6. Uji privasi
@@ -253,6 +285,9 @@ Server tinjau `http://localhost:8800`; bila tidak menjawab, jalankan `npm run ti
 | PB-47 | `http://localhost:8800/banjir` | banjir lewat jalur generik |
 | PB-53, PB-54a, PB-54b | halaman bencana terkait | tren, metode, cerita |
 | PB-65 | semua jalur di atas di emulasi 375 px | tanpa gulir horizontal |
+| PB-68.1 sampai PB-68.9 | `/gempa`, `/kekeringan`, `/gunungapi`, `/cuaca` beserta `/simulasi` dan `/laporan.html` | temuan audit 16 Nov sudah hilang |
+| PB-70 sampai PB-78 | `http://localhost:8800/gempa` dan `http://localhost:8800/` | pilot gempa; karhutla tidak berubah |
+| PB-79a, PB-79b, PB-79c | `/kekeringan`, `/gunungapi`, `/cuaca` | bentuk sama dengan pilot gempa |
 
 Setiap tiket layar juga diperiksa: kepala kartu nama seksi, tanpa kalimat kesimpulan, tanpa kaki sumber, tanpa kapital dipaksa, tanpa titik tengah, tanpa data dummy, kartu tidak menempel (20 px), kolom berdampingan sama tinggi, grafik interaktif dengan tooltip, paragraf rata kiri-kanan.
 
