@@ -25,6 +25,11 @@ const IKON = {
   png: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/>'};
 const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON[k]}</svg>`;
 let A = null;   // adaptor aktif
+/* gerbang registri (PB-71, D15): tombol hanya dipasang bila kemampuan.layar.unduh_tabel bernilai true untuk id itu di /bencana.json.
+   Diambil sekali, janjinya disimpan. Gagal dimuat = tidak dipasang untuk bencana selain karhutla; karhutla selalu tampil agar tidak mundur. */
+let REG = null, IZIN = false;
+const registri = () => REG ||= typeof fetch === "function" ? fetch("/bencana.json").then(r => r.ok ? r.json() : Promise.reject(new Error("registri " + r.status))).then(j => j.bencana || [], () => []) : Promise.resolve([]);
+const izinReg = (daftar, id) => id === "karhutla" || (daftar || []).find(b => b.id === id)?.kemampuan?.layar?.unduh_tabel === true;
 
 /* ---------- model murni (diuji di tests/layar/pb_unduh_tabel.test.mjs) ---------- */
 /* angka id-ID dari layar ("1.234", "12,5") jadi number untuk Excel; "–" tetap teks */
@@ -108,8 +113,12 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape") tutup(); });
 
 window.UnduhTabel = {
-  tema: a => { A = a; return a; },
-  tombol: () => `<button type="button" class="ud-btn" data-unduh aria-haspopup="menu" aria-label="${A?.label || "Unduh laporan tabel"}">${svg("unduh")}<span class="ud-t"></span></button>`,
-  model: {angka, baris, cap, judulTabel, lembar, bentukPdf, namaBerkas},
+  /* adaptor mendengarkan "unduh-tabel-siap" untuk menggambar ulang tombolnya setelah registri terbaca */
+  tema: a => { A = a; IZIN = a.id === "karhutla";
+    registri().then(d => { const ok = izinReg(d, a.id); if (ok !== IZIN) { IZIN = ok; if (typeof CustomEvent === "function") document.dispatchEvent?.(new CustomEvent("unduh-tabel-siap", {detail: {id: a.id}})); } });
+    return a; },
+  registri, diizinkan: () => IZIN,
+  tombol: () => !IZIN ? "" : `<button type="button" class="ud-btn" data-unduh aria-haspopup="menu" aria-label="${A?.label || "Unduh laporan tabel"}">${svg("unduh")}<span class="ud-t"></span></button>`,
+  model: {izinReg, angka, baris, cap, judulTabel, lembar, bentukPdf, namaBerkas},
   format: {xlsx, docx, pdf, png}};
 })();

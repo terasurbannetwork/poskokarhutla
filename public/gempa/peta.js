@@ -186,7 +186,8 @@ function renderDaftar() {
   if (!j.length) {
     const G = "20px minmax(0,2fr) minmax(46px,.7fr) minmax(72px,1fr) minmax(64px,1fr)", ag = agregat(d);
     const baris = Object.entries(ag).map(([k, a]) => ({k, nama: namaProv(k), ...a})).sort((a, b) => arah * ((u.k === "nama" ? a.nama.localeCompare(b.nama) : a[u.k] - b[u.k]) || b.n - a.n || a.nama.localeCompare(b.nama)));
-    box.innerHTML = kepala(G, [["nama", "Provinsi"], ["n", "Gempa", "n"], ["mmi", "Dirasakan", "n"], ["m", "Terbesar"]]) +
+    const unduh = window.UnduhTabel?.tombol() || "";   /* hanya bila registri menyalakan kemampuan.layar.unduh_tabel */
+    box.innerHTML = (unduh ? `<div style="display:flex;justify-content:flex-end;padding:0 2px 6px">${unduh}</div>` : "") + kepala(G, [["nama", "Provinsi"], ["n", "Gempa", "n"], ["mmi", "Dirasakan", "n"], ["m", "Terbesar"]]) +
       baris.map((p, i) => `<button class="tb" data-k="${esc(p.k)}" style="grid-template-columns:${G}"><span class="rk">${i + 1}</span><span class="kom"><b>${esc(p.nama)}</b></span><span class="n"><b>${fmt(p.n)}</b></span><span class="n">${p.mmi ? fmt(p.mmi) : "–"}</span><span>${pilM(p.m)}</span></button>`).join("");
     return; }
   const G = "20px minmax(0,2.4fr) minmax(70px,.9fr) minmax(80px,1.2fr)", per = 20;

@@ -105,7 +105,7 @@ test("gerbang statis mesin: tanpa pemisah titik tengah, tanpa warna literal, tan
   const h = baca("public/index.html"), i = h.indexOf('src="/inti/unduh_tabel.js"'), j = h.indexOf('src="unduh_tabel.js"');
   assert.ok(i > 0 && j > i, "urutan skrip"); assert.ok(h.indexOf('src="/inti/unduh.js"') < i);
 });
-test("registri: kemampuan.layar.unduh_tabel masih mati di semua bencana (PB-71 yang menyalakan)", () => {
+test("registri: unduh_tabel hanya boleh menyala di bencana yang punya adaptor (karhutla, gempa; PB-71 dst. menambah)", () => {
   const r = JSON.parse(baca("public/bencana.json")); const daftar = Array.isArray(r) ? r : (r.bencana || Object.values(r));
-  for (const b of daftar) if (b && b.kemampuan && b.kemampuan.layar) assert.notEqual(b.kemampuan.layar.unduh_tabel, true, b.id);
+  for (const b of daftar) if (b && b.kemampuan && b.kemampuan.layar && b.kemampuan.layar.unduh_tabel === true) assert.ok(["karhutla", "gempa"].includes(b.id), b.id + " menyala tanpa adaptor");
 });

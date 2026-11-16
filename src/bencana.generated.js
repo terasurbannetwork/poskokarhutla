@@ -212,7 +212,7 @@ export default {
         "pencegahan": false,
         "prioritas": false,
         "layar": {
-          "unduh_tabel": false,
+          "unduh_tabel": true,
           "brief": false,
           "pilih_tanggal": false,
           "profil_kab": false,
@@ -943,7 +943,7 @@ export default {
         "pencegahan": false,
         "prioritas": false,
         "layar": {
-          "unduh_tabel": false,
+          "unduh_tabel": true,
           "brief": false,
           "pilih_tanggal": false,
           "profil_kab": false,
