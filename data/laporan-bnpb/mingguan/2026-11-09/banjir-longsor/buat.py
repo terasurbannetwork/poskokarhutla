@@ -986,7 +986,7 @@ def main():
     # pemilik 16 Nov 2026: sampul tanpa blok "Dipresentasikan oleh" dan tanpa pil "Disampaikan kepada" (pengecualian resmi deck.py)
     TANPA = 'pemilik 16 Nov 2026: sampul laporan mingguan tanpa penyaji dan tanpa pil sasaran'
     PENYAJI = {'nama': 'Tim Ahli dan Tim Sus IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}
-    susun = [{'jenis': 'sampul', 'penyaji': None, 'tanpa_penyaji': TANPA}, {'jenis': 'daftar-isi'}]
+    susun = []   # pemilik 16 Nov 2026 ("gausah ada cover dan daftar isi"): deck langsung dibuka slide isi; tab bagian tetap
     susun += [{'halaman': n, 'bagian': 1, 'sumber': sumber()} for n in (1, 2)]
     judul_bagian = ['Peta banjir dan longsor']   # pemilik 16 Nov 2026 (sebelumnya "Situasi banjir dan longsor sepekan")
     if gis:
@@ -1017,7 +1017,7 @@ def main():
     keluar = lewat_deck.bingkai(
         isi, 'kajian', 'Laporan Situasi dan Kondisi Wilayah Terdampak Banjir dan Tanah Longsor',
         f'{HARI[a.weekday()]}, {a.day} {BLN[a.month]} s.d. {HARI[b_.weekday()]}, {tgl_l(b_)}', MINGGU['paparan'],
-        foto=([foto], kredit), penyaji=None, tanpa_kepada=TANPA, bagian=bagian, susun=susun,
+        sampul=False, foto=([foto], kredit), penyaji=None, tanpa_kepada=TANPA, bagian=bagian, susun=susun,
         spek_tambah={'panel_sisi': 'gelap', 'subjek_dokumen': 'Paparan Situasi Banjir dan Longsor Mingguan', 'skala_logo_bnpb': 1.1})
     # pemilik 16 Nov 2026: tiap keluaran masuk folder 'Revisi N' baru di folder minggu (PPTX dan PDF, nama tanpa (revN))
     import re, shutil
