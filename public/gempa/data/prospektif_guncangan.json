@@ -3,5 +3,5 @@
  "dicatat": 0,
  "dinilai": 0,
  "metrik": null,
- "catatan": "Append-only: ramalan MMI per gempa Dirasakan baru dicatat saat arsip D1 gempa (warga-api) tersedia; belum ada yang dicatat atau dinilai."
+ "catatan": "Tidak dipakai lagi: uji prospektif berjalan di prospektif_gempa.json (scripts/gempa/prospektif.py, tanpa menunggu arsip D1). Berkas ini hanya penunjuk dan tidak berisi catatan."
 }
