@@ -37,9 +37,11 @@ const warnaDalam = ["match", ["get", "d"], 0, KELAS_DALAM[0][1], 1, KELAS_DALAM[
 const jamPendek = iso => jamWIB(iso).replace(" WIB", "");
 
 /* ---------- keadaan ---------- */
-const S = {gempa: [], dibuat: null, rentang: bacaLokal("gempa-rentang", 72), jalur: [], urut: {k: "n", turun: true}, hal: 0, geo: null, nama: {}, atr: {}, tersedia: false, pilih: null};
+const S = {gempa: [], dibuat: null, rentang: bacaLokal("gempa-rentang", 72), jalur: [], urut: {k: "n", turun: true}, hal: 0, geo: null, nama: {}, atr: {}, tersedia: false, pilih: null, tanggal: null, riwayat: false};
 const namaProv = k => k === "-" ? "Perairan" : S.nama[k] ?? k;
-const dalamRentang = () => { const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
+/* tanggal WIB terpilih (PB-73, inti/pilih_tanggal.js lewat tanggal.js) menggantikan jendela jam; null = jendela jam seperti biasa */
+const tglWIB = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
+const dalamRentang = () => { if (S.tanggal) return S.gempa.filter(g => tglWIB(g.t) === S.tanggal); const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
 function agregat(daftar) { const o = {};
   for (const g of daftar) { const k = g.prov || "-", a = o[k] ||= {n: 0, m: 0, mmi: 0}; a.n++; a.m = Math.max(a.m, g.m); if (g.mmi_maks) a.mmi++; } return o; }
 
@@ -86,7 +88,7 @@ const Peta = {
     ["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit", "sensor", "dart", "gnss"].forEach(k => this.lihat(k) && nanti(() => this.pasangLapis(k)));
     Evakuasi.pasang(); Kejadian.pasangLapis(); renderLegenda(); },
   geoGempa() { const kini = Date.now(), t0 = kini - S.rentang * 36e5;
-    return {type: "FeatureCollection", features: S.gempa.map((g, i) => g.t < t0 ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
+    return {type: "FeatureCollection", features: S.gempa.map((g, i) => (S.tanggal ? tglWIB(g.t) !== S.tanggal : g.t < t0) ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
       properties: {i, m: g.m, d: kelasDalam(g.dalam), u: (kini - g.t) / 36e5}})).filter(Boolean)}; },
   async pasangLapis(k) {
     if (!peta?.getSource("gempa") || peta.getLayer(k)) return;
@@ -179,10 +181,20 @@ function renderCrumb() {
   if (j[0]) b.push(`<button data-n="1">${esc(namaProv(j[0]))}</button>`);
   $("#crumb").innerHTML = b.join(""); }
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
+/* mode Riwayat (PB-73): hitungan M 5+ per provinsi sejak 1900 dari riwayat_prov.json; kolom data: [4,5-4,9, 5-5,9, 6-6,9, >=7, M maks] per tahun */
+function riwayatProv() { return Object.entries(S.riwProv || {}).filter(([k]) => S.nama[k] && k !== "ID").map(([k, v]) => { let n = 0, m = 0;
+  for (const x of Object.values(v.th || {})) { n += (x[1] || 0) + (x[2] || 0) + (x[3] || 0); m = Math.max(m, x[4] || 0); } return {k, nama: namaProv(k), n, m}; }); }
+function renderRiwayat(box, u, arah) {
+  const G = "20px minmax(0,2.4fr) minmax(80px,1.2fr) minmax(64px,1fr)", uk = ["nama", "n", "m"].includes(u.k) ? u.k : "n";
+  const baris = riwayatProv().sort((a, b) => arah * ((uk === "nama" ? a.nama.localeCompare(b.nama) : a[uk] - b[uk]) || b.n - a.n || a.nama.localeCompare(b.nama)));
+  const kol = [["nama", "Provinsi"], ["n", "M 5+ sejak 1900", "n"], ["m", "Terbesar"]];
+  box.innerHTML = `<div class="tb kepala" style="grid-template-columns:${G}"><span></span>${kol.map(([k, n, c]) => `<span class="${[c, uk === k ? "urut" : ""].join(" ").trim()}" data-s="${k}"${uk === k ? ` data-arah="${u.turun ? 0 : 1}"` : ""}>${n}</span>`).join("")}</div>` +
+    baris.map((p, i) => `<button class="tb" data-kr="${esc(p.k)}" style="grid-template-columns:${G}"><span class="rk">${i + 1}</span><span class="kom"><b>${esc(p.nama)}</b></span><span class="n"><b>${fmt(p.n)}</b></span><span>${pilM(p.m)}</span></button>`).join(""); }
 function renderDaftar() {
   const box = $("#rows"), d = dalamRentang(), j = S.jalur, u = S.urut, arah = u.turun ? -1 : 1;
-  if (!d.length) { box.innerHTML = `<div class="kosong">${S.tersedia ? `Tidak ada gempa ${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
+  if (!d.length) { box.innerHTML = `<div class="kosong">${S.tersedia ? S.tanggal ? `Tidak ada gempa pada ${esc(S.tanggal)}.` : `Tidak ada gempa ${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
   const kepala = (g, kol) => `<div class="tb kepala" style="grid-template-columns:${g}"><span></span>${kol.map(([k, n, c]) => `<span class="${[c, k && u.k === k ? "urut" : ""].join(" ").trim()}"${k ? ` data-s="${k}"` : ""}${k && u.k === k ? ` data-arah="${u.turun ? 0 : 1}"` : ""}>${n}</span>`).join("")}</div>`;
+  if (!j.length && S.riwayat && S.riwProv) return renderRiwayat(box, u, arah);
   if (!j.length) {
     const G = "20px minmax(0,2fr) minmax(46px,.7fr) minmax(72px,1fr) minmax(64px,1fr)", ag = agregat(d);
     const baris = Object.entries(ag).map(([k, a]) => ({k, nama: namaProv(k), ...a})).sort((a, b) => arah * ((u.k === "nama" ? a.nama.localeCompare(b.nama) : a[u.k] - b[u.k]) || b.n - a.n || a.nama.localeCompare(b.nama)));
@@ -199,15 +211,16 @@ function renderDaftar() {
 $("#rows").addEventListener("click", e => {
   const h = e.target.closest("[data-h]"); if (h) { S.hal = +h.dataset.h; return renderDaftar(); }
   const s = e.target.closest("[data-s]"); if (s) { const k = s.dataset.s; S.urut = {k, turun: S.urut.k === k ? !S.urut.turun : k !== "nama"}; S.hal = 0; return renderDaftar(); }
+  const rw = e.target.closest("[data-kr]"); if (rw) return turun(rw.dataset.kr);
   const p = e.target.closest("[data-k]"); if (p) return turun(p.dataset.k);
   const g = e.target.closest("[data-g]"); if (g) { const q = S.gempa.find(x => x.id === g.dataset.g); if (q) Peta.pilih(q); } });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
 /* ---------- jendela waktu ---------- */
 const RENTANG = [[24, "24 jam"], [72, "72 jam"], [168, "7 hari"]];
-function renderRentang() { $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${S.rentang === v}">${n}</button>`).join(""); }
-$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.rentang = +b.dataset.v; simpanLokal("gempa-rentang", S.rentang); S.hal = 0;
-  $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.segarkan(); renderDaftar(); renderPita(); renderLegenda(); }); });
+function renderRentang() { $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${S.rentang === v && !S.tanggal}">${n}</button>`).join(""); window.PilihTanggal?.gambar(); }
+$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.rentang = +b.dataset.v; simpanLokal("gempa-rentang", S.rentang); S.hal = 0; S.tanggal = null; window.PilihTanggal?.lepas();
+  $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));  nanti(() => { Peta.segarkan(); renderDaftar(); renderPita(); renderLegenda(); }); });
 
 /* ---------- pita status tsunami resmi BMKG: hanya bila BMKG menyatakan berpotensi tsunami (kode 1 sampai 3) dalam 24 jam; tanpa pernyataan = tidak tampil, tidak ditafsir aman ---------- */
 function renderPita() {

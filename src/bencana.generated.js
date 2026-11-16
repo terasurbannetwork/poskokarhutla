@@ -945,7 +945,7 @@ export default {
         "layar": {
           "unduh_tabel": true,
           "brief": true,
-          "pilih_tanggal": false,
+          "pilih_tanggal": true,
           "profil_kab": false,
           "tab_operasi": true,
           "cari": [
