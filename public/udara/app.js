@@ -85,7 +85,7 @@ async function muatData() {
   S.h0 = S.hari = Math.max(0, uk.hari.indexOf(tglWIB(SEKARANG())));
   /* METAR boleh tidak ada: kartu dan lapisannya dibuang */
   S.metar = await muatJSON("../data/metar.json").catch(() => []);
-  $("#upd").textContent = "Data " + jamWIB(uk.dibuat);
+  $("#upd").innerHTML = jamData(uk.dibuat);
   await Kejadian.muatAwal(); isiTab();
 }
 /* stasiun METAR segar (laporan <= maksJam jam, jarak pandang terbaca) */

@@ -61,8 +61,7 @@ async function muatData() {
   S.glb = Pesisir.gelBmkg(per, SEKARANG());
   /* waktu tiap sumber terpisah (bukan yang terbaru saja): sumber yang basi tak tertutup sumber yang segar */
   const W = [["Abrasi", abr?.dibuat], ["Rob", rob?.dibuat], ["Pasang", pas?.dibuat], ["Ombak", gel?.dibuat], ["Peringatan BMKG", per?.dibuat]].filter(x => x[1] && Number.isFinite(Date.parse(x[1])));
-  $("#upd").textContent = W.length ? W.map(([n, t]) => `${n} ${jamWIB(t)}`).join(", ") : "Data tidak terbaca";
-  $("#upd").title = $("#upd").textContent;
+  { const t = W.length ? W.map(([n, t]) => `${n} ${jamWIB(t)}`).join(", ") : "Data tidak terbaca"; $("#upd").innerHTML = `<span class="pjg">${esc(t)}</span>`; $("#upd").title = t; }   /* daftar stasiun panjang: tampil hanya di kepala lebar (.pjg, gaya.css) */
 }
 
 /* ================================================================ laci */

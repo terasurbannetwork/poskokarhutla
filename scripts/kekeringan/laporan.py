@@ -178,10 +178,11 @@ def satukan_alias(penduduk, pusat, wilayah):
 
 def bangun(harian, penduduk, pusat, wilayah, prakiraan, padi, sekarang):
     H.validasi_harian(harian)
+    kode = H.kode_kab(penduduk)   # dari daftar ASLI sebelum alias disatukan: kode kab sesudah ejaan ganda (mis. Pohuwato 7507) tidak bergeser
     penduduk, pusat, wilayah = satukan_alias(penduduk, pusat, wilayah)
     isi, ag = H.hitung(harian, penduduk, pusat)
     n = len(isi["tgl30"])
-    ag["_kode"] = H.kode_kab(penduduk)
+    ag["_kode"] = kode
     nas, prov, kab = seri_laporan(ag, n, frozenset(k for k, v in ((wilayah or {}).get("kab") or {}).items() if (v.get("lv") or 0) >= 2))
     prov_urut = [p for j, p in sorted(((w["j31"][-1], p) for p, w in ag["prov"].items()), reverse=True) if j > 0]   # hanya yang memang punya penduduk HTH 31 hari atau lebih; urutan seri nol bukan peringkat
     t_ref = harian["tgl"].index(harian["hari_ini"]) - 1
