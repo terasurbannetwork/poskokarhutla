@@ -782,7 +782,7 @@ export default {
           "tab_operasi": false,
           "citra": true,
           "sinyal": true,
-          "peta_kab": false,
+          "peta_kab": true,
           "cari": [
             "kab",
             "desa",
@@ -970,7 +970,7 @@ export default {
           "tab_operasi": true,
           "citra": false,
           "sinyal": true,
-          "peta_kab": false,
+          "peta_kab": true,
           "cari": [
             "desa",
             "kab",
@@ -1490,7 +1490,7 @@ export default {
           "tab_operasi": false,
           "citra": false,
           "sinyal": false,
-          "peta_kab": false,
+          "peta_kab": true,
           "cari": [
             "desa",
             "kab",
