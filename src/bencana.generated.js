@@ -948,7 +948,15 @@ export default {
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": true,
-          "cari": [],
+          "cari": [
+            "desa",
+            "kab",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
           "ukuran_provinsi": []
         }
       }
