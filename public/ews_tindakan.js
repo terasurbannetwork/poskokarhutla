@@ -50,11 +50,26 @@ export const BENCANA = {
     }},
   cuaca: {nama: "Cuaca ekstrem", pendek: "Cuaca ekstrem", warna: "#5b5fc7", gambar: "bencana-cuaca.jpg",
     sumber: "Peringatan dini cuaca BMKG (nowcast) untuk kecamatan Anda",
+    /* PB-42: butir disalin dari BNPB, Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana edisi 2012 (bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf),
+       bagian Angin Puting Beliung, Banjir, dan Gelombang Pasang; butir lama tanpa sumber (tunda perjalanan, berteduh di bawah pohon, jendela kaca) dibuang.
+       Tingkat dari CAP severity BMKG: peringatan terpadu Severe = Siaga (2), Extreme = Awas (3); email Moderate = 2, Severe dan Extreme = 3, lainnya 1 (src/ews.js). */
     tindakan: {
-      1: ["Tunda perjalanan yang tidak penting selama peringatan berlaku.", "Amankan benda di luar rumah yang bisa terbang tertiup angin."],
-      2: ["Jauhi pohon besar, baliho, dan tiang listrik saat angin kencang.", "Cabut peralatan listrik saat petir; jangan berteduh di bawah pohon di lapangan terbuka.",
-        "Nelayan dan penyeberangan: tunda melaut."],
-      3: ["Tetap di dalam bangunan yang kokoh, jauh dari jendela kaca.", "Bila banjir mulai naik, ikuti tindakan banjir: matikan listrik dan menuju tempat tinggi."],
+      1: ["Perhatikan tanda cuaca buruk: gumpalan awan gelap, besar, dan tinggi, petir dan guruh terlihat dari kejauhan, atau suara gemuruh terdengar dari kejauhan.",
+        "Bawa masuk barang di luar rumah agar tidak terbawa angin.", "Bila sedang berlayar, hindari daerah laut yang sedang dilanda cuaca buruk."],
+      2: ["Tutup jendela dan pintu, lalu kunci.", "Matikan aliran listrik dan peralatan elektronik.",
+        "Hindari bangunan yang tinggi, tiang listrik, dan papan reklame.",
+        "Jika terasa petir akan menyambar, segera membungkuk, duduk, dan peluk lutut ke dada; jangan tiarap di atas tanah."],
+      3: ["Segera masuk ke dalam rumah atau bangunan yang kokoh.",
+        "Saat terjadi banjir, hindari berjalan di dekat saluran air agar tidak terseret arus banjir.",
+        "Bila genangan naik, mengungsi ke posko banjir sedini mungkin selagi genangan masih bisa dilewati.",
+        "Setelah reda, pastikan tidak ada anggota keluarga yang cedera, beri pertolongan darurat bila ada korban, dan laporkan kerusakan listrik, gas, dan lainnya kepada yang berwenang."],
+    },
+    rujukan: {
+      1: ["BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 28", "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 28", "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 33"],
+      2: ["BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 28", "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 28",
+        "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 29", "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 29"],
+      3: ["BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 29", "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 18",
+        "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 19", "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 30"],
     }},
   /* PB-44: butir gempa dan tsunami disalin dari dua dokumen resmi (dibaca 17 Nov 2026); butir lama tanpa sumber (minimal 3 km ke darat,
      lantai 3 bangunan beton, naik motor, matikan listrik, bau gas, nomor 112) dibuang. rujukan[tingkat][i] = sumber butir ke-i (tests/layar/ews_tindakan.test.mjs).

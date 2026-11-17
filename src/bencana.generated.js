@@ -773,8 +773,10 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "cuaca"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "cuaca",
