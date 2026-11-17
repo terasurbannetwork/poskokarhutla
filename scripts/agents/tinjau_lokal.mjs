@@ -79,6 +79,11 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         const h = isi.toString("utf8");
         if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>')); keluar["cache-control"] = "no-store"; }
       }
+      /* tiru pasangKeluar src/worker.js: tombol Keluar di semua HTML sebelum Worker baru terbit (halaman tanpa sesi tidak dibedakan di sini) */
+      if ((keluar["content-type"] || r.headers.get("content-type") || "").includes("text/html") && !/^\/(admin\/)?masuk\/?$/.test(jalur)) {
+        const h = isi.toString("utf8");
+        if (h.includes("</body>") && !h.includes("/inti/keluar.js")) { isi = Buffer.from(h.replace("</body>", '<script src="/inti/keluar.js?v=1" defer></script>\n</body>')); keluar["cache-control"] = "no-store"; }
+      }
       res.writeHead(status, keluar);
       res.end(req.method === "HEAD" ? undefined : isi);
     } catch (e) {
