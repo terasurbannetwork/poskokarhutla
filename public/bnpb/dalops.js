@@ -950,16 +950,16 @@
     const A = n.terdampak ? [hl(F(n.terdampak)), " terdampak ditangani sekarang"] : [];
     const B = n.awas && n.siaga ? [hl(F(n.awas)), " Awas dan ", hl(F(n.siaga)), " Siaga disiapkan"] : n.awas || n.siaga ? [hl(F(n.awas || n.siaga)), n.awas ? " Awas disiapkan" : " Siaga disiapkan"] : [];
     const judul = ["Mitigasi ", hl(`${F(n.total)} kab/kota`), ": ", ...A, ...A.length && B.length ? [", "] : [], ...B, ...!A.length && !B.length ? ["pantauan khusus"] : []];
-    const t = h("table", {class: "ad-tabel dl-tabel dl-mt"}, h("thead", null, h("tr", null, ["Kab/kota", "Tenggat", "Langkah BPBD bersama BNPB"].map(k => h("th", {scope: "col", teks: k})))));
+    const t = h("table", {class: "ad-tabel dl-tabel dl-mt"}, h("thead", null, h("tr", null, ["Kab/kota", "Tenggat", "Langkah BPBD bersama BNPB", "Status"].map((k, i) => h("th", {scope: "col", class: ["", "dl-mt-tg", "", "dl-mt-st"][i] || null, teks: k})))));
     /* rapi (pemilik 12 Nov 2026): satu langkah satu baris berlabel, tenggat jadi tanda, kelompok Siaga dan Pantauan tertutup sampai diklik */
     for (const g of m.grup) {
       const [ik, kls] = PITA[g.kunci], buka = g.kunci === "terdampak" || g.kunci === "awas";
       const tombol = h("button", {type: "button", class: "dl-buka", "aria-expanded": String(buka)}, ikon("lanjut"), h("span", {class: "dl-mt-judul"}, ikon(ik), h("b", {teks: g.judul})),
         h("span", {class: "dl-tag dl-tag-hijau dl-tl-n", hidden: true}), h("span", {class: "dl-tag dl-tag-biru dl-jml", teks: `${F(g.baris.length)} kab/kota`}));
-      const tb = h("tbody", {class: "dl-mt-grup dl-grup " + kls + (buka ? "" : " dl-tutup")}, h("tr", {class: "dl-mt-pita dl-prov"}, h("td", {colspan: "3"}, tombol)),
+      const tb = h("tbody", {class: "dl-mt-grup dl-grup " + kls + (buka ? "" : " dl-tutup")}, h("tr", {class: "dl-mt-pita dl-prov"}, h("td", {colspan: "4"}, tombol)),
         g.baris.map(x => h("tr", null, h("td", {class: "dl-mt-kab"}, h("b", {teks: x.nama}), h("span", {class: "bn-label", teks: namaProv(x.prov_kode)})),
           h("td", {class: "dl-mt-tg"}, x.tenggat ? h("span", {class: "dl-tag " + (x.tenggat === "Sekarang" ? "dl-tag-merah" : "dl-tag-kuning"), teks: x.tenggat}) : "–"),
-          h("td", {class: "dl-mt-ln"}, ...String(x.langkah).split("; ").map(t => butirLangkah(x, t))))));
+          h("td", {class: "dl-mt-ln", colspan: "2"}, ...String(x.langkah).split("; ").map(t => butirLangkah(x, t))))));
       tb.firstChild.addEventListener("click", () => { const jadi = tb.classList.toggle("dl-tutup") === false; tombol.setAttribute("aria-expanded", String(jadi)); });
       t.append(tb);
     }
