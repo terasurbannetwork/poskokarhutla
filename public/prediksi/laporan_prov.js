@@ -29,14 +29,43 @@
   /* Kelas warna: batas kiri inklusif; warna[i] untuk kelas i; label untuk legenda. */
   const KELAS = {
     hujan: {batas: [1, 20, 50, 100, 150], warna: ["#eef2f7", "#c6dbef", "#6baed6", "#2171b5", "#08306b", "#54278f"],
-      label: ["<1", "1–20", "20–50", "50–100", "100–150", "≥150"]},
+      label: ["<1 mm", "1–20 mm", "20–50 mm", "50–100 mm", "100–150 mm", "≥150 mm"]},
     lengas: {batas: [0.15, 0.25, 0.35, 0.45], warna: ["#a6611a", "#dfc27d", "#b9dcc4", "#5fb3a6", "#018571"],
       label: ["<0,15", "0,15–0,25", "0,25–0,35", "0,35–0,45", "≥0,45"]},
     ambang: {batas: [40, 60, 80, 120], warna: ["#7a0177", "#c51b8a", "#f768a1", "#fbb4b9", "#fde0dd"],
-      label: ["<40", "40–60", "60–80", "80–120", "≥120"]},
+      label: ["<40 mm", "40–60 mm", "60–80 mm", "80–120 mm", "≥120 mm"]},
     lebih: {batas: [0.1, 10, 25, 50], warna: ["#eef2f7", "#fee391", "#fe9929", "#d95f0e", "#993404"],
-      label: ["tidak lewat", "<10", "10–25", "25–50", "≥50"]},   // lebihan dibulatkan 1 desimal: >0 berarti >=0,1
+      label: ["tidak lewat", "<10 mm", "10–25 mm", "25–50 mm", "≥50 mm"]},   // lebihan dibulatkan 1 desimal: >0 berarti >=0,1
     level: {batas: [1, 2, 3], warna: ["#e2e8f0", "#f2c94c", "#f2994a", "#c9503a"], label: ["Normal", "Waspada", "Siaga", "Awas"]},
+  };
+  /* Kelas tambahan: lapisan paparan dampak (tab Paparan dampak) dan jenis laporan selain banjir. Batas kiri inklusif. */
+  const JINGGA4 = ["#fde8c8", "#fdae6b", "#e6550d", "#7f2704"];
+  KELAS.gempa = {batas: [1, 2, 3], warna: JINGGA4, label: ["Rendah", "Sedang", "Tinggi", "Sangat tinggi"]};   // indeks dari kelas dampak.json
+  KELAS.terisolir = {batas: [3, 10, 30], warna: JINGGA4, label: ["1–2 desa", "3–9 desa", "10–29 desa", "≥30 desa"]};   // minimum data 1 desa
+  KELAS.genangan = {batas: [10, 100, 500, 2000], warna: ["#eef2f7", "#c6dbef", "#6baed6", "#2171b5", "#08306b"], label: ["<10 ha", "10–100 ha", "100–500 ha", "500–2.000 ha", "≥2.000 ha"]};
+  KELAS.jalan = {batas: [1, 10, 40, 100], warna: ["#eef2f7", "#fee391", "#fe9929", "#d95f0e", "#993404"], label: ["0 ruas", "1–9 ruas", "10–39 ruas", "40–99 ruas", "≥100 ruas"]};
+  KELAS.api = {batas: [0.1, 0.3, 0.6], warna: ["#fff5eb", "#fdae6b", "#e6550d", "#7f2704"], label: ["<10%", "10–30%", "30–60%", "≥60%"]};
+  KELAS.asap = {batas: [1, 2, 3], warna: ["#e2e8f0", "#fdd49e", "#e6550d", "#7f0000"], label: ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"]};
+  KELAS.rob = {batas: [1], warna: ["#e2e8f0", "#0f6fb0"], label: ["di bawah p95", "melewati p95"]};
+  const NAMA_JALAN = {motorway: "jalan bebas hambatan", trunk: "jalan utama nasional", primary: "jalan primer", secondary: "jalan sekunder", tertiary: "jalan tersier"};
+  const kelasJalan = k => NAMA_JALAN[k] || k || "tanpa kelas";
+  /* Lapisan paparan dampak: nilai per kab dari dampak.json (dp) dan jalan.json (jl); null = tanpa data, bukan nol. */
+  const LAPISAN = ["gempa", "terisolir", "jalan", "genangan"];
+  const ruasRawan = jl => jl ? (jl.way_rawan ?? jl.way_tunggal ?? null) : null;
+  function nilaiDampak(j, dp, jl) {
+    if (j === "gempa") { const i = KELAS.gempa.label.indexOf(dp?.gempa?.kelas); return i < 0 ? null : i; }
+    if (j === "terisolir") return dp?.terisolir?.desa ?? null;
+    if (j === "genangan") return dp?.genangan?.tergenang_ha ?? null;
+    return ruasRawan(jl);
+  }
+  /* Jenis laporan generik dari prediksi.json: kolom yang dikelaskan, kelas, dan indeks kelas "di atas normal" (min). */
+  const JENIS = {
+    banjir: {kode: "BNJ", nama: "banjir"},
+    longsor: {kode: "LSR", nama: "longsor", kolom: "lv", kelas: "level", min: 1},
+    api: {kode: "API", nama: "titik panas", kolom: "p", kelas: "api", min: 1},
+    asap: {kode: "ASP", nama: "asap", kolom: "kat", kelas: "asap", min: 1},
+    rob: {kode: "ROB", nama: "rob", kolom: "lewat", kelas: "rob", min: 1},
+    hujan: {kode: "HJN", nama: "hujan", kolom: "tot", kelas: "hujan", min: 2},
   };
   const TANPA = "#cbd5e1";
   const kelas = (v, batas) => {
@@ -78,5 +107,21 @@
     .sort((a, b) => b.lv[n - 1] - a.lv[n - 1] || a.nama.localeCompare(b.nama, "id"));
   const tabel = baris => baris.filter(b => lvMaks(b) >= 1).sort((a, b) => lvMaks(b) - lvMaks(a) || a.nama.localeCompare(b.nama, "id"));
 
-  window.LaporanProv = {kunci, petaSvg, KELAS, TANPA, kelas, indeksAmbang, ambangKab, lebih, susun, waspada, tabel};
+  /* Laporan jenis selain banjir: tiap kab dikelaskan per hari (+1..+3); tanpa data = kelas -1. ada=false bila tak satu kab pun punya data
+     (mis. rob di provinsi tanpa kab pesisir). ringkas[n][i] = jumlah kab berkelas i; atas = kab yang kelas tertingginya >= min. */
+  function susunJenis({d, prov, jenis}) {
+    const J = JENIS[jenis], K = KELAS[J.kelas], kd = d.kode[J.kode], ic = kd ? kd.kol.indexOf(J.kolom) : -1;
+    const kab = d.kab.filter(k => k.prov === prov);
+    const baris = kab.map(k => {
+      const v = [0, 1, 2].map(n => { const r = k[J.kode]?.[n]; return r && ic >= 0 && r[ic] != null ? Number(r[ic]) : null; });
+      return {id: k.id, nama: k.nama, kunci: kunci(k.nama), v, kls: v.map(x => kelas(x, K.batas))};
+    });
+    const ringkas = [0, 1, 2].map(n => K.warna.map((_, i) => baris.filter(b => b.kls[n] === i).length));
+    const maks = b => Math.max(-1, ...b.kls);
+    const atas = baris.filter(b => maks(b) >= J.min).sort((a, b) => maks(b) - maks(a) || a.nama.localeCompare(b.nama, "id"));
+    return {prov, nama: kab[0]?.pn ?? prov, jenis, J, n: baris.length, ada: baris.some(b => maks(b) >= 0), baris, ringkas, atas};
+  }
+
+  window.LaporanProv = {kunci, petaSvg, KELAS, TANPA, kelas, indeksAmbang, ambangKab, lebih, susun, waspada, tabel,
+    JENIS, LAPISAN, NAMA_JALAN, kelasJalan, ruasRawan, nilaiDampak, susunJenis};
 })();

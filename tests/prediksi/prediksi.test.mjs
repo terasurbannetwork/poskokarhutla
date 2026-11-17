@@ -131,8 +131,9 @@ test('tab Dampak: dimuat malas, data lewat esc(), tanpa sisa interpolasi mentah 
   assert.match(js, /if \(t === "dampak"\) tunda2\(muatDampak\)/)   // lewat nanti: chrome tab dulu, isi sesudah satu frame
   assert.ok(!js.includes('${jam(mulai)}'), 'jam() tanpa esc')
   assert.ok(!js.includes('<td>${x.ambang}</td>') && !js.includes('+${x.tenggang}</td>'), 'ambang/tenggang tanpa esc')
-  const g = js.slice(js.indexOf('function gambarDampak'), js.indexOf('async function muatDampak'))
-  for (const f of ['o.nama', 'o.kelas', 'o.way', 'g.kelas', 'tgl(f.acuan', 'k.nama']) assert.ok(g.includes(`esc(${f}`), `${f} tanpa esc di tab Dampak`)
+  const g = js.slice(js.indexOf('function rincianDampak'), js.indexOf('async function muatDampak'))
+  for (const f of ['o.nama', 'LaporanProv.kelasJalan(o.kelas', 'o.way', 'g.kelas', 'tgl(f.acuan', 'k.nama']) assert.ok(g.includes(`esc(${f}`), `${f} tanpa esc di tab Dampak`)
+  assert.match(js, /await petaProv\(prov\)/, 'geometri dimuat per provinsi, bukan di muka')
 })
 
 test('dampak.json: 514 kab, berlabel skenario/paparan, bidang null bila sumber tak memuat', () => {
@@ -164,4 +165,76 @@ test('tab Laporan provinsi: data dimuat malas, teks lewat esc(), pil hipotesis m
   assert.match(g, /\.pakai/, 'pil hipotesis harus membaca ambang_persentil.pakai, bukan angka tetap')
   assert.match(g, /window\.print\(\)/)
   for (const f of ['b.nama', 's.nama']) assert.ok(g.includes(`esc(${f}`), `${f} tanpa esc di tab Laporan`)
+})
+
+// ---- tab Besok (BS-5, BS-6): fungsi murni besok_inti.js dijalankan nyata di node (aturan: prediksi-besok/ALGORITMA.md) ----
+const winB = {}
+new Function('window', readFileSync(join(ROOT, 'public/prediksi/besok_inti.js'), 'utf8'))(winB)
+const Bk = winB.Besok
+const KOLB = { HJN: ['p1', 'p20', 'p50', 'tot', 'mulai', 'lama', 'puncak', 'm'], API: ['p', 'd'], BNJ: ['lv', 'ps'], LSR: ['lv', 'ps'], ASP: ['pm', 'kat'], ROB: ['lewat', 'sel'], GEL: ['hs', 'lv'], CEX: ['emb', 'lv'] }
+const hj = (tot) => [0.9, 0.3, 0.1, tot, 6, 4, 8, 1]
+const kabB = (id, jiwa, o = {}) => ({ id, nama: 'Kab. ' + id, prov: '11', pn: 'Aceh', jiwa, ...o })
+
+test('besok_inti levelSel: ambang hujan, titik panas, asap, rob, lv; tanpa data = null (bukan 0)', () => {
+  const L = (k, r) => Bk.levelSel(k, KOLB, r)
+  assert.deepEqual([19.9, 20, 49.9, 50, 99.9, 100].map((t) => L('HJN', hj(t))), [0, 1, 1, 2, 2, 3])
+  assert.deepEqual([0.19, 0.2, 0.49, 0.5, 0.79, 0.8].map((p) => L('API', [p, 1])), [0, 1, 1, 2, 2, 3])
+  assert.deepEqual([0, 1, 2, 3].map((c) => L('ASP', [30, c])), [0, 1, 2, 3])
+  assert.equal(L('ROB', [1, 0.2]), 2); assert.equal(L('ROB', [0, 0.2]), 0)
+  assert.deepEqual([0, 1, 2, 3].map((v) => L('BNJ', [v, 0.1])), [0, 1, 2, 3])
+  assert.equal(L('GEL', [3.1, 2]), 2); assert.equal(L('CEX', [90, 3]), 3)
+  assert.equal(L('HJN', null), null)
+  assert.equal(L('GEL', [1, 1]) === 1 && Bk.levelSel('GEL', { HJN: KOLB.HJN }, [1, 1]), null, 'kode yang belum ada di data = null')
+})
+
+test('besok_inti level baris, urutan bawaan, angka pil, saring pil', () => {
+  const kab = [
+    kabB('A', 100, { HJN: [hj(10)] }),                              // level 0
+    kabB('B', 500, { HJN: [hj(60)], BNJ: [[2, 0.4]] }),             // level 2
+    kabB('C', 900, { HJN: [hj(60)] }),                              // level 2, jiwa lebih besar
+    kabB('D', 50, { HJN: [hj(120)], GEL: [[4.5, 3]] }),             // level 3
+    kabB('E', 70, { HJN: [hj(30)], ROB: [[1, 0.3]] }),              // rob lewat = 2
+  ]
+  assert.deepEqual(kab.map((k) => Bk.levelKab(k, KOLB, 1)), [0, 2, 2, 3, 2])
+  assert.deepEqual(Bk.urutBawaan(kab, KOLB, 1).map((k) => k.id), ['D', 'C', 'B', 'E', 'A'], 'level baris menurun, lalu jiwa')
+  assert.equal(Bk.angkaPil(kab, KOLB, 1, 'HJN'), 3)
+  assert.equal(Bk.angkaPil(kab, KOLB, 1, 'BNJ'), 1)
+  assert.equal(Bk.angkaPil(kab, KOLB, 1, 'LAUT'), 2, 'gelombang dan rob digabung')
+  assert.equal(Bk.angkaPil(kab, KOLB, 1, 'ALL'), 4)
+  assert.equal(Bk.angkaPil(kab, KOLB, 1, 'CEX'), 0, 'tanpa data tidak dihitung')
+  assert.deepEqual(Bk.urutBawaan(kab, KOLB, 1, 'HJN').map((k) => k.id), ['D', 'C', 'B', 'E'], 'pil menyaring level >= 1 lalu urut level pil, jiwa')
+  assert.deepEqual(Bk.urutKolom(kab, KOLB, 1, 'jiwa', 1).map((k) => k.id), ['C', 'B', 'A', 'E', 'D'])
+  assert.deepEqual(Bk.urutKolom(kab, KOLB, 1, 'HJN', 1).map((k) => k.id).slice(0, 3), ['D', 'C', 'B'], 'hujan terbesar dulu, seri pecah dengan jiwa')
+  assert.deepEqual(Bk.urutKolom(kab, KOLB, 1, 'nama', 1).map((k) => k.id), ['A', 'B', 'C', 'D', 'E'])
+})
+
+test('besok_inti kunciGeo: pakai geo bila ada, cadangan dari prov + nama tanpa "Kab. ", Kota tetap', () => {
+  assert.equal(Bk.kunciGeo({ geo: '11|Aceh Selatan', prov: '11', nama: 'Kab. Aceh Selatan' }), '11|Aceh Selatan')
+  assert.equal(Bk.kunciGeo({ prov: '11', nama: 'Kab. Aceh Selatan' }), '11|Aceh Selatan')
+  assert.equal(Bk.kunciGeo({ prov: '11', nama: 'Kota Banda Aceh' }), '11|Kota Banda Aceh')
+  const p = join(DATA, 'prediksi.json')
+  if (existsSync(p)) {
+    const d = JSON.parse(readFileSync(p, 'utf8')), ada = new Set()
+    for (const pv of new Set(d.kab.map((k) => k.prov))) {
+      const g = join(ROOT, 'public/geo/kabupaten', pv + '.json')
+      if (existsSync(g)) for (const f of JSON.parse(readFileSync(g, 'utf8')).features) ada.add(pv + '|' + f.properties.kab)
+    }
+    const cocok = d.kab.filter((k) => ada.has(Bk.kunciGeo(k))).length
+    assert.ok(cocok / d.kab.length > 0.95, `kunci geo cocok ${cocok}/${d.kab.length}`)
+  }
+})
+
+test('nama menu: label tab jelas, data-tab dan hash tidak berubah', () => {
+  const h = readFileSync(join(ROOT, 'public/prediksi/index.html'), 'utf8')
+  const nav = h.slice(h.indexOf('id="tabs"'), h.indexOf('</nav>'))
+  const peta = Object.fromEntries([...nav.matchAll(/data-tab="(\w+)"[^>]*>([^<]+)</g)].map((m) => [m[1], m[2]]))
+  assert.deepEqual(peta, { besok: 'Prakiraan 3 hari', rapor: 'Ketepatan prakiraan', tangga: 'Tangga peringatan', dampak: 'Paparan dampak', laporan: 'Laporan provinsi', konfirmasi: 'Konfirmasi lapangan' })
+})
+
+test('Laporan provinsi: pemilih jenis berikon, hash lama = banjir', () => {
+  const h = readFileSync(join(ROOT, 'public/prediksi/index.html'), 'utf8')
+  const jenis = [...h.slice(h.indexOf('id="lpJenis"'), h.indexOf('id="laporanIsi"')).matchAll(/data-j="(\w+)"/g)].map((m) => m[1])
+  assert.deepEqual(jenis, ['banjir', 'longsor', 'api', 'asap', 'rob', 'hujan'])
+  const g = readFileSync(join(ROOT, 'public/prediksi/laporan_layar.js'), 'utf8')
+  assert.ok(g.includes('(?:\\/(\\w+))?$/'), 'hash #laporan/<prov> tanpa jenis tetap dibaca')
 })
