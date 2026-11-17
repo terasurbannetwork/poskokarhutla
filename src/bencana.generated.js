@@ -961,8 +961,11 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "gempa",
+            "tsunami"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "gempa",

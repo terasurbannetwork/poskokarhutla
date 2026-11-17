@@ -91,3 +91,9 @@ jobs:
           done
           echo "::error title=Push data gempa gagal::git push ke main gagal 3x (bentrok atau token tanpa contents:write)"
           exit 1
+
+      # Penjaga data beku (PB-44, F-30; pola PB-68.10): laporan harian dan catatan prospektif gempa dari tanggal di dalam berkas.
+      # Kuning = ::warning, merah = langkah gagal. Ambang di scripts/agents/cek_basi.py.
+      - name: Periksa data gempa tidak beku
+        if: always()
+        run: python3 scripts/agents/cek_basi.py gempa

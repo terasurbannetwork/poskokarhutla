@@ -28,6 +28,9 @@ TABEL = [
     # risiko.json bulanan (statis.yml tanggal 2): satu bulan terlewat = kuning, dua = merah
     ("lintas", "public/gunungapi/data/risiko.json", "dibuat", 45, 75, "statis.yml bulanan (risiko.py)"),
     ("statis", "public/gunungapi/data/risiko.json", "dibuat", 45, 75, "statis.yml bulanan (risiko.py)"),
+    # PB-44 (F-30, gempa): dua keluaran harian gempa.yml yang di-commit ke main; batas 2 jam GEMPA_UMUR_MAKS hanya untuk email (src/ews.js)
+    ("gempa", "public/gempa/data/laporan.json", "dibuat", 3, 7, "gempa.yml harian (laporan_gempa.py)"),
+    ("gempa", "public/gempa/data/prospektif_gempa.json", "diperbarui", 3, 7, "gempa.yml harian (prospektif.py catat dan nilai)"),
 ]
 
 
@@ -106,6 +109,10 @@ def uji():
         assert s["c.json"]["status"] == "merah" and s["c.json"]["umur_hari"] > 27, s["c.json"]
         assert s["d.json"]["status"] == "tanpa_tanggal" and s["e.json"]["status"] == "tanpa_tanggal"
         assert s["f.json"]["status"] == "hilang" and "z.json" not in s
+    # tiap grup di TABEL punya langkah workflow yang memanggilnya (grup tanpa langkah = penjaga yang tak pernah jalan)
+    for g in {g for g, *_ in TABEL}:
+        with open(os.path.join(AKAR, ".github/workflows", f"{g}.yml"), encoding="utf-8") as f:
+            assert f"cek_basi.py {g}" in f.read(), f"{g}.yml tidak memanggil cek_basi.py {g}"
     print("cek_basi: uji lulus")
 
 
@@ -114,7 +121,7 @@ def utama():
     if a == ["uji"]:
         return uji()
     if not a or a[0] not in {g for g, *_ in TABEL}:
-        print("pakai: cek_basi.py lintas|statis [--akar DIR] | uji", file=sys.stderr)
+        print("pakai: cek_basi.py lintas|statis|gempa [--akar DIR] | uji", file=sys.stderr)
         return 2
     akar = a[a.index("--akar") + 1] if "--akar" in a else AKAR
     hasil = periksa(a[0], akar)
