@@ -1,5 +1,14 @@
 {
 "kamus": {
+"M 5+": "M 5+",
+"Grand total": "Grand total",
+"Memuat riwayat…": "Loading history…",
+"Unduh tabel (CSV)": "Download table (CSV)",
+"Saringan gempa": "Earthquake filter",
+"Isi riwayat": "History contents",
+"Riwayat gagal dimuat, coba lagi.": "History failed to load, try again.",
+"Data riwayat belum tersedia.": "History data is not available yet.",
+"Gempa per tahun": "Earthquakes per year",
 "Wilayah Siaga/Awas 72 jam": "Alert/Danger areas, 72 hours",
 "Siklon tropis": "Tropical cyclone",
 "Pelabuhan dan bandara terancam": "Ports and airports at risk",

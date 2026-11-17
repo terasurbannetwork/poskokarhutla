@@ -150,5 +150,7 @@
   "0146_indeks_fk_kejadian.sql": "f17a297084428b137163da3f24fc2c17d2d395b31fc1ae5fff5a4c971a692976",
   "0147_kaji_ulang.sql": "e3abf7727a55f80b6cda701bf147c5ce987d74dc349b9e7227220bbea2d2fa2e",
   "0148_pembiayaan.sql": "bb73e7bf830de2fe734747bfd823546c059ddd2d00c19b0d5545bf239b724dff",
-  "0149_pemetaan_relawan.sql": "2ac1d9df8a622dcfab399b9f157731a3c2f0e7cffdcd07f47189b81d90d823d6"
+  "0149_pemetaan_relawan.sql": "2ac1d9df8a622dcfab399b9f157731a3c2f0e7cffdcd07f47189b81d90d823d6",
+  "0150_alun_terpadu.sql": "4bfc5715376ba49c22e48f4359f0fc9d3abd4bf9ecbbb3c5899366290fa32832",
+  "0151_staf_aktif_indeks.sql": "c0f23a53aeedaf0c96391a17f513b3813dfa2b7d163a677fccf6a0514ec470ae"
 }

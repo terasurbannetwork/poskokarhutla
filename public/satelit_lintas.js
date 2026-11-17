@@ -336,7 +336,7 @@
     h.satelit.forEach(function (e) { epoch = Math.min(epoch, Date.parse(e.epoch)); });
     var bln = new Date(epoch).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
     return '<div class="asap-k lintas-k kotak-p" data-kunci="' + esc(h.kunci || "") + '"><div class="lbl"><span style="font-weight:700;color:var(--ink)">' + IKON + "Satelit berikutnya di " +
-      '<span translate="no">' + esc(namaWilayah()) + "</span></span></div>" + htmlSegKartu(tab) +
+      '<span translate="no">' + esc(h.nama || namaWilayah()) + "</span></span></div>" + htmlSegKartu(tab) +
       '<div class="lk-isi">' + isiKartu(h, tab, now, jd) + "</div>" +
       '<div style="margin-top:6px;font-size:10.5px"><span>Sumber: elemen orbit CelesTrak (epoch tertua</span> <span translate="no">' + esc(bln + " " + jam(epoch)) +
       " WIB</span><span>), dihitung di peramban</span>, " + htmlJeda(jd, false) + "</div></div>";
@@ -393,7 +393,7 @@
     for (var k = 0; k < tle.satelit.length; k++) { if (k) await tidur(); satKeLintasan(lintas, tle.satelit[k], potong(jejak.daftar[k], now, akhir), titik, now); }
     return lintas.sort(urutWaktu);
   }
-  async function kerja(kunci, fitur) {
+  async function kerja(kunci, fitur, nama) {
     try {
       var sat = await muatPustaka(), tle = await muatTle(), jejak = await siapkanJejak(sat, tle);
       await tidur();
@@ -401,7 +401,7 @@
       await tidur();
       var lintas = await lintasWilayah(tle, jejak, titik, Date.now());
       if (!lintas.length) throw lokal("tidak ada lintasan sampai besok 24.00 WIB di " + kunci);
-      G.hasil.set(kunci, {kunci: kunci, lintas: lintas, satelit: tle.satelit, jeda: tle.jeda, hari: jejak.hari});
+      G.hasil.set(kunci, {kunci: kunci, nama: nama, lintas: lintas, satelit: tle.satelit, jeda: tle.jeda, hari: jejak.hari});
     } catch (e) {
       if (e && e.lokal) G.hasil.set(kunci, {kunci: kunci, kosong: true, hari: hariKe(Date.now())});   // cache kosong supaya renderDaftar tidak menjadwalkan ulang terus
       else { peringatkan(e); return; }
@@ -425,10 +425,10 @@
       if (fokus && baru) { var b = baru.querySelector('[data-lk="' + fokus + '"]'); if (b) b.focus(); }
     });
   }
-  function jadwalkan(kunci, fitur) {
+  function jadwalkan(kunci, fitur, nama) {
     if (G.menunggu.has(kunci)) return;
     G.menunggu.add(kunci);
-    var jalan = function () { kerja(kunci, fitur); };
+    var jalan = function () { kerja(kunci, fitur, nama); };
     typeof nanti === "function" ? nanti(jalan) : setTimeout(jalan, 120);
   }
 
@@ -445,6 +445,14 @@
       return htmlKartu(h);
     }
     jadwalkan(kunci, fw);
+    return '<div hidden data-lintas="' + esc(kunci) + '"></div>';
+  }
+  /* kartu untuk wilayah di luar S.jalur (pop-up rincian kab/kota): fitur = geometri wilayah itu sendiri, nama = judul kartu */
+  function kartuDi(kunci, fitur, nama) {
+    if (G.gagal || !fitur || !fitur.length) return "";
+    var h = G.hasil.get(kunci);
+    if (h && h.hari === hariKe(Date.now())) return htmlKartu(h.nama ? h : Object.assign({}, h, {nama: nama}));
+    jadwalkan(kunci, fitur, nama);
     return '<div hidden data-lintas="' + esc(kunci) + '"></div>';
   }
 
@@ -1173,7 +1181,7 @@
   }
   if (typeof document !== "undefined") { if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasang); else pasang(); }
 
-  g.SatelitLintas = {kartu: kartu, hitung: hitungSemua, buatJejak: buatJejak, cariLintasan: cariLintasan, pusatKotak: pusatKotak, jarakKm: jarakKm, jam: jam, penanda: penanda,
+  g.SatelitLintas = {kartu: kartu, kartuDi: kartuDi, hitung: hitungSemua, buatJejak: buatJejak, cariLintasan: cariLintasan, pusatKotak: pusatKotak, jarakKm: jarakKm, jam: jam, penanda: penanda,
     titik: titikDari, simpul: simpulWilayah, selubung: selubung, cakupan: hitungCakupan, satKeLintasan: satKeLintasan, hitungJejak: hitungJejak, lintasWilayah: lintasWilayah, htmlKartu: htmlKartu,
     potong: potong, isiKartu: isiKartu, siapkanJejak: siapkanJejak,
     pop: {ambangMs: ambangMs, waktuDiambil: waktuDiambil, sigData: sigData, kodeSensor: kodeSensor, namaKode: namaKode, kelompokTitik: kelompokTitik, kelompokTitikBertahap: kelompokTitikBertahap, cocokkan: cocokkan, lintasDariWaktu: lintasDariWaktu, klasifikasi: klasifikasi, susunModel: susunModel, htmlPop: htmlPop, svgGrafik: svgGrafik, judulLintas: judulLintas, teksTelat: teksTelat, htmlKaki: htmlKaki, ringkasJeda: ringkasJeda, htmlJeda: htmlJeda,

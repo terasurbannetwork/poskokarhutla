@@ -3,7 +3,7 @@
 async function muatData() {
   const [geo, prov, meta, bahaya] = await Promise.all([muatJSON("../geo/provinsi.json"), muatJSON("data/riwayat_prov.json").catch(() => ({nama: {}})),
     muatJSON("data/meta.json").catch(() => ({})), muatJSON("data/bahaya_meta.json").catch(() => ({atribusi: {}}))]);
-  S.geo = geo; S.nama = prov.nama || {};
+  S.geo = geo; S.nama = prov.nama || {}; S.rwProv = prov.prov ? prov : null;   /* riwayat_prov.json: dipakai kartu panel (panel.js) */
   S.atr = {usgs: meta.atribusi, lempeng: bahaya.atribusi?.["batas_lempeng.geojson"], bahaya: bahaya.atribusi?.["inarisk_gempa.json"]};
   /* gempa hidup dari D1 (cron Worker). Tabel belum ada / sumber mati = keadaan tanpa data, bukan galat. */
   const d = await fetch("/api/gempa/terbaru?jam=168").then(r => r.ok ? r.json() : null).catch(() => null);

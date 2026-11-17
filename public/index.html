@@ -2782,7 +2782,7 @@ function pilAsap(as) { const la = as?.lv || 0; if (!as) return "–"; if (!la) r
   const tip = `PM2,5 rata-rata 24 jam ${fmt(as.r24[S.asap.hi])} µg/m³ (${NM_ASAP[la].toLowerCase()})${as.prov ? " di " + as.nama : ""}`;
   return `<span class="pill l${la}" title="${esc(tip)}">${PIL_ASAP[la]}</span>`; }
 /* kartu asap di atas tabel saat masuk ke provinsi/kabupaten: angka hari ini, 3 hari, grafik 72 jam, dan dari mana asapnya datang */
-function kartuAsap(k) { const as = asapDi(k); if (!as || !as.lvH.some(v => v > 0)) return "";
+function kartuAsap(k) { const as = asapDi(k); if (!as) return "";
   const A = S.asap, hi = A.hi, mdr = S.hotMundur, titik = mdr ? S.hit[k] || 0 : hariIniWil(k), nmW = k.split("|").length === 1 ? namaProv(k) : k.split("|").pop();
   const hr = d => new Date(d + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
   const W = 360, H = 96, B = 82, pm = as.pm || [], m = Math.max(300, ...pm), X = i => i / Math.max(1, pm.length - 1) * W, Y = v => B - Math.min(v, m) / m * 76;
@@ -2886,7 +2886,8 @@ S.trenWilV = "7h";
 const trenPanjang = v => { const r = TREN_WIL.find(x => x[0] === v); return r[4] === "b" || (r[4] === "m" && r[3] > 12); };
 const muatPanjang = () => S.hPanjangP ||= muatJSON("data/harian_panjang.json").then(j => { S.hPanjang = {i: new Map(j.hari.map((t, i) => [t, i])), prov: j.prov}; }).catch(() => { S.hPanjangP = null; throw 0; });
 /* nilai satu hari: harian30 menang (versi terbaru), selebihnya arsip panjang; null = hari itu tidak ada datanya */
-function nilaiHariProv(k, t) { const H = S.h30, i = H ? H.hari.indexOf(t) : -1; if (i >= 0) return H.prov[k]?.[i] || 0;
+function nilaiHariProv(k, t) { const H = S.h30, i = H ? H.hari.indexOf(t) : -1, kab = k.includes("|"); if (i >= 0) return (kab ? H.kab : H.prov)[k]?.[i] || 0;
+  if (kab) return null;   /* harian_panjang.json hanya per provinsi */
   const P = S.hPanjang, j = P?.i.get(t); return j == null ? null : P.prov[k]?.[j] || 0; }
 const geserHari = (t, n) => new Date(Date.parse(t + "T12:00:00Z") + n * 864e5).toISOString().slice(0, 10);
 const jmlHari = (k, dari, n) => { let a = 0, ada = false; for (let i = 0; i < n; i++) { const v = nilaiHariProv(k, geserHari(dari, i)); if (v != null) { a += v; ada = true; } } return ada ? a : null; };
@@ -2925,15 +2926,20 @@ function isiTrenWil(k) { const v = S.trenWilV, r = TREN_WIL.find(x => x[0] === v
     if (lalu && lengkap) { const d = Math.round((tot - lalu) / lalu * 100); banding = ` <span style="color:${d > 0 ? "#c9503a" : d < 0 ? "#2b8c86" : "inherit"}">${d > 0 ? "naik" : d < 0 ? "turun" : "sama dengan"} ${d ? fmt(Math.abs(d)) + "% dari" : ""} ${r[2]} sebelumnya</span>`; } }
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tren titik panas ${r[2]} terakhir, per ${satuan}">${g}</svg>
     <p class="tr-pesan"><b>${fmt(tot)}</b> titik panas, ${r[2]} terakhir per ${satuan}.${banding}</p>`; }
-function trenWil(k) { if (!S.h30?.prov?.[k] && !S.sejarah?.prov?.[k]) return "";
-  return `<div class="tm kotak-p" id="trenWil" data-prov="${esc(k)}"><div class="lbl">Tren titik panas</div>
-    <div class="seg penuh tr-seg" role="group" aria-label="Rentang tren">${TREN_WIL.map(([v, n, p]) => `<button type="button" data-tren="${v}" title="${p}" aria-label="${p}" aria-pressed="${S.trenWilV === v}">${n}</button>`).join("")}</div>
-    <div id="trenWilIsi">${isiTrenWil(k)}</div></div>`; }
-function segarTrenWil() { const w = $("#trenWil"); if (w) w.querySelector("#trenWilIsi").innerHTML = isiTrenWil(w.dataset.prov); }
-$("#rows").addEventListener("click", e => { const t = e.target.closest("[data-tren]"); if (!t) return; const v = t.dataset.tren;
+/* kab/kota (pop-up rincian, pemilik 16 Nov 2026): harian30.kab 100 hari, jadi rentang sampai 3 bulan saja */
+const trenOpsi = k => k.includes("|") ? TREN_WIL.filter(x => !trenPanjang(x[0])) : TREN_WIL;
+function trenWil(k) { const kab = k.includes("|");
+  if (kab ? !S.h30?.kab?.[k] : !S.h30?.prov?.[k] && !S.sejarah?.prov?.[k]) return "";
+  if (!trenOpsi(k).some(x => x[0] === S.trenWilV)) S.trenWilV = "7h";
+  return `<div class="tm kotak-p tren-wil" data-prov="${esc(k)}"><div class="lbl">Tren titik panas</div>
+    <div class="seg penuh tr-seg" role="group" aria-label="Rentang tren">${trenOpsi(k).map(([v, n, p]) => `<button type="button" data-tren="${v}" title="${p}" aria-label="${p}" aria-pressed="${S.trenWilV === v}">${n}</button>`).join("")}</div>
+    <div class="tren-wil-isi">${isiTrenWil(k)}</div></div>`; }
+function segarTrenWil(w) { const i = w?.querySelector(".tren-wil-isi"); if (i) i.innerHTML = isiTrenWil(w.dataset.prov); }
+/* satu pendengar di document: kartu tren ada di panel (#rows) dan di pop-up rincian (#dlg); pilihan rentang hanya menyegarkan kartu yang diklik */
+document.addEventListener("click", e => { const t = e.target.closest(".tren-wil [data-tren]"); if (!t) return; const v = t.dataset.tren, w = t.closest(".tren-wil");
   if (S.trenWilV === v) return; S.trenWilV = v;
   t.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === t));   /* tombol berganti dulu, grafik sesudah satu frame (INP) */
-  requestAnimationFrame(() => setTimeout(() => { segarTrenWil(); if (trenPanjang(v) && !S.hPanjang) muatPanjang().then(segarTrenWil, () => { const i = $("#trenWilIsi"); if (i) i.innerHTML = `<p class="tr-pesan">Riwayat gagal dimuat, coba lagi.</p>`; S.trenWilV === v && (S.hPanjangP = null); }); }, 0)); });
+  requestAnimationFrame(() => setTimeout(() => { segarTrenWil(w); if (trenPanjang(v) && !S.hPanjang) muatPanjang().then(() => segarTrenWil(w), () => { const i = w.querySelector(".tren-wil-isi"); if (i) i.innerHTML = `<p class="tr-pesan">Riwayat gagal dimuat, coba lagi.</p>`; S.trenWilV === v && (S.hPanjangP = null); }); }, 0)); });
 /* daftar Riwayat: wilayah di tingkat ini diurutkan menurut skor risiko 2002-2026; klik = popup analisa */
 function renderDaftarRiw() {
   if (!S.riw) return;
@@ -3890,6 +3896,8 @@ const Tren = {
           <div class="grid g3" style="margin-top:6px">${kot("Titik panas", fmt(S.hit[r.kunci] || 0), namaHot())}${kot("Cluster aktif", fmt(kl.length), prior ? `<span style="color:var(--bad);font-weight:700">${prior} prioritas</span>, ${siaga} siaga` : siaga + " siaga")}
             ${(en => kot("Peluang periode ini", o ? Math.round((en ? o.p_el_nino : o.p_semua)[das] * 100) + "%" : "–", o ? `${DAS(das)} · ${en ? "tahun El Niño seperti sekarang" : "semua tahun"}` : ""))(window.ENSO_STATUS === "El Niño")}</div>
           ${kl.length ? `<table class="tb3 rk-tb"><thead><tr><th>Cluster</th><th>Kecamatan</th><th class="n">Piksel 24 j</th><th class="n">Hari menyala</th><th>Status</th></tr></thead><tbody id="rkKl"></tbody></table>${kl.length > 8 ? `<div id="rkHal"></div>` : ""}` : ""}</div></details>
+        ${""/* kartu panel wilayah ikut di pop-up rincian (pemilik 16 Nov 2026): tren harian, asap, satelit berikutnya */}
+        <div class="rk-kartu">${r.jenis === "kec" ? "" : trenWil(r.kunci)}${kartuAsap(r.kunci)}<div data-rk-lintas hidden></div></div>
         <details class="lipat" open><summary>Titik panas per tahun ${th[0]}–${th.at(-1)}</summary><div class="isi">
           <svg viewBox="0 -14 ${W} ${Hc}" width="100%" role="img" aria-label="Titik panas per tahun">${grafik}</svg>
           <span class="ex-leg" style="font-size:11.5px;color:var(--ink2);justify-content:center"><span><i style="background:#a9402f"></i>tahun El Niño</span><span><i style="background:#e58a45"></i>tahun biasa</span><span><i style="background:#c9503a"></i>${th.at(-1)} (berjalan)</span><span><i style="background:none;border-top:2px dashed #a9402f;height:0;border-radius:0"></i>rata-rata El Niño ${rb(rEN)}</span><span><i style="background:none;border-top:2px dashed #c46a2a;height:0;border-radius:0"></i>rata-rata biasa ${rb(rB)}</span></span></div></details>
@@ -3913,7 +3921,13 @@ const Tren = {
       tb.innerHTML = kl.slice(h * 8, h * 8 + 8).map(f => { const p = f.properties; return `<tr data-kom="${p.id}"><td><span class="kd">${p.id}</span></td><td>${esc(p.kec)}</td><td class="n">${fmt(p.px24)}</td><td class="n">${p.hari}</td><td><span class="pill l${p.level}">${["Rutin", "Patroli", "Awal", "Prioritas"][p.level]}</span></td></tr>`; }).join("");
       const pg = d.querySelector("#rkHal"); if (pg) pg.innerHTML = paginasi(h, kl.length, 8, "cluster"); };
     isiKl(0);
-    d.showModal(); },
+    d.showModal();
+    /* satelit berikutnya: geometri wilayah itu sendiri (berkas kab/kec dimuat bila belum), lalu kartu satelit_lintas.js mengisi tempatnya */
+    if (window.SatelitLintas) (async () => { const [pv, kb, kc] = r.kunci.split("|"), cocok = ({properties: p}) => r.jenis === "prov" ? p.kode === pv : p.kab === kb && (r.jenis === "kab" || p.kec === kc);
+      const fc = r.jenis === "prov" ? S.geo.prov : r.jenis === "kab" ? S.geo.kab[pv] ||= await muatJSON(`geo/kabupaten/${pv}.json`) : S.geo.kec[pv] ||= await muatJSON(`geo/kecamatan/${pv}.json`);
+      const tempat = d.querySelector("[data-rk-lintas]"); if (!tempat || !fc) return;
+      const h = SatelitLintas.kartuDi(r.kunci, fc.features.filter(cocok), r.jenis === "prov" ? namaProv(pv) : r.nama);
+      if (h) tempat.outerHTML = h; })().catch(() => {}); },
 
   async render() {
     const el = $("#tren");

@@ -19,7 +19,8 @@ import {RUTE_SIKLUS_DUMMY} from "./siklus_dummy.js";
 import {RUTE_TAUTAN} from "./kejadian_tautan.js";
 import {RUTE_LIFELINE} from "./lifeline.js";
 import {RUTE_TIGAW} from "./tiga_w.js";
-const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_TAUTAN, ...RUTE_LIFELINE, ...RUTE_TIGAW};
+import {RUTE_KAJI_ULANG} from "./kaji_ulang.js";
+const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_TAUTAN, ...RUTE_LIFELINE, ...RUTE_TIGAW, ...RUTE_KAJI_ULANG};
 
 const JENIS_BPBD = ["pemprov", "pemkab", "pemkot"], PERAN_STAF = ["pusdalops", "koordalops", "pimpinan"];
 const ID_KJ = "KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}", ID16 = "[0-9a-f]{16}", POLA = {id: ID_KJ, sid: ID16};
