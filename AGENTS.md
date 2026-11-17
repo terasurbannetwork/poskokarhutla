@@ -419,6 +419,17 @@ Sebelum menyentuh kabupaten baku utas alun-alun, tautannya ke Buku Besar Kejadia
 
 Aturan berhentinya sama dengan §2.1. Kiriman alun-alun tidak pernah membuat kejadian atau mengubah fasenya (dijaga di pencocok dan di rute ingest Worker); pencocok tetap satu (`pasang.py`); kabupaten utas berkode baku; pemberitahuan hanya untuk kiriman terverifikasi dan tanpa judul; rekap dihitung pipeline, tanpa judul dan tanpa data orang; tidak ada versi publik, mitra, pemirsa, atau Laporan Berkala sebelum pemilik menjawab Q1, Q2, Q11, Q12; tidak pernah menulis "aman"; label lembaga diambil server dan hanya untuk balasan lembaga; tanpa trigger dan tanpa `ALTER` pada tabel `alun_*`.
 
+### 2.27 Tab Besok di `/prediksi` (tabel, peta, Perlu tindakan, gelombang, angin, kekeringan pekan dan bulan): baca dulu, baru bangun
+
+Sebelum menyentuh tabel dan peta tab Besok, kode arsip `GEL` dan `CEX`, aturan melaut dan angin kencang, atau anak tangga kering kita di skala sepekan dan bulan, baca dokumen di
+`data/kajian-bnpb/prediksi-besok/` dengan urutan otoritas ini (kode di `scripts/prediksi/**`, `public/prediksi/**`, `tests/prediksi/**` milik `prediksi`):
+
+1. `KEPUTUSAN-BESOK.md`: keputusan pemilik K1–K11, rancangan D1–D12, pertanyaan terbuka Q1–Q5 dengan bawaan sementara; menang atas semuanya. Untuk tab Tangga `data/kajian-bnpb/tangga/KEPUTUSAN-TANGGA.md` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Arsip tetap append-only; GEL dan CEX "belum teruji" sampai ada pengamatan; prediksi kekeringan kita tanpa peringkat dan tidak ikut sinyal Tangga; tanpa abrasi harian; tidak pernah menulis "aman".
+
 ### 2.28 Tindakan lapangan per bencana di operasi generik (`/operasi`, seksi Sarana dan fasilitas): baca dulu, baru bangun
 
 Sebelum menyentuh katalog tindakan dan `kemampuan.tindakan` di registri, persen tindakan dari logbook Pusdalops, kolom tindakan di hasil renlap, atau `per_tindakan` di kepatuhan, baca dokumen di

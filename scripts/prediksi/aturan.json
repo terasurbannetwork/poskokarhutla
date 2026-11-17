@@ -50,9 +50,18 @@
     {
       "id": "melaut",
       "maka": "Hari tidak melaut (nelayan kecil)",
-      "aktif": false,
-      "alasan": "Gelombang >= 1,25 m / angin >= 15 kn per kab belum dibekukan di arsip prakiraan",
-      "semua": []
+      "semua": [
+        {"v": "GEL.hs", "op": ">=", "nilai": 1.25, "sumber": "BMKG: gelombang di atas 1,25 m berisiko bagi perahu nelayan"}
+      ],
+      "paparan": {"jenis": "tanpa", "sumber": "jumlah kab saja; data nelayan per kab tidak ada di repo, jiwa tidak diperkirakan"}
+    },
+    {
+      "id": "angin",
+      "maka": "Waspada angin kencang",
+      "semua": [
+        {"v": "CEX.emb", "op": ">=", "nilai": 46, "sumber": "BMKG: angin kencang di atas 25 knot (46 km/jam); embusan 10 m Open-Meteo"}
+      ],
+      "paparan": {"jenis": "kab", "sumber": "seluruh penduduk kab (batas atas)"}
     }
   ]
 }
