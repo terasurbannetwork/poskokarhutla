@@ -12,6 +12,8 @@
     api: "M12 3c1 3-1 4-1 6 0 1.5 1 2 2 2 0-1 1-2 1-2 2 1.5 3 3.5 3 6a5 5 0 0 1-10 0c0-3 3-5 5-12z",
     cari: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4",
   };
+  const DB = Admin.dasbor, sv = d => DB.svg(d).outerHTML;   // kit dashboard bersama (bersama.js)
+  const tunda = fn => requestAnimationFrame(() => setTimeout(fn, 0));   // INP: chrome berubah seketika, render berat sesudah satu frame
   const ikon = k => `<svg class="gk-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="${IKON[k]}"/></svg>`;
   const fmt = (n, d = 0) => n == null || isNaN(n) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: d});
   const pct = v => v == null ? "–" : fmt(v * 100, 1) + "%";
@@ -30,17 +32,17 @@
   /* ---------- daftar ---------- */
   function kerangka() {
     aksiJudul.innerHTML = `<span class="gk-pil">${ikon("api")}Data sampai ${esc(sam(IDX.sampai))}</span>`;
-    app.innerHTML = `<section class="gk-kontrol">
-        <label class="gk-isian">Provinsi<select id="gkProv">${IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(p => `<option value="${esc(p.kode)}">${esc(p.nama)} (${fmt(p.perusahaan)} konsesi)</option>`).join("")}</select></label>
-        <div class="gk-pilpil" id="gkJenis" role="group" aria-label="Jenis izin"></div>
-        <label class="gk-isian gk-cari">${ikon("cari")}<input id="gkCari" type="search" placeholder="Cari nama konsesi" aria-label="Cari nama konsesi" autocomplete="off"></label>
-      </section>
-      <p id="gkPesan" class="gk-pesan" role="status"></p>
-      <div class="ad-tabel-wadah"><table class="ad-tabel gk-tabel"><thead><tr id="gkKepala">${KOLOM.map(([k, l]) => `<th><button type="button" data-k="${k}">${esc(l)}<i></i></button></th>`).join("")}<th>Berkas</th></tr></thead><tbody id="gkIsi"></tbody></table></div>
-      <div id="gkPgn" class="gk-pgn"></div>`;
+    DB.tumpuk(app).innerHTML = `<p id="gkPesan" class="gk-pesan" role="status"></p>
+      <div id="gkJenis" role="group" aria-label="Jenis izin"></div>
+      <section class="ex ex-std db-std" aria-label="Konsesi"><header class="ex-hd"><div class="ex-jd"><h3>${sv("berkas")}Konsesi</h3>
+        <select id="gkProv" class="gk-sel" aria-label="Provinsi">${IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(p => `<option value="${esc(p.kode)}">${esc(p.nama)} (${fmt(p.perusahaan)} konsesi)</option>`).join("")}</select>
+        <input id="gkCari" type="search" placeholder="Cari nama konsesi" aria-label="Cari nama konsesi" autocomplete="off"></div><span class="ex-ey">Berkas Gakkum</span></header>
+        <div class="ex-bd"><div class="db-tabel-wadah"><table class="ex-tabel db-tabel gk-tabel"><thead><tr id="gkKepala">${KOLOM.map(([k, l]) => `<th scope="col"><button type="button" data-k="${k}">${esc(l)}<i></i></button></th>`).join("")}<th scope="col">Aksi</th></tr></thead><tbody id="gkIsi"></tbody></table></div>
+        <div id="gkPgn" class="gk-pgn"></div></div></section>`;
     document.getElementById("gkProv").addEventListener("change", e => pilihProv(e.target.value));
-    document.getElementById("gkCari").addEventListener("input", e => { cari = e.target.value.trim().toLowerCase(); hal = 0; isi(); });
-    document.getElementById("gkJenis").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; jenis = b.dataset.j; hal = 0; pilJenis(); isi(); });
+    document.getElementById("gkCari").addEventListener("input", e => { cari = e.target.value.trim().toLowerCase(); hal = 0; tunda(isi); });
+    document.getElementById("gkJenis").addEventListener("click", e => { const b = e.target.closest("button[data-saring]"); if (!b) return; jenis = b.dataset.saring === "semua" ? "" : b.dataset.saring; hal = 0;
+      for (const x of e.currentTarget.querySelectorAll("button")) x.setAttribute("aria-pressed", String(x === b)); tunda(isi); });
     document.getElementById("gkKepala").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;
       st.turun = st.urut === k ? !st.turun : true; st.urut = k; hal = 0; isi(); });
     document.getElementById("gkPgn").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (b && !b.disabled) { hal = +b.dataset.h; isi(); } });
@@ -48,7 +50,7 @@
   }
   function pilJenis() {
     const ada = [...new Set(daftar.map(r => r.jenis))].filter(j => JENIS[j]);
-    document.getElementById("gkJenis").innerHTML = ["", ...ada].map(j => `<button type="button" data-j="${j}" aria-pressed="${j === jenis}">${esc(j ? JENIS[j] : "Semua")}</button>`).join("");
+    document.getElementById("gkJenis").replaceChildren(DB.ubinGrid(...["", ...ada].map(j => DB.ubin({ikon: "berkas", label: j ? JENIS[j] : "Semua", nilai: fmt(j ? daftar.filter(r => r.jenis === j).length : daftar.length), ket: "konsesi", saring: j || "semua", aktif: j === jenis}))));
   }
   function isi() {
     const k = st.urut, d = st.turun ? -1 : 1;
@@ -62,7 +64,7 @@
       <td data-label="Kabupaten">${esc((r.kab || []).join(", ") || "–")}</td>
       <td class="n" data-label="Luas (ha)">${fmt(r.luas_ha)}</td><td class="n" data-label="Titik 2026">${fmt(r.titik)}</td><td class="n" data-label="Titik 7 hari">${fmt(r.titik_7h)}</td>
       <td class="n" data-label="Terbakar (ha)">${kira(r.luas_bakar_ha)}</td><td class="n" data-label="Terbakar (%)">${pct(r.persen_bakar)}</td>
-      <td class="a"><button type="button" class="ad-tombol kecil utama" data-berkas="${esc(r.id)}">${ikon("berkas")}Berkas</button></td></tr>`).join("")
+      <td class="a"><div class="db-aksi"><button type="button" class="db-ik" data-berkas="${esc(r.id)}" title="Buka berkas" aria-label="Buka berkas ${esc(r.nama)}">${sv("berkas")}</button></div></td></tr>`).join("")
       : `<tr><td colspan="${KOLOM.length + 1}" class="gk-kosong">${daftar.length ? "Tidak ada konsesi yang cocok dengan penyaring." : "Provinsi ini belum punya konsesi dengan titik api 2026."}</td></tr>`;
     document.getElementById("gkPgn").innerHTML = `<p>${rs.length ? `Menampilkan ${fmt(hal * PER + 1)} sampai ${fmt(Math.min(rs.length, hal * PER + PER))} dari ${fmt(rs.length)} konsesi` : "0 konsesi"}</p>
       <div><button type="button" class="gk-pg" data-h="${hal - 1}" ${hal <= 0 ? "disabled" : ""}>‹ Sebelumnya</button><span class="gk-pg-n">Halaman ${fmt(hal + 1)} dari ${fmt(jml)}</span><button type="button" class="gk-pg" data-h="${hal + 1}" ${hal >= jml - 1 ? "disabled" : ""}>Berikutnya ›</button></div>`;

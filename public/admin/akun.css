@@ -9,7 +9,7 @@
 .ak-kartu span{color:var(--ink2);font-size:12px;font-weight:700}
 .ak-panel{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px 16px;min-width:0}
 .ak-panel>summary{cursor:pointer;font-weight:800;min-height:40px;display:flex;align-items:center;gap:8px}
-.ak-plus{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;background:var(--gradien);color:#fff;font-weight:800}
+.ak-plus{display:grid;place-items:center;width:26px;height:26px;border-radius:999px;background:var(--gradien);color:var(--on-head);font-weight:800}
 .ak-kepala{display:flex;gap:8px 12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .ak-kepala h2{margin:0;font-size:16px}
 .ak-cari{height:40px;border:0;border-radius:10px;background:var(--soft);padding:0 12px;font-size:14px;width:100%;max-width:320px;color:var(--ink)}
@@ -28,7 +28,7 @@
 .ak-galat{margin:0;color:var(--c1);font-weight:700;font-size:13px;min-height:1em}
 .ak-aksi{display:flex;gap:6px;flex-wrap:wrap}
 .ak-btn{min-height:36px;border:0;border-radius:10px;padding:0 12px;font-weight:700;font-size:12.5px;cursor:pointer;background:var(--card);color:var(--ink);box-shadow:var(--ring);display:inline-flex;align-items:center;text-decoration:none;white-space:nowrap;touch-action:manipulation}
-.ak-btn.utama{background:var(--gradien);color:#fff;box-shadow:none;min-height:42px;justify-self:start;padding:0 18px}.ak-btn.bahaya{color:var(--c1)}
+.ak-btn.utama{background:var(--gradien);color:var(--on-head);box-shadow:none;min-height:42px;justify-self:start;padding:0 18px}.ak-btn.bahaya{color:var(--c1)}
 .ak-btn:disabled{opacity:.5;cursor:default}.ak-btn:active{transform:scale(.97)}
 .ak-tabel-wadah{overflow-x:auto;margin-top:10px}
 .ak-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
@@ -53,3 +53,18 @@
 .ak-buat-pm{margin:6px 0 4px}.ak-buat-pm>summary{cursor:pointer;font-weight:800;min-height:40px;display:flex;align-items:center;gap:8px}
 .ak-tab{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.ak-tabel-pm{min-width:640px}
 .ak-wa{display:flex;width:fit-content;text-decoration:none;margin:0 0 6px}
+/* format dashboard (sistem desain public/inti/dasbor.css, rujukan /operasi): ubin angka, kartu seksi .ex-std, kepala tabel navy, aksi ikon polos */
+.ak-kanan{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ak-hitung{font-size:.78rem;font-weight:700;color:var(--ink2)}
+.db-std .ak-buat-pm{margin:0;border:1px solid var(--db-h2-garis);border-radius:12px;padding:0 12px;background:var(--db-isi)}
+.db-std .ak-buat-pm[open]{padding-bottom:12px}
+.db-std .ak-buat-pm>summary{color:var(--db-navy)}
+.db-std .ak-tabel-wadah{margin:0 -16px;border-top:1px solid var(--db-h2-garis)}
+.db-std .ak-tabel-wadah:last-child{margin-bottom:-12px}
+.db-std .ak-tabel td{padding:8px 10px;line-height:1.35;vertical-align:middle}
+.db-std .ak-tabel td:first-child{padding-left:16px}
+.db-std .ak-tabel:not(.ak-matriks) td:nth-child(5){min-width:160px}
+.db-std .ak-matriks td:first-child{white-space:nowrap}
+.db-std .ak-tabel:not(.ak-matriks) td:nth-child(6) small,.ak-tabel-pm td:nth-child(3) small{white-space:nowrap}
+
+.ak-td-aksi{text-align:center;white-space:nowrap}

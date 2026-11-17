@@ -1,7 +1,7 @@
 /* Dasbor statistik admin. Data dari GET /api/statistik (dijaga cookie sesi). Tanpa pustaka luar: grafik & peta = SVG.
    CSP halaman admin melarang style inline, jadi lebar/warna batang diisi lewat CSSOM (data-w / data-c) setelah render. */
 (() => {
-  const $ = s => document.querySelector(s), app = $("#app");
+  const $ = s => document.querySelector(s), DB = Admin.dasbor, app = DB.tumpuk($("#app"));   // kit dashboard bersama (public/admin/bersama.js)
   const W = ["#c9503a", "#e58a45", "#e3b94e", "#5a9e74", "#4f8fc4", "#5f6fb0", "#2b8c86", "#7a2b2b"];
   const fmt = n => Math.round(n || 0).toLocaleString("id-ID"), f1 = n => (Math.round((n || 0) * 10) / 10).toLocaleString("id-ID");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
@@ -18,6 +18,12 @@
   try { Object.assign(st, JSON.parse(sessionStorage.getItem("ad-stat") || "{}")); } catch (e) {}
   const ambil = async u => { const r = await fetch(u, {credentials: "same-origin"}); if (r.status === 401) { location.href = "/admin/masuk"; throw new Error("sesi habis"); } if (!r.ok) throw new Error((await r.json().catch(() => ({}))).galat || r.status); return r.json(); };
   const statik = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
+
+  /* kartu seksi dan ubin angka dari kit bersama, dalam bentuk teks HTML karena layar ini menyusun innerHTML */
+  const kartuH = (judul, ikon, ey, isi, kanan = "") => `<section class="ex ex-std db-std" aria-label="${esc(judul)}"><header class="ex-hd"><div class="ex-jd"><h3>${DB.svg(ikon).outerHTML}${esc(judul)}</h3>${kanan}</div>${ey ? `<span class="ex-ey">${esc(ey)}</span>` : ""}</header><div class="ex-bd">${isi}</div></section>`;
+  const ubinH = (ikon, label, nilai, ket, o = {}) => { const u = DB.ubin({ikon, label, nilai: String(nilai), ket: ket || " ", warna: o.warna || ""}); if (o.title) u.title = o.title; if (o.kelas) u.classList.add(o.kelas); if (o.isi) u.insertAdjacentHTML("beforeend", o.isi); return u.outerHTML; };
+  /* nama kelompok daftar (pil kategori kartu), diisi per kelompok lewat G(ey) */
+  const G = ey => (judul, dim, o = {}) => daftar(judul, dim, {...o, ey});
 
   /* ---------- komponen ---------- */
   const lukis = el => el.querySelectorAll("[data-w],[data-c],[data-x]").forEach(x => { if (x.dataset.w) x.style.width = x.dataset.w + "%"; if (x.dataset.c) x.style.background = x.dataset.c; if (x.dataset.x) x.style.left = x.dataset.x + "%"; });
@@ -46,9 +52,9 @@
     if (o.saring) r = r.filter(o.saring);
     r.sort((a, b) => b.v - a.v); r = r.slice(0, o.maks || 8);
     const m = Math.max(...r.map(x => x.v), 1), warna = o.warna || W[4], total = baris(dim).reduce((s, x) => s + x[1], 0);
-    return `<section class="ad-kartu"><h3>${judul}</h3>${r.length ? `<ol class="ad-rank">${r.map(x => `<li><span class="k" title="${esc(x.k)}">${esc(o.label ? o.label(x.k) : x.k)}</span>
+    return kartuH(judul, "grafik", o.ey, `${r.length ? `<ol class="ad-rank">${r.map(x => `<li><span class="k" title="${esc(x.k)}">${esc(o.label ? o.label(x.k) : x.k)}</span>
       <span class="n">${o.rata ? f1(x.v) + (o.satuan || "") : fmt(x.n)}${!o.rata && total ? `<small>${Math.round(x.n / total * 100)}%</small>` : o.rata ? `<small>${fmt(x.n)}×</small>` : ""}</span>
-      <span class="bar"><i data-w="${(x.v / m * 100).toFixed(1)}" data-c="${warna}"></i></span></li>`).join("")}</ol>` : HANTU}</section>`;
+      <span class="bar"><i data-w="${(x.v / m * 100).toFixed(1)}" data-c="${warna}"></i></span></li>`).join("")}</ol>` : HANTU}`);
   }
   const namaProv = k => meta?.provinsi?.[k] || k, namaTab = k => TAB[k] || k;
   const namaKota = k => k.split("|").slice(0, 3).filter(Boolean).join(", ");
@@ -130,85 +136,76 @@
       <select id="hal" aria-label="Halaman"><option value="">Semua halaman</option>${Object.entries(HALN).map(([k, n]) => `<option value="${k}" ${st.hal === k ? "selected" : ""}>${n}</option>`).join("")}</select>
     </div>
     ${d.email_siap ? "" : `<div class="ad-spanduk" role="status"><b>Notifikasi email belum dikonfigurasi.</b> Pesan baru tetap tersimpan di <a href="/admin/pesan">Kotak pesan</a>; set EMAIL_API_KEY, EMAIL_FROM, EMAIL_TO untuk menerima email.</div>`}
-    <div class="ad-hero">
-      <section class="ad-kartu"><span class="ad-ey">${esc(d.jendela)}</span>
-        <div class="ad-besar" title="Satu orang = satu peramban per hari yang menyetujui analitik (tanpa cookie). Do Not Track / GPC dan yang menolak tidak dihitung.">${d.sampel ? "≈ " : ""}${fmt(R.orang)}</div>
-        <div class="ad-besar-l">${hariIniSaja ? "orang membuka peta hari ini" : d.hari > 1 ? `orang membuka peta (jumlah harian, ${d.hari} hari)` : "orang membuka peta pada hari itu"}</div>
-        ${d.sampel ? `<p class="ad-catat"><b>Perkiraan (sampel):</b> lalu lintas melewati batas pencatatan gratis, sebagian kiriman dicatat lalu dikalikan.</p>` : ""}</section>
-      <section class="ad-kartu ad-langsung" aria-live="polite" id="langsung"></section>
+    <div class="db-ubin-grid db-ubin-baris">
+      ${ubinH("orang", "Orang membuka peta", `${d.sampel ? "≈ " : ""}${fmt(R.orang)}`, hariIniSaja ? "orang membuka peta hari ini" : d.hari > 1 ? `jumlah harian, ${d.hari} hari` : "pada hari itu", {title: "Satu orang = satu peramban per hari yang menyetujui analitik (tanpa cookie). Do Not Track / GPC dan yang menolak tidak dihitung."})}
+      ${ubinH("lihat", "Kunjungan", fmt(R.kunjungan), "kunjungan baru setelah 30 menit pergi")}
+      ${ubinH("staf", "Kembali", R.orang ? Math.round(R.kembali / R.orang * 100) + "%" : "–", `${fmt(R.kembali)} orang pernah datang sebelumnya`)}
+      ${ubinH("berkas", "Tampilan halaman", per(R.tampilan, R.orang), `per orang, ${fmt(R.tampilan)} total`)}
+      ${ubinH("grafik", "Interaksi", per(R.klik, R.orang), `klik per orang, ${fmt(R.klik)} total`)}
+      ${ubinH("jam", "Waktu aktif", R.orang ? f1(R.detik / R.orang / 60) + " mnt" : "–", "rata-rata per orang, saat halaman terlihat")}
     </div>
-    <div class="ad-kpi">
-      ${[["Kunjungan", fmt(R.kunjungan), "kunjungan baru setelah 30 menit pergi", W[4]], ["Kembali", R.orang ? Math.round(R.kembali / R.orang * 100) + "%" : "–", `${fmt(R.kembali)} orang pernah datang sebelumnya`, W[3]],
-        ["Tampilan halaman", per(R.tampilan, R.orang), `per orang, ${fmt(R.tampilan)} total`, W[5]], ["Interaksi", per(R.klik, R.orang), `klik per orang, ${fmt(R.klik)} total`, W[1]],
-        ["Waktu aktif", R.orang ? f1(R.detik / R.orang / 60) + " mnt" : "–", "rata-rata per orang, saat halaman terlihat", W[6]]]
-        .map(([j, v, s, c]) => `<section class="ad-kartu"><div class="ad-garis" data-c="${c}"></div><span class="ad-ey">${j}</span><b>${v}</b><small>${s}</small></section>`).join("")}
-    </div>
-    <section class="ad-kartu ad-grafik"><header><h2>Orang di peta</h2><span class="ad-redup kecil">per 10 menit, ${d.sampai}, jam WIB</span></header>${grafikSlot()}
-      <div class="ad-leg"><span><i data-c="#4f8fc4"></i>orang aktif</span><span><i data-c="#c9503a"></i>puncak</span><span><i data-c="rgba(201,80,58,.25)"></i>data/pembaruan terlambat (cek tiap jam)</span></div></section>
-    ${d.hari > 1 ? `<section class="ad-kartu ad-grafik"><header><h2>Orang per hari</h2><span class="ad-redup kecil">${d.dari} s.d. ${d.sampai}</span></header>${grafikHari()}
-      <div class="ad-leg"><span><i data-c="#4f8fc4"></i>orang</span><span><i data-c="rgba(11,37,69,.55)"></i>pengunjung kembali</span></div></section>` : ""}
+    ${d.sampel ? `<p class="ad-catat"><b>Perkiraan (sampel):</b> lalu lintas melewati batas pencatatan gratis, sebagian kiriman dicatat lalu dikalikan.</p>` : ""}
+    <div id="langsung" aria-live="polite">${kartuH("Saat ini", "jam", "Perkiraan", "")}</div>
+    ${kartuH("Orang di peta", "grafik", `per 10 menit, ${d.sampai}, jam WIB`, `${grafikSlot()}
+      <div class="ad-leg"><span><i data-c="#4f8fc4"></i>orang aktif</span><span><i data-c="#c9503a"></i>puncak</span><span><i data-c="rgba(201,80,58,.25)"></i>data/pembaruan terlambat (cek tiap jam)</span></div>`)}
+    ${d.hari > 1 ? kartuH("Orang per hari", "grafik", `${d.dari} s.d. ${d.sampai}`, `${grafikHari()}
+      <div class="ad-leg"><span><i data-c="#4f8fc4"></i>orang</span><span><i data-c="rgba(11,37,69,.55)"></i>pengunjung kembali</span></div>`) : ""}
 
-    <section class="ad-wadah"><h2 class="ad-seksi">Paling dibuka</h2>
+    
     <div class="ad-grid">
-      ${daftar("Tab", "tab", {label: namaTab, warna: W[4]})}
-      ${daftar("Provinsi", "provinsi", {label: namaProv, warna: W[3]})}
-      ${daftar("Cluster api", "kompleks", {warna: W[0], label: k => kluster?.[k] ? `${k}, ${kluster[k][2]}` : k})}
-      ${daftar("Kabupaten / kecamatan", "wilayah", {label: namaWil, warna: W[3]})}
-      ${daftar("Eksibit yang dilihat", "ex_lihat", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + ": ")})}
-      ${daftar("Simulasi dijalankan", "sim", {warna: W[1]})}
-      ${daftar("Unduhan (brief, PDF, CSV, XLSX, PPTX)", "unduh", {warna: W[6]})}
-      ${daftar("Bagikan / ekspor", "bagikan", {warna: W[6]})}
-      ${daftar("Laporan warga dikirim", "laporan_kirim", {warna: W[7]})}
-      ${daftar("Pencarian wilayah", "cari", {warna: W[5]})}
-      ${daftar("Lapisan peta dinyalakan", "lapisan", {warna: W[2]})}
-      ${daftar("Kontrol grafik & filter", "kontrol", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + ": ")})}
-      ${daftar("Slider Operasi", "operasi", {warna: W[1]})}
-      ${daftar("Kirim pesan dibuka", "pesan_buka", {label: k => "dari " + namaTab(k)})}
-      ${daftar("Kirim pesan terkirim", "pesan_kirim")}
-      ${daftar("Persetujuan analitik diterima", "persetujuan", {warna: W[3]})}
+      ${G("Paling dibuka")("Tab", "tab", {label: namaTab, warna: W[4]})}
+      ${G("Paling dibuka")("Provinsi", "provinsi", {label: namaProv, warna: W[3]})}
+      ${G("Paling dibuka")("Cluster api", "kompleks", {warna: W[0], label: k => kluster?.[k] ? `${k}, ${kluster[k][2]}` : k})}
+      ${G("Paling dibuka")("Kabupaten / kecamatan", "wilayah", {label: namaWil, warna: W[3]})}
+      ${G("Paling dibuka")("Eksibit yang dilihat", "ex_lihat", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + ": ")})}
+      ${G("Paling dibuka")("Simulasi dijalankan", "sim", {warna: W[1]})}
+      ${G("Paling dibuka")("Unduhan (brief, PDF, CSV, XLSX, PPTX)", "unduh", {warna: W[6]})}
+      ${G("Paling dibuka")("Bagikan / ekspor", "bagikan", {warna: W[6]})}
+      ${G("Paling dibuka")("Laporan warga dikirim", "laporan_kirim", {warna: W[7]})}
+      ${G("Paling dibuka")("Pencarian wilayah", "cari", {warna: W[5]})}
+      ${G("Paling dibuka")("Lapisan peta dinyalakan", "lapisan", {warna: W[2]})}
+      ${G("Paling dibuka")("Kontrol grafik & filter", "kontrol", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + ": ")})}
+      ${G("Paling dibuka")("Slider Operasi", "operasi", {warna: W[1]})}
+      ${G("Paling dibuka")("Kirim pesan dibuka", "pesan_buka", {label: k => "dari " + namaTab(k)})}
+      ${G("Paling dibuka")("Kirim pesan terkirim", "pesan_kirim")}
+      ${G("Paling dibuka")("Persetujuan analitik diterima", "persetujuan", {warna: W[3]})}
     </div>
 
-    </section>
-    <section class="ad-wadah"><h2 class="ad-seksi">Di mana pengunjung</h2>
+    
     <div class="ad-peta">
-      <section class="ad-kartu"><h3>Wilayah pengunjung</h3>${petaPengunjung()}<p class="ad-catat">Kota kasar dari jaringan Cloudflare (bukan GPS, bukan IP).</p></section>
-      <section class="ad-kartu"><h3>Yang paling dibuka di peta</h3><div id="petaDibuka">${petaDibuka()}</div>
-        <div class="ad-leg"><span><i data-c="#c9503a"></i>cluster</span><span><i data-c="#5a9e74"></i>provinsi</span><span><i data-c="#e3b94e"></i>pusat tampilan peta (sel 0,5°)</span></div></section>
+      ${kartuH("Wilayah pengunjung", "peta", "Di mana pengunjung", `${petaPengunjung()}<p class="ad-catat">Kota kasar dari jaringan Cloudflare (bukan GPS, bukan IP).</p>`)}
+      ${kartuH("Yang paling dibuka di peta", "peta", "Di mana pengunjung", `<div id="petaDibuka">${petaDibuka()}</div>
+        <div class="ad-leg"><span><i data-c="#c9503a"></i>cluster</span><span><i data-c="#5a9e74"></i>provinsi</span><span><i data-c="#e3b94e"></i>pusat tampilan peta (sel 0,5°)</span></div>`)}
     </div>
     <div class="ad-grid">
-      ${daftar("Negara", "cf_negara", {warna: W[5]})}${daftar("Provinsi / region", "cf_wilayah", {warna: W[5]})}${daftar("Kota", "cf_kota", {label: namaKota, warna: W[5]})}
-      ${daftar("Jaringan (organisasi)", "cf_jaringan", {warna: W[6]})}${daftar("ASN", "cf_asn", {warna: W[6]})}${daftar("Zona waktu", "cf_zona", {warna: W[6]})}${daftar("Pusat data Cloudflare", "cf_colo", {warna: W[6]})}
+      ${G("Di mana pengunjung")("Negara", "cf_negara", {warna: W[5]})}${G("Di mana pengunjung")("Provinsi / region", "cf_wilayah", {warna: W[5]})}${G("Di mana pengunjung")("Kota", "cf_kota", {label: namaKota, warna: W[5]})}
+      ${G("Di mana pengunjung")("Jaringan (organisasi)", "cf_jaringan", {warna: W[6]})}${G("Di mana pengunjung")("ASN", "cf_asn", {warna: W[6]})}${G("Di mana pengunjung")("Zona waktu", "cf_zona", {warna: W[6]})}${G("Di mana pengunjung")("Pusat data Cloudflare", "cf_colo", {warna: W[6]})}
     </div>
 
-    </section>
-    <section class="ad-wadah"><h2 class="ad-seksi">Datang dari mana & pakai apa</h2>
+    
     <div class="ad-grid">
-      ${daftar("Rujukan", "rujukan", {warna: W[4]})}${daftar("UTM sumber", "utm_sumber")}${daftar("UTM medium", "utm_medium")}${daftar("UTM kampanye", "utm_kampanye")}
-      ${daftar("Tautan langsung", "tautan_dalam", {warna: W[1]})}${daftar("Perangkat", "perangkat", {warna: W[3]})}${daftar("Peramban", "browser", {warna: W[3]})}${daftar("Sistem operasi", "os", {warna: W[3]})}
-      ${daftar("Lebar layar", "layar", {warna: W[2]})}${daftar("Lebar jendela", "viewport", {warna: W[2]})}${daftar("Bahasa", "bahasa", {warna: W[2]})}${daftar("Koneksi", "koneksi", {warna: W[2]})}
-      ${daftar("Tema", "skema", {warna: W[5]})}${daftar("Dipasang sebagai aplikasi", "pwa", {warna: W[5]})}
+      ${G("Datang dari mana")("Rujukan", "rujukan", {warna: W[4]})}${G("Datang dari mana")("UTM sumber", "utm_sumber")}${G("Datang dari mana")("UTM medium", "utm_medium")}${G("Datang dari mana")("UTM kampanye", "utm_kampanye")}
+      ${G("Datang dari mana")("Tautan langsung", "tautan_dalam", {warna: W[1]})}${G("Datang dari mana")("Perangkat", "perangkat", {warna: W[3]})}${G("Datang dari mana")("Peramban", "browser", {warna: W[3]})}${G("Datang dari mana")("Sistem operasi", "os", {warna: W[3]})}
+      ${G("Datang dari mana")("Lebar layar", "layar", {warna: W[2]})}${G("Datang dari mana")("Lebar jendela", "viewport", {warna: W[2]})}${G("Datang dari mana")("Bahasa", "bahasa", {warna: W[2]})}${G("Datang dari mana")("Koneksi", "koneksi", {warna: W[2]})}
+      ${G("Datang dari mana")("Tema", "skema", {warna: W[5]})}${G("Datang dari mana")("Dipasang sebagai aplikasi", "pwa", {warna: W[5]})}
     </div>
 
-    </section>
-    <section class="ad-wadah"><h2 class="ad-seksi">Perilaku</h2>
+    
     <div class="ad-grid">
-      ${daftar("Tab pertama", "masuk_tab", {label: namaTab})}${daftar("Tab terakhir", "keluar_tab", {label: namaTab})}
-      ${daftar("Waktu per tab (rata-rata)", "tab_detik", {label: namaTab, rata: 1, satuan: " dtk", warna: W[6]})}${daftar("Kedalaman gulir per tab", "gulir", {label: namaTab, rata: 1, satuan: "%", warna: W[6]})}
-      ${daftar("Lama sesi", "durasi_sesi", {warna: W[4], maks: 7})}${daftar("Pantul (pergi tanpa interaksi)", "pantul", {label: namaTab, warna: W[0]})}
-      ${daftar("Tingkat zoom peta", "zoom", {warna: W[2], maks: 12})}${daftar("Ganti tema layar besar", "tema")}${daftar("Laporan warga dibuka", "laporan_lihat")}${daftar("Bahasa berita", "berita_bahasa")}
+      ${G("Perilaku")("Tab pertama", "masuk_tab", {label: namaTab})}${G("Perilaku")("Tab terakhir", "keluar_tab", {label: namaTab})}
+      ${G("Perilaku")("Waktu per tab (rata-rata)", "tab_detik", {label: namaTab, rata: 1, satuan: " dtk", warna: W[6]})}${G("Perilaku")("Kedalaman gulir per tab", "gulir", {label: namaTab, rata: 1, satuan: "%", warna: W[6]})}
+      ${G("Perilaku")("Lama sesi", "durasi_sesi", {warna: W[4], maks: 7})}${G("Perilaku")("Pantul (pergi tanpa interaksi)", "pantul", {label: namaTab, warna: W[0]})}
+      ${G("Perilaku")("Tingkat zoom peta", "zoom", {warna: W[2], maks: 12})}${G("Perilaku")("Ganti tema layar besar", "tema")}${G("Perilaku")("Laporan warga dibuka", "laporan_lihat")}${G("Perilaku")("Bahasa berita", "berita_bahasa")}
     </div>
 
-    </section>
-    <section class="ad-wadah"><h2 class="ad-seksi">Kualitas</h2>
-    <div class="ad-kpi">${[["TTFB", "ttfb", "ms", 800, 1800], ["FCP", "fcp", "ms", 1800, 3000], ["LCP", "lcp", "ms", 2500, 4000], ["CLS", "cls", "", 100, 250], ["INP", "inp", "ms", 200, 500]].map(([j, k, u, baik, buruk]) => { const v = ratav(k);
+    
+    <div class="db-ubin-grid db-ubin-baris">${[["TTFB", "ttfb", "ms", 800, 1800], ["FCP", "fcp", "ms", 1800, 3000], ["LCP", "lcp", "ms", 2500, 4000], ["CLS", "cls", "", 100, 250], ["INP", "inp", "ms", 200, 500]].map(([j, k, u, baik, buruk]) => { const v = ratav(k);
       const kelas = v == null ? "" : v <= baik ? "baik" : v <= buruk ? "perlu" : "buruk", ujung = buruk * 1.5;   // skala Web Vitals Google; CLS disimpan ×1000
-      return `<section class="ad-kartu ad-vital ${kelas}"><span class="ad-ey">${j} rata-rata</span><b>${v == null ? "–" : k === "cls" ? (v / 1000).toFixed(3) : fmt(v) + " " + u}</b>
-        <span class="ad-skala" aria-hidden="true"><i data-w="${(baik / ujung * 100).toFixed(1)}"></i><i data-w="${((buruk - baik) / ujung * 100).toFixed(1)}"></i><i></i>${v == null ? "" : `<em data-x="${Math.min(100, v / ujung * 100).toFixed(1)}"></em>`}</span>
-        <small>${v == null ? "belum ada sampel" : `${{baik: "baik", perlu: "perlu perbaikan", buruk: "buruk"}[kelas]}, ${fmt(vit.find(x => x[0] === k)?.[1] || 0)} sampel`}</small></section>`; }).join("")}</div>
+      return ubinH("grafik", `${j} rata-rata`, v == null ? "–" : k === "cls" ? (v / 1000).toLocaleString("id-ID", {maximumFractionDigits: 2}) : fmt(v) + " " + u, v == null ? "belum ada sampel" : `${{baik: "baik", perlu: "perlu perbaikan", buruk: "buruk"}[kelas]}, ${fmt(vit.find(x => x[0] === k)?.[1] || 0)} sampel`,
+        {warna: kelas === "buruk" ? "merah" : kelas === "perlu" ? "oranye" : "", kelas: "ad-vital", isi: `<span class="ad-skala" aria-hidden="true"><i data-w="${(baik / ujung * 100).toFixed(1)}"></i><i data-w="${((buruk - baik) / ujung * 100).toFixed(1)}"></i><i></i>${v == null ? "" : `<em data-x="${Math.min(100, v / ujung * 100).toFixed(1)}"></em>`}</span>`}); }).join("")}</div>
     <div class="ad-grid">
-      ${daftar("Kelas Web Vitals", "vital_kelas", {maks: 15, warna: W[3]})}${daftar("Galat JavaScript", "galat_js", {warna: W[0]})}${daftar("Berkas gagal dimuat", "gagal_muat", {warna: W[0]})}${daftar("Umur data yang dilihat", "umur_data", {warna: W[2]})}
+      ${G("Kualitas")("Kelas Web Vitals", "vital_kelas", {maks: 15, warna: W[3]})}${G("Kualitas")("Galat JavaScript", "galat_js", {warna: W[0]})}${G("Kualitas")("Berkas gagal dimuat", "gagal_muat", {warna: W[0]})}${G("Kualitas")("Umur data yang dilihat", "umur_data", {warna: W[2]})}
     </div>
-    </section>
     <p class="ad-catat">Disimpan 90 hari. Tiap dimensi menyimpan paling banyak 100 nilai per hari; sisanya masuk "lainnya". Rincian: <a href="/privasi.html#statistik">privasi</a>.</p>`;
     lukis(app); langsung(d.langsung);
     app.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { st.rentang = +b.dataset.r; st.sampai = hariIni(); muat(); });
@@ -218,8 +215,8 @@
     const b = $("#badgePesan"); if (b) { b.hidden = !d.pesan_baru; b.textContent = d.pesan_baru; }
   }
   function langsung(L) {
-    const el = $("#langsung"); if (!el || !L) return;
-    el.innerHTML = `<span class="ad-ey">Saat ini (perkiraan)</span><div title="Dari kiriman 5 menit terakhir; peramban mengirim saat halaman ditutup/disembunyikan, jadi angka ini tertinggal."><span class="ad-titik"></span><b>${fmt(L.sekarang)}</b> peta terbuka saat ini</div>
+    const el = $("#langsung .ex-bd"); if (!el || !L) return;
+    el.innerHTML = `<div title="Dari kiriman 5 menit terakhir; peramban mengirim saat halaman ditutup/disembunyikan, jadi angka ini tertinggal."><span class="ad-titik"></span><b>${fmt(L.sekarang)}</b> peta terbuka saat ini</div>
       <div class="ad-redup">${fmt(L.n30)} dalam 30 menit terakhir</div>
       <div class="ad-hal">${Object.entries(L.per_hal || {}).map(([k, v]) => `<span>${HALN[k] || k}: sekarang ${v.sekarang}, 30 menit ${v.n30}</span>`).join("") || "<span>belum ada yang aktif</span>"}</div>
       <p class="ad-catat">Diperbarui tiap 15 detik, ${new Date(L.kini + WIB).toISOString().slice(11, 19)} WIB</p>`;

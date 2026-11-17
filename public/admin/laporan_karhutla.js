@@ -13,7 +13,8 @@ const fmt2 = n => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id
    Operator provinsi mengisi dari /instansi; halaman ini untuk verifikator dan admin: kelengkapan, isi kiriman, verifikasi, kunci, ralat, snapshot, teks WA, paparan. */
 const BNC = new URLSearchParams(location.search).get("bencana") || "karhutla", HZ = BNC !== "karhutla", SP = SBM.spek(BNC), META = S.BENCANA[BNC];
 const API = j => HZ && j.startsWith("/api/laporan-karhutla/") ? j + (j.includes("?") ? "&" : "?") + "bencana=" + encodeURIComponent(BNC) : j;
-const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul");
+const DB = window.Admin.dasbor;   // kit dashboard bersama (public/admin/bersama.js)
+const app = DB.tumpuk(document.getElementById("app")), aksiJudul = document.getElementById("aksiJudul");
 const h = (tag, att, ...anak) => { const e = document.createElement(tag);
   for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else if (k === "value") e.value = v; else e.setAttribute(k, v === true ? "" : v); }
   for (const a of anak.flat()) if (a != null) e.append(a); return e; };
@@ -68,14 +69,15 @@ const NS = "http://www.w3.org/2000/svg";
 const svg = d => { const s = document.createElementNS(NS, "svg"), p = document.createElementNS(NS, "path"); for (const [k, v] of [["viewBox", "0 0 24 24"], ["fill", "none"], ["stroke", "currentColor"], ["stroke-width", "2"], ["stroke-linecap", "round"], ["stroke-linejoin", "round"], ["aria-hidden", "true"]]) s.setAttribute(k, v); p.setAttribute("d", d); s.append(p); return s; };
 const IK = {berkas: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6", unduh: "M12 3v12m0 0l-4-4m4 4l4-4M5 21h14", mata: "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z", kunci: "M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z",
   cek: "M5 12l5 5L20 7", awas: "M12 9v4m0 4h.01M10.3 3.9L2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z", teks: "M4 6h16M4 12h16M4 18h10", api: "M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"};
-const judulKartu = (ik, teks, ...lain) => h("div", {class: "lka-judul-kartu"}, svg(IK[ik]), h("h3", {teks}), ...lain);
+/* kartu seksi dari kit bersama; ikon kit: berkas/kunci/lihat/unduh/api (nama sama dengan IK lokal untuk berkas, kunci, api) */
+const kartu = (ikon, judul, ey, kanan, ...isi) => DB.kartu({ikon, judul, ey, kanan: kanan ?? ""}, ...isi.flat().filter(x => x != null && x !== false));
 
 /* ---------- tampilan utama ---------- */
 let deckBuka = false, deckGen = 0, deckMuat = null;
 /* satu halaman, tujuh bahaya: tautan biasa (muat ulang halaman), jadi tiap bahaya punya URL sendiri yang bisa dibagikan */
 const panelBencana = () => h("nav", {class: "lka-chip-baris", "aria-label": "Bencana"}, S.DAFTAR_BENCANA.map(b => h("a", {class: "lka-chip", href: b === "karhutla" ? "/admin/laporan-karhutla" : `/admin/laporan-karhutla?bencana=${b}`, "aria-current": b === BNC ? "page" : null, "aria-pressed": String(b === BNC), teks: S.BENCANA[b].nama})));
 /* laporan bahaya ini yang pernah dibuat: klik membuka tanggalnya */
-const panelDaftar = () => DAFTAR?.length ? h("details", {class: "lka-kartu lka-prioritas"}, h("summary", {teks: `Laporan ${META.nama.toLowerCase()} terbaru (${DAFTAR.length})`}),
+const panelDaftar = () => DAFTAR?.length ? kartu("berkas", `Laporan ${META.nama.toLowerCase()} terbaru`, "Riwayat", h("span", {class: "lka-pil", teks: String(DAFTAR.length)}),
   h("div", {class: "lka-chip-baris", role: "group", "aria-label": "Daftar laporan"}, DAFTAR.map(d => h("button", {type: "button", class: "lka-chip", "data-a": "buka-hari", "data-tgl": d.tanggal_laporan, "aria-pressed": String(d.tanggal_laporan === T),
     teks: `${d.tanggal_laporan}, ${d.status === "terbuka" ? "terbuka" : d.ralat ? "Ralat-" + d.ralat : "dikunci"}${d.dummy ? ", dummy" : ""}`})))) : null;
 function gambar() {
@@ -84,34 +86,34 @@ function gambar() {
   ganti(app,
     panelBencana(),
     h("p", {id: "lkPesan", class: "lka-pesan " + (pesanOk ? "ok" : "galat"), role: "status", teks: pesanTeks}),
-    h("div", {class: "lka-kepala"}, h("label", {class: "lka-kol", for: "lkTgl"}, h("span", {teks: "Tanggal laporan"}), h("input", {type: "date", id: "lkTgl", value: T, "aria-label": "Tanggal laporan"})),
+    kartu("jam", "Tanggal laporan", "Status", null, h("div", {class: "lka-kepala"}, h("label", {class: "lka-kol", for: "lkTgl"}, h("span", {teks: "Tanggal laporan"}), h("input", {type: "date", id: "lkTgl", value: T, "aria-label": "Tanggal laporan"})),
       h("div", {class: "lka-kepala-isi"}, h("div", {class: "lka-aksi"}, h("span", {class: "lka-pil hari-" + H.status, teks: STATUS_HARI[H.status]}), H.dummy ? h("span", {class: "lka-pil dummy", teks: "DUMMY"}) : null),
         h("p", {class: "lka-redup", teks: `Data pantauan ${H.tanggal_data}, cut-off 07.00 WIB. Batas daerah 09.00 WIB${H.lewat_batas ? " (sudah lewat)" : ""}.`})),
-      h("button", {type: "button", class: "lka-btn", "data-a": "muat-ulang", teks: "Segarkan"})),
+      h("button", {type: "button", class: "lka-btn", "data-a": "muat-ulang", teks: "Segarkan"}))),
     ringkasAtas(terkunci, b),
     panelDaftar(),
-    h("section", {class: "lka-bag", "aria-label": "Kelengkapan"}, judulKartu("berkas", "Kelengkapan per sumber"), h("div", {class: "lka-sumber-grid"}, ...b.map(kartuSumber)),
+    kartu("berkas", "Kelengkapan per sumber", "Verifikasi", null, h("div", {class: "lka-sumber-grid"}, ...b.map(kartuSumber)),
       !terkunci && H.wajib.length ? h("p", {class: "lka-redup", teks: wajibBelum.length ? `${wajibBelum.length} sumber wajib belum disetujui.` : "Semua sumber wajib sudah disetujui."}) : null),
     terkunci ? panelSnapshot() : (H.boleh.verifikasi ? panelKunci(wajibBelum) : null),
     panelPaparan(terkunci),
     H.boleh.verifikasi && !terkunci ? panelPrioritas() : null,
-    h("section", {id: "lkDetail", class: "lka-kartu", hidden: !sel}));
+    h("div", {id: "lkDetail", hidden: !sel}));
   if (sel && K) gambarDetail();
   if (RL) gambarRalat();   // panel ralat ikut digambar ulang bersama snapshot (isi koreksi yang sedang diketik tidak hilang)
   if (deckBuka) requestAnimationFrame(() => setTimeout(renderDeck, 0));
 }
 /* deret angka ringkas gaya /bnpb: sebelum kunci progres verifikasi, sesudah kunci angka snapshot */
 function ringkasAtas(terkunci, b) {
-  const kartu = (angka, label, o = {}) => h("div", {class: "lka-kpi" + (o.kelas ? " " + o.kelas : "")}, h("b", {teks: angka}), h("span", {teks: label}), o.isi ?? null);
+  const ubin = (angka, label, o = {}) => { const u = DB.ubin({ikon: o.ikon || "grafik", label, nilai: angka, ket: " ", warna: o.awas ? "merah" : ""}); if (o.isi) u.append(o.isi); return u; };
   const wajib = b.filter(k => k.wajib), ok = wajib.filter(k => k.status === "disetujui").length;
   if (terkunci && snapshotTampil && HZ) { const m = snapshotTampil.snapshot.nasional;
-    return m ? h("div", {class: "lka-ringkas-atas", "aria-label": "Angka snapshot"}, m.slice(0, 5).map(x => kartu(fmtD(x.nilai, x.desimal), `${x.satuan}, ${x.judul ?? x.label}`, {kelas: x.utama ? "awas" : ""}))) : h("p", {class: "lka-redup", teks: "Pantauan otomatis tidak mencakup tanggal data; snapshot memuat laporan provinsi saja."}); }
+    return m ? DB.ubinGrid(m.slice(0, 5).map(x => ubin(fmtD(x.nilai, x.desimal), `${x.satuan}, ${x.judul ?? x.label}`, {awas: x.utama && x.nilai > 0}))) : h("p", {class: "lka-redup", teks: "Pantauan otomatis tidak mencakup tanggal data; snapshot memuat laporan provinsi saja."}); }
   if (terkunci && snapshotTampil) { const n = snapshotTampil.snapshot.nasional, f = n.fs_ha, v = x => x == null ? "NA" : fmt2(x);
-    return h("div", {class: "lka-ringkas-atas", "aria-label": "Angka snapshot"}, kartu(v(f.fs), "titik api (FS)"), kartu(v(f.target_ha), "ha target"), kartu(v(f.padam_ha), "ha padam"), kartu(v(f.sisa_ha), "ha belum padam", {kelas: "awas"}), kartu(v(n.hotspot?.total), "hotspot (GIS)"), kartu(v(n.personel.total), "personel")); }
+    return DB.ubinGrid(ubin(v(f.fs), "titik api (FS)", {ikon: "api"}), ubin(v(f.target_ha), "ha target", {ikon: "peta"}), ubin(v(f.padam_ha), "ha padam", {ikon: "aktif"}), ubin(v(f.sisa_ha), "ha belum padam", {ikon: "waspada", awas: f.sisa_ha > 0}), ubin(v(n.hotspot?.total), "hotspot (GIS)", {ikon: "grafik"}), ubin(v(n.personel.total), "personel", {ikon: "staf"})); }
   const bar = h("div", {class: "lka-bar", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(wajib.length), "aria-valuenow": String(ok), "aria-label": "Sumber wajib disetujui"}, h("i")); bar.firstChild.style.width = (wajib.length ? Math.round(ok / wajib.length * 100) : 0) + "%";
   const merah = b.reduce((a, k) => a + (k.cek?.merah || 0), 0), kuning = b.reduce((a, k) => a + (k.cek?.kuning_belum_dijelaskan || 0), 0);
-  return h("div", {class: "lka-ringkas-atas", "aria-label": "Progres verifikasi"}, kartu(`${ok} dari ${wajib.length}`, "sumber wajib disetujui", {kelas: "lebar", isi: bar}), kartu(String(b.filter(k => k.status === "terkirim").length), "menunggu verifikasi"), kartu(String(b.filter(k => k.status === "dikembalikan").length), "dikembalikan"),
-    kartu(String(merah), "cek merah", {kelas: merah ? "awas" : ""}), kartu(String(kuning), "kuning belum dijelaskan"));
+  return DB.ubinGrid(ubin(`${ok} dari ${wajib.length}`, "sumber wajib disetujui", {ikon: "aktif", isi: bar}), ubin(String(b.filter(k => k.status === "terkirim").length), "menunggu verifikasi", {ikon: "jam"}), ubin(String(b.filter(k => k.status === "dikembalikan").length), "dikembalikan", {ikon: "waspada"}),
+    ubin(String(merah), "cek merah", {ikon: "waspada", awas: merah > 0}), ubin(String(kuning), "kuning belum dijelaskan", {ikon: "lihat"}));
 }
 function kartuSumber(k) {
   const cek = k.status === "belum" ? null : [k.cek.merah ? h("span", {class: "lka-pil merah", teks: `${k.cek.merah} merah`}) : null, k.cek.kuning ? h("span", {class: "lka-pil kuning", teks: `${k.cek.kuning} kuning`}) : null, !k.cek.merah && !k.cek.kuning ? h("span", {class: "lka-redup", teks: "cek bersih"}) : null];
@@ -145,7 +147,7 @@ async function renderDeck() {
 function panelPaparan(terkunci) {
   const ok = terkunci && !!snapshotTampil?.utuh;
   const tombol = (jenis, label) => h("button", {type: "button", class: "lka-btn utama", "data-a": "unduh-deck", "data-jenis": jenis, disabled: !ok, title: ok ? null : "Aktif setelah hari dikunci"}, svg(IK.unduh), label);
-  return h("section", {class: "lka-kartu lka-paparan", "aria-label": "Paparan"}, judulKartu("berkas", HZ ? `Paparan Laporan Harian ${META.nama}` : "Paparan Penanganan dan Pengendalian Karhutla"),
+  return kartu("berkas", HZ ? `Paparan Laporan Harian ${META.nama}` : "Paparan Penanganan dan Pengendalian Karhutla", "Paparan", null,
     h("p", {class: "lka-redup", teks: ok && HZ ? "Dibuat dari snapshot terkunci: ringkasan nasional, tiga hari terakhir, provinsi, laporan provinsi, perlu perhatian, prakiraan, dan metode. Bagian yang belum ada datanya dilewati dan dicatat di slide metode." : ok ? "Dibuat dari snapshot terkunci: slide 1 sampai 3, daftar lampiran, A1 sampai A11, dan B1 sampai B5. Lampiran yang belum ada datanya dilewati dan dicatat di daftar lampiran." : terkunci ? "Snapshot tidak utuh (hash tidak cocok dengan isi), unduhan dimatikan." : "Unduhan aktif setelah hari dikunci. Sebelum itu hanya pratinjau berwatermark DRAF dari kiriman saat ini."}),
     h("div", {class: "lka-aksi"}, tombol("pptx", "Unduh PPTX"), tombol("pdf", "Unduh PDF"),
       h("button", {type: "button", class: "lka-btn", "data-a": "pratinjau-deck", "aria-expanded": String(deckBuka)}, svg(IK.mata), deckBuka ? "Tutup pratinjau" : terkunci ? "Pratinjau slide" : "Pratinjau DRAF")),
@@ -185,7 +187,7 @@ const formBencana = st => [h("div", {class: "lka-blok"}, h("h4", {teks: "Dampak 
 function formSkema(sumber, st) {
   if (HZ) return formBencana(st);
   const skema = S.kodeDariSumber(sumber) ? FORM_PROV : FORM[sumber], daftar = (d, judul, kols) => h("div", {class: "lka-blok"}, h("h4", {teks: judul}),
-    h("ul", {class: "lka-daftar"}, (st.isi[d] || []).map((_, i) => h("li", {class: "lka-baris-isi"}, h("div", {class: "lka-grid"}, kols.map(kol => kolForm(st, d, i, kol))), !st.mati ? h("button", {type: "button", class: "lka-btn kecil bahaya", "data-a": st.aksi + "hapus-baris", "data-d": d, "data-i": i, teks: "Hapus baris"}) : null))),
+    h("ul", {class: "lka-daftar"}, (st.isi[d] || []).map((_, i) => h("li", {class: "lka-baris-isi"}, h("div", {class: "lka-grid"}, kols.map(kol => kolForm(st, d, i, kol))), !st.mati ? DB.aksi(DB.ikon("hapus", "Hapus baris", {"data-a": st.aksi + "hapus-baris", "data-d": d, "data-i": i}, "bahaya")) : null))),
     !st.mati ? h("button", {type: "button", class: "lka-btn kecil", "data-a": st.aksi + "tambah-baris", "data-d": d, teks: "Tambah baris"}) : null);
   const kol = skema.map(([d, j, kols, mode]) => mode === "satu" ? h("div", {class: "lka-blok"}, h("h4", {teks: j}), h("div", {class: "lka-grid"}, kols.map(x => kolForm(st, d, null, x)))) : daftar(d, j, kols));
   if (S.kodeDariSumber(sumber)) return kol;
@@ -211,8 +213,8 @@ const ringkasProv = isi => {
   if (isi.kondisi?.length) baris2.push(`Kondisi wilayah: ${isi.kondisi.length} kabupaten/kota`);
   if (isi.catatan) baris2.push("Catatan: " + isi.catatan);
   return h("div", null, h("ul", {class: "lka-ringkas"}, baris2.map(t => h("li", {teks: t}))),
-    isi.fs?.length ? h("div", {class: "lka-tabel-wadah"}, h("table", {class: "lka-tabel"}, h("thead", null, h("tr", null, ["FS", "Lokasi", "Target (ha)", "Padam (ha)", "Sisa (ha)", "Status"].map(x => h("th", {teks: x})))),
-      h("tbody", null, isi.fs.map(x => h("tr", null, h("td", {teks: x.fs_id}), h("td", {teks: window.Wilayah.teks([x.kec, x.kab, x.kawasan].filter(Boolean).join(", "))}), h("td", {teks: fmt2(x.target_ha)}), h("td", {teks: fmt2((x.padam_darat_ha ?? 0) + (x.padam_udara_ha ?? 0))}), h("td", {teks: fmt2(x.sisa_ha)}), h("td", {teks: x.kumulatif ? "kumulatif" : x.status})))))) : null);
+    isi.fs?.length ? h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel"}, h("thead", null, h("tr", null, ["FS", "Lokasi", "Target (ha)", "Padam (ha)", "Sisa (ha)", "Status"].map(x => h("th", {scope: "col", teks: x})))),
+      h("tbody", null, isi.fs.map(x => h("tr", null, h("td", {teks: x.fs_id}), h("td", {teks: window.Wilayah.teks([x.kec, x.kab, x.kawasan].filter(Boolean).join(", "))}), h("td", {class: "n", teks: fmt2(x.target_ha)}), h("td", {class: "n", teks: fmt2((x.padam_darat_ha ?? 0) + (x.padam_udara_ha ?? 0))}), h("td", {class: "n", teks: fmt2(x.sisa_ha)}), h("td", {teks: x.kumulatif ? "kumulatif" : x.status})))))) : null);
 };
 /* ringkasan kiriman provinsi untuk bahaya lain: angka otomatis (bersumber) dipisah dari isian provinsi */
 function ringkasBencana(isi, oto) {
@@ -226,7 +228,7 @@ function ringkasBencana(isi, oto) {
 function gambarDetail() {
   const w = document.getElementById("lkDetail"); if (!w || !K) return; w.hidden = false;
   const prov = !!S.kodeDariSumber(K.sumber), tulis = K.boleh_tulis;
-  ganti(w, h("div", {class: "lka-detail-kepala"}, h("h3", {teks: K.label}), h("span", {class: "lka-pil st-" + K.status, teks: STATUS_K[K.status]}), K.versi ? h("span", {class: "lka-redup", teks: `versi ${K.versi}`}) : null, K.terkunci ? h("span", {class: "lka-pil", teks: "dikunci"}) : null),
+  ganti(w, kartu("berkas", K.label, "Kiriman", null, h("div", {class: "lka-detail-kepala"}, h("span", {class: "lka-pil st-" + K.status, teks: STATUS_K[K.status]}), K.versi ? h("span", {class: "lka-redup", teks: `versi ${K.versi}`}) : null, K.terkunci ? h("span", {class: "lka-pil", teks: "dikunci"}) : null),
     K.catatan ? h("p", {class: "lka-banner kuning", teks: "Catatan: " + K.catatan}) : null,
     !K.ada ? h("p", {class: "lka-redup", teks: "Belum ada kiriman. Isi di bawah adalah draf otomatis dari data yang ada."}) : null,
     prov && !HZ ? h("a", {class: "lka-btn", href: `/api/laporan-karhutla/format-khusus?prov=${S.kodeDariSumber(K.sumber)}&tanggal=${T}`, download: "", teks: "Unduh format BNPB (xlsx)"}) : null,
@@ -235,7 +237,7 @@ function gambarDetail() {
     h("div", {class: "lka-aksi"}, !prov && tulis ? [h("button", {type: "button", class: "lka-btn", "data-a": "simpan-draf", teks: "Simpan draf"}), h("button", {type: "button", class: "lka-btn utama", "data-a": "kirim-kiriman", teks: K.status === "terkirim" || K.status === "disetujui" ? "Kirim ulang" : "Kirim"})] : null),
     K.boleh_verifikasi && K.status === "terkirim" && !K.terkunci ? h("div", {class: "lka-verif"}, h("h4", {teks: "Verifikasi"}), h("label", {class: "lka-kol"}, h("span", {teks: "Catatan (wajib bila dikembalikan)"}), h("input", {id: "lkCatatan", maxlength: "500", autocomplete: "off"})),
       h("div", {class: "lka-aksi"}, h("button", {type: "button", class: "lka-btn utama", "data-a": "setujui", disabled: hasil?.cek.some(c => c.t === "merah"), teks: "Setujui"}), h("button", {type: "button", class: "lka-btn bahaya", "data-a": "kembalikan", teks: "Kembalikan ke pengirim"}))) : null,
-    K.riwayat?.length ? h("details", {class: "lka-riwayat"}, h("summary", {teks: `Riwayat (${K.riwayat.length})`}), h("ol", null, K.riwayat.map(r => h("li", {teks: `${waktu(r.waktu)}, ${r.oleh}: ${r.aksi.replace(/_/g, " ")}, versi ${r.versi}${r.catatan ? ", " + r.catatan : ""}`})))) : null);
+    K.riwayat?.length ? h("details", {class: "lka-riwayat"}, h("summary", {teks: `Riwayat (${K.riwayat.length})`}), h("ol", null, K.riwayat.map(r => h("li", {teks: `${waktu(r.waktu)}, ${r.oleh}: ${r.aksi.replace(/_/g, " ")}, versi ${r.versi}${r.catatan ? ", " + r.catatan : ""}`})))) : null));
 }
 /* isi kotak cek: galat bentuk (bahasa manusia), "Isi minimal" bila isian wajib masih kosong, lalu cek merah/kuning; "Tidak ada pelanggaran." HANYA bila benar-benar bersih dan lengkap */
 function isiCek(h0 = hasil, kurangDari = K && !K.terkunci ? SP.kurangMinimal(K.sumber, salinEd(), T) : []) {
@@ -271,27 +273,27 @@ const tunda = () => { cancelAnimationFrame(jadwal); jadwal = requestAnimationFra
 /* ---------- kunci, ralat, snapshot ---------- */
 function panelKunci(belum) {
   const adaBelum = belum.length > 0;
-  return h("section", {class: "lka-kartu", "aria-label": "Kunci laporan"}, judulKartu("kunci", "Kunci laporan"),
+  return kartu("kunci", "Kunci laporan", "Verifikasi", null,
     h("p", {class: "lka-redup", teks: "Kunci menghasilkan snapshot beku (dengan hash) yang dipakai slide, teks WA, dan dashboard. Sumber wajib yang belum disetujui menahan kunci, kecuali dinyatakan lanjut tanpa dengan alasan; pernyataan itu tercetak di laporan."}),
     adaBelum ? h("ul", {class: "lka-lanjut"}, belum.map(k => h("li", null, h("label", {class: "lka-kol cek"}, h("input", {type: "checkbox", "data-lanjut": k.sumber, checked: !!lanjut[k.sumber]?.on}), h("span", {teks: `Lanjut tanpa ${k.label} (${STATUS_K[k.status].toLowerCase()})`})),
       lanjut[k.sumber]?.on ? h("input", {class: "lka-alasan", "data-alasan": k.sumber, placeholder: "Alasan (minimal 10 huruf), tercetak di laporan", maxlength: "300", value: lanjut[k.sumber].alasan ?? "", "aria-label": "Alasan lanjut tanpa " + k.label}) : null))) : null,
     h("div", {class: "lka-aksi"}, h("button", {type: "button", class: "lka-btn utama", "data-a": "kunci"}, svg(IK.kunci), adaBelum ? "Kunci dengan pengecualian" : "Kunci laporan")));
 }
 function panelPrioritas() {
-  return h("details", {class: "lka-kartu lka-prioritas"}, h("summary", {teks: `Provinsi yang wajib mengirim laporan hari ini (${H.prioritas.length})`}),
+  return kartu("staf", "Provinsi wajib lapor", "Prioritas", h("span", {class: "lka-pil", teks: String(H.prioritas.length)}), h("details", {class: "lka-prioritas"}, h("summary", {teks: "Atur provinsi yang wajib mengirim laporan hari ini"}),
     h("p", {class: "lka-redup", teks: HZ ? "Sumber wajib = provinsi yang wajib mengirim laporan (penyumbang terbesar angka utama pada berkas otomatis). Provinsi lain boleh mengirim. Perubahan berlaku sampai hari dikunci." : "Sumber wajib = provinsi prioritas, Operasi udara, dan OMC. Perubahan berlaku sampai hari dikunci."}),
     h("div", {class: "lka-pilihan"}, Object.entries(HZ ? H.nama_prov : S.NAMA_PROV).map(([k, n]) => h("label", {class: "lka-kol cek"}, h("input", {type: "checkbox", "data-prio": k, checked: H.prioritas.includes(k)}), h("span", {teks: n})))),
-    h("button", {type: "button", class: "lka-btn", "data-a": "simpan-prioritas", teks: "Simpan prioritas"}));
+    h("button", {type: "button", class: "lka-btn", "data-a": "simpan-prioritas", teks: "Simpan prioritas"})));
 }
 function panelSnapshot() {
-  const s = snapshotTampil; if (!s) return h("section", {class: "lka-kartu"}, h("p", {class: "lka-redup", teks: "Snapshot belum bisa dimuat."}));
+  const s = snapshotTampil; if (!s) return kartu("kunci", "Snapshot terkunci", "Snapshot", null, h("p", {class: "lka-redup", teks: "Snapshot belum bisa dimuat."}));
   const sn = s.snapshot, wa = s.teks_wa;
   const salinBtn = (k, l) => h("button", {type: "button", class: "lka-chip", "data-tabwa": k, "aria-pressed": String(tabWA === k), teks: l});
-  return h("section", {class: "lka-kartu", "aria-label": "Snapshot"}, judulKartu("kunci", `Snapshot terkunci, ${sn.ralat ? "Ralat-" + sn.ralat : "kunci pertama"}`, h("span", {class: "lka-pil " + (s.utuh ? "st-disetujui" : "merah"), teks: s.utuh ? "utuh" : "hash tidak cocok"})),
+  return kartu("kunci", `Snapshot terkunci, ${sn.ralat ? "Ralat-" + sn.ralat : "kunci pertama"}`, "Snapshot", h("span", {class: "lka-pil " + (s.utuh ? "st-disetujui" : "merah"), teks: s.utuh ? "utuh" : "hash tidak cocok"}),
     h("p", {class: "lka-redup", teks: `Dikunci ${waktu(s.dikunci_pada)}. Hash ${s.hash.slice(0, 16)}…${s.utuh ? "" : " TIDAK COCOK dengan isi (jangan dipakai)"}.`}),
     sn.pengecualian.length ? h("div", {class: "lka-banner kuning"}, sn.pengecualian.map(p => h("p", {teks: `${p.label}: data terakhir ${p.data_terakhir ?? "tidak ada"}. Alasan: ${p.alasan}`}))) : null,
     h("ul", {class: "lka-ringkas"}, sn.kesimpulan.map(t => h("li", {teks: t}))),
-    h("div", {class: "lka-judul-kartu"}, svg(IK.teks), h("h3", {teks: "Teks WA siap salin"})),
+    h("h4", {teks: "Teks WA siap salin"}),
     h("div", {class: "lka-chip-baris", role: "group", "aria-label": "Teks WA"}, ...(HZ ? [salinBtn("laporan", "Laporan harian")] : [salinBtn("laporan_karhutla", "Laporan Karhutla"), salinBtn("gelar_pesawat", "Gelar pesawat dan heli"), salinBtn("rekap_dry_ice", "Rekap dry ice OMC"), salinBtn("hasil_hujan_omc", "Hasil hujan pasca-OMC")])),
     h("textarea", {id: "lkWA", class: "lka-wa", readonly: true, rows: "12", "aria-label": "Teks WA", value: wa[tabWA]}),
     h("div", {class: "lka-aksi"}, h("button", {type: "button", class: "lka-btn utama", "data-a": "salin-wa", teks: "Salin teks WA"}), h("button", {type: "button", class: "lka-btn", "data-a": "unduh", teks: "Unduh snapshot JSON"}),

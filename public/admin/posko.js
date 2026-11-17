@@ -26,14 +26,19 @@
   const pil = (kelas, t) => `<span class="pk-pil ${esc(kelas)}">${esc(t)}</span>`;
   const kosong = t => `<p class="pk-kosong">${esc(t)}</p>`;
   const catatPesan = (t, ok) => { const p = document.getElementById("pkPesan"); if (p) { p.textContent = t; p.className = "pk-pesan " + (ok ? "ok" : "galat"); } };
-  const tabel = (kepala, baris, kosongT) => `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr>${kepala.map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${
+  /* kit dashboard (Admin.dasbor, bersama.js) dalam bentuk string: kartu seksi, tombol ikon polos, tabel berkepala navy */
+  const DB = Admin.dasbor, sv = d => DB.svg(d).outerHTML;
+  const kartuS = (ik, judul, ey, kanan, isi) => `<section class="ex ex-std db-std" aria-label="${esc(judul)}"><header class="ex-hd"><div class="ex-jd"><h3>${sv(ik)}${esc(judul)}</h3>${kanan || ""}</div>${ey ? `<span class="ex-ey">${esc(ey)}</span>` : ""}</header><div class="ex-bd">${isi}</div></section>`;
+  const ikS = (ik, label, attr = "", kls = "") => `<button type="button" class="db-ik ${kls}" title="${esc(label)}" aria-label="${esc(label)}" ${attr}>${sv(ik)}</button>`;
+  const ubinS = (...u) => DB.ubinGrid(...u.map(x => DB.ubin(x))).outerHTML;
+  const tabel = (kepala, baris, kosongT) => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kepala.map(k => `<th scope="col">${esc(k)}</th>`).join("")}</tr></thead><tbody>${
     baris.length ? baris.join("") : `<tr><td colspan="${kepala.length}" class="pk-kosong-baris">${esc(kosongT)}</td></tr>`}</tbody></table></div>`;
   const formatMundur = ms => { const s = Math.floor(Math.abs(ms) / 1000), p = n => String(n).padStart(2, "0"); return `${p(Math.floor(s / 3600))}:${p(Math.floor(s % 3600 / 60))}:${p(s % 60)}`; };
 
   /* ================= kerangka & tab ================= */
   function kerangka() {
-    app.innerHTML = `<nav class="ad-tabs" aria-label="Ruang Posko">${TABS.map(([k, l]) => `<button data-tab="${k}" aria-pressed="${k === tab}">${l}</button>`).join("")}</nav>
-      <p id="pkPesan" class="pk-pesan" role="status"></p><div id="pkIsi" class="pk-isi"><p class="ad-redup">Memuat…</p></div>`;
+    DB.tumpuk(app).innerHTML = `<nav class="ad-tabs" aria-label="Ruang Posko">${TABS.map(([k, l]) => `<button data-tab="${k}" aria-pressed="${k === tab}">${l}</button>`).join("")}</nav>
+      <p id="pkPesan" class="pk-pesan" role="status"></p><div id="pkIsi" class="db-tumpuk"><p class="ad-redup">Memuat…</p></div>`;
   }
   async function muat() {
     clearInterval(timer); timer = null;
@@ -76,9 +81,11 @@
   async function tampilAntrean() {
     antrean = await ambil(`${API}/panggilan${semua ? "?semua=1" : ""}`);
     const d = antrean, terlambat = d.panggilan.filter(p => p.terlambat).length, baru = d.panggilan.filter(p => p.status === "baru").length;
-    return `<div class="pk-bar"><label class="pk-cek"><input type="checkbox" id="pkSemua" ${semua ? "checked" : ""}> tampilkan selesai & diabaikan</label>
-      <span class="pk-redup">${baru} baru, ${terlambat ? `<b class="pk-lewat">${terlambat} lewat batas</b>` : "tidak ada yang lewat batas"}, email ${d.email_siap ? "siap (Resend)" : "belum siap"}, tidak ada kiriman otomatis: Anda yang menekan kirim</span></div>
-      <div class="pk-daftar">${d.panggilan.length ? d.panggilan.map(p => kartuPanggilan(p, d)).join("") : kosong("Antrean kosong. Titik api di dalam konsesi masuk otomatis tiap 3 jam.")}</div>`;
+    return ubinS({ikon: "telepon", label: "Baru", nilai: baru, ket: "belum dipanggil"}, {ikon: "waspada", label: "Lewat batas", nilai: terlambat, ket: "lebih dari 2 jam", warna: terlambat ? "merah" : ""},
+        {ikon: "kotak", label: "Di antrean", nilai: d.panggilan.length, ket: semua ? "termasuk selesai" : "yang masih berjalan"})
+      + kartuS("telepon", "Antrean panggilan", "Perusahaan", `<label class="pk-cek"><input type="checkbox" id="pkSemua" ${semua ? "checked" : ""}> tampilkan selesai & diabaikan</label>`,
+        `<p class="pk-redup">Email ${d.email_siap ? "siap (Resend)" : "belum siap"}. Tidak ada kiriman otomatis: Anda yang menekan kirim.</p>
+        <div class="pk-daftar">${d.panggilan.length ? d.panggilan.map(p => kartuPanggilan(p, d)).join("") : kosong("Antrean kosong. Titik api di dalam konsesi masuk otomatis tiap 3 jam.")}</div>`);
   }
 
   /* ================= neraca ================= */
@@ -88,48 +95,54 @@
     const rakor = new Set(d.baris.filter(r => r.sumber === "rakor").map(r => r.prov + "|" + r.kab));
     const dipakai = r => r.sumber === "rakor" || !rakor.has(r.prov + "|" + r.kab);
     const f = formNeraca, kab = [...new Set(d.baris.map(r => r.kab))];
-    return `<div class="pk-bar"><label>Tanggal <input type="date" id="pkTglN" value="${esc(tglNeraca)}"></label><span class="pk-redup">Isian Rakor menang atas agregat regu. Agregat regu dihitung otomatis dari laporan.</span></div>
-      ${tabel(["Prov", "Kabupaten", "Sumber", "FS", "Luas (ha)", "Padam (ha)", "Sisa (ha)", "Personel", "Kendala", "Dipakai", ""], d.baris.map(r => `<tr class="${dipakai(r) ? "" : "pk-redam"}" data-prov="${esc(r.prov)}" data-kab="${esc(r.kab)}">
+    return kartuS("grafik", "Neraca per kabupaten", "Harian", `<label class="pk-cek">Tanggal <input type="date" id="pkTglN" value="${esc(tglNeraca)}"></label>`,
+      `<p class="pk-redup">Isian Rakor menang atas agregat regu. Agregat regu dihitung otomatis dari laporan.</p>
+      ${tabel(["Prov", "Kabupaten", "Sumber", "FS", "Luas (ha)", "Padam (ha)", "Sisa (ha)", "Personel", "Kendala", "Dipakai", "Aksi"], d.baris.map(r => `<tr class="${dipakai(r) ? "" : "pk-redam"}" data-prov="${esc(r.prov)}" data-kab="${esc(r.kab)}">
         <td>${esc(r.prov)}</td><td>${esc(r.kab)}${r.dummy ? " " + pil("dummy", "DUMMY") : ""}</td><td>${pil(r.sumber === "rakor" ? "s-selesai" : "s-baru", r.sumber)}</td><td>${r.fs}</td><td>${num(r.luas_ha)}</td><td>${num(r.padam_ha)}</td><td>${num(r.sisa_ha)}</td><td>${r.personel}</td>
         <td>${esc(r.kendala.map(k => KENDALA[k] || k).join(", ")) || "–"}</td><td>${dipakai(r) ? "✔" : ""}</td>
-        <td><button class="ad-tombol kecil" data-salin="${esc(JSON.stringify({prov: r.prov, kab: r.kab, fs: r.fs, luas_ha: r.luas_ha, padam_ha: r.padam_ha, personel: r.personel, kendala: r.kendala}))}">Salin ke form</button>
-          ${r.sumber === "rakor" ? `<button class="ad-tombol kecil bahaya" data-hapus-rakor="1">Hapus</button>` : ""}</td></tr>`), "Belum ada angka untuk tanggal ini.")}
-      <form id="pkFormNeraca" class="pk-form ad-kartu"><h3>Isian Rakor</h3>
+        <td><div class="db-aksi">${ikS("ubah", "Salin ke form", `data-salin="${esc(JSON.stringify({prov: r.prov, kab: r.kab, fs: r.fs, luas_ha: r.luas_ha, padam_ha: r.padam_ha, personel: r.personel, kendala: r.kendala}))}"`)}
+          ${r.sumber === "rakor" ? ikS("hapus", "Hapus isian Rakor", 'data-hapus-rakor="1"', "bahaya") : ""}</div></td></tr>`), "Belum ada angka untuk tanggal ini.")}`)
+      + kartuS("ubah", "Isian Rakor", "Rakor", "", `<form id="pkFormNeraca" class="pk-form">
         <div class="pk-grid"><label>Prov (kode 2 digit)<input name="prov" maxlength="2" inputmode="numeric" required value="${esc(f.prov || "62")}"></label>
           <label>Kabupaten / kota<input name="kab" maxlength="60" required list="pkKab" value="${esc(f.kab || "")}"></label><datalist id="pkKab">${kab.map(k => `<option value="${esc(k)}">`).join("")}</datalist>
           <label>FS (titik api)<input name="fs" inputmode="numeric" value="${esc(f.fs ?? "")}"></label><label>Luas (ha)<input name="luas_ha" inputmode="decimal" value="${esc(f.luas_ha ?? "")}"></label>
           <label>Dipadamkan (ha)<input name="padam_ha" inputmode="decimal" value="${esc(f.padam_ha ?? "")}"></label><label>Sisa (ha, kosong = luas − padam)<input name="sisa_ha" inputmode="decimal"></label>
           <label>Personel<input name="personel" inputmode="numeric" value="${esc(f.personel ?? "")}"></label></div>
         <div class="pk-centang">${Object.entries(KENDALA).map(([k, l]) => `<label class="pk-cek"><input type="checkbox" name="kendala" value="${k}" ${(f.kendala || []).includes(k) ? "checked" : ""}>${l}</label>`).join("")}</div>
-        <label>Catatan<textarea name="catatan" maxlength="500" rows="2"></textarea></label><div><button class="ad-tombol utama" type="submit">💾 Simpan isian Rakor</button></div></form>`;
+        <label>Catatan<textarea name="catatan" maxlength="500" rows="2"></textarea></label><div><button class="ad-tombol utama" type="submit">💾 Simpan isian Rakor</button></div></form>`);
   }
 
   /* ================= laporan regu ================= */
   async function tampilLaporan() {
     const d = await ambil(`${API}/lapangan?tgl=${tglLaporan}`);
-    return `<div class="pk-bar"><label>Tanggal <input type="date" id="pkTglL" value="${esc(tglLaporan)}"></label><span class="pk-redup">${d.laporan.length} laporan</span></div>
-      ${tabel(["Waktu", "Regu", "Wilayah", "Kondisi", "Luas / padam", "Personel", "Kendala", "Air", "Catatan", "Foto", "Lokasi"], d.laporan.map(l => `<tr data-id="${esc(l.id)}">
+    const ditahan = d.laporan.filter(l => l.putusan === "tahan").length, curiga = d.laporan.filter(l => l.gps_curiga).length;
+    return ubinS({ikon: "berkas", label: "Laporan regu", nilai: d.laporan.length, ket: "pada tanggal ini"}, {ikon: "jam", label: "Ditahan", nilai: ditahan, ket: "keluar dari neraca", warna: ditahan ? "oranye" : ""},
+        {ikon: "waspada", label: "GPS curiga", nilai: curiga, ket: "perlu dicek", warna: curiga ? "oranye" : ""})
+      + kartuS("berkas", "Laporan regu", "Harian", `<label class="pk-cek">Tanggal <input type="date" id="pkTglL" value="${esc(tglLaporan)}"></label>`,
+      `${tabel(["Waktu", "Regu", "Wilayah", "Kondisi", "Luas / padam", "Personel", "Kendala", "Air", "Catatan", "Foto", "Lokasi"], d.laporan.map(l => `<tr data-id="${esc(l.id)}">
         <td>${jam(l.waktu)}</td><td>${esc(l.regu)}<br><span class="pk-redup">${esc(l.unsur)}</span>${l.dummy ? " " + pil("dummy", "DUMMY") : ""}</td><td>${esc(l.kab)}${l.kompleks_id ? `<br><span class="pk-redup">${esc(l.kompleks_id)}</span>` : ""}</td>
-        <td>${pil("l-" + l.status, STATUS_LAP[l.status])}</td><td>${l.luas_ha == null ? "–" : num(l.luas_ha)} / ${l.padam_ha == null ? "–" : num(l.padam_ha)}${l.putusan === "tahan" ? `<br>${pil("l-menyala", "DITAHAN")} <span class="pk-redup">${esc(l.alasan_tahan)}</span><br><button class="ad-tombol kecil utama" data-putus="setuju">Setujui</button>` : l.putusan === "setuju" ? `<br>${pil("l-padam", "disetujui")} <button class="ad-tombol kecil" data-putus="tahan">Tahan</button>` : ""}</td><td>${l.personel ?? "–"}</td>
+        <td>${pil("l-" + l.status, STATUS_LAP[l.status])}</td><td>${l.luas_ha == null ? "–" : num(l.luas_ha)} / ${l.padam_ha == null ? "–" : num(l.padam_ha)}${l.putusan === "tahan" ? `<br>${pil("l-menyala", "DITAHAN")} <span class="pk-redup">${esc(l.alasan_tahan)}</span><br><div class="db-aksi">${ikS("cek", "Setujui laporan", 'data-putus="setuju"')}</div>` : l.putusan === "setuju" ? `<br>${pil("l-padam", "disetujui")} <div class="db-aksi">${ikS("cabut", "Tahan laporan", 'data-putus="tahan"', "bahaya")}</div>` : ""}</td><td>${l.personel ?? "–"}</td>
         <td>${esc(l.kendala.map(k => KENDALA[k] || k).join(", ")) || "–"}</td><td>${esc(l.sumber_air || "–")}</td><td>${esc(l.catatan || "")}${l.gps_curiga ? `<br><b class="pk-lewat">Curiga GPS: ${esc(l.gps_curiga)}</b>` : ""}</td>
         <td>${l.foto ? `<a href="${API}/foto/${esc(l.id)}" target="_blank" rel="noopener">Lihat</a>` : "–"}</td>
-        <td><a href="https://www.google.com/maps?q=${l.lat},${l.lon}" target="_blank" rel="noopener noreferrer">${(+l.lat).toFixed(4)}, ${(+l.lon).toFixed(4)}</a> ±${Math.round(l.akurasi ?? 0)} m</td></tr>`), "Belum ada laporan regu untuk tanggal ini.")}`;
+        <td><a href="https://www.google.com/maps?q=${l.lat},${l.lon}" target="_blank" rel="noopener noreferrer">${l.lat == null ? "–" : `${(+l.lat).toFixed(4)}, ${(+l.lon).toFixed(4)}`}</a>${l.akurasi == null ? "" : ` ±${Math.round(l.akurasi).toLocaleString("id-ID")} m`}</td></tr>`), "Belum ada laporan regu untuk tanggal ini.")}`);
   }
 
   /* ================= regu ================= */
   let kodeBaru = null;
   async function tampilRegu() {
     const d = await ambil(`${API}/regu`);
-    return `${kodeBaru ? `<div class="pk-kode ad-kartu"><h3>Kode regu "${esc(kodeBaru.nama)}" — hanya tampil SEKALI</h3><p>Kirim tautan ini ke ketua regu (WhatsApp). Server hanya menyimpan sidik jarinya, jadi tidak bisa ditampilkan lagi; hilang = buat regu baru.</p>
+    const aktif = d.regu.filter(r => !r.dicabut).length;
+    return ubinS({ikon: "orang", label: "Regu aktif", nilai: aktif, ket: "kode berlaku"}, {ikon: "cabut", label: "Dicabut", nilai: d.regu.length - aktif, ket: "kode tidak berlaku"})
+      + (kodeBaru ? kartuS("kunci", "Kode regu baru", "Tampil sekali", "", `<p><b>${esc(kodeBaru.nama)}</b>. Kirim tautan ini ke ketua regu (WhatsApp). Server hanya menyimpan sidik jarinya, jadi tidak bisa ditampilkan lagi; hilang = buat regu baru.</p>
         <input class="pk-isian" id="pkTautan" readonly value="${esc(kodeBaru.tautan)}"><div class="pk-aksi"><button class="ad-tombol utama" data-salin-tautan="1">📋 Salin tautan</button>
-        <a class="ad-tombol" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=${encodeURIComponent("Tautan lapor lapangan regu " + kodeBaru.nama + ": " + kodeBaru.tautan)}">💬 Bagikan lewat WhatsApp</a></div></div>` : ""}
-      <form id="pkFormRegu" class="pk-form ad-kartu"><h3>Buat regu</h3><div class="pk-grid"><label>Nama regu<input name="nama" required minlength="2" maxlength="80" placeholder="mis. Daops Manggala Agni Pulang Pisau"></label>
+        <a class="ad-tombol" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=${encodeURIComponent("Tautan lapor lapangan regu " + kodeBaru.nama + ": " + kodeBaru.tautan)}">💬 Bagikan lewat WhatsApp</a></div>`).replace('class="ex ex-std db-std"', 'class="ex ex-std db-std pk-kode"') : "")
+      + kartuS("tambah", "Buat regu", "Regu berkode", "", `<form id="pkFormRegu" class="pk-form"><div class="pk-grid"><label>Nama regu<input name="nama" required minlength="2" maxlength="80" placeholder="mis. Daops Manggala Agni Pulang Pisau"></label>
         <label>Unsur<select name="unsur">${UNSUR.map(u => `<option>${u}</option>`).join("")}</select></label><label>Prov (kode 2 digit)<input name="prov" maxlength="2" inputmode="numeric" required value="62"></label>
         <label>Kabupaten / kota<input name="kab" required minlength="2" maxlength="60"></label><label>ID perusahaan (opsional, untuk regu perusahaan)<input name="perusahaan_id" maxlength="80" placeholder="mis. sawit-gfw-537"></label></div>
-        <div><button class="ad-tombol utama" type="submit">➕ Buat regu & kode</button></div></form>
-      ${tabel(["Regu", "Unsur", "Wilayah", "Laporan", "Terakhir", "Status", ""], d.regu.map(r => `<tr data-id="${esc(r.id)}"><td>${esc(r.nama)}${r.dummy ? " " + pil("dummy", "DUMMY") : ""}${r.perusahaan_id ? `<br><span class="pk-redup">${esc(r.perusahaan_id)}</span>` : ""}</td>
+        <div><button class="ad-tombol utama" type="submit">➕ Buat regu & kode</button></div></form>`)
+      + kartuS("orang", "Daftar regu", "Regu", "", tabel(["Regu", "Unsur", "Wilayah", "Laporan", "Terakhir", "Status", "Aksi"], d.regu.map(r => `<tr data-id="${esc(r.id)}"><td>${esc(r.nama)}${r.dummy ? " " + pil("dummy", "DUMMY") : ""}${r.perusahaan_id ? `<br><span class="pk-redup">${esc(r.perusahaan_id)}</span>` : ""}</td>
         <td>${esc(r.unsur)}</td><td>${esc(r.kab)} (${esc(r.prov)})</td><td>${r.laporan}</td><td>${jam(r.terakhir)}</td><td>${r.dicabut ? pil("s-abaikan", "Dicabut " + jam(r.dicabut)) : pil("s-selesai", "Aktif")}</td>
-        <td>${r.dicabut ? "" : `<button class="ad-tombol kecil bahaya" data-cabut="1">Cabut kode</button>`}</td></tr>`), "Belum ada regu.")}`;
+        <td>${r.dicabut ? "" : `<div class="db-aksi">${ikS("cabut", "Cabut kode", 'data-cabut="1"', "bahaya")}</div>`}</td></tr>`), "Belum ada regu."));
   }
 
   /* ================= kontak PT ================= */
@@ -138,16 +151,16 @@
     const [d, p] = await Promise.all([ambil(`${API}/kontak`), ambil(`${API}/panggilan?semua=1`)]);
     const ada = new Set(d.kontak.map(k => k.perusahaan_id)), tanpa = new Map(p.panggilan.filter(x => !ada.has(x.perusahaan_id)).map(x => [x.perusahaan_id, x.nama_pt]));
     const f = formKontak;
-    return `${tanpa.size ? `<div class="ad-spanduk"><b>${tanpa.size} perusahaan di antrean belum punya kontak:</b> ${[...tanpa].map(([id, n]) => `<button class="ad-tombol kecil" data-isi-kontak="${esc(id)}" data-nama="${esc(n)}">${esc(n)}</button>`).join(" ")}</div>` : ""}
-      <form id="pkFormKontak" class="pk-form ad-kartu"><h3>Kontak perusahaan (hanya admin yang melihat; tidak pernah tampil di halaman publik)</h3><div class="pk-grid">
+    return (tanpa.size ? kartuS("waspada", "Belum punya kontak", `${tanpa.size} perusahaan`, "", `<div class="pk-aksi">${[...tanpa].map(([id, n]) => `<button class="ad-tombol kecil" data-isi-kontak="${esc(id)}" data-nama="${esc(n)}">${esc(n)}</button>`).join(" ")}</div>`) : "")
+      + kartuS("telepon", "Kontak perusahaan", "Hanya admin", "", `<p class="pk-redup">Hanya admin yang melihat; tidak pernah tampil di halaman publik.</p><form id="pkFormKontak" class="pk-form"><div class="pk-grid">
         <label>ID perusahaan (dari konsesi2026)<input name="perusahaan_id" required maxlength="80" value="${esc(f.perusahaan_id || "")}"></label><label>Nama perusahaan<input name="nama_pt" required maxlength="120" value="${esc(f.nama_pt || "")}"></label>
         <label>Nama kontak (PIC)<input name="kontak" maxlength="80" value="${esc(f.kontak || "")}"></label><label>Email<input name="email" type="email" maxlength="254" value="${esc(f.email || "")}"></label>
         <label>WhatsApp (0812…)<input name="wa" inputmode="tel" maxlength="30" value="${esc(f.wa || "")}"></label><label>Telepon<input name="telepon" inputmode="tel" maxlength="20" value="${esc(f.telepon || "")}"></label>
-        <label>Catatan<input name="catatan" maxlength="300" value="${esc(f.catatan || "")}"></label></div><div><button class="ad-tombol utama" type="submit">💾 Simpan kontak</button></div></form>
-      ${tabel(["Perusahaan", "PIC", "Email", "WhatsApp", "Telepon", ""], d.kontak.map(k => `<tr data-id="${esc(k.id)}"><td>${esc(k.nama_pt)}${k.dummy ? " " + pil("dummy", "DUMMY") : ""}<br><span class="pk-redup">${esc(k.perusahaan_id)}</span></td><td>${esc(k.kontak || "–")}</td><td>${esc(k.email || "–")}</td><td>${esc(k.wa || "–")}</td><td>${esc(k.telepon || "–")}</td>
-        <td><button class="ad-tombol kecil" data-ubah-kontak="${esc(JSON.stringify(k))}">Ubah</button> <button class="ad-tombol kecil bahaya" data-hapus-kontak="1">Hapus</button></td></tr>`), "Belum ada kontak.")}
-      <form id="pkFormCsv" class="pk-form ad-kartu"><h3>Impor CSV</h3><p class="pk-redup">Baris pertama = kepala kolom: <code>perusahaan_id,nama_pt,kontak,email,wa,telepon,catatan</code> (wajib perusahaan_id dan nama_pt; pemisah koma atau titik koma). Satu baris salah = tidak ada yang diimpor.</p>
-        <input type="file" id="pkCsvBerkas" accept=".csv,text/csv,text/plain"><textarea name="csv" rows="5" maxlength="65536" placeholder="perusahaan_id,nama_pt,email,wa"></textarea><div><button class="ad-tombol utama" type="submit">⬆️ Impor</button></div></form>`;
+        <label>Catatan<input name="catatan" maxlength="300" value="${esc(f.catatan || "")}"></label></div><div><button class="ad-tombol utama" type="submit">💾 Simpan kontak</button></div></form>`)
+      + kartuS("kisi", "Daftar kontak", "Perusahaan", "", tabel(["Perusahaan", "PIC", "Email", "WhatsApp", "Telepon", "Aksi"], d.kontak.map(k => `<tr data-id="${esc(k.id)}"><td>${esc(k.nama_pt)}${k.dummy ? " " + pil("dummy", "DUMMY") : ""}<br><span class="pk-redup">${esc(k.perusahaan_id)}</span></td><td>${esc(k.kontak || "–")}</td><td>${esc(k.email || "–")}</td><td>${esc(k.wa || "–")}</td><td>${esc(k.telepon || "–")}</td>
+        <td><div class="db-aksi">${ikS("ubah", "Ubah kontak", `data-ubah-kontak="${esc(JSON.stringify(k))}"`)}${ikS("hapus", "Hapus kontak", 'data-hapus-kontak="1"', "bahaya")}</div></td></tr>`), "Belum ada kontak."))
+      + kartuS("unduh", "Impor CSV", "Massal", "", `<form id="pkFormCsv" class="pk-form"><p class="pk-redup">Baris pertama = kepala kolom: <code>perusahaan_id,nama_pt,kontak,email,wa,telepon,catatan</code> (wajib perusahaan_id dan nama_pt; pemisah koma atau titik koma). Satu baris salah = tidak ada yang diimpor.</p>
+        <input type="file" id="pkCsvBerkas" accept=".csv,text/csv,text/plain"><textarea name="csv" rows="5" maxlength="65536" placeholder="perusahaan_id,nama_pt,email,wa"></textarea><div><button class="ad-tombol utama" type="submit">⬆️ Impor</button></div></form>`);
   }
 
   /* ================= templat paparan ================= */
@@ -160,9 +173,9 @@
   }
   async function tampilTemplat() {
     const d = await ambil(`${API}/templat`);
-    return `<form id="pkFormTemplat" class="pk-form ad-kartu"><h3>Templat halaman /paparan</h3><p class="pk-redup">Skema: <code>{versi:1, slide:[{id,aktif,urutan}], tambahan:[{id,judul,sub,isi[],gambar_url?,setelah}]}</code>. Terakhir diubah: ${jam(d.diubah)}. Teks tanpa tanda &lt; &gt;.</p>
+    return kartuS("berkas", "Templat paparan", "/paparan", "", `<form id="pkFormTemplat" class="pk-form"><p class="pk-redup">Skema: <code>{versi:1, slide:[{id,aktif,urutan}], tambahan:[{id,judul,sub,isi[],gambar_url?,setelah}]}</code>. Terakhir diubah: ${jam(d.diubah)}. Teks tanpa tanda &lt; &gt;.</p>
       <textarea name="isi" class="pk-kode-json" rows="18" spellcheck="false">${esc(JSON.stringify(d.templat, null, 2))}</textarea>
-      <div class="pk-aksi"><button class="ad-tombol" type="button" data-templat="validasi">🔍 Validasi</button><button class="ad-tombol" type="button" data-templat="contoh">📄 Isi contoh</button><button class="ad-tombol utama" type="submit">💾 Simpan</button></div></form>`;
+      <div class="pk-aksi"><button class="ad-tombol" type="button" data-templat="validasi">🔍 Validasi</button><button class="ad-tombol" type="button" data-templat="contoh">📄 Isi contoh</button><button class="ad-tombol utama" type="submit">💾 Simpan</button></div></form>`);
   }
   const TAMPIL = {antrean: tampilAntrean, neraca: tampilNeraca, laporan: tampilLaporan, regu: tampilRegu, kontak: tampilKontak, templat: tampilTemplat};
 
