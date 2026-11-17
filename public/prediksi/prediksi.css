@@ -92,7 +92,7 @@ main>.db-l1{display:none}
 .dm-kendali select,.dm-kendali input{flex:1 1 220px;min-width:0}
 .dm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch}
 .dm-grid>#dmRinci,.dm-grid>#dmRinci>.ex-std{height:100%}
-.lp-grid .ex.ex-std+.ex,.dm-grid .ex.ex-std+.ex,.lp-grid>.ex,.dm-grid .ex{margin-top:0}
+.lp-grid>.ex.ex-std,.dm-grid .ex.ex-std,.lp-grid>.ex,.dm-grid .ex{margin-top:0}
 .dm-grid>.ex-std{height:100%;display:flex;flex-direction:column}
 .dm-grid>.ex-std>.ex-bd{flex:1;display:flex;flex-direction:column}
 .dm-grid>.ex-std .lp-peta{flex:1 1 0;width:100%;height:auto;max-height:none;min-height:320px}
