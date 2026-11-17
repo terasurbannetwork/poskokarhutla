@@ -63,6 +63,9 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         const f = path.join(akar, "data/raw/semai/keluar", semai[1]);
         try { const b = await fs.readFile(f); res.writeHead(200, {"content-type": JENIS[path.extname(f)], "cache-control": "no-store", "x-tinjau": "lokal-semai"}); return res.end(b); } catch { /* tidak ada: teruskan 404 hulu */ }
       }
+      /* berkas /data/ baru yang belum terbit (hulu 404) dari folder kerja; yang sudah terbit tetap dari hulu */
+      const dataBaru = r.status === 404 && req.method === "GET" && jalurData(jalur) && await berkas(publik, jalur);
+      if (dataBaru) { res.writeHead(200, {"content-type": JENIS[path.extname(dataBaru).toLowerCase()] || "application/octet-stream", "cache-control": "no-store", "x-tinjau": "lokal-data-baru"}); return res.end(await fs.readFile(dataBaru)); }
       /* rute HTML baru yang belum terbit di produksi (hulu 404) tetap disajikan dari folder kerja */
       const baru = r.status === 404 && ruteHtml && await berkas(publik, ruteHtml[1]);
       const htmlLokal = baru || (r.ok && (r.headers.get("content-type") || "").includes("text/html") &&

@@ -1341,6 +1341,7 @@
     "table pb_titik": "pb_skema CHECK titik",
     "table pb_renlap": "pb_skema CHECK renlap",
     "table pb_renlap_hasil": "pb_skema pb_renlap_hasil mengikuti FK",
+    "table pb_renlap_tindakan": "migrasi 0153 jalan dua kali tanpa galat",
     "table pb_log": "pb_skema pb_log menolak JSON",
     "table pb_dokumen": "pb_skema pb_dokumen CHECK",
     "table pb_tindakan": "pb_skema pb_tindakan CHECK",

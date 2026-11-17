@@ -16,10 +16,12 @@ test("tinjau lokal: kode dari folder kerja, data/API/login dari hulu", async () 
   await fs.mkdir(path.join(akar, "public/data"), {recursive: true});
   await fs.writeFile(path.join(akar, "public/app.js"), "lokal-js");
   await fs.writeFile(path.join(akar, "public/data/x.json"), '"basi"');
+  await fs.writeFile(path.join(akar, "public/data/baru.json"), '"baru"');
   await fs.writeFile(path.join(akar, "public/index.html"), '<html lang="id"><body>LOKAL</body></html>');
   const hulu = http.createServer((req, res) => {
     if (req.url === "/tutup") { res.writeHead(303, {location: `http://127.0.0.1:${pH}/admin/masuk?ke=%2Ftutup`}); return res.end(); }
     if (req.url === "/") { res.writeHead(200, {"content-type": "text/html"}); return res.end('<html lang="id" data-situs="w"><body>HULU</body></html>'); }
+    if (req.url === "/data/baru.json") { res.writeHead(404); return res.end("tidak ada"); }
     if (req.url === "/api/masuk") { res.writeHead(200, {"set-cookie": "sesi=abc; Path=/; HttpOnly; Secure; Domain=centurisk97.id; SameSite=Lax"}); return res.end(req.headers.origin || ""); }
     res.writeHead(200, {"content-type": "application/json"}); res.end('"hulu"');
   });
@@ -29,6 +31,7 @@ test("tinjau lokal: kode dari folder kerja, data/API/login dari hulu", async () 
   try {
     assert.equal(await (await fetch(L + "/app.js")).text(), "lokal-js", "kode dari folder kerja");
     assert.equal(await (await fetch(L + "/data/x.json")).text(), '"hulu"', "jalur /data/ selalu dari hulu");
+    assert.equal(await (await fetch(L + "/data/baru.json")).text(), '"baru"', "berkas /data/ yang belum terbit (hulu 404) dari folder kerja");
     assert.equal(await (await fetch(L + "/api/apa")).text(), '"hulu"', "API dari hulu");
     const h = await (await fetch(L + "/")).text();
     assert.match(h, /LOKAL/, "isi HTML dari folder kerja"); assert.match(h, /data-situs="w"/, "tag <html> dari hulu");

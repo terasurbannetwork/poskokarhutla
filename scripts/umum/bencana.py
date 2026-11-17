@@ -40,6 +40,10 @@ JENIS_LOGBOOK_KE_BENCANA = {
     "gunungapi": "gunungapi", "kekeringan": "kekeringan", "gelombang_pasang": "pesisir", "abrasi": "pesisir",
 }
 KEMAMPUAN_BOOL = ("operasi", "ekonomi", "pencegahan", "prioritas")
+# DESAIN-TEKNIS tindakan-operasi §2: kosakata tindakan lapangan; label di kunci puncak `tindakan` registri
+TINDAKAN = ("kaji_cepat", "evakuasi", "sar", "pembersihan", "alat_berat", "buka_akses", "pohon_tumbang", "logistik", "dapur_umum",
+            "pengungsian", "air_bersih", "kesehatan", "perbaikan_darurat", "tanggul", "pompa", "masker", "pantau", "posko",
+            "imbauan", "rambu", "status_darurat", "omc", "patroli")
 
 
 def galat_kemampuan(id_, k):
@@ -81,7 +85,14 @@ def galat_kemampuan(id_, k):
                 g.append(f"{id_}: kemampuan.dasbor.ringkas harus string")
             if not isinstance(o["papan_sk"], bool):
                 g.append(f"{id_}: kemampuan.dasbor.papan_sk harus bool")
-    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen",) + tuple(objek)]
+    t = k.get("tindakan")
+    if not isinstance(t, list) or any(x not in TINDAKAN for x in t):
+        g.append(f"{id_}: kemampuan.tindakan harus list kode dari TINDAKAN")
+    elif len(set(t)) != len(t):
+        g.append(f"{id_}: kemampuan.tindakan berisi kode ganda")
+    elif k.get("operasi") is False and t:
+        g.append(f"{id_}: operasi false wajib tindakan []")
+    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen", "tindakan") + tuple(objek)]
     return g
 
 
@@ -115,6 +126,11 @@ def periksa(reg, akar=AKAR):
     g = []
     if not isinstance(reg, dict) or reg.get("versi") != 1 or not isinstance(reg.get("bencana"), list) or not reg["bencana"]:
         return ["registry harus {versi: 1, bencana: [..]} dan tidak kosong"]
+    ti = reg.get("tindakan")
+    if not isinstance(ti, dict) or set(ti) != set(TINDAKAN):
+        g.append("tindakan puncak harus objek berkunci tepat TINDAKAN")
+    elif any(not isinstance(v, str) or not v.strip() or "—" in v for v in ti.values()):
+        g.append("tindakan puncak: label harus string tak kosong tanpa em dash")
     seen = {k: {} for k in ("id", "rute", "data", "awalan", "ikon", "bahaya")}
 
     def unik(jenis, nilai, id_):
@@ -264,6 +280,16 @@ def _uji():
     rusak(lambda b: b[0]["kemampuan"]["ews"].update(tangga=1), "tangga harus bool")
     rusak(lambda b: b[0]["kemampuan"]["dasbor"].pop("papan_sk"), "dasbor harus berkunci")
     rusak(lambda b: b[0]["kemampuan"].update(sihir=True), "kemampuan.sihir tidak dikenal")
+    rusak(lambda b: b[0]["kemampuan"].pop("tindakan"), "tindakan harus list")
+    rusak(lambda b: b[0]["kemampuan"].update(tindakan=["terbang"]), "tindakan harus list")
+    rusak(lambda b: b[0]["kemampuan"].update(tindakan=["posko", "posko"], operasi=True), "kode ganda")
+    rusak(lambda b: b[0]["kemampuan"].update(tindakan=["posko"]), "operasi false wajib")
+    for kasus in (lambda r: r.pop("tindakan"), lambda r: r["tindakan"].pop("patroli"), lambda r: r["tindakan"].update(x="y"),
+                  lambda r: r["tindakan"].update(patroli=""), lambda r: r["tindakan"].update(patroli="a — b")):
+        r = copy.deepcopy(reg)
+        kasus(r)
+        assert any("tindakan puncak" in s for s in periksa(r)), periksa(r)
+    assert '"tindakan"' in bangkitkan(reg)
     r = copy.deepcopy(reg)
     r["bencana"][0]["kemampuan"].update(operasi=True, dokumen=["sitrep"], renlap={"sarana": ["tenda"], "bobot": "banjir"})
     assert periksa(r) == [], periksa(r)

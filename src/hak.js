@@ -951,6 +951,15 @@ export const PB_SQL_HASIL = {
     WHERE r.tanggal BETWEEN ?1 AND ?2 AND r.bencana = ?3 AND (?4 = '' OR r.prov = ?4) AND r.status IN ('terbit','selesai') AND NOT EXISTS (SELECT 1 FROM pb_renlap n WHERE n.bencana = r.bencana AND n.prov = r.prov AND n.kab = r.kab AND n.tanggal = r.tanggal AND n.versi > r.versi AND n.status IN ('terbit','selesai')) GROUP BY h.didatangi, h.alasan`,
 };
 export const pbStmtHasil = (env, p, id, b, oleh, kini) => sedia(env, p, "pb_renlap_hasil", "tambah", PB_SQL_HASIL.upsert).bind(id, b.target_no, b.didatangi, b.alasan, b.hasil, b.catatan, oleh, kini);
+/* Tindakan per target (pb_renlap_tindakan, migrasi 0153; tindakan-operasi D5, D6): hapus set per (renlap, target) lalu sisip satu kode. per_tindakan memakai saringan versi terbaru yang sama dengan rinci. */
+Object.assign(MATRIKS, {pb_renlap_tindakan: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "hapus"]}});
+PB_SQL_HASIL.tindakanHapus = "DELETE FROM pb_renlap_tindakan WHERE renlap_id = ?1 AND target_no IN (SELECT value FROM json_each(?2))";
+PB_SQL_HASIL.tindakanSisip = "INSERT INTO pb_renlap_tindakan (renlap_id, target_no, tindakan, oleh, waktu) SELECT ?1, json_extract(value, '$[0]'), json_extract(value, '$[1]'), ?3, ?4 FROM json_each(?2)";
+PB_SQL_HASIL.perTindakan = PB_SQL_HASIL.rinci.replace("SELECT h.didatangi, h.alasan, count(*) n FROM pb_renlap r JOIN pb_renlap_hasil h", "SELECT h.tindakan, count(*) n FROM pb_renlap r JOIN pb_renlap_tindakan h").replace("GROUP BY h.didatangi, h.alasan", "GROUP BY h.tindakan");
+/* dua pernyataan per permintaan: nomor = daftar target_no bertindakan, pasangan = [[target_no, kode], ...] (batas kueri D1 per pemanggilan) */
+export const pbStmtTindakanHapus = (env, p, id, nomor) => sedia(env, p, "pb_renlap_tindakan", "hapus", PB_SQL_HASIL.tindakanHapus).bind(id, JSON.stringify(nomor));
+export const pbStmtTindakanSisip = (env, p, id, pasangan, oleh, kini) => sedia(env, p, "pb_renlap_tindakan", "tambah", PB_SQL_HASIL.tindakanSisip).bind(id, JSON.stringify(pasangan), oleh, kini);
+export const pbTindakanRekap = async (env, p, dari, sampai, bencana, prov) => Object.fromEntries((await sedia(env, p, "pb_renlap_tindakan", "baca", PB_SQL_HASIL.perTindakan).bind(dari, sampai, bencana, prov).all()).results.map(x => [x.tindakan, x.n]));
 export const pbKepatuhan = async (env, p, dari, sampai, bencana, prov) => {
   const [a, b] = await env.DB.batch([sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.renlap).bind(dari, sampai, bencana, prov), sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.rinci).bind(dari, sampai, bencana, prov)]);
   return {renlap: a.results[0].renlap, target: a.results[0].target, rinci: b.results};
