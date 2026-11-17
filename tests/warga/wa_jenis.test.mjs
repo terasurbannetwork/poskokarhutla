@@ -18,6 +18,7 @@ const CONTOH = {
   pvmbg_pagi: ["Selamat pagi, laporan aktivitas gunung api PVMBG pukul 07.00 WIB", ""],
   pvmbg_malam: ["Selamat malam, laporan aktivitas gunung api  _PVMBG_ ", ""],
   gelar_armada: ["*GELAR PESAWAT DAN HELIKOPTER*\nPosisi 28 Okt", ""],
+  gelar_udara: ["", "Data Gelar Kekuatan Satgas Udara Karhutla 16 Nov.xlsx"],
   dry_ice_omc: ["LAPORAN PENGGUNAAN DRY ICE OMC", ""],
   hujan_omc: ["*PEMANTAUAN HUJAN PASCA PELAKSANAAN OPERASI MODIFIKASI CUACA*", ""],
   bpbd_kejadian: ["Perkembangan Kejadian Banjir\nPembuat Laporan: Kepala Pelaksana BPBD Provinsi Jawa Timur", ""],
@@ -50,7 +51,7 @@ uji("rekap: pintu admin, dedupe tempelan ganda, hari kosong tetap ada", async ()
   assert.equal((await api("GET", "/api/wa/rekap?sampai=salah", undefined, ADMIN)).s, 400);
   const r = await api("GET", "/api/wa/rekap?sampai=2026-10-29&hari=3", undefined, ADMIN);
   assert.equal(r.s, 200, r.t); assert.equal(r.h.get("cache-control"), "no-store");
-  assert.equal(r.j.sampai, "2026-10-29"); assert.equal(r.j.hari, 3); assert.equal(r.j.jenis.length, 13);
+  assert.equal(r.j.sampai, "2026-10-29"); assert.equal(r.j.hari, 3); assert.equal(r.j.jenis.length, 14);
   assert.deepEqual(r.j.per.map(p => p.tanggal), ["2026-10-29", "2026-10-28", "2026-10-27"]);
   const h = r.j.per[1];
   assert.equal(h.isi.rekap_koordalops_24.n, 1, "tempelan ganda dihitung sekali");
