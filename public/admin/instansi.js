@@ -2,7 +2,7 @@
    Data dari /api/instansi/admin/* (moderator ke atas). Sandi baru tampil SEKALI: CSV dibuat di peramban dan tidak pernah dikirim balik ke server.
    INP: tombol tab menandai chrome (aria-pressed) dulu, isi digambar sesudah satu frame. CSP admin: tanpa skrip/gaya inline; semua teks data lewat esc(). */
 (() => {
-  const {esc, kirim, ambil} = window.Admin, app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul"), API = "/api/instansi/admin";
+  const {esc, kirim, ambil} = window.Admin, DB = Admin.dasbor, app = DB.tumpuk(document.getElementById("app")), aksiJudul = document.getElementById("aksiJudul"), API = "/api/instansi/admin";
   const IKON = {validasi: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', akun: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.5 3.5-5.5 7-5.5s6.2 2 7 5.5"/>', pantau: '<path d="M3 12h4l3-7 4 14 3-7h4"/>', kontak: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z"/>'};
   const ik = k => `<svg class="ai-ik" viewBox="0 0 24 24" aria-hidden="true">${IKON[k]}</svg>`;
   /* tab per peran: admin melihat semua; staf hanya tab yang diizinkan perannya (yang lain TIDAK dirender, bukan dinonaktifkan). Sama dengan hak API (P_VALIDASI, P_KONSESI di src/staf.js). */
@@ -25,6 +25,10 @@
     r.vegetasi?.length && ` Vegetasi ${esc(r.vegetasi.join(", ").replaceAll("_", " "))}.`, r.kedalaman_gambut_cm != null && ` Gambut sekitar ${num(r.kedalaman_gambut_cm)} cm.`,
     r.padam_baru_ha != null && ` Dipadamkan ${num(r.padam_baru_ha)} ha sejak laporan sebelumnya.`].filter(Boolean).join("");
   const dum = x => x.dummy ? " " + pil("DUMMY", "dummy") : "";
+  /* kartu seksi (kit dashboard) dan ubin sebagai string HTML; penangan klik didelegasikan di #app, jadi outerHTML aman */
+  const ikS = (ik, label, data, kls) => DB.ikon(ik, label, data, kls).outerHTML;
+  const kartuS = (ikon, judul, ey, isi, kanan = "") => { const k = DB.kartu({ikon, judul, ey}); k.querySelector(".ex-bd").innerHTML = isi; if (kanan) k.querySelector(".ex-jd").insertAdjacentHTML("beforeend", kanan); return k.outerHTML; };
+  const ubinS = (...u) => DB.ubinGrid(...u.map(DB.ubin)).outerHTML;
   const kosong = t => `<p class="ai-kosong">${esc(t)}</p>`;
   const sesudahCat = fn => { let jalan = false; const f = () => { if (!jalan) { jalan = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(f)); setTimeout(f, 120); };
   const pesanTeks = (t, ok) => { pesanAkhir = t ? [t, ok] : null; const p = document.getElementById("aiPesan"); if (p) { p.textContent = t; p.className = "ai-pesan " + (ok ? "ok" : "galat"); } };
@@ -34,7 +38,7 @@
     if (!k) return pesanTeks("Butir yang dituju sudah tidak ada di daftar ini. Mungkin sudah selesai ditangani.", true);
     k.classList.add("sorot"); k.scrollIntoView({block: "center"}); if (tab === "pantau") k.querySelector("[data-rincian]")?.click();
   }
-  const tabel = (kepala, baris, k) => `<div class="ad-tabel-wadah"><table class="ad-tabel ai-tabel"><thead><tr>${kepala.map(x => `<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${
+  const tabel = (kepala, baris, k) => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel ai-tabel"><thead><tr>${kepala.map(x => `<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${
     baris.length ? baris.map(r => { let i = 0; return r.replace(/<td(?=[ >])/g, () => `<td data-label="${esc(kepala[i++] || "")}"`); }).join("") : `<tr><td colspan="${kepala.length}">${esc(k)}</td></tr>`}</tbody></table></div>`;
   /* deep link dari Meja Pantau: #<tab> atau #<tab>/<id butir>; tab yang tidak diizinkan jatuh ke tab pertama yang boleh */
   /* filter jenis bencana tab Pantau (?bencana=banjir dst, divalidasi terhadap kamus bersama instansi_kartu.js; selain itu semua) */
@@ -45,7 +49,7 @@
 
   function kerangka() {
     app.innerHTML = `<nav class="ad-tabs" aria-label="Akun Instansi">${TABS.map(([k, l]) => `<button data-tab="${k}" aria-pressed="${k === tab}">${l}</button>`).join("")}</nav>
-      <p id="aiPesan" class="ai-pesan" role="status"></p><div id="aiIsi" class="ai-isi"><p class="ad-redup">Memuat…</p></div>`;
+      <p id="aiPesan" class="ai-pesan" role="status"></p><div id="aiIsi" class="ai-isi db-tumpuk"><p class="ad-redup">Memuat…</p></div>`;
     if (pesanAkhir) pesanTeks(...pesanAkhir);
   }
   async function muat() {
@@ -60,30 +64,32 @@
       <dl class="ai-data"><div><dt>Nama</dt><dd>${esc(v.nama)}</dd></div><div><dt>Pangkat</dt><dd>${esc(v.pangkat || "tanpa pangkat")}</dd></div><div><dt>NIP atau NRP</dt><dd>${esc(v.nip)}</dd></div><div><dt>Jabatan</dt><dd>${esc(v.jabatan)}</dd></div>
         <div><dt>Unit</dt><dd>${esc(v.unit)}</dd></div><div><dt>Email</dt><dd>${esc(v.email)}</dd></div><div><dt>WhatsApp</dt><dd>${esc(v.wa)}</dd></div>${v.telepon_kantor ? `<div><dt>Telepon kantor</dt><dd>${esc(v.telepon_kantor)}</dd></div>` : ""}</dl>
       <div class="ai-doks"><a class="ad-tombol kecil" href="${API}/surat/${esc(a.id)}" target="_blank" rel="noopener">Buka surat tugas atau SK</a><a href="${API}/kartu/${esc(a.id)}" target="_blank" rel="noopener"><img src="${API}/kartu/${esc(a.id)}" alt="Kartu pegawai ${esc(v.nama)}" loading="lazy"></a></div>
-      <div class="ai-aksi"><button class="ad-tombol utama" data-akun="setuju">Setujui</button><button class="ad-tombol bahaya" data-akun="tolak">Tolak dengan alasan</button><button class="ad-tombol" data-akun="cabut">Cabut</button></div></article>`; };
+      <div class="db-aksi">${ikS("cek", "Setujui", {"data-akun": "setuju"})}${ikS("tutup", "Tolak dengan alasan", {"data-akun": "tolak"}, "bahaya")}${ikS("cabut", "Cabut", {"data-akun": "cabut"}, "bahaya")}</div></article>`; };
   async function tampilValidasi() {
     const d = await ambil(`${API}/antrean`, "Akun instansi");
-    return d.akun.length ? `<div class="ai-daftar">${d.akun.map(kartuVerif).join("")}</div>` : kosong("Tidak ada akun yang menunggu validasi.");
+    return ubinS({ikon: "jam", label: "Menunggu validasi", nilai: num(d.akun.length), ket: "akun instansi", warna: d.akun.length ? "oranye" : ""})
+      + kartuS("cek", "Antrean validasi", "Akun", d.akun.length ? `<div class="ai-daftar">${d.akun.map(kartuVerif).join("")}</div>` : kosong("Tidak ada akun yang menunggu validasi."));
   }
 
   /* ---- Akun ---- */
   const opsi = (o, pilih, semua) => `<option value="">${semua}</option>` + Object.entries(o).map(([k, v]) => `<option value="${esc(k)}" ${String(pilih) === String(k) ? "selected" : ""}>${esc(v)}</option>`).join("");
   /* tab Akun: kerangka (buat massal, filter) digambar SEKALI; paginasi dan filter hanya mengganti #aiTabel, dengan chrome urgent lebih dulu */
   async function tampilAkun() {
-    document.getElementById("aiIsi").innerHTML = `<div class="ai-kartu"><h3>Buat akun massal</h3><p class="ai-meta">Membuat semua akun yang belum ada (pemprov, polda, kodam, pemkab atau pemkot, polres, kodim) bertahap 100 per permintaan. Akun yang sudah ada dilewati,
+    document.getElementById("aiIsi").innerHTML = `<div id="aiUbin"></div>` + kartuS("akun", "Buat akun massal", "Akun", `<p class="ai-meta">Membuat semua akun yang belum ada (pemprov, polda, kodam, pemkab atau pemkot, polres, kodim) bertahap 100 per permintaan. Akun yang sudah ada dilewati,
       jadi aman diulang. Sandi hanya tampil sekali dan masuk ke berkas CSV yang diunduh di peramban ini, jangan menutup halaman sebelum selesai. Sandi di CSV hanya sandi AWAL: wakil WAJIB membuat sandi baru yang tidak diketahui admin saat pertama masuk sesudah akunnya aktif.</p>
-      <div class="ai-aksi"><button class="ad-tombol utama" id="aiBuat">Buat akun yang belum ada</button><button class="ad-tombol" id="aiCsv" ${hasilBuat.length ? "" : "disabled"}>Unduh CSV (${num(hasilBuat.length)} akun)</button></div><p id="aiProgres" class="ai-meta"></p></div>
-      <div class="ai-bar"><label>Jenis<select id="aiFJenis">${opsi(JENIS, filter.jenis, "Semua")}</select></label><label>Provinsi<select id="aiFProv">${opsi(PROV, filter.prov, "Semua")}</select></label>
-      <label>Status<select id="aiFStatus">${opsi(STATUS, filter.status, "Semua")}</select></label><span id="aiJumlah"></span></div><div id="aiTabel" aria-live="polite"></div>`;
+      <div class="ai-aksi"><button class="ad-tombol utama" id="aiBuat">Buat akun yang belum ada</button><button class="ad-tombol" id="aiCsv" ${hasilBuat.length ? "" : "disabled"}>Unduh CSV (${num(hasilBuat.length)} akun)</button></div><p id="aiProgres" class="ai-meta"></p>`)
+      + kartuS("akun", "Daftar akun", "Instansi", `<div class="ai-bar"><label>Jenis<select id="aiFJenis">${opsi(JENIS, filter.jenis, "Semua")}</select></label><label>Provinsi<select id="aiFProv">${opsi(PROV, filter.prov, "Semua")}</select></label>
+      <label>Status<select id="aiFStatus">${opsi(STATUS, filter.status, "Semua")}</select></label></div><div id="aiTabel" aria-live="polite"></div>`);
     return muatAkun(true);
   }
   async function muatAkun(awal) {
     const w = document.getElementById("aiTabel"); if (!w) return;
     const q = new URLSearchParams(Object.entries(filter).filter(([, v]) => v !== "" && v !== 0)), d = await ambil(`${API}/akun?${q}`, "Akun instansi");
-    document.getElementById("aiJumlah").textContent = Object.entries(d.jumlah).map(([k, n]) => `${STATUS[k]} ${num(n)}`).join(", ");
+    const IKS = {belum_klaim: "orang", menunggu: "jam", aktif: "aktif", ditolak: "tutup", dicabut: "cabut"};
+    document.getElementById("aiUbin").innerHTML = ubinS(...Object.entries(STATUS).map(([k, l]) => ({ikon: IKS[k], label: l, nilai: num(d.jumlah[k] || 0), ket: "saring daftar", warna: k === "menunggu" && d.jumlah[k] ? "oranye" : "", saring: k, aktif: filter.status === k})));
     const baris = d.akun.map(a => `<tr data-id="${esc(a.id)}"><td><b>${esc(a.username)}</b>${dum(a)}</td><td>${esc(JENIS[a.jenis])}</td><td>${esc(a.wilayah)}</td><td>${pil(STATUS[a.status], WARNA[a.status])}${a.wajib_ganti && a.status === "aktif" ? " " + pil("Belum ganti sandi", "kuning") : ""}</td>
-      <td>${esc(a.verifikasi.nama || "-")}</td><td class="a"><button class="ad-tombol kecil" data-rincianakun="1">Rincian</button> ${a.status === "dicabut" ? "" : `<button class="ad-tombol kecil bahaya" data-akun="cabut">Cabut</button> `}<button class="ad-tombol kecil" data-akun="reset">Reset sandi</button></td></tr>`);
-    w.innerHTML = `${tabel(["Username", "Jenis", "Wilayah", "Status", "Wakil", ""], baris, "Belum ada akun. Tekan Buat akun yang belum ada.")}
+      <td>${esc(a.verifikasi.nama || "-")}</td><td><div class="db-aksi">${ikS("lihat", "Rincian " + a.username, {"data-rincianakun": "1"})}${a.status === "dicabut" ? "" : ikS("cabut", "Cabut " + a.username, {"data-akun": "cabut"}, "bahaya")}${ikS("kunci", "Reset sandi " + a.username, {"data-akun": "reset"})}</div></td></tr>`);
+    w.innerHTML = `${tabel(["Username", "Jenis", "Wilayah", "Status", "Wakil", "Aksi"], baris, "Belum ada akun. Tekan Buat akun yang belum ada.")}
       <div class="ai-aksi"><button class="ad-tombol kecil" data-hal="-1" ${filter.hal ? "" : "disabled"}>Sebelumnya</button><span class="ai-meta">Halaman ${filter.hal + 1}, ${num(d.total)} akun</span><button class="ad-tombol kecil" data-hal="1" ${(filter.hal + 1) * 50 < d.total ? "" : "disabled"}>Berikutnya</button></div><div id="aiRincianAkun"></div>`;
     w.removeAttribute("aria-busy");
   }
@@ -131,7 +137,7 @@
   async function tampilPantau() {
     const d = await ambil(`${API}/pantau${bcPantau ? "?bencana=" + encodeURIComponent(bcPantau) : ""}`, "Akun instansi");
     const chip = (id, nama, n) => `<button type="button" class="ad-tombol kecil" data-bcf="${esc(id)}" aria-pressed="${bcPantau === id}">${esc(nama)} <b>${num(n)}</b></button>`;
-    const chips = d.bencana.length > 1 ? `<div class="ai-aksi" role="group" aria-label="Jenis bencana">${chip("", "Semua", d.bencana.reduce((a, b) => a + b.n, 0))}${d.bencana.map(b => chip(b.id, b.nama, b.n)).join("")}</div>` : "";
+    const chips = d.bencana.length > 1 ? `<div class="ai-aksi ai-chip" role="group" aria-label="Jenis bencana">${chip("", "Semua", d.bencana.reduce((a, b) => a + b.n, 0))}${d.bencana.map(b => chip(b.id, b.nama, b.n)).join("")}</div>` : "";
     const prov = d.provinsi.map(p => `<article class="ai-prov${p.terlambat ? " telat" : ""}"><div class="ai-kepala"><b>${esc(p.nama)}</b>${p.terlambat ? pil(num(p.terlambat) + " terlambat", "merah") : pil("Tepat waktu", "hijau")}</div>
       <div class="ai-angka"><b>${num(p.aktif)}</b><span>tugas aktif</span></div>
       <div class="ai-hal"><span>Terkonfirmasi <b>${num(p.terkonfirmasi)}</b></span><span>Padam <b>${num(p.padam)}</b></span><span>Bukan api <b>${num(p.bukan_api)}</b></span></div>
@@ -142,10 +148,13 @@
       <p class="ai-meta">${esc(t.ciri || "")}</p>${t.padam && window.Tugaskan ? `<p class="ai-meta">${window.Tugaskan.padamPil({padam: t.padam})} ${esc(t.padam.label)}</p>` : ""}
       <p class="ai-meta">Tugas dibuat ${jam(t.dibuat)}, batas ${jam(t.tenggat)}</p>
       <div class="ai-tagih">${t.dummy ? `<span class="ai-meta">Data contoh: tidak ada tautan tagih.</span>` : t.tagih.length ? t.tagih.map(x => `<a class="ad-tombol utama" href="${esc(x.tautan)}" target="_blank" rel="noopener" title="${esc(x.untuk)}"><b>${ik("kontak")}${x.jenis === "wakil" ? "Tagih wakil" : "Tagih PIC"}</b><small>${esc(x.nama ?? x.untuk)}</small></a>`).join("") : `<span class="ai-meta">Belum ada nomor WhatsApp yang bisa ditagih.</span>`}
-      <button class="ad-tombol" data-rincian="1">Rincian</button></div><div class="ai-rincian"></div></article>`);   // tab Pantau hanya tampil untuk admin dan staf pusdalops; rincian terbuka untuk P_VALIDASI (keputusan pemilik 21 Okt 2026)
-    return `${chips}<h3 class="ai-judul">Per provinsi</h3>${prov.length ? `<div class="ai-prov-grid">${prov.join("")}</div>` : kosong(bcPantau ? "Belum ada tugas untuk jenis bencana ini." : "Belum ada tugas.")}
-      <h3 class="ai-judul">Tugas terlambat</h3>${lambat.length ? `<div class="ai-daftar">${lambat.join("")}</div>` : kosong("Tidak ada tugas terlambat.")}
-      <h3 class="ai-judul">Per akun aktif</h3>${tabel(["Username", "Jenis", "Wilayah", "Isian", "Konfirmasi", "Kabar", "Terakhir"], akun, "Belum ada akun aktif.")}`;
+      ${ikS("lihat", "Rincian tugas", {"data-rincian": "1"})}</div><div class="ai-rincian"></div></article>`);   // tab Pantau hanya tampil untuk admin dan staf pusdalops; rincian terbuka untuk P_VALIDASI (keputusan pemilik 21 Okt 2026)
+    const aktifTot = d.provinsi.reduce((a, p) => a + p.aktif, 0);
+    return ubinS({ikon: "peta", label: "Tugas aktif", nilai: num(aktifTot), ket: `${num(d.provinsi.length)} provinsi`}, {ikon: "waspada", label: "Tugas terlambat", nilai: num(d.terlambat.length), ket: "melewati batas", warna: d.terlambat.length ? "merah" : ""},
+        {ikon: "akun", label: "Akun aktif", nilai: num(d.akun.length), ket: "terdaftar"})
+      + kartuS("peta", "Per provinsi", "Provinsi", `${chips}${prov.length ? `<div class="ai-prov-grid">${prov.join("")}</div>` : kosong(bcPantau ? "Belum ada tugas untuk jenis bencana ini." : "Belum ada tugas.")}`)
+      + kartuS("waspada", "Tugas terlambat", "Terlambat", lambat.length ? `<div class="ai-daftar">${lambat.join("")}</div>` : kosong("Tidak ada tugas terlambat."))
+      + kartuS("akun", "Per akun aktif", "Akun", tabel(["Username", "Jenis", "Wilayah", "Isian", "Konfirmasi", "Kabar", "Terakhir"], akun, "Belum ada akun aktif."));
   }
   const SUMBER = {exif: "waktu EXIF foto", gps: "waktu GPS perangkat", unggah: "waktu unggah"};
   const NAMA_ALAT = {pompa: "pompa", selang_m: "selang (m)", jet_shooter: "jet shooter", heli_wb: "helikopter water bombing", alat_berat: "alat berat", drone_termal: "drone termal", pembasah_l: "bahan pembasah (liter konsentrat)"};
@@ -179,11 +188,13 @@
   const barisKontak = k => `${esc(k.kontak || "tanpa nama PIC")}, ${esc([k.wa && "WhatsApp " + k.wa, k.email, k.telepon].filter(Boolean).join(", ") || "tanpa kontak")}${k.catatan ? `<br>${esc(k.catatan)}` : ""}`;
   async function tampilKontak() {
     const d = await ambil(`${API}/usulan?semua=1`, "Akun instansi");
-    return d.usulan.length ? `<div class="ai-daftar">${d.usulan.map(u => `<article class="ai-kartu" data-id="${esc(u.id)}"><div class="ai-kepala"><b>${esc(u.nama_pt)}</b>${pil(u.status, u.status === "diterima" ? "hijau" : u.status === "ditolak" ? "merah" : "kuning")}${dum(u)}</div>
+    const n = st => d.usulan.filter(u => u.status === st).length;
+    return ubinS({ikon: "jam", label: "Menunggu", nilai: num(n("menunggu")), ket: "usulan kontak", warna: n("menunggu") ? "oranye" : ""}, {ikon: "aktif", label: "Diterima", nilai: num(n("diterima")), ket: "masuk Kontak PT"}, {ikon: "tutup", label: "Ditolak", nilai: num(n("ditolak")), ket: "tidak dipakai"})
+      + kartuS("telepon", "Usulan kontak konsesi", "Kontak", d.usulan.length ? `<div class="ai-daftar">${d.usulan.map(u => `<article class="ai-kartu" data-id="${esc(u.id)}"><div class="ai-kepala"><b>${esc(u.nama_pt)}</b>${pil(u.status, u.status === "diterima" ? "hijau" : u.status === "ditolak" ? "merah" : "kuning")}${dum(u)}</div>
       <p class="ai-meta">Diusulkan ${esc(u.username)} (${esc(u.wilayah)}), ${jam(u.dibuat)}</p>
       <div class="ai-banding"><div><b>Usulan baru</b><p class="ai-meta">${barisKontak(u)}</p></div>${u.kontak_lama ? `<div><b>Kontak lama di Kontak PT</b><p class="ai-meta">${esc(u.kontak_lama.nama_pt)}<br>${barisKontak(u.kontak_lama)}</p></div>` : ""}</div>
-      ${u.alasan ? `<p class="ai-meta">${esc(u.alasan)}</p>` : ""}${u.status === "menunggu" ? `${u.kontak_lama ? `<label class="ai-meta"><input type="checkbox" data-timpa="1"> Timpa kontak lama dengan usulan ini</label>` : ""}<div class="ai-aksi"><button class="ad-tombol kecil utama" data-usulan="terima">Terima ke Kontak PT</button><button class="ad-tombol kecil bahaya" data-usulan="tolak">Tolak</button></div>` : ""}</article>`).join("")}</div>`
-      : kosong("Belum ada usulan kontak dari instansi.");
+      ${u.alasan ? `<p class="ai-meta">${esc(u.alasan)}</p>` : ""}${u.status === "menunggu" ? `${u.kontak_lama ? `<label class="ai-meta"><input type="checkbox" data-timpa="1"> Timpa kontak lama dengan usulan ini</label>` : ""}<div class="db-aksi">${ikS("cek", "Terima ke Kontak PT", {"data-usulan": "terima"})}${ikS("tutup", "Tolak", {"data-usulan": "tolak"}, "bahaya")}</div>` : ""}</article>`).join("")}</div>`
+      : kosong("Belum ada usulan kontak dari instansi."));
   }
   const TAMPIL = {validasi: tampilValidasi, akun: tampilAkun, pantau: tampilPantau, kontak: tampilKontak};
 
@@ -206,6 +217,11 @@
     if (t.dataset.tab) {   // chrome urgent (tombol aktif, aria-busy, "Memuat…"), isi tab menyusul sesudah satu frame; hanya #aiIsi yang diganti
       tab = t.dataset.tab; history.replaceState(null, "", "#" + tab); for (const b of app.querySelectorAll("[data-tab]")) b.setAttribute("aria-pressed", String(b.dataset.tab === tab)); document.getElementById("aiPesan").textContent = "";
       const isi = document.getElementById("aiIsi"); isi.setAttribute("aria-busy", "true"); isi.innerHTML = `<p class="ad-redup">Memuat…</p>`; return sesudahCat(muat);
+    }
+    if (t.classList.contains("db-saring") && tab === "akun") {   // ubin status: tanda aktif seketika, daftar menyusul sesudah satu frame
+      filter.status = filter.status === t.dataset.saring ? "" : t.dataset.saring; filter.hal = 0;
+      for (const b of app.querySelectorAll("#aiUbin .db-saring")) b.setAttribute("aria-pressed", String(b.dataset.saring === filter.status));
+      const sel = document.getElementById("aiFStatus"); if (sel) sel.value = filter.status; return sibukAkun();
     }
     if (t.dataset.bcf !== undefined) {   // chip jenis bencana: tanda aktif seketika (urgent), daftar menyusul sesudah satu frame
       bcPantau = t.dataset.bcf; for (const b of t.parentNode.children) b.setAttribute("aria-pressed", String(b === t));

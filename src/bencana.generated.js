@@ -1,6 +1,31 @@
 // DIBANGKITKAN dari public/bencana.json oleh scripts/umum/bencana.py js, jangan disunting.
 export default {
   "versi": 1,
+  "tindakan": {
+    "kaji_cepat": "Kaji cepat dan pendataan",
+    "evakuasi": "Evakuasi warga",
+    "sar": "Pencarian dan pertolongan korban",
+    "pembersihan": "Pembersihan material dan lumpur",
+    "alat_berat": "Pengerahan alat berat",
+    "buka_akses": "Buka akses jalan",
+    "pohon_tumbang": "Potong pohon tumbang",
+    "logistik": "Distribusi logistik",
+    "dapur_umum": "Dapur umum",
+    "pengungsian": "Pengungsian dan tenda",
+    "air_bersih": "Distribusi air bersih",
+    "kesehatan": "Layanan kesehatan",
+    "perbaikan_darurat": "Perbaikan darurat rumah dan atap",
+    "tanggul": "Tanggul darurat dan karung pasir",
+    "pompa": "Penyedotan genangan",
+    "masker": "Pembagian masker",
+    "pantau": "Pemantauan lokasi atau aktivitas",
+    "posko": "Posko dan rapat koordinasi",
+    "imbauan": "Sosialisasi dan imbauan",
+    "rambu": "Rambu, garis bahaya, tutup jalur",
+    "status_darurat": "Usulan penetapan status darurat",
+    "omc": "Operasi modifikasi cuaca",
+    "patroli": "Patroli"
+  },
   "bencana": [
     {
       "id": "karhutla",
@@ -211,6 +236,7 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [],
         "layar": {
           "unduh_tabel": true,
           "brief": false,
@@ -415,6 +441,27 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "kaji_cepat",
+          "evakuasi",
+          "logistik",
+          "pantau",
+          "pembersihan",
+          "pengungsian",
+          "posko",
+          "imbauan",
+          "dapur_umum",
+          "kesehatan",
+          "alat_berat",
+          "tanggul",
+          "perbaikan_darurat",
+          "pompa",
+          "sar",
+          "buka_akses",
+          "air_bersih",
+          "status_darurat",
+          "omc"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,
@@ -590,6 +637,20 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "kaji_cepat",
+          "logistik",
+          "pantau",
+          "evakuasi",
+          "imbauan",
+          "tanggul",
+          "pembersihan",
+          "perbaikan_darurat",
+          "posko",
+          "pengungsian",
+          "sar",
+          "dapur_umum"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,
@@ -765,6 +826,17 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "kaji_cepat",
+          "pembersihan",
+          "logistik",
+          "evakuasi",
+          "pohon_tumbang",
+          "perbaikan_darurat",
+          "imbauan",
+          "pantau",
+          "buka_akses"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,
@@ -942,6 +1014,17 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "pantau",
+          "kaji_cepat",
+          "logistik",
+          "imbauan",
+          "pengungsian",
+          "evakuasi",
+          "posko",
+          "perbaikan_darurat",
+          "kesehatan"
+        ],
         "layar": {
           "unduh_tabel": true,
           "brief": true,
@@ -1115,6 +1198,10 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "masker",
+          "imbauan"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,
@@ -1277,6 +1364,28 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "pantau",
+          "masker",
+          "imbauan",
+          "kaji_cepat",
+          "evakuasi",
+          "logistik",
+          "posko",
+          "pengungsian",
+          "kesehatan",
+          "air_bersih",
+          "pembersihan",
+          "dapur_umum",
+          "sar",
+          "status_darurat",
+          "perbaikan_darurat",
+          "alat_berat",
+          "buka_akses",
+          "rambu",
+          "patroli",
+          "tanggul"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,
@@ -1441,6 +1550,15 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "air_bersih",
+          "kaji_cepat",
+          "logistik",
+          "imbauan",
+          "posko",
+          "pantau",
+          "status_darurat"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,
@@ -1560,10 +1678,16 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "alat_berat",
+            "tim_sar_unit",
+            "tenda",
+            "air_bersih_unit",
+            "dapur_umum"
+          ],
+          "bobot": "longsor"
         },
         "dokumen": [],
         "ews": {
@@ -1577,6 +1701,22 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
+        "tindakan": [
+          "kaji_cepat",
+          "pembersihan",
+          "logistik",
+          "evakuasi",
+          "imbauan",
+          "alat_berat",
+          "perbaikan_darurat",
+          "buka_akses",
+          "pantau",
+          "posko",
+          "kesehatan",
+          "rambu",
+          "sar",
+          "pengungsian"
+        ],
         "layar": {
           "unduh_tabel": false,
           "brief": false,

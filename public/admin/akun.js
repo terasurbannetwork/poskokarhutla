@@ -19,22 +19,28 @@
     ? `Akun Centurisk97 untuk ${r.nama}\nMasuk: ${location.origin}/admin/masuk\nUsername: ${r.username}\nSandi: ${r.sandi}\n\nJangan bagikan sandi ini ke orang lain.`
     : `Akun Centurisk97 untuk ${r.nama}\nMasuk: ${location.origin}/admin/pantau\nUsername: ${r.username}\nSandi: ${r.sandi}\n\nSaat masuk pertama Anda wajib membuat sandi baru.`;
   const statusDari = s => s.status === "dicabut" ? "dicabut" : s.wajib_ganti ? "ganti" : "aktif";
+  /* kit dashboard bersama (public/admin/bersama.js Admin.dasbor) */
+  const DB = Admin.dasbor, svg = DB.svg;
+  DB.tumpuk(app);
+  const ikonBtn = (ik, label, data, kls = "") => DB.ikon(ik === "pemirsa" ? "lihat" : ik, label, data, kls);
+  const IKK = {pemirsa: "lihat", instansi: "gedung", matriks: "kisi"};
+  const kartuStd = (ik, judul, ey, kanan, ...isi) => DB.kartu({ikon: IKK[ik] || ik, judul, ey, kanan}, ...isi);
 
   /* ---------- ringkasan dan kontrol (berubah seketika) ---------- */
   function gambar(instansi) {
     const n = k => D.staf.filter(s => statusDari(s) === k).length;
-    const kartu = (k, l, v, kls = "") => h("button", {class: "ak-kartu " + kls, type: "button", "data-status": k, "aria-pressed": String(F.status === k)}, h("b", {teks: angka(v)}), h("span", {teks: l}));
+    const kartu = (k, l, v, ik, ket, kls = "") => h("button", {class: "db-ubin db-saring ak-ubin " + kls, type: "button", "data-status": k, "aria-pressed": String(F.status === k), title: "Saring daftar: " + l},
+      h("header", null, h("i", null, svg(ik)), l), h("b", {teks: angka(v)}), h("small", {teks: ket}));
     app.replaceChildren(
       rahasia ? h("div", {class: "ak-rahasia-kotak", role: "status"}, h("p", {teks: `Akun untuk ${rahasia.nama}. Tampil sekali, salin dan serahkan langsung ke orangnya:`}),
         h("code", {class: "ak-rahasia", teks: `Username: ${rahasia.username}\nSandi: ${rahasia.sandi}`}),
         h("a", {class: "ak-btn utama ak-wa", href: "https://wa.me/?text=" + encodeURIComponent(pesanWA(rahasia)), target: "_blank", rel: "noopener noreferrer", teks: "Kirim ke WA"}),
         h("small", {teks: "Staf: masuk di /admin/pantau lalu wajib membuat sandi baru. Pemirsa: masuk di halaman login situs."})) : null,
-      h("div", {class: "ak-ringkas"}, kartu("", "Akun staf", D.staf.length), kartu("aktif", "Aktif", n("aktif")), kartu("ganti", "Belum ganti sandi", n("ganti"), n("ganti") ? "kuning" : ""), kartu("dicabut", "Dicabut", n("dicabut"))),
-      panelBuat(),
-      h("section", {class: "ak-panel"},
-        h("div", {class: "ak-kepala"}, h("h2", {teks: "Daftar akun staf"}),
-          h("input", {class: "ak-cari", type: "search", placeholder: "Cari nama, username, unit, NIP", "aria-label": "Cari akun", value: F.q, "data-cari": "1"})),
-        h("div", {id: "akDaftar"}, h("p", {class: "ak-redup", teks: "Menggambar daftar…"}))),
+      h("div", {class: "db-ubin-grid db-ubin-baris k4 ak-ringkas"}, kartu("", "Akun staf", D.staf.length, "staf", "semua akun"), kartu("aktif", "Aktif", n("aktif"), "aktif", "bisa masuk"),
+        kartu("ganti", "Belum ganti sandi", n("ganti"), "kunci", "wajib ganti saat masuk", n("ganti") ? "oranye" : ""), kartu("dicabut", "Dicabut", n("dicabut"), "cabut", "tidak bisa masuk", n("dicabut") ? "merah" : "")),
+      kartuStd("staf", "Akun staf", "Staf BNPB",
+        h("input", {class: "ak-cari", type: "search", placeholder: "Cari nama, username, unit, NIP", "aria-label": "Cari akun", value: F.q, "data-cari": "1"}),
+        panelBuat(), h("div", {id: "akDaftar"}, h("p", {class: "ak-redup", teks: "Menggambar daftar…"}))),
       panelPemirsa(),
       panelInstansi(instansi),
       panelMatriks());
@@ -64,20 +70,21 @@
       if (!x.ok) { document.getElementById("akBuatGalat").textContent = x.j.galat || `Gagal (${x.status})`; return; }
       rahasia = {nama: x.j.staf.nama, username: x.j.username, sandi: x.j.sandi}; muat();
     });
-    return h("details", {class: "ak-panel ak-buat"}, h("summary", null, h("span", {class: "ak-plus", "aria-hidden": "true", teks: "+"}), "Buat akun baru"),
+    return h("details", {class: "ak-buat-pm ak-buat"}, h("summary", null, h("span", {class: "ak-plus", "aria-hidden": "true", teks: "+"}), "Buat akun baru"),
       h("p", {class: "ak-redup", teks: "Username dan sandi acak dibuat otomatis dan tampil sekali. Akses halaman mengikuti peran yang dicentang."}), f);
   }
 
   /* ---------- daftar (berat: sesudah satu frame) ---------- */
   const aksesTeks = a => a?.length ? a.map(x => x.label).join(", ") : "Meja Pantau saja";
-  const aksesPil = a => h("div", {class: "ak-akses"}, ...(a || []).map(x => h("a", {class: "ak-pil akses", href: x.href || "/admin/" + x.k, teks: `${x.ikon} ${x.label}`})));
+  const aksesPil = a => !a?.length ? h("small", {teks: "Meja Pantau saja"}) : h("details", {class: "db-lipat"}, h("summary", {title: aksesTeks(a)}, `${angka(a.length)} halaman`),
+    h("div", {class: "ak-akses"}, ...a.map(x => h("a", {class: "ak-pil akses", href: x.href || "/admin/" + x.k, teks: `${x.ikon} ${x.label}`}))));
   function gambarDaftar() {
     const wadah = document.getElementById("akDaftar"); if (!wadah) return;
     const q = F.q.trim().toLowerCase();
     const xs = D.staf.filter(s => (!F.status || statusDari(s) === F.status) && (!q || [s.nama, s.username, s.unit, s.nip, s.email].some(v => String(v).toLowerCase().includes(q))));
     if (!xs.length) { wadah.replaceChildren(h("p", {class: "ak-kosong", teks: D.staf.length ? "Tidak ada akun yang cocok dengan saringan." : "Belum ada akun staf. Buat yang pertama lewat tombol Buat akun baru."})); return; }
-    wadah.replaceChildren(h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ak-tabel"},
-      h("thead", null, h("tr", null, ["Nama", "Kontak", "Peran", "Wilayah", "Akses halaman", "Status", ""].map(k => h("th", {teks: k})))),
+    wadah.replaceChildren(h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel ak-tabel"},
+      h("thead", null, h("tr", null, ["Nama", "Kontak", "Peran", "Wilayah", "Akses halaman", "Status", "Aksi"].map(k => h("th", {scope: "col", teks: k})))),
       h("tbody", null, xs.flatMap(s => [baris(s), ubahId === s.id ? barisUbah(s) : null])))));
   }
   function baris(s) {
@@ -89,7 +96,8 @@
       h("td", {teks: s.wilayah.length ? s.wilayah.map(wil.prov).join(", ") : "Nasional"}),
       h("td", null, aksesPil(s.akses)),
       h("td", null, pil(STATUS[st], st), s.dummy ? pil("DUMMY", "dummy") : null, h("small", {teks: "Dibuat " + tgl(s.dibuat)})),
-      h("td", null, hidup && !s.dummy ? h("div", {class: "ak-aksi"}, tombol(ubahId === s.id ? "Tutup" : "Ubah akses", {"data-aksi": "ubah-buka"}), tombol("Reset sandi", {"data-aksi": "reset"}), tombol("Cabut", {"data-aksi": "cabut"}, "bahaya")) : null));
+      h("td", {class: "ak-td-aksi"}, hidup && !s.dummy ? h("div", {class: "db-aksi"}, ikonBtn(ubahId === s.id ? "tutup" : "ubah", ubahId === s.id ? "Tutup" : "Ubah akses", {"data-aksi": "ubah-buka", "aria-pressed": String(ubahId === s.id)}),
+        ikonBtn("kunci", "Reset sandi", {"data-aksi": "reset"}), ikonBtn("cabut", "Cabut akun", {"data-aksi": "cabut"}, "bahaya")) : null));
   }
   function barisUbah(s) {
     const f = h("form", {class: "ak-form", "data-ubah": s.id}, cekPeran("peran", s.peran), cekWilayah("wilayah", s.wilayah),
@@ -101,7 +109,7 @@
   const cekTab = (pilih = []) => h("fieldset", {class: "ak-peran ak-tab"}, h("legend", {teks: "Tab yang boleh dilihat"}),
     ...Object.entries(P.tab).map(([k, l]) => h("label", {class: "ak-cek"}, h("input", {type: "checkbox", name: "tab", value: k, checked: pilih.includes(k)}), l)));
   function panelPemirsa() {
-    if (!P) return h("section", {class: "ak-panel"}, h("h2", {teks: "Akun pemirsa"}), h("p", {class: "ak-redup", teks: "Akun pemirsa belum diaktifkan (migrasi D1 0036_pemirsa belum diterapkan)."}));
+    if (!P) return kartuStd("pemirsa", "Akun pemirsa", "Pemirsa", null, h("p", {class: "ak-redup", teks: "Akun pemirsa belum diaktifkan (migrasi D1 0036_pemirsa belum diterapkan)."}));
     const f = h("form", {class: "ak-form", "data-pm-buat": "1"}, h("div", {class: "ak-grid"}, h("label", null, "Nama", h("input", {name: "nama", required: true, placeholder: "Nama orang atau lembaga", autocomplete: "off"})),
       h("label", null, "Sandi awal (opsional)", h("input", {name: "sandi", type: "text", minlength: "8", maxlength: "64", placeholder: "Kosongkan untuk sandi acak", autocomplete: "new-password", spellcheck: "false"}))),
       cekTab(["berita"]), h("p", {class: "ak-galat", role: "alert"}), tombol("Buat akun pemirsa", {type: "submit"}, "utama"));
@@ -110,14 +118,16 @@
         h("td", null, h("b", {teks: p.nama}), h("small", {teks: "@" + p.username})),
         h("td", null, h("div", {class: "ak-akses"}, ...p.tab.map(t => pil(P.tab_label[t] || t, "akses")))),
         h("td", null, pil(hidup ? "Aktif" : "Dicabut", hidup ? "aktif" : "dicabut"), h("small", {teks: "Dibuat " + tgl(p.dibuat)})),
-        h("td", null, hidup ? h("div", {class: "ak-aksi"}, tombol(pmUbah === p.id ? "Tutup" : "Ubah tab", {"data-pm-aksi": "ubah-buka"}), tombol("Reset sandi", {"data-pm-aksi": "reset"}), tombol("Cabut", {"data-pm-aksi": "cabut"}, "bahaya")) : null)),
+        h("td", {class: "ak-td-aksi"}, hidup ? h("div", {class: "db-aksi"}, ikonBtn(pmUbah === p.id ? "tutup" : "ubah", pmUbah === p.id ? "Tutup" : "Ubah tab", {"data-pm-aksi": "ubah-buka", "aria-pressed": String(pmUbah === p.id)}),
+          ikonBtn("kunci", "Reset sandi", {"data-pm-aksi": "reset"}), ikonBtn("cabut", "Cabut akun", {"data-pm-aksi": "cabut"}, "bahaya")) : null)),
         pmUbah === p.id ? h("tr", {class: "ak-ubah", "data-pm": p.id}, h("td", {colspan: "4"}, h("form", {class: "ak-form", "data-pm-ubah": p.id}, cekTab(p.tab), h("p", {class: "ak-galat", role: "alert"}),
           h("div", {class: "ak-aksi"}, tombol("Simpan tab", {type: "submit"}, "utama"), tombol("Batal", {"data-pm-aksi": "ubah-buka"}))))) : null]; });
-    return h("section", {class: "ak-panel", id: "akPemirsa"}, h("div", {class: "ak-kepala"}, h("h2", {teks: `Akun pemirsa (${angka(xs.length)})`})),
+    const k = kartuStd("pemirsa", "Akun pemirsa", "Pemirsa", h("span", {class: "ak-hitung", teks: `${angka(xs.length)} akun`}),
       h("p", {class: "ak-redup", teks: "Hanya bisa melihat tab yang dicentang di situs. Tab lain disembunyikan dan alamatnya dialihkan. Masuk lewat halaman login yang sama."}),
       h("details", {class: "ak-buat-pm"}, h("summary", null, h("span", {class: "ak-plus", "aria-hidden": "true", teks: "+"}), "Buat akun pemirsa"), f),
-      xs.length ? h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ak-tabel ak-tabel-pm"}, h("thead", null, h("tr", null, ["Nama", "Tab yang boleh dilihat", "Status", ""].map(k => h("th", {teks: k})))), h("tbody", null, rows)))
+      xs.length ? h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel ak-tabel ak-tabel-pm"}, h("thead", null, h("tr", null, ["Nama", "Tab yang boleh dilihat", "Status", "Aksi"].map(k => h("th", {scope: "col", teks: k})))), h("tbody", null, rows)))
         : h("p", {class: "ak-kosong", teks: "Belum ada akun pemirsa."}));
+    k.id = "akPemirsa"; return k;
   }
   const gagalJaringan = {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}};
   function gambarPemirsa() { document.getElementById("akPemirsa")?.replaceWith(panelPemirsa()); }
@@ -125,15 +135,15 @@
   /* ---------- akun instansi (ringkas; kelola di /admin/instansi) dan matriks peran ---------- */
   function panelInstansi(r) {
     if (!r) return null;
-    return h("section", {class: "ak-panel"}, h("div", {class: "ak-kepala"}, h("h2", {teks: `Akun instansi (${angka(r.total)})`}), h("a", {class: "ak-btn", href: "/admin/instansi", teks: "Kelola di Akun Instansi"})),
+    return kartuStd("instansi", "Akun instansi", "Pemda, TNI, Polri", h("div", {class: "ak-kanan"}, h("span", {class: "ak-hitung", teks: `${angka(r.total)} akun`}), h("a", {class: "ak-btn", href: "/admin/instansi", teks: "Kelola di Akun Instansi"})),
       h("p", {class: "ak-redup", teks: "Pemprov, pemkab/pemkot, Polda, Polres, Kodam, Kodim. Dibuat massal, diklaim instansinya dengan NIP/NRP dan surat tugas, lalu diverifikasi. Akses: layar /instansi untuk wilayahnya sendiri."}),
       h("div", {class: "ak-akses"}, ...Object.entries(ST_INSTANSI).map(([k, l]) => pil(`${l}: ${angka(r.jumlah?.[k])}`, k === "menunggu" && r.jumlah?.[k] ? "ganti" : ""))));
   }
   function panelMatriks() {
     const hal = [...new Map(Object.values(D.akses).flat().map(x => [x.k, x])).values()];
-    return h("details", {class: "ak-panel"}, h("summary", {teks: "Peran dan halaman yang dibukanya"}),
+    return kartuStd("matriks", "Peran dan halaman", "Hak akses", null,
       h("p", {class: "ak-redup", teks: "Super Admin dan moderator membuka semua halaman admin. Staf hanya membuka halaman sesuai perannya; wilayah membatasi data yang bisa diubah."}),
-      h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ak-tabel ak-matriks"},
+      h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel ak-tabel ak-matriks"},
         h("thead", null, h("tr", null, h("th", {teks: "Peran"}), ...hal.map(x => h("th", {teks: `${x.ikon} ${x.label}`})))),
         h("tbody", null, Object.entries(D.peran).map(([p, l]) => h("tr", null, h("td", null, h("b", {teks: l})), ...hal.map(x => h("td", {class: "ak-tanda", teks: D.akses[p].some(y => y.k === x.k) ? "✓" : ""}))))))));
   }

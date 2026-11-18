@@ -20,8 +20,8 @@ from kalibrasi import terapkan
 
 SINI = os.path.dirname(os.path.abspath(__file__))
 TAMPIL = {"HJN": ["p1", "p20", "p50", "tot", "mulai", "lama", "puncak", "m"], "API": ["p", "d"], "BNJ": ["lv", "ps"],
-          "LSR": ["lv", "ps"], "ASP": ["pm", "kat"], "ROB": ["lewat", "sel"]}
-LABEL = {"HJN": "Hujan", "API": "Titik panas", "BNJ": "Banjir", "LSR": "Longsor", "ASP": "Asap (PM2,5)", "ROB": "Rob"}
+          "LSR": ["lv", "ps"], "ASP": ["pm", "kat"], "ROB": ["lewat", "sel"], "GEL": ["hs", "lv"], "CEX": ["emb", "lv"]}
+LABEL = {"HJN": "Hujan", "API": "Titik panas", "BNJ": "Banjir", "LSR": "Longsor", "ASP": "Asap (PM2,5)", "ROB": "Rob", "GEL": "Gelombang", "CEX": "Angin kencang"}
 AMBANG_KOL = {("HJN", "p1"): 1, ("HJN", "p20"): 20, ("HJN", "p50"): 50, ("API", "p"): 1, ("BNJ", "ps"): 1, ("LSR", "ps"): 1}
 OP = {">=": lambda a, b: a >= b, "<": lambda a, b: a < b, ">": lambda a, b: a > b, "<=": lambda a, b: a <= b}
 BATASAN = ["Semua peluang di halaman ini mentah sampai rapornya cukup (>= 30 pasangan) dan kalibrasinya lolos uji tahan 14 hari.",
@@ -198,7 +198,7 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
     laju = {a["id"]: laju_ungsi(akar, cari, set(a["mengungsi"]["jenis_dibi"])) for a in aturan if a.get("mengungsi")}
     kabs, waspada = [], []
     for k in daftar:
-        x = {"id": k["id"], "nama": k["nama"], "prov": k["prov"], "pn": k["pn"], "jiwa": k["jiwa"]}
+        x = {"id": k["id"], "nama": k["nama"], "prov": k["prov"], "pn": k["pn"], "jiwa": k["jiwa"], "geo": k["geo"]}
         for kode, e in akhir.items():
             rows = baris_tampil(e, k["id"], k["prov"], pk, rk)
             if any(rows):
@@ -214,7 +214,10 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
             for n in (1, 2, 3):
                 if evaluasi(a, xv, n):
                     p = a.get("paparan", {})
-                    d = dict(pap[k["id"]].get(p.get("bahaya"), {})) if p.get("jenis") == "kec_bahaya" else {"jiwa": k["jiwa"]}
+                    if p.get("jenis") == "kec_bahaya":
+                        d = dict(pap[k["id"]].get(p.get("bahaya"), {}))
+                    else:                  # "tanpa" = tak ada data penduduk terpapar (mis. nelayan): dampak kosong, bukan dikarang
+                        d = {} if p.get("jenis") == "tanpa" else {"jiwa": k["jiwa"]}
                     if p.get("murid"):
                         d["murid"] = pap[k["id"]]["_kab"]["murid"]
                     if a["id"] in laju and d.get("jiwa"):
@@ -285,6 +288,8 @@ def periksa(d):
     if len(d["kab"]) != 514:
         g.append(f"kab {len(d['kab'])} != 514")
     for k in d["kab"]:
+        if not k.get("geo") or "|" not in k["geo"]:
+            g.append(f"{k['id']} tanpa kunci geo")
         for kode, rows in k.items():
             if kode not in TAMPIL:
                 continue
@@ -300,7 +305,7 @@ def periksa(d):
                     g.append(f"{k['id']} HJN peluang tidak menurun dengan ambang")
                 if kode == "HJN" and not 0 <= v["tot"] <= 1000:
                     g.append(f"{k['id']} HJN tot {v['tot']} mustahil")
-                if kode in ("BNJ", "LSR") and v["lv"] not in (0, 1, 2, 3):
+                if kode in ("BNJ", "LSR", "GEL", "CEX") and v["lv"] not in (0, 1, 2, 3):
                     g.append(f"{k['id']} {kode} level {v['lv']}")
     for w in d["waspada"]:
         kb = w["dampak"].get("kebutuhan")
@@ -360,9 +365,30 @@ def uji():
         w = next(w for w in o["waspada"] if w["aturan"] == "banjir" and w["dampak"].get("jiwa"))
         assert w["dampak"]["jiwa"] > 0 and "kebutuhan" in w["dampak"], w
         assert o["kode"]["HJN"]["vonis"]["p50|1"][0] == "belum teruji"
+        assert all("|" in k["geo"] for k in o["kab"]) and o["kab"][0]["geo"] == daftar[0]["geo"]
+        bad = json.loads(json.dumps(o))
+        del bad["kab"][0]["geo"]
+        assert periksa(bad), "geo wajib"
         bad = json.loads(json.dumps(o))
         bad["kab"][0]["HJN"][0][0] = 1.4
         assert periksa(bad), "peluang > 1 ditolak"
+    # aturan melaut dan angin: GEL/CEX sintetis; melaut tanpa jiwa, angin seluruh penduduk kab
+    kolg, kolc = ["hs", "lv"], ["emb", "lv"]
+    ent2 = ent + [{"t": t, "k": "GEL", "dibuat": "x", "sumber": "uji", "hari": ent[0]["hari"], "kol": kolg,
+                   "kab": {daftar[0]["id"]: [[1.3, 1], [1.0, 0], None], daftar[1]["id"]: [[0.5, 0]] * 3}},
+                  {"t": t, "k": "CEX", "dibuat": "x", "sumber": "uji", "hari": ent[0]["hari"], "kol": kolc,
+                   "kab": {daftar[0]["id"]: [[50, 1], [45, 0], None]}}]
+    with tempfile.TemporaryDirectory() as tmp:
+        o = terbit(data=tmp, entri=ent2)
+        assert periksa(o) == [] and o["kode"]["GEL"]["label"] == "Gelombang" and o["kode"]["CEX"]["kol"] == kolc
+        m = [w for w in o["waspada"] if w["aturan"] == "melaut"]
+        assert [(w["kab"], w["tenggang"], w["dampak"]) for w in m] == [(daftar[0]["id"], 1, {})], m
+        an = [w for w in o["waspada"] if w["aturan"] == "angin"]
+        assert [(w["kab"], w["tenggang"], w["dampak"]) for w in an] == [(daftar[0]["id"], 1, {"jiwa": daftar[0]["jiwa"]})], an
+        assert not o["kab"][2].get("GEL"), "kab tanpa titik: tidak ada kunci GEL (tampil -)"
+        bad = json.loads(json.dumps(o))
+        bad["kab"][0]["CEX"][0][1] = 7
+        assert periksa(bad), "lv CEX di luar 0..3 ditolak"
     print("terbit.py: uji lulus")
 
 

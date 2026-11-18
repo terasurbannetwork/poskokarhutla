@@ -11,7 +11,7 @@
   const STATUS = {diminta: "Diminta, diproses", draf: "Draf", terbit: "Terbit", selesai: "Selesai", gagal: "Gagal", dibatalkan: "Dibatalkan"};
   const WARNA = {diminta: "#b7791f", draf: "#7a8699", terbit: "#1b5fa8", selesai: "#1f8a4c", gagal: "#c0392b", dibatalkan: "#7a8699"};
   const GALAT = {401: "Masuk dulu untuk mengelola renlap.", 403: "Akun ini tidak berhak di wilayah ini.", 404: "Renlap belum menyala untuk bencana ini, atau tidak ditemukan.", 409: "Status renlap sudah berubah atau permintaan masih diproses; muat ulang.", 422: "Isian ditolak server.", 429: "Terlalu cepat; tunggu beberapa menit lalu coba lagi.", 503: "Fitur renlap belum aktif di server."};
-  const IK = {renlap: "M4 4h16v16H4z|M8 9h8|M8 13h8|M8 17h5", hasil: "M5 12l4 4 10-10", patuh: "M4 20V10|M10 20V4|M16 20v-7|M22 20H2", minta: "M12 5v14|M5 12h14", unduh: "M12 4v11|M7 11l5 5 5-5|M5 20h14", salin: "M8 8h11v12H8z|M5 16V4h11", terbit: "M4 12l16-8-6 16-3-7z", selesai: "M5 12l4 4 10-10", muat: "M4 12a8 8 0 1 0 3-6|M4 4v5h5", simpan: "M5 4h12l3 3v13H5z|M8 4v6h8V4|M8 20v-6h8v6", lagi: "M4 6h16|M4 12h16|M4 18h10"};
+  const IK = {renlap: "M4 4h16v16H4z|M8 9h8|M8 13h8|M8 17h5", hasil: "M5 12l4 4 10-10", patuh: "M4 20V10|M10 20V4|M16 20v-7|M22 20H2", minta: "M12 5v14|M5 12h14", unduh: "M12 4v11|M7 11l5 5 5-5|M5 20h14", salin: "M8 8h11v12H8z|M5 16V4h11", terbit: "M4 12l16-8-6 16-3-7z", selesai: "M5 12l4 4 10-10", muat: "M4 12a8 8 0 1 0 3-6|M4 4v5h5", simpan: "M5 4h12l3 3v13H5z|M8 4v6h8V4|M8 20v-6h8v6", lagi: "M4 6h16|M4 12h16|M4 18h10", tindakan: "M9 11l3 3 8-8|M20 12v7H4V5h11"};
 
   /* ---- inti murni (diuji node) ---- */
   const hariWib = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
@@ -31,16 +31,24 @@
     return hasil;
   }
   /* badan POST /api/pb/hasil dari baris isian yang diubah; alasan hanya bila tidak didatangi (server menolak selain itu) */
-  function butirDari(baris) {
+  function butirDari(baris, urut) {
+    const susun = t => { const a = [...t]; if (urut) a.sort((p, q) => urut.indexOf(p) - urut.indexOf(q)); return a; };
     return baris.map(x => { const d = x.didatangi === "1" ? true : x.didatangi === "0" ? false : null;
-      const o = {target_no: x.no, didatangi: d}; if (d === false && x.alasan) o.alasan = x.alasan; if (x.hasil) o.hasil = x.hasil; const c = String(x.catatan || "").trim(); if (c) o.catatan = c.slice(0, 200); return o; });
+      const o = {target_no: x.no, didatangi: d}; if (d === false && x.alasan) o.alasan = x.alasan; if (x.hasil) o.hasil = x.hasil; const c = String(x.catatan || "").trim(); if (c) o.catatan = c.slice(0, 200); if (x.tindakan) o.tindakan = susun(x.tindakan); return o; });
   }
   /* catatan keselamatan: teks tetap; isi renlap.json (huruf besar dari mesin) tidak ditampilkan apa adanya */
   const catatanDari = () => "Usulan lokasi untuk dilihat, bukan perintah terbang. Skor hipotesis.";
   const potong = (daftar, n) => { const h = []; for (let i = 0; i < daftar.length; i += n) h.push(daftar.slice(i, i + n)); return h; };
-  const ringkasKepatuhan = k => ({didatangi: k.didatangi || 0, target: k.target || 0, belum_diisi: k.belum_diisi || 0, persen: k.persen,
+  /* persen kejadian logbook yang mencatat tindakan ini; null bila bencana tak ada di logbook */
+  const persenLogbook = (lb, id, kode) => { const j = lb && lb.jenis && lb.jenis[id]; if (!j || !j.n) return null; const h = (j.tindakan || {})[kode] || 0; return Math.round(h / j.n * 100); };   // bilangan bulat: asalnya pencocokan kata kunci
+  const ringkasKepatuhan = (k, tdk) => ({tindakan: Object.entries(k.per_tindakan || {}).map(([c, n]) => [((tdk || []).find(t => t[0] === c) || [c, c])[1], n]).sort((x, y) => y[1] - x[1]),
+    didatangi: k.didatangi || 0, target: k.target || 0, belum_diisi: k.belum_diisi || 0, persen: k.persen,
     tidak: Object.entries(k.per_alasan || {}).map(([a, n]) => [labelAlasan(a), n]).sort((x, y) => y[1] - x[1]), tidakJumlah: Object.values(k.per_alasan || {}).reduce((t, n) => t + n, 0)});
   const galatRamah = (status, j) => (j && j.galat) || GALAT[status] || "Gagal (kode " + status + ").";
+
+  /* logbook tindakan: satu promise per muat halaman; gagal tidak di-cache */
+  let lbJanji = null;
+  const logbook = ambil => lbJanji ||= ambil("/data/bnpb/logbook_tindakan.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { if (!j) lbJanji = null; return j; });
 
   /* ---- DOM ---- */
   const NS = "http://www.w3.org/2000/svg";
@@ -64,6 +72,8 @@
     const nanti = fn => g.requestAnimationFrame ? g.requestAnimationFrame(() => setTimeout(fn, 0)) : setTimeout(fn, 0);
 
     /* kartu 1: renlap */
+    const TDK = o.tindakan || [], urutTdk = TDK.map(t => t[0]), namaTdk = k => (TDK.find(t => t[0] === k) || [k, k])[1];
+    const tdkWadah = el("div", "pb-tabel"), kT = TDK.length ? kartu("Tindakan", "tindakan", [tdkWadah]) : null;
     const hariIni = hariWib(kini());
     const selProv = pilihan(S.prov, [["", "Pilih provinsi"], ...provDaftar]), fKab = masukan("text", "4 digit (opsional)", 4), fTgl = masukan("date"); fKab.inputMode = "numeric"; fTgl.value = hariIni; fTgl.max = hariIni; fTgl.min = hariWib(kini() - 7 * 864e5);
     const mintaB = tombol("minta", "Minta renlap", "pb-utama"), muatB = tombol("muat", "Muat ulang", "pb-sekunder");
@@ -82,7 +92,26 @@
     const fDari = masukan("date"), fSampai = masukan("date"); fSampai.value = fSampai.max = hariIni; fDari.value = hariWib(kini() - 30 * 864e5); fDari.min = hariWib(kini() - 61 * 864e5); fDari.max = hariIni;
     const patuhB = tombol("muat", "Tampilkan kepatuhan", "pb-sekunder"), patuhAlat = el("div", "pb-alat"); patuhAlat.append(bidang("Dari", fDari), bidang("Sampai", fSampai));
     const patuhIsi = el("div", "rl-patuh"); const k3 = kartu("Kepatuhan", "patuh", [patuhAlat, (() => { const a = el("div", "pb-aksi"); a.append(patuhB); return a; })(), patuhIsi]);
-    host.replaceChildren(k1, k2, k3);
+    host.replaceChildren(...(kT ? [kT] : []), k1, k2, k3);
+
+    /* kartu tindakan: logbook diambil sekali per pasang; gagal = persen "tidak tercatat" */
+    /* keadaan: "memuat" | "gagal" | "ada" (lb terisi; bencana tak di jenis = "tidak tercatat") */
+    function gambarTindakan(keadaan, lb) {
+      if (S.tutup || !kT) return;
+      const jn = lb && lb.jenis && lb.jenis[o.bencana], tgl = lb && lb.dibuat && !isNaN(new Date(lb.dibuat)) ? new Date(lb.dibuat).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"}) : "";
+      const t = el("table"), th = el("thead"), tr = el("tr"), kp = el("th", "n", "Persen kejadian"), kj = el("th", "n", "Kejadian");
+      kp.title = "persen kejadian berisi di logbook Pusdalops 2011-2026 yang mencatat tindakan ini; pencocokan kata kunci, bisa kurang atau lebih dari kenyataan" + (tgl ? "; data dibuat " + tgl : "");
+      if (jn && jn.n) kj.title = "dari " + rpSatu(jn.n) + " kejadian berisi";
+      tr.append(el("th", "", "Tindakan"), kp, kj); th.append(tr); t.append(th);
+      const tb = el("tbody"), kosong = keadaan === "memuat" ? "memuat data" : keadaan === "gagal" ? "data logbook belum bisa dimuat" : "tidak tercatat";
+      for (const [kode, label] of TDK) {
+        const p = keadaan === "ada" ? persenLogbook(lb, o.bencana, kode) : null, x = el("tr"), c = el("td", "n");
+        if (p == null) c.append(el("span", "rl-tt", kosong)); else { const bar = el("span", "rl-bar"), isi = el("i"); isi.style.width = Math.min(100, p) + "%"; bar.append(isi); c.append(bar, el("span", "rl-p num", persen(p))); }
+        x.append(el("td", "ops-kiri", label), c, el("td", "n num", p == null ? "–" : rpSatu((jn.tindakan || {})[kode] || 0))); tb.append(x);
+      }
+      t.append(tb); const w = el("div", "tw ops-tw ex-tabel"); w.append(t); tdkWadah.replaceChildren(w);
+    }
+    if (kT) { gambarTindakan("memuat"); if (ambil) logbook(ambil).then(lb => nanti(() => gambarTindakan(lb ? "ada" : "gagal", lb))); else gambarTindakan("gagal"); }
 
     function gambarTabel() {
       if (S.tutup) return;
@@ -103,19 +132,22 @@
       if (S.daftar.length > S.batas) { const l = tombol("lagi", "Tampilkan lagi (" + (S.daftar.length - S.batas) + " baris)", "pb-sekunder"); l.dataset.lagi = "1"; isi.push(l); }
       tabelWadah.replaceChildren(...isi);
     }
-    function gambarHasil() {
-      if (S.tutup) return;
-      if (!S.pilih) { hasilWadah.replaceChildren(); simpanB.hidden = true; return; }
-      const t = el("table"), th = el("thead"), tr = el("tr"); for (const h of ["No", "Target", "Didatangi", "Alasan bila tidak", "Hasil", "Catatan"]) tr.append(el("th", h === "No" ? "n" : "", h)); th.append(tr); t.append(th);
-      const tb = el("tbody");
-      for (const x of S.target.slice(0, S.batasT || MAKS_BARIS)) {
+    const ringTdk = n => n ? n + " tindakan" : "Pilih tindakan";
+    function daftarTdk(pilih) { const d = el("details", "rl-tdk"); d.append(el("summary", null, ringTdk(pilih ? pilih.size : 0))); return d; }   // isi centang dibangun saat dibuka (INP)
+    function barisHasil(x) {
         const u = S.ubah[x.no] || {didatangi: "", alasan: "", hasil: "", catatan: ""}, r = el("tr"); r.dataset.no = x.no;
         const d = pilihan(u.didatangi, [["", "Belum diisi"], ["1", "Didatangi"], ["0", "Tidak didatangi"]]), a = pilihan(u.alasan, [["", "Pilih alasan"], ...Object.entries(ALASAN).filter(([k]) => k !== "tanpa_alasan")]), h = pilihan(u.hasil, [["", "Pilih hasil"], ...Object.entries(HASIL)]), c = masukan("text", "Catatan singkat", 200);
         d.dataset.f = "didatangi"; a.dataset.f = "alasan"; h.dataset.f = "hasil"; c.dataset.f = "catatan"; c.value = u.catatan; a.disabled = u.didatangi !== "0";
         for (const k of [d, a, h, c]) k.setAttribute("aria-label", k.dataset.f + " target " + x.no);
         const cel = k => { const e = el("td"); e.append(k); return e; };
-        r.append(el("td", "n num", String(x.no)), el("td", "ops-kiri", x.nama), cel(d), cel(a), cel(h), cel(c)); tb.append(r);
-      }
+        r.append(el("td", "n num", String(x.no)), el("td", "ops-kiri", x.nama), cel(d), cel(a), cel(h)); if (TDK.length) r.append(cel(daftarTdk(u.tindakan))); r.append(cel(c)); return r;
+    }
+    function gambarHasil() {
+      if (S.tutup) return;
+      if (!S.pilih) { hasilWadah.replaceChildren(); simpanB.hidden = true; return; }
+      const t = el("table"), th = el("thead"), tr = el("tr"); for (const h of ["No", "Target", "Didatangi", "Alasan bila tidak", "Hasil", ...(TDK.length ? ["Tindakan"] : []), "Catatan"]) tr.append(el("th", h === "No" ? "n" : "", h)); th.append(tr); t.append(th);
+      const tb = el("tbody");
+      for (const x of S.target.slice(0, S.batasT || MAKS_BARIS)) tb.append(barisHasil(x));
       t.append(tb); const w = el("div", "tw ops-tw ex-tabel"); w.append(t);
       const isi = [S.target.length ? w : el("p", "ops-kosong", "Renlap ini tidak memuat target.")];
       if (S.target.length > (S.batasT || MAKS_BARIS)) { const l = tombol("lagi", "Tampilkan lagi (" + (S.target.length - (S.batasT || MAKS_BARIS)) + " baris)", "pb-sekunder"); l.dataset.lagiT = "1"; isi.push(l); }
@@ -123,11 +155,12 @@
     }
     function gambarPatuh(k) {
       if (S.tutup) return;
-      const p = ringkasKepatuhan(k), kotak = (ik, nama, nilai) => { const d = el("div", "rl-k"); d.append(ikon(ik), el("span", "rl-n", nilai), el("span", "rl-t", nama)); return d; };
+      const p = ringkasKepatuhan(k, TDK), kotak = (ik, nama, nilai) => { const d = el("div", "rl-k"); d.append(ikon(ik), el("span", "rl-n", nilai), el("span", "rl-t", nama)); return d; };
       const baris = el("div", "rl-baris"); baris.append(kotak("renlap", "Renlap", rpSatu(k.renlap || 0)), kotak("hasil", "Target", rpSatu(p.target)), kotak("hasil", "Didatangi", rpSatu(p.didatangi)), kotak("patuh", "Persen didatangi", persen(p.persen)));
       const sisa = el("div", "rl-baris"); sisa.append(kotak("minta", "Tidak didatangi", rpSatu(p.tidakJumlah)), kotak("lagi", "Belum diisi", rpSatu(p.belum_diisi)));   // belum_diisi terpisah dari tidak didatangi
       const isi = [baris, sisa];
       if (p.tidak.length) { const ul = el("ul", "rl-alasan"); for (const [a, n] of p.tidak) ul.append(el("li", null, a + ": " + rpSatu(n))); isi.push(ul); }
+      if (p.tindakan.length) { const ul = el("ul", "rl-alasan"); for (const [a, n] of p.tindakan) ul.append(el("li", null, a + ": " + rpSatu(n) + " target")); isi.push(ul); }
       patuhIsi.replaceChildren(...isi);
     }
 
@@ -185,22 +218,38 @@
       if (!rt.ok) { b.disabled = false; status.textContent = galatRamah(rt.status, rt.j); return; }
       status.textContent = b.dataset.aksi === "terbit" ? "Renlap diterbitkan." : "Renlap ditandai selesai."; muat();
     });
-    hasilWadah.addEventListener("click", e => { if (e.target.closest("[data-lagi-t]")) { S.batasT += MAKS_BARIS; nanti(gambarHasil); } });
+    hasilWadah.addEventListener("click", e => {
+      const l = e.target.closest("[data-lagi-t]"); if (!l) return;
+      const dari = S.batasT || MAKS_BARIS; S.batasT = dari + MAKS_BARIS;   // hanya menambah irisan baru ke tbody
+      nanti(() => { const tb = hasilWadah.querySelector("tbody"); if (!tb) return; tb.append(...S.target.slice(dari, S.batasT).map(barisHasil));
+        if (S.target.length > S.batasT) l.querySelector("span").textContent = "Tampilkan lagi (" + (S.target.length - S.batasT) + " baris)"; else l.remove(); });
+    });
+    hasilWadah.addEventListener("toggle", e => {   // capture: toggle tidak menggelembung; daftar dibangun dari Set di S.ubah
+      const d = e.target; if (!d.classList || !d.classList.contains("rl-tdk") || !d.open || d.querySelector(".rl-tdk-isi")) return;
+      const pilih = S.ubah[d.closest("tr").dataset.no]?.tindakan, l = el("div", "rl-tdk-isi");
+      for (const [kode, label] of TDK) { const b = el("label", "rl-cek"), c = el("input"); c.type = "checkbox"; c.dataset.k = kode; c.checked = !!(pilih && pilih.has(kode)); b.append(c, el("span", null, label)); l.append(b); }
+      d.append(l);
+    }, true);
     hasilWadah.addEventListener("change", e => {
-      const f = e.target.dataset.f, no = e.target.closest("tr")?.dataset.no; if (!f || !no) return;
+      const kt = e.target.dataset.k, f = e.target.dataset.f, no = e.target.closest("tr")?.dataset.no;
+      if (kt && no) {   // hanya himpunan dan teks ringkasan baris itu; tabel tidak digambar ulang
+        const u = S.ubah[no] ||= {no: Number(no), didatangi: "", alasan: "", hasil: "", catatan: ""}; const h = u.tindakan ||= new Set(); e.target.checked ? h.add(kt) : h.delete(kt);
+        e.target.closest("details").querySelector("summary").textContent = ringTdk(h.size); return;
+      }
+      if (!f || !no) return;
       const u = S.ubah[no] ||= {no: Number(no), didatangi: "", alasan: "", hasil: "", catatan: ""}; u[f] = e.target.value;
       if (f === "didatangi") { const a = e.target.closest("tr").querySelector("[data-f=alasan]"); a.disabled = u.didatangi !== "0"; if (a.disabled) { a.value = ""; u.alasan = ""; } }
     });
     hasilWadah.addEventListener("input", e => { if (e.target.dataset.f !== "catatan") return; const no = e.target.closest("tr").dataset.no; (S.ubah[no] ||= {no: Number(no), didatangi: "", alasan: "", hasil: "", catatan: ""}).catatan = e.target.value; });
     simpanB.addEventListener("click", async () => {
       const baris = Object.values(S.ubah); if (!baris.length || !S.pilih) { pesan.textContent = "Belum ada isian yang diubah."; return; }
-      simpanB.disabled = true; pesan.textContent = "Menyimpan..."; let n = 0;
-      for (const bag of potong(butirDari(baris), MAKS_BUTIR)) {
+      simpanB.disabled = true; pesan.textContent = "Menyimpan..."; let n = 0, info = "";
+      for (const bag of potong(butirDari(baris, urutTdk), MAKS_BUTIR)) {
         const r = await kirim("/api/pb/hasil", {id: S.pilih.id, butir: bag});
         if (!r.ok) { simpanB.disabled = false; pesan.textContent = galatRamah(r.status, r.j) + (n ? " (" + n + " butir sudah tersimpan)" : ""); return; }
-        n += bag.length;
+        n += bag.length; if (r.j && r.j.tindakan === false && r.j.pesan) info = r.j.pesan;
       }
-      simpanB.disabled = false; S.ubah = {}; pesan.textContent = n + " butir tersimpan."; muatPatuh();
+      simpanB.disabled = false; S.ubah = {}; pesan.textContent = n + " butir tersimpan." + (info ? " " + info : ""); muatPatuh();
     });
 
     gambarTabel(); gambarHasil();
@@ -208,5 +257,5 @@
     return {muat, tutup() { S.tutup = true; host.replaceChildren(); }, _S: S};
   }
 
-  g.PbRenlap = {ALASAN, HASIL, STATUS, labelAlasan, labelStatus, statusEfektif, targetDari, catatanDari, butirDari, ringkasKepatuhan, galatRamah, hariWib, potong, bisaUnduh, FORMAT, MAKS_BARIS, MAKS_BUTIR, pasang};
+  g.PbRenlap = {ALASAN, HASIL, STATUS, labelAlasan, labelStatus, statusEfektif, targetDari, catatanDari, butirDari, ringkasKepatuhan, galatRamah, persenLogbook, persen, hariWib, potong, bisaUnduh, FORMAT, MAKS_BARIS, MAKS_BUTIR, pasang};
 })(typeof window !== "undefined" ? window : globalThis);

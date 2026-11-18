@@ -116,6 +116,46 @@
    "server": "tests/warga/lifeline_rute.test.mjs",
    "klien": []
   },
+  "GET /api/siklus/kaji-ulang/kandidat": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kaji-ulang/rekomendasi": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kejadian/:id/kaji-ulang": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/kaji-ulang": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran/:sid": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/kaji-ulang/rekomendasi": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/kaji-ulang/rekomendasi/status": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kejadian/:id/kaji-ulang/rekomendasi/riwayat": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/kaji-ulang/sahkan": {
+   "server": "tests/warga/kaji_ulang_rute.test.mjs",
+   "klien": []
+  },
   "GET /api/siklus/kejadian/arsip": {
    "server": "tests/warga/siklus_kejadian.test.mjs",
    "klien": []

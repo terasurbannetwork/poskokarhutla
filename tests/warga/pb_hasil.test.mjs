@@ -4,13 +4,14 @@
    Jalankan: node --test tests/warga/pb_hasil.test.mjs */
 import assert from "node:assert/strict";
 import {DatabaseSync} from "node:sqlite";
+import {readFileSync} from "node:fs";
 import "../../src/worker.js";   // dahulu: impor sirkular
 import {siapkan, berantai, MOD2, GERBANG} from "./_bnpb.mjs";
 import {migrasi} from "./_bantu.mjs";
 import {PB_SQL_HASIL} from "../../src/hak.js";
 
 const uji = berantai();
-const REG = JSON.stringify({pesisir: {operasi: true, renlap: {sarana: ["tenda"]}}});
+const REG = JSON.stringify({pesisir: {operasi: true, renlap: {sarana: ["tenda"]}, tindakan: ["evakuasi", "logistik", "tanggul"]}});
 const {DB, api, n} = await siapkan("uji-pb-hasil", {ikat: {PB_REGISTRI: REG}});
 const hari = (d = 0) => new Date(Date.now() + 7 * 36e5 - d * 864e5).toISOString().slice(0, 10);
 const baris = (id, status, kab, jml, versi = 1, prov = "32") => DB.prepare("INSERT INTO pb_renlap (id, bencana, prov, kab, tanggal, versi, status, jml_target, oleh, dibuat, diubah) VALUES (?,?,?,?,?,?,?,?,?,1,1)")
@@ -51,7 +52,7 @@ uji("hasil: upsert menimpa baris yang sama, log hanya jumlah, tanpa kolom oleh d
 
 uji("kepatuhan: hitung dari terbit/selesai saja, persen dan per_alasan, tanpa pengisi; prov lain terpisah", async () => {
   const k = await kep(`&dari=${hari(1)}&sampai=${hari()}`); assert.equal(k.s, 200, k.t);
-  assert.deepEqual(k.j, {tersedia: true, renlap: 2, target: 8, didatangi: 2, belum_diisi: 4, persen: 25, per_alasan: {cuaca: 1, sudah_aman: 1}});   // draf D tidak dihitung
+  assert.deepEqual(k.j, {tersedia: true, renlap: 2, target: 8, didatangi: 2, belum_diisi: 4, persen: 25, per_alasan: {cuaca: 1, sudah_aman: 1}, per_tindakan: {}});   // draf D tidak dihitung
   assert.ok(!JSON.stringify(k.j).includes("staf"));
   const p31 = await api("GET", `/api/pb/kepatuhan?bencana=pesisir&prov=31&dari=${hari(1)}&sampai=${hari()}`, undefined, MOD2);
   assert.equal(p31.j.renlap, 1); assert.equal(p31.j.persen, 0);
@@ -73,7 +74,7 @@ uji("hasil: 100 butir sukses; kepatuhan hanya versi terbit terbaru per tanggal",
 
 uji("kepatuhan: hak baca, bencana, rentang", async () => {
   assert.equal((await kep("", {})).s, 403);
-  assert.equal((await api("GET", "/api/pb/kepatuhan?bencana=longsor&prov=32", undefined, MOD2)).s, 404);
+  assert.equal((await api("GET", "/api/pb/kepatuhan?bencana=karhutla&prov=32", undefined, MOD2)).s, 404);
   assert.equal((await kep("&dari=2026-01-01&sampai=2026-12-31")).s, 400);
   assert.equal((await kep("&dari=bukan")).s, 400);
   assert.equal((await kep(`&dari=${hari(32)}&sampai=${hari()}`)).s, 400);   // 32 hari
@@ -94,4 +95,63 @@ uji("tanpa migrasi 0130: hasil 503, kepatuhan tersedia:false", async () => {
   assert.equal((await U.api("POST", "/api/pb/hasil", {id: T, butir: [{target_no: 1, didatangi: 1}]}, MOD2)).s, 503);
   const d = await U.api("GET", "/api/pb/kepatuhan?bencana=pesisir&prov=32", undefined, MOD2);
   assert.equal(d.s, 200); assert.equal(d.j.tersedia, false);
+});
+
+uji("tindakan: simpan, set diganti, absen tidak menyentuh, [] menghapus, log memuat jumlah", async () => {
+  const T2 = "1".repeat(16); await baris(T2, "terbit", "3201", 5);
+  const ada = async no => (await DB.prepare("SELECT tindakan FROM pb_renlap_tindakan WHERE renlap_id = ? AND target_no = ? ORDER BY tindakan").bind(T2, no).all()).results.map(x => x.tindakan);
+  let r = await kirim({id: T2, butir: [{target_no: 1, didatangi: 1, tindakan: ["evakuasi", "logistik"]}, {target_no: 2, didatangi: 1}]});
+  assert.equal(r.s, 200, r.t); assert.equal(r.j.tindakan, true);
+  assert.deepEqual(await ada(1), ["evakuasi", "logistik"]); assert.deepEqual(await ada(2), []);
+  const l = await DB.prepare("SELECT sesudah FROM pb_log WHERE tabel = 'pb_renlap_hasil' AND kunci = ? ORDER BY id DESC LIMIT 1").bind(T2).first();
+  assert.deepEqual(JSON.parse(l.sesudah), {butir: 2, didatangi: 2, tindakan: 2});
+  await kirim({id: T2, butir: [{target_no: 1, didatangi: 1, tindakan: ["tanggul"]}]});   // diganti
+  assert.deepEqual(await ada(1), ["tanggul"]);
+  r = await kirim({id: T2, butir: [{target_no: 1, didatangi: 0, alasan: "cuaca"}]});   // absen: tidak disentuh
+  assert.deepEqual(r.j, {ok: true, butir: 1}); assert.deepEqual(await ada(1), ["tanggul"]);
+  await kirim({id: T2, butir: [{target_no: 1, tindakan: []}]});   // kosong: hapus
+  assert.deepEqual(await ada(1), []);
+});
+
+uji("tindakan: di luar daftar, ganda, lebih dari 12, bukan array, constructor = 400 tanpa tulis", async () => {
+  const T3 = "2".repeat(16); await baris(T3, "terbit", "3202", 5);
+  for (const t of [["banjir"], ["evakuasi", "evakuasi"], Array.from({length: 13}, (_, i) => "k" + i), "evakuasi", {a: 1}, ["constructor"], [1], null, ["__proto__"]])
+    assert.equal((await kirim({id: T3, butir: [{target_no: 1, didatangi: 1, tindakan: t}]})).s, 400, JSON.stringify(t));
+  assert.equal(await n("pb_renlap_hasil", `renlap_id = '${T3}'`), 0); assert.equal(await n("pb_renlap_tindakan", `renlap_id = '${T3}'`), 0);
+});
+
+uji("kepatuhan per_tindakan: hanya versi terbaru terbit/selesai; objek kosong bila tak ada", async () => {
+  const A = "3".repeat(16), B = "4".repeat(16);
+  await baris(A, "terbit", "3203", 5, 1); await baris(B, "terbit", "3203", 5, 2);
+  await kirim({id: A, butir: [{target_no: 1, didatangi: 1, tindakan: ["evakuasi"]}]});   // versi lama: tak dihitung
+  await kirim({id: B, butir: [{target_no: 1, didatangi: 1, tindakan: ["evakuasi", "tanggul"]}, {target_no: 2, didatangi: 1, tindakan: ["evakuasi"]}]});
+  const k = await kep(`&dari=${hari()}&sampai=${hari()}`); assert.equal(k.s, 200, k.t);
+  assert.equal(k.j.per_tindakan.tanggul, 1); assert.ok(k.j.per_tindakan.evakuasi >= 2);
+  const k2 = await api("GET", `/api/pb/kepatuhan?bencana=pesisir&prov=12&dari=${hari()}&sampai=${hari()}`, undefined, MOD2);
+  assert.deepEqual(k2.j.per_tindakan, {});
+});
+
+uji("kueri per_tindakan SEARCH, bukan SCAN", () => {
+  const db = new DatabaseSync(":memory:"); db.exec(migrasi());
+  for (const sql of [PB_SQL_HASIL.perTindakan, PB_SQL_HASIL.tindakanHapus]) {
+    const p = db.prepare("EXPLAIN QUERY PLAN " + sql).all().map(r => r.detail).filter(d => /^SCAN (pb_|h\b|r\b)/.test(d));
+    assert.deepEqual(p, [], sql.slice(0, 60));
+  }
+});
+
+uji("migrasi 0153 jalan dua kali tanpa galat", () => {
+  const db = new DatabaseSync(":memory:"); db.exec(migrasi());
+  db.exec(readFileSync(new URL("../../migrations/0153_pb_renlap_tindakan.sql", import.meta.url), "utf8"));
+});
+
+uji("tanpa migrasi 0153: hasil tersimpan, tindakan:false, kepatuhan tanpa per_tindakan", async () => {
+  const U = await siapkan("uji-pb-hasil-tanpa153", {ikat: {PB_REGISTRI: REG}});
+  await U.DB.exec("DROP TABLE pb_renlap_tindakan");
+  const X = "5".repeat(16);
+  await U.DB.prepare("INSERT INTO pb_renlap (id, bencana, prov, kab, tanggal, versi, status, jml_target, oleh, dibuat, diubah) VALUES (?,?,?,?,?,?,?,?,?,1,1)").bind(X, "pesisir", "32", "3273", hari(), 1, "terbit", 5, "staf:x").run();
+  const r = await U.api("POST", "/api/pb/hasil", {id: X, butir: [{target_no: 1, didatangi: 1, tindakan: ["evakuasi"]}]}, MOD2);
+  assert.equal(r.s, 200, r.t); assert.equal(r.j.tindakan, false); assert.match(r.j.pesan, /pengelola sistem/); assert.ok(!/0153/.test(r.t));
+  assert.equal(await U.n("pb_renlap_hasil", `renlap_id = '${X}'`), 1);
+  const k = await U.api("GET", `/api/pb/kepatuhan?bencana=pesisir&prov=32&dari=${hari()}&sampai=${hari()}`, undefined, MOD2);
+  assert.equal(k.s, 200); assert.equal(k.j.tersedia, true); assert.ok(!("per_tindakan" in k.j));
 });

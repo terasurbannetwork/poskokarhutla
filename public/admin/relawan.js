@@ -38,7 +38,7 @@
       if (urut >= 0) { const k = kolom[urut]; x.sort((a, b) => { const p = nil(a, k), q = nil(b, k); return arah * (typeof p === "number" && typeof q === "number" ? p - q : String(p ?? "").localeCompare(String(q ?? ""), "id")); }); }
       const total = Math.max(1, Math.ceil(x.length / ukuran)); hal = Math.min(hal, total - 1);
       const isi = x.slice(hal * ukuran, (hal + 1) * ukuran);
-      el.innerHTML = `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr>${kolom.map((k, i) => `<th aria-sort="${urut === i ? (arah > 0 ? "ascending" : "descending") : "none"}">${k.u === false ? esc(k.l) : `<button type="button" class="rw-urut" data-u="${i}">${esc(k.l)}${urut === i ? (arah > 0 ? " ▲" : " ▼") : ""}</button>`}</th>`).join("")}</tr></thead><tbody>${
+      el.innerHTML = `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kolom.map((k, i) => `<th scope="col" aria-sort="${urut === i ? (arah > 0 ? "ascending" : "descending") : "none"}">${k.u === false ? esc(k.l) : `<button type="button" class="rw-urut" data-u="${i}">${esc(k.l)}${urut === i ? (arah > 0 ? " ▲" : " ▼") : ""}</button>`}</th>`).join("")}</tr></thead><tbody>${
         isi.length ? isi.map(b => `<tr data-id="${esc(b.id)}">${kolom.map(k => `<td>${k.h ? k.h(b) : esc(nil(b, k))}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${kolom.length}" class="rw-kosong-baris">${esc(kosongT)}</td></tr>`}</tbody></table></div>${
         total > 1 ? `<div class="rw-hal"><button type="button" class="ad-tombol kecil" data-h="-1" ${hal === 0 ? "disabled" : ""}>Sebelumnya</button><span>Halaman ${hal + 1} dari ${total} (${angka(x.length)} baris)</span><button type="button" class="ad-tombol kecil" data-h="1" ${hal >= total - 1 ? "disabled" : ""}>Berikutnya</button></div>` : ""}`;
     };
@@ -46,6 +46,11 @@
     gambar();
   }
   const wadah = id => `<div id="${id}" class="rw-tabel"></div>`;
+  /* kit dashboard bersama (Admin.dasbor): kartu seksi, ubin angka, tombol ikon polos */
+  const DB = Admin.dasbor, ib = (ik, label, att = "", kls = "") => `<button type="button" class="db-ik ${kls}" title="${esc(label)}" aria-label="${esc(label)}" ${att}>${DB.svg(ik).outerHTML}</button>`;
+  const K = (ikon, judul, ey, html, kanan = "") => { const k = DB.kartu({ikon, judul, ey}); k.querySelector(".ex-bd").innerHTML = html; if (kanan) k.querySelector(".ex-jd").insertAdjacentHTML("beforeend", kanan); return k; };
+  const aksiH = (...x) => `<div class="db-aksi">${x.join("")}</div>`;
+  const IKB = {pulih: "M3 7v6h6M3 13a9 9 0 1 0 3-7.7L3 8", jeda: "M10 4H6v16h4zM18 4h-4v16h4z"};
   const opsi = (obj, pilih, semua) => (semua ? `<option value="">${esc(semua)}</option>` : "") + Object.entries(obj).map(([k, v]) => `<option value="${esc(k)}" ${pilih === k ? "selected" : ""}>${esc(v)}</option>`).join("");
   const urutProv = () => Object.fromEntries(Object.entries(konfig.provinsi).sort((a, b) => a[1].localeCompare(b[1], "id")));
   const pilKeahlian = a => (a || []).map(k => `<span class="bn-pil p-abu">${esc(konfig.keahlian[k] || k)}</span>`).join(" ");
@@ -53,7 +58,8 @@
   /* ================= kerangka ================= */
   function kerangka(hitung = {}) {
     app.innerHTML = `<nav class="ad-tabs" aria-label="Relawan">${TABS.map(([k, l]) => `<button data-tab="${k}" aria-pressed="${k === tab}">${l}${k === "antrean" && hitung.terdaftar ? ` <b>${angka(hitung.terdaftar)}</b>` : ""}</button>`).join("")}</nav>
-      <p id="rwPesan" class="rw-pesan" role="status"></p><div id="rwIsi" class="rw-isi"><p class="ad-redup">Memuat...</p></div>`;
+      <p id="rwPesan" class="rw-pesan" role="status"></p><div id="rwIsi" class="rw-isi db-tumpuk"><p class="ad-redup">Memuat...</p></div>`;
+    DB.tumpuk(app);
   }
   async function muat() {
     const isi = document.getElementById("rwIsi");
@@ -63,31 +69,16 @@
   const pindah = k => { tab = k; terpilih = null; kerangka(); return muat(); };
 
   /* ================= relawan + antrean ================= */
-  function aksiRelawan(r) {   // satu tombol utama + menu "⋯" (aksi lain; berbahaya merah). Alur prompt/confirm tetap di penangan klik.
-    const b = (a, l, k = "", m = "") => `<button type="button" class="ad-tombol kecil ${k}" ${m} data-r="${a}" data-id="${esc(r.id)}">${l}</button>`;
-    const utama = {terdaftar: ["verifikasi", "Verifikasi"], diverifikasi: ["siap", "Tandai siap"], selesai: ["siap", "Tandai siap"], nonaktif: ["aktifkan", "Aktifkan"], daftar_hitam: ["pulihkan", "Pulihkan"]}[r.status];
+  function aksiRelawan(r) {   // tombol ikon polos per aksi; alur prompt/confirm tetap di penangan klik
+    const b = (a, ik, l, k = "") => ib(ik, l, `data-r="${a}" data-id="${esc(r.id)}"`, k);
+    const utama = {terdaftar: ["verifikasi", "aktif", "Verifikasi"], diverifikasi: ["siap", "cek", "Tandai siap"], selesai: ["siap", "cek", "Tandai siap"], nonaktif: ["aktifkan", "aktif", "Aktifkan"], daftar_hitam: ["pulihkan", IKB.pulih, "Pulihkan"]}[r.status];
     const lain = [];
-    if (["terdaftar", "diverifikasi"].includes(r.status)) lain.push(b("tolak", "Tolak", "rw-bhy", 'role="menuitem"'));
-    if (["siap_tugas", "selesai", "diverifikasi", "terdaftar"].includes(r.status)) lain.push(b("nonaktifkan", "Nonaktifkan", "", 'role="menuitem"'));
-    if (r.status !== "daftar_hitam") lain.push(b("daftar_hitam", "Daftar hitam", "rw-bhy", 'role="menuitem"'));
-    lain.push(b("kode_baru", "Kode baru", "", 'role="menuitem"'));
-    return `<div class="rw-aksi">${utama ? b(utama[0], utama[1], "utama") : ""}<span class="rw-menu-bungkus"><button type="button" class="ad-tombol kecil" data-menu="1" aria-haspopup="menu" aria-expanded="false" aria-label="Aksi lain untuk ${esc(r.nama)}" title="Aksi lain">⋯</button><div class="rw-menu" role="menu" hidden>${lain.join("")}</div></span></div>`;
+    if (["terdaftar", "diverifikasi"].includes(r.status)) lain.push(b("tolak", "tutup", "Tolak", "bahaya"));
+    if (["siap_tugas", "selesai", "diverifikasi", "terdaftar"].includes(r.status)) lain.push(b("nonaktifkan", IKB.jeda, "Nonaktifkan"));
+    if (r.status !== "daftar_hitam") lain.push(b("daftar_hitam", "cabut", "Daftar hitam", "bahaya"));
+    lain.push(b("kode_baru", "kunci", "Kode baru"));
+    return aksiH(utama ? b(utama[0], utama[1], utama[2]) : "", ...lain);
   }
-  /* popover aksi: absolut di bawah tombol; wadah tabel diberi ruang saat terbuka (CSS :has); tutup saat klik di luar, Esc, ubah ukuran */
-  const tutupMenu = balik => { document.querySelectorAll(".rw-menu:not([hidden])").forEach(m => { m.hidden = true; const t = m.previousElementSibling; t.setAttribute("aria-expanded", "false"); if (balik) t.focus(); }); };
-  document.addEventListener("click", e => {
-    const t = e.target.closest("[data-menu]"), m = t && t.nextElementSibling, buka = t && m.hidden;
-    tutupMenu(); if (!buka) return;
-    m.hidden = false; t.setAttribute("aria-expanded", "true");
-    m.querySelector("button").focus();
-  });
-  document.addEventListener("keydown", e => {
-    const m = document.querySelector(".rw-menu:not([hidden])"); if (!m) return;
-    if (e.key === "Escape") { e.preventDefault(); return tutupMenu(true); }
-    const x = [...m.querySelectorAll("button")], i = x.indexOf(document.activeElement), d = {ArrowDown: 1, ArrowUp: -1}[e.key];
-    if (d) { e.preventDefault(); x[(i + d + x.length) % x.length].focus(); } else if (e.key === "Tab") tutupMenu();
-  });
-  addEventListener("resize", () => tutupMenu());
   const kolomRelawan = () => [
     {l: "Nama", k: "nama", h: r => `<b>${esc(r.nama)}</b>${dummyPil(r.dummy)}<br><span class="rw-redup">${esc(r.gol_darah || "")}</span>`},
     {l: "Kontak", u: false, h: r => `<span title="Kontak darurat: ${esc(r.darurat_nama || "–")} ${esc(r.darurat_wa || "")}">${esc(r.wa || "–")}<br><span class="rw-redup">${esc(r.email || "–")}</span></span>`},
@@ -103,95 +94,96 @@
     const d = await ambil(`${API}/relawan?status=terdaftar`);
     kerangka(d.hitung);
     const el = document.getElementById("rwIsi");
-    el.innerHTML = `<div class="rw-bar"><span class="rw-redup">${angka(d.relawan.length)} menunggu verifikasi. Relawan jalur kampus bisa juga diverifikasi koordinator kampusnya.</span></div>${wadah("tAntre")}`;
+    el.replaceChildren(K("staf", "Antrean verifikasi", "Relawan", `<p class="rw-redup">Relawan jalur kampus bisa juga diverifikasi koordinator kampusnya.</p>${wadah("tAntre")}`, `<span class="rw-redup">${angka(d.relawan.length)} menunggu</span>`));
     Tabel(document.getElementById("tAntre"), kolomRelawan(), d.relawan, "Antrean kosong. Semua pendaftar sudah diputuskan.");
   }
   async function tampilRelawan(isi) {
     const q = new URLSearchParams(Object.entries(saring).filter(([, v]) => v)).toString();
     const d = await ambil(`${API}/relawan${q ? "?" + q : ""}`);
-    isi.innerHTML = `<form id="rwSaring" class="rw-bar"><label>Provinsi<select name="prov">${opsi(urutProv(), saring.prov, "Semua")}</select></label><label>Keahlian<select name="keahlian">${opsi(konfig.keahlian, saring.keahlian, "Semua")}</select></label>
+    const IKS = {terdaftar: "jam", diverifikasi: "cek", siap_tugas: "aktif", ditugaskan: "peta", bertugas: "api", selesai: "cek", ditolak: "tutup", nonaktif: IKB.jeda, daftar_hitam: "cabut"};
+    const ubin = Object.entries(d.hitung).map(([s, n]) => DB.ubin({ikon: IKS[s] || "orang", label: STATUS[s]?.[2] || s, nilai: angka(n), saring: s, aktif: saring.status === s, warna: ["daftar_hitam", "ditolak"].includes(s) && n ? "merah" : s === "terdaftar" && n ? "oranye" : ""}));
+    const grid = DB.ubinGrid(...ubin), form = K("cari", "Penyaring", "Relawan", `<form id="rwSaring" class="rw-bar"><label>Provinsi<select name="prov">${opsi(urutProv(), saring.prov, "Semua")}</select></label><label>Keahlian<select name="keahlian">${opsi(konfig.keahlian, saring.keahlian, "Semua")}</select></label>
       <label>Status<select name="status">${opsi(Object.fromEntries(Object.entries(STATUS).map(([k, v]) => [k, v[2]])), saring.status, "Semua")}</select></label>
       <label>Jalur<select name="jalur">${opsi({umum: "Umum", kampus: "Kampus", organisasi: "Organisasi"}, saring.jalur, "Semua")}</select></label>
-      <label>Nama<input name="q" maxlength="60" value="${esc(saring.q || "")}"></label><button class="ad-tombol utama" type="submit">Terapkan</button><button class="ad-tombol" type="button" data-csv="1">Ekspor CSV</button>
-      <span class="rw-redup">${angka(d.relawan.length)} relawan. Data pribadi hanya tampil di sini.</span></form>
-      <div class="rw-ringkas">${Object.entries(d.hitung).map(([s, n]) => `<span>${ps(STATUS[s])} <b>${angka(n)}</b></span>`).join("")}</div>${wadah("tRel")}`;
+      <label>Nama<input type="search" name="q" maxlength="60" value="${esc(saring.q || "")}"></label><button class="ad-tombol utama" type="submit">Terapkan</button></form>`);
+    isi.replaceChildren(grid, form, K("staf", "Relawan", "Daftar", `<p class="rw-redup">Data pribadi hanya tampil di sini.</p>${wadah("tRel")}`, `<span class="rw-redup">${angka(d.relawan.length)} relawan</span>${ib("unduh", "Ekspor CSV", 'data-csv="1"')}`));
     Tabel(document.getElementById("tRel"), kolomRelawan(), d.relawan, "Tidak ada relawan yang cocok dengan saringan ini.");
   }
 
   /* ================= permintaan + pencocokan ================= */
   async function tampilPermintaan(isi) {
     const d = await ambil(`${API}/permintaan`);
-    isi.innerHTML = `<form id="rwFormPermintaan" class="rw-form ad-kartu"><h3>Permintaan relawan baru</h3><div class="rw-grid">
+    const form = K("tambah", "Permintaan relawan baru", "Formulir", `<form id="rwFormPermintaan" class="rw-form"><div class="rw-grid">
       <label>Judul<input name="judul" required maxlength="120" placeholder="mis. Dapur umum pengungsian"></label><label>Bencana<select name="bencana">${opsi(Object.fromEntries(BENCANA.map(b => [b, b])))}</select></label>
       <label>Provinsi<select name="prov" required>${opsi(urutProv(), "62")}</select></label><label>Kabupaten atau kota<input name="kab" required maxlength="60"></label>
       <label>Lintang (opsional)<input name="lat" inputmode="decimal" placeholder="-2,2"></label><label>Bujur (opsional)<input name="lon" inputmode="decimal" placeholder="114,0"></label>
       <label>Mulai<input name="mulai" type="date" required value="${hariIni()}"></label><label>Selesai<input name="selesai" type="date" required value="${geser(14)}"></label></div>
       <fieldset class="rw-butuh"><legend>Keahlian yang dibutuhkan (isi jumlah orang; 0 = tidak dibutuhkan)</legend>${Object.entries(konfig.keahlian).map(([k, l]) => `<label>${esc(l)}<input type="number" min="0" max="1000" value="0" data-butuh="${k}"></label>`).join("")}</fieldset>
-      <label>Catatan<input name="catatan" maxlength="500"></label><div><button class="ad-tombol utama" type="submit">Buat permintaan</button></div></form>
-      ${wadah("tPerm")}<div id="rwCocok"></div>`;
+      <label>Catatan<input name="catatan" maxlength="500"></label><div><button class="ad-tombol utama" type="submit">Buat permintaan</button></div></form>`);
+    isi.replaceChildren(form, K("kotak", "Permintaan", "Daftar", wadah("tPerm")), Object.assign(document.createElement("div"), {id: "rwCocok", className: "db-tumpuk"}));
     Tabel(document.getElementById("tPerm"), [
       {l: "Permintaan", k: "judul", h: p => `<b>${esc(p.judul)}</b>${dummyPil(p.dummy)}<br><span class="rw-redup">${esc(p.bencana)}</span>`}, {l: "Lokasi", v: p => p.kab, h: p => `${esc(p.kab)}<br><span class="rw-redup">${esc(konfig.provinsi[p.prov] || p.prov)}</span>`},
       {l: "Tanggal", k: "mulai", h: p => `${tgl(p.mulai)} sampai ${tgl(p.selesai)}`}, {l: "Kebutuhan", u: false, h: p => p.butuh.map(b => `<span class="bn-pil p-abu">${esc(konfig.keahlian[b.keahlian] || b.keahlian)} ${angka(b.jumlah)}</span>`).join(" ")},
       {l: "Terpenuhi", v: p => p.ditugaskan, h: p => `${angka(p.ditugaskan)} / ${angka(p.dibutuhkan)}`}, {l: "Status", k: "status", h: p => pil(p.status === "buka" ? "p-hijau" : "p-abu", p.status === "buka" ? "bolt" : "jeda", p.status === "buka" ? "Buka" : "Ditutup")},
-      {l: "Aksi", u: false, h: p => `<div class="rw-aksi"><button class="ad-tombol kecil utama" data-cocok="${esc(p.id)}">Cocokkan</button><button class="ad-tombol kecil" data-tutup="${p.status === "buka" ? "tutup" : "buka"}" data-id="${esc(p.id)}">${p.status === "buka" ? "Tutup" : "Buka lagi"}</button></div>`}], d.permintaan, "Belum ada permintaan.", 10);
+      {l: "Aksi", u: false, h: p => aksiH(ib("cari", "Cocokkan", `data-cocok="${esc(p.id)}"`), ib(p.status === "buka" ? "tutup" : "aktif", p.status === "buka" ? "Tutup" : "Buka lagi", `data-tutup="${p.status === "buka" ? "tutup" : "buka"}" data-id="${esc(p.id)}"`))}], d.permintaan, "Belum ada permintaan.", 10);
     if (terpilih) cocok(terpilih);
   }
   async function cocok(id) {
     terpilih = id; const el = document.getElementById("rwCocok");
     const d = await ambil(`${API}/permintaan/${id}`), p = d.permintaan;
-    el.innerHTML = `<section class="rw-panel ad-kartu"><h3>Pencocokan: ${esc(p.judul)}</h3><p class="rw-redup">Skor: keahlian cocok, kedekatan wilayah (prov sama lebih dulu, lalu yang bersedia keluar provinsi), kecukupan durasi, dikurangi beban tugas 90 hari terakhir. Hanya relawan siap tugas.</p>
-      <div class="rw-ringkas">${p.butuh.map(b => `<span class="bn-pil p-abu">${esc(konfig.keahlian[b.keahlian] || b.keahlian)} ${angka(b.jumlah)}</span>`).join(" ")}</div>${wadah("tKand")}<h3>Penugasan</h3>${wadah("tTugas")}</section>`;
+    el.replaceChildren(K("cari", "Pencocokan: " + p.judul, "Kandidat", `<p class="rw-redup">Skor: keahlian cocok, kedekatan wilayah (prov sama lebih dulu, lalu yang bersedia keluar provinsi), kecukupan durasi, dikurangi beban tugas 90 hari terakhir. Hanya relawan siap tugas.</p>
+      <div class="rw-ringkas">${p.butuh.map(b => `<span class="bn-pil p-abu">${esc(konfig.keahlian[b.keahlian] || b.keahlian)} ${angka(b.jumlah)}</span>`).join(" ")}</div>${wadah("tKand")}`), K("staf", "Penugasan", "Relawan", wadah("tTugas")));
     Tabel(document.getElementById("tKand"), [{l: "Relawan", k: "nama", h: r => `<b>${esc(r.nama)}</b><br><span class="rw-redup">${esc(r.jalur)}</span>`}, {l: "Skor", k: "skor"},
       {l: "Keahlian cocok", v: r => r.cocok.join(","), h: r => pilKeahlian(r.cocok)}, {l: "Wilayah", v: r => r.wilayah, h: r => `${esc(r.kab)} (${esc(konfig.provinsi[r.prov] || r.prov)})<br>${pil(r.wilayah === "luar" ? "p-oranye" : "p-hijau", "pin", {sama_kab: "Satu kabupaten", sama_prov: "Satu provinsi", luar: "Luar provinsi"}[r.wilayah])}`},
       {l: "Durasi", k: "maks_hari", h: r => `${angka(r.maks_hari)} hari ${r.cukup_waktu ? pil("p-hijau", "centang", "Cukup") : pil("p-oranye", "jam", "Kurang")}`}, {l: "Beban", k: "beban"},
-      {l: "Aksi", u: false, h: r => `<button class="ad-tombol kecil utama" data-tugaskan="${esc(r.id)}" data-perm="${esc(id)}">Tugaskan</button>`}], d.kandidat, "Belum ada relawan siap tugas yang cocok.", 8);
+      {l: "Aksi", u: false, h: r => aksiH(ib("tambah", "Tugaskan", `data-tugaskan="${esc(r.id)}" data-perm="${esc(id)}"`))}], d.kandidat, "Belum ada relawan siap tugas yang cocok.", 8);
     Tabel(document.getElementById("tTugas"), [{l: "Relawan", k: "nama"}, {l: "Status", v: t => t.status, h: t => ps(PENUGASAN[t.status])}, {l: "Asuransi", v: t => t.asuransi, h: t => esc(ASURANSI[t.asuransi])}, {l: "Nilai", v: t => t.nilai ?? 0, h: t => t.nilai ?? "–"},
-      {l: "Aksi", u: false, h: t => ["ditawarkan", "diterima"].includes(t.status) ? `<button class="ad-tombol kecil bahaya" data-batal="${esc(t.id)}">Batalkan</button>` : ""}], d.penugasan, "Belum ada yang ditugaskan.", 8);
+      {l: "Aksi", u: false, h: t => ["ditawarkan", "diterima"].includes(t.status) ? aksiH(ib("tutup", "Batalkan", `data-batal="${esc(t.id)}"`, "bahaya")) : ""}], d.penugasan, "Belum ada yang ditugaskan.", 8);
     el.scrollIntoView({behavior: "smooth", block: "nearest"});
   }
 
   /* ================= institusi (kampus, organisasi, MoU relawan): satu modul dengan tab Institusi di /admin/riset ================= */
   async function tampilInstitusi(isi) {
     isi.innerHTML = '<div id="inRoot"></div>';
-    await (await import("/admin/institusi.js?v=1")).pasang(document.getElementById("inRoot"));
+    await (await import("/admin/institusi.js?v=2")).pasang(document.getElementById("inRoot"));
   }
 
   /* ================= pelatihan ================= */
   async function tampilPelatihan(isi) {
     const [d, r] = await Promise.all([ambil(`${API}/pelatihan`), ambil(`${API}/relawan`)]);
-    isi.innerHTML = `<form id="rwFormLatih" class="rw-form ad-kartu"><h3>Catat pelatihan atau sertifikasi</h3><div class="rw-grid"><label>Relawan<select name="relawan_id" required><option value="">Pilih relawan</option>${r.relawan.filter(x => x.status !== "daftar_hitam").map(x => `<option value="${esc(x.id)}">${esc(x.nama)} (${esc(x.kab)})</option>`).join("")}</select></label>
+    isi.replaceChildren(K("tambah", "Catat pelatihan atau sertifikasi", "Formulir", `<form id="rwFormLatih" class="rw-form"><div class="rw-grid"><label>Relawan<select name="relawan_id" required><option value="">Pilih relawan</option>${r.relawan.filter(x => x.status !== "daftar_hitam").map(x => `<option value="${esc(x.id)}">${esc(x.nama)} (${esc(x.kab)})</option>`).join("")}</select></label>
       <label>Nama pelatihan<input name="nama" required maxlength="120"></label><label>Penyelenggara<input name="penyelenggara" maxlength="120"></label><label>Tanggal<input name="tgl" type="date" required value="${hariIni()}"></label>
-      <label>Berlaku sampai (opsional)<input name="berlaku_sampai" type="date"></label></div><div><button class="ad-tombol utama" type="submit">Simpan</button></div></form>${wadah("tLatih")}`;
+      <label>Berlaku sampai (opsional)<input name="berlaku_sampai" type="date"></label></div><div><button class="ad-tombol utama" type="submit">Simpan</button></div></form>`), K("berkas", "Pelatihan", "Daftar", wadah("tLatih")));
     Tabel(document.getElementById("tLatih"), [{l: "Relawan", k: "relawan", h: p => esc(p.relawan) + dummyPil(p.dummy)}, {l: "Pelatihan", k: "nama"}, {l: "Penyelenggara", v: p => p.penyelenggara || ""}, {l: "Tanggal", k: "tgl", h: p => tgl(p.tgl)},
       {l: "Berlaku sampai", v: p => p.berlaku_sampai || "9999", h: p => p.berlaku_sampai ? `${tgl(p.berlaku_sampai)} ${p.kedaluwarsa ? pil("p-merah", "x", "Kedaluwarsa") : pil("p-hijau", "centang", "Berlaku")}` : "Tanpa batas"},
-      {l: "Aksi", u: false, h: p => `<button class="ad-tombol kecil bahaya" data-hapus-latih="${esc(p.id)}">Hapus</button>`}], d.pelatihan, "Belum ada pelatihan tercatat.");
+      {l: "Aksi", u: false, h: p => aksiH(ib("hapus", "Hapus", `data-hapus-latih="${esc(p.id)}"`, "bahaya"))}], d.pelatihan, "Belum ada pelatihan tercatat.");
   }
 
   /* ================= asuransi, jam kerja, penilaian ================= */
   async function tampilAsuransi(isi) {
     const d = await ambil(`${API}/penugasan`), rows = d.penugasan.filter(p => !["ditolak", "dibatalkan"].includes(p.status));
-    isi.innerHTML = `<div class="rw-bar"><span class="rw-redup">Status asuransi per penugasan. Ubah lalu tekan Simpan di barisnya.</span></div>${wadah("tAsur")}`;
+    isi.replaceChildren(K("kunci", "Asuransi", "Penugasan", `<p class="rw-redup">Status asuransi per penugasan. Ubah lalu tekan Simpan di barisnya.</p>${wadah("tAsur")}`));
     Tabel(document.getElementById("tAsur"), [{l: "Relawan", k: "nama", h: p => esc(p.nama) + dummyPil(p.dummy)}, {l: "Permintaan", k: "judul", h: p => `${esc(p.judul)}<br><span class="rw-redup">${tgl(p.mulai)} sampai ${tgl(p.selesai)}</span>`},
       {l: "Penugasan", v: p => p.status, h: p => ps(PENUGASAN[p.status])}, {l: "Asuransi", v: p => p.asuransi, h: p => `<select class="rw-isian" data-f="asuransi">${opsi(ASURANSI, p.asuransi)}</select>`},
-      {l: "Nomor polis", u: false, h: p => `<input class="rw-isian" data-f="polis" maxlength="60" value="${esc(p.polis || "")}">`}, {l: "Aksi", u: false, h: p => `<button class="ad-tombol kecil utama" data-simpan-asuransi="${esc(p.id)}">Simpan</button>`}], rows, "Belum ada penugasan.");
+      {l: "Nomor polis", u: false, h: p => `<input class="rw-isian" data-f="polis" maxlength="60" value="${esc(p.polis || "")}">`}, {l: "Aksi", u: false, h: p => aksiH(ib("cek", "Simpan", `data-simpan-asuransi="${esc(p.id)}"`))}], rows, "Belum ada penugasan.");
   }
   async function tampilJam(isi) {
     const d = await ambil(`${API}/penugasan`);
-    isi.innerHTML = `<div class="rw-bar"><span class="rw-redup">Sesi check-in dan check-out relawan. Jam yang disahkan masuk angka publik dan rekap kampus.</span></div>${wadah("tJam")}`;
+    isi.replaceChildren(K("jam", "Jam kerja", "Sesi", `<p class="rw-redup">Sesi check-in dan check-out relawan. Jam yang disahkan masuk angka publik dan rekap kampus.</p>${wadah("tJam")}`));
     Tabel(document.getElementById("tJam"), [{l: "Relawan", k: "nama"}, {l: "Masuk", k: "masuk", h: j => wkt(j.masuk)}, {l: "Keluar", k: "keluar", h: j => j.keluar ? wkt(j.keluar) : pil("p-hijau", "api", "Berjalan")}, {l: "Durasi", k: "menit", h: j => jamF(j.menit)},
       {l: "Lokasi", u: false, h: j => j.lat == null ? "–" : `<a href="https://www.google.com/maps?q=${+j.lat},${+j.lon}" target="_blank" rel="noopener noreferrer">${(+j.lat).toLocaleString("id-ID", {maximumFractionDigits: 3})}, ${(+j.lon).toLocaleString("id-ID", {maximumFractionDigits: 3})}</a>`},
-      {l: "Validasi", v: j => j.sah, h: j => ps(SAH[j.sah])}, {l: "Aksi", u: false, h: j => j.keluar == null ? "" : `<div class="rw-aksi"><button class="ad-tombol kecil utama" data-jam="sah" data-id="${esc(j.id)}">Sahkan</button><button class="ad-tombol kecil bahaya" data-jam="tolak" data-id="${esc(j.id)}">Tolak</button></div>`}], d.jam, "Belum ada sesi jam kerja.");
+      {l: "Validasi", v: j => j.sah, h: j => ps(SAH[j.sah])}, {l: "Aksi", u: false, h: j => j.keluar == null ? "" : aksiH(ib("cek", "Sahkan", `data-jam="sah" data-id="${esc(j.id)}"`), ib("tutup", "Tolak", `data-jam="tolak" data-id="${esc(j.id)}"`, "bahaya"))}], d.jam, "Belum ada sesi jam kerja.");
   }
   async function tampilPenilaian(isi) {
     const [d, h] = await Promise.all([ambil(`${API}/penugasan`), ambil(`${API}/relawan?status=daftar_hitam`)]);
-    isi.innerHTML = `<h3>Purna tugas dan penilaian</h3>${wadah("tNilai")}<h3>Daftar hitam</h3>${wadah("tHitam")}`;
+    isi.replaceChildren(K("grafik", "Purna tugas dan penilaian", "Penilaian", wadah("tNilai")), K("cabut", "Daftar hitam", "Relawan", wadah("tHitam")));
     Tabel(document.getElementById("tNilai"), [{l: "Relawan", k: "nama", h: p => esc(p.nama) + dummyPil(p.dummy)}, {l: "Permintaan", k: "judul"}, {l: "Penugasan", v: p => p.status, h: p => ps(PENUGASAN[p.status])}, {l: "Jam sah", k: "jam_sah_menit", h: p => jamF(p.jam_sah_menit)},
       {l: "Nilai (1-5)", v: p => p.nilai ?? 0, h: p => p.status === "selesai" ? `<select class="rw-isian" data-f="nilai"><option value="">Belum</option>${[1, 2, 3, 4, 5].map(n => `<option ${p.nilai === n ? "selected" : ""}>${n}</option>`).join("")}</select>` : "–"},
       {l: "Catatan", u: false, h: p => p.status === "selesai" ? `<input class="rw-isian" data-f="catatan" maxlength="300" value="${esc(p.nilai_catatan || "")}">` : ""},
-      {l: "Aksi", u: false, h: p => `<div class="rw-aksi">${p.status === "selesai" ? `<button class="ad-tombol kecil utama" data-simpan-nilai="${esc(p.id)}">Simpan nilai</button>` : ""}${["bertugas", "diterima"].includes(p.status) ? `<button class="ad-tombol kecil utama" data-selesai="${esc(p.id)}">Tandai selesai</button>` : ""}</div>`}],
+      {l: "Aksi", u: false, h: p => aksiH(p.status === "selesai" ? ib("cek", "Simpan nilai", `data-simpan-nilai="${esc(p.id)}"`) : "", ["bertugas", "diterima"].includes(p.status) ? ib("aktif", "Tandai selesai", `data-selesai="${esc(p.id)}"`) : "")}],
       d.penugasan.filter(p => ["diterima", "bertugas", "selesai"].includes(p.status)), "Belum ada penugasan yang berjalan atau selesai.");
     Tabel(document.getElementById("tHitam"), [{l: "Nama", k: "nama", h: r => esc(r.nama) + dummyPil(r.dummy)}, {l: "Kontak", u: false, h: r => `${esc(r.wa || "–")}<br><span class="rw-redup">${esc(r.email || "–")}</span>`}, {l: "Alasan", v: r => r.alasan || "", h: r => esc(r.alasan || "–")},
-      {l: "Aksi", u: false, h: r => `<button class="ad-tombol kecil" data-r="pulihkan" data-id="${esc(r.id)}">Pulihkan</button>`}], h.relawan, "Tidak ada relawan dalam daftar hitam.");
+      {l: "Aksi", u: false, h: r => aksiH(ib(IKB.pulih, "Pulihkan", `data-r="pulihkan" data-id="${esc(r.id)}"`))}], h.relawan, "Tidak ada relawan dalam daftar hitam.");
   }
   const TAMPIL = {antrean: tampilAntrean, relawan: tampilRelawan, permintaan: tampilPermintaan, institusi: tampilInstitusi, pelatihan: tampilPelatihan, asuransi: tampilAsuransi, jam: tampilJam, penilaian: tampilPenilaian};
 
@@ -218,6 +210,7 @@
     const t = e.target.closest("button, a"); if (!t) return;
     if (t.dataset.tab) return pindah(t.dataset.tab);
     if (t.dataset.csv) return unduhCsv();
+    if (t.classList.contains("db-saring")) { const v = t.dataset.saring; saring = {...saring, status: saring.status === v ? "" : v}; for (const u of app.querySelectorAll(".db-saring")) u.setAttribute("aria-pressed", String(u === t && saring.status === v)); return requestAnimationFrame(() => setTimeout(muat, 0)); }
     if (t.dataset.r) {   // aksi status relawan
       const aksi = t.dataset.r, butuhAlasan = ["daftar_hitam", "pulihkan"].includes(aksi); let alasan;
       if (butuhAlasan || aksi === "tolak") { alasan = prompt(butuhAlasan ? "Alasan (wajib, minimal 3 huruf):" : "Alasan menolak (boleh dikosongkan):"); if (alasan === null) return; }

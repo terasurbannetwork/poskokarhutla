@@ -51,7 +51,7 @@ test("kartu: kepala = nama seksi berikon, rute sesuai kontrak, 100 baris, kerja 
 });
 test("terpasang di /operasi bersama seksi sarana, hanya lewat registri (karhutla tak berubah)", () => {
   const js = baca("public/operasi_laporan.js");
-  assert.match(js, /b\.id !== "karhutla" && b\.kemampuan\?\.operasi === true/); assert.match(js, /PbRenlap\.pasang\(isi2, \{bencana: b\.id\}\)/); assert.match(js, /\/inti\/renlap\.js/); assert.match(js, /\/inti\/renlap\.css/);
+  assert.match(js, /b\.id !== "karhutla" && b\.kemampuan\?\.operasi === true/); assert.match(js, /PbRenlap\.pasang\(isi2, \{bencana: b\.id, tindakan:/); assert.match(js, /\/inti\/renlap\.js/); assert.match(js, /\/inti\/renlap\.css/);
 });
 test("PB-18 perbaikan: pilih renlap baru mengosongkan isian lama, catatan keselamatan tetap, muat gagal tidak di-cache", () => {
   const js = baca("public/inti/renlap.js"), lp = baca("public/operasi_laporan.js");
@@ -59,5 +59,39 @@ test("PB-18 perbaikan: pilih renlap baru mengosongkan isian lama, catatan kesela
   assert.match(R.catatanDari(null), /bukan perintah terbang\. Skor hipotesis\./);
   assert.doesNotMatch(R.catatanDari({catatan: "USULAN x", bobot_label: "HIPOTESIS"}), /[A-Z]{3,}/);   // tanpa huruf kapital dari mesin
   assert.match(js, /\[alat, aksi, status, tabelWadah, catat,/);
-  assert.match(lp, /renlap\.js\?v=1"\)\.catch\(\(\) => 0\)/); assert.match(lp, /pbMuat = null/);
+  assert.match(lp, /renlap\.js\?v=2"\)\.catch\(\(\) => 0\)/); assert.match(lp, /pbMuat = null/);
+});
+test("TO-05: butirDari membawa tindakan hanya bila disentuh, urut registri", () => {
+  const b = R.butirDari([{no: 1, didatangi: "1", tindakan: new Set(["pompa", "evakuasi"])}, {no: 2, didatangi: "1", tindakan: new Set()}, {no: 3, didatangi: "1"}], ["evakuasi", "pompa"]);
+  assert.deepEqual(JSON.parse(JSON.stringify(b.map(x => x.tindakan))), [["evakuasi", "pompa"], [], null]);
+  assert.ok(!("tindakan" in b[2]));
+});
+test("TO-05: kepatuhan per_tindakan berlabel, urut n turun, kode asing apa adanya", () => {
+  const k = R.ringkasKepatuhan({per_tindakan: {pompa: 2, evakuasi: 5, xyz: 1}}, [["evakuasi", "Evakuasi warga"], ["pompa", "Penyedotan genangan"]]);
+  assert.deepEqual(JSON.parse(JSON.stringify(k.tindakan)), [["Evakuasi warga", 5], ["Penyedotan genangan", 2], ["xyz", 1]]);
+  assert.equal(R.ringkasKepatuhan({}).tindakan.length, 0);
+});
+test("TO-05: persen logbook bilangan bulat; bencana tak ada di logbook = tidak tercatat", () => {
+  const lb = {jenis: {banjir: {n: 1000, tindakan: {evakuasi: 731, pompa: 5}}}};
+  assert.equal(R.persenLogbook(lb, "banjir", "evakuasi"), 73); assert.equal(R.persen(73), "73 persen"); assert.equal(R.persen(null), "–");
+  assert.equal(R.persenLogbook(lb, "udara", "evakuasi"), null); assert.equal(R.persenLogbook(null, "banjir", "x"), null);
+  assert.equal(R.persenLogbook(lb, "banjir", "tak_ada"), 0);
+});
+test("TO-05: kartu Tindakan pertama, kolom hasil, pesan tindakan:false, tanpa warna literal", () => {
+  const js = baca("public/inti/renlap.js"), css = baca("public/inti/renlap.css"), lp = baca("public/operasi_laporan.js");
+  assert.ok(js.includes('"Tindakan", "tindakan"')); assert.match(js, /replaceChildren\(\.\.\.\(kT \? \[kT\] : \[\]\), k1, k2, k3\)/);
+  assert.ok(js.includes("/data/bnpb/logbook_tindakan.json")); assert.match(js, /r\.j\.tindakan === false && r\.j\.pesan/); assert.match(js, /persen kejadian berisi di logbook Pusdalops 2011-2026/);
+  assert.doesNotMatch(css.slice(css.indexOf(".rl-bar")), /#[0-9a-f]{3,6}\b|rgb\(/i); assert.match(lp, /j\?\.tindakan/);
+});
+test("TO-05 INP: isi details malas lewat toggle ter-delegasi, tampilkan lagi hanya append, logbook cache modul, pil banyak", () => {
+  const js = baca("public/inti/renlap.js"), lp = baca("public/operasi_laporan.js"), pc = baca("public/operasi_peta.css");
+  assert.match(js, /function daftarTdk\(pilih\) \{ const d = el\("details", "rl-tdk"\); d\.append\(el\("summary"/); assert.doesNotMatch(js.slice(js.indexOf("function daftarTdk"), js.indexOf("function barisHasil")), /checkbox/);
+  assert.match(js, /addEventListener\("toggle", e => \{[\s\S]*?\}, true\)/); assert.match(js, /tb\.append\(\.\.\.S\.target\.slice\(dari, S\.batasT\)/);
+  assert.match(js, /let lbJanji = null;/); assert.match(js, /if \(!j\) lbJanji = null/);
+  assert.match(lp, /ops-kat-banyak/); assert.match(pc, /\.ops-kat\.ops-kat-banyak\{grid-auto-flow:row;grid-template-columns:repeat\(auto-fit,minmax\(170px,1fr\)\)/);
+});
+test("TO-05: tiga keadaan kartu Tindakan, title kolom, rekap target", () => {
+  const js = baca("public/inti/renlap.js");
+  for (const t of ["memuat data", "data logbook belum bisa dimuat", "tidak tercatat", "pencocokan kata kunci, bisa kurang atau lebih dari kenyataan", "data dibuat ", "kejadian berisi", '" target"']) assert.ok(js.includes(t), t);
+  assert.match(js, /gambarTindakan\("memuat"\)/); assert.match(js, /lb \? "ada" : "gagal"/);
 });

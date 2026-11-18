@@ -4,7 +4,8 @@
    CSP admin: tanpa skrip/gaya inline, semua teks data lewat textContent. Peta sasaran = SVG titik kecamatan digambar di sini (tanpa pustaka luar).
    INP: kontrol (pil bahan, kartu, tombol) berubah SEKETIKA; daftar, peta, dan kartu hasil digambar sesudah satu frame dan dipotong. Dummy: Super Admin saja (🧪 isi, 🧹 hapus). */
 (() => {
-  const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul"), NS = "http://www.w3.org/2000/svg";
+  const DB = Admin.dasbor;   // kit dashboard bersama (public/admin/bersama.js)
+  const app = DB.tumpuk(document.getElementById("app")), aksiJudul = document.getElementById("aksiJudul"), NS = "http://www.w3.org/2000/svg";
   const h = (tag, att, ...anak) => { const e = document.createElement(tag);
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
@@ -29,7 +30,7 @@
   let D = null, HASIL = null, WIL = null, jadwal = 0, pesanTeks = "", pesanOk = true;
   let F = {form: null, op: false, semua: new Set(), episodeSemua: false};   // form: null | {id|null, ...isian}
   const pesan = (t, ok = true) => { pesanTeks = t || ""; pesanOk = ok; const p = document.getElementById("omPesan"); if (p) { p.textContent = pesanTeks; p.className = "om-pesan " + (ok ? "ok" : "galat"); } };
-  const kosong = (teks, ...tombol) => app.replaceChildren(h("div", {class: "om-kosong"}, h("p", {teks}), ...tombol));
+  const kosong = (teks, ...tombol) => app.replaceChildren(DB.kartu({ikon: "pesawat", judul: "Sortie OMC", ey: "Status", kanan: ""}, h("div", {class: "om-kosong"}, h("p", {teks}), ...tombol)));
   const pil = (teks, kls = "") => h("span", {class: "om-pil " + kls, teks});
   /* angka di kalimat berwarna merah (selera pemilik: angka kunci menonjol) */
   const kalimat = t => h("p", {class: "om-kalimat"}, ...String(t).split(/(\d[\d.,]*)/).map((s, i) => i % 2 ? h("b", {class: "om-angka", teks: s}) : s));
@@ -85,25 +86,24 @@
   function kartuMetrik(m, dummy, label) {
     const [ikon, nama, , , sumber] = METRIK[m.nama] || ["", m.nama, "", 1, ""], [labelKat, kls] = KAT[m.kategori] || KAT.data_kurang;
     return h("article", {class: "om-kartu " + kls},
-      h("div", {class: "om-eyebrow"}, pil(`${ikon} ${nama}`, "metrik"), pil(labelKat, kls), dummy ? pil("DUMMY", "dummy") : null),
+      h("div", {class: "om-eyebrow"}, h("span", {class: "om-pil metrik", title: `Sumber: ${(label || {})[m.nama] || sumber}, diolah Centurisk97`, teks: `${ikon} ${nama}`}), pil(labelKat, kls), dummy ? pil("DUMMY", "dummy") : null),
       m.kalimat ? kalimat(m.kalimat) : null,
       m.sebelum != null && m.sesudah != null && m.kontrol_sebelum != null && m.kontrol_sesudah != null ? grafik(m) : null,
       m.bendera?.length ? h("div", {class: "om-bendera"}, ...m.bendera.map(b => pil("⚑ " + (BENDERA[b] || b.replaceAll("_", " ")), "bendera"))) : null,
-      h("p", {class: "om-sumber", teks: `Sumber: ${(label || {})[m.nama] || sumber}, diolah Centurisk97`}),
       h("p", {class: "om-footer", teks: FOOTER}));
   }
   function panelHasil() {
-    const E = [...episodeSemua()].sort((x, y) => String(y.mulai || "").localeCompare(String(x.mulai || ""))), w = h("section", {class: "om-bagian", id: "omHasil"}, h("h2", {teks: "Hasil evaluasi"}));
-    if (!E.length) { w.append(h("div", {class: "om-kosong"}, h("p", {teks: "Evaluasi belum tersedia, arsip pembanding sedang dikumpulkan."}))); return w; }
+    const E = [...episodeSemua()].sort((x, y) => String(y.mulai || "").localeCompare(String(x.mulai || ""))), w = DB.kartu({ikon: "grafik", judul: "Hasil evaluasi", ey: "Evaluasi", kanan: "", id: "omHasil"}), isi = w.querySelector(".ex-bd");
+    if (!E.length) { isi.append(h("div", {class: "om-kosong"}, h("p", {teks: "Evaluasi belum tersedia, arsip pembanding sedang dikumpulkan."}))); return w; }
     const tampil = F.episodeSemua ? E : E.slice(0, POTONG_EP);
-    for (const [bahan, r] of Object.entries(HASIL?.ringkas || {})) if (r?.kalimat) w.append(kalimat(r.kalimat));
+    for (const [bahan, r] of Object.entries(HASIL?.ringkas || {})) if (r?.kalimat) isi.append(kalimat(r.kalimat));
     for (const e of tampil) {
       const S = e.sortie_ids.map(i => D.sortie.find(s => s.id === i)).filter(Boolean), tgls = [...new Set(S.map(s => s.tanggal))].map(tgl).join(", ");
-      w.append(h("div", {class: "om-episode", id: "ep-" + e.id}, h("div", {class: "om-baris"}, h("b", {teks: `${BAHAN[e.bahan] || e.bahan}, ${tgls || "tanggal tidak diketahui"}`}), pil(`${e.sortie_ids.length} sortie`),
+      isi.append(h("div", {class: "om-episode", id: "ep-" + e.id}, h("div", {class: "om-baris"}, h("b", {teks: `${BAHAN[e.bahan] || e.bahan}, ${tgls || "tanggal tidak diketahui"}`}), pil(`${e.sortie_ids.length} sortie`),
         pil(e.status === "final" ? "Final" : "Sementara", e.status === "final" ? "final" : "sementara"), e.dummy ? pil("DUMMY", "dummy") : null),
         h("div", {class: "om-kartu-grid"}, ...e.metrik.map(m => kartuMetrik(m, e.dummy, HASIL?.label)))));
     }
-    if (E.length > tampil.length) w.append(h("button", {class: "om-btn", type: "button", "data-episode-semua": "1", teks: `Lihat semua ${fmt(E.length)} episode`}));
+    if (E.length > tampil.length) isi.append(h("button", {class: "om-btn", type: "button", "data-episode-semua": "1", teks: `Lihat semua ${fmt(E.length)} episode`}));
     return w;
   }
 
@@ -116,27 +116,27 @@
   }
   const sasaranTeks = s => [s.sasaran_kab.map(namaKab).join(", "), s.sasaran_poligon ? "poligon gambar" : ""].filter(Boolean).join(" dan ");
   function barisSortie(s) {
-    const td = (teks, kls) => h("td", {class: kls, teks, title: kls === "sasaran" ? teks : null});
+    const td = (teks, kls) => h("td", {class: kls === "angka" ? "n" : kls, teks, title: kls === "sasaran" ? teks : null});
     return h("tr", {"data-id": s.id}, td(tgl(s.tanggal)), td(s.jam_mulai ? `${s.jam_mulai}${s.jam_selesai ? " sampai " + s.jam_selesai : ""}` : "tidak diketahui", s.jam_mulai ? "" : "redup"),
       h("td", null, h("b", {teks: s.pesawat}), s.dummy ? pil("DUMMY", "dummy") : null), h("td", null, pil(BAHAN[s.bahan], s.bahan)), td(fmt(s.kg), "angka"), td(s.ketinggian_kaki != null ? fmt(s.ketinggian_kaki) : "–", "angka"), td(sasaranTeks(s), "sasaran"),
       h("td", null, statusSortie(s)),
-      h("td", {class: "aksi"}, D.boleh_tulis ? [h("button", {class: "om-btn kecil", type: "button", "data-ubah": s.id, teks: "Ubah"}), h("button", {class: "om-btn kecil bahaya", type: "button", "data-hapus": s.id, teks: "Hapus"})] : null));
+      h("td", null, D.boleh_tulis ? DB.aksi(DB.ikon("ubah", "Ubah sortie", {"data-ubah": s.id}), DB.ikon("hapus", "Hapus sortie", {"data-hapus": s.id}, "bahaya")) : null));
   }
   function grup(nama, op, S) {
     const kg = Object.entries(BAHAN).map(([k, l]) => [l, S.filter(s => s.bahan === k).reduce((t, s) => t + s.kg, 0)]).filter(x => x[1] > 0).map(([l, t]) => `${l} ${fmt(t)} kg`).join(", ");
     const tampil = F.semua.has(op?.id ?? "-") ? S : S.slice(0, POTONG);
     return h("section", {class: "om-grup"}, h("div", {class: "om-baris"}, h("h3", {teks: nama}), op?.dummy ? pil("DUMMY", "dummy") : null, h("span", {class: "om-meta", teks: [`${fmt(S.length)} sortie`, kg, op?.provinsi ? PROV[op.provinsi] : null,
       op?.mulai ? `${tgl(op.mulai)}${op.selesai && op.selesai !== op.mulai ? " sampai " + tgl(op.selesai) : ""}` : null].filter(Boolean).join(", ")})),
-      h("div", {class: "om-tabel-wadah"}, h("table", {class: "om-tabel"}, h("thead", null, h("tr", null, ["Tanggal", "Jam WIB", "Pesawat", "Bahan", "Kg", "Kaki", "Sasaran", "Status", ""].map(k => h("th", {teks: k})))), h("tbody", null, tampil.map(barisSortie)))),
+      h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel"}, h("thead", null, h("tr", null, ["Tanggal", "Jam WIB", "Pesawat", "Bahan", "Kg", "Kaki", "Sasaran", "Status", "Aksi"].map(k => h("th", {scope: "col", teks: k})))), h("tbody", null, tampil.map(barisSortie)))),
       S.length > tampil.length ? h("button", {class: "om-btn", type: "button", "data-grup-semua": op?.id ?? "-", teks: `Lihat semua ${fmt(S.length)} sortie`}) : null);
   }
   function panelDaftar() {
-    const w = h("section", {class: "om-bagian", id: "omDaftar"}, h("h2", {teks: "Sortie per operasi"}));
-    if (!D.sortie.length) { w.append(h("div", {class: "om-kosong"}, h("p", {teks: D.boleh_tulis ? "Belum ada sortie tercatat. Catat sortie pertama dengan tombol di atas." : "Belum ada sortie tercatat."}))); return w; }
+    const w = DB.kartu({ikon: "pesawat", judul: "Sortie per operasi", ey: "Daftar", kanan: "", id: "omDaftar"}), isi = w.querySelector(".ex-bd");
+    if (!D.sortie.length) { isi.append(h("div", {class: "om-kosong"}, h("p", {teks: D.boleh_tulis ? "Belum ada sortie tercatat. Catat sortie pertama dengan tombol di atas." : "Belum ada sortie tercatat."}))); return w; }
     const per = new Map(D.operasi.map(o => [o.id, []])); per.set(null, []);
     for (const s of D.sortie) (per.get(s.operasi_id) || per.get(null)).push(s);
-    for (const o of D.operasi) if (per.get(o.id).length) w.append(grup(o.nama, o, per.get(o.id)));
-    if (per.get(null).length) w.append(grup("Tanpa operasi", null, per.get(null)));
+    for (const o of D.operasi) if (per.get(o.id).length) isi.append(grup(o.nama, o, per.get(o.id)));
+    if (per.get(null).length) isi.append(grup("Tanpa operasi", null, per.get(null)));
     return w;
   }
 
@@ -195,9 +195,10 @@
     const op = F.op ? h("div", {class: "om-form", id: "omOp"}, bidang("Nama operasi", h("input", {id: "omOpNama", maxlength: 100, placeholder: "OMC Kalimantan Tengah Okt 2026"})),
       bidang("Provinsi", h("select", {id: "omOpProv"}, h("option", {value: "", teks: "Beberapa provinsi"}), ...Object.entries(PROV).map(([k, n]) => h("option", {value: k, teks: n})))),
       bidang("Mulai", h("input", {id: "omOpMulai", type: "date"})), bidang("Selesai", h("input", {id: "omOpSelesai", type: "date"})), h("div", {class: "om-aksi"}, h("button", {class: "om-btn utama", type: "button", "data-op-simpan": "1", teks: "Simpan operasi"}))) : null;
-    if (!f) return h("div", {class: "om-bagian"}, aksi, op);
+    const kartuForm = (...isi) => DB.kartu({ikon: "tambah", judul: f ? (f.id ? "Ubah sortie" : "Catat sortie") : "Catat sortie", ey: "Formulir", kanan: "", id: "omFormKartu"}, ...isi);
+    if (!f) return kartuForm(aksi, op);
     const field = (id, att) => h("input", {id, ...att});
-    const form = h("div", {class: "om-form", id: "omForm"}, h("h3", {teks: f.id ? "Ubah sortie" : "Catat sortie"}),
+    const form = h("div", {class: "om-form", id: "omForm"},
       bidang("Operasi", h("select", {id: "omOperasi"}, h("option", {value: "", teks: "Tanpa operasi"}), ...o.map(x => h("option", {value: x.id, teks: x.nama, selected: f.operasi_id === x.id})))),
       bidang("Tanggal (WIB)", field("omTanggal", {type: "date", value: f.tanggal})), bidang("Pesawat (registrasi)", field("omPesawat", {value: f.pesawat, maxlength: 40, placeholder: "PK-SNL"})),
       bidang("Jam mulai WIB, kosong bila tidak diketahui", field("omMulai", {type: "time", value: f.jam_mulai})), bidang("Jam selesai WIB", field("omSelesai", {type: "time", value: f.jam_selesai})),
@@ -209,16 +210,16 @@
         h("div", {class: "om-aksi"}, h("button", {class: "om-btn kecil", type: "button", "data-urung": "1", teks: "Urungkan titik"}), h("button", {class: "om-btn kecil", type: "button", "data-kosongkan": "1", teks: "Kosongkan poligon"}))),
       h("label", {class: "om-bidang lebar"}, h("span", {teks: "Catatan internal (tidak tampil di data publik)"}), h("textarea", {id: "omCatatan", maxlength: 500, rows: 2, teks: f.catatan})),
       h("div", {class: "om-aksi"}, h("button", {class: "om-btn utama", id: "omSimpan", type: "button", "data-simpan": "1", teks: f.id ? "Simpan perubahan" : "Simpan sortie"}), h("button", {class: "om-btn", type: "button", "data-batal": "1", teks: "Batal"})));
-    return h("div", {class: "om-bagian"}, aksi, op, form);
+    return kartuForm(aksi, op, form);
   }
 
   /* ---------- kerangka ---------- */
   const tunda = () => { cancelAnimationFrame(jadwal); jadwal = requestAnimationFrame(() => setTimeout(() => { const d = document.getElementById("omDaftar"), p = document.getElementById("omHasil"); d?.replaceWith(panelDaftar()); p?.replaceWith(panelHasil()); }, 0)); };
   function gambarKontrol() {
-    const S = D.sortie, kg = S.reduce((t, s) => t + s.kg, 0), tunggu = S.filter(s => !episodeDari(s.id)).length, kt = (l, n, kls = "") => h("div", {class: "om-ringkas-kartu " + kls}, h("b", {teks: fmt(n)}), h("span", {teks: l}));
+    const S = D.sortie, kg = S.reduce((t, s) => t + s.kg, 0), tunggu = S.filter(s => !episodeDari(s.id)).length, kt = (l, n, warna = "", ikon = "grafik") => DB.ubin({ikon, label: l, nilai: fmt(n), ket: " ", warna});
     app.replaceChildren(h("p", {id: "omPesan", class: "om-pesan " + (pesanOk ? "ok" : "galat"), role: "status", teks: pesanTeks}),
-      h("div", {class: "om-ringkas"}, kt("Sortie tercatat", S.length), kt("Bahan disemai (kg)", kg), kt("Belum ada hasil", tunggu, tunggu ? "merah" : "")),
-      panelForm(), h("section", {class: "om-bagian", id: "omDaftar"}), h("section", {class: "om-bagian", id: "omHasil"}));
+      DB.ubinGrid(kt("Sortie tercatat", S.length, "", "pesawat"), kt("Bahan disemai (kg)", kg, "", "kotak"), kt("Belum ada hasil", tunggu, tunggu ? "merah" : "", "jam")),
+      panelForm(), h("div", {id: "omDaftar"}), h("div", {id: "omHasil"}));
     pasangDummy(); tunda();
     if (F.form) { gambarKab(); gambarPeta(); }
   }
