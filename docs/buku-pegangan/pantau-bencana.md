@@ -4,8 +4,8 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
-Disegarkan 17 Nov 2026 malam\
-commit dbadf8528
+Disegarkan 18 Nov 2026 malam\
+commit 7fcaa86e4
 
 [Mengenal pemilik](#mengenal-pemilik) [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -72,18 +72,20 @@ Disuling dari log prompt pemilik (`.claude/ilmu-agent/prompt/`), memori, dan com
 - Memoles deck per gambar dulu baru dirakit: *"kirim gambarnya dlu ke saya, baru build deck keseluruhan, kita poles sampai bener2 bagus"* (16 Nov). Dia juga menyunting PPTX langsung, jadi revisi berikutnya dibangun dari berkas yang dia sunting.
 - Bertanya kelayakan dulu, lalu memutus sekaligus: *"Bisa ga ya?"*, *"menurut lu bisa dikategorikan gimana"*, lalu *"Gas semua"* atau *"gas gabung sekalian"*. Usulan yang dia setujui harus dikerjakan utuh, termasuk butir opsionalnya.
 - Menjalankan migrasi D1 produksi sendiri dari terminal (*"Gw terapkan sendiri"*, 17 Nov: 0150 sampai 0153), dan bertanya dulu apakah push mengubah sistem yang sudah jalan (*"ini kalo di push bakal ngerubah sistem yang sudah ada apa ngga ?"*). Laporan sebelum push harus menyebut dampaknya ke yang sudah ada.
+- Merancang lewat persetujuan singkat atas usulan bernomor, lalu membaliknya cepat bila data menunjukkan lain: 18 Nov bot laporan WA lahir dari K1 sampai K21 dalam sehari (*"ikut usul"*, *"setuju yang ini, fokus bot baru aja"*); K20 (*"as it is aja dulu"*) diganti K21 (*"berarti ini gausah ada, sesuaikan aja"*) begitu uji banding membuktikan selisih firespot berasal dari arsip yang terpotong. Usulan wajib membawa bukti angka supaya bisa diputus sekali baca.
+- Meninjau deck per slide dengan teguran sangat pendek dan keras (*"Sumpah jelek banget jenis gini. Jangan pernah ada lagi. Ganti lah"*, 18 Nov). Teguran keras atas satu bentuk berarti bentuk itu dilarang di semua deck, bukan hanya di deck itu.
 - Sejak 16 Nov sebagian prompt datang dari perangkat Windows dengan sapaan saya/kamu, untuk deck laporan dan paparan. Aturannya sama; jalur `C:\Users\...` di prompt bukan jalur repo.
 
 ### Pola koreksi berulang
 
-Kolom "8 sampai 14 Nov" dibekukan dari penyegaran sebelumnya; kolom "15 sampai 17 Nov" dihitung dari log prompt sejak itu.
+Kolom "8 sampai 14 Nov" dibekukan dari penyegaran sebelumnya; kolom "15 sampai 18 Nov" dihitung dari log prompt sejak itu, ditambah kutipan tinjauan deck 18 Nov di `keputusan-pemilik.md` skill `ppt-konsultan` (log prompt 18 Nov kosong; sesi hari itu tidak tercatat di mesin ini).
 
-| Pola | 8 sampai 14 Nov | 15 sampai 17 Nov | Terakhir | Contoh commit perbaikan | Penahan |
+| Pola | 8 sampai 14 Nov | 15 sampai 18 Nov | Terakhir | Contoh commit perbaikan | Penahan |
 | --- | --- | --- | --- | --- | --- |
-| Tombol, label, slide, atau baris tambahan yang tidak diminta ("Gausah ada", "Hilangkan", "hapus aja") | lebih dari 100 | 25 | 16 Nov | `0cd3304f0`, `53fd40625`, `fdc6c63b9`, `f21596a57`, `f50b163f5` | belum bergerbang; catat di Fitur yang disembunyikan |
-| "Jelek banget", minta dibagusin tanpa rincian (17 Nov: *"Bagusin lah tiap kata" nya nih"*, *"Bagusin lagi"* dua kali) | 57 | 13 | 17 Nov | `335e150b7`, `81512efb9`, `cfdd0d1c3`, `31c54ef59`, `77bc17a5d` | belum bergerbang; tinjau di 8800 sebelum lapor, kirim gambar per slide sebelum merakit deck |
+| Tombol, label, slide, atau baris tambahan yang tidak diminta ("Gausah ada", "Hilangkan", "hapus aja") | lebih dari 100 | 30 | 18 Nov | `0cd3304f0`, `53fd40625`, `fdc6c63b9`, `f21596a57`, `f50b163f5` | sebagian: D-53 kode bagian "A1." di judul (`periksa_selera_181126`); sisanya catat di Fitur yang disembunyikan |
+| "Jelek banget", minta dibagusin tanpa rincian (17 Nov: *"Bagusin lah tiap kata" nya nih"*, *"Bagusin lagi"* dua kali) | 57 | 15 | 18 Nov | `335e150b7`, `81512efb9`, `cfdd0d1c3`, `31c54ef59`, `77bc17a5d` | belum bergerbang; tinjau di 8800 sebelum lapor, kirim gambar per slide sebelum merakit deck |
 | Ruang putih kosong, kolom tidak rata, isi tidak penuh sampai bawah, bilah tidak ujung ke ujung | 19 | 0 | 14 Nov | `0ce1cddd9`, `8f64c3cca`, `3aa9cc01d`, `cfdd0d1c3`, `e8f784be5` | belum bergerbang; ukur tinggi kolom di peramban (memori `tanpa-ruang-kosong`) |
-| Ubin, pil, atau pemisah tanpa ikon, atau ikon tidak terlihat (*"Kasih icon gitu pemisahnya jangan koma"*) | 0 | 6 | 16 Nov | `98b427199`, `4de55cd43` | belum bergerbang |
+| Ubin, pil, pemisah, butir kartu, atau ruas grafik tanpa ikon, atau ikon tidak terlihat (*"Kasih icon gitu pemisahnya jangan koma"*, 18 Nov *"Kasih icon semua"*) | 0 | 11 | 18 Nov | `98b427199`, `4de55cd43` | sebagian: D-55 panel butir polos dan D-56 grafik satu warna di `deck.py` `periksa_selera_181126`; layar web belum bergerbang |
 | Teks mepet atau menabrak gambar, yang seharusnya sebaris jadi dua baris | 0 | 6 | 16 Nov | `98b427199`, `7430bb7c2` | belum bergerbang; `aturan_slide.py` memeriksa tumpang tindih kotak, bukan jarak |
 | Sampul, daftar isi, atau penutup di deck yang tidak memintanya | 0 | 5 | 16 Nov | `ffcc32a6b`, `4b16f451c`, `55cd11848` | belum bergerbang; ikuti permintaan per deck, bawaan skill tetap bersampul |
 | Angka yang tidak wajar atau sumbernya ditanya (PM2,5 Pekanbaru, DIBI basi, angka tabel lawan WA hari ini) | 0 | 6 | 16 Nov | `dc50c1a28`, `f48e2da64` | belum bergerbang |
@@ -98,7 +100,7 @@ Kolom "8 sampai 14 Nov" dibekukan dari penyegaran sebelumnya; kolom "15 sampai 1
 | Oranye atau biru yang terkesan bahaya untuk hal biasa | 4 | 0 | 11 Nov | `66b8f6475` | belum bergerbang |
 | Palet lokal dan warna literal di CSS di luar token | 0 | 1 | 15 Nov | `5122b4d9e`, `47aefb417`, `ae88f0211` | `gerbang-token-warna` (ratchet, AGENTS §3.9) |
 | Huruf kapital semua | 2 | 0 | 11 Nov | `c3c6d6dcb` | `gerbang-dasbor` (dasbor.css); `kartu.css` lama masih kapital |
-| Nama akun Mac, jalur mutlak, atau kata BNPB di keluaran yang dibagikan (*"Ini agar jangan ada priyankaalfatehannya dong"*, *"Jangan ada kata BNPBNya"*) | 0 | 3 | 15 Nov | `f34013b9f`, `e12773d91` | `gerbang-jalur-mutlak`, uji `renlap_jam` |
+| Nama akun Mac, jalur mutlak, atau kata BNPB di keluaran yang dibagikan (*"Ini agar jangan ada priyankaalfatehannya dong"*, *"Jangan ada kata BNPBNya"*) | 0 | 4 | 18 Nov | `f34013b9f`, `e12773d91` | `gerbang-jalur-mutlak`, uji `renlap_jam`; nama sistem Centurisk di deck (*"Gausah ada sistem Centurisk"*, 18 Nov) belum bergerbang |
 | Aturan yang sudah dibalik dipakai lagi (pil CUT OFF 9 Nov dicabut, 11 Nov kembali) | 1 | 0 | 11 Nov | `d53b9b95c`, `a351753e6` | `gerbang-penanganan-pil-cutoff` |
 | Ikon tidak mewakili isinya atau mirip ikon lain (kualitas udara nyaru dengan hujan, masker, lingkaran untuk data belum lengkap, ikon koroplet) | 7 | 0 | 13 Nov | `cfdd0d1c3` | belum bergerbang |
 | Dokumen Word/PDF dan tabel deck: teks atau tabel tidak rata, sampul buram atau bergeser | 3 | 1 | 16 Nov | `1cd28a035`, `fdc6c63b9` | belum bergerbang |
@@ -108,6 +110,7 @@ Kolom "8 sampai 14 Nov" dibekukan dari penyegaran sebelumnya; kolom "15 sampai 1
 | "GIS BNPB" ditulis di baris Sumber atau footer | 3 | 0 | 14 Nov | `fdc6c63b9` | `aturan_slide.py` skill `ppt-konsultan` (baris Sumber) |
 | Nomor langsung di awal judul (pakai kata dulu: "Enam (6) ...") | 2 | 0 | 13 Nov | belum ada | belum bergerbang |
 | Perbandingan antarsumber tidak setara atau tanpa tanggal (titik lawan cluster, tanggal tidak tertulis, tanpa angka tiap titik) | 4 | 0 | 13 Nov | belum ada | belum bergerbang |
+| Bentuk grafik yang ditolak: corong, batang satu warna, panel samping butir polos (*"Sumpah jelek banget jenis gini. Jangan pernah ada lagi"*) | 0 | 3 | 18 Nov | repo skill `ppt-konsultan` (Sinkron 18 Nov) | D-54, D-55, D-56 di `deck.py` `periksa_selera_181126`, uji `uji_selera_181126.py` |
 | Branch atau worktree | 2 | 0 | 10 Nov | `75c19aa8a` | `gerbang-tanpa-branch`, hook `tolak-branch.mjs` |
 
 ### Yang paling sering membuat pemilik kesal
@@ -126,6 +129,13 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 18 Nov 2026
+   - **Bot Laporan WA dengan Claude API**: pemilik mau bahan laporan diteruskan ke bot, laporan dibuat, direvisi lewat chat, lalu ditutup (*"kita full utilize pake API claude aja"*). Paket 11 dokumen `data/kajian-bnpb/bot-laporan/` (AGENTS §2.29) lalu tiket BL-01 sampai BL-12 dikerjakan hari itu juga: migrasi 0154 `bl_*`, pemanggil Claude API, kunci angka sistem di generator, mesin proyek sampai draf v1, revisi lewat chat lewat `ubah.py`, pemeriksaan otomatis draf, dan `final` yang mengunggah PPTX dan PDF ke Drive tim IT di subfolder Revisi N (`0153f52f6`, `c2b709451`, `f7d212ff0`, `f28436c44`, `0685827b1`, `236e8af98`). Angka hotspot, firespot, dan luas tetap hanya dari sistem dan tidak bisa diubah lewat revisi (K4).
+   - **Keputusan bot sepanjang hari, K11 sampai K21**: pesan saat mesin mati tidak disimpan (*"klo mati berarti gausah simpen data dlu takutnya nanti overwhelmed"*); PDF dan foto diekstrak jadi teks dan disamarkan sebelum ke Claude, berkas asli tidak dikirim (K15, *"ikut usul"*); jalur terjadwal lama dimatikan lewat `WA_OTOMATIS=0`, semua laporan lewat `buat` (K16, *"setuju yang ini, fokus bot baru aja"*); alur dituntun dan selalu menunggu `lanjut` (K17); status satelit dengan pilihan tunggu atau hitung (K18); tanpa pendaftaran mandiri, nomor asing hanya dibalas bahwa bot untuk nomor terdaftar (K19, *"gausah ada daftar nomor"*); peringatan beda angka pada pilihan hitung dihapus (K21, *"berarti ini gausah ada, sesuaikan aja"*) (`96f0000e0`, `0c9789cad`, `bc066a57e`).
+   - **Perbaikan bot sesudah dicoba**: rute versi menolak tiap draf berperingatan dengan 400 karena baris baru dianggap karakter kendali (`7678678e4`); pesan kemajuan yang disunting tampil "Waiting for this message" di WA, jadi dihapus dan cukup tanda mengetik (`37ab0bbf1`, `47d11aef8`); tanda terima tidak lagi menulis "belum dikenali", bahan opsional ditulis "Opsional, boleh dilewati" (`8bd4b35ed`, `e5034ff22`); balasan percakapan berjeda 2 sampai 4 detik (`a23c5eac9`).
+   - **Arsip firespot harian dihitung ulang**: arsip hari lalu membeku sebelum lintasan VIIRS malam, sehingga firespot terpotong (16 Nov nasional 139 lawan 240, Papua Selatan 23 lawan 120). Putaran pagi `harian.py` kini menghitung ulang hari kemarin dengan data penuh, dan tujuh hari 11 sampai 17 Nov diperbaiki (`fdd415a22`, `14e16274b`).
+   - **Selera deck dari tinjauan per slide** (deck Dampak Bencana Terhadap Lingkungan dan Masyarakat 2026): judul tanpa kode "A1." (*"Gw ga mau ada A1 gini"*), corong dilarang (*"Sumpah jelek banget jenis gini. Jangan pernah ada lagi. Ganti lah"*), batang tidak satu warna (*"Warnanya jangan sama semua"*), ikon di semua butir (*"Kasih icon semua"*), "±" menggantikan "sekitar", tanpa pembanding tahun lalu yang tidak diminta, tanpa nama sistem Centurisk di isi. Gerbang D-53 sampai D-56 di `deck.py` skill `ppt-konsultan`. Deck rujukan Kerangka Sendai dan Perban BNPB 1/2023 Satu Data Bencana ikut dibuat (`27bfca586`, `349407e2f`).
+   - Nama korban di bahan laporan 5 Nov yang ter-commit ke repo publik disamarkan jadi `[nama korban]`; riwayat git tidak ditulis ulang (`2e2e1a2f4`).
 1. 17 Nov 2026
    - **Tab Besok `/prediksi` jadi tabel dan peta ala `/bnpb/dalops`**: pemilik menyetujui tujuh butir usulan sekaligus (*"gas gabung sekalian sama rombak layout tabel Buat peta juga. gw setuju"*). Satu kab satu baris dengan sel berwarna per level, pil teruji sekali di kepala kolom, kartu Perlu tindakan memuat semua aturan terpicu, rincian di pop-up, rob ikut tampil, kontrol pakai elemen inti, tampilan peta. Bencana yang diprediksi ditambah gelombang (`GEL`) dan angin kencang (`CEX`) dengan aturan melaut dan angin; kekeringan masuk Tangga untuk pekan dan bulan (*"Kekeringan gas ya pekan dan bulan"*); abrasi harian dilepas (*"Abrasi ga bisa ya ga apa deh"*). Paket `data/kajian-bnpb/prediksi-besok/`, AGENTS §2.27 (`99c8192da`, `77bc17a5d`). Tab Paparan dampak jadi peta dan laporan provinsi dibuat per jenis bencana (*"Laporan provinsi ini bisa untuk setiap bencana ga?"*).
    - **Tindakan lapangan per bencana masuk operasi generik**: pemilik bertanya tindakan operasi bencana selain karhutla, lalu *"Ya lanjut semua tindakan yang tercatat. Lu atur agar ada di operasi"*. Katalog 23 tindakan diambil dari logbook Pusdalops 2011 sampai 2026 (ambang 2 persen kejadian), longsor menyalakan operasi dan renlap, migrasi 0153 `pb_renlap_tindakan`; paket `data/kajian-bnpb/tindakan-operasi/`, AGENTS §2.28 (`3895e8b48`).
@@ -465,6 +475,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Butir di bawah tabel diganti kartu | 1 Nov 2026 | Daftar butir berlabel tebal di bawah tabel diganti pita kartu atau baris tabel (*"either lu buat dalam card atau dalam tabel"*) |
 | Gelar Kepala BNPB | 4 Nov 2026, dikonfirmasi 12 Nov | "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)", M.Si. sekali; gerbang menolak bentuk lama |
 | Tanpa logo BerAKHLAK | 9 Nov 2026 | *"JANGAN PERNAH ADA LAGI. HAPUSKAN."* Berlaku di semua deck |
+| Laporan lewat bot WA dengan Claude API | 18 Nov 2026 | Bahan diteruskan, `buat`, revisi lewat chat, `final` ke Drive tim IT; angka sistem dikunci; jalur terjadwal lama dimatikan (`WA_OTOMATIS=0`); paket Bot Laporan WA, AGENTS §2.29 |
 | Semua bencana selengkap karhutla dan banjir | 15 Nov 2026 | Dibangun sekali di inti, dinyalakan per bencana lewat registri `kemampuan`; paket Paritas Bencana, AGENTS §2.16 |
 | Laporan warga longsor tetap di banjir | 15 Nov 2026 | *"Tetap di banjir"* (K11 paritas, Q41) |
 | `/bantu` publik bertoken | 15 Nov 2026 | Halaman organisasi Tiga W dibuka tanpa login (*"Ya, izinkan /bantu"*), masuk `PUBLIK_TANPA_SESI` |
@@ -1736,6 +1747,19 @@ Ditelusuri 26 Okt 2026 dari 288 masukan pemilik (15 Sep sampai 26 Okt), memori, 
 
 Catatan hitung: baris bertanda ⚠ dihitung sebagai satu aturan; aturan yang bertanda (baru) dan ⚠ sekaligus dihitung di kedua kolom. Bagian "Belum pasti" memuat 22 pertanyaan (Q01 sampai Q22).
 
+### Tambahan 18 Nov 2026
+
+Dari tinjauan per slide deck Dampak Bencana Terhadap Lingkungan dan Masyarakat 2026; berlaku di semua deck. Rincian dan kutipan di `keputusan-pemilik.md` skill `ppt-konsultan`, gerbang `periksa_selera_181126`.
+
+- Judul tanpa kode bagian "A1. " (D-53); penanda bagian cukup di pita atas.
+- Bentuk corong dilarang tanpa pengecualian (D-54); dua angka bertahap ditulis sebagai `angka_besar` mode kartu.
+- Panel samping butir polos dilarang (D-55): `daftar_ikon` mode baris, ikon, judul singkat, angka besar.
+- Batang tidak satu warna (D-56): subjek disorot, kategori berikon; batang bertumpuk diberi persen dan ikon per ruas, label baris memuat periode.
+- Angka perkiraan memakai "±", bukan "sekitar"; panel angka besar di kiri, keterangan di kanan.
+- Tanpa pembanding tahun lalu yang tidak diminta, tanpa nama sistem Centurisk dan nama lembaga di isi (cukup di baris Sumber).
+- Kesimpulan per pilar (Lingkungan, Masyarakat, Petani dan UMKM), bukan tabel rekomendasi berkolom pemangku kepentingan.
+- Panel dampak berisi dampak (lahan terbakar, asap, habitat, emisi), bukan metrik satelit.
+
 ### Tambahan 15 sampai 16 Nov 2026
 
 - Situasi Banjir per provinsi paling banyak 5 slide; provinsi lain hanya atas permintaan (`--provinsi-lain`).
@@ -2169,6 +2193,8 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 | Tanggal | Insiden | Pelajaran |
 | --- | --- | --- |
+| 18 Nov | Arsip `kluster_hari` hari lalu membeku sebelum lintasan VIIRS malam; firespot 11 sampai 17 Nov terpotong, Indonesia timur paling parah | Putaran pagi menghitung ulang hari kemarin dan tidak menimpa bila total turun di bawah 90 persen; tujuh berkas dihitung ulang (`fdd415a22`, `14e16274b`). Selisih antarsumber diusut sampai akarnya sebelum diberi peringatan ke pemakai |
+| 18 Nov | Nama korban di bahan WA laporan harian 5 Nov ter-commit ke repo publik | Disamarkan (`2e2e1a2f4`); bot laporan menyamarkan teks bahan sebelum ke Claude (K15). Bahan mentah WA diperiksa sebelum commit |
 | 16 Nov | Perubahan `wa_operasi` (pesawat A-xxxx, frasa "untuk sasaran") tertinggal di autostash | Dipulihkan (`dfb7db836`); jangan `git stash` di checkout bersama, cek `git stash list` sesudah pull |
 | 15 Nov | Panen bulanan `menara.py` tanpa `OPENCELLID_KEY` mengosongkan data menara | Skrip tidak menimpa data bila kunci tidak ada; berkas dipulihkan ke unduhan 30 Okt (`8e082434e`) |
 | 15 Nov | SK contoh logbook bertanggal tetap kedaluwarsa dan memblokir `uji:warga`; jalur mutlak `/Users/<nama>` di spek deck memblokir pre-push | Tanggal contoh relatif hari ini (`684bbe331`); spek deck dan log tanpa jalur mutlak (`e12773d91`) |
@@ -2247,7 +2273,8 @@ Yang tidak bisa dikerjakan sesi agent:
 17. Branch yang tertinggal: sejak 2 Nov sesi agent boleh menyapu branch yang sudah masuk `main` lewat `scripts/agents/sapu-branch.sh`; branch yang belum di-merge tetap diputus pemilik.
 18. Pastikan secret Worker `GITHUB_TOKEN` (fine-grained, Actions read and write, repo ini saja) terpasang; tanpa itu cadangan pemicu `titik.yml` dan denyut `jaga.yml` tidak jalan, padahal sejak 7 Nov jadwal GitHub dibuang.
 19. Pasang server tinjau lokal sekali lewat `npm run tinjau:pasang` (launchd `id.centurisk97.tinjau-lokal`); sesi agent tidak boleh memasang launchd.
-20. Jawab pertanyaan terbuka paket baru: Operasi Udara (termasuk isian manual Q16 sampai Q19), Cek Kabar Luar Q1 sampai Q6, Tindak Langkah Q1 sampai Q6, Laporan Berkala Q1 sampai Q27, Peluang Semai Q1 sampai Q17 (base OMC dari BMKG), Silang Sumber, Tangga, LogPal, Paritas Bencana Q1 sampai Q37, Satu Pintu Masuk, Misi Udara Q1 sampai Q17, Lifeline Q1 sampai Q7, Tiga W Q1 sampai Q7, Kaji ulang, Kerusakan satelit, Penurunan tanah (Q1 izin unduh), Pembiayaan risiko (Q1 saldo DSP dan PFB), Pemetaan relawan (Q1 pengajuan ke HOT, Q5), Alun-alun Terpadu Q1 sampai Q13, Tab Besok Q1 sampai Q5, Tindakan operasi Q1 sampai Q4; bawaan sementara sudah tertulis di tiap `KEPUTUSAN-*.md`.
+20. Jawab pertanyaan terbuka paket baru: Operasi Udara (termasuk isian manual Q16 sampai Q19), Cek Kabar Luar Q1 sampai Q6, Tindak Langkah Q1 sampai Q6, Laporan Berkala Q1 sampai Q27, Peluang Semai Q1 sampai Q17 (base OMC dari BMKG), Silang Sumber, Tangga, LogPal, Paritas Bencana Q1 sampai Q37, Satu Pintu Masuk, Misi Udara Q1 sampai Q17, Lifeline Q1 sampai Q7, Tiga W Q1 sampai Q7, Kaji ulang, Kerusakan satelit, Penurunan tanah (Q1 izin unduh), Pembiayaan risiko (Q1 saldo DSP dan PFB), Pemetaan relawan (Q1 pengajuan ke HOT, Q5), Alun-alun Terpadu Q1 sampai Q13, Tab Besok Q1 sampai Q5, Tindakan operasi Q1 sampai Q4, Bot Laporan WA Q1 sampai Q14; bawaan sementara sudah tertulis di tiap `KEPUTUSAN-*.md`.
+21. Bot Laporan WA: terapkan migrasi 0154 `bl_*` ke produksi, pasang kunci Claude API di `.env` mesin bot, beri izin Drive tim IT, dan pastikan `WA_OTOMATIS=0` (panduan pemilik di `data/kajian-bnpb/bot-laporan/`).
 
 ## Katalog modul dan design system
 
