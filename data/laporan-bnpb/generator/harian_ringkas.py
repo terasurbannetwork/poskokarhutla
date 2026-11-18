@@ -280,6 +280,8 @@ def mulai_lama(T, out):
     for n in range(4, 0, -1):   # yang paling dekat menang
         d = T - dt.timedelta(days=n)
         calon = [os.path.join(os.path.dirname(out), d.isoformat(), f'kerja-{d:%d%m%y}', 'data.json'), os.path.join(out, '..', d.isoformat(), f'kerja-{d:%d%m%y}', 'data.json')]
+        if os.environ.get('WA_MULAI_AKAR'):   # bot proyek (BL-08): keluaran per versi tidak bersebelahan dengan folder tanggal jalur terjadwal
+            calon.append(os.path.join(os.environ['WA_MULAI_AKAR'], d.isoformat(), f'kerja-{d:%d%m%y}', 'data.json'))
         try: calon.append(os.path.join(jalur.harian(d), f'kerja-{d:%d%m%y}', 'data.json'))
         except Exception: pass
         f = next((c for c in calon if os.path.exists(c)), None)

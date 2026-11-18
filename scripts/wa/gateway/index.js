@@ -3,6 +3,8 @@
 //     (POST multipart ke /api/wa/gateway?k=), lewat outbox berkas supaya tak hilang bila worker mati.
 //     Sesudah tersimpan, pengatur otomatis (../otomatis.mjs) dipicu dengan debounce 2 menit.
 //  2. KELUAR: API lokal 127.0.0.1 /send dan /send-file, lewat limiter anti-blokir (limiter.js).
+//  3. DAFTAR (BL-03, ../daftar.cjs): nomor bl_daftar setuju (salinan /api/wa/terdaftar, 5 menit) diteruskan seperti WA_IZIN dengan medan wa_sha;
+//     nomor asing pribadi dibalas T-DAFTAR sekali sehari dan TIDAK diteruskan; `daftar` ke PEMILIK; `setuju|tolak <nomor>` hanya dari PEMILIK.
 // Tidak ada LLM. Ini WhatsApp Web TIDAK RESMI: baca ../../../../pangantara/wa-gateway/ANTI-BAN.md.
 const fs = require('fs')
 const path = require('path')
@@ -20,6 +22,7 @@ const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) //
 const OCR = require('../ocr.cjs')
 const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, putusanSusulan } = require('../aman.cjs')
 const RW = require('../riwayat.cjs')
+const DAFTAR = require('../daftar.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
 const TOKEN = process.env.GATEWAY_TOKEN || ''
@@ -102,6 +105,17 @@ function sapuTerkirim() {
     try { if (fs.statSync(f).mtimeMs < batas) fs.unlinkSync(f) } catch {}
   }
 }
+
+// BL-03: salinan nomor terdaftar + pendaftaran. Balasan lewat sendPaced yang sama (limiter tidak dilewati); WA putus = balasan tidak dikirim.
+const DF = DAFTAR.buat({
+  env: process.env, rumah: RUMAH, log,
+  kirim: async (jid, teks) => {
+    if (!connected || !sock) { log('[daftar] balasan dilewati: wa belum terhubung'); return }
+    const x = await sendPaced(jid, { text: teks }, false).catch((e) => ({ ok: false, error: String(e?.message || e) }))
+    if (!x.ok) log('[daftar] balasan ditahan', x.error)
+  },
+})
+DF.mulai()
 
 async function jidDari(target) {
   const mentah = String(target ?? '').trim()
@@ -290,21 +304,22 @@ async function simpanKeOutbox(m, { lama = false } = {}) {
   const media = mediaAda && (!GRUP_OPS.has(k.remoteJid) || IZIN.has(pengirim(k)) || c.imageMessage) ? mediaAda : null // grup operasi: hanya foto (dokumen grup tetap dibuang)
   const dari = pengirim(k)
   const grupOps = !!dari && !IZIN.has(dari) && GRUP_OPS.has(k.remoteJid)
-  if (!dari || (!IZIN.has(dari) && !grupOps)) return
+  const blSha = !!dari && !IZIN.has(dari) && !String(k.remoteJid).endsWith('@g.us') ? DF.shaTerdaftar(dari) : null // nomor bl_daftar setuju (BL-03)
+  if (!dari || (!IZIN.has(dari) && !grupOps && !blSha)) return
   if (!teks.trim() && !media && !video) return // foto grup tanpa caption tetap diteruskan
   if (!media && !grupOps && !lama) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
     const P = await import('../perintah.mjs')
     const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
     if (cmd) { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
   }
-  if (!grupOps && !lama && /^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
+  if (!grupOps && !lama && /^cari\s/i.test(teks) && !blSha) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
     return
   }
   kabarPenuh = false
   const id = `${Date.now()}-${idAman(k.id)}`
-  const e = { id, dari, nama: grupOps ? '' : (m.pushName || ''), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now(), ...(grupOps ? { grup: k.remoteJid } : {}) }
+  const e = { id, dari, nama: grupOps ? '' : (m.pushName || ''), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now(), ...(grupOps ? { grup: k.remoteJid } : {}), ...(blSha ? { wa_sha: blSha } : {}) }
   let lampiran = null
   if (media) {
     const tipe = media.mimetype || 'application/octet-stream'
@@ -372,6 +387,7 @@ async function kirimSatu(e) {
   const f = new FormData()
   f.set('dari', e.dari); f.set('nama', e.nama); f.set('teks', e.teks); f.set('waktu', String(e.waktu))
   if (e.grup) f.set('grup', e.grup)
+  if (e.wa_sha) f.set('wa_sha', e.wa_sha) // Worker mencocokkan ke bl_daftar setuju (src/wa.js)
   if (e.stempel) f.set('stempel', String(e.stempel).slice(0, 4000))
   if (e.berkas) {
     const buf = fs.readFileSync(path.join(OUTBOX, e.id + '.bin'))
@@ -462,16 +478,24 @@ async function startSock() {
       if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue
       const susulan = ev.type === 'append'
       if (!susulan && await logbookCegat(m)) continue
-      const izin = IZIN.has(pengirim(m.key))
+      const dari = pengirim(m.key), pribadi = !m.key.remoteJid.endsWith('@g.us')
       const id = m.key.id
-      const diterima = izin || (GRUP_OPS.has(m.key.remoteJid) && !!pengirim(m.key))
+      const putusan = !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju|tolak <nomor>, hanya PEMILIK
+      if (putusan) { if (id) terlihat.catat(id); DF.putuskan(putusan).then((x) => log('[daftar] putusan', x)).catch((e) => log('[daftar] galat', String(e?.message || e))); continue }
+      const izin = IZIN.has(dari)
+      const bl = !izin && pribadi && !!DF.shaTerdaftar(dari)
+      if (pribadi && !izin && !bl) { // nomor asing: tidak pernah diteruskan ke Worker (D10); susulan tidak dibalas
+        if (!susulan && dari) DF.asing({ dari, jid: m.key.remoteJid, teks: isiPesan(m).teks }).then((x) => log('[daftar] asing', x)).catch((e) => log('[daftar] galat', String(e?.message || e)))
+        continue
+      }
+      const diterima = izin || bl || (GRUP_OPS.has(m.key.remoteJid) && !!dari)
       if (susulan) { // aturan sama dengan pesan langsung, termasuk grup operasi; yang dibuang selalu dicatat beserta alasannya
         const p = putusanSusulan({ diterima, ts: m.messageTimestamp, terlihat: terlihat.ada(id) })
         if (!p.ok) { log('[susulan] dibuang:', p.alasan, m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', id); continue }
       }
       const { c, teks, media } = isiPesan(m)
       const jenis = c.documentMessage ? 'dokumen' : c.imageMessage ? 'gambar' : teks ? 'teks' : 'lain:' + (Object.keys(c)[0] || 'kosong')
-      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : GRUP_OPS.has(m.key.remoteJid) ? 'grup-ops' : 'asing', m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
+      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : bl ? 'terdaftar' : GRUP_OPS.has(m.key.remoteJid) ? 'grup-ops' : 'asing', m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
       try { await simpanKeOutbox(m, { lama: susulan }); if (diterima && id) terlihat.catat(id) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
     }
     flushOutbox().catch(() => {})

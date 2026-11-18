@@ -19,7 +19,7 @@ const garis = n => iso(n).split("-").reverse().join("/"), padat = n => iso(n).sp
 /* o = {dari, nama, teks, waktu, berkas: [byte, nama, tipe]}; kunci null = tanpa header */
 async function kirim(o, kunci = "kunci-wa") {
   const f = new FormData();
-  for (const k of ["dari", "nama", "teks", "waktu"]) if (o[k] !== undefined) f.set(k, String(o[k]));
+  for (const k of ["dari", "nama", "teks", "waktu", "wa_sha"]) if (o[k] !== undefined) f.set(k, String(o[k]));
   if (o.berkas) f.set("berkas", new Blob([o.berkas[0]], {type: o.berkas[2]}), o.berkas[1]);
   const r = await mf.dispatchFetch("http://bnpb.lokal/api/wa/gateway", {method: "POST", headers: kunci ? {"x-wa-kunci": kunci} : {}, body: f});
   const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch {}
@@ -107,6 +107,26 @@ uji("berkas masuk R2, dibaca admin dan mesin; bearer salah 403; tipe terlarang d
   assert.equal(x.j.disimpan, true);
   const l = await api("GET", `/api/wa/masuk?tanggal=${x.j.tanggal}`, undefined, ADMIN);
   assert.equal(l.j.pesan.find(m => m.teks === "dengan exe").ada_berkas, 0, "tipe terlarang: teks tersimpan, berkas dibuang");
+});
+
+uji("BL-03: nomor bl_daftar setuju (wa_sha dari gateway) tersimpan; menunggu, tolak, sha tak dikenal, atau tanpa sha dibuang", async () => {
+  const S = c => c.repeat(64), {DB} = U, dari = "6281277770001";
+  await DB.batch([["a", "setuju"], ["b", "menunggu"], ["c", "tolak"]].map(([c, st]) => DB.prepare("INSERT INTO bl_daftar (wa_sha, nama, instansi, status, dibuat) VALUES (?, 'Uji', 'BPBD Uji', ?, 1)").bind(S(c), st)));
+  const sebelum = await n("wa_masuk");
+  for (const wa_sha of [undefined, S("b"), S("c"), S("d"), "BUKAN-SHA"]) {
+    const r = await kirim({dari, teks: `bahan bot ${wa_sha}`, wa_sha});
+    assert.equal(r.s, 200, r.t); assert.equal(r.j.disimpan, false, `wa_sha ${wa_sha} tidak boleh tersimpan`);
+  }
+  assert.equal(await n("wa_masuk"), sebelum);
+  const waktu = Date.now() - 3600e3, ok = await kirim({dari, nama: "Budi", teks: "bahan bot laporan dari pendaftar", wa_sha: S("a"), waktu});   // waktu tetap: kiriman ulang outbox membawa waktu yang sama
+  assert.equal(ok.j.disimpan, true, ok.t);
+  assert.equal(await n("wa_masuk", `dari = 'bl:${S("a")}' AND teks = 'bahan bot laporan dari pendaftar'`), 1, "dari = bl:<wa_sha>");
+  assert.equal(await n("wa_masuk", `dari LIKE '%${dari}%'`), 0, "nomor terbaca tidak pernah tersimpan");
+  assert.equal((await kirim({dari, nama: "Budi", teks: "bahan bot laporan dari pendaftar", wa_sha: S("a"), waktu})).j.id, ok.j.id, "kiriman ulang outbox tetap dedup");
+  const m = await api("GET", `/api/wa/masuk?tanggal=${ok.j.tanggal}`, undefined, MESIN);
+  assert.equal(m.s, 200); assert.equal(m.j.pesan.find(x => x.id === ok.j.id).dari, `bl:${S("a")}`);
+  await DB.prepare("UPDATE bl_daftar SET status = 'tolak' WHERE wa_sha = ?").bind(S("a")).run();
+  assert.equal((await kirim({dari, teks: "sesudah dicabut", wa_sha: S("a")})).j.disimpan, false, "pencabutan berlaku seketika");
 });
 
 uji("WA_MESIN tak diset: bearer apa pun ditolak", async () => {

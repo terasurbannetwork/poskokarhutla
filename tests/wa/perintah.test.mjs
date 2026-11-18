@@ -136,3 +136,18 @@ test('bantuan dan sibuk: daftar perintah; perintah kedua saat sibuk ditolak', as
   assert.equal(d2.balasan[0], 'Sedang membuat laporan, tunggu sebentar.')
   lepas(); await pertama
 })
+
+test('T22 Q14: dengan BL_PROYEK, buat, status tanpa tanggal, dan bantuan ke mesin proyek; kirim ulang dan status <tanggal> tetap di sini', async () => {
+  const pemilik = '08123'
+  const c = (teks, proyek = true) => cegat({ dari: '08123', teks, pemilik, now: NOW, proyek })
+  for (const t of ['buat harian', 'buat penanganan 26 okt', 'buat saja', 'Status', 'bantuan']) assert.deepEqual(c(t), { aksi: 'proyek', dari: '628123', teks: t }, t)
+  assert.equal(c('kirim ulang harian 26 okt').aksi, 'kirim_ulang')
+  assert.deepEqual(c('status 26 okt'), { aksi: 'status', tanggal: '2026-10-26' })
+  assert.equal(c('buat harian', false).aksi, 'buat') // tanpa BL_PROYEK: perilaku lama
+  assert.equal(c('halo'), null)
+  const d = dunia(), terima = []
+  d.ctx.tanganiProyek = async (pesan, ctx) => { terima.push(pesan); assert.equal(ctx, d.ctx) }
+  await tangani(c('buat harian'), d.ctx)
+  assert.deepEqual(terima, [{ dari: '628123', teks: 'buat harian' }])
+  assert.equal(d.exec.length, 0); assert.equal(d.balasan.length, 0)
+})

@@ -1712,6 +1712,8 @@ export async function blDaftarTulis(env, p, {waSha, nama = null, instansi = null
   return sedia(env, p, "bl_daftar", "baca", "SELECT status, nama, instansi, dibuat FROM bl_daftar WHERE wa_sha = ?1").bind(waSha).first();
 }
 export const blMenungguHitung = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT count(*) n FROM bl_daftar WHERE status = 'menunggu'").first()).n;
+/* satu nomor (lewat PK): dipakai src/wa.js untuk kiriman gateway berkunci yang membawa wa_sha, jadi pencabutan berlaku seketika tanpa menunggu salinan gateway */
+export const blDaftarSetuju = async (env, p, waSha) => !!(await sedia(env, p, "bl_daftar", "baca", "SELECT 1 ada FROM bl_daftar WHERE wa_sha = ?1 AND status = 'setuju'").bind(waSha).first());
 export const blTerdaftar = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT wa_sha FROM bl_daftar WHERE status = 'setuju' ORDER BY wa_sha LIMIT 5000").all()).results.map(r => r.wa_sha);
 
 /* ---- biaya harian (A10, Q5), mikro-USD ---- */

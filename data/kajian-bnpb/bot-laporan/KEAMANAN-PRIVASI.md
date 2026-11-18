@@ -18,7 +18,7 @@
 
 ## Penyimpanan
 
-- Nomor pemakai disimpan sebagai sha256 bergaram. Nama pemegang di tab Pelaporan diambil dari `bl_daftar.nama` bila ada, selain itu "Pemakai terdaftar".
+- Nomor pemakai disimpan sebagai sha256 bergaram (di `wa_masuk.dari` sebagai `bl:<wa_sha>`). Berkas di `~/.wa-bot/` diberi mode 0600 di Mac; di Windows mode itu tidak berlaku dan perlindungannya bergantung pada izin folder profil pengguna. Nama pemegang di tab Pelaporan diambil dari `bl_daftar.nama` bila ada, selain itu "Pemakai terdaftar".
 - Berkas proyek di R2 `bot-laporan/`, tidak di `public/`. Rute daftar untuk staf tidak mengembalikan isian, bahan, atau nomor.
 - Versi append-only; tidak ada rute hapus. Penghapusan data atas permintaan pemilik dilakukan manual oleh pemilik.
 

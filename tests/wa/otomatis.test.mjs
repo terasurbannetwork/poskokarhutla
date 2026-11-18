@@ -319,3 +319,27 @@ test('Excel gelar udara kemarin tidak dipakai; tanpa Excel penanganan tetap jala
   await d.jalan()
   assert.ok(!d.kirim.exec.find((x) => x[0] === 'penanganan_otomatis.py').includes('--gelar'))
 })
+
+test('D9 BL-03: jalur terjadwal hanya memakai bahan pengirim WA_IZIN; baris bot laporan dan nomor asing dibuang, grup operasi tetap', async () => {
+  const dari = (p, d) => ({ ...p, dari: d })
+  const pesan = [dari(P('1', 'rekap_koordalops_24', 100, 'a'), '628111'), dari(P('2', 'bmkg_pagi', 101, 'b'), '628111'),
+    dari(P('3', 'satgas', 102, 'c'), '120363@g.us'), dari(P('5', 'pvmbg_pagi', 103, 'd'), '628111'),
+    dari(P('6', 'bmkg_pagi', 300, 'bot'), 'bl:' + 'a'.repeat(64)), dari(P('7', 'pvmbg_pagi', 301, 'asing'), '628999')]
+  const d = dunia(pesan)
+  const env = { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', WA_IZIN: '08111' }
+  await d.jalan({ env })
+  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['harian_ringkas.py', 'penanganan_otomatis.py'])
+  const isi = (a, k) => fs.readFileSync(a[a.indexOf(k) + 1], 'utf8')
+  assert.equal(isi(d.kirim.exec[0], '--bmkg'), '[bmkg_pagi] b')   // bukan bahan bot laporan yang lebih baru
+  assert.equal(isi(d.kirim.exec[0], '--pvmbg'), '[pvmbg_pagi] d') // bukan nomor di luar WA_IZIN
+  assert.equal(isi(d.kirim.exec[1], '--operasi'), '[satgas] c')   // grup operasi tetap
+})
+
+test('5: jalur terjadwal memegang generator.lock bersama selama generator jalan, lalu melepasnya', async () => {
+  const d = dunia(LENGKAP)
+  const asli = d.dep.exec, terkunci = []
+  d.dep.exec = async (...a) => { terkunci.push(fs.existsSync(path.join(d.rumah, 'generator.lock'))); return asli(...a) }
+  await d.jalan()
+  assert.deepEqual(terkunci, [true, true])
+  assert.equal(fs.existsSync(path.join(d.rumah, 'generator.lock')), false)
+})

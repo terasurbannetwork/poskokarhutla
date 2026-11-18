@@ -26,7 +26,7 @@ Semua dunia luar (Claude API, gateway, Drive, Worker, generator) disuntik lewat 
 | T18 | SQL hanya di `src/hak.js` | `npm run uji:agen` (gerbang-d1) |
 | T19 | Gerbang deck 0,8 detik tetap di bawah 5 detik per draf | log waktu di `proyek.mjs`, dicek di uji tempo |
 | T20 | Draf pertama sampai paling lama 120 detik pada 9 dari 10 percobaan (draf = 2 kiriman: pratinjau dan PDF, jeda limiter 15 sampai 20 detik sudah dihitung) | uji asap manual dengan nomor uji, dicatat di BL-18 |
-| T21 | Gateway: nomor `bl_daftar` setuju diteruskan; nomor asing dibalas T-DAFTAR sekali per hari dan tidak diteruskan; salinan daftar disegarkan tanpa baca D1 per pesan | `node --test tests/wa/gateway_saring.test.mjs` |
+| T21 | Gateway: nomor `bl_daftar` setuju diteruskan (Worker memeriksa ulang dengan satu baca kunci primer per pesan bertanda `wa_sha`, supaya pencabutan langsung berlaku); nomor asing dibalas T-DAFTAR sekali per hari, dengan batas global harian, dan tidak diteruskan | `node --test tests/wa/daftar.test.mjs` |
 | T22 | `buat`, `status` tanpa tanggal, `bantuan` ke mesin proyek; `kirim ulang` dan `status <tanggal>` tetap ke `perintah.mjs`; uji `perintah.test.mjs` lama yang masih berlaku tetap hijau | `node --test tests/wa/*.test.mjs` |
 | T23 | Pesan susulan (`lama:true`) tidak masuk proyek, tidak memanggil Claude, perintahnya tidak jalan; T-TERLEWAT terkirim tepat sekali per nomor; jalur terjadwal lama tetap menerima susulannya | `node --test tests/wa/proyek.test.mjs` |
 

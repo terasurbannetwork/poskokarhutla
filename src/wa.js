@@ -14,6 +14,7 @@ import {urai} from "./operasi_wa.js";
 import {simpanFoto} from "./operasi_hasil.js";
 import {catatRekap} from "./dalops_laporan.js";
 import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
+import {blDaftarSetuju, pelakuBlMesin} from "./hak.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
 const MAKS_TEKS = 65536, MAKS_HARI = 500, MAKS_GRUP = 150;   // MAKS_GRUP: plafon harian sendiri untuk baris grup operasi supaya foto grup tidak menghabiskan plafon pengirim terdaftar
@@ -56,10 +57,14 @@ async function gerbang(env, req, kini) {
      Dari grup hanya pesan yang DIKENALI (pengurai operasi atau jenis laporan) yang disimpan; obrolan dibuang; lampiran GAMBAR grup disimpan semua (indeks op_foto, src/operasi_hasil.js), lampiran lain dibuang.
      `dari` diganti id grup: nomor HP anggota grup (pilot, operator) tidak masuk D1. */
   const grup = /^[\d-]{5,40}@g\.us$/.test(String(f.get("grup") || "")) ? String(f.get("grup")) : null, nomor = normalNo(f.get("dari"));
-  if (!izin.has(nomor) && !grup) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
+  /* BL-03 (bot-laporan K14, A1): nomor bl_daftar setuju. Gateway berkunci mengirim wa_sha (sha256 bergaram; garam hanya di mesin) untuk nomor di salinan daftarnya;
+     Worker mencocokkannya ke bl_daftar lewat PK, jadi baca D1 hanya untuk kiriman yang membawa wa_sha dan pencabutan berlaku seketika. Galat (0154 belum ada) = tidak terdaftar. */
+  const waSha = !grup && !izin.has(nomor) && /^[0-9a-f]{64}$/.test(String(f.get("wa_sha") || "")) ? String(f.get("wa_sha")) : null;
+  const bl = !!waSha && await blDaftarSetuju(env, pelakuBlMesin, waSha).catch(() => false);
+  if (!izin.has(nomor) && !grup && !bl) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
   const w = Number(f.get("waktu")), diterima = Number.isFinite(w) && w >= kini - 7 * 864e5 && w <= kini + 5 * 60e3 ? Math.trunc(w) : kini;
   let teks = bersih(f.get("teks"), MAKS_TEKS) || null; const namaKirim = bersih(f.get("nama"), 100) || null, caption = teks;
-  const dariGrup = grup && !izin.has(nomor), dari = dariGrup ? grup : nomor, nama = dariGrup ? null : namaKirim;   // nama tampilan anggota grup juga tidak disimpan
+  const dariGrup = grup && !izin.has(nomor), dari = dariGrup ? grup : bl ? "bl:" + waSha : nomor, nama = dariGrup ? null : namaKirim;   // nama tampilan anggota grup juga tidak disimpan
   const so = f.get("stempel"), stempel = grup && typeof so === "string" ? so.normalize("NFC").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0009\u000b-\u001f\u007f\u200b-\u200f\u202a-\u202e\ufeff]/g, "").slice(0, 4000).trim() || null : null;   // OCR gateway (macOS Vision); hanya kiriman berkunci sampai di sini, dan hanya untuk foto grup
   let b = f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
   /* foto grup operasi: SEMUA gambar grup disimpan (perintah pemilik 3 Nov 2026), dengan atau tanpa keterangan; lampiran grup selain gambar tetap dibuang */
@@ -94,11 +99,12 @@ async function gerbang(env, req, kini) {
   const r = await env.DB.prepare("INSERT INTO wa_masuk (diterima, tanggal, jenis, dari, nama, teks, berkas, nama_berkas, tipe) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)")
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
   /* OP-2: pesan satgas udara -> tabel operasi; galat apa pun (termasuk migrasi 0103 belum ada) tidak menggagalkan pesan yang sudah tersimpan */
-  let operasi = null; if (teks) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
+  /* nomor bl_daftar (pemakai bot laporan) tidak menulis tabel operasi */
+  let operasi = null; if (teks && !bl) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
   /* rekap Koordalops 07.00 -> ringkasan terstruktur Laporan Masuk Dalops (R2 dalops/laporan.json); teks kosong + lampiran .txt dibaca dari isinya; rekap 19.00 diabaikan; galat tidak menggagalkan pesan */
   try {
     let t = teks; if (!t && isiBerkas && /^text\/plain/.test(tipe || "")) t = bersih(new TextDecoder().decode(isiBerkas), MAKS_TEKS);
-    if (t && !dariGrup && kenali(t, null) === "rekap_koordalops_24") await catatRekap(env, {teks: t, tanggal, diterima});   // anggota grup operasi tidak boleh menimpa rekap; rekap asli datang dari nomor WA_IZIN
+    if (t && !dariGrup && !bl && kenali(t, null) === "rekap_koordalops_24") await catatRekap(env, {teks: t, tanggal, diterima});   // anggota grup operasi tidak boleh menimpa rekap; rekap asli datang dari nomor WA_IZIN
   } catch (e) { console.error("dalops_laporan", String(e?.message || e).slice(0, 120)); }
   /* foto grup operasi -> indeks op_foto (stempel = teks OCR dari gateway, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
   let foto = null; if (grup && gambar && b && isiBerkas && kunci) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, stempel, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }

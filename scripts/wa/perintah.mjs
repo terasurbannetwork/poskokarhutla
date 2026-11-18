@@ -1,4 +1,4 @@
-// Perintah tetap lewat WhatsApp dari nomor PEMILIK. Deterministik, tanpa LLM. Balasan HANYA ke pengirim perintah, tidak pernah ke PENERIMA.
+// Perintah tetap lewat WhatsApp dari nomor PEMILIK. Deterministik, tanpa LLM (perintah mesin proyek diteruskan ke proyek.mjs, Q14). Balasan HANYA ke pengirim perintah, tidak pernah ke PENERIMA.
 //   buat harian|penanganan [tanggal] | kirim ulang harian|penanganan [tanggal] | status [tanggal] | bantuan
 // parse() murni; tangani() memakai fungsi otomatis.mjs (bukan salinan logika generator) dan semua dunia luar disuntik lewat ctx.
 import fs from 'node:fs'
@@ -64,11 +64,20 @@ export function parse(teks, now = new Date()) {
   return { aksi: kata === 'buat' ? 'buat' : 'kirim_ulang', laporan: n[1], tanggal }
 }
 
+// Q14 (bot laporan, BL-08): `buat ...`, `status` tanpa tanggal, dan `bantuan` milik mesin proyek (proyek.mjs) bila BL_PROYEK=1.
+// `kirim ulang ...` dan `status <tanggal>` tetap di sini. Tanpa BL_PROYEK perilaku lama utuh (kunci Claude API belum dipasang, BL-13).
+export function untukProyek(teks) {
+  const t = String(teks ?? '').trim().toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
+  return t === 'bantuan' || t === 'status' || /^buat\b/.test(t)
+}
+
 // Pintu masuk gateway: perintah hanya bila pengirim ada di PEMILIK (dinormalkan seperti WA_IZIN) dan pesan tanpa lampiran.
-export function cegat({ dari, teks, pemilik, now }) {
+export function cegat({ dari, teks, pemilik, now, proyek = process.env.BL_PROYEK === '1' }) {
   const sah = new Set(daftar(pemilik).map(normalWa).filter(Boolean))
   const d = normalWa(dari)
-  return d && sah.has(d) ? parse(teks, now) : null
+  if (!d || !sah.has(d)) return null
+  const cmd = parse(teks, now)
+  return cmd && proyek && untukProyek(teks) ? { aksi: 'proyek', dari: d, teks: String(teks).trim() } : cmd
 }
 
 let sibuk = false
@@ -76,6 +85,10 @@ let sibuk = false
 // ctx: { env, dep, now, dasar, balas(teks), balasFile(path, nama, caption, mime), log, ada, kenali, tanggalIsi }
 export async function tangani(cmd, ctx) {
   const { balas } = ctx
+  if (cmd.aksi === 'proyek') {
+    const proyek = ctx.tanganiProyek || (await import('./proyek.mjs')).tangani
+    return proyek({ dari: cmd.dari, teks: cmd.teks }, ctx)
+  }
   if (cmd.aksi === 'bantuan') return balas(BANTUAN)
   if (sibuk) return balas('Sedang membuat laporan, tunggu sebentar.')
   sibuk = true
@@ -102,7 +115,7 @@ async function buat({ laporan, tanggal }, ctx) {
   const lepas = kunciProses(path.join(dasar, 'otomatis.lock'))
   if (!lepas) return balas('Sedang membuat laporan, tunggu sebentar.')
   try {
-    const bahan = await ambilBahan({ env, dep, tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+    const bahan = await ambilBahan({ env, dep, tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log, hanyaIzin: true }) // deck jalur lama: bahan WA_IZIN saja
     const { terpilih, teks } = await bahan.pilihSesuai(lap)
     const kurang = lap.butuh.filter((k) => !terpilih[k])
     if (kurang.length) {
@@ -120,7 +133,7 @@ async function buat({ laporan, tanggal }, ctx) {
     if (!c.siap) return balas(`${lap.judul} ${labelTanggal(tanggal)} menunggu: ${c.alasan}.`)
     const { kerja, out, f, berkas } = siapkanKeluaran(lap, tanggal, teks, dasar)
     await balas(`Membuat ${lap.judul} ${labelTanggal(tanggal)}, mohon tunggu.`)
-    await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env)
+    await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env, { kunci: path.join(dasar, 'generator.lock') })
     for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
     // Sengaja TIDAK menulis state, TIDAK mengunggah ke /api/wa/hasil, TIDAK mengirim ke PENERIMA: itu tugas jalur otomatis.
     await kirimBerkas(lap, tanggal, berkas, `${lap.judul} ${tanggal} (permintaan, belum dikirim ke penerima)`, ctx)
