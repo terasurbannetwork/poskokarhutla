@@ -51,6 +51,7 @@ import {RUTE_LABEL} from "./label.js";
 import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
 import {RUTE_DRONE} from "./drone.js";
 import {RUTE_WA} from "./wa.js";
+import {RUTE_WA_PROYEK} from "./wa_proyek.js";
 import {RUTE_WA_FORM} from "./wa_form.js";
 import {RUTE_SAHAM} from "./saham.js";
 import {RUTE_KATALOG_DOKUMEN} from "./katalog_dokumen.js";
@@ -620,6 +621,7 @@ const RUTE = {
   ...RUTE_LABEL,   // label harian teranonim, Bearer PIPA_TOKEN (src/label.js)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
   ...RUTE_WA,   // kotak masuk WA laporan harian lewat gerbang Baileys, tanpa balasan (src/wa.js)
+  ...RUTE_WA_PROYEK,   // Bot Laporan WA: proyek, versi append-only, pola, daftar nomor, detak, biaya; Bearer WA_MESIN, daftar staf untuk /pelaporan (src/wa_proyek.js, BL-02)
   ...RUTE_KATALOG_DOKUMEN,   // indeks dokumen repo untuk /bnpb/katalog-dokumen, terbuka tanpa login sementara (src/katalog_dokumen.js)
   ...RUTE_SAHAM,   // proksi data saham untuk /bnpb/saham, staf saja, kunci Stellar hanya di Worker (src/saham.js)
   ...RUTE_WA_FORM,   // form Bahan Laporan Harian /bnpb/bahan: isian -> teks WA baku -> wa_masuk, staf saja (src/wa_form.js)

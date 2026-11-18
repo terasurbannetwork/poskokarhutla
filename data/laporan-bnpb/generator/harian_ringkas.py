@@ -302,21 +302,32 @@ MEDAN_KUNCI = {'hotspot', 'hot', 'titik_panas', 'firespot', 'fs', 'titik_api', '
                'belum_padam', 'luas_belum_padam', 'belum', 'padam', 'luas_padam'}
 
 
+def bersih_unicode(t):   # NFKC + buang karakter format (Cf: zero-width, word joiner) sebelum mencocokkan kata angka sistem
+    import unicodedata
+    return ''.join(c for c in unicodedata.normalize('NFKC', str(t)) if unicodedata.category(c) != 'Cf')
+
+
 def normal_medan(k):
-    return re.sub(r'[\s\-]+', '_', str(k).strip().lower())
+    return re.sub(r'[\s\-]+', '_', bersih_unicode(k).strip().lower())
 
 
 # K4 juga untuk teks bebas: kata angka sistem bersama angka di satu teks ('hotspot 999 titik', '5.000 ha terbakar') ditolak
-KATA_KUNCI = re.compile(r'hot\s*-?\s*spot|fire\s*-?\s*spot|titik\s+(?:panas|api)|(?:luas|lahan|hutan|area)\s+(?:yang\s+)?terbakar|\bha\s+terbakar|'
-                        r'belum\s+padam|sudah\s+padam|luas\s+padam', re.I)
+KATA_KUNCI = re.compile(r'hot[\s_-]*spot|fire[\s_-]*spot|titik[\s_-]*(?:panas|api)|(?:luas|lahan|hutan|area)[\s_-]*(?:yang\s+)?terbakar|\bha\s*terbakar|'
+                        r'belum[\s_-]*padam|sudah[\s_-]*padam|luas[\s_-]*padam', re.I)   # spasi boleh hilang: Cf (soft hyphen) dibuang lebih dulu
 
 
 def teks_angka_kunci(v):
     """True bila v (teks, atau daftar/objek berisi teks) memuat kata angka sistem dan angka sekaligus."""
-    if isinstance(v, str): return bool(KATA_KUNCI.search(v) and re.search(r'\d', v))
+    if isinstance(v, str):
+        v = bersih_unicode(v); return bool(KATA_KUNCI.search(v) and re.search(r'\d', v))
     if isinstance(v, (list, tuple)): return any(teks_angka_kunci(x) for x in v)
     if isinstance(v, dict): return any(teks_angka_kunci(x) for x in v.values())
     return False
+
+
+def medan_kunci(k):   # nama medan angka sistem, juga tanpa pemisah ('luasterbakar' sesudah Cf dibuang) atau berkata kunci ('jumlah_hotspot')
+    kn = normal_medan(k)
+    return kn in MEDAN_KUNCI or kn.replace('_', '') in {m.replace('_', '') for m in MEDAN_KUNCI} or bool(KATA_KUNCI.search(kn))
 
 
 def _peringatan(pesan):
@@ -335,7 +346,7 @@ def saring_isian(nilai, skema, jalur='isian'):
         hasil = {}
         for k, v in nilai.items():
             kn = normal_medan(k)
-            if kn in MEDAN_KUNCI:
+            if medan_kunci(kn):
                 _peringatan(f'{jalur}.{k}: angka sistem dikunci (hotspot, firespot, luas terbakar, luas belum padam hanya dari sistem), diabaikan'); continue
             if kn not in skema:
                 _peringatan(f'{jalur}.{k}: medan tidak dikenal, diabaikan'); continue
@@ -348,7 +359,7 @@ def saring_isian(nilai, skema, jalur='isian'):
             _peringatan(f'{jalur}: harus objek, diabaikan'); return None
         hasil = {}
         for k, v in nilai.items():
-            if normal_medan(k) in MEDAN_KUNCI:
+            if medan_kunci(k):
                 _peringatan(f'{jalur}.{k}: angka sistem dikunci, diabaikan'); continue
             b = saring_isian(v, skema[1], f'{jalur}.{k}')
             if b is not None: hasil[str(k).strip()] = b
@@ -507,7 +518,7 @@ def namai_slide(S, n):
         if not bebas(i) or not m: continue
         v = [j for j in teks if j != i and bebas(j) and abs(S[j]['x'] - S[i]['x']) <= 20000 and -20000 <= S[j]['y'] - S[i]['y'] <= 500000 and _nilai(S[j]['teks'])]
         if v:
-            j = min(v, key=lambda j: (S[j]['y'], S[j]['id'])); nama[i], nama[j] = f'kpi_{m}_label', f'kpi_{m}'; kunci_t(j, m)
+            j = min(v, key=lambda j: (S[j]['y'], S[j]['id'])); nama[i], nama[j] = f'kpi_{m}_label', f'kpi_{m}'; kunci_t(j, m); kunci_t(i, m)   # label dikunci: tak bisa diganti ke/dari metrik
     for i in teks:
         if not bebas(i) or not re.fullmatch(r'[±+]?\s*\d[\d.,]*', S[i]['teks']): continue
         lab = [j for j in teks if bebas(j) and abs(S[j]['x'] - S[i]['x']) <= 20000 and 0 < S[j]['y'] - S[i]['y'] <= 400000
@@ -580,8 +591,9 @@ def namai_slide(S, n):
         batas = [a - t_ for a in atas] + [atas[-1] + pitch - t_]
         for k, i in enumerate(kol):
             nama[i] = f'{tb}_kepala_{nama_kol[k][1]}'
+            if nama_kol[k][0] in dict(METRIK): kunci_t(i, nama_kol[k][0])   # kepala kolom metrik dikunci
         for p in induk:
-            if any(nama_kol[k][0] == _metrik(S[p]['teks']) for k in range(len(kol))): nama[p] = f'{tb}_kepala_{_metrik(S[p]["teks"])}'
+            if any(nama_kol[k][0] == _metrik(S[p]['teks']) for k in range(len(kol))): nama[p] = f'{tb}_kepala_{_metrik(S[p]["teks"])}'; kunci_t(p, _metrik(S[p]['teks']))
         isi = collections.defaultdict(list)
         for i in sel:
             b = next((k for k in range(len(atas)) if batas[k] <= S[i]['y'] < batas[k + 1]), None)
@@ -607,7 +619,7 @@ def namai_slide(S, n):
             for c, kepala in enumerate(s['tbl'][0]):
                 m = _metrik(kepala)
                 # sel = [baris, kolom]: baris 0 = baris kepala, baris data pertama = 1; kolom mulai 0 (skema operasi ubah bot memakai dasar yang sama)
-                if m: kunci.extend((i, m, [r, c]) for r in range(1, len(s['tbl'])))
+                if m: kunci.extend((i, m, [r, c]) for r in range(0, len(s['tbl'])))   # termasuk sel kepala [0, c]
     # 4. seksi berlabel huruf besar (ARMADA UDARA, STATUS SIAGA, RENCANA AKSI): baris per y, urut x
     sek = sorted((i for i in teks if bebas(i) and _kapital(S[i]['teks'])), key=lambda i: (S[i]['y'], S[i]['x']))
     kembar = collections.Counter(slug(S[i]['teks']) for i in sek)

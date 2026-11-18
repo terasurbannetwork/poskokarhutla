@@ -38,7 +38,7 @@ bl_biaya   (tanggal TEXT PK, usd_mikro INTEGER)
 bl_detak   (mesin TEXT PK, terakhir INTEGER)
 ```
 
-Nomor disimpan hanya sebagai `wa_sha` (sha256 nomor ternormal + garam `WA_GARAM`), termasuk di `bl_daftar`. Balasan ke pendaftar memakai JID dari pesan `daftar` yang ditahan di mesin (`~/.wa-bot/daftar/`, dihapus sesudah diputus pemilik). Tanpa `ALTER` pada tabel `wa_*` yang ada; tautan ke bahan lewat `bl_bahan.wa_id`. `GET /api/wa/terdaftar` mengembalikan himpunan `wa_sha` setuju; gateway menggabungkannya dengan `WA_IZIN` dan memanggilnya tiap 5 menit (288 baca per hari, aman untuk kuota baca D1 Free).
+Nomor disimpan hanya sebagai `wa_sha` (sha256 nomor ternormal + garam `WA_GARAM`), termasuk di `bl_daftar`. Balasan ke pendaftar memakai JID dari pesan `daftar` yang ditahan di mesin (`~/.wa-bot/daftar/`, dihapus sesudah diputus pemilik). Tanpa `ALTER` pada tabel `wa_*` yang ada; tautan ke bahan lewat `bl_bahan.wa_id`. `GET /api/wa/terdaftar` mengembalikan himpunan `wa_sha` setuju; gateway menggabungkannya dengan `WA_IZIN` dan memanggilnya tiap 5 menit: 288 panggilan per hari, tiap panggilan membaca baris sebanyak nomor yang disetujui (maksimal 5000), jadi baca per hari = 288 × jumlah nomor setuju; aman untuk kuota baca D1 Free selama jumlah pendaftar ratusan.
 
 ## R2
 

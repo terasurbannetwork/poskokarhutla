@@ -173,11 +173,13 @@ class TestNamaDanKunci(unittest.TestCase):
         for m in ('hotspot', 'firespot', 'luas_terbakar', 'belum_padam'):   # 4 angka sistem (TIKET BL-06)
             self.assertIn((1, f's1_kpi_{m}'), bentuk)
             for b in (1, 2, 3): self.assertIn((1, f's1_tabel_b{b}_{m}'), bentuk)
+            self.assertIn((1, f's1_kpi_{m}_label'), bentuk)        # label kartu tak bisa diganti ke/dari metrik
+            self.assertIn((1, f's1_tabel_kepala_{m}'), bentuk)     # kepala kolom metrik
         self.assertIn((1, 's1_subjudul'), bentuk)
-        self.assertNotIn((1, 's1_tabel_b1_provinsi'), bentuk); self.assertNotIn((1, 's1_kpi_hotspot_label'), bentuk)
+        self.assertNotIn((1, 's1_tabel_b1_provinsi'), bentuk); self.assertNotIn((1, 's1_tabel_kepala_provinsi'), bentuk)
         self.assertNotIn((1, 's1_judul'), bentuk)
         sel = sorted(tuple(e['sel']) for e in k if 'sel' in e)
-        self.assertEqual(sel, [(1, 1), (2, 1)])   # tabel asli: kolom HOTSPOT di bawah kepala
+        self.assertEqual(sel, [(0, 1), (1, 1), (2, 1)])   # tabel asli: kepala HOTSPOT [0, 1] dan selnya; PROVINSI/CATATAN tidak
         self.assertFalse(any(e['slide'] == 2 and 'sel' not in e for e in k))   # slide harian tanpa angka sistem
 
     def test_tanpa_tulis_tidak_menulis(self):
@@ -263,6 +265,15 @@ class TestIsian(unittest.TestCase):
             self.assertIn(f'isian.{j}: teks memuat angka sistem', err)
         po_isian, err2 = senyap(hr.saring_isian, {'omc': {'Riau': {'sasaran': 'hotspot 20 titik di Siak'}}}, po.ISIAN_PENANGANAN)
         self.assertEqual(po_isian, {'omc': {'Riau': {}}}); self.assertIn('teks memuat angka sistem', err2)
+
+    def test_unicode_tersamar_tetap_ditolak(self):
+        """NFKC (huruf lebar, ligatur) dan karakter Cf (zero-width, word joiner) tidak meloloskan kata angka sistem."""
+        isian, err = senyap(hr.saring_isian, {'hot​spot': 5, 'ｆｉｒｅｓｐｏｔ': 2, 'luas⁠terbakar': 1,
+                                              'kejadian': [{'lokasi': 'Kampar', 'teks': {'dampak': 'ｈｏｔ​spot ９９９ titik', 'kondisi': 'belum­padam 12 ha'}}]},
+                                   hr.ISIAN_HARIAN)
+        self.assertEqual(isian, {'kejadian': [{'lokasi': 'Kampar', 'teks': {}}]})
+        self.assertEqual(err.count('angka sistem dikunci'), 3)
+        self.assertEqual(err.count('teks memuat angka sistem'), 2)
 
     def test_harian_kejadian_tak_cocok_diperingatkan(self):
         wa, w, ga = self.bahan_harian()

@@ -1576,3 +1576,150 @@ export const kuSahkan = async (env, p, {kejadianId, versiLama, potret, oleh}, ki
   const [r] = await skBatch(env, p, [s, skStmtJejakJikaBerubah(env, pelakuSkStaf, oleh, "kaji_ulang", kejadianId, ulang ? "sahkan_ulang" : "sahkan", ulang ? "disahkan" : "draf", "disahkan", `versi ${versiLama + 1}`, kini)]);
   return r.meta.changes > 0;   // D1 menghitung baris pemicu arsip ku_potret juga, jadi bukan === 1
 };
+
+/* ---------- Bot Laporan WA (BL-02; data/kajian-bnpb/bot-laporan/DESAIN-TEKNIS.md, ALUR.md, ALGORITMA.md A1 dan A9, migrasi 0154) ----------
+   SQL saja; validasi masukan di src/wa_proyek.js. Pelaku bl_mesin = mesin bot (Bearer WA_MESIN), bl_staf = daftar untuk tab /pelaporan
+   (tanpa isian, bahan, atau wa_sha). bl_versi append-only: di sini hanya INSERT, tidak ada UPDATE atau DELETE pada tabel itu.
+   Tiap kueri SEARCH lewat PK atau indeks 0154 (kuota baca D1 Free). */
+Object.assign(MATRIKS, {
+  bl_proyek: {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+  bl_bahan:  {bl_mesin: ["baca", "tambah"]},
+  bl_versi:  {bl_mesin: ["baca", "tambah"]},
+  bl_pola:   {bl_mesin: ["baca", "tambah", "ubah"]},
+  bl_daftar: {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+  bl_biaya:  {bl_mesin: ["baca", "tambah", "ubah"]},
+  bl_detak:  {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+});
+export const pelakuBlMesin = {peran: "bl_mesin"}, pelakuBlStaf = {peran: "bl_staf"};
+export const BL_STATUS = ["terbuka", "bertanya", "membangun", "draf", "final", "ditutup", "batal", "kedaluwarsa"];
+export const BL_AKTIF = ["terbuka", "bertanya", "membangun", "draf"];   // proyek yang masih menerima bahan, revisi, dan versi; final dan ditutup tidak dibuka lagi (ALUR)
+/* ALUR "Status proyek": terbuka -> bertanya -> membangun -> draf -> membangun (revisi) -> draf ... -> final -> ditutup; keluar samping batal dan kedaluwarsa.
+   Syarat versi: ke draf dan final butuh versi >= 1; membangun mundur ke terbuka/bertanya hanya bila belum ada versi (bangun v1 gagal atau bot bertanya dulu). */
+export const BL_TRANSISI = {
+  terbuka:     ["bertanya", "membangun", "batal", "kedaluwarsa"],
+  bertanya:    ["terbuka", "membangun", "batal", "kedaluwarsa"],
+  membangun:   ["draf", "terbuka", "bertanya", "batal", "kedaluwarsa"],
+  draf:        ["membangun", "final", "batal", "kedaluwarsa"],
+  final:       ["ditutup"],
+  ditutup: [], batal: [], kedaluwarsa: [],
+};
+export const blBolehPindah = (dari, ke, versi) => !!BL_TRANSISI[dari]?.includes(ke)
+  && (!["draf", "final"].includes(ke) || versi >= 1) && !(dari === "membangun" && ["terbuka", "bertanya"].includes(ke) && versi > 0);
+const BL_KOL_PROYEK = "id, wa_sha, jenis, tanggal, status, versi, drive_url, dibuat, diubah";
+const BL_AKTIF_SQL = "('terbuka', 'bertanya', 'membangun', 'draf')";
+
+/* ---- proyek ---- */
+export const blProyekById = (env, p, id) => sedia(env, p, "bl_proyek", "baca", `SELECT ${BL_KOL_PROYEK} FROM bl_proyek WHERE id = ?1`).bind(id).first();
+const blProyekAktif = (env, p, waSha, jenis, tanggal) => sedia(env, p, "bl_proyek", "baca",
+  `SELECT ${BL_KOL_PROYEK} FROM bl_proyek WHERE wa_sha = ?1 AND status IN ${BL_AKTIF_SQL} AND jenis = ?2 AND tanggal = ?3 ORDER BY dibuat DESC LIMIT 1`).bind(waSha, jenis, tanggal).first();
+/* buka atau ambil proyek aktif per (nomor, jenis, tanggal) (Q6). Kode P-DDMMYY-NN dari tanggal WIB pembuatan, NN urut per hari (maks 99).
+   INSERT ... WHERE NOT EXISTS: dua panggilan bersamaan untuk tuple yang sama tidak membuat dua proyek aktif; bentrok kode = coba nomor berikut. */
+export async function blProyekBuka(env, p, {waSha, jenis, tanggal}, kini) {
+  const ada = await blProyekAktif(env, p, waSha, jenis, tanggal); if (ada) return {proyek: ada, baru: false};
+  const d = new Date(kini + 7 * 3600e3).toISOString(), awal = `P-${d.slice(8, 10)}${d.slice(5, 7)}${d.slice(2, 4)}-`;
+  for (let coba = 0; coba < 4; coba++) {
+    const akhir = await sedia(env, p, "bl_proyek", "baca", "SELECT id FROM bl_proyek WHERE id > ?1 AND id < ?2 ORDER BY id DESC LIMIT 1").bind(awal + "00", awal + "99~").first();
+    const nn = (akhir ? Number(akhir.id.slice(9)) : 0) + 1;
+    if (nn > 99) throw new Galat(429, "kode proyek hari ini habis (99 per hari)");
+    const id = awal + String(nn).padStart(2, "0");
+    try {
+      const r = await sedia(env, p, "bl_proyek", "tambah", `INSERT INTO bl_proyek (id, wa_sha, jenis, tanggal, status, versi, dibuat, diubah)
+        SELECT ?1, ?2, ?3, ?4, 'terbuka', 0, ?5, ?5 WHERE NOT EXISTS (SELECT 1 FROM bl_proyek WHERE wa_sha = ?2 AND status IN ${BL_AKTIF_SQL} AND jenis = ?3 AND tanggal = ?4)`)
+        .bind(id, waSha, jenis, tanggal, kini).run();
+      if (r.meta.changes === 1) return {proyek: await blProyekById(env, p, id), baru: true};
+      const lain = await blProyekAktif(env, p, waSha, jenis, tanggal); if (lain) return {proyek: lain, baru: false};
+    } catch (e) { if (!/UNIQUE|PRIMARY/i.test(String(e?.message ?? e))) throw e; }
+  }
+  throw new Galat(503, "kode proyek bentrok; coba lagi");
+}
+/* pindah status dengan pembanding status dan versi lama (balapan = 0 baris = false). drive_url hanya saat ke ditutup. */
+export async function blProyekPindah(env, p, {id, ke, driveUrl = null}, kini) {
+  const pr = await blProyekById(env, p, id); if (!pr) throw new Galat(404, "proyek tidak ada");
+  if (!blBolehPindah(pr.status, ke, pr.versi)) throw new Galat(409, `transisi ${pr.status} ke ${ke} tidak sah${["draf", "final"].includes(ke) && pr.versi < 1 ? " (belum ada versi)" : ""}`);
+  const r = await sedia(env, p, "bl_proyek", "ubah", "UPDATE bl_proyek SET status = ?2, diubah = ?3, drive_url = COALESCE(?4, drive_url) WHERE id = ?1 AND status = ?5 AND versi = ?6")
+    .bind(id, ke, kini, ke === "ditutup" ? driveUrl : null, pr.status, pr.versi).run();
+  if (r.meta.changes !== 1) throw new Galat(409, "status proyek berubah bersamaan; baca ulang");
+  return {...pr, status: ke, diubah: kini, drive_url: ke === "ditutup" && driveUrl ? driveUrl : pr.drive_url, dari: pr.status};
+}
+/* daftar untuk staf /pelaporan: tanpa wa_sha, isian, bahan; nama pemegang dari bl_daftar setuju bila ada */
+export const blProyekStaf = async (env, p, sejak) => {
+  izin(p, "bl_daftar", "baca");
+  return (await sedia(env, p, "bl_proyek", "baca", `SELECT r.id, r.jenis, r.tanggal, r.status, r.versi, r.drive_url, r.dibuat, r.diubah, d.nama pemegang FROM bl_proyek r
+    LEFT JOIN bl_daftar d ON d.wa_sha = r.wa_sha AND d.status = 'setuju' WHERE r.status IN ('terbuka', 'bertanya', 'membangun', 'draf', 'final', 'ditutup', 'batal', 'kedaluwarsa') AND r.diubah >= ?1
+    ORDER BY r.diubah DESC LIMIT 200`).bind(sejak).all()).results;
+};
+
+/* ---- bahan: tautan ke wa_masuk lewat wa_id; ganda diabaikan (PK); tiap tambah menyegarkan diubah (aktivitas untuk kedaluwarsa Q7) ---- */
+export async function blBahanTambah(env, p, id, bahan, kini) {
+  if (!bahan.length) return 0;
+  const s = bahan.map(b => sedia(env, p, "bl_bahan", "tambah", `INSERT INTO bl_bahan (proyek_id, wa_id, jenis_bahan, ditambah)
+    SELECT ?1, ?2, ?3, ?4 WHERE EXISTS (SELECT 1 FROM bl_proyek WHERE id = ?1 AND status IN ${BL_AKTIF_SQL}) ON CONFLICT (proyek_id, wa_id) DO NOTHING`).bind(id, b.wa_id, b.jenis_bahan ?? null, kini));
+  const r = await env.DB.batch([...s, sedia(env, p, "bl_proyek", "ubah", `UPDATE bl_proyek SET diubah = ?2 WHERE id = ?1 AND status IN ${BL_AKTIF_SQL}`).bind(id, kini)]);
+  return r.slice(0, -1).reduce((n, x) => n + x.meta.changes, 0);
+}
+export const blBahanDaftar = async (env, p, id) => (await sedia(env, p, "bl_bahan", "baca", "SELECT wa_id, jenis_bahan, ditambah FROM bl_bahan WHERE proyek_id = ?1 ORDER BY ditambah, wa_id LIMIT 200").bind(id).all()).results;
+
+/* ---- versi (D6): append-only. n harus = versi proyek + 1 dan proyek masih aktif; INSERT dan naik versi sebatch dengan syarat yang sama,
+   jadi n yang sudah ada = galat PK (tidak pernah menimpa) dan n melompat = 0 baris. Berkas R2 tiap percobaan di awalan unik v<n>-<acak>/ (src/wa_proyek.js). ---- */
+export async function blVersiTambah(env, p, v, kini) {
+  const syarat = `EXISTS (SELECT 1 FROM bl_proyek WHERE id = ?1 AND versi = ?2 - 1 AND status IN ${BL_AKTIF_SQL})`;
+  try {
+    const [a] = await env.DB.batch([
+      sedia(env, p, "bl_versi", "tambah", `INSERT INTO bl_versi (proyek_id, n, isian_r2, ubah_r2, pptx_r2, pdf_r2, instruksi, peringatan, dibuat) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9 WHERE ${syarat}`)
+        .bind(v.id, v.n, v.isian_r2 ?? null, v.ubah_r2 ?? null, v.pptx_r2 ?? null, v.pdf_r2 ?? null, v.instruksi ?? null, v.peringatan ?? null, kini),
+      sedia(env, p, "bl_proyek", "ubah", `UPDATE bl_proyek SET versi = ?2, diubah = ?3 WHERE id = ?1 AND versi = ?2 - 1 AND status IN ${BL_AKTIF_SQL}`).bind(v.id, v.n, kini)]);
+    return a.meta.changes === 1;
+  } catch (e) { if (/UNIQUE|PRIMARY/i.test(String(e?.message ?? e))) throw new Galat(409, `versi ${v.n} sudah ada; versi tidak bisa ditimpa`); throw e; }
+}
+const BL_KOL_VERSI = "proyek_id, n, isian_r2, ubah_r2, pptx_r2, pdf_r2, instruksi, peringatan, dibuat";
+export const blVersiBaca = (env, p, id, n) => sedia(env, p, "bl_versi", "baca", `SELECT ${BL_KOL_VERSI} FROM bl_versi WHERE proyek_id = ?1 AND n = ?2`).bind(id, n).first();
+export const blVersiDaftar = async (env, p, id) => (await sedia(env, p, "bl_versi", "baca", `SELECT ${BL_KOL_VERSI} FROM bl_versi WHERE proyek_id = ?1 ORDER BY n LIMIT 999`).bind(id).all()).results;
+
+/* ---- pola revisi (K10, A9, Q12 BAWAAN SEMENTARA: 3 kejadian dalam 14 hari dari minimal 2 proyek; ditolak = tidak diusulkan 30 hari).
+   Kejadian per (proyek, versi) dicatat pemanggil di R2 (bl_pola hanya punya hitung); fungsi murni blPolaNilai memutuskan status. ---- */
+export const BL_POLA = {hari: 14, kali: 3, proyek: 2, tolakHari: 30};
+const BL_KOL_POLA = "id, jenis, slide_judul, operasi, ringkas, hitung, status, diubah";
+export const blPolaById = (env, p, id) => sedia(env, p, "bl_pola", "baca", `SELECT ${BL_KOL_POLA} FROM bl_pola WHERE id = ?1`).bind(id).first();
+export const blPolaJenis = async (env, p, jenis) => (await sedia(env, p, "bl_pola", "baca", `SELECT ${BL_KOL_POLA} FROM bl_pola WHERE jenis = ?1 AND status IN ('diusulkan', 'aturan') ORDER BY status, diubah DESC LIMIT 100`).bind(jenis).all()).results;
+/* row lama (atau null), label, kejadian dalam jendela -> {baris baru, capai: baru saja mencapai ambang} */
+export function blPolaNilai(lama, label, kejadian, kini) {
+  const jendela = kejadian.filter(k => kini - k.t <= BL_POLA.hari * 864e5), nProyek = new Set(jendela.map(k => k.p)).size;
+  const cukup = jendela.length >= BL_POLA.kali && nProyek >= BL_POLA.proyek;
+  let status = lama?.status ?? "mengamati", diubah = lama?.diubah ?? kini;
+  if (status === "ditolak" && kini - diubah >= BL_POLA.tolakHari * 864e5) { status = "mengamati"; diubah = kini; }
+  const capai = status === "mengamati" && cukup;
+  if (capai) { status = "diusulkan"; diubah = kini; }
+  if (!lama) diubah = kini;
+  return {baris: {id: lama?.id ?? label.id, jenis: lama?.jenis ?? label.jenis, slide_judul: lama?.slide_judul ?? label.slide_judul, operasi: lama?.operasi ?? label.operasi, ringkas: lama?.ringkas ?? label.ringkas, hitung: jendela.length, status, diubah}, capai};
+}
+export const blPolaSimpan = (env, p, b) => sedia(env, p, "bl_pola", "tambah", `INSERT INTO bl_pola (id, jenis, slide_judul, operasi, ringkas, hitung, status, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+  ON CONFLICT (id) DO UPDATE SET hitung = excluded.hitung, status = excluded.status, diubah = excluded.diubah`).bind(b.id, b.jenis, b.slide_judul, b.operasi, b.ringkas, b.hitung, b.status, b.diubah).run();
+/* putusan pemilik atas usulan: aturan atau ditolak, hanya dari diusulkan */
+export const blPolaPutus = async (env, p, id, putusan, kini) => (await sedia(env, p, "bl_pola", "ubah", "UPDATE bl_pola SET status = ?2, diubah = ?3 WHERE id = ?1 AND status = 'diusulkan'").bind(id, putusan, kini).run()).meta.changes === 1;
+
+/* ---- daftar nomor (K14, A1): menunggu dari pesan daftar; setuju/tolak dari putusan pemilik (dijaga gateway). Nomor setuju tidak diturunkan oleh daftar ulang;
+   nomor tolak baru boleh menunggu lagi BL_TOLAK_HARI sesudah ditolak (dibuat = waktu putusan tolak), sebelum itu tetap tolak dan gateway diam. ---- */
+export const BL_TOLAK_HARI = 30;
+export async function blDaftarTulis(env, p, {waSha, nama = null, instansi = null, status}, kini) {
+  const s = status === "menunggu"
+    ? sedia(env, p, "bl_daftar", "tambah", `INSERT INTO bl_daftar (wa_sha, nama, instansi, status, dibuat) VALUES (?1, ?2, ?3, 'menunggu', ?4)
+        ON CONFLICT (wa_sha) DO UPDATE SET nama = excluded.nama, instansi = excluded.instansi, status = 'menunggu', dibuat = excluded.dibuat
+        WHERE bl_daftar.status = 'menunggu' OR (bl_daftar.status = 'tolak' AND bl_daftar.dibuat <= ?5)`).bind(waSha, nama, instansi, kini, kini - BL_TOLAK_HARI * 864e5)
+    : sedia(env, p, "bl_daftar", "ubah", `INSERT INTO bl_daftar (wa_sha, nama, instansi, status, dibuat) VALUES (?1, ?2, ?3, ?4, ?5)
+        ON CONFLICT (wa_sha) DO UPDATE SET status = excluded.status, nama = COALESCE(excluded.nama, bl_daftar.nama), instansi = COALESCE(excluded.instansi, bl_daftar.instansi),
+          dibuat = CASE WHEN excluded.status = 'tolak' AND bl_daftar.status != 'tolak' THEN excluded.dibuat ELSE bl_daftar.dibuat END`).bind(waSha, nama, instansi, status, kini);
+  await s.run();
+  return sedia(env, p, "bl_daftar", "baca", "SELECT status, nama, instansi, dibuat FROM bl_daftar WHERE wa_sha = ?1").bind(waSha).first();
+}
+export const blMenungguHitung = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT count(*) n FROM bl_daftar WHERE status = 'menunggu'").first()).n;
+export const blTerdaftar = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT wa_sha FROM bl_daftar WHERE status = 'setuju' ORDER BY wa_sha LIMIT 5000").all()).results.map(r => r.wa_sha);
+
+/* ---- biaya harian (A10, Q5), mikro-USD ---- */
+export const blBiayaBaca = async (env, p, tanggal) => (await sedia(env, p, "bl_biaya", "baca", "SELECT usd_mikro FROM bl_biaya WHERE tanggal = ?1").bind(tanggal).first())?.usd_mikro ?? 0;
+export const blBiayaTambah = async (env, p, tanggal, usdMikro) => (await sedia(env, p, "bl_biaya", "tambah", `INSERT INTO bl_biaya (tanggal, usd_mikro) VALUES (?1, ?2)
+  ON CONFLICT (tanggal) DO UPDATE SET usd_mikro = bl_biaya.usd_mikro + excluded.usd_mikro RETURNING usd_mikro`).bind(tanggal, usdMikro).first()).usd_mikro;
+
+/* ---- detak mesin (K11, Q2) ---- */
+export const blDetakBaca = async (env, p, mesin) => (await sedia(env, p, "bl_detak", "baca", "SELECT terakhir FROM bl_detak WHERE mesin = ?1").bind(mesin).first())?.terakhir ?? null;
+export const blDetakTulis = (env, p, mesin, kini) => sedia(env, p, "bl_detak", "tambah", "INSERT INTO bl_detak (mesin, terakhir) VALUES (?1, ?2) ON CONFLICT (mesin) DO UPDATE SET terakhir = excluded.terakhir").bind(mesin, kini).run();
+export const blDetakSemua = async (env, p) => (await sedia(env, p, "bl_detak", "baca", "SELECT mesin, terakhir FROM bl_detak WHERE mesin > '' ORDER BY mesin LIMIT 20").all()).results;
