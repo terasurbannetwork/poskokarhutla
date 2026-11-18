@@ -6,6 +6,7 @@
 // -> `tanya` dibalas sebagai pertanyaan (draf lagi) | semua ditolak kunci: T-TOLAK-KUNCI tanpa versi baru | selain itu generator dibangun ulang dari bahan + isian,
 // operasi 1..n diterapkan (ubah.py terapkan), PDF bersamaan dengan periksa (BL-11), pratinjau slide pertama yang berubah, versi n+1 dengan ubah.json, draf.
 // `versi` riwayat dengan jam; `balik vN` = versi baru dengan operasi vN (append-only); `pptx` kirim PPTX terakhir; `batal` menutup proyek.
+// `final` (BL-12): PPTX + PDF ke pemegang, Drive <tanggal>/Revisi N/ (tanpa /api/wa/hasil, D13), ditutup + T-FINAL; gagal diulang ulangFinal() tiap 10 menit.
 // Semua dunia luar lewat ctx (balas, balasFile, kabariPemilik) dan ctx.dep (fetch, exec, ocr, claude, periksa?). Angka sistem tidak pernah dari Claude (D1, K4).
 //   node scripts/wa/proyek.mjs --kering   (cek kesiapan mesin, BL-13)
 import fs from 'node:fs'
@@ -50,7 +51,7 @@ export function parsePerintah(teks, now = new Date()) {
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
   if (t === 'status') return { aksi: 'status' }
-  if (['versi', 'pptx', 'batal', 'final'].includes(t)) return { aksi: t } // final: BL-12; sampai itu dibalas belum tersedia
+  if (['versi', 'pptx', 'batal', 'final'].includes(t)) return { aksi: t }
   const b = t.match(/^balik (?:ke )?v?(\d{1,3})$/)
   if (b) return { aksi: 'balik', n: Number(b[1]) }
   const m = t.match(/^buat\b ?(.*)$/)
@@ -74,7 +75,7 @@ export const BANTUAN = [
   'buat [tanggal] (jenis ditebak dari bahan)',
   'buat saja (bangun dengan bahan yang ada)',
   'status (proyek Anda yang masih terbuka)',
-  'Saat draf: balas dengan kalimat revisi, atau versi, balik v2, pptx, batal',
+  'Saat draf: balas dengan kalimat revisi, atau versi, balik v2, pptx, final, batal',
   'bantuan',
   'Kirim atau teruskan bahan laporan dulu, lalu ketik buat.',
   'Tanggal: hari ini (bawaan), kemarin, 26 okt, 26/10, 2026-10-26.',
@@ -111,7 +112,7 @@ async function worker(ctx, jalur, { method = 'GET', body, form } = {}) {
   return r.json()
 }
 const proyekBuka = (ctx, o) => worker(ctx, '/api/wa/proyek', { method: 'POST', body: o })
-const proyekStatus = (ctx, id, ke, sha) => worker(ctx, '/api/wa/proyek/status', { method: 'POST', body: { id, ke, wa_sha: sha } })
+const proyekStatus = (ctx, id, ke, sha, tambah = {}) => worker(ctx, '/api/wa/proyek/status', { method: 'POST', body: { id, ke, wa_sha: sha, ...tambah } })
 
 // Lingkup bahan (D12): pengirim WA_IZIN (termasuk PEMILIK) memakai SEMUA bahan hari itu dari nomor WA_IZIN dan baris grup operasi, sama dengan
 // jalur terjadwal, jadi `buat harian` dan `buat penanganan` menghasilkan deck yang sama. Pengirim bl_daftar hanya memakai barisnya sendiri
@@ -452,7 +453,6 @@ async function buat(cmd, dari, sha, ctx) {
       return await balas(`${kepala(p)}\nDraf v${n} gagal disimpan. Pemilik sudah dikabari, coba lagi nanti.`)
     }
     // D8 dan Q1: tepat 2 kiriman, gambar pratinjau slide 1 berketerangan ringkasan draf, lalu PDF. Tanpa pratinjau: ringkasan di keterangan PDF.
-    // TODO(BL-12): `final` mengirim PPTX, unggah Drive dan /api/wa/hasil.
     const ringkas = tDraf(p, n, lap, cmd.tanggal, { hitung, catatan, peringatan, slide: png.length ? 1 : null })
     if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), ringkas, 'image/png')
     await ctx.balasFile(pdf, path.basename(pdf), png.length ? tPdf(p, n, lap, cmd.tanggal) : ringkas, MIME.pdf)
@@ -618,13 +618,13 @@ async function jalankanPeriksa(ctx, { pptx, pdf, jenis, tanggal, angka }) {
 const versiDaftar = async (ctx, p, sha) => (await worker(ctx, `/api/wa/proyek/versi?id=${encodeURIComponent(p.id)}&wa_sha=${sha}`)).versi || []
 const versiRinci = (ctx, p, n, sha) => worker(ctx, `/api/wa/proyek/versi?id=${encodeURIComponent(p.id)}&n=${n}&wa_sha=${sha}`)
 const opsDari = (rinci) => (Array.isArray(rinci?.ubah?.operasi) ? rinci.ubah.operasi : [])
-// PPTX versi n di mesin; hilang (mesin lain, dibersihkan) = unduh dari R2 lewat rute.
-async function pastikanPptx(ctx, p, lap, n, sha) {
-  const f = jalurDeck(ctx.dasar || RUMAH, p, lap, n)
+// PPTX (atau PDF) versi n di mesin; hilang (mesin lain, dibersihkan) = unduh dari R2 lewat rute.
+async function pastikanPptx(ctx, p, lap, n, sha, ext = 'pptx') {
+  const f = jalurDeck(ctx.dasar || RUMAH, p, lap, n).replace(/\.pptx$/, '.' + ext)
   if ((ctx.ada || fs.existsSync)(f)) return f
   const { env, dep } = ctx
   const r = await dep.fetch(`${W(env)}/api/wa/proyek/versi?id=${encodeURIComponent(p.id)}&n=${n}&wa_sha=${sha}&berkas=${encodeURIComponent(path.basename(f))}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` }, signal: AbortSignal.timeout(WAKTU_WORKER) })
-  if (!r.ok) throw new Error(`PPTX v${n} tidak ada (HTTP ${r.status})`)
+  if (!r.ok) throw new Error(`${ext.toUpperCase()} v${n} tidak ada (HTTP ${r.status})`)
   fs.mkdirSync(path.dirname(f), { recursive: true, mode: 0o700 })
   fs.writeFileSync(f, Buffer.from(await r.arrayBuffer()), { mode: 0o600 })
   return f
@@ -632,7 +632,7 @@ async function pastikanPptx(ctx, p, lap, n, sha) {
 
 // Proyek aktif pengirim dari indeks lokal, terbaru dulu; yang tidak aktif lagi dibuang dari indeks.
 // bersihkan: false = tanpa menulis indeks (klasifikasi tanpa efek samping); rute {id} hanya membaca.
-async function proyekPengirim(ctx, sha, saring = () => true, { bersihkan = true } = {}) {
+async function proyekPengirim(ctx, sha, saring = () => true, { bersihkan = true, jugaFinal = false } = {}) {
   const dasar = ctx.dasar || RUMAH
   const ix = bacaJson(indeksP(dasar), { proyek: {} })
   const buang = (id) => { if (bersihkan) hapusIndeks(dasar, id) }
@@ -641,6 +641,7 @@ async function proyekPengirim(ctx, sha, saring = () => true, { bersihkan = true 
     if (e.sha !== sha) continue
     let p
     try { p = (await proyekBuka(ctx, { id, wa_sha: sha })).proyek } catch (x) { if (/HTTP 404/.test(x.message)) buang(id); continue }
+    if (p.status === 'final') { if (jugaFinal && saring(p)) ada.push(p); continue } // final tetap di indeks sampai ditutup (BL-12)
     if (!AKTIF.includes(p.status)) { buang(id); continue }
     if (saring(p)) ada.push(p)
   }
@@ -831,6 +832,169 @@ async function perintahProyek(cmd, dari, sha, ctx) {
   return balas(`${kepala(p, p.versi || null)}\n${nama} dibatalkan, tanpa unggah. Ketik buat untuk memulai lagi.`)
 }
 
+// ---------- final dan closing (BL-12; ALUR C, K7, Q1, Q9, Q10, T10, D13) ----------
+// final: keadaan dicatat di proyek/final.json LEBIH DULU, lalu draf -> final; PPTX lalu PDF versi terakhir ke pemegang (2 kiriman, PPTX ikut limiter);
+// Drive <tanggal>/Revisi N/ (drive.cjs folderRevisi); ditutup dengan drive_url; T-FINAL. Q10: tidak pernah ke PENERIMA.
+// D13: final bot TIDAK diunggah ke /api/wa/hasil (kunci lapor-otomatis/<tanggal>/<laporan> milik jalur terjadwal); final bot sudah tersimpan di bl_versi.
+// Gagal (pindah status, Drive, ditutup, kirim T-FINAL): keadaan tetap di final.json, ulangFinal() (tiap 10 menit) melanjutkan dari langkah yang belum.
+// Folder Revisi yang terpilih disimpan sebelum unggah: ulangan tidak pernah membuat Revisi kedua. Pemilik dikabari sekali per proyek per jenis galat.
+// Lewat 24 jam belum selesai: berhenti diulang, pemilik dikabari sekali untuk ditangani manual. T-FINAL tidak pernah dikirim dua kali (st.tfinal).
+const BATAS_ULANG_FINAL_MS = 24 * 3600e3
+const finalP = (dasar) => path.join(dirProyek(dasar), 'final.json')
+const bacaFinal = (dasar) => bacaJson(finalP(dasar), { proyek: {} })
+function simpanFinal(dasar, st) { const ix = bacaFinal(dasar); ix.proyek[st.id] = st; tulisJson(finalP(dasar), ix) }
+function hapusFinal(dasar, id) { const ix = bacaFinal(dasar); if (ix.proyek[id]) { delete ix.proyek[id]; tulisJson(finalP(dasar), ix) } }
+const driveDari = (ctx) => ctx.dep.drive || req('./drive.cjs').buat({ env: ctx.env, log: ctx.log })
+async function kePemilik(ctx, teks) {
+  if (ctx.kabariPemilik) return ctx.kabariPemilik(teks)
+  const pm = daftar(ctx.env.PEMILIK)[0]
+  if (pm && ctx.dep.kirimTeks) await ctx.dep.kirimTeks(pm, teks)
+}
+const bacaProyek = async (ctx, id, sha) => (await proyekBuka(ctx, { id, wa_sha: sha })).proyek
+
+export async function tFinal(ctx, st) {
+  const p = { id: st.id }, lap = lapDari(st.jenis)
+  let riwayat = []
+  try { riwayat = (await versiDaftar(ctx, p, st.sha)).map((x) => `v${x.n} ${jamLabel(x.dibuat)}, ${rapi(x.instruksi || 'buat', 80)}`) } catch (e) { (ctx.log || (() => {}))('riwayat versi gagal', e.message) }
+  return [kepala(p, st.n), `Final ${lap ? judul(lap, st.tanggal) : st.jenis}, versi v${st.n}.`,
+    `Folder Drive${st.folder?.nama ? ' ' + st.folder.nama : ''}: ${st.driveUrl}`,
+    ...(riwayat.length ? ['Riwayat versi:', ...riwayat] : []),
+    'Proyek ditutup. Pesan berikutnya membuka proyek baru.'].join('\n')
+}
+
+async function galatFinal(ctx, st, jenis, e) {
+  (ctx.log || (() => {}))('final', st.id, jenis, e.message)
+  st.galat = { ...(st.galat || {}), [jenis]: String(e.message).slice(0, 300) }
+  if (!st.kabar?.[jenis]) {
+    const apa = { status: 'pindah status ke final', drive: 'unggah Google Drive', tutup: 'pindah status ke ditutup', kirim: 'kirim T-FINAL ke pemegang' }[jenis]
+    try { await kePemilik(ctx, `Bot laporan ${st.id} v${st.n}: ${apa} gagal, diulang otomatis tiap 10 menit. ${String(e.message).slice(0, 300)}`); st.kabar = { ...(st.kabar || {}), [jenis]: true } } catch (x) { (ctx.log || (() => {}))('kabar pemilik gagal', x.message) }
+  }
+  simpanFinal(ctx.dasar || RUMAH, st)
+}
+
+// Pastikan Worker berstatus final (atau sudah ditutup). Jawaban hilang = baca ulang. -> 'ok' | 'tertunda' | 'buang' (proyek berubah, keadaan dibuang).
+async function pastikanFinal(ctx, st) {
+  if (st.statusFinal) return 'ok'
+  let q
+  try { q = await bacaProyek(ctx, st.id, st.sha) } catch (e) { await galatFinal(ctx, st, 'status', e); return 'tertunda' }
+  if (q.status === 'draf' && Number(q.versi) === Number(st.n)) {
+    try { await proyekStatus(ctx, st.id, 'final', st.sha) } catch (e) {
+      try { q = await bacaProyek(ctx, st.id, st.sha) } catch {}
+      if (!['final', 'ditutup'].includes(q?.status)) { await galatFinal(ctx, st, 'status', e); return 'tertunda' }
+    }
+    q = { ...q, status: q.status === 'ditutup' ? 'ditutup' : 'final' }
+  }
+  if (!['final', 'ditutup'].includes(q.status)) return 'buang'
+  st.statusFinal = true
+  if (q.status === 'ditutup') { st.ditutup = true; if (!st.driveUrl && q.drive_url) st.driveUrl = q.drive_url }
+  simpanFinal(ctx.dasar || RUMAH, st)
+  return 'ok'
+}
+
+// Satu langkah lanjut untuk proyek final; idempoten. kirim(teks) = T-FINAL ke pemegang. -> 'ditutup' | 'tertunda' | 'buang'
+async function lanjutFinal(ctx, st, kirim, { kirimBerkas = null } = {}) {
+  const dasar = ctx.dasar || RUMAH
+  const lap = lapDari(st.jenis)
+  const simpan = () => simpanFinal(dasar, st)
+  const ok = await pastikanFinal(ctx, st)
+  if (ok === 'buang') { hapusFinal(dasar, st.id); return 'buang' }
+  if (ok !== 'ok') return 'tertunda'
+  const berkas = async () => {
+    const p = { id: st.id, tanggal: st.tanggal }
+    return [{ p: await pastikanPptx(ctx, p, lap, st.n, st.sha, 'pptx'), mime: MIME.pptx }, { p: await pastikanPptx(ctx, p, lap, st.n, st.sha, 'pdf'), mime: MIME.pdf }]
+  }
+  if (kirimBerkas && !st.berkasTerkirim) {
+    try { await kirimBerkas(await berkas()) } catch (e) { (ctx.log || (() => {}))('kirim berkas final gagal', e.message) }
+    st.berkasTerkirim = true; simpan() // sekali saja: PPTX dan PDF tidak dikirim ulang oleh ulangan
+  }
+  if (!st.driveUrl) {
+    try {
+      const drive = driveDari(ctx)
+      if (!st.folder) {
+        const f = await drive.folderRevisi({ tanggal: st.tanggal, laporan: st.jenis })
+        if (!f?.id) throw new Error('Google Drive belum dikonfigurasi (DRIVE_CLIENT_ID, DRIVE_ROOT, DRIVE_LAPORAN, ~/.wa-bot/drive.json)')
+        st.folder = { id: f.id, nama: f.nama, n: f.n }; simpan() // dicatat SEBELUM unggah: ulangan memakai folder yang sama
+      }
+      const url = await drive.unggahKeFolder({ folder: st.folder, berkas: await berkas() })
+      if (!url) throw new Error('Drive tidak memberi tautan folder')
+      st.driveUrl = url; simpan()
+    } catch (e) { await galatFinal(ctx, st, 'drive', e); return 'tertunda' }
+  }
+  if (!st.ditutup) {
+    try { await proyekStatus(ctx, st.id, 'ditutup', st.sha, { drive_url: st.driveUrl }) } catch (e) {
+      let q = null
+      try { q = await bacaProyek(ctx, st.id, st.sha) } catch {}
+      if (q?.status !== 'ditutup') { await galatFinal(ctx, st, 'tutup', e); return 'tertunda' }
+    }
+    st.ditutup = true; simpan()
+  }
+  if (!st.tfinal) {
+    try { await kirim(await tFinal(ctx, st)) } catch (e) { await galatFinal(ctx, st, 'kirim', e); return 'tertunda' }
+    st.tfinal = true; simpan()
+  }
+  hapusFinal(dasar, st.id)
+  hapusIndeks(dasar, st.id)
+  return 'ditutup'
+}
+
+async function final(dari, sha, ctx) {
+  const { balas } = ctx
+  const dasar = ctx.dasar || RUMAH
+  const tunda = Object.values(bacaFinal(dasar).proyek).find((x) => x.sha === sha)
+  const ps = await proyekPengirim(ctx, sha, (p) => p.versi > 0, { jugaFinal: true })
+  // urutan: final yang tercatat di mesin, lalu proyek yang di Worker sudah final (jawaban hilang, keadaan lokal hilang), lalu draf
+  const p = (tunda && { id: tunda.id }) || ps.find((x) => x.status === 'final') || ps.find((x) => x.status === 'draf')
+  if (!p) {
+    if (ps.some((x) => x.status === 'membangun')) return balas(`${kepala(ps[0], ps[0].versi || null)}\nSedang dibangun, tunggu sebentar lalu ketik final lagi.`)
+    return balas('Belum ada draf untuk difinalkan. Kirim bahan lalu ketik buat harian atau buat penanganan.')
+  }
+  const lepas = kunciProses(lockProyek(dasar, p.id))
+  if (!lepas) return balas(`${kepala(p, p.versi || tunda?.n || null)}\nSedang diproses, tunggu sebentar lalu ketik final lagi.`)
+  try {
+    let st = tunda
+    if (!st) {
+      const lap = lapDari(p.jenis)
+      if (!lap) return balas(`${kepala(p, p.versi)}\nJenis ${p.jenis} belum bisa difinalkan lewat bot.`)
+      st = { id: p.id, sha, dari, jenis: p.jenis, tanggal: p.tanggal, n: p.versi, folder: null, driveUrl: null, ditutup: false, tfinal: false, kabar: {}, mulai: (ctx.now || new Date()).getTime() }
+      await pastikanPptx(ctx, p, lap, st.n, sha, 'pptx'); await pastikanPptx(ctx, p, lap, st.n, sha, 'pdf') // berkas ada sebelum status berubah
+      simpanFinal(dasar, st) // SEBELUM pindah ke final: mati di tengah = ulangFinal melanjutkan
+    } else if (st.basi) {
+      return balas(`${kepala({ id: st.id }, st.n)}\nFinal v${st.n} belum selesai lebih dari 24 jam dan sedang ditangani pemilik.`)
+    }
+    const lap = lapDari(st.jenis), nama = judul(lap, st.tanggal), pk = { id: st.id }
+    // Q1: PPTX dikirim saat final (dihitung limiter seperti kiriman lain), lalu PDF. Hanya ke pemegang (Q10).
+    const kirimBerkas = async ([pptx, pdf]) => {
+      await ctx.balasFile(pptx.p, path.basename(pptx.p), `${kepala(pk, st.n)}\nPPTX final ${nama}.`, MIME.pptx)
+      await ctx.balasFile(pdf.p, path.basename(pdf.p), `${kepala(pk, st.n)}\nPDF final ${nama}.`, MIME.pdf)
+    }
+    const hasil = await lanjutFinal(ctx, st, balas, { kirimBerkas })
+    if (hasil === 'buang') return balas(`${kepala(pk, st.n)}\nDraf berubah sebelum final tercatat. Ketik final lagi.`)
+    if (hasil !== 'ditutup') await balas(`${kepala(pk, st.n)}\nFinal v${st.n} diterima. Penutupan belum selesai, diulang otomatis tiap 10 menit. Tautan Drive menyusul.`)
+    return hasil
+  } finally { lepas() }
+}
+
+// Untuk detak 10 menit: lanjutkan tiap proyek final yang belum ditutup. ctx seperti tangani tanpa balas; T-FINAL lewat ctx.kirimKe(dari, teks).
+export async function ulangFinal(ctx) {
+  const dasar = ctx.dasar || RUMAH, now = (ctx.now || new Date()).getTime()
+  const hasil = []
+  for (const st of Object.values(bacaFinal(dasar).proyek)) {
+    if (st.basi) continue
+    const lepas = kunciProses(lockProyek(dasar, st.id))
+    if (!lepas) continue // `final` sedang berjalan untuk proyek ini
+    try {
+      if (now - Number(st.mulai || now) > BATAS_ULANG_FINAL_MS) {
+        try { await kePemilik(ctx, `Bot laporan ${st.id} v${st.n}: final belum selesai sesudah 24 jam (${Object.keys(st.galat || {}).join(', ') || 'tanpa galat tercatat'}), tidak diulang lagi. Perlu ditangani manual.`); st.basi = true; simpanFinal(dasar, st) } catch (x) { (ctx.log || (() => {}))('kabar pemilik gagal', x.message) }
+        hasil.push({ id: st.id, status: 'basi' })
+        continue
+      }
+      const kirim = (t) => (ctx.kirimKe || ((a, b) => ctx.dep.kirimTeks(a, b)))(st.dari, t)
+      hasil.push({ id: st.id, status: await lanjutFinal(ctx, st, kirim) })
+    } catch (e) { (ctx.log || (() => {}))('ulang final gagal', st.id, e.message); hasil.push({ id: st.id, status: 'galat' }) } finally { lepas() }
+  }
+  return hasil
+}
+
 // ---------- status tanpa tanggal ----------
 async function status(dari, sha, ctx) {
   const dasar = ctx.dasar || RUMAH
@@ -840,6 +1004,7 @@ async function status(dari, sha, ctx) {
     if (e.sha !== sha) continue
     let p
     try { p = (await proyekBuka(ctx, { id, wa_sha: sha })).proyek } catch (x) { if (/HTTP 404/.test(x.message)) hapusIndeks(dasar, id); continue }
+    if (p.status === 'final') continue
     if (!AKTIF.includes(p.status)) { hapusIndeks(dasar, id); continue }
     const lap = lapDari(p.jenis)
     const lanjut = { terbuka: 'Kirim bahan lalu ketik buat.', bertanya: 'Menunggu jawaban atau buat saja.', membangun: 'Sedang dibangun.', draf: 'Balas dengan revisi, atau ketik final.' }[p.status]
@@ -870,6 +1035,7 @@ export async function kedaluwarsa(ctx) {
   for (const [id, e] of Object.entries(ix.proyek)) {
     let p
     try { p = (await proyekBuka(ctx, { id, wa_sha: e.sha })).proyek } catch { continue }
+    if (p.status === 'final') continue // ditutup lewat ulangFinal, bukan kedaluwarsa
     if (!AKTIF.includes(p.status)) { hapusIndeks(dasar, id); continue }
     const umur = now - Number(p.diubah || 0)
     if (p.status === 'membangun' ? (umur < MEMBANGUN_BASI_MS || kunciHidup(lockProyek(dasar, id))) : umur < KEDALUWARSA_MS) continue
@@ -923,7 +1089,7 @@ export async function tangani(pesan, ctx) {
   try {
     if (cmd?.aksi === 'status') { await status(dari, sha, ctx); return { status: 'status' } }
     if (cmd?.aksi === 'buat') { await buat(cmd, dari, sha, ctx); return { status: 'buat' } }
-    if (cmd?.aksi === 'final') { await ctx.balas('Perintah final belum tersedia, segera menyusul.'); return { status: 'final belum tersedia' } } // TODO(BL-12)
+    if (cmd?.aksi === 'final') { const r = await final(dari, sha, ctx); return { status: r === 'ditutup' ? 'ditutup' : r === 'tertunda' ? 'final tertunda' : 'final' } }
     if (cmd) { await perintahProyek(cmd, dari, sha, ctx); return { status: cmd.aksi } }
     // Perintah tidak pernah sampai ke sini (tidak pernah ke Claude). Revisi (ALUR B): calonRevisi dari pemegang proyek draf; forward dan bahan dikenali tetap bahan.
     if (calonRevisi(pesan, ctx)) {

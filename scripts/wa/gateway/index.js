@@ -389,6 +389,19 @@ const TERLEWAT = BL ? ARAH.buatTerlewat({
   kirim: (nomor, teks) => sendPaced(nomor + '@s.whatsapp.net', { text: teks }, false).catch((x) => ({ ok: false, error: String((x && x.message) || x) })),
 }) : null
 if (TERLEWAT) setInterval(() => { if (connected) TERLEWAT.detak() }, 60e3).unref()
+// BL-12 (T10): proyek final yang unggah Drive, /api/wa/hasil, atau ditutup-nya gagal diulang tiap 10 menit dan 1 menit sesudah tersambung.
+const kirimKe = async (target, teks) => {
+  const x = await sendPaced(normalWa(target) + '@s.whatsapp.net', { text: teks }, false)
+  if (!x.ok) throw new Error(x.error || 'kirim gagal')
+}
+const ULANG_FINAL = BL ? ARAH.buatUlangFinal({
+  terhubung: () => connected, log,
+  jalankan: async () => {
+    const [Pr, O] = await Promise.all([import('../proyek.mjs'), muatOtomatis()])
+    return Pr.ulangFinal({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe })
+  },
+}) : null
+if (ULANG_FINAL) ULANG_FINAL.mulai()
 
 function balasanKe(dari, tag, masuk) {
   const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
@@ -410,10 +423,7 @@ function keProyek(dari, masuk, ambilPesan) {
     const ctx = {
       env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log,
       ...balasanKe(dari, '[proyek]', masuk), kabariPemilik: kabarPemilik,
-      kirimKe: async (target, teks) => {
-        const x = await sendPaced(normalWa(target) + '@s.whatsapp.net', { text: teks }, false)
-        if (!x.ok) throw new Error(x.error || 'kirim gagal')
-      },
+      kirimKe,
     }
     const pesan = await ambilPesan(Pr, ctx)
     if (!pesan) return
@@ -583,7 +593,7 @@ async function startSock() {
       if (process.stdout.isTTY) { console.log('\n=== Scan QR ini di WhatsApp > Perangkat Tertaut ===\n'); qrcode.generate(qr, { small: true }) }
       else log('Butuh scan QR: hentikan layanan dan jalankan node gateway/index.js di terminal.')
     }
-    if (connection === 'open') { connected = true; log('WA terhubung'); if (TERLEWAT) TERLEWAT.buka(); flushOutbox().catch(() => {}); mulaiLapangan() }
+    if (connection === 'open') { connected = true; log('WA terhubung'); if (TERLEWAT) TERLEWAT.buka(); if (ULANG_FINAL) ULANG_FINAL.buka(); flushOutbox().catch(() => {}); mulaiLapangan() }
     if (connection === 'close') {
       connected = false
       const code = lastDisconnect?.error?.output?.statusCode

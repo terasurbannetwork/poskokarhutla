@@ -204,3 +204,35 @@ test('jam susulan: number, string, Long; tak jelas = null dan teks tanpa jam, ti
   assert.doesNotMatch(kirim[0], /NaN/)
   assert.equal(kirim[0], 'Bot tadi mati, pesan selama itu tidak diproses. Kirim ulang bila masih perlu.')
 })
+
+// ---------- BL-12: ulang final tiap 10 menit di gateway ----------
+test('buatUlangFinal: detak 10 menit dan 1 menit sesudah buka memanggil ulangFinal; tidak tumpang tindih; galat dicatat tanpa nomor utuh', async () => {
+  const jam = [], tunda = [], log = []
+  let n = 0, lepas, terhubung = true
+  const u = A.buatUlangFinal({
+    terhubung: () => terhubung, log: (...a) => log.push(a.join(' ')),
+    jalankan: () => { n++; return new Promise((r) => { lepas = r }) },
+    setI: (f, ms) => { jam.push({ f, ms }); return {} }, setT: (f, ms) => { tunda.push({ f, ms }); return {} }, clearT: () => {},
+  })
+  u.mulai(); u.mulai()
+  assert.equal(jam.length, 1); assert.equal(jam[0].ms, 600e3)
+  u.buka(); assert.equal(tunda[0].ms, 60e3)
+  tunda[0].f(); assert.equal(n, 1)
+  jam[0].f(); assert.equal(n, 1, 'panggilan lama belum selesai: dilewati')
+  lepas([{ id: 'P-1', status: 'ditutup' }]); await new Promise((r) => setImmediate(r))
+  jam[0].f(); assert.equal(n, 2)
+  lepas([]); await new Promise((r) => setImmediate(r))
+  terhubung = false; jam[0].f(); assert.equal(n, 2, 'WA belum tersambung: tidak jalan')
+  terhubung = true
+  const g = A.buatUlangFinal({ jalankan: async () => { throw new Error('kirim ke 6281234567890 gagal') }, log: (...a) => log.push(a.join(' ')) })
+  assert.equal(await g.sekali(), 'galat')
+  assert.ok(log.some((l) => l.includes('6281***')) && !log.some((l) => l.includes('6281234567890')))
+})
+
+test('gateway: ulang final hanya dipasang bila BL_PROYEK=1, memakai ctx proyek (kirimKe, kabariPemilik) dan dibuka saat tersambung', () => {
+  const src = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/(\w:)/, '$1')), '../../scripts/wa/gateway/index.js'), 'utf8')
+  assert.match(src, /const ULANG_FINAL = BL \? ARAH\.buatUlangFinal\(/)
+  assert.match(src, /Pr\.ulangFinal\(\{ env: process\.env, dep: O\.depBawaan\(process\.env\),.*kabariPemilik: kabarPemilik, kirimKe \}\)/)
+  assert.match(src, /if \(ULANG_FINAL\) ULANG_FINAL\.mulai\(\)/)
+  assert.match(src, /connection === 'open'\) \{[^\n]*if \(ULANG_FINAL\) ULANG_FINAL\.buka\(\)/)
+})

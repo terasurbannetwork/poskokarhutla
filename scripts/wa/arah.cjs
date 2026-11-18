@@ -140,4 +140,25 @@ function isiBerkas(p, nama, caption, mimetype) {
   return { document: { url: p }, fileName: String(nama || path.basename(p)), mimetype: mime, caption: String(caption || '') }
 }
 
-module.exports = { perintahProyek, arah, buatAntre, buatPenunggu, buatTerlewat, teksTerlewat, isiBerkas, pilihJalur, diteruskan, tsMs }
+// Ulang final bot laporan (BL-12, T10): jalankan() = proyek.ulangFinal(ctx). Tiap `jeda` (10 menit) bila terhubung, dan sekali `awal` (1 menit)
+// sesudah buka() (WA tersambung). Tidak pernah tumpang tindih: panggilan saat yang lama masih jalan dilewati. Galat dicatat tanpa nomor utuh.
+function buatUlangFinal({ jalankan, terhubung = () => true, log = () => {}, jeda = 10 * 60e3, awal = 60e3, setT = setTimeout, setI = setInterval, clearT = clearTimeout } = {}) {
+  let jalan = false, tunda = null, detak = null
+  const samar = (s) => String(s).replace(/\d{6,}/g, (x) => x.slice(0, 4) + '***')
+  async function sekali() {
+    if (jalan || !terhubung()) return 'lewat'
+    jalan = true
+    try {
+      const h = await jalankan()
+      if (Array.isArray(h) && h.length) log('[final] ulang', h.map((x) => `${x.id} ${x.status}`).join(', '))
+      return 'jalan'
+    } catch (e) { log('[final] ulang gagal', samar((e && e.message) || e)); return 'galat' } finally { jalan = false }
+  }
+  return {
+    sekali,
+    mulai() { if (!detak) { detak = setI(() => { sekali() }, jeda); if (detak && detak.unref) detak.unref() } },
+    buka() { if (tunda) clearT(tunda); tunda = setT(() => { tunda = null; sekali() }, awal); if (tunda && tunda.unref) tunda.unref() },
+  }
+}
+
+module.exports = { perintahProyek, arah, buatAntre, buatPenunggu, buatTerlewat, buatUlangFinal, teksTerlewat, isiBerkas, pilihJalur, diteruskan, tsMs }

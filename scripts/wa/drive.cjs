@@ -5,6 +5,7 @@
 //                      juga ke <DRIVE_LAPORAN>/3. Laporan Harian Dirdalops/<tanggal di nama berkas>/
 //   2. unggahLaporan() PDF+PPTX -> <DRIVE_LAPORAN>/1. Laporan Harian Bencana atau 2. Laporan Harian Karhutla/<tanggal>/
 //                      (tanpa DRIVE_LAPORAN: <root>/Laporan/<tanggal>/), mengembalikan link folder
+//      folderRevisi() + unggahKeFolder(): `final` bot laporan ke <...>/<tanggal>/Revisi N/ dengan nama deck polos (BL-12, Q9)
 //   3. tick()          kuras antrean + ambil berkas baru di <root>/Masuk/ -> outbox yang sama dengan pesan WA
 //   4. perintahCari()  balasan untuk pesan "cari <kata>", terbatas pada pohon folder root
 // Diuji tests/wa/drive.test.mjs dengan fetch palsu (opsi.fetch, opsi.rumah).
@@ -142,6 +143,56 @@ function buat(opsi = {}) {
       : await pastikanFolder(['Laporan', ...jalurTanggal(tanggal)])
     for (const b of berkas) await unggah(id, (revisi ? 'Revisi ' : '') + path.basename(b.p), b.p, b.mime)
     return (await json(`${API}/${encodeURIComponent(id)}?fields=webViewLink`)).webViewLink || null
+  }
+
+  // ── Alur 2b: final bot laporan (BL-12, Q9, AGENTS 3.6) ─────────────────
+  // Folder hari sama dengan unggahLaporan, lalu subfolder `Revisi N` baru: N = nomor Revisi terbesar yang sudah ada + 1 (mulai 1),
+  // jadi folder Revisi buatan tangan tidak pernah ditimpa atau dipakai bersama. Pemanggil MENYIMPAN {id, nama, n} hasilnya sebelum
+  // mengunggah, supaya ulangan sesudah gagal memakai folder yang sama (tidak ada Revisi kedua). null bila Drive belum dikonfigurasi.
+  // Kunci berkas per tanggal dan laporan (~/.wa-bot/proyek/revisi-*.lock): dua final bersamaan di mesin ini tidak memilih N yang sama. Basi 5 menit.
+  async function kunciRevisi(kunci) {
+    const f = path.join(dasar, 'proyek', `revisi-${alnum(kunci)}.lock`)
+    fs.mkdirSync(path.dirname(f), { recursive: true, mode: 0o700 })
+    const batas = Date.now() + (opsi.tungguKunci ?? 60e3)
+    for (;;) {
+      try { fs.writeFileSync(f, String(process.pid), { flag: 'wx', mode: 0o600 }); return () => fs.rmSync(f, { force: true }) } catch (e) { if (e.code !== 'EEXIST') throw e }
+      try { if (Date.now() - fs.statSync(f).mtimeMs > 5 * 60e3) { fs.rmSync(f, { force: true }); continue } } catch { continue }
+      if (Date.now() > batas) throw new Error('folder Revisi sedang dibuat proses lain')
+      await new Promise((r) => setTimeout(r, 200))
+    }
+  }
+  const nomorRevisi = (nama) => Number((/^Revisi (\d{1,4})$/i.exec(String(nama || '').trim()) || [])[1] || 0)
+  const anakFolder = (id) => daftarFile(`'${esc(id)}' in parents and mimeType = '${FOLDER}' and trashed = false`, 'id,name', 1000)
+  async function folderRevisi({ tanggal, laporan }) {
+    if (!hidup()) return null
+    const lepas = await kunciRevisi(`${tanggal}-${laporan}`)
+    try {
+      const hari = LAPORAN && KATEGORI[laporan]
+        ? await pastikanFolder([KATEGORI[laporan], ...jalurTanggal(tanggal)], LAPORAN)
+        : await pastikanFolder(['Laporan', ...jalurTanggal(tanggal)])
+      let n = Math.max(0, ...(await anakFolder(hari)).map((x) => nomorRevisi(x.name))) + 1
+      const id = (await json(API + '?fields=id', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: `Revisi ${n}`, mimeType: FOLDER, parents: [hari] }) })).id
+      // Daftar ulang: folder bernomor sama dari luar mesin ini (tangan, mesin lain) = folder kita dinamai ulang ke nomor bebas berikutnya.
+      for (let coba = 0; coba < 3; coba++) {
+        const anak = await anakFolder(hari)
+        if (!anak.some((x) => x.id !== id && nomorRevisi(x.name) === n)) break
+        n = Math.max(0, ...anak.map((x) => nomorRevisi(x.name))) + 1
+        await req(`${API}/${encodeURIComponent(id)}?fields=id,name`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: `Revisi ${n}` }) })
+      }
+      idFolder.set(hari + '/' + `Revisi ${n}`, id)
+      return { id, nama: `Revisi ${n}`, n }
+    } finally { lepas() }
+  }
+  // Nama berkas deck tanpa "(revN)" (aturan folder revisi AGENTS 3.6); tidak ada awalan apa pun. Berkas yang namanya sudah ada di folder itu dilewati (ulangan sesudah unggah separuh).
+  const namaPolos = (p) => path.basename(p).replace(/\s*\(rev\s*\d+\)/gi, '').replace(/\s+(?=\.[^.]+$)/, '')
+  async function unggahKeFolder({ folder, berkas }) {
+    if (!hidup()) return null
+    for (const b of berkas) {
+      const nama = namaPolos(b.p)
+      const ada = (await daftarFile(`name = '${esc(nama)}' and '${esc(folder.id)}' in parents and trashed = false`, 'id', 1)).length
+      if (!ada) await unggah(folder.id, nama, b.p, b.mime)
+    }
+    return (await json(`${API}/${encodeURIComponent(folder.id)}?fields=webViewLink`)).webViewLink || null
   }
 
   // ── Alur 1: bahan WA -> antrean -> Drive ───────────────────────────────
@@ -297,7 +348,7 @@ function buat(opsi = {}) {
     }
   }
 
-  return { aktif, jalurTanggal, token, pastikanFolder, unggah, unggahLaporan, salin, kuras, periksaMasuk, tick, cari, perintahCari, sapu }
+  return { aktif, jalurTanggal, token, pastikanFolder, unggah, unggahLaporan, folderRevisi, unggahKeFolder, namaPolos, salin, kuras, periksaMasuk, tick, cari, perintahCari, sapu }
 }
 
 module.exports = { buat, jalurTanggal }

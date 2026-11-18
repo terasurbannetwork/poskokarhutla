@@ -27,7 +27,7 @@ Keluar samping: `batal` (perintah pemakai) dan `kedaluwarsa` (24 jam tanpa aktiv
 ## C. Final dan closing
 
 1. Pemakai mengetik `final`.
-2. Mesin mengirim PPTX dan PDF versi terakhir ke pemakai, lalu mengunggahnya ke Drive tim IT di subfolder `Revisi N` (Q9) dan ke `POST /api/wa/hasil` (arsip tab Pelaporan).
+2. Mesin mengirim PPTX dan PDF versi terakhir ke pemakai, lalu mengunggahnya ke Drive tim IT di subfolder `Revisi N` berikutnya yang masih kosong (Q9). Hasil final bot tidak dikirim ke `POST /api/wa/hasil` (D13); arsipnya tetap di `bl_versi` dan tampil di kartu proyek tab Pelaporan.
 3. Bot membalas tautan folder Drive dan ringkasan riwayat versi. Status `ditutup`.
 4. Unggah Drive gagal: status tetap `final`, diulang otomatis tiap 10 menit, pemilik dikabari sekali.
 

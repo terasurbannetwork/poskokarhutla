@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import crypto from 'node:crypto'
 import os from 'node:os'
 import path from 'node:path'
-import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN } from '../../scripts/wa/proyek.mjs'
+import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN, ulangFinal } from '../../scripts/wa/proyek.mjs'
 import { GalatClaude, validasiOperasi } from '../../scripts/wa/claude.mjs'
 import { LAPORAN } from '../../scripts/wa/otomatis.mjs'
 
@@ -41,13 +41,17 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
       if (url.pathname === '/api/wa/proyek') {
         if (b.id) { const p = [...proyek.values()].find((x) => x.id === b.id); return p ? jawab({ proyek: { ...p } }) : { ok: false, status: 404, text: async () => '' } }
         const k = `${b.wa_sha}|${b.jenis}|${b.tanggal}`
-        if (!proyek.has(k)) proyek.set(k, { id: `P-291026-${String(++nomor).padStart(2, '0')}`, wa_sha: b.wa_sha, jenis: b.jenis, tanggal: b.tanggal, status: 'terbuka', versi: 0, diubah: now.getTime(), bahan: [] })
+        // seperti blProyekBuka: proyek yang sudah tidak aktif tidak dipakai lagi, kombinasi sama membuka proyek baru
+        if (proyek.has(k) && !['terbuka', 'bertanya', 'membangun', 'draf'].includes(proyek.get(k).status)) { const lama = proyek.get(k); proyek.delete(k); proyek.set('lama:' + lama.id, lama) }
+        if (!proyek.has(k)) proyek.set(k,{ id: `P-291026-${String(++nomor).padStart(2, '0')}`, wa_sha: b.wa_sha, jenis: b.jenis, tanggal: b.tanggal, status: 'terbuka', versi: 0, diubah: now.getTime(), bahan: [] })
         const p = proyek.get(k); p.bahan.push(...(b.bahan || []))
         return jawab({ proyek: { ...p } })
       }
       if (url.pathname === '/api/wa/proyek/status') {
         if (gagalStatus > 0) { gagalStatus--; statusLog.push('gagal:' + b.ke); return { ok: false, status: 503, text: async () => 'sibuk' } }
+        if (dep.tolakStatus?.(b)) { statusLog.push('gagal:' + b.ke); return { ok: false, status: 503, text: async () => 'sibuk' } }
         const p = [...proyek.values()].find((x) => x.id === b.id); statusLog.push(b.ke); p.status = b.ke
+        if (b.drive_url) p.drive_url = b.drive_url
         return jawab({ ok: true, proyek: p })
       }
       if (url.pathname === '/api/wa/proyek/versi' && (o.method || 'GET') === 'GET') {
@@ -635,16 +639,160 @@ test('parsePerintah BL-10: versi, pptx, batal, balik vN', () => {
 })
 
 // ---------- tinjauan BL-09/10/11 ----------
-test('final dikenal sebagai perintah: dibalas belum tersedia, tidak pernah ke Claude atau revisi', async () => {
+test('final dikenal sebagai perintah: tidak pernah ke Claude atau revisi', async () => {
   assert.deepEqual(parsePerintah('final', NOW), { aksi: 'final' })
   const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  pasangFinal(d)
   assert.equal(await klasifikasi({ dari: DARI, teks: 'Final' }, d.ctx), 'perintah')
-  const r = await perintah(d, 'Final')
-  assert.equal(r.status, 'final belum tersedia')
-  assert.equal(d.balasan[0], 'Perintah final belum tersedia, segera menyusul.')
-  assert.equal(d.keOperasi.length, 0); assert.deepEqual(d.statusLog, [])
   for (const t of ['versi', 'balik v1', 'pptx', 'status']) assert.equal(await klasifikasi({ dari: DARI, teks: t }, d.ctx), 'perintah')
+  await perintah(d, 'Final')
   assert.equal(d.keOperasi.length, 0)
+})
+
+// ---------- BL-12: final (T10) ----------
+// Drive palsu. driveGagal = jumlah unggah yang gagal lebih dulu. dep.unggah (/api/wa/hasil) dipasang hanya untuk membuktikan tidak dipanggil (D13).
+function pasangFinal(d, { driveGagal = 0, revisiAda = [], kirimGagal = 0 } = {}) {
+  const f = { folderBaru: [], unggahan: [], hasil: [], keKirimKe: [], revisiAda: [...revisiAda] }
+  d.ctx.env.PENERIMA = '6288800001,6288800002'
+  d.ctx.dep.drive = {
+    folderRevisi: async ({ tanggal, laporan }) => {
+      const n = Math.max(0, ...f.revisiAda) + 1
+      f.revisiAda.push(n); f.folderBaru.push({ tanggal, laporan, n })
+      return { id: 'R' + n, nama: `Revisi ${n}`, n }
+    },
+    unggahKeFolder: async ({ folder, berkas }) => {
+      if (driveGagal > 0) { driveGagal--; throw new Error('Drive HTTP 503') }
+      f.unggahan.push({ folder: folder.id, nama: berkas.map((b) => path.basename(b.p)) })
+      return `https://drive.google.com/drive/folders/${folder.id}`
+    },
+  }
+  d.ctx.dep.unggah = async (a) => { f.hasil.push(a) }
+  d.ctx.kirimKe = async (t, s) => { if (kirimGagal > 0) { kirimGagal--; throw new Error('gateway mati') } f.keKirimKe.push({ t, s }) }
+  return f
+}
+const ulang = (d, now) => ulangFinal({ ...d.ctx, balas: undefined, balasFile: undefined, ...(now ? { now } : {}) })
+const proyekId = (d, id = 'P-291026-01') => [...d.proyek.values()].find((x) => x.id === id)
+const finalJson = (d) => JSON.parse(fs.readFileSync(path.join(d.dasar, 'proyek', 'final.json'), 'utf8')).proyek
+
+test('T10: final mengirim PPTX lalu PDF ke pemegang, unggah Drive Revisi N, ditutup dengan drive_url, T-FINAL; tanpa /api/wa/hasil (D13); tidak ke PENERIMA', async () => {
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  await perintah(d, 'judul ganti')
+  const f = pasangFinal(d)
+  for (const a of [d.balasan, d.kirim, d.statusLog]) a.length = 0
+  const r = await perintah(d, 'final')
+  assert.equal(r.status, 'ditutup')
+  assert.deepEqual(d.statusLog, ['final', 'ditutup'])
+  assert.deepEqual(d.kirim.map((k) => [path.extname(k.nama), k.mime]), [['.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'], ['.pdf', 'application/pdf']])
+  assert.equal(bacaDeck(d.kirim[0].p)[0].teks, 'JUDUL', 'PPTX versi terakhir (v2)')
+  assert.equal(d.kirim[0].caption, 'P-291026-01 v2\nPPTX final Laporan Kejadian Bencana Harian 26 Okt.')
+  assert.deepEqual(f.folderBaru, [{ tanggal: TGL, laporan: 'harian', n: 1 }])
+  assert.deepEqual(f.unggahan, [{ folder: 'R1', nama: ['Laporan Kejadian Bencana Harian 261026.pptx', 'Laporan Kejadian Bencana Harian 261026.pdf'] }])
+  assert.deepEqual(f.hasil, [], 'D13: final bot tidak menimpa arsip terjadwal')
+  const p = proyekId(d)
+  assert.equal(p.status, 'ditutup'); assert.equal(p.drive_url, 'https://drive.google.com/drive/folders/R1')
+  assert.equal(d.balasan.length, 1)
+  assert.equal(d.balasan[0], 'P-291026-01 v2\nFinal Laporan Kejadian Bencana Harian 26 Okt, versi v2.\nFolder Drive Revisi 1: https://drive.google.com/drive/folders/R1\nRiwayat versi:\nv1 29 Okt 08.00, buat\nv2 29 Okt 08.01, revisi: judul ganti\nProyek ditutup. Pesan berikutnya membuka proyek baru.')
+  assert.ok(!d.semua().some((t) => SISTEM_HURUF.test(t)))
+  assert.deepEqual(f.keKirimKe, [], 'Q10: tidak ada kiriman ke PENERIMA atau nomor lain')
+  assert.equal(d.pemilik.length, 0)
+  assert.deepEqual(finalJson(d), {})
+  assert.deepEqual(await ulang(d), [], 'tidak ada yang tertunda')
+})
+
+test('T10: Drive gagal = status tetap final, pemilik dikabari sekali, ulangFinal melanjutkan ke folder Revisi yang sama lalu ditutup dan T-FINAL lewat kirimKe', async () => {
+  const d = await drafV1()
+  const f = pasangFinal(d, { driveGagal: 2, revisiAda: [1, 3] })
+  assert.equal((await perintah(d, 'final')).status, 'final tertunda')
+  assert.deepEqual(d.statusLog, ['final'])
+  assert.equal(proyekId(d).status, 'final')
+  assert.equal(d.kirim.length, 2, 'PPTX dan PDF tetap terkirim ke pemegang')
+  assert.match(d.balasan.at(-1), /^P-291026-01 v1\nFinal v1 diterima\. Penutupan belum selesai, diulang otomatis tiap 10 menit\. Tautan Drive menyusul\.$/)
+  assert.equal(d.pemilik.length, 1); assert.match(d.pemilik[0], /P-291026-01 v1: unggah Google Drive gagal, diulang otomatis/)
+  // final lagi saat tertunda: melanjutkan penutupan (Drive masih gagal), tanpa mengirim berkas lagi
+  await perintah(d, 'final')
+  assert.equal(d.kirim.length, 2); assert.match(d.balasan.at(-1), /Penutupan belum selesai/)
+  assert.equal(d.pemilik.length, 1, 'kabar pemilik sekali per proyek')
+  assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'ditutup' }])
+  assert.deepEqual(f.folderBaru.map((x) => x.n), [4], 'satu folder Revisi saja, nomor sesudah Revisi 3 yang sudah ada')
+  assert.deepEqual(f.unggahan.map((x) => x.folder), ['R4'])
+  assert.equal(proyekId(d).status, 'ditutup'); assert.equal(proyekId(d).drive_url, 'https://drive.google.com/drive/folders/R4')
+  assert.equal(f.keKirimKe.length, 1); assert.equal(f.keKirimKe[0].t, DARI, 'T-FINAL hanya ke pemegang')
+  assert.match(f.keKirimKe[0].s, /^P-291026-01 v1\nFinal Laporan Kejadian Bencana Harian 26 Okt, versi v1\.\nFolder Drive Revisi 4: https:\/\/drive\.google\.com\/drive\/folders\/R4\n/)
+  assert.deepEqual(await ulang(d), [])
+})
+
+test('T10: jawaban pindah ke final hilang (Worker sudah final) = dilanjutkan; ditutup gagal diulang tanpa unggah ulang', async () => {
+  const d = await drafV1()
+  const f = pasangFinal(d)
+  let hilang = 1, tolakTutup = 1
+  d.ctx.dep.tolakStatus = (b) => {
+    if (b.ke === 'final' && hilang-- > 0) { proyekId(d).status = 'final'; return true } // Worker menerima, jawabannya hilang
+    return b.ke === 'ditutup' && tolakTutup-- > 0
+  }
+  assert.equal((await perintah(d, 'final')).status, 'final tertunda')
+  assert.equal(d.kirim.length, 2); assert.equal(f.unggahan.length, 1)
+  assert.match(d.pemilik.at(-1), /pindah status ke ditutup gagal/)
+  assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'ditutup' }])
+  assert.equal(f.unggahan.length, 1, 'Drive tidak diunggah ulang'); assert.equal(f.folderBaru.length, 1)
+  assert.equal(f.keKirimKe.length, 1)
+})
+
+test('T10: mati sesudah final.json tercatat dan sebelum pindah status = ulangFinal memindahkan ke final dan menutup; final lagi di proyek final tanpa catatan lokal = dilanjutkan', async () => {
+  const d = await drafV1()
+  const f = pasangFinal(d)
+  // tiruan mati: pindah ke final melempar galat tak terduga dan Worker tetap draf
+  let mati = true
+  d.ctx.dep.tolakStatus = (b) => b.ke === 'final' && mati
+  assert.equal((await perintah(d, 'final')).status, 'final tertunda')
+  assert.equal(proyekId(d).status, 'draf'); assert.equal(d.kirim.length, 0, 'berkas hanya dikirim sesudah status final'); assert.equal(f.folderBaru.length, 0)
+  assert.equal(finalJson(d)['P-291026-01'].n, 1, 'keadaan tercatat sebelum pindah status')
+  mati = false
+  assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'ditutup' }])
+  assert.equal(proyekId(d).status, 'ditutup'); assert.equal(f.keKirimKe.length, 1)
+
+  // Worker final, final.json hilang: `final` melanjutkan penutupan, bukan "Belum ada draf"
+  const e = await drafV1()
+  const g = pasangFinal(e)
+  proyekId(e).status = 'final'
+  const r = await perintah(e, 'final')
+  assert.equal(r.status, 'ditutup')
+  assert.equal(proyekId(e).status, 'ditutup'); assert.equal(g.unggahan.length, 1)
+  assert.match(e.balasan.at(-1), /^P-291026-01 v1\nFinal Laporan Kejadian Bencana Harian 26 Okt, versi v1\./)
+})
+
+test('T10: kirim T-FINAL gagal = keadaan disimpan, diulang, tidak pernah dua kali; lewat 24 jam berhenti dan pemilik dikabari sekali', async () => {
+  const d = await drafV1()
+  const f = pasangFinal(d, { kirimGagal: 1, driveGagal: 1 })
+  await perintah(d, 'final')
+  assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'tertunda' }], 'ditutup, tetapi T-FINAL gagal dikirim')
+  assert.equal(proyekId(d).status, 'ditutup'); assert.equal(f.keKirimKe.length, 0)
+  assert.match(d.pemilik.at(-1), /kirim T-FINAL ke pemegang gagal/)
+  assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'ditutup' }])
+  assert.equal(f.keKirimKe.length, 1)
+  assert.deepEqual(await ulang(d), []); assert.equal(f.keKirimKe.length, 1, 'T-FINAL sekali saja')
+
+  const e = await drafV1()
+  pasangFinal(e, { driveGagal: 99 })
+  await perintah(e, 'final')
+  const kabar = e.pemilik.length
+  const besok = new Date(NOW.getTime() + 25 * 3600e3)
+  assert.deepEqual(await ulang(e, besok), [{ id: 'P-291026-01', status: 'basi' }])
+  assert.equal(e.pemilik.length, kabar + 1); assert.match(e.pemilik.at(-1), /final belum selesai sesudah 24 jam \(drive\), tidak diulang lagi\. Perlu ditangani manual\./)
+  assert.deepEqual(await ulang(e, besok), [], 'tidak diulang dan tidak dikabari lagi')
+  assert.equal(e.pemilik.length, kabar + 1)
+})
+
+test('ALUR C: sesudah ditutup, pesan berikutnya membuka proyek baru; kalimat bebas bukan revisi proyek lama', async () => {
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  pasangFinal(d)
+  await perintah(d, 'final')
+  assert.equal((await perintah(d, 'judul ganti')).status, 'diabaikan')
+  assert.equal(d.keOperasi.length, 0)
+  await perintah(d, 'final')
+  assert.match(d.balasan.at(-1), /^Belum ada draf untuk difinalkan/)
+  for (const a of [d.balasan, d.kirim, d.statusLog]) a.length = 0
+  await perintah(d, 'buat harian 26 okt')
+  assert.match(d.kirim[0].caption, /^P-291026-02 v1\n/)
 })
 
 test('klasifikasi: revisi hanya teks bukan forward dari pemegang draf, bukan bahan dikenali; tanpa efek samping; tangani menerima revisi tanpa wa_id', async () => {
