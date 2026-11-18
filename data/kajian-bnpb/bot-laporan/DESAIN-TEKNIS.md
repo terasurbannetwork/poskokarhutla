@@ -13,7 +13,7 @@
 | `scripts/wa/gateway/limiter.js` | Batas terpisah untuk balasan percakapan (Q1) | `wa-bot` |
 | `scripts/wa/drive.cjs` | `unggahLaporan()` diperluas: subfolder `Revisi N` dan nama tanpa `(revN)` (Q9) | `wa-bot` |
 | `data/laporan-bnpb/generator/ubah.py` (baru) | Inventaris shape, terapkan operasi ubah, render pratinjau PNG | `pipa-data` |
-| `data/laporan-bnpb/generator/harian_ringkas.py`, `penanganan_otomatis.py` | Nama shape stabil, `--isian <json>`, tulis `kunci.json` | `pipa-data` |
+| `data/laporan-bnpb/generator/harian_ringkas.py`, `penanganan_otomatis.py` | Nama shape stabil berawalan `s<n>_`, `--isian <json>`, tulis `<nama deck>.kunci.json` (entri `{slide, shape, sel?, angka}`) | `pipa-data` |
 | `src/wa.js` | Terima pesan dari nomor `bl_daftar` setuju selain `WA_IZIN` (lewat fungsi di `src/hak.js`; `wa.js` sudah di batas ratchet `fixtures/d1-sisa.json`, jadi tanpa SQL baru di berkas ini); `POST /api/wa/hasil` menerima jenis tahap 2 (BL-16) | `warga-api` |
 | `src/wa_proyek.js` (baru) | Rute `/api/wa/proyek*`, `/api/wa/terdaftar`, `/api/wa/daftar`, `/api/wa/detak` | `warga-api` |
 | `src/hak.js` | Fungsi SQL bagian bot laporan (aturan repo: SQL hanya di sini) | `warga-api` |
@@ -67,6 +67,7 @@ Nomor disimpan hanya sebagai `wa_sha` (sha256 nomor ternormal + garam `WA_GARAM`
 - `client.messages.create({ model: "claude-opus-5-5", output_config: { effort, format: { type: "json_schema", schema } }, system: [bagian tetap dengan cache_control], messages })`.
 - Tanpa `thinking: {type: "disabled"}` (400 di Opus 5.5) dan tanpa `tool_choice` paksa.
 - Cek `stop_reason`: `refusal` atau `max_tokens` = gagal terkendali, pemakai dibalas "gagal membaca bahan, coba lagi atau kirim ulang", pemilik dikabari.
+- Cadangan sisi server untuk penolakan: `client.beta.messages.create` dengan `betas: ["server-side-fallback-2026-07-01"]` dan `fallbacks: "default"`; biaya dihitung dari model yang benar-benar menjawab (`r.model`).
 - Galat 429 dan 5xx: ulang bawaan SDK (`maxRetries: 2`, menghormati `retry-after`), tanpa loop ulang sendiri (D11).
 - PDF bahan dikirim sebagai blok `document` base64; foto sebagai `image`; Excel diubah ke teks CSV per lembar oleh mesin.
 

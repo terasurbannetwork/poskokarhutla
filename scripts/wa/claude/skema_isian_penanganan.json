@@ -1,0 +1,163 @@
+{
+ "type": "object",
+ "properties": {
+  "isian": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "medan": {
+      "type": "string",
+      "enum": [
+       "provinsi",
+       "kabupaten",
+       "base_operasi",
+       "personel_darat",
+       "sorti_patroli",
+       "sorti_water_bombing",
+       "sorti_omc",
+       "jam_terbang",
+       "air_water_bombing_liter",
+       "bahan_semai_ton",
+       "armada_patroli",
+       "armada_water_bombing",
+       "armada_omc",
+       "pemilik_armada",
+       "nama_pesawat",
+       "upaya_darat",
+       "kendala",
+       "cuaca_operasi",
+       "status_siaga",
+       "catatan_lain"
+      ],
+      "description": "nama medan dari daftar"
+     },
+     "nilai": {
+      "type": "string",
+      "description": "nilai seperti tertulis di bahan"
+     },
+     "kutipan": {
+      "type": "string",
+      "description": "potongan teks persis dari bahan yang memuat nilai"
+     },
+     "sumber_bahan_id": {
+      "type": "string",
+      "description": "id bahan asal kutipan"
+     },
+     "kelompok": {
+      "type": "string",
+      "description": "kejadian, provinsi, atau base; kosong bila tidak perlu"
+     }
+    },
+    "required": [
+     "medan",
+     "nilai",
+     "kutipan",
+     "sumber_bahan_id",
+     "kelompok"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "pertentangan": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "medan": {
+      "type": "string",
+      "enum": [
+       "provinsi",
+       "kabupaten",
+       "base_operasi",
+       "personel_darat",
+       "sorti_patroli",
+       "sorti_water_bombing",
+       "sorti_omc",
+       "jam_terbang",
+       "air_water_bombing_liter",
+       "bahan_semai_ton",
+       "armada_patroli",
+       "armada_water_bombing",
+       "armada_omc",
+       "pemilik_armada",
+       "nama_pesawat",
+       "upaya_darat",
+       "kendala",
+       "cuaca_operasi",
+       "status_siaga",
+       "catatan_lain"
+      ]
+     },
+     "kelompok": {
+      "type": "string",
+      "description": "kelompok"
+     },
+     "a": {
+      "type": "object",
+      "properties": {
+       "nilai": {
+        "type": "string",
+        "description": "nilai"
+       },
+       "kutipan": {
+        "type": "string",
+        "description": "kutipan persis"
+       },
+       "sumber_bahan_id": {
+        "type": "string",
+        "description": "id bahan"
+       }
+      },
+      "required": [
+       "nilai",
+       "kutipan",
+       "sumber_bahan_id"
+      ],
+      "additionalProperties": false
+     },
+     "b": {
+      "type": "object",
+      "properties": {
+       "nilai": {
+        "type": "string",
+        "description": "nilai"
+       },
+       "kutipan": {
+        "type": "string",
+        "description": "kutipan persis"
+       },
+       "sumber_bahan_id": {
+        "type": "string",
+        "description": "id bahan"
+       }
+      },
+      "required": [
+       "nilai",
+       "kutipan",
+       "sumber_bahan_id"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "required": [
+     "medan",
+     "kelompok",
+     "a",
+     "b"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "catatan": {
+   "type": "string",
+   "description": "catatan singkat atau kosong"
+  }
+ },
+ "required": [
+  "isian",
+  "pertentangan",
+  "catatan"
+ ],
+ "additionalProperties": false
+}

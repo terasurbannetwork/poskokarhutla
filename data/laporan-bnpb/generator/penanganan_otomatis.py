@@ -11,7 +11,10 @@
   (13 Nov pemilik), tanpa Excel dari teks Satgas. Tanpa kartu PENANGANAN dan PERSONEL (10 Nov).
 - Dibingkai mesin ppt-konsultan (lewat_deck.bingkai, format 'penanganan'), dua bagian Situasi dan Operasi.
 
-    python penanganan_otomatis.py --tanggal 2026-11-13 [--jam 18:00] [--operasi wa_satgas.txt] [--gelar gelar.xlsx] [--bmkg b.txt] --out DIR
+    python penanganan_otomatis.py --tanggal 2026-11-13 [--jam 18:00] [--operasi wa_satgas.txt] [--gelar gelar.xlsx] [--bmkg b.txt] --out DIR [--isian isian.json]
+
+Bot laporan (BL-06): nama shape stabil s<n>_<peran> di deck akhir, <deck>.kunci.json selalu ditulis (angka hotspot, firespot, luas terbakar,
+belum padam), --isian opsional (ISIAN_PENANGANAN; mesin penamaan dan saring isian di harian_ringkas.py).
 """
 import argparse, csv, datetime as dt, io, json, os, re, shutil, sys, types, urllib.request, zipfile
 from collections import Counter
@@ -56,6 +59,30 @@ def gelar_udara(f):
     return armada, pemilik
 
 
+# BL-06: medan bahan yang dibaca generator ini (wa_operasi.operasi dari teks Satgas, gelar_udara dari Excel). Angka sistem (hotspot,
+# firespot, luas terbakar, belum padam) tidak ada di skema dan ditolak saring_isian (K4).
+OMC_ISIAN = {'sortie': int, 'nacl': float, 'dryice': float, 'sasaran': str, 'jarak_pandang': bool,
+             'hujan': ('atau_kosong', {'intensitas': str, 'lokasi': str, 'tanggal': 'tanggal'})}
+ISIAN_PENANGANAN = {'tanggal': 'tanggal', 'tanggal_laporan': 'tanggal', 'tanggal_armada': 'tanggal', 'personel': ('peta', int),
+                    'armada': ('peta', ('pasang', int)), 'pemilik': ('peta', int), 'omc': ('peta', OMC_ISIAN)}
+
+
+def terap_isian_operasi(op, isian):
+    """Isian menimpa medan yang sama hasil urai teks Satgas dan Excel gelar; per provinsi/instansi/unsur untuk peta, per medan untuk OMC.
+    Yang tidak diisi tetap dari bahan. Mengembalikan op baru."""
+    op = dict(op)
+    for k in ('tanggal', 'tanggal_laporan', 'tanggal_armada'):
+        if k in isian: op[k] = isian[k]
+    for k in ('personel', 'armada', 'pemilik'):
+        if k in isian: op[k] = {**op.get(k, {}), **isian[k]}
+    if 'omc' in isian:
+        omc = {p: dict(v) for p, v in op.get('omc', {}).items()}
+        for p, v in isian['omc'].items():
+            omc.setdefault(p, {'sortie': 0, 'nacl': 0, 'dryice': 0, 'sasaran': '', 'hujan': None, 'jarak_pandang': False}).update(v)
+        op['omc'] = omc
+    return op
+
+
 def tanpa_kartu_personel(x):
     """Pemilik 10 Nov 2026: slide 3 tanpa kartu PENANGANAN dan PERSONEL PER PROVINSI (salinan bingkai.py 13 Nov)."""
     ATAS, PANEL, TINGGI, BAKU = 1325880, 2212848, 4142232, 6446520
@@ -87,9 +114,13 @@ def utama():
     ap = argparse.ArgumentParser()
     ap.add_argument('--tanggal', required=True); ap.add_argument('--jam', default='18:00'); ap.add_argument('--operasi'); ap.add_argument('--gelar')
     ap.add_argument('--bmkg', help='diterima supaya pemanggil sama; pil cuaca dan PM2,5 dari data sistem (format 13 Nov)'); ap.add_argument('--out', default='.')
+    ap.add_argument('--isian', help='JSON medan bahan hasil urai bot (BL-06); menimpa medan operasi yang sama, angka sistem dikunci')
     g = ap.parse_args()
     os.chdir(G)
     import satelit, penanganan, cuaca_riwayat, pil_sendiri, lewat_deck, pdf, segar_situs
+    from harian_ringkas import baca_isian, namai_deck
+    isian = baca_isian(g.isian, ISIAN_PENANGANAN) if g.isian else {}
+    if isian and not g.operasi: print('PERINGATAN isian: tanpa --operasi tidak ada slide Operasi; isian diabaikan', file=sys.stderr)
     D, JAM = dt.date.fromisoformat(g.tanggal), g.jam
     KEMARIN, LUSA = D - dt.timedelta(days=1), D - dt.timedelta(days=2)
     md = lambda d: d.strftime('%m-%d')
@@ -164,7 +195,7 @@ def utama():
     def operasi(teks):   # pil ARMADA UDARA bertanggal laporan WA (deck 281026)
         op = asli_op(teks); op = {**op, 'tanggal_armada': op['tanggal_laporan']}
         if ar_pm: op.update(armada=ar_pm[0], pemilik={k: ar_pm[1][k] for k in URUT + sorted(ar_pm[1]) if k in ar_pm[1]})
-        return op
+        return terap_isian_operasi(op, isian) if isian else op
     penanganan.wa_operasi.operasi = operasi
     satelit.hitung = hitung_web
     penanganan.satelit = satelit
@@ -202,6 +233,7 @@ def utama():
                        bagian=bagian, spek_tambah={'panel_sisi': 'gelap', 'skala_logo_bnpb': 1.0}, susun=susun)
     for f in os.listdir(out):   # penanganan.bangun menyalin PDF generator mentah ke out; diganti PDF deck berbingkai
         if f.startswith(nama_d[:-5]) and f.endswith('.pdf'): os.remove(os.path.join(out, f))
+    print('kunci', len(namai_deck(nama)), 'shape angka sistem ->', nama[:-5] + '.kunci.json')   # BL-06: nama shape stabil + kunci (D3)
     print('ok', nama, '| pdf', pdf.ke_pdf(nama))
 
 

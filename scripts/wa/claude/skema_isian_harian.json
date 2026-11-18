@@ -1,0 +1,185 @@
+{
+ "type": "object",
+ "properties": {
+  "isian": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "medan": {
+      "type": "string",
+      "enum": [
+       "jenis_kejadian",
+       "provinsi",
+       "kabupaten",
+       "kecamatan",
+       "desa",
+       "lokasi",
+       "waktu_kejadian",
+       "kronologi",
+       "kondisi_terkini",
+       "dampak",
+       "meninggal",
+       "hilang",
+       "luka",
+       "mengungsi_jiwa",
+       "mengungsi_kk",
+       "terdampak_jiwa",
+       "terdampak_kk",
+       "rumah_rusak_berat",
+       "rumah_rusak_sedang",
+       "rumah_rusak_ringan",
+       "rumah_terendam",
+       "fasilitas_rusak",
+       "upaya_penanganan",
+       "kebutuhan_mendesak",
+       "status_darurat",
+       "peringatan_cuaca_wilayah",
+       "peringatan_cuaca_periode",
+       "gunung_api_nama",
+       "gunung_api_level",
+       "gunung_api_rekomendasi",
+       "catatan_lain"
+      ],
+      "description": "nama medan dari daftar"
+     },
+     "nilai": {
+      "type": "string",
+      "description": "nilai seperti tertulis di bahan"
+     },
+     "kutipan": {
+      "type": "string",
+      "description": "potongan teks persis dari bahan yang memuat nilai"
+     },
+     "sumber_bahan_id": {
+      "type": "string",
+      "description": "id bahan asal kutipan"
+     },
+     "kelompok": {
+      "type": "string",
+      "description": "kejadian, provinsi, atau base; kosong bila tidak perlu"
+     }
+    },
+    "required": [
+     "medan",
+     "nilai",
+     "kutipan",
+     "sumber_bahan_id",
+     "kelompok"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "pertentangan": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "medan": {
+      "type": "string",
+      "enum": [
+       "jenis_kejadian",
+       "provinsi",
+       "kabupaten",
+       "kecamatan",
+       "desa",
+       "lokasi",
+       "waktu_kejadian",
+       "kronologi",
+       "kondisi_terkini",
+       "dampak",
+       "meninggal",
+       "hilang",
+       "luka",
+       "mengungsi_jiwa",
+       "mengungsi_kk",
+       "terdampak_jiwa",
+       "terdampak_kk",
+       "rumah_rusak_berat",
+       "rumah_rusak_sedang",
+       "rumah_rusak_ringan",
+       "rumah_terendam",
+       "fasilitas_rusak",
+       "upaya_penanganan",
+       "kebutuhan_mendesak",
+       "status_darurat",
+       "peringatan_cuaca_wilayah",
+       "peringatan_cuaca_periode",
+       "gunung_api_nama",
+       "gunung_api_level",
+       "gunung_api_rekomendasi",
+       "catatan_lain"
+      ]
+     },
+     "kelompok": {
+      "type": "string",
+      "description": "kelompok"
+     },
+     "a": {
+      "type": "object",
+      "properties": {
+       "nilai": {
+        "type": "string",
+        "description": "nilai"
+       },
+       "kutipan": {
+        "type": "string",
+        "description": "kutipan persis"
+       },
+       "sumber_bahan_id": {
+        "type": "string",
+        "description": "id bahan"
+       }
+      },
+      "required": [
+       "nilai",
+       "kutipan",
+       "sumber_bahan_id"
+      ],
+      "additionalProperties": false
+     },
+     "b": {
+      "type": "object",
+      "properties": {
+       "nilai": {
+        "type": "string",
+        "description": "nilai"
+       },
+       "kutipan": {
+        "type": "string",
+        "description": "kutipan persis"
+       },
+       "sumber_bahan_id": {
+        "type": "string",
+        "description": "id bahan"
+       }
+      },
+      "required": [
+       "nilai",
+       "kutipan",
+       "sumber_bahan_id"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "required": [
+     "medan",
+     "kelompok",
+     "a",
+     "b"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "catatan": {
+   "type": "string",
+   "description": "catatan singkat atau kosong"
+  }
+ },
+ "required": [
+  "isian",
+  "pertentangan",
+  "catatan"
+ ],
+ "additionalProperties": false
+}

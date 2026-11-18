@@ -41,7 +41,7 @@ Penerapan pada versi n: bangun ulang dari bahan, lalu operasi 1..n berurutan. Ti
 
 ## A6. Kunci angka sistem (D3)
 
-Generator menulis manifest `kunci.json`: daftar `{slide, shape, sel?}` yang memuat angka hotspot, firespot, luas terbakar, luas belum padam. Operasi yang menyentuh entri manifest ditolak sebelum diterapkan. Jawaban bot: asal angka (sumber dan aturan hari D-1) dan tawaran `catatan`.
+Generator menulis manifest `<nama deck>.kunci.json` di samping PPTX (nama berdeck supaya harian dan penanganan di folder keluaran yang sama tidak saling timpa): daftar `{slide, shape, sel?}` yang memuat angka hotspot, firespot, luas terbakar, luas belum padam. Operasi yang menyentuh entri manifest ditolak sebelum diterapkan. Jawaban bot: asal angka (sumber dan aturan hari D-1) dan tawaran `catatan`.
 
 ## A7. Banding 7 hari (K9, Q11)
 

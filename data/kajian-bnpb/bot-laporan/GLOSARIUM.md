@@ -10,7 +10,7 @@
 | Kutipan | Potongan teks bahan tempat sebuah nilai ditemukan. Nilai tanpa kutipan yang cocok ditolak. |
 | Operasi ubah | Satu perubahan pada deck hasil generator (ganti teks, ganti sel, tambah baris, catatan, sembunyikan slide). Revisi = daftar operasi ubah. |
 | Inventaris shape | Daftar slide, nama shape, dan teksnya dari PPTX hasil generator; dasar Claude menulis operasi ubah. |
-| Manifest kunci (`kunci.json`) | Daftar shape yang memuat angka sistem, ditulis generator. |
+| Manifest kunci (`<nama deck>.kunci.json`) | Daftar shape yang memuat angka sistem, ditulis generator. |
 | Versi | Hasil bangun ulang ke-n: generator dari bahan ditambah operasi ubah 1..n. Tidak pernah ditimpa. |
 | Draf | Versi yang sudah dikirim ke pemegang dan belum `final`. |
 | Final | Versi yang dipilih pemegang lewat perintah `final`; diunggah ke Drive dan dikunci. |
