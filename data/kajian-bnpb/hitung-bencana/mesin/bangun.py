@@ -60,6 +60,11 @@ def main():
     K.ANAK = cfg.get('anak_judul', K.ANAK)
     K.LABEL = cfg.get('label', K.LABEL)
     K.TATA = cfg.get('tata', {})
+    if cfg.get('gbr'):          # folder PNG gambar milik kajian lain (relatif ke mesin/)
+        K.GBR = (K.MESIN / cfg['gbr']).resolve()
+    if cfg.get('keluaran'):     # folder keluaran milik kajian lain (relatif ke mesin/)
+        K.KELUARAN = (K.MESIN / cfg['keluaran']).resolve()
+        K.KELUARAN.mkdir(parents=True, exist_ok=True)
     nama_keluaran = cfg.get('nama_keluaran', 'Kajian Penghitungan dan Klasifikasi Kejadian Bencana')
     os.environ['JUDUL_KEPALA'] = K.JUDUL
     urut = cfg['berkas']

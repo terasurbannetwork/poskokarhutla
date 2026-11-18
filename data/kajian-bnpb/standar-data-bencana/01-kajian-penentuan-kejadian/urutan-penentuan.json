@@ -1,0 +1,18 @@
+{
+    "judul": "Kajian Penentuan Kejadian Bencana, Kelas Mayor dan Minor, dan Standar Data Lapangan",
+    "anak_judul": "Dasar akademik dan cara penerapan Rancangan Juklak Standar Data Kejadian dan Dampak Bencana untuk sembilan jenis bencana alam",
+    "folder": "../../standar-data-bencana/01-kajian-penentuan-kejadian/naskah",
+    "gbr": "../../standar-data-bencana/01-kajian-penentuan-kejadian/gbr",
+    "keluaran": "../../standar-data-bencana/keluaran/01 Kajian Penentuan Kejadian Bencana/Revisi 2",
+    "nama_keluaran": "Kajian Penentuan Kejadian Bencana",
+    "berkas": [
+        "00-abstrak.md",
+        "00-ringkasan.md",
+        "01-pendahuluan.md",
+        "02-metode.md",
+        "03-hasil.md",
+        "04-pembahasan.md",
+        "05-kesimpulan.md",
+        "pustaka.md"
+    ]
+}
