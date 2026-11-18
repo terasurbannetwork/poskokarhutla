@@ -948,7 +948,7 @@ const MENUNGGU = ['terbuka', 'bertanya']
 // ---------- K18: status data satelit penanganan, pilihan *tunggu* atau *hitung* (~/.wa-bot/proyek/satelit.json: {id: {sha, dari, jenis, tanggal, keadaan}}) ----------
 // statusSatelit(ctx, tanggal) -> {firms_terakhir_wib, lintasan_siang, situs_memuat, ...} | null. dep.statusSatelit disuntik (uji), null = mati;
 // tanpa itu: `segar_situs.py --status --tanggal D` lewat dep.exec (execFile). Galat apa pun = null (tidak pernah menahan laporan).
-export const CATATAN_FIRMS = 'Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs.'
+export const CATATAN_FIRMS = 'Firespot dihitung langsung dari FIRMS dengan rumus situs.'
 export async function statusSatelit(ctx, tanggal) {
   const dep = ctx.dep || {}
   try {
@@ -967,7 +967,7 @@ export function barisSatelit(st) {
   return `Data satelit: lintasan siang masuk FIRMS ${jamTitik(st.firms_terakhir_wib)} WIB, ${situs}.`
 }
 export const tPilihSatelit = (p, st) => susun('Situs belum memuat data satelit', p, null, barisSatelit(st),
-  ['Pilih salah satu:', '- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.'])
+  ['Pilih salah satu:', '- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs'])
 const satelitP = (dasar) => path.join(dirProyek(dasar), 'satelit.json')
 const SATELIT_BASI_MS = 24 * 3600e3 // pilihan lebih tua dari ini diabaikan
 const TUNGGU_MAKS_MS = 3 * 3600e3, TUNGGU_NOL_MAKS = 3 // lewat ini pemegang ditanya sekali lagi
@@ -997,7 +997,7 @@ async function pilihSatelit(kata, e, dari, sha, ctx) {
   return ctx.balas(susun('Menunggu situs', { id: e.id }, null, ['Laporan dibangun otomatis begitu situs memuat lintasan siang.', 'Dicek tiap 10 menit.'], 'Ketik *hitung* bila ingin membangun sekarang.'))
 }
 const tTanyaUlangSatelit = (id, st) => susun('Situs masih belum memuat', { id }, null, st ? barisSatelit(st) : 'Data satelit: status belum terbaca.',
-  ['Pilih lagi:', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.', '- *tunggu*: tetap menunggu situs'])
+  ['Pilih lagi:', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs', '- *tunggu*: tetap menunggu situs'])
 
 // Detak 10 menit gateway: proyek yang memilih *tunggu* dibangun begitu situs memuat lintasan siang.
 // ctx.balasKe(dari, masuk) -> {balas, balasFile}; masuk = jam pesan *tunggu*. Sesudah 3 status kosong berturut-turut atau 3 jam, pemegang ditanya sekali lagi.

@@ -805,7 +805,7 @@ test('K18: situs belum memuat lintasan siang = pilih tunggu atau hitung; hitung 
   assert.equal(d.proyek.size, 0); assert.equal(d.gen().length, 0); d.balasan.length = 0
   await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')
   assert.equal(d.gen().length, 0); assert.deepEqual(d.statusLog, ['bertanya'])
-  assert.equal(d.balasan.at(-1), '*Situs belum memuat data satelit*\n_P-291026-01_\n\nData satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.\n\nPilih salah satu:\n- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu\n- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.')
+  assert.equal(d.balasan.at(-1), '*Situs belum memuat data satelit*\n_P-291026-01_\n\nData satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.\n\nPilih salah satu:\n- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu\n- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs')
   gayaWa(d.balasan.at(-1))
   assert.equal(await klasifikasi({ dari: DARI, teks: 'Hitung.' }, d.ctx), 'perintah')
   assert.equal(await klasifikasi({ dari: DARI, teks: 'hitung', diteruskan: true }, d.ctx), 'bahan')
@@ -813,7 +813,7 @@ test('K18: situs belum memuat lintasan siang = pilih tunggu atau hitung; hitung 
   assert.equal(d.gen().length, 1)
   const a = d.gen()[0].args
   assert.deepEqual(a.slice(a.indexOf('--firespot'), a.indexOf('--firespot') + 2), ['--firespot', 'firms'])
-  assert.match(d.kirim[0].caption, /- Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs\./)
+  assert.match(d.kirim[0].caption, /- Firespot dihitung langsung dari FIRMS dengan rumus situs\./)
   assert.equal(await klasifikasi({ dari: DARI, teks: 'hitung' }, d.ctx), 'perintah', 'kata satelit selalu perintah (bukan revisi)')
   assert.equal((await perintah(d, 'hitung')).status, 'satelit tanpa pilihan', 'pilihan selesai saat membangun: petunjuk, tanpa bangun ulang')
   assert.equal(d.gen().length, 1)
@@ -861,7 +861,7 @@ test('K18: tunggu dibatasi: 3 status kosong berturut-turut atau 3 jam = pemegang
   for (let i = 1; i <= 4; i++) h.push((await ulangSatelit(ke(new Date(NOW.getTime() + i * 600e3))))[0].status)
   assert.deepEqual(h, ['tunggu', 'tunggu', 'tanya ulang', 'tunggu'], 'ditanya sekali saja')
   assert.equal(keluar.length, 1)
-  assert.equal(keluar[0], '*Situs masih belum memuat*\n_P-291026-01_\n\nData satelit: status belum terbaca.\n\nPilih lagi:\n- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.\n- *tunggu*: tetap menunggu situs')
+  assert.equal(keluar[0], '*Situs masih belum memuat*\n_P-291026-01_\n\nData satelit: status belum terbaca.\n\nPilih lagi:\n- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs\n- *tunggu*: tetap menunggu situs')
   assert.ok(masukLihat.every((m) => m === NOW.getTime()), 'jam pesan tunggu dipakai sebagai jam masuk')
   // tunggu lagi = hitungan baru; 3 jam dengan status terbaca tetapi situs belum memuat = ditanya lagi
   await perintah(d, 'tunggu'); keluar.length = 0; d.st = BELUM

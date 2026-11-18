@@ -179,7 +179,7 @@ Data satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.
 
 Pilih salah satu:
 - *tunggu*: dibangun otomatis begitu situs memuat lintasan itu
-- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.
+- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs
 ```
 
 Balasan *tunggu*:
@@ -203,7 +203,7 @@ _P-181126-02_
 Data satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.
 
 Pilih lagi:
-- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.
+- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs
 - *tunggu*: tetap menunggu situs
 ```
 
@@ -219,7 +219,7 @@ Balasan *hitung*: draf biasa (A1) dengan baris catatan:
 
 ```text
 *Catatan:*
-- Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs.
+- Firespot dihitung langsung dari FIRMS dengan rumus situs.
 ```
 
 ### A2b. *lanjut* dengan bahan wajib kurang (draf tetap dibuat, kekurangan dicatat)
