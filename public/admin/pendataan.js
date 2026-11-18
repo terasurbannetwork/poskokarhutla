@@ -14,6 +14,9 @@
   const KLS_ISIAN = {draf: "biru", terkirim: "hijau"};
   const pil = (t, kls = "") => h("span", {class: "pd-pil " + kls, teks: t});
   const tombol = (t, att, kls = "") => h("button", {class: "ad-tombol kecil " + kls, type: "button", ...att}, t);
+  /* kit dashboard bersama (Admin.dasbor): kartu seksi, ubin angka, tombol ikon polos */
+  const DB = Admin.dasbor, ikWa = (nomor, teks, label) => h("a", {class: "db-ik pd-wa", href: `https://wa.me/${nomor || ""}?text=${encodeURIComponent(teks)}`, target: "_blank", rel: "noopener noreferrer", title: label, "aria-label": label}, DB.svg("telepon"));
+  const cariKolom = (jenis, ph, lbl) => h("input", {class: "pd-cari", type: "search", placeholder: ph, "aria-label": lbl, value: F.q, "data-cari": jenis});
   const gagalJaringan = {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}};
   let D = null, tab = "unit", rahasia = null, jadwal = 0;
   const urut = {unit: {k: "status", arah: 1}, akun: {k: "dibuat", arah: -1}, isian: {k: "diubah", arah: -1}};
@@ -24,21 +27,21 @@
   const barisUnit = () => [...D.unit.map(u => ({...u, label: u.nama})), ...D.lainnya.map(u => ({...u, kunci: "lainnya", label: `Lainnya: ${u.unit_lain}`}))];
   const pesanTagih = (u, nama) => `Halo ${nama || ""}, mohon bantuannya mengisi pendataan data, dokumen, dan aplikasi milik ${u.label} di ${location.origin}/pendataan. Terima kasih.`.replace("Halo ,", "Halo,");
   const pesanBagi = u => `Halo, mohon perwakilan ${u.label} membuat akun dan mengisi pendataan data, dokumen, dan aplikasi di ${location.origin}/pendataan. Terima kasih.`;
-  const wa = (nomor, teks, label) => h("a", {class: "ad-tombol kecil pd-wa", href: `https://wa.me/${nomor || ""}?text=${encodeURIComponent(teks)}`, target: "_blank", rel: "noopener noreferrer", teks: label});
   const bandingkan = (k, arah) => (a, b) => { const x = a[k], y = b[k]; if (x === y) return 0; if (x == null || x === "") return 1; if (y == null || y === "") return -1; return (typeof x === "number" ? x - y : String(x).localeCompare(String(y), "id")) * arah; };
   const urutStatus = s => STATUS_URUT.indexOf(s);
   const STATUS_URUT = ["Belum ada akun", "Akun menunggu", "Belum mengisi", "Draf", "Sudah kirim"];
 
   /* ---------- kerangka ---------- */
   function kerangka() {
-    const R = D.ringkas, p = (v, l) => h("span", {class: "pd-ringkas"}, h("b", {teks: angka(v)}), h("span", {teks: l}));
+    const R = D.ringkas, u = (ikon, label, v, ket = "", warna = "") => DB.ubin({ikon, label, nilai: angka(v), ket, warna});
+    DB.tumpuk(app);
     app.replaceChildren(
-      h("div", {class: "pd-baris-pil"}, p(R.unit_sudah, `dari ${angka(R.unit_total)} unit sudah kirim`), p(R.akun_aktif, "akun aktif"), p(R.akun_menunggu, "akun menunggu"), p(R.data, "data terkirim"), p(R.aplikasi, "aplikasi terkirim"), p(R.umum, "kebutuhan terkirim"), p(R.draf, "draf")),
+      DB.ubinGrid(u("gedung", "Unit sudah kirim", R.unit_sudah, `dari ${angka(R.unit_total)} unit`), u("aktif", "Akun aktif", R.akun_aktif), u("jam", "Akun menunggu", R.akun_menunggu, "", R.akun_menunggu ? "oranye" : ""), u("berkas", "Data terkirim", R.data),
+        u("kisi", "Aplikasi terkirim", R.aplikasi), u("kotak", "Kebutuhan terkirim", R.umum), u("ubah", "Draf", R.draf)),
       rahasia ? kotakRahasia() : null,
-      h("div", {class: "pd-bar"},
-        h("div", {class: "pd-tab", role: "tablist"}, ...[["unit", "Unit"], ["akun", `Akun (${angka(D.akun.length)})`], ["isian", `Isian (${angka(D.isian.length)})`]].map(([k, l]) => h("button", {type: "button", role: "tab", "data-tab": k, "aria-selected": String(tab === k), teks: l}))),
-        h("div", {class: "pd-ekspor"}, ...S.JENIS.map(j => h("a", {class: "ad-tombol kecil", href: "/api/pendataan/admin/ekspor?jenis=" + j, download: `pendataan-${j}.csv`, teks: "CSV " + S.JUDUL_JENIS[j]})))),
-      h("div", {id: "pdIsi"}));
+      h("div", {class: "pd-bar"}, h("div", {class: "pd-tab", role: "tablist"}, ...[["unit", "Unit"], ["akun", `Akun (${angka(D.akun.length)})`], ["isian", `Isian (${angka(D.isian.length)})`]].map(([k, l]) => h("button", {type: "button", role: "tab", "data-tab": k, "aria-selected": String(tab === k), teks: l})))),
+      h("div", {id: "pdIsi", class: "db-tumpuk"}),
+      DB.kartu({ikon: "unduh", judul: "Ekspor", ey: "CSV"}, h("div", {class: "pd-ekspor"}, ...S.JENIS.map(j => h("a", {class: "ad-tombol kecil", href: "/api/pendataan/admin/ekspor?jenis=" + j, download: `pendataan-${j}.csv`, teks: "CSV " + S.JUDUL_JENIS[j]})))));
     gambar();
   }
   function kotakRahasia() {
@@ -52,46 +55,45 @@
     const w = document.getElementById("pdIsi"); if (!w) return;
     for (const b of app.querySelectorAll("[data-tab]")) b.setAttribute("aria-selected", String(b.dataset.tab === tab));
     const cari = document.activeElement?.matches?.("[data-cari]") ? [document.activeElement.selectionStart, document.activeElement.selectionEnd] : null;
-    w.replaceChildren(tab === "unit" ? tabelUnit() : tab === "akun" ? tabelAkun() : tabelIsian());
+    w.replaceChildren(...(tab === "unit" ? tabelUnit() : tab === "akun" ? tabelAkun() : tabelIsian()));
     const q = cari && w.querySelector("[data-cari]");   // kolom cari ikut tergambar ulang: kembalikan fokus dan kursor supaya ketikan berikutnya tidak hilang
     if (q) { q.focus({preventScroll: true}); q.setSelectionRange(...cari); }
   }
   function kepala(jenis, kolom) {
     const u = urut[jenis];
-    return h("thead", null, h("tr", null, ...kolom.map(([k, l]) => k ? h("th", {"data-urut": k, "data-jenis": jenis, "aria-sort": u.k === k ? (u.arah > 0 ? "ascending" : "descending") : "none", tabindex: "0"}, l, u.k === k ? (u.arah > 0 ? " ▲" : " ▼") : "") : h("th", {teks: l}))));
+    return h("thead", null, h("tr", null, ...kolom.map(([k, l]) => k ? h("th", {scope: "col", "data-urut": k, "data-jenis": jenis, "aria-sort": u.k === k ? (u.arah > 0 ? "ascending" : "descending") : "none", tabindex: "0"}, l, u.k === k ? (u.arah > 0 ? " ▲" : " ▼") : "") : h("th", {scope: "col", teks: l || "Aksi"}))));
   }
 
   /* ---------- unit ---------- */
   function tabelUnit() {
     const u = urut.unit, xs = barisUnit().map(x => ({...x, urut_status: urutStatus(x.status)})).sort(u.k === "status" ? bandingkan("urut_status", u.arah) : bandingkan(u.k === "nama" ? "label" : u.k, u.arah));
-    return h("div", {class: "pd-tabel-wadah"}, h("table", {class: "pd-tabel"},
+    return [DB.kartu({ikon: "gedung", judul: "Unit", ey: "Pendataan", kanan: h("span", {class: "pd-jumlah", teks: `${angka(xs.length)} unit`})}, h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel"},
       kepala("unit", [["nama", "Unit"], ["status", "Status"], ["akun_aktif", "Akun aktif"], ["akun_menunggu", "Akun menunggu"], ["data", "Data"], ["aplikasi", "Aplikasi"], ["umum", "Kebutuhan"], ["draf", "Draf"], ["terakhir", "Terakhir kirim"], [null, "Tagih"]]),
       h("tbody", null, xs.map(x => h("tr", null,
         h("td", null, h("b", {teks: x.label})), h("td", null, pil(x.status, KLS_UNIT[x.status])),
         ...["akun_aktif", "akun_menunggu", "data", "aplikasi", "umum", "draf"].map(k => h("td", {class: "pd-num", teks: angka(x[k])})),
         h("td", {teks: waktu(x.terakhir)}),
-        h("td", null, h("div", {class: "pd-aksi"}, x.status === "Sudah kirim" ? null : x.pic.length ? x.pic.map(p => wa(p.wa, pesanTagih(x, p.nama), `Tagih ${p.nama.split(" ")[0]}`)) : x.status === "Akun menunggu" ? null : wa("", pesanBagi(x), "Bagikan tautan"))))))));
+        h("td", null, h("div", {class: "db-aksi"}, x.status === "Sudah kirim" ? null : x.pic.length ? x.pic.map(p => ikWa(p.wa, pesanTagih(x, p.nama), `Tagih ${p.nama.split(" ")[0]}`)) : x.status === "Akun menunggu" ? null : ikWa("", pesanBagi(x), "Bagikan tautan")))))))))]
   }
 
   /* ---------- akun ---------- */
   function tabelAkun() {
     const u = urut.akun, q = F.q.trim().toLowerCase();
     const xs = D.akun.filter(a => (!F.akun || a.status === F.akun) && (!q || [a.nama, a.username, a.jabatan, a.email, namaUnit(a.unit, a.unit_lain)].some(v => String(v ?? "").toLowerCase().includes(q)))).sort(bandingkan(u.k, u.arah));
-    const chip = (k, l) => h("button", {class: "pd-chip", type: "button", "data-akun": k, "aria-pressed": String(F.akun === k), teks: l});
-    return h("div", null,
-      h("div", {class: "pd-saring"}, chip("", "Semua"), ...S.STATUS_AKUN.map(s => chip(s, s[0].toUpperCase() + s.slice(1) + ` (${angka(D.akun.filter(a => a.status === s).length)})`)),
-        h("input", {class: "pd-cari", type: "search", placeholder: "Cari nama, username, unit", "aria-label": "Cari akun", value: F.q, "data-cari": "akun"})),
-      xs.length ? h("div", {class: "pd-tabel-wadah"}, h("table", {class: "pd-tabel"},
-        kepala("akun", [["nama", "Nama"], ["unit", "Unit"], [null, "Kontak"], ["status", "Status"], ["isian", "Isian"], ["dibuat", "Daftar"], [null, ""]]),
-        h("tbody", null, xs.map(a => h("tr", {"data-akun-id": a.id, class: a.status === "aktif" ? "" : "pd-redup"},
-          h("td", null, h("b", {teks: a.nama}), h("small", {teks: `@${a.username}, ${a.jabatan}`}), a.nip ? h("small", {teks: "NIP " + a.nip}) : null),
-          h("td", {teks: namaUnit(a.unit, a.unit_lain)}),
-          h("td", null, h("small", {teks: a.email}), h("small", {teks: "+" + a.wa})),
-          h("td", null, pil(a.status[0].toUpperCase() + a.status.slice(1), KLS_AKUN[a.status]), a.wajib_ganti ? pil("Belum ganti sandi", "kuning") : null, a.dummy ? pil("DUMMY", "dummy") : null),
-          h("td", {class: "pd-num", teks: angka(a.isian)}), h("td", {teks: waktu(a.dibuat)}),
-          h("td", null, h("div", {class: "pd-aksi"},
-            a.status !== "aktif" ? tombol("Setujui", {"data-aksi": "setujui"}, "utama") : null, a.status === "menunggu" ? tombol("Tolak", {"data-aksi": "tolak"}, "bahaya") : null,
-            a.status === "aktif" ? tombol("Reset sandi", {"data-aksi": "reset"}) : null, a.status === "aktif" ? tombol("Cabut", {"data-aksi": "cabut"}, "bahaya") : null))))))) : h("p", {class: "pd-kosong", teks: D.akun.length ? "Tidak ada akun yang cocok." : "Belum ada akun responden."}));
+    const chip = (k, l, n) => { const e = DB.ubin({ikon: k === "aktif" ? "aktif" : k === "menunggu" ? "jam" : k === "" ? "staf" : "cabut", label: l, nilai: angka(n), saring: k || "semua", aktif: F.akun === k}); e.removeAttribute("data-saring"); e.setAttribute("data-akun", k); return e; };
+    return [DB.ubinGrid(chip("", "Semua", D.akun.length), ...S.STATUS_AKUN.map(s => chip(s, s[0].toUpperCase() + s.slice(1), D.akun.filter(a => a.status === s).length))),
+      DB.kartu({ikon: "staf", judul: "Akun responden", ey: "Akun", kanan: cariKolom("akun", "Cari nama, username, unit", "Cari akun")},
+        xs.length ? h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel"},
+          kepala("akun", [["nama", "Nama"], ["unit", "Unit"], [null, "Kontak"], ["status", "Status"], ["isian", "Isian"], ["dibuat", "Daftar"], [null, ""]]),
+          h("tbody", null, xs.map(a => h("tr", {"data-akun-id": a.id, class: a.status === "aktif" ? "" : "pd-redup"},
+            h("td", null, h("b", {teks: a.nama}), h("small", {teks: `@${a.username}, ${a.jabatan}`}), a.nip ? h("small", {teks: "NIP " + a.nip}) : null),
+            h("td", {teks: namaUnit(a.unit, a.unit_lain)}),
+            h("td", null, h("small", {teks: a.email}), h("small", {teks: "+" + a.wa})),
+            h("td", null, pil(a.status[0].toUpperCase() + a.status.slice(1), KLS_AKUN[a.status]), a.wajib_ganti ? pil("Belum ganti sandi", "kuning") : null, a.dummy ? pil("DUMMY", "dummy") : null),
+            h("td", {class: "pd-num", teks: angka(a.isian)}), h("td", {teks: waktu(a.dibuat)}),
+            h("td", null, h("div", {class: "db-aksi"},
+              a.status !== "aktif" ? DB.ikon("aktif", "Setujui", {"data-aksi": "setujui"}) : null, a.status === "menunggu" ? DB.ikon("tutup", "Tolak", {"data-aksi": "tolak"}, "bahaya") : null,
+              a.status === "aktif" ? DB.ikon("kunci", "Reset sandi", {"data-aksi": "reset"}) : null, a.status === "aktif" ? DB.ikon("cabut", "Cabut", {"data-aksi": "cabut"}, "bahaya") : null))))))) : h("p", {class: "pd-kosong", teks: D.akun.length ? "Tidak ada akun yang cocok." : "Belum ada akun responden."}))];
   }
 
   /* ---------- isian ---------- */
@@ -99,15 +101,14 @@
     const u = urut.isian, q = F.q.trim().toLowerCase();
     const xs = D.isian.filter(i => (!F.jenis || i.jenis === F.jenis) && (!F.unit || (F.unit === "lainnya" ? i.unit === "lainnya" : i.unit === F.unit)) && (!F.status || i.status === F.status) && (!q || [i.judul, i.pengisi, namaUnit(i.unit, i.unit_lain)].some(v => String(v ?? "").toLowerCase().includes(q)))).sort(bandingkan(u.k, u.arah));
     const pilih = (nama, daftar, label) => h("select", {"data-saring": nama, "aria-label": label}, h("option", {value: "", teks: label}), ...daftar.map(([v, l]) => h("option", {value: v, selected: F[nama] === v, teks: l})));
-    return h("div", null,
-      h("div", {class: "pd-saring"}, pilih("jenis", S.JENIS.map(j => [j, S.JUDUL_JENIS[j]]), "Semua jenis"), pilih("unit", Object.entries(S.UNIT).map(([k, l]) => [k, l]), "Semua unit"), pilih("status", S.STATUS_ISIAN.map(s => [s, s[0].toUpperCase() + s.slice(1)]), "Semua status"),
-        h("input", {class: "pd-cari", type: "search", placeholder: "Cari judul, pengisi, unit", "aria-label": "Cari isian", value: F.q, "data-cari": "isian"}), h("span", {class: "pd-jumlah", teks: `${angka(xs.length)} isian`})),
-      xs.length ? h("div", {class: "pd-tabel-wadah"}, h("table", {class: "pd-tabel pd-klik"},
-        kepala("isian", [["judul", "Judul"], ["jenis", "Jenis"], ["unit", "Unit"], ["pengisi", "Pengisi"], ["status", "Status"], [null, "Berkas"], ["diubah", "Diubah"]]),
-        h("tbody", null, xs.slice(0, F.batas).map(i => h("tr", {"data-isian": i.id, tabindex: "0"},
-          h("td", null, h("b", {teks: i.judul})), h("td", null, pil(S.JUDUL_JENIS[i.jenis], "biru")), h("td", {teks: namaUnit(i.unit, i.unit_lain)}), h("td", {teks: i.pengisi}),
-          h("td", null, pil(i.status[0].toUpperCase() + i.status.slice(1), KLS_ISIAN[i.status]), i.dummy ? pil("DUMMY", "dummy") : null), h("td", {class: "pd-num", teks: angka(i.berkas.length)}), h("td", {teks: waktu(i.diubah)})))))
-        , xs.length > F.batas ? tombol(`Tampilkan lagi (${angka(xs.length - F.batas)})`, {"data-lagi": "1"}) : null) : h("p", {class: "pd-kosong", teks: D.isian.length ? "Tidak ada isian yang cocok." : "Belum ada isian."}));
+    return [DB.kartu({ikon: "cari", judul: "Penyaring", ey: "Isian"}, h("div", {class: "pd-saring"}, pilih("jenis", S.JENIS.map(j => [j, S.JUDUL_JENIS[j]]), "Semua jenis"), pilih("unit", Object.entries(S.UNIT).map(([k, l]) => [k, l]), "Semua unit"), pilih("status", S.STATUS_ISIAN.map(s => [s, s[0].toUpperCase() + s.slice(1)]), "Semua status"))),
+      DB.kartu({ikon: "berkas", judul: "Isian", ey: "Daftar", kanan: h("span", {class: "pd-kanan"}, cariKolom("isian", "Cari judul, pengisi, unit", "Cari isian"), h("span", {class: "pd-jumlah", teks: `${angka(xs.length)} isian`}))},
+        xs.length ? h("div", null, h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel pd-klik"},
+          kepala("isian", [["judul", "Judul"], ["jenis", "Jenis"], ["unit", "Unit"], ["pengisi", "Pengisi"], ["status", "Status"], [null, "Berkas"], ["diubah", "Diubah"]]),
+          h("tbody", null, xs.slice(0, F.batas).map(i => h("tr", {"data-isian": i.id, tabindex: "0"},
+            h("td", null, h("b", {teks: i.judul})), h("td", null, pil(S.JUDUL_JENIS[i.jenis], "biru")), h("td", {teks: namaUnit(i.unit, i.unit_lain)}), h("td", {teks: i.pengisi}),
+            h("td", null, pil(i.status[0].toUpperCase() + i.status.slice(1), KLS_ISIAN[i.status]), i.dummy ? pil("DUMMY", "dummy") : null), h("td", {class: "pd-num", teks: angka(i.berkas.length)}), h("td", {teks: waktu(i.diubah)})))))),
+          xs.length > F.batas ? tombol(`Tampilkan lagi (${angka(xs.length - F.batas)})`, {"data-lagi": "1"}) : null) : h("p", {class: "pd-kosong", teks: D.isian.length ? "Tidak ada isian yang cocok." : "Belum ada isian."}))];
   }
   function bukaIsian(id) {
     const i = D.isian.find(x => x.id === id); if (!i) return;
@@ -132,7 +133,7 @@
     const t = e.target.closest("[data-tab]"); if (t) { tab = t.dataset.tab; F.q = ""; F.batas = 60; gambar(); return; }
     const th = e.target.closest("[data-urut]");
     if (th) { const u = urut[th.dataset.jenis]; u.arah = u.k === th.dataset.urut ? -u.arah : 1; u.k = th.dataset.urut; tunda(); return; }
-    const c = e.target.closest("[data-akun]"); if (c) { F.akun = c.dataset.akun; tunda(); return; }
+    const c = e.target.closest("[data-akun]"); if (c) { F.akun = c.dataset.akun; for (const u of app.querySelectorAll("[data-akun]")) u.setAttribute("aria-pressed", String(u === c)); tunda(); return; }
     if (e.target.closest("[data-lagi]")) { F.batas += 60; tunda(); return; }
     if (e.target.closest("[data-tutup]")) { rahasia = null; kerangka(); return; }
     if (e.target.closest("[data-salin]")) { const b = e.target.closest("[data-salin]"); await navigator.clipboard?.writeText(`Username: ${rahasia.username}\nSandi: ${rahasia.sandi}`).catch(() => null); b.textContent = "Tersalin"; return; }

@@ -1,8 +1,8 @@
 /* Buku kontak (/admin/kontak): daftar pemangku kepentingan per wilayah, tambah/ubah/hapus, impor dan unduh CSV. Data: /api/kontak/admin* (src/kontak.js).
-   Kab/kota dipilih dari kunci public/banjir/data/pusat_kec.json (ejaan data; tampilan lewat Wilayah.kab). Gaya dari akun.css (ak-*) + kontak.css (kt-*).
+   Kab/kota dipilih dari kunci public/banjir/data/pusat_kec.json (ejaan data; tampilan lewat Wilayah.kab). Gaya dari akun.css (ak-*), kit dashboard (Admin.dasbor) + kontak.css (kt-*).
    CSP admin: tanpa skrip/gaya inline; teks dari data lewat textContent. */
 (() => {
-  const app = document.getElementById("app");
+  const app = Admin.dasbor.tumpuk(document.getElementById("app")), DB = Admin.dasbor;
   const h = (tag, att, ...anak) => { const e = document.createElement(tag);
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
@@ -23,10 +23,13 @@
   function kelengkapan() {
     const wilayah = Object.keys(D.provinsi).length + Object.values(KAB).reduce((a, l) => a + l.length, 0);
     const ada = kat => new Set(D.kontak.filter(k => k.status === "aktif" && k.kategori === kat && k.prov).map(k => k.prov + "|" + (k.kab || ""))).size;
-    return h("div", {class: "kt-ringkas"}, ...[["Kontak", D.kontak.length, null], ["Kepala daerah", ada("kepala_daerah"), wilayah], ["BPBD", ada("bpbd"), wilayah],
-      ["Menunggu persetujuan", D.kontak.filter(k => k.status === "menunggu").length, null],
-      ["Menerima notifikasi", D.kontak.filter(k => k.status === "aktif" && k.notif).length, null]].map(([l, n, dari]) =>
-      h("div", {class: "kt-angka"}, h("b", {teks: angka(n) + (dari ? " / " + angka(dari) : "")}), h("small", {teks: dari ? `${l}: wilayah terisi` : l}))));
+    const tunggu = D.kontak.filter(k => k.status === "menunggu").length;
+    return DB.ubinGrid(
+      DB.ubin({ikon: "telepon", label: "Kontak", nilai: angka(D.kontak.length), ket: "semua pemangku kepentingan"}),
+      DB.ubin({ikon: "staf", label: "Kepala daerah", nilai: `${angka(ada("kepala_daerah"))} / ${angka(wilayah)}`, ket: "wilayah terisi"}),
+      DB.ubin({ikon: "gedung", label: "BPBD", nilai: `${angka(ada("bpbd"))} / ${angka(wilayah)}`, ket: "wilayah terisi"}),
+      DB.ubin({ikon: "jam", label: "Menunggu persetujuan", nilai: angka(tunggu), ket: "saring daftar", warna: tunggu ? "oranye" : "", saring: "menunggu", aktif: saring.status === "menunggu"}),
+      DB.ubin({ikon: "lonceng", label: "Menerima notifikasi", nilai: angka(D.kontak.filter(k => k.status === "aktif" && k.notif).length), ket: "aktif dan setuju"}));
   }
 
   function formulir(k) {
@@ -74,36 +77,37 @@
         h("span", {class: "ak-pil " + (k.notif ? "aktif" : "dicabut"), teks: k.notif ? AMBANG[k.ambang] : "Tidak"}),
         k.status === "menunggu" ? h("small", {teks: "Registrasi " + tgl(k.dibuat)}) : null,
         h("small", {teks: k.diverifikasi ? "Dicek " + tgl(k.diverifikasi) : "Belum dicek"})),
-      h("td", null, h("div", {class: "kt-aksi"}, k.status === "menunggu" ? h("button", {class: "ak-btn utama", type: "button", "data-setujui": "1"}, "Setujui") : null,
-        h("button", {class: "ak-btn", type: "button", "data-ubah": "1"}, "Ubah"), h("button", {class: "ak-btn bahaya", type: "button", "data-hapus": "1"}, "Hapus"))));
+      h("td", null, DB.aksi(k.status === "menunggu" ? DB.ikon("cek", "Setujui " + k.nama, {"data-setujui": "1"}) : null,
+        DB.ikon("ubah", "Ubah " + k.nama, {"data-ubah": "1"}), DB.ikon("hapus", "Hapus " + k.nama, {"data-hapus": "1"}, "bahaya"))));
     return ubah === k.id ? [tr, h("tr", {class: "ak-ubah"}, h("td", {colspan: "6"}, formulir(k)))] : tr;
   }
 
   function gambarDaftar() {
     const l = D.kontak.filter(cocok), w = app.querySelector("#ktDaftar");
-    w.replaceChildren(h("p", {class: "ak-redup", teks: `${angka(l.length)} dari ${angka(D.kontak.length)} kontak`}),
-      l.length ? h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ak-tabel kt-tabel"},
-        h("thead", null, h("tr", null, ["Nama & jabatan", "Kategori & wilayah", "Kontak", "Ajudan", "Notifikasi", ""].map(t => h("th", {teks: t})))),
-        h("tbody", null, l.flatMap(baris)))) : h("p", {class: "ak-kosong", teks: D.kontak.length ? "Tidak ada kontak yang cocok." : "Belum ada kontak. Tambah satu per satu atau impor CSV."}));
+    app.querySelector("#ktHitung").textContent = `${angka(l.length)} dari ${angka(D.kontak.length)} kontak`;
+    w.replaceChildren(l.length ? DB.tabel(["Nama dan jabatan", "Kategori dan wilayah", "Kontak", "Ajudan", "Notifikasi", "Aksi"], l.flatMap(baris), "kt-tabel")
+      : h("p", {class: "ak-kosong", teks: D.kontak.length ? "Tidak ada kontak yang cocok." : "Belum ada kontak. Tambah satu per satu atau impor CSV."}));
   }
 
   function gambar() {
     const filter = h("div", {class: "kt-filter"},
-      h("input", {type: "search", "data-saring": "q", placeholder: "Cari nama, jabatan, nomor…", value: saring.q, "aria-label": "Cari kontak"}),
       h("select", {"data-saring": "prov", "aria-label": "Provinsi"}, ...opsi({nasional: "Nasional", ...D.provinsi}, saring.prov, "Semua wilayah")),
       h("select", {"data-saring": "kat", "aria-label": "Kategori"}, ...opsi(D.kategori, saring.kat, "Semua kategori")),
       h("select", {"data-saring": "status", "aria-label": "Status"}, ...opsi({menunggu: "Menunggu persetujuan", aktif: "Aktif"}, saring.status, "Semua status")));
     app.replaceChildren(kelengkapan(),
-      h("p", {class: "ak-redup"}, "Formulir registrasi untuk dibagikan ke pemangku kepentingan: ", h("a", {href: "/daftar-kontak", target: "_blank", rel: "noopener", teks: location.origin + "/daftar-kontak"}),
-        ". Registrasi masuk sebagai Menunggu dan baru aktif setelah disetujui."),
-      h("details", {class: "ak-panel", open: !D.kontak.length}, h("summary", {teks: "Tambah kontak"}), formulir(null)),
-      h("details", {class: "ak-panel", open: !!pesanImpor}, h("summary", {teks: "Impor & unduh CSV"}),
-        h("p", {class: "ak-redup", teks: `Kolom: ${KOL.join(", ")}. Kategori pakai kode (${Object.keys(D.kategori).join(", ")}). Provinsi boleh kode BPS atau nama; kosong = nasional. Kab/kota memakai ejaan daftar wilayah. Satu baris salah = tidak ada yang masuk.`}),
-        h("div", {class: "kt-aksi"}, h("label", {class: "ak-btn"}, "Pilih berkas CSV", h("input", {type: "file", accept: ".csv,text/csv", "data-impor": "1", class: "kt-sembunyi"})),
-          h("button", {class: "ak-btn", type: "button", "data-unduh": "templat"}, "Unduh templat"),
-          h("button", {class: "ak-btn", type: "button", "data-unduh": "semua"}, "Unduh semua kontak")),
-        pesanImpor ? h("pre", {class: "kt-pesan" + (pesanImpor.ok ? " ok" : ""), teks: pesanImpor.teks}) : null),
-      h("section", {class: "ak-panel"}, filter, h("div", {id: "ktDaftar"})));
+      DB.kartu({ikon: "tambah", judul: "Tambah dan impor", ey: "Kontak"},
+        h("p", {class: "ak-redup"}, "Formulir registrasi untuk dibagikan ke pemangku kepentingan: ", h("a", {href: "/daftar-kontak", target: "_blank", rel: "noopener", teks: location.origin + "/daftar-kontak"}),
+          ". Registrasi masuk sebagai Menunggu dan baru aktif setelah disetujui."),
+        h("details", {class: "ak-buat-pm", open: !D.kontak.length}, h("summary", null, h("span", {class: "ak-plus", "aria-hidden": "true", teks: "+"}), "Tambah kontak"), formulir(null)),
+        h("details", {class: "ak-buat-pm", open: !!pesanImpor}, h("summary", null, h("span", {class: "ak-plus", "aria-hidden": "true", teks: "+"}), "Impor dan unduh CSV"),
+          h("p", {class: "ak-redup", teks: `Kolom: ${KOL.join(", ")}. Kategori pakai kode (${Object.keys(D.kategori).join(", ")}). Provinsi boleh kode BPS atau nama; kosong = nasional. Kab/kota memakai ejaan daftar wilayah. Satu baris salah = tidak ada yang masuk.`}),
+          h("div", {class: "kt-aksi"}, h("label", {class: "ak-btn"}, "Pilih berkas CSV", h("input", {type: "file", accept: ".csv,text/csv", "data-impor": "1", class: "kt-sembunyi"})),
+            h("button", {class: "ak-btn", type: "button", "data-unduh": "templat"}, "Unduh templat"),
+            h("button", {class: "ak-btn", type: "button", "data-unduh": "semua"}, "Unduh semua kontak")),
+          pesanImpor ? h("pre", {class: "kt-pesan" + (pesanImpor.ok ? " ok" : ""), teks: pesanImpor.teks}) : null)),
+      DB.kartu({ikon: "telepon", judul: "Daftar kontak", ey: "Pemangku kepentingan",
+        kanan: h("span", {class: "ak-kanan"}, h("input", {class: "ak-cari", type: "search", "data-saring": "q", placeholder: "Cari nama, jabatan, nomor", value: saring.q, "aria-label": "Cari kontak"}), h("span", {class: "ak-hitung", id: "ktHitung"}))},
+        filter, h("div", {id: "ktDaftar"})));
     gambarDaftar();
   }
 
@@ -157,7 +161,9 @@
     if (x.ok) muat(); else gambar();
   }
 
-  app.addEventListener("input", e => { const s = e.target.closest("[data-saring]"); if (!s) return; saring[s.dataset.saring] = s.dataset.saring === "q" ? s.value.trim().toLowerCase() : s.value; gambarDaftar(); });
+  app.addEventListener("input", e => { const s = e.target.closest("[data-saring]"); if (!s) return; saring[s.dataset.saring] = s.dataset.saring === "q" ? s.value.trim().toLowerCase() : s.value;
+    if (s.dataset.saring === "status") app.querySelector(".db-saring")?.setAttribute("aria-pressed", String(saring.status === "menunggu")); cancelAnimationFrame(jadwalCari); jadwalCari = requestAnimationFrame(() => setTimeout(gambarDaftar, 0)); });
+  let jadwalCari = 0;
   app.addEventListener("change", e => { const f = e.target.closest("[data-impor]"); if (f?.files[0]) { impor(f.files[0]); f.value = ""; } });
   app.addEventListener("submit", async e => {
     const f = e.target.closest("[data-simpan]"); if (!f) return;
@@ -171,6 +177,12 @@
     ubah = null; muat();
   });
   app.addEventListener("click", async e => {
+    const ub = e.target.closest(".db-saring");
+    if (ub) {   // chrome urgent (aria-pressed, pilihan status), tabel menyusul sesudah satu frame
+      saring.status = saring.status === ub.dataset.saring ? "" : ub.dataset.saring; ub.setAttribute("aria-pressed", String(saring.status === "menunggu"));
+      const sel = app.querySelector("select[data-saring=status]"); if (sel) sel.value = saring.status;
+      return void requestAnimationFrame(() => setTimeout(gambarDaftar, 0));
+    }
     const u = e.target.closest("[data-unduh]"); if (u) return unduh(u.dataset.unduh === "semua");
     if (e.target.closest("[data-batal]")) { ubah = null; return gambarDaftar(); }
     const tr = e.target.closest("tr[data-id]"); if (!tr) return;

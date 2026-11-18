@@ -145,6 +145,11 @@ def operasi(teks):
             hujan = {'intensitas': h.group(1).strip().lower(), 'lokasi': h.group(2).replace('Kabupaten ', '').rstrip('. '),
                      'tanggal': dt.date(tanggal.year, BULAN[h.group(4).lower()], int(h.group(3)))
                      if h.group(3) and h.group(4).lower() in BULAN else tanggal}   # "pada 15 FS" bukan tanggal (Kalteng 3 Nov)
+            if w := re.match(r'(.+?) pada (.*?)(?:,\s*(\d{1,2}) (\w+))?$', hujan['lokasi']):
+                # "di *Kota Palembang pada siang hingga sore hari, 13 November*" (Sumsel 14 Nov): waktu dan tanggal ikut tebal
+                hujan['lokasi'] = w.group(1)
+                if w.group(3) and w.group(4).lower() in BULAN:
+                    hujan['tanggal'] = dt.date(tanggal.year, BULAN[w.group(4).lower()], int(w.group(3)))
         elif h3:   # "Hujan dilaporkan di sebagian besar wilayah X pada dini hari" (27 Okt): lokasi tanpa cetak tebal
             hujan = {'intensitas': '', 'lokasi': h3.group(1), 'tanggal': tanggal}
         elif h4 := re.search(r'^>\s*Hujan\s+([a-z]+(?:\s*[–-]\s*[a-z]+|\s+hingga\s+[a-z]+)?)\s+di ([^.\n]+?)(?:,? serta [^.\n]*)?\.', isi, re.M):

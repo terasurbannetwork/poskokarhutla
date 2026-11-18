@@ -901,3 +901,13 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 /* ringkasan Status Lifeline (dalops_lifeline.js): kartu dilipat, tabel memakai .ad-tabel */
 .dl-lf>summary{cursor:pointer;font-weight:700;color:var(--ink2);padding:6px 0}
 .dl-lf[open]>summary{margin-bottom:10px}
+/* menu "Pilih angka yang tampil" terbuka ke atas: bilah dasar peta berhenti memotong selama menu terbuka (17 Nov 2026) */
+.dl-peta .dl-peta-dasar:has(.dl-ubin-menu:not([hidden])){overflow:visible}
+/* grafik Tren: aturan ikon .dl-wrap svg (16px, garis) tidak berlaku untuk grafik */
+.dl-wrap .dl-tren-k svg{width:100%;height:auto;fill:currentColor;stroke:none}
+/* Usulan langkah: kolom Status berkepala, tenggat selebar isinya, label status sejajar kepala */
+.dl-mt .dl-mt-tg{width:1%}
+.dl-mt th.dl-mt-st{width:104px}
+.dl-mt .dl-ln{grid-template-columns:128px minmax(0,1fr) 88px}
+.dl-mt .dl-st-tl{justify-self:center}
+.dl-mt .dl-ln-t{line-height:1.4}

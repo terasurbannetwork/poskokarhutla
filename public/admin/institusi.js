@@ -1,7 +1,7 @@
 /* Tab Institusi bersama /admin/relawan dan /admin/riset (C7): SATU daftar institusi (kampus atau organisasi) dari /api/relawan/admin/institusi.
    Kolom Relawan = MoU relawan + kode koordinator; kolom Riset = PKS riset + kode mitra. Dua halaman memanggil pasang() yang sama, tidak ada salinan.
    CSP admin: tanpa skrip/gaya inline; semua teks data lewat esc(). Modul ES: const {pasang} = await import("/admin/institusi.js"). */
-const {esc, kirim, ambil} = window.Admin, API = "/api/relawan/admin/institusi", UKURAN = 12;
+const {esc, kirim, ambil} = window.Admin, DB = window.Admin.dasbor, API = "/api/relawan/admin/institusi", UKURAN = 12;
 const angka = n => Number(n ?? 0).toLocaleString("id-ID", {maximumFractionDigits: 1});
 const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "–";
 const hariIni = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
@@ -12,6 +12,9 @@ const pil = (warna, ikon, teks) => `<span class="in-pil in-${warna}"><svg viewBo
 const STATUS = {aktif: ["hijau", "centang", "Berlaku"], segera_habis: ["oranye", "jam", "Segera habis"], habis: ["merah", "x", "Habis"], belum: ["kuning", "jam", "Belum berlaku"]};
 const JENIS = {ptn: "PTN", pts: "PTS", organisasi: "Organisasi"}, PERJANJIAN = {mou_relawan: "MoU relawan", pks_riset: "PKS riset"};
 const opsi = (obj, pilih, semua) => (semua ? `<option value="">${esc(semua)}</option>` : "") + Object.entries(obj).map(([k, v]) => `<option value="${esc(k)}"${k === pilih ? " selected" : ""}>${esc(v)}</option>`).join("");
+/* kartu seksi bersama (Admin.dasbor.kartu) sebagai string HTML; ib = tombol ikon polos */
+const KH = (ikon, judul, ey, html, kanan = "") => { const k = DB.kartu({ikon, judul, ey}); k.querySelector(".ex-bd").innerHTML = html; if (kanan) k.querySelector(".ex-jd").insertAdjacentHTML("beforeend", kanan); return k.outerHTML; };
+const ib = (ik, label, att = "", kls = "") => `<button type="button" class="db-ik ${kls}" title="${esc(label)}" aria-label="${esc(label)}" ${att}>${DB.svg(ik).outerHTML}</button>`;
 const isian = (label, el) => `<label>${esc(label)}${el}</label>`;
 
 /* satu perjanjian terpilih (mou atau pks) sebagai pil + nomor + masa berlaku */
@@ -19,7 +22,7 @@ const ringkasPj = (p, ekstra = "") => p ? `${pil(...STATUS[p.status])}<br>${esc(
 
 export async function pasang(el) {
   if (!document.getElementById("inCss")) { const l = document.createElement("link"); l.id = "inCss"; l.rel = "stylesheet"; l.href = "/admin/institusi.css?v=1"; document.head.appendChild(l); }
-  el.classList.add("in-tab");
+  el.classList.add("in-tab", "db-tumpuk");
   let d = null, form = null, kode = null, q = "", urut = "nama", arah = 1, hal = 0, pesan = ["", true];
   const provinsi = () => Object.fromEntries(Object.entries(d.provinsi).sort((a, b) => a[1].localeCompare(b[1], "id")));
   const muat = async () => { try { d = await ambil(API, "Fitur relawan"); gambar(); } catch (e) { if (e.message !== "perlu masuk") el.innerHTML = `<p class="in-kosong">${esc(e.message)}</p>`; } };
@@ -30,16 +33,16 @@ export async function pasang(el) {
     if (!form) return "";
     if (form.pj) {   // perjanjian: baru, atau ubah (perpanjangan) yang sudah ada
       const i = d.institusi.find(x => x.id === form.pj), p = form.pilih ? i.perjanjian.find(x => x.id === form.pilih) : null, jenis = p?.jenis_perjanjian || form.jenis || "mou_relawan";
-      return `<form id="inForm" class="in-form ad-kartu"><h3>Perjanjian ${esc(i.nama)}</h3><div class="in-grid">
+      return KH("berkas", "Perjanjian " + i.nama, "Formulir", `<form id="inForm" class="in-form"><div class="in-grid">
         ${isian("Perjanjian", `<select name="perjanjian_id" data-pilih="1"><option value="">Perjanjian baru</option>${i.perjanjian.map(x => `<option value="${esc(x.id)}"${x.id === form.pilih ? " selected" : ""}>${esc(PERJANJIAN[x.jenis_perjanjian])} ${esc(x.nomor)}</option>`).join("")}</select>`)}
         ${isian("Jenis", `<select name="jenis_perjanjian" data-pilih="1"${p ? " disabled" : ""}>${opsi(PERJANJIAN, jenis)}</select>`)}
         ${isian("Nomor", `<input name="nomor" required minlength="3" maxlength="80" value="${esc(p?.nomor || "")}">`)}
         ${isian("Berlaku mulai", `<input name="mulai" type="date" required value="${esc(p?.mulai || hariIni())}">`)}${isian("Berlaku sampai", `<input name="berakhir" type="date" required value="${esc(p?.berakhir || geser(365))}">`)}
         ${jenis === "mou_relawan" ? isian("Kuota relawan", `<input name="kuota" type="number" min="1" max="100000" required value="${esc(p?.kuota ?? 50)}">`) : ""}</div>
-        <div class="in-aksi"><button class="ad-tombol utama" type="submit">${p ? "Simpan perpanjangan" : "Tambah perjanjian"}</button><button class="ad-tombol" type="button" data-batal="1">Batal</button></div></form>`;
+        <div class="in-aksi"><button class="ad-tombol utama" type="submit">${p ? "Simpan perpanjangan" : "Tambah perjanjian"}</button><button class="ad-tombol" type="button" data-batal="1">Batal</button></div></form>`);
     }
     const f = form.i || {}, baru = !form.i;
-    return `<form id="inForm" class="in-form ad-kartu"><h3>${baru ? "Catat institusi" : "Ubah " + esc(f.nama)}</h3><div class="in-grid">
+    return KH(baru ? "tambah" : "ubah", baru ? "Catat institusi" : "Ubah " + f.nama, "Formulir", `<form id="inForm" class="in-form"><div class="in-grid">
       ${isian("Nama", `<input name="nama" required minlength="3" maxlength="120" value="${esc(f.nama || "")}">`)}${isian("Singkatan", `<input name="singkatan" maxlength="20" value="${esc(f.singkatan || "")}">`)}
       ${isian("Jenis", `<select name="jenis">${opsi(JENIS, f.jenis || "pts")}</select>`)}${isian("Provinsi", `<select name="prov">${opsi(provinsi(), f.prov || "", "Belum diisi")}</select>`)}
       ${isian("Nama PIC", `<input name="pic_nama" required minlength="2" maxlength="100" value="${esc(f.pic_nama || "")}">`)}${isian("Jabatan PIC", `<input name="pic_jabatan" maxlength="80" value="${esc(f.pic_jabatan || "")}">`)}
@@ -48,7 +51,7 @@ export async function pasang(el) {
       ${baru ? `<fieldset class="in-pj"><legend>Perjanjian pertama (boleh dikosongkan, tambah nanti)</legend><div class="in-grid">
         ${isian("Jenis", `<select name="jenis_perjanjian">${opsi(PERJANJIAN, "mou_relawan", "Tanpa perjanjian")}</select>`)}${isian("Nomor", '<input name="nomor" maxlength="80">')}
         ${isian("Berlaku mulai", `<input name="mulai" type="date" value="${hariIni()}">`)}${isian("Berlaku sampai", `<input name="berakhir" type="date" value="${geser(365)}">`)}${isian("Kuota relawan (MoU)", '<input name="kuota" type="number" min="1" max="100000" value="50">')}</div></fieldset>` : ""}
-      <div class="in-aksi"><button class="ad-tombol utama" type="submit">${baru ? "Catat institusi" : "Simpan"}</button>${baru ? "" : '<button class="ad-tombol" type="button" data-batal="1">Batal</button>'}</div></form>`;
+      <div class="in-aksi"><button class="ad-tombol utama" type="submit">${baru ? "Catat institusi" : "Simpan"}</button>${baru ? "" : '<button class="ad-tombol" type="button" data-batal="1">Batal</button>'}</div></form>`);
   }
   function gambar() {
     const cocok = d.institusi.filter(i => !q || (i.nama + " " + (i.singkatan || "")).toLowerCase().includes(q.toLowerCase()));
@@ -59,14 +62,17 @@ export async function pasang(el) {
       <td>${esc(i.pic_nama)}<br><span class="in-redup">${esc(i.pic_jabatan || "")}</span><br><span class="in-redup">${esc(i.pic_email || "–")} ${esc(i.pic_wa || "")}</span></td>
       <td>${ringkasPj(i.mou, i.mou ? `<br>${angka(i.terisi)} / ${angka(i.mou.kuota)} relawan, ${angka(i.antre)} antre` : "")}<br>${i.kode_aktif ? pil("hijau", "kunci", "Kode koordinator aktif") : pil("abu", "x", "Tanpa kode koordinator")}</td>
       <td>${ringkasPj(i.pks)}<br>${i.kode_riset ? pil("hijau", "kunci", `${angka(i.kode_riset)} kode mitra aktif`) : pil("abu", "x", "Tanpa kode mitra")}<br><span class="in-redup">${angka(i.usulan)} usulan</span></td>
-      <td><div class="in-aksi"><button class="ad-tombol kecil" data-ubah="1">Ubah</button><button class="ad-tombol kecil" data-pj="1">Perjanjian</button><button class="ad-tombol kecil" data-kode="kode_baru">Kode koordinator baru</button>${i.kode_aktif ? '<button class="ad-tombol kecil bahaya" data-kode="cabut_kode">Cabut kode</button>' : ""}</div></td></tr>`);
-    el.innerHTML = `${kode ? `<div class="in-kode ad-kartu"><h3>Kode koordinator "${esc(kode.nama)}": tampil SEKALI</h3><p class="in-redup">Kirim tautan ini ke PIC. Server hanya menyimpan sidik jarinya; hilang berarti buat kode baru.</p>
-        <input class="in-isian" id="inTautan" readonly value="${esc(kode.tautan)}"><div class="in-aksi"><button class="ad-tombol utama" data-salin="1">Salin tautan</button></div></div>` : ""}
+      <td><div class="db-aksi">${ib("ubah", "Ubah", 'data-ubah="1"')}${ib("berkas", "Perjanjian", 'data-pj="1"')}${ib("kunci", "Kode koordinator baru", 'data-kode="kode_baru"')}${i.kode_aktif ? ib("cabut", "Cabut kode", 'data-kode="cabut_kode"', "bahaya") : ""}</div></td></tr>`);
+    const sehat = p => p && (p.status === "aktif" || p.status === "segera_habis"), n = f => d.institusi.filter(f).length;
+    const ubin = DB.ubinGrid(DB.ubin({ikon: "gedung", label: "Institusi", nilai: angka(d.institusi.length), ket: "kampus dan organisasi"}), DB.ubin({ikon: "aktif", label: "MoU relawan berlaku", nilai: angka(n(i => sehat(i.mou))), ket: "kode koordinator"}),
+      DB.ubin({ikon: "berkas", label: "PKS riset berlaku", nilai: angka(n(i => sehat(i.pks))), ket: "kode mitra"}), DB.ubin({ikon: "waspada", label: "Segera habis", nilai: angka(n(i => i.mou?.status === "segera_habis" || i.pks?.status === "segera_habis")), ket: "MoU atau PKS", warna: n(i => i.mou?.status === "segera_habis" || i.pks?.status === "segera_habis") ? "oranye" : ""})).outerHTML;
+    el.innerHTML = `${ubin}${kode ? KH("kunci", `Kode koordinator "${kode.nama}"`, "Tampil sekali", `<p class="in-redup">Kirim tautan ini ke PIC. Server hanya menyimpan sidik jarinya; hilang berarti buat kode baru.</p>
+        <input class="in-isian" id="inTautan" readonly value="${esc(kode.tautan)}"><div class="in-aksi"><button class="ad-tombol utama" data-salin="1">Salin tautan</button></div>`) : ""}
       <p class="in-pesan ${pesan[0] ? (pesan[1] ? "ok" : "galat") : ""}" role="status">${esc(pesan[0])}</p>${formulir()}
-      <div class="in-bar"><label>Cari institusi<input id="inCari" maxlength="60" value="${esc(q)}"></label><button class="ad-tombol" data-baru="1">Catat institusi</button><span class="in-redup">${angka(cocok.length)} institusi. Satu institusi, dua peran: kode koordinator relawan dan kode mitra riset.</span></div>
-      <div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr>${kolom.map(([k, l]) => `<th aria-sort="${k && urut === k ? (arah > 0 ? "ascending" : "descending") : "none"}">${k ? `<button type="button" class="in-urut" data-urut="${k}">${esc(l)}${urut === k ? (arah > 0 ? " ▲" : " ▼") : ""}</button>` : esc(l)}</th>`).join("")}</tr></thead>
+      ${KH("gedung", "Institusi", "Daftar", `<p class="in-redup">Satu institusi, dua peran: kode koordinator relawan dan kode mitra riset.</p><div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kolom.map(([k, l]) => `<th scope="col" aria-sort="${k && urut === k ? (arah > 0 ? "ascending" : "descending") : "none"}">${k ? `<button type="button" class="in-urut" data-urut="${k}">${esc(l)}${urut === k ? (arah > 0 ? " ▲" : " ▼") : ""}</button>` : esc(l)}</th>`).join("")}</tr></thead>
       <tbody>${baris.length ? baris.join("") : `<tr><td colspan="5" class="in-kosong-baris">Belum ada institusi. Catat yang pertama di atas.</td></tr>`}</tbody></table></div>${
-      total > 1 ? `<div class="in-hal"><button class="ad-tombol kecil" data-hal="-1"${hal === 0 ? " disabled" : ""}>Sebelumnya</button><span>Halaman ${hal + 1} dari ${total}</span><button class="ad-tombol kecil" data-hal="1"${hal >= total - 1 ? " disabled" : ""}>Berikutnya</button></div>` : ""}`;
+      total > 1 ? `<div class="in-hal"><button class="ad-tombol kecil" data-hal="-1"${hal === 0 ? " disabled" : ""}>Sebelumnya</button><span>Halaman ${hal + 1} dari ${total}</span><button class="ad-tombol kecil" data-hal="1"${hal >= total - 1 ? " disabled" : ""}>Berikutnya</button></div>` : ""}`,
+      `<input type="search" id="inCari" maxlength="60" placeholder="Cari institusi" aria-label="Cari institusi" value="${esc(q)}"><span class="in-redup">${angka(cocok.length)} institusi</span>${ib("tambah", "Catat institusi", 'data-baru="1"')}`)}`;
   }
 
   /* stopPropagation: penangan klik/submit halaman induk (relawan.js, riset.js) memakai atribut data-* yang bisa bertabrakan */

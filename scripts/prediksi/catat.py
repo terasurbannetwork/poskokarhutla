@@ -18,13 +18,18 @@ Kode dan kolomnya (satu baris arsip per kode per hari terbit, lihat dasar.py):
                    1 Tidak sehat, 2 Sangat tidak sehat, 3 Berbahaya (batas P.14/2020 sama dengan pipeline udara).
   ROB  lewat sel   muka laut harian maksimum di titik rob kab >= p95 titik itu (public/banjir/data/rob.json); sel = selisih
                    maksimum terhadap p95 (m). Hanya kab yang punya titik rob.
+  GEL  hs lv       tinggi gelombang maksimum harian (m, wave_height_max) Open-Meteo Marine di titik pesisir cuaca_gelombang.json
+                   (pelabuhan + titik rob), maksimum per kab; lv BMKG: < 1,25 m 0, < 2,5 1, < 4,0 2, selain itu 3. Titik ke kab =
+                   di dalam poligon public/geo/kabupaten, atau simpul poligon provinsi sama <= 25 km; selain itu dibuang. Kab tanpa titik tidak dicatat.
+  CEX  emb lv      embusan angin 10 m maksimum harian (km/jam) Open-Meteo wind_gusts_10m (ikut panggilan hujan HJN, >= 20 jam terisi);
+                   lv: < 46 0, < 63 1, < 89 2, selain itu 3 (25/34/48 knot).
 Masukan yang tidak ada atau tidak mencakup ketiga tanggal sasaran = kode itu dilewati dan dicatat di log, bukan dikarang.
 Jalan ulang di hari yang sama tidak menimpa (prakiraan pertama hari itu yang dinilai).
 
 Pakai:  python3 scripts/prediksi/catat.py          (butuh jaringan untuk HJN)
         python3 scripts/prediksi/catat.py uji      (tanpa jaringan)
 """
-import datetime as dt, json, os, sys, tempfile
+import datetime as dt, json, math, os, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D
@@ -34,6 +39,11 @@ URL = "https://api.open-meteo.com/v1/forecast"
 PER_PANGGIL = 100
 BASAH = 0.5                     # mm/jam: jam dihitung hujan (RANCANGAN "mulai = jam pertama >= 0,5 mm")
 PAST = 10
+MARINE = "https://marine-api.open-meteo.com/v1/marine"
+PER_MARINE = 50
+JARAK_PESISIR = 25              # km: titik laut ke simpul poligon provinsi sama (RANCANGAN D3)
+GEL_LV = [1.25, 2.5, 4.0]       # m, kategori tinggi gelombang BMKG (Sedang, Tinggi, Sangat tinggi)
+CEX_LV = [46, 63, 89]           # km/jam = 25, 34, 48 knot (RANCANGAN D5)
 AMBANG = [1, 20, 50]            # mm/24 jam
 # ponytail: skor mentah deterministik (rasio jumlah/ambang -> peluang), sengaja kasar; kalibrasi isotonik yang menggantinya
 DET = [(1.0, 0.8), (0.5, 0.4), (0.0, 0.05)]
@@ -92,13 +102,19 @@ def per_hari(waktu, nilai):
     return out
 
 
-def ambil_hujan(daftar):
-    """-> {id: {tanggal: (jam[24], sm)}} dari Open-Meteo, PER_PANGGIL lokasi per panggilan."""
+def embusan_harian(waktu, nilai):
+    """Deret per jam -> {tanggal: embusan maks (km/jam, bulat)}; hari dengan < 20 jam terisi dibuang."""
+    return {t: round(max(v)) for t, j in per_hari(waktu, nilai).items() if len(v := [x for x in j if x is not None]) >= 20}
+
+
+def ambil_hujan(daftar, emb=None):
+    """-> {id: {tanggal: (jam[24], sm)}} dari Open-Meteo, PER_PANGGIL lokasi per panggilan.
+    emb (dict, opsional) diisi {id: {tanggal: embusan maks}} dari kolom wind_gusts_10m di panggilan yang sama."""
     out = {}
     for i in range(0, len(daftar), PER_PANGGIL):
         b = daftar[i:i + PER_PANGGIL]
         q = {"latitude": ",".join(str(k["lat"]) for k in b), "longitude": ",".join(str(k["lon"]) for k in b),
-             "hourly": "precipitation,soil_moisture_3_to_9cm,soil_moisture_9_to_27cm", "timezone": "Asia/Jakarta", "forecast_days": 4,
+             "hourly": "precipitation,soil_moisture_3_to_9cm,soil_moisture_9_to_27cm,wind_gusts_10m", "timezone": "Asia/Jakarta", "forecast_days": 4,
              "past_days": PAST}   # riwayat 10 hari untuk model bayangan; 10 + 4 = 14 hari, batas bobot 1 panggilan Open-Meteo (periksa kuota)
         r = D.per_lokasi(D.ambil(URL + "?" + "&".join(f"{k}={v}" for k, v in q.items())))
         for k, j in zip(b, r):
@@ -107,7 +123,119 @@ def ambil_hujan(daftar):
             sm = per_hari(h["time"], [None if a is None or c is None else (6 * a + 18 * c) / 24
                                       for a, c in zip(h["soil_moisture_3_to_9cm"], h["soil_moisture_9_to_27cm"])])
             out[k["id"]] = {t: (pr[t], _rata(sm.get(t, []))) for t in pr}
+            if emb is not None:
+                emb[k["id"]] = embusan_harian(h["time"], h.get("wind_gusts_10m") or [])
     return out
+
+
+def ambil_embusan(daftar):
+    """Embusan saja (HJN sudah tercatat hari ini, kamus embusan kosong): -> {id: {tanggal: emb}}, 4 hari tanpa past_days."""
+    emb = {}
+    for i in range(0, len(daftar), PER_PANGGIL):
+        b = daftar[i:i + PER_PANGGIL]
+        q = {"latitude": ",".join(str(k["lat"]) for k in b), "longitude": ",".join(str(k["lon"]) for k in b),
+             "hourly": "wind_gusts_10m", "timezone": "Asia/Jakarta", "forecast_days": 4}
+        for k, j in zip(b, D.per_lokasi(D.ambil(URL + "?" + "&".join(f"{a}={v}" for a, v in q.items())))):
+            emb[k["id"]] = embusan_harian(j["hourly"]["time"], j["hourly"]["wind_gusts_10m"])
+    return emb
+
+
+def lv_ambang(x, batas):
+    return sum(x >= b for b in batas)
+
+
+def entri_cex(t, daftar, emb):
+    hari = [D.geser(t, i) for i in (1, 2, 3)]
+    kab = {}
+    for k in daftar:
+        e = emb.get(k["id"]) or {}
+        baris = [None if e.get(h) is None else [e[h], lv_ambang(e[h], CEX_LV)] for h in hari]
+        if any(baris):
+            kab[k["id"]] = baris
+    return {"sumber": "Open-Meteo wind_gusts_10m per jam, maksimum harian (km/jam)", "kol": ["emb", "lv"], "hari": hari, "kab": kab}
+
+
+# ---------- gelombang ----------
+def dalam_poligon(lon, lat, ring):
+    """Ray casting; ring = [[lon, lat], ...] (cincin luar, lubang diabaikan)."""
+    di = False
+    for (x1, y1), (x2, y2) in zip(ring, ring[1:] + ring[:1]):
+        if (y1 > lat) != (y2 > lat) and lon < (x2 - x1) * (lat - y1) / (y2 - y1) + x1:
+            di = not di
+    return di
+
+
+def haversine_km(a, b, c, d):
+    p = math.pi / 180
+    h = math.sin((c - a) * p / 2) ** 2 + math.cos(a * p) * math.cos(c * p) * math.sin((d - b) * p / 2) ** 2
+    return 12742 * math.asin(math.sqrt(h))
+
+
+def kab_titik(lat, lon, fitur):
+    """fitur = [(nama kab, [cincin luar, ...])] satu provinsi -> nama kab: poligon yang memuat titik, selain itu
+    kab pemilik simpul terdekat bila <= JARAK_PESISIR km, selain itu None."""
+    for nama, cincin in fitur:
+        if any(dalam_poligon(lon, lat, r) for r in cincin):
+            return nama
+    terbaik = min(((haversine_km(lat, lon, y, x), nama) for nama, cincin in fitur for r in cincin for x, y in r), default=None)
+    return terbaik[1] if terbaik and terbaik[0] <= JARAK_PESISIR else None
+
+
+def fitur_prov(akar, prov):
+    d = D.baca(os.path.join(akar, "public", "geo", "kabupaten", prov + ".json"))
+    out = []
+    for f in (d or {}).get("features", []):
+        g = f["geometry"]
+        polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
+        out.append((f["properties"]["kab"], [p[0] for p in polys]))
+    return out
+
+
+def petakan_titik(akar, cari):
+    """cuaca_gelombang.json -> [(lat, lon, id kab)]; titik yang tak terpetakan dibuang dan dicatat."""
+    d = D.baca(os.path.join(akar, "public", "banjir", "data", "cuaca_gelombang.json"))
+    if not d:
+        return []
+    cache, out, buang = {}, [], 0
+    for t in d["titik"]:
+        lat, lon, prov = t[0], t[1], t[2]
+        f = cache.setdefault(prov, fitur_prov(akar, prov))
+        n = kab_titik(lat, lon, f)
+        i = cari(prov, n) if n else None
+        if i:
+            out.append((lat, lon, i))
+        else:
+            buang += 1
+    if buang:
+        log(f"GEL: {buang} titik pesisir dibuang (di luar poligon dan > {JARAK_PESISIR} km dari simpul provinsinya)")
+    return out
+
+
+def ambil_gel(titik):
+    """[(lat, lon, id)] -> {id: {tanggal: hs maks}} dari Open-Meteo Marine (daily wave_height_max, sel laut)."""
+    out = {}
+    for a in range(0, len(titik), PER_MARINE):
+        b = titik[a:a + PER_MARINE]
+        q = {"latitude": ",".join(f"{p[0]:.4f}" for p in b), "longitude": ",".join(f"{p[1]:.4f}" for p in b), "daily": "wave_height_max",
+             "cell_selection": "sea", "timezone": "Asia/Jakarta", "forecast_days": 4}
+        for p, j in zip(b, D.per_lokasi(D.ambil(MARINE + "?" + "&".join(f"{k}={v}" for k, v in q.items())))):
+            dl = j.get("daily") or {}
+            for tgl, h in zip(dl.get("time", []), dl.get("wave_height_max", [])):
+                if h is not None:
+                    v = out.setdefault(p[2], {})
+                    v[tgl] = max(v.get(tgl, 0), h)
+    return out
+
+
+def entri_gel(t, hs):
+    """hs = {id: {tanggal: hs maks m}} -> entri arsip; kab tanpa titik tidak dicatat."""
+    hari = [D.geser(t, i) for i in (1, 2, 3)]
+    kab = {}
+    for i, v in hs.items():
+        baris = [None if v.get(h) is None else [round(v[h], 2), lv_ambang(v[h], GEL_LV)] for h in hari]
+        if any(baris):
+            kab[i] = baris
+    return {"sumber": "Open-Meteo Marine wave_height_max di titik pesisir (maks per kab)", "kol": ["hs", "lv"], "hari": hari, "kab": kab}
 
 
 def _rata(xs):
@@ -355,8 +483,11 @@ def catat_bayangan(t, akar, folder, daftar, cari, data, sudah):
     return tulis
 
 
-def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None, data=None):
-    """Bekukan semua kode yang belum tercatat untuk tanggal terbit t. hujan: {id: ...} (uji) atau None = unduh."""
+def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None, data=None, emb=None, gel=None):
+    """Bekukan semua kode yang belum tercatat untuk tanggal terbit t. hujan: {id: ...} (uji) atau None = unduh.
+    emb {id: {tanggal: embusan}} dan gel {id: {tanggal: hs}} (uji): None = unduh; dikirim = dipakai apa adanya (kosong = tak ada)."""
+    unduh_emb = emb is None
+    emb = {} if emb is None else emb
     daftar = daftar or D.kab(akar)
     cari = D.pencari(daftar)
     sudah = {e["k"] for e in D.semua_arsip(folder) if e["t"] == t}
@@ -368,7 +499,7 @@ def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None, data=None):
             continue
         try:
             if k == "HJN":
-                h = hujan if hujan is not None else ambil_hujan(daftar)
+                h = hujan if hujan is not None else ambil_hujan(daftar, emb)
                 B.simpan_riwayat(h, t, data)
                 e = entri_hjn(t, daftar, h, D.baca(os.path.join(akar, "public", "banjir", "data", "hujan_ansambel.json")))
             elif k == "API":
@@ -377,8 +508,15 @@ def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None, data=None):
                 e = entri_bnj(t, daftar, akar, cari, "b" if k == "BNJ" else "l")
             elif k == "ASP":
                 e = entri_asp(t, daftar, akar)
-            else:
+            elif k == "ROB":
                 e = entri_rob(t, akar, cari)
+            elif k == "CEX":
+                if not emb and unduh_emb:
+                    emb.update(ambil_embusan(daftar))
+                e = entri_cex(t, daftar, emb) if emb else None
+            else:
+                gel = ambil_gel(petakan_titik(akar, cari)) if gel is None else gel
+                e = entri_gel(t, gel) if gel else None
         except (RuntimeError, D.KuotaHabis, KeyError, ValueError, OSError) as x:
             log(k, "gagal:", x)
             e = None
@@ -412,6 +550,28 @@ def uji():
     assert cari("94", "Kota Jayapura") is not None, "provinsi DIBI lama: cocok nasional bila nama unik"
     assert cari("31", "Kota Adm. Jakarta Timur") is not None
     assert cari("11", "Tidak Ada") is None
+    # embusan: >= 20 jam terisi, maks bulat; level 46/63/89
+    w = [f"2026-10-30T{h:02d}:00" for h in range(24)]
+    assert embusan_harian(w, [30.0] * 23 + [47.4]) == {"2026-10-30": 47} and embusan_harian(w, [None] * 4 + [50.0] * 20) == {"2026-10-30": 50}
+    assert embusan_harian(w, [None] * 5 + [50.0] * 19) == {}, "< 20 jam terisi = tak ada"
+    assert [lv_ambang(x, CEX_LV) for x in (45.9, 46, 62.9, 63, 88.9, 89)] == [0, 1, 1, 2, 2, 3]
+    assert [lv_ambang(x, GEL_LV) for x in (1.24, 1.25, 2.4, 2.5, 3.9, 4.0)] == [0, 1, 1, 2, 2, 3]
+    ce = entri_cex("2026-10-29", daftar, {daftar[0]["id"]: {"2026-10-30": 50, "2026-10-31": 70}})
+    assert ce["kab"] == {daftar[0]["id"]: [[50, 1], [70, 2], None]} and D.periksa_entri({"t": "2026-10-29", "k": "CEX", **ce}) is None
+    assert D.periksa_entri({"t": "2026-10-29", "k": "CEX", **dict(ce, kab={"1101": [[50, 1.5], None, None]})}) is not None, "lv bukan bulat ditolak"
+    # titik ke kab: kotak 0..1 (lon, lat); titik dalam, titik laut ~11 km (masuk), titik jauh (dibuang)
+    kotak = [("A", [[[0, 0], [1, 0], [1, 1], [0, 1]]]), ("B", [[[2, 0], [3, 0], [3, 1], [2, 1]]])]
+    assert kab_titik(0.5, 0.5, kotak) == "A" and kab_titik(0.5, 2.5, kotak) == "B"
+    assert kab_titik(1.1, 1.0, kotak) == "A", "11 km dari simpul (1,1): masuk"
+    assert kab_titik(1.5, 1.0, kotak) is None, "55 km: dibuang"
+    # poligon nyata: pelabuhan nyata terpetakan ke kab lewat pencari
+    pt = petakan_titik(D.AKAR, cari)
+    ids = {k["id"] for k in daftar}
+    assert all(i in ids for _, _, i in pt)
+    ge = entri_gel("2026-10-29", {daftar[0]["id"]: {"2026-10-30": 1.25, "2026-11-01": 3.96}, daftar[1]["id"]: {}})
+    b = ge["kab"][daftar[0]["id"]]
+    assert b == [[1.25, 1], None, [3.96, 2]] and set(ge["kab"]) == {daftar[0]["id"]}, ge   # hs 2 desimal: hs, lv, aturan melaut (>= 1,25) konsisten
+    assert D.periksa_entri({"t": "2026-10-29", "k": "GEL", **ge}) is None
     # catat ke folder sementara: hanya HJN yang punya masukan sintetis; kode lain dilewati, tidak dikarang
     with tempfile.TemporaryDirectory() as tmp:
         t = "2026-10-29"
@@ -422,12 +582,12 @@ def uji():
         shutil.copy(os.path.join(D.AKAR, "scripts", "udara", "kota.json"), os.path.join(tmp, "scripts", "udara"))
         f = os.path.join(tmp, "arsip")
         dd = os.path.join(tmp, "data")
-        assert catat(t, tmp, f, hujan, daftar, dd) == ["HJN"], "riwayat hujan kosong: model bayangan dilewati, tidak dikarang"
-        assert catat(t, tmp, f, hujan, daftar, dd) == [], "jalan ulang hari yang sama tidak menimpa"
+        assert catat(t, tmp, f, hujan, daftar, dd, {}, {}) == ["HJN"], "riwayat hujan kosong: model bayangan dilewati, tidak dikarang"
+        assert catat(t, tmp, f, hujan, daftar, dd, {}, {}) == [], "jalan ulang hari yang sama tidak menimpa"
         # riwayat 100 hari ada -> BNJ_B dan LSR_B dibekukan; CEX_B (tanpa DIBI) dan KRH_B (tanpa titik panas) tetap dilewati
         D.simpan(B.jalur_riwayat(dd), {"hari": {D.geser(t, -i): {daftar[0]["id"]: 4.0, daftar[1]["id"]: 0.0} for i in range(100)}})
-        assert catat(t, tmp, f, hujan, daftar, dd) == ["BNJ_B", "LSR_B"]
-        assert catat(t, tmp, f, hujan, daftar, dd) == [], "bayangan juga append-only"
+        assert catat(t, tmp, f, hujan, daftar, dd, {}, {}) == ["BNJ_B", "LSR_B"]
+        assert catat(t, tmp, f, hujan, daftar, dd, {}, {}) == [], "bayangan juga append-only"
         bb = {e["k"]: e for e in D.semua_arsip(f)}
         assert bb["BNJ_B"]["kol"] == ["p"] and set(bb["BNJ_B"]["kab"]) == {daftar[0]["id"], daftar[1]["id"]} and all(r[0] < 1 for r in bb["LSR_B"]["kab"][daftar[0]["id"]])
         e = [x for x in D.semua_arsip(f) if x["k"] == "HJN"]

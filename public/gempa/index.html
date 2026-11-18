@@ -87,11 +87,12 @@
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="cari">
+          <div class="cari" style="margin-bottom:8px">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari provinsi atau lokasi gempa" autocomplete="off" aria-label="Cari wilayah">
             <div class="hasil card" id="hasil" hidden></div>
           </div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none"><button data-m="kini" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Terkini</button><button data-m="riw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button></div>
         </div>
         <div class="rows" id="rows" role="list"></div>
       </div>
@@ -187,6 +188,7 @@
 <script src="metode.js"></script>
 <script src="foto.js"></script>
 <script src="../foto.js"></script>
+<script src="panel.js"></script>
 <script src="mulai.js"></script>
 <script src="../inti/sapa.js"></script>
 <script src="sapa.js"></script>

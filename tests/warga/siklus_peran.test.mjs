@@ -13,7 +13,8 @@ import {RUTE_SIKLUS_RENKON} from "../../src/siklus_renkon.js";
 import {RUTE_SIKLUS_PINTU} from "../../src/siklus_pintu.js";
 import {RUTE_TIGAW} from "../../src/tiga_w.js";
 import {RUTE_LIFELINE} from "../../src/lifeline.js";
-const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_LIFELINE, ...RUTE_TIGAW};
+import {RUTE_KAJI_ULANG} from "../../src/kaji_ulang.js";
+const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_LIFELINE, ...RUTE_TIGAW, ...RUTE_KAJI_ULANG};
 
 const U = await mulai("uji-sk-peran");
 const {DB, api, GET, POST, n} = U;
@@ -81,6 +82,16 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["POST /api/siklus/kejadian/:id/tawaran/:sid/keputusan", `/kejadian/${ID}/tawaran/${SID}/keputusan`, "PD KO SA"],
   ["POST /api/siklus/kejadian/:id/tiga-w/token", `/kejadian/${ID}/tiga-w/token`, "PD KO SA"],
   ["POST /api/siklus/kejadian/:id/tiga-w/token/cabut", `/kejadian/${ID}/tiga-w/token/cabut`, "PD KO SA"],
+  ["GET /api/siklus/kaji-ulang/kandidat", "/kaji-ulang/kandidat", "PD KO PM SA MOD"],
+  ["GET /api/siklus/kaji-ulang/rekomendasi", "/kaji-ulang/rekomendasi", "PD KO PM SA MOD"],
+  ["GET /api/siklus/kejadian/:id/kaji-ulang", `/kejadian/${ID}/kaji-ulang`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/kejadian/:id/kaji-ulang", `/kejadian/${ID}/kaji-ulang`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran", `/kejadian/${ID}/kaji-ulang/pelajaran`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/kaji-ulang/pelajaran/:sid", `/kejadian/${ID}/kaji-ulang/pelajaran/${SID}`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/kaji-ulang/rekomendasi", `/kejadian/${ID}/kaji-ulang/rekomendasi`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/kaji-ulang/rekomendasi/status", `/kejadian/${ID}/kaji-ulang/rekomendasi/status`, "PD KO SA"],
+  ["GET /api/siklus/kejadian/:id/kaji-ulang/rekomendasi/riwayat", `/kejadian/${ID}/kaji-ulang/rekomendasi/riwayat?nomor=1`, "PD KO PM SA MOD"],
+  ["POST /api/siklus/kejadian/:id/kaji-ulang/sahkan", `/kejadian/${ID}/kaji-ulang/sahkan`, "KO SA"],
   ["GET /api/siklus/org", "/org", "PD KO PM SA MOD"],
   ["POST /api/siklus/org", "/org", "PD KO SA"],
 ];

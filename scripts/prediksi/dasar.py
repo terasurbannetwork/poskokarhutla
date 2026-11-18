@@ -22,7 +22,7 @@ from wilayah import PROVINSI  # noqa: E402
 DATA = os.path.join(AKAR, "public", "prediksi", "data")
 ARSIP = os.path.join(DATA, "arsip")
 WIB = dt.timezone(dt.timedelta(hours=7))
-KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB"]
+KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB", "GEL", "CEX"]
 # Model bayangan (bayangan/model.py): dinilai berdampingan dengan model lama, TIDAK tampil di kartu Besok.
 # DASAR = kode yang labelnya dipakai menilai (BNJ/LSR = DIBI, CEX = DIBI cuaca ekstrem, KRH = >= 5 titik VIIRS S-NPP).
 KODE_B = ["BNJ_B", "LSR_B", "CEX_B", "KRH_B"]
@@ -203,6 +203,8 @@ def periksa_entri(e):
                         return f"{k}: peluang {c}={x} di luar 0..1"
                 if c in ("mulai", "puncak") and x is not None and not 0 <= x <= 23:
                     return f"{k}: jam {c}={x} di luar 0..23"
-                if c in ("tot", "lama", "d", "pm") and x is not None and x < 0:
+                if c in ("tot", "lama", "d", "pm", "hs", "emb") and x is not None and x < 0:
                     return f"{k}: {c} negatif"
+                if e["k"] in ("GEL", "CEX") and c == "lv" and (x is None or isinstance(x, bool) or not isinstance(x, int) or not 0 <= x <= 3):
+                    return f"{k}: lv={x} bukan bulat 0..3"
     return None

@@ -137,7 +137,7 @@ uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain
   for (const j of ["/peta", "/kompleks/", "/k/K0001", "/sim/K0123", "/prioritas"]) {
     const r = await panggil("GET", j);
     assert.equal(r.status, 200, `GET ${j} = ${r.status}`);
-    assert.equal(r.teks, idx, `GET ${j} bukan index.html`);
+    assert.equal(r.teks.replace('<script src="/inti/keluar.js?v=1" defer></script>', ""), idx, `GET ${j} bukan index.html`);   // tombol Keluar disisipkan Worker (pasangKeluar)
   }
   for (const j of ["/petaku", "/k/abc", "/api/wargaX", "/peta/x"]) assert.notEqual((await panggil("GET", j)).teks, idx, `GET ${j} tidak boleh jadi index.html`);
 });
