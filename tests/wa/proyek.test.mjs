@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import crypto from 'node:crypto'
 import os from 'node:os'
 import path from 'node:path'
-import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN, ulangFinal } from '../../scripts/wa/proyek.mjs'
+import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN, ulangFinal, hapusKonfirmasi } from '../../scripts/wa/proyek.mjs'
 import { GalatClaude, validasiOperasi } from '../../scripts/wa/claude.mjs'
 import { LAPORAN } from '../../scripts/wa/otomatis.mjs'
 
@@ -18,6 +18,15 @@ const tanggalIsi = (t) => String(t).split('] ')[1]
 const P = (id, kunci, dari = DARI) => ({ id, diterima: Number(id), dari, teks: `[${kunci}] ${TGL}`, nama_berkas: '', ada_berkas: 0 })
 const LENGKAP = () => [P('1', 'rekap_koordalops_24'), P('2', 'bmkg_pagi'), P('3', 'pvmbg_pagi')]
 const SISTEM_HURUF = /[·—–]|\p{Extended_Pictographic}/u
+// Gaya pesan WA (DESIGN-SYSTEM bot laporan): baris 1 tebal, baris 2 kode miring bila ada, tanpa titik tengah, em dash, emoji, judul Markdown, pagar kode.
+function gayaWa(t) {
+  assert.doesNotMatch(t, SISTEM_HURUF, t)
+  assert.doesNotMatch(t, /^#|\n#|```/, t)
+  const [a, b] = t.split('\n')
+  assert.match(a, /^\*[^*]+\*$/, t)
+  assert.ok(a.split(' ').length <= 7, 'judul pendek: ' + a)
+  if (b && b.startsWith('_')) assert.match(b, /^_P-\d{6}-\d{2}(, versi \d+)?_$/, t)
+}
 const DECK = () => [{ slide: 1, shape: 's1_judul', teks: 'LAPORAN HARIAN' }, { slide: 2, shape: 's2_kpi_hotspot', teks: 'HOTSPOT\n1.234' },
   { slide: 2, shape: 's2_ringkas', teks: 'Banjir di Bogor' }, { slide: 3, shape: 's3_rencana', teks: 'Rencana aksi' }]
 const KUNCI = () => [{ slide: 2, shape: 's2_kpi_hotspot', angka: 'hotspot' }]
@@ -165,9 +174,10 @@ test('T2: buat dengan bahan wajib kurang -> satu T-TANYA, status bertanya, gener
   assert.deepEqual(d.statusLog, ['bertanya'])
   assert.equal(d.balasan.length, 1)
   const [b] = d.balasan
-  assert.match(b, /^P-291026-01\n/)
-  assert.match(b, /1\. PVMBG pagi untuk 26 Okt belum ada\. Kirim bahannya\./)
-  assert.match(b, /buat saja/)
+  assert.match(b, /^\*Bahan belum lengkap\*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt perlu dipastikan dulu:\n/)
+  assert.match(b, /\n1\. PVMBG pagi untuk 26 Okt belum ada\. Kirim bahannya\./)
+  assert.match(b, /\n\nKirim jawabannya lalu ketik \*buat\*, atau ketik \*buat saja\* untuk lanjut dengan bahan yang ada\.$/)
+  gayaWa(b)
   assert.equal(d.kirim.length, 0)
 })
 
@@ -175,7 +185,7 @@ test('T2: pertentangan dari Claude ikut ditanyakan bernomor', async () => {
   const d = dunia({ claude: () => ({ isian: [], gagal: [], pertentangan: [{ medan: 'sorti_water_bombing', a: { nilai: '14', kutipan: 'sorti 14' }, b: { nilai: '12', kutipan: 'sorti 12' } }] }) })
   await perintah(d, 'buat harian 26 okt')
   assert.equal(d.gen().length, 0)
-  assert.match(d.balasan[0], /1\. sorti water bombing berbeda: 14 \("sorti 14"\) dan 12 \("sorti 12"\)\. Mana yang dipakai\?/)
+  assert.match(d.balasan[0], /1\. Sorti water bombing berbeda: 14 \("sorti 14"\) dan 12 \("sorti 12"\)\. Mana yang dipakai\?/)
 })
 
 test('T3: buat saja membangun dengan catatan kekurangan; Claude tidak dipanggil dua kali untuk bahan sama', async () => {
@@ -186,7 +196,8 @@ test('T3: buat saja membangun dengan catatan kekurangan; Claude tidak dipanggil 
   assert.equal(d.gen().length, 1)
   assert.deepEqual(d.statusLog, ['bertanya', 'membangun', 'draf'])
   assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
-  assert.match(d.kirim[0].caption, /^P-291026-01 v1\nDraf Laporan Kejadian Bencana Harian 26 Okt\.\nBahan: Rekap Koordalops 24 jam 1, BMKG pagi 1\.\nCatatan:\n- PVMBG pagi untuk 26 Okt belum ada/)
+  assert.match(d.kirim[0].caption, /^\*Draf v1 siap\*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt\nBahan: Rekap Koordalops 24 jam 1, BMKG pagi 1\nGambar ini slide 1, PDF menyusul\.\n\n\*Catatan:\*\n- PVMBG pagi untuk 26 Okt belum ada/)
+  assert.match(d.kirim[0].caption, /\n\n\*Balas angka:\*\n1 Final\n2 Minta PPTX\n3 Lihat versi\n4 Batal\n\nAtau tulis perubahan dengan kalimat biasa\.$/, 'draf diakhiri menu bernomor')
   assert.match(d.versi[0].peringatan, /PVMBG pagi/)
 })
 
@@ -203,8 +214,9 @@ test('bangun v1: tepat 2 kiriman (pratinjau berketerangan ringkasan, lalu PDF), 
   assert.deepEqual(d.statusLog, ['membangun', 'draf'])
   assert.equal(d.balasan.length, 0, 'tanpa pesan T-BUKA terpisah')
   assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
-  assert.equal(d.kirim[0].caption, 'P-291026-01 v1\nDraf Laporan Kejadian Bencana Harian 26 Okt.\nBahan: Rekap Koordalops 24 jam 1, BMKG pagi 1, PVMBG pagi 1.\nGambar ini pratinjau slide 1, PDF menyusul.\nBalas dengan revisi, atau ketik final.')
-  assert.equal(d.kirim[1].caption, 'P-291026-01 v1\nPDF draf Laporan Kejadian Bencana Harian 26 Okt.')
+  assert.equal(d.kirim[0].caption, '*Draf v1 siap*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt\nBahan: Rekap Koordalops 24 jam 1, BMKG pagi 1, PVMBG pagi 1\nGambar ini slide 1, PDF menyusul.\n\n*Balas angka:*\n1 Final\n2 Minta PPTX\n3 Lihat versi\n4 Batal\n\nAtau tulis perubahan dengan kalimat biasa.')
+  assert.equal(d.kirim[1].caption, '*PDF draf v1*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt')
+  for (const k of d.kirim) gayaWa(k.caption)
   assert.ok(d.exec.some((e) => String(e.args[0]).endsWith('ubah.py') && e.args[3] === '1'), 'pratinjau slide 1 saja')
   assert.ok(!d.kirim.some((k) => /\.pptx$/i.test(k.nama) || k.mime?.includes('presentation')), 'draf tidak mengirim PPTX (Q1)')
   // generator dapat --isian; isinya tanpa kunci atau teks angka sistem
@@ -238,7 +250,7 @@ test('T15: satu proyek tidak pernah dibangun dua proses bersamaan', async () => 
   const pertama = perintah(d, 'buat harian 26 okt')
   for (let i = 0; i < 50 && !d.gen().length; i++) await new Promise((r) => setTimeout(r, 10))
   await perintah(d, 'buat harian 26 okt')
-  assert.match(d.balasan.at(-1), /^P-291026-01\nSedang dibangun, tunggu sebentar\.$/)
+  assert.equal(d.balasan.at(-1), '*Sedang dibangun*\n_P-291026-01_\n\nTunggu sebentar, draf dikirim begitu siap.')
   lepas(); await pertama
   assert.equal(d.gen().length, 1)
   assert.equal(fs.existsSync(path.join(d.dasar, 'proyek', 'P-291026-01.lock')), false)
@@ -270,7 +282,7 @@ test('GalatClaude: pesan ramah ke pengirim, pemilik dikabari sekali, status kemb
   await perintah(d, 'buat harian 26 okt')
   await perintah(d, 'buat harian 26 okt')
   assert.equal(d.gen().length, 0)
-  assert.equal(d.balasan[0], 'P-291026-01\nGagal membaca bahan, coba lagi atau kirim ulang.')
+  assert.equal(d.balasan[0], '*Bahan belum terbaca*\n_P-291026-01_\n\nMesin gagal membaca bahan. Kirim ulang bahannya, lalu coba lagi.')
   assert.equal(d.pemilik.length, 1)
   assert.match(d.pemilik[0], /Claude gagal \(tolak\)/)
 })
@@ -280,7 +292,7 @@ test('generator gagal: pengirim diberi tahu singkat, rincian hanya ke pemilik, s
   d.ctx.dep.exec = async (cmd, args) => { if (/_(ringkas|otomatis)\.py$/.test(args[0])) throw Object.assign(new Error('x'), { stderr: 'meledak' }); return { stdout: '' } }
   await perintah(d, 'buat harian 26 okt')
   assert.deepEqual(d.statusLog, ['membangun', 'terbuka'])
-  assert.match(d.balasan.at(-1), /Draf v1 gagal dibangun\. Pemilik sudah dikabari/)
+  assert.equal(d.balasan.at(-1), '*Draf v1 gagal dibangun*\n_P-291026-01_\n\nPemilik sudah dikabari. Ketik *buat* lagi beberapa saat lagi.')
   assert.match(d.pemilik[0], /meledak/)
   assert.equal(d.kirim.length, 0)
 })
@@ -288,7 +300,7 @@ test('generator gagal: pengirim diberi tahu singkat, rincian hanya ke pemilik, s
 test('A2: jenis ditebak dari bahan; seri ditanyakan tanpa membuka proyek', async () => {
   const d = dunia({ pesan: [P('2', 'bmkg_pagi')] })
   await perintah(d, 'buat 26 okt')
-  assert.match(d.balasan[0], /belum jelas dari bahan\. Ketik buat harian 2026-10-26 atau buat penanganan 2026-10-26\./)
+  assert.equal(d.balasan[0], '*Jenis laporan belum jelas*\n\nBahan 26 Okt belum menunjukkan jenis laporannya.\n\nKetik salah satu:\n- *buat harian 2026-10-26*\n- *buat penanganan 2026-10-26*')
   assert.equal(d.proyek.size, 0)
   const d2 = dunia({ pesan: [P('2', 'bmkg_pagi'), P('4', 'satgas')] })
   await perintah(d2, 'buat 26 okt')
@@ -298,15 +310,18 @@ test('A2: jenis ditebak dari bahan; seri ditanyakan tanpa membuka proyek', async
 test('status tanpa tanggal: proyek pengirim yang masih terbuka; bantuan; susulan dan grup diabaikan', async () => {
   const d = dunia()
   await perintah(d, 'status')
-  assert.match(d.balasan[0], /Belum ada proyek laporan yang terbuka/)
+  assert.match(d.balasan[0], /^\*Belum ada proyek terbuka\*\n\nKirim atau teruskan bahan, lalu ketik \*buat harian\* atau \*buat penanganan\*\.$/)
   await perintah(d, 'buat harian 26 okt')
   d.balasan.length = 0
   await perintah(d, 'status')
-  assert.equal(d.balasan[0], 'P-291026-01 v1\nLaporan Kejadian Bencana Harian 26 Okt, status draf. Balas dengan revisi, atau ketik final.')
+  assert.equal(d.balasan[0], '*Proyek terbuka*\n\n_P-291026-01, versi 1_\nLaporan Kejadian Bencana Harian 26 Okt\nStatus: draf siap\nBalas *1* untuk final, atau tulis revisi.')
   await perintah(d, 'bantuan')
   assert.equal(d.balasan[1], BANTUAN)
   await tangani({ dari: '6299', teks: 'bantuan' }, d.ctx)
-  assert.match(d.balasan[2], /Khusus pemilik: kirim ulang/)
+  assert.ok(d.balasan[2].startsWith(BANTUAN + '\n\n*Khusus pemilik*\n- *kirim ulang harian 26 okt*'))
+  assert.doesNotMatch(d.balasan[1], /Khusus pemilik/)
+  for (const kata of ['*Membuat laporan*', '*Saat draf*', '*Lainnya*', '*buat harian*', '*1* atau *final*', '*4* atau *batal*', 'Contoh: *buat harian kemarin*']) assert.ok(BANTUAN.includes(kata), kata)
+  gayaWa(d.balasan[2])
   assert.deepEqual(await tangani({ dari: DARI, teks: 'buat harian', lama: true }, d.ctx), { status: 'susulan dibuang' })
   assert.deepEqual(await tangani({ dari: '120363@g.us', teks: 'buat harian' }, d.ctx), { status: 'bukan pemakai' })
   assert.equal(d.balasan.length, 3)
@@ -332,7 +347,7 @@ test('Q7: proyek 24 jam tanpa aktivitas jadi kedaluwarsa dan pemegangnya diberi 
   assert.deepEqual(hasil, ['P-291026-01'])
   assert.deepEqual(d.statusLog, ['kedaluwarsa'])
   assert.equal(ke[0][0], DARI)
-  assert.match(ke[0][1], /^P-291026-01\nLaporan Penanganan Pengendalian Karhutla 26 Okt ditutup otomatis/)
+  assert.match(ke[0][1], /^\*Proyek ditutup otomatis\*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt ditutup karena 24 jam tanpa aktivitas, tanpa unggah\.\nKetik \*buat\* untuk memulai lagi\.$/)
 })
 
 test('WA_GARAM kosong: perintah dibalas belum siap, tidak ada rute dipanggil', async () => {
@@ -370,7 +385,7 @@ test('1: membangun tanpa kunci hidup dipulihkan (versi 0 -> terbuka lalu bangun;
   p.status = 'membangun' // proses kedua mati sesudah v1 tercatat
   await perintah(d, 'buat harian 26 okt')
   assert.equal(d.statusLog.at(-1), 'draf')
-  assert.match(d.balasan.at(-1), /^P-291026-01 v1\nDraf sudah ada/)
+  assert.equal(d.balasan.at(-1), '*Draf sudah ada*\n_P-291026-01, versi 1_\n\nTulis perubahan dengan kalimat biasa, atau balas *1* untuk final.')
 })
 
 test('1: pindah status gagal diulang sekali; gagal dua kali = pemilik dikabari, tidak ditelan', async () => {
@@ -381,7 +396,7 @@ test('1: pindah status gagal diulang sekali; gagal dua kali = pemilik dikabari, 
   const e = dunia({ gagalStatus: 2 })
   await perintah(e, 'buat harian 26 okt')
   assert.equal(e.gen().length, 0)
-  assert.match(e.pemilik[0], /status gagal dipindah ke membangun/)
+  assert.match(e.pemilik[0], /^\*Galat bot laporan\*\n_P-291026-01_\n\nStatus gagal dipindah ke membangun\./)
   assert.match(e.balasan.at(-1), /Perintah gagal diproses/)
 })
 
@@ -409,7 +424,7 @@ test('2 D12: pengirim WA_IZIN memakai semua bahan WA_IZIN dan grup operasi hari 
 test('4: baris PERINGATAN isian dari stderr generator masuk catatan T-DRAF', async () => {
   const d = dunia({ stderrGen: "lain\nPERINGATAN isian: isian.kejadian[0] lokasi 'Bogor': tidak ada di bahan, diabaikan\n" })
   await perintah(d, 'buat harian 26 okt')
-  assert.match(d.kirim[0].caption, /Catatan:\n- Isian diabaikan generator: isian\.kejadian\[0\] lokasi 'Bogor': tidak ada di bahan, diabaikan/)
+  assert.match(d.kirim[0].caption, /\*Catatan:\*\n- Isian diabaikan generator: isian\.kejadian\[0\] lokasi 'Bogor': tidak ada di bahan, diabaikan/)
 })
 
 test('5: generator menunggu kunci bersama generator.lock milik jalur terjadwal, lalu melepasnya', async () => {
@@ -448,7 +463,7 @@ test('T6: operasi ke shape terkunci ditolak, T-TOLAK-KUNCI (nama, nilai, asal, t
   assert.equal(d.versi.length, 1)
   assert.deepEqual(d.statusLog, ['membangun', 'draf'])
   assert.equal(d.kirim.length, 0); assert.equal(d.balasan.length, 1)
-  assert.match(d.balasan[0], /^P-291026-01 v1\nRevisi tidak diterapkan, draf tetap v1\.\nHotspot 1\.234 di slide 2 adalah angka sistem \(dari sistem, hari D-1\), tidak diubah lewat revisi\.\nBila angka lapangan berbeda, minta catatan, misalnya: tambahkan catatan di slide 2/)
+  assert.equal(d.balasan[0], '*Revisi tidak diterapkan*\n_P-291026-01, versi 1_\n\nDraf tetap v1.\n\nHotspot 1.234 di slide 2 adalah angka sistem (hari D-1), tidak bisa diubah lewat revisi.\n\nBila angka lapangan berbeda, minta catatan. Contoh: tambahkan catatan di slide 2 bahwa angka lapangan berbeda.')
   for (const t of d.semua()) assert.doesNotMatch(t, SISTEM_HURUF, t)
 })
 
@@ -475,11 +490,11 @@ test('T7: versi n = generator dibangun ulang + operasi 1..n; tepat 2 kiriman per
   assert.equal(akhir.find((x) => x.shape === 's3_rencana').teks, 'Rencana aksi BPBD')
   assert.equal(d.versi[2].ubah.operasi.length, 2)
   assert.equal(d.kirim.length, 2)
-  assert.equal(d.kirim[0].caption, 'P-291026-01 v3\nPratinjau v3, slide 3. PDF menyusul.')
+  assert.equal(d.kirim[0].caption, '*Pratinjau slide 3*\n_P-291026-01, versi 3_\n\nRingkasan perubahan ada di PDF berikutnya.')
   assert.ok(d.exec.some((e) => e.args[1] === 'pratinjau' && e.args[3] === '3'), 'pratinjau slide yang berubah')
   assert.ok(d.exec.some((e) => String(e.args[0]).endsWith('pdf.py')), 'PDF dari deck yang sudah diubah')
   assert.match(fs.readFileSync(d.kirim[1].p, 'utf8'), /Rencana aksi BPBD/)
-  assert.equal(d.kirim[1].caption, 'P-291026-01 v3\nDraf Laporan Kejadian Bencana Harian 26 Okt.\nPerubahan:\n- Slide 3: "Rencana aksi" diganti "Rencana aksi BPBD".\nBalas dengan revisi, atau ketik final.')
+  assert.equal(d.kirim[1].caption, '*Draf v3 siap*\n_P-291026-01, versi 3_\n\nLaporan Kejadian Bencana Harian 26 Okt\n\n*Perubahan:*\n- Slide 3: "Rencana aksi" diganti "Rencana aksi BPBD".\n\n*Balas angka:*\n1 Final\n2 Minta PPTX\n3 Lihat versi\n4 Batal\n\nAtau tulis perubahan dengan kalimat biasa.')
   assert.ok(!d.kirim.some((k) => /\.pptx$/i.test(k.nama)), 'revisi tidak mengirim PPTX (Q1)')
   for (const t2 of d.semua()) assert.doesNotMatch(t2, SISTEM_HURUF, t2)
 })
@@ -493,13 +508,13 @@ test('T7: operasi lama yang teks_lama-nya tidak cocok lagi sesudah bahan berubah
   await sesudah(d, () => perintah(d, 'rencana sebut BPBD'))
   assert.equal(d.versi.length, 3)
   assert.deepEqual(d.versi[2].ubah.operasi, [GANTI(3, 's3_rencana', 'Rencana aksi', 'Rencana BPBD')], 'operasi yang dilewati tidak ikut versi')
-  assert.match(d.kirim[1].caption, /\nDilewati:\n- Slide 1: "LAPORAN HARIAN" diganti "JUDUL BARU": perubahan lama, teks di slide sudah berbeda\. Kirim ulang revisinya bila masih perlu\.\n/)
+  assert.match(d.kirim[1].caption, /\n\*Dilewati:\*\n- Slide 1: "LAPORAN HARIAN" diganti "JUDUL BARU": perubahan lama, teks di slide sudah berbeda\. Kirim ulang revisinya bila masih perlu\.\n/)
   // teks_lama sebagian (lolos validasi Claude) tapi tidak sama persis saat diterapkan: tidak ada versi baru
   await sesudah(d, () => perintah(d, 'banjir jadi banjir besar'))
   assert.equal(d.versi.length, 3)
   assert.equal(d.kirim.length, 0)
   assert.deepEqual(d.statusLog, ['membangun', 'draf'])
-  assert.match(d.balasan[0], /^P-291026-01 v3\nRevisi tidak diterapkan, draf tetap v3\.\nSlide 2: "Banjir" diganti "Banjir besar": teks di slide sudah berbeda/)
+  assert.match(d.balasan[0], /^\*Revisi tidak diterapkan\*\n_P-291026-01, versi 3_\n\nDraf tetap v3\.\n\nSlide 2: "Banjir" diganti "Banjir besar": teks di slide sudah berbeda/)
 })
 
 test('T8: balik v2 membuat versi baru dengan operasi v2, tanpa Claude; versi lama tidak berubah; v tidak ada dan v terakhir ditolak', async () => {
@@ -516,13 +531,13 @@ test('T8: balik v2 membuat versi baru dengan operasi v2, tanpa Claude; versi lam
   assert.equal(d.versi[3].ubah.balik, 2)
   assert.equal(d.versi[3].instruksi, 'balik v2')
   assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
-  assert.match(d.kirim[1].caption, /^P-291026-01 v4\n.*\nPerubahan:\n- Isi sama dengan v2\.\n/)
+  assert.match(d.kirim[1].caption, /^\*Draf v4 siap\*\n_P-291026-01, versi 4_\n\n.*\n\n\*Perubahan:\*\n- Isi sama dengan v2\.\n/)
   const deck4 = bacaDeck(d.kirim[1].p.replace(/\.pdf$/, '.pptx'))
   assert.equal(deck4.find((x) => x.shape === 's3_rencana').teks, 'Rencana aksi')
   await sesudah(d, () => perintah(d, 'balik v9'))
-  assert.match(d.balasan[0], /^P-291026-01 v4\nVersi v9 tidak ada\. Versi terakhir v4/)
+  assert.equal(d.balasan[0], '*Versi v9 tidak ada*\n_P-291026-01, versi 4_\n\nVersi terakhir v4. Balas *3* untuk melihat riwayat versi.')
   await sesudah(d, () => perintah(d, 'balik 4'))
-  assert.match(d.balasan[0], /v4 sudah versi terakhir/)
+  assert.match(d.balasan[0], /^\*Sudah versi terakhir\*\n_P-291026-01, versi 4_\n\nv4 sudah versi terakhir/)
   assert.equal(d.versi.length, 4); assert.deepEqual(d.statusLog, [])
   // balik v1: tanpa operasi, deck generator apa adanya
   await sesudah(d, () => perintah(d, 'balik ke v1'))
@@ -535,7 +550,7 @@ test('tanya: kalimat ambigu dibalas pertanyaan bernomor, status kembali draf, ta
   await perintah(d, 'ganti yang itu')
   assert.deepEqual(d.statusLog, ['membangun', 'draf'])
   assert.equal(d.gen().length, 0); assert.equal(d.versi.length, 1)
-  assert.equal(d.balasan[0], 'P-291026-01 v1\nRevisi belum diterapkan, ada yang perlu dipastikan:\n1. Slide mana yang dimaksud, 2 atau 3?\nBalas dengan kalimat revisi yang lebih rinci.')
+  assert.equal(d.balasan[0], '*Revisi perlu dipastikan*\n_P-291026-01, versi 1_\n\n1. Slide mana yang dimaksud, 2 atau 3?\n\nBalas dengan kalimat revisi yang lebih rinci.')
 })
 
 test('revisi sebagian: operasi sah diterapkan, yang terkunci dijelaskan di keterangan PDF (tetap 2 kiriman)', async () => {
@@ -543,8 +558,8 @@ test('revisi sebagian: operasi sah diterapkan, yang terkunci dijelaskan di keter
   await perintah(d, 'ganti hotspot dan ringkasan')
   assert.equal(d.versi.length, 2)
   assert.equal(d.kirim.length, 2)
-  assert.equal(d.kirim[0].caption, 'P-291026-01 v2\nPratinjau v2, slide 2. PDF menyusul.')
-  assert.match(d.kirim[1].caption, /Perubahan:\n- Slide 2: "Banjir di Bogor" diganti "Banjir di Kabupaten Bogor"\.\nTidak diubah:\n- Hotspot 1\.234 di slide 2 adalah angka sistem/)
+  assert.equal(d.kirim[0].caption, '*Pratinjau slide 2*\n_P-291026-01, versi 2_\n\nRingkasan perubahan ada di PDF berikutnya.')
+  assert.match(d.kirim[1].caption, /\*Perubahan:\*\n- Slide 2: "Banjir di Bogor" diganti "Banjir di Kabupaten Bogor"\.\n\n\*Tidak diubah:\*\n- Hotspot 1\.234 di slide 2 adalah angka sistem/)
   assert.equal(d.versi[1].ubah.ditolak[0].kunci, true)
 })
 
@@ -557,12 +572,12 @@ test('periksa (BL-11) ada: dipanggil dengan pptx, pdf, jenis, tanggal, angka; pe
   assert.equal(a.jenis, 'harian'); assert.equal(a.tanggal, TGL)
   assert.deepEqual(a.angka, { hotspot: 1234, meninggal: 5 })
   assert.equal(d.kirim.length, 2)
-  assert.match(d.kirim[0].caption, /\nPemeriksaan:\n- Angka hotspot hari ini 1\.234, lebih dari 3 kali median\.\n/)
+  assert.match(d.kirim[0].caption, /\n\*Pemeriksaan:\*\n- Angka hotspot hari ini 1\.234, lebih dari 3 kali median\.\n/)
   assert.match(d.versi[0].peringatan, /lebih dari 3 kali median/)
   await sesudah(d, () => perintah(d, 'judul ganti'))
   assert.equal(d.kePeriksa.length, 2)
   assert.equal(d.kirim.length, 2)
-  assert.match(d.kirim[1].caption, /\nPemeriksaan:\n- Angka hotspot hari ini 1\.234, lebih dari 3 kali median\.\nBalas dengan revisi/)
+  assert.match(d.kirim[1].caption, /\n\*Pemeriksaan:\*\n- Angka hotspot hari ini 1\.234, lebih dari 3 kali median\.\n\n\*Balas angka:\*/)
   for (const t of d.semua()) assert.doesNotMatch(t, SISTEM_HURUF, t)
 })
 
@@ -584,12 +599,12 @@ test('versi: riwayat dengan jam WIB; pptx mengirim PPTX terakhir (unduh dari rut
   const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
   await perintah(d, 'judul ganti')
   await sesudah(d, () => perintah(d, 'versi'))
-  assert.equal(d.balasan[0], 'P-291026-01 v2\nRiwayat versi Laporan Kejadian Bencana Harian 26 Okt:\nv1 29 Okt 08.00, buat\nv2 29 Okt 08.01, revisi: judul ganti\nKetik balik vN untuk membuat versi baru yang sama dengan vN.')
+  assert.equal(d.balasan[0], '*Riwayat versi*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt\n- v1 29 Okt 08.00, buat\n- v2 29 Okt 08.01, revisi: judul ganti\n\nKetik *balik v1* (atau nomor lain) untuk membuat versi baru dengan isi versi itu.')
   await sesudah(d, () => perintah(d, 'pptx'))
   assert.equal(d.kirim.length, 1)
   assert.match(d.kirim[0].nama, /\.pptx$/)
   assert.equal(d.kirim[0].mime, 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
-  assert.equal(d.kirim[0].caption, 'P-291026-01 v2\nPPTX draf Laporan Kejadian Bencana Harian 26 Okt.')
+  assert.equal(d.kirim[0].caption, '*PPTX draf v2*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt')
   assert.equal(bacaDeck(d.kirim[0].p)[0].teks, 'JUDUL')
   fs.rmSync(path.join(d.dasar, 'keluaran', 'proyek'), { recursive: true })
   await sesudah(d, () => perintah(d, 'pptx'))
@@ -604,11 +619,100 @@ test('batal menutup proyek; sesudahnya kalimat bebas bukan revisi; bahan dikenal
   const harian = [...d.proyek.values()].find((x) => x.jenis === 'harian')
   await perintah(d, 'batal')
   assert.equal(harian.status, 'batal', 'draf yang dibatalkan, bukan proyek terbuka lain')
-  assert.equal(d.balasan.at(-1), 'P-291026-01 v1\nLaporan Kejadian Bencana Harian 26 Okt dibatalkan, tanpa unggah. Ketik buat untuk memulai lagi.')
+  assert.equal(d.balasan.at(-1), '*Proyek dibatalkan*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt dibatalkan, tanpa unggah.\nKetik *buat* untuk memulai lagi.')
   assert.equal((await perintah(d, 'judul ganti')).status, 'diabaikan')
   assert.equal(d.keOperasi.length, 0)
   await perintah(d, 'versi')
-  assert.match(d.balasan.at(-1), /^Belum ada draf/)
+  assert.match(d.balasan.at(-1), /^\*Belum ada draf\*\n\n/)
+})
+
+test('menu bernomor: angka 1-4 dari pemegang draf = final, pptx, versi, batal; tidak pernah revisi atau Claude', async () => {
+  for (const t of ['1', '2', '3', '4', ' 2 ', '3.', '4 .']) assert.equal(parsePerintah(t)?.aksi, 'menu', t)
+  assert.equal(parsePerintah('5'), null); assert.equal(parsePerintah('12'), null); assert.equal(parsePerintah('1 final'), null)
+  const d = await drafV1()
+  assert.equal(await klasifikasi({ dari: DARI, teks: '2' }, d.ctx), 'perintah', 'angka menu tidak diteruskan ke Worker')
+  assert.equal((await perintah(d, '3')).status, 'versi')
+  assert.match(d.balasan.at(-1), /^\*Riwayat versi\*\n_P-291026-01, versi 1_\n/)
+  assert.equal((await perintah(d, '2')).status, 'pptx')
+  assert.match(d.kirim.at(-1).nama, /\.pptx$/)
+  assert.equal(d.keOperasi.length, 0, 'angka menu tidak pernah ke Claude')
+  assert.equal(d.versi.length, 1, 'angka menu tidak membuat versi')
+  assert.equal((await perintah(d, '1')).status, 'final tertunda', 'angka 1 = final (Drive tidak disuntik di uji ini)')
+  assert.match(d.balasan.at(-1), /^\*Final v1 diterima\*\n/)
+})
+
+test('menu 4: batal ditanyakan sekali, ya dalam 5 menit membatalkan; lewat 5 menit atau pesan lain menghapus tanya', async () => {
+  const d = await drafV1()
+  const harian = [...d.proyek.values()].find((x) => x.jenis === 'harian')
+  assert.equal((await perintah(d, '4')).status, 'tanya batal')
+  assert.equal(harian.status, 'draf', 'angka 4 belum membatalkan')
+  assert.equal(d.balasan.at(-1), '*Batalkan proyek ini?*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt\nKetik *ya* untuk membatalkan P-291026-01, tanpa unggah.\n\nBerlaku 5 menit. Abaikan pesan ini bila tidak jadi.')
+  gayaWa(d.balasan.at(-1))
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'Ya.' }, d.ctx), 'perintah', 'ya tidak diteruskan ke Worker selama tanya batal berlaku')
+  assert.equal((await perintah(d, 'Ya.')).status, 'batal')
+  assert.equal(harian.status, 'batal')
+  assert.match(d.balasan.at(-1), /^\*Proyek dibatalkan\*\n_P-291026-01, versi 1_\n/)
+  assert.equal(d.keOperasi.length, 0)
+  // lewat 5 menit: ya kembali kalimat biasa (revisi pemegang draf)
+  const e = await drafV1()
+  await perintah(e, '4')
+  const lambat = { ...e.ctx, now: new Date(NOW.getTime() + 6 * 60e3) }
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya' }, lambat), 'revisi')
+  // pesan lain sesudah tanya: ya tidak lagi membatalkan
+  const g = await drafV1()
+  await perintah(g, '4')
+  await perintah(g, '3')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya' }, g.ctx), 'revisi')
+  assert.equal([...g.proyek.values()].find((x) => x.jenis === 'harian').status, 'draf')
+})
+
+test('pesan diteruskan tidak pernah jadi angka menu atau ya', async () => {
+  const d = await drafV1()
+  const harian = () => [...d.proyek.values()].find((x) => x.jenis === 'harian')
+  assert.equal(await klasifikasi({ dari: DARI, teks: '1', diteruskan: true }, d.ctx), 'bahan')
+  assert.equal((await tangani({ dari: DARI, teks: '1', diteruskan: true }, d.ctx)).status, 'diabaikan')
+  assert.equal((await tangani({ dari: DARI, teks: '4', diteruskan: true, wa_id: 91 }, d.ctx)).status, 'menunggu buat')
+  assert.equal(harian().status, 'draf'); assert.equal(d.balasan.length, 0); assert.equal(d.kirim.length, 0)
+  await perintah(d, '4')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya', diteruskan: true }, d.ctx), 'bahan')
+  await tangani({ dari: DARI, teks: 'ya', diteruskan: true }, d.ctx)
+  assert.equal(harian().status, 'draf', 'ya diteruskan tidak membatalkan')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya' }, d.ctx), 'revisi', 'pesan diteruskan pun menghapus tanya batal')
+})
+
+test('tanya batal dihapus juga oleh bantuan dan oleh hapusKonfirmasi (perintah pemilik di perintah.mjs)', async () => {
+  const d = await drafV1()
+  await perintah(d, '4'); await perintah(d, 'bantuan')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya' }, d.ctx), 'revisi')
+  await perintah(d, '4')
+  hapusKonfirmasi({ dari: DARI, env: d.ctx.env, dasar: d.dasar })
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya' }, d.ctx), 'revisi')
+})
+
+test('dua draf: angka berlaku untuk proyek yang menunya terakhir dikirim; tanpa catatan tidak menebak, minta perintah berkode', async () => {
+  const d = dunia({ pesan: [...LENGKAP(), P('4', 'satgas')] })
+  await perintah(d, 'buat harian 26 okt'); await perintah(d, 'buat penanganan 26 okt')
+  const ids = [...d.proyek.values()].filter((x) => x.status === 'draf').map((x) => x.id).sort()
+  assert.deepEqual(ids, ['P-291026-01', 'P-291026-02'])
+  d.balasan.length = 0
+  assert.equal((await perintah(d, '3')).status, 'versi')
+  assert.match(d.balasan.at(-1), /^\*Riwayat versi\*\n_P-291026-02, versi 1_\n/, 'menu terakhir = penanganan')
+  fs.rmSync(path.join(d.dasar, 'proyek', 'menu.json'))
+  assert.equal((await perintah(d, '1')).status, 'menu ganda')
+  assert.match(d.balasan.at(-1), /^\*Ada 2 draf terbuka\*\n\n- P-291026-0[12]: Laporan .*\n- P-291026-0[12]: Laporan .*\n\nKetik perintahnya dengan kode proyek, misalnya \*final P-291026-0[12]\*\.$/)
+  assert.equal(d.kirim.length, 4, 'hanya 2 kiriman per draf, tidak ada berkas final terkirim')
+  assert.deepEqual(parsePerintah('final P-291026-01'), { aksi: 'final', id: 'P-291026-01' })
+  assert.equal((await perintah(d, 'versi P-291026-01')).status, 'versi')
+  assert.match(d.balasan.at(-1), /^\*Riwayat versi\*\n_P-291026-01, versi 1_\n/)
+})
+
+test('angka menu di luar draf: petunjuk singkat ketik buat, tanpa proyek dan tanpa Claude', async () => {
+  const d = dunia()
+  assert.equal((await perintah(d, '1')).status, 'menu tanpa draf')
+  assert.equal(d.balasan.at(-1), '*Belum ada draf*\n\nAngka 1 menjawab menu draf. Kirim bahan, lalu ketik *buat* dulu.')
+  assert.equal(d.proyek.size, 0); assert.equal(d.keUrai.length, 0)
+  assert.equal(await klasifikasi({ dari: DARI, teks: '4' }, d.ctx), 'perintah')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'ya' }, d.ctx), 'bahan', 'ya tanpa tanya batal tetap seperti dulu')
 })
 
 test('revisi: GalatClaude dan generator gagal mengembalikan draf, pemilik dikabari, versi tetap', async () => {
@@ -616,7 +720,7 @@ test('revisi: GalatClaude dan generator gagal mengembalikan draf, pemilik dikaba
   d.ctx.dep.claude.operasi = async () => { throw new GalatClaude('batas_belanja', 'x') }
   await perintah(d, 'judul ganti')
   assert.deepEqual(d.statusLog, ['membangun', 'draf'])
-  assert.equal(d.balasan[0], 'P-291026-01 v1\nKuota hari ini habis, bot lanjut besok.')
+  assert.equal(d.balasan[0], '*Kuota hari ini habis*\n_P-291026-01, versi 1_\n\nKuota pembacaan hari ini sudah habis. Bot lanjut lagi besok.')
   assert.match(d.pemilik.at(-1), /Claude gagal \(batas_belanja\)/)
   const e = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
   const asli = e.ctx.dep.exec
@@ -624,7 +728,7 @@ test('revisi: GalatClaude dan generator gagal mengembalikan draf, pemilik dikaba
   await perintah(e, 'judul ganti')
   assert.deepEqual(e.statusLog, ['membangun', 'draf'])
   assert.equal(e.versi.length, 1); assert.equal(e.kirim.length, 0)
-  assert.match(e.balasan.at(-1), /^P-291026-01 v1\nRevisi v2 gagal dibangun\. Pemilik sudah dikabari, draf v1 tetap berlaku\.$/)
+  assert.equal(e.balasan.at(-1), '*Revisi v2 gagal dibangun*\n_P-291026-01, versi 1_\n\nDraf v1 tetap berlaku. Pemilik sudah dikabari, kirim revisinya lagi nanti.')
 })
 
 test('parsePerintah BL-10: versi, pptx, batal, balik vN', () => {
@@ -684,14 +788,15 @@ test('T10: final mengirim PPTX lalu PDF ke pemegang, unggah Drive Revisi N, ditu
   assert.deepEqual(d.statusLog, ['final', 'ditutup'])
   assert.deepEqual(d.kirim.map((k) => [path.extname(k.nama), k.mime]), [['.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'], ['.pdf', 'application/pdf']])
   assert.equal(bacaDeck(d.kirim[0].p)[0].teks, 'JUDUL', 'PPTX versi terakhir (v2)')
-  assert.equal(d.kirim[0].caption, 'P-291026-01 v2\nPPTX final Laporan Kejadian Bencana Harian 26 Okt.')
+  assert.equal(d.kirim[0].caption, '*PPTX final v2*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt')
   assert.deepEqual(f.folderBaru, [{ tanggal: TGL, laporan: 'harian', n: 1 }])
   assert.deepEqual(f.unggahan, [{ folder: 'R1', nama: ['Laporan Kejadian Bencana Harian 261026.pptx', 'Laporan Kejadian Bencana Harian 261026.pdf'] }])
   assert.deepEqual(f.hasil, [], 'D13: final bot tidak menimpa arsip terjadwal')
   const p = proyekId(d)
   assert.equal(p.status, 'ditutup'); assert.equal(p.drive_url, 'https://drive.google.com/drive/folders/R1')
   assert.equal(d.balasan.length, 1)
-  assert.equal(d.balasan[0], 'P-291026-01 v2\nFinal Laporan Kejadian Bencana Harian 26 Okt, versi v2.\nFolder Drive Revisi 1: https://drive.google.com/drive/folders/R1\nRiwayat versi:\nv1 29 Okt 08.00, buat\nv2 29 Okt 08.01, revisi: judul ganti\nProyek ditutup. Pesan berikutnya membuka proyek baru.')
+  assert.equal(d.balasan[0], '*Laporan selesai*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt, final versi 2.\nFolder Drive (Revisi 1):\nhttps://drive.google.com/drive/folders/R1\n\n*Riwayat versi:*\n- v1 29 Okt 08.00, buat\n- v2 29 Okt 08.01, revisi: judul ganti\n\nProyek ditutup. Bahan berikutnya membuka proyek baru.')
+  gayaWa(d.balasan[0])
   assert.ok(!d.semua().some((t) => SISTEM_HURUF.test(t)))
   assert.deepEqual(f.keKirimKe, [], 'Q10: tidak ada kiriman ke PENERIMA atau nomor lain')
   assert.equal(d.pemilik.length, 0)
@@ -706,8 +811,8 @@ test('T10: Drive gagal = status tetap final, pemilik dikabari sekali, ulangFinal
   assert.deepEqual(d.statusLog, ['final'])
   assert.equal(proyekId(d).status, 'final')
   assert.equal(d.kirim.length, 2, 'PPTX dan PDF tetap terkirim ke pemegang')
-  assert.match(d.balasan.at(-1), /^P-291026-01 v1\nFinal v1 diterima\. Penutupan belum selesai, diulang otomatis tiap 10 menit\. Tautan Drive menyusul\.$/)
-  assert.equal(d.pemilik.length, 1); assert.match(d.pemilik[0], /P-291026-01 v1: unggah Google Drive gagal, diulang otomatis/)
+  assert.equal(d.balasan.at(-1), '*Final v1 diterima*\n_P-291026-01, versi 1_\n\nPenutupan belum selesai, diulang otomatis tiap 10 menit.\nTautan Drive menyusul.')
+  assert.equal(d.pemilik.length, 1); assert.match(d.pemilik[0], /^\*Galat bot laporan\*\n_P-291026-01, versi 1_\n\nUnggah Google Drive gagal, diulang otomatis tiap 10 menit\./)
   // final lagi saat tertunda: melanjutkan penutupan (Drive masih gagal), tanpa mengirim berkas lagi
   await perintah(d, 'final')
   assert.equal(d.kirim.length, 2); assert.match(d.balasan.at(-1), /Penutupan belum selesai/)
@@ -717,7 +822,7 @@ test('T10: Drive gagal = status tetap final, pemilik dikabari sekali, ulangFinal
   assert.deepEqual(f.unggahan.map((x) => x.folder), ['R4'])
   assert.equal(proyekId(d).status, 'ditutup'); assert.equal(proyekId(d).drive_url, 'https://drive.google.com/drive/folders/R4')
   assert.equal(f.keKirimKe.length, 1); assert.equal(f.keKirimKe[0].t, DARI, 'T-FINAL hanya ke pemegang')
-  assert.match(f.keKirimKe[0].s, /^P-291026-01 v1\nFinal Laporan Kejadian Bencana Harian 26 Okt, versi v1\.\nFolder Drive Revisi 4: https:\/\/drive\.google\.com\/drive\/folders\/R4\n/)
+  assert.match(f.keKirimKe[0].s, /^\*Laporan selesai\*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt, final versi 1\.\nFolder Drive \(Revisi 4\):\nhttps:\/\/drive\.google\.com\/drive\/folders\/R4\n/)
   assert.deepEqual(await ulang(d), [])
 })
 
@@ -731,7 +836,7 @@ test('T10: jawaban pindah ke final hilang (Worker sudah final) = dilanjutkan; di
   }
   assert.equal((await perintah(d, 'final')).status, 'final tertunda')
   assert.equal(d.kirim.length, 2); assert.equal(f.unggahan.length, 1)
-  assert.match(d.pemilik.at(-1), /pindah status ke ditutup gagal/)
+  assert.match(d.pemilik.at(-1), /Pindah status ke ditutup gagal/)
   assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'ditutup' }])
   assert.equal(f.unggahan.length, 1, 'Drive tidak diunggah ulang'); assert.equal(f.folderBaru.length, 1)
   assert.equal(f.keKirimKe.length, 1)
@@ -757,7 +862,7 @@ test('T10: mati sesudah final.json tercatat dan sebelum pindah status = ulangFin
   const r = await perintah(e, 'final')
   assert.equal(r.status, 'ditutup')
   assert.equal(proyekId(e).status, 'ditutup'); assert.equal(g.unggahan.length, 1)
-  assert.match(e.balasan.at(-1), /^P-291026-01 v1\nFinal Laporan Kejadian Bencana Harian 26 Okt, versi v1\./)
+  assert.match(e.balasan.at(-1), /^\*Laporan selesai\*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt, final versi 1\./)
 })
 
 test('T10: kirim T-FINAL gagal = keadaan disimpan, diulang, tidak pernah dua kali; lewat 24 jam berhenti dan pemilik dikabari sekali', async () => {
@@ -766,7 +871,7 @@ test('T10: kirim T-FINAL gagal = keadaan disimpan, diulang, tidak pernah dua kal
   await perintah(d, 'final')
   assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'tertunda' }], 'ditutup, tetapi T-FINAL gagal dikirim')
   assert.equal(proyekId(d).status, 'ditutup'); assert.equal(f.keKirimKe.length, 0)
-  assert.match(d.pemilik.at(-1), /kirim T-FINAL ke pemegang gagal/)
+  assert.match(d.pemilik.at(-1), /Kirim T-FINAL ke pemegang gagal/)
   assert.deepEqual(await ulang(d), [{ id: 'P-291026-01', status: 'ditutup' }])
   assert.equal(f.keKirimKe.length, 1)
   assert.deepEqual(await ulang(d), []); assert.equal(f.keKirimKe.length, 1, 'T-FINAL sekali saja')
@@ -777,7 +882,7 @@ test('T10: kirim T-FINAL gagal = keadaan disimpan, diulang, tidak pernah dua kal
   const kabar = e.pemilik.length
   const besok = new Date(NOW.getTime() + 25 * 3600e3)
   assert.deepEqual(await ulang(e, besok), [{ id: 'P-291026-01', status: 'basi' }])
-  assert.equal(e.pemilik.length, kabar + 1); assert.match(e.pemilik.at(-1), /final belum selesai sesudah 24 jam \(drive\), tidak diulang lagi\. Perlu ditangani manual\./)
+  assert.equal(e.pemilik.length, kabar + 1); assert.match(e.pemilik.at(-1), /Final belum selesai sesudah 24 jam \(drive\), tidak diulang lagi\. Perlu ditangani manual\./)
   assert.deepEqual(await ulang(e, besok), [], 'tidak diulang dan tidak dikabari lagi')
   assert.equal(e.pemilik.length, kabar + 1)
 })
@@ -789,10 +894,10 @@ test('ALUR C: sesudah ditutup, pesan berikutnya membuka proyek baru; kalimat beb
   assert.equal((await perintah(d, 'judul ganti')).status, 'diabaikan')
   assert.equal(d.keOperasi.length, 0)
   await perintah(d, 'final')
-  assert.match(d.balasan.at(-1), /^Belum ada draf untuk difinalkan/)
+  assert.match(d.balasan.at(-1), /^\*Belum ada draf untuk difinalkan\*\n\nKirim bahan, lalu ketik \*buat harian\* atau \*buat penanganan\*\.$/)
   for (const a of [d.balasan, d.kirim, d.statusLog]) a.length = 0
   await perintah(d, 'buat harian 26 okt')
-  assert.match(d.kirim[0].caption, /^P-291026-02 v1\n/)
+  assert.match(d.kirim[0].caption, /^\*Draf v1 siap\*\n_P-291026-02, versi 1_\n/)
 })
 
 test('klasifikasi: revisi hanya teks bukan forward dari pemegang draf, bukan bahan dikenali; tanpa efek samping; tangani menerima revisi tanpa wa_id', async () => {
@@ -836,14 +941,14 @@ test('kunci: berkas kunci generator hilang = kunci versi tersimpan lewat berkas 
   await perintah(e, 'judul ganti')
   assert.equal(e.keOperasi.length, 0); assert.equal(e.versi.length, 1); assert.equal(e.gen().length, 0)
   assert.deepEqual(e.statusLog, ['membangun', 'draf'])
-  assert.match(e.balasan[0], /^P-291026-01 v1\nRevisi belum bisa diproses: daftar angka sistem yang dikunci untuk draf ini tidak ditemukan\./)
-  assert.match(e.pemilik.at(-1), /daftar kunci angka sistem v1 tidak ada/)
+  assert.match(e.balasan[0], /^\*Revisi belum bisa diproses\*\n_P-291026-01, versi 1_\n\nDaftar angka sistem yang dikunci untuk draf ini tidak ditemukan\./)
+  assert.match(e.pemilik.at(-1), /Daftar kunci angka sistem v1 tidak ada/)
 })
 
 test('periksa gagal (gerbang format dan bahasa) masuk ringkasan: paling banyak 3 baris + dan N lainnya', async () => {
   const d = dunia({ periksa: () => ({ peringatan: [], gagal: ['slide 2 judul terlalu panjang', 'slide 3 font bukan Roboto', 'slide 4 kosong', 'slide 5 frasa AI', 'slide 6 em dash'], ms: 12 }) })
   await perintah(d, 'buat harian 26 okt')
-  assert.match(d.kirim[0].caption, /\nPemeriksaan:\n- Gerbang: slide 2 judul terlalu panjang\n- Gerbang: slide 3 font bukan Roboto\n- Gerbang: slide 4 kosong\n- Gerbang: dan 2 lainnya\.\n/)
+  assert.match(d.kirim[0].caption, /\n\*Pemeriksaan:\*\n- Gerbang: slide 2 judul terlalu panjang\n- Gerbang: slide 3 font bukan Roboto\n- Gerbang: slide 4 kosong\n- Gerbang: dan 2 lainnya\.\n/)
 })
 
 test('fetch Worker memakai AbortSignal (timeout): panggilan yang menggantung jadi galat Worker biasa', async () => {

@@ -320,7 +320,9 @@ async function simpanKeOutbox(m, { lama = false } = {}) {
     P = await import('../perintah.mjs')
     cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK, proyek: BL && pribadi }) // grup: perilaku lama
   }
-  const arah = ARAH.arah({ proyek: BL, pribadi, terdaftar: true, grupOps, lama, adaMedia: !!(media || video), teks, cmd })
+  const arah = ARAH.arah({ proyek: BL, pribadi, terdaftar: true, grupOps, lama, adaMedia: !!(media || video), teks, cmd, diteruskan })
+  // Perintah pemilik di perintah.mjs (kirim ulang, status <tanggal>) juga menghapus tanya batal menu milik pengirim itu.
+  if (arah === 'perintah' && BL && pribadi) import('../proyek.mjs').then((Pr) => Pr.hapusKonfirmasi({ dari, env: process.env, dasar: RUMAH })).catch(() => {})
   if (arah === 'perintah') { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
   const masuk = Date.now() // Q1: jendela percakapan dihitung dari pesan masuk ini, bukan dari jam balasan (pembangunan bisa lama)
   if (arah === 'proyek') { keProyek(dari, masuk, async () => ({ dari, teks: teks.trim(), diteruskan })); return } // perintah proyek: tidak jadi bahan di Worker

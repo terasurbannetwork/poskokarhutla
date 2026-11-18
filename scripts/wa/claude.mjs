@@ -302,12 +302,13 @@ export const tanggalWib = (now) => new Date(now.getTime() + 7 * 3600e3).toISOStr
 
 // ---------- galat terkendali ----------
 export const PESAN = {
-  tolak: 'Gagal membaca bahan, coba lagi atau kirim ulang.',
-  terpotong: 'Gagal membaca bahan, coba lagi atau kirim ulang.',
-  json_rusak: 'Gagal membaca bahan, coba lagi atau kirim ulang.',
-  batas_belanja: 'Kuota hari ini habis, bot lanjut besok.',
-  tanpa_kunci: 'Bot laporan belum siap, pemilik sudah dikabari.',
-  tanpa_sdk: 'Bot laporan belum siap, coba lagi nanti.',
+  // Satu baris: apa yang terjadi dan langkah berikutnya. Judul tebal dan kode proyek dipasang proyek.mjs (JUDUL_CLAUDE).
+  tolak: 'Mesin gagal membaca bahan. Kirim ulang bahannya, lalu coba lagi.',
+  terpotong: 'Bahan terlalu panjang untuk dibaca sekaligus. Kirim ulang dengan bahan lebih sedikit, lalu coba lagi.',
+  json_rusak: 'Mesin gagal membaca bahan. Kirim ulang bahannya, lalu coba lagi.',
+  batas_belanja: 'Kuota pembacaan hari ini sudah habis. Bot lanjut lagi besok.',
+  tanpa_kunci: 'Bot laporan belum siap. Pemilik sudah dikabari, coba lagi nanti.',
+  tanpa_sdk: 'Bot laporan belum siap. Coba lagi nanti.',
 }
 export class GalatClaude extends Error {
   constructor(kode, rinci = '') {

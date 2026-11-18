@@ -35,6 +35,36 @@ test('BL_PROYEK nyala: perintah proyek dari pemilik dan nomor terdaftar lain (Q1
   }
 })
 
+test('menu draf: angka 1-4 dari nomor terdaftar langsung ke proyek, tidak diteruskan ke Worker; ya diputuskan klasifikasi proyek', async () => {
+  for (const teks of ['1', '2', '3', '4', ' 4 ', '1.', '2 .']) {
+    assert.equal(rute({ bl: true, teks }), 'proyek', 'pemilik ' + teks)
+    assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'proyek', 'terdaftar ' + teks)
+  }
+  for (const teks of ['5', '12', '1 final', '0']) assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'bahan+proyek', teks)
+  assert.equal(rute({ bl: false, dari: NO_LAIN, teks: '1' }), 'bahan', 'BL_PROYEK mati: perilaku lama')
+  assert.equal(rute({ bl: true, dari: NO_LAIN, teks: '1', grupOps: true, pribadi: false }), 'bahan', 'grup operasi tidak berubah')
+  // `ya` teks saja: jalur bahan+proyek, lalu proyek.klasifikasi memutuskan (langsung hanya selama tanya batal berlaku)
+  assert.equal(rute({ bl: true, dari: NO_LAIN, teks: 'ya' }), 'bahan+proyek')
+  const Pr = await import('../../scripts/wa/proyek.mjs')
+  const dasar = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-arah-ya-'))
+  const ctx = { env: { WA_GARAM: 'garam' }, dep: {}, now: JAM, dasar }
+  const pesan = { dari: NO_LAIN, teks: 'ya', ada_berkas: false }
+  assert.equal(await A.pilihJalur(Pr, pesan, ctx), 'bahan', 'tanpa tanya batal: ya tetap bahan')
+  fs.mkdirSync(path.join(dasar, 'proyek'), { recursive: true })
+  fs.writeFileSync(path.join(dasar, 'proyek', 'konfirmasi.json'), JSON.stringify({ [Pr.waSha(NO_LAIN, 'garam')]: { id: 'P-181126-01', waktu: JAM.getTime() - 60e3 } }))
+  assert.equal(await A.pilihJalur(Pr, pesan, ctx), 'langsung', 'ya dalam 5 menit sesudah angka 4 = perintah')
+  assert.equal(await A.pilihJalur(Pr, pesan, { ...ctx, now: new Date(JAM.getTime() + 5 * 60e3) }), 'bahan', 'lewat 5 menit')
+  assert.equal(await A.pilihJalur(Pr, { ...pesan, teks: '3' }, ctx), 'langsung')
+  // diteruskan: angka dan ya selalu bahan, juga selama tanya batal berlaku
+  assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks: '1', diteruskan: true }), 'bahan+proyek')
+  assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks: 'final P-181126-02' }), 'proyek')
+  assert.equal(await A.pilihJalur(Pr, { ...pesan, teks: '1', diteruskan: true }, ctx), 'bahan')
+  assert.equal(await A.pilihJalur(Pr, { ...pesan, diteruskan: true }, ctx), 'bahan')
+  const src = fs.readFileSync(new URL('../../scripts/wa/gateway/index.js', import.meta.url), 'utf8')
+  assert.match(src, /adaMedia: !!\(media \|\| video\), teks, cmd, diteruskan \}\)/)
+  assert.match(src, /arah === 'perintah' && BL && pribadi\) import\('\.\.\/proyek\.mjs'\)\.then\(\(Pr\) => Pr\.hapusKonfirmasi\(/)
+})
+
 test('kirim ulang dan status <tanggal> tetap di perintah.mjs (Q14)', () => {
   assert.equal(rute({ bl: true, teks: 'kirim ulang harian kemarin' }), 'perintah')
   assert.equal(rute({ bl: true, teks: 'status 17 nov' }), 'perintah')
@@ -113,7 +143,8 @@ test('K11: T-TERLEWAT tepat sekali per nomor per jendela mati, tersimpan', async
   await tw.susulan(NO_LAIN, mati + 900e3)
   assert.equal(kirim.length, 2)
   assert.deepEqual(kirim.map((x) => x.n).sort(), [NO_PEMILIK, NO_LAIN].sort())
-  assert.equal(kirim[0].t, 'Bot tadi mati dari jam 14.05 sampai 16.30, pesan di jam itu tidak diproses. Kirim ulang bila masih perlu.')
+  assert.equal(kirim[0].t, '*Pesan belum diproses*\n\nBot tadi mati jam 14.05 sampai 16.30.\nPesan di jam itu tidak diproses. Kirim ulang bila masih perlu.')
+  assert.doesNotMatch(kirim[0].t, /[·—–]|\p{Extended_Pictographic}/u)
   // Proses dimulai ulang tanpa mati baru: jendela tersimpan tidak mengulang kiriman untuk nomor yang sama.
   const simpan = JSON.parse(fs.readFileSync(berkas, 'utf8'))
   assert.equal(simpan.terkirim[NO_LAIN], String(nyala))
@@ -125,7 +156,7 @@ test('K11: T-TERLEWAT tepat sekali per nomor per jendela mati, tersimpan', async
   await tw3.susulan(NO_LAIN, jam - 3600e3)
   await tw3.susulan(NO_LAIN, jam - 1800e3)
   assert.equal(kirim.length, 3)
-  assert.match(kirim[2].t, /^Bot tadi mati dari 18 Nov jam 23\.00 sampai 19 Nov jam 08\.00, /)
+  assert.match(kirim[2].t, /\n\nBot tadi mati 18 Nov jam 23\.00 sampai 19 Nov jam 08\.00\.\n/)
 })
 
 test('K11: T-TERLEWAT gagal kirim diulang, tetap sekali sesudah berhasil', async () => {
@@ -195,14 +226,14 @@ test('jam susulan: number, string, Long; tak jelas = null dan teks tanpa jam, ti
   assert.equal(A.tsMs({ toNumber: () => 1763449200, low: 1, high: 0 }), 1763449200000)
   assert.equal(A.tsMs({ low: 1 }), null)
   assert.equal(A.tsMs(undefined), null)
-  assert.equal(A.teksTerlewat(NaN, Date.now()), 'Bot tadi mati, pesan selama itu tidak diproses. Kirim ulang bila masih perlu.')
+  assert.equal(A.teksTerlewat(NaN, Date.now()), '*Pesan belum diproses*\n\nBot tadi mati, pesan selama itu tidak diproses.\nKirim ulang bila masih perlu.')
   const berkas = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'bl-terlewat-')), 'terlewat.json')
   const kirim = []
   const tw = A.buatTerlewat({ berkas, kini: () => JAM.getTime(), kirim: async (n, t) => { kirim.push(t); return { ok: true } } })
   tw.buka() // tanpa detak lama
   await tw.susulan(NO_LAIN, A.tsMs({ low: 1 }))
   assert.doesNotMatch(kirim[0], /NaN/)
-  assert.equal(kirim[0], 'Bot tadi mati, pesan selama itu tidak diproses. Kirim ulang bila masih perlu.')
+  assert.equal(kirim[0], '*Pesan belum diproses*\n\nBot tadi mati, pesan selama itu tidak diproses.\nKirim ulang bila masih perlu.')
 })
 
 // ---------- BL-12: ulang final tiap 10 menit di gateway ----------

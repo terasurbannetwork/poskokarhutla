@@ -16,13 +16,14 @@ const RE_SHA = /^[0-9a-f]{64}$/
 const SEGAR_MS = 5 * 60 * 1000
 const BATAS_BALAS = 30, BATAS_TERUS = 20, USIA_TAHAN = 30 * 864e5 // plafon global per hari WIB (semua nomor); berkas tertahan basi sesudah 30 hari
 const KONTROL = /[\u0000-\u001f\u007f​-‏‪-‮﻿]/g
-const T_DAFTAR = 'Nomor ini belum terdaftar di bot laporan BNPB. Untuk mendaftar, ketik:\ndaftar <nama>, <instansi>\nContoh: daftar Budi Santoso, BPBD Riau'
-const T_DIKIRIM = 'Permintaan dikirim ke admin. Anda akan dikabari sesudah diputuskan.'
-const T_FORMAT = 'Format pendaftaran belum sesuai. Ketik: daftar <nama>, <instansi>\nContoh: daftar Budi Santoso, BPBD Riau'
-const T_PENUH = 'Antrean pendaftaran sedang penuh. Coba lagi besok.'
-const T_SUDAH = 'Nomor ini sudah terdaftar di bot laporan. Kirim ulang pesan Anda.'
-const T_SETUJU = 'Pendaftaran Anda di bot laporan BNPB disetujui. Nomor ini sekarang terdaftar.'
-const T_TOLAK = 'Pendaftaran Anda di bot laporan BNPB belum disetujui.'
+// Gaya pesan: data/kajian-bnpb/bot-laporan/DESIGN-SYSTEM.md (judul tebal, baris pendek, tanpa titik tengah, em dash, emoji).
+const T_DAFTAR = '*Nomor belum terdaftar*\n\nNomor ini belum terdaftar di bot laporan BNPB.\nUntuk mendaftar, ketik:\n*daftar nama, instansi*\n\nContoh: daftar Budi Santoso, BPBD Riau'
+const T_DIKIRIM = '*Permintaan terkirim*\n\nPermintaan daftar sudah diteruskan ke admin.\nKabar dikirim ke nomor ini sesudah diputuskan.'
+const T_FORMAT = '*Format belum sesuai*\n\nKetik: *daftar nama, instansi*\nContoh: daftar Budi Santoso, BPBD Riau'
+const T_PENUH = '*Antrean pendaftaran penuh*\n\nCoba daftar lagi besok.'
+const T_SUDAH = '*Nomor sudah terdaftar*\n\nKirim ulang pesan tadi.'
+const T_SETUJU = '*Pendaftaran disetujui*\n\nNomor ini sekarang terdaftar di bot laporan BNPB.\nKetik *bantuan* untuk melihat cara pakai.'
+const T_TOLAK = '*Pendaftaran belum disetujui*\n\nNomor ini belum bisa memakai bot laporan BNPB.'
 const INSTANSI = /^(bpbd|bnpb|pemda|pemkab|pemkot|pemprov|pemerintah|dinas|dishut|tni|polri|polda|polres|polsek|kodim|korem|kodam|koramil|lanud|lanal|basarnas|bmkg|brin|klhk|kemen\w*|kementerian|badan|satgas|pmi|manggala|universitas|univ|institut|politeknik|pt|cv|yayasan|kantor|balai|pusdalops|bappeda|sekda|setda)$/i
 const RELAWAN = /^(siap|tidak)\s+[a-z0-9]{6}\s*$/i // balasan panggilan relawan (LP-020), bukan sapaan: jangan dibalas T-DAFTAR
 
@@ -160,8 +161,8 @@ function buat({ env = process.env, fetch = globalThis.fetch, fs = nodeFs, rumah,
       g.kabar[jenis] = 1
       try { tulis(F.hari, hari) } catch {}
       await kirim(pemilik + '@s.whatsapp.net', jenis === 'balas'
-        ? `Balasan cara mendaftar hari ini sudah ${batas}. Nomor asing berikutnya tidak dibalas sampai besok.`
-        : `Permintaan daftar hari ini sudah ${batas} diteruskan. Permintaan berikutnya ditahan sampai besok.`)
+        ? `*Batas balasan daftar tercapai*\n\nBalasan cara mendaftar hari ini sudah ${batas}.\nNomor asing berikutnya tidak dibalas sampai besok.`
+        : `*Batas permintaan daftar tercapai*\n\nPermintaan daftar hari ini sudah ${batas} diteruskan.\nPermintaan berikutnya ditahan sampai besok.`)
       return false
     }
     g[jenis]++
@@ -215,7 +216,7 @@ function buat({ env = process.env, fetch = globalThis.fetch, fs = nodeFs, rumah,
     if (r.json.status === 'setuju') { await segarkan(); await kirim(jid, T_SUDAH); return 'sudah' }
     if (r.json.status !== 'menunggu') return 'diam'
     tulis(tahanan(sha), { jid, nomor: n, nama: d.nama, instansi: d.instansi, waktu: kini() })
-    await kirim(pemilik + '@s.whatsapp.net', `Permintaan daftar bot laporan\nNama: ${d.nama}\nInstansi: ${d.instansi}\nNomor: ${n}\nBalas setuju ${n} atau tolak ${n}`)
+    await kirim(pemilik + '@s.whatsapp.net', `*Permintaan daftar baru*\n\nNama: ${d.nama}\nInstansi: ${d.instansi}\nNomor: ${n}\n\nBalas *setuju ${n}* atau *tolak ${n}*`)
     await kirim(jid, T_DIKIRIM)
     return 'daftar'
   }
@@ -231,7 +232,7 @@ function buat({ env = process.env, fetch = globalThis.fetch, fs = nodeFs, rumah,
     const sha = waSha(nomor, garam)
     let r
     try { r = await api('POST', '/api/wa/daftar', { wa_sha: sha, status: putusan }) } catch (e) { r = { status: 0, json: {} } }
-    if (r.status !== 200) { await kirim(ke, `Putusan ${putusan} ${nomor} gagal disimpan (HTTP ${r.status || 'jaringan'}). Ulangi sebentar lagi.`); return 'gagal' }
+    if (r.status !== 200) { await kirim(ke, `*Putusan gagal disimpan*\n\n${putusan} ${nomor} (HTTP ${r.status || 'jaringan'}).\nKirim ulang putusannya sebentar lagi.`); return 'gagal' }
     catatTolak(sha, putusan === 'tolak' ? kini() + 30 * 864e5 : 0)
     await segarkan()
     const t = baca(tahanan(sha), null)
@@ -239,9 +240,9 @@ function buat({ env = process.env, fetch = globalThis.fetch, fs = nodeFs, rumah,
     if (t && t.jid) {
       await kirim(t.jid, putusan === 'setuju' ? T_SETUJU : T_TOLAK)
       try { fs.rmSync(tahanan(sha), { force: true }) } catch {}
-      await kirim(ke, `${putusan === 'setuju' ? 'Disetujui' : 'Ditolak'}: ${siapa}. Pendaftar sudah dikabari.`)
+      await kirim(ke, `*${putusan === 'setuju' ? 'Disetujui' : 'Ditolak'}*\n\n${siapa}\nPendaftar sudah dikabari.`)
     } else {
-      await kirim(ke, `${putusan === 'setuju' ? 'Disetujui' : 'Ditolak'}: ${siapa}. Tidak ada permintaan tertahan, jadi pendaftar tidak dikabari.`)
+      await kirim(ke, `*${putusan === 'setuju' ? 'Disetujui' : 'Ditolak'}*\n\n${siapa}\nTidak ada permintaan tertahan, jadi pendaftar tidak dikabari.`)
     }
     return putusan
   }

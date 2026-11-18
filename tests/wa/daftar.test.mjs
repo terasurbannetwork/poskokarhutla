@@ -163,7 +163,12 @@ test('setuju/tolak hanya dari PEMILIK; setuju menyegarkan salinan, mengabari pen
   assert.deepEqual(keputusan.at(-1), { wa_sha: shaAsing, status: 'setuju' })
   assert.equal(df.terdaftar(ASING), true, 'salinan disegarkan segera')
   assert.equal(t.kirim[0].jid, ASING_JID); assert.equal(t.kirim[0].teks, D.T_SETUJU)
-  assert.equal(t.kirim[1].jid, PEMILIK + '@s.whatsapp.net'); assert.match(t.kirim[1].teks, /^Disetujui: Budi Santoso \(BPBD Riau\)/)
+  assert.equal(t.kirim[1].jid, PEMILIK + '@s.whatsapp.net'); assert.match(t.kirim[1].teks, /^\*Disetujui\*\n\nBudi Santoso \(BPBD Riau\)/)
+  for (const x of [D.T_DAFTAR, D.T_DIKIRIM, D.T_SETUJU, D.T_TOLAK, ...t.kirim.map((k) => k.teks)]) {
+    assert.match(x, /^\*[^*\n]+\*\n\n/, 'judul tebal lalu baris kosong: ' + x)
+    assert.doesNotMatch(x, /[·—–]|\p{Extended_Pictographic}/u, x)
+  }
+  assert.match(D.T_DAFTAR, /\*daftar nama, instansi\*\n\nContoh: daftar Budi Santoso, BPBD Riau$/)
   assert.equal(fs.existsSync(path.join(rumah, 'daftar', shaAsing + '.json')), false)
   t.kirim.length = 0
   assert.equal(await df.putuskan({ putusan: 'tolak', nomor: ASING }), 'tolak')
@@ -202,7 +207,7 @@ test('plafon global per hari: 30 balasan cara daftar, 20 terusan ke PEMILIK, PEM
   t.kirim.length = 0
   for (let i = 100; i < 125; i++) await df.asing({ dari: nomorKe(i), jid: nomorKe(i) + '@s.whatsapp.net', teks: `daftar Orang ${i}, BPBD Uji` })
   const terus = t.kirim.filter((k) => k.jid === PEMILIK + '@s.whatsapp.net')
-  assert.equal(terus.filter((k) => /^Permintaan daftar bot/.test(k.teks)).length, 20)
+  assert.equal(terus.filter((k) => /^\*Permintaan daftar baru\*\n/.test(k.teks)).length, 20)
   assert.equal(terus.filter((k) => /ditahan sampai besok/.test(k.teks)).length, 1)
   assert.equal(t.panggil.filter((x) => x.url.endsWith('/api/wa/daftar')).length, 20, 'lewat plafon tidak memanggil Worker')
   t.jam += 864e5; t.kirim.length = 0

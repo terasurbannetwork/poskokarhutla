@@ -77,7 +77,7 @@ test('buat hari lampau: abaikan cut-off, kirim PPTX dan PDF hanya ke peminta, st
   await tangani(parse('buat harian 26 okt', d.ctx.now), d.ctx)
   assert.equal(d.exec.length, 1); assert.equal(d.exec[0][0], 'harian_ringkas.py')
   assert.deepEqual(d.berkas.map((b) => path.extname(b.n)).sort(), ['.pdf', '.pptx'])
-  assert.ok(d.berkas.every((b) => b.c === 'Laporan Kejadian Bencana Harian 2026-10-26 (permintaan, belum dikirim ke penerima)'))
+  assert.ok(d.berkas.every((b) => b.c === '*Laporan atas permintaan*\n\nLaporan Kejadian Bencana Harian 26 Okt\nBelum dikirim ke penerima.'))
   assert.equal(fs.existsSync(path.join(d.dasar, 'state.json')), false)
   assert.equal(fs.existsSync(path.join(d.dasar, 'otomatis.lock')), false) // kunci dilepas
 })
@@ -94,14 +94,15 @@ test('buat dengan bahan kurang: sebut jenis yang kurang dan tanggal bahan yang a
   await tangani(parse('buat harian 26 okt', d.ctx.now), d.ctx)
   assert.equal(d.exec.length, 0)
   const b = d.balasan.join('\n')
-  assert.match(b, /Rekap Koordalops 24 jam: ada, bertanggal 26 Okt/)
+  assert.match(b, /^\*Bahan belum lengkap\*\n\nLaporan Kejadian Bencana Harian 26 Okt:\n- Rekap Koordalops 24 jam: ada, bertanggal 26 Okt/)
+  assert.match(b, /\n\nKirim bahan yang kurang, lalu ketik perintah yang sama lagi\.$/)
   assert.match(b, /BMKG pagi: belum untuk 26 Okt, yang ada bertanggal 25 Okt/)
 })
 
 test('generator gagal: galat hanya ke peminta, tanpa berkas', async () => {
   const d = dunia({ pesan: LENGKAP('2026-10-26'), now: wibKe(1), gagalGenerator: true })
   await tangani(parse('buat harian 26 okt', d.ctx.now), d.ctx)
-  assert.equal(d.berkas.length, 0); assert.match(d.balasan.at(-1), /Perintah gagal: generator gagal/)
+  assert.equal(d.berkas.length, 0); assert.match(d.balasan.at(-1), /^\*Perintah gagal\*\n\n.*generator gagal/)
 })
 
 test('kirim ulang: ada keluaran dikirim ke peminta, tidak ada dibalas tiada', async () => {
@@ -121,19 +122,21 @@ test('status: hitung dari rekap, sebut yang belum, dan status kirim hari ini dar
   fs.writeFileSync(path.join(d.dasar, 'state.json'), JSON.stringify({ laporan: { 'harian:2026-10-29': { selesai: true } } }))
   await tangani(parse('status 26 okt', NOW), d.ctx)
   assert.match(d.fetchUrl[0], /\/api\/wa\/rekap\?sampai=2026-10-26&hari=1/)
-  assert.equal(d.balasan[0], '1 dari 2 laporan wajib masuk untuk 26 Okt. Belum: Bb.\nHari ini (29 Okt) laporan harian sudah dikirim ke penerima, penanganan belum.')
+  assert.equal(d.balasan[0], '*Bahan 26 Okt*\n\n1 dari 2 laporan wajib sudah masuk.\nBelum: Bb.\n\n*Kiriman hari ini (29 Okt)*\n- Harian: sudah dikirim\n- Penanganan: belum dikirim')
 })
 
 test('bantuan dan sibuk: daftar perintah; perintah kedua saat sibuk ditolak', async () => {
   const d = dunia({ pesan: LENGKAP('2026-10-26'), now: wibKe(1) })
   await tangani({ aksi: 'bantuan' }, d.ctx)
   assert.equal(d.balasan[0], BANTUAN)
+  for (const kata of ['*Membuat laporan*', '*Kirim ulang*', '*Lainnya*', '- *buat harian*:', 'Contoh: *buat harian kemarin*']) assert.ok(BANTUAN.includes(kata), kata)
+  assert.match(BANTUAN, /^\*[^*\n]+\*\n\n/); assert.doesNotMatch(BANTUAN, /[·—–]|\p{Extended_Pictographic}|^#|```/u)
   let lepas; const tahan = new Promise((r) => { lepas = r })
   d.ctx.dep.exec = async () => { await tahan }
   const pertama = tangani(parse('buat harian 26 okt', d.ctx.now), d.ctx)
   await new Promise((r) => setTimeout(r, 30))
   const d2 = dunia(); await tangani(parse('status', NOW), d2.ctx)
-  assert.equal(d2.balasan[0], 'Sedang membuat laporan, tunggu sebentar.')
+  assert.equal(d2.balasan[0], '*Sedang membuat laporan*\n\nTunggu sebentar, berkas dikirim begitu siap.')
   lepas(); await pertama
 })
 

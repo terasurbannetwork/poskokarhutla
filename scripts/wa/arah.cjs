@@ -8,21 +8,26 @@ const fs = require('fs')
 const path = require('path')
 
 // Perintah mesin proyek (Q14 dan ALUR B-C): `kirim ulang ...` dan `status <tanggal>` tidak termasuk, tetap di perintah.mjs.
-const KATA_PROYEK = /^(buat\b.*|status|bantuan|final|batal|versi|balik (ke )?v?\d+|pptx)$/
-function perintahProyek(teks) {
+// Angka menu draf 1 sampai 4 (boleh berspasi atau bertitik) juga perintah: tidak pernah jadi bahan di Worker. `ya` tidak di sini: hanya perintah
+// selama tanya batal berlaku, jadi diputuskan proyek.klasifikasi (jalur 'bahan+proyek' teks saja, lewat pilihJalur).
+const KATA_PROYEK = /^(buat\b.*|status|bantuan|(final|batal|versi|pptx)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
+const ANGKA_MENU = /^[1-4][\s.]*$/
+// diteruskan: pesan berlabel Diteruskan tidak pernah jadi angka menu (bahan biasa).
+function perintahProyek(teks, diteruskan = false) {
   const asli = String(teks ?? '').trim()
   const t = asli.toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
   if (!t || t.length > 60 || /\n/.test(asli)) return false
+  if (diteruskan && ANGKA_MENU.test(t)) return false
   return KATA_PROYEK.test(t)
 }
 
 // -> 'perintah' | 'proyek' (perintah proyek, tidak diteruskan) | 'bahan+proyek' (teruskan, lalu proyek dengan wa_id) | 'bahan' (teruskan saja).
 // cmd = hasil perintah.cegat (dipanggil dengan proyek: BL_PROYEK && pribadi, jadi grup tetap memakai perilaku lama).
-function arah({ proyek = false, pribadi = false, terdaftar = false, grupOps = false, lama = false, adaMedia = false, teks = '', cmd = null } = {}) {
+function arah({ proyek = false, pribadi = false, terdaftar = false, grupOps = false, lama = false, adaMedia = false, teks = '', cmd = null, diteruskan = false } = {}) {
   if (cmd && cmd.aksi !== 'proyek') return 'perintah'
   if (!proyek || !pribadi || grupOps || !terdaftar) return cmd ? 'perintah' : 'bahan'
   if (lama) return 'bahan' // K11: susulan tidak pernah ke proyek; jalur terjadwal tetap menerimanya
-  if ((cmd && cmd.aksi === 'proyek') || (!adaMedia && perintahProyek(teks))) return 'proyek'
+  if ((cmd && cmd.aksi === 'proyek') || (!adaMedia && perintahProyek(teks, diteruskan))) return 'proyek'
   return 'bahan+proyek'
 }
 
@@ -88,9 +93,9 @@ const jam = (ms) => { const d = wib(ms); return `${String(d.getUTCHours()).padSt
 const tgl = (ms) => { const d = wib(ms); return `${d.getUTCDate()} ${BULAN[d.getUTCMonth()]}` }
 function teksTerlewat(dari, sampai) {
   const sah = (x) => Number.isFinite(x) && x > 0
-  if (!sah(dari) || !sah(sampai)) return 'Bot tadi mati, pesan selama itu tidak diproses. Kirim ulang bila masih perlu.' // jendela tidak jelas: tanpa jam, tidak pernah NaN
+  if (!sah(dari) || !sah(sampai)) return '*Pesan belum diproses*\n\nBot tadi mati, pesan selama itu tidak diproses.\nKirim ulang bila masih perlu.' // jendela tidak jelas: tanpa jam, tidak pernah NaN
   const rentang = tgl(dari) === tgl(sampai) ? `jam ${jam(dari)} sampai ${jam(sampai)}` : `${tgl(dari)} jam ${jam(dari)} sampai ${tgl(sampai)} jam ${jam(sampai)}`
-  return `Bot tadi mati dari ${rentang}, pesan di jam itu tidak diproses. Kirim ulang bila masih perlu.`
+  return `*Pesan belum diproses*\n\nBot tadi mati ${rentang}.\nPesan di jam itu tidak diproses. Kirim ulang bila masih perlu.`
 }
 
 // state berkas: {detak, terkirim: {nomor: kunci jendela}}. kirim(nomor, teks) -> {ok}. Gagal kirim diulang sampai `ulang` kali.
