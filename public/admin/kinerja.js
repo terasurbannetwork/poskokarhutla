@@ -30,9 +30,13 @@
 
   /* ---------- potongan tampilan ---------- */
   const pil = (t, ton) => `<span class="kj-pil t-${ton || "info"}">${esc(t)}</span>`;
-  const ukur = (nilai, label, ton) => nilai === "–" ? `<div class="kj-ukur"><b class="kj-na">belum ada data</b><span>${esc(label)}</span></div>` : `<div class="kj-ukur${ton ? " t-" + ton : ""}"><b>${esc(nilai)}</b><span>${esc(label)}</span></div>`;
+  /* kit dashboard bersama (bersama.js Admin.dasbor); layar ini menyusun teks HTML, jadi ubin dan ikon kartu diambil outerHTML-nya */
+  const DB = Admin.dasbor;
+  const ubin = (nilai, label, ton, ket = "", ikon = "grafik") => DB.ubin({ikon, label, nilai: nilai === "–" ? "belum ada data" : nilai, ket: ket || " ", warna: ton === "bahaya" ? "merah" : ""}).outerHTML;
+  const ukur = (nilai, label, ton) => ubin(nilai, label, ton);
   const kosong = t => `<p class="kj-kosong">${esc(t)}</p>`;
-  const seksi = (judul, isi, ket) => `<section class="kj-k"><h2>${esc(judul)}</h2>${ket ? `<p class="kj-ket">${esc(ket)}</p>` : ""}${isi}</section>`;
+  const IKS = {"Kesegaran data per sumber": "jam", "Waktu per tahap penanganan": "jam", "Tugas yang macet": "waspada", "Himawari": "api", "Evaluasi isian dan verifikasi": "aktif", "Luas dan taktik regu": "peta", "Per instansi": "gedung", "Catatan metode": "berkas"};
+  const seksi = (judul, isi, ket, ikon = IKS[judul] || "grafik") => `<section class="ex ex-std db-std" aria-label="${esc(judul)}"><header class="ex-hd"><div class="ex-jd"><h3>${DB.svg(ikon).outerHTML}${esc(judul)}</h3></div></header><div class="ex-bd">${isi}${ket ? `<p class="kj-ket">${esc(ket)}</p>` : ""}</div></section>`;
   const rangka = () => `<div class="kj-sk" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="kj-sk lebar" aria-hidden="true"><i></i></div><div class="kj-sk lebar" aria-hidden="true"><i></i></div>`;
 
   const garis = (judul, titik, kunci, fmt, nol) => {
@@ -57,7 +61,7 @@
       const lolos = s.segar_pct != null && s.segar_pct >= s.slo_target_pct, gg = s.gangguan || [], tot = gg.reduce((a, g) => a + (g.menit || 0), 0);
       const strip = gg.map(g => `<rect class="kj-gg" x="${Math.max(0, (g.mulai - t0) / (t1 - t0) * 100).toFixed(2)}" y="0" width="${Math.max(.5, (g.selesai - g.mulai) / (t1 - t0) * 100).toFixed(2)}" height="8"><title>${esc(wib(g.mulai))}, ${esc(dur(g.menit))}</title></rect>`).join("");
       return `<article class="kj-s"><header><h3>${esc(s.nama)}</h3>${s.segar_pct == null ? pil("belum terukur", "tunggu") : pil(lolos ? "memenuhi target" : "di bawah target", lolos ? "ok" : "bahaya")}</header>
-        <div class="kj-ukurbaris">${ukur(pct(s.segar_pct), `segar, target ${pct(s.slo_target_pct)}`, s.segar_pct == null ? "" : lolos ? "ok" : "bahaya")}${ukur(dur(s.umur_p50), "umur data tengah (p50)")}${ukur(dur(s.umur_p95), "umur data terburuk (p95)")}</div>
+        <div class="db-ubin-grid db-ubin-baris">${ukur(pct(s.segar_pct), `segar, target ${pct(s.slo_target_pct)}`, s.segar_pct == null ? "" : lolos ? "ok" : "bahaya")}${ukur(dur(s.umur_p50), "umur data tengah (p50)")}${ukur(dur(s.umur_p95), "umur data terburuk (p95)")}</div>
         <svg class="kj-strip" viewBox="0 0 100 8" preserveAspectRatio="none" role="img" aria-label="Gangguan ${esc(s.nama)} ${d.hari} hari terakhir"><rect class="kj-lat" x="0" y="0" width="100" height="8"/>${strip}</svg>
         <p class="kj-ket">${gg.length ? `${N0.format(gg.length)} gangguan, total ${esc(dur(tot))}, di atas batas segar ${esc(dur(s.batas_menit))}.` : `Tidak ada gangguan dalam ${d.hari} hari, batas segar ${esc(dur(s.batas_menit))}.`}</p></article>`;
     }).join("")}</div>`, `Bagian waktu dalam ${d.hari} hari terakhir saat umur data masih di bawah batas segarnya.`);
@@ -69,7 +73,7 @@
       const tgt = t.target_menit == null ? `<span class="kj-redup">target belum ditetapkan</span>` : t.dalam_target_pct == null ? NA : `<b class="${t.dalam_target_pct >= 80 ? "ok" : "bahaya"}">${pct(t.dalam_target_pct)}</b> <small>dari target ${esc(dur(t.target_menit))}</small>`;
       return `<tr><td data-label="Tahap"><b>${esc(TAHAP[t.dari] || t.dari)}</b> ke <b>${esc(TAHAP[t.ke] || t.ke)}</b></td><td class="n" data-label="Tugas">${N0.format(t.n)}</td><td class="n" data-label="Tengah (p50)">${esc(t.n ? jam(t.p50_menit) : NA)}</td><td class="n" data-label="90% selesai dalam (p90)">${esc(t.n ? jam(t.p90_menit) : NA)}</td><td data-label="Dalam target">${t.n ? tgt : NA}</td></tr>`;
     }).join("");
-    return seksi("Waktu per tahap penanganan", `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr><th>Tahap</th><th>Tugas</th><th>Tengah (p50)</th><th>90% dalam (p90)</th><th>Dalam target</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+    return seksi("Waktu per tahap penanganan", `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr><th>Tahap</th><th>Tugas</th><th>Tengah (p50)</th><th>90% dalam (p90)</th><th>Dalam target</th></tr></thead><tbody>${baris}</tbody></table></div>`,
       "Tahap deteksi yang tanpa catatan awal dihitung dari saat tugas dibuat, ditandai perkiraan di catatan.");
   }
   const na = v => v === "–" ? "belum ada data" : v;   // instansi: null berarti belum ada data, bukan nol
@@ -91,7 +95,7 @@
     return [...T.baris()].sort((p, q) => { const x = T.nilai(p, k), y = T.nilai(q, k); return x == null ? 1 : y == null ? -1 : (typeof x === "string" ? x.localeCompare(y, "id") : x - y) * a || p.nama.localeCompare(q.nama, "id"); }).map(r => `<tr>${T.sel(r)}</tr>`).join("");
   }
   const kepala = t => TBL[t].kolom.map(([k, l]) => `<th aria-sort="${urutDari(t) === k ? (arahDari(t) === 1 ? "ascending" : "descending") : "none"}"><button type="button" class="kj-urut" data-t="${t}" data-urut="${k}">${esc(l)}<i aria-hidden="true">${urutDari(t) === k ? (arahDari(t) === 1 ? "▲" : "▼") : ""}</i></button></th>`).join("");
-  const tabelUrut = t => `<div class="ad-tabel-wadah"><table class="ad-tabel kj-t${t}"><thead><tr id="kjKepala${TBL[t].id}">${kepala(t)}</tr></thead><tbody id="kjIsi${TBL[t].id}">${badan(t)}</tbody></table></div>`;
+  const tabelUrut = t => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel kj-t${t}"><thead><tr id="kjKepala${TBL[t].id}">${kepala(t)}</tr></thead><tbody id="kjIsi${TBL[t].id}">${badan(t)}</tbody></table></div>`;
 
   /* ---------- tab Proses ---------- */
   const TAHAP_URUT = ["deteksi", "tugas", "konfirmasi", "tiba", "padam", "terverifikasi"];
@@ -107,7 +111,7 @@
   function macetHtml(d) {
     const m = d.macet; if (!m) return seksi("Macet", kosong("Belum ada data."));
     const sebagian = m.some(x => x.n_menunggu == null), tot = m.reduce((a, x) => a + (x.n_menunggu || 0), 0), lewat = m.reduce((a, x) => a + (x.n_lewat_target || 0), 0);
-    return seksi("Tugas yang macet", m.length ? `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr><th>Menunggu tahap</th><th>Menunggu</th><th>Lewat target</th><th>Daftar</th></tr></thead><tbody>${m.map(x => `<tr><td data-label="Menunggu tahap"><b>${esc(TAHAP[x.tahap] || x.tahap)}</b></td><td class="n" data-label="Menunggu">${x.n_menunggu == null ? "belum ada data" : N0.format(x.n_menunggu)}</td>
+    return seksi("Tugas yang macet", m.length ? `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr><th>Menunggu tahap</th><th>Menunggu</th><th>Lewat target</th><th>Daftar</th></tr></thead><tbody>${m.map(x => `<tr><td data-label="Menunggu tahap"><b>${esc(TAHAP[x.tahap] || x.tahap)}</b></td><td class="n" data-label="Menunggu">${x.n_menunggu == null ? "belum ada data" : N0.format(x.n_menunggu)}</td>
       <td class="n" data-label="Lewat target">${x.n_lewat_target == null ? "belum ada data" : x.n_lewat_target ? `<b class="bahaya">${N0.format(x.n_lewat_target)}</b>` : "0"}</td><td class="n" data-label="Daftar">${x.n_menunggu ? `<a class="kj-drill" href="/admin/instansi#pantau">Buka tugasnya</a>` : "–"}</td></tr>`).join("")}</tbody></table></div>` : kosong("Tidak ada tugas yang menunggu."),
       m.length ? (sebagian ? "Sebagian tahap belum ada data, jadi jumlah total belum bisa dihitung." : `${N0.format(tot)} tugas menunggu, ${N0.format(lewat)} di antaranya lewat target. Target yang belum ditetapkan tidak dihitung lewat.`) : "");
   }
@@ -119,16 +123,16 @@
   function lapanganHtml(d) {
     const L = d.lapangan; if (!L) return seksi("Evaluasi lapangan", kosong("Belum ada data lapangan."));
     const N = L.n || {}, dari = (n, satuan) => n ? `dari ${N0.format(n)} ${satuan}` : "";   // tiap rasio memakai penyebutnya sendiri (lapangan.n)
-    const R = (nilai, label, ton, ket) => nilai == null ? `<div class="kj-ukur"><b class="kj-na">belum ada data</b><span>${esc(label)}</span></div>` : `<div class="kj-ukur${ton ? " t-" + ton : ""}"><b>${esc(pct(nilai))}</b><span>${esc(label)}</span><small>${esc(ket)}</small></div>`;
+    const R = (nilai, label, ton, ket) => nilai == null ? ubin("–", label, "", "", "berkas") : ubin(pct(nilai), label, ton, ket, "berkas");
     /* tanpa warna baik/buruk: kontrak belum punya target untuk rasio lapangan, jadi angkanya netral */
     const gps = L.gps_curiga_n, tugas = dari(N.konfirmasi, "tugas terkonfirmasi"), foto = dari(N.foto, "foto"), padam = dari(N.padam, "tugas padam");
-    const kartu = `<div class="kj-ukurbaris">${R(L.isian_lengkap_pct, "isian lengkap", "", tugas)}${R(L.foto_gps_sah_pct, "foto GPS sah", "", foto)}
-      ${gps == null ? `<div class="kj-ukur"><b class="kj-na">belum ada data</b><span>foto GPS curiga</span></div>` : `<div class="kj-ukur"><b>${N0.format(gps)}</b><span>foto GPS curiga</span><small>${esc(foto)}</small></div>`}
+    const kartu = `<div class="db-ubin-grid db-ubin-baris">${R(L.isian_lengkap_pct, "isian lengkap", "", tugas)}${R(L.foto_gps_sah_pct, "foto GPS sah", "", foto)}
+      ${gps == null ? ubin("–", "foto GPS curiga", "", "", "waspada") : ubin(N0.format(gps), "foto GPS curiga", "", foto, "waspada")}
       ${R(L.kabar_tepat_pct, "kabar tepat (tiap 24 jam)", "", dari(N.kabar, "tugas berjalan"))}${R(L.padam_terverifikasi_pct, "padam terverifikasi", "", padam)}
       ${R(L.muncul_lagi_pct, "muncul lagi sesudah padam", "", padam)}${R(L.bukan_api_pct, "bukan api (alarm palsu satelit)", "", dari(N.konfirmasi, "tugas terkonfirmasi"))}</div>`;
     const rasio =v => v == null ? "belum ada data" : N1T.format(v) + " kali";
     const luas = L.luas, tak = L.taktik;
-    const blok = (judul, o, a, b, ketA, ketB) => `<div class="kj-s"><h3>${esc(judul)}</h3>${!o || !o.n ? kosong("Belum ada tugas yang punya kedua angka.") : `<div class="kj-ukurbaris"><div class="kj-ukur"><b>${esc(rasio(o[a]))}</b><span>${esc(ketA)}</span><small>dari ${N0.format(o.n)} tugas</small></div>${b ? `<div class="kj-ukur"><b>${esc(rasio(o[b]))}</b><span>${esc(ketB)}</span><small>dari ${N0.format(o.n_garis ?? o.n)} tugas</small></div>` : ""}</div>`}</div>`;
+    const blok = (judul, o, a, b, ketA, ketB) => `<div class="kj-s"><h3>${esc(judul)}</h3>${!o || !o.n ? kosong("Belum ada tugas yang punya kedua angka.") : `<div class="db-ubin-grid db-ubin-baris">${ubin(rasio(o[a]), ketA, "", `dari ${N0.format(o.n)} tugas`, "grafik")}${b ? ubin(rasio(o[b]), ketB, "", `dari ${N0.format(o.n_garis ?? o.n)} tugas`, "grafik") : ""}</div>`}</div>`;
     return seksi("Evaluasi isian dan verifikasi", kartu, "Isian lengkap: konfirmasi, penanggung jawab, foto ber-GPS, dan status api. Kabar tepat: selang kabar tidak lebih dari 24 jam selama api belum padam. Bukan api: hasil isian regu, ukuran alarm palsu satelit.")
       + seksi("Luas dan taktik regu", `<div class="kj-sumber">${blok("Luas lapangan dibanding satelit", luas, "rasio_lapangan_satelit_p50", "rasio_garis_satelit_p50", "luas lapangan per luas satelit (tengah)", "luas garis api per luas satelit (tengah)")}${blok("Regu nyata dibanding saran", tak, "regu_nyata_per_saran_p50", "personel_nyata_per_saran_p50", "regu nyata per saran (tengah)", "personel nyata per saran (tengah)")}</div>`,
         "Rasio satu berarti sama dengan satelit atau saran; hanya tugas yang punya kedua angka yang dihitung.")
@@ -143,7 +147,7 @@
   function himawariHtml(d) {
     const h = d.himawari; if (!h) return seksi("Himawari", kosong("Belum ada data Himawari."));
     const semua0 = h.alarm === 0 && h.terkunci === 0 && h.hilang === 0, n = v => v == null ? "–" : N0.format(v);
-    return seksi("Himawari", `<div class="kj-ukurbaris">${ukur(n(h.alarm), "alarm dini")}${ukur(n(h.terkunci), "terkunci jadi tugas", h.terkunci ? "ok" : "")}${ukur(n(h.hilang), "hilang sebelum terkunci")}${ukur(dur(h.selisih_viirs_p50_menit), "selisih ke VIIRS (tengah)")}</div>`
+    return seksi("Himawari", `<div class="db-ubin-grid db-ubin-baris">${ukur(n(h.alarm), "alarm dini")}${ukur(n(h.terkunci), "terkunci jadi tugas", h.terkunci ? "ok" : "")}${ukur(n(h.hilang), "hilang sebelum terkunci")}${ukur(dur(h.selisih_viirs_p50_menit), "selisih ke VIIRS (tengah)")}</div>`
       + (semua0 ? kosong("Belum ada alarm Himawari pada periode ini.") : ""), "Terkunci: alarm yang terkonfirmasi satelit lain atau pindai berikutnya sehingga jadi tugas. Hilang: alarm yang padam sebelum terkunci.");
   }
   const catatanHtml = d => d.catatan?.length ? seksi("Catatan metode", `<ul class="kj-catat">${d.catatan.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`) : "";
@@ -153,7 +157,7 @@
   function kontrol() {
     return `${tabHtml()}<div class="kj-bar"><div class="kj-seg" role="group" aria-label="Periode">${HARI.map(h => `<button type="button" data-hari="${h}" aria-pressed="${S.hari === h}">${h} hari</button>`).join("")}</div>
       ${S.prov ? `<span class="kj-chip" id="kjChip">${esc(NAMA[S.prov] || "Provinsi " + S.prov)}<button type="button" data-semua aria-label="Tampilkan semua provinsi">Semua provinsi</button></span>` : `<span class="kj-chip muda">Semua provinsi</span>`}
-      <span class="kj-redup" id="kjWaktu"></span><span class="kj-pesan" id="kjPesan" role="status"></span></div><div id="kjIsi"></div>`;
+      <span class="kj-redup" id="kjWaktu"></span><span class="kj-pesan" id="kjPesan" role="status"></span></div><div id="kjIsi" class="db-tumpuk"></div>`;
   }
   const pasang = html => { document.getElementById("kjIsi").innerHTML = html; };
   const galat = (status, pesan) => `<div class="kj-galat" role="alert"><b>${status === 503 ? "Belum aktif" : "Gagal memuat"}</b><p>${esc(pesan)}</p>${status === 503 ? "" : `<button type="button" class="ad-tombol" data-ulang>Coba lagi</button>`}</div>`;
@@ -215,6 +219,7 @@
   });
 
   app.className = "ad-isi kj";
+  DB.tumpuk(app);
   S = baca();
   app.innerHTML = kontrol();
   nanti(muat);

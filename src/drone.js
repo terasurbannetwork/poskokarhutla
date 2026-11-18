@@ -38,7 +38,7 @@ export const halamanDrone = ctx => `<!doctype html>
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
 <script src="/laporan_koordalops.js?v=1"></script>
-<script src="/admin/bersama.js?v=4"></script>
+<script src="/admin/bersama.js?v=5"></script>
 <script src="/admin/drone_rute.js?v=1"></script>
 <script src="/admin/drone.js?v=1"></script>
 </body></html>`;

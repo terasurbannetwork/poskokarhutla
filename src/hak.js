@@ -951,6 +951,15 @@ export const PB_SQL_HASIL = {
     WHERE r.tanggal BETWEEN ?1 AND ?2 AND r.bencana = ?3 AND (?4 = '' OR r.prov = ?4) AND r.status IN ('terbit','selesai') AND NOT EXISTS (SELECT 1 FROM pb_renlap n WHERE n.bencana = r.bencana AND n.prov = r.prov AND n.kab = r.kab AND n.tanggal = r.tanggal AND n.versi > r.versi AND n.status IN ('terbit','selesai')) GROUP BY h.didatangi, h.alasan`,
 };
 export const pbStmtHasil = (env, p, id, b, oleh, kini) => sedia(env, p, "pb_renlap_hasil", "tambah", PB_SQL_HASIL.upsert).bind(id, b.target_no, b.didatangi, b.alasan, b.hasil, b.catatan, oleh, kini);
+/* Tindakan per target (pb_renlap_tindakan, migrasi 0153; tindakan-operasi D5, D6): hapus set per (renlap, target) lalu sisip satu kode. per_tindakan memakai saringan versi terbaru yang sama dengan rinci. */
+Object.assign(MATRIKS, {pb_renlap_tindakan: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "hapus"]}});
+PB_SQL_HASIL.tindakanHapus = "DELETE FROM pb_renlap_tindakan WHERE renlap_id = ?1 AND target_no IN (SELECT value FROM json_each(?2))";
+PB_SQL_HASIL.tindakanSisip = "INSERT INTO pb_renlap_tindakan (renlap_id, target_no, tindakan, oleh, waktu) SELECT ?1, json_extract(value, '$[0]'), json_extract(value, '$[1]'), ?3, ?4 FROM json_each(?2)";
+PB_SQL_HASIL.perTindakan = PB_SQL_HASIL.rinci.replace("SELECT h.didatangi, h.alasan, count(*) n FROM pb_renlap r JOIN pb_renlap_hasil h", "SELECT h.tindakan, count(*) n FROM pb_renlap r JOIN pb_renlap_tindakan h").replace("GROUP BY h.didatangi, h.alasan", "GROUP BY h.tindakan");
+/* dua pernyataan per permintaan: nomor = daftar target_no bertindakan, pasangan = [[target_no, kode], ...] (batas kueri D1 per pemanggilan) */
+export const pbStmtTindakanHapus = (env, p, id, nomor) => sedia(env, p, "pb_renlap_tindakan", "hapus", PB_SQL_HASIL.tindakanHapus).bind(id, JSON.stringify(nomor));
+export const pbStmtTindakanSisip = (env, p, id, pasangan, oleh, kini) => sedia(env, p, "pb_renlap_tindakan", "tambah", PB_SQL_HASIL.tindakanSisip).bind(id, JSON.stringify(pasangan), oleh, kini);
+export const pbTindakanRekap = async (env, p, dari, sampai, bencana, prov) => Object.fromEntries((await sedia(env, p, "pb_renlap_tindakan", "baca", PB_SQL_HASIL.perTindakan).bind(dari, sampai, bencana, prov).all()).results.map(x => [x.tindakan, x.n]));
 export const pbKepatuhan = async (env, p, dari, sampai, bencana, prov) => {
   const [a, b] = await env.DB.batch([sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.renlap).bind(dari, sampai, bencana, prov), sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.rinci).bind(dari, sampai, bencana, prov)]);
   return {renlap: a.results[0].renlap, target: a.results[0].target, rinci: b.results};
@@ -1526,4 +1535,44 @@ export const kuMuatDraf = async (env, p, kejadianId) => {
   const terpotong = [], potong = (nama, a) => { if (a && a.length > KU_BATAS[nama]) { terpotong.push(nama); return a.slice(0, KU_BATAS[nama]); } return a; };
   return {kejadian: kej.results[0], kab: kab.results.map(r => r.kab4), jejak: potong("jejak", jejak.results), tugas: baris, tautan: tautan.results[0].n, muncul: potong("muncul", muncul), pelajaran: potong("pelajaran", pelajaran),
     layanan: potong("layanan", layanan), baris3w: potong("baris3w", baris3w), tawaran: potong("tawaran", tawaran), terpotong, kolom: {awal, penugasan: tugasan}};
+};
+
+/* ---------- Kaji ulang: kandidat, tugas belum bertaut, pengesahan (KU-04..06; ALGORITMA 1, 2; ALUR A4; keputusan Q1, Q3) ----------
+   SQL saja; kriteria Q1 (HIPOTESIS) dan aturan penulis tunggal Q3 diputuskan di rute src/kaji_ulang.js. Hak lewat izin()/sedia() pada tabel ku_*. */
+export const KU_MAKS_KANDIDAT = 120;
+const KU_SQL_KANDIDAT = merah => `SELECT k.id, k.jenis, k.nama, k.fase, k.mulai, k.tanggap_mulai, k.tanggap_akhir,
+  (SELECT count(*) FROM sk_kejadian_kab WHERE kejadian_id = k.id) nkab, ${merah ? "EXISTS (SELECT 1 FROM lf_riwayat WHERE kejadian_id = k.id AND warna = 'merah')" : "NULL"} merah, u.status kaji_status, u.versi kaji_versi
+  FROM sk_kejadian k LEFT JOIN ku_kaji u ON u.kejadian_id = k.id WHERE k.fase IN ('transisi', 'pemulihan', 'selesai') AND (?1 = 1 OR k.dummy = 0) ORDER BY k.mulai DESC, k.id DESC LIMIT ${KU_MAKS_KANDIDAT}`;
+/* {baris, lifeline}: lifeline=false bila lf_riwayat belum ada (kriteria itu dilewati, bukan nol) */
+export const kuKandidatBaris = async (env, p, dummyOk) => {
+  izin(p, "ku_kaji", "baca");
+  try { return {baris: (await env.DB.prepare(KU_SQL_KANDIDAT(true)).bind(dummyOk ? 1 : 0).all()).results, lifeline: true}; }
+  catch (e) { if (!/no such table: (main\.)?lf_riwayat/i.test(String(e?.message ?? e))) throw e; }
+  return {baris: (await env.DB.prepare(KU_SQL_KANDIDAT(false)).bind(dummyOk ? 1 : 0).all()).results, lifeline: false};
+};
+/* T21: tugas_api yang dibuat dalam [dari, sampai) di provinsi kejadian tanpa baris sk_kejadian_sumber; pencocokan kab dilakukan pemanggil (kab4Dari). null bila tugas_api belum ada. */
+export const kuTugasBelumBertaut = async (env, p, dari, sampai, provs) => {
+  izin(p, "ku_kaji", "baca");
+  try {
+    return (await env.DB.prepare(`SELECT t.prov, t.kab FROM tugas_api t WHERE t.dummy = 0 AND t.dibuat >= ?1 AND t.dibuat < ?2 AND t.prov IN (SELECT value FROM json_each(?3))
+      AND NOT EXISTS (SELECT 1 FROM sk_kejadian_sumber s WHERE s.sumber = 'tugas_api' AND s.kode = t.id) LIMIT 500`).bind(dari, sampai, JSON.stringify(provs)).all()).results;
+  } catch (e) { if (/no such table/i.test(String(e?.message ?? e))) return null; throw e; }
+};
+/* siapa saja yang menulis isi kaji ulang (pelajaran dan rekomendasi), untuk aturan penulis tunggal */
+export const kuPenulis = async (env, p, kejadianId) => {
+  izin(p, "ku_pelajaran", "baca"); izin(p, "ku_rekomendasi", "baca"); kuKj(kejadianId);
+  return (await env.DB.prepare("SELECT oleh FROM ku_pelajaran WHERE kejadian_id = ?1 UNION SELECT oleh FROM ku_rekomendasi WHERE kejadian_id = ?1 LIMIT 50").bind(kejadianId).all()).results.map(r => r.oleh);
+};
+/* ada staf Koordalops aktif lain selain `stafId` (Q3: dua pasang mata) */
+export const kuKoordalopsLain = async (env, p, stafId) => {
+  izin(p, "ku_kaji", "ubah");
+  return (await env.DB.prepare("SELECT count(*) n FROM staf WHERE status = 'aktif' AND dummy = 0 AND id != ?1 AND EXISTS (SELECT 1 FROM json_each(peran) WHERE value = 'koordalops')").bind(String(stafId)).first()).n > 0;
+};
+/* sahkan (versiLama 0) atau sahkan ulang (>= 1): naik satu versi dengan pembanding versi lama (balapan = 0 baris = false); pemicu ku_kaji_arsip_versi memindahkan potret lama ke ku_potret; sk_jejak sebatch */
+export const kuSahkan = async (env, p, {kejadianId, versiLama, potret, oleh}, kini) => {
+  kuKj(kejadianId);
+  const s = sedia(env, p, "ku_kaji", "ubah", "UPDATE ku_kaji SET status = 'disahkan', versi = versi + 1, disahkan_oleh = ?3, disahkan_pada = ?4, potret = ?5, diubah = ?4 WHERE kejadian_id = ?1 AND versi = ?2").bind(kejadianId, versiLama, oleh, kini, potret);
+  const ulang = versiLama > 0;
+  const [r] = await skBatch(env, p, [s, skStmtJejakJikaBerubah(env, pelakuSkStaf, oleh, "kaji_ulang", kejadianId, ulang ? "sahkan_ulang" : "sahkan", ulang ? "disahkan" : "draf", "disahkan", `versi ${versiLama + 1}`, kini)]);
+  return r.meta.changes > 0;   // D1 menghitung baris pemicu arsip ku_potret juga, jadi bukan === 1
 };

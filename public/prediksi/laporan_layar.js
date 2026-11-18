@@ -22,10 +22,15 @@ function petaLap(pt, s, kls, nilai, teks) {
   const pakai = Object.keys(pt.d).map(k => {
     const b = per[k], v = b ? nilai(b) : null, i = LP.kelas(v, LP.KELAS[kls].batas);
     const tip = `<b>${esc(b?.nama || k)}</b><br>${esc(b ? teks(b) : "tidak ada di prediksi").replace(/\n/g, "<br>")}`;
-    return `<use href="#lp-${k}" fill="${i < 0 ? LP.TANPA : LP.KELAS[kls].warna[i]}" data-tip="${esc(tip)}"/>`;
+    return `<use href="#lp-${k}" fill="${i < 0 ? LP.TANPA : LP.KELAS[kls].warna[i]}" data-tip="${esc(tip)}"${b ? ` data-id="${esc(b.id)}"` : ""}/>`;
   }).join("");
   return `<svg class="lp-peta" viewBox="0 0 ${pt.lebar} ${pt.tinggi}" role="img" preserveAspectRatio="xMidYMid meet">${pakai}</svg>${legendaLap(kls)}`;
 }
+
+const JENIS_URUT = ["banjir", "longsor", "api", "asap", "rob", "hujan"];
+const jenisAktif = () => $("#lpJenis")?.querySelector('[aria-pressed="true"]')?.dataset.j || "banjir";
+const hashLap = () => "#laporan/" + $("#lpProv").value + (jenisAktif() === "banjir" ? "" : "/" + jenisAktif());
+const VONIS_J = {HJN: "p20", API: "p", LSR: "ps", BNJ: "ps"};
 
 async function muatLaporan() {
   if (!PR.d) return;   // tab diklik sebelum prediksi.json termuat: mulai() memanggil pilihTab lagi lewat hash
@@ -35,25 +40,69 @@ async function muatLaporan() {
     PR.lap = {amatan, lengas, ap};
     const prov = [...new Map(PR.d.kab.map(k => [k.prov, k.pn])).entries()].sort((a, b) => a[1].localeCompare(b[1], "id"));
     $("#lpProv").innerHTML = prov.map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join("");
-    const awal = location.hash.match(/^#laporan\/(\d{2})$/)?.[1];
-    if (awal && prov.some(([k]) => k === awal)) $("#lpProv").value = awal;
+    const m = location.hash.match(/^#laporan\/(\d{2})(?:\/(\w+))?$/);
+    if (m && prov.some(([k]) => k === m[1])) $("#lpProv").value = m[1];
+    if (m?.[2] && JENIS_URUT.includes(m[2])) pasangJenis(m[2]);
   }
-  if (PR.lapProv === $("#lpProv").value) { history.replaceState(null, "", "#laporan/" + PR.lapProv); return; }   // buka ulang tab: sudah tergambar
+  if (PR.lapProv === $("#lpProv").value + "/" + jenisAktif()) { history.replaceState(null, "", hashLap()); return; }   // buka ulang tab: sudah tergambar
   gambarLaporan();
 }
 
-async function gambarLaporan() {
-  const prov = $("#lpProv").value, {amatan, lengas, ap} = PR.lap;
-  history.replaceState(null, "", "#laporan/" + prov);
-  $("#laporanIsi").setAttribute("aria-busy", "true");
-  await new Promise(r => setTimeout(r));   // biarkan pemilih menutup dan tampil dulu sebelum render berat
+/* geometri satu provinsi + path SVG-nya, dipakai bersama tab Laporan provinsi dan Paparan dampak; null bila berkas tak ada */
+async function petaProv(prov) {
   const geo = PR.geo[prov] ||= await fetch(`../geo/kabupaten/${prov}.json`).then(r => r.ok ? r.json() : null).catch(() => null);
-  if (prov !== $("#lpProv").value) return;   // pemilih berganti selama menunggu
+  return geo ? ((PR.pt ||= {})[prov] ||= LP.petaSvg(geo)) : null;
+}
+function pasangJenis(j) {
+  document.querySelectorAll("#lpJenis button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.j === j)));
+}
+
+/* Isi sel dan tooltip jenis generik dari baris mentah prediksi.json (kab[kode][n-1]) */
+function teksJenis(jenis, k, n) {
+  const J = LP.JENIS[jenis], r = k?.[J.kode]?.[n - 1], g = c => kol(J.kode, r, c);
+  if (!r || g(J.kolom) == null) return "tanpa data";
+  if (jenis === "hujan") return `total ${mmLap(g("tot"))}, peluang ≥20 mm ${persen(g("p20"))}`;
+  if (jenis === "api") return `peluang ≥1 titik ${persen(g("p"))}`;
+  if (jenis === "asap") return `${ISPU[g("kat")]}, PM2,5 ${fmt(g("pm"))} µg/m³`;
+  if (jenis === "rob") return g("lewat") ? "muka laut melewati p95" : "di bawah p95";
+  return `${LEVEL[g("lv")]}${g("ps") != null ? `, peluang Siaga ${persen(g("ps"))}` : ""}`;
+}
+
+/* Laporan generik per jenis (longsor, titik panas, asap, rob, hujan): hanya dari prediksi.json, tanpa sumber lain */
+function laporanJenis(pt, jenis, prov) {
+  const s = LP.susunJenis({d: PR.d, prov, jenis}), J = s.J, K = LP.KELAS[J.kelas], kd = PR.d.kode[J.kode];
+  const kabById = Object.fromEntries(PR.d.kab.filter(k => k.prov === prov).map(k => [k.id, k]));
+  const kepala = `${defsLap(pt)}<header class="lp-kepala"><h2>Laporan prediksi ${esc(J.nama)} ${esc(s.nama)}</h2><p class="pr-kecil">Terbit ${esc(jamWIB(PR.d.dibuat))}. Alat bantu staf, tidak untuk disebar ke publik.</p></header>
+    <details class="pr-kecil lp-batas"><summary>Batasan</summary><ul>${PR.d.batasan.map(b => `<li>${esc(b)}</li>`).join("")}${kd ? `<li>Data dari ${esc(kd.sumber)}.</li>` : ""}</ul></details>`;
+  if (!kd || !s.ada) {
+    const ket = jenis === "rob" ? "Provinsi ini tidak punya kab/kota pesisir yang dipantau rob, jadi tidak ada titik rob untuk dilaporkan." : `Tidak ada data prediksi ${esc(J.nama)} untuk provinsi ini.`;
+    return kepala + kartuLap("Keterangan", "Titik prediksi", `<p class="pr-kecil">${ket}</p>`);
+  }
+  const hari = n => esc(tgl(kd.hari[n - 1]));
+  const belum = VONIS_J[J.kode] ? "" : '<span class="pr-pil abu">belum teruji</span>';
+  const ringkas = `<div class="tw ex-tabel"><table><thead><tr><th>Hari</th>${K.label.map(l => `<th>${esc(l)}</th>`).join("")}<th>Tanpa data</th></tr></thead><tbody>${[1, 2, 3].map(n =>
+    `<tr><td>${hari(n)}</td>${s.ringkas[n - 1].map(c => `<td class="n">${fmt(c)}</td>`).join("")}<td class="n">${fmt(s.n - s.ringkas[n - 1].reduce((a, c) => a + c, 0))}</td></tr>`).join("")}</tbody></table></div>`;
+  const panel = [1, 2, 3].map(n => kartuLap(n === 1 ? "Besok" : `+${n} hari`, `${esc(J.nama[0].toUpperCase() + J.nama.slice(1))}, ${hari(n)} ${pil(kd.vonis[`${VONIS_J[J.kode]}|${n}`])} ${belum}`,
+    petaLap(pt, s, J.kelas, b => b.v[n - 1], b => `${K.label[b.kls[n - 1]] ?? "tanpa data"}\n${teksJenis(jenis, kabById[b.id], n)}`)));
+  const tb = s.atas.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th>${[1, 2, 3].map(n => `<th>+${n} hari</th>`).join("")}</tr></thead><tbody>${s.atas.map(b =>
+    `<tr><td>${esc(b.nama)}</td>${[1, 2, 3].map(n => `<td>${esc(teksJenis(jenis, kabById[b.id], n))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "";
+  return `${kepala}${kartuLap("Ringkasan", `Jumlah kab/kota ${esc(s.nama)} per kelas`, ringkas)}
+    <div class="lp-grid">${panel.join("")}</div>
+    ${tb ? kartuLap("Rincian", "Rincian kab/kota", tb) : ""}`;
+}
+
+async function gambarLaporan() {
+  const prov = $("#lpProv").value, jenis = jenisAktif(), {amatan, lengas, ap} = PR.lap;
+  history.replaceState(null, "", hashLap());
+  $("#laporanIsi").setAttribute("aria-busy", "true");
+  await new Promise(r => (window.nanti || (f => f()))(r));   // biarkan pemilih menutup dan tampil dulu sebelum render berat
+  const pt = await petaProv(prov);
+  if (prov !== $("#lpProv").value || jenis !== jenisAktif()) return;   // pemilih berganti selama menunggu
   $("#laporanIsi").removeAttribute("aria-busy");
-  if (!geo) { $("#laporanIsi").innerHTML = '<p class="kosong">Batas kab/kota provinsi ini belum tersedia.</p>'; return; }
-  const pt = (PR.pt ||= {})[prov] ||= LP.petaSvg(geo);
+  if (!pt) { $("#laporanIsi").innerHTML = '<p class="kosong">Batas kab/kota provinsi ini belum tersedia.</p>'; return; }
+  PR.lapProv = prov + "/" + jenis;
+  if (jenis !== "banjir") { $("#laporanIsi").innerHTML = laporanJenis(pt, jenis, prov); return; }
   const s = LP.susun({d: PR.d, amatan, lengas, ap, prov}), w = LP.waspada(s.baris, 1);
-  PR.lapProv = prov;
   const hj = PR.d.kode.HJN, bn = PR.d.kode.BNJ;
   const tahapA = !s.amatan ? "" : s.amatan.j === "final" ? '<span class="pr-pil ok" title="ERA5 per jam lewat Open-Meteo Archive">final, ERA5</span>'
     : '<span class="pr-pil abu" title="Open-Meteo untuk tanggal lampau = analisis model, bukan pengukuran; diganti ERA5 sesudah 6 hari">sementara, analisis model</span>';
@@ -77,15 +126,16 @@ async function gambarLaporan() {
   const tabel = tb.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th title="Hujan hari terakhir di arsip pengamatan">Hujan kemarin (mm)</th><th title="Fraksi volume 3 sampai 27 cm">Lengas (fraksi)</th><th title="Total prakiraan hujan besok">Prakiraan besok (mm)</th><th title="Ambang Waspada, hipotesis; * = angka nasional">Ambang (mm)</th><th title="Prakiraan dikurangi ambang">Lebihan (mm)</th><th>Banjir +1</th><th>Banjir +2</th><th>Banjir +3</th></tr></thead><tbody>${tb.map(b =>
     `<tr><td>${esc(b.nama)}</td><td class="n">${sel(b.hujan)}</td><td class="n">${lgs(b.lengas)}</td><td class="n">${sel(b.prak)}</td><td class="n">${sel(b.ambang)}${b.sumberAmbang === "nasional" ? "*" : ""}</td><td class="n">${sel(b.lebih)}</td>${b.lv.map(v => `<td>${v == null ? "–" : LEVEL[v]}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "";
   /* jumlah kab per level untuk +1..+3: baris = hari; kolom pertama = Waspada atau lebih (sama dengan judul), lalu per level tepat */
-  const ringkas = `<div class="tw ex-tabel"><table><thead><tr><th>Hari</th><th>Waspada atau lebih</th>${LEVEL.slice(1).map(l => `<th>${l}</th>`).join("")}</tr></thead><tbody>${[1, 2, 3].map(n =>
-    `<tr><td>${bn ? esc(tgl(bn.hari[n - 1])) : `+${n}`}</td><td class="n">${fmt(LP.waspada(s.baris, n).length)}</td>${[1, 2, 3].map(l => `<td class="n">${fmt(s.baris.filter(b => b.lv[n - 1] === l).length)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const ringkas = `<div class="tw ex-tabel"><table><thead><tr><th>Hari</th><th>Waspada atau lebih</th>${LEVEL.slice(1).map(l => `<th>${l}</th>`).join("")}<th>Seluruh kab/kota</th></tr></thead><tbody>${[1, 2, 3].map(n =>
+    `<tr><td>${bn ? esc(tgl(bn.hari[n - 1])) : `+${n}`}</td><td class="n">${fmt(LP.waspada(s.baris, n).length)}</td>${[1, 2, 3].map(l => `<td class="n">${fmt(s.baris.filter(b => b.lv[n - 1] === l).length)}</td>`).join("")}<td class="n">${fmt(s.n)}</td></tr>`).join("")}</tbody></table></div>`;
   $("#laporanIsi").innerHTML = `${defsLap(pt)}<header class="lp-kepala"><h2>Laporan prediksi banjir ${esc(s.nama)}</h2><p class="pr-kecil">Terbit ${esc(jamWIB(PR.d.dibuat))}. Alat bantu staf, tidak untuk disebar ke publik.</p></header>
     <details class="pr-kecil lp-batas"><summary>Batasan</summary><ul>${PR.d.batasan.map(b => `<li>${esc(b)}</li>`).join("")}<li>Ambang hujan pemicu belum lolos uji; kab/kota di luar sampel memakai angka nasional (bertanda *).</li></ul></details>
-    ${kartuLap("Ringkasan", `<span class="hl">${fmt(w.length)} dari ${fmt(s.n)}</span> kab/kota ${esc(s.nama)} berpeluang banjir Waspada atau lebih besok`, ringkas)}
+    ${kartuLap("Ringkasan", "Jumlah kab/kota per level", ringkas)}
     <div class="lp-grid">${panel.join("")}</div>
-    ${tabel ? kartuLap("Rincian", `Kab/kota berlevel Waspada atau lebih dalam 3 hari: <span class="hl">${fmt(tb.length)}</span> ${tahapA} ${pilHip(ap)}`, tabel, "lp-rinci") : ""}`;
+    ${tabel ? kartuLap("Rincian", `Rincian kab/kota ${tahapA} ${pilHip(ap)}`, tabel, "lp-rinci") : ""}`;
 }
 
 $("#lpProv").addEventListener("change", gambarLaporan);
+$("#lpJenis").addEventListener("click", e => { const b = e.target.closest("button[data-j]"); if (b) { pasangJenis(b.dataset.j); gambarLaporan(); } });
 $("#lpCetak").addEventListener("click", () => window.print());
 pasangTip();

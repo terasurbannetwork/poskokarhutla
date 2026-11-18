@@ -166,8 +166,9 @@ const slug = s => String(s).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCas
 /* murni: larik peran dan wilayah dari isian; {galat} atau {peran, wilayah} */
 export function cekPeranWilayah(o) {
   const dari = (v, nama, boleh, maks) => v == null ? [] : Array.isArray(v) && v.length <= maks && v.every(x => typeof x === "string" && boleh(x)) && new Set(v).size === v.length ? v : null;
-  const peran = dari(o.peran, "peran", x => Object.hasOwn(PERAN, x), 7), wilayah = dari(o.wilayah, "wilayah", x => Object.hasOwn(PROV, x), 40);
-  if (!peran?.length) return {galat: `peran wajib, satu atau lebih dari: ${Object.keys(PERAN).join(", ")}`};
+  const peran = dari(o.peran, "peran", x => Object.hasOwn(PERAN, x), Object.keys(PERAN).length), wilayah = dari(o.wilayah, "wilayah", x => Object.hasOwn(PROV, x), 40);
+  if (!peran) return {galat: `peran harus larik tanpa duplikat dari: ${Object.keys(PERAN).join(", ")}`};
+  if (!peran.length) return {galat: `peran wajib, satu atau lebih dari: ${Object.keys(PERAN).join(", ")}`};
   if (!wilayah) return {galat: "wilayah harus larik kode provinsi BPS 2 digit tanpa duplikat (kosong = nasional)"};
   return {peran, wilayah};
 }
