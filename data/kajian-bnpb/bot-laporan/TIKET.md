@@ -16,7 +16,7 @@ Urutan kerja. Ambil satu tiket, kerjakan hanya cakupannya. Tiket yang ditahan Q 
 | BL-10 | Revisi: operasi ubah, kunci, `versi`, `balik`, `pptx` | wa-bot | T6, T8 | BL-07, BL-08 |
 | BL-11 | Pemeriksaan otomatis: `aturan_slide.py`, gerbang bahasa, banding 7 hari, bersamaan dengan PDF | wa-bot | T11, T19 | BL-08 |
 | BL-12 | `final`: perluas `unggahLaporan()` untuk subfolder `Revisi N`; Drive tim IT, `/api/wa/hasil`, ulang bila gagal | wa-bot | T10 | BL-10, Q9 |
-| BL-13 | Pemilik, ikuti `PANDUAN-PEMILIK.md`: tautkan organisasi API, buat kunci, isi `.env`; ganti `DRIVE_ROOT` dan `DRIVE_LAPORAN` lalu jalankan `drive-masuk.mjs` sebagai akun tim IT; terapkan migrasi di D1 produksi | pemilik | `node scripts/wa/proyek.mjs --kering` lolos | BL-01 |
+| BL-13 | Pemilik, ikuti `PANDUAN-PEMILIK.md`: tautkan organisasi API, buat kunci, isi `.env`; cek akun Drive yang tersambung (ganti ke tim IT hanya bila belum); terapkan migrasi di D1 produksi | pemilik | `node scripts/wa/proyek.mjs --kering` lolos | BL-01 |
 | BL-14 | Detak mesin; susulan dibuang untuk bot proyek, T-TERLEWAT sekali per nomor | wa-bot, warga-api | uji detak; T23 | BL-08, Q2 |
 | BL-15 | Label pola dan usulan aturan tetap | wa-bot, warga-api | T12 | BL-10, Q12 |
 | BL-16 | Jenis tahap 2: penanganan banjir, gempa, kekeringan; `POST /api/wa/hasil` menerima jenis itu | pipa-data, wa-bot, warga-api | BL-06 dan BL-07 untuk tiap generator | BL-10, Q3 |

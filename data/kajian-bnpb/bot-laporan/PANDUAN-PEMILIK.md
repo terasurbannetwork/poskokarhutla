@@ -12,33 +12,105 @@ Jangan pernah menempel kunci, token, atau kode rahasia ke chat Claude, ke WA, at
 2. Buka **platform.claude.com** (Console) dengan akun yang sama, pilih organisasi tadi.
 3. Masuk menu **API Keys**, klik **Create Key**, beri nama `bot-laporan-wa`. Salin kuncinya (diawali `sk-ant-`). Kunci hanya tampil sekali.
 4. Di Console, cari pengaturan batas belanja (**Limits** atau **Spend limit**) dan pasang batas bulanan, misalnya $200. Cek juga apa yang terjadi saat kredit habis: berhenti atau ditagih ke kartu. Catat jawabannya untuk Q5.
-5. Di mesin bot, buka `scripts/wa/.env` dengan editor teks dan tambahkan satu baris:
+### 1A. Uji kunci di PC Windows (tanpa menyimpan ke berkas)
+
+Kunci bisa diuji dari komputer mana saja. Ujinya dua: (1) kunci dikenali, (2) kunci benar-benar bisa memakai kredit.
+
+1. Buka **PowerShell** (tekan tombol Windows, ketik `PowerShell`, Enter).
+2. Tempel kunci ke variabel sementara. Kunci hanya hidup di jendela ini dan hilang saat jendela ditutup:
+
+   ```powershell
+   $k = Read-Host "Tempel kunci API lalu Enter"
+   ```
+
+3. Uji 1, kunci dikenali (gratis):
+
+   ```powershell
+   (Invoke-RestMethod -Uri "https://api.anthropic.com/v1/models" -Headers @{ "x-api-key" = $k; "anthropic-version" = "2023-06-01" }).data.id
+   ```
+
+   Berhasil: keluar daftar nama model seperti `claude-opus-5-5`. Gagal dengan `401` atau `authentication_error`: kunci salah salin (biasanya kurang satu huruf di ujung); salin ulang dari Console.
+
+4. Uji 2, kredit bisa dipakai (biayanya di bawah Rp500):
+
+   ```powershell
+   $body = @{ model = "claude-opus-5-5"; max_tokens = 1000; messages = @(@{ role = "user"; content = "Balas satu kalimat: kunci berfungsi." }) } | ConvertTo-Json -Depth 5
+   $r = Invoke-RestMethod -Method Post -Uri "https://api.anthropic.com/v1/messages" -Headers @{ "x-api-key" = $k; "anthropic-version" = "2023-06-01"; "content-type" = "application/json" } -Body $body
+   ($r.content | Where-Object type -eq "text").text
+   ```
+
+   Berhasil: keluar kalimat balasan Claude. Gagal dengan `400` dan pesan soal `credit balance` atau `billing`: organisasi belum tersambung ke kredit Ultra, ulangi langkah 1. Gagal dengan `429`: tunggu satu menit lalu ulangi.
+
+5. Tutup jendela PowerShell supaya kunci hilang dari memori.
+
+### 1B. Simpan kunci di mesin bot
+
+Berkasnya `scripts/wa/.env` di dalam folder repo **di mesin bot** (Mac mini). Di PC Windows berkas ini memang tidak ada, karena bot tidak jalan di sini. Berkas ini sudah diabaikan git (`scripts/wa/.gitignore`), jadi tidak akan ikut ter-commit.
+
+1. Di Mac mini, buka **Terminal**, masuk ke folder repo:
+
+   ```bash
+   cd ~/Developer/poskokarhutla
+   ```
+
+   (Kalau repo ada di folder lain, ganti alamatnya. Cari dengan `ls ~/Developer ~/Documents/GitHub`.)
+
+2. Pastikan berkasnya ada:
+
+   ```bash
+   ls -l scripts/wa/.env
+   ```
+
+   Kalau keluar "No such file", bot belum pernah dipasang di mesin ini; ikuti `scripts/wa/README.md` bagian Pasang dulu.
+
+3. Buka berkasnya di TextEdit:
+
+   ```bash
+   open -e scripts/wa/.env
+   ```
+
+4. Di baris paling bawah, tambahkan satu baris (tanpa spasi di sekitar `=`, tanpa tanda kutip):
 
    ```
    ANTHROPIC_API_KEY=sk-ant-...kunci-lu...
    ```
 
-   Simpan. Di Mac, pastikan berkas hanya bisa dibaca lu:
+   Simpan (Cmd+S) lalu tutup TextEdit.
+
+5. Kunci berkas supaya hanya akun lu yang bisa membaca:
 
    ```bash
    chmod 600 scripts/wa/.env
    ```
 
-6. Uji kuncinya (hanya membaca daftar model, tidak memakai kredit berarti):
+6. Uji dari mesin bot, membaca kunci langsung dari berkas (gratis):
 
    ```bash
-   set -a; . scripts/wa/.env; set +a; curl -s https://api.anthropic.com/v1/models -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" | head -c 300
+   K=$(grep '^ANTHROPIC_API_KEY=' scripts/wa/.env | cut -d= -f2-); curl -s https://api.anthropic.com/v1/models -H "x-api-key: $K" -H "anthropic-version: 2023-06-01" | grep -o 'claude-[a-z0-9-]*' | head -3; unset K
    ```
 
-   Berhasil bila keluar teks berisi `claude-`. Keluar `authentication_error` berarti kunci salah salin.
+   Berhasil: keluar tiga nama model `claude-...`. Tidak keluar apa-apa: baris di `.env` salah tulis (cek ejaan `ANTHROPIC_API_KEY` dan tidak ada spasi).
 
-Selesai bila uji di langkah 6 berhasil. Bilang ke Claude "kunci API sudah dipasang" (tanpa menyebut kuncinya).
+Bot belum memakai kunci ini sampai tiket BL-04 selesai, jadi gateway tidak perlu dinyalakan ulang.
+
+Selesai bila 1A dan 1B berhasil. Bilang ke Claude "kunci API sudah dipasang" (tanpa menyebut kuncinya).
 
 ---
 
-## Langkah 2: izin Drive akun tim IT (sekitar 10 menit)
+## Langkah 2: izin Drive akun tim IT (cek 1 menit; ganti hanya bila perlu)
 
-**Penting sebelum mulai.** Izin Drive bot sekarang tersambung ke akun pribadi lu dan dipakai juga oleh fitur lama: salin bahan WA ke Drive, perintah `cari`, dan unggah laporan terjadwal. Kalau izinnya diganti ke akun tim IT, fitur lama ikut pindah ke Drive tim IT, dan folder di `DRIVE_ROOT` serta `DRIVE_LAPORAN` (folder di Drive pribadi lu) tidak bisa dibuka lagi. Karena itu langkah 2b wajib.
+Menurut pemilik (18 Nov 2026), bot WA yang sekarang sudah mengunggah lewat akun tim IT BNPB. Kalau begitu langkah ini cukup dicek, tidak perlu login ulang. Komentar lama di `scripts/wa/drive.cjs` masih menyebut "akun pribadi pemilik"; komentar itu yang usang.
+
+### Cek akun yang tersambung
+
+Di Terminal Mac mini, dari folder repo (hanya membaca email akun, tidak mengubah apa pun):
+
+```bash
+node -e "require('./scripts/wa/umum.cjs').muatEnv(); const d=require('./scripts/wa/drive.cjs').buat({env:process.env}); d.token().then(t=>fetch('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)',{headers:{Authorization:'Bearer '+t}})).then(r=>r.json()).then(j=>console.log(j.user?j.user.emailAddress:j)).catch(e=>console.log('gagal:',e.message))"
+```
+
+- Keluar email akun tim IT: **langkah 2 selesai**, lewati 2a sampai 2c.
+- Keluar email lain atau `gagal`: kerjakan 2a sampai 2c di bawah. Izin Drive juga dipakai fitur lama (salin bahan WA ke Drive, perintah `cari`, unggah laporan terjadwal), jadi folder di `DRIVE_ROOT` dan `DRIVE_LAPORAN` harus diganti ke folder di Drive tim IT (2b).
 
 ### 2a. Pastikan akun tim IT boleh login ke aplikasi OAuth
 
