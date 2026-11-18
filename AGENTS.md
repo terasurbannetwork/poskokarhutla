@@ -441,6 +441,17 @@ Sebelum menyentuh katalog tindakan dan `kemampuan.tindakan` di registri, persen 
 
 Aturan berhentinya sama dengan §2.1. Daftar tindakan hanya dari logbook atau sumber kedua tercatat, tanpa karangan; pemadaman, water bombing, dan patroli api tetap di modul karhutla; teks logbook asli tidak pernah masuk `public/`.
 
+### 2.29 Bot Laporan WA dengan Claude API (forward bahan, `buat`, revisi lewat chat, `final` ke Drive tim IT): baca dulu, baru bangun
+
+Sebelum menyentuh mesin proyek laporan di bot WA, pemanggil Claude API, operasi ubah deck, kunci angka sistem, atau tabel `bl_*`, baca dokumen di
+`data/kajian-bnpb/bot-laporan/` dengan urutan otoritas ini (kode di `scripts/wa/proyek.mjs`, `scripts/wa/claude.mjs`, `scripts/wa/claude/**`, `tests/wa/**` milik `wa-bot`; `data/laporan-bnpb/generator/ubah.py` dan perubahan generator milik `pipa-data`; `src/wa_proyek.js`, bagian bot laporan `src/hak.js`, migrasi `bl_*` milik `warga-api`):
+
+1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K14, rancangan D1–D11, pertanyaan terbuka Q1–Q14 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (kutipan, operasi ubah, kunci, banding 7 hari), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BL-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Claude tidak pernah menulis angka sistem dan tidak pernah menyunting PPTX langsung; deck selalu dari generator yang ada; versi append-only; hanya nomor terdaftar; kunci API hanya di `.env` mesin; jalur terjadwal `otomatis.mjs` tidak diubah.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
