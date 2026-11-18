@@ -7,7 +7,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const JALUR = require.resolve('../../scripts/wa/gateway/limiter.js')
-const KUNCI = ['WA_MAX_PER_MINUTE', 'WA_MAX_PER_HOUR', 'WA_MAX_PER_DAY', 'WA_MAX_PER_TARGET_DAY', 'WA_MAX_PER_TARGET_PERCAKAPAN', 'WA_PERCAKAPAN_MS', 'WA_WARMUP_PER_DAY', 'WA_WARMUP_DAYS']
+const KUNCI = ['WA_GAP_PERCAKAPAN_MIN_MS', 'WA_GAP_PERCAKAPAN_MAX_MS', 'WA_MAX_PER_MINUTE_PERCAKAPAN', 'WA_MAX_PER_MINUTE', 'WA_MAX_PER_HOUR', 'WA_MAX_PER_DAY', 'WA_MAX_PER_TARGET_DAY', 'WA_MAX_PER_TARGET_PERCAKAPAN', 'WA_PERCAKAPAN_MS', 'WA_WARMUP_PER_DAY', 'WA_WARMUP_DAYS']
 
 function muat({ pemanasan = false } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-limit-'))
@@ -29,7 +29,8 @@ function kirim(L, t, tujuan, opsi) {
 
 test('batas global dan per tujuan bawaan tidak berubah', (t) => {
   const L = muat()
-  assert.deepEqual(L.stats().caps, { minute: 3, hour: 60, day: 300, target_day: 8, target_day_percakapan: 40 })
+  assert.deepEqual(L.stats().caps, { minute: 3, minute_percakapan: 10, hour: 60, day: 300, target_day: 8, target_day_percakapan: 40 })
+  assert.deepEqual(L.stats().gap_percakapan_ms, [2000, 4000])
   assert.equal(L.stats().gap_ms[0], 15000)
   assert.equal(L.stats().gap_ms[1], 20000)
   const P = muat({ pemanasan: true })
@@ -63,13 +64,32 @@ test('balasan tanpa pesan masuk 10 menit terakhir memakai batas biasa 8', (t) =>
   assert.equal(L.check(B, { balasan: true }).percakapan, true)
 })
 
-test('batas per menit global tetap berlaku untuk percakapan', (t) => {
+test('batas per menit: percakapan 10, kiriman biasa tetap 3 dan ikut menghitung balasan', (t) => {
   t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
   const L = muat()
   L.noteMasuk(A)
   for (let i = 0; i < 3; i++) { const g = L.check(A, { balasan: true }); assert.equal(g.ok, true); L.commit(A, g.percakapan) }
+  assert.equal(L.check(B).error, 'batas per menit', 'kiriman biasa: 3 per menit dari semua kiriman')
+  for (let i = 3; i < 10; i++) { const g = L.check(A, { balasan: true }); assert.equal(g.ok, true, 'balasan ' + i); L.commit(A, g.percakapan) }
   assert.equal(L.check(A, { balasan: true }).error, 'batas per menit')
-  assert.equal(L.check(B).error, 'batas per menit')
+})
+
+test('jeda: balasan percakapan 2-4 dtk, kiriman biasa tetap 15-20 dtk dari kiriman apa pun terakhir', async (t) => {
+  t.mock.timers.enable({ apis: ['Date', 'setTimeout'], now: Date.parse('2026-11-18T01:00:00Z') })
+  const L = muat()
+  assert.equal((await L.slot({ percakapan: true })).ok, true)
+  const s1 = L.stats().next_slot_in_ms
+  assert.ok(s1 >= 2000 && s1 <= 4000, 'balasan berikutnya ' + s1)
+  t.mock.timers.tick(4000)
+  assert.equal(await L.slot({ percakapan: true }).then((x) => x.ok), true, 'balasan kedua tanpa menunggu 15 dtk')
+  const p = L.slot({}) // kiriman biasa: harus menunggu 15-20 dtk dari balasan terakhir
+  let selesai = false; p.then(() => { selesai = true })
+  t.mock.timers.tick(14000); await Promise.resolve(); await Promise.resolve()
+  assert.equal(selesai, false, 'belum 15 dtk')
+  t.mock.timers.tick(6000); await p
+  assert.equal(selesai, true)
+  const s2 = L.stats().next_slot_in_ms
+  assert.ok(s2 <= 4000, 'sesudah kiriman biasa, balasan tetap jeda pendek (tidak 15 dtk) ' + s2)
 })
 
 test('pemanasan: percakapan paling banyak separuh batas harian, kiriman terjadwal tetap dapat jatah', (t) => {

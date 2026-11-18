@@ -12,6 +12,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { LAPORAN, ambilBahan, siapkanKeluaran, jalankanGenerator, kunciProses, tanggalWib, jamWib, MIME, dariIzin, KUNCI_BASI_MS } from './otomatis.mjs'
@@ -1633,7 +1634,11 @@ export async function tangani(pesan, ctxAsli) {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   muatEnv()
   const env = process.env
-  const cek = { ANTHROPIC_API_KEY: !!env.ANTHROPIC_API_KEY, WA_GARAM: !!env.WA_GARAM, WA_MESIN: !!env.WA_MESIN, generator: fs.existsSync(path.join(GENERATOR, 'ubah.py')) }
+  // Modul Python venv bot: python-pptx (revisi lewat ubah.py dan gerbang format slide), openpyxl (Excel), Pillow (pratinjau, gerbang).
+  // Generator laporan tidak memakai python-pptx, jadi draf v1 bisa jadi walau revisi pasti gagal (insiden 18 Nov 2026).
+  const modul = (m) => { try { execFileSync(pyBin(env), ['-c', `import ${m}`], { stdio: 'ignore', timeout: 30e3 }); return true } catch { return false } }
+  const cek = { ANTHROPIC_API_KEY: !!env.ANTHROPIC_API_KEY, WA_GARAM: !!env.WA_GARAM, WA_MESIN: !!env.WA_MESIN, generator: fs.existsSync(path.join(GENERATOR, 'ubah.py')),
+    py_pptx: modul('pptx'), py_openpyxl: modul('openpyxl'), py_pillow: modul('PIL') }
   console.log(JSON.stringify(cek))
   process.exit(Object.values(cek).every(Boolean) ? 0 : 1)
 }

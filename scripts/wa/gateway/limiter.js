@@ -32,6 +32,11 @@ const GAP_MAX = Math.max(GAP_MIN, num(process.env.WA_GAP_MAX_MS, Math.max(GAP_MI
 // kiriman berurutan lolos, tapi tumpukan bersamaan (2+ antre) ditolak.
 const MAX_WAIT = num(process.env.WA_MAX_WAIT_MS, GAP_MAX + 2000)
 const MAX_PER_MINUTE = num(process.env.WA_MAX_PER_MINUTE, 3)
+// Balasan percakapan (pemilik 18 Nov 2026: "lama bgt responnya"): orang yang baru menulis ke bot dibalas dengan jeda pendek 2-4 dtk dan
+// batas 10 per menit, seperti orang mengetik beberapa bubble. Kiriman lain tetap 15-20 dtk sesudah kiriman APA PUN terakhir dan 3 per menit.
+const GAP_PERCAKAPAN_MIN = num(process.env.WA_GAP_PERCAKAPAN_MIN_MS, 2000)
+const GAP_PERCAKAPAN_MAX = Math.max(GAP_PERCAKAPAN_MIN, num(process.env.WA_GAP_PERCAKAPAN_MAX_MS, Math.max(GAP_PERCAKAPAN_MIN, 4000)))
+const MAX_PER_MINUTE_PERCAKAPAN = Math.max(MAX_PER_MINUTE, num(process.env.WA_MAX_PER_MINUTE_PERCAKAPAN, 10))
 const MAX_PER_HOUR = num(process.env.WA_MAX_PER_HOUR, 60)
 const MAX_PER_DAY = num(process.env.WA_MAX_PER_DAY, 300)
 const MAX_PER_TARGET_DAY = num(process.env.WA_MAX_PER_TARGET_DAY, 8)
@@ -72,8 +77,10 @@ let masukTerakhir = {}
 // Jendela geser di memori (reset saat restart — tak apa, hanya rem jangka pendek).
 let minuteHits = []
 let hourHits = []
-// Waktu paling awal pesan BERIKUTNYA boleh dikirim (reservasi serial).
+// Waktu paling awal pesan BERIKUTNYA boleh dikirim (reservasi serial): nextSlotAt untuk balasan percakapan (jeda pendek),
+// nextSlotBiasaAt untuk kiriman lain (jeda 15-20 dtk dari kiriman apa pun terakhir). nextSlotBiasaAt >= nextSlotAt selalu.
 let nextSlotAt = 0
+let nextSlotBiasaAt = 0
 
 function persist() {
   try {
@@ -118,11 +125,12 @@ function check(target, opts) {
   const now = Date.now()
   minuteHits = minuteHits.filter((t) => now - t < 60000)
   hourHits = hourHits.filter((t) => now - t < 3600000)
-  if (minuteHits.length >= MAX_PER_MINUTE) return { ok: false, code: 429, error: 'batas per menit' }
+  const cakap = percakapan(target, opts)
+  if (minuteHits.length >= (cakap ? MAX_PER_MINUTE_PERCAKAPAN : MAX_PER_MINUTE)) return { ok: false, code: 429, error: 'batas per menit' }
   if (hourHits.length >= MAX_PER_HOUR) return { ok: false, code: 429, error: 'batas per jam' }
   if (state.dayCount >= dailyCap())
     return { ok: false, code: 429, error: inWarmup() ? 'batas harian (pemanasan)' : 'batas harian' }
-  if (percakapan(target, opts)) {
+  if (cakap) {
     if ((state.perTargetPercakapan[target] || 0) >= MAX_PER_TARGET_PERCAKAPAN)
       return { ok: false, code: 429, error: 'batas percakapan per tujuan/hari' }
     if (inWarmup() && (state.dayCountPercakapan || 0) >= Math.floor(dailyCap() / 2))
@@ -138,14 +146,17 @@ function check(target, opts) {
 // tidur sampai giliran. Kalau antre terlalu jauh (> MAX_WAIT) → 429.
 // `opts.noCap` (Uji Kirim): jangan pernah 429 — tetap tunggu jeda, tapi tunggu
 // diklamp ke ~GAP_MAX biar route uji (maxDuration 60s) tak time-out.
+// opts.percakapan (dari check): jeda pendek; selain itu jeda biasa.
 async function slot(opts) {
   const now = Date.now()
-  const at = Math.max(now, nextSlotAt)
+  const cakap = !!(opts && opts.percakapan)
+  const at = Math.max(now, cakap ? nextSlotAt : nextSlotBiasaAt)
   const wait = at - now
   if (!(opts && opts.noCap) && wait > MAX_WAIT) {
     return { ok: false, code: 429, error: 'antrean terlalu panjang' }
   }
-  nextSlotAt = at + rnd(GAP_MIN, GAP_MAX) // pesan berikutnya minimal sejauh ini
+  nextSlotAt = Math.max(nextSlotAt, at + rnd(GAP_PERCAKAPAN_MIN, GAP_PERCAKAPAN_MAX)) // balasan berikutnya minimal sejauh ini
+  nextSlotBiasaAt = Math.max(nextSlotBiasaAt, at + rnd(GAP_MIN, GAP_MAX), nextSlotAt) // kiriman biasa berikutnya minimal sejauh ini
   const eff = opts && opts.noCap ? Math.min(wait, GAP_MAX + 2000) : wait
   if (eff > 0) await sleep(eff)
   return { ok: true }
@@ -180,10 +191,11 @@ function longgar(cadangan = 2, target = null, opts = null) {
   rollDay()
   const now = Date.now(), perlu = 1 + cadangan
   const menit = minuteHits.filter((t) => now - t < 60000).length, jam = hourHits.filter((t) => now - t < 3600000).length
-  if (nextSlotAt > now || menit + perlu > MAX_PER_MINUTE || jam + perlu > MAX_PER_HOUR) return false
+  const cakap = !!target && percakapan(target, opts)
+  if ((cakap ? nextSlotAt : nextSlotBiasaAt) > now || menit + perlu > (cakap ? MAX_PER_MINUTE_PERCAKAPAN : MAX_PER_MINUTE) || jam + perlu > MAX_PER_HOUR) return false
   if (state.dayCount + perlu > dailyCap()) return false // termasuk batas pemanasan
   if (!target) return true
-  if (percakapan(target, opts)) {
+  if (cakap) {
     if ((state.perTargetPercakapan[target] || 0) + perlu > MAX_PER_TARGET_PERCAKAPAN) return false
     if (inWarmup() && (state.dayCountPercakapan || 0) + perlu > Math.floor(dailyCap() / 2)) return false
     return true
@@ -203,7 +215,8 @@ function stats() {
     last_hour: hourHits.filter((t) => now - t < 3600000).length,
     next_slot_in_ms: Math.max(0, nextSlotAt - now),
     gap_ms: [GAP_MIN, GAP_MAX],
-    caps: { minute: MAX_PER_MINUTE, hour: MAX_PER_HOUR, day: MAX_PER_DAY, target_day: MAX_PER_TARGET_DAY, target_day_percakapan: MAX_PER_TARGET_PERCAKAPAN },
+    gap_percakapan_ms: [GAP_PERCAKAPAN_MIN, GAP_PERCAKAPAN_MAX],
+    caps: { minute: MAX_PER_MINUTE, minute_percakapan: MAX_PER_MINUTE_PERCAKAPAN, hour: MAX_PER_HOUR, day: MAX_PER_DAY, target_day: MAX_PER_TARGET_DAY, target_day_percakapan: MAX_PER_TARGET_PERCAKAPAN },
   }
 }
 

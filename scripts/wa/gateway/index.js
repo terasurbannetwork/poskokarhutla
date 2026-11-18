@@ -76,7 +76,7 @@ async function sendPaced(jid, isi, isGroup, opsi) {
   if (!connected || !sock) return { ok: false, code: 503, error: 'wa belum terhubung' }
   const gate = limiter.check(jid, opsi)
   if (!gate.ok) return { ok: false, code: gate.code, error: gate.error }
-  const s = await limiter.slot()
+  const s = await limiter.slot({ percakapan: gate.percakapan })
   if (!s.ok) return { ok: false, code: s.code, error: s.error }
   const sent = await sock.sendMessage(jid, isi)
   limiter.commit(jid, gate.percakapan)
