@@ -42,8 +42,18 @@ Atau tulis perubahan dengan kalimat biasa.
 
 | Kode | Kapan | Isi |
 | --- | --- | --- |
-| T-BUKA + T-DRAF v1 | draf v1 jadi (keterangan gambar pratinjau slide 1) | `*Draf v1 siap*`, kode, nama laporan, bahan per jenis, kalimat angka sistem (penanganan), `*Catatan:*`, `*Pemeriksaan:*`, menu bernomor |
-| T-TANYA | A3 tidak kosong | `*Bahan belum lengkap*`, kode, pertanyaan bernomor, "Kirim jawabannya lalu ketik *buat*, atau ketik *buat saja* untuk lanjut dengan bahan yang ada." |
+| T-BAHAN | `buat harian` / `buat penanganan` (K17) | `*Kirim bahan laporan*` (atau `*Bahan wajib lengkap*`), kode, nama laporan, baris cut-off bila belum lewat, `*Wajib:*` dari `LAPORAN[].butuh` dan `*Tambahan:*` dari `LAPORAN[].pilihan` dengan label `JENIS_LAPORAN` dan tanda ": sudah ada" (lingkup bahan D12), ajakan kirim lalu *lanjut*. Tidak pernah membangun |
+| T-TERIMA | tiap bahan dari pemegang proyek dituntun berstatus `terbuka` atau `bertanya` (K17); kiriman dalam sekitar 20 detik digabung jadi satu pesan, lewat ember balasan limiter | wajib belum lengkap: `*Diterima: <label>* (k dari n wajib)`, kode, `*Masih kurang:*`, ajakan *lanjut*. Wajib lengkap: `*Bahan wajib lengkap*`, "Diterima: ...", `*Tambahan yang belum ada:*`, "Ketik *lanjut* untuk membuat laporan." Tak dikenali: `*Bahan belum dikenali*`, "Belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.", daftar wajib dan tambahan. Proyek tanpa `buat` (bahan sebelum perintah) tidak dibalas |
+| T-LANJUT-KOSONG | `lanjut` tanpa proyek terbuka | `*Belum ada proyek terbuka*`, ketik *buat harian* atau *buat penanganan* dulu |
+| T-BUKA + T-DRAF v1 | draf v1 jadi sesudah `lanjut` atau `buat saja` (keterangan gambar pratinjau slide 1) | `*Draf v1 siap*`, kode, nama laporan, bahan per jenis, kalimat angka sistem (penanganan), `*Catatan:*` (bahan wajib yang kurang dan cut-off dicatat di sini, tidak ditanyakan), `*Pemeriksaan:*`, menu bernomor |
+| T-TANYA | sesudah `lanjut`, bila ada bentrok angka atau bahan tak terbaca (A3) | `*Bahan perlu dipastikan*`, kode, pertanyaan bernomor, "Kirim jawabannya, atau ketik *lanjut* untuk membuat dengan bahan yang ada." `lanjut` berikutnya membangun dan mencatat sisanya |
+| T-SATELIT (baris) | daftar bahan penanganan (K18) | "Data satelit: lintasan siang masuk FIRMS 13.42 WIB, situs sudah/belum memuat." dari `segar_situs.py --status --tanggal D` (`dep.statusSatelit` bila disuntik); status tak terbaca = "Data satelit: status belum terbaca.", tidak pernah menahan |
+| T-PILIH-SATELIT | sebelum membangun penanganan, FIRMS sudah memuat lintasan siang tetapi situs belum (K18) | `*Situs belum memuat data satelit*`, kode, baris satelit, pilihan `*tunggu*` dan `*hitung*`. Kedua kata itu perintah hanya selama pilihan ini menunggu (`~/.wa-bot/proyek/satelit.json`), tidak untuk pesan diteruskan |
+| T-TUNGGU-SITUS | `tunggu` | `*Menunggu situs*`, kode, dibangun otomatis (detak 10 menit gateway, `ulangSatelit`), ajakan *hitung*. `hitung` membangun dengan `--firespot firms` dan catatan draf "Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs." Label cut-off 18.00 tidak berubah |
+| T-SATELIT-ULANG | 3 status satelit kosong berturut-turut atau 3 jam menunggu, sekali per *tunggu* | `*Situs masih belum memuat*`, kode, baris satelit, pilih lagi *hitung* atau *tunggu* |
+| T-SATELIT-KOSONG | *hitung* / *tunggu* tanpa pilihan hidup (lebih 24 jam, proyek tidak lagi menunggu, atau sudah dibangun, dibatalkan, final, kedaluwarsa) | `*Tidak ada pilihan menunggu*`, satu baris petunjuk; tidak membuka proyek dan tidak membangun |
+
+Pesan diteruskan yang isinya persis angka menu, *lanjut*, *buat saja*, *hitung*, atau *tunggu* selalu bahan. Tanda terima menyebut bahan bertanggal lain: "Diterima, tetapi bertanggal 25 Okt, tidak dipakai untuk laporan 26 Okt: BMKG pagi." (judul `*Bahan bertanggal lain*` bila hanya itu).
 | T-PRATINJAU | gambar slide revisi | `*Pratinjau slide N*`, kode, satu baris |
 | T-PDF | PDF draf v1 | `*PDF draf vN*`, kode, nama laporan |
 | T-DRAF revisi | PDF revisi terkirim | `*Draf vN siap*`, kode, nama laporan, `*Perubahan:*`, `*Tidak diubah:*`, `*Dilewati:*`, `*Catatan:*`, `*Pemeriksaan:*`, menu bernomor |
@@ -53,7 +63,7 @@ Atau tulis perubahan dengan kalimat biasa.
 | T-FINAL | closing selesai | `*Laporan selesai*`, kode, versi final, tautan folder Drive di baris sendiri, `*Riwayat versi:*`, proyek ditutup |
 | T-STATUS | `status` | `*Proyek terbuka*`, per proyek: kode, nama laporan, `Status: ...`, langkah berikutnya |
 | T-BANTUAN | `bantuan` | `*Cara pakai bot laporan*`, bagian `*Membuat laporan*`, `*Saat draf*`, `*Lainnya*` (perintah tebal + 2 sampai 5 kata), satu baris contoh; `*Khusus pemilik*` hanya untuk pemilik |
-| T-DAFTAR | nomor asing, paling banyak sekali sehari per nomor | `*Nomor belum terdaftar*`, cara mendaftar `*daftar nama, instansi*`, contoh |
+| T-DAFTAR | nomor asing, paling banyak sekali sehari per nomor (30 nomor per hari) | `*Nomor belum terdaftar*` lalu "Bot ini hanya bisa dipakai nomor yang terdaftar."; tanpa cara mendaftar (K19) |
 | T-TERLEWAT | mesin menyala, nomor itu sempat mengirim pesan saat mati (sekali per nomor) | `*Pesan belum diproses*`, jam mati sampai menyala, "Kirim ulang bila masih perlu." |
 | T-ATURAN | usulan aturan tetap ke pemilik | pola, 3 contoh, `setuju` atau `tolak` (belum dibangun) |
 | T-KUOTA | batas belanja | `*Kuota hari ini habis*`, kode, lanjut besok |

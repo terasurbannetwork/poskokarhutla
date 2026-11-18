@@ -10,14 +10,15 @@ const path = require('path')
 // Perintah mesin proyek (Q14 dan ALUR B-C): `kirim ulang ...` dan `status <tanggal>` tidak termasuk, tetap di perintah.mjs.
 // Angka menu draf 1 sampai 4 (boleh berspasi atau bertitik) juga perintah: tidak pernah jadi bahan di Worker. `ya` tidak di sini: hanya perintah
 // selama tanya batal berlaku, jadi diputuskan proyek.klasifikasi (jalur 'bahan+proyek' teks saja, lewat pilihJalur).
-const KATA_PROYEK = /^(buat\b.*|status|bantuan|(final|batal|versi|pptx)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
+const KATA_PROYEK = /^(buat\b.*|status|bantuan|panduan|lanjut|hitung|tunggu|(final|batal|versi|pptx)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
 const ANGKA_MENU = /^[1-4][\s.]*$/
+const KATA_TUNTUN = /^(lanjut|buat saja|hitung|tunggu)$/ // K17/K18: diteruskan = bahan, tidak pernah perintah
 // diteruskan: pesan berlabel Diteruskan tidak pernah jadi angka menu (bahan biasa).
 function perintahProyek(teks, diteruskan = false) {
   const asli = String(teks ?? '').trim()
   const t = asli.toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
   if (!t || t.length > 60 || /\n/.test(asli)) return false
-  if (diteruskan && ANGKA_MENU.test(t)) return false
+  if (diteruskan && (ANGKA_MENU.test(t) || KATA_TUNTUN.test(t))) return false
   return KATA_PROYEK.test(t)
 }
 
@@ -27,7 +28,8 @@ function arah({ proyek = false, pribadi = false, terdaftar = false, grupOps = fa
   if (cmd && cmd.aksi !== 'proyek') return 'perintah'
   if (!proyek || !pribadi || grupOps || !terdaftar) return cmd ? 'perintah' : 'bahan'
   if (lama) return 'bahan' // K11: susulan tidak pernah ke proyek; jalur terjadwal tetap menerimanya
-  if ((cmd && cmd.aksi === 'proyek') || (!adaMedia && perintahProyek(teks, diteruskan))) return 'proyek'
+  const tuntunTerusan = diteruskan && !adaMedia && !perintahProyek(teks, true) && perintahProyek(teks, false) // kata tuntun diteruskan = bahan
+  if ((cmd && cmd.aksi === 'proyek' && !tuntunTerusan) || (!adaMedia && perintahProyek(teks, diteruskan))) return 'proyek'
   return 'bahan+proyek'
 }
 
@@ -139,9 +141,9 @@ function buatTerlewat({ berkas, kini = Date.now, kirim, log = () => {}, setT = s
 }
 
 // Q1 dan D8: pratinjau slide dikirim sebagai pesan gambar berketerangan; PDF dan PPTX sebagai dokumen.
-function isiBerkas(p, nama, caption, mimetype) {
+function isiBerkas(p, nama, caption, mimetype, opsi = {}) {
   const mime = String(mimetype || 'application/octet-stream')
-  if (/^image\//.test(mime)) return { image: { url: p }, caption: String(caption || ''), mimetype: mime }
+  if (/^image\//.test(mime) && !opsi.dokumen) return { image: { url: p }, caption: String(caption || ''), mimetype: mime }
   return { document: { url: p }, fileName: String(nama || path.basename(p)), mimetype: mime, caption: String(caption || '') }
 }
 

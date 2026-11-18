@@ -1,4 +1,4 @@
-// BL-03 pendaftaran nomor bot laporan (scripts/wa/daftar.cjs; RENCANA-UJI T1, T21). fetch, fs (folder sementara), jam, dan kirim disuntik.
+// BL-03 nomor terdaftar bot laporan (scripts/wa/daftar.cjs; RENCANA-UJI T1, T21; K19 tanpa pendaftaran mandiri). fetch, fs (folder sementara), jam, dan kirim disuntik.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -11,8 +11,10 @@ const D = require('../../scripts/wa/daftar.cjs')
 const GARAM = 'garam-uji', ASING = '6281299990001', ASING_JID = '6281299990001@s.whatsapp.net', PEMILIK = '6281100000000'
 const ENV = { WA_GARAM: GARAM, WA_MESIN: 'mesin', PEMILIK: '081100000000', WA_IZIN: '0812 3456 7890', WORKER_URL: 'https://uji.lokal' }
 const JAM = Date.parse('2026-11-18T03:00:00Z') // 10.00 WIB
+const KE_PEMILIK = PEMILIK + '@s.whatsapp.net'
+const nomorKe = (i) => '62813' + String(10000000 + i)
 
-function pasang({ env = ENV, terdaftar = [], daftar = () => ({ status: 200, json: { ok: true, status: 'menunggu' } }), jaringanMati = false } = {}) {
+function pasang({ env = ENV, terdaftar = [], daftar = (b) => ({ status: 200, json: { ok: true, status: b.status } }), jaringanMati = false } = {}) {
   const rumah = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-daftar-'))
   const t = { jam: JAM, kirim: [], panggil: [], terdaftar: [...terdaftar], jaringanMati }
   const fetch = async (url, o = {}) => {
@@ -38,17 +40,14 @@ test('wa_sha: sha256 garam|nomor 62, sama untuk 08 dan +62; tanpa garam null', (
   assert.notEqual(D.waSha(ASING, 'garam-lain'), shaAsing)
 })
 
-test('urai daftar dan putusan', () => {
-  assert.deepEqual(D.uraiDaftar('daftar Budi Santoso, BPBD Riau'), { nama: 'Budi Santoso', instansi: 'BPBD Riau' })
-  assert.deepEqual(D.uraiDaftar('Daftar Budi Santoso BPBD Riau'), { nama: 'Budi Santoso', instansi: 'BPBD Riau' })
-  assert.deepEqual(D.uraiDaftar('daftar Siti Kalbar'), { nama: 'Siti', instansi: 'Kalbar' })
-  assert.equal(D.uraiDaftar('daftar Budi'), null)
-  assert.equal(D.uraiDaftar('halo'), null)
-  assert.equal(D.uraiDaftar('daftar ' + 'a'.repeat(100) + ', ' + 'b'.repeat(100)).nama.length, 80); assert.equal(D.uraiDaftar('daftar a, ' + 'b'.repeat(400)), null)
+test('urai putusan: setuju <nomor> [nama], tolak <nomor>', () => {
   assert.deepEqual(D.uraiPutusan('setuju 0812-9999-0001'), { putusan: 'setuju', nomor: ASING })
+  assert.deepEqual(D.uraiPutusan('setuju 0812 9999 0001 Budi Santoso'), { putusan: 'setuju', nomor: ASING, nama: 'Budi Santoso' })
   assert.deepEqual(D.uraiPutusan('Tolak +62 812 9999 0001'), { putusan: 'tolak', nomor: ASING })
-  assert.equal(D.uraiPutusan('setuju pola-revisi-01'), null, 'id pola aturan tetap bukan putusan daftar')
+  assert.equal(D.uraiPutusan('tolak 081299990001 Budi'), null, 'tolak tanpa nama')
+  assert.equal(D.uraiPutusan('setuju pola-revisi-01'), null, 'id pola aturan tetap bukan putusan nomor')
   assert.equal(D.uraiPutusan('setuju 12345'), null)
+  assert.equal(D.uraiPutusan('setuju 081299990001 ' + 'a'.repeat(200)).nama.length, 80)
 })
 
 test('T21: terdaftar = WA_IZIN atau sha di salinan; salinan disegarkan dari /api/wa/terdaftar dengan Bearer WA_MESIN', async () => {
@@ -77,114 +76,93 @@ test('segarkan gagal (jaringan, HTTP, isi rusak) menyimpan salinan lama', async 
   assert.deepEqual(await df.segarkan(), { ok: true, n: 0 }, 'entri tidak sah dibuang')
 })
 
-test('T1/T21: nomor asing dibalas T-DAFTAR sekali per hari WIB, tanpa memanggil Worker', async () => {
+test('T1/T21 K19: nomor asing dibalas "Nomor belum terdaftar" sekali per hari WIB, tanpa memanggil Worker', async () => {
   const { df, t } = pasang()
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo minta laporan harian' }), 't-daftar')
+  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo minta laporan harian' }), 'belum')
   assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo lagi' }), 'diam')
-  assert.equal(t.kirim.length, 1); assert.equal(t.kirim[0].jid, ASING_JID); assert.equal(t.kirim[0].teks, D.T_DAFTAR)
-  assert.doesNotMatch(t.kirim[0].teks, /·|—/)
+  assert.deepEqual(t.kirim, [{ jid: ASING_JID, teks: '*Nomor belum terdaftar*\nBot ini hanya bisa dipakai nomor yang terdaftar.' }])
+  assert.doesNotMatch(D.T_BELUM, /·|—|daftar\s*</)
   assert.equal(t.panggil.length, 0, 'pesan asing tidak pernah dikirim ke Worker')
   t.jam += 13 * 3600e3 // 23.00 WIB, hari sama
   assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'x' }), 'diam')
   t.jam += 2 * 3600e3 // 01.00 WIB besok
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'x' }), 't-daftar')
+  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'x' }), 'belum')
   assert.equal(t.kirim.length, 2)
 })
 
-test('balasan relawan, pemilik, dan fitur mati tidak dibalas T-DAFTAR', async () => {
+test('K19: "daftar ..." dari nomor asing hanya dibalas sama, tidak ke PEMILIK dan tidak ke /api/wa/daftar', async () => {
+  const { df, t } = pasang()
+  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi Santoso, BPBD Riau' }), 'belum')
+  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi Santoso, BPBD Riau' }), 'diam')
+  assert.deepEqual(t.kirim.map((k) => k.jid), [ASING_JID]); assert.equal(t.kirim[0].teks, D.T_BELUM)
+  assert.equal(t.panggil.length, 0)
+  assert.equal(df.cocokPemilik(ASING, 'setuju 081299990001'), null, 'nomor asing tidak bisa mendaftarkan diri')
+})
+
+test('balasan relawan, pemilik, LID, dan fitur mati tidak dibalas', async () => {
   const { df, t } = pasang()
   assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'SIAP AB12CD' }), 'diam-relawan')
-  assert.equal(await df.asing({ dari: PEMILIK, jid: PEMILIK + '@s.whatsapp.net', teks: 'halo' }), 'diam-pemilik')
-  assert.equal(t.kirim.length, 0)
+  assert.equal(await df.asing({ dari: PEMILIK, jid: KE_PEMILIK, teks: 'halo' }), 'diam-pemilik')
+  assert.equal(await df.asing({ dari: '123456789012345', jid: '123456789012345@lid', teks: 'halo' }), 'diam-lid')
+  assert.equal(t.kirim.length + t.panggil.length, 0)
   const m = pasang({ env: { ...ENV, WA_GARAM: '' } })
   assert.equal(m.df.hidup, false)
-  assert.equal(await m.df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD' }), 'mati')
+  assert.equal(await m.df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo' }), 'mati')
+  assert.equal(m.df.cocokPemilik('081100000000', 'setuju 081299990001'), null)
   assert.equal(m.t.kirim.length + m.t.panggil.length, 0)
 })
 
-test('daftar: POST menunggu, JID ditahan, nomor lengkap hanya ke PEMILIK, pengirim diberi tahu', async () => {
-  const { df, t, rumah } = pasang()
-  await df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo' }) // T-DAFTAR dulu, lalu daftar di hari yang sama tetap jalan
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar  Budi Santoso ,  BPBD Riau ' }), 'daftar')
-  const p = t.panggil.find((x) => x.url.endsWith('/api/wa/daftar'))
-  assert.deepEqual(p.body, { wa_sha: shaAsing, status: 'menunggu', nama: 'Budi Santoso', instansi: 'BPBD Riau' })
-  assert.equal(p.auth, 'Bearer mesin')
-  assert.ok(!JSON.stringify(p.body).includes(ASING), 'nomor tidak dikirim ke Worker')
-  const tahan = JSON.parse(fs.readFileSync(path.join(rumah, 'daftar', shaAsing + '.json'), 'utf8'))
-  assert.equal(tahan.jid, ASING_JID)
-  const kePemilik = t.kirim.filter((k) => k.jid === PEMILIK + '@s.whatsapp.net')
-  assert.equal(kePemilik.length, 1)
-  assert.match(kePemilik[0].teks, /Budi Santoso/); assert.match(kePemilik[0].teks, /BPBD Riau/); assert.match(kePemilik[0].teks, new RegExp(`setuju ${ASING}`))
-  const kePendaftar = t.kirim.filter((k) => k.jid === ASING_JID)
-  assert.equal(kePendaftar.at(-1).teks, D.T_DIKIRIM)
-  assert.ok(kePendaftar.every((k) => !k.teks.includes(ASING)), 'nomor tidak dipantulkan ke pendaftar')
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD Riau' }), 'diam-menunggu', 'daftar kedua di hari sama diam')
-  t.jam += 3 * 864e5
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD Riau' }), 'diam-menunggu', 'menunggu tidak diteruskan ulang hari lain')
-  assert.equal(t.kirim.filter((k) => k.jid === PEMILIK + '@s.whatsapp.net').length, 1)
+test('plafon global 30 balasan per hari WIB, PEMILIK dikabari sekali, pulih besok', async () => {
+  const { df, t } = pasang()
+  for (let i = 0; i < 35; i++) await df.asing({ dari: nomorKe(i), jid: nomorKe(i) + '@s.whatsapp.net', teks: 'halo' })
+  assert.equal(t.kirim.filter((k) => k.teks === D.T_BELUM).length, 30)
+  const kePemilik = t.kirim.filter((k) => k.jid === KE_PEMILIK)
+  assert.equal(kePemilik.length, 1); assert.match(kePemilik[0].teks, /30/)
+  assert.equal(t.panggil.length, 0)
+  t.jam += 864e5; t.kirim.length = 0
+  assert.equal(await df.asing({ dari: nomorKe(0), jid: nomorKe(0) + '@s.whatsapp.net', teks: 'halo' }), 'belum')
 })
 
-test('tolak: jawaban diam:true membuat bot diam total, tanpa pesan ke pemilik', async () => {
-  const sampai = JAM + 20 * 864e5
-  const { df, t } = pasang({ daftar: () => ({ status: 200, json: { ok: true, status: 'tolak', diam: true, tolak_sampai: sampai } }) })
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD Riau' }), 'diam-ditolak')
-  assert.equal(t.kirim.length, 0)
-  t.jam += 2 * 864e5
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo' }), 'diam-ditolak', 'hari lain pun tanpa T-DAFTAR')
-  assert.equal(t.kirim.length, 0)
-  t.jam = sampai + 1
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'halo' }), 't-daftar', 'sesudah masa tolak habis boleh lagi')
-})
-
-test('daftar: Worker mati atau 5xx = jatah dikembalikan; 429 = antrean penuh', async () => {
-  let kode = 503
-  const { df, t } = pasang({ daftar: () => ({ status: kode, json: {} }) })
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD' }), 'gagal')
-  assert.equal(t.kirim.length, 0)
-  kode = 429
-  assert.equal(await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD' }), 'penuh')
-  assert.match(t.kirim.at(-1).teks, /penuh/)
-})
-
-test('setuju/tolak hanya dari PEMILIK; setuju menyegarkan salinan, mengabari pendaftar, menghapus berkas tertahan', async () => {
+test('setuju <nomor> [nama] dari PEMILIK mendaftarkan langsung tanpa permintaan; tolak mencabut; nomor itu tidak dikirimi pesan', async () => {
   const keputusan = []
-  const { df, t, rumah } = pasang({ daftar: (b, tt) => {
+  const { df, t } = pasang({ daftar: (b, tt) => {
     keputusan.push(b)
-    if (b.status === 'setuju') tt.terdaftar = [b.wa_sha]
-    return { status: 200, json: { ok: true, status: b.status, nama: 'Budi Santoso', instansi: 'BPBD Riau' } }
+    tt.terdaftar = b.status === 'setuju' ? [b.wa_sha] : []
+    return { status: 200, json: { ok: true, status: b.status, nama: b.nama ?? 'Budi Santoso', instansi: null } }
   } })
-  await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi Santoso, BPBD Riau' })
-  assert.equal(df.cocokPemilik(ASING, 'setuju 081299990001'), null, 'pendaftar sendiri tidak bisa menyetujui')
-  assert.equal(df.cocokPemilik('081234567890', 'setuju 081299990001'), null, 'nomor WA_IZIN lain pun tidak')
-  const c = df.cocokPemilik('081100000000', 'setuju 0812-9999-0001')
-  assert.deepEqual(c, { putusan: 'setuju', nomor: ASING })
-  t.kirim.length = 0
+  assert.equal(df.cocokPemilik('081234567890', 'setuju 081299990001'), null, 'nomor WA_IZIN lain tidak bisa')
+  const c = df.cocokPemilik('081100000000', 'setuju 0812-9999-0001 Budi Santoso')
+  assert.deepEqual(c, { putusan: 'setuju', nomor: ASING, nama: 'Budi Santoso' })
   assert.equal(await df.putuskan(c), 'setuju')
-  assert.deepEqual(keputusan.at(-1), { wa_sha: shaAsing, status: 'setuju' })
+  assert.deepEqual(keputusan.at(-1), { wa_sha: shaAsing, status: 'setuju', nama: 'Budi Santoso' })
+  assert.ok(!JSON.stringify(keputusan).includes(ASING), 'nomor tidak dikirim ke Worker')
   assert.equal(df.terdaftar(ASING), true, 'salinan disegarkan segera')
-  assert.equal(t.kirim[0].jid, ASING_JID); assert.equal(t.kirim[0].teks, D.T_SETUJU)
-  assert.equal(t.kirim[1].jid, PEMILIK + '@s.whatsapp.net'); assert.match(t.kirim[1].teks, /^\*Disetujui\*\n\nBudi Santoso \(BPBD Riau\)/)
-  for (const x of [D.T_DAFTAR, D.T_DIKIRIM, D.T_SETUJU, D.T_TOLAK, ...t.kirim.map((k) => k.teks)]) {
-    assert.match(x, /^\*[^*\n]+\*\n\n/, 'judul tebal lalu baris kosong: ' + x)
-    assert.doesNotMatch(x, /[·—–]|\p{Extended_Pictographic}/u, x)
-  }
-  assert.match(D.T_DAFTAR, /\*daftar nama, instansi\*\n\nContoh: daftar Budi Santoso, BPBD Riau$/)
-  assert.equal(fs.existsSync(path.join(rumah, 'daftar', shaAsing + '.json')), false)
+  assert.deepEqual(t.kirim.map((k) => k.jid), [KE_PEMILIK], 'hanya PEMILIK dikabari')
+  assert.match(t.kirim[0].teks, /^\*Nomor terdaftar\*\nBudi Santoso, 6281299990001/)
   t.kirim.length = 0
-  assert.equal(await df.putuskan({ putusan: 'tolak', nomor: ASING }), 'tolak')
-  assert.equal(t.kirim.length, 1, 'tanpa berkas tertahan pendaftar tidak dikirimi pesan')
-  assert.match(t.kirim[0].teks, /tidak dikabari/)
+  assert.equal(await df.putuskan(df.cocokPemilik(PEMILIK, 'tolak 081299990001')), 'tolak')
+  assert.deepEqual(keputusan.at(-1), { wa_sha: shaAsing, status: 'tolak' })
+  assert.equal(df.terdaftar(ASING), false, 'dicabut seketika di salinan')
+  assert.deepEqual(t.kirim.map((k) => k.jid), [KE_PEMILIK]); assert.match(t.kirim[0].teks, /^\*Nomor dicabut\*/)
 })
 
-test('putusan gagal disimpan: pemilik dikabari, berkas tertahan tetap', async () => {
-  let gagal = false
-  const { df, t, rumah } = pasang({ daftar: (b) => gagal ? { status: 500, json: {} } : { status: 200, json: { ok: true, status: 'menunggu' } } })
-  await df.asing({ dari: ASING, jid: ASING_JID, teks: 'daftar Budi, BPBD' })
-  gagal = true; t.kirim.length = 0
+test('putusan gagal disimpan: PEMILIK dikabari, salinan tidak berubah', async () => {
+  const { df, t } = pasang({ daftar: () => ({ status: 500, json: {} }) })
   assert.equal(await df.putuskan({ putusan: 'setuju', nomor: ASING }), 'gagal')
-  assert.equal(t.kirim.length, 1); assert.equal(t.kirim[0].jid, PEMILIK + '@s.whatsapp.net')
-  assert.equal(fs.existsSync(path.join(rumah, 'daftar', shaAsing + '.json')), true)
+  assert.deepEqual(t.kirim.map((k) => k.jid), [KE_PEMILIK]); assert.match(t.kirim[0].teks, /HTTP 500/)
   assert.equal(df.terdaftar(ASING), false)
+})
+
+test('sisa berkas daftar/ lebih dari 30 hari disapu saat mulai dan saat segar', async () => {
+  const { df, t, rumah } = pasang()
+  const dir = path.join(rumah, 'daftar'); fs.mkdirSync(dir, { recursive: true })
+  const lama = path.join(dir, 'a'.repeat(64) + '.json'), baru = path.join(dir, 'b'.repeat(64) + '.json')
+  fs.writeFileSync(lama, JSON.stringify({ jid: 'x', waktu: JAM - 31 * 864e5 })); fs.writeFileSync(baru, JSON.stringify({ jid: 'y', waktu: JAM - 864e5 }))
+  df.muat()
+  assert.equal(fs.existsSync(lama), false); assert.equal(fs.existsSync(baru), true)
+  t.jam += 30 * 864e5
+  await df.segarkan()
+  assert.equal(fs.existsSync(baru), false)
 })
 
 // Gateway butuh WhatsApp sungguhan: penjaga sumber untuk sambungan BL-03.
@@ -196,38 +174,4 @@ test('T21 gateway: nomor asing pribadi tidak diteruskan, nomor terdaftar membawa
   assert.match(src, /sendPaced\(jid, \{ text: teks \}, false\)/)
   assert.match(src, /DF\.cocokPemilik\(dari, /)
   assert.doesNotMatch(src, /limiter\.(commit|slot)\([^)]*\)[^\n]*daftar/)
-})
-
-const nomorKe = (i) => '62813' + String(10000000 + i)
-test('plafon global per hari: 30 balasan cara daftar, 20 terusan ke PEMILIK, PEMILIK dikabari sekali', async () => {
-  const { df, t } = pasang()
-  for (let i = 0; i < 35; i++) await df.asing({ dari: nomorKe(i), jid: nomorKe(i) + '@s.whatsapp.net', teks: 'halo' })
-  const keAsing = t.kirim.filter((k) => k.teks === D.T_DAFTAR).length, kePemilik = t.kirim.filter((k) => k.jid === PEMILIK + '@s.whatsapp.net')
-  assert.equal(keAsing, 30); assert.equal(kePemilik.length, 1); assert.match(kePemilik[0].teks, /30/)
-  t.kirim.length = 0
-  for (let i = 100; i < 125; i++) await df.asing({ dari: nomorKe(i), jid: nomorKe(i) + '@s.whatsapp.net', teks: `daftar Orang ${i}, BPBD Uji` })
-  const terus = t.kirim.filter((k) => k.jid === PEMILIK + '@s.whatsapp.net')
-  assert.equal(terus.filter((k) => /^\*Permintaan daftar baru\*\n/.test(k.teks)).length, 20)
-  assert.equal(terus.filter((k) => /ditahan sampai besok/.test(k.teks)).length, 1)
-  assert.equal(t.panggil.filter((x) => x.url.endsWith('/api/wa/daftar')).length, 20, 'lewat plafon tidak memanggil Worker')
-  t.jam += 864e5; t.kirim.length = 0
-  assert.equal(await df.asing({ dari: nomorKe(0), jid: nomorKe(0) + '@s.whatsapp.net', teks: 'halo' }), 't-daftar', 'plafon pulih hari berikut')
-})
-
-test('pengirim LID tanpa nomor 62 diam total', async () => {
-  const { df, t } = pasang()
-  assert.equal(await df.asing({ dari: '123456789012345', jid: '123456789012345@lid', teks: 'daftar Budi, BPBD' }), 'diam-lid')
-  assert.equal(t.kirim.length + t.panggil.length, 0)
-})
-
-test('berkas tertahan lebih dari 30 hari disapu saat mulai dan saat segar', async () => {
-  const { df, t, rumah } = pasang()
-  const dir = path.join(rumah, 'daftar'); fs.mkdirSync(dir, { recursive: true })
-  const lama = path.join(dir, 'a'.repeat(64) + '.json'), baru = path.join(dir, 'b'.repeat(64) + '.json')
-  fs.writeFileSync(lama, JSON.stringify({ jid: 'x', waktu: JAM - 31 * 864e5 })); fs.writeFileSync(baru, JSON.stringify({ jid: 'y', waktu: JAM - 864e5 }))
-  df.muat()
-  assert.equal(fs.existsSync(lama), false); assert.equal(fs.existsSync(baru), true)
-  t.jam += 30 * 864e5
-  await df.segarkan()
-  assert.equal(fs.existsSync(baru), false)
 })

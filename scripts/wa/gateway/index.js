@@ -4,7 +4,7 @@
 //     Sesudah tersimpan, pengatur otomatis (../otomatis.mjs) dipicu dengan debounce 2 menit.
 //  2. KELUAR: API lokal 127.0.0.1 /send dan /send-file, lewat limiter anti-blokir (limiter.js).
 //  3. DAFTAR (BL-03, ../daftar.cjs): nomor bl_daftar setuju (salinan /api/wa/terdaftar, 5 menit) diteruskan seperti WA_IZIN dengan medan wa_sha;
-//     nomor asing pribadi dibalas T-DAFTAR sekali sehari dan TIDAK diteruskan; `daftar` ke PEMILIK; `setuju|tolak <nomor>` hanya dari PEMILIK.
+//     nomor asing pribadi dibalas "Nomor belum terdaftar" sekali sehari dan TIDAK diteruskan (K19: tanpa pendaftaran mandiri); `setuju <nomor> [nama]` / `tolak <nomor>` hanya dari PEMILIK.
 //  4. PROYEK (BL-09, ../arah.cjs, hanya bila BL_PROYEK=1): pesan pribadi nomor terdaftar ke ../proyek.mjs tangani(), satu per pengirim.
 //     Perintah proyek tidak diteruskan ke Worker; bahan diteruskan dulu lalu ke proyek dengan wa_id. Susulan tidak pernah ke proyek (K11),
 //     tiap nomor terdaftar yang sempat menulis saat mati dapat satu T-TERLEWAT. Balasan ke orang yang baru menulis: batas percakapan (Q1).
@@ -113,7 +113,7 @@ function sapuTerkirim() {
   }
 }
 
-// BL-03: salinan nomor terdaftar + pendaftaran. Balasan lewat sendPaced yang sama (limiter tidak dilewati); WA putus = balasan tidak dikirim.
+// BL-03: salinan nomor terdaftar + putusan PEMILIK. Balasan lewat sendPaced yang sama (limiter tidak dilewati); WA putus = balasan tidak dikirim.
 const DF = DAFTAR.buat({
   env: process.env, rumah: RUMAH, log,
   kirim: async (jid, teks) => {
@@ -400,7 +400,12 @@ const ULANG_FINAL = BL ? ARAH.buatUlangFinal({
   terhubung: () => connected, log,
   jalankan: async () => {
     const [Pr, O] = await Promise.all([import('../proyek.mjs'), muatOtomatis()])
-    return Pr.ulangFinal({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe })
+    const h = await Pr.ulangFinal({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe })
+    // K18: proyek penanganan yang memilih *tunggu* dibangun begitu situs memuat lintasan siang (detak 10 menit yang sama).
+    if (typeof Pr.ulangSatelit === 'function') {
+      try { await Pr.ulangSatelit({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe, balasKe: (d, masuk) => balasanKe(d, '[satelit]', Number(masuk) || Date.now()) }) } catch (e) { log('[satelit] ulang gagal', String((e && e.message) || e)) }
+    }
+    return h
   },
 }) : null
 if (ULANG_FINAL) ULANG_FINAL.mulai()
@@ -410,10 +415,10 @@ function balasanKe(dari, tag, masuk) {
   const kirim = async (isi) => { const x = await sendPaced(jid, isi, false, { balasan: true, masuk }); if (!x.ok) log(tag, 'balasan ditahan', x.error) }
   return {
     balas: (teks) => kirim({ text: teks }),
-    balasFile: async (p, nama, caption, mimetype) => {
+    balasFile: async (p, nama, caption, mimetype, opsi) => {
       const aman = jalurKeluaran(p, KELUARAN)
       if (!aman) throw new Error('berkas di luar keluaran')
-      await kirim(ARAH.isiBerkas(aman, nama, caption, mimetype))
+      await kirim(ARAH.isiBerkas(aman, nama, caption, mimetype, opsi))
     },
   }
 }
@@ -560,7 +565,7 @@ async function startSock() {
       if (!susulan && await logbookCegat(m)) continue
       const dari = pengirim(m.key), pribadi = !m.key.remoteJid.endsWith('@g.us')
       const id = m.key.id
-      const putusan = !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju|tolak <nomor>, hanya PEMILIK
+      const putusan = !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju <nomor> [nama] | tolak <nomor>, hanya PEMILIK
       if (putusan) { if (id) terlihat.catat(id); DF.putuskan(putusan).then((x) => log('[daftar] putusan', x)).catch((e) => log('[daftar] galat', String(e?.message || e))); continue }
       const izin = IZIN.has(dari)
       const bl = !izin && pribadi && !!DF.shaTerdaftar(dari)

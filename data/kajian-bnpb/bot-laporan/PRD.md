@@ -9,8 +9,8 @@ Nomor terdaftar mem-forward pesan atau dokumen ke bot WA, mengetik `buat`, lalu 
 | Peran | Bisa |
 | --- | --- |
 | Nomor terdaftar | Mengirim bahan, `buat`, revisi, `final`, `batal`, `versi`, `balik vN`, `pptx`, `status` |
-| Pemilik (nomor PEMILIK) | Semua di atas, `setuju <nomor>` untuk pendaftaran, menyetujui atau menolak usulan aturan tetap |
-| Nomor tidak terdaftar | Hanya menerima balasan cara mendaftar |
+| Pemilik (nomor PEMILIK) | Semua di atas, `setuju <nomor> [nama]` dan `tolak <nomor>` untuk mendaftarkan dan mencabut nomor, menyetujui atau menolak usulan aturan tetap |
+| Nomor tidak terdaftar | Hanya menerima balasan "Bot ini hanya bisa dipakai nomor yang terdaftar" (K19) |
 
 ## Fitur
 
@@ -37,7 +37,7 @@ Nomor terdaftar mem-forward pesan atau dokumen ke bot WA, mengetik `buat`, lalu 
 - Claude tidak menulis atau mengubah angka hotspot, firespot, luas terbakar, dan luas belum padam.
 - Claude tidak menyunting PPTX langsung dan tidak membuat jenis laporan yang belum punya generator.
 - Versi lama tidak pernah ditimpa atau dihapus lewat rute.
-- Bot tidak membalas nomor tidak terdaftar selain cara mendaftar, dan tidak pernah mengirim data laporan kepadanya.
+- Bot tidak membalas nomor tidak terdaftar selain pesan "nomor belum terdaftar", dan tidak pernah mengirim data laporan kepadanya.
 - Bot tidak membuat draf atas inisiatif sendiri (K12).
 - Jalur terjadwal `otomatis.mjs` tidak diubah perilakunya (D9).
 - Tidak ada kunci API, token Drive, atau nomor HP di berkas yang dilacak git.

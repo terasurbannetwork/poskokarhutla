@@ -50,7 +50,10 @@ export function parsePerintah(teks, now = new Date()) {
   const t = asli.toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
+  if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai dokumen PNG supaya tidak dikompres WA
   if (t === 'status') return { aksi: 'status' }
+  if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
+  if (t === 'hitung' || t === 'tunggu') return { aksi: 'satelit', kata: t } // K18: menjawab pilihan data satelit; tanpa pilihan hidup = petunjuk
   if (['versi', 'pptx', 'batal', 'final'].includes(t)) return { aksi: t }
   const k = t.match(/^(versi|pptx|batal|final) (p-\d{6}-\d{2})$/) // berkode: pemegang beberapa draf memilih proyeknya
   if (k) return { aksi: k[1], id: k[2].toUpperCase() }
@@ -75,10 +78,10 @@ export const BANTUAN = [
   '*Cara pakai bot laporan*',
   '',
   '*Membuat laporan*',
-  '- Kirim atau teruskan bahan dulu',
-  '- *buat harian*: laporan kejadian bencana',
-  '- *buat penanganan*: laporan penanganan karhutla',
-  '- *buat saja*: lanjut dengan bahan ada',
+  '- *buat harian*: mulai laporan kejadian bencana',
+  '- *buat penanganan*: mulai laporan penanganan karhutla',
+  '- Kirim atau teruskan bahan yang diminta',
+  '- *lanjut*: buat laporan dari bahan ada',
   '',
   '*Saat draf*',
   '- *1* atau *final*: kirim versi final',
@@ -91,8 +94,9 @@ export const BANTUAN = [
   '*Lainnya*',
   '- *status*: proyek yang masih terbuka',
   '- *bantuan*: tampilkan pesan ini',
+  '- *panduan*: kirim gambar panduan lengkap',
   '',
-  'Contoh: *buat harian kemarin*',
+  'Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*',
   'Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.',
 ].join('\n')
 const BANTUAN_PEMILIK = ['', '*Khusus pemilik*', '- *kirim ulang harian 26 okt*: kirim ulang berkas', '- *status 26 okt*: rekap bahan per tanggal'].join('\n')
@@ -299,9 +303,43 @@ export function tDrafRevisi(p, n, lap, tanggal, { perubahan = [], tolak = [], le
 export const tPdf = (p, n, lap, tanggal) => susun(`PDF draf v${n}`, p, n, judul(lap, tanggal))
 
 export function tTanya(p, lap, tanggal, pertanyaan) {
-  return susun('Bahan belum lengkap', p, null,
+  return susun('Bahan perlu dipastikan', p, null,
     [`${judul(lap, tanggal)} perlu dipastikan dulu:`, ...pertanyaan.map((q, i) => `${i + 1}. ${q}`)],
-    'Kirim jawabannya lalu ketik *buat*, atau ketik *buat saja* untuk lanjut dengan bahan yang ada.')
+    'Kirim jawabannya, atau ketik *lanjut* untuk membuat dengan bahan yang ada.')
+}
+
+// ---------- K17: daftar bahan (sesudah `buat`) dan tanda terima bahan ----------
+const daftarBaris = (ks, terpilih) => ks.map((k) => `- ${labelBahan(k)}${terpilih[k] ? ': sudah ada' : ''}`)
+const wajibLengkap = (lap, terpilih) => lap.butuh.every((k) => terpilih[k])
+export function tDaftarBahan(p, lap, tanggal, terpilih, { cutoff = false, satelit = null } = {}) {
+  const lengkap = wajibLengkap(lap, terpilih)
+  return susun(lengkap ? 'Bahan wajib lengkap' : 'Kirim bahan laporan', p, null,
+    [judul(lap, tanggal), ...(cutoff ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []), ...(satelit ? [barisSatelit(satelit)] : [])],
+    ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih)],
+    (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [],
+    lengkap ? 'Ketik *lanjut* untuk membuat laporan.' : ['Kirim atau teruskan bahannya ke sini.', 'Ketik *lanjut* bila sudah siap.'])
+}
+// diterima: label bahan laporan ini yang baru masuk; lain: jumlah kiriman yang belum dikenali sebagai bahan laporan ini.
+export function tTerima(p, lap, tanggal, terpilih, { diterima = [], lain = 0, beda = [] } = {}) {
+  const kalimatBeda = beda.map((b) => `Diterima, tetapi bertanggal ${labelTanggal(b.tgl)}, tidak dipakai untuk laporan ${labelTanggal(tanggal)}: ${b.label}.`).join('\n')
+  const n = lap.butuh.length, k = lap.butuh.filter((x) => terpilih[x]).length
+  const kalimatLain = lain ? `${lain > 1 ? `${lain} kiriman` : 'Kiriman ini'} belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.` : ''
+  if (wajibLengkap(lap, terpilih)) {
+    const kurangTambah = (lap.pilihan || []).filter((x) => !terpilih[x]).map((x) => `- ${labelBahan(x)}`)
+    return susun('Bahan wajib lengkap', p, null,
+      [...(diterima.length ? [`Diterima: ${diterima.join(', ')}.`] : []), ...(kalimatBeda ? [kalimatBeda] : []), ...(kalimatLain ? [kalimatLain] : [])],
+      kurangTambah.length ? ['*Tambahan yang belum ada:*', ...kurangTambah] : [],
+      'Ketik *lanjut* untuk membuat laporan.')
+  }
+  const kurang = lap.butuh.filter((x) => !terpilih[x]).map((x) => `- ${labelBahan(x)}`)
+  const akhir = 'Ketik *lanjut* bila ingin membuat dengan bahan yang ada.'
+  if (!diterima.length) {
+    return susun(lain ? 'Bahan belum dikenali' : 'Bahan bertanggal lain', p, null, [judul(lap, tanggal), kalimatBeda, kalimatLain],
+      ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih)],
+      (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [], akhir)
+  }
+  return [`*Diterima: ${diterima.join(', ')}* (${k} dari ${n} wajib)`, kodeBaris(p)].join('\n') + '\n\n' +
+    [[kalimatBeda, kalimatLain].filter(Boolean).join('\n'), ['*Masih kurang:*', ...kurang].join('\n'), akhir].filter(Boolean).join('\n\n')
 }
 // Judul galat Claude (pesanPemakai di claude.mjs = isi satu baris).
 const JUDUL_CLAUDE = { batas_belanja: 'Kuota hari ini habis', tanpa_kunci: 'Bot belum siap', tanpa_sdk: 'Bot belum siap' }
@@ -407,7 +445,8 @@ async function buat(cmd, dari, sha, ctx) {
   for (const m of [...Object.values(terpilih), ...mentah]) pakai.set(String(m.id), m)
   const kunciDari = new Map(Object.entries(terpilih).map(([k, m]) => [String(m.id), k]))
   const bahanRute = [...pakai.keys()].slice(0, MAKS_BAHAN).map((id) => ({ wa_id: id, ...(kunciDari.has(id) ? { jenis_bahan: kunciDari.get(id) } : {}) }))
-  let { proyek: p } = await proyekBuka(ctx, { wa_sha: sha, jenis, tanggal: cmd.tanggal, bahan: bahanRute })
+  // Daftar bahan (K17) hanya membuka proyek; bahan ditempel sekali, saat membangun (`lanjut`, `buat saja`).
+  let { proyek: p } = await proyekBuka(ctx, { wa_sha: sha, jenis, tanggal: cmd.tanggal, bahan: cmd.saja || cmd.lanjut ? bahanRute : [] })
   catatIndeks(dasar, p, sha, dari)
   const berkasKunci = lockProyek(dasar, p.id)
   if (p.status === 'membangun') {
@@ -417,6 +456,12 @@ async function buat(cmd, dari, sha, ctx) {
   // TODO(BL-10): proyek draf menerima revisi; `buat` lagi di sini belum membangun ulang.
   if (p.status === 'draf') return balas(susun('Draf sudah ada', p, p.versi, 'Tulis perubahan dengan kalimat biasa, atau balas *1* untuk final.'))
   if (!AKTIF.includes(p.status)) return balas(susun(`Proyek sudah ${p.status}`, p, null, 'Ketik *buat* untuk memulai proyek baru.'))
+  // K17: `buat <jenis>` hanya membuka proyek dan membalas daftar bahan; pembangunan selalu menunggu `lanjut` (atau `buat saja`).
+  if (!cmd.saja && !cmd.lanjut) {
+    catatTuntun(ctx, sha, p.id)
+    const satelit = lap.id === 'penanganan' ? await statusSatelit(ctx, cmd.tanggal) : null // K18: baris status data satelit
+    return balas(tDaftarBahan(p, lap, cmd.tanggal, terpilih, { cutoff: cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam, satelit }))
+  }
 
   const lepas = kunciProses(berkasKunci) // satu proses aktif per proyek (T15)
   if (!lepas) return balas(tSibuk(p, null))
@@ -433,22 +478,44 @@ async function buat(cmd, dari, sha, ctx) {
     }
     const hasil = await urai(ctx, p, lap, bahanTeks)
     const kurang = lap.butuh.filter((k) => !terpilih[k])
-    const pertanyaan = [
-      ...kurang.map((k) => `${labelBahan(k)} untuk ${labelTanggal(cmd.tanggal)} belum ada. Kirim bahannya.`),
+    // K17: bahan wajib yang kurang dan cut-off tidak ditanyakan (pemakai sudah memilih `lanjut`), hanya dicatat di draf.
+    // Bentrok dan bahan tak terbaca ditanyakan sekali sesudah `lanjut`; `lanjut` lagi (status bertanya) atau `buat saja` membangun dan mencatatnya.
+    const celah = [
+      ...kurang.map((k) => `${labelBahan(k)} untuk ${labelTanggal(cmd.tanggal)} belum ada.`),
       ...(cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []),
+    ]
+    const pertanyaan = [
       ...hasil.pertentangan.map(tanyaBentrok),
       ...tidakTerbaca.map((n) => `${n} tidak terbaca. Kirim teks atau PDF.`),
     ]
     if (pertanyaan.length && !cmd.saja) {
       await pindah('bertanya')
-      // TODO(BL-10): jawaban bebas atas T-TANYA diurai Claude ke keputusan per nomor (A3); sekarang pemakai mengirim bahan lalu `buat` atau `buat saja`.
+      catatTuntun(ctx, sha, p.id)
+      // TODO(BL-10): jawaban bebas atas T-TANYA diurai Claude ke keputusan per nomor (A3); sekarang pemakai mengirim bahan lalu `lanjut`.
       return await balas(tTanya(p, lap, cmd.tanggal, pertanyaan))
     }
-    const catatan = cmd.saja ? [...pertanyaan] : []
+    const catatan = [...celah, ...(cmd.saja ? pertanyaan : [])]
     for (const g of hasil.gagal || []) catatan.push(`${kapital(String(g.medan).replace(/_/g, ' '))} tidak terbaca dari bahan.`)
     const hitung = {}
     for (const m of pakai.values()) { const k = kenali(m.teks || '', m.nama_berkas || '') || 'lain'; hitung[k] = (hitung[k] || 0) + 1 }
 
+    // K18: penanganan saat FIRMS sudah memuat lintasan siang tetapi situs belum = pemakai memilih *tunggu* atau *hitung*.
+    let lapBangun = lap
+    if (lap.id === 'penanganan') {
+      if (cmd.firespot === 'firms') {
+        lapBangun = { ...lap, args: (d, f, o) => [...lap.args(d, f, o), '--firespot', 'firms'] }
+        catatan.push(CATATAN_FIRMS)
+      } else {
+        const st = await statusSatelit(ctx, cmd.tanggal)
+        if (st && st.situs_memuat === false && st.lintasan_siang === true) {
+          await pindah('bertanya')
+          catatSatelit(ctx, p.id, { sha, dari, jenis, tanggal: cmd.tanggal, keadaan: 'pilih' })
+          return await balas(tPilihSatelit(p, st))
+        }
+      }
+    }
+
+    try { catatSatelit(ctx, p.id, null) } catch {} // pembangunan mulai: pilihan data satelit proyek ini selesai
     await pindah('membangun')
     const n = (p.versi || 0) + 1
     const dasarV = path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`) // di bawah ~/.wa-bot/keluaran: satu-satunya akar yang boleh dikirim gateway
@@ -459,9 +526,13 @@ async function buat(cmd, dari, sha, ctx) {
       isianGen = keIsianGenerator(jenis, hasil.isian)
       if (Object.keys(isianGen).length) { k.f.isian = path.join(k.kerja, 'isian.json'); tulisJson(k.f.isian, isianGen) }
       // Kunci generator bersama jalur terjadwal; tanggal mulai kejadian lama dibaca dari keluaran terjadwal (WA_MULAI_AKAR).
-      const r = await jalankanGenerator(lap, cmd.tanggal, k.f, k.out, k.kerja, dep, env, { kunci: path.join(dasar, 'generator.lock'), envAnak: { WA_MULAI_AKAR: path.join(dasar, 'keluaran') } })
+      const r = await jalankanGenerator(lapBangun, cmd.tanggal, k.f, k.out, k.kerja, dep, env, { kunci: path.join(dasar, 'generator.lock'), envAnak: { WA_MULAI_AKAR: path.join(dasar, 'keluaran') } })
       for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
-      for (const l of String(r?.stderr || '').split('\n')) { const m = l.match(/^PERINGATAN isian:\s*(.+)$/); if (m) catatan.push(`Isian diabaikan generator: ${m[1].trim()}`) }
+      for (const l of String(r?.stderr || '').split('\n')) {
+        const m = l.match(/^PERINGATAN isian:\s*(.+)$/)
+        if (!m || (cmd.firespot === 'firms' && /firespot/i.test(m[1]))) continue // mode FIRMS: cukup CATATAN_FIRMS (K18)
+        catatan.push(`Isian diabaikan generator: ${m[1].trim()}`)
+      }
     } catch (e) {
       await pindah('terbuka', { lempar: false })
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Draf v${n} gagal dibangun.`, e.message, 400))
@@ -865,6 +936,151 @@ function catatMenu(ctx, sha, id) {
   try { const f = menuP(ctx.dasar || RUMAH), isi = bacaJson(f, {}); isi[sha] = id; tulisJson(f, isi) } catch (e) { (ctx.log || (() => {}))('catat menu gagal', e.message) }
 }
 
+// ---------- K17: proyek dituntun (~/.wa-bot/proyek/tuntun.json: {wa_sha: id}) ----------
+// Hanya proyek yang dibuka lewat `buat <jenis>` (daftar bahan terkirim) yang membalas tanda terima bahan; bahan tanpa `buat` tetap diam (Q1).
+const tuntunP = (dasar) => path.join(dirProyek(dasar), 'tuntun.json')
+const tuntunTerakhir = (ctx, sha) => bacaJson(tuntunP(ctx.dasar || RUMAH), {})[sha] || null
+function catatTuntun(ctx, sha, id) {
+  try { const f = tuntunP(ctx.dasar || RUMAH), isi = bacaJson(f, {}); isi[sha] = id; tulisJson(f, isi) } catch (e) { (ctx.log || (() => {}))('catat tuntun gagal', e.message) }
+}
+const MENUNGGU = ['terbuka', 'bertanya']
+
+// ---------- K18: status data satelit penanganan, pilihan *tunggu* atau *hitung* (~/.wa-bot/proyek/satelit.json: {id: {sha, dari, jenis, tanggal, keadaan}}) ----------
+// statusSatelit(ctx, tanggal) -> {firms_terakhir_wib, lintasan_siang, situs_memuat, ...} | null. dep.statusSatelit disuntik (uji), null = mati;
+// tanpa itu: `segar_situs.py --status --tanggal D` lewat dep.exec (execFile). Galat apa pun = null (tidak pernah menahan laporan).
+export const CATATAN_FIRMS = 'Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs.'
+export async function statusSatelit(ctx, tanggal) {
+  const dep = ctx.dep || {}
+  try {
+    if ('statusSatelit' in dep) return dep.statusSatelit ? (await dep.statusSatelit(tanggal)) || null : null
+    if (typeof dep.exec !== 'function') return null
+    const r = await dep.exec(pyBin(ctx.env), [path.join(GENERATOR, 'segar_situs.py'), '--status', '--tanggal', tanggal], { cwd: GENERATOR, timeout: 90e3, maxBuffer: 2e6 })
+    const j = JSON.parse(String(r?.stdout || ''))
+    return j && typeof j === 'object' ? j : null
+  } catch (e) { (ctx.log || (() => {}))('status satelit gagal', e.message); return null }
+}
+const jamTitik = (j) => String(j || '').replace(':', '.')
+export function barisSatelit(st) {
+  if (st.lintasan_siang == null) return 'Data satelit: status belum terbaca.'
+  const situs = st.situs_memuat === true ? 'situs sudah memuat' : st.situs_memuat === false ? 'situs belum memuat' : 'status situs belum terbaca'
+  if (!st.lintasan_siang) return `Data satelit: lintasan siang belum masuk FIRMS${st.firms_terakhir_wib ? ` (terakhir ${jamTitik(st.firms_terakhir_wib)} WIB)` : ''}, ${situs}.`
+  return `Data satelit: lintasan siang masuk FIRMS ${jamTitik(st.firms_terakhir_wib)} WIB, ${situs}.`
+}
+export const tPilihSatelit = (p, st) => susun('Situs belum memuat data satelit', p, null, barisSatelit(st),
+  ['Pilih salah satu:', '- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.'])
+const satelitP = (dasar) => path.join(dirProyek(dasar), 'satelit.json')
+const SATELIT_BASI_MS = 24 * 3600e3 // pilihan lebih tua dari ini diabaikan
+const TUNGGU_MAKS_MS = 3 * 3600e3, TUNGGU_NOL_MAKS = 3 // lewat ini pemegang ditanya sekali lagi
+function catatSatelit(ctx, id, isi) {
+  const f = satelitP(ctx.dasar || RUMAH), semua = bacaJson(f, {})
+  if (!isi && !semua[id]) return
+  const kini = (ctx.now || new Date()).getTime()
+  if (isi) { const { id: _, ...sisa } = isi; semua[id] = { dibuat: kini, ...sisa, waktu: kini } } else delete semua[id]
+  tulisJson(f, semua)
+}
+// Pilihan hidup pengirim: umur di bawah 24 jam dan proyeknya masih menunggu (dibaca ulang dari Worker). Tanpa menulis apa pun.
+async function pilihanSatelit(ctx, sha) {
+  const kini = (ctx.now || new Date()).getTime()
+  const calon = Object.entries(bacaJson(satelitP(ctx.dasar || RUMAH), {})).map(([id, e]) => ({ id, ...e }))
+    .filter((e) => e.sha === sha && kini - Number(e.dibuat || e.waktu || 0) <= SATELIT_BASI_MS).sort((a, b) => b.waktu - a.waktu)
+  for (const e of calon) {
+    try { if (MENUNGGU.includes((await bacaProyek(ctx, e.id, sha)).status)) return e } catch {}
+  }
+  return null
+}
+
+async function pilihSatelit(kata, e, dari, sha, ctx) {
+  if (kata === 'hitung') return buat({ aksi: 'buat', jenis: e.jenis, tanggal: e.tanggal, saja: true, lanjut: true, firespot: 'firms' }, dari, sha, ctx)
+  // *tunggu*: jam pesan ini disimpan sebagai jam pesan masuk saat draf dikirim detak (jendela balasan limiter); hitungan mundur mulai lagi.
+  const kini = (ctx.now || new Date()).getTime()
+  catatSatelit(ctx, e.id, { ...e, keadaan: 'tunggu', masuk: kini, mulaiTunggu: kini, nol: 0, ditanyaUlang: false })
+  return ctx.balas(susun('Menunggu situs', { id: e.id }, null, ['Laporan dibangun otomatis begitu situs memuat lintasan siang.', 'Dicek tiap 10 menit.'], 'Ketik *hitung* bila ingin membangun sekarang.'))
+}
+const tTanyaUlangSatelit = (id, st) => susun('Situs masih belum memuat', { id }, null, st ? barisSatelit(st) : 'Data satelit: status belum terbaca.',
+  ['Pilih lagi:', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.', '- *tunggu*: tetap menunggu situs'])
+
+// Detak 10 menit gateway: proyek yang memilih *tunggu* dibangun begitu situs memuat lintasan siang.
+// ctx.balasKe(dari, masuk) -> {balas, balasFile}; masuk = jam pesan *tunggu*. Sesudah 3 status kosong berturut-turut atau 3 jam, pemegang ditanya sekali lagi.
+export async function ulangSatelit(ctx) {
+  const hasil = [], log = ctx.log || (() => {}), kini = (ctx.now || new Date()).getTime()
+  for (const [id, e] of Object.entries(bacaJson(satelitP(ctx.dasar || RUMAH), {}))) {
+    if (e.keadaan !== 'tunggu') continue
+    if (kini - Number(e.dibuat || e.waktu || 0) > SATELIT_BASI_MS) { catatSatelit(ctx, id, null); hasil.push({ id, status: 'basi' }); continue }
+    let p
+    try { p = await bacaProyek(ctx, id, e.sha) } catch (x) { log('ulang satelit', id, x.message); continue }
+    if (!MENUNGGU.includes(p.status)) { catatSatelit(ctx, id, null); hasil.push({ id, status: 'buang' }); continue }
+    const st = await statusSatelit(ctx, e.tanggal)
+    const c = { ...ctx, ...(ctx.balasKe ? ctx.balasKe(e.dari, e.masuk) : {}) }
+    if (st?.situs_memuat !== true) {
+      const nol = st ? 0 : Number(e.nol || 0) + 1
+      const ulang = !e.ditanyaUlang && (nol >= TUNGGU_NOL_MAKS || kini - Number(e.mulaiTunggu || e.waktu || kini) >= TUNGGU_MAKS_MS)
+      catatSatelit(ctx, id, { ...e, waktu: e.waktu, nol, ditanyaUlang: e.ditanyaUlang || ulang })
+      if (ulang && c.balas) { try { await c.balas(tTanyaUlangSatelit(id, st)) } catch (x) { log('ulang satelit tanya', id, x.message) } }
+      hasil.push({ id, status: ulang ? 'tanya ulang' : 'tunggu' })
+      continue
+    }
+    try { await buat({ aksi: 'buat', jenis: e.jenis, tanggal: e.tanggal, saja: true, lanjut: true }, e.dari, e.sha, c); hasil.push({ id, status: 'bangun' }) } catch (x) { log('ulang satelit bangun', id, x.message); hasil.push({ id, status: 'galat' }) }
+  }
+  return hasil
+}
+
+// `lanjut`: proyek terbuka pengirim (yang dituntun lebih dulu, lalu yang terbaru) dibangun; status bertanya = bangun dengan catatan.
+async function lanjut(dari, sha, ctx) {
+  const ps = await proyekPengirim(ctx, sha, (p) => MENUNGGU.includes(p.status) || p.status === 'membangun' || p.status === 'draf')
+  const tunggu = ps.filter((p) => MENUNGGU.includes(p.status))
+  const t = tuntunTerakhir(ctx, sha)
+  const p = tunggu.find((x) => x.id === t) || tunggu[0]
+  if (!p) {
+    const lain = ps[0]
+    if (lain?.status === 'membangun') return ctx.balas(tSibuk(lain, lain.versi || null))
+    if (lain?.status === 'draf') return ctx.balas(susun('Draf sudah ada', lain, lain.versi, 'Tulis perubahan dengan kalimat biasa, atau balas *1* untuk final.'))
+    return ctx.balas(susun('Belum ada proyek terbuka', null, null, 'Ketik *buat harian* atau *buat penanganan* dulu, lalu kirim bahannya.'))
+  }
+  return buat({ aksi: 'buat', jenis: p.jenis, tanggal: p.tanggal, saja: p.status === 'bertanya', lanjut: true }, dari, sha, ctx)
+}
+
+// Tanda terima: satu pesan per kiriman; kiriman yang datang dalam JEDA_TERIMA_MS digabung jadi satu pesan (limiter, Q1).
+const JEDA_TERIMA_MS = 20e3
+const antreTerima = new Map()
+function jadwalTerima(ctx, sha, dari, id, k, tgl = null) {
+  const kunciAntre = `${ctx.dasar || RUMAH}|${sha}` // per mesin dan pengirim
+  let a = antreTerima.get(kunciAntre)
+  if (!a) {
+    a = { k: [], id, dari }
+    a.janji = new Promise((selesai) => {
+      setTimeout(async () => {
+        antreTerima.delete(kunciAntre)
+        try { selesai(await kirimTerima(a.ctx, sha, a)) } catch (e) { (a.ctx.log || (() => {}))('[proyek] tanda terima gagal', e.message); selesai(null) }
+      }, ctx.jedaTerima ?? JEDA_TERIMA_MS)
+    })
+    antreTerima.set(kunciAntre, a)
+  }
+  a.ctx = ctx // balas terbaru: jendela balasan limiter dihitung dari pesan masuk terakhir
+  a.k.push({ k, tgl })
+  return a.janji
+}
+async function kirimTerima(ctx, sha, a) {
+  const p = await bacaProyek(ctx, a.id, sha)
+  if (!MENUNGGU.includes(p.status)) { // sudah dibangun atau ditutup: tanpa tanda terima, tuntun dilepas
+    const f = tuntunP(ctx.dasar || RUMAH), isi = bacaJson(f, {})
+    if (isi[sha] === a.id) { delete isi[sha]; tulisJson(f, isi) }
+    return null
+  }
+  const lap = lapDari(p.jenis)
+  if (!lap) return null
+  const lingkup = lingkupBahan(ctx.env, a.dari, sha)
+  const bahan = await ambilBahan({ env: ctx.env, dep: { ...ctx.dep, fetch: fetchLingkup(ctx.dep, lingkup.boleh) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log: ctx.log || (() => {}) })
+  const { terpilih } = await bahan.pilihSesuai(lap)
+  const milik = new Set([...lap.butuh, ...(lap.pilihan || [])])
+  const kenal = a.k.filter((x) => x.k && milik.has(x.k))
+  const beda = kenal.filter((x) => x.tgl && x.tgl !== p.tanggal) // bahan bertanggal hari lain: tidak dipakai untuk proyek ini
+  const diterima = [...new Set(kenal.filter((x) => !beda.includes(x)).map((x) => labelBahan(x.k)))]
+  const lain = a.k.length - kenal.length
+  const teks = tTerima(p, lap, p.tanggal, terpilih, { diterima, lain, beda: beda.map((x) => ({ label: labelBahan(x.k), tgl: x.tgl })) })
+  await ctx.balas(teks)
+  return teks
+}
+
 // ---------- versi, pptx, batal ----------
 async function perintahProyek(cmd, dari, sha, ctx) {
   const { balas } = ctx
@@ -894,6 +1110,7 @@ async function perintahProyek(cmd, dari, sha, ctx) {
   }
   if (p.status === 'membangun' && kunciHidup(lockProyek(ctx.dasar || RUMAH, p.id))) return balas(susun('Sedang dibangun', p, p.versi || null, 'Tunggu sebentar, lalu ketik *batal* lagi.'))
   await pindahStatus(ctx, p, 'batal', sha)
+  try { catatSatelit(ctx, p.id, null) } catch {}
   hapusIndeks(ctx.dasar || RUMAH, p.id)
   return balas(susun('Proyek dibatalkan', p, p.versi || null, [`${nama} dibatalkan, tanpa unggah.`, 'Ketik *buat* untuk memulai lagi.']))
 }
@@ -1023,6 +1240,7 @@ async function final(dari, sha, ctx, id = null) {
       if (!lap) return balas(susun('Final belum bisa', p, p.versi, `Jenis ${p.jenis} belum bisa difinalkan lewat bot. Hubungi pemilik.`))
       st = { id: p.id, sha, dari, jenis: p.jenis, tanggal: p.tanggal, n: p.versi, folder: null, driveUrl: null, ditutup: false, tfinal: false, kabar: {}, mulai: (ctx.now || new Date()).getTime() }
       await pastikanPptx(ctx, p, lap, st.n, sha, 'pptx'); await pastikanPptx(ctx, p, lap, st.n, sha, 'pdf') // berkas ada sebelum status berubah
+      try { catatSatelit(ctx, st.id, null) } catch {}
       simpanFinal(dasar, st) // SEBELUM pindah ke final: mati di tengah = ulangFinal melanjutkan
     } else if (st.basi) {
       return balas(susun('Final sedang ditangani', { id: st.id }, st.n, `Final v${st.n} belum selesai lebih dari 24 jam. Pemilik sedang menanganinya, tunggu kabar.`))
@@ -1073,7 +1291,7 @@ async function status(dari, sha, ctx) {
     if (p.status === 'final') continue
     if (!AKTIF.includes(p.status)) { hapusIndeks(dasar, id); continue }
     const lap = lapDari(p.jenis)
-    const [keadaan, lanjut] = { terbuka: ['menunggu bahan', 'Kirim bahan, lalu ketik *buat*.'], bertanya: ['menunggu jawaban', 'Kirim jawabannya lalu ketik *buat*, atau ketik *buat saja*.'], membangun: ['sedang dibangun', 'Tunggu sebentar.'], draf: ['draf siap', 'Balas *1* untuk final, atau tulis revisi.'] }[p.status]
+    const [keadaan, lanjut] = { terbuka: ['menunggu bahan', 'Kirim bahan, lalu ketik *lanjut*.'], bertanya: ['menunggu jawaban', 'Kirim jawabannya, atau ketik *lanjut*.'], membangun: ['sedang dibangun', 'Tunggu sebentar.'], draf: ['draf siap', 'Balas *1* untuk final, atau tulis revisi.'] }[p.status]
     blok.push([kodeBaris(p, p.versi || null), lap ? judul(lap, p.tanggal) : p.jenis, `Status: ${keadaan}`, lanjut].join('\n'))
   }
   return ctx.balas(blok.length ? susun(blok.length > 1 ? `${blok.length} proyek terbuka` : 'Proyek terbuka', null, null, ...blok) : susun('Belum ada proyek terbuka', null, null, 'Kirim atau teruskan bahan, lalu ketik *buat harian* atau *buat penanganan*.'))
@@ -1083,14 +1301,18 @@ async function status(dari, sha, ctx) {
 async function tambahBahan(pesan, dari, sha, ctx) {
   const kenali = ctx.kenali || jenisWa.kenali
   const k = kenali(pesan.teks || '', pesan.nama_berkas || '')
-  if (!k) return { status: 'menunggu buat' } // jenis tak dikenali (foto, PDF lain): dipakai saat `buat` dari /api/wa/masuk
+  // K17: pemegang proyek yang dituntun mendapat tanda terima (digabung per jeda); status proyek diperiksa saat dikirim.
+  const t = tuntunTerakhir(ctx, sha)
+  const tglBahan = k ? (ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null))(pesan.teks || '', k) || null : null // hanya tanggal yang tertulis di bahan
+  const terima = t ? { terima: jadwalTerima(ctx, sha, dari, t, k, tglBahan) } : {}
+  if (!k) return { status: 'menunggu buat', ...terima } // jenis tak dikenali (foto, PDF lain): dipakai saat `buat` dari /api/wa/masuk
   const calon = LAPORAN.filter((l) => [...l.butuh, ...(l.pilihan || [])].includes(k))
-  if (calon.length !== 1) return { status: 'menunggu buat' } // bahan bersama (BMKG pagi) menunggu `buat` menentukan jenisnya
+  if (calon.length !== 1) return { status: 'menunggu buat', ...terima } // bahan bersama (BMKG pagi) menunggu `buat` menentukan jenisnya
   const tanggal = (ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null))(pesan.teks || '', k) || tanggalWib(ctx.now || new Date())
   const { proyek: p } = await proyekBuka(ctx, { wa_sha: sha, jenis: calon[0].id, tanggal, bahan: [{ wa_id: String(pesan.wa_id), jenis_bahan: k }] })
   catatIndeks(ctx.dasar || RUMAH, p, sha, dari)
   // TODO(BL-10): bahan baru untuk proyek draf memicu tawaran bangun ulang.
-  return { status: 'ditambah', proyek: p.id } // tanpa balasan: limiter 8 kiriman per tujuan per hari (Q1)
+  return { status: 'ditambah', proyek: p.id, ...terima } // tanpa proyek dituntun: tanpa balasan (limiter 8 kiriman per tujuan per hari, Q1)
 }
 
 // ---------- Q7: kedaluwarsa (fungsi saja; penjadwalnya di tiket lain) ----------
@@ -1106,6 +1328,7 @@ export async function kedaluwarsa(ctx) {
     const umur = now - Number(p.diubah || 0)
     if (p.status === 'membangun' ? (umur < MEMBANGUN_BASI_MS || kunciHidup(lockProyek(dasar, id))) : umur < KEDALUWARSA_MS) continue
     if (!await pindahStatus(ctx, p, 'kedaluwarsa', e.sha, { lempar: false })) continue
+    try { catatSatelit(ctx, id, null) } catch {}
     hapusIndeks(dasar, id)
     const lap = lapDari(p.jenis)
     try { await (ctx.kirimKe || ((t, s) => ctx.dep.kirimTeks(t, s)))(e.dari, susun('Proyek ditutup otomatis', p, p.versi || null,
@@ -1122,6 +1345,11 @@ function calonRevisi(pesan, ctx) {
   return !pesan.ada_berkas && pesan.diteruskan !== true && !!teks && !parsePerintah(teks, ctx.now || new Date()) &&
     !(ctx.kenali || jenisWa.kenali)(teks, pesan.nama_berkas || '')
 }
+// Pesan diteruskan yang isinya persis kata tuntun (angka menu, lanjut, buat saja, hitung, tunggu) = bahan, bukan perintah.
+function bukanPerintahTerusan(cmd, teks) {
+  if (['menu', 'lanjut', 'satelit'].includes(cmd.aksi)) return true
+  return cmd.aksi === 'buat' && String(teks ?? '').trim().toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ') === 'buat saja'
+}
 const drafPengirim = async (ctx, sha, o) => (await proyekPengirim(ctx, sha, (p) => p.status === 'draf' && p.versi > 0, o))[0] || null
 
 // Untuk gateway (BL-09) sebelum meneruskan pesan teks ke Worker: 'perintah' | 'revisi' | 'bahan'. Tanpa efek samping (hanya membaca proyek).
@@ -1129,7 +1357,7 @@ const drafPengirim = async (ctx, sha, o) => (await proyekPengirim(ctx, sha, (p) 
 export async function klasifikasi(pesan, ctx) {
   if (!pesan || pesan.lama) return 'bahan'
   const cmd = pesan.ada_berkas ? null : parsePerintah(pesan.teks, ctx.now || new Date())
-  if (cmd && !(cmd.aksi === 'menu' && pesan.diteruskan === true)) return 'perintah' // angka menu yang diteruskan = bahan
+  if (cmd && !(pesan.diteruskan === true && bukanPerintahTerusan(cmd, pesan.teks))) return 'perintah' // angka menu, lanjut, buat saja, hitung, tunggu yang diteruskan = bahan
   const dari = normalWa(pesan.dari), sha = dari && !/@g\.us$/.test(dari) ? waSha(dari, ctx.env.WA_GARAM) : null
   if (sha && !pesan.ada_berkas && pesan.diteruskan !== true && teksYa(pesan.teks) && konfirmasiBatal(ctx, sha)) return 'perintah' // `ya` atas tanya batal dari menu
   if (!calonRevisi(pesan, ctx)) return 'bahan'
@@ -1145,11 +1373,24 @@ export async function tangani(pesan, ctx) {
   if (!dari || /@g\.us$/.test(dari)) return { status: 'bukan pemakai' }
   const sha = waSha(dari, ctx.env.WA_GARAM)
   let cmd = pesan.ada_berkas ? null : parsePerintah(pesan.teks, ctx.now || new Date())
-  if (cmd?.aksi === 'menu' && pesan.diteruskan === true) cmd = null // pesan diteruskan tidak pernah jadi angka menu
+  if (cmd && pesan.diteruskan === true && bukanPerintahTerusan(cmd, pesan.teks)) cmd = null // pesan diteruskan tidak pernah jadi angka menu, lanjut, buat saja, hitung, tunggu
   // `ya` dalam 5 menit sesudah angka 4 = batal proyek yang ditanyakan; pesan lain apa pun (termasuk bantuan) menghapus tanya batal itu.
   const ya = sha && !pesan.ada_berkas && pesan.diteruskan !== true && teksYa(pesan.teks) ? konfirmasiBatal(ctx, sha) : null
   if (sha) try { catatKonfirmasi(ctx, sha, null) } catch {}
   if (ya) cmd = { aksi: 'batal', id: ya.id }
+  if (cmd?.aksi === 'panduan') {
+    // Salin infografis dari repo ke ~/.wa-bot/keluaran (satu-satunya akar yang boleh dikirim gateway), kirim sebagai dokumen.
+    const asal = path.join(DI, '../../data/kajian-bnpb/bot-laporan/infografis/panduan-bot.png')
+    const tujuan = path.join(ctx.dasar || RUMAH, 'keluaran', 'panduan', 'Panduan Bot Laporan BNPB.png')
+    try {
+      fs.mkdirSync(path.dirname(tujuan), { recursive: true, mode: 0o700 })
+      fs.copyFileSync(asal, tujuan)
+      await ctx.balasFile(tujuan, path.basename(tujuan), susun('Panduan bot laporan', null, null, ['Buka berkas ini untuk melihat gambar ukuran penuh.']), 'image/png', { dokumen: true })
+    } catch (e) {
+      await ctx.balas(susun('Panduan belum tersedia', null, null, ['Ketik *bantuan* untuk daftar perintah.']))
+    }
+    return { status: 'panduan' }
+  }
   if (cmd?.aksi === 'bantuan') {
     const pemilik = new Set(daftar(ctx.env.PEMILIK).map(normalWa))
     await ctx.balas(BANTUAN + (pemilik.has(dari) ? '\n' + BANTUAN_PEMILIK : ''))
@@ -1161,6 +1402,12 @@ export async function tangani(pesan, ctx) {
   }
   let jawab = !!cmd // galat dibalas ke pengirim hanya untuk perintah dan revisi, tidak untuk bahan biasa
   try {
+    if (cmd?.aksi === 'satelit') {
+      // K18: *tunggu* / *hitung* hanya menjawab pilihan hidup (di bawah 24 jam, proyek masih menunggu); selain itu petunjuk, tanpa proyek baru.
+      const e = await pilihanSatelit(ctx, sha)
+      if (!e) { await ctx.balas(susun('Tidak ada pilihan menunggu', null, null, `*${cmd.kata}* hanya menjawab pilihan data satelit laporan penanganan. Ketik *status* untuk melihat proyek.`)); return { status: 'satelit tanpa pilihan' } }
+      await pilihSatelit(cmd.kata, e, dari, sha, ctx); return { status: cmd.kata }
+    }
     if (cmd?.aksi === 'menu') {
       // Angka menu hanya berarti perintah untuk pemegang draf; di luar draf dijawab petunjuk, tidak pernah ke Claude.
       // Beberapa draf: angka berlaku untuk proyek yang menunya terakhir dikirim ke pengirim ini (menu.json); tanpa catatan itu tidak menebak.
@@ -1178,7 +1425,8 @@ export async function tangani(pesan, ctx) {
       cmd = aksi === 'batal' ? { aksi, tanya: true, id: sasaran.id } : { aksi, id: sasaran.id }
     }
     if (cmd?.aksi === 'status') { await status(dari, sha, ctx); return { status: 'status' } }
-    if (cmd?.aksi === 'buat') { await buat(cmd, dari, sha, ctx); return { status: 'buat' } }
+    if (cmd?.aksi === 'buat') { await buat(cmd, dari, sha, ctx); return { status: cmd.saja ? 'buat saja' : 'buat' } }
+    if (cmd?.aksi === 'lanjut') { await lanjut(dari, sha, ctx); return { status: 'lanjut' } }
     if (cmd?.aksi === 'final') { const r = await final(dari, sha, ctx, cmd.id || null); return { status: r === 'ditutup' ? 'ditutup' : r === 'tertunda' ? 'final tertunda' : 'final' } }
     if (cmd) { await perintahProyek(cmd, dari, sha, ctx); return { status: cmd.tanya ? 'tanya batal' : cmd.aksi } }
     // Perintah tidak pernah sampai ke sini (tidak pernah ke Claude). Revisi (ALUR B): calonRevisi dari pemegang proyek draf; forward dan bahan dikenali tetap bahan.

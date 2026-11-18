@@ -60,20 +60,205 @@ _P-181126-01, versi 1_
 Laporan Kejadian Bencana Harian 18 Nov
 ```
 
-### A4. Bahan belum lengkap (T-TANYA)
+### A0. Alur dituntun (K17)
+
+1. Pemakai mengetik *buat harian* atau *buat penanganan* (boleh bertanggal). Bot membalas daftar bahan (A0a).
+2. Tiap bahan yang masuk dibalas tanda terima dengan sisa yang kurang (A0b sampai A0d). Kiriman yang datang dalam sekitar 20 detik digabung jadi satu pesan.
+3. Bot tidak pernah membangun sendiri, juga saat bahan wajib lengkap. Pemakai mengetik *lanjut* (atau *buat saja*).
+4. Sesudah *lanjut*, bentrok angka atau bahan tak terbaca ditanyakan sekali (A4). *lanjut* lagi membangun dan mencatatnya. Bahan wajib yang kurang tidak ditanyakan, hanya dicatat di draf (A2b).
+5. Bahan yang dikirim sebelum *buat* tetap dipakai dan langsung tertandai "sudah ada". Tanpa *buat*, bahan diterima diam-diam seperti dulu.
+
+### A0a. Daftar bahan sesudah *buat penanganan*
 
 ```text
-*Bahan belum lengkap*
+*Kirim bahan laporan*
+_P-181126-02_
+
+Laporan Penanganan Pengendalian Karhutla 18 Nov
+
+*Wajib:*
+- BMKG pagi: sudah ada
+- Satgas pemadaman
+
+*Tambahan:*
+- Gelar kekuatan Satgas Udara (Excel)
+
+Kirim atau teruskan bahannya ke sini.
+Ketik *lanjut* bila sudah siap.
+```
+
+Bila semua bahan wajib sudah ada, judulnya `*Bahan wajib lengkap*` dan baris terakhirnya "Ketik *lanjut* untuk membuat laporan." Laporan harian tidak punya bagian Tambahan. Sebelum cut-off hari ini, di bawah nama laporan ada baris "Belum cut-off 18.00 WIB, angka sistem hari ini belum lengkap."
+
+### A0b. Tanda terima bahan, wajib belum lengkap
+
+```text
+*Diterima: Satgas pemadaman* (1 dari 2 wajib)
+_P-181126-02_
+
+*Masih kurang:*
+- BMKG pagi
+
+Ketik *lanjut* bila ingin membuat dengan bahan yang ada.
+```
+
+### A0c. Tanda terima, bahan wajib lengkap
+
+```text
+*Bahan wajib lengkap*
+_P-181126-02_
+
+Diterima: BMKG pagi.
+
+*Tambahan yang belum ada:*
+- Gelar kekuatan Satgas Udara (Excel)
+
+Ketik *lanjut* untuk membuat laporan.
+```
+
+### A0d. Kiriman yang belum dikenali
+
+```text
+*Bahan belum dikenali*
+_P-181126-02_
+
+Laporan Penanganan Pengendalian Karhutla 18 Nov
+Kiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.
+
+*Wajib:*
+- BMKG pagi: sudah ada
+- Satgas pemadaman
+
+*Tambahan:*
+- Gelar kekuatan Satgas Udara (Excel)
+
+Ketik *lanjut* bila ingin membuat dengan bahan yang ada.
+```
+
+Beberapa kiriman digabung: "3 kiriman belum dikenali ...".
+
+### A0d2. Bahan bertanggal hari lain
+
+```text
+*Bahan bertanggal lain*
+_P-181126-01_
+
+Laporan Kejadian Bencana Harian 18 Nov
+Diterima, tetapi bertanggal 17 Nov, tidak dipakai untuk laporan 18 Nov: BMKG pagi.
+
+*Wajib:*
+- Rekap Koordalops 24 jam: sudah ada
+- BMKG pagi
+- PVMBG pagi
+
+Ketik *lanjut* bila ingin membuat dengan bahan yang ada.
+```
+
+### A0e. *lanjut* tanpa proyek terbuka
+
+```text
+*Belum ada proyek terbuka*
+
+Ketik *buat harian* atau *buat penanganan* dulu, lalu kirim bahannya.
+```
+
+### A0f. Data satelit penanganan (K18)
+
+Baris di daftar bahan penanganan, di bawah nama laporan:
+
+```text
+Data satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.
+```
+
+Sebelum membangun, bila situs belum memuat lintasan siang:
+
+```text
+*Situs belum memuat data satelit*
+_P-181126-02_
+
+Data satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.
+
+Pilih salah satu:
+- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu
+- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.
+```
+
+Balasan *tunggu*:
+
+```text
+*Menunggu situs*
+_P-181126-02_
+
+Laporan dibangun otomatis begitu situs memuat lintasan siang.
+Dicek tiap 10 menit.
+
+Ketik *hitung* bila ingin membangun sekarang.
+```
+
+Sesudah 3 jam (atau 3 kali status satelit tak terbaca), sekali:
+
+```text
+*Situs masih belum memuat*
+_P-181126-02_
+
+Data satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.
+
+Pilih lagi:
+- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.
+- *tunggu*: tetap menunggu situs
+```
+
+*hitung* atau *tunggu* tanpa pilihan yang menunggu:
+
+```text
+*Tidak ada pilihan menunggu*
+
+*hitung* hanya menjawab pilihan data satelit laporan penanganan. Ketik *status* untuk melihat proyek.
+```
+
+Balasan *hitung*: draf biasa (A1) dengan baris catatan:
+
+```text
+*Catatan:*
+- Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs.
+```
+
+### A2b. *lanjut* dengan bahan wajib kurang (draf tetap dibuat, kekurangan dicatat)
+
+```text
+*Draf v1 siap*
+_P-181126-02, versi 1_
+
+Laporan Penanganan Pengendalian Karhutla 18 Nov
+Bahan: BMKG pagi 1
+Hotspot, firespot, luas terbakar, dan luas belum padam dari sistem (hari D-1).
+Gambar ini slide 1, PDF menyusul.
+
+*Catatan:*
+- Satgas pemadaman untuk 18 Nov belum ada.
+
+*Balas angka:*
+1 Final
+2 Minta PPTX
+3 Lihat versi
+4 Batal
+
+Atau tulis perubahan dengan kalimat biasa.
+```
+
+### A4. Bahan perlu dipastikan (T-TANYA, sesudah *lanjut*)
+
+```text
+*Bahan perlu dipastikan*
 _P-181126-01_
 
 Laporan Kejadian Bencana Harian 18 Nov perlu dipastikan dulu:
-1. PVMBG pagi untuk 18 Nov belum ada. Kirim bahannya.
-2. Sorti water bombing berbeda: 14 ("sorti 14") dan 12 ("sorti 12"). Mana yang dipakai?
+1. Sorti water bombing berbeda: 14 ("sorti 14") dan 12 ("sorti 12"). Mana yang dipakai?
+2. sitrep.pdf tidak terbaca. Kirim teks atau PDF.
 
-Kirim jawabannya lalu ketik *buat*, atau ketik *buat saja* untuk lanjut dengan bahan yang ada.
+Kirim jawabannya, atau ketik *lanjut* untuk membuat dengan bahan yang ada.
 ```
 
-Catatan: jawaban bebas atas pertanyaan belum diurai mesin (TODO BL-10), jadi kalimatnya meminta *buat* lagi sesudah menjawab.
+Catatan: jawaban bebas atas pertanyaan belum diurai mesin (TODO BL-10). Bahan pengganti yang dikirim tetap dipakai; *lanjut* berikutnya membangun dan mencatat yang masih bentrok.
 
 ### A5. Jenis laporan belum jelas
 
@@ -336,10 +521,10 @@ Kirim atau teruskan bahan, lalu ketik *buat harian* atau *buat penanganan*.
 *Cara pakai bot laporan*
 
 *Membuat laporan*
-- Kirim atau teruskan bahan dulu
-- *buat harian*: laporan kejadian bencana
-- *buat penanganan*: laporan penanganan karhutla
-- *buat saja*: lanjut dengan bahan ada
+- *buat harian*: mulai laporan kejadian bencana
+- *buat penanganan*: mulai laporan penanganan karhutla
+- Kirim atau teruskan bahan yang diminta
+- *lanjut*: buat laporan dari bahan ada
 
 *Saat draf*
 - *1* atau *final*: kirim versi final
@@ -353,7 +538,7 @@ Kirim atau teruskan bahan, lalu ketik *buat harian* atau *buat penanganan*.
 - *status*: proyek yang masih terbuka
 - *bantuan*: tampilkan pesan ini
 
-Contoh: *buat harian kemarin*
+Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*
 Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.
 ```
 
@@ -429,74 +614,38 @@ Pemilik sudah dikabari. Coba lagi beberapa saat lagi.
 Pemilik sudah dikabari. Coba lagi beberapa saat lagi.
 ```
 
-## G. Pendaftaran nomor
+## G. Nomor belum terdaftar (K19)
+
+Tidak ada pendaftaran mandiri. Pesan apa pun dari nomor asing, termasuk "daftar ...", dijawab sama, paling banyak sekali sehari per nomor dan 30 nomor per hari.
 
 ### G1. Nomor belum terdaftar (T-DAFTAR)
 
 ```text
 *Nomor belum terdaftar*
-
-Nomor ini belum terdaftar di bot laporan BNPB.
-Untuk mendaftar, ketik:
-*daftar nama, instansi*
-
-Contoh: daftar Budi Santoso, BPBD Riau
-```
-
-### G2. Format belum sesuai
-
-```text
-*Format belum sesuai*
-
-Ketik: *daftar nama, instansi*
-Contoh: daftar Budi Santoso, BPBD Riau
-```
-
-### G3. Permintaan terkirim
-
-```text
-*Permintaan terkirim*
-
-Permintaan daftar sudah diteruskan ke admin.
-Kabar dikirim ke nomor ini sesudah diputuskan.
-```
-
-### G4. Disetujui dan belum disetujui
-
-```text
-*Pendaftaran disetujui*
-
-Nomor ini sekarang terdaftar di bot laporan BNPB.
-Ketik *bantuan* untuk melihat cara pakai.
-```
-
-```text
-*Pendaftaran belum disetujui*
-
-Nomor ini belum bisa memakai bot laporan BNPB.
+Bot ini hanya bisa dipakai nomor yang terdaftar.
 ```
 
 ## H. Pesan ke pemilik
 
-### H1. Permintaan daftar baru
+### H1. Mendaftarkan dan mencabut nomor
+
+Pemilik mengetik `setuju 081200000000 Budi Santoso` atau `tolak 081200000000`. Nomor itu sendiri tidak dikirimi pesan.
 
 ```text
-*Permintaan daftar baru*
-
-Nama: Budi Santoso
-Instansi: BPBD Riau
-Nomor: 6281100000000
-
-Balas *setuju 6281100000000* atau *tolak 6281100000000*
+*Nomor terdaftar*
+Budi Santoso (6281200000000) sekarang bisa memakai bot laporan.
 ```
 
-### H2. Putusan tersimpan
+```text
+*Nomor dicabut*
+Budi Santoso (6281200000000) tidak lagi terdaftar.
+```
+
+### H2. Batas harian balasan nomor asing
 
 ```text
-*Disetujui*
-
-Budi Santoso (BPBD Riau), 6281100000000
-Pendaftar sudah dikabari.
+*Balasan nomor asing ditahan*
+Hari ini sudah 30 nomor belum terdaftar dibalas. Nomor berikutnya tidak dibalas sampai besok.
 ```
 
 ### H3. Galat bot laporan

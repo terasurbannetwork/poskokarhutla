@@ -172,15 +172,27 @@ def seri(hari_akhir, n, jam='17:00', kunci=None):
     hari_akhir = dt.date.fromisoformat(str(hari_akhir))
     hari = [hari_akhir - dt.timedelta(days=n - 1 - i) for i in range(n)]
     jalur = os.path.join(SINI, 'cache', f'firespot-{jam.replace(":", ".")}.json')
-    simpan = json.load(open(jalur)) if os.path.exists(jalur) else {}
-    perlu = [d for d in hari if d.isoformat() not in simpan]
+    try:
+        with open(jalur, encoding='utf-8') as f: simpan = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        simpan = {}   # cache rusak (jalan bersamaan terputus) = hitung ulang, bukan galat
+    # K18 (18 Nov 2026): hari yang dihitung SEBELUM jam cut-off-nya (bot membangun sebelum 18.00) dihitung ulang di jalan berikutnya;
+    # _dibuat = jam hitung per hari. Entri lama tanpa cap tetap dipercaya, kecuali hari ini dan kemarin (bisa dari jalan sebelum cut-off).
+    dibuat = simpan.setdefault('_dibuat', {})
+    kini = dt.datetime.now(WIB)
+    batas = lambda d: dt.datetime.combine(d, dt.time.fromisoformat(jam), WIB)
+    basi = lambda d: (dt.datetime.fromisoformat(dibuat[d.isoformat()]) < batas(d) if d.isoformat() in dibuat
+                      else d >= kini.date() - dt.timedelta(days=1))
+    perlu = [d for d in hari if d.isoformat() not in simpan or basi(d)]
     if perlu:
         cuaca = CR.hitung(min(perlu), max(perlu))
         w, gambut = Wilayah(), Poligon(os.path.join(AKAR, 'public/data/lahan/gambut.geojson'))
         for d in perlu:
             simpan[d.isoformat()] = hitung(d, jam, cuaca, kunci, gambut, w)
+            dibuat[d.isoformat()] = dt.datetime.now(WIB).isoformat(timespec='seconds')
             os.makedirs(os.path.dirname(jalur), exist_ok=True)
-            json.dump(simpan, open(jalur, 'w'))
+            with open(jalur + '.tmp', 'w', encoding='utf-8') as f: json.dump(simpan, f)
+            os.replace(jalur + '.tmp', jalur)   # atomik: dua jalan bersamaan tidak memotong berkas
             print('firespot', d, 'titik nasional', sum(v[KOL_FS] for v in simpan[d.isoformat()].values()), flush=True)
     kolom = [simpan[d.isoformat()] for d in hari]
     kunci_semua = sorted({k for c in kolom for k in c})

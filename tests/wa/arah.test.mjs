@@ -13,9 +13,9 @@ const PEMILIK = '081100000000', NO_PEMILIK = '6281100000000', NO_LAIN = '6281234
 const JAM = new Date('2026-11-18T03:00:00Z') // 10.00 WIB
 
 // Tiruan alur simpanKeOutbox: cegat (proyek hanya bila BL dan pribadi) lalu arah.
-function rute({ bl, dari = NO_PEMILIK, teks, pribadi = true, terdaftar = true, grupOps = false, lama = false, adaMedia = false }) {
+function rute({ bl, dari = NO_PEMILIK, teks, pribadi = true, terdaftar = true, grupOps = false, lama = false, adaMedia = false, diteruskan = false }) {
   const cmd = !adaMedia && !grupOps && !lama ? cegat({ dari, teks, pemilik: PEMILIK, now: JAM, proyek: bl && pribadi }) : null
-  return A.arah({ proyek: bl, pribadi, terdaftar, grupOps, lama, adaMedia, teks, cmd })
+  return A.arah({ proyek: bl, pribadi, terdaftar, grupOps, lama, adaMedia, teks, cmd, diteruskan })
 }
 
 test('BL_PROYEK mati: perilaku lama utuh', () => {
@@ -29,7 +29,7 @@ test('BL_PROYEK mati: perilaku lama utuh', () => {
 })
 
 test('BL_PROYEK nyala: perintah proyek dari pemilik dan nomor terdaftar lain (Q14)', () => {
-  for (const teks of ['buat', 'buat harian', 'buat penanganan 17 nov', 'buat saja', 'status', 'bantuan', 'Bantuan.', 'final', 'batal', 'versi', 'balik v2', 'balik ke v2', 'Balik ke v3.', 'pptx']) {
+  for (const teks of ['buat', 'buat harian', 'buat penanganan 17 nov', 'buat saja', 'status', 'bantuan', 'Bantuan.', 'final', 'batal', 'versi', 'balik v2', 'balik ke v2', 'Balik ke v3.', 'pptx', 'lanjut', 'Lanjut.']) {
     assert.equal(rute({ bl: true, teks }), 'proyek', 'pemilik ' + teks)
     assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'proyek', 'terdaftar ' + teks)
   }
@@ -57,6 +57,11 @@ test('menu draf: angka 1-4 dari nomor terdaftar langsung ke proyek, tidak diteru
   assert.equal(await A.pilihJalur(Pr, { ...pesan, teks: '3' }, ctx), 'langsung')
   // diteruskan: angka dan ya selalu bahan, juga selama tanya batal berlaku
   assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks: '1', diteruskan: true }), 'bahan+proyek')
+  for (const teks of ['lanjut', 'buat saja', 'hitung', 'tunggu']) {
+    assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks, diteruskan: true }), 'bahan+proyek', 'diteruskan ' + teks)
+    assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks }), 'proyek', teks)
+    assert.equal(rute({ bl: true, teks, diteruskan: true }), 'bahan+proyek', 'pemilik diteruskan ' + teks)
+  }
   assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks: 'final P-181126-02' }), 'proyek')
   assert.equal(await A.pilihJalur(Pr, { ...pesan, teks: '1', diteruskan: true }, ctx), 'bahan')
   assert.equal(await A.pilihJalur(Pr, { ...pesan, diteruskan: true }, ctx), 'bahan')
@@ -197,7 +202,7 @@ test('gateway: arah, antrean, susulan, dan batas percakapan tersambung', () => {
   assert.match(src, /TERLEWAT\.susulan\(dari, ARAH\.tsMs\(m\.messageTimestamp\)\)/)
   assert.match(src, /if \(TERLEWAT\) TERLEWAT\.buka\(\)/)
   assert.match(src, /susulan && TERLEWAT && pribadi && \(izin \|\| bl\) && !terlihat\.ada\(id\)/)
-  assert.match(src, /ARAH\.isiBerkas\(aman, nama, caption, mimetype\)/)
+  assert.match(src, /ARAH\.isiBerkas\(aman, nama, caption, mimetype, opsi\)/)
   assert.equal((src.match(/Pr\.tangani\(/g) || []).length, 1, 'proyek hanya dipanggil dari antrean')
 })
 

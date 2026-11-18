@@ -7,7 +7,7 @@ Keluar samping: `batal` (perintah pemakai) dan `kedaluwarsa` (24 jam tanpa aktiv
 
 ## A. Membuat laporan
 
-1. Pemakai mem-forward bahan. Gateway mencocokkan nomor dengan salinan daftar terdaftar (D10). Nomor asing dibalas cara mendaftar (paling banyak sekali sehari) dan bahannya tidak diteruskan. Nomor terdaftar diteruskan ke `POST /api/wa/gateway`.
+1. Pemakai mem-forward bahan. Gateway mencocokkan nomor dengan salinan daftar terdaftar (D10). Nomor asing dibalas "Bot ini hanya bisa dipakai nomor yang terdaftar" (paling banyak sekali sehari) dan bahannya tidak diteruskan. Nomor terdaftar diteruskan ke `POST /api/wa/gateway`.
 2. Bahan ditambahkan ke proyek `terbuka` milik nomor itu untuk tanggal dan jenis yang cocok, atau dibiarkan menunggu `buat`.
 3. Pemakai mengetik `buat penanganan karhutla` (jenis boleh ditebak dari bahan bila tidak disebut; bila ragu bot bertanya).
 4. Mesin memeriksa bahan wajib jenis laporan itu (`LAPORAN[].butuh` di `otomatis.mjs`; penanganan butuh `bmkg_pagi` dan `satgas`) dan meminta Claude mencari pertentangan antarbahan. Ada yang kurang atau bentrok: status `bertanya`, bot mengirim satu pesan berisi semua pertanyaan.
@@ -31,11 +31,11 @@ Keluar samping: `batal` (perintah pemakai) dan `kedaluwarsa` (24 jam tanpa aktiv
 3. Bot membalas tautan folder Drive dan ringkasan riwayat versi. Status `ditutup`.
 4. Unggah Drive gagal: status tetap `final`, diulang otomatis tiap 10 menit, pemilik dikabari sekali.
 
-## D. Pendaftaran
+## D. Pendaftaran (K19)
 
-1. Nomor asing mengirim apa pun: gateway membalas cara mendaftar (ketik `daftar <nama> <instansi>`), paling banyak sekali sehari per nomor.
-2. `daftar`: gateway meneruskannya ke pemilik berisi nama, instansi, dan nomor; pemilik membalas `setuju <nomor>` atau `tolak <nomor>`.
-3. `setuju`: nomor masuk `bl_daftar`, salinan daftar di gateway disegarkan, pendaftar diberi tahu. Akun `/masuk` tidak otomatis terhitung (Q8).
+1. Tidak ada pendaftaran mandiri. Nomor asing yang mengirim apa pun, termasuk "daftar ...", hanya dibalas "Bot ini hanya bisa dipakai nomor yang terdaftar", paling banyak sekali sehari per nomor.
+2. Pemilik mendaftarkan nomor langsung: `setuju <nomor> [nama]`. Mencabut: `tolak <nomor>`. Salinan daftar di gateway langsung disegarkan; nomor itu tidak dikirimi pesan.
+3. Nomor di `WA_IZIN` tetap terhitung terdaftar. Akun `/masuk` tidak.
 
 ## E. Mesin mati
 

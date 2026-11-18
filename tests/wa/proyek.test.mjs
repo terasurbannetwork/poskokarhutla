@@ -6,7 +6,7 @@ import fs from 'node:fs'
 import crypto from 'node:crypto'
 import os from 'node:os'
 import path from 'node:path'
-import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN, ulangFinal, hapusKonfirmasi } from '../../scripts/wa/proyek.mjs'
+import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN, ulangFinal, hapusKonfirmasi, ulangSatelit } from '../../scripts/wa/proyek.mjs'
 import { GalatClaude, validasiOperasi } from '../../scripts/wa/claude.mjs'
 import { LAPORAN } from '../../scripts/wa/otomatis.mjs'
 
@@ -136,7 +136,7 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
   }
   const ctx = {
     env: { WORKER_URL: 'http://w', WA_MESIN: 'k', WA_GARAM: 'garam', PEMILIK: '6299', WA_IZIN: `${DARI},6299,6281111`, WA_PY_BIN: '/opt/py/bin' },
-    dep, now, dasar, kenali, tanggalIsi, log: () => {},
+    dep, now, dasar, kenali, tanggalIsi, log: () => {}, jedaTerima: 0, // uji yang menguji penggabungan memasang jedanya sendiri
     balas: async (t) => { balasan.push(t) },
     balasFile: async (p, nama, caption, mime) => { kirim.push({ p, nama, caption, mime }) },
     kabariPemilik: async (t) => { pemilik.push(t) },
@@ -146,6 +146,15 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
     gen: () => exec.filter((e) => /_(ringkas|otomatis)\.py$/.test(e.args[0])), terapkan: () => exec.filter((e) => e.args[1] === 'terapkan') }
 }
 const perintah = (d, teks) => tangani({ dari: DARI, teks }, d.ctx)
+// K17: `buat <jenis>` membalas daftar bahan, `lanjut` membangun. bangun() = keduanya; balasan daftar bahan dibuang supaya uji draf tetap memeriksa balasan draf.
+const DAFTAR_BAHAN = /^\*(Kirim bahan laporan|Bahan wajib lengkap)\*\n/
+async function bangun(d, teks, dari = DARI) {
+  const n = d.balasan.length
+  const r = await tangani({ dari, teks }, d.ctx)
+  if (d.balasan.length !== n + 1 || !DAFTAR_BAHAN.test(d.balasan[n])) return r
+  d.balasan.splice(n, 1)
+  return tangani({ dari, teks: 'lanjut' }, d.ctx)
+}
 
 test('parsePerintah: buat, jenis, tanggal, saja; status tanpa tanggal; selain itu bahan', () => {
   const p = (t) => parsePerintah(t, NOW)
@@ -167,34 +176,94 @@ test('waSha memakai rumus daftar.cjs: sha256("<garam>|<62 nomor>")', () => {
   assert.equal(waSha('081234567890', ''), null)
 })
 
-test('T2: buat dengan bahan wajib kurang -> satu T-TANYA, status bertanya, generator tidak jalan', async () => {
+test('K17: buat membalas daftar bahan (wajib, tambahan, sudah ada), tidak membangun, tidak memanggil Claude', async () => {
   const d = dunia({ pesan: [P('1', 'rekap_koordalops_24'), P('2', 'bmkg_pagi')] })
-  await perintah(d, 'buat harian 26 okt')
-  assert.equal(d.gen().length, 0)
-  assert.deepEqual(d.statusLog, ['bertanya'])
+  assert.equal((await perintah(d, 'buat harian 26 okt')).status, 'buat')
+  assert.equal(d.gen().length, 0); assert.equal(d.keUrai.length, 0); assert.deepEqual(d.statusLog, [])
   assert.equal(d.balasan.length, 1)
-  const [b] = d.balasan
-  assert.match(b, /^\*Bahan belum lengkap\*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt perlu dipastikan dulu:\n/)
-  assert.match(b, /\n1\. PVMBG pagi untuk 26 Okt belum ada\. Kirim bahannya\./)
-  assert.match(b, /\n\nKirim jawabannya lalu ketik \*buat\*, atau ketik \*buat saja\* untuk lanjut dengan bahan yang ada\.$/)
-  gayaWa(b)
-  assert.equal(d.kirim.length, 0)
+  assert.equal(d.balasan[0], '*Kirim bahan laporan*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt\n\n*Wajib:*\n- Rekap Koordalops 24 jam: sudah ada\n- BMKG pagi: sudah ada\n- PVMBG pagi\n\nKirim atau teruskan bahannya ke sini.\nKetik *lanjut* bila sudah siap.')
+  gayaWa(d.balasan[0])
+  assert.deepEqual([...d.proyek.values()][0].bahan, [], 'bahan belum ditempel sebelum lanjut')
+  // penanganan: bagian Tambahan dari LAPORAN.pilihan
+  const e = dunia({ pesan: [P('2', 'bmkg_pagi'), P('4', 'satgas')] })
+  await perintah(e, 'buat penanganan 26 okt')
+  assert.equal(e.balasan[0], '*Bahan wajib lengkap*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt\n\n*Wajib:*\n- BMKG pagi: sudah ada\n- Satgas pemadaman: sudah ada\n\n*Tambahan:*\n- Gelar kekuatan Satgas Udara (Excel)\n\nKetik *lanjut* untuk membuat laporan.')
+  assert.equal(e.gen().length, 0, 'wajib lengkap pun tetap menunggu lanjut')
+})
+
+test('K17: lanjut dengan bahan wajib kurang membangun dan mencatat kekurangannya; lanjut tanpa proyek = petunjuk', async () => {
+  const d = dunia({ pesan: [P('1', 'rekap_koordalops_24'), P('2', 'bmkg_pagi')] })
+  assert.equal((await perintah(d, 'lanjut')).status, 'lanjut')
+  assert.equal(d.balasan.at(-1), '*Belum ada proyek terbuka*\n\nKetik *buat harian* atau *buat penanganan* dulu, lalu kirim bahannya.')
+  assert.equal(d.proyek.size, 0)
+  await perintah(d, 'buat harian 26 okt')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'Lanjut.' }, d.ctx), 'perintah')
+  await perintah(d, 'lanjut')
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
+  assert.equal(d.gen().length, 1)
+  assert.match(d.kirim[0].caption, /\n\n\*Catatan:\*\n- PVMBG pagi untuk 26 Okt belum ada\.\n/)
+  assert.match(d.versi[0].peringatan, /PVMBG pagi untuk 26 Okt belum ada/)
+  assert.deepEqual([...d.proyek.values()][0].bahan.map((b) => b.wa_id).sort(), ['1', '2'])
+  await perintah(d, 'lanjut')
+  assert.match(d.balasan.at(-1), /^\*Draf sudah ada\*\n_P-291026-01, versi 1_\n/)
+  assert.equal(d.gen().length, 1)
+})
+
+test('K17: bahan dikirim sebelum buat tetap dipakai; tanda terima hanya untuk proyek dituntun, digabung per jeda', async () => {
+  const pesan = [P('1', 'rekap_koordalops_24')]
+  const d = dunia({ pesan }); d.ctx.jedaTerima = 30
+  // sebelum buat: diam (Q1)
+  const r0 = await tangani({ dari: DARI, teks: `[rekap_koordalops_24] ${TGL}`, wa_id: 1 }, d.ctx)
+  assert.equal(r0.terima, undefined); assert.equal(d.balasan.length, 0)
+  await perintah(d, 'buat harian 26 okt')
+  assert.match(d.balasan[0], /- Rekap Koordalops 24 jam: sudah ada\n/, 'bahan sebelum buat terhitung')
+  // satu bahan: Diterima + sisa wajib
+  pesan.push(P('2', 'bmkg_pagi'))
+  const r1 = await tangani({ dari: DARI, teks: `[bmkg_pagi] ${TGL}`, wa_id: 2 }, d.ctx)
+  assert.equal(await r1.terima, '*Diterima: BMKG pagi* (2 dari 3 wajib)\n_P-291026-01_\n\n*Masih kurang:*\n- PVMBG pagi\n\nKetik *lanjut* bila ingin membuat dengan bahan yang ada.')
+  // tidak dikenali
+  const r2 = await tangani({ dari: DARI, teks: 'catatan rapat koordinasi', wa_id: 7 }, d.ctx)
+  assert.match(await r2.terima, /^\*Bahan belum dikenali\*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt\nKiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain\.\n\n\*Wajib:\*\n- Rekap Koordalops 24 jam: sudah ada\n- BMKG pagi: sudah ada\n- PVMBG pagi\n/)
+  // dua kiriman berdekatan = satu pesan; wajib lengkap = ajakan lanjut, tanpa membangun
+  pesan.push(P('3', 'pvmbg_pagi'))
+  const n = d.balasan.length
+  const [a, b] = await Promise.all([tangani({ dari: DARI, teks: `[pvmbg_pagi] ${TGL}`, wa_id: 3, diteruskan: true }, d.ctx), tangani({ dari: DARI, teks: 'foto posko', wa_id: 8 }, d.ctx)])
+  assert.equal(a.terima, b.terima, 'satu janji untuk kiriman yang digabung')
+  assert.equal(await a.terima, '*Bahan wajib lengkap*\n_P-291026-01_\n\nDiterima: PVMBG pagi.\nKiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.\n\nKetik *lanjut* untuk membuat laporan.')
+  assert.equal(d.balasan.length, n + 1)
+  for (const t of d.balasan) assert.doesNotMatch(t, SISTEM_HURUF, t)
+  assert.equal(d.gen().length, 0, 'tidak pernah membangun sendiri')
+  // sesudah dibangun: tanpa tanda terima
+  await perintah(d, 'lanjut')
+  assert.equal(d.gen().length, 1)
+  const r4 = await tangani({ dari: DARI, teks: 'tambahan lagi', wa_id: 9, diteruskan: true }, d.ctx)
+  assert.equal(await r4.terima, null)
+  const r5 = await tangani({ dari: DARI, teks: 'lagi', wa_id: 10, diteruskan: true }, d.ctx)
+  assert.equal(r5.terima, undefined, 'tuntun dilepas sesudah proyek tidak menunggu bahan')
 })
 
 test('T2: pertentangan dari Claude ikut ditanyakan bernomor', async () => {
   const d = dunia({ claude: () => ({ isian: [], gagal: [], pertentangan: [{ medan: 'sorti_water_bombing', a: { nilai: '14', kutipan: 'sorti 14' }, b: { nilai: '12', kutipan: 'sorti 12' } }] }) })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.gen().length, 0)
+  assert.match(d.balasan[0], /^\*Bahan perlu dipastikan\*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt perlu dipastikan dulu:\n/)
+  gayaWa(d.balasan[0])
   assert.match(d.balasan[0], /1\. Sorti water bombing berbeda: 14 \("sorti 14"\) dan 12 \("sorti 12"\)\. Mana yang dipakai\?/)
+  assert.match(d.balasan[0], /\n\nKirim jawabannya, atau ketik \*lanjut\* untuk membuat dengan bahan yang ada\.$/)
+  assert.deepEqual(d.statusLog, ['bertanya'], 'bentrok ditanyakan sesudah lanjut, sebelum membangun')
+  // lanjut lagi: membangun, bentrok masuk catatan, Claude tidak dipanggil ulang untuk bahan sama
+  assert.equal((await perintah(d, 'lanjut')).status, 'lanjut')
+  assert.equal(d.gen().length, 1); assert.equal(d.keUrai.length, 1)
+  assert.match(d.kirim[0].caption, /\*Catatan:\*\n- Sorti water bombing berbeda/)
 })
 
-test('T3: buat saja membangun dengan catatan kekurangan; Claude tidak dipanggil dua kali untuk bahan sama', async () => {
+test('T3: buat saja (alias lanjut) membangun dengan catatan kekurangan; Claude tidak dipanggil dua kali untuk bahan sama', async () => {
   const d = dunia({ pesan: [P('1', 'rekap_koordalops_24'), P('2', 'bmkg_pagi')] })
   await perintah(d, 'buat harian 26 okt')
-  await perintah(d, 'buat harian saja 26 okt')
+  assert.equal((await perintah(d, 'buat harian saja 26 okt')).status, 'buat saja')
   assert.equal(d.keUrai.length, 1)
   assert.equal(d.gen().length, 1)
-  assert.deepEqual(d.statusLog, ['bertanya', 'membangun', 'draf'])
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
   assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
   assert.match(d.kirim[0].caption, /^\*Draf v1 siap\*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt\nBahan: Rekap Koordalops 24 jam 1, BMKG pagi 1\nGambar ini slide 1, PDF menyusul\.\n\n\*Catatan:\*\n- PVMBG pagi untuk 26 Okt belum ada/)
   assert.match(d.kirim[0].caption, /\n\n\*Balas angka:\*\n1 Final\n2 Minta PPTX\n3 Lihat versi\n4 Batal\n\nAtau tulis perubahan dengan kalimat biasa\.$/, 'draf diakhiri menu bernomor')
@@ -210,7 +279,7 @@ test('bangun v1: tepat 2 kiriman (pratinjau berketerangan ringkasan, lalu PDF), 
     { medan: 'hotspot', kelompok: 'k1', nilai: '40', kutipan: '40', sumber_bahan_id: '1' },
     { medan: 'luas_terbakar', kelompok: 'k1', nilai: '12 ha', kutipan: '12 ha', sumber_bahan_id: '1' },
   ] }) })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.deepEqual(d.statusLog, ['membangun', 'draf'])
   assert.equal(d.balasan.length, 0, 'tanpa pesan T-BUKA terpisah')
   assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
@@ -235,7 +304,7 @@ test('bangun v1: tepat 2 kiriman (pratinjau berketerangan ringkasan, lalu PDF), 
 
 test('tanpa isian yang bisa dipetakan: generator tanpa --isian (deck sama dengan jalur lama)', async () => {
   const d = dunia()
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.gen()[0].args.includes('--isian'), false)
   assert.deepEqual(keIsianGenerator('penanganan', [{ medan: 'personel_darat', kelompok: 'p', nilai: '20' }]), {})
 })
@@ -247,9 +316,9 @@ test('tanpaKunci membuang kunci dan teks angka sistem di kedalaman mana pun', ()
 test('T15: satu proyek tidak pernah dibangun dua proses bersamaan', async () => {
   let lepas; const tahan = new Promise((r) => { lepas = r })
   const d = dunia({ tahanGenerator: tahan })
-  const pertama = perintah(d, 'buat harian 26 okt')
+  const pertama = bangun(d, 'buat harian 26 okt')
   for (let i = 0; i < 50 && !d.gen().length; i++) await new Promise((r) => setTimeout(r, 10))
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.balasan.at(-1), '*Sedang dibangun*\n_P-291026-01_\n\nTunggu sebentar, draf dikirim begitu siap.')
   lepas(); await pertama
   assert.equal(d.gen().length, 1)
@@ -264,7 +333,7 @@ test('K15: PDF dan foto diekstrak jadi teks; yang tidak terbaca dikabarkan dan t
     { id: '10', dari: '6280000000', teks: '[satgas] 2026-10-26', nama_berkas: '', ada_berkas: 0 }]
   const d = dunia({ pesan, berkas: { 7: 'PDF:Banjir melanda Kabupaten Bogor, 3 jiwa meninggal dunia', 8: 'PDF:  ', 9: 'jpg' },
     ocr: async () => 'Pengungsi di balai desa 120 jiwa tercatat' })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   const bahan = d.keUrai[0].bahan
   assert.ok(bahan.every((b) => typeof b.teks === 'string' && !('data' in b)), 'hanya teks ke Claude')
   assert.deepEqual(bahan.map((b) => b.id).sort(), ['1', '2', '3', '7', '9'])
@@ -279,8 +348,8 @@ test('K15: PDF dan foto diekstrak jadi teks; yang tidak terbaca dikabarkan dan t
 
 test('GalatClaude: pesan ramah ke pengirim, pemilik dikabari sekali, status kembali terbuka', async () => {
   const d = dunia({ claude: () => { throw new GalatClaude('tolak', 'x') } })
-  await perintah(d, 'buat harian 26 okt')
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.gen().length, 0)
   assert.equal(d.balasan[0], '*Bahan belum terbaca*\n_P-291026-01_\n\nMesin gagal membaca bahan. Kirim ulang bahannya, lalu coba lagi.')
   assert.equal(d.pemilik.length, 1)
@@ -290,7 +359,7 @@ test('GalatClaude: pesan ramah ke pengirim, pemilik dikabari sekali, status kemb
 test('generator gagal: pengirim diberi tahu singkat, rincian hanya ke pemilik, status terbuka', async () => {
   const d = dunia()
   d.ctx.dep.exec = async (cmd, args) => { if (/_(ringkas|otomatis)\.py$/.test(args[0])) throw Object.assign(new Error('x'), { stderr: 'meledak' }); return { stdout: '' } }
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.deepEqual(d.statusLog, ['membangun', 'terbuka'])
   assert.equal(d.balasan.at(-1), '*Draf v1 gagal dibangun*\n_P-291026-01_\n\nPemilik sudah dikabari. Ketik *buat* lagi beberapa saat lagi.')
   assert.match(d.pemilik[0], /meledak/)
@@ -299,11 +368,11 @@ test('generator gagal: pengirim diberi tahu singkat, rincian hanya ke pemilik, s
 
 test('A2: jenis ditebak dari bahan; seri ditanyakan tanpa membuka proyek', async () => {
   const d = dunia({ pesan: [P('2', 'bmkg_pagi')] })
-  await perintah(d, 'buat 26 okt')
+  await bangun(d, 'buat 26 okt')
   assert.equal(d.balasan[0], '*Jenis laporan belum jelas*\n\nBahan 26 Okt belum menunjukkan jenis laporannya.\n\nKetik salah satu:\n- *buat harian 2026-10-26*\n- *buat penanganan 2026-10-26*')
   assert.equal(d.proyek.size, 0)
   const d2 = dunia({ pesan: [P('2', 'bmkg_pagi'), P('4', 'satgas')] })
-  await perintah(d2, 'buat 26 okt')
+  await bangun(d2, 'buat 26 okt')
   assert.equal([...d2.proyek.values()][0].jenis, 'penanganan')
 })
 
@@ -311,7 +380,7 @@ test('status tanpa tanggal: proyek pengirim yang masih terbuka; bantuan; susulan
   const d = dunia()
   await perintah(d, 'status')
   assert.match(d.balasan[0], /^\*Belum ada proyek terbuka\*\n\nKirim atau teruskan bahan, lalu ketik \*buat harian\* atau \*buat penanganan\*\.$/)
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   d.balasan.length = 0
   await perintah(d, 'status')
   assert.equal(d.balasan[0], '*Proyek terbuka*\n\n_P-291026-01, versi 1_\nLaporan Kejadian Bencana Harian 26 Okt\nStatus: draf siap\nBalas *1* untuk final, atau tulis revisi.')
@@ -352,7 +421,7 @@ test('Q7: proyek 24 jam tanpa aktivitas jadi kedaluwarsa dan pemegangnya diberi 
 
 test('WA_GARAM kosong: perintah dibalas belum siap, tidak ada rute dipanggil', async () => {
   const d = dunia(); d.ctx.env.WA_GARAM = ''
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.proyek.size, 0)
   assert.match(d.balasan[0], /belum siap/)
 })
@@ -361,7 +430,7 @@ test('Q6: baris nomor bot laporan (dari = bl:<wa_sha>) milik pemegang sha itu sa
   const BOT = '6285555000111', sha = waSha(BOT, 'garam')
   const bl = (id, kunci, s = sha) => ({ ...P(id, kunci), dari: `bl:${s}` })
   const d = dunia({ pesan: [bl('1', 'rekap_koordalops_24'), bl('2', 'bmkg_pagi'), bl('3', 'pvmbg_pagi'), bl('4', 'satgas', 'f'.repeat(64)), P('5', 'satgas')] })
-  await tangani({ dari: BOT, teks: 'buat harian 26 okt' }, d.ctx)
+  await bangun(d, 'buat harian 26 okt', BOT)
   assert.deepEqual(d.keUrai[0].bahan.map((b) => b.id).sort(), ['1', '2', '3'])
   assert.equal(d.gen().length, 1)
   assert.equal([...d.proyek.values()][0].wa_sha, sha)
@@ -375,26 +444,26 @@ test('1: membangun tanpa kunci hidup dipulihkan (versi 0 -> terbuka lalu bangun;
   fs.mkdirSync(path.join(d.dasar, 'proyek'), { recursive: true })
   const kunci = path.join(d.dasar, 'proyek', `${p.id}.lock`)
   fs.writeFileSync(kunci, '')
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.match(d.balasan.at(-1), /Sedang dibangun/); assert.equal(d.gen().length, 0)
   const lama = (Date.now() - 41 * 60e3) / 1000
   fs.utimesSync(kunci, lama, lama)
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.deepEqual(d.statusLog, ['terbuka', 'membangun', 'draf'])
   assert.equal(d.gen().length, 1)
   p.status = 'membangun' // proses kedua mati sesudah v1 tercatat
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.statusLog.at(-1), 'draf')
   assert.equal(d.balasan.at(-1), '*Draf sudah ada*\n_P-291026-01, versi 1_\n\nTulis perubahan dengan kalimat biasa, atau balas *1* untuk final.')
 })
 
 test('1: pindah status gagal diulang sekali; gagal dua kali = pemilik dikabari, tidak ditelan', async () => {
   const d = dunia({ gagalStatus: 1 })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.deepEqual(d.statusLog, ['gagal:membangun', 'membangun', 'draf'])
   assert.equal(d.pemilik.length, 0)
   const e = dunia({ gagalStatus: 2 })
-  await perintah(e, 'buat harian 26 okt')
+  await bangun(e, 'buat harian 26 okt')
   assert.equal(e.gen().length, 0)
   assert.match(e.pemilik[0], /^\*Galat bot laporan\*\n_P-291026-01_\n\nStatus gagal dipindah ke membangun\./)
   assert.match(e.balasan.at(-1), /Perintah gagal diproses/)
@@ -413,7 +482,7 @@ test('1 dan Q7: membangun lebih dari 1 jam tanpa kunci ikut kedaluwarsa', async 
 test('2 D12: pengirim WA_IZIN memakai semua bahan WA_IZIN dan grup operasi hari itu, bukan baris bot atau nomor asing', async () => {
   const d = dunia({ pesan: [P('1', 'rekap_koordalops_24', '6281111'), P('2', 'bmkg_pagi', '120363@g.us'), P('3', 'pvmbg_pagi'),
     { ...P('4', 'bmkg_pagi'), diterima: 99, dari: 'bl:' + 'a'.repeat(64) }, { ...P('5', 'pvmbg_pagi', '6289999'), diterima: 98 }] })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.gen().length, 1)
   const bahan = [...d.proyek.values()][0].bahan.map((b) => b.wa_id).sort()
   assert.deepEqual(bahan, ['1', '2', '3'])
@@ -423,7 +492,7 @@ test('2 D12: pengirim WA_IZIN memakai semua bahan WA_IZIN dan grup operasi hari 
 
 test('4: baris PERINGATAN isian dari stderr generator masuk catatan T-DRAF', async () => {
   const d = dunia({ stderrGen: "lain\nPERINGATAN isian: isian.kejadian[0] lokasi 'Bogor': tidak ada di bahan, diabaikan\n" })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.match(d.kirim[0].caption, /\*Catatan:\*\n- Isian diabaikan generator: isian\.kejadian\[0\] lokasi 'Bogor': tidak ada di bahan, diabaikan/)
 })
 
@@ -433,7 +502,7 @@ test('5: generator menunggu kunci bersama generator.lock milik jalur terjadwal, 
   fs.writeFileSync(kunci, '')
   let tunggu = 0
   d.ctx.dep.tidur = async () => { tunggu++; assert.equal(d.gen().length, 0); fs.rmSync(kunci) }
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(tunggu, 1)
   assert.equal(d.gen().length, 1)
   assert.equal(fs.existsSync(kunci), false)
@@ -446,7 +515,7 @@ const GANTI = (slide, shape, lama, baru) => ({ jenis: 'ganti_teks', slide, shape
 // v1 siap, lalu catatan uji dikosongkan supaya tiap uji menghitung kiriman revisinya sendiri.
 async function drafV1(o = {}) {
   const d = dunia(o)
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.equal(d.versi.length, 1)
   for (const a of [d.balasan, d.kirim, d.statusLog, d.exec, d.kePeriksa]) a.length = 0
   return d
@@ -566,7 +635,7 @@ test('revisi sebagian: operasi sah diterapkan, yang terkunci dijelaskan di keter
 test('periksa (BL-11) ada: dipanggil dengan pptx, pdf, jenis, tanggal, angka; peringatannya masuk ringkasan draf v1 dan T-DRAF revisi', async () => {
   const d = dunia({ periksa: () => ({ peringatan: ['Angka hotspot hari ini 1.234 — lebih dari 3 kali median.'] }), ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')],
     claude: () => ({ gagal: [], pertentangan: [], isian: [{ medan: 'kabupaten', kelompok: 'k1', nilai: 'Bogor' }, { medan: 'meninggal', kelompok: 'k1', nilai: '3 jiwa' }, { medan: 'meninggal', kelompok: 'k2', nilai: '2' }] }) })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   const a = d.kePeriksa[0]
   assert.match(a.pptx, /\.pptx$/); assert.match(a.pdf, /\.pdf$/)
   assert.equal(a.jenis, 'harian'); assert.equal(a.tanggal, TGL)
@@ -583,15 +652,15 @@ test('periksa (BL-11) ada: dipanggil dengan pptx, pdf, jenis, tanggal, angka; pe
 
 test('periksa tidak ada atau galat: draf tetap terkirim tanpa bagian Pemeriksaan', async () => {
   const d = dunia() // periksa: null = modul tidak ada
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.doesNotMatch(d.kirim[0].caption, /Pemeriksaan/)
   const e = dunia({ periksa: () => { throw new Error('python hilang') } })
-  await perintah(e, 'buat harian 26 okt')
+  await bangun(e, 'buat harian 26 okt')
   assert.equal(e.kirim.length, 2)
   assert.doesNotMatch(e.kirim[0].caption, /Pemeriksaan/)
   const lambat = dunia({ periksa: () => new Promise(() => {}) })
   lambat.ctx.periksaMs = 20
-  await perintah(lambat, 'buat harian 26 okt')
+  await bangun(lambat, 'buat harian 26 okt')
   assert.equal(lambat.kirim.length, 2, 'periksa yang menggantung tidak menahan draf')
 })
 
@@ -691,7 +760,7 @@ test('tanya batal dihapus juga oleh bantuan dan oleh hapusKonfirmasi (perintah p
 
 test('dua draf: angka berlaku untuk proyek yang menunya terakhir dikirim; tanpa catatan tidak menebak, minta perintah berkode', async () => {
   const d = dunia({ pesan: [...LENGKAP(), P('4', 'satgas')] })
-  await perintah(d, 'buat harian 26 okt'); await perintah(d, 'buat penanganan 26 okt')
+  await bangun(d, 'buat harian 26 okt'); await bangun(d, 'buat penanganan 26 okt')
   const ids = [...d.proyek.values()].filter((x) => x.status === 'draf').map((x) => x.id).sort()
   assert.deepEqual(ids, ['P-291026-01', 'P-291026-02'])
   d.balasan.length = 0
@@ -704,6 +773,129 @@ test('dua draf: angka berlaku untuk proyek yang menunya terakhir dikirim; tanpa 
   assert.deepEqual(parsePerintah('final P-291026-01'), { aksi: 'final', id: 'P-291026-01' })
   assert.equal((await perintah(d, 'versi P-291026-01')).status, 'versi')
   assert.match(d.balasan.at(-1), /^\*Riwayat versi\*\n_P-291026-01, versi 1_\n/)
+})
+
+// ---------- K18: data satelit penanganan ----------
+const BELUM = { firms_terakhir_wib: '13:42', lintasan_siang: true, situs_memuat: false }
+function duniaSatelit(st) {
+  const d = dunia({ pesan: [P('2', 'bmkg_pagi'), P('4', 'satgas')] })
+  d.st = st; d.panggilSat = []
+  d.ctx.dep.statusSatelit = async (t) => { d.panggilSat.push(t); return d.st }
+  return d
+}
+
+test('K18: daftar bahan penanganan memuat baris data satelit; harian tidak; status satelit galat tidak menahan', async () => {
+  const d = duniaSatelit(BELUM)
+  await perintah(d, 'buat penanganan 26 okt')
+  assert.match(d.balasan[0], /^\*Bahan wajib lengkap\*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt\nData satelit: lintasan siang masuk FIRMS 13\.42 WIB, situs belum memuat\.\n\n\*Wajib:\*/)
+  assert.deepEqual(d.panggilSat, [TGL])
+  const e = duniaSatelit({ ...BELUM, situs_memuat: true }); await perintah(e, 'buat penanganan 26 okt')
+  assert.match(e.balasan[0], /situs sudah memuat\./)
+  const g = duniaSatelit({ firms_terakhir_wib: '09:10', lintasan_siang: false, situs_memuat: true }); await perintah(g, 'buat penanganan 26 okt')
+  assert.match(g.balasan[0], /Data satelit: lintasan siang belum masuk FIRMS \(terakhir 09\.10 WIB\), situs sudah memuat\./)
+  const h = dunia(); h.ctx.dep.statusSatelit = async () => { throw new Error('jaringan') }
+  await perintah(h, 'buat harian 26 okt')
+  assert.doesNotMatch(h.balasan[0], /Data satelit/)
+})
+
+test('K18: situs belum memuat lintasan siang = pilih tunggu atau hitung; hitung membangun dengan --firespot firms dan catatan', async () => {
+  const d = duniaSatelit(BELUM)
+  assert.equal((await perintah(d, 'hitung')).status, 'satelit tanpa pilihan', 'tanpa pilihan hidup: petunjuk')
+  assert.match(d.balasan.at(-1), /^\*Tidak ada pilihan menunggu\*\n\n\*hitung\* hanya menjawab pilihan data satelit/)
+  assert.equal(d.proyek.size, 0); assert.equal(d.gen().length, 0); d.balasan.length = 0
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')
+  assert.equal(d.gen().length, 0); assert.deepEqual(d.statusLog, ['bertanya'])
+  assert.equal(d.balasan.at(-1), '*Situs belum memuat data satelit*\n_P-291026-01_\n\nData satelit: lintasan siang masuk FIRMS 13.42 WIB, situs belum memuat.\n\nPilih salah satu:\n- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu\n- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.')
+  gayaWa(d.balasan.at(-1))
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'Hitung.' }, d.ctx), 'perintah')
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'hitung', diteruskan: true }, d.ctx), 'bahan')
+  assert.equal((await perintah(d, 'hitung')).status, 'hitung')
+  assert.equal(d.gen().length, 1)
+  const a = d.gen()[0].args
+  assert.deepEqual(a.slice(a.indexOf('--firespot'), a.indexOf('--firespot') + 2), ['--firespot', 'firms'])
+  assert.match(d.kirim[0].caption, /- Firespot dihitung langsung dari FIRMS, bisa berbeda dari situs\./)
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'hitung' }, d.ctx), 'perintah', 'kata satelit selalu perintah (bukan revisi)')
+  assert.equal((await perintah(d, 'hitung')).status, 'satelit tanpa pilihan', 'pilihan selesai saat membangun: petunjuk, tanpa bangun ulang')
+  assert.equal(d.gen().length, 1)
+  // situs sudah memuat: langsung dibangun tanpa bendera
+  const e = duniaSatelit({ ...BELUM, situs_memuat: true }); await bangun(e, 'buat penanganan 26 okt')
+  assert.equal(e.gen().length, 1); assert.ok(!e.gen()[0].args.includes('--firespot'))
+})
+
+test('K18: tunggu = dicek detak 10 menit (ulangSatelit), dibangun begitu situs memuat; hitung tetap bisa selama menunggu', async () => {
+  const d = duniaSatelit(BELUM)
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')
+  assert.equal((await perintah(d, 'tunggu')).status, 'tunggu')
+  assert.equal(d.balasan.at(-1), '*Menunggu situs*\n_P-291026-01_\n\nLaporan dibangun otomatis begitu situs memuat lintasan siang.\nDicek tiap 10 menit.\n\nKetik *hitung* bila ingin membangun sekarang.')
+  const keluar = []
+  const ctxDetak = { ...d.ctx, balas: undefined, balasFile: undefined, balasKe: (dari) => ({ balas: async (t) => keluar.push({ dari, t }), balasFile: async (p, nama, caption) => keluar.push({ dari, nama, caption }) }) }
+  assert.deepEqual(await ulangSatelit(ctxDetak), [{ id: 'P-291026-01', status: 'tunggu' }])
+  assert.equal(d.gen().length, 0)
+  d.st = { ...BELUM, situs_memuat: true }
+  assert.deepEqual(await ulangSatelit(ctxDetak), [{ id: 'P-291026-01', status: 'bangun' }])
+  assert.equal(d.gen().length, 1); assert.ok(!d.gen()[0].args.includes('--firespot'))
+  assert.ok(keluar.every((k) => k.dari === DARI), 'draf hanya ke pemegang')
+  assert.match(keluar[0].caption, /^\*Draf v1 siap\*\n_P-291026-01, versi 1_\n/)
+  assert.deepEqual(await ulangSatelit(ctxDetak), [], 'tidak dibangun dua kali')
+})
+
+test('K18: pilihan basi (lebih 24 jam) atau proyek batal tidak dihidupkan lagi; batal menghapus pilihan', async () => {
+  const d = duniaSatelit(BELUM)
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')
+  const besok = { ...d.ctx, now: new Date(NOW.getTime() + 25 * 3600e3) }
+  assert.equal((await tangani({ dari: DARI, teks: 'hitung' }, besok)).status, 'satelit tanpa pilihan')
+  assert.equal(d.gen().length, 0)
+  await perintah(d, 'batal')
+  assert.equal(fs.existsSync(path.join(d.dasar, 'proyek', 'satelit.json')) && Object.keys(JSON.parse(fs.readFileSync(path.join(d.dasar, 'proyek', 'satelit.json'), 'utf8'))).length, 0)
+  assert.equal((await perintah(d, 'tunggu')).status, 'satelit tanpa pilihan')
+  assert.equal(d.proyek.size, 1, 'tidak membuka proyek baru')
+})
+
+test('K18: tunggu dibatasi: 3 status kosong berturut-turut atau 3 jam = pemegang ditanya sekali lagi', async () => {
+  const d = duniaSatelit(BELUM)
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut'); await perintah(d, 'tunggu')
+  const keluar = [], masukLihat = []
+  const ke = (now) => ({ ...d.ctx, now, balasKe: (dari, masuk) => { masukLihat.push(masuk); return { balas: async (t) => keluar.push(t), balasFile: async () => {} } } })
+  d.st = null
+  const h = []
+  for (let i = 1; i <= 4; i++) h.push((await ulangSatelit(ke(new Date(NOW.getTime() + i * 600e3))))[0].status)
+  assert.deepEqual(h, ['tunggu', 'tunggu', 'tanya ulang', 'tunggu'], 'ditanya sekali saja')
+  assert.equal(keluar.length, 1)
+  assert.equal(keluar[0], '*Situs masih belum memuat*\n_P-291026-01_\n\nData satelit: status belum terbaca.\n\nPilih lagi:\n- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS. Perhitungan bisa berbeda dari situs, gunakan kalau butuh laporan cepat.\n- *tunggu*: tetap menunggu situs')
+  assert.ok(masukLihat.every((m) => m === NOW.getTime()), 'jam pesan tunggu dipakai sebagai jam masuk')
+  // tunggu lagi = hitungan baru; 3 jam dengan status terbaca tetapi situs belum memuat = ditanya lagi
+  await perintah(d, 'tunggu'); keluar.length = 0; d.st = BELUM
+  assert.equal((await ulangSatelit(ke(new Date(NOW.getTime() + 3600e3))))[0].status, 'tunggu')
+  assert.equal((await ulangSatelit(ke(new Date(NOW.getTime() + 3.1 * 3600e3))))[0].status, 'tanya ulang')
+  assert.match(keluar[0], /\nData satelit: lintasan siang masuk FIRMS 13\.42 WIB, situs belum memuat\.\n/)
+  assert.equal(d.gen().length, 0)
+})
+
+test('K17/K18: kata tuntun yang diteruskan (lanjut, buat saja, hitung, tunggu) = bahan, bukan perintah', async () => {
+  const d = duniaSatelit(BELUM)
+  await perintah(d, 'buat penanganan 26 okt')
+  for (const teks of ['lanjut', 'buat saja', 'hitung', 'tunggu', 'Lanjut.']) {
+    assert.equal(await klasifikasi({ dari: DARI, teks, diteruskan: true }, d.ctx), 'bahan', teks)
+    assert.notEqual((await tangani({ dari: DARI, teks, diteruskan: true }, d.ctx)).status, 'lanjut', teks)
+  }
+  assert.equal(d.gen().length, 0); assert.deepEqual(d.statusLog, [])
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'buat harian saja', diteruskan: true }, d.ctx), 'perintah', 'buat lengkap tetap perintah seperti dulu')
+})
+
+test('K17: tanda terima bahan bertanggal hari lain menyebut tanggalnya dan tidak menghitungnya', async () => {
+  const d = dunia({ pesan: [P('1', 'rekap_koordalops_24')] }); d.ctx.jedaTerima = 0
+  await perintah(d, 'buat harian 26 okt')
+  const r = await tangani({ dari: DARI, teks: '[bmkg_pagi] 2026-10-25', wa_id: 5 }, d.ctx)
+  assert.equal(await r.terima, '*Bahan bertanggal lain*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt\nDiterima, tetapi bertanggal 25 Okt, tidak dipakai untuk laporan 26 Okt: BMKG pagi.\n\n*Wajib:*\n- Rekap Koordalops 24 jam: sudah ada\n- BMKG pagi\n- PVMBG pagi\n\nKetik *lanjut* bila ingin membuat dengan bahan yang ada.')
+})
+
+test('K18: mode FIRMS tidak meneruskan PERINGATAN isian firespot generator, hanya CATATAN_FIRMS', async () => {
+  const d = dunia({ pesan: [P('2', 'bmkg_pagi'), P('4', 'satgas')], stderrGen: 'PERINGATAN isian: firespot FIRMS dihitung ulang\nPERINGATAN isian: lokasi X diabaikan\n' })
+  d.ctx.dep.statusSatelit = async () => BELUM
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut'); await perintah(d, 'hitung')
+  assert.doesNotMatch(d.kirim[0].caption, /Isian diabaikan generator: firespot/)
+  assert.match(d.kirim[0].caption, /Isian diabaikan generator: lokasi X diabaikan/)
+  assert.match(d.kirim[0].caption, /Firespot dihitung langsung dari FIRMS/)
 })
 
 test('angka menu di luar draf: petunjuk singkat ketik buat, tanpa proyek dan tanpa Claude', async () => {
@@ -896,7 +1088,7 @@ test('ALUR C: sesudah ditutup, pesan berikutnya membuka proyek baru; kalimat beb
   await perintah(d, 'final')
   assert.match(d.balasan.at(-1), /^\*Belum ada draf untuk difinalkan\*\n\nKirim bahan, lalu ketik \*buat harian\* atau \*buat penanganan\*\.$/)
   for (const a of [d.balasan, d.kirim, d.statusLog]) a.length = 0
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.match(d.kirim[0].caption, /^\*Draf v1 siap\*\n_P-291026-02, versi 1_\n/)
 })
 
@@ -947,7 +1139,7 @@ test('kunci: berkas kunci generator hilang = kunci versi tersimpan lewat berkas 
 
 test('periksa gagal (gerbang format dan bahasa) masuk ringkasan: paling banyak 3 baris + dan N lainnya', async () => {
   const d = dunia({ periksa: () => ({ peringatan: [], gagal: ['slide 2 judul terlalu panjang', 'slide 3 font bukan Roboto', 'slide 4 kosong', 'slide 5 frasa AI', 'slide 6 em dash'], ms: 12 }) })
-  await perintah(d, 'buat harian 26 okt')
+  await bangun(d, 'buat harian 26 okt')
   assert.match(d.kirim[0].caption, /\n\*Pemeriksaan:\*\n- Gerbang: slide 2 judul terlalu panjang\n- Gerbang: slide 3 font bukan Roboto\n- Gerbang: slide 4 kosong\n- Gerbang: dan 2 lainnya\.\n/)
 })
 
@@ -956,9 +1148,23 @@ test('fetch Worker memakai AbortSignal (timeout): panggilan yang menggantung jad
   const sinyal = []
   const asli = d.ctx.dep.fetch
   d.ctx.dep.fetch = async (u, o = {}) => { if (!u.includes('/api/wa/masuk')) sinyal.push(o.signal); if (/\/api\/wa\/proyek$/.test(new URL(u).pathname)) throw Object.assign(new Error('The operation was aborted due to timeout'), { name: 'TimeoutError' }); return asli(u, o) }
-  const r = await perintah(d, 'buat harian 26 okt')
+  const r = await bangun(d, 'buat harian 26 okt')
   assert.equal(r.status, 'galat')
   assert.ok(sinyal.length && sinyal.every((s) => s instanceof AbortSignal))
   assert.match(d.balasan.at(-1), /Perintah gagal diproses/)
   assert.match(d.pemilik[0], /aborted due to timeout/)
+})
+
+test('panduan: infografis dikirim sebagai dokumen PNG dari keluaran, bukan gambar terkompres', async () => {
+  const P = await import('../../scripts/wa/proyek.mjs')
+  assert.deepEqual(P.parsePerintah('panduan'), { aksi: 'panduan' })
+  const fs2 = await import('node:fs'), os2 = await import('node:os'), path2 = await import('node:path')
+  const dasar = fs2.mkdtempSync(path2.join(os2.tmpdir(), 'panduan-'))
+  const kirim = []
+  const ctx = { env: { WA_IZIN: '6281200000001', PEMILIK: '6281200000001' }, dasar, dep: {}, balas: async (t) => kirim.push({ t }), balasFile: async (p, n, c, m, o) => kirim.push({ p, n, c, m, o }) }
+  await P.tangani({ dari: '6281200000001', teks: 'panduan' }, ctx)
+  assert.equal(kirim.length, 1)
+  assert.ok(kirim[0].p && kirim[0].p.startsWith(path2.join(dasar, 'keluaran')), 'berkas di bawah keluaran')
+  assert.equal(kirim[0].o?.dokumen, true)
+  assert.match(kirim[0].c, /^\*Panduan bot laporan\*/)
 })
