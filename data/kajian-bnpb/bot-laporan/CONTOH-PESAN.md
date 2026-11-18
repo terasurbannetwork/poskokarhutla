@@ -273,33 +273,9 @@ Ketik salah satu:
 - *buat penanganan 2026-11-18*
 ```
 
-### A5b. Kemajuan pembangunan (satu pesan, disunting per tahap)
+### A5b. Kemajuan pembangunan
 
-Selama membangun, WhatsApp menampilkan "sedang mengetik". Pesan pertama:
-
-```text
-*Membangun draf v1*
-_P-181126-01_
-
-[jalan] Membaca bahan
-[menunggu] Mengurai bahan dengan AI
-[menunggu] Membuat slide
-[menunggu] PDF dan pemeriksaan
-```
-
-Pesan yang sama disunting tiap pindah tahap (paling banyak 4 kali). Sesudah pratinjau dan PDF terkirim:
-
-```text
-*Membangun draf v1*
-_P-181126-01_
-
-[selesai] Membaca bahan
-[selesai] Mengurai bahan dengan AI
-[selesai] Membuat slide
-[selesai] PDF dan pemeriksaan
-```
-
-Bila gagal, tahap itu bertanda `[gagal]` lalu balasan gagal (F3) menyusul. Revisi memakai judul `*Menerapkan revisi v2*` dengan tahap Membaca permintaan, Menerapkan perubahan, Membuat slide, PDF dan pemeriksaan.
+Tanpa pesan kemajuan (pemilik 18 Nov 2026: "Hapus, cukup mengetik"). Selama membangun draf atau revisi, WhatsApp hanya menampilkan "sedang mengetik" sampai pratinjau dan PDF draf terkirim. Pesan kemajuan yang disunting dihapus karena suntingan dari gateway tampil sebagai "Waiting for this message" di WA penerima.
 
 ### A5c. *lanjut* lagi saat masih dibangun (sekali)
 

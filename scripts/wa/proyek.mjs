@@ -534,7 +534,7 @@ async function buat(cmd, dari, sha, ctx) {
   let status = p.status
   const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
   const kunciSibuk = tandaiSibuk(ctx, sha, p.id)
-  const prog = await mulaiProgres(ctx, `Membangun draf v${(p.versi || 0) + 1}`, p, TAHAP_BUAT)
+  const prog = await mulaiProgres(ctx)
   const gagalBangun = () => catatGagal(ctx, sha, { langkah: 'bangun', id: p.id, cmd: { jenis, tanggal: cmd.tanggal, saja: !!cmd.saja, ...(cmd.firespot ? { firespot: cmd.firespot } : {}) } })
   try {
     const bahanTeks = [], tidakTerbaca = []
@@ -862,7 +862,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
   let status = p.status
   const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
   const kunciSibuk = tandaiSibuk(ctx, sha, p.id)
-  const prog = await mulaiProgres(ctx, `Menerapkan revisi v${n}`, p, TAHAP_REVISI)
+  const prog = await mulaiProgres(ctx)
   const gagalRevisi = () => catatGagal(ctx, sha, { langkah: 'revisi', id: p.id, ...(opsi.balik != null ? { balik: opsi.balik } : { teks: String(pesan?.teks || '') }) })
   const keDraf = async (teks) => { await prog.akhir('berhenti'); await pindah('draf'); return balas(teks) }
   try {
@@ -1078,39 +1078,16 @@ async function ulangi(dari, sha, ctx) {
   return ctx.balas(tTakAdaUlang())
 }
 
-// ---------- kemajuan: satu pesan yang disunting per tahap, ditambah "sedang mengetik" (pemilik 18 Nov 2026: "pakai dua-duanya") ----------
-// ctx.kirimProgres(teks) -> pegangan | null, ctx.ubahProgres(pegangan, teks) -> false bila gagal, ctx.mengetik(nyala): semuanya opsional.
-// Paling banyak 4 suntingan per draf (3 pindah tahap + 1 akhir). Gagal kirim atau sunting = tanpa kemajuan, pembangunan tidak pernah terganggu.
-export const TAHAP_BUAT = ['Membaca bahan', 'Mengurai bahan dengan AI', 'Membuat slide', 'PDF dan pemeriksaan']
-export const TAHAP_REVISI = ['Membaca permintaan', 'Menerapkan perubahan', 'Membuat slide', 'PDF dan pemeriksaan']
-export const MAKS_UBAH_PROGRES = 4
-const SUNTING_MAKS_MS = 14 * 60e3
-export function teksProgres(jdl, p, tahap, ke, akhir = null) {
-  const tanda = (i) => {
-    if (akhir === 'selesai' || i < ke) return 'selesai'
-    if (i === ke) return akhir === 'gagal' ? 'gagal' : akhir === 'berhenti' ? 'selesai' : 'jalan'
-    return 'menunggu'
-  }
-  return susun(jdl, p, null, tahap.map((t, i) => `[${tanda(i)}] ${t}`), akhir === 'berhenti' ? 'Berhenti dulu, lihat pesan berikutnya.' : '')
-}
-async function mulaiProgres(ctx, jdl, p, tahap) {
-  const log = ctx.log || (() => {})
-  let pegangan = null, ubah = 0, ke = 0, habis = false, dikirim = 0
-  const kini = () => (typeof ctx.jam === 'function' ? ctx.jam() : Date.now())
+// ---------- kemajuan: hanya "sedang mengetik" selama membangun (pemilik 18 Nov 2026: "Hapus, cukup mengetik") ----------
+// Pesan kemajuan yang disunting dihapus: suntingan dari gateway Baileys tampil sebagai "Waiting for this message" di WA penerima.
+// ctx.mengetik(nyala) opsional; gagal = diam, pembangunan tidak pernah terganggu. ke() dan akhir() tetap ada supaya pemanggil tidak berubah.
+async function mulaiProgres(ctx) {
+  let habis = false
   const ketik = (nyala) => { try { if (typeof ctx.mengetik === 'function') Promise.resolve(ctx.mengetik(nyala)).catch(() => {}) } catch {} }
-  const sunting = async (teks) => {
-    if (!pegangan || ubah >= MAKS_UBAH_PROGRES || typeof ctx.ubahProgres !== 'function') return
-    if (kini() - dikirim > SUNTING_MAKS_MS) { pegangan = null; log('kemajuan lewat 14 menit, suntingan dilewati'); return } // WA menolak sunting sesudah 15 menit
-    ubah++
-    try { if ((await ctx.ubahProgres(pegangan, teks)) === false) pegangan = null } catch (e) { pegangan = null; log('sunting kemajuan gagal', e.message) }
-  }
   ketik(true)
-  if (typeof ctx.kirimProgres === 'function') {
-    try { pegangan = (await ctx.kirimProgres(teksProgres(jdl, p, tahap, 0))) || null; dikirim = kini() } catch (e) { log('kirim kemajuan gagal', e.message) }
-  }
   return {
-    async ke(i) { if (habis || i <= ke) return; ke = i; await sunting(teksProgres(jdl, p, tahap, ke)) },
-    async akhir(keadaan) { if (habis) return; habis = true; ketik(false); await sunting(teksProgres(jdl, p, tahap, ke, keadaan)) },
+    async ke() {},
+    async akhir() { if (habis) return; habis = true; ketik(false) },
     get habis() { return habis },
   }
 }
