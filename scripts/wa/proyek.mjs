@@ -886,8 +886,14 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       instruksi = `balik v${opsi.balik}`
     } else {
       kalimat = String(pesan.teks || '').trim().slice(0, MAKS_KALIMAT)
-      const r = await klien(ctx).operasi(invLama, kunciLama, opsLama.map((o) => JSON.stringify(o)), kalimat)
+      // Jawaban atas pertanyaan balik Claude (insiden 18 Nov 2026: "ya" dibalas "belum ada pertanyaan"): Claude tidak punya ingatan antarpanggilan,
+      // jadi permintaan awal dan pertanyaannya ikut dikirim bersama jawaban. Satu tanya tersimpan per proyek dan versi, berlaku 2 jam.
+      const sebelum = ambilTanyaRevisi(ctx, p.id, m)
+      const awal = sebelum ? sebelum.kalimat : kalimat
+      const kirimKalimat = sebelum ? susunJawaban(sebelum, kalimat) : kalimat
+      const r = await klien(ctx).operasi(invLama, kunciLama, opsLama.map((o) => JSON.stringify(o)), kirimKalimat)
       if (r.tanya?.length) {
+        catatTanyaRevisi(ctx, p.id, m, { kalimat: awal, tanya: r.tanya.map((q) => rapi(q.pertanyaan, 300)), jawab: sebelum ? [...(sebelum.jawab || []), kalimat].slice(-3) : [] })
         return await keDraf(susun('Revisi perlu dipastikan', p, m, r.tanya.map((q, i) => `${i + 1}. ${rapi(q.pertanyaan, 300)}`),
           'Balas dengan kalimat revisi yang lebih rinci.'))
       }
@@ -1031,6 +1037,25 @@ const menuP = (dasar) => path.join(dirProyek(dasar), 'menu.json')
 const menuTerakhir = (ctx, sha) => bacaJson(menuP(ctx.dasar || RUMAH), {})[sha] || null
 function catatMenu(ctx, sha, id) {
   try { const f = menuP(ctx.dasar || RUMAH), isi = bacaJson(f, {}); isi[sha] = id; tulisJson(f, isi) } catch (e) { (ctx.log || (() => {}))('catat menu gagal', e.message) }
+}
+
+// ---------- tanya revisi (~/.wa-bot/proyek/tanya_revisi.json: {id: {v, kalimat, tanya, jawab, waktu}}) ----------
+const TANYA_REVISI_MS = 2 * 3600e3
+const tanyaRevisiP = (dasar) => path.join(dirProyek(dasar), 'tanya_revisi.json')
+function catatTanyaRevisi(ctx, id, v, isi) {
+  try { const f = tanyaRevisiP(ctx.dasar || RUMAH), semua = bacaJson(f, {}); if (isi) semua[id] = { v, ...isi, waktu: Date.now() }; else delete semua[id]; tulisJson(f, semua) } catch (e) { (ctx.log || (() => {}))('catat tanya revisi gagal', e.message) }
+}
+// tanya yang masih berlaku untuk proyek id versi v; selalu dihapus saat dibaca (sekali pakai, tanya baru dicatat ulang bila Claude bertanya lagi)
+function ambilTanyaRevisi(ctx, id, v) {
+  const e = bacaJson(tanyaRevisiP(ctx.dasar || RUMAH), {})[id]
+  if (!e) return null
+  catatTanyaRevisi(ctx, id, v, null)
+  return e.v === v && Date.now() - Number(e.waktu || 0) <= TANYA_REVISI_MS ? e : null
+}
+export function susunJawaban(e, jawaban) {
+  return [`Permintaan revisi awal: "${e.kalimat}"`, ...(e.jawab || []).map((j) => `Jawaban sebelumnya: "${j}"`),
+    'Bot bertanya:', ...(e.tanya || []).map((q, i) => `${i + 1}. ${q}`), `Jawaban pemakai: "${jawaban}"`,
+    'Terapkan permintaan awal sesuai jawaban ini.'].join('\n').slice(0, MAKS_KALIMAT)
 }
 
 // ---------- K17: proyek dituntun (~/.wa-bot/proyek/tuntun.json: {wa_sha: id}) ----------

@@ -1,4 +1,4 @@
-// BL-09 Q1: batas percakapan 40 per tujuan per hari untuk balasan ke orang yang menulis dalam 10 menit terakhir; lainnya tetap 8, global tidak berubah.
+// BL-09 Q1: batas percakapan (150 sejak 18 Nov 2026) per tujuan per hari untuk balasan ke orang yang menulis dalam 10 menit terakhir; lainnya tetap 8, global tidak berubah.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -29,7 +29,7 @@ function kirim(L, t, tujuan, opsi) {
 
 test('batas global dan per tujuan bawaan tidak berubah', (t) => {
   const L = muat()
-  assert.deepEqual(L.stats().caps, { minute: 3, minute_percakapan: 10, hour: 60, day: 300, target_day: 8, target_day_percakapan: 40 })
+  assert.deepEqual(L.stats().caps, { minute: 3, minute_percakapan: 10, hour: 60, day: 300, target_day: 8, target_day_percakapan: 150 })
   assert.deepEqual(L.stats().gap_percakapan_ms, [2000, 4000])
   assert.equal(L.stats().gap_ms[0], 15000)
   assert.equal(L.stats().gap_ms[1], 20000)
@@ -39,16 +39,16 @@ test('batas global dan per tujuan bawaan tidak berubah', (t) => {
   void t
 })
 
-test('balasan percakapan: 40 per tujuan, terpisah dari 8 kiriman biasa', (t) => {
+test('balasan percakapan: 150 per tujuan, terpisah dari 8 kiriman biasa', (t) => {
   t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
   const L = muat()
   for (let i = 0; i < 8; i++) assert.equal(kirim(L, t, A).ok, true, 'biasa ' + i)
   assert.equal(kirim(L, t, A).error, 'batas per tujuan/hari')
-  for (let i = 0; i < 40; i++) { L.noteMasuk(A); const g = kirim(L, t, A, { balasan: true }); assert.equal(g.ok, true, 'percakapan ' + i); assert.equal(g.percakapan, true) }
+  for (let i = 0; i < 150; i++) { L.noteMasuk(A); const g = kirim(L, t, A, { balasan: true }); assert.equal(g.ok, true, 'percakapan ' + i); assert.equal(g.percakapan, true) }
   L.noteMasuk(A)
   assert.equal(kirim(L, t, A, { balasan: true }).error, 'batas percakapan per tujuan/hari')
   assert.equal(kirim(L, t, A).error, 'batas per tujuan/hari', 'kiriman biasa tetap 8')
-  assert.equal(L.stats().sent_today, 48, 'semua tetap dihitung batas harian global')
+  assert.equal(L.stats().sent_today, 158, 'semua tetap dihitung batas harian global')
 })
 
 test('balasan tanpa pesan masuk 10 menit terakhir memakai batas biasa 8', (t) => {
@@ -129,10 +129,11 @@ test('longgar: kiriman kosmetik hanya bila jatah menit, jam, harian, per tujuan,
   assert.equal(L.longgar(2, B), true)
   kirim(L, t, B)
   assert.equal(L.longgar(2, B), false, 'ember biasa 8 per tujuan')
-  // percakapan (40 per tujuan)
-  for (let i = 0; i < 38; i++) { L.noteMasuk(A); kirim(L, t, A, { balasan: true }) } // 38 + 1 + 2 > 40
+  // percakapan (150 per tujuan)
+  for (let i = 0; i < 148; i++) { L.noteMasuk(A); kirim(L, t, A, { balasan: true }) } // 148 + 1 + 2 > 150
+  t.mock.timers.tick(3600e3) // jatah per jam (60) dikosongkan dulu supaya yang diuji hanya ember per tujuan
   L.noteMasuk(A)
-  assert.equal(L.longgar(2, A, { balasan: true }), false, 'ember percakapan 40 per tujuan')
+  assert.equal(L.longgar(2, A, { balasan: true }), false, 'ember percakapan 150 per tujuan')
   assert.equal(L.longgar(1, A, { balasan: true }), true)
 })
 

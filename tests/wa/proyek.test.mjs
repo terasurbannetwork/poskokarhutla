@@ -623,6 +623,19 @@ test('tanya: kalimat ambigu dibalas pertanyaan bernomor, status kembali draf, ta
   assert.equal(d.balasan[0], '*Revisi perlu dipastikan*\n_P-291026-01, versi 1_\n\n1. Slide mana yang dimaksud, 2 atau 3?\n\nBalas dengan kalimat revisi yang lebih rinci.')
 })
 
+test('tanya lalu jawaban singkat: Claude menerima permintaan awal, pertanyaannya, dan jawaban (insiden 18 Nov 2026 "ya")', async () => {
+  let ke = 0
+  const d = await drafV1({ ops: () => (ke++ === 0 ? [{ jenis: 'tanya', pertanyaan: 'Panel OMC DAN HUJAN atau SEMAI OMC?' }] : [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')]) })
+  await perintah(d, 'panel omc hapus aja')
+  assert.match(d.balasan[0], /^\*Revisi perlu dipastikan\*/)
+  await perintah(d, 'ya')
+  assert.equal(d.keOperasi.length, 2)
+  assert.equal(d.keOperasi[1].kalimat, 'Permintaan revisi awal: "panel omc hapus aja"\nBot bertanya:\n1. Panel OMC DAN HUJAN atau SEMAI OMC?\nJawaban pemakai: "ya"\nTerapkan permintaan awal sesuai jawaban ini.')
+  assert.equal(d.versi.length, 2, 'jawaban menerapkan revisi')
+  await perintah(d, 'judul ganti')
+  assert.equal(d.keOperasi[2].kalimat, 'judul ganti', 'tanya sekali pakai: revisi berikutnya tanpa konteks lama')
+})
+
 test('revisi sebagian: operasi sah diterapkan, yang terkunci dijelaskan di keterangan PDF (tetap 2 kiriman)', async () => {
   const d = await drafV1({ ops: () => [GANTI(2, 's2_kpi_hotspot', 'HOTSPOT\n1.234', 'HOTSPOT\n9'), GANTI(2, 's2_ringkas', 'Banjir di Bogor', 'Banjir di Kabupaten Bogor')] })
   await perintah(d, 'ganti hotspot dan ringkasan')

@@ -75,7 +75,7 @@ Pesan diteruskan yang isinya persis angka menu, *lanjut*, *buat saja*, *hitung*,
 
 ## Hitungan kiriman per hari (limiter, Q1)
 
-Balasan dalam percakapan memakai ember terpisah 40 kiriman per tujuan per hari (`WA_MAX_PER_TARGET_PERCAKAPAN`). Satu draf 2 kiriman: pratinjau dan PDF (tanpa pesan kemajuan sejak 18 Nov 2026). Balasan percakapan berjeda 2-4 detik dan paling banyak 10 per menit; kiriman lain 15-20 detik dan 3 per menit. Berkas draf yang ditolak batas per menit atau antrean diulang sesudah jendela menit, paling banyak 3 kali (`arah.kirimUlangMenit`). Hari biasa satu pengirim: daftar bahan 1, tanda terima sekitar 3, draf v1 2, dua revisi 4, final 3 (PPTX, PDF, T-FINAL) = 13, masih di bawah 40. "Sedang mengetik" adalah presence, tidak dihitung limiter, dan berhenti bila soket tertutup.
+Balasan dalam percakapan memakai ember terpisah 150 kiriman per tujuan per hari (40 sampai 18 Nov 2026; hari uji menghabiskannya dan balasan sesudahnya terbuang) (`WA_MAX_PER_TARGET_PERCAKAPAN`). Satu draf 2 kiriman: pratinjau dan PDF (tanpa pesan kemajuan sejak 18 Nov 2026). Balasan percakapan berjeda 2-4 detik dan paling banyak 10 per menit; kiriman lain 15-20 detik dan 3 per menit. Berkas draf yang ditolak batas per menit atau antrean diulang sesudah jendela menit, paling banyak 3 kali (`arah.kirimUlangMenit`). Hari biasa satu pengirim: daftar bahan 1, tanda terima sekitar 3, draf v1 2, dua revisi 4, final 3 (PPTX, PDF, T-FINAL) = 13, jauh di bawah 150. "Sedang mengetik" adalah presence, tidak dihitung limiter, dan berhenti bila soket tertutup.
 
 ## Tampilan di tab Pelaporan (`/pelaporan`, `#p-pelaporan` di `public/index.html`, arsip di `public/arsip_laporan.js`)
 

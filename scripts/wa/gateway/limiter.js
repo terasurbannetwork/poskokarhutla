@@ -42,7 +42,8 @@ const MAX_PER_DAY = num(process.env.WA_MAX_PER_DAY, 300)
 const MAX_PER_TARGET_DAY = num(process.env.WA_MAX_PER_TARGET_DAY, 8)
 // Q1 bot laporan (BL-09): balasan (opts.balasan) ke tujuan yang menulis dalam 10 menit terakhir (noteMasuk) memakai batas
 // per tujuan TERPISAH 40/hari. Batas global menit/jam/hari dan pemanasan TIDAK berubah; kiriman lain tetap 8 per tujuan/hari.
-const MAX_PER_TARGET_PERCAKAPAN = num(process.env.WA_MAX_PER_TARGET_PERCAKAPAN, 40)
+// 150 sejak 18 Nov 2026: hari uji pemilik menghabiskan 40 dan balasan sesudahnya terbuang diam-diam; batas harian global 300 tetap.
+const MAX_PER_TARGET_PERCAKAPAN = num(process.env.WA_MAX_PER_TARGET_PERCAKAPAN, 150)
 const PERCAKAPAN_MS = num(process.env.WA_PERCAKAPAN_MS, 10 * 60000)
 // opts.masuk = jam pesan masuk yang dibalas: jendela diputus dari jam itu, jadi balasan sesudah pembangunan lama tetap percakapan,
 // asal balasan paling lambat BALAS_MS sesudah pesan masuk. Selama pemanasan percakapan paling banyak separuh batas harian.
