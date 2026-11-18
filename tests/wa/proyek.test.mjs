@@ -187,7 +187,7 @@ test('K17: buat membalas daftar bahan (wajib, tambahan, sudah ada), tidak memban
   // penanganan: bagian Tambahan dari LAPORAN.pilihan
   const e = dunia({ pesan: [P('2', 'bmkg_pagi'), P('4', 'satgas')] })
   await perintah(e, 'buat penanganan 26 okt')
-  assert.equal(e.balasan[0], '*Bahan wajib lengkap*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt\n\n*Wajib:*\n- Satgas pemadaman atau laporan penanganan lengkap: sudah ada\n\n*Tambahan:*\n- Gelar kekuatan Satgas Udara (Excel)\n\nKetik *lanjut* untuk membuat laporan.')
+  assert.equal(e.balasan[0], '*Bahan wajib lengkap*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt\n\n*Wajib:*\n- Satgas pemadaman atau laporan penanganan lengkap: sudah ada\n\n*Opsional, boleh dilewati:*\n- Gelar kekuatan Satgas Udara (Excel)\n\nKetik *lanjut* untuk membuat laporan.')
   assert.equal(e.gen().length, 0, 'wajib lengkap pun tetap menunggu lanjut')
 })
 
@@ -1295,7 +1295,7 @@ test('T-SAPA: sapaan pendek tanpa proyek dibalas sekali per 6 jam; diteruskan, p
 test('penanganan: wajib laporan Satgas ATAU laporan penanganan lengkap (Mensesneg), tanpa BMKG pagi; lengkap dikirim sebagai --operasi', async () => {
   const d = dunia({ pesan: [P('5', 'karhutla_mensesneg')] })
   await perintah(d, 'buat penanganan 26 okt')
-  assert.match(d.balasan[0], /^\*Bahan wajib lengkap\*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt\n\n\*Wajib:\*\n- Satgas pemadaman atau laporan penanganan lengkap: sudah ada\n\n\*Tambahan:\*/)
+  assert.match(d.balasan[0], /^\*Bahan wajib lengkap\*\n_P-291026-01_\n\nLaporan Penanganan Pengendalian Karhutla 26 Okt\n\n\*Wajib:\*\n- Satgas pemadaman atau laporan penanganan lengkap: sudah ada\n\n\*Opsional, boleh dilewati:\*/)
   await perintah(d, 'lanjut')
   const a = d.gen()[0].args
   assert.ok(!a.includes('--bmkg'))

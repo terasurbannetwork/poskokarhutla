@@ -360,7 +360,7 @@ export function tDaftarBahan(p, lap, tanggal, terpilih, { cutoff = false, sateli
   return susun(lengkap ? 'Bahan wajib lengkap' : 'Kirim bahan laporan', p, null,
     [judul(lap, tanggal), ...(cutoff ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []), ...(satelit ? [barisSatelit(satelit)] : [])],
     ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih, lap)],
-    (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [],
+    (lap.pilihan || []).length ? ['*Opsional, boleh dilewati:*', ...daftarBaris(lap.pilihan, terpilih)] : [],
     lengkap ? 'Ketik *lanjut* untuk membuat laporan.' : ['Kirim atau teruskan bahannya ke sini.', 'Ketik *lanjut* bila sudah siap.'])
 }
 // diterima: label bahan laporan ini yang baru masuk; lain: jumlah kiriman di luar format baku (ikut dibaca Claude saat bangun).
@@ -380,7 +380,7 @@ export function tTerima(p, lap, tanggal, terpilih, { diterima = [], lain = 0, be
   if (!diterima.length) {
     return susun(lain ? 'Bahan disimpan' : 'Bahan bertanggal lain', p, null, [judul(lap, tanggal), kalimatBeda, kalimatLain],
       ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih, lap)],
-      (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [], akhir)
+      (lap.pilihan || []).length ? ['*Opsional, boleh dilewati:*', ...daftarBaris(lap.pilihan, terpilih)] : [], akhir)
   }
   return [`*Diterima: ${diterima.join(', ')}* (${k} dari ${n} wajib)`, kodeBaris(p)].join('\n') + '\n\n' +
     [[kalimatBeda, kalimatLain].filter(Boolean).join('\n'), ['*Masih kurang:*', ...kurang].join('\n'), akhir].filter(Boolean).join('\n\n')
