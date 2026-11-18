@@ -2,7 +2,11 @@
    CSP admin: tanpa skrip/gaya inline; semua teks data lewat esc(); tautan hanya http/https. Data dari /api/riset/admin (sesi admin). */
 (() => {
   const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul"), API = "/api/riset";
-  const {esc, kirim} = Admin;   // public/admin/bersama.js
+  const {esc, kirim} = Admin, DB = Admin.dasbor;   // public/admin/bersama.js
+  /* kit dashboard bersama: kartu seksi (string HTML), tombol ikon polos, tabel berkepala navy */
+  const KH = (ikon, judul, ey, html, kanan = "") => { const k = DB.kartu({ikon, judul, ey}); k.querySelector(".ex-bd").innerHTML = html; if (kanan) k.querySelector(".ex-jd").insertAdjacentHTML("beforeend", kanan); return k.outerHTML; };
+  const ib = (ik, label, att = "", kls = "") => `<button type="button" class="db-ik ${kls}" title="${esc(label)}" aria-label="${esc(label)}" ${att}>${DB.svg(ik).outerHTML}</button>`;
+  const aksiH = (...x) => `<div class="db-aksi">${x.join("")}</div>`;
   const angka = n => Number(n ?? 0).toLocaleString("id-ID");
   const wkt = ms => ms ? new Date(ms).toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "–";
   const tgl = s => s ? new Date(s + "T00:00:00+07:00").toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "–";
@@ -21,14 +25,15 @@
     berjalan: ["jam", "Berjalan", "biru"], laporan_akhir: ["dokumen", "Laporan akhir", "ungu"], selesai: ["centang", "Selesai", "hijau"]};
   const AKSI_NAMA = {ditelaah: "Mulai telaah", revisi: "Minta revisi", disetujui: "Setujui", ditolak: "Tolak", berjalan: "Mulai berjalan", selesai: "Tutup selesai"};
   const PKS = {berlaku: ["centang", "Berlaku", "hijau"], hampir: ["peringatan", "Hampir habis", "kuning"], kedaluwarsa: ["silang", "Kedaluwarsa", "merah"], tanpa: ["jam", "Belum dicatat", "abu"]};
-  const TABS = [["agenda", "🎯 Agenda"], ["institusi", "🏫 Institusi"], ["mitra", "🏛️ Mitra"], ["usulan", "📥 Usulan"], ["permintaan", "📂 Permintaan data"], ["luaran", "📈 Luaran dan kebijakan"]];
+  const TABS = [["agenda", "Agenda"], ["institusi", "Institusi"], ["mitra", "Mitra"], ["usulan", "Usulan"], ["permintaan", "Permintaan data"], ["luaran", "Luaran dan kebijakan"]];
   const JENIS = {artikel: "Artikel", dataset: "Dataset", model: "Model", policy_brief: "Policy brief", prototipe: "Prototipe"};
+  const IK_TELAAH = {ditelaah: "lihat", revisi: "ubah", disetujui: "aktif", ditolak: "tutup", berjalan: "jam", selesai: "cek"};
   let d = null, tab = "usulan", saring = "antre", kodeBaru = null, formAgenda = {}, pksId = null, telaah = null, putus = null, catat = null;
 
   const pesan = (t, ok) => { const p = document.getElementById("rsPesan"); if (p) { p.textContent = t; p.className = "rs-pesan " + (ok ? "ok" : "galat"); } };
-  const tabel = (kepala, baris, kosong) => `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr>${kepala.map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${
+  const tabel = (kepala, baris, kosong) => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kepala.map(k => `<th scope="col">${esc(k || "Aksi")}</th>`).join("")}</tr></thead><tbody>${
     baris.length ? baris.join("") : `<tr><td colspan="${kepala.length}" class="rs-kosong-baris">${esc(kosong)}</td></tr>`}</tbody></table></div>`;
-  const csv = (t, label) => `<a class="ad-tombol kecil" href="${API}/admin/csv?tabel=${t}" download>${ikon("unduh")}${esc(label || "Ekspor CSV")}</a>`;
+  const csv = (t, label) => `<a class="db-ik" href="${API}/admin/csv?tabel=${t}" download title="${esc(label || "Ekspor CSV")}" aria-label="${esc(label || "Ekspor CSV")}">${DB.svg("unduh").outerHTML}</a>`;
   const opsi = (obj, pilih) => Object.entries(obj).map(([k, v]) => `<option value="${esc(k)}"${k === pilih ? " selected" : ""}>${esc(v)}</option>`).join("");
   const isian = (label, el) => `<label>${esc(label)}${el}</label>`;
   const nilai = f => Object.fromEntries([...new FormData(f)].map(([k, v]) => [k, v.trim ? v.trim() : v]));
@@ -40,27 +45,27 @@
     d = await r.json(); gambar();
   }
   function gambar() {
-    const k = d.kartu, stat = [["jam", "Antre telaah", k.antre, k.antre ? "kuning" : "abu"], ["gedung", "Mitra aktif", k.mitra_aktif, "biru"], ["jam", "Berjalan", k.berjalan, "biru"], ["centang", "Selesai", k.selesai, "hijau"],
-      ["dokumen", "Luaran (menunggu: " + angka(k.luaran_antre) + ")", k.luaran, k.luaran_antre ? "kuning" : "abu"], ["bendera", "Dipakai kebijakan", k.kebijakan, "hijau"], ["kirim", "Permintaan data", k.permintaan_antre, k.permintaan_antre ? "kuning" : "abu"]];
-    app.innerHTML = `<div class="rs-statbar">${stat.map(([i, l, n, w]) => `<div class="rs-stat">${pil(i, l, w)}<b>${angka(n)}</b></div>`).join("")}</div>
+    const k = d.kartu, stat = [["jam", "Antre telaah", k.antre, k.antre ? "oranye" : ""], ["gedung", "Mitra aktif", k.mitra_aktif, ""], ["jam", "Berjalan", k.berjalan, ""], ["aktif", "Selesai", k.selesai, ""],
+      ["berkas", "Luaran", k.luaran, "", `menunggu: ${angka(k.luaran_antre)}`], ["grafik", "Dipakai kebijakan", k.kebijakan, ""], ["kotak", "Permintaan data", k.permintaan_antre, k.permintaan_antre ? "oranye" : ""]];
+    DB.tumpuk(app);
+    app.innerHTML = `${DB.ubinGrid(...stat.map(([ikon, label, n, warna, ket]) => DB.ubin({ikon, label, nilai: angka(n), warna, ket}))).outerHTML}
       <nav class="ad-tabs" aria-label="Riset">${TABS.map(([t, l]) => `<button type="button" data-tab="${t}" aria-pressed="${t === tab}">${l}</button>`).join("")}</nav>
-      <p id="rsPesan" class="rs-pesan" role="status"></p><div class="rs-isi">${TAMPIL[tab]()}</div>`;
-    if (tab === "institusi") import("/admin/institusi.js?v=1").then(m => m.pasang(document.getElementById("inRoot")));   // modul yang sama dengan tab Institusi di /admin/relawan
+      <p id="rsPesan" class="rs-pesan" role="status"></p><div class="rs-isi db-tumpuk">${TAMPIL[tab]()}</div>`;
+    if (tab === "institusi") import("/admin/institusi.js?v=2").then(m => m.pasang(document.getElementById("inRoot")));   // modul yang sama dengan tab Institusi di /admin/relawan
   }
 
   /* ================= agenda ================= */
   const TAMPIL = {
     agenda() {
       const f = formAgenda, tema = Object.fromEntries(Object.entries(d.enum.tema)), pri = {1: "1 (tertinggi)", 2: "2", 3: "3"};
-      return `<form id="fAgenda" class="rs-form ad-kartu"><h3>${f.id ? "Ubah agenda" : "Tambah agenda riset"}</h3><div class="rs-grid">
+      return KH(f.id ? "ubah" : "tambah", f.id ? "Ubah agenda" : "Tambah agenda riset", "Formulir", `<form id="fAgenda" class="rs-form"><div class="rs-grid">
         ${isian("Pertanyaan riset (judul)", `<input name="judul" required minlength="5" maxlength="200" value="${esc(f.judul)}">`)}
         ${isian("Bencana", `<select name="bencana">${opsi({...d.enum.bencana}, f.bencana || "karhutla")}</select>`)}${isian("Tema", `<select name="tema">${opsi(tema, f.tema)}</select>`)}
         ${isian("Prioritas", `<select name="prioritas">${opsi(pri, String(f.prioritas || 2))}</select>`)}</div>
         ${isian("Latar singkat", `<textarea name="latar" rows="2" maxlength="800">${esc(f.latar)}</textarea>`)}${isian("Luaran yang diharapkan", `<input name="luaran" maxlength="400" value="${esc(f.luaran)}">`)}
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">${f.id ? "Simpan agenda" : "Tambah agenda"}</button>${f.id ? '<button class="ad-tombol" type="button" data-aksi="batal-agenda">Batal</button>' : ""}${csv("agenda")}</div></form>
-      ${tabel(["Prioritas", "Pertanyaan riset", "Tema", "Bencana", "Usulan", "Status", ""], d.agenda.map(a => `<tr data-id="${esc(a.id)}"><td>${pil("bendera", "P" + a.prioritas, a.prioritas === 1 ? "merah" : a.prioritas === 2 ? "kuning" : "abu")}</td>
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">${f.id ? "Simpan agenda" : "Tambah agenda"}</button>${f.id ? '<button class="ad-tombol" type="button" data-aksi="batal-agenda">Batal</button>' : ""}</div></form>`) + KH("kisi", "Agenda riset", "Daftar", `${tabel(["Prioritas", "Pertanyaan riset", "Tema", "Bencana", "Usulan", "Status", "Aksi"], d.agenda.map(a => `<tr data-id="${esc(a.id)}"><td>${pil("bendera", "P" + a.prioritas, a.prioritas === 1 ? "merah" : a.prioritas === 2 ? "kuning" : "abu")}</td>
         <td><b>${esc(a.judul)}</b>${dummyPil(a)}<br><span class="rs-redup">${esc(a.latar)}</span></td><td>${pil("bidik", d.enum.tema[a.tema], "biru")}</td><td>${esc(d.enum.bencana[a.bencana] || a.bencana)}</td><td>${angka(a.usulan)}</td>
-        <td>${a.status === "buka" ? pil("centang", "Buka", "hijau") : pil("silang", "Tutup", "abu")}</td><td class="a"><button class="ad-tombol kecil" data-aksi="ubah-agenda">Ubah</button> <button class="ad-tombol kecil" data-aksi="ganti-agenda" data-ke="${a.status === "buka" ? "tutup" : "buka"}">${a.status === "buka" ? "Tutup" : "Buka lagi"}</button></td></tr>`), "Belum ada agenda.")}`;
+        <td>${a.status === "buka" ? pil("centang", "Buka", "hijau") : pil("silang", "Tutup", "abu")}</td><td class="a">${aksiH(ib("ubah", "Ubah", 'data-aksi="ubah-agenda"'), ib(a.status === "buka" ? "tutup" : "aktif", a.status === "buka" ? "Tutup" : "Buka lagi", `data-aksi="ganti-agenda" data-ke="${a.status === "buka" ? "tutup" : "buka"}"`))}</td></tr>`), "Belum ada agenda.")}`, csv("agenda"));
     },
 
     /* ================= institusi (bersama dengan /admin/relawan) ================= */
@@ -68,36 +73,35 @@
 
     /* ================= mitra ================= */
     mitra() {
-      const baru = kodeBaru ? `<div class="rs-kode ad-kartu"><h3>Kode mitra "${esc(kodeBaru.institusi)}": hanya tampil SEKALI</h3><p>Kirim tautan ini ke PIC. Server hanya menyimpan sidik jarinya; hilang berarti buat kode baru (cabut yang lama).</p>
-        <input class="rs-isian" id="rsTautan" readonly value="${esc(kodeBaru.tautan)}"><div class="rs-aksi"><button class="ad-tombol utama" data-aksi="salin">Salin tautan</button></div></div>` : "";
-      const pks = pksId ? (m => `<form id="fPks" class="rs-form ad-kartu"><h3>Perbarui PKS: ${esc(m.institusi)}</h3><div class="rs-grid">${isian("Nomor PKS", `<input name="pks_nomor" required minlength="3" maxlength="80" value="${esc(m.pks_nomor)}">`)}
+      const baru = kodeBaru ? KH("kunci", `Kode mitra "${kodeBaru.institusi}"`, "Tampil sekali", `<div class="rs-kode"><p>Kirim tautan ini ke PIC. Server hanya menyimpan sidik jarinya; hilang berarti buat kode baru (cabut yang lama).</p>
+        <input class="rs-isian" id="rsTautan" readonly value="${esc(kodeBaru.tautan)}"><div class="rs-aksi"><button class="ad-tombol utama" data-aksi="salin">Salin tautan</button></div></div>`) : "";
+      const pks = pksId ? (m => KH("berkas", "Perbarui PKS: " + m.institusi, "Formulir", `<form id="fPks" class="rs-form"><div class="rs-grid">${isian("Nomor PKS", `<input name="pks_nomor" required minlength="3" maxlength="80" value="${esc(m.pks_nomor)}">`)}
         ${isian("Berlaku mulai", `<input type="date" name="pks_mulai" required value="${esc(m.pks_mulai || hariIni())}">`)}${isian("Berlaku sampai", `<input type="date" name="pks_sampai" required value="${esc(m.pks_sampai)}">`)}</div>
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan PKS</button><button class="ad-tombol" type="button" data-aksi="batal-pks">Batal</button></div></form>`)(d.mitra.find(x => x.id === pksId) || {}) : "";
-      return `${baru}${pks}<form id="fMitra" class="rs-form ad-kartu"><h3>Buat kode mitra riset</h3><div class="rs-grid">
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan PKS</button><button class="ad-tombol" type="button" data-aksi="batal-pks">Batal</button></div></form>`))(d.mitra.find(x => x.id === pksId) || {}) : "";
+      return `${baru}${pks}` + KH("tambah", "Buat kode mitra riset", "Formulir", `<form id="fMitra" class="rs-form"><div class="rs-grid">
         ${isian("Institusi terdaftar", `<select name="institusi_id"><option value="">Institusi baru (isi di bawah)</option>${d.institusi.map(i => `<option value="${esc(i.id)}">${esc(i.nama)}</option>`).join("")}</select>`)}
         ${isian("Institusi baru", '<input name="institusi" minlength="3" maxlength="120" placeholder="mis. Universitas Contoh">')}${isian("Fakultas / pusat studi", '<input name="unit" maxlength="120">')}
         ${isian("Nama PIC (institusi baru)", '<input name="pic_nama" minlength="2" maxlength="100">')}${isian("Email PIC", '<input name="pic_email" type="email" maxlength="254">')}${isian("WhatsApp PIC", '<input name="pic_wa" inputmode="tel" maxlength="20">')}
         ${isian("Nomor PKS riset", '<input name="pks_nomor" maxlength="80">')}${isian("PKS berlaku mulai", '<input type="date" name="pks_mulai">')}${isian("PKS berlaku sampai", '<input type="date" name="pks_sampai">')}</div>
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Buat kode mitra</button>${csv("mitra")}</div></form>
-      ${tabel(["Institusi", "PIC (hanya admin)", "PKS", "Usulan", "Kode", ""], d.mitra.map(m => { const p = PKS[m.pks.s];
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Buat kode mitra</button></div></form>`) + KH("gedung", "Mitra riset", "Daftar", `${tabel(["Institusi", "PIC (hanya admin)", "PKS", "Usulan", "Kode", ""], d.mitra.map(m => { const p = PKS[m.pks.s];
         return `<tr data-id="${esc(m.id)}"${m.dicabut ? ' class="rs-redam"' : ""}><td><b>${esc(m.institusi)}</b>${dummyPil(m)}<br><span class="rs-redup">${esc(m.unit || "")}</span></td>
         <td>${esc(m.pic_nama)}<br><span class="rs-redup">${esc(m.pic_email || "–")}, ${esc(m.pic_wa || "–")}</span></td>
         <td>${esc(m.pks_nomor || "–")}<br>${pil(p[0], p[1] + (m.pks.sisa != null && m.pks.s !== "kedaluwarsa" ? ` (${angka(m.pks.sisa)} hari)` : ""), p[2])}<br><span class="rs-redup">${tgl(m.pks_mulai)}–${tgl(m.pks_sampai)}</span></td>
         <td>${angka(m.usulan)}</td><td>${m.dicabut ? pil("silang", "Dicabut " + wkt(m.dicabut), "abu") : pil("centang", "Aktif", "hijau")}</td>
-        <td class="a"><button class="ad-tombol kecil" data-aksi="pks">Perbarui PKS</button>${m.dicabut ? "" : ' <button class="ad-tombol kecil bahaya" data-aksi="cabut">Cabut kode</button>'}</td></tr>`; }), "Belum ada mitra.")}`;
+        <td class="a">${aksiH(ib("berkas", "Perbarui PKS", 'data-aksi="pks"'), m.dicabut ? "" : ib("cabut", "Cabut kode", 'data-aksi="cabut"', "bahaya"))}</td></tr>`; }), "Belum ada mitra.")}`, csv("mitra"));
     },
 
     /* ================= usulan ================= */
     usulan() {
       const ANTRE = ["diajukan", "ditelaah", "laporan_akhir"], cocok = u => saring === "semua" || (saring === "antre" ? ANTRE.includes(u.status) : u.status === saring);
-      const chip = (k, l, n) => `<button class="ad-chip" type="button" data-saring="${k}" aria-pressed="${saring === k}">${esc(l)} <b>${angka(n)}</b></button>`;
+      const chip = (k, l, n) => DB.ubin({ikon: k === "antre" ? "jam" : k === "semua" ? "kisi" : "berkas", label: l, nilai: angka(n), saring: k, aktif: saring === k});
       const hit = k => d.usulan.filter(u => k === "semua" ? true : k === "antre" ? ANTRE.includes(u.status) : u.status === k).length;
-      const panel = telaah ? (u => `<form id="fTelaah" class="rs-form ad-kartu"><h3>${esc(AKSI_NAMA[telaah.ke])}: ${esc(u.judul)}</h3>
+      const panel = telaah ? (u => KH("ubah", AKSI_NAMA[telaah.ke] + ": " + u.judul, "Telaah", `<form id="fTelaah" class="rs-form">
         ${telaah.ke === "disetujui" ? isian("Nomor PKS (wajib)", '<input name="nomor_pks" required minlength="3" maxlength="80" placeholder="mis. PKS/BNPB/2026/007">') : ""}
         ${isian("Catatan telaah" + (telaah.ke === "revisi" || telaah.ke === "ditolak" ? " (wajib)" : " (opsional)"), `<textarea name="catatan" rows="3" maxlength="600"${telaah.ke === "revisi" || telaah.ke === "ditolak" ? " required minlength=\"5\"" : ""}></textarea>`)}
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan keputusan</button><button class="ad-tombol" type="button" data-aksi="batal-telaah">Batal</button></div></form>`)(d.usulan.find(x => x.id === telaah.id) || {}) : "";
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan keputusan</button><button class="ad-tombol" type="button" data-aksi="batal-telaah">Batal</button></div></form>`))(d.usulan.find(x => x.id === telaah.id) || {}) : "";
       const baris = d.usulan.filter(cocok).map(u => { const s = STATUS[u.status], jj = d.jejak.filter(j => j.usulan_id === u.id), kk = d.kemajuan.filter(k => k.usulan_id === u.id);
-        const aksi = Object.entries(d.enum.alur[u.status]).filter(([, p]) => p === "admin").map(([ke]) => `<button class="ad-tombol kecil ${ke === "disetujui" ? "utama" : ke === "ditolak" ? "bahaya" : ""}" data-aksi="telaah" data-ke="${ke}">${esc(AKSI_NAMA[ke])}</button>`).join(" ");
+        const aksi = Object.entries(d.enum.alur[u.status]).filter(([, p]) => p === "admin").map(([ke]) => ib(IK_TELAAH[ke] || "cek", AKSI_NAMA[ke], `data-aksi="telaah" data-ke="${ke}"`, ke === "ditolak" ? "bahaya" : "")).join("");
         return `<tr data-id="${esc(u.id)}"><td><details><summary><b>${esc(u.judul)}</b>${dummyPil(u)}</summary><div class="rs-detail">
           <p><b>Metode:</b> ${esc(u.metode)}</p><p><b>Anggota:</b> ${esc(u.anggota || "–")}</p><p><b>Wilayah:</b> ${esc(u.wilayah)}, <b>Jadwal:</b> ${tgl(u.mulai)}–${tgl(u.selesai)}</p>
           <p><b>Agenda:</b> ${esc(u.agenda || "–")}</p><p><b>Data dibutuhkan:</b> ${esc(u.data_butuh.map(i => (d.enum.katalog.find(k => k.id === i) || {}).nama || i).join(", ") || "–")}</p><p><b>Luaran rencana:</b> ${esc(u.luaran_rencana)}</p>
@@ -105,37 +109,36 @@
           ${kk.length ? `<p><b>Laporan:</b></p><ul>${kk.map(k => `<li>${wkt(k.waktu)} ${k.jenis === "akhir" ? "(akhir) " : ""}${esc(k.isi)} ${k.tautan ? lnk(k.tautan, "dokumen") : ""}</li>`).join("")}</ul>` : ""}
           <p><b>Riwayat:</b></p><ul>${jj.map(j => `<li>${wkt(j.waktu)}: ${esc((j.dari || "baru") + " ke " + j.ke)} oleh ${esc(j.oleh.split(":")[0])}${j.catatan ? " - " + esc(j.catatan) : ""}</li>`).join("")}</ul></div></details></td>
           <td>${esc(u.institusi)}<br><span class="rs-redup">${esc(u.ketua)}</span></td><td>${esc(d.enum.bencana[u.bencana] || u.bencana)}</td><td>${pil(s[0], s[1], s[2])}${u.nomor_pks ? `<br><span class="rs-redup">${esc(u.nomor_pks)}</span>` : ""}</td>
-          <td>${wkt(u.diubah)}</td><td class="a">${aksi}</td></tr>`; });
-      return `<div class="rs-bar">${chip("antre", "Antre telaah", hit("antre"))}${chip("semua", "Semua", hit("semua"))}${Object.keys(STATUS).map(k => chip(k, STATUS[k][1], hit(k))).join("")}<span class="rs-sp">${csv("usulan")}</span></div>${panel}
-        ${tabel(["Usulan", "Institusi / ketua", "Bencana", "Status", "Diubah", ""], baris, "Tidak ada usulan di saringan ini.")}`;
+          <td>${wkt(u.diubah)}</td><td class="a">${aksiH(aksi)}</td></tr>`; });
+      return DB.ubinGrid(chip("antre", "Antre telaah", hit("antre")), chip("semua", "Semua", hit("semua")), ...Object.keys(STATUS).map(k => chip(k, STATUS[k][1], hit(k)))).outerHTML + panel +
+        KH("berkas", "Usulan riset", "Telaah", tabel(["Usulan", "Institusi / ketua", "Bencana", "Status", "Diubah", ""], baris, "Tidak ada usulan di saringan ini."), csv("usulan"));
     },
 
     /* ================= permintaan data ================= */
     permintaan() {
       const nama = id => (d.enum.katalog.find(k => k.id === id) || {}).nama || id, S = {diminta: ["jam", "Menunggu", "kuning"], disetujui: ["centang", "Disetujui", "hijau"], ditolak: ["silang", "Ditolak", "merah"]};
-      const panel = putus ? (p => `<form id="fPutus" class="rs-form ad-kartu"><h3>${putus.ke === "disetujui" ? "Setujui" : "Tolak"}: ${esc(nama(p.dataset))} untuk ${esc(p.institusi)}</h3>
+      const panel = putus ? (p => KH(putus.ke === "disetujui" ? "aktif" : "tutup", `${putus.ke === "disetujui" ? "Setujui" : "Tolak"}: ${nama(p.dataset)} untuk ${p.institusi}`, "Keputusan", `<form id="fPutus" class="rs-form">
         ${putus.ke === "disetujui" ? isian("Jalur atau tautan data (wajib)", `<input name="jalur" required maxlength="300" value="${esc((d.enum.katalog.find(k => k.id === p.dataset) || {}).jalur || "")}" placeholder="/data/... atau https://...">`) : ""}
         ${isian("Catatan" + (putus.ke === "ditolak" ? " (wajib)" : " (opsional)"), `<textarea name="catatan" rows="2" maxlength="600"${putus.ke === "ditolak" ? " required" : ""}></textarea>`)}
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan</button><button class="ad-tombol" type="button" data-aksi="batal-putus">Batal</button></div></form>`)(d.permintaan.find(x => x.id === putus.id) || {}) : "";
-      return `<div class="rs-bar">${csv("permintaan")}</div>${panel}${tabel(["Mitra", "Data", "Tujuan", "Status", "Jalur", "Diminta", ""], d.permintaan.map(p => { const s = S[p.status];
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan</button><button class="ad-tombol" type="button" data-aksi="batal-putus">Batal</button></div></form>`))(d.permintaan.find(x => x.id === putus.id) || {}) : "";
+      return panel + KH("kotak", "Permintaan data", "Mitra", `${tabel(["Mitra", "Data", "Tujuan", "Status", "Jalur", "Diminta", ""], d.permintaan.map(p => { const s = S[p.status];
         return `<tr data-id="${esc(p.id)}"><td>${esc(p.institusi)}${dummyPil(p)}</td><td><b>${esc(nama(p.dataset))}</b></td><td>${esc(p.tujuan)}${p.catatan ? `<br><span class="rs-redup">${esc(p.catatan)}</span>` : ""}</td>
           <td>${pil(s[0], s[1], s[2])}</td><td>${p.jalur ? (p.jalur.startsWith("/") ? `<a href="${esc(p.jalur)}" target="_blank" rel="noopener noreferrer">${esc(p.jalur)}</a>` : lnk(p.jalur)) : "–"}</td><td>${wkt(p.dibuat)}</td>
-          <td class="a">${p.status === "diminta" ? '<button class="ad-tombol kecil utama" data-aksi="putus" data-ke="disetujui">Setujui</button> <button class="ad-tombol kecil bahaya" data-aksi="putus" data-ke="ditolak">Tolak</button>' : ""}</td></tr>`; }), "Belum ada permintaan data.")}`;
+          <td class="a">${p.status === "diminta" ? aksiH(ib("aktif", "Setujui", 'data-aksi="putus" data-ke="disetujui"'), ib("tutup", "Tolak", 'data-aksi="putus" data-ke="ditolak"', "bahaya")) : ""}</td></tr>`; }), "Belum ada permintaan data.")}`, csv("permintaan"));
     },
 
     /* ================= luaran dan kebijakan ================= */
     luaran() {
       const BENTUK = d.enum.bentuk;
-      const panel = catat ? (l => `<form id="fKebijakan" class="rs-form ad-kartu"><h3>Catat pemanfaatan kebijakan: ${esc(l.judul)}</h3><div class="rs-grid">
+      const panel = catat ? (l => KH("tambah", "Catat pemanfaatan kebijakan: " + l.judul, "Formulir", `<form id="fKebijakan" class="rs-form"><div class="rs-grid">
         ${isian("Instansi / unit pengguna", '<input name="instansi" required minlength="2" maxlength="120" placeholder="mis. Direktorat Pusdalops BNPB">')}${isian("Bentuk", `<select name="bentuk">${opsi(BENTUK)}</select>`)}
         ${isian("Tanggal", `<input type="date" name="tanggal" required max="${hariIni()}" value="${hariIni()}">`)}</div>${isian("Catatan", '<textarea name="catatan" rows="2" maxlength="600"></textarea>')}
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan pemanfaatan</button><button class="ad-tombol" type="button" data-aksi="batal-catat">Batal</button></div></form>`)(d.luaran.find(x => x.id === catat) || {}) : "";
-      return `<div class="rs-bar"><b>Dipakai untuk kebijakan: ${angka(d.kartu.kebijakan)} riset dari ${angka(d.kartu.selesai + d.kartu.berjalan)} yang berjalan atau selesai</b><span class="rs-sp">${csv("luaran", "CSV luaran")} ${csv("kebijakan", "CSV pemanfaatan")}</span></div>${panel}
-        ${tabel(["Luaran", "Riset", "Institusi", "Tampil publik", "Dipakai", ""], d.luaran.map(l => `<tr data-id="${esc(l.id)}"><td>${pil("dokumen", JENIS[l.jenis] || l.jenis, "biru")}${dummyPil(l)}<br><b>${esc(l.judul)}</b><br>${l.tautan ? lnk(l.tautan, "tautan") : ""} ${l.doi ? lnk("https://doi.org/" + l.doi, "DOI " + l.doi) : ""}</td>
-          <td>${esc(l.usulan)}</td><td>${esc(l.institusi)}</td><td>${l.disetujui ? pil("centang", "Disetujui", "hijau") : pil("jam", "Menunggu", "kuning")}</td><td>${l.kebijakan ? pil("bendera", angka(l.kebijakan) + " pemanfaatan", "hijau") : '<span class="rs-redup">Belum</span>'}</td><td class="a"><button class="ad-tombol kecil" data-aksi="${l.disetujui ? "tolak-luaran" : "setujui-luaran"}">${l.disetujui ? "Cabut persetujuan" : "Setujui"}</button> <button class="ad-tombol kecil" data-aksi="catat">Catat pemanfaatan</button></td></tr>`), "Belum ada luaran.")}
-        <h3 class="rs-sub">Pemanfaatan kebijakan</h3>
-        ${tabel(["Tanggal", "Instansi / unit", "Bentuk", "Luaran", "Riset", "Catatan", ""], d.kebijakan.map(k => `<tr data-id="${esc(k.id)}"><td>${tgl(k.tanggal)}</td><td>${esc(k.instansi)}${dummyPil(k)}</td><td>${pil("bendera", BENTUK[k.bentuk] || k.bentuk, "hijau")}</td>
-          <td>${esc(k.luaran)}</td><td>${esc(k.usulan)}<br><span class="rs-redup">${esc(k.institusi)}</span></td><td>${esc(k.catatan || "")}</td><td class="a"><button class="ad-tombol kecil bahaya" data-aksi="hapus-kebijakan">Hapus</button></td></tr>`), "Belum ada pemanfaatan kebijakan yang dicatat.")}`;
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan pemanfaatan</button><button class="ad-tombol" type="button" data-aksi="batal-catat">Batal</button></div></form>`))(d.luaran.find(x => x.id === catat) || {}) : "";
+      return DB.ubinGrid(DB.ubin({ikon: "grafik", label: "Dipakai kebijakan", nilai: angka(d.kartu.kebijakan), ket: `dari ${angka(d.kartu.selesai + d.kartu.berjalan)} riset berjalan atau selesai`})).outerHTML + panel +
+        KH("berkas", "Luaran riset", "Daftar", `${tabel(["Luaran", "Riset", "Institusi", "Tampil publik", "Dipakai", ""], d.luaran.map(l => `<tr data-id="${esc(l.id)}"><td>${pil("dokumen", JENIS[l.jenis] || l.jenis, "biru")}${dummyPil(l)}<br><b>${esc(l.judul)}</b><br>${l.tautan ? lnk(l.tautan, "tautan") : ""} ${l.doi ? lnk("https://doi.org/" + l.doi, "DOI " + l.doi) : ""}</td>
+          <td>${esc(l.usulan)}</td><td>${esc(l.institusi)}</td><td>${l.disetujui ? pil("centang", "Disetujui", "hijau") : pil("jam", "Menunggu", "kuning")}</td><td>${l.kebijakan ? pil("bendera", angka(l.kebijakan) + " pemanfaatan", "hijau") : '<span class="rs-redup">Belum</span>'}</td><td class="a">${aksiH(ib(l.disetujui ? "tutup" : "aktif", l.disetujui ? "Cabut persetujuan" : "Setujui", `data-aksi="${l.disetujui ? "tolak-luaran" : "setujui-luaran"}"`), ib("tambah", "Catat pemanfaatan", 'data-aksi="catat"'))}</td></tr>`), "Belum ada luaran.")}`, csv("luaran", "CSV luaran")) +
+        KH("grafik", "Pemanfaatan kebijakan", "Daftar", `${tabel(["Tanggal", "Instansi / unit", "Bentuk", "Luaran", "Riset", "Catatan", ""], d.kebijakan.map(k => `<tr data-id="${esc(k.id)}"><td>${tgl(k.tanggal)}</td><td>${esc(k.instansi)}${dummyPil(k)}</td><td>${pil("bendera", BENTUK[k.bentuk] || k.bentuk, "hijau")}</td>
+          <td>${esc(k.luaran)}</td><td>${esc(k.usulan)}<br><span class="rs-redup">${esc(k.institusi)}</span></td><td>${esc(k.catatan || "")}</td><td class="a">${aksiH(ib("hapus", "Hapus", 'data-aksi="hapus-kebijakan"', "bahaya"))}</td></tr>`), "Belum ada pemanfaatan kebijakan yang dicatat.")}`, csv("kebijakan", "CSV pemanfaatan"));
     },
   };
 
@@ -143,8 +146,8 @@
   app.addEventListener("click", async e => {
     const t = e.target.closest("button, a"); if (!t || t.tagName === "A") return;
     const tr = t.closest("tr"), id = tr?.dataset.id;
-    if (t.dataset.tab) { tab = t.dataset.tab; telaah = putus = catat = pksId = null; return gambar(); }
-    if (t.dataset.saring) { saring = t.dataset.saring; return gambar(); }
+    if (t.dataset.tab) { tab = t.dataset.tab; telaah = putus = catat = pksId = null; for (const u of app.querySelectorAll("[data-tab]")) u.setAttribute("aria-pressed", String(u === t)); return requestAnimationFrame(() => setTimeout(gambar, 0)); }
+    if (t.dataset.saring) { saring = t.dataset.saring; for (const u of app.querySelectorAll(".db-saring")) u.setAttribute("aria-pressed", String(u === t)); return requestAnimationFrame(() => setTimeout(gambar, 0)); }
     const a = t.dataset.aksi; if (!a) return;
     if (a === "ubah-agenda") { formAgenda = d.agenda.find(x => x.id === id); gambar(); return document.getElementById("fAgenda").scrollIntoView({behavior: "smooth"}); }
     if (a === "batal-agenda") { formAgenda = {}; return gambar(); }

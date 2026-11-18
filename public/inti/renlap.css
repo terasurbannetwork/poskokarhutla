@@ -11,3 +11,10 @@
 .pb-tabel a.pb-ik{text-decoration:none}
 .pb-tabel td select,.pb-tabel td input{font:inherit;font-size:.8125rem;padding:5px 8px;border:1px solid var(--pb-garis);border-radius:8px;background:var(--pb-kartu);color:var(--pb-teks);min-width:0;max-width:100%}
 .pb-ak{white-space:normal}
+.rl-bar{display:inline-block;vertical-align:middle;width:96px;height:8px;margin-right:8px;border-radius:999px;background:var(--pb-bidang);overflow:hidden}
+.rl-bar>i{display:block;height:100%;border-radius:999px;background:var(--brand2)}
+.rl-tt{color:var(--pb-redup);font-size:.8125rem}
+.rl-tdk{min-width:150px}
+.rl-tdk>summary{cursor:pointer;font-size:.8125rem;color:var(--brand2);font-weight:700}
+.rl-tdk-isi{display:grid;gap:4px;margin-top:6px;max-height:220px;overflow:auto}
+.rl-cek{display:flex;align-items:center;gap:6px;font-size:.8125rem;color:var(--pb-teks);white-space:normal}

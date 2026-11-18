@@ -37,7 +37,10 @@ JENIS = {"BNJ": {"Banjir", "Banjir Bandang", "Banjir Genangan", "Banjir dan Tana
          "LSR": {"Tanah Longsor", "Gerakan Tanah", "Banjir dan Tanah Longsor"}}
 CEX_RE = B.CEX_RE        # label CEX = DIBI cuaca ekstrem/angin/puting (sama dengan label lab)
 MENUNGGU = {"ASP": "belum ada stasiun PM2,5 terukur (WAQI_TOKEN/OpenAQ tidak tersedia); CAMS tidak dinilai dengan CAMS",
-            "ROB": "pasut IOC belum dipanen sebagai seri harian per titik"}
+            "ROB": "pasut IOC belum dipanen sebagai seri harian per titik",
+            "GEL": "belum ada sumber pengamatan gelombang per kab; model tidak dinilai dengan modelnya sendiri",
+            "CEX": "belum ada sumber pengamatan embusan angin per kab; DIBI cuaca ekstrem bukan ukuran yang sama (label CEX_B tetap terpisah)"}
+TANPA_NILAI = ("GEL", "CEX")     # arsip dibekukan tapi belum dinilai: tidak masuk pasangan, status "menunggu"
 
 
 def log(*a):
@@ -198,6 +201,8 @@ def pasangan(entri, am, kini=None, regu=None):
     out, klim = [], {k: Klim(k, v) for k, v in am.items()}
     for e in entri:
         k = e["k"]
+        if k in TANPA_NILAI:
+            continue
         ak = D.DASAR.get(k, k)          # model bayangan memakai amatan/baseline kode dasarnya
         if ak not in am:
             continue
@@ -296,7 +301,7 @@ def ringkas(pas, n_prakiraan, status=None):
             kode[k] = {"status": "dinilai", "prakiraan": n_prakiraan.get(k, 0), "grup": g}
         else:
             kode[k] = {"status": "menunggu", "prakiraan": n_prakiraan.get(k, 0),
-                       "alasan": (status or {}).get(k) or (status or {}).get(D.DASAR.get(k)) or MENUNGGU.get(k) or "belum ada prakiraan yang matang"}
+                       "alasan": MENUNGGU.get(k) if k in TANPA_NILAI else (status or {}).get(k) or (status or {}).get(D.DASAR.get(k)) or MENUNGGU.get(k) or "belum ada prakiraan yang matang"}
     return kode
 
 
@@ -384,7 +389,7 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
     am, status = {}, {}
     if any(e["k"] == "HJN" for e in entri):
         am["HJN"] = perbarui_hujan(entri, daftar, kini, data, unduh)
-    dasar = {D.DASAR.get(e["k"], e["k"]) for e in entri}
+    dasar = {D.DASAR.get(e["k"], e["k"]) for e in entri if e["k"] not in TANPA_NILAI}
     for kd, sensor in (("API", None), ("KRH", "N")):
         tgl = sorted({h for e in entri if D.DASAR.get(e["k"], e["k"]) == kd for h in e["hari"] + [D.geser(e["t"], -1)] if h < kini})
         if tgl:
@@ -517,6 +522,9 @@ def uji():
         g1 = next(x for x in g if x["ambang"] == 1 and x["tenggang"] == 1 and x["tahap"] == "final")
         assert g1["frek"] == 1.0 and g1["mae_mulai"] == 2.0 and g1["mae_lama"] == 1.0 and g1["mae_tot"] == 7.0, g1
         assert s["kode"]["ASP"]["status"] == "menunggu" and "stasiun" in s["kode"]["ASP"]["alasan"]
+        assert all(s["kode"][k]["status"] == "menunggu" and "pengamatan" in s["kode"][k]["alasan"] for k in TANPA_NILAI)
+        gel = {"t": "2026-09-10", "k": "GEL", "kol": ["hs", "lv"], "hari": [D.geser("2026-09-10", i) for i in (1, 2, 3)], "kab": {"1101": [[1.3, 1]] * 3}}
+        assert pasangan([gel], {"GEL": {}, "CEX": {}}, "2026-09-20") == [], "GEL/CEX tidak dinilai"
         am = D.baca(jalur_amatan("HJN", d))
         assert am["2026-09-14"]["j"] == "final" and am["2026-09-15"]["j"] == "sementara"
         assert "2026-09-20" not in am, "sasaran hari ini belum matang, tidak diamati"

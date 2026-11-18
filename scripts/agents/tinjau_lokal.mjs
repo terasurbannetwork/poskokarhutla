@@ -63,6 +63,9 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         const f = path.join(akar, "data/raw/semai/keluar", semai[1]);
         try { const b = await fs.readFile(f); res.writeHead(200, {"content-type": JENIS[path.extname(f)], "cache-control": "no-store", "x-tinjau": "lokal-semai"}); return res.end(b); } catch { /* tidak ada: teruskan 404 hulu */ }
       }
+      /* berkas /data/ baru yang belum terbit (hulu 404) dari folder kerja; yang sudah terbit tetap dari hulu */
+      const dataBaru = r.status === 404 && req.method === "GET" && jalurData(jalur) && await berkas(publik, jalur);
+      if (dataBaru) { res.writeHead(200, {"content-type": JENIS[path.extname(dataBaru).toLowerCase()] || "application/octet-stream", "cache-control": "no-store", "x-tinjau": "lokal-data-baru"}); return res.end(await fs.readFile(dataBaru)); }
       /* rute HTML baru yang belum terbit di produksi (hulu 404) tetap disajikan dari folder kerja */
       const baru = r.status === 404 && ruteHtml && await berkas(publik, ruteHtml[1]);
       const htmlLokal = baru || (r.ok && (r.headers.get("content-type") || "").includes("text/html") &&
@@ -78,6 +81,11 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         /* halaman admin dirender Worker: sisipkan lapisan dashboard lokal supaya perubahan public/inti/dasbor.css terlihat sebelum deploy */
         const h = isi.toString("utf8");
         if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>')); keluar["cache-control"] = "no-store"; }
+      }
+      /* tiru pasangKeluar src/worker.js: tombol Keluar di semua HTML sebelum Worker baru terbit (halaman tanpa sesi tidak dibedakan di sini) */
+      if ((keluar["content-type"] || r.headers.get("content-type") || "").includes("text/html") && !/^\/(admin\/)?masuk\/?$/.test(jalur)) {
+        const h = isi.toString("utf8");
+        if (h.includes("</body>") && !h.includes("/inti/keluar.js")) { isi = Buffer.from(h.replace("</body>", '<script src="/inti/keluar.js?v=1" defer></script>\n</body>')); keluar["cache-control"] = "no-store"; }
       }
       res.writeHead(status, keluar);
       res.end(req.method === "HEAD" ? undefined : isi);

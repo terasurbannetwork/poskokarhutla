@@ -30,7 +30,7 @@ let a, b;
 
 uji("minta: tamu dan akun gerbang 403 sebelum body; bencana tak aktif 404; tanggal sah 7 hari ke belakang, depan 400", async () => {
   for (const h of [{}, GERBANG]) assert.equal((await minta(R(), h)).s, 403);
-  assert.equal((await minta(R({bencana: "longsor"}))).s, 404);
+  assert.equal((await minta(R({bencana: "karhutla"}))).s, 404);
   assert.equal((await minta(R({tanggal: hari(-1)}))).s, 400);
   assert.equal((await minta(R({tanggal: hari(8)}))).s, 400);
   assert.equal((await minta(R({kab: "../x"}))).s, 400);

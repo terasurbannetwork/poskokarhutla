@@ -41,7 +41,7 @@ const S = {gempa: [], dibuat: null, rentang: bacaLokal("gempa-rentang", 72), jal
 const namaProv = k => k === "-" ? "Perairan" : S.nama[k] ?? k;
 const dalamRentang = () => { const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
 function agregat(daftar) { const o = {};
-  for (const g of daftar) { const k = g.prov || "-", a = o[k] ||= {n: 0, m: 0, mmi: 0}; a.n++; a.m = Math.max(a.m, g.m); if (g.mmi_maks) a.mmi++; } return o; }
+  for (const g of daftar) { const k = g.prov || "-", a = o[k] ||= {n: 0, m: 0, mmi: 0}; a.n++; a.m = Math.max(a.m, g.m); if (g.mmi_maks) a.mmi++; if (g.tsunami?.kode >= 1) a.ts = (a.ts || 0) + 1; } return o; }
 
 const Peta = {
   async init() {
@@ -179,25 +179,11 @@ function renderCrumb() {
   if (j[0]) b.push(`<button data-n="1">${esc(namaProv(j[0]))}</button>`);
   $("#crumb").innerHTML = b.join(""); }
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
-function renderDaftar() {
-  const box = $("#rows"), d = dalamRentang(), j = S.jalur, u = S.urut, arah = u.turun ? -1 : 1;
-  if (!d.length) { box.innerHTML = `<div class="kosong">${S.tersedia ? `Tidak ada gempa ${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
-  const kepala = (g, kol) => `<div class="tb kepala" style="grid-template-columns:${g}"><span></span>${kol.map(([k, n, c]) => `<span class="${[c, k && u.k === k ? "urut" : ""].join(" ").trim()}"${k ? ` data-s="${k}"` : ""}${k && u.k === k ? ` data-arah="${u.turun ? 0 : 1}"` : ""}>${n}</span>`).join("")}</div>`;
-  if (!j.length) {
-    const G = "20px minmax(0,2fr) minmax(46px,.7fr) minmax(72px,1fr) minmax(64px,1fr)", ag = agregat(d);
-    const baris = Object.entries(ag).map(([k, a]) => ({k, nama: namaProv(k), ...a})).sort((a, b) => arah * ((u.k === "nama" ? a.nama.localeCompare(b.nama) : a[u.k] - b[u.k]) || b.n - a.n || a.nama.localeCompare(b.nama)));
-    box.innerHTML = kepala(G, [["nama", "Provinsi"], ["n", "Gempa", "n"], ["mmi", "Dirasakan", "n"], ["m", "Terbesar"]]) +
-      baris.map((p, i) => `<button class="tb" data-k="${esc(p.k)}" style="grid-template-columns:${G}"><span class="rk">${i + 1}</span><span class="kom"><b>${esc(p.nama)}</b></span><span class="n"><b>${fmt(p.n)}</b></span><span class="n">${p.mmi ? fmt(p.mmi) : "–"}</span><span>${pilM(p.m)}</span></button>`).join("");
-    return; }
-  const G = "20px minmax(0,2.4fr) minmax(70px,.9fr) minmax(80px,1.2fr)", per = 20;
-  const isi = d.filter(g => (g.prov || "-") === j[0]).sort((a, b) => arah * (u.k === "m" ? a.m - b.m : a.t - b.t) || b.t - a.t);
-  S.hal = Math.min(S.hal, Math.max(0, Math.ceil(isi.length / per) - 1));
-  box.innerHTML = kepala(G, [[null, "Lokasi"], ["m", "Kekuatan"], ["t", "Waktu"]]) +
-    isi.slice(S.hal * per, S.hal * per + per).map((g, i) => `<button class="tb" data-g="${esc(g.id)}" style="grid-template-columns:${G}"><span class="rk">${S.hal * per + i + 1}</span><span class="kom">${esc(wilayahPendek(g.wilayah))}</span><span>${pilM(g.m)}</span><span class="n">${esc(jamPendek(g.waktu))}</span></button>`).join("") +
-    paginasi(S.hal, isi.length, per, "gempa"); }
+function renderDaftar() { Panel.render(); }   /* isi panel kiri: panel.js */
 $("#rows").addEventListener("click", e => {
-  const h = e.target.closest("[data-h]"); if (h) { S.hal = +h.dataset.h; return renderDaftar(); }
-  const s = e.target.closest("[data-s]"); if (s) { const k = s.dataset.s; S.urut = {k, turun: S.urut.k === k ? !S.urut.turun : k !== "nama"}; S.hal = 0; return renderDaftar(); }
+  const h = e.target.closest("[data-h]"); if (h) { S.hal = +h.dataset.h; h.parentElement.querySelectorAll(".pgn-b.on").forEach(x => x.classList.remove("on")); if (!h.disabled) h.classList.add("on"); return nanti(renderDaftar); }
+  const s = e.target.closest("[data-s]"); if (s) { const k = s.dataset.s; S.urut = {k, turun: S.urut.k === k ? !S.urut.turun : k !== "nama"}; S.hal = 0;
+    s.parentElement.querySelectorAll("[data-s]").forEach(x => { x.classList.remove("urut"); x.removeAttribute("data-arah"); }); s.classList.add("urut"); s.dataset.arah = S.urut.turun ? 0 : 1; return nanti(renderDaftar); }
   const p = e.target.closest("[data-k]"); if (p) return turun(p.dataset.k);
   const g = e.target.closest("[data-g]"); if (g) { const q = S.gempa.find(x => x.id === g.dataset.g); if (q) Peta.pilih(q); } });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");

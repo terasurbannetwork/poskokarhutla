@@ -13,7 +13,7 @@ import {PROV} from "./bangunan.js";
 import {akunAktif} from "./instansi.js";
 import {kodeKab} from "./kemitraan_akun.js";
 import REGISTRY from "./bencana.generated.js";
-import {pelakuPbTulis, pelakuPbBaca, pbTitikDaftar, pbTitikById, pbStmtTitikSisip, pbStmtTitikUbah, pbStmtTitikHapus, pbStmtLog, pbLogLaju, tanpaTabelPb, batchTulis, pbRenlapMinta, pbRenlapById, pbRenlapDaftar, pbRenlapGeser, pbRenlapLajuMinta, pbStmtHasil, pbKepatuhan, pbPeringatanAktif, pbTindakanDaftar, pbTindakanSatu, pbStmtTindakanUpsert} from "./hak.js";
+import {pelakuPbTulis, pelakuPbBaca, pbTitikDaftar, pbTitikById, pbStmtTitikSisip, pbStmtTitikUbah, pbStmtTitikHapus, pbStmtLog, pbLogLaju, tanpaTabelPb, batchTulis, pbRenlapMinta, pbRenlapById, pbRenlapDaftar, pbRenlapGeser, pbRenlapLajuMinta, pbStmtHasil, pbKepatuhan, pbStmtTindakanHapus, pbStmtTindakanSisip, pbTindakanRekap, pbPeringatanAktif, pbTindakanDaftar, pbTindakanSatu, pbStmtTindakanUpsert} from "./hak.js";
 import {tindakanUntuk} from "../public/ews_tindakan.js";
 
 export const PERAN_TULIS = ["pusdalops"];
@@ -316,12 +316,19 @@ const berkas = rute(async (env, req, url) => {
 /* ======================================================================================================================================================
    PB-16 hasil tindakan dan kepatuhan (F-5). Hanya untuk renlap terbit/selesai; hak tulis = wilayah BARIS renlap; log memuat jumlah, bukan butir (batas 8 KB); tanpa nama orang. */
 const ALASAN = ["akses_terputus", "cuaca", "sarana_kurang", "warga_menolak", "sudah_aman", "lokasi_salah", "lainnya"], HASIL = ["selesai", "sebagian", "belum", "eskalasi"];
-function butir(x, maks) {
+function butir(x, maks, daftar = []) {
   if (!x || typeof x !== "object" || Array.isArray(x)) tolak("tiap butir harus objek");
   const target_no = Number.isInteger(x.target_no) && x.target_no >= 1 && x.target_no <= (maks ?? 500) ? x.target_no : tolak(`target_no harus bilangan bulat 1 sampai ${maks ?? 500}`);
   const d = x.didatangi === true || x.didatangi === 1 ? 1 : x.didatangi === false || x.didatangi === 0 ? 0 : x.didatangi == null ? null : tolak("didatangi harus true, false, atau kosong");
   if (x.alasan != null && d !== 0) tolak("alasan hanya untuk target yang tidak didatangi");
-  return {target_no, didatangi: d, alasan: x.alasan == null ? null : pilih(x.alasan, ALASAN, "alasan"), hasil: x.hasil == null ? null : pilih(x.hasil, HASIL, "hasil"), catatan: bersih(x.catatan, 200) || null};
+  let tindakan;   // undefined = set lama tidak disentuh
+  if (x.tindakan !== undefined) {
+    if (!Array.isArray(x.tindakan) || x.tindakan.length > 12) tolak("tindakan harus daftar paling banyak 12 kode");
+    for (const k of x.tindakan) if (typeof k !== "string" || !daftar.includes(k)) tolak("kode tindakan tidak dikenal untuk bencana ini");
+    if (new Set(x.tindakan).size !== x.tindakan.length) tolak("kode tindakan kembar");
+    tindakan = x.tindakan;
+  }
+  return {target_no, didatangi: d, alasan: x.alasan == null ? null : pilih(x.alasan, ALASAN, "alasan"), hasil: x.hasil == null ? null : pilih(x.hasil, HASIL, "hasil"), catatan: bersih(x.catatan, 200) || null, tindakan};
 }
 const hasil = rute(async (env, req, url, kini) => {
   const tamu = await gerbangTulis(env, req); if (tamu) return tamu;
@@ -329,15 +336,24 @@ const hasil = rute(async (env, req, url, kini) => {
   const id = idBody(o);
   if (!Array.isArray(o.butir) || !o.butir.length || o.butir.length > 100) tolak("butir harus daftar 1 sampai 100 isi");
   const r = await pbRenlapById(env, pelakuPbBaca, id); if (!r) return gagal(404, "renlap tidak ditemukan");
-  bencanaAktif(env, r.bencana);
+  const kem = bencanaAktif(env, r.bencana), daftarT = Array.isArray(kem.tindakan) ? kem.tindakan : [];
   const p = await penulis(env, req, r.prov, r.kab); if (p instanceof Response) return p;
-  const bs = o.butir.map(x => butir(x, r.jml_target ?? 500));
+  const bs = o.butir.map(x => butir(x, r.jml_target ?? 500, daftarT));
   if (new Set(bs.map(x => x.target_no)).size !== bs.length) tolak("target_no kembar dalam satu permintaan");
   if (!["terbit", "selesai"].includes(r.status)) return gagal(409, "hasil hanya untuk renlap berstatus terbit atau selesai");
   if (!await lajuOK(env, p.oleh, kini)) return lambat();
-  await batchTulis(env, [...bs.map(b => pbStmtHasil(env, pelakuPbTulis, id, b, p.oleh, kini)),
-    pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_renlap_hasil", id, "isi", null, {butir: bs.length, didatangi: bs.filter(b => b.didatangi === 1).length})]);
-  return json({ok: true, butir: bs.length});
+  const bt = bs.filter(b => b.tindakan), jmlKode = bt.reduce((a, b) => a + b.tindakan.length, 0);
+  const susun = dgnTindakan => [...bs.map(b => pbStmtHasil(env, pelakuPbTulis, id, b, p.oleh, kini)),
+    ...(dgnTindakan ? [pbStmtTindakanHapus(env, pelakuPbTulis, id, bt.map(b => b.target_no)), ...(jmlKode ? [pbStmtTindakanSisip(env, pelakuPbTulis, id, bt.flatMap(b => b.tindakan.map(k => [b.target_no, k])), p.oleh, kini)] : [])] : []),
+    pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_renlap_hasil", id, "isi", null, {butir: bs.length, didatangi: bs.filter(b => b.didatangi === 1).length, ...(dgnTindakan && bt.length ? {tindakan: jmlKode} : {})})];
+  try { await batchTulis(env, susun(true)); }
+  catch (e) {
+    if (!bt.length || !tanpaTabelPb(e)) throw e;   // migrasi 0153 belum diterapkan: hasil tetap tersimpan, tindakan tidak
+    console.error("pb_renlap_tindakan belum ada: migrasi 0153_pb_renlap_tindakan belum diterapkan");
+    await batchTulis(env, susun(false));
+    return json({ok: true, butir: bs.length, tindakan: false, pesan: "tindakan belum bisa disimpan; hubungi pengelola sistem"});
+  }
+  return json({ok: true, butir: bs.length, ...(bt.length ? {tindakan: true} : {})});
 });
 const kepatuhan = rute(async (env, req, url, kini) => {
   const q = url.searchParams, bencana = q.get("bencana") ?? "";
@@ -352,7 +368,9 @@ const kepatuhan = rute(async (env, req, url, kini) => {
     const k = await pbKepatuhan(env, pelakuPbBaca, dari, sampai, bencana, prov), per_alasan = {};
     let didatangi = 0, baris = 0;
     for (const x of k.rinci) { baris += x.n; if (x.didatangi === 1) didatangi += x.n; else if (x.didatangi === 0) per_alasan[x.alasan ?? "tanpa_alasan"] = (per_alasan[x.alasan ?? "tanpa_alasan"] ?? 0) + x.n; }
-    return json({tersedia: true, renlap: k.renlap, target: k.target, didatangi, belum_diisi: Math.max(0, k.target - baris), persen: k.target > 0 ? Math.round(1000 * didatangi / k.target) / 10 : null, per_alasan});
+    const j = {tersedia: true, renlap: k.renlap, target: k.target, didatangi, belum_diisi: Math.max(0, k.target - baris), persen: k.target > 0 ? Math.round(1000 * didatangi / k.target) / 10 : null, per_alasan};
+    try { j.per_tindakan = await pbTindakanRekap(env, pelakuPbBaca, dari, sampai, bencana, prov); } catch (e) { if (!tanpaTabelPb(e)) throw e; }   // 0153 belum ada: kunci tidak dikirim
+    return json(j);
   } catch (e) { if (tanpaTabelPb(e)) return json({tersedia: false}); throw e; }
 });
 

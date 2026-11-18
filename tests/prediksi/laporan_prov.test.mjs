@@ -113,3 +113,83 @@ test('laporan_prov.js murni: tanpa DOM, tanpa fetch, tanpa "Sumber: "', () => {
   const js = baca('public/prediksi/laporan_prov.js')
   assert.doesNotMatch(js, /document\.|fetch\(|innerHTML|Sumber: /)
 })
+
+// Jenis laporan generik dan lapisan Paparan dampak: fungsi murni, data sintetis kecil + prediksi.json nyata
+const dasar = { kode: { LSR: { kol: ['lv', 'ps'] }, ROB: { kol: ['lewat', 'sel'] }, HJN: { kol: ['p1', 'p20', 'p50', 'tot'] } } }
+const kabs = [
+  { id: '1', nama: 'Kab. A', prov: '11', pn: 'Aceh', LSR: [[2, 0.1], [0, 0], null], HJN: [[1, 1, 1, 55], [1, 0, 0, 0.4], [1, 0, 0, 19.9]], ROB: [[1, 0], null, null] },
+  { id: '2', nama: 'Kab. B', prov: '11', pn: 'Aceh', LSR: [[1, 0], [1, 0], [3, 0]] },
+  { id: '3', nama: 'Kab. C', prov: '12', pn: 'Sumut' },
+]
+
+test('susunJenis longsor: kelas per hari, ringkas, atas terurut menurut kelas tertinggi', () => {
+  const s = L.susunJenis({ d: { ...dasar, kab: kabs }, prov: '11', jenis: 'longsor' })
+  assert.equal(s.n, 2)
+  assert.deepEqual(s.baris[0].kls, [2, 0, -1])
+  assert.deepEqual(s.ringkas[0], [0, 1, 1, 0])
+  assert.deepEqual(s.atas.map((b) => b.id), ['2', '1'])   // B maks Awas (3), A maks Siaga (2)
+  assert.equal(s.nama, 'Aceh')
+})
+
+test('susunJenis hujan: ambang tabel >= 20 mm; rob tanpa kab pesisir = ada false (bukan peta kosong)', () => {
+  const h = L.susunJenis({ d: { ...dasar, kab: kabs }, prov: '11', jenis: 'hujan' })
+  assert.deepEqual(h.baris[0].kls, [3, 0, 1])
+  assert.deepEqual(h.atas.map((b) => b.id), ['1'])
+  assert.equal(L.susunJenis({ d: { ...dasar, kab: kabs }, prov: '12', jenis: 'rob' }).ada, false)
+  assert.equal(L.susunJenis({ d: { ...dasar, kab: kabs }, prov: '11', jenis: 'rob' }).ada, true)
+  assert.equal(L.susunJenis({ d: { ...dasar, kab: kabs }, prov: '12', jenis: 'api' }).ada, false)   // kode tak ada di data = tanpa data
+})
+
+test('kelas jenis: batas kiri inklusif, panjang warna = batas + 1, label cocok', () => {
+  for (const k of ['gempa', 'terisolir', 'genangan', 'jalan', 'api', 'asap', 'rob']) {
+    const K = L.KELAS[k]
+    assert.equal(K.warna.length, K.batas.length + 1, k)
+    assert.equal(K.label.length, K.warna.length, k)
+  }
+  assert.equal(L.kelas(0.1, L.KELAS.api.batas), 1)
+  assert.equal(L.kelas(0.099, L.KELAS.api.batas), 0)
+  assert.equal(L.kelas(1, L.KELAS.rob.batas), 1)
+})
+
+test('nilaiDampak: tanpa data = null (bukan nol), ruas rawan jatuh ke ruas tunggal, kelas gempa jadi indeks', () => {
+  assert.equal(L.nilaiDampak('gempa', undefined, undefined), null)
+  assert.equal(L.nilaiDampak('gempa', { gempa: { kelas: 'Tinggi' } }), 2)
+  assert.equal(L.nilaiDampak('terisolir', { terisolir: null }), null)
+  assert.equal(L.nilaiDampak('genangan', { genangan: { tergenang_ha: 6.2 } }), 6.2)
+  assert.equal(L.nilaiDampak('jalan', {}, undefined), null)
+  assert.equal(L.nilaiDampak('jalan', {}, { way_rawan: 7, way_tunggal: 3 }), 7)
+  assert.equal(L.nilaiDampak('jalan', {}, { way_tunggal: 3 }), 3)
+  assert.equal(L.nilaiDampak('jalan', {}, { way_rawan: 0 }), 0)
+})
+
+test('kelasJalan: bahasa Indonesia, kelas tak dikenal apa adanya', () => {
+  assert.equal(L.kelasJalan('primary'), 'jalan primer')
+  assert.equal(L.kelasJalan('secondary'), 'jalan sekunder')
+  assert.equal(L.kelasJalan('tertiary'), 'jalan tersier')
+  assert.equal(L.kelasJalan('trunk'), 'jalan utama nasional')
+  assert.equal(L.kelasJalan('track'), 'track')
+})
+
+test('susunJenis pada prediksi.json nyata: tiap jenis jalan di semua provinsi tanpa galat', () => {
+  if (!ada('public/prediksi/data/prediksi.json')) return
+  const d = json('public/prediksi/data/prediksi.json')
+  for (const prov of new Set(d.kab.map((k) => k.prov))) for (const jenis of ['longsor', 'api', 'asap', 'rob', 'hujan']) {
+    const s = L.susunJenis({ d, prov, jenis })
+    assert.equal(s.baris.length, s.n)
+    for (const b of s.baris) assert.ok(b.kls.every((i) => i >= -1 && i < L.KELAS[s.J.kelas].warna.length), `${prov} ${jenis}`)
+  }
+})
+
+test('satuan label legenda seragam (mm, desa, ha, ruas)', () => {
+  const sat = (k, u) => { for (const l of L.KELAS[k].label) if (!/tidak lewat/.test(l)) assert.ok(l.endsWith(' ' + u), `${k}: ${l}`) }
+  for (const k of ['hujan', 'ambang', 'lebih']) sat(k, 'mm')
+  sat('terisolir', 'desa'); sat('genangan', 'ha'); sat('jalan', 'ruas')
+})
+
+test('laporan_layar: nilai kolom null = tanpa data, ringkasan punya kolom Tanpa data, hujan tanpa plus-minus', () => {
+  const g = baca('public/prediksi/laporan_layar.js')
+  assert.match(g, /g\(J\.kolom\) == null\) return "tanpa data"/)
+  assert.match(g, /<th>Tanpa data<\/th>/)
+  assert.match(g, /total \$\{mmLap\(g\("tot"\)\)\}/)
+  assert.doesNotMatch(g, /µg\/m³`[^\n]*±|±\$\{fmt\(g\("pm"\)\)/)
+})

@@ -8,6 +8,7 @@
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const sv = (tag, att, ...anak) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(att || {})) e.setAttribute(k, v); for (const a of anak.flat()) if (a != null) e.append(a); return e; };
+  const DB = Admin.dasbor;   // fmt = global dari /inti/format.js
   const HARI = 864e5, POTONG = 15, IKON = {pompa: "💧", selang_1_5: "🪢", selang_2_5: "🪢", nozzle: "🚿", jet_shooter_lance: "🎯", tangki_fleksibel: "🛢️", mobil_tangki: "🚛", mobil_pemadam: "🚒", motor_trail: "🏍️",
     alat_berat: "🚜", drone_termal: "🛸", genset: "🔌", perahu: "🚤", apd_set: "🦺", scba: "😷", kepyok_garu: "🧹", pompa_punggung: "🎒", ht_radio: "📻", tenda: "⛺", lainnya: "📦"};
   const IKON_P3K = {kotak_p3k: "🧰", tandu: "🛏️", tabung_oksigen: "🫁", regulator: "🔧", masker_n95: "😷", obat_tetes_mata: "👁️", salep_luka_bakar: "🧴", infus_oralit: "💧", aed: "❤️", lainnya: "➕"};   // sama dengan KATEGORI_P3K (src/inventaris.js)
@@ -45,7 +46,7 @@
     const total = Object.fromEntries(K.map(k => [k.k, 0]));
     for (const p of D.rekap) for (const [k, v] of Object.entries(p.kategori)) total[k] += v.siap;
     const ada = K.filter(k => total[k.k] > 0 || D.rekap.some(p => p.kategori[k.k]));
-    w.replaceChildren(h("div", {class: "iv-tabel-wadah"}, h("table", {class: "iv-tabel"},
+    w.replaceChildren(h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel iv-tabel"},
       h("thead", null, h("tr", null, h("th", {teks: "Provinsi"}), h("th", {teks: "Gudang"}), ...ada.map(k => h("th", {title: k.label, teks: (IKON[k.k] || "") + " " + k.label})))),
       h("tbody", null, ...D.rekap.map(p => h("tr", null, h("td", {teks: p.nama}), h("td", {teks: fmt(p.gudang)}), ...ada.map(k => { const v = p.kategori[k.k];
         return h("td", {class: v ? (v.siap ? "" : "nol") : "tak", title: v ? `${fmt(v.siap)} siap, ${fmt(v.dikerahkan)} dikerahkan, ${fmt(v.total)} total` : "tidak tercatat", teks: v ? fmt(v.siap) : "0"}); }))),
@@ -58,7 +59,7 @@
     if (!D.p3k_aktif) { w.replaceChildren(h("p", {class: "iv-redup", teks: "Inventaris P3K belum diaktifkan: migrasi D1 0034_korban_p3k belum diterapkan."})); return; }
     if (!D.rekap_p3k.length) { w.replaceChildren(h("p", {class: "iv-redup", teks: "Belum ada barang P3K tercatat untuk penyaring ini."})); return; }
     const K = D.kamus.p3k, ada = K.filter(k => D.rekap_p3k.some(p => p.kategori[k.k])), total = k => D.rekap_p3k.reduce((s, p) => s + (p.kategori[k]?.jumlah || 0), 0);
-    w.replaceChildren(h("div", {class: "iv-tabel-wadah"}, h("table", {class: "iv-tabel"},
+    w.replaceChildren(h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel iv-tabel"},
       h("thead", null, h("tr", null, h("th", {teks: "Provinsi"}), ...ada.map(k => h("th", {title: k.label, teks: (IKON_P3K[k.k] || "") + " " + k.label})))),
       h("tbody", null, ...D.rekap_p3k.map(p => h("tr", null, h("td", {teks: p.nama}), ...ada.map(k => { const v = p.kategori[k.k], perlu = v && (v.kedaluwarsa || v.rendah);
         return h("td", {class: v ? (perlu ? "peringatan" : "") : "tak", title: v ? `${fmt(v.jumlah)} total, ${fmt(v.jenis)} jenis, ${fmt(v.kedaluwarsa)} hampir kedaluwarsa, ${fmt(v.rendah)} di bawah ambang` : "tidak tercatat", teks: v ? fmt(v.jumlah) : "0"}); }))),
@@ -75,8 +76,8 @@
       h("p", {class: "iv-meta", teks: [`${g.pemilik.nama}`, g.kab ? `${window.Wilayah.kab(g.kab)}, ${provNama(g.prov)}` : provNama(g.prov), `diperbarui ${umur(D.kini, g.diubah)}`].join(", ")}),
       h("p", {class: "iv-meta", teks: `${fmt(g.siap)} unit siap dari ${fmt(g.total)}${g.rusak_berat ? `, ${fmt(g.rusak_berat)} rusak berat` : ""}`}),
       g.pic_nama ? h("p", {class: "iv-meta", teks: `PIC ${g.pic_nama}${g.pic_wa ? ", " : ""}`}, g.pic_wa ? h("a", {href: "https://wa.me/" + g.pic_wa, target: "_blank", rel: "noopener noreferrer", teks: "+" + g.pic_wa}) : null) : null,
-      h("div", {class: "iv-aksi"}, h("button", {class: "iv-btn", type: "button", "data-rinci": g.id, "aria-expanded": String(terbuka), teks: terbuka ? "Tutup rincian" : "Rincian alat dan jejak"}),
-        h("a", {class: "iv-btn", href: `https://www.google.com/maps?q=${g.lat},${g.lon}`, target: "_blank", rel: "noopener noreferrer", teks: "Buka peta"})),
+      DB.aksi(DB.ikon(terbuka ? "tutup" : "lihat", terbuka ? "Tutup rincian" : "Rincian alat dan jejak", {"data-rinci": g.id, "aria-expanded": String(terbuka)}),
+        h("a", {class: "db-ik", href: `https://www.google.com/maps?q=${g.lat},${g.lon}`, target: "_blank", rel: "noopener noreferrer", title: "Buka peta", "aria-label": "Buka peta"}, DB.svg("peta"))),
       terbuka ? h("div", {class: "iv-rinci", "data-rinci-isi": g.id}, h("p", {class: "iv-redup", teks: "Memuat rincian…"})) : null);
   }
   const provNama = k => (D.rekap.find(p => p.prov === k) || {}).nama || k;
@@ -91,11 +92,11 @@
     const e = document.querySelector(`[data-rinci-isi="${CSS.escape(id)}"]`); if (!e) return;
     const r = await fetch("/api/inventaris/gudang/" + id).then(x => x.ok ? x.json() : null).catch(() => null);
     if (!r) return e.replaceChildren(h("p", {class: "iv-pesan galat", teks: "Rincian gagal dimuat."}));
-    e.replaceChildren(h("div", {class: "iv-tabel-wadah"}, h("table", {class: "iv-tabel"}, h("thead", null, h("tr", null, ["Alat", "Jumlah", "Kondisi", "Status", "Keterangan"].map(k => h("th", {teks: k})))),
+    e.replaceChildren(h("div", {class: "iv-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel iv-tabel"}, h("thead", null, h("tr", null, ["Alat", "Jumlah", "Kondisi", "Status", "Keterangan"].map(k => h("th", {teks: k})))),
       h("tbody", null, ...r.alat.map(a => h("tr", null, h("td", {teks: `${IKON[a.kategori] || ""} ${D.kamus.kategori.find(k => k.k === a.kategori)?.label}${a.merek_model ? ", " + a.merek_model : ""}`}), h("td", {teks: fmt(a.jumlah)}),
         h("td", {class: a.kondisi, teks: KOND[a.kondisi]}), h("td", {class: a.status, teks: STAT[a.status]}),
         h("td", {teks: [a.kelas_pompa ? a.kelas_pompa.replace("_", " ") : null, a.hp ? a.hp + " HP" : null, a.kapasitas ? fmt(a.kapasitas) + (D.kamus.kategori.find(k => k.k === a.kategori)?.satuan || "") : null, a.tahun, a.catatan].filter(Boolean).join(", ")})))))),
-      ...(r.p3k?.length ? [h("h4", {teks: "P3K dan medis"}), h("div", {class: "iv-tabel-wadah"}, h("table", {class: "iv-tabel"}, h("thead", null, h("tr", null, ["Barang", "Jumlah", "Kedaluwarsa", "Ambang"].map(k => h("th", {teks: k})))),
+      ...(r.p3k?.length ? [h("h4", {teks: "P3K dan medis"}), h("div", {class: "iv-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel iv-tabel"}, h("thead", null, h("tr", null, ["Barang", "Jumlah", "Kedaluwarsa", "Ambang"].map(k => h("th", {teks: k})))),
         h("tbody", null, ...r.p3k.map(x => h("tr", null, h("td", {teks: `${IKON_P3K[x.kategori] || ""} ${D.kamus.p3k.find(k => k.k === x.kategori)?.label}${x.nama ? ", " + x.nama : ""}`}), h("td", {class: x.rendah ? "rusak_berat" : "", teks: `${fmt(x.jumlah)} ${x.satuan}`}),
           h("td", {class: x.kdl ? "rusak_berat" : "", teks: x.kedaluwarsa ? x.kedaluwarsa + (x.kdl === "lewat" ? " (lewat)" : x.kdl === "dekat" ? " (dekat)" : "") : "-"}), h("td", {teks: x.ambang != null ? fmt(x.ambang) : "-"})))))),
         r.p3k_jejak?.length ? h("ol", {class: "iv-jejak"}, ...r.p3k_jejak.slice(0, 20).map(j => h("li", {teks: `${waktu(j.waktu)}, ${j.oleh}: ${j.aksi}${j.dari != null || j.ke != null ? ` (${j.dari ?? "-"} ke ${j.ke ?? "-"})` : ""}${j.tugas_id ? ", dipakai di tugas api" : ""}`}))) : null] : []),
@@ -106,18 +107,18 @@
   const tunda = () => { cancelAnimationFrame(jadwal); jadwal = requestAnimationFrame(() => setTimeout(() => { gambarPeta(); gambarRekap(); gambarP3k(); gambarDaftar(); }, 0)); };
   function gambarKontrol() {
     const G = D.gudang, siap = G.reduce((s, g) => s + g.siap, 0), basi = G.filter(g => g.basi).length;
-    const kt = (l, n, kls = "", data = {}) => h("button", {class: "iv-kartu " + kls, type: "button", ...data}, h("b", {teks: fmt(n)}), h("span", {teks: l}));
     const provs = [...new Map(D.rekap.map(p => [p.prov, p.nama])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
-    app.replaceChildren(h("p", {id: "ivPesan", class: "iv-pesan " + (pesanOk ? "ok" : "galat"), role: "status", teks: pesanTeks}),
-      h("div", {class: "iv-ringkas"}, kt("Gudang", G.length), kt("Unit alat siap", siap), kt("Belum diperbarui lebih dari 30 hari", basi, basi ? "merah" : "", {"data-basi": "1", "aria-pressed": String(F.basi)})),
-      h("div", {class: "iv-saring"},
+    DB.tumpuk(app).replaceChildren(h("p", {id: "ivPesan", class: "iv-pesan " + (pesanOk ? "ok" : "galat"), role: "status", teks: pesanTeks}),
+      DB.ubinGrid(DB.ubin({ikon: "gedung", label: "Gudang", nilai: fmt(G.length)}), DB.ubin({ikon: "kotak", label: "Unit alat siap", nilai: fmt(siap)}),
+        DB.ubin({ikon: "waspada", label: "Belum diperbarui", nilai: fmt(basi), ket: "lebih dari 30 hari", warna: basi ? "merah" : "", saring: "basi", aktif: F.basi})),
+      DB.kartu({ikon: "cari", judul: "Saringan", ey: "Pihak dan provinsi"},
         h("div", {class: "iv-chip-baris", role: "group", "aria-label": "Pihak"}, h("button", {class: "iv-chip", type: "button", "data-pihak": "", "aria-pressed": String(!F.pihak)}, "Semua pihak"),
           ...Object.entries(D.pihak).map(([k, l]) => h("button", {class: "iv-chip", type: "button", "data-pihak": k, "aria-pressed": String(F.pihak === k)}, l))),
         h("select", {id: "ivProv", "aria-label": "Provinsi"}, h("option", {value: "", teks: "Semua provinsi"}), ...provs.map(([k, n]) => h("option", {value: k, teks: n, selected: F.prov === k})))),
-      h("section", {class: "iv-bagian"}, h("h2", {teks: "Peta gudang"}), h("div", {id: "ivPeta"})),
-      h("section", {class: "iv-bagian"}, h("h2", {teks: "Alat siap per provinsi dan kategori"}), h("div", {id: "ivRekap"})),
-      h("section", {class: "iv-bagian"}, h("h2", {teks: "P3K dan medis per provinsi"}), h("div", {id: "ivP3k"})),
-      h("section", {class: "iv-bagian"}, h("h2", {teks: "Gudang"}), h("div", {id: "ivDaftar"})));
+      DB.kartu({ikon: "peta", judul: "Peta gudang", ey: "Sebaran"}, h("div", {id: "ivPeta"})),
+      DB.kartu({ikon: "kotak", judul: "Alat siap per provinsi", ey: "Rekap kategori"}, h("div", {id: "ivRekap"})),
+      DB.kartu({ikon: "waspada", judul: "P3K dan medis per provinsi", ey: "Rekap P3K"}, h("div", {id: "ivP3k"})),
+      DB.kartu({ikon: "gedung", judul: "Gudang", ey: "Daftar"}, h("div", {id: "ivDaftar"})));
     tunda();
   }
   async function muat() {
@@ -138,7 +139,7 @@
     const t = e.target;
     if (t.closest("[data-ulang]")) return muat();
     const p = t.closest("[data-pihak]"); if (p) { F.pihak = p.dataset.pihak; for (const c of app.querySelectorAll("[data-pihak]")) c.setAttribute("aria-pressed", String(c.dataset.pihak === F.pihak)); return muat(); }
-    if (t.closest("[data-basi]")) { F.basi = !F.basi; t.closest("[data-basi]").setAttribute("aria-pressed", String(F.basi)); return tunda(); }
+    const sb = t.closest("[data-saring=basi]"); if (sb) { F.basi = !F.basi; sb.setAttribute("aria-pressed", String(F.basi)); return tunda(); }
     if (t.closest("[data-semua]")) { F.semua = true; return tunda(); }
     const ri = t.closest("[data-rinci]");
     if (ri) { const id = ri.dataset.rinci; buka.has(id) ? buka.delete(id) : buka.add(id); const li = document.getElementById("g" + id), g = D.gudang.find(x => x.id === id); li.replaceWith(kartuGudang(g)); if (buka.has(id)) muatRinci(id); return; }

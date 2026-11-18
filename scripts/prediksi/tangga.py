@@ -19,6 +19,7 @@ ARSIP = os.path.join(D.DATA, "tangga_arsip")
 
 SKALA = [("musim", "Musim"), ("bulan", "Bulan"), ("dasarian", "Dasarian"), ("h10", "10 hari"), ("sepekan", "Sepekan"), ("h3", "3 hari"), ("jam", "Jam")]
 ORDE = [s for s, _ in SKALA]
+BASI_BULANAN = 45     # hari: batas umur berkas bulanan peluang_bayangan.json
 BASI_SPI_HARI = 45   # SPI terbit bulanan; dihitung dari tanggal update PDF
 BASI_JAM = {"jam": 4, "harian": 48, "iklim": 14 * 24, "musim": 240 * 24}
 BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
@@ -378,11 +379,83 @@ def muat_h3_kita(H, m, kini):
         if asp:
             kat, n, pm = max(asp)
             kat = min(max(int(kat), 0), 3)
-            H.taruh("kab", i, "h3", item("k", "asap", kat, ISPU[kat], f"Prediksi model: PM2,5 sampai {idn(pm, 0) if pm is not None else '-'} ug/m3" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + ", kategori ISPU.", "kita", "kab", u=vonis("ASP", "pm", n) or "belum teruji"))
+            H.taruh("kab", i, "h3", item("k", "asap", kat, ISPU[kat], f"Prediksi model: PM2,5 ± {idn(pm, 0) if pm is not None else '-'} µg/m³" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + ", kategori ISPU.", "kita", "kab", u=vonis("ASP", "pm", n) or "belum teruji"))
+
+
+HTH_KELAS = [(5, "sangat pendek"), (10, "pendek"), (20, "menengah"), (30, "panjang"), (60, "sangat panjang"), (10 ** 9, "kekeringan ekstrem")]   # kelas HTH BMKG (hari); hari tanpa hujan = curah < 1 mm; sumber: BMKG, klasifikasi hari tanpa hujan berturut (rujukan di data/kajian-bnpb/prediksi-besok/RISET.md)
+
+
+def hth(riwayat, prak, hari):
+    """Hari berturut dengan total < 1 mm, dihitung mundur dari hari[-1]. riwayat {tgl: mm}, prak {tgl: mm} (menimpa).
+    -> (n, lengkap): lengkap False = riwayat habis sebelum bertemu hari hujan (n adalah batas bawah). None bila hari akhir tak ada datanya."""
+    v = {**riwayat, **prak}
+    t, n = hari[-1], 0
+    if v.get(t) is None:
+        return None
+    while v.get(t) is not None:
+        if v[t] >= 1:
+            return n, True
+        n += 1
+        t = D.geser(t, -1)
+    return n, False
+
+
+def muat_kering_kita(H, m, kini):
+    """Prediksi kita untuk kekeringan: sepekan (HTH sampai H+3) dan bulan (peluang model bayangan). tk None, tanpa tandai(): tidak ikut sinyal."""
+    d = m.get("prediksi")
+    if not d or not segar(d.get("dibuat"), BASI_JAM["harian"], kini):
+        H.lewat("prediksi kering kita (sepekan): prediksi.json tidak ada atau lebih dari 48 jam")
+    else:
+        hari = ((d.get("kode") or {}).get("HJN") or {}).get("hari") or []
+        rw = ((m.get("hujan_harian") or {}).get("hari")) or {}
+        if len(hari) != 3 or not rw:
+            H.lewat("prediksi kering kita (sepekan): hari HJN atau riwayat hujan_harian.json tidak ada")
+        else:
+            H.src("kita_kering", lembaga="Centurisk97", nama="Prediksi model: hari tanpa hujan berturut (HTH)", terbit=None, diambil=d.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+            for k in d.get("kab") or []:
+                i = k["id"]
+                prak = {h: r[3] for h, r in zip(hari, k.get("HJN") or []) if r and r[3] is not None}
+                r = hth({t: x[i] for t, x in rw.items() if x.get(i) is not None}, prak, hari)
+                if r is None:
+                    continue
+                n, lengkap = r
+                if n == 0:
+                    lab, x = "Ada hari hujan", f"Prediksi model: ada hari hujan 1 mm atau lebih pada {tgl(hari[-1])}; bukan peringatan kekeringan."
+                else:
+                    kelas = next(nm for b, nm in HTH_KELAS if n <= b)
+                    lab = ("Sekurang-kurangnya " if not lengkap else "") + f"{n} hari tanpa hujan"
+                    x = f"Prediksi model: {'sekurang-kurangnya ' if not lengkap else ''}{n} hari berturut-turut tanpa hujan (kurang dari 1 mm per hari) sampai {tgl(hari[-1])}, kelas {kelas} menurut HTH BMKG. Bukan peringatan kekeringan."
+                H.taruh("kab", i, "sepekan", item("k", "hth", None, lab, x, "kita_kering", "kab", p=f"sampai {tgl(hari[-1])}", u="belum teruji"))
+    p = m.get("peluang_kering")
+    if not p or not p.get("bulan_t1") or not isinstance(p.get("kab"), dict):
+        H.lewat("peluang_bayangan.json (kekeringan bulan): tidak ada")
+        return
+    r = rentang(f"{list(BLN_PENUH)[int(p['bulan_t1'][5:7]) - 1]} {p['bulan_t1'][:4]}")
+    if r is None or r[1] < kini.date():
+        H.lewat(f"peluang kekeringan bulan {p.get('bulan_t1')}: bulan sasaran sudah lewat (basi)")
+        return
+    if not segar(p.get("dibuat"), BASI_BULANAN * 24, kini):
+        H.lewat(f"peluang kekeringan bulan {p.get('bulan_t1')}: peluang_bayangan.json dibuat {p.get('dibuat')}, lebih dari {BASI_BULANAN} hari (basi)")
+        return
+    ix = p["kolom"].index("p_model_t1")
+    far = (p.get("model") or {}).get("far_uji")
+    geo = {k["geo"]: k["id"] for k in m["kab_daftar"]}
+    H.src("kita_bulan", lembaga="Centurisk97", nama="Prediksi model: peluang kekeringan bulan depan (hipotesis)", terbit=p.get("dibuat"), diambil=p.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+    for g, v in p["kab"].items():
+        i = geo.get(g)
+        if i is None:
+            H.tc("kita_bulan")
+        elif v[ix] is not None:
+            H.taruh("kab", i, "bulan", item("k", "kekeringan", None, f"Peluang {D_persen(v[ix])}", f"Prediksi model (hipotesis): peluang kekeringan bulan {bulan_id(p['bulan_t1'])} {D_persen(v[ix])}" + (f"; pada uji balik {round(far * 100)}% alarmnya keliru (FAR), jadi hanya acuan" if far else "") + ". Bukan peringatan.", "kita_bulan", "kab", p=bulan_id(p["bulan_t1"]), u="hipotesis"))
+
+
+def bulan_id(ym):
+    """'2026-11' -> 'November 2026'."""
+    return f"{list(BLN_PENUH)[int(ym[5:7]) - 1].capitalize()} {ym[:4]}"
 
 
 def D_persen(p):
-    return "kurang dari 5%" if p < 0.05 else "lebih dari 95%" if p > 0.95 else f"{round(p * 20) * 5}%"
+    return "kurang dari 5%" if p < 0.05 else "lebih dari 95%" if p > 0.95 else f"{int(p * 20 + 0.5) * 5}%"
 
 
 def muat_jam(H, m, cari, kini):
@@ -492,7 +565,7 @@ def susun(m, kini):
     kab_daftar = m["kab_daftar"]
     cari = D.pencari(kab_daftar)
     for fn, args in ((muat_iklim, (H, m, cari, kini)), (muat_kekeringan, (H, m, cari, kini)), (muat_h10, (H, m, cari, kini)), (muat_sepekan, (H, m, kini)),
-                     (muat_h3_bmkg, (H, m, kini)), (muat_h3_kita, (H, m, kini)), (muat_jam, (H, m, cari, kini))):
+                     (muat_h3_bmkg, (H, m, kini)), (muat_h3_kita, (H, m, kini)), (muat_kering_kita, (H, m, kini)), (muat_jam, (H, m, cari, kini))):
         try:
             fn(*args)
         except Exception as e:  # gagal-lunak: satu sumber rusak tidak menjatuhkan tangga lain
@@ -530,8 +603,8 @@ def susun(m, kini):
             "gagal": H.gagal}
 
 
-PREFIKS = {"musim": ("prediksi musim", "iklim_bmkg_arsip"), "bulan": ("bulan", "iklim_bmkg_arsip"), "dasarian": ("dasarian", "peringatan kekeringan", "peringatan_bmkg", "iklim_bmkg_arsip"),
-           "h10": ("cuaca_bmkg_kab10",), "sepekan": ("prakiraan sepekan", "cuaca_sepekan", "karhutla_bmkg"), "h3": ("cuaca_factsheet", "prediksi.json"),
+PREFIKS = {"musim": ("prediksi musim", "iklim_bmkg_arsip"), "bulan": ("bulan", "iklim_bmkg_arsip", "peluang"), "dasarian": ("dasarian", "peringatan kekeringan", "peringatan_bmkg", "iklim_bmkg_arsip"),
+           "h10": ("cuaca_bmkg_kab10",), "sepekan": ("prakiraan sepekan", "cuaca_sepekan", "karhutla_bmkg", "prediksi kering kita"), "h3": ("cuaca_factsheet", "prediksi.json"),
            "jam": ("peringatan.json", "cuaca_petir", "awan_himawari")}
 
 
@@ -540,7 +613,8 @@ MASUKAN = {"iklim_arsip": os.path.join(BANJIR, "iklim_bmkg_arsip.json"), "pering
            "kab10": os.path.join(BANJIR, "cuaca_bmkg_kab10.json"), "sepekan": os.path.join(BANJIR, "cuaca_sepekan.json"),
            "karhutla_bmkg": os.path.join(BANJIR, "karhutla_bmkg.json"), "factsheet": os.path.join(BANJIR, "cuaca_factsheet.json"),
            "peringatan": os.path.join(BANJIR, "peringatan.json"), "petir": os.path.join(BANJIR, "cuaca_petir.json"),
-           "awan": os.path.join(UDARA, "awan_himawari.json"), "prediksi": os.path.join(D.DATA, "prediksi.json")}
+           "awan": os.path.join(UDARA, "awan_himawari.json"), "prediksi": os.path.join(D.DATA, "prediksi.json"),
+           "hujan_harian": os.path.join(D.DATA, "bayangan", "hujan_harian.json"), "peluang_kering": os.path.join(AKAR, "public", "kekeringan", "data", "peluang_bayangan.json")}
 
 
 LIVE_REL = {"peringatan": "banjir/data/peringatan.json", "petir": "banjir/data/cuaca_petir.json", "awan": "udara/data/awan_himawari.json"}
@@ -724,6 +798,28 @@ def uji():
     assert kt["karhutla"]["tk"] == 1 and kt["asap"]["tk"] == 2 and k1["kita"] == {"k": 2, "b": 2}
     sg = k1["sg"]["b"]["r"]
     assert sg[ORDE.index("h3")] == 2 and sg[ORDE.index("h10")] is None and sg[ORDE.index("sepekan")] == 2, "kita (h3) tidak ikut sinyal; h3 = ensemble BMKG provinsi"
+    # kekeringan prediksi kita: HTH sepekan dan peluang bulan; tanpa peringkat, tidak ikut sinyal
+    kita2 = json.loads(json.dumps(kita))
+    kita2["kode"]["HJN"] = {"hari": ["2026-11-11", "2026-11-12", "2026-11-13"]}
+    hjn = lambda *tot: [[0.5, 0.2, 0.1, x, 1, 1, 1, 0.3, 0] if x is not None else None for x in tot]
+    kita2["kab"][0]["HJN"], kita2["kab"][1]["HJN"] = hjn(0, 0.5, 0), hjn(0, 0, 0)
+    rw = {"hari": {"2026-11-08": {"1101": 5.0}, "2026-11-09": {"1101": 0, "1102": 0.0}, "2026-11-10": {"1101": 0.2, "1102": 0.0}}}
+    pk = {"bulan_t1": "2026-11", "kolom": ["spi3", "p_model_t1", "p_klim_t1", "p_klim_t3"], "dibuat": "2026-11-02T08:56+07:00", "model": {"far_uji": 0.88},
+          "kab": {"11|Aceh Selatan": [-1.0, 0.27, 0.1, 0.1], "11|Tidak Ada": [0, 0.5, 0, 0]}}
+    t5 = susun(dict(m, prediksi=kita2, hujan_harian=rw, peluang_kering=pk), kini)
+    sp = [e for e in t5["kab"]["1101"]["sepekan"] if e["j"] == "hth"]
+    assert len(sp) == 1 and sp[0]["t"] == "5 hari tanpa hujan" and "sangat pendek" in sp[0]["x"] and sp[0]["tk"] is None and sp[0]["u"] == "belum teruji", sp
+    assert [e["t"] for e in t5["kab"]["1102"]["sepekan"] if e["j"] == "hth"] == ["Sekurang-kurangnya 5 hari tanpa hujan"], "riwayat habis = batas bawah"
+    bl = [e for e in t5["kab"]["1101"]["bulan"] if e["j"] == "kekeringan" and e["s"] == "kita_bulan"]
+    assert "bulan November 2026" in bl[0]["x"] and D_persen(0.125) == "15%"
+    assert len(bl) == 1 and bl[0]["t"] == "Peluang 25%" and bl[0]["u"] == "hipotesis" and "FAR" in bl[0]["x"] and bl[0]["tk"] is None, bl
+    assert t5["sumber"]["kita_bulan"]["jenis"] == "kita" and t5["ringkas"]["tak_cocok"].get("kita_bulan") == 1
+    assert t5["kab"]["1101"]["sg"] == t["kab"]["1101"]["sg"] and t5["kab"]["1101"]["kita"] == k1["kita"], "kering kita tidak mengubah sinyal maupun peringkat kita"
+    assert hth({}, {"2026-11-13": 3.0}, ["2026-11-11", "2026-11-12", "2026-11-13"]) == (0, True) and hth({}, {}, ["2026-11-11", "2026-11-12", "2026-11-13"]) is None
+    tua = susun(dict(m, prediksi=kita2, hujan_harian=rw, peluang_kering=dict(pk, dibuat="2026-09-01T00:00+07:00")), kini)
+    assert not [e for e in tua["kab"]["1101"].get("bulan", []) if e["s"] == "kita_bulan"] and any("45 hari" in g for g in tua["gagal"]), "berkas > 45 hari = dilewati"
+    bs = susun(dict(m, prediksi=kita2, hujan_harian=rw, peluang_kering=dict(pk, bulan_t1="2026-09")), kini)
+    assert not [e for e in bs["kab"]["1101"].get("bulan", []) if e["s"] == "kita_bulan"] and any("sudah lewat" in g for g in bs["gagal"]), "bulan sasaran lewat = dilewati"
     # menguat basah Aceh Selatan: bulan 0, h10 2, sepekan 2, h3 2, jam 2 -> tidak menurun, >=2 skala >=1
     assert k1["sg"]["b"]["m"] is False and k1["sg"]["b"]["d"] is True and k1["sg"]["b"]["s"] is False, k1["sg"]["b"]   # 2,2,2 pada provinsi: searah, datar
     assert k1["sg"]["b"]["c"][ORDE.index("sepekan")] == "prov" and k1["sg"]["b"]["c"][ORDE.index("h10")] is None

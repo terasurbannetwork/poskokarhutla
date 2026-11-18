@@ -16,9 +16,9 @@
   };
   const WARNA = {ok: "var(--c4)", bahaya: "var(--c1)", tunggu: "var(--c3)", info: "var(--c5)"};
   const pil = (teks, ikon, ton, warna) => `<span class="pm-pil" data-w="${esc(warna || WARNA[ton || "info"])}">${ikon ? IK[ikon] : ""}${esc(teks)}</span>`;
-  const sumber = t => `<p class="pm-sumber">Sumber: ${esc(t)}</p>`;
   const kosong = (t = "Belum ada data.") => `<p class="pm-kosong">${IK.info}${esc(t)}</p>`;
-  const ukur = (nilai, label, ton) => `<div class="pm-ukur${ton ? " t-" + ton : ""}"><b>${esc(nilai)}</b><span>${esc(label)}</span></div>`;
+  const DB = Admin.dasbor;   // kit dashboard bersama (bersama.js)
+  const ukur = (nilai, label, ton, ikon = "grafik") => DB.ubin({ikon, label, nilai, ket: " ", warna: ton === "bahaya" ? "merah" : ton === "tunggu" ? "oranye" : ""}).outerHTML;
   /* angka perkiraan dibulatkan agar tidak berpresisi palsu: 8.528.782 -> "8,5 juta", 260.002 -> "260 ribu" */
   const kira = n => n >= 1e6 ? ID.format(Math.round(n / 1e5) / 10) + " juta" : n >= 1e5 ? N0.format(Math.round(n / 1e3)) + " ribu" : n >= 1e3 ? ID.format(Math.round(n / 100) / 10) + " ribu" : N0.format(n);
   const rp = n => n >= 1e12 ? "Rp" + ID.format(Math.round(n / 1e11) / 10) + " triliun" : n >= 1e9 ? "Rp" + (n >= 1e11 ? N0.format(Math.round(n / 1e9)) : ID.format(Math.round(n / 1e8) / 10)) + " miliar" : "Rp" + N0.format(Math.round(n / 1e6)) + " juta";
@@ -36,9 +36,9 @@
     ["sit", "Situasi per bencana", "api", "/bnpb/sitrep", "pm-penuh"], ["pri", "Prioritas dampak hari ini", "peta", "/bnpb/risiko", "pm-4"], ["rap", "Rapor BPBD: skor terendah", "rapor", "/admin/meja", "pm-5"],
     ["bhy", "Tanda bahaya lintas meja", "bahaya", "/admin/meja", "pm-3"], ["rel", "Relawan", "orang", "/admin/relawan", "pm-b3"], ["aln", "Alun-alun: butuh bantuan", "pesan", "/admin/alun", "pm-b3"],
     ["keb", "Kebutuhan 30 hari", "uang", "/bnpb/kebutuhan", "pm-b3"], ["png", "Pengingat terbuka", "lonceng", "/admin/pengingat", "pm-b3"]];
-  const kartuHtml = ([id, judul, ik, href, kls]) => `<section class="pm-k ${kls}" id="k_${id}"><h2>${IK[ik]}<span>${esc(judul)}</span><a class="pm-buka" href="${esc(href)}" aria-label="Buka ${esc(judul)}">Rincian${IK.buka}</a></h2><div class="pm-isi"><p class="pm-kosong">Memuat…</p></div></section>`;
+  const kartuHtml = ([id, judul, ik, href, kls]) => `<section class="ex ex-std db-std pm-k ${kls}" id="k_${id}" aria-label="${esc(judul)}"><header class="ex-hd"><div class="ex-jd"><h3>${IK[ik]}${esc(judul)}</h3><a class="pm-buka" href="${esc(href)}" aria-label="Buka ${esc(judul)}">Rincian${IK.buka}</a></div></header><div class="ex-bd pm-isi"><p class="pm-kosong">Memuat…</p></div></section>`;
   const isi = (id, html) => { const e = document.querySelector(`#k_${id} .pm-isi`); if (!e) return; e.innerHTML = html; e.querySelectorAll("[data-w]").forEach(x => x.style.setProperty("--w", x.dataset.w)); };
-  const tabel = (kolom, baris) => `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr>${kolom.map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`;
+  const tabel = (kolom, baris) => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kolom.map(k => `<th scope="col">${esc(k)}</th>`).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`;
 
   /* ---------- 1. situasi ---------- */
   async function situasi() {
@@ -53,7 +53,7 @@
       const tren = r.ubah.ikon ? `<span class="pm-tren ${r.ubah.kelas || ""}">${IK[r.ubah.ikon]}${esc(r.ubah.t)}</span>` : "";
       return `<div class="pm-bc"><h3>${titik}${esc(r.b.nama)}</h3><div class="pm-angka"><b>${esc(RingkasBencana.F(r.angka, r.utama?.desimal | 0))}</b><small>${esc(r.satuan || "")}</small></div>
         <div class="pm-bc-baris">${r.tingkat ? pil(r.tingkat.nama, "perisai", null, r.tingkat.warna) : `<span class="pm-redup">tanpa tingkat</span>`}${tren}</div></div>`;
-    }).join("")}</div>${sumber("laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Centurisk97")}`);
+    }).join("")}</div>`);
   }
 
   /* ---------- 2. prioritas dampak ---------- */
@@ -61,10 +61,9 @@
     const d = await statis("/banjir/data/risiko_prioritas.json");
     if (!d?.ringkas) return isi("pri", kosong());
     const r = d.ringkas, atas = (d.kec || []).slice(0, 5);
-    isi("pri", `<div class="pm-ukurbaris">${ukur(N0.format(r.kecamatan), "kecamatan")}${ukur("±" + kira(r.jiwa), "jiwa")}</div>
+    isi("pri", `<div class="db-ubin-grid db-ubin-baris">${ukur(N0.format(r.kecamatan), "kecamatan", "", "peta")}${ukur("±" + kira(r.jiwa), "jiwa", "", "orang")}</div>
       <div class="pm-pils">${pil(d.label || "indeks komposit, belum diuji balik", "info", "tunggu")}${d.usang ? pil("data lama", "waktu", "bahaya") : ""}</div>
-      ${atas.length ? tabel(["Kecamatan", "Bahaya", "Jiwa"], atas.map(k => `<tr><td data-label="Kecamatan"><b>${esc(k.kec)}</b><small>${esc(k.kab)}</small></td><td data-label="Bahaya">${esc(k.utama_nama)}</td><td data-label="Jiwa" class="n">±${esc(kira(k.dampak ?? k.pend))}</td></tr>`)) : kosong("Tidak ada kecamatan yang memenuhi syarat hari ini.")}
-      ${sumber("indeks risiko kecamatan × penduduk WorldPop, " + (d.hari || "hari ini"))}`);
+      ${atas.length ? tabel(["Kecamatan", "Bahaya", "Jiwa"], atas.map(k => `<tr><td data-label="Kecamatan"><b>${esc(k.kec)}</b><small>${esc(k.kab)}</small></td><td data-label="Bahaya">${esc(k.utama_nama)}</td><td data-label="Jiwa" class="n">±${esc(kira(k.dampak ?? k.pend))}</td></tr>`)) : kosong("Tidak ada kecamatan yang memenuhi syarat hari ini.")}`);
   }
 
   /* ---------- 3. rapor BPBD ---------- */
@@ -75,8 +74,7 @@
     if (!rendah.length) return isi("rap", kosong("Belum ada kabupaten yang punya skor."));
     isi("rap", `<div class="pm-pils">${pil(`${N0.format(ada.length)} kabupaten bernilai`, "rapor", "info")}${pil("indeks komposit, bobot sementara, belum diuji balik", "info", "tunggu")}</div>
       ${tabel(["Kabupaten", "Skor", "Respons median", "Regu aktif"], rendah.map(k => `<tr><td data-label="Kabupaten"><b>${esc(k.kab)}</b><small>${esc(PV[k.prov] || k.prov)}</small></td><td data-label="Skor" class="n">${N0.format(k.skor)}</td>
-        <td data-label="Respons median" class="n">${k.respons?.median_menit != null ? ID.format(k.respons.median_menit) + " menit" : "–"}</td><td data-label="Regu aktif" class="n">${k.regu?.terdaftar ? N0.format(k.regu.aktif) + " dari " + N0.format(k.regu.terdaftar) : "–"}</td></tr>`))}
-      ${sumber("Meja Kerja BPBD dan Ruang Posko, 30 hari terakhir")}`);
+        <td data-label="Respons median" class="n">${k.respons?.median_menit != null ? ID.format(k.respons.median_menit) + " menit" : "–"}</td><td data-label="Regu aktif" class="n">${k.regu?.terdaftar ? N0.format(k.regu.aktif) + " dari " + N0.format(k.regu.terdaftar) : "–"}</td></tr>`))}`);
   }
 
   /* ---------- 4. tanda bahaya lintas meja ---------- */
@@ -91,10 +89,9 @@
     baris.sort((a, b) => b.n - a.n);
     const tr = new Set(Object.values(rk.j.tanpa_renkon || {}).flat()).size;
     const total = baris.reduce((a, r) => a + r.n, 0);
-    isi("bhy", `<div class="pm-ukurbaris">${ukur(N0.format(total), "catatan bertanda", total ? "bahaya" : "ok")}</div>
+    isi("bhy", `<div class="db-ubin-grid db-ubin-baris">${ukur(N0.format(total), "catatan bertanda", total ? "bahaya" : "ok", "waspada")}</div>
       ${baris.length ? `<ul class="pm-daftar">${baris.slice(0, 5).map(r => `<li class="sebaris"><div>${pil(N0.format(r.n), "bahaya", "bahaya")}<b>${esc(nama[r.meja]?.nama || r.meja)}</b></div><small>${esc(r.kab)}</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada tanda bahaya", "ok", "ok")}</p>`}
-      ${tr ? `<p class="pm-catat">${IK.info}${N0.format(tr)} kabupaten belum punya rencana kontinjensi berlaku.</p>` : ""}
-      ${sumber("Meja Kerja BPBD: logistik lebih dari 24 jam, DSP tanpa SPJ, rehab macet, stok rendah, renkon")}`);
+      ${tr ? `<p class="pm-catat">${IK.info}${N0.format(tr)} kabupaten belum punya rencana kontinjensi berlaku.</p>` : ""}`);
   }
 
   /* ---------- 5. relawan ---------- */
@@ -103,9 +100,8 @@
     if (rg.g && pm.g) return isi("rel", kosong(rg.g.includes("belum diaktifkan") ? "Relawan belum diaktifkan." : "Belum ada data."));
     const R = rg.j, buka = (pm.j?.permintaan || []).filter(p => p.status === "buka" && (dummy() || !p.dummy));
     const kurang = buka.reduce((a, p) => a + Math.max(0, (p.dibutuhkan || 0) - (p.ditugaskan || 0)), 0);
-    isi("rel", `<div class="pm-ukurbaris">${R ? ukur(N0.format(R.siap_tugas), "siap tugas") + ukur(N0.format(R.bertugas), "bertugas") : ""}${pm.j ? ukur(N0.format(buka.length), "permintaan terbuka", buka.length ? "tunggu" : "") : ""}</div>
-      ${pm.j && buka.length ? `<p class="pm-catat">${IK.info}Masih kurang ${N0.format(kurang)} orang dari kebutuhan permintaan terbuka.</p><ul class="pm-daftar">${buka.slice(0, 2).map(p => `<li><b>${esc(p.judul)}</b><small>${esc(p.kab)}</small></li>`).join("")}</ul>` : ""}
-      ${sumber("Relawan Centurisk97 (siap tugas dan bertugas dari ringkasan, permintaan dari admin)")}`);
+    isi("rel", `<div class="db-ubin-grid db-ubin-baris">${R ? ukur(N0.format(R.siap_tugas), "siap tugas", "", "orang") + ukur(N0.format(R.bertugas), "bertugas", "", "staf") : ""}${pm.j ? ukur(N0.format(buka.length), "permintaan terbuka", buka.length ? "tunggu" : "", "berkas") : ""}</div>
+      ${pm.j && buka.length ? `<p class="pm-catat">${IK.info}Masih kurang ${N0.format(kurang)} orang dari kebutuhan permintaan terbuka.</p><ul class="pm-daftar">${buka.slice(0, 2).map(p => `<li><b>${esc(p.judul)}</b><small>${esc(p.kab)}</small></li>`).join("")}</ul>` : ""}`);
   }
 
   /* ---------- 6. alun-alun ---------- */
@@ -113,9 +109,8 @@
     const {j, g} = await api("/api/alun/admin" + dq(), "Alun-alun");
     if (g || !j) return isi("aln", kosong(g?.includes("belum diaktifkan") ? "Alun-alun belum diaktifkan." : "Belum ada data."));
     const t = (j.bantuan || []).filter(u => u.bantuan === "terbuka"), lama = j.stat?.bantuan_terbuka_24j ?? 0, kini = Date.now();
-    isi("aln", `<div class="pm-ukurbaris">${ukur(N0.format(t.length), "terbuka")}${ukur(N0.format(lama), "lebih dari 24 jam", lama ? "bahaya" : "ok")}</div>
-      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(u => `<li><b>${esc(u.judul)}</b><small>${esc([u.kab, u.prov_nama].filter(Boolean).join(", "))}, ${esc(jam(kini - u.dibuat))} lalu</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}
-      ${sumber("Alun-alun, utas butuh bantuan berstatus terbuka")}`);
+    isi("aln", `<div class="db-ubin-grid db-ubin-baris">${ukur(N0.format(t.length), "terbuka", "", "lonceng")}${ukur(N0.format(lama), "lebih dari 24 jam", lama ? "bahaya" : "ok", "jam")}</div>
+      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(u => `<li><b>${esc(u.judul)}</b><small>${esc([u.kab, u.prov_nama].filter(Boolean).join(", "))}, ${esc(jam(kini - u.dibuat))} lalu</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}`);
   }
 
   /* ---------- 7. kebutuhan 30 hari ---------- */
@@ -126,8 +121,7 @@
     isi("keb", `<p class="pm-rentang"><b>${esc(rp(a.rp_rendah))}</b> sampai <b>${esc(rp(a.rp_tinggi))}</b></p>
       <div class="pm-pils">${pil(d.label || "perkiraan, belum diuji balik", "info", "tunggu")}</div>
       <ul class="pm-daftar"><li><b>Penduduk terdampak asap</b><small>±${esc(kira(a.terdampak))} jiwa</small></li>
-      ${el?.rp_rendah != null ? `<li><b>Bila mirip tahun El Nino</b><small>${esc(rp(el.rp_rendah))} sampai ${esc(rp(el.rp_tinggi))}</small></li>` : ""}</ul>
-      ${sumber(`titik panas 2019 sampai 2025, tarif asumsi kerja, ${N0.format(a.prov_berangka)} provinsi berangka (rentang rupiah bukan selang kepercayaan)`)}`);
+      ${el?.rp_rendah != null ? `<li><b>Bila mirip tahun El Nino</b><small>${esc(rp(el.rp_rendah))} sampai ${esc(rp(el.rp_tinggi))}</small></li>` : ""}</ul>`);
   }
 
   /* ---------- 8. pengingat (endpoint dibuat agen lain: 404/503 = sembunyikan kartu) ---------- */
@@ -136,9 +130,8 @@
     if (g) { if (/404|belum diaktifkan/.test(g)) return document.getElementById("k_png")?.remove(); return isi("png", kosong()); }
     const semua = Array.isArray(j) ? j : j.antrean || j.pengingat || j.daftar || [], tutup = ["terkirim", "dikirim", "selesai", "ditolak", "dilewati", "dibatalkan"];
     const t = semua.filter(x => !tutup.includes(x.status) && (dummy() || !x.dummy));
-    isi("png", `<div class="pm-ukurbaris">${ukur(N0.format(t.length), "menunggu kamu", t.length ? "tunggu" : "ok")}</div>
-      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(x => `<li><b>${esc(x.judul || x.pesan || x.jenis || "Pengingat")}</b><small>${esc([x.kab, x.jenis].filter(Boolean).join(", "))}</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}
-      ${sumber("antrean pengingat (admin yang menekan kirim)")}`);
+    isi("png", `<div class="db-ubin-grid db-ubin-baris">${ukur(N0.format(t.length), "menunggu kamu", t.length ? "tunggu" : "ok", "lonceng")}</div>
+      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(x => `<li><b>${esc(x.judul || x.pesan || x.jenis || "Pengingat")}</b><small>${esc([x.kab, x.jenis].filter(Boolean).join(", "))}</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}`);
   }
 
   /* ---------- dummy (DUMMY.md): 🧪 isi semua modul berurutan, 🧹 hapus; lalu muat ulang penuh ---------- */
@@ -162,6 +155,7 @@
 
   /* ---------- mulai ---------- */
   app.className = "ad-isi pm";
+  DB.tumpuk(app);
   app.innerHTML = `<p class="pm-kop-cetak">Layar Pimpinan, Centurisk97, Ruang Koordinasi</p>
     <div class="pm-grid">${KARTU.slice(0, 4).map(kartuHtml).join("")}<div class="pm-baris3">${KARTU.slice(4).map(kartuHtml).join("")}</div></div>
     <div class="pm-bar"><p id="pmWaktu" class="pm-redup"></p>${dummy() ? pil("memuat data dummy", "info", "tunggu") : ""}<p id="pmPesan" class="pm-pesan" role="status"></p></div>`;

@@ -66,6 +66,9 @@
 
   document.head.insertAdjacentHTML("beforeend", `<style>
 .al{position:fixed;right:16px;bottom:16px;z-index:60;width:min(420px,calc(100vw - 32px));border-radius:18px;overflow:hidden;background:var(--card,#fff);color:var(--ink,#0b2545);box-shadow:0 12px 40px rgb(0 0 0 / .25);font:14px/1.45 var(--font,system-ui)}
+/* laci rincian (#laci.on, peta.css) tidak boleh tertimpa: desktop geser ke kiri laci (12+390+12), <=900px laci jadi lembar bawah 72% maka naik di atasnya */
+body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
+@media (max-width:900px){body:has(#laci.on) .al{right:16px;width:min(420px,calc(100vw - 32px));bottom:calc(72dvh + 8px);max-height:calc(28dvh - 16px);overflow:auto}}
 .al-hd{display:flex;gap:10px;align-items:flex-start;padding:14px 16px 12px;background:linear-gradient(135deg,#0b2545,#163a66);color:#fff}
 .al-ey{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#f5a06b;white-space:nowrap}
 .al-hd h3{margin:6px 0 0;font:700 16px/1.35 var(--display,inherit);color:#fff}
