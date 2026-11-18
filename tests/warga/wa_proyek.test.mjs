@@ -163,6 +163,15 @@ uji("versi atomik: batch D1 gagal membersihkan berkas, ulang n sama berhasil; du
 
 /* berdiri sendiri (bukan berantai, tanpa keadaan D1): penjaga ukuran diuji langsung dengan content-length besar dan body kecil, tanpa mengirim 35 MB lewat soket
    (server menjawab 413 sebelum klien selesai kirim = ECONNRESET di Windows); kabel rute dibuktikan lewat 411 dengan body mengalir tanpa content-length */
+uji("versi: peringatan dan instruksi berbaris banyak diterima, kendali lain tetap 400 (insiden 18 Nov 2026)", async () => {
+  await pasang(AWAL + "60", "membangun", 0);
+  const r = await versi({proyek: AWAL + "60", n: 1, wa_sha: A, instruksi: "buat\r\nsaja", peringatan: "Firespot dihitung langsung dari FIRMS.\nIsian diabaikan generator: x", isian: {a: 1}, pdf: PDF("p")});
+  assert.equal(r.s, 200, r.t);
+  const v = await DB.prepare("SELECT instruksi, peringatan FROM bl_versi WHERE proyek_id = ? AND n = 1").bind(AWAL + "60").first();
+  assert.equal(v.peringatan, "Firespot dihitung langsung dari FIRMS.\nIsian diabaikan generator: x"); assert.equal(v.instruksi, "buat\nsaja");
+  assert.equal((await versi({proyek: AWAL + "60", n: 2, wa_sha: A, peringatan: "a\u0000b", isian: {a: 1}})).s, 400, "NUL tetap ditolak");
+});
+
 test("versi: kiriman lebih dari 35 MB ditolak 413 dari content-length", async () => {
   const rq = cl => new Request("http://bnpb.lokal/api/wa/proyek/versi", {method: "POST", headers: cl == null ? {} : {"content-length": cl}, body: "x"});
   for (const [cl, s] of [[String(35 * 1024 * 1024 + 1), 413], ["999999999999", 413], [String(35 * 1024 * 1024), null], ["1", null], [null, 411], ["-1", 411], ["1e9", 411]]) {

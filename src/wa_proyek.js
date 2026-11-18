@@ -94,7 +94,10 @@ async function versiTambah(env, req, url, kini) {
   const isianTeks = k => { const v = f.get(k); return v == null ? null : typeof v === "string" ? v : tolak(`${k} harus teks`); };
   const id = pola(isianTeks("proyek"), RE_ID, "proyek"), nT = isianTeks("n") ?? "";
   if (!/^[1-9]\d{0,2}$/.test(nT)) tolak("n harus 1 sampai 999");
-  const n = Number(nT), instruksi = teks(isianTeks("instruksi"), 1, 4000, "instruksi"), peringatan = teks(isianTeks("peringatan"), 1, 8000, "peringatan");
+  /* instruksi (kalimat revisi) dan peringatan (catatan draf digabung baris) boleh berbaris banyak: \n dan \r\n dijadikan pengganti netral
+     dulu supaya penjaga karakter kendali tetap menolak kendali lain, lalu dikembalikan sebagai \n (insiden 18 Nov 2026: tiap draf berperingatan 400). */
+  const baris = (v, maks, nama) => { if (typeof v !== "string") return teks(v, 1, maks, nama); const s = teks(v.replace(/\r?\n/g, " "), 1, maks, nama); return s == null ? null : v.replace(/\r\n?/g, "\n").trim(); };
+  const n = Number(nT), instruksi = baris(isianTeks("instruksi"), 4000, "instruksi"), peringatan = baris(isianTeks("peringatan"), 8000, "peringatan");
   const berkas = {}, pratinjau = [];
   for (const [k, v] of f.entries()) {
     if (["proyek", "n", "wa_sha", "instruksi", "peringatan"].includes(k)) continue;
