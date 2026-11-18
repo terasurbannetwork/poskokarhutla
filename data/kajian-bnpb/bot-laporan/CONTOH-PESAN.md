@@ -110,20 +110,20 @@ _P-181126-02_
 
 Diterima: BMKG pagi.
 
-*Tambahan yang belum ada:*
+*Opsional, boleh dilewati:*
 - Gelar kekuatan Satgas Udara (Excel)
 
 Ketik *lanjut* untuk membuat laporan.
 ```
 
-### A0d. Kiriman yang belum dikenali
+### A0d. Kiriman di luar format baku
 
 ```text
-*Bahan belum dikenali*
+*Bahan disimpan*
 _P-181126-02_
 
 Laporan Penanganan Pengendalian Karhutla 18 Nov
-Kiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.
+Kiriman lain (bukan format baku) ikut disimpan dan dibaca saat laporan dibuat.
 
 *Wajib:*
 - BMKG pagi: sudah ada
@@ -135,7 +135,7 @@ Kiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bah
 Ketik *lanjut* bila ingin membuat dengan bahan yang ada.
 ```
 
-Beberapa kiriman digabung: "3 kiriman belum dikenali ...".
+Beberapa kiriman digabung: "3 kiriman lain (bukan format baku) ...". Contohnya info hujan harian untuk laporan penanganan: tidak punya kepala baku, tetapi tetap dibaca Claude saat bangun.
 
 ### A0d2. Bahan bertanggal hari lain
 

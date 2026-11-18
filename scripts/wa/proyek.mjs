@@ -363,22 +363,22 @@ export function tDaftarBahan(p, lap, tanggal, terpilih, { cutoff = false, sateli
     (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [],
     lengkap ? 'Ketik *lanjut* untuk membuat laporan.' : ['Kirim atau teruskan bahannya ke sini.', 'Ketik *lanjut* bila sudah siap.'])
 }
-// diterima: label bahan laporan ini yang baru masuk; lain: jumlah kiriman yang belum dikenali sebagai bahan laporan ini.
+// diterima: label bahan laporan ini yang baru masuk; lain: jumlah kiriman di luar format baku (ikut dibaca Claude saat bangun).
 export function tTerima(p, lap, tanggal, terpilih, { diterima = [], lain = 0, beda = [] } = {}) {
   const kalimatBeda = beda.map((b) => `Diterima, tetapi bertanggal ${labelTanggal(b.tgl)}, tidak dipakai untuk laporan ${labelTanggal(tanggal)}: ${b.label}.`).join('\n')
   const n = lap.butuh.length, k = lap.butuh.filter((x) => terpilih[x]).length
-  const kalimatLain = lain ? `${lain > 1 ? `${lain} kiriman` : 'Kiriman ini'} belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.` : ''
+  const kalimatLain = lain ? `${lain > 1 ? `${lain} kiriman lain` : 'Kiriman lain'} (bukan format baku) ikut disimpan dan dibaca saat laporan dibuat.` : ''
   if (wajibLengkap(lap, terpilih)) {
     const kurangTambah = (lap.pilihan || []).filter((x) => !terpilih[x]).map((x) => `- ${labelBahan(x)}`)
     return susun('Bahan wajib lengkap', p, null,
       [...(diterima.length ? [`Diterima: ${diterima.join(', ')}.`] : []), ...(kalimatBeda ? [kalimatBeda] : []), ...(kalimatLain ? [kalimatLain] : [])],
-      kurangTambah.length ? ['*Tambahan yang belum ada:*', ...kurangTambah] : [],
+      kurangTambah.length ? ['*Opsional, boleh dilewati:*', ...kurangTambah] : [],
       'Ketik *lanjut* untuk membuat laporan.')
   }
   const kurang = lap.butuh.filter((x) => !terpilih[x]).map((x) => `- ${labelBahan(x)}`)
   const akhir = 'Ketik *lanjut* bila ingin membuat dengan bahan yang ada.'
   if (!diterima.length) {
-    return susun(lain ? 'Bahan belum dikenali' : 'Bahan bertanggal lain', p, null, [judul(lap, tanggal), kalimatBeda, kalimatLain],
+    return susun(lain ? 'Bahan disimpan' : 'Bahan bertanggal lain', p, null, [judul(lap, tanggal), kalimatBeda, kalimatLain],
       ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih, lap)],
       (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [], akhir)
   }

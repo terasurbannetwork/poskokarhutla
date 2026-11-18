@@ -223,13 +223,13 @@ test('K17: bahan dikirim sebelum buat tetap dipakai; tanda terima hanya untuk pr
   assert.equal(await r1.terima, '*Diterima: BMKG pagi* (2 dari 3 wajib)\n_P-291026-01_\n\n*Masih kurang:*\n- PVMBG pagi\n\nKetik *lanjut* bila ingin membuat dengan bahan yang ada.')
   // tidak dikenali
   const r2 = await tangani({ dari: DARI, teks: 'catatan rapat koordinasi', wa_id: 7 }, d.ctx)
-  assert.match(await r2.terima, /^\*Bahan belum dikenali\*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt\nKiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain\.\n\n\*Wajib:\*\n- Rekap Koordalops 24 jam: sudah ada\n- BMKG pagi: sudah ada\n- PVMBG pagi\n/)
+  assert.match(await r2.terima, /^\*Bahan disimpan\*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt\nKiriman lain \(bukan format baku\) ikut disimpan dan dibaca saat laporan dibuat\.\n\n\*Wajib:\*\n- Rekap Koordalops 24 jam: sudah ada\n- BMKG pagi: sudah ada\n- PVMBG pagi\n/)
   // dua kiriman berdekatan = satu pesan; wajib lengkap = ajakan lanjut, tanpa membangun
   pesan.push(P('3', 'pvmbg_pagi'))
   const n = d.balasan.length
   const [a, b] = await Promise.all([tangani({ dari: DARI, teks: `[pvmbg_pagi] ${TGL}`, wa_id: 3, diteruskan: true }, d.ctx), tangani({ dari: DARI, teks: 'foto posko', wa_id: 8 }, d.ctx)])
   assert.equal(a.terima, b.terima, 'satu janji untuk kiriman yang digabung')
-  assert.equal(await a.terima, '*Bahan wajib lengkap*\n_P-291026-01_\n\nDiterima: PVMBG pagi.\nKiriman ini belum dikenali sebagai bahan laporan ini, tetap disimpan sebagai bahan lain.\n\nKetik *lanjut* untuk membuat laporan.')
+  assert.equal(await a.terima, '*Bahan wajib lengkap*\n_P-291026-01_\n\nDiterima: PVMBG pagi.\nKiriman lain (bukan format baku) ikut disimpan dan dibaca saat laporan dibuat.\n\nKetik *lanjut* untuk membuat laporan.')
   assert.equal(d.balasan.length, n + 1)
   for (const t of d.balasan) assert.doesNotMatch(t, SISTEM_HURUF, t)
   assert.equal(d.gen().length, 0, 'tidak pernah membangun sendiri')
