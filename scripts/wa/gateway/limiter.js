@@ -173,6 +173,24 @@ function noteLogout() {
   persist()
 }
 
+// Kiriman kosmetik (sunting pesan kemajuan bot laporan): hanya bila tidak perlu antre slot dan jatah menit/jam masih menyisakan `cadangan`
+// kiriman penting (pratinjau dan PDF draf). Tidak mengubah batas apa pun; pemanggil melewati suntingan bila false.
+// target/opts sama dengan check(): ember percakapan (40 per tujuan, separuh jatah harian selama pemanasan) atau ember biasa (8 per tujuan).
+function longgar(cadangan = 2, target = null, opts = null) {
+  rollDay()
+  const now = Date.now(), perlu = 1 + cadangan
+  const menit = minuteHits.filter((t) => now - t < 60000).length, jam = hourHits.filter((t) => now - t < 3600000).length
+  if (nextSlotAt > now || menit + perlu > MAX_PER_MINUTE || jam + perlu > MAX_PER_HOUR) return false
+  if (state.dayCount + perlu > dailyCap()) return false // termasuk batas pemanasan
+  if (!target) return true
+  if (percakapan(target, opts)) {
+    if ((state.perTargetPercakapan[target] || 0) + perlu > MAX_PER_TARGET_PERCAKAPAN) return false
+    if (inWarmup() && (state.dayCountPercakapan || 0) + perlu > Math.floor(dailyCap() / 2)) return false
+    return true
+  }
+  return (state.perTarget[target] || 0) + perlu <= MAX_PER_TARGET_DAY
+}
+
 function stats() {
   const now = Date.now()
   return {
@@ -189,4 +207,4 @@ function stats() {
   }
 }
 
-module.exports = { check, slot, commit, noteLogout, noteMasuk, stats }
+module.exports = { check, slot, commit, noteLogout, noteMasuk, stats, longgar }

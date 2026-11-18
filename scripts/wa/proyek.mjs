@@ -33,7 +33,14 @@ const MAKS_KALIMAT = 2000 // kalimat revisi ke Claude
 const PERIKSA_MS = 120e3 // periksa (BL-11) tidak pernah menahan draf lebih lama dari ini
 const WAKTU_WORKER = 60_000 // tiap fetch Worker: menggantung = galat Worker biasa, antrean pengirim tidak tertahan
 
-const labelBahan = (k) => jenisWa.JENIS_LAPORAN.find((j) => j.kunci === k)?.label || k
+// Label tampil: label JENIS_LAPORAN, kecuali yang di LABEL_KHUSUS (laporan Mensesneg dipakai bot sebagai laporan penanganan lengkap).
+const LABEL_KHUSUS = { karhutla_mensesneg: 'Laporan penanganan lengkap' }
+const labelBahan = (k) => LABEL_KHUSUS[k] || jenisWa.JENIS_LAPORAN.find((j) => j.kunci === k)?.label || k
+// Semua jenis bahan milik laporan: wajib, tambahan, dan padanan wajib (lap.setara).
+const jenisLap = (lap) => [...lap.butuh, ...(lap.pilihan || []), ...Object.values(lap.setara || {}).flat()]
+const labelWajib = (lap, k) => [labelBahan(k), ...(lap.setara?.[k] || []).map((a) => { const l = labelBahan(a); return l[0].toLowerCase() + l.slice(1) })].join(' atau ')
+// Perintah satu baris pendek: huruf kecil, spasi tunggal, ekor bukan huruf atau angka dibuang ("lanjut\\", "final!", "lanjut.").
+export const normalPerintah = (teks) => String(teks ?? '').trim().toLowerCase().replace(/[^\p{L}\p{N}]+$/u, '').replace(/\s+/g, ' ')
 const lapDari = (id) => LAPORAN.find((l) => l.id === id)
 
 // wa_sha = sha256("<WA_GARAM>|<62 nomor>") dari daftar.cjs (satu rumus dengan gateway dan pendaftaran, BL-03): satu-satunya pengenal pemakai yang keluar dari mesin.
@@ -47,9 +54,10 @@ const JENIS_KATA = { harian: 'harian', bencana: 'harian', 'harian bencana': 'har
 // Teks panjang atau berbaris banyak = bahan (aturan sama dengan perintah.mjs). `status <tanggal>` bukan milik mesin ini (Q14).
 export function parsePerintah(teks, now = new Date()) {
   const asli = String(teks ?? '').trim()
-  const t = asli.toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
+  const t = normalPerintah(asli)
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
+  if (t === 'ulangi') return { aksi: 'ulangi' } // ulangi langkah terakhir yang gagal (bangun atau revisi)
   if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai dokumen PNG supaya tidak dikompres WA
   if (t === 'status') return { aksi: 'status' }
   if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
@@ -93,6 +101,8 @@ export const BANTUAN = [
   '',
   '*Lainnya*',
   '- *status*: proyek yang masih terbuka',
+  '- *ulangi*: coba lagi langkah yang gagal',
+  '- *batal*: batalkan proyek kapan saja',
   '- *bantuan*: tampilkan pesan ini',
   '- *panduan*: kirim gambar panduan lengkap',
   '',
@@ -100,6 +110,40 @@ export const BANTUAN = [
   'Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.',
 ].join('\n')
 const BANTUAN_PEMILIK = ['', '*Khusus pemilik*', '- *kirim ulang harian 26 okt*: kirim ulang berkas', '- *status 26 okt*: rekap bahan per tanggal'].join('\n')
+
+// ---------- T-SAPA: obrolan pendek dari nomor terdaftar tanpa proyek (pemilik 18 Nov 2026) ----------
+// Bukan perintah, tidak diteruskan, tanpa lampiran, satu baris paling banyak 80 huruf, tidak dikenali sebagai bahan, dan pengirim tidak memegang
+// proyek terbuka, bertanya, atau draf. Sekali per pengirim per 6 jam (~/.wa-bot/proyek/sapa.json); di dalam jendela itu diam.
+export const T_SAPA = [
+  '*Halo, ini Bot Laporan BNPB*',
+  'Bot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpannya ke Google Drive Tim IT.',
+  '',
+  '*Mulai dengan mengetik:*',
+  '- *buat harian*: laporan kejadian bencana harian',
+  '- *buat penanganan*: laporan penanganan karhutla',
+  '',
+  '*Butuh bantuan?*',
+  '- *bantuan*: daftar perintah',
+  '- *panduan*: gambar panduan lengkap',
+].join('\n')
+const SAPA_JEDA_MS = 6 * 3600e3, SAPA_MAKS = 80
+const sapaP = (dasar) => path.join(dirProyek(dasar), 'sapa.json')
+async function sapaBila(pesan, sha, ctx) {
+  const teks = String(pesan?.teks || '').trim()
+  if (!sha || pesan.diteruskan === true || pesan.ada_berkas || !teks || teks.length > SAPA_MAKS || /\n/.test(teks)) return false
+  if ((ctx.kenali || jenisWa.kenali)(teks, pesan.nama_berkas || '')) return false
+  const kini = (ctx.now || new Date()).getTime(), f = sapaP(ctx.dasar || RUMAH), catat = bacaJson(f, {})
+  if (kini - Number(catat[sha] || 0) < SAPA_JEDA_MS) return false
+  if (sibukBangun.has(kunciSibukDari(ctx, sha))) return false // pembangunan pengirim ini sedang jalan
+  const punya = await proyekPengirim(ctx, sha, (p) => ['terbuka', 'bertanya', 'membangun', 'draf'].includes(p.status), { bersihkan: false })
+  if (punya.length) return false
+  catat[sha] = kini
+  for (const [k, v] of Object.entries(catat)) if (kini - Number(v) > SAPA_JEDA_MS) delete catat[k]
+  catat[sha] = kini
+  tulisJson(f, catat)
+  await ctx.balas(T_SAPA)
+  return true
+}
 
 // ---------- penyimpanan lokal mesin (~/.wa-bot/proyek) ----------
 const dirProyek = (dasar) => path.join(dasar, 'proyek')
@@ -309,13 +353,13 @@ export function tTanya(p, lap, tanggal, pertanyaan) {
 }
 
 // ---------- K17: daftar bahan (sesudah `buat`) dan tanda terima bahan ----------
-const daftarBaris = (ks, terpilih) => ks.map((k) => `- ${labelBahan(k)}${terpilih[k] ? ': sudah ada' : ''}`)
+const daftarBaris = (ks, terpilih, lap = null) => ks.map((k) => `- ${lap ? labelWajib(lap, k) : labelBahan(k)}${terpilih[k] ? ': sudah ada' : ''}`)
 const wajibLengkap = (lap, terpilih) => lap.butuh.every((k) => terpilih[k])
 export function tDaftarBahan(p, lap, tanggal, terpilih, { cutoff = false, satelit = null } = {}) {
   const lengkap = wajibLengkap(lap, terpilih)
   return susun(lengkap ? 'Bahan wajib lengkap' : 'Kirim bahan laporan', p, null,
     [judul(lap, tanggal), ...(cutoff ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []), ...(satelit ? [barisSatelit(satelit)] : [])],
-    ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih)],
+    ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih, lap)],
     (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [],
     lengkap ? 'Ketik *lanjut* untuk membuat laporan.' : ['Kirim atau teruskan bahannya ke sini.', 'Ketik *lanjut* bila sudah siap.'])
 }
@@ -335,7 +379,7 @@ export function tTerima(p, lap, tanggal, terpilih, { diterima = [], lain = 0, be
   const akhir = 'Ketik *lanjut* bila ingin membuat dengan bahan yang ada.'
   if (!diterima.length) {
     return susun(lain ? 'Bahan belum dikenali' : 'Bahan bertanggal lain', p, null, [judul(lap, tanggal), kalimatBeda, kalimatLain],
-      ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih)],
+      ['*Wajib:*', ...daftarBaris(lap.butuh, terpilih, lap)],
       (lap.pilihan || []).length ? ['*Tambahan:*', ...daftarBaris(lap.pilihan, terpilih)] : [], akhir)
   }
   return [`*Diterima: ${diterima.join(', ')}* (${k} dari ${n} wajib)`, kodeBaris(p)].join('\n') + '\n\n' +
@@ -343,7 +387,27 @@ export function tTerima(p, lap, tanggal, terpilih, { diterima = [], lain = 0, be
 }
 // Judul galat Claude (pesanPemakai di claude.mjs = isi satu baris).
 const JUDUL_CLAUDE = { batas_belanja: 'Kuota hari ini habis', tanpa_kunci: 'Bot belum siap', tanpa_sdk: 'Bot belum siap' }
-const tClaude = (p, n, e) => susun(JUDUL_CLAUDE[e.kode] || 'Bahan belum terbaca', p, n, e.pesanPemakai)
+const tClaude = (p, n, e) => susun(JUDUL_CLAUDE[e.kode] || 'Bahan belum terbaca', p, n, e.pesanPemakai, e.kode === 'batas_belanja' ? '' : AKHIR_GAGAL)
+
+// ---------- satu pembangunan per pengirim: `lanjut`/`ulangi` saat masih membangun dijawab sekali "Masih dibangun" ----------
+const sibukBangun = new Map() // `${dasar}|${sha}` -> {id, dibalas}
+const kunciSibukDari = (ctx, sha) => `${ctx.dasar || RUMAH}|${sha}`
+function tandaiSibuk(ctx, sha, id) { const k = kunciSibukDari(ctx, sha); sibukBangun.set(k, { id, dibalas: false }); return k }
+function lepasSibuk(k) { sibukBangun.delete(k) }
+export const sedangDibangun = (dari, env = process.env, dasar = RUMAH) => { const sha = waSha(normalWa(dari), env.WA_GARAM); return !!sha && sibukBangun.has(`${dasar}|${sha}`) }
+// Untuk gateway sebelum antre per pengirim: `lanjut`, `ulangi`, `buat saja` (tidak diteruskan) dari pengirim yang pembangunannya masih jalan
+// dijawab sekali saat itu juga -> true (pesan selesai); selain itu false dan pesan masuk antrean seperti biasa.
+export async function jawabSibukLangsung(pesan, ctx) {
+  if (!pesan || pesan.diteruskan === true || !/^(lanjut|ulangi|buat saja)$/.test(normalPerintah(pesan.teks))) return false
+  const sha = waSha(normalWa(pesan.dari), ctx.env?.WA_GARAM)
+  return !!sha && jawabSibuk(ctx, sha)
+}
+async function jawabSibuk(ctx, sha) {
+  const s = sibukBangun.get(kunciSibukDari(ctx, sha))
+  if (!s) return false
+  if (!s.dibalas) { s.dibalas = true; await ctx.balas(susun('Masih dibangun', { id: s.id }, null, 'Tunggu sebentar, draf dikirim begitu siap.')) }
+  return true
+}
 const tSibuk = (p, n) => susun('Sedang dibangun', p, n, 'Tunggu sebentar, draf dikirim begitu siap.')
 // Kabar galat ke pemilik: judul tetap, kode proyek, apa yang gagal, rincian teknis dipotong.
 const tGalatPemilik = (p, n, apa, rinci, maks = 300) => susun('Galat bot laporan', p, n, [apa, ...(rinci ? [String(rinci).slice(0, maks)] : [])])
@@ -419,7 +483,7 @@ async function tebakJenis(bahan) {
   const skor = []
   for (const lap of LAPORAN) {
     const { terpilih } = await bahan.pilihSesuai(lap)
-    skor.push({ id: lap.id, n: [...lap.butuh, ...(lap.pilihan || [])].filter((k) => terpilih[k]).length })
+    skor.push({ id: lap.id, n: jenisLap(lap).filter((k) => terpilih[k]).length })
   }
   skor.sort((a, b) => b.n - a.n)
   return skor[0].n > 0 && skor[0].n > (skor[1]?.n ?? -1) ? skor[0].id : null
@@ -468,6 +532,9 @@ async function buat(cmd, dari, sha, ctx) {
   const kerjaEkstrak = path.join(dirProyek(dasar), p.id, 'ekstrak')
   let status = p.status
   const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
+  const kunciSibuk = tandaiSibuk(ctx, sha, p.id)
+  const prog = await mulaiProgres(ctx, `Membangun draf v${(p.versi || 0) + 1}`, p, TAHAP_BUAT)
+  const gagalBangun = () => catatGagal(ctx, sha, { langkah: 'bangun', id: p.id, cmd: { jenis, tanggal: cmd.tanggal, saja: !!cmd.saja, ...(cmd.firespot ? { firespot: cmd.firespot } : {}) } })
   try {
     const bahanTeks = [], tidakTerbaca = []
     for (const m of pakai.values()) {
@@ -476,6 +543,7 @@ async function buat(cmd, dari, sha, ctx) {
       if (e.tidakTerbaca) tidakTerbaca.push(e.nama || `pesan ${e.id}`)
       else bahanTeks.push(e)
     }
+    await prog.ke(1)
     const hasil = await urai(ctx, p, lap, bahanTeks)
     const kurang = lap.butuh.filter((k) => !terpilih[k])
     // K17: bahan wajib yang kurang dan cut-off tidak ditanyakan (pemakai sudah memilih `lanjut`), hanya dicatat di draf.
@@ -492,6 +560,7 @@ async function buat(cmd, dari, sha, ctx) {
       await pindah('bertanya')
       catatTuntun(ctx, sha, p.id)
       // TODO(BL-10): jawaban bebas atas T-TANYA diurai Claude ke keputusan per nomor (A3); sekarang pemakai mengirim bahan lalu `lanjut`.
+      await prog.akhir('berhenti')
       return await balas(tTanya(p, lap, cmd.tanggal, pertanyaan))
     }
     const catatan = [...celah, ...(cmd.saja ? pertanyaan : [])]
@@ -510,6 +579,7 @@ async function buat(cmd, dari, sha, ctx) {
         if (st && st.situs_memuat === false && st.lintasan_siang === true) {
           await pindah('bertanya')
           catatSatelit(ctx, p.id, { sha, dari, jenis, tanggal: cmd.tanggal, keadaan: 'pilih' })
+          await prog.akhir('berhenti')
           return await balas(tPilihSatelit(p, st))
         }
       }
@@ -517,6 +587,7 @@ async function buat(cmd, dari, sha, ctx) {
 
     try { catatSatelit(ctx, p.id, null) } catch {} // pembangunan mulai: pilihan data satelit proyek ini selesai
     await pindah('membangun')
+    await prog.ke(2)
     const n = (p.versi || 0) + 1
     const dasarV = path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`) // di bawah ~/.wa-bot/keluaran: satu-satunya akar yang boleh dikirim gateway
     let berkas, isianGen
@@ -534,10 +605,13 @@ async function buat(cmd, dari, sha, ctx) {
         catatan.push(`Isian diabaikan generator: ${m[1].trim()}`)
       }
     } catch (e) {
+      await prog.akhir('gagal')
       await pindah('terbuka', { lempar: false })
+      gagalBangun()
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Draf v${n} gagal dibangun.`, e.message, 400))
-      return await balas(susun(`Draf v${n} gagal dibangun`, p, null, 'Pemilik sudah dikabari. Ketik *buat* lagi beberapa saat lagi.'))
+      return await balas(susun(`Draf v${n} gagal dibangun`, p, null, ['Pemilik sudah dikabari.', AKHIR_GAGAL]))
     }
+    await prog.ke(3)
     const pdf = berkas.find((b) => b.x === 'pdf').p, pptx = berkas.find((b) => b.x === 'pptx').p
     const kunciV = bacaJson(jalurKunci(pptx), [])
     // BL-11: periksa jalan bersamaan dengan langkah PDF/pratinjau; peringatannya masuk ringkasan draf, tidak pernah menahan.
@@ -549,21 +623,29 @@ async function buat(cmd, dari, sha, ctx) {
       await simpanVersi(ctx, { p, n, sha, isian: { generator: isianGen, urai: hasil.isian, catatan: hasil.catatan, kunci: kunciV }, pptx, pdf, png, instruksi: cmd.saja ? 'buat saja' : 'buat', catatan: [...catatan, ...peringatan] })
       await pindah('draf')
     } catch (e) {
+      await prog.akhir('gagal')
       if (status === 'membangun') await pindah('terbuka', { lempar: false })
+      gagalBangun()
       await kabarSekali(ctx, 'versi', tGalatPemilik(p, n, `Versi v${n} gagal disimpan.`, e.message))
-      return await balas(susun(`Draf v${n} gagal disimpan`, p, null, 'Pemilik sudah dikabari. Ketik *buat* lagi beberapa saat lagi.'))
+      return await balas(susun(`Draf v${n} gagal disimpan`, p, null, ['Pemilik sudah dikabari.', AKHIR_GAGAL]))
     }
+    catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, gambar pratinjau slide 1 berketerangan ringkasan draf, lalu PDF. Tanpa pratinjau: ringkasan di keterangan PDF.
     const ringkas = tDraf(p, n, lap, cmd.tanggal, { hitung, catatan, peringatan, slide: png.length ? 1 : null })
     catatMenu(ctx, sha, p.id) // angka menu berikutnya berlaku untuk proyek ini
     if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), ringkas, 'image/png')
     await ctx.balasFile(pdf, path.basename(pdf), png.length ? tPdf(p, n, lap, cmd.tanggal) : ringkas, MIME.pdf)
+    await prog.akhir('selesai') // sunting akhir sesudah dua berkas draf: jatah limiter didahulukan untuk berkas
   } catch (e) {
-    if (!(e instanceof GalatClaude)) throw e
+    await prog.akhir('gagal')
+    if (!(e instanceof GalatClaude)) { gagalBangun(); throw e }
     if (['bertanya', 'membangun'].includes(status)) await pindah('terbuka', { lempar: false })
+    if (e.kode !== 'batas_belanja') gagalBangun()
     await kabarSekali(ctx, `claude:${e.kode}`, tGalatPemilik(p, null, `Panggilan Claude gagal (${e.kode}).`, e.message))
     await balas(tClaude(p, null, e))
   } finally {
+    await prog.akhir('gagal') // tidak berbuat apa pun bila sudah diakhiri
+    lepasSibuk(kunciSibuk)
     fs.rmSync(kerjaEkstrak, { recursive: true, force: true })
     lepas()
   }
@@ -778,7 +860,10 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
   if (!lepas) return balas(tSibuk(p, m))
   let status = p.status
   const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
-  const keDraf = async (teks) => { await pindah('draf'); return balas(teks) }
+  const kunciSibuk = tandaiSibuk(ctx, sha, p.id)
+  const prog = await mulaiProgres(ctx, `Menerapkan revisi v${n}`, p, TAHAP_REVISI)
+  const gagalRevisi = () => catatGagal(ctx, sha, { langkah: 'revisi', id: p.id, ...(opsi.balik != null ? { balik: opsi.balik } : { teks: String(pesan?.teks || '') }) })
+  const keDraf = async (teks) => { await prog.akhir('berhenti'); await pindah('draf'); return balas(teks) }
   try {
     await pindah('membangun')
     const akhir = await versiRinci(ctx, p, m, sha)
@@ -818,6 +903,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       ops = [...opsLama, ...baru]
       instruksi = `revisi: ${rapi(samarkan(kalimat), 480)}`
     }
+    await prog.ke(1)
 
     // Bangun ulang dari bahan + isian versi terakhir (D1, D6), lalu operasi 1..n.
     const lingkup = lingkupBahan(env, dari, sha)
@@ -827,10 +913,13 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
     const catatan = []
     let pptx, pdf, lewat = [], terpakai = ops
     const gagalBangun = async (e) => {
+      await prog.akhir('gagal')
+      gagalRevisi()
       await pindah('draf', { lempar: false })
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Revisi v${n} gagal dibangun.`, e.message, 400))
-      return balas(susun(`Revisi v${n} gagal dibangun`, p, m, `Draf v${m} tetap berlaku. Pemilik sudah dikabari, kirim revisinya lagi nanti.`))
+      return balas(susun(`Revisi v${n} gagal dibangun`, p, m, [`Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
     }
+    await prog.ke(2)
     try {
       const k = siapkanKeluaran(lap, p.tanggal, teks, dasarV)
       const isianGen = isianV.generator && typeof isianV.generator === 'object' ? isianV.generator : {}
@@ -868,6 +957,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       return await keDraf(susun('Revisi tidak diterapkan', p, m, `Draf tetap v${m}.`, tk ? tk.baris : [], tk ? tk.tawaran : '', kalimatLewat))
     }
 
+    await prog.ke(3)
     const sembunyi = terpakai.some((o) => o.jenis === 'sembunyikan_slide')
     const berubah = slideBerubah(invLama, invBaru)
     const slide = berubah[0] || baruJalan.find((o) => o.slide)?.slide || terpakai.find((o) => o.slide)?.slide || 1
@@ -892,27 +982,33 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
         catatan: [...perubahan, ...tolak, ...kalimatLewat, ...catatan, ...peringatan] })
       await pindah('draf')
     } catch (e) {
+      await prog.akhir('gagal')
+      gagalRevisi()
       if (status === 'membangun') await pindah('draf', { lempar: false })
       await kabarSekali(ctx, 'versi', tGalatPemilik(p, n, `Versi v${n} gagal disimpan.`, e.message))
-      return await balas(susun(`Revisi v${n} gagal disimpan`, p, m, `Draf v${m} tetap berlaku. Pemilik sudah dikabari, kirim revisinya lagi nanti.`))
+      return await balas(susun(`Revisi v${n} gagal disimpan`, p, m, [`Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
     }
+    catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, pratinjau slide pertama yang berubah lalu PDF berketerangan T-DRAF. Tanpa pratinjau: PDF saja.
     const ringkas = tDrafRevisi(p, n, lap, p.tanggal, { perubahan, tolak, lewat: kalimatLewat, catatan, peringatan })
     catatMenu(ctx, sha, p.id)
     if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), tPratinjau(p, n, slide), 'image/png')
     await ctx.balasFile(pdf, path.basename(pdf), ringkas, MIME.pdf)
+    await prog.akhir('selesai')
   } catch (e) {
+    await prog.akhir('gagal')
     if (status === 'membangun') await pindah('draf', { lempar: false })
-    if (!(e instanceof GalatClaude)) throw e
+    if (!(e instanceof GalatClaude)) { gagalRevisi(); throw e }
+    if (e.kode !== 'batas_belanja') gagalRevisi()
     await kabarSekali(ctx, `claude:${e.kode}`, tGalatPemilik(p, m, `Panggilan Claude gagal (${e.kode}).`, e.message))
     await balas(tClaude(p, m, e))
-  } finally { lepas() }
+  } finally { await prog.akhir('gagal'); lepasSibuk(kunciSibuk); lepas() }
 }
 
 // ---------- konfirmasi batal dari menu (~/.wa-bot/proyek/konfirmasi.json: {wa_sha: {id, waktu}}) ----------
 const KONFIRMASI_MS = 5 * 60e3
 const konfirmP = (dasar) => path.join(dirProyek(dasar), 'konfirmasi.json')
-const teksYa = (t) => String(t ?? '').trim().toLowerCase().replace(/[.!]+$/, '').trim() === 'ya'
+const teksYa = (t) => normalPerintah(t) === 'ya'
 function konfirmasiBatal(ctx, sha) {
   const k = bacaJson(konfirmP(ctx.dasar || RUMAH), {})[sha]
   return k && (ctx.now || new Date()).getTime() - Number(k.waktu) <= KONFIRMASI_MS ? k : null
@@ -944,6 +1040,79 @@ function catatTuntun(ctx, sha, id) {
   try { const f = tuntunP(ctx.dasar || RUMAH), isi = bacaJson(f, {}); isi[sha] = id; tulisJson(f, isi) } catch (e) { (ctx.log || (() => {}))('catat tuntun gagal', e.message) }
 }
 const MENUNGGU = ['terbuka', 'bertanya']
+
+// ---------- ulangi: langkah gagal terakhir per pengirim (~/.wa-bot/proyek/gagal.json: {wa_sha: {langkah, cmd|id, teks, balik, waktu}}) ----------
+// langkah: 'bangun' (draf baru, cmd buat yang sama dengan `lanjut`), 'revisi' (kalimat atau balik yang sama), 'pesan' (perintah lain yang galat).
+// Dihapus saat versi tersimpan, saat `ulangi` dijalankan (gagal lagi = dicatat lagi), dan saat proyek dibatalkan.
+export const AKHIR_GAGAL = 'Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.'
+const gagalP = (dasar) => path.join(dirProyek(dasar), 'gagal.json')
+function catatGagal(ctx, sha, isi) {
+  try {
+    const f = gagalP(ctx.dasar || RUMAH), semua = bacaJson(f, {})
+    if (!isi && !semua[sha]) return
+    if (isi) semua[sha] = { ...isi, waktu: (ctx.now || new Date()).getTime() }; else delete semua[sha]
+    tulisJson(f, semua)
+  } catch (e) { (ctx.log || (() => {}))('catat gagal', e.message) }
+}
+const gagalTerakhir = (ctx, sha) => bacaJson(gagalP(ctx.dasar || RUMAH), {})[sha] || null
+const tTakAdaUlang = (rinci = 'Belum ada langkah yang gagal.') => susun('Tidak ada yang perlu diulang', null, null, `${rinci} Ketik *status* untuk melihat proyek.`)
+const ULANGI_BASI_MS = 24 * 3600e3 // catatan gagal lebih tua dari ini diabaikan
+async function ulangi(dari, sha, ctx) {
+  const e = gagalTerakhir(ctx, sha)
+  if (!e) return ctx.balas(tTakAdaUlang())
+  catatGagal(ctx, sha, null)
+  if ((ctx.now || new Date()).getTime() - Number(e.waktu || 0) > ULANGI_BASI_MS) return ctx.balas(tTakAdaUlang())
+  // proyek asal dibaca ulang dari Worker: harus masih terbuka (bangun: terbuka atau bertanya; revisi: draf)
+  let p = null
+  if (e.id) { try { p = await bacaProyek(ctx, e.id, sha) } catch {} }
+  if (e.langkah === 'bangun' && e.cmd) {
+    if (!p || !MENUNGGU.includes(p.status)) return ctx.balas(tTakAdaUlang(e.id ? `Proyek ${e.id} tidak lagi menunggu dibangun.` : undefined))
+    return buat({ ...e.cmd, aksi: 'buat', lanjut: true }, dari, sha, ctx)
+  }
+  if (e.langkah === 'revisi') {
+    if (!p || p.status !== 'draf' || !(p.versi > 0)) return ctx.balas(tTakAdaUlang(`Proyek ${e.id} tidak lagi berstatus draf.`))
+    return revisi(e.balik != null ? null : { teks: e.teks }, dari, sha, p, ctx, e.balik != null ? { balik: e.balik } : {})
+  }
+  if (e.langkah === 'pesan' && e.teks && normalPerintah(e.teks) !== 'ulangi') return tangani({ dari, teks: e.teks }, ctx)
+  return ctx.balas(tTakAdaUlang())
+}
+
+// ---------- kemajuan: satu pesan yang disunting per tahap, ditambah "sedang mengetik" (pemilik 18 Nov 2026: "pakai dua-duanya") ----------
+// ctx.kirimProgres(teks) -> pegangan | null, ctx.ubahProgres(pegangan, teks) -> false bila gagal, ctx.mengetik(nyala): semuanya opsional.
+// Paling banyak 4 suntingan per draf (3 pindah tahap + 1 akhir). Gagal kirim atau sunting = tanpa kemajuan, pembangunan tidak pernah terganggu.
+export const TAHAP_BUAT = ['Membaca bahan', 'Mengurai bahan dengan AI', 'Membuat slide', 'PDF dan pemeriksaan']
+export const TAHAP_REVISI = ['Membaca permintaan', 'Menerapkan perubahan', 'Membuat slide', 'PDF dan pemeriksaan']
+export const MAKS_UBAH_PROGRES = 4
+const SUNTING_MAKS_MS = 14 * 60e3
+export function teksProgres(jdl, p, tahap, ke, akhir = null) {
+  const tanda = (i) => {
+    if (akhir === 'selesai' || i < ke) return 'selesai'
+    if (i === ke) return akhir === 'gagal' ? 'gagal' : akhir === 'berhenti' ? 'selesai' : 'jalan'
+    return 'menunggu'
+  }
+  return susun(jdl, p, null, tahap.map((t, i) => `[${tanda(i)}] ${t}`), akhir === 'berhenti' ? 'Berhenti dulu, lihat pesan berikutnya.' : '')
+}
+async function mulaiProgres(ctx, jdl, p, tahap) {
+  const log = ctx.log || (() => {})
+  let pegangan = null, ubah = 0, ke = 0, habis = false, dikirim = 0
+  const kini = () => (typeof ctx.jam === 'function' ? ctx.jam() : Date.now())
+  const ketik = (nyala) => { try { if (typeof ctx.mengetik === 'function') Promise.resolve(ctx.mengetik(nyala)).catch(() => {}) } catch {} }
+  const sunting = async (teks) => {
+    if (!pegangan || ubah >= MAKS_UBAH_PROGRES || typeof ctx.ubahProgres !== 'function') return
+    if (kini() - dikirim > SUNTING_MAKS_MS) { pegangan = null; log('kemajuan lewat 14 menit, suntingan dilewati'); return } // WA menolak sunting sesudah 15 menit
+    ubah++
+    try { if ((await ctx.ubahProgres(pegangan, teks)) === false) pegangan = null } catch (e) { pegangan = null; log('sunting kemajuan gagal', e.message) }
+  }
+  ketik(true)
+  if (typeof ctx.kirimProgres === 'function') {
+    try { pegangan = (await ctx.kirimProgres(teksProgres(jdl, p, tahap, 0))) || null; dikirim = kini() } catch (e) { log('kirim kemajuan gagal', e.message) }
+  }
+  return {
+    async ke(i) { if (habis || i <= ke) return; ke = i; await sunting(teksProgres(jdl, p, tahap, ke)) },
+    async akhir(keadaan) { if (habis) return; habis = true; ketik(false); await sunting(teksProgres(jdl, p, tahap, ke, keadaan)) },
+    get habis() { return habis },
+  }
+}
 
 // ---------- K18: status data satelit penanganan, pilihan *tunggu* atau *hitung* (~/.wa-bot/proyek/satelit.json: {id: {sha, dari, jenis, tanggal, keadaan}}) ----------
 // statusSatelit(ctx, tanggal) -> {firms_terakhir_wib, lintasan_siang, situs_memuat, ...} | null. dep.statusSatelit disuntik (uji), null = mati;
@@ -1071,7 +1240,7 @@ async function kirimTerima(ctx, sha, a) {
   const lingkup = lingkupBahan(ctx.env, a.dari, sha)
   const bahan = await ambilBahan({ env: ctx.env, dep: { ...ctx.dep, fetch: fetchLingkup(ctx.dep, lingkup.boleh) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log: ctx.log || (() => {}) })
   const { terpilih } = await bahan.pilihSesuai(lap)
-  const milik = new Set([...lap.butuh, ...(lap.pilihan || [])])
+  const milik = new Set(jenisLap(lap))
   const kenal = a.k.filter((x) => x.k && milik.has(x.k))
   const beda = kenal.filter((x) => x.tgl && x.tgl !== p.tanggal) // bahan bertanggal hari lain: tidak dipakai untuk proyek ini
   const diterima = [...new Set(kenal.filter((x) => !beda.includes(x)).map((x) => labelBahan(x.k)))]
@@ -1111,6 +1280,7 @@ async function perintahProyek(cmd, dari, sha, ctx) {
   if (p.status === 'membangun' && kunciHidup(lockProyek(ctx.dasar || RUMAH, p.id))) return balas(susun('Sedang dibangun', p, p.versi || null, 'Tunggu sebentar, lalu ketik *batal* lagi.'))
   await pindahStatus(ctx, p, 'batal', sha)
   try { catatSatelit(ctx, p.id, null) } catch {}
+  catatGagal(ctx, sha, null)
   hapusIndeks(ctx.dasar || RUMAH, p.id)
   return balas(susun('Proyek dibatalkan', p, p.versi || null, [`${nama} dibatalkan, tanpa unggah.`, 'Ketik *buat* untuk memulai lagi.']))
 }
@@ -1298,6 +1468,7 @@ async function status(dari, sha, ctx) {
 }
 
 // ---------- bahan masuk (Q6) ----------
+const TANPA_BUKA = new Set(['bmkg_pagi'])
 async function tambahBahan(pesan, dari, sha, ctx) {
   const kenali = ctx.kenali || jenisWa.kenali
   const k = kenali(pesan.teks || '', pesan.nama_berkas || '')
@@ -1306,8 +1477,10 @@ async function tambahBahan(pesan, dari, sha, ctx) {
   const tglBahan = k ? (ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null))(pesan.teks || '', k) || null : null // hanya tanggal yang tertulis di bahan
   const terima = t ? { terima: jadwalTerima(ctx, sha, dari, t, k, tglBahan) } : {}
   if (!k) return { status: 'menunggu buat', ...terima } // jenis tak dikenali (foto, PDF lain): dipakai saat `buat` dari /api/wa/masuk
-  const calon = LAPORAN.filter((l) => [...l.butuh, ...(l.pilihan || [])].includes(k))
-  if (calon.length !== 1) return { status: 'menunggu buat', ...terima } // bahan bersama (BMKG pagi) menunggu `buat` menentukan jenisnya
+  // TANPA_BUKA (BMKG pagi): tidak pernah membuka proyek sendiri; tetap tersimpan sebagai bahan dan terhitung saat pengirim mengetik `buat`.
+  // Bahan milik lebih dari satu laporan juga menunggu `buat` menentukan jenisnya.
+  const calon = TANPA_BUKA.has(k) ? [] : LAPORAN.filter((l) => jenisLap(l).includes(k))
+  if (calon.length !== 1) return { status: 'menunggu buat', ...terima }
   const tanggal = (ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null))(pesan.teks || '', k) || tanggalWib(ctx.now || new Date())
   const { proyek: p } = await proyekBuka(ctx, { wa_sha: sha, jenis: calon[0].id, tanggal, bahan: [{ wa_id: String(pesan.wa_id), jenis_bahan: k }] })
   catatIndeks(ctx.dasar || RUMAH, p, sha, dari)
@@ -1347,8 +1520,8 @@ function calonRevisi(pesan, ctx) {
 }
 // Pesan diteruskan yang isinya persis kata tuntun (angka menu, lanjut, buat saja, hitung, tunggu) = bahan, bukan perintah.
 function bukanPerintahTerusan(cmd, teks) {
-  if (['menu', 'lanjut', 'satelit'].includes(cmd.aksi)) return true
-  return cmd.aksi === 'buat' && String(teks ?? '').trim().toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ') === 'buat saja'
+  if (['menu', 'lanjut', 'satelit', 'ulangi'].includes(cmd.aksi)) return true
+  return cmd.aksi === 'buat' && normalPerintah(teks) === 'buat saja'
 }
 const drafPengirim = async (ctx, sha, o) => (await proyekPengirim(ctx, sha, (p) => p.status === 'draf' && p.versi > 0, o))[0] || null
 
@@ -1367,7 +1540,10 @@ export async function klasifikasi(pesan, ctx) {
 
 // pesan: {dari, teks, wa_id?, nama_berkas?, ada_berkas?, diteruskan?, lama?}. Revisi tidak butuh wa_id (gateway tidak meneruskannya ke Worker). ctx: {env, dep, now, dasar, log, balas, balasFile, kabariPemilik?, kirimKe?, kenali?, tanggalIsi?, ada?}.
 // Kembalian: {status} untuk pemanggil (gateway, BL-09).
-export async function tangani(pesan, ctx) {
+export async function tangani(pesan, ctxAsli) {
+  // Satu pesan masuk tidak pernah dijawab dua kali dengan teks yang sama (mis. galat dalam lalu galat umum).
+  const sudah = new Set()
+  const ctx = typeof ctxAsli?.balas === 'function' ? { ...ctxAsli, balas: async (t) => { if (sudah.has(t)) return; sudah.add(t); return ctxAsli.balas(t) } } : ctxAsli
   if (pesan?.lama) return { status: 'susulan dibuang' } // K11: pesan saat mesin mati tidak masuk proyek. TODO(BL-14): T-TERLEWAT sekali per nomor.
   const dari = normalWa(pesan?.dari)
   if (!dari || /@g\.us$/.test(dari)) return { status: 'bukan pemakai' }
@@ -1401,7 +1577,11 @@ export async function tangani(pesan, ctx) {
     return { status: 'belum siap' }
   }
   let jawab = !!cmd // galat dibalas ke pengirim hanya untuk perintah dan revisi, tidak untuk bahan biasa
+  const gagalSebelum = JSON.stringify(gagalTerakhir(ctx, sha))
   try {
+    // `lanjut`, `ulangi`, `buat saja` saat pembangunan pengirim ini masih jalan: dijawab sekali, tidak membangun kedua kalinya.
+    if ((cmd?.aksi === 'lanjut' || cmd?.aksi === 'ulangi' || (cmd?.aksi === 'buat' && cmd.saja)) && await jawabSibuk(ctx, sha)) return { status: 'masih dibangun' }
+    if (cmd?.aksi === 'ulangi') { await ulangi(dari, sha, ctx); return { status: 'ulangi' } }
     if (cmd?.aksi === 'satelit') {
       // K18: *tunggu* / *hitung* hanya menjawab pilihan hidup (di bawah 24 jam, proyek masih menunggu); selain itu petunjuk, tanpa proyek baru.
       const e = await pilihanSatelit(ctx, sha)
@@ -1434,12 +1614,17 @@ export async function tangani(pesan, ctx) {
       const draf = await drafPengirim(ctx, sha)
       if (draf) { jawab = true; await revisi(pesan, dari, sha, draf, ctx); return { status: 'revisi', proyek: draf.id } }
     }
-    if (pesan.wa_id != null) return await tambahBahan(pesan, dari, sha, ctx)
-    return { status: 'diabaikan' }
+    const sapa = !cmd && await sapaBila(pesan, sha, ctx) // T-SAPA: obrolan pendek tanpa proyek; bahan tetap lewat jalur biasa
+    if (pesan.wa_id != null) { const r = await tambahBahan(pesan, dari, sha, ctx); return sapa ? { ...r, sapa: true } : r }
+    return { status: sapa ? 'sapa' : 'diabaikan' }
   } catch (e) {
     (ctx.log || (() => {}))('[proyek] galat', e.message)
     await kabarSekali(ctx, 'proyek', tGalatPemilik(null, null, 'Perintah gagal.', e.message, 400))
-    if (jawab) await ctx.balas(susun('Perintah gagal diproses', null, null, 'Pemilik sudah dikabari. Coba lagi beberapa saat lagi.'))
+    if (jawab) {
+      // Langkah dalam (bangun, revisi) sudah mencatat dirinya; selain itu `ulangi` mengirim ulang pesan ini.
+      if (JSON.stringify(gagalTerakhir(ctx, sha)) === gagalSebelum && cmd?.aksi !== 'ulangi') catatGagal(ctx, sha, { langkah: 'pesan', teks: String(pesan.teks || '') })
+      await ctx.balas(susun('Perintah gagal diproses', null, null, ['Pemilik sudah dikabari.', AKHIR_GAGAL]))
+    }
     return { status: 'galat', alasan: e.message }
   }
 }

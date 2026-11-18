@@ -81,7 +81,7 @@ async function sendPaced(jid, isi, isGroup, opsi) {
   const sent = await sock.sendMessage(jid, isi)
   limiter.commit(jid, gate.percakapan)
   simpanTerkirim(sent)
-  return { ok: true, kind: isGroup ? 'group' : 'personal', id: (sent && sent.key && sent.key.id) || null }
+  return { ok: true, kind: isGroup ? 'group' : 'personal', id: (sent && sent.key && sent.key.id) || null, key: (sent && sent.key) || null }
 }
 
 // Tanpa getMessage, permintaan kirim ulang dari penerima yang gagal dekripsi tak terjawab dan pesan
@@ -325,7 +325,13 @@ async function simpanKeOutbox(m, { lama = false } = {}) {
   if (arah === 'perintah' && BL && pribadi) import('../proyek.mjs').then((Pr) => Pr.hapusKonfirmasi({ dari, env: process.env, dasar: RUMAH })).catch(() => {})
   if (arah === 'perintah') { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
   const masuk = Date.now() // Q1: jendela percakapan dihitung dari pesan masuk ini, bukan dari jam balasan (pembangunan bisa lama)
-  if (arah === 'proyek') { keProyek(dari, masuk, async () => ({ dari, teks: teks.trim(), diteruskan })); return } // perintah proyek: tidak jadi bahan di Worker
+  if (arah === 'proyek') {
+    // `lanjut`, `ulangi`, `buat saja` saat pembangunan pengirim ini masih jalan: dijawab langsung (sekali "Masih dibangun"), tidak antre di belakangnya.
+    const Pr = BL ? await import('../proyek.mjs') : null
+    if (Pr && typeof Pr.jawabSibukLangsung === 'function' &&
+      await Pr.jawabSibukLangsung({ dari, teks, diteruskan }, { env: process.env, dasar: RUMAH, log, ...balasanKe(dari, '[proyek]', masuk) }).catch(() => false)) return
+    keProyek(dari, masuk, async () => ({ dari, teks: teks.trim(), diteruskan })); return // perintah proyek: tidak jadi bahan di Worker
+  }
   if (!grupOps && !lama && /^cari\s/i.test(teks) && !blSha) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
@@ -410,15 +416,52 @@ const ULANG_FINAL = BL ? ARAH.buatUlangFinal({
 }) : null
 if (ULANG_FINAL) ULANG_FINAL.mulai()
 
+// Kemajuan pembangunan (pemilik 18 Nov 2026): "sedang mengetik" (presence, di luar limiter, berhenti bila soket tertutup) dan satu pesan
+// kemajuan yang disunting per tahap. Pesan kemajuan = 1 kiriman balasan; suntingan juga kiriman balasan dan hanya bila limiter longgar
+// (menyisakan jatah untuk pratinjau dan PDF), selain itu dilewati. Galat apa pun = tanpa kemajuan, pembangunan jalan terus.
+function kemajuanKe(dari, masuk) {
+  const jid = dari + '@s.whatsapp.net'
+  let detak = null
+  const hadir = (keadaan) => { if (connected && sock) sock.sendPresenceUpdate(keadaan, jid).catch(() => {}) }
+  return {
+    mengetik: (nyala) => {
+      if (detak) { clearInterval(detak); detak = null }
+      if (!nyala) return hadir('paused')
+      hadir('composing')
+      detak = setInterval(() => { if (!connected || !sock) { clearInterval(detak); detak = null; return } hadir('composing') }, 10e3)
+      if (detak.unref) detak.unref()
+    },
+    kirimProgres: async (teks) => {
+      // hanya bila ada ruang untuk pesan kemajuan ditambah pratinjau dan PDF; selain itu tanpa kemajuan (mengetik tetap jalan)
+      if (!limiter.longgar(3, jid, { balasan: true, masuk })) { log('[kemajuan] dilewati, limiter sibuk'); return null }
+      const x = await sendPaced(jid, { text: teks }, false, { balasan: true, masuk })
+      if (!x.ok) { log('[kemajuan] ditahan', x.error); return null }
+      return x.key
+    },
+    ubahProgres: async (key, teks) => {
+      if (!key || !connected || !sock) return false
+      if (!limiter.longgar(2, jid, { balasan: true, masuk })) { log('[kemajuan] suntingan dilewati, limiter sibuk'); return true }
+      const x = await sendPaced(jid, { text: teks, edit: key }, false, { balasan: true, masuk })
+      if (!x.ok) log('[kemajuan] suntingan ditahan', x.error)
+      return !!x.ok
+    },
+  }
+}
+
 function balasanKe(dari, tag, masuk) {
   const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
   const kirim = async (isi) => { const x = await sendPaced(jid, isi, false, { balasan: true, masuk }); if (!x.ok) log(tag, 'balasan ditahan', x.error) }
+  // berkas (pratinjau, PDF, PPTX): ditolak batas per menit atau antrean = diulang sesudah jendela menit, paling banyak 3 kali
+  const kirimBerkas = async (isi) => {
+    const x = await ARAH.kirimUlangMenit(() => sendPaced(jid, isi, false, { balasan: true, masuk }), { log: (...a) => log(tag, ...a) })
+    if (!x.ok) log(tag, 'berkas ditahan', x.error)
+  }
   return {
     balas: (teks) => kirim({ text: teks }),
     balasFile: async (p, nama, caption, mimetype, opsi) => {
       const aman = jalurKeluaran(p, KELUARAN)
       if (!aman) throw new Error('berkas di luar keluaran')
-      await kirim(ARAH.isiBerkas(aman, nama, caption, mimetype, opsi))
+      await kirimBerkas(ARAH.isiBerkas(aman, nama, caption, mimetype, opsi))
     },
   }
 }
@@ -429,8 +472,8 @@ function keProyek(dari, masuk, ambilPesan) {
     const [Pr, O] = await Promise.all([import('../proyek.mjs'), muatOtomatis()])
     const ctx = {
       env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log,
-      ...balasanKe(dari, '[proyek]', masuk), kabariPemilik: kabarPemilik,
-      kirimKe,
+      ...balasanKe(dari, '[proyek]', masuk), ...kemajuanKe(dari, masuk), kabariPemilik: kabarPemilik,
+      kirimKe, masuk,
     }
     const pesan = await ambilPesan(Pr, ctx)
     if (!pesan) return

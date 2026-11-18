@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { jalankan, pilihTerbaru, cekSiap, LAPORAN } from '../../scripts/wa/otomatis.mjs'
+import { jalankan, pilihTerbaru, cekSiap, LAPORAN, hashBahan } from '../../scripts/wa/otomatis.mjs'
 
 const kenali = (teks) => (teks.match(/^\[(\w+)\]/) || [])[1] || null // stub: "[kunci] isi"
 const wibKe = (jam, tgl = '2026-10-29') => new Date(Date.parse(`${tgl}T00:00:00Z`) + (jam - 7) * 3600e3)
@@ -64,8 +64,9 @@ test('kirim sekali: dua laporan x dua berkas x dua penerima, caption tanpa titik
 test('revisi: bahan berubah -> bangun ulang, kirim ulang dengan awalan "Revisi: "', async () => {
   const d = dunia(LENGKAP)
   await d.jalan()
-  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'))
-  try { await d.jalan() } finally { LENGKAP.pop() }
+  // penanganan tidak lagi memakai BMKG pagi (18 Nov 2026): bahan keduanya diganti supaya dua laporan direvisi
+  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'), P('6', 'satgas', 200, 'baru'))
+  try { await d.jalan() } finally { LENGKAP.pop(); LENGKAP.pop() }
   const baru = d.kirim.file.slice(8)
   assert.equal(baru.length, 8)
   assert.ok(baru.every((f) => f.c.startsWith('Revisi: ')))
@@ -157,8 +158,8 @@ test('unggah /pelaporan: sebelum WA, bidang benar, revisi 0 lalu 1, sekali per b
   assert.ok(d.kirim.unggah[0].pptx.endsWith('.pptx') && d.kirim.unggah[0].pdf.endsWith('.pdf'))
   await d.jalan()
   assert.equal(d.kirim.unggah.length, 2)
-  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'))
-  try { await d.jalan() } finally { LENGKAP.pop() }
+  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'), P('6', 'satgas', 200, 'baru'))
+  try { await d.jalan() } finally { LENGKAP.pop(); LENGKAP.pop() }
   assert.deepEqual(d.kirim.unggah.slice(2).map((u) => u.revisi), [1, 1])
 })
 
@@ -206,7 +207,7 @@ test('Google Drive gagal: WA tetap terkirim tanpa link, PEMILIK dikabari sekali;
 test('tanggal isi: bahan lama (tanggal isi beda) diabaikan, tidak ada laporan yang dibuat', async () => {
   const d = dunia(LENGKAP)
   const log = []
-  const r = await d.jalan({ tanggalIsi: (t, k) => (k === 'bmkg_pagi' ? '2026-10-27' : TGL), log: (...a) => log.push(a.join(' ')) })
+  const r = await d.jalan({ tanggalIsi: (t, k) => (k === 'bmkg_pagi' || k === 'satgas' ? '2026-10-27' : TGL), log: (...a) => log.push(a.join(' ')) })
   assert.equal(d.kirim.exec.length, 0); assert.equal(d.kirim.file.length, 0)
   assert.ok(r.every((x) => x.status === 'tunggu'))
   assert.ok(log.some((l) => l.includes('bahan bertanggal 2026-10-27, bukan 2026-10-29')))
@@ -271,7 +272,7 @@ test('--cutoff: penanganan dibangun tanpa bahan WA, harian menunggu dan PEMILIK 
   const d = dunia([])
   const h = await d.jalan({ cutoff: true })
   assert.equal(h.find((x) => x.id === 'penanganan').status, 'terkirim')
-  assert.deepEqual(h.find((x) => x.id === 'penanganan').bahanBelumMasuk, ['bmkg_pagi', 'satgas'])
+  assert.deepEqual(h.find((x) => x.id === 'penanganan').bahanBelumMasuk, ['satgas'])
   assert.ok(!d.kirim.exec.find((a) => a[0] === 'penanganan_otomatis.py').includes('--bmkg'))
   assert.equal(h.find((x) => x.id === 'harian').status, 'tunggu')
   await d.jalan({ cutoff: true })
@@ -354,4 +355,17 @@ test('WA_OTOMATIS=0 (K16): laporan terjadwal tidak dibangun dan tidak dikirim; p
   const m = await d.jalan({ env: env0 })
   assert.ok(d.kirim.exec.length > 0, 'jalan bertanggal (kirim ulang manual) tetap membangun')
   assert.ok(!m.some((x) => /dimatikan/.test(x.status)))
+})
+
+test('hash penanganan sama dengan rumus sebelum 18 Nov (bmkg_pagi lalu satgas): laporan terkirim tidak dikirim ulang sebagai Revisi', async () => {
+  const crypto = await import('node:crypto')
+  const lap = LAPORAN.find((l) => l.id === 'penanganan')
+  const lama = (teks) => crypto.createHash('sha256').update(JSON.stringify([...['bmkg_pagi', 'satgas'], ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
+  for (const teks of [{ bmkg_pagi: 'b', satgas: 's' }, { bmkg_pagi: 'b', satgas: 's', gelar_udara: 'g' }, { satgas: 's' }]) assert.equal(hashBahan(lap, teks), lama(teks), JSON.stringify(teks))
+  assert.deepEqual(lap.butuh, ['satgas'], 'BMKG pagi tidak diminta')
+  // BMKG pagi tetap ikut dibaca dan diteruskan (--bmkg) bila ada, supaya hash hari pemasangan sama
+  const d = dunia(LENGKAP)
+  await d.jalan()
+  const a = d.kirim.exec.find((x) => x[0] === 'penanganan_otomatis.py')
+  assert.ok(a.includes('--bmkg') && a.includes('--operasi'))
 })

@@ -10,13 +10,14 @@ const path = require('path')
 // Perintah mesin proyek (Q14 dan ALUR B-C): `kirim ulang ...` dan `status <tanggal>` tidak termasuk, tetap di perintah.mjs.
 // Angka menu draf 1 sampai 4 (boleh berspasi atau bertitik) juga perintah: tidak pernah jadi bahan di Worker. `ya` tidak di sini: hanya perintah
 // selama tanya batal berlaku, jadi diputuskan proyek.klasifikasi (jalur 'bahan+proyek' teks saja, lewat pilihJalur).
-const KATA_PROYEK = /^(buat\b.*|status|bantuan|panduan|lanjut|hitung|tunggu|(final|batal|versi|pptx)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
+const KATA_PROYEK = /^(buat\b.*|status|bantuan|panduan|lanjut|ulangi|hitung|tunggu|(final|batal|versi|pptx)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
 const ANGKA_MENU = /^[1-4][\s.]*$/
-const KATA_TUNTUN = /^(lanjut|buat saja|hitung|tunggu)$/ // K17/K18: diteruskan = bahan, tidak pernah perintah
+const KATA_TUNTUN = /^(lanjut|ulangi|buat saja|hitung|tunggu)$/ // K17/K18: diteruskan = bahan, tidak pernah perintah
 // diteruskan: pesan berlabel Diteruskan tidak pernah jadi angka menu (bahan biasa).
+// Ekor bukan huruf atau angka dibuang ("lanjut\", "final!", "lanjut."), sama dengan proyek.normalPerintah.
 function perintahProyek(teks, diteruskan = false) {
   const asli = String(teks ?? '').trim()
-  const t = asli.toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
+  const t = asli.toLowerCase().replace(/[^\p{L}\p{N}]+$/u, '').replace(/\s+/g, ' ')
   if (!t || t.length > 60 || /\n/.test(asli)) return false
   if (diteruskan && (ANGKA_MENU.test(t) || KATA_TUNTUN.test(t))) return false
   return KATA_PROYEK.test(t)
@@ -140,6 +141,19 @@ function buatTerlewat({ berkas, kini = Date.now, kirim, log = () => {}, setT = s
   return { buka, detak, susulan, state: () => st }
 }
 
+// Kiriman berkas draf yang ditolak batas per menit atau antrean slot (429) diulang sesudah jendela menit, paling banyak `ulang` kali.
+// Penolakan lain (batas harian, per tujuan, soket tertutup) tidak diulang. kirim() -> {ok, code, error} dari sendPaced.
+async function kirimUlangMenit(kirim, { ulang = 3, jeda = 61e3, tidur = (ms) => new Promise((r) => { const t = setTimeout(r, ms); if (t && t.unref) t.unref() }), log = () => {} } = {}) {
+  let x
+  for (let i = 0; i <= ulang; i++) {
+    try { x = await kirim() } catch (e) { return { ok: false, error: String((e && e.message) || e) } }
+    if (x && x.ok) return x
+    if (!(x && x.code === 429 && /per menit|antrean/.test(String(x.error || '')))) return x || { ok: false }
+    if (i < ulang) { log('ditahan', x.error, 'diulang sesudah jendela menit'); await tidur(jeda) }
+  }
+  return x
+}
+
 // Q1 dan D8: pratinjau slide dikirim sebagai pesan gambar berketerangan; PDF dan PPTX sebagai dokumen.
 function isiBerkas(p, nama, caption, mimetype, opsi = {}) {
   const mime = String(mimetype || 'application/octet-stream')
@@ -168,4 +182,4 @@ function buatUlangFinal({ jalankan, terhubung = () => true, log = () => {}, jeda
   }
 }
 
-module.exports = { perintahProyek, arah, buatAntre, buatPenunggu, buatTerlewat, buatUlangFinal, teksTerlewat, isiBerkas, pilihJalur, diteruskan, tsMs }
+module.exports = { perintahProyek, arah, buatAntre, buatPenunggu, buatTerlewat, buatUlangFinal, teksTerlewat, isiBerkas, pilihJalur, diteruskan, tsMs, kirimUlangMenit }

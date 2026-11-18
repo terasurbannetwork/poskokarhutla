@@ -36,7 +36,12 @@ export const LAPORAN = [
     args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out, ...isianArg(f)] },
   // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada. pilihan: bahan tambahan yang dipakai bila ada, tidak ditunggu
   // (Excel 'Gelar Kekuatan Satgas Udara Karhutla' untuk panel Armada Udara, pemilik 16 Nov 2026). Format laporan manual 13 Nov, cut-off 18.00.
-  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], pilihan: ['gelar_udara'], opsional: true, jam: 18, waktu: 25 * 60e3,
+  // Wajib hanya laporan Satgas (18 Nov 2026: penanganan_otomatis.py tidak memakai --bmkg; cuaca dan PM2.5 dari data sistem). Laporan penanganan
+  // lengkap (karhutla_mensesneg) memuat bagian Operasi Darat/Udara yang sama, jadi setara dengan satgas dan dikirim sebagai --operasi.
+  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['satgas'], setara: { satgas: ['karhutla_mensesneg'] }, pilihan: ['gelar_udara'],
+    // ikut: dibaca dan diteruskan bila ada (--bmkg, tidak dipakai generator), tidak diminta. kunciHash: masukan hash seperti sebelum 18 Nov
+    // (bmkg_pagi lalu satgas) supaya laporan yang sudah terkirim pada hari pemasangan tidak dikirim ulang sebagai "Revisi:".
+    ikut: ['bmkg_pagi'], kunciHash: ['bmkg_pagi', 'satgas'], opsional: true, jam: 18, waktu: 25 * 60e3,
     berkas: (d) => `Laporan Penanganan Pengendalian Karhutla ${ddmmyy(d)}`,
     args: (d, f, out) => ['penanganan_otomatis.py', '--tanggal', d, '--jam', '18:00', ...(f.bmkg_pagi ? ['--bmkg', f.bmkg_pagi] : []), ...(f.satgas ? ['--operasi', f.satgas] : []),
       ...(f.gelar_udara ? ['--gelar', f.gelar_udara] : []), '--out', out, ...isianArg(f)] },
@@ -90,7 +95,7 @@ export function cekSiap(lap, terpilih, now, tanggal, cutoff = false) {
 }
 
 export const hashBahan = (lap, teks) =>
-  crypto.createHash('sha256').update(JSON.stringify([...lap.butuh, ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
+  crypto.createHash('sha256').update(JSON.stringify([...(lap.kunciHash || lap.butuh), ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
 
 function ambilKunci(berkas) {
   const baca = () => { try { return JSON.parse(fs.readFileSync(berkas, 'utf8')) } catch { return {} } }
@@ -174,11 +179,12 @@ export async function ambilBahan({ env, dep, tanggal, kenali = kenaliAsli, tangg
   const teksDari = async (p) => { if (!teksCache.has(p.id)) teksCache.set(p.id, await ambilTeks(p, dep, env)); return teksCache.get(p.id) }
   const pilihSesuai = async (lap) => {
     const terpilih = {}, teks = {}
-    for (const k of [...lap.butuh, ...(lap.pilihan || [])]) {
-      for (const p of semua[k] || []) {
+    for (const k of [...lap.butuh, ...(lap.pilihan || []), ...(lap.ikut || [])]) {
+      // lap.setara: jenis lain yang boleh mengisi k (bahan k sendiri lebih dulu); tanggal isi dibaca dengan aturan jenis aslinya
+      for (const [p, asal] of [...(semua[k] || []).map((x) => [x, k]), ...(lap.setara?.[k] || []).flatMap((a) => (semua[a] || []).map((x) => [x, a]))]) {
         let t
         try { t = await teksDari(p) } catch (x) { log(lap.id, k, 'teks tak terbaca:', x.message); continue }
-        const td = BERKAS_BINER.test(p.nama_berkas || '') ? tanggalWib(new Date(Number(p.diterima) || Date.parse(p.diterima) || 0)) : tanggalIsi(t, k) // Excel tanpa tanggal isi: tanggal terima
+        const td = BERKAS_BINER.test(p.nama_berkas || '') ? tanggalWib(new Date(Number(p.diterima) || Date.parse(p.diterima) || 0)) : tanggalIsi(t, asal) // Excel tanpa tanggal isi: tanggal terima
         if (td === tanggal) { terpilih[k] = p; teks[k] = t; break }
         log(`bahan bertanggal ${td || 'tak terbaca'}, bukan ${tanggal}`, k, p.id)
       }
@@ -199,7 +205,7 @@ export function siapkanKeluaran(lap, tanggal, teks, dasar) {
   const out = path.join(dasar, 'keluaran', tanggal)
   fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
   const f = {}
-  for (const k of [...lap.butuh, ...(lap.pilihan || [])]) {
+  for (const k of [...lap.butuh, ...(lap.pilihan || []), ...(lap.ikut || [])]) {
     if (teks[k] == null) continue
     const biner = String(teks[k]).match(/^biner:(\.\w+):/) // berkas biner (Excel) dari ambilTeks
     f[k] = path.join(kerja, k + (biner ? biner[1] : '.txt'))

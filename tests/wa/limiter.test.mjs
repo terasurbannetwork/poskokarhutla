@@ -95,3 +95,34 @@ test('pembangunan lama: balasan dihitung dari jam pesan masuk, tetap percakapan'
   assert.equal(L.check(A, { balasan: true, masuk }).percakapan, false, 'lebih dari 2 jam sesudah pesan masuk: batas biasa')
   assert.equal(L.check(B, { balasan: true, masuk: Date.now() }).percakapan, false, 'tanpa pesan masuk dari tujuan itu: batas biasa')
 })
+
+test('longgar: kiriman kosmetik hanya bila jatah menit, jam, harian, per tujuan, dan pemanasan masih menyisakan cadangan', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
+  const L = muat()
+  assert.equal(L.longgar(2), true)
+  L.commit(A, false) // satu kiriman dalam menit ini: 1 + 1 + 2 > 3
+  assert.equal(L.longgar(2), false, 'per menit menyisakan dua kiriman penting')
+  t.mock.timers.tick(61000)
+  assert.equal(L.longgar(2), true)
+  // per tujuan, ember biasa (8): 5 terkirim, 1 + 2 cadangan muat; 6 terkirim tidak
+  for (let i = 0; i < 5; i++) kirim(L, t, B)
+  assert.equal(L.longgar(2, B), true)
+  kirim(L, t, B)
+  assert.equal(L.longgar(2, B), false, 'ember biasa 8 per tujuan')
+  // percakapan (40 per tujuan)
+  for (let i = 0; i < 38; i++) { L.noteMasuk(A); kirim(L, t, A, { balasan: true }) } // 38 + 1 + 2 > 40
+  L.noteMasuk(A)
+  assert.equal(L.longgar(2, A, { balasan: true }), false, 'ember percakapan 40 per tujuan')
+  assert.equal(L.longgar(1, A, { balasan: true }), true)
+})
+
+test('longgar: batas harian pemanasan dan anggaran percakapan pemanasan', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
+  const L = muat({ pemanasan: true })
+  for (let i = 0; i < 18; i++) { L.noteMasuk(A); kirim(L, t, A, { balasan: true }) }
+  L.noteMasuk(A)
+  assert.equal(L.longgar(2, A, { balasan: true }), false, 'percakapan pemanasan paling banyak 20, 18 + 3 lewat')
+  const C = (n) => '62812000000' + String(n).padStart(2, '0') + '@s.whatsapp.net'
+  for (let i = 0; i < 22; i++) kirim(L, t, C(i)) // 18 + 22 = 40
+  assert.equal(L.longgar(0), false, 'batas harian pemanasan 40 tercapai')
+})

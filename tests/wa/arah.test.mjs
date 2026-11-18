@@ -57,7 +57,8 @@ test('menu draf: angka 1-4 dari nomor terdaftar langsung ke proyek, tidak diteru
   assert.equal(await A.pilihJalur(Pr, { ...pesan, teks: '3' }, ctx), 'langsung')
   // diteruskan: angka dan ya selalu bahan, juga selama tanya batal berlaku
   assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks: '1', diteruskan: true }), 'bahan+proyek')
-  for (const teks of ['lanjut', 'buat saja', 'hitung', 'tunggu']) {
+  for (const teks of ['ulangi', 'Ulangi.', 'lanjut\\', 'final!', 'batal?']) assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'proyek', 'ekor bukan huruf: ' + teks)
+  for (const teks of ['lanjut', 'buat saja', 'hitung', 'tunggu', 'ulangi']) {
     assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks, diteruskan: true }), 'bahan+proyek', 'diteruskan ' + teks)
     assert.equal(A.arah({ proyek: true, pribadi: true, terdaftar: true, teks }), 'proyek', teks)
     assert.equal(rute({ bl: true, teks, diteruskan: true }), 'bahan+proyek', 'pemilik diteruskan ' + teks)
@@ -271,4 +272,23 @@ test('gateway: ulang final hanya dipasang bila BL_PROYEK=1, memakai ctx proyek (
   assert.match(src, /Pr\.ulangFinal\(\{ env: process\.env, dep: O\.depBawaan\(process\.env\),.*kabariPemilik: kabarPemilik, kirimKe \}\)/)
   assert.match(src, /if \(ULANG_FINAL\) ULANG_FINAL\.mulai\(\)/)
   assert.match(src, /connection === 'open'\) \{[^\n]*if \(ULANG_FINAL\) ULANG_FINAL\.buka\(\)/)
+})
+
+test('kirimUlangMenit: berkas draf yang ditolak batas per menit diulang sesudah jendela menit (paling banyak 3 kali); penolakan lain tidak', async () => {
+  const tidur = []
+  const urut = (...h) => { let i = 0; return async () => h[Math.min(i++, h.length - 1)] }
+  const menit = { ok: false, code: 429, error: 'batas per menit' }
+  let x = await A.kirimUlangMenit(urut(menit, { ok: false, code: 429, error: 'antrean terlalu panjang' }, { ok: true, id: 'X' }), { tidur: async (ms) => tidur.push(ms) })
+  assert.equal(x.ok, true); assert.deepEqual(tidur, [61000, 61000])
+  tidur.length = 0
+  let n = 0
+  x = await A.kirimUlangMenit(async () => { n++; return menit }, { tidur: async (ms) => tidur.push(ms) })
+  assert.equal(x.ok, false); assert.equal(n, 4, 'sekali ditambah 3 ulangan'); assert.equal(tidur.length, 3)
+  n = 0
+  x = await A.kirimUlangMenit(async () => { n++; return { ok: false, code: 429, error: 'batas harian' } }, { tidur: async () => { throw new Error('tidak boleh menunggu') } })
+  assert.equal(n, 1); assert.equal(x.error, 'batas harian')
+  const src = fs.readFileSync(new URL('../../scripts/wa/gateway/index.js', import.meta.url), 'utf8')
+  assert.match(src, /if \(!limiter\.longgar\(3, jid, \{ balasan: true, masuk \}\)\) \{ log\('\[kemajuan\] dilewati, limiter sibuk'\); return null \}/, 'pesan kemajuan hanya bila ada ruang untuk kemajuan, pratinjau, PDF')
+  assert.match(src, /limiter\.longgar\(2, jid, \{ balasan: true, masuk \}\)/)
+  assert.match(src, /await kirimBerkas\(ARAH\.isiBerkas\(aman, nama, caption, mimetype, opsi\)\)/)
 })

@@ -77,8 +77,7 @@ _P-181126-02_
 Laporan Penanganan Pengendalian Karhutla 18 Nov
 
 *Wajib:*
-- BMKG pagi: sudah ada
-- Satgas pemadaman
+- Satgas pemadaman atau laporan penanganan lengkap
 
 *Tambahan:*
 - Gelar kekuatan Satgas Udara (Excel)
@@ -86,6 +85,8 @@ Laporan Penanganan Pengendalian Karhutla 18 Nov
 Kirim atau teruskan bahannya ke sini.
 Ketik *lanjut* bila sudah siap.
 ```
+
+Wajib penanganan cukup salah satu: laporan Satgas pemadaman, atau laporan penanganan lengkap ("LAPORAN PENANGANAN KARHUTLA DI ENAM PROVINSI PRIORITAS") yang memuat bagian Operasi Darat dan Udara yang sama. BMKG pagi tidak lagi diminta; cuaca dan PM2.5 diambil dari data sistem. BMKG pagi yang dikirim sendirian disimpan sebagai bahan tanpa membuka proyek; terhitung saat *buat harian*.
 
 Bila semua bahan wajib sudah ada, judulnya `*Bahan wajib lengkap*` dan baris terakhirnya "Ketik *lanjut* untuk membuat laporan." Laporan harian tidak punya bagian Tambahan. Sebelum cut-off hari ini, di bawah nama laporan ada baris "Belum cut-off 18.00 WIB, angka sistem hari ini belum lengkap."
 
@@ -229,7 +230,7 @@ Balasan *hitung*: draf biasa (A1) dengan baris catatan:
 _P-181126-02, versi 1_
 
 Laporan Penanganan Pengendalian Karhutla 18 Nov
-Bahan: BMKG pagi 1
+Bahan: Gelar kekuatan Satgas Udara (Excel) 1
 Hotspot, firespot, luas terbakar, dan luas belum padam dari sistem (hari D-1).
 Gambar ini slide 1, PDF menyusul.
 
@@ -270,6 +271,43 @@ Bahan 18 Nov belum menunjukkan jenis laporannya.
 Ketik salah satu:
 - *buat harian 2026-11-18*
 - *buat penanganan 2026-11-18*
+```
+
+### A5b. Kemajuan pembangunan (satu pesan, disunting per tahap)
+
+Selama membangun, WhatsApp menampilkan "sedang mengetik". Pesan pertama:
+
+```text
+*Membangun draf v1*
+_P-181126-01_
+
+[jalan] Membaca bahan
+[menunggu] Mengurai bahan dengan AI
+[menunggu] Membuat slide
+[menunggu] PDF dan pemeriksaan
+```
+
+Pesan yang sama disunting tiap pindah tahap (paling banyak 4 kali). Sesudah pratinjau dan PDF terkirim:
+
+```text
+*Membangun draf v1*
+_P-181126-01_
+
+[selesai] Membaca bahan
+[selesai] Mengurai bahan dengan AI
+[selesai] Membuat slide
+[selesai] PDF dan pemeriksaan
+```
+
+Bila gagal, tahap itu bertanda `[gagal]` lalu balasan gagal (F3) menyusul. Revisi memakai judul `*Menerapkan revisi v2*` dengan tahap Membaca permintaan, Menerapkan perubahan, Membuat slide, PDF dan pemeriksaan.
+
+### A5c. *lanjut* lagi saat masih dibangun (sekali)
+
+```text
+*Masih dibangun*
+_P-181126-01_
+
+Tunggu sebentar, draf dikirim begitu siap.
 ```
 
 ### A6. Sedang dibangun
@@ -364,7 +402,8 @@ Balas dengan kalimat revisi yang lebih rinci.
 *Revisi v2 gagal dibangun*
 _P-181126-01, versi 1_
 
-Draf v1 tetap berlaku. Pemilik sudah dikabari, kirim revisinya lagi nanti.
+Draf v1 tetap berlaku. Pemilik sudah dikabari.
+Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.
 ```
 
 ## C. Menu bernomor dan perintah saat draf
@@ -536,6 +575,8 @@ Kirim atau teruskan bahan, lalu ketik *buat harian* atau *buat penanganan*.
 
 *Lainnya*
 - *status*: proyek yang masih terbuka
+- *ulangi*: coba lagi langkah yang gagal
+- *batal*: batalkan proyek kapan saja
 - *bantuan*: tampilkan pesan ini
 
 Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*
@@ -569,6 +610,23 @@ Bot tadi mati jam 14.05 sampai 16.30.
 Pesan di jam itu tidak diproses. Kirim ulang bila masih perlu.
 ```
 
+### E5. Sapaan tanpa proyek (T-SAPA)
+
+Pesan pendek yang bukan perintah dari nomor terdaftar tanpa proyek terbuka (misalnya "halo", "selamat pagi", "test"), sekali per 6 jam:
+
+```text
+*Halo, ini Bot Laporan BNPB*
+Bot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpannya ke Google Drive Tim IT.
+
+*Mulai dengan mengetik:*
+- *buat harian*: laporan kejadian bencana harian
+- *buat penanganan*: laporan penanganan karhutla
+
+*Butuh bantuan?*
+- *bantuan*: daftar perintah
+- *panduan*: gambar panduan lengkap
+```
+
 ## F. Galat ke pengirim
 
 ### F1. Bahan gagal dibaca (Claude)
@@ -578,6 +636,8 @@ Pesan di jam itu tidak diproses. Kirim ulang bila masih perlu.
 _P-181126-01_
 
 Mesin gagal membaca bahan. Kirim ulang bahannya, lalu coba lagi.
+
+Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.
 ```
 
 ### F2. Kuota habis (T-KUOTA)
@@ -595,7 +655,8 @@ Kuota pembacaan hari ini sudah habis. Bot lanjut lagi besok.
 *Draf v1 gagal dibangun*
 _P-181126-01_
 
-Pemilik sudah dikabari. Ketik *buat* lagi beberapa saat lagi.
+Pemilik sudah dikabari.
+Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.
 ```
 
 ### F4. Perintah gagal diproses (galat lain)
@@ -603,8 +664,21 @@ Pemilik sudah dikabari. Ketik *buat* lagi beberapa saat lagi.
 ```text
 *Perintah gagal diproses*
 
-Pemilik sudah dikabari. Coba lagi beberapa saat lagi.
+Pemilik sudah dikabari.
+Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.
 ```
+
+### F4b. *ulangi*
+
+*ulangi* menjalankan lagi langkah terakhir yang gagal: draf yang gagal dibangun atau disimpan dibangun lagi seperti *lanjut*, revisi yang gagal dijalankan lagi dengan kalimat yang sama. Catatan gagal berlaku 24 jam dan proyeknya harus masih terbuka. Tanpa langkah gagal:
+
+```text
+*Tidak ada yang perlu diulang*
+
+Belum ada langkah yang gagal. Ketik *status* untuk melihat proyek.
+```
+
+*batal* bekerja di setiap status proyek yang masih terbuka (menunggu bahan, menunggu jawaban, pembangunan yang terhenti, draf). Angka *4* di menu draf tetap bertanya dulu.
 
 ### F5. Bot belum siap
 
