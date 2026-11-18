@@ -74,11 +74,11 @@ CREATE TABLE IF NOT EXISTS alun_tanda (
 CREATE INDEX IF NOT EXISTS alun_tanda_akun ON alun_tanda (akun_id, waktu);
 
 CREATE INDEX IF NOT EXISTS alun_utas_kursor ON alun_utas (dibuat, id);
-CREATE INDEX IF NOT EXISTS alun_balas_utas_petugas ON alun_balas (utas_id, petugas, dibuat);
 ```
 
 Catatan:
 
+- Berkasnya `migrations/0150_alun_terpadu.sql` (AT-02). Indeks `alun_balas (utas_id, petugas, dibuat)` tidak dibuat: indeks `alun_balas_utas (utas_id, dibuat)` dari 0024 sudah mempersempit ke satu utas. CHECK awalan kode kabupaten dipertahankan sesudah dicek terhadap 548 kode di `public/data/wilayah/indeks.json`, termasuk Papua 91 sampai 96.
 - Tanpa trigger. Riwayat append-only dijaga kode (tidak ada rute yang mengubah atau menghapus) dan gerbang G-7. Menghapus utas menghapus utas dulu, lalu baris `alun_riwayat`, `alun_tanda`, `alun_wilayah`, `alun_lembaga`, `alun_penulis`, dan tautan kejadiannya, dalam satu jalur kode.
 - `alun_utas` dan `alun_balas` tidak diubah. Status tetap di `alun_utas.bantuan`.
 - `alun_penulis.mk_id` wajib terisi (`migrations/0133_masuk.sql`), jadi balasan dari kotak masuk instansi tidak memakainya; penanda lembaga ada di `alun_lembaga`.

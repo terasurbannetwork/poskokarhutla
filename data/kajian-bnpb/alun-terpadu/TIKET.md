@@ -1,6 +1,6 @@
 # TIKET: Alun-alun Terpadu
 
-Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas, lalu pemeriksa bersih yang bukan pengerjanya (AGENTS 3.2). Subagent tidak commit dan tidak push. Belum ada tiket yang dikerjakan.
+Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas, lalu pemeriksa bersih yang bukan pengerjanya (AGENTS 3.2). Subagent tidak commit dan tidak push. Sedang dikerjakan: AT-01, AT-02 (15 Nov 2026). Migrasi `0150_alun_terpadu.sql` belum diterapkan di D1 produksi; itu langkah pemilik.
 
 ## Urutan
 

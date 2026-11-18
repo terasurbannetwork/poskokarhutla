@@ -777,6 +777,15 @@ async function bacaSaja(env, req, res) {
   k.headers.set("cache-control", "private, no-store"); k.headers.append("vary", "cookie");
   return k;
 }
+/* tombol Keluar di kepala setiap halaman bersesi (pemilik, 17 Nov 2026): satu skrip public/inti/keluar.js disisipkan di sini, bukan disalin ke tiap HTML.
+   Halaman tanpa sesi (PUBLIK_TANPA_SESI, /masuk, /admin/masuk) tidak diberi tombol. */
+const TANPA_KELUAR = /^\/(admin\/)?masuk$/;
+function pasangKeluar(req, url, res) {
+  const ct = res.headers.get("content-type"); if (req.method !== "GET" || res.status !== 200 || ct && !/text\/html/.test(ct)) return res;
+  const j = url.pathname.replace(/\/+$/, "") || "/";
+  if (PUBLIK_TANPA_SESI.has(j) || TANPA_KELUAR.test(j)) return res;
+  return new HTMLRewriter().on("body", {element: el => el.append('<script src="/inti/keluar.js?v=1" defer></script>', {html: true})}).transform(res);
+}
 async function layaniHTML(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
   /* berkas statis layar petugas tidak membawa CSP/permissions-policy modul: arahkan ke alamat bersih */
@@ -938,9 +947,9 @@ const W = {
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
-    const r = await rute(env, req, url, ctx); if (r) return bacaSaja(env, req, r);
+    const r = await rute(env, req, url, ctx); if (r) return bacaSaja(env, req, pasangKeluar(req, url, r));
     const h = await layaniHTML(req, env, ctx, url);
-    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : await bacaSaja(env, req, h);
+    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : await bacaSaja(env, req, pasangKeluar(req, url, h));
     if (!url.pathname.startsWith("/api/warga")) { const a = await env.ASSETS.fetch(req); return a.status === 404 && mauHalaman(req, url) ? halamanGalat(env, req, url, 404) : a; }
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {

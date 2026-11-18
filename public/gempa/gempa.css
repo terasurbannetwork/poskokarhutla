@@ -65,6 +65,27 @@
 .lc-citra figure{margin:0;display:grid;gap:4px}
 .lc-citra img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--bg2,#0001)}
 .lc-citra figcaption{font-size:11.5px}
+/* panel kiri setara karhutla (public/index.html): mode atas, pil + unduh, label hari, Grand total, kartu tahunan dan tren; aturan disalin, warna lewat token */
+#panelMode button{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}#panelMode button svg{width:14px;height:14px;flex:none}
+.tb.tb-total{position:sticky;top:30px;z-index:2;background:color-mix(in srgb,var(--info) 18%,var(--card));font-weight:800;color:var(--ink);cursor:default;border-bottom:1px solid var(--line)}
+.tb.tb-total .n{font-variant-numeric:tabular-nums}
+.kotak-p{margin:4px 0 10px;padding:12px 12px 10px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+.tm{padding:12px 12px 8px}.tm svg{display:block;margin:4px 0 2px;color:var(--ink)}
+.tm-b{cursor:pointer}.tm-b:hover rect + rect{filter:brightness(.88)}
+.tr-sw{display:flex;align-items:center;gap:8px;padding:4px 2px 6px;font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--ink2)}
+.tr-sw .seg{box-shadow:none;padding:2px;width:100%}.tr-sw .seg button{padding:3px 6px;font-size:var(--fs-1);text-transform:none;letter-spacing:0;display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:1 1 auto;white-space:nowrap;min-width:0}
+.tr-sw .seg button svg{width:13px;height:13px;flex:none}.tr-sw .seg.penuh{width:auto;flex:1;min-width:0}
+.tr-hari{padding:2px 2px 5px;font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--ink2)}.tr-hari b{color:var(--ink)}
+.tr-baris{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.seg.tr-seg{margin:6px 0 8px;overflow:hidden}.seg.tr-seg button{flex:1 1 0;min-width:0;padding:5px 0;font-size:.68rem}
+.tr-pesan{margin:2px 0 0;font-size:.72rem;color:var(--ink2);text-align:center}.tr-pesan b{color:var(--ink)}
+.tm-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 12px;font-size:.656rem;color:var(--ink2);margin:2px 0 4px}
+.tm-leg span{display:inline-flex;align-items:center;gap:5px}.tm-leg i{width:14px;border-top:2px dashed;height:0}.tm-leg b{color:var(--ink)}
+.tm-ring{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center;margin:6px 0 2px;padding:10px 12px;border-radius:12px;border:1px solid color-mix(in oklch,var(--w) 28%,var(--line));background:color-mix(in oklch,var(--w) 7%,var(--card))}
+.tm-ring-k{display:flex;flex-direction:column;gap:1px;padding-right:14px;border-right:1px solid color-mix(in oklch,var(--w) 25%,var(--line))}
+.tm-ring-k span{font-size:.625rem;font-weight:800;letter-spacing:.07em;color:var(--ink2)}
+.tm-ring-k b{font-family:var(--display);font-size:1.25rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;color:var(--w);white-space:nowrap}
+.tm-ring-r{display:flex;flex-direction:column;gap:2px;font-size:.72rem;color:var(--ink2);min-width:0}.tm-ring-r b{color:var(--ink);font-variant-numeric:tabular-nums}
 /* tooltip sumber di legenda: atribusi sebagai paragraf terbaca, bukan angka besar (16 Nov 2026) */
 #tip .tp2-atr{margin-top:6px;max-width:300px;font-size:12px;line-height:1.5;color:var(--ink2);overflow-wrap:anywhere}
 #tip .tp2-atr b{font-weight:600;color:var(--ink)}

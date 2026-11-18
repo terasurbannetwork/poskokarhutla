@@ -5,7 +5,7 @@
    Isian terakhir per jenis disimpan di R2 wa-form/<kunci>.json untuk tombol "Salin isian terakhir" (bukan sumber laporan).
    Semua rute: staf Pusdalops/Koordalops/Pimpinan (atau admin) PERTAMA, sebelum body/D1. */
 import {json, gagal, bacaBody} from "./worker.js";
-import {modAtauStaf, stafNyata, dariStaf, wilayahStaf} from "./staf.js";
+import {modAtauStaf, stafNyata, dariStaf, wilayahStaf, stafSesiSemua} from "./staf.js";
 import {laju} from "./bnpb.js";
 import {kenali, tanggalIsi} from "./wa_jenis.js";
 import {jenisDari, hariWib} from "./wa.js";
@@ -13,12 +13,14 @@ import {susun, KUNCI} from "../public/bnpb/bahan_spek.js";
 
 const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BODY = 65536, MAKS_TEKS = 65536, HARI = 864e5;   // MAKS_TEKS = CHECK teks wa_masuk (0076)
 const pintu = async (env, req) => { const o = await modAtauStaf(env, req, PERAN); return o ? String(o).slice(0, 64) : null; };
+/* tanpa sesi staf = 401 (layar menyuruh masuk), sesi ada tapi perannya bukan = 403; dulu keduanya 403 sehingga staf yang sesinya habis dibilang "belum berhak" */
+const tolak = async (env, req) => (await stafSesiSemua(env, req)) ? gagal(403, DITOLAK) : gagal(401, "belum masuk sebagai staf atau sesi berakhir; masuk lagi");
 const DITOLAK = "hanya staf Pusdalops, Koordalops, atau Pimpinan";
 /* bahan laporan harian = produk NASIONAL yang dibaca bot laporan Kepala BNPB: staf berwilayah dan akun dummy tidak boleh menulisnya */
 const bolehTulis = (req, oleh) => !dariStaf(oleh) || (stafNyata(req) && !wilayahStaf(req).length);
 
 async function kirim(env, req, kini) {
-  const oleh = await pintu(env, req); if (!oleh) return gagal(403, DITOLAK);
+  const oleh = await pintu(env, req); if (!oleh) return tolak(env, req);
   if (!bolehTulis(req, oleh)) return gagal(403, "hanya staf nasional (bukan akun dummy atau staf berwilayah) yang boleh mengirim bahan laporan harian");
   const lj = await laju(env, "bf:" + oleh, "bahan_form", [[3600e3, 60]], kini); if (lj) return lj;
   const b = await bacaBody(req, MAKS_BODY); if (b.galat) return gagal(b.status || 400, b.galat);
@@ -41,7 +43,7 @@ async function kirim(env, req, kini) {
 }
 
 async function terakhir(env, req, url) {
-  const oleh = await pintu(env, req); if (!oleh) return gagal(403, DITOLAK);
+  const oleh = await pintu(env, req); if (!oleh) return tolak(env, req);
   const kunci = url.searchParams.get("kunci"); if (!KUNCI.includes(kunci)) return gagal(400, `kunci harus salah satu: ${KUNCI.join(", ")}`);
   const o = env.MEDIA && await env.MEDIA.get(`wa-form/${kunci}.json`);
   let isi = null; if (o) try { isi = JSON.parse(await o.text()); } catch {}

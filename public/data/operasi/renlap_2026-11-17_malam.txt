@@ -1,0 +1,282 @@
+USULAN TARGET, Base PNK Supadio, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+  tidak ada usulan
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base KTG Rahadi Oesman, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+  tidak ada usulan
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base PKY Tjilik Riwut, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+1. Desa Kalumpang, Kec. Bungur, Kab. Tapin
+   S 03° 00' 00"  E 115° 12' 15"
+   R 121 D 88 Nm Fr VOR PKY
+   Alasan: tanpa titik baru; permukiman 0.5 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 19 ug/m3 (Kab. Tapin); jarak pandang tidak tersedia
+2. Desa Rantau Bintungan, Kec. Muara Samu, Kab. Paser
+   S 01° 56' 12"  E 115° 51' 21"
+   R 080 D 116 Nm Fr VOR PKY
+   Alasan: tanpa titik baru; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 9 ug/m3 (Kab. Paser); jarak pandang tidak tersedia
+3. Desa Samurangau, Kec. Batu Sopang, Kab. Paser
+   S 01° 53' 03"  E 115° 51' 01"
+   R 079 D 116 Nm Fr VOR PKY
+   Alasan: tanpa titik baru; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 9 ug/m3 (Kab. Paser); jarak pandang tidak tersedia
+  Titik panas di luar radius pandang semua target: 0 titik di 0 sel
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base SMQ H. Asan Sampit, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+  tidak ada usulan
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base KLP Kuala Pembuang, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+  tidak ada usulan
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base BDJ Syamsudin Noor / Lanud SAM, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+1. Desa Kalumpang, Kec. Bungur, Kab. Tapin
+   S 03° 00' 00"  E 115° 12' 15"
+   R 047 D 39 Nm Fr VOR BDM
+   Alasan: tanpa titik baru; permukiman 0.5 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 19 ug/m3 (Kab. Tapin); jarak pandang tidak tersedia
+2. Desa Makmur Mulia, Kec. Satui, Kab. Tanah Bumbu
+   S 03° 44' 20"  E 115° 21' 08"
+   R 115 D 41 Nm Fr VOR BDM
+   Alasan: 1 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:01 WIB, NOAA-20
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 10 ug/m3 (Kab. Tanah Laut); jarak pandang tidak tersedia
+3. Desa Kintap Kecil, Kec. Kintap, Kab. Tanah Laut
+   S 03° 50' 31"  E 115° 15' 27"
+   R 127 D 40 Nm Fr VOR BDM
+   Alasan: tanpa titik baru; permukiman 1.8 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 10 ug/m3 (Kab. Tanah Laut); jarak pandang tidak tersedia
+4. Desa Langadai, Kec. Pulaulaut Utara, Kotabaru
+   S 03° 15' 17"  E 116° 07' 43"
+   R 082 D 84 Nm Fr VOR BDM
+   Alasan: 1 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:01 WIB, NOAA-20
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 7 ug/m3 (Kab. Kotabaru); jarak pandang tidak tersedia
+5. Desa Serakaman, Kec. Pulau Sebuku, Kotabaru
+   S 03° 27' 11"  E 116° 22' 33"
+   R 090 D 99 Nm Fr VOR BDM
+   Alasan: tanpa titik baru; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 00:19 WIB, NOAA-20
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 7 ug/m3 (Kab. Kotabaru); jarak pandang tidak tersedia
+6. Desa Rantau Bintungan, Kec. Muara Samu, Kab. Paser
+   S 01° 56' 12"  E 115° 51' 21"
+   R 036 D 113 Nm Fr VOR BDM
+   Alasan: tanpa titik baru; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 9 ug/m3 (Kab. Paser); jarak pandang tidak tersedia
+7. Desa Samurangau, Kec. Batu Sopang, Kab. Paser
+   S 01° 53' 03"  E 115° 51' 01"
+   R 035 D 115 Nm Fr VOR BDM
+   Alasan: tanpa titik baru; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 01:04 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 9 ug/m3 (Kab. Paser); jarak pandang tidak tersedia
+  Titik panas di luar radius pandang semua target: 0 titik di 0 sel
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base PLM SMB II / Lanud SMH, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+1. Desa Kurup, Kec. Lubuk Batang, Kab. Ogan Komering Ulu
+   S 04° 01' 18"  E 104° 09' 29"
+   R 203 D 75 Nm Fr VOR PLB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 1.9 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 23 ug/m3 (Kab. Ogan Komering Ulu); jarak pandang tidak tersedia
+2. Desa Gunung Kuripan, Kec. Pengandonan, Kab. Ogan Komering Ulu
+   S 04° 00' 19"  E 103° 52' 26"
+   R 214 D 82 Nm Fr VOR PLB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 1.2 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 15:49 WIB, MODIS
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 23 ug/m3 (Kab. Ogan Komering Ulu); jarak pandang tidak tersedia
+3. Kec. Menggala Timur, Kab. Tulang Bawang
+   S 04° 23' 39"  E 105° 19' 43"
+   R 156 D 100 Nm Fr VOR PLB
+   Alasan: 2 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 32 ug/m3 (Kab. Tulang Bawang); jarak pandang tidak tersedia
+4. Kec. Sungai Menang, Kab. Ogan Komering Ilir
+   S 04° 07' 11"  E 105° 43' 42"
+   R 139 D 99 Nm Fr VOR PLB
+   Alasan: 1 titik baru lintasan terakhir; gambut; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 32 ug/m3 (Kab. Tulang Bawang); jarak pandang tidak tersedia
+5. Kec. Sungai Menang, Kab. Ogan Komering Ilir
+   S 04° 00' 43"  E 105° 49' 29"
+   R 134 D 98 Nm Fr VOR PLB
+   Alasan: 2 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 12:59 WIB, NOAA-20
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 32 ug/m3 (Kab. Tulang Bawang); jarak pandang tidak tersedia
+6. Kec. Lubuk Besar, Kab. Bangka Tengah
+   S 02° 34' 15"  E 106° 34' 30"
+   R 080 D 117 Nm Fr VOR PLB
+   Alasan: 2 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 9 ug/m3 (Kab. Bangka Selatan); jarak pandang tidak tersedia
+7. Desa Ladang Panjang, Kec. Sungai Gelam, Kab. Muaro Jambi
+   S 01° 46' 42"  E 103° 43' 06"
+   R 319 D 87 Nm Fr VOR PLB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 0.5 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 12 ug/m3 (Kab. Muaro Jambi); jarak pandang tidak tersedia
+8. Desa Bingin Rupit, Kec. Rupit, Kab. Musi Rawas Utara
+   S 02° 44' 34"  E 102° 51' 07"
+   R 274 D 108 Nm Fr VOR PLB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 1.6 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 15:49 WIB, MODIS
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 22 ug/m3 (Kab. Musi Rawas Utara); jarak pandang tidak tersedia
+  Titik panas di luar radius pandang semua target: 6 titik di 6 sel
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base DJB Sultan Thaha, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+1. Desa Ladang Panjang, Kec. Sungai Gelam, Kab. Muaro Jambi
+   S 01° 46' 42"  E 103° 43' 06"
+   R 152 D 10 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 0.5 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 12 ug/m3 (Kab. Muaro Jambi); jarak pandang tidak tersedia
+2. Desa Petanang, Kec. Kumpeh, Kab. Muaro Jambi
+   S 01° 28' 39"  E 103° 55' 36"
+   R 060 D 19 Nm Fr VOR JMB
+   Alasan: tanpa titik baru; gambut; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 02:02 WIB, NOAA-20
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 10 ug/m3 (Kab. Tanjung Jabung Timur); jarak pandang tidak tersedia
+3. Desa Balai Agung, Kec. Sekayu, Kab. Musi Banyuasin
+   S 02° 48' 46"  E 103° 51' 54"
+   R 169 D 72 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 11 ug/m3 (Kab. Musi Banyuasin); jarak pandang tidak tersedia
+4. Desa Air Beliti, Kec. Suka Karya, Kab. Musi Rawas
+   S 03° 09' 08"  E 103° 13' 13"
+   R 195 D 95 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 17 ug/m3 (Kab. Musi Rawas); jarak pandang tidak tersedia
+5. Desa Bingin Rupit, Kec. Rupit, Kab. Musi Rawas Utara
+   S 02° 44' 34"  E 102° 51' 07"
+   R 215 D 82 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 1.6 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 15:49 WIB, MODIS
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 22 ug/m3 (Kab. Musi Rawas Utara); jarak pandang tidak tersedia
+6. Desa Sendang Sari, Kec. Singkut, Kab. Sarolangun
+   S 02° 35' 08"  E 102° 39' 51"
+   R 225 D 82 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 1.3 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 22 ug/m3 (Kab. Musi Rawas Utara); jarak pandang tidak tersedia
+7. Desa Sungai Merah, Kec. Pelawan, Kab. Sarolangun
+   S 02° 26' 33"  E 102° 41' 14"
+   R 229 D 75 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 0.9 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 15:49 WIB, MODIS
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 24 ug/m3 (Kab. Sarolangun); jarak pandang tidak tersedia
+8. Desa Tambang Besi, Kec. Batang Masumai, Kab. Merangin
+   S 02° 02' 17"  E 102° 13' 32"
+   R 254 D 89 Nm Fr VOR JMB
+   Alasan: 1 titik baru lintasan terakhir; permukiman 1.7 km; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 15:49 WIB, MODIS
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 25 ug/m3 (Kab. Merangin); jarak pandang tidak tersedia
+  Titik panas di luar radius pandang semua target: 0 titik di 0 sel
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
+
+========================================
+
+USULAN TARGET, Base PKU Roesmin Nurjadin, operasi 17 Nov 2026 (versi malam)
+Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.
+
+TARGET PATROLI (berurut dari base)
+1. Kec. Sangir Jujuan, Kab. Solok Selatan
+   S 01° 21' 45"  E 101° 25' 13"
+   R 180 D 107 Nm Fr VOR PKU
+   Alasan: 1 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 38 ug/m3 (Kab. Solok Selatan); jarak pandang tidak tersedia
+2. Kec. Sangir Jujuan, Kab. Solok Selatan
+   S 01° 23' 31"  E 101° 20' 20"
+   R 183 D 109 Nm Fr VOR PKU
+   Alasan: 1 titik baru lintasan terakhir; belum ada temuan 48 jam
+   Titik panas terakhir: 16 Nov 13:44 WIB, NOAA-21
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 38 ug/m3 (Kab. Solok Selatan); jarak pandang tidak tersedia
+  Titik panas di luar radius pandang semua target: 0 titik di 0 sel
+
+TARGET WATER BOMBING (FS terkonfirmasi)
+  tidak ada usulan
+
+Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-16T08:49:00.000Z, 838 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.

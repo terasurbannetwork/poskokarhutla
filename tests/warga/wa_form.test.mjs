@@ -150,7 +150,7 @@ const hariIni = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10)
 
 uji("rute: staf saja, isian salah 400, isian sah masuk wa_masuk dan dipilih bot", async () => {
   const tgl = hariIni(), isi = {...ISI.bmkg_pagi, tanggal: tgl};
-  assert.equal((await call("POST", "/api/wa/form", orig, {kunci: "bmkg_pagi", isi})).status, 403);
+  assert.equal((await call("POST", "/api/wa/form", orig, {kunci: "bmkg_pagi", isi})).status, 401);   // tanpa sesi: masuk dulu, bukan "belum berhak"
   assert.equal((await call("POST", "/api/wa/form", LUAR, {kunci: "bmkg_pagi", isi})).status, 403);
   assert.equal((await call("GET", "/api/wa/form/terakhir?kunci=bmkg_pagi", LUAR)).status, 403);
   /* produk nasional: akun dummy dan staf berwilayah ditolak walau perannya benar */

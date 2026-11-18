@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <base href="/prediksi/">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Centurisk97 · Prediksi</title>
+<title>Prediksi, Centurisk97</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Prakiraan per kab/kota besok sampai 3 hari: hujan kapan dan berapa lama, titik panas, banjir, longsor, asap, rob, beserta rapor ketepatannya.">
 <meta name="theme-color" content="#0b2545">
@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="../inti/gaya.css">
 <link rel="stylesheet" href="../inti/tabel.css">
 <link rel="stylesheet" href="../inti/kartu.css">
-<link rel="stylesheet" href="prediksi.css?v=3">
+<link rel="stylesheet" href="prediksi.css?v=6">
 <link rel="stylesheet" href="tangga.css">
 <link href="/inti/dasbor.css?v=26" rel="stylesheet">
 </head>
@@ -31,46 +31,57 @@
     <b>Prediksi</b>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu prediksi">
-    <button type="button" data-tab="besok" aria-current="page">Besok</button>
-    <button type="button" data-tab="rapor">Rapor</button>
-    <button type="button" data-tab="tangga">Tangga</button>
-    <button type="button" data-tab="dampak">Dampak</button>
+    <button type="button" data-tab="besok" aria-current="page">Prakiraan 3 hari</button>
+    <button type="button" data-tab="rapor">Ketepatan prakiraan</button>
+    <button type="button" data-tab="tangga">Tangga peringatan</button>
+    <button type="button" data-tab="dampak">Paparan dampak</button>
     <button type="button" data-tab="laporan">Laporan provinsi</button>
-    <button type="button" data-tab="konfirmasi">Konfirmasi</button>
+    <button type="button" data-tab="konfirmasi">Konfirmasi lapangan</button>
   </nav>
   <div class="stat"><span class="upd" id="upd">Memuat data…</span></div>
 </header>
 
 <main>
-  <section class="page scroll on" id="p-besok" aria-label="Prakiraan besok">
+  <section class="page scroll on" id="p-besok" aria-label="Prakiraan 3 hari">
     <div class="wrap pr-wrap">
-      <div class="pr-catat" id="catatan"></div>
-      <div class="tbar">
+      <div class="pr-kendali">
         <input id="cari" type="search" placeholder="Cari kab/kota" autocomplete="off" aria-label="Cari kab/kota">
         <select id="prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
-        <select id="hari" aria-label="Hari sasaran"></select>
-        <select id="urut" aria-label="Urutkan">
-          <option value="hujan">Urut: peluang hujan lebat</option>
-          <option value="api">Urut: peluang titik panas</option>
-          <option value="asap">Urut: PM2,5</option>
-          <option value="nama">Urut: nama</option>
-        </select>
+        <div class="seg penuh" id="hariSeg" role="group" aria-label="Hari sasaran"></div>
+        <div class="seg" id="tampilSeg" role="group" aria-label="Tampilan">
+          <button type="button" data-t="tabel" aria-pressed="true">Tabel</button>
+          <button type="button" data-t="peta" aria-pressed="false">Peta</button>
+        </div>
       </div>
+      <div class="pr-pils" id="pilBar" role="group" aria-label="Jenis bencana"></div>
       <div id="waspada"></div>
-      <div class="pr-grid" id="kartu" role="list"></div>
+      <section class="ex ex-std" id="kartuTabel">
+        <header class="ex-hd"><div class="ex-jd"><h3 class="pr-h"><span class="pr-ik" id="ikTabel" tabindex="0" role="img" aria-label="Batasan prediksi"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3z"/><path d="M3 10h18M9 5v14"/></svg></span>Prediksi per kab/kota</h3><span class="pr-jml" id="jmlTabel"></span></div></header>
+        <div class="ex-bd" id="tabelBesok"><p class="kosong">Memuat…</p></div>
+      </section>
+      <section class="ex ex-std" id="kartuPeta" hidden>
+        <header class="ex-hd"><div class="ex-jd"><h3 class="pr-h"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Peta prediksi</h3></div></header>
+        <div class="ex-bd"><div class="pr-peta">
+          <div id="petaKanvas" class="pr-kanvas"></div>
+          <div class="pr-peta-alat"><select id="petaPil" aria-label="Jenis bencana di peta"></select>
+            <div class="pr-lv" id="petaLv" role="group" aria-label="Saring tingkat"><button type="button" data-lv="1" aria-pressed="false" class="pr-lv1">Waspada <b>0</b></button><button type="button" data-lv="2" aria-pressed="false" class="pr-lv2">Siaga <b>0</b></button><button type="button" data-lv="3" aria-pressed="false" class="pr-lv3">Awas <b>0</b></button></div></div>
+          <div class="pr-legenda"><span class="pr-leg-0">Normal</span><span class="pr-leg-1">Waspada</span><span class="pr-leg-2">Siaga</span><span class="pr-leg-3">Awas</span></div>
+          <p class="pr-pesan" id="petaPesan" role="status"></p>
+        </div></div>
+      </section>
       <div class="pr-lagi"><button type="button" id="lagi" hidden>Tampilkan lagi</button></div>
     </div>
   </section>
 
-  <section class="page scroll" id="p-rapor" aria-label="Rapor ketepatan">
+  <section class="page scroll" id="p-rapor" aria-label="Ketepatan prakiraan">
     <div class="wrap pr-wrap" id="rapor"><p class="kosong">Memuat rapor…</p></div>
   </section>
 
   <section class="page scroll" id="p-tangga" aria-label="Tangga peringatan">
     <div class="wrap pr-wrap">
       <div class="tbar tg-kendali">
-        <select id="tgProv" aria-label="Provinsi"></select>
-        <select id="tgKab" aria-label="Kab/kota"></select>
+        <select data-cantik="x" id="tgProv" aria-label="Provinsi"></select>
+        <select data-cantik="x" id="tgKab" aria-label="Kab/kota"></select>
         <div class="seg penuh" id="tgAncaman" role="group" aria-label="Ancaman">
           <button type="button" data-a="semua" aria-pressed="true">Kering dan basah</button>
           <button type="button" data-a="k" aria-pressed="false">Kering</button>
@@ -84,21 +95,34 @@
 
   <section class="page scroll" id="p-dampak" aria-label="Paparan dampak">
     <div class="wrap pr-wrap">
-      <div class="card pad">
-        <h2>Paparan dampak per kab/kota</h2>
-        <p class="pr-kecil" id="dampakLabel"></p>
-        <label class="pr-kecil">Kab/kota <input id="dKabIn" list="dKab" autocomplete="off" placeholder="Ketik nama kab/kota"></label>
+      <div class="tbar dm-kendali">
+        <select id="dProv" aria-label="Provinsi"></select>
+        <input id="dKabIn" list="dKab" autocomplete="off" placeholder="Cari kab/kota" aria-label="Cari kab/kota">
+        <div class="pr-seg" id="dLapisan" role="group" aria-label="Lapisan paparan">
+          <button type="button" data-l="gempa" aria-pressed="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Bahaya gempa</button>
+          <button type="button" data-l="terisolir" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/><path d="M5.6 5.6l12.8 12.8"/></svg>Desa langganan terisolir</button>
+          <button type="button" data-l="jalan" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 9 4"/><path d="M20 20 15 4"/><path d="M12 6v3"/><path d="M12 12v3"/></svg>Ruas rawan putus jalan</button>
+          <button type="button" data-l="genangan" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>Genangan banjir terekam</button>
+        </div>
       </div>
-      <div id="dampakIsi"></div>
-      <p class="pr-kecil" id="dampakSumber"></p>
+      <div id="dampakIsi"><p class="kosong">Memuat…</p></div>
+      <details class="pr-kecil dm-batas"><summary>Batasan</summary><p id="dampakLabel"></p><p>Tsunami dan kerusakan bangunan gempa tidak ditampilkan per kab: sumber terbukanya tidak tersedia sebagai tabel statis.</p><p id="dampakSumber"></p></details>
     </div>
   </section>
 
   <section class="page scroll" id="p-laporan" aria-label="Laporan provinsi">
     <div class="wrap pr-wrap">
       <div class="tbar lp-kendali">
-        <select id="lpProv" aria-label="Provinsi"></select>
+        <select data-cantik="x" id="lpProv" aria-label="Provinsi"></select>
         <button type="button" class="iconbtn" id="lpCetak" aria-label="Unduh PDF" title="Unduh PDF (cetak A4 lanskap)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></button>
+        <div class="pr-seg" id="lpJenis" role="group" aria-label="Jenis bencana">
+        <button type="button" data-j="banjir" aria-pressed="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>Banjir</button>
+        <button type="button" data-j="longsor" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20 10 6l4 7 3-4 4 11z"/></svg>Longsor</button>
+        <button type="button" data-j="api" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg>Titik panas</button>
+        <button type="button" data-j="asap" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 16h12a3 3 0 0 0 0-6 5 5 0 0 0-9.5-1A4 4 0 0 0 5 16z"/><path d="M8 20h8"/></svg>Asap</button>
+        <button type="button" data-j="rob" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10c3-3 6 3 9 0s6 3 9 0"/><path d="M3 16c3-3 6 3 9 0s6 3 9 0"/></svg>Rob</button>
+        <button type="button" data-j="hujan" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 16a4 4 0 1 1 1-7.9A5 5 0 0 1 17 9a3.5 3.5 0 0 1 0 7z"/><path d="M9 19l-1 2"/><path d="M13 19l-1 2"/><path d="M17 19l-1 2"/></svg>Hujan</button>
+        </div>
       </div>
       <div id="laporanIsi"><p class="kosong">Memuat laporan…</p></div>
     </div>
@@ -115,7 +139,7 @@
           <datalist id="dKab"></datalist>
           <label>Tanggal kejadian <input id="kTgl" type="date" required></label>
           <label>Jenis
-            <select id="kKode">
+            <select data-cantik="x" id="kKode">
               <option value="HJN">Hujan</option><option value="API">Titik panas / kebakaran</option><option value="BNJ">Banjir</option>
               <option value="LSR">Longsor</option><option value="ASP">Asap</option><option value="ROB">Rob</option>
             </select>
@@ -132,12 +156,15 @@
       </div>
     </div>
   </section>
+  <dialog id="rincian" class="pr-dlg" aria-label="Rincian kab/kota"></dialog>
 </main>
 
 <script src="../inti/format.js"></script>
 <script src="../inti/tip.js"></script>
+<script src="../inti/pilih.js"></script>
+<script src="besok_inti.js?v=1"></script>
 <script src="laporan_prov.js"></script>
-<script src="prediksi.js?v=3"></script>
+<script src="prediksi.js?v=6"></script>
 <script src="laporan_layar.js"></script>
 <script src="../inti/nanti.js"></script>
 <script src="tangga_inti.js"></script>

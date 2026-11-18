@@ -27,8 +27,11 @@ const kalender = {satuan: "gempa", get awal() { return awal30(); },
 
 PilihTanggal.pasang({id: "gempa", host: () => host, kalender,
   tanggal: () => (S.gempa || []).map(g => g.t),
-  ubah: iso => { S.tanggal = iso; if (iso && S.riwayat) S.riwayat = false; segar(); },
-  get riwayat() { return S.riwProv ? {ubah: r => { S.riwayat = r; S.urut = {k: !r && typeof ukAktif === "function" ? ukAktif().kunci : "n", turun: true}; renderDaftar(); }} : null; }});
+  /* memilih tanggal dari mode Riwayat kembali ke Terkini: tanggal hanya berlaku untuk gempa terkini */
+  ubah: iso => { S.tanggal = iso; if (iso && typeof Panel !== "undefined" && Panel.mode === "riw") { Panel.mode = "kini";
+    document.querySelectorAll("#panelMode button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.m === "kini"))); S.urut = {k: "n", turun: true}; } segar(); },
+  /* Riwayat tidak dipasang di pemilih tanggal: panel sudah punya tombol Terkini/Riwayat (#panelMode, panel.js) */
+  riwayat: null});
 /* riwayat per provinsi dimuat sekali, di luar jalur kritis; segmen Riwayat muncul bila datanya ada */
 const ambil = () => typeof muatJSON === "function" && muatJSON("data/riwayat_prov.json").then(p => { if (p?.prov) { S.riwProv = p.prov; PilihTanggal.gambar(); } }).catch(() => {});
 typeof nanti === "function" ? nanti(ambil) : setTimeout(ambil, 0);

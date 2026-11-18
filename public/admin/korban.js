@@ -9,6 +9,8 @@
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else if (k === "value") e.value = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const sv = (tag, att, ...anak) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(att || {})) e.setAttribute(k, v); for (const a of anak.flat()) if (a != null) e.append(a); return e; };
+  /* kit dashboard bersama (Admin.dasbor): kartu seksi, ubin angka, tombol ikon polos */
+  const DB = Admin.dasbor, ikA = (ik, label, href) => h("a", {class: "db-ik", href, target: "_blank", rel: "noopener noreferrer", title: label, "aria-label": label}, DB.svg(ik));
   /* daftar tetap sama dengan src/korban.js (label asli dari D.kamus; ini hanya urutan tombol) */
   const BENCANA = ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "pesisir", "lainnya"], KATEGORI = ["warga", "petugas_pemadam", "relawan", "lainnya"], PENYEBAB = ["terbakar", "asap_ispa", "tenggelam", "kecelakaan_tugas", "lainnya"], SUMBER = ["laporan_langsung", "rs", "kepolisian"];
   const STATUS = {dilaporkan: "Dilaporkan", terverifikasi: "Terverifikasi", dikoreksi: "Dikoreksi"}, POTONG = 15, MAKS_FOTO = 1.4 * 1048576;
@@ -41,7 +43,7 @@
   function gambarRekap() {
     const w = document.getElementById("kxRekap"); if (!w) return;
     if (!D.rekap.length) { w.replaceChildren(h("p", {class: "kx-redup", teks: "Belum ada laporan korban."})); return; }
-    w.replaceChildren(h("div", {class: "kx-tabel-wadah"}, h("table", {class: "kx-tabel"}, h("thead", null, h("tr", null, ["Provinsi", "Laporan", "Meninggal", "Luka berat", "Hilang", "Belum diverifikasi"].map(k => h("th", {teks: k})))),
+    w.replaceChildren(h("div", {class: "db-tabel-wadah"}, h("table", {class: "ex-tabel db-tabel kx-tabel"}, h("thead", null, h("tr", null, ["Provinsi", "Laporan", "Meninggal", "Luka berat", "Hilang", "Belum diverifikasi"].map(k => h("th", {scope: "col", teks: k})))),
       h("tbody", null, ...D.rekap.map(p => h("tr", null, h("td", {teks: p.nama}), ...[p.laporan, p.meninggal, p.luka_berat, p.hilang].map(n => h("td", {teks: fmt(n)})), h("td", {class: p.belum_diverifikasi ? "merah" : "", teks: fmt(p.belum_diverifikasi)}))),
         h("tr", {class: "kx-jumlah"}, h("td", {teks: "Jumlah"}), ...[D.total.laporan, D.total.meninggal, D.total.luka_berat, D.total.hilang, D.total.belum_diverifikasi].map(n => h("td", {teks: fmt(n)})))))));
   }
@@ -55,11 +57,11 @@
       h("p", {class: "kx-meta", teks: `${nilai(D.kamus.kategori, k.kategori)}, ${nilai(D.kamus.penyebab, k.penyebab).toLowerCase()}. Sumber: ${nilai(D.kamus.sumber, k.sumber).toLowerCase()}. Pelapor: ${k.pelapor}.`}),
       k.kronologi ? h("p", {class: "kx-meta", teks: k.kronologi}) : null,
       k.ada_nama ? h("p", {class: "kx-meta", teks: D.boleh.nama ? `Nama korban: ${k.nama_korban}` : "Nama korban tercatat, hanya terlihat moderator dan Pusdalops."}) : null,
-      h("div", {class: "kx-aksi"}, D.boleh.periksa && k.status !== "terverifikasi" ? h("button", {class: "kx-btn utama", type: "button", "data-verif": k.id, teks: "Verifikasi"}) : null,
-        D.boleh.periksa ? h("button", {class: "kx-btn", type: "button", "data-koreksi": k.id, teks: "Koreksi"}) : null, h("button", {class: "kx-btn", type: "button", "data-riwayat": k.id, "aria-expanded": String(terbuka), teks: terbuka ? "Tutup riwayat" : "Riwayat"}),
-        k.foto && D.boleh.moderator ? h("button", {class: "kx-btn", type: "button", "data-hapus-foto": k.id, teks: "Hapus foto"}) : null,
-        k.foto && D.boleh.nama ? h("a", {class: "kx-btn", href: "/api/korban/foto/" + k.id, target: "_blank", rel: "noopener noreferrer", teks: "Foto dokumen"}) : null,
-        k.lat != null ? h("a", {class: "kx-btn", href: `https://www.google.com/maps?q=${k.lat},${k.lon}`, target: "_blank", rel: "noopener noreferrer", teks: "Buka peta"}) : null),
+      h("div", {class: "db-aksi"}, D.boleh.periksa && k.status !== "terverifikasi" ? DB.ikon("aktif", "Verifikasi", {"data-verif": k.id}) : null,
+        D.boleh.periksa ? DB.ikon("ubah", "Koreksi", {"data-koreksi": k.id}) : null, DB.ikon("jam", terbuka ? "Tutup riwayat" : "Riwayat", {"data-riwayat": k.id, "aria-expanded": String(terbuka)}),
+        k.foto && D.boleh.moderator ? DB.ikon("hapus", "Hapus foto", {"data-hapus-foto": k.id}, "bahaya") : null,
+        k.foto && D.boleh.nama ? ikA("lihat", "Foto dokumen", "/api/korban/foto/" + k.id) : null,
+        k.lat != null ? ikA("peta", "Buka peta", `https://www.google.com/maps?q=${k.lat},${k.lon}`) : null),
       h("div", {class: "kx-sisip", "data-sisip": k.id}), terbuka ? h("div", {class: "kx-riwayat", "data-riwayat-isi": k.id}, h("p", {class: "kx-redup", teks: "Memuat riwayat…"})) : null);
   }
   function daftar() {
@@ -98,7 +100,7 @@
   function formBaru() {
     const f = h("form", {class: "kx-form", novalidate: true, id: "kxFormLapor"}); f.dataset.kategori = ""; f.dataset.penyebab = ""; f.dataset.sumber = "laporan_langsung"; f.dataset.sumber_lokasi = "manual"; f.dataset.klien = "k" + crypto.randomUUID().replace(/-/g, "");   // satu per form sampai sukses
     const prov = h("select", {name: "prov"}, ...Object.entries(D.provinsi).map(([k, n]) => h("option", {value: k, teks: n}))), bencana = h("select", {name: "bencana"}, ...BENCANA.map(k => h("option", {value: k, teks: nilai(D.kamus.bencana, k)})));
-    f.append(h("h3", {teks: "Lapor korban jiwa"}), h("p", {class: "kx-redup", teks: "Laporan masuk dengan status Dilaporkan dan menjadi butir Meja Pantau prioritas tertinggi sampai diverifikasi."}),
+    f.append(h("p", {class: "kx-redup", teks: "Laporan masuk dengan status Dilaporkan dan menjadi butir Meja Pantau prioritas tertinggi sampai diverifikasi."}),
       lab("Waktu kejadian (WIB)", h("input", {name: "waktu", type: "datetime-local", value: nowWib(), max: nowWib()})), lab("Provinsi", prov), lab("Kabupaten atau kota (boleh kosong)", h("input", {name: "kab", maxlength: "60", autocomplete: "off"})),
       h("div", {class: "kx-aksi"}, h("button", {type: "button", class: "kx-btn", "data-gps": "1", teks: "Pakai GPS perangkat"}), h("span", {class: "kx-redup", "data-gps-info": "1", teks: "GPS opsional."})), h("input", {type: "hidden", name: "lat"}), h("input", {type: "hidden", name: "lon"}),
       lab("Jenis bencana", bencana), h("div", {class: "kx-tiga"}, angka("meninggal", "Meninggal", 0), angka("luka_berat", "Luka berat", 0), angka("hilang", "Hilang", 0)),
@@ -121,18 +123,22 @@
   /* ---------- kerangka ---------- */
   const tunda = () => { cancelAnimationFrame(jadwal); jadwal = requestAnimationFrame(() => setTimeout(() => { gambarPeta(); gambarRekap(); daftar(); }, 0)); };
   function gambarKontrol() {
-    const T = D.total, kt = (l, n, kls = "", data = {}) => h("button", {class: "kx-kartu-ringkas " + kls, type: "button", ...data}, h("b", {teks: fmt(n)}), h("span", {teks: l}));
+    const T = D.total;
     const provs = [...new Map(D.rekap.map(p => [p.prov, p.nama])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+    const ub = (ikon, label, n, warna = "") => DB.ubin({ikon, label, nilai: fmt(n), warna});
+    const belumU = DB.ubin({ikon: "waspada", label: "Belum diverifikasi", nilai: fmt(T.belum_diverifikasi), warna: T.belum_diverifikasi ? "merah" : "", saring: "belum", aktif: F.belum});
+    belumU.removeAttribute("data-saring"); belumU.setAttribute("data-belum", "1");   // penangan klik lama memakai data-belum
+    DB.tumpuk(app);
     app.replaceChildren(T.belum_diverifikasi ? h("div", {class: "kx-banner", role: "alert", teks: `${fmt(T.belum_diverifikasi)} laporan korban belum diverifikasi. Cocokkan dengan rumah sakit atau kepolisian, lalu verifikasi atau koreksi.`}) : null,
       h("p", {id: "kxPesan", class: "kx-pesan " + (pesanOk ? "ok" : "galat"), role: "status", teks: pesanTeks}),
-      h("div", {class: "kx-ringkas"}, kt("Laporan", T.laporan), kt("Meninggal", T.meninggal, "merah"), kt("Luka berat", T.luka_berat), kt("Hilang", T.hilang), kt("Belum diverifikasi", T.belum_diverifikasi, T.belum_diverifikasi ? "merah" : "", {"data-belum": "1", "aria-pressed": String(F.belum)})),
-      h("div", {class: "kx-saring"}, h("div", {class: "kx-chip-baris", role: "group", "aria-label": "Status"}, h("button", {class: "kx-chip", type: "button", "data-status": "", "aria-pressed": String(!F.status), teks: "Semua status"}),
-        ...Object.entries(STATUS).map(([k, l]) => h("button", {class: "kx-chip", type: "button", "data-status": k, "aria-pressed": String(F.status === k), teks: l}))),
-        h("select", {id: "kxProv", "aria-label": "Provinsi"}, h("option", {value: "", teks: "Semua provinsi"}), ...provs.map(([k, n]) => h("option", {value: k, teks: n, selected: F.prov === k}))),
-        D.boleh.lapor ? h("button", {class: "kx-btn utama", type: "button", "data-lapor": "1", teks: "Lapor korban"}) : null),
-      formLapor ? formBaru() : null,
-      h("section", {class: "kx-bagian"}, h("h2", {teks: "Peta laporan"}), h("div", {id: "kxPeta"})), h("section", {class: "kx-bagian"}, h("h2", {teks: "Rekap per provinsi"}), h("div", {id: "kxRekap"})),
-      h("section", {class: "kx-bagian"}, h("h2", {teks: "Laporan"}), h("div", {id: "kxDaftar"})));
+      DB.ubinGrid(ub("berkas", "Laporan", T.laporan), ub("cabut", "Meninggal", T.meninggal, T.meninggal ? "merah" : ""), ub("waspada", "Luka berat", T.luka_berat), ub("lihat", "Hilang", T.hilang), belumU),
+      DB.kartu({ikon: "cari", judul: "Penyaring", ey: "Laporan korban"},
+        h("div", {class: "kx-saring"}, h("div", {class: "kx-chip-baris", role: "group", "aria-label": "Status"}, h("button", {class: "kx-chip", type: "button", "data-status": "", "aria-pressed": String(!F.status), teks: "Semua status"}),
+          ...Object.entries(STATUS).map(([k, l]) => h("button", {class: "kx-chip", type: "button", "data-status": k, "aria-pressed": String(F.status === k), teks: l}))),
+          h("select", {id: "kxProv", "aria-label": "Provinsi"}, h("option", {value: "", teks: "Semua provinsi"}), ...provs.map(([k, n]) => h("option", {value: k, teks: n, selected: F.prov === k}))))),
+      formLapor ? DB.kartu({ikon: "tambah", judul: "Lapor korban jiwa", ey: "Formulir"}, formBaru()) : null,
+      DB.kartu({ikon: "peta", judul: "Peta laporan", ey: "Peta"}, h("div", {id: "kxPeta"})), DB.kartu({ikon: "grafik", judul: "Rekap per provinsi", ey: "Provinsi"}, h("div", {id: "kxRekap"})),
+      DB.kartu({ikon: "berkas", judul: "Laporan", ey: "Daftar", kanan: D.boleh.lapor ? DB.ikon("tambah", "Lapor korban", {"data-lapor": "1"}) : null}, h("div", {id: "kxDaftar"})));
     tunda();
   }
   async function muat() {
@@ -148,7 +154,7 @@
   app.addEventListener("click", async e => {
     const t = e.target;
     if (t.closest("[data-ulang]")) return muat();
-    const st = t.closest("[data-status]"); if (st) { F.status = st.dataset.status; return muat(); }
+    const st = t.closest("[data-status]"); if (st) { F.status = st.dataset.status; for (const u of app.querySelectorAll("[data-status]")) u.setAttribute("aria-pressed", String(u.dataset.status === F.status)); return requestAnimationFrame(() => setTimeout(muat, 0)); }
     if (t.closest("[data-belum]")) { F.belum = !F.belum; t.closest("[data-belum]").setAttribute("aria-pressed", String(F.belum)); return tunda(); }
     if (t.closest("[data-semua]")) { F.semua = true; return tunda(); }
     if (t.closest("[data-lapor]")) { formLapor = true; gambarKontrol(); return document.getElementById("kxFormLapor")?.scrollIntoView({behavior: "smooth", block: "start"}); }
