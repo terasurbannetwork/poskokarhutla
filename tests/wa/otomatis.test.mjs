@@ -343,3 +343,15 @@ test('5: jalur terjadwal memegang generator.lock bersama selama generator jalan,
   assert.deepEqual(terkunci, [true, true])
   assert.equal(fs.existsSync(path.join(d.rumah, 'generator.lock')), false)
 })
+
+test('WA_OTOMATIS=0 (K16): laporan terjadwal tidak dibangun dan tidak dikirim; perintah manual bertanggal tetap jalan', async () => {
+  const d = dunia(LENGKAP)
+  const env0 = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', WA_OTOMATIS: '0' }
+  const h = await d.jalan({ env: env0, tanggal: undefined })
+  assert.ok(h.some((x) => /dimatikan/.test(x.status)), 'status dimatikan dilaporkan')
+  assert.equal(d.kirim.exec.length, 0, 'generator tidak jalan')
+  assert.equal(d.kirim.file.length, 0, 'tidak ada kiriman')
+  const m = await d.jalan({ env: env0 })
+  assert.ok(d.kirim.exec.length > 0, 'jalan bertanggal (kirim ulang manual) tetap membangun')
+  assert.ok(!m.some((x) => /dimatikan/.test(x.status)))
+})

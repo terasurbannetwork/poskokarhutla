@@ -446,7 +446,7 @@ Aturan berhentinya sama dengan §2.1. Daftar tindakan hanya dari logbook atau su
 Sebelum menyentuh mesin proyek laporan di bot WA, pemanggil Claude API, operasi ubah deck, kunci angka sistem, atau tabel `bl_*`, baca dokumen di
 `data/kajian-bnpb/bot-laporan/` dengan urutan otoritas ini (kode di `scripts/wa/proyek.mjs`, `scripts/wa/claude.mjs`, `scripts/wa/claude/**`, `tests/wa/**` milik `wa-bot`; `data/laporan-bnpb/generator/ubah.py` dan perubahan generator milik `pipa-data`; `src/wa_proyek.js`, bagian bot laporan `src/hak.js`, migrasi `bl_*` milik `warga-api`):
 
-1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K15, rancangan D1–D13, pertanyaan terbuka Q1–Q14 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K16, rancangan D1–D13, pertanyaan terbuka Q1–Q14 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (kutipan, operasi ubah, kunci, banding 7 hari), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BL-*`), `GLOSARIUM.md`.
 

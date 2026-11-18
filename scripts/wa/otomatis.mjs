@@ -283,6 +283,9 @@ export async function jalankan(opsi = {}) {
     // Jarak pandang BMKG (JARAK_PANDANG=1): galat tertangkap di dalam modul, tidak menahan laporan.
     if (!opsi.tanggal) try { hasil.push(...await jalankanJarakPandang({ env, now, jam: jamWib(now), state, simpan, kering, dep, log, pemilik })) } catch (e) { log('jarak pandang tak terduga', e.message) }
     if (diLuar) return hasil
+    // Saklar pemilik 18 Nov 2026 (K16 paket bot-laporan): WA_OTOMATIS=0 mematikan laporan terjadwal (harian, penanganan, banjir);
+    // semua laporan lewat `buat` di bot proyek. Renlap dan jarak pandang di atas tetap jalan; perintah manual bertanggal (`kirim ulang`) tetap boleh.
+    if (env.WA_OTOMATIS === '0' && !opsi.tanggal) { hasil.push({ id: '-', status: 'laporan terjadwal dimatikan (WA_OTOMATIS=0)' }); return hasil }
     let bahan
     try { bahan = await ambilBahan({ env, dep, tanggal, kenali, tanggalIsi, log, hanyaIzin: true }) } catch (e) { await galat('sistem', e.message); return [{ id: '-', status: 'galat' }] }
     delete state.gagal.sistem
