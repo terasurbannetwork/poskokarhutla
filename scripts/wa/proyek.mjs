@@ -2,7 +2,11 @@
 // tangani(pesan, ctx): bahan masuk ke proyek terbuka pengirim, `buat [jenis] [tanggal]`, `buat saja`, `status`, `bantuan`.
 // Alur buat: bahan pengirim (Q6) -> jenis (A2) -> kurang dan bentrok (A3) -> T-TANYA atau bangun -> ekstraksi teks (K15) -> Claude urai ->
 // isian.json -> generator --isian (otomatis.mjs) -> pratinjau slide 1-3 (ubah.py) -> PDF (PPTX hanya saat final atau `pptx`, Q1) -> versi v1 -> draf.
-// Semua dunia luar lewat ctx (balas, balasFile, kabariPemilik) dan ctx.dep (fetch, exec, ocr, claude). Angka sistem tidak pernah dari Claude (D1, K4).
+// Revisi (BL-10; D1, D3, D6, D8, A5, A6, A8): kalimat bebas pemegang proyek `draf` -> membangun -> inventaris deck terakhir + kunci + operasi lama -> Claude operasi
+// -> `tanya` dibalas sebagai pertanyaan (draf lagi) | semua ditolak kunci: T-TOLAK-KUNCI tanpa versi baru | selain itu generator dibangun ulang dari bahan + isian,
+// operasi 1..n diterapkan (ubah.py terapkan), PDF bersamaan dengan periksa (BL-11), pratinjau slide pertama yang berubah, versi n+1 dengan ubah.json, draf.
+// `versi` riwayat dengan jam; `balik vN` = versi baru dengan operasi vN (append-only); `pptx` kirim PPTX terakhir; `batal` menutup proyek.
+// Semua dunia luar lewat ctx (balas, balasFile, kabariPemilik) dan ctx.dep (fetch, exec, ocr, claude, periksa?). Angka sistem tidak pernah dari Claude (D1, K4).
 //   node scripts/wa/proyek.mjs --kering   (cek kesiapan mesin, BL-13)
 import fs from 'node:fs'
 import path from 'node:path'
@@ -11,7 +15,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { LAPORAN, ambilBahan, siapkanKeluaran, jalankanGenerator, kunciProses, tanggalWib, jamWib, MIME, dariIzin, KUNCI_BASI_MS } from './otomatis.mjs'
 import { parseTanggal, labelTanggal } from './perintah.mjs'
-import { buatKlien, GalatClaude, medanTerkunci, sebutAngkaSistem } from './claude.mjs'
+import { buatKlien, GalatClaude, medanTerkunci, sebutAngkaSistem, samarkan } from './claude.mjs'
 import * as jenisWa from '../../src/wa_jenis.js'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
@@ -24,6 +28,9 @@ const KEDALUWARSA_MS = 24 * 3600e3 // Q7 bawaan sementara
 const MEMBANGUN_BASI_MS = 3600e3 // `membangun` lebih dari 1 jam tanpa kunci hidup = proses mati
 const TEKS_MINIMAL = 20 // huruf dan angka; di bawah ini hasil ekstraksi dianggap tidak terbaca (K15)
 const MAKS_BAHAN = 50 // sama dengan batas rute POST /api/wa/proyek
+const MAKS_KALIMAT = 2000 // kalimat revisi ke Claude
+const PERIKSA_MS = 120e3 // periksa (BL-11) tidak pernah menahan draf lebih lama dari ini
+const WAKTU_WORKER = 60_000 // tiap fetch Worker: menggantung = galat Worker biasa, antrean pengirim tidak tertahan
 
 const labelBahan = (k) => jenisWa.JENIS_LAPORAN.find((j) => j.kunci === k)?.label || k
 const lapDari = (id) => LAPORAN.find((l) => l.id === id)
@@ -35,7 +42,7 @@ export const waSha = req('./daftar.cjs').waSha
 const JENIS_KATA = { harian: 'harian', bencana: 'harian', 'harian bencana': 'harian', 'kejadian bencana': 'harian',
   penanganan: 'penanganan', karhutla: 'penanganan', 'penanganan karhutla': 'penanganan' }
 
-// -> {aksi:'buat', jenis|null, tanggal, saja} | {aksi:'status'} | {aksi:'bantuan'} | null (bukan perintah: bahan biasa).
+// -> {aksi:'buat', jenis|null, tanggal, saja} | {aksi:'status'|'bantuan'|'versi'|'pptx'|'batal'|'final'} | {aksi:'balik', n} | null (bukan perintah: bahan atau revisi).
 // Teks panjang atau berbaris banyak = bahan (aturan sama dengan perintah.mjs). `status <tanggal>` bukan milik mesin ini (Q14).
 export function parsePerintah(teks, now = new Date()) {
   const asli = String(teks ?? '').trim()
@@ -43,6 +50,9 @@ export function parsePerintah(teks, now = new Date()) {
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
   if (t === 'status') return { aksi: 'status' }
+  if (['versi', 'pptx', 'batal', 'final'].includes(t)) return { aksi: t } // final: BL-12; sampai itu dibalas belum tersedia
+  const b = t.match(/^balik (?:ke )?v?(\d{1,3})$/)
+  if (b) return { aksi: 'balik', n: Number(b[1]) }
   const m = t.match(/^buat\b ?(.*)$/)
   if (!m) return null
   let sisa = m[1], saja = false
@@ -64,6 +74,7 @@ export const BANTUAN = [
   'buat [tanggal] (jenis ditebak dari bahan)',
   'buat saja (bangun dengan bahan yang ada)',
   'status (proyek Anda yang masih terbuka)',
+  'Saat draf: balas dengan kalimat revisi, atau versi, balik v2, pptx, batal',
   'bantuan',
   'Kirim atau teruskan bahan laporan dulu, lalu ketik buat.',
   'Tanggal: hari ini (bawaan), kemarin, 26 okt, 26/10, 2026-10-26.',
@@ -91,7 +102,7 @@ async function worker(ctx, jalur, { method = 'GET', body, form } = {}) {
   const { env, dep } = ctx
   const headers = { authorization: `Bearer ${env.WA_MESIN || ''}` }
   if (body) headers['content-type'] = 'application/json'
-  const r = await dep.fetch(W(env) + jalur, { method, headers, body: form || (body ? JSON.stringify(body) : undefined) })
+  const r = await dep.fetch(W(env) + jalur, { method, headers, body: form || (body ? JSON.stringify(body) : undefined), signal: AbortSignal.timeout(WAKTU_WORKER) })
   if (!r.ok) {
     let rinci = ''
     try { rinci = (await r.text()).slice(0, 160) } catch {}
@@ -163,7 +174,7 @@ export async function ekstrak(p, ctx, kerja) {
   let isi = ''
   const ujung = path.join(kerja, `${String(p.id).replace(/[^\w.-]/g, '_')}${EXT(p) || '.bin'}`)
   try {
-    const r = await dep.fetch(`${W(env)}/api/wa/berkas?id=${encodeURIComponent(p.id)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
+    const r = await dep.fetch(`${W(env)}/api/wa/berkas?id=${encodeURIComponent(p.id)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` }, signal: AbortSignal.timeout(WAKTU_WORKER) })
     if (!r.ok) throw new Error('HTTP ' + r.status)
     const buf = Buffer.from(await r.arrayBuffer())
     if (bentuk === 'teks' || bentuk === 'csv') isi = buf.toString('utf8')
@@ -233,13 +244,32 @@ const judul = (lap, tanggal) => `${lap.judul} ${labelTanggal(tanggal)}`
 
 // Ringkasan draf (T-BUKA dan T-DRAF dalam satu teks): menempel di keterangan gambar pratinjau, jadi satu draf = 2 kiriman (Q1).
 // hitung: {kunci bahan atau 'lain': jumlah pesan}. Kalimat angka sistem hanya untuk laporan yang memuatnya (penanganan karhutla).
-export function tDraf(p, n, lap, tanggal, { hitung = {}, catatan = [], slide = null } = {}) {
+export function tDraf(p, n, lap, tanggal, { hitung = {}, catatan = [], peringatan = [], slide = null } = {}) {
   const per = Object.entries(hitung).map(([k, j]) => `${k === 'lain' ? 'bahan lain' : labelBahan(k)} ${j}`)
   return [kepala(p, n), `Draf ${judul(lap, tanggal)}.`,
     per.length ? `Bahan: ${per.join(', ')}.` : 'Bahan: belum ada bahan yang dikenali.',
     ...(lap.id === 'penanganan' ? ['Angka hotspot, firespot, luas terbakar, dan luas belum padam diambil dari sistem (hari D-1), bukan dari bahan.'] : []),
     ...(catatan.length ? ['Catatan:', ...catatan.map((c) => `- ${c}`)] : []),
+    ...daftarPeringatan(peringatan),
     ...(slide ? [`Gambar ini pratinjau slide ${slide}, PDF menyusul.`] : []),
+    'Balas dengan revisi, atau ketik final.'].join('\n')
+}
+const daftarPeringatan = (pr) => (pr.length ? ['Pemeriksaan:', ...pr.map((c) => `- ${c}`)] : [])
+// Teks dari luar (Claude, deck, pemeriksa) dirapikan ke aturan caption: tanpa titik tengah, em dash, en dash; satu baris; dipotong.
+const rapi = (t, maks = 160) => {
+  const s = String(t ?? '').replace(/\s*[·—–]\s*/g, ', ').replace(/\p{Extended_Pictographic}/gu, '').replace(/\s+/g, ' ').trim()
+  return s.length > maks ? s.slice(0, maks - 3).trimEnd() + '...' : s
+}
+
+// T-PRATINJAU (gambar) dan T-DRAF revisi (PDF): satu revisi = 2 kiriman (Q1).
+export const tPratinjau = (p, n, slide) => `${kepala(p, n)}\nPratinjau v${n}, slide ${slide}. PDF menyusul.`
+export function tDrafRevisi(p, n, lap, tanggal, { perubahan = [], tolak = [], lewat = [], catatan = [], peringatan = [] } = {}) {
+  return [kepala(p, n), `Draf ${judul(lap, tanggal)}.`,
+    ...(perubahan.length ? ['Perubahan:', ...perubahan.map((c) => `- ${c}`)] : []),
+    ...(tolak.length ? ['Tidak diubah:', ...tolak.map((c) => `- ${c}`)] : []),
+    ...(lewat.length ? ['Dilewati:', ...lewat.map((c) => `- ${c}`)] : []),
+    ...(catatan.length ? ['Catatan:', ...catatan.map((c) => `- ${c}`)] : []),
+    ...daftarPeringatan(peringatan),
     'Balas dengan revisi, atau ketik final.'].join('\n')
 }
 export const tPdf = (p, n, lap, tanggal) => `${kepala(p, n)}\nPDF draf ${judul(lap, tanggal)}.`
@@ -340,7 +370,7 @@ async function buat(cmd, dari, sha, ctx) {
   const { terpilih, teks } = await bahan.pilihSesuai(lap)
   // Bahan teks Claude: bahan terpilih generator ditambah pesan lain dalam lingkup bertanggal itu (teks, PDF, foto, Excel).
   // Foto grup operasi yang tidak terpilih tidak ikut: itu bukti lapangan, bukan bahan laporan, dan OCR-nya mahal.
-  const mentah = ((await (await depSaring.fetch(`${W(env)}/api/wa/masuk?tanggal=${encodeURIComponent(cmd.tanggal)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })).json()).pesan || [])
+  const mentah = ((await (await depSaring.fetch(`${W(env)}/api/wa/masuk?tanggal=${encodeURIComponent(cmd.tanggal)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` }, signal: AbortSignal.timeout(WAKTU_WORKER) })).json()).pesan || [])
     .filter((m) => !/@g\.us$/i.test(String(m.dari || '')))
   const pakai = new Map()
   for (const m of [...Object.values(terpilih), ...mentah]) pakai.set(String(m.id), m)
@@ -407,10 +437,14 @@ async function buat(cmd, dari, sha, ctx) {
       return await balas(`${kepala(p)}\nDraf v${n} gagal dibangun. Pemilik sudah dikabari, coba lagi nanti.`)
     }
     const pdf = berkas.find((b) => b.x === 'pdf').p, pptx = berkas.find((b) => b.x === 'pptx').p
-    // TODO(BL-11): gerbang aturan_slide, bahasa, dan banding 7 hari jalan bersamaan dengan PDF (Promise.all).
-    const png = await pratinjau(ctx, pdf, path.join(dasarV, 'pratinjau'))
+    const kunciV = bacaJson(jalurKunci(pptx), [])
+    // BL-11: periksa jalan bersamaan dengan langkah PDF/pratinjau; peringatannya masuk ringkasan draf, tidak pernah menahan.
+    const [png, peringatan] = await Promise.all([
+      pratinjau(ctx, pdf, path.join(dasarV, 'pratinjau')),
+      jalankanPeriksa(ctx, { pptx, pdf, jenis, tanggal: cmd.tanggal, angka: async () => angkaDraf(await inventarisAman(ctx, pptx), kunciV, hasil.isian) }),
+    ])
     try {
-      await simpanVersi(ctx, { p, n, sha, isian: { generator: isianGen, urai: hasil.isian, catatan: hasil.catatan }, pptx, pdf, png, instruksi: cmd.saja ? 'buat saja' : 'buat', catatan })
+      await simpanVersi(ctx, { p, n, sha, isian: { generator: isianGen, urai: hasil.isian, catatan: hasil.catatan, kunci: kunciV }, pptx, pdf, png, instruksi: cmd.saja ? 'buat saja' : 'buat', catatan: [...catatan, ...peringatan] })
       await pindah('draf')
     } catch (e) {
       if (status === 'membangun') await pindah('terbuka', { lempar: false })
@@ -418,8 +452,8 @@ async function buat(cmd, dari, sha, ctx) {
       return await balas(`${kepala(p)}\nDraf v${n} gagal disimpan. Pemilik sudah dikabari, coba lagi nanti.`)
     }
     // D8 dan Q1: tepat 2 kiriman, gambar pratinjau slide 1 berketerangan ringkasan draf, lalu PDF. Tanpa pratinjau: ringkasan di keterangan PDF.
-    // TODO(BL-10): perintah `pptx`; TODO(BL-12): `final` mengirim PPTX, unggah Drive dan /api/wa/hasil.
-    const ringkas = tDraf(p, n, lap, cmd.tanggal, { hitung, catatan, slide: png.length ? 1 : null })
+    // TODO(BL-12): `final` mengirim PPTX, unggah Drive dan /api/wa/hasil.
+    const ringkas = tDraf(p, n, lap, cmd.tanggal, { hitung, catatan, peringatan, slide: png.length ? 1 : null })
     if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), ringkas, 'image/png')
     await ctx.balasFile(pdf, path.basename(pdf), png.length ? tPdf(p, n, lap, cmd.tanggal) : ringkas, MIME.pdf)
   } catch (e) {
@@ -433,7 +467,7 @@ async function buat(cmd, dari, sha, ctx) {
   }
 }
 
-// A8: v1 = slide 1 saja (satu gambar per draf, Q1). TODO(BL-10): slide pertama yang berubah untuk revisi.
+// A8: v1 = slide 1; revisi = slide pertama yang berubah. Satu gambar per draf (Q1). berkas: PDF, atau PPTX bila ada slide disembunyikan (nomor halaman PDF bergeser).
 async function pratinjau(ctx, pdf, dir, slide = 1) {
   try {
     fs.mkdirSync(dir, { recursive: true, mode: 0o700 })
@@ -443,16 +477,358 @@ async function pratinjau(ctx, pdf, dir, slide = 1) {
   } catch (e) { (ctx.log || (() => {}))('pratinjau gagal', e.message); return [] }
 }
 
-async function simpanVersi(ctx, { p, n, sha, isian, pptx, pdf, png, instruksi, catatan }) {
+async function simpanVersi(ctx, { p, n, sha, isian, ubah, pptx, pdf, png, instruksi, catatan }) {
   const f = new FormData()
   f.set('proyek', p.id); f.set('n', String(n)); f.set('wa_sha', sha); f.set('instruksi', instruksi)
   if (catatan.length) f.set('peringatan', catatan.join('\n').slice(0, 8000))
   const blob = (x, tipe) => new Blob([fs.readFileSync(x)], { type: tipe })
   f.set('isian', new Blob([JSON.stringify(isian)], { type: 'application/json' }), 'isian.json')
+  if (ubah) f.set('ubah', new Blob([JSON.stringify(ubah)], { type: 'application/json' }), 'ubah.json')
   f.set('pptx', blob(pptx, MIME.pptx), path.basename(pptx))
   f.set('pdf', blob(pdf, MIME.pdf), path.basename(pdf))
   for (const x of png) { const m = path.basename(x).match(/^pratinjau-(\d+)\.png$/); if (m) f.set(`pratinjau-${m[1]}`, blob(x, 'image/png'), path.basename(x)) }
   return worker(ctx, '/api/wa/proyek/versi', { method: 'POST', form: f })
+}
+
+// ---------- deck: inventaris, kunci, angka (A5, A6) ----------
+const jalurKunci = (pptx) => pptx.replace(/\.pptx$/i, '') + '.kunci.json'
+// Jalur lokal deck versi n: sama dengan siapkanKeluaran(lap, tanggal, _, <dasar>/keluaran/proyek/<id>/v<n>).
+const jalurDeck = (dasar, p, lap, n) => path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`, 'keluaran', p.tanggal, lap.berkas(p.tanggal) + '.pptx')
+const pyUbah = (ctx, args, timeout = 120e3) => ctx.dep.exec(pyBin(ctx.env), [path.join(GENERATOR, 'ubah.py'), ...args], { cwd: GENERATOR, timeout, maxBuffer: 20e6 })
+async function inventaris(ctx, pptx) {
+  const v = JSON.parse(String((await pyUbah(ctx, ['inventaris', pptx])).stdout || '[]'))
+  if (!Array.isArray(v)) throw new Error('inventaris bukan daftar')
+  return v
+}
+async function inventarisAman(ctx, pptx) { try { return await inventaris(ctx, pptx) } catch (e) { (ctx.log || (() => {}))('inventaris gagal', e.message); return [] } }
+
+const NAMA_ANGKA = { hotspot: 'Hotspot', firespot: 'Firespot', luas_terbakar: 'Luas terbakar', belum_padam: 'Luas belum padam' }
+const selDari = (k) => (k?.sel == null ? null : Array.isArray(k.sel) ? { baris: Number(k.sel[0]), kolom: Number(k.sel[1]) } : { baris: Number(k.sel.baris), kolom: Number(k.sel.kolom) })
+// Teks angka di deck ("1.234", "12,5 ha") dan nilai JS-nya.
+const teksAngka = (t) => (String(t ?? '').match(/\d[\d.,]*/) || [''])[0].replace(/[.,]+$/, '')
+const keNilai = (t) => { const s = teksAngka(t); if (!s) return null; const v = Number(s.replace(/\.(?=\d{3}(?!\d))/g, '').replace(',', '.')); return Number.isFinite(v) ? v : null }
+function teksKunci(k, inv) {
+  const x = (inv || []).find((e) => Number(e.slide) === Number(k.slide) && e.shape === k.shape)
+  if (!x) return ''
+  const s = selDari(k)
+  return s && Array.isArray(x.tabel) ? String(x.tabel[s.baris]?.[s.kolom] ?? '') : String(x.teks ?? '')
+}
+// Entri kunci yang disentuh operasi (aturan sama dengan sentuhKunci claude.mjs).
+function kunciUntuk(op, kunci) {
+  for (const k of kunci || []) {
+    if (Number(k.slide) !== Number(op?.slide)) continue
+    if (op.jenis === 'sembunyikan_slide') return k
+    if (k.shape !== op.shape) continue
+    const s = selDari(k)
+    if (!s || op.jenis !== 'ganti_sel' || (s.baris === Number(op.baris) && s.kolom === Number(op.kolom))) return k
+  }
+  return null
+}
+
+// angka untuk periksa (BL-11, A7): {nama: nilai}. Kunci dari deck (shape utuh lebih dulu, bila hanya sel: dijumlah) ditambah medan angka isian (dijumlah per medan).
+export function angkaDraf(inv, kunci, isianUrai = []) {
+  const angka = {}, utuh = new Set()
+  for (const k of kunci || []) {
+    const v = keNilai(teksKunci(k, inv)), nama = k.angka || 'angka_sistem'
+    if (v == null || utuh.has(nama)) continue
+    if (!selDari(k)) { angka[nama] = v; utuh.add(nama) } else angka[nama] = (angka[nama] || 0) + v
+  }
+  for (const e of isianUrai || []) {
+    if (!e || medanTerkunci(e.medan) || (kunci || []).some((k) => k.angka === e.medan)) continue
+    const v = angkaBulat(e.nilai)
+    if (v != null) angka[e.medan] = (angka[e.medan] || 0) + v
+  }
+  return angka
+}
+
+// T-TOLAK-KUNCI: nama angka, nilai, asal, tawaran catatan. ops: operasi yang ditolak karena kunci (Claude atau ubah.py).
+export function tTolakKunci(ops, inv, kunci) {
+  const baris = [], slide = new Set()
+  for (const op of ops) {
+    const k = kunciUntuk(op, kunci)
+    if (k) {
+      const nilai = teksAngka(teksKunci(k, inv))
+      const ha = /^(luas_terbakar|belum_padam)$/.test(k.angka) && nilai ? ' ha' : ''
+      baris.push(`${NAMA_ANGKA[k.angka] || 'Angka sistem'}${nilai ? ` ${nilai}${ha}` : ''} di slide ${k.slide} adalah angka sistem (dari sistem, hari D-1), tidak diubah lewat revisi.`)
+      slide.add(k.slide)
+    } else {
+      baris.push(`Revisi${op?.slide ? ` slide ${op.slide}` : ''} menulis angka hotspot, firespot, luas terbakar, atau belum padam. Angka itu hanya dari sistem (hari D-1).`)
+      if (op?.slide) slide.add(op.slide)
+    }
+  }
+  const s = [...slide][0]
+  return { baris: [...new Set(baris)], tawaran: `Bila angka lapangan berbeda, minta catatan, misalnya: tambahkan catatan di slide ${s || 'itu'} bahwa angka lapangan berbeda (tanpa menulis angka sistem).` }
+}
+
+// A8: slide yang teks inventarisnya beda dari versi sebelumnya, urut naik.
+export function slideBerubah(lama, baru) {
+  const peta = (inv) => {
+    const m = new Map()
+    for (const x of inv || []) m.set(Number(x.slide), (m.get(Number(x.slide)) || '') + JSON.stringify([x.shape, x.teks ?? '', x.tabel ?? null]))
+    return m
+  }
+  const a = peta(lama), b = peta(baru)
+  return [...new Set([...a.keys(), ...b.keys()])].filter((n) => a.get(n) !== b.get(n)).sort((x, y) => x - y)
+}
+
+// Satu baris ringkasan per operasi yang diterapkan (fakta dari operasi, bukan kalimat Claude).
+function uraiOp(op) {
+  const t = (x) => `"${rapi(x, 70)}"`
+  switch (op.jenis) {
+    case 'ganti_teks': return `Slide ${op.slide}: ${t(op.teks_lama)} diganti ${t(op.teks_baru)}.`
+    case 'ganti_sel': return `Slide ${op.slide}: sel baris ${op.baris} kolom ${op.kolom} diganti ${t(op.teks_baru)}.`
+    case 'tambah_baris': return `Slide ${op.slide}: baris baru ${t(op.teks)}.`
+    case 'hapus_baris': return `Slide ${op.slide}: baris ${t(op.teks_lama)} dihapus.`
+    case 'catatan': return `Slide ${op.slide}: catatan ${t(op.teks)}.`
+    case 'sembunyikan_slide': return `Slide ${op.slide} disembunyikan.`
+    case 'tampilkan_slide': return `Slide ${op.slide} ditampilkan lagi.`
+    default: return `Slide ${op.slide}: ${op.jenis}.`
+  }
+}
+const alasanKunci = (a) => /terkunci|angka sistem/i.test(String(a || ''))
+
+// ---------- periksa (BL-11): modul opsional ./periksa.mjs ----------
+async function muatPeriksa(ctx) {
+  if (ctx.dep && 'periksa' in ctx.dep) return ctx.dep.periksa || null // uji dan pemanggil boleh menyuntik atau mematikan (null)
+  try { return (await import('./periksa.mjs')).periksa || null } catch (e) {
+    if (e?.code !== 'ERR_MODULE_NOT_FOUND') (ctx.log || (() => {}))('periksa tidak termuat', e.message)
+    return null
+  }
+}
+// -> daftar kalimat peringatan, ditambah pelanggaran gerbang (gagal: format slide, bahasa) paling banyak 3 baris + "dan N lainnya".
+// Galat, modul tidak ada, atau lewat PERIKSA_MS = [] (tidak pernah menahan draf).
+async function jalankanPeriksa(ctx, { pptx, pdf, jenis, tanggal, angka }) {
+  const log = ctx.log || (() => {})
+  const fn = await muatPeriksa(ctx)
+  if (typeof fn !== 'function') return []
+  let jam
+  try {
+    const nilai = typeof angka === 'function' ? await angka() : angka
+    const kerja = Promise.resolve(fn({ pptx, pdf, jenis, tanggal, angka: nilai, env: ctx.env, dep: ctx.dep.periksaDep || {} }))
+    const batas = new Promise((r) => { jam = setTimeout(() => { log('periksa lewat batas waktu'); r(null) }, ctx.periksaMs ?? PERIKSA_MS); jam.unref?.() })
+    const h = await Promise.race([kerja, batas])
+    if (h && h.ms != null) log('periksa selesai', `${h.ms} ms`)
+    const pr = (Array.isArray(h?.peringatan) ? h.peringatan : []).map((x) => rapi(x, 200)).filter(Boolean).slice(0, 8)
+    const gg = (Array.isArray(h?.gagal) ? h.gagal : []).map((x) => rapi(x, 160)).filter(Boolean)
+    return [...pr, ...gg.slice(0, 3).map((x) => `Gerbang: ${x}`), ...(gg.length > 3 ? [`Gerbang: dan ${gg.length - 3} lainnya.`] : [])]
+  } catch (e) { log('periksa gagal', e.message); return [] } finally { clearTimeout(jam) }
+}
+
+// ---------- versi (rute GET /api/wa/proyek/versi) ----------
+const versiDaftar = async (ctx, p, sha) => (await worker(ctx, `/api/wa/proyek/versi?id=${encodeURIComponent(p.id)}&wa_sha=${sha}`)).versi || []
+const versiRinci = (ctx, p, n, sha) => worker(ctx, `/api/wa/proyek/versi?id=${encodeURIComponent(p.id)}&n=${n}&wa_sha=${sha}`)
+const opsDari = (rinci) => (Array.isArray(rinci?.ubah?.operasi) ? rinci.ubah.operasi : [])
+// PPTX versi n di mesin; hilang (mesin lain, dibersihkan) = unduh dari R2 lewat rute.
+async function pastikanPptx(ctx, p, lap, n, sha) {
+  const f = jalurDeck(ctx.dasar || RUMAH, p, lap, n)
+  if ((ctx.ada || fs.existsSync)(f)) return f
+  const { env, dep } = ctx
+  const r = await dep.fetch(`${W(env)}/api/wa/proyek/versi?id=${encodeURIComponent(p.id)}&n=${n}&wa_sha=${sha}&berkas=${encodeURIComponent(path.basename(f))}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` }, signal: AbortSignal.timeout(WAKTU_WORKER) })
+  if (!r.ok) throw new Error(`PPTX v${n} tidak ada (HTTP ${r.status})`)
+  fs.mkdirSync(path.dirname(f), { recursive: true, mode: 0o700 })
+  fs.writeFileSync(f, Buffer.from(await r.arrayBuffer()), { mode: 0o600 })
+  return f
+}
+
+// Proyek aktif pengirim dari indeks lokal, terbaru dulu; yang tidak aktif lagi dibuang dari indeks.
+// bersihkan: false = tanpa menulis indeks (klasifikasi tanpa efek samping); rute {id} hanya membaca.
+async function proyekPengirim(ctx, sha, saring = () => true, { bersihkan = true } = {}) {
+  const dasar = ctx.dasar || RUMAH
+  const ix = bacaJson(indeksP(dasar), { proyek: {} })
+  const buang = (id) => { if (bersihkan) hapusIndeks(dasar, id) }
+  const ada = []
+  for (const [id, e] of Object.entries(ix.proyek)) {
+    if (e.sha !== sha) continue
+    let p
+    try { p = (await proyekBuka(ctx, { id, wa_sha: sha })).proyek } catch (x) { if (/HTTP 404/.test(x.message)) buang(id); continue }
+    if (!AKTIF.includes(p.status)) { buang(id); continue }
+    if (saring(p)) ada.push(p)
+  }
+  return ada.sort((a, b) => Number(b.diubah || 0) - Number(a.diubah || 0))
+}
+
+const jamLabel = (ms) => {
+  const t = Number(ms) < 1e12 ? Number(ms) * 1000 : Number(ms)
+  const d = new Date(t)
+  return `${labelTanggal(tanggalWib(d))} ${new Date(t + 7 * 3600e3).toISOString().slice(11, 16).replace(':', '.')}`
+}
+
+// ---------- revisi dan balik (ALUR B) ----------
+// opsi.balik = nomor versi yang isinya disalin (tanpa Claude). Selain itu pesan.teks = kalimat revisi.
+async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
+  const { env, dep, balas } = ctx
+  const dasar = ctx.dasar || RUMAH, log = ctx.log || (() => {}), ada = ctx.ada || fs.existsSync
+  const lap = lapDari(p.jenis)
+  if (!lap) return balas(`${kepala(p, p.versi || null)}\nJenis ${p.jenis} belum bisa direvisi lewat bot.`)
+  const berkasKunci = lockProyek(dasar, p.id)
+  if (p.status === 'membangun') {
+    if (kunciHidup(berkasKunci)) return balas(`${kepala(p, p.versi || null)}\nSedang dibangun, tunggu sebentar.`)
+    p = await pulihkan(ctx, p, sha)
+  }
+  if (p.status !== 'draf' || !(p.versi > 0)) return balas(`${kepala(p, p.versi || null)}\nBelum ada draf untuk ${opsi.balik ? 'dikembalikan' : 'direvisi'}. Ketik buat dulu.`)
+  const m = p.versi, n = m + 1
+  if (opsi.balik != null) {
+    if (opsi.balik < 1 || opsi.balik > m) return balas(`${kepala(p, m)}\nVersi v${opsi.balik} tidak ada. Versi terakhir v${m}, ketik versi untuk riwayatnya.`)
+    if (opsi.balik === m) return balas(`${kepala(p, m)}\nv${m} sudah versi terakhir.`)
+  }
+  const lepas = kunciProses(berkasKunci)
+  if (!lepas) return balas(`${kepala(p, m)}\nSedang dibangun, tunggu sebentar.`)
+  let status = p.status
+  const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
+  const keDraf = async (teks) => { await pindah('draf'); return balas(teks) }
+  try {
+    await pindah('membangun')
+    const akhir = await versiRinci(ctx, p, m, sha)
+    const opsLama = opsDari(akhir)
+    const isianV = akhir?.isian && typeof akhir.isian === 'object' ? akhir.isian : {}
+    const pptxLama = await pastikanPptx(ctx, p, lap, m, sha)
+    const kunciSimpan = Array.isArray(akhir?.ubah?.kunci) ? akhir.ubah.kunci : Array.isArray(isianV.kunci) ? isianV.kunci : null
+    const kunciLama = bacaJson(jalurKunci(pptxLama), null) ?? kunciSimpan
+    if (!Array.isArray(kunciLama)) {
+      // Tanpa daftar kunci angka sistem tidak ada yang menjaga K4: revisi ditolak, tidak pernah dijalankan tanpa kunci.
+      await kabarSekali(ctx, 'kunci', `Bot laporan ${p.id}: daftar kunci angka sistem v${m} tidak ada di mesin maupun versi tersimpan; revisi ditolak.`)
+      return await keDraf(`${kepala(p, m)}\nRevisi belum bisa diproses: daftar angka sistem yang dikunci untuk draf ini tidak ditemukan. Pemilik sudah dikabari.`)
+    }
+    const invLama = await inventaris(ctx, pptxLama)
+
+    let ops, baru = [], tolakKunci = [], tolakLain = [], instruksi, kalimat = null
+    if (opsi.balik != null) {
+      ops = opsDari(await versiRinci(ctx, p, opsi.balik, sha))
+      instruksi = `balik v${opsi.balik}`
+    } else {
+      kalimat = String(pesan.teks || '').trim().slice(0, MAKS_KALIMAT)
+      const r = await klien(ctx).operasi(invLama, kunciLama, opsLama.map((o) => JSON.stringify(o)), kalimat)
+      if (r.tanya?.length) {
+        return await keDraf([kepala(p, m), 'Revisi belum diterapkan, ada yang perlu dipastikan:',
+          ...r.tanya.map((q, i) => `${i + 1}. ${rapi(q.pertanyaan, 300)}`), 'Balas dengan kalimat revisi yang lebih rinci.'].join('\n'))
+      }
+      tolakKunci = (r.ditolak || []).filter((x) => x.kunci).map((x) => x.op)
+      tolakLain = (r.ditolak || []).filter((x) => !x.kunci)
+      baru = r.diterima || []
+      if (!baru.length) {
+        const tk = tolakKunci.length ? tTolakKunci(tolakKunci, invLama, kunciLama) : null
+        return await keDraf([kepala(p, m), 'Revisi tidak diterapkan, draf tetap v' + m + '.',
+          ...(tk ? [...tk.baris, tk.tawaran] : []),
+          ...(tolakLain.length ? [`Bagian lain belum bisa dipetakan ke slide (${rapi(tolakLain[0].alasan, 80)}). Sebut nomor slide dan teks yang diganti.`] : []),
+          ...(!tk && !tolakLain.length ? ['Tidak ada perubahan yang bisa dibaca dari kalimat itu. Sebut nomor slide dan teks yang diganti.'] : [])].join('\n'))
+      }
+      ops = [...opsLama, ...baru]
+      instruksi = `revisi: ${rapi(samarkan(kalimat), 480)}`
+    }
+
+    // Bangun ulang dari bahan + isian versi terakhir (D1, D6), lalu operasi 1..n.
+    const lingkup = lingkupBahan(env, dari, sha)
+    const bahan = await ambilBahan({ env, dep: { ...dep, fetch: fetchLingkup(dep, lingkup.boleh) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+    const { teks } = await bahan.pilihSesuai(lap)
+    const dasarV = path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`)
+    const catatan = []
+    let pptx, pdf, lewat = [], terpakai = ops
+    const gagalBangun = async (e) => {
+      await pindah('draf', { lempar: false })
+      await kabarSekali(ctx, 'bangun', `Bot laporan ${p.id}: revisi v${n} gagal dibangun. ${String(e.message).slice(0, 400)}`)
+      return balas(`${kepala(p, m)}\nRevisi v${n} gagal dibangun. Pemilik sudah dikabari, draf v${m} tetap berlaku.`)
+    }
+    try {
+      const k = siapkanKeluaran(lap, p.tanggal, teks, dasarV)
+      const isianGen = isianV.generator && typeof isianV.generator === 'object' ? isianV.generator : {}
+      if (Object.keys(isianGen).length) { k.f.isian = path.join(k.kerja, 'isian.json'); tulisJson(k.f.isian, tanpaKunci(isianGen)) }
+      const r = await jalankanGenerator(lap, p.tanggal, k.f, k.out, k.kerja, dep, env, { kunci: path.join(dasar, 'generator.lock'), envAnak: { WA_MULAI_AKAR: path.join(dasar, 'keluaran') } })
+      pdf = k.berkas.find((b) => b.x === 'pdf').p; pptx = k.berkas.find((b) => b.x === 'pptx').p
+      if (!ada(pptx)) throw new Error('keluaran tidak ada: ' + path.basename(pptx))
+      for (const l of String(r?.stderr || '').split('\n')) { const x = l.match(/^PERINGATAN isian:\s*(.+)$/); if (x) catatan.push(`Isian diabaikan generator: ${x[1].trim()}`) }
+      if (ops.length) {
+        const opsF = path.join(k.kerja, 'operasi.json'), keluar = path.join(k.kerja, 'ubah.pptx')
+        let kunciF = jalurKunci(pptx)
+        // Generator tidak menulis kunci: pakai kunci versi terakhir lewat berkas sementara; ubah.py tidak pernah jalan tanpa kunci ('-').
+        if (!ada(kunciF)) { kunciF = path.join(k.kerja, 'kunci-versi.json'); tulisJson(kunciF, kunciLama) }
+        tulisJson(opsF, ops)
+        const t = JSON.parse(String((await pyUbah(ctx, ['terapkan', pptx, opsF, kunciF, keluar], 300e3)).stdout || '{}'))
+        if (!ada(keluar)) throw new Error('ubah.py terapkan tidak menulis PPTX')
+        fs.renameSync(keluar, pptx)
+        lewat = Array.isArray(t.dilewati) ? t.dilewati : []
+        const ke = new Set(lewat.map((x) => Number(x.ke)))
+        terpakai = ops.filter((_, i) => !ke.has(i))
+      }
+    } catch (e) { return await gagalBangun(e) }
+
+    const awalBaru = ops.length - baru.length
+    const baruJalan = terpakai.filter((o) => ops.indexOf(o) >= awalBaru)
+    const lewatKunci = lewat.filter((x) => alasanKunci(x.alasan)).map((x) => x.op)
+    const lewatTeks = lewat.filter((x) => !alasanKunci(x.alasan))
+    const kunciBaru = bacaJson(jalurKunci(pptx), null) ?? kunciLama
+    const invBaru = await inventarisAman(ctx, pptx)
+    const tk = [...tolakKunci, ...lewatKunci].length ? tTolakKunci([...tolakKunci, ...lewatKunci], invBaru.length ? invBaru : invLama, kunciBaru.length ? kunciBaru : kunciLama) : null
+    const kalimatLewat = lewatTeks.map((x) => `${uraiOp(x.op || {}).replace(/\.$/, '')}: ${Number(x.ke) < awalBaru ? 'perubahan lama, ' : ''}teks di slide sudah berbeda. Kirim ulang revisinya bila masih perlu.`)
+    if (opsi.balik == null && !baruJalan.length) {
+      // Tidak ada perubahan baru yang lolos: versi tidak bertambah, berkas bangunan ini dibuang.
+      fs.rmSync(dasarV, { recursive: true, force: true })
+      return await keDraf([kepala(p, m), `Revisi tidak diterapkan, draf tetap v${m}.`, ...(tk ? [...tk.baris, tk.tawaran] : []), ...kalimatLewat].join('\n'))
+    }
+
+    const sembunyi = terpakai.some((o) => o.jenis === 'sembunyikan_slide')
+    const berubah = slideBerubah(invLama, invBaru)
+    const slide = berubah[0] || baruJalan.find((o) => o.slide)?.slide || terpakai.find((o) => o.slide)?.slide || 1
+    // PDF (bila deck diubah) dan periksa jalan bersamaan (BL-11); periksa tidak pernah menahan.
+    const langkahPdf = (async () => {
+      if (!ops.length) return
+      fs.rmSync(pdf, { force: true })
+      await dep.exec(pyBin(env), [path.join(GENERATOR, 'pdf.py'), pptx, path.dirname(pdf)], { cwd: GENERATOR, timeout: 300e3, maxBuffer: 20e6 })
+      if (!ada(pdf)) throw new Error('PDF tidak terbentuk: ' + path.basename(pdf))
+    })()
+    const langkahPeriksa = jalankanPeriksa(ctx, { pptx, pdf, jenis: p.jenis, tanggal: p.tanggal, angka: () => angkaDraf(invBaru, kunciBaru, isianV.urai) })
+    let peringatan
+    try { [, peringatan] = await Promise.all([langkahPdf, langkahPeriksa]) } catch (e) { return await gagalBangun(e) }
+    const png = await pratinjau(ctx, sembunyi ? pptx : pdf, path.join(dasarV, 'pratinjau'), slide)
+
+    const ubah = { operasi: terpakai, baru: baruJalan, dari_versi: m, ...(opsi.balik != null ? { balik: opsi.balik } : {}),
+      dilewati: lewat.map((x) => ({ ke: x.ke, alasan: x.alasan })), ditolak: [...tolakKunci.map((op) => ({ op, kunci: true })), ...tolakLain], kunci: kunciBaru }
+    const perubahan = opsi.balik != null ? [`Isi sama dengan v${opsi.balik}.`] : baruJalan.map(uraiOp)
+    const tolak = tk ? [...tk.baris, tk.tawaran] : []
+    try {
+      await simpanVersi(ctx, { p, n, sha, isian: { ...isianV, kunci: kunciBaru }, ubah, pptx, pdf, png, instruksi,
+        catatan: [...perubahan, ...tolak, ...kalimatLewat, ...catatan, ...peringatan] })
+      await pindah('draf')
+    } catch (e) {
+      if (status === 'membangun') await pindah('draf', { lempar: false })
+      await kabarSekali(ctx, 'versi', `Bot laporan ${p.id}: versi v${n} gagal disimpan. ${String(e.message).slice(0, 300)}`)
+      return await balas(`${kepala(p, m)}\nRevisi v${n} gagal disimpan. Pemilik sudah dikabari, draf v${m} tetap berlaku.`)
+    }
+    // D8 dan Q1: tepat 2 kiriman, pratinjau slide pertama yang berubah lalu PDF berketerangan T-DRAF. Tanpa pratinjau: PDF saja.
+    const ringkas = tDrafRevisi(p, n, lap, p.tanggal, { perubahan, tolak, lewat: kalimatLewat, catatan, peringatan })
+    if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), tPratinjau(p, n, slide), 'image/png')
+    await ctx.balasFile(pdf, path.basename(pdf), ringkas, MIME.pdf)
+  } catch (e) {
+    if (status === 'membangun') await pindah('draf', { lempar: false })
+    if (!(e instanceof GalatClaude)) throw e
+    await kabarSekali(ctx, `claude:${e.kode}`, `Bot laporan ${p.id}: panggilan Claude gagal (${e.kode}). ${String(e.message).slice(0, 300)}`)
+    await balas(`${kepala(p, m)}\n${e.pesanPemakai}`)
+  } finally { lepas() }
+}
+
+// ---------- versi, pptx, batal ----------
+async function perintahProyek(cmd, dari, sha, ctx) {
+  const { balas } = ctx
+  const ps = await proyekPengirim(ctx, sha, (p) => cmd.aksi === 'batal' || p.versi > 0)
+  const p = ps.find((x) => x.status === 'draf') || ps[0]
+  if (!p) return balas(cmd.aksi === 'batal' ? 'Tidak ada proyek laporan yang terbuka.' : 'Belum ada draf. Kirim bahan lalu ketik buat harian atau buat penanganan.')
+  const lap = lapDari(p.jenis)
+  const nama = lap ? judul(lap, p.tanggal) : p.jenis
+  if (cmd.aksi === 'balik') return revisi(null, dari, sha, p, ctx, { balik: cmd.n })
+  if (cmd.aksi === 'versi') {
+    const v = await versiDaftar(ctx, p, sha)
+    const baris = v.map((x) => `v${x.n} ${jamLabel(x.dibuat)}, ${rapi(x.instruksi || 'buat', 80)}`)
+    return balas([kepala(p, p.versi), `Riwayat versi ${nama}:`, ...baris, 'Ketik balik vN untuk membuat versi baru yang sama dengan vN.'].join('\n'))
+  }
+  if (cmd.aksi === 'pptx') {
+    if (!lap) return balas(`${kepala(p, p.versi)}\nPPTX jenis ini belum bisa dikirim lewat bot.`)
+    const f = await pastikanPptx(ctx, p, lap, p.versi, sha)
+    return ctx.balasFile(f, path.basename(f), `${kepala(p, p.versi)}\nPPTX draf ${nama}.`, MIME.pptx) // dihitung limiter seperti kiriman lain (Q1)
+  }
+  // batal
+  if (p.status === 'membangun' && kunciHidup(lockProyek(ctx.dasar || RUMAH, p.id))) return balas(`${kepala(p, p.versi || null)}\nSedang dibangun, tunggu sebentar lalu ketik batal lagi.`)
+  await pindahStatus(ctx, p, 'batal', sha)
+  hapusIndeks(ctx.dasar || RUMAH, p.id)
+  return balas(`${kepala(p, p.versi || null)}\n${nama} dibatalkan, tanpa unggah. Ketik buat untuk memulai lagi.`)
 }
 
 // ---------- status tanpa tanggal ----------
@@ -507,7 +883,26 @@ export async function kedaluwarsa(ctx) {
 }
 
 // ---------- pintu masuk ----------
-// pesan: {dari, teks, wa_id?, nama_berkas?, ada_berkas?, lama?}. ctx: {env, dep, now, dasar, log, balas, balasFile, kabariPemilik?, kirimKe?, kenali?, tanggalIsi?, ada?}.
+// Calon revisi: teks saja, bukan diteruskan (forward selalu bahan), bukan perintah, bukan bahan yang dikenali. Murni, tanpa Worker.
+function calonRevisi(pesan, ctx) {
+  const teks = String(pesan?.teks || '').trim()
+  return !pesan.ada_berkas && pesan.diteruskan !== true && !!teks && !parsePerintah(teks, ctx.now || new Date()) &&
+    !(ctx.kenali || jenisWa.kenali)(teks, pesan.nama_berkas || '')
+}
+const drafPengirim = async (ctx, sha, o) => (await proyekPengirim(ctx, sha, (p) => p.status === 'draf' && p.versi > 0, o))[0] || null
+
+// Untuk gateway (BL-09) sebelum meneruskan pesan teks ke Worker: 'perintah' | 'revisi' | 'bahan'. Tanpa efek samping (hanya membaca proyek).
+// 'revisi' hanya bila pengirim memegang proyek draf dan calonRevisi; kalimat revisi tidak diteruskan ke Worker, jadi tidak pernah jadi bahan.
+export async function klasifikasi(pesan, ctx) {
+  if (!pesan || pesan.lama) return 'bahan'
+  if (!pesan.ada_berkas && parsePerintah(pesan.teks, ctx.now || new Date())) return 'perintah'
+  if (!calonRevisi(pesan, ctx)) return 'bahan'
+  const dari = normalWa(pesan.dari), sha = dari && !/@g\.us$/.test(dari) ? waSha(dari, ctx.env.WA_GARAM) : null
+  if (!sha) return 'bahan'
+  try { return (await drafPengirim(ctx, sha, { bersihkan: false })) ? 'revisi' : 'bahan' } catch { return 'bahan' }
+}
+
+// pesan: {dari, teks, wa_id?, nama_berkas?, ada_berkas?, diteruskan?, lama?}. Revisi tidak butuh wa_id (gateway tidak meneruskannya ke Worker). ctx: {env, dep, now, dasar, log, balas, balasFile, kabariPemilik?, kirimKe?, kenali?, tanggalIsi?, ada?}.
 // Kembalian: {status} untuk pemanggil (gateway, BL-09).
 export async function tangani(pesan, ctx) {
   if (pesan?.lama) return { status: 'susulan dibuang' } // K11: pesan saat mesin mati tidak masuk proyek. TODO(BL-14): T-TERLEWAT sekali per nomor.
@@ -524,16 +919,23 @@ export async function tangani(pesan, ctx) {
     if (cmd) { await ctx.balas('Bot laporan belum siap, pemilik sudah dikabari.'); await kabarSekali(ctx, 'garam', 'Bot laporan: WA_GARAM belum diisi di scripts/wa/.env.') }
     return { status: 'belum siap' }
   }
+  let jawab = !!cmd // galat dibalas ke pengirim hanya untuk perintah dan revisi, tidak untuk bahan biasa
   try {
     if (cmd?.aksi === 'status') { await status(dari, sha, ctx); return { status: 'status' } }
     if (cmd?.aksi === 'buat') { await buat(cmd, dari, sha, ctx); return { status: 'buat' } }
-    // TODO(BL-10): revisi lewat kalimat biasa, `versi`, `balik vN`, `pptx`, `batal`. TODO(BL-12): `final`.
+    if (cmd?.aksi === 'final') { await ctx.balas('Perintah final belum tersedia, segera menyusul.'); return { status: 'final belum tersedia' } } // TODO(BL-12)
+    if (cmd) { await perintahProyek(cmd, dari, sha, ctx); return { status: cmd.aksi } }
+    // Perintah tidak pernah sampai ke sini (tidak pernah ke Claude). Revisi (ALUR B): calonRevisi dari pemegang proyek draf; forward dan bahan dikenali tetap bahan.
+    if (calonRevisi(pesan, ctx)) {
+      const draf = await drafPengirim(ctx, sha)
+      if (draf) { jawab = true; await revisi(pesan, dari, sha, draf, ctx); return { status: 'revisi', proyek: draf.id } }
+    }
     if (pesan.wa_id != null) return await tambahBahan(pesan, dari, sha, ctx)
     return { status: 'diabaikan' }
   } catch (e) {
     (ctx.log || (() => {}))('[proyek] galat', e.message)
     await kabarSekali(ctx, 'proyek', `Bot laporan: perintah gagal. ${String(e.message).slice(0, 400)}`)
-    if (cmd) await ctx.balas('Perintah gagal diproses. Pemilik sudah dikabari, coba lagi nanti.')
+    if (jawab) await ctx.balas('Perintah gagal diproses. Pemilik sudah dikabari, coba lagi nanti.')
     return { status: 'galat', alasan: e.message }
   }
 }

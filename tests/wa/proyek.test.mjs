@@ -1,12 +1,13 @@
-// Uji mesin proyek bot laporan (BL-08; RENCANA-UJI T2, T3, T15, T22) tanpa Claude API, Worker, python, atau WhatsApp: semua disuntik.
+// Uji mesin proyek bot laporan (BL-08, BL-10; RENCANA-UJI T2, T3, T6, T7, T8, T15, T22) tanpa Claude API, Worker, python, atau WhatsApp: semua disuntik.
+// Deck palsu: PPTX berisi JSON inventaris [{slide, shape, teks}]; ubah.py palsu (inventaris, terapkan, pratinjau) dan pdf.py palsu bekerja di atasnya.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import crypto from 'node:crypto'
 import os from 'node:os'
 import path from 'node:path'
-import { tangani, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN } from '../../scripts/wa/proyek.mjs'
-import { GalatClaude } from '../../scripts/wa/claude.mjs'
+import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN } from '../../scripts/wa/proyek.mjs'
+import { GalatClaude, validasiOperasi } from '../../scripts/wa/claude.mjs'
 import { LAPORAN } from '../../scripts/wa/otomatis.mjs'
 
 const NOW = new Date('2026-10-29T01:00:00Z') // 08.00 WIB
@@ -17,10 +18,14 @@ const tanggalIsi = (t) => String(t).split('] ')[1]
 const P = (id, kunci, dari = DARI) => ({ id, diterima: Number(id), dari, teks: `[${kunci}] ${TGL}`, nama_berkas: '', ada_berkas: 0 })
 const LENGKAP = () => [P('1', 'rekap_koordalops_24'), P('2', 'bmkg_pagi'), P('3', 'pvmbg_pagi')]
 const SISTEM_HURUF = /[·—–]|\p{Extended_Pictographic}/u
+const DECK = () => [{ slide: 1, shape: 's1_judul', teks: 'LAPORAN HARIAN' }, { slide: 2, shape: 's2_kpi_hotspot', teks: 'HOTSPOT\n1.234' },
+  { slide: 2, shape: 's2_ringkas', teks: 'Banjir di Bogor' }, { slide: 3, shape: 's3_rencana', teks: 'Rencana aksi' }]
+const KUNCI = () => [{ slide: 2, shape: 's2_kpi_hotspot', angka: 'hotspot' }]
+const bacaDeck = (f) => JSON.parse(fs.readFileSync(f, 'utf8'))
 
-function dunia({ pesan = LENGKAP(), berkas = {}, claude, ocr, tahanGenerator, now = NOW, stderrGen = '', gagalStatus = 0 } = {}) {
+function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerator, now = NOW, stderrGen = '', gagalStatus = 0, periksa = null, deck = DECK } = {}) {
   const dasar = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-proyek-'))
-  const balasan = [], kirim = [], exec = [], keUrai = [], pemilik = [], versi = [], statusLog = []
+  const balasan = [], kirim = [], exec = [], keUrai = [], keOperasi = [], pemilik = [], versi = [], statusLog = [], kePeriksa = []
   const proyek = new Map()
   let nomor = 0
   const jawab = (o) => ({ ok: true, status: 200, json: async () => o, text: async () => JSON.stringify(o) })
@@ -45,10 +50,22 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ocr, tahanGenerator, no
         const p = [...proyek.values()].find((x) => x.id === b.id); statusLog.push(b.ke); p.status = b.ke
         return jawab({ ok: true, proyek: p })
       }
+      if (url.pathname === '/api/wa/proyek/versi' && (o.method || 'GET') === 'GET') {
+        const id = url.searchParams.get('id'), n = url.searchParams.get('n'), nama = url.searchParams.get('berkas')
+        const vs = versi.filter((v) => v.proyek === id)
+        if (n == null) return jawab({ versi: vs.map((v) => ({ n: Number(v.n), instruksi: v.instruksi, dibuat: v.dibuat })) })
+        const v = vs.find((x) => x.n === n)
+        if (!v) return { ok: false, status: 404, text: async () => 'versi tidak ada' }
+        if (nama != null) return { ok: true, status: 200, arrayBuffer: async () => new TextEncoder().encode(v.pptxIsi).buffer }
+        return jawab({ versi: { n: Number(v.n), instruksi: v.instruksi }, isian: v.isian, ubah: v.ubah })
+      }
       if (url.pathname === '/api/wa/proyek/versi') {
         const f = o.body
-        versi.push({ n: f.get('n'), kunci: [...f.keys()], isian: JSON.parse(await f.get('isian').text()), peringatan: f.get('peringatan') })
-        const p = [...proyek.values()].find((x) => x.id === f.get('proyek')); p.versi = Number(f.get('n'))
+        const p = [...proyek.values()].find((x) => x.id === f.get('proyek'))
+        if (Number(f.get('n')) !== p.versi + 1) return { ok: false, status: 409, text: async () => 'versi sudah ada' }
+        versi.push({ proyek: f.get('proyek'), n: f.get('n'), kunci: [...f.keys()], isian: JSON.parse(await f.get('isian').text()), peringatan: f.get('peringatan'),
+          instruksi: f.get('instruksi'), ubah: f.get('ubah') ? JSON.parse(await f.get('ubah').text()) : null, pptxIsi: await f.get('pptx').text(), dibuat: now.getTime() + versi.length * 60e3 })
+        p.versi = Number(f.get('n'))
         return jawab({ ok: true })
       }
       throw new Error('fetch tak terduga ' + u)
@@ -57,20 +74,52 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ocr, tahanGenerator, no
       exec.push({ cmd, args })
       if (cmd === 'pdftotext') return { stdout: fs.readFileSync(args[1], 'utf8').replace(/^PDF:/, '') }
       if (args[0] === '-c') return { stdout: 'a,b\n1,2\n' + fs.readFileSync(args[2], 'utf8') }
+      if (String(args[0]).endsWith('ubah.py') && args[1] === 'inventaris') return { stdout: JSON.stringify(bacaDeck(args[2])) }
+      if (String(args[0]).endsWith('ubah.py') && args[1] === 'terapkan') {
+        const inv = bacaDeck(args[2]), daftarOps = JSON.parse(fs.readFileSync(args[3], 'utf8'))
+        const kunci = args[4] === '-' ? [] : JSON.parse(fs.readFileSync(args[4], 'utf8'))
+        const hasil = { diterapkan: [], dilewati: [], tanya: [] }
+        daftarOps.forEach((op, ke) => {
+          if (op.jenis === 'catatan') { inv.push({ slide: op.slide, shape: `s${op.slide}_catatan_bot_1`, teks: op.teks }); hasil.diterapkan.push(op); return }
+          const sh = inv.find((x) => x.slide === op.slide && x.shape === op.shape)
+          if (!sh) return hasil.dilewati.push({ ke, op, alasan: 'shape tidak ada' })
+          if (kunci.some((k) => k.slide === op.slide && k.shape === op.shape)) return hasil.dilewati.push({ ke, op, alasan: 'shape terkunci: memuat angka sistem' })
+          if (sh.teks !== op.teks_lama) return hasil.dilewati.push({ ke, op, alasan: 'teks_lama tidak cocok dengan teks sekarang' })
+          sh.teks = op.teks_baru; hasil.diterapkan.push(op)
+        })
+        fs.writeFileSync(args[5], JSON.stringify(inv))
+        return { stdout: JSON.stringify(hasil) }
+      }
       if (String(args[0]).endsWith('ubah.py')) {
         const dir = args[4]; fs.mkdirSync(dir, { recursive: true })
-        const png = [1, 2, 3].map((n) => path.join(dir, `pratinjau-${n}.png`))
+        const png = String(args[3]).split(',').map((n) => path.join(dir, `pratinjau-${n}.png`))
         for (const f of png) fs.writeFileSync(f, 'png')
         return { stdout: JSON.stringify({ png, metode: 'uji' }) }
+      }
+      if (String(args[0]).endsWith('pdf.py')) {
+        const pdf = path.join(args[2], path.basename(args[1]).replace(/\.pptx$/, '.pdf'))
+        fs.writeFileSync(pdf, 'PDF ' + fs.readFileSync(args[1], 'utf8'))
+        return { stdout: pdf }
       }
       if (tahanGenerator) await tahanGenerator
       const out = args[args.indexOf('--out') + 1], tgl = args[args.indexOf('--tanggal') + 1]
       const lap = LAPORAN.find((l) => l.args(tgl, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's', pvmbg_pagi: 'g' }, 'o')[0] === args[0])
-      for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.${x}`), 'x')
+      fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.pdf`), 'x')
+      fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.pptx`), JSON.stringify(deck()))
+      fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.kunci.json`), JSON.stringify(KUNCI()))
       return { stdout: '', stderr: stderrGen }
     },
     ocr: ocr || (async () => null),
-    claude: { urai: async (bahan, jenis) => { keUrai.push({ bahan, jenis }); return claude ? claude(bahan, jenis) : { isian: [], pertentangan: [], gagal: [] } } },
+    claude: {
+      urai: async (bahan, jenis) => { keUrai.push({ bahan, jenis }); return claude ? claude(bahan, jenis) : { isian: [], pertentangan: [], gagal: [] } },
+      // Claude palsu untuk revisi: ops(kalimat, inventaris) -> operasi mentah, divalidasi validasiOperasi asli (kunci, teks_lama).
+      operasi: async (inv, kunci, riwayat, kalimat) => {
+        keOperasi.push({ inv, kunci, riwayat, kalimat })
+        const mentah = ops ? await ops(kalimat, inv) : []
+        return { ...validasiOperasi(mentah, inv, kunci), ringkasan: '' }
+      },
+    },
+    periksa: periksa && (async (a) => { kePeriksa.push(a); return periksa(a) }),
   }
   const ctx = {
     env: { WORKER_URL: 'http://w', WA_MESIN: 'k', WA_GARAM: 'garam', PEMILIK: '6299', WA_IZIN: `${DARI},6299,6281111`, WA_PY_BIN: '/opt/py/bin' },
@@ -80,7 +129,8 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ocr, tahanGenerator, no
     kabariPemilik: async (t) => { pemilik.push(t) },
   }
   const semua = () => [...balasan, ...kirim.map((k) => k.caption).filter(Boolean)]
-  return { ctx, dasar, balasan, kirim, exec, keUrai, pemilik, versi, statusLog, proyek, semua, gen: () => exec.filter((e) => /_(ringkas|otomatis)\.py$/.test(e.args[0])) }
+  return { ctx, dasar, balasan, kirim, exec, keUrai, keOperasi, kePeriksa, pemilik, versi, statusLog, proyek, semua,
+    gen: () => exec.filter((e) => /_(ringkas|otomatis)\.py$/.test(e.args[0])), terapkan: () => exec.filter((e) => e.args[1] === 'terapkan') }
 }
 const perintah = (d, teks) => tangani({ dari: DARI, teks }, d.ctx)
 
@@ -370,4 +420,292 @@ test('5: generator menunggu kunci bersama generator.lock milik jalur terjadwal, 
   assert.equal(fs.existsSync(kunci), false)
   const opsi = d.exec.find((e) => /_ringkas\.py$/.test(e.args[0]))
   assert.ok(opsi)
+})
+
+// ---------- BL-10: revisi, kunci, versi, balik, pptx, batal ----------
+const GANTI = (slide, shape, lama, baru) => ({ jenis: 'ganti_teks', slide, shape, teks_lama: lama, teks_baru: baru })
+// v1 siap, lalu catatan uji dikosongkan supaya tiap uji menghitung kiriman revisinya sendiri.
+async function drafV1(o = {}) {
+  const d = dunia(o)
+  await perintah(d, 'buat harian 26 okt')
+  assert.equal(d.versi.length, 1)
+  for (const a of [d.balasan, d.kirim, d.statusLog, d.exec, d.kePeriksa]) a.length = 0
+  return d
+}
+const sesudah = (d, f) => { for (const a of [d.balasan, d.kirim, d.statusLog, d.exec]) a.length = 0; return f() }
+
+test('T6: operasi ke shape terkunci ditolak, T-TOLAK-KUNCI (nama, nilai, asal, tawaran catatan), tanpa bangun ulang dan tanpa versi baru', async () => {
+  const d = await drafV1({ ops: () => [GANTI(2, 's2_kpi_hotspot', 'HOTSPOT\n1.234', 'HOTSPOT\n1.300')] })
+  const r = await perintah(d, 'hotspot di slide 2 jadi 1.300')
+  assert.equal(r.status, 'revisi')
+  assert.equal(d.keOperasi.length, 1)
+  assert.deepEqual(d.keOperasi[0].kunci, KUNCI(), 'kunci deck terakhir ikut ke Claude')
+  assert.equal(d.gen().length, 0); assert.equal(d.terapkan().length, 0)
+  assert.equal(d.versi.length, 1)
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
+  assert.equal(d.kirim.length, 0); assert.equal(d.balasan.length, 1)
+  assert.match(d.balasan[0], /^P-291026-01 v1\nRevisi tidak diterapkan, draf tetap v1\.\nHotspot 1\.234 di slide 2 adalah angka sistem \(dari sistem, hari D-1\), tidak diubah lewat revisi\.\nBila angka lapangan berbeda, minta catatan, misalnya: tambahkan catatan di slide 2/)
+  for (const t of d.semua()) assert.doesNotMatch(t, SISTEM_HURUF, t)
+})
+
+test('T7: versi n = generator dibangun ulang + operasi 1..n; tepat 2 kiriman per revisi (pratinjau slide pertama yang berubah, lalu PDF T-DRAF)', async () => {
+  let giliran = 0
+  const d = await drafV1({ ops: () => [++giliran === 1 ? GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'LAPORAN HARIAN BNPB') : GANTI(3, 's3_rencana', 'Rencana aksi', 'Rencana aksi BPBD')] })
+  await perintah(d, 'judul tambahkan BNPB')
+  assert.equal(d.gen().length, 1, 'generator dijalankan ulang dari bahan')
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
+  assert.equal(d.versi[1].n, '2')
+  assert.deepEqual(d.versi[1].ubah.operasi, [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'LAPORAN HARIAN BNPB')])
+  assert.equal(d.versi[1].instruksi, 'revisi: judul tambahkan BNPB')
+  assert.ok(d.versi[1].kunci.includes('ubah'))
+  assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
+
+  await sesudah(d, () => perintah(d, 'rencana aksi sebut BPBD'))
+  assert.equal(d.keOperasi[1].inv.find((x) => x.shape === 's1_judul').teks, 'LAPORAN HARIAN BNPB', 'Claude melihat deck versi terakhir')
+  assert.deepEqual(d.keOperasi[1].riwayat, [JSON.stringify(GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'LAPORAN HARIAN BNPB'))])
+  const t = d.terapkan()[0].args
+  assert.equal(JSON.parse(fs.readFileSync(t[3], 'utf8')).length, 2, 'operasi 1..n diterapkan ulang di atas deck baru')
+  assert.equal(d.gen().length, 1)
+  const akhir = bacaDeck(d.kirim[1].p.replace(/\.pdf$/, '.pptx'))
+  assert.equal(akhir.find((x) => x.shape === 's1_judul').teks, 'LAPORAN HARIAN BNPB')
+  assert.equal(akhir.find((x) => x.shape === 's3_rencana').teks, 'Rencana aksi BPBD')
+  assert.equal(d.versi[2].ubah.operasi.length, 2)
+  assert.equal(d.kirim.length, 2)
+  assert.equal(d.kirim[0].caption, 'P-291026-01 v3\nPratinjau v3, slide 3. PDF menyusul.')
+  assert.ok(d.exec.some((e) => e.args[1] === 'pratinjau' && e.args[3] === '3'), 'pratinjau slide yang berubah')
+  assert.ok(d.exec.some((e) => String(e.args[0]).endsWith('pdf.py')), 'PDF dari deck yang sudah diubah')
+  assert.match(fs.readFileSync(d.kirim[1].p, 'utf8'), /Rencana aksi BPBD/)
+  assert.equal(d.kirim[1].caption, 'P-291026-01 v3\nDraf Laporan Kejadian Bencana Harian 26 Okt.\nPerubahan:\n- Slide 3: "Rencana aksi" diganti "Rencana aksi BPBD".\nBalas dengan revisi, atau ketik final.')
+  assert.ok(!d.kirim.some((k) => /\.pptx$/i.test(k.nama)), 'revisi tidak mengirim PPTX (Q1)')
+  for (const t2 of d.semua()) assert.doesNotMatch(t2, SISTEM_HURUF, t2)
+})
+
+test('T7: operasi lama yang teks_lama-nya tidak cocok lagi sesudah bahan berubah dilewati dan dilaporkan; operasi baru dengan teks_lama salah tidak membuat versi', async () => {
+  let judul = 'LAPORAN HARIAN', giliran = 0
+  const d = await drafV1({ deck: () => DECK().map((x) => x.shape === 's1_judul' ? { ...x, teks: judul } : x),
+    ops: () => [[GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL BARU')], [GANTI(3, 's3_rencana', 'Rencana aksi', 'Rencana BPBD')], [GANTI(2, 's2_ringkas', 'Banjir', 'Banjir besar')]][giliran++] })
+  await perintah(d, 'ganti judul')
+  judul = 'LAPORAN HARIAN (revisi bahan)' // bahan berubah: generator menulis judul lain
+  await sesudah(d, () => perintah(d, 'rencana sebut BPBD'))
+  assert.equal(d.versi.length, 3)
+  assert.deepEqual(d.versi[2].ubah.operasi, [GANTI(3, 's3_rencana', 'Rencana aksi', 'Rencana BPBD')], 'operasi yang dilewati tidak ikut versi')
+  assert.match(d.kirim[1].caption, /\nDilewati:\n- Slide 1: "LAPORAN HARIAN" diganti "JUDUL BARU": perubahan lama, teks di slide sudah berbeda\. Kirim ulang revisinya bila masih perlu\.\n/)
+  // teks_lama sebagian (lolos validasi Claude) tapi tidak sama persis saat diterapkan: tidak ada versi baru
+  await sesudah(d, () => perintah(d, 'banjir jadi banjir besar'))
+  assert.equal(d.versi.length, 3)
+  assert.equal(d.kirim.length, 0)
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
+  assert.match(d.balasan[0], /^P-291026-01 v3\nRevisi tidak diterapkan, draf tetap v3\.\nSlide 2: "Banjir" diganti "Banjir besar": teks di slide sudah berbeda/)
+})
+
+test('T8: balik v2 membuat versi baru dengan operasi v2, tanpa Claude; versi lama tidak berubah; v tidak ada dan v terakhir ditolak', async () => {
+  let giliran = 0
+  const d = await drafV1({ ops: () => [++giliran === 1 ? GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL A') : GANTI(3, 's3_rencana', 'Rencana aksi', 'Rencana B')] })
+  await perintah(d, 'judul A')
+  await perintah(d, 'rencana B')
+  const lama = JSON.stringify(d.versi)
+  await sesudah(d, () => perintah(d, 'balik v2'))
+  assert.equal(d.keOperasi.length, 2, 'balik tidak memanggil Claude')
+  assert.equal(d.versi.length, 4)
+  assert.equal(JSON.stringify(d.versi.slice(0, 3)), lama, 'versi lama utuh (append-only)')
+  assert.deepEqual(d.versi[3].ubah.operasi, d.versi[1].ubah.operasi)
+  assert.equal(d.versi[3].ubah.balik, 2)
+  assert.equal(d.versi[3].instruksi, 'balik v2')
+  assert.deepEqual(d.kirim.map((k) => path.extname(k.nama)), ['.png', '.pdf'])
+  assert.match(d.kirim[1].caption, /^P-291026-01 v4\n.*\nPerubahan:\n- Isi sama dengan v2\.\n/)
+  const deck4 = bacaDeck(d.kirim[1].p.replace(/\.pdf$/, '.pptx'))
+  assert.equal(deck4.find((x) => x.shape === 's3_rencana').teks, 'Rencana aksi')
+  await sesudah(d, () => perintah(d, 'balik v9'))
+  assert.match(d.balasan[0], /^P-291026-01 v4\nVersi v9 tidak ada\. Versi terakhir v4/)
+  await sesudah(d, () => perintah(d, 'balik 4'))
+  assert.match(d.balasan[0], /v4 sudah versi terakhir/)
+  assert.equal(d.versi.length, 4); assert.deepEqual(d.statusLog, [])
+  // balik v1: tanpa operasi, deck generator apa adanya
+  await sesudah(d, () => perintah(d, 'balik ke v1'))
+  assert.deepEqual(d.versi[4].ubah.operasi, [])
+  assert.equal(d.terapkan().length, 0)
+})
+
+test('tanya: kalimat ambigu dibalas pertanyaan bernomor, status kembali draf, tanpa bangun ulang', async () => {
+  const d = await drafV1({ ops: () => [{ jenis: 'tanya', pertanyaan: 'Slide mana yang dimaksud — 2 atau 3?' }] })
+  await perintah(d, 'ganti yang itu')
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
+  assert.equal(d.gen().length, 0); assert.equal(d.versi.length, 1)
+  assert.equal(d.balasan[0], 'P-291026-01 v1\nRevisi belum diterapkan, ada yang perlu dipastikan:\n1. Slide mana yang dimaksud, 2 atau 3?\nBalas dengan kalimat revisi yang lebih rinci.')
+})
+
+test('revisi sebagian: operasi sah diterapkan, yang terkunci dijelaskan di keterangan PDF (tetap 2 kiriman)', async () => {
+  const d = await drafV1({ ops: () => [GANTI(2, 's2_kpi_hotspot', 'HOTSPOT\n1.234', 'HOTSPOT\n9'), GANTI(2, 's2_ringkas', 'Banjir di Bogor', 'Banjir di Kabupaten Bogor')] })
+  await perintah(d, 'ganti hotspot dan ringkasan')
+  assert.equal(d.versi.length, 2)
+  assert.equal(d.kirim.length, 2)
+  assert.equal(d.kirim[0].caption, 'P-291026-01 v2\nPratinjau v2, slide 2. PDF menyusul.')
+  assert.match(d.kirim[1].caption, /Perubahan:\n- Slide 2: "Banjir di Bogor" diganti "Banjir di Kabupaten Bogor"\.\nTidak diubah:\n- Hotspot 1\.234 di slide 2 adalah angka sistem/)
+  assert.equal(d.versi[1].ubah.ditolak[0].kunci, true)
+})
+
+test('periksa (BL-11) ada: dipanggil dengan pptx, pdf, jenis, tanggal, angka; peringatannya masuk ringkasan draf v1 dan T-DRAF revisi', async () => {
+  const d = dunia({ periksa: () => ({ peringatan: ['Angka hotspot hari ini 1.234 — lebih dari 3 kali median.'] }), ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')],
+    claude: () => ({ gagal: [], pertentangan: [], isian: [{ medan: 'kabupaten', kelompok: 'k1', nilai: 'Bogor' }, { medan: 'meninggal', kelompok: 'k1', nilai: '3 jiwa' }, { medan: 'meninggal', kelompok: 'k2', nilai: '2' }] }) })
+  await perintah(d, 'buat harian 26 okt')
+  const a = d.kePeriksa[0]
+  assert.match(a.pptx, /\.pptx$/); assert.match(a.pdf, /\.pdf$/)
+  assert.equal(a.jenis, 'harian'); assert.equal(a.tanggal, TGL)
+  assert.deepEqual(a.angka, { hotspot: 1234, meninggal: 5 })
+  assert.equal(d.kirim.length, 2)
+  assert.match(d.kirim[0].caption, /\nPemeriksaan:\n- Angka hotspot hari ini 1\.234, lebih dari 3 kali median\.\n/)
+  assert.match(d.versi[0].peringatan, /lebih dari 3 kali median/)
+  await sesudah(d, () => perintah(d, 'judul ganti'))
+  assert.equal(d.kePeriksa.length, 2)
+  assert.equal(d.kirim.length, 2)
+  assert.match(d.kirim[1].caption, /\nPemeriksaan:\n- Angka hotspot hari ini 1\.234, lebih dari 3 kali median\.\nBalas dengan revisi/)
+  for (const t of d.semua()) assert.doesNotMatch(t, SISTEM_HURUF, t)
+})
+
+test('periksa tidak ada atau galat: draf tetap terkirim tanpa bagian Pemeriksaan', async () => {
+  const d = dunia() // periksa: null = modul tidak ada
+  await perintah(d, 'buat harian 26 okt')
+  assert.doesNotMatch(d.kirim[0].caption, /Pemeriksaan/)
+  const e = dunia({ periksa: () => { throw new Error('python hilang') } })
+  await perintah(e, 'buat harian 26 okt')
+  assert.equal(e.kirim.length, 2)
+  assert.doesNotMatch(e.kirim[0].caption, /Pemeriksaan/)
+  const lambat = dunia({ periksa: () => new Promise(() => {}) })
+  lambat.ctx.periksaMs = 20
+  await perintah(lambat, 'buat harian 26 okt')
+  assert.equal(lambat.kirim.length, 2, 'periksa yang menggantung tidak menahan draf')
+})
+
+test('versi: riwayat dengan jam WIB; pptx mengirim PPTX terakhir (unduh dari rute bila berkas lokal hilang)', async () => {
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  await perintah(d, 'judul ganti')
+  await sesudah(d, () => perintah(d, 'versi'))
+  assert.equal(d.balasan[0], 'P-291026-01 v2\nRiwayat versi Laporan Kejadian Bencana Harian 26 Okt:\nv1 29 Okt 08.00, buat\nv2 29 Okt 08.01, revisi: judul ganti\nKetik balik vN untuk membuat versi baru yang sama dengan vN.')
+  await sesudah(d, () => perintah(d, 'pptx'))
+  assert.equal(d.kirim.length, 1)
+  assert.match(d.kirim[0].nama, /\.pptx$/)
+  assert.equal(d.kirim[0].mime, 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+  assert.equal(d.kirim[0].caption, 'P-291026-01 v2\nPPTX draf Laporan Kejadian Bencana Harian 26 Okt.')
+  assert.equal(bacaDeck(d.kirim[0].p)[0].teks, 'JUDUL')
+  fs.rmSync(path.join(d.dasar, 'keluaran', 'proyek'), { recursive: true })
+  await sesudah(d, () => perintah(d, 'pptx'))
+  assert.equal(bacaDeck(d.kirim[0].p)[0].teks, 'JUDUL', 'diunduh dari versi tersimpan')
+})
+
+test('batal menutup proyek; sesudahnya kalimat bebas bukan revisi; bahan dikenali saat draf tetap bahan', async () => {
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  assert.equal((await tangani({ dari: DARI, teks: `[satgas] ${TGL}`, wa_id: 77 }, d.ctx)).status, 'ditambah')
+  assert.equal(d.keOperasi.length, 0)
+  assert.equal((await tangani({ dari: '6281111', teks: 'judul ganti' }, d.ctx)).status, 'diabaikan', 'nomor lain tanpa draf: bukan revisi')
+  const harian = [...d.proyek.values()].find((x) => x.jenis === 'harian')
+  await perintah(d, 'batal')
+  assert.equal(harian.status, 'batal', 'draf yang dibatalkan, bukan proyek terbuka lain')
+  assert.equal(d.balasan.at(-1), 'P-291026-01 v1\nLaporan Kejadian Bencana Harian 26 Okt dibatalkan, tanpa unggah. Ketik buat untuk memulai lagi.')
+  assert.equal((await perintah(d, 'judul ganti')).status, 'diabaikan')
+  assert.equal(d.keOperasi.length, 0)
+  await perintah(d, 'versi')
+  assert.match(d.balasan.at(-1), /^Belum ada draf/)
+})
+
+test('revisi: GalatClaude dan generator gagal mengembalikan draf, pemilik dikabari, versi tetap', async () => {
+  const d = await drafV1()
+  d.ctx.dep.claude.operasi = async () => { throw new GalatClaude('batas_belanja', 'x') }
+  await perintah(d, 'judul ganti')
+  assert.deepEqual(d.statusLog, ['membangun', 'draf'])
+  assert.equal(d.balasan[0], 'P-291026-01 v1\nKuota hari ini habis, bot lanjut besok.')
+  assert.match(d.pemilik.at(-1), /Claude gagal \(batas_belanja\)/)
+  const e = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  const asli = e.ctx.dep.exec
+  e.ctx.dep.exec = async (cmd, args, o) => { if (/_(ringkas|otomatis)\.py$/.test(args[0])) throw Object.assign(new Error('x'), { stderr: 'meledak' }); return asli(cmd, args, o) }
+  await perintah(e, 'judul ganti')
+  assert.deepEqual(e.statusLog, ['membangun', 'draf'])
+  assert.equal(e.versi.length, 1); assert.equal(e.kirim.length, 0)
+  assert.match(e.balasan.at(-1), /^P-291026-01 v1\nRevisi v2 gagal dibangun\. Pemilik sudah dikabari, draf v1 tetap berlaku\.$/)
+})
+
+test('parsePerintah BL-10: versi, pptx, batal, balik vN', () => {
+  const p = (t) => parsePerintah(t, NOW)
+  assert.deepEqual(p('versi'), { aksi: 'versi' })
+  assert.deepEqual(p('PPTX'), { aksi: 'pptx' })
+  assert.deepEqual(p('batal.'), { aksi: 'batal' })
+  assert.deepEqual(p('balik v2'), { aksi: 'balik', n: 2 })
+  assert.deepEqual(p('Balik ke v12'), { aksi: 'balik', n: 12 })
+  assert.equal(p('balik ke versi yang tadi'), null)
+  assert.equal(p('versinya salah'), null)
+})
+
+// ---------- tinjauan BL-09/10/11 ----------
+test('final dikenal sebagai perintah: dibalas belum tersedia, tidak pernah ke Claude atau revisi', async () => {
+  assert.deepEqual(parsePerintah('final', NOW), { aksi: 'final' })
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'Final' }, d.ctx), 'perintah')
+  const r = await perintah(d, 'Final')
+  assert.equal(r.status, 'final belum tersedia')
+  assert.equal(d.balasan[0], 'Perintah final belum tersedia, segera menyusul.')
+  assert.equal(d.keOperasi.length, 0); assert.deepEqual(d.statusLog, [])
+  for (const t of ['versi', 'balik v1', 'pptx', 'status']) assert.equal(await klasifikasi({ dari: DARI, teks: t }, d.ctx), 'perintah')
+  assert.equal(d.keOperasi.length, 0)
+})
+
+test('klasifikasi: revisi hanya teks bukan forward dari pemegang draf, bukan bahan dikenali; tanpa efek samping; tangani menerima revisi tanpa wa_id', async () => {
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  const ix = path.join(d.dasar, 'proyek', 'indeks.json'), sebelum = fs.readFileSync(ix, 'utf8')
+  const k = (o) => klasifikasi({ dari: DARI, ...o }, d.ctx)
+  assert.equal(await k({ teks: 'judul ganti' }), 'revisi')
+  assert.equal(await k({ teks: 'judul ganti', diteruskan: true }), 'bahan', 'forward selalu bahan')
+  assert.equal(await k({ teks: `[satgas] ${TGL}` }), 'bahan', 'bahan dikenali')
+  assert.equal(await k({ teks: 'judul ganti', ada_berkas: 1, nama_berkas: 'a.pdf' }), 'bahan')
+  assert.equal(await k({ teks: '   ' }), 'bahan')
+  assert.equal(await klasifikasi({ dari: '6281111', teks: 'judul ganti' }, d.ctx), 'bahan', 'tanpa draf')
+  assert.equal(await klasifikasi({ dari: '120363@g.us', teks: 'judul ganti' }, d.ctx), 'bahan')
+  assert.deepEqual(d.statusLog, []); assert.equal(d.keOperasi.length, 0); assert.equal(d.balasan.length, 0)
+  assert.equal(fs.readFileSync(ix, 'utf8'), sebelum, 'indeks tidak ditulis')
+  // forward ke tangani: tidak jadi revisi
+  assert.equal((await tangani({ dari: DARI, teks: 'judul ganti', diteruskan: true }, d.ctx)).status, 'diabaikan')
+  assert.equal(d.keOperasi.length, 0)
+  const r = await tangani({ dari: DARI, teks: 'judul ganti' }, d.ctx) // tanpa wa_id
+  assert.equal(r.status, 'revisi'); assert.equal(d.versi.length, 2)
+})
+
+test('kunci: berkas kunci generator hilang = kunci versi tersimpan lewat berkas sementara; tanpa kunci sama sekali revisi ditolak', async () => {
+  const d = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  const asli = d.ctx.dep.exec
+  d.ctx.dep.exec = async (cmd, args, o) => {
+    const r = await asli(cmd, args, o)
+    if (/_ringkas\.py$/.test(args[0])) { const out = args[args.indexOf('--out') + 1]; for (const f of fs.readdirSync(out)) if (f.endsWith('.kunci.json')) fs.rmSync(path.join(out, f)) }
+    return r
+  }
+  await perintah(d, 'judul ganti')
+  const t = d.terapkan()[0].args
+  assert.notEqual(t[4], '-')
+  assert.match(t[4], /kunci-versi\.json$/)
+  assert.deepEqual(JSON.parse(fs.readFileSync(t[4], 'utf8')), KUNCI())
+  assert.deepEqual(d.versi[1].ubah.kunci, KUNCI())
+  // tanpa kunci lokal dan tanpa kunci tersimpan
+  const e = await drafV1({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'JUDUL')] })
+  for (const f of fs.readdirSync(path.join(e.dasar, 'keluaran', 'proyek', 'P-291026-01', 'v1', 'keluaran', TGL))) if (f.endsWith('.kunci.json')) fs.rmSync(path.join(e.dasar, 'keluaran', 'proyek', 'P-291026-01', 'v1', 'keluaran', TGL, f))
+  delete e.versi[0].isian.kunci
+  await perintah(e, 'judul ganti')
+  assert.equal(e.keOperasi.length, 0); assert.equal(e.versi.length, 1); assert.equal(e.gen().length, 0)
+  assert.deepEqual(e.statusLog, ['membangun', 'draf'])
+  assert.match(e.balasan[0], /^P-291026-01 v1\nRevisi belum bisa diproses: daftar angka sistem yang dikunci untuk draf ini tidak ditemukan\./)
+  assert.match(e.pemilik.at(-1), /daftar kunci angka sistem v1 tidak ada/)
+})
+
+test('periksa gagal (gerbang format dan bahasa) masuk ringkasan: paling banyak 3 baris + dan N lainnya', async () => {
+  const d = dunia({ periksa: () => ({ peringatan: [], gagal: ['slide 2 judul terlalu panjang', 'slide 3 font bukan Roboto', 'slide 4 kosong', 'slide 5 frasa AI', 'slide 6 em dash'], ms: 12 }) })
+  await perintah(d, 'buat harian 26 okt')
+  assert.match(d.kirim[0].caption, /\nPemeriksaan:\n- Gerbang: slide 2 judul terlalu panjang\n- Gerbang: slide 3 font bukan Roboto\n- Gerbang: slide 4 kosong\n- Gerbang: dan 2 lainnya\.\n/)
+})
+
+test('fetch Worker memakai AbortSignal (timeout): panggilan yang menggantung jadi galat Worker biasa', async () => {
+  const d = dunia()
+  const sinyal = []
+  const asli = d.ctx.dep.fetch
+  d.ctx.dep.fetch = async (u, o = {}) => { if (!u.includes('/api/wa/masuk')) sinyal.push(o.signal); if (/\/api\/wa\/proyek$/.test(new URL(u).pathname)) throw Object.assign(new Error('The operation was aborted due to timeout'), { name: 'TimeoutError' }); return asli(u, o) }
+  const r = await perintah(d, 'buat harian 26 okt')
+  assert.equal(r.status, 'galat')
+  assert.ok(sinyal.length && sinyal.every((s) => s instanceof AbortSignal))
+  assert.match(d.balasan.at(-1), /Perintah gagal diproses/)
+  assert.match(d.pemilik[0], /aborted due to timeout/)
 })

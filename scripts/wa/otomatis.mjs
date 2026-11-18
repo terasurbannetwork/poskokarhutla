@@ -121,7 +121,7 @@ export function depBawaan(env) {
     }
   }
   return {
-    fetch: (u, o) => fetch(u, o),
+    fetch: (u, o = {}) => fetch(u, { signal: AbortSignal.timeout(60_000), ...o }), // panggilan Worker yang menggantung tidak menahan antrean pengirim
     exec: (cmd, args, o) => execP(cmd, args, o),
     kirimFile: (target, p, filename, caption, mimetype) => pos('/send-file', { target, path: p, filename, caption, mimetype }),
     kirimTeks: (target, message) => pos('/send', { target, message }),

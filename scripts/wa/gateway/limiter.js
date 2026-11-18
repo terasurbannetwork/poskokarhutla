@@ -35,6 +35,13 @@ const MAX_PER_MINUTE = num(process.env.WA_MAX_PER_MINUTE, 3)
 const MAX_PER_HOUR = num(process.env.WA_MAX_PER_HOUR, 60)
 const MAX_PER_DAY = num(process.env.WA_MAX_PER_DAY, 300)
 const MAX_PER_TARGET_DAY = num(process.env.WA_MAX_PER_TARGET_DAY, 8)
+// Q1 bot laporan (BL-09): balasan (opts.balasan) ke tujuan yang menulis dalam 10 menit terakhir (noteMasuk) memakai batas
+// per tujuan TERPISAH 40/hari. Batas global menit/jam/hari dan pemanasan TIDAK berubah; kiriman lain tetap 8 per tujuan/hari.
+const MAX_PER_TARGET_PERCAKAPAN = num(process.env.WA_MAX_PER_TARGET_PERCAKAPAN, 40)
+const PERCAKAPAN_MS = num(process.env.WA_PERCAKAPAN_MS, 10 * 60000)
+// opts.masuk = jam pesan masuk yang dibalas: jendela diputus dari jam itu, jadi balasan sesudah pembangunan lama tetap percakapan,
+// asal balasan paling lambat BALAS_MS sesudah pesan masuk. Selama pemanasan percakapan paling banyak separuh batas harian.
+const BALAS_MS = num(process.env.WA_BALAS_MS, 2 * 3600000)
 const WARMUP_DAYS = num(process.env.WA_WARMUP_DAYS, 7)
 const WARMUP_PER_DAY = num(process.env.WA_WARMUP_PER_DAY, 40)
 // Jam senyap SENGAJA dihapus (permintaan user 2026-07-25): jangan pernah
@@ -50,7 +57,7 @@ const todayStr = () => {
 }
 
 try { fs.mkdirSync(path.dirname(STATE_FILE), { recursive: true }) } catch {}
-let state = { day: todayStr(), dayCount: 0, perTarget: {}, warmupUntil: 0 }
+let state = { day: todayStr(), dayCount: 0, perTarget: {}, perTargetPercakapan: {}, dayCountPercakapan: 0, warmupUntil: 0 }
 try {
   const loaded = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
   if (loaded && typeof loaded === 'object') state = { ...state, ...loaded }
@@ -58,6 +65,9 @@ try {
   // Tak ada state = tautan baru → nyalakan mode pemanasan.
   state.warmupUntil = Date.now() + WARMUP_DAYS * 86400000
 }
+if (!state.perTargetPercakapan || typeof state.perTargetPercakapan !== 'object') state.perTargetPercakapan = {}
+// Pesan masuk terakhir per tujuan (memori saja): penentu "percakapan".
+let masukTerakhir = {}
 
 // Jendela geser di memori (reset saat restart — tak apa, hanya rem jangka pendek).
 let minuteHits = []
@@ -77,6 +87,8 @@ function rollDay() {
     state.day = t
     state.dayCount = 0
     state.perTarget = {}
+    state.perTargetPercakapan = {}
+    state.dayCountPercakapan = 0
     persist()
   }
 }
@@ -89,7 +101,19 @@ function dailyCap() {
 }
 // Cek batas SEBELUM ambil slot. Semua penolakan → 429 (tahan, bukan gagal).
 // (Jam senyap dihapus — tak pernah dijadikan alasan gagal.)
-function check(target) {
+function noteMasuk(target) {
+  if (!target) return
+  const now = Date.now()
+  for (const [t, w] of Object.entries(masukTerakhir)) if (now - w >= PERCAKAPAN_MS + BALAS_MS) delete masukTerakhir[t]
+  masukTerakhir[target] = now
+}
+function percakapan(target, opts) {
+  if (!target || !opts || !opts.balasan || !masukTerakhir[target]) return false
+  const now = Date.now(), m = Number(opts.masuk), acuan = Number.isFinite(m) && m > 0 && m <= now ? m : now
+  if (now - masukTerakhir[target] < PERCAKAPAN_MS) return true
+  return now - acuan <= BALAS_MS && Math.abs(acuan - masukTerakhir[target]) < PERCAKAPAN_MS
+}
+function check(target, opts) {
   rollDay()
   const now = Date.now()
   minuteHits = minuteHits.filter((t) => now - t < 60000)
@@ -98,9 +122,16 @@ function check(target) {
   if (hourHits.length >= MAX_PER_HOUR) return { ok: false, code: 429, error: 'batas per jam' }
   if (state.dayCount >= dailyCap())
     return { ok: false, code: 429, error: inWarmup() ? 'batas harian (pemanasan)' : 'batas harian' }
+  if (percakapan(target, opts)) {
+    if ((state.perTargetPercakapan[target] || 0) >= MAX_PER_TARGET_PERCAKAPAN)
+      return { ok: false, code: 429, error: 'batas percakapan per tujuan/hari' }
+    if (inWarmup() && (state.dayCountPercakapan || 0) >= Math.floor(dailyCap() / 2))
+      return { ok: false, code: 429, error: 'batas percakapan (pemanasan)' } // kiriman terjadwal tidak boleh kehabisan jatah
+    return { ok: true, percakapan: true }
+  }
   if (target && (state.perTarget[target] || 0) >= MAX_PER_TARGET_DAY)
     return { ok: false, code: 429, error: 'batas per tujuan/hari' }
-  return { ok: true }
+  return { ok: true, percakapan: false }
 }
 
 // Ambil slot kirim: reservasi nextSlotAt secara atomik (JS single-thread), lalu
@@ -121,13 +152,18 @@ async function slot(opts) {
 }
 
 // Catat kiriman SUKSES (naikkan counter menit/jam/hari/per-tujuan + persist).
-function commit(target) {
+// percakapanKah = nilai `percakapan` dari check() kiriman ini (jendela 10 menit bisa lewat selama menunggu slot).
+function commit(target, percakapanKah) {
   rollDay()
   const now = Date.now()
   minuteHits.push(now)
   hourHits.push(now)
   state.dayCount += 1
-  if (target) state.perTarget[target] = (state.perTarget[target] || 0) + 1
+  if (target && percakapanKah) {
+    state.perTargetPercakapan[target] = (state.perTargetPercakapan[target] || 0) + 1
+    state.dayCountPercakapan = (state.dayCountPercakapan || 0) + 1
+  }
+  else if (target) state.perTarget[target] = (state.perTarget[target] || 0) + 1
   persist()
 }
 
@@ -149,8 +185,8 @@ function stats() {
     last_hour: hourHits.filter((t) => now - t < 3600000).length,
     next_slot_in_ms: Math.max(0, nextSlotAt - now),
     gap_ms: [GAP_MIN, GAP_MAX],
-    caps: { minute: MAX_PER_MINUTE, hour: MAX_PER_HOUR, day: MAX_PER_DAY, target_day: MAX_PER_TARGET_DAY },
+    caps: { minute: MAX_PER_MINUTE, hour: MAX_PER_HOUR, day: MAX_PER_DAY, target_day: MAX_PER_TARGET_DAY, target_day_percakapan: MAX_PER_TARGET_PERCAKAPAN },
   }
 }
 
-module.exports = { check, slot, commit, noteLogout, stats }
+module.exports = { check, slot, commit, noteLogout, noteMasuk, stats }
