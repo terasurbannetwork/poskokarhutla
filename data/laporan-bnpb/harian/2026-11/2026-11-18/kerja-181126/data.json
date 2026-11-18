@@ -1,0 +1,242 @@
+{
+ "hari": "2026-11-18",
+ "cutoff": "2026-11-18T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3517.0,
+    "rumah_dampak": 3517.0
+   },
+   "teks": {
+    "dampak": "± 3.517 KK / 13.720 jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026  s.d 31/01/2027",
+    "kondisi": "Sebagian air berangsur surut dan jalan sudah bisa dilalui kendaraan roda 2 dan roda 4, sementara sebagian air masih menggenangi pemukiman warga.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 254.0,
+    "mengungsi": 245.0,
+    "rumah_dampak": 254.0
+   },
+   "teks": {
+    "dampak": "254 KK / 947 jiwa Warga Terdampak",
+    "status_darurat": "Siaga Darurat Provinsi  TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Banjir berangsur surut, ketinggian rumah warga tergenang air ± 15 s/d 70 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2185.0,
+    "mengungsi": 18.0,
+    "rumah_dampak": 2010.0
+   },
+   "teks": {
+    "dampak": "2.185 KK / 9.064 jiwa terdampak (pendataan)",
+    "status_darurat": "Tanggap Darurat TMT 06/11/2026 s.d 19/11/2026",
+    "kondisi": "Air sudah surut namun beberapa wilayah masih tergenang air di jalan",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Sebagian tergenang",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4397.0,
+    "mengungsi": 1143.0
+   },
+   "teks": {
+    "dampak": "4.397 KK/15.921 jiwa terdampak (dalam pendataan",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Untuk wilayah Hulu air sudah surut, untuk wilayah Tengah dan Hilir air beranjak surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "17",
+   "lokasi": "Kota Bengkulu",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2069.0,
+    "rumah_dampak": 2069.0
+   },
+   "teks": {
+    "dampak": "± 2.069 KK / 7.446 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Air sudah surut dan cuaca di Kota Bengkulu cerah",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-17",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "18",
+   "lokasi": "Tl. Bawang Barat",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (angin kencang)",
+   "angka": {
+    "kk": 487.0,
+    "rumah": 487.0
+   },
+   "teks": {
+    "dampak": "± 487 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 06/10/2026 s.d 31/08/2027",
+    "kondisi": "Tim masih di lokasi melakukan pendataan kerusakan rumah.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-17",
+   "kondisi_pil": [
+    "Pendataan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "33",
+   "lokasi": "Karanganyar",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 21.0,
+    "rumah": 17.0
+   },
+   "teks": {
+    "dampak": "± 21 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Lokasi dalam keadaan kondusif dan terkendali, telah dilakukan pengamanan sementara oleh warga dengan pendampingan aparat setempat",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-17",
+   "kondisi_pil": [
+    "Kondusif",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "35",
+   "lokasi": "Blitar",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 19836.0,
+    "jiwa": 56165.0,
+    "liter": 3793300.0
+   },
+   "teks": {
+    "dampak": "± 19.836 KK / 56.165 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Provinsi TMT 07/10/2026 s.d 01/12/ 2026",
+    "kondisi": "Total akumulasi keseluruhan distribusi air bersih Periode 22 Juli 2026 s/d 17 November 2026 sebanyak 3.793.300 liter.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-09-26",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "71",
+   "lokasi": "Minahasa",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Puting Beliung)",
+   "angka": {
+    "kk": 34.0,
+    "rumah_dampak": 34.0
+   },
+   "teks": {
+    "dampak": "34 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "proses penanganan untuk perbaikan rumah rusak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-17",
+   "kondisi_pil": [
+    "Perbaikan rumah",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "64",
+  "72",
+  "74",
+  "81",
+  "82",
+  "93"
+ ]
+}

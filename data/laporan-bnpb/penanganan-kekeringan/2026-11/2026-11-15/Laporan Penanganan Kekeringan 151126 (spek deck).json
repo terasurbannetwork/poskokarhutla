@@ -1,0 +1,35 @@
+{
+ "format": "penanganan",
+ "pesan_kunci": "Laporan Penanganan Kekeringan, 15-11-2026.",
+ "judul_dokumen": "Laporan Penanganan Kekeringan",
+ "kajian": "rehab",
+ "tanggal": "2026-11-15",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-kekeringan\\2026-11\\2026-11-15\\Laporan Penanganan Kekeringan 151126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Hujan harian Open-Meteo, hitungan HTH Centurisk97 (bukan peta BMKG), 15 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-kekeringan\\2026-11\\2026-11-15\\Laporan Penanganan Kekeringan 151126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Hujan harian Open-Meteo, hitungan HTH Centurisk97 (bukan peta BMKG), 15 Nov 2026"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi Kekeringan",
+   "label": "Situasi",
+   "halaman_tetap": [
+    1,
+    2
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "skala_logo_bnpb": 1.0
+}
