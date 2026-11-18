@@ -40,6 +40,6 @@ const luap = await p.evaluate(() => [...document.querySelectorAll('.hal')].map((
 if (luap.length) console.log('PERINGATAN', luap.join('; '));
 await p.pdf({ path: path.join(KELUAR, nama + '.pdf'), format: 'A4', printBackground: true, preferCSSPageSize: true });
 const hal = await p.$$('.hal');
-for (let i = 0; i < hal.length; i++) await hal[i].screenshot({ path: path.join(KELUAR, `${nama} hal ${i + 1}.png`) });
+for (let i = 0; i < hal.length; i++) await hal[i].screenshot({ path: path.join(KELUAR, `${nama} hal ${String(i + 1).padStart(2, '0')}.png`) });
 await b.close();
 console.log('ok', hal.length, 'halaman');
