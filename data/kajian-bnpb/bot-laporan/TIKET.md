@@ -11,7 +11,7 @@ Urutan kerja. Ambil satu tiket, kerjakan hanya cakupannya. Tiket yang ditahan Q 
 | BL-05 | Skema isian dan 10 sampai 20 contoh arsip untuk `harian` dan `penanganan` di `scripts/wa/claude/` | wa-bot | contoh lolos penyamaran; ditinjau pemeriksa bersih | BL-04 |
 | BL-06 | Generator `harian_ringkas.py` dan `penanganan_otomatis.py`: nama shape stabil, `--isian`, `kunci.json` | pipa-data | keluaran tanpa `--isian` identik dengan sebelumnya; `kunci.json` memuat 4 angka sistem | - |
 | BL-07 | `data/laporan-bnpb/generator/ubah.py`: inventaris, terapkan operasi, pratinjau PNG | pipa-data | T7 | BL-06 |
-| BL-08 | `scripts/wa/proyek.mjs`: status, `buat`, bahan `LAPORAN[].butuh`, T-TANYA, bangun v1, antrean per proyek; `--isian` opsional di entri `LAPORAN` `otomatis.mjs`; pindah `buat`/`status`/`bantuan` dari `perintah.mjs` (Q14) | wa-bot | T2, T3, T15, T16, T22 | BL-02, BL-04, BL-06, Q14 |
+| BL-08 | `scripts/wa/proyek.mjs`: status, `buat`, bahan `LAPORAN[].butuh`, T-TANYA, ekstraksi teks PDF dan foto sebelum dikirim ke Claude (K15), bangun v1, antrean per proyek; `--isian` opsional di entri `LAPORAN` `otomatis.mjs`; pindah `buat`/`status`/`bantuan` dari `perintah.mjs` (Q14) | wa-bot | T2, T3, T15, T16, T22 | BL-02, BL-04, BL-06, Q14 |
 | BL-09 | Gateway dan limiter: arahkan perintah ke `proyek.mjs` atau `perintah.mjs`, batas balasan percakapan | wa-bot | uji limiter; T16, T22 | BL-08, Q1 |
 | BL-10 | Revisi: operasi ubah, kunci, `versi`, `balik`, `pptx` | wa-bot | T6, T8 | BL-07, BL-08 |
 | BL-11 | Pemeriksaan otomatis: `aturan_slide.py`, gerbang bahasa, banding 7 hari, bersamaan dengan PDF | wa-bot | T11, T19 | BL-08 |

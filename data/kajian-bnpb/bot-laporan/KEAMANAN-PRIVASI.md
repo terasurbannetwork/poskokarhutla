@@ -11,7 +11,7 @@
 
 ## Data yang keluar ke Anthropic
 
-- Isi bahan (teks, PDF, gambar, Excel sebagai teks), inventaris shape, dan kalimat revisi.
+- Hanya teks: isi bahan teks, teks hasil ekstraksi PDF dan foto (K15; berkas asli tidak dikirim), Excel sebagai teks, inventaris shape, dan kalimat revisi.
 - Sebelum dikirim, mesin menyamarkan nomor HP (pola `(\+62|62|0)8\d{7,12}`), NIK (16 digit), dan alamat email. Nama orang tidak disamarkan karena dibutuhkan isi laporan (Q4 menunggu pemilik).
 - Tidak dikirim: nomor pengirim, nama tampilan WA, token, isi D1 di luar bahan proyek itu.
 - Contoh arsip di `scripts/wa/claude/` lolos penyamaran yang sama dan tanpa nama korban.

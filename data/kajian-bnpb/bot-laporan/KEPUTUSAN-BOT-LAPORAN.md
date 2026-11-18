@@ -22,6 +22,7 @@ Sekarang laporan BNPB (Laporan Kejadian Bencana Harian, Laporan Penanganan Penge
 | K10 | Revisi yang berulang diusulkan jadi aturan tetap, berlaku sesudah disetujui pemilik. |
 | K11 | (18 Nov, menggantikan usulan antre) Pesan yang masuk ke bot proyek selama mesin mati tidak disimpan dan tidak diproses saat mesin menyala: "klo mati berarti gausah simpen data dlu takutnya nanti overwhelmed". Tab Pelaporan menampilkan "mesin bot mati sejak ..." (pemilik: "ya"). |
 | K14 | (18 Nov, menjawab Q8: "Oke, pakai ini") Terdaftar = nomor di `WA_IZIN` atau nomor yang mengirim `daftar <nama> <instansi>` lalu disetujui pemilik dengan `setuju <nomor>`. Hanya pemilik yang menyetujui. Akun `/masuk` tidak otomatis terhitung. |
+| K15 | (18 Nov, "ikut usul") PDF dan foto bahan diekstrak jadi teks dulu (`pdftotext -layout` untuk PDF, OCR Vision Mac `scripts/wa/ocr.cjs` untuk foto), disamarkan, lalu hanya teks yang dikirim ke Claude. Berkas asli tidak dikirim. Bila teks hasil ekstraksi kosong atau terlalu sedikit, bot memberi tahu pengirim ("tidak terbaca, kirim teks atau PDF") dan tidak menebak. |
 | K12 | Ditolak: bot membuat draf duluan secara terjadwal ("gausah"). Ditunda: satu laporan dengan banyak penyumbang ("nanti aja"). |
 | K13 | Paket dokumen dulu, baru kode (AGENTS.md 3.7). |
 
