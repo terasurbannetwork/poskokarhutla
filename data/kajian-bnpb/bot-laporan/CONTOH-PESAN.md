@@ -624,7 +624,7 @@ Bot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpanny
 
 *Butuh bantuan?*
 - *bantuan*: daftar perintah
-- *panduan*: gambar panduan lengkap
+- *panduan*: panduan lengkap (PDF)
 ```
 
 ## F. Galat ke pengirim

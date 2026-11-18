@@ -58,7 +58,7 @@ export function parsePerintah(teks, now = new Date()) {
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
   if (t === 'ulangi') return { aksi: 'ulangi' } // ulangi langkah terakhir yang gagal (bangun atau revisi)
-  if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai dokumen PNG supaya tidak dikompres WA
+  if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai PDF (pemilik 18 Nov 2026: PDF, bukan gambar)
   if (t === 'status') return { aksi: 'status' }
   if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
   if (t === 'hitung' || t === 'tunggu') return { aksi: 'satelit', kata: t } // K18: menjawab pilihan data satelit; tanpa pilihan hidup = petunjuk
@@ -104,7 +104,7 @@ export const BANTUAN = [
   '- *ulangi*: coba lagi langkah yang gagal',
   '- *batal*: batalkan proyek kapan saja',
   '- *bantuan*: tampilkan pesan ini',
-  '- *panduan*: kirim gambar panduan lengkap',
+  '- *panduan*: kirim panduan lengkap (PDF)',
   '',
   'Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*',
   'Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.',
@@ -124,7 +124,7 @@ export const T_SAPA = [
   '',
   '*Butuh bantuan?*',
   '- *bantuan*: daftar perintah',
-  '- *panduan*: gambar panduan lengkap',
+  '- *panduan*: panduan lengkap (PDF)',
 ].join('\n')
 const SAPA_JEDA_MS = 6 * 3600e3, SAPA_MAKS = 80
 const sapaP = (dasar) => path.join(dirProyek(dasar), 'sapa.json')
@@ -1556,12 +1556,12 @@ export async function tangani(pesan, ctxAsli) {
   if (ya) cmd = { aksi: 'batal', id: ya.id }
   if (cmd?.aksi === 'panduan') {
     // Salin infografis dari repo ke ~/.wa-bot/keluaran (satu-satunya akar yang boleh dikirim gateway), kirim sebagai dokumen.
-    const asal = path.join(DI, '../../data/kajian-bnpb/bot-laporan/infografis/panduan-bot.png')
-    const tujuan = path.join(ctx.dasar || RUMAH, 'keluaran', 'panduan', 'Panduan Bot Laporan BNPB.png')
+    const asal = path.join(DI, '../../data/kajian-bnpb/bot-laporan/infografis/panduan-bot.pdf')
+    const tujuan = path.join(ctx.dasar || RUMAH, 'keluaran', 'panduan', 'Panduan Bot Laporan BNPB.pdf')
     try {
       fs.mkdirSync(path.dirname(tujuan), { recursive: true, mode: 0o700 })
       fs.copyFileSync(asal, tujuan)
-      await ctx.balasFile(tujuan, path.basename(tujuan), susun('Panduan bot laporan', null, null, ['Buka berkas ini untuk melihat gambar ukuran penuh.']), 'image/png', { dokumen: true })
+      await ctx.balasFile(tujuan, path.basename(tujuan), susun('Panduan bot laporan', null, null, ['Buka PDF ini untuk melihat cara memakai bot.']), MIME.pdf)
     } catch (e) {
       await ctx.balas(susun('Panduan belum tersedia', null, null, ['Ketik *bantuan* untuk daftar perintah.']))
     }

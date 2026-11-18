@@ -1156,7 +1156,7 @@ test('fetch Worker memakai AbortSignal (timeout): panggilan yang menggantung jad
   assert.match(d.pemilik[0], /aborted due to timeout/)
 })
 
-test('panduan: infografis dikirim sebagai dokumen PNG dari keluaran, bukan gambar terkompres', async () => {
+test('panduan: infografis dikirim sebagai PDF dari keluaran, bukan gambar', async () => {
   const P = await import('../../scripts/wa/proyek.mjs')
   assert.deepEqual(P.parsePerintah('panduan'), { aksi: 'panduan' })
   const fs2 = await import('node:fs'), os2 = await import('node:os'), path2 = await import('node:path')
@@ -1166,7 +1166,7 @@ test('panduan: infografis dikirim sebagai dokumen PNG dari keluaran, bukan gamba
   await P.tangani({ dari: '6281200000001', teks: 'panduan' }, ctx)
   assert.equal(kirim.length, 1)
   assert.ok(kirim[0].p && kirim[0].p.startsWith(path2.join(dasar, 'keluaran')), 'berkas di bawah keluaran')
-  assert.equal(kirim[0].o?.dokumen, true)
+  assert.equal(kirim[0].m, 'application/pdf'); assert.match(kirim[0].n, /\.pdf$/)
   assert.match(kirim[0].c, /^\*Panduan bot laporan\*/)
 })
 
@@ -1275,7 +1275,7 @@ test('T-SAPA: sapaan pendek tanpa proyek dibalas sekali per 6 jam; diteruskan, p
   const d = dunia({ pesan: [] })
   const r = await tangani({ dari: DARI, teks: 'halo', wa_id: 31 }, d.ctx)
   assert.equal(r.sapa, true); assert.equal(d.balasan.at(-1), T_SAPA)
-  assert.equal(T_SAPA, '*Halo, ini Bot Laporan BNPB*\nBot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpannya ke Google Drive Tim IT.\n\n*Mulai dengan mengetik:*\n- *buat harian*: laporan kejadian bencana harian\n- *buat penanganan*: laporan penanganan karhutla\n\n*Butuh bantuan?*\n- *bantuan*: daftar perintah\n- *panduan*: gambar panduan lengkap')
+  assert.equal(T_SAPA, '*Halo, ini Bot Laporan BNPB*\nBot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpannya ke Google Drive Tim IT.\n\n*Mulai dengan mengetik:*\n- *buat harian*: laporan kejadian bencana harian\n- *buat penanganan*: laporan penanganan karhutla\n\n*Butuh bantuan?*\n- *bantuan*: daftar perintah\n- *panduan*: panduan lengkap (PDF)')
   assert.doesNotMatch(T_SAPA, SISTEM_HURUF)
   assert.equal(d.proyek.size, 0, 'sapaan tidak masuk proyek')
   assert.equal((await tangani({ dari: DARI, teks: 'selamat pagi', wa_id: 32 }, d.ctx)).sapa, undefined, 'dalam 6 jam diam')
