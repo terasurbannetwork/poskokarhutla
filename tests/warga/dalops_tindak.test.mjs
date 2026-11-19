@@ -86,7 +86,8 @@ uji("T11: kueri terkini, riwayat, laju, nama staf memakai indeks", () => {
 uji("kunci kaji| (kaji ulang) tidak bocor ke GET /api/dalops/tindak, walau lebih baru dan lebih dari 2000; kunci banjir tetap muncul; indeks tetap dipakai", async () => {
   const {results: ada} = await DB.prepare("SELECT count(*) n FROM dl_tindak WHERE kunci NOT LIKE 'kaji|%'").all(), sebelum = ada[0].n;
   assert.ok(sebelum > 0);
-  await DB.batch(Array.from({length: 2005}, (_, i) => DB.prepare("INSERT INTO dl_tindak (kunci, status, oleh, waktu) VALUES (?, 'belum', 'x', ?)").bind(`kaji|KJ-2026-0000000A|${String(i).padStart(4, "0")}`, Date.now() + 1000 + i)));
+  // satu pernyataan CTE, bukan batch 2005 pernyataan: batch sebesar itu memutus proxy miniflare di runner CI (fetch failed, terbit 18-19 Nov)
+  await DB.prepare("WITH RECURSIVE n(i) AS (SELECT 0 UNION ALL SELECT i + 1 FROM n WHERE i < 2004) INSERT INTO dl_tindak (kunci, status, oleh, waktu) SELECT 'kaji|KJ-2026-0000000A|' || printf('%04d', i), 'belum', 'x', ? + i FROM n").bind(Date.now() + 1000).run();
   const g = await api("GET", "/api/dalops/tindak", undefined, MOD2); assert.equal(g.s, 200, g.t);
   assert.ok(!g.t.includes("kaji|"), "tidak ada kunci kaji|");
   assert.equal(g.j.butir.length, sebelum, "semua baris non-kaji tetap tampil");
