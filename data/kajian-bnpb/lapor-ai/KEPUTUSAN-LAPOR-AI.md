@@ -412,3 +412,7 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q | Pertanyaan | Bawaan sementara | Menahan |
 | --- | --- | --- | --- |
 | Q56 | Rincian meja untuk BPBD memuat tautan lacak bertoken (foto, PDF, Word). Tautan itu tetap terbuka walau anggota sudah dicabut dari akun lembaga. Pindahkan foto dan dokumen BPBD ke rute bersesi yang diperiksa wilayah? | **[BAWAAN SEMENTARA]** Tetap tautan bertoken (risiko diterima sementara); identitas pelapor untuk BPBD hanya lewat POST yang tercatat (D95). | LA-66 |
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K64 | 19 Nov 2026 | Jawaban Q56: "biarin dulu". Rincian meja untuk BPBD tetap memuat tautan lacak bertoken (foto, PDF, Word); risiko tautan yang masih terbuka sesudah anggota dicabut diterima sementara. Identitas pelapor untuk BPBD tetap hanya lewat POST yang tercatat (D95). |
