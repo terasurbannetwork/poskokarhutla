@@ -394,7 +394,9 @@ function alun(q) {
 // angka dampak ringkas untuk peta dan kepala rincian; null = belum didata (kosong tidak pernah jadi nol)
 const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : Number(x.nilai) || 0; };
   const rumah = ["rumah_berat", "rumah_sedang", "rumah_ringan"].map(a), adaRumah = rumah.some(v => v != null);
-  return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null}; };
+  const fas = ["fasilitas_sekolah", "fasilitas_kesehatan", "fasilitas_ibadah"].map(a), adaFas = fas.some(v => v != null);
+  return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null,
+    fasilitas: adaFas ? fas.reduce((t, v) => t + (v || 0), 0) : null, jalan: a("jalan_jembatan")}; };
 // waktu tanggap (D68): menit dari terkirim sampai "dilihat" pertama dan sampai "ditindaklanjuti" pertama; null = belum. Tanpa target (Q37).
 const tanggap = s => { const pertama = ke => s.tiket.riwayat.find(r => r.ke === ke || (ke === "dilihat" && r.ke !== "baru"))?.waktu;
   const m = w => w ? Math.max(0, Math.round((w - s.terkirim) / 60000)) : null; return {dibuka: m(pertama("dilihat")), tindak: m(pertama("ditindaklanjuti"))}; };

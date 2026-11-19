@@ -681,3 +681,20 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-isi[data-tampil="daftar"] .mj-tabel-kepala{margin:0 0 12px}
 .mj-isi[data-tampil="daftar"] .mj-tabel-wadah .mj-saring{margin:0 0 14px;padding:0;border:0;background:none;box-shadow:none}
 .mj-isi[data-tampil="daftar"] .mj-tabel-gulung{border-radius:12px}
+/* lengkap = lingkaran */
+.mj-cincin{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:radial-gradient(closest-side,var(--card) 76%,transparent 78%),conic-gradient(var(--ok) calc(var(--p) * 1%),var(--surface) 0);font:800 .625rem var(--mj-display);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.mj-korban span.fasilitas,.mj-korban span.jalan{background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+
+/* ===== rincian dikategorikan: deret pil lompat bagian + bagian berpil ===== */
+.mj-bagian-nav{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 8px;background:var(--paper)}
+.mj-bagian-nav button{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand);font-size:.75rem;font-weight:700;cursor:pointer}
+.mj-bagian-nav button:hover{border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 6%,var(--card))}
+.mj-bagian-nav svg{width:14px;height:14px;color:var(--brand2)}
+.mj-bagian{display:grid;gap:10px;scroll-margin-top:52px}
+.mj-bagian-pil{display:inline-flex;align-items:center;gap:7px;justify-self:start;margin:4px 0 0;padding:5px 12px 5px 8px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand);font:800 .75rem var(--mj-display)}
+.mj-bagian-pil svg{width:15px;height:15px;color:var(--brand2)}
+.mj-bagian-isi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+.mj-bagian-isi.tunggal{grid-template-columns:1fr}
+.mj-bagian-isi>.mj-kartu{margin:0}
+@media (max-width:900px){.mj-bagian-isi{grid-template-columns:1fr}}
+.mj-kolom.kiri>.mj-bagian-pil{margin:6px 0 0}
