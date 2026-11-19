@@ -126,3 +126,34 @@ F-15 (minta verifikasi dua arah) digantikan F-18 sampai F-20.
 - Merah lewat tenggat bukan vonis atas petugas; tidak ada penilaian kinerja orang atau BPBD dari data penugasan di paket ini.
 - Draf LogPal tidak pernah diajukan oleh sistem dan tidak pernah berisi jumlah barang yang dihitung mesin.
 - Kontak BPBD dan nomor WA staf tidak masuk repo.
+
+---
+
+## Lanjutan 19 Nov 2026 (bagian 3): Meja lanjutan F-40 sampai F-48
+
+| F | Fitur | Fase | Keputusan |
+| --- | --- | --- | --- |
+| F-40 | Kelompok titik di peta meja (lingkaran berangka, memecah saat zoom) | F0 | K43, D59 |
+| F-41 | Lapisan konteks: peringatan BMKG, titik panas, prediksi banjir dan longsor besok, batas kab/kota; tanda sejalan atau di luar prediksi pada laporan | F0 | K44, D60, D61 |
+| F-42 | Linimasa: penggeser waktu per jam, Putar dan Jeda | F0 | K45, D62 |
+| F-43 | Kab/kota terbanyak yang bisa diklik: peta terbang, tabel tersaring | F0 | K46, D63 |
+| F-44 | Urutan Perhatian dan chip penanda di Daftar | F0 | K47, D64 |
+| F-45 | Tindakan massal: pindah status, teruskan ke BPBD (F1), tandai ganda | F0 status dan ganda, F1 teruskan | K48, D65 sampai D67 |
+| F-46 | Penanda waktu tanggap dan merah lewat tenggat | F0 | K49, D68 |
+| F-47 | Mode layar besar untuk ruang Pusdalops | F0 | K50, D69 |
+| F-48 | Ekspor daftar tersaring: Excel, CSV, PDF ringkas | F0 | K51, D70 |
+
+### Persyaratan mutu (Meja lanjutan)
+
+- Klik saringan, pil lapisan, kab terbanyak, dan centang tidak membekukan layar: kontrol berganti keadaan seketika, peta dan tabel digambar ulang sesudah cat berikutnya (aturan INP pemilik nomor 2; pemeriksa `inp-reviewer`).
+- Peta dengan 1.000 titik tetap bisa digeser dan diperbesar tanpa tersendat (kelompok titik membuat jumlah yang digambar jauh lebih sedikit saat zoom jauh).
+- Linimasa 14 hari memutar tanpa permintaan jaringan.
+- Mode layar besar bisa dibaca dari jarak 5 meter: angka utama paling kecil setara 64 px pada layar 1920 px (HIPOTESIS, ditinjau di ruang Pusdalops).
+- Ekspor 1.000 baris selesai paling lama 3 detik di peramban.
+
+### Larangan (Meja lanjutan)
+
+- Tanda sejalan atau di luar prediksi tidak berwarna baik atau buruk, tidak berangka, dan tidak menulis "aman" atau "salah".
+- Urutan Perhatian bukan nilai kebenaran laporan dan bukan peringkat pelapor.
+- Waktu tanggap bukan penilaian kinerja; tanpa peringkat orang atau BPBD.
+- Mode layar besar tidak menampilkan nama atau nomor pelapor; ekspor bawaan tidak memuatnya.

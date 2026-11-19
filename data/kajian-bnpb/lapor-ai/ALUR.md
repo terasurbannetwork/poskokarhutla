@@ -163,3 +163,14 @@ Bagian 5 di atas (verifikasi dua arah, rancangan awal) digantikan bagian 7. Bagi
 2. Layar menampilkan pratinjau: kab, barang hasil pemetaan A20 (yang tidak berpadanan tertulis "perlu dipilih"), jiwa usulan dari isian mengungsi, dan peringatan "jumlah diisi oleh BPBD".
 3. Staf mengonfirmasi; draf tersimpan di `lapor_logpal_draf`. Akun BPBD kab itu dan staf melihat "Draf dari Lapor Bencana" di `/instansi/logpal` tab Permintaan, mengubah barang, mengisi jumlah, status darurat, dan SK, lalu mengajukan lewat alur yang ada. Draf yang diajukan ditandai `dipakai` beserta nomor permintaan.
 4. Draf yang tidak dipakai 14 hari ditandai `kedaluwarsa` (hitung malas).
+
+## 19. Meja lanjutan (F-40 sampai F-48)
+
+1. Staf membuka `/lapor/meja`. Bilah saringan (jenis berikon dan angka, periode, status, kab) berlaku serentak untuk peta, panel, linimasa, dan tabel.
+2. Peta menampilkan kelompok titik. Pil lapisan di atas peta menyalakan peringatan BMKG, titik panas, prediksi banjir dan longsor besok, batas kab/kota; legenda hanya memuat lapisan yang menyala.
+3. Panel "Kab/kota terbanyak": mengetuk baris menerbangkan peta ke kab itu dan menambah chip saringan Kab.
+4. Penggeser linimasa di dasar peta: geser ke jam tertentu atau Putar; titik muncul kumulatif. Mengetuk Jeda atau menggeser manual menghentikan putaran.
+5. Daftar default urutan Perhatian: laporan dengan penanda terbanyak di atas; chip penanda terlihat; kolom Lama dibuka, Lama tindak, Tenggat (merah bila lewat tanpa tindakan). Centang beberapa baris memunculkan bilah aksi massal.
+6. Pindah status massal: pilih status tujuan dan catatan; layar menampilkan hasil per laporan (berhasil atau alasan ditolak). Teruskan ke BPBD (F1): pratinjau kontak, daftar tiket, dan teks; konfirmasi mengirim satu pesan dan membuat tugas. Tandai ganda: pilih laporan induk, konfirmasi.
+7. Unduh di bilah ekspor: Excel, CSV, atau PDF ringkas dari baris tersaring.
+8. Layar besar: tombol "Layar besar" meminta layar penuh; tampilan berganti ke angka besar, peta, dan sepuluh teratas; segar sendiri tiap 30 detik; tekan Esc atau tombol Tutup untuk kembali.
