@@ -1351,3 +1351,11 @@ test('T-SAPA diam selama pengirim punya proyek membangun atau pembangunan sedang
   assert.ok(!e.balasan.includes(T_SAPA)); assert.ok(!d.balasan.includes(T_SAPA))
 })
 
+test('cut-off: hanya laporan penanganan; laporan kejadian bencana harian tanpa cut-off (pemilik 19 Nov 2026)', async () => {
+  const { adaCutoff } = await import('../../scripts/wa/proyek.mjs')
+  const { LAPORAN } = await import('../../scripts/wa/otomatis.mjs')
+  assert.equal(adaCutoff(LAPORAN.find((l) => l.id === 'harian')), false)
+  assert.equal(adaCutoff(LAPORAN.find((l) => l.id === 'penanganan')), true)
+  const src = (await import('node:fs')).readFileSync(new URL('../../scripts/wa/proyek.mjs', import.meta.url), 'utf8')
+  assert.equal((src.match(/jamWib(now) < lap.jam/g) || []).length, (src.match(/adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam/g) || []).length, 'tiap baris cut-off dijaga adaCutoff')
+})

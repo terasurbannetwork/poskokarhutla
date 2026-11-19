@@ -88,7 +88,7 @@ Ketik *lanjut* bila sudah siap.
 
 Wajib penanganan cukup salah satu: laporan Satgas pemadaman, atau laporan penanganan lengkap ("LAPORAN PENANGANAN KARHUTLA DI ENAM PROVINSI PRIORITAS") yang memuat bagian Operasi Darat dan Udara yang sama. BMKG pagi tidak lagi diminta; cuaca dan PM2.5 diambil dari data sistem. BMKG pagi yang dikirim sendirian disimpan sebagai bahan tanpa membuka proyek; terhitung saat *buat harian*.
 
-Bila semua bahan wajib sudah ada, judulnya `*Bahan wajib lengkap*` dan baris terakhirnya "Ketik *lanjut* untuk membuat laporan." Laporan harian tidak punya bagian Tambahan. Sebelum cut-off hari ini, di bawah nama laporan ada baris "Belum cut-off 18.00 WIB, angka sistem hari ini belum lengkap."
+Bila semua bahan wajib sudah ada, judulnya `*Bahan wajib lengkap*` dan baris terakhirnya "Ketik *lanjut* untuk membuat laporan." Laporan harian tidak punya bagian Tambahan. Khusus laporan penanganan karhutla, sebelum cut-off hari ini di bawah nama laporan ada baris "Belum cut-off 18.00 WIB, angka sistem hari ini belum lengkap." Laporan kejadian bencana harian tidak punya cut-off, jadi baris ini tidak pernah muncul (pemilik 19 Nov 2026).
 
 ### A0b. Tanda terima bahan, wajib belum lengkap
 

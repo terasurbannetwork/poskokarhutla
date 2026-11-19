@@ -356,6 +356,9 @@ export function tTanya(p, lap, tanggal, pertanyaan) {
 // ---------- K17: daftar bahan (sesudah `buat`) dan tanda terima bahan ----------
 const daftarBaris = (ks, terpilih, lap = null) => ks.map((k) => `- ${lap ? labelWajib(lap, k) : labelBahan(k)}${terpilih[k] ? ': sudah ada' : ''}`)
 const wajibLengkap = (lap, terpilih) => lap.butuh.every((k) => terpilih[k])
+// Cut-off hanya untuk laporan yang memuat angka sistem (penanganan karhutla, 18.00). Laporan kejadian bencana harian tidak punya cut-off
+// (pemilik 19 Nov 2026: "bencana harian tuh gaada cut off"); lap.jam harian hanya jam jadwal jalur terjadwal lama.
+export const adaCutoff = (lap) => lap?.id === 'penanganan'
 export function tDaftarBahan(p, lap, tanggal, terpilih, { cutoff = false, satelit = null } = {}) {
   const lengkap = wajibLengkap(lap, terpilih)
   return susun(lengkap ? 'Bahan wajib lengkap' : 'Kirim bahan laporan', p, null,
@@ -525,7 +528,7 @@ async function buat(cmd, dari, sha, ctx) {
   if (!cmd.saja && !cmd.lanjut) {
     catatTuntun(ctx, sha, p.id)
     const satelit = lap.id === 'penanganan' ? await statusSatelit(ctx, cmd.tanggal) : null // K18: baris status data satelit
-    return balas(tDaftarBahan(p, lap, cmd.tanggal, terpilih, { cutoff: cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam, satelit }))
+    return balas(tDaftarBahan(p, lap, cmd.tanggal, terpilih, { cutoff: adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam, satelit }))
   }
 
   const lepas = kunciProses(berkasKunci) // satu proses aktif per proyek (T15)
@@ -551,7 +554,7 @@ async function buat(cmd, dari, sha, ctx) {
     // Bentrok dan bahan tak terbaca ditanyakan sekali sesudah `lanjut`; `lanjut` lagi (status bertanya) atau `buat saja` membangun dan mencatatnya.
     const celah = [
       ...kurang.map((k) => `${labelBahan(k)} untuk ${labelTanggal(cmd.tanggal)} belum ada.`),
-      ...(cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []),
+      ...(adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []),
     ]
     const pertanyaan = [
       ...hasil.pertentangan.map(tanyaBentrok),
