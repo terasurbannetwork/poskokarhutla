@@ -27,6 +27,8 @@ const ikonJenis = id => JENIS[id]?.[1] || "m-kejadian";
 const pil = (st, teks) => { const p = el("span", "mj-pil", teks || LABEL[st] || st); p.style.setProperty("--st", WARNA[st] || "var(--line)"); return p; };
 const lokasiTeks = b => b.wilayah ? [b.wilayah.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah.kab].filter(Boolean).join(", ") : "Tanpa lokasi";
 const pelaporSub = b => [b.peran, /bpbd/i.test(b.peran || "") ? b.instansi : null, b.wa ? `+${b.wa}` : null].filter(Boolean).join(", ");   // instansi hanya untuk petugas BPBD
+// "19 November 2026, 16.49 WIB" -> "19 Nov 26, 16.49 WIB" (pemilik 19 Nov 2026)
+const tglRingkas = t => String(t || "").replace(/(\d{1,2}) ([A-Z][a-z]{2})[a-z]* \d{2}(\d{2})/, "$1 $2 $3");
 const durasi = m => m == null ? null : m < 60 ? `${m} menit` : m < 1440 ? `${Math.floor(m / 60)} jam${m % 60 ? ` ${m % 60} menit` : ""}` : `${Math.floor(m / 1440)} hari${Math.floor(m % 1440 / 60) ? ` ${Math.floor(m % 1440 / 60)} jam` : ""}`;
 /* gugus (A9): laporan berjenis sama, berdekatan waktu dan tempat, dari paling sedikit dua pelapor berbeda; bukan verifikasi */
 const chipGugus = g => { const c = el("span", `mj-gugus${g.label === "gugus kuat" ? " kuat" : ""}`); c.append(ikon("m-gugus"), `${g.label === "gugus kuat" ? "Gugus kuat" : "Gugus"}, ${F(g.n_laporan)} laporan`);
@@ -48,7 +50,7 @@ async function muat() {
 
 /* saringan bertingkat: dasar (periode, cari, kab/kota, cepat) -> + status -> + jenis. Jumlah di tiap kontrol dihitung tanpa saringannya sendiri. */
 const dasar = () => {
-  const q = $("qCari").value.trim().toLowerCase(), hari = periode, batas = hari ? Date.now() - hari * 864e5 : 0;
+  const q = $("qCari").value.trim().toLowerCase(), hari = periode0(), batas = hari ? Date.now() - hari * 864e5 : 0;
   return semua.filter(b => (!batas || b.terkirim >= batas) && (!saringKab || b.wilayah?.kab === saringKab) && (!cepat.has("korban") || adaKorban(b)) && (!cepat.has("gugus") || b.gugus) && (!cepat.has("foto") || b.foto > 0) &&
     (!q || [b.nomor, b.nama, b.wa, b.wilayah?.kab, b.wilayah?.desa, b.wilayah?.prov, b.jenis, b.subjenis].filter(Boolean).join(" ").toLowerCase().includes(q)));
 };
@@ -56,7 +58,7 @@ const cocokStatus = b => !saringStatus || saringStatus.includes(b.status), cocok
 
 function gambar() {
   const d0 = dasar(), dSt = d0.filter(cocokStatus), dJn = d0.filter(cocokJenis), d = dSt.filter(cocokJenis);
-  gambarAngka(dJn); gambarJenis(dSt); gambarCepat(); gambarPilihan(); gambarNav(dJn);
+  gambarAngka(dJn); gambarJenis(dSt); gambarCepat(d); gambarPilihan(); gambarNav(dJn);
   nanti(() => { gambarPeta(d); gambarRingkas(d); gambarLegenda(d); gambarTabel(d); });
 }
 
@@ -96,11 +98,15 @@ const KOTAK = [["Semua laporan", null, "var(--head-bg)"], ["Baru, belum dibuka",
 const barisPanel = (ik, warna, label, nilai, {maks, el: tag = "div"} = {}) => {
   const r = el(tag, "mj-pb"), i = el("span", "mj-pb-ik"); i.style.setProperty("--w", warna); i.append(ikon(ik));
   r.append(i, el("span", "mj-pb-t", label), el("b", typeof nilai === "number" ? "mj-pb-n" : "mj-pb-n teks", typeof nilai === "number" ? F(nilai) : nilai));
-  if (maks != null) { const t = el("span", "mj-pb-bar"), u = el("i"); u.style.width = `${Math.round((typeof nilai === "number" ? nilai : 0) / Math.max(1, maks) * 100)}%`; u.style.setProperty("--w", warna); t.append(u); r.append(t); }
+  if (maks != null && tag === "bar") { const t = el("span", "mj-pb-bar"), u = el("i"); u.style.width = `${Math.round((typeof nilai === "number" ? nilai : 0) / Math.max(1, maks) * 100)}%`; u.style.setProperty("--w", warna); t.append(u); r.append(t); }
   return r;
 };
 function gambarAngka(daftar) {
-  $("angka").replaceChildren(...KOTAK.map(([t, st, w], k) => {
+  if (!$("angka")) return;   // panel Status tiket dihapus (pemilik 19 Nov 2026 "hilangkan"); status lewat Antrean kerja di menu samping
+  // satu batang bertumpuk sebaran status di atas daftar (tinggi baris seragam, tanpa batang per baris)
+  const tumpuk = el("div", "mj-tumpuk"); tumpuk.setAttribute("aria-hidden", "true");
+  for (const [, st, w] of KOTAK.slice(1)) { const n = daftar.filter(x => st.includes(x.status)).length; if (!n) continue; const i = el("i"); i.style.flexGrow = n; i.style.setProperty("--w", w); tumpuk.append(i); }
+  $("angka").replaceChildren(tumpuk, ...KOTAK.map(([t, st, w], k) => {
     const n = st ? daftar.filter(x => st.includes(x.status)).length : daftar.length, b = barisPanel(IKON_KOTAK[k], w, t, n, {maks: st ? daftar.length : null, el: "button"});
     b.type = "button"; b.setAttribute("aria-pressed", String(String(saringStatus) === String(st)));
     b.addEventListener("click", () => { saringStatus = String(saringStatus) === String(st) ? null : st; gambar(); });
@@ -109,34 +115,30 @@ function gambarAngka(daftar) {
 }
 
 /* ---------- di atas peta: saring jenis (pilih banyak), saring cepat, periode ---------- */
+/* pil jenis berangka (pilih banyak); jenis tanpa laporan tampil ikon saja supaya baris muat */
 function gambarJenis(daftar) {
-  const n = id => daftar.filter(b => b.jenisId === id).length;
-  const semuaB = el("button", "mj-jenis-b"); semuaB.type = "button"; semuaB.setAttribute("aria-pressed", String(!saringJenis.size));
-  semuaB.append(ikon("m-semua"), el("span", null, "Semua"), el("b", null, F(daftar.length)));
-  semuaB.addEventListener("click", () => { saringJenis.clear(); gambar(); });
-  const bs = Object.entries(JENIS).map(([id, [t, ik]]) => {
-    const b = el("button", "mj-jenis-b"), k = n(id); b.type = "button"; b.style.setProperty("--jn", warnaJenis(id));
-    b.setAttribute("aria-pressed", String(saringJenis.has(id))); b.disabled = !k && !saringJenis.has(id); b.title = `${t}: ${F(k)} laporan`;
-    b.append(ikon(ik), ...(k || saringJenis.has(id) ? [el("span", null, t), el("b", null, F(k))] : []));   // jenis tanpa laporan: ikon saja, deret muat sebaris
-    b.setAttribute("aria-label", `${t}, ${F(k)} laporan`);
-    b.addEventListener("click", () => { saringJenis.has(id) ? saringJenis.delete(id) : saringJenis.add(id); gambar(); });
-    return b;
-  });
-  $("saringJenis").replaceChildren(semuaB, ...bs);
+  const n = id => daftar.filter(b => b.jenisId === id).length, tb = (id, t, ik, k) => {
+    const b = el("button"); b.type = "button"; if (id) b.style.setProperty("--jn", warnaJenis(id));
+    b.setAttribute("aria-pressed", String(id ? saringJenis.has(id) : !saringJenis.size)); b.setAttribute("aria-label", `${t}, ${F(k)} laporan`); b.title = `${t}: ${F(k)} laporan`;
+    b.disabled = !!id && !k && !saringJenis.has(id); b.append(ikon(ik), ...(k || !id || saringJenis.has(id) ? [el("span", null, t), el("b", null, F(k))] : []));
+    b.addEventListener("click", () => { if (!id) saringJenis.clear(); else saringJenis.has(id) ? saringJenis.delete(id) : saringJenis.add(id); gambar(); }); return b; };
+  $("pilihJenis").replaceChildren(tb(null, "Semua", "m-semua", daftar.length), ...Object.entries(JENIS).map(([id, [t, ik]]) => tb(id, t, ik, n(id))));
 }
 const CEPAT = [["korban", "m-korban", "Ada korban"], ["foto", "m-foto", "Ada foto"], ["gugus", "m-gugus", "Bergugus"]];
-/* waktu: deret tombol, semua pilihan tampil (pemilik 19 Nov 2026); status dan kab/kota tidak lagi berupa pilihan di baris saring:
-   status lewat Antrean kerja dan Status tiket, kab/kota lewat daftar Kab/kota terbanyak */
+/* waktu: tombol, semua pilihan tampil (pemilik 19 Nov 2026 "tampilin aja semua pilihan ini") */
 let periode = 0;
 const PERIODE = [[1, "24 jam"], [7, "7 hari"], [30, "30 hari"], [0, "Semua waktu"]];
+const periode0 = () => periode;
 function gambarPilihan() {
   $("saringWaktu").replaceChildren(...PERIODE.map(([v, t]) => { const b = el("button", null, t); b.type = "button"; b.setAttribute("aria-pressed", String(periode === v));
     b.addEventListener("click", () => { periode = v; gambar(); }); return b; }));
   $("bUlang").disabled = !(saringJenis.size || saringStatus || saringKab || cepat.size || $("qCari").value || periode);
 }
-function gambarCepat() {
+function gambarCepat(daftar) {   // chip berangka ala dalops; angka = laporan tersaring yang cocok
+  const uji = {korban: adaKorban, foto: b => b.foto > 0, gugus: b => !!b.gugus};
   $("saringCepat").replaceChildren(...CEPAT.map(([k, ik, t]) => { const b = el("button"); b.type = "button"; b.setAttribute("aria-pressed", String(cepat.has(k)));
-    b.append(ikon(ik), t); b.addEventListener("click", () => { cepat.has(k) ? cepat.delete(k) : cepat.add(k); gambar(); }); return b; }));
+    b.append(ikon(ik), el("span", null, t), el("b", null, F(daftar.filter(uji[k]).length)));
+    b.addEventListener("click", () => { cepat.has(k) ? cepat.delete(k) : cepat.add(k); gambar(); }); return b; }));
 }
 
 /* ---------- peta ---------- */
@@ -240,22 +242,25 @@ function gambarLegenda(daftar) {
 /* ---------- tabel ---------- */
 function tombolAksi(ik, label, aksi) { const b = el(aksi.href ? "a" : "button", "mj-ikon"); if (aksi.href) Object.assign(b, aksi); else { b.type = "button"; b.addEventListener("click", e => { e.stopPropagation(); aksi(); }); }
   b.setAttribute("aria-label", label); b.title = label; b.append(ikon(ik)); if (aksi.href) b.addEventListener("click", e => e.stopPropagation()); return b; }
+/* dampak ringkas di tabel (pemilik 19 Nov 2026 "kurang komprehensif, rumah, pengungsi"): korban, mengungsi, rumah rusak; ikon berlabel, kosong = strip */
+const DAMPAK_SEL = [["meninggal", "Meninggal", "m-meninggal", "orang"], ["hilang", "Hilang", "m-hilang", "orang"], ["luka", "Luka-luka", "m-luka", "orang"],
+  ["mengungsi", "Mengungsi", "m-tenda", "orang"], ["rumah", "Rumah rusak", "m-rumah", "rumah"]];
 function korbanSel(b) {
   const d = b.dampak || {}, w = el("div", "mj-korban");
-  if ([d.meninggal, d.hilang, d.luka].every(v => v == null)) { w.append(el("small", null, "belum didata")); return w; }
-  for (const [k, t] of [["meninggal", "Meninggal"], ["hilang", "Hilang"], ["luka", "Luka-luka"]]) {   // ikon berlabel, tanpa singkatan (pemilik 19 Nov 2026 "kasih icon")
-    const s = el("span", d[k] > 0 ? `isi ${k}` : ""), v = d[k] == null ? "–" : F(d[k]); s.title = `${t}: ${d[k] == null ? "belum didata" : `${v} orang`}`; s.setAttribute("aria-label", s.title);
-    s.append(ikon(`m-${k}`), el("b", null, v)); w.append(s); }
+  if (DAMPAK_SEL.every(([k]) => d[k] == null)) { w.append(el("small", null, "belum didata")); return w; }
+  for (const [k, t, ik, sat] of DAMPAK_SEL) {
+    const s = el("span", d[k] > 0 ? `isi ${k}` : ""), v = d[k] == null ? "–" : F(d[k]); s.title = `${t}: ${d[k] == null ? "belum didata" : `${v} ${sat}`}`; s.setAttribute("aria-label", s.title);
+    s.append(ikon(ik), el("b", null, v)); w.append(s); }
   return w;
 }
 /* urut tabel: kepala kolom = tombol; ketuk lagi membalik arah */
 const KOLOM = [["waktu", "Waktu lapor", b => b.terkirim], ["tiket", "Tiket", b => b.nomor], ["jenis", "Jenis", b => b.jenis || ""], ["lokasi", "Lokasi", b => b.wilayah?.kab || ""],
-  ["korban", "Korban", b => (b.dampak?.meninggal || 0) * 1e6 + (b.dampak?.hilang || 0) * 1e3 + (b.dampak?.luka || 0)], ["pelapor", "Pelapor", b => b.nama || ""],
+  ["korban", "Dampak", b => (b.dampak?.meninggal || 0) * 1e9 + (b.dampak?.hilang || 0) * 1e6 + (b.dampak?.luka || 0) * 1e3 + (b.dampak?.mengungsi || 0)],
   ["lengkap", "Lengkap", b => b.lengkap], ["foto", "Foto", b => b.foto], ["status", "Status", b => b.status === "tidak_valid" ? -1 : TAHAP.indexOf(b.status)], ["aksi", "Aksi", null]];
 function gambarKepala() {
   $("kepalaTabel").replaceChildren(...KOLOM.map(([k, t, f]) => {
     const th = el("th"); if (!f) { th.textContent = t; return th; }
-    if (k === "korban") th.title = "Meninggal, hilang, luka-luka";
+    if (k === "korban") th.title = "Meninggal, hilang, luka-luka, mengungsi, rumah rusak";
     th.setAttribute("aria-sort", urut.k === k ? (urut.arah > 0 ? "ascending" : "descending") : "none");
     const b = el("button", "mj-urut"); b.type = "button"; b.append(el("span", null, t), ikon("m-urut"));
     b.addEventListener("click", () => { urut = urut.k === k ? {k, arah: -urut.arah} : {k, arah: k === "waktu" || k === "korban" || k === "lengkap" || k === "foto" ? -1 : 1}; gambarKepala(); nanti(() => gambarTabel(tersaringSekarang())); });
@@ -280,12 +285,11 @@ function gambarTabel(daftar) {
     aksi.append(tombolAksi("m-buka", `Buka ${b.nomor}`, () => bukaRinci(b.nomor)));
     if (b.wa) aksi.append(tombolAksi("m-wa", `Chat WhatsApp ${b.nama || ""}`, {href: `https://wa.me/${b.wa}`, target: "_blank", rel: "noopener"}));
     if (b.lat != null) aksi.append(tombolAksi("m-lokasi", "Lihat di peta", () => { peta?.flyTo({center: [b.lon, b.lat], zoom: 13}); pindahTampil("peta"); requestAnimationFrame(() => bukaPopup(b)); }));
-    tr.append(sel("", el("b", null, b.waktuLapor)), sel("", el("span", "mj-nomor", b.nomor)),
-      sel("", jn), sel("", lok), sel("angka", korbanSel(b)), sel("", el("b", null, b.nama || "Tanpa nama"), el("small", null, pelaporSub(b))),
-      sel("angka", el("b", null, `${b.lengkap}%`), bar), sel("angka", ft), sel("angka", pil(b.status), ...(b.tanggap?.dibuka != null ? [el("small", "mj-tanggap", `dibuka ${durasi(b.tanggap.dibuka)}`)] : b.status === "baru" ? [el("small", "mj-tanggap belum", `belum dibuka, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))}`)] : [])), sel("angka", aksi));
+    tr.append(sel("", el("b", null, tglRingkas(b.waktuLapor))), sel("", el("span", "mj-nomor", b.nomor)),
+      sel("", jn), sel("", lok), sel("angka", korbanSel(b)), sel("angka", el("b", null, `${b.lengkap}%`), bar), sel("angka", ft), sel("angka", pil(b.status), ...(b.tanggap?.dibuka != null ? [el("small", "mj-tanggap", `dibuka ${durasi(b.tanggap.dibuka)}`)] : b.status === "baru" ? [el("small", "mj-tanggap belum", `belum dibuka, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))}`)] : [])), sel("angka", aksi));
     tr.addEventListener("click", () => bukaRinci(b.nomor));
     return tr;
-  }) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = 10; tr.append(td); return tr; })()]));
+  }) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
 }
 const fotoLaporan = nomor => { if (!fotoCache.has(nomor)) fotoCache.set(nomor, fetch(`/api/lapor/meja/${nomor}`).then(r => r.json()).then(j => j.foto || []).catch(() => [])); return fotoCache.get(nomor); };
 

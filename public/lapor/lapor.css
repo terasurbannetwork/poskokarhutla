@@ -1834,3 +1834,5 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 /* catatan daftar tempat satu baris penuh, tidak terjepit di satu kolom kisi */
 .lp-tempat-kisi > p{grid-column:1 / -1;margin:0}
 .lp-lap-kartu.draf .lp-lap-maskot{right:auto;left:50%;translate:-50% 0;bottom:-4px}
+/* Lapor kejadian selalu di dasar menu samping (pemilik 19 Nov 2026 "tetap taro paling bawah"): saat Sigap tersembunyi (di luar chat) tombol tetap terdorong ke bawah */
+@media (min-width:900px){.lp-app:not(.di-chat) .lp-tab .lp-tab-lapor{margin-top:auto!important}}

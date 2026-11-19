@@ -580,7 +580,7 @@ button.mj-pb:first-child[aria-pressed="true"]{box-shadow:none;background:none}
 /* ===== kepala situs bersama (sama dengan .ad-top public/admin/admin.css, ditulis ulang dengan token supaya meja tidak memuat seluruh admin.css) ===== */
 body{display:flex;flex-direction:column;height:100dvh}
 .ad-top{flex:none;display:flex;align-items:center;gap:14px;padding:10px 20px;background:var(--head-bg);color:var(--on-head);box-shadow:0 6px 18px -10px color-mix(in oklab,var(--head-bg) 60%,transparent);position:relative;z-index:5}
-.ad-logo{display:inline-flex;align-items:center;gap:10px;color:var(--on-head);text-decoration:none;font:800 15px var(--mj-display);letter-spacing:-.01em}
+.ad-logo{display:inline-flex;align-items:center;gap:10px;color:var(--on-head);text-decoration:none;font:800 .9375rem var(--mj-display);letter-spacing:-.01em}
 .ad-logo img{width:30px;height:30px;border-radius:9px;box-shadow:0 0 0 1px color-mix(in oklab,var(--on-head) 25%,transparent)}
 .mj{flex:1;min-height:0;height:auto!important}
 
@@ -612,3 +612,72 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-rk-catat{margin:2px 0 0}
 .mj-kiri-peta{width:262px}
 .mj-rk-kab button[aria-pressed="true"]{background:color-mix(in oklab,var(--brand2) 10%,var(--card));box-shadow:inset 3px 0 0 var(--brand2)}
+
+/* ===== bilah saring ala /bnpb/dalops: pilihan jenis, chip berangka, waktu di kanan ===== */
+.mj-peta-atas .mj-saring,.mj-tabel-wadah .mj-saring{display:flex!important;align-items:center;gap:8px;padding:6px;border-radius:14px}
+.mj-pjenis{position:relative;flex:none}
+.mj-pjenis-b{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 10px 0 6px;border:1.5px solid var(--brand);border-radius:12px;background:var(--card);color:var(--brand);cursor:pointer}
+.mj-pjenis-b b{font-weight:800;font-size:.8125rem;white-space:nowrap}
+.mj-pjenis-b>svg{width:16px;height:16px}
+.mj-pjenis .mj-jenis-ikon.kecil{width:26px;height:26px}.mj-pjenis .mj-jenis-ikon.kecil svg{width:14px;height:14px}
+.mj-pjenis-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:10;display:none;min-width:240px;max-height:60vh;overflow:auto;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--mj-bayang)}
+.mj-pjenis.buka .mj-pjenis-menu{display:grid;gap:2px}
+.mj-pjenis-menu button{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:8px;padding:6px 8px;border:0;border-radius:9px;background:none;font-size:.8125rem;font-weight:600;text-align:left;cursor:pointer}
+.mj-pjenis-menu button:hover:not(:disabled){background:color-mix(in oklab,var(--brand2) 7%,var(--card))}
+.mj-pjenis-menu button[aria-selected="true"]{background:color-mix(in oklab,var(--brand2) 11%,var(--card));color:var(--brand)}
+.mj-pjenis-menu button:disabled{opacity:.4;cursor:default}
+.mj-pjenis-menu b{min-width:22px;padding:0 6px;border-radius:999px;background:var(--surface);font-size:.6875rem;text-align:center}
+.mj-chip{display:inline-flex;flex:none;gap:2px;padding:3px;border:1.5px solid var(--line);border-radius:12px;background:var(--card)}
+.mj-chip button{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:0;border-radius:9px;background:none;font-size:.75rem;font-weight:700;white-space:nowrap;cursor:pointer}
+.mj-chip button svg{width:15px;height:15px;color:var(--brand2)}
+.mj-chip button b{min-width:20px;padding:0 6px;border-radius:999px;background:var(--surface);font-size:.6875rem;text-align:center}
+.mj-chip button:hover{background:color-mix(in oklab,var(--brand2) 6%,var(--card))}
+.mj-chip button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.mj-chip button[aria-pressed="true"] svg{color:currentColor}
+.mj-chip button[aria-pressed="true"] b{background:color-mix(in oklab,var(--on-brand) 20%,transparent)}
+.mj-saring .mj-cari{flex:1 1 160px;min-width:120px;max-width:300px;height:38px}
+.mj-peta-atas .mj-saring .mj-cari{display:none}   /* cari ada di tampilan Daftar; peta mengikuti bilah dalops */
+.mj-waktu{display:inline-flex;align-items:center;gap:6px;flex:none;margin-left:auto;height:38px;padding:0 4px 0 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--brand2)}
+.mj-waktu svg{width:16px;height:16px}
+.mj-waktu select{height:34px;padding:0 4px;border:0;background:none;color:var(--ink);font-size:.8125rem;font-weight:700;cursor:pointer}
+.mj-saring .mj-ulang{order:0}
+
+/* ===== panel kanan, putaran berikut (pemilik 19 Nov 2026 "bagusin lagi"): baris seragam 32 px, angka rata kanan, satu batang bertumpuk di Status tiket ===== */
+.mj-kiri-peta{width:256px;gap:12px}
+.mj-ringkas,.mj-statpeta{box-shadow:0 8px 24px -12px color-mix(in oklab,var(--ink) 40%,transparent)}
+.mj-ringkas summary,.mj-statpeta .mj-panel-judul{padding:12px 14px 6px;font-size:.8125rem}
+.mj-ringkas-isi,.mj-statpeta .mj-angka{padding:0 14px 10px!important}
+.mj-rk-total{display:flex;align-items:baseline;gap:6px;padding:0 0 8px;margin:0 0 2px;border-bottom:1px solid var(--line)}
+.mj-rk-total b{font-size:1.5rem}
+.mj-pb,.mj-statpeta .mj-angka button.mj-pb{min-height:32px;padding:4px 0;grid-template-columns:24px minmax(0,1fr) auto;column-gap:10px;border-top:0!important}
+.mj-statpeta .mj-angka button.mj-pb{padding:4px 6px;margin:0 -6px;width:calc(100% + 12px)}
+.mj-pb-ik{width:24px;height:24px;border:0;border-radius:8px;background:color-mix(in oklab,var(--w) 12%,var(--card))}
+.mj-pb-ik svg{width:14px;height:14px}
+.mj-pb-t,.mj-statpeta .mj-angka .mj-pb-t{font-size:.75rem;font-weight:600;color:var(--ink)}
+.mj-pb-n,.mj-statpeta .mj-angka .mj-pb-n{font-size:1rem}
+.mj-pb-n.teks{font-size:.75rem}
+.mj-tumpuk{display:flex;gap:2px;height:8px;margin:0 0 6px;border-radius:999px;overflow:hidden;background:var(--line)}
+.mj-tumpuk i{display:block;min-width:4px;background:var(--w)}
+.mj-statpeta .mj-angka button.mj-pb:first-of-type{border-bottom:1px solid var(--line)!important;border-radius:0;margin-bottom:2px}
+.mj-rk-label{margin:8px 0 2px;font-size:.6875rem}
+.mj-rk-kab{gap:0}
+.mj-rk-kab button{display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;column-gap:8px;min-height:30px;padding:3px 4px 8px}
+.mj-rk-kab button::after,.mj-rk-kab button i{left:30px;bottom:3px;height:3px}
+.mj-rk-kab button i{opacity:1;background:color-mix(in oklab,var(--brand2) 70%,var(--card))}
+/* satu baris: cari tampil di peta lagi; pil jenis mengisi sisa dan bergulir mendatar */
+.mj-peta-atas .mj-saring .mj-cari{display:flex}
+.mj-saring .mj-cari{flex:0 0 200px}
+.mj-chip-jenis{flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+.mj-chip-jenis::-webkit-scrollbar{display:none}
+.mj-chip-jenis button svg{color:var(--jn,var(--brand2))}
+.mj-chip-jenis button[aria-pressed="true"]{background:var(--jn,var(--brand));color:var(--on-pekat)}
+.mj-chip button:disabled{opacity:.4;cursor:default}
+.mj-korban span.mengungsi{background:color-mix(in oklab,var(--warn) 16%,var(--card));color:var(--warn-tx)}
+.mj-korban span.rumah{background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.mj-korban{flex-wrap:nowrap}
+
+/* ===== Daftar laporan dalam satu kartu (pemilik 19 Nov 2026 "harusnya ada containernya"): judul, saring, tabel ===== */
+.mj-isi[data-tampil="daftar"] .mj-tabel-wadah{margin:20px;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 8px 24px -16px color-mix(in oklab,var(--ink) 35%,transparent)}
+.mj-isi[data-tampil="daftar"] .mj-tabel-kepala{margin:0 0 12px}
+.mj-isi[data-tampil="daftar"] .mj-tabel-wadah .mj-saring{margin:0 0 14px;padding:0;border:0;background:none;box-shadow:none}
+.mj-isi[data-tampil="daftar"] .mj-tabel-gulung{border-radius:12px}

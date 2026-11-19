@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/inti/tema.css" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
-<link href="/lapor/meja.css?v=28" rel="stylesheet">
+<link href="/lapor/meja.css?v=33" rel="stylesheet">
 </head>
 <!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
      peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
@@ -49,6 +49,8 @@
   <symbol id="m-bagi" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
   <symbol id="m-arah" viewBox="0 0 24 24"><path d="M12 2.5 21.5 12 12 21.5 2.5 12Z"/><path d="M9 14v-2.5a1.5 1.5 0 0 1 1.5-1.5H15M13 8l2 2-2 2"/></symbol>
   <symbol id="m-gugus" viewBox="0 0 24 24"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/></symbol>
+  <symbol id="m-kalender" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></symbol>
+  <symbol id="m-bawah" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="m-rumah" viewBox="0 0 24 24"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
   <symbol id="m-tenda" viewBox="0 0 24 24"><path d="M3 20 12 4l9 16z"/><path d="M12 4v16M9 20l3-6 3 6"/></symbol>
   <symbol id="m-ringkas" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
@@ -79,10 +81,11 @@
   <!-- SATU baris saring penuh lebar (pemilik 19 Nov 2026 "ini agar sebaris semua"): cari, pil jenis bergulir mendatar, status, kab/kota, waktu, saring cepat.
        Berlaku sekaligus untuk peta, ringkasan, dan tabel. -->
   <div class="mj-saring" id="saring" role="search" aria-label="Saring laporan">
+    <!-- satu baris (pemilik 19 Nov 2026): cari, pil jenis berangka, waktu, saring cepat berangka; gaya chip /bnpb/dalops -->
     <label class="mj-cari"><svg aria-hidden="true"><use href="#m-cari"/></svg><input id="qCari" type="search" placeholder="Cari tiket, pelapor, nomor WA" aria-label="Cari laporan"></label>
-    <div class="mj-jenis" id="saringJenis" role="group" aria-label="Saring jenis bencana"></div>
-    <div class="mj-seg" id="saringWaktu" role="group" aria-label="Periode laporan"></div>
-    <div class="mj-seg" id="saringCepat" role="group" aria-label="Saring cepat"></div>
+    <div class="mj-chip mj-chip-jenis" id="pilihJenis" role="group" aria-label="Saring jenis bencana"></div>
+    <div class="mj-chip" id="saringWaktu" role="group" aria-label="Periode laporan"></div>
+    <div class="mj-chip" id="saringCepat" role="group" aria-label="Saring cepat"></div>
     <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" title="Hapus semua saringan"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
   </div>
   <div class="mj-isi" id="isi">
@@ -94,8 +97,6 @@
       </div>
       <div class="mj-kiri-peta">
       <aside class="mj-ringkas" id="ringkas" aria-label="Ringkasan laporan tersaring"></aside>
-      <!-- statistik status tiket di bawah ringkasan (pemilik 19 Nov 2026); tiap baris = saring status -->
-      <aside class="mj-statpeta"><p class="mj-panel-judul"><svg aria-hidden="true"><use href="#m-tiket"/></svg>Status tiket</p><div class="mj-angka" id="angka" role="group" aria-label="Saring menurut status tiket"></div></aside>
       </div>
       <div class="mj-legenda" id="legenda"></div>
     </section>
@@ -110,6 +111,6 @@
   <dialog class="mj-rinci" id="rinci" closedby="any" aria-labelledby="rinciJudul"></dialog>
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
-<script type="module" src="/lapor/meja.js?v=23"></script>
+<script type="module" src="/lapor/meja.js?v=29"></script>
 </body>
 </html>
