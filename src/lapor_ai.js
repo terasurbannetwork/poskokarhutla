@@ -11,7 +11,9 @@ import {modAtauStaf} from "./staf.js";
 import {sesiMasuk} from "./masuk_sesi.js";
 import {hakKm} from "./kemitraan.js";
 import {bersihMedia} from "./media_bersih.js";
-import {jenisBerkas} from "./media_berkas.js";
+import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "./media_berkas.js";
+import {BAHASA, bahasaSah, keIndonesia, dariIndonesia} from "./lapor_bahasa.js";
+import {samarkan} from "./samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab} from "./lapor_meja_hak.js";
 import {hitungGugus} from "./lapor_gugus.js";
 import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
@@ -20,10 +22,10 @@ import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
 import {buatInfo} from "./lapor_info.js";
-import {isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
+import {urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
 import * as H from "./hak.js";
 
-const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10;
+const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 60], [HARI, 120]], BATAS_IP_JAM = [[JAM, 300]];   // per nomor; per alamat IP /64 hanya pintu web
 const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa"]);
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
@@ -33,7 +35,17 @@ const RE_NOMOR = /^LA-\d{6}-\d{2,3}$/, RE_TOKEN = /^[0-9a-f]{32}$/, RE_KODE_DESA
 const BATAS_KIRIM_TEKS = `*Batas laporan harian*\nSatu nomor paling banyak ${MAKS_TERKIRIM_HARI} laporan dalam sehari. Coba lagi besok, atau hubungi 112 bila darurat.`;
 const angka = v => typeof v === "number" && Number.isFinite(v);   // null, "" dan teks tidak pernah lolos jadi 0
 const titikSah = (lat, lon) => angka(lat) && angka(lon) && lat >= -12 && lat <= 7 && lon >= 94 && lon <= 142;
-const adaIdentitas = req => req.headers.has("authorization") || /(?:^|;\s*)sesi_masuk=/.test(req.headers.get("cookie") || "");   // dicek sebelum membaca badan besar
+const adaIdentitas = req => req.headers.has("authorization") || /(?:^|;\s*)sesi_masuk=/.test(req.headers.get("cookie") || "");   // saringan murah sebelum membaca badan kecil
+/* sebelum membaca badan besar: identitas benar-benar sah (kunci mesin atau sesi /masuk yang hidup), bukan hanya nama kuki, plus batas per IP.
+   Penyerang tanpa akun tidak bisa membuat Worker menelan 5 MB per permintaan (tinjauan keamanan tahap 2). */
+async function identitasSah(env, req, kini, aksi) {
+  const lj = await lajuPublik(env, req, aksi, 400, kini); if (lj) return lj;
+  if (req.headers.get("authorization")) return await mesinSah(env, req) ? null : galat(403, "kunci mesin salah");
+  let s = null; try { s = await sesiMasuk(env, req, kini); } catch (e) { if (!tabelBelum(e)) throw e; }
+  if (s) return null;
+  try { await req.body?.cancel(); } catch {}
+  return galat(401, "Masuk dulu dengan nomor WhatsApp Anda.");
+}
 const lajuPublik = (env, req, aksi, maks, kini) => req.headers.get("authorization") ? null : lajuIP(env, req, aksi, [[JAM, maks]], kini);   // mesin Mac mini tidak dibatasi per IP
 const P = H.pelakuLpPelapor, PUBLIK = H.pelakuLpPublik, STAF = H.pelakuLpStaf, MESIN = H.pelakuLpMesin;
 
@@ -52,7 +64,7 @@ async function pelapor(env, req, url, body) {
   } else {
     let s = null; try { s = await sesiMasuk(env, req); } catch (e) { if (!/no such table/i.test(String(e?.message))) throw e; }
     if (!s) return galat(401, "Masuk dulu dengan nomor WhatsApp Anda.");
-    if (req.method === "POST" && req.headers.get("x-pb") !== "1") return galat(403, "kiriman bersesi wajib membawa header x-pb: 1");
+    if (req.method !== "GET" && req.headers.get("x-pb") !== "1") return galat(403, "kiriman bersesi wajib membawa header x-pb: 1");   // POST dan PUT (bagian video)
     wa = s.wa; saluran = "web";
   }
   const izin = await H.lpIzin(env, P, wa);
@@ -86,7 +98,7 @@ const wilayahBaris = baris => { try { return JSON.parse(baris.kerja)?.isian?.lok
 
 /* kuota pesan (pemilik 19 Nov 2026): lewat batas = 429 berisi balasan sopan; laporan yang sedang diisi tetap tersimpan di D1. Batas nomor dan IP dibaca sebelum baris laju ditulis. */
 async function kuota(env, req, {wa, saluran}, kini, aksi = "lapor.pesan") {
-  const daftar = aksi === "lapor.pesan" ? [{kunci: wa, aksi, batas: BATAS_PESAN}] : [{kunci: wa, aksi, batas: [[JAM, 30]]}];
+  const daftar = aksi === "lapor.pesan" ? [{kunci: wa, aksi, batas: BATAS_PESAN}] : [{kunci: wa, aksi, batas: aksi === "lapor.bagian" ? [[JAM, 120]] : [[JAM, 30]]}];   // satu video = paling banyak 6 bagian; 120 bagian/jam memberi ruang ulang
   if (aksi === "lapor.pesan" && saluran === "web") daftar.push({kunci: await ipHash(env, req), aksi: "lapor.ip", batas: BATAS_IP_JAM});
   const r = await H.lpKuota(env, P, daftar, kini);
   if (!r) return null;
@@ -215,9 +227,13 @@ async function pesan(env, req, url, kini, ctx) {
   const b = await bacaBody(req, 16384); if (b.galat) return galat(b.status || 400, b.galat);
   const o = b.o, id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
   const {wa} = id;
-  const teks = typeof o.teks === "string" ? o.teks.slice(0, 2000) : "";
+  // ponytail: saluran bawaan = jalur masuk (mesin = wa, sesi = web); mesin boleh meneruskan saluran "web" hanya bila gateway web memintanya
+  const saluran = id.saluran === "web" ? "web" : o.saluran === "web" ? "web" : "wa";
   const batas = await kuota(env, req, id, kini);
   if (batas) return batas;
+  // bahasa pilihan (K58, D80-D82): hanya pintu web dan hanya bila model tersedia; pesan diterjemahkan ke Indonesia sebelum mesin, teks asli disimpan berdampingan
+  const model = modelDari(env), bahasa = saluran === "web" && model ? bahasaSah(o.bahasa) : "id";
+  const terj = await keIndonesia(model, typeof o.teks === "string" ? o.teks.slice(0, 2000) : "", bahasa), teks = terj.teks;
   if (/^(cek\s+)?status(\s+laporan)?$/i.test(teks.trim())) return statusLaporan(env, wa);
   let lokasi = null;
   if (o.lokasi && typeof o.lokasi === "object") {
@@ -234,15 +250,25 @@ async function pesan(env, req, url, kini, ctx) {
   }
   const sesiPesan = {teks, lokasi, form: o.form && typeof o.form === "object" && !Array.isArray(o.form) ? o.form : null,
     pilih: Array.isArray(o.pilih) ? o.pilih.slice(0, 20).map(Number).filter(Number.isInteger) : null, lain: typeof o.lain === "string" ? o.lain.slice(0, 120) : null, kembali: o.kembali === true};
-  // ponytail: saluran bawaan = jalur masuk (mesin = wa, sesi = web); mesin boleh meneruskan saluran "web" hanya bila gateway web memintanya
-  const saluran = id.saluran === "web" ? "web" : o.saluran === "web" ? "web" : "wa";
   const r = await putar(env, ctx, url, {...id, saluran}, sesiPesan, kini);
   if (r.batas) return kirim(200, {balasan: BATAS_KIRIM_TEKS, teksWa: BATAS_KIRIM_TEKS, status: "ringkasan"});
+  r.h.sesi.bahasa = bahasa;
+  if (terj.diterjemahkan) { const t = [...r.h.sesi.transkrip].reverse().find(x => x.dari === "pelapor"); if (t) Object.assign(t, {asli: samarkan(terj.asli), bahasa}); }   // asli disamarkan sama dengan terjemahannya; ikut tersimpan di kerja sesi
   const s = await simpanPutaran(env, url, {wa, saluran}, r, kini);
   if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
   if (s.tolak) return galat(409, s.tolak);
   if (s.batas) return kirim(200, {balasan: s.teks, teksWa: s.teks, status: r.lama?.status || null});
-  return kirim(200, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null});
+  return kirim(200, await keluarBahasa(model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa));
+}
+/* balasan mesin (Indonesia) -> bahasa pilihan; angka dijaga dua arah di dariIndonesia, gagal = Indonesia. teksWa tidak diterjemahkan (pintu WA tetap Indonesia). */
+async function keluarBahasa(model, out, bahasa) {
+  if (!model || bahasa === "id" || !out.balasan) return out;
+  const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa);
+  return Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa});
+}
+async function bahasaGet(env, req, url, kini) {
+  const lj = await lajuPublik(env, req, "lapor.bahasa", 120, kini); if (lj) return lj;
+  return kirim(200, {bahasa: modelDari(env) ? BAHASA.map(([kode, nama]) => ({kode, nama})) : [{kode: "id", nama: "Bahasa Indonesia"}]});   // tanpa model hanya Indonesia (D82)
 }
 
 /* mulai laporan susulan (F-28): sesi salinan tanpa nomor, langsung mode Ubah; 409 di luar jendela 72 jam / 10 versi atau bila ada sesi isian hidup */
@@ -343,7 +369,7 @@ async function fotoPost(env, req, url, kini, ctx) {
   if (!bersih) return galat(400, "Struktur foto tidak sah atau rusak.");
   const baris = await H.lpSesiAktif(env, P, wa), lama = baris ? dariBaris(baris) : null;
   if (!lama || lama.status !== "foto") return galat(409, "Foto belum diperlukan sekarang. Lanjutkan pertanyaan laporan dulu.", {teksWa: "*Foto belum diperlukan*\nLanjutkan jawaban pertanyaan laporan dulu; foto diminta di akhir."});
-  if ((lama.foto || []).length >= MAKS_FOTO) return galat(400, `Paling banyak ${MAKS_FOTO} foto per laporan.`);
+  if ((lama.foto || []).filter(f => f.jenis !== "video").length >= MAKS_FOTO || (lama.foto || []).length >= MAKS_BERKAS) return galat(400, `Paling banyak ${MAKS_FOTO} foto per laporan.`);
   let meta, waktuAmbil, sumberWaktu;
   if (mesin) {   // gateway WA: jam pesan dan lokasi yang dibagikan (bila ada); nilai tidak sah dibuang, bukan disimpan
     const w = o.waktu, L = o.lokasi && typeof o.lokasi === "object" && titikSah(o.lokasi.lat, o.lokasi.lon) ? {lat: o.lokasi.lat, lon: o.lokasi.lon} : null;
@@ -361,34 +387,181 @@ async function fotoPost(env, req, url, kini, ctx) {
   }
   const fid = acak(8), kunci = `lapor/foto/${fid}.jpg`;
   const info = {id: fid, ...meta, waktuAmbil, sumberWaktu, waktuTerima: kini};
-  const pel = (await H.lpPelapor(env, P, wa)) || null; naikBpbd(pel, id.izin);
+  const m = await masukkanMedia(env, url, id, kini, baris, lama, info, kunci, () => env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}}), () => env.MEDIA.delete(kunci).catch(() => {}));
+  if (m.tolak) return galat(409, m.tolak);
+  if (m.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
+  const h = m.h, prov = provDari(h.sesi), bahasa = saluran === "web" ? bahasaSah(o.bahasa) : "id";
+  return kirim(200, await keluarBahasa(modelDari(env), {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: fid, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null, akurasi: meta.akurasi ?? null,
+    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: h.sesi.foto.length, maks: MAKS_FOTO}}, bahasa));
+}
+/* satu foto atau video masuk ke laporan yang sedang diisi: putaran mesin + baris lapor_foto dalam satu batch D1. tulisR2 menulis berkas sesudah mesin menerima, buangR2 membuangnya bila batch gagal. */
+async function masukkanMedia(env, url, id, kini, baris, lama, info, kunci, tulisR2, buangR2) {
+  const {wa, saluran, izin} = id;
+  const pel = (await H.lpPelapor(env, P, wa)) || null; naikBpbd(pel, izin);
   const awal = lama.transkrip.length;
   const h = await putaran({sesi: lama, pelapor: pel, model: null, wilayah: wilayahDari(env), pesan: {wa, saluran, foto: info}, kini});
   h.sesi.id = lama.id; h.sesi.wa = wa;
-  if (!h.sesi.foto?.some(f => f.id === fid)) return galat(409, "Foto belum diperlukan sekarang.");
-  await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}});
+  if (!h.sesi.foto?.some(f => f.id === info.id)) return {tolak: "Foto belum diperlukan sekarang."};
+  await tulisR2();
   try {
     const s = await simpanPutaran(env, url, {wa, saluran}, {h, baris, lama, lanjut: true, pel, awal}, kini,
-      [H.lpStmtFoto(env, P, {id: fid, sesi: lama.id, kunci, lat: meta.lat, lon: meta.lon, akurasi: meta.akurasi, waktuAmbil, waktuTerima: kini, lencana: meta.lencana, pintu: mesin ? "wa" : "web"}, true)]);
-    if (s.bentrok) { await env.MEDIA.delete(kunci); return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang."); }
-  } catch (e) { await env.MEDIA.delete(kunci).catch(() => {}); throw e; }
-  const prov = provDari(h.sesi);
-  return kirim(200, {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: fid, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null, akurasi: meta.akurasi ?? null,
-    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: h.sesi.foto.length, maks: MAKS_FOTO}});
+      [H.lpStmtFoto(env, P, {id: info.id, sesi: lama.id, kunci, lat: info.lat, lon: info.lon, akurasi: info.akurasi, waktuAmbil: info.waktuAmbil, waktuTerima: kini, lencana: info.lencana, pintu: saluran === "wa" ? "wa" : "web"}, true)]);
+    if (s.bentrok) { await buangR2(); return {bentrok: true}; }
+  } catch (e) { await buangR2(); throw e; }
+  return {h};
 }
-/* berkas foto: pemegang token lacak, pelapornya (sesi atau mesin), atau staf meja */
-async function fotoGet(env, req, url, kini, ctx, id) {
+/* berkas foto atau video: pemegang token lacak, pelapornya (sesi atau mesin), atau staf meja. `<id>` = foto atau sampul video (JPEG), `<id>.mp4|mov|webm` = video dengan Range (206)
+   supaya bisa digeser. ponytail: kunci R2 video berekstensi netral (.vid, jenis baru diketahui setelah byte dibaca di "selesai"); Content-Type disajikan dari ekstensi alamat yang
+   dibuat server sendiri dari sesi (urlMedia), jadi ekstensi yang dikarang pemegang token hanya mengubah header jawabannya sendiri. */
+const TIPE_EKS = {mp4: "video/mp4", mov: "video/quicktime", webm: "video/webm"};
+async function fotoGet(env, req, url, kini, ctx, x) {
   if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
   const lj = await lajuPublik(env, req, "lapor.fotoget", 600, kini); if (lj) return lj;
-  const f = await H.lpFotoById(env, PUBLIK, id); if (!f) return galat(404, "tidak ada");
+  const m = /^([0-9a-f]{16})(?:\.(mp4|mov|webm))?$/.exec(x || ""); if (!m) return galat(404, "tidak ada");
+  const f = await H.lpFotoById(env, PUBLIK, m[1]); if (!f) return galat(404, "tidak ada");
   const t = url.searchParams.get("t") || "";
   let ok = RE_TOKEN.test(t) && f.token_sha && await sha(t) === f.token_sha;
   if (!ok) ok = !!await stafMeja(env, req);
   if (!ok && req.headers.get("authorization")) ok = await mesinSah(env, req);
   if (!ok && req.headers.has("cookie")) { try { ok = (await sesiMasuk(env, req))?.wa === f.wa; } catch {} }
   if (!ok) return galat(404, "tidak ada");
-  const o = await env.MEDIA.get(f.kunci_r2); if (!o) return galat(404, "tidak ada");
-  return new Response(o.body, {headers: {"content-type": "image/jpeg", "cache-control": "private, no-store", "x-robots-tag": "noindex", "x-content-type-options": "nosniff"}});
+  const video = f.kunci_r2.endsWith(".vid");
+  if (m[2] && !video) return galat(404, "tidak ada");
+  const kunci = video && !m[2] ? f.kunci_r2.replace(/\.vid$/, ".jpg") : f.kunci_r2;
+  const baku = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "x-content-type-options": "nosniff"};
+  if (!m[2]) { const o = await env.MEDIA.get(kunci); return o ? new Response(o.body, {headers: {"content-type": "image/jpeg", ...baku}}) : galat(404, "tidak ada"); }
+  const rentang = req.headers.get("range");
+  let o; try { o = await env.MEDIA.get(kunci, rentang ? {range: req.headers} : undefined); } catch { return new Response(null, {status: 416, headers: baku}); }
+  if (!o) return galat(404, "tidak ada");
+  const h = {"content-type": TIPE_EKS[m[2]], "accept-ranges": "bytes", ...baku};
+  if (rentang && o.range && o.range.offset != null) {
+    const {offset, length} = o.range;
+    const awal = /^bytes=(\d+)-/.exec(rentang)?.[1];   // awal rentang di luar berkas: R2 sungguhan menolak, emulator mengembalikan seluruh berkas; jawab 416 dua-duanya
+    if (!(length > 0) || offset >= o.size || awal != null && Number(awal) >= o.size) { o.body?.cancel(); return new Response(null, {status: 416, headers: {...baku, "content-range": `bytes */${o.size}`}}); }
+    return new Response(o.body, {status: 206, headers: {...h, "content-range": `bytes ${offset}-${offset + length - 1}/${o.size}`, "content-length": String(length)}});
+  }
+  return new Response(o.body, {headers: {...h, "content-length": String(o.size)}});
+}
+
+/* ---------------- video, unggah bersambung (KEPUTUSAN K57, K61, D77, D79, D89, D90) ----------------
+   mulai (multipart R2 dibuka, baris lapor_unggah) -> PUT bagian 5 MB satu per satu (etag di D1) -> status (bagian yang sudah ada) -> selesai (complete, periksa isi, masuk laporan).
+   Pemeriksaan isi dijalankan di selesai, bukan per bagian. Semua rute hanya untuk pemilik unggahan (nomor sama); selain pemilik = 404. Cron menit 17 membuang yang 24 jam tanpa bagian baru. */
+const BAGIAN = 5 * 1048576, VIDEO_MAKS = 30 * 1048576, VIDEO_DETIK = 60, VIDEO_PER_LAPORAN = 3, UNGGAH_BASI = 24 * JAM, UNGGAH_BERJALAN = 5, SISI = 1048576;
+const EKS_VIDEO = {"video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm"};
+const bagianDari = u => { try { return Object.keys(JSON.parse(u.bagian || "{}")).map(Number).sort((a, b) => a - b); } catch { return []; } };
+const gagalUnggah = {galat: "Unggahan tidak ditemukan atau sudah kedaluwarsa. Pilih video lagi."};
+const miliknya = (u, id) => u && u.wa === id.wa;
+async function unggahMulai(env, req, url, kini) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  if (!adaIdentitas(req)) return galat(401, "Masuk dulu dengan nomor WhatsApp Anda.");
+  const b = await bacaBody(req, 4096); if (b.galat) return galat(b.status || 400, b.galat);
+  const o = b.o, id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
+  const batas = await kuota(env, req, id, kini, "lapor.unggah"); if (batas) return batas;
+  const {wa, saluran} = id, ukuran = o.ukuran;
+  if (!Number.isInteger(ukuran) || ukuran < 1000 || ukuran > VIDEO_MAKS) return galat(400, `Video paling besar ${VIDEO_MAKS / 1048576} MB.`);
+  const baris = await H.lpSesiAktif(env, P, wa), lama = baris ? dariBaris(baris) : null;
+  if (!lama || lama.status !== "foto") return galat(409, "Kirim video saat diminta foto atau video kejadian.");
+  if ((lama.foto || []).filter(f => f.jenis === "video").length >= VIDEO_PER_LAPORAN) return galat(400, `Paling banyak ${VIDEO_PER_LAPORAN} video per laporan.`);
+  if ((lama.foto || []).length >= MAKS_BERKAS) return galat(400, `Paling banyak ${MAKS_BERKAS} foto dan video per laporan.`);
+  if (await H.lpUnggahHitung(env, P, wa) >= UNGGAH_BERJALAN) return galat(429, "Terlalu banyak unggahan video yang belum selesai. Selesaikan dulu atau tunggu beberapa jam.");
+  const g = o.gps && typeof o.gps === "object" && titikSah(o.gps.lat, o.gps.lon) && angka(o.gps.akurasi) && o.gps.akurasi >= 0 && angka(o.gps.waktu) ? {lat: o.gps.lat, lon: o.gps.lon, akurasi: o.gps.akurasi, waktu: o.gps.waktu} : null;
+  const durasi = angka(o.durasi) && o.durasi >= 0 && o.durasi < 36000 ? Math.round(o.durasi) : null, jumlah = Math.ceil(ukuran / BAGIAN);
+  const fid = acak(8), kunci = `lapor/foto/${fid}.vid`, mp = await env.MEDIA.createMultipartUpload(kunci);
+  try { await H.lpUnggahBaru(env, P, {id: fid, wa, kunci, uploadId: mp.uploadId, ukuran, jumlah, gps: g ? JSON.stringify(g) : null, durasi, bahasa: saluran === "web" ? bahasaSah(o.bahasa) : "id", kini}); }
+  catch (e) { await mp.abort().catch(() => {}); throw e; }
+  return kirim(200, {id: fid, bagian: BAGIAN, jumlah, diterima: []});
+}
+async function unggahBagian(env, req, url, kini, ctx, x) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  const m = /^([0-9a-f]{16})\/(\d{1,2})$/.exec(x || ""); if (!m) return galat(404, "tidak ada");
+  const tolakDini = await identitasSah(env, req, kini, "lapor.unggah.ip"); if (tolakDini) return tolakDini;   // sebelum membaca badan 5 MB
+  // badan dibaca (dan kelebihannya dibuang) sebelum pemeriksaan hak: jawaban dini tanpa membaca badan memutus sambungan klien di tengah kirim sehingga status 404/429 tak sampai
+  const bb = await bacaBytes(req, BAGIAN); if (bb.galat) return galat(bb.status || 400, "Bagian lebih besar dari seharusnya.");
+  const id = await pelapor(env, req, url); if (id instanceof Response) return id;
+  const u = await H.lpUnggahBaca(env, P, m[1]), n = Number(m[2]);
+  if (!miliknya(u, id) || n >= u.jumlah) return galat(404, gagalUnggah.galat);
+  const batas = await kuota(env, req, id, kini, "lapor.bagian"); if (batas) return batas;
+  const harap = n === u.jumlah - 1 ? u.ukuran - n * BAGIAN : BAGIAN;   // R2: semua bagian kecuali yang terakhir persis sama besar
+  if (bb.b.length > harap) return galat(413, "Bagian lebih besar dari seharusnya.");
+  if (bb.b.length !== harap) return galat(400, `Bagian ${n + 1} terpotong (${bb.b.length} dari ${harap} byte). Dikirim ulang.`);
+  const p = await env.MEDIA.resumeMultipartUpload(u.kunci_r2, u.upload_id).uploadPart(n + 1, bb.b);
+  await H.lpUnggahBagian(env, P, u.id, n, p.etag, kini);
+  return kirim(200, {diterima: bagianDari(await H.lpUnggahBaca(env, P, u.id)), jumlah: u.jumlah});
+}
+async function unggahStatus(env, req, url, kini, ctx, x) {
+  if (!/^[0-9a-f]{16}$/.test(x || "")) return galat(404, "tidak ada");
+  const id = await pelapor(env, req, url); if (id instanceof Response) return id;
+  const u = await H.lpUnggahBaca(env, P, x);
+  return miliknya(u, id) ? kirim(200, {diterima: bagianDari(u), jumlah: u.jumlah, bagian: BAGIAN}) : galat(404, "Unggahan tidak ditemukan.");
+}
+async function unggahPost(env, req, url, kini, ctx, x) {
+  if (x === "mulai") return unggahMulai(env, req, url, kini);
+  const m = /^([0-9a-f]{16})\/selesai$/.exec(x || ""); if (!m) return galat(404, "tidak ada");
+  return unggahSelesai(env, req, url, kini, m[1]);
+}
+async function unggahSelesai(env, req, url, kini, uid) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  const tolakDini = await identitasSah(env, req, kini, "lapor.unggah.ip"); if (tolakDini) return tolakDini;
+  const bb = await bacaBytes(req, 700e3); if (bb.galat) return galat(bb.status || 400, bb.galat);   // sampul JPEG paling besar 400 KB (base64 +33%)
+  let o; try { o = JSON.parse(new TextDecoder().decode(bb.b) || "{}"); } catch { return galat(400, "body bukan JSON"); }
+  if (!o || typeof o !== "object") return galat(400, "body harus objek JSON");
+  const id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
+  const u = await H.lpUnggahBaca(env, P, uid); if (!miliknya(u, id)) return galat(404, "Unggahan tidak ditemukan.");
+  const diterima = bagianDari(u); if (diterima.length !== u.jumlah) return galat(409, `Baru ${diterima.length} dari ${u.jumlah} bagian.`, {diterima});
+  const {wa, saluran} = id, kunci = u.kunci_r2, kunciSampul = `lapor/foto/${uid}.jpg`;
+  let selesai = false;   // multipart sudah digabung: yang dibuang berkas, bukan multipart
+  const tolak = async (kode, pesan) => {   // ditolak = berkas R2, multipart, dan baris dibuang (D90)
+    if (selesai) await env.MEDIA.delete([kunci, kunciSampul]).catch(() => {}); else await env.MEDIA.resumeMultipartUpload(kunci, u.upload_id).abort().catch(() => {});
+    await H.lpUnggahHapus(env, P, uid); return galat(kode, pesan);
+  };
+  try {
+    const sampulMentah = b64(o.sampul, 560e3);
+    const sampul = sampulMentah && sampulMentah.length > 500 && sampulMentah.length < 400 * 1024 && sampulMentah[0] === 0xff && sampulMentah[1] === 0xd8 ? bersihMedia("image/jpeg", sampulMentah) : null;
+    if (!sampul) return await tolak(400, "Gambar sampul video tidak terbaca. Kirim video lagi.");
+    try { await env.MEDIA.resumeMultipartUpload(kunci, u.upload_id).complete(diterima.map(n => ({partNumber: n + 1, etag: JSON.parse(u.bagian)[n]}))); selesai = true; }
+    catch { return await tolak(400, "Unggahan tidak dapat diselesaikan. Kirim video lagi."); }
+    const head = await env.MEDIA.head(kunci), ukuran = head?.size ?? 0;
+    // pemeriksaan isi dari byte, bukan nama atau Content-Type. ponytail: hanya 1 MB awal dan 1 MB akhir dibaca (kotak moov di depan atau di belakang; batas CPU Workers Free 10 ms): rekaman 60 detik moov < 1 MB
+    const baca = async (offset, length) => new Uint8Array(await (await env.MEDIA.get(kunci, {range: {offset, length}})).arrayBuffer());
+    const kepala = await baca(0, Math.min(ukuran, SISI)), ekor = ukuran > SISI ? await baca(Math.max(SISI, ukuran - SISI), Math.min(SISI, ukuran - SISI)) : null;
+    const eks = EKS_VIDEO[jenisBerkas(kepala)];
+    if (!eks || ukuran !== u.ukuran) return await tolak(400, "Berkas bukan video MP4, MOV, atau WebM.");
+    const cari = f => f(kepala) ?? (ekor ? f(ekor) : null), durasiBaca = cari(durasiMP4), durasi = durasiBaca ?? u.durasi;
+    // MP4/MOV wajib punya mvhd (berkas berkepala ftyp tanpa kotak film bukan video); WebM tanpa mvhd wajib durasi dari peramban (tinjauan keamanan tahap 2)
+    if (eks === "webm" ? u.durasi == null : durasiBaca == null) return await tolak(400, "Durasi video tidak terbaca. Rekam ulang dengan kamera, lalu kirim lagi.");
+    if (durasi != null && durasi > VIDEO_DETIK + 1) return await tolak(400, `Video paling lama ${VIDEO_DETIK} detik. Potong dulu, lalu kirim lagi.`);
+    // aturan lokasi dan waktu sama dengan foto (D11): GPS perangkat; metadata video (©xyz, creation_time) menggantikan EXIF
+    let g = null; try { g = u.gps ? JSON.parse(u.gps) : null; } catch {}
+    const gpsSah = !!g && g.akurasi <= 1000 && Math.abs(kini - g.waktu) <= 10 * MENIT;
+    const lok0 = cari(lokasiMP4), mLok = lok0 && titikSah(lok0.lat, lok0.lon) ? lok0 : null, w0 = cari(waktuMP4), mWaktu = w0 && w0 <= kini + 5 * MENIT ? w0 : null;
+    if (mWaktu && kini - mWaktu > 48 * JAM) return await tolak(400, "Video direkam lebih dari 48 jam lalu. Kirim rekaman terbaru dari lokasi.");
+    if (gpsSah && mLok && kmDua(g.lat, g.lon, mLok.lat, mLok.lon) > 5) return await tolak(400, "Lokasi di video lebih dari 5 km dari posisi Anda sekarang.");
+    const meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
+      : mLok ? {lencana: "exif", lencanaTeks: "Lokasi dari data video", lat: mLok.lat, lon: mLok.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
+    const baris = await H.lpSesiAktif(env, P, wa), lama = baris ? dariBaris(baris) : null;
+    if (!lama || lama.status !== "foto") return await tolak(409, "Video belum diperlukan sekarang. Lanjutkan pertanyaan laporan dulu.");
+    if ((lama.foto || []).filter(f => f.jenis === "video").length >= VIDEO_PER_LAPORAN) return await tolak(400, `Paling banyak ${VIDEO_PER_LAPORAN} video per laporan.`);
+    if ((lama.foto || []).length >= MAKS_BERKAS) return await tolak(400, `Paling banyak ${MAKS_BERKAS} foto dan video per laporan.`);
+    const waktuAmbil = mWaktu || kini, sumberWaktu = mWaktu ? "waktu rekam video" : gpsSah ? "waktu GPS perangkat" : "waktu unggah", dRound = durasi != null ? Math.round(durasi) : null;
+    const info = {id: uid, jenis: "video", eks, durasi: dRound, ...meta, waktuAmbil, sumberWaktu, waktuTerima: kini};
+    const mm = await masukkanMedia(env, url, id, kini, baris, lama, info, kunci, () => env.MEDIA.put(kunciSampul, sampul, {httpMetadata: {contentType: "image/jpeg"}}), () => env.MEDIA.delete([kunci, kunciSampul]).catch(() => {}));
+    if (mm.tolak || mm.bentrok) { await H.lpUnggahHapus(env, P, uid); if (mm.tolak) await env.MEDIA.delete([kunci, kunciSampul]).catch(() => {}); return galat(mm.bentrok ? 400 : 409, mm.tolak || "Pesan lain dari nomor ini sedang diproses. Kirim video lagi."); }
+    await H.lpUnggahHapus(env, P, uid);
+    const h = mm.h, prov = provDari(h.sesi);
+    return kirim(200, await keluarBahasa(modelDari(env), {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: uid, jenis: "video", durasi: dRound, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null,
+      waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu}}, saluran === "web" ? bahasaSah(u.bahasa) : "id"));
+  } catch (e) {   // galat tak terduga: tidak meninggalkan berkas yatim
+    if (selesai) await env.MEDIA.delete([kunci, kunciSampul]).catch(() => {});
+    await H.lpUnggahHapus(env, P, uid).catch(() => {});
+    throw e;
+  }
+}
+/* D90: dipanggil cron bersih-bersih menit 17. Unggahan 24 jam tanpa bagian baru: multipart di-abort, baris dibuang; paling banyak 20 per putaran. */
+export async function bersihkanLapor(env, kini = Date.now()) {
+  if (!env.MEDIA) return {lewat: "tanpa R2 MEDIA"};
+  let basi; try { basi = await H.lpUnggahBasi(env, H.pelakuLpCron, kini - UNGGAH_BASI); } catch (e) { if (tabelBelum(e)) return {lewat: "migrasi 0158 belum diterapkan"}; throw e; }
+  for (const u of basi) { await env.MEDIA.resumeMultipartUpload(u.kunci_r2, u.upload_id).abort().catch(() => {}); await H.lpUnggahHapus(env, H.pelakuLpCron, u.id); }
+  return {unggahBasi: basi.length};
 }
 
 /* ---------------- lacak dan unduhan ---------------- */
@@ -647,6 +820,11 @@ const RUTE = {
   "POST /api/lapor/pesan": pesan,
   "POST /api/lapor/foto": fotoPost,
   "GET /api/lapor/foto/:id": fotoGet,
+  "GET /api/lapor/foto/:x": fotoGet,   // video: <id>.mp4|mov|webm, dengan Range
+  "POST /api/lapor/unggah/:x": unggahPost,   // mulai, <id>/selesai
+  "PUT /api/lapor/unggah/:x": unggahBagian,   // <id>/<n>
+  "GET /api/lapor/unggah/:x": unggahStatus,   // <id>
+  "GET /api/lapor/bahasa": bahasaGet,
   "GET /api/lapor/sesi": sesiGet,
   "GET /api/lapor/cari": cariGet,
   "GET /api/lapor/sekitar": sekitarGet,

@@ -497,3 +497,228 @@ uji("agregat: hanya akun kampus aktif, staf, admin; sel kecil <3; tanpa identita
   const log = (await DB.prepare("SELECT akun, berkas FROM lapor_unduh ORDER BY id").all()).results;
   assert.deepEqual(log.map(x => x.berkas), ["agregat.json", "agregat.csv", "agregat.csv"]); assert.equal(log[0].akun, "kk:a1b2c3d4e5f60001"); assert.match(log[2].akun, /^admin:/);
 });
+
+/* ---------- video bersambung (K57, K61, D77, D79, D89, D90) dan bahasa (K58, D80-D82); LA-58, LA-60, LA-61 ---------- */
+const WV = "6281200000031", WV2 = "6281200000032", WV3 = "6281200000033", MB5 = 5 * 1048576, SAMPUL = "data:image/jpeg;base64," + B64;
+const DETIK_1904 = 2082844800;
+/* MP4 sintetis: ftyp di byte 4, mvhd (skala 1000, durasi detik, waktu rekam), ©xyz opsional; sisanya isian. Cukup untuk pembaca src/media_berkas.js. */
+function buatMp4({ukuran, detik = 10, lat = null, lon = null, rekam = Date.now() - 60e3, merk = "isom"}) {
+  const b = Buffer.alloc(ukuran, 0x61); b.writeUInt32BE(24, 0); b.write("ftyp" + merk, 4, "latin1");
+  b.write("mvhd", 32, "latin1"); b.writeUInt32BE(Math.floor(rekam / 1000) + DETIK_1904, 40); b.writeUInt32BE(1000, 48); b.writeUInt32BE(Math.round(detik * 1000), 52);
+  if (lat != null) { b[100] = 0xa9; b.write("xyz", 101, "latin1"); b.write(`\0\0\0\0${lat > 0 ? "+" : "-"}${Math.abs(lat).toFixed(4)}${lon > 0 ? "+" : "-"}${Math.abs(lon).toFixed(4)}/`, 104, "latin1"); }
+  return b;
+}
+const GPS = () => ({lat: -6.6, lon: 106.8, akurasi: 10, waktu: Date.now()});
+const mulai = (wa, b, h = MESIN) => api("POST", "/api/lapor/unggah/mulai", {wa, ...b}, h);
+const bagian = async (wa, id, n, bytes, h = MESIN) => { const r = await mf.dispatchFetch(`http://bnpb.lokal/api/lapor/unggah/${id}/${n}?wa=${wa}`, {method: "PUT", headers: h, body: bytes}); const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch {} return {s: r.status, j, t}; };
+const statusU = (wa, id) => api("GET", `/api/lapor/unggah/${id}?wa=${wa}`, undefined, MESIN);
+const selesaiU = (wa, id, b = {}) => api("POST", `/api/lapor/unggah/${id}/selesai`, {wa, sampul: SAMPUL, ...b}, MESIN);
+const kirimBagian = async (wa, id, vid) => { for (let i = 0; i * MB5 < vid.length; i++) { const r = await bagian(wa, id, i, vid.subarray(i * MB5, (i + 1) * MB5)); assert.equal(r.s, 200, r.t.slice(0, 200)); } };
+async function videoUtuh(wa, vid, {gps = GPS(), durasi = 10, sampul} = {}) {   // mulai, semua bagian, selesai; mengembalikan {id, r}
+  const m = await mulai(wa, {ukuran: vid.length, durasi, gps}); assert.equal(m.s, 200, m.t.slice(0, 200));
+  await kirimBagian(wa, m.j.id, vid); return {id: m.j.id, r: await selesaiU(wa, m.j.id, sampul === undefined ? {} : {sampul})};
+}
+const R2 = async () => mf.getR2Bucket("MEDIA");
+const adaR2 = async k => !!(await (await R2()).head(k));
+let vidId, vid, nomorV, tokenV;
+
+uji("video bersambung: tiga bagian, satu terpotong ditolak lalu dilanjutkan, status bagian, selesai masuk laporan sebagai video", async () => {
+  for (const wa of [WV, WV2, WV3]) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
+  assert.equal((await mulai(WV3, {ukuran: 5000})).s, 409, "belum ada laporan yang diisi");
+  await keFoto(WV);
+  vid = buatMp4({ukuran: 2 * MB5 + 123456, detik: 10});
+  for (const ukuran of [999, 31457281, "5000", null, 12.5]) assert.equal((await mulai(WV, {ukuran})).s, 400, String(ukuran));
+  assert.equal((await api("POST", "/api/lapor/unggah/mulai", {ukuran: 5000})).s, 401, "tamu");
+  const m = await mulai(WV, {ukuran: vid.length, durasi: 10, gps: GPS(), bahasa: "id"}); assert.equal(m.s, 200, m.t.slice(0, 200));
+  vidId = m.j.id; assert.match(vidId, /^[0-9a-f]{16}$/); assert.equal(m.j.jumlah, 3); assert.equal(m.j.bagian, MB5); assert.deepEqual(m.j.diterima, []);
+  assert.equal(await n("lapor_unggah", `id = '${vidId}' AND wa = '${WV}'`), 1);
+  // kuki palsu tanpa sesi hidup ditolak sebelum badan 5 MB dibaca (tinjauan keamanan tahap 2)
+  const palsu = await bagian(WV, vidId, 0, Buffer.alloc(1000, 1), {cookie: "sesi_masuk=" + "00".repeat(32), "x-pb": "1", origin: "http://bnpb.lokal"});
+  assert.equal(palsu.s, 401, palsu.t.slice(0, 200));
+  // nomor lain tidak bisa menyentuh unggahan orang lain
+  assert.equal((await statusU(WV2, vidId)).s, 404); assert.equal((await bagian(WV2, vidId, 0, vid.subarray(0, MB5))).s, 404); assert.equal((await selesaiU(WV2, vidId)).s, 404);
+  assert.equal((await statusU(WV, "0".repeat(16))).s, 404, "unggahan tak dikenal");
+  assert.equal((await bagian(WV, vidId, 3, Buffer.alloc(10))).s, 404, "nomor bagian di luar jumlah");
+  // bagian terpotong ditolak, tidak tercatat; yang berlebih ditolak
+  let r = await bagian(WV, vidId, 0, vid.subarray(0, 1000)); assert.equal(r.s, 400); assert.match(r.t, /terpotong/);
+  assert.deepEqual((await statusU(WV, vidId)).j.diterima, []);
+  assert.equal((await bagian(WV, vidId, 0, Buffer.alloc(MB5 + 1))).s, 413);
+  // dilanjutkan: bagian 0 dan 2 (terakhir, lebih kecil), lalu status dan selesai-terlalu-dini
+  assert.deepEqual((await bagian(WV, vidId, 0, vid.subarray(0, MB5))).j.diterima, [0]);
+  assert.deepEqual((await bagian(WV, vidId, 2, vid.subarray(2 * MB5))).j.diterima, [0, 2]);
+  assert.equal((await bagian(WV, vidId, 2, vid.subarray(2 * MB5, 2 * MB5 + 10))).s, 400, "bagian terakhir harus tepat sisanya");
+  const st = await statusU(WV, vidId); assert.deepEqual(st.j.diterima, [0, 2]); assert.equal(st.j.jumlah, 3); assert.equal(st.j.bagian, MB5);
+  const dini = await selesaiU(WV, vidId); assert.equal(dini.s, 409); assert.deepEqual(dini.j.diterima, [0, 2]);
+  assert.equal(await n("lapor_unggah", `id = '${vidId}'`), 1, "belum lengkap: unggahan tetap menunggu");
+  assert.equal((await bagian(WV, vidId, 1, vid.subarray(MB5, 2 * MB5))).s, 200);   // bagian ulang boleh (menimpa)
+  assert.equal((await bagian(WV, vidId, 1, vid.subarray(MB5, 2 * MB5))).s, 200);
+  assert.deepEqual((await statusU(WV, vidId)).j.diterima, [0, 1, 2]);
+  // sampul rusak = ditolak dan semua dibuang; unggahan baru dipakai untuk selesai yang benar
+  const ok = await selesaiU(WV, vidId); assert.equal(ok.s, 200, ok.t.slice(0, 300));
+  assert.equal(ok.j.fotoBaru.jenis, "video"); assert.equal(ok.j.fotoBaru.durasi, 10); assert.equal(ok.j.fotoBaru.lencana, "gps"); assert.equal(ok.j.fotoBaru.id, vidId);
+  assert.equal((await (await R2()).head(`lapor/foto/${vidId}.vid`)).size, vid.length); assert.ok(await adaR2(`lapor/foto/${vidId}.jpg`), "sampul di R2");
+  assert.equal(await n("lapor_unggah", `id = '${vidId}'`), 0, "baris unggahan dibuang");
+  assert.equal(await n("lapor_foto", `id = '${vidId}' AND kunci_r2 = 'lapor/foto/${vidId}.vid'`), 1);
+  const kerja = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ? AND nomor IS NULL").bind(WV).first()).kerja);
+  assert.deepEqual([kerja.foto[0].jenis, kerja.foto[0].eks, kerja.foto[0].durasi], ["video", "mp4", 10]);
+  // sesudah selesai, unggahan yang sama tidak ada lagi
+  assert.equal((await selesaiU(WV, vidId)).s, 404);
+  // lanjutkan laporan sampai terkirim
+  r = await ketik(WV, {teks: "1"});
+  for (let i = 0; i < 60 && r.status !== "ringkasan"; i++) r = await ketik(WV, {teks: r.pilihan ? "1" : i % 2 ? "belum tahu" : "tidak ada"});
+  r = await ketik(WV, {teks: "1"}); assert.equal(r.status, "terkirim"); nomorV = r.nomor; tokenV = /t=([0-9a-f]{32})/.exec(r.lacak)[1];
+});
+
+uji("video bersambung: penyajian dengan Range (206), sampul, token, meja memuat video, PDF memakai sampul, BPBD hanya wilayahnya", async () => {
+  const dasar = `/api/lapor/foto/${vidId}`, ambil = (j, h = {}) => mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h});
+  let r = await ambil(`${dasar}.mp4?t=${tokenV}`); assert.equal(r.status, 200); assert.equal(r.headers.get("content-type"), "video/mp4"); assert.equal(r.headers.get("accept-ranges"), "bytes");
+  assert.match(r.headers.get("cache-control"), /private/); assert.equal(r.headers.get("x-robots-tag"), "noindex");
+  assert.equal(Buffer.compare(Buffer.from(await r.arrayBuffer()), vid), 0, "berkas utuh sama dengan yang diunggah");
+  r = await ambil(`${dasar}.mp4?t=${tokenV}`, {range: "bytes=0-99"}); assert.equal(r.status, 206); assert.equal(r.headers.get("content-range"), `bytes 0-99/${vid.length}`); assert.equal(r.headers.get("content-length"), "100");
+  assert.equal(Buffer.compare(Buffer.from(await r.arrayBuffer()), vid.subarray(0, 100)), 0);
+  r = await ambil(`${dasar}.mp4?t=${tokenV}`, {range: `bytes=${MB5 - 10}-${MB5 + 9}`}); assert.equal(r.status, 206); assert.equal(Buffer.compare(Buffer.from(await r.arrayBuffer()), vid.subarray(MB5 - 10, MB5 + 10)), 0, "rentang melintasi batas bagian");
+  r = await ambil(`${dasar}.mp4?t=${tokenV}`, {range: "bytes=-50"}); assert.equal(r.status, 206); assert.equal(r.headers.get("content-range"), `bytes ${vid.length - 50}-${vid.length - 1}/${vid.length}`);
+  r = await ambil(`${dasar}.mp4?t=${tokenV}`, {range: `bytes=${vid.length + 10}-`}); assert.equal(r.status, 416); assert.equal(r.headers.get("content-range"), `bytes */${vid.length}`);
+  await (await ambil(`${dasar}.mp4?t=${tokenV}`)).arrayBuffer();
+  r = await ambil(`${dasar}?t=${tokenV}`); assert.equal(r.status, 200); assert.equal(r.headers.get("content-type"), "image/jpeg", "tanpa ekstensi = sampul"); assert.equal((await r.arrayBuffer()).byteLength, JPEG_SAH.length);
+  for (const j of [`${dasar}.mp4`, `${dasar}.mp4?t=${"0".repeat(32)}`, `${dasar}?t=${"0".repeat(32)}`, `${dasar}.exe?t=${tokenV}`, `/api/lapor/foto/${fotoId}.mp4?t=${token}`]) assert.equal((await ambil(j)).status, 404, j);
+  assert.equal((await ambil(`${dasar}.mp4`, ADMIN)).status, 200, "staf meja boleh tanpa token");
+  // meja: foto memuat video dengan sampul dan durasi
+  const rin = await api("GET", `/api/lapor/meja/${nomorV}`, undefined, ADMIN); assert.equal(rin.s, 200);
+  assert.deepEqual([rin.j.foto[0].jenis, rin.j.foto[0].durasi], ["video", 10]); assert.equal(rin.j.foto[0].url, `${dasar}.mp4?t=${tokenV}`); assert.equal(rin.j.foto[0].sampul, `${dasar}?t=${tokenV}`);
+  // BPBD: kab asal melihat video, kab lain tidak punya rincian (jadi tidak punya token)
+  const kab = await api("GET", `/api/lapor/meja/${nomorV}`, undefined, bogor.h); assert.equal(kab.s, 200); assert.equal(kab.j.foto[0].jenis, "video"); assert.equal((await ambil(kab.j.foto[0].url)).status, 200);
+  assert.equal((await api("GET", `/api/lapor/meja/${nomorV}`, undefined, bandung.h)).s, 404, "kab lain");
+  // lacak: foto pertama = sampul; PDF: video diwakili sampulnya (alamat tanpa ekstensi)
+  assert.equal((await api("GET", `/api/lapor/lacak?t=${tokenV}`)).j.fotoPertama, `${dasar}?t=${tokenV}`);
+  let q; for (let i = 0; i < 12 && !q; i++) q = (await api("GET", "/api/lapor/pdf/antre", undefined, MESIN)).j.antre.find(x => x.nomor === nomorV);   // antrean diambil bertahap
+  assert.ok(q, "PDF antre");
+  assert.match(q.bahan.foto[0].url, new RegExp(`/api/lapor/foto/${vidId}\\?t=${tokenV}$`)); assert.match(q.bahan.foto[0].ket, /^Video 10 detik, /);
+  assert.ok(q.bahan.kelompok.some(g => g.judul === "Foto dan video" && /^Video 1$/.test(g.baris[0][0])));
+});
+
+uji("video bersambung: lebih 60 detik, bukan video, lokasi jauh, rekaman lama, sampul rusak ditolak dan berkas R2 dibuang; batas 3 video", async () => {
+  await keFoto(WV2);
+  const sisa = async (id, kode, re) => { assert.equal(kode.s, 400, kode.t.slice(0, 200)); assert.match(kode.j.galat, re);
+    assert.equal(await adaR2(`lapor/foto/${id}.vid`), false, "berkas video dibuang"); assert.equal(await adaR2(`lapor/foto/${id}.jpg`), false, "sampul dibuang");
+    assert.equal(await n("lapor_unggah", `id = '${id}'`), 0); assert.equal(await n("lapor_foto", `id = '${id}'`), 0); };
+  let x = await videoUtuh(WV2, buatMp4({ukuran: 6 * 1048576, detik: 75}), {durasi: 75}); await sisa(x.id, x.r, /paling lama 60 detik/);
+  x = await videoUtuh(WV2, Buffer.from("ini bukan video, hanya teks biasa ".repeat(100)), {durasi: 5}); await sisa(x.id, x.r, /bukan video/);
+  x = await videoUtuh(WV2, Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(4000, 1)])); await sisa(x.id, x.r, /bukan video/);   // JPEG disamarkan sebagai video
+  x = await videoUtuh(WV2, buatMp4({ukuran: 3000, lat: -7.5, lon: 110.1})); await sisa(x.id, x.r, /lebih dari 5 km/);
+  x = await videoUtuh(WV2, buatMp4({ukuran: 3000, rekam: Date.now() - 72 * 3600e3})); await sisa(x.id, x.r, /lebih dari 48 jam/);
+  x = await videoUtuh(WV2, buatMp4({ukuran: 3000}), {sampul: "data:image/jpeg;base64,AAAA"}); await sisa(x.id, x.r, /sampul/);
+  // durasi dari metadata menang atas klaim klien: klaim 5 detik, isi 90 detik
+  x = await videoUtuh(WV2, buatMp4({ukuran: 3000, detik: 90}), {durasi: 5}); await sisa(x.id, x.r, /paling lama 60 detik/);
+  assert.equal(await n("lapor_foto", `sesi = (SELECT id FROM lapor_sesi WHERE wa = '${WV2}' AND nomor IS NULL)`), 0, "tidak ada yang masuk laporan");
+  // lokasi dekat dan webm diterima: lokasi dari metadata video menggantikan GPS yang tak ada; tiga video lolos, keempat ditolak
+  x = await videoUtuh(WV2, buatMp4({ukuran: 3000, lat: -6.6, lon: 106.8}), {gps: null}); assert.equal(x.r.s, 200, x.r.t.slice(0, 200)); assert.equal(x.r.j.fotoBaru.lencana, "exif"); assert.equal(x.r.j.fotoBaru.lat, -6.6);
+  x = await videoUtuh(WV2, buatMp4({ukuran: 3000, merk: "qt  "})); assert.equal(x.r.s, 200); assert.equal((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ? AND nomor IS NULL").bind(WV2).first()).kerja.includes('"eks":"mov"'), true);
+  const webm = Buffer.alloc(4000, 3); webm.set([0x1a, 0x45, 0xdf, 0xa3]); x = await videoUtuh(WV2, webm, {durasi: 7}); assert.equal(x.r.s, 200, x.r.t.slice(0, 200)); assert.equal(x.r.j.fotoBaru.durasi, 7, "WebM tanpa mvhd memakai durasi klien");
+  assert.equal(await n("lapor_foto", `sesi = (SELECT id FROM lapor_sesi WHERE wa = '${WV2}' AND nomor IS NULL)`), 3);
+  const keempat = await mulai(WV2, {ukuran: 3000}); assert.equal(keempat.s, 400); assert.match(keempat.j.galat, /3 video/);
+  // pintu web: sesi + x-pb juga untuk PUT; multipart tidak tertinggal
+  const tok = "9a".repeat(32), kini = Date.now(), H = {cookie: `sesi_masuk=${tok}`, origin: "http://bnpb.lokal"};
+  await DB.batch([DB.prepare("INSERT INTO mk_akun (id, wa, status, dibuat) VALUES ('akunlaporuji0031', ?, 'aktif', ?)").bind(WV3, kini), DB.prepare("INSERT INTO mk_sesi (token_sha, mk_id, kode_pada, dibuat, habis) VALUES (?, 'akunlaporuji0031', ?, ?, ?)").bind(sha256(tok), kini, kini, kini + 3600e3)]);
+  await keFoto(WV3);
+  assert.equal((await mulai(WV3, {ukuran: 3000}, H)).s, 403, "POST tanpa x-pb");
+  const mw = await mulai(WV3, {ukuran: 3000, bahasa: "en"}, {...H, "x-pb": "1"}); assert.equal(mw.s, 200, mw.t.slice(0, 200));
+  assert.equal((await bagian(WV3, mw.j.id, 0, Buffer.alloc(3000), H)).s, 403, "PUT tanpa x-pb");
+  assert.equal((await bagian(WV3, mw.j.id, 0, Buffer.alloc(3000), {...H, origin: "https://jahat.example", "x-pb": "1"})).s, 403, "PUT dari origin lain");
+  assert.equal((await bagian(WV3, mw.j.id, 0, Buffer.alloc(3000), {...H, "x-pb": "1"})).s, 200);
+  await DB.prepare("DELETE FROM lapor_unggah WHERE id = ?").bind(mw.j.id).run();
+});
+
+uji("video bersambung: batas laju dan unggahan berjalan per nomor", async () => {
+  await DB.prepare("DELETE FROM lapor_unggah").run(); await DB.prepare("DELETE FROM laju_bnpb WHERE aksi IN ('lapor.unggah', 'lapor.bagian')").run();
+  await DB.prepare("DELETE FROM lapor_foto WHERE sesi = (SELECT id FROM lapor_sesi WHERE wa = ? AND nomor IS NULL)").bind(WV2).run();
+  const kerja = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ? AND nomor IS NULL").bind(WV2).first()).kerja); kerja.foto = [];
+  await DB.prepare("UPDATE lapor_sesi SET kerja = ? WHERE wa = ? AND nomor IS NULL").bind(JSON.stringify(kerja), WV2).run();
+  for (let i = 0; i < 5; i++) assert.equal((await mulai(WV2, {ukuran: 3000})).s, 200);
+  const r = await mulai(WV2, {ukuran: 3000}); assert.equal(r.s, 429, "paling banyak 5 unggahan berjalan"); assert.match(r.j.galat, /belum selesai/);
+  await DB.prepare("DELETE FROM lapor_unggah").run();
+  await DB.batch(Array.from({length: 30}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.unggah', ?)").bind(WV2, Date.now())));
+  const l = await mulai(WV2, {ukuran: 3000}); assert.equal(l.s, 429); assert.ok(l.j.sisaDetik > 0);
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'lapor.unggah'").run();
+});
+
+uji("video bersambung: cron menit 17 membatalkan multipart dan membuang unggahan 24 jam tanpa bagian baru", async () => {
+  await DB.prepare("DELETE FROM lapor_unggah").run();
+  const t = new Date(); t.setUTCMinutes(17, 0, 0); const sekarang = t.getTime();
+  const a = (await mulai(WV2, {ukuran: 2 * MB5 + 10})).j.id, b = (await mulai(WV2, {ukuran: 2 * MB5 + 10})).j.id;
+  assert.equal((await bagian(WV2, a, 0, Buffer.alloc(MB5))).s, 200);
+  await DB.prepare("UPDATE lapor_unggah SET akhir = ? WHERE id = ?").bind(sekarang - 25 * 3600e3, a).run();   // basi
+  await DB.prepare("UPDATE lapor_unggah SET akhir = ? WHERE id = ?").bind(sekarang - 23 * 3600e3, b).run();   // belum
+  await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: sekarang});
+  assert.equal(await n("lapor_unggah", `id = '${a}'`), 0, "basi dibuang"); assert.equal(await n("lapor_unggah", `id = '${b}'`), 1, "yang baru 23 jam tetap");
+  assert.equal((await statusU(WV2, a)).s, 404);
+  assert.equal((await bagian(WV2, a, 1, Buffer.alloc(MB5))).s, 404, "bagian ke unggahan yang dibuang ditolak");
+  assert.equal(await adaR2(`lapor/foto/${a}.vid`), false); await DB.prepare("DELETE FROM lapor_unggah").run();
+});
+
+/* ---------- bahasa (K58, D80-D82): model palsu lewat outboundService ---------- */
+let mauUbahAngka = false; const keModel = [];
+const luarModel = async req => {
+  const u = new URL(req.url);
+  if (u.hostname !== "api.anthropic.com") return new Response("diblok di uji", {status: 599});
+  const b = await req.json(), sistem = b.system?.[0]?.text || "", isi = b.messages?.[0]?.content || "";
+  const balas = obj => new Response(JSON.stringify({model: "palsu", stop_reason: "end_turn", usage: {}, content: [{type: "text", text: JSON.stringify(obj)}]}), {headers: {"content-type": "application/json"}});
+  if (/translate a disaster report message/.test(sistem)) { keModel.push(isi); return balas({teks: `Terjemahan${mauUbahAngka ? " 99" : ""}: ${isi}`}); }
+  if (/disaster reporting assistant/.test(sistem)) { const o = JSON.parse(isi); return balas({teks: "[EN] " + o.teks, pilihan: o.pilihan.map(x => "[EN] " + x), ket: o.ket}); }
+  return new Response("model tidak dipakai di uji ini", {status: 500});   // pengurai mesin jatuh ke pengurai sederhana
+};
+uji("bahasa: tanpa model hanya Indonesia, pesan tidak diterjemahkan, daftar bahasa lewat rute", async () => {
+  const l = await api("GET", "/api/lapor/bahasa"); assert.equal(l.s, 200); assert.deepEqual(l.j.bahasa, [{kode: "id", nama: "Bahasa Indonesia"}]);
+  assert.match(l.h.get("cache-control"), /no-store/);
+  assert.equal((await api("POST", "/api/lapor/izin", {wa: WV3}, MESIN)).s, 200); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WV3).run();
+  const r = await pesan(WV3, {teks: "halo", bahasa: "en", saluran: "web"}); assert.equal(r.s, 200); assert.ok(!/\[EN\]/.test(r.t) && r.j.bahasa === undefined, "tanpa kunci: Indonesia saja");
+});
+
+uji("bahasa: terjemah masuk disamarkan, asli tersimpan, balasan diterjemahkan, angka berubah ditolak, pintu WA tetap Indonesia", async () => {
+  const B = await siapkan("uji-lapor-bahasa", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", ANTHROPIC_API_KEY: "kunci-uji"}, luar: luarModel});
+  const WB = "6281200000041", kirimB = (b, h = MESIN) => B.api("POST", "/api/lapor/pesan", {wa: WB, ...b}, h);
+  assert.equal((await B.api("POST", "/api/lapor/izin", {wa: WB}, MESIN)).s, 200);
+  const l = await B.api("GET", "/api/lapor/bahasa"); assert.equal(l.s, 200); assert.equal(l.j.bahasa.length, 13); assert.deepEqual(l.j.bahasa[1], {kode: "en", nama: "English"});
+  // pesan pertama web berbahasa Inggris: terjemahan masuk ke mesin; yang sampai ke model tidak memuat nomor HP
+  const masuk = "Hello I am Budi, call me 081234567890, flood in Bogor"; keModel.length = 0;
+  let r = await kirimB({teks: masuk, bahasa: "en", saluran: "web"}); assert.equal(r.s, 200, r.t.slice(0, 300));
+  assert.equal(keModel.length, 1); assert.ok(!keModel[0].includes("081234567890") && keModel[0].includes("[nomor HP]"), "disamarkan sebelum ke model");
+  assert.match(r.j.balasan, /^\[EN\] /, "balasan diterjemahkan"); assert.equal(r.j.bahasa, "en"); assert.ok(r.j.pilihan.every(x => x.startsWith("[EN] ")), "label tombol ikut");
+  assert.ok(!/^\[EN\]/.test(r.j.teksWa), "teksWa tidak diterjemahkan");
+  let sesi = JSON.parse((await B.DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ?").bind(WB).first()).kerja);
+  const t = sesi.transkrip.find(x => x.dari === "pelapor"); assert.equal(sesi.bahasa, "en"); assert.equal(t.bahasa, "en"); assert.match(t.teks, /^Terjemahan: /);
+  assert.equal(t.asli, "Hello I am Budi, call me [nomor HP], flood in Bogor", "asli tersimpan, juga disamarkan");
+  assert.ok(!JSON.stringify(sesi).includes("081234567890"), "nomor HP mentah tidak ada di sesi");
+  // angka yang berubah dalam terjemahan: terjemahan dibuang, teks asli yang dipakai, tanpa asli berdampingan
+  mauUbahAngka = true; keModel.length = 0;
+  await B.DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WB).run();
+  r = await kirimB({teks: "Setuju sekali, ada 3 rumah", bahasa: "en", saluran: "web"}); assert.equal(r.s, 200); mauUbahAngka = false;
+  sesi = JSON.parse((await B.DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ?").bind(WB).first()).kerja);
+  const t2 = sesi.transkrip.filter(x => x.dari === "pelapor").at(-1); assert.equal(t2.teks, "Setuju sekali, ada 3 rumah"); assert.equal(t2.asli, undefined);
+  // pintu WA (mesin tanpa saluran web) dengan bahasa = tetap Indonesia, model terjemah tidak dipanggil
+  keModel.length = 0; await B.DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WB).run();
+  r = await kirimB({teks: "lanjut", bahasa: "en", saluran: "wa"}); assert.equal(r.s, 200); assert.equal(keModel.length, 0); assert.ok(!/\[EN\]/.test(r.t));
+  // nomor pilihan ("1") tidak diterjemahkan; bahasa tak dikenal = Indonesia
+  await B.DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WB).run();
+  r = await kirimB({teks: "1", bahasa: "en", saluran: "web"}); assert.equal(keModel.length, 0, "angka saja tidak dikirim ke model");
+  r = await kirimB({teks: "halo", bahasa: "xx", saluran: "web"}); assert.equal(r.s, 200); assert.equal(keModel.length, 0); assert.ok(!/\[EN\]/.test(r.t));
+});
+
+uji("bahasa: rincian meja memuat teks asli dan nama bahasa, foto memuat video (fungsi tampil murni)", async () => {
+  const {mejaRinciTampil} = await import("../../src/lapor_tampil.js");
+  const kini = Date.now(), isian = {jenis: {nilai: "banjir", asal: "pelapor"}, lokasi: {nilai: {lat: -6.6, lon: 106.8, wilayah: {provKode: "32", prov: "Jawa Barat", kabKode: "32.01", kab: "Kab. Bogor", kec: "X", desa: "Y"}}}};
+  const s = {nomor: "LA-010101-01", wa: "6281200000041", isian, terkirim: kini, bahasa: "jv", tiket: {status: "baru", riwayat: []}, balasan: [], bukti: [],
+    foto: [{id: "a".repeat(16), jenis: "video", eks: "webm", durasi: 12, lencana: "gps", lencanaTeks: "Lokasi GPS perangkat"}, {id: "b".repeat(16), lencana: "tanpa", lencanaTeks: "Tanpa lokasi"}],
+    transkrip: [{dari: "pelapor", teks: "banjir tiga rumah", asli: "banjir telung omah", bahasa: "jv", waktu: kini}, {dari: "bot", teks: "Terima kasih", waktu: kini}]};
+  const o = mejaRinciTampil(s, {nama: "Budi"}, "t".repeat(32));
+  assert.equal(o.bahasa, "Basa Jawa"); assert.equal(o.transkrip[0].asli, "banjir telung omah"); assert.equal(o.transkrip[1].asli, null);
+  assert.deepEqual([o.foto[0].jenis, o.foto[0].durasi, o.foto[0].url.endsWith(".webm?t=" + "t".repeat(32))], ["video", 12, true]); assert.equal(o.foto[1].jenis, "foto"); assert.equal(o.foto[1].url, `/api/lapor/foto/${"b".repeat(16)}?t=${"t".repeat(32)}`);
+});
+
+uji("video tanpa kotak film: berkepala ftyp tanpa mvhd ditolak walau durasi peramban kecil (tinjauan keamanan tahap 2)", async () => {
+  const W4 = "6281200000034"; assert.equal((await api("POST", "/api/lapor/izin", {wa: W4}, MESIN)).s, 200); await keFoto(W4);
+  const b = Buffer.alloc(300000, 0x61); b.writeUInt32BE(24, 0); b.write("ftypisom", 4, "latin1");
+  const {id, r} = await videoUtuh(W4, b, {durasi: 5});
+  assert.equal(r.s, 400, r.t.slice(0, 200)); assert.match(r.j.galat, /Durasi video tidak terbaca/);
+  assert.equal(await n("lapor_unggah", `id = '${id}'`), 0); assert.equal(await adaR2(`lapor/foto/${id}.vid`), false);
+});

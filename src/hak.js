@@ -1748,8 +1748,9 @@ Object.assign(MATRIKS, {
   lapor_unduh:         {lp_staf: ["tambah"]},
   lapor_kabar_bpbd:    {lp_staf: ["baca", "tambah"], lp_mesin: ["baca", "ubah"]},
   laju_bnpb:           {sistem: ["baca", "tambah"], lp_pelapor: ["baca", "tambah"]},
+  lapor_unggah:        {lp_pelapor: ["baca", "tambah", "ubah", "hapus"], lp_cron: ["baca", "hapus"]},   // lp_cron = bersih-bersih menit 17 (D90)
 });
-export const pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
+export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
 /* g = true: INSERT ... SELECT ... WHERE changes() > 0, hanya menulis bila pernyataan sebelumnya dalam batch (pembaruan sesi) benar-benar mengubah baris */
 const lpIns = (g, atau, tabel, kolom) => { const n = kolom.split(",").length, ph = Array.from({length: n}, (_, i) => "?" + (i + 1)).join(", ");
@@ -1828,6 +1829,19 @@ export const lpStmtFoto = (env, p, f, g = false) => sedia(env, p, "lapor_foto", 
   .bind(f.id, f.sesi, f.kunci, f.lat ?? null, f.lon ?? null, f.akurasi ?? null, f.waktuAmbil ?? null, f.waktuTerima, f.lencana, f.pintu);
 export const lpFotoById = (env, p, id) => sedia(env, p, "lapor_foto", "baca",
   "SELECT f.id, f.kunci_r2, s.wa, s.token_sha, s.nomor FROM lapor_foto f JOIN lapor_sesi s ON s.id = f.sesi WHERE f.id = ?1").bind(id).first();
+
+/* ---- unggah video bersambung (migrasi 0158, K61, D89): bagian = JSON {"<n>": etag}, json_set atomik ---- */
+export const lpUnggahBaru = (env, p, u) => sedia(env, p, "lapor_unggah", "tambah",
+  "INSERT INTO lapor_unggah (id, wa, kunci_r2, upload_id, ukuran, jumlah, gps, durasi, bahasa, mulai, akhir) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?10)")
+  .bind(u.id, u.wa, u.kunci, u.uploadId, u.ukuran, u.jumlah, u.gps ?? null, u.durasi ?? null, u.bahasa, u.kini).run();
+export const lpUnggahBaca = (env, p, id) => sedia(env, p, "lapor_unggah", "baca",
+  "SELECT id, wa, kunci_r2, upload_id, ukuran, jumlah, bagian, gps, durasi, bahasa FROM lapor_unggah WHERE id = ?1").bind(id).first();
+export const lpUnggahHitung = async (env, p, wa) => (await sedia(env, p, "lapor_unggah", "baca", "SELECT count(*) n FROM lapor_unggah WHERE wa = ?1").bind(wa).first()).n;
+export const lpUnggahBagian = (env, p, id, n, etag, kini) => sedia(env, p, "lapor_unggah", "ubah",
+  "UPDATE lapor_unggah SET bagian = json_set(bagian, ?2, ?3), akhir = ?4 WHERE id = ?1").bind(id, `$."${Number(n)}"`, etag, kini).run();
+export const lpUnggahHapus = (env, p, id) => sedia(env, p, "lapor_unggah", "hapus", "DELETE FROM lapor_unggah WHERE id = ?1").bind(id).run();
+export const lpUnggahBasi = async (env, p, batas) => (await sedia(env, p, "lapor_unggah", "baca",
+  "SELECT id, kunci_r2, upload_id FROM lapor_unggah WHERE akhir <= ?1 ORDER BY akhir LIMIT 20").bind(batas).all()).results;
 
 /* ---- monitoring staf dan alun-alun ---- */
 const LP_KOLOM_FILTER = {jenis: "s.jenis = ?", status: "t.status = ?", kab: "s.kab = ?", prov: "s.kab LIKE ? || '%'"};   // prov (2 angka) hanya diisi server dari cakupan akun BPBD

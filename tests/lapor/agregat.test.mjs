@@ -39,3 +39,14 @@ test("hak meja: BPBD tidak bisa meneruskan lewat jalur status (D97, tinjauan kea
   assert.equal(bolehAksi(kab, "status", "ditelaah", "ditindaklanjuti"), true);
   assert.equal(bolehAksi(cakupanMeja({bnpb: true}), "status", "ditelaah", "diteruskan"), true);
 });
+
+import {dariIndonesia} from "../../src/lapor_bahasa.js";
+test("terjemahan keluar: nomor HP dan nama pelapor tidak sampai ke AI, nama dipulihkan (D12, tinjauan keamanan tahap 2)", async () => {
+  let dikirim = "";
+  const model = async ({teks}) => { dikirim = teks; const o = JSON.parse(teks); return {teks: o.teks.replace("Terima kasih", "Matur nuwun"), pilihan: o.pilihan, ket: o.ket}; };
+  const h = await dariIndonesia(model, {teks: "Terima kasih Budi Santoso. Hubungi 0812 3456 7890. Tiket LA-191126-01, 3 rumah.", pilihan: ["Kirim"], ket: [""], nama: "Budi Santoso"}, "jv");
+  assert.ok(!dikirim.includes("Budi") && !dikirim.includes("3456"), dikirim);
+  assert.match(h.teks, /^Matur nuwun Budi Santoso/); assert.match(h.teks, /LA-191126-01/);
+  const ubahAngka = async ({teks}) => { const o = JSON.parse(teks); return {teks: o.teks.replace("3 rumah", "5 rumah"), pilihan: o.pilihan, ket: o.ket}; };
+  assert.match((await dariIndonesia(ubahAngka, {teks: "Ada 3 rumah rusak.", nama: null}, "jv")).teks, /^Ada 3 rumah/, "angka berubah = Indonesia");
+});

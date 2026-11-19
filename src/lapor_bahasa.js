@@ -35,14 +35,18 @@ Rules: translate meaning only, add nothing. Keep every number exactly as written
 }
 
 /* balasan mesin (Indonesia) -> bahasa pilihan. Teks dan label tombol dalam satu panggilan; gagal = Indonesia apa adanya. */
-export async function dariIndonesia(model, {teks, pilihan = null, ket = null}, bahasa) {
+export async function dariIndonesia(model, {teks, pilihan = null, ket = null, nama = null}, bahasa) {
   if (!model || bahasa === "id" || !teks) return {teks, pilihan, ket};
+  // D12: yang ke AI disamarkan juga untuk arah keluar; nama pelapor diganti penanda lalu dipulihkan (tinjauan keamanan tahap 2)
+  const tutup = t => { let x = samarkan(String(t ?? "")); if (nama && nama.length >= 2) x = x.split(nama).join("[NAMA]"); return x; };
+  const buka = t => nama ? String(t).split("[NAMA]").join(nama) : String(t);
+  const aman = tutup(teks), pAman = pilihan ? pilihan.map(tutup) : null, kAman = ket ? ket.map(tutup) : null;
   const skema = {type: "object", properties: {teks: {type: "string"}, pilihan: {type: "array", items: {type: "string"}}, ket: {type: "array", items: {type: "string"}}}, required: ["teks", "pilihan", "ket"], additionalProperties: false};
   try {
     const j = await model({sistem: `You translate messages from the BNPB disaster reporting assistant from Indonesian into ${bahasa === "lain" ? "simple Indonesian that a speaker of any Indonesian regional language understands (keep it Indonesian, just simpler)" : NAMA[bahasa]}.
-Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). Keep all numbers, ticket numbers (like LA-191126-01), phone numbers (112, 117), URLs, and names exactly. Translate "pilihan" (button labels) and "ket" (button hints) item by item, same count and order; empty strings stay empty. Polite register. Output only the translation.`,
-      skema, teks: JSON.stringify({teks, pilihan: pilihan || [], ket: ket || []})});
-    if (!angkaSama(teks, j?.teks || "")) return {teks, pilihan, ket}; // angka berubah = kirim Indonesia
-    return {teks: j?.teks || teks, pilihan: pilihan && j?.pilihan?.length === pilihan.length ? j.pilihan : pilihan, ket: ket && j?.ket?.length === ket.length ? j.ket : ket};
+Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). Keep all numbers, ticket numbers (like LA-191126-01), phone numbers (112, 117), URLs, names, and placeholders in square brackets (like [NAMA]) exactly. Translate "pilihan" (button labels) and "ket" (button hints) item by item, same count and order; empty strings stay empty. Polite register. Output only the translation.`,
+      skema, teks: JSON.stringify({teks: aman, pilihan: pAman || [], ket: kAman || []})});
+    if (!angkaSama(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return {teks, pilihan, ket}; // angka atau penanda nama hilang = kirim Indonesia
+    return {teks: buka(j.teks), pilihan: pilihan && j?.pilihan?.length === pilihan.length ? j.pilihan.map(buka) : pilihan, ket: ket && j?.ket?.length === ket.length ? j.ket.map(buka) : ket};
   } catch { return {teks, pilihan, ket}; }
 }

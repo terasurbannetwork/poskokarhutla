@@ -408,3 +408,7 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q53 | Akun pemkab, pemkot, dan pemprov itu dipakai BPBD, atau kantor bupati/gubernur juga? Bila keduanya, meja BPBD dibatasi ke anggota yang mencantumkan unit BPBD? | **[BAWAAN SEMENTARA]** Semua anggota aktif akun lembaga pemda tingkat kab dan provinsi boleh membuka meja wilayahnya; unit tercatat di riwayat. Bila pemilik ingin hanya BPBD, saring dengan kolom `unit` akun. | LA-66 |
 | Q54 | Polres, Kodim, Damkar perlu meja yang sama untuk wilayahnya? | **[BAWAAN SEMENTARA]** Tidak pada tahap ini. | LA-66 |
 | Q55 | Pemberitahuan ke BPBD saat diteruskan: lewat bot WA yang ada (Baileys) atau tidak sama sekali? | **[BAWAAN SEMENTARA]** Lewat bot WA yang ada ke nomor akun lembaga, paling banyak 20 pesan per kab per hari; tanpa isi laporan (D97). | LA-67 |
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q56 | Rincian meja untuk BPBD memuat tautan lacak bertoken (foto, PDF, Word). Tautan itu tetap terbuka walau anggota sudah dicabut dari akun lembaga. Pindahkan foto dan dokumen BPBD ke rute bersesi yang diperiksa wilayah? | **[BAWAAN SEMENTARA]** Tetap tautan bertoken (risiko diterima sementara); identitas pelapor untuk BPBD hanya lewat POST yang tercatat (D95). | LA-66 |

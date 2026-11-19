@@ -3,6 +3,10 @@
    Objek sesi yang masuk = sesi mesin (isian, foto, transkrip) + s.tiket {status, riwayat}, s.balasan [{teks, waktu, oleh}], s.token (tautan lacak) bila perlu. */
 import {lengkap, nilaiTampil, waktuLapor, KELOMPOK} from "./lapor_mesin.js";
 import {berlakuSesi, JENIS} from "./lapor_spek.js";
+import {BAHASA} from "./lapor_bahasa.js";
+
+/* alamat berkas foto atau video: video memuat ekstensi (D77), foto dan sampul video tanpa ekstensi */
+export const urlMedia = (f, q) => f.jenis === "video" ? `/api/lapor/foto/${f.id}.${f.eks}${q}` : `/api/lapor/foto/${f.id}${q}`;
 
 export const PERAN = {warga: "Warga", bpbd_klaim: "Petugas BPBD (belum dikonfirmasi)", bpbd: "Petugas BPBD"};
 /* status tiket (pemilik 19 Nov 2026: "bisa tau laporan lu sudah dilihat atau sudah ditanggapi, persis kaya tiket") */
@@ -53,7 +57,7 @@ export function bahanDokumen(s, p, fotoUrl) {
   const prov = s.isian.lokasi?.nilai?.wilayah?.provKode;
   const kelompok = KELOMPOK.map(k => ({judul: k.label, baris: berlakuSesi(s).filter(i => i.kelompok === k.id && i.nama !== "kronologi")
     .map(i => [i.label, nilaiTampil(i, s.isian[i.nama])])})).filter(g => g.baris.length);
-  kelompok.push({judul: "Foto", baris: (s.foto || []).length ? s.foto.map((f, n) => [`Foto ${n + 1}`, `${f.lencanaTeks}${f.lat != null ? `, ${f.lat.toFixed(5)}, ${f.lon.toFixed(5)}` : ""}${f.waktuAmbil ? `, diambil ${waktuLapor(f.waktuAmbil, prov)}` : ""}`]) : [["Foto", "Tidak ada"]]});
+  kelompok.push({judul: "Foto dan video", baris: (s.foto || []).length ? s.foto.map((f, n) => [`${f.jenis === "video" ? "Video" : "Foto"} ${n + 1}`, `${f.lencanaTeks}${f.lat != null ? `, ${f.lat.toFixed(5)}, ${f.lon.toFixed(5)}` : ""}${f.waktuAmbil ? `, diambil ${waktuLapor(f.waktuAmbil, prov)}` : ""}`]) : [["Foto", "Tidak ada"]]});
   // narasi gaya laporan pemantauan Koordalops (public/laporan_koordalops.js): judul, waktu, kronologis, dampak bernomor, kebutuhan
   const v = n => s.isian[n], ada = n => v(n) && !v(n).belum && !v(n).nihil, angka = n => ada(n) ? v(n).nilai : 0;
   const w = s.isian.lokasi?.nilai?.wilayah, jenis = labelJenis(v("jenis")?.nilai) || "Kejadian";
@@ -71,7 +75,7 @@ export function bahanDokumen(s, p, fotoUrl) {
       ["Kebutuhan mendesak", ada("kebutuhan") ? v("kebutuhan").nilai : "belum didata"],
       ["Sumber", `Laporan ${s.tingkat === "bpbd" ? "petugas BPBD" : "warga"} melalui Lapor Bencana BNPB, ${waktuLapor(s.terkirim, prov)}${s.tingkat === "bpbd" ? "" : ", belum terverifikasi"}.`]]};
   // foto: url bertoken (mesin mengunduh sendiri), bukan berkas lokal
-  const foto = (s.foto || []).map(f => ({url: fotoUrl(f), ket: `${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
+  const foto = (s.foto || []).map(f => ({url: fotoUrl(f), ket: `${f.jenis === "video" ? `Video ${f.durasi ?? "?"} detik, ` : ""}${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
   return {narasi, foto, nomor: s.nomor, tingkat_label: s.tingkat === "bpbd" ? "" : "Laporan warga, belum terverifikasi",
     pelapor: {nama: p.nama, peran: PERAN[p.peran], instansi: p.kab ? `BPBD ${p.kab}${p.jabatan ? `, ${p.jabatan}` : ""}` : null, wa_samar: waSamar(s.wa)},
     waktu_kejadian: s.isian.waktu?.nilai || "belum didata", waktu_lapor: waktuLapor(s.terkirim, prov),
@@ -127,11 +131,12 @@ export function mejaRinciTampil(s, p, t) {
     pelapor: {nama: p?.nama, wa: s.wa, peran: PERAN[p?.peran], kab: p?.kab || null, jabatan: p?.jabatan || null},
     waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), versi: s.jumlahVersi || 1, adaSusulan: !!s.adaSusulan, jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
-    foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${t}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
+    foto: (s.foto || []).map(f => ({url: urlMedia(f, `?t=${t}`), sampul: `/api/lapor/foto/${f.id}?t=${t}`, jenis: f.jenis || "foto", durasi: f.durasi ?? null, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
     bukti: (s.bukti || []).map(b => ({id: b.id, url: `/api/lapor/bukti/${b.id}?t=${t}`, publik: !!b.publik, waktu: waktuLapor(b.waktu, prov), lokasi: b.lat != null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, pelaku: pelakuLabel(r.pelaku), label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({teks: b.teks, oleh: pelakuLabel(b.oleh), waktu: waktuLapor(b.waktu, prov)})),
     unduhan: [{label: "PDF", url: `/api/lapor/unduh/${nomor}.pdf?t=${t}`}, {label: "Word", url: `/api/lapor/unduh/${nomor}.docx?t=${t}`}],
-    transkrip: s.transkrip.map(x => ({dari: x.dari, teks: x.teks || (x.lokasi ? "Lokasi dibagikan" : ""), waktu: waktuLapor(x.waktu, prov)}))};
+    bahasa: BAHASA.find(([k]) => k === (s.bahasa || "id"))?.[1] || null,
+    transkrip: s.transkrip.map(x => ({dari: x.dari, teks: x.teks || (x.lokasi ? "Lokasi dibagikan" : ""), asli: x.asli || null, waktu: waktuLapor(x.waktu, prov)}))};
 }
 /* kode pelaku di D1 ("admin:<awalan>", "staf:<id>", "Sistem") tidak ditampilkan ke layar */
 export const pelakuLabel = k => String(k || "").startsWith("staf:") ? "Staf BNPB" : String(k || "").startsWith("admin:") ? "Admin BNPB" : k || "Sistem";

@@ -1451,7 +1451,13 @@
     "table lapor_bukti": "bukti: JPEG disimpan di R2",
     "table lapor_akses": "meja BPBD: kab hanya wilayahnya",
     "table lapor_unduh": "agregat: hanya akun kampus aktif",
-    "table lapor_kabar_bpbd": "teruskan: hanya BNPB"
+    "table lapor_kabar_bpbd": "teruskan: hanya BNPB",
+    "POST /api/lapor/unggah/:x": "video bersambung",
+    "PUT /api/lapor/unggah/:x": "video bersambung",
+    "GET /api/lapor/unggah/:x": "video bersambung",
+    "GET /api/lapor/foto/:x": "video bersambung",
+    "GET /api/lapor/bahasa": "bahasa: tanpa model",
+    "table lapor_unggah": "video bersambung"
   },
   "dikecualikan": {
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
