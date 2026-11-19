@@ -129,6 +129,7 @@ Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya car
 | No | Keputusan |
 | --- | --- |
 | K29 | (19 Nov) "saya tuh pengen ada kecerdasan claude sungguhan di wa bot itu, jgn terlalu kaku sama perintah, input wa juga bisa jadi berubah2 dan ga konsisten karena ada human error". Tiga kemampuan: (a) bahan WA yang formatnya berantakan dirapikan Claude bila generator gagal membacanya, lalu generator dijalankan ulang; (b) kalimat bebas dipahami, bukan hanya perintah baku; (c) pertanyaan tentang draf dijawab. |
+| K31 | (19 Nov) Biaya: "biaya pembuatan laporan pas di akhir (atau selama proses juga bisa)", "total penggunaan biaya waktu chat biaya", "gausah tampilin sisa saldo karena itu ga realtime, kemungkinan credit dipakai untuk hal lain juga". Ringkasan tiap draf menyebut biaya Claude laporan itu sejauh ini; pesan final menyebut totalnya; *biaya* menampilkan pemakaian bot bulan ini dan hari ini dari D1 serta biaya laporan terakhir; perintah *saldo* dan semua baris sisa kredit dicabut. Ini menggantikan bagian saldo di K28. |
 | K30 | (19 Nov) "termasuk pas revisi juga ya, claude tuh harusnya pinter dan paham konteks", "kalau mau revisi bilang dulu revisi, dumping revisi (bisa lebih dari 1 bubble message), lakukan revisi". Alur kumpul revisi: *revisi*, lalu pesan revisi sebanyak apa pun, lalu *lanjut*; semua pesan itu dikerjakan sekali sebagai satu permintaan. |
 
 ### Keputusan rancangan V2.1 (agent, bisa dibatalkan pemilik)

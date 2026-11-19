@@ -10,7 +10,7 @@ const path = require('path')
 // Perintah mesin proyek (Q14 dan ALUR B-C): `kirim ulang ...` dan `status <tanggal>` tidak termasuk, tetap di perintah.mjs.
 // Angka menu draf 1 sampai 4 (boleh berspasi atau bertitik) juga perintah: tidak pernah jadi bahan di Worker. `ya` tidak di sini: hanya perintah
 // selama tanya batal berlaku, jadi diputuskan proyek.klasifikasi (jalur 'bahan+proyek' teks saja, lewat pilihJalur).
-const KATA_PROYEK = /^(buat\b.*|status|bantuan|panduan|biaya|saldo \$?[\d.,]+|changelog( semua)?|versi bot|tentang|lanjut|ulangi|hitung|tunggu|(final|batal|versi|pptx|revisi)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
+const KATA_PROYEK = /^(buat\b.*|status|bantuan|panduan|biaya|changelog( semua)?|versi bot|tentang|lanjut|ulangi|hitung|tunggu|(final|batal|versi|pptx|revisi)( p-\d{6}-\d{2})?|balik (ke )?v?\d+|[1-4][\s.]*)$/
 const ANGKA_MENU = /^[1-4][\s.]*$/
 const KATA_TUNTUN = /^(lanjut|ulangi|buat saja|hitung|tunggu)$/ // K17/K18: diteruskan = bahan, tidak pernah perintah
 // diteruskan: pesan berlabel Diteruskan tidak pernah jadi angka menu (bahan biasa).

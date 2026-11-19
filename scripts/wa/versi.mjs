@@ -6,9 +6,14 @@
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.1'
+export const VERSI = '2.1.1'
 
 export const CHANGELOG = [
+  { versi: '2.1.1', tanggal: '2026-11-19', isi: [
+    'Biaya Claude laporan tampil di tiap draf (sejauh ini) dan di pesan final (total).',
+    'Perintah pemilik *biaya*: pemakaian bot bulan ini dan hari ini, plus biaya laporan terakhir.',
+    'Sisa saldo kredit tidak ditampilkan lagi dan perintah *saldo* dicabut, karena saldo Console tidak realtime.',
+  ] },
   { versi: '2.1', tanggal: '2026-11-19', isi: [
     'Bot paham kalimat biasa: misalnya "bikinin laporan harian kemarin", "udah oke finalkan", atau "laporanku gimana". Final dan batal tetap ditanya dulu.',
     'Bisa bertanya tentang isi draf ("slide 3 isinya apa") tanpa mengubah draf.',

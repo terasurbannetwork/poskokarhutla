@@ -1513,22 +1513,17 @@ test('biaya: urai V1 dicatat per laporan dan per bulan; perintah biaya khusus pe
     if (url.pathname === '/api/wa/biaya') return { ok: true, status: 200, json: async () => ({ usd_mikro: harian[url.searchParams.get('tanggal')] || 0 }), text: async () => '' }
     return fetchAsli(u, o)
   }
-  let n = d.balasan.length
+  // biaya laporan tampil di ringkasan draf selama proses (pemilik 19 Nov: "atau selama proses juga bisa")
+  assert.ok(d.kirim.some((k) => /\nBiaya Claude laporan ini sejauh ini: \$1,25\.\n/.test(k.caption || '')), d.kirim.map((k) => k.caption).join('\n---\n'))
+  const n = d.balasan.length
   await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
-  assert.match(d.balasan[n], /^\*Pemakaian Claude\*\n\nPemakaian bot Oktober: \$5,86 dari anggaran \$200,00\.\nKetik \*saldo\*/)
+  assert.match(d.balasan[n], /^\*Pemakaian Claude\*\n\nPemakaian bot Oktober: \$5,86 dari anggaran \$200,00\.\nPemakaian hari ini: \$0,86\.\n/)
   assert.match(d.balasan[n], /\*Laporan terakhir:\*\n- P-291026-01: \$1,25\n/)
-  // saldo Console: sisa = saldo dikurangi pemakaian SESUDAH diatur
-  n = d.balasan.length
-  await tangani({ dari: '6299', teks: 'saldo 192,54' }, d.ctx)
-  assert.match(d.balasan[n], /^\*Saldo kredit diatur\*/); assert.match(d.balasan[n], /Sisa kredit Console sekitar \$192,54/)
-  harian['2026-10-29'] += 500_000
-  n = d.balasan.length
-  await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
-  assert.match(d.balasan[n], /Sisa kredit Console sekitar \$192,04 \(dari \$192,54 yang diatur/)
+  assert.doesNotMatch(d.balasan[n], /saldo|sisa/i, 'tanpa sisa saldo (pemilik 19 Nov: tidak realtime)')
   await tangani({ dari: DARI, teks: 'biaya' }, d.ctx)
   assert.equal(d.balasan.at(-1), BANTUAN, 'bukan pemilik: bantuan biasa')
   assert.deepEqual(parsePerintah('biaya', NOW), { aksi: 'biaya' })
-  assert.deepEqual(parsePerintah('saldo $1.192,54', NOW), { aksi: 'saldo', usd: 1192.54 }); assert.deepEqual(parsePerintah('saldo 192.54', NOW), { aksi: 'saldo', usd: 192.54 })
+  assert.equal(parsePerintah('saldo 192,54', NOW), null, 'perintah saldo dicabut')
 })
 
 test('batal = mulai dari awal: bahan sebelum batal tidak dipakai proyek baru jenis dan tanggal sama; berkas kerja dihapus; jenis lain tetap', async () => {

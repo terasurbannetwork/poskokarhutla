@@ -492,12 +492,11 @@ https://drive.google.com/drive/folders/CONTOH
 
 Biaya Claude laporan ini: $2,35.
 Pemakaian bot November: $7,46 dari anggaran $200,00.
-Sisa kredit Console sekitar $190,19 (dari $192,54 yang diatur 19 Nov).
 
 Proyek ditutup. Bahan berikutnya membuka proyek baru.
 ```
 
-Baris "Pemakaian bot ..." hanya untuk nomor PEMILIK (K25). Pemakaian bulan dijumlah dari catatan harian D1 (`/api/wa/biaya`), bukan berkas lokal. Tanpa `BL_ANGGARAN_BULAN` barisnya "Pemakaian bot November: $7,46." Baris sisa kredit hanya muncul sesudah pemilik mengetik `saldo` (K28). Gateway memasang satu ikon di depan judul tebal (🎉 di sini).
+Baris "Pemakaian bot ..." hanya untuk nomor PEMILIK (K25). Pemakaian bulan dijumlah dari catatan harian D1 (`/api/wa/biaya`), bukan berkas lokal. Tanpa `BL_ANGGARAN_BULAN` barisnya "Pemakaian bot November: $7,46." Tanpa baris sisa saldo (K31: saldo Console tidak realtime dan kreditnya bisa dipakai di luar bot). Ringkasan tiap draf (v1 dan revisi) memuat "Biaya Claude laporan ini sejauh ini: $X." bila sudah ada biaya. Gateway memasang satu ikon di depan judul tebal (🎉 di sini).
 
 ### D2b. Pemakaian Claude (perintah `biaya`, khusus pemilik)
 
@@ -505,7 +504,7 @@ Baris "Pemakaian bot ..." hanya untuk nomor PEMILIK (K25). Pemakaian bulan dijum
 *Pemakaian Claude*
 
 Pemakaian bot November: $7,46 dari anggaran $200,00.
-Ketik *saldo* lalu angka Organization credits di Console (misalnya *saldo 192,54*) supaya bot menghitung sisa kredit.
+Pemakaian hari ini: $2,35.
 
 *Laporan terakhir:*
 - P-191126-02: $2,35
@@ -514,17 +513,9 @@ Ketik *saldo* lalu angka Organization credits di Console (misalnya *saldo 192,54
 Dihitung bot dari pemakaian tokennya sendiri (perkiraan). Angka Console bisa sedikit berbeda, apalagi bila kunci yang sama dipakai di tempat lain.
 ```
 
-### D2c. Saldo kredit (perintah `saldo 192,54`, khusus pemilik)
+### D2c. Saldo kredit
 
-```text
-*Saldo kredit diatur*
-
-Saldo Console $192,54 dicatat.
-Bot menguranginya dengan pemakaian bot sesudah ini.
-
-Pemakaian bot November: $7,46 dari anggaran $200,00.
-Sisa kredit Console sekitar $192,54 (dari $192,54 yang diatur 19 Nov).
-```
+Dicabut di v2.1.1 (K31). Perintah `saldo` tidak dikenali lagi; sisa kredit dilihat langsung di Console.
 
 ### D2d. Changelog (perintah `changelog`, semua nomor terdaftar; `changelog semua` untuk seluruh riwayat)
 
