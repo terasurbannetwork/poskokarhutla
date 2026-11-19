@@ -1547,7 +1547,7 @@ test('batal = mulai dari awal: bahan sebelum batal tidak dipakai proyek baru jen
   const { waktuBatal, barisPenyebab } = await import('../../scripts/wa/proyek.mjs')
   assert.ok(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'harian', TGL) > 0)
   assert.equal(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'penanganan', TGL), 0, 'jenis lain tidak terpengaruh')
-  assert.equal(barisPenyebab('generator gagal (kode G1, rincian di /Users/x/.wa-bot/keluaran/galat.txt): ModuleNotFoundError: No module named pptx'), 'Penyebab: generator gagal: ModuleNotFoundError: No module named pptx')
+  assert.equal(barisPenyebab('generator gagal (kode G1, rincian di /Users/.../.wa-bot/keluaran/galat.txt): ModuleNotFoundError: No module named pptx'), 'Penyebab: generator gagal: ModuleNotFoundError: No module named pptx')
   assert.equal(barisPenyebab('POST /api/x HTTP 401 Bearer abc.def sk-ant-api03-xyz'), 'Penyebab: POST /api/x HTTP 401 Bearer … [disamarkan]')
 })
 
