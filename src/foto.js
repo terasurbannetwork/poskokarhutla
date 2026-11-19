@@ -56,25 +56,9 @@ async function laju(env, ip, aksi, kini) {
   return null;
 }
 
-/* ---------------- jenis berkas dari byte awal, bukan dari nama/Content-Type kiriman ---------------- */
-export function jenisBerkas(b) {
-  const s = (i, n) => String.fromCharCode(...b.subarray(i, i + n));
-  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
-  if (s(0, 4) === "RIFF" && s(8, 4) === "WEBP") return "image/webp";
-  if (b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return "video/webm";
-  if (s(4, 4) === "ftyp") return s(8, 2) === "qt" ? "video/quicktime" : "video/mp4";
-  return null;
-}
-/* durasi MP4/MOV dari kotak mvhd (detik). null = tidak ketemu (WebM, berkas rusak): durasi kiriman peramban yang dipakai. */
-export function durasiMP4(b) {
-  for (let i = 4; i < b.length - 32; i++) {
-    if (b[i] !== 0x6d || b[i + 1] !== 0x76 || b[i + 2] !== 0x68 || b[i + 3] !== 0x64) continue;   // "mvhd"
-    const v = new DataView(b.buffer, b.byteOffset + i + 4), versi = v.getUint8(0);
-    const skala = versi === 1 ? v.getUint32(20) : v.getUint32(12), durasi = versi === 1 ? Number(v.getBigUint64(24)) : v.getUint32(16);
-    return skala ? durasi / skala : null;
-  }
-  return null;
-}
+/* jenis berkas dan durasi video: src/media_berkas.js (dipakai juga Lapor Bencana) */
+import {jenisBerkas, durasiMP4} from "./media_berkas.js";
+export {jenisBerkas, durasiMP4};
 
 /* ---------------- baris -> objek publik (tanpa email, hash IP, flag dummy) ---------------- */
 const KOLOM_PUBLIK = "id, jenis, kategori, lat, lon, prov, kab, kec, keterangan, nama, tampil_nama, diambil, dibuat, exif_waktu, exif_jarak, kamera, durasi, suka, komentar, dilihat";

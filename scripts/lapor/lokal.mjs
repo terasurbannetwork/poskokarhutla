@@ -19,6 +19,9 @@ import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
 import {hitungGugus} from "../../src/lapor_gugus.js";
+import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
+import {BAHASA, bahasaSah, keIndonesia, dariIndonesia} from "../../src/lapor_bahasa.js";
+import {samarkan} from "../../src/samarkan.js";
 
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUBLIK = path.join(AKAR, "public");
@@ -72,7 +75,7 @@ function bahanDokumen(s, p) {
   const prov = s.isian.lokasi?.nilai?.wilayah?.provKode;
   const kelompok = KELOMPOK.map(k => ({judul: k.label, baris: berlakuSesi(s).filter(i => i.kelompok === k.id && i.nama !== "kronologi")
     .map(i => [i.label, nilaiTampil(i, s.isian[i.nama])])})).filter(g => g.baris.length);
-  kelompok.push({judul: "Foto", baris: (s.foto || []).length ? s.foto.map((f, n) => [`Foto ${n + 1}`, `${f.lencanaTeks}${f.lat != null ? `, ${f.lat.toFixed(5)}, ${f.lon.toFixed(5)}` : ""}${f.waktuAmbil ? `, diambil ${waktuLapor(f.waktuAmbil, prov)}` : ""}`]) : [["Foto", "Tidak ada"]]});
+  kelompok.push({judul: "Foto dan video", baris: (s.foto || []).length ? s.foto.map((f, n) => [`${f.jenis === "video" ? "Video" : "Foto"} ${n + 1}`, `${f.lencanaTeks}${f.lat != null ? `, ${f.lat.toFixed(5)}, ${f.lon.toFixed(5)}` : ""}${f.waktuAmbil ? `, diambil ${waktuLapor(f.waktuAmbil, prov)}` : ""}`]) : [["Foto", "Tidak ada"]]});
   // narasi gaya laporan pemantauan Koordalops (public/laporan_koordalops.js): judul, waktu, kronologis, dampak bernomor, kebutuhan
   const v = n => s.isian[n], ada = n => v(n) && !v(n).belum && !v(n).nihil, angka = n => ada(n) ? v(n).nilai : 0;
   const w = s.isian.lokasi?.nilai?.wilayah, jenis = JENIS.find(j => j.id === v("jenis")?.nilai)?.label || "Kejadian";
@@ -89,7 +92,8 @@ function bahanDokumen(s, p) {
         `Kerusakan rumah: ${rumah.length ? rumah.join(", ") : "belum didata atau nihil"}.`, `Fasilitas umum: ${fas.length ? fas.join("; ") : "belum didata atau nihil"}.`, ...khusus.map(k => `${k}.`)]],
       ["Kebutuhan mendesak", ada("kebutuhan") ? v("kebutuhan").nilai : "belum didata"],
       ["Sumber", `Laporan ${s.tingkat === "bpbd" ? "petugas BPBD" : "warga"} melalui Lapor Bencana BNPB, ${waktuLapor(s.terkirim, prov)}${s.tingkat === "bpbd" ? "" : ", belum terverifikasi"}.`]]};
-  const foto = (s.foto || []).map(f => ({berkas: path.join(FOTO, `${f.id}.jpg`), ket: `${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
+  const foto = (s.foto || []).filter(f => fs.existsSync(path.join(FOTO, `${f.id}.jpg`))) // video: sampul bingkai pertama
+    .map(f => ({berkas: path.join(FOTO, `${f.id}.jpg`), ket: `${f.jenis === "video" ? `Video ${f.durasi ?? "?"} detik, ` : ""}${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
   return {narasi, foto, nomor: s.nomor, tingkat_label: s.tingkat === "bpbd" ? "" : "Laporan warga, belum terverifikasi",
     pelapor: {nama: p.nama, peran: PERAN[p.peran], instansi: p.kab ? `BPBD ${p.kab}${p.jabatan ? `, ${p.jabatan}` : ""}` : null, wa_samar: waSamar(s.wa)},
     waktu_kejadian: s.isian.waktu?.nilai || "belum didata", waktu_lapor: waktuLapor(s.terkirim, prov),
@@ -142,7 +146,10 @@ async function pesan(body) {
   }
   jejakKuota.push(kini);
   const idAktif = d.aktif[wa], sesiAktif = idAktif ? d.sesi[idAktif] : null;
-  const teks = body.teks ? String(body.teks).slice(0, 2000) : "";
+  // bahasa pilihan (K58, D80, D81): pesan diterjemahkan ke Indonesia sebelum mesin, teks asli disimpan di transkrip; tanpa model hanya Indonesia
+  const bahasa = model ? bahasaSah(body.bahasa) : "id";
+  const terj = await keIndonesia(model, body.teks ? String(body.teks).slice(0, 2000) : "", bahasa);
+  const teks = terj.teks;
 
   if (/^(cek\s+)?status(\s+laporan)?$/i.test(teks.trim())) { // cek status laporan milik nomor ini
     const milik = Object.values(d.sesi).filter(s => s.wa === wa && s.nomor).sort((a, b) => b.terkirim - a.terkirim).slice(0, 5);
@@ -163,7 +170,8 @@ async function pesan(body) {
   const h = await putaran({sesi: sesiAktif, pelapor: d.pelapor[wa] || null, model, wilayah,
     pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, kembali: body.kembali === true, saluran: "web"}, kini}); // rute ini hanya dipakai layar web
   h.sesi.id ||= `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;
-  h.sesi.wa = wa;
+  h.sesi.wa = wa; h.sesi.bahasa = bahasa;
+  if (terj.diterjemahkan) { const t = [...h.sesi.transkrip].reverse().find(x => x.dari === "pelapor"); if (t) Object.assign(t, {asli: samarkan(terj.asli), bahasa}); } // teks asli disamarkan sama dengan terjemahannya
   let tambahan = {};
   if (h.kirim && h.sesi.susulanDari) { // laporan susulan (F-28, ALGORITMA A12): perubahan digabung ke tiket yang sama sebagai versi baru
     const asal = Object.values(d.sesi).find(x => x.nomor === h.sesi.susulanDari);
@@ -203,7 +211,9 @@ async function pesan(body) {
   d.sesi[h.sesi.id] = h.sesi; d.aktif[wa] = h.sesi.id;
   if (h.pelapor) d.pelapor[wa] = h.pelapor;
   simpan(d);
-  return [200, {...keluaran(h, h.sesi), ...tambahan, pelapor: h.pelapor ? {nama: h.pelapor.nama, peran: h.pelapor.peran} : null}];
+  const out = {...keluaran(h, h.sesi), ...tambahan, pelapor: h.pelapor ? {nama: h.pelapor.nama, peran: h.pelapor.peran} : null};
+  if (bahasa !== "id") { const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket}, bahasa); Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa}); }
+  return [200, out];
 }
 
 /* ---------- foto (KEPUTUSAN K5, D11): GPS perangkat <= 1 km dan <= 10 menit; EXIF <= 5 km dan <= 48 jam ---------- */
@@ -219,17 +229,94 @@ async function foto(body) {
   const meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
     : x?.lat != null ? {lencana: "exif", lencanaTeks: "Lokasi dari data foto", lat: x.lat, lon: x.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
   const sAkt = sesiMentah(wa), MAKS = 10; // standar foto publik: paling banyak 10 foto per laporan
-  if ((sAkt?.foto || []).length >= MAKS) return [400, {galat: `Paling banyak ${MAKS} foto per laporan.`}];
+  if ((sAkt?.foto || []).filter(f => f.jenis !== "video").length >= MAKS) return [400, {galat: `Paling banyak ${MAKS} foto per laporan.`}];
   const id = crypto.randomBytes(8).toString("hex");
   fs.mkdirSync(FOTO, {recursive: true, mode: 0o700});
   fs.writeFileSync(path.join(FOTO, `${id}.jpg`), buf, {mode: 0o600}); // sudah digambar ulang di kanvas peramban: metadata asli tidak ikut
   // waktu ambil: EXIF, lalu waktu GPS perangkat, lalu waktu unggah; sumbernya ikut ditampilkan (pola /instansi dan /lacak)
   const waktuAmbil = x?.waktu || kini, sumberWaktu = x?.waktu ? "waktu EXIF foto" : gpsSah ? "waktu GPS perangkat" : "waktu unggah";
-  const [kode, isi] = await pesan({wa, foto: {id, ...meta, waktuAmbil, sumberWaktu, waktuTerima: kini}});
+  const [kode, isi] = await pesan({wa, bahasa: body.bahasa, foto: {id, ...meta, waktuAmbil, sumberWaktu, waktuTerima: kini}});
   const prov = sesiMentah(wa)?.isian?.lokasi?.nilai?.wilayah?.provKode;
   return [kode, {...isi, fotoBaru: {id, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null, akurasi: meta.akurasi ?? null,
     waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: (sAkt?.foto || []).length + 1, maks: MAKS}}];
 }
+
+/* ---------- video, unggah bersambung (KEPUTUSAN K57, K61, D77, D79, D89, D90) ----------
+   Video selalu lewat unggah bersambung: dipotong 5 MB per bagian (batas minimum bagian multipart R2), bagian yang sudah diterima dicatat,
+   peramban melanjutkan dari GET status sesudah sinyal pulih. Pemeriksaan isi (byte awal, besar, durasi, metadata lokasi dan waktu) di "selesai".
+   Lokal: bagian di ~/.lapor-lokal/unggah/<id>/; Worker: multipart R2 dan tabel lapor_unggah. */
+const BUKTI = path.join(DIR, "bukti"), UNGGAH = path.join(DIR, "unggah"), BAGIAN = 5 * 1048576, VIDEO_MAKS = 30 * 1048576, VIDEO_DETIK = 60, VIDEO_PER_LAPORAN = 3, UNGGAH_BASI = 24 * 3600e3;
+const MIME_VIDEO = {"video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm"};
+function unggahBersih(d, kini = Date.now()) { // D90: unggahan tanpa bagian baru 24 jam dibuang (Worker: cron bersih-bersih menit 17)
+  for (const [id, u] of Object.entries(d.unggah || {})) if (kini - u.akhir > UNGGAH_BASI) { fs.rmSync(path.join(UNGGAH, id), {recursive: true, force: true}); delete d.unggah[id]; }
+}
+function unggahMulai(body) {
+  const wa = nomorWa(body.wa), ukuran = Number(body.ukuran);
+  if (!wa) return [400, {galat: "Nomor WhatsApp tidak sah."}];
+  if (!Number.isInteger(ukuran) || ukuran < 1000 || ukuran > VIDEO_MAKS) return [400, {galat: `Video paling besar ${VIDEO_MAKS / 1048576} MB.`}];
+  const s = sesiMentah(wa);
+  if (!s || s.status !== "foto") return [409, {galat: "Kirim video saat diminta foto atau video kejadian."}];
+  if ((s.foto || []).filter(f => f.jenis === "video").length >= VIDEO_PER_LAPORAN) return [400, {galat: `Paling banyak ${VIDEO_PER_LAPORAN} video per laporan.`}];
+  const d = baca(); unggahBersih(d);
+  const id = crypto.randomBytes(8).toString("hex"), jumlah = Math.ceil(ukuran / BAGIAN);
+  (d.unggah ||= {})[id] = {wa, bahasa: body.bahasa || "id", ukuran, jumlah, diterima: [], gps: body.gps || null, durasi: Number(body.durasi) || null, mulai: Date.now(), akhir: Date.now()};
+  fs.mkdirSync(path.join(UNGGAH, id), {recursive: true, mode: 0o700}); simpan(d);
+  return [200, {id, bagian: BAGIAN, jumlah, diterima: []}];
+}
+async function unggahBagian(req, id, n) {
+  const d = baca(), u = d.unggah?.[id];
+  if (!u || !Number.isInteger(n) || n < 0 || n >= u.jumlah) return [404, {galat: "Unggahan tidak ditemukan atau sudah kedaluwarsa. Pilih video lagi."}];
+  const harap = n === u.jumlah - 1 ? u.ukuran - n * BAGIAN : BAGIAN, potong = [];
+  let pjg = 0; for await (const c of req) { pjg += c.length; if (pjg > harap) return [413, {galat: "Bagian lebih besar dari seharusnya."}]; potong.push(c); }
+  if (pjg !== harap) return [400, {galat: `Bagian ${n + 1} terpotong (${pjg} dari ${harap} byte). Dikirim ulang.`}];
+  fs.writeFileSync(path.join(UNGGAH, id, String(n)), Buffer.concat(potong), {mode: 0o600});
+  const d2 = baca(), u2 = d2.unggah[id]; if (!u2.diterima.includes(n)) u2.diterima.push(n); u2.akhir = Date.now(); simpan(d2);
+  return [200, {diterima: u2.diterima.sort((a, b) => a - b), jumlah: u2.jumlah}];
+}
+function unggahStatus(id) { const u = baca().unggah?.[id]; return u ? [200, {diterima: u.diterima.sort((a, b) => a - b), jumlah: u.jumlah, bagian: BAGIAN}] : [404, {galat: "Unggahan tidak ditemukan."}]; }
+async function unggahSelesai(id, body) {
+  const d = baca(), u = d.unggah?.[id];
+  if (!u) return [404, {galat: "Unggahan tidak ditemukan."}];
+  if (u.diterima.length !== u.jumlah) return [409, {galat: `Baru ${u.diterima.length} dari ${u.jumlah} bagian.`, diterima: u.diterima}];
+  const buf = Buffer.concat([...Array(u.jumlah).keys()].map(n => fs.readFileSync(path.join(UNGGAH, id, String(n)))));
+  const buang = () => { fs.rmSync(path.join(UNGGAH, id), {recursive: true, force: true}); const d2 = baca(); delete d2.unggah[id]; simpan(d2); };
+  const mime = jenisBerkas(buf), eks = MIME_VIDEO[mime];
+  if (!eks || buf.length !== u.ukuran) { buang(); return [400, {galat: "Berkas bukan video MP4, MOV, atau WebM."}]; }
+  const durasi = durasiMP4(buf) ?? u.durasi;
+  if (durasi != null && durasi > VIDEO_DETIK + 1) { buang(); return [400, {galat: `Video paling lama ${VIDEO_DETIK} detik. Potong dulu, lalu kirim lagi.`}]; }
+  // aturan lokasi dan waktu sama dengan foto (D11): GPS perangkat; metadata video menggantikan EXIF
+  const kini = Date.now(), g = u.gps, mLok = lokasiMP4(buf), mWaktu = waktuMP4(buf);
+  const gpsSah = g && Number.isFinite(g.lat) && Number.isFinite(g.lon) && g.akurasi <= 1000 && kini - g.waktu <= 10 * 6e4;
+  if (mWaktu && kini - mWaktu > 48 * 3600e3) { buang(); return [400, {galat: "Video direkam lebih dari 48 jam lalu. Kirim rekaman terbaru dari lokasi."}]; }
+  if (gpsSah && mLok && km(g.lat, g.lon, mLok.lat, mLok.lon) > 5) { buang(); return [400, {galat: "Lokasi di video lebih dari 5 km dari posisi Anda sekarang."}]; }
+  const meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
+    : mLok ? {lencana: "exif", lencanaTeks: "Lokasi dari data video", ...mLok} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
+  fs.mkdirSync(FOTO, {recursive: true, mode: 0o700});
+  fs.writeFileSync(path.join(FOTO, `${id}.${eks}`), buf, {mode: 0o600});
+  // sampul (bingkai pertama, digambar peramban): dipakai kartu, galeri meja, dan PDF (bahanDokumen membaca <id>.jpg)
+  const sampul = Buffer.from(String(body.sampul || "").replace(/^data:image\/jpeg;base64,/, ""), "base64");
+  if (sampul.length > 500 && sampul.length < 400 * 1024 && sampul[0] === 0xff && sampul[1] === 0xd8) fs.writeFileSync(path.join(FOTO, `${id}.jpg`), sampul, {mode: 0o600});
+  buang();
+  const waktuAmbil = mWaktu || kini, sumberWaktu = mWaktu ? "waktu rekam video" : gpsSah ? "waktu GPS perangkat" : "waktu unggah";
+  const [kode, isi] = await pesan({wa: u.wa, bahasa: u.bahasa, foto: {id, jenis: "video", eks, durasi: durasi != null ? Math.round(durasi) : null, ...meta, waktuAmbil, sumberWaktu, waktuTerima: kini}});
+  const prov = sesiMentah(u.wa)?.isian?.lokasi?.nilai?.wilayah?.provKode;
+  return [kode, {...isi, fotoBaru: {id, jenis: "video", durasi: durasi != null ? Math.round(durasi) : null, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null,
+    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu}}];
+}
+/* sajikan media (foto JPEG atau video dengan Range supaya bisa digeser) */
+function sajikanMedia(req, res, berkas, tipe) {
+  if (!fs.existsSync(berkas)) { res.writeHead(404); res.end(); return; }
+  const n = fs.statSync(berkas).size, m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+  if (m && tipe.startsWith("video/")) {
+    const a = m[1] ? Number(m[1]) : n - Number(m[2]), b = m[1] && m[2] ? Math.min(Number(m[2]), n - 1) : n - 1;
+    if (!(a >= 0 && a <= b)) { res.writeHead(416, {"content-range": `bytes */${n}`}); res.end(); return; }
+    res.writeHead(206, {"content-type": tipe, "content-range": `bytes ${a}-${b}/${n}`, "content-length": b - a + 1, "accept-ranges": "bytes", "cache-control": "private, no-store"});
+    fs.createReadStream(berkas, {start: a, end: b}).pipe(res); return;
+  }
+  res.writeHead(200, {"content-type": tipe, "content-length": n, "accept-ranges": "bytes", "cache-control": "private, no-store"}); fs.createReadStream(berkas).pipe(res);
+}
+const TIPE_EKS = {mp4: "video/mp4", mov: "video/quicktime", webm: "video/webm"};
+const urlMedia = (f, q) => f.jenis === "video" ? `/api/lapor/foto/${f.id}.${f.eks}${q}` : `/api/lapor/foto/${f.id}${q}`;
 
 // sesi mentah (isian, foto) untuk rute dalam; sesiAktif() mengembalikan [kode, tampilan] untuk peramban
 function sesiMentah(wa) { const d = baca(), id = d.aktif[nomorWa(wa)]; return id ? d.sesi[id] : null; }
@@ -253,6 +340,7 @@ function lacak(t) { // halaman lacak tanpa login: tanpa nomor WA, nama depan saj
     tahap: s.tiket.status === "tidak_valid" ? [...URUTAN.filter(k => sudah.has(k)), "tidak_valid"].map(k => ({kunci: k, label: STATUS[k], selesai: true, waktu: waktuLapor(sudah.get(k)?.waktu, prov), catatan: sudah.get(k)?.catatan || null}))
       : URUTAN.filter(k => k !== "diteruskan" || sudah.has(k)).map(k => ({kunci: k, label: STATUS[k], selesai: sudah.has(k), waktu: sudah.has(k) ? waktuLapor(sudah.get(k).waktu, prov) : null, catatan: sudah.get(k)?.catatan || null})),
     balasan: (s.balasan || []).map(b => ({teks: b.teks, waktu: waktuLapor(b.waktu, prov)})),
+    bukti: (s.bukti || []).map(b => ({url: `/api/lapor/bukti/${b.id}?t=${t}`, waktu: waktuLapor(b.waktu, prov)})), // foto penanganan petugas (K60, D88)
     unduhan: [{label: "Unduh PDF", url: `/api/lapor/unduh/${s.nomor}.pdf?t=${t}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${s.nomor}.docx?t=${t}`}]}];
 }
 
@@ -382,18 +470,29 @@ const PROV_NAMA = w => w.prov;
    Hanya laporan berstatus ditindaklanjuti atau selesai. Tanpa nama, nomor WA, foto, kronologi bebas, dan nomor tiket (tiket = kunci lacak).
    Isi: jenis, karakteristik, waktu kejadian, desa sampai provinsi, angka dampak, status. */
 const TAMPIL_ALUN = new Set(["ditindaklanjuti", "selesai"]);
-function alun(q) {
+const idAlun = s => crypto.createHash("sha256").update(s.id).digest("hex").slice(0, 10);
+/* K59, D84-D86: titik peta = pusat desa (bukan koordinat pelapor, Q14); laporan satu gugus jadi satu kartu dengan "N warga melapor" bila N >= 2
+   (jumlah nomor berbeda, nomornya tidak dikirim); angka dampak dari laporan terbaru gugus itu, tidak dijumlah (D28).
+   id kartu = sidik laporan paling awal gugus, jadi tetap sama saat laporan baru bergabung: dipakai "Ikuti kejadian" di perangkat. */
+async function alun(q) {
   const d = baca(), angka = (s, n) => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
-  const baris = Object.values(d.sesi).filter(s => s.nomor && TAMPIL_ALUN.has(s.tiket?.status))
-    .filter(s => !q.prov || s.isian.lokasi?.nilai?.wilayah?.provKode === q.prov).filter(s => !q.jenis || s.isian.jenis?.nilai === q.jenis)
-    .sort((a, b) => (b.isian.waktu?.ms || b.terkirim) - (a.isian.waktu?.ms || a.terkirim)).slice(0, 100)
-    .map(s => { const w = s.isian.lokasi?.nilai?.wilayah || {};
-      return {id: crypto.createHash("sha256").update(s.id).digest("hex").slice(0, 10), jenisId: s.isian.jenis?.nilai || null, jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || "Kejadian",
+  const G = gugusSemua(d), perGugus = new Map(), sesiNomor = new Map(Object.values(d.sesi).filter(s => s.nomor).map(s => [s.nomor, s]));
+  const tampil = Object.values(d.sesi).filter(s => s.nomor && TAMPIL_ALUN.has(s.tiket?.status))
+    .filter(s => !q.prov || s.isian.lokasi?.nilai?.wilayah?.provKode === q.prov).filter(s => !q.jenis || s.isian.jenis?.nilai === q.jenis);
+  for (const s of tampil) { const k = G.per[s.nomor] || s.nomor, lama = perGugus.get(k); if (!lama || (s.isian.waktu?.ms || s.terkirim) > (lama.isian.waktu?.ms || lama.terkirim)) perGugus.set(k, s); }
+  const baris = await Promise.all([...perGugus].sort(([, a], [, b]) => (b.isian.waktu?.ms || b.terkirim) - (a.isian.waktu?.ms || a.terkirim)).slice(0, 100)
+    .map(async ([k, s]) => { const w = s.isian.lokasi?.nilai?.wilayah || {}, g = G.gugus.find(x => x.kode === k);
+      const awal = g ? sesiNomor.get(g.anggota[0]) : s, desa = w.kode ? await wilayah.pusat(String(w.kode)).catch(() => null) : null;
+      const bukti = (g ? g.anggota.map(n => sesiNomor.get(n)) : [s]).flatMap(x => TAMPIL_ALUN.has(x?.tiket?.status) ? (x.bukti || []).filter(b => b.publik) : []);
+      return {id: idAlun(awal), jenisId: s.isian.jenis?.nilai || null, jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || "Kejadian",
         subjenis: s.isian.subjenis?.nilai !== "Belum diketahui" ? s.isian.subjenis?.nilai || null : null, waktu: s.isian.waktu?.nilai || null,
         lokasi: {desa: w.desa || null, kec: w.kec || null, kab: w.kab || null, prov: w.prov || null, provKode: w.provKode || null},
+        titik: desa ? {lat: Math.round(desa.lat * 1e4) / 1e4, lon: Math.round(desa.lon * 1e4) / 1e4} : null,
+        nWarga: g && g.n_pelapor >= 2 ? g.n_pelapor : null,
         dampak: {meninggal: angka(s, "meninggal"), hilang: angka(s, "hilang"), luka: angka(s, "luka"), mengungsi: angka(s, "mengungsi_jiwa"),
           rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(s, n), 0), terendam: angka(s, "rumah_terendam")},
-        status: s.tiket.status, statusLabel: STATUS[s.tiket.status], tingkat: s.tingkat === "bpbd" ? "Petugas BPBD" : "Warga"}; });
+        bukti: bukti.slice(0, 4).map(b => `/api/lapor/bukti/${b.id}?alun=1`),
+        status: s.tiket.status, statusLabel: STATUS[s.tiket.status], tingkat: s.tingkat === "bpbd" ? "Petugas BPBD" : "Warga"}; }));
   return [200, {baris, jumlah: baris.length}];
 }
 
@@ -438,10 +537,12 @@ function mejaRinci(nomor, lihat = false) {
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
         return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
-    foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${s.token}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
+    foto: (s.foto || []).map(f => ({url: urlMedia(f, `?t=${s.token}`), sampul: `/api/lapor/foto/${f.id}?t=${s.token}`, jenis: f.jenis || "foto", durasi: f.durasi ?? null, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
+    bukti: (s.bukti || []).map(b => ({id: b.id, url: `/api/lapor/bukti/${b.id}?t=${s.token}`, publik: !!b.publik, waktu: waktuLapor(b.waktu, prov), lokasi: b.lat != null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({...b, waktu: waktuLapor(b.waktu, prov)})),
     unduhan: [{label: "PDF", url: `/api/lapor/unduh/${nomor}.pdf?t=${s.token}`}, {label: "Word", url: `/api/lapor/unduh/${nomor}.docx?t=${s.token}`}],
-    transkrip: s.transkrip.map(t => ({dari: t.dari, teks: t.teks || (t.lokasi ? "Lokasi dibagikan" : ""), waktu: waktuLapor(t.waktu, prov)}))}];
+    bahasa: BAHASA.find(([k]) => k === (s.bahasa || "id"))?.[1] || null,
+    transkrip: s.transkrip.map(t => ({dari: t.dari, teks: t.teks || (t.lokasi ? "Lokasi dibagikan" : ""), asli: t.asli || null, waktu: waktuLapor(t.waktu, prov)}))}];
 }
 function mejaUbah(nomor, aksi, body) {
   const d = baca(), s = Object.values(d.sesi).find(x => x.nomor === nomor), kini = Date.now();
@@ -452,12 +553,30 @@ function mejaUbah(nomor, aksi, body) {
     (s.balasan ||= []).push({teks: catatan, waktu: kini, oleh: "Admin BNPB"});
     (d.kotak[s.wa] ||= []).push({nomor, teks: catatan, waktu: kini});
     if (s.tiket.status === "baru" || s.tiket.status === "dilihat") { s.tiket.riwayat.push({dari: s.tiket.status, ke: "ditelaah", pelaku: "Admin BNPB", catatan: null, waktu: kini}); s.tiket.status = "ditelaah"; }
+  } else if (aksi === "bukti") { // foto penanganan petugas (K60, D87): tabel samping, bukan foto pelapor; GPS perangkat petugas
+    const buf = Buffer.from(String(body.data || "").replace(/^data:image\/jpeg;base64,/, ""), "base64");
+    if (buf.length < 1000 || buf.length > 3 * 1048576 || jenisBerkas(buf) !== "image/jpeg") return [400, {galat: "Foto penanganan harus JPEG, paling besar 3 MB."}];
+    if ((s.bukti || []).length >= 10) return [400, {galat: "Paling banyak 10 foto penanganan per laporan."}];
+    const g = body.gps, gpsSah = g && Number.isFinite(g.lat) && Number.isFinite(g.lon) && g.akurasi <= 1000 && kini - g.waktu <= 10 * 6e4;
+    const id = crypto.randomBytes(8).toString("hex");
+    fs.mkdirSync(BUKTI, {recursive: true, mode: 0o700}); fs.writeFileSync(path.join(BUKTI, `${id}.jpg`), buf, {mode: 0o600});
+    (s.bukti ||= []).push({id, waktu: kini, oleh: "Admin BNPB", publik: false, ...(gpsSah ? {lat: g.lat, lon: g.lon, akurasi: g.akurasi} : {})});
+    s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: "Admin BNPB", catatan: `Foto penanganan ditambahkan${gpsSah ? "" : " (tanpa lokasi GPS)"}`, waktu: kini});
+  } else if (aksi === "bukti-publik") { // D88: tampil di Alun-alun hanya bila staf menandai per foto
+    const b = (s.bukti || []).find(x => x.id === body.id);
+    if (!b) return [404, {galat: "Foto penanganan tidak ditemukan."}];
+    b.publik = body.publik === true;
   } else if (aksi === "status") {
     if (!PINDAH[s.tiket.status]?.includes(body.ke)) return [409, {galat: "Perpindahan status tidak sah."}];
+    // Selesai wajib minimal satu foto penanganan, atau alasan tertulis tanpa foto yang tercatat di riwayat (K60, D87, Q49)
+    const alasan = String(body.tanpaBukti || "").replace(/\s+/g, " ").trim().slice(0, 300);
+    if (body.ke === "selesai" && !(s.bukti || []).length && alasan.length < 5) return [400, {galat: "Lampirkan minimal satu foto penanganan, atau tulis alasan tanpa foto.", perluBukti: true}];
     if (["selesai", "tidak_valid"].includes(s.tiket.status) && !catatan) return [400, {galat: "Membuka kembali wajib dengan catatan."}];
-    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: catatan || null, pelaku: "Admin BNPB", waktu: kini}); // append-only
+    const tanpa = body.ke === "selesai" && !(s.bukti || []).length ? `Tanpa foto penanganan: ${alasan}` : null;
+    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: [catatan, tanpa].filter(Boolean).join(". ") || null, pelaku: "Admin BNPB", waktu: kini}); // append-only
     s.tiket.status = body.ke;
-    (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[body.ke]}.${catatan ? ` ${catatan}` : ""}`, waktu: kini, status: true});
+    const nb = (s.bukti || []).length;
+    (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[body.ke]}.${catatan ? ` ${catatan}` : ""}${body.ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, waktu: kini, status: true});
   } else return [404, {galat: "aksi"}];
   simpan(d);
   return mejaRinci(nomor);
@@ -477,23 +596,35 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/lacak") return kirim(lacak(url.searchParams.get("t")));
     if (j === "/api/lapor/kotak") { const d = baca(), sejak = Number(url.searchParams.get("sejak") || 0); return kirim([200, {pesan: (d.kotak[nomorWa(url.searchParams.get("wa"))] || []).filter(k => k.waktu > sejak)}]); }
     if (j.startsWith("/api/lapor/unduh/")) { unduh(res, decodeURIComponent(j.slice(17)), url.searchParams.get("t")); return true; }
-    if (j.startsWith("/api/lapor/foto/")) {
-      const id = j.slice(16), d = baca(), s = Object.values(d.sesi).find(x => x.token === url.searchParams.get("t") && (x.foto || []).some(f => f.id === id));
-      if (!s || !/^[0-9a-f]{16}$/.test(id)) return kirim([404, {galat: "tidak ada"}]);
-      res.writeHead(200, {"content-type": "image/jpeg", "cache-control": "private, no-store"}); fs.createReadStream(path.join(FOTO, `${id}.jpg`)).pipe(res); return true;
+    if (j.startsWith("/api/lapor/foto/")) { // foto, sampul video (<id>), atau video (<id>.<eks>); hanya dengan token lacak laporan itu
+      const [, id, eks] = /^([0-9a-f]{16})(?:\.(mp4|mov|webm))?$/.exec(j.slice(16)) || [], d = baca(), s = id && Object.values(d.sesi).find(x => x.token === url.searchParams.get("t") && (x.foto || []).some(f => f.id === id));
+      if (!s) return kirim([404, {galat: "tidak ada"}]);
+      sajikanMedia(req, res, path.join(FOTO, `${id}.${eks || "jpg"}`), eks ? TIPE_EKS[eks] : "image/jpeg"); return true;
     }
+    if (j.startsWith("/api/lapor/bukti/")) { // foto penanganan: token lacak laporan itu, atau ?alun=1 bila ditandai publik
+      const id = j.slice(17), d = baca(), alunQ = url.searchParams.get("alun") === "1";
+      const s = /^[0-9a-f]{16}$/.test(id) && Object.values(d.sesi).find(x => (x.bukti || []).some(b => b.id === id && (alunQ ? b.publik && TAMPIL_ALUN.has(x.tiket?.status) : x.token === url.searchParams.get("t"))));
+      if (!s) return kirim([404, {galat: "tidak ada"}]);
+      sajikanMedia(req, res, path.join(BUKTI, `${id}.jpg`), "image/jpeg"); return true;
+    }
+    if (req.method === "POST" && j === "/api/lapor/unggah/mulai") return kirim(unggahMulai(await badan(req)));
+    const mu = /^\/api\/lapor\/unggah\/([0-9a-f]{16})(?:\/(\d+|selesai))?$/.exec(j);
+    if (mu && req.method === "PUT" && /^\d+$/.test(mu[2] || "")) return kirim(await unggahBagian(req, mu[1], Number(mu[2])));
+    if (mu && req.method === "POST" && mu[2] === "selesai") return kirim(await unggahSelesai(mu[1], await badan(req)));
+    if (mu && !mu[2]) return kirim(unggahStatus(mu[1]));
     if (req.method === "POST" && j === "/api/lapor/nilai") { // nilai percakapan 1-5 (pemilik 19 Nov 2026)
       const b = await badan(req), d = baca(), s = Object.values(d.sesi).find(x => x.nomor === b.nomor && x.wa === nomorWa(b.wa)), n = Number(b.nilai);
       if (!s || !Number.isInteger(n) || n < 1 || n > 5) return kirim([400, {galat: "Nilai tidak sah."}]);
       s.nilai = {nilai: n, waktu: Date.now()}; simpan(d); return kirim([200, {ok: true}]);
     }
+    if (j === "/api/lapor/bahasa") return kirim([200, {bahasa: model ? BAHASA.map(([kode, nama]) => ({kode, nama})) : [{kode: "id", nama: "Bahasa Indonesia"}]}]);
     if (j === "/api/lapor/penting") return kirim(await penting(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/sekitar") return kirim(await sekitar(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
-    if (j === "/api/lapor/alun") return kirim(alun(Object.fromEntries(url.searchParams)));
+    if (j === "/api/lapor/alun") return kirim(await alun(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/susulan" && req.method === "POST") return kirim(await susulan(await badan(req)));
     if (j === "/api/lapor/meja") return kirim(meja());
-    const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat))?$/.exec(j);
+    const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik))?$/.exec(j);
     // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
     if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(m[1], true));
     if (m && !m[2]) return kirim(mejaRinci(m[1], url.searchParams.get("lihat") === "1"));

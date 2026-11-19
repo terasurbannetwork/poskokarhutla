@@ -200,8 +200,8 @@ export const T = {
   lokasi: () => "*Bagikan lokasi kejadian*\nLokasi wajib. Kalau Anda di lokasi, bagikan lokasi sekarang. Di WhatsApp: ketuk lampiran, pilih *Lokasi*.",
   lokasiWajib: () => "Lokasi wajib dibagikan dulu sebelum laporan bisa dilanjutkan. Ketuk *Bagikan lokasi*, atau di WhatsApp: lampiran, *Lokasi*.",
   cerita: () => `*Ceritakan kejadiannya*\nTulis singkat apa yang terjadi dan urutannya. Waktu, korban, pengungsi, kerusakan, dan kebutuhan ditanyakan sesudah ini satu per satu.\n\n${TEMPLAT}`,
-  foto: n => n ? `*Foto diterima (${n})*\nTambah foto lain, atau ketuk *Lanjut* bila sudah cukup.`
-    : "*Foto kejadian*\nKirim foto keadaan di lokasi, misalnya kerusakan, genangan, atau pengungsian. Ambil langsung dari kamera supaya lokasi dan waktunya terekam. Hindari memotret wajah orang bila bisa.\nDi WhatsApp: kirim foto, lalu bagikan lokasi.",
+  foto: n => n ? `*Foto atau video diterima (${n})*\nTambah foto atau video lain, atau ketuk *Lanjut* bila sudah cukup.`
+    : "*Foto atau video kejadian*\nKirim foto atau video pendek (paling lama 60 detik) keadaan di lokasi, misalnya kerusakan, genangan, atau pengungsian. Ambil langsung dari kamera supaya lokasi dan waktunya terekam. Hindari merekam wajah orang bila bisa.\nDi WhatsApp: kirim foto atau video, lalu bagikan lokasi.",
   terkirim: (nama, nomor) => `*Laporan terkirim*\nTerima kasih sudah melaporkan, ${nama}.\n\nNomor tiket laporan Anda:\n*${nomor}*\n\nTim kami akan menghubungi Anda sesegera mungkin untuk mengonfirmasi laporan. Simpan nomor tiket ini untuk cek status.`,
   darurat: () => "Bila ada nyawa terancam sekarang, hubungi 112 atau BPBD setempat.",
   batal: () => `*Laporan dibatalkan*\nKetik *lapor* untuk membuat laporan baru.`,
@@ -349,7 +349,8 @@ export function ringkasan(sesi, pelapor) {
     baris.push("", `*${k.label}*`, ...isi.map(i => `${i.label}: ${nilaiTampil(i, sesi.isian[i.nama])}`));
   }
   const f = sesi.foto || [];
-  baris.push("", "*Foto*", f.length ? `${f.length} foto, ${f.filter(x => x.lencana !== "tanpa").length} dengan lokasi terekam` : "Tidak ada foto");
+  const nv = f.filter(x => x.jenis === "video").length, nf = f.length - nv; // video (K57) berbagi langkah foto
+  baris.push("", nv ? "*Foto dan video*" : "*Foto*", f.length ? `${[nf && `${nf} foto`, nv && `${nv} video`].filter(Boolean).join(", ")}, ${f.filter(x => x.lencana !== "tanpa").length} dengan lokasi terekam` : "Tidak ada foto");
   return baris.join("\n");
 }
 

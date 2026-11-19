@@ -781,3 +781,6 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-asli summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--brand2);font-weight:700}
 .mj-asli p{margin:4px 0 0;font-style:italic}
 .mj-pil-ai{padding:1px 7px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));font-size:.625rem}
+/* angka rincian: baris terakhir melebar sampai ujung, tanpa ruang kosong (memori tanpa-ruang-kosong) */
+.mj-rk-angka{display:flex!important;flex-wrap:wrap}
+.mj-rk-angka>*{flex:1 1 150px;min-width:0}

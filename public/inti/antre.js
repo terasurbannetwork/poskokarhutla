@@ -99,7 +99,8 @@
     };
     const unggah = async x => {
       const blob = await simpan.ambilBlob(x.klien_id); if (blob === undefined) { x.ada_blob = false; await simpan.taruh(x); return { s: 200 }; }
-      let r; try { r = await post(o.media.url, blob, blob.type || "application/octet-stream", o.header ? o.header() : {}); } catch (e) { r = { s: 0, j: {} }; }
+      // o.media.unggah(blob, butir): pengunggah milik saluran (mis. bersambung per bagian, Lapor K61); jawabannya berbentuk {s, j} seperti post
+      let r; try { r = o.media.unggah ? await o.media.unggah(blob, x) : await post(o.media.url, blob, blob.type || "application/octet-stream", o.header ? o.header() : {}); } catch (e) { r = { s: 0, j: {} }; }
       if (kelas(r.s, r.j) === "ok" && r.j && r.j.media_id) { x.media_id = r.j.media_id; x.ada_blob = false; await simpan.taruh(x); await simpan.hapusBlob(x.klien_id); return { s: 200 }; }
       return r.s >= 200 && r.s < 300 ? { s: 500, j: {} } : r;
     };

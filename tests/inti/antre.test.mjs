@@ -116,6 +116,16 @@ test("foto: unggah 503 menahan butir tanpa mengirimnya", async () => {
   } finally { globalThis.fetch = orig; }
 });
 
+test("media.unggah milik saluran (video bersambung Lapor K61): gagal sekali ditahan, lalu media_id dari pengunggah dipakai", async () => {
+  const lihat = []; let gagal = true;
+  const s = buat(async b => { lihat.push(b[0].media_id); return ok; }, {media: {unggah: async (blob, x) => { lihat.push(`unggah ${await blob.text()} ${x.data.a}`);
+    if (gagal) { gagal = false; return {s: 0, j: {}}; } return {s: 200, j: {media_id: "U9"}}; }}});
+  await s.tambah({a: 7}, new Blob(["vid"]));
+  await s.kirimSekarang(); assert.equal(await s.menunggu(), 1, "putus: butir dan blob tetap");
+  jam.t = s.tundaSampai + 1; await s.kirimSekarang();
+  assert.deepEqual(lihat, ["unggah vid 7", "unggah vid 7", "U9"]); assert.equal(await s.menunggu(), 0);
+});
+
 /* ---- T7 ---- */
 const lama = (isi, gagalHapus) => { const st = {hapus: 0}; return {st, semua: async () => isi, hapus: async () => { if (gagalHapus) throw new Error("x"); st.hapus++; }}; };
 const petakan = r => ({klien_id: r.id, data: r.d, dibuat: r.t});

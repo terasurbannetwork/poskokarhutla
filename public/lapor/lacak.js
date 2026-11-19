@@ -25,6 +25,8 @@ async function muat() {
       if (x.catatan) isi.append(el("p", null, x.catatan));
       li.append(titik, isi); return li;
     }));
+    $("kBukti").hidden = !(j.bukti || []).length; // bukti tindak lanjut (K60, D88)
+    $("bukti").replaceChildren(...(j.bukti || []).map(b => { const f = el("figure"), a = Object.assign(el("a"), {href: b.url, target: "_blank", rel: "noopener"}), im = el("img"); im.src = b.url; im.alt = "Foto penanganan oleh petugas"; im.loading = "lazy"; a.append(im); f.append(a, el("figcaption", null, b.waktu)); return f; }));
     $("kBalasan").hidden = !j.balasan.length;
     $("balasan").replaceChildren(...j.balasan.map(b => { const d = el("div", "lk-balas"); d.append(el("b", null, "Admin BNPB"), el("p", null, b.teks), el("small", null, b.waktu)); return d; }));
     const rinci = [["Jenis", j.jenis, "jenis"], ["Karakteristik", j.subjenis, "karakter"], ["Lokasi", j.lokasi, "lokasi"], ["Waktu kejadian", j.waktuKejadian, "waktu"], ["Waktu dilaporkan", j.waktuLapor, "lapor"], ["Foto", `${j.foto} foto`, "foto"], ["Pelapor", j.pelapor, "pelapor"]];

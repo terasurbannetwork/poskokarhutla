@@ -458,26 +458,36 @@ function kartuFoto(j) {
   // standar foto publik (pola /instansi dan /lacak): cap waktu setempat dan koordinat di atas foto, sumber waktu, tautan peta, paling banyak 10 foto
   const daftarFoto = cache.fotoSesi || [], MAKS = 10;
   for (const f of daftarFoto) {
-    const fig = el("figure", `lp-foto ${f.lat != null ? "ada-titik" : "tanpa-titik"}`), im = el("img"); im.src = f.src; im.alt = `Foto kejadian, ${f.waktuTeks || ""}`;
+    const fig = el("figure", `lp-foto ${f.lat != null ? "ada-titik" : "tanpa-titik"}`), im = el("img"); im.src = f.src; im.alt = `${f.jenis === "video" ? "Video" : "Foto"} kejadian, ${f.waktuTeks || ""}`;
     const cap = el("figcaption", "lp-foto-cap");
     const w = el("span"); w.append(ikon("i-kalender"), f.waktuTeks || "Waktu tidak terbaca"); cap.append(w);
     const t = el("span"); t.append(ikon("i-lokasi"), f.lat != null ? `${f.lat.toFixed(5)}, ${f.lon.toFixed(5)}` : "Tanpa lokasi"); cap.append(t);
     const ket = el("div", "lp-foto-ket"); ket.append(el("span", `lp-pil ${f.lat != null ? "selesai" : "ditelaah"}`, f.lencanaTeks || f.lencana || ""), el("small", null, f.sumberWaktu || ""));
     if (f.lat != null) { const a = Object.assign(el("a", "lp-teks-tombol"), {href: `https://www.google.com/maps?q=${f.lat},${f.lon}`, target: "_blank", rel: "noopener"}); a.append(ikon("i-lokasi"), "Lihat di peta"); ket.append(a); }
-    const g = el("div", "lp-foto-gambar"); g.append(im, cap); fig.append(g, ket); kisi.append(fig);
+    const g = el("div", "lp-foto-gambar"); g.append(im, cap);
+    if (f.jenis === "video") { const v = el("span", "lp-foto-video"); v.append(ikon("i-putar"), f.durasi != null ? `${f.durasi} detik` : "Video"); g.append(v); }
+    fig.append(g, ket); kisi.append(fig);
   }
-  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${daftarFoto.length} dari ${MAKS} foto`, el("small", null, "Ambil langsung dari kamera supaya waktu dan lokasinya terekam."));
+  const nVideo = daftarFoto.filter(f => f.jenis === "video").length, nFoto = daftarFoto.length - nVideo;
+  const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${nFoto} dari ${MAKS} foto, ${nVideo} dari ${VIDEO_MAKS_N} video`, el("small", null, "Ambil langsung dari kamera supaya waktu dan lokasinya terekam. Video paling lama 60 detik."));
   const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.capture = "environment"; masukan.hidden = true;
-  const galeri = el("input"); galeri.type = "file"; galeri.accept = "image/jpeg,image/*"; galeri.hidden = true;
+  const rekam = el("input"); rekam.type = "file"; rekam.accept = "video/*"; rekam.capture = "environment"; rekam.hidden = true;   // video (K57)
+  const galeri = el("input"); galeri.type = "file"; galeri.accept = "image/jpeg,image/*,video/mp4,video/quicktime,video/webm"; galeri.hidden = true;
   const ambil = el("button", "lp-utama"); ambil.type = "button"; ambil.append(ikon("i-kamera"), "Ambil foto");
+  const ambilV = el("button", "lp-kedua"); ambilV.type = "button"; ambilV.append(ikon("i-putar"), "Rekam video");
   const pilihG = el("button", "lp-kedua", "Pilih dari galeri"); pilihG.type = "button";
   ambil.addEventListener("click", () => { siapkanGps(); masukan.click(); });
+  ambilV.addEventListener("click", () => { siapkanGps(); rekam.click(); });
   pilihG.addEventListener("click", () => { siapkanGps(); galeri.click(); });
-  masukan.addEventListener("change", () => unggahFoto(masukan.files[0]));
-  galeri.addEventListener("change", () => unggahFoto(galeri.files[0]));
+  const pilihBerkas = f => f && (f.type.startsWith("video/") ? unggahVideo(f) : unggahFoto(f));
+  masukan.addEventListener("change", () => pilihBerkas(masukan.files[0]));
+  rekam.addEventListener("change", () => pilihBerkas(rekam.files[0]));
+  galeri.addEventListener("change", () => pilihBerkas(galeri.files[0]));
   const lanjut = el("div", "lp-opsi"); j.pilihan.forEach((o, i) => lanjut.append(tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}))));
-  if (daftarFoto.length >= MAKS) { ambil.disabled = pilihG.disabled = true; }
-  const aksi = el("div", "lp-aksi-dua"); aksi.append(ambil, pilihG);
+  if (nFoto >= MAKS) ambil.disabled = true;
+  if (nVideo >= VIDEO_MAKS_N) ambilV.disabled = true;
+  if (nFoto >= MAKS && nVideo >= VIDEO_MAKS_N) pilihG.disabled = true;
+  const aksi = el("div", "lp-aksi-dua"); aksi.append(ambil, ambilV, pilihG);
   isi.closest(".lp-langkah").classList.add("lp-langkah-foto");
   for (const b of [...lanjut.children]) { b.classList.add("lp-foto-lanjut"); aksi.append(b); } // tiga aksi sebaris
   aksi.classList.add("lp-foto-aksi"); pilihG.prepend(ikon("i-unduh"));
@@ -486,7 +496,7 @@ function kartuFoto(j) {
     z.append(ikon(daftarFoto.length ? "i-plus" : "i-kamera"), el("b", null, daftarFoto.length ? "Tambah foto" : "Foto keadaan di lokasi"), el("small", null, daftarFoto.length ? `Sisa ${MAKS - daftarFoto.length} foto` : "Kerusakan, genangan, atau pengungsian. Hindari memotret wajah orang."));
     z.addEventListener("click", () => { siapkanGps(); masukan.click(); }); kisi.append(z); }
   for (const b of aksi.querySelectorAll(".lp-foto-lanjut")) b.prepend(ikon("i-panah"));
-  isi.append(hitung, kisi, aksi, masukan, galeri);
+  isi.append(hitung, kisi, aksi, masukan, rekam, galeri);
 }
 
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
@@ -578,7 +588,7 @@ async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampi
   if (tampil !== false && (tampil || teks)) tambah("saya", tampil || teks, {foto}); // tampil:false = perintah diam (membuka laporan)
   wadah.replaceChildren(); fPesan.hidden = true; $("mengetik").hidden = false;
   try {
-    const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, teks, lokasi, form, pilih, lain, kembali, saluran: "web"}), signal: AbortSignal.timeout(45000)});
+    const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, teks, lokasi, form, pilih, lain, kembali, saluran: "web", bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
     const j = await r.json();
     if (!r.ok) throw new Error(j.galat || "Gagal mengirim");
     if (j.kembali) { await ulangChat(); return; }
@@ -675,13 +685,89 @@ async function unggahFoto(file) {
     const data = await new Promise((ok, gagal) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = gagal; r.readAsDataURL(kecil); });
     tambah("saya", "", {foto: data, simpanKe: false});
     sibuk = true; wadah.replaceChildren(); $("mengetik").hidden = false; statusEl.textContent = "";
-    const r = await fetch("/api/lapor/foto", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, data, gps: posisi, exif}), signal: AbortSignal.timeout(60000)});
+    const r = await fetch("/api/lapor/foto", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, data, gps: posisi, exif, bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
     const j = await r.json(); sibuk = false;
     if (!r.ok) throw new Error(j.galat || "Foto gagal dikirim");
     const fb = j.fotoBaru || {};
     cache.fotoSesi = [...(cache.fotoSesi || []), {src: data, lencana: fb.lencana, lencanaTeks: fb.lencanaTeks, lat: fb.lat, lon: fb.lon, waktuTeks: fb.waktuTeks, sumberWaktu: fb.sumberWaktu}]; simpanCache();
     selesaiBalas(j);
   } catch (e) { sibuk = false; $("mengetik").hidden = true; tambah("bot", `${e.message}.`, {galat: true, simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); }
+}
+
+/* ============ video, unggah bersambung (KEPUTUSAN K57, K61, D77, D89, D90) ============
+   Berkas disimpan di antrean bersama public/inti/antre.js (saluran "lapor-video", IndexedDB pb-antre; satu-satunya pemegang IndexedDB) sampai
+   semua bagian 5 MB diterima server. Sinyal putus atau halaman ditutup = lanjut dari bagian terakhir (GET status), bukan dari nol.
+   Nomor unggahan server per butir disimpan di localStorage (butir antrean tidak ditulis ulang saat bagian berjalan). */
+const VIDEO_MAKS_N = 3, VIDEO_MB = 30, VIDEO_DETIK = 60, tunggu = ms => new Promise(r => setTimeout(r, ms)), janjiVideo = new Map();
+const idUnggah = {baca: k => { try { return localStorage.getItem(`lapor-unggah-${k}`); } catch { return null; } }, tulis: (k, v) => { try { v ? localStorage.setItem(`lapor-unggah-${k}`, v) : localStorage.removeItem(`lapor-unggah-${k}`); } catch {} }};
+function metaVideo(file) { // durasi dan sampul bingkai pertama, digambar di kanvas (tanpa metadata asli)
+  return new Promise((ok, gagal) => { const v = document.createElement("video"), u = URL.createObjectURL(file); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = u;
+    const habis = setTimeout(() => { URL.revokeObjectURL(u); gagal(new Error("Video tidak terbaca di perangkat ini")); }, 15000);
+    v.addEventListener("loadedmetadata", () => { v.currentTime = Math.min(0.5, (v.duration || 1) / 2); }, {once: true});
+    v.addEventListener("seeked", () => { const k = document.createElement("canvas"), sk = Math.min(1, 640 / (v.videoWidth || 640)); k.width = Math.round((v.videoWidth || 640) * sk); k.height = Math.round((v.videoHeight || 360) * sk);
+      k.getContext("2d").drawImage(v, 0, 0, k.width, k.height); clearTimeout(habis); URL.revokeObjectURL(u); ok({durasi: v.duration, sampul: k.toDataURL("image/jpeg", 0.7)}); }, {once: true});
+    v.addEventListener("error", () => { clearTimeout(habis); URL.revokeObjectURL(u); gagal(new Error("Video tidak terbaca di perangkat ini")); }, {once: true}); });
+}
+const jsonAman = async r => { try { return await r.json(); } catch { return {}; } };
+/* pengunggah saluran: mulai (sekali), kirim bagian yang belum ada, coba cepat 3 kali; sesudah itu antrean yang mengatur jeda (60 dtk ke atas) */
+async function unggahBersambung(berkas, x) {
+  const d = x.data;
+  for (let coba = 0; coba < 3; coba++) {
+    try {
+      let id = idUnggah.baca(x.klien_id), diterima = [];
+      if (id) { const st = await fetch(`/api/lapor/unggah/${id}`, {signal: AbortSignal.timeout(15000)}); if (st.status === 404) { idUnggah.tulis(x.klien_id, null); id = null; } else diterima = (await st.json()).diterima || []; }
+      if (!id) { const r = await fetch("/api/lapor/unggah/mulai", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa: d.wa, ukuran: berkas.size, durasi: d.durasi, gps: d.gps, bahasa: d.bahasa}), signal: AbortSignal.timeout(15000)});
+        const j = await jsonAman(r); if (!r.ok) { if (r.status < 500) videoSelesai({...d, klien_id: x.klien_id}, null, j.galat); return {s: r.status, j}; } id = j.id; idUnggah.tulis(x.klien_id, id); x.bagian = j.bagian; x.jumlah = j.jumlah; }
+      const B = x.bagian || 5 * 1048576, n = Math.ceil(berkas.size / B), sudah = new Set(diterima);
+      for (let i = 0; i < n; i++) {
+        if (sudah.has(i)) continue;
+        statusEl.textContent = `Mengirim video, bagian ${sudah.size + 1} dari ${n}. Bila sinyal putus, kiriman dilanjutkan dari bagian ini.`;
+        const r = await fetch(`/api/lapor/unggah/${id}/${i}`, {method: "PUT", body: berkas.slice(i * B, (i + 1) * B), signal: AbortSignal.timeout(120000)});
+        if (r.status === 404) { idUnggah.tulis(x.klien_id, null); throw new Error("kedaluwarsa"); }
+        if (!r.ok) throw new Error("bagian gagal");
+        sudah.add(i);
+      }
+      return {s: 200, j: {media_id: id}};
+    } catch {
+      statusEl.textContent = navigator.onLine ? "Sinyal lemah, mencoba lagi..." : "Tanpa sinyal. Video tersimpan di HP dan dilanjutkan otomatis saat tersambung.";
+      if (!navigator.onLine) break; await tunggu(2000 * 2 ** coba);
+    }
+  }
+  // tetap gagal: butir dan berkas tinggal di antrean (dikirim otomatis saat tersambung), obrolan dilepas supaya pelapor bisa lanjut
+  const t = janjiVideo.get(x.klien_id); if (t) { janjiVideo.delete(x.klien_id); t.gagal(Object.assign(new Error("Video tersimpan di HP dan terkirim otomatis saat sinyal kembali. Anda bisa lanjut mengisi laporan"), {tersimpan: true})); }
+  return {s: 0, j: {}};
+}
+const salVideo = window.PbAntre?.saluran("lapor-video", {umurMs: 24 * 3600e3, langsung: true, media: {unggah: unggahBersambung},
+  kirim: async (badan) => { // semua bagian sudah diterima: server memeriksa isi dan memasukkan video ke laporan
+    const b = badan[0], r = await fetch(`/api/lapor/unggah/${b.media_id}/selesai`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({sampul: b.sampul}), signal: AbortSignal.timeout(60000)});
+    const j = await jsonAman(r); if (r.ok || r.status === 400) { idUnggah.tulis(b.klien_id, null); videoSelesai(b, r.ok ? j : null, j.galat); }
+    return {s: r.status, j};
+  }});
+function videoSelesai(b, j, galat) {
+  const tunggu = janjiVideo.get(b.klien_id); janjiVideo.delete(b.klien_id);
+  if (tunggu) return j ? tunggu.ok(j) : tunggu.gagal(new Error(galat || "Video ditolak"));
+  if (j && b.wa === wa) { tambah("bot", "Video yang tadi terputus sudah terkirim.", {simpanKe: false}); simpanVideoCache(b, j); selesaiBalas(j); } // butir sisa dari kunjungan sebelumnya
+}
+function simpanVideoCache(b, j) { const fb = j.fotoBaru || {};
+  cache.fotoSesi = [...(cache.fotoSesi || []), {src: b.sampul, jenis: "video", durasi: fb.durasi ?? b.durasi, lencana: fb.lencana, lencanaTeks: fb.lencanaTeks, lat: fb.lat, lon: fb.lon, waktuTeks: fb.waktuTeks, sumberWaktu: fb.sumberWaktu}]; simpanCache(); }
+async function unggahVideo(file) {
+  if (!file || sibuk) return;
+  try {
+    if (!salVideo) throw new Error("Peramban ini belum bisa mengirim video. Kirim foto saja");
+    if (file.size > VIDEO_MB * 1048576) throw new Error(`Video ${Math.round(file.size / 1048576)} MB, paling besar ${VIDEO_MB} MB. Rekam lebih pendek`);
+    statusEl.textContent = "Menyiapkan video...";
+    const m = await metaVideo(file);
+    if (!Number.isFinite(m.durasi)) m.durasi = null; // WebM tanpa durasi tercatat: server memeriksa yang bisa dibaca
+    if (m.durasi > VIDEO_DETIK + 1) throw new Error(`Video ${Math.round(m.durasi)} detik, paling lama ${VIDEO_DETIK} detik. Potong dulu atau rekam lebih pendek`);
+    const data = {wa, durasi: m.durasi == null ? null : Math.round(m.durasi), gps: posisi, bahasa: bahasaKini(), sampul: m.sampul};
+    tambah("saya", "", {foto: m.sampul, simpanKe: false});
+    sibuk = true; wadah.replaceChildren(); $("mengetik").hidden = false;
+    let idButir = null;
+    const hasil = new Promise((ok, gagal) => { salVideo.masukkan({data, berkas: file}).then(id => { idButir = id; janjiVideo.set(id, {ok, gagal}); salVideo.kirimSekarang(); }, gagal); });
+    const j = await hasil.catch(async e => { if (!e.tersimpan && idButir) { await salVideo.kirimSekarang(); await salVideo.buang(idButir); } throw e; }); // ditolak: jangan ditahan di antrean
+    sibuk = false; statusEl.textContent = "";
+    simpanVideoCache(data, j); selesaiBalas(j);
+  } catch (e) { sibuk = false; statusEl.textContent = ""; $("mengetik").hidden = true; tambah("bot", `${e.message}.`, {galat: !e.tersimpan, simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); }
 }
 
 /* ============ beranda, laporan saya, bantuan ============ */
@@ -1030,38 +1116,109 @@ function kartuPenting(j) {
 }
 $("bTutupInfo").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
 
-/* ============ Alun-alun (K30, Q14): hanya laporan ditindaklanjuti atau selesai, tanpa identitas pelapor ============ */
-let alunJenis = "";
+/* ============ Alun-alun (K30, Q14, K59): hanya laporan ditindaklanjuti atau selesai, tanpa identitas pelapor ============
+   Peta titik pusat desa (D84), satu kartu per gugus dengan "N warga melapor" (D85), Ikuti kejadian di perangkat tanpa akun (D86):
+   daftar id kartu dan status terakhir yang dilihat disimpan di localStorage; kartu yang statusnya berubah ditandai. */
+let alunJenis = "", alunPeta = null, alunData = [];
+const ikutiBaca = () => { try { return JSON.parse(localStorage.getItem("lapor-ikuti") || "{}"); } catch { return {}; } };
+const ikutiTulis = x => { try { localStorage.setItem("lapor-ikuti", JSON.stringify(x)); } catch {} };
+// MapLibre butuh warna jadi (tanpa var() dan oklch): token tema diubah ke rgb lewat kanvas 1 piksel
+const tok = v => { const c = document.createElement("canvas").getContext("2d"); c.fillStyle = getComputedStyle(document.body).getPropertyValue(v).trim() || "gray"; c.fillRect(0, 0, 1, 1);
+  const [r, g, b] = c.getImageData(0, 0, 1, 1).data; return `rgb(${r},${g},${b})`; };
+function muatMaplibre() { // dimuat saat Alun-alun pertama dibuka saja (berkas besar, tidak perlu di beranda)
+  if (window.maplibregl) return Promise.resolve();
+  return muatMaplibre.janji ||= new Promise((ok, gagal) => { const l = Object.assign(document.createElement("link"), {rel: "stylesheet", href: "/vendor/maplibre/maplibre-gl.css"}); document.head.append(l);
+    const sc = Object.assign(document.createElement("script"), {src: "/vendor/maplibre/maplibre-gl.js"}); sc.onload = ok; sc.onerror = gagal; document.head.append(sc); });
+}
+function kartuAlun(x, ikut) {
+  const a = el("article", "lp-alun-kartu"), g = el("div", "lp-alun-gambar"); if (GAMBAR[x.jenisId]) g.style.backgroundImage = `url(/img/bencana-${GAMBAR[x.jenisId]}.jpg)`;
+  a.id = `alun-${x.id}`;
+  g.append(el("span", `lp-pil ${x.status}`, x.statusLabel));
+  const berubah = ikut[x.id] && ikut[x.id] !== x.status; if (berubah) g.append(el("span", "lp-pil lp-alun-berubah", "Status berubah"));
+  const isi = el("div", "lp-alun-isi");
+  isi.append(el("b", null, `${x.jenis}${x.subjenis ? `, ${x.subjenis.toLowerCase()}` : ""}`),
+    el("small", null, [x.lokasi.desa && `Desa/Kel. ${x.lokasi.desa}`, x.lokasi.kec && `Kec. ${x.lokasi.kec}`, x.lokasi.kab, x.lokasi.prov].filter(Boolean).join(", ")),
+    el("small", "lp-redup", `${x.waktu || "Waktu belum didata"}, dilaporkan ${x.tingkat.toLowerCase()}`));
+  if (x.nWarga) { const n = el("p", "lp-alun-warga"); n.append(ikon("i-orang"), `${x.nWarga.toLocaleString("id-ID")} warga melapor kejadian ini`); isi.append(n); }
+  const d = el("div", "lp-alun-dampak");
+  for (const [k, t] of [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"], ["terendam", "rumah terendam"]])
+    if (x.dampak[k]) d.append(el("span", null, `${x.dampak[k].toLocaleString("id-ID")} ${t}`));
+  if (d.childElementCount) isi.append(d);
+  if (x.bukti?.length) { const bk = el("div", "lp-alun-bukti"); bk.append(el("small", null, "Foto penanganan petugas"));
+    const kisi = el("div"); for (const u of x.bukti) { const im = el("img"); im.src = u; im.alt = "Foto penanganan oleh petugas"; im.loading = "lazy"; kisi.append(im); } bk.append(kisi); isi.append(bk); }
+  const ik = el("button", `lp-kedua lp-alun-ikuti${ikut[x.id] ? " aktif" : ""}`); ik.type = "button"; ik.setAttribute("aria-pressed", String(!!ikut[x.id]));
+  ik.append(ikon(ikut[x.id] ? "i-centang" : "i-plus"), ikut[x.id] ? "Diikuti" : "Ikuti kejadian");
+  ik.title = "Disimpan di perangkat ini. Kartu ditandai saat statusnya berubah.";
+  ik.addEventListener("click", () => { const m = ikutiBaca(); if (m[x.id]) delete m[x.id]; else m[x.id] = x.status; ikutiTulis(m); gambarAlun(); });
+  isi.append(ik);
+  a.append(g, isi); return a;
+}
+function gambarAlun() {
+  const w = $("daftarAlun"), ikut = ikutiBaca();
+  const nIkut = alunData.filter(x => ikut[x.id]).length, nUbah = alunData.filter(x => ikut[x.id] && ikut[x.id] !== x.status).length;
+  const jenis = [["", "Semua", "i-daftar"], ["diikuti", nIkut ? `Diikuti (${nIkut})` : "Diikuti", "i-centang"], ...Object.entries({banjir: "Banjir", longsor: "Tanah longsor", cuaca: "Cuaca ekstrem", gempa: "Gempa bumi", karhutla: "Karhutla", erupsi: "Erupsi", abrasi: "Abrasi", kekeringan: "Kekeringan"}).map(([id, t]) => [id, t, IKON_JENIS[id] || "i-kejadian"])];
+  $("saringAlun").replaceChildren(...jenis.map(([id, t, ik]) => { const b = el("button"); b.append(ikon(ik), el("span", null, t)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunJenis));
+    if (id === "diikuti" && nUbah) b.append(el("span", "lp-tab-jumlah", String(nUbah)));
+    b.addEventListener("click", () => { alunJenis = id; if (id === "diikuti" || !alunData.length) tampilAlun(); else tampilAlun(); }); return b; }));
+  const daftar = alunJenis === "diikuti" ? alunData.filter(x => ikut[x.id]) : alunData;
+  if (alunJenis === "diikuti" && nUbah) { const m = ikutiBaca(); for (const x of daftar) m[x.id] = x.status; ikutiTulis(m); } // dilihat = penanda berubah hilang pada buka berikutnya
+  gambarPetaAlun(daftar);
+  if (!daftar.length) {
+    const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
+    const tx = el("div", "lp-kosong-teks"), lb = el("button", "lp-utama"); lb.type = "button"; lb.append(ikon("i-kirim"), "Lapor kejadian"); lb.addEventListener("click", bukaChat);
+    tx.append(el("h2", null, alunJenis === "diikuti" ? "Belum ada kejadian yang Anda ikuti" : alunJenis ? "Belum ada laporan jenis ini" : "Belum ada laporan yang ditindaklanjuti"),
+      el("p", null, alunJenis === "diikuti" ? "Ketuk Ikuti kejadian di kartu mana pun. Kartu ditandai saat statusnya berubah." : "Laporan warga muncul di sini sesudah diperiksa dan ditindaklanjuti petugas BNPB atau BPBD. Lihat kejadian di sekitar Anda? Laporkan sekarang."), lb);
+    k.append(m, tx); return w.replaceChildren(k);
+  }
+  w.replaceChildren(...daftar.map(x => kartuAlun(x, ikut)));
+}
+async function gambarPetaAlun(daftar) {
+  const wp = $("petaAlun"), titik = daftar.filter(x => x.titik);
+  wp.hidden = !titik.length; if (!titik.length) return;
+  try { await muatMaplibre(); } catch { wp.hidden = true; return; }
+  const fc = {type: "FeatureCollection", features: titik.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.titik.lon, x.titik.lat]},
+    properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: tok(x.status === "selesai" ? "--ok" : "--warn")}}))};
+  const pas = () => { const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates); alunPeta.fitBounds(b, {padding: 48, maxZoom: 11, duration: 0}); };
+  if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); pas(); return; }
+  alunPeta = new maplibregl.Map({container: wp.querySelector(".lp-peta-alun"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 4, attributionControl: {compact: true}});
+  alunPeta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
+  alunPeta.on("load", () => {
+    alunPeta.addSource("alun", {type: "geojson", data: fc, cluster: true, clusterRadius: 40, clusterMaxZoom: 10});
+    alunPeta.addLayer({id: "kelompok", type: "circle", source: "alun", filter: ["has", "point_count"], paint: {"circle-color": tok("--head-bg"), "circle-radius": ["step", ["get", "point_count"], 16, 10, 22, 50, 28], "circle-stroke-width": 3, "circle-stroke-color": tok("--card")}});
+    alunPeta.addLayer({id: "kelompok-n", type: "symbol", source: "alun", filter: ["has", "point_count"], layout: {"text-field": ["get", "point_count_abbreviated"], "text-size": 13, "text-font": ["Noto Sans Bold"]}, paint: {"text-color": tok("--on-head")}});
+    alunPeta.addLayer({id: "titik", type: "circle", source: "alun", filter: ["!", ["has", "point_count"]], paint: {"circle-color": ["get", "warna"], "circle-radius": 8, "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
+    alunPeta.on("click", "kelompok", e => { const f = e.features[0]; alunPeta.getSource("alun").getClusterExpansionZoom(f.properties.cluster_id).then(z => alunPeta.easeTo({center: f.geometry.coordinates, zoom: z})); });
+    alunPeta.on("click", "titik", e => { const p = e.features[0].properties, box = el("div", "lp-alun-pop"); box.append(el("b", null, p.judul), el("small", null, p.tempat), el("small", null, p.status));
+      const lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button"; lihat.addEventListener("click", () => document.getElementById(`alun-${p.id}`)?.scrollIntoView({behavior: "smooth", block: "center"})); box.append(lihat);
+      new maplibregl.Popup({offset: 10, closeButton: false}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(alunPeta); });
+    for (const l of ["kelompok", "titik"]) { alunPeta.on("mouseenter", l, () => { alunPeta.getCanvas().style.cursor = "pointer"; }); alunPeta.on("mouseleave", l, () => { alunPeta.getCanvas().style.cursor = ""; }); }
+    pas();
+  });
+}
 async function tampilAlun() {
   const w = $("daftarAlun");
-  const jenis = [["", "Semua"], ...Object.entries({banjir: "Banjir", longsor: "Tanah longsor", cuaca: "Cuaca ekstrem", gempa: "Gempa bumi", karhutla: "Karhutla", erupsi: "Erupsi", abrasi: "Abrasi", kekeringan: "Kekeringan"})];
-  $("saringAlun").replaceChildren(...jenis.map(([id, t]) => { const b = el("button"); b.append(ikon(id ? IKON_JENIS[id] || "i-kejadian" : "i-daftar"), el("span", null, t)); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(id === alunJenis));
-    b.addEventListener("click", () => { alunJenis = id; tampilAlun(); }); return b; }));
-  w.replaceChildren(el("p", "lp-redup", "Memuat laporan..."));
+  if (!alunData.length) w.replaceChildren(el("p", "lp-redup", "Memuat laporan..."));
   try {
-    const j = await (await fetch(`/api/lapor/alun?jenis=${alunJenis}`, {signal: AbortSignal.timeout(10000)})).json();
-    if (!j.baris?.length) {
-      const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
-      const tx = el("div", "lp-kosong-teks"), lb = el("button", "lp-utama"); lb.type = "button"; lb.append(ikon("i-kirim"), "Lapor kejadian"); lb.addEventListener("click", bukaChat);
-      tx.append(el("h2", null, alunJenis ? "Belum ada laporan jenis ini" : "Belum ada laporan yang ditindaklanjuti"), el("p", null, "Laporan warga muncul di sini sesudah diperiksa dan ditindaklanjuti petugas BNPB atau BPBD. Lihat kejadian di sekitar Anda? Laporkan sekarang."), lb);
-      k.append(m, tx);
-      return w.replaceChildren(k);
-    }
-    w.replaceChildren(...j.baris.map(x => {
-      const a = el("article", "lp-alun-kartu"), g = el("div", "lp-alun-gambar"); if (GAMBAR[x.jenisId]) g.style.backgroundImage = `url(/img/bencana-${GAMBAR[x.jenisId]}.jpg)`;
-      g.append(el("span", `lp-pil ${x.status}`, x.statusLabel));
-      const isi = el("div", "lp-alun-isi");
-      isi.append(el("b", null, `${x.jenis}${x.subjenis ? `, ${x.subjenis.toLowerCase()}` : ""}`),
-        el("small", null, [x.lokasi.desa && `Desa/Kel. ${x.lokasi.desa}`, x.lokasi.kec && `Kec. ${x.lokasi.kec}`, x.lokasi.kab, x.lokasi.prov].filter(Boolean).join(", ")),
-        el("small", "lp-redup", `${x.waktu || "Waktu belum didata"}, dilaporkan ${x.tingkat.toLowerCase()}`));
-      const d = el("div", "lp-alun-dampak");
-      for (const [k, t] of [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"], ["terendam", "rumah terendam"]])
-        if (x.dampak[k]) d.append(el("span", null, `${x.dampak[k].toLocaleString("id-ID")} ${t}`));
-      if (d.childElementCount) isi.append(d);
-      a.append(g, isi); return a;
-    }));
+    const j = await (await fetch(`/api/lapor/alun?jenis=${alunJenis === "diikuti" ? "" : alunJenis}`, {signal: AbortSignal.timeout(10000)})).json();
+    alunData = j.baris || [];
+    gambarAlun();
   } catch { w.replaceChildren(el("p", "lp-redup", "Alun-alun belum bisa dimuat. Coba lagi.")); }
 }
+
+/* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */
+const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || "id"; } catch { return "id"; } };
+(async () => {
+  const sel = $("pilihBahasa"); if (!sel) return;
+  let daftar = []; try { daftar = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch {}
+  if (daftar.length < 2) return; // tanpa model AI: hanya Indonesia, pemilih tidak tampil
+  sel.replaceChildren(...daftar.map(b => Object.assign(document.createElement("option"), {value: b.kode, textContent: b.nama})));
+  sel.value = daftar.some(b => b.kode === bahasaKini()) ? bahasaKini() : "id"; sel.closest(".lp-tab-bahasa").hidden = false;
+  const hp = sel.closest(".lp-tab-bahasa").cloneNode(true); hp.classList.add("lp-bahasa-hp"); $("sapa").after(hp); // layar sempit: menu samping jadi bilah bawah
+  const sel2 = hp.querySelector("select"); sel2.removeAttribute("id"); sel2.value = sel.value;
+  for (const [a, b] of [[sel, sel2], [sel2, sel]]) a.addEventListener("change", () => { b.value = a.value; });
+  for (const x of [sel, sel2]) x.addEventListener("change", () => { try { localStorage.setItem("lapor-bahasa", x.value); } catch {}
+    statusEl.textContent = x.value === "id" ? "" : "Pesan berikutnya dijawab dalam bahasa pilihan Anda. Petugas membaca terjemahannya dan teks asli Anda."; });
+})();
 
 /* ============ mulai ============ */
 async function mulai(nomor) {
@@ -1077,7 +1234,7 @@ async function mulai(nomor) {
       terapkan(j);
     }
   } catch {}
-  await segarkanLaporan(); tampilBeranda();
+  await segarkanLaporan(); tampilBeranda(); salVideo?.kirimSekarang(); // video yang terputus pada kunjungan sebelumnya
   setInterval(() => { if (!document.hidden) tarikKotak(); }, 20000); tarikKotak();
 }
 

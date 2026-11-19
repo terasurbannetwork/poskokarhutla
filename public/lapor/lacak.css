@@ -87,3 +87,9 @@ body{display:block;padding:0;background:var(--surface)}
 .lk-kartu > h2{padding:12px 18px;background:var(--k);color:var(--on-pekat)!important}
 .lk-kartu > h2 svg{background:color-mix(in oklab,var(--on-pekat) 20%,transparent)!important;color:var(--on-pekat)!important}
 .lk-kartu > :not(h2){margin:16px 18px 18px}
+
+/* foto penanganan petugas (K60) */
+.lk-bukti{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.lk-bukti figure{margin:0;display:grid;gap:4px}
+.lk-bukti img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
+.lk-bukti figcaption{font-size:.75rem;color:var(--ink2)}

@@ -114,3 +114,13 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 | LA-61 | Alun-alun: peta MapLibre titik pusat desa (D84), kartu bergugus "N warga melapor" (D85), Ikuti dan menu Diikuti di perangkat, perintah WA `ikuti` (D86); rute lokal dan Worker `/api/lapor/alun` menambah `desaLat`, `desaLon`, `pelaporGugus` | `layar-peta`, `warga-api`, `wa-bot` | `inp-reviewer`, `security-reviewer`, `selera-angka` | LA-24a | Q48 |
 | LA-62 | Bukti tindak lanjut: unggah foto petugas di rincian meja saat Selesai (D87), `lapor_bukti`, tampil di lacak dan pesan WA penutup, tanda "boleh publik" (D88) | `warga-api`, `layar-peta`, `wa-bot` | `security-reviewer`, `migrasi-idempoten` | LA-10, LA-58 | Q47, Q49 |
 | LA-63 | Unggah bersambung: rute multipart R2 dan `lapor_unggah` (D89), lanjut dari IndexedDB, abort 24 jam di cron yang ada (D90), pita bagian; uji integrasi putus di bagian ke-3 lalu lanjut | `warga-api`, `layar-peta` | `guard-api`, `migrasi-idempoten`, `inp-reviewer` | LA-58, LA-35 | Q50 |
+
+### Pelaksanaan K57 sampai K61 (19 Nov 2026 malam)
+
+| Tiket | Status | Bukti |
+| --- | --- | --- |
+| LA-58 | Selesai lokal: rekam video dan pilih dari galeri di langkah foto, sampul bingkai pertama, pemutar di galeri meja, sampul di PDF, pembaca MP4 `src/media_berkas.js` (durasi, waktu rekam, lokasi `©xyz`; `src/foto.js` memakai modul yang sama). Rute Worker dan bagian WA (gateway) menyusul. | `tests/lapor/lokal_media.test.mjs` |
+| LA-59, LA-60 | Selesai lokal: `src/lapor_bahasa.js` (13 pilihan, terjemah masuk dan keluar, angka baru ditolak), pemilih bahasa di menu samping dan beranda, teks asli di transkrip meja (pil "diterjemahkan AI"). Belum: pesan tetap tertinjau penutur (Q44), antarmuka Inggris (D83), Worker dan WA. | uji manual Jawa lewat 8800 |
+| LA-61 | Selesai lokal: peta MapLibre titik pusat desa dengan kelompok, kartu bergugus "N warga melapor", Ikuti dan saring Diikuti di perangkat. Belum: perintah WA `ikuti`. | `tests/lapor/lokal_media.test.mjs` |
+| LA-62 | Selesai lokal: kartu Foto penanganan di meja, Selesai butuh foto atau alasan, foto di halaman lacak, centang "Tampil di Alun-alun" per foto. Belum: rute Worker, tabel `lapor_bukti`, pesan WA penutup. | `tests/lapor/lokal_media.test.mjs` |
+| LA-63 | Selesai lokal: rute bagian 5 MB, status, selesai, buang 24 jam; peramban menyimpan berkas di antrean bersama `public/inti/antre.js` (saluran `lapor-video`, kait baru `media.unggah`) dan melanjutkan dari bagian terakhir. Belum: multipart R2 di Worker. | `tests/lapor/lokal_media.test.mjs`, `tests/inti/antre.test.mjs` |

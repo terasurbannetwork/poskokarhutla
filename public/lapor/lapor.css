@@ -636,6 +636,24 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-alun-isi small{font-size:.8125rem;line-height:1.4}
 .lp-alun-dampak{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .lp-alun-dampak span{padding:3px 10px;border-radius:999px;background:var(--surface);font-size:.75rem;font-weight:700}
+/* Alun-alun hidup (K59): peta, gugus, ikuti, bukti penanganan */
+.lp-peta-alun-kartu{display:grid;gap:8px;margin:0 16px;padding:12px;background:var(--card);border-radius:16px;box-shadow:var(--bayang)}
+.lp-peta-alun{height:clamp(260px,42vh,420px);border-radius:12px;overflow:hidden}
+.lp-peta-alun-kartu > p{margin:0;font-size:.75rem}
+.lp-alun-warga{display:inline-flex;align-items:center;gap:6px;margin:4px 0 0;padding:4px 10px;justify-self:start;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2);font-size:.75rem;font-weight:800}
+.lp-alun-warga svg{width:14px;height:14px}
+.lp-alun-berubah{background:var(--warn);color:var(--on-head)}
+.lp-alun-gambar .lp-alun-berubah{top:8px;bottom:auto}
+.lp-alun-bukti{display:grid;gap:4px;margin-top:6px}
+.lp-alun-bukti small{font-size:.6875rem;font-weight:700;color:var(--ink2)}
+.lp-alun-bukti div{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.lp-alun-bukti img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.lp-alun-ikuti{justify-self:start;margin-top:8px;min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 14px}
+.lp-alun-ikuti svg{width:16px;height:16px}
+.lp-alun-ikuti.aktif{background:color-mix(in oklab,var(--ok) 14%,var(--card));color:var(--ok);border-color:var(--ok)}
+.lp-alun-pop{display:grid;gap:2px;font:600 .8125rem/1.35 var(--font)}
+.lp-alun-pop small{color:var(--ink2)}
+@media (min-width:900px){.lp-peta-alun-kartu{margin:0 48px}}
 @media (min-width:900px){.lp-alun{grid-template-columns:repeat(auto-fill,minmax(380px,1fr));padding:16px 48px 48px}.lp-alun-kartu{grid-template-columns:150px minmax(0,1fr)}}
 
 /* Bantuan: kompartemen per kelompok, tanpa meluber (pemilik 19 Nov 2026: "kenapa sampai samping over") */
@@ -1148,6 +1166,8 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-foto-cap{position:absolute;left:8px;right:8px;bottom:8px;display:grid;gap:2px;padding:8px 10px;border-radius:10px;background:color-mix(in oklab,var(--head-bg) 78%,transparent);color:var(--on-head);font:700 .75rem/1.3 var(--font);font-variant-numeric:tabular-nums}
 .lp-foto-cap span{display:flex;align-items:center;gap:6px}
 .lp-foto-cap svg{width:13px;height:13px;flex:none}
+.lp-foto-video{position:absolute;left:8px;top:8px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:color-mix(in oklab,var(--head-bg) 78%,transparent);color:var(--on-head);font:700 .75rem/1.3 var(--font)}
+.lp-foto-video svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
 .lp-foto-ket{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
 .lp-foto-ket small{font-size:.6875rem;color:var(--ink2)}
 .lp-foto-ket .lp-teks-tombol{margin-left:auto;font-size:.75rem}
@@ -1292,7 +1312,7 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-opsi-ikon button{align-content:center}
 
 /* ===== Alun-alun: pilihan jenis selebar layar berikon, kosong selebar layar (pemilik 19 Nov 2026: "jelek banget") ===== */
-#saringAlun{display:grid!important;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;overflow-x:auto;scrollbar-width:none}
+#saringAlun{display:grid!important;grid-auto-flow:column;grid-auto-columns:minmax(max-content,1fr);gap:8px;overflow-x:auto;scrollbar-width:none}
 #saringAlun button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 12px;border-radius:14px;white-space:nowrap}
 #saringAlun button svg{width:18px;height:18px;flex:none}
 @media (max-width:700px){#saringAlun{grid-auto-columns:max-content}}
@@ -1441,7 +1461,7 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-opsi-grup:first-child{margin-top:0}
 /* kartu foto selebar layar, tiga aksi sebaris (pemilik 19 Nov 2026: "agar sampai ujung") */
 .lp-langkah-foto{max-width:none!important}
-.lp-foto-aksi{display:grid!important;grid-template-columns:1.2fr 1fr 1fr;gap:10px}
+.lp-foto-aksi{display:grid!important;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:10px}
 .lp-foto-aksi > button{min-height:56px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .lp-foto-aksi > button svg{width:18px;height:18px}
 .lp-foto-aksi .lp-foto-lanjut{display:grid!important;justify-items:center;align-content:center;gap:2px;border:1px dashed var(--line);border-radius:12px;background:var(--card)}
@@ -1891,9 +1911,17 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-kepala-teks{display:grid;gap:2px;flex:1;min-width:0}
 .lp-kepala-teks b{font:800 1rem var(--display);color:var(--brand)}
 .lp-kepala-teks small{font:500 .8125rem/1.4 var(--font);color:var(--ink2)}
+/* pemilih bahasa percakapan (K58) di menu samping */
+.lp-tab-bahasa{display:flex;align-items:center;gap:8px;margin:8px 12px 0;padding:6px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink2)}
+.lp-tab-bahasa[hidden]{display:none}
+.lp-tab-bahasa svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-tab-bahasa select{flex:1;min-width:0;min-height:32px;border:0;background:transparent;color:var(--ink);font:600 .8125rem var(--font)}
+@media (max-width:899px){.lp-tab-bahasa{display:none}}
 /* pembuka: logo BNPB besar di tengah, BNPB dan nama lembaga di bawahnya, semua rata tengah (pemilik 19 Nov 2026) */
 .lp-pb-merek{flex-direction:column;gap:8px;text-align:center}
 .lp-pb-merek img{width:clamp(72px,9vh,96px);height:clamp(72px,9vh,96px)}
 .lp-pb-merek span{align-items:center;text-align:center;gap:2px}
 .lp-pb-merek b{font-size:1.375rem;color:var(--accent)}
 .lp-pb-merek small{font-size:.8125rem}
+.lp-bahasa-hp{display:none;margin:12px 0 0;max-width:320px}
+@media (max-width:899px){.lp-bahasa-hp{display:flex}}

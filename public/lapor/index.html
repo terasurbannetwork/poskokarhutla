@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=120" rel="stylesheet">
+<link href="/lapor/lapor.css?v=122" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -30,6 +30,8 @@
   <symbol id="i-kalender" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></symbol>
   <symbol id="i-orang" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></symbol>
   <symbol id="i-kamera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-bahasa" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></symbol>
+  <symbol id="i-putar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5v5l4.5-2.5z"/></symbol>
   <symbol id="i-status" viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M7 5.5H5v15h14v-15h-2"/><path d="m8.5 13.5 2.3 2.3 4.7-4.6"/></symbol>
   <symbol id="i-kirim" viewBox="0 0 24 24"><path d="M4 12 20 4l-6 16-2.5-6.5z"/></symbol>
   <symbol id="i-panah" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
@@ -199,6 +201,7 @@
       </aside>
     </header>
     <div class="lp-saring" id="saringAlun" role="tablist" aria-label="Jenis bencana"></div>
+    <section class="lp-peta-alun-kartu" id="petaAlun" aria-label="Peta kejadian" hidden><div class="lp-peta-alun"></div><p class="lp-redup">Titik di pusat desa, bukan lokasi pelapor. Angka di lingkaran = jumlah kejadian berdekatan.</p></section>
     <div class="lp-alun" id="daftarAlun"></div>
   </section>
 
@@ -347,6 +350,7 @@
     <button type="button" data-ke="alun"><svg aria-hidden="true"><use href="#i-pengungsian"/></svg>Alun-alun</button>
     <button type="button" data-ke="tentang"><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Cara melapor</button>
     <button type="button" data-ke="privasi"><svg aria-hidden="true"><use href="#i-status"/></svg>Kebijakan privasi</button>
+    <label class="lp-tab-bahasa" hidden><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span class="lp-sr">Bahasa percakapan</span><select id="pilihBahasa" aria-label="Bahasa percakapan"></select></label>
     <div class="lp-tab-profil" id="tabProfil" hidden><span class="lp-tab-avatar" id="tabAvatar"></span><span><b id="tabNama"></b><small id="tabWa"></small></span></div>
     <!-- Sigap di ruang kosong menu samping (pemilik 19 Nov 2026: "ini agar disini") -->
     <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
@@ -355,7 +359,8 @@
 </div>
 <script src="/inti/exif.js" defer></script>
 <script src="/inti/foto_kecil.js" defer></script>
+<script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=87"></script>
+<script type="module" src="/lapor/lapor.js?v=91"></script>
 </body>
 </html>
