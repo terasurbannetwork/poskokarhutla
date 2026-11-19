@@ -118,3 +118,30 @@ Sebelum jalan: kunci agen global (D26); cek biaya harian dan per proyek (D20). S
 ```
 
 `pptx` wajib bila `tanya` kosong: nama tanpa `/`, `\`, atau `..`, berkas biasa (bukan tautan simbolik) di `keluaran/`, ZIP yang memuat `ppt/presentation.xml`, paling besar 30 MB. `ringkasan` paling banyak 300 huruf; `perubahan`, `catatan`, `tanya` masing-masing paling banyak 10 butir, tiap butir paling banyak 300 huruf.
+
+## A15. Rapikan bahan (D30, D31)
+
+- Pemicu: `jalankanGenerator` gagal dan pesannya bukan galat mesin (`kunci`, `keluaran tidak ada`, `ENOENT`, `timeout`, `dipakai proses lain`).
+- Masukan Claude: pesan galat (900 huruf terakhir) dan tiap bahan teks `{kunci, teks}` yang disamarkan. Keluaran skema `{bahan: [{kunci, teks}], perubahan: [string]}`.
+- Pagar: angka di teks rapi dinormalkan seperti A4 (titik ribuan dibuang). Tiap angka harus ada di himpunan angka teks mentah bahan yang sama, kecuali (a) angka di awal baris yang diikuti titik atau tutup kurung (nomor urut) dan (b) angka di baris yang memuat "menonjol" atau "kejadian". Kunci bahan yang tidak dikirim tidak boleh muncul.
+- Paling banyak 2 putaran; putaran kedua menerima galat generator putaran pertama.
+- Pagar (diperketat sesudah pemeriksa bersih 19 Nov): angka isi dibandingkan sebagai multiset (tanpa angka baru, ganda, atau hilang); nomor urut hanya dikecualikan bila berurutan 1, 2, 3; kepala "menonjol" hanya baris pendek berangka satu, nilainya harus sama dengan jumlah nomor urut atau sudah ada di teks mentah; digit Unicode selain 0-9 ditolak.
+- Teks yang dikirim ke Claude sudah disamarkan (nomor HP, NIK, surel), jadi bahan rapi yang dipakai generator memuat tanda samaran itu, bukan nilai aslinya.
+- Maksud yang berlaku (D33): tanpa draf hanya buat, lanjut, final, batal, status, bantuan, dan obrolan berbalasan yang menahan pesan dari bahan; pemegang draf hanya tanya, final, batal, status, bantuan, dan obrolan berbalasan, selainnya revisi. Kumpul revisi hanya hidup selama proyeknya draf.
+
+## A16. Maksud pesan (D32, D33)
+
+- Syarat: teks 2 sampai 500 huruf, bukan perintah baku, bukan diteruskan, `kenali` tidak mengenalinya sebagai bahan, tidak ada kumpulan revisi terbuka.
+- Konteks: daftar proyek pengirim `{id, jenis, tanggal, status, versi}` dan tanggal hari ini WIB.
+- Keluaran skema `{maksud, jenis, tanggal, balasan}`; `maksud` di luar daftar = `bahan`. Tanggal di luar 14 hari ke belakang sampai besok diabaikan.
+
+## A17. Tanya draf (D34)
+
+- Masukan: inventaris teks deck versi terakhir `[{slide, shape, teks}]` (dipotong 30.000 huruf), riwayat instruksi versi, pertanyaan.
+- Keluaran skema `{jawaban}`, dipotong 800 huruf. Tidak memanggil generator dan tidak menyimpan versi.
+
+## A18. Kumpul revisi (D35)
+
+- `kumpul.json`: `{wa_sha: {id, mulai, waktu, pesan: [teks]}}`; berlaku 2 jam sejak pesan terakhir.
+- Gabungan: "Revisi dari beberapa pesan, kerjakan semuanya:" lalu "1. ...", "2. ..."; paling banyak 30 pesan dan 8000 huruf.
+- Draf berubah versi sebelum *lanjut*: kumpulan tetap dipakai untuk versi terbaru.

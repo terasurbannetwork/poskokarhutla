@@ -30,6 +30,19 @@ Semua dunia luar (Claude API, gateway, Drive, Worker, generator) disuntik lewat 
 | T22 | `buat`, `status` tanpa tanggal, `bantuan` ke mesin proyek; `kirim ulang` dan `status <tanggal>` tetap ke `perintah.mjs`; uji `perintah.test.mjs` lama yang masih berlaku tetap hijau | `node --test tests/wa/*.test.mjs` |
 | T23 | Pesan susulan (`lama:true`) tidak masuk proyek, tidak memanggil Claude, perintahnya tidak jalan; T-TERLEWAT terkirim tepat sekali per nomor; jalur terjadwal lama tetap menerima susulannya | `node --test tests/wa/proyek.test.mjs` |
 
+## V2.1: kriteria terima
+
+| ID | Kriteria | Perintah bukti |
+| --- | --- | --- |
+| T37 | Generator gagal baca, Claude merapikan, generator ulang berhasil: draf jadi dan mencatat "Bahan dirapikan Claude" | `node --test tests/wa/proyek.test.mjs` |
+| T38 | Pagar rapikan menolak angka baru (selain nomor urut dan jumlah menonjol); galat mesin tidak memicu rapikan; paling banyak 2 putaran | `node --test tests/wa/maksud.test.mjs` |
+| T39 | Maksud: "tolong bikin laporan harian hari ini" = daftar bahan; "udah oke finalkan" = tanya *ya*, *ya* = final; "batalin aja" = tanya batal | idem |
+| T40 | Maksud gagal (galat Claude) = perilaku lama; perintah baku tidak pernah memanggil Claude | idem |
+| T41 | Tanya draf dijawab tanpa versi baru dan tanpa memanggil generator | `node --test tests/wa/proyek.test.mjs` |
+| T42 | *revisi* membuka kumpulan; tiga pesan (satu diteruskan) masuk kumpulan, tidak jadi bahan (`klasifikasi` = revisi); *lanjut* = satu revisi berisi ketiganya bernomor | idem |
+| T43 | *batal* saat kumpulan terbuka hanya menutup kumpulan; kumpulan lewat 2 jam dibuang | idem |
+| T44 | Tanpa `ANTHROPIC_API_KEY` atau dengan Claude gagal, semua uji V1 dan V2 tetap hijau | `node --test tests/wa/*.test.mjs` |
+
 ## Uji balik kemiripan (K5, BL-17)
 
 1. Pilih 20 hari sejak 1 Nov 2026 yang punya deck manual final (`Revisi N` tertinggi) dan bahan WA di D1.

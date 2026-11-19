@@ -444,13 +444,13 @@ Aturan berhentinya sama dengan §2.1. Daftar tindakan hanya dari logbook atau su
 ### 2.29 Bot Laporan WA dengan Claude API (forward bahan, `buat`, revisi lewat chat, `final` ke Drive tim IT): baca dulu, baru bangun
 
 Sebelum menyentuh mesin proyek laporan di bot WA, pemanggil Claude API, operasi ubah deck, kunci angka sistem, atau tabel `bl_*`, baca dokumen di
-`data/kajian-bnpb/bot-laporan/` dengan urutan otoritas ini (kode di `scripts/wa/proyek.mjs`, `scripts/wa/claude.mjs`, `scripts/wa/claude/**`, mesin agen V2 `scripts/wa/agen.mjs`, `scripts/wa/agen_pagar.mjs`, `scripts/wa/agen_isi.py`, `scripts/wa/agen/**`, `tests/wa/**` milik `wa-bot`; `data/laporan-bnpb/generator/ubah.py` dan perubahan generator milik `pipa-data`; `src/wa_proyek.js`, bagian bot laporan `src/hak.js`, migrasi `bl_*` milik `warga-api`):
+`data/kajian-bnpb/bot-laporan/` dengan urutan otoritas ini (kode di `scripts/wa/proyek.mjs`, `scripts/wa/claude.mjs`, `scripts/wa/claude/**`, kecerdasan percakapan V2.1 `scripts/wa/maksud.mjs`, versi dan ikon `scripts/wa/versi.mjs`, `scripts/wa/hias.cjs`, mesin agen V2 `scripts/wa/agen.mjs`, `scripts/wa/agen_pagar.mjs`, `scripts/wa/agen_isi.py`, `scripts/wa/agen/**`, `tests/wa/**` milik `wa-bot`; `data/laporan-bnpb/generator/ubah.py` dan perubahan generator milik `pipa-data`; `src/wa_proyek.js`, bagian bot laporan `src/hak.js`, migrasi `bl_*` milik `warga-api`):
 
-1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K27 (V2: K22–K24), rancangan D1–D29 (V2: D14–D29), pertanyaan terbuka Q1–Q21 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K30 (V2: K22–K28, V2.1: K29–K30), rancangan D1–D35 (V2: D14–D29, V2.1: D30–D35), pertanyaan terbuka Q1–Q24 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (kutipan, operasi ubah, kunci, banding 7 hari), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
-9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BL-*`, V2 `BV-*`), `GLOSARIUM.md`.
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BL-*`, V2 dan V2.1 `BV-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Bot V1: Claude tidak pernah menulis angka sistem dan tidak pernah menyunting PPTX langsung; deck selalu dari generator yang ada. Bot V2 (`BL_VERSI=2`, K23): agen Claude Code menyempurnakan deck generator di ruang kerjanya sendiri, angka sistem dijaga pagar angka mesin, agen tidak pernah mengirim, mengunggah, commit, atau mengubah generator; versi append-only; hanya nomor terdaftar; kunci API hanya di `.env` mesin; jalur terjadwal `otomatis.mjs` tidak diubah.
+Aturan berhentinya sama dengan §2.1. Bot V1: Claude tidak pernah menulis angka sistem dan tidak pernah menyunting PPTX langsung; deck selalu dari generator yang ada. Bot V2 (`BL_VERSI=2`, K23): agen Claude Code menyempurnakan deck generator di ruang kerjanya sendiri, angka sistem dijaga pagar angka mesin, agen tidak pernah mengirim, mengunggah, commit, atau mengubah generator. Bot V2.1 (K29, K30): kalimat bebas dipahami Claude Haiku, *final* dan *batal* dari kalimat bebas selalu ditanya dulu, rapikan bahan tidak pernah menambah angka (pagar D31), kumpul revisi dikerjakan sekali saat *lanjut*. Tiap perubahan perilaku bot menaikkan `VERSI` dan changelog (gerbang `tests/wa/versi.test.mjs`); versi append-only; hanya nomor terdaftar; kunci API hanya di `.env` mesin; jalur terjadwal `otomatis.mjs` tidak diubah.
 
 ## 3. Bentuk kerja
 

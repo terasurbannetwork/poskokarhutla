@@ -32,3 +32,11 @@
 | Pagar angka | Pemeriksaan mesin atas isi PPTX lengkap sesudah agen bekerja: angka sistem harus sama dengan deck dasar. |
 | Pedoman agen | Aturan cara membuat laporan untuk agen, disuling dari kerja pemilik seminggu terakhir. |
 | Laporan kemarin | Final laporan jenis sama dari tanggal terdekat sebelumnya, dipakai agen sebagai acuan gaya dan urutan, bersama skrip harian kemarin. |
+
+## V2.1
+
+| Istilah | Arti |
+| --- | --- |
+| Rapikan bahan | Claude membetulkan bentuk teks WA yang tidak terbaca generator (penomoran, label, pemisah) tanpa menambah angka. |
+| Maksud pesan | Arti kalimat bebas pemakai (buat, final, revisi, tanya, dan seterusnya) yang ditebak Claude Haiku. |
+| Kumpul revisi | Mode sesudah *revisi*: pesan-pesan revisi ditampung lalu dikerjakan sekali saat *lanjut*. |

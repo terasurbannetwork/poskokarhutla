@@ -38,3 +38,13 @@ Urutan kerja. Ambil satu tiket, kerjakan hanya cakupannya. Tiket yang ditahan Q 
 | BV-07 | Pemilik: pasang di Mac mini, `BL_VERSI=2`, uji asap satu laporan harian dan satu penanganan | pemilik | draf V2 sampai di WA | BV-06 |
 | BV-08 | Uji banding 3 hari V1 lawan V2, dinilai pemilik | wa-bot, pemilik | laporan banding | BV-07, Q15 |
 | BV-09 | V2 untuk nomor terdaftar lain | wa-bot, pemilik | kunci khusus V2 terpasang | Q17 |
+
+## V2.1
+
+| Tiket | Isi | Pengerja | Bukti siap | Bergantung |
+| --- | --- | --- | --- | --- |
+| BV-10 | Paket dokumen V2.1 (K29, K30, D30-D35, Q22-Q24, A15-A18, T37-T44) | orkestrator | ditinjau pemeriksa bersih | - |
+| BV-11 | Rapikan bahan saat generator gagal (`claude.mjs` rapikan, `maksud.mjs` pagar, `proyek.mjs` buat) | wa-bot | T37, T38 | BV-10 |
+| BV-12 | Kumpul revisi (`revisi`, `lanjut`, `batal`), `klasifikasi`, `arah.cjs` | wa-bot | T42, T43 | BV-10 |
+| BV-13 | Maksud kalimat bebas dan tanya draf | wa-bot | T39-T41, T44 | BV-11 |
+| BV-14 | Versi 2.1, changelog, panduan dan tutorial WA | wa-bot | `tests/wa/versi.test.mjs` | BV-11 sampai BV-13 |

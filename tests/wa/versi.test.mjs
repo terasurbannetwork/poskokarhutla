@@ -14,7 +14,8 @@ const banding = (a, b) => { const x = a.split('.').map(Number), y = b.split('.')
 // Berkas yang menentukan perilaku bot di WA (bukan uji, bukan dokumen)
 export const BERKAS_BOT = ['scripts/wa/proyek.mjs', 'scripts/wa/agen.mjs', 'scripts/wa/agen_pagar.mjs', 'scripts/wa/agen_isi.py', 'scripts/wa/biaya.mjs',
   'scripts/wa/claude.mjs', 'scripts/wa/arah.cjs', 'scripts/wa/gateway/index.js', 'scripts/wa/gateway/limiter.js', 'scripts/wa/agen/PEDOMAN.md',
-  'scripts/wa/agen/PEDOMAN-HARIAN.md', 'scripts/wa/agen/PEDOMAN-PENANGANAN.md']
+  'scripts/wa/agen/PEDOMAN-HARIAN.md', 'scripts/wa/agen/PEDOMAN-PENANGANAN.md', 'scripts/wa/maksud.mjs', 'scripts/wa/hias.cjs',
+  ...fs.readdirSync(path.join(AKAR, 'scripts/wa/claude')).filter((n) => n.endsWith('.md')).sort().map((n) => 'scripts/wa/claude/' + n)]
 const sidik = () => {
   const h = crypto.createHash('sha256')
   for (const f of BERKAS_BOT) h.update(f + '\0' + fs.readFileSync(path.join(AKAR, f), 'utf8').replace(/\r\n/g, '\n') + '\0')

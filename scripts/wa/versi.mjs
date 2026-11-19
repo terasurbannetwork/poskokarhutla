@@ -1,14 +1,20 @@
 // Nama, versi, dan changelog Bot Laporan BNPB (pemilik 19 Nov 2026: "Nama Bot: Bot Laporan BNPB, tampilin versi berapa, bisa liat changelog
 // versi"; "buat versioning, kamu yang urus setelahnya ya"). Penomoran pemilik: v0 = bot terjadwal awal, v1 = bot proyek (18 Nov),
-// v2 = agen Claude Code (19 Nov), v2.1 = kecerdasan percakapan (sedang dibuat).
+// v2 = agen Claude Code (19 Nov), v2.1 = kecerdasan percakapan.
 // ATURAN (gerbang tests/wa/versi.test.mjs): tiap perubahan perilaku bot di scripts/wa menaikkan VERSI dan menambah entri CHANGELOG paling
 // atas dengan versi yang sama. Patch (x.y.Z) = perbaikan; minor (x.Y) = kemampuan baru; mayor (X) = cara kerja baru.
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.0.2'
+export const VERSI = '2.1'
 
 export const CHANGELOG = [
+  { versi: '2.1', tanggal: '2026-11-19', isi: [
+    'Bot paham kalimat biasa: misalnya "bikinin laporan harian kemarin", "udah oke finalkan", atau "laporanku gimana". Final dan batal tetap ditanya dulu.',
+    'Bisa bertanya tentang isi draf ("slide 3 isinya apa") tanpa mengubah draf.',
+    'Revisi panjang: ketik *revisi*, kirim revisinya dalam beberapa pesan (boleh diteruskan), lalu *lanjut*; semuanya dikerjakan sekaligus.',
+    'Bahan WA yang formatnya berantakan dirapikan Claude bila tidak terbaca, tanpa mengubah angka, lalu laporan dibangun ulang.',
+  ] },
   { versi: '2.0.2', tanggal: '2026-11-19', isi: [
     'Pemakaian bulan ini dihitung dari catatan harian lengkap, tidak lagi hanya sejak fitur biaya dipasang.',
     'Perintah pemilik *saldo* (misalnya *saldo 192,54*): bot menghitung sisa kredit Console.',

@@ -21,6 +21,7 @@ import { buatKlien, GalatClaude, medanTerkunci, sebutAngkaSistem, samarkan } fro
 import * as jenisWa from '../../src/wa_jenis.js'
 import * as Agen from './agen.mjs'
 import * as Biaya from './biaya.mjs'
+import * as Maksud from './maksud.mjs'
 import { NAMA_BOT, VERSI, tChangelog, CHANGELOG } from './versi.mjs'
 import { periksa as periksaPagar } from './agen_pagar.mjs'
 
@@ -34,7 +35,7 @@ const KEDALUWARSA_MS = 24 * 3600e3 // Q7 bawaan sementara
 const MEMBANGUN_BASI_MS = 3600e3 // `membangun` lebih dari 1 jam tanpa kunci hidup = proses mati
 const TEKS_MINIMAL = 20 // huruf dan angka; di bawah ini hasil ekstraksi dianggap tidak terbaca (K15)
 const MAKS_BAHAN = 50 // sama dengan batas rute POST /api/wa/proyek
-const MAKS_KALIMAT = 2000 // kalimat revisi ke Claude
+const MAKS_KALIMAT = 8000 // kalimat revisi ke Claude; sama dengan batas gabungan kumpul revisi (D35)
 const PERIKSA_MS = 120e3 // periksa (BL-11) tidak pernah menahan draf lebih lama dari ini
 const WAKTU_WORKER = 60_000 // tiap fetch Worker: menggantung = galat Worker biasa, antrean pengirim tidak tertahan
 
@@ -70,6 +71,9 @@ export function parsePerintah(teks, now = new Date()) {
   if (sl && Biaya.nilaiUsd(sl[1]) != null) return { aksi: 'saldo', usd: Biaya.nilaiUsd(sl[1]) }
   if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai PDF (pemilik 18 Nov 2026: PDF, bukan gambar)
   if (t === 'status') return { aksi: 'status' }
+  if (t === 'revisi') return { aksi: 'revisi' } // V2.1 D35: buka kumpul revisi (beberapa pesan, lalu lanjut)
+  const rv = t.match(/^revisi (p-\d{6}-\d{2})$/)
+  if (rv) return { aksi: 'revisi', id: rv[1].toUpperCase() }
   if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
   if (t === 'hitung' || t === 'tunggu') return { aksi: 'satelit', kata: t } // K18: menjawab pilihan data satelit; tanpa pilihan hidup = petunjuk
   if (['versi', 'pptx', 'batal', 'final'].includes(t)) return { aksi: t }
@@ -107,7 +111,8 @@ export const BANTUAN = [
   '- *3* atau *versi*: lihat riwayat versi',
   '- *4* atau *batal*: batalkan proyek',
   '- *balik v2*: pakai isi versi 2',
-  '- Kalimat biasa: revisi draf',
+  '- Kalimat biasa: revisi atau tanya isi draf',
+  '- *revisi*: kirim revisi dalam beberapa pesan, lalu *lanjut*',
   '',
   '*Lainnya*',
   '- *status*: proyek yang masih terbuka',
@@ -118,6 +123,7 @@ export const BANTUAN = [
   '- *changelog*: perubahan versi terbaru',
   '',
   'Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*',
+  'Boleh juga kalimat biasa, misalnya "bikinin laporan harian kemarin".',
   'Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.',
   '',
   `${NAMA_BOT} v${VERSI}`,
@@ -518,6 +524,28 @@ async function urai(ctx, p, lap, bahanTeks) {
 const kapital = (t) => t.charAt(0).toUpperCase() + t.slice(1)
 const tanyaBentrok = (b) => `${kapital(b.medan.replace(/_/g, ' '))} berbeda: ${b.a.nilai} ("${String(b.a.kutipan).slice(0, 80)}") dan ${b.b.nilai} ("${String(b.b.kutipan).slice(0, 80)}"). Mana yang dipakai?`
 
+// ---------- V2.1 A15: rapikan bahan saat generator gagal membaca ----------
+// mentah: teks bahan asli {kunci: teks} (acuan pagar angka); pakai: teks putaran sebelumnya. -> {teks, perubahan} atau null (Claude gagal, pagar menolak).
+async function rapikanBahan(ctx, p, mentah, pakai, galat) {
+  const log = ctx.log || (() => {})
+  const c = ctx.dep?.claude
+  if (String(ctx.env.BL_RAPIKAN ?? '1') === '0' || (c ? typeof c.rapikan !== 'function' : !ctx.env.ANTHROPIC_API_KEY)) return null
+  const calon = Object.fromEntries(Object.entries(pakai).filter(([, t]) => typeof t === 'string' && !/^biner:/.test(t) && t.trim()))
+  if (!Object.keys(calon).length) return null
+  try {
+    const r = await klien(ctx).rapikan(calon, galat)
+    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+    if (!Object.keys(r.bahan).length) { log('[rapikan] tanpa perubahan', r.perubahan.join('; ')); return null }
+    // acuan angka = teks asli bahan yang dikirim; kunci di luar kiriman ditolak pagar (kunciAsing)
+    const pagar = Maksud.pagarRapikan(Object.fromEntries(Object.keys(calon).map((k) => [k, mentah[k] ?? calon[k]])), r.bahan)
+    if (!pagar.lolos) { log('[rapikan] ditolak pagar', JSON.stringify(pagar).slice(0, 400)); return null }
+    return { teks: { ...pakai, ...r.bahan }, perubahan: r.perubahan.length ? r.perubahan : ['format teks diseragamkan'] }
+  } catch (e) {
+    log('[rapikan] gagal', e.message)
+    return null
+  }
+}
+
 // ---------- A2: jenis dari bahan ----------
 async function tebakJenis(bahan) {
   const skor = []
@@ -637,9 +665,9 @@ async function buat(cmd, dari, sha, ctx) {
     await prog.ke(2)
     const n = (p.versi || 0) + 1
     const dasarV = path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`) // di bawah ~/.wa-bot/keluaran: satu-satunya akar yang boleh dikirim gateway
-    let berkas, isianGen
-    try {
-      const k = siapkanKeluaran(lap, cmd.tanggal, teks, dasarV)
+    let berkas, isianGen, teksPakai = teks, dirapikan = null, cobaRapi = 0
+    for (;;) try {
+      const k = siapkanKeluaran(lap, cmd.tanggal, teksPakai, dasarV)
       berkas = k.berkas
       isianGen = v2 ? {} : keIsianGenerator(jenis, hasil.isian)
       if (Object.keys(isianGen).length) { k.f.isian = path.join(k.kerja, 'isian.json'); tulisJson(k.f.isian, isianGen) }
@@ -651,7 +679,16 @@ async function buat(cmd, dari, sha, ctx) {
         if (!m || (cmd.firespot === 'firms' && /firespot/i.test(m[1]))) continue // mode FIRMS: cukup CATATAN_FIRMS (K18)
         catatan.push(`Isian diabaikan generator: ${m[1].trim()}`)
       }
+      if (dirapikan) catatan.push(`Bahan dirapikan Claude supaya terbaca: ${dirapikan.join('; ')}.`)
+      break
     } catch (e) {
+      // V2.1 A15 (K29): galat baca bahan = Claude merapikan bentuk teks WA, generator dijalankan ulang (paling banyak 2 kali, pagar angka D31).
+      if (cobaRapi < Maksud.MAKS_PUTARAN_RAPIKAN && !Maksud.galatMesin(e.message)) {
+        cobaRapi++
+        const r = await rapikanBahan(ctx, p, teks, teksPakai, e.message)
+        if (r) { teksPakai = r.teks; dirapikan = r.perubahan; continue }
+      }
+      if (dirapikan) e.message = `${e.message} (bahan sudah dirapikan Claude, generator tetap gagal)`
       await prog.akhir('gagal')
       await pindah('terbuka', { lempar: false })
       gagalBangun()
@@ -1288,10 +1325,10 @@ function konfirmasiBatal(ctx, sha) {
   const k = bacaJson(konfirmP(ctx.dasar || RUMAH), {})[sha]
   return k && (ctx.now || new Date()).getTime() - Number(k.waktu) <= KONFIRMASI_MS ? k : null
 }
-function catatKonfirmasi(ctx, sha, id) {
+function catatKonfirmasi(ctx, sha, id, aksi = 'batal') {
   const f = konfirmP(ctx.dasar || RUMAH), isi = bacaJson(f, {})
   if (!id && !isi[sha]) return
-  if (id) isi[sha] = { id, waktu: (ctx.now || new Date()).getTime() }; else delete isi[sha]
+  if (id) isi[sha] = { id, aksi, waktu: (ctx.now || new Date()).getTime() }; else delete isi[sha]
   tulisJson(f, isi)
 }
 
@@ -1565,6 +1602,7 @@ async function perintahProyek(cmd, dari, sha, ctx) {
   await pindahStatus(ctx, p, 'batal', sha)
   try { catatSatelit(ctx, p.id, null) } catch {}
   try { Agen.hapusSesi(ctx.dasar || RUMAH, p.id) } catch {} // V2: sesi, ruang kerja, transkrip (D14)
+  try { Maksud.tutupKumpulProyek(ctx.dasar || RUMAH, p.id) } catch {} // V2.1 D35: kumpul revisi proyek ini ikut ditutup
   // batal = mulai dari awal: bahan sebelum ini tidak dipakai proyek berikutnya, berkas kerja proyek ini dihapus
   try {
     const dasar = ctx.dasar || RUMAH
@@ -1713,6 +1751,7 @@ async function lanjutFinal(ctx, st, kirim, { kirimBerkas = null } = {}) {
     const lap = lapDari(st.jenis), f = lap && jalurDeck(dasar, { id: st.id, tanggal: st.tanggal }, lap, st.n)
     if (f && fs.existsSync(f)) Agen.catatFinal(dasar, { jenis: st.jenis, tanggal: st.tanggal, id: st.id, n: st.n, pptx: f })
     Agen.hapusSesi(dasar, st.id)
+    try { Maksud.tutupKumpulProyek(dasar, st.id) } catch {}
   } catch {}
   return 'ditutup'
 }
@@ -1831,6 +1870,7 @@ export async function kedaluwarsa(ctx) {
     if (!await pindahStatus(ctx, p, 'kedaluwarsa', e.sha, { lempar: false })) continue
     try { catatSatelit(ctx, id, null) } catch {}
     try { Agen.hapusSesi(dasar, id) } catch {}
+    try { Maksud.tutupKumpulProyek(dasar, id) } catch {}
     hapusIndeks(dasar, id)
     const lap = lapDari(p.jenis)
     try { await (ctx.kirimKe || ((t, s) => ctx.dep.kirimTeks(t, s)))(e.dari, susun('Proyek ditutup otomatis', p, p.versi || null,
@@ -1838,6 +1878,159 @@ export async function kedaluwarsa(ctx) {
     hasil.push(id)
   }
   return hasil
+}
+
+// ---------- V2.1: kumpul revisi, maksud kalimat bebas, tanya draf (K29, K30, D32-D35) ----------
+const jedaKumpul = new Map() // wa_sha -> timer tanda terima kumpul
+function jadwalTerimaKumpul(ctx, sha) {
+  clearTimeout(jedaKumpul.get(sha))
+  const t = setTimeout(async () => {
+    jedaKumpul.delete(sha)
+    const k = Maksud.bacaKumpul(ctx.dasar || RUMAH, sha, ctx.now || new Date())
+    if (!k) return
+    try {
+      await ctx.balas(susun('Revisi tersimpan', null, null, [`${k.pesan.length} pesan revisi untuk ${k.id} sudah dicatat.`,
+        ...(k.pesan.length >= Maksud.KUMPUL_MAKS_PESAN ? [`Batas ${Maksud.KUMPUL_MAKS_PESAN} pesan tercapai; pesan berikutnya tidak dicatat.`] : []),
+        'Ketik *lanjut* kalau sudah, atau *batal* untuk membatalkan revisi.']))
+    } catch (e) { (ctx.log || (() => {}))('[kumpul] tanda terima gagal', e.message) }
+  }, ctx.jedaKumpulMs ?? 20e3)
+  t.unref?.()
+  jedaKumpul.set(sha, t)
+}
+const hentiTerimaKumpul = (sha) => { clearTimeout(jedaKumpul.get(sha)); jedaKumpul.delete(sha) }
+
+// -> {status} bila pesan ditangani alur kumpul, null bila tidak
+async function alurKumpul(cmd, pesan, dari, sha, ctx) {
+  const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
+  if (cmd?.aksi === 'revisi') {
+    const drafs = await proyekPengirim(ctx, sha, (p) => p.status === 'draf' && p.versi > 0)
+    const p = cmd.id ? drafs.find((x) => x.id === cmd.id) : drafs.length === 1 ? drafs[0] : drafs.find((x) => x.id === menuTerakhir(ctx, sha))
+    if (!p) {
+      await ctx.balas(drafs.length > 1 && !cmd.id
+        ? susun(`Ada ${drafs.length} draf terbuka`, null, null, drafs.map((x) => `- ${x.id}: ${lapDari(x.jenis) ? judul(lapDari(x.jenis), x.tanggal) : x.jenis}`), `Ketik *revisi ${drafs[0].id}* untuk memilih drafnya.`)
+        : susun('Belum ada draf', null, null, cmd.id ? `Draf ${cmd.id} tidak terbuka. Ketik *status* untuk melihat proyek Anda.` : 'Belum ada draf untuk direvisi. Ketik *buat* dulu.'))
+      return { status: 'revisi tanpa draf' }
+    }
+    const lama = Maksud.bacaKumpul(dasar, sha, kini)
+    if (lama?.id === p.id && lama.pesan.length) { await ctx.balas(susun('Revisi masih dikumpulkan', p, p.versi, [`${lama.pesan.length} pesan revisi sudah dicatat.`, 'Lanjutkan kirim revisinya, lalu ketik *lanjut*.'])); return { status: 'kumpul revisi', proyek: p.id } }
+    Maksud.bukaKumpul(dasar, sha, p.id, kini)
+    await ctx.balas(susun('Siap menerima revisi', p, p.versi, ['Kirim revisinya, boleh beberapa pesan (termasuk pesan yang diteruskan).', 'Ketik *lanjut* kalau sudah semua; semua pesan dikerjakan sekaligus.', 'Ketik *batal* untuk membatalkan revisi.']))
+    return { status: 'kumpul revisi', proyek: p.id }
+  }
+  const k = await kumpulHidup(ctx, sha)
+  if (!k) return null
+  if (cmd?.aksi === 'lanjut') {
+    hentiTerimaKumpul(sha)
+    const teks = Maksud.gabungKumpul(k.pesan)
+    if (!teks) { await ctx.balas(susun('Belum ada revisi', null, null, ['Kirim revisinya dulu, lalu ketik *lanjut*.', 'Ketik *batal* untuk membatalkan revisi.'])); return { status: 'kumpul kosong' } }
+    Maksud.tutupKumpul(dasar, sha)
+    const p = (await proyekPengirim(ctx, sha, (x) => x.id === k.id))[0]
+    if (!p || p.status !== 'draf') { await ctx.balas(susun('Draf tidak terbuka lagi', null, null, `Proyek ${k.id} sudah tidak berstatus draf; revisi tidak dijalankan. Ketik *status* untuk melihat proyek Anda.`)); return { status: 'kumpul tanpa draf' } }
+    await revisi({ teks }, dari, sha, p, ctx)
+    return { status: 'revisi', proyek: p.id, kumpul: k.pesan.length }
+  }
+  if (cmd?.aksi === 'batal' && !cmd.id) {
+    hentiTerimaKumpul(sha)
+    Maksud.tutupKumpul(dasar, sha)
+    await ctx.balas(susun('Revisi dibatalkan', null, null, [`${k.pesan.length} pesan revisi dibuang, draf ${k.id} tetap.`, 'Ketik *batal* lagi bila ingin membatalkan proyeknya.']))
+    return { status: 'kumpul batal' }
+  }
+  if (cmd || pesan.ada_berkas || !String(pesan.teks || '').trim()) return null // perintah lain dan berkas tetap jalur biasa
+  Maksud.tambahKumpul(dasar, sha, pesan.teks, kini)
+  jadwalTerimaKumpul(ctx, sha)
+  return { status: 'revisi dicatat', proyek: k.id }
+}
+
+// Kumpulan hidup = belum 2 jam DAN proyeknya masih draf; proyek yang sudah final, batal, atau kedaluwarsa menutup kumpulannya.
+async function kumpulHidup(ctx, sha) {
+  const dasar = ctx.dasar || RUMAH, k = Maksud.bacaKumpul(dasar, sha, ctx.now || new Date())
+  if (!k) return null
+  const p = (await proyekPengirim(ctx, sha, (x) => x.id === k.id, { bersihkan: false }))[0]
+  if (p?.status === 'draf' || p?.status === 'membangun') return k
+  Maksud.tutupKumpul(dasar, sha); hentiTerimaKumpul(sha)
+  return null
+}
+
+// A16: maksud kalimat bebas. Hasil di-cache 2 menit per (pengirim, teks): klasifikasi gateway dan tangani memakai satu panggilan Claude.
+const cacheMaksud = new Map()
+async function maksudPesan(ctx, pesan, sha) {
+  const teks = String(pesan?.teks || '').trim()
+  if (String(ctx.env.BL_MAKSUD ?? '1') === '0' || !Maksud.syaratMaksud(teks) || !calonRevisi(pesan, ctx)) return null
+  const c = ctx.dep?.claude
+  if (c ? typeof c.maksud !== 'function' : !ctx.env.ANTHROPIC_API_KEY) return null
+  const kunci = `${sha}|${teks}`, kini = (ctx.now || new Date()).getTime()
+  const ada = cacheMaksud.get(kunci)
+  if (ada && kini - ada.waktu < 120e3) return ada.hasil
+  try {
+    const ps = await proyekPengirim(ctx, sha, () => true, { bersihkan: false })
+    const r = await klien(ctx).maksud(teks, { hari_ini: tanggalWib(ctx.now || new Date()), proyek: ps.map((p) => ({ id: p.id, jenis: p.jenis, tanggal: p.tanggal, status: p.status, versi: p.versi || 0 })) })
+    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: null, kini: ctx.now || new Date() }) } catch {}
+    const hasil = Maksud.bersihkanMaksud(r, ctx.now || new Date())
+    if (cacheMaksud.size > 200) cacheMaksud.clear()
+    cacheMaksud.set(kunci, { waktu: kini, hasil })
+    return hasil
+  } catch (e) {
+    (ctx.log || (() => {}))('[maksud] gagal', e.message)
+    return null
+  }
+}
+
+// A17: pertanyaan tentang draf dijawab dari teks deck versi terakhir; tanpa versi baru.
+async function tanyaDraf(pesan, sha, p, ctx) {
+  const lap = lapDari(p.jenis)
+  try {
+    const pptx = await pastikanPptx(ctx, p, lap, p.versi, sha)
+    const inv = await inventaris(ctx, pptx)
+    const riwayat = (await versiDaftar(ctx, p, sha).catch(() => [])).map((x) => `v${x.n}: ${rapi(x.instruksi || 'buat', 160)}`)
+    const r = await klien(ctx).jawabDraf(inv, riwayat, String(pesan.teks || ''))
+    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+    catatMenu(ctx, sha, p.id)
+    return ctx.balas(susun(`Tentang draf v${p.versi}`, p, p.versi, [r.jawaban || 'Jawabannya tidak tertulis di draf.'], 'Tulis revisinya bila ingin ada yang diubah.'))
+  } catch (e) {
+    (ctx.log || (() => {}))('[tanya draf] gagal', e.message)
+    return ctx.balas(susun('Pertanyaan belum bisa dijawab', p, p.versi, [...penyebab(e.message), `Draf v${p.versi} tidak berubah.`]))
+  }
+}
+
+// D33: final dari kalimat bebas selalu ditanya dulu; `ya` dalam 5 menit menjalankannya.
+async function tanyaFinal(sha, ctx) {
+  const drafs = await proyekPengirim(ctx, sha, (p) => p.status === 'draf' && p.versi > 0)
+  const p = drafs.length === 1 ? drafs[0] : drafs.find((x) => x.id === menuTerakhir(ctx, sha))
+  if (!p) {
+    return ctx.balas(drafs.length
+      ? susun(`Ada ${drafs.length} draf terbuka`, null, null, drafs.map((x) => `- ${x.id}`), `Ketik *final ${drafs[0].id}* (atau kode lain) untuk memilih drafnya.`)
+      : susun('Belum ada draf', null, null, 'Belum ada draf untuk difinalkan. Ketik *buat* dulu.'))
+  }
+  const lap = lapDari(p.jenis)
+  catatKonfirmasi(ctx, sha, p.id, 'final')
+  return ctx.balas(susun('Perlu dipastikan dulu', p, p.versi, [lap ? judul(lap, p.tanggal) : p.jenis, `Ketik *ya* untuk mengirim draf v${p.versi} sebagai versi final ke Drive.`], 'Berlaku 5 menit. Abaikan pesan ini bila belum jadi.'))
+}
+
+// -> {cmd} untuk diteruskan ke jalur perintah, {status} bila sudah dijawab, atau null (perilaku lama: revisi pemegang draf, bahan, sapaan)
+async function alurMaksud(pesan, dari, sha, ctx) {
+  const draf = await drafPengirim(ctx, sha)
+  const m = Maksud.maksudBerlaku(await maksudPesan(ctx, pesan, sha), !!draf)
+  if (!m) return null
+  const hariIni = tanggalWib(ctx.now || new Date())
+  switch (m.maksud) {
+    case 'buat': return { cmd: { aksi: 'buat', jenis: m.jenis, tanggal: m.tanggal || hariIni, saja: false } }
+    case 'lanjut': case 'status': case 'bantuan': return { cmd: { aksi: m.maksud } }
+    case 'batal': return { cmd: { aksi: 'batal', tanya: true } }
+    case 'final': await tanyaFinal(sha, ctx); return { status: 'tanya final' }
+    case 'tanya':
+      if (draf) { await tanyaDraf(pesan, sha, draf, ctx); return { status: 'tanya draf', proyek: draf.id } }
+      await ctx.balas(susun('Belum ada draf', null, null, ['Belum ada draf yang bisa ditanyakan.', 'Ketik *status* untuk melihat proyek Anda, atau *buat harian* untuk mulai.']))
+      return { status: 'tanya tanpa draf' }
+    case 'revisi':
+      if (draf) return null // jalur revisi biasa
+      await ctx.balas(susun('Belum ada draf', null, null, ['Belum ada draf untuk direvisi.', 'Ketik *buat harian* atau *buat penanganan* untuk mulai.']))
+      return { status: 'revisi tanpa draf' }
+    case 'obrolan':
+      if (!m.balasan) return null
+      await ctx.balas([m.balasan, '', `_${NAMA_BOT} v${VERSI}. Ketik *bantuan* untuk daftar perintah._`].join('\n'))
+      return { status: 'obrolan' }
+  }
+  return null
 }
 
 // ---------- pintu masuk ----------
@@ -1862,10 +2055,14 @@ export async function klasifikasi(pesan, ctx) {
   if (cmd && !(pesan.diteruskan === true && bukanPerintahTerusan(cmd, pesan.teks))) return 'perintah' // angka menu, lanjut, buat saja, hitung, tunggu yang diteruskan = bahan
   const dari = normalWa(pesan.dari), sha = dari && !/@g\.us$/.test(dari) ? waSha(dari, ctx.env.WA_GARAM) : null
   if (sha && !pesan.ada_berkas && pesan.diteruskan !== true && teksYa(pesan.teks) && konfirmasiBatal(ctx, sha)) return 'perintah' // `ya` atas tanya batal dari menu
+  // V2.1 D35: selama kumpul revisi terbuka, semua teks pengirim (termasuk yang diteruskan) adalah revisi, tidak pernah bahan
+  try { if (sha && !pesan.ada_berkas && String(pesan.teks || '').trim() && await kumpulHidup(ctx, sha)) return 'revisi' } catch { return 'bahan' }
   if (!calonRevisi(pesan, ctx)) return 'bahan'
   if (!sha) return 'bahan'
   if (String(ctx.env.BL_VERSI || '') === '2' && Agen.tanyaPengirim(ctx.dasar || RUMAH, sha)) return 'revisi' // jawaban atas pertanyaan agen V2 (D25), tidak jadi bahan
-  try { return (await drafPengirim(ctx, sha, { bersihkan: false })) ? 'revisi' : 'bahan' } catch { return 'bahan' }
+  try { if (await drafPengirim(ctx, sha, { bersihkan: false })) return 'revisi' } catch { return 'bahan' }
+  // V2.1 D32: kalimat bebas yang meminta sesuatu (buat, status, obrolan, ...) tidak disimpan sebagai bahan; hasilnya di-cache untuk tangani
+  return Maksud.maksudBerlaku(await maksudPesan(ctx, pesan, sha), false) ? 'revisi' : 'bahan' // tanpa draf: hanya permintaan jelas yang tidak jadi bahan
 }
 
 // pesan: {dari, teks, wa_id?, nama_berkas?, ada_berkas?, diteruskan?, lama?}. Revisi tidak butuh wa_id (gateway tidak meneruskannya ke Worker). ctx: {env, dep, now, dasar, log, balas, balasFile, kabariPemilik?, kirimKe?, kenali?, tanggalIsi?, ada?}.
@@ -1883,7 +2080,7 @@ export async function tangani(pesan, ctxAsli) {
   // `ya` dalam 5 menit sesudah angka 4 = batal proyek yang ditanyakan; pesan lain apa pun (termasuk bantuan) menghapus tanya batal itu.
   const ya = sha && !pesan.ada_berkas && pesan.diteruskan !== true && teksYa(pesan.teks) ? konfirmasiBatal(ctx, sha) : null
   if (sha) try { catatKonfirmasi(ctx, sha, null) } catch {}
-  if (ya) cmd = { aksi: 'batal', id: ya.id }
+  if (ya) cmd = { aksi: ya.aksi === 'final' ? 'final' : 'batal', id: ya.id } // V2.1 D33: tanya final dari kalimat bebas juga dijawab ya
   if (cmd?.aksi === 'panduan') {
     // Salin infografis dari repo ke ~/.wa-bot/keluaran (satu-satunya akar yang boleh dikirim gateway), kirim sebagai dokumen.
     const asal = path.join(DI, '../../data/kajian-bnpb/bot-laporan/infografis/panduan-bot.pdf')
@@ -1927,6 +2124,20 @@ export async function tangani(pesan, ctxAsli) {
   let jawab = !!cmd // galat dibalas ke pengirim hanya untuk perintah dan revisi, tidak untuk bahan biasa
   const gagalSebelum = JSON.stringify(gagalTerakhir(ctx, sha))
   try {
+    // V2.1 D35: kumpul revisi (`revisi`, pesan-pesan revisi, `lanjut` atau `batal`) didahulukan dari jalur lain.
+    const kk = await alurKumpul(cmd, pesan, dari, sha, ctx)
+    if (kk) { jawab = true; return kk }
+    // V2 (D25): selama agen menunggu jawaban, teks pemegang adalah jawabannya (didahulukan dari maksud, bahan, dan revisi).
+    if (!cmd && calonRevisi(pesan, ctx)) {
+      const ta = await tanyaAgenPengirim(ctx, sha)
+      if (ta) { jawab = true; const r = await jawabV2(pesan, dari, sha, ta.p, ctx, ta.t); if (r !== null) return { status: 'jawaban agen', proyek: ta.p.id } }
+    }
+    // V2.1 D32-D34: kalimat bebas dipahami Claude Haiku; hasilnya jadi perintah biasa, tanya final, tanya draf, atau obrolan.
+    if (!cmd && calonRevisi(pesan, ctx)) {
+      const mk = await alurMaksud(pesan, dari, sha, ctx)
+      if (mk?.status) { jawab = true; return mk }
+      if (mk?.cmd) { cmd = mk.cmd; jawab = true }
+    }
     // `lanjut`, `ulangi`, `buat saja` saat pembangunan pengirim ini masih jalan: dijawab sekali, tidak membangun kedua kalinya.
     if ((cmd?.aksi === 'lanjut' || cmd?.aksi === 'ulangi' || (cmd?.aksi === 'buat' && cmd.saja)) && await jawabSibuk(ctx, sha)) return { status: 'masih dibangun' }
     if (cmd?.aksi === 'ulangi') { await ulangi(dari, sha, ctx); return { status: 'ulangi' } }
@@ -1958,12 +2169,7 @@ export async function tangani(pesan, ctxAsli) {
     if (cmd?.aksi === 'final') { const r = await final(dari, sha, ctx, cmd.id || null); return { status: r === 'ditutup' ? 'ditutup' : r === 'tertunda' ? 'final tertunda' : 'final' } }
     if (cmd) { await perintahProyek(cmd, dari, sha, ctx); return { status: cmd.tanya ? 'tanya batal' : cmd.aksi } }
     // Perintah tidak pernah sampai ke sini (tidak pernah ke Claude). Revisi (ALUR B): calonRevisi dari pemegang proyek draf; forward dan bahan dikenali tetap bahan.
-    // V2 (D25): selama agen menunggu jawaban, teks pemegang adalah jawabannya (didahulukan dari bahan dan revisi).
-    if (calonRevisi(pesan, ctx)) {
-      const ta = await tanyaAgenPengirim(ctx, sha)
-      if (ta) { jawab = true; const r = await jawabV2(pesan, dari, sha, ta.p, ctx, ta.t); if (r !== null) return { status: 'jawaban agen', proyek: ta.p.id } }
-    }
-    if (calonRevisi(pesan, ctx)) {
+    if (!cmd && calonRevisi(pesan, ctx)) {
       const draf = await drafPengirim(ctx, sha)
       if (draf) { jawab = true; await revisi(pesan, dari, sha, draf, ctx); return { status: 'revisi', proyek: draf.id } }
     }

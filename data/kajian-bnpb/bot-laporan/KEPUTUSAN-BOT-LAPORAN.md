@@ -119,3 +119,33 @@ Bot yang dibangun sampai 19 Nov disebut **V1**. V2 tidak menghapus V1: keduanya 
 | Q19 | Skill deck pemilik (`ppt-konsultan`) dipasang di mesin bot supaya agen bisa menjalankan alur `jalan.py` harian persis seperti di aplikasi? | **[BAWAAN SEMENTARA]** Tidak. Agen bekerja dari deck generator bot dan membaca skrip harian kemarin sebagai acuan (D23). | tidak menahan |
 | Q20 | Koreksi berulang di V2 dijadikan aturan bagaimana? | **[BAWAAN SEMENTARA]** Ditambahkan ke pedoman agen lewat pengembang, atas persetujuan pemilik (D27). | tidak menahan |
 | Q21 | Draf V2 butuh sampai 6 menit (V1 sekitar 2 menit). Diterima? | **[BAWAAN SEMENTARA]** Ya; V1 tetap ada untuk kebutuhan cepat. | tidak menahan |
+
+## Bot V2.1: kecerdasan percakapan (19 Nov 2026)
+
+Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya cara bot memahami pesan dan menangani bahan yang berantakan.
+
+### Keputusan pemilik V2.1
+
+| No | Keputusan |
+| --- | --- |
+| K29 | (19 Nov) "saya tuh pengen ada kecerdasan claude sungguhan di wa bot itu, jgn terlalu kaku sama perintah, input wa juga bisa jadi berubah2 dan ga konsisten karena ada human error". Tiga kemampuan: (a) bahan WA yang formatnya berantakan dirapikan Claude bila generator gagal membacanya, lalu generator dijalankan ulang; (b) kalimat bebas dipahami, bukan hanya perintah baku; (c) pertanyaan tentang draf dijawab. |
+| K30 | (19 Nov) "termasuk pas revisi juga ya, claude tuh harusnya pinter dan paham konteks", "kalau mau revisi bilang dulu revisi, dumping revisi (bisa lebih dari 1 bubble message), lakukan revisi". Alur kumpul revisi: *revisi*, lalu pesan revisi sebanyak apa pun, lalu *lanjut*; semua pesan itu dikerjakan sekali sebagai satu permintaan. |
+
+### Keputusan rancangan V2.1 (agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D30 | Rapikan bahan: generator gagal dengan galat baca bahan (bukan galat mesin seperti kunci atau berkas hilang) = teks WA mentah tiap bahan dan pesan galatnya dikirim ke Claude (model utama), yang mengembalikan teks rapi dan daftar perubahan. Generator dijalankan ulang dengan teks rapi, paling banyak 2 kali. Draf mencatat "Bahan dirapikan Claude" beserta perubahannya. | Format WA Koordalops berubah-ubah (insiden 19 Nov: "1 .Bencana", 15 lawan 16 menonjol); aturan pengurai tidak bisa menebak semua salah ketik. |
+| D31 | Pagar rapikan: tiap angka di teks rapi harus ada di teks mentah, kecuali nomor urut di awal baris dan jumlah di baris yang menyebut "menonjol" atau "kejadian". Teks rapi yang menambah angka lain ditolak dan generator tidak dijalankan ulang. | Claude merapikan bentuk, tidak pernah mengarang angka korban atau dampak. |
+| D32 | Maksud pesan: teks pendek (paling banyak 500 huruf) dari nomor terdaftar yang bukan perintah baku, bukan pesan diteruskan, dan tidak dikenali sebagai bahan, diklasifikasi Claude Haiku (`BL_MODEL_MAKSUD`, bawaan `claude-haiku-5-5`) dengan konteks proyek pengirim: buat, lanjut, final, batal, revisi, tanya, status, bantuan, obrolan, bahan. | Murah (sekitar $0,001 per pesan) dan cepat; perintah baku tetap tanpa Claude. |
+| D33 | Hasil maksud: *buat* membuka daftar bahan (tidak membangun); *lanjut*, *status*, *bantuan* langsung dijalankan; *final* dan *batal* dari kalimat bebas selalu ditanya dulu ("Balas *ya*", 5 menit), tidak pernah langsung. Maksud *revisi* dari pemegang draf = revisi seperti biasa. Klasifikasi gagal = perilaku lama (pemegang draf: revisi; lainnya: sapaan). | Kalimat bebas bisa salah paham; tindakan keluar (unggah Drive) dan hapus bahan butuh kepastian. |
+| D34 | Tanya draf: maksud *tanya* dari pemegang draf dijawab Claude dari isi teks deck versi terakhir dan riwayat versinya, tanpa mengubah apa pun (tidak membuat versi). Jawaban paling panjang 800 huruf. | Pemakai sering bertanya "slide 3 isinya apa", "angka hotspot berapa" sebelum merevisi. |
+| D35 | Kumpul revisi: *revisi* (atau *revisi P-...*) dari pemegang draf membuka kumpulan selama 2 jam (`~/.wa-bot/proyek/kumpul.json`). Semua pesan teks pengirim itu, termasuk yang diteruskan, masuk kumpulan dan tidak jadi bahan; tanda terima digabung sekali per 20 detik jeda. *lanjut* menggabungkan semuanya (bernomor, paling banyak 30 pesan dan 8000 huruf) lalu menjalankan satu revisi; *batal* hanya menutup kumpulan. Tanpa *revisi*, satu kalimat revisi tetap langsung dikerjakan seperti sebelumnya. | K30; tanda terima digabung supaya batas kiriman per nomor tidak habis. |
+
+### Pertanyaan terbuka V2.1
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q22 | *final* dari kalimat bebas ("udah oke, finalkan") langsung dijalankan? | **[BAWAAN SEMENTARA]** Tidak, ditanya dulu dan dijalankan sesudah *ya* (D33). | tidak menahan |
+| Q23 | Obrolan bebas (bukan tentang laporan) dijawab Claude? | **[BAWAAN SEMENTARA]** Ya, satu atau dua kalimat lalu petunjuk *bantuan*; tanpa jawaban di luar urusan laporan. | tidak menahan |
+| Q24 | Aturan rapikan yang sering terpakai dipindah ke pengurai generator supaya tidak butuh Claude? | **[BAWAAN SEMENTARA]** Ya, lewat pengembang, saat pola yang sama muncul tiga kali di catatan draf. | tidak menahan |

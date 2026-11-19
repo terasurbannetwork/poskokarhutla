@@ -799,3 +799,67 @@ Belum: PVMBG pagi.
 - Harian: sudah dikirim
 - Penanganan: belum dikirim
 ```
+
+## J. V2.1: kecerdasan percakapan (K29, K30)
+
+Gateway memasang satu ikon di depan judul tebal (`hias.cjs`); contoh di bawah tanpa ikon.
+
+### J1. Kalimat bebas: buat (D33)
+
+Pemakai: "tolong bikinin laporan harian kemarin ya". Bot membalas daftar bahan yang sama dengan *buat harian kemarin* (bagian A); tidak membangun sebelum *lanjut*.
+
+### J2. Kalimat bebas: final ditanya dulu (D33, Q22)
+
+```text
+*Perlu dipastikan dulu*
+_P-191126-01, versi 2_
+
+Laporan Kejadian Bencana Harian 19 Nov
+Ketik *ya* untuk mengirim draf v2 sebagai versi final ke Drive.
+
+Berlaku 5 menit. Abaikan pesan ini bila belum jadi.
+```
+
+### J3. Tanya draf (D34)
+
+```text
+*Tentang draf v2*
+_P-191126-01, versi 2_
+
+Kejadian menonjol di Jawa Tengah ada 3, di slide 4: banjir Kab. Pati, longsor Kab. Banjarnegara, dan angin kencang Kota Semarang.
+
+Tulis revisinya bila ingin ada yang diubah.
+```
+
+### J4. Kumpul revisi (D35)
+
+```text
+*Siap menerima revisi*
+_P-191126-01, versi 2_
+
+Kirim revisinya, boleh beberapa pesan (termasuk pesan yang diteruskan).
+Ketik *lanjut* kalau sudah semua; semua pesan dikerjakan sekaligus.
+Ketik *batal* untuk membatalkan revisi.
+```
+
+Sesudah 20 detik tanpa pesan baru:
+
+```text
+*Revisi tersimpan*
+
+3 pesan revisi untuk P-191126-01 sudah dicatat.
+Ketik *lanjut* kalau sudah, atau *batal* untuk membatalkan revisi.
+```
+
+*lanjut* membalas draf revisi biasa (bagian B). *batal* saat kumpul:
+
+```text
+*Revisi dibatalkan*
+
+3 pesan revisi dibuang, draf P-191126-01 tetap.
+Ketik *batal* lagi bila ingin membatalkan proyeknya.
+```
+
+### J5. Bahan dirapikan (D30)
+
+Baris catatan di ringkasan draf: "Bahan dirapikan Claude supaya terbaca: Penomoran kejadian 3 sampai 16 diseragamkan; Jumlah kejadian di kepala disesuaikan menjadi 15." Bila tetap gagal, baris penyebab galat berakhir "(bahan sudah dirapikan Claude, generator tetap gagal)".

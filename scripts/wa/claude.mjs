@@ -16,6 +16,19 @@ export const MAKS_TOKEN = 16000
 export const SISTEM = baca('sistem.md')
 export const TUGAS_URAI = baca('tugas_urai.md')
 export const TUGAS_OPERASI = baca('tugas_operasi.md')
+// V2.1 (K29, D30-D34): rapikan bahan, maksud pesan, tanya draf; sistem sendiri karena SISTEM hanya untuk urai dan operasi
+export const SISTEM_CAKAP = baca('sistem_cakap.md')
+export const TUGAS_RAPIKAN = baca('tugas_rapikan.md')
+export const TUGAS_MAKSUD = baca('tugas_maksud.md')
+export const TUGAS_TANYA = baca('tugas_tanya.md')
+export const MODEL_MAKSUD = 'claude-haiku-5-5'
+const STR = { type: 'string' }
+const OBJ = (properties) => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false })
+export const SKEMA_CAKAP = {
+  rapikan: OBJ({ bahan: { type: 'array', items: OBJ({ kunci: STR, teks: STR }) }, perubahan: { type: 'array', items: STR } }),
+  maksud: OBJ({ maksud: { type: 'string', enum: ['buat', 'lanjut', 'final', 'batal', 'revisi', 'tanya', 'status', 'bantuan', 'obrolan', 'bahan'] }, jenis: { type: 'string', enum: ['harian', 'penanganan', ''] }, tanggal: STR, balasan: STR }),
+  tanya: OBJ({ jawaban: STR }),
+}
 export const SKEMA = {
   harian: json('skema_isian_harian.json'),
   penanganan: json('skema_isian_penanganan.json'),
@@ -321,7 +334,7 @@ export class GalatClaude extends Error {
 
 // ---------- blok pesan ----------
 // Tag pembungkus di dalam data dinetralkan supaya isi bahan tidak bisa menutup pembungkus dan menyamar sebagai instruksi.
-const TAG = /<(\/?)(contoh_bahan|contoh|keluaran|bahan|inventaris|kunci|riwayat|revisi)\b/gi
+const TAG = /<(\/?)(contoh_bahan|contoh|keluaran|bahan|inventaris|kunci|riwayat|revisi|galat|konteks|pesan|pertanyaan)\b/gi
 export const netral = (t) => String(t ?? '').replace(TAG, '&lt;$1$2')
 function blokBahan(bahan) {
   const blok = []
@@ -365,7 +378,7 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
   const dikabari = new Set()
   let client = dep.client || null
 
-  async function panggil({ effort, skema, tugas, isi, contoh = '' }) {
+  async function panggil({ effort, skema, tugas, isi, contoh = '', modelPakai = model, sistem = SISTEM, maksToken = MAKS_TOKEN }) {
     const tgl = tanggalWib(sekarang())
     const terpakai = Number(await dep.bacaBiaya(tgl)) || 0
     if (terpakai >= batasMikro) {
@@ -380,11 +393,11 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
       client = muatSdk(env, dep)
     }
     const body = {
-      model,
-      max_tokens: MAKS_TOKEN,
+      model: modelPakai,
+      max_tokens: maksToken,
       output_config: { effort, format: { type: 'json_schema', schema: skema } },
       system: [
-        { type: 'text', text: SISTEM, cache_control: { type: 'ephemeral' } },
+        { type: 'text', text: sistem, cache_control: { type: 'ephemeral' } },
         ...(contoh ? [{ type: 'text', text: contoh, cache_control: { type: 'ephemeral' } }] : []),
         { type: 'text', text: tugas, cache_control: { type: 'ephemeral' } },
       ],
@@ -392,10 +405,11 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
     }
     // Cadangan sisi server: permintaan yang ditolak pengaman Opus 5.5 diulang di model cadangan dalam panggilan yang sama.
     // Klien palsu di uji tanpa `beta` tetap memakai messages.create biasa.
-    const r = client.beta?.messages?.create
+    // Haiku 5.5 tidak punya cadangan sisi server: selalu messages.create biasa.
+    const r = client.beta?.messages?.create && !/haiku/.test(modelPakai)
       ? await client.beta.messages.create({ ...body, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
       : await client.messages.create(body)
-    const mikro = biaya(r.usage || {}, HARGA[r.model] ? r.model : model)
+    const mikro = biaya(r.usage || {}, HARGA[r.model] ? r.model : modelPakai)
     await dep.tambahBiaya(tgl, mikro)
     if (r.stop_reason === 'refusal') throw new GalatClaude('tolak', r.stop_details?.category || '')
     if (r.stop_reason === 'max_tokens') throw new GalatClaude('terpotong')
@@ -405,8 +419,36 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
     return { hasil, biaya: mikro, usage: r.usage || {} }
   }
 
+  const potong = (t, n) => { const x = String(t ?? ''); return x.length > n ? x.slice(0, n) : x }
+  const blokTeks = (tag, isi) => ({ type: 'text', text: `<${tag}>\n${netral(isi)}\n</${tag}>` })
   return {
     model,
+    // V2.1 A15: bahan {kunci: teks mentah}, galat generator -> {bahan: {kunci: teks rapi}, perubahan, biaya}. Pagar angka ada di maksud.mjs.
+    async rapikan(bahan, galat) {
+      const isi = [blokTeks('galat', potong(galat, 900)),
+        ...Object.entries(bahan || {}).map(([k, t]) => blokTeks('bahan', `kunci: ${k}\n${samarkan(t)}`)),
+        { type: 'text', text: 'Rapikan bahan di atas supaya terbaca generator, sesuai tugas.' }]
+      const { hasil, biaya: b } = await panggil({ effort: 'medium', skema: SKEMA_CAKAP.rapikan, tugas: TUGAS_RAPIKAN, isi, sistem: SISTEM_CAKAP })
+      const rapi = {}
+      for (const x of hasil?.bahan || []) if (x && typeof x.kunci === 'string' && typeof x.teks === 'string' && x.teks.trim()) rapi[x.kunci] = x.teks
+      return { bahan: rapi, perubahan: (hasil?.perubahan || []).filter((x) => typeof x === 'string').map((x) => potong(x.trim(), 200)).slice(0, 12), biaya: b }
+    },
+    // V2.1 A16: konteks {hari_ini, proyek: [{id, jenis, tanggal, status, versi}]} -> {maksud, jenis, tanggal, balasan, biaya} mentah (dibersihkan maksud.mjs)
+    async maksud(teks, konteks) {
+      const isi = [blokTeks('konteks', JSON.stringify(konteks || {})), blokTeks('pesan', samarkan(potong(teks, 600))),
+        { type: 'text', text: 'Tentukan maksud pesan di atas.' }]
+      const { hasil, biaya: b } = await panggil({ effort: 'low', skema: SKEMA_CAKAP.maksud, tugas: TUGAS_MAKSUD, isi, sistem: SISTEM_CAKAP,
+        modelPakai: env.BL_MODEL_MAKSUD || MODEL_MAKSUD, maksToken: 2000 })
+      return { ...hasil, biaya: b }
+    },
+    // V2.1 A17: inventaris deck versi terakhir, riwayat versi, pertanyaan -> {jawaban, biaya}. Tidak mengubah apa pun.
+    async jawabDraf(inventaris, riwayat, pertanyaan) {
+      const inv = potong(JSON.stringify((inventaris || []).map((x) => ({ slide: x.slide, shape: x.shape, teks: samarkan(x.teks ?? '') }))), 30000)
+      const isi = [blokTeks('inventaris', inv), blokTeks('riwayat', JSON.stringify((riwayat || []).map((x) => samarkan(String(x))))),
+        blokTeks('pertanyaan', samarkan(potong(pertanyaan, 1500))), { type: 'text', text: 'Jawab pertanyaan di atas dari isi draf.' }]
+      const { hasil, biaya: b } = await panggil({ effort: 'low', skema: SKEMA_CAKAP.tanya, tugas: TUGAS_TANYA, isi, sistem: SISTEM_CAKAP, maksToken: 4000 })
+      return { jawaban: potong(String(hasil?.jawaban || '').replace(/[·—–]/g, ',').trim(), 800), biaya: b }
+    },
     // bahan: [{id, jenis:'teks'|'tabel'|'pdf'|'gambar', teks?, data? (base64), media_type?, nama?}]; skema: 'harian' | 'penanganan' | objek skema.
     // Kutipan dari PDF atau gambar hanya lolos bila bahan itu membawa teks hasil ekstraksi mesin di `teks`.
     async urai(bahan, skema, { instruksi = '' } = {}) {

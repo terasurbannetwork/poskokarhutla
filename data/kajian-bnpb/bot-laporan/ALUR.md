@@ -74,3 +74,30 @@ Status proyek, perintah, dan pesan WA sama dengan V1. Yang berganti hanya isi la
 ### V2-C. Final
 
 Sama dengan V1. Tambahan: jalur deck final dicatat di `~/.wa-bot/agen/final.json` per jenis dan tanggal (D23); sesi agen dan transkripnya dihapus (D14). `batal` dan `kedaluwarsa` juga menghapus sesi.
+
+## V2.1: kecerdasan percakapan (K29, K30)
+
+### V2.1-A. Bahan berantakan (D30, D31)
+
+1. Generator gagal membaca bahan (galat baca, bukan galat mesin).
+2. Mesin mengirim teks WA mentah tiap bahan dan pesan galatnya ke Claude; Claude mengembalikan teks rapi dan daftar perubahan.
+3. Pagar rapikan memeriksa angka (D31). Lolos: generator dijalankan ulang dengan teks rapi. Ditolak: balasan galat seperti biasa, dengan penyebabnya.
+4. Paling banyak 2 kali. Draf yang jadi mencatat "Bahan dirapikan Claude" dan perubahannya.
+
+### V2.1-B. Kalimat bebas (D32, D33)
+
+1. Pesan teks pendek yang bukan perintah baku diklasifikasi Claude Haiku bersama ringkasan proyek pengirim.
+2. Buat: daftar bahan. Lanjut, status, bantuan: dijalankan. Final dan batal: ditanya "Balas *ya*". Revisi: alur B. Tanya: V2.1-C. Obrolan: jawaban singkat. Bahan: jalur bahan biasa.
+3. Klasifikasi gagal: perilaku sebelum V2.1.
+
+### V2.1-C. Tanya draf (D34)
+
+1. Pemegang draf bertanya tentang isi draf.
+2. Mesin membaca teks deck versi terakhir; Claude menjawab dari teks itu. Tidak ada versi baru.
+
+### V2.1-D. Kumpul revisi (D35)
+
+1. Pemegang draf mengetik *revisi*. Bot: "Kirim revisinya, boleh beberapa pesan. Ketik *lanjut* kalau sudah."
+2. Pesan teks berikutnya (termasuk yang diteruskan) masuk kumpulan; tanda terima sekali per 20 detik jeda.
+3. *lanjut*: kumpulan digabung bernomor dan dikerjakan sebagai satu revisi (alur B untuk V1, V2-B untuk V2). Kumpulan ditutup.
+4. *batal*: kumpulan ditutup, draf tetap. Lewat 2 jam tanpa pesan baru: kumpulan dibuang.
