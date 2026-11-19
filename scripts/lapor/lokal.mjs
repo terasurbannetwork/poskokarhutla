@@ -336,6 +336,10 @@ function alun(q) {
 }
 
 /* ---------- monitoring petugas (K7, D20, D22) ---------- */
+// angka dampak ringkas untuk peta dan kepala rincian; null = belum didata (kosong tidak pernah jadi nol)
+const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : Number(x.nilai) || 0; };
+  const rumah = ["rumah_berat", "rumah_sedang", "rumah_ringan"].map(a), adaRumah = rumah.some(v => v != null);
+  return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null}; };
 function meja() {
   const d = baca();
   return [200, {baris: Object.values(d.sesi).filter(s => s.nomor).sort((a, b) => b.terkirim - a.terkirim).map(s => {
@@ -343,7 +347,7 @@ function meja() {
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
-      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length};
+      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, dampak: dampakRingkas(s)};
   })}];
 }
 function mejaRinci(nomor, lihat = false) {
@@ -355,7 +359,7 @@ function mejaRinci(nomor, lihat = false) {
   const p = d.pelapor[s.wa] || {}, prov = s.isian.lokasi?.nilai?.wilayah?.provKode;
   return [200, {nomor, token: s.token, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
     pelapor: {nama: p.nama, wa: s.wa, peran: PERAN[p.peran], kab: p.kab || null, jabatan: p.jabatan || null},
-    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s),
+    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
     foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${s.token}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({...b, waktu: waktuLapor(b.waktu, prov)})),

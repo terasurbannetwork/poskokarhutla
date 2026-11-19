@@ -1782,3 +1782,17 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 @media (min-width:900px){.lp-app:not(.di-chat) .lp-tab .lp-sigap{display:none!important}}
 /* Sigap di menu samping tanpa latar abu (pemilik 19 Nov 2026) */
 .lp-tab .lp-sigap{background:none!important;padding:0!important}
+/* tombol Kembali: ikon polos tanpa ubin (ikon kepala kartu memakai ubin), pemilik 19 Nov 2026 "bagusin" */
+.lp-langkah-kepala .lp-kembali-langkah svg{width:16px!important;height:16px!important;padding:0!important;margin:0!important;background:none!important;border-radius:0!important;color:currentColor}
+.lp-kembali-langkah{padding:7px 14px 7px 10px!important;gap:6px!important}
+/* maskot hero berdiri, tidak melayang (pemilik 19 Nov 2026): tanpa gerak apung, tanpa cincin terpisah; bayangan bawaan maskot jadi pijakan */
+.lp-hero-tengah .lp-hero-maskot{animation:none!important;margin-bottom:0!important}
+.lp-hero-tengah::after{display:none!important}
+.lp-hero-tengah::before{inset:auto 18% 0 18%!important;height:22%!important}
+/* layar lebar: tombol kembali ke beranda tetap ada di kepala chat (pemilik 19 Nov 2026), berlabel supaya jelas */
+@media (min-width:900px){
+  .lp-chat-kepala #bKembali{display:inline-flex!important;align-items:center;gap:6px;width:auto!important;height:auto!important;padding:7px 14px 7px 10px!important;border:1px solid var(--line)!important;border-radius:999px!important;background:var(--card)!important;color:var(--brand2)!important;font:700 .8125rem var(--font)}
+  .lp-chat-kepala #bKembali svg{width:16px;height:16px}
+  .lp-chat-kepala #bKembali::after{content:"Beranda"}
+  .lp-chat-kepala #bKembali:hover{border-color:var(--brand2)!important}
+}

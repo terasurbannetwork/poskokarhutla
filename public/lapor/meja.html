@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Meja laporan, Lapor Bencana BNPB</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/inti/tema.css" rel="stylesheet">
+<link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
+<link href="/lapor/meja.css?v=7" rel="stylesheet">
+</head>
+<!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
+     peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
+     Nomor WA pelapor tampil di sini saja (D12). Di Worker rute /api/lapor/meja* wajib sesi staf (Q12); server tinjau lokal tanpa login. -->
+<body data-tanpa-keluar>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="m-cari" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="m-tutup" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="m-orang" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="m-kejadian" viewBox="0 0 24 24"><path d="M12 3 2 20h20Z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="m-daftar" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="m-foto" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></symbol>
+  <symbol id="m-tiket" viewBox="0 0 24 24"><path d="M9 5h6M9 3h6v4H9zM6 5H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1M9 14l2 2 4-4"/></symbol>
+  <symbol id="m-pesan" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4Z"/></symbol>
+  <symbol id="m-unduh" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="m-telepon" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="m-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7Z"/><path d="M9 9.5c.5 2 2.5 4 4.5 4.5l1-1.2 2 .8-.3 1.6c-3.5.3-7.5-3.7-7.2-7.2l1.6-.3.8 2Z"/></symbol>
+  <symbol id="m-segar" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></symbol>
+  <symbol id="m-lokasi" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+  <symbol id="m-buka" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="m-log" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="m-korban" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4.5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 6"/></symbol>
+  <symbol id="m-rumah" viewBox="0 0 24 24"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="m-tenda" viewBox="0 0 24 24"><path d="M3 20 12 4l9 16z"/><path d="M12 4v16M9 20l3-6 3 6"/></symbol>
+  <symbol id="m-ringkas" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="m-semua" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="m-luas" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="b-banjir" viewBox="0 0 24 24"><path d="M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9Z"/><path d="M3 20c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 4.5 0 3-1 4.5 0"/></symbol>
+  <symbol id="b-longsor" viewBox="0 0 24 24"><path d="M3 20h18L13 6l-3 5-2-2Z"/><circle cx="16" cy="16" r="1.5"/><circle cx="12.5" cy="17.5" r="1"/></symbol>
+  <symbol id="b-gelombang" viewBox="0 0 24 24"><path d="M2 15c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/><path d="M2 19c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/><path d="M6 11c0-4 3-7 7-7 2 0 3.5 1 4 2-2 0-3.5 1.5-3.5 3.5"/></symbol>
+  <symbol id="b-angin" viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h7"/></symbol>
+  <symbol id="b-matahari" viewBox="0 0 24 24"><circle cx="12" cy="10" r="4"/><path d="M12 2v2M4.5 4.5l1.4 1.4M2 10h2M20 10h2M18.1 5.9l1.4-1.4"/><path d="M4 20l3-3 2 2 3-3 2 2 3-3 3 3"/></symbol>
+  <symbol id="b-api" viewBox="0 0 24 24"><path d="M12 21c-4 0-6.5-2.6-6.5-6 0-3.4 2.6-5.6 3.6-8.5.4 1.6 1.4 2.6 2.4 3 .3-2.6 1.8-5 3.900-6.5-.4 2.900.6 4.600 1.900 6.300a7.6 7.6 0 0 1 1.2 5.7C18 18.7 15.6 21 12 21Z"/></symbol>
+  <symbol id="b-gempa" viewBox="0 0 24 24"><path d="M2 12h4l2-6 3 12 3-9 2 6 2-3h4"/></symbol>
+  <symbol id="b-gunung" viewBox="0 0 24 24"><path d="M2 20h20L15 9h-6Z"/><path d="M9 9l1.5-2h3L15 9"/><path d="M11 4c0-1 1-2 2-1M14 3.5c.5-1 2-1 2.5 0"/></symbol>
+  <symbol id="b-gedung" viewBox="0 0 24 24"><path d="M4 21V10l8-6 8 6v11Z"/><path d="M10 21v-5h4v5"/><path d="M15 3c1 1.5 2.5 2 2.5 4a2 2 0 0 1-4 0"/></symbol>
+</svg>
+<main class="mj">
+  <header class="mj-pita">
+    <a class="mj-merek" href="/lapor/"><img src="/lapor/lambang-bnpb.png" alt="" width="40" height="40"><span>Meja Laporan<small>Lapor Bencana BNPB, khusus staf</small></span></a>
+    <div class="mj-angka" id="angka" role="group" aria-label="Saring menurut status tiket"></div>
+    <button class="mj-segar" id="bSegar" type="button"><svg aria-hidden="true"><use href="#m-segar"/></svg><span id="waktuSegar">Memuat...</span></button>
+  </header>
+  <div class="mj-isi" id="isi">
+    <!-- peta dasbor: saring jenis berikon di atas peta, periode dan saring cepat di kanan, ringkasan di kiri, legenda tengah bawah (tiru /bnpb/dalops) -->
+    <section class="mj-peta-wadah" aria-label="Peta laporan">
+      <div class="mj-peta" id="peta"></div>
+      <div class="mj-peta-atas">
+        <div class="mj-jenis" id="saringJenis" role="group" aria-label="Saring jenis bencana"></div>
+        <div class="mj-alat">
+          <div class="mj-seg" id="saringCepat" role="group" aria-label="Saring cepat"></div>
+          <select id="sPeriode" aria-label="Periode laporan">
+            <option value="1">24 jam terakhir</option><option value="7">7 hari terakhir</option><option value="30">30 hari terakhir</option><option value="0" selected>Semua waktu</option>
+          </select>
+          <button class="mj-ikon-peta" id="bPas" type="button" aria-label="Tampilkan semua titik" title="Tampilkan semua titik"><svg aria-hidden="true"><use href="#m-luas"/></svg></button>
+        </div>
+      </div>
+      <aside class="mj-ringkas" id="ringkas" aria-label="Ringkasan laporan tersaring"></aside>
+      <div class="mj-legenda" id="legenda"></div>
+    </section>
+    <section class="mj-tabel-wadah">
+      <div class="mj-tabel-kepala">
+        <h2><svg aria-hidden="true"><use href="#m-daftar"/></svg>Daftar laporan <span id="nTabel"></span></h2>
+        <label class="mj-cari"><svg aria-hidden="true"><use href="#m-cari"/></svg><input id="qCari" type="search" placeholder="Cari nomor tiket, nama pelapor, nomor WA, atau kab/kota" aria-label="Cari laporan"></label>
+      </div>
+      <div class="mj-tabel-gulung"><table class="mj-tabel"><thead><tr>
+        <th>Waktu lapor</th><th>Tiket</th><th>Jenis</th><th>Lokasi</th><th title="Meninggal, hilang, luka-luka">Korban</th><th>Pelapor</th><th>Lengkap</th><th>Foto</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    </section>
+  </div>
+  <dialog class="mj-rinci" id="rinci" closedby="any" aria-labelledby="rinciJudul"></dialog>
+</main>
+<script src="/vendor/maplibre/maplibre-gl.js"></script>
+<script type="module" src="/lapor/meja.js?v=3"></script>
+</body>
+</html>
