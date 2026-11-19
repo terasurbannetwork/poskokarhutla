@@ -8,14 +8,18 @@ import path from 'node:path'
 
 const MAKS_PROYEK = 500
 const berkas = (dasar) => path.join(dasar, 'biaya-lokal.json')
-const baca = (dasar) => { try { const j = JSON.parse(fs.readFileSync(berkas(dasar), 'utf8')); return { bulan: j.bulan || {}, proyek: j.proyek || {} } } catch { return { bulan: {}, proyek: {} } } }
+const baca = (dasar) => { try { const j = JSON.parse(fs.readFileSync(berkas(dasar), 'utf8')); return { bulan: j.bulan || {}, proyek: j.proyek || {}, kegiatan: j.kegiatan || {} } } catch { return { bulan: {}, proyek: {}, kegiatan: {} } } }
 const bulanWib = (d = new Date()) => new Date(d.getTime() + 7 * 36e5).toISOString().slice(0, 7)
 
-// usd: dolar (bukan mikro). proyek boleh null (biaya tanpa proyek).
-export function catat(dasar, { usd, proyek = null, kini = new Date() }) {
+// Kegiatan pemakaian Claude (pemilik 19 Nov 2026: "coba track pemakaian selain bikin laporan"); dicatat per bulan WIB.
+export const KEGIATAN = { laporan: 'Membuat dan merevisi laporan', tinjau: 'Tinjau visual draf', tanya: 'Tanya isi draf', rapikan: 'Rapikan bahan WA', percakapan: 'Kalimat bebas dan obrolan' }
+// usd: dolar (bukan mikro). proyek boleh null (biaya tanpa proyek). kegiatan: kunci KEGIATAN (bawaan laporan).
+export function catat(dasar, { usd, proyek = null, kini = new Date(), kegiatan = 'laporan' }) {
   if (!(Number(usd) > 0)) return
   const s = baca(dasar), b = bulanWib(kini)
   s.bulan[b] = Number(s.bulan[b] || 0) + Number(usd)
+  const k = KEGIATAN[kegiatan] ? kegiatan : 'laporan'
+  s.kegiatan[b] = { ...(s.kegiatan[b] || {}), [k]: Number(s.kegiatan[b]?.[k] || 0) + Number(usd) }
   if (proyek) {
     s.proyek[proyek] = { usd: Number(s.proyek[proyek]?.usd || 0) + Number(usd), waktu: kini.getTime() }
     const ids = Object.keys(s.proyek).sort((a, c) => s.proyek[a].waktu - s.proyek[c].waktu)
@@ -24,6 +28,9 @@ export function catat(dasar, { usd, proyek = null, kini = new Date() }) {
   fs.mkdirSync(dasar, { recursive: true, mode: 0o700 })
   fs.writeFileSync(berkas(dasar), JSON.stringify(s, null, 1), { mode: 0o600 })
 }
+// -> [{kegiatan, label, usd}] bulan ini, terbesar dulu
+export const perKegiatan = (dasar, kini = new Date()) => Object.entries(baca(dasar).kegiatan[bulanWib(kini)] || {})
+  .map(([k, usd]) => ({ kegiatan: k, label: KEGIATAN[k] || k, usd: Number(usd) || 0 })).filter((x) => x.usd > 0).sort((a, b) => b.usd - a.usd)
 export const proyek = (dasar, id) => Number(baca(dasar).proyek[id]?.usd || 0)
 export const bulan = (dasar, kini = new Date()) => Number(baca(dasar).bulan[bulanWib(kini)] || 0)
 export const terakhir = (dasar, n = 5) => Object.entries(baca(dasar).proyek).sort((a, b) => b[1].waktu - a[1].waktu).slice(0, n).map(([id, v]) => ({ id, usd: v.usd }))

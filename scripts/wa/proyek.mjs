@@ -551,7 +551,7 @@ async function urai(ctx, p, lap, bahanTeks) {
   const ada = bacaJson(f, null)
   if (ada?.sidik === sidik) return ada.hasil
   const r = await klien(ctx).urai(bahanTeks, lap.id)
-  try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+  try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date(), kegiatan: 'laporan' }) } catch {}
   const hasil ={ isian: r.isian || [], pertentangan: r.pertentangan || [], gagal: r.gagal || [], ditolak: r.ditolak || [], catatan: r.catatan || '' }
   tulisJson(f, { sidik, hasil })
   return hasil
@@ -570,7 +570,7 @@ async function rapikanBahan(ctx, p, mentah, pakai, galat) {
   if (!Object.keys(calon).length) return null
   try {
     const r = await klien(ctx).rapikan(calon, galat)
-    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date(), kegiatan: 'rapikan' }) } catch {}
     if (!Object.keys(r.bahan).length) { log('[rapikan] tanpa perubahan', r.perubahan.join('; ')); return null }
     // acuan angka = teks asli bahan yang dikirim; kunci di luar kiriman ditolak pagar (kunciAsing)
     const pagar = Maksud.pagarRapikan(Object.fromEntries(Object.keys(calon).map((k) => [k, mentah[k] ?? calon[k]])), r.bahan)
@@ -1071,7 +1071,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       const awal = sebelum ? sebelum.kalimat : kalimat
       const kirimKalimat = sebelum ? susunJawaban(sebelum, kalimat) : kalimat
       const r = await klien(ctx).operasi(invLama, kunciLama, opsLama.map((o) => JSON.stringify(o)), kirimKalimat)
-      try { Biaya.catat(dasar, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+      try { Biaya.catat(dasar, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date(), kegiatan: 'laporan' }) } catch {}
       if (!r.tanya?.length && r.diterima?.length) await kabarMulai(ctx, p, lap, { versi: 'v1', mode: 'revisi', n })
       if (r.tanya?.length) {
         catatTanyaRevisi(ctx, p.id, m, { kalimat: awal, tanya: r.tanya.map((q) => rapi(q.pertanyaan, 300)), jawab: sebelum ? [...(sebelum.jawab || []), kalimat].slice(-3) : [] })
@@ -1378,7 +1378,7 @@ async function tinjauVisual(ctx, o, { h, sesi, pagarDeck }) {
     mulai = true
     const prompt = Agen.promptTinjau({ ruang, png })
     Agen.segarkanKunciAgen(dasar, p.id) // kunci agen masih dipegang kerjakanAgen
-    const r2 = await Agen.jalankan({ ...ctx, dasar, promptSesiBaru: () => prompt }, { jenis: p.jenis, id: p.id, ruang, prompt, sesi, pyBin: path.dirname(pyBin(env)), biaya: biayaWorker(ctx) })
+    const r2 = await Agen.jalankan({ ...ctx, dasar, promptSesiBaru: () => prompt }, { jenis: p.jenis, id: p.id, ruang, prompt, sesi, pyBin: path.dirname(pyBin(env)), biaya: { ...biayaWorker(ctx), kegiatan: 'tinjau' } })
     const h2 = r2.hasil
     if (!h2.pptx || h2.tanya.length) throw new Error('tinjau tidak menghasilkan deck')
     // tinjau hanya tata letak: seluruh teks deck (tanpa spasi dan baris baru) harus sama dengan sebelum tinjau
@@ -2203,7 +2203,7 @@ async function maksudPesan(ctx, pesan, sha) {
   try {
     const ps = await proyekPengirim(ctx, sha, () => true, { bersihkan: false })
     const r = await klien(ctx).maksud(teks, { hari_ini: tanggalWib(ctx.now || new Date()), proyek: ps.map((p) => ({ id: p.id, jenis: p.jenis, tanggal: p.tanggal, status: p.status, versi: p.versi || 0 })) })
-    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: null, kini: ctx.now || new Date() }) } catch {}
+    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: null, kini: ctx.now || new Date(), kegiatan: 'percakapan' }) } catch {}
     const hasil = Maksud.bersihkanMaksud(r, ctx.now || new Date())
     if (cacheMaksud.size > 200) cacheMaksud.clear()
     cacheMaksud.set(kunci, { waktu: kini, hasil })
@@ -2225,7 +2225,7 @@ async function tanyaDraf(pesan, sha, p, ctx) {
     const gambar = []
     for (const g of (pesan.gambar || []).slice(0, 4)) { const b = await unduhBerkas(ctx, g.wa_id).catch(() => null); const mt = b && mimeIsi(b); if (b && mt && b.length <= MAKS_GAMBAR_BYTE) gambar.push({ media_type: mt, data: b.toString('base64') }) }
     const r = await klien(ctx).jawabDraf(inv, riwayat, String(pesan.teks || ''), gambar)
-    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+    try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date(), kegiatan: 'tanya' }) } catch {}
     catatMenu(ctx, sha, p.id)
     return ctx.balas(susun(`Tentang draf v${p.versi}`, p, p.versi, [r.jawaban || 'Jawabannya tidak tertulis di draf.'], 'Tulis revisinya bila ingin ada yang diubah.'))
   } catch (e) {
@@ -2341,7 +2341,11 @@ export async function tangani(pesan, ctxAsli) {
     const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
     if (!new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(dari)) { await ctx.balas(BANTUAN); return { status: 'bantuan' } }
     const akhir = Biaya.terakhir(dasar, 5).map((x) => `- ${x.id}: ${Biaya.dolar(x.usd)}`)
+    const keg = Biaya.perKegiatan(dasar, kini)
+    const belum = Biaya.bulan(dasar, kini) - keg.reduce((a, x) => a + x.usd, 0) // pemakaian sebelum rincian per kegiatan ada (19 Nov 2026)
+    if (keg.length && belum >= 0.005) keg.push({ label: 'Sebelum rincian dicatat', usd: belum })
     await ctx.balas(susun('Pemakaian Claude', null, null, await barisBiaya(ctx, { hari: true }),
+      keg.length ? ['*Per kegiatan bulan ini:*', ...keg.map((x) => `- ${x.label}: ${Biaya.dolar(x.usd)}`)] : [],
       akhir.length ? ['*Laporan terakhir:*', ...akhir] : [],
       'Dihitung bot dari pemakaian tokennya sendiri (perkiraan). Angka Console bisa sedikit berbeda, apalagi bila kunci yang sama dipakai di tempat lain.'))
     return { status: 'biaya' }

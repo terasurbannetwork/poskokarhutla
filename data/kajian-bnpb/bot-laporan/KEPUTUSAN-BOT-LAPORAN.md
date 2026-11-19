@@ -162,6 +162,7 @@ Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya car
 | No | Keputusan |
 | --- | --- |
 | K37 | (19 Nov) "sekalian saya ingin ganti api key dari anthropic jadi 9router yang sudah setup sebelumnya, isinya $400 credit (gabungan 2 akun)". Bot dan agen V2 membaca `ANTHROPIC_BASE_URL` (alamat router) dan `ANTHROPIC_API_KEY` (kunci router) dari `.env` mesin; cadangan sisi server Anthropic dimatikan saat lewat router. Sebelum dipakai: `node scripts/wa/uji_router.mjs` harus LOLOS ketiga uji (Haiku structured output, Opus structured output, agen Claude Code). |
+| K38 | (19 Nov) "ini masih $200 padahal kan skrg pakai 9router yang gabungin 2 api $200" (pengaturan `BL_ANGGARAN_BULAN=400` di mesin), "terus coba track pemakaian selain bikin laporan": biaya dicatat per kegiatan (laporan, tinjau visual, tanya draf, rapikan bahan, kalimat bebas) di `~/.wa-bot/biaya-lokal.json` dan ditampilkan di perintah *biaya*. |
 | K36 | (19 Nov) "bot wa nya support vision ga ya? jadi saya ingin ngasih tau revisi pake ss-an", lalu "dengan kapabilitas claude sekarang, gambar yang dikirim bisa dijadiin support vision aja ga? jadi supaya bot ini keseluruhannya support vision, jadinya lebih pinter", lalu "gas" atas usulan empat bagian: agen melihat render deck sendiri, screenshot revisi, bahan gambar asli ke agen, tanya draf bergambar. |
 
 ### Keputusan rancangan V2.2 (agent, bisa dibatalkan pemilik)

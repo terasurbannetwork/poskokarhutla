@@ -304,7 +304,7 @@ export function tanyaPengirim(dasar, sha, kini = Date.now()) {
 // ---------- anggaran (D20) ----------
 // biaya per proyek dan per bulan di catatan lokal bersama V1 (biaya.mjs): dipakai batas per proyek dan baris biaya di pesan final
 export const biayaProyek = (dasar, id) => Biaya.proyek(dasar, id)
-const tambahBiayaProyek = (dasar, id, usd) => Biaya.catat(dasar, { usd, proyek: id })
+const tambahBiayaProyek = (dasar, id, usd, kegiatan = 'laporan') => Biaya.catat(dasar, { usd, proyek: id, kegiatan })
 export const usdJalan = (env = {}) => (Number(env.BL_AGEN_USD) > 0 ? Number(env.BL_AGEN_USD) : USD_AGEN)
 export const usdProyek = (env = {}) => (Number(env.BL_AGEN_PROYEK_USD) > 0 ? Number(env.BL_AGEN_PROYEK_USD) : USD_PROYEK)
 
@@ -509,6 +509,6 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
 }
 async function catatBiaya(biaya, dasar, id, usd) {
   if (!(usd > 0)) return
-  tambahBiayaProyek(dasar, id, usd)
+  tambahBiayaProyek(dasar, id, usd, biaya?.kegiatan || 'laporan')
   try { await biaya.tambah(biaya.tgl, Math.round(usd * 1e6)) } catch {}
 }

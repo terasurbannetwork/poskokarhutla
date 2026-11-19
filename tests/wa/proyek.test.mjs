@@ -1852,3 +1852,17 @@ test('T49 tanya draf bergambar: gambar berketerangan dari pemegang draf dijawab 
   assert.match(d.balasan.at(-1), /Judul slide 1 terlalu panjang/)
   assert.equal((await tangani({ dari: DARI, teks: '', wa_id: 602, nama_berkas: 'foto.jpg', ada_berkas: true }, d.ctx)).status, 'menunggu buat', 'tanpa keterangan: bahan')
 })
+
+test('biaya per kegiatan: laporan, tanya draf, kalimat bebas dicatat terpisah dan tampil di perintah biaya (pemilik 19 Nov)', async () => {
+  const Biaya = await import('../../scripts/wa/biaya.mjs')
+  const d = dunia()
+  const kini = NOW
+  Biaya.catat(d.dasar, { usd: 0.5, kini })
+  Biaya.catat(d.dasar, { usd: 2, proyek: 'P-1', kini, kegiatan: 'laporan' })
+  Biaya.catat(d.dasar, { usd: 0.3, proyek: 'P-1', kini, kegiatan: 'tinjau' })
+  Biaya.catat(d.dasar, { usd: 0.02, kini, kegiatan: 'percakapan' })
+  assert.deepEqual(Biaya.perKegiatan(d.dasar, kini).map((x) => [x.kegiatan, x.usd]), [['laporan', 2.5], ['tinjau', 0.3], ['percakapan', 0.02]])
+  d.ctx.dep.fetch = async () => ({ ok: true, status: 200, json: async () => ({ usd_mikro: 0 }), text: async () => '' })
+  await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
+  assert.match(d.balasan.at(-1), /\*Per kegiatan bulan ini:\*\n- Membuat dan merevisi laporan: \$2,50\n- Tinjau visual draf: \$0,30\n- Kalimat bebas dan obrolan: \$0,02/)
+})
