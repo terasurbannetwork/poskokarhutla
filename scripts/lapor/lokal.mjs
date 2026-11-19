@@ -136,7 +136,7 @@ async function pesan(body) {
     h.sesi.versi = [{versi: 1, isi: structuredClone(h.sesi.isian), waktu: kini}];
     h.inti = T.terkirim(h.pelapor.nama, h.sesi.nomor);
     const q = `?t=${h.sesi.token}`;
-    tambahan = {nomor: h.sesi.nomor, lacak: `/lapor/lacak.html${q}`, unduhan: [
+    tambahan = {nomor: h.sesi.nomor, lacak: `/lapor/lacak.html${q}`, foto: h.sesi.foto?.[0] ? `/api/lapor/foto/${h.sesi.foto[0].id}${q}` : null, unduhan: [ // foto pertama untuk kartu Laporan saya
       {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
       {label: "Unduh PDF", url: `/api/lapor/unduh/${h.sesi.nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${h.sesi.nomor}.docx${q}`}]};
     buatDokumen(h.sesi, h.pelapor);
@@ -201,6 +201,8 @@ function unduh(res, nama, t) {
   const m = /^(LA-\d{6}-\d{2,3})\.(pdf|docx)$/.exec(nama), d = baca(), s = cariToken(d, t);
   if (!m || !s || s.nomor !== m[1]) { res.writeHead(404); return res.end("tidak ada"); }
   const f = path.join(DOK, `${m[1]}.${m[2]}`);
+  // templat dokumen berubah sesudah berkas dibuat: hapus berkas lama supaya dibuat ulang dengan tampilan baru
+  try { if (fs.statSync(f).mtimeMs < fs.statSync(path.join(AKAR, "scripts/lapor/dokumen.py")).mtimeMs) for (const x of ["pdf", "docx"]) fs.rmSync(path.join(DOK, `${m[1]}.${x}`), {force: true}); } catch {}
   if (!fs.existsSync(f) && !fs.existsSync(path.join(DOK, `${m[1]}.pdf`)) && Date.now() - (sedangBuat[m[1]] || 0) > 60000) { sedangBuat[m[1]] = Date.now(); buatDokumen(s, d.pelapor[s.wa]); } // belum ada: buat ulang
   if (!fs.existsSync(f)) { res.writeHead(202, {"content-type": "text/plain; charset=utf-8"}); return res.end("Dokumen sedang dibuat. Coba lagi beberapa detik lagi."); }
   res.writeHead(200, {"content-type": m[2] === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -249,28 +251,36 @@ const cacheSekitar = new Map();
 async function sekitar(q) {
   const s = sesiMentah(q.wa), L = s?.isian?.lokasi?.nilai;
   if (!L || L.lat == null) return [400, {galat: "Lokasi kejadian belum ada."}];
-  const lat = Number(L.lat), lon = Number(L.lon), kunci = `${lat.toFixed(3)},${lon.toFixed(3)}`, JENIS_T = {sekolah: "Sekolah", pemerintahan: "Kantor atau balai", titik_kumpul: "Titik kumpul", puskesmas: "Puskesmas"};
-  let semua = cacheSekitar.get(kunci);
-  if (!semua) {
-    semua = [];
+  const lat = Number(L.lat), lon = Number(L.lon), kunci = `${lat.toFixed(3)},${lon.toFixed(3)}`, JENIS_T = {sekolah: "Sekolah", pemerintahan: "Kantor atau balai", titik_kumpul: "Titik kumpul", puskesmas: "Puskesmas", rs: "Rumah sakit", klinik: "Klinik", jembatan: "Jembatan"};
+  // data OSM lokal langsung; Overpass (rumah ibadah, balai warga) ditunggu paling lama 2,5 detik, sisanya mengisi cache untuk ketukan berikutnya
+  // (pemilik 19 Nov 2026: "lama banget")
+  const rapikan = xs => { const unik = new Map(); for (const x of xs) { const k = x.nama.toLowerCase(); if (!unik.has(k) || unik.get(k).jarakKm > x.jarakKm) unik.set(k, x); }
+    return [...unik.values()].sort((a, b) => a.jarakKm - b.jarakKm).map(x => ({...x, jarakKm: Math.round(x.jarakKm * 10) / 10})); };
+  let c = cacheSekitar.get(kunci);
+  if (!c) {
+    const lokal = [];
     let osm = {}; try { osm = JSON.parse(fs.readFileSync(path.join(PUBLIK, `data/osm_nasional/${L.wilayah?.provKode}.json`), "utf8")); } catch {}
-    for (const [k, t] of Object.entries(JENIS_T)) for (const [la, lo, nama] of osm[k] || []) { const d = km(lat, lon, la, lo); if (d <= 5 && nama) semua.push({nama, jenis: t, jarakKm: d}); }
-    try {
-      const ql = `[out:json][timeout:8];(nwr(around:3000,${lat},${lon})["amenity"~"place_of_worship|school|community_centre|townhall|shelter"]["name"];);out center 80;`;
-      const r = await fetch("https://overpass-api.de/api/interpreter", {method: "POST", body: new URLSearchParams({data: ql}), headers: {"user-agent": "lapor-bencana-lokal/0.1"}, signal: AbortSignal.timeout(10000)});
-      const J = await r.json(), JT = {place_of_worship: "Rumah ibadah", school: "Sekolah", community_centre: "Balai warga", townhall: "Kantor atau balai", shelter: "Shelter"};
-      for (const e of J.elements || []) { const la = e.lat ?? e.center?.lat, lo = e.lon ?? e.center?.lon; if (la == null || !e.tags?.name) continue; semua.push({nama: e.tags.name, jenis: JT[e.tags.amenity] || "Tempat", jarakKm: km(lat, lon, la, lo)}); }
-    } catch (e) { console.error("overpass gagal", e.message); } // tetap pakai data lokal
-    const unik = new Map(); for (const x of semua) { const k = x.nama.toLowerCase(); if (!unik.has(k) || unik.get(k).jarakKm > x.jarakKm) unik.set(k, x); }
-    semua = [...unik.values()].sort((a, b) => a.jarakKm - b.jarakKm).map(x => ({...x, jarakKm: Math.round(x.jarakKm * 10) / 10}));
-    cacheSekitar.set(kunci, semua);
+    for (const [k, t] of Object.entries(JENIS_T)) for (const [la, lo, nama] of osm[k] || []) { const d = km(lat, lon, la, lo); if (d <= 5 && nama) lokal.push({nama, jenis: t, jarakKm: d}); }
+    c = {semua: rapikan(lokal), lengkap: false};
+    cacheSekitar.set(kunci, c);
+    const ql = `[out:json][timeout:8];(nwr(around:3000,${lat},${lon})["amenity"~"place_of_worship|school|community_centre|townhall|shelter|clinic|hospital|doctors"]["name"];way(around:1500,${lat},${lon})["highway"~"primary|secondary|tertiary|residential|unclassified"]["name"];);out center 160;`;
+    c.overpass = fetch("https://overpass-api.de/api/interpreter", {method: "POST", body: new URLSearchParams({data: ql}), headers: {"user-agent": "lapor-bencana-lokal/0.1"}, signal: AbortSignal.timeout(10000)})
+      .then(r => r.json()).then(J => { const JT = {place_of_worship: "Rumah ibadah", school: "Sekolah", community_centre: "Balai warga", townhall: "Kantor atau balai", shelter: "Shelter", clinic: "Klinik", hospital: "Rumah sakit", doctors: "Klinik"}, tambah = [];
+        for (const e of J.elements || []) { const la = e.lat ?? e.center?.lat, lo = e.lon ?? e.center?.lon; if (la == null || !e.tags?.name) continue; tambah.push({nama: e.tags.name, jenis: e.tags.highway ? "Jalan" : JT[e.tags.amenity] || "Tempat", jarakKm: km(lat, lon, la, lo)}); }
+        c.semua = rapikan([...c.semua, ...tambah]); c.lengkap = true; })
+      .catch(e => { console.error("overpass gagal", e.message); cacheSekitar.delete(kunci); }); // gagal: dicoba lagi pada permintaan berikutnya
   }
+  if (!c.lengkap) await Promise.race([c.overpass, new Promise(r => setTimeout(r, 2500))]);
+  // satu pemilih untuk titik pengungsian dan nama fasilitas rusak (pemilik 19 Nov 2026: "SD rusak kasih pilihan langsung", juga faskes, ibadah, jalan)
+  const SARING = {pengungsian: /^(Sekolah|Kantor atau balai|Balai warga|Rumah ibadah|Titik kumpul|Shelter)$/, sekolah: /^Sekolah$/, faskes: /^(Puskesmas|Rumah sakit|Klinik)$/,
+    ibadah: /^Rumah ibadah$/, jalan: /^(Jalan|Jembatan)$/};
+  const semua = c.semua.filter(x => (SARING[q.jenis] || SARING.pengungsian).test(x.jenis));
   // cari per kata pada nama dan jenis, dengan sebutan sehari-hari ("balai desa" = kantor desa, "sd" = sekolah dasar); tidak ada yang cocok = tampilkan yang terdekat
   const SEBUT = {"Kantor atau balai": "balai desa kantor kelurahan aula", "Balai warga": "balai warga aula gedung serbaguna", "Rumah ibadah": "masjid musala mushola surau gereja pura vihara klenteng",
-    "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Shelter": "shelter tempat evakuasi"};
+    "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Puskesmas": "puskesmas faskes", "Rumah sakit": "rs rsud rumah sakit faskes", "Klinik": "klinik faskes", "Jalan": "jalan jl", "Jembatan": "jembatan", "Shelter": "shelter tempat evakuasi"};
   const kata = String(q.q || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
   const cocok = kata.length ? semua.filter(x => { const h = `${x.nama} ${x.jenis} ${SEBUT[x.jenis] || ""}`.toLowerCase(); return kata.every(k => h.includes(k)); }) : semua;
-  return [200, cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}];
+  return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !c.lengkap}];
 }
 
 /* ---------- nomor penting di sekitar lokasi terverifikasi (pemilik 19 Nov 2026: damkar, BPBD daerah, rumah sakit terdekat, kepolisian) ----------
@@ -281,10 +291,15 @@ const NOMOR_NASIONAL = [["112", "Darurat terpadu"], ["113", "Pemadam kebakaran"]
 const normKab = t => String(t || "").toLowerCase().replace(/kota administrasi|kabupaten|kab\.|kota|adm\./g, "").replace(/[^a-z]/g, "");
 async function penting(q) {
   let lat = Number(q.lat), lon = Number(q.lon), w = null;
-  if (q.kode) { const c = await wilayah.pusat(String(q.kode)); if (c) ({lat, lon, wilayah: w} = c); }
+  const semuaKantor = JSON.parse(fs.readFileSync(path.join(PUBLIK, "data/bpbd.json"), "utf8")).kantor;
+  if (q.kode && /^\d{2}\.\d{2}(\.\d{2})?$/.test(q.kode)) { // daerah tingkat kab/kec (mis. "Daerah terakhir" dari Info): titik acuan = kantor BPBD kab itu
+    const d = (await wilayah.cariNama("", q.kode))[0]; w = d ? {...d, desa: null} : null;
+    const k = w && semuaKantor.find(x => x.prov === w.provKode && normKab(x.kab) === normKab(w.kab));
+    if (k) ({lat, lon} = k); else if (d) { const c = await wilayah.pusat(d.kode); if (c) ({lat, lon} = c); } // kantor BPBD kab belum terdata: pakai titik desa pertama di kab itu
+  } else if (q.kode) { const c = await wilayah.pusat(String(q.kode)); if (c) ({lat, lon, wilayah: w} = c); }
   else if (Number.isFinite(lat)) w = await wilayah(lat, lon);
-  if (!w || !Number.isFinite(lat)) return [400, {galat: "Lokasi belum terverifikasi. Bagikan lokasi atau pilih desa dulu."}];
-  const kantor = JSON.parse(fs.readFileSync(path.join(PUBLIK, "data/bpbd.json"), "utf8")).kantor.filter(x => x.prov === w.provKode);
+  if (!w || !Number.isFinite(lat)) return [400, {galat: "Lokasi belum terbaca. Pakai lokasi saat ini atau cari desa Anda."}];
+  const kantor = semuaKantor.filter(x => x.prov === w.provKode);
   const nomor = t => /\d{3}/.test(t || "") ? String(t).replace(/[^\d+ -]/g, "").trim() : null;
   const bpbdKab = kantor.find(x => normKab(x.kab) === normKab(w.kab)) || kantor.filter(x => !/provinsi/i.test(x.nama)).sort((a, b) => km(lat, lon, a.lat, a.lon) - km(lat, lon, b.lat, b.lon))[0];
   const bpbdProv = kantor.find(x => /provinsi/i.test(x.nama));

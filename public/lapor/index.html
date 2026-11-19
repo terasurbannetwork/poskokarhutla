@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=95" rel="stylesheet">
+<link href="/lapor/lapor.css?v=100" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -90,7 +90,7 @@
           <button class="lp-tombol-kaca" id="bCekStatus" type="button"><svg aria-hidden="true"><use href="#i-status"/></svg>Cek status laporan</button>
         </div>
       </div>
-      <div class="lp-hero-tengah"><p class="lp-hero-gelembung"><b>Halo, saya Sigap.</b>Saya temani Anda melapor sampai selesai.</p><div class="lp-hero-maskot" id="maskotHero"></div></div>
+      <div class="lp-hero-tengah"><p class="lp-hero-gelembung"><span class="lp-hg-label"><i aria-hidden="true"></i>Sigap, asisten AI BNPB</span><b>Halo, ada kejadian di sekitar Anda?</b>Saya temani melapor sampai selesai.</p><div class="lp-hero-maskot" id="maskotHero"></div></div>
       <div class="lp-hero-kanan">
       <section class="lp-cc2" aria-label="Kontak BNPB">
           <div class="lp-cc2-kepala"><img src="/img/lembaga/sumber-bnpb.png" alt="" width="40" height="40"><div><b>BNPB</b><small>Badan Nasional Penanggulangan Bencana</small></div></div>
@@ -161,10 +161,13 @@
 
   <!-- ===== pembuka ===== -->
   <div class="lp-pembuka" id="pembuka" hidden aria-hidden="true">
+    <span class="lp-pb-riak" aria-hidden="true"><i></i><i></i><i></i></span>
+    <div class="lp-pb-merek"><img src="/lapor/lambang-bnpb.png" alt="" width="44" height="44"><span><b>BNPB</b><small>Badan Nasional Penanggulangan Bencana</small></span></div>
     <div class="lp-pembuka-maskot" id="maskotPembuka"></div>
     <p class="lp-pembuka-sapa">Selamat datang di</p>
-    <p class="lp-pembuka-judul">Lapor Bencana</p>
-    <p class="lp-pembuka-bnpb">Badan Nasional Penanggulangan Bencana</p>
+    <p class="lp-pembuka-judul">Lapor <em>Bencana</em></p>
+    <p class="lp-pembuka-bnpb">Lihat kejadian, laporkan, kami teruskan ke BPBD setempat</p>
+    <span class="lp-pb-muat" aria-hidden="true"><i></i></span>
   </div>
 
   <!-- ===== layar 2: laporan saya ===== -->
@@ -252,7 +255,6 @@
         <div class="lp-panel-ringkas"><h2 id="judulIsian">Isian laporan</h2><p id="ringkasIsian" class="lp-redup">Terisi otomatis dari percakapan</p><span class="lp-panel-bar" aria-hidden="true"><i id="barIsian"></i></span><p id="sisaIsian" class="lp-panel-sisa" hidden></p></div>
         <button class="lp-ikon" id="bTutupIsian" type="button" aria-label="Tutup isian"><svg aria-hidden="true"><use href="#i-tutup"/></svg></button>
       </div>
-      <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
       <div id="isian" class="lp-isian"></div>
     </aside>
   </section>
@@ -282,12 +284,14 @@
     <button type="button" data-ke="alun"><svg aria-hidden="true"><use href="#i-pengungsian"/></svg>Alun-alun</button>
     <button type="button" data-ke="privasi"><svg aria-hidden="true"><use href="#i-status"/></svg>Kebijakan privasi</button>
     <div class="lp-tab-profil" id="tabProfil" hidden><span class="lp-tab-avatar" id="tabAvatar"></span><span><b id="tabNama"></b><small id="tabWa"></small></span></div>
+    <!-- Sigap di ruang kosong menu samping (pemilik 19 Nov 2026: "ini agar disini") -->
+    <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
     <button type="button" class="lp-tab-lapor" data-ke="lapor"><svg aria-hidden="true"><use href="#i-kirim"/></svg>Lapor kejadian</button>
   </nav>
 </div>
 <script src="/inti/exif.js" defer></script>
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=71"></script>
+<script type="module" src="/lapor/lapor.js?v=76"></script>
 </body>
 </html>

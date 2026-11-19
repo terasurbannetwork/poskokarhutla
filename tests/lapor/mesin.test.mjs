@@ -2,6 +2,8 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {putaran, angkaDalam, validasiUraian, wajibKurang} from "../../src/lapor_mesin.js";
+import {langkahKronologi, rangkaiKronologi} from "../../src/lapor_spek.js";
+const kr1 = jenis => langkahKronologi(jenis).map(() => "1"); // jawab pilihan pertama di tiap langkah kronologi
 
 let jam = 0;
 async function obrol(langkah, {model = null, pelapor = null} = {}) {
@@ -58,7 +60,7 @@ test("BPBD yang mengaku sendiri = bpbd_klaim, ditanya kab dan jabatan", async ()
   assert.match(h.balasan, /Jenis bencana/, "sesudah lokasi: jenis bencana dipilih dulu");
   assert.equal(h.minta, "jenis");
   const h2 = await obrol(["lapor", "1", "2", "Siti", "Kabupaten Bogor", "Kalaksa", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "1", "1"]);
-  assert.match(h2.balasan, /1 dari 5/, "sesudah jenis dan karakteristik: kronologi berpandu langkah 1");
+  assert.match(h2.balasan, new RegExp(`1 dari ${langkahKronologi("banjir").length}`), "sesudah jenis dan karakteristik: kronologi berpandu langkah 1");
   assert.ok(h2.pilihan.length >= 2, "langkah kronologi berupa pilihan");
 });
 
@@ -67,8 +69,7 @@ test("nomor dikenal cukup konfirmasi; alur lengkap sampai terkirim tanpa model",
   const langkah = ["lapor", "1", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}},
     "2",                          // Tanah longsor dari pilihan
     "1",                          // subjenis Longsoran
-    "1", "2", "2",                // kronologi berpandu: hujan lebat, menutup jalan, sudah berhenti
-    "1", "7",                     // lama kejadian, fenomena lain: tidak ada
+    ...kr1("longsor"),            // kronologi berpandu: pilihan pertama tiap langkah
     "2",                          // tidak ada tambahan
     "hari ini jam 05.30"];
   let h = await obrol(langkah, {pelapor});
@@ -98,8 +99,8 @@ test("dengan model: uraian berkutipan masuk, kelompok ditanya sekaligus, lokasi 
       jenis_tebak: [], darurat_jiwa: false, tanggapan: "Baik, kami catat."};
   };
   const pelapor = {wa: "6280000000000", nama: "Budi", peran: "warga"};
-  let h = await obrol(["lapor", "1", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "1", "1", "2", "1", "1", "1", "7", "1", "Ada banjir, air masuk rumah warga di Desa Air Tenang, Aceh Tamiang"], {model, pelapor});
-  assert.match(h.sesi.isian.kronologi.nilai, /meluap/, "kronologi dirangkai dari pilihan, keterangan tambahan ikut");
+  let h = await obrol(["lapor", "1", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "1", "1", ...kr1("banjir"), "1", "Ada banjir, air masuk rumah warga di Desa Air Tenang, Aceh Tamiang"], {model, pelapor});
+  assert.match(h.sesi.isian.kronologi.nilai, /intensitas tinggi.*Desa Air Tenang/, "kronologi dirangkai dari pilihan, keterangan tambahan ikut");
   assert.match(h.balasan, /Terima kasih sudah melapor/);
   assert.equal(h.sesi.isian.jenis.nilai, "banjir");
   h = await putaran({sesi: h.sesi, pelapor, pesan: {lokasi: {lat: 40, lon: -3, sumber: "wa"}}, model, kini: ++jam});
@@ -117,9 +118,15 @@ test("waktu wajib tanggal dan jam; 'tadi malam' di siang hari = kemarin; masa de
   assert.equal(uraiWaktu("19/11/2026 10.15", kini, "73").tampil, "19 November 2026, 10.15 WITA", "zona dari provinsi");
 });
 
-test("kronologi berpandu dirangkai jadi kalimat gaya laporan Pusdalops", async () => {
-  const h = await obrol(["lapor", "1", "2", "Siti", "Kabupaten Bogor", "Kalaksa", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "1", "1", "2", "1", "3", "2", "1, 3", "2"]);
-  assert.equal(h.sesi.isian.kronologi.nilai, "Debit sungai meningkat hingga meluap mengakibatkan permukiman warga tergenang. Saat dilaporkan, air mulai surut. Kejadian berlangsung satu sampai enam jam. Selain itu terlihat arus deras, listrik padam.");
+test("kronologi berpandu dirangkai jadi kalimat gaya laporan Pusdalops; pilihan berbahaya memunculkan peringatan", async () => {
+  const L = langkahKronologi("banjir"), jawaban = L.map(l => l.banyak ? "1, 2" : "2"); // langkah 2 pilihan kedua = naik cepat (bahaya)
+  const awal = ["lapor", "1", "2", "Siti", "Kabupaten Bogor", "Kalaksa", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "1", "1"];
+  const sela = await obrol([...awal, ...jawaban.slice(0, 2)]);
+  assert.match(sela.balasan, /^\*[^*]+\*[\s\S]*Peringatan keselamatan/, "pilihan bertanda bahaya memunculkan peringatan sebelum langkah berikutnya");
+  const h = await obrol([...awal, ...jawaban, "2"]);
+  const frasa = L.map((l, i) => l.banyak ? `${l.awalan} ${[0, 1].map(n => l.opsi[n][1]).filter(Boolean).join(", ")}.` : l.opsi[1][1]).filter(Boolean);
+  assert.equal(h.sesi.isian.kronologi.nilai, rangkaiKronologi(frasa));
+  assert.doesNotMatch(h.sesi.isian.kronologi.nilai, /\.\.|null|undefined/);
   assert.equal(h.sesi.status, "melengkapi");
 });
 

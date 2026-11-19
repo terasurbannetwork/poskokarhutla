@@ -201,6 +201,7 @@ export const T = {
 /* isi awal kotak tulis untuk tiap pertanyaan (pemilik 19 Nov 2026: "di tulis pesan itu langsung tertulis templatenya jadi dia tinggal isi") */
 const ISI_KELOMPOK = {
   korban: "Meninggal: \nHilang: \nLuka: ",
+  terdampak: "Keluarga terdampak (KK): \nWarga terdampak (orang): ",
   pengungsian: "Mengungsi (orang): \nMengungsi (KK): ",
   rumah: "Rusak berat: \nRusak sedang: \nRusak ringan: \nTerendam: ",
   fasilitas: "Sekolah: \nFasilitas kesehatan: \nTempat ibadah: \nJalan atau jembatan: ",
@@ -229,6 +230,7 @@ const ISI_KOSONG = "Isi jumlahnya. Tulis *0* bila tidak ada, biarkan kosong bila
 const DEF = "Arti tiap isian tertulis di bawah kotaknya.";
 const PANDU = {
   "kelompok:korban": `*Korban*\n${ISI_KOSONG}\n${DEF}`,
+  "kelompok:terdampak": `*Warga terdampak*\n${ISI_KOSONG}\n${DEF}`,
   "kelompok:pengungsian": `*Pengungsian*\n${ISI_KOSONG}\n${DEF}`,
   "kelompok:rumah": `*Kerusakan rumah*\nIsi jumlah rumah. ${ISI_KOSONG.replace("Isi angka di kotak tulis. ", "")}\nArti rusak berat, sedang, dan ringan tertulis di bawah kotaknya.`,
   "kelompok:fasilitas": `*Fasilitas umum yang rusak*\n${ISI_KOSONG}`,
@@ -347,7 +349,8 @@ export function waktuLapor(ms, provKode) {
   const [zona, geser] = zonaProv(provKode), d = new Date(ms + geser * 3600e3);
   return `${d.getUTCDate()} ${BULAN[d.getUTCMonth()][0].toUpperCase()}${BULAN[d.getUTCMonth()].slice(1)} ${d.getUTCFullYear()}, ${String(d.getUTCHours()).padStart(2, "0")}.${String(d.getUTCMinutes()).padStart(2, "0")} ${zona}`;
 }
-const teksWilayah = w => `*Lokasi terbaca*\nDesa/Kel. ${w.desa}\nKecamatan ${w.kec}\n${w.kab}\nProvinsi ${w.prov}\n\nApakah ini lokasi kejadiannya?`;
+// titik GPS ikut ditampilkan sampai koordinat (pemilik 19 Nov 2026: "kalau pakai lokasi bisa sampai koordinat")
+const teksWilayah = (w, L) => `*Lokasi terbaca*\nDesa/Kel. ${w.desa}\nKecamatan ${w.kec}\n${w.kab}\nProvinsi ${w.prov}${L?.lat != null ? `\nKoordinat ${Number(L.lat).toFixed(6)}, ${Number(L.lon).toFixed(6)}${L.akurasi ? ` (ketelitian ±${Math.round(L.akurasi)} m)` : ""}` : ""}\n\nApakah ini lokasi kejadiannya?`;
 
 function terimaLokasi(sesi, lokasi, kini) { // galat teks atau null
   const lat = Number(lokasi.lat), lon = Number(lokasi.lon);
@@ -454,7 +457,7 @@ export async function putaran({sesi, pelapor, pesan, model = null, wilayah = nul
       try { w = await wilayah(sesi.isian.lokasi.nilai.lat, sesi.isian.lokasi.nilai.lon); } catch { w = null; }
       if (!w) { delete sesi.isian.lokasi; return jawab("Titik itu belum terbaca sebagai desa di Indonesia. Pastikan GPS menyala dan Anda di dekat lokasi kejadian, lalu bagikan lagi.", null, false, "lokasi"); }
       sesi.calonWilayah = w; sesi.status = "wilayah";
-      return jawab(teksWilayah(w), ["Benar", "Bukan, pilih desa lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa terdekat dari titik Anda`]);
+      return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa terdekat dari titik Anda`]);
     }
     if (!sesi.tunda) return tanyaJenis("*Lokasi tercatat*");
     sesi.status = "bercerita";
@@ -471,7 +474,7 @@ export async function putaran({sesi, pelapor, pesan, model = null, wilayah = nul
     } else if (p === 1) {
       sesi.langkahWilayah = "pilih";
       return jawab("*Pilih desa lokasi kejadian:*", [...w.sekitar.map(d => d.desa), "Bagikan lokasi ulang"], false, null, [...w.sekitar.map(d => `Kec. ${d.kec}, ${d.jarakKm.toLocaleString("id-ID")} km dari titik Anda`), "Ambil titik GPS lagi"]);
-    } else if (p !== 0) return jawab(teksWilayah(w), ["Benar", "Bukan, pilih desa lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa terdekat dari titik Anda`]);
+    } else if (p !== 0) return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa terdekat dari titik Anda`]);
     const {sekitar, ...pilihan} = sesi.calonWilayah;
     sesi.isian.lokasi.nilai.wilayah = pilihan;
     delete sesi.calonWilayah; delete sesi.langkahWilayah;
@@ -512,15 +515,20 @@ export async function putaran({sesi, pelapor, pesan, model = null, wilayah = nul
 
   /* ----- kronologi berpandu: satu pilihan per langkah, langkah fenomena boleh lebih dari satu, lalu keterangan tambahan ----- */
   if (sesi.status === "kronologi") {
-    const langkah = langkahKronologi(sesi.isian.jenis?.nilai), kr = sesi.kr ||= {i: 0, frasa: []}, p = pilih();
+    const langkah = langkahKronologi(sesi.isian.jenis?.nilai), kr = sesi.kr ||= {i: 0, frasa: []}, p = pilih(); let waspada = null;
     if (kr.i < langkah.length) {
       const l = langkah[kr.i];
       if (l.banyak) { // web: pesan.pilih [indeks]; WA: "1, 3"
         const idx = [...new Set(pesan?.pilih?.length ? pesan.pilih.map(Number) : String(teks || "").split(/[,\s]+/).map(n => Number(n) - 1))].filter(n => n >= 0 && n < l.opsi.length);
-        if (idx.length) { const f = idx.map(n => l.opsi[n][1]).filter(Boolean); if (f.length) kr.frasa.push(`Selain itu terlihat ${f.join(", ")}.`); kr.i++; }
-      } else if (p >= 0) { kr.frasa.push(l.opsi[p][1]); kr.i++; }
-      if (kr.i < langkah.length) return langkahKr(t => t, kr.i);
-      return jawab(`*Kronologi tersusun*\n${rangkaiKronologi(kr.frasa)}\n\nAda yang ingin ditambahkan? Misalnya nama sungai, jalan yang tertutup, atau hal lain yang Anda lihat.`, ["Tambah keterangan", "Tidak ada, lanjut"], false, null, ["Tulis sendiri di kotak pesan", "Kronologi sudah cukup"]);
+        const lain = samarkan(String(pesan?.lain || "")).trim().slice(0, 120).replace(/\.$/, ""); // "Lainnya" diganti teks pelapor
+        if (idx.length) { const f = idx.map(n => l.opsi[n][0] === "Lainnya" ? (lain ? lain.charAt(0).toLowerCase() + lain.slice(1) : null) : l.opsi[n][1]).filter(Boolean); if (f.length) kr.frasa.push(`${l.awalan || "Selain itu terlihat"} ${f.join(", ")}.`); kr.i++;
+          if (l.bahaya && idx.some(n => l.opsi[n][2])) waspada = l.bahaya; }
+      } else if (p >= 0) { if (l.opsi[p][1]) kr.frasa.push(l.opsi[p][1]); kr.i++; if (l.bahaya && l.opsi[p][2]) waspada = l.bahaya; }
+      // pilihan bertanda bahaya: peringatan keselamatan langsung di atas pertanyaan berikutnya (riset 19 Nov 2026: air laut surut, retakan melebar, gemuruh, banjir bandang)
+      // peringatan di bawah pertanyaan: judul kartu pilihan tetap pertanyaannya (pemilik 19 Nov 2026: "kenapa Peringatan keselamatan?")
+      const awal = t => waspada ? `${t}\n\n⚠️ Peringatan keselamatan: ${waspada}` : t;
+      if (kr.i < langkah.length) return langkahKr(awal, kr.i);
+      return jawab(awal(`*Kronologi tersusun*\n${rangkaiKronologi(kr.frasa)}\n\nAda yang ingin ditambahkan? Misalnya nama sungai, jalan yang tertutup, atau hal lain yang Anda lihat.`), ["Tambah keterangan", "Tidak ada, lanjut"], false, null, ["Tulis sendiri di kotak pesan", "Kronologi sudah cukup"]);
     }
     if (!kr.tulis && p === 0) { kr.tulis = true; const h = jawab("*Keterangan tambahan*\nTulis di kotak pesan, lalu kirim."); sesi.isiAwal = h.isiAwal = "Keterangan: "; return h; }
     const tambah = (p === 1 && !kr.tulis) ? "" : samarkan(String(teks || "").replace(/^keterangan:\s*/i, "")).trim().slice(0, 300);
@@ -688,7 +696,9 @@ export async function putaran({sesi, pelapor, pesan, model = null, wilayah = nul
   const ob = sn && opsiBerlaku(sn, sesi.isian.jenis?.nilai);
   if (sn?.tipe === "opsi") return jawab(sambung(`*${sn.label}*\n${sn.tanya}`), ob.map(o => o[0]), false, null, ob.map(o => o[1]));
   if (sn?.tipe === "opsi_banyak") { const h = jawab(sambung(`*${sn.label}*\n${sn.tanya}\nDi WhatsApp balas angka dipisah koma, misalnya *1, 2, 5*.`), ob.map(o => o[0]), false, null, ob.map(o => o[1])); h.banyak = true; sesi.banyak = true; h.grup = sesi.grup = ob.map(o => o[4] || null); return h; }
-  if (next === "titik_pengungsian") return jawab(sambung(teksTanya(next, sesi)), null, false, "tempat"); // web: pilih tempat di sekitar dari OpenStreetMap
+  // web: pilih dari tempat di sekitar lokasi (OpenStreetMap), juga untuk nama fasilitas yang rusak (pemilik 19 Nov 2026)
+  const PILIH_TEMPAT = {titik_pengungsian: "tempat", nama_sekolah: "tempat:sekolah", nama_faskes: "tempat:faskes", nama_ibadah: "tempat:ibadah", nama_jalan: "tempat:jalan"};
+  if (PILIH_TEMPAT[next]) return jawab(sambung(teksTanya(next, sesi)), null, false, PILIH_TEMPAT[next]);
   return jawab(sambung(teksTanya(next, sesi)));
 }
 

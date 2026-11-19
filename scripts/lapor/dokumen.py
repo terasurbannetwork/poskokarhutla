@@ -26,7 +26,6 @@ from docx.shared import Cm, Pt, RGBColor
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 LOGO = os.path.join(AKAR, "data/kajian-bnpb/skill/surat-bnpb/assets/logo-bnpb.png")
-KRIS = os.path.join(AKAR, "public/img/logo-kris.png")
 FONT = "Roboto"
 NAVY = RGBColor(0x0B, 0x25, 0x45)
 ABU = RGBColor(0x5B, 0x67, 0x7A)
@@ -74,11 +73,14 @@ def _lebar(t, lebar):
     for baris in t.rows:
         for i, w in enumerate(lebar):
             baris.cells[i].width = w
+    # LibreOffice membaca lebar dari tblGrid, bukan dari sel: samakan supaya kolom tidak dibagi rata
+    for g, w in zip(t._tbl.tblGrid.findall(qn("w:gridCol")), lebar):
+        g.set(qn("w:w"), str(int(w.twips if hasattr(w, "twips") else w / 635)))
 
 
 def _judul_bagian(d, isi, sebelum=12):
     p = d.add_paragraph()
-    _rapat(p, sebelum, 4)
+    _rapat(p, sebelum, 4).keep_with_next = True
     _teks(p, isi, 11.5, True, NAVY)
     # garis navy pendek di bawah judul bagian
     bdr, bawah = OxmlElement("w:pBdr"), OxmlElement("w:bottom")
@@ -115,43 +117,69 @@ def bangun(c, docx_keluar):
     s.top_margin, s.bottom_margin = Cm(1.4), Cm(1.6)
     s.left_margin = s.right_margin = Cm(2)
 
-    # kop: logo BNPB kiri, judul tengah, KRIS kanan, garis navy tebal
+    # kop (pemilik 19 Nov 2026: KRIS dihapus, "bagusin maksimal"): logo BNPB kiri, nama lembaga dan judul rata kiri, nomor tiket di kotak navy kanan
     kop = d.add_table(rows=1, cols=3)
     kop.alignment = WD_TABLE_ALIGNMENT.CENTER
     a, b, k = kop.rows[0].cells
     if os.path.exists(LOGO):
-        a.paragraphs[0].add_run().add_picture(LOGO, width=Cm(1.9))
-    if os.path.exists(KRIS):
-        k.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        k.paragraphs[0].add_run().add_picture(KRIS, width=Cm(2.6))
+        a.paragraphs[0].add_run().add_picture(LOGO, width=Cm(1.7))
     p = b.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    _rapat(p)
-    _teks(p, "BADAN NASIONAL PENANGGULANGAN BENCANA", 10, True, NAVY)
-    p = b.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     _rapat(p, 2, 0)
-    _teks(p, "Laporan Kejadian Bencana", 17, True, NAVY)
+    _teks(p, "BADAN NASIONAL PENANGGULANGAN BENCANA", 9, True, ABU)
     p = b.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    _rapat(p, 1, 0, 1.0)
+    _teks(p, "Laporan Kejadian Bencana", 19, True, NAVY)
+    p = b.add_paragraph()
     _rapat(p, 2, 0)
-    _teks(p, f"Nomor tiket {c['nomor']}", 10, True)
-    _lebar(kop, (Cm(2.6), Cm(11.8), Cm(2.6)))
+    _teks(p, "Lapor Bencana BNPB, diteruskan ke BPBD setempat", 9, False, ABU)
+    _latar(k, "0B2545")
+    for q, (isi, uk, tebal) in zip([k.paragraphs[0], k.add_paragraph()], (("Nomor tiket", 8, False), (c["nomor"], 11.5, True))):
+        q.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _rapat(q, 4 if uk == 8 else 0, 0 if uk == 8 else 4)
+        _teks(q, isi, uk, tebal, RGBColor(0xFF, 0xFF, 0xFF))
+    from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT as VA
+    for sel in (a, b, k):
+        sel.vertical_alignment = VA.CENTER
+    _lebar(kop, (Cm(2.2), Cm(10.6), Cm(4.2)))
     kop.autofit = False
     tw = OxmlElement("w:tblW"); tw.set(qn("w:w"), str(int(17 / 2.54 * 1440))); tw.set(qn("w:type"), "dxa"); kop._tbl.tblPr.append(tw)
     lay = OxmlElement("w:tblLayout"); lay.set(qn("w:type"), "fixed"); kop._tbl.tblPr.append(lay)
     garis = d.add_paragraph()
-    _rapat(garis, 4, 6, 1.0)
+    _rapat(garis, 4, 8, 1.0)
     bdr, bawah = OxmlElement("w:pBdr"), OxmlElement("w:bottom")
     for kk, v in (("val", "single"), ("sz", "18"), ("space", "1"), ("color", "0B2545")):
         bawah.set(qn("w:" + kk), v)
     bdr.append(bawah)
     garis._p.get_or_add_pPr().append(bdr)
-    if c.get("tingkat_label"):
-        p = d.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        _rapat(p, 0, 6)
-        _teks(p, c["tingkat_label"], 9, True, JINGGA)
+    if c.get("tingkat_label"):  # pita status verifikasi
+        t = d.add_table(rows=1, cols=1)
+        t.alignment = WD_TABLE_ALIGNMENT.CENTER
+        sel = t.rows[0].cells[0]
+        _latar(sel, "FDF1E3")
+        q = sel.paragraphs[0]
+        _rapat(q, 3, 3)
+        _teks(q, c["tingkat_label"], 9, True, JINGGA)
+        _lebar(t, (Cm(17),))
+
+    # angka kunci: kotak besar di atas narasi supaya pembaca langsung menangkap skala kejadian
+    kunci = []
+    for nama in ("Meninggal", "Hilang", "Luka-luka", "Mengungsi", "Rusak berat"):
+        for g in c["kelompok"]:
+            for label, nilai in g["baris"]:
+                if label == nama and str(nilai)[:1].isdigit():
+                    kunci.append((label, str(nilai)))
+    if kunci:
+        p = d.add_paragraph(); _rapat(p, 2, 0, 1.0)
+        t = d.add_table(rows=1, cols=len(kunci))
+        t.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for sel, (label, nilai) in zip(t.rows[0].cells, kunci):
+            _latar(sel, MUDA)
+            angka, _, satuan = nilai.partition(" ")
+            q = sel.paragraphs[0]; q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 5, 0, 1.0)
+            _teks(q, angka, 18, True, NAVY); _teks(q, f" {satuan}" if satuan else "", 9, True, NAVY)
+            q = sel.add_paragraph(); q.alignment = WD_ALIGN_PARAGRAPH.CENTER; _rapat(q, 1, 5)
+            _teks(q, "Rumah rusak berat" if label == "Rusak berat" else label, 8.5, False, ABU)
+        _lebar(t, tuple(Cm(17 / len(kunci)) for _ in kunci))
 
     # 1. narasi gaya Koordalops
     n = c.get("narasi")
@@ -178,10 +206,10 @@ def bangun(c, docx_keluar):
 
     # 2. pelapor dan waktu
     pel = c["pelapor"]
-    _judul_bagian(d, "Pelapor dan waktu")
+    _judul_bagian(d, "Pelapor")
     _tabel(d, [("Nama pelapor", pel["nama"]), ("Melapor sebagai", pel["peran"]),
                *([("Instansi", pel["instansi"])] if pel.get("instansi") else []),
-               ("Nomor WhatsApp", pel["wa_samar"]), ("Waktu kejadian", c["waktu_kejadian"]), ("Waktu dilaporkan", c["waktu_lapor"])])
+               ("Nomor WhatsApp", pel["wa_samar"]), ("Waktu dilaporkan", c["waktu_lapor"])])
 
     # 3. rincian per kelompok
     for g in c["kelompok"]:
@@ -244,12 +272,15 @@ def _cek():
          "narasi": {"judul": "Bencana Alam Banjir di Kota Bogor, Prov. Jawa Barat", "butir": [["Lokasi", "Desa X"], ["Dampak", ["Korban jiwa: nihil.", "Pengungsi: 12 jiwa."]]]},
          "pelapor": {"nama": "Uji", "peran": "Warga", "wa_samar": "0812****1234"},
          "waktu_kejadian": "1 Januari 2026, 14.30 WIB", "waktu_lapor": "1 Januari 2026, 15.00 WIB",
-         "kelompok": [{"judul": "Kejadian", "baris": [["Jenis bencana", "Banjir"]]}], "foto": [], "asal": [["Jenis bencana", "pilihan"]]}
+         "kelompok": [{"judul": "Kejadian", "baris": [["Jenis bencana", "Banjir"], ["Waktu kejadian", "1 Januari 2026, 14.30 WIB"]]}, {"judul": "Korban", "baris": [["Meninggal", "2 orang"]]}], "foto": [], "asal": [["Jenis bencana", "pilihan"]]}
     with tempfile.TemporaryDirectory() as tmp:
         f = bangun(c, os.path.join(tmp, "cek.docx"))
         doc = Document(f)
         isi = "\n".join([p.text for p in doc.paragraphs] + [sel.text for t in doc.tables for r in t.rows for sel in r.cells])
-    for wajib in ("LA-010126-01", "Bencana Alam Banjir", "Waktu kejadian", "Waktu dilaporkan", "Pengungsi: 12 jiwa", "0812****1234", "Pelapor tidak mengirim foto"):
+    for wajib in ("LA-010126-01", "Bencana Alam Banjir", "Waktu kejadian", "Waktu dilaporkan", "Pengungsi: 12 jiwa", "0812****1234", "Pelapor tidak mengirim foto", "Laporan Kejadian Bencana", "Nomor tiket"):
+        assert wajib in isi, f"{wajib} hilang"
+    assert "Meninggal" in isi and isi.count("2") >= 1, "angka kunci hilang"
+    for wajib in ():
         assert wajib in isi, f"{wajib} hilang"
     print("cek dokumen lapor: lulus")
 
