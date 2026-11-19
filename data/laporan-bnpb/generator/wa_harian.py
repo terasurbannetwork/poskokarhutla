@@ -65,6 +65,7 @@ def _jenis_lokasi(judul):
     else:
         # 30 Okt: "Kota" dipertahankan; data kita menamai kota "Kota Sorong", beda dengan kabupaten "Sorong" (angka Kab. Sorong sempat terpakai)
         lok = re.sub(r'^(Kab\.|Kabupaten|Kawasan)\s+', '', di.strip())
+        lok = re.sub(r'^Kota\.\s*', 'Kota ', lok)   # 19 Nov: "Kota. Mataram", "Kota. Bontang"
         lok = re.sub(r'^Taman Nasional\s+([^,]+),.*$', r'TN \1', lok)   # "Taman Nasional Way Kambas, Kab. Lampung Timur" -> kawasan TN Way Kambas
     if lok.lower() in _PROV: lok = ''   # WA 30 Okt: "di Kalimantan Barat" tanpa "Prov." = kejadian tingkat provinsi
     for a, b in KOREKSI.items():
@@ -111,10 +112,13 @@ def koordalops(teks, pagi=True, terima_kurang=False):
            'menonjol': int(re.search(r'berdampak signifikan sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I)[1]), 'kejadian': []}
     for blok in re.split(r'\n\*[A-Z]\.\s*', t)[1:]:
         prov = kode_prov(blok.split('*', 1)[0])
-        for e in re.split(r'\n\d+\.(?:\s+|(?=[A-Z]))', '\n' + blok.split('*', 1)[1])[1:]:   # WA 26 Okt: "1.Bencana" tanpa spasi
+        # WA 26 Okt: "1.Bencana" tanpa spasi; 19 Nov: "1 .Bencana" (spasi sebelum titik, kejadian ke-16 Morowali Utara sempat tidak terurai)
+        for e in re.split(r'\n\d+[ \t]*\.(?:\s+|(?=[A-Z]))', '\n' + blok.split('*', 1)[1])[1:]:
             kepala = e.split('\n', 1)[0]
-            baru = bool(re.search(r'\(Kejadian Baru\)', kepala, re.I))   # 30 Okt manager: halaman utama hanya merinci kejadian baru
-            judul = re.sub(r'\*?\((?:Pengkinian Data|Kejadian Baru)\)\*?', '', kepala, flags=re.I).replace('Bencana Alam', '').replace('Bencana Non Alam', '').strip()
+            # 19 Nov: label berbintang salah letak "*(Pengkinian Data*)"; bintang di dalam atau di luar kurung sama saja
+            LABEL = r'\*?\(\s*\*?\s*(?:Pengkinian Data|Kejadian Baru)\s*\*?\s*\)\*?'
+            baru = bool(re.search(r'\(\s*\*?\s*Kejadian Baru\s*\*?\s*\)', kepala, re.I))   # 30 Okt manager: halaman utama hanya merinci kejadian baru
+            judul = re.sub(LABEL, '', kepala, flags=re.I).replace('Bencana Alam', '').replace('Bencana Non Alam', '').strip()
             if not judul:
                 continue
             ambil = lambda kunci: (lambda m: m.group(1).strip() if m else '')(re.search(rf'(?:^|[-*•])[ \t]*{kunci}\s*:\s*(.*)', e, re.I | re.M))   # 12 Nov: butir "* Dampak:", sebelumnya "- Dampak:"
