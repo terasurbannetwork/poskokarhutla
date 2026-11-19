@@ -304,6 +304,7 @@ export const KONTRAK = [
   'KONTRAK KELUARAN (wajib):',
   '- Tulis deck hasil sebagai berkas .pptx di folder keluaran/ ruang kerja versi ini, lalu tulis keluaran/hasil.json:',
   '  {"pptx": "<nama berkas di keluaran/>", "ringkasan": "<satu kalimat>", "perubahan": ["..."], "catatan": ["..."], "tanya": []}',
+  '- "perubahan", "catatan", dan "tanya" berisi teks biasa, paling banyak 10 butir, tiap butir satu kalimat pendek (di bawah 300 huruf). Gabungkan perubahan kecil yang sejenis.',
   '- Bila ada yang benar-benar harus ditanyakan ke pemakai sebelum bisa membuat deck, isi "tanya" (paling banyak 3) dan boleh tanpa pptx.',
   '- Angka hotspot, firespot, luas terbakar, dan luas belum padam di deck dasar dikunci: jangan diubah, jangan dipindah ke shape lain, jangan diganti gambar. Mesin memeriksa seluruh isi PPTX; deck yang mengubahnya ditolak.',
   '- Jangan menambah gambar, grafik, berkas tertanam, atau tautan eksternal baru.',
@@ -356,10 +357,15 @@ export function bacaHasil(ruang) {
   if (!h || typeof h !== 'object' || Array.isArray(h)) throw new Error('hasil.json bukan objek')
   // teks hasil dikirim ke WA: tiap bentuk kunci API disamarkan
   const bersih = (s) => String(s).replace(/sk-ant-[\w-]{6,}/g, '[disamarkan]').replace(/\b[A-Za-z0-9_-]{60,}\b/g, '[disamarkan]').trim()
+  // Daftar teks dirapikan, tidak ditolak (insiden 19 Nov 2026 "perubahan tidak sah": deck jadi tetapi dibuang karena ringkasannya terlalu
+  // panjang). Teks tunggal jadi satu butir, objek atau angka jadi teks, butir dipotong 300 huruf, lebih dari 10 butir diringkas.
   const daftar = (k) => {
-    const v = h[k] ?? []
-    if (!Array.isArray(v) || v.length > MAKS_BUTIR || v.some((x) => typeof x !== 'string' || x.length > MAKS_HURUF)) throw new Error(`hasil.json: ${k} tidak sah`)
-    return v.map(bersih).filter(Boolean)
+    let v = h[k] ?? []
+    if (typeof v === 'string') v = [v]
+    if (!Array.isArray(v)) throw new Error(`hasil.json: ${k} bukan daftar`)
+    const teks = v.map((x) => (typeof x === 'string' ? x : x == null ? '' : typeof x === 'object' ? Object.values(x).filter((y) => typeof y !== 'object').join(', ') : String(x)))
+      .map(bersih).filter(Boolean).map((x) => (x.length > MAKS_HURUF ? x.slice(0, MAKS_HURUF - 3).trimEnd() + '...' : x))
+    return teks.length > MAKS_BUTIR ? [...teks.slice(0, MAKS_BUTIR - 1), `dan ${teks.length - MAKS_BUTIR + 1} lainnya`] : teks
   }
   const tanya = daftar('tanya'), perubahan = daftar('perubahan'), catatan = daftar('catatan')
   const ringkasan = typeof h.ringkasan === 'string' ? bersih(h.ringkasan).slice(0, MAKS_HURUF) : ''

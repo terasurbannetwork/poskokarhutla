@@ -62,7 +62,11 @@ test('T27 hasil.json: tidak ada, rusak, jalur, tautan, bukan PPTX, terlalu panja
   tulis({ pptx: 'a.pptx' }); assert.throws(() => A.bacaHasil(ruang), /tidak ada di keluaran/)
   fs.writeFileSync(path.join(ruang, 'keluaran', 'a.pptx'), Buffer.alloc(3000)); assert.throws(() => A.bacaHasil(ruang), /bukan PPTX/)
   fs.writeFileSync(path.join(ruang, 'keluaran', 'a.pptx'), PPTX_MINI)
-  tulis({ pptx: 'a.pptx', perubahan: ['x'.repeat(301)] }); assert.throws(() => A.bacaHasil(ruang), /perubahan tidak sah/)
+  // ringkasan terlalu panjang dirapikan, deck tidak dibuang (insiden 19 Nov 2026)
+  tulis({ pptx: 'a.pptx', perubahan: ['kata '.repeat(70), { slide: 3, isi: 'judul diganti' }, 7, ...Array(12).fill('y')], catatan: 'satu catatan' })
+  { const h = A.bacaHasil(ruang); assert.equal(h.perubahan.length, 10); assert.equal(h.perubahan[0].length, 300); assert.ok(h.perubahan[0].endsWith('...'))
+    assert.equal(h.perubahan[1], '3, judul diganti'); assert.equal(h.perubahan[2], '7'); assert.equal(h.perubahan[9], 'dan 6 lainnya'); assert.deepEqual(h.catatan, ['satu catatan']) }
+  tulis({ pptx: 'a.pptx', perubahan: { a: 1 } }); assert.throws(() => A.bacaHasil(ruang), /perubahan bukan daftar/)
   tulis({ pptx: 'a.pptx', ringkasan: 'Panel OMC dihapus', perubahan: ['Slide 3: panel OMC dihapus'] })
   const h = A.bacaHasil(ruang); assert.equal(h.pptx, path.join(ruang, 'keluaran', 'a.pptx')); assert.deepEqual(h.tanya, [])
   tulis({ tanya: ['Yang mana?'] }); assert.deepEqual(A.bacaHasil(ruang).tanya, ['Yang mana?'])
