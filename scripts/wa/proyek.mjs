@@ -21,6 +21,7 @@ import { buatKlien, GalatClaude, medanTerkunci, sebutAngkaSistem, samarkan } fro
 import * as jenisWa from '../../src/wa_jenis.js'
 import * as Agen from './agen.mjs'
 import * as Biaya from './biaya.mjs'
+import { NAMA_BOT, VERSI, tChangelog, CHANGELOG } from './versi.mjs'
 import { periksa as periksaPagar } from './agen_pagar.mjs'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
@@ -62,7 +63,11 @@ export function parsePerintah(teks, now = new Date()) {
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
   if (t === 'ulangi') return { aksi: 'ulangi' } // ulangi langkah terakhir yang gagal (bangun atau revisi)
-  if (t === 'biaya') return { aksi: 'biaya' } // pemakaian Claude bulan ini, sisa anggaran, biaya laporan terakhir (khusus PEMILIK)
+  if (t === 'changelog' || t === 'versi bot' || t === 'tentang') return { aksi: 'changelog', semua: false } // nama, versi, changelog (pemilik 19 Nov)
+  if (t === 'changelog semua') return { aksi: 'changelog', semua: true }
+  if (t === 'biaya') return { aksi: 'biaya' } // pemakaian Claude bulan ini, sisa kredit, biaya laporan terakhir (khusus PEMILIK)
+  const sl = t.match(/^saldo \$?([\d.,]+)$/) // saldo kredit dari Console, misalnya "saldo 192,54" (khusus PEMILIK)
+  if (sl && Biaya.nilaiUsd(sl[1]) != null) return { aksi: 'saldo', usd: Biaya.nilaiUsd(sl[1]) }
   if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai PDF (pemilik 18 Nov 2026: PDF, bukan gambar)
   if (t === 'status') return { aksi: 'status' }
   if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
@@ -88,7 +93,7 @@ export function parsePerintah(teks, now = new Date()) {
 }
 
 export const BANTUAN = [
-  '*Cara pakai bot laporan*',
+  `*Cara pakai ${NAMA_BOT}*`,
   '',
   '*Membuat laporan*',
   '- *buat harian*: mulai laporan kejadian bencana',
@@ -110,11 +115,14 @@ export const BANTUAN = [
   '- *batal*: batalkan proyek kapan saja',
   '- *bantuan*: tampilkan pesan ini',
   '- *panduan*: kirim panduan lengkap (PDF)',
+  '- *changelog*: perubahan versi terbaru',
   '',
   'Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*',
   'Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.',
+  '',
+  `${NAMA_BOT} v${VERSI}`,
 ].join('\n')
-const BANTUAN_PEMILIK = ['', '*Khusus pemilik*', '- *kirim ulang harian 26 okt*: kirim ulang berkas', '- *status 26 okt*: rekap bahan per tanggal', '- *biaya*: pemakaian Claude bulan ini dan sisa anggaran'].join('\n')
+const BANTUAN_PEMILIK = ['', '*Khusus pemilik*', '- *kirim ulang harian 26 okt*: kirim ulang berkas', '- *status 26 okt*: rekap bahan per tanggal', '- *biaya*: pemakaian Claude bulan ini dan sisa kredit', '- *saldo 192,54*: atur saldo kredit dari Console'].join('\n')
 
 // ---------- T-SAPA: obrolan pendek dari nomor terdaftar tanpa proyek (pemilik 18 Nov 2026) ----------
 // Bukan perintah, tidak diteruskan, tanpa lampiran, satu baris paling banyak 80 huruf, tidak dikenali sebagai bahan, dan pengirim tidak memegang
@@ -130,6 +138,8 @@ export const T_SAPA = [
   '*Butuh bantuan?*',
   '- *bantuan*: daftar perintah',
   '- *panduan*: panduan lengkap (PDF)',
+  '',
+  `${NAMA_BOT} v${VERSI}`,
 ].join('\n')
 const SAPA_JEDA_MS = 6 * 3600e3, SAPA_MAKS = 80
 const sapaP = (dasar) => path.join(dirProyek(dasar), 'sapa.json')
@@ -1586,6 +1596,31 @@ async function kePemilik(ctx, teks) {
 }
 const bacaProyek = async (ctx, id, sha) => (await proyekBuka(ctx, { id, wa_sha: sha })).proyek
 
+// ---------- biaya dari D1 (K25, pembaruan 19 Nov: angka bulanan dari bl_biaya per hari, saldo dari angka Console pemilik) ----------
+const geserHari = (iso, h) => new Date(Date.parse(iso + 'T00:00:00Z') + h * 864e5).toISOString().slice(0, 10)
+async function biayaHarian(ctx, awal) {
+  const akhir = tanggalWib(ctx.now || new Date()), hari = []
+  for (let t = awal; t <= akhir && hari.length < 62; t = geserHari(t, 1)) hari.push(t)
+  const isi = await Promise.all(hari.map(async (t) => [t, Number((await worker(ctx, `/api/wa/biaya?tanggal=${t}`)).usd_mikro) || 0]))
+  return Object.fromEntries(isi)
+}
+// -> baris pemakaian bulan ini dan sisa saldo Console (bila pemilik sudah mengatur `saldo`); galat Worker = catatan lokal
+async function barisBiaya(ctx, { ajak = false } = {}) {
+  const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date(), hariIni = tanggalWib(kini), awalBulan = hariIni.slice(0, 8) + '01'
+  const saldo = Biaya.bacaSaldo(dasar)
+  try {
+    const harian = await biayaHarian(ctx, saldo?.tanggal && saldo.tanggal < awalBulan ? saldo.tanggal : awalBulan)
+    const bulanIni = Object.entries(harian).filter(([t]) => t >= awalBulan).reduce((a, [, m]) => a + m, 0) / 1e6
+    const sisa = Biaya.sisaSaldo(saldo, harian)
+    return [Biaya.barisBulan(dasar, ctx.env, kini, bulanIni),
+      ...(sisa != null ? [`Sisa kredit Console sekitar ${Biaya.dolar(Math.max(0, sisa))} (dari ${Biaya.dolar(saldo.usd)} yang diatur ${labelTanggal(saldo.tanggal)}).`]
+        : ajak ? ['Ketik *saldo* lalu angka Organization credits di Console (misalnya *saldo 192,54*) supaya bot menghitung sisa kredit.'] : [])]
+  } catch (e) {
+    (ctx.log || (() => {}))('biaya D1 gagal', e.message)
+    return [Biaya.barisBulan(dasar, ctx.env, kini)]
+  }
+}
+
 export async function tFinal(ctx, st) {
   const p = { id: st.id }, lap = lapDari(st.jenis)
   let riwayat = []
@@ -1593,7 +1628,7 @@ export async function tFinal(ctx, st) {
   // Biaya Claude laporan ini (semua versi); pemakaian bulan ini dan sisa anggaran hanya untuk PEMILIK (pemilik 19 Nov 2026)
   const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
   const pemilik = new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(normalWa(st.dari))
-  const biaya = [`Biaya Claude laporan ini: ${Biaya.dolar(Biaya.proyek(dasar, st.id))}.`, ...(pemilik ? [Biaya.barisBulan(dasar, ctx.env, kini)] : [])]
+  const biaya = [`Biaya Claude laporan ini: ${Biaya.dolar(Biaya.proyek(dasar, st.id))}.`, ...(pemilik ? await barisBiaya(ctx) : [])]
   return susun('Laporan selesai', p, st.n, [`${lap ? judul(lap, st.tanggal) : st.jenis}, final versi ${st.n}.`,
     `Folder Drive${st.folder?.nama ? ' (' + st.folder.nama + ')' : ''}:`, st.driveUrl],
     bagian('Riwayat versi', riwayat),
@@ -1862,14 +1897,23 @@ export async function tangani(pesan, ctxAsli) {
     }
     return { status: 'panduan' }
   }
+  if (cmd?.aksi === 'changelog') { await ctx.balas(tChangelog(cmd.semua ? CHANGELOG.length : 3)); return { status: 'changelog' } }
   if (cmd?.aksi === 'biaya') {
     const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
     if (!new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(dari)) { await ctx.balas(BANTUAN); return { status: 'bantuan' } }
     const akhir = Biaya.terakhir(dasar, 5).map((x) => `- ${x.id}: ${Biaya.dolar(x.usd)}`)
-    await ctx.balas(susun('Pemakaian Claude', null, null, [Biaya.barisBulan(dasar, ctx.env, kini)],
+    await ctx.balas(susun('Pemakaian Claude', null, null, await barisBiaya(ctx, { ajak: true }),
       akhir.length ? ['*Laporan terakhir:*', ...akhir] : [],
-      'Dihitung bot dari pemakaian tokennya sendiri. Saldo kredit di Console Anthropic bisa berbeda bila kunci yang sama dipakai di tempat lain.'))
+      'Dihitung bot dari pemakaian tokennya sendiri (perkiraan). Angka Console bisa sedikit berbeda, apalagi bila kunci yang sama dipakai di tempat lain.'))
     return { status: 'biaya' }
+  }
+  if (cmd?.aksi === 'saldo') {
+    if (!new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(dari)) { await ctx.balas(BANTUAN); return { status: 'bantuan' } }
+    const dasar = ctx.dasar || RUMAH, hariIni = tanggalWib(ctx.now || new Date())
+    const hariItu = Number((await worker(ctx, `/api/wa/biaya?tanggal=${hariIni}`)).usd_mikro) || 0
+    Biaya.aturSaldo(dasar, { usd: cmd.usd, tanggal: hariIni, hariItu, kini: ctx.now || new Date() })
+    await ctx.balas(susun('Saldo kredit diatur', null, null, [`Saldo Console ${Biaya.dolar(cmd.usd)} dicatat.`, 'Bot menguranginya dengan pemakaian bot sesudah ini.'], await barisBiaya(ctx)))
+    return { status: 'saldo' }
   }
   if (cmd?.aksi === 'bantuan') {
     const pemilik = new Set(daftar(ctx.env.PEMILIK).map(normalWa))

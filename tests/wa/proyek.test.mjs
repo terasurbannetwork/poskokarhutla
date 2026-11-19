@@ -1269,7 +1269,7 @@ test('T-SAPA: sapaan pendek tanpa proyek dibalas sekali per 6 jam; diteruskan, p
   const d = dunia({ pesan: [] })
   const r = await tangani({ dari: DARI, teks: 'halo', wa_id: 31 }, d.ctx)
   assert.equal(r.sapa, true); assert.equal(d.balasan.at(-1), T_SAPA)
-  assert.equal(T_SAPA, '*Halo, ini Bot Laporan BNPB*\nBot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpannya ke Google Drive Tim IT.\n\n*Mulai dengan mengetik:*\n- *buat harian*: laporan kejadian bencana harian\n- *buat penanganan*: laporan penanganan karhutla\n\n*Butuh bantuan?*\n- *bantuan*: daftar perintah\n- *panduan*: panduan lengkap (PDF)')
+  assert.equal(T_SAPA, '*Halo, ini Bot Laporan BNPB*\nBot ini menyusun laporan resmi BNPB dari bahan yang Anda kirim, lalu menyimpannya ke Google Drive Tim IT.\n\n*Mulai dengan mengetik:*\n- *buat harian*: laporan kejadian bencana harian\n- *buat penanganan*: laporan penanganan karhutla\n\n*Butuh bantuan?*\n- *bantuan*: daftar perintah\n- *panduan*: panduan lengkap (PDF)\n\nBot Laporan BNPB v' + (await import('../../scripts/wa/versi.mjs')).VERSI)
   assert.doesNotMatch(T_SAPA, SISTEM_HURUF)
   assert.equal(d.proyek.size, 0, 'sapaan tidak masuk proyek')
   assert.equal((await tangani({ dari: DARI, teks: 'selamat pagi', wa_id: 32 }, d.ctx)).sapa, undefined, 'dalam 6 jam diam')
@@ -1504,13 +1504,31 @@ test('biaya: urai V1 dicatat per laporan dan per bulan; perintah biaya khusus pe
   await bangun(d, 'buat harian 26 okt')
   assert.equal(Biaya.proyek(d.dasar, 'P-291026-01'), 1.25)
   d.ctx.env.BL_ANGGARAN_BULAN = '200'
-  assert.equal(Biaya.barisBulan(d.dasar, d.ctx.env, NOW), 'Pemakaian bot Oktober: $1,25 dari $200,00, sisa sekitar $198,75.')
-  const n = d.balasan.length
+  assert.equal(Biaya.barisBulan(d.dasar, d.ctx.env, NOW), 'Pemakaian bot Oktober: $1,25 dari anggaran $200,00.')
+  // angka bulanan dari D1 bl_biaya per hari (lengkap), bukan berkas lokal (pemilik 19 Nov: bot $0,14, Console $7,46)
+  const harian = { '2026-10-28': 5_000_000, '2026-10-29': 860_000 }
+  const fetchAsli = d.ctx.dep.fetch
+  d.ctx.dep.fetch = async (u, o = {}) => {
+    const url = new URL(u)
+    if (url.pathname === '/api/wa/biaya') return { ok: true, status: 200, json: async () => ({ usd_mikro: harian[url.searchParams.get('tanggal')] || 0 }), text: async () => '' }
+    return fetchAsli(u, o)
+  }
+  let n = d.balasan.length
   await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
-  assert.match(d.balasan[n], /^\*Pemakaian Claude\*\n\nPemakaian bot Oktober: \$1,25 dari \$200,00, sisa sekitar \$198,75\.\n\n\*Laporan terakhir:\*\n- P-291026-01: \$1,25\n/)
+  assert.match(d.balasan[n], /^\*Pemakaian Claude\*\n\nPemakaian bot Oktober: \$5,86 dari anggaran \$200,00\.\nKetik \*saldo\*/)
+  assert.match(d.balasan[n], /\*Laporan terakhir:\*\n- P-291026-01: \$1,25\n/)
+  // saldo Console: sisa = saldo dikurangi pemakaian SESUDAH diatur
+  n = d.balasan.length
+  await tangani({ dari: '6299', teks: 'saldo 192,54' }, d.ctx)
+  assert.match(d.balasan[n], /^\*Saldo kredit diatur\*/); assert.match(d.balasan[n], /Sisa kredit Console sekitar \$192,54/)
+  harian['2026-10-29'] += 500_000
+  n = d.balasan.length
+  await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
+  assert.match(d.balasan[n], /Sisa kredit Console sekitar \$192,04 \(dari \$192,54 yang diatur/)
   await tangani({ dari: DARI, teks: 'biaya' }, d.ctx)
   assert.equal(d.balasan.at(-1), BANTUAN, 'bukan pemilik: bantuan biasa')
   assert.deepEqual(parsePerintah('biaya', NOW), { aksi: 'biaya' })
+  assert.deepEqual(parsePerintah('saldo $1.192,54', NOW), { aksi: 'saldo', usd: 1192.54 }); assert.deepEqual(parsePerintah('saldo 192.54', NOW), { aksi: 'saldo', usd: 192.54 })
 })
 
 test('batal = mulai dari awal: bahan sebelum batal tidak dipakai proyek baru jenis dan tanggal sama; berkas kerja dihapus; jenis lain tetap', async () => {
@@ -1529,7 +1547,7 @@ test('batal = mulai dari awal: bahan sebelum batal tidak dipakai proyek baru jen
   const { waktuBatal, barisPenyebab } = await import('../../scripts/wa/proyek.mjs')
   assert.ok(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'harian', TGL) > 0)
   assert.equal(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'penanganan', TGL), 0, 'jenis lain tidak terpengaruh')
-  assert.equal(barisPenyebab('generator gagal (kode G1, rincian di /home/x/.wa-bot/keluaran/galat.txt): ModuleNotFoundError: No module named pptx'), 'Penyebab: generator gagal: ModuleNotFoundError: No module named pptx')
+  assert.equal(barisPenyebab('generator gagal (kode G1, rincian di /Users/x/.wa-bot/keluaran/galat.txt): ModuleNotFoundError: No module named pptx'), 'Penyebab: generator gagal: ModuleNotFoundError: No module named pptx')
   assert.equal(barisPenyebab('POST /api/x HTTP 401 Bearer abc.def sk-ant-api03-xyz'), 'Penyebab: POST /api/x HTTP 401 Bearer … [disamarkan]')
 })
 

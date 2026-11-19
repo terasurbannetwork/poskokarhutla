@@ -27,6 +27,7 @@ const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTer
 const RW = require('../riwayat.cjs')
 const DAFTAR = require('../daftar.cjs')
 const ARAH = require('../arah.cjs')
+const HIAS = require('../hias.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
 const TOKEN = process.env.GATEWAY_TOKEN || ''
@@ -456,11 +457,13 @@ function balasanKe(dari, tag, masuk) {
     const x = await ARAH.kirimUlangMenit(() => sendPaced(jid, isi, false, { balasan: true, masuk }), { log: (...a) => log(tag, ...a) })
     if (!x.ok) log(tag, 'berkas ditahan', x.error)
   }
+  // satu ikon di depan judul pesan dan keterangan berkas (hias.cjs, pemilik 19 Nov 2026)
   return {
-    balas: (teks) => kirim({ text: teks }),
-    balasFile: async (p, nama, caption, mimetype, opsi) => {
+    balas: (teks) => kirim({ text: HIAS.hias(teks) }),
+    balasFile: async (p, nama, keterangan, mimetype, opsi) => {
       const aman = jalurKeluaran(p, KELUARAN)
       if (!aman) throw new Error('berkas di luar keluaran')
+      const caption = keterangan == null ? keterangan : HIAS.hias(keterangan)
       await kirimBerkas(ARAH.isiBerkas(aman, nama, caption, mimetype, opsi))
     },
   }

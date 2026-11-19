@@ -491,26 +491,53 @@ https://drive.google.com/drive/folders/CONTOH
 - v2 18 Nov 08.12, revisi: judul tambahkan BNPB
 
 Biaya Claude laporan ini: $2,35.
-Pemakaian bot November: $47,20 dari $200,00, sisa sekitar $152,80.
+Pemakaian bot November: $7,46 dari anggaran $200,00.
+Sisa kredit Console sekitar $190,19 (dari $192,54 yang diatur 19 Nov).
 
 Proyek ditutup. Bahan berikutnya membuka proyek baru.
 ```
 
-Baris "Pemakaian bot ..." hanya untuk nomor PEMILIK (K25). Tanpa `BL_ANGGARAN_BULAN` barisnya "Pemakaian bot November: $47,20." tanpa sisa.
+Baris "Pemakaian bot ..." hanya untuk nomor PEMILIK (K25). Pemakaian bulan dijumlah dari catatan harian D1 (`/api/wa/biaya`), bukan berkas lokal. Tanpa `BL_ANGGARAN_BULAN` barisnya "Pemakaian bot November: $7,46." Baris sisa kredit hanya muncul sesudah pemilik mengetik `saldo` (K28). Gateway memasang satu ikon di depan judul tebal (🎉 di sini).
 
 ### D2b. Pemakaian Claude (perintah `biaya`, khusus pemilik)
 
 ```text
 *Pemakaian Claude*
 
-Pemakaian bot November: $47,20 dari $200,00, sisa sekitar $152,80.
+Pemakaian bot November: $7,46 dari anggaran $200,00.
+Ketik *saldo* lalu angka Organization credits di Console (misalnya *saldo 192,54*) supaya bot menghitung sisa kredit.
 
 *Laporan terakhir:*
 - P-191126-02: $2,35
 - P-191126-01: $3,10
 
-Dihitung bot dari pemakaian tokennya sendiri. Saldo kredit di Console Anthropic bisa berbeda bila kunci yang sama dipakai di tempat lain.
+Dihitung bot dari pemakaian tokennya sendiri (perkiraan). Angka Console bisa sedikit berbeda, apalagi bila kunci yang sama dipakai di tempat lain.
 ```
+
+### D2c. Saldo kredit (perintah `saldo 192,54`, khusus pemilik)
+
+```text
+*Saldo kredit diatur*
+
+Saldo Console $192,54 dicatat.
+Bot menguranginya dengan pemakaian bot sesudah ini.
+
+Pemakaian bot November: $7,46 dari anggaran $200,00.
+Sisa kredit Console sekitar $192,54 (dari $192,54 yang diatur 19 Nov).
+```
+
+### D2d. Changelog (perintah `changelog`, semua nomor terdaftar; `changelog semua` untuk seluruh riwayat)
+
+```text
+📝 *Changelog Bot Laporan BNPB*
+
+*v2.0.2* (19 Nov 2026)
+- ...
+
+Bot Laporan BNPB v2.0.2
+```
+
+Isi tiap versi diambil dari `scripts/wa/versi.mjs`; gerbang `tests/wa/versi.test.mjs` menolak perubahan perilaku bot tanpa versi baru.
 
 ### D3. Final diterima, penutupan tertunda
 
