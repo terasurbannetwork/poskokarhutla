@@ -145,7 +145,8 @@ def isi(berkas):
         def baca_slide(bagian, n, sembunyi):
             root = ET.fromstring(z.read(bagian))
             pohon = root.find('.//' + P + 'spTree')
-            return {'n': n, 'bagian': bagian, 'tersembunyi': sembunyi or root.get('show') in ('0', 'false'),
+            # yatim: bagian slide di ZIP tanpa sldId (cara umum python-pptx menghapus slide); tidak tampil di PowerPoint maupun PDF
+            return {'n': n, 'bagian': bagian, 'tersembunyi': sembunyi or root.get('show') in ('0', 'false'), 'yatim': sembunyi,
                     'shapes': _shapes(pohon, lebar, tinggi) if pohon is not None else []}
 
         for bagian in [u for u in urut if u and u in nama_semua]:

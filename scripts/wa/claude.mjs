@@ -438,7 +438,7 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
       const isi = [blokTeks('konteks', JSON.stringify(konteks || {})), blokTeks('pesan', samarkan(potong(teks, 600))),
         { type: 'text', text: 'Tentukan maksud pesan di atas.' }]
       const { hasil, biaya: b } = await panggil({ effort: 'low', skema: SKEMA_CAKAP.maksud, tugas: TUGAS_MAKSUD, isi, sistem: SISTEM_CAKAP,
-        modelPakai: env.BL_MODEL_MAKSUD || MODEL_MAKSUD, maksToken: 2000 })
+        modelPakai: env.BL_MODEL_MAKSUD || MODEL_MAKSUD, maksToken: 4000 })
       return { ...hasil, biaya: b }
     },
     // V2.1 A17: inventaris deck versi terakhir, riwayat versi, pertanyaan -> {jawaban, biaya}. Tidak mengubah apa pun.
@@ -446,7 +446,7 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
       const inv = potong(JSON.stringify((inventaris || []).map((x) => ({ slide: x.slide, shape: x.shape, teks: samarkan(x.teks ?? '') }))), 30000)
       const isi = [blokTeks('inventaris', inv), blokTeks('riwayat', JSON.stringify((riwayat || []).map((x) => samarkan(String(x))))),
         blokTeks('pertanyaan', samarkan(potong(pertanyaan, 1500))), { type: 'text', text: 'Jawab pertanyaan di atas dari isi draf.' }]
-      const { hasil, biaya: b } = await panggil({ effort: 'low', skema: SKEMA_CAKAP.tanya, tugas: TUGAS_TANYA, isi, sistem: SISTEM_CAKAP, maksToken: 4000 })
+      const { hasil, biaya: b } = await panggil({ effort: 'low', skema: SKEMA_CAKAP.tanya, tugas: TUGAS_TANYA, isi, sistem: SISTEM_CAKAP, maksToken: 12000 })
       return { jawaban: potong(String(hasil?.jawaban || '').replace(/[·—–]/g, ',').trim(), 800), biaya: b }
     },
     // bahan: [{id, jenis:'teks'|'tabel'|'pdf'|'gambar', teks?, data? (base64), media_type?, nama?}]; skema: 'harian' | 'penanganan' | objek skema.

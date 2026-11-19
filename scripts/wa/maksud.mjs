@@ -14,38 +14,34 @@ export const MAKS_PUTARAN_RAPIKAN = 2
 const tanpaPemisah = (s) => String(s ?? '').replace(/(\d)[.,](?=\d{3}(?!\d))/g, '$1').replace(/(\d)[.,](?=\d)/g, '$1.')
 const rata = (s) => String(s ?? '').normalize('NFKC').replace(/\p{Cf}/gu, '')
 export const angkaDi = (s) => tanpaPemisah(rata(s)).match(/\d+(?:\.\d+)?/g) || []
-// Kepala jumlah kejadian: baris pendek yang menyebut "menonjol" dengan tepat satu angka (misalnya "Kejadian menonjol: 16").
-const KEPALA = /menonjol/i
 const NOMOR_URUT = /^\s*[*_~]*\s*(\d{1,3})\s*[.)]/
 const DIGIT_ASING = /[^\P{Nd}0-9]/u // digit Unicode selain 0-9 (Arab-Hindi, Dewanagari, ...): generator Python bisa membacanya, pagar JS tidak
 
-// Pisah angka satu teks: nomor urut berurutan (1, 2, 3 di awal baris), angka kepala menonjol, dan angka isi (multiset, per nilai).
+// Pisah angka satu teks: nomor urut berurutan (1, 2, 3 di awal baris) dan angka isi (multiset, per nilai). Angka jumlah kejadian di
+// kepala WA termasuk isi: tidak boleh diubah (keputusan pemilik 12 Nov: laporan kurang dari kepala hanya atas perintah *terima kurang*).
 function uraiAngka(teks) {
-  const isi = new Map(), urut = [], kepala = [], liar = new Set()
+  const isi = new Map(), urut = [], liar = new Set()
   let berikut = 1
   for (const baris of rata(teks).split(/\r?\n/)) {
     let sisa = baris
     const u = baris.match(NOMOR_URUT)
     if (u && Number(u[1]) === berikut) { urut.push(u[1]); berikut++; sisa = baris.slice(u[0].length) } else if (u) liar.add(u[1]) // nomor urut tidak berurutan: boleh hilang saat dirapikan, tetap dihitung sebagai isi
     const a = angkaDi(sisa)
-    if (KEPALA.test(sisa) && a.length === 1 && sisa.trim().length <= 100) { kepala.push(a[0]); continue }
     for (const x of a) isi.set(x, (isi.get(x) || 0) + 1)
   }
-  return { isi, urut, kepala, liar }
+  return { isi, urut, liar }
 }
 
 // -> {lolos, angkaBaru: [{kunci, angka}], angkaHilang: [{kunci, angka}], kunciAsing, digitAsing: [kunci]}
 // mentah, rapi: {kunci: teks}. D31: angka isi teks rapi harus sama persis (multiset) dengan angka isi teks mentah kunci yang sama: tanpa
 // angka baru, tanpa angka ganda, tanpa angka hilang. Pengecualian: nomor urut berurutan di awal baris (angka mentah yang jadi nomor urut
-// boleh hilang dari isi) dan angka kepala "menonjol" yang sama dengan jumlah nomor urut atau sudah ada di teks mentah.
+// boleh hilang dari isi) dan nomor urut mentah yang tidak berurutan.
 export function pagarRapikan(mentah, rapi) {
   const angkaBaru = [], angkaHilang = [], kunciAsing = [], digitAsing = []
   for (const [k, teks] of Object.entries(rapi || {})) {
     if (!(k in (mentah || {}))) { kunciAsing.push(k); continue }
     if (DIGIT_ASING.test(String(teks))) { digitAsing.push(k); continue }
     const m = uraiAngka(mentah[k]), r = uraiAngka(teks)
-    const semuaMentah = new Set(angkaDi(mentah[k]))
-    for (const x of r.kepala) if (x !== String(r.urut.length) && !semuaMentah.has(x)) angkaBaru.push({ kunci: k, angka: x })
     for (const [x, n] of r.isi) if (n > (m.isi.get(x) || 0)) angkaBaru.push({ kunci: k, angka: x })
     const jadiUrut = new Set(r.urut)
     for (const [x, n] of m.isi) if (n > (r.isi.get(x) || 0) && !jadiUrut.has(x) && !m.liar.has(x)) angkaHilang.push({ kunci: k, angka: x })
@@ -77,10 +73,12 @@ export function bersihkanMaksud(h, now = new Date()) {
 // dengan draf, maksud selain ini tetap revisi ("buat judulnya lebih pendek" bukan proyek baru).
 const TANPA_DRAF = new Set(['buat', 'lanjut', 'final', 'batal', 'status', 'bantuan'])
 const DENGAN_DRAF = new Set(['tanya', 'final', 'batal', 'status', 'bantuan'])
-export function maksudBerlaku(m, adaDraf) {
+// draf: proyek draf pengirim (atau null/false). Pemegang draf harian yang meminta laporan penanganan (jenis lain) tetap boleh *buat*.
+export function maksudBerlaku(m, draf) {
   if (!m) return null
   if (m.maksud === 'obrolan') return m.balasan ? m : null
-  return (adaDraf ? DENGAN_DRAF : TANPA_DRAF).has(m.maksud) ? m : null
+  if (draf && m.maksud === 'buat' && m.jenis && draf.jenis && m.jenis !== draf.jenis) return m
+  return (draf ? DENGAN_DRAF : TANPA_DRAF).has(m.maksud) ? m : null
 }
 
 // ---------- A18. Kumpul revisi ----------

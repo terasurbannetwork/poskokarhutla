@@ -137,3 +137,24 @@ test('deck nyata (penanganan 16 Nov): isi dibaca lengkap dan pagar lolos terhada
   assert.equal(isi.slides.length, 3); assert.ok(isi.media.length > 0); assert.deepEqual(isi.luar, [])
   assert.equal(periksa(isi, salin(isi), []).lolos, true)
 })
+
+// Sapu bug 19 Nov 2026 (pemeriksa: deck penanganan tanpa perubahan pun ditolak; hapus slide cara python-pptx ditolak).
+test('regresi: dua angka sistem berlabel sama ("678 titik", "139 titik") tidak saling dianggap salinan', () => {
+  const d = { slides: [{ n: 1, tersembunyi: false, shapes: [
+    { nama: 's1_kpi_hotspot', teks: 'HOTSPOT\n678 titik', tampak: true }, { nama: 's1_kpi_firespot', teks: 'FIRESPOT\n139 titik', tampak: true },
+    { nama: 's1_teks_2', teks: 'Legenda 1 sampai 100 titik', tampak: true }] }] }
+  const kunci = [{ slide: 1, shape: 's1_kpi_hotspot', angka: 'hotspot' }, { slide: 1, shape: 's1_kpi_firespot', angka: 'firespot' }]
+  assert.deepEqual(periksa(d, salin(d), kunci).langgar, [])
+  const k = salin(d); k.slides[0].shapes.push({ nama: 'Kotak 9', teks: 'HOTSPOT\n999 titik', tampak: true })
+  assert.equal(periksa(d, k, kunci).lolos, false, 'salinan label dengan angka baru tetap ditolak')
+})
+
+test('regresi: slide yatim (dihapus dari daftar presentasi, bagiannya tertinggal di ZIP) = slide terhapus', () => {
+  const k = salin(DASAR)
+  k.slides = k.slides.map((s) => (s.n === 1 ? { ...s, tersembunyi: true, yatim: true } : s))
+  const r = periksa(DASAR, k, KUNCI)
+  assert.deepEqual(r.langgar, [], JSON.stringify(r.langgar))
+  assert.ok(r.dihapus.length > 0)
+  const t = salin(DASAR); t.slides[0].tersembunyi = true // disembunyikan (show=0), bukan dihapus: tetap ditolak
+  assert.equal(periksa(DASAR, t, KUNCI).lolos, false)
+})

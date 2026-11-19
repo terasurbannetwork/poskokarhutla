@@ -1442,7 +1442,7 @@ test('V2 T28: agen mengubah angka sistem terkunci = draf ditolak, tanpa versi, s
   const d = duniaV2({ ubah: (inv) => inv.map((x) => (x.shape === 's2_kpi_hotspot' ? { ...x, teks: 'HOTSPOT\n999' } : x)) })
   await bangun(d, 'buat harian 26 okt')
   assert.equal(d.versi.length, 0); assert.equal(d.kirim.length, 0)
-  assert.match(d.balasan.at(-1), /^\*Draf v1 ditolak\*/); assert.match(d.balasan.at(-1), /Angka sistem berubah/)
+  assert.match(d.balasan.at(-1), /^\*Draf v1 ditolak\*/); assert.match(d.balasan.at(-1), /Pagar angka menolak draf ini/)
   assert.deepEqual(d.statusLog, ['membangun', 'terbuka'])
   assert.match(d.pemilik.at(-1), /pagar angka/)
 })
@@ -1718,4 +1718,20 @@ test('kabar mulai: lanjut dan revisi membalas sekali "sedang dibuat" dengan esti
   assert.deepEqual(Durasi.perkiraan(d.dasar, 'v1:bangun:penanganan'), [2, 5])
   assert.deepEqual(Durasi.perkiraan(d.dasar, 'v2:revisi:penanganan'), [2, 5], 'bawaan per versi dan mode')
   assert.equal(Durasi.jamSelesai(new Date('2026-11-19T07:58:00Z'), 6), '15.04')
+})
+
+test('terima kurang: WA menyebut 20 tetapi merinci 15 = petunjuk ke pemilik; terima kurang membangun dengan --terima-kurang; bukan pemilik ditolak', async () => {
+  const d = dunia()
+  const asli = d.ctx.dep.exec, argGen = []
+  d.ctx.dep.exec = async (cmd, args) => {
+    if (/_ringkas\.py$/.test(args[0])) { argGen.push(args); if (!args.includes('--terima-kurang')) throw Object.assign(new Error('x'), { stderr: 'ValueError: terurai 15 kejadian, laporan menyebut 20 menonjol' }) }
+    return asli(cmd, args)
+  }
+  await bangun(d, 'buat harian 26 okt', '6299')
+  assert.match(d.balasan.at(-1), /WA Koordalops menyebut 20 kejadian menonjol tetapi hanya merinci 15\.\nKetik \*terima kurang\*/)
+  assert.equal((await tangani({ dari: DARI, teks: 'terima kurang' }, d.ctx)).status, 'terima kurang ditolak')
+  assert.equal((await tangani({ dari: '6299', teks: 'terima kurang' }, d.ctx)).status, 'terima kurang')
+  assert.ok(argGen.at(-1).includes('--terima-kurang'))
+  assert.equal(d.versi.length, 1)
+  assert.ok(d.semua().some((t) => /Atas perintah pemilik \(terima kurang\)/.test(t)))
 })

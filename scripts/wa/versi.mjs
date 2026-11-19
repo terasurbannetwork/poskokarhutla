@@ -6,9 +6,17 @@
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.1.3'
+export const VERSI = '2.1.4'
 
 export const CHANGELOG = [
+  { versi: '2.1.4', tanggal: '2026-11-19', isi: [
+    'Laporan penanganan V2 tidak lagi selalu ditolak pagar angka (hotspot dan firespot berlabel sama dulu saling dianggap salinan).',
+    'Deck yang sudah jadi tidak dibuang: hapus slide cara biasa, angka dari teks revisi, format hasil agen yang meleset, atau agen terhenti sesudah selesai.',
+    'Jatah biaya per laporan tidak lagi menolak percobaan ulang terlalu cepat.',
+    'Draf dan final tidak lagi tertahan pembatas kiriman WA saat mode pemanasan atau sesudah pembuatan yang lama.',
+    'Laporan harian yang WA-nya merinci lebih sedikit dari jumlah di kepalanya: pemilik bisa ketik *terima kurang*; Claude tidak pernah mengubah jumlah itu sendiri.',
+    'Perbaikan alur: lanjut saat revisi dikumpulkan, ulangi sesudah kumpul revisi gagal, pesan "sedang dikerjakan" tidak muncul sebelum pertanyaan, pemegang draf harian bisa minta laporan penanganan dengan kalimat biasa.',
+  ] },
   { versi: '2.1.3', tanggal: '2026-11-19', isi: [
     'Draf V2 tidak lagi gagal hanya karena ringkasan perubahannya terlalu panjang; ringkasannya dirapikan, deck tetap dipakai.',
   ] },

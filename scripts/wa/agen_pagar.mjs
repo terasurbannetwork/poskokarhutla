@@ -60,10 +60,12 @@ const KUNCI_API = /sk-ant-[\w-]{10,}/
 
 // -> {lolos, langgar, dihapus, tanpaSumber, dariKemarin}
 export function periksa(isiDasar, isiKeluar, kunci, { izin = [], kemarin = null } = {}) {
-  const D = kelompok(shapesDari(isiDasar)), K = kelompok(shapesDari(isiKeluar))
+  // slide yatim (dihapus dari daftar presentasi tetapi bagiannya tertinggal di ZIP) = slide terhapus: tidak tampil di mana pun (sapu bug 19 Nov)
+  const isiTampil = { ...isiKeluar, slides: (isiKeluar?.slides || []).filter((s) => !s.yatim) }
+  const D = kelompok(shapesDari(isiDasar)), K = kelompok(shapesDari(isiTampil))
   const langgar = [], dihapus = []
   const kunciArr = (Array.isArray(kunci) ? kunci : []).filter((e) => e && e.shape != null)
-  const namaKeluar = new Set(shapesDari(isiKeluar).map((x) => x.nama))
+  const namaKeluar = new Set(shapesDari(isiTampil).map((x) => x.nama))
   // slide dasar dianggap hilang utuh bila kurang dari 20% nama shape-nya masih ada di keluaran
   const slideHilang = (n) => {
     const s = (isiDasar?.slides || []).find((x) => x.n === n)
@@ -95,14 +97,24 @@ export function periksa(isiDasar, isiKeluar, kunci, { izin = [], kemarin = null 
       if (lama !== baru) langgar.push(`${judul}: berubah ("${lama.replace(/\n/g, ' ')}" menjadi "${baru.replace(/\n/g, ' ')}")`)
     }
   }
-  // label shape terkunci yang muncul di shape lain (disalin atau dipindah) harus membawa angka yang sama
+  // label shape terkunci yang muncul di shape lain (disalin atau dipindah) harus membawa angka yang sama. Shape terkunci lain dan pasangan
+  // (label, angka) yang sudah ada di deck dasar tidak dihitung: hotspot "678 titik" dan firespot "139 titik" berlabel sama (sapu bug 19 Nov:
+  // deck penanganan tanpa perubahan pun ditolak).
+  const namaTerkunci = new Set(kunciArr.map((e) => e.shape))
+  const pasanganDasar = new Set(shapesDari(isiDasar).map((y) => label(y.teks) + '#' + angkaDi(y.teks).join('|')))
+  const labelLanggar = new Set()
   for (const nama of new Set(kunciArr.filter((e) => !Array.isArray(e.sel)).map((e) => e.shape))) {
     for (const x of D.get(nama) || []) {
       const lab = label(x.teks), angkaLama = angkaDi(x.teks).join('|')
       if (lab.length < 4) continue
-      for (const y of shapesDari(isiKeluar)) if (y.nama !== nama && !y.tabel && label(y.teks) === lab && angkaDi(y.teks).join('|') !== angkaLama) langgar.push(`slide ${y.slide}: label "${lab}" disalin dengan angka lain`)
+      for (const y of shapesDari(isiTampil)) {
+        if (y.nama === nama || namaTerkunci.has(y.nama) || y.tabel || label(y.teks) !== lab) continue
+        const ang = angkaDi(y.teks).join('|')
+        if (ang !== angkaLama && !pasanganDasar.has(lab + '#' + ang)) labelLanggar.add(`slide ${y.slide}: label "${lab}" disalin dengan angka lain`)
+      }
     }
   }
+  langgar.push(...labelLanggar)
 
   // 2-3. lingkup (slide atau bagian lain) yang menyebut angka sistem: tiap angka ukuran harus ada di deck dasar atau bahan
   const sah = new Set([...himpunanAngka(semuaTeks(isiDasar)), ...himpunanAngka(Array.isArray(izin) ? izin : [izin])])

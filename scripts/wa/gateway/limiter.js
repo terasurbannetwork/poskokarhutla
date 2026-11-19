@@ -50,6 +50,10 @@ const PERCAKAPAN_MS = num(process.env.WA_PERCAKAPAN_MS, 10 * 60000)
 const BALAS_MS = num(process.env.WA_BALAS_MS, 2 * 3600000)
 const WARMUP_DAYS = num(process.env.WA_WARMUP_DAYS, 7)
 const WARMUP_PER_DAY = num(process.env.WA_WARMUP_PER_DAY, 40)
+// Pemanasan (19 Nov 2026, sapu bug bot laporan): balasan ke orang yang baru menulis punya jatah sendiri selama pemanasan dan tidak
+// memakan jatah kiriman biasa. Sebelumnya semua kiriman dibatasi 40 per hari dan balasan 20, padahal satu laporan sekitar 22 balasan:
+// draf atau final bisa terbuang diam-diam. Kiriman biasa (terjadwal, ke orang yang tidak menulis) tetap 40 per hari selama pemanasan.
+const WARMUP_PERCAKAPAN_PER_DAY = num(process.env.WA_WARMUP_PERCAKAPAN_PER_DAY, 100)
 // Jam senyap SENGAJA dihapus (permintaan user 2026-07-25): jangan pernah
 // gagalkan kiriman karena "jam senyap". Pengaturan jam ada di sisi app
 // (wa_umum) tapi TIDAK ditegakkan di gateway.
@@ -104,6 +108,13 @@ function rollDay() {
 function inWarmup() {
   return Date.now() < (state.warmupUntil || 0)
 }
+// true = kiriman perlu-buah lagi melewati batas harian (ember percakapan atau biasa, termasuk pemanasan)
+function lewatHarian(cakap, perlu) {
+  if (state.dayCount + perlu > MAX_PER_DAY) return true
+  if (!inWarmup()) return false
+  if (cakap) return (state.dayCountPercakapan || 0) + perlu > WARMUP_PERCAKAPAN_PER_DAY
+  return state.dayCount - (state.dayCountPercakapan || 0) + perlu > WARMUP_PER_DAY
+}
 function dailyCap() {
   return inWarmup() ? Math.min(WARMUP_PER_DAY, MAX_PER_DAY) : MAX_PER_DAY
 }
@@ -119,7 +130,10 @@ function percakapan(target, opts) {
   if (!target || !opts || !opts.balasan || !masukTerakhir[target]) return false
   const now = Date.now(), m = Number(opts.masuk), acuan = Number.isFinite(m) && m > 0 && m <= now ? m : now
   if (now - masukTerakhir[target] < PERCAKAPAN_MS) return true
-  return now - acuan <= BALAS_MS && Math.abs(acuan - masukTerakhir[target]) < PERCAKAPAN_MS
+  // pesan masuk yang dibalas masih dalam BALAS_MS, dan pengirim memang menulis sekitar jam itu atau sesudahnya (pesan masuk berikutnya
+  // tidak memutus jendela: lanjut, lalu status 11 menit kemudian, lalu draf selesai 22 menit = tetap balasan)
+  if (!(Number.isFinite(m) && m > 0 && m <= now)) return false // tanpa jam pesan masuk: hanya jendela 10 menit di atas
+  return now - acuan <= BALAS_MS && masukTerakhir[target] > acuan - PERCAKAPAN_MS
 }
 function check(target, opts) {
   rollDay()
@@ -129,13 +143,11 @@ function check(target, opts) {
   const cakap = percakapan(target, opts)
   if (minuteHits.length >= (cakap ? MAX_PER_MINUTE_PERCAKAPAN : MAX_PER_MINUTE)) return { ok: false, code: 429, error: 'batas per menit' }
   if (hourHits.length >= MAX_PER_HOUR) return { ok: false, code: 429, error: 'batas per jam' }
-  if (state.dayCount >= dailyCap())
-    return { ok: false, code: 429, error: inWarmup() ? 'batas harian (pemanasan)' : 'batas harian' }
+  if (lewatHarian(cakap, 1))
+    return { ok: false, code: 429, error: inWarmup() ? (cakap ? 'batas percakapan (pemanasan)' : 'batas harian (pemanasan)') : 'batas harian' }
   if (cakap) {
     if ((state.perTargetPercakapan[target] || 0) >= MAX_PER_TARGET_PERCAKAPAN)
       return { ok: false, code: 429, error: 'batas percakapan per tujuan/hari' }
-    if (inWarmup() && (state.dayCountPercakapan || 0) >= Math.floor(dailyCap() / 2))
-      return { ok: false, code: 429, error: 'batas percakapan (pemanasan)' } // kiriman terjadwal tidak boleh kehabisan jatah
     return { ok: true, percakapan: true }
   }
   if (target && (state.perTarget[target] || 0) >= MAX_PER_TARGET_DAY)
@@ -194,11 +206,10 @@ function longgar(cadangan = 2, target = null, opts = null) {
   const menit = minuteHits.filter((t) => now - t < 60000).length, jam = hourHits.filter((t) => now - t < 3600000).length
   const cakap = !!target && percakapan(target, opts)
   if ((cakap ? nextSlotAt : nextSlotBiasaAt) > now || menit + perlu > (cakap ? MAX_PER_MINUTE_PERCAKAPAN : MAX_PER_MINUTE) || jam + perlu > MAX_PER_HOUR) return false
-  if (state.dayCount + perlu > dailyCap()) return false // termasuk batas pemanasan
+  if (lewatHarian(cakap, perlu)) return false // termasuk batas pemanasan
   if (!target) return true
   if (cakap) {
     if ((state.perTargetPercakapan[target] || 0) + perlu > MAX_PER_TARGET_PERCAKAPAN) return false
-    if (inWarmup() && (state.dayCountPercakapan || 0) + perlu > Math.floor(dailyCap() / 2)) return false
     return true
   }
   return (state.perTarget[target] || 0) + perlu <= MAX_PER_TARGET_DAY

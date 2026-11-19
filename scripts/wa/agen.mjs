@@ -130,7 +130,9 @@ export function jalurRahasia({ dasar, repo = REPO, rumah = os.homedir() }) {
 export function tolakBaca({ dasar, repo = REPO, rumah = os.homedir(), pyBin = null }) {
   const H = jalurAsli(rumah)
   // venv Python bot utuh (bin/ dan lib/ tempat python-pptx), bukan hanya bin/
-  const izin = [jalurAsli(repo), jalurAsli(akarRuang(dasar)), ...(pyBin ? [jalurAsli(path.dirname(path.dirname(pyBin)))] : [])]
+  // venv uv bisa menunjuk interpreter di ~/.local/share/uv/python/...: prefix interpreter asli ikut diizinkan (sapu bug 19 Nov)
+  const pyAsli = (() => { if (!pyBin) return null; try { return path.dirname(path.dirname(fs.realpathSync(pyBin))) } catch { return null } })()
+  const izin = [jalurAsli(repo), jalurAsli(akarRuang(dasar)), ...(pyBin ? [jalurAsli(path.dirname(path.dirname(pyBin)))] : []), ...(pyAsli ? [jalurAsli(pyAsli)] : [])]
   const tolak = new Set()
   const tingkat = (dir) => {
     let isi = []
@@ -214,9 +216,10 @@ export function aturanTolak({ dasar, id, repo = REPO, rumah = os.homedir() }) {
     `Read(${abs(path.join(repo, 'data', 'laporan-bnpb'))}/**/wa-*.txt)`,
     `Edit(${abs(repo)}/**)`, `Edit(${abs(acuan(dasar, id))}/**)`]
 }
-export function lingkungan(env = process.env, { pyBin = null, kunci = null } = {}) {
+export function lingkungan(env = process.env, { pyBin = null, kunci = null, tmp = null } = {}) {
   const out = {}
   for (const k of ['HOME', 'USER', 'LOGNAME', 'LANG', 'LC_ALL', 'TMPDIR', 'SHELL', 'TERM', 'SystemRoot', 'TEMP', 'TMP', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA']) if (env[k]) out[k] = env[k]
+  if (tmp) { try { fs.mkdirSync(tmp, { recursive: true, mode: 0o700 }) } catch {} out.TMPDIR = out.TMP = out.TEMP = tmp } // sandbox hanya boleh menulis kerja/ dan keluaran/
   out.PATH = [pyBin, env.PATH].filter(Boolean).join(path.delimiter)
   out.PYTHONUTF8 = '1'
   out.CLAUDE_CODE_SUBPROCESS_ENV_SCRUB = '1' // kredensial (termasuk kunci API) dibuang dari lingkungan perintah Bash agen
@@ -307,6 +310,8 @@ export const KONTRAK = [
   '- "perubahan", "catatan", dan "tanya" berisi teks biasa, paling banyak 10 butir, tiap butir satu kalimat pendek (di bawah 300 huruf). Gabungkan perubahan kecil yang sejenis.',
   '- Bila ada yang benar-benar harus ditanyakan ke pemakai sebelum bisa membuat deck, isi "tanya" (paling banyak 3) dan boleh tanpa pptx.',
   '- Angka hotspot, firespot, luas terbakar, dan luas belum padam di deck dasar dikunci: jangan diubah, jangan dipindah ke shape lain, jangan diganti gambar. Mesin memeriksa seluruh isi PPTX; deck yang mengubahnya ditolak.',
+  '- Shape yang tercantum di dasar/*.kunci.json hanya boleh dibaca: jangan ubah teksnya (termasuk subjudul), jangan ganti nama, jangan gandakan slide yang memuatnya. Menghapus slide utuh boleh.',
+  '- Menghapus slide dengan python-pptx: buang sldId DAN relasinya (prs.part.drop_rel(rId)), jangan hanya sldId.',
   '- Jangan menambah gambar, grafik, berkas tertanam, atau tautan eksternal baru.',
   '- Di slide yang memuat angka karhutla, setiap angka harus sudah ada di deck dasar atau bahan; jangan menulis angka hasil hitungan sendiri di slide itu.',
   '- Jangan pernah menulis isi variabel lingkungan, kunci, atau isi berkas di luar ruang kerja ke deck maupun hasil.json.',
@@ -347,13 +352,14 @@ export const promptLanjutTanpaJawaban = (ruang) => [`Pemakai memilih lanjut tanp
   'Lanjutkan dengan asumsi paling wajar, tulis asumsinya di "catatan", dan penuhi kontrak keluaran tanpa bertanya lagi.'].join('\n')
 
 // ---------- hasil.json (D18, A14) ----------
-export function bacaHasil(ruang) {
+export function bacaHasil(ruang, { tanpaTanya = false } = {}) {
   const f = path.join(ruang, 'keluaran', 'hasil.json')
   let st
   try { st = fs.lstatSync(f) } catch { throw new Error('hasil.json tidak ada') }
   if (!st.isFile() || st.size > 64 * 1024) throw new Error('hasil.json tidak sah')
   let h
-  try { h = JSON.parse(fs.readFileSync(f, 'utf8')) } catch { throw new Error('hasil.json rusak') }
+  // BOM dan pagar kode ```json ditoleransi (agen kadang menulisnya)
+  try { h = JSON.parse(fs.readFileSync(f, 'utf8').replace(/^﻿/, '').trim().replace(/^```(?:json)?\s*|\s*```$/g, '')) } catch { throw new Error('hasil.json rusak') }
   if (!h || typeof h !== 'object' || Array.isArray(h)) throw new Error('hasil.json bukan objek')
   // teks hasil dikirim ke WA: tiap bentuk kunci API disamarkan
   const bersih = (s) => String(s).replace(/sk-ant-[\w-]{6,}/g, '[disamarkan]').replace(/\b[A-Za-z0-9_-]{60,}\b/g, '[disamarkan]').trim()
@@ -367,10 +373,13 @@ export function bacaHasil(ruang) {
       .map(bersih).filter(Boolean).map((x) => (x.length > MAKS_HURUF ? x.slice(0, MAKS_HURUF - 3).trimEnd() + '...' : x))
     return teks.length > MAKS_BUTIR ? [...teks.slice(0, MAKS_BUTIR - 1), `dan ${teks.length - MAKS_BUTIR + 1} lainnya`] : teks
   }
-  const tanya = daftar('tanya'), perubahan = daftar('perubahan'), catatan = daftar('catatan')
+  const tanya = tanpaTanya ? [] : daftar('tanya'), perubahan = daftar('perubahan'), catatan = daftar('catatan')
   const ringkasan = typeof h.ringkasan === 'string' ? bersih(h.ringkasan).slice(0, MAKS_HURUF) : ''
-  if (tanya.length) return { tanya: tanya.slice(0, 3), ringkasan, perubahan, catatan, pptx: null }
-  const nama = String(h.pptx || '')
+  // nama boleh ditulis dengan awalan keluaran/ atau jalur penuh ruang ini: yang dipakai nama berkasnya, tetap di keluaran/
+  const nama = String(h.pptx || '') ? path.basename(String(h.pptx).replace(/\\/g, '/')) : ''
+  if (tanya.length && !nama) return { tanya: tanya.slice(0, 3), ringkasan, perubahan, catatan, pptx: null }
+  // tanya bersama deck: deck sah dipakai, pertanyaannya jadi catatan; deck tidak sah = pertanyaan tetap diajukan
+  if (tanya.length) { try { const d = bacaHasil(ruang, { tanpaTanya: true }); return { ...d, catatan: [...d.catatan, ...tanya.slice(0, 3).map((q) => `Pertanyaan agen: ${q}`)] } } catch { return { tanya: tanya.slice(0, 3), ringkasan, perubahan, catatan, pptx: null } } }
   if (!/^[^\\/]+\.pptx$/i.test(nama) || nama.includes('..')) throw new Error('hasil.json: pptx tidak sah')
   const pptx = path.join(ruang, 'keluaran', nama)
   let sp
@@ -405,7 +414,8 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
   // anggaran sebelum jalan: harian bersama V1 dan per proyek
   const terpakai = Number(await biaya.baca(biaya.tgl)) || 0
   if (terpakai + perJalan * 1e6 > Math.round(Number(env.BL_BATAS_USD ?? 10) * 1e6)) throw new GalatAgen('batas_belanja', `${terpakai} + ${perJalan} USD lewat batas harian`)
-  if (biayaProyek(dasar, id) + perJalan > usdProyek(env)) throw new GalatAgen('batas_proyek', `biaya proyek ${biayaProyek(dasar, id)} USD lewat batas`)
+  if (biayaProyek(dasar, id) >= usdProyek(env)) throw new GalatAgen('batas_proyek', `biaya proyek ${biayaProyek(dasar, id)} USD lewat batas`)
+  const jatahJalan = Math.max(0.5, Math.min(perJalan, usdProyek(env) - biayaProyek(dasar, id)))
   const query = await muatQuery(ctx)
   fs.mkdirSync(sesiCwd(dasar, id), { recursive: true, mode: 0o700 })
   // cwd = folder sesi kosong (bukan ruang proyek): baca dan tulis di luar cwd selalu lewat canUseTool; repo tidak dijadikan folder kerja
@@ -414,8 +424,8 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
     settingSources: [], systemPrompt: { type: 'preset', preset: 'claude_code', append: pedoman(jenis) },
     tools: ['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash'], disallowedTools: aturanTolak({ dasar, id }), permissionMode: 'default',
     canUseTool: buatPenjaga({ ruang, dasar }), sandbox: opsiSandbox({ ruang, dasar, id, pyBin: pyBin ? path.join(pyBin, 'python3') : null }),
-    maxTurns: MAKS_GILIRAN, maxBudgetUsd: perJalan,
-    env: lingkungan({ ...process.env }, { pyBin, kunci: kunciApi || null }),
+    maxTurns: MAKS_GILIRAN, maxBudgetUsd: jatahJalan,
+    env: lingkungan({ ...process.env }, { pyBin, kunci: kunciApi || null, tmp: path.join(jalurAsli(ruang), 'kerja', 'tmp') }),
   }
   const satu = async (resume) => {
     const henti = new AbortController()
@@ -440,20 +450,24 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
     // anggaran dicek ulang sebelum jalan cadangan; kunci agen disegarkan supaya tidak dianggap basi
     const lagi = Number(await biaya.baca(biaya.tgl)) || 0
     if (lagi + perJalan * 1e6 > Math.round(Number(env.BL_BATAS_USD ?? 10) * 1e6)) throw new GalatAgen('batas_belanja', 'lewat batas harian sebelum sesi baru', usdGagal)
-    if (biayaProyek(dasar, id) + perJalan > usdProyek(env)) throw new GalatAgen('batas_proyek', 'lewat batas proyek sebelum sesi baru', usdGagal)
+    if (biayaProyek(dasar, id) >= usdProyek(env)) throw new GalatAgen('batas_proyek', 'lewat batas proyek sebelum sesi baru', usdGagal)
     segarkanKunciAgen(dasar, id)
     if (typeof ctx.promptSesiBaru === 'function') prompt = ctx.promptSesiBaru()
     const lama = sesi
     r = await satu(null)
     r.lama = lama
   }
-  const usd = r.akhir && Number.isFinite(Number(r.akhir.total_cost_usd)) ? Number(r.akhir.total_cost_usd) : perJalan // terputus tanpa hasil = dicatat penuh
+  const usd = r.akhir && Number.isFinite(Number(r.akhir.total_cost_usd)) ? Number(r.akhir.total_cost_usd) : jatahJalan // terputus tanpa hasil = dicatat sebesar jatah jalan itu
   await catatBiaya(biaya, dasar, id, usd)
   if (r.sesiBaru) catatSesi(dasar, id, { sesi: r.sesiBaru, ...(r.lama ? { lama: [...(bacaSesi(dasar, id)?.lama || []), r.lama] } : {}) })
   // SDK bisa melempar galat SESUDAH memancarkan pesan hasil (proses keluar bukan nol): pesan hasil yang menentukan
+  // deck yang sudah ditulis lengkap (hasil.json + pptx sah) dipakai walau agen terhenti sesudahnya (sapu bug 19 Nov); pagar angka tetap jalan
+  const selamatkan = () => { try { const h = bacaHasil(ruang); return h.pptx ? { sesi: r.sesiBaru, biaya: usd, hasil: { ...h, catatan: [...h.catatan, 'Agen terhenti sesudah deck selesai; deck dipakai apa adanya.'] } } : null } catch { return null } }
+  if (!r.akhir) { const sl = selamatkan(); if (sl) return sl }
   if (!r.akhir) throw Object.assign(new GalatAgen(r.waktu ? 'waktu' : 'jalan', r.waktu ? 'agen lewat batas waktu' : `agen galat: ${String(r.galat?.message || 'berhenti tanpa hasil').slice(0, 200)}`, usd), { sesi: r.sesiBaru })
   const a = r.akhir
   if (a.subtype !== 'success' || a.is_error) {
+    const sl = selamatkan(); if (sl) return sl
     const kode = a.subtype === 'error_max_budget_usd' ? 'anggaran' : a.subtype === 'error_max_turns' ? 'giliran' : 'jalan'
     throw Object.assign(new GalatAgen(kode, `agen berhenti: ${a.subtype}${a.errors?.length ? ' ' + String(a.errors[0]).slice(0, 160) : ''}`, usd), { sesi: r.sesiBaru })
   }

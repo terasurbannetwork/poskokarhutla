@@ -58,7 +58,7 @@ test('T27 hasil.json: tidak ada, rusak, jalur, tautan, bukan PPTX, terlalu panja
   const tulis = (o) => fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), typeof o === 'string' ? o : JSON.stringify(o))
   assert.throws(() => A.bacaHasil(ruang), /tidak ada/)
   tulis('{rusak'); assert.throws(() => A.bacaHasil(ruang), /rusak/)
-  tulis({ pptx: '../x.pptx' }); assert.throws(() => A.bacaHasil(ruang), /pptx tidak sah/)
+  tulis({ pptx: '../x.pptx' }); assert.throws(() => A.bacaHasil(ruang), /x.pptx tidak ada di keluaran/, 'jalur dibuang, tetap hanya keluaran/')
   tulis({ pptx: 'a.pptx' }); assert.throws(() => A.bacaHasil(ruang), /tidak ada di keluaran/)
   fs.writeFileSync(path.join(ruang, 'keluaran', 'a.pptx'), Buffer.alloc(3000)); assert.throws(() => A.bacaHasil(ruang), /bukan PPTX/)
   fs.writeFileSync(path.join(ruang, 'keluaran', 'a.pptx'), PPTX_MINI)
@@ -112,6 +112,8 @@ test('T33 anggaran: lewat harian atau per proyek = tidak jalan; terputus tanpa h
   const ctx2 = { dasar, env: { ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100', BL_AGEN_PROYEK_USD: '5' }, dep: { agenQuery: queryPalsu({ ruang, lempar: new Error('putus') }) } }
   await assert.rejects(A.jalankan(ctx2, { jenis: 'harian', id: 'P2', ruang, prompt: 'x', biaya: b2 }), (e) => e.kode === 'jalan' && e.biaya === 4)
   assert.equal(b2.isi, 4e6, 'jalan terputus dicatat BL_AGEN_USD')
+  // sisa jatah proyek 1 USD: masih boleh jalan dengan jatah dipangkas (sapu bug 19 Nov: dulu sisa di bawah 4 USD langsung ditolak)
+  await assert.rejects(A.jalankan(ctx2, { jenis: 'harian', id: 'P2', ruang, prompt: 'x', biaya: b2 }), (e) => e.kode === 'jalan' && e.biaya === 1)
   await assert.rejects(A.jalankan(ctx2, { jenis: 'harian', id: 'P2', ruang, prompt: 'x', biaya: b2 }), (e) => e.kode === 'batas_proyek')
 })
 
@@ -217,4 +219,37 @@ test('pemeriksa bersih: pesan hasil yang dipancarkan sebelum SDK melempar galat 
   })()
   const r = await A.jalankan({ dasar, env: { ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100' }, dep: { agenQuery: q } }, { jenis: 'harian', id: 'P7', ruang, prompt: 'x', biaya: biayaPalsu() })
   assert.equal(r.biaya, 0.5); assert.ok(r.hasil.pptx)
+})
+
+// Sapu bug 19 Nov 2026: deck yang sudah jadi tidak pernah dibuang karena bentuk hasil.json atau agen terhenti sesudahnya.
+test('regresi: hasil.json ber-BOM, berpagar kode, jalur keluaran/, dan tanya bersama deck sah tetap memakai deck', () => {
+  const { ruang } = dunia()
+  fs.writeFileSync(path.join(ruang, 'keluaran', 'a.pptx'), PPTX_MINI)
+  const tulis = (s) => fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), s)
+  tulis('﻿```json\n' + JSON.stringify({ pptx: 'keluaran/a.pptx', ringkasan: 'ok' }) + '\n```')
+  assert.equal(path.basename(A.bacaHasil(ruang).pptx), 'a.pptx')
+  tulis(JSON.stringify({ pptx: 'a.pptx', ringkasan: 'ok', tanya: ['Panel OMC dihapus atau dikosongkan?'] }))
+  const h = A.bacaHasil(ruang)
+  assert.ok(h.pptx); assert.deepEqual(h.tanya, []); assert.match(h.catatan.at(-1), /Pertanyaan agen: Panel OMC/)
+  fs.rmSync(path.join(ruang, 'keluaran', 'a.pptx'))
+  assert.deepEqual(A.bacaHasil(ruang).tanya, ['Panel OMC dihapus atau dikosongkan?'], 'tanpa deck sah: pertanyaan diajukan')
+})
+
+test('regresi: agen terhenti (giliran habis, galat proses) sesudah deck dan hasil.json lengkap = deck dipakai', async () => {
+  for (const q of [{ akhir: { subtype: 'error_max_turns', is_error: true } }, { akhir: { subtype: 'error_max_budget_usd', is_error: true } }]) {
+    const { dasar, ruang } = dunia()
+    const ctx = { dasar, env: { ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '25' }, dep: { agenQuery: queryPalsu({ ruang, ...q }) } }
+    const r = await A.jalankan(ctx, { jenis: 'harian', id: 'P-191126-01', ruang, prompt: 'x', biaya: biayaPalsu() })
+    assert.ok(r.hasil.pptx); assert.match(r.hasil.catatan.at(-1), /Agen terhenti sesudah deck selesai/)
+  }
+  const { dasar, ruang } = dunia()
+  const ctx = { dasar, env: { ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '25' }, dep: { agenQuery: queryPalsu({ ruang, hasil: null, akhir: { subtype: 'error_max_turns', is_error: true } }) } }
+  await assert.rejects(A.jalankan(ctx, { jenis: 'harian', id: 'P-191126-01', ruang, prompt: 'x', biaya: biayaPalsu() }), (e) => e.kode === 'giliran', 'tanpa deck: tetap galat')
+})
+
+test('regresi: TMPDIR agen di kerja/tmp ruang ini (pratinjau tempfile di sandbox)', () => {
+  const { ruang } = dunia()
+  const tmpAgen = path.join(ruang, 'kerja', 'tmp')
+  const e = A.lingkungan({ PATH: '/usr/bin', TMPDIR: '/private/var/folders/x' }, { tmp: tmpAgen })
+  assert.equal(e.TMPDIR, tmpAgen); assert.ok(fs.existsSync(tmpAgen))
 })

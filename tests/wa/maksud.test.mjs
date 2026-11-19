@@ -8,9 +8,9 @@ import * as M from '../../scripts/wa/maksud.mjs'
 
 test('T38 pagar rapikan: nomor urut dan jumlah menonjol boleh berubah, angka lain tidak', () => {
   const mentah = { rekap: 'Kejadian menonjol 16\n1 .Banjir Kab. Bogor, 3 rumah rusak\n2 .Longsor Kab Garut 1 meninggal' }
-  const ok = { rekap: 'Kejadian menonjol 2\n1. Banjir Kab. Bogor, 3 rumah rusak\n2. Longsor Kab. Garut, 1 meninggal' }
+  const ok = { rekap: 'Kejadian menonjol 16\n1. Banjir Kab. Bogor, 3 rumah rusak\n2. Longsor Kab. Garut, 1 meninggal' }
   assert.deepEqual(M.pagarRapikan(mentah, ok), { lolos: true, angkaBaru: [], angkaHilang: [], kunciAsing: [], digitAsing: [] })
-  const tambah = { rekap: 'Kejadian menonjol 2\n1. Banjir Kab. Bogor, 5 rumah rusak\n2. Longsor Kab. Garut, 1 meninggal' }
+  const tambah = { rekap: 'Kejadian menonjol 16\n1. Banjir Kab. Bogor, 5 rumah rusak\n2. Longsor Kab. Garut, 1 meninggal' }
   const r = M.pagarRapikan(mentah, tambah)
   assert.equal(r.lolos, false)
   assert.deepEqual(r.angkaBaru.map((x) => x.angka), ['5'])
@@ -22,6 +22,8 @@ test('T38 pagar rapikan: nomor urut dan jumlah menonjol boleh berubah, angka lai
   tolak('1. a 3 rumah', '1. a 3 rumah\n2. b 3 rumah')
   tolak('1. a 2 rumah\n2. b 7 rumah', '1. a 2 rumah')
   tolak('menonjol 16\n1. a', 'menonjol 9\n1. a')
+  // kepala tidak pernah disesuaikan Claude (keputusan pemilik: laporan kurang dari kepala hanya lewat *terima kurang*)
+  tolak('berdampak signifikan sejumlah 20\n1. a\n2. b', 'berdampak signifikan sejumlah 2\n1. a\n2. b')
   const terima = (a, b) => assert.equal(M.pagarRapikan({ k: a }, { k: b }).lolos, true, b)
   terima('1. a 2. b 4 rumah', '1. a\n2. b 4 rumah')
   terima('1. a\n3. b 4 rumah', '1. a\n2. b 4 rumah')

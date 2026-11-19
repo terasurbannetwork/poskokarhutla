@@ -7,7 +7,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const JALUR = require.resolve('../../scripts/wa/gateway/limiter.js')
-const KUNCI = ['WA_GAP_PERCAKAPAN_MIN_MS', 'WA_GAP_PERCAKAPAN_MAX_MS', 'WA_MAX_PER_MINUTE_PERCAKAPAN', 'WA_MAX_PER_MINUTE', 'WA_MAX_PER_HOUR', 'WA_MAX_PER_DAY', 'WA_MAX_PER_TARGET_DAY', 'WA_MAX_PER_TARGET_PERCAKAPAN', 'WA_PERCAKAPAN_MS', 'WA_WARMUP_PER_DAY', 'WA_WARMUP_DAYS']
+const KUNCI = ['WA_GAP_PERCAKAPAN_MIN_MS', 'WA_GAP_PERCAKAPAN_MAX_MS', 'WA_MAX_PER_MINUTE_PERCAKAPAN', 'WA_MAX_PER_MINUTE', 'WA_MAX_PER_HOUR', 'WA_MAX_PER_DAY', 'WA_MAX_PER_TARGET_DAY', 'WA_MAX_PER_TARGET_PERCAKAPAN', 'WA_PERCAKAPAN_MS', 'WA_WARMUP_PER_DAY', 'WA_WARMUP_DAYS', 'WA_WARMUP_PERCAKAPAN_PER_DAY']
 
 function muat({ pemanasan = false } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bl-limit-'))
@@ -92,14 +92,14 @@ test('jeda: balasan percakapan 2-4 dtk, kiriman biasa tetap 15-20 dtk dari kirim
   assert.ok(s2 <= 4000, 'sesudah kiriman biasa, balasan tetap jeda pendek (tidak 15 dtk) ' + s2)
 })
 
-test('pemanasan: percakapan paling banyak separuh batas harian, kiriman terjadwal tetap dapat jatah', (t) => {
+test('pemanasan: balasan punya jatah sendiri 100, kiriman terjadwal tetap 40 (sapu bug 19 Nov: satu laporan sekitar 22 balasan)', (t) => {
   t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
   const L = muat({ pemanasan: true })
-  for (let i = 0; i < 20; i++) { L.noteMasuk(i % 2 ? A : B); assert.equal(kirim(L, t, i % 2 ? A : B, { balasan: true }).ok, true) }
+  for (let i = 0; i < 100; i++) { L.noteMasuk(i % 2 ? A : B); assert.equal(kirim(L, t, i % 2 ? A : B, { balasan: true }).ok, true, 'balasan ' + i) }
   L.noteMasuk(A)
   assert.equal(kirim(L, t, A, { balasan: true }).error, 'batas percakapan (pemanasan)')
   const C = (n) => '62812000000' + String(n).padStart(2, '0') + '@s.whatsapp.net'
-  for (let i = 0; i < 20; i++) assert.equal(kirim(L, t, C(i)).ok, true, 'terjadwal ' + i)
+  for (let i = 0; i < 40; i++) assert.equal(kirim(L, t, C(i)).ok, true, 'terjadwal ' + i)
   assert.equal(kirim(L, t, C(99)).error, 'batas harian (pemanasan)')
 })
 
@@ -140,10 +140,23 @@ test('longgar: kiriman kosmetik hanya bila jatah menit, jam, harian, per tujuan,
 test('longgar: batas harian pemanasan dan anggaran percakapan pemanasan', (t) => {
   t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
   const L = muat({ pemanasan: true })
-  for (let i = 0; i < 18; i++) { L.noteMasuk(A); kirim(L, t, A, { balasan: true }) }
+  for (let i = 0; i < 98; i++) { L.noteMasuk(A); kirim(L, t, A, { balasan: true }) }
+  t.mock.timers.tick(3600e3) // jatah per jam (60) dikosongkan supaya yang diuji hanya jatah harian
   L.noteMasuk(A)
-  assert.equal(L.longgar(2, A, { balasan: true }), false, 'percakapan pemanasan paling banyak 20, 18 + 3 lewat')
+  assert.equal(L.longgar(2, A, { balasan: true }), false, 'balasan pemanasan paling banyak 100, 98 + 3 lewat')
+  assert.equal(L.longgar(1, A, { balasan: true }), true)
   const C = (n) => '62812000000' + String(n).padStart(2, '0') + '@s.whatsapp.net'
-  for (let i = 0; i < 22; i++) kirim(L, t, C(i)) // 18 + 22 = 40
-  assert.equal(L.longgar(0), false, 'batas harian pemanasan 40 tercapai')
+  assert.equal(L.longgar(0), true, 'balasan tidak memakan jatah kiriman biasa')
+  for (let i = 0; i < 40; i++) kirim(L, t, C(i))
+  assert.equal(L.longgar(0), false, 'kiriman biasa pemanasan 40 tercapai')
+})
+
+test('pembangunan lama dengan pesan masuk di tengah: lanjut, status 11 menit kemudian, draf 22 menit = tetap balasan', (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-18T01:00:00Z') })
+  const L = muat()
+  L.noteMasuk(A)
+  const masuk = Date.now()
+  t.mock.timers.tick(11 * 60000); L.noteMasuk(A)
+  t.mock.timers.tick(11 * 60000)
+  assert.equal(L.check(A, { balasan: true, masuk }).percakapan, true)
 })
