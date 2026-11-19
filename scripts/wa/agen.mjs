@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import * as Biaya from './biaya.mjs'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
 export const REPO = path.resolve(DI, '../..')
@@ -292,9 +293,9 @@ export function tanyaPengirim(dasar, sha, kini = Date.now()) {
 }
 
 // ---------- anggaran (D20) ----------
-const biayaProyekP = (dasar) => path.join(keadaan(dasar), 'biaya.json')
-export const biayaProyek = (dasar, id) => Number(bacaJson(biayaProyekP(dasar), {})[id] || 0)
-function tambahBiayaProyek(dasar, id, usd) { const f = biayaProyekP(dasar), s = bacaJson(f, {}); s[id] = Number(s[id] || 0) + usd; tulisJson(f, s) }
+// biaya per proyek dan per bulan di catatan lokal bersama V1 (biaya.mjs): dipakai batas per proyek dan baris biaya di pesan final
+export const biayaProyek = (dasar, id) => Biaya.proyek(dasar, id)
+const tambahBiayaProyek = (dasar, id, usd) => Biaya.catat(dasar, { usd, proyek: id })
 export const usdJalan = (env = {}) => (Number(env.BL_AGEN_USD) > 0 ? Number(env.BL_AGEN_USD) : USD_AGEN)
 export const usdProyek = (env = {}) => (Number(env.BL_AGEN_PROYEK_USD) > 0 ? Number(env.BL_AGEN_PROYEK_USD) : USD_PROYEK)
 

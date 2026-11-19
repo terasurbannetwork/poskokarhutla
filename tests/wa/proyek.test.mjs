@@ -1001,7 +1001,7 @@ test('T10: final mengirim PPTX lalu PDF ke pemegang, unggah Drive Revisi N, ditu
   const p = proyekId(d)
   assert.equal(p.status, 'ditutup'); assert.equal(p.drive_url, 'https://drive.google.com/drive/folders/R1')
   assert.equal(d.balasan.length, 1)
-  assert.equal(d.balasan[0], '*Laporan selesai*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt, final versi 2.\nFolder Drive (Revisi 1):\nhttps://drive.google.com/drive/folders/R1\n\n*Riwayat versi:*\n- v1 29 Okt 08.00, buat\n- v2 29 Okt 08.01, revisi: judul ganti\n\nProyek ditutup. Bahan berikutnya membuka proyek baru.')
+  assert.equal(d.balasan[0], '*Laporan selesai*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt, final versi 2.\nFolder Drive (Revisi 1):\nhttps://drive.google.com/drive/folders/R1\n\n*Riwayat versi:*\n- v1 29 Okt 08.00, buat\n- v2 29 Okt 08.01, revisi: judul ganti\n\nBiaya Claude laporan ini: $0,00.\n\nProyek ditutup. Bahan berikutnya membuka proyek baru.')
   gayaWa(d.balasan[0])
   assert.ok(!d.semua().some((t) => SISTEM_HURUF.test(t)))
   assert.deepEqual(f.keKirimKe, [], 'Q10: tidak ada kiriman ke PENERIMA atau nomor lain')
@@ -1495,4 +1495,20 @@ test('V2: final mencatat acuan laporan kemarin dan menghapus sesi agen', async (
   await perintah(d, 'batal')
   assert.equal(bacaSesi(d.dasar, 'P-291026-01'), null, 'batal menghapus sesi')
   assert.equal(fs.existsSync(path.join(d.dasar + '-agen', 'P-291026-01')), false, 'ruang kerja dihapus')
+})
+
+test('biaya: urai V1 dicatat per laporan dan per bulan; perintah biaya khusus pemilik dengan sisa anggaran; format dolar', async () => {
+  const Biaya = await import('../../scripts/wa/biaya.mjs')
+  assert.equal(Biaya.dolar(1234.5), '$1.234,50'); assert.equal(Biaya.dolar(0.05), '$0,05')
+  const d = dunia({ claude: () => ({ isian: [], pertentangan: [], gagal: [], biaya: 1_250_000 }) })
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(Biaya.proyek(d.dasar, 'P-291026-01'), 1.25)
+  d.ctx.env.BL_ANGGARAN_BULAN = '200'
+  assert.equal(Biaya.barisBulan(d.dasar, d.ctx.env, NOW), 'Pemakaian bot Oktober: $1,25 dari $200,00, sisa sekitar $198,75.')
+  const n = d.balasan.length
+  await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
+  assert.match(d.balasan[n], /^\*Pemakaian Claude\*\n\nPemakaian bot Oktober: \$1,25 dari \$200,00, sisa sekitar \$198,75\.\n\n\*Laporan terakhir:\*\n- P-291026-01: \$1,25\n/)
+  await tangani({ dari: DARI, teks: 'biaya' }, d.ctx)
+  assert.equal(d.balasan.at(-1), BANTUAN, 'bukan pemilik: bantuan biasa')
+  assert.deepEqual(parsePerintah('biaya', NOW), { aksi: 'biaya' })
 })

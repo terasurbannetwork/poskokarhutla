@@ -20,6 +20,7 @@ import { parseTanggal, labelTanggal } from './perintah.mjs'
 import { buatKlien, GalatClaude, medanTerkunci, sebutAngkaSistem, samarkan } from './claude.mjs'
 import * as jenisWa from '../../src/wa_jenis.js'
 import * as Agen from './agen.mjs'
+import * as Biaya from './biaya.mjs'
 import { periksa as periksaPagar } from './agen_pagar.mjs'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
@@ -61,6 +62,7 @@ export function parsePerintah(teks, now = new Date()) {
   if (!t || t.length > 60 || /\n/.test(asli)) return null
   if (t === 'bantuan') return { aksi: 'bantuan' }
   if (t === 'ulangi') return { aksi: 'ulangi' } // ulangi langkah terakhir yang gagal (bangun atau revisi)
+  if (t === 'biaya') return { aksi: 'biaya' } // pemakaian Claude bulan ini, sisa anggaran, biaya laporan terakhir (khusus PEMILIK)
   if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai PDF (pemilik 18 Nov 2026: PDF, bukan gambar)
   if (t === 'status') return { aksi: 'status' }
   if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
@@ -112,7 +114,7 @@ export const BANTUAN = [
   'Contoh: *buat harian kemarin*, kirim bahannya, lalu *lanjut*',
   'Tanggal bisa: kemarin, 26 okt, 26/10, 2026-10-26.',
 ].join('\n')
-const BANTUAN_PEMILIK = ['', '*Khusus pemilik*', '- *kirim ulang harian 26 okt*: kirim ulang berkas', '- *status 26 okt*: rekap bahan per tanggal'].join('\n')
+const BANTUAN_PEMILIK = ['', '*Khusus pemilik*', '- *kirim ulang harian 26 okt*: kirim ulang berkas', '- *status 26 okt*: rekap bahan per tanggal', '- *biaya*: pemakaian Claude bulan ini dan sisa anggaran'].join('\n')
 
 // ---------- T-SAPA: obrolan pendek dari nomor terdaftar tanpa proyek (pemilik 18 Nov 2026) ----------
 // Bukan perintah, tidak diteruskan, tanpa lampiran, satu baris paling banyak 80 huruf, tidak dikenali sebagai bahan, dan pengirim tidak memegang
@@ -476,7 +478,8 @@ async function urai(ctx, p, lap, bahanTeks) {
   const ada = bacaJson(f, null)
   if (ada?.sidik === sidik) return ada.hasil
   const r = await klien(ctx).urai(bahanTeks, lap.id)
-  const hasil = { isian: r.isian || [], pertentangan: r.pertentangan || [], gagal: r.gagal || [], ditolak: r.ditolak || [], catatan: r.catatan || '' }
+  try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
+  const hasil ={ isian: r.isian || [], pertentangan: r.pertentangan || [], gagal: r.gagal || [], ditolak: r.ditolak || [], catatan: r.catatan || '' }
   tulisJson(f, { sidik, hasil })
   return hasil
 }
@@ -917,6 +920,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       const awal = sebelum ? sebelum.kalimat : kalimat
       const kirimKalimat = sebelum ? susunJawaban(sebelum, kalimat) : kalimat
       const r = await klien(ctx).operasi(invLama, kunciLama, opsLama.map((o) => JSON.stringify(o)), kirimKalimat)
+      try { Biaya.catat(dasar, { usd: Number(r.biaya || 0) / 1e6, proyek: p.id, kini: ctx.now || new Date() }) } catch {}
       if (r.tanya?.length) {
         catatTanyaRevisi(ctx, p.id, m, { kalimat: awal, tanya: r.tanya.map((q) => rapi(q.pertanyaan, 300)), jawab: sebelum ? [...(sebelum.jawab || []), kalimat].slice(-3) : [] })
         return await keDraf(susun('Revisi perlu dipastikan', p, m, r.tanya.map((q, i) => `${i + 1}. ${rapi(q.pertanyaan, 300)}`),
@@ -1544,9 +1548,14 @@ export async function tFinal(ctx, st) {
   const p = { id: st.id }, lap = lapDari(st.jenis)
   let riwayat = []
   try { riwayat = (await versiDaftar(ctx, p, st.sha)).map((x) => `v${x.n} ${jamLabel(x.dibuat)}, ${rapi(x.instruksi || 'buat', 80)}`) } catch (e) { (ctx.log || (() => {}))('riwayat versi gagal', e.message) }
+  // Biaya Claude laporan ini (semua versi); pemakaian bulan ini dan sisa anggaran hanya untuk PEMILIK (pemilik 19 Nov 2026)
+  const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
+  const pemilik = new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(normalWa(st.dari))
+  const biaya = [`Biaya Claude laporan ini: ${Biaya.dolar(Biaya.proyek(dasar, st.id))}.`, ...(pemilik ? [Biaya.barisBulan(dasar, ctx.env, kini)] : [])]
   return susun('Laporan selesai', p, st.n, [`${lap ? judul(lap, st.tanggal) : st.jenis}, final versi ${st.n}.`,
     `Folder Drive${st.folder?.nama ? ' (' + st.folder.nama + ')' : ''}:`, st.driveUrl],
     bagian('Riwayat versi', riwayat),
+    biaya,
     'Proyek ditutup. Bahan berikutnya membuka proyek baru.')
 }
 
@@ -1810,6 +1819,15 @@ export async function tangani(pesan, ctxAsli) {
       await ctx.balas(susun('Panduan belum tersedia', null, null, ['Ketik *bantuan* untuk daftar perintah.']))
     }
     return { status: 'panduan' }
+  }
+  if (cmd?.aksi === 'biaya') {
+    const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
+    if (!new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(dari)) { await ctx.balas(BANTUAN); return { status: 'bantuan' } }
+    const akhir = Biaya.terakhir(dasar, 5).map((x) => `- ${x.id}: ${Biaya.dolar(x.usd)}`)
+    await ctx.balas(susun('Pemakaian Claude', null, null, [Biaya.barisBulan(dasar, ctx.env, kini)],
+      akhir.length ? ['*Laporan terakhir:*', ...akhir] : [],
+      'Dihitung bot dari pemakaian tokennya sendiri. Saldo kredit di Console Anthropic bisa berbeda bila kunci yang sama dipakai di tempat lain.'))
+    return { status: 'biaya' }
   }
   if (cmd?.aksi === 'bantuan') {
     const pemilik = new Set(daftar(ctx.env.PEMILIK).map(normalWa))

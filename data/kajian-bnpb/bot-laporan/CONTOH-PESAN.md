@@ -488,7 +488,26 @@ https://drive.google.com/drive/folders/CONTOH
 - v1 18 Nov 08.00, buat
 - v2 18 Nov 08.12, revisi: judul tambahkan BNPB
 
+Biaya Claude laporan ini: $2,35.
+Pemakaian bot November: $47,20 dari $200,00, sisa sekitar $152,80.
+
 Proyek ditutup. Bahan berikutnya membuka proyek baru.
+```
+
+Baris "Pemakaian bot ..." hanya untuk nomor PEMILIK (K25). Tanpa `BL_ANGGARAN_BULAN` barisnya "Pemakaian bot November: $47,20." tanpa sisa.
+
+### D2b. Pemakaian Claude (perintah `biaya`, khusus pemilik)
+
+```text
+*Pemakaian Claude*
+
+Pemakaian bot November: $47,20 dari $200,00, sisa sekitar $152,80.
+
+*Laporan terakhir:*
+- P-191126-02: $2,35
+- P-191126-01: $3,10
+
+Dihitung bot dari pemakaian tokennya sendiri. Saldo kredit di Console Anthropic bisa berbeda bila kunci yang sama dipakai di tempat lain.
 ```
 
 ### D3. Final diterima, penutupan tertunda
