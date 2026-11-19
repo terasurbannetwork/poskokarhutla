@@ -75,6 +75,107 @@ def kumpulkan(awal, akhir, wa=()):
     return [o for o in baris if o['akhir'] >= dalam], S
 
 
+# ---------------------------------------------------------------- multipeta otomatis (pemilik 20 Nov 2026: "pakai multipanel map untuk di slide 1")
+# Satu panel per pulau berskala sama (pola Revisi 4 deck 191126), label dicarikan celah otomatis.
+ZONA = [('Sumatera', ['11', '12', '13', '14', '15', '16', '17', '18', '19', '21']),
+        ('Jawa dan Nusa Tenggara', ['31', '32', '33', '34', '35', '36', '51', '52', '53']),
+        ('Kalimantan', ['61', '62', '63', '64', '65']),
+        ('Sulawesi', ['71', '72', '73', '74', '75', '76']),
+        ('Maluku dan Papua', ['81', '82', '91', '92', '93', '94', '95', '96'])]
+PETA = (43.2, 102.0, 418.0, 338.0)   # wilayah peta slide 1 (pt): x, y, lebar, tinggi
+CELAH, KOLOM_KANAN, PAD_DERAJAT, SKALA_MAKS = 6.0, 160.0, 0.7, 60.0
+TINGGI_LABEL = 15.8
+
+
+def tata_panel(M, rows):
+    """rows = M.BANJIR -> (PANEL_BANJIR, SKALA_PANEL, titik {kab: (x, y) pt}). Zona dengan kab/kota terbanyak di panel kiri setinggi peta,
+    zona lain bertumpuk di kolom kanan; skala satu untuk semua panel, sebesar yang memuat semua kab/kota terdampak."""
+    pts = {r[1]: M.pusat(M.KODE[r[0]], r[1]) for r in rows}
+    zona = []
+    for nama, provs in ZONA:
+        kab = [r for r in rows if M.KODE[r[0]] in provs]
+        if kab:
+            pr = list(dict.fromkeys(r[0] for r in kab))
+            zona.append((pr[0] if len(pr) == 1 else ' dan '.join(pr) if len(pr) == 2 else nama, kab))
+    zona.sort(key=lambda z: -len(z[1]))
+    x0, y0, W, H = PETA
+    if len(zona) == 1:
+        kotak = [(x0, y0, W, H)]
+    else:
+        n = len(zona) - 1
+        h = (H - CELAH * (n - 1)) / n
+        kotak = [(x0, y0, W - KOLOM_KANAN - CELAH, H)] + [(x0 + W - KOLOM_KANAN, y0 + i * (h + CELAH), KOLOM_KANAN, h) for i in range(n)]
+    batas = []
+    for (_, kab), (_, _, w, h) in zip(zona, kotak):
+        xs, ys = [pts[r[1]][0] for r in kab], [pts[r[1]][1] for r in kab]
+        bw, bh = max(max(xs) - min(xs) + 2 * PAD_DERAJAT, 1.5), max(max(ys) - min(ys) + 2 * PAD_DERAJAT, 1.5)
+        batas.append(((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2))
+        batas[-1] += (min(w / bw, (h - 14) / bh),)   # 14 pt: judul panel
+    s = min(SKALA_MAKS, *[b[2] for b in batas])
+    semua = sorted(M.SEMUA_PROV)
+    panel, titik = [], {}
+    for (nama, kab), (x, y, w, h), (cx, cy, _) in zip(zona, kotak, batas):
+        lon0, la1 = cx - w / s / 2, cy + (h - 14) / s / 2 + 14 / s   # pusat kab/kota di bawah judul panel
+        panel.append((nama, round(x, 1), round(y, 1), round(w, 1), round(h, 1), (lon0, la1), semua))
+        for r in kab:
+            lon, lat = pts[r[1]]
+            titik[r[1]] = (x + (lon - lon0) * s, y + (la1 - lat) * s)
+    return panel, s, titik
+
+
+def tata_label_panel(M, rows, panel, s, titik):
+    """POS_BANJIR {kab: (x, y)}: pil label di celah terdekat titiknya, sebisa mungkin di panelnya sendiri, tidak menimpa label lain,
+    judul panel, unsur peta (panah utara, skala), titik kab/kota lain, atau wilayah berwarna."""
+    from PIL import Image, ImageDraw
+    x0, y0, W, H = PETA
+    masker = Image.new('1', (int(W) + 1, int(H) + 1), 0); dm = ImageDraw.Draw(masker)
+    for nama, px, py, pw, ph, (lon0, la1), _ in panel:
+        for r in rows:
+            f = next((f for f in M.geo(M.KODE[r[0]]) if f['properties']['kab'] == r[1]), None)
+            for poly in (M.cincin(f) if f else []):
+                q = [(min(max(px + (lo - lon0) * s, px), px + pw) - x0, min(max(py + (la1 - la) * s, py), py + ph) - y0) for lo, la in poly[0]]
+                if len(q) > 2:
+                    dm.polygon(q, fill=1)
+    larang = [(px, py, px + min(pw, len(nm) * 4.6 + 12), py + 14) for nm, px, py, pw, ph, _, _ in panel]   # judul panel
+    km = max(42, 100 / 111 * s)
+    larang.append((x0, y0 + H - 38, 82.8 + km + 4, y0 + H - 6))   # unsur_peta(dy=-8): panah utara dan skala 100 km
+    larang += [(tx - 4, ty - 4, tx + 4, ty + 4) for tx, ty in titik.values()]
+    pos, taruh = {}, []
+    tumbuk = lambda a, b: a[0] < b[2] + 2 and b[0] < a[2] + 2 and a[1] < b[3] + 2 and b[1] < a[3] + 2
+    for r in sorted(rows, key=lambda r: titik[r[1]][1]):
+        kab, (tx, ty) = r[1], titik[r[1]]
+        lw = M.lebar_label(kab, 'Belum surut' if not r[4] else 'Sudah surut')
+        sendiri = next(p for p in panel if p[1] <= tx <= p[1] + p[3] and p[2] <= ty <= p[2] + p[4])
+        terbaik = None
+        for y in [ty - TINGGI_LABEL / 2 + d for d in range(-150, 151, 3)]:
+            for x in (tx + 9, tx - lw - 9, sendiri[1] + 3, sendiri[1] + sendiri[3] - lw - 3, x0, x0 + W - lw):
+                kt = (x, y, x + lw, y + TINGGI_LABEL)
+                # utuh di dalam satu panel, >= 8 pt dari tepi bawahnya (QA mesin deck T-7: isi >= 7 pt dari tepi bawah panel)
+                if not any(p[1] <= x and kt[2] <= p[1] + p[3] and p[2] <= y and kt[3] <= p[2] + p[4] - 8 for p in panel):
+                    continue
+                if any(tumbuk(kt, b) for b in taruh + larang):   # larang memuat titik kab/kota sendiri: pil tidak menutup titiknya
+                    continue
+                di_panel = sendiri[1] <= x and kt[2] <= sendiri[1] + sendiri[3] and sendiri[2] <= y and kt[3] <= sendiri[2] + sendiri[4]
+                tutup = masker.crop((int(x - x0), int(y - y0), int(kt[2] - x0), int(kt[3] - y0))).getbbox() is not None
+                skor = abs(x + lw / 2 - tx) * 0.5 + abs(y + TINGGI_LABEL / 2 - ty) + (0 if di_panel else 120) + (60 if tutup else 0)
+                if terbaik is None or skor < terbaik[0]:
+                    terbaik = (skor, x, y)
+        if terbaik is None:   # tidak ada celah sama sekali: di bawah label terakhir panelnya
+            terbaik = (0, sendiri[1] + 3, min(max([b[3] for b in taruh] + [sendiri[2] + 16]) + 2, sendiri[2] + sendiri[4] - 8 - TINGGI_LABEL))
+        _, x, y = terbaik
+        pos[kab] = (round(x, 1), round(y, 1))
+        taruh.append((x, y, x + lw, y + TINGGI_LABEL))
+    return pos
+
+
+def multipeta(M):
+    if not M.BANJIR:
+        return
+    panel, s, titik = tata_panel(M, M.BANJIR)
+    M.PANEL_BANJIR, M.SKALA_PANEL = panel, s
+    M.POS_BANJIR = tata_label_panel(M, M.BANJIR, panel, s, titik)
+
+
 def berkas_tersedia(awal, akhir, wa=()):
     """Tanggal berkas WA Koordalops (hari WA, = laphar + 1) yang terbaca untuk periode: arsip repo dan --wa (aturan tanggal sama dengan sudah_banjir)."""
     import jalur
@@ -165,7 +266,8 @@ def isi_mesin(M, awal, akhir, wa=(), gis=None, keluar='.'):
             langkah = ([f'Layani {M.f0(o["ungsi"])} jiwa pengungsi'] if o.get('ungsi') else []) + ['pantau wilayah yang belum surut']
             M.MITIGASI[o['kab']] = '; '.join(langkah).capitalize() if not o.get('ungsi') else '; '.join(langkah)
     M.BANJIR.sort(key=lambda r: (M.KODE[r[0]], r[4] is not None, -(r[5] or 0)))
-    M.EXT_SUM = ext_sumatera(M, M.BANJIR)   # urut kode provinsi, belum surut dulu, KK terbesar
+    M.EXT_SUM = ext_sumatera(M, M.BANJIR)   # urut kode provinsi, belum surut dulu, KK terbesar; EXT_SUM hanya untuk mode inset
+    multipeta(M)   # pemilik 20 Nov 2026: slide 1 selalu multipeta
     M.UNGSI.sort(key=lambda r: (M.KODE[r[0]], -(r[5] or 0)))
     M.UNGSI_HARI = {'tanggal': [_tgl(laphar(h), BLN) for h in hari_ada], 'kab': seri_ungsi, 'catatan': None} if len(hari_ada) > 1 and seri_ungsi else None
     return {'periode': [awal.isoformat(), akhir.isoformat()], 'laporan': [laphar(h).isoformat() for h in hari_ada], 'kosong': [d.isoformat() for d in kosong],

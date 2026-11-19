@@ -24,7 +24,7 @@ Deck mingguan buatan pemilik (data/laporan-bnpb/mingguan/2026-11-09, 2026-11-16,
 ## Larangan
 
 - Jangan pernah menulis kata "aman" (misalnya "kondisi aman terkendali" ditulis "kondisi terkendali").
-- Peta dibuat generator; jangan mengganti gambar peta. Bila label peta terlalu rapat atau perlu multipeta per pulau seperti deck 19 Nov, tulis usulnya di `catatan.teknis`.
+- Peta slide 1 selalu multipeta (pemilik 20 Nov 2026): satu panel per pulau berskala sama, label diatur generator. Jangan mengganti gambar peta atau memindah panel; bila label terlalu rapat, tulis usulnya di `catatan.teknis`.
 - Jangan menambah kejadian dari luar bahan, termasuk dari deck pekan lalu.
 
 ## Nama berkas
