@@ -378,3 +378,33 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q48 | Ikuti kejadian di web perlu notifikasi push peramban (butuh kunci VAPID dan izin notifikasi)? | **[BAWAAN SEMENTARA]** Tidak; tanda berubah di menu Diikuti saat halaman dibuka (D86). | LA-61 |
 | Q49 | Foto bukti wajib saat Selesai, atau boleh dilewati? | **[BAWAAN SEMENTARA]** Wajib minimal satu, boleh dilewati dengan alasan tertulis yang tercatat (D87). | LA-62 |
 | Q50 | Unggah bersambung juga untuk foto? | **[BAWAAN SEMENTARA]** Tidak; foto paling besar 3 MB, satu bagian, cukup diulang utuh oleh antrean luring. | LA-63 |
+
+## Keputusan pemilik (data terbuka dan meja BPBD, 19 Nov 2026 malam)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K62 | 19 Nov 2026 | Data terbuka agregat: jumlah laporan per kab/kota, jenis, dan minggu, tanpa identitas, bisa diunduh peneliti dan kampus mitra `/kemitraan`; termasuk bahan riset seberapa cepat warga melapor dibanding data resmi. |
+| K63 | 19 Nov 2026 | Meja BPBD: BPBD kab/kota melihat laporan di wilayahnya, mengubah status, dan melampirkan foto penanganan, menggantikan "Teruskan ke BPBD" lewat WA manual. Pemilik: "agar mereka login, pakai akun mereka aja", bukan tautan bertoken. |
+
+## Keputusan rancangan (pelaksanaan K62 dan K63)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D91 | Agregat dihitung pipeline harian dari laporan terkirim: baris = (kab/kota kode Kemendagri, jenis, minggu ISO), kolom = jumlah laporan, jumlah pelapor berbeda, laporan berfoto sah, laporan berstatus tidak valid, median menit dari waktu kejadian sampai terkirim. Tanpa nomor tiket, desa, koordinat, teks, foto, atau nama. Sel dengan kurang dari 3 pelapor berbeda ditulis "<3" (bukan angka), supaya satu pelapor di kab sepi tidak bisa ditebak. | Privasi pelapor (D12, UU PDP); pola sel kecil lazim di data terbuka statistik. |
+| D92 | "Seberapa cepat warga melapor dibanding data resmi" dihitung hanya untuk laporan yang sudah ditempel ke kejadian Buku Besar (pencocok `pasang.py`, LA-25, F1): selisih menit antara laporan warga pertama dan catatan resmi pertama (DIBI atau Pantau Dalops) kejadian yang sama, per jenis dan provinsi, median dan sebaran. Sebelum LA-25 jalan kolom ini tertulis "belum tersedia", tidak pernah nol. | Satu pencocok kejadian (AGENTS 2.15); kosong tidak jadi nol. |
+| D93 | Unduhan CSV dan JSON dari halaman `/kemitraan` untuk akun kampus mitra yang aktif (sesi kemitraan yang sudah ada), beserta kamus kolom dan catatan metode. Tidak di `public/data` sebelum Q51 dijawab. Tiap unduhan tercatat (akun, waktu, berkas) untuk laporan pemakaian. | Kalimat pemilik menyebut peneliti dan kampus mitra; publik terbuka keputusan terpisah. |
+| D94 | Meja BPBD memakai akun lembaga yang sudah ada: akun Ruang Instansi berjenis `pemkab` atau `pemkot` (tingkat kab) dan `pemprov` (tingkat provinsi), termasuk anggota yang diundang lewat `/masuk` (undangan berantai D7 paket pintu masuk). Tanpa tautan bertoken, tanpa jenis akun baru, tanpa sandi baru. | Pemilik K63; BPBD sudah masuk lewat akun pemda di Ruang Instansi. |
+| D95 | Hak wilayah: akun kab melihat laporan yang lokasinya di kab/kota itu; akun provinsi melihat semua kab/kota di provinsinya. Diperiksa di Worker per permintaan dari kode wilayah laporan, bukan dari isian pelapor. Nomor WA pelapor tampil (sama dengan meja BNPB) karena BPBD perlu menghubungi; tiap pembukaan rincian tercatat di log akses (siapa, kapan, laporan mana). | Q12: nomor terlihat hanya di layar petugas; jejak akses untuk akuntabilitas. |
+| D96 | Yang bisa dilakukan BPBD: tandai dilihat, pindah status menurut aturan A8 (termasuk Selesai dengan foto penanganan atau alasan, D87), balas pelapor, lampirkan foto penanganan, tandai foto boleh publik. Yang tidak: membuka kembali tiket Selesai (tetap BNPB), menghapus, mengubah isian pelapor, mengakses laporan di luar wilayah. Riwayat mencatat pelaku "BPBD <kab>" dengan nama anggota. | Tiket tetap satu; BNPB memegang pembukaan kembali. |
+| D97 | Tombol "Teruskan ke BPBD" di meja BNPB menandai laporan masuk antrean meja BPBD wilayah itu (status Diteruskan) dan, bila ada nomor WA akun lembaga, mengirim satu pemberitahuan berisi tautan ke `/lapor/meja` (tanpa isi laporan di pesan). Kab tanpa akun aktif: tombol tetap ke WA manual (D72) dengan tanda "BPBD belum punya akun". | Pemberitahuan tanpa data pribadi; jalan lama tetap ada selama akun belum lengkap. |
+| D98 | Layar: `/lapor/meja` yang sama, disaring server menurut wilayah akun; kepala menampilkan nama lembaga dan wilayah; tombol yang tidak berhak tidak tampil. Tanpa salinan halaman per peran. | Satu layar (pola meja dan `/bnpb/dalops`). |
+
+## Pertanyaan terbuka (K62 dan K63)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q51 | Data agregat juga dibuka untuk umum (tanpa masuk), misalnya di `public/data`? | **[BAWAAN SEMENTARA]** Tidak; hanya akun kampus mitra `/kemitraan` (D93). | LA-64 |
+| Q52 | Ambang sel kecil: 3 pelapor berbeda cukup? | **[BAWAAN SEMENTARA]** 3 (D91). | LA-64 |
+| Q53 | Akun pemkab, pemkot, dan pemprov itu dipakai BPBD, atau kantor bupati/gubernur juga? Bila keduanya, meja BPBD dibatasi ke anggota yang mencantumkan unit BPBD? | **[BAWAAN SEMENTARA]** Semua anggota aktif akun lembaga pemda tingkat kab dan provinsi boleh membuka meja wilayahnya; unit tercatat di riwayat. Bila pemilik ingin hanya BPBD, saring dengan kolom `unit` akun. | LA-66 |
+| Q54 | Polres, Kodim, Damkar perlu meja yang sama untuk wilayahnya? | **[BAWAAN SEMENTARA]** Tidak pada tahap ini. | LA-66 |
+| Q55 | Pemberitahuan ke BPBD saat diteruskan: lewat bot WA yang ada (Baileys) atau tidak sama sekali? | **[BAWAAN SEMENTARA]** Lewat bot WA yang ada ke nomor akun lembaga, paling banyak 20 pesan per kab per hari; tanpa isi laporan (D97). | LA-67 |

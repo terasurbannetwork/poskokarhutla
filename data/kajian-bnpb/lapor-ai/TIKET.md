@@ -124,3 +124,12 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 | LA-61 | Selesai lokal: peta MapLibre titik pusat desa dengan kelompok, kartu bergugus "N warga melapor", Ikuti dan saring Diikuti di perangkat. Belum: perintah WA `ikuti`. | `tests/lapor/lokal_media.test.mjs` |
 | LA-62 | Selesai lokal: kartu Foto penanganan di meja, Selesai butuh foto atau alasan, foto di halaman lacak, centang "Tampil di Alun-alun" per foto. Belum: rute Worker, tabel `lapor_bukti`, pesan WA penutup. | `tests/lapor/lokal_media.test.mjs` |
 | LA-63 | Selesai lokal: rute bagian 5 MB, status, selesai, buang 24 jam; peramban menyimpan berkas di antrean bersama `public/inti/antre.js` (saluran `lapor-video`, kait baru `media.unggah`) dan melanjutkan dari bagian terakhir. Belum: multipart R2 di Worker. | `tests/lapor/lokal_media.test.mjs`, `tests/inti/antre.test.mjs` |
+
+### Data terbuka dan meja BPBD (K62, K63)
+
+| Tiket | Isi | Pengerja | Pemeriksa | Tergantung | Q |
+| --- | --- | --- | --- | --- | --- |
+| LA-64 | Agregat harian (D91): skrip pipeline dari D1 ke R2 `kemitraan/lapor/`, sel kecil "<3", kamus kolom dan metode; uji: tidak ada nomor, desa, koordinat, teks | `kampus`, `warga-api` | `security-reviewer`, `selera-angka` | LA-04 | Q51, Q52 |
+| LA-65 | Unduhan di `/kemitraan` untuk akun kampus aktif dengan log unduhan (D93); kolom selisih lawan data resmi "belum tersedia" sampai LA-25 (D92) | `kampus` | `security-reviewer`, `inp-reviewer` | LA-64, LA-25 | Q51 |
+| LA-66 | Meja BPBD: sesi akun pemkab, pemkot, pemprov dan anggota undangan di rute `/api/lapor/meja*`, saring wilayah di Worker, log akses rincian, aksi terbatas (D94-D96, D98); uji hak lintas wilayah | `warga-api`, `layar-peta` | `guard-api`, `security-reviewer`, `inp-reviewer` | LA-10, LA-62 | Q53, Q54 |
+| LA-67 | Teruskan ke BPBD lewat antrean meja BPBD dan pemberitahuan WA tanpa isi (D97); kab tanpa akun tetap jalan manual | `warga-api`, `wa-bot` | `security-reviewer` | LA-66 | Q55 |
