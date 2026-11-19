@@ -72,6 +72,8 @@ export function validasiUraian(keluaran, teks, jenis) {
 }
 
 /* ---------- pengurai tanpa AI (Q2: tetap jalan tanpa kunci) ---------- */
+const SEBUT_ANGKA = {meninggal: ["tewas", "wafat", "korban jiwa"], luka: ["luka-luka", "terluka"], mengungsi_jiwa: ["mengungsi", "pengungsi"], mengungsi_kk: ["kk mengungsi", "keluarga mengungsi"],
+  terdampak_jiwa: ["terdampak", "warga terdampak"], terdampak_kk: ["kk terdampak", "keluarga terdampak"], rumah_berat: ["rusak berat"], rumah_sedang: ["rusak sedang"], rumah_ringan: ["rusak ringan"], rumah_terendam: ["terendam"]};
 function uraiSederhana(teks, ditanya, sesi) {
   const isian = {};
   if (ditanya?.startsWith("kelompok:")) { // templat "Label: angka" per baris (WA tanpa AI)
@@ -86,6 +88,13 @@ function uraiSederhana(teks, ditanya, sesi) {
     return {isian, jenisTebak: [], darurat: false, tanggapan: ""};
   }
   const spek = isianNama[ditanya];
+  // tanpa pertanyaan aktif (mode Ubah dan laporan susulan, tanpa AI): "meninggal jadi 3", "40 orang mengungsi", "rusak berat 5"
+  if (!ditanya) for (const i of berlakuSesi(sesi).filter(i => i.tipe === "angka")) {
+    const kata = [i.label, ...(SEBUT_ANGKA[i.nama] || [])].map(k => k.toLowerCase().replace(/[()]/g, "")).join("|");
+    const m = kecil(teks).match(new RegExp(`(?:\\b(?:${kata})\\b\\D{0,20}?(\\d[\\d.]*))|(?:(\\d[\\d.]*)\\s*(?:orang|jiwa|kk|rumah|unit|titik)?\\s*(?:${kata})\\b)`));
+    const n = m && Number(String(m[1] || m[2]).replace(/\\./g, ""));
+    if (Number.isFinite(n) && n <= i.maks) isian[i.nama] = {nilai: n, kutipan: m[0]};
+  }
   if (spek?.tipe === "angka") {
     const a = [...angkaDalam(teks)];
     if (a.length === 1 && a[0] <= spek.maks) isian[ditanya] = {nilai: a[0], kutipan: kecil(teks)};

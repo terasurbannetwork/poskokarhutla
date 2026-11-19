@@ -100,6 +100,25 @@ export function buatDokumen(s, p, ulang = false) {
 }
 
 /* ---------- satu pesan dari pelapor ---------- */
+/* ---------- laporan susulan (F-28, ALUR 11, ALGORITMA A12; Q26: 72 jam, paling banyak 10 versi) ---------- */
+const KUNCI_SUSULAN = ["jenis", "subjenis", "lokasi", "waktu", "rtrw"], JENDELA_SUSULAN = 72 * 3600e3;
+const bolehSusulan = s => !!s?.nomor && Date.now() - s.terkirim <= JENDELA_SUSULAN && !["selesai", "tidak_valid"].includes(s.tiket?.status) && (s.versi || []).length < 10;
+async function susulan(body) {
+  const wa = nomorWa(body.wa), d = baca(), kini = Date.now();
+  const asal = Object.values(d.sesi).find(x => x.nomor === body.nomor && x.wa === wa);
+  if (!asal) return [404, {galat: "Laporan tidak ditemukan."}];
+  if (!bolehSusulan(asal)) return [409, {galat: "Kabar tambahan hanya bisa dikirim 72 jam sejak laporan terkirim, sebelum laporan selesai ditangani."}];
+  const hidup = d.sesi[d.aktif[wa]];
+  if (hidup && !["terkirim", "batal", "susulan"].includes(hidup.status) && !hidup.susulanDari) return [409, {galat: "Selesaikan atau batalkan dulu laporan yang sedang diisi."}];
+  const {nomor, token, tiket, versi, jejak, akhir, susulanBaru, balasan, nilai, ...dasar} = structuredClone(asal);
+  const s = {...dasar, id: `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`, status: "ringkasan", susulanDari: asal.nomor, transkrip: [], foto: [], fotoSelesai: true, ditanya: [], dibuat: kini};
+  const h = await putaran({sesi: s, pelapor: d.pelapor[wa], model, wilayah, kini, pesan: {wa, teks: "2", saluran: body.saluran || "web"}}); // masuk mode Ubah
+  h.sesi.transkrip = h.sesi.transkrip.filter(t => t.dari === "bot");
+  h.inti = `*Tambah kabar untuk ${asal.nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
+  h.sesi.transkrip.at(-1).teks = h.inti; h.sesi.akhir = {...(h.sesi.akhir || {}), inti: h.inti, balasan: h.inti};
+  d.sesi[h.sesi.id] = h.sesi; d.aktif[wa] = h.sesi.id; simpan(d);
+  return [200, {...keluaran(h, h.sesi), susulanDari: asal.nomor}];
+}
 const KUOTA_JAM = 60, KUOTA_MENIT = 20, kuota = {}; // ponytail: hitungan di memori proses; Worker memakai tabel laju D1
 async function pesan(body) {
   const wa = nomorWa(body.wa);
@@ -139,7 +158,28 @@ async function pesan(body) {
   h.sesi.id ||= `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;
   h.sesi.wa = wa;
   let tambahan = {};
-  if (h.kirim) { // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
+  if (h.kirim && h.sesi.susulanDari) { // laporan susulan (F-28, ALGORITMA A12): perubahan digabung ke tiket yang sama sebagai versi baru
+    const asal = Object.values(d.sesi).find(x => x.nomor === h.sesi.susulanDari);
+    for (const k of KUNCI_SUSULAN) if (asal.isian[k]) h.sesi.isian[k] = asal.isian[k]; else delete h.sesi.isian[k]; // jenis, lokasi, waktu terkunci
+    const lama = new Map(isianTampil(asal).map(x => [x.nama, x])), perubahan = [];
+    for (const x of isianTampil(h.sesi)) { const l = lama.get(x.nama); const a = l && l.status !== "kosong" ? l.tampil : "belum didata", b = x.status !== "kosong" ? x.tampil : "belum didata";
+      const kosong = v => /^(belum didata|tidak tahu|belum tahu|belum diketahui)$/i.test(v); // dari kosong ke "tidak tahu" bukan perubahan
+      if (a !== b && !(kosong(a) && kosong(b))) perubahan.push({nama: x.nama, label: x.label, dari: a, ke: b}); }
+    const versi = asal.versi.length + 1, st = asal.tiket.status;
+    asal.isian = structuredClone(h.sesi.isian);
+    asal.foto = [...(asal.foto || []), ...(h.sesi.foto || [])].slice(0, 20);
+    asal.versi.push({versi, isi: structuredClone(asal.isian), waktu: kini, susulan: true, perubahan});
+    asal.tiket.riwayat.push({dari: st, ke: st, pelaku: "Pelapor", catatan: `Susulan versi ${versi}: ${perubahan.length ? perubahan.map(x => x.label).join(", ") : "tanpa perubahan angka"}`, waktu: kini});
+    asal.susulanBaru = kini; // penanda "ada susulan" di meja sampai staf bertindak
+    h.sesi.status = "terkirim"; h.sesi.susulanVersi = versi; // sesi salinan selesai; tanpa nomor sendiri jadi tidak tampil di meja
+    h.inti = `*Laporan diperbarui*\n_${asal.nomor} versi ${versi}_\n\n${perubahan.length ? `*Perubahan:*\n${perubahan.map(x => `- ${x.label}: ${x.dari} menjadi ${x.ke}`).join("\n")}` : "Tidak ada angka yang berubah."}\n\nPDF versi baru menyusul.`;
+    const q = `?t=${asal.token}`;
+    tambahan = {nomor: asal.nomor, susulan: versi, lacak: `/lapor/lacak.html${q}`, foto: asal.foto?.[0] ? `/api/lapor/foto/${asal.foto[0].id}${q}` : null, unduhan: [
+      {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
+      {label: "Unduh PDF", url: `/api/lapor/unduh/${asal.nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${asal.nomor}.docx${q}`}]};
+    for (const x of ["pdf", "docx"]) fs.rmSync(path.join(DOK, `${asal.nomor}.${x}`), {force: true});
+    buatDokumen(asal, d.pelapor[asal.wa]);
+  } else if (h.kirim) { // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
     const tgl = tglWib(kini), n = (d.urut[tgl] || 0) + 1;
     d.urut[tgl] = n;
     h.sesi.nomor = `LA-${tgl.slice(8, 10)}${tgl.slice(5, 7)}${tgl.slice(2, 4)}-${String(n).padStart(2, "0")}`;
@@ -202,7 +242,7 @@ function lacak(t) { // halaman lacak tanpa login: tanpa nomor WA, nama depan saj
   const sudah = new Map(s.tiket.riwayat.map(r => [r.ke, r]));
   return [200, {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || "Kejadian",
     subjenis: s.isian.subjenis?.nilai || null, lokasi: w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : null, waktuKejadian: s.isian.waktu?.nilai || null,
-    waktuLapor: waktuLapor(s.terkirim, prov), pelapor: (p.nama || "").split(" ")[0], foto: (s.foto || []).length, fotoPertama: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}?t=${s.token}` : null,
+    waktuLapor: waktuLapor(s.terkirim, prov), pelapor: (p.nama || "").split(" ")[0], foto: (s.foto || []).length, terkirimMs: s.terkirim || null, bisaSusulan: bolehSusulan(s), versi: (s.versi || []).length, fotoPertama: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}?t=${s.token}` : null,
     tahap: s.tiket.status === "tidak_valid" ? [...URUTAN.filter(k => sudah.has(k)), "tidak_valid"].map(k => ({kunci: k, label: STATUS[k], selesai: true, waktu: waktuLapor(sudah.get(k)?.waktu, prov), catatan: sudah.get(k)?.catatan || null}))
       : URUTAN.filter(k => k !== "diteruskan" || sudah.has(k)).map(k => ({kunci: k, label: STATUS[k], selesai: sudah.has(k), waktu: sudah.has(k) ? waktuLapor(sudah.get(k).waktu, prov) : null, catatan: sudah.get(k)?.catatan || null})),
     balasan: (s.balasan || []).map(b => ({teks: b.teks, waktu: waktuLapor(b.waktu, prov)})),
@@ -369,7 +409,7 @@ function meja() {
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
-      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, dampak: dampakRingkas(s), tanggap: tanggap(s),
+      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tanggap: tanggap(s),
       gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null};
   })}];
 }
@@ -406,7 +446,7 @@ function mejaUbah(nomor, aksi, body) {
   } else if (aksi === "status") {
     if (!PINDAH[s.tiket.status]?.includes(body.ke)) return [409, {galat: "Perpindahan status tidak sah."}];
     if (["selesai", "tidak_valid"].includes(s.tiket.status) && !catatan) return [400, {galat: "Membuka kembali wajib dengan catatan."}];
-    s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: catatan || null, pelaku: "Admin BNPB", waktu: kini}); // append-only
+    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: catatan || null, pelaku: "Admin BNPB", waktu: kini}); // append-only
     s.tiket.status = body.ke;
     (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[body.ke]}.${catatan ? ` ${catatan}` : ""}`, waktu: kini, status: true});
   } else return [404, {galat: "aksi"}];
@@ -442,6 +482,7 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/sekitar") return kirim(await sekitar(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/alun") return kirim(alun(Object.fromEntries(url.searchParams)));
+    if (j === "/api/lapor/susulan" && req.method === "POST") return kirim(await susulan(await badan(req)));
     if (j === "/api/lapor/meja") return kirim(meja());
     const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat))?$/.exec(j);
     // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara

@@ -1880,3 +1880,9 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-terima{z-index:60}
 .lp-terima-lewati{margin-top:18px!important;font:600 .75rem var(--font);color:var(--on-head-2);opacity:.8}
 @media (prefers-reduced-motion:no-preference){.lp-terima .lp-pembuka-maskot{animation:lp-naik .7s var(--ease) both}.lp-terima .lp-pembuka-sapa{animation:lp-naik .6s .25s var(--ease) both}.lp-terima .lp-pembuka-judul{animation:lp-naik .6s .4s var(--ease) both}.lp-terima .lp-pembuka-bnpb{animation:lp-naik .6s .55s var(--ease) both}}
+/* Tambah kabar (laporan susulan) di kepala kartu Laporan saya */
+.lp-lap-tombol{display:flex;align-items:center;gap:8px;flex:none}
+.lp-lap-susul{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:0;border-radius:999px;background:var(--brand-accent);color:var(--on-pekat);font:700 .8125rem var(--font);cursor:pointer}
+.lp-lap-susul svg{width:15px;height:15px}
+.lp-lap-susul:hover{background:color-mix(in oklab,var(--brand-accent) 85%,var(--ink))}
+@media (max-width:700px){.lp-lap-kep{flex-wrap:wrap}}

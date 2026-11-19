@@ -586,7 +586,8 @@ function selesaiBalas(j) {
   $("mengetik").hidden = true;
   if (j.balasan) tambah("bot", j.minta === "setuju" ? "Halo, saya Sigap, asisten AI Lapor Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
-  if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now()}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
+  if (j.nomor && j.susulan) { const l = (cache.laporan || []).find(x => x.nomor === j.nomor); if (l) { l.versi = j.susulan; if (j.foto) l.foto = j.foto; } cache.fotoSesi = []; } // susulan: kartu tetap, versi naik
+  else if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now()}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
   if (j.unduhan && !j.nomor) { const d = el("div", "lp-langkah-isi"); } // daftar lacak dari "status" tampil di tab Laporan
   terapkan(j);
 }
@@ -682,7 +683,7 @@ const STATUS_PIL = s => { const p = el("span", `lp-pil lp-pil-ikon ${s.status}`)
 async function segarkanLaporan() {
   for (const l of cache.laporan || []) {
     const t = new URL(l.lacak, location.href).searchParams.get("t");
-    try { const j = await (await fetch(`/api/lapor/lacak?t=${t}`, {signal: AbortSignal.timeout(10000)})).json(); if (j.nomor) Object.assign(l, {status: j.status, statusLabel: j.statusLabel, jenis: j.jenis, balasan: j.balasan.length}); } catch {}
+    try { const j = await (await fetch(`/api/lapor/lacak?t=${t}`, {signal: AbortSignal.timeout(10000)})).json(); if (j.nomor) Object.assign(l, {waktu: j.terkirimMs || l.waktu, bisaSusul: j.bisaSusulan, versi: j.versi, status: j.status, statusLabel: j.statusLabel, jenis: j.jenis, balasan: j.balasan.length}); } catch {}
   }
   simpanCache();
 }
@@ -714,6 +715,13 @@ fetch("/bencana.json").then(r => r.json()).then(j => { for (const b of j.bencana
 const warnaJenis = id => id === "kebakaran_gedung" ? "var(--bad)" : warnaReg[REG_JENIS[id] || id] || "var(--brand2)";
 const ID_JENIS = {"Banjir": "banjir", "Tanah longsor": "longsor", "Gelombang pasang dan abrasi": "abrasi", "Cuaca ekstrem": "cuaca", "Kekeringan": "kekeringan", "Kebakaran hutan dan lahan": "karhutla", "Gempa bumi": "gempa", "Tsunami": "tsunami", "Erupsi gunung api": "erupsi", "Kebakaran gedung dan permukiman": "kebakaran_gedung"};
 const URUT_STATUS = ["diterima", "dilihat", "ditelaah", "ditindaklanjuti", "selesai"];
+async function mulaiSusulan(nomor) {
+  try {
+    const r = await fetch("/api/lapor/susulan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, nomor, saluran: "web"})}), j = await r.json();
+    if (!r.ok) { statusEl.textContent = j.galat || "Kabar tambahan belum bisa dimulai."; alert(j.galat || "Kabar tambahan belum bisa dimulai."); return; }
+    ke("chat"); await ulangChat();
+  } catch { alert("Jaringan bermasalah. Coba lagi."); }
+}
 function tampilDaftarLaporan() {
   const w = $("daftarLaporan"), daftar = cache.laporan || [];
   const aktif = cache.keadaan && !["terkirim", "batal"].includes(cache.keadaan.status) && cache.transkrip.length;
@@ -739,7 +747,12 @@ function tampilDaftarLaporan() {
     // baris meta: nomor tiket dan waktu kirim berikon (pemilik 19 Nov 2026 "bagusin")
     const meta = el("span", "lp-lap-meta"), m1 = el("span"), m2 = el("span"); m1.append(ikon("i-daftar"), l.nomor);
     m2.append(ikon("i-kalender"), l.waktu ? new Date(l.waktu).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(":", ".") : "Terkirim"); meta.append(m1, m2);
-    const kep = el("span", "lp-lap-kep"); kep.append(el("b", null, l.jenis || "Laporan"), aksi);
+    // laporan susulan (F-28): Tambah kabar 72 jam sejak terkirim, sebelum laporan selesai (Q26); server memeriksa ulang
+    const bisaSusul = l.bisaSusul ?? (l.waktu && Date.now() - l.waktu < 72 * 3600e3 && !["selesai", "tidak_valid"].includes(l.status));
+    const kep = el("span", "lp-lap-kep"), tombolKep = el("span", "lp-lap-tombol");
+    if (bisaSusul) { const tk = el("button", "lp-lap-susul"); tk.type = "button"; tk.append(ikon("i-tambah-teks"), "Tambah kabar");
+      tk.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); mulaiSusulan(l.nomor); }); tombolKep.append(tk); }
+    tombolKep.append(aksi); kep.append(el("b", null, l.jenis || "Laporan"), tombolKep);
     tx.append(kep, meta, lk); a.append(g, tx); isi.push(a);
   }
   if (!isi.length) {
