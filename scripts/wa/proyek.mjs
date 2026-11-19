@@ -649,10 +649,10 @@ async function buat(cmd, dari, sha, ctx) {
 
     // K18: penanganan saat FIRMS sudah memuat lintasan siang tetapi situs belum = pemakai memilih *tunggu* atau *hitung*.
     let lapBangun = lap
-    // terima kurang (pemilik, per laporan): WA Koordalops merinci lebih sedikit dari jumlah menonjol; draf memakai yang dirinci dan mencatatnya
+    // terima kurang (per laporan, nomor terdaftar mana pun): WA Koordalops merinci lebih sedikit dari jumlah menonjol; draf memakai yang dirinci dan mencatatnya
     if (cmd.terimaKurang && lap.id === 'harian') {
       lapBangun = { ...lap, args: (d, f, o) => [...lap.args(d, f, o), '--terima-kurang'] }
-      catatan.push('Atas perintah pemilik (terima kurang): WA Koordalops merinci lebih sedikit kejadian dari jumlah menonjol di kepalanya; draf hanya memuat yang dirinci.')
+      catatan.push('Atas perintah terima kurang: WA Koordalops merinci lebih sedikit kejadian dari jumlah menonjol di kepalanya; draf hanya memuat yang dirinci.')
     }
     if (lap.id === 'penanganan') {
       if (cmd.firespot === 'firms') {
@@ -1444,13 +1444,11 @@ const ULANGI_BASI_MS = 24 * 3600e3 // catatan gagal lebih tua dari ini diabaikan
 function barisKurang(ctx, dari, lap, pesan) {
   const m = String(pesan || '').match(/terurai (\d+) kejadian, laporan menyebut (\d+) menonjol/)
   if (!m || lap?.id !== 'harian' || Number(m[1]) >= Number(m[2])) return []
-  const pemilik = new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(normalWa(dari))
   return [`WA Koordalops menyebut ${m[2]} kejadian menonjol tetapi hanya merinci ${m[1]}.`,
-    pemilik ? `Ketik *terima kurang* untuk membuat laporan dengan ${m[1]} kejadian, atau kirim WA yang lengkap lalu *ulangi*.` : 'Kirim WA yang lengkap lalu *ulangi*, atau minta pemilik memutuskan.']
+    `Ketik *terima kurang* untuk membuat laporan dengan ${m[1]} kejadian, atau kirim WA yang lengkap lalu *ulangi*.`]
 }
-// `terima kurang` (khusus PEMILIK): ulangi pembangunan harian terakhir yang gagal dengan --terima-kurang.
+// `terima kurang` (semua nomor terdaftar, pemilik 19 Nov 2026: "terapkan umum dong"): ulangi pembangunan harian terakhir yang gagal dengan --terima-kurang.
 async function terimaKurang(dari, sha, ctx) {
-  if (!new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(dari)) { await ctx.balas(susun('Hanya pemilik', null, null, 'Laporan dengan kejadian kurang dari jumlah di kepala WA hanya dibuat atas perintah pemilik.')); return { status: 'terima kurang ditolak' } }
   const e = gagalTerakhir(ctx, sha)
   if (!e || e.langkah !== 'bangun' || !e.cmd || lapDari(e.cmd.jenis)?.id !== 'harian') { await ctx.balas(susun('Tidak ada yang bisa diterima', null, null, 'Perintah ini hanya untuk laporan harian yang gagal karena jumlah kejadian WA kurang dari kepalanya.')); return { status: 'terima kurang kosong' } }
   catatGagal(ctx, sha, null)

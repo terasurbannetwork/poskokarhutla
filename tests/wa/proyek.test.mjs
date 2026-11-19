@@ -1720,18 +1720,17 @@ test('kabar mulai: lanjut dan revisi membalas sekali "sedang dibuat" dengan esti
   assert.equal(Durasi.jamSelesai(new Date('2026-11-19T07:58:00Z'), 6), '15.04')
 })
 
-test('terima kurang: WA menyebut 20 tetapi merinci 15 = petunjuk ke pemilik; terima kurang membangun dengan --terima-kurang; bukan pemilik ditolak', async () => {
+test('terima kurang: WA menyebut 20 tetapi merinci 15 = petunjuk; terima kurang dari nomor terdaftar mana pun membangun dengan --terima-kurang', async () => {
   const d = dunia()
   const asli = d.ctx.dep.exec, argGen = []
   d.ctx.dep.exec = async (cmd, args) => {
     if (/_ringkas\.py$/.test(args[0])) { argGen.push(args); if (!args.includes('--terima-kurang')) throw Object.assign(new Error('x'), { stderr: 'ValueError: terurai 15 kejadian, laporan menyebut 20 menonjol' }) }
     return asli(cmd, args)
   }
-  await bangun(d, 'buat harian 26 okt', '6299')
+  await bangun(d, 'buat harian 26 okt')
   assert.match(d.balasan.at(-1), /WA Koordalops menyebut 20 kejadian menonjol tetapi hanya merinci 15\.\nKetik \*terima kurang\*/)
-  assert.equal((await tangani({ dari: DARI, teks: 'terima kurang' }, d.ctx)).status, 'terima kurang ditolak')
-  assert.equal((await tangani({ dari: '6299', teks: 'terima kurang' }, d.ctx)).status, 'terima kurang')
+  assert.equal((await tangani({ dari: DARI, teks: 'terima kurang' }, d.ctx)).status, 'terima kurang', 'bukan pemilik juga boleh')
   assert.ok(argGen.at(-1).includes('--terima-kurang'))
   assert.equal(d.versi.length, 1)
-  assert.ok(d.semua().some((t) => /Atas perintah pemilik \(terima kurang\)/.test(t)))
+  assert.ok(d.semua().some((t) => /Atas perintah terima kurang/.test(t)))
 })

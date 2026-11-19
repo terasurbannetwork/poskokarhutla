@@ -6,9 +6,12 @@
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.1.4'
+export const VERSI = '2.1.5'
 
 export const CHANGELOG = [
+  { versi: '2.1.5', tanggal: '2026-11-19', isi: [
+    'Perintah *terima kurang* bisa dipakai semua nomor terdaftar, tidak hanya pemilik.',
+  ] },
   { versi: '2.1.4', tanggal: '2026-11-19', isi: [
     'Laporan penanganan V2 tidak lagi selalu ditolak pagar angka (hotspot dan firespot berlabel sama dulu saling dianggap salinan).',
     'Deck yang sudah jadi tidak dibuang: hapus slide cara biasa, angka dari teks revisi, format hasil agen yang meleset, atau agen terhenti sesudah selesai.',
