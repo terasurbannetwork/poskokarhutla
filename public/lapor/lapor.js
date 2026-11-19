@@ -102,7 +102,9 @@ function tombolOpsi(label, ket, aksi, kelas = "") {
   b.addEventListener("click", aksi); return b;
 }
 
-const ikonKebutuhan = o => [[/makan/i, "k-makan"], [/air/i, "b-banjir"], [/selimut|pakaian/i, "k-baju"], [/obat|kesehatan/i, "i-plus"], [/tenda|terpal/i, "k-tenda"],
+const ikonKebutuhan = o => [  // kelompok rentan dan layanan terganggu berikon sendiri (pemilik 19 Nov 2026 "bagusin")
+  [/^tidak ada|^semua masih|^belum ada/i, "i-centang"], [/^tidak tahu/i, "i-bantuan"], [/hamil|menyusui|disabilitas|lansia/i, "i-orang"], [/listrik/i, "k-listrik"], [/sinyal|telepon/i, "i-telepon"],
+  [/makan/i, "k-makan"], [/air/i, "b-banjir"], [/selimut|pakaian/i, "k-baju"], [/obat|kesehatan/i, "i-plus"], [/tenda|terpal/i, "k-tenda"],
   [/bayi|lansia/i, "k-bayi"], [/sembako|pangan/i, "i-kebutuhan"], [/sandang/i, "k-baju"], [/matras|tikar|kasur/i, "k-kasur"], [/family kit/i, "k-sabun"], [/kidsware/i, "k-bayi"], [/tangki/i, "b-banjir"], [/mandi|kebersihan/i, "b-banjir"], [/tandon|penampungan/i, "b-banjir"], [/mesin|selang|pemadam/i, "b-api"], [/masker/i, "i-plus"], [/karung|bronjong/i, "b-longsor"], [/evakuasi|perahu/i, "k-perahu"], [/alat berat/i, "k-alat"], [/lainnya/i, "i-tambah-teks"], [/belum/i, "i-centang"]].find(([r]) => r.test(o))?.[1] || "i-kebutuhan";
 const ikonOpsi = o => [[/^ganti/i, "i-orang"], [/^benar|^ya\b|^setuju|kirim/i, "i-centang"], [/^bukan|^tidak setuju|batal/i, "i-tutup"], [/tidak tahu|ragu/i, "i-bantuan"],
   [/tanpa foto|lanjut/i, "i-panah"], [/ubah/i, "i-daftar"], [/lokasi|desa|gps/i, "i-lokasi"], [/foto/i, "i-kamera"],
@@ -125,7 +127,12 @@ const gambarAir = cm => { const y = 54 - Math.min(cm, 190) / 190 * 50;
 /* jumlah kolom yang membuat baris rata: 6 = 3+3, 8 = 4+4; sisa diletakkan di tengah lewat flex (pemilik 19 Nov 2026: "harus selalu simetris") */
 const kolomSimetris = n => n <= 4 ? n : n % 3 === 0 ? 3 : n % 4 === 0 ? 4 : n % 5 === 0 ? 5 : Math.ceil(n / Math.ceil(n / 4));
 function kartuPilihan(j) {
-  const isi = kartu(j.minta || "pilihan", j.minta ? null : ((j.inti || j.balasan)?.match(/\*([^*]+)\*/)?.[1]?.replace(/\.$/, "") || (j.banyak ? "Pilih yang sesuai" : "Pilih salah satu"))); // judul = judul pertanyaan, di baris mana pun
+  const isi = kartu(j.minta || "pilihan", j.minta ? null : ((j.inti || j.balasan)?.match(/\*([^*]+)\*/)?.[1]?.replace(/\.$/, "") || (j.banyak ? "Pilih yang sesuai" : "Pilih salah satu")));
+  // kalimat pertanyaan ikut tampil di kepala kartu, di bawah judul (pemilik 19 Nov 2026 "harusnya pertanyaan ini muncul di sini")
+  const tanyaT = !j.minta && (j.inti || j.balasan || "").replace(/^\*[^*]+\*\s*/, "").split("\n").map(x => x.trim()).filter(Boolean)[0];
+  if (tanyaT && tanyaT.length < 200) { const kp = isi.closest(".lp-langkah")?.querySelector(".lp-langkah-kepala"); kp?.classList.add("lp-kepala-tanya"); const jd = el("span", "lp-kepala-teks");
+    const nodes = [...(kp?.childNodes || [])].filter(n => n.nodeType === 3); const judulT = nodes.map(n => n.textContent).join(""); nodes.forEach(n => n.remove());
+    jd.append(el("b", null, judulT), el("small", null, tanyaT.replace(/\*/g, ""))); kp?.querySelector("svg")?.after(jd); } // judul = judul pertanyaan, di baris mana pun
   if (j.minta === "jenis" && j.kunci) { // kartu bergambar
     const g = el("div", "lp-jenis");
     j.kunci.forEach((id, i) => {

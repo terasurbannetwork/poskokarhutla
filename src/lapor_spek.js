@@ -158,9 +158,9 @@ export const ISIAN = [
   {nama: "rentan", label: "Kelompok rentan", kelompok: "rentan", tipe: "opsi_banyak", tanya: "Ada warga dari kelompok ini yang butuh bantuan khusus? Boleh pilih lebih dari satu.", opsi: [
     ["Bayi atau balita", ""], ["Ibu hamil atau menyusui", ""], ["Lansia", "Usia 60 tahun ke atas"], ["Penyandang disabilitas", "Termasuk yang sulit berjalan atau melihat"],
     ["Tidak ada", "", null, null, "Lainnya"], ["Tidak tahu", "", null, null, "Lainnya"]]},
-  /* layanan dasar yang terlihat warga (pemilik 19 Nov 2026, dari daftar Kendala logbook). Bukti untuk status Lifeline per kab/kota; status resmi tetap ditetapkan staf (KEPUTUSAN-LIFELINE). */
+  /* layanan dasar yang terlihat warga (pemilik 19 Nov 2026, dari daftar Kendala logbook); jalan tidak di sini karena sudah ditanya di akses_jalan. Bukti untuk status Lifeline per kab/kota; status resmi tetap ditetapkan staf (KEPUTUSAN-LIFELINE). */
   {nama: "layanan_terganggu", label: "Layanan terganggu", kelompok: "layanan", tipe: "opsi_banyak", tanya: "Layanan apa yang terganggu di lokasi? Boleh pilih lebih dari satu.", opsi: [
-    ["Jalan putus atau tertutup", "Kendaraan tidak bisa masuk"], ["Listrik padam", ""], ["Sinyal telepon putus", "Tidak bisa menelepon atau internet"], ["Air bersih terhenti", "PDAM atau sumur tidak mengalir"],
+    ["Listrik padam", ""], ["Sinyal telepon putus", "Tidak bisa menelepon atau internet"], ["Air bersih terhenti", "PDAM atau sumur tidak mengalir"],
     ["Semua masih berjalan", "", null, null, "Lainnya"], ["Tidak tahu", "", null, null, "Lainnya"]]},
   {nama: "kebutuhan", label: "Kebutuhan mendesak", kelompok: "kebutuhan", tipe: "opsi_banyak", tanya: "Apa yang paling dibutuhkan warga sekarang? Boleh pilih lebih dari satu.", opsi: [
     // Logistik: kategori Perka 18/2009 Standarisasi Logistik dan Perka 23/2014, nama barang mengikuti katalog LogPal (pangan, sandang, family kit, kidsware, logistik lain).

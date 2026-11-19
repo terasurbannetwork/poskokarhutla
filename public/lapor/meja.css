@@ -698,3 +698,15 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-bagian-isi>.mj-kartu{margin:0}
 @media (max-width:900px){.mj-bagian-isi{grid-template-columns:1fr}}
 .mj-kolom.kiri>.mj-bagian-pil{margin:6px 0 0}
+/* kepala provinsi yang bisa dilipat */
+.mj-tabel tr.mj-prov td{padding:0;background:color-mix(in oklab,var(--brand2) 7%,var(--card));border-top:1px solid var(--line)}
+.mj-tabel tr.mj-prov{cursor:default}
+.mj-tabel tr.mj-prov:hover{background:none}
+.mj-prov button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 14px;border:0;background:none;color:var(--brand);font:inherit;text-align:left;cursor:pointer}
+.mj-prov button svg{width:16px;height:16px;transition:transform var(--dur-2)}
+.mj-prov button[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.mj-prov b{font:800 .8125rem var(--mj-display)}
+.mj-prov span{font-size:.75rem;color:var(--ink2)}
+.mj-prov .mj-prov-korban{padding:1px 8px;border-radius:999px;background:color-mix(in oklab,var(--bad) 12%,var(--card));color:var(--bad-tx);font-weight:700}
+.mj-ringkas-isi .mj-rk-label{margin:8px 0 0;padding-top:6px;border-top:1px dashed var(--line);font-size:.65625rem;color:var(--ink2)}
+.mj-ringkas-isi .mj-rk-total+.mj-rk-label{border-top:0;padding-top:0}

@@ -1886,3 +1886,8 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-lap-susul svg{width:15px;height:15px}
 .lp-lap-susul:hover{background:color-mix(in oklab,var(--brand-accent) 85%,var(--ink))}
 @media (max-width:700px){.lp-lap-kep{flex-wrap:wrap}}
+/* kepala kartu pilihan: judul + kalimat pertanyaan */
+.lp-kepala-tanya{align-items:flex-start!important}
+.lp-kepala-teks{display:grid;gap:2px;flex:1;min-width:0}
+.lp-kepala-teks b{font:800 1rem var(--display);color:var(--brand)}
+.lp-kepala-teks small{font:500 .8125rem/1.4 var(--font);color:var(--ink2)}

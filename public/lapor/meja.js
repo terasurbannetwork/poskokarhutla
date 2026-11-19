@@ -37,6 +37,7 @@ const chipGugus = g => { const c = el("span", `mj-gugus${g.label === "gugus kuat
   c.title = `${g.kode}: ${F(g.n_laporan)} laporan dari ${F(g.n_pelapor)} pelapor berbeda, berdekatan waktu dan tempat. Bukan verifikasi.`; return c; };
 const adaKorban = b => (b.dampak?.meninggal || 0) + (b.dampak?.hilang || 0) + (b.dampak?.luka || 0) > 0;
 
+const provTutup = new Set();
 let semua = [], saringStatus = null, saringJenis = new Set(), saringKab = "", cepat = new Set(), urut = {k: "waktu", arah: -1}, pilih = null, peta = null, penanda = [], popup = null, petaMini = null;
 const fotoCache = new Map(), dlg = $("rinci");
 
@@ -224,10 +225,17 @@ function gambarRingkas(daftar) {
   const dib = daftar.map(b => b.tanggap?.dibuka).filter(v => v != null).sort((a, b) => a - b), med = dib.length ? dib[dib.length >> 1] : null, ngugus = new Set(daftar.map(b => b.gugus?.kode).filter(Boolean)).size;
   const tanpa = n(b => b.lat == null), kepala = el("div", "mj-rk-total"); kepala.append(el("b", null, F(daftar.length)), el("span", null, "laporan tersaring"));
   const L = daftar.length;
+  // dikelompokkan seperti tabel: manusia, bangunan, penanganan (pemilik 19 Nov 2026 "bagusin", "dipisahkan manusia dan bangunan")
+  const sub = t => el("p", "mj-rk-label", t);
   det.querySelector(".mj-ringkas-isi").replaceChildren(kepala,
-    barisPanel("m-korban", "var(--bad)", "Ada korban jiwa atau luka", n(adaKorban), {maks: L}),
-    barisPanel("m-tenda", "var(--warn)", "Ada warga mengungsi", n(b => b.dampak?.mengungsi > 0), {maks: L}),
-    barisPanel("m-rumah", "var(--brand2)", "Ada rumah rusak", n(b => b.dampak?.rumah > 0), {maks: L}),
+    sub("Laporan dengan dampak ke warga"),
+    barisPanel("m-korban", "var(--bad)", "Korban jiwa atau luka", n(adaKorban), {maks: L}),
+    barisPanel("m-tenda", "var(--warn)", "Warga mengungsi", n(b => b.dampak?.mengungsi > 0), {maks: L}),
+    sub("Laporan dengan kerusakan"),
+    barisPanel("m-rumah", "var(--brand2)", "Rumah rusak", n(b => b.dampak?.rumah > 0), {maks: L}),
+    barisPanel("m-fasilitas", "var(--brand2)", "Fasilitas rusak", n(b => b.dampak?.fasilitas > 0), {maks: L}),
+    barisPanel("m-jalan", "var(--brand2)", "Jalan atau jembatan rusak", n(b => b.dampak?.jalan > 0), {maks: L}),
+    sub("Penanganan"),
     barisPanel("m-foto", "var(--ok)", "Berfoto", n(b => b.foto > 0), {maks: L}),
     barisPanel("m-gugus", "var(--brand2)", "Gugus laporan", ngugus),
     barisPanel("m-log", "var(--ink2)", "Median dibuka", med == null ? "–" : durasi(med)),
@@ -248,22 +256,25 @@ function tombolAksi(ik, label, aksi) { const b = el(aksi.href ? "a" : "button", 
 const DAMPAK_SEL = [["meninggal", "Meninggal", "m-meninggal", "orang"], ["hilang", "Hilang", "m-hilang", "orang"], ["luka", "Luka-luka", "m-luka", "orang"],
   ["mengungsi", "Mengungsi", "m-tenda", "orang"], ["rumah", "Rumah rusak", "m-rumah", "rumah"], ["fasilitas", "Sekolah, faskes, atau tempat ibadah rusak", "m-fasilitas", "unit"],
   ["jalan", "Jalan atau jembatan rusak", "m-jalan", "titik"]];
-function korbanSel(b) {
-  const d = b.dampak || {}, w = el("div", "mj-korban");
-  if (DAMPAK_SEL.every(([k]) => d[k] == null)) { w.append(el("small", null, "belum didata")); return w; }
-  for (const [k, t, ik, sat] of DAMPAK_SEL) {
+/* dipisah manusia dan bangunan (pemilik 19 Nov 2026 "dipisahkan aja yang manusia dan bangunan") */
+const MANUSIA = ["meninggal", "hilang", "luka", "mengungsi"], BANGUNAN = ["rumah", "fasilitas", "jalan"];
+function korbanSel(b, kunci = MANUSIA) {
+  const d = b.dampak || {}, w = el("div", "mj-korban"), daftar = DAMPAK_SEL.filter(([k]) => kunci.includes(k));
+  if (daftar.every(([k]) => d[k] == null)) { w.append(el("small", null, "belum didata")); return w; }
+  for (const [k, t, ik, sat] of daftar) {
     const s = el("span", d[k] > 0 ? `isi ${k}` : ""), v = d[k] == null ? "–" : F(d[k]); s.title = `${t}: ${d[k] == null ? "belum didata" : `${v} ${sat}`}`; s.setAttribute("aria-label", s.title);
     s.append(ikon(ik), el("b", null, v)); w.append(s); }
   return w;
 }
 /* urut tabel: kepala kolom = tombol; ketuk lagi membalik arah */
 const KOLOM = [["waktu", "Waktu lapor", b => b.terkirim], ["tiket", "Tiket", b => b.nomor], ["jenis", "Jenis", b => b.jenis || ""], ["lokasi", "Lokasi", b => b.wilayah?.kab || ""],
-  ["korban", "Dampak", b => (b.dampak?.meninggal || 0) * 1e9 + (b.dampak?.hilang || 0) * 1e6 + (b.dampak?.luka || 0) * 1e3 + (b.dampak?.mengungsi || 0)],
+  ["korban", "Korban", b => (b.dampak?.meninggal || 0) * 1e9 + (b.dampak?.hilang || 0) * 1e6 + (b.dampak?.luka || 0) * 1e3 + (b.dampak?.mengungsi || 0)],
+  ["rusak", "Kerusakan", b => (b.dampak?.rumah || 0) + (b.dampak?.fasilitas || 0) + (b.dampak?.jalan || 0)],
   ["lengkap", "Lengkap", b => b.lengkap], ["foto", "Foto", b => b.foto], ["status", "Status", b => b.status === "tidak_valid" ? -1 : TAHAP.indexOf(b.status)], ["aksi", "Aksi", null]];
 function gambarKepala() {
   $("kepalaTabel").replaceChildren(...KOLOM.map(([k, t, f]) => {
     const th = el("th"); if (!f) { th.textContent = t; return th; }
-    if (k === "korban") th.title = "Meninggal, hilang, luka-luka, mengungsi, rumah rusak";
+    if (k === "korban") th.title = "Meninggal, hilang, luka-luka, mengungsi"; if (k === "rusak") th.title = "Rumah, fasilitas (sekolah, faskes, tempat ibadah), jalan atau jembatan";
     th.setAttribute("aria-sort", urut.k === k ? (urut.arah > 0 ? "ascending" : "descending") : "none");
     const b = el("button", "mj-urut"); b.type = "button"; b.append(el("span", null, t), ikon("m-urut"));
     b.addEventListener("click", () => { urut = urut.k === k ? {k, arah: -urut.arah} : {k, arah: k === "waktu" || k === "korban" || k === "lengkap" || k === "foto" ? -1 : 1}; gambarKepala(); nanti(() => gambarTabel(tersaringSekarang())); });
@@ -275,7 +286,13 @@ function gambarTabel(daftar) {
   const f = KOLOM.find(x => x[0] === urut.k)[2];
   daftar = [...daftar].sort((a, b) => { const x = f(a), y = f(b); return (typeof x === "string" ? x.localeCompare(y, "id") : x - y) * urut.arah || b.terkirim - a.terkirim; });
   $("nTabel").textContent = `${F(daftar.length)} dari ${F(semua.length)}`;
-  $("tbody").replaceChildren(...(daftar.length ? daftar.map(b => {
+  // dikelompokkan per provinsi, kepala bisa dilipat (pemilik 19 Nov 2026 "ada collapsible provinsinya"); urutan provinsi = urutan baris pertamanya
+  const per = new Map(); for (const b of daftar) { const p = b.wilayah?.prov || "Tanpa provinsi"; per.set(p, [...(per.get(p) || []), b]); }
+  const kepalaProv = (p, xs) => { const tr = el("tr", "mj-prov"), td = el("td"), bt = el("button"); td.colSpan = KOLOM.length; bt.type = "button";
+    const tutup = provTutup.has(p); bt.setAttribute("aria-expanded", String(!tutup)); bt.append(ikon("m-bawah"), el("b", null, p), el("span", null, `${F(xs.length)} laporan`),
+      ...(xs.some(adaKorban) ? [el("span", "mj-prov-korban", `${F(xs.filter(adaKorban).length)} dengan korban`)] : []));
+    bt.addEventListener("click", () => { provTutup.has(p) ? provTutup.delete(p) : provTutup.add(p); gambarTabel(tersaringSekarang()); }); td.append(bt); tr.append(td); return tr; };
+  const baris = b => {
     const tr = el("tr"); if (b.nomor === pilih) tr.classList.add("pilih");
     const sel = (k, ...isi) => { const td = el("td", k); td.append(...isi); return td; };
     const bar = el("span", "mj-bar"), bi = el("i"); bi.style.width = `${b.lengkap}%`; bar.append(bi);
@@ -289,10 +306,11 @@ function gambarTabel(daftar) {
     if (b.wa) aksi.append(tombolAksi("m-wa", `Chat WhatsApp ${b.nama || ""}`, {href: `https://wa.me/${b.wa}`, target: "_blank", rel: "noopener"}));
     if (b.lat != null) aksi.append(tombolAksi("m-lokasi", "Lihat di peta", () => { peta?.flyTo({center: [b.lon, b.lat], zoom: 13}); pindahTampil("peta"); requestAnimationFrame(() => bukaPopup(b)); }));
     tr.append(sel("", el("b", null, tglRingkas(b.waktuLapor))), sel("", el("span", "mj-nomor", b.nomor)),
-      sel("", jn), sel("", lok), sel("angka", korbanSel(b)), sel("angka", cincin(b.lengkap)), sel("angka", ft), sel("angka", pil(b.status), ...(b.tanggap?.dibuka != null ? [el("small", "mj-tanggap", `dibuka ${durasi(b.tanggap.dibuka)}`)] : b.status === "baru" ? [el("small", "mj-tanggap belum", `belum dibuka, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))}`)] : [])), sel("angka", aksi));
+      sel("", jn), sel("", lok), sel("angka", korbanSel(b)), sel("angka", korbanSel(b, BANGUNAN)), sel("angka", cincin(b.lengkap)), sel("angka", ft), sel("angka", pil(b.status), ...(b.tanggap?.dibuka != null ? [el("small", "mj-tanggap", `dibuka ${durasi(b.tanggap.dibuka)}`)] : b.status === "baru" ? [el("small", "mj-tanggap belum", `belum dibuka, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))}`)] : [])), sel("angka", aksi));
     tr.addEventListener("click", () => bukaRinci(b.nomor));
     return tr;
-  }) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
+  };
+  $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : xs.map(baris))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
 }
 const fotoLaporan = nomor => { if (!fotoCache.has(nomor)) fotoCache.set(nomor, fetch(`/api/lapor/meja/${nomor}`).then(r => r.json()).then(j => j.foto || []).catch(() => [])); return fotoCache.get(nomor); };
 
@@ -310,7 +328,7 @@ function drafLogbook(j, tombol) {
   const d = {jenis: JENIS_LOGBOOK[n.jenis] || "", prov: s(w.provKode), kab: s(w.kabKode).replace(".", ""), kec: s(w.kec), desa: s(w.desa), lanjut: null, mulai, lat: s(j.lat), lon: s(j.lon),
     dampak: {md: s(n.meninggal), hilang: s(n.hilang), luka: s(n.luka), mengungsi_jiwa: s(n.mengungsi_jiwa), mengungsi_kk: s(n.mengungsi_kk), rumah_rb: s(n.rumah_berat), rumah_rs: s(n.rumah_sedang),
       rumah_rr: s(n.rumah_ringan), rumah_terendam: s(n.rumah_terendam), luas_ha: ""},
-    kendala: pilihan(n.layanan_terganggu, KENDALA_LOGBOOK), kebutuhan: pilihan(n.kebutuhan, KEBUTUHAN_LOGBOOK), sumber_instansi: "",
+    kendala: [...new Set([...pilihan(n.layanan_terganggu, KENDALA_LOGBOOK), ...(/putus|hanya motor/i.test(n.akses_jalan || "") ? ["akses"] : [])])], kebutuhan: pilihan(n.kebutuhan, KEBUTUHAN_LOGBOOK), sumber_instansi: "",
     catatan: `Dari laporan warga ${j.nomor} (Lapor Bencana), belum terverifikasi. ${String(n.kronologi || "").slice(0, 400)}`.trim()};
   let lama = null; try { lama = localStorage.getItem("logbook_draf_v1"); } catch {}
   if (lama && tombol.dataset.yakin !== "1") { tombol.dataset.yakin = "1"; tombol.lastChild.textContent = "Ganti draf lama? Ketuk lagi"; return; }   // jangan diam-diam menimpa draf petugas
