@@ -122,7 +122,7 @@ def koordalops(teks, pagi=True, terima_kurang=False):
             if not judul:
                 continue
             ambil = lambda kunci: (lambda m: m.group(1).strip() if m else '')(re.search(rf'(?:^|[-*•])[ \t]*{kunci}\s*:\s*(.*)', e, re.I | re.M))   # 12 Nov: butir "* Dampak:", sebelumnya "- Dampak:"
-            dampak, sd, kondisi = ambil('Dampak'), ambil('Penetapan status'), ambil('Kondisi mutakhir')
+            dampak, sd, kondisi = ambil('Dampak'), ambil('Penetapan status'), ambil('Kondisi (?:mutakhir|terkini)')
             # 12 Nov: pengungsi dan kerusakan pindah ke butir sendiri; angka dihitung dari ketiganya
             semua = ' '.join(x for x in (dampak, ambil('Pengungsi'), ambil('Kerusakan')) if x)
             jenis, lok = _jenis_lokasi(judul)
