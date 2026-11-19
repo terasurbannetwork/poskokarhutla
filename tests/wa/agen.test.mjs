@@ -253,3 +253,15 @@ test('regresi: TMPDIR agen di kerja/tmp ruang ini (pratinjau tempfile di sandbox
   const e = A.lingkungan({ PATH: '/usr/bin', TMPDIR: '/private/var/folders/x' }, { tmp: tmpAgen })
   assert.equal(e.TMPDIR, tmpAgen); assert.ok(fs.existsSync(tmpAgen))
 })
+
+test('catatan berkelompok di hasil.json (pemilik 19 Nov: catatan kepanjangan, grouping)', () => {
+  const { ruang } = dunia()
+  fs.writeFileSync(path.join(ruang, 'keluaran', 'a.pptx'), PPTX_MINI)
+  fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), JSON.stringify({ pptx: 'a.pptx', ringkasan: 'ok', catatan: {
+    keputusan: ['Kekeringan Blitar tidak disebut WA hari ini; dimasukkan?'], dicek: [], tidak_dimuat: ['Banjir Subulussalam: sudah surut'],
+    teknis: ['Slide 2 generator menulis 0 gunung api'], lain: 'PM2,5 Pekanbaru galat sensor' } }))
+  const h = A.bacaHasil(ruang)
+  assert.deepEqual(h.kelompok.keputusan, ['Kekeringan Blitar tidak disebut WA hari ini; dimasukkan?'])
+  assert.deepEqual(h.kelompok.lain, ['PM2,5 Pekanbaru galat sensor'])
+  assert.equal(h.catatan.length, 4)
+})

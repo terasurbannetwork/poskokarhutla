@@ -17,7 +17,7 @@ Bot menjawab dari isi draf. Draf tidak berubah.
 Ketik:
 ```revisi```
 Lalu kirim revisinya, boleh banyak pesan, boleh juga pesan yang diteruskan. Kalau sudah semua, ketik:
-```lanjut```
+```selesai```
 Semua revisi dikerjakan sekaligus jadi satu versi baru. Mau batal revisi? Ketik *batal*. Drafnya tetap tersimpan.
 _Revisi satu kalimat tetap bisa langsung dikirim seperti biasa, tanpa ketik revisi dulu._
 
