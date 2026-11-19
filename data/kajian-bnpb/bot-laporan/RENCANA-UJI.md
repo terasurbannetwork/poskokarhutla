@@ -43,6 +43,17 @@ Semua dunia luar (Claude API, gateway, Drive, Worker, generator) disuntik lewat 
 | T43 | *batal* saat kumpulan terbuka hanya menutup kumpulan; kumpulan lewat 2 jam dibuang | idem |
 | T44 | Tanpa `ANTHROPIC_API_KEY` atau dengan Claude gagal, semua uji V1 dan V2 tetap hijau | `node --test tests/wa/*.test.mjs` |
 
+## V2.2: kriteria terima
+
+| ID | Kriteria | Perintah bukti |
+| --- | --- | --- |
+| T45 | Tinjau visual: render ke `kerja/tinjau`, sesi dilanjutkan, hasil tinjau dipakai bila lolos pagar | `node --test tests/wa/proyek.test.mjs` |
+| T46 | Tinjau gagal, bertanya, atau ditolak pagar = deck sebelum tinjau dipakai, draf tetap jadi | idem |
+| T47 | Gambar di kumpul revisi masuk kumpulan, `selesai` = revisi V2 dengan berkas gambar di `revisi/`; gambar tidak jadi bahan | idem |
+| T48 | Bahan gambar asli ada di `bahan/` ruang kerja; pagar membaca hanya `.txt` | idem |
+| T49 | Gambar berketerangan tanya dari pemegang draf dijawab dengan gambar ikut ke `jawabDraf` | idem |
+| T50 | `BL_TINJAU_VISUAL=0` = perilaku v2.1.7 | idem |
+
 ## Uji balik kemiripan (K5, BL-17)
 
 1. Pilih 20 hari sejak 1 Nov 2026 yang punya deck manual final (`Revisi N` tertinggi) dan bahan WA di D1.

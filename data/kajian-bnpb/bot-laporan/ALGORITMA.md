@@ -145,3 +145,19 @@ Sebelum jalan: kunci agen global (D26); cek biaya harian dan per proyek (D20). S
 - `kumpul.json`: `{wa_sha: {id, mulai, waktu, pesan: [teks]}}`; berlaku 2 jam sejak pesan terakhir.
 - Gabungan: "Revisi dari beberapa pesan, kerjakan semuanya:" lalu "1. ...", "2. ..."; paling banyak 30 pesan dan 8000 huruf.
 - Draf berubah versi sebelum *lanjut*: kumpulan tetap dipakai untuk versi terbaru.
+
+## A19. Tinjau visual (D36)
+
+- Urutan: pagar lolos, salin deck agen ke `kerja/tinjau/deck.pptx`, `pdf.py`, `ubah.py pratinjau <pdf> 1,...,N kerja/tinjau` (N paling banyak 16), cadangkan `keluaran/`, lanjutkan sesi agen dengan prompt tinjau.
+- Hasil dipakai bila `hasil.json` sah, punya pptx, tanpa pertanyaan, dan lolos pagar; selain itu `keluaran/` dipulihkan dari cadangan dan catatan teknis ditulis.
+- Biaya tinjau masuk biaya proyek; anggaran per jalan dan per proyek tetap berlaku.
+
+## A20. Gambar di kumpul revisi (D37, D40)
+
+- Butir kumpulan: teks biasa atau `{teks, gambar: {wa_id, nama}}`. Gabungan: `N. [gambar K] keterangan`.
+- Revisi V2: tiap gambar diunduh dari `/api/wa/berkas` ke `revisi/gambar-K.<ext>`; prompt revisi menyebut jalurnya. Paling banyak 6 gambar per revisi.
+
+## A21. Bahan gambar (D38)
+
+- `ekstrak` dengan `simpanGambar` menyimpan berkas asli gambar bahan terpilih ke acuan proyek `bahan/` dengan nama `NN-<nama>.<ext>`; teks OCR tetap `NN-<nama>.txt`.
+- `teksBahanRuang` hanya membaca berkas `.txt` sebagai sumber angka pagar.

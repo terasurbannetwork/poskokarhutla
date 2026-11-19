@@ -48,3 +48,12 @@ Urutan kerja. Ambil satu tiket, kerjakan hanya cakupannya. Tiket yang ditahan Q 
 | BV-12 | Kumpul revisi (`revisi`, `lanjut`, `batal`), `klasifikasi`, `arah.cjs` | wa-bot | T42, T43 | BV-10 |
 | BV-13 | Maksud kalimat bebas dan tanya draf | wa-bot | T39-T41, T44 | BV-11 |
 | BV-14 | Versi 2.1, changelog, panduan dan tutorial WA | wa-bot | `tests/wa/versi.test.mjs` | BV-11 sampai BV-13 |
+
+## V2.2
+
+| Tiket | Isi | Pengerja | Bukti siap | Bergantung |
+| --- | --- | --- | --- | --- |
+| BV-15 | Paket dokumen V2.2 (K36, D36-D40, Q25-Q26, A19-A21, T45-T50) | orkestrator | ditinjau pemeriksa bersih | - |
+| BV-16 | Tinjau visual agen | wa-bot | T45, T46, T50 | BV-15 |
+| BV-17 | Screenshot revisi, tanya bergambar, bukan-bahan | wa-bot | T47, T49 | BV-15 |
+| BV-18 | Bahan gambar asli ke agen | wa-bot | T48 | BV-15 |

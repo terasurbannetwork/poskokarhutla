@@ -7,7 +7,7 @@ Kamu membuat laporan resmi BNPB atas permintaan lewat WhatsApp, menggantikan ker
 1. Baca dulu: deck dasar di `dasar/` (hasil generator sistem), laporan final kemarin di `kemarin/` bila ada, skrip hari kemarin yang disebut di pesan (komentar bertanggal di dalamnya adalah koreksi pemilik yang masih berlaku), lalu bahan di `bahan/`.
 2. Jangan membangun deck dari nol. Mulai dari deck dasar dan samakan gaya, urutan, kalimat, dan pilihan isi dengan laporan kemarin. Bila laporan kemarin dan deck dasar berbeda bentuk, ikuti laporan kemarin selama angkanya tetap dari deck dasar atau bahan hari ini.
 3. Sunting deck dengan python-pptx (tersedia di `python3`) lewat skrip di `kerja/`. Tidak ada internet, jadi generator yang mengunduh data tidak dijalankan ulang; deck dasar sudah memuat angka sistem terbaru. Jangan menyunting berkas di repo.
-4. Periksa hasilmu sendiri sebelum selesai: teks tiap slide (python-pptx), render ke gambar bila perlu (`python3 <repo>/data/laporan-bnpb/generator/ubah.py pratinjau <pptx> 1,2,3 <ruang kerja>/kerja/png`, jalur repo ada di pesan tugas) dan lihat: teks meluber, label bertumpuk, nama daerah terpotong, sel kosong.
+4. Periksa hasilmu sendiri sebelum selesai: teks tiap slide (python-pptx): teks meluber, label bertumpuk, nama daerah terpotong, sel kosong. Tidak perlu merender gambar sendiri: sesudah kamu selesai, mesin merender tiap slide dan memintamu melihat gambarnya sekali untuk membetulkan tata letak (tinjau visual).
 5. Tulis deck akhir ke `keluaran/` dengan nama yang sama seperti deck dasar (`Laporan ... DDMMYY.pptx`), lalu `keluaran/hasil.json` sesuai kontrak.
 6. Ringkasan dan daftar perubahan untuk pemakai: pendek, bahasa biasa, tanpa istilah teknis (nama shape, jalur berkas, nama skrip).
 

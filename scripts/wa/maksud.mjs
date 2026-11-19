@@ -101,12 +101,13 @@ export function bacaKumpul(dasar, sha, kini = new Date()) {
   return k
 }
 // -> {n, penuh}; pesan ke-31 dan seterusnya tidak disimpan
+// teks: string, atau {teks, gambar: {wa_id, nama}} untuk screenshot revisi (V2.2, D37)
 export function tambahKumpul(dasar, sha, teks, kini = new Date()) {
   const isi = baca(kumpulP(dasar)), k = isi[sha]
   if (!k) return null
-  const t = String(teks || '').trim()
+  const butir = teks && typeof teks === 'object' ? { teks: String(teks.teks || '').trim(), gambar: teks.gambar } : String(teks || '').trim()
   const penuh = k.pesan.length >= KUMPUL_MAKS_PESAN
-  if (t && !penuh) k.pesan.push(t)
+  if ((typeof butir === 'string' ? butir : butir.gambar) && !penuh) k.pesan.push(butir)
   k.waktu = kini.getTime()
   tulis(kumpulP(dasar), isi)
   return { n: k.pesan.length, penuh }
@@ -126,8 +127,12 @@ export function tutupKumpulProyek(dasar, id) {
   return sha.length
 }
 // -> teks satu permintaan revisi: satu pesan apa adanya; beberapa pesan bernomor; dipotong 8000 huruf
+// Gambar ke-K dalam kumpulan (urut kiriman), paling banyak MAKS_GAMBAR_REVISI
+export const MAKS_GAMBAR_REVISI = 6
+export const gambarKumpul = (pesan) => (pesan || []).filter((x) => x && typeof x === 'object' && x.gambar).map((x) => x.gambar).slice(0, MAKS_GAMBAR_REVISI)
 export function gabungKumpul(pesan) {
-  const p = (pesan || []).map((t) => String(t).trim()).filter(Boolean)
+  let g = 0
+  const p = (pesan || []).map((t) => (t && typeof t === 'object' ? (t.gambar && ++g <= MAKS_GAMBAR_REVISI ? `[gambar ${g}] ${t.teks || ''}`.trim() : String(t.teks || '').trim()) : String(t).trim())).filter(Boolean)
   if (!p.length) return ''
   const isi = p.length === 1 ? p[0] : ['Revisi dari beberapa pesan, kerjakan semuanya:', ...p.map((t, i) => `${i + 1}. ${t}`)].join('\n')
   return isi.length > KUMPUL_MAKS_HURUF ? isi.slice(0, KUMPUL_MAKS_HURUF) : isi

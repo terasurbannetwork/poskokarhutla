@@ -1,14 +1,20 @@
 // Nama, versi, dan changelog Bot Laporan BNPB (pemilik 19 Nov 2026: "Nama Bot: Bot Laporan BNPB, tampilin versi berapa, bisa liat changelog
 // versi"; "buat versioning, kamu yang urus setelahnya ya"). Penomoran pemilik: v0 = bot terjadwal awal, v1 = bot proyek (18 Nov),
-// v2 = agen Claude Code (19 Nov), v2.1 = kecerdasan percakapan.
+// v2 = agen Claude Code (19 Nov), v2.1 = kecerdasan percakapan, v2.2 = vision.
 // ATURAN (gerbang tests/wa/versi.test.mjs): tiap perubahan perilaku bot di scripts/wa menaikkan VERSI dan menambah entri CHANGELOG paling
 // atas dengan versi yang sama. Patch (x.y.Z) = perbaikan; minor (x.Y) = kemampuan baru; mayor (X) = cara kerja baru.
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.1.8'
+export const VERSI = '2.2'
 
 export const CHANGELOG = [
+  { versi: '2.2', tanggal: '2026-11-19', isi: [
+    'Bot bisa melihat gambar: sesudah menyusun draf, bot melihat tiap slide dan membetulkan sendiri teks yang meluber, label bertumpuk, atau panel kosong.',
+    'Revisi pakai screenshot: balas *1*, kirim screenshot (boleh dicoret, boleh berketerangan) dan teks, lalu *selesai*.',
+    'Tanya pakai screenshot: kirim gambar dengan keterangan pertanyaan, bot menjawab sambil melihat gambarnya.',
+    'Bahan berupa gambar (infografis, tabel, foto) dibaca langsung dari gambarnya, bukan hanya dari teks hasil pindaian.',
+  ] },
   { versi: '2.1.8', tanggal: '2026-11-19', isi: [
     'Bot bisa memakai router API (misalnya 9router) di depan beberapa akun Anthropic; diatur pemilik di mesin bot.',
   ] },

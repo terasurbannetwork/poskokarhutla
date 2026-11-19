@@ -47,3 +47,9 @@
 | Biaya lepas kendali | Cek sebelum jalan (harian dan per proyek), `maxBudgetUsd`, `maxTurns` 80, batas waktu 15 menit, jalan terputus dicatat penuh, satu agen pada satu waktu |
 | Transkrip sesi memuat bahan | Dihapus saat proyek final, batal, atau kedaluwarsa; sesi lebih dari 7 hari dibersihkan |
 | Nama orang di pedoman | Pedoman di repo publik tanpa nama orang, nomor, atau data kejadian rinci (D22), dijaga uji |
+
+## V2.2: gambar (K36)
+
+- Gambar (bahan, screenshot revisi, pertanyaan bergambar) dikirim ke Claude apa adanya. Penyamaran nomor HP, NIK, dan surel hanya berlaku untuk teks; data pribadi yang tampak di gambar ikut terbaca. Pemakai diminta tidak mengirim gambar berisi data pribadi yang tidak perlu.
+- Gambar hanya disimpan di ruang kerja agen proyek itu dan acuan mesin; dihapus bersama sesi saat final, batal, atau kedaluwarsa.
+- Gambar revisi dan pertanyaan dicatat di `bukan-bahan.json` (hanya id pesan) supaya tidak ikut jadi bahan laporan.

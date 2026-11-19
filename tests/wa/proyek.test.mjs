@@ -1381,7 +1381,7 @@ const isiDari = (inv) => {
 // agen palsu: ubah(inv, prompt) -> inv baru, atau {tanya: [...]}. Mencatat prompt dan opsi tiap jalan.
 function duniaV2({ ubah = (inv) => inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: 'Rencana Aksi pemantauan banjir' } : x)), ...o } = {}) {
   const d = dunia(o)
-  d.ctx.env = { ...d.ctx.env, BL_VERSI: '2', BL_V2_NOMOR: DARI, ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100' }
+  d.ctx.env = { ...d.ctx.env, BL_VERSI: '2', BL_V2_NOMOR: DARI, ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100', BL_TINJAU_VISUAL: o.tinjau ? '1' : '0' }
   d.agen = []
   d.biaya = 0
   const fetchAsli = d.ctx.dep.fetch
@@ -1719,7 +1719,7 @@ test('kabar mulai: lanjut dan revisi membalas sekali "sedang dibuat" dengan esti
   // estimasi belajar: 3 catatan atau lebih = rentang dari catatan
   for (const detik of [130, 200, 290]) Durasi.catatDurasi(d.dasar, 'v1:bangun:penanganan', detik)
   assert.deepEqual(Durasi.perkiraan(d.dasar, 'v1:bangun:penanganan'), [2, 5])
-  assert.deepEqual(Durasi.perkiraan(d.dasar, 'v2:revisi:penanganan'), [2, 5], 'bawaan per versi dan mode')
+  assert.deepEqual(Durasi.perkiraan(d.dasar, 'v2:revisi:penanganan'), [3, 6], 'bawaan per versi dan mode (v2.2 termasuk tinjau visual)')
   assert.equal(Durasi.jamSelesai(new Date('2026-11-19T07:58:00Z'), 6), '15.04')
 })
 
@@ -1761,4 +1761,94 @@ test('selesai dan kata penutup pendek menjalankan kumpul revisi; selesai tanpa k
   await perintah(d, 'revisi'); await perintah(d, 'slide 3 hapus')
   assert.equal((await perintah(d, 'selesai')).status, 'revisi')
   await new Promise((r) => setTimeout(r, 20))
+})
+
+// ---------- V2.2 vision (K36; RENCANA-UJI T45, T46) ----------
+test('T45 tinjau visual: mesin merender slide, sesi agen dilanjutkan dengan gambarnya, perbaikan tata letak dipakai dan dicatat', async () => {
+  const d = duniaV2({ tinjau: true, ubah: (inv) => inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: 'Rencana Aksi pemantauan banjir' } : x)) })
+  const asli = d.ctx.dep.agenQuery
+  d.ctx.dep.agenQuery = (a) => {
+    if (!/Tinjau visual/.test(a.prompt)) return asli(a)
+    // agen tinjau menulis perubahan visual sendiri
+    return (async function* () {
+      for await (const m of asli(a)) {
+        if (m.type === 'result') {
+          const ruang = a.prompt.match(/Ruang kerja versi ini: (.+)/)[1].trim()
+          const h = JSON.parse(fs.readFileSync(path.join(ruang, 'keluaran', 'hasil.json'), 'utf8'))
+          fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), JSON.stringify({ ...h, perubahan: ['Slide 3: ukuran huruf rencana aksi dikecilkan supaya tidak meluber'] }))
+        }
+        yield m
+      }
+    })()
+  }
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.agen.length, 2, 'satu jalan bangun, satu jalan tinjau')
+  assert.match(d.agen[1].prompt, /Tinjau visual deck/); assert.match(d.agen[1].prompt, /kerja.tinjau.pratinjau-1.png/)
+  assert.equal(d.agen[1].options.resume, d.agen.length && 'sesi-00000001', 'sesi yang sama dilanjutkan')
+  assert.match(d.versi[0].pptxIsi, /Rencana Aksi pemantauan banjir/)
+  assert.match(d.kirim[0].caption, /\*Tata letak dibetulkan setelah dilihat:\*\n- Slide 3: ukuran huruf rencana aksi dikecilkan/)
+})
+
+test('T46 tinjau visual yang mengubah isi teks ditolak: deck sebelum tinjau dipakai', async () => {
+  const d = duniaV2({ tinjau: true, ubah: (inv, prompt) => inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: /Tinjau visual/.test(prompt) ? 'Rencana diganti saat tinjau' : 'Rencana Aksi pemantauan banjir' } : x)) })
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.agen.length, 2)
+  assert.match(d.versi[0].pptxIsi, /Rencana Aksi pemantauan banjir/); assert.doesNotMatch(d.versi[0].pptxIsi, /diganti saat tinjau/)
+})
+
+test('T46 tinjau visual gagal atau bertanya = deck sebelum tinjau dipakai, draf tetap jadi; BL_TINJAU_VISUAL=0 tanpa tinjau', async () => {
+  const d = duniaV2({ tinjau: true, ubah: (inv, prompt) => (/Tinjau visual/.test(prompt) ? { tanya: ['Panel ini dihapus?'] } : inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: 'Rencana Aksi pemantauan banjir' } : x))) })
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.agen.length, 2)
+  assert.equal(d.versi.length, 1)
+  assert.match(d.versi[0].pptxIsi, /Rencana Aksi pemantauan banjir/, 'deck jalan pertama dipulihkan')
+  assert.doesNotMatch(d.kirim[0].caption, /Tata letak dibetulkan/)
+  const e = duniaV2()
+  await bangun(e, 'buat harian 26 okt')
+  assert.equal(e.agen.length, 1, 'tinjau mati: satu jalan agen')
+})
+
+test('T47 screenshot revisi: gambar di kumpul masuk kumpulan dan ruang kerja agen, tidak jadi bahan', async () => {
+  const d = duniaV2({ berkas: { 501: 'GAMBAR-SCREENSHOT' } })
+  await bangun(d, 'buat harian 26 okt')
+  d.ctx.jedaKumpulMs = 5
+  await perintah(d, '1')
+  const r = await tangani({ dari: DARI, teks: 'judul ini kepanjangan', wa_id: 501, nama_berkas: 'ss.jpg', ada_berkas: true }, d.ctx)
+  assert.equal(r.status, 'revisi dicatat'); assert.equal(r.gambar, true)
+  await perintah(d, 'panel kanan dihapus')
+  assert.equal((await perintah(d, 'selesai')).status, 'revisi')
+  const prompt = d.agen.at(-1).prompt
+  assert.match(prompt, /1\. \[gambar 1\] judul ini kepanjangan\n2\. panel kanan dihapus/)
+  const fGambar = (prompt.match(/- gambar 1: (.+)/) || [])[1]
+  assert.ok(fGambar && fs.readFileSync(fGambar.trim(), 'utf8') === 'GAMBAR-SCREENSHOT', 'gambar diunduh ke revisi/ ruang kerja')
+  assert.ok(Object.keys(JSON.parse(fs.readFileSync(path.join(d.dasar, 'proyek', 'bukan-bahan.json'), 'utf8'))).includes('501'), 'dicatat bukan bahan')
+  assert.equal(d.versi.length, 2)
+  await new Promise((s) => setTimeout(s, 20))
+})
+
+test('T48 bahan gambar: gambar asli ikut ke bahan/ agen di samping teks OCR; pagar hanya membaca .txt', async () => {
+  const foto = { id: '7', diterima: 7, dari: DARI, teks: '', nama_berkas: 'infografis.png', ada_berkas: 1 }
+  const d = duniaV2({ pesan: [...LENGKAP(), foto], berkas: { 7: 'PNG-ASLI' } })
+  await bangun(d, 'buat harian 26 okt')
+  const bahan = fs.readdirSync(path.join(d.dasar + '-agen', 'P-291026-01', 'v1', 'bahan'))
+  assert.ok(bahan.some((f) => /infografis\.png$/.test(f)), bahan.join(', '))
+  assert.match(d.agen[0].prompt, /gambar asli bahan/)
+  assert.equal(d.versi.length, 1, 'draf tetap jadi')
+})
+
+test('T49 tanya draf bergambar: gambar berketerangan dari pemegang draf dijawab dengan gambar ikut; tanpa keterangan tetap bahan', async () => {
+  const d = await drafV1()
+  const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.from('PNG-SLIDE')])
+  const fetchAsli = d.ctx.dep.fetch
+  d.ctx.dep.fetch = async (u, o) => (new URL(u).pathname === '/api/wa/berkas' && new URL(u).searchParams.get('id') === '601'
+    ? { ok: true, status: 200, arrayBuffer: async () => PNG.buffer.slice(PNG.byteOffset, PNG.byteOffset + PNG.length) } : fetchAsli(u, o))
+  const ke = []
+  d.ctx.dep.claude.maksud = async () => ({ maksud: 'tanya', jenis: '', tanggal: '', balasan: '', biaya: 0 })
+  d.ctx.dep.claude.jawabDraf = async (inv, riwayat, q, gambar) => { ke.push({ q, gambar }); return { jawaban: 'Judul slide 1 terlalu panjang.', biaya: 0 } }
+  const r = await tangani({ dari: DARI, teks: 'ini kenapa ya?', wa_id: 601, nama_berkas: 'ss.jpg', ada_berkas: true }, d.ctx) // nama .jpg, isi PNG: jenis dari isi
+  assert.equal(r.status, 'tanya draf')
+  assert.equal(ke[0].gambar.length, 1); assert.equal(ke[0].gambar[0].media_type, 'image/png')
+  assert.ok(Buffer.from(ke[0].gambar[0].data, 'base64').equals(PNG))
+  assert.match(d.balasan.at(-1), /Judul slide 1 terlalu panjang/)
+  assert.equal((await tangani({ dari: DARI, teks: '', wa_id: 602, nama_berkas: 'foto.jpg', ada_berkas: true }, d.ctx)).status, 'menunggu buat', 'tanpa keterangan: bahan')
 })

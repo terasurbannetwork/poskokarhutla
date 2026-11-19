@@ -154,3 +154,29 @@ Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya car
 | Q22 | *final* dari kalimat bebas ("udah oke, finalkan") langsung dijalankan? | **[BAWAAN SEMENTARA]** Tidak, ditanya dulu dan dijalankan sesudah *ya* (D33). | tidak menahan |
 | Q23 | Obrolan bebas (bukan tentang laporan) dijawab Claude? | **[BAWAAN SEMENTARA]** Ya, satu atau dua kalimat lalu petunjuk *bantuan*; tanpa jawaban di luar urusan laporan. | tidak menahan |
 | Q24 | Aturan rapikan yang sering terpakai dipindah ke pengurai generator supaya tidak butuh Claude? | **[BAWAAN SEMENTARA]** Ya, lewat pengembang, saat pola yang sama muncul tiga kali di catatan draf. | tidak menahan |
+
+## Bot V2.2: vision (19 Nov 2026)
+
+### Keputusan pemilik V2.2
+
+| No | Keputusan |
+| --- | --- |
+| K37 | (19 Nov) "sekalian saya ingin ganti api key dari anthropic jadi 9router yang sudah setup sebelumnya, isinya $400 credit (gabungan 2 akun)". Bot dan agen V2 membaca `ANTHROPIC_BASE_URL` (alamat router) dan `ANTHROPIC_API_KEY` (kunci router) dari `.env` mesin; cadangan sisi server Anthropic dimatikan saat lewat router. Sebelum dipakai: `node scripts/wa/uji_router.mjs` harus LOLOS ketiga uji (Haiku structured output, Opus structured output, agen Claude Code). |
+| K36 | (19 Nov) "bot wa nya support vision ga ya? jadi saya ingin ngasih tau revisi pake ss-an", lalu "dengan kapabilitas claude sekarang, gambar yang dikirim bisa dijadiin support vision aja ga? jadi supaya bot ini keseluruhannya support vision, jadinya lebih pinter", lalu "gas" atas usulan empat bagian: agen melihat render deck sendiri, screenshot revisi, bahan gambar asli ke agen, tanya draf bergambar. |
+
+### Keputusan rancangan V2.2 (agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D36 | Tinjau visual: sesudah agen selesai dan pagar angka lolos, mesin membuat PDF dari deck agen, merender tiap slide jadi PNG (PyMuPDF, jalur pratinjau yang sudah jalan di Mac) ke `kerja/tinjau/`, lalu melanjutkan sesi agen sekali: agen membaca gambar dan membetulkan tata letak. Hasil tinjau melewati pagar angka lagi; gagal, ditolak pagar, atau bertanya = deck sebelum tinjau yang dipakai. Paling banyak 1 putaran dan 16 slide; `BL_TINJAU_VISUAL=0` mematikan. | Agen tidak bisa menjalankan LibreOffice di sandbox ("Pratinjau gambar slide tidak bisa dibuat di mesin ini"); mesin merender di luar sandbox. |
+| D37 | Screenshot revisi: selama kumpul revisi (`revisi` atau `1` sampai `selesai`), gambar dari pemegang draf (bukan diteruskan) masuk kumpulan bersama keterangannya. Gabungan revisi menyebut "[gambar N]". Revisi V2 mendapat berkas gambar di `revisi/` ruang kerja versi itu. Revisi V1 hanya memakai teks, gambar dicatat sebagai tidak terbaca. Di luar kumpul, gambar berketerangan dari pemegang draf yang ditebak Haiku sebagai revisi atau tanya juga dipakai; tanpa keterangan tetap bahan. | Pemakai menandai revisi langsung di gambar slide. |
+| D38 | Bahan gambar: gambar bahan yang dipilih untuk laporan V2 disimpan asli di `bahan/` ruang kerja (paling banyak 10, paling besar 8 MB) di samping teks OCR-nya. Pagar angka tetap memakai teks bahan (OCR); angka yang hanya terbaca dari gambar masuk Perlu dicek, atau ditolak di slide angka sistem. | Tabel dan infografis rusak di OCR; teks OCR tetap jadi sumber yang bisa diperiksa mesin. |
+| D39 | Tanya draf bergambar: gambar berketerangan pertanyaan dari pemegang draf dijawab `jawabDraf` dengan gambar ikut dikirim ke Claude (paling banyak 4). | "ini kenapa?" dengan screenshot slide. |
+| D40 | Gambar yang masuk kumpul revisi atau dijawab sebagai tanya tetap tersimpan di Worker sebagai pesan masuk (jalur gateway), tetapi dicatat di `~/.wa-bot/proyek/bukan-bahan.json` dan tidak ikut sebagai bahan saat laporan tanggal itu dibangun lagi. | Revisi tidak boleh bocor jadi bahan. |
+
+### Pertanyaan terbuka V2.2
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q25 | Tinjau visual menambah 1 sampai 3 menit dan sekitar $0,10 sampai $0,80 per draf. Diterima? | **[BAWAAN SEMENTARA]** Ya, nyala untuk semua draf V2; bisa dimatikan `BL_TINJAU_VISUAL=0`. | tidak menahan |
+| Q26 | Vision untuk bot V1 (nomor lain)? | **[BAWAAN SEMENTARA]** Hanya tanya draf bergambar; revisi V1 tetap teks. | tidak menahan |

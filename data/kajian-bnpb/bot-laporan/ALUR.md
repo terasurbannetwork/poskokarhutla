@@ -101,3 +101,10 @@ Sama dengan V1. Tambahan: jalur deck final dicatat di `~/.wa-bot/agen/final.json
 2. Pesan teks berikutnya (termasuk yang diteruskan) masuk kumpulan; tanda terima sekali per 20 detik jeda.
 3. *lanjut*: kumpulan digabung bernomor dan dikerjakan sebagai satu revisi (alur B untuk V1, V2-B untuk V2). Kumpulan ditutup.
 4. *batal*: kumpulan ditutup, draf tetap. Lewat 2 jam tanpa pesan baru: kumpulan dibuang.
+
+## V2.2: vision (K36)
+
+1. Bangun dan revisi V2: agen bekerja seperti biasa. Pagar angka lolos, mesin merender slide ke PNG, sesi agen dilanjutkan sekali untuk tinjau visual, pagar angka diulang, lalu PDF, pratinjau, dan pesan draf seperti biasa (D36).
+2. Kumpul revisi menerima gambar dan keterangannya; `selesai` mengirim teks bernomor dan berkas gambar ke agen (D37).
+3. Bahan gambar ikut sebagai berkas asli di `bahan/` (D38).
+4. Gambar berketerangan dari pemegang draf di luar kumpul: Haiku menebak dari keterangan; tanya = dijawab dengan gambar (D39), revisi = revisi satu pesan dengan gambar, lainnya = bahan.
