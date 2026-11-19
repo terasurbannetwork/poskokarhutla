@@ -400,7 +400,7 @@ export function tDraf(p, n, lap, tanggal, { hitung = {}, catatan = [], peringata
     [judul(lap, tanggal),
       per.length ? `Bahan: ${per.join(', ')}` : 'Bahan: belum ada yang dikenali',
       ...(lap.id === 'penanganan' ? ['Hotspot, firespot, luas terbakar, dan luas belum padam dari sistem (hari D-1).'] : []),
-      ...(slide ? [`Gambar ini slide ${slide}, PDF menyusul.`] : [])],
+      ...(slide ? [slide > 1 ? `Gambar slide 1 sampai ${slide} menyusul, lalu PDF.` : 'Gambar ini slide 1, PDF menyusul.'] : [])],
     ...(ringkasan ? [rapi(ringkasan, 300)] : []),
     ...(kelompok ? blokKelompok(kelompok) : [bagian('Catatan', catatan)]),
     bagianRingkas('Perlu dicek', peringatan.map(temuanRingkas)))
@@ -758,7 +758,7 @@ async function buat(cmd, dari, sha, ctx) {
     const kunciV = bacaJson(jalurKunci(pptx), [])
     // BL-11: periksa jalan bersamaan dengan langkah PDF/pratinjau; peringatannya masuk ringkasan draf, tidak pernah menahan.
     const [png, peringatan] = await Promise.all([
-      pratinjau(ctx, pdf, path.join(dasarV, 'pratinjau')),
+      inventarisAman(ctx, pptx).then((inv) => pratinjau(ctx, pdf, path.join(dasarV, 'pratinjau'), slidesDraf(ctx, inv))),
       jalankanPeriksa(ctx, { pptx, pdf, jenis, tanggal: cmd.tanggal, angka: async () => angkaDraf(await inventarisAman(ctx, pptx), kunciV, hasil.isian) }),
     ])
     try {
@@ -773,9 +773,9 @@ async function buat(cmd, dari, sha, ctx) {
     }
     catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, gambar pratinjau slide 1 berketerangan ringkasan draf, lalu PDF. Tanpa pratinjau: ringkasan di keterangan PDF.
-    const ringkas = tDraf(p, n, lap, cmd.tanggal, { hitung, catatan, peringatan, slide: png.length ? 1 : null, biaya: Biaya.proyek(dasar, p.id) })
+    const ringkas = tDraf(p, n, lap, cmd.tanggal, { hitung, catatan, peringatan, slide: png.length || null, biaya: Biaya.proyek(dasar, p.id) })
     catatMenu(ctx, sha, p.id) // angka menu berikutnya berlaku untuk proyek ini
-    if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), ringkas, 'image/png')
+    await kirimSlide(ctx, png, { pertama: ringkas })
     await ctx.balasFile(pdf, path.basename(pdf), png.length ? tPdf(p, n, lap, cmd.tanggal) : ringkas, MIME.pdf)
     await kirimMenuDraf(ctx, p, n)
     await prog.akhir('selesai') // sunting akhir sesudah dua berkas draf: jatah limiter didahulukan untuk berkas
@@ -798,15 +798,36 @@ async function buat(cmd, dari, sha, ctx) {
   }
 }
 
-// A8: v1 = slide 1; revisi = slide pertama yang berubah. Satu gambar per draf (Q1). berkas: PDF, atau PPTX bila ada slide disembunyikan (nomor halaman PDF bergeser).
+// A8: gambar slide draf. slide: nomor atau daftar nomor. berkas: PDF, atau PPTX bila ada slide disembunyikan (nomor halaman PDF bergeser).
+// Sejak 19 Nov 2026 (pemilik: "selama draf, aku pengennya kamu ngasih ss per slidenya") tiap draf mengirim gambar semua slide (slidesDraf).
+export const MAKS_SLIDE_KIRIM = 15
+const nomorPng = (f) => Number((path.basename(f).match(/(\d+)/) || [])[1]) || 0
 async function pratinjau(ctx, pdf, dir, slide = 1) {
   try {
     fs.mkdirSync(dir, { recursive: true, mode: 0o700 })
-    const r = await ctx.dep.exec(pyBin(ctx.env), [path.join(GENERATOR, 'ubah.py'), 'pratinjau', pdf, String(slide), dir], { cwd: GENERATOR, timeout: 120e3, maxBuffer: 20e6 })
-    const png = (JSON.parse(String(r.stdout || '{}')).png || []).slice(0, 1)
-    return png.filter((f) => (ctx.ada || fs.existsSync)(f))
+    const daftarSlide = (Array.isArray(slide) ? slide : [slide]).slice(0, MAKS_SLIDE_KIRIM)
+    const r = await ctx.dep.exec(pyBin(ctx.env), [path.join(GENERATOR, 'ubah.py'), 'pratinjau', pdf, daftarSlide.join(','), dir], { cwd: GENERATOR, timeout: 180e3, maxBuffer: 20e6 })
+    const png = (JSON.parse(String(r.stdout || '{}')).png || []).sort((a, b) => nomorPng(a) - nomorPng(b))
+    return png.filter((f) => (ctx.ada || fs.existsSync)(f)).slice(0, MAKS_SLIDE_KIRIM)
   } catch (e) { (ctx.log || (() => {}))('pratinjau gagal', e.message); return [] }
 }
+// Nomor slide yang dikirim gambarnya: semua slide deck (paling banyak MAKS_SLIDE_KIRIM); ctx.pratinjauSatu (uji lama) = hanya `satu`.
+function slidesDraf(ctx, inv, satu = 1) {
+  if (ctx.pratinjauSatu) return [satu]
+  const n = (inv || []).reduce((a, x) => Math.max(a, Number(x.slide) || 0), 0)
+  return n ? Array.from({ length: Math.min(n, MAKS_SLIDE_KIRIM) }, (_, i) => i + 1) : [satu]
+}
+// Gambar draf berurutan: gambar pertama berketerangan `pertama`, sisanya "Slide N" (ditandai berubah bila nomornya di `berubah`).
+async function kirimSlide(ctx, png, { pertama, berubah = [] }) {
+  for (const [i, f] of png.entries()) {
+    const k = nomorPng(f)
+    await ctx.balasFile(f, path.basename(f), i === 0 ? pertama : `Slide ${k}${berubah.includes(k) ? ' (berubah)' : ''}`, 'image/png')
+  }
+}
+// keterangan gambar pertama draf revisi: daftar slide yang berubah
+export const tPratinjauRevisi = (p, n, berubah, jumlah) => susun(`Pratinjau draf v${n}`, p, n,
+  [jumlah > 1 ? `Gambar slide 1 sampai ${jumlah}, ini slide 1.` : 'Gambar ini slide 1.', berubah.length ? `Slide berubah: ${berubah.join(', ')}.` : 'Tidak ada slide yang berubah isinya.'],
+  'Ringkasan perubahan ada di PDF berikutnya.')
 
 async function simpanVersi(ctx, { p, n, sha, isian, ubah, pptx, pdf, png, instruksi, catatan }) {
   const f = new FormData()
@@ -1159,7 +1180,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
     const langkahPeriksa = jalankanPeriksa(ctx, { pptx, pdf, jenis: p.jenis, tanggal: p.tanggal, angka: () => angkaDraf(invBaru, kunciBaru, isianV.urai) })
     let peringatan
     try { [, peringatan] = await Promise.all([langkahPdf, langkahPeriksa]) } catch (e) { return await gagalBangun(e) }
-    const png = await pratinjau(ctx, sembunyi ? pptx : pdf, path.join(dasarV, 'pratinjau'), slide)
+    const png = await pratinjau(ctx, sembunyi ? pptx : pdf, path.join(dasarV, 'pratinjau'), ctx.pratinjauSatu ? slide : slidesDraf(ctx, invBaru, slide))
 
     const ubah = { operasi: terpakai, baru: baruJalan, dari_versi: m, ...(opsi.balik != null ? { balik: opsi.balik } : {}),
       dilewati: lewat.map((x) => ({ ke: x.ke, alasan: x.alasan })), ditolak: [...tolakKunci.map((op) => ({ op, kunci: true })), ...tolakLain], kunci: kunciBaru }
@@ -1180,7 +1201,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
     // D8 dan Q1: tepat 2 kiriman, pratinjau slide pertama yang berubah lalu PDF berketerangan T-DRAF. Tanpa pratinjau: PDF saja.
     const ringkas = tDrafRevisi(p, n, lap, p.tanggal, { perubahan, tolak, lewat: kalimatLewat, catatan, peringatan, biaya: Biaya.proyek(dasar, p.id) })
     catatMenu(ctx, sha, p.id)
-    if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), tPratinjau(p, n, slide), 'image/png')
+    await kirimSlide(ctx, png, { pertama: ctx.pratinjauSatu ? tPratinjau(p, n, slide) : tPratinjauRevisi(p, n, berubah, png.length), berubah })
     await ctx.balasFile(pdf, path.basename(pdf), ringkas, MIME.pdf)
     await kirimMenuDraf(ctx, p, n)
     await prog.akhir('selesai')
@@ -1309,9 +1330,11 @@ async function kerjakanAgen(ctx, o) {
     if (!ada(pdf)) throw new Error('PDF tidak terbentuk')
   } catch (e) { return gagal('PDF gagal dibuat', 'agen:pdf', e.message) }
   const sebelum = mode === 'revisi' ? pptxDi(path.join(ruang, 'sebelum')) : null
-  const slide = sebelum ? (slideBerubah(await inventarisAman(ctx, sebelum), await inventarisAman(ctx, pptx))[0] || 1) : 1
+  const invKeluar = await inventarisAman(ctx, pptx)
+  const berubahV2 = sebelum ? slideBerubah(await inventarisAman(ctx, sebelum), invKeluar) : []
+  const slide = berubahV2[0] || 1
   const [png, peringatan] = await Promise.all([
-    pratinjau(ctx, pdf, path.join(path.dirname(pptx), 'pratinjau'), slide),
+    pratinjau(ctx, pdf, path.join(path.dirname(pptx), 'pratinjau'), ctx.pratinjauSatu ? slide : slidesDraf(ctx, invKeluar, slide)),
     jalankanPeriksa(ctx, { pptx, pdf, jenis: p.jenis, tanggal: p.tanggal, angka: async () => angkaDraf(await inventarisAman(ctx, pptx), kunci, []) }),
   ])
   const catatan = [...(o.catatan || []), ...h.catatan,
@@ -1338,13 +1361,13 @@ async function kerjakanAgen(ctx, o) {
   catatGagal(ctx, sha, null)
   catatMenu(ctx, sha, p.id)
   if (mode === 'bangun') {
-    const ringkas = tDraf(p, n, lap, p.tanggal, { hitung: o.hitung || {}, ringkasan: h.ringkasan, kelompok: kelompokDraf, slide: png.length ? 1 : null })
-    if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), ringkas, 'image/png')
+    const ringkas = tDraf(p, n, lap, p.tanggal, { hitung: o.hitung || {}, ringkasan: h.ringkasan, kelompok: kelompokDraf, slide: png.length || null })
+    await kirimSlide(ctx, png, { pertama: ringkas })
     await ctx.balasFile(pdf, path.basename(pdf), png.length ? tPdf(p, n, lap, p.tanggal) : ringkas, MIME.pdf)
     await kirimMenuDraf(ctx, p, n)
   } else {
     const ringkas = tDrafRevisi(p, n, lap, p.tanggal, { perubahan: h.perubahan.length ? h.perubahan : [h.ringkasan || 'Revisi diterapkan.'], kelompok: kelompokDraf })
-    if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), tPratinjau(p, n, slide), 'image/png')
+    await kirimSlide(ctx, png, { pertama: ctx.pratinjauSatu ? tPratinjau(p, n, slide) : tPratinjauRevisi(p, n, berubahV2, png.length), berubah: berubahV2 })
     await ctx.balasFile(pdf, path.basename(pdf), ringkas, MIME.pdf)
     await kirimMenuDraf(ctx, p, n)
   }
@@ -1428,13 +1451,13 @@ async function revisiV2(pesan, dari, sha, p, ctx, opsi = {}) {
       fs.copyFileSync(src, pptx)
       fs.rmSync(pdf, { force: true })
       await ctx.dep.exec(pyBin(ctx.env), [path.join(GENERATOR, 'pdf.py'), pptx, path.dirname(pdf)], { cwd: GENERATOR, timeout: 300e3, maxBuffer: 20e6 })
-      const png = await pratinjau(ctx, pdf, path.join(path.dirname(pptx), 'pratinjau'), 1)
+      const png = await pratinjau(ctx, pdf, path.join(path.dirname(pptx), 'pratinjau'), slidesDraf(ctx, await inventarisAman(ctx, pptx)))
       const perubahan = [`Isi sama dengan v${opsi.balik}.`]
       await simpanVersi(ctx, { p, n, sha, pptx, pdf, png, instruksi: `balik v${opsi.balik}`, isian: { versi_bot: 2, balik: opsi.balik }, catatan: perubahan })
       await pindah('draf')
       Agen.catatSesi(dasar, p.id, { balik: opsi.balik })
       catatGagal(ctx, sha, null); catatMenu(ctx, sha, p.id)
-      if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), tPratinjau(p, n, 1), 'image/png')
+      await kirimSlide(ctx, png, { pertama: ctx.pratinjauSatu ? tPratinjau(p, n, 1) : tPratinjauRevisi(p, n, [], png.length) })
       await ctx.balasFile(pdf, path.basename(pdf), tDrafRevisi(p, n, lap, p.tanggal, { perubahan }), MIME.pdf)
       return kirimMenuDraf(ctx, p, n)
     }

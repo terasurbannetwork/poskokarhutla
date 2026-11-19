@@ -137,7 +137,7 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
   }
   const ctx = {
     env: { WORKER_URL: 'http://w', WA_MESIN: 'k', WA_GARAM: 'garam', PEMILIK: '6299', WA_IZIN: `${DARI},6299,6281111`, WA_PY_BIN: '/opt/py/bin' },
-    dep, now, dasar, kenali, tanggalIsi, log: () => {}, jedaTerima: 0, kabarMulai: false, // uji yang menguji penggabungan atau kabar mulai memasang sendiri
+    dep, now, dasar, kenali, tanggalIsi, log: () => {}, jedaTerima: 0, kabarMulai: false, pratinjauSatu: true, // uji yang menguji penggabungan atau kabar mulai memasang sendiri
     balas: async (t) => { balasan.push(t) },
     balasFile: async (p, nama, caption, mime) => { kirim.push({ p, nama, caption, mime }) },
     kabariPemilik: async (t) => { pemilik.push(t) },
@@ -1885,4 +1885,19 @@ test('K40: V2 untuk semua nomor terdaftar bila BL_V2_NOMOR kosong; terisi = hany
   assert.equal(P.pakaiV2({ BL_VERSI: '2', BL_V2_NOMOR: '6299' }, '6281111'), false)
   assert.equal(P.pakaiV2({ BL_VERSI: '2', BL_V2_NOMOR: '6299' }, '6299'), true)
   assert.equal(P.pakaiV2({ PEMILIK: '6299' }, '6299'), false, 'tanpa BL_VERSI=2 semua V1')
+})
+
+test('gambar semua slide tiap draf (pemilik 19 Nov: ss per slide): v1 berurutan dengan ringkasan di gambar pertama; revisi menandai slide berubah', async () => {
+  const d = dunia({ ops: () => [GANTI(3, 's3_rencana', 'Rencana aksi', 'Rencana aksi BPBD')] })
+  d.ctx.pratinjauSatu = false
+  await bangun(d, 'buat harian 26 okt')
+  assert.deepEqual(d.kirim.map((k) => path.basename(k.nama)).slice(0, 3), ['pratinjau-1.png', 'pratinjau-2.png', 'pratinjau-3.png'])
+  assert.equal(d.kirim.length, 4)
+  assert.match(d.kirim[0].caption, /^\*Draf v1 siap\*/); assert.match(d.kirim[0].caption, /Gambar slide 1 sampai 3 menyusul, lalu PDF\./)
+  assert.equal(d.kirim[1].caption, 'Slide 2'); assert.equal(d.kirim[2].caption, 'Slide 3')
+  assert.equal(d.kirim[3].mime, 'application/pdf')
+  d.kirim.length = 0
+  await perintah(d, 'rencana aksi sebut BPBD')
+  assert.deepEqual(d.kirim.map((k) => k.caption.split('\n')[0]), ['*Pratinjau draf v2*', 'Slide 2', 'Slide 3 (berubah)', '*Draf v2 siap*'])
+  assert.match(d.kirim[0].caption, /Slide berubah: 3\./)
 })
