@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=114" rel="stylesheet">
+<link href="/lapor/lapor.css?v=115" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -229,8 +229,9 @@
 
   <!-- ===== layar: tentang dan cara melapor (pemilik 19 Nov 2026: "halaman tentang dan cara bertanya", pola halaman Tentang ChatHPT) ===== -->
   <section class="lp-layar" id="lTentang" data-tab="tentang" hidden>
-    <header class="lp-pita lp-pita-dua" style="--foto:url(/img/bencana-banjir.jpg)">
-      <div class="lp-pita-kiri">
+    <!-- kepala sama dengan beranda: maskot Sigap dan kartu kontak BNPB disalin dari beranda saat layar dibuka (pemilik 19 Nov 2026) -->
+    <header class="lp-hero" id="heroTentang" style="--foto:url(/img/bencana-banjir.jpg)">
+      <div class="lp-hero-isi">
         <p class="lp-alis">Tentang Lapor Bencana</p>
         <h1>Satu pintu warga melaporkan kejadian bencana ke BNPB</h1>
         <p class="lp-hero-sub">Laporan dipandu asisten AI sampai lengkap, lalu diterima petugas BNPB dan diteruskan ke BPBD setempat.</p>
@@ -272,11 +273,19 @@
           <article class="baik"><b>Lakukan</b><ul><li>Melapor dari dekat lokasi supaya titiknya tepat.</li><li>Memotret kerusakan, genangan, atau pengungsian, bukan wajah orang.</li><li>Menulis angka yang Anda lihat sendiri; tulis 0 bila tidak ada.</li></ul></article>
           <article class="hindari"><b>Hindari</b><ul><li>Mengirim foto dari internet atau kejadian lama.</li><li>Menebak jumlah korban. Pilih belum tahu bila ragu.</li><li>Melapor palsu. Laporan palsu dapat dikenai sanksi hukum.</li></ul></article>
         </div>
-        <p class="lp-tt-darurat"><svg aria-hidden="true"><use href="#i-telepon"/></svg>Ada nyawa terancam? Jangan menunggu laporan. Telepon <a href="tel:112">112</a> atau <a href="tel:117">117</a> sekarang.</p>
+        <div class="lp-tt-darurat"><span class="lp-tt-darurat-ikon"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span>
+          <div><b>Ada nyawa terancam?</b><span>Jangan menunggu laporan. Telepon sekarang.</span></div>
+          <a class="lp-tt-telp" href="tel:112"><b>112</b><small>Darurat terpadu</small></a><a class="lp-tt-telp" href="tel:117"><b>117</b><small>Call center BNPB</small></a></div>
       </section>
       <section class="lp-tt-blok">
         <h2><svg aria-hidden="true"><use href="#i-status"/></svg>Batas pemakaian</h2>
-        <p class="lp-tt-catatan">Supaya layanan tidak disalahgunakan, tiap nomor bisa mengirim paling banyak 60 pesan per jam dan 20 pesan per menit. Laporan yang sedang diisi tetap tersimpan bila batas tercapai.</p>
+        <div class="lp-tt-batas">
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-pesan"/></svg></span><div><b>60 pesan</b><small>per jam per nomor</small></div></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-kalender"/></svg></span><div><b>20 pesan</b><small>per menit per nomor</small></div></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-status"/></svg></span><div><b>5 laporan</b><small>terkirim per hari per nomor</small></div></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-centang"/></svg></span><div><b>Tetap tersimpan</b><small>laporan yang sedang diisi saat batas tercapai</small></div></article>
+        </div>
+        <p class="lp-tt-catatan">Batas ini menjaga layanan dari penyalahgunaan. Bila batas tercapai, asisten memberi tahu jam Anda bisa melanjutkan.</p>
       </section>
     </div>
   </section>
@@ -347,6 +356,6 @@
 <script src="/inti/exif.js" defer></script>
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=81"></script>
+<script type="module" src="/lapor/lapor.js?v=82"></script>
 </body>
 </html>

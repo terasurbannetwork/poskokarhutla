@@ -4,7 +4,7 @@
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
    - Cache: percakapan dan daftar laporan disimpan di localStorage per nomor supaya muat ulang langsung tampil.
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
-import {maskot} from "/lapor/maskot.js?v=11"; // bervesi: berkas .js disajikan immutable
+import {maskot} from "/lapor/maskot.js?v=12"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 /* Produksi (Worker, src/lapor_ai.js): pelapor web masuk lewat Satu Pintu Masuk (/masuk, kode WA) dan nomor diambil dari sesi; kiriman POST bersesi wajib x-pb: 1.
    Server tinjau lokal (localhost:8800) tetap memakai nomor yang diketik. */
@@ -45,6 +45,8 @@ function ke(tab) {
   for (const b of document.querySelectorAll("#tab button")) { if (b.dataset.ke === tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }
   if (tab === "laporan") { $("titikBaru").hidden = true; tampilDaftarLaporan(); }
   if (tab === "alun") tampilAlun();
+  if (tab === "tentang" && !$("heroTentang").querySelector(".lp-hero-tengah")) { // salin maskot dan kartu kontak beranda tanpa id ganda
+    for (const k of [".lp-hero-tengah", ".lp-hero-kanan"]) { const c = document.querySelector(`#lBeranda ${k}`)?.cloneNode(true); if (!c) continue; c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); $("heroTentang").append(c); } }
   if (tab === "chat") requestAnimationFrame(() => gulir.scrollTo({top: gulir.scrollHeight}));
 }
 // menu: Bantuan dilebur ke Beranda, diganti Kebijakan privasi (pemilik 19 Nov 2026)
@@ -152,8 +154,14 @@ function kartuPilihan(j) {
     const kotak = new Map([...bagian].map(([g, idx]) => { const k = el("div", "lp-opsi lp-opsi-ikon lp-opsi-banyak lp-simetris"); k.style.setProperty("--kol", kolomSimetris(idx.length)); if (g) d.append(el("p", "lp-opsi-grup", g)); d.append(k); return [g, k]; }));
     const lain = el("input"); lain.type = "text"; lain.placeholder = "Tulis kebutuhan lain, misalnya genset atau popok"; lain.maxLength = 120;
     const lLain = el("label", "lp-isi lp-lain"); lLain.append("Kebutuhan lain", lain); lLain.hidden = true;
-    j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => { dipilih.has(i) ? dipilih.delete(i) : dipilih.add(i); b.setAttribute("aria-pressed", String(dipilih.has(i))); s.disabled = !dipilih.size;
-        if (o === "Lainnya") { lLain.hidden = !dipilih.has(i); if (!lLain.hidden) lain.focus(); } });
+    // pilihan "tidak ada" dan sejenisnya meniadakan pilihan lain, dan sebaliknya (pemilik 19 Nov 2026: "masa bisa milih belum ada kebutuhan mendesak tapi bisa milih yang lain")
+    const TUNGGAL = /^(Belum ada|Tidak ada|Tidak tahu|Semua masih)/i, tombol = [];
+    const segar = () => { tombol.forEach((t, k) => t.setAttribute("aria-pressed", String(dipilih.has(k)))); s.disabled = !dipilih.size;
+      const iL = j.pilihan.indexOf("Lainnya"); lLain.hidden = !(iL >= 0 && dipilih.has(iL)); };
+    j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => {
+        if (dipilih.has(i)) dipilih.delete(i);
+        else { if (TUNGGAL.test(o)) dipilih.clear(); else for (const k of [...dipilih]) if (TUNGGAL.test(j.pilihan[k])) dipilih.delete(k); dipilih.add(i); }
+        segar(); if (o === "Lainnya" && !lLain.hidden) lain.focus(); }); tombol[i] = b;
       const u = el("span", "lp-opsi-ubin"); u.append(ikon(ikonKebutuhan(o))); b.prepend(u); b.setAttribute("aria-pressed", "false");
       kotak.get(j.grup?.[i] || "").append(b); });
     const s = el("button", "lp-utama", "Simpan pilihan"); s.type = "button"; s.disabled = true;
@@ -654,7 +662,8 @@ async function unggahFoto(file) {
 }
 
 /* ============ beranda, laporan saya, bantuan ============ */
-const STATUS_PIL = s => el("span", `lp-pil ${s.status}`, s.statusLabel || "Diterima");
+const IKON_STATUS = {baru: "i-centang", dilihat: "i-cari", ditelaah: "i-daftar", diteruskan: "i-kirim", ditindaklanjuti: "i-status", selesai: "i-centang", tidak_valid: "i-tutup"};
+const STATUS_PIL = s => { const p = el("span", `lp-pil lp-pil-ikon ${s.status}`); p.append(ikon(IKON_STATUS[s.status] || "i-status"), s.statusLabel || "Diterima"); return p; }; // pil status berikon (pemilik 19 Nov 2026)
 async function segarkanLaporan() {
   for (const l of cache.laporan || []) {
     const t = new URL(l.lacak, location.href).searchParams.get("t");
