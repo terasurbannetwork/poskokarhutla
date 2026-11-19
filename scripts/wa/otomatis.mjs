@@ -55,6 +55,17 @@ export const LAPORAN_BANJIR = [
     args: (d, f, out) => ['penanganan_banjir.py', '--tanggal', d, '--out', out] },
 ]
 
+// Laporan hanya lewat proyek bot (perintah), TIDAK PERNAH terjadwal: jalur jalankan() hanya mengulang LAPORAN dan LAPORAN_BANJIR.
+// banjir_sepekan (pemilik 19 Nov 2026: "tambahin laporan paparan banjir sepekan? tapi bisa diatur juga tanggal yang dimau"):
+// periode bebas = tanggal laphar awal s.d. akhir (tanggal proyek = akhir). Data dari WA Koordalops tiap hari periode (f.wa, dikumpulkan
+// proyek.mjs dari bahan tersimpan) dan arsip repo; generator data/laporan-bnpb/generator/banjir_sepekan.py. Hanya mode V2 (tanpa --isian).
+export const geserHari = (iso, h) => new Date(Date.parse(iso + 'T00:00:00Z') + h * 864e5).toISOString().slice(0, 10)
+export const LAPORAN_PROYEK = [
+  { id: 'banjir_sepekan', judul: 'Paparan Situasi Banjir Sepekan', butuh: [], jam: 0, unggah: false, periode: true, waktu: 20 * 60e3,
+    berkas: (d) => `Paparan Situasi Banjir Sepekan ${ddmmyy(d)}`,
+    args: (d, f, out) => ['banjir_sepekan.py', '--awal', f.awal || geserHari(d, -6), '--akhir', d, '--out', out, ...(f.wa?.length ? ['--wa', ...f.wa] : [])] },
+]
+
 export const ddmmyy = (d) => `${d.slice(8, 10)}${d.slice(5, 7)}${d.slice(2, 4)}`
 const wib = (now) => new Date(now.getTime() + 7 * 3600e3)
 export const tanggalWib = (now) => wib(now).toISOString().slice(0, 10)

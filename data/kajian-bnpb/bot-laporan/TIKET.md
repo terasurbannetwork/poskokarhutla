@@ -57,3 +57,10 @@ Urutan kerja. Ambil satu tiket, kerjakan hanya cakupannya. Tiket yang ditahan Q 
 | BV-16 | Tinjau visual agen | wa-bot | T45, T46, T50 | BV-15 |
 | BV-17 | Screenshot revisi, tanya bergambar, bukan-bahan | wa-bot | T47, T49 | BV-15 |
 | BV-18 | Bahan gambar asli ke agen | wa-bot | T48 | BV-15 |
+
+## V2.4
+
+| Tiket | Isi | Pengerja | Bukti | Tergantung |
+| --- | --- | --- | --- | --- |
+| BV-19 | Paparan banjir sepekan berperiode bebas (K42): `banjir_sepekan.py`, `LAPORAN_PROYEK`, `parsePeriode`, Koordalops per hari, pedoman agen, acuan mingguan, `BL_JENIS` Worker | wa-bot, pipa-data, warga-api | `tests/wa/proyek.test.mjs` (banjir sepekan), `tests/wa/agen.test.mjs` (cariKemarin banjir_sepekan), `tests/warga/wa_proyek.test.mjs`; uji generator 16-19 dan 9-15 Nov QA deck LOLOS | - |
+| BV-20 | Kalimat bebas untuk paparan banjir sepekan (maksud + periode) | wa-bot | - | BV-19 |

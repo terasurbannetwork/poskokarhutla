@@ -99,6 +99,23 @@ export function catatFinal(dasar, { jenis, tanggal, id, n, pptx }) {
   isi[jenis] = d
   tulisJson(f, isi)
 }
+// Paparan mingguan buatan tangan: data/laporan-bnpb/mingguan/<tanggal paparan>/<folder>/Revisi N/*.pptx dan buat.py (komentar = koreksi pemilik).
+const MINGGUAN_JENIS = { banjir_sepekan: 'banjir-longsor' }
+function arsipMingguan(repo, folder, tanggal, hari) {
+  const akar = path.join(repo, 'data', 'laporan-bnpb', 'mingguan'), batas = kurangHari(tanggal, hari)
+  let tgl = []
+  try { tgl = fs.readdirSync(akar).filter((t) => /^\d{4}-\d{2}-\d{2}$/.test(t) && t < tanggal && t >= batas).sort().reverse() } catch {}
+  for (const t of tgl) {
+    const dir = path.join(akar, t, folder)
+    let revisi = []
+    try { revisi = fs.readdirSync(dir).map((x) => [x, Number((x.match(/^Revisi (\d+)$/) || [])[1])]).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]) } catch { continue }
+    for (const [nama] of revisi) {
+      const pptx = fs.readdirSync(path.join(dir, nama)).filter((f) => /^Paparan Situasi Banjir Sepekan .*\.pptx$/i.test(f))[0]
+      if (pptx) return { arsip: { tanggal: t, pptx: path.join(dir, nama, pptx), sumber: 'arsip' }, skrip: [path.join(dir, 'buat.py')].filter((f) => fs.existsSync(f)) }
+    }
+  }
+  return { arsip: null, skrip: [] }
+}
 const kurangHari = (iso, h) => new Date(Date.parse(iso + 'T00:00:00Z') - h * 864e5).toISOString().slice(0, 10)
 const hariDir = (repo, folder, t) => path.join(repo, 'data', 'laporan-bnpb', folder, t.slice(0, 7), t)
 export function cariKemarin({ dasar, jenis, tanggal, repo = REPO, hari = 7 }) {
@@ -107,7 +124,8 @@ export function cariKemarin({ dasar, jenis, tanggal, repo = REPO, hari = 7 }) {
   const bot = Object.keys(d).filter((t) => t < tanggal && t >= batas && d[t]?.pptx && fs.existsSync(d[t].pptx)).sort().pop() || null
   const folder = FOLDER_JENIS[jenis]
   let arsip = null, skrip = []
-  if (folder) {
+  if (MINGGUAN_JENIS[jenis]) ({ arsip, skrip } = arsipMingguan(repo, MINGGUAN_JENIS[jenis], tanggal, hari * 2))
+  else if (folder) {
     for (let i = 1; i <= hari; i++) {
       const t = kurangHari(tanggal, i), dir = hariDir(repo, folder, t)
       if (!skrip.length) skrip = SKRIP_HARI.map((f) => path.join(dir, f)).filter((f) => fs.existsSync(f))
@@ -331,7 +349,7 @@ export const KONTRAK = [
 ].join('\n')
 export function pedoman(jenis) {
   const baca = (f) => { try { return fs.readFileSync(path.join(PEDOMAN_DIR, f), 'utf8') } catch { return '' } }
-  const khusus = { harian: 'PEDOMAN-HARIAN.md', penanganan: 'PEDOMAN-PENANGANAN.md' }[jenis]
+  const khusus = { harian: 'PEDOMAN-HARIAN.md', penanganan: 'PEDOMAN-PENANGANAN.md', banjir_sepekan: 'PEDOMAN-BANJIR-SEPEKAN.md' }[jenis]
   return [baca('PEDOMAN.md'), khusus ? baca(khusus) : '', KONTRAK].filter(Boolean).join('\n\n')
 }
 const daftarBerkas = (dir) => { try { return fs.readdirSync(dir).filter((f) => fs.lstatSync(path.join(dir, f)).isFile()) } catch { return [] } }

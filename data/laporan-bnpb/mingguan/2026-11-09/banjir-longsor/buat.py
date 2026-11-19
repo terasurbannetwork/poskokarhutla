@@ -145,8 +145,9 @@ def lama(mulai, selesai):
     Mulai tidak diketahui (kejadian hanya muncul sebagai pengkinian) = None, tampil '–'."""
     if not mulai:
         return None
-    bl = {'Okt': 10, 'Nov': 11, 'Des': 12}
-    d = lambda s: date(2026, bl[s.split()[1]], int(s.split()[0]))
+    bl = {BLN[m][:3]: m for m in range(1, 13)}   # 19 Nov: periode bebas (bot, banjir_sepekan.py), bulan apa pun; lewat Desember = tahun sebelumnya
+    ak = MINGGU['akhir']
+    d = lambda s: date(ak.year - (bl[s.split()[1]] > ak.month), bl[s.split()[1]], int(s.split()[0]))
     return ((d(selesai) if selesai else MINGGU['akhir']) - d(mulai)).days + 1
 
 
@@ -288,12 +289,12 @@ def label_peta(k, x, y, nama, status, merah, titik):
     k.kotak(tx - 2.5, ty - 2.5, 5, 5, PUTIH, TEKS, bentuk=MSO_SHAPE.OVAL)
 
 
-def unsur_peta(k, km_pt):
-    """Panah utara dan skala 100 km di kiri bawah peta."""
-    k.kotak(54, 414, 8.6, 12.2, NAVY, bentuk=MSO_SHAPE.ISOSCELES_TRIANGLE)
-    k.teks(46.8, 427, 23, 9.4, [R('U', 8, NAVY, True)], rata='c', bungkus=False)
-    k.garis(82.8, 432, 82.8 + km_pt, 432, NAVY, 1.0)
-    k.teks(82.8, 419, max(42, km_pt), 10.8, [R('100 km', 8, NAVY, True)], rata='c', bungkus=False)
+def unsur_peta(k, km_pt, dy=0):
+    """Panah utara dan skala 100 km di kiri bawah peta; dy < 0 menaikkan (multipeta: jarak 7 pt dari tepi bawah panel)."""
+    k.kotak(54, 414 + dy, 8.6, 12.2, NAVY, bentuk=MSO_SHAPE.ISOSCELES_TRIANGLE)
+    k.teks(46.8, 427 + dy, 23, 9.4, [R('U', 8, NAVY, True)], rata='c', bungkus=False)
+    k.garis(82.8, 432 + dy, 82.8 + km_pt, 432 + dy, NAVY, 1.0)
+    k.teks(82.8, 419 + dy, max(42, km_pt), 10.8, [R('100 km', 8, NAVY, True)], rata='c', bungkus=False)
 
 
 def inset(k, png, x=165.6, y=375.8):
@@ -422,9 +423,10 @@ def tata_label(titik, sisi, status, masker=None):
             return True
         kot = (int(max(0, x - 43.2 - 2)), int(max(0, y - 102 - 2)), int(min(418, x - 43.2 + w + 2)), int(min(338, y - 102 + 18)))
         return kot[2] <= kot[0] or kot[3] <= kot[1] or masker.crop(kot).getbbox() is None
-    out = {}
+    out, luap = {}, []
     for s_, bawah in (('k', 355), ('n', 430)):
-        xs = sorted(((y, kab) for kab, (x, y) in titik.items() if sisi[kab] == s_), key=lambda t: t[0])
+        # 19 Nov (bot, periode bebas): label kiri yang tidak dapat celah pindah ke kolom kanan, bukan ditumpuk di tepi bawah (QA T-7)
+        xs = sorted([(y, kab) for kab, (x, y) in titik.items() if sisi[kab] == s_] + (luap if s_ == 'n' else []), key=lambda t: t[0])
         taruh = []
         for y0, kab in xs:
             w = lebar_label(kab, status[kab])
@@ -439,6 +441,8 @@ def tata_label(titik, sisi, status, masker=None):
                         hasil = (x, y); break
                 if hasil:
                     break
+            if not hasil and s_ == 'k':
+                luap.append((y0, kab)); continue
             if not hasil:   # tidak ada celah: tetap rapat ke tepi, urut di bawah label sebelumnya
                 y = max([ingin] + [t + 21 for t in taruh if t >= ingin - 21])
                 hasil = (pilihan[-1], min(y, bawah))
@@ -454,6 +458,43 @@ def s_peta_banjir(Dk):
     s, k = Dk.slide(judul(f'Terdapat [{len(BANJIR)}] kab/kota terdampak banjir pada periode {periode()}; '
                           f'[{len(belum)}] kab/kota ({kec}[{f0(t_kk)}] KK) belum dilaporkan surut'))
     warna = {(KODE[r[0]], r[1]): (MERAH if not r[4] else BIRU) for r in BANJIR}
+    if PANEL_BANJIR:
+        peta_banjir_panel(k, warna)
+    else:
+        peta_banjir_inset(k, warna)
+    kartu(k, 43.2, 446.4, 206.1, len(belum), 'Belum dilaporkan surut (kab/kota)', True)
+    kartu(k, 254.3, 446.4, 206.1, len(BANJIR) - len(belum), 'Sudah dilaporkan surut (kab/kota)', False)
+    return tabel_peta_banjir(k)
+
+
+# multipeta (pemilik 19 Nov 2026: "bikin multipeta", tiap zona kejadian sama menonjolnya, bukan Sumatera besar plus inset):
+# [(judul, x, y, w, h, (lon0, lat_atas), [kode provinsi])]; semua panel berskala SKALA_PANEL pt per derajat
+PANEL_BANJIR = []
+SKALA_PANEL = 32.0
+
+
+def peta_banjir_panel(k, warna):
+    """Satu panel per zona, skala sama; label di POS_BANJIR = {kab: (x, y)} mutlak (pt slide)."""
+    titik = {}
+    for i, (nama, x, y, w, h, (lon0, la1), provs) in enumerate(PANEL_BANJIR):
+        ext = (lon0, lon0 + w / SKALA_PANEL, la1, la1 - h / SKALA_PANEL)
+        png = os.path.join(SINI, 'bahan', f'peta-banjir-{i + 1}.png')
+        px = (int(w * 5), int(h * 5))
+        f = gambar_peta(png, ext, px, warna, provs)
+        k.bulat(x, y, w, h, PUTIH, GARIS_INSET, radius=3)
+        k.gambar(png, x, y, w, h)
+        k.teks(x + 5, y + 2, w - 10, 12, [R(nama, 8, TEKS3, True)], bungkus=False)
+        for r in BANJIR:
+            lon, lat = pusat(KODE[r[0]], r[1])
+            if ext[0] <= lon <= ext[1] and ext[3] <= lat <= ext[2]:
+                titik[r[1]] = (x + f(lon, lat)[0] / px[0] * w, y + f(lon, lat)[1] / px[1] * h)
+    for r in BANJIR:
+        xl, yl = POS_BANJIR[r[1]]
+        label_peta(k, xl, yl, r[1], 'Belum surut' if not r[4] else 'Sudah surut', not r[4], titik[r[1]])
+    unsur_peta(k, 100 / 111 * SKALA_PANEL, dy=-8)
+
+
+def peta_banjir_inset(k, warna):
     png = os.path.join(SINI, 'bahan', 'peta-banjir.png')
     proj = peta_pt(gambar_peta(png, EXT_SUM, PX, warna, ['11', '12', '13', '14', '21', '15', '16', '17', '18']))
     k.gambar(png, 43.2, 102, 418, 338)
@@ -478,9 +519,9 @@ def s_peta_banjir(Dk):
         _, yl, xl = pos[r[1]]
         label_peta(k, xl, yl, r[1], stat[r[1]], not r[4], titik[r[1]])
     unsur_peta(k, 100 / 111 * 418 / (EXT_SUM[1] - EXT_SUM[0]))
-    kartu(k, 43.2, 446.4, 206.1, len(belum), 'Belum dilaporkan surut (kab/kota)', True)
-    kartu(k, 254.3, 446.4, 206.1, len(BANJIR) - len(belum), 'Sudah dilaporkan surut (kab/kota)', False)
-    # tabel
+
+
+def tabel_peta_banjir(k):
     kol = [('KAB/KOTA', 118.9, 'l'), ('KEC.', 22.6, 'c'), ('MULAI', 36, 'c'), ('SELESAI', 40, 'c'), ('KK TERDAMPAK', 68, 'c'),
            ('MENGUNGSI', 62, 'c'), ('KONDISI', 98, 'c')]   # 16 Nov: MULAI/SELESAI dilebarkan, "12 Nov" sempat terbungkus
     baris = []
@@ -786,7 +827,22 @@ def s_lampiran_ungsi(Dk, no='L3', jenis=None):
             baris.append(('data', [nama, ('pil', pil, r[3], 8.6), f0(r[4]), f0(r[5]), rt(r[6], 8.5), r[7]]))
     baris.append(('total', ['Jumlah', '', f0(t_k), f0(t_j), ('runs', [R('KK dan jiwa dijumlah terpisah: tidak semua kab/kota melaporkan keduanya',
                                                                        7.5, PUTIH, False)]), '']))
-    tabel(k, 43.2, 140, kol, baris, bawah=500, pt=8.5, maks=34 if len(U) > 6 else 52)   # baris sedikit: lebih tinggi (D-39)
+    hari = UNGSI_HARI if jenis in (None, 'banjir') else None
+    tabel(k, 43.2, 140, kol, baris, bawah=318 if hari else 500, pt=8.5, maks=34 if len(U) > 6 or hari else 52)   # baris sedikit: lebih tinggi (D-39)
+    if hari:   # 19 Nov: baris sedikit; perkembangan jiwa mengungsi per laporan harian mengisi sisa halaman (D-39), bukan meregangkan tabel
+        tgl = hari['tanggal']
+        kepala_panel(k, 43.2, 330, 873.6, 'Perkembangan jiwa mengungsi per laporan harian', 'pengungsi', hari.get('catatan'))
+        lebar = (873.6 - 150 - 140) / len(tgl)
+        kol2 = [('KAB/KOTA', 150, 'l')] + [(t.upper(), lebar, 'c') for t in tgl] + [('PERUBAHAN', 140, 'c')]
+        b2, tot = [], [0] * len(tgl)
+        for kab, v in hari['kab'].items():
+            ada = [x for x in v if x is not None]
+            d = ada[-1] - ada[0] if len(ada) > 1 else None
+            ubah = '–' if d is None else ('tetap' if d == 0 else f'{"+" if d > 0 else "−"}{f0(abs(d))} jiwa')
+            b2.append(('data', [kab] + [f0(x) for x in v] + [ubah]))
+            tot = [a + (x or 0) for a, x in zip(tot, v)]
+        b2.append(('total', ['Jumlah'] + [f0(x) for x in tot] + ['']))
+        tabel(k, 43.2, 368, kol2, b2, bawah=500, pt=8.5, maks=26)
 
 
 # ======================================================================== probabilitas dan mitigasi dari data GIS (minggu tanpa deck 091126)
@@ -794,9 +850,13 @@ AWAS, SIAGA, PITA_SIAGA = '8F3F07', 'E8894A', 'FBE7D6'   # skala.api.5, skala.ap
 ARTI = [('Awas', AWAS, PITA_MERAH, 'peringatan', 'Hujan 3 hari 120 mm atau lebih di wilayah bahaya tinggi, atau debit sungai setara banjir 20 tahunan.'),
         ('Siaga', SIAGA, PITA_SIAGA, 'banjir', 'Hujan 3 hari 80 mm atau lebih, hujan 30 mm per jam, atau peluang hujan lebat 50% di wilayah '
                                                  'bahaya sedang ke atas, atau debit sungai setara banjir 5 tahunan.')]
+UNGSI_HARI = None  # {'tanggal': [...], 'kab': {kab: [jiwa per tanggal]}, 'catatan': teks} perkembangan pengungsi (lampiran pengungsian)
 MITIGASI = {}      # kab terdampak -> langkah (diisi skrip minggu, dari laporan Koordalops)
 PANTAU = []        # [(kab, langkah)] pantauan khusus, mis. longsor yang masih ditangani
 N_SIAGA_MITIGASI = 12
+N_AWAS_TERATAS = 10  # tabel per kab/kota di slide probabilitas: sekian teratas (pemilik 19 Nov 2026)
+AWAS_PER_KEC = 7    # lebih dari ini kecamatan Awas: tabel slide probabilitas per kab/kota (19 Nov 2026)
+MUAT_PANEL = 18     # baris (pita dihitung) yang muat di satu panel mitigasi; Awas yang tidak muat di kiri pindah ke kanan
 PAKAI_PANTAU = True
 
 
@@ -848,6 +908,11 @@ def s_probabilitas(Dk):
     k.gambar(png, 43.2, 102, W_, H_)
     ke = lambda lon, lat: (43.2 + f(lon, lat)[0] / 2000 * W_, 102 + f(lon, lat)[1] / int(2000 * H_ / W_) * H_)
     awas = [(o, kec) for o in rows if o['a'] for kec in o['ka']]
+    per_kab = len(awas) > AWAS_PER_KEC   # 19 Nov: 44 kecamatan Awas tidak muat; tabel dan nomor peta per kab/kota, dua kolom
+    if per_kab:
+        # pemilik 19 Nov 2026: "bikin top 10 aja", berjudul "10 kab/kota dengan probabilitas tertinggi"; urut hujan tiga hari
+        # kecamatan Awas tertinggi, lalu jumlah kecamatan Awas; daftar lengkap tetap di lampiran
+        awas = sorted(((o, o['ka'][0]) for o in rows if o['a']), key=lambda t: (-t[1][1], -t[0]['a']))[:N_AWAS_TERATAS]
     taruh = []
     for i, (o, kec) in enumerate(awas, 1):   # nomor pada peta = nomor baris tabel kecamatan Awas di bawah
         try:
@@ -869,10 +934,22 @@ def s_probabilitas(Dk):
         k.gambar(ikon(konsep), x + 11.3, 308.3, 6.4, 6.4)
         k.teks(x + 24, 305, 170, 13, [R(nama, 9, TEKS, True)], bungkus=False)
         k.teks(x + 9, 319, 192, 34, [R(arti, 7, TEKS)], jangkar='t', spasi=0.95)
-    kol = [('NO', 22, 'c'), ('KECAMATAN AWAS', 118, 'l'), ('KAB/KOTA', 110, 'l'), ('HUJAN 3 HARI (MM)', 86, 'c'), ('PUNCAK', 81.8, 'c')]
-    baris = [('data', [str(i), kec[0], o['kab'], ('runs', [R(str(round(kec[1])), 9, MERAH, True)]),
-                       f'{kec[2].day} {BLN[kec[2].month][:3]}' if kec[2] else '–']) for i, (o, kec) in enumerate(awas, 1)]
-    tabel(k, 43.2, 364, kol, baris, bawah=500, pt=8.5, maks=22)
+    if per_kab:   # kab/kota Awas: jumlah kecamatan Awas, hujan dan puncak kecamatan tertingginya; daftar kecamatan di lampiran
+        kol = [('NO', 17, 'c'), ('KAB/KOTA AWAS', 92, 'l'), ('KEC.', 24, 'c'), ('MM', 28, 'c'), ('PUNCAK', 45, 'c')]
+        baris = [('data', [str(i), o['kab'], o['a'], ('runs', [R(str(round(kec[1])), 8, MERAH, True)]),
+                           f'{kec[2].day} {BLN[kec[2].month][:3]}' if kec[2] else '–']) for i, (o, kec) in enumerate(awas, 1)]
+        # pemilik 19 Nov 2026 ("bikin yang bagus"): kepala bagian berikon seperti kepala panel lain, bukan teks lepas
+        kepala_panel(k, 43.2, 362, 418, f'{len(baris)} kab/kota dengan probabilitas tertinggi', 'peringatan',
+                     'Urut hujan 3 hari; daftar lengkap di L3', warna=AWAS)
+        h = (len(baris) + 1) // 2
+        tb = (500 - 398 - 14) / h   # tinggi baris tetap: sel angka merah ('runs') tidak memaksa tinggi minimum 17 pt
+        for j, bs in enumerate((baris[:h], baris[h:])):
+            tabel(k, 43.2 + j * 212, 398, kol, [b_ + (tb,) for b_ in bs], bawah=500, pt=7.5, kepala=14)
+    else:
+        kol = [('NO', 22, 'c'), ('KECAMATAN AWAS', 118, 'l'), ('KAB/KOTA', 110, 'l'), ('HUJAN 3 HARI (MM)', 86, 'c'), ('PUNCAK', 81.8, 'c')]
+        baris = [('data', [str(i), kec[0], o['kab'], ('runs', [R(str(round(kec[1])), 9, MERAH, True)]),
+                           f'{kec[2].day} {BLN[kec[2].month][:3]}' if kec[2] else '–']) for i, (o, kec) in enumerate(awas, 1)]
+        tabel(k, 43.2, 364, kol, baris, bawah=500, pt=8.5, maks=22)
     # tabel per provinsi
     kol = [('PROVINSI', 128, 'l'), ('KAB/KOTA', 52, 'c'), ('KEC. AWAS', 58, 'c'), ('KEC. SIAGA', 58, 'c'), ('HUJAN 3 HARI (MM)', 82, 'c'),
            ('TGL. PUNCAK', 67.5, 'c')]
@@ -884,6 +961,9 @@ def s_probabilitas(Dk):
         baris.append(('data', [p, len(xs), ('runs', [R(str(a), 9, MERAH, True)]) if a else '–', sum(o['s'] for o in xs),
                                ('runs', [R(str(round(top['mm'])), 9, MERAH, True)]), f'{top["tgl"].day} {BLN[top["tgl"].month][:3]}']))
     baris.append(('total', ['Jumlah', len(rows), na, ns, '', '']))
+    if len(baris) > 19:   # 19 Nov: 21 provinsi; tinggi baris tetap supaya muat sampai dasar
+        tb = (500 - 101 - 16.6 - 21.6) / (len(baris) - 1)
+        baris = [b_ + (tb,) if b_[0] == 'data' else b_ for b_ in baris]
     tabel(k, 471.3, 101, kol, baris, pt=9, minh=17)
 
 
@@ -899,6 +979,9 @@ def s_mitigasi(Dk):
     tk = {r[1] for r in terdampak}
     aw = [o for o in rows if o['a'] and o['kab'] not in tk]
     sg = sorted((o for o in rows if not o['a'] and o['kab'] not in tk), key=lambda o: (-o['s'], -o['mm']))[:N_SIAGA_MITIGASI]
+    lebih = 2 + len(terdampak) + len(aw) - MUAT_PANEL   # baris Awas yang pindah ke panel kanan (19 Nov 2026)
+    if lebih > 0:
+        sg = sg[:max(0, MUAT_PANEL - lebih - 2)]
     pantau = PANTAU if PAKAI_PANTAU else []   # deck banjir terpisah: tanpa pantauan longsor
     n = len(terdampak) + len(aw) + len(sg) + len(pantau)
     s, k = Dk.slide(judul(f'Mitigasi [{n}] kab/kota: [{len(terdampak)}] terdampak ditangani sekarang; [{len(aw)}] Awas dan [{len(sg)}] Siaga '
@@ -908,14 +991,18 @@ def s_mitigasi(Dk):
         k.ikon_bulat(konsep, x + 6, 103, 22)
         k.teks(x + 36, 102, w - 36, 24, [R(judul_p, 11, TEKS, True)])
         k.garis(x, 132, x + w, 132, TEKS, 0.75)
-        tabel(k, x + 6, 140, [('KAB/KOTA', 92, 'l'), ('LANGKAH BPBD BERSAMA BNPB', w - 104, 'l')], isi, bawah=500, pt=8.5, maks=24, minh=17)
+        tabel(k, x + 6, 140, [('KAB/KOTA', 106, 'l'), ('LANGKAH BPBD BERSAMA BNPB', w - 118, 'l')], isi, bawah=500, pt=8.5, maks=24, minh=17)
 
     kiri = [('prov', 'Terdampak, belum dilaporkan surut', PITA_MERAH, (MERAH, 'peringatan'))]
     kiri += [('data', [r[1], rt(MITIGASI[r[1]], 8)]) for r in terdampak]
     kiri += [('prov', 'Awas', PITA_MERAH, (AWAS, 'peringatan'))]
     kiri += [('data', [o['kab'], rt(f'Siapkan evakuasi {langkah_kec(o["ka"])}' + (f'; pantau {langkah_kec(o["ks"])}' if o['ks'] else ''), 8)])
              for o in aw]
-    kanan = [('prov', 'Siaga', PITA_SIAGA, (SIAGA, 'banjir'))]
+    kanan = []
+    if len(kiri) > MUAT_PANEL:   # 19 Nov: 18 kab/kota Awas; sisa Awas menyambung di panel kanan, Siaga dipangkas supaya muat
+        kanan = [('prov', 'Awas (lanjutan)', PITA_MERAH, (AWAS, 'peringatan'))] + kiri[MUAT_PANEL:]
+        kiri = kiri[:MUAT_PANEL]
+    kanan += [('prov', 'Siaga', PITA_SIAGA, (SIAGA, 'banjir'))]
     # tanggal puncak ditulis sebagai keterangan, bukan tenggat: puncak bisa jatuh sebelum tanggal paparan
     kanan += [('data', [o['kab'], rt(f'Siapkan evakuasi {langkah_kec(o["ks"])} ({o["s"]} kecamatan Siaga, puncak hujan '
                                      f'{o["tgl"].day} {BLN[o["tgl"].month][:3]})', 8)]) for o in sg]
@@ -1153,10 +1240,11 @@ def bangun(jenis):
             susun += [{'jenis': 'impor', 'pptx': imp, 'halaman': n, 'bagian': b, 'sumber': sb091[n]} for n, b in ((2, 2), (5, 3))]
             judul_bagian += ['Probabilitas banjir', 'Mitigasi']
         n_l = s_rincian_banjir(Dk)
-        if any(r[2] == 'banjir' for r in UNGSI):
+        l_ungsi = any(r[2] == 'banjir' for r in UNGSI)   # pemilik 19 Nov: L2 selalu pengungsian, L3 daftar kab/kota
+        if l_ungsi:
             s_lampiran_ungsi(Dk, 'L2', 'banjir'); n_l += 1
         if MINGGU.get('gis'):   # pemilik 16 Nov 2026: lampiran daftar lengkap kab/kota Awas dan Siaga, per provinsi
-            n_gis = s_lampiran_status(Dk, f'L{2 + any(r[2] == "banjir" for r in UNGSI)}'); n_l += n_gis
+            n_gis = s_lampiran_status(Dk, f'L{2 + l_ungsi}'); n_l += n_gis
         nama = MINGGU['nama'].replace('Banjir dan Longsor', 'Banjir')
         judul_dok, subjek = 'Laporan Situasi dan Kondisi Wilayah Terdampak Banjir', 'Paparan Situasi Banjir Mingguan'
     else:

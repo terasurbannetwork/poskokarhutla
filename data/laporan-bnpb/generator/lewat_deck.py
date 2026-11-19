@@ -109,6 +109,9 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
         akar_k = os.path.splitext(os.path.basename(keluar))[0]
         for f in os.listdir(kerja):
             if f.startswith(akar_k): shutil.move(os.path.join(kerja, f), os.path.join(os.path.dirname(keluar), f))
+        if os.path.isdir(os.path.join(kerja, 'qa')):   # 19 Nov: laporan QA ikut dipindah supaya alasan GAGAL bisa dibaca
+            ke_qa = os.path.join(os.path.dirname(keluar), 'qa')
+            shutil.rmtree(ke_qa, ignore_errors=True); shutil.move(os.path.join(kerja, 'qa'), ke_qa)
         shutil.rmtree(kerja, ignore_errors=True)
     # 15 Nov (Mac): salinan spek yang tersimpan di repo publik memakai jalur relatif repo, bukan /Users/<nama>/... (gerbang-jalur-mutlak);
     # jalur mutlak hanya dipakai saat membangun di atas

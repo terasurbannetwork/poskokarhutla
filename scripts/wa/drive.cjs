@@ -47,7 +47,8 @@ function jalurTanggal(iso) {
     `${ke + 1}. ${HARI[ke]}, ${tgl(new Date(t), true)}`]
 }
 // Laporan otomatis -> subfolder di DRIVE_LAPORAN ("1. Laporan Harian" Tim IT BNPB). Banjir ikut Bencana.
-const KATEGORI = { harian: '1. Laporan Harian Bencana', penanganan: '2. Laporan Harian Karhutla', penanganan_banjir: '1. Laporan Harian Bencana' }
+const KATEGORI = { harian: '1. Laporan Harian Bencana', penanganan: '2. Laporan Harian Karhutla', penanganan_banjir: '1. Laporan Harian Bencana',
+  banjir_sepekan: '1. Laporan Harian Bencana' } // paparan banjir sepekan (bot, 19 Nov 2026) ke folder hari tanggal akhir periode
 const DIRDALOPS = '3. Laporan Harian Dirdalops'
 // Tanggal laporan Dirdalops dari nama berkas ("... Koordalops BNPB 29102026.docx"), sama dengan tanggalNamaBerkas di src/wa_jenis.js.
 function tanggalDirdalops(nama) {

@@ -265,3 +265,20 @@ test('catatan berkelompok di hasil.json (pemilik 19 Nov: catatan kepanjangan, gr
   assert.deepEqual(h.kelompok.lain, ['PM2,5 Pekanbaru galat sensor'])
   assert.equal(h.catatan.length, 4)
 })
+
+test('cariKemarin banjir_sepekan (K42): acuan = paparan mingguan buatan tangan terakhir sebelum tanggal akhir, revisi tertinggi, beserta buat.py', () => {
+  const dasar = fs.mkdtempSync(path.join(os.tmpdir(), 'agen-sepekan-')), repo = path.join(dasar, 'repo')
+  const taruh = (t, rev, nama) => { const d = path.join(repo, 'data', 'laporan-bnpb', 'mingguan', t, 'banjir-longsor', `Revisi ${rev}`); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, nama), 'x') }
+  taruh('2026-11-09', 7, 'Paparan Situasi Banjir Sepekan 091126.pptx')
+  taruh('2026-11-16', 2, 'Paparan Situasi Banjir Sepekan 161126.pptx')
+  taruh('2026-11-16', 6, 'Paparan Situasi Banjir Sepekan 161126.pptx')
+  taruh('2026-11-16', 7, 'Paparan Situasi Tanah Longsor Sepekan 161126.pptx')
+  taruh('2026-11-19', 1, 'Paparan Situasi Banjir Sepekan 191126.pptx')
+  fs.writeFileSync(path.join(repo, 'data', 'laporan-bnpb', 'mingguan', '2026-11-16', 'banjir-longsor', 'buat.py'), '# minggu')
+  const k = A.cariKemarin({ dasar, jenis: 'banjir_sepekan', tanggal: '2026-11-19', repo })
+  assert.equal(k.tanggal, '2026-11-16', 'deck tanggal yang sama tidak dipakai')
+  assert.equal(k.pptx, path.join(repo, 'data', 'laporan-bnpb', 'mingguan', '2026-11-16', 'banjir-longsor', 'Revisi 6', 'Paparan Situasi Banjir Sepekan 161126.pptx'))
+  assert.deepEqual(k.skrip.map((f) => path.basename(f)), ['buat.py'])
+  assert.match(A.pedoman('banjir_sepekan'), /Pedoman: Paparan Situasi Banjir Sepekan/)
+  assert.equal(A.cariKemarin({ dasar, jenis: 'banjir_sepekan', tanggal: '2026-11-09', repo }), null)
+})

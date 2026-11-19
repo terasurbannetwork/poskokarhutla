@@ -8,7 +8,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { tangani, klasifikasi, parsePerintah, keIsianGenerator, tanpaKunci, kedaluwarsa, waSha, BANTUAN, ulangFinal, hapusKonfirmasi, ulangSatelit, jawabSibukLangsung, T_SAPA } from '../../scripts/wa/proyek.mjs'
 import { GalatClaude, validasiOperasi } from '../../scripts/wa/claude.mjs'
-import { LAPORAN } from '../../scripts/wa/otomatis.mjs'
+import { LAPORAN, LAPORAN_PROYEK } from '../../scripts/wa/otomatis.mjs'
 
 const NOW = new Date('2026-10-29T01:00:00Z') // 08.00 WIB
 const TGL = '2026-10-26'
@@ -116,8 +116,8 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
         return { stdout: pdf }
       }
       if (tahanGenerator) await tahanGenerator
-      const out = args[args.indexOf('--out') + 1], tgl = args[args.indexOf('--tanggal') + 1]
-      const lap = LAPORAN.find((l) => l.args(tgl, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's', pvmbg_pagi: 'g' }, 'o')[0] === args[0])
+      const out = args[args.indexOf('--out') + 1], tgl = args[args.indexOf(args.includes('--tanggal') ? '--tanggal' : '--akhir') + 1]
+      const lap = [...LAPORAN, ...LAPORAN_PROYEK].find((l) => l.args(tgl, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's', pvmbg_pagi: 'g' }, 'o')[0] === args[0])
       fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.pdf`), 'x')
       fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.pptx`), JSON.stringify(deck()))
       fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.kunci.json`), JSON.stringify(KUNCI()))
@@ -1900,4 +1900,63 @@ test('gambar semua slide tiap draf (pemilik 19 Nov: ss per slide): v1 berurutan 
   await perintah(d, 'rencana aksi sebut BPBD')
   assert.deepEqual(d.kirim.map((k) => k.caption.split('\n')[0]), ['*Pratinjau draf v2*', 'Slide 2', 'Slide 3 (berubah)', '*Draf v2 siap*'])
   assert.match(d.kirim[0].caption, /Slide berubah: 3\./)
+})
+
+// K42 (pemilik 19 Nov 2026): Paparan Situasi Banjir Sepekan berperiode bebas, hanya lewat perintah, langsung dibangun V2.
+test('banjir sepekan: perintah periode bebas', () => {
+  const p = (t) => parsePerintah(t, NOW)
+  assert.deepEqual(p('buat banjir sepekan'), { aksi: 'buat', jenis: 'banjir_sepekan', tanggal: '2026-10-29', awal: '2026-10-23', saja: true })
+  assert.deepEqual(p('buat banjir sepekan 23-26 okt'), { aksi: 'buat', jenis: 'banjir_sepekan', tanggal: '2026-10-26', awal: '2026-10-23', saja: true })
+  assert.deepEqual(p('buat paparan banjir 28 sep sampai 3 okt'), { aksi: 'buat', jenis: 'banjir_sepekan', tanggal: '2026-10-03', awal: '2026-09-28', saja: true })
+  assert.equal(p('buat banjir sepekan 28-3 okt').awal, '2026-09-28')
+  assert.equal(p('buat banjir mingguan 23/10-26/10').tanggal, '2026-10-26')
+  assert.equal(p('buat banjir sepekan 2026-10-20 2026-10-26').awal, '2026-10-20')
+  assert.equal(p('buat banjir sepekan kemarin').tanggal, '2026-10-28')
+  assert.equal(p('buat banjir sepekan 1 agu - 26 okt').aksi, 'bantuan', 'lebih dari 31 hari')
+  assert.equal(p('buat banjir sepekan 31-2 okt').aksi, 'bantuan', '31 September tidak ada')
+  assert.deepEqual(p('buat harian kemarin'), { aksi: 'buat', jenis: 'harian', tanggal: '2026-10-28', saja: false })
+  assert.ok(!LAPORAN.some((l) => l.id === 'banjir_sepekan'), 'tidak pernah ikut jalur terjadwal')
+  assert.match(BANTUAN, /buat banjir sepekan 16-19 nov/)
+})
+
+function duniaSepekan(o = {}) {
+  const d = duniaV2(o)
+  const asli = d.ctx.dep.fetch
+  d.ctx.dep.fetch = async (u, opsi = {}) => {
+    const url = new URL(u)
+    if (url.pathname !== '/api/wa/masuk') return asli(u, opsi)
+    const t = url.searchParams.get('tanggal')
+    const pesan = t >= '2026-10-24' && t <= '2026-10-27' && t !== '2026-10-25'
+      ? [{ id: t.replace(/-/g, ''), diterima: 1, dari: DARI, teks: `[rekap_koordalops_24] ${t}`, nama_berkas: '', ada_berkas: 0 }] : []
+    return { ok: true, status: 200, json: async () => ({ pesan }), text: async () => '' }
+  }
+  return d
+}
+
+test('banjir sepekan: dibangun langsung dari WA Koordalops tiap hari periode, generator mendapat --awal dan --wa', async () => {
+  const d = duniaSepekan()
+  await perintah(d, 'buat banjir sepekan 23-26 okt')
+  const g = d.exec.filter((e) => String(e.args[0]).endsWith('banjir_sepekan.py'))
+  assert.equal(g.length, 1, 'tanpa menunggu lanjut')
+  assert.deepEqual(g[0].args.slice(1, 5), ['--awal', '2026-10-23', '--akhir', '2026-10-26'])
+  const wa = g[0].args.slice(g[0].args.indexOf('--wa') + 1).map((f) => path.basename(f))
+  assert.deepEqual(wa, ['koordalops-2026-10-24.txt', 'koordalops-2026-10-26.txt', 'koordalops-2026-10-27.txt'], 'laphar 23-26 = WA pagi 24-27; 25 tidak ada')
+  assert.equal(d.agen.length, 1)
+  assert.match(d.agen[0].prompt, /Paparan Situasi Banjir Sepekan/)
+  assert.match(d.agen[0].prompt, /koordalops-2026-10-24/)
+  assert.match(d.agen[0].prompt, /Periode laphar Koordalops 23 Okt sampai 26 Okt; WA Koordalops tersimpan di bot: 24 Okt, 26 Okt, 27 Okt\./)
+  assert.ok(d.kirim.some((k) => k.nama === 'Paparan Situasi Banjir Sepekan 261026.pdf'), d.kirim.map((k) => k.nama).join(', '))
+})
+
+test('banjir sepekan: tanpa mode V2 ditolak, generator tidak dijalankan', async () => {
+  const d = dunia()
+  await perintah(d, 'buat banjir sepekan 23-26 okt')
+  assert.match(d.balasan.at(-1), /hanya dibuat lewat Claude \(mode V2\)/)
+  assert.equal(d.exec.filter((e) => String(e.args[0]).endsWith('banjir_sepekan.py')).length, 0)
+})
+
+test('banjir sepekan: periode lintas tahun dan satu tanggal ISO', () => {
+  const p = (t) => parsePerintah(t, new Date('2027-01-04T01:00:00Z'))
+  assert.deepEqual([p('buat banjir sepekan 28 des - 3 jan').awal, p('buat banjir sepekan 28 des - 3 jan').tanggal], ['2026-12-28', '2027-01-03'])
+  assert.deepEqual([p('buat banjir sepekan 2027-01-03').awal, p('buat banjir sepekan 2027-01-03').tanggal], ['2026-12-28', '2027-01-03'])
 })

@@ -15,7 +15,7 @@ import crypto from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { LAPORAN, ambilBahan, siapkanKeluaran, jalankanGenerator, kunciProses, tanggalWib, jamWib, MIME, dariIzin, KUNCI_BASI_MS } from './otomatis.mjs'
+import { LAPORAN, LAPORAN_PROYEK, ambilBahan, siapkanKeluaran, jalankanGenerator, kunciProses, tanggalWib, jamWib, MIME, dariIzin, KUNCI_BASI_MS } from './otomatis.mjs'
 import { parseTanggal, labelTanggal } from './perintah.mjs'
 import { buatKlien, GalatClaude, medanTerkunci, sebutAngkaSistem, samarkan } from './claude.mjs'
 import * as jenisWa from '../../src/wa_jenis.js'
@@ -48,14 +48,43 @@ const jenisLap = (lap) => [...lap.butuh, ...(lap.pilihan || []), ...Object.value
 const labelWajib = (lap, k) => [labelBahan(k), ...(lap.setara?.[k] || []).map((a) => { const l = labelBahan(a); return l[0].toLowerCase() + l.slice(1) })].join(' atau ')
 // Perintah satu baris pendek: huruf kecil, spasi tunggal, ekor bukan huruf atau angka dibuang ("lanjut\\", "final!", "lanjut.").
 export const normalPerintah = (teks) => String(teks ?? '').trim().toLowerCase().replace(/[^\p{L}\p{N}]+$/u, '').replace(/\s+/g, ' ')
-const lapDari = (id) => LAPORAN.find((l) => l.id === id)
+const lapDari = (id) => [...LAPORAN, ...LAPORAN_PROYEK].find((l) => l.id === id)
 
 // wa_sha = sha256("<WA_GARAM>|<62 nomor>") dari daftar.cjs (satu rumus dengan gateway dan pendaftaran, BL-03): satu-satunya pengenal pemakai yang keluar dari mesin.
 export const waSha = req('./daftar.cjs').waSha
 
 // ---------- perintah ----------
 const JENIS_KATA = { harian: 'harian', bencana: 'harian', 'harian bencana': 'harian', 'kejadian bencana': 'harian',
-  penanganan: 'penanganan', karhutla: 'penanganan', 'penanganan karhutla': 'penanganan' }
+  penanganan: 'penanganan', karhutla: 'penanganan', 'penanganan karhutla': 'penanganan',
+  'banjir sepekan': 'banjir_sepekan', 'paparan banjir': 'banjir_sepekan', 'paparan banjir sepekan': 'banjir_sepekan', 'banjir mingguan': 'banjir_sepekan' }
+
+// Periode paparan banjir sepekan (pemilik 19 Nov 2026: "bisa diatur juga tanggal yang dimau tanggal berapa aja") -> {awal, akhir} | null.
+// Kosong = 7 hari sampai hari ini; satu tanggal = 7 hari sampai tanggal itu; "16-19 nov", "16 sampai 19 nov", "28 okt s.d. 3 nov",
+// "16/11-19/11", "2026-11-16 2026-11-19". Paling panjang 31 hari, awal tidak sesudah akhir.
+export const MAKS_PERIODE = 31
+const tglSah = (y, m, d) => { const x = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`, u = new Date(x + 'T00:00:00Z'); return !Number.isNaN(u.getTime()) && u.toISOString().slice(0, 10) === x ? x : null }
+export function parsePeriode(s, now = new Date()) {
+  const t = String(s ?? '').trim()
+  const jadi = (awal, akhir) => (awal && akhir && awal <= akhir && Date.parse(akhir) - Date.parse(awal) < MAKS_PERIODE * 864e5 ? { awal, akhir } : null)
+  const m = t.match(/^(\d{4}-\d{1,2}-\d{1,2})(?:\s*(?:-|–|sampai|sd|s\.d\.?|s\/d|hingga)\s*|\s+)(\d{4}-\d{1,2}-\d{1,2})$/)
+  if (m) return jadi(parseTanggal(m[1], now), parseTanggal(m[2], now))
+  if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(t)) { const akhir = parseTanggal(t, now); return akhir ? jadi(geserHari(akhir, -6), akhir) : null }
+  const bagian =t.split(/\s*(?:\bsampai(?: dengan)?\b|\bhingga\b|\bs\.?d\b\.?|\bs\/d\b|–|-)\s*/).filter(Boolean)
+  if (!t || bagian.length === 1) {
+    const akhir = parseTanggal(t, now)
+    return akhir ? jadi(geserHari(akhir, -6), akhir) : null
+  }
+  if (bagian.length !== 2) return null
+  const akhir = parseTanggal(bagian[1], now)
+  if (!akhir) return null
+  let awal = parseTanggal(bagian[0], now)
+  if (!awal && /^\d{1,2}$/.test(bagian[0])) { // "16-19 nov": bulan dan tahun dari tanggal akhir; "28-3 nov" = 28 bulan sebelumnya
+    const [y, mo] = akhir.split('-').map(Number), d = Number(bagian[0])
+    awal = tglSah(y, mo, d)
+    if (!awal || awal > akhir) awal = mo === 1 ? tglSah(y - 1, 12, d) : tglSah(y, mo - 1, d)
+  } else if (awal && awal > akhir && !/\d{4}/.test(bagian[0])) awal = tglSah(Number(awal.slice(0, 4)) - 1, Number(awal.slice(5, 7)), Number(awal.slice(8, 10))) // "28 des - 3 jan"
+  return jadi(awal, akhir)
+}
 
 // -> {aksi:'buat', jenis|null, tanggal, saja} | {aksi:'status'|'bantuan'|'versi'|'pptx'|'batal'|'final'} | {aksi:'balik', n} | null (bukan perintah: bahan atau revisi).
 // Teks panjang atau berbaris banyak = bahan (aturan sama dengan perintah.mjs). `status <tanggal>` bukan milik mesin ini (Q14).
@@ -92,6 +121,10 @@ export function parsePerintah(teks, now = new Date()) {
     if (sisa === kata || sisa.startsWith(kata + ' ')) { jenis = JENIS_KATA[kata]; sisa = sisa.slice(kata.length).trim(); break }
   }
   if (/^saja\b/.test(sisa)) { saja = true; sisa = sisa.replace(/^saja\b ?/, '') }
+  if (jenis && lapDari(jenis)?.periode) { // tanpa bahan yang ditunggu: langsung dibangun (setara buat saja)
+    const pr = parsePeriode(sisa, now)
+    return pr ? { aksi: 'buat', jenis, tanggal: pr.akhir, awal: pr.awal, saja: true } : { aksi: 'bantuan' }
+  }
   const tanggal = parseTanggal(sisa, now)
   if (!tanggal) return { aksi: 'bantuan' }
   return { aksi: 'buat', jenis, tanggal, saja }
@@ -103,6 +136,7 @@ export const BANTUAN = [
   '*Membuat laporan*',
   '- *buat harian*: mulai laporan kejadian bencana',
   '- *buat penanganan*: mulai laporan penanganan karhutla',
+  '- *buat banjir sepekan 16-19 nov*: paparan banjir sepekan, periode bebas, langsung dibuat',
   '- Kirim atau teruskan bahan yang diminta',
   '- *lanjut*: buat laporan dari bahan ada',
   '',
@@ -177,6 +211,30 @@ function catatIndeks(dasar, p, sha, dari) {
   const ix = bacaJson(indeksP(dasar), { proyek: {} })
   ix.proyek[p.id] = { sha, dari, jenis: p.jenis, tanggal: p.tanggal }
   tulisJson(indeksP(dasar), ix)
+}
+// Periode laporan berperiode (banjir_sepekan): Worker hanya menyimpan tanggal (= akhir), awalnya disimpan di mesin per proyek.
+const periodeP = (dasar, id) => path.join(dirProyek(dasar), id, 'periode.json')
+export function periodeProyek(dasar, p) {
+  const d = bacaJson(periodeP(dasar, p.id), null)
+  return d?.akhir === p.tanggal && d.awal ? d : { awal: geserHari(p.tanggal, -6), akhir: p.tanggal }
+}
+const catatPeriode = (dasar, p, awal) => tulisJson(periodeP(dasar, p.id), { awal, akhir: p.tanggal })
+// WA Koordalops tiap hari periode dari bahan tersimpan (laphar D dikirim pagi D+1): berkas untuk --wa generator dan bahan agen.
+async function koordalopsPeriode(ctx, dep, awal, akhir, ke) {
+  const harian = LAPORAN.find((l) => l.id === 'harian'), log = ctx.log || (() => {}), kini = tanggalWib(ctx.now || new Date()), hasil = []
+  fs.mkdirSync(ke, { recursive: true, mode: 0o700 })
+  for (let h = geserHari(awal, 1); h <= geserHari(akhir, 1) && h <= kini; h = geserHari(h, 1)) {
+    try {
+      const b = await ambilBahan({ env: ctx.env, dep, tanggal: h, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+      const { teks } = await b.pilihSesuai(harian)
+      const t = teks.rekap_koordalops_24
+      if (!t || /^biner:/.test(t)) continue
+      const f = path.join(ke, `koordalops-${h}.txt`)
+      fs.writeFileSync(f, t, { mode: 0o600 })
+      hasil.push({ tanggal: h, f, teks: t })
+    } catch (e) { log('[periode] koordalops', h, e.message) }
+  }
+  return hasil
 }
 function hapusIndeks(dasar, id) {
   const ix = bacaJson(indeksP(dasar), { proyek: {} })
@@ -609,6 +667,7 @@ async function buat(cmd, dari, sha, ctx) {
   }
   if (!jenis) return balas(susun('Jenis laporan belum jelas', null, null, `Bahan ${labelTanggal(cmd.tanggal)} belum menunjukkan jenis laporannya.`, ['Ketik salah satu:', `- *buat harian ${cmd.tanggal}*`, `- *buat penanganan ${cmd.tanggal}*`]))
   const lap = lapDari(jenis)
+  if (lap.periode && !pakaiV2(env, dari)) return balas(susun(`${lap.judul} belum bisa dibuat`, null, null, 'Laporan ini hanya dibuat lewat Claude (mode V2). Hubungi pemilik bot.'))
   const { terpilih, teks } = await bahan.pilihSesuai(lap)
   // Bahan teks Claude: bahan terpilih generator ditambah pesan lain dalam lingkup bertanggal itu (teks, PDF, foto, Excel).
   // Foto grup operasi yang tidak terpilih tidak ikut: itu bukti lapangan, bukan bahan laporan, dan OCR-nya mahal.
@@ -622,6 +681,8 @@ async function buat(cmd, dari, sha, ctx) {
   // Daftar bahan (K17) hanya membuka proyek; bahan ditempel sekali, saat membangun (`lanjut`, `buat saja`).
   let { proyek: p } = await proyekBuka(ctx, { wa_sha: sha, jenis, tanggal: cmd.tanggal, bahan: cmd.saja || cmd.lanjut ? bahanRute : [] })
   catatIndeks(dasar, p, sha, dari)
+  if (lap.periode && cmd.awal && !['draf', 'membangun'].includes(p.status)) catatPeriode(dasar, p, cmd.awal)
+  const periode = lap.periode ? periodeProyek(dasar, p) : null
   const berkasKunci = lockProyek(dasar, p.id)
   if (p.status === 'membangun') {
     if (kunciHidup(berkasKunci)) return balas(tSibuk(p, p.versi || null))
@@ -644,11 +705,15 @@ async function buat(cmd, dari, sha, ctx) {
   const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
   const kunciSibuk = tandaiSibuk(ctx, sha, p.id)
   const prog = await mulaiProgres(ctx)
-  const gagalBangun = () => catatGagal(ctx, sha, { langkah: 'bangun', id: p.id, cmd: { jenis, tanggal: cmd.tanggal, saja: !!cmd.saja, ...(cmd.firespot ? { firespot: cmd.firespot } : {}), ...(cmd.terimaKurang ? { terimaKurang: true } : {}) } })
+  const gagalBangun = () => catatGagal(ctx, sha, { langkah: 'bangun', id: p.id, cmd: { jenis, tanggal: cmd.tanggal, saja: !!cmd.saja, ...(periode ? { awal: periode.awal } : {}), ...(cmd.firespot ? { firespot: cmd.firespot } : {}), ...(cmd.terimaKurang ? { terimaKurang: true } : {}) } })
   try {
     const bahanTeks = [], tidakTerbaca = []
     let jumlahGambar = 0
-    for (const m of pakai.values()) {
+    // Berperiode: bahannya WA Koordalops tiap hari periode, bukan pesan tanggal proyek saja.
+    // tanpa saring `batal`: WA Koordalops hari-hari periode memang masuk sebelum batal, tetap dipakai saat dibangun ulang
+    const kd = periode ? await koordalopsPeriode(ctx, { ...dep, fetch: fetchLingkup(dep, lingkup.boleh) }, periode.awal, periode.akhir, path.join(dirProyek(dasar), p.id, 'koordalops')) : []
+    for (const x of kd) bahanTeks.push({ id: `koordalops-${x.tanggal}`, nama: `koordalops-${x.tanggal}`, jenis: 'rekap_koordalops_24', teks: x.teks })
+    for (const m of periode ? [] : pakai.values()) {
       const simpan = pakaiV2(env, dari) && jumlahGambar < MAKS_BAHAN_GAMBAR ? path.join(kerjaEkstrak, 'gambar') : null
       const e = await ekstrak(m, ctx, kerjaEkstrak, { simpanGambar: simpan })
       if (!e) continue
@@ -665,6 +730,7 @@ async function buat(cmd, dari, sha, ctx) {
     // K17: bahan wajib yang kurang dan cut-off tidak ditanyakan (pemakai sudah memilih `lanjut`), hanya dicatat di draf.
     // Bentrok dan bahan tak terbaca ditanyakan sekali sesudah `lanjut`; `lanjut` lagi (status bertanya) atau `buat saja` membangun dan mencatatnya.
     const celah = [
+      ...(periode ? [`Periode laphar Koordalops ${labelTanggal(periode.awal)} sampai ${labelTanggal(periode.akhir)}; WA Koordalops tersimpan di bot: ${kd.length ? kd.map((x) => labelTanggal(x.tanggal)).join(', ') : 'tidak ada'}.`] : []),
       ...kurang.map((k) => `${labelBahan(k)} untuk ${labelTanggal(cmd.tanggal)} belum ada.`),
       ...(adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []),
     ]
@@ -686,6 +752,7 @@ async function buat(cmd, dari, sha, ctx) {
 
     // K18: penanganan saat FIRMS sudah memuat lintasan siang tetapi situs belum = pemakai memilih *tunggu* atau *hitung*.
     let lapBangun = lap
+    if (periode) lapBangun = { ...lap, args: (d, f, o) => lap.args(d, { ...f, awal: periode.awal, wa: kd.map((x) => x.f) }, o) }
     // terima kurang (per laporan, nomor terdaftar mana pun): WA Koordalops merinci lebih sedikit dari jumlah menonjol; draf memakai yang dirinci dan mencatatnya
     if (cmd.terimaKurang && lap.id === 'harian') {
       lapBangun = { ...lap, args: (d, f, o) => [...lap.args(d, f, o), '--terima-kurang'] }
