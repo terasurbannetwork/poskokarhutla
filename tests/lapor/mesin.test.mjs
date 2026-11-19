@@ -165,3 +165,15 @@ test("nama yang tidak sesuai jenisnya dikonfirmasi dulu", async () => {
   assert.match(h.balasan, /Tulis ulang/);
   assert.equal(h.sesi.isian.nama_faskes, undefined);
 });
+
+test("salah pilih: 'kembali' memulihkan pertanyaan sebelumnya beserta isiannya", async () => {
+  const awal = ["lapor", "1", "2", "Siti", "Kabupaten Bogor", "Kalaksa", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}];
+  const sesudahJenis = await obrol([...awal, "1"]);
+  assert.equal(sesudahJenis.sesi.isian.jenis.nilai, "banjir");
+  const h = await putaran({sesi: sesudahJenis.sesi, pelapor: sesudahJenis.pelapor, pesan: {teks: "kembali"}, kini: ++jam});
+  assert.equal(h.kembali, true);
+  assert.equal(h.sesi.isian.jenis, undefined, "jenis yang salah pilih terhapus");
+  assert.match(h.inti, /Jenis bencana/, "pertanyaan jenis tampil lagi");
+  const lagi = await putaran({sesi: h.sesi, pelapor: h.pelapor, pesan: {teks: "2"}, kini: ++jam});
+  assert.equal(lagi.sesi.isian.jenis.nilai, "longsor", "bisa memilih ulang");
+});

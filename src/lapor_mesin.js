@@ -362,7 +362,28 @@ function terimaLokasi(sesi, lokasi, kini) { // galat teks atau null
 }
 
 /* ---------- satu putaran (A1 + A7) ---------- */
-export async function putaran({sesi, pelapor, pesan, model = null, wilayah = null, kini}) {
+/* Kembali ke pertanyaan sebelumnya bila salah pilih (pemilik 19 Nov 2026: "agar ada pilihan kalau salah pilih"): tiap putaran menyimpan potret sesi
+   sebelum jawaban diterapkan; "kembali" memulihkan potret terakhir dan menampilkan lagi pertanyaan itu. Berlaku di web dan WA (ketik *kembali*).
+   ponytail: potret menyalin sesi utuh (transkrip ikut), dibatasi 12 langkah; pangkas transkrip di potret bila ukuran sesi D1 jadi masalah. */
+const KATA_KEMBALI = /^(kembali|salah pilih|balik|undo)$/i;
+export async function putaran(arg) {
+  const {sesi, pelapor, pesan} = arg;
+  const kembali = pesan?.kembali === true || KATA_KEMBALI.test(String(pesan?.teks || "").trim());
+  if (kembali && sesi && !SELESAI.has(sesi.status)) {
+    const jejak = sesi.jejak || [], lalu = jejak.pop();
+    if (!lalu) return {sesi, pelapor, balasan: "Belum ada jawaban yang bisa dibatalkan.", inti: "Belum ada jawaban yang bisa dibatalkan.", pilihan: sesi.pilihan || null, pilihanKet: sesi.pilihanKet || null, minta: sesi.minta || null, isiAwal: sesi.isiAwal || null, form: sesi.form || null, banyak: !!sesi.banyak};
+    const pulih = {...lalu, jejak};
+    return {...(lalu.akhir || {}), sesi: pulih, pelapor, kembali: true};
+  }
+  const potret = sesi && !SELESAI.has(sesi.status) ? (({jejak, ...x}) => structuredClone(x))(sesi) : null;
+  const h = await putaranInti(arg);
+  if (h.sesi && !SELESAI.has(h.sesi.status)) {
+    h.sesi.jejak = potret && sesi === h.sesi ? [...(sesi.jejak || []), potret].slice(-12) : (h.sesi.jejak || []);
+    h.sesi.akhir = {balasan: h.balasan, inti: h.inti, pilihan: h.pilihan, pilihanKet: h.pilihanKet, minta: h.minta, isiAwal: h.isiAwal, form: h.form, banyak: h.banyak, grup: h.grup, kunci: h.kunci, saran: h.saran};
+  } else if (h.sesi) { delete h.sesi.jejak; delete h.sesi.akhir; }
+  return h;
+}
+async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, kini}) {
   const teks = tanpaEkor(pesan?.teks);
   let lokasi = pesan?.lokasi || null;
   const keluar = [];
@@ -534,7 +555,7 @@ export async function putaran({sesi, pelapor, pesan, model = null, wilayah = nul
     const tambah = (p === 1 && !kr.tulis) ? "" : samarkan(String(teks || "").replace(/^keterangan:\s*/i, "")).trim().slice(0, 300);
     setIsian(sesi, "kronologi", {nilai: [rangkaiKronologi(kr.frasa), tambah].filter(Boolean).join(" ")}, {sumber: "pilihan", waktu: kini});
     sesi.status = "melengkapi"; sesi.tanya = null; delete sesi.kr;
-    if (!tambah) return putaran({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kini}); // langsung ke pertanyaan berikutnya
+    if (!tambah) return putaranInti({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kini}); // langsung ke pertanyaan berikutnya
     // keterangan tambahan ikut diurai di bawah (angka korban dan lain-lain yang disebut tertangkap berkutipan)
   }
 

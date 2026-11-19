@@ -57,7 +57,7 @@ function isianTampil(sesi) {
   });
 }
 const keluaran = (h, sesi) => ({balasan: h.inti, pilihan: h.pilihan, ket: h.pilihanKet || null, minta: h.minta || null, isiAwal: h.isiAwal || null, form: h.form || null,
-  banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, status: sesi.status, lengkap: lengkap(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length});
+  banyak: !!h.banyak, grup: h.grup || null, kunci: h.kunci || null, saran: h.saran || 0, status: sesi.status, lengkap: lengkap(sesi), isian: isianTampil(sesi), foto: (sesi.foto || []).length, bisaKembali: !!sesi.jejak?.length, kembali: !!h.kembali});
 
 /* ---------- dokumen PDF dan Word (KEPUTUSAN K8, D21) ---------- */
 function bahanDokumen(s, p) {
@@ -123,7 +123,7 @@ async function pesan(body) {
     lokasi = {lat: c.lat, lon: c.lon, sumber: "cari", wilayah: c.wilayah};
   }
   const h = await putaran({sesi: sesiAktif, pelapor: d.pelapor[wa] || null, model, wilayah,
-    pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, saluran: "web"}, kini}); // rute ini hanya dipakai layar web
+    pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, kembali: body.kembali === true, saluran: "web"}, kini}); // rute ini hanya dipakai layar web
   h.sesi.id ||= `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;
   h.sesi.wa = wa;
   let tambahan = {};
@@ -178,7 +178,8 @@ function sesiAktif(wa) {
   const d = baca(), id = d.aktif[nomorWa(wa)], s = id && d.sesi[id];
   if (!s) return [200, {transkrip: []}];
   return [200, {transkrip: s.transkrip, nomor: s.nomor || null, pilihan: s.pilihan || null, ket: s.pilihanKet || null, minta: s.minta || null, isiAwal: s.isiAwal || null,
-    form: s.form || null, banyak: !!s.banyak, grup: s.grup || null, kunci: s.kunci || null, saran: s.saran || 0, status: s.status, lengkap: lengkap(s), isian: isianTampil(s), foto: (s.foto || []).length}];
+    form: s.form || null, banyak: !!s.banyak, grup: s.grup || null, kunci: s.kunci || null, saran: s.saran || 0, status: s.status, lengkap: lengkap(s), isian: isianTampil(s), foto: (s.foto || []).length,
+    balasan: s.akhir?.inti || [...(s.transkrip || [])].reverse().find(t => t.dari === "bot")?.teks || null, bisaKembali: !!s.jejak?.length}];
 }
 
 const cariToken = (d, t) => /^[0-9a-f]{32}$/.test(t || "") ? Object.values(d.sesi).find(s => s.token === t) : null;

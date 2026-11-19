@@ -84,6 +84,9 @@ function kartu(kunci, judul) {
   const [ik, jd] = KEPALA[kunci] || [kunci, judul];
   const k = el("section", "lp-langkah"), kp = el("div", "lp-langkah-kepala"), isi = el("div", "lp-langkah-isi");
   kp.append(ikon(ik), judul || jd); k.append(kp, isi);
+  // salah pilih: kembali ke pertanyaan sebelumnya (pemilik 19 Nov 2026)
+  if (terakhir?.bisaKembali && !["setuju", "identitas"].includes(kunci)) { const kb = el("button", "lp-kembali-langkah"); kb.type = "button"; kb.append(ikon("i-kembali"), "Kembali");
+    kb.setAttribute("aria-label", "Kembali ke pertanyaan sebelumnya"); kb.addEventListener("click", () => kirim({teks: "kembali", kembali: true, tampil: false})); kp.append(kb); }
   wadah.replaceChildren(k);
   return isi;
 }
@@ -500,6 +503,13 @@ async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri
 }
 
 /* terapkan keadaan mesin ke layar */
+/* sesudah "kembali": percakapan digambar ulang dari transkrip server supaya jawaban yang dibatalkan hilang dari layar */
+async function ulangChat() {
+  const j = await (await fetch(`/api/lapor/sesi?wa=${wa}`, {signal: AbortSignal.timeout(15000)})).json();
+  $("mengetik").hidden = true; log.replaceChildren(); cache.transkrip = [];
+  for (const t of j.transkrip || []) tambah(t.dari === "pelapor" ? "saya" : t.dari, t.teks || (t.lokasi ? "Lokasi dibagikan" : ""));
+  terapkan(j); simpanCache();
+}
 function terapkan(j, {dariCache = false} = {}) {
   terakhir = j; wadah.replaceChildren(); statusEl.textContent = "";
   let tulis = false;
@@ -524,15 +534,16 @@ function terapkan(j, {dariCache = false} = {}) {
 }
 
 /* ============ kirim ke server ============ */
-async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampil = null, foto = null}) {
+async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampil = null, foto = null, lain = null, kembali = false}) {
   if (sibuk) return;
   sibuk = true; statusEl.textContent = "";
   if (tampil !== false && (tampil || teks)) tambah("saya", tampil || teks, {foto}); // tampil:false = perintah diam (membuka laporan)
   wadah.replaceChildren(); fPesan.hidden = true; $("mengetik").hidden = false;
   try {
-    const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, teks, lokasi, form, pilih}), signal: AbortSignal.timeout(45000)});
+    const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, teks, lokasi, form, pilih, lain, kembali, saluran: "web"}), signal: AbortSignal.timeout(45000)});
     const j = await r.json();
     if (!r.ok) throw new Error(j.galat || "Gagal mengirim");
+    if (j.kembali) { await ulangChat(); return; }
     selesaiBalas(j);
   } catch (e) {
     $("mengetik").hidden = true;

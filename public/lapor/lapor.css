@@ -1770,3 +1770,15 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-lap-gambar{position:relative}
 .lp-lap-maskot{position:absolute;right:8px;bottom:-4px;width:96px}
 .lp-lap-kartu.draf .lp-lap-isi b{font:800 1.125rem var(--display)}
+/* tombol Kembali di kepala kartu pertanyaan (salah pilih) */
+.lp-langkah-kepala{position:relative}
+.lp-kembali-langkah{margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:6px 12px 6px 8px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand2);font:700 .8125rem var(--font);cursor:pointer}
+.lp-kembali-langkah svg{width:16px;height:16px}
+.lp-kembali-langkah:hover{border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+/* Sigap di menu samping: ikon menu 20px tidak boleh mengecilkan maskot */
+.lp-tab .lp-sigap-maskot svg,.lp-tab .lp-sigap-maskot .mk{width:100%!important;height:auto!important}
+@media (min-width:900px){.lp-tab .lp-sigap-maskot{width:120px!important}}
+/* Sigap di menu samping hanya saat melapor (layar chat), pemilik 19 Nov 2026 */
+@media (min-width:900px){.lp-app:not(.di-chat) .lp-tab .lp-sigap{display:none!important}}
+/* Sigap di menu samping tanpa latar abu (pemilik 19 Nov 2026) */
+.lp-tab .lp-sigap{background:none!important;padding:0!important}
