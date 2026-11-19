@@ -452,6 +452,17 @@ Sebelum menyentuh mesin proyek laporan di bot WA, pemanggil Claude API, operasi 
 
 Aturan berhentinya sama dengan §2.1. Bot V1: Claude tidak pernah menulis angka sistem dan tidak pernah menyunting PPTX langsung; deck selalu dari generator yang ada. Bot V2 (`BL_VERSI=2`, K23): agen Claude Code menyempurnakan deck generator di ruang kerjanya sendiri, angka sistem dijaga pagar angka mesin, agen tidak pernah mengirim, mengunggah, commit, atau mengubah generator. Bot V2.1 (K29, K30): kalimat bebas dipahami Claude Haiku, *final* dan *batal* dari kalimat bebas selalu ditanya dulu, rapikan bahan tidak pernah menambah angka (pagar D31), kumpul revisi dikerjakan sekali saat *lanjut*. Tiap perubahan perilaku bot menaikkan `VERSI` dan changelog (gerbang `tests/wa/versi.test.mjs`); versi append-only; hanya nomor terdaftar; kunci API hanya di `.env` mesin; jalur terjadwal `otomatis.mjs` tidak diubah.
 
+### 2.30 Lapor Bencana BNPB (chatbot AI pelaporan kejadian, pintu WA dan web `/lapor`, monitoring dan peta `/lapor/meja`): baca dulu, baru bangun
+
+Sebelum menyentuh pelaporan kejadian lewat chatbot (identitas pelapor, isian data umum dan khusus yang dituntun AI, foto bergeotag, tiket dan PDF laporan, monitoring dan dashboard peta), baca dokumen di
+`data/kajian-bnpb/lapor-ai/` dengan urutan otoritas ini (kode di `src/lapor_spek.js`, `src/lapor_mesin.js`, `src/lapor_model.js`, `src/samarkan.js` dan rute nanti milik `warga-api`; `public/lapor/**` milik `layar-peta`; `scripts/lapor/**` dan sambungan gateway `scripts/wa/**` milik `wa-bot`; agent `lapor-ai` dibuat di LA-00):
+
+1. `KEPUTUSAN-LAPOR-AI.md`: keputusan pemilik K1–K30, rancangan D1–D22, pertanyaan terbuka Q1–Q15 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (putaran, isian berikutnya, kutipan angka, identitas, tiket), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LA-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Kode memegang alur, AI hanya mengurai berkutipan; angka tanpa kutipan dibuang dan kosong tidak pernah jadi nol; laporan warga tidak pernah membuat kejadian resmi atau tampil publik; nomor WA pelapor hanya di monitoring staf, tidak pernah di repo; tinjau di `http://localhost:8800/lapor/` (server tinjau menjawab `/api/lapor/*` dengan mesin lokal, tidak meneruskan ke produksi).
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

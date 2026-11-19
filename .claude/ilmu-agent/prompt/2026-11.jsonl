@@ -4477,3 +4477,332 @@
 {"t":"2026-11-19T13:49:56.940+07:00","sesi":"9501c4fe","prompt":"coba push di local dulu biar bisa dikerjain ya. pakai apa ya? \n\nkemudian kalo misalnya laporan dari BPBD atau udah pernah melaporkan sebelumnya dia mengingat ini nomor siapa. \n\nLu buatkan script awalnya. \n\nDan dia juga bisa membalas gitu coy dengan AI. Sekarang udah make API Anthropic kan?","label":[],"berkas":[]}
 {"t":"2026-11-19T13:51:45.064+07:00","sesi":"64e27dc3","prompt":"1. Sedang Tinggi Awassaja\n2. Yes benar\n3. Yes benar\n4. Yes benar\n5. Yes benar","label":[],"berkas":[]}
 {"t":"2026-11-19T13:53:28.070+07:00","sesi":"64e27dc3","prompt":"Hujan Lebat petakan ke peringkat aja","label":[],"berkas":[]}
+{"t":"2026-11-19T13:59:16.999+07:00","sesi":"9501c4fe","prompt":"Lah bukannya harusnya 8800 ya","label":[],"berkas":[]}
+{"t":"2026-11-19T13:59:19.886+07:00","sesi":"0f623480","prompt":"hah?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:00:58.586+07:00","sesi":"0f623480","prompt":"Tolong bantu pasang 9router di Mac ini sebagai router lokal untuk 2 API key Claude dari Console (dua organisasi berbeda). Tujuannya: aplikasi cukup pakai 1 kunci lokal dari router, key A dipakai utama, key B hanya cadangan.\n\nAturan:\n1. Pasang hanya dari sumber resmi: npm (`npm install -g 9router`) atau README github.com/decolua/9router. Jangan pakai installer `curl | sh` dari situs lain.\n2. Cek dulu Node.js >= 18 (`node -v`); kalau belum ada, pasang lewat Homebrew.\n3. Jalankan 9router (dashboard bawaan di http://localhost:20128). Kalau port bentrok, pakai `--port`.\n4. Saya sendiri yang memasukkan kedua API key ke dashboard. Jangan minta saya menempel key di chat, dan jangan simpan key di berkas mana pun.\n5. Setelan yang saya mau:\n   - Sumber: hanya 2 API key Anthropic dari Console. Jangan tambahkan login langganan Claude (Pro/Max/OAuth).\n   - Mode: fallback/prioritas (A utama, B cadangan), bukan round-robin atau load balance.\n   - Pindah ke B hanya saat saldo/kredit A habis (error tagihan). Jangan pindah karena error 429 rate limit. Kalau 9router tidak bisa membedakan keduanya, bilang ke saya, jangan diakali.\n   - Buat satu kunci router (key lokal) untuk dipakai aplikasi.\n   Baca README/dokumentasi 9router versi yang terpasang untuk nama menu dan setelan yang tepat; jangan menebak.\n6. Uji dengan curl ke router (ganti KUNCI_ROUTER):\n   curl http://localhost:20128/v1/messages -H \"x-api-key: [rahasia] -H \"anthropic-version: 2023-06-01\" -H \"content-type: application/json\" -d '{\"model\":\"claude-haiku-5-5\",\"max_tokens\":20,\"messages\":[{\"role\":\"user\",\"content\":\"tes\"}]}'\n   Pastikan balasannya JSON, dan di log dashboard terlihat yang dipakai key A.\n7. Kalau berhasil, buat 9router jalan otomatis saat Mac menyala (launchd atau cara yang dianjurkan README). Tanya saya dulu sebelum memasang layanan latar.\n8. Jangan sentuh bot WA atau repo poskokarhutla di sesi ini.\n\nDi akhir, laporkan: versi 9router, port, cara menyalakan/mematikan, setelan fallback yang dipakai dan apakah 429 benar-benar tidak memicu pindah, serta hasil uji curl.","label":["wa-bot"],"berkas":["Node.js"]}
+{"t":"2026-11-19T14:06:03.860+07:00","sesi":"9501c4fe","prompt":"Kalo dia di WA bot kita gini dia bisa kaya telegram dong dia ngasih pilihan-pilihannya kan. Kaya pill yang tinggal dipilih gitu bro","label":[],"berkas":[]}
+{"t":"2026-11-19T14:06:54.280+07:00","sesi":"9501c4fe","prompt":"Kemudian dia akan diakhir dikasih kaya ya laporan telah diterima kemudian ada kaya laporan pdf gitu dan word yang bisa didownload. \n\nKemudian cek status pelaporan mu. \n\nBisa juga nanti dibalas sama Admi atau dihubungi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:07:31.722+07:00","sesi":"9501c4fe","prompt":"Bagusin. Sumpah jelek banget.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:07:31.932+07:00","sesi":"9501c4fe","prompt":"Agar hanya bisa angka doang ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:07:36.686+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T14:08:12.754+07:00","sesi":"0f623480","prompt":"<!-- reply 1 -->\n> Artinya, tiap kali A kena rate limit, key B akan ikut kepakai dan saldonya terpotong. Sesuai aturan lu, ini tidak gw akali, misalnya dengan menambal kode hasil build.\n\ngapapa","label":[],"berkas":[]}
+{"t":"2026-11-19T14:08:41.022+07:00","sesi":"9501c4fe","prompt":"Bagikan lokasi adalah ketika awal langsung ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:09:33.186+07:00","sesi":"9501c4fe","prompt":"Jelek banget agar bagusin.  Ini gausah ada yang di atas untuk logout dong.\n\nKemudian ada yang kaya penyimpanan cache ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:09:33.350+07:00","sesi":"9501c4fe","prompt":"Gausah ada ini. Intinya wajib lokasi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:09:33.396+07:00","sesi":"9501c4fe","prompt":"Jangan kaya gini ya langsung keluar dong kaya templatenya gitu.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:10:04.388+07:00","sesi":"0f623480","prompt":"saya sedang remote control di laptop lain\n\nsaya ingin buka dsahboardnya dari sini","label":[],"berkas":[]}
+{"t":"2026-11-19T14:10:05.097+07:00","sesi":"9501c4fe","prompt":"Oke ini dia bisa juga menggunakan suara ya. Menangkap suara","label":[],"berkas":[]}
+{"t":"2026-11-19T14:10:46.314+07:00","sesi":"9501c4fe","prompt":"Ini kan warga umum ya dia mana tau Gempa tektonik kek gempa runtuhan kek. Ya setiap. karakteristik bencana ini agar lu kasih deskripsinya lah","label":["gempa"],"berkas":[]}
+{"t":"2026-11-19T14:11:44.568+07:00","sesi":"9501c4fe","prompt":"Kaya kasih template lah Bahkan di tulis pesan itu langsung tertulis templatenya jadi dia tinggal isi sesuai data","label":[],"berkas":[]}
+{"t":"2026-11-19T14:12:02.958+07:00","sesi":"0f623480","prompt":"<!-- reply 1 -->\n> Laptop harus terhubung Tailscale dengan akun yang sama dengan Mac mini (mbgbangkabelitung@). Waktu gw cek tadi, tailnet ini baru berisi Mac mini saja. Kalau laptop belum masuk, pasang dan login Tailscale dulu di laptop.\n\nsaya gapunya akun ini\n\ndan laptop ini gapunya tailscale (?)\n\n\ngimana caranya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:12:09.406+07:00","sesi":"9501c4fe","prompt":"Nanti dicatat ya log kejadian itu kapan terlapor dan kapan bencana terjadi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:12:25.296+07:00","sesi":"0f623480","prompt":"itu akun atasan saya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:12:55.329+07:00","sesi":"0f623480","prompt":"wifi aja","label":[],"berkas":[]}
+{"t":"2026-11-19T14:12:59.484+07:00","sesi":"9501c4fe","prompt":"Langsung ada disuruh bagian lokasi dari awal ya bro. \n\nKalo ini berarti dia langsung pilih prov mana baru kabko mana kecamatan mana desa mana  RT RW mana berdasarkan gps","label":[],"berkas":[]}
+{"t":"2026-11-19T14:13:29.217+07:00","sesi":"9501c4fe","prompt":"Ya kalo belum lengkap harusnya lu komplain dong. Kan ini ga jelas bro","label":[],"berkas":[]}
+{"t":"2026-11-19T14:14:43.593+07:00","sesi":"9501c4fe","prompt":"Jelaskan lah ingat lu itusama pbulik awam harus memudahkan mereka\n\nHarus dipandu gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T14:16:08.780+07:00","sesi":"9501c4fe","prompt":"Ya kalo gini sih ya kaya pilihan gitu. Atau yakaya kasih form angka yang harus diisi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:16:08.913+07:00","sesi":"9501c4fe","prompt":"Chat bot nya ga melulu di bawah gini ya bro.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:16:08.973+07:00","sesi":"9501c4fe","prompt":"Kasih definisi mengungsi atau gimana cara hitung KK nya ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:16:17.018+07:00","sesi":"0f623480","prompt":"saya kan lagi gabisa pake mac mini\n\nmakanya remote control","label":[],"berkas":[]}
+{"t":"2026-11-19T14:16:59.277+07:00","sesi":"9501c4fe","prompt":"Definisi rusak berat sedang ringan atau terendam itu dari mana>","label":[],"berkas":[]}
+{"t":"2026-11-19T14:17:32.314+07:00","sesi":"9501c4fe","prompt":"Nah lu tolol. KAlo misalnya ada ya harusnya ada follow up questionnya lah. Kan lu pintar sudah dilengkapi AIkan. \n\nYa tanya ? Nama sekolahnya apa.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:17:43.326+07:00","sesi":"0f623480","prompt":"sudah","label":[],"berkas":[]}
+{"t":"2026-11-19T14:18:00.530+07:00","sesi":"0f623480","prompt":"eh belum","label":[],"berkas":[]}
+{"t":"2026-11-19T14:18:04.976+07:00","sesi":"9501c4fe","prompt":"Ini coba definisikanjadi fenomena yangbisa diamati. Kemudian ya gini kaya kasih pilihan gitu lah.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:18:49.634+07:00","sesi":"9501c4fe","prompt":"Usahakan semuanya itu adalah pilihan. Jangan mereka harus isi sendiri","label":[],"berkas":[]}
+{"t":"2026-11-19T14:19:34.225+07:00","sesi":"9501c4fe","prompt":"Harusnya dia harus 100% kalo belum jelas ya tanya lagi di akhir.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:20:40.380+07:00","sesi":"9501c4fe","prompt":"Laporan nya jangan gini dong tapi kasih dalam bentuk PDF\n\nJadi kaya terima kasih sudah melaporkan, kemudian berikut nomor tiket laporan Anda, tim kamu akan menghubungi Anda sesegera mungkin untuk mengonfirmasi laporan.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:20:40.489+07:00","sesi":"9501c4fe","prompt":"Kemudian mana? Kenapa ga ada disuruh foto bro?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:20:40.543+07:00","sesi":"9501c4fe","prompt":"Kemudian mana halaman pelaporan?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:21:22.423+07:00","sesi":"9501c4fe","prompt":"@\"~/Documents/GitHub/Betutu Sambe/\"\nNanti setelah dia sudah melapor coba cari kaya sambe betutu dia ada kaya yang dikasih link gitu bro","label":[],"berkas":[]}
+{"t":"2026-11-19T14:23:41.886+07:00","sesi":"9501c4fe","prompt":"Ini kalo pilihan harinya ya dia kaya dibuat date picker gitu aja.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:23:42.018+07:00","sesi":"9501c4fe","prompt":"Ini data pelapor","label":[],"berkas":[]}
+{"t":"2026-11-19T14:23:42.067+07:00","sesi":"9501c4fe","prompt":"Kalo bencananya mungkin kaya pilih bencana gitu ya ada gambarnya gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T14:23:42.112+07:00","sesi":"9501c4fe","prompt":"Baru ada pilihan karakter\" bencananya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:24:49.558+07:00","sesi":"9501c4fe","prompt":"Dia bisa pakai. lokasi saat ini Bisa search juga","label":[],"berkas":[]}
+{"t":"2026-11-19T14:25:40.040+07:00","sesi":"0f623480","prompt":"ini kok cuma segini modelnya? sapa mau opus 5.5","label":[],"berkas":[]}
+{"t":"2026-11-19T14:26:29.031+07:00","sesi":"0f623480","prompt":"pas test kok gini ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:26:41.568+07:00","sesi":"9501c4fe","prompt":"Coba inspirasinya mana yang bisa diambil untuk chat bot ini. Nanti kan ketika pelaporan terakhirnya dia ada kaya link pemantauan gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T14:26:46.150+07:00","sesi":"9501c4fe","prompt":"Jadi bisa tau bahwa laporan lu sudah dilihat atau sudah ditanggapi atau apa. persis kaya tiket gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T14:28:10.632+07:00","sesi":"9501c4fe","prompt":"Ada gininya dong. Tolong tiru chatbot nya yang lu miliki gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T14:29:12.396+07:00","sesi":"9501c4fe","prompt":"Jadi pertama dia bisa minta untuk\n\n1. Informasi terkait bencana di daerahnya\n2. Prediksi bencana di daerahnya\n3. Melaporkan bencana\n4. Nanti ada nilai percakapan juga.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:29:12.568+07:00","sesi":"9501c4fe","prompt":"Bisa melampirkan dokumen juga","label":[],"berkas":[]}
+{"t":"2026-11-19T14:29:12.618+07:00","sesi":"9501c4fe","prompt":"Bisa kirim foto juga","label":[],"berkas":[]}
+{"t":"2026-11-19T14:29:12.666+07:00","sesi":"9501c4fe","prompt":"Ada ini juga","label":[],"berkas":[]}
+{"t":"2026-11-19T14:29:12.714+07:00","sesi":"9501c4fe","prompt":"Ada gininya.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:29:38.816+07:00","sesi":"9501c4fe","prompt":"Kalo untuk WA tolong disesuaikan ya.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:30:02.798+07:00","sesi":"0f623480","prompt":"ini perlu diubah ga","label":[],"berkas":[]}
+{"t":"2026-11-19T14:30:31.691+07:00","sesi":"0f623480","prompt":"<!-- reply 1 -->\n> bnpb itu key A (utama), kan\n\niya\n\n\n\nsudah add model","label":[],"berkas":[]}
+{"t":"2026-11-19T14:30:56.957+07:00","sesi":"9501c4fe","prompt":"Tiru https://www.anthropic.com/legal/privacy untuk ini lu tiru semua aja dulu ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:33:16.662+07:00","sesi":"9501c4fe","prompt":"Bisa juga ada terkait Edukasi terkait Bencana ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:35:35.226+07:00","sesi":"9501c4fe","prompt":"Nih contoh Chatbot Chat HPT. Coba aplikasikan yang relevan di kita. Harusnya bisa berkembang banget","label":[],"berkas":[]}
+{"t":"2026-11-19T14:35:35.288+07:00","sesi":"9501c4fe","prompt":"Bagusiun sebagus-bagusnya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:36:14.422+07:00","sesi":"0f623480","prompt":"<!-- reply 1 -->\n> Router dan aturan fallback-nya sudah bekerja benar. Masalahnya ada di saldo: kedua key ditolak Anthropic karena kreditnya habis.\n\nhah? masih ada kok","label":[],"berkas":[]}
+{"t":"2026-11-19T14:37:38.164+07:00","sesi":"9501c4fe","prompt":"Bagusin lah. Laporan koordaloops gimana menurut lu?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:38:34.271+07:00","sesi":"0f623480","prompt":"sudah","label":[],"berkas":[]}
+{"t":"2026-11-19T14:39:12.417+07:00","sesi":"9501c4fe","prompt":"Anjir kayanya kecil banget. Disesuaikan dong kalo dia web bro. Kalo mobile juga disesuaikan","label":[],"berkas":[]}
+{"t":"2026-11-19T14:41:09.145+07:00","sesi":"9501c4fe","prompt":"@\"~/Developer/worth-it/\" @\"~/Documents/GitHub/pangantara/\"\nIni bencana di daerah kenapa diarahkannya ke halaman utama? Ya langsung aja summary kechat gitu untuk provinsi dan kab/kota tersebut. Tetap awalnya dia dapat animasi awal ya pembuka awal. Selamat datang di Lapor Bencana. Ada maskotnya juga dan animate bagus. Tolong tiru yang di maskot kdmp atau worth it","label":[],"berkas":[]}
+{"t":"2026-11-19T14:41:15.178+07:00","sesi":"0f623480","prompt":"berarti sudah selesai ya?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:41:45.220+07:00","sesi":"0f623480","prompt":"saya ingin buka lagi dashboardnya di laptop lain","label":[],"berkas":[]}
+{"t":"2026-11-19T14:42:26.758+07:00","sesi":"9501c4fe","prompt":"Oh ya nomor\" penting juga ada kaya Damkar gitu\" nomor BPBD daerah tersebut tapi dia harus diverifikasi dulu lokasinya dimana baru dikasih tau nomor\" penting. Ada juga kaya rumah sakit terdekat kesitu, kepolisian, dll. ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:42:26.921+07:00","sesi":"9501c4fe","prompt":"Kebijakan privasi ya langsung muncul aja di lapor itu tadi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:42:35.043+07:00","sesi":"0f623480","prompt":"lanjut buka ke WiFi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:43:13.082+07:00","sesi":"9501c4fe","prompt":"Bagusin. Sumpah jelek banget. Jelek sejelek-jeleknya. Tiru di halaman pantau bencana yang untuk profil teras urban coba cari gimana mereka menampilkan FAQ","label":[],"berkas":[]}
+{"t":"2026-11-19T14:43:38.870+07:00","sesi":"9501c4fe","prompt":"Coba kok ginidoang. Ya edukasinya lu riset apa aja yang publik perlu di ekdukasi ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:44:01.390+07:00","sesi":"9501c4fe","prompt":"Sumpah masih jelek banget sejelek jeleknya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:44:30.380+07:00","sesi":"9501c4fe","prompt":"Kenapa apa saya yang perlu disiapkan kenapa malah ada kebijakan privasi","label":[],"berkas":[]}
+{"t":"2026-11-19T14:44:30.589+07:00","sesi":"9501c4fe","prompt":"Gepeng anjing logonya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:44:32.990+07:00","sesi":"0f623480","prompt":"ini tuh apa maksudnya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:45:01.584+07:00","sesi":"9501c4fe","prompt":"Bagusin.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:46:01.301+07:00","sesi":"9501c4fe","prompt":"Wa slice isnot a fucntion maksdunya?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:46:01.471+07:00","sesi":"9501c4fe","prompt":"Ya ini kurang kiri ga sih. Lebarin aja selebar layar","label":[],"berkas":[]}
+{"t":"2026-11-19T14:46:01.514+07:00","sesi":"9501c4fe","prompt":"Bagusin sumpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T14:47:31.050+07:00","sesi":"9501c4fe","prompt":"Masih jelek anjing","label":[],"berkas":[]}
+{"t":"2026-11-19T14:47:31.169+07:00","sesi":"9501c4fe","prompt":"Bagusin sumpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T14:47:31.213+07:00","sesi":"9501c4fe","prompt":"Bagusin. SUmpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T14:49:21.846+07:00","sesi":"0f623480","prompt":"<!-- reply 1 -->\n> Tunnel → Enable. Mengunduh dan menjalankan cloudflared untuk membuat alamat publik di internet yang menuju router ini.\n\nini menarik","label":[],"berkas":[]}
+{"t":"2026-11-19T14:49:59.775+07:00","sesi":"0f623480","prompt":"gausah dulu deh","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.004+07:00","sesi":"9501c4fe","prompt":"@\"~/Downloads/Lampiran Kajian Penentuan Kejadian Bencana 171126.pdf\" @\"~/Downloads/Lampiran Kajian Penentuan Kejadian Bencana 171126.docx\" @\"~/Downloads/Kajian Penentuan Kejadian Bencana 171126.pdf\" @\"~/Downloads/Kajian Penentuan Kejadian Bencana 171126.docx\" @\"~/Downloads/Lampiran Kajian Penentuan Kejadian Bencana 171126.pdf\"\nIni jadikan pedoman untuk memastikan laporan jadinya langsung jadi nantinya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.155+07:00","sesi":"9501c4fe","prompt":"Maskotnya bagusin lagi. Agar pakai logo BNPB","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.216+07:00","sesi":"9501c4fe","prompt":"Ini gw ngeliat banyak banget white space disamping jadinya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.288+07:00","sesi":"9501c4fe","prompt":"Ini jelek banget. Dibaut container\" gitu kaliya. Bagusin maskimal","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.535+07:00","sesi":"9501c4fe","prompt":"Agar ada semua informasi ini ya.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.606+07:00","sesi":"9501c4fe","prompt":"Agar ada ALun-alun juga ya. Yang mereka bisa melihat laporan bencana dari daerah\" lainnya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:15.680+07:00","sesi":"9501c4fe","prompt":"Bagusin. Jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T14:53:30.171+07:00","sesi":"9501c4fe","prompt":"Kenapa langsung desa? Kenapa ga semuanya bisa ya. nama jalan juga bisa.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:54:23.949+07:00","sesi":"9501c4fe","prompt":"Kenapa kaya gini. Jelek banget. Itu di kanan white spacenya banyak banget. Jangan terkomparteminsasi lah","label":[],"berkas":[]}
+{"t":"2026-11-19T14:56:16.106+07:00","sesi":"0f623480","prompt":"sudah beres","label":[],"berkas":[]}
+{"t":"2026-11-19T14:56:21.948+07:00","sesi":"9501c4fe","prompt":"Usulan lu aja.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:56:24.224+07:00","sesi":"0f623480","prompt":"belum","label":[],"berkas":[]}
+{"t":"2026-11-19T14:56:48.408+07:00","sesi":"9501c4fe","prompt":"Ganti jadi yang lebih bagus","label":[],"berkas":[]}
+{"t":"2026-11-19T14:57:28.956+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T14:57:29.089+07:00","sesi":"9501c4fe","prompt":"Digabung disini","label":[],"berkas":[]}
+{"t":"2026-11-19T14:57:52.021+07:00","sesi":"0f623480","prompt":"matiin aja dlu\nini apa ya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:57:52.400+07:00","sesi":"9501c4fe","prompt":"Ini kenapa ebda sendiri","label":[],"berkas":[]}
+{"t":"2026-11-19T14:58:00.858+07:00","sesi":"9501c4fe","prompt":"Gw suka kompartemen kompartemen Apa yang ining anda lakukan dan.  butuh bantuan tolong ada kompartemennya dong","label":[],"berkas":[]}
+{"t":"2026-11-19T14:58:39.991+07:00","sesi":"9501c4fe","prompt":"Ini kenapa sampai samping gitu over dia","label":[],"berkas":[]}
+{"t":"2026-11-19T14:58:40.142+07:00","sesi":"9501c4fe","prompt":"Bagusin kasih icon kompartemen dan bagusin maksimal lah","label":[],"berkas":[]}
+{"t":"2026-11-19T14:58:46.019+07:00","sesi":"0f623480","prompt":"ini dipakai untuk bot WA","label":["wa-bot"],"berkas":[]}
+{"t":"2026-11-19T14:58:57.659+07:00","sesi":"9501c4fe","prompt":"Kasih gambar atau ilustrasi dong","label":[],"berkas":[]}
+{"t":"2026-11-19T14:58:57.839+07:00","sesi":"9501c4fe","prompt":"Atau video sederhana","label":[],"berkas":[]}
+{"t":"2026-11-19T14:59:05.688+07:00","sesi":"0f623480","prompt":"bisa tolong kamu matikan langsung?","label":[],"berkas":[]}
+{"t":"2026-11-19T14:59:26.190+07:00","sesi":"9501c4fe","prompt":"Kaish figur\"","label":[],"berkas":[]}
+{"t":"2026-11-19T14:59:26.433+07:00","sesi":"9501c4fe","prompt":"Tetap satu kolom aja bro.","label":[],"berkas":[]}
+{"t":"2026-11-19T14:59:26.495+07:00","sesi":"9501c4fe","prompt":"Tapi bagusin semuanya","label":[],"berkas":[]}
+{"t":"2026-11-19T14:59:43.854+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T14:59:58.420+07:00","sesi":"0f623480","prompt":"nyalain routernya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.131+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.191+07:00","sesi":"9501c4fe","prompt":"BNPBn ya gausah dalam lingkaran","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.262+07:00","sesi":"9501c4fe","prompt":"Sumpah kaya ginijadi aneh banget cuy","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.326+07:00","sesi":"9501c4fe","prompt":"Atur lagi biar layoutingnya bagus","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.395+07:00","sesi":"9501c4fe","prompt":"Bagusin. Kasih gambar yang sesuaifigur atau ilustrasi atau video dan icon.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.451+07:00","sesi":"9501c4fe","prompt":"Buat jadi menarik yang gini\"","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:32.516+07:00","sesi":"9501c4fe","prompt":"Kenapa ini atasnya kepotong?","label":[],"berkas":[]}
+{"t":"2026-11-19T15:01:52.643+07:00","sesi":"9501c4fe","prompt":"Kenapa ada juklak gitu\" orang luar mana tau","label":[],"berkas":[]}
+{"t":"2026-11-19T15:02:21.495+07:00","sesi":"9501c4fe","prompt":"Kasih gambar dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:02:32.325+07:00","sesi":"9501c4fe","prompt":"Bagsuin lagi. Sempurnakan","label":[],"berkas":[]}
+{"t":"2026-11-19T15:03:12.769+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:03:12.910+07:00","sesi":"9501c4fe","prompt":"Ini aku udah izinkan kenapa ga bisa ya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:03:40.424+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:03:58.401+07:00","sesi":"9501c4fe","prompt":"Ini bagusin. Kaya aneh aja","label":[],"berkas":[]}
+{"t":"2026-11-19T15:04:33.517+07:00","sesi":"9501c4fe","prompt":"Agar sebariss","label":[],"berkas":[]}
+{"t":"2026-11-19T15:04:33.677+07:00","sesi":"9501c4fe","prompt":"Agar dia pilihan bencananya dulu dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:06:41.795+07:00","sesi":"9501c4fe","prompt":"Kenapa langsung semua. gitu. \n\nKorban meninggal hilang lkuka coba definisikan dulu \n\nMengungsi agar dia nanti dulu \n\nRumah rusak nanti dulu \n\nKebutuhan mendesak nanti dulu. Dia pertanyaan yang pilihan\" juga.  atau langsung picker atau ketik hanya angka \n\nKebutuhan mendesak juga pilihan gitu pilih. Nanti ada lainnya. Bisamultiple pick.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:06:53.649+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:07:13.602+07:00","sesi":"9501c4fe","prompt":"Anjir jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:07:20.684+07:00","sesi":"9501c4fe","prompt":"Anjir ini bahasa AI banget.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:07:54.895+07:00","sesi":"9501c4fe","prompt":"untuk daerah Anda","label":[],"berkas":[]}
+{"t":"2026-11-19T15:07:59.923+07:00","sesi":"9501c4fe","prompt":"Agar ya dia bisa search daerah dengan menggunakan aktifin lokasi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:08:15.994+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:08:36.769+07:00","sesi":"9501c4fe","prompt":"Bagusin. Coba lu cari carta buat yang bagus gimana karakternya ya.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:08:36.901+07:00","sesi":"9501c4fe","prompt":"Jelek banget sumpah maskotnya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:09:31.942+07:00","sesi":"9501c4fe","prompt":"Bagusin lah. Kan lu pinter ya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:09:50.731+07:00","sesi":"9501c4fe","prompt":"Sumpah masih jelek banget semuanya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:10:19.317+07:00","sesi":"9501c4fe","prompt":"Ini maksudnya lu recreate lagi aja. Asal ya bisa masuk informasinya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:10:25.649+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:10:55.970+07:00","sesi":"9501c4fe","prompt":"Iya kan ini satu bagian satu bagian Ya jangan langsung semua gini dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:11:59.551+07:00","sesi":"9501c4fe","prompt":"Ini agar. ya Gmapsnya ada yang bisa langsung klik\n\nBagusin lagi\n\nBagusin. Tengah nya kosong banget coy\n\nIconnya ganti\" dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:12:07.915+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:12:24.962+07:00","sesi":"9501c4fe","prompt":"Bagusin. Kanan kosong banget.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:12:25.090+07:00","sesi":"9501c4fe","prompt":"Smapai ujung kasih icon masing\"nya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:12:56.547+07:00","sesi":"9501c4fe","prompt":"Bagusin ya semuanya. \n\nSumber kaya dibautlabel gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T15:12:56.670+07:00","sesi":"9501c4fe","prompt":"Bagusin sumpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:13:13.183+07:00","sesi":"9501c4fe","prompt":"Bagusin. SUmpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:14:20.194+07:00","sesi":"9501c4fe","prompt":"Bagusin. Logo BNPB nya gausah ada lingkaran gitu.\n\nIni pakai icon aja","label":[],"berkas":[]}
+{"t":"2026-11-19T15:14:29.495+07:00","sesi":"9501c4fe","prompt":"Oke jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:15:14.824+07:00","sesi":"9501c4fe","prompt":"Ini agar di kanan ga sih","label":[],"berkas":[]}
+{"t":"2026-11-19T15:15:48.138+07:00","sesi":"9501c4fe","prompt":"Jarinya cuma tigaterus dia kaya melayang. Nyarus sama background belakangnya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:16:09.090+07:00","sesi":"9501c4fe","prompt":"Anjing jelek banget jadinya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:16:52.937+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi. Logo BNPB nya jelek banget itu keliatannya jadinya\n\nIni dia ga ada kakinya keliatan.\n\nSumpah jelek bangtet maskotnya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:17:20.942+07:00","sesi":"9501c4fe","prompt":"Kenapa gini jelek banget ya anjing. Itu white spacenya di kiri banyak banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:17:51.603+07:00","sesi":"9501c4fe","prompt":"Kasih icon semua. Bagusin semua. Jelek banget. \n\n9,3 km dari lokasi itu dibuat icon dan label dan satu baris sama itu","label":[],"berkas":[]}
+{"t":"2026-11-19T15:18:11.042+07:00","sesi":"9501c4fe","prompt":"Bagussin. Kategorisasi. Buat icon. Bagusin maksimal","label":[],"berkas":[]}
+{"t":"2026-11-19T15:18:11.274+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:18:35.080+07:00","sesi":"9501c4fe","prompt":"Aneh banget ini ke bukanya di kanan gini","label":[],"berkas":[]}
+{"t":"2026-11-19T15:18:47.401+07:00","sesi":"9501c4fe","prompt":"Ya pakai logo BNPB dong. ANjing","label":[],"berkas":[]}
+{"t":"2026-11-19T15:18:52.932+07:00","sesi":"9501c4fe","prompt":"Ini sumpah masih kasar banget. Jelek maksimal","label":[],"berkas":[]}
+{"t":"2026-11-19T15:19:19.342+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:19:19.390+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:19:42.370+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi masih jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:20:03.292+07:00","sesi":"9501c4fe","prompt":"Bagusin. Masih jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:20:26.774+07:00","sesi":"9501c4fe","prompt":"Ini tangannya kaya ga nyatu anjing","label":[],"berkas":[]}
+{"t":"2026-11-19T15:20:39.485+07:00","sesi":"9501c4fe","prompt":"Bwgitu di awal harusnya ada kaya selamat datang di Lapor Bencana BNPB","label":[],"berkas":[]}
+{"t":"2026-11-19T15:20:46.235+07:00","sesi":"9501c4fe","prompt":"Kemudian ada si tokoh ini","label":[],"berkas":[]}
+{"t":"2026-11-19T15:21:05.828+07:00","sesi":"9501c4fe","prompt":"Lebarin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:21:05.948+07:00","sesi":"9501c4fe","prompt":"Agar sebaris aja. Kemudian jangan Instagram gitu. ya kasih nama IG nya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:21:53.444+07:00","sesi":"9501c4fe","prompt":"Agar ada kaya gini ya disini","label":[],"berkas":[]}
+{"t":"2026-11-19T15:22:17.758+07:00","sesi":"9501c4fe","prompt":"Gausah ada Bantuan. Udah ada di halaman beranda aja.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:22:17.869+07:00","sesi":"9501c4fe","prompt":"Tambahkan Kebijakan Privasi aja","label":[],"berkas":[]}
+{"t":"2026-11-19T15:22:38.203+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:23:00.730+07:00","sesi":"9501c4fe","prompt":"Gimana ya caranya kalo dia ga pakai kontaainer jenis bencana gini. Coba pikirin. Bagusnya giaman","label":[],"berkas":[]}
+{"t":"2026-11-19T15:23:25.683+07:00","sesi":"9501c4fe","prompt":"Bagusin kasih icon Atau kaya kasih ilustrasi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:23:34.960+07:00","sesi":"9501c4fe","prompt":"Kasih icon. Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:24:35.278+07:00","sesi":"9501c4fe","prompt":"Ini agar gunakan waktu lokal jadi langsung ada tulisan WIB WITA WIT nya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:25:02.603+07:00","sesi":"9501c4fe","prompt":"Kaish icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:25:02.728+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:25:18.193+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:25:34.161+07:00","sesi":"9501c4fe","prompt":"Bagusin.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:25:44.514+07:00","sesi":"9501c4fe","prompt":"Ini agar di kanan jangan ada white space","label":[],"berkas":[]}
+{"t":"2026-11-19T15:25:54.842+07:00","sesi":"9501c4fe","prompt":"Justify","label":[],"berkas":[]}
+{"t":"2026-11-19T15:27:01.201+07:00","sesi":"9501c4fe","prompt":"Harusnya ada kaya \n1.xx\n2.xx \n\nJadi biar orang terpacu ngelist semua","label":[],"berkas":[]}
+{"t":"2026-11-19T15:27:11.146+07:00","sesi":"9501c4fe","prompt":"2 atas 2 bawah. Kasih icon Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:27:59.043+07:00","sesi":"9501c4fe","prompt":"2 atas 2 bawah\n\nLah kan gw bilang satu sekolahnya ya tulis satu aja dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:28:20.814+07:00","sesi":"9501c4fe","prompt":"Puskesmas. gerilya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:29:28.300+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:30:05.456+07:00","sesi":"9501c4fe","prompt":"Bagusin semuanya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:31:05.334+07:00","sesi":"9501c4fe","prompt":"Pakai warna biru\nLainnya bisa diketik.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:31:12.645+07:00","sesi":"9501c4fe","prompt":"Bagussin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:31:26.730+07:00","sesi":"9501c4fe","prompt":"Lah ini kan bukan Whatsapp kenapa lu bahas whatssapp anjuiung","label":["wa-bot"],"berkas":[]}
+{"t":"2026-11-19T15:32:42.446+07:00","sesi":"9501c4fe","prompt":"Mana jamnya mana geotag lokasinya? Kan lu udah ada standar ambil foto yang dari foto publik yang bisa ditampilkan di peta ya. Terus bisa uplaod maks berapa foto. Lu tiru lah broo. Yang konsep ambil foto itu","label":[],"berkas":[]}
+{"t":"2026-11-19T15:34:57.088+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:36:16.887+07:00","sesi":"9501c4fe","prompt":"Ini harusnya agak ke bawah","label":[],"berkas":[]}
+{"t":"2026-11-19T15:36:24.373+07:00","sesi":"9501c4fe","prompt":"Yaudah ketika nomor penting udah dapet ya dia tetap ada pilihan ini dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:36:28.396+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:36:34.420+07:00","sesi":"9501c4fe","prompt":"Iconnyabaguysin.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:36:49.692+07:00","sesi":"9501c4fe","prompt":"Jangan ada white space dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:37:00.756+07:00","sesi":"9501c4fe","prompt":"Bagusin. Kasih header","label":[],"berkas":[]}
+{"t":"2026-11-19T15:37:00.811+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:37:15.536+07:00","sesi":"9501c4fe","prompt":"Jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:38:25.767+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:38:25.879+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:38:36.255+07:00","sesi":"9501c4fe","prompt":"Bagusin maksimal","label":[],"berkas":[]}
+{"t":"2026-11-19T15:39:28.757+07:00","sesi":"9501c4fe","prompt":"Gabisa donwload pdf","label":[],"berkas":[]}
+{"t":"2026-11-19T15:39:32.662+07:00","sesi":"9501c4fe","prompt":"Oke dia ada kode barcodenya juga dong.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:39:43.551+07:00","sesi":"9501c4fe","prompt":"Bagusin maksimal.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:40:03.123+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi. Ya dan gantinya terlalu kecil","label":[],"berkas":[]}
+{"t":"2026-11-19T15:40:12.706+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:40:38.367+07:00","sesi":"9501c4fe","prompt":"Ini bagusnya di kanan gitu ga sih","label":[],"berkas":[]}
+{"t":"2026-11-19T15:40:54.974+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:41:18.694+07:00","sesi":"9501c4fe","prompt":"Kekeringan dan Kebakaran coba cari deh yang cocok","label":["gunungapi-kering"],"berkas":[]}
+{"t":"2026-11-19T15:41:27.359+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:41:35.424+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:42:52.579+07:00","sesi":"9501c4fe","prompt":"Setiap bencana kira\" ada template kronologi yang lu bisa generate ga yakira\" untuk memudahkan.\n\nKaya ambil aja dari laporan koordalops selama ini gimana coba lu bautkan","label":[],"berkas":[]}
+{"t":"2026-11-19T15:43:06.331+07:00","sesi":"9501c4fe","prompt":"Oha ya pertanyaan-pertanyaan juga lu pastikan. semua data yang selama ini diambil pusdalops untuk tiap\" bencana terutama yang unik karakterbencana itu pastikan ada. ditanyakan.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:24.000+07:00","sesi":"9501c4fe","prompt":"Kalo belum jelas nih air meluap dari sungai boleh minta klarifikasi ga?","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:24.116+07:00","sesi":"9501c4fe","prompt":"Atau ya bahkan kaya membuat kronologisnya tuh bukan disuruh ketik chat panjang tapi kaya dipandu untuk menceritakan bencananya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:24.162+07:00","sesi":"9501c4fe","prompt":"Bagsuin ya.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:24.209+07:00","sesi":"9501c4fe","prompt":"Gw btw ga suka banget warna pink ini","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:39.926+07:00","sesi":"9501c4fe","prompt":"Sumpah jelek banget. Coba tiru paltform meti untuk ini nya di tengah bawah gitu\n\nKemudian ya dibuat lebar aja bro jangan. panjang banget ke bawah","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:40.089+07:00","sesi":"9501c4fe","prompt":"Ini paling jelek anjing","label":[],"berkas":[]}
+{"t":"2026-11-19T15:45:49.047+07:00","sesi":"9501c4fe","prompt":"Jelek banget anjing","label":[],"berkas":[]}
+{"t":"2026-11-19T15:46:17.056+07:00","sesi":"9501c4fe","prompt":"Agar. sampai ujung kanan.  Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:46:17.184+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:46:36.520+07:00","sesi":"9709b143","prompt":"Di Mac mini cukup empat langkah. Jalankan di Terminal satu per satu:\n1. Ambil kode terbaru\n\n```\ncd ~/Developer/poskokarhutla && git pull --rebase --autostash origin main\n\n```\n\nKalau folder repo di Mac beda, sesuaikan jalurnya.\n2. Mulai ulang bot\n\n```\nlaunchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway\n\n```\n\nTunggu sekitar 20 detik sampai WA tersambung lagi.\n3. Cek kesiapan\n\n```\nnode scripts/wa/proyek.mjs --kering; readlink -f ~/.wa-bot/py/bin/python3; node -e \"const s=require(require('os').homedir()+'/.wa-bot/limit-state.json');console.log('pemanasan sampai', new Date(s.warmupUntil||0).toLocaleString('id-ID'))\"\n\n```\n\nHasilnya ada tiga baris:\n\n* Baris pertama: semua isian harus `true`.\n* Baris kedua: lokasi Python asli bot. Gw perlu ini buat mastiin Python bisa jalan di dalam sandbox agen.\n* Baris ketiga: kalau tanggalnya masih ke depan, bot lagi mode pemanasan (jatah kirim lebih kecil, tapi balasan sekarang udah punya jatah sendiri).\n\nKirim hasil langkah 3 ke gw.\n4. Coba di WA\n\n* Ketik changelog. Baris teratas harus v2.1.5. Kalau masih versi lama, berarti langkah 2 belum kena.\n* Ketik ulangi buat P-191126-04. Bot bakal kirim pesan \"Laporan sedang dibuat\" lengkap dengan estimasi waktu. Agen jalan dari awal dan kena biaya lagi, karena hasil yang gagal tadi nggak tersimpan.\n\nKalau ada yang gagal, kirim tangkapan layar atau teks galatnya.","label":["wa-bot"],"berkas":["scripts/wa/proyek.mjs",".wa-bot/limit-state.json"]}
+{"t":"2026-11-19T15:46:37.999+07:00","sesi":"9501c4fe","prompt":"Bagusin. Bagusin.","label":[],"berkas":[]}
+{"t":"2026-11-19T15:47:20.186+07:00","sesi":"9501c4fe","prompt":"Ini jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:47:20.342+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:47:33.064+07:00","sesi":"9501c4fe","prompt":"Ini laporan juga diteruskan ke BPBD daerah ya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:48:11.381+07:00","sesi":"9501c4fe","prompt":"Hape ga apa\" tetap ada Tapi kaya ya dia coba sebagai maskot BNPB menggambarkan BNPB yang siap siaga bawa peralatan apa gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T15:48:35.360+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi. maksimal Gw ga suka ada whites pace gini","label":[],"berkas":[]}
+{"t":"2026-11-19T15:48:50.592+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:48:50.707+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:49:10.477+07:00","sesi":"9501c4fe","prompt":"Kenapa gini logonya","label":[],"berkas":[]}
+{"t":"2026-11-19T15:49:10.658+07:00","sesi":"9501c4fe","prompt":"Jelek banget sangat sangat jelek","label":[],"berkas":[]}
+{"t":"2026-11-19T15:50:10.182+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi Bagusin maksimal","label":[],"berkas":[]}
+{"t":"2026-11-19T15:50:28.061+07:00","sesi":"9501c4fe","prompt":"Ngapain ini asal data anjing","label":[],"berkas":[]}
+{"t":"2026-11-19T15:50:50.001+07:00","sesi":"9501c4fe","prompt":"Bagusin. Label laporan diterima agar di kanan atas","label":[],"berkas":[]}
+{"t":"2026-11-19T15:50:57.236+07:00","sesi":"9501c4fe","prompt":"Gw ga suka container yang abu\" gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T15:51:08.327+07:00","sesi":"9501c4fe","prompt":"MNash jelek agar ada header\"nya dong","label":[],"berkas":[]}
+{"t":"2026-11-19T15:51:23.802+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:51:23.938+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T15:51:34.788+07:00","sesi":"9501c4fe","prompt":"Kasih logo BNPB","label":[],"berkas":[]}
+{"t":"2026-11-19T15:52:08.703+07:00","sesi":"9501c4fe","prompt":"Bagusin Ini kan banyak white space. Mending proses progressnya disini dikasih liat. jangandi bawah","label":[],"berkas":[]}
+{"t":"2026-11-19T15:52:27.925+07:00","sesi":"9501c4fe","prompt":"Gasuah ada model belum teruji ya. \n\nWaspada curah hujan berapa gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T15:52:34.685+07:00","sesi":"9501c4fe","prompt":"Ini gausah ada","label":[],"berkas":[]}
+{"t":"2026-11-19T15:54:00.461+07:00","sesi":"9501c4fe","prompt":"Ya, cocokkan","label":[],"berkas":[]}
+{"t":"2026-11-19T15:54:47.416+07:00","sesi":"9501c4fe","prompt":"Kasih label dan tempatin di dalam bar ini","label":[],"berkas":[]}
+{"t":"2026-11-19T15:54:47.522+07:00","sesi":"9501c4fe","prompt":"Kenapa ini. Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:54:47.570+07:00","sesi":"9501c4fe","prompt":"Kenapa ini bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:55:10.520+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:55:10.636+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:55:30.796+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:55:30.911+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:55:43.209+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:56:09.461+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:56:09.586+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:56:09.652+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:56:58.615+07:00","sesi":"9501c4fe","prompt":"Bagusin. ANjing. Jelek banget sumpah","label":[],"berkas":[]}
+{"t":"2026-11-19T15:56:58.817+07:00","sesi":"9501c4fe","prompt":"Bagusin sumpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T15:57:33.211+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:57:33.330+07:00","sesi":"9501c4fe","prompt":"Agar sebaris","label":[],"berkas":[]}
+{"t":"2026-11-19T15:58:02.758+07:00","sesi":"9501c4fe","prompt":"Sebaris","label":[],"berkas":[]}
+{"t":"2026-11-19T15:58:45.888+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T15:58:53.214+07:00","sesi":"9501c4fe","prompt":"Hilangaknn","label":[],"berkas":[]}
+{"t":"2026-11-19T15:59:20.453+07:00","sesi":"9501c4fe","prompt":"Lah klininknya kalo 5 ya lu tanya lagi lah 2 lagi kalo dia gatau. baru yaudah tapi lu harus konfirmasi","label":[],"berkas":[]}
+{"t":"2026-11-19T15:59:31.948+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:00:12.506+07:00","sesi":"9501c4fe","prompt":"Ini sesuaikan sama peraturan kali ya. atau cek yang di logpalnya ya","label":[],"berkas":[]}
+{"t":"2026-11-19T16:00:56.939+07:00","sesi":"9501c4fe","prompt":"Agar sampai ujung ya.  Biar bagus","label":[],"berkas":[]}
+{"t":"2026-11-19T16:00:57.054+07:00","sesi":"9501c4fe","prompt":"Bagusin lagi","label":[],"berkas":[]}
+{"t":"2026-11-19T16:01:12.304+07:00","sesi":"9501c4fe","prompt":"Agar sampai ujung biar bagus","label":[],"berkas":[]}
+{"t":"2026-11-19T16:01:34.305+07:00","sesi":"9501c4fe","prompt":"Kenapa ini anjing","label":[],"berkas":[]}
+{"t":"2026-11-19T16:01:47.529+07:00","sesi":"9501c4fe","prompt":"Agar sampai ujung","label":[],"berkas":[]}
+{"t":"2026-11-19T16:01:56.089+07:00","sesi":"9501c4fe","prompt":"Bagusin. Jelek banget","label":[],"berkas":[]}
+{"t":"2026-11-19T16:01:59.720+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:02:05.474+07:00","sesi":"9501c4fe","prompt":"Agar sebaris","label":[],"berkas":[]}
+{"t":"2026-11-19T16:02:15.618+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T16:02:28.237+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:02:41.236+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:02:54.921+07:00","sesi":"9501c4fe","prompt":"Agar sampai ujung dong biar bagus","label":[],"berkas":[]}
+{"t":"2026-11-19T16:03:18.538+07:00","sesi":"9501c4fe","prompt":"Bagusinb","label":[],"berkas":[]}
+{"t":"2026-11-19T16:03:24.591+07:00","sesi":"9501c4fe","prompt":"Info hari ini juga agar kaya gini formatnya","label":[],"berkas":[]}
+{"t":"2026-11-19T16:03:41.047+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:04:23.542+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:05:18.648+07:00","sesi":"9501c4fe","prompt":"Bagusin\nBagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:05:47.081+07:00","sesi":"9501c4fe","prompt":"Ya bisa search juga dong jangan langsung disuruh pilih gini","label":[],"berkas":[]}
+{"t":"2026-11-19T16:05:47.199+07:00","sesi":"9501c4fe","prompt":"Buat sebaris semua","label":[],"berkas":[]}
+{"t":"2026-11-19T16:06:02.841+07:00","sesi":"9501c4fe","prompt":"Pakai gambar asli","label":[],"berkas":[]}
+{"t":"2026-11-19T16:06:13.213+07:00","sesi":"9501c4fe","prompt":"Bagusin lah.","label":[],"berkas":[]}
+{"t":"2026-11-19T16:06:39.985+07:00","sesi":"9501c4fe","prompt":"Harus selalu simetris yang gini\" ya 3 atas 3 bawah gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T16:07:01.607+07:00","sesi":"9501c4fe","prompt":"Kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-19T16:08:32.253+07:00","sesi":"9501c4fe","prompt":"Kronologis masa gitu doang. Kaya kapan terjadinya kemudian bla bla bla harusnya cukup banyak ya yang bisa ditanyakan. Berlangsung berapa lama\n\nkemudian di akhir ada informasi tambahan yang perlu ditanyakan. \n\nAda fenomena apa lagi\n\nKenapa cuma tidak ada lanjut kenapa ga ada pilihan. untuk menambahklan?","label":[],"berkas":[]}
+{"t":"2026-11-19T16:09:27.153+07:00","sesi":"9501c4fe","prompt":"Titik pengungsian harusnya langsung bisa search tempat. di sekitar situ ya.","label":[],"berkas":[]}
+{"t":"2026-11-19T16:09:44.478+07:00","sesi":"9501c4fe","prompt":"maksudnya connect ke Open site map atau google maps jadi bisa dipilih beberapa","label":[],"berkas":[]}
+{"t":"2026-11-19T16:10:51.034+07:00","sesi":"9501c4fe","prompt":"Harusnya ketika gw bilang SD 03 padahal pertanyaan ini harusnya dia bisa nanyalagi konfirmasi.","label":[],"berkas":[]}
+{"t":"2026-11-19T16:11:12.464+07:00","sesi":"9501c4fe","prompt":"Ini gw jawab Puskesmas Lebak harusnya dia konfirmasi atau nanya ulang","label":[],"berkas":[]}
+{"t":"2026-11-19T16:11:12.574+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:11:33.517+07:00","sesi":"9501c4fe","prompt":"Bagasin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:11:55.139+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:12:59.156+07:00","sesi":"9501c4fe","prompt":"Bagusin\nBagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:13:07.817+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:13:07.868+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:13:26.856+07:00","sesi":"9501c4fe","prompt":"Harusnya ada containernya","label":[],"berkas":[]}
+{"t":"2026-11-19T16:13:26.988+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:14:19.026+07:00","sesi":"9501c4fe","prompt":"Harusnya kan ini sama ya.","label":[],"berkas":[]}
+{"t":"2026-11-19T16:14:27.173+07:00","sesi":"9501c4fe","prompt":"Digabung aja toh dalamsatu bagian","label":[],"berkas":[]}
+{"t":"2026-11-19T16:14:47.241+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:15:54.445+07:00","sesi":"9501c4fe","prompt":"Disini mana ada maskotnya? Harusnya. dia ada sambil kaya interaktif gitu. Sedikit lagi ayo atau terkjahir kaya terima kasih banyak. \n\nAtau kalo kaya kronologinya mengerikan dia kaya ya serem gitu\nANJIR GAUSAH ADARAMBUTNYA GITU DONG","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:31.327+07:00","sesi":"9501c4fe","prompt":"Bagusin sumpah jelek yang. jelek banget paripurna tai","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:31.453+07:00","sesi":"9501c4fe","prompt":"Lu atur bagusinlah","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:31.502+07:00","sesi":"9501c4fe","prompt":"Kenapa ada garisluarnya gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:31.548+07:00","sesi":"9501c4fe","prompt":"Hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:31.595+07:00","sesi":"9501c4fe","prompt":"Ini ya ga apa deh adacontainernya gitu","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:50.887+07:00","sesi":"9501c4fe","prompt":"Apasih. ga nyambung pilihan jawaban dengan pertanyaan","label":[],"berkas":[]}
+{"t":"2026-11-19T16:18:51.012+07:00","sesi":"9501c4fe","prompt":"Bagusin.","label":[],"berkas":[]}
+{"t":"2026-11-19T16:19:24.310+07:00","sesi":"9501c4fe","prompt":"Lu pokoknya kajian mendalam dulu lah untuk riset sangat mendalam terkait buat kronologis. Biar lu ajukan pertanyaan-pertanyaan gokil","label":[],"berkas":[]}
+{"t":"2026-11-19T16:22:30.624+07:00","sesi":"9501c4fe","prompt":"Bagusin\nKenapa ga keluar pilihannya?\nMalah harusnya ya langsung ada pilihannya disini ya muncul tempatnya apa\" aja","label":[],"berkas":[]}
+{"t":"2026-11-19T16:22:41.691+07:00","sesi":"9501c4fe","prompt":"Apakah masih bisa dilewati harusnya di pertanyaan selanjutnya","label":[],"berkas":[]}
+{"t":"2026-11-19T16:23:00.354+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:23:21.440+07:00","sesi":"9501c4fe","prompt":"Ga keluar. Ga bisa dipilih","label":[],"berkas":[]}
+{"t":"2026-11-19T16:23:55.613+07:00","sesi":"9501c4fe","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-19T16:24:18.110+07:00","sesi":"9501c4fe","prompt":"Ini kan sama ya. Digabung di yang kiri aja. Dilengkapi","label":[],"berkas":[]}

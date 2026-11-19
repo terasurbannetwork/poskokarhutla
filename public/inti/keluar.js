@@ -3,7 +3,8 @@
    Klik = cabut semua jenis sesi (staf, akun umum, instansi, kemitraan, pendataan), lalu /admin/keluar mencabut sesi admin dan pemirsa
    dan mengalihkan ke /admin/masuk. Gaya: ikon polos tanpa garis luar, warna ikut kepala. */
 (() => {
-  if (document.getElementById("keluar") || document.querySelector('form[action="/admin/keluar"]')) return;
+  /* halaman pelapor publik (/lapor) menolak tombol ini lewat <body data-tanpa-keluar> (pemilik 19 Nov 2026: "gausah ada yang di atas untuk logout") */
+  if (document.body?.hasAttribute("data-tanpa-keluar") || document.getElementById("keluar") || document.querySelector('form[action="/admin/keluar"]')) return;
   const kepala = document.querySelector("body > header") || document.querySelector(".ad-top")
     || [...document.querySelectorAll("header")].find(h => !h.closest("article, section, details, dialog"));
   if (!kepala) return;

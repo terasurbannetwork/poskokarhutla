@@ -1,0 +1,893 @@
+{
+ "dibuat": "2026-11-19",
+ "catatan": "Disusun dari sumber resmi; perlu ditinjau Direktorat Kesiapsiagaan BNPB sebelum publik.",
+ "topik": [
+  {
+   "id": "gempa",
+   "judul": "Gempa bumi",
+   "ringkas": "Gempa datang tanpa tanda dan tidak bisa diprediksi, jadi yang bisa disiapkan adalah rencana dan latihan.",
+   "gambar": "gempa",
+   "tanda": [
+    "Gempa tidak bisa diprediksi. Belum ada ahli atau lembaga yang mampu memastikan kapan gempa terjadi.",
+    "Informasi resmi kekuatan, pusat, kedalaman, dan potensi tsunami hanya dari BMKG.",
+    "Gempa besar bisa disusul gempa susulan.",
+    "Di tepi pantai, guncangan kuat atau goyang lemah tapi lama adalah tanda untuk waspada tsunami."
+   ],
+   "sebelum": [
+    "Kenali risiko gempa di tempat tinggal dan tahu apa yang harus dilakukan.",
+    "Siapkan rencana menyelamatkan diri. Latih merunduk, melindungi kepala, dan berpegangan di bawah meja.",
+    "Ikat atau kuatkan benda yang tergantung dan mudah jatuh.",
+    "Siapkan alat pemadam api, alat keselamatan standar, dan obat-obatan.",
+    "Bangun atau perbaiki rumah agar tahan guncangan, dengan fondasi yang kuat.",
+    "Siapkan tas siaga bencana."
+   ],
+   "saat": [
+    "Di dalam bangunan, berlindung di bawah meja yang kuat. Lindungi kepala dengan bantal atau helm.",
+    "Matikan kompor, cabut dan matikan peralatan listrik supaya tidak memicu kebakaran.",
+    "Jangan pakai lift. Pakai tangga darurat untuk keluar.",
+    "Setelah guncangan reda, keluar ke tempat terbuka. Jauhi tiang, pohon, kaca, dan gedung yang mungkin roboh.",
+    "Di dalam mobil, jauhi persimpangan, menepi di kiri bahu jalan, lalu berhenti.",
+    "Di tepi pantai, segera menuju tempat yang tinggi tanpa menunggu peringatan."
+   ],
+   "sesudah": [
+    "Tetap waspada terhadap gempa susulan.",
+    "Periksa keluarga dan berikan pertolongan pertama bila ada yang cedera.",
+    "Periksa ada tidaknya api dan potensi kebakaran.",
+    "Jauhi bangunan yang retak atau rusak strukturnya.",
+    "Dengarkan informasi dari pihak berwenang. Jangan bertindak karena kabar yang belum jelas.",
+    "Beri perhatian pada trauma, terutama pada anak-anak, perempuan, dan lansia."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "BMKG Akhiri Peringatan Dini Tsunami Pasca-Gempa M7.7 NTT, Masyarakat Diimbau Tetap Tenang dan Waspada (15 Agustus 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/bmkg-akhiri-peringatan-dini-tsunami-pasca-gempa-m7-7-ntt-masyarakat-dimbau-tetap-tenang-dan-waspada"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Panduan Langkah Evakuasi Darurat Peringatan Dini Tsunami Dalam Situasi COVID-19",
+     "url": "https://content.bmkg.go.id/wp-content/uploads/Panduan_Evakuasi_Tsunami_COVID-19_HQ-1.pdf"
+    }
+   ]
+  },
+  {
+   "id": "tsunami",
+   "judul": "Tsunami",
+   "ringkas": "Setelah gempa kuat di tepi pantai, jangan menunggu sirene. Segera menuju tempat yang tinggi.",
+   "gambar": "tsunami",
+   "tanda": [
+    "Gempa kuat, atau goyang lemah tetapi lama, terutama saat berada di pantai.",
+    "Air laut surut tiba-tiba, terdengar gemuruh dari tengah laut, dan ikan menggelepar di pantai yang airnya surut.",
+    "Tsunami tidak selalu didahului gempa kuat. Longsoran di bawah laut atau letusan gunung api juga bisa memicunya.",
+    "Gelombang bisa datang beberapa kali, dan gelombang berikutnya bisa lebih tinggi.",
+    "Peringatan dini BMKG punya tiga tingkat: Waspada (perkiraan tinggi kurang dari 0,5 m), Siaga (0,5 sampai 3 m), dan Awas (lebih dari 3 m)."
+   ],
+   "sebelum": [
+    "Kenali tingkat kerawanan tempat tinggal dan jalur tercepat menuju tempat yang tinggi.",
+    "Kenali rambu bahaya tsunami dan tempat evakuasi sementara di sekitar Anda.",
+    "Ikut latihan evakuasi bersama warga.",
+    "Ingat waktu tiba bisa sangat singkat. BMKG menyebut kurang dari 5 menit, dan di sebagian wilayah kurang dari 2 menit.",
+    "Siapkan tas siaga dan tentukan titik kumpul keluarga."
+   ],
+   "saat": [
+    "Jika guncangan kuat atau lama terasa di pantai, segera evakuasi sendiri tanpa menunggu sirene atau perintah.",
+    "Menuju perbukitan atau gedung tinggi yang kokoh.",
+    "Tidak perlu melihat datangnya tsunami atau menangkap ikan di pantai yang airnya surut.",
+    "Jika macet, kunci dan tinggalkan kendaraan, lalu lanjutkan berjalan kaki. Hindari jembatan.",
+    "Bertahan di tempat yang tinggi. Gelombang kedua dan ketiga biasanya lebih besar dari yang pertama.",
+    "Di kapal di tengah laut, jangan mendekat ke pantai atau pelabuhan."
+   ],
+   "sesudah": [
+    "Tetap di tempat evakuasi sampai pihak berwenang menyatakan ancaman berakhir.",
+    "Peringatan yang sudah berakhir tidak berarti gempa susulan berhenti.",
+    "Jauhi air genangan karena bisa tercemar dan ada ancaman tersengat listrik.",
+    "Waspada instalasi listrik dan pipa gas. Jangan masuk bangunan yang masih dikelilingi genangan.",
+    "Cuci tangan dengan sabun dan air bersih bila terkena air genangan. Buang makanan yang terkena air.",
+    "Bila terluka, periksakan diri di pos kesehatan terdekat."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BMKG",
+     "judul": "Panduan Langkah Evakuasi Darurat Peringatan Dini Tsunami Dalam Situasi COVID-19",
+     "url": "https://content.bmkg.go.id/wp-content/uploads/Panduan_Evakuasi_Tsunami_COVID-19_HQ-1.pdf"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Rawan Tsunami, BMKG: Masyarakat Maluku Harus Evakuasi Mandiri (26 Maret 2019)",
+     "url": "https://www.bmkg.go.id/berita/utama/rawan-tsunami-bmkg-masyarakat-maluku-harus-evakuasi-mandiri"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "BMKG Akhiri Peringatan Dini Tsunami Pasca-Gempa M7.7 NTT, Masyarakat Diimbau Tetap Tenang dan Waspada (15 Agustus 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/bmkg-akhiri-peringatan-dini-tsunami-pasca-gempa-m7-7-ntt-masyarakat-dimbau-tetap-tenang-dan-waspada"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    }
+   ]
+  },
+  {
+   "id": "banjir",
+   "judul": "Banjir dan banjir bandang",
+   "ringkas": "Pindah ke tempat yang lebih tinggi sedini mungkin. Jangan berjalan atau berkendara di arus banjir.",
+   "gambar": "banjir",
+   "tanda": [
+    "Hujan deras terus menerus dan debit sungai naik.",
+    "Genangan mulai meninggi. Warga di sekitar sungai diminta memantau kenaikan debit air.",
+    "Banjir bandang bisa datang dengan atau tanpa peringatan, saat hujan biasa maupun deras, melalui saluran air dan sungai.",
+    "Banjir rob terjadi karena naiknya muka air laut dan pasang.",
+    "Kenali istilah peringatan banjir seperti Siaga I sampai Siaga IV yang dikeluarkan daerah Anda."
+   ],
+   "sebelum": [
+    "Cari tahu apakah rumah Anda ada di zona rawan banjir, dan jalur air yang sering dilalui.",
+    "Bersihkan saluran air dan jangan buang sampah ke sungai.",
+    "Siapkan rute evakuasi dan tempat berkumpul keluarga bila terpencar.",
+    "Siapkan tas siaga, makanan, dan air minum untuk sedikitnya tiga hari.",
+    "Ketahui cara mematikan air, listrik, dan gas.",
+    "Simpan dokumen penting di tempat yang terlindung."
+   ],
+   "saat": [
+    "Segera ke tempat yang lebih tinggi. Mengungsilah sedini mungkin selagi genangan masih bisa dilewati.",
+    "Matikan listrik bila ada instruksi petugas. Jangan menyentuh alat listrik saat berdiri di air.",
+    "Jangan berjalan di arus air. Beberapa langkah saja bisa membuat jatuh. Bila terpaksa, pijak tempat yang tidak bergerak dan cek dengan tongkat.",
+    "Jangan mengemudi di wilayah banjir. Bila air naik, tinggalkan mobil dan pindah ke tempat yang tinggi.",
+    "Waspada saluran air dan tempat lewat air deras. Jangan beraktivitas dekat sungai saat hujan deras."
+   ],
+   "sesudah": [
+    "Hindari air banjir karena bisa tercemar dan menyetrum. Waspada instalasi listrik.",
+    "Hindari area yang airnya baru surut karena jalan bisa keropos dan ambles.",
+    "Kembali ke rumah sesuai perintah pihak berwenang. Hati-hati memasuki gedung karena fondasi bisa rusak tanpa terlihat.",
+    "Cuci tangan dengan sabun dan air bersih. Buang makanan yang terkena air banjir.",
+    "Bersihkan rumah dan sarang nyamuk. Siapkan air bersih untuk mencegah diare.",
+    "Bila sakit atau terluka, ke fasilitas kesehatan terdekat."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Jelang dan Selama Musim Hujan, BMKG Ajak Masyarakat Tingkatkan Kesiapsiagaan Bencana Hidrometeorologi (18 November 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/jelang-dan-selama-musim-hujan-bmkg-ajak-masyarakat-tingkatkan-kesiapsiagaan-bencana-hidrometeorologi"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Perkembangan Situasi dan Penanganan Bencana di Tanah Air 13 November 2026",
+     "url": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-13-november-2026"
+    }
+   ]
+  },
+  {
+   "id": "longsor",
+   "judul": "Tanah longsor",
+   "ringkas": "Longsor sering terjadi cepat setelah hujan lebat. Kenali tanda di lereng dan menjauh lebih awal.",
+   "gambar": "longsor",
+   "tanda": [
+    "Retakan muncul di lereng atau tebing.",
+    "Pohon atau tiang listrik mulai miring.",
+    "Air merembes atau mata air baru muncul tiba-tiba. Air sumur dekat tebing menjadi keruh.",
+    "Batu kecil mulai berjatuhan dan permukaan lereng tampak menggembung.",
+    "Biasanya terjadi setelah hujan lebat, dan awal musim hujan rawan."
+   ],
+   "sebelum": [
+    "Kenali apakah rumah Anda di lereng, di bawah tebing, atau dekat sungai berlereng.",
+    "Jaga saluran air agar tidak tersumbat dan tidak meresapkan air ke lereng.",
+    "Tutup rekahan di atas lereng supaya air tidak cepat meresap.",
+    "Jangan memotong kaki lereng sembarangan dan jangan menebang pohon sembarangan.",
+    "Tanam pohon berakar kuat dan dalam di lereng yang gersang.",
+    "Waspada saat hujan tinggi. Kenali sirine peringatan dini longsor dan zona evakuasi bila ada."
+   ],
+   "saat": [
+    "Bila menemukan tanda-tanda, jauhi lereng dan mengungsilah lebih dulu.",
+    "Longsor terjadi cepat dan waktu evakuasi mandiri terbatas, jadi jangan menunggu.",
+    "Segera menjauh dari arah suara gemuruh dan arah datangnya longsoran.",
+    "Jika sirine peringatan longsor berbunyi, menuju zona evakuasi yang sudah ditentukan.",
+    "Laporkan tanda yang Anda temukan kepada aparat setempat."
+   ],
+   "sesudah": [
+    "Hindari wilayah longsor karena tanahnya masih labil.",
+    "Waspada longsor susulan bila hujan turun lagi.",
+    "Ikuti arahan BPBD dan aparat setempat sebelum kembali ke rumah.",
+    "Laporkan kerusakan dan korban kepada aparat setempat."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "Kementerian ESDM (Badan Geologi)",
+     "judul": "Curah Hujan Tinggi, Masyarakat Diminta Waspadai Terjadinya Tanah Longsor (26 Februari 2018)",
+     "url": "https://www.esdm.go.id/en/media-center/news-archives/curah-hujan-tinggi-masyarakat-diminta-waspadai-terjadinya-tanah-longsor"
+    },
+    {
+     "lembaga": "Kementerian ESDM (Badan Geologi)",
+     "judul": "Pengenalan Gerakan Tanah",
+     "url": "https://www.esdm.go.id/assets/media/content/Pengenalan_Gerakan_Tanah"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Perkembangan Situasi dan Penanganan Bencana di Tanah Air 13 November 2026",
+     "url": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-13-november-2026"
+    }
+   ]
+  },
+  {
+   "id": "cuaca-ekstrem",
+   "judul": "Cuaca ekstrem dan puting beliung",
+   "ringkas": "Puting beliung datang singkat dan lokal. Masuk ke bangunan yang kokoh dan jauhi pohon serta papan reklame.",
+   "gambar": "cuaca",
+   "tanda": [
+    "Awan gelap menjulang tinggi seperti kembang kol (awan Cumulonimbus), kadang berlandasan di puncaknya.",
+    "Udara terasa panas lalu muncul awan gelap hingga sore. Terdengar petir, guruh, atau gemuruh dari jauh.",
+    "Lebih sering terjadi di masa pancaroba, saat pergantian musim.",
+    "Puting beliung umumnya berlangsung kurang dari 10 menit.",
+    "Peringatan dini cuaca ekstrem BMKG: hijau berarti tidak ada peringatan, kuning waspada, oranye siaga, merah awas."
+   ],
+   "sebelum": [
+    "Periksa pohon di sekitar rumah dan pangkas yang terlalu rindang atau rapuh.",
+    "Periksa atap, terutama yang terbuat dari bahan ringan.",
+    "Ikuti peringatan dini BMKG lewat aplikasi InfoBMKG.",
+    "Siapkan payung, topi, atau jas hujan dan sesuaikan kegiatan di luar ruangan.",
+    "Jaga kesehatan karena cuaca panas dan hujan bisa berganti cepat."
+   ],
+   "saat": [
+    "Di dalam ruangan, tutup pintu dan jendela rapat, matikan listrik, dan menjauh dari pintu serta jendela.",
+    "Masukkan barang yang bisa terbawa angin ke dalam rumah.",
+    "Di luar, jauhi tiang listrik, papan reklame, bangunan tinggi, jembatan, dan pohon tinggi.",
+    "Jangan berlindung di bawah pohon besar atau papan reklame. Saat petir, hindari lapangan terbuka.",
+    "Bila petir terasa akan menyambar, membungkuk, duduk, dan peluk lutut. Jangan tiarap di tanah.",
+    "Di dalam kendaraan, keluar dan berlindung di bangunan yang kokoh."
+   ],
+   "sesudah": [
+    "Pastikan tidak ada anggota keluarga yang cedera dan beri pertolongan darurat.",
+    "Laporkan kerusakan listrik, gas, atau lainnya kepada pihak berwenang.",
+    "Jika sedang di perjalanan, lanjutkan dengan hati-hati.",
+    "Waspada longsor di lereng bila hujan lebat menyertai."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BMKG",
+     "judul": "Fenomena Cuaca Ekstrem Puting Beliung Terjadi di Wilayah Jawa Barat (22 Februari 2024)",
+     "url": "https://www.bmkg.go.id/siaran-pers/bmkg-fenomena-cuaca-ekstrem-puting-beliung-terjadi-di-wilayah-jawa-barat-apa-dan-bagaimana-potensi-ke-depannya"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Waspada Cuaca Ekstrem! Indonesia Mulai Masuk Periode Pancaroba (25 Februari 2024)",
+     "url": "https://www.bmkg.go.id/siaran-pers/waspada-cuaca-ekstrem-indonesia-mulai-masuk-musim-pancaroba"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Jelang dan Selama Musim Hujan, BMKG Ajak Masyarakat Tingkatkan Kesiapsiagaan Bencana Hidrometeorologi (18 November 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/jelang-dan-selama-musim-hujan-bmkg-ajak-masyarakat-tingkatkan-kesiapsiagaan-bencana-hidrometeorologi"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Peraturan BMKG Nomor 9 Tahun 2022 tentang peringatan dini cuaca ekstrem (tingkat dan warna)",
+     "url": "https://jdih.bmkg.go.id/storage/common/dokumen/perbanno.9tahun2022.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    }
+   ]
+  },
+  {
+   "id": "karhutla",
+   "judul": "Kebakaran hutan dan lahan (asap)",
+   "ringkas": "Jangan membakar lahan. Saat asap tebal, kurangi keluar rumah dan lindungi pernapasan.",
+   "gambar": "karhutla",
+   "tanda": [
+    "Musim kemarau dengan hujan sedikit membuat lahan mudah terbakar.",
+    "Terlihat kepulan asap atau titik api di hutan dan lahan sekitar.",
+    "Udara berasap dan kualitas udara memburuk.",
+    "Asap bisa menimbulkan iritasi mata, tenggorokan gatal, dan sesak napas."
+   ],
+   "sebelum": [
+    "Jangan membuka atau membersihkan lahan dengan membakar.",
+    "Jangan membuang puntung rokok sembarangan.",
+    "Matikan api sampai benar-benar padam setelah berkemah atau membakar.",
+    "Siapkan masker di rumah.",
+    "Cari tahu tempat berlindung berudara bersih di wilayah Anda, misalnya rumah oksigen yang disiapkan Kemenkes di daerah terdampak."
+   ],
+   "saat": [
+    "Bila melihat api atau asap, segera lapor ke ketua RT, pemuka masyarakat, posko kebakaran, atau petugas.",
+    "Bila tidak perlu, jangan keluar rumah. Tutup celah udara berasap dan jaga udara dalam ruangan tetap bersih.",
+    "Bila harus keluar, pakai masker. Masker N95 yang terpasang rapat tanpa celah memberi perlindungan lebih baik.",
+    "Pantau indeks kualitas udara lewat aplikasi resmi sebelum beraktivitas di luar.",
+    "Segera ke puskesmas bila sesak napas, batuk menetap, nyeri dada, atau iritasi mata berat.",
+    "Cukupi minum air putih."
+   ],
+   "sesudah": [
+    "Cuci tangan dan wajah setelah beraktivitas di luar rumah.",
+    "Tetap pantau kualitas udara sebelum keluar rumah.",
+    "Jangan menyepelekan gejala pernapasan ringan. Periksakan sebelum memburuk.",
+    "Pastikan api di bekas pembakaran atau perkemahan sudah mati."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Perkembangan Situasi dan Penanganan Bencana di Tanah Air 13 November 2026",
+     "url": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-13-november-2026"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "Kemenkes",
+     "judul": "Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla (21 Agustus 2026)",
+     "url": "http://www.kemkes.go.id/id/menkes-pakai-masker-dan-pantau-kualitas-udara-untuk-cegah-dampak-asap-karhutla"
+    },
+    {
+     "lembaga": "Kemenkes",
+     "judul": "Kemenkes Perkuat Perlindungan Kelompok Rentan Hadapi Karhutla (26 Agustus 2026)",
+     "url": "https://kemkes.go.id/id/kemenkes-perkuat-perlindungan-kelompok-rentan-hadapi-karhutla"
+    }
+   ]
+  },
+  {
+   "id": "gunungapi",
+   "judul": "Erupsi gunung api",
+   "ringkas": "Patuhi status dan radius larangan dari PVMBG. Lindungi diri dari abu dan jauhi aliran sungai yang berhulu di puncak.",
+   "gambar": "gunungapi",
+   "tanda": [
+    "Status resmi gunung api dikeluarkan PVMBG dalam empat level. Level I Normal: tidak ada kelainan.",
+    "Level II Waspada: ada kelainan yang tampak secara visual atau dari kegempaan.",
+    "Level III Siaga: peningkatan makin nyata, perubahan kegiatan cenderung diikuti letusan.",
+    "Level IV Awas: menjelang letusan utama, letusan awal berupa abu atau asap sudah mulai.",
+    "Radius larangan beraktivitas berbeda tiap gunung dan bisa berubah. Contoh: Semeru Level IV (November 2025) 8 km dari puncak, Lewotobi Laki-laki Level III (Mei 2026) 5 km dari pusat erupsi.",
+    "Hujan lebat bisa membawa banjir lahar di sungai yang berhulu di puncak."
+   ],
+   "sebelum": [
+    "Pasang aplikasi MAGMA Indonesia dan ikuti arahan PVMBG.",
+    "Kenali kawasan rawan bencana, jalur evakuasi, dan tempat pengungsian.",
+    "Siapkan masker dan kacamata pelindung untuk abu.",
+    "Siapkan senter, baterai cadangan, uang tunai, obat khusus, dan makanan siap saji.",
+    "Siapkan rencana evakuasi cadangan bila dampak meluas."
+   ],
+   "saat": [
+    "Jangan berada di lokasi yang direkomendasikan untuk dikosongkan. Jauhi lembah dan aliran sungai.",
+    "Jangan beraktivitas dalam radius larangan yang ditetapkan PVMBG.",
+    "Saat hujan abu, pakai masker atau kain basah dan kacamata pelindung. Jangan pakai lensa kontak.",
+    "Kenakan baju lengan panjang, celana panjang, dan topi.",
+    "Ikuti arahan pemerintah daerah. Jangan percaya kabar dari sumber yang tidak jelas."
+   ],
+   "sesudah": [
+    "Kurangi paparan abu vulkanik.",
+    "Hindari berkendara di daerah hujan abu karena abu bisa merusak mesin kendaraan.",
+    "Bersihkan atap dari timbunan abu karena beratnya bisa merobohkan atap.",
+    "Waspada banjir lahar di aliran sungai, terutama saat hujan.",
+    "Pantau MAGMA Indonesia untuk status dan rekomendasi terbaru."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "Badan Geologi (PVMBG)",
+     "judul": "MAGMA Indonesia",
+     "url": "https://magma.vsi.esdm.go.id/"
+    },
+    {
+     "lembaga": "Kementerian ESDM (PVMBG)",
+     "judul": "PVMBG Tingkatkan Aktivitas Gunung Api Semeru Ke Level IV (AWAS) (19 November 2025)",
+     "url": "https://esdm.go.id/id/media-center/arsip-berita/pvmbg-tingkatkan-aktivitas-gunung-api-semeru-ke-level-iv-awas"
+    },
+    {
+     "lembaga": "Badan Geologi (PVMBG)",
+     "judul": "Kenaikan Tingkat Aktivitas G. Lewotobi Laki-laki dari Level II (Waspada) menjadi Level III (Siaga) (12 Mei 2026)",
+     "url": "https://geologi.esdm.go.id/index.php/media-center/kenaikan-tingkat-aktivitas-g-lewotobi-laki-laki-ntt-dari-level-ii-waspada-menjadi-level-iii-siaga-tanggal-12-mei-2026-pukul-13-00-wita"
+    },
+    {
+     "lembaga": "Badan Geologi (PVMBG)",
+     "judul": "PVMBG Pantau 24 Jam Peningkatan Aktivitas Gunungapi di Indonesia (5 Desember 2023)",
+     "url": "https://geologi.esdm.go.id/media-center/pvmbg-pantau-24-jam-peningkatan-aktivitas-gunungapi-di-indonesia"
+    },
+    {
+     "lembaga": "Kementerian ESDM (PVMBG)",
+     "judul": "Gunung Ibu Erupsi, Warga Diminta Waspadai Hujan Abu (5 Agustus 2025)",
+     "url": "https://www.esdm.go.id/id/media-center/arsip-berita/gunung-ibu-erupsi-warga-diminta-waspadai-hujan-abu"
+    }
+   ]
+  },
+  {
+   "id": "kekeringan",
+   "judul": "Kekeringan",
+   "ringkas": "Kekeringan datang pelan. Hemat air sejak dini dan siapkan cadangan.",
+   "gambar": "kekeringan",
+   "tanda": [
+    "Hujan jauh di bawah normal dalam satu musim adalah tanda paling awal.",
+    "Muka air sungai, waduk, danau, dan air tanah menurun.",
+    "Tanah pertanian kekurangan kandungan air.",
+    "BMKG menghitung hari tanpa hujan, yaitu hari dengan hujan kurang dari 1 mm. Salah satu syarat peringatan: Waspada paling singkat 21 hari, Siaga 31 hari, Awas 61 hari berturut-turut."
+   ],
+   "sebelum": [
+    "Jaga mata air dan gunakan air dengan bijak.",
+    "Buat tandon air di pekarangan untuk menampung air hujan.",
+    "Bersama warga, buat embung atau waduk kecil untuk menampung hujan.",
+    "Jangan merusak hutan atau kawasan cagar alam.",
+    "Petani dapat memakai mulsa untuk menjaga kelembapan tanah."
+   ],
+   "saat": [
+    "Kurangi pemakaian air dan matikan keran bila tidak dipakai.",
+    "Atur jadwal pemakaian air yang masih ada bersama warga.",
+    "Lapor dan minta bantuan air bersih kepada pihak berwenang.",
+    "Ikuti informasi terkini dari radio, televisi, dan sumber resmi pemerintah."
+   ],
+   "sesudah": [
+    "Buat sumur resapan atau biopori.",
+    "Tampung air hujan di waduk atau embung.",
+    "Ingat lahan yang gundul akibat kekeringan mudah terkikis dan memicu banjir saat musim hujan."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Peraturan BMKG Nomor 9 Tahun 2019 tentang Penyediaan dan Penyebaran Peringatan Dini Iklim Ekstrim",
+     "url": "https://jdih.bmkg.go.id/storage/common/dokumen/perbanno.9tahun2019.pdf"
+    }
+   ],
+   "kredit": "Foto: Crisco 1492, CC BY-SA 4.0"
+  },
+  {
+   "id": "gelombang-pasang",
+   "judul": "Gelombang pasang, rob, dan abrasi",
+   "ringkas": "Saat gelombang tinggi atau pasang maksimum, jauhi pantai dan tunda melaut.",
+   "gambar": "rob",
+   "tanda": [
+    "Angin kencang, badai di tengah laut, atau cuaca yang tiba-tiba gelap.",
+    "BMKG mengelompokkan gelombang, misalnya 1,25 sampai 2,5 m dan 2,5 sampai 4 m.",
+    "Peringatan rob BMKG disusun dari data muka air laut dan prediksi pasang surut, dan mengingatkan pasang air laut maksimum.",
+    "Banjir rob disebabkan naiknya muka air laut. Gelombang pasang yang kuat bisa menyapu tepi pantai (abrasi)."
+   ],
+   "sebelum": [
+    "Pantau informasi cuaca maritim BMKG sebelum melaut.",
+    "Nelayan dan kapal kecil menunda pelayaran bila harus melewati perairan bergelombang tinggi.",
+    "Rencanakan pengungsian dan kenali jalur menuju tempat yang tinggi.",
+    "Lengkapi diri dengan alat komunikasi.",
+    "Dukung penanaman mangrove dan tanaman pantai untuk meredam gelombang."
+   ],
+   "saat": [
+    "Jauhi pantai dan menuju dataran yang lebih tinggi.",
+    "Bila di laut, hindari perairan yang sedang dilanda cuaca buruk.",
+    "Siaga terhadap dampak pasang maksimum pada pelabuhan, permukiman pesisir, dan tambak.",
+    "Laporkan tanda-tanda kepada kepala desa atau petugas berwenang."
+   ],
+   "sesudah": [
+    "Hindari air yang menggenang karena bisa tercemar dan menyetrum.",
+    "Pantau masa berlaku peringatan di BMKG sebelum kembali beraktivitas.",
+    "Laporkan kerusakan rumah, perahu, atau jalan kepada aparat setempat."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Peringatan Banjir Pesisir (Rob)",
+     "url": "https://www.bmkg.go.id/peringatan-dini/banjir-pesisir"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Bibit Siklon Tropis 97S Menguat, BMKG Minta Waspada Cuaca Ekstrem di Wilayah Timur Indonesia (18 November 2025)",
+     "url": "https://www.bmkg.go.id/siaran-pers/bibit-siklon-tropis-97s-menguat-bmkg-minta-waspada-cuaca-ekstrem-di-wilayah-timur-indonesia"
+    }
+   ]
+  },
+  {
+   "id": "kebakaran-permukiman",
+   "judul": "Kebakaran permukiman dan gas elpiji",
+   "ringkas": "Sebagian besar bisa dicegah. Periksa listrik dan gas, dan tahu nomor pemadam kebakaran.",
+   "gambar": null,
+   "tanda": [
+    "Bau gas yang menyengat di dapur. Gas elpiji tidak berbau, baunya berasal dari zat yang sengaja ditambahkan.",
+    "Gas elpiji lebih berat dari udara dan mengendap di lantai dan sudut dapur.",
+    "Selang atau regulator retak, atau klem longgar.",
+    "Kabel terkelupas, stop kontak bertumpuk, atau perangkat yang terasa panas berlebih."
+   ],
+   "sebelum": [
+    "Pakai kabel ber-SNI. Periksa kabel dan stop kontak secara rutin.",
+    "Cabut steker perangkat yang tidak dipakai.",
+    "Jangan tinggalkan dapur saat memasak.",
+    "Cek sambungan selang dengan air sabun. Gelembung berarti ada kebocoran.",
+    "Pasang alat pemadam api ringan, pastikan seluruh keluarga bisa memakainya, dan periksa tekanannya setiap 6 bulan.",
+    "Ajari keluarga jalur keluar dan jangan biarkan anak bermain korek atau lilin."
+   ],
+   "saat": [
+    "Hubungi pemadam kebakaran 113 atau nomor darurat 112.",
+    "Bau gas: jangan menyalakan kompor, saklar listrik, steker, kipas, korek, atau merokok di dekatnya.",
+    "Matikan kompor, tutup atau lepas regulator, buka pintu dan jendela lebar, lalu bawa tabung ke area terbuka.",
+    "Api kecil di area tabung dapat ditutup dengan kain basah sebelum tabung dibawa keluar."
+   ],
+   "sesudah": [
+    "Periksa selang, regulator, dan klem. Ganti yang retak atau longgar.",
+    "Gunakan perlengkapan gas berstandar SNI.",
+    "Minta teknisi listrik berlisensi memeriksa instalasi bila ada kabel yang rusak."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BPBD DI Yogyakarta",
+     "judul": "Benarkah Tabung LPG Bisa Meledak Sendiri? (21 Juli 2026)",
+     "url": "https://bpbd.jogjaprov.go.id/berita/benarkah-tabung-lpg-bisa-meledak-sendiri-"
+    },
+    {
+     "lembaga": "Pemerintah Kota Surabaya",
+     "judul": "Antisipasi Ledakan hingga Kebakaran, Pemkot Surabaya Edukasi Masyarakat Kenali Tanda Kebocoran Gas LPG (8 Oktober 2026)",
+     "url": "https://www.surabaya.go.id/id/berita/25761/antisipasi-ledakan-hingga-kebakaran-pemkot-surabaya-edukasi-masyarakat-kenali-tanda-kebocoran-gas-lpg"
+    },
+    {
+     "lembaga": "Dinas Pemadam Kebakaran dan Penyelamatan Kota Cirebon",
+     "judul": "Tips Pencegahan Kebakaran Rumah Tangga (20 November 2025)",
+     "url": "https://damkar.cirebonkota.go.id/artikel/tips-pencegahan-kebakaran-rumah-tangga"
+    }
+   ]
+  },
+  {
+   "id": "tas-siaga",
+   "judul": "Tas siaga bencana",
+   "ringkas": "Tas tahan air berisi kebutuhan dasar sekitar tiga hari, supaya bisa bertahan sampai bantuan datang dan mudah dibawa mengungsi.",
+   "gambar": null,
+   "butir": [
+    "Tas tahan air, disiapkan tiap keluarga untuk bertahan sekitar tiga hari.",
+    "Surat penting: surat tanah, surat kendaraan, ijazah, akta kelahiran.",
+    "Pakaian untuk tiga hari: pakaian dalam, celana panjang, jaket, selimut, handuk, jas hujan.",
+    "Air minum dan makanan ringan tahan lama untuk sekitar tiga hari, misalnya mi instan, biskuit, abon, cokelat.",
+    "Senter atau headlamp, korek api, dan lilin.",
+    "Radio atau ponsel beserta baterai, pengisi daya, atau powerbank.",
+    "Kotak P3K dan obat pribadi.",
+    "Masker, peluit untuk meminta tolong, uang tunai secukupnya, dan perlengkapan mandi."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    }
+   ]
+  },
+  {
+   "id": "rencana-keluarga",
+   "judul": "Rencana keluarga",
+   "ringkas": "Bicarakan dan latih rencana bersama keluarga sebelum bencana terjadi.",
+   "gambar": null,
+   "butir": [
+    "Kenali ancaman di sekitar rumah dan tempat kerja.",
+    "Tentukan titik kumpul bila keluarga terpencar.",
+    "Catat nomor kontak penting, termasuk BPBD kabupaten atau kota Anda.",
+    "Ketahui rute evakuasi dari rumah dan dari luar rumah.",
+    "Ketahui letak mematikan air, gas, dan listrik.",
+    "Tentukan tempat berlindung di dalam rumah.",
+    "Catat anggota keluarga yang rentan: anak, lansia, ibu hamil, penyandang disabilitas.",
+    "Latih rencana ini secara berkala. BNPB menetapkan 26 April sebagai Hari Kesiapsiagaan Bencana.",
+    "Saat bencana, putuskan cepat apakah tinggal atau berpindah. Bila tidak dalam bahaya, tetap tinggal dan cari informasi terbaru. Bila harus berpindah, patuhi instruksi pemerintah setempat.",
+    "Siapkan juga hewan peliharaan: kalung identitas, foto, dan tas darurat."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    }
+   ]
+  },
+  {
+   "id": "nomor-darurat",
+   "judul": "Nomor darurat",
+   "ringkas": "Simpan nomor ini di ponsel dan tulis di tempat yang mudah dilihat keluarga.",
+   "gambar": null,
+   "butir": [
+    "112: nomor tunggal panggilan darurat, gratis tanpa pulsa atau kode area, untuk kebakaran, kecelakaan, kondisi medis, bencana, dan kriminal. Layanan ini belum tentu sudah ada di semua kabupaten atau kota.",
+    "110: Polri, bebas pulsa.",
+    "113: pemadam kebakaran. Banyak daerah punya nomor damkar lokal, simpan juga nomor itu.",
+    "115: Basarnas, untuk pencarian dan pertolongan saat kecelakaan, bencana, atau kondisi yang membahayakan manusia.",
+    "117: Pusdalops BNPB, layanan 24 jam.",
+    "119: darurat medis (Public Safety Center Kemenkes). Bila di daerah Anda belum ada PSC, panggilan diteruskan ke rumah sakit terdekat.",
+    "196: contact center BMKG. 1500-567: Halo Kemenkes untuk informasi kesehatan.",
+    "Simpan juga nomor BPBD provinsi dan kabupaten atau kota Anda."
+   ],
+   "sumber": [
+    {
+     "lembaga": "Kementerian Komdigi",
+     "judul": "Siaran Pers: Kurangi Risiko Bencana Saat Lebaran, Komdigi Siagakan Layanan Darurat 112 dan EWS (26 Maret 2025)",
+     "url": "https://infopublik.id/kategori/siaran-pers/912067/siaran-pers-kurangi-risiko-bencana-saat-lebaran-komdigi-siagakan-layanan-darurat-112-dan-ews"
+    },
+    {
+     "lembaga": "Polri",
+     "judul": "Polri Sediakan Layanan Call Center 110 Bebas Pulsa untuk Respons Cepat Masyarakat",
+     "url": "https://humas.polri.go.id/news/detail/2209926-polri-sediakan-layanan-call-center-110-bebas-pulsa-untuk-respons-cepat-masyarakat"
+    },
+    {
+     "lembaga": "Basarnas",
+     "judul": "Kabasarnas: Darurat SAR, Hubungi 115! (12 Maret 2022)",
+     "url": "https://basarnas.go.id/berita/kabasarnas-darurat-sar-hubungi-115"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Laporan Kinerja Deputi Bidang Penanganan Darurat 2021 (memuat Pusdalops dan Call Center 117)",
+     "url": "https://bnpb.go.id/d3-lkip-deputi-bidang-penanganan-darurat-ta-2021"
+    },
+    {
+     "lembaga": "Kemenkes",
+     "judul": "PSC 119, layanan gawat darurat medis",
+     "url": "https://kemkes.go.id/eng/layanan/psc-119"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Jelang dan Selama Musim Hujan, BMKG Ajak Masyarakat Tingkatkan Kesiapsiagaan Bencana Hidrometeorologi (18 November 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/jelang-dan-selama-musim-hujan-bmkg-ajak-masyarakat-tingkatkan-kesiapsiagaan-bencana-hidrometeorologi"
+    },
+    {
+     "lembaga": "Kemenkes",
+     "judul": "Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla (21 Agustus 2026)",
+     "url": "http://www.kemkes.go.id/id/menkes-pakai-masker-dan-pantau-kualitas-udara-untuk-cegah-dampak-asap-karhutla"
+    }
+   ]
+  },
+  {
+   "id": "peringatan-resmi",
+   "judul": "Cara mendapat peringatan resmi",
+   "ringkas": "Pakai kanal resmi. Aplikasi dan akun yang tidak jelas asalnya bisa menyesatkan.",
+   "gambar": null,
+   "butir": [
+    "InfoBMKG (aplikasi, bmkg.go.id, akun @infoBMKG): gempa, peringatan dini tsunami, cuaca ekstrem, gelombang, rob. Peringatan tsunami juga di inatews.bmkg.go.id dan aplikasi WRS-BMKG.",
+    "MAGMA Indonesia (PVMBG): status gunung api, radius larangan, info gempa, dan gerakan tanah atau longsor.",
+    "InaRISK (BNPB): cek tingkat ancaman bencana di lokasi Anda, dan aplikasi InaRISK Personal untuk rekomendasi sebelum, saat, dan sesudah bencana.",
+    "BPBD dan pemerintah daerah: informasi banjir dan arahan evakuasi di daerah Anda. BNPB: bnpb.go.id.",
+    "Peringatan dini darurat juga bisa dikirim lewat SMS blast ke ponsel di wilayah terdampak.",
+    "Arti warna peringatan cuaca BMKG: hijau tidak ada peringatan, kuning waspada, oranye siaga, merah awas."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BMKG",
+     "judul": "BMKG Akhiri Peringatan Dini Tsunami Pasca-Gempa M7.7 NTT, Masyarakat Diimbau Tetap Tenang dan Waspada (15 Agustus 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/bmkg-akhiri-peringatan-dini-tsunami-pasca-gempa-m7-7-ntt-masyarakat-dimbau-tetap-tenang-dan-waspada"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Jelang dan Selama Musim Hujan, BMKG Ajak Masyarakat Tingkatkan Kesiapsiagaan Bencana Hidrometeorologi (18 November 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/jelang-dan-selama-musim-hujan-bmkg-ajak-masyarakat-tingkatkan-kesiapsiagaan-bencana-hidrometeorologi"
+    },
+    {
+     "lembaga": "BMKG",
+     "judul": "Peraturan BMKG Nomor 9 Tahun 2022 tentang peringatan dini cuaca ekstrem (tingkat dan warna)",
+     "url": "https://jdih.bmkg.go.id/storage/common/dokumen/perbanno.9tahun2022.pdf"
+    },
+    {
+     "lembaga": "Badan Geologi (PVMBG)",
+     "judul": "MAGMA Indonesia",
+     "url": "https://magma.vsi.esdm.go.id/"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "InaRISK, portal risiko bencana Indonesia",
+     "url": "https://inarisk.bnpb.go.id/"
+    },
+    {
+     "lembaga": "Kementerian Komdigi",
+     "judul": "Siaran Pers: Kurangi Risiko Bencana Saat Lebaran, Komdigi Siagakan Layanan Darurat 112 dan EWS (26 Maret 2025)",
+     "url": "https://infopublik.id/kategori/siaran-pers/912067/siaran-pers-kurangi-risiko-bencana-saat-lebaran-komdigi-siagakan-layanan-darurat-112-dan-ews"
+    }
+   ]
+  },
+  {
+   "id": "kelompok-rentan",
+   "judul": "Kelompok rentan",
+   "ringkas": "Bayi, anak, ibu hamil, lansia, dan penyandang disabilitas butuh persiapan dan perhatian khusus.",
+   "gambar": null,
+   "butir": [
+    "Catat anggota keluarga yang rentan dalam rencana keluarga: anak, lansia, ibu hamil, penyandang disabilitas.",
+    "Penyandang disabilitas: sampaikan peringatan dini sesuai jenis disabilitasnya, latih bersama kerabat dekat, dan petakan kebutuhan mereka saat dan sesudah bencana.",
+    "Bayi: usahakan ASI tetap diberikan di pengungsian. Waspadai donasi susu formula karena air bersih terbatas dan lingkungan kotor, dan minta pendampingan konselor ASI.",
+    "Ibu hamil: butuh dukungan gizi, makanan tambahan, dan tablet tambah darah. Periksakan diri ke petugas kesehatan di pengungsian.",
+    "Lansia dan penderita penyakit kronis: bawa obat rutin dalam tas siaga.",
+    "Saat asap karhutla, anak-anak, ibu hamil, lansia, dan penderita asma atau penyakit paru paling berisiko. Prioritaskan mereka untuk berlindung di ruang berudara bersih."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "Kemenkes (Ditjen Kesehatan Lanjutan)",
+     "judul": "Respons Gizi pada Masa Tanggap Darurat Bencana (10 Juli 2023)",
+     "url": "https://keslan.kemkes.go.id/view_artikel/2600/respons-gizi-pada-masa-tanggap-darurat-bencana"
+    },
+    {
+     "lembaga": "Kemenkes",
+     "judul": "Kemenkes Perkuat Perlindungan Kelompok Rentan Hadapi Karhutla (26 Agustus 2026)",
+     "url": "https://kemkes.go.id/id/kemenkes-perkuat-perlindungan-kelompok-rentan-hadapi-karhutla"
+    },
+    {
+     "lembaga": "Kemenkes",
+     "judul": "Menkes: Pakai Masker dan Pantau Kualitas Udara untuk Cegah Dampak Asap Karhutla (21 Agustus 2026)",
+     "url": "http://www.kemkes.go.id/id/menkes-pakai-masker-dan-pantau-kualitas-udara-untuk-cegah-dampak-asap-karhutla"
+    }
+   ]
+  },
+  {
+   "id": "kesehatan-pengungsian",
+   "judul": "Kesehatan di pengungsian dan air bersih",
+   "ringkas": "Air bersih dan cuci tangan mencegah penyakit yang sering muncul sesudah bencana.",
+   "gambar": null,
+   "butir": [
+    "Cuci tangan dengan sabun dan air bersih, terutama setelah terkena air banjir atau genangan.",
+    "Pastikan air yang diminum layak. Rebus sampai mendidih bergolak bila ada bahan bakar. Setelah bencana, WHO mencatat banyak keluarga tidak punya alat atau bahan bakar untuk merebus.",
+    "Buang makanan yang terkena air banjir atau genangan.",
+    "Jaga sumber air dari pencemar. Jarak sumber air dengan jamban dan tempat sampah minimal 10 meter. Tutup wadah air dan pakai gayung bertangkai.",
+    "Bantu bersihkan sarang nyamuk, kaporitisasi sumur, dan perbaikan jamban serta saluran pembuangan.",
+    "Diare: perbanyak minum, pakai oralit atau larutan 2 sendok teh gula dan setengah sendok teh garam dalam satu gelas air matang. Segera ke petugas kesehatan bila pusing, lemas, sedikit berkemih, atau penderitanya bayi atau anak kecil.",
+    "Bila terluka atau sakit, datangi pos kesehatan terdekat."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "WHO",
+     "judul": "Household water treatment and safe storage following emergencies and disasters",
+     "url": "https://www.who.int/docs/default-source/documents/publications/household-water-treatment-and-safe-storage-following-emergencies-and-disasters.pdf"
+    },
+    {
+     "lembaga": "Kemenkes (Ditjen Kesehatan Lanjutan)",
+     "judul": "Gunakan Air Bersih dan Kiat Menjaga Kualitasnya untuk Mencegah Water Borne Disease (31 Juli 2022)",
+     "url": "https://keslan.kemkes.go.id/view_artikel/743/gunakan-air-bersih-dan-kiat-menjaga-kualitasnya-untuk-mencegah-water-borne-dissease"
+    },
+    {
+     "lembaga": "Kemenkes (Ditjen Kesehatan Lanjutan)",
+     "judul": "Penanganan Awal pada Diare (11 September 2024)",
+     "url": "https://keslan.kemkes.go.id/view_artikel/3623/penanganan-awal-pada-diare"
+    }
+   ]
+  },
+  {
+   "id": "hoaks",
+   "judul": "Waspada hoaks bencana",
+   "ringkas": "Kabar bencana palsu menimbulkan panik dan menghambat pertolongan.",
+   "gambar": null,
+   "butir": [
+    "Gempa tidak bisa diprediksi. Kabar yang menyebut waktu gempa akan terjadi patut dicurigai.",
+    "Cek ke kanal resmi: akun @infoBMKG, bmkg.go.id, aplikasi InfoBMKG atau WRS-BMKG untuk gempa dan tsunami; MAGMA Indonesia untuk gunung api; BNPB, BPBD, dan pemda untuk kejadian di daerah.",
+    "Jangan terpancing isu yang tidak bertanggung jawab. Jangan percaya informasi dari sumber yang tidak jelas.",
+    "Jangan menyebarkan kabar yang belum terverifikasi. Cek dulu sebelum membagikan.",
+    "Jangan bertindak karena informasi yang belum jelas. Ikuti arahan petugas."
+   ],
+   "sumber": [
+    {
+     "lembaga": "BMKG",
+     "judul": "BMKG Akhiri Peringatan Dini Tsunami Pasca-Gempa M7.7 NTT, Masyarakat Diimbau Tetap Tenang dan Waspada (15 Agustus 2026)",
+     "url": "https://www.bmkg.go.id/siaran-pers/bmkg-akhiri-peringatan-dini-tsunami-pasca-gempa-m7-7-ntt-masyarakat-dimbau-tetap-tenang-dan-waspada"
+    },
+    {
+     "lembaga": "Badan Geologi (PVMBG)",
+     "judul": "Kenaikan Tingkat Aktivitas G. Lewotobi Laki-laki dari Level II (Waspada) menjadi Level III (Siaga) (12 Mei 2026)",
+     "url": "https://geologi.esdm.go.id/index.php/media-center/kenaikan-tingkat-aktivitas-g-lewotobi-laki-laki-ntt-dari-level-ii-waspada-menjadi-level-iii-siaga-tanggal-12-mei-2026-pukul-13-00-wita"
+    },
+    {
+     "lembaga": "Kementerian ESDM (PVMBG)",
+     "judul": "Gunung Ibu Erupsi, Warga Diminta Waspadai Hujan Abu (5 Agustus 2025)",
+     "url": "https://www.esdm.go.id/id/media-center/arsip-berita/gunung-ibu-erupsi-warga-diminta-waspadai-hujan-abu"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (cetakan keempat, Maret 2019)",
+     "url": "https://bnpb.go.id/storage/app/media/uploads/24/buku-data-bencana/6-buku-saku-cetakan-4-2019.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Perkembangan Situasi dan Penanganan Bencana di Tanah Air 13 November 2026",
+     "url": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-13-november-2026"
+    }
+   ]
+  },
+  {
+   "id": "cara-lapor",
+   "judul": "Cara melapor yang baik",
+   "ringkas": "Laporan yang jelas membantu petugas bergerak cepat ke tempat yang tepat.",
+   "gambar": null,
+   "butir": [
+    "Pastikan kejadian benar-benar terjadi. Jangan membuat laporan palsu.",
+    "Sebutkan identitas yang jelas dan nomor yang bisa dihubungi.",
+    "Jelaskan kejadian secara jelas: jenis kejadian, lokasi sedetail mungkin (desa, jalan, patokan), waktu, dan kondisi saat ini (ada korban atau tidak, kerusakan, ancaman lanjutan).",
+    "Untuk keadaan darurat hubungi 112, atau 115 (Basarnas), 117 (BNPB), 119 (medis), 113 (pemadam kebakaran), 110 (polisi).",
+    "Tanda awal bahaya seperti retakan lereng, asap kebakaran, atau tanda tsunami laporkan segera ke kepala desa, RT, polisi, atau BPBD.",
+    "Tetap bisa dihubungi setelah melapor, karena petugas mencatat, memverifikasi, lalu bergerak ke lokasi."
+   ],
+   "sumber": [
+    {
+     "lembaga": "Basarnas",
+     "judul": "Operasi Pencarian dan Pertolongan (prosedur pelaporan, PPID Basarnas)",
+     "url": "https://ppid.basarnas.go.id/p/operasi-pencarian-dan-pertolongan"
+    },
+    {
+     "lembaga": "Basarnas",
+     "judul": "Kabasarnas: Darurat SAR, Hubungi 115! (12 Maret 2022)",
+     "url": "https://basarnas.go.id/berita/kabasarnas-darurat-sar-hubungi-115"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Buku Saku Tanggap Tangkas Tangguh Menghadapi Bencana (edisi 2012)",
+     "url": "https://www.bnpb.go.id/storage/app/media/uploads/migration/pubs/478.pdf"
+    },
+    {
+     "lembaga": "BNPB",
+     "judul": "Perkembangan Situasi dan Penanganan Bencana di Tanah Air 13 November 2026",
+     "url": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-13-november-2026"
+    },
+    {
+     "lembaga": "Polri",
+     "judul": "Polri Sediakan Layanan Call Center 110 Bebas Pulsa untuk Respons Cepat Masyarakat",
+     "url": "https://humas.polri.go.id/news/detail/2209926-polri-sediakan-layanan-call-center-110-bebas-pulsa-untuk-respons-cepat-masyarakat"
+    }
+   ]
+  }
+ ]
+}

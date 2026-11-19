@@ -32,7 +32,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
   if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
     /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
-    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"]];
+    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
   const H = new URL(hulu);
@@ -45,6 +45,8 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         res.writeHead(200, {"content-type": JENIS[path.extname(lokal).toLowerCase()] || "application/octet-stream", "cache-control": "no-store"});
         return res.end(await fs.readFile(lokal));
       }
+      /* Lapor Bencana AI (data/kajian-bnpb/lapor-ai) sebelum rutenya terbit: /api/lapor/* dijawab mesin lokal, TIDAK diteruskan ke produksi */
+      if (jalur.startsWith("/api/lapor/")) { const {tanganiLapor} = await import(pathToFileURL(path.join(akar, "scripts/lapor/lokal.mjs")).href); if (await tanganiLapor(req, res, url)) return; }
       const kepala = {};
       for (const [k, v] of Object.entries(req.headers)) if (!["host", "connection", "accept-encoding", "content-length"].includes(k)) kepala[k] = v;
       if (kepala.origin) kepala.origin = H.origin;
