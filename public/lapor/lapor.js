@@ -482,6 +482,20 @@ function kartuFoto(j) {
   isi.append(hitung, kisi, aksi, masukan, galeri);
 }
 
+/* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
+   gaya sama dengan pembuka (.lp-pembuka), maskot senang; sekali per nomor tiket supaya tidak muncul lagi saat riwayat chat dimuat ulang */
+function ucapanTerimaKasih(nomor) {
+  const kunci = `lapor-tk-${nomor}`; try { if (sessionStorage.getItem(kunci) || localStorage.getItem(kunci)) return; localStorage.setItem(kunci, "1"); } catch { return; }
+  const pb = el("div", "lp-pembuka lp-terima"); pb.setAttribute("role", "status");
+  const riak = el("span", "lp-pb-riak"); riak.setAttribute("aria-hidden", "true"); riak.append(el("i"), el("i"), el("i"));
+  const m = el("div", "lp-pembuka-maskot"); m.innerHTML = maskot("senang");
+  pb.append(riak, m, el("p", "lp-pembuka-sapa", "Laporan terkirim"), el("p", "lp-pembuka-judul", `Terima kasih${cache.pelapor ? `, ${cache.pelapor}` : ""}!`),
+    el("p", "lp-pembuka-bnpb", `Nomor tiket ${nomor}. Laporan Anda kami teruskan ke petugas BNPB dan BPBD setempat.`), el("p", "lp-terima-lewati", "Ketuk di mana saja untuk lanjut"));
+  document.body.append(pb);
+  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => pb.remove(), 700); };
+  setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1500 : 5000);
+  pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
+}
 /* kartu tiket (pemilik 19 Nov 2026: "bagusin maksimal"): pita sukses, tiket bersobek dengan nomor, langkah berikutnya, aksi berikon, penilaian */
 function kartuTiket(j) {
   const isi = kartu("tiket", "Laporan terkirim"); const k = isi.closest(".lp-langkah"); k.classList.add("lp-langkah-tiket"); k.querySelector(".lp-langkah-kepala")?.remove();
@@ -507,7 +521,8 @@ function kartuTiket(j) {
     b.addEventListener("click", async () => { nilai.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); tanya.textContent = "Terima kasih atas penilaian Anda.";
       try { await fetch("/api/lapor/nilai", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, nomor: j.nomor, nilai: i + 1})}); } catch {} }); nilai.append(b); });
   kotakNilai.append(tanya, nilai);
-  const baru = el("button", "lp-teks-tombol lp-tk-baru"); baru.type = "button"; baru.append(ikon("i-plus"), "Buat laporan baru"); baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
+  ucapanTerimaKasih(j.nomor);
+  const baru = el("button", "lp-tk-baru"); baru.type = "button"; baru.append(ikon("i-plus"), "Buat laporan baru"); baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
   isi.append(pita, tiket, aksi, kotakNilai, baru);
 }
 
@@ -1062,7 +1077,7 @@ if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Lapor Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
   const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => pb.remove(), 700); };
-  setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 900 : 3800);
+  setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : 6000);   // pemilik 19 Nov 2026 malam: "masih kurang lama"
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
 if (LOKAL) { if (tersimpan) mulai(tersimpan); else { ke("masuk"); iNomor.focus(); } }

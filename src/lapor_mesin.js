@@ -272,7 +272,7 @@ function teksTanya(tanya, sesi) {
 }
 function teksTanyaDasar(tanya, sesi) {
   if (PANDU[tanya]) return PANDU[tanya];
-  if (tanya.startsWith("kelompok:")) return KELOMPOK.find(k => `kelompok:${k.id}` === tanya).tanya;
+  if (tanya.startsWith("kelompok:")) { const k = KELOMPOK.find(k => `kelompok:${k.id}` === tanya); return k.tanyaJenis?.[sesi.isian?.jenis?.nilai] || k.tanya; }
   const i = isianNama[tanya], jn = sesi.isian?.jenis?.nilai;   // kalimat dan label bisa mengikuti jenis (tanyaJenis, labelJenis)
   const judul = `*${i.labelJenis?.[jn] || i.label}*\n`;
   if (i.tanya) return judul + (i.tanyaJenis?.[jn] || i.tanya);

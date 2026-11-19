@@ -1856,3 +1856,11 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-pil-ikon{display:inline-flex!important;align-items:center;gap:5px}
 .lp-pil-ikon svg{width:13px;height:13px;flex:none}
 #heroTentang{flex-shrink:0}
+/* tombol Buat laporan baru (pemilik 19 Nov 2026 "buat dalam button bagus") */
+.lp-langkah-tiket .lp-tk-baru{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 40px);margin:6px 20px 20px;padding:13px 16px;border:1.5px solid var(--brand2);border-radius:14px;background:var(--card);color:var(--brand2);font:800 .9375rem var(--font);cursor:pointer;transition:background var(--dur-1),color var(--dur-1)}
+.lp-langkah-tiket .lp-tk-baru:hover{background:var(--brand2);color:var(--on-pekat)}
+.lp-langkah-tiket .lp-tk-baru svg{width:18px;height:18px}
+/* layar terima kasih: memakai gaya pembuka */
+.lp-terima{z-index:60}
+.lp-terima-lewati{margin-top:18px!important;font:600 .75rem var(--font);color:var(--on-head-2);opacity:.8}
+@media (prefers-reduced-motion:no-preference){.lp-terima .lp-pembuka-maskot{animation:lp-naik .7s var(--ease) both}.lp-terima .lp-pembuka-sapa{animation:lp-naik .6s .25s var(--ease) both}.lp-terima .lp-pembuka-judul{animation:lp-naik .6s .4s var(--ease) both}.lp-terima .lp-pembuka-bnpb{animation:lp-naik .6s .55s var(--ease) both}}

@@ -63,9 +63,14 @@ export const KELOMPOK = [
   /* terdampak dan mengungsi dua kelompok terpisah (pemilik 19 Nov 2026: "dipisah 2") */
   {id: "terdampak", label: "Warga terdampak", tanya: "Berapa keluarga dan warga yang terdampak?"},
   {id: "pengungsian", label: "Pengungsian", tanya: "Berapa warga dan keluarga yang mengungsi?"},
-  {id: "rumah", label: "Kerusakan rumah", tanya: "Berapa rumah rusak berat, rusak sedang, rusak ringan, atau terendam?"},
+  /* pertanyaan kelompok mengikuti jenis (pemilik 19 Nov 2026: "karhutla masa jalan atau jembatan rusak"); isian yang tidak cocok disaring lewat jenis/kecuali */
+  {id: "rumah", label: "Kerusakan rumah", tanya: "Berapa rumah rusak berat, rusak sedang, rusak ringan, atau terendam?",
+    tanyaJenis: {karhutla: "Ada rumah yang terbakar atau rusak? Berapa yang rusak berat, sedang, atau ringan?", kebakaran_gedung: "Berapa rumah terbakar habis (rusak berat), rusak sedang, atau rusak ringan?",
+      gempa: "Berapa rumah rusak berat, rusak sedang, atau rusak ringan?", longsor: "Berapa rumah tertimbun atau rusak berat, rusak sedang, atau rusak ringan?",
+      cuaca: "Berapa rumah rusak berat, rusak sedang, atau rusak ringan (atap terbang, roboh)?", erupsi: "Berapa rumah rusak berat, rusak sedang, atau rusak ringan (atap ambruk karena abu)?", lainnya: "Berapa rumah rusak berat, rusak sedang, atau rusak ringan?"}},
   {id: "rentan", label: "Kelompok rentan"},
-  {id: "fasilitas", label: "Fasilitas dan jalan", tanya: "Ada sekolah, fasilitas kesehatan, tempat ibadah, jalan, atau jembatan yang rusak?"},
+  {id: "fasilitas", label: "Fasilitas dan jalan", tanya: "Ada sekolah, fasilitas kesehatan, tempat ibadah, jalan, atau jembatan yang rusak?",
+    tanyaJenis: {karhutla: "Ada sekolah, fasilitas kesehatan, atau tempat ibadah yang terbakar atau rusak?", kebakaran_gedung: "Ada sekolah, fasilitas kesehatan, atau tempat ibadah yang terbakar?"}},
   {id: "layanan", label: "Layanan dasar"},
   {id: "khusus", label: "Data khusus"},
   {id: "kebutuhan", label: "Kebutuhan"},
@@ -100,14 +105,14 @@ export const ISIAN = [
     ket: "Jumlah keluarga yang mengungsi, dihitung per Kartu Keluarga (KK), bukan per orang. Satu rumah tangga dengan satu KK = 1, berapa pun anggotanya"},
   {nama: "titik_pengungsian", label: "Titik pengungsian", kelompok: "pengungsian", tipe: "teks", maks: 300, bila: "mengungsi_jiwa",
     tanya: "Di mana saja warga mengungsi? Tulis nama tempatnya, misalnya Masjid Al Ikhlas, SDN 2 Cibeber, tenda di lapangan desa."},
-  {nama: "rumah_berat", label: "Rusak berat", kelompok: "rumah", tipe: "angka", satuan: "rumah", maks: 2000000, ket: "Rumah roboh, atau sebagian besar struktur utama, dinding, dan lantai rusak"},
-  {nama: "rumah_sedang", label: "Rusak sedang", kelompok: "rumah", tipe: "angka", satuan: "rumah", maks: 2000000, ket: "Sebagian kecil struktur utama rusak, tetapi rumah masih berdiri"},
-  {nama: "rumah_ringan", label: "Rusak ringan", kelompok: "rumah", tipe: "angka", satuan: "rumah", maks: 2000000, ket: "Retak-retak pada dinding plesteran, struktur masih bisa dipakai"},
-  {nama: "rumah_terendam", label: "Terendam", kelompok: "rumah", tipe: "angka", satuan: "rumah", maks: 5000000, ket: "Rumah tergenang air tanpa kerusakan struktur"},
-  {nama: "fasilitas_sekolah", label: "Sekolah", kelompok: "fasilitas", tipe: "angka", satuan: "unit", maks: 100000, ket: "Gedung sekolah atau madrasah yang rusak"},
-  {nama: "fasilitas_kesehatan", label: "Fasilitas kesehatan", kelompok: "fasilitas", tipe: "angka", satuan: "unit", maks: 100000, ket: "Puskesmas, klinik, atau rumah sakit yang rusak"},
-  {nama: "fasilitas_ibadah", label: "Tempat ibadah", kelompok: "fasilitas", tipe: "angka", satuan: "unit", maks: 100000, ket: "Masjid, musala, gereja, pura, vihara, atau kelenteng yang rusak"},
-  {nama: "jalan_jembatan", label: "Jalan atau jembatan", kelompok: "fasilitas", tipe: "angka", satuan: "titik", maks: 100000, ket: "Ruas jalan atau jembatan yang rusak atau putus"},
+  {nama: "rumah_berat", label: "Rusak berat", kelompok: "rumah", kecuali: ["kekeringan"], tipe: "angka", satuan: "rumah", maks: 2000000, ket: "Rumah roboh, atau sebagian besar struktur utama, dinding, dan lantai rusak"},
+  {nama: "rumah_sedang", label: "Rusak sedang", kelompok: "rumah", kecuali: ["kekeringan"], tipe: "angka", satuan: "rumah", maks: 2000000, ket: "Sebagian kecil struktur utama rusak, tetapi rumah masih berdiri"},
+  {nama: "rumah_ringan", label: "Rusak ringan", kelompok: "rumah", kecuali: ["kekeringan"], tipe: "angka", satuan: "rumah", maks: 2000000, ket: "Retak-retak pada dinding plesteran, struktur masih bisa dipakai"},
+  {nama: "rumah_terendam", label: "Terendam", kelompok: "rumah", jenis: ["banjir", "tsunami", "abrasi"], tipe: "angka", satuan: "rumah", maks: 5000000, ket: "Rumah tergenang air tanpa kerusakan struktur"},
+  {nama: "fasilitas_sekolah", label: "Sekolah", kelompok: "fasilitas", kecuali: ["kekeringan"], tipe: "angka", satuan: "unit", maks: 100000, ket: "Gedung sekolah atau madrasah yang rusak"},
+  {nama: "fasilitas_kesehatan", label: "Fasilitas kesehatan", kelompok: "fasilitas", kecuali: ["kekeringan"], tipe: "angka", satuan: "unit", maks: 100000, ket: "Puskesmas, klinik, atau rumah sakit yang rusak"},
+  {nama: "fasilitas_ibadah", label: "Tempat ibadah", kelompok: "fasilitas", kecuali: ["kekeringan"], tipe: "angka", satuan: "unit", maks: 100000, ket: "Masjid, musala, gereja, pura, vihara, atau kelenteng yang rusak"},
+  {nama: "jalan_jembatan", label: "Jalan atau jembatan", kelompok: "fasilitas", kecuali: ["karhutla", "kekeringan", "kebakaran_gedung"], tipe: "angka", satuan: "titik", maks: 100000, ket: "Ruas jalan atau jembatan yang rusak atau putus"},
   {nama: "nama_sekolah", label: "Nama sekolah rusak", kelompok: "fasilitas", tipe: "teks", maks: 300, bila: "fasilitas_sekolah", tanya: "Sekolah mana saja yang rusak? Tulis nama sekolahnya."},
   {nama: "nama_faskes", label: "Nama fasilitas kesehatan rusak", kelompok: "fasilitas", tipe: "teks", maks: 300, bila: "fasilitas_kesehatan", tanya: "Puskesmas, klinik, atau rumah sakit mana yang rusak? Tulis namanya."},
   {nama: "nama_ibadah", label: "Nama tempat ibadah rusak", kelompok: "fasilitas", tipe: "teks", maks: 300, bila: "fasilitas_ibadah", tanya: "Tempat ibadah mana yang rusak? Tulis namanya."},
@@ -179,7 +184,7 @@ export const ISIAN = [
 export const isianNama = Object.fromEntries(ISIAN.map(i => [i.nama, i]));
 /* pilihan yang berlaku untuk jenis kejadian ini: opsi berelemen ke-4 berisi daftar jenis hanya muncul untuk jenis itu (kebutuhan khas per bencana, logbook Pusdalops) */
 export const opsiBerlaku = (i, jenis) => (i.opsi || []).filter(o => !o[3] || (jenis && o[3].includes(jenis)));
-export const berlaku = (jenis) => ISIAN.filter(i => !i.jenis || (jenis && i.jenis.includes(jenis)));
+export const berlaku = (jenis) => ISIAN.filter(i => (!i.jenis || (jenis && i.jenis.includes(jenis))) && !(jenis && i.kecuali?.includes(jenis)));
 /* isian yang berlaku untuk sesi ini: pertanyaan lanjutan (bila) hanya bila isian induknya lebih dari 0 (pemilik 19 Nov 2026: "harusnya ada follow up questionnya") */
 export const berlakuSesi = (sesi) => berlaku(sesi.isian.jenis?.nilai).filter(i => !i.bila || Number(sesi.isian[i.bila]?.nilai) > 0);
 

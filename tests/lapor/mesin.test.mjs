@@ -187,3 +187,13 @@ test("isian warga baru: lahan per jenis, kelompok rentan, layanan terganggu", as
   assert.match(isianNama.lahan_terendam.tanyaJenis.kekeringan, /puso/);
   for (const j of JENIS.map(x => x.id)) { assert.ok(ada(j).includes("rentan")); assert.ok(ada(j).includes("layanan_terganggu")); }
 });
+
+test("isian per jenis: karhutla tanpa jalan/jembatan dan rumah terendam; kekeringan tanpa rumah dan fasilitas", async () => {
+  const {berlaku, KELOMPOK} = await import("../../src/lapor_spek.js");
+  const ada = j => berlaku(j).map(i => i.nama);
+  for (const n of ["jalan_jembatan", "rumah_terendam"]) assert.ok(!ada("karhutla").includes(n), `karhutla tanpa ${n}`);
+  assert.ok(ada("karhutla").includes("rumah_berat"));
+  for (const n of ["rumah_berat", "fasilitas_sekolah", "jalan_jembatan"]) assert.ok(!ada("kekeringan").includes(n), `kekeringan tanpa ${n}`);
+  assert.ok(ada("banjir").includes("rumah_terendam") && ada("banjir").includes("jalan_jembatan"));
+  assert.match(KELOMPOK.find(k => k.id === "fasilitas").tanyaJenis.karhutla, /terbakar/);
+});
