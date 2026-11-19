@@ -7,7 +7,7 @@ import path from 'node:path'
 // Bawaan sebelum ada catatan (menit), dari pengamatan 18-19 Nov: V1 harian sekitar 2 menit, V2 sampai 6 menit (D28).
 const BAWAAN = {
   'v1:bangun:harian': [1, 3], 'v1:bangun:penanganan': [3, 10], 'v1:revisi': [1, 2],
-  'v2:bangun:harian': [5, 10], 'v2:bangun:penanganan': [7, 14], 'v2:revisi': [3, 6], // v2.2: termasuk tinjau visual
+  'v2:bangun:harian': [4, 8], 'v2:bangun:penanganan': [6, 12], 'v2:revisi': [2, 5],
 }
 const MAKS_CATAT = 10
 const durasiP = (dasar) => path.join(dasar, 'proyek', 'durasi.json')

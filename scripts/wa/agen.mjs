@@ -452,7 +452,8 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
   fs.mkdirSync(sesiCwd(dasar, id), { recursive: true, mode: 0o700 })
   // cwd = folder sesi kosong (bukan ruang proyek): baca dan tulis di luar cwd selalu lewat canUseTool; repo tidak dijadikan folder kerja
   const opsiDasar = {
-    cwd: sesiCwd(dasar, id), model: MODEL_AGEN, effort: 'high',
+    // effort medium (pemilik 19 Nov 2026: "agen harusnya pakai effort medium ajaa", draf v2.2 lewat batas waktu 15 menit)
+    cwd: sesiCwd(dasar, id), model: MODEL_AGEN, effort: ['low', 'medium', 'high', 'xhigh', 'max'].includes(env.BL_AGEN_EFFORT) ? env.BL_AGEN_EFFORT : 'medium',
     settingSources: [], systemPrompt: { type: 'preset', preset: 'claude_code', append: pedoman(jenis) },
     tools: ['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash'], disallowedTools: aturanTolak({ dasar, id }), permissionMode: 'default',
     canUseTool: buatPenjaga({ ruang, dasar }), sandbox: opsiSandbox({ ruang, dasar, id, pyBin: pyBin ? path.join(pyBin, 'python3') : null }),
@@ -474,6 +475,7 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
       return { akhir, sesiBaru, giliran, galat: e, waktu: henti.signal.aborted }
     } finally { clearTimeout(jam) }
   }
+  const mulaiJalan = Date.now()
   let r = await satu(sesi)
   // resume gagal sebelum giliran pertama: sesi baru sekali (D14); prompt pemanggil sudah memuat riwayat bila perlu
   if (sesi && !r.giliran && (r.galat || r.akhir?.subtype === 'error_during_execution') && !r.waktu) {
@@ -489,6 +491,10 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
     r = await satu(null)
     r.lama = lama
   }
+  try {
+    fs.appendFileSync(path.join(keadaan(dasar), 'jalan.log'), JSON.stringify({ waktu: new Date().toISOString(), id, kegiatan: biaya?.kegiatan || 'laporan', detik: Math.round((Date.now() - mulaiJalan) / 1000),
+      giliran: r.giliran, hasil: r.akhir?.subtype || (r.waktu ? 'lewat_waktu' : 'galat'), api_detik: r.akhir?.duration_api_ms ? Math.round(r.akhir.duration_api_ms / 1000) : null, usd: r.akhir?.total_cost_usd ?? null }) + '\n')
+  } catch {}
   const usd = r.akhir && Number.isFinite(Number(r.akhir.total_cost_usd)) ? Number(r.akhir.total_cost_usd) : jatahJalan // terputus tanpa hasil = dicatat sebesar jatah jalan itu
   await catatBiaya(biaya, dasar, id, usd)
   if (r.sesiBaru) catatSesi(dasar, id, { sesi: r.sesiBaru, ...(r.lama ? { lama: [...(bacaSesi(dasar, id)?.lama || []), r.lama] } : {}) })

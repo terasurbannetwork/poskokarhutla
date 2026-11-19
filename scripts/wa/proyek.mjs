@@ -1280,7 +1280,8 @@ async function kerjakanAgen(ctx, o) {
   // D36 (V2.2 vision): mesin merender deck, agen melihat gambarnya sekali dan membetulkan tata letak; gagal apa pun = deck sebelum tinjau
   let ubahVisual = []
   try {
-    if (pg.lolos && String(env.BL_TINJAU_VISUAL ?? '1') !== '0') {
+    // tinjau visual mati secara bawaan (pemilik 19 Nov 2026: "tinjau visual matiin aja"; draf jadi lebih dari 17 menit); BL_TINJAU_VISUAL=1 menyalakan
+  if (pg.lolos && String(env.BL_TINJAU_VISUAL ?? '0') === '1') {
       const t = await tinjauVisual(ctx, o, { h, sesi: r.sesi, pagarDeck })
       if (t) { h = t.h; pg = t.pg; ubahVisual = t.ubah }
     }

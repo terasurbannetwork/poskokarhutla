@@ -1381,7 +1381,7 @@ const isiDari = (inv) => {
 // agen palsu: ubah(inv, prompt) -> inv baru, atau {tanya: [...]}. Mencatat prompt dan opsi tiap jalan.
 function duniaV2({ ubah = (inv) => inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: 'Rencana Aksi pemantauan banjir' } : x)), ...o } = {}) {
   const d = dunia(o)
-  d.ctx.env = { ...d.ctx.env, BL_VERSI: '2', BL_V2_NOMOR: DARI, ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100', BL_TINJAU_VISUAL: o.tinjau ? '1' : '0' }
+  d.ctx.env = { ...d.ctx.env, BL_VERSI: '2', BL_V2_NOMOR: DARI, ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100', ...(o.tinjau ? { BL_TINJAU_VISUAL: '1' } : {}) }
   d.agen = []
   d.biaya = 0
   const fetchAsli = d.ctx.dep.fetch
@@ -1719,7 +1719,7 @@ test('kabar mulai: lanjut dan revisi membalas sekali "sedang dibuat" dengan esti
   // estimasi belajar: 3 catatan atau lebih = rentang dari catatan
   for (const detik of [130, 200, 290]) Durasi.catatDurasi(d.dasar, 'v1:bangun:penanganan', detik)
   assert.deepEqual(Durasi.perkiraan(d.dasar, 'v1:bangun:penanganan'), [2, 5])
-  assert.deepEqual(Durasi.perkiraan(d.dasar, 'v2:revisi:penanganan'), [3, 6], 'bawaan per versi dan mode (v2.2 termasuk tinjau visual)')
+  assert.deepEqual(Durasi.perkiraan(d.dasar, 'v2:revisi:penanganan'), [2, 5], 'bawaan per versi dan mode')
   assert.equal(Durasi.jamSelesai(new Date('2026-11-19T07:58:00Z'), 6), '15.04')
 })
 
@@ -1868,4 +1868,13 @@ test('biaya per kegiatan: laporan, tanya draf, kalimat bebas dicatat terpisah da
   await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
   assert.match(d.balasan.at(-1), /\*Per kegiatan bulan ini:\*\n- Membuat dan merevisi laporan: \$3,70\n- Tinjau visual draf: \$0,30\n- Kalimat bebas dan obrolan: \$0,02/)
   assert.doesNotMatch(d.balasan.at(-1), /Sebelum rincian/, 'pemakaian lama digabung ke laporan (pemilik: baris itu membingungkan)')
+})
+
+test('K39: agen effort medium dan tinjau visual mati secara bawaan (pemilik 19 Nov: laporan jadi lebih dari 17 menit)', async () => {
+  const d = duniaV2()
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.agen.length, 1, 'tanpa BL_TINJAU_VISUAL: tanpa jalan tinjau')
+  assert.equal(d.agen[0].options.effort, 'medium')
+  const log = fs.readFileSync(path.join(d.dasar, 'agen', 'jalan.log'), 'utf8').trim().split('\n').map((x) => JSON.parse(x))
+  assert.equal(log[0].id, 'P-291026-01'); assert.equal(log[0].hasil, 'success'); assert.ok(log[0].detik >= 0)
 })
