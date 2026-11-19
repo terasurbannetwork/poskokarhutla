@@ -414,12 +414,22 @@ ISIAN_HARIAN = {
 }
 
 
+def _nama_wilayah(s):
+    """Kunci banding lokasi: 'Kab. Aceh Selatan', 'Kabupaten Aceh Selatan', 'aceh selatan' sama; 'Kota. Mataram' = 'Kota Mataram'.
+    Awalan kabupaten dibuang, awalan kota dipertahankan (Kota Bengkulu bukan Provinsi Bengkulu). Isian Claude menulis awalan resmi,
+    urai bahan WA tidak (insiden 19 Nov 2026: 10 kejadian diabaikan)."""
+    t = re.sub(r'\s+', ' ', (s or '').strip().lower())
+    t = re.sub(r'^(kabupaten|kab)\.?\s+', '', t)
+    t = re.sub(r'^kota\.?\s+', 'kota ', t)
+    return t
+
+
 def terap_isian_harian(wa, w, ga, isian):
     """Isian menimpa medan yang sama hasil urai bahan; yang tidak diisi tetap dari bahan. Mengubah wa, w, ga di tempat."""
     if 'laporan' in isian: wa['laporan'] = isian['laporan']
     for i, e in enumerate(isian.get('kejadian') or []):
-        lok = (e.get('lokasi') or '').strip().lower()
-        cocok = [x for x in wa['kejadian'] if x['lokasi'].lower() == lok and (not e.get('jenis') or x['jenis'] == e['jenis'])]
+        lok = _nama_wilayah(e.get('lokasi'))
+        cocok = [x for x in wa['kejadian'] if _nama_wilayah(x['lokasi']) == lok and (not e.get('jenis') or x['jenis'] == e['jenis'])]
         if len(cocok) != 1:
             _peringatan(f"isian.kejadian[{i}] lokasi {e.get('lokasi')!r}: {'tidak ada di bahan' if not cocok else 'lebih dari satu, isi jenis'}, diabaikan"); continue
         x = cocok[0]

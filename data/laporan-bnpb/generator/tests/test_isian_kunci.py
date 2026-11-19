@@ -281,6 +281,15 @@ class TestIsian(unittest.TestCase):
         self.assertIn('tidak ada di bahan', err)
         self.assertEqual(wa['kejadian'][0]['angka'], {'kk': 3517})
 
+    def test_harian_lokasi_berawalan_kab_kota_cocok(self):
+        self.assertEqual(hr._nama_wilayah('Kab. Aceh Singkil'), hr._nama_wilayah('aceh singkil'))
+        self.assertEqual(hr._nama_wilayah('Kabupaten  Aceh Singkil'), 'aceh singkil')
+        self.assertEqual(hr._nama_wilayah('Kota. Mataram'), hr._nama_wilayah('Kota Mataram'))
+        self.assertNotEqual(hr._nama_wilayah('Kota Bengkulu'), hr._nama_wilayah('Bengkulu'))
+        wa, w, ga = self.bahan_harian()
+        _, err = senyap(hr.terap_isian_harian, wa, w, ga, {'kejadian': [{'lokasi': 'Kab. Aceh Singkil', 'angka': {'kk': 7}}]})
+        self.assertEqual(err, ''); self.assertEqual(wa['kejadian'][0]['angka']['kk'], 7)
+
     def test_penanganan_isian_operasi(self):
         import datetime as dt
         op = {'tanggal': dt.date(2026, 11, 16), 'personel': {'TNI': 100}, 'armada': {'Riau': [1, 1], 'Jambi': [0, 2]}, 'pemilik': {'BNPB': 3},
