@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/inti/tema.css" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
-<link href="/lapor/meja.css?v=38" rel="stylesheet">
+<link href="/lapor/meja.css?v=44" rel="stylesheet">
 </head>
 <!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
      peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
@@ -53,6 +53,7 @@
   <symbol id="m-bawah" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="m-fasilitas" viewBox="0 0 24 24"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-5h6v5M4 20h16"/></symbol>
   <symbol id="m-jalan" viewBox="0 0 24 24"><path d="M5 20 9 4M19 20 15 4M12 6v2M12 11v2M12 16v2"/></symbol>
+  <symbol id="m-sisi" viewBox="0 0 24 24"><path d="M8 7 4 12l4 5M16 7l4 5-4 5M4 12h16"/></symbol>
   <symbol id="m-rumah" viewBox="0 0 24 24"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
   <symbol id="m-tenda" viewBox="0 0 24 24"><path d="M3 20 12 4l9 16z"/><path d="M12 4v16M9 20l3-6 3 6"/></symbol>
   <symbol id="m-ringkas" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
@@ -68,13 +69,12 @@
   <symbol id="b-gunung" viewBox="0 0 24 24"><path d="M2 20h20L15 9h-6Z"/><path d="M9 9l1.5-2h3L15 9"/><path d="M11 4c0-1 1-2 2-1M14 3.5c.5-1 2-1 2.5 0"/></symbol>
   <symbol id="b-gedung" viewBox="0 0 24 24"><path d="M4 21V10l8-6 8 6v11Z"/><path d="M10 21v-5h4v5"/><path d="M15 3c1 1.5 2.5 2 2.5 4a2 2 0 0 1-4 0"/></symbol>
 </svg>
-<!-- kepala situs navy bersama Centurisk97 seperti /bnpb/dalops (pemilik 19 Nov 2026 "header atasnya buat kaya gini, cuma di kiri doang"); latar gelap hanya di sini -->
-<header class="ad-top"><a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a></header>
 <main class="mj">
   <!-- menu samping ala dasbor (pemilik 19 Nov 2026 "kaya menu dashboard, di kiri sidebar"): tampilan, antrean kerja per status, pintu lain -->
   <!-- kepala navy dihapus (pemilik 19 Nov 2026 "header ini ga ada lagi"): merek di atas menu samping, segarkan di bawahnya -->
   <aside class="mj-samping">
-    <a class="mj-merek" href="/lapor/"><img src="/lapor/lambang-bnpb.png" alt="" width="36" height="36"><span>Meja Laporan<small>Lapor Bencana, khusus staf</small></span></a>
+    <div class="mj-merek-baris"><a class="mj-merek" href="/lapor/"><img src="/lapor/lambang-bnpb.png" alt="" width="36" height="36"><span>Meja Laporan<small>Lapor Bencana, khusus staf</small></span></a>
+      <button class="mj-sisi" id="sisiMenu" type="button" aria-label="Pindahkan menu ke kanan" title="Pindahkan menu ke kanan"><svg aria-hidden="true"><use href="#m-sisi"/></svg></button></div>
     <!-- label waktu data di menu samping (pemilik 19 Nov 2026 "agar di side bar"): titik hidup + jam; ketuk untuk memuat ulang -->
     <button class="mj-segar" id="bSegar" type="button" title="Muat ulang data"><i aria-hidden="true"></i><span id="waktuSegar">Memuat data...</span><svg aria-hidden="true"><use href="#m-segar"/></svg></button>
     <nav class="mj-nav" id="nav" aria-label="Menu meja laporan"></nav>
@@ -98,7 +98,7 @@
         <button class="mj-ikon-peta" id="bPas" type="button" aria-label="Tampilkan semua titik" title="Tampilkan semua titik"><svg aria-hidden="true"><use href="#m-luas"/></svg></button>
       </div>
       <div class="mj-kiri-peta">
-      <aside class="mj-ringkas" id="ringkas" aria-label="Ringkasan laporan tersaring"></aside>
+      <aside class="mj-ringkas" id="ringkas" aria-label="Ringkasan laporan tersaring"><button class="mj-sisi" id="sisiRingkas" type="button" aria-label="Pindahkan ringkasan ke kiri" title="Pindahkan ringkasan ke kiri"><svg aria-hidden="true"><use href="#m-sisi"/></svg></button></aside>
       </div>
       <div class="mj-legenda" id="legenda"></div>
     </section>
@@ -113,6 +113,6 @@
   <dialog class="mj-rinci" id="rinci" closedby="any" aria-labelledby="rinciJudul"></dialog>
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
-<script type="module" src="/lapor/meja.js?v=34"></script>
+<script type="module" src="/lapor/meja.js?v=38"></script>
 </body>
 </html>

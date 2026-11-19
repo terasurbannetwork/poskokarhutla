@@ -244,6 +244,14 @@ dialog.mj-rinci::backdrop{background:color-mix(in oklab,var(--head-bg) 55%,trans
 .mj-foto-kecil img{width:100%;height:100%;object-fit:cover;transition:transform var(--dur-2)}
 .mj-foto-kecil a:hover img{transform:scale(1.04)}
 .mj-foto-kecil a small{position:absolute;left:6px;bottom:6px;padding:1px 6px;border-radius:6px;background:color-mix(in oklab,var(--head-bg) 80%,transparent);color:var(--on-head);font-size:.625rem}
+.mj-video{margin:0;display:grid;gap:4px}
+.mj-video video{width:100%;aspect-ratio:4/3;border-radius:10px;background:var(--head-bg);object-fit:cover}
+.mj-video small{font-size:.625rem;color:var(--ink2)}
+/* bukti tindak lanjut (K60, D87, D88) */
+.mj-bukti{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.mj-bukti figure{margin:0;display:grid;gap:4px}
+.mj-bukti img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--surface)}
+.mj-bukti label{display:flex;align-items:center;gap:6px;font-size:.6875rem;color:var(--ink2)}
 /* percakapan */
 .mj-transkrip{max-height:420px;overflow:auto;display:grid;gap:8px;padding:12px 16px 16px}
 .mj-transkrip>div{display:grid;gap:2px;max-width:82%;justify-self:start}
@@ -710,3 +718,66 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-prov .mj-prov-korban{padding:1px 8px;border-radius:999px;background:color-mix(in oklab,var(--bad) 12%,var(--card));color:var(--bad-tx);font-weight:700}
 .mj-ringkas-isi .mj-rk-label{margin:8px 0 0;padding-top:6px;border-top:1px dashed var(--line);font-size:.65625rem;color:var(--ink2)}
 .mj-ringkas-isi .mj-rk-total+.mj-rk-label{border-top:0;padding-top:0}
+/* pil di kepala provinsi */
+.mj-prov .mj-prov-pil{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink2);font-size:.71875rem;font-weight:600}
+.mj-prov .mj-prov-pil svg{width:13px;height:13px;transform:none!important}
+.mj-prov .mj-prov-pil b{font:800 .75rem var(--mj-display);color:var(--ink)}
+.mj-prov .mj-prov-pil.merah{border-color:color-mix(in oklab,var(--bad) 30%,var(--line));color:var(--bad-tx)}.mj-prov .mj-prov-pil.merah b{color:var(--bad-tx)}
+.mj-prov .mj-prov-pil.kuning{border-color:color-mix(in oklab,var(--warn) 40%,var(--line));color:var(--warn-tx)}.mj-prov .mj-prov-pil.kuning b{color:var(--warn-tx)}
+.mj-prov .mj-prov-pil.biru{border-color:color-mix(in oklab,var(--brand2) 30%,var(--line));color:var(--brand2)}.mj-prov .mj-prov-pil.biru b{color:var(--brand2)}
+.mj-prov button>b{margin-right:4px}
+/* nomor tiket: huruf situs, angka sejajar (pemilik 19 Nov 2026: monospace sistem terlihat seperti mesin ketik) */
+.mj-nomor,.mj-pop-baris.nomor span{font:700 .8125rem Inter,system-ui,sans-serif!important;font-variant-numeric:tabular-nums;letter-spacing:.01em;color:var(--brand)}
+.mj-rinci-kepala .mj-nomor{color:var(--on-head)}
+
+/* ===== sidebar fleksibel kiri atau kanan ===== */
+.mj-merek-baris{display:flex;align-items:center;gap:6px;padding-right:10px;border-bottom:1px solid var(--line)}
+.mj-merek-baris .mj-merek{flex:1;min-width:0;border-bottom:0!important}
+.mj-sisi{display:grid;place-items:center;flex:none;width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--brand2);cursor:pointer}
+.mj-sisi:hover{border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 7%,var(--card))}
+.mj-sisi svg{width:15px;height:15px}
+.mj.menu-kanan{grid-template-columns:minmax(0,1fr) 240px!important;grid-template-areas:"isi samping"!important}
+.mj.menu-kanan .mj-samping{border-right:0;border-left:1px solid var(--line)}
+.mj-ringkas{position:relative}
+.mj-ringkas>.mj-sisi{position:absolute;top:8px;right:40px;z-index:1;width:26px;height:26px}
+.mj-kiri-peta.di-kiri{left:12px!important;right:auto!important}
+@media (max-width:900px){.mj.menu-kanan{grid-template-columns:1fr!important;grid-template-areas:"isi"!important}}
+
+/* pop-up titik, putaran 3 (pemilik 19 Nov 2026 "bagusin lagi"): dampak berlabel, nomor di atas foto, aksi dua baris */
+.mj-popup .maplibregl-popup-content{width:300px}
+.mj-pop-kepala{padding:12px 14px}
+.mj-pop-kepala b{font-size:1rem;line-height:1.2;text-wrap:balance}
+.mj-pop-foto{position:relative;min-height:44px;background:color-mix(in oklab,var(--jn,var(--brand2)) 10%,var(--card))}
+.mj-pop-foto.kosong{min-height:0;background:none}
+.mj-pop-foto img{height:150px}
+.mj-pop-tiket{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--card);color:var(--brand);font:800 .75rem/1.2 Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;box-shadow:var(--mj-bayang)}
+.mj-pop-foto.kosong .mj-pop-tiket{position:static;margin:12px 14px 0;box-shadow:none;background:var(--paper)}
+.mj-pop-tiket svg{width:14px;height:14px}
+.mj-pop-foto small{right:10px;bottom:12px}
+.mj-pop-isi{gap:7px;padding:12px 14px}
+.mj-pop-baris{font-size:.8125rem}
+.mj-pop-dampak{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;margin-top:4px}
+.mj-pop-dampak div{display:grid;gap:1px;padding:7px 9px;border-radius:10px;background:var(--paper)}
+.mj-pop-dampak b{font:800 1rem/1.1 var(--mj-display);color:var(--ink);font-variant-numeric:tabular-nums}
+.mj-pop-dampak small{font-size:.6875rem;color:var(--ink2)}
+.mj-pop-dampak .isi.meninggal{background:color-mix(in oklab,var(--bad) 12%,var(--card))}
+.mj-pop-dampak .isi.meninggal b{color:var(--bad)}
+.mj-pop-dampak .isi.hilang,.mj-pop-dampak .isi.luka{background:color-mix(in oklab,var(--warn) 14%,var(--card))}
+.mj-pop-dampak p{grid-column:1 / -1;margin:0;font-size:.75rem;color:var(--ink2)}
+.mj-pop-kaki{grid-template-columns:1fr 1fr;gap:8px;padding:0 14px 14px;border-top:0}
+.mj-pop-kaki>*{border-radius:10px;min-height:40px}
+.mj-pop-buka{grid-column:1 / -1;border-radius:10px}
+.mj-pop-kecil{border:1px solid var(--line);border-left:1px solid var(--line)}
+
+/* rincian, putaran 3: dokumen dua kolom, foto mengisi kartu, bukti penanganan */
+.mj-dok-kisi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mj-dok-kisi .mj-tombol{justify-content:flex-start;white-space:nowrap;min-height:44px}
+.mj-foto-kecil{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.mj-foto-kecil a,.mj-video video{aspect-ratio:4/3}
+
+.mj-isi-kartu .mj-redup{margin:0;font-size:.75rem;line-height:1.45;color:var(--ink2)}
+/* teks asli pesan yang diterjemahkan (K58, D81) */
+.mj-asli{margin-top:4px;font-size:.75rem}
+.mj-asli summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--brand2);font-weight:700}
+.mj-asli p{margin:4px 0 0;font-style:italic}
+.mj-pil-ai{padding:1px 7px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));font-size:.625rem}
