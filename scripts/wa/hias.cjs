@@ -6,7 +6,7 @@ const ATURAN = [
   [/gagal|ditolak|belum bisa|belum terbaca|belum siap|tidak ditemukan|tidak ada|habis|batas/i, '⚠️'],
   [/dibatalkan|batalkan/i, '🗑️'],
   [/perlu dipastikan|bertanya|pilih|ragu/i, '❓'],
-  [/sedang dibangun|sibuk|antre|tunggu/i, '⏳'],
+  [/sedang dibangun|sedang dibuat|sedang dikerjakan|sibuk|antre|tunggu/i, '⏳'],
   [/pemakaian|saldo|biaya/i, '💰'],
   [/changelog|versi/i, '📝'],
   [/halo/i, '👋'],

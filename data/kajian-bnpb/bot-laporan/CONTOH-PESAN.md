@@ -854,3 +854,18 @@ Ketik *batal* lagi bila ingin membatalkan proyeknya.
 ### J5. Bahan dirapikan (D30)
 
 Baris catatan di ringkasan draf: "Bahan dirapikan Claude supaya terbaca: Penomoran kejadian 3 sampai 16 diseragamkan; Jumlah kejadian di kepala disesuaikan menjadi 15." Bila tetap gagal, baris penyebab galat berakhir "(bahan sudah dirapikan Claude, generator tetap gagal)".
+
+### J6. Konfirmasi mulai (K32)
+
+```text
+⏳ *Laporan sedang dibuat*
+_P-191126-04_
+
+Laporan Kejadian Bencana Harian 19 Nov
+Estimasi waktu: 4-8 menit
+Perkiraan selesai pukul 15.11 WIB
+
+Draf dikirim otomatis begitu selesai.
+```
+
+Revisi: judul "Revisi v2 sedang dikerjakan", isi sama.

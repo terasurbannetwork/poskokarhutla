@@ -22,6 +22,7 @@ import * as jenisWa from '../../src/wa_jenis.js'
 import * as Agen from './agen.mjs'
 import * as Biaya from './biaya.mjs'
 import * as Maksud from './maksud.mjs'
+import * as Durasi from './durasi.mjs'
 import { NAMA_BOT, VERSI, tChangelog, CHANGELOG } from './versi.mjs'
 import { periksa as periksaPagar } from './agen_pagar.mjs'
 
@@ -663,6 +664,7 @@ async function buat(cmd, dari, sha, ctx) {
 
     try { catatSatelit(ctx, p.id, null) } catch {} // pembangunan mulai: pilihan data satelit proyek ini selesai
     await pindah('membangun')
+    await kabarMulai(ctx, p, lap, { versi: v2 ? 'v2' : 'v1', mode: 'bangun', n: (p.versi || 0) + 1 })
     await prog.ke(2)
     const n = (p.versi || 0) + 1
     const dasarV = path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`) // di bawah ~/.wa-bot/keluaran: satu-satunya akar yang boleh dikirim gateway
@@ -767,7 +769,25 @@ async function simpanVersi(ctx, { p, n, sha, isian, ubah, pptx, pdf, png, instru
   f.set('pptx', blob(pptx, MIME.pptx), path.basename(pptx))
   f.set('pdf', blob(pdf, MIME.pdf), path.basename(pdf))
   for (const x of png) { const m = path.basename(x).match(/^pratinjau-(\d+)\.png$/); if (m) f.set(`pratinjau-${m[1]}`, blob(x, 'image/png'), path.basename(x)) }
-  return worker(ctx, '/api/wa/proyek/versi', { method: 'POST', form: f })
+  const hasil = await worker(ctx, '/api/wa/proyek/versi', { method: 'POST', form: f })
+  const m = mulaiBangun.get(p.id) // lama pembuatan sungguhan untuk estimasi berikutnya (durasi.mjs)
+  if (m) { mulaiBangun.delete(p.id); try { Durasi.catatDurasi(ctx.dasar || RUMAH, m.kunci, (Date.now() - m.t) / 1e3) } catch {} }
+  return hasil
+}
+
+// Pesan konfirmasi saat pembuatan mulai (pemilik 19 Nov 2026): satu pesan, estimasi dari lama pembuatan sebelumnya, tidak pernah disunting.
+const mulaiBangun = new Map() // id proyek -> {kunci, t}
+async function kabarMulai(ctx, p, lap, { versi, mode, n }) {
+  const dasar = ctx.dasar || RUMAH, kini = ctx.now || new Date()
+  const kunci = Durasi.kunciDurasi(versi, mode, p.jenis)
+  mulaiBangun.set(p.id, { kunci, t: Date.now() })
+  if (ctx.kabarMulai === false) return // uji lama yang menghitung balasan persis mematikannya; uji kabar mulai menyalakannya
+  const [lo, hi] = Durasi.perkiraan(dasar, kunci)
+  try {
+    await ctx.balas(susun(mode === 'bangun' ? 'Laporan sedang dibuat' : `Revisi v${n} sedang dikerjakan`, p, null,
+      [lap ? judul(lap, p.tanggal) : p.jenis, `Estimasi waktu: ${lo}-${hi} menit`, `Perkiraan selesai pukul ${Durasi.jamSelesai(kini, hi)} WIB`],
+      'Draf dikirim otomatis begitu selesai.'))
+  } catch (e) { (ctx.log || (() => {}))('[mulai] kabar gagal', e.message) }
 }
 
 // ---------- deck: inventaris, kunci, angka (A5, A6) ----------
@@ -969,6 +989,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
   const keDraf = async (teks) => { await prog.akhir('berhenti'); await pindah('draf'); return balas(teks) }
   try {
     await pindah('membangun')
+    await kabarMulai(ctx, p, lap, { versi: 'v1', mode: 'revisi', n })
     const akhir = await versiRinci(ctx, p, m, sha)
     const opsLama = opsDari(akhir)
     const isianV = akhir?.isian && typeof akhir.isian === 'object' ? akhir.isian : {}
@@ -1286,6 +1307,7 @@ async function revisiV2(pesan, dari, sha, p, ctx, opsi = {}) {
     const riwayat = (await versiDaftar(ctx, p, sha).catch(() => [])).map((x) => `v${x.n}: ${rapi(x.instruksi || 'buat', 160)}`)
     const promptSesiBaru = () => [Agen.promptBangun({ jenis: p.jenis, judul: lap.judul, tanggal: p.tanggal, id: p.id, ruang, kemarin: Agen.kemarinAcuan(dasar, p.id), riwayat }), '', prompt].join('\n')
     const deckNama = path.basename(pptxDi(path.join(Agen.acuan(dasar, p.id), 'dasar')) || jalurDeck(dasar, p, lap, 1))
+    await kabarMulai(ctx, p, lap, { versi: 'v2', mode: 'revisi', n })
     const ok = await kerjakanAgen(ctx, { p, sha, dari, lap, mode: 'revisi', n, m, ruang, prompt, sesi: s.sesi || null, promptSesiBaru, deckNama, catatan: [],
       instruksi: `revisi: ${rapi(kalimatAman, 480)}`, pindah, statusGagal: 'draf', gagalCatat: () => catatGagal(ctx, sha, langkah) })
     if (ok === true && s.balik) Agen.catatSesi(dasar, p.id, { balik: null }) // catatan balik hanya hilang sesudah versi baru tersimpan
@@ -1301,6 +1323,7 @@ async function jawabV2(pesan, dari, sha, p, ctx, t, { tanpaJawaban = false } = {
   const langkah = { langkah: 'pesan', teks: tanpaJawaban ? 'lanjut' : teks }
   return denganKunciV2(ctx, sha, p, langkah, async (pindah) => {
     Agen.bersihkanKeluaran(t.ruang)
+    await kabarMulai(ctx, p, lap, { versi: 'v2', mode: t.mode, n: t.n })
     const prompt = tanpaJawaban ? Agen.promptLanjutTanpaJawaban(t.ruang) : Agen.promptRevisi({ n: t.n, ruang: t.ruang, kalimat: samarkan(teks), jawaban: true })
     await kerjakanAgen(ctx, { p, sha, dari, lap, mode: t.mode, n: t.n, m: t.m, ruang: t.ruang, prompt, sesi: Agen.bacaSesi(dasar, p.id)?.sesi || null,
       promptSesiBaru: () => prompt, deckNama: t.deckNama, catatan: t.catatan || [], hitung: t.hitung || {}, instruksi: t.instruksi || 'buat',

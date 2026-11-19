@@ -136,7 +136,7 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
   }
   const ctx = {
     env: { WORKER_URL: 'http://w', WA_MESIN: 'k', WA_GARAM: 'garam', PEMILIK: '6299', WA_IZIN: `${DARI},6299,6281111`, WA_PY_BIN: '/opt/py/bin' },
-    dep, now, dasar, kenali, tanggalIsi, log: () => {}, jedaTerima: 0, // uji yang menguji penggabungan memasang jedanya sendiri
+    dep, now, dasar, kenali, tanggalIsi, log: () => {}, jedaTerima: 0, kabarMulai: false, // uji yang menguji penggabungan atau kabar mulai memasang sendiri
     balas: async (t) => { balasan.push(t) },
     balasFile: async (p, nama, caption, mime) => { kirim.push({ p, nama, caption, mime }) },
     kabariPemilik: async (t) => { pemilik.push(t) },
@@ -1700,4 +1700,22 @@ test('T43: batal saat kumpul hanya menutup kumpulan; revisi tanpa draf dijawab; 
   assert.equal((await perintah(e, 'revisi')).status, 'revisi tanpa draf')
   assert.match(e.balasan.at(-1), /^\*Belum ada draf\*/)
   await tunda(20)
+})
+
+test('kabar mulai: lanjut dan revisi membalas sekali "sedang dibuat" dengan estimasi dan jam selesai; estimasi belajar dari lama pembuatan', async () => {
+  const Durasi = await import('../../scripts/wa/durasi.mjs')
+  const d = dunia({ ops: () => [GANTI(1, 's1_judul', 'LAPORAN HARIAN', 'LAPORAN HARIAN BNPB')] })
+  d.ctx.kabarMulai = true
+  await bangun(d, 'buat harian 26 okt')
+  const mulai = d.balasan.filter((t) => /^\*Laporan sedang dibuat\*/.test(t))
+  assert.equal(mulai.length, 1)
+  assert.equal(mulai[0], '*Laporan sedang dibuat*\n_P-291026-01_\n\nLaporan Kejadian Bencana Harian 26 Okt\nEstimasi waktu: 1-3 menit\nPerkiraan selesai pukul 08.03 WIB\n\nDraf dikirim otomatis begitu selesai.')
+  assert.equal(d.versi.length, 1)
+  await perintah(d, 'judul tambahkan BNPB')
+  assert.ok(d.balasan.some((t) => /^\*Revisi v2 sedang dikerjakan\*\n_P-291026-01_\n/.test(t)), d.balasan.join('\n---\n'))
+  // estimasi belajar: 3 catatan atau lebih = rentang dari catatan
+  for (const detik of [130, 200, 290]) Durasi.catatDurasi(d.dasar, 'v1:bangun:penanganan', detik)
+  assert.deepEqual(Durasi.perkiraan(d.dasar, 'v1:bangun:penanganan'), [2, 5])
+  assert.deepEqual(Durasi.perkiraan(d.dasar, 'v2:revisi:penanganan'), [2, 5], 'bawaan per versi dan mode')
+  assert.equal(Durasi.jamSelesai(new Date('2026-11-19T07:58:00Z'), 6), '15.04')
 })
