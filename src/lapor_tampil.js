@@ -88,12 +88,17 @@ export function lacakTampil(s, p, t) {
     unduhan: [{label: "Unduh PDF", url: `/api/lapor/unduh/${s.nomor}.pdf?t=${t}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${s.nomor}.docx?t=${t}`}]};
 }
 
+/* angka dampak ringkas untuk peta dan kepala rincian; null = belum didata (kosong tidak pernah jadi nol); sama dengan lokal.mjs */
+export const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : Number(x.nilai) || 0; };
+  const rumah = ["rumah_berat", "rumah_sedang", "rumah_ringan"].map(a), adaRumah = rumah.some(v => v != null);
+  return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null}; };
+
 /* ---------- ringkasan beku saat terkirim (kolom lapor_sesi.ringkas): meja dan alun-alun tidak perlu mengurai sesi utuh ---------- */
 export function ringkasSesi(s) {
   const w = s.isian.lokasi?.nilai?.wilayah, angka = n => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
   return {waktuKejadian: s.isian.waktu?.nilai || null, waktuMs: s.isian.waktu?.ms || null, subjenis: s.isian.subjenis?.nilai || null,
     wilayah: w ? {kode: w.kode, desa: w.desa, kec: w.kec, kab: w.kab, kabKode: w.kabKode, prov: w.prov, provKode: w.provKode} : null,
-    lengkap: lengkap(s), foto: (s.foto || []).length,
+    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s),
     dampak: {meninggal: angka("meninggal"), hilang: angka("hilang"), luka: angka("luka"), mengungsi: angka("mengungsi_jiwa"),
       rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(n), 0), terendam: angka("rumah_terendam")}};
 }
@@ -102,7 +107,7 @@ export function barisMeja(r) {
   return {nomor: r.nomor, status: r.status, statusLabel: STATUS[r.status], waktuLapor: waktuLapor(r.terkirim, prov), terkirim: r.terkirim,
     waktuKejadian: k.waktuKejadian || null, wa: r.wa, nama: r.nama || null, peran: PERAN[r.peran] || null, instansi: r.pkab ? `BPBD ${r.pkab}` : null,
     jenis: labelJenis(r.jenis), jenisId: r.jenis || null, subjenis: k.subjenis || null, lat: r.lat ?? null, lon: r.lon ?? null, wilayah: k.wilayah || null,
-    lengkap: k.lengkap ?? 0, foto: k.foto || 0, balasan: r.balasan || 0};
+    lengkap: k.lengkap ?? 0, foto: k.foto || 0, balasan: r.balasan || 0, dampak: k.dampakMeja || null};
 }
 export function barisAlun(r) {
   const k = r.ringkas ? JSON.parse(r.ringkas) : {}, w = k.wilayah || {};
@@ -116,7 +121,7 @@ export function mejaRinciTampil(s, p, t) {
   const prov = s.isian.lokasi?.nilai?.wilayah?.provKode, nomor = s.nomor;
   return {nomor, token: t, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
     pelapor: {nama: p?.nama, wa: s.wa, peran: PERAN[p?.peran], kab: p?.kab || null, jabatan: p?.jabatan || null},
-    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s),
+    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
     foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${t}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, pelaku: pelakuLabel(r.pelaku), label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({teks: b.teks, oleh: pelakuLabel(b.oleh), waktu: waktuLapor(b.waktu, prov)})),

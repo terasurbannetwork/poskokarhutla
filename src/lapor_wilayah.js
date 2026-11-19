@@ -63,6 +63,7 @@ export function buatWilayah(muat) {
   }
   /* titik pusat kotak batas desa (perkiraan tingkat desa) */
   async function pusat(kd) {
+    if (!/^\d{2}\.\d{2}\.\d{2}\.\d{4}$/.test(String(kd))) return null;   // kode desa baku; mencegah jalur berkas sembarang di desaKab
     const D = await desaKab(kd.slice(0, 5)), f = D.fitur.find(x => x.kd === kd);
     return f ? {lat: f.pusat[0], lon: f.pusat[1], wilayah: await isiKd(kd)} : null;
   }

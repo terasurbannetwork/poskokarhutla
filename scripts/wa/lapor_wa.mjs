@@ -108,8 +108,9 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
     try {
       const r = await panggil('POST', jalur, body)
       const j = await r.json().catch(() => ({}))
-      const t = r.ok ? (typeof j.teksWa === 'string' && j.teksWa ? j.teksWa : typeof j.balasan === 'string' ? j.balasan : '') : ''
-      if (!t) log('[lapor] Worker', jalur, 'HTTP', r.status)
+      // 409 (sesi bukan tahap foto) dan 429 (kuota) membawa teksWa untuk pelapor: dikirim apa adanya
+      const t = typeof j.teksWa === 'string' && j.teksWa ? j.teksWa : r.ok && typeof j.balasan === 'string' ? j.balasan : ''
+      if (!t || !r.ok) log('[lapor] Worker', jalur, 'HTTP', r.status)
       return t || GANGGUAN
     } catch (e) { log('[lapor] Worker tak terjangkau', jalur, samar(e?.message || e)); return GANGGUAN }
   }
@@ -145,8 +146,9 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
   const belumTanda = new Set()
   const asal = (u) => { try { return new URL(u, base + '/').origin === new URL(base).origin } catch { return false } }
   async function unduhPdf(url) {
+    if (!asal(url)) throw new Error('URL bukan origin Worker')
     const u = new URL(url, base + '/')
-    const r = await fetchFn(u, { headers: asal(url) ? head(false) : {}, signal: AbortSignal.timeout(timeoutMs) })
+    const r = await fetchFn(u, { headers: head(false), redirect: 'error', signal: AbortSignal.timeout(timeoutMs) })
     if (!r.ok) throw new Error('HTTP ' + r.status)
     return Buffer.from(await r.arrayBuffer())
   }

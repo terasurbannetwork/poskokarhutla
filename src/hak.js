@@ -1746,6 +1746,9 @@ Object.assign(MATRIKS, {
 });
 export const pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
+/* g = true: INSERT ... SELECT ... WHERE changes() > 0, hanya menulis bila pernyataan sebelumnya dalam batch (pembaruan sesi) benar-benar mengubah baris */
+const lpIns = (g, atau, tabel, kolom) => { const n = kolom.split(",").length, ph = Array.from({length: n}, (_, i) => "?" + (i + 1)).join(", ");
+  return g ? `INSERT ${atau}INTO ${tabel} (${kolom}) SELECT ${ph} WHERE changes() > 0` : `INSERT ${atau}INTO ${tabel} (${kolom}) VALUES (${ph})`; };
 /* tulis banyak pernyataan sekaligus; pelaku harus salah satu pelaku Lapor */
 export const lpBatch = (env, p, stmts) => { if (!String(p?.peran).startsWith("lp_")) throw new Galat(403, "batch Lapor hanya untuk pelaku lp_*"); return env.DB.batch(stmts); };
 
@@ -1756,9 +1759,8 @@ export const lpIzinSimpan = (env, p, wa, peran, kab, oleh, kini) => sedia(env, p
   "INSERT INTO lapor_izin (wa, peran, kab, oleh, dibuat) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT (wa) DO UPDATE SET peran = excluded.peran, kab = excluded.kab, oleh = excluded.oleh").bind(wa, peran, kab, oleh, kini).run();
 export const lpIzinCabut = (env, p, wa) => sedia(env, p, "lapor_izin", "hapus", "DELETE FROM lapor_izin WHERE wa = ?1").bind(wa).run();
 export const lpPelapor = (env, p, wa) => sedia(env, p, "lapor_pelapor", "baca", "SELECT wa, nama, peran, kab, jabatan, dibuat, diubah FROM lapor_pelapor WHERE wa = ?1").bind(wa).first();
-export const lpStmtPelapor = (env, p, wa, v, kini) => sedia(env, p, "lapor_pelapor", "tambah",
-  `INSERT INTO lapor_pelapor (wa, nama, peran, kab, jabatan, dibuat, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6)
-   ON CONFLICT (wa) DO UPDATE SET nama = excluded.nama, peran = excluded.peran, kab = excluded.kab, jabatan = excluded.jabatan, diubah = excluded.diubah`)
+export const lpStmtPelapor = (env, p, wa, v, kini, g = false) => sedia(env, p, "lapor_pelapor", "tambah",
+  `${lpIns(g, "", "lapor_pelapor", "wa, nama, peran, kab, jabatan, dibuat, diubah")} ON CONFLICT (wa) DO UPDATE SET nama = excluded.nama, peran = excluded.peran, kab = excluded.kab, jabatan = excluded.jabatan, diubah = excluded.diubah`.replace("?7", "?6"))
   .bind(wa, String(v.nama).slice(0, 120), v.peran, v.kab ? String(v.kab).slice(0, 120) : null, v.jabatan ? String(v.jabatan).slice(0, 120) : null, kini);
 
 /* ---- sesi ---- */
@@ -1768,24 +1770,25 @@ export const lpSesiToken = (env, p, tokenSha) => sedia(env, p, "lapor_sesi", "ba
 export const lpSesiMilik = async (env, p, wa) => (await sedia(env, p, "lapor_sesi", "baca",
   `SELECT s.nomor, s.kerja, s.terkirim, t.status tiket FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor WHERE s.wa = ?1 AND s.nomor IS NOT NULL ORDER BY s.terkirim DESC LIMIT 5`).bind(wa).all()).results;
 export const lpHitungTerkirim = async (env, p, wa, sejak) => (await sedia(env, p, "lapor_sesi", "baca", "SELECT count(*) n FROM lapor_sesi WHERE wa = ?1 AND terkirim > ?2").bind(wa, sejak).first()).n;
-export const lpSesiBaru = (env, p, s, kini) => sedia(env, p, "lapor_sesi", "tambah",
+export const lpStmtSesiBaru = (env, p, s, kini) => sedia(env, p, "lapor_sesi", "tambah",
   `INSERT INTO lapor_sesi (id, wa, status, tingkat, jenis, kab, lat, lon, kerja, rev, dibuat, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0, ?10, ?10)`)
-  .bind(s.id, s.wa, s.status, s.tingkat ?? null, s.jenis ?? null, s.kab ?? null, s.lat ?? null, s.lon ?? null, s.kerja, kini).run();
+  .bind(s.id, s.wa, s.status, s.tingkat ?? null, s.jenis ?? null, s.kab ?? null, s.lat ?? null, s.lon ?? null, s.kerja, kini);
 /* pembaruan optimistis: hanya bila rev masih sama (dua pesan serentak dari satu nomor tidak saling menimpa); mengembalikan jumlah baris berubah */
-export const lpSesiUbah = async (env, p, s, revLama, kini) => (await sedia(env, p, "lapor_sesi", "ubah",
+export const lpStmtSesiUbah = (env, p, s, revLama, kini) => sedia(env, p, "lapor_sesi", "ubah",
   `UPDATE lapor_sesi SET status = ?1, tingkat = ?2, jenis = ?3, kab = ?4, lat = ?5, lon = ?6, kerja = ?7, nomor = COALESCE(?8, nomor), token_sha = COALESCE(?9, token_sha),
    terkirim = COALESCE(?10, terkirim), ringkas = COALESCE(?11, ringkas), rev = rev + 1, diubah = ?12 WHERE id = ?13 AND rev = ?14`)
-  .bind(s.status, s.tingkat ?? null, s.jenis ?? null, s.kab ?? null, s.lat ?? null, s.lon ?? null, s.kerja, s.nomor ?? null, s.token_sha ?? null, s.terkirim ?? null, s.ringkas ?? null, kini, s.id, revLama).run()).meta.changes;
+  .bind(s.status, s.tingkat ?? null, s.jenis ?? null, s.kab ?? null, s.lat ?? null, s.lon ?? null, s.kerja, s.nomor ?? null, s.token_sha ?? null, s.terkirim ?? null, s.ringkas ?? null, kini, s.id, revLama);
+export const lpSesiUbah = async (env, p, s, revLama, kini) => (await lpStmtSesiUbah(env, p, s, revLama, kini).run()).meta.changes;
 export const lpNomorBerikut = async (env, p, tgl) => (await sedia(env, p, "lapor_urut", "tambah",
   "INSERT INTO lapor_urut (tgl, n) VALUES (?1, 1) ON CONFLICT (tgl) DO UPDATE SET n = n + 1 RETURNING n").bind(tgl).first()).n;
-export const lpStmtPesan = (env, p, sesi, dari, pintu, teks, waktu) => sedia(env, p, "lapor_pesan", "tambah",
-  "INSERT INTO lapor_pesan (sesi, dari, pintu, teks, waktu) VALUES (?1, ?2, ?3, ?4, ?5)").bind(sesi, dari, pintu, teks == null ? null : String(teks).slice(0, 4000), waktu);
+export const lpStmtPesan = (env, p, sesi, dari, pintu, teks, waktu, g = false) => sedia(env, p, "lapor_pesan", "tambah",
+  lpIns(g, "", "lapor_pesan", "sesi, dari, pintu, teks, waktu")).bind(sesi, dari, pintu, teks == null ? null : String(teks).slice(0, 4000), waktu);
 
 /* ---- tiket, riwayat, balasan, kabar, PDF ---- */
-export const lpStmtTiketBaru = (env, p, nomor, sesi, kini) => sedia(env, p, "lapor_tiket", "tambah", "INSERT INTO lapor_tiket (nomor, sesi, status, diubah) VALUES (?1, ?2, 'baru', ?3)").bind(nomor, sesi, kini);
-export const lpStmtRiwayat = (env, p, nomor, dari, ke, catatan, pelaku, kini) => sedia(env, p, "lapor_tiket_riwayat", "tambah",
-  "INSERT INTO lapor_tiket_riwayat (nomor, dari, ke, catatan, pelaku, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6)").bind(nomor, dari, ke, catatan, pelaku, kini);
-export const lpStmtPdfAntre = (env, p, nomor, versi, kini) => sedia(env, p, "lapor_pdf", "tambah", "INSERT OR IGNORE INTO lapor_pdf (nomor, versi, status, diubah) VALUES (?1, ?2, 'antre', ?3)").bind(nomor, versi, kini);
+export const lpStmtTiketBaru = (env, p, nomor, sesi, kini, g = false) => sedia(env, p, "lapor_tiket", "tambah", lpIns(g, "", "lapor_tiket", "nomor, sesi, status, diubah").replace("?3, ?4", "'baru', ?3")).bind(nomor, sesi, kini);
+export const lpStmtRiwayat = (env, p, nomor, dari, ke, catatan, pelaku, kini, g = false) => sedia(env, p, "lapor_tiket_riwayat", "tambah",
+  lpIns(g, "", "lapor_tiket_riwayat", "nomor, dari, ke, catatan, pelaku, waktu")).bind(nomor, dari, ke, catatan, pelaku, kini);
+export const lpStmtPdfAntre = (env, p, nomor, versi, kini, g = false) => sedia(env, p, "lapor_pdf", "tambah", lpIns(g, "OR IGNORE ", "lapor_pdf", "nomor, versi, status, diubah").replace("?3, ?4", "'antre', ?3")).bind(nomor, versi, kini);
 export const lpTiket = (env, p, nomor) => sedia(env, p, "lapor_tiket", "baca", "SELECT nomor, status, diubah FROM lapor_tiket WHERE nomor = ?1").bind(nomor).first();
 export const lpRiwayat = async (env, p, nomor) => (await sedia(env, p, "lapor_tiket_riwayat", "baca",
   "SELECT dari, ke, catatan, pelaku, waktu FROM lapor_tiket_riwayat WHERE nomor = ?1 ORDER BY id LIMIT 100").bind(nomor).all()).results;
@@ -1815,8 +1818,8 @@ export const lpPdfStatus = async (env, p, nomor, versi, status, kini) => (await 
 export const lpPdfAda = (env, p, nomor, versi) => sedia(env, p, "lapor_pdf", "baca", "SELECT status FROM lapor_pdf WHERE nomor = ?1 AND versi = ?2").bind(nomor, versi).first();
 
 /* ---- foto ---- */
-export const lpStmtFoto = (env, p, f) => sedia(env, p, "lapor_foto", "tambah",
-  `INSERT INTO lapor_foto (id, sesi, kunci_r2, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`)
+export const lpStmtFoto = (env, p, f, g = false) => sedia(env, p, "lapor_foto", "tambah",
+  lpIns(g, "", "lapor_foto", "id, sesi, kunci_r2, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu"))
   .bind(f.id, f.sesi, f.kunci, f.lat ?? null, f.lon ?? null, f.akurasi ?? null, f.waktuAmbil ?? null, f.waktuTerima, f.lencana, f.pintu);
 export const lpFotoById = (env, p, id) => sedia(env, p, "lapor_foto", "baca",
   "SELECT f.id, f.kunci_r2, s.wa, s.token_sha, s.nomor FROM lapor_foto f JOIN lapor_sesi s ON s.id = f.sesi WHERE f.id = ?1").bind(id).first();
@@ -1838,12 +1841,13 @@ export const lpAlunBaris = async (env, p, prov, jenis) => (await sedia(env, p, "
   `SELECT s.id, s.jenis, s.ringkas, s.terkirim, s.tingkat, t.status FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
    WHERE t.status IN ('ditindaklanjuti', 'selesai') AND (?1 IS NULL OR s.kab LIKE ?1 || '%') AND (?2 IS NULL OR s.jenis = ?2) ORDER BY s.terkirim DESC LIMIT 300`).bind(prov || null, jenis || null).all()).results;
 
-/* kuota pesan Lapor: batas = [[jendela ms, maks], ...]; lewat batas -> {sisa detik sampai baris tertua keluar dari jendela}, lolos -> null dan satu baris laju_bnpb dicatat */
-export async function lpKuota(env, p, kunci, aksi, batas, kini) {
-  for (const [jendela, maks] of batas) {
+/* kuota Lapor: daftar = [{kunci, aksi, batas: [[jendela ms, maks], ...]}]. Semua batas dibaca dulu; lewat salah satu -> {sisa detik sampai baris tertua keluar dari jendela}
+   tanpa menulis apa pun; lolos semua -> satu baris laju_bnpb per kunci. */
+export async function lpKuota(env, p, daftar, kini) {
+  for (const {kunci, aksi, batas} of daftar) for (const [jendela, maks] of batas) {
     const r = await sedia(env, p, "laju_bnpb", "baca", "SELECT count(*) n, min(waktu) t FROM laju_bnpb WHERE kunci = ?1 AND aksi = ?2 AND waktu > ?3").bind(kunci, aksi, kini - jendela).first();
     if (r.n >= maks) return {sisa: Math.max(1, Math.ceil((r.t + jendela - kini) / 1000))};
   }
-  await sedia(env, p, "laju_bnpb", "tambah", "INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?1, ?2, ?3)").bind(kunci, aksi, kini).run();
+  await env.DB.batch(daftar.map(({kunci, aksi}) => sedia(env, p, "laju_bnpb", "tambah", "INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?1, ?2, ?3)").bind(kunci, aksi, kini)));
   return null;
 }

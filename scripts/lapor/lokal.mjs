@@ -441,7 +441,9 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/alun") return kirim(alun(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/meja") return kirim(meja());
-    const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status))?$/.exec(j);
+    const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat))?$/.exec(j);
+    // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
+    if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(m[1], true));
     if (m && !m[2]) return kirim(mejaRinci(m[1], url.searchParams.get("lihat") === "1"));
     if (m && req.method === "POST") return kirim(mejaUbah(m[1], m[2], await badan(req)));
     return kirim([404, {galat: "rute lapor tidak ada"}]);

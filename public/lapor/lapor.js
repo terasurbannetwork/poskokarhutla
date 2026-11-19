@@ -6,6 +6,11 @@
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
 import {maskot} from "/lapor/maskot.js?v=11"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
+/* Produksi (Worker, src/lapor_ai.js): pelapor web masuk lewat Satu Pintu Masuk (/masuk, kode WA) dan nomor diambil dari sesi; kiriman POST bersesi wajib x-pb: 1.
+   Server tinjau lokal (localhost:8800) tetap memakai nomor yang diketik. */
+const LOKAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+{ const asli = window.fetch.bind(window);
+  window.fetch = (u, o = {}) => (String(u).startsWith("/api/lapor/") && (o.method || "GET").toUpperCase() !== "GET") ? asli(u, {...o, credentials: "same-origin", headers: {...(o.headers || {}), "x-pb": "1"}}) : asli(u, o); }
 const $ = id => document.getElementById(id);
 const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
 const ikon = (id, kelas) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("aria-hidden", "true"); if (kelas) s.setAttribute("class", kelas);
@@ -660,7 +665,7 @@ async function segarkanLaporan() {
 /* sidebar: profil pelapor dan jumlah laporan (pemilik 19 Nov 2026: "bagusin") */
 function tampilProfil() {
   const p = cache.pelapor, n = (cache.laporan || []).length;
-  $("tabProfil").hidden = !p; if (p) { $("tabNama").textContent = p; $("tabAvatar").textContent = p.trim().split(/\s+/).slice(0, 2).map(x => x[0]).join("").toUpperCase(); $("tabWa").textContent = wa ? `0${wa.slice(2, 5)}****${wa.slice(-4)}${n ? `, ${n} laporan` : ""}` : ""; }
+  $("tabProfil").hidden = !p; if (p) { $("tabNama").textContent = p; $("tabAvatar").textContent = p.trim().split(/\s+/).slice(0, 2).map(x => x[0]).join("").toUpperCase(); $("tabWa").textContent = wa && /^62\d+$/.test(wa) ? `0${wa.slice(2, 5)}****${wa.slice(-4)}${n ? `, ${n} laporan` : ""}` : (n ? `${n} laporan` : ""); }
   $("tabJumlah").hidden = !n; $("tabJumlah").textContent = String(n);
 }
 function tampilBeranda() {
@@ -679,6 +684,10 @@ function tampilBeranda() {
     $("kTerbaru").href = l.lacak; $("kTerbaruJudul").textContent = `${l.jenis || "Laporan"} ${l.nomor}`; $("kTerbaruSub").textContent = l.balasan ? `${l.balasan} balasan dari petugas` : "Ketuk untuk melihat status"; $("kTerbaruPil").replaceWith(Object.assign(STATUS_PIL(l), {id: "kTerbaruPil"})); }
 }
 /* Laporan saya (pemilik 19 Nov 2026: "jelek banget"): pita dengan ringkasan, kartu bergambar per laporan dengan langkah status dan tombol */
+/* warna ikon per jenis dari registri bencana (public/bencana.json), sama dengan meja staf (pemilik 19 Nov 2026: "icon setiap bencana warnanya beda") */
+const REG_JENIS = {tsunami: "pesisir", abrasi: "pesisir", erupsi: "gunungapi"}, warnaReg = {};
+fetch("/bencana.json").then(r => r.json()).then(j => { for (const b of j.bencana || []) warnaReg[b.id] = b.warna; if (!$("lLaporan").hidden) tampilDaftarLaporan(); }).catch(() => {});
+const warnaJenis = id => id === "kebakaran_gedung" ? "var(--bad)" : warnaReg[REG_JENIS[id] || id] || "var(--brand2)";
 const ID_JENIS = {"Banjir": "banjir", "Tanah longsor": "longsor", "Gelombang pasang dan abrasi": "abrasi", "Cuaca ekstrem": "cuaca", "Kekeringan": "kekeringan", "Kebakaran hutan dan lahan": "karhutla", "Gempa bumi": "gempa", "Tsunami": "tsunami", "Erupsi gunung api": "erupsi", "Kebakaran gedung dan permukiman": "kebakaran_gedung"};
 const URUT_STATUS = ["diterima", "dilihat", "ditelaah", "ditindaklanjuti", "selesai"];
 function tampilDaftarLaporan() {
@@ -699,7 +708,7 @@ function tampilDaftarLaporan() {
     if (l.foto) { g.style.setProperty("background-image", `url("${l.foto}")`, "important"); g.classList.add("asli"); } else if (GAMBAR[id]) g.style.backgroundImage = `url(/img/bencana-${GAMBAR[id]}.jpg)`;
     if (!l.foto && l.fotoCek2 !== true && l.lacak) { const t = new URL(l.lacak, location.href).searchParams.get("t"); // laporan lama: ambil foto pertama dari halaman lacak sekali
       fetch(`/api/lapor/lacak?t=${encodeURIComponent(t || "")}`).then(r => r.json()).then(x => { l.fotoCek2 = true; const f = x.fotoPertama; if (f) { l.foto = f; g.style.setProperty("background-image", `url("${f}")`, "important"); g.classList.add("asli"); } simpanCache(); }).catch(() => {}); }
-    const ic = el("span", "lp-lap-ikon"); ic.append(ikon(IKON_JENIS[id] || "i-kejadian")); g.append(ic, STATUS_PIL(l));
+    const ic = el("span", "lp-lap-ikon"); ic.style.setProperty("--jn", warnaJenis(id)); ic.append(ikon(IKON_JENIS[id] || "i-kejadian")); g.append(ic, STATUS_PIL(l));
     const tx = el("div", "lp-lap-isi"), n = Math.max(0, URUT_STATUS.indexOf(l.status)), lk = el("span", "lp-terbaru-langkah");
     lk.append(...[["Diterima", "i-centang"], ["Dilihat", "i-cari"], ["Ditelaah", "i-daftar"], ["Ditindaklanjuti", "i-status"], ["Selesai", "i-centang"]].map(([t, ik], i) => { const sp = el("span", i <= n ? "aktif" : i === n + 1 ? "berikut" : ""); sp.append(ikon(ik), t); return sp; }));
     const aksi = el("span", "lp-lap-aksi"); aksi.append(ikon("i-status"), l.balasan ? `${l.balasan} balasan petugas, lihat` : "Lacak laporan");
@@ -1047,4 +1056,11 @@ if (!pernah) {
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 900 : 3800);
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
-if (tersimpan) mulai(tersimpan); else { ke("masuk"); iNomor.focus(); }
+if (LOKAL) { if (tersimpan) mulai(tersimpan); else { ke("masuk"); iNomor.focus(); } }
+else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server, tidak pernah diketik ulang di sini
+  let j = null; try { j = await (await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"})).json(); } catch {}
+  if (j?.akun) { await mulai(`sesi-${j.akun.id}`); if (j.akun.nama) cache.pelapor ||= j.akun.nama; $("tabWa").textContent = j.akun.wa || ""; return; }
+  $("fNomor").hidden = true; $("lMasuk").querySelector(".lp-sampul p").textContent = "Masuk dengan nomor WhatsApp Anda. Kami kirim kode enam angka lewat WhatsApp, tanpa sandi.";
+  const a = Object.assign(el("a", "lp-utama lp-masuk-wa"), {href: `/masuk?ke=${encodeURIComponent("/lapor/")}`}); a.append(ikon("i-kirim"), "Masuk dengan kode WhatsApp");
+  $("fNomor").after(a); ke("masuk");
+})();

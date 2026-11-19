@@ -28,6 +28,7 @@ async function worker(st = {}) {
       if (st.gagal) return kirim({}, 503)
       if (u === '/api/lapor/izin' && req.method === 'GET') return kirim({ wa: st.izin })
       if (u === '/api/lapor/izin') { const j = json(); if (j.cabut) st.izin = st.izin.filter((x) => x !== j.wa); else st.izin.push(j.wa); return kirim({ ok: true }) }
+      if (st.kode && (u === '/api/lapor/foto' || u === '/api/lapor/pesan')) return kirim({ galat: 'x', sisaDetik: 5, teksWa: st.kode === 409 ? 'Belum tahap foto.' : 'Kuota habis, coba lagi nanti.' }, st.kode)
       if (u === '/api/lapor/pesan') return kirim({ teksWa: '*Lapor Bencana BNPB*\n\n1 Warga\n2 Petugas BPBD' })
       if (u === '/api/lapor/foto') return kirim({ teksWa: '*Foto diterima*' })
       if (u === '/api/lapor/kabar') return kirim({ kabar: st.kabar })
@@ -199,4 +200,30 @@ open(sys.argv[2]+'.docx','wb').write(b'DOCX');open(sys.argv[2]+'.pdf','wb').writ
   assert.equal(unggah[1].badan.toString(), 'DOCX')
   assert.deepEqual(fs.readdirSync(kerja).filter((x) => x.startsWith('lapor-pdf-')), [], 'folder sementara dibersihkan')
   w.tutup()
+})
+
+test('409 dan 429 dari Worker: teksWa diteruskan ke pelapor, bukan pesan gangguan', async () => {
+  for (const [kode, teks] of [[409, 'Belum tahap foto.'], [429, 'Kuota habis, coba lagi nanti.']]) {
+    const w = await worker({ kode })
+    const { L, kirim } = pasang(w)
+    await L.tangani({ wa: NOMOR, jid: 'j', c: { imageMessage: {} }, unduh: async () => jpegDenganExif() })
+    await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: 'halo' } })
+    assert.deepEqual(kirim.map((k) => k.isi.text), [teks, teks])
+    w.tutup()
+  }
+})
+
+test('URL unduhan bukan origin Worker ditolak: PDF kabar dan foto bahan tidak diunduh, tanpa token bocor', async () => {
+  const luar = await worker()
+  const w = await worker({ kabar: [{ id: 'z1', wa: NOMOR, jenis: 'pdf', teks: 't', url: luar.url + '/berkas/x.pdf', nomor: 'LA-1' }],
+    antre: [{ nomor: 'LA-2', versi: 1, bahan: { foto: [{ url: luar.url + '/berkas/f.jpg' }] } }] })
+  const { L, kirim } = pasang(w)
+  assert.equal((await L.kabar()).n, 0)
+  assert.equal(kirim.length, 0)
+  const kerja = fs.mkdtempSync(path.join(os.tmpdir(), 'uji-lapor-'))
+  const skrip = path.join(kerja, 'dok.py')
+  fs.writeFileSync(skrip, "import json,sys\nassert json.load(open(sys.argv[1]))['foto']==[]\nopen(sys.argv[2]+'.docx','wb').write(b'D');open(sys.argv[2]+'.pdf','wb').write(b'P')\n")
+  await buatPdf({ worker: w.url, mesin: MESIN, kerja, skrip }).putaran()
+  assert.equal(luar.log.filter((x) => x.url.startsWith('/berkas/')).length, 0, 'tidak ada permintaan ke origin lain')
+  luar.tutup(); w.tutup()
 })

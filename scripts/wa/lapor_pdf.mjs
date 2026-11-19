@@ -26,7 +26,8 @@ export function buat({ worker, mesin, fetchFn = fetch, log = () => {}, python = 
       for (const [i, f] of (Array.isArray(bahan?.foto) ? bahan.foto : []).entries()) {
         if (!f?.url) continue
         try {
-          const r = await fetchFn(new URL(f.url, base + '/'), { headers: sama(f.url) ? bearer : {}, signal: AbortSignal.timeout(timeoutMs) })
+          if (!sama(f.url)) throw new Error('URL bukan origin Worker')
+          const r = await fetchFn(new URL(f.url, base + '/'), { headers: bearer, redirect: 'error', signal: AbortSignal.timeout(timeoutMs) })
           if (!r.ok) throw new Error('HTTP ' + r.status)
           const berkas = path.join(dir, `foto-${i}.berkas`)
           fs.writeFileSync(berkas, Buffer.from(await r.arrayBuffer()), { mode: 0o600 })

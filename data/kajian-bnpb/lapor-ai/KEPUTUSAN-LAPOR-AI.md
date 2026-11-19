@@ -119,7 +119,7 @@ Pemilik memilih enam fitur lanjutan pada 19 Nov 2026. Semuanya masuk paket ini l
 
 | No | Fitur | Keputusan | Alasan |
 | --- | --- | --- | --- |
-| D23 | Verifikasi | Permintaan verifikasi = baris `lapor_verif` dengan token acak (disimpan sha256, terikat satu laporan dan satu kontak BPBD, berlaku 48 jam, Q17). Halaman `/lapor/v/<token>` tanpa login menampilkan ringkasan laporan tanpa nama dan nomor pelapor, lalu tiga jawaban. Jawaban disimpan append-only di `lapor_verif_jawab`; boleh lebih dari satu (jawaban terbaru dipakai, riwayat tetap). | Pola tautan bertoken yang sudah dipakai `/uji-pilot` dan kamera `/lapor/foto`; BPBD tidak perlu akun. |
+| D23 | Verifikasi | Permintaan verifikasi = baris `lapor_verif` dengan token acak (sha256 disimpan di `lapor_tautan`, terikat satu laporan dan satu kontak BPBD, berlaku 48 jam, Q17). Halaman `/lapor/v/<token>` tanpa login menampilkan ringkasan laporan tanpa nama dan nomor pelapor, lalu tiga jawaban. Jawaban disimpan append-only di `lapor_verif_jawab`; boleh lebih dari satu (jawaban terbaru dipakai, riwayat tetap). | Pola tautan bertoken yang sudah dipakai `/uji-pilot` dan kamera `/lapor/foto`; BPBD tidak perlu akun. |
 | D24 | Verifikasi | Jawaban verifikasi tidak pernah mengubah isi laporan, status tiket, atau kejadian resmi. "Sebagian benar" menyimpan koreksi sebagai catatan teks (disaring `teksBersih`) yang tampil di rincian laporan dan PDF. Staf yang memutuskan pindah status tiket (A8). "Tidak ditemukan" hanya menandai laporan dan menyarankan staf menimbang `tidak_valid`. | D7: laporan warga tidak pernah resmi; verifikasi adalah bukti tambahan, bukan vonis. |
 | D25 | Verifikasi | Pengiriman tautan ke BPBD adalah tindakan keluar. Selama F0 tautan hanya dikirim ke PEMILIK sebagai uji. Pada F1 tautan dikirim hanya ke kontak yang sudah terdaftar di `lapor_kontak_bpbd` untuk kab itu (Q16); tanpa kontak, tombol Minta verifikasi nonaktif dengan alasan terbaca. | D9; AGENTS: pesan ke pejabat butuh keputusan pemilik. |
 | D26 | Verifikasi | Penjawab memasukkan nama dan jabatan di halaman. Nama itu klaim: jawaban berlabel "dijawab lewat kontak terdaftar" bila token dikirim ke kontak terdaftar, dan label itu tidak berarti orangnya terkonfirmasi. | Tautan bisa diteruskan; label jujur. |
@@ -249,6 +249,7 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | K49 | 19 Nov 2026 | M7: penanda waktu tanggap: lama sampai dibuka dan sampai ditindaklanjuti; lewat tenggat merah (terkait fitur 10). |
 | K50 | 19 Nov 2026 | M9: mode layar besar untuk ruang Pusdalops: penuh layar, angka besar, segar sendiri. |
 | K51 | 19 Nov 2026 | M10: ekspor daftar tersaring ke Excel dan PDF ringkas untuk rapat. |
+| K52 | 19 Nov 2026 | Pemilik: "setuju semua bawaan". Semua bawaan sementara Q8 dan Q16 sampai Q38 menjadi keputusan. Q39 dibalik atas saran sesi induk yang disetujui pemilik: `dilihat` tetap STATUS tiket (tampilan lima tahap Diterima, Dilihat, Ditelaah, Ditindaklanjuti, Selesai di tiket, lacak, dan meja sudah disetujui pemilik), CHECK `lapor_tiket.status` memuat `dilihat`. |
 
 ## Keputusan rancangan (Meja lanjutan)
 
@@ -276,7 +277,7 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q36 | Ekspor: boleh memuat nama dan nomor WA pelapor? | **[BAWAAN SEMENTARA]** Tidak. Hanya admin yang boleh menambah kolom itu lewat tombol terpisah, tercatat siapa dan kapan; tidak pada mode layar besar. | LA-52 |
 | Q37 | Target waktu tanggap: berapa lama sampai dibuka dan sampai ditindaklanjuti dianggap terlambat, dan menurut aturan mana? | **[BAWAAN SEMENTARA]** Tidak ada target; angka hanya ditampilkan (D68). Merah hanya dari tenggat tugas. | LA-50 |
 | Q38 | Teruskan massal ke BPBD: kontak mana dan kapan boleh dikirim (mengulang Q5 dan Q16)? | **[BAWAAN SEMENTARA]** Sama dengan penugasan ke BPBD: hanya kontak terdaftar (Q16), F0 hanya ke PEMILIK. | LA-49 |
-| Q39 | Status tiket "dilihat": `meja.js` lokal memakai status `dilihat` (K19: "sudah dilihat petugas"), tetapi D20 dan A8 tidak memuatnya dan CHECK migrasi 0155 hanya enam status lain. Dijadikan status atau penanda terpisah? | **[BAWAAN SEMENTARA]** Penanda, bukan status: baris riwayat tiket dengan `dari` dan `ke` sama (`baru`) dan catatan khusus "dilihat" oleh staf; layar tetap menampilkannya sebagai tahap "Dilihat". Bila pemilik ingin status sungguhan, migrasi 0155 diubah sebelum diterapkan ke produksi (tabel CHECK tidak bisa diubah idempoten sesudahnya). | LA-45 |
+| Q39 | Status tiket "dilihat": `meja.js` lokal memakai status `dilihat` (K19: "sudah dilihat petugas"), tetapi D20 dan A8 tidak memuatnya dan CHECK migrasi 0155 hanya enam status lain. Dijadikan status atau penanda terpisah? | **[BAWAAN SEMENTARA]** Penanda, bukan status: baris riwayat tiket dengan `dari` dan `ke` sama (`baru`) dan catatan khusus "dilihat" oleh staf; layar tetap menampilkannya sebagai tahap "Dilihat". Bila pemilik ingin status sungguhan, migrasi 0155 diubah sebelum diterapkan ke produksi (tabel CHECK tidak bisa diubah idempoten sesudahnya). | LA-45 **Dijawab K52: `dilihat` tetap status tiket.** |
 
 ## Keputusan pemilik (Meja tampilan dasbor, 19 Nov 2026 sore)
 

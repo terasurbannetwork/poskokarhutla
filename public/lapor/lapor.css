@@ -1827,3 +1827,10 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-tt-darurat a{color:var(--bad-tx)}
 @media (max-width:900px){.lp-tt-kisi.tiga,.lp-tt-kisi.empat,.lp-tt-langkah{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.lp-tt-kisi.tiga,.lp-tt-kisi.empat,.lp-tt-kisi.dua,.lp-tt-langkah{grid-template-columns:1fr}.lp-tentang{padding:16px}}
+.lp-masuk-wa{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px;text-decoration:none}
+/* kartu Laporan saya: ikon jenis berwarna registri, status di kanan bawah foto supaya tidak menempel ikon (pemilik 19 Nov 2026) */
+.lp-lap-gambar .lp-lap-ikon{background:var(--jn,var(--brand2))!important;color:var(--on-pekat)!important;border-color:color-mix(in oklab,var(--on-pekat) 70%,transparent)!important}
+.lp-lap-gambar .lp-pil{top:auto!important;left:auto!important;right:10px!important;bottom:10px!important}
+/* catatan daftar tempat satu baris penuh, tidak terjepit di satu kolom kisi */
+.lp-tempat-kisi > p{grid-column:1 / -1;margin:0}
+.lp-lap-kartu.draf .lp-lap-maskot{right:auto;left:50%;translate:-50% 0;bottom:-4px}

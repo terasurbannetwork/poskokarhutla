@@ -90,7 +90,7 @@ Tanpa trigger. Migrasi diterapkan ke produksi oleh pemilik. Pemeriksa: `migrasi-
 | `POST /api/lapor/meja/:nomor/status` | staf atau admin | pindah status (A8) dengan catatan |
 | `GET /api/lapor/foto/:id` | staf, admin, atau pelapornya | berkas R2, `cache-control: private, no-store` |
 
-Batas laju (pola `laju` di `src/bnpb.js`): pesan 120 per nomor per hari, 20 per menit; laporan terkirim 5 per hari (Q9); foto 20 per laporan; pindah status 120 per jam per staf.
+Batas laju (pola `laju` di `src/bnpb.js`): pesan 20 per menit, 60 per jam, dan 120 per hari per nomor, pintu web 300 per jam per IP /64 (pemilik 19 Nov 2026: kuota per jam); laporan terkirim 5 per hari (Q9); foto 10 per laporan (pemilik 19 Nov 2026, standar foto publik); pindah status 120 per jam per staf.
 
 ## Izin uji (K2)
 

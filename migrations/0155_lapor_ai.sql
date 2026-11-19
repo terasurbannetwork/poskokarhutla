@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS lapor_izin (
 
 CREATE TABLE IF NOT EXISTS lapor_sesi (
   id TEXT PRIMARY KEY CHECK (length(id) BETWEEN 6 AND 40),
-  wa TEXT NOT NULL CHECK (length(wa) BETWEEN 10 AND 15),
+  wa TEXT NOT NULL CHECK (length(wa) BETWEEN 10 AND 15 AND wa GLOB '62[0-9]*' AND wa NOT GLOB '*[^0-9]*'),
   status TEXT NOT NULL CHECK (length(status) BETWEEN 1 AND 30),
   tingkat TEXT CHECK (tingkat IS NULL OR tingkat IN ('warga', 'bpbd_klaim', 'bpbd')),
   jenis TEXT CHECK (jenis IS NULL OR length(jenis) <= 40),
@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS lapor_sesi (
   diubah INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS lapor_sesi_wa ON lapor_sesi (wa, diubah);
+CREATE INDEX IF NOT EXISTS lapor_sesi_wa_terkirim ON lapor_sesi (wa, terkirim);
 CREATE INDEX IF NOT EXISTS lapor_sesi_token ON lapor_sesi (token_sha);
 CREATE INDEX IF NOT EXISTS lapor_sesi_terkirim ON lapor_sesi (terkirim);
 

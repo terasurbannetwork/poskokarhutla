@@ -95,8 +95,12 @@ uji("meja: tamu ditolak, membuka = dilihat, balas dan status mengisi kabar, pind
   assert.equal((await api("GET", "/api/lapor/meja", undefined, {"x-admin-token": "gerbang@x:sandi"})).s, 403, "akun gerbang tidak melihat nomor WA");
   const d = await api("GET", "/api/lapor/meja", undefined, ADMIN); assert.equal(d.s, 200);
   const b = d.j.baris.find(x => x.nomor === nomor); assert.equal(b.wa, WA); assert.equal(b.jenisId, "longsor"); assert.equal(b.status, "baru"); assert.equal(b.foto, 1);
-  const r = await api("GET", `/api/lapor/meja/${nomor}?lihat=1`, undefined, ADMIN); assert.equal(r.s, 200);
-  assert.equal(r.j.status, "dilihat"); assert.deepEqual(r.j.pindah, ["ditelaah", "tidak_valid"]); assert.equal(r.j.token, token);
+  assert.deepEqual(Object.keys(b.dampak), ["meninggal", "hilang", "luka", "mengungsi", "rumah"]); assert.ok(Object.values(b.dampak).every(v => v === null || Number.isFinite(v)), "angka atau null, kosong bukan nol");
+  assert.equal((await api("GET", `/api/lapor/meja/${nomor}?lihat=1`, undefined, ADMIN)).j.status, "baru", "GET tidak pernah menulis");
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/lihat`, {})).s, 403, "tamu");
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/lihat`, {}, ADMIN)).s, 200);
+  const r = await api("GET", `/api/lapor/meja/${nomor}`, undefined, ADMIN); assert.equal(r.s, 200);
+  assert.equal(r.j.status, "dilihat"); assert.equal(r.j.jenisId, "longsor"); assert.equal(r.j.wilayah.provKode, "32"); assert.deepEqual(r.j.dampak, b.dampak); assert.deepEqual(r.j.pindah, ["ditelaah", "tidak_valid"]); assert.equal(r.j.token, token);
   assert.equal(r.j.riwayat.at(-1).pelaku, "Admin BNPB", "kode pelaku tidak keluar");
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "selesai"}, ADMIN)).s, 409);
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/balas`, {catatan: "x"}, ADMIN)).s, 400);
@@ -190,4 +194,87 @@ uji("info daerah: prakiraan, nomor penting, cari desa, tempat sekitar (data publ
   assert.equal((await api("POST", "/api/lapor/nilai", {wa: WA, nomor, nilai: 9}, MESIN)).s, 400);
   assert.equal((await api("POST", "/api/lapor/nilai", {wa: WA, nomor, nilai: 5}, MESIN)).s, 200);
   assert.equal(JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE nomor = ?").bind(nomor).first()).kerja).nilai.nilai, 5);
+});
+
+/* ---------- hasil pemeriksaan bersih 19 Nov 2026 ---------- */
+const WA4 = "6281200000014", WA5 = "6281200000015";
+async function keFoto(wa) {
+  let r = await ketik(wa, {teks: "lapor"});
+  for (const t of ["1", "1", "Siti Aminah"]) r = await ketik(wa, {teks: t});
+  r = await ketik(wa, {lokasi: LOK}); r = await ketik(wa, {teks: "1"}); r = await ketik(wa, {teks: "Tidak tahu"});
+  r = await ketik(wa, {teks: String(r.pilihan.findIndex(x => /longsor/i.test(x)) + 1)});
+  for (const t of ["1", ...langkahKronologi("longsor").map(() => "1"), "2", "kemarin jam 05.30"]) r = await ketik(wa, {teks: t});
+  for (let i = 0; i < 60 && r.minta !== "foto"; i++) r = await ketik(wa, {teks: r.pilihan ? "1" : i % 2 ? "belum tahu" : "tidak ada"});
+  assert.equal(r.minta, "foto"); return r;
+}
+const foto = (b, h = MESIN) => api("POST", "/api/lapor/foto", b, h);
+
+uji("lokasi pesan: null, teks kosong, teks angka, di luar kotak ditolak 400; kode desa harus baku", async () => {
+  await api("POST", "/api/lapor/izin", {wa: WA4}, MESIN); await api("POST", "/api/lapor/izin", {wa: WA5}, MESIN);
+  for (const lokasi of [{lat: null, lon: null}, {lat: "", lon: ""}, {lat: "-6.6", lon: "106.8"}, {lat: 0, lon: 0}, {lat: -6.6}, {lat: true, lon: true}]) {
+    await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WA4).run();
+    const r = await pesan(WA4, {lokasi}); assert.equal(r.s, 400, JSON.stringify(lokasi));
+  }
+  for (const kode of ["../../x", "32.71", 3271010001, "", "32.71.01.100a", "3271.01.01.1001"]) assert.equal((await pesan(WA4, {lokasi: {kode}})).s, 400, String(kode));
+  assert.equal(await n("lapor_sesi", `wa = '${WA4}'`), 0, "penolakan tidak menyentuh mesin");
+});
+
+uji("foto: gps, exif, waktu tidak sah dibuang (mesin dan web), tidak disimpan; header referrer-policy", async () => {
+  await keFoto(WA4);
+  const tok = "ef".repeat(32), kini = Date.now(), H = {cookie: `sesi_masuk=${tok}`, origin: "http://bnpb.lokal", "x-pb": "1"};
+  await DB.batch([DB.prepare("INSERT INTO mk_akun (id, wa, status, dibuat) VALUES ('akunlaporuji0005', ?, 'aktif', ?)").bind(WA4, kini),
+    DB.prepare("INSERT INTO mk_sesi (token_sha, mk_id, kode_pada, dibuat, habis) VALUES (?, 'akunlaporuji0005', ?, ?, ?)").bind(sha256(tok), kini, kini, kini + 3600e3)]);
+  const lencana = async j => (await DB.prepare("SELECT lencana, lat FROM lapor_foto WHERE id = ?").bind(j.fotoBaru.id).first());
+  // mesin: lokasi null dan waktu masa depan -> tanpa lokasi, waktu unggah
+  let r = await foto({wa: WA4, data: B64, waktu: Date.now() + 3600e3, lokasi: {lat: null, lon: null}}); assert.equal(r.s, 200, r.t.slice(0, 200));
+  assert.equal(r.j.fotoBaru.lencana, "tanpa"); assert.equal(r.j.fotoBaru.sumberWaktu, "waktu unggah");
+  assert.equal(r.h.get("referrer-policy"), "no-referrer");
+  // web: gps tidak sah (lat null, akurasi teks, waktu lama), exif tidak sah -> tanpa lokasi
+  for (const b of [{gps: {lat: null, lon: 106.8, akurasi: 10, waktu: kini}}, {gps: {lat: -6.6, lon: 106.8, akurasi: "10", waktu: kini}}, {gps: {lat: -6.6, lon: 106.8, akurasi: 10, waktu: kini - 30 * 60e3}},
+    {gps: {lat: -6.6, lon: 106.8, akurasi: 10, waktu: kini + 3600e3}}, {exif: {lat: "-6.6", lon: "106.8"}}, {exif: {lat: 99, lon: 106.8}}]) {
+    await DB.prepare("DELETE FROM laju_bnpb WHERE kunci IN (?, 'lapor.ip')").bind(WA4).run();
+    r = await foto({data: B64, ...b}, H); assert.equal(r.s, 200, JSON.stringify(b) + r.t.slice(0, 200));
+    const f = await lencana(r.j); assert.equal(f.lencana, "tanpa", JSON.stringify(b)); assert.equal(f.lat, null);
+  }
+  // exif dengan lokasi sah tetapi waktu masa depan: lokasi dipakai, waktu dibuang
+  await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WA4).run();
+  r = await foto({data: B64, exif: {lat: -6.6, lon: 106.8, waktu: kini + 3600e3}}, H); assert.equal((await lencana(r.j)).lencana, "exif"); assert.equal(r.j.fotoBaru.sumberWaktu, "waktu unggah");
+  // gps sah tetap diterima
+  await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WA4).run();
+  r = await foto({data: B64, gps: {lat: -6.6, lon: 106.8, akurasi: 10, waktu: kini}}, H); assert.equal((await lencana(r.j)).lencana, "gps");
+  // exif waktu > 48 jam lalu tetap ditolak
+  await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WA4).run();
+  assert.equal((await foto({data: B64, exif: {waktu: kini - 72 * 3600e3}}, H)).s, 400);
+});
+
+uji("nilai: harus angka bulat 1-5 bertipe number dan 30 per jam per nomor", async () => {
+  assert.equal((await api("POST", "/api/lapor/nilai", {wa: WA, nomor, nilai: "5"}, MESIN)).s, 400);
+  assert.equal((await api("POST", "/api/lapor/nilai", {wa: WA, nomor, nilai: null}, MESIN)).s, 400);
+  await DB.batch(Array.from({length: 30}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.nilai', ?)").bind(WA, Date.now())));
+  const r = await api("POST", "/api/lapor/nilai", {wa: WA, nomor, nilai: 4}, MESIN); assert.equal(r.s, 429); assert.ok(r.j.sisaDetik > 0);
+});
+
+uji("meja: tiket hilang 404, status prototipe diabaikan, pdf antre rusak tidak memacetkan, unduh %-rusak 404", async () => {
+  const kini = Date.now();
+  await DB.prepare("INSERT INTO lapor_sesi (id, wa, status, kerja, rev, nomor, token_sha, terkirim, dibuat, diubah) VALUES ('sesirusak0001', ?, 'terkirim', '{}', 0, 'LA-010101-01', ?, ?, ?, ?)").bind(WA5, sha256("x"), kini, kini, kini).run();
+  assert.equal((await api("POST", "/api/lapor/meja/LA-010101-01/balas", {catatan: "halo"}, ADMIN)).s, 404, "sesi bernomor tanpa tiket");
+  assert.equal((await api("GET", "/api/lapor/meja?status=constructor", undefined, ADMIN)).s, 200);
+  await DB.prepare("INSERT INTO lapor_pdf (nomor, versi, status, diubah) VALUES ('LA-010101-01', 1, 'antre', ?)").bind(kini).run();
+  const q = await api("GET", "/api/lapor/pdf/antre", undefined, MESIN); assert.equal(q.s, 200); assert.ok(!q.j.antre.some(x => x.nomor === "LA-010101-01"));
+  assert.equal((await api("GET", "/api/lapor/unduh/%E0%A4%A.pdf?t=" + token)).s, 404);
+});
+
+uji("batas 5 laporan sehari dicek sebelum putaran pada pesan kirim; batas IP untuk lacak; token butuh SESI_KUNCI", async () => {
+  const kini = Date.now(), sesi = {status: "ringkasan", isian: {}, transkrip: [], ditanya: [], dibuat: kini};
+  await DB.batch([...Array.from({length: 5}, (_, i) => DB.prepare("INSERT INTO lapor_sesi (id, wa, status, kerja, rev, nomor, terkirim, dibuat, diubah) VALUES (?, ?, 'terkirim', '{}', 0, ?, ?, ?, ?)").bind(`selesai${i}000000`, WA5, `LA-0202${10 + i}-01`, kini - 1000 - i, kini - 1000, kini - 1000)),
+    DB.prepare("INSERT INTO lapor_sesi (id, wa, status, kerja, rev, dibuat, diubah) VALUES ('aktifringkas01', ?, 'ringkasan', ?, 0, ?, ?)").bind(WA5, JSON.stringify(sesi), kini, kini)]);
+  const r = await pesan(WA5, {teks: "1"}); assert.equal(r.s, 200); assert.match(r.j.balasan, /Batas laporan harian/);
+  assert.equal(await n("lapor_pesan", "sesi = 'aktifringkas01'"), 0, "tidak ada putaran");
+  const ip = "203.0.113.77";
+  await DB.batch(Array.from({length: 300}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.lacak', ?)").bind(sha256(`garam-uji|${ip}`), kini)));
+  assert.equal((await api("GET", `/api/lapor/lacak?t=${token}`, undefined, {"cf-connecting-ip": ip})).s, 429);
+  assert.equal((await api("GET", `/api/lapor/lacak?t=${token}`, undefined, {"cf-connecting-ip": "203.0.113.78"})).s, 200);
+  const T = await siapkan("uji-lapor-tanpa-kunci", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", SESI_KUNCI: ""}});
+  assert.equal((await T.api("GET", `/api/lapor/lacak?t=${token}`)).s, 503);
+  assert.equal((await T.api("GET", "/api/lapor/alun")).s, 503);
 });
