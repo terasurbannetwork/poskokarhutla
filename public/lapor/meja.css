@@ -784,3 +784,4 @@ body{display:flex;flex-direction:column;height:100dvh}
 /* angka rincian: baris terakhir melebar sampai ujung, tanpa ruang kosong (memori tanpa-ruang-kosong) */
 .mj-rk-angka{display:flex!important;flex-wrap:wrap}
 .mj-rk-angka>*{flex:1 1 150px;min-width:0}
+.mj-dok-kisi > :last-child:nth-child(odd){grid-column:1 / -1}

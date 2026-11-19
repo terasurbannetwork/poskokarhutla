@@ -133,3 +133,12 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 | LA-65 | Unduhan di `/kemitraan` untuk akun kampus aktif dengan log unduhan (D93); kolom selisih lawan data resmi "belum tersedia" sampai LA-25 (D92) | `kampus` | `security-reviewer`, `inp-reviewer` | LA-64, LA-25 | Q51 |
 | LA-66 | Meja BPBD: sesi akun pemkab, pemkot, pemprov dan anggota undangan di rute `/api/lapor/meja*`, saring wilayah di Worker, log akses rincian, aksi terbatas (D94-D96, D98); uji hak lintas wilayah | `warga-api`, `layar-peta` | `guard-api`, `security-reviewer`, `inp-reviewer` | LA-10, LA-62 | Q53, Q54 |
 | LA-67 | Teruskan ke BPBD lewat antrean meja BPBD dan pemberitahuan WA tanpa isi (D97); kab tanpa akun tetap jalan manual | `warga-api`, `wa-bot` | `security-reviewer` | LA-66 | Q55 |
+
+### Pelaksanaan K62 dan K63 (19 Nov 2026 malam)
+
+| Tiket | Status | Bukti |
+| --- | --- | --- |
+| LA-64 | Selesai lokal: `src/lapor_agregat.js` (minggu ISO WIB, sel "<3", median menit, CSV berkamus), rute lokal `/api/lapor/agregat`. Belum: pipeline harian ke R2 dan rute Worker bersesi kampus. | `tests/lapor/agregat.test.mjs`, `tests/lapor/lokal_media.test.mjs` |
+| LA-65 | Selesai lokal: tampilan "Data lapor" di `/kemitraan` (unduh CSV dan JSON, kamus kolom, 20 baris terbaru). Belum: log unduhan (Worker), kolom selisih resmi menunggu LA-25. | tinjau `http://localhost:8800/kemitraan?tampil=data` |
+| LA-66 | Selesai lokal: `src/lapor_meja_hak.js` (cakupan akun pemkab, pemkot, pemprov; wilayah; aksi BPBD tanpa buka kembali), meja lokal tersaring wilayah, log akses rincian, pelaku "BPBD <kab>", tanpa kartu Teruskan dan Draf logbook. Tinjau: `?sebagai=kab:31.75` atau `prov:31` (kuki khusus lokal). Belum: sesi Ruang Instansi dan `/masuk` di rute Worker. | `tests/lapor/lokal_media.test.mjs` |
+| LA-67 | Belum: antrean meja BPBD dari tombol Teruskan dan pemberitahuan WA (butuh Worker dan bot, Q55). | |

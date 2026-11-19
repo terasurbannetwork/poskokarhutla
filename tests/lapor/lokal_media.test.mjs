@@ -17,7 +17,7 @@ const DIR = path.join(RUMAH, ".lapor-lokal"), BERKAS = path.join(DIR, "data.json
 const srv = http.createServer((q, s) => tanganiLapor(q, s, new URL(q.url, "http://x"))).listen(0);
 const DASAR = `http://127.0.0.1:${srv.address().port}`;
 test.after(() => { srv.close(); fs.rmSync(RUMAH, {recursive: true, force: true}); });
-const api = async (m, j, b, raw) => { const r = await fetch(DASAR + j, {method: m, headers: raw ? {} : {"content-type": "application/json"}, body: raw ?? (b ? JSON.stringify(b) : undefined)});
+const api = async (m, j, b, raw, h = {}) => { const r = await fetch(DASAR + j, {method: m, headers: {...(raw ? {} : {"content-type": "application/json"}), ...h}, body: raw ?? (b ? JSON.stringify(b) : undefined)});
   const t = await r.text(); let x = null; try { x = JSON.parse(t); } catch {} return {s: r.status, j: x}; };
 
 /* MP4 kecil sah: ftyp + moov(mvhd, udta ©xyz) + mdat isian sampai ukuran yang diminta */
@@ -112,4 +112,36 @@ test("Alun-alun: satu kartu per gugus dengan N warga, titik pusat desa, tanpa no
   assert.equal(x.nWarga, 2); assert.equal(x.dampak.mengungsi, 12, "angka tidak dijumlah");
   const teks = JSON.stringify(a.j); for (const rahasia of [WA, WA2, "Uji Satu", "LA-191126-91", "a".repeat(32)]) assert.ok(!teks.includes(rahasia), rahasia);
   const id1 = x.id; benih(); assert.equal((await api("GET", "/api/lapor/alun")).j.baris[0].id, id1, "id kartu tetap untuk Ikuti");
+});
+
+test("meja BPBD: hanya wilayahnya, tanpa buka kembali, pelaku tercatat, log akses (K63, D94-D96)", async () => {
+  benih();
+  const KAB = {cookie: "lapor_sebagai=kab:31.75"}, LAIN = {cookie: "lapor_sebagai=kab:32.01"}, PROV = {cookie: "lapor_sebagai=prov:31"}, N = "LA-191126-91";
+  const m = await api("GET", "/api/lapor/meja", null, null, KAB);
+  assert.equal(m.s, 200); assert.equal(m.j.akun.jenis, "bpbd"); assert.equal(m.j.baris.length, 2);
+  assert.equal((await api("GET", "/api/lapor/meja", null, null, LAIN)).j.baris.length, 0, "kab lain tidak melihat");
+  assert.equal((await api("GET", "/api/lapor/meja", null, null, PROV)).j.baris.length, 2, "provinsi melihat kab di dalamnya");
+  assert.equal((await api("GET", `/api/lapor/meja/${N}`, null, null, LAIN)).s, 404, "rincian di luar wilayah = tidak ada");
+  assert.equal((await api("POST", `/api/lapor/meja/${N}/balas`, {teks: "coba"}, null, LAIN)).s, 404);
+  const r = await api("POST", `/api/lapor/meja/${N}/lihat`, {}, null, KAB);
+  assert.equal(r.s, 200); assert.ok(!r.j.pindah.includes("ditelaah") || r.j.status !== "selesai");
+  assert.equal((await api("POST", `/api/lapor/meja/${N}/status`, {ke: "selesai", tanpaBukti: "Ditangani BPBD, foto menyusul"}, null, KAB)).s, 200);
+  const sesudah = await api("GET", `/api/lapor/meja/${N}`, null, null, KAB);
+  assert.deepEqual(sesudah.j.pindah, [], "BPBD tidak ditawari buka kembali");
+  assert.equal((await api("POST", `/api/lapor/meja/${N}/status`, {ke: "ditelaah", catatan: "buka lagi"}, null, KAB)).s, 403);
+  assert.equal((await api("POST", `/api/lapor/meja/${N}/status`, {ke: "ditelaah", catatan: "buka lagi"})).s, 200, "BNPB boleh membuka kembali");
+  const d = JSON.parse(fs.readFileSync(BERKAS, "utf8")).sesi.a1;
+  assert.match(d.tiket.riwayat.find(x => x.ke === "selesai").pelaku, /^BPBD Kota Jakarta Timur/);
+  assert.equal(d.akses.length, 1, "pembukaan rincian BPBD tercatat");
+});
+
+test("agregat data terbuka: tanpa identitas, sel kecil <3, CSV berkolom kamus (K62, D91)", async () => {
+  benih();
+  const a = await api("GET", "/api/lapor/agregat?format=json");
+  assert.equal(a.s, 200); assert.equal(a.j.baris.length, 1);
+  const b = a.j.baris[0];
+  assert.equal(b.kab_kode, "31.75"); assert.equal(b.laporan, "<3"); assert.equal(b.median_menit_lapor, null); assert.equal(b.selisih_resmi_menit, "belum tersedia");
+  const teks = JSON.stringify(a.j); for (const rahasia of [WA, WA2, "Uji Satu", "LA-191126-91", "31.75.06.1001", "-6.2088"]) assert.ok(!teks.includes(rahasia), rahasia);
+  const r = await fetch(DASAR + "/api/lapor/agregat?format=csv"), csv = await r.text();
+  assert.match(r.headers.get("content-type"), /text\/csv/); assert.ok(csv.startsWith("minggu,prov_kode,provinsi,kab_kode,kab_kota,jenis,laporan,pelapor,"));
 });

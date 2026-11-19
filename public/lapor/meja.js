@@ -41,9 +41,18 @@ const provTutup = new Set();
 let semua = [], saringStatus = null, saringJenis = new Set(), saringKab = "", cepat = new Set(), urut = {k: "waktu", arah: -1}, pilih = null, peta = null, penanda = [], popup = null, petaMini = null;
 const fotoCache = new Map(), dlg = $("rinci");
 
+/* meja BPBD (K63, D94-D98): halaman sama, isinya disaring server menurut wilayah akun lembaga. Tinjau lokal: ?sebagai=kab:31.75 atau prov:31
+   (kuki khusus server lokal; ?sebagai=bnpb kembali ke tampilan BNPB). Di situs, akun dibaca dari sesi Ruang Instansi atau /masuk. */
+if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { const sb = new URLSearchParams(location.search).get("sebagai");
+  if (sb) document.cookie = /^(kab:\d{2}\.\d{2}|prov:\d{2})$/.test(sb) ? `lapor_sebagai=${sb}; path=/; SameSite=Strict` : "lapor_sebagai=; path=/; max-age=0"; }
+let akunMeja = {jenis: "bnpb", label: "BNPB"};
+const akunBpbd = () => akunMeja.jenis === "bpbd";
 async function muat() {
   try {
-    const j = await (await fetch("/api/lapor/meja", {cache: "no-store"})).json();
+    const res = await fetch("/api/lapor/meja", {cache: "no-store"}), j = await res.json();
+    if (!res.ok) { $("waktuSegar").textContent = j.galat || "Tidak berhak"; return; }
+    if (j.akun) { akunMeja = j.akun; document.body.classList.toggle("mj-bpbd", akunBpbd());
+      const sub = document.querySelector(".mj-merek small"); if (sub) sub.textContent = akunBpbd() ? `${akunMeja.label}, laporan di wilayah Anda` : "Lapor Bencana, khusus staf"; }
     semua = j.baris || [];
     $("bSegar").classList.remove("galat"); $("waktuSegar").textContent = `Data diperbarui ${new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}).replace(":", ".")}`;
     gambar();
@@ -471,7 +480,7 @@ async function bukaRinci(nomor, lihat = true) {
     bt.addEventListener("click", () => kirim("status", {ke, catatan: catatan.value, ...(ke === "selesai" && !(j.bukti || []).length ? {tanpaBukti: catatan.value} : {})}, bt)); st.append(bt); }
   const balas = el("button", "mj-tombol isi lebar"); balas.type = "button"; balas.append(ikon("m-pesan"), "Kirim balasan ke pelapor"); balas.addEventListener("click", () => kirim("balas", {teks: catatan.value}, balas));
   const dok = el("div", "mj-dok-kisi"); for (const u of j.unduhan || []) { const a = Object.assign(el("a", "mj-tombol"), {href: u.url}); a.append(ikon("m-unduh"), `Unduh ${u.label}`); dok.append(a); }
-  const draf = el("button", "mj-tombol"); draf.type = "button"; draf.append(ikon("m-daftar"), "Draf logbook"); draf.title = "Buka Logbook Pusdalops dengan isian dari laporan ini"; draf.addEventListener("click", () => drafLogbook(j, draf)); dok.append(draf);
+  const draf = el("button", "mj-tombol"); draf.type = "button"; draf.append(ikon("m-daftar"), "Draf logbook"); draf.title = "Buka Logbook Pusdalops dengan isian dari laporan ini"; draf.addEventListener("click", () => drafLogbook(j, draf)); if (!akunBpbd()) dok.append(draf); // Logbook Pusdalops milik BNPB
   const lacak = Object.assign(el("a", "mj-tombol"), {href: `/lapor/lacak.html?t=${j.token}`, target: "_blank", rel: "noopener"}); lacak.append(ikon("m-tiket"), "Lacak"); lacak.title = "Halaman lacak yang dilihat pelapor"; dok.append(lacak);
   const lbl = t => el("p", "mj-label", t);
   tk.append(catatan, balas, ...(st.childElementCount ? [lbl("Pindahkan status ke"), st] : []), galat, lbl("Dokumen"), dok);
@@ -523,7 +532,7 @@ async function bukaRinci(nomor, lihat = true) {
     return wt; })());
 
   // dua kolom: kiri tindakan (menempel saat digulir), kanan isi laporan
-  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, kBukti, kartuTeruskan(j, b, kirim), kPelapor, kLog);
+  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, kBukti, ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
   /* isi laporan dikategorikan (pemilik 19 Nov 2026 "harus dikategoriin, ada bagian dengan pill"): tiap bagian berpil berikon,
      deret pil di atas untuk lompat ke bagian; kartu tiap kelompok isian masuk bagiannya */
   const kartuKelompok = new Map([...per].map(([kel, xs]) => [kel, kartuKel([kel, xs])]));

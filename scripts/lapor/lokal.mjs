@@ -22,6 +22,8 @@ import {hitungGugus} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia} from "../../src/lapor_bahasa.js";
 import {samarkan} from "../../src/samarkan.js";
+import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
+import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
 
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUBLIK = path.join(AKAR, "public");
@@ -510,9 +512,9 @@ const tanggap = s => { const pertama = ke => s.tiket.riwayat.find(r => r.ke === 
 const gugusSemua = d => hitungGugus(Object.values(d.sesi).filter(s => s.nomor).map(s => { const L = s.isian.lokasi?.nilai;
   return {nomor: s.nomor, jenis: s.isian.jenis?.nilai, lat: L?.lat ?? null, lon: L?.lon ?? null, kab: L?.wilayah?.kab || null, desa: L?.wilayah?.kode || null,
     t: s.isian.waktu?.ms || s.terkirim, wa: s.wa, fotoSah: (s.foto || []).some(f => f.lencana === "gps" || f.lencana === "exif"), status: s.tiket.status}; }));
-function meja() {
+function meja(c) {
   const d = baca(), G = gugusSemua(d), gk = Object.fromEntries(G.gugus.map(g => [g.kode, g]));
-  return [200, {baris: Object.values(d.sesi).filter(s => s.nomor).sort((a, b) => b.terkirim - a.terkirim).map(s => {
+  return [200, {akun: {jenis: c.jenis, label: c.label}, baris: Object.values(d.sesi).filter(s => s.nomor && dalamWilayah(c, s.isian.lokasi?.nilai?.wilayah)).sort((a, b) => b.terkirim - a.terkirim).map(s => {
     const p = d.pelapor[s.wa] || {}, w = s.isian.lokasi?.nilai;
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
@@ -521,14 +523,15 @@ function meja() {
       gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null};
   })}];
 }
-function mejaRinci(nomor, lihat = false) {
+function mejaRinci(c, nomor, lihat = false) {
   const d = baca(), s = Object.values(d.sesi).find(x => x.nomor === nomor);
-  if (!s) return [404, {galat: "Laporan tidak ditemukan."}];
+  if (!s || !dalamWilayah(c, s.isian.lokasi?.nilai?.wilayah)) return [404, {galat: "Laporan tidak ditemukan."}]; // di luar wilayah = tidak ada (D95)
+  if (lihat && c.jenis !== "bnpb") { (s.akses ||= []).push({oleh: c.pelaku, waktu: Date.now()}); simpan(d); } // log akses rincian BPBD (D95)
   if (lihat && s.tiket.status === "baru") { // petugas membuka laporan = "Sudah dilihat petugas"
-    s.tiket.riwayat.push({dari: "baru", ke: "dilihat", pelaku: "Admin BNPB", catatan: null, waktu: Date.now()}); s.tiket.status = "dilihat"; simpan(d);
+    s.tiket.riwayat.push({dari: "baru", ke: "dilihat", pelaku: c.pelaku, catatan: null, waktu: Date.now()}); s.tiket.status = "dilihat"; simpan(d);
   }
   const p = d.pelapor[s.wa] || {}, prov = s.isian.lokasi?.nilai?.wilayah?.provKode;
-  return [200, {nomor, token: s.token, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
+  return [200, {nomor, token: s.token, status: s.tiket.status, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status]), statusLabel: STATUS, akun: {jenis: c.jenis, label: c.label},
     pelapor: {nama: p.nama, wa: s.wa, peran: PERAN[p.peran], kab: p.kab || null, jabatan: p.jabatan || null},
     waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), tanggap: tanggap(s),
     // nilai mentah per isian (null = belum, 0 = tidak ada) dan waktu kejadian ms: bahan draf logbook Pusdalops di meja (K56)
@@ -544,15 +547,16 @@ function mejaRinci(nomor, lihat = false) {
     bahasa: BAHASA.find(([k]) => k === (s.bahasa || "id"))?.[1] || null,
     transkrip: s.transkrip.map(t => ({dari: t.dari, teks: t.teks || (t.lokasi ? "Lokasi dibagikan" : ""), asli: t.asli || null, waktu: waktuLapor(t.waktu, prov)}))}];
 }
-function mejaUbah(nomor, aksi, body) {
+function mejaUbah(c, nomor, aksi, body) {
   const d = baca(), s = Object.values(d.sesi).find(x => x.nomor === nomor), kini = Date.now();
-  if (!s) return [404, {galat: "Laporan tidak ditemukan."}];
+  if (!s || !dalamWilayah(c, s.isian.lokasi?.nilai?.wilayah)) return [404, {galat: "Laporan tidak ditemukan."}];
+  if (!bolehAksi(c, aksi, s.tiket.status, body.ke)) return [403, {galat: "Membuka kembali tiket hanya oleh BNPB."}]; // D96
   const catatan = String(body.catatan || body.teks || "").replace(/\s+/g, " ").trim().slice(0, 1000);
   if (aksi === "balas") {
     if (catatan.length < 2) return [400, {galat: "Balasan kosong."}];
-    (s.balasan ||= []).push({teks: catatan, waktu: kini, oleh: "Admin BNPB"});
+    (s.balasan ||= []).push({teks: catatan, waktu: kini, oleh: c.pelaku});
     (d.kotak[s.wa] ||= []).push({nomor, teks: catatan, waktu: kini});
-    if (s.tiket.status === "baru" || s.tiket.status === "dilihat") { s.tiket.riwayat.push({dari: s.tiket.status, ke: "ditelaah", pelaku: "Admin BNPB", catatan: null, waktu: kini}); s.tiket.status = "ditelaah"; }
+    if (s.tiket.status === "baru" || s.tiket.status === "dilihat") { s.tiket.riwayat.push({dari: s.tiket.status, ke: "ditelaah", pelaku: c.pelaku, catatan: null, waktu: kini}); s.tiket.status = "ditelaah"; }
   } else if (aksi === "bukti") { // foto penanganan petugas (K60, D87): tabel samping, bukan foto pelapor; GPS perangkat petugas
     const buf = Buffer.from(String(body.data || "").replace(/^data:image\/jpeg;base64,/, ""), "base64");
     if (buf.length < 1000 || buf.length > 3 * 1048576 || jenisBerkas(buf) !== "image/jpeg") return [400, {galat: "Foto penanganan harus JPEG, paling besar 3 MB."}];
@@ -560,8 +564,8 @@ function mejaUbah(nomor, aksi, body) {
     const g = body.gps, gpsSah = g && Number.isFinite(g.lat) && Number.isFinite(g.lon) && g.akurasi <= 1000 && kini - g.waktu <= 10 * 6e4;
     const id = crypto.randomBytes(8).toString("hex");
     fs.mkdirSync(BUKTI, {recursive: true, mode: 0o700}); fs.writeFileSync(path.join(BUKTI, `${id}.jpg`), buf, {mode: 0o600});
-    (s.bukti ||= []).push({id, waktu: kini, oleh: "Admin BNPB", publik: false, ...(gpsSah ? {lat: g.lat, lon: g.lon, akurasi: g.akurasi} : {})});
-    s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: "Admin BNPB", catatan: `Foto penanganan ditambahkan${gpsSah ? "" : " (tanpa lokasi GPS)"}`, waktu: kini});
+    (s.bukti ||= []).push({id, waktu: kini, oleh: c.pelaku, publik: false, ...(gpsSah ? {lat: g.lat, lon: g.lon, akurasi: g.akurasi} : {})});
+    s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: c.pelaku, catatan: `Foto penanganan ditambahkan${gpsSah ? "" : " (tanpa lokasi GPS)"}`, waktu: kini});
   } else if (aksi === "bukti-publik") { // D88: tampil di Alun-alun hanya bila staf menandai per foto
     const b = (s.bukti || []).find(x => x.id === body.id);
     if (!b) return [404, {galat: "Foto penanganan tidak ditemukan."}];
@@ -573,13 +577,25 @@ function mejaUbah(nomor, aksi, body) {
     if (body.ke === "selesai" && !(s.bukti || []).length && alasan.length < 5) return [400, {galat: "Lampirkan minimal satu foto penanganan, atau tulis alasan tanpa foto.", perluBukti: true}];
     if (["selesai", "tidak_valid"].includes(s.tiket.status) && !catatan) return [400, {galat: "Membuka kembali wajib dengan catatan."}];
     const tanpa = body.ke === "selesai" && !(s.bukti || []).length ? `Tanpa foto penanganan: ${alasan}` : null;
-    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: [catatan, tanpa].filter(Boolean).join(". ") || null, pelaku: "Admin BNPB", waktu: kini}); // append-only
+    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: [catatan, tanpa].filter(Boolean).join(". ") || null, pelaku: c.pelaku, waktu: kini}); // append-only
     s.tiket.status = body.ke;
     const nb = (s.bukti || []).length;
     (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[body.ke]}.${catatan ? ` ${catatan}` : ""}${body.ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, waktu: kini, status: true});
   } else return [404, {galat: "aksi"}];
   simpan(d);
-  return mejaRinci(nomor);
+  return mejaRinci(c, nomor);
+}
+
+/* ---------- akun meja (K63, D94): lokal tanpa login = BNPB (hanya loopback). Kuki lapor_sebagai=kab:31.75 atau prov:31 meniru akun lembaga
+   pemkab/pemkot/pemprov supaya tampilan BPBD bisa ditinjau di http://localhost:8800/lapor/meja.html?sebagai=kab:31.75.
+   Worker: dari sesi Ruang Instansi atau /masuk (instansi_akun aktif, mk_anggota), bukan kuki ini. ---------- */
+async function akunMeja(req) {
+  const m = /(?:^|;\s*)lapor_sebagai=(kab|prov):([\d.]{2,5})/.exec(req.headers.cookie || "");
+  if (!m) return cakupanMeja({bnpb: true});
+  const [, tingkat, kode] = m, prov = kode.slice(0, 2);
+  const w = (await wilayah.cariNama("", kode))[0];
+  return cakupanMeja({jenis: tingkat === "prov" ? "pemprov" : /^kota/i.test(w?.kab || "") ? "pemkot" : "pemkab", tingkat, prov, kab: tingkat === "kab" ? kode : null,
+    wilayah: tingkat === "kab" ? (w?.kab || kode).replace(/^Kota Administrasi /, "Kota ") : `Provinsi ${w?.prov || prov}`, status: "aktif", nama: "Uji lokal"});
 }
 
 /* ---------- penangan /api/lapor/* (dipakai server tinjau 8800 dan mode mandiri). true = sudah dijawab ---------- */
@@ -623,12 +639,23 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/alun") return kirim(await alun(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/susulan" && req.method === "POST") return kirim(await susulan(await badan(req)));
-    if (j === "/api/lapor/meja") return kirim(meja());
-    const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik))?$/.exec(j);
-    // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
-    if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(m[1], true));
-    if (m && !m[2]) return kirim(mejaRinci(m[1], url.searchParams.get("lihat") === "1"));
-    if (m && req.method === "POST") return kirim(mejaUbah(m[1], m[2], await badan(req)));
+    if (j === "/api/lapor/agregat") { // K62, D91-D93: lokal tanpa login (loopback); Worker: hanya sesi kampus mitra /kemitraan, unduhan dicatat
+      const d = baca(), baris = agregat(Object.values(d.sesi).filter(s => s.nomor).map(s => { const w = s.isian.lokasi?.nilai?.wilayah || {};
+        return {provKode: w.provKode, prov: w.prov, kabKode: w.kabKode, kab: w.kab, jenis: JENIS.find(x => x.id === s.isian.jenis?.nilai)?.label || null, kejadian: s.isian.waktu?.ms ?? null,
+          terkirim: s.terkirim, wa: s.wa, fotoSah: (s.foto || []).some(f => f.lencana === "gps" || f.lencana === "exif"), status: s.tiket?.status}; }));
+      if (url.searchParams.get("format") === "csv") { res.writeHead(200, {"content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="lapor-agregat.csv"', "cache-control": "no-store"}); res.end(keCsv(baris)); return true; }
+      return kirim([200, {dibuat: new Date().toLocaleString("id-ID", {dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta"}), batas: BATAS_SEL, kolom: KOLOM_AGREGAT, baris}]);
+    }
+    if (j.startsWith("/api/lapor/meja")) {
+      const c = await akunMeja(req);
+      if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);
+      if (j === "/api/lapor/meja") return kirim(meja(c));
+      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik))?$/.exec(j);
+      // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
+      if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));
+      if (m && !m[2]) return kirim(mejaRinci(c, m[1], url.searchParams.get("lihat") === "1"));
+      if (m && req.method === "POST") return kirim(mejaUbah(c, m[1], m[2], await badan(req)));
+    }
     return kirim([404, {galat: "rute lapor tidak ada"}]);
   } catch (e) { if (e.kode === 413) return kirim([413, {galat: "Kiriman terlalu besar."}]); console.error(e); return kirim([500, {galat: "Galat server lokal."}]); }
 }
