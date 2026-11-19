@@ -88,6 +88,7 @@ export function lacakTampil(s, p, t) {
     tahap: s.tiket.status === "tidak_valid" ? [...URUTAN.filter(k => sudah.has(k)), "tidak_valid"].map(k => ({kunci: k, label: STATUS[k], selesai: true, waktu: waktuLapor(sudah.get(k)?.waktu, prov), catatan: sudah.get(k)?.catatan || null}))
       : URUTAN.filter(k => k !== "diteruskan" || sudah.has(k)).map(k => ({kunci: k, label: STATUS[k], selesai: sudah.has(k), waktu: sudah.has(k) ? waktuLapor(sudah.get(k).waktu, prov) : null, catatan: sudah.get(k)?.catatan || null})),
     balasan: (s.balasan || []).map(b => ({teks: b.teks, waktu: waktuLapor(b.waktu, prov)})),
+    bukti: (s.bukti || []).map(b => ({url: `/api/lapor/bukti/${b.id}?t=${t}`, waktu: waktuLapor(b.waktu, prov)})),   // foto penanganan petugas (K60, D88)
     unduhan: [{label: "Unduh PDF", url: `/api/lapor/unduh/${s.nomor}.pdf?t=${t}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${s.nomor}.docx?t=${t}`}]};
 }
 
@@ -127,6 +128,7 @@ export function mejaRinciTampil(s, p, t) {
     waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), versi: s.jumlahVersi || 1, adaSusulan: !!s.adaSusulan, jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
     foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${t}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
+    bukti: (s.bukti || []).map(b => ({id: b.id, url: `/api/lapor/bukti/${b.id}?t=${t}`, publik: !!b.publik, waktu: waktuLapor(b.waktu, prov), lokasi: b.lat != null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, pelaku: pelakuLabel(r.pelaku), label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({teks: b.teks, oleh: pelakuLabel(b.oleh), waktu: waktuLapor(b.waktu, prov)})),
     unduhan: [{label: "PDF", url: `/api/lapor/unduh/${nomor}.pdf?t=${t}`}, {label: "Word", url: `/api/lapor/unduh/${nomor}.docx?t=${t}`}],
     transkrip: s.transkrip.map(x => ({dari: x.dari, teks: x.teks || (x.lokasi ? "Lokasi dibagikan" : ""), waktu: waktuLapor(x.waktu, prov)}))};

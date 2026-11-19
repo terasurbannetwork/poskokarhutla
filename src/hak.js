@@ -1743,6 +1743,10 @@ Object.assign(MATRIKS, {
   lapor_urut:          {lp_pelapor: ["tambah"]},
   lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
   lapor_pdf:           {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_mesin: ["baca", "ubah"]},
+  lapor_bukti:         {lp_staf: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_mesin: ["baca"]},
+  lapor_akses:         {lp_staf: ["tambah"]},
+  lapor_unduh:         {lp_staf: ["tambah"]},
+  lapor_kabar_bpbd:    {lp_staf: ["baca", "tambah"], lp_mesin: ["baca", "ubah"]},
   laju_bnpb:           {sistem: ["baca", "tambah"], lp_pelapor: ["baca", "tambah"]},
 });
 export const pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
@@ -1826,7 +1830,7 @@ export const lpFotoById = (env, p, id) => sedia(env, p, "lapor_foto", "baca",
   "SELECT f.id, f.kunci_r2, s.wa, s.token_sha, s.nomor FROM lapor_foto f JOIN lapor_sesi s ON s.id = f.sesi WHERE f.id = ?1").bind(id).first();
 
 /* ---- monitoring staf dan alun-alun ---- */
-const LP_KOLOM_FILTER = {jenis: "s.jenis = ?", status: "t.status = ?", kab: "s.kab = ?"};
+const LP_KOLOM_FILTER = {jenis: "s.jenis = ?", status: "t.status = ?", kab: "s.kab = ?", prov: "s.kab LIKE ? || '%'"};   // prov (2 angka) hanya diisi server dari cakupan akun BPBD
 export async function lpMejaDaftar(env, p, f) {
   const where = ["s.terkirim IS NOT NULL"], ikat = [];
   if (Number.isFinite(f.dari)) { where.push("s.terkirim >= ?"); ikat.push(f.dari); }
@@ -1842,8 +1846,52 @@ export async function lpMejaDaftar(env, p, f) {
   catch (e) { if (!/no such table: lapor_versi/i.test(String(e?.message))) throw e; return (await sedia(env, p, "lapor_sesi", "baca", sql(false)).bind(...ikat).all()).results; }   // kode tayang sebelum 0156
 }
 export const lpAlunBaris = async (env, p, prov, jenis) => (await sedia(env, p, "lapor_sesi", "baca",
-  `SELECT s.id, s.jenis, s.ringkas, s.terkirim, s.tingkat, t.status FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
+  `SELECT s.id, s.nomor, s.jenis, s.ringkas, s.terkirim, s.tingkat, t.status FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
    WHERE t.status IN ('ditindaklanjuti', 'selesai') AND (?1 IS NULL OR s.kab LIKE ?1 || '%') AND (?2 IS NULL OR s.jenis = ?2) ORDER BY s.terkirim DESC LIMIT 300`).bind(prov || null, jenis || null).all()).results;
+
+/* semua laporan terkirim 30 hari terakhir untuk menghitung gugus (alun-alun) dan agregat; tanpa teks, hanya kolom indeks dan ringkasan beku */
+export const lpGugusBaris = async (env, p, sejak) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.id, s.nomor, s.wa, s.jenis, s.lat, s.lon, s.terkirim, s.ringkas, t.status,
+     EXISTS (SELECT 1 FROM lapor_foto f WHERE f.sesi = s.id AND f.lencana IN ('gps', 'exif')) foto_sah
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor WHERE s.terkirim > ?1 ORDER BY s.terkirim DESC LIMIT 3000`).bind(sejak).all()).results;
+export const lpAgregatBaris = async (env, p, batas = 50000) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.wa, s.jenis, s.terkirim, s.ringkas, t.status,
+     EXISTS (SELECT 1 FROM lapor_foto f WHERE f.sesi = s.id AND f.lencana IN ('gps', 'exif')) foto_sah
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor WHERE s.terkirim IS NOT NULL ORDER BY s.terkirim DESC LIMIT ?1`).bind(batas).all()).results;
+
+/* ---- bukti tindak lanjut (migrasi 0157, K60, D87, D88) ---- */
+export const lpBuktiDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_bukti", "baca",
+  "SELECT id, publik, waktu, lat FROM lapor_bukti WHERE nomor = ?1 ORDER BY waktu, id LIMIT 10").bind(nomor).all()).results;
+export const lpBuktiHitung = async (env, p, nomor) => (await sedia(env, p, "lapor_bukti", "baca", "SELECT count(*) n FROM lapor_bukti WHERE nomor = ?1").bind(nomor).first()).n;
+/* tambah hanya bila nomor itu masih di bawah 10 foto (satu pernyataan: tanpa celah baca-lalu-tulis); stmt berikutnya memakai changes() */
+export const lpStmtBukti = (env, p, b) => sedia(env, p, "lapor_bukti", "tambah",
+  "INSERT INTO lapor_bukti (id, nomor, kunci_r2, oleh, lat, lon, akurasi, publik, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, 0, ?8 WHERE (SELECT count(*) FROM lapor_bukti WHERE nomor = ?2) < 10")
+  .bind(b.id, b.nomor, b.kunci, String(b.oleh).slice(0, 200), b.lat ?? null, b.lon ?? null, b.akurasi ?? null, b.waktu);
+export const lpBuktiPublik = async (env, p, nomor, id, publik) => (await sedia(env, p, "lapor_bukti", "ubah", "UPDATE lapor_bukti SET publik = ?3 WHERE id = ?2 AND nomor = ?1").bind(nomor, id, publik ? 1 : 0).run()).meta.changes;
+export const lpBuktiById = (env, p, id) => sedia(env, p, "lapor_bukti", "baca",
+  "SELECT b.id, b.kunci_r2, b.publik, b.nomor, s.token_sha, t.status FROM lapor_bukti b JOIN lapor_sesi s ON s.nomor = b.nomor JOIN lapor_tiket t ON t.nomor = b.nomor WHERE b.id = ?1").bind(id).first();
+export const lpBuktiAlun = async (env, p) => (await sedia(env, p, "lapor_bukti", "baca",
+  "SELECT b.id, b.nomor FROM lapor_bukti b JOIN lapor_tiket t ON t.nomor = b.nomor WHERE b.publik = 1 AND t.status IN ('ditindaklanjuti', 'selesai') ORDER BY b.waktu DESC LIMIT 500").all()).results;
+
+/* ---- jejak akses meja BPBD (D95) dan unduhan agregat (D93) ---- */
+export const lpStmtAkses = (env, p, nomor, oleh, kini) => sedia(env, p, "lapor_akses", "tambah", "INSERT INTO lapor_akses (nomor, oleh, waktu) VALUES (?1, ?2, ?3)").bind(nomor, String(oleh).slice(0, 200), kini);
+export const lpUnduhCatat = (env, p, akun, berkas, kini) => sedia(env, p, "lapor_unduh", "tambah", "INSERT INTO lapor_unduh (akun, berkas, waktu) VALUES (?1, ?2, ?3)").bind(String(akun).slice(0, 200), berkas, kini).run();
+
+/* ---- akun lembaga pemda untuk meja BPBD (D94): pemilik akun (instansi_akun.wa) atau anggota aktif lewat /masuk (mk_anggota). Hanya jenis pemkab, pemkot, pemprov yang aktif; provinsi lebih dulu. ---- */
+export const lpAkunMeja = async (env, wa, mkId) => (await env.DB.prepare(
+  `SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 AND jenis IN ('pemkab', 'pemkot', 'pemprov')
+   UNION SELECT x.id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id
+     WHERE g.mk_id = ?2 AND g.tabel = 'instansi_akun' AND g.status = 'aktif' AND x.status = 'aktif' AND x.dummy = 0 AND x.jenis IN ('pemkab', 'pemkot', 'pemprov')
+   ORDER BY tingkat DESC LIMIT 3`).bind(wa, mkId).all()).results;
+/* akun lembaga kab/kota aktif di satu provinsi, dengan nomor WA, untuk pemberitahuan teruskan (D97); dicocokkan nama oleh pemanggil (bakuKab) */
+export const lpAkunKabProv = async (env, prov) => (await env.DB.prepare(
+  "SELECT id, jenis, kab, wa FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND status = 'aktif' AND dummy = 0 AND jenis IN ('pemkab', 'pemkot') AND wa IS NOT NULL AND wa GLOB '62[0-9]*' AND wa NOT GLOB '*[^0-9]*' LIMIT 200").bind(prov).all()).results;   // format sama dengan CHECK lapor_kabar_bpbd.wa: satu nomor tak baku tidak menggagalkan batch teruskan
+/* satu pesan ke antrean BPBD, hanya bila pernyataan sebelumnya dalam batch mengubah baris (changes() > 0) dan kab itu belum 20 pesan dalam 24 jam (Q55) */
+export const lpStmtKabarBpbd = (env, p, wa, nomor, kab, teks, kini) => sedia(env, p, "lapor_kabar_bpbd", "tambah",
+  "INSERT INTO lapor_kabar_bpbd (wa, nomor, kab, teks, dibuat) SELECT ?1, ?2, ?3, ?4, ?5 WHERE changes() > 0 AND (SELECT count(*) FROM lapor_kabar_bpbd WHERE kab = ?3 AND dibuat > ?5 - 86400000) < 20")
+  .bind(wa, nomor, String(kab).slice(0, 120), String(teks).slice(0, 1000), kini);
+export const lpKabarBpbdAntre = async (env, p, batas = 50) => (await sedia(env, p, "lapor_kabar_bpbd", "baca", "SELECT id, wa, teks FROM lapor_kabar_bpbd WHERE terkirim IS NULL ORDER BY id LIMIT ?1").bind(batas).all()).results;
+export const lpKabarBpbdTerkirim = async (env, p, id, kini) => (await sedia(env, p, "lapor_kabar_bpbd", "ubah", "UPDATE lapor_kabar_bpbd SET terkirim = ?2 WHERE id = ?1 AND terkirim IS NULL").bind(id, kini).run()).meta.changes;
 
 /* kuota Lapor: daftar = [{kunci, aksi, batas: [[jendela ms, maks], ...]}]. Semua batas dibaca dulu; lewat salah satu -> {sisa detik sampai baris tertua keluar dari jendela}
    tanpa menulis apa pun; lolos semua -> satu baris laju_bnpb per kunci. */

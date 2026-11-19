@@ -18,3 +18,24 @@ test("sel terbuka mulai 3 pelapor berbeda; median menit hanya dari laporan berwa
   assert.equal(agregat([{...l("a", 1), kabKode: null}]).length, 0, "tanpa kab tidak dihitung");
   assert.ok(keCsv(tiga).split("\n")[1].includes(",4,3,1,1,20,belum tersedia"));
 });
+
+import {cakupanMeja, dalamWilayah, bolehAksi, bakuKab} from "../../src/lapor_meja_hak.js";
+test("hak meja: akun lembaga bernama kab (instansi_akun.kab) dicocokkan dengan nama wilayah laporan, Bogor bukan Kota Bogor", () => {
+  const kab = cakupanMeja({jenis: "pemkab", tingkat: "kab", prov: "32", kab: "Bogor", wilayah: "Pemerintah Kabupaten Bogor", status: "aktif"});
+  const kota = cakupanMeja({jenis: "pemkot", tingkat: "kab", prov: "31", kab: "Kota Jakarta Timur", status: "aktif"});
+  assert.equal(dalamWilayah(kab, {provKode: "32", kab: "Bogor", kabKode: "32.01"}), true);
+  assert.equal(dalamWilayah(kab, {provKode: "32", kab: "Kota Bogor", kabKode: "32.71"}), false);
+  assert.equal(dalamWilayah(kota, {provKode: "31", kab: "Kota Administrasi Jakarta Timur"}), true);
+  assert.equal(bakuKab("Kabupaten Bogor"), "bogor");
+  assert.equal(cakupanMeja({jenis: "polres", tingkat: "kab", prov: "32", kab: "Bogor", status: "aktif"}), null, "Q54: polres belum");
+  assert.equal(cakupanMeja({jenis: "pemkab", tingkat: "kab", prov: "32", kab: "Bogor", status: "menunggu"}), null);
+  assert.equal(bolehAksi(kab, "status", "selesai", "ditelaah"), false); assert.equal(bolehAksi(cakupanMeja({bnpb: true}), "status", "selesai", "ditelaah"), true);
+  assert.equal(dalamWilayah(kab, null), false, "laporan tanpa wilayah hanya BNPB");
+});
+
+test("hak meja: BPBD tidak bisa meneruskan lewat jalur status (D97, tinjauan keamanan)", () => {
+  const kab = cakupanMeja({jenis: "pemkab", tingkat: "kab", prov: "32", kab: "Bogor", status: "aktif"});
+  assert.equal(bolehAksi(kab, "status", "ditelaah", "diteruskan"), false);
+  assert.equal(bolehAksi(kab, "status", "ditelaah", "ditindaklanjuti"), true);
+  assert.equal(bolehAksi(cakupanMeja({bnpb: true}), "status", "ditelaah", "diteruskan"), true);
+});

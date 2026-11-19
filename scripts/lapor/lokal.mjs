@@ -566,6 +566,13 @@ function mejaUbah(c, nomor, aksi, body) {
     fs.mkdirSync(BUKTI, {recursive: true, mode: 0o700}); fs.writeFileSync(path.join(BUKTI, `${id}.jpg`), buf, {mode: 0o600});
     (s.bukti ||= []).push({id, waktu: kini, oleh: c.pelaku, publik: false, ...(gpsSah ? {lat: g.lat, lon: g.lon, akurasi: g.akurasi} : {})});
     s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: c.pelaku, catatan: `Foto penanganan ditambahkan${gpsSah ? "" : " (tanpa lokasi GPS)"}`, waktu: kini});
+  } else if (aksi === "teruskan") { // LA-67 (D97): hanya BNPB (bolehAksi); lokal hanya mengubah status, pemberitahuan BPBD butuh Worker dan bot
+    if (!PINDAH[s.tiket.status]?.includes("diteruskan")) return [409, {galat: "Perpindahan status tidak sah."}];
+    s.tiket.riwayat.push({dari: s.tiket.status, ke: "diteruskan", pelaku: c.pelaku, catatan: "Diteruskan ke meja BPBD (pemberitahuan menunggu Worker)", waktu: kini});
+    s.tiket.status = "diteruskan";
+    (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS.diteruskan}.`, waktu: kini, status: true});
+    simpan(d);
+    const r = mejaRinci(c, nomor); r[1].bpbdTerdaftar = false; r[1].antre = 0; return r;
   } else if (aksi === "bukti-publik") { // D88: tampil di Alun-alun hanya bila staf menandai per foto
     const b = (s.bukti || []).find(x => x.id === body.id);
     if (!b) return [404, {galat: "Foto penanganan tidak ditemukan."}];
@@ -650,7 +657,7 @@ export async function tanganiLapor(req, res, url) {
       const c = await akunMeja(req);
       if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);
       if (j === "/api/lapor/meja") return kirim(meja(c));
-      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik))?$/.exec(j);
+      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan))?$/.exec(j);
       // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
       if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));
       if (m && !m[2]) return kirim(mejaRinci(c, m[1], url.searchParams.get("lihat") === "1"));

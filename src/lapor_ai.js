@@ -9,7 +9,12 @@ import {laju, lajuIP} from "./bnpb.js";
 import {modOK} from "./posko.js";
 import {modAtauStaf} from "./staf.js";
 import {sesiMasuk} from "./masuk_sesi.js";
+import {hakKm} from "./kemitraan.js";
 import {bersihMedia} from "./media_bersih.js";
+import {jenisBerkas} from "./media_berkas.js";
+import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab} from "./lapor_meja_hak.js";
+import {hitungGugus} from "./lapor_gugus.js";
+import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
 import {putaran, lengkap, T, waktuLapor} from "./lapor_mesin.js";
 import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
@@ -59,7 +64,25 @@ async function stafMeja(env, req) {
   const oleh = await modAtauStaf(env, req, ["pusdalops", "koordalops"]);
   return oleh ? (String(oleh).startsWith("staf:") ? oleh : `admin:${oleh}`) : null;
 }
-const tolakStaf = () => galat(403, "perlu masuk sebagai admin atau staf Pusdalops/Koordalops");
+const tolakStaf = () => galat(403, "perlu masuk sebagai admin, staf Pusdalops/Koordalops, atau akun lembaga pemda");
+const tabelBelum = e => /no such table/i.test(String(e?.message));
+// ringkasan dipotong tetap membawa kode wilayah, supaya laporan panjang tetap masuk daftar meja BPBD wilayahnya (tinjauan guard-api)
+const wilayahKecil = s => { const w = s.isian?.lokasi?.nilai?.wilayah; return w ? {provKode: w.provKode ?? null, kabKode: w.kabKode ?? null, kab: w.kab ?? null, prov: w.prov ?? null} : null; };
+const tulisAudit = async f => { try { await f(); } catch (e) { if (!tabelBelum(e)) throw e; } };   // log audit sebelum migrasi 0157 tidak menggagalkan aksi
+const bacaTabel = async (f, awal) => { try { return await f(); } catch (e) { if (tabelBelum(e)) return awal; throw e; } };   // kode tayang sebelum migrasi 0157: bacaan memberi kosong, bukan 500
+/* hak meja (K63, D94-D98): BNPB (admin/staf, Q12) = cakupan penuh; selain itu akun lembaga pemda lewat sesi /masuk (pemilik akun atau anggota aktif) yang jenisnya pemkab/pemkot/pemprov.
+   Hasil {c: cakupanMeja, oleh: pelaku riwayat, kunci: kunci batas laju}, {tolak: Response}, atau null (tidak berhak). ponytail: cookie sesi_instansi berjalur /instansi tidak sampai ke /api/lapor, jadi pintu /masuk satu-satunya jalur BPBD. */
+async function hakMeja(env, req, kini) {
+  const oleh = await stafMeja(env, req);
+  if (oleh) return {c: cakupanMeja({bnpb: true, nama: oleh}), oleh, kunci: String(oleh).slice(0, 60)};
+  let s = null; try { s = await sesiMasuk(env, req, kini); } catch (e) { if (!tabelBelum(e)) throw e; }
+  if (!s) return null;
+  if (req.method !== "GET" && req.headers.get("x-pb") !== "1") return {tolak: galat(403, "kiriman bersesi wajib membawa header x-pb: 1")};
+  let akun = null; try { akun = (await H.lpAkunMeja(env, s.wa, s.id))[0]; } catch (e) { if (!tabelBelum(e)) throw e; }
+  const c = akun && cakupanMeja({jenis: akun.jenis, tingkat: akun.tingkat, prov: akun.prov, kab: akun.kab, wilayah: akun.wilayah, status: "aktif", nama: s.nama});
+  return c ? {c, oleh: c.pelaku, kunci: `mk:${s.id}`} : null;
+}
+const wilayahBaris = baris => { try { return JSON.parse(baris.kerja)?.isian?.lokasi?.nilai?.wilayah ?? null; } catch { return null; } };
 
 /* kuota pesan (pemilik 19 Nov 2026): lewat batas = 429 berisi balasan sopan; laporan yang sedang diisi tetap tersimpan di D1. Batas nomor dan IP dibaca sebelum baris laju ditulis. */
 async function kuota(env, req, {wa, saluran}, kini, aksi = "lapor.pesan") {
@@ -135,7 +158,7 @@ async function simpanSusulan(env, url, {wa, saluran}, {h, baris, awal}, kini) {
   copy.status = "terkirim"; copy.susulanVersi = versi;   // salinan selesai; tanpa nomor sendiri jadi tidak tampil di meja
   h.inti = h.balasan = `*Laporan diperbarui*\n_${nomor} versi ${versi}_\n\n${perubahan.length ? `*Perubahan:*\n${perubahan.map(x => `- ${x.label}: ${x.dari} menjadi ${x.ke}`).join("\n")}` : "Tidak ada angka yang berubah."}\n\nPDF versi baru menyusul.`;
   const akhir = copy.transkrip.at(-1); if (akhir?.dari === "bot") akhir.teks = h.inti;
-  let ringkas = JSON.stringify(ringkasSesi(asal)); if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(asal), foto: (asal.foto || []).length});
+  let ringkas = JSON.stringify(ringkasSesi(asal)); if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(asal), foto: (asal.foto || []).length, wilayah: wilayahKecil(asal)});
   const w = asal.isian.lokasi?.nilai, catatan = `Susulan versi ${versi}: ${perubahan.length ? perubahan.map(x => x.label).join(", ") : "tanpa perubahan angka"}`;
   const sesiAsal = {id: asal.id, status: asal.status, tingkat: asal.tingkat, jenis: asal.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null,
     kerja: JSON.stringify({...asal, tiket: undefined, jumlahVersi: undefined}), ringkas};
@@ -167,7 +190,7 @@ async function simpanPutaran(env, url, {wa, saluran}, {h, baris, lama, lanjut, p
     h.inti = h.balasan = T.terkirim(h.pelapor.nama, nomor);
     const akhir = s.transkrip.at(-1); if (akhir?.dari === "bot") akhir.teks = h.inti;   // transkrip memuat nomor sebenarnya, bukan "(nomor menyusul)"
     ringkas = JSON.stringify(ringkasSesi(s));
-    if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length});   // CHECK kolom: ringkasan tidak boleh memutus penyimpanan
+    if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length, wilayah: wilayahKecil(s)});   // CHECK kolom: ringkasan tidak boleh memutus penyimpanan
     const q = `?t=${token}`;
     Object.assign(tambahan, {nomor, lacak: `/lapor/lacak.html${q}`, foto: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}${q}` : null, unduhan: [
       {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
@@ -375,6 +398,7 @@ async function lacak(env, req, url, kini) {
   const baris = RE_TOKEN.test(t) ? await H.lpSesiToken(env, PUBLIK, await sha(t)) : null;
   if (!baris) return galat(404, "Laporan tidak ditemukan.");
   const {s, pel} = await lengkapi(env, PUBLIK, baris);
+  s.bukti = await bacaTabel(() => H.lpBuktiDaftar(env, PUBLIK, s.nomor), []);
   return kirim(200, lacakTampil(s, pel, t));
 }
 async function unduh(env, req, url, kini, ctx, x) {
@@ -443,70 +467,179 @@ async function pdfPost(env, req, url, kini, ctx, x) {
 }
 async function kabarGet(env, req) {
   if (!await mesinSah(env, req)) return galat(403, "perlu kunci mesin");
-  return kirim(200, {kabar: await H.lpKabarAntre(env, MESIN)});
+  const bpbd = await bacaTabel(() => H.lpKabarBpbdAntre(env, MESIN), []);   // butir BPBD berjenis "bpbd", id berawalan "b": bot yang ada mengirim teksnya apa adanya (D97)
+  return kirim(200, {kabar: [...await H.lpKabarAntre(env, MESIN), ...bpbd.map(x => ({id: `b${x.id}`, wa: x.wa, jenis: "bpbd", teks: x.teks, url: null, nomor: null}))]});
 }
 async function kabarTerkirim(env, req, url, kini, ctx, x) {
   if (!await mesinSah(env, req)) return galat(403, "perlu kunci mesin");
-  const m = /^(\d{1,12})\/terkirim$/.exec(x); if (!m) return galat(404, "rute lapor tidak ada");
-  const n = await H.lpKabarTerkirim(env, MESIN, Number(m[1]), kini);
+  const m = /^(b?)(\d{1,12})\/terkirim$/.exec(x); if (!m) return galat(404, "rute lapor tidak ada");
+  const n = m[1] ? await H.lpKabarBpbdTerkirim(env, MESIN, Number(m[2]), kini) : await H.lpKabarTerkirim(env, MESIN, Number(m[2]), kini);
   return n ? kirim(200, {ok: true}) : galat(404, "kabar tidak ada atau sudah ditandai");
 }
 
-/* ---------------- meja staf (K7, D20, D22) ---------------- */
-async function mejaDaftar(env, req, url) {
-  if (!await stafMeja(env, req)) return tolakStaf();
-  const q = url.searchParams, f = {dari: q.has("dari") ? Number(q.get("dari")) : NaN, sampai: q.has("sampai") ? Number(q.get("sampai")) : NaN,
-    jenis: /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null, status: Object.hasOwn(STATUS, q.get("status") || "") ? q.get("status") : null, kab: /^\d{2}(\.\d{2})?$/.test(q.get("kab") || "") ? q.get("kab") : null};
-  return kirim(200, {baris: (await H.lpMejaDaftar(env, STAF, f)).map(barisMeja)});
+/* ---------------- meja (K7, D20, D22; K63 D94-D98: BNPB atau akun lembaga pemda bersaring wilayah) ---------------- */
+async function mejaDaftar(env, req, url, kini) {
+  const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
+  const lj = await laju(env, h.kunci, "lapor.mejadaftar", [[JAM, 300]], kini); if (lj) return lj;
+  const {c} = h, q = url.searchParams, f = {dari: q.has("dari") ? Number(q.get("dari")) : NaN, sampai: q.has("sampai") ? Number(q.get("sampai")) : NaN,
+    jenis: /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null, status: Object.hasOwn(STATUS, q.get("status") || "") ? q.get("status") : null, kab: /^\d{2}(\.\d{2})?$/.test(q.get("kab") || "") ? q.get("kab") : null,
+    prov: c.jenis === "bpbd" ? c.prov : null};   // BPBD: saring kasar di SQL, lalu tepat per kab/kota di bawah
+  const baris = (await H.lpMejaDaftar(env, STAF, f)).map(barisMeja).filter(b => dalamWilayah(c, b.wilayah))
+    .map(b => c.jenis === "bnpb" ? b : {...b, wa: null, nama: null});   // BPBD: identitas pelapor hanya lewat POST lihat yang tercatat (D95)
+  return kirim(200, {akun: {jenis: c.jenis, label: c.label}, baris});
 }
-async function mejaRinci(env, nomor) {   // hanya baca: GET tidak pernah menulis
-  const baris = await H.lpSesiNomor(env, STAF, nomor); if (!baris) return galat(404, "Laporan tidak ditemukan.");
-  const {s, pel} = await lengkapi(env, STAF, baris);
-  return kirim(200, mejaRinciTampil(s, pel, await tokenLacak(env, nomor)));
+/* identitas: BNPB selalu; BPBD hanya pada jawaban POST (lihat atau aksi) yang menulis lapor_akses, supaya tiap pembukaan identitas tercatat (D95).
+   GET rincian untuk BPBD tanpa nama, nomor WA, jabatan, dan transkrip pelapor. */
+async function rincianObj(env, c, baris, identitas = c.jenis === "bnpb") {   // hanya baca: GET tidak pernah menulis
+  const {s, pel} = await lengkapi(env, STAF, baris), nomor = s.nomor;
+  s.bukti = await bacaTabel(() => H.lpBuktiDaftar(env, STAF, nomor), []);
+  const o = mejaRinciTampil(s, pel, await tokenLacak(env, nomor));
+  if (!identitas) { o.pelapor = {peran: o.pelapor?.peran ?? null, tersembunyi: true}; o.transkrip = []; }
+  return {...o, akun: {jenis: c.jenis, label: c.label}, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status])};
 }
-async function mejaUbah(env, req, nomor, aksi, kini) {
-  const oleh = await stafMeja(env, req); if (!oleh) return tolakStaf();
-  const b = await bacaBody(req, 4096); if (b.galat) return galat(b.status || 400, b.galat);
-  const baris = await H.lpSesiNomor(env, STAF, nomor); if (!baris) return galat(404, "Laporan tidak ditemukan.");
-  const batas = await laju(env, String(oleh).slice(0, 60), "lapor.meja", [[JAM, 120]], kini); if (batas) return batas;
+async function mejaRinci(env, c, nomor) {
+  const baris = await H.lpSesiNomor(env, STAF, nomor);
+  if (!baris || !dalamWilayah(c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");   // di luar wilayah = tidak ada (D95)
+  return kirim(200, await rincianObj(env, c, baris));
+}
+const b64Foto = (d, maks) => { const t = String(d || "").replace(/^data:image\/jpeg;base64,/, ""); if (t.length > maks) return null; try { return Uint8Array.from(atob(t), ch => ch.charCodeAt(0)); } catch { return null; } };
+async function bacaJsonBesar(req, maks) {
+  const r = await bacaBytes(req, maks); if (r.galat) return r;
+  try { const o = JSON.parse(new TextDecoder().decode(r.b) || "{}"); return o && typeof o === "object" && !Array.isArray(o) ? {o} : {galat: "body harus objek JSON"}; } catch { return {galat: "body bukan JSON"}; }
+}
+async function mejaUbah(env, req, url, nomor, aksi, kini) {
+  const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
+  const {c, oleh} = h;
+  const batas = await laju(env, h.kunci, "lapor.meja", [[JAM, 120]], kini); if (batas) return batas;   // laju sebelum membaca badan sampai 4,6 MB
+  const b = aksi === "bukti" ? await bacaJsonBesar(req, 4.6e6) : await bacaBody(req, 4096); if (b.galat) return galat(b.status || 400, b.galat);
+  const baris = await H.lpSesiNomor(env, STAF, nomor);
+  if (!baris || !dalamWilayah(c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");
   const t = await H.lpTiket(env, STAF, nomor); if (!t) return galat(404, "Tiket laporan tidak ditemukan.");
+  if (!bolehAksi(c, aksi, t.status, b.o.ke)) return galat(403, "Aksi ini hanya untuk BNPB (membuka kembali tiket, meneruskan ke BPBD).");   // D96
   const catatan = String(b.o.catatan || b.o.teks || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 1000);
-  if (aksi === "lihat") {   // petugas membuka laporan baru = "Sudah dilihat petugas" (POST, bukan GET)
-    if (t.status === "baru") await H.lpBatch(env, STAF, [H.lpStmtTiketPindah(env, STAF, nomor, "baru", "dilihat", kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, "baru", "dilihat", null, oleh, kini)]);
+  let tambahan = {};
+  if (aksi === "lihat") {   // petugas membuka laporan baru = "Sudah dilihat petugas" (POST, bukan GET); akun BPBD tiap kali tercatat di lapor_akses (D95)
+    const g = [];
+    if (t.status === "baru") g.push(H.lpStmtTiketPindah(env, STAF, nomor, "baru", "dilihat", kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, "baru", "dilihat", null, oleh, kini));
+    if (c.jenis !== "bnpb") g.push(H.lpStmtAkses(env, STAF, nomor, oleh, kini));
+    if (g.length) await H.lpBatch(env, STAF, g);
   } else if (aksi === "balas") {
     if (catatan.length < 2) return galat(400, "Balasan kosong.");
     const stmts = [H.lpStmtBalasan(env, STAF, nomor, catatan, oleh, kini), H.lpStmtKabar(env, STAF, baris.wa, nomor, "balasan", catatan, null, kini)];
     if (t.status === "baru" || t.status === "dilihat") stmts.push(H.lpStmtTiketPindah(env, STAF, nomor, t.status, "ditelaah", kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, "ditelaah", null, oleh, kini));
     await H.lpBatch(env, STAF, stmts);
+  } else if (aksi === "bukti") {   // foto penanganan petugas (K60, D87): tabel samping, bukan foto pelapor; GPS perangkat petugas dicatat bila sah
+    if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+    const mentah = b64Foto(b.o.data, 4.3e6);
+    if (!mentah || mentah.length < 1000 || mentah.length > 3 * 1048576 || jenisBerkas(mentah) !== "image/jpeg") return galat(400, "Foto penanganan harus JPEG, paling besar 3 MB.");
+    const bersih = bersihMedia("image/jpeg", mentah); if (!bersih) return galat(400, "Struktur foto tidak sah atau rusak.");
+    const g = b.o.gps && typeof b.o.gps === "object" ? b.o.gps : null;
+    const gpsSah = !!g && titikSah(g.lat, g.lon) && angka(g.akurasi) && g.akurasi >= 0 && g.akurasi <= 1000 && angka(g.waktu) && Math.abs(kini - g.waktu) <= 10 * MENIT;
+    const id = acak(8), kunci = `lapor/bukti/${id}.jpg`;
+    await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}});
+    let r; try {
+      r = await H.lpBatch(env, STAF, [H.lpStmtBukti(env, STAF, {id, nomor, kunci, oleh, ...(gpsSah ? {lat: g.lat, lon: g.lon, akurasi: g.akurasi} : {}), waktu: kini}),
+        H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, t.status, `Foto penanganan ditambahkan${gpsSah ? "" : " (tanpa lokasi GPS)"}`, oleh, kini)]);
+    } catch (e) { await env.MEDIA.delete(kunci).catch(() => {}); throw e; }
+    if (!r[0].meta.changes) { await env.MEDIA.delete(kunci).catch(() => {}); return galat(400, "Paling banyak 10 foto penanganan per laporan."); }
+  } else if (aksi === "bukti-publik") {   // D88, Q47: tampil di Alun-alun hanya bila ditandai per foto
+    if (typeof b.o.id !== "string" || !/^[0-9a-f]{16}$/.test(b.o.id) || !await H.lpBuktiPublik(env, STAF, nomor, b.o.id, b.o.publik === true)) return galat(404, "Foto penanganan tidak ditemukan.");
+  } else if (aksi === "teruskan") {   // LA-67 (D97, Q55): hanya BNPB; antrean pemberitahuan WA ke akun lembaga kab/kota, tanpa isi laporan, paling banyak 20 per kab per hari
+    if (!PINDAH[t.status]?.includes("diteruskan")) return galat(409, "Perpindahan status tidak sah.");
+    const w = wilayahBaris(baris), kabNama = w?.kab || null;
+    const akun = kabNama && w.provKode ? (await H.lpAkunKabProv(env, w.provKode)).filter(a => bakuKab(a.kab) === bakuKab(kabNama)) : [];
+    const wa = [...new Set(akun.map(a => a.wa))];
+    const teks = `Ada laporan warga di ${kabNama} yang diteruskan BNPB lewat Lapor Bencana. Buka meja BPBD untuk melihat dan menindaklanjuti: ${url.origin}/lapor/meja`;
+    const r = await H.lpBatch(env, STAF, [H.lpStmtTiketPindah(env, STAF, nomor, t.status, "diteruskan", kini),
+      H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, "diteruskan", `Diteruskan ke meja BPBD${kabNama ? ` ${kabNama}` : " setempat"}`, oleh, kini),
+      H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS.diteruskan}.`, kini),
+      ...wa.map(x => H.lpStmtKabarBpbd(env, STAF, x, nomor, kabNama, teks, kini))]);
+    if (!r[0].meta.changes) return galat(409, "Status laporan baru saja berubah. Muat ulang.");
+    tambahan = {bpbdTerdaftar: wa.length > 0, antre: r.slice(3).reduce((n, x) => n + x.meta.changes, 0)};
   } else {
     const ke = b.o.ke;
     if (!PINDAH[t.status]?.includes(ke)) return galat(409, "Perpindahan status tidak sah.");
+    // Selesai wajib minimal satu foto penanganan, atau alasan tertulis tanpa foto yang tercatat di riwayat (K60, D87, Q49)
+    const alasan = String(b.o.tanpaBukti || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300);
+    const nb = ke === "selesai" ? await bacaTabel(() => H.lpBuktiHitung(env, STAF, nomor), 0) : 0;
+    if (ke === "selesai" && !nb && alasan.length < 5) return galat(400, "Lampirkan minimal satu foto penanganan, atau tulis alasan tanpa foto.", {perluBukti: true});
     if (["selesai", "tidak_valid"].includes(t.status) && !catatan) return galat(400, "Membuka kembali wajib dengan catatan.");
-    const r = await H.lpBatch(env, STAF, [H.lpStmtTiketPindah(env, STAF, nomor, t.status, ke, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, ke, catatan || null, oleh, kini),
-      H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS[ke]}.${catatan ? ` ${catatan}` : ""}`, kini)]);
+    const tanpa = ke === "selesai" && !nb ? `Tanpa foto penanganan: ${alasan}` : null, catatanRiwayat = [catatan, tanpa].filter(Boolean).join(". ").slice(0, 1000) || null;
+    const r = await H.lpBatch(env, STAF, [H.lpStmtTiketPindah(env, STAF, nomor, t.status, ke, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, ke, catatanRiwayat, oleh, kini),
+      H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS[ke]}.${catatan ? ` ${catatan}` : ""}${ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, kini)]);
     if (!r[0].meta.changes) return galat(409, "Status laporan baru saja berubah. Muat ulang.");   // balapan dua staf
   }
-  return mejaRinci(env, nomor);
+  const baru = await H.lpSesiNomor(env, STAF, nomor);
+  if (c.jenis !== "bnpb" && aksi !== "lihat") await tulisAudit(() => H.lpBatch(env, STAF, [H.lpStmtAkses(env, STAF, nomor, oleh, kini)]));   // aksi BPBD juga membuka identitas: tercatat
+  return kirim(200, {...await rincianObj(env, c, baru, true), ...tambahan});
 }
 async function mejaGet(env, req, url, kini, ctx, x) {
-  const oleh = await stafMeja(env, req); if (!oleh) return tolakStaf();
+  const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
   if (!RE_NOMOR.test(x)) return galat(404, "rute lapor tidak ada");
-  return mejaRinci(env, x);
+  return mejaRinci(env, h.c, x);
 }
 async function mejaPost(env, req, url, kini, ctx, x) {
-  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat)$/.exec(x);
-  return m ? mejaUbah(env, req, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
+  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan)$/.exec(x);
+  return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
 }
 
-/* ---------------- Alun-alun warga (K30, Q14): hanya ditindaklanjuti atau selesai; tanpa nama, nomor WA, foto, kronologi, nomor tiket ---------------- */
-const alun = (env, req, url, kini, ctx) => cacheTepi(req, ctx, 60, () => alunBuat(env, req, url, kini));   // agregat tanpa data pribadi: cache tepi 60 detik
+/* ---------------- foto penanganan: berkas (K60, D88) ---------------- */
+async function buktiGet(env, req, url, kini, ctx, id) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  const lj = await lajuPublik(env, req, "lapor.buktiget", 600, kini); if (lj) return lj;
+  const f = /^[0-9a-f]{16}$/.test(id) ? await bacaTabel(() => H.lpBuktiById(env, PUBLIK, id), null) : null; if (!f) return galat(404, "tidak ada");
+  const t = url.searchParams.get("t") || "";
+  const ok = RE_TOKEN.test(t) && f.token_sha && await sha(t) === f.token_sha || url.searchParams.get("alun") === "1" && f.publik === 1 && TAMPIL_ALUN.has(f.status);
+  if (!ok) return galat(404, "tidak ada");
+  const o = await env.MEDIA.get(f.kunci_r2); if (!o) return galat(404, "tidak ada");
+  const publik = url.searchParams.get("alun") === "1";   // foto yang ditandai publik boleh di-cache peramban: halaman Alun-alun memuat banyak sekaligus
+  return new Response(o.body, {headers: {"content-type": "image/jpeg", "cache-control": publik ? "public, max-age=300" : "private, no-store", "x-robots-tag": "noindex", "x-content-type-options": "nosniff"}});
+}
+
+/* ---------------- Alun-alun warga (K30, Q14; K59 D84-D85): hanya ditindaklanjuti atau selesai; tanpa nama, nomor WA, nomor tiket, teks, koordinat pelapor; titik = pusat desa ---------------- */
+const ID_JENIS = new Set(JENIS.map(j => j.id));
+const alun = (env, req, url, kini, ctx) => {   // kunci cache tepi hanya dari kueri yang sah: jenis dari daftar JENIS, prov dua angka, tanpa parameter lain
+  const q = url.searchParams, j = q.get("jenis") || "", p = q.get("prov") || "";
+  if ([...q.keys()].some(k => k !== "jenis" && k !== "prov") || j && !ID_JENIS.has(j) || p && !/^\d{2}$/.test(p)) return galat(400, "Saringan tidak dikenal.");
+  return cacheTepi(req, ctx, 60, () => alunBuat(env, req, url, kini));
+};
+const ringkasDari = r => { try { return r.ringkas ? JSON.parse(r.ringkas) : {}; } catch { return {}; } };
 async function alunBuat(env, req, url, kini) {
   const batas = await lajuIP(env, req, "lapor.alun", [[JAM, 120]], kini); if (batas) return batas;
   const q = url.searchParams, prov = /^\d{2}$/.test(q.get("prov") || "") ? q.get("prov") : null, jenis = /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null;
-  const baris = (await H.lpAlunBaris(env, PUBLIK, prov, jenis)).filter(r => TAMPIL_ALUN.has(r.status)).map(barisAlun)
-    .sort((a, b) => b.ms - a.ms).slice(0, 100).map(async r => { const {ms, id, ...x} = r; return {id: (await sha(id)).slice(0, 10), ...x}; });
-  const hasil = await Promise.all(baris);
+  const [tampil, semua, buktiPublik] = await Promise.all([H.lpAlunBaris(env, PUBLIK, prov, jenis), H.lpGugusBaris(env, PUBLIK, kini - 30 * HARI), bacaTabel(() => H.lpBuktiAlun(env, PUBLIK), [])]);
+  // gugus dari semua laporan terkirim 30 hari (A9, src/lapor_gugus.js); angka dampak laporan terbaru gugus, tidak dijumlah (D28, D85)
+  const per = new Map(semua.map(r => [r.nomor, r]));
+  const G = hitungGugus(semua.map(r => { const k = ringkasDari(r), w = k.wilayah || {};
+    return {nomor: r.nomor, jenis: r.jenis, lat: r.lat ?? null, lon: r.lon ?? null, kab: w.kab || null, desa: w.kode || null, t: k.waktuMs || r.terkirim, wa: r.wa, fotoSah: !!r.foto_sah, status: r.status}; }));
+  const gk = new Map(G.gugus.map(g => [g.kode, g])), terbaru = new Map();
+  for (const r of tampil.filter(x => TAMPIL_ALUN.has(x.status))) {
+    const b = barisAlun(r), kunci = G.per[r.nomor] || r.nomor, lama = terbaru.get(kunci);
+    if (!lama || b.ms > lama.b.ms) terbaru.set(kunci, {r, b});
+  }
+  const publikPer = new Map(); for (const x of buktiPublik) publikPer.set(x.nomor, [...(publikPer.get(x.nomor) || []), x.id]);
+  const hasil = await Promise.all([...terbaru].sort(([, a], [, z]) => z.b.ms - a.b.ms).slice(0, 100).map(async ([kunci, {r, b}]) => {
+    const g = gk.get(kunci), awal = g ? per.get(g.anggota[0]) : null, w = ringkasDari(r).wilayah || {}, {ms, id, ...x} = b;
+    const desa = w.kode ? await wilayahDari(env).pusat(String(w.kode)).catch(() => null) : null;
+    const anggota = g ? g.anggota : [r.nomor], bukti = anggota.filter(n => TAMPIL_ALUN.has(per.get(n)?.status ?? r.status)).flatMap(n => publikPer.get(n) || []).slice(0, 4);
+    return {id: (await sha(awal?.id || id)).slice(0, 10), ...x, titik: desa ? {lat: Math.round(desa.lat * 1e4) / 1e4, lon: Math.round(desa.lon * 1e4) / 1e4} : null,
+      nWarga: g && g.n_pelapor >= 2 ? g.n_pelapor : null, bukti: bukti.map(i => `/api/lapor/bukti/${i}?alun=1`)};
+  }));
   return kirim(200, {baris: hasil, jumlah: hasil.length});
+}
+
+/* ---------------- data terbuka agregat (K62, D91-D93): akun kampus mitra aktif (sesi /kemitraan), staf, atau admin; tiap unduhan tercatat ---------------- */
+async function agregatGet(env, req, url, kini) {
+  let akun = await stafMeja(env, req);
+  if (!akun) { let h = null; try { h = await hakKm(env, req, kini); } catch (e) { if (!tabelBelum(e)) throw e; } if (h?.tolak) return h.tolak; if (["KK", "SA", "ST"].includes(h?.peran)) akun = h.oleh; }
+  if (!akun) return galat(403, "Data agregat hanya untuk akun kampus mitra, staf, atau admin.");
+  const lj = await laju(env, String(akun).slice(0, 60), "lapor.agregat", [[JAM, 10], [HARI, 30]], kini); if (lj) return lj;   // baca D1 berat (kuota Free 5 juta baris per hari): sampai pipeline harian LA-64
+  const csv = url.searchParams.get("format") === "csv";
+  const baris = agregat((await H.lpAgregatBaris(env, STAF)).map(r => { const k = ringkasDari(r), w = k.wilayah || {};
+    return {provKode: w.provKode, prov: w.prov, kabKode: w.kabKode, kab: w.kab, jenis: labelJenis(r.jenis), kejadian: k.waktuMs ?? null, terkirim: r.terkirim, wa: r.wa, fotoSah: !!r.foto_sah, status: r.status}; }));
+  await tulisAudit(() => H.lpUnduhCatat(env, STAF, akun, csv ? "agregat.csv" : "agregat.json", kini));   // D93 meminta tiap unduhan tercatat: satu-satunya GET Lapor yang menulis selain laju
+  if (csv) return new Response(keCsv(baris), {headers: {"content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="lapor-agregat.csv"', "x-content-type-options": "nosniff", ...HDR}});
+  return kirim(200, {dibuat: new Date(kini).toLocaleString("id-ID", {dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta"}), batas: BATAS_SEL, kolom: KOLOM_AGREGAT, baris});
 }
 
 const jaga = f => (env, ...a) => env.SESI_KUNCI ? f(env, ...a) : galat(503, "server belum dikonfigurasi (SESI_KUNCI)");   // token lacak butuh kunci rahasia; tanpa itu tidak ada jalur yang jalan
@@ -525,6 +658,8 @@ const RUTE = {
   "GET /api/lapor/lacak": lacak,
   "GET /api/lapor/unduh/:x": unduh,
   "GET /api/lapor/alun": alun,
+  "GET /api/lapor/bukti/:id": buktiGet,
+  "GET /api/lapor/agregat": agregatGet,
   "GET /api/lapor/izin": izinGet,
   "POST /api/lapor/izin": izinPost,
   "GET /api/lapor/pdf/antre": pdfAntre,

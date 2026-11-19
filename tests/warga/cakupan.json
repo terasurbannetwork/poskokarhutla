@@ -1445,7 +1445,13 @@
     "table lapor_urut": "alur mesin sampai terkirim",
     "table lapor_pdf": "PDF: antre",
     "POST /api/lapor/susulan": "susulan: mulai dari laporan terkirim",
-    "table lapor_versi": "susulan: mulai dari laporan terkirim"
+    "table lapor_versi": "susulan: mulai dari laporan terkirim",
+    "GET /api/lapor/bukti/:id": "bukti: JPEG disimpan di R2",
+    "GET /api/lapor/agregat": "agregat: hanya akun kampus aktif",
+    "table lapor_bukti": "bukti: JPEG disimpan di R2",
+    "table lapor_akses": "meja BPBD: kab hanya wilayahnya",
+    "table lapor_unduh": "agregat: hanya akun kampus aktif",
+    "table lapor_kabar_bpbd": "teruskan: hanya BNPB"
   },
   "dikecualikan": {
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

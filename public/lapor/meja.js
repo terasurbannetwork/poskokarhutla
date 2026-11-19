@@ -371,7 +371,22 @@ function kartuGugusRinci(g, kartu) {
    lalu tiket ditandai Diteruskan dengan catatan nama BPBD. Kirim otomatis ke kontak terdaftar menunggu F1 (Q16, Q38). */
 function kartuTeruskan(j, b, kirim) {
   const w = el("div", "mj-isi-kartu"), isi = el("div", "mj-teruskan"); isi.append(el("p", "mj-label", "Mencari BPBD setempat..."));
-  w.append(isi);
+  // tombol utama (K63, D97): tiket masuk meja BPBD wilayahnya dan akun lembaga dikabari lewat WhatsApp; kontak WA manual di bawah tetap jadi cadangan
+  const lewatUtama = !(j.pindah || []).includes("diteruskan") && (j.pindah || []).includes("ditelaah"), utama = el("button", "mj-tombol isi lebar"), hasil = el("p", "mj-label");
+  utama.type = "button"; utama.append(ikon("m-kirim"), "Teruskan ke meja BPBD"); utama.disabled = !(j.pindah || []).includes("diteruskan") && !lewatUtama;
+  utama.title = utama.disabled ? "Tiket tidak bisa diteruskan dari tahap ini" : "BPBD kab/kota membuka laporan ini di meja mereka dan dikabari lewat WhatsApp tanpa isi laporan";
+  utama.addEventListener("click", async () => {
+    utama.disabled = true; hasil.textContent = "";
+    try {
+      const kirimKe = (aksi, badan) => fetch(`/api/lapor/meja/${j.nomor}/${aksi}`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(badan)});
+      if (lewatUtama) { const a = await kirimKe("status", {ke: "ditelaah", catatan: "Ditelaah untuk diteruskan ke meja BPBD"}); if (!a.ok) throw 0; }   // aturan tahap A8
+      const r = await kirimKe("teruskan", {}), h = await r.json(); if (!r.ok) { hasil.textContent = h.galat || "Gagal meneruskan."; utama.disabled = false; return; }
+      hasil.textContent = h.bpbdTerdaftar ? (h.antre ? "Diteruskan. Akun BPBD wilayah ini dikabari lewat WhatsApp." : "Diteruskan. Akun BPBD wilayah ini sudah dikabari hari ini (batas harian), tiket tetap ada di meja mereka.")
+        : "Diteruskan, tetapi BPBD wilayah ini belum punya akun. Hubungi lewat WhatsApp di bawah.";
+      fotoCache.delete(j.nomor); muat();
+    } catch { hasil.textContent = "Gagal meneruskan, periksa sambungan."; utama.disabled = false; }
+  });
+  w.append(utama, hasil, isi);
   const k = el("section", "mj-kartu"), h = el("h3"); h.append(ikon("m-kirim"), "Teruskan ke BPBD"); k.append(h, w);
   if (j.lat == null) { isi.replaceChildren(el("p", "mj-label", "Lokasi belum ada, BPBD setempat belum bisa ditentukan.")); return k; }
   fetch(`/api/lapor/penting?lat=${j.lat}&lon=${j.lon}`).then(r => r.json()).then(p => {
@@ -436,7 +451,8 @@ async function kecilkanFoto(f) {
 async function bukaRinci(nomor, lihat = true) {
   pilih = nomor;
   if (lihat) { petaMini?.remove(); petaMini = null; dlg.replaceChildren(el("p", "mj-kosong", "Memuat rincian...")); if (!dlg.open) dlg.showModal(); }
-  let j; try { j = await (await (lihat   // membuka = tanda dilihat lewat POST .../lihat (kontrak Worker: GET tidak menulis); jawabannya berbentuk sama dengan rincian
+  // BPBD: rincian selalu lewat POST lihat, karena identitas pelapor hanya diberikan pada pembukaan yang tercatat (D95)
+  let j; try { j = await (await (lihat || akunBpbd()   // membuka = tanda dilihat lewat POST .../lihat (kontrak Worker: GET tidak menulis); jawabannya berbentuk sama dengan rincian
     ? fetch(`/api/lapor/meja/${nomor}/lihat`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: "{}"})
     : fetch(`/api/lapor/meja/${nomor}`, {cache: "no-store"}))).json(); } catch { dlg.replaceChildren(el("p", "mj-kosong", "Rincian gagal dimuat.")); return; }
   if (j.galat) { dlg.replaceChildren(el("p", "mj-kosong", j.galat)); return; }
