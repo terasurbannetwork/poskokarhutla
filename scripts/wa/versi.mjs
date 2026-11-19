@@ -6,9 +6,12 @@
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.2'
+export const VERSI = '2.2.2'
 
 export const CHANGELOG = [
+  { versi: '2.2.2', tanggal: '2026-11-19', isi: [
+    'Perbaikan: tebak maksud pesan dan tanya draf kini jalan lewat router API (9router).',
+  ] },
   { versi: '2.2', tanggal: '2026-11-19', isi: [
     'Bot bisa melihat gambar: sesudah menyusun draf, bot melihat tiap slide dan membetulkan sendiri teks yang meluber, label bertumpuk, atau panel kosong.',
     'Revisi pakai screenshot: balas *1*, kirim screenshot (boleh dicoret, boleh berketerangan) dan teks, lalu *selesai*.',

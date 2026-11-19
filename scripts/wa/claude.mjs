@@ -366,7 +366,10 @@ function muatSdk(env, dep) {
     return m.default || m.Anthropic || m
   })()
   // ANTHROPIC_BASE_URL: router API (mis. 9router, pemilik 19 Nov 2026) di depan beberapa akun Anthropic; kosong = API Anthropic langsung
-  return new Kelas({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 2, ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL } : {}) })
+  // x-app: cli = 9router meneruskan permintaan apa adanya (passthrough); tanpa itu router menerjemahkan ulang dan membuang
+  // output_config.format, sehingga Opus menjawab teks biasa, bukan JSON (diuji 19 Nov 2026)
+  return new Kelas({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 2,
+    ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL, defaultHeaders: { 'x-app': 'cli' } } : {}) })
 }
 
 // dep: client (palsu di uji), Anthropic (kelas SDK, opsional), bacaBiaya(tanggalWib) -> mikro-dolar hari itu, tambahBiaya(tanggalWib, mikro),
@@ -410,7 +413,9 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
     // cadangan sisi server hanya langsung ke Anthropic: router bisa menolak beta dan parameter yang tidak dikenalnya (BL_FALLBACK=0 mematikan)
     const r = client.beta?.messages?.create && !/haiku/.test(modelPakai) && !env.ANTHROPIC_BASE_URL && env.BL_FALLBACK !== '0'
       ? await client.beta.messages.create({ ...body, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
-      : await client.messages.create(body)
+      // streaming: 9router menempelkan "data: [DONE]" di ujung balasan non-streaming sehingga JSON-nya rusak (19 Nov 2026);
+      // klien palsu di uji tanpa `stream` tetap memakai create biasa
+      : client.messages.stream ? await client.messages.stream(body).finalMessage() : await client.messages.create(body)
     const mikro = biaya(r.usage || {}, HARGA[r.model] ? r.model : modelPakai)
     await dep.tambahBiaya(tgl, mikro)
     if (r.stop_reason === 'refusal') throw new GalatClaude('tolak', r.stop_details?.category || '')
