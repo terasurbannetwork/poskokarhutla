@@ -1878,3 +1878,11 @@ test('K39: agen effort medium dan tinjau visual mati secara bawaan (pemilik 19 N
   const log = fs.readFileSync(path.join(d.dasar, 'agen', 'jalan.log'), 'utf8').trim().split('\n').map((x) => JSON.parse(x))
   assert.equal(log[0].id, 'P-291026-01'); assert.equal(log[0].hasil, 'success'); assert.ok(log[0].detik >= 0)
 })
+
+test('K40: V2 untuk semua nomor terdaftar bila BL_V2_NOMOR kosong; terisi = hanya nomor itu', async () => {
+  const P = await import('../../scripts/wa/proyek.mjs')
+  assert.equal(P.pakaiV2({ BL_VERSI: '2', PEMILIK: '6299' }, '6281111'), true, 'bukan pemilik pun V2')
+  assert.equal(P.pakaiV2({ BL_VERSI: '2', BL_V2_NOMOR: '6299' }, '6281111'), false)
+  assert.equal(P.pakaiV2({ BL_VERSI: '2', BL_V2_NOMOR: '6299' }, '6299'), true)
+  assert.equal(P.pakaiV2({ PEMILIK: '6299' }, '6299'), false, 'tanpa BL_VERSI=2 semua V1')
+})

@@ -1195,8 +1195,9 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
 }
 
 // ---------- bot V2: agen Claude Code (data/kajian-bnpb/bot-laporan K22-K24, D14-D28, ALUR V2) ----------
-// Nomor V2: saklar BL_VERSI=2 dan nomor di BL_V2_NOMOR (bawaan: PEMILIK; Q17). Proyek dikunci ke versi bot v1-nya (D24).
-export const pakaiV2 = (env, dari) => String(env.BL_VERSI || '') === '2' && new Set(daftar(env.BL_V2_NOMOR || env.PEMILIK).map(normalWa).filter(Boolean)).has(normalWa(dari))
+// Nomor V2: saklar BL_VERSI=2. Sejak 19 Nov 2026 (pemilik: "terbitkan v2 sekarang, jgn draf lagi", Q17 dijawab) semua nomor terdaftar
+// memakai V2; BL_V2_NOMOR terisi = hanya nomor itu (uji terbatas). Proyek dikunci ke versi bot v1-nya (D24).
+export const pakaiV2 = (env, dari) => String(env.BL_VERSI || '') === '2' && (!String(env.BL_V2_NOMOR || '').trim() || new Set(daftar(env.BL_V2_NOMOR).map(normalWa).filter(Boolean)).has(normalWa(dari)))
 // true | false | null (versi tidak terbaca: jangan menebak, supaya proyek V2 tidak diam-diam direvisi V1)
 async function proyekV2(ctx, p, sha) {
   if (!(p.versi > 0)) return false
@@ -2452,7 +2453,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     py_pptx: modul('pptx'), py_openpyxl: modul('openpyxl'), py_pillow: modul('PIL') }
   if (String(env.BL_VERSI || '') === '2') { // V2: SDK agen terpasang di gateway (BV-06)
     cek.agen_sdk = fs.existsSync(path.join(DI, 'gateway', 'node_modules', '@anthropic-ai', 'claude-agent-sdk'))
-    cek.agen_nomor = daftar(env.BL_V2_NOMOR || env.PEMILIK).length > 0
+    cek.agen_nomor = true // V2 untuk semua nomor terdaftar, atau BL_V2_NOMOR bila diisi
   }
   console.log(JSON.stringify(cek))
   process.exit(Object.values(cek).every(Boolean) ? 0 : 1)

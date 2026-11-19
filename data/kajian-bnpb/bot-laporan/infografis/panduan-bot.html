@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Panduan Bot Laporan WA BNPB</title>
+<title>Panduan Bot Laporan BNPB v2.2</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 @font-face{font-family:Rob;src:url("../../../laporan-bnpb/generator/font/Roboto-Regular.ttf")}
@@ -61,7 +61,7 @@ h2 .i{width:36px;height:36px;border-radius:10px;background:var(--navy);color:#ff
 .baris .i{color:var(--oranye);font-size:22px;flex:none}
 .baris b{color:var(--navy);font-size:16.5px}
 .baris.or{background:var(--oranye-m)}
-.ang{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s1)}
+.ang{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s1)}
 .ang div{background:var(--abu);border-radius:10px;padding:12px 4px;text-align:center}
 .ang b{display:block;font-size:36px;color:var(--oranye);line-height:1}
 .ang span{font-size:15px;color:var(--navy);font-weight:500}
@@ -92,6 +92,16 @@ h2 .i{width:36px;height:36px;border-radius:10px;background:var(--navy);color:#ff
 .atur b{display:block;font-size:16.5px;color:var(--navy);line-height:1.3}
 .atur .cmd{color:#fff;font-size:14.5px}
 .atur p>span{display:block;font-size:14.5px;color:var(--teks2);line-height:1.35;margin-top:2px}
+.hero h1 .versi{display:inline-block;vertical-align:middle;margin-left:var(--s2);background:var(--oranye);color:#fff;font-size:20px;font-weight:700;border-radius:20px;padding:4px 14px;position:relative;top:-6px}
+.bub .gb{display:flex;align-items:center;gap:6px;background:#C9E9C2;border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:13px;color:var(--navy)}
+.bub .gb .i{font-size:18px}
+.pintar{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2)}
+.pintar>div{background:var(--biru-m);border-radius:var(--r);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1)}
+.pintar .jd{display:flex;align-items:center;gap:var(--s1);font-size:18px;font-weight:700;color:var(--navy)}
+.pintar .jd .i{width:36px;height:36px;border-radius:10px;background:var(--oranye);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none}
+.pintar p{font-size:15px;color:var(--teks2)}
+.pintar .contoh{background:#fff;border-radius:10px;padding:8px 12px;font-size:15px;color:var(--teks);font-style:italic}
+@media print{@page{size:1080px 2469px;margin:0}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 footer{background:var(--navy);color:#fff;height:88px;padding:0 var(--tepi);display:flex;align-items:center;justify-content:space-between}
 footer b{font-size:19px;display:block}footer span{font-size:15px;color:#C9D6E6}
 footer .lg{display:flex;align-items:center;gap:var(--s2);background:#fff;border-radius:10px;padding:6px 12px}
@@ -103,8 +113,8 @@ footer .lg img.l{height:40px}footer .lg img.k{height:30px}
   <div class="foto"></div><div class="pudar"></div>
   <div class="isi">
     <div class="logo"><img class="l" src="aset/bnpb-lambang.png" alt="Lambang BNPB"><img class="k" src="aset/kris-logo.png" alt="KRIS"></div>
-    <h1>Bot Laporan <span>WA</span> BNPB</h1>
-    <div class="sub">Ketik perintah, kirim bahan, laporan resmi jadi dalam sekitar 2 menit.</div>
+    <h1>Bot Laporan <span>WA</span> BNPB<span class="versi">v2.2</span></h1>
+    <div class="sub">Kirim bahan, ketik lanjut. Claude menyusun laporan resmi dalam sekitar 5 sampai 10 menit, dan paham kalimat biasa maupun gambar.</div>
   </div>
 </div>
 <div class="pita"><i class="i ti ti-lock"></i>Hanya nomor terdaftar yang bisa memakai bot. Hubungi admin Tim IT BNPB.</div>
@@ -113,11 +123,11 @@ footer .lg img.l{height:40px}footer .lg img.k{height:30px}
 <section>
   <h2><span class="i ti ti-route"></span>Cara pakai</h2>
   <div class="lgk">
-    <div><span class="bul">1</span><b>Ketik jenis laporan</b><span class="cmd">buat penanganan</span><p>Bot membalas daftar bahan yang perlu dikirim.</p></div>
-    <div><span class="bul">2</span><b>Kirim bahan</b><span class="cmd">teks, PDF, foto</span><p>Tiap bahan dikonfirmasi beserta yang masih kurang.</p></div>
-    <div><span class="bul">3</span><b>Ketik lanjut</b><span class="cmd o">lanjut</span><p>Bot selalu menunggu perintah ini. Saat membangun, bot sedang mengetik.</p></div>
-    <div><span class="bul">4</span><b>Terima draf, revisi</b><span class="cmd">kalimat biasa</span><p>Pratinjau dan PDF dalam sekitar 2 menit. Tiap revisi jadi versi baru.</p></div>
-    <div class="akhir"><span class="bul">5</span><b>Final</b><span class="cmd o">final</span><p>PPTX dan PDF dikirim, tersimpan di Drive Tim IT.</p></div>
+    <div><span class="bul">1</span><b>Ketik jenis laporan</b><span class="cmd">buat harian</span><p>Bot membalas daftar bahan. Boleh juga kalimat biasa: "bikinin laporan harian".</p></div>
+    <div><span class="bul">2</span><b>Kirim bahan</b><span class="cmd">teks, PDF, foto</span><p>Foto, tabel, dan infografis dibaca langsung dari gambarnya.</p></div>
+    <div><span class="bul">3</span><b>Ketik lanjut</b><span class="cmd o">lanjut</span><p>Bot mengirim estimasi waktu dan perkiraan jam selesai.</p></div>
+    <div><span class="bul">4</span><b>Terima draf, revisi</b><span class="cmd">1</span><p>Kirim revisi, boleh beberapa pesan atau screenshot, lalu ketik selesai.</p></div>
+    <div class="akhir"><span class="bul">5</span><b>Final</b><span class="cmd o">2</span><p>PPTX dan PDF dikirim, tersimpan di Drive Tim IT, beserta biayanya.</p></div>
   </div>
   <div class="tgl dua2"><i class="i ti ti-refresh"></i><b>Gagal?</b>ketik<span class="cmd o">ulangi</span><b style="margin-left:24px">Batalkan kapan saja:</b>ketik<span class="cmd">batal</span></div>
   <div class="tgl"><i class="i ti ti-calendar-event"></i><b>Laporan tanggal tertentu:</b>tambahkan tanggal di belakang perintah<span class="cmd">buat harian 17/11</span><span class="cmd">buat penanganan kemarin</span></div>
@@ -129,23 +139,38 @@ footer .lg img.l{height:40px}footer .lg img.k{height:30px}
     <div class="bd">
       <div class="baris or"><i class="i ti ti-flame"></i><div><b>Penanganan Karhutla</b><br>Wajib: laporan Satgas pemadaman atau laporan penanganan lengkap. Tambahan: Excel gelar Satgas Udara</div></div>
       <div class="baris or"><i class="i ti ti-alert-triangle"></i><div><b>Kejadian Bencana Harian</b><br>Rekap Koordalops 24 jam, BMKG pagi, PVMBG pagi</div></div>
+      <div class="baris"><i class="i ti ti-photo"></i><div><b>Bahan berupa gambar</b><br>Foto, tabel, infografis, dan tangkapan layar dibaca langsung dari gambarnya</div></div>
+      <div class="baris"><i class="i ti ti-list-numbers"></i><div><b>WA merinci lebih sedikit dari jumlah di kepalanya</b><br>Bot memberi tahu. Ketik <span class="cmd">terima kurang</span> untuk tetap membuat laporan dari yang dirinci</div></div>
+      <div class="baris"><i class="i ti ti-coin"></i><div><b>Biaya terlihat</b><br>Tiap draf menyebut biaya dan lama pembuatan; final menyebut totalnya</div></div>
       <div class="baris"><i class="i ti ti-clock-hour-4"></i><div><b>Segera menyusul</b><br>Banjir, gempa bumi, kekeringan</div></div>
     </div>
   </div>
   <div class="kartu">
-    <div class="kp"><b>Saat draf diterima</b><span>pilih salah satu cara membalas</span></div>
+    <div class="kp"><b>Saat draf diterima</b><span>bot bertanya "Ada revisi?" lalu menunggu balasan</span></div>
     <div class="bd">
       <div class="lbl"><span class="no">A</span>Balas satu angka</div>
       <div class="ang">
-        <div class="f"><b>1</b><span>Final</span></div><div><b>2</b><span>PPTX</span></div><div><b>3</b><span>Versi</span></div><div><b>4</b><span>Batal</span></div>
+        <div class="f"><b>1</b><span>Revisi</span></div><div><b>2</b><span>Final</span></div><div><b>3</b><span>PPTX</span></div><div><b>4</b><span>Versi</span></div><div><b>5</b><span>Batal</span></div>
       </div>
       <div class="atau"><span>atau</span></div>
-      <div class="lbl"><span class="no">B</span>Tulis revisi dengan kalimat biasa</div>
+      <div class="lbl"><span class="no">B</span>Revisi dalam beberapa pesan</div>
       <div class="hp">
-        <div class="bub u"><i>Anda</i>judul slide 2 ganti jadi Operasi Udara</div>
-        <div class="bub b"><i>Bot</i><b>Draf v2 siap</b>, judul slide 2 diganti</div>
+        <div class="bub u"><i>Anda</i>1</div>
+        <div class="bub u"><i>Anda</i><span class="gb"><i class="i ti ti-photo"></i>screenshot slide 2</span>judul ini kepanjangan</div>
+        <div class="bub u"><i>Anda</i>panel kanan hapus</div>
+        <div class="bub u"><i>Anda</i>selesai</div>
+        <div class="bub b"><i>Bot</i><b>Draf v2 siap</b>, dua revisi dikerjakan sekaligus</div>
       </div>
     </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="i ti ti-sparkles"></span>Lebih pintar</h2>
+  <div class="pintar">
+    <div><div class="jd"><span class="i ti ti-message-circle"></span>Paham kalimat biasa</div><div class="contoh">"udah oke, finalkan"</div><p>Bot memahami maksudnya. Final dan batal selalu ditanya dulu, balas <span class="cmd">ya</span>.</p></div>
+    <div><div class="jd"><span class="i ti ti-help-hexagon"></span>Tanya isi draf</div><div class="contoh">"slide 3 isinya apa?"</div><p>Bisa juga kirim screenshot dengan pertanyaan. Draf tidak berubah.</p></div>
+    <div><div class="jd"><span class="i ti ti-wand"></span>Bahan berantakan dirapikan</div><div class="contoh">"1 .Bencana", label salah ketik</div><p>Format WA yang meleset dirapikan Claude. Angka korban dan dampak tidak diubah.</p></div>
   </div>
 </section>
 
@@ -159,10 +184,10 @@ footer .lg img.l{height:40px}footer .lg img.k{height:30px}
   <h2><span class="i ti ti-shield-check"></span>Aturan penting</h2>
   <div class="atur">
     <div><span class="i ti ti-lock-square"></span><p><b>Angka sistem terkunci</b><span>Hotspot, firespot, luas terbakar, belum padam</span></p></div>
-    <div><span class="i ti ti-quote"></span><p><b>Tidak mengarang angka</b><span>Angka lain wajib ada kutipan di bahan</span></p></div>
-    <div><span class="i ti ti-shield-lock"></span><p><b>Data pribadi disamarkan</b><span>Nomor HP, NIK, email sebelum ke AI</span></p></div>
+    <div><span class="i ti ti-quote"></span><p><b>Tidak mengarang angka</b><span>Angka tanpa sumber di bahan ditandai Perlu dicek</span></p></div>
+    <div><span class="i ti ti-shield-lock"></span><p><b>Data pribadi disamarkan</b><span>Nomor HP, NIK, email di teks sebelum ke AI</span></p></div>
     <div><span class="i ti ti-share-3"></span><p><b>Pesan terusan = bahan</b><span>Tidak pernah dianggap perintah</span></p></div>
-    <div><span class="i ti ti-user-check"></span><p><b>Laporan milik sendiri</b><span>Hanya pembuat yang bisa mengelola</span></p></div>
+    <div><span class="i ti ti-history"></span><p><b>Perubahan versi</b><span>Ketik <span class="cmd">changelog</span></span></p></div>
     <div><span class="i ti ti-refresh"></span><p><b>Coba lagi yang gagal</b><span>Ketik <span class="cmd">ulangi</span></span></p></div>
     <div><span class="i ti ti-x"></span><p><b>Batalkan kapan saja</b><span>Ketik <span class="cmd">batal</span></span></p></div>
     <div><span class="i ti ti-help-circle"></span><p><b>Lupa perintah?</b><span>Ketik <span class="cmd">bantuan</span></span></p></div>
@@ -171,7 +196,7 @@ footer .lg img.l{height:40px}footer .lg img.k{height:30px}
 </section>
 </main>
 <footer>
-  <div><b>Tim IT BNPB</b><span>Bot Laporan WA, November 2026</span></div>
+  <div><b>Tim IT BNPB</b><span>Bot Laporan BNPB v2.2, November 2026</span></div>
   <div class="lg"><img class="l" src="aset/bnpb-lambang.png" alt="Lambang BNPB"><img class="k" src="aset/kris-logo.png" alt="KRIS"></div>
 </footer>
 </body>

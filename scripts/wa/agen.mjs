@@ -20,7 +20,9 @@ export const MODEL_AGEN = 'claude-opus-5-5'
 export const MAKS_GILIRAN = 80
 export const WAKTU_AGEN_MS = 15 * 60e3
 export const USD_AGEN = 4 // Q15 bawaan sementara; BL_AGEN_USD menimpa
-export const USD_PROYEK = 12 // Q15; BL_AGEN_PROYEK_USD menimpa
+// Batas biaya per laporan dicabut (pemilik 19 Nov 2026: "gausah ada batasnya", revisi v4 P-191126-06 tertahan); BL_AGEN_PROYEK_USD > 0 memasangnya lagi.
+// Batas per jalan (BL_AGEN_USD) dan batas harian bersama (BL_BATAS_USD) tetap.
+export const USD_PROYEK = Infinity
 const MAKS_BUTIR = 10, MAKS_HURUF = 300, MAKS_PPTX = 30 * 1024 * 1024
 // kunci agen basi hanya bila lebih tua dari dua jalan penuh (jalan + cadangan sesi baru) ditambah jeda, atau prosesnya sudah mati
 const TANYA_MS = 24 * 3600e3, KUNCI_BASI_MS = 2 * WAKTU_AGEN_MS + 5 * 60e3, SESI_MS = 7 * 864e5
