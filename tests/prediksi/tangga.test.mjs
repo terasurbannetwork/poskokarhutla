@@ -80,7 +80,7 @@ test('tangga.json: 514+ kab, tiap pernyataan punya lembaga, cakupan, kalimat; si
   assert.ok(t.ringkas.cakupan.musim.nas === t.ringkas.n_kab || !t.skala[0].ok.k, 'musim tampil nasional untuk semua kab bila sumbernya ada')
 })
 
-test('kosakata nyata prakiraan 10 hari BMKG: tidak ada kelas lebat, jadi peringkat basah h10 null dan kondisi tampil apa adanya', () => {
+test('kosakata nyata prakiraan 10 hari BMKG: kelas lebat berperingkat (lebat 2, sangat lebat/ekstrem 3), kondisi lain null dan tampil apa adanya', () => {
   if (!ada('public/banjir/data/cuaca_bmkg_kab10.json') || !ada('public/prediksi/data/tangga.json')) return
   const kosa = new Set(Object.values(JSON.parse(baca('public/banjir/data/cuaca_bmkg_kab10.json')).kab).flatMap((k) => k.hari.map((h) => h.kondisi)))
   assert.ok(kosa.size > 3)
@@ -88,9 +88,10 @@ test('kosakata nyata prakiraan 10 hari BMKG: tidak ada kelas lebat, jadi peringk
   const t = JSON.parse(baca('public/prediksi/data/tangga.json'))
   const h10b = Object.values(t.kab).flatMap((k) => (k.h10 || []).filter((e) => e.a === 'b'))
   assert.ok(h10b.length > 400)
-  // jika BMKG suatu hari memakai kelas lebat, pemetaan harus diputuskan pemilik (Q10): uji ini sengaja gagal supaya tidak diam-diam null
-  assert.deepEqual(lebat, [], `kosakata BMKG kini memuat ${lebat}; putuskan pemetaan (KEPUTUSAN Q10)`)
-  for (const e of h10b) { assert.equal(e.tk, null); assert.ok(e.t === 'Tanpa hujan' || kosa.has(e.t), `${e.t} bukan kondisi BMKG`) }
+  // pemetaan kelas lebat diputuskan pemilik 19 Nov 2026 (Q10); kelas baru di luar Lebat/Sangat Lebat/Ekstrem tetap null
+  const tkHarus = (x) => /Sangat Lebat|Ekstrem/i.test(x) ? 3 : /Lebat/i.test(x) ? 2 : null
+  for (const e of h10b) { assert.equal(e.tk, tkHarus(e.t), `${e.t} peringkat ${e.tk}`); assert.ok(e.t === 'Tanpa hujan' || kosa.has(e.t), `${e.t} bukan kondisi BMKG`) }
+  assert.ok(lebat.every((x) => tkHarus(x) !== null), `kelas lebat tanpa pemetaan: ${lebat}`)
 })
 
 test('cakupan: FWI, asap, SPI, sifat Normal, hujan sedang tanpa peringkat; prediksi kita level 0 bukan "Normal"', () => {
