@@ -15,7 +15,7 @@ import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
 import {buatInfo} from "./lapor_info.js";
-import {STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
+import {isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
 import * as H from "./hak.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10;
@@ -85,13 +85,14 @@ let WIL, INFO;
 const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); throw new Error(`aset ${jalur} ${r.status}`); } return r.json(); };
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
 const infoDari = env => INFO ||= buatInfo({muat: muatAset(env), wilayah: wilayahDari(env)});
-const modelDari = env => buatModel({kunci: env.ANTHROPIC_API_KEY, model: env.LAPOR_MODEL || undefined, catat: u => console.log(`lapor model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});   // tanpa kunci = null = pertanyaan templat
+const modelDari = env => buatModel({kunci: env.ANTHROPIC_API_KEY, model: env.LAPOR_MODEL || undefined, dasar: /^https:\/\//.test(env.LAPOR_BASE_URL || "") ? env.LAPOR_BASE_URL : "", catat: u => console.log(`lapor model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});   // tanpa kunci = null = pertanyaan templat
 
 /* ---------------- memuat sesi ---------------- */
 const dariBaris = r => { const s = JSON.parse(r.kerja); s.id = r.id; s.wa = r.wa; if (r.nomor) { s.nomor = r.nomor; s.terkirim = r.terkirim; } return s; };
 async function lengkapi(env, p, row) {   // sesi + tiket + balasan + pelapor (untuk lacak, meja, dokumen)
   const s = dariBaris(row), [tiket, riwayat, balasan, pel] = await Promise.all([H.lpTiket(env, p, s.nomor), H.lpRiwayat(env, p, s.nomor), H.lpBalasan(env, p, s.nomor), H.lpPelapor(env, p, s.wa)]);
   s.tiket = {status: tiket?.status || "baru", riwayat}; s.balasan = balasan;
+  const vi = await H.lpVersiInfo(env, p, s.nomor); s.jumlahVersi = vi.versi; s.adaSusulan = vi.ada;
   return {s, pel: pel || {}};
 }
 const provDari = s => s.isian.lokasi?.nilai?.wilayah?.provKode;
@@ -106,7 +107,7 @@ async function putar(env, ctx, url, {wa, saluran, izin}, pesan, kini) {
   const pel = (await H.lpPelapor(env, P, wa)) || null;
   naikBpbd(pel, izin);
   const kirimIsh = /^(1|kirim)$/i.test(String(pesan.teks || "").trim()) || pesan.pilih?.[0] === 1;
-  if (lama?.status === "ringkasan" && kirimIsh && await H.lpHitungTerkirim(env, P, wa, kini - HARI) >= MAKS_TERKIRIM_HARI) return {batas: true};   // sebelum model dipanggil
+  if (lama?.status === "ringkasan" && !lama.susulanDari && kirimIsh && await H.lpHitungTerkirim(env, P, wa, kini - HARI) >= MAKS_TERKIRIM_HARI) return {batas: true};   // sebelum model dipanggil
   const awal = lama?.transkrip?.length ?? 0, lanjut = !!lama && !SELESAI.has(lama.status);   // putaran menambah ke objek yang sama: panjang awal dicatat sebelumnya
   const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), pesan: {...pesan, wa, saluran}, kini});
   if (naikBpbd(h.pelapor, izin)) h.sesi.tingkat = "bpbd";
@@ -115,7 +116,46 @@ async function putar(env, ctx, url, {wa, saluran, izin}, pesan, kini) {
   h.sesi.wa = wa;
   return {h, baris, lama, lanjut, pel, awal};
 }
+/* laporan susulan (F-28, ALGORITMA A12): perubahan digabung ke tiket asal sebagai versi baru, satu batch; (nomor, versi) menolak dua susulan serentak */
+async function simpanSusulan(env, url, {wa, saluran}, {h, baris, awal}, kini) {
+  const copy = h.sesi, nomor = copy.susulanDari, aBaris = await H.lpSesiNomor(env, P, nomor);
+  if (!aBaris || aBaris.wa !== wa) return {tolak: "Laporan asal tidak ditemukan."};
+  const asal = dariBaris(aBaris), [tiket, vi] = await Promise.all([H.lpTiket(env, P, nomor), H.lpVersiInfo(env, P, nomor)]);
+  asal.tiket = {status: tiket?.status}; asal.jumlahVersi = vi.versi;
+  if (!bolehSusulan(asal, kini)) return {tolak: "Kabar tambahan hanya bisa dikirim 72 jam sejak laporan terkirim, sebelum laporan selesai ditangani."};
+  for (const k of KUNCI_SUSULAN) if (asal.isian[k]) copy.isian[k] = asal.isian[k]; else delete copy.isian[k];   // jenis, lokasi, waktu terkunci
+  const lama = new Map(isianTampil(asal).map(x => [x.nama, x])), perubahan = [], kosong = v => /^(belum didata|tidak tahu|belum tahu|belum diketahui)$/i.test(v);
+  for (const x of isianTampil(copy)) {
+    const l = lama.get(x.nama), a = l && l.status !== "kosong" ? l.tampil : "belum didata", b = x.status !== "kosong" ? x.tampil : "belum didata";
+    if (a !== b && !(kosong(a) && kosong(b))) perubahan.push({nama: x.nama, label: x.label, dari: a, ke: b});
+  }
+  const versi = vi.versi + 1, st = tiket.status, token = await tokenLacak(env, nomor), pesanBaru = copy.transkrip.slice(awal);
+  asal.isian = structuredClone(copy.isian);
+  asal.foto = [...(asal.foto || []), ...(copy.foto || [])].slice(0, 20);
+  copy.status = "terkirim"; copy.susulanVersi = versi;   // salinan selesai; tanpa nomor sendiri jadi tidak tampil di meja
+  h.inti = h.balasan = `*Laporan diperbarui*\n_${nomor} versi ${versi}_\n\n${perubahan.length ? `*Perubahan:*\n${perubahan.map(x => `- ${x.label}: ${x.dari} menjadi ${x.ke}`).join("\n")}` : "Tidak ada angka yang berubah."}\n\nPDF versi baru menyusul.`;
+  const akhir = copy.transkrip.at(-1); if (akhir?.dari === "bot") akhir.teks = h.inti;
+  let ringkas = JSON.stringify(ringkasSesi(asal)); if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(asal), foto: (asal.foto || []).length});
+  const w = asal.isian.lokasi?.nilai, catatan = `Susulan versi ${versi}: ${perubahan.length ? perubahan.map(x => x.label).join(", ") : "tanpa perubahan angka"}`;
+  const sesiAsal = {id: asal.id, status: asal.status, tingkat: asal.tingkat, jenis: asal.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null,
+    kerja: JSON.stringify({...asal, tiket: undefined, jumlahVersi: undefined}), ringkas};
+  const sesiCopy = {id: copy.id, status: copy.status, tingkat: copy.tingkat, jenis: copy.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(copy)};
+  let r;
+  try {
+    r = await H.lpBatch(env, P, [H.lpStmtSesiUbah(env, P, sesiAsal, aBaris.rev, kini),
+      H.lpStmtVersi(env, P, nomor, versi, JSON.stringify(asal.isian), JSON.stringify(perubahan), kini, true),
+      H.lpStmtRiwayat(env, P, nomor, st, st, catatan, "Pelapor", kini, true), H.lpStmtPdfAntre(env, P, nomor, versi, kini, true),
+      ...pesanBaru.map(t => H.lpStmtPesan(env, P, copy.id, t.dari, saluran === "wa" ? "wa" : "web", t.teks, t.waktu, true)),
+      H.lpStmtSesiUbah(env, P, sesiCopy, baris.rev, kini)]);
+  } catch (e) { if (/UNIQUE|constraint/i.test(String(e?.message))) return {bentrok: true}; throw e; }   // susulan lain mengambil versi yang sama
+  if (!r[0].meta.changes) return {bentrok: true};
+  const q = `?t=${token}`;
+  return {token, tambahan: {nomor, susulan: versi, lacak: `/lapor/lacak.html${q}`, foto: asal.foto?.[0] ? `/api/lapor/foto/${asal.foto[0].id}${q}` : null, unduhan: [
+    {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
+    {label: "Unduh PDF", url: `/api/lapor/unduh/${nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${nomor}.docx${q}`}]}};
+}
 async function simpanPutaran(env, url, {wa, saluran}, {h, baris, lama, lanjut, pel, awal}, kini, tambahStmt = []) {
+  if (h.kirim && h.sesi.susulanDari) return simpanSusulan(env, url, {wa, saluran}, {h, baris, awal}, kini);
   const s = h.sesi, pesanBaru = s.transkrip.slice(lanjut ? awal : 0), g = [], tambahan = {};
   let nomor = null, tokenSha = null, ringkas = null, token = null;
   if (h.kirim) {   // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
@@ -177,8 +217,36 @@ async function pesan(env, req, url, kini, ctx) {
   if (r.batas) return kirim(200, {balasan: BATAS_KIRIM_TEKS, teksWa: BATAS_KIRIM_TEKS, status: "ringkasan"});
   const s = await simpanPutaran(env, url, {wa, saluran}, r, kini);
   if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
+  if (s.tolak) return galat(409, s.tolak);
   if (s.batas) return kirim(200, {balasan: s.teks, teksWa: s.teks, status: r.lama?.status || null});
   return kirim(200, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null});
+}
+
+/* mulai laporan susulan (F-28): sesi salinan tanpa nomor, langsung mode Ubah; 409 di luar jendela 72 jam / 10 versi atau bila ada sesi isian hidup */
+async function susulanPost(env, req, url, kini) {
+  if (!adaIdentitas(req)) return galat(401, "Masuk dulu dengan nomor WhatsApp Anda.");
+  const b = await bacaBody(req, 1024); if (b.galat) return galat(b.status || 400, b.galat);
+  const id = await pelapor(env, req, url, b.o); if (id instanceof Response) return id;
+  const {wa, saluran} = id, nomor = b.o.nomor;
+  const lj = await kuota(env, req, id, kini); if (lj) return lj;
+  const aBaris = typeof nomor === "string" && RE_NOMOR.test(nomor) ? await H.lpSesiNomor(env, P, nomor) : null;
+  if (!aBaris || aBaris.wa !== wa) return galat(404, "Laporan tidak ditemukan.");
+  const asal = dariBaris(aBaris), [tiket, vi] = await Promise.all([H.lpTiket(env, P, nomor), H.lpVersiInfo(env, P, nomor)]);
+  asal.tiket = {status: tiket?.status}; asal.jumlahVersi = vi.versi;
+  if (!bolehSusulan(asal, kini)) return galat(409, "Kabar tambahan hanya bisa dikirim 72 jam sejak laporan terkirim, sebelum laporan selesai ditangani.");
+  const hb = await H.lpSesiAktif(env, P, wa), hidup = hb ? dariBaris(hb) : null;
+  if (hidup && !SELESAI.has(hidup.status) && !hidup.susulanDari) return galat(409, "Selesaikan atau batalkan dulu laporan yang sedang diisi.");
+  const {nomor: _n, token: _t, tiket: _ti, versi: _v, jejak: _j, akhir: _a, susulanBaru: _s, balasan: _b, nilai: _ni, jumlahVersi: _jv, adaSusulan: _as, terkirim: _te, id: _id, ...dasar} = structuredClone(asal);
+  const copy = {...dasar, id: `${kini.toString(36)}${acak(3)}`, wa, status: "ringkasan", susulanDari: nomor, transkrip: [], foto: [], fotoSelesai: true, ditanya: [], dibuat: kini};
+  const pel = (await H.lpPelapor(env, P, wa)) || null;
+  const h = await putaran({sesi: copy, pelapor: pel, model: null, wilayah: wilayahDari(env), kini, pesan: {wa, teks: "2", saluran}});   // masuk mode Ubah
+  h.sesi.transkrip = h.sesi.transkrip.filter(t => t.dari === "bot");
+  h.inti = `*Tambah kabar untuk ${nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
+  h.sesi.transkrip.at(-1).teks = h.inti; h.sesi.akhir = {...(h.sesi.akhir || {}), inti: h.inti, balasan: h.inti};
+  h.sesi.id = copy.id; h.sesi.wa = wa;
+  const w = h.sesi.isian.lokasi?.nilai;
+  await H.lpBatch(env, P, [H.lpStmtSesiBaru(env, P, {id: copy.id, wa, status: h.sesi.status, tingkat: h.sesi.tingkat, jenis: h.sesi.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(h.sesi)}, kini)]);
+  return kirim(200, {...keluaran(h, h.sesi), susulanDari: nomor, teksWa: h.balasan});
 }
 
 /* cek status laporan milik nomor ini */
@@ -315,7 +383,8 @@ async function unduh(env, req, url, kini, ctx, x) {
   const m = /^(LA-\d{6}-\d{2,3})\.(pdf|docx)$/.exec(nama);
   const baris = m ? await H.lpSesiNomor(env, PUBLIK, m[1]) : null, t = url.searchParams.get("t") || "";
   if (!baris || !(RE_TOKEN.test(t) && baris.token_sha && await sha(t) === baris.token_sha) && !await stafMeja(env, req)) return galat(404, "tidak ada");
-  const o = env.MEDIA ? await env.MEDIA.get(`lapor/dok/${m[1]}.${VERSI}.${m[2]}`) : null;
+  const v = await H.lpPdfTerakhir(env, PUBLIK, m[1]) ?? VERSI;   // versi terbaru yang sudah jadi; versi baru menyusul, sementara yang lama tetap bisa diunduh
+  const o = env.MEDIA ? await env.MEDIA.get(`lapor/dok/${m[1]}.${v}.${m[2]}`) : null;
   if (!o) return new Response("Dokumen sedang dibuat. Coba lagi beberapa detik lagi.", {status: 202, headers: {"content-type": "text/plain; charset=utf-8", ...HDR}});
   return new Response(o.body, {headers: {"content-type": m[2] === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "content-disposition": `attachment; filename="Laporan ${m[1]}.${m[2]}"`, "x-content-type-options": "nosniff", ...HDR}});
@@ -452,6 +521,7 @@ const RUTE = {
   "GET /api/lapor/daerah": infoGet("daerah"),
   "GET /api/lapor/kotak": kotakGet,
   "POST /api/lapor/nilai": nilaiPost,
+  "POST /api/lapor/susulan": susulanPost,
   "GET /api/lapor/lacak": lacak,
   "GET /api/lapor/unduh/:x": unduh,
   "GET /api/lapor/alun": alun,

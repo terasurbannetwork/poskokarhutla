@@ -11,6 +11,9 @@ export const STATUS = {baru: "Laporan diterima", dilihat: "Sudah dilihat petugas
 export const URUTAN = ["baru", "dilihat", "ditelaah", "diteruskan", "ditindaklanjuti", "selesai"];
 export const PINDAH = {baru: ["dilihat"], dilihat: ["ditelaah", "tidak_valid"], ditelaah: ["diteruskan", "ditindaklanjuti", "tidak_valid"], diteruskan: ["ditindaklanjuti"],
   ditindaklanjuti: ["selesai"], selesai: ["ditelaah"], tidak_valid: ["ditelaah"]}; // ALGORITMA A8 + "dilihat" otomatis saat petugas membuka
+/* susulan (F-28, Q26): 72 jam sejak terkirim, tiket belum selesai/tidak_valid, kurang dari 10 versi; s.jumlahVersi dipasang pemuat */
+export const JENDELA_SUSULAN = 72 * 3600e3, KUNCI_SUSULAN = ["jenis", "subjenis", "lokasi", "waktu", "rtrw"];
+export const bolehSusulan = (s, kini = Date.now()) => !!s?.nomor && kini - s.terkirim <= JENDELA_SUSULAN && !["selesai", "tidak_valid"].includes(s.tiket?.status) && (s.jumlahVersi || 1) < 10;
 export const TAMPIL_ALUN = new Set(["ditindaklanjuti", "selesai"]);
 
 export const nomorWa = s => { const d = String(s || "").replace(/\D/g, ""); const n = d.startsWith("0") ? "62" + d.slice(1) : d; return /^628\d{7,12}$/.test(n) ? n : null; };
@@ -81,7 +84,7 @@ export function lacakTampil(s, p, t) {
   const sudah = new Map(s.tiket.riwayat.map(r => [r.ke, r]));
   return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], jenis: labelJenis(s.isian.jenis?.nilai) || "Kejadian",
     subjenis: s.isian.subjenis?.nilai || null, lokasi: w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : null, waktuKejadian: s.isian.waktu?.nilai || null,
-    waktuLapor: waktuLapor(s.terkirim, prov), pelapor: (p?.nama || "").split(" ")[0], foto: (s.foto || []).length, fotoPertama: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}?t=${t}` : null,
+    waktuLapor: waktuLapor(s.terkirim, prov), pelapor: (p?.nama || "").split(" ")[0], foto: (s.foto || []).length, terkirimMs: s.terkirim || null, bisaSusulan: bolehSusulan(s), versi: s.jumlahVersi || 1, fotoPertama: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}?t=${t}` : null,
     tahap: s.tiket.status === "tidak_valid" ? [...URUTAN.filter(k => sudah.has(k)), "tidak_valid"].map(k => ({kunci: k, label: STATUS[k], selesai: true, waktu: waktuLapor(sudah.get(k)?.waktu, prov), catatan: sudah.get(k)?.catatan || null}))
       : URUTAN.filter(k => k !== "diteruskan" || sudah.has(k)).map(k => ({kunci: k, label: STATUS[k], selesai: sudah.has(k), waktu: sudah.has(k) ? waktuLapor(sudah.get(k).waktu, prov) : null, catatan: sudah.get(k)?.catatan || null})),
     balasan: (s.balasan || []).map(b => ({teks: b.teks, waktu: waktuLapor(b.waktu, prov)})),
@@ -107,7 +110,7 @@ export function barisMeja(r) {
   return {nomor: r.nomor, status: r.status, statusLabel: STATUS[r.status], waktuLapor: waktuLapor(r.terkirim, prov), terkirim: r.terkirim,
     waktuKejadian: k.waktuKejadian || null, wa: r.wa, nama: r.nama || null, peran: PERAN[r.peran] || null, instansi: r.pkab ? `BPBD ${r.pkab}` : null,
     jenis: labelJenis(r.jenis), jenisId: r.jenis || null, subjenis: k.subjenis || null, lat: r.lat ?? null, lon: r.lon ?? null, wilayah: k.wilayah || null,
-    lengkap: k.lengkap ?? 0, foto: k.foto || 0, balasan: r.balasan || 0, dampak: k.dampakMeja || null};
+    lengkap: k.lengkap ?? 0, foto: k.foto || 0, balasan: r.balasan || 0, versi: r.versi || 1, adaSusulan: !!r.ada_susulan, dampak: k.dampakMeja || null};
 }
 export function barisAlun(r) {
   const k = r.ringkas ? JSON.parse(r.ringkas) : {}, w = k.wilayah || {};
@@ -121,7 +124,7 @@ export function mejaRinciTampil(s, p, t) {
   const prov = s.isian.lokasi?.nilai?.wilayah?.provKode, nomor = s.nomor;
   return {nomor, token: t, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
     pelapor: {nama: p?.nama, wa: s.wa, peran: PERAN[p?.peran], kab: p?.kab || null, jabatan: p?.jabatan || null},
-    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
+    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), versi: s.jumlahVersi || 1, adaSusulan: !!s.adaSusulan, jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
     foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${t}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, pelaku: pelakuLabel(r.pelaku), label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({teks: b.teks, oleh: pelakuLabel(b.oleh), waktu: waktuLapor(b.waktu, prov)})),

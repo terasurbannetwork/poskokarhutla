@@ -197,3 +197,15 @@ test("isian per jenis: karhutla tanpa jalan/jembatan dan rumah terendam; kekerin
   assert.ok(ada("banjir").includes("rumah_terendam") && ada("banjir").includes("jalan_jembatan"));
   assert.match(KELOMPOK.find(k => k.id === "fasilitas").tanyaJenis.karhutla, /terbakar/);
 });
+
+import {buatModel} from "../../src/lapor_model.js";
+test("model: alamat router dipakai bila dasar diisi; header beta dan fallbacks tidak dikirim lewat router; balasan [DONE] terbaca", async () => {
+  const panggilan = [];
+  const f = async (u, o) => { panggilan.push({u, h: o.headers, b: JSON.parse(o.body)}); return new Response(`${JSON.stringify({content: [{type: "text", text: '{"a":1}'}], usage: {}, stop_reason: "end_turn"})}\n\ndata: [DONE]\n`); };
+  const arg = {sistem: "s", skema: {type: "object"}, teks: "t"};
+  assert.deepEqual(await buatModel({kunci: "k", fetch: f, dasar: "https://router.contoh.id/"})(arg), {a: 1});
+  assert.equal(panggilan[0].u, "https://router.contoh.id/v1/messages");
+  assert.equal(panggilan[0].h["x-app"], "cli"); assert.equal(panggilan[0].h["anthropic-beta"], undefined); assert.equal(panggilan[0].b.fallbacks, undefined);
+  await buatModel({kunci: "k", fetch: f})(arg);
+  assert.equal(panggilan[1].u, "https://api.anthropic.com/v1/messages"); assert.ok(panggilan[1].h["anthropic-beta"]); assert.equal(panggilan[1].b.fallbacks, "default"); assert.equal(panggilan[1].h["x-app"], undefined);
+});

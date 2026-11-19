@@ -32,8 +32,15 @@ function kunciApi() {
     return m ? m[1].trim().replace(/^["']|["']$/g, "") : null;
   } catch { return null; }
 }
+function dasarApi() {   // ANTHROPIC_BASE_URL: router API (9router); dari env atau scripts/wa/.env seperti kunciApi()
+  if (process.env.ANTHROPIC_BASE_URL) return process.env.ANTHROPIC_BASE_URL;
+  try {
+    const m = fs.readFileSync(path.join(AKAR, "scripts/wa/.env"), "utf8").match(/^ANTHROPIC_BASE_URL=(.+)$/m);
+    return m ? m[1].trim().replace(/^["']|["']$/g, "") : "";
+  } catch { return ""; }
+}
 const model = process.argv.includes("--tanpa-ai") ? null
-  : buatModel({kunci: kunciApi(), model: process.env.LAPOR_MODEL || undefined, catat: u => console.log(`model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});
+  : buatModel({kunci: kunciApi(), dasar: dasarApi(), model: process.env.LAPOR_MODEL || undefined, catat: u => console.log(`model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});
 const wilayah = buatWilayah(async p => JSON.parse(await fs.promises.readFile(path.join(PUBLIK, p), "utf8")));
 
 const baca = () => { try { return JSON.parse(fs.readFileSync(BERKAS, "utf8")); } catch { return {pelapor: {}, sesi: {}, aktif: {}, urut: {}, kotak: {}}; } };

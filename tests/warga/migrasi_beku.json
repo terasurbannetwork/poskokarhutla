@@ -156,5 +156,6 @@
   "0152_staf_peran_tanpa_batas.sql": "64686d937ac0b6430aa894851ce22e3f239c75dafd8a71144e2d5e6f44f36118",
   "0153_pb_renlap_tindakan.sql": "e7df4db449034192f8bcd8914da3cdd3c68f65e77f9726805fa95bbdca1e55de",
   "0154_bl_proyek.sql": "b3ee96fb0fbee28aa81e0899b465da97e1ebe4989e8746fb8618eee4ae4c38f8",
-  "0155_lapor_ai.sql": "6b63603b4ff73efb6c14a5911cd4786244bd371fa3437c4202dcbd8284398590"
+  "0155_lapor_ai.sql": "6b63603b4ff73efb6c14a5911cd4786244bd371fa3437c4202dcbd8284398590",
+  "0156_lapor_versi.sql": "fdfd9fbe199ba9fd592af5a3aa15bb5cc4de84c8db3f4498d041acff180580a2"
 }

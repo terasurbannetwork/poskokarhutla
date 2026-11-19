@@ -1443,7 +1443,9 @@
     "table lapor_balasan": "meja: tamu",
     "table lapor_kabar": "meja: tamu",
     "table lapor_urut": "alur mesin sampai terkirim",
-    "table lapor_pdf": "PDF: antre"
+    "table lapor_pdf": "PDF: antre",
+    "POST /api/lapor/susulan": "susulan: mulai dari laporan terkirim",
+    "table lapor_versi": "susulan: mulai dari laporan terkirim"
   },
   "dikecualikan": {
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

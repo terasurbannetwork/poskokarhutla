@@ -278,3 +278,38 @@ uji("batas 5 laporan sehari dicek sebelum putaran pada pesan kirim; batas IP unt
   assert.equal((await T.api("GET", `/api/lapor/lacak?t=${token}`)).s, 503);
   assert.equal((await T.api("GET", "/api/lapor/alun")).s, 503);
 });
+
+/* ---------- laporan susulan (LA-26, F-28, A12, Q26) ---------- */
+const WA6 = "6281200000016";
+const tokenDariMeja = async no => (await api("GET", `/api/lapor/meja/${no}`, undefined, ADMIN)).j.token;
+uji("susulan: mulai dari laporan terkirim, kabar digabung jadi versi 2 di tiket yang sama, jenis dan lokasi terkunci", async () => {
+  await api("POST", "/api/lapor/izin", {wa: WA6}, MESIN);
+  let r = await keFoto(WA6);
+  r = await ketik(WA6, {teks: "1"});   // lanjut tanpa foto
+  for (let i = 0; i < 60 && r.status !== "ringkasan"; i++) r = await ketik(WA6, {teks: r.pilihan ? "1" : i % 2 ? "belum tahu" : "tidak ada"});
+  r = await ketik(WA6, {teks: "1"}); assert.equal(r.status, "terkirim"); const no = r.nomor;
+  const awal = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE nomor = ?").bind(no).first()).kerja);
+  assert.equal((await api("POST", "/api/lapor/susulan", {wa: WA5, nomor: no}, MESIN)).s, 404, "bukan milik nomor itu");
+  assert.equal((await api("POST", "/api/lapor/susulan", {nomor: no})).s, 401);
+  const m = await api("POST", "/api/lapor/susulan", {wa: WA6, nomor: no}, MESIN); assert.equal(m.s, 200, m.t.slice(0, 300)); assert.equal(m.j.susulanDari, no);
+  assert.equal(await n("lapor_sesi", `wa = '${WA6}' AND nomor IS NULL`), 1, "sesi salinan tanpa nomor");
+  r = await ketik(WA6, {teks: "meninggal jadi 2"}); assert.equal(r.status, "ringkasan");
+  r = await ketik(WA6, {teks: "1"}); assert.equal(r.status, "terkirim", JSON.stringify(r).slice(0, 300)); assert.equal(r.susulan, 2); assert.equal(r.nomor, no);
+  assert.match(r.teksWa, /versi 2/);
+  const v = await DB.prepare("SELECT versi, perubahan FROM lapor_versi WHERE nomor = ?").bind(no).all(); assert.equal(v.results.length, 1); assert.equal(v.results[0].versi, 2);
+  assert.ok(JSON.parse(v.results[0].perubahan).some(x => x.nama === "meninggal"));
+  const rw = await DB.prepare("SELECT dari, ke, pelaku, catatan FROM lapor_tiket_riwayat WHERE nomor = ? ORDER BY id DESC LIMIT 1").bind(no).first();
+  assert.deepEqual([rw.dari, rw.ke, rw.pelaku], ["baru", "baru", "Pelapor"]); assert.match(rw.catatan, /^Susulan versi 2: /);
+  assert.equal(await n("lapor_pdf", `nomor = '${no}' AND versi = 2 AND status = 'antre'`), 1);
+  assert.equal(await n("lapor_sesi", `nomor = '${no}'`), 1, "tidak ada tiket kedua");
+  const akhir = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE nomor = ?").bind(no).first()).kerja);
+  assert.deepEqual(akhir.isian.jenis, awal.isian.jenis); assert.deepEqual(akhir.isian.lokasi, awal.isian.lokasi); assert.equal(akhir.isian.meninggal.nilai, 2);
+  const d = (await api("GET", "/api/lapor/meja", undefined, ADMIN)).j.baris.find(x => x.nomor === no); assert.equal(d.versi, 2); assert.equal(d.adaSusulan, true);
+  const l = await api("GET", `/api/lapor/lacak?t=${await tokenDariMeja(no)}`); assert.equal(l.j.versi, 2); assert.equal(l.j.bisaSusulan, true); assert.ok(l.j.terkirimMs > 0);
+  assert.equal((await api("POST", `/api/lapor/meja/${no}/lihat`, {}, ADMIN)).j.adaSusulan, false, "staf bertindak: penanda mati");
+  await ketik(WA6, {teks: "lapor"});   // laporan baru sedang diisi: susulan ditolak
+  assert.equal((await api("POST", "/api/lapor/susulan", {wa: WA6, nomor: no}, MESIN)).s, 409);
+  await DB.prepare("UPDATE lapor_sesi SET status = 'batal' WHERE wa = ? AND nomor IS NULL AND status != 'terkirim'").bind(WA6).run();
+  await DB.prepare("UPDATE lapor_sesi SET terkirim = ? WHERE nomor = ?").bind(Date.now() - 73 * 3600e3, no).run();
+  assert.equal((await api("POST", "/api/lapor/susulan", {wa: WA6, nomor: no}, MESIN)).s, 409, "di luar 72 jam");
+});

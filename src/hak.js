@@ -1741,7 +1741,8 @@ Object.assign(MATRIKS, {
   lapor_balasan:       {lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
   lapor_kabar:         {lp_pelapor: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "tambah", "ubah"]},
   lapor_urut:          {lp_pelapor: ["tambah"]},
-  lapor_pdf:           {lp_pelapor: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
+  lapor_pdf:           {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_mesin: ["baca", "ubah"]},
   laju_bnpb:           {sistem: ["baca", "tambah"], lp_pelapor: ["baca", "tambah"]},
 });
 export const pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
@@ -1831,11 +1832,14 @@ export async function lpMejaDaftar(env, p, f) {
   if (Number.isFinite(f.dari)) { where.push("s.terkirim >= ?"); ikat.push(f.dari); }
   if (Number.isFinite(f.sampai)) { where.push("s.terkirim <= ?"); ikat.push(f.sampai); }
   for (const k of Object.keys(LP_KOLOM_FILTER)) if (f[k]) { where.push(LP_KOLOM_FILTER[k]); ikat.push(f[k]); }
-  return (await sedia(env, p, "lapor_sesi", "baca",
-    `SELECT s.nomor, s.wa, s.terkirim, s.jenis, s.lat, s.lon, s.ringkas, t.status, pl.nama, pl.peran, pl.kab pkab,
-       (SELECT count(*) FROM lapor_balasan b WHERE b.nomor = s.nomor) balasan
+  const sql = susulan => `SELECT s.nomor, s.wa, s.terkirim, s.jenis, s.lat, s.lon, s.ringkas, t.status, pl.nama, pl.peran, pl.kab pkab,
+       (SELECT count(*) FROM lapor_balasan b WHERE b.nomor = s.nomor) balasan${susulan ? `,
+       COALESCE((SELECT max(v.versi) FROM lapor_versi v WHERE v.nomor = s.nomor), 1) versi,
+       (SELECT count(*) FROM lapor_versi w WHERE w.nomor = s.nomor AND w.waktu > COALESCE((SELECT max(r.waktu) FROM lapor_tiket_riwayat r WHERE r.nomor = s.nomor AND r.pelaku != 'Pelapor'), 0)) ada_susulan` : ""}
      FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_pelapor pl ON pl.wa = s.wa
-     WHERE ${where.join(" AND ")} ORDER BY s.terkirim DESC LIMIT 1000`).bind(...ikat).all()).results;
+     WHERE ${where.join(" AND ")} ORDER BY s.terkirim DESC LIMIT 1000`;
+  try { return (await sedia(env, p, "lapor_sesi", "baca", sql(true)).bind(...ikat).all()).results; }
+  catch (e) { if (!/no such table: lapor_versi/i.test(String(e?.message))) throw e; return (await sedia(env, p, "lapor_sesi", "baca", sql(false)).bind(...ikat).all()).results; }   // kode tayang sebelum 0156
 }
 export const lpAlunBaris = async (env, p, prov, jenis) => (await sedia(env, p, "lapor_sesi", "baca",
   `SELECT s.id, s.jenis, s.ringkas, s.terkirim, s.tingkat, t.status FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
@@ -1851,3 +1855,17 @@ export async function lpKuota(env, p, daftar, kini) {
   await env.DB.batch(daftar.map(({kunci, aksi}) => sedia(env, p, "laju_bnpb", "tambah", "INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?1, ?2, ?3)").bind(kunci, aksi, kini)));
   return null;
 }
+
+/* ---- laporan susulan (migrasi 0156): versi 2+ ---- */
+export const lpStmtVersi = (env, p, nomor, versi, isi, perubahan, waktu, g = false) => sedia(env, p, "lapor_versi", "tambah",
+  lpIns(g, "", "lapor_versi", "nomor, versi, isi, perubahan, waktu")).bind(nomor, versi, isi, perubahan, waktu);
+/* versi terakhir (1 bila belum ada susulan) dan penanda "ada susulan": versi > 1 lebih baru daripada riwayat tiket terakhir oleh selain Pelapor. Tanpa tabel 0156: versi 1, tanpa penanda. */
+export async function lpVersiInfo(env, p, nomor) {
+  try {
+    const r = await sedia(env, p, "lapor_versi", "baca",
+      `SELECT COALESCE(max(v.versi), 1) versi, (SELECT count(*) FROM lapor_versi w WHERE w.nomor = ?1 AND w.waktu > COALESCE((SELECT max(r.waktu) FROM lapor_tiket_riwayat r WHERE r.nomor = ?1 AND r.pelaku != 'Pelapor'), 0)) ada
+       FROM lapor_versi v WHERE v.nomor = ?1`).bind(nomor).first();
+    return {versi: r.versi, ada: r.ada > 0};
+  } catch (e) { if (/no such table/i.test(String(e?.message))) return {versi: 1, ada: false}; throw e; }
+}
+export const lpPdfTerakhir = async (env, p, nomor) => (await sedia(env, p, "lapor_pdf", "baca", "SELECT max(versi) v FROM lapor_pdf WHERE nomor = ?1 AND status = 'jadi'").bind(nomor).first())?.v ?? null;
