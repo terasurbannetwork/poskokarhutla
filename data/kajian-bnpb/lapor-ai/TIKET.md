@@ -106,3 +106,11 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 | LA-58 | Video di `/lapor` dan WA: pakai `ATURAN_MEDIA` `src/foto.js`, metadata lokasi dan waktu MP4/MOV (D77), lencana WA (D78), batas 20 berkas dan 3 video (D79), pemutar di rincian meja dan Alun-alun, thumbnail di PDF; uji `tests/lapor/` untuk byte awal, durasi, batas | `warga-api`, `layar-peta`, `wa-bot` | `security-reviewer`, `guard-api` | LA-05, LA-06 | Q46 |
 | LA-59 | Bahasa di mesin: pilihan di sesi (D80), terjemah pertanyaan dan urai jawaban berkutipan teks asli (D81), simpan asli dan terjemahan; uji emas per bahasa Q43 (20 percakapan, angka tidak boleh berubah) | `warga-api` | `validasi-model`, pemeriksa bersih | LA-03 | Q43 |
 | LA-60 | Pesan tetap per bahasa (D82), pemilih bahasa web dan perintah WA `bahasa`, i18n Indonesia dan Inggris untuk antarmuka (D83), pil "diterjemahkan AI" dan Lihat teks asli di meja | `layar-peta`, `wa-bot` | `selera-angka`, `inp-reviewer` | LA-59 | Q44, Q45 |
+
+### Alun-alun hidup, bukti tindak lanjut, unggah bersambung (K59 sampai K61)
+
+| Tiket | Isi | Pengerja | Pemeriksa | Tergantung | Q |
+| --- | --- | --- | --- | --- | --- |
+| LA-61 | Alun-alun: peta MapLibre titik pusat desa (D84), kartu bergugus "N warga melapor" (D85), Ikuti dan menu Diikuti di perangkat, perintah WA `ikuti` (D86); rute lokal dan Worker `/api/lapor/alun` menambah `desaLat`, `desaLon`, `pelaporGugus` | `layar-peta`, `warga-api`, `wa-bot` | `inp-reviewer`, `security-reviewer`, `selera-angka` | LA-24a | Q48 |
+| LA-62 | Bukti tindak lanjut: unggah foto petugas di rincian meja saat Selesai (D87), `lapor_bukti`, tampil di lacak dan pesan WA penutup, tanda "boleh publik" (D88) | `warga-api`, `layar-peta`, `wa-bot` | `security-reviewer`, `migrasi-idempoten` | LA-10, LA-58 | Q47, Q49 |
+| LA-63 | Unggah bersambung: rute multipart R2 dan `lapor_unggah` (D89), lanjut dari IndexedDB, abort 24 jam di cron yang ada (D90), pita bagian; uji integrasi putus di bagian ke-3 lalu lanjut | `warga-api`, `layar-peta` | `guard-api`, `migrasi-idempoten`, `inp-reviewer` | LA-58, LA-35 | Q50 |

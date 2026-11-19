@@ -349,3 +349,32 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q44 | Siapa yang meninjau terjemahan pesan tetap per bahasa daerah? | **[BAWAAN SEMENTARA]** Penutur asli dari BPBD atau kampus mitra (`/kemitraan`), satu orang per bahasa; sebelum ditinjau, pesan diterjemahkan model saat dipakai dan pesan darurat dikirim dua bahasa (bahasa daerah dan Indonesia). | LA-60 |
 | Q45 | Antarmuka web (menu, tombol) juga dalam bahasa daerah? | **[BAWAAN SEMENTARA]** Tidak; hanya Indonesia dan Inggris (D83). | LA-60 |
 | Q46 | Video: batas 30 MB dan 60 detik cukup, dan berapa lama video disimpan di R2? | **[BAWAAN SEMENTARA]** Batas yang ada; masa simpan sama dengan foto laporan. Biaya R2 dipantau dari ringkasan harian (LA-39). | LA-58 |
+
+## Keputusan pemilik (Alun-alun hidup, bukti tindak lanjut, unggah bersambung, 19 Nov 2026 malam)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K59 | 19 Nov 2026 | Alun-alun lebih hidup: ada peta, tombol "Ikuti kejadian" supaya dikabari saat statusnya berubah, dan hitungan "N warga melapor kejadian ini" dari gugus. |
+| K60 | 19 Nov 2026 | Bukti tindak lanjut: saat tiket selesai, petugas melampirkan foto penanganan, dan pelapor melihatnya. |
+| K61 | 19 Nov 2026 | Unggah video besar bersambung: bila sinyal putus di tengah unggah, kiriman melanjutkan dari bagian terakhir, tidak mulai dari nol. |
+
+## Keputusan rancangan (pelaksanaan K59 sampai K61)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D84 | Peta Alun-alun memakai MapLibre yang sudah dipakai `/lapor/meja`, titik di pusat desa (bukan koordinat pelapor) sesuai Q14, kelompok titik saat jauh, pop-up berisi isi kartu yang sama. Daftar dan peta memakai satu jawaban `/api/lapor/alun` dan saring jenis yang sama. | Q14 membatasi lokasi sampai desa; satu sumber data. |
+| D85 | "N warga melapor kejadian ini" = jumlah nomor pelapor berbeda di gugus (A9, `src/lapor_gugus.js`), hanya tampil bila 2 atau lebih; laporan bergugus tampil sebagai satu kartu, bukan N kartu. Angka dihitung server; nomor tidak pernah dikirim ke peramban. | Tanpa angka 1 yang tidak berarti; privasi pelapor. |
+| D86 | "Ikuti kejadian" di web disimpan di perangkat (daftar nomor laporan di `localStorage`, dibungkus try/catch), tanpa akun dan tanpa push: menu Diikuti menandai kartu yang statusnya berubah sejak terakhir dibuka. Di WA, ikuti hanya untuk nomor yang pernah lapor dan sudah setuju dikabari (LA-32, Q20), lewat perintah `ikuti <nomor laporan>`, tunduk pada batas kirim D33. Notifikasi push peramban tidak dibangun (Q48). | Tanpa data orang baru di server untuk pengguna web; kabar WA ikut aturan kabar balik yang sudah diputuskan. |
+| D87 | Bukti tindak lanjut: tombol "Selesai" di rincian meja meminta minimal satu foto penanganan (bisa dilewati dengan alasan tertulis, tercatat di riwayat). Foto petugas masuk tabel samping `lapor_bukti` (bukan `lapor_foto`), ke R2 `lapor/bukti/`, memakai `ATURAN_MEDIA` dan GPS perangkat petugas; lencananya "foto petugas". | Bukti tidak bercampur dengan foto pelapor; aturan media satu sumber. |
+| D88 | Foto bukti tampil di halaman lacak pelapor (`/lapor/lacak.html`) dan di pesan WA penutup tiket (satu foto, sisanya tautan). Di Alun-alun hanya tampil sesudah staf menandai "boleh publik" per foto, dengan pengingat jangan memuat wajah korban atau pelat kendaraan (Q47). | Q14 melarang foto di Alun-alun untuk foto pelapor; foto petugas butuh keputusan sendiri per foto. |
+| D89 | Unggah bersambung memakai multipart R2 lewat Worker: berkas di atas 5 MB dipotong 5 MB per bagian (batas minimum bagian R2), rute `unggah/mulai`, `unggah/bagian`, `unggah/selesai`, `unggah/status`; status bagian yang sudah diterima di tabel `lapor_unggah`. Peramban menyimpan berkas dan nomor bagian terakhir di IndexedDB (saluran `lapor` antre.js, D41) dan melanjutkan dari `unggah/status` saat tersambung lagi atau halaman dibuka ulang. Pemeriksaan isi (byte awal, durasi, metadata lokasi D77) dijalankan di `selesai`, bukan per bagian. | Worker Free tidak menyimpan state antar-permintaan; multipart R2 sudah menyimpan bagian. |
+| D90 | Unggah yang belum selesai dibatalkan (abort multipart) 24 jam sesudah bagian terakhir oleh cron bersih-bersih menit 17 yang sudah ada; tanpa jadwal cron baru (batas 5 jadwal akun Free). Pita antre.js menampilkan "Video 3 dari 6 bagian, melanjutkan saat ada sinyal". Di WA, unggah bersambung urusan WhatsApp sendiri, tidak dibangun. | Tidak menumpuk bagian yatim di R2. |
+
+## Pertanyaan terbuka (K59 sampai K61)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q47 | Foto bukti petugas boleh tampil di Alun-alun publik? | **[BAWAAN SEMENTARA]** Hanya foto yang ditandai staf "boleh publik" satu per satu (D88); bawaan tidak. | LA-62 |
+| Q48 | Ikuti kejadian di web perlu notifikasi push peramban (butuh kunci VAPID dan izin notifikasi)? | **[BAWAAN SEMENTARA]** Tidak; tanda berubah di menu Diikuti saat halaman dibuka (D86). | LA-61 |
+| Q49 | Foto bukti wajib saat Selesai, atau boleh dilewati? | **[BAWAAN SEMENTARA]** Wajib minimal satu, boleh dilewati dengan alasan tertulis yang tercatat (D87). | LA-62 |
+| Q50 | Unggah bersambung juga untuk foto? | **[BAWAAN SEMENTARA]** Tidak; foto paling besar 3 MB, satu bagian, cukup diulang utuh oleh antrean luring. | LA-63 |
