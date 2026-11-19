@@ -98,3 +98,11 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 | LA-56a | K56 isian warga: rentan, layanan terganggu, Lainnya, lahan per jenis (D74, D75) | sesi induk | selesai, uji `tests/lapor/mesin.test.mjs` |
 | LA-56b | K56 draf Logbook Pusdalops dari rincian meja (D76) | sesi induk | selesai lokal; rute Worker rincian perlu `nilai` dan `waktuKejadianMs` |
 | LA-57 | Layanan terganggu ke Lifeline per kab/kota | `warga-api`, `siklus` | menunggu Q41 |
+
+### Video dan bahasa (K57, K58, 19 Nov 2026 malam)
+
+| Tiket | Isi | Pengerja | Pemeriksa | Tergantung | Q |
+| --- | --- | --- | --- | --- | --- |
+| LA-58 | Video di `/lapor` dan WA: pakai `ATURAN_MEDIA` `src/foto.js`, metadata lokasi dan waktu MP4/MOV (D77), lencana WA (D78), batas 20 berkas dan 3 video (D79), pemutar di rincian meja dan Alun-alun, thumbnail di PDF; uji `tests/lapor/` untuk byte awal, durasi, batas | `warga-api`, `layar-peta`, `wa-bot` | `security-reviewer`, `guard-api` | LA-05, LA-06 | Q46 |
+| LA-59 | Bahasa di mesin: pilihan di sesi (D80), terjemah pertanyaan dan urai jawaban berkutipan teks asli (D81), simpan asli dan terjemahan; uji emas per bahasa Q43 (20 percakapan, angka tidak boleh berubah) | `warga-api` | `validasi-model`, pemeriksa bersih | LA-03 | Q43 |
+| LA-60 | Pesan tetap per bahasa (D82), pemilih bahasa web dan perintah WA `bahasa`, i18n Indonesia dan Inggris untuk antarmuka (D83), pil "diterjemahkan AI" dan Lihat teks asli di meja | `layar-peta`, `wa-bot` | `selera-angka`, `inp-reviewer` | LA-59 | Q44, Q45 |

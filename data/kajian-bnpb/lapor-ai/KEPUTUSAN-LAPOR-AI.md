@@ -321,3 +321,31 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | --- | --- | --- | --- |
 | Q41 | Layanan terganggu dari laporan warga: dipakai sebagai bukti pada layar Lifeline per kab/kota sekarang, atau menunggu verifikasi BPBD? | **[BAWAAN SEMENTARA]** Belum mengalir ke Lifeline; tampil di rincian dan ikut draf logbook (kendala). | LA-57 |
 | Q42 | Jenis Epidemi, Kecelakaan, dan Konflik sosial (ada di logbook) perlu masuk Lapor untuk warga? | **[BAWAAN SEMENTARA]** Tidak; warga memakai Lainnya. | — |
+
+## Keputusan pemilik (video dan bahasa, 19 Nov 2026 malam)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K57 | 19 Nov 2026 | Selain foto, pelapor bisa mengirim video. |
+| K58 | 19 Nov 2026 | Pelapor memilih bahasa: Indonesia, Inggris, dan bahasa daerah (Jawa, Sunda, Minang, Bugis, dan bahasa daerah lainnya). |
+
+## Keputusan rancangan (pelaksanaan K57 dan K58)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D77 | Video memakai aturan media yang sudah ada di `src/foto.js` (`ATURAN_MEDIA`: paling besar 30 MB, paling lama 60 detik, MP4/MOV/WebM dikenali dari byte awal, durasi dari kotak `mvhd`, thumbnail dari peramban, R2 dengan Range). Aturan lokasi D11 berlaku sama: GPS perangkat saat unggah; EXIF tidak ada di video, jadi lokasi dan waktu ambil dari metadata video (`©xyz` dan `creation_time` di MP4/MOV) bila ada, diperiksa dengan batas jarak dan umur yang sama. Tanpa aturan kedua. | Satu sumber aturan media (pola `src/instansi.js`). |
+| D78 | Video lewat WA ditandai seperti foto chat WA (D16): waktu pesan dan lokasi "Bagikan lokasi" terdekat, lencana "lokasi WA". Gateway menolak video di atas 30 MB atau 60 detik dengan pesan L-VIDEO-BESAR, bukan memotongnya. | WA membuang metadata; aturan sama dengan foto. |
+| D79 | Batas per laporan: foto dan video dihitung bersama, paling banyak 20 berkas (batas foto yang ada), dengan video paling banyak 3. Penilaian foto (D46, D47) untuk video hanya pada bingkai thumbnail; tanpa penilaian bingkai lain. Video tidak pernah dikirim ke AI. | Biaya R2 dan CPU Mac mini; privasi (Q4 tetap tidak). |
+| D80 | Bahasa dipilih sekali di awal (web: pemilih di beranda dan di menu; WA: pesan pertama menawarkan daftar bernomor, perintah `bahasa` mengganti). Pilihan disimpan di sesi, bukan di profil, dan tidak menebak dari nomor atau lokasi. | Pelapor yang menentukan; tebakan dari nomor salah untuk perantau dan turis. |
+| D81 | Mesin dan data tetap berbahasa Indonesia. Pertanyaan berikutnya disusun mesin dalam bahasa Indonesia lalu diterjemahkan model; jawaban pelapor diurai model ke nilai isian dengan kutipan dari teks asli (aturan kutipan angka tetap: angka tanpa kutipan dari teks asli dibuang). Teks asli dan terjemahannya disimpan berdampingan; meja menampilkan terjemahan dengan pil "diterjemahkan AI" dan tombol Lihat teks asli. PDF memuat terjemahan dan lampiran teks asli. | Petugas membaca satu bahasa; bukti asli tidak hilang. |
+| D82 | Pesan tetap (identitas, darurat 112, privasi, batas pemakaian, tiket) untuk Indonesia dan Inggris ditulis tangan dan disimpan di berkas; untuk bahasa daerah diterjemahkan model sekali, disimpan di berkas yang sama berstatus "belum ditinjau penutur", dan baru dipakai tanpa AI sesudah ditinjau (Q44). Nomor darurat, nomor tiket, dan angka selalu ditulis apa adanya. Tanpa secret AI, pilihan bahasa daerah tidak tampil (hanya Indonesia dan Inggris). | Pesan darurat tidak boleh salah terjemah; mesin tetap jalan tanpa AI (D2). |
+| D83 | Kepala halaman, menu, dan tombol `/lapor` memakai Indonesia dan Inggris lewat `public/i18n.js` yang sudah ada; bahasa daerah hanya untuk percakapan dan pesan, bukan seluruh antarmuka (Q45). | Tanpa sistem terjemahan kedua. |
+
+## Pertanyaan terbuka (K57 dan K58)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q43 | Daftar bahasa daerah yang ditawarkan? | **[BAWAAN SEMENTARA]** Tahap awal: Jawa, Sunda, Minang, Bugis, Madura, Bali, Banjar, Batak Toba, Aceh, Makassar. Bahasa lain (mis. bahasa Papua dan Dayak) ditambah sesudah uji mutu, karena mutu model untuk bahasa berpenutur sedikit belum diukur. Pilihan "Bahasa lain, ketik saja" tersedia: model menjawab dalam bahasa Indonesia sederhana. | LA-59 |
+| Q44 | Siapa yang meninjau terjemahan pesan tetap per bahasa daerah? | **[BAWAAN SEMENTARA]** Penutur asli dari BPBD atau kampus mitra (`/kemitraan`), satu orang per bahasa; sebelum ditinjau, pesan diterjemahkan model saat dipakai dan pesan darurat dikirim dua bahasa (bahasa daerah dan Indonesia). | LA-60 |
+| Q45 | Antarmuka web (menu, tombol) juga dalam bahasa daerah? | **[BAWAAN SEMENTARA]** Tidak; hanya Indonesia dan Inggris (D83). | LA-60 |
+| Q46 | Video: batas 30 MB dan 60 detik cukup, dan berapa lama video disimpan di R2? | **[BAWAAN SEMENTARA]** Batas yang ada; masa simpan sama dengan foto laporan. Biaya R2 dipantau dari ringkasan harian (LA-39). | LA-58 |
