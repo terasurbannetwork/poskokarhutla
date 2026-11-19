@@ -445,11 +445,14 @@ async function kabarSekali(ctx, kategori, teks) {
   const hari = tanggalWib(ctx.now || new Date())
   if (st[kategori] === hari) return
   try {
-    if (ctx.kabariPemilik) await ctx.kabariPemilik(teks)
+    // kabariPemilik mengembalikan false bila tidak terkirim (limiter, belum terhubung): jangan ditandai, coba lagi di galat berikutnya
+    if (ctx.kabariPemilik) { if ((await ctx.kabariPemilik(teks)) === false) return }
     else { const pm = daftar(ctx.env.PEMILIK)[0]; if (!pm || !ctx.dep.kirimTeks) return; await ctx.dep.kirimTeks(pm, teks) }
   } catch (e) { (ctx.log || (() => {}))('kabar pemilik gagal', e.message); return }
   st[kategori] = hari; tulisJson(f, st)
 }
+// Baris "Pemilik sudah dikabari." hanya untuk pengirim selain pemilik; pemilik sudah membaca penyebabnya di chat (K26).
+const kabarBaris = (ctx, dari) => (new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(normalWa(dari)) ? [] : ['Pemilik sudah dikabari.'])
 
 // Pindah status lewat rute; gagal diulang sekali, lalu pemilik dikabari (tidak pernah ditelan diam-diam).
 async function pindahStatus(ctx, p, ke, sha, { lempar = true } = {}) {
@@ -643,7 +646,7 @@ async function buat(cmd, dari, sha, ctx) {
       await pindah('terbuka', { lempar: false })
       gagalBangun()
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Draf v${n} gagal dibangun.`, e.message, 400))
-      return await balas(susun(`Draf v${n} gagal dibangun`, p, null, [...penyebab(e.message), 'Pemilik sudah dikabari.', AKHIR_GAGAL]))
+      return await balas(susun(`Draf v${n} gagal dibangun`, p, null, [...penyebab(e.message), ...kabarBaris(ctx, dari), AKHIR_GAGAL]))
     }
     if (v2) {
       // V2-A: deck generator = deck dasar; agen menyempurnakannya di ruang kerja (D15, D16, D23).
@@ -652,7 +655,7 @@ async function buat(cmd, dari, sha, ctx) {
       const ruang = Agen.siapkanRuang({ dasar, id: p.id, n, kemarin: kem, dasarBerkas: [pptxGen, jalurKunci(pptxGen)],
         bahan: bahanTeks.map((b) => ({ nama: b.nama || `pesan-${b.id}`, teks: samarkan(String(b.teks || '')) })) })
       const prompt = Agen.promptBangun({ jenis, judul: lap.judul, tanggal: cmd.tanggal, id: p.id, ruang, kemarin: kem, catatan })
-      return await kerjakanAgen(ctx, { p, sha, lap, mode: 'bangun', n, m: null, ruang, prompt, sesi: Agen.bacaSesi(dasar, p.id)?.sesi || null,
+      return await kerjakanAgen(ctx, { p, sha, dari, lap, mode: 'bangun', n, m: null, ruang, prompt, sesi: Agen.bacaSesi(dasar, p.id)?.sesi || null,
         promptSesiBaru: () => prompt, deckNama: path.basename(pptxGen), catatan, hitung, instruksi: cmd.saja ? 'buat saja' : 'buat',
         pindah, statusGagal: 'terbuka', gagalCatat: gagalBangun })
     }
@@ -672,7 +675,7 @@ async function buat(cmd, dari, sha, ctx) {
       if (status === 'membangun') await pindah('terbuka', { lempar: false })
       gagalBangun()
       await kabarSekali(ctx, 'versi', tGalatPemilik(p, n, `Versi v${n} gagal disimpan.`, e.message))
-      return await balas(susun(`Draf v${n} gagal disimpan`, p, null, [...penyebab(e.message), 'Pemilik sudah dikabari.', AKHIR_GAGAL]))
+      return await balas(susun(`Draf v${n} gagal disimpan`, p, null, [...penyebab(e.message), ...kabarBaris(ctx, dari), AKHIR_GAGAL]))
     }
     catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, gambar pratinjau slide 1 berketerangan ringkasan draf, lalu PDF. Tanpa pratinjau: ringkasan di keterangan PDF.
@@ -976,7 +979,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       gagalRevisi()
       await pindah('draf', { lempar: false })
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Revisi v${n} gagal dibangun.`, e.message, 400))
-      return balas(susun(`Revisi v${n} gagal dibangun`, p, m, [...penyebab(e.message), `Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
+      return balas(susun(`Revisi v${n} gagal dibangun`, p, m, [...penyebab(e.message), `Draf v${m} tetap berlaku.`, ...kabarBaris(ctx, dari), AKHIR_GAGAL]))
     }
     await prog.ke(2)
     try {
@@ -1045,7 +1048,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       gagalRevisi()
       if (status === 'membangun') await pindah('draf', { lempar: false })
       await kabarSekali(ctx, 'versi', tGalatPemilik(p, n, `Versi v${n} gagal disimpan.`, e.message))
-      return await balas(susun(`Revisi v${n} gagal disimpan`, p, m, [...penyebab(e.message), `Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
+      return await balas(susun(`Revisi v${n} gagal disimpan`, p, m, [...penyebab(e.message), `Draf v${m} tetap berlaku.`, ...kabarBaris(ctx, dari), AKHIR_GAGAL]))
     }
     catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, pratinjau slide pertama yang berubah lalu PDF berketerangan T-DRAF. Tanpa pratinjau: PDF saja.
@@ -1096,7 +1099,7 @@ async function kerjakanAgen(ctx, o) {
     await o.pindah(o.statusGagal, { lempar: false })
     o.gagalCatat?.()
     if (kabar) await kabarSekali(ctx, kabar, tGalatPemilik(p, n, `${judulGagal} V2: ${alasan}.`, sebab || '', 400))
-    return balas(susun(`${judulGagal} gagal dibuat`, p, m, [...penyebab(sebab ? `${alasan}: ${sebab}` : alasan), ...tetap, ...(kabar ? ['Pemilik sudah dikabari.'] : []), AKHIR_GAGAL]))
+    return balas(susun(`${judulGagal} gagal dibuat`, p, m, [...penyebab(sebab ? `${alasan}: ${sebab}` : alasan), ...tetap, ...(kabar ? kabarBaris(ctx, o.dari) : []), AKHIR_GAGAL]))
   }
   await o.pindah('membangun')
   const lepasAgen = Agen.ambilKunciAgen(dasar, p.id)
@@ -1235,7 +1238,7 @@ async function revisiV2(pesan, dari, sha, p, ctx, opsi = {}) {
     const riwayat = (await versiDaftar(ctx, p, sha).catch(() => [])).map((x) => `v${x.n}: ${rapi(x.instruksi || 'buat', 160)}`)
     const promptSesiBaru = () => [Agen.promptBangun({ jenis: p.jenis, judul: lap.judul, tanggal: p.tanggal, id: p.id, ruang, kemarin: Agen.kemarinAcuan(dasar, p.id), riwayat }), '', prompt].join('\n')
     const deckNama = path.basename(pptxDi(path.join(Agen.acuan(dasar, p.id), 'dasar')) || jalurDeck(dasar, p, lap, 1))
-    const ok = await kerjakanAgen(ctx, { p, sha, lap, mode: 'revisi', n, m, ruang, prompt, sesi: s.sesi || null, promptSesiBaru, deckNama, catatan: [],
+    const ok = await kerjakanAgen(ctx, { p, sha, dari, lap, mode: 'revisi', n, m, ruang, prompt, sesi: s.sesi || null, promptSesiBaru, deckNama, catatan: [],
       instruksi: `revisi: ${rapi(kalimatAman, 480)}`, pindah, statusGagal: 'draf', gagalCatat: () => catatGagal(ctx, sha, langkah) })
     if (ok === true && s.balik) Agen.catatSesi(dasar, p.id, { balik: null }) // catatan balik hanya hilang sesudah versi baru tersimpan
   })
@@ -1251,7 +1254,7 @@ async function jawabV2(pesan, dari, sha, p, ctx, t, { tanpaJawaban = false } = {
   return denganKunciV2(ctx, sha, p, langkah, async (pindah) => {
     Agen.bersihkanKeluaran(t.ruang)
     const prompt = tanpaJawaban ? Agen.promptLanjutTanpaJawaban(t.ruang) : Agen.promptRevisi({ n: t.n, ruang: t.ruang, kalimat: samarkan(teks), jawaban: true })
-    await kerjakanAgen(ctx, { p, sha, lap, mode: t.mode, n: t.n, m: t.m, ruang: t.ruang, prompt, sesi: Agen.bacaSesi(dasar, p.id)?.sesi || null,
+    await kerjakanAgen(ctx, { p, sha, dari, lap, mode: t.mode, n: t.n, m: t.m, ruang: t.ruang, prompt, sesi: Agen.bacaSesi(dasar, p.id)?.sesi || null,
       promptSesiBaru: () => prompt, deckNama: t.deckNama, catatan: t.catatan || [], hitung: t.hitung || {}, instruksi: t.instruksi || 'buat',
       pindah, statusGagal: t.mode === 'bangun' ? 'bertanya' : 'draf', gagalCatat: () => catatGagal(ctx, sha, langkah) })
     return true
@@ -1929,7 +1932,7 @@ export async function tangani(pesan, ctxAsli) {
     if (jawab) {
       // Langkah dalam (bangun, revisi) sudah mencatat dirinya; selain itu `ulangi` mengirim ulang pesan ini.
       if (JSON.stringify(gagalTerakhir(ctx, sha)) === gagalSebelum && cmd?.aksi !== 'ulangi') catatGagal(ctx, sha, { langkah: 'pesan', teks: String(pesan.teks || '') })
-      await ctx.balas(susun('Perintah gagal diproses', null, null, [...penyebab(e.message), 'Pemilik sudah dikabari.', AKHIR_GAGAL]))
+      await ctx.balas(susun('Perintah gagal diproses', null, null, [...penyebab(e.message), ...kabarBaris(ctx, dari), AKHIR_GAGAL]))
     }
     return { status: 'galat', alasan: e.message }
   }

@@ -586,9 +586,15 @@ function picuOtomatis() {
   }, DEBOUNCE_MS)
 }
 
+// -> true bila terkirim; false bila tidak (belum terhubung, ditahan limiter, galat): pemanggil (kabarSekali) tidak menandai
+// "sudah dikabari" supaya kabar dicoba lagi pada galat berikutnya (pemilik 19 Nov 2026: kabar tidak pernah sampai).
 async function kabarPemilik(teks) {
-  if (!PEMILIK || !connected || !sock) return
-  try { await sendPaced(PEMILIK + '@s.whatsapp.net', { text: teks }, false) } catch {}
+  if (!PEMILIK || !connected || !sock) { log('[kabar] pemilik tidak dikabari: PEMILIK kosong atau WA belum terhubung'); return false }
+  try {
+    const x = await sendPaced(PEMILIK + '@s.whatsapp.net', { text: teks }, false)
+    if (!x || !x.ok) { log('[kabar] kabar pemilik ditahan', x && x.error); return false }
+    return true
+  } catch (e) { log('[kabar] kabar pemilik gagal', String((e && e.message) || e)); return false }
 }
 
 // ── SAMBUNGAN ───────────────────────────────────────────────────────────

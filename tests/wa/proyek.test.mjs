@@ -934,7 +934,7 @@ test('revisi: GalatClaude dan generator gagal mengembalikan draf, pemilik dikaba
   await perintah(e, 'judul ganti')
   assert.deepEqual(e.statusLog, ['membangun', 'draf'])
   assert.equal(e.versi.length, 1); assert.equal(e.kirim.length, 0)
-  assert.equal(e.balasan.at(-1), '*Revisi v2 gagal dibangun*\n_P-291026-01, versi 1_\n\nPenyebab: generator gagal: meledak\nDraf v1 tetap berlaku. Pemilik sudah dikabari.\nKetik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.')
+  assert.equal(e.balasan.at(-1), '*Revisi v2 gagal dibangun*\n_P-291026-01, versi 1_\n\nPenyebab: generator gagal: meledak\nDraf v1 tetap berlaku.\nPemilik sudah dikabari.\nKetik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.')
 })
 
 test('parsePerintah BL-10: versi, pptx, batal, balik vN', () => {
@@ -1531,4 +1531,20 @@ test('batal = mulai dari awal: bahan sebelum batal tidak dipakai proyek baru jen
   assert.equal(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'penanganan', TGL), 0, 'jenis lain tidak terpengaruh')
   assert.equal(barisPenyebab('generator gagal (kode G1, rincian di /Users/x/.wa-bot/keluaran/galat.txt): ModuleNotFoundError: No module named pptx'), 'Penyebab: generator gagal: ModuleNotFoundError: No module named pptx')
   assert.equal(barisPenyebab('POST /api/x HTTP 401 Bearer abc.def sk-ant-api03-xyz'), 'Penyebab: POST /api/x HTTP 401 Bearer … [disamarkan]')
+})
+
+test('kabar pemilik: tidak terkirim = tidak ditandai, dicoba lagi; pemilik sendiri tidak dibalas "Pemilik sudah dikabari"', async () => {
+  const d = dunia(); gagalGenerator(d)
+  let terkirim = false
+  d.ctx.kabariPemilik = async () => terkirim // limiter menahan
+  await bangun(d, 'buat harian 26 okt')
+  assert.match(d.balasan.at(-1), /Pemilik sudah dikabari\./, 'pengirim bukan pemilik tetap diberi tahu')
+  const kabar = () => { try { return JSON.parse(fs.readFileSync(path.join(d.dasar, 'proyek', 'kabar.json'), 'utf8')) } catch { return {} } }
+  assert.equal(kabar().bangun, undefined, 'kabar yang ditahan tidak ditandai terkirim')
+  terkirim = true
+  await perintah(d, 'ulangi')
+  assert.ok(kabar().bangun, 'galat berikutnya mengabari lagi')
+  const e = dunia(); gagalGenerator(e)
+  await bangun(e, 'buat harian 26 okt', '6299')
+  assert.doesNotMatch(e.balasan.at(-1), /Pemilik sudah dikabari/); assert.match(e.balasan.at(-1), /Penyebab: generator gagal: meledak/)
 })
