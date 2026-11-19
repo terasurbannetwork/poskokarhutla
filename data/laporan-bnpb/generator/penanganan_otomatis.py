@@ -200,7 +200,9 @@ def utama():
     TOP6 = set(sorted(SEGAR['prov'], key=lambda k: -SEGAR['prov'][k]['hot'][iS])[:6])
     asli_grid = cuaca_riwayat.H.grid_darat
     cuaca_riwayat.H.grid_darat = lambda w: [x for x in asli_grid(w) if x[2] in TOP6]   # cuaca cukup sel 6 provinsi tabel (31 Okt pemilik: "ambil secukupnya")
-    cuaca_riwayat.PAST = 1
+    # situs: cuaca hanya untuk pil hari laporan (1 hari). firms (bot: `hitung`): firespot_hari.seri menghitung 3 hari ke belakang dan
+    # butuh cuaca hari-hari itu (19 Nov 2026: "tidak ada cuaca untuk [16..18 Nov]: rentangnya di luar past_days=1")
+    cuaca_riwayat.PAST = 1 if g.firespot == 'situs' else 5
 
     def firespot_web(hari_akhir, n, jam='17:00', kunci=None):
         hari = [(hari_akhir - dt.timedelta(days=n - 1 - i)).isoformat() for i in range(n)]
