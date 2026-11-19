@@ -277,3 +277,25 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q37 | Target waktu tanggap: berapa lama sampai dibuka dan sampai ditindaklanjuti dianggap terlambat, dan menurut aturan mana? | **[BAWAAN SEMENTARA]** Tidak ada target; angka hanya ditampilkan (D68). Merah hanya dari tenggat tugas. | LA-50 |
 | Q38 | Teruskan massal ke BPBD: kontak mana dan kapan boleh dikirim (mengulang Q5 dan Q16)? | **[BAWAAN SEMENTARA]** Sama dengan penugasan ke BPBD: hanya kontak terdaftar (Q16), F0 hanya ke PEMILIK. | LA-49 |
 | Q39 | Status tiket "dilihat": `meja.js` lokal memakai status `dilihat` (K19: "sudah dilihat petugas"), tetapi D20 dan A8 tidak memuatnya dan CHECK migrasi 0155 hanya enam status lain. Dijadikan status atau penanda terpisah? | **[BAWAAN SEMENTARA]** Penanda, bukan status: baris riwayat tiket dengan `dari` dan `ke` sama (`baru`) dan catatan khusus "dilihat" oleh staf; layar tetap menampilkannya sebagai tahap "Dilihat". Bila pemilik ingin status sungguhan, migrasi 0155 diubah sebelum diterapkan ke produksi (tabel CHECK tidak bisa diubah idempoten sesudahnya). | LA-45 |
+
+## Keputusan pemilik (Meja tampilan dasbor, 19 Nov 2026 sore)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K53 | 19 Nov 2026 | Meja meniru dasbor `/bnpb/dalops`: menu samping (Peta laporan, Daftar laporan, antrean per status, pintu lain), tanpa kepala navy; baris saring bersama (cari, jenis, status, kab/kota, periode, ada korban, ada foto, bergugus) dengan label "Data diperbarui"; Peta dan Daftar di tampilan terpisah (`#peta`, `#daftar`); Ringkasan lalu Status tiket di kolom kiri peta; legenda sebaris. |
+| K54 | 19 Nov 2026 | Pop-up titik peta punya tombol Buka rincian, Arah (Google Maps), dan Bagikan (ringkasan tanpa nomor WA pelapor, D12). |
+| K55 | 19 Nov 2026 | Pemilik "gas" untuk tiga arah: (1) laporan mirip digabung jadi gugus lalu ditautkan ke Buku Besar, (2) diteruskan ke BPBD setempat langsung dari tiket, (3) batas waktu respons per status. Ringkasan tetap menghitung jumlah laporan, bukan menjumlah korban. |
+
+## Keputusan rancangan (pelaksanaan K55)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D71 | Gugus dihitung oleh `src/lapor_gugus.js` (fungsi murni A9, uji `tests/warga/lapor_gugus.test.mjs`) dan dikirim sebagai `gugus` per baris `/api/lapor/meja` dan anggota beserta dampak per laporan di rincian. Meja: chip "Gugus" atau "Gugus kuat" di kolom Jenis, saring cepat Bergugus, kartu gugus di rincian. Penempelan ke Buku Besar tetap F1 lewat `pasang.py` sumber `lapor_ai` (D29, Q19, LA-25), tidak dibuat sendiri. | Pencocok kejadian tetap satu; gugus bukan kejadian resmi. |
+| D72 | Teruskan ke BPBD pada F0: kartu di rincian menampilkan BPBD kab/kota dan provinsi dari `public/data/bpbd.json` (rute `/api/lapor/penting`), tombol Kirim WA membuka WhatsApp staf dengan pesan terisi (staf yang menekan kirim), dan Tandai diteruskan memindahkan tiket ke Diteruskan berbatas aturan A8 (dari Baru atau Dilihat lewat Ditelaah dulu, dua baris riwayat). Pengiriman otomatis oleh sistem ke kontak terdaftar tetap F1 (Q16, Q38, LA-49). | Tindakan keluar tetap oleh manusia (D25); tidak melanggar "F0 hanya ke PEMILIK" karena sistem tidak mengirim. |
+| D73 | Waktu tanggap (D68) tampil: "dibuka N menit" atau "belum dibuka, N" di kolom Status, median sampai dibuka di Ringkasan. Belum ada warna terlambat karena target belum punya sumber (Q37, Q40). | Angka tanpa sumber tidak dikodekan. |
+
+## Pertanyaan terbuka (pelaksanaan K55)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q40 | "Batas waktu respons per status" (K55 butir 3): berapa menit atau jam untuk Baru sampai dibuka, Ditelaah sampai diteruskan, Diteruskan sampai ditindaklanjuti, dan aturan mana yang jadi sumbernya (SOP Pusdalops, Perka, atau keputusan pemilik)? | **[BAWAAN SEMENTARA]** Tidak ada warna terlambat; waktu hanya ditampilkan (D73). Begitu pemilik memberi angka, kolom Status memerah saat lewat dan Antrean kerja menghitung yang lewat. | LA-56 |

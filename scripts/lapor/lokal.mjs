@@ -18,6 +18,7 @@ import {putaran, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/
 import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
+import {hitungGugus} from "../../src/lapor_gugus.js";
 
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUBLIK = path.join(AKAR, "public");
@@ -276,8 +277,11 @@ async function sekitar(q) {
     c = {semua: rapikan(lokal), lengkap: false};
     cacheSekitar.set(kunci, c);
     const ql = `[out:json][timeout:8];(nwr(around:3000,${lat},${lon})["amenity"~"place_of_worship|school|community_centre|townhall|shelter|clinic|hospital|doctors"]["name"];way(around:1500,${lat},${lon})["highway"~"primary|secondary|tertiary|residential|unclassified"]["name"];);out center 160;`;
-    c.overpass = fetch("https://overpass-api.de/api/interpreter", {method: "POST", body: new URLSearchParams({data: ql}), headers: {"user-agent": "lapor-bencana-lokal/0.1"}, signal: AbortSignal.timeout(10000)})
-      .then(r => r.json()).then(J => { const JT = {place_of_worship: "Rumah ibadah", school: "Sekolah", community_centre: "Balai warga", townhall: "Kantor atau balai", shelter: "Shelter", clinic: "Klinik", hospital: "Rumah sakit", doctors: "Klinik"}, tambah = [];
+    // server Overpass utama sering penuh (502): coba cermin berurutan, jawaban bukan JSON dianggap gagal
+    const CERMIN = ["https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"];
+    const tanya = async () => { for (const u of CERMIN) { try { const r = await fetch(u, {method: "POST", body: new URLSearchParams({data: ql}), headers: {"user-agent": "lapor-bencana-lokal/0.1"}, signal: AbortSignal.timeout(12000)});
+      if (r.ok && /json/.test(r.headers.get("content-type") || "")) return await r.json(); } catch {} } throw new Error("semua cermin Overpass gagal"); };
+    c.overpass = tanya().then(J => { const JT = {place_of_worship: "Rumah ibadah", school: "Sekolah", community_centre: "Balai warga", townhall: "Kantor atau balai", shelter: "Shelter", clinic: "Klinik", hospital: "Rumah sakit", doctors: "Klinik"}, tambah = [];
         for (const e of J.elements || []) { const la = e.lat ?? e.center?.lat, lo = e.lon ?? e.center?.lon; if (la == null || !e.tags?.name) continue; tambah.push({nama: e.tags.name, jenis: e.tags.highway ? "Jalan" : JT[e.tags.amenity] || "Tempat", jarakKm: km(lat, lon, la, lo)}); }
         c.semua = rapikan([...c.semua, ...tambah]); c.lengkap = true; })
       .catch(e => { console.error("overpass gagal", e.message); cacheSekitar.delete(kunci); }); // gagal: dicoba lagi pada permintaan berikutnya
@@ -351,14 +355,22 @@ function alun(q) {
 const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : Number(x.nilai) || 0; };
   const rumah = ["rumah_berat", "rumah_sedang", "rumah_ringan"].map(a), adaRumah = rumah.some(v => v != null);
   return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null}; };
+// waktu tanggap (D68): menit dari terkirim sampai "dilihat" pertama dan sampai "ditindaklanjuti" pertama; null = belum. Tanpa target (Q37).
+const tanggap = s => { const pertama = ke => s.tiket.riwayat.find(r => r.ke === ke || (ke === "dilihat" && r.ke !== "baru"))?.waktu;
+  const m = w => w ? Math.max(0, Math.round((w - s.terkirim) / 60000)) : null; return {dibuka: m(pertama("dilihat")), tindak: m(pertama("ditindaklanjuti"))}; };
+// gugus (A9, src/lapor_gugus.js) dihitung atas semua laporan terkirim
+const gugusSemua = d => hitungGugus(Object.values(d.sesi).filter(s => s.nomor).map(s => { const L = s.isian.lokasi?.nilai;
+  return {nomor: s.nomor, jenis: s.isian.jenis?.nilai, lat: L?.lat ?? null, lon: L?.lon ?? null, kab: L?.wilayah?.kab || null, desa: L?.wilayah?.kode || null,
+    t: s.isian.waktu?.ms || s.terkirim, wa: s.wa, fotoSah: (s.foto || []).some(f => f.lencana === "gps" || f.lencana === "exif"), status: s.tiket.status}; }));
 function meja() {
-  const d = baca();
+  const d = baca(), G = gugusSemua(d), gk = Object.fromEntries(G.gugus.map(g => [g.kode, g]));
   return [200, {baris: Object.values(d.sesi).filter(s => s.nomor).sort((a, b) => b.terkirim - a.terkirim).map(s => {
     const p = d.pelapor[s.wa] || {}, w = s.isian.lokasi?.nilai;
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
-      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, dampak: dampakRingkas(s)};
+      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, dampak: dampakRingkas(s), tanggap: tanggap(s),
+      gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null};
   })}];
 }
 function mejaRinci(nomor, lihat = false) {
@@ -370,7 +382,10 @@ function mejaRinci(nomor, lihat = false) {
   const p = d.pelapor[s.wa] || {}, prov = s.isian.lokasi?.nilai?.wilayah?.provKode;
   return [200, {nomor, token: s.token, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
     pelapor: {nama: p.nama, wa: s.wa, peran: PERAN[p.peran], kab: p.kab || null, jabatan: p.jabatan || null},
-    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
+    waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), tanggap: tanggap(s),
+    gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
+      const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
+        return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
     foto: (s.foto || []).map(f => ({url: `/api/lapor/foto/${f.id}?t=${s.token}`, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),
     riwayat: s.tiket.riwayat.map(r => ({...r, label: STATUS[r.ke], waktu: waktuLapor(r.waktu, prov)})), balasan: (s.balasan || []).map(b => ({...b, waktu: waktuLapor(b.waktu, prov)})),

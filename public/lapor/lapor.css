@@ -1749,6 +1749,8 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-opsi-ikon.lp-tegak .lp-opsi-ubin{grid-row:auto!important;width:52px!important;height:52px!important}
 .lp-opsi-ikon.lp-tegak button > span:not(.lp-opsi-ubin),.lp-opsi-ikon.lp-tegak button > b,.lp-opsi-ikon.lp-tegak button > small{text-align:center;overflow-wrap:anywhere}
 @media (max-width:700px){.lp-opsi-ikon.lp-tegak button{grid-template-columns:52px minmax(0,1fr)!important;justify-items:start;text-align:left}}
+/* lima sebaris: teks di bawah ikon dalam SATU kolom; aturan baris mendatar (grid-column:2, b span 2 baris) mendorong ikon keluar kotak (pemilik 19 Nov 2026) */
+@media (min-width:701px){.lp-opsi-ikon.lp-tegak button > :not(.lp-opsi-ubin){grid-column:1!important;grid-row:auto!important}.lp-opsi-ikon.lp-tegak button{align-content:start}}
 /* Sigap di menu samping, di atas tombol Lapor kejadian (pemilik 19 Nov 2026); di ponsel menu jadi bilah bawah, Sigap disembunyikan */
 .lp-tab .lp-sigap{display:none}
 @media (min-width:900px){
@@ -1795,6 +1797,9 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
   .lp-chat-kepala #bKembali svg{width:16px;height:16px}
   .lp-chat-kepala #bKembali::after{content:"Beranda"}
   .lp-chat-kepala #bKembali:hover{border-color:var(--brand2)!important}
+  /* Beranda di ujung kanan kepala (pemilik 19 Nov 2026) */
+  .lp-chat-kepala #bKembali{order:9;margin-left:auto}
+  .lp-chat-kepala .lp-chat-judul{flex:1;min-width:0}
 }
 /* ===== Tentang dan cara melapor ===== */
 .lp-tentang{display:grid;gap:20px;padding:20px 24px 40px}

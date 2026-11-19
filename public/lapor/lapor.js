@@ -406,12 +406,15 @@ function kartuTempat(j = {}) {
   const s = el("button", "lp-utama"); s.type = "button"; s.append(ikon("i-centang"), simpanT);
   const segarPilihan = () => { pilihan.replaceChildren(...[...dipilih.keys()].map(n => { const c = el("button", "lp-tempat-chip"); c.type = "button"; c.append(n, ikon("i-tutup")); c.addEventListener("click", () => { dipilih.delete(n); segarPilihan(); muat(q.value); }); return c; }));
     pilihan.hidden = !dipilih.size; };
-  let ulangTempat = false;
+  let ulangTempat = 0;
   const muat = async t => {
     if (!daftar.querySelector(".lp-tempat")) daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Mencari tempat di sekitar lokasi..."));
     try { const j = await (await fetch(`/api/lapor/sekitar?wa=${encodeURIComponent(wa)}&jenis=${jenisT}&q=${encodeURIComponent(t || "")}`, {signal: AbortSignal.timeout(15000)})).json();
-      if (!j.tempat?.length) return daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Tidak ada tempat yang cocok di sekitar lokasi. Tulis di kolom Tempat lain."));
-      if (j.sebagian && !ulangTempat) { ulangTempat = true; setTimeout(() => muat(q.value.trim()), 5000); } // daftar rumah ibadah dan balai warga menyusul dari OSM
+      // daftar rumah ibadah dan balai warga menyusul dari OpenStreetMap daring yang kadang penuh: coba lagi sampai tiga kali,
+      // dan selama belum lengkap jangan pernah bilang "tidak ada" (pemilik 19 Nov 2026 "kenapa ga ada")
+      if (j.sebagian && ulangTempat < 3) { ulangTempat++; setTimeout(() => muat(q.value.trim()), 4000); }
+      if (!j.tempat?.length) return daftar.replaceChildren(el("p", "lp-redup lp-kecil", j.sebagian && ulangTempat < 3 ? "Mengambil daftar dari OpenStreetMap, tunggu sebentar..."
+        : j.sebagian ? "Daftar dari OpenStreetMap sedang tidak bisa diambil. Tulis namanya di kolom bawah." : "Tidak ada tempat seperti ini tercatat di OpenStreetMap dalam 3 km dari lokasi. Tulis namanya di kolom bawah."));
       const kisi = j.tempat.map(x => { const b = el("button", "lp-tempat"); b.type = "button"; b.setAttribute("aria-pressed", String(dipilih.has(x.nama)));
         const ic = el("span", "lp-tempat-ikon"); ic.append(ikon(/ibadah|sekolah/i.test(x.jenis) ? "i-fasilitas" : /puskesmas|klinik|sakit/i.test(x.jenis) ? "i-plus" : /jalan|jembatan/i.test(x.jenis) ? "i-lokasi" : "i-rumah"));
         const tx = el("span"); tx.append(el("b", null, x.nama), el("small", null, `${x.jenis}, ${x.jarakKm.toLocaleString("id-ID")} km`)); b.append(ic, tx);

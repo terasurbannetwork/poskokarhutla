@@ -401,3 +401,113 @@ dialog.mj-rinci::backdrop{background:color-mix(in oklab,var(--head-bg) 55%,trans
 .mj-pop-buka{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;border:0;border-top:1px solid var(--line);background:var(--card);color:var(--brand2);font-weight:700;font-size:.8125rem;cursor:pointer}
 .mj-pop-buka:hover{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
 .mj-pop-buka svg{width:15px;height:15px}
+
+/* tabel lebih padat */
+.mj-tabel td{padding:8px 10px;font-size:.8125rem}
+.mj-tabel td small{font-size:.6875rem}
+.mj-tabel td:first-child b{white-space:nowrap}
+.mj-isian-kisi .mj-peta-mini{height:170px}
+
+/* ===== poles menyeluruh (pemilik 19 Nov 2026 "bagusin semua") ===== */
+.mj-pita{padding:10px 20px}
+.mj-merek img{width:34px;height:34px}
+.mj-merek span{font-size:1.125rem}
+.mj-saring{padding:10px 20px}
+.mj-nav{padding:12px 10px}
+/* status: baris "Semua" tidak berbingkai saat tidak ada saringan */
+.mj-statpeta .mj-angka button:first-child[aria-pressed="true"]{outline:0;background:none}
+.mj-statpeta .mj-angka button:first-child b{font-size:1.125rem}
+/* kab/kota: lintasan tipis abu muda + isi biru, bukan garis bawah tebal */
+.mj-rk-kab button{position:relative;padding:6px 4px 10px}
+.mj-rk-kab button::after{content:"";position:absolute;left:4px;right:4px;bottom:4px;height:3px;border-radius:3px;background:var(--surface)}
+.mj-rk-kab button i{position:absolute;top:auto;left:4px;bottom:4px;z-index:1;height:3px;max-width:calc(100% - 8px)}
+/* panel di atas peta seragam */
+.mj-ringkas,.mj-statpeta,.mj-jenis,.mj-legenda,.mj-ikon-peta{border:1px solid color-mix(in oklab,var(--line) 70%,transparent)}
+.mj-legenda{bottom:12px}
+.mj-peta .maplibregl-ctrl-bottom-right{margin-bottom:44px}
+.mj-peta .maplibregl-ctrl-group{border-radius:10px;box-shadow:var(--mj-bayang)}
+
+/* ===== tanpa kepala navy: merek di atas menu samping ===== */
+.mj{grid-template-columns:240px minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr)!important;grid-template-areas:"samping saring" "samping isi"!important}
+.mj-samping{grid-area:samping;display:flex;flex-direction:column;min-height:0;background:var(--head-bg);color:var(--on-head)}
+.mj-samping .mj-merek{gap:10px;padding:16px 16px 14px;border-bottom:1px solid color-mix(in oklab,var(--on-head) 12%,transparent)}
+.mj-samping .mj-merek span{font-size:1.0625rem}
+.mj-samping .mj-merek small{font-size:.6875rem}
+.mj-samping .mj-segar{margin:10px 14px 14px;justify-content:center}
+/* menu samping navy (selaras merek BNPB) */
+.mj-nav{flex:1;grid-area:auto;background:none;border:0;padding:10px}
+.mj-nav-grup{margin:14px 10px 6px;color:var(--on-head-2);font-size:.6875rem;letter-spacing:.02em}
+.mj-nav-b{color:var(--on-head);font-weight:500;padding:8px 10px}
+.mj-nav-b svg{width:17px;height:17px;color:var(--st,var(--on-head-2))}
+.mj-nav-b b{background:color-mix(in oklab,var(--on-head) 12%,transparent);color:var(--on-head)}
+.mj-nav-b:hover{background:color-mix(in oklab,var(--on-head) 8%,transparent)}
+.mj-nav-b[aria-current="true"]{background:color-mix(in oklab,var(--on-head) 14%,transparent);color:var(--on-head);font-weight:700}
+.mj-nav-b[aria-current="true"]::before{left:-10px;top:6px;bottom:6px;width:4px;background:var(--st,var(--head-hl))}
+.mj-nav-b[aria-current="true"] b{background:var(--head-hl);color:var(--head-bg)}
+.mj-nav-b[aria-current="true"] svg{color:var(--st,var(--head-hl))}
+@media (max-width:900px){.mj{grid-template-columns:1fr!important;grid-template-areas:"saring" "isi"!important}.mj-samping{display:none}}
+
+/* ===== ringkasan dipoles ===== */
+.mj-rk-ubin{border:0;background:color-mix(in oklab,var(--jn) 9%,var(--card));grid-template-columns:auto 1fr;padding:10px}
+.mj-rk-ubin .mj-rk-ik{background:var(--card)}
+.mj-rk-ubin b{justify-self:end;color:var(--jn)}
+.mj-rk-ubin small{color:var(--ink)}
+.mj-rk-kab button{grid-template-columns:18px minmax(0,1fr) auto;align-items:center;column-gap:8px}
+.mj-rk-kab em{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--surface);color:var(--ink2);font:700 .625rem Inter,sans-serif;font-style:normal}
+.mj-rk-kab li:first-child em{background:var(--head-bg);color:var(--on-head)}
+.mj-rk-kab button::after{left:30px}
+.mj-rk-kab button i{left:30px;max-width:calc(100% - 34px);background:var(--brand2);opacity:.7}
+
+/* ===== pop-up titik: kaki tiga tombol ===== */
+.mj-pop-kaki{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:0;padding:0;border-top:1px solid var(--line);background:var(--card)}
+.mj-pop-kaki>*{border-radius:0}
+.mj-pop-buka{border:0;background:var(--brand);color:var(--on-brand)}
+.mj-pop-buka:hover{background:var(--brand2)}
+.mj-pop-kecil{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 6px;border:0;border-left:1px solid var(--line);background:var(--card);color:var(--brand2);font-size:.75rem;font-weight:700;text-decoration:none;cursor:pointer}
+.mj-pop-kecil:hover{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.mj-pop-kecil svg{width:15px;height:15px}
+.mj-pop button:focus:not(:focus-visible),.mj-pop a:focus:not(:focus-visible){outline:0}
+
+/* ===== label waktu data ala dalops ===== */
+.mj-saring{grid-template-columns:minmax(200px,1.6fr) repeat(4,minmax(0,1fr)) auto auto auto!important}
+.mj-saring .mj-segar{display:inline-flex;align-items:center;gap:7px;height:32px;margin:0;padding:0 12px;border:1px solid color-mix(in oklab,var(--ok) 35%,var(--line));border-radius:999px;background:color-mix(in oklab,var(--ok) 9%,var(--card));color:var(--ink);font-size:.75rem;font-weight:600;white-space:nowrap;cursor:pointer}
+.mj-saring .mj-segar i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 color-mix(in oklab,var(--ok) 50%,transparent);animation:mj-denyut 2s infinite}
+.mj-saring .mj-segar svg{width:14px;height:14px;color:var(--ink2)}
+.mj-saring .mj-segar:hover svg{color:var(--brand2)}
+.mj-saring .mj-segar.galat{border-color:color-mix(in oklab,var(--bad) 40%,var(--line));background:color-mix(in oklab,var(--bad) 9%,var(--card))}
+.mj-saring .mj-segar.galat i{background:var(--bad);animation:none}
+@keyframes mj-denyut{70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (max-width:1100px){.mj-saring{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+/* status tiket: pilihan lembut, baris nol diredupkan */
+.mj-statpeta .mj-angka button[aria-pressed="true"]:not(:first-child){outline:0;background:color-mix(in oklab,var(--st) 12%,var(--card));box-shadow:inset 3px 0 0 var(--st)}
+/* ringkasan: ubin bernilai nol diredupkan */
+.mj-rk-ubin.nol{background:var(--paper)}
+.mj-rk-ubin.nol b{color:var(--ink2)}
+.mj-rk-ubin.nol .mj-rk-ik{opacity:.5}
+
+/* ===== kolom kiri peta: ringkasan lalu status tiket (pemilik 19 Nov 2026) ===== */
+.mj-kiri-peta{position:absolute;left:12px;top:64px;bottom:64px;z-index:2;display:flex;flex-direction:column;gap:10px;width:256px;overflow:auto;scrollbar-width:thin;pointer-events:none}
+.mj-kiri-peta>*{pointer-events:auto;flex:none}
+.mj-kiri-peta .mj-ringkas,.mj-kiri-peta .mj-statpeta{position:static;width:auto;max-height:none}
+.mj-peta-atas{right:12px!important}
+@media (max-width:1100px){.mj-kiri-peta .mj-statpeta{display:block}}
+@media (max-width:900px){.mj-kiri-peta{top:auto;bottom:56px;width:230px;max-height:45%}}
+
+/* ===== gugus, waktu tanggap, teruskan ke BPBD ===== */
+.mj-gugus{display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:1px 7px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 10%,var(--card));color:var(--brand2);font-size:.6875rem;font-weight:700;white-space:nowrap}
+.mj-gugus svg{width:12px;height:12px}
+.mj-gugus.kuat{background:var(--brand2);color:var(--on-pekat)}
+.mj-tanggap{display:block;margin-top:3px;font-size:.6875rem;color:var(--ink2);white-space:nowrap}
+.mj-tanggap.belum{color:var(--warn-tx);font-weight:600}
+.mj-rk-tanggap{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:8px 10px;border-radius:10px;background:var(--paper);font-size:.75rem}
+.mj-rk-tanggap b{font-weight:800;text-align:right}
+.mj-teruskan{display:grid;gap:8px}
+.mj-bpbd{display:grid;gap:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px}
+.mj-bpbd b{display:block;font-size:.8125rem}
+.mj-bpbd small{display:block;color:var(--ink2);font-size:.6875rem}
+.mj-gugus-tabel{width:100%;border-collapse:collapse;font-size:.75rem}
+.mj-gugus-tabel th{padding:5px 6px;background:var(--head-bg);color:var(--on-head);font-weight:700;text-align:center}
+.mj-gugus-tabel td{padding:5px 6px;border-top:1px solid var(--line)}
+.mj-gugus-tabel td.angka{text-align:center;font-variant-numeric:tabular-nums}
+.mj-gugus-tabel tr.saya td{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.mj-tautan{padding:0;border:0;background:none;color:var(--brand2);text-decoration:underline;cursor:pointer}
