@@ -35,12 +35,12 @@ test('BL_PROYEK nyala: perintah proyek dari pemilik dan nomor terdaftar lain (Q1
   }
 })
 
-test('menu draf: angka 1-4 dari nomor terdaftar langsung ke proyek, tidak diteruskan ke Worker; ya diputuskan klasifikasi proyek', async () => {
-  for (const teks of ['1', '2', '3', '4', ' 4 ', '1.', '2 .']) {
+test('menu draf: angka 1-5 dari nomor terdaftar langsung ke proyek, tidak diteruskan ke Worker; ya diputuskan klasifikasi proyek', async () => {
+  for (const teks of ['1', '2', '3', '4', '5', ' 4 ', '1.', '2 .']) {
     assert.equal(rute({ bl: true, teks }), 'proyek', 'pemilik ' + teks)
     assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'proyek', 'terdaftar ' + teks)
   }
-  for (const teks of ['5', '12', '1 final', '0']) assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'bahan+proyek', teks)
+  for (const teks of ['6', '12', '1 final', '0']) assert.equal(rute({ bl: true, dari: NO_LAIN, teks }), 'bahan+proyek', teks)
   assert.equal(rute({ bl: false, dari: NO_LAIN, teks: '1' }), 'bahan', 'BL_PROYEK mati: perilaku lama')
   assert.equal(rute({ bl: true, dari: NO_LAIN, teks: '1', grupOps: true, pribadi: false }), 'bahan', 'grup operasi tidak berubah')
   // `ya` teks saja: jalur bahan+proyek, lalu proyek.klasifikasi memutuskan (langsung hanya selama tanya batal berlaku)

@@ -80,7 +80,7 @@ export function parsePerintah(teks, now = new Date()) {
   if (['versi', 'pptx', 'batal', 'final'].includes(t)) return { aksi: t }
   const k = t.match(/^(versi|pptx|batal|final) (p-\d{6}-\d{2})$/) // berkode: pemegang beberapa draf memilih proyeknya
   if (k) return { aksi: k[1], id: k[2].toUpperCase() }
-  if (/^[1-4][\s.]*$/.test(t)) return { aksi: 'menu', n: Number(t[0]) } // menu bernomor di akhir draf; di luar draf dijawab petunjuk
+  if (/^[1-5][\s.]*$/.test(t)) return { aksi: 'menu', n: Number(t[0]) } // menu bernomor di akhir draf; di luar draf dijawab petunjuk
   const b = t.match(/^balik (?:ke )?v?(\d{1,3})$/)
   if (b) return { aksi: 'balik', n: Number(b[1]) }
   const m = t.match(/^buat\b ?(.*)$/)
@@ -107,13 +107,13 @@ export const BANTUAN = [
   '- *lanjut*: buat laporan dari bahan ada',
   '',
   '*Saat draf*',
-  '- *1* atau *final*: kirim versi final',
-  '- *2* atau *pptx*: minta berkas PPTX',
-  '- *3* atau *versi*: lihat riwayat versi',
-  '- *4* atau *batal*: batalkan proyek',
+  '- *1* atau *revisi*: kirim revisi beberapa pesan, lalu *selesai*',
+  '- *2* atau *final*: kirim versi final',
+  '- *3* atau *pptx*: minta berkas PPTX',
+  '- *4* atau *versi*: lihat riwayat versi',
+  '- *5* atau *batal*: batalkan proyek',
   '- *balik v2*: pakai isi versi 2',
   '- Kalimat biasa: revisi atau tanya isi draf',
-  '- *revisi*: kirim revisi dalam beberapa pesan, lalu *selesai*',
   '',
   '*Lainnya*',
   '- *status*: proyek yang masih terbuka',
@@ -355,15 +355,17 @@ export function susun(jdl, p, n, ...blok) {
 }
 const bagian = (label, baris) => (baris.length ? [`*${label}:*`, ...baris.map((c) => `- ${c}`)] : [])
 // Menu bernomor di akhir tiap draf (pemilik, 18 Nov 2026): angka 1 sampai 4 dari pemegang draf = perintah, tidak pernah revisi.
-export const MENU = '*Atau balas angka:*\n1 Final\n2 Minta PPTX\n3 Lihat versi\n4 Batal'
+export const MENU = '*Balas angka:*\n*1* Revisi: kirim revisinya (boleh beberapa pesan), lalu *selesai*\n*2* Final\n*3* Minta PPTX\n*4* Lihat versi\n*5* Batal'
 // Bubble sendiri sesudah PDF tiap draf (pemilik 19 Nov 2026: "kalau udah beres, tanya revisi"; "bagian ini dan penawaran revisi pindah jadi
 // bubble baru aja"): biaya laporan sejauh ini, tawaran revisi (revisi, kirim, selesai), lalu menu angka.
 const labelLama = (detik) => { const d = Math.round(Number(detik)); if (!(d > 0)) return ''; const m = Math.floor(d / 60), s = d % 60; return `Lama pembuatan: ${m ? m + ' menit' : ''}${m && s ? ' ' : ''}${s || !m ? s + ' detik' : ''}.` }
 export function tMenuDraf(p, n, biaya = 0, lamaDetik = null) {
-  return susun('Ada revisi?', p, n, [barisBiayaDraf(biaya), labelLama(lamaDetik)],
-    ['Ketik *revisi*, kirim revisinya (boleh beberapa pesan), lalu ketik *selesai*.', 'Revisi satu kalimat juga bisa langsung dikirim.'], MENU)
+  // tebal untuk judul dan angka pilihan, miring untuk keterangan, kode untuk perintah (pemilik 19 Nov 2026: "mainin formatting, jangan berantakan")
+  const meta = [barisBiayaDraf(biaya), labelLama(lamaDetik)].filter(Boolean).map((x) => `_${x}_`)
+  return susun('Ada revisi?', p, n, meta, MENU, '_Revisi satu kalimat juga bisa langsung dikirim._')
 }
-export const MENU_AKSI = { 1: 'final', 2: 'pptx', 3: 'versi', 4: 'batal' }
+// 1 = revisi (pemilik 19 Nov 2026: "revisi jadi angka"); angka lain bergeser satu
+export const MENU_AKSI = { 1: 'revisi', 2: 'final', 3: 'pptx', 4: 'versi', 5: 'batal' }
 
 // Ringkasan draf (T-BUKA dan T-DRAF dalam satu teks): menempel di keterangan gambar pratinjau, jadi satu draf = 2 kiriman (Q1).
 // hitung: {kunci bahan atau 'lain': jumlah pesan}. Kalimat angka sistem hanya untuk laporan yang memuatnya (penanganan karhutla).
@@ -375,6 +377,15 @@ function bagianRingkas(judul, isi) {
   const b = (isi || []).map((x) => rapi(x, 160)).filter(Boolean)
   return bagian(judul, b.length > MAKS_PER_KELOMPOK ? [...b.slice(0, MAKS_PER_KELOMPOK - 1), `dan ${b.length - MAKS_PER_KELOMPOK + 1} lainnya`] : b)
 }
+// Temuan pemeriksa otomatis jadi kalimat biasa di kelompok Perlu dicek (pemilik 19 Nov 2026: "Gerbang: bahasa: slide 1: spasi ganda" tidak jelas
+// maksudnya). Awalan teknis dibuang, kutipan kosong dibuang, tanda belum dibetulkan ditambahkan.
+export function temuanRingkas(x) {
+  let t = String(x ?? '').replace(/^Gerbang:\s*/i, '').replace(/^(bahasa|format|format slide):\s*/i, '').replace(/:\s*""\s*$/, '').trim()
+  const lain = t.match(/^dan (\d+)/)
+  if (lain) return `dan ${lain[1]} temuan lain.`
+  t = t.charAt(0).toUpperCase() + t.slice(1)
+  return /belum dibetulkan/.test(t) ? t : t.replace(/\.$/, '') + ' (belum dibetulkan).'
+}
 const blokKelompok = (kelompok) => (kelompok || []).map(([judul, isi]) => bagianRingkas(judul, isi))
 export function tDraf(p, n, lap, tanggal, { hitung = {}, catatan = [], peringatan = [], slide = null, biaya = 0, ringkasan = '', kelompok = null } = {}) {
   const per = Object.entries(hitung).map(([k, j]) => `${k === 'lain' ? 'bahan lain' : labelBahan(k)} ${j}`)
@@ -385,7 +396,7 @@ export function tDraf(p, n, lap, tanggal, { hitung = {}, catatan = [], peringata
       ...(slide ? [`Gambar ini slide ${slide}, PDF menyusul.`] : [])],
     ...(ringkasan ? [rapi(ringkasan, 300)] : []),
     ...(kelompok ? blokKelompok(kelompok) : [bagian('Catatan', catatan)]),
-    bagian('Pemeriksaan', peringatan))
+    bagianRingkas('Perlu dicek', peringatan.map(temuanRingkas)))
 }
 // Teks dari luar (Claude, deck, pemeriksa) dirapikan ke aturan caption: tanpa titik tengah, em dash, en dash; satu baris; dipotong.
 const rapi = (t, maks = 160) => {
@@ -398,7 +409,7 @@ export const tPratinjau = (p, n, slide) => susun(`Pratinjau slide ${slide}`, p, 
 export function tDrafRevisi(p, n, lap, tanggal, { perubahan = [], tolak = [], lewat = [], catatan = [], peringatan = [], biaya = 0, kelompok = null } = {}) {
   return susun(`Draf v${n} siap`, p, n, judul(lap, tanggal),
     kelompok ? bagianRingkas('Perubahan', perubahan) : bagian('Perubahan', perubahan), bagian('Tidak diubah', tolak), bagian('Dilewati', lewat),
-    ...(kelompok ? blokKelompok(kelompok) : [bagian('Catatan', catatan)]), bagian('Pemeriksaan', peringatan))
+    ...(kelompok ? blokKelompok(kelompok) : [bagian('Catatan', catatan)]), bagianRingkas('Perlu dicek', peringatan.map(temuanRingkas)))
 }
 export const tPdf = (p, n, lap, tanggal) => susun(`PDF draf v${n}`, p, n, judul(lap, tanggal))
 
@@ -609,7 +620,7 @@ async function buat(cmd, dari, sha, ctx) {
     p = await pulihkan(ctx, p, sha)
   }
   // TODO(BL-10): proyek draf menerima revisi; `buat` lagi di sini belum membangun ulang.
-  if (p.status === 'draf') return balas(susun('Draf sudah ada', p, p.versi, 'Tulis perubahan dengan kalimat biasa, atau balas *1* untuk final.'))
+  if (p.status === 'draf') return balas(susun('Draf sudah ada', p, p.versi, 'Tulis perubahan dengan kalimat biasa, atau balas *2* untuk final.'))
   if (!AKTIF.includes(p.status)) return balas(susun(`Proyek sudah ${p.status}`, p, null, 'Ketik *buat* untuk memulai proyek baru.'))
   // K17: `buat <jenis>` hanya membuka proyek dan membalas daftar bahan; pembangunan selalu menunggu `lanjut` (atau `buat saja`).
   if (!cmd.saja && !cmd.lanjut) {
@@ -1002,7 +1013,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
   if (p.status !== 'draf' || !(p.versi > 0)) return balas(susun('Belum ada draf', p, p.versi || null, `Belum ada draf untuk ${opsi.balik ? 'dikembalikan' : 'direvisi'}. Ketik *buat* dulu.`))
   const m = p.versi, n = m + 1
   if (opsi.balik != null) {
-    if (opsi.balik < 1 || opsi.balik > m) return balas(susun(`Versi v${opsi.balik} tidak ada`, p, m, `Versi terakhir v${m}. Balas *3* untuk melihat riwayat versi.`))
+    if (opsi.balik < 1 || opsi.balik > m) return balas(susun(`Versi v${opsi.balik} tidak ada`, p, m, `Versi terakhir v${m}. Balas *4* untuk melihat riwayat versi.`))
     if (opsi.balik === m) return balas(susun('Sudah versi terakhir', p, m, `v${m} sudah versi terakhir, tidak ada yang dikembalikan.`))
   }
   // D24: proyek yang v1-nya dibuat V2 selalu direvisi V2 (dan sebaliknya), walau saklar berubah.
@@ -1257,11 +1268,16 @@ async function kerjakanAgen(ctx, o) {
     return balas(susun(`${judulGagal} ditolak`, p, m, ['Pagar angka menolak draf ini, draf tidak disimpan:', ...pg.langgar.slice(0, 3).map((x) => `- ${rapi(x, 200)}`), ...tetap], AKHIR_GAGAL))
   }
   // terbitkan: PPTX agen di jalur versi biasa (pastikanPptx, final), PDF dan pratinjau dibuat mesin (D18)
-  const pptx = jalurDeck(dasar, p, lap, n), pdf = pptx.replace(/\.pptx$/i, '.pdf')
+  const pptx = jalurDeck(dasar, p, lap, n), pdf = pptx.replace(/\.pptx$/i, '.pdf'), spasiDirapikan = []
   try {
     fs.mkdirSync(path.dirname(pptx), { recursive: true, mode: 0o700 })
     fs.copyFileSync(h.pptx, pptx)
     if (kunci.length) tulisJson(jalurKunci(pptx), kunci)
+    // spasi ganda dirapikan otomatis sebelum PDF (pemilik 19 Nov 2026: temuan aman dibetulkan, bukan hanya dilaporkan); angka sistem tidak disentuh
+    try {
+      const rs = JSON.parse(String((await dep.exec(pyBin(env), [path.join(DI, 'rapi_spasi.py'), pptx, ...(kunci.length ? [jalurKunci(pptx)] : [])], { cwd: GENERATOR, timeout: 120e3, maxBuffer: 5e6 }))?.stdout || '').trim() || '{}')
+      if (rs.diperbaiki > 0) spasiDirapikan.push(`Spasi ganda di slide ${rs.slide.join(', ')} dirapikan otomatis.`)
+    } catch (e) { (ctx.log || (() => {}))('[rapi spasi] gagal', e.message) }
     fs.rmSync(pdf, { force: true })
     await dep.exec(pyBin(env), [path.join(GENERATOR, 'pdf.py'), pptx, path.dirname(pdf)], { cwd: GENERATOR, timeout: 300e3, maxBuffer: 20e6 })
     if (!ada(pdf)) throw new Error('PDF tidak terbentuk')
@@ -1287,20 +1303,20 @@ async function kerjakanAgen(ctx, o) {
   if (kel.teknis?.length) { try { fs.appendFileSync(path.join(dasar, 'agen', 'usul-teknis.log'), kel.teknis.map((x) => `${new Date().toISOString()} ${p.id} v${n}: ${x}\n`).join('')) } catch {} }
   const kelompokDraf = [
     ['Perlu keputusan', kel.keputusan],
-    ['Perlu dicek', [...(kel.dicek || []), ...(pg.tanpaSumber.length ? [`Angka tanpa sumber di bahan: ${pg.tanpaSumber.join(', ')}`] : []),
+    ['Perlu dicek', [...(kel.dicek || []), ...peringatan.map(temuanRingkas), ...(pg.tanpaSumber.length ? [`Angka tanpa sumber di bahan: ${pg.tanpaSumber.join(', ')}`] : []),
       ...(pg.dariKemarin.length ? [`Angka dari laporan kemarin: ${pg.dariKemarin.join(', ')}`] : [])]],
     ['Tidak dimuat', [...(kel.tidak_dimuat || []), ...pg.dihapus.map((x) => `Dihapus: ${x}`)]],
-    ['Catatan', [...(o.catatan || []), ...(kel.lain || [])]],
+    ['Catatan', [...(o.catatan || []), ...(kel.lain || []), ...spasiDirapikan]],
   ]
   catatGagal(ctx, sha, null)
   catatMenu(ctx, sha, p.id)
   if (mode === 'bangun') {
-    const ringkas = tDraf(p, n, lap, p.tanggal, { hitung: o.hitung || {}, ringkasan: h.ringkasan, kelompok: kelompokDraf, peringatan, slide: png.length ? 1 : null })
+    const ringkas = tDraf(p, n, lap, p.tanggal, { hitung: o.hitung || {}, ringkasan: h.ringkasan, kelompok: kelompokDraf, slide: png.length ? 1 : null })
     if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), ringkas, 'image/png')
     await ctx.balasFile(pdf, path.basename(pdf), png.length ? tPdf(p, n, lap, p.tanggal) : ringkas, MIME.pdf)
     await kirimMenuDraf(ctx, p, n)
   } else {
-    const ringkas = tDrafRevisi(p, n, lap, p.tanggal, { perubahan: h.perubahan.length ? h.perubahan : [h.ringkasan || 'Revisi diterapkan.'], kelompok: kelompokDraf, peringatan })
+    const ringkas = tDrafRevisi(p, n, lap, p.tanggal, { perubahan: h.perubahan.length ? h.perubahan : [h.ringkasan || 'Revisi diterapkan.'], kelompok: kelompokDraf })
     if (png.length) await ctx.balasFile(png[0], path.basename(png[0]), tPratinjau(p, n, slide), 'image/png')
     await ctx.balasFile(pdf, path.basename(pdf), ringkas, MIME.pdf)
     await kirimMenuDraf(ctx, p, n)
@@ -1615,7 +1631,7 @@ async function lanjut(dari, sha, ctx) {
   if (!p) {
     const lain = ps[0]
     if (lain?.status === 'membangun') return ctx.balas(tSibuk(lain, lain.versi || null))
-    if (lain?.status === 'draf') return ctx.balas(susun('Draf sudah ada', lain, lain.versi, 'Tulis perubahan dengan kalimat biasa, atau balas *1* untuk final.'))
+    if (lain?.status === 'draf') return ctx.balas(susun('Draf sudah ada', lain, lain.versi, 'Tulis perubahan dengan kalimat biasa, atau balas *2* untuk final.'))
     return ctx.balas(susun('Belum ada proyek terbuka', null, null, 'Ketik *buat harian* atau *buat penanganan* dulu, lalu kirim bahannya.'))
   }
   return buat({ aksi: 'buat', jenis: p.jenis, tanggal: p.tanggal, saja: p.status === 'bertanya', lanjut: true }, dari, sha, ctx)
@@ -1916,7 +1932,7 @@ async function status(dari, sha, ctx) {
     if (p.status === 'final') continue
     if (!AKTIF.includes(p.status)) { hapusIndeks(dasar, id); continue }
     const lap = lapDari(p.jenis)
-    const [keadaan, lanjut] = { terbuka: ['menunggu bahan', 'Kirim bahan, lalu ketik *lanjut*.'], bertanya: ['menunggu jawaban', 'Kirim jawabannya, atau ketik *lanjut*.'], membangun: ['sedang dibangun', 'Tunggu sebentar.'], draf: ['draf siap', 'Balas *1* untuk final, atau tulis revisi.'] }[p.status]
+    const [keadaan, lanjut] = { terbuka: ['menunggu bahan', 'Kirim bahan, lalu ketik *lanjut*.'], bertanya: ['menunggu jawaban', 'Kirim jawabannya, atau ketik *lanjut*.'], membangun: ['sedang dibangun', 'Tunggu sebentar.'], draf: ['draf siap', 'Balas *1* untuk revisi atau *2* untuk final.'] }[p.status]
     blok.push([kodeBaris(p, p.versi || null), lap ? judul(lap, p.tanggal) : p.jenis, `Status: ${keadaan}`, lanjut].join('\n'))
   }
   return ctx.balas(blok.length ? susun(blok.length > 1 ? `${blok.length} proyek terbuka` : 'Proyek terbuka', null, null, ...blok) : susun('Belum ada proyek terbuka', null, null, 'Kirim atau teruskan bahan, lalu ketik *buat harian* atau *buat penanganan*.'))
@@ -2228,7 +2244,7 @@ export async function tangani(pesan, ctxAsli) {
     if ((cmd?.aksi === 'lanjut' || cmd?.aksi === 'ulangi' || (cmd?.aksi === 'buat' && cmd.saja)) && await jawabSibuk(ctx, sha)) return { status: 'masih dibangun' }
     if (cmd?.aksi === 'ulangi') { await ulangi(dari, sha, ctx); return { status: 'ulangi' } }
     if (cmd?.aksi === 'terima_kurang') return await terimaKurang(dari, sha, ctx)
-    if (cmd?.aksi === 'selesai') { await ctx.balas(susun('Tidak ada revisi terbuka', null, null, ['Belum ada revisi yang sedang dikumpulkan.', 'Ketik *revisi* dulu, kirim revisinya, lalu *selesai*. Ketik *1* atau *final* bila draf sudah sesuai.'])); return { status: 'selesai tanpa kumpul' } }
+    if (cmd?.aksi === 'selesai') { await ctx.balas(susun('Tidak ada revisi terbuka', null, null, ['Belum ada revisi yang sedang dikumpulkan.', 'Ketik *revisi* dulu, kirim revisinya, lalu *selesai*. Ketik *2* atau *final* bila draf sudah sesuai.'])); return { status: 'selesai tanpa kumpul' } }
     if (cmd?.aksi === 'satelit') {
       // K18: *tunggu* / *hitung* hanya menjawab pilihan hidup (di bawah 24 jam, proyek masih menunggu); selain itu petunjuk, tanpa proyek baru.
       const e = await pilihanSatelit(ctx, sha)
@@ -2250,6 +2266,7 @@ export async function tangani(pesan, ctxAsli) {
       }
       const aksi = MENU_AKSI[cmd.n]
       cmd = aksi === 'batal' ? { aksi, tanya: true, id: sasaran.id } : { aksi, id: sasaran.id }
+      if (aksi === 'revisi') return await alurKumpul(cmd, pesan, dari, sha, ctx)
     }
     if (cmd?.aksi === 'status') { await status(dari, sha, ctx); return { status: 'status' } }
     if (cmd?.aksi === 'buat') { await buat(cmd, dari, sha, ctx); return { status: cmd.saja ? 'buat saja' : 'buat' } }
