@@ -218,7 +218,8 @@ export function aturanTolak({ dasar, id, repo = REPO, rumah = os.homedir() }) {
 }
 export function lingkungan(env = process.env, { pyBin = null, kunci = null, tmp = null } = {}) {
   const out = {}
-  for (const k of ['HOME', 'USER', 'LOGNAME', 'LANG', 'LC_ALL', 'TMPDIR', 'SHELL', 'TERM', 'SystemRoot', 'TEMP', 'TMP', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA']) if (env[k]) out[k] = env[k]
+  // ANTHROPIC_BASE_URL ikut supaya Claude Code agen memakai router API yang sama dengan bot (9router, pemilik 19 Nov 2026)
+  for (const k of ['ANTHROPIC_BASE_URL', 'HOME', 'USER', 'LOGNAME', 'LANG', 'LC_ALL', 'TMPDIR', 'SHELL', 'TERM', 'SystemRoot', 'TEMP', 'TMP', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA']) if (env[k]) out[k] = env[k]
   if (tmp) { try { fs.mkdirSync(tmp, { recursive: true, mode: 0o700 }) } catch {} out.TMPDIR = out.TMP = out.TEMP = tmp } // sandbox hanya boleh menulis kerja/ dan keluaran/
   out.PATH = [pyBin, env.PATH].filter(Boolean).join(path.delimiter)
   out.PYTHONUTF8 = '1'

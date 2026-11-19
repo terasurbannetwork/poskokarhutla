@@ -6,9 +6,12 @@
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.1.7'
+export const VERSI = '2.1.8'
 
 export const CHANGELOG = [
+  { versi: '2.1.8', tanggal: '2026-11-19', isi: [
+    'Bot bisa memakai router API (misalnya 9router) di depan beberapa akun Anthropic; diatur pemilik di mesin bot.',
+  ] },
   { versi: '2.1.7', tanggal: '2026-11-19', isi: [
     'Menu draf: *1* Revisi, *2* Final, *3* Minta PPTX, *4* Lihat versi, *5* Batal.',
     'Perintah ditulis dengan format kode supaya jelas bisa diketik; keterangan biaya dan lama pembuatan miring.',

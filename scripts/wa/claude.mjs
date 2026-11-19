@@ -365,7 +365,8 @@ function muatSdk(env, dep) {
     }
     return m.default || m.Anthropic || m
   })()
-  return new Kelas({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 2 })
+  // ANTHROPIC_BASE_URL: router API (mis. 9router, pemilik 19 Nov 2026) di depan beberapa akun Anthropic; kosong = API Anthropic langsung
+  return new Kelas({ apiKey: env.ANTHROPIC_API_KEY, maxRetries: 2, ...(env.ANTHROPIC_BASE_URL ? { baseURL: env.ANTHROPIC_BASE_URL } : {}) })
 }
 
 // dep: client (palsu di uji), Anthropic (kelas SDK, opsional), bacaBiaya(tanggalWib) -> mikro-dolar hari itu, tambahBiaya(tanggalWib, mikro),
@@ -406,7 +407,8 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
     // Cadangan sisi server: permintaan yang ditolak pengaman Opus 5.5 diulang di model cadangan dalam panggilan yang sama.
     // Klien palsu di uji tanpa `beta` tetap memakai messages.create biasa.
     // Haiku 5.5 tidak punya cadangan sisi server: selalu messages.create biasa.
-    const r = client.beta?.messages?.create && !/haiku/.test(modelPakai)
+    // cadangan sisi server hanya langsung ke Anthropic: router bisa menolak beta dan parameter yang tidak dikenalnya (BL_FALLBACK=0 mematikan)
+    const r = client.beta?.messages?.create && !/haiku/.test(modelPakai) && !env.ANTHROPIC_BASE_URL && env.BL_FALLBACK !== '0'
       ? await client.beta.messages.create({ ...body, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' })
       : await client.messages.create(body)
     const mikro = biaya(r.usage || {}, HARGA[r.model] ? r.model : modelPakai)
