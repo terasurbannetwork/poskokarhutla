@@ -1964,8 +1964,9 @@ async function final(dari, sha, ctx, id = null) {
     const lap = lapDari(st.jenis), nama = judul(lap, st.tanggal), pk = { id: st.id }
     // Q1: PPTX dikirim saat final (dihitung limiter seperti kiriman lain), lalu PDF. Hanya ke pemegang (Q10).
     const kirimBerkas = async ([pptx, pdf]) => {
-      await ctx.balasFile(pptx.p, path.basename(pptx.p), susun(`PPTX final v${st.n}`, pk, st.n, nama), MIME.pptx)
-      await ctx.balasFile(pdf.p, path.basename(pdf.p), susun(`PDF final v${st.n}`, pk, st.n, nama), MIME.pdf)
+      // berkas final tanpa keterangan (pemilik 19 Nov 2026: "ini pisahin aja"); judul, Drive, riwayat, dan biaya ada di pesan Laporan selesai
+      await ctx.balasFile(pptx.p, path.basename(pptx.p), null, MIME.pptx)
+      await ctx.balasFile(pdf.p, path.basename(pdf.p), null, MIME.pdf)
     }
     const hasil = await lanjutFinal(ctx, st, balas, { kirimBerkas })
     if (hasil === 'buang') return balas(susun('Final belum tercatat', pk, st.n, 'Draf berubah sebelum final tercatat. Ketik *final* lagi.'))

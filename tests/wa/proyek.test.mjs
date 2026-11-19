@@ -997,7 +997,7 @@ test('T10: final mengirim PPTX lalu PDF ke pemegang, unggah Drive Revisi N, ditu
   assert.deepEqual(d.statusLog, ['final', 'ditutup'])
   assert.deepEqual(d.kirim.map((k) => [path.extname(k.nama), k.mime]), [['.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'], ['.pdf', 'application/pdf']])
   assert.equal(bacaDeck(d.kirim[0].p)[0].teks, 'JUDUL', 'PPTX versi terakhir (v2)')
-  assert.equal(d.kirim[0].caption, '*PPTX final v2*\n_P-291026-01, versi 2_\n\nLaporan Kejadian Bencana Harian 26 Okt')
+  assert.equal(d.kirim[0].caption, null, 'berkas final tanpa keterangan (pemilik 19 Nov: pisahin)')
   assert.deepEqual(f.folderBaru, [{ tanggal: TGL, laporan: 'harian', n: 1 }])
   assert.deepEqual(f.unggahan, [{ folder: 'R1', nama: ['Laporan Kejadian Bencana Harian 261026.pptx', 'Laporan Kejadian Bencana Harian 261026.pdf'] }])
   assert.deepEqual(f.hasil, [], 'D13: final bot tidak menimpa arsip terjadwal')
