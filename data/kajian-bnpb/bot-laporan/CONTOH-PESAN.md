@@ -378,6 +378,7 @@ Balas dengan kalimat revisi yang lebih rinci.
 *Revisi v2 gagal dibangun*
 _P-181126-01, versi 1_
 
+Penyebab: generator gagal: No module named pptx
 Draf v1 tetap berlaku. Pemilik sudah dikabari.
 Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.
 ```
@@ -425,7 +426,8 @@ Berlaku 5 menit. Abaikan pesan ini bila tidak jadi.
 _P-181126-01, versi 2_
 
 Laporan Kejadian Bencana Harian 18 Nov dibatalkan, tanpa unggah.
-Ketik *buat* untuk memulai lagi.
+Bahan yang sudah dikirim ikut dihapus.
+Ketik *buat* untuk memulai lagi dari awal.
 ```
 
 ### C5. Angka menu tanpa draf
@@ -650,6 +652,7 @@ Kuota pembacaan hari ini sudah habis. Bot lanjut lagi besok.
 *Draf v1 gagal dibangun*
 _P-181126-01_
 
+Penyebab: generator gagal: WA Koordalops s.d. 2026-11-18 07.00 bukan hari laporan 2026-11-19
 Pemilik sudah dikabari.
 Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.
 ```

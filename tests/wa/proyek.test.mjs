@@ -361,7 +361,7 @@ test('generator gagal: pengirim diberi tahu singkat, rincian hanya ke pemilik, s
   d.ctx.dep.exec = async (cmd, args) => { if (/_(ringkas|otomatis)\.py$/.test(args[0])) throw Object.assign(new Error('x'), { stderr: 'meledak' }); return { stdout: '' } }
   await bangun(d, 'buat harian 26 okt')
   assert.deepEqual(d.statusLog, ['membangun', 'terbuka'])
-  assert.equal(d.balasan.at(-1), '*Draf v1 gagal dibangun*\n_P-291026-01_\n\nPemilik sudah dikabari.\nKetik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.')
+  assert.equal(d.balasan.at(-1), '*Draf v1 gagal dibangun*\n_P-291026-01_\n\nPenyebab: generator gagal: meledak\nPemilik sudah dikabari.\nKetik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.')
   assert.equal(d.balasan.filter((t) => /gagal/.test(t)).length, 1, 'balasan gagal tidak terkirim dua kali')
   assert.match(d.pemilik[0], /meledak/)
   assert.equal(d.kirim.length, 0)
@@ -702,7 +702,7 @@ test('batal menutup proyek; sesudahnya kalimat bebas bukan revisi; bahan dikenal
   const harian = [...d.proyek.values()].find((x) => x.jenis === 'harian')
   await perintah(d, 'batal')
   assert.equal(harian.status, 'batal', 'draf yang dibatalkan, bukan proyek terbuka lain')
-  assert.equal(d.balasan.at(-1), '*Proyek dibatalkan*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt dibatalkan, tanpa unggah.\nKetik *buat* untuk memulai lagi.')
+  assert.equal(d.balasan.at(-1), '*Proyek dibatalkan*\n_P-291026-01, versi 1_\n\nLaporan Kejadian Bencana Harian 26 Okt dibatalkan, tanpa unggah.\nBahan yang sudah dikirim ikut dihapus.\nKetik *buat* untuk memulai lagi dari awal.')
   assert.equal((await perintah(d, 'judul ganti')).status, 'diabaikan')
   assert.equal(d.keOperasi.length, 0)
   await perintah(d, 'versi')
@@ -934,7 +934,7 @@ test('revisi: GalatClaude dan generator gagal mengembalikan draf, pemilik dikaba
   await perintah(e, 'judul ganti')
   assert.deepEqual(e.statusLog, ['membangun', 'draf'])
   assert.equal(e.versi.length, 1); assert.equal(e.kirim.length, 0)
-  assert.equal(e.balasan.at(-1), '*Revisi v2 gagal dibangun*\n_P-291026-01, versi 1_\n\nDraf v1 tetap berlaku. Pemilik sudah dikabari.\nKetik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.')
+  assert.equal(e.balasan.at(-1), '*Revisi v2 gagal dibangun*\n_P-291026-01, versi 1_\n\nPenyebab: generator gagal: meledak\nDraf v1 tetap berlaku. Pemilik sudah dikabari.\nKetik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.')
 })
 
 test('parsePerintah BL-10: versi, pptx, batal, balik vN', () => {
@@ -1511,4 +1511,24 @@ test('biaya: urai V1 dicatat per laporan dan per bulan; perintah biaya khusus pe
   await tangani({ dari: DARI, teks: 'biaya' }, d.ctx)
   assert.equal(d.balasan.at(-1), BANTUAN, 'bukan pemilik: bantuan biasa')
   assert.deepEqual(parsePerintah('biaya', NOW), { aksi: 'biaya' })
+})
+
+test('batal = mulai dari awal: bahan sebelum batal tidak dipakai proyek baru jenis dan tanggal sama; berkas kerja dihapus; jenis lain tetap', async () => {
+  const d = dunia()
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.versi.length, 1)
+  fs.mkdirSync(path.join(d.dasar, 'keluaran', 'proyek', 'P-291026-01'), { recursive: true })
+  d.ctx.now = new Date(NOW.getTime() + 60e3)
+  await perintah(d, 'batal')
+  assert.equal(fs.existsSync(path.join(d.dasar, 'keluaran', 'proyek', 'P-291026-01')), false, 'berkas kerja proyek dihapus')
+  d.ctx.now = new Date(NOW.getTime() + 120e3)
+  const n = d.balasan.length
+  await perintah(d, 'buat harian 26 okt')
+  assert.match(d.balasan[n], /^\*Kirim bahan laporan\*\n_P-291026-02_/, 'proyek baru tanpa bahan lama')
+  assert.doesNotMatch(d.balasan[n], /sudah ada/)
+  const { waktuBatal, barisPenyebab } = await import('../../scripts/wa/proyek.mjs')
+  assert.ok(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'harian', TGL) > 0)
+  assert.equal(waktuBatal(d.ctx, waSha(DARI, 'garam'), 'penanganan', TGL), 0, 'jenis lain tidak terpengaruh')
+  assert.equal(barisPenyebab('generator gagal (kode G1, rincian di /Users/x/.wa-bot/keluaran/galat.txt): ModuleNotFoundError: No module named pptx'), 'Penyebab: generator gagal: ModuleNotFoundError: No module named pptx')
+  assert.equal(barisPenyebab('POST /api/x HTTP 401 Bearer abc.def sk-ant-api03-xyz'), 'Penyebab: POST /api/x HTTP 401 Bearer … [disamarkan]')
 })

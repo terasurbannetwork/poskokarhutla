@@ -191,6 +191,24 @@ export function lingkupBahan(env, dari, sha) {
   return { izin: false, boleh: (p) => String(p?.dari ?? '') === `bl:${sha}` }
 }
 export const milikPengirim = (p, dari, sha, env = {}) => lingkupBahan(env, dari, sha).boleh(p)
+
+// ---------- batal = mulai dari awal (pemilik 19 Nov 2026: "kalau batal, semua inputan untuk project itu hapus aja") ----------
+// Bahan tersimpan per tanggal di kotak masuk WA (bukan per proyek), jadi `batal` mencatat waktunya per (nomor, jenis, tanggal):
+// proyek berikutnya untuk jenis dan tanggal yang sama hanya memakai bahan yang masuk SESUDAH batal. ~/.wa-bot/proyek/batal.json.
+const batalP = (dasar) => path.join(dirProyek(dasar), 'batal.json')
+const kunciBatal = (sha, jenis, tanggal) => `${sha}|${jenis}|${tanggal}`
+export const waktuPesan = (m) => Number(m?.diterima) || Date.parse(m?.diterima) || 0
+export const waktuBatal = (ctx, sha, jenis, tanggal) => Number(bacaJson(batalP(ctx.dasar || RUMAH), {})[kunciBatal(sha, jenis, tanggal)] || 0)
+export function catatBatal(ctx, sha, jenis, tanggal) {
+  const f = batalP(ctx.dasar || RUMAH), isi = bacaJson(f, {}), kini = (ctx.now || new Date()).getTime()
+  for (const [k, t] of Object.entries(isi)) if (kini - Number(t) > 8 * 864e5) delete isi[k] // bahan lebih dari seminggu tidak dipakai lagi
+  isi[kunciBatal(sha, jenis, tanggal)] = kini
+  tulisJson(f, isi)
+}
+function sesudahBatal(ctx, sha, jenis, tanggal, boleh) {
+  const t = waktuBatal(ctx, sha, jenis, tanggal)
+  return t ? (m) => boleh(m) && waktuPesan(m) > t : boleh
+}
 // fetch yang hanya meneruskan baris dalam lingkup dan menyimpan tiap jawaban /api/wa/masuk.
 function fetchLingkup(dep, boleh) {
   const simpan = new Map()
@@ -504,9 +522,14 @@ async function buat(cmd, dari, sha, ctx) {
   const now = ctx.now || new Date(), dasar = ctx.dasar || RUMAH, log = ctx.log || (() => {}), ada = ctx.ada || fs.existsSync
   const kenali = ctx.kenali || jenisWa.kenali
   const lingkup = lingkupBahan(env, dari, sha)
-  const depSaring = { ...dep, fetch: fetchLingkup(dep, lingkup.boleh) }
-  const bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+  // batal = mulai dari awal: bahan sebelum `batal` proyek jenis dan tanggal yang sama tidak dipakai lagi (pemilik 19 Nov 2026)
+  let depSaring = { ...dep, fetch: fetchLingkup(dep, cmd.jenis ? sesudahBatal(ctx, sha, cmd.jenis, cmd.tanggal, lingkup.boleh) : lingkup.boleh) }
+  let bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
   const jenis = cmd.jenis || await tebakJenis(bahan)
+  if (!cmd.jenis && jenis && waktuBatal(ctx, sha, jenis, cmd.tanggal)) {
+    depSaring = { ...dep, fetch: fetchLingkup(dep, sesudahBatal(ctx, sha, jenis, cmd.tanggal, lingkup.boleh)) }
+    bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+  }
   if (!jenis) return balas(susun('Jenis laporan belum jelas', null, null, `Bahan ${labelTanggal(cmd.tanggal)} belum menunjukkan jenis laporannya.`, ['Ketik salah satu:', `- *buat harian ${cmd.tanggal}*`, `- *buat penanganan ${cmd.tanggal}*`]))
   const lap = lapDari(jenis)
   const { terpilih, teks } = await bahan.pilihSesuai(lap)
@@ -620,7 +643,7 @@ async function buat(cmd, dari, sha, ctx) {
       await pindah('terbuka', { lempar: false })
       gagalBangun()
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Draf v${n} gagal dibangun.`, e.message, 400))
-      return await balas(susun(`Draf v${n} gagal dibangun`, p, null, ['Pemilik sudah dikabari.', AKHIR_GAGAL]))
+      return await balas(susun(`Draf v${n} gagal dibangun`, p, null, [...penyebab(e.message), 'Pemilik sudah dikabari.', AKHIR_GAGAL]))
     }
     if (v2) {
       // V2-A: deck generator = deck dasar; agen menyempurnakannya di ruang kerja (D15, D16, D23).
@@ -649,7 +672,7 @@ async function buat(cmd, dari, sha, ctx) {
       if (status === 'membangun') await pindah('terbuka', { lempar: false })
       gagalBangun()
       await kabarSekali(ctx, 'versi', tGalatPemilik(p, n, `Versi v${n} gagal disimpan.`, e.message))
-      return await balas(susun(`Draf v${n} gagal disimpan`, p, null, ['Pemilik sudah dikabari.', AKHIR_GAGAL]))
+      return await balas(susun(`Draf v${n} gagal disimpan`, p, null, [...penyebab(e.message), 'Pemilik sudah dikabari.', AKHIR_GAGAL]))
     }
     catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, gambar pratinjau slide 1 berketerangan ringkasan draf, lalu PDF. Tanpa pratinjau: ringkasan di keterangan PDF.
@@ -953,7 +976,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       gagalRevisi()
       await pindah('draf', { lempar: false })
       await kabarSekali(ctx, 'bangun', tGalatPemilik(p, n, `Revisi v${n} gagal dibangun.`, e.message, 400))
-      return balas(susun(`Revisi v${n} gagal dibangun`, p, m, [`Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
+      return balas(susun(`Revisi v${n} gagal dibangun`, p, m, [...penyebab(e.message), `Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
     }
     await prog.ke(2)
     try {
@@ -1022,7 +1045,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
       gagalRevisi()
       if (status === 'membangun') await pindah('draf', { lempar: false })
       await kabarSekali(ctx, 'versi', tGalatPemilik(p, n, `Versi v${n} gagal disimpan.`, e.message))
-      return await balas(susun(`Revisi v${n} gagal disimpan`, p, m, [`Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
+      return await balas(susun(`Revisi v${n} gagal disimpan`, p, m, [...penyebab(e.message), `Draf v${m} tetap berlaku. Pemilik sudah dikabari.`, AKHIR_GAGAL]))
     }
     catatGagal(ctx, sha, null)
     // D8 dan Q1: tepat 2 kiriman, pratinjau slide pertama yang berubah lalu PDF berketerangan T-DRAF. Tanpa pratinjau: PDF saja.
@@ -1073,7 +1096,7 @@ async function kerjakanAgen(ctx, o) {
     await o.pindah(o.statusGagal, { lempar: false })
     o.gagalCatat?.()
     if (kabar) await kabarSekali(ctx, kabar, tGalatPemilik(p, n, `${judulGagal} V2: ${alasan}.`, sebab || '', 400))
-    return balas(susun(`${judulGagal} gagal dibuat`, p, m, [...tetap, ...(kabar ? ['Pemilik sudah dikabari.'] : []), AKHIR_GAGAL]))
+    return balas(susun(`${judulGagal} gagal dibuat`, p, m, [...penyebab(sebab ? `${alasan}: ${sebab}` : alasan), ...tetap, ...(kabar ? ['Pemilik sudah dikabari.'] : []), AKHIR_GAGAL]))
   }
   await o.pindah('membangun')
   const lepasAgen = Agen.ambilKunciAgen(dasar, p.id)
@@ -1303,6 +1326,16 @@ const MENUNGGU = ['terbuka', 'bertanya']
 // langkah: 'bangun' (draf baru, cmd buat yang sama dengan `lanjut`), 'revisi' (kalimat atau balik yang sama), 'pesan' (perintah lain yang galat).
 // Dihapus saat versi tersimpan, saat `ulangi` dijalankan (gagal lagi = dicatat lagi), dan saat proyek dibatalkan.
 export const AKHIR_GAGAL = 'Ketik *ulangi* untuk mencoba lagi, atau *batal* untuk membatalkan.'
+// Penyebab galat langsung di chat (pemilik 19 Nov 2026: "bisa dikasih tau aja errornya apa langsung di chat"): satu baris, ringkas,
+// jalur folder mesin, token Bearer, dan teks berbentuk kunci API disamarkan. Kabar ke pemilik (sekali sehari per jenis) tetap jalan.
+export function barisPenyebab(pesan) {
+  const t = String(pesan ?? '').replace(/\s+/g, ' ').trim()
+    .replace(/(?:\/(?:Users|home|private|var|tmp|opt|Volumes)\/|[A-Za-z]:[\\/])[^\s'"(),;]*/g, '…')
+    .replace(/sk-ant-[\w-]+/g, '[disamarkan]').replace(/Bearer \S+/gi, 'Bearer …')
+    .replace(/\s*\(kode \w+, rincian di …\)/g, '') // "generator gagal (kode G1, rincian di <jalur>): x" -> "generator gagal: x"
+  return t ? `Penyebab: ${rapi(t, 220)}` : ''
+}
+const penyebab = (pesan) => { const b = barisPenyebab(pesan); return b ? [b] : [] }
 const gagalP = (dasar) => path.join(dirProyek(dasar), 'gagal.json')
 function catatGagal(ctx, sha, isi) {
   try {
@@ -1476,7 +1509,7 @@ async function kirimTerima(ctx, sha, a) {
   const lap = lapDari(p.jenis)
   if (!lap) return null
   const lingkup = lingkupBahan(ctx.env, a.dari, sha)
-  const bahan = await ambilBahan({ env: ctx.env, dep: { ...ctx.dep, fetch: fetchLingkup(ctx.dep, lingkup.boleh) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log: ctx.log || (() => {}) })
+  const bahan = await ambilBahan({ env: ctx.env, dep: { ...ctx.dep, fetch: fetchLingkup(ctx.dep, sesudahBatal(ctx, sha, p.jenis, p.tanggal, lingkup.boleh)) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log: ctx.log || (() => {}) })
   const { terpilih } = await bahan.pilihSesuai(lap)
   const milik = new Set(jenisLap(lap))
   const kenal = a.k.filter((x) => x.k && milik.has(x.k))
@@ -1519,9 +1552,15 @@ async function perintahProyek(cmd, dari, sha, ctx) {
   await pindahStatus(ctx, p, 'batal', sha)
   try { catatSatelit(ctx, p.id, null) } catch {}
   try { Agen.hapusSesi(ctx.dasar || RUMAH, p.id) } catch {} // V2: sesi, ruang kerja, transkrip (D14)
+  // batal = mulai dari awal: bahan sebelum ini tidak dipakai proyek berikutnya, berkas kerja proyek ini dihapus
+  try {
+    const dasar = ctx.dasar || RUMAH
+    catatBatal(ctx, sha, p.jenis, p.tanggal)
+    for (const f of [path.join(dirProyek(dasar), `${p.id}.urai.json`), path.join(dirProyek(dasar), p.id), path.join(dasar, 'keluaran', 'proyek', p.id)]) fs.rmSync(f, { recursive: true, force: true })
+  } catch (e) { (ctx.log || (() => {}))('bersihkan batal gagal', e.message) }
   catatGagal(ctx, sha, null)
   hapusIndeks(ctx.dasar || RUMAH, p.id)
-  return balas(susun('Proyek dibatalkan', p, p.versi || null, [`${nama} dibatalkan, tanpa unggah.`, 'Ketik *buat* untuk memulai lagi.']))
+  return balas(susun('Proyek dibatalkan', p, p.versi || null, [`${nama} dibatalkan, tanpa unggah.`, 'Bahan yang sudah dikirim ikut dihapus.', 'Ketik *buat* untuk memulai lagi dari awal.']))
 }
 
 // ---------- final dan closing (BL-12; ALUR C, K7, Q1, Q9, Q10, T10, D13) ----------
@@ -1890,7 +1929,7 @@ export async function tangani(pesan, ctxAsli) {
     if (jawab) {
       // Langkah dalam (bangun, revisi) sudah mencatat dirinya; selain itu `ulangi` mengirim ulang pesan ini.
       if (JSON.stringify(gagalTerakhir(ctx, sha)) === gagalSebelum && cmd?.aksi !== 'ulangi') catatGagal(ctx, sha, { langkah: 'pesan', teks: String(pesan.teks || '') })
-      await ctx.balas(susun('Perintah gagal diproses', null, null, ['Pemilik sudah dikabari.', AKHIR_GAGAL]))
+      await ctx.balas(susun('Perintah gagal diproses', null, null, [...penyebab(e.message), 'Pemilik sudah dikabari.', AKHIR_GAGAL]))
     }
     return { status: 'galat', alasan: e.message }
   }
