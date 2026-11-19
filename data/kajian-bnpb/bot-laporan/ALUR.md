@@ -46,3 +46,31 @@ Gerbang dan generator ada di satu mesin (Q2). Saat mesin mati, bot tidak menerim
 1. Tiap revisi diberi label pola oleh Claude (jenis laporan, slide, jenis ubahan).
 2. Pola mencapai ambang Q12: pemilik menerima usulan "Jadikan aturan tetap?" dengan contoh.
 3. `setuju`: aturan berlaku untuk draf v1 berikutnya sebagai operasi ubah bawaan. `tolak`: pola tidak diusulkan lagi 30 hari.
+
+## V2: alur bangun dan revisi dengan agen
+
+Status proyek, perintah, dan pesan WA sama dengan V1. Yang berganti hanya isi langkah bangun dan revisi untuk nomor V2 (`BL_VERSI=2` dan nomor di `BL_V2_NOMOR`, D21), dan versi bot dikunci per proyek (D24).
+
+### V2-A. Bangun draf v1
+
+1. `lanjut` (atau `tunggu`/`hitung` K18) sama dengan V1 sampai bahan terkumpul.
+2. Mesin membangun deck dasar dengan generator (D16) ke `~/.wa-bot/agen/<proyek>/v1/dasar/`, lengkap dengan `<deck>.kunci.json`. Generator gagal = galat bangun V1 seperti biasa.
+3. Mesin menyiapkan ruang kerja (D15): teks bahan tersamarkan ke `bahan/`, laporan kemarin dan skrip kemarin (D23) ke `kemarin/`.
+4. Kunci agen global dan cek biaya (D20, D26). Sibuk = pemakai dibalas antre; biaya lewat = pesan batas belanja V1.
+5. Mesin menjalankan agen (A13) dengan tugas membuat laporan dari deck dasar. Tanda sedang mengetik menyala selama agen bekerja. Pesan teks pemegang saat itu dibalas "masih dikerjakan".
+6. Agen selesai: mesin membaca `keluaran/hasil.json` (D18).
+   - `tanya` tidak kosong: status `bertanya`, pertanyaan dikirim, `tanya.json` disimpan (D25). Jawaban melanjutkan sesi dan kembali ke langkah 4 dengan ruang kerja yang sama (keluaran lama dikosongkan).
+   - Selain itu: pagar angka (A11). Lolos: PDF dan pratinjau dibuat mesin, gerbang V1 jalan, versi disimpan lewat rute yang sama (`isian` = `{versi_bot: 2, hasil, sesi, pagar}`), draf dikirim (pratinjau lalu PDF) dengan ringkasan agen, perubahan, catatan, dan peringatan asal angka. Gagal: draf ditolak, pemakai dibalas, pemilik dikabari, proyek kembali `terbuka`, `ulangi` tersedia.
+7. Galat agen, lewat batas waktu, lewat anggaran, atau `hasil.json` tidak sah: proyek kembali `terbuka`, pemakai dibalas "Draf v1 gagal dibangun", `ulangi` mengulang langkah 4 (sesi dilanjutkan bila ada).
+
+### V2-B. Revisi
+
+1. Pemegang draf proyek V2 mengirim kalimat revisi (atau jawaban atas pertanyaan agen, D25).
+2. Mesin menyiapkan ruang kerja `v<n>/`: deck versi terakhir ke `sebelum/`, `dasar/` dan `bahan/` disalin dari ruang kerja v1 (acuan angka sistem tetap deck dasar v1), `kemarin/` disalin dari v1.
+3. Kunci, biaya, lalu sesi agen proyek dilanjutkan dengan kalimat itu (A13; resume gagal = sesi baru dengan riwayat, D14).
+4. Hasil: sama dengan V2-A langkah 6, kecuali: `tanya` = status kembali `draf`; pagar gagal atau galat agen = status kembali `draf`, versi terakhir tetap berlaku, pemakai dibalas "Revisi vN gagal", `ulangi` mengulang revisi itu (D24).
+5. `balik vN` di proyek V2: PPTX versi N disalin sebagai versi baru tanpa agen (D24); sesi agen diberi tahu di revisi berikutnya bahwa draf sekarang salinan vN.
+
+### V2-C. Final
+
+Sama dengan V1. Tambahan: jalur deck final dicatat di `~/.wa-bot/agen/final.json` per jenis dan tanggal (D23); sesi agen dan transkripnya dihapus (D14). `batal` dan `kedaluwarsa` juga menghapus sesi.

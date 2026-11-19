@@ -156,3 +156,15 @@ Tunggu sampai Claude bilang migrasi BL-01 sudah ada di repo dan sudah di-push.
 3. Berhasil bila tiap baris berstatus berhasil (tanda centang).
 
 Bilang ke Claude "migrasi bl sudah diterapkan" supaya tiket berikutnya bisa diuji ke produksi.
+
+## Langkah 4: nyalakan bot V2 (agen Claude Code, sekitar 10 menit)
+
+V2 (KEPUTUSAN K22-K24) menjalankan Claude Code di Mac mini untuk tiap laporan dan revisi. Hanya nomor di `BL_V2_NOMOR` (bawaan: nomor PEMILIK) yang memakai V2; nomor lain tetap V1.
+
+1. Di Mac mini: `cd ~/Developer/poskokarhutla && git pull origin main`, lalu `cd scripts/wa/gateway && npm ci` (memasang `@anthropic-ai/claude-agent-sdk`, termasuk program Claude Code untuk macOS).
+2. Dianjurkan (Q17): buat workspace baru di Console Anthropic khusus bot V2, pasang batas belanja bulanan, buat kunci API di workspace itu.
+3. Tambahkan ke `scripts/wa/.env`: `BL_VERSI=2`, `BL_AGEN_KUNCI=<kunci workspace V2>` (boleh kosong, jatuh ke `ANTHROPIC_API_KEY`), dan naikkan `BL_BATAS_USD=25`.
+4. Cek: `node scripts/wa/proyek.mjs --kering` harus menampilkan `agen_sdk: true` dan `agen_nomor: true`.
+5. Nyalakan ulang gateway: `launchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway`.
+6. Uji dari WA: `buat harian`, kirim bahan, `lanjut`. Draf V2 butuh 2 sampai 6 menit.
+7. Kembali ke V1 kapan saja: hapus baris `BL_VERSI=2`, lalu nyalakan ulang gateway. Proyek yang sudah dibuat V2 tetap direvisi V2 sampai final atau batal.

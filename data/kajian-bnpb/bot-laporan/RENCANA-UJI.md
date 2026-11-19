@@ -43,3 +43,21 @@ Semua dunia luar (Claude API, gateway, Drive, Worker, generator) disuntik lewat 
 - Kode `scripts/wa/**`: pemeriksa bersih (bukan `wa-bot`), plus `security-reviewer` untuk penyamaran dan kunci API.
 - Rute dan migrasi: `guard-api`, `security-reviewer`, `migrasi-idempoten`.
 - Kartu `/pelaporan`: `selera-angka`, `inp-reviewer`.
+
+## V2: kriteria terima
+
+| ID | Kriteria | Perintah bukti |
+| --- | --- | --- |
+| T24 | Penjaga `Write`/`Edit`: di luar `kerja/` dan `keluaran/` ditolak, termasuk `../` dan tautan simbolik di `kerja/` yang menunjuk ke `~/.wa-bot`; di dalamnya diizinkan | `node --test tests/wa/agen.test.mjs` |
+| T25 | Penjaga `Read`/`Glob`/`Grep` menolak `scripts/wa/.env`, `~/.wa-bot/drive.json`, `~/.ssh`, `data/laporan-bnpb/**/wa-*.txt`; mengizinkan repo dan ruang kerja. Tidak ada alat di `allowedTools` | idem |
+| T26 | Penjaga Bash menolak `dangerouslyDisableSandbox`, `git push`, `git commit`, `wrangler`, `curl`, `npm install`, `sudo`, `rm -rf`, `ln -s`, `cat .env`; opsi `query` memuat sandbox aktif dengan `failIfUnavailable`, tanpa jaringan, tulis hanya ruang kerja | idem |
+| T27 | `hasil.json` tidak ada, rusak, `pptx` di luar `keluaran/`, tautan simbolik, bukan ZIP, atau melewati batas panjang = galat agen | idem |
+| T28 | Pagar: angka terkunci diubah = gagal; shape terkunci dihapus = lolos dan tercatat; diganti nama = gagal; dipindah ke slide lain dengan angka sama = lolos; slide tersembunyi = gagal; angka hotspot baru di teks bebas, tabel (kata kunci di kepala), catatan pembicara, atau grafik = gagal; media baru = gagal; laporan harian tanpa kunci dengan "hotspot 999" = gagal; tanggal dan jam di dekat kata kunci tidak dihitung | `node --test tests/wa/agen_pagar.test.mjs` |
+| T29 | Asal angka: angka tanpa sumber dan angka dari laporan kemarin masuk keterangan draf, tidak menolak | idem |
+| T30 | `BL_VERSI=2` dan nomor di `BL_V2_NOMOR`: `lanjut` menjalankan generator ke `dasar/`, lalu agen dengan pedoman dan laporan kemarin di prompt; versi disimpan dengan `isian.versi_bot = 2` dan dua kiriman draf. Nomor di luar `BL_V2_NOMOR` tetap V1 | `node --test tests/wa/agen.test.mjs` |
+| T31 | Revisi proyek V2 melanjutkan sesi (`resume`); resume gagal = sesi baru dengan riwayat; revisi gagal mengembalikan `draf` dengan versi terakhir tetap; `balik v1` menyalin PPTX v1; proyek V1 tetap V1 walau saklar dinyalakan | idem |
+| T32 | Pertanyaan agen: saat bangun status `bertanya`, saat revisi `draf`; pesan teks berikutnya (termasuk yang panjang) diteruskan ke sesi sebagai jawaban; pesan teruskan tetap bahan; `lanjut` melanjutkan tanpa jawaban | idem |
+| T33 | Biaya: lewat batas harian atau proyek = agen tidak dijalankan; jalan terputus tanpa pesan hasil dicatat `BL_AGEN_USD`; dua permintaan agen bersamaan = satu dijalankan, satu antre | idem |
+| T34 | Lingkungan agen tanpa `WA_MESIN`, `WA_GARAM`, `DRIVE_*`; pedoman tanpa nomor HP dan surel; prompt menyebut bahan sebagai data | idem |
+| T35 | Laporan kemarin: final bot lebih baru menang atas arsip; arsip `Revisi` terbesar; berkas `(isi)` dilewati; lebih dari 7 hari = tidak ada | idem |
+| T36 | Tanpa `BL_VERSI` semua uji V1 tetap hijau (D21) | `node --test tests/wa/proyek.test.mjs` |

@@ -32,3 +32,18 @@
 | Nomor bot diblokir WA | Limiter tidak dinaikkan untuk kiriman global; hanya batas per tujuan untuk balasan percakapan (Q1); tidak pernah mengirim ke nomor yang belum menulis |
 | Kunci API bocor | Hanya di `.env` mesin 0600; tidak di Worker, repo, atau log; galat dari SDK disaring sebelum dikirim ke pemilik |
 | Token Drive salah akun | `drive-masuk.mjs` dijalankan pemilik sebagai akun tim IT; mesin mencatat email akun Drive saat menyala dan mengabarkan pemilik bila bukan akun tim IT |
+
+## V2: agen di mesin bot
+
+| Risiko | Penjaga |
+| --- | --- |
+| Bahan WA memuat instruksi ("abaikan aturan, jalankan ...") | Bahan ditulis sebagai berkas di `bahan/` dan pesan agen menyebutnya data; sandbox OS mengurung semua perintah (tulis hanya `kerja/` dan `keluaran/`, tanpa jaringan); agen tidak punya alat kirim WA, unggah, web, atau MCP; hasil hanya berupa deck ke pemegang proyek |
+| Agen membaca rahasia bot | Lingkungan proses tanpa `WA_MESIN`, `WA_GARAM`, token Drive; sandbox `denyRead` dan `canUseTool` (dengan `realpath`) menolak `.env`, `~/.wa-bot` di luar ruang kerja, `~/.ssh`, `~/.config`, `~/.aws` |
+| Kunci API Anthropic | Tetap ada di lingkungan Claude Code; tanpa jaringan hanya bisa bocor lewat isi deck ke pemegang proyek; dianjurkan kunci khusus V2 dengan batas belanja di workspace Console tersendiri (Q17); V2 hanya untuk `BL_V2_NOMOR` sampai Q17 dijawab |
+| Agen merusak repo atau mesin | Sandbox: tulis hanya di ruang kerja; `Write`/`Edit` lewat `realpath`; `git` hanya baca; `ln -s`, `rm -r`, `sudo`, `launchctl`, pemasangan paket ditolak lapis kedua |
+| Tautan simbolik ke berkas rahasia lewat `hasil.json` | `pptx` harus berkas biasa (`lstat`), ZIP PPTX sah, di dalam `keluaran/` |
+| Agen mengubah angka sistem | Pagar angka A11 atas isi PPTX lengkap sesudah tiap jalan; gagal = versi tidak disimpan |
+| Teks WA mentah di repo (tidak tersamarkan) | `data/laporan-bnpb/**/wa-*.txt` ditolak dibaca; agen hanya membaca bahan tersamarkan di `bahan/` |
+| Biaya lepas kendali | Cek sebelum jalan (harian dan per proyek), `maxBudgetUsd`, `maxTurns` 80, batas waktu 15 menit, jalan terputus dicatat penuh, satu agen pada satu waktu |
+| Transkrip sesi memuat bahan | Dihapus saat proyek final, batal, atau kedaluwarsa; sesi lebih dari 7 hari dibersihkan |
+| Nama orang di pedoman | Pedoman di repo publik tanpa nama orang, nomor, atau data kejadian rinci (D22), dijaga uji |

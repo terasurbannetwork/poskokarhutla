@@ -22,3 +22,13 @@
 | Mesin bot | Komputer yang menjalankan gerbang Baileys, mesin proyek, dan generator. |
 | Detak | Tanda hidup mesin bot ke Worker tiap 5 menit. |
 | Uji balik | Membangun ulang laporan hari-hari lalu dari bahannya lalu membandingkannya dengan deck manual untuk mengukur kemiripan. |
+| Bot V1 | Bot sampai 19 Nov 2026: Claude hanya mengisi medan JSON dan operasi ubah kecil; deck selalu dari generator. |
+| Bot V2 | Bot dengan agen Claude Code di mesin bot (K23): agen menyempurnakan deck generator dan menjalankan revisi apa pun kecuali angka sistem. |
+| Agen | Claude Code yang dijalankan mesin lewat Claude Agent SDK, tanpa layar, untuk satu proyek. |
+| Sesi agen | Percakapan agen per proyek; revisi melanjutkan sesi yang sama sehingga agen ingat langkah sebelumnya. |
+| Ruang kerja | Folder `~/.wa-bot/agen/<proyek>/v<n>/` tempat bahan, deck dasar, laporan kemarin, dan hasil agen. |
+| Sandbox | Kurungan sistem operasi untuk semua perintah agen: hanya boleh menulis di ruang kerja, tanpa jaringan, tanpa membaca rahasia. |
+| Deck dasar | Deck hasil generator untuk proyek itu; acuan angka sistem untuk pagar angka. |
+| Pagar angka | Pemeriksaan mesin atas isi PPTX lengkap sesudah agen bekerja: angka sistem harus sama dengan deck dasar. |
+| Pedoman agen | Aturan cara membuat laporan untuk agen, disuling dari kerja pemilik seminggu terakhir. |
+| Laporan kemarin | Final laporan jenis sama dari tanggal terdekat sebelumnya, dipakai agen sebagai acuan gaya dan urutan, bersama skrip harian kemarin. |

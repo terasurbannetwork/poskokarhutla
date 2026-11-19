@@ -24,3 +24,17 @@ Urutan kerja. Ambil satu tiket, kerjakan hanya cakupannya. Tiket yang ditahan Q 
 | BL-18 | Uji asap dengan nomor uji, ukur waktu | wa-bot | T20 | BL-13 |
 | BL-19 | Kartu proyek bot dan detak di `/pelaporan` | layar-peta | tinjau lokal; `selera-angka`, `inp-reviewer` | BL-02 |
 | BL-20 | Satu laporan banyak penyumbang | - | - | ditunda pemilik (K12) |
+
+## V2
+
+| Tiket | Isi | Pengerja | Bukti siap | Bergantung |
+| --- | --- | --- | --- | --- |
+| BV-01 | Paket dokumen V2 (bagian V2 di tiap dokumen folder ini) dan AGENTS §2.29 | orkestrator | ditinjau pemeriksa bersih | - |
+| BV-02 | Pedoman agen `scripts/wa/agen/PEDOMAN*.md` dari kerja seminggu (K24) | wa-bot | T34; ditinjau pemilik | BV-01 |
+| BV-03 | `scripts/wa/agen_isi.py` dan `scripts/wa/agen_pagar.mjs` | wa-bot | T28, T29 | BV-01 |
+| BV-04 | `scripts/wa/agen.mjs`: ruang kerja, kemarin, penjaga, sandbox, lingkungan, kunci, biaya, `query`, resume, `hasil.json`, sesi, tanya, final | wa-bot | T24-T27, T33-T35 | BV-03 |
+| BV-05 | `proyek.mjs` cabang V2: bangun, revisi, tanya, `balik`, `ulangi`, final, batal, kedaluwarsa, pesan "masih dikerjakan" | wa-bot | T30-T32, T36 | BV-04 |
+| BV-06 | `package.json` gateway, `.env.contoh`, `PANDUAN-PEMILIK.md` bagian V2, `--kering` memeriksa SDK agen | wa-bot | `npm ci` di mesin; `--kering` lolos | BV-05 |
+| BV-07 | Pemilik: pasang di Mac mini, `BL_VERSI=2`, uji asap satu laporan harian dan satu penanganan | pemilik | draf V2 sampai di WA | BV-06 |
+| BV-08 | Uji banding 3 hari V1 lawan V2, dinilai pemilik | wa-bot, pemilik | laporan banding | BV-07, Q15 |
+| BV-09 | V2 untuk nomor terdaftar lain | wa-bot, pemilik | kunci khusus V2 terpasang | Q17 |

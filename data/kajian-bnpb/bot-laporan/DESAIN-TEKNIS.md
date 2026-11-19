@@ -74,3 +74,28 @@ Nomor disimpan hanya sebagai `wa_sha` (sha256 nomor ternormal + garam `WA_GARAM`
 ## Rahasia
 
 `ANTHROPIC_API_KEY`, `WA_GARAM` di `scripts/wa/.env` (0600). Token Drive di `~/.wa-bot/drive.json`. Tidak ada rahasia baru di Worker.
+
+## V2: berkas dan alur teknis
+
+| Berkas | Isi | Pengerja |
+| --- | --- | --- |
+| `scripts/wa/agen.mjs` (baru) | Ruang kerja (D15), laporan kemarin (A12), penjaga izin dan sandbox (A13), lingkungan bersih, kunci agen global, pemanggil `query()` dengan `resume` dan cadangan sesi baru, pembaca dan validator `hasil.json` (A14), sesi `~/.wa-bot/agen/sesi.json`, pertanyaan `tanya.json`, daftar final `final.json` | `wa-bot` |
+| `scripts/wa/agen_pagar.mjs` (baru) | Pagar angka murni (A11) | `wa-bot` |
+| `scripts/wa/agen_isi.py` (baru) | Membaca isi PPTX lengkap dari ZIP untuk pagar (slide, tersembunyi, tampak, tabel, catatan, grafik, layout, master, sidik media) | `wa-bot` |
+| `scripts/wa/agen/PEDOMAN.md`, `PEDOMAN-HARIAN.md`, `PEDOMAN-PENANGANAN.md` (baru) | Pedoman agen (D22, K24) | `wa-bot` |
+| `scripts/wa/proyek.mjs` | Cabang V2 di langkah bangun, revisi, `balik`, `ulangi`; jawaban pertanyaan agen; pesan "masih dikerjakan"; catat final; hapus sesi saat final, batal, kedaluwarsa | `wa-bot` |
+| `scripts/wa/gateway/package.json` | Dependensi `@anthropic-ai/claude-agent-sdk` (membawa binari Claude Code untuk macOS) | `wa-bot` |
+| `scripts/wa/.env.contoh` | `BL_VERSI`, `BL_V2_NOMOR`, `BL_AGEN_USD`, `BL_AGEN_PROYEK_USD`, `BL_AGEN_KUNCI` | `wa-bot` |
+| `tests/wa/agen.test.mjs`, `tests/wa/agen_pagar.test.mjs` (baru) | Uji penjaga, pagar, ruang kerja, kontrak hasil, alur V2 dengan `query` palsu | `wa-bot` |
+
+Tanpa rute Worker baru dan tanpa migrasi: versi V2 disimpan lewat `POST /api/wa/proyek/versi` yang sama. Medan `isian` versi V2 berisi `{versi_bot: 2, hasil, sesi, pagar}`; medan `instruksi` berisi kalimat pemakai seperti V1; medan `ubah` tidak dikirim (rute menerima `isian` saja untuk revisi).
+
+### Urutan proses V2 di mesin
+
+`proyek.mjs buat` (bahan terkumpul, K17/K18) -> `jalankanGenerator` ke `agen/<proyek>/v1/dasar/` -> `agen.siapkanRuang` (bahan, kemarin, skrip kemarin) -> kunci agen + cek biaya -> `agen.jalankan` (`query`, sesi baru) -> `agen.bacaHasil` -> `tanya`? simpan `tanya.json`, kirim : `agen_isi.py` untuk dasar, keluaran, kemarin -> `agen_pagar.periksa` -> `generator/pdf.py` (PDF) dan `ubah.py pratinjau` -> gerbang V1 (`periksa.mjs`) -> `simpanVersi` -> kirim draf.
+
+Revisi: `proyek.mjs revisi` (proyek `versi_bot = 2`) -> `agen.siapkanRuang` versi n (`sebelum/` dari versi terakhir, `dasar/`, `bahan/`, `kemarin/` dari v1) -> `agen.jalankan` (`resume`) -> sama seperti di atas.
+
+### Dunia luar yang disuntik (uji)
+
+`ctx.dep.agenQuery` (pengganti `query` SDK), `ctx.dep.exec` (generator, `pdf.py`, `ubah.py`, `agen_isi.py`), `ctx.dep.fetch` (Worker), `ctx.dasar` (akar `~/.wa-bot`). Uji tidak pernah memanggil SDK sungguhan.

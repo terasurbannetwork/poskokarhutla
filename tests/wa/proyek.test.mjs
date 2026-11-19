@@ -1357,5 +1357,142 @@ test('cut-off: hanya laporan penanganan; laporan kejadian bencana harian tanpa c
   assert.equal(adaCutoff(LAPORAN.find((l) => l.id === 'harian')), false)
   assert.equal(adaCutoff(LAPORAN.find((l) => l.id === 'penanganan')), true)
   const src = (await import('node:fs')).readFileSync(new URL('../../scripts/wa/proyek.mjs', import.meta.url), 'utf8')
-  assert.equal((src.match(/jamWib(now) < lap.jam/g) || []).length, (src.match(/adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam/g) || []).length, 'tiap baris cut-off dijaga adaCutoff')
+  const jumlah = (x) => src.split(x).length - 1
+  assert.ok(jumlah('jamWib(now) < lap.jam') >= 2, 'baris cut-off ada')
+  assert.equal(jumlah('jamWib(now) < lap.jam'), jumlah('adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam'), 'tiap baris cut-off dijaga adaCutoff')
+})
+
+// ---------- bot V2: agen Claude Code (data/kajian-bnpb/bot-laporan ALUR V2; T28, T30-T32) ----------
+// Deck V2 palsu: kepala ZIP + penanda + JSON inventaris (lolos cek PPTX bacaHasil); agen_isi.py palsu membaca JSON-nya.
+const PK = Buffer.from([0x50, 0x4b, 3, 4])
+const deckV2 = (inv) => Buffer.concat([PK, Buffer.from('ppt/presentation.xml#DECK#' + JSON.stringify(inv) + '#AKHIR#'), Buffer.alloc(1200, 32)])
+const invDari = (f) => {
+  const s = fs.readFileSync(f).toString('latin1')
+  return s.startsWith('[') ? JSON.parse(fs.readFileSync(f, 'utf8')) : JSON.parse(Buffer.from(s.split('#DECK#')[1].split('#AKHIR#')[0], 'latin1').toString('utf8'))
+}
+const isiDari = (inv) => {
+  const slides = new Map()
+  for (const x of inv) { if (!slides.has(x.slide)) slides.set(x.slide, { n: x.slide, tersembunyi: false, shapes: [] }); slides.get(x.slide).shapes.push({ nama: x.shape, teks: x.teks, tampak: true }) }
+  return { slides: [...slides.values()], lain: [], media: [] }
+}
+// agen palsu: ubah(inv, prompt) -> inv baru, atau {tanya: [...]}. Mencatat prompt dan opsi tiap jalan.
+function duniaV2({ ubah = (inv) => inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: 'Rencana Aksi pemantauan banjir' } : x)), ...o } = {}) {
+  const d = dunia(o)
+  d.ctx.env = { ...d.ctx.env, BL_VERSI: '2', BL_V2_NOMOR: DARI, ANTHROPIC_API_KEY: 'k', BL_BATAS_USD: '100' }
+  d.agen = []
+  d.biaya = 0
+  const fetchAsli = d.ctx.dep.fetch
+  d.ctx.dep.fetch = async (u, opsi = {}) => {
+    const url = new URL(u)
+    if (url.pathname === '/api/wa/biaya') {
+      if ((opsi.method || 'GET') === 'POST') d.biaya += JSON.parse(opsi.body).usd_mikro
+      return { ok: true, status: 200, json: async () => ({ usd_mikro: d.biaya }), text: async () => '' }
+    }
+    return fetchAsli(u, opsi)
+  }
+  const execAsli = d.ctx.dep.exec
+  d.ctx.dep.exec = async (cmd, args, opsi) => {
+    if (String(args[0]).endsWith('agen_isi.py')) return { stdout: JSON.stringify(isiDari(invDari(args[1]))) }
+    if (String(args[0]).endsWith('ubah.py') && args[1] === 'inventaris') return { stdout: JSON.stringify(invDari(args[2])) }
+    if (String(args[0]).endsWith('pdf.py')) {
+      const pdf = path.join(args[2], path.basename(args[1]).replace(/\.pptx$/, '.pdf'))
+      fs.writeFileSync(pdf, 'PDF'); return { stdout: pdf }
+    }
+    return execAsli(cmd, args, opsi)
+  }
+  let sesi = 0
+  d.ctx.dep.agenQuery = ({ prompt, options }) => (async function* () {
+    d.agen.push({ prompt, options })
+    const id = options.resume || `sesi-${String(++sesi).padStart(8, '0')}`
+    yield { type: 'system', subtype: 'init', session_id: id }
+    yield { type: 'assistant', session_id: id }
+    const ruang = (prompt.match(/Ruang kerja versi ini: (.+)/) || [])[1].trim()
+    const sumber = fs.readdirSync(path.join(ruang, 'sebelum')).find((f) => f.endsWith('.pptx'))
+    const asal = sumber ? path.join(ruang, 'sebelum', sumber) : path.join(ruang, 'dasar', fs.readdirSync(path.join(ruang, 'dasar')).find((f) => f.endsWith('.pptx')))
+    const hasil = ubah(invDari(asal), prompt, d.agen.length)
+    if (hasil.tanya) fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), JSON.stringify({ tanya: hasil.tanya }))
+    else {
+      const nama = path.basename(asal)
+      fs.writeFileSync(path.join(ruang, 'keluaran', nama), deckV2(hasil))
+      fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), JSON.stringify({ pptx: nama, ringkasan: 'Rencana aksi dirapikan.', perubahan: ['Slide 3: rencana aksi dirapikan'], catatan: [] }))
+    }
+    yield { type: 'result', subtype: 'success', is_error: false, total_cost_usd: 1.5, num_turns: 4, session_id: id }
+  })()
+  return d
+}
+
+test('V2 T30: lanjut = generator ke deck dasar, agen menyempurnakan, versi_bot 2, dua kiriman; nomor di luar BL_V2_NOMOR tetap V1', async () => {
+  const d = duniaV2()
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.gen().length, 1, 'generator membangun deck dasar'); assert.equal(d.keUrai.length, 0, 'urai Claude V1 tidak dipakai')
+  assert.equal(d.agen.length, 1); assert.equal(d.agen[0].options.resume, undefined)
+  assert.match(d.agen[0].prompt, /bahan\/: 3 berkas/); assert.match(d.agen[0].options.systemPrompt.append, /Pedoman: Laporan Kejadian Bencana Harian/)
+  assert.equal(d.versi.length, 1); assert.equal(d.versi[0].isian.versi_bot, 2); assert.equal(d.versi[0].isian.sesi, 'sesi-00000001')
+  assert.match(d.versi[0].pptxIsi, /Rencana Aksi pemantauan banjir/)
+  assert.equal(d.kirim.length, 2); assert.equal(d.kirim[1].mime, 'application/pdf'); assert.match(d.kirim[0].caption, /Rencana aksi dirapikan\./)
+  assert.deepEqual(d.statusLog, ['membangun', 'draf']); assert.equal(d.biaya, 1.5e6, 'biaya agen ke batas harian bersama')
+  const ruang1 = path.join(d.dasar + '-agen', 'P-291026-01', 'v1')
+  assert.ok(fs.readdirSync(path.join(ruang1, 'dasar')).some((f) => f.endsWith('.kunci.json')), 'kunci generator di deck dasar')
+  const v1 = duniaV2(); v1.ctx.env.BL_V2_NOMOR = '6281111'
+  await bangun(v1, 'buat harian 26 okt')
+  assert.equal(v1.agen.length, 0); assert.equal(v1.keUrai.length, 1, 'nomor lain tetap V1'); assert.equal(v1.versi[0].isian.versi_bot, undefined)
+})
+
+test('V2 T28: agen mengubah angka sistem terkunci = draf ditolak, tanpa versi, status kembali terbuka, ulangi tersedia', async () => {
+  const d = duniaV2({ ubah: (inv) => inv.map((x) => (x.shape === 's2_kpi_hotspot' ? { ...x, teks: 'HOTSPOT\n999' } : x)) })
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.versi.length, 0); assert.equal(d.kirim.length, 0)
+  assert.match(d.balasan.at(-1), /^\*Draf v1 ditolak\*/); assert.match(d.balasan.at(-1), /Angka sistem berubah/)
+  assert.deepEqual(d.statusLog, ['membangun', 'terbuka'])
+  assert.match(d.pemilik.at(-1), /pagar angka/)
+})
+
+test('V2 T31: revisi melanjutkan sesi (resume), V1 operasi tidak dipakai; balik v1 menyalin PPTX v1; revisi gagal kembali draf', async () => {
+  let gagalKe = 0
+  const d = duniaV2({ ubah: (inv, prompt, ke) => {
+    if (ke === gagalKe) throw new Error('agen meledak')
+    if (/hapus slide 3/.test(prompt)) return inv.filter((x) => x.slide !== 3)
+    return inv.map((x) => (x.shape === 's3_rencana' ? { ...x, teks: 'Rencana Aksi pemantauan banjir' } : x))
+  } })
+  await bangun(d, 'buat harian 26 okt')
+  await perintah(d, 'hapus slide 3 ya')
+  assert.equal(d.agen.length, 2); assert.equal(d.agen[1].options.resume, 'sesi-00000001'); assert.equal(d.keOperasi.length, 0)
+  assert.match(d.agen[1].prompt, /DATA dari WhatsApp/); assert.match(d.agen[1].prompt, /hapus slide 3 ya/)
+  assert.equal(d.versi.length, 2); assert.doesNotMatch(d.versi[1].pptxIsi, /s3_rencana/); assert.match(d.versi[1].instruksi, /^revisi: hapus slide 3 ya/)
+  assert.ok(fs.readdirSync(path.join(d.dasar + '-agen', 'P-291026-01', 'v2', 'sebelum')).length === 1, 'deck v1 di sebelum/')
+  await perintah(d, 'balik v1')
+  assert.equal(d.versi.length, 3); assert.equal(d.versi[2].pptxIsi, d.versi[0].pptxIsi); assert.equal(d.versi[2].isian.balik, 1); assert.equal(d.agen.length, 2, 'balik tanpa agen')
+  gagalKe = 3
+  const n = d.statusLog.length
+  await perintah(d, 'ganti judul slide 1')
+  assert.equal(d.versi.length, 3); assert.match(d.balasan.at(-1), /^\*Revisi v4 gagal dibuat\*/); assert.match(d.balasan.at(-1), /Draf v3 tetap berlaku/)
+  assert.deepEqual(d.statusLog.slice(n), ['membangun', 'draf'])
+  assert.match(d.agen[2].prompt, /salinan v1/, 'agen diberi tahu draf sekarang salinan v1')
+})
+
+test('V2 T32: pertanyaan agen saat bangun = bertanya; teks berikutnya jawaban ke sesi sama; lanjut tanpa jawaban; klasifikasi revisi', async () => {
+  const d = duniaV2({ ubah: (inv, prompt, ke) => (ke === 1 ? { tanya: ['Panel OMC dan Hujan atau Semai OMC yang dihapus?'] } : inv) })
+  await bangun(d, 'buat harian 26 okt')
+  assert.equal(d.versi.length, 0); assert.match(d.balasan.at(-1), /^\*Perlu dipastikan dulu\*/); assert.match(d.balasan.at(-1), /Semai OMC/)
+  assert.deepEqual(d.statusLog, ['membangun', 'bertanya'])
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'yang OMC dan Hujan saja, panel armada dilebarkan memenuhi slide supaya rapi' }, d.ctx), 'revisi', 'jawaban tidak jadi bahan')
+  await tangani({ dari: DARI, teks: 'yang OMC dan Hujan saja, panel armada dilebarkan memenuhi slide supaya rapi', wa_id: 77 }, d.ctx)
+  assert.equal(d.agen.length, 2); assert.equal(d.agen[1].options.resume, 'sesi-00000001'); assert.match(d.agen[1].prompt, /Jawaban pemakai/)
+  assert.equal(d.versi.length, 1); assert.equal(d.versi[0].isian.versi_bot, 2)
+  const e = duniaV2({ ubah: (inv, prompt, ke) => (ke === 1 ? { tanya: ['Yang mana?'] } : inv) })
+  await bangun(e, 'buat harian 26 okt')
+  await perintah(e, 'lanjut')
+  assert.match(e.agen[1].prompt, /lanjut tanpa menjawab/); assert.equal(e.versi.length, 1, JSON.stringify(e.balasan.slice(-2)) + JSON.stringify(e.pemilik))
+})
+
+test('V2: final mencatat acuan laporan kemarin dan menghapus sesi agen', async () => {
+  const d = duniaV2()
+  d.ctx.dep.drive = { unggah: async () => ({ url: 'https://drive.google.com/x' }) }
+  await bangun(d, 'buat harian 26 okt')
+  assert.ok(fs.existsSync(path.join(d.dasar, 'agen', 'sesi.json')))
+  const { bacaSesi } = await import('../../scripts/wa/agen.mjs')
+  assert.equal(bacaSesi(d.dasar, 'P-291026-01').sesi, 'sesi-00000001')
+  await perintah(d, 'batal')
+  assert.equal(bacaSesi(d.dasar, 'P-291026-01'), null, 'batal menghapus sesi')
+  assert.equal(fs.existsSync(path.join(d.dasar + '-agen', 'P-291026-01')), false, 'ruang kerja dihapus')
 })
