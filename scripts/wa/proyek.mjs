@@ -2342,8 +2342,14 @@ export async function tangani(pesan, ctxAsli) {
     if (!new Set(daftar(ctx.env.PEMILIK).map(normalWa)).has(dari)) { await ctx.balas(BANTUAN); return { status: 'bantuan' } }
     const akhir = Biaya.terakhir(dasar, 5).map((x) => `- ${x.id}: ${Biaya.dolar(x.usd)}`)
     const keg = Biaya.perKegiatan(dasar, kini)
-    const belum = Biaya.bulan(dasar, kini) - keg.reduce((a, x) => a + x.usd, 0) // pemakaian sebelum rincian per kegiatan ada (19 Nov 2026)
-    if (keg.length && belum >= 0.005) keg.push({ label: 'Sebelum rincian dicatat', usd: belum })
+    // pemakaian sebelum rincian per kegiatan ada (19 Nov 2026) hampir seluruhnya pembuatan laporan: digabung ke kegiatan laporan
+    // (pemilik: "Sebelum rincian dicatat, ini apaan bingung", "masukin kemana kek")
+    const belum = Biaya.bulan(dasar, kini) - keg.reduce((a, x) => a + x.usd, 0)
+    if (keg.length && belum >= 0.005) {
+      const lap = keg.find((x) => x.kegiatan === 'laporan')
+      if (lap) lap.usd += belum; else keg.push({ kegiatan: 'laporan', label: Biaya.KEGIATAN.laporan, usd: belum })
+      keg.sort((a, b) => b.usd - a.usd)
+    }
     await ctx.balas(susun('Pemakaian Claude', null, null, await barisBiaya(ctx, { hari: true }),
       keg.length ? ['*Per kegiatan bulan ini:*', ...keg.map((x) => `- ${x.label}: ${Biaya.dolar(x.usd)}`)] : [],
       akhir.length ? ['*Laporan terakhir:*', ...akhir] : [],

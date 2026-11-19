@@ -1859,10 +1859,13 @@ test('biaya per kegiatan: laporan, tanya draf, kalimat bebas dicatat terpisah da
   const kini = NOW
   Biaya.catat(d.dasar, { usd: 0.5, kini })
   Biaya.catat(d.dasar, { usd: 2, proyek: 'P-1', kini, kegiatan: 'laporan' })
+  // pemakaian lama tanpa kegiatan (berkas sebelum v2.2.3): total bulan bertambah, kegiatan tidak
+  const bj = path.join(d.dasar, 'biaya-lokal.json'), isiB = JSON.parse(fs.readFileSync(bj, 'utf8')); isiB.bulan['2026-10'] += 1.2; fs.writeFileSync(bj, JSON.stringify(isiB))
   Biaya.catat(d.dasar, { usd: 0.3, proyek: 'P-1', kini, kegiatan: 'tinjau' })
   Biaya.catat(d.dasar, { usd: 0.02, kini, kegiatan: 'percakapan' })
   assert.deepEqual(Biaya.perKegiatan(d.dasar, kini).map((x) => [x.kegiatan, x.usd]), [['laporan', 2.5], ['tinjau', 0.3], ['percakapan', 0.02]])
   d.ctx.dep.fetch = async () => ({ ok: true, status: 200, json: async () => ({ usd_mikro: 0 }), text: async () => '' })
   await tangani({ dari: '6299', teks: 'biaya' }, d.ctx)
-  assert.match(d.balasan.at(-1), /\*Per kegiatan bulan ini:\*\n- Membuat dan merevisi laporan: \$2,50\n- Tinjau visual draf: \$0,30\n- Kalimat bebas dan obrolan: \$0,02/)
+  assert.match(d.balasan.at(-1), /\*Per kegiatan bulan ini:\*\n- Membuat dan merevisi laporan: \$3,70\n- Tinjau visual draf: \$0,30\n- Kalimat bebas dan obrolan: \$0,02/)
+  assert.doesNotMatch(d.balasan.at(-1), /Sebelum rincian/, 'pemakaian lama digabung ke laporan (pemilik: baris itu membingungkan)')
 })

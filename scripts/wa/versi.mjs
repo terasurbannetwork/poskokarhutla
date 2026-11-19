@@ -6,9 +6,12 @@
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.2.3'
+export const VERSI = '2.2.4'
 
 export const CHANGELOG = [
+  { versi: '2.2.4', tanggal: '2026-11-19', isi: [
+    'Rincian *biaya*: pemakaian sebelum rincian ada digabung ke Membuat dan merevisi laporan, tanpa baris terpisah.',
+  ] },
   { versi: '2.2.3', tanggal: '2026-11-19', isi: [
     'Perintah pemilik *biaya* merinci pemakaian per kegiatan: membuat dan merevisi laporan, tinjau visual, tanya draf, rapikan bahan, kalimat bebas.',
   ] },
