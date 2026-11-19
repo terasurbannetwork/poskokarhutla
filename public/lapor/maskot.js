@@ -17,10 +17,10 @@ export function maskot(pose = "sapa", judul = "") {
   const i = `sg${++n}`, u = x => `url(#${i}${x})`;
   return `<svg class="mk sg" data-pose="${pose}" viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
   <defs>
-    <radialGradient id="${i}kulit" cx=".4" cy=".35" r=".75"><stop offset="0" class="sg-g-kulit-a"/><stop offset="1" class="sg-g-kulit-b"/></radialGradient>
-    <linearGradient id="${i}helm" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" class="sg-g-helm-a"/><stop offset="1" class="sg-g-helm-b"/></linearGradient>
-    <linearGradient id="${i}baju" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sg-g-baju-a"/><stop offset="1" class="sg-g-baju-b"/></linearGradient>
-    <radialGradient id="${i}bayang" cx=".5" cy=".5" r=".5"><stop offset="0" class="sg-g-bayang-a"/><stop offset="1" class="sg-g-bayang-b"/></radialGradient>
+    <radialGradient id="${i}kulit" cx=".4" cy=".35" r=".75"><stop offset="0" class="sg-g-kulit-a" stop-color="#fde4cf"/><stop offset="1" class="sg-g-kulit-b" stop-color="#f6c79f"/></radialGradient>
+    <linearGradient id="${i}helm" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" class="sg-g-helm-a" stop-color="#f39a4e"/><stop offset="1" class="sg-g-helm-b" stop-color="#e0662f"/></linearGradient>
+    <linearGradient id="${i}baju" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sg-g-baju-a" stop-color="#2c4a7a"/><stop offset="1" class="sg-g-baju-b" stop-color="#13254a"/></linearGradient>
+    <radialGradient id="${i}bayang" cx=".5" cy=".5" r=".5"><stop offset="0" class="sg-g-bayang-a" stop-color="#13254a" stop-opacity=".35"/><stop offset="1" class="sg-g-bayang-b" stop-color="#13254a" stop-opacity="0"/></radialGradient>
   </defs>
   <ellipse cx="120" cy="268" rx="70" ry="9" fill="${u("bayang")}" class="mk-bayang"/>
   <g class="mk-tubuh">

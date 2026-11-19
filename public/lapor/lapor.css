@@ -1812,8 +1812,24 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-tt-kisi article b{font:800 .9375rem var(--display);color:var(--ink)}
 .lp-tt-kisi article p,.lp-tt-kisi li{margin:0;font-size:.875rem;color:var(--ink2);line-height:1.5}
 .lp-tt-kisi ul{margin:0;padding-left:18px;display:grid;gap:4px}
-.lp-tt-kisi article.baik{border-top:4px solid var(--ok)}.lp-tt-kisi article.hindari{border-top:4px solid var(--bad)}
-.lp-tt-kisi code{justify-self:start;padding:4px 12px;border-radius:999px;background:var(--brand);color:var(--on-brand);font:700 .875rem ui-monospace,monospace}
+.lp-tt-kisi article.baik,.lp-tt-kisi article.hindari{gap:12px;padding:18px;--nada:var(--ok);background:color-mix(in oklab,var(--nada) 5%,var(--card));border-color:color-mix(in oklab,var(--nada) 25%,var(--line))}
+.lp-tt-kisi article.hindari{--nada:var(--bad)}
+.lp-tt-kisi article.baik > b,.lp-tt-kisi article.hindari > b{display:flex;align-items:center;gap:10px;font-size:1rem}
+.lp-tt-kisi article.baik > b span,.lp-tt-kisi article.hindari > b span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--nada);color:var(--on-pekat)}
+.lp-tt-kisi article.baik > b svg,.lp-tt-kisi article.hindari > b svg{width:16px;height:16px}
+.lp-tt-kisi article.baik ul,.lp-tt-kisi article.hindari ul{list-style:none;padding:0;gap:10px}
+.lp-tt-kisi article.baik li,.lp-tt-kisi article.hindari li{display:flex;align-items:flex-start;gap:10px;color:var(--ink)}
+.lp-tt-kisi article.baik li svg,.lp-tt-kisi article.hindari li svg{flex:none;width:16px;height:16px;margin-top:2px;color:var(--nada)}
+.lp-tt-kisi code{justify-self:start;padding:3px 10px;border-radius:8px;background:color-mix(in oklab,var(--brand2) 8%,var(--card));border:1px solid color-mix(in oklab,var(--brand2) 22%,var(--line));border-bottom-width:3px;color:var(--brand);font:700 .9375rem ui-monospace,monospace}
+.lp-tt-kata article{gap:10px;transition:border-color .15s}
+.lp-tt-kata-kepala{display:flex;align-items:center;gap:10px}
+.lp-tt-kata-ikon{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:color-mix(in oklab,var(--brand2) 10%,var(--card));color:var(--brand2)}
+.lp-tt-kata-ikon svg{width:16px;height:16px}
+.lp-tt-info{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:color-mix(in oklab,var(--brand2) 6%,var(--card));color:var(--ink)}
+.lp-tt-info svg{flex:none;width:18px;height:18px;color:var(--brand2)}
+.lp-tt-batas article.aman{background:color-mix(in oklab,var(--ok) 5%,var(--card));border-color:color-mix(in oklab,var(--ok) 25%,var(--line))}
+.lp-tt-batas article.aman .lp-tt-ikon{background:var(--ok)}
+.lp-tt-kata article:hover{border-color:color-mix(in oklab,var(--brand2) 35%,var(--line))}
 .lp-tt-ikon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--brand2);color:var(--on-brand)}
 .lp-tt-ikon svg{width:22px;height:22px}
 .lp-tt-langkah{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -1849,7 +1865,7 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-tt-telp + .lp-tt-telp{background:var(--brand)}
 .lp-tt-batas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .lp-tt-batas article{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:14px}
-.lp-tt-batas b{display:block;font:800 1.0625rem var(--display);color:var(--ink)}
+.lp-tt-batas b{display:block;font:800 1.25rem/1.2 var(--display);color:var(--ink)}
 .lp-tt-batas small{font-size:.75rem;color:var(--ink2)}
 @media (max-width:900px){.lp-tt-batas{grid-template-columns:1fr 1fr}.lp-tt-darurat{grid-template-columns:auto minmax(0,1fr)}.lp-tt-telp{grid-column:span 1}}
 /* pil status berikon */
