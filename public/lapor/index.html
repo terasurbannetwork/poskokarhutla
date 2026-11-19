@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=94" rel="stylesheet">
+<link href="/lapor/lapor.css?v=95" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -249,10 +249,10 @@
     <aside id="panelIsian" class="lp-panel" aria-labelledby="judulIsian">
       <div class="lp-panel-kepala">
         <span class="lp-cincin-wadah"><svg class="lp-cincin" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><circle id="cincin" cx="22" cy="22" r="18" pathLength="100"/></svg><span id="persenCincin">0%</span></span>
-        <div><h2 id="judulIsian">Isian laporan</h2><p id="ringkasIsian" class="lp-redup">Terisi otomatis dari percakapan</p></div>
+        <div class="lp-panel-ringkas"><h2 id="judulIsian">Isian laporan</h2><p id="ringkasIsian" class="lp-redup">Terisi otomatis dari percakapan</p><span class="lp-panel-bar" aria-hidden="true"><i id="barIsian"></i></span><p id="sisaIsian" class="lp-panel-sisa" hidden></p></div>
         <button class="lp-ikon" id="bTutupIsian" type="button" aria-label="Tutup isian"><svg aria-hidden="true"><use href="#i-tutup"/></svg></button>
       </div>
-      <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><p class="lp-sigap-gelembung" id="sigapTeks">Saya bantu sampai laporan lengkap.</p></div>
+      <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
       <div id="isian" class="lp-isian"></div>
     </aside>
   </section>
@@ -288,6 +288,6 @@
 <script src="/inti/exif.js" defer></script>
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=70"></script>
+<script type="module" src="/lapor/lapor.js?v=71"></script>
 </body>
 </html>

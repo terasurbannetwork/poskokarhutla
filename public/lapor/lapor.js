@@ -540,13 +540,15 @@ $("bTutupIsian").addEventListener("click", () => { $("panelIsian").classList.rem
 let poseSigap = "";
 function suasanaSigap(j) {
   const ang = n => Number((j.isian || []).find(x => x.nama === n)?.tampil?.match?.(/\d+/)?.[0] || 0), L = j.lengkap || 0;
-  const [pose, teks] = j.status === "terkirim" ? ["senang", "Terima kasih banyak! Laporan Anda sudah sampai ke petugas BNPB."]
-    : ang("meninggal") > 0 || ang("hilang") > 0 || j.darurat ? ["sedih", "Turut prihatin. Utamakan keselamatan, telepon 112 bila ada yang perlu ditolong segera."]
-    : L >= 70 ? ["semangat", "Sedikit lagi, ayo! Tinggal beberapa pertanyaan."]
-    : L >= 30 ? ["semangat", "Bagus, terus lanjutkan."]
-    : ["sapa", "Saya bantu sampai laporan lengkap."];
+  const [pose, judul, teks] = j.status === "terkirim" ? ["senang", "Terima kasih banyak!", "Laporan Anda sudah sampai ke petugas BNPB dan BPBD setempat."]
+    : ang("meninggal") > 0 || ang("hilang") > 0 || j.darurat ? ["sedih", "Turut prihatin", "Utamakan keselamatan. Bila ada yang perlu ditolong sekarang, telepon 112."]
+    : L >= 70 ? ["semangat", "Sedikit lagi, ayo!", "Tinggal beberapa pertanyaan."]
+    : L >= 30 ? ["semangat", "Bagus, lanjutkan", "Tiap jawaban membantu petugas menyiapkan bantuan."]
+    : ["sapa", "Halo, saya Sigap", "Saya bantu sampai laporan lengkap."];
   if (pose !== poseSigap) { $("sigapMaskot").innerHTML = maskot(pose); poseSigap = pose; }
-  $("sigapTeks").textContent = teks; $("sigapPanel").dataset.pose = pose;
+  const isi = [el("b", null, judul), el("span", null, teks)];
+  if (pose === "sedih") { const a = el("a", "lp-sigap-tel"); a.href = "tel:112"; a.append(ikon("i-telepon"), "Telepon 112"); isi.push(a); }
+  $("sigapTeks").replaceChildren(...isi); $("sigapPanel").dataset.pose = pose;
 }
 function tampilIsian(isian, lengkap) {
   $("cincin").style.strokeDasharray = `${lengkap} 100`;
@@ -554,11 +556,15 @@ function tampilIsian(isian, lengkap) {
   $("progres").style.width = `${lengkap}%`;
   $("lengkapKecil").textContent = `${lengkap}%`;
   // kepala chat: bilah kemajuan kecil + persen, bukan kalimat polos (pemilik 19 Nov 2026: "bagusin")
-  if (isian.length) { const bar = el("span", "lp-kepala-bar"), b = el("i"); b.style.width = `${lengkap}%`; bar.append(b); $("langkahTeks").replaceChildren(bar, el("span", null, `${lengkap}% lengkap`)); $("langkahTeks").classList.add("ada"); }
-  else { $("langkahTeks").textContent = "Asisten AI, dipandu sampai lengkap"; $("langkahTeks").classList.remove("ada"); }
+  // kemajuan cukup satu tempat: kartu Isian laporan di kiri (pemilik 19 Nov 2026: "ini kan sama ya, digabung di yang kiri aja, dilengkapi")
+  $("langkahTeks").textContent = "Asisten AI, dipandu sampai lengkap"; $("barIsian").style.width = `${lengkap}%`;
   if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
   const jawab = x => !["kosong", "belum"].includes(x.status);
+  const belum = isian.filter(x => !jawab(x));
   $("ringkasIsian").textContent = `${isian.filter(jawab).length} dari ${isian.length} terjawab`;
+  $("sisaIsian").hidden = false;
+  $("sisaIsian").textContent = belum.length ? `Belum: ${belum.slice(0, 3).map(x => x.label).join(", ")}${belum.length > 3 ? `, dan ${belum.length - 3} lagi` : ""}` : "Semua terjawab, laporan siap dikirim";
+  $("sisaIsian").classList.toggle("selesai", !belum.length);
   const per = new Map(); for (const x of isian) per.set(x.kelompok, [...(per.get(x.kelompok) || []), x]);
   const frag = document.createDocumentFragment();
   for (const [kel, daftar] of per) {

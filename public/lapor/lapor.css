@@ -1644,3 +1644,21 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-opsi.lp-tegak .lp-opsi-ubin .lp-air{height:60px;width:auto}
 .lp-opsi.lp-tegak > button > span:not(.lp-opsi-ubin){display:flex;flex-direction:column;align-items:center;gap:2px}
 @media (max-width:700px){.lp-opsi.lp-simetris.lp-tegak > button{flex-direction:row!important;text-align:left;align-items:center!important}}
+
+/* satu tempat kemajuan: kartu Isian laporan (pemilik 19 Nov 2026); bilah tipis di kepala chat dihapus */
+.lp-progres{display:none!important}
+.lp-panel-ringkas{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.lp-panel-bar{display:block;height:6px;border-radius:99px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));overflow:hidden;margin-top:2px}
+.lp-panel-bar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--ok);transition:width .4s var(--ease)}
+.lp-panel-sisa{margin:0;font:600 .75rem/1.4 var(--font);color:var(--muted)}
+.lp-panel-sisa.selesai{color:var(--ok)}
+/* gelembung Sigap: kartu putih berbatas kiri sesuai suasana, tanpa latar merah muda (pemilik: "gw ga suka warna pink") */
+.lp-sigap-gelembung{display:flex!important;flex-direction:column;gap:2px;flex:1;background:var(--card)!important;border:1px solid var(--line);border-left:4px solid var(--brand2);border-radius:14px 14px 14px 4px!important;padding:10px 14px!important;font:500 .8125rem/1.45 var(--font)!important;box-shadow:0 1px 2px color-mix(in oklab,var(--ink) 6%,transparent)}
+.lp-sigap-gelembung b{font:800 .875rem/1.3 var(--font-display,var(--font));color:var(--brand)}
+.lp-sigap-gelembung span{color:var(--ink)}
+.lp-sigap[data-pose="senang"] .lp-sigap-gelembung{border-left-color:var(--ok)}
+.lp-sigap[data-pose="semangat"] .lp-sigap-gelembung{border-left-color:var(--brand-accent)}
+.lp-sigap[data-pose="sedih"] .lp-sigap-gelembung{border-left-color:var(--bad)}
+.lp-sigap-tel{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-top:6px;padding:6px 12px;border-radius:99px;background:var(--bad);color:var(--on-pekat);font:700 .8125rem/1 var(--font);text-decoration:none}
+.lp-sigap-tel svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.lp-tempat-catatan{grid-column:1/-1;margin:0 0 2px;font:600 .75rem/1.4 var(--font);color:var(--muted)}

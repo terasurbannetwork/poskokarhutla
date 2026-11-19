@@ -1,0 +1,1989 @@
+{
+ "banjir": [
+  {
+   "tanya": "Sebelum air naik, apa yang pertama kali Anda lihat atau alami?",
+   "opsi": [
+    [
+     "Hujan deras berjam-jam",
+     "Hujan dengan intensitas tinggi turun dalam waktu lama"
+    ],
+    [
+     "Air sungai atau selokan naik cepat",
+     "Debit sungai atau saluran air meningkat hingga meluap"
+    ],
+    [
+     "Di sini cerah, air datang dari arah hulu",
+     "Air kiriman dari wilayah hulu tiba di lokasi meski di lokasi tidak turun hujan"
+    ],
+    [
+     "Air laut pasang masuk ke darat",
+     "Air laut pasang masuk ke daratan"
+    ],
+    [
+     "Tanggul, talud, atau pintu air jebol",
+     "Tanggul atau pintu air jebol"
+    ],
+    [
+     "Tidak tahu",
+     "Air naik dengan penyebab yang belum diketahui"
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana air naik?",
+   "bahaya": "Air yang naik cepat atau deras bisa menghanyutkan orang. Jangan menyeberangi arus, segera naik ke tempat tinggi atau lantai atas, dan hubungi 112.",
+   "opsi": [
+    [
+     "Pelan, sedikit demi sedikit",
+     "Air naik perlahan"
+    ],
+    [
+     "Cepat, dalam hitungan menit",
+     "Air naik dengan cepat dalam hitungan menit",
+     true
+    ],
+    [
+     "Tiba-tiba, deras, berlumpur, membawa kayu atau batu",
+     "Air datang tiba-tiba, deras, berlumpur, dan membawa material kayu serta batu, mengindikasikan banjir bandang",
+     true
+    ],
+    [
+     "Tidak tahu",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa saja yang terendam?",
+   "banyak": true,
+   "awalan": "Genangan merendam",
+   "opsi": [
+    [
+     "Rumah warga",
+     "permukiman warga"
+    ],
+    [
+     "Jalan",
+     "jalan"
+    ],
+    [
+     "Sawah atau kebun",
+     "sawah dan kebun"
+    ],
+    [
+     "Sekolah atau tempat ibadah",
+     "sekolah atau tempat ibadah"
+    ],
+    [
+     "Pasar atau pertokoan",
+     "pasar atau pertokoan"
+    ],
+    [
+     "Belum tahu",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa yang terganggu karena banjir ini?",
+   "banyak": true,
+   "awalan": "Dampak yang terlihat:",
+   "bahaya": "Orang yang terjebak: tetap di tempat tinggi dan terlihat (atap, jendela atas), jangan berenang di arus, kirim lokasi ke 112 atau Basarnas 115.",
+   "opsi": [
+    [
+     "Jalan tidak bisa dilewati kendaraan",
+     "akses jalan terputus"
+    ],
+    [
+     "Listrik padam",
+     "listrik padam"
+    ],
+    [
+     "Air bersih keruh atau terhenti",
+     "air bersih terganggu"
+    ],
+    [
+     "Sinyal telepon lemah atau hilang",
+     "jaringan telepon terganggu"
+    ],
+    [
+     "Warga terjebak di rumah atau di atap",
+     "warga terjebak di dalam rumah",
+     true
+    ],
+    [
+     "Tidak ada yang terganggu",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Sudah berapa lama air menggenang di lokasi?",
+   "opsi": [
+    [
+     "Baru, kurang dari 3 jam",
+     "Genangan berlangsung kurang dari tiga jam."
+    ],
+    [
+     "3 sampai 12 jam",
+     "Genangan berlangsung tiga sampai 12 jam."
+    ],
+    [
+     "Lebih dari setengah hari",
+     "Genangan berlangsung lebih dari setengah hari."
+    ],
+    [
+     "Lebih dari sehari",
+     "Genangan berlangsung lebih dari satu hari."
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana air sekarang?",
+   "bahaya": "Air masih naik: pindahkan orang sakit, anak, dan lansia ke tempat tinggi sekarang, matikan listrik dari saklar utama bila aman.",
+   "opsi": [
+    [
+     "Masih naik",
+     "Saat dilaporkan, air masih naik.",
+     true
+    ],
+    [
+     "Bertahan, tidak naik tidak turun",
+     "Saat dilaporkan, ketinggian air bertahan."
+    ],
+    [
+     "Mulai surut",
+     "Saat dilaporkan, air mulai surut."
+    ],
+    [
+     "Sudah surut, lumpur tersisa",
+     "Saat dilaporkan, air sudah surut dan meninggalkan lumpur."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apakah ada tanda bahaya lanjutan di sekitar?",
+   "banyak": true,
+   "awalan": "Potensi bahaya lanjutan:",
+   "bahaya": "Jauhi kabel listrik dan genangan di dekat tiang. Jangan menyeberangi tanggul atau jembatan yang retak.",
+   "opsi": [
+    [
+     "Hujan masih deras di sini",
+     "hujan masih turun deras",
+     true
+    ],
+    [
+     "Tebing atau tanggul tampak retak",
+     "tebing atau tanggul retak",
+     true
+    ],
+    [
+     "Kabel listrik terendam atau putus",
+     "kabel listrik terendam atau putus",
+     true
+    ],
+    [
+     "Ada kabar air kiriman dari hulu",
+     "ada peringatan kiriman air dari hulu",
+     true
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Arus deras",
+     "arus deras"
+    ],
+    [
+     "Sampah atau kayu menumpuk di jembatan",
+     "sampah dan kayu menumpuk di jembatan"
+    ],
+    [
+     "Ternak hanyut",
+     "hewan ternak hanyut"
+    ],
+    [
+     "Longsor di tebing sekitar",
+     "longsor di tebing sekitar"
+    ],
+    [
+     "Air sumur tercemar",
+     "air sumur tercemar"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "longsor": [
+  {
+   "tanya": "Sebelum tanah bergerak, apa yang Anda lihat atau dengar? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Sebelum longsor terlihat tanda:",
+   "bahaya": "Retakan melebar atau gemuruh dari lereng berarti lereng bisa bergerak lagi. Menjauh dari lereng dan dari alur di bawahnya, jangan kembali ke rumah, hubungi 112.",
+   "opsi": [
+    [
+     "Retakan baru di tanah atau dinding rumah",
+     "muncul retakan baru di tanah atau dinding",
+     true
+    ],
+    [
+     "Mata air keruh atau tiba-tiba keluar",
+     "mata air berubah keruh atau muncul rembesan baru"
+    ],
+    [
+     "Pohon, tiang, atau pagar mulai miring",
+     "pohon, tiang, atau pagar mulai miring"
+    ],
+    [
+     "Suara gemuruh dari arah lereng",
+     "terdengar suara gemuruh dari lereng",
+     true
+    ],
+    [
+     "Tidak ada tanda, tiba-tiba",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa pemicunya menurut Anda?",
+   "opsi": [
+    [
+     "Hujan deras hari ini",
+     "Hujan dengan intensitas tinggi mengakibatkan tanah di lereng jenuh air dan longsor"
+    ],
+    [
+     "Hujan terus beberapa hari",
+     "Hujan yang turun terus beberapa hari mengakibatkan tanah di lereng jenuh air dan longsor"
+    ],
+    [
+     "Gempa",
+     "Guncangan gempa mengakibatkan lereng longsor"
+    ],
+    [
+     "Tebing digali, dipotong, atau dibebani",
+     "Lereng yang digali, dipotong, atau dibebani bangunan longsor"
+    ],
+    [
+     "Tidak tahu",
+     "Tanah di lereng longsor dengan pemicu yang belum diketahui"
+    ]
+   ]
+  },
+  {
+   "tanya": "Seperti apa tanah bergerak?",
+   "bahaya": "Aliran lumpur dan batu bergerak cepat dan jauh. Menjauh ke arah menyamping dari alurnya, bukan lurus ke bawah.",
+   "opsi": [
+    [
+     "Merayap pelan sedikit demi sedikit",
+     "Tanah bergerak perlahan menuruni lereng"
+    ],
+    [
+     "Runtuh tiba-tiba dari tebing",
+     "Tanah dan batu runtuh tiba-tiba dari tebing"
+    ],
+    [
+     "Mengalir seperti lumpur bercampur batu dan kayu",
+     "Material longsor mengalir seperti lumpur bercampur batu dan kayu",
+     true
+    ],
+    [
+     "Amblas turun ke bawah",
+     "Tanah amblas ke bawah"
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa yang tertimpa atau terdampak material longsor?",
+   "banyak": true,
+   "awalan": "Material longsor",
+   "bahaya": "Jika ada yang tertimbun atau sungai tersumbat: telepon 112 atau Basarnas 115, sebutkan perkiraan lokasi, jangan menggali dengan tangan di dekat lereng yang masih bergerak.",
+   "opsi": [
+    [
+     "Rumah",
+     "menimpa rumah warga"
+    ],
+    [
+     "Jalan",
+     "menutup jalan"
+    ],
+    [
+     "Sawah atau kebun",
+     "menimbun sawah atau kebun"
+    ],
+    [
+     "Sungai atau saluran air",
+     "menyumbat sungai atau saluran air",
+     true
+    ],
+    [
+     "Ada orang tertimbun",
+     "menimbun warga",
+     true
+    ],
+    [
+     "Tidak ada yang terdampak",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana lereng sekarang?",
+   "bahaya": "Lereng yang masih bergerak: tidak ada yang boleh mendekat, evakuasi warga di bawah dan di atas lereng.",
+   "opsi": [
+    [
+     "Masih bergerak atau retakan melebar",
+     "Saat dilaporkan, tanah masih bergerak dan retakan melebar.",
+     true
+    ],
+    [
+     "Ada retakan baru, belum bergerak",
+     "Saat dilaporkan, terdapat retakan baru namun belum ada gerakan."
+    ],
+    [
+     "Sudah berhenti, tidak ada gerakan baru",
+     "Saat dilaporkan, gerakan tanah sudah berhenti."
+    ],
+    [
+     "Tidak tahu",
+     "Kondisi lereng saat dilaporkan belum diketahui."
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana akses ke lokasi?",
+   "opsi": [
+    [
+     "Bisa dilewati kendaraan",
+     "Akses ke lokasi masih bisa dilalui kendaraan."
+    ],
+    [
+     "Hanya bisa jalan kaki",
+     "Akses ke lokasi hanya bisa dilalui dengan berjalan kaki."
+    ],
+    [
+     "Terputus, alat berat belum bisa masuk",
+     "Akses ke lokasi terputus sehingga alat berat belum dapat masuk."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apakah ada bahaya lanjutan di sekitar?",
+   "banyak": true,
+   "awalan": "Potensi bahaya lanjutan:",
+   "bahaya": "Longsor susulan sering datang setelah hujan atau beberapa jam kemudian. Pindahkan warga ke tempat aman yang jauh dari lereng dan alur sungai.",
+   "opsi": [
+    [
+     "Hujan masih turun",
+     "hujan masih turun",
+     true
+    ],
+    [
+     "Lereng lain di sekitar retak",
+     "lereng lain di sekitar retak",
+     true
+    ],
+    [
+     "Air terbendung di sungai atas",
+     "air terbendung di sungai bagian atas",
+     true
+    ],
+    [
+     "Warga masih berada di bawah lereng rawan",
+     "warga masih berada di bawah lereng rawan",
+     true
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Longsor susulan kecil",
+     "longsor susulan kecil"
+    ],
+    [
+     "Pohon tumbang",
+     "pohon tumbang"
+    ],
+    [
+     "Listrik padam atau kabel putus",
+     "listrik padam atau kabel putus"
+    ],
+    [
+     "Air sumur atau mata air keruh",
+     "air sumur atau mata air keruh"
+    ],
+    [
+     "Jalan amblas",
+     "jalan amblas"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "abrasi": [
+  {
+   "tanya": "Sebelum air laut naik atau pantai terkikis, apa yang Anda lihat?",
+   "bahaya": "Jika air laut surut mendadak, terlebih setelah gempa, segera menjauh dari pantai ke tempat tinggi tanpa menunggu peringatan resmi.",
+   "opsi": [
+    [
+     "Angin kencang dan cuaca buruk di laut",
+     "Angin kencang dan cuaca buruk di laut diikuti gelombang tinggi"
+    ],
+    [
+     "Air laut surut mendadak lalu naik lagi",
+     "Air laut surut mendadak lalu kembali naik",
+     true
+    ],
+    [
+     "Ombak besar datang padahal cuaca cerah",
+     "Gelombang besar datang meski cuaca tampak cerah"
+    ],
+    [
+     "Air pasang purnama, lebih tinggi dari biasa",
+     "Air laut pasang tinggi melebihi biasanya"
+    ],
+    [
+     "Tidak tahu",
+     "Gelombang tinggi menerjang kawasan pesisir dengan penyebab yang belum diketahui"
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa yang terjadi di pantai?",
+   "opsi": [
+    [
+     "Ombak menghantam bibir pantai",
+     "Gelombang tinggi menghantam bibir pantai"
+    ],
+    [
+     "Air laut masuk ke permukiman",
+     "Air laut masuk ke permukiman dan menggenangi pesisir"
+    ],
+    [
+     "Pantai terkikis dan mundur",
+     "Garis pantai terkikis dan mundur"
+    ],
+    [
+     "Tanah atau pohon di tepi pantai runtuh ke laut",
+     "Tanah dan pohon di tepi pantai runtuh ke laut"
+    ]
+   ]
+  },
+  {
+   "tanya": "Sebelum ini, apakah pantai di sini sering terkikis?",
+   "opsi": [
+    [
+     "Baru kali ini",
+     "Menurut pelapor, kejadian ini baru pertama kali di lokasi."
+    ],
+    [
+     "Terulang setiap musim gelombang tinggi",
+     "Menurut pelapor, kejadian serupa terulang setiap musim gelombang tinggi."
+    ],
+    [
+     "Terkikis terus beberapa tahun terakhir",
+     "Menurut pelapor, pantai di lokasi terkikis terus beberapa tahun terakhir."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa saja yang terdampak?",
+   "banyak": true,
+   "awalan": "Terdampak:",
+   "opsi": [
+    [
+     "Rumah di pesisir",
+     "rumah warga di pesisir"
+    ],
+    [
+     "Perahu atau dermaga",
+     "perahu atau dermaga"
+    ],
+    [
+     "Tambak atau kebun kelapa",
+     "tambak atau kebun"
+    ],
+    [
+     "Warung atau lapak",
+     "warung atau lapak"
+    ],
+    [
+     "Jalan pesisir",
+     "jalan pesisir"
+    ],
+    [
+     "Tanggul atau turap",
+     "tanggul atau turap"
+    ],
+    [
+     "Belum tahu",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana gelombang atau air laut sekarang?",
+   "bahaya": "Jangan mendekati pantai, melaut, atau berenang. Gelombang susulan bisa lebih besar daripada yang pertama.",
+   "opsi": [
+    [
+     "Masih tinggi",
+     "Saat dilaporkan, gelombang masih tinggi.",
+     true
+    ],
+    [
+     "Mulai mereda",
+     "Saat dilaporkan, gelombang mulai mereda."
+    ],
+    [
+     "Sudah tenang",
+     "Saat dilaporkan, gelombang sudah tenang."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apakah ada bahaya lanjutan?",
+   "banyak": true,
+   "awalan": "Potensi bahaya lanjutan:",
+   "bahaya": "Warga di rumah dekat bibir pantai sebaiknya pindah sementara ke tempat yang lebih jauh dari garis air.",
+   "opsi": [
+    [
+     "Air masih pasang",
+     "air laut masih pasang",
+     true
+    ],
+    [
+     "Tebing pantai retak atau menggantung",
+     "tebing pantai retak atau menggantung",
+     true
+    ],
+    [
+     "Rumah dekat bibir pantai terancam roboh",
+     "rumah dekat bibir pantai terancam roboh",
+     true
+    ],
+    [
+     "Peringatan gelombang tinggi BMKG masih berlaku",
+     "peringatan gelombang tinggi BMKG masih berlaku"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Air asin masuk sawah atau sumur",
+     "air asin masuk ke sawah atau sumur"
+    ],
+    [
+     "Perahu hanyut",
+     "perahu hanyut"
+    ],
+    [
+     "Pohon pantai tumbang",
+     "pohon pantai tumbang"
+    ],
+    [
+     "Sampah laut terdampar",
+     "sampah laut terdampar"
+    ],
+    [
+     "Garis pantai tampak berubah",
+     "garis pantai tampak berubah"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "cuaca": [
+  {
+   "tanya": "Sebelum kejadian, apa yang Anda rasakan atau lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Sebelum kejadian,",
+   "opsi": [
+    [
+     "Udara gerah dan panas sebelumnya",
+     "udara terasa panas dan gerah sebelumnya"
+    ],
+    [
+     "Awan berubah gelap pekat bergumpal",
+     "awan berubah dari putih menjadi gelap pekat bergumpal"
+    ],
+    [
+     "Tiba-tiba dingin dan angin kencang",
+     "udara tiba-tiba dingin disertai angin kencang"
+    ],
+    [
+     "Petir dan kilat sering",
+     "petir dan kilat sering terjadi"
+    ],
+    [
+     "Tidak ada tanda",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Cuaca ekstrem seperti apa yang terjadi?",
+   "bahaya": "Pusaran angin: berlindung di bangunan kokoh, jauhi jendela, pohon, tiang, dan baliho, berjongkok melindungi kepala.",
+   "opsi": [
+    [
+     "Angin berputar seperti pusaran dari awan ke tanah",
+     "Angin kencang berputar seperti pusaran dari awan ke permukaan tanah, diduga puting beliung, melanda permukiman",
+     true
+    ],
+    [
+     "Angin kencang lurus dari satu arah",
+     "Angin kencang dari satu arah melanda permukiman"
+    ],
+    [
+     "Hujan es",
+     "Hujan es turun di permukiman"
+    ],
+    [
+     "Hujan sangat deras dengan petir",
+     "Hujan sangat deras disertai petir melanda permukiman"
+    ]
+   ]
+  },
+  {
+   "tanya": "Sudah berapa lama anginnya berlangsung?",
+   "bahaya": "Cuaca buruk masih berlangsung: tetap di dalam bangunan kokoh, jauhi pohon dan tiang listrik.",
+   "opsi": [
+    [
+     "Hanya beberapa menit",
+     "Kejadian berlangsung singkat, hanya beberapa menit."
+    ],
+    [
+     "Sekitar seperempat sampai setengah jam",
+     "Kejadian berlangsung seperempat sampai setengah jam."
+    ],
+    [
+     "Lebih dari setengah jam",
+     "Kejadian berlangsung lebih dari setengah jam."
+    ],
+    [
+     "Masih berlangsung",
+     "Saat dilaporkan, cuaca buruk masih berlangsung.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa saja yang rusak?",
+   "banyak": true,
+   "awalan": "Angin merusak",
+   "opsi": [
+    [
+     "Atap rumah",
+     "atap rumah warga"
+    ],
+    [
+     "Pohon tumbang",
+     "pohon tumbang"
+    ],
+    [
+     "Tiang listrik atau baliho roboh",
+     "tiang listrik atau baliho"
+    ],
+    [
+     "Dinding atau bangunan roboh",
+     "dinding atau bangunan"
+    ],
+    [
+     "Kendaraan tertimpa",
+     "kendaraan yang tertimpa"
+    ],
+    [
+     "Tenda atau warung",
+     "tenda atau warung"
+    ],
+    [
+     "Tidak ada kerusakan",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apakah ada bahaya langsung di sekitar sekarang?",
+   "banyak": true,
+   "awalan": "Bahaya langsung di lokasi:",
+   "bahaya": "Jauhi kabel putus, jangan sentuh genangan dekatnya. Orang yang terjepit: panggil 112, jangan digeser bila tidak perlu.",
+   "opsi": [
+    [
+     "Kabel listrik putus menjuntai",
+     "kabel listrik putus menjuntai",
+     true
+    ],
+    [
+     "Pohon atau baliho miring hampir roboh",
+     "pohon atau baliho miring hampir roboh",
+     true
+    ],
+    [
+     "Ada orang tertimpa atau terjepit",
+     "ada orang tertimpa atau terjepit",
+     true
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana cuaca sekarang?",
+   "bahaya": "Cuaca masih buruk: tunda evakuasi di luar bila angin masih kencang kecuali ada ancaman langsung.",
+   "opsi": [
+    [
+     "Masih buruk",
+     "Saat dilaporkan, cuaca buruk masih berlangsung.",
+     true
+    ],
+    [
+     "Reda, masih mendung",
+     "Saat dilaporkan, cuaca sudah reda namun masih mendung."
+    ],
+    [
+     "Reda dan cerah",
+     "Saat dilaporkan, cuaca sudah reda dan cerah."
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Hujan es",
+     "hujan es"
+    ],
+    [
+     "Petir menyambar bangunan atau orang",
+     "petir menyambar bangunan atau orang"
+    ],
+    [
+     "Genangan atau banjir setelahnya",
+     "genangan atau banjir setelahnya"
+    ],
+    [
+     "Longsor kecil",
+     "longsor kecil"
+    ],
+    [
+     "Listrik padam",
+     "listrik padam"
+    ],
+    [
+     "Ombak tinggi di pantai",
+     "ombak tinggi di pantai"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "kekeringan": [
+  {
+   "tanya": "Apa tanda pertama bahwa air mulai sulit? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Tanda awal yang dirasakan:",
+   "opsi": [
+    [
+     "Hujan tidak turun lama",
+     "hujan lama tidak turun"
+    ],
+    [
+     "Air sumur atau mata air mengecil",
+     "debit sumur atau mata air mengecil"
+    ],
+    [
+     "Sungai, embung, atau waduk menyusut",
+     "sungai, embung, atau waduk menyusut"
+    ],
+    [
+     "Tanaman layu atau tanah retak",
+     "tanaman layu dan tanah retak"
+    ],
+    [
+     "Tidak tahu",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Sejak kapan air mulai sulit?",
+   "opsi": [
+    [
+     "Kurang dari 2 minggu",
+     "Kesulitan air bersih berlangsung kurang dari dua minggu."
+    ],
+    [
+     "2 minggu sampai 1 bulan",
+     "Kesulitan air bersih berlangsung dua minggu sampai satu bulan."
+    ],
+    [
+     "1 sampai 3 bulan",
+     "Kesulitan air bersih berlangsung satu sampai tiga bulan."
+    ],
+    [
+     "Lebih dari 3 bulan",
+     "Kesulitan air bersih berlangsung lebih dari tiga bulan."
+    ]
+   ]
+  },
+  {
+   "tanya": "Sumber air apa yang sudah mengering?",
+   "banyak": true,
+   "awalan": "Sumber air yang mengering:",
+   "opsi": [
+    [
+     "Sumur gali",
+     "sumur gali"
+    ],
+    [
+     "Sumur bor atau pompa",
+     "sumur bor atau pompa"
+    ],
+    [
+     "Mata air",
+     "mata air"
+    ],
+    [
+     "Sungai, embung, atau waduk",
+     "sungai, embung, atau waduk"
+    ],
+    [
+     "Air PDAM atau pipa",
+     "air PDAM atau perpipaan"
+    ],
+    [
+     "Belum ada yang mengering",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana warga mendapat air sekarang?",
+   "bahaya": "Air keruh atau tercemar bisa menyebabkan diare. Rebus hingga mendidih atau gunakan tablet klorin.",
+   "opsi": [
+    [
+     "Antre di sumber yang tersisa",
+     "Warga mengantre di sumber air yang tersisa."
+    ],
+    [
+     "Membeli air galon atau tangki",
+     "Warga membeli air untuk kebutuhan sehari-hari."
+    ],
+    [
+     "Mengambil dari tempat jauh",
+     "Warga mengambil air dari tempat yang jauh."
+    ],
+    [
+     "Sudah ada kiriman air",
+     "Sudah ada distribusi air bersih untuk warga."
+    ],
+    [
+     "Memakai air sungai atau genangan keruh",
+     "Sebagian warga memakai air keruh yang tidak layak minum.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa dampak yang terlihat?",
+   "banyak": true,
+   "awalan": "Dampak yang terlihat:",
+   "opsi": [
+    [
+     "Tanaman mati atau gagal panen",
+     "tanaman mati atau gagal panen"
+    ],
+    [
+     "Ternak kekurangan air",
+     "ternak kekurangan air"
+    ],
+    [
+     "Warga diare atau sakit kulit",
+     "warga diare atau sakit kulit"
+    ],
+    [
+     "Sekolah atau tempat ibadah kekurangan air",
+     "sekolah atau tempat ibadah kekurangan air"
+    ],
+    [
+     "Tidak ada dampak yang terlihat",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apakah ada bahaya lanjutan?",
+   "banyak": true,
+   "awalan": "Potensi bahaya lanjutan:",
+   "bahaya": "Lahan kering mudah terbakar: jangan membakar sampah atau lahan, laporkan asap pertama ke 112 atau Manggala Agni.",
+   "opsi": [
+    [
+     "Kemarau masih panjang",
+     "kemarau diperkirakan masih panjang"
+    ],
+    [
+     "Lahan sangat kering, mudah terbakar",
+     "lahan sangat kering dan mudah terbakar",
+     true
+    ],
+    [
+     "Harga air makin naik",
+     "harga air makin naik"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Tanah retak-retak",
+     "tanah retak-retak"
+    ],
+    [
+     "Sungai kering total",
+     "sungai kering total"
+    ],
+    [
+     "Kabut asap",
+     "kabut asap"
+    ],
+    [
+     "Warga mengungsi sementara untuk mencari air",
+     "warga berpindah sementara untuk mencari air"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "karhutla": [
+  {
+   "tanya": "Apa yang terbakar?",
+   "opsi": [
+    [
+     "Hutan",
+     "Terjadi kebakaran hutan"
+    ],
+    [
+     "Kebun atau ladang",
+     "Terjadi kebakaran di kebun atau ladang"
+    ],
+    [
+     "Semak atau padang rumput",
+     "Terjadi kebakaran semak belukar atau padang rumput"
+    ],
+    [
+     "Lahan gambut (tanah hitam berserat)",
+     "Terjadi kebakaran di lahan gambut"
+    ],
+    [
+     "Lahan kosong atau pekarangan",
+     "Terjadi kebakaran di lahan kosong atau pekarangan"
+    ],
+    [
+     "Tidak tahu",
+     "Terjadi kebakaran lahan"
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana Anda pertama tahu ada api?",
+   "opsi": [
+    [
+     "Melihat asap membumbung",
+     "Api diketahui pertama kali dari asap yang membumbung."
+    ],
+    [
+     "Melihat api menyala",
+     "Api diketahui pertama kali dari nyala api."
+    ],
+    [
+     "Mencium bau terbakar",
+     "Api diketahui pertama kali dari bau terbakar."
+    ],
+    [
+     "Asap keluar dari tanah, tanpa api",
+     "Api diketahui pertama kali dari asap yang keluar dari tanah tanpa nyala api."
+    ],
+    [
+     "Diberi tahu warga lain",
+     "Api diketahui pertama kali dari laporan warga."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa dugaan penyebabnya?",
+   "opsi": [
+    [
+     "Pembukaan lahan dengan membakar",
+     "Kebakaran diduga berasal dari pembukaan lahan dengan cara membakar."
+    ],
+    [
+     "Membakar sampah atau semak yang menjalar",
+     "Kebakaran diduga berasal dari pembakaran sampah atau semak yang menjalar."
+    ],
+    [
+     "Puntung rokok, api unggun, atau sisa memasak",
+     "Kebakaran diduga berasal dari puntung rokok, api unggun, atau sisa memasak."
+    ],
+    [
+     "Petir",
+     "Kebakaran diduga akibat sambaran petir."
+    ],
+    [
+     "Cuaca sangat kering saja",
+     "Kebakaran terjadi saat cuaca sangat kering."
+    ],
+    [
+     "Tidak tahu",
+     "Penyebab kebakaran belum diketahui."
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana apinya sekarang?",
+   "bahaya": "Jangan memadamkan api besar sendirian. Telepon 112 atau Manggala Agni, jauhi arah angin dan lahan gambut yang berasap (tanah bisa ambles).",
+   "opsi": [
+    [
+     "Menjalar cepat di permukaan, tertiup angin",
+     "Saat dilaporkan, api menjalar cepat di permukaan tertiup angin.",
+     true
+    ],
+    [
+     "Asap tebal, tanpa nyala (di bawah tanah)",
+     "Saat dilaporkan, api membara di bawah tanah dengan asap tebal tanpa nyala.",
+     true
+    ],
+    [
+     "Api kecil di beberapa titik",
+     "Saat dilaporkan, api terlihat kecil di beberapa titik."
+    ],
+    [
+     "Padam, masih berasap atau berbara",
+     "Saat dilaporkan, api sudah padam namun masih berasap atau berbara."
+    ],
+    [
+     "Sudah padam",
+     "Saat dilaporkan, api sudah padam."
+    ]
+   ]
+  },
+  {
+   "tanya": "Ke arah mana api mengancam?",
+   "banyak": true,
+   "awalan": "Api mengancam",
+   "bahaya": "Jika api mendekati rumah atau fasilitas berbahaya: evakuasi warga lebih dulu, hubungi damkar atau 112.",
+   "opsi": [
+    [
+     "Permukiman atau rumah",
+     "permukiman atau rumah",
+     true
+    ],
+    [
+     "Kebun atau lahan warga",
+     "kebun atau lahan warga"
+    ],
+    [
+     "Jalan",
+     "jalan"
+    ],
+    [
+     "Fasilitas berbahaya (SPBU, gudang, tabung gas)",
+     "fasilitas berbahaya seperti SPBU atau gudang",
+     true
+    ],
+    [
+     "Tidak mengancam apa pun",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana asapnya?",
+   "bahaya": "Pakai masker N95 atau kain basah, tetap di dalam ruangan. Balita, lansia, dan penderita asma sebaiknya ke tempat berudara bersih; bila sesak, segera ke fasilitas kesehatan.",
+   "opsi": [
+    [
+     "Tidak ada asap",
+     "Tidak terlihat asap."
+    ],
+    [
+     "Tipis, berbau",
+     "Asap yang timbul tipis."
+    ],
+    [
+     "Tebal, jarak pandang pendek, mata perih",
+     "Asap tebal, jarak pandang pendek, dan mata terasa perih."
+    ],
+    [
+     "Tebal, warga sesak napas",
+     "Asap tebal mengganggu pernapasan warga.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Api muncul lagi setelah padam",
+     "api muncul kembali setelah dipadamkan"
+    ],
+    [
+     "Sekolah diliburkan",
+     "sekolah diliburkan"
+    ],
+    [
+     "Jalan tertutup asap",
+     "jalan tertutup asap"
+    ],
+    [
+     "Hewan liar keluar ke permukiman",
+     "hewan liar keluar ke permukiman"
+    ],
+    [
+     "Abu beterbangan",
+     "abu beterbangan"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "gempa": [
+  {
+   "tanya": "Apa yang pertama Anda rasakan?",
+   "opsi": [
+    [
+     "Getaran halus lalu membesar",
+     "Warga merasakan getaran yang awalnya halus lalu membesar."
+    ],
+    [
+     "Hentakan keras mendadak",
+     "Warga merasakan hentakan keras mendadak."
+    ],
+    [
+     "Goyangan bergelombang pelan dan lama",
+     "Warga merasakan goyangan bergelombang pelan dan lama."
+    ],
+    [
+     "Bunyi gemuruh sebelum terasa",
+     "Warga mendengar bunyi gemuruh sebelum guncangan terasa."
+    ]
+   ]
+  },
+  {
+   "tanya": "Seberapa lama guncangan terasa?",
+   "bahaya": "Jika Anda di dekat pantai dan guncangan lama: segera naik ke tempat tinggi atau gedung kokoh, jauh dari pantai, tanpa menunggu sirene. Tetap di sana sampai BMKG menyatakan aman.",
+   "opsi": [
+    [
+     "Sebentar, hitungan detik",
+     "Guncangan berlangsung singkat, hanya hitungan detik."
+    ],
+    [
+     "Cukup lama, sekitar setengah menit",
+     "Guncangan berlangsung cukup lama, sekitar setengah menit.",
+     true
+    ],
+    [
+     "Sangat lama, lebih dari setengah menit",
+     "Guncangan berlangsung sangat lama, lebih dari setengah menit.",
+     true
+    ],
+    [
+     "Tidak tahu",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa yang dilakukan warga sekitar?",
+   "opsi": [
+    [
+     "Tidak ada yang keluar rumah",
+     "Sebagian besar warga tetap berada di dalam rumah."
+    ],
+    [
+     "Sebagian keluar rumah",
+     "Sebagian warga keluar rumah."
+    ],
+    [
+     "Hampir semua lari keluar, panik",
+     "Hampir semua warga berlari keluar rumah dalam keadaan panik."
+    ],
+    [
+     "Sulit berdiri atau berjalan",
+     "Guncangan membuat warga sulit berdiri atau berjalan."
+    ]
+   ]
+  },
+  {
+   "tanya": "Sesudah guncangan, apa yang terjadi di sekitar? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Sesudah gempa terlihat:",
+   "bahaya": "Air laut tidak biasa: ke tempat tinggi sekarang. Bau gas atau api: jauhi bangunan, jangan menyalakan api atau listrik. Orang terjebak: 112 atau Basarnas 115.",
+   "opsi": [
+    [
+     "Air laut surut atau naik tidak biasa",
+     "air laut surut atau naik tidak biasa",
+     true
+    ],
+    [
+     "Tanah retak, ambles, atau keluar lumpur dan pasir",
+     "tanah retak, ambles, atau mengeluarkan lumpur dan pasir",
+     true
+    ],
+    [
+     "Longsor di lereng",
+     "longsor di lereng"
+    ],
+    [
+     "Bau gas atau ada api",
+     "bau gas atau api",
+     true
+    ],
+    [
+     "Listrik padam atau kabel putus",
+     "listrik padam atau kabel putus"
+    ],
+    [
+     "Ada orang terjebak di reruntuhan",
+     "ada orang terjebak di reruntuhan",
+     true
+    ],
+    [
+     "Tidak ada yang terlihat",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana gempa susulan?",
+   "bahaya": "Gempa susulan bisa lebih kuat. Tetap di tempat terbuka, jauh dari bangunan retak.",
+   "opsi": [
+    [
+     "Belum terasa",
+     "Belum terasa gempa susulan."
+    ],
+    [
+     "Terasa satu dua kali, kecil",
+     "Terasa gempa susulan satu dua kali dengan getaran kecil."
+    ],
+    [
+     "Terasa berkali-kali",
+     "Warga masih merasakan gempa susulan berkali-kali."
+    ],
+    [
+     "Ada yang lebih kuat dari yang pertama",
+     "Terasa gempa susulan yang lebih kuat dari gempa pertama.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Di mana warga sekarang?",
+   "opsi": [
+    [
+     "Di rumah masing-masing",
+     "Warga berada di rumah masing-masing."
+    ],
+    [
+     "Berkumpul di lapangan terbuka",
+     "Warga berkumpul di lapangan terbuka."
+    ],
+    [
+     "Sudah mengungsi ke tempat tinggi atau tenda",
+     "Warga sudah mengungsi ke tempat tinggi atau tenda."
+    ],
+    [
+     "Takut kembali ke rumah",
+     "Warga takut kembali ke rumah."
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Hewan gelisah",
+     "hewan gelisah"
+    ],
+    [
+     "Air sumur keruh atau berubah",
+     "air sumur keruh atau berubah"
+    ],
+    [
+     "Bangunan tinggi bergoyang",
+     "bangunan tinggi bergoyang"
+    ],
+    [
+     "Suara dentuman",
+     "suara dentuman"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "tsunami": [
+  {
+   "tanya": "Apa tanda pertama yang Anda lihat atau rasakan?",
+   "bahaya": "Segera naik ke tempat tinggi atau gedung kokoh jauh dari pantai, jangan menonton laut, dan tetap di sana sampai BMKG menyatakan aman. Hubungi 112.",
+   "opsi": [
+    [
+     "Gempa kuat dan lama",
+     "Setelah gempa kuat dan lama terasa, air laut naik ke daratan",
+     true
+    ],
+    [
+     "Air laut surut tiba-tiba",
+     "Air laut surut tiba-tiba, lalu gelombang besar datang",
+     true
+    ],
+    [
+     "Gemuruh keras dari laut",
+     "Terdengar gemuruh keras dari laut, lalu gelombang besar datang",
+     true
+    ],
+    [
+     "Sirene peringatan berbunyi",
+     "Sirene peringatan berbunyi, lalu gelombang datang ke daratan",
+     true
+    ],
+    [
+     "Tidak ada tanda, gelombang langsung datang",
+     "Gelombang besar datang dari laut tanpa tanda yang terlihat",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Seperti apa air datang?",
+   "bahaya": "Gelombang pertama bukan yang terakhir. Jangan turun sebelum ada pernyataan aman resmi.",
+   "opsi": [
+    [
+     "Naik pelan seperti pasang cepat",
+     "Air naik seperti pasang yang sangat cepat."
+    ],
+    [
+     "Seperti dinding air",
+     "Air datang seperti dinding air."
+    ],
+    [
+     "Datang berkali-kali",
+     "Gelombang datang berulang kali."
+    ],
+    [
+     "Datang dengan suara gemuruh",
+     "Air datang disertai suara gemuruh."
+    ]
+   ]
+  },
+  {
+   "tanya": "Sampai mana air masuk?",
+   "opsi": [
+    [
+     "Hanya sampai pantai",
+     "Air mencapai bibir pantai."
+    ],
+    [
+     "Masuk ke permukiman dekat pantai",
+     "Air masuk ke permukiman dekat pantai."
+    ],
+    [
+     "Jauh ke darat melewati permukiman",
+     "Air masuk jauh ke daratan melewati permukiman."
+    ],
+    [
+     "Menyusuri sungai ke hulu",
+     "Air menyusuri sungai ke arah hulu."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa yang terseret atau terdampar?",
+   "banyak": true,
+   "awalan": "Air membawa serta",
+   "bahaya": "Warga hilang: laporkan perkiraan lokasi terakhir ke 112 atau Basarnas 115, jangan masuk air yang masih surut-pasang.",
+   "opsi": [
+    [
+     "Perahu atau kapal ke darat",
+     "perahu atau kapal terdampar ke darat"
+    ],
+    [
+     "Rumah hanyut atau roboh",
+     "rumah hanyut atau roboh"
+    ],
+    [
+     "Kendaraan terseret",
+     "kendaraan terseret"
+    ],
+    [
+     "Puing dan pohon menumpuk",
+     "puing dan pohon menumpuk"
+    ],
+    [
+     "Warga hanyut atau hilang",
+     "warga hanyut atau hilang",
+     true
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana warga?",
+   "bahaya": "Bila jalur macet, naik ke gedung kokoh bertingkat atau perbukitan terdekat dengan berjalan kaki.",
+   "opsi": [
+    [
+     "Sudah di tempat tinggi",
+     "Warga sudah menyelamatkan diri ke tempat tinggi."
+    ],
+    [
+     "Sedang bergerak naik",
+     "Warga sedang bergerak ke tempat tinggi."
+    ],
+    [
+     "Sebagian belum mengungsi",
+     "Sebagian warga belum mengungsi.",
+     true
+    ],
+    [
+     "Jalur evakuasi macet atau tertutup",
+     "Jalur evakuasi macet atau tertutup.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana laut sekarang?",
+   "bahaya": "Tetap di tempat tinggi sampai BMKG menyatakan aman. Gelombang susulan bisa lebih besar.",
+   "opsi": [
+    [
+     "Masih bergejolak, gelombang berulang",
+     "Saat dilaporkan, laut masih bergejolak dan gelombang berulang.",
+     true
+    ],
+    [
+     "Air surut lagi",
+     "Saat dilaporkan, air laut kembali surut.",
+     true
+    ],
+    [
+     "Tenang, belum ada pernyataan resmi",
+     "Saat dilaporkan, laut tampak tenang namun belum ada pernyataan resmi bahwa kondisi aman."
+    ],
+    [
+     "Tidak tahu",
+     "Kondisi laut saat dilaporkan belum diketahui."
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Gempa susulan",
+     "gempa susulan"
+    ],
+    [
+     "Kebakaran",
+     "kebakaran"
+    ],
+    [
+     "Listrik padam, jalan terputus",
+     "listrik padam dan jalan terputus"
+    ],
+    [
+     "Ikan atau biota terdampar",
+     "ikan atau biota laut terdampar"
+    ],
+    [
+     "Sirene tidak berbunyi",
+     "sirene tidak berbunyi"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "erupsi": [
+  {
+   "tanya": "Sebelum erupsi, apa yang terlihat atau terasa? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Sebelum erupsi,",
+   "opsi": [
+    [
+     "Getaran atau gempa terasa",
+     "terasa getaran atau gempa dari arah gunung"
+    ],
+    [
+     "Suara gemuruh atau dentuman",
+     "terdengar suara gemuruh atau dentuman"
+    ],
+    [
+     "Bau belerang",
+     "tercium bau belerang"
+    ],
+    [
+     "Air sumber berubah hangat atau keruh",
+     "air sumber berubah hangat atau keruh"
+    ],
+    [
+     "Hewan hutan turun ke permukiman",
+     "hewan hutan turun ke permukiman"
+    ],
+    [
+     "Tidak ada tanda",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa yang keluar dari gunung?",
+   "banyak": true,
+   "awalan": "Erupsi disertai",
+   "bahaya": "Awan panas atau lahar: tinggalkan radius dan bantaran sungai sekarang, ikuti arahan PVMBG dan BPBD, jangan menonton dari dekat.",
+   "opsi": [
+    [
+     "Kolom asap atau abu menjulang",
+     "kolom asap atau abu menjulang"
+    ],
+    [
+     "Hujan abu",
+     "hujan abu"
+    ],
+    [
+     "Lontaran batu pijar atau kerikil",
+     "lontaran batu pijar atau kerikil"
+    ],
+    [
+     "Awan panas atau guguran",
+     "awan panas atau guguran",
+     true
+    ],
+    [
+     "Lahar atau lumpur di sungai",
+     "aliran lahar di sungai",
+     true
+    ],
+    [
+     "Lava pijar mengalir",
+     "aliran lava pijar"
+    ]
+   ]
+  },
+  {
+   "tanya": "Seperti apa langit dan udara di lokasi Anda?",
+   "bahaya": "Pakai masker N95 atau kain basah, kacamata, tetap di dalam ruangan bila abu tebal, bersihkan atap perlahan agar tidak runtuh.",
+   "opsi": [
+    [
+     "Normal",
+     "Langit di lokasi tampak normal."
+    ],
+    [
+     "Mendung keabuan",
+     "Langit di lokasi mendung keabuan karena abu."
+    ],
+    [
+     "Gelap seperti malam di siang hari",
+     "Langit di lokasi gelap seperti malam di siang hari."
+    ],
+    [
+     "Jarak pandang pendek, napas sesak",
+     "Jarak pandang pendek dan warga sesak napas.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana sungai yang berhulu di gunung?",
+   "bahaya": "Jauhi aliran dan bantaran sungai; lahar bisa datang meski hujan hanya di puncak.",
+   "opsi": [
+    [
+     "Normal",
+     "Aliran sungai yang berhulu di gunung tampak normal."
+    ],
+    [
+     "Debit naik dan keruh",
+     "Debit sungai yang berhulu di gunung naik dan keruh."
+    ],
+    [
+     "Mengalir lumpur pekat membawa batu",
+     "Sungai mengalirkan lumpur pekat membawa batu.",
+     true
+    ],
+    [
+     "Tiba-tiba kering",
+     "Sungai tiba-tiba kering.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana warga di sekitar?",
+   "bahaya": "Warga di radius berbahaya harus dievakuasi ke luar radius yang ditetapkan PVMBG dan BPBD.",
+   "opsi": [
+    [
+     "Beraktivitas seperti biasa",
+     "Warga masih beraktivitas seperti biasa."
+    ],
+    [
+     "Sebagian sudah mengungsi",
+     "Sebagian warga sudah mengungsi."
+    ],
+    [
+     "Semua sudah mengungsi",
+     "Seluruh warga di zona rawan sudah mengungsi."
+    ],
+    [
+     "Masih ada warga di radius berbahaya",
+     "Masih ada warga di dalam radius berbahaya.",
+     true
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana gunung sekarang?",
+   "bahaya": "Erupsi bisa berulang tanpa banyak jeda; tetap di luar radius yang ditetapkan.",
+   "opsi": [
+    [
+     "Masih terus erupsi atau bergemuruh",
+     "Saat dilaporkan, gunung masih terus erupsi atau bergemuruh.",
+     true
+    ],
+    [
+     "Berhenti, masih berasap",
+     "Saat dilaporkan, erupsi berhenti dan gunung masih berasap."
+    ],
+    [
+     "Tampak tenang",
+     "Saat dilaporkan, gunung tampak tenang."
+    ],
+    [
+     "Tidak tahu",
+     "Kondisi gunung saat dilaporkan belum diketahui."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa dampak yang dialami warga? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Dampak yang terlihat:",
+   "bahaya": "Abu basah berat dan bisa meruntuhkan atap. Bersihkan atap perlahan dengan pelindung napas, jangan menyapu saat abu masih turun.",
+   "opsi": [
+    [
+     "Mata perih, batuk",
+     "warga mengalami mata perih dan batuk"
+    ],
+    [
+     "Atap tertimbun abu",
+     "atap tertimbun abu",
+     true
+    ],
+    [
+     "Tanaman dan ternak tertutup abu",
+     "tanaman dan ternak tertutup abu"
+    ],
+    [
+     "Sekolah atau kegiatan diliburkan",
+     "sekolah atau kegiatan diliburkan"
+    ],
+    [
+     "Bandara atau jalan ditutup",
+     "bandara atau jalan ditutup"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Gempa terasa lagi",
+     "gempa terasa lagi"
+    ],
+    [
+     "Hujan kerikil",
+     "hujan kerikil"
+    ],
+    [
+     "Sirene atau kentongan berbunyi",
+     "sirene atau kentongan berbunyi"
+    ],
+    [
+     "Listrik padam",
+     "listrik padam"
+    ],
+    [
+     "Air sumur keruh",
+     "air sumur keruh"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ],
+ "kebakaran_gedung": [
+  {
+   "tanya": "Bagaimana Anda pertama tahu ada kebakaran?",
+   "opsi": [
+    [
+     "Melihat asap",
+     "Kebakaran diketahui pertama kali dari asap yang membumbung."
+    ],
+    [
+     "Melihat api",
+     "Kebakaran diketahui pertama kali dari nyala api."
+    ],
+    [
+     "Mendengar ledakan atau letupan",
+     "Kebakaran diketahui pertama kali dari suara ledakan atau letupan."
+    ],
+    [
+     "Mencium bau gosong atau gas",
+     "Kebakaran diketahui pertama kali dari bau gosong atau gas."
+    ],
+    [
+     "Teriakan warga",
+     "Kebakaran diketahui pertama kali dari teriakan warga."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apa dugaan penyebabnya?",
+   "opsi": [
+    [
+     "Korsleting listrik",
+     "Kebakaran diduga akibat korsleting listrik"
+    ],
+    [
+     "Kompor atau tabung gas",
+     "Kebakaran diduga berasal dari kompor atau tabung gas"
+    ],
+    [
+     "Lilin, rokok, obat nyamuk, atau dupa",
+     "Kebakaran diduga berasal dari lilin, rokok, obat nyamuk, atau dupa"
+    ],
+    [
+     "Membakar sampah yang menjalar",
+     "Kebakaran diduga berasal dari pembakaran sampah yang menjalar"
+    ],
+    [
+     "Kendaraan atau pengisian bahan bakar",
+     "Kebakaran diduga berasal dari kendaraan atau pengisian bahan bakar"
+    ],
+    [
+     "Tidak tahu",
+     "Kebakaran terjadi dengan penyebab yang belum diketahui"
+    ]
+   ]
+  },
+  {
+   "tanya": "Bangunan apa yang terbakar?",
+   "opsi": [
+    [
+     "Rumah tinggal",
+     "dan menghanguskan rumah tinggal."
+    ],
+    [
+     "Toko, kios, atau pasar",
+     "dan menghanguskan toko, kios, atau pasar."
+    ],
+    [
+     "Pabrik, gudang, atau bengkel",
+     "dan menghanguskan pabrik, gudang, atau bengkel."
+    ],
+    [
+     "Kantor, sekolah, atau asrama",
+     "dan menghanguskan kantor, sekolah, atau asrama."
+    ],
+    [
+     "Banyak jenis bangunan sekaligus",
+     "dan menghanguskan beberapa jenis bangunan sekaligus."
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana api menyebar?",
+   "bahaya": "Warga di bangunan sebelah dan sekitar agar segera keluar membawa dokumen penting, jauhi arah angin, beri jalan untuk damkar.",
+   "opsi": [
+    [
+     "Terbatas di satu bangunan",
+     "Api terbatas di satu bangunan."
+    ],
+    [
+     "Merambat ke bangunan sebelah",
+     "Api merambat ke bangunan di sebelahnya.",
+     true
+    ],
+    [
+     "Menjalar cepat karena angin",
+     "Api menjalar cepat karena tertiup angin.",
+     true
+    ],
+    [
+     "Sulit dijangkau karena gang sempit",
+     "Api sulit dijangkau karena akses gang sempit."
+    ]
+   ]
+  },
+  {
+   "tanya": "Apakah ada bahaya langsung di sana? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Bahaya langsung yang terlihat:",
+   "bahaya": "Jangan masuk menyelamatkan barang. Orang terjebak: telepon 112 atau damkar 113, sebut lantai dan sisi bangunan. Jauhi bangunan yang bergemeretak atau miring.",
+   "opsi": [
+    [
+     "Tabung gas atau bahan mudah meledak",
+     "ada tabung gas atau bahan mudah meledak di dalam",
+     true
+    ],
+    [
+     "Asap hitam tebal",
+     "asap hitam tebal"
+    ],
+    [
+     "Orang masih terjebak di dalam",
+     "ada orang masih terjebak di dalam",
+     true
+    ],
+    [
+     "Kabel listrik atau trafo menyala",
+     "kabel listrik atau trafo menyala",
+     true
+    ],
+    [
+     "Bangunan mulai runtuh",
+     "bangunan mulai runtuh",
+     true
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  },
+  {
+   "tanya": "Bagaimana apinya sekarang?",
+   "bahaya": "Api masih membesar: menjauh minimal satu blok dan jangan menghalangi jalan damkar.",
+   "opsi": [
+    [
+     "Masih membesar",
+     "Saat dilaporkan, api masih membesar.",
+     true
+    ],
+    [
+     "Masih menyala, mulai terkendali",
+     "Saat dilaporkan, api masih menyala namun mulai terkendali."
+    ],
+    [
+     "Padam, masih berasap",
+     "Saat dilaporkan, api sudah padam namun masih berasap."
+    ],
+    [
+     "Padam total",
+     "Saat dilaporkan, api sudah padam."
+    ]
+   ]
+  },
+  {
+   "tanya": "Ada hal lain yang Anda lihat? Boleh pilih lebih dari satu.",
+   "banyak": true,
+   "awalan": "Fenomena lain yang terlihat:",
+   "opsi": [
+    [
+     "Ledakan susulan",
+     "terdengar ledakan susulan"
+    ],
+    [
+     "Air untuk memadamkan kurang",
+     "air untuk memadamkan kurang"
+    ],
+    [
+     "Hidran tidak berfungsi",
+     "hidran tidak berfungsi"
+    ],
+    [
+     "Listrik dipadamkan",
+     "listrik dipadamkan"
+    ],
+    [
+     "Warga membantu memadamkan dengan ember",
+     "warga membantu memadamkan dengan ember"
+    ],
+    [
+     "Tidak ada",
+     null
+    ]
+   ]
+  }
+ ]
+}
