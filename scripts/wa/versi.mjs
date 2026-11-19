@@ -4,6 +4,8 @@
 // ATURAN (gerbang tests/wa/versi.test.mjs): tiap perubahan perilaku bot di scripts/wa menaikkan VERSI dan menambah entri CHANGELOG paling
 // atas dengan versi yang sama. Patch (x.y.Z) = perbaikan; minor (x.Y) = kemampuan baru; mayor (X) = cara kerja baru.
 // Isi changelog ditulis untuk pemakai: kalimat biasa, tanpa nama berkas atau istilah teknis.
+// Hanya Bot Laporan BNPB. Lapor AI (Lapor Bencana) produk lain: perubahannya tidak dicatat di sini dan tidak menaikkan VERSI;
+// kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
 export const VERSI = '2.2.5'

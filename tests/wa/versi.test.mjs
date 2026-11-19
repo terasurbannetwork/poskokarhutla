@@ -18,7 +18,10 @@ export const BERKAS_BOT = ['scripts/wa/proyek.mjs', 'scripts/wa/agen.mjs', 'scri
   ...fs.readdirSync(path.join(AKAR, 'scripts/wa/claude')).filter((n) => n.endsWith('.md')).sort().map((n) => 'scripts/wa/claude/' + n)]
 const sidik = () => {
   const h = crypto.createHash('sha256')
-  for (const f of BERKAS_BOT) h.update(f + '\0' + fs.readFileSync(path.join(AKAR, f), 'utf8').replace(/\r\n/g, '\n') + '\0')
+  // Lapor AI (produk lain, pemilik 19 Nov 2026: "ini tuh beda produk") menumpang di gateway yang sama; bagiannya ditandai
+  // `// >>> lapor-ai` ... `// <<< lapor-ai` dan tidak ikut sidik, supaya perubahan Lapor AI tidak menaikkan versi bot.
+  const tanpaLapor = (s) => s.replace(/^[ \t]*\/\/ >>> lapor-ai\b[^\n]*\n[\s\S]*?^[ \t]*\/\/ <<< lapor-ai\b[^\n]*\n/gm, '')
+  for (const f of BERKAS_BOT) h.update(f + '\0' + tanpaLapor(fs.readFileSync(path.join(AKAR, f), 'utf8').replace(/\r\n/g, '\n')) + '\0')
   return h.digest('hex').slice(0, 16)
 }
 
