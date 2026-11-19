@@ -511,3 +511,104 @@ dialog.mj-rinci::backdrop{background:color-mix(in oklab,var(--head-bg) 55%,trans
 .mj-gugus-tabel td.angka{text-align:center;font-variant-numeric:tabular-nums}
 .mj-gugus-tabel tr.saya td{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
 .mj-tautan{padding:0;border:0;background:none;color:var(--brand2);text-decoration:underline;cursor:pointer}
+
+/* ===== menu samping terang (pemilik 19 Nov 2026 "warnanya jangan gini"; AGENTS 3.5: latar gelap hanya kepala halaman) ===== */
+.mj-samping{background:var(--card);color:var(--ink);border-right:1px solid var(--line)}
+.mj-samping .mj-merek{color:var(--brand);border-bottom-color:var(--line)}
+.mj-samping .mj-merek small{color:var(--ink2)}
+.mj-nav-grup{color:var(--ink2)}
+.mj-nav-b{color:var(--ink)}
+.mj-nav-b svg{color:var(--st,var(--brand2))}
+.mj-nav-b b{background:var(--surface);color:var(--ink)}
+.mj-nav-b:hover{background:var(--surface)}
+.mj-nav-b[aria-current="true"]{background:color-mix(in oklab,var(--brand2) 11%,var(--card));color:var(--brand)}
+.mj-nav-b[aria-current="true"]::before{background:var(--st,var(--brand2))}
+.mj-nav-b[aria-current="true"] b{background:var(--brand);color:var(--on-brand)}
+.mj-nav-b[aria-current="true"] svg{color:var(--st,var(--brand2))}
+
+/* ===== satu baris saring (pemilik 19 Nov 2026 "ini agar sebaris semua"): pil jenis mengisi sisa lebar dan bergulir mendatar ===== */
+.mj-saring{display:flex!important;flex-wrap:nowrap;align-items:center;gap:8px;padding:10px 16px}
+.mj-saring>*{flex:none}
+.mj-saring .mj-cari{width:220px;height:36px}
+.mj-saring .mj-jenis{flex:1 1 auto;min-width:0;height:36px;align-items:center;padding:2px;border:1.5px solid var(--line);border-radius:12px;box-shadow:none;overflow-x:auto;scrollbar-width:none}
+.mj-saring .mj-jenis::-webkit-scrollbar{display:none}
+.mj-saring .mj-jenis-b{flex:none;padding:5px 9px}
+.mj-saring select{width:auto;max-width:170px;height:36px;padding:0 8px;font-size:.75rem}
+.mj-saring .mj-seg{height:36px;border:1.5px solid var(--line);box-shadow:none}
+.mj-saring .mj-seg button{padding:5px 8px;font-size:.75rem}
+.mj-saring .mj-ulang{width:36px;height:36px;padding:0;justify-content:center}
+.mj-peta-atas{justify-content:flex-end}
+@media (max-width:900px){.mj-saring{flex-wrap:wrap}.mj-saring .mj-cari{width:100%}.mj-saring .mj-jenis{flex-basis:100%}}
+
+/* ===== label waktu data di menu samping ===== */
+.mj-samping .mj-segar{display:flex;align-items:center;gap:7px;margin:10px 12px 0;padding:7px 12px;border:1px solid color-mix(in oklab,var(--ok) 40%,var(--line));border-radius:999px;background:var(--card);color:var(--ink);font-size:.75rem;font-weight:600;cursor:pointer;justify-content:flex-start}
+.mj-samping .mj-segar span{flex:1;text-align:left}
+.mj-samping .mj-segar i{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:mj-denyut 2s infinite;box-shadow:0 0 0 0 color-mix(in oklab,var(--ok) 50%,transparent)}
+.mj-samping .mj-segar svg{width:14px;height:14px;color:var(--ink2)}
+.mj-samping .mj-segar.galat{border-color:var(--bad)}
+.mj-samping .mj-segar.galat i{background:var(--bad);animation:none}
+
+/* ===== Ringkasan dan Status tiket: kartu putih, baris berikon, angka besar rata kanan, jarak 20 px ===== */
+.mj-kiri-peta{gap:20px}
+.mj-kiri-peta .mj-ringkas,.mj-kiri-peta .mj-statpeta{border-radius:16px}
+.mj-ringkas-isi{gap:2px;padding:0 14px 14px}
+.mj-rk-total{padding:2px 0 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.mj-pb{position:relative;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;column-gap:10px;width:100%;padding:7px 0;border:0;border-radius:0;background:none;color:var(--ink);font:inherit;text-align:left}
+.mj-pb+.mj-pb{border-top:1px solid color-mix(in oklab,var(--line) 70%,transparent)}
+.mj-pb-ik{display:grid;place-items:center;width:28px;height:28px;border:1.5px solid color-mix(in oklab,var(--w) 35%,var(--line));border-radius:9px;color:var(--w)}
+.mj-pb-ik svg{width:15px;height:15px}
+.mj-pb-t{font-size:.75rem;font-weight:600;line-height:1.25}
+.mj-pb-n{font:800 1.125rem/1 var(--mj-display);font-variant-numeric:tabular-nums;color:var(--ink);text-align:right;min-width:2ch}
+.mj-pb-bar{grid-column:2/-1;height:3px;margin-top:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.mj-pb-bar i{display:block;height:100%;border-radius:3px;background:var(--w)}
+button.mj-pb{cursor:pointer;padding:7px 8px;margin:0 -8px;width:calc(100% + 16px);border-radius:10px}
+button.mj-pb:hover{background:color-mix(in oklab,var(--brand2) 5%,var(--card))}
+button.mj-pb[aria-pressed="true"]{box-shadow:inset 3px 0 0 var(--w);background:color-mix(in oklab,var(--brand2) 7%,var(--card))}
+button.mj-pb:first-child[aria-pressed="true"]{box-shadow:none;background:none}
+.mj-statpeta .mj-angka{display:grid!important;gap:0!important;padding:0 14px 10px!important}
+.mj-statpeta .mj-panel-judul,.mj-ringkas summary{padding:12px 14px 8px}
+.mj-rk-label{margin:10px 0 2px;font-size:.6875rem;font-weight:700;color:var(--ink2)}
+/* baris status menang atas gaya tombol status lama */
+.mj-statpeta .mj-angka button.mj-pb{display:grid;grid-template-columns:28px minmax(0,1fr) auto;column-gap:10px;padding:6px 8px;margin:0 -8px;width:calc(100% + 16px);overflow:visible}
+.mj-statpeta .mj-angka button.mj-pb:first-child{margin-bottom:0;border-bottom:0}
+.mj-statpeta .mj-angka .mj-pb-ik{display:grid;overflow:visible}
+.mj-statpeta .mj-angka .mj-pb-t{display:block;white-space:normal;font-weight:600}
+.mj-statpeta .mj-angka .mj-pb-n{font-size:1.125rem}
+.mj-pb{padding:6px 0}
+.mj-pb-n.teks{font-size:.8125rem;font-weight:700;white-space:nowrap}
+
+/* ===== kepala situs bersama (sama dengan .ad-top public/admin/admin.css, ditulis ulang dengan token supaya meja tidak memuat seluruh admin.css) ===== */
+body{display:flex;flex-direction:column;height:100dvh}
+.ad-top{flex:none;display:flex;align-items:center;gap:14px;padding:10px 20px;background:var(--head-bg);color:var(--on-head);box-shadow:0 6px 18px -10px color-mix(in oklab,var(--head-bg) 60%,transparent);position:relative;z-index:5}
+.ad-logo{display:inline-flex;align-items:center;gap:10px;color:var(--on-head);text-decoration:none;font:800 15px var(--mj-display);letter-spacing:-.01em}
+.ad-logo img{width:30px;height:30px;border-radius:9px;box-shadow:0 0 0 1px color-mix(in oklab,var(--on-head) 25%,transparent)}
+.mj{flex:1;min-height:0;height:auto!important}
+
+/* ===== baris saring di dalam peta ===== */
+.mj{grid-template-rows:minmax(0,1fr)!important;grid-template-areas:"samping isi"!important}
+.mj-peta-atas{align-items:center;gap:8px}
+.mj-peta-atas .mj-saring{flex:1;min-width:0;margin:0;padding:6px;border:1px solid color-mix(in oklab,var(--line) 70%,transparent);border-radius:14px;background:var(--card);box-shadow:var(--mj-bayang)}
+.mj-tabel-wadah .mj-saring{margin:0 0 14px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.mj-kiri-peta{top:72px}
+@media (max-width:900px){.mj{grid-template-areas:"isi"!important}}
+
+/* ===== panel di kanan peta, padat, semua tampil tanpa gulir (pemilik 19 Nov 2026 "muncul semua, line spacing kurangin, letaknya di kanan") ===== */
+.mj-kiri-peta{left:auto;right:12px;top:68px;bottom:auto;max-height:calc(100% - 128px);gap:12px;width:248px}
+.mj-ringkas summary,.mj-statpeta .mj-panel-judul{padding:9px 12px 4px}
+.mj-ringkas-isi{padding:0 12px 10px}
+.mj-statpeta .mj-angka{padding:0 12px 8px!important}
+.mj-rk-total{padding:0 0 4px;margin-bottom:2px}
+.mj-rk-total b{font-size:1.375rem}
+.mj-pb,.mj-statpeta .mj-angka button.mj-pb{padding:3px 0;column-gap:8px;grid-template-columns:22px minmax(0,1fr) auto}
+.mj-statpeta .mj-angka button.mj-pb{padding:3px 6px;margin:0 -6px;width:calc(100% + 12px)}
+.mj-pb-ik{width:22px;height:22px;border-radius:7px}
+.mj-pb-ik svg{width:13px;height:13px}
+.mj-pb-t,.mj-statpeta .mj-angka .mj-pb-t{font-size:.71875rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mj-pb-n,.mj-statpeta .mj-angka .mj-pb-n{font-size:.9375rem}
+.mj-pb-bar{margin-top:2px;height:2px}
+.mj-rk-label{margin:6px 0 0}
+.mj-rk-kab button{padding:3px 4px 7px}
+.mj-rk-kab button::after,.mj-rk-kab button i{bottom:2px}
+.mj-rk-catat{margin:2px 0 0}
+.mj-kiri-peta{width:262px}
+.mj-rk-kab button[aria-pressed="true"]{background:color-mix(in oklab,var(--brand2) 10%,var(--card));box-shadow:inset 3px 0 0 var(--brand2)}

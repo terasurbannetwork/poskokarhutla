@@ -273,9 +273,9 @@ function teksTanya(tanya, sesi) {
 function teksTanyaDasar(tanya, sesi) {
   if (PANDU[tanya]) return PANDU[tanya];
   if (tanya.startsWith("kelompok:")) return KELOMPOK.find(k => `kelompok:${k.id}` === tanya).tanya;
-  const i = isianNama[tanya];
-  const judul = `*${i.label}*\n`;
-  if (i.tanya) return judul + i.tanya;
+  const i = isianNama[tanya], jn = sesi.isian?.jenis?.nilai;   // kalimat dan label bisa mengikuti jenis (tanyaJenis, labelJenis)
+  const judul = `*${i.labelJenis?.[jn] || i.label}*\n`;
+  if (i.tanya) return judul + (i.tanyaJenis?.[jn] || i.tanya);
   if (i.tipe === "angka") return `${judul}Berapa ${i.satuan}? Isi angka di kotak tulis. Tulis *0* bila tidak ada, ketik *belum tahu* bila belum tahu.`;
   return `${judul}Ketik *belum tahu* bila belum diketahui.`;
 }

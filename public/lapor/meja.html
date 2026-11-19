@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/inti/tema.css" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
-<link href="/lapor/meja.css?v=21" rel="stylesheet">
+<link href="/lapor/meja.css?v=28" rel="stylesheet">
 </head>
 <!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
      peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
@@ -64,33 +64,32 @@
   <symbol id="b-gunung" viewBox="0 0 24 24"><path d="M2 20h20L15 9h-6Z"/><path d="M9 9l1.5-2h3L15 9"/><path d="M11 4c0-1 1-2 2-1M14 3.5c.5-1 2-1 2.5 0"/></symbol>
   <symbol id="b-gedung" viewBox="0 0 24 24"><path d="M4 21V10l8-6 8 6v11Z"/><path d="M10 21v-5h4v5"/><path d="M15 3c1 1.5 2.5 2 2.5 4a2 2 0 0 1-4 0"/></symbol>
 </svg>
+<!-- kepala situs navy bersama Centurisk97 seperti /bnpb/dalops (pemilik 19 Nov 2026 "header atasnya buat kaya gini, cuma di kiri doang"); latar gelap hanya di sini -->
+<header class="ad-top"><a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a></header>
 <main class="mj">
   <!-- menu samping ala dasbor (pemilik 19 Nov 2026 "kaya menu dashboard, di kiri sidebar"): tampilan, antrean kerja per status, pintu lain -->
   <!-- kepala navy dihapus (pemilik 19 Nov 2026 "header ini ga ada lagi"): merek di atas menu samping, segarkan di bawahnya -->
   <aside class="mj-samping">
     <a class="mj-merek" href="/lapor/"><img src="/lapor/lambang-bnpb.png" alt="" width="36" height="36"><span>Meja Laporan<small>Lapor Bencana, khusus staf</small></span></a>
+    <!-- label waktu data di menu samping (pemilik 19 Nov 2026 "agar di side bar"): titik hidup + jam; ketuk untuk memuat ulang -->
+    <button class="mj-segar" id="bSegar" type="button" title="Muat ulang data"><i aria-hidden="true"></i><span id="waktuSegar">Memuat data...</span><svg aria-hidden="true"><use href="#m-segar"/></svg></button>
     <nav class="mj-nav" id="nav" aria-label="Menu meja laporan"></nav>
   </aside>
   <!-- baris saring bersama peta dan tabel, tiru /bnpb/dalops (pemilik 19 Nov 2026 "ada filter-filternya juga kaya dalops") -->
-  <div class="mj-saring" role="search" aria-label="Saring laporan">
-    <label class="mj-cari"><svg aria-hidden="true"><use href="#m-cari"/></svg><input id="qCari" type="search" placeholder="Cari tiket, pelapor, nomor WA, desa, kab/kota" aria-label="Cari laporan"></label>
-    <select id="sJenis" aria-label="Jenis bencana"></select>
-    <select id="sStatus" aria-label="Status tiket"></select>
-    <select id="sKab" aria-label="Kabupaten atau kota"></select>
-    <select id="sPeriode" aria-label="Periode laporan">
-      <option value="1">24 jam terakhir</option><option value="7">7 hari terakhir</option><option value="30">30 hari terakhir</option><option value="0" selected>Semua waktu</option>
-    </select>
+  <!-- SATU baris saring penuh lebar (pemilik 19 Nov 2026 "ini agar sebaris semua"): cari, pil jenis bergulir mendatar, status, kab/kota, waktu, saring cepat.
+       Berlaku sekaligus untuk peta, ringkasan, dan tabel. -->
+  <div class="mj-saring" id="saring" role="search" aria-label="Saring laporan">
+    <label class="mj-cari"><svg aria-hidden="true"><use href="#m-cari"/></svg><input id="qCari" type="search" placeholder="Cari tiket, pelapor, nomor WA" aria-label="Cari laporan"></label>
+    <div class="mj-jenis" id="saringJenis" role="group" aria-label="Saring jenis bencana"></div>
+    <div class="mj-seg" id="saringWaktu" role="group" aria-label="Periode laporan"></div>
     <div class="mj-seg" id="saringCepat" role="group" aria-label="Saring cepat"></div>
-    <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" title="Hapus semua saringan"><svg aria-hidden="true"><use href="#m-ulang"/></svg><span>Hapus saringan</span></button>
-    <!-- label waktu data ala /bnpb/dalops: titik hidup + jam; ketuk untuk memuat ulang -->
-    <button class="mj-segar" id="bSegar" type="button" title="Muat ulang data"><i aria-hidden="true"></i><span id="waktuSegar">Memuat data...</span><svg aria-hidden="true"><use href="#m-segar"/></svg></button>
+    <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" title="Hapus semua saringan"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
   </div>
   <div class="mj-isi" id="isi">
     <!-- peta dasbor: saring jenis berikon di atas peta, ringkasan di kiri, legenda tengah bawah (tiru /bnpb/dalops) -->
     <section class="mj-peta-wadah" id="bagPeta" aria-label="Peta laporan">
       <div class="mj-peta" id="peta"></div>
       <div class="mj-peta-atas">
-        <div class="mj-jenis" id="saringJenis" role="group" aria-label="Saring jenis bencana"></div>
         <button class="mj-ikon-peta" id="bPas" type="button" aria-label="Tampilkan semua titik" title="Tampilkan semua titik"><svg aria-hidden="true"><use href="#m-luas"/></svg></button>
       </div>
       <div class="mj-kiri-peta">
@@ -101,7 +100,7 @@
       <div class="mj-legenda" id="legenda"></div>
     </section>
     <section class="mj-tabel-wadah" id="bagDaftar">
-      <div class="mj-tabel-kepala">
+      <div class="mj-tabel-kepala" id="kepalaDaftar">
         <h2><svg aria-hidden="true"><use href="#m-daftar"/></svg>Daftar laporan <span id="nTabel"></span></h2>
       </div>
       <!-- kepala kolom = tombol urut (aria-sort) -->
@@ -111,6 +110,6 @@
   <dialog class="mj-rinci" id="rinci" closedby="any" aria-labelledby="rinciJudul"></dialog>
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
-<script type="module" src="/lapor/meja.js?v=17"></script>
+<script type="module" src="/lapor/meja.js?v=23"></script>
 </body>
 </html>

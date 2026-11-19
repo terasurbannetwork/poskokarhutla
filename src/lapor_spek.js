@@ -51,6 +51,9 @@ export const JENIS = [
   {id: "kebakaran_gedung", label: "Kebakaran gedung dan permukiman", ket: "Api di rumah warga atau bangunan", sub: S(
     ["Kebakaran gedung", "Api di gedung kantor, sekolah, pasar, atau bangunan besar"],
     ["Kebakaran permukiman", "Api membakar rumah warga"])},
+  /* Lainnya (pemilik 19 Nov 2026): kejadian di luar daftar tidak dipaksa masuk jenis yang salah; kronologi diketik bebas karena tidak ada pandu per jenis */
+  {id: "lainnya", label: "Lainnya", ket: "Kejadian lain yang tidak ada di daftar", sub: S(
+    ["Kejadian lain", "Ceritakan jenis kejadiannya di kronologi"])},
 ];
 
 /* kelompok berurutan (ALGORITMA A2). tanya = pertanyaan kelompok sekaligus; "tidak ada" mengisi nihil seluruh kelompok. */
@@ -61,7 +64,9 @@ export const KELOMPOK = [
   {id: "terdampak", label: "Warga terdampak", tanya: "Berapa keluarga dan warga yang terdampak?"},
   {id: "pengungsian", label: "Pengungsian", tanya: "Berapa warga dan keluarga yang mengungsi?"},
   {id: "rumah", label: "Kerusakan rumah", tanya: "Berapa rumah rusak berat, rusak sedang, rusak ringan, atau terendam?"},
+  {id: "rentan", label: "Kelompok rentan"},
   {id: "fasilitas", label: "Fasilitas dan jalan", tanya: "Ada sekolah, fasilitas kesehatan, tempat ibadah, jalan, atau jembatan yang rusak?"},
+  {id: "layanan", label: "Layanan dasar"},
   {id: "khusus", label: "Data khusus"},
   {id: "kebutuhan", label: "Kebutuhan"},
 ];
@@ -134,10 +139,24 @@ export const ISIAN = [
     ["Satu titik", "Beberapa rumah berdekatan"], ["Satu kampung atau dusun", "Belasan sampai puluhan rumah"], ["Beberapa desa", "Kerusakan tersebar ke desa lain"]]},
   {nama: "garis_pantai", label: "Pantai tergerus", kelompok: "khusus", tipe: "opsi", jenis: ["abrasi"], tanya: "Seberapa jauh daratan pantai tergerus?", opsi: [
     ["Kurang dari 1 meter", "Bibir pantai sedikit terkikis"], ["1 sampai 5 meter", "Pohon atau pagar tumbang ke laut"], ["Lebih dari 5 meter", "Rumah atau jalan terancam atau rusak"], ["Tidak tahu", "Belum bisa diperkirakan"]]},
-  {nama: "lahan_terendam", label: "Sawah atau kebun terendam", kelompok: "khusus", tipe: "opsi", satuan: "ha", jenis: ["banjir"], tanya: "Seluas apa sawah atau kebun yang terendam? Satu hektare = 100 m kali 100 m, kira-kira satu setengah lapangan sepak bola.", opsi: [
+  /* lahan pertanian rusak untuk semua jenis yang merusak tanaman (pemilik 19 Nov 2026); kalimat tanya mengikuti jenis (tanyaJenis), satu isian supaya angkanya satu kolom.
+     Karhutla tidak ditanya (sudah ada Luas terbakar), gempa dan kebakaran gedung jarang merusak lahan. Nama isian tetap lahan_terendam supaya data lama terbaca. */
+  {nama: "lahan_terendam", label: "Lahan pertanian rusak", kelompok: "khusus", tipe: "opsi", satuan: "ha", jenis: ["banjir", "longsor", "kekeringan", "erupsi", "cuaca", "tsunami", "abrasi"],
+    tanya: "Seluas apa sawah atau kebun yang rusak? Satu hektare = 100 m kali 100 m, kira-kira satu setengah lapangan sepak bola.",
+    tanyaJenis: {banjir: "Seluas apa sawah atau kebun yang terendam?", longsor: "Seluas apa sawah atau kebun yang tertimbun longsor?", kekeringan: "Seluas apa tanaman yang puso atau gagal panen?",
+      erupsi: "Seluas apa tanaman yang tertutup abu?", cuaca: "Seluas apa tanaman yang rusak karena angin atau hujan es?", tsunami: "Seluas apa sawah atau kebun yang terendam air laut?", abrasi: "Seluas apa sawah atau kebun yang terendam air laut?"},
+    labelJenis: {banjir: "Sawah atau kebun terendam", longsor: "Sawah atau kebun tertimbun", kekeringan: "Tanaman puso atau gagal panen", erupsi: "Tanaman tertutup abu", cuaca: "Tanaman rusak angin atau hujan es", tsunami: "Sawah terendam air laut", abrasi: "Sawah terendam air laut"}, opsi: [
     ["Tidak ada", "Hanya permukiman dan jalan", 0], ["Kurang dari 1 ha", "Beberapa petak", 0.5], ["1 sampai 10 ha", "Satu hamparan sawah", 5], ["10 sampai 100 ha", "Beberapa hamparan", 50], ["Lebih dari 100 ha", "Sejauh mata memandang", 100], ["Tidak tahu", "", null]]},
   {nama: "jarak_kawah", label: "Jarak dari kawah", kelompok: "khusus", tipe: "opsi", satuan: "km", jenis: ["erupsi"], tanya: "Kira-kira berapa jauh lokasi Anda dari puncak atau kawah gunung?", opsi: [
     ["Kurang dari 3 km", "Sangat dekat puncak", 2], ["3 sampai 5 km", "", 4], ["5 sampai 10 km", "", 7], ["Lebih dari 10 km", "", 10], ["Tidak tahu", "", null]]},
+  /* kelompok rentan (pemilik 19 Nov 2026): pilihan, tanpa jumlah; untuk prioritas bantuan. Jumlah terpilah tetap diisi BPBD di logbook. */
+  {nama: "rentan", label: "Kelompok rentan", kelompok: "rentan", tipe: "opsi_banyak", tanya: "Ada warga dari kelompok ini yang butuh bantuan khusus? Boleh pilih lebih dari satu.", opsi: [
+    ["Bayi atau balita", ""], ["Ibu hamil atau menyusui", ""], ["Lansia", "Usia 60 tahun ke atas"], ["Penyandang disabilitas", "Termasuk yang sulit berjalan atau melihat"],
+    ["Tidak ada", "", null, null, "Lainnya"], ["Tidak tahu", "", null, null, "Lainnya"]]},
+  /* layanan dasar yang terlihat warga (pemilik 19 Nov 2026, dari daftar Kendala logbook). Bukti untuk status Lifeline per kab/kota; status resmi tetap ditetapkan staf (KEPUTUSAN-LIFELINE). */
+  {nama: "layanan_terganggu", label: "Layanan terganggu", kelompok: "layanan", tipe: "opsi_banyak", tanya: "Layanan apa yang terganggu di lokasi? Boleh pilih lebih dari satu.", opsi: [
+    ["Jalan putus atau tertutup", "Kendaraan tidak bisa masuk"], ["Listrik padam", ""], ["Sinyal telepon putus", "Tidak bisa menelepon atau internet"], ["Air bersih terhenti", "PDAM atau sumur tidak mengalir"],
+    ["Semua masih berjalan", "", null, null, "Lainnya"], ["Tidak tahu", "", null, null, "Lainnya"]]},
   {nama: "kebutuhan", label: "Kebutuhan mendesak", kelompok: "kebutuhan", tipe: "opsi_banyak", tanya: "Apa yang paling dibutuhkan warga sekarang? Boleh pilih lebih dari satu.", opsi: [
     // Logistik: kategori Perka 18/2009 Standarisasi Logistik dan Perka 23/2014, nama barang mengikuti katalog LogPal (pangan, sandang, family kit, kidsware, logistik lain).
     // Disesuaikan per jenis bencana (pemilik 19 Nov 2026: "kebutuhan masing-masing bencana mungkin berbeda"): perlengkapan pengungsian hanya untuk bencana yang

@@ -2,7 +2,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {putaran, angkaDalam, validasiUraian, wajibKurang} from "../../src/lapor_mesin.js";
-import {langkahKronologi, rangkaiKronologi} from "../../src/lapor_spek.js";
+import {langkahKronologi, rangkaiKronologi, JENIS} from "../../src/lapor_spek.js";
 const kr1 = jenis => langkahKronologi(jenis).map(() => "1"); // jawab pilihan pertama di tiap langkah kronologi
 
 let jam = 0;
@@ -50,7 +50,8 @@ test("nomor baru: identitas dulu, cerita pertama disimpan dan dipakai sesudahnya
   assert.ok(h.sesi.isian.kronologi, "cerita tertunda jadi kronologi");
   assert.match(h.balasan, /Jenis bencana/);
   assert.equal(h.pilihan[0], "Banjir", "saran dari cerita di urutan teratas");
-  assert.equal(h.pilihan.length, 10, "semua jenis tetap bisa dipilih");
+  assert.equal(h.pilihan.length, JENIS.length, "semua jenis tetap bisa dipilih, termasuk Lainnya");
+  assert.equal(h.pilihan.at(-1), "Lainnya", "Lainnya di urutan terakhir");
 });
 
 test("BPBD yang mengaku sendiri = bpbd_klaim, ditanya kab dan jabatan", async () => {
@@ -176,4 +177,13 @@ test("salah pilih: 'kembali' memulihkan pertanyaan sebelumnya beserta isiannya",
   assert.match(h.inti, /Jenis bencana/, "pertanyaan jenis tampil lagi");
   const lagi = await putaran({sesi: h.sesi, pelapor: h.pelapor, pesan: {teks: "2"}, kini: ++jam});
   assert.equal(lagi.sesi.isian.jenis.nilai, "longsor", "bisa memilih ulang");
+});
+
+test("isian warga baru: lahan per jenis, kelompok rentan, layanan terganggu", async () => {
+  const {berlaku, isianNama} = await import("../../src/lapor_spek.js");
+  const ada = j => berlaku(j).map(i => i.nama);
+  for (const j of ["banjir", "longsor", "kekeringan", "erupsi", "cuaca", "tsunami", "abrasi"]) assert.ok(ada(j).includes("lahan_terendam"), `lahan untuk ${j}`);
+  for (const j of ["karhutla", "gempa", "kebakaran_gedung", "lainnya"]) assert.ok(!ada(j).includes("lahan_terendam"), `tanpa lahan untuk ${j}`);
+  assert.match(isianNama.lahan_terendam.tanyaJenis.kekeringan, /puso/);
+  for (const j of JENIS.map(x => x.id)) { assert.ok(ada(j).includes("rentan")); assert.ok(ada(j).includes("layanan_terganggu")); }
 });

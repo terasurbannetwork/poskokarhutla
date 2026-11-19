@@ -300,3 +300,24 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q | Pertanyaan | Bawaan sementara | Menahan |
 | --- | --- | --- | --- |
 | Q40 | "Batas waktu respons per status" (K55 butir 3): berapa menit atau jam untuk Baru sampai dibuka, Ditelaah sampai diteruskan, Diteruskan sampai ditindaklanjuti, dan aturan mana yang jadi sumbernya (SOP Pusdalops, Perka, atau keputusan pemilik)? | **[BAWAAN SEMENTARA]** Tidak ada warna terlambat; waktu hanya ditampilkan (D73). Begitu pemilik memberi angka, kolom Status memerah saat lewat dan Antrean kerja menghitung yang lewat. | LA-56 |
+
+## Keputusan pemilik (isian warga tambahan dan draf logbook, 19 Nov 2026 malam)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K56 | 19 Nov 2026 | Isian warga ditambah: kelompok rentan (pilihan, tanpa jumlah), layanan dasar terganggu (jalan, listrik, sinyal, air bersih), jenis Lainnya, dan lahan pertanian rusak untuk banjir, longsor, kekeringan, erupsi, cuaca ekstrem, tsunami, dan abrasi dengan kalimat per jenis (karhutla memakai Luas terbakar). Isian khusus BPBD (upaya penanganan, kendala lengkap, kebutuhan berjumlah, korban terpilah, prasarana dan kerugian, keposkoan, SK, KIB, sumber, tautan) TIDAK ditanyakan di Lapor: laporan yang diterima menjadi draf Logbook Pusdalops dan petugas melengkapinya di sana. |
+
+## Keputusan rancangan (pelaksanaan K56)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D74 | `lahan_terendam` tetap satu isian (nama lama supaya data lama terbaca) berlabel "Lahan pertanian rusak", dengan `tanyaJenis` dan `labelJenis` per jenis yang dibaca `teksTanyaDasar` di `src/lapor_mesin.js`. | Satu kolom angka lintas jenis. |
+| D75 | Kelompok baru `rentan` dan `layanan` di `KELOMPOK`, masing-masing satu isian `opsi_banyak` (`rentan`, `layanan_terganggu`). Layanan terganggu adalah bukti untuk Lifeline, bukan status resmi (KEPUTUSAN-LIFELINE). | Pilihan, bukan ketik; mesin tidak menetapkan status. |
+| D76 | Draf logbook: tombol "Draf logbook" di rincian meja menulis draf perangkat `logbook_draf_v1` (bentuk `kumpul()` `public/bnpb/logbook.js`) dari nilai mentah rincian (`nilai`, `waktuKejadianMs`, tambahan aditif di `/api/lapor/meja/<nomor>`) lalu membuka `/bnpb/logbook`. Draf lama petugas tidak ditimpa tanpa ketukan kedua. Tanpa rute dan tabel baru; penyimpanan tetap oleh petugas lewat rute logbook yang ada. | Satu sumber angka, tanpa ketik ulang, tanpa buku kejadian kedua. |
+
+## Pertanyaan terbuka (pelaksanaan K56)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q41 | Layanan terganggu dari laporan warga: dipakai sebagai bukti pada layar Lifeline per kab/kota sekarang, atau menunggu verifikasi BPBD? | **[BAWAAN SEMENTARA]** Belum mengalir ke Lifeline; tampil di rincian dan ikut draf logbook (kendala). | LA-57 |
+| Q42 | Jenis Epidemi, Kecelakaan, dan Konflik sosial (ada di logbook) perlu masuk Lapor untuk warga? | **[BAWAAN SEMENTARA]** Tidak; warga memakai Lainnya. | — |

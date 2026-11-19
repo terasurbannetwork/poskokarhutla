@@ -383,6 +383,8 @@ function mejaRinci(nomor, lihat = false) {
   return [200, {nomor, token: s.token, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
     pelapor: {nama: p.nama, wa: s.wa, peran: PERAN[p.peran], kab: p.kab || null, jabatan: p.jabatan || null},
     waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), tanggap: tanggap(s),
+    // nilai mentah per isian (null = belum, 0 = tidak ada) dan waktu kejadian ms: bahan draf logbook Pusdalops di meja (K56)
+    nilai: Object.fromEntries(berlakuSesi(s).map(i => { const x = s.isian[i.nama]; return [i.nama, !x || x.belum ? null : x.nihil ? 0 : x.nilai]; })), waktuKejadianMs: s.isian.waktu?.ms ?? null,
     gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
         return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,

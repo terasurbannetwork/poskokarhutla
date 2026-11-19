@@ -95,3 +95,6 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 | LA-25a | Chip gugus, saring Bergugus, kartu gugus rincian (D71) | sesi induk | selesai lokal; Buku Besar tetap LA-25 (F1) |
 | LA-49a | Kartu Teruskan ke BPBD di rincian, kirim WA oleh staf, tandai diteruskan (D72) | sesi induk | selesai lokal; otomatis tetap LA-49 (F1) |
 | LA-56 | Batas waktu respons per status: warna lewat batas dan hitungan di Antrean kerja | `layar-peta` | menunggu Q40 |
+| LA-56a | K56 isian warga: rentan, layanan terganggu, Lainnya, lahan per jenis (D74, D75) | sesi induk | selesai, uji `tests/lapor/mesin.test.mjs` |
+| LA-56b | K56 draf Logbook Pusdalops dari rincian meja (D76) | sesi induk | selesai lokal; rute Worker rincian perlu `nilai` dan `waktuKejadianMs` |
+| LA-57 | Layanan terganggu ke Lifeline per kab/kota | `warga-api`, `siklus` | menunggu Q41 |
