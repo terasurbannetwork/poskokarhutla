@@ -1796,3 +1796,29 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
   .lp-chat-kepala #bKembali::after{content:"Beranda"}
   .lp-chat-kepala #bKembali:hover{border-color:var(--brand2)!important}
 }
+/* ===== Tentang dan cara melapor ===== */
+.lp-tentang{display:grid;gap:20px;padding:20px 24px 40px}
+.lp-tt-blok{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 22px}
+.lp-tt-blok h2{display:flex;align-items:center;gap:10px;margin:0 0 16px;font:800 1.125rem var(--display);color:var(--ink)}
+.lp-tt-blok h2 svg{width:34px;height:34px;padding:8px;border-radius:10px;background:color-mix(in oklab,var(--brand2) 10%,var(--card));color:var(--brand2)}
+.lp-tt-kisi{display:grid;gap:12px}
+.lp-tt-kisi.tiga{grid-template-columns:repeat(3,minmax(0,1fr))}.lp-tt-kisi.empat{grid-template-columns:repeat(4,minmax(0,1fr))}.lp-tt-kisi.dua{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lp-tt-kisi article{display:grid;align-content:start;gap:6px;padding:16px;border:1px solid var(--line);border-radius:14px}
+.lp-tt-kisi article b{font:800 .9375rem var(--display);color:var(--ink)}
+.lp-tt-kisi article p,.lp-tt-kisi li{margin:0;font-size:.875rem;color:var(--ink2);line-height:1.5}
+.lp-tt-kisi ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.lp-tt-kisi article.baik{border-top:4px solid var(--ok)}.lp-tt-kisi article.hindari{border-top:4px solid var(--bad)}
+.lp-tt-kisi code{justify-self:start;padding:4px 12px;border-radius:999px;background:var(--brand);color:var(--on-brand);font:700 .875rem ui-monospace,monospace}
+.lp-tt-ikon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--brand2);color:var(--on-brand)}
+.lp-tt-ikon svg{width:22px;height:22px}
+.lp-tt-langkah{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.lp-tt-langkah li{display:flex;gap:12px;padding:16px;border:1px solid var(--line);border-radius:14px}
+.lp-tt-langkah li > span{display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;background:var(--brand-accent);color:var(--on-pekat);font:800 .9375rem var(--display)}
+.lp-tt-langkah b{font:800 .9375rem var(--display)}
+.lp-tt-langkah p{margin:4px 0 0;font-size:.8125rem;color:var(--ink2);line-height:1.5}
+.lp-tt-catatan{margin:12px 0 0;font-size:.875rem;color:var(--ink2);line-height:1.55}
+.lp-tt-darurat{display:flex;align-items:center;gap:10px;margin:14px 0 0;padding:12px 16px;border-radius:14px;background:color-mix(in oklab,var(--bad) 8%,var(--card));border:1px solid color-mix(in oklab,var(--bad) 30%,var(--line));font-weight:700;color:var(--ink)}
+.lp-tt-darurat svg{color:var(--bad)}
+.lp-tt-darurat a{color:var(--bad-tx)}
+@media (max-width:900px){.lp-tt-kisi.tiga,.lp-tt-kisi.empat,.lp-tt-langkah{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.lp-tt-kisi.tiga,.lp-tt-kisi.empat,.lp-tt-kisi.dua,.lp-tt-langkah{grid-template-columns:1fr}.lp-tentang{padding:16px}}

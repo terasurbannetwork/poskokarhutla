@@ -1731,17 +1731,18 @@ export const blDetakSemua = async (env, p) => (await sedia(env, p, "bl_detak", "
    lp_publik = pemegang tautan lacak atau pembaca alun-alun (tanpa identitas), lp_staf = admin/staf meja, lp_mesin = mesin Mac mini (PDF dan kabar).
    lapor_tiket_riwayat dan lapor_pesan append-only: hanya INSERT di sini. Tiap kueri lewat PK atau indeks 0155 (kuota baca D1 Free). */
 Object.assign(MATRIKS, {
-  lapor_pelapor:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"]},
+  lapor_pelapor:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
   lapor_izin:          {lp_pelapor: ["baca"], lp_mesin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca", "tambah", "ubah", "hapus"]},
   lapor_sesi:          {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
   lapor_pesan:         {lp_pelapor: ["tambah"], lp_staf: ["baca"]},
   lapor_foto:          {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
-  lapor_tiket:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},
-  lapor_tiket_riwayat: {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_staf: ["baca", "tambah"]},
-  lapor_balasan:       {lp_publik: ["baca"], lp_staf: ["baca", "tambah"]},
+  lapor_tiket:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
+  lapor_tiket_riwayat: {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
+  lapor_balasan:       {lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
   lapor_kabar:         {lp_pelapor: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "tambah", "ubah"]},
   lapor_urut:          {lp_pelapor: ["tambah"]},
   lapor_pdf:           {lp_pelapor: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  laju_bnpb:           {sistem: ["baca", "tambah"], lp_pelapor: ["baca", "tambah"]},
 });
 export const pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
@@ -1836,3 +1837,13 @@ export async function lpMejaDaftar(env, p, f) {
 export const lpAlunBaris = async (env, p, prov, jenis) => (await sedia(env, p, "lapor_sesi", "baca",
   `SELECT s.id, s.jenis, s.ringkas, s.terkirim, s.tingkat, t.status FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
    WHERE t.status IN ('ditindaklanjuti', 'selesai') AND (?1 IS NULL OR s.kab LIKE ?1 || '%') AND (?2 IS NULL OR s.jenis = ?2) ORDER BY s.terkirim DESC LIMIT 300`).bind(prov || null, jenis || null).all()).results;
+
+/* kuota pesan Lapor: batas = [[jendela ms, maks], ...]; lewat batas -> {sisa detik sampai baris tertua keluar dari jendela}, lolos -> null dan satu baris laju_bnpb dicatat */
+export async function lpKuota(env, p, kunci, aksi, batas, kini) {
+  for (const [jendela, maks] of batas) {
+    const r = await sedia(env, p, "laju_bnpb", "baca", "SELECT count(*) n, min(waktu) t FROM laju_bnpb WHERE kunci = ?1 AND aksi = ?2 AND waktu > ?3").bind(kunci, aksi, kini - jendela).first();
+    if (r.n >= maks) return {sisa: Math.max(1, Math.ceil((r.t + jendela - kini) / 1000))};
+  }
+  await sedia(env, p, "laju_bnpb", "tambah", "INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?1, ?2, ?3)").bind(kunci, aksi, kini).run();
+  return null;
+}
