@@ -675,7 +675,7 @@ function tampilDaftarLaporan() {
   for (const [t, n, ik] of [["Laporan terkirim", daftar.length, "i-kirim"], ["Sedang ditangani", daftar.length - selesai, "i-status"], ["Selesai", selesai, "i-centang"]]) {
     const u = el("div", "lp-pita-ubin"), ic = el("span"); ic.append(ikon(ik)); const tx = el("span"); tx.append(el("b", null, String(n)), el("small", null, t)); u.append(ic, tx); ring.append(u); }
   const isi = [];
-  if (aktif) { const b = el("button", "lp-lap-kartu draf"); b.type = "button"; const g = el("div", "lp-lap-gambar"); const ic = el("span", "lp-lap-ikon"); ic.append(ikon("i-pesan")); g.append(ic, el("span", "lp-pil ditelaah", "Belum dikirim"));
+  if (aktif) { const b = el("button", "lp-lap-kartu draf"); b.type = "button"; const g = el("div", "lp-lap-gambar"); const ic = el("span", "lp-lap-ikon"); ic.append(ikon("i-pesan")); const mk = el("span", "lp-lap-maskot"); mk.innerHTML = maskot("semangat"); g.append(ic, el("span", "lp-pil ditelaah", "Belum dikirim"), mk);
     const tx = el("div", "lp-lap-isi"), bar = el("span", "lp-lap-bar"), bi = el("i"); bi.style.width = `${cache.keadaan.lengkap || 0}%`; bar.append(bi);
     const aksi = el("span", "lp-lap-aksi"); aksi.append(ikon("i-panah"), "Lanjutkan melapor");
     tx.append(el("b", null, "Laporan yang belum selesai"), el("small", null, `Lengkap ${cache.keadaan.lengkap || 0} persen`), bar, aksi); b.append(g, tx); b.addEventListener("click", () => ke("chat")); isi.push(b); }
@@ -683,13 +683,17 @@ function tampilDaftarLaporan() {
     const id = ID_JENIS[l.jenis], a = Object.assign(el("a", "lp-lap-kartu"), {href: l.lacak}), g = el("div", "lp-lap-gambar");
     // foto asli yang diunggah pelapor; foto contoh jenis hanya bila laporan tanpa foto (pemilik 19 Nov 2026: "pakai foto real yang diupload")
     if (l.foto) { g.style.setProperty("background-image", `url("${l.foto}")`, "important"); g.classList.add("asli"); } else if (GAMBAR[id]) g.style.backgroundImage = `url(/img/bencana-${GAMBAR[id]}.jpg)`;
-    if (!l.foto && l.fotoCek !== true && l.lacak) { const t = new URL(l.lacak, location.href).searchParams.get("t"); // laporan lama: ambil foto pertama dari halaman lacak sekali
-      fetch(`/api/lapor/lacak?t=${encodeURIComponent(t || "")}`).then(r => r.json()).then(x => { l.fotoCek = true; const f = x.foto?.[0]?.url; if (f) { l.foto = f; g.style.setProperty("background-image", `url("${f}")`, "important"); g.classList.add("asli"); } simpanCache(); }).catch(() => {}); }
+    if (!l.foto && l.fotoCek2 !== true && l.lacak) { const t = new URL(l.lacak, location.href).searchParams.get("t"); // laporan lama: ambil foto pertama dari halaman lacak sekali
+      fetch(`/api/lapor/lacak?t=${encodeURIComponent(t || "")}`).then(r => r.json()).then(x => { l.fotoCek2 = true; const f = x.fotoPertama; if (f) { l.foto = f; g.style.setProperty("background-image", `url("${f}")`, "important"); g.classList.add("asli"); } simpanCache(); }).catch(() => {}); }
     const ic = el("span", "lp-lap-ikon"); ic.append(ikon(IKON_JENIS[id] || "i-kejadian")); g.append(ic, STATUS_PIL(l));
     const tx = el("div", "lp-lap-isi"), n = Math.max(0, URUT_STATUS.indexOf(l.status)), lk = el("span", "lp-terbaru-langkah");
     lk.append(...[["Diterima", "i-centang"], ["Dilihat", "i-cari"], ["Ditelaah", "i-daftar"], ["Ditindaklanjuti", "i-status"], ["Selesai", "i-centang"]].map(([t, ik], i) => { const sp = el("span", i <= n ? "aktif" : i === n + 1 ? "berikut" : ""); sp.append(ikon(ik), t); return sp; }));
     const aksi = el("span", "lp-lap-aksi"); aksi.append(ikon("i-status"), l.balasan ? `${l.balasan} balasan petugas, lihat` : "Lacak laporan");
-    tx.append(el("b", null, l.jenis || "Laporan"), el("small", "lp-lap-nomor", l.nomor), lk, aksi); a.append(g, tx); isi.push(a);
+    // baris meta: nomor tiket dan waktu kirim berikon (pemilik 19 Nov 2026 "bagusin")
+    const meta = el("span", "lp-lap-meta"), m1 = el("span"), m2 = el("span"); m1.append(ikon("i-daftar"), l.nomor);
+    m2.append(ikon("i-kalender"), l.waktu ? new Date(l.waktu).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(":", ".") : "Terkirim"); meta.append(m1, m2);
+    const kep = el("span", "lp-lap-kep"); kep.append(el("b", null, l.jenis || "Laporan"), aksi);
+    tx.append(kep, meta, lk); a.append(g, tx); isi.push(a);
   }
   if (!isi.length) {
     const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");

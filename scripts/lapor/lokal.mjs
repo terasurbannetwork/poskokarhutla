@@ -189,7 +189,7 @@ function lacak(t) { // halaman lacak tanpa login: tanpa nomor WA, nama depan saj
   const sudah = new Map(s.tiket.riwayat.map(r => [r.ke, r]));
   return [200, {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || "Kejadian",
     subjenis: s.isian.subjenis?.nilai || null, lokasi: w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : null, waktuKejadian: s.isian.waktu?.nilai || null,
-    waktuLapor: waktuLapor(s.terkirim, prov), pelapor: (p.nama || "").split(" ")[0], foto: (s.foto || []).length,
+    waktuLapor: waktuLapor(s.terkirim, prov), pelapor: (p.nama || "").split(" ")[0], foto: (s.foto || []).length, fotoPertama: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}?t=${s.token}` : null,
     tahap: s.tiket.status === "tidak_valid" ? [...URUTAN.filter(k => sudah.has(k)), "tidak_valid"].map(k => ({kunci: k, label: STATUS[k], selesai: true, waktu: waktuLapor(sudah.get(k)?.waktu, prov), catatan: sudah.get(k)?.catatan || null}))
       : URUTAN.filter(k => k !== "diteruskan" || sudah.has(k)).map(k => ({kunci: k, label: STATUS[k], selesai: sudah.has(k), waktu: sudah.has(k) ? waktuLapor(sudah.get(k).waktu, prov) : null, catatan: sudah.get(k)?.catatan || null})),
     balasan: (s.balasan || []).map(b => ({teks: b.teks, waktu: waktuLapor(b.waktu, prov)})),

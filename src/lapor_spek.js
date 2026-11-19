@@ -67,6 +67,8 @@ export const KELOMPOK = [
 ];
 
 /* tipe: pilihan_jenis | pilihan_sub | waktu | lokasi | teks | angka. wajib = wajib laporan awal (D5). */
+/* bencana yang biasanya membuat warga mengungsi: perlengkapan pengungsian hanya ditawarkan di sini */
+const UNGSI = ["banjir", "longsor", "abrasi", "cuaca", "gempa", "tsunami", "erupsi", "kebakaran_gedung"];
 export const ISIAN = [
   {nama: "jenis", label: "Jenis bencana", kelompok: "kejadian", tipe: "pilihan_jenis", wajib: true},
   {nama: "subjenis", label: "Subjenis", kelompok: "kejadian", tipe: "pilihan_sub", wajib: true},
@@ -137,15 +139,21 @@ export const ISIAN = [
   {nama: "jarak_kawah", label: "Jarak dari kawah", kelompok: "khusus", tipe: "opsi", satuan: "km", jenis: ["erupsi"], tanya: "Kira-kira berapa jauh lokasi Anda dari puncak atau kawah gunung?", opsi: [
     ["Kurang dari 3 km", "Sangat dekat puncak", 2], ["3 sampai 5 km", "", 4], ["5 sampai 10 km", "", 7], ["Lebih dari 10 km", "", 10], ["Tidak tahu", "", null]]},
   {nama: "kebutuhan", label: "Kebutuhan mendesak", kelompok: "kebutuhan", tipe: "opsi_banyak", tanya: "Apa yang paling dibutuhkan warga sekarang? Boleh pilih lebih dari satu.", opsi: [
-    // Logistik: kategori Perka 18/2009 Standarisasi Logistik dan Perka 23/2014, nama barang mengikuti katalog LogPal (pangan, sandang, family kit, kidsware, logistik lain)
-    ["Makanan siap saji", "", null, null, "Logistik"], ["Paket pangan atau sembako", "Beras, mi instan, lauk", null, null, "Logistik"], ["Air bersih atau air minum", "", null, null, "Logistik"],
-    ["Paket sandang", "Pakaian dan selimut", null, null, "Logistik"], ["Matras, kasur lipat, atau tikar", "", null, null, "Logistik"], ["Tenda atau terpal", "", null, null, "Logistik"],
-    ["Family kit", "Perlengkapan mandi dan kebersihan keluarga", null, null, "Logistik"], ["Kidsware", "Perlengkapan bayi dan anak", null, null, "Logistik"],
-    ["Obat dan layanan kesehatan", "", null, null, "Logistik"], ["Masker", "", null, ["karhutla", "erupsi"], "Logistik"],
+    // Logistik: kategori Perka 18/2009 Standarisasi Logistik dan Perka 23/2014, nama barang mengikuti katalog LogPal (pangan, sandang, family kit, kidsware, logistik lain).
+    // Disesuaikan per jenis bencana (pemilik 19 Nov 2026: "kebutuhan masing-masing bencana mungkin berbeda"): perlengkapan pengungsian hanya untuk bencana yang
+    // membuat warga mengungsi; karhutla dan kekeringan memakai kebutuhan khasnya (masker, air).
+    ["Makanan siap saji", "", null, [...UNGSI, "karhutla"], "Logistik"], ["Paket pangan atau sembako", "Beras, mi instan, lauk", null, null, "Logistik"],
+    ["Air bersih atau air minum", "", null, null, "Logistik"], ["Paket sandang", "Pakaian dan selimut", null, UNGSI, "Logistik"],
+    ["Matras, kasur lipat, atau tikar", "", null, UNGSI, "Logistik"], ["Tenda atau terpal", "", null, UNGSI, "Logistik"],
+    ["Family kit", "Perlengkapan mandi dan kebersihan keluarga", null, UNGSI, "Logistik"], ["Kidsware", "Perlengkapan bayi dan anak", null, UNGSI, "Logistik"],
+    ["Obat dan layanan kesehatan", "", null, null, "Logistik"], ["Masker", "Untuk asap atau abu", null, ["karhutla", "erupsi"], "Logistik"],
     // Peralatan: khas per jenis bencana, dari permintaan yang paling sering tercatat di logbook Pusdalops 2024-2026
-    ["Perahu karet untuk evakuasi", "", null, ["banjir", "tsunami", "abrasi"], "Peralatan"], ["Tandon atau mobil tangki air", "", null, ["kekeringan"], "Peralatan"],
-    ["Mesin dan selang pemadam", "", null, ["karhutla", "kebakaran_gedung"], "Peralatan"], ["Karung atau bronjong", "Menahan tanah atau air", null, ["longsor", "banjir", "abrasi"], "Peralatan"],
+    ["Perahu karet untuk evakuasi", "", null, ["banjir", "tsunami", "abrasi"], "Peralatan"], ["Pompa air", "Menyedot genangan", null, ["banjir"], "Peralatan"],
+    ["Tandon atau mobil tangki air", "", null, ["kekeringan"], "Peralatan"], ["Mesin dan selang pemadam", "", null, ["karhutla", "kebakaran_gedung"], "Peralatan"],
+    ["Karung atau bronjong", "Menahan tanah atau air", null, ["longsor", "banjir", "abrasi"], "Peralatan"],
     ["Alat berat", "Membuka jalan atau mencari korban", null, ["longsor", "gempa", "banjir", "erupsi", "tsunami"], "Peralatan"],
+    ["Gergaji mesin", "Memotong pohon tumbang", null, ["cuaca", "longsor"], "Peralatan"], ["Bahan atap", "Seng, asbes, atau terpal atap", null, ["cuaca", "gempa"], "Peralatan"],
+    ["Genset dan lampu penerangan", "Listrik padam", null, ["gempa", "tsunami", "banjir", "cuaca", "erupsi"], "Peralatan"],
     ["Lainnya", "Tulis sendiri kebutuhannya", null, null, "Lainnya"], ["Belum ada kebutuhan mendesak", "", null, null, "Lainnya"]]},
 ];
 

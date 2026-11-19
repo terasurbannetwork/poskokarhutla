@@ -1757,3 +1757,16 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
   .lp-tab .lp-sigap-gelembung{width:100%;margin:0!important;border-radius:12px!important;text-align:left}
   .lp-tab .lp-sigap ~ .lp-tab-lapor{margin-top:0!important}
 }
+/* kartu Laporan saya (pemilik 19 Nov 2026 "bagusin"): kepala jenis + tautan lacak sebaris, meta nomor dan waktu berikon, tahap di bawah */
+.lp-lap-isi{display:flex!important;flex-direction:column;justify-content:center;gap:10px!important;padding:16px 20px!important}
+.lp-lap-kep{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lp-lap-kep b{font:800 1.125rem/1.2 var(--display);color:var(--ink)}
+.lp-lap-kep .lp-lap-aksi{margin:0!important;flex:none;padding:6px 12px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 10%,var(--card));font-size:.8125rem}
+.lp-lap-meta{display:flex;flex-wrap:wrap;gap:6px 16px;font:600 .8125rem var(--font);color:var(--ink2)}
+.lp-lap-meta span{display:inline-flex;align-items:center;gap:6px}
+.lp-lap-meta svg{width:15px;height:15px;color:var(--brand2)}
+.lp-lap-meta span:first-child{font-family:var(--mono,var(--font));letter-spacing:.04em}
+.lp-lap-gambar.asli{background-size:cover!important;background-position:center!important}
+.lp-lap-gambar{position:relative}
+.lp-lap-maskot{position:absolute;right:8px;bottom:-4px;width:96px}
+.lp-lap-kartu.draf .lp-lap-isi b{font:800 1.125rem var(--display)}

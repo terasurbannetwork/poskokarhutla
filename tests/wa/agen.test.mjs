@@ -250,7 +250,7 @@ test('regresi: agen terhenti (giliran habis, galat proses) sesudah deck dan hasi
 test('regresi: TMPDIR agen di kerja/tmp ruang ini (pratinjau tempfile di sandbox)', () => {
   const { ruang } = dunia()
   const tmpAgen = path.join(ruang, 'kerja', 'tmp')
-  const e = A.lingkungan({ PATH: '/usr/bin', TMPDIR: '/private/var/folders/x' }, { tmp: tmpAgen })
+  const e = A.lingkungan({ PATH: '/usr/bin', TMPDIR: '/tmp/tmpdir-asal' }, { tmp: tmpAgen })
   assert.equal(e.TMPDIR, tmpAgen); assert.ok(fs.existsSync(tmpAgen))
 })
 
