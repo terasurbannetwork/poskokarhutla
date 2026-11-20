@@ -12,7 +12,8 @@
 | Jiwa | Satu orang pengungsi, berinduk kepala keluarga |
 | RB, RS, RR | Rusak berat (lebih dari 70%), sedang (30 sampai 70%), ringan (kurang dari 30%); sumber pedoman Q1 |
 | Fungsi prasarana | Putus, terbatas, atau berfungsi |
-| Nihil | Bagian sudah diperiksa dan memang tidak ada; bernilai 0 |
+| Nihil | Metrik sudah diperiksa dan memang tidak ada; bernilai 0 |
+| Isian pribadi | Nama orang, HP, NIK, kontak keluarga, ciri, keadaan kesehatan; disimpan di kolom `pribadi`, diurai kode, tidak pernah ke AI |
 | Belum didata | Bagian belum diisi; bernilai kosong, tidak pernah 0 |
 | Penanda | Peringatan mesin pada objek (tanpa titik, foto jauh, foto lama, dobel titik, NIK ganda, luar kab); tidak menolak simpan |
 | Lencana foto | Asal titik foto: `gps` (peramban), `exif`, `wa` (bagikan lokasi), `tanpa` |

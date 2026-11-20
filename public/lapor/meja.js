@@ -3,6 +3,9 @@
    Kotak angka di kepala = saring status. Semua saringan berlaku serentak untuk peta, ringkasan, dan tabel.
    INP (aturan pemilik 2): tombol saring berganti keadaan seketika, peta dan tabel digambar ulang sesudah cat berikutnya.
    Angka dampak antarlaporan tidak dijumlah (laporan warga bisa ganda untuk satu kejadian): ringkasan menghitung LAPORAN, bukan korban. */
+/* tinjau lokal tampilan BPBD (LA-66): ?sebagai=kab:31.75 | prov:31 | bnpb menyetel kuki lapor_sebagai. Hanya di localhost; Worker mengabaikan kuki ini. */
+{ const s = new URLSearchParams(location.search).get("sebagai");
+  if (s && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) document.cookie = /^(kab|prov):[\d.]{2,5}$/.test(s) ? `lapor_sebagai=${s}; path=/; samesite=strict` : "lapor_sebagai=; path=/; max-age=0"; }
 const $ = id => document.getElementById(id);
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
 const ikon = id => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"), u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", `#${id}`); s.setAttribute("aria-hidden", "true"); s.append(u); return s; };
@@ -57,9 +60,40 @@ async function muat() {
       const sub = document.querySelector(".mj-merek small"); if (sub) sub.textContent = akunBpbd() ? `${akunMeja.label}, laporan di wilayah Anda` : "Lapor Bencana, khusus staf"; }
     semua = j.baris || [];
     $("bSegar").classList.remove("galat"); $("waktuSegar").textContent = `Data diperbarui ${new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}).replace(":", ".")}`;
-    gambar();
+    gambar(); gambarDarurat();
     if (pilih && dlg.open) bukaRinci(pilih, false);
   } catch { $("bSegar").classList.add("galat"); $("waktuSegar").textContent = "Gagal memuat, ketuk untuk ulang"; }
+}
+
+/* Lapor darurat (K68): pita merah di atas meja untuk laporan darurat yang belum selesai; laporan darurat baru membunyikan nada,
+   mengedipkan judul tab, dan memunculkan notifikasi peramban bila diizinkan. Yang sudah pernah terlihat disimpan di perangkat. */
+const AKTIF_DARURAT = b => b.darurat && !["selesai", "tidak_valid"].includes(b.status);
+const KORBAN_DARURAT = {ya: "Ada korban atau orang terjebak", tidak: "Tidak ada korban", belum_tahu: "Korban belum diketahui"};
+let daruratDikenal = null;
+function bunyiDarurat() {
+  try { const a = new AudioContext(), g = a.createGain(); g.connect(a.destination); g.gain.value = .15;
+    for (const [i, f] of [880, 660, 880, 660].entries()) { const o = a.createOscillator(); o.frequency.value = f; o.connect(g); o.start(a.currentTime + i * .22); o.stop(a.currentTime + i * .22 + .18); } } catch {}
+}
+function gambarDarurat() {
+  const xs = semua.filter(AKTIF_DARURAT).sort((a, b) => b.terkirim - a.terkirim), w = $("pitaDarurat");
+  let kenal; try { kenal = new Set(JSON.parse(localStorage.getItem("meja-darurat") || "[]")); } catch { kenal = new Set(); }
+  const baru = daruratDikenal === null && !kenal.size ? [] : xs.filter(b => !kenal.has(b.nomor));   // muat pertama di perangkat baru: tidak berbunyi untuk yang lama
+  daruratDikenal = true;
+  try { localStorage.setItem("meja-darurat", JSON.stringify(xs.map(b => b.nomor).concat([...kenal]).slice(0, 300))); } catch {}
+  if (baru.length) {
+    bunyiDarurat();
+    if ("Notification" in window && Notification.permission === "granted") for (const b of baru.slice(0, 3)) new Notification(`Laporan darurat: ${b.jenis || "kejadian"}`, {body: [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.kab].filter(Boolean).join(", "), tag: b.nomor});
+    let n = 0; const asli = document.title.replace(/^\(\d+\) Darurat, /, ""), t = setInterval(() => { document.title = ++n % 2 ? `(${xs.length}) Darurat, ${asli}` : asli; if (n > 20 || !document.hidden && n > 6) { clearInterval(t); document.title = asli; } }, 900);
+  }
+  w.hidden = !xs.length; if (!xs.length) return w.replaceChildren();
+  const kepala = el("div", "mj-darurat-kepala"); kepala.append(el("i", null), el("b", null, `${xs.length} laporan darurat belum selesai`));
+  if ("Notification" in window && Notification.permission === "default") { const izin = el("button", "mj-darurat-izin", "Nyalakan notifikasi"); izin.type = "button"; izin.addEventListener("click", () => Notification.requestPermission().then(() => gambarDarurat())); kepala.append(izin); }
+  const daftar = el("div", "mj-darurat-daftar");
+  for (const b of xs.slice(0, 8)) { const k = el("button", `mj-darurat-kartu${baru.includes(b) ? " baru" : ""}`); k.type = "button";
+    k.append(el("b", null, b.jenis || "Kejadian"), el("span", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.kec && `Kec. ${b.wilayah.kec}`, b.wilayah?.kab].filter(Boolean).join(", ") || "Lokasi belum terbaca"),
+      el("small", null, `${KORBAN_DARURAT[b.darurat.korban] || "Korban belum diisi"}, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))} lalu, ${b.statusLabel}`));
+    k.addEventListener("click", () => bukaRinci(b.nomor)); daftar.append(k); }
+  w.replaceChildren(kepala, daftar);
 }
 
 /* saringan bertingkat: dasar (periode, cari, kab/kota, cepat) -> + status -> + jenis. Jumlah di tiap kontrol dihitung tanpa saringannya sendiri. */
@@ -322,7 +356,7 @@ function gambarTabel(daftar) {
     const ft = el("span", "mj-mini"); ft.textContent = b.foto ? "" : "Tanpa foto";
     if (b.foto) fotoLaporan(b.nomor).then(fs => { if (fs[0]) { const im = el("img"); im.src = fs[0].sampul || fs[0].url; im.alt = ""; im.loading = "lazy"; ft.append(im); if (fs.length > 1) ft.append(el("small", null, `+${fs.length - 1}`)); } });
     const jn = el("div", "mj-sel-jenis"), ik = el("span", "mj-jenis-ikon kecil"); ik.style.setProperty("--jn", warnaJenis(b.jenisId)); ik.append(ikon(ikonJenis(b.jenisId)));
-    const jt = el("div"); jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
+    const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); } jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
     const lok = el("div"); lok.append(el("b", null, b.wilayah?.kab || "Tanpa lokasi"), el("small", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.prov].filter(Boolean).join(", ")));
     const aksi = el("div", "mj-aksi-baris");
     aksi.append(tombolAksi("m-buka", `Buka ${b.nomor}`, () => bukaRinci(b.nomor)));
@@ -626,5 +660,5 @@ function terapSisi() {
 $("sisiMenu").addEventListener("click", () => { sisi.menu = sisi.menu === "kanan" ? "kiri" : "kanan"; terapSisi(); });
 $("sisiRingkas").addEventListener("click", e => { e.stopPropagation(); sisi.ringkas = sisi.ringkas === "kiri" ? "kanan" : "kiri"; terapSisi(); });
 terapSisi();
-setInterval(() => { if (!document.hidden && !dlg.open) muat(); }, 60000);
+setInterval(() => { if (!dlg.open) muat(); }, 20000);   // 20 detik, juga saat tab di latar: laporan darurat harus cepat terlihat (K68)
 muat();

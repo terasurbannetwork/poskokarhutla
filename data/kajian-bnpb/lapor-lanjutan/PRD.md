@@ -10,15 +10,16 @@ Sesudah laporan awal, BPBD mendata dampak per objek (rumah, prasarana, pengungsi
 | --- | --- | --- |
 | Ketua berkas (pelapor tahap 1, tingkat `bpbd`) | Semua isian berkas, menambah dan mencabut anggota, menjawab pertanyaan harian, menutup | Melihat berkas kab lain |
 | Anggota tim (`bpbd_tim`) | Menambah dan mengubah objek di berkasnya | Menutup berkas, mengubah tim |
-| Staf BNPB Pusdalops | Membaca semua berkas, menerima rekap ke meja, menerima penutupan, mencabut anggota | Mengubah isian objek BPBD |
-| Warga, `bpbd_klaim` | Tidak ada tahap 2 | Semua di atas |
+| Staf BNPB Pusdalops | Membaca semua berkas (data pribadi tersamar sampai Tampilkan), menerima penutupan dan bahan Jitupasna, mencabut anggota, memindah ketua | Mengubah isian objek BPBD |
+| Akun lembaga BPBD kab/prov | Sesuai Q15 | Mengubah isian |
+| Warga, `bpbd_klaim`, staf BNPB lain | Tidak ada tahap 2 | Semua di atas |
 
 ## Fitur
 
 | No | Fitur | Keputusan |
 | --- | --- | --- |
 | F-1 | Pembukaan tahap 2 otomatis sesudah laporan awal BPBD terkirim, dengan tautan web | D1, D2 |
-| F-2 | Data rumah per rumah: penghuni, pemilik, alamat, titik, tingkat rusak, status huni, jumlah jiwa, foto 2 wajib, video opsional | K2, D3, Q1, Q9 |
+| F-2 | Data rumah per rumah: penghuni, pemilik, alamat, titik, tingkat rusak, tanda terendam, status huni, jumlah jiwa, foto 2 wajib, video opsional | K2, D3, Q1, Q9 |
 | F-3 | Data prasarana: jenis, nama, titik, tingkat rusak, fungsi, panjang rusak, jalur alternatif, kendaraan yang bisa lewat, foto 2 wajib | K2, D7 |
 | F-4 | Tempat pengungsian: nama, titik, jenis, kapasitas, air, MCK, dapur umum, listrik, foto 1 wajib | D6 |
 | F-5 | Pengungsi per jiwa berinduk KK: nama, umur, L/P, desa asal, nomor HP (satu per KK), foto wajah (anak tidak wajib), rentan, kebutuhan khusus, tanggal masuk dan keluar | K2, K4, Q10 |
@@ -27,7 +28,7 @@ Sesudah laporan awal, BPBD mendata dampak per objek (rumah, prasarana, pengungsi
 | F-8 | Kebutuhan dan bantuan masuk per titik | D3 |
 | F-9 | Status penanganan berkas: status darurat, nomor dan tanggal SK, posko, upaya, personel | D3 |
 | F-10 | Tim: tambah dan cabut anggota | K6, D11 |
-| F-11 | Rekap otomatis ke meja `dampak` dan meja `pengungsi`, isyarat ke Lifeline, bahan Jitupasna lewat Terima staf | D5 sampai D8 |
+| F-11 | Rekap otomatis ke meja `dampak` (sampai ke Lifeline lewat kolom prasarana meja) dan meja `pengungsi`, bahan Jitupasna lewat Terima staf | D5 sampai D8 |
 | F-12 | Pertanyaan harian "masih berlangsung?" ke ketua | K3, D12 |
 | F-13 | Penutupan: isian akhir, kondisi akhir mesin, selesai atau selesai dengan catatan, versi beku | D13, D14 |
 | F-14 | Luring: isian dan foto antre lalu terkirim saat ada sinyal | K5 |

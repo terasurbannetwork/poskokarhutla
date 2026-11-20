@@ -23,8 +23,8 @@
 ## 4. Tim
 
 1. Ketua: "tim tambah 0812xxxx" atau tombol Tambah anggota.
-2. Nomor itu menerima pesan pembuka berkas. Ia berlabel `bpbd_tim` untuk berkas itu saja.
-3. "tim cabut 0812xxxx" atau tombol Cabut. Objek yang sudah diisi anggota tetap ada, tercatat siapa pengisinya.
+2. Nomor itu menerima pesan pembuka berkas dan ditanya namanya. Ia berlabel `bpbd_tim` untuk berkas itu saja dan mendapat tautan web sendiri.
+3. "tim cabut 0812xxxx" atau tombol Cabut (ketua, staf Pusdalops, admin); anggota lain tidak terputus. Objek yang sudah diisi anggota tetap ada, tercatat siapa pengisinya.
 
 ## 5. Perubahan status orang
 
@@ -34,9 +34,9 @@
 ## 6. Rekap ke meja lain (otomatis, staf menerima)
 
 1. Tiap simpan objek menghitung ulang rekap berkas (ALGORITMA bagian 4).
-2. Rekap rumah dan korban masuk kolom bersumber daftar di catatan meja `dampak` kejadian dan kab itu; bila angka ketikan lain sudah ada, keduanya tampil berdampingan.
+2. Rekap rumah, korban, prasarana, dan pelayanan dasar masuk kolom bersumber daftar di satu catatan meja `dampak` milik berkas itu; bila angka ketikan lain sudah ada, keduanya tampil berdampingan dan staf memilih. Catatan yang sudah diverifikasi hanya mendapat tanda rekap baru.
 3. Rekap harian per titik masuk meja `pengungsi`.
-4. Prasarana yang putus atau terbatas menjadi isyarat `lf_usulan`.
+4. Prasarana yang putus atau terbatas sampai ke Lifeline lewat kolom prasarana meja `dampak`; staf yang menetapkan status Lifeline. Lifeline dan Jitupasna menunggu berkas tertaut ke kejadian Buku Besar.
 5. Staf menekan Terima untuk memindahkan rumah dan prasarana ke Jitupasna.
 
 ## 7. Pertanyaan harian dan penutupan

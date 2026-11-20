@@ -35,11 +35,12 @@ Tidak ada gaya baru. Layar web `/lapor/data/` memakai token `public/inti/tema.cs
 
 | Element | Keadaan |
 | --- | --- |
-| Pil tingkat rusak RB/RS/RR/Terendam | warna status dari token, label Indonesia |
+| Pil tingkat rusak RB/RS/RR/Tidak rusak, pil Terendam terpisah | warna status dari token, label Indonesia |
 | Pil fungsi Putus/Terbatas/Berfungsi | warna status dari token |
 | Pil penanda (tanpa titik, foto jauh, dobel, NIK ganda) | kuning peringatan, `title` menjelaskan aturannya |
 | Pita "Belum terkirim" | antrean luring; hilang sesudah terkirim |
-| Isian "belum didata" vs "nihil" | dua tombol pada kepala bagian; nihil menyembunyikan tombol Tambah |
+| Isian "belum didata" vs "nihil" | tombol Nihil per metrik (meninggal, hilang, RB, dst.); metrik nihil tampil 0, belum didata tampil kosong |
+| Peringatan luring data pribadi | bila ada isian pribadi atau foto wajah yang belum terkirim, keluar halaman meminta konfirmasi |
 | Foto wajib | kotak kamera bergaris putus dengan hitungan "1 dari 2" |
 
 ## Blocks

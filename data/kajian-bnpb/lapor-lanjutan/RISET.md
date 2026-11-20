@@ -26,13 +26,13 @@ Angka dari `juklak/DATA-DAMPAK.md` (bukan dihitung ulang di sini):
 | Mesin percakapan berkutipan | `src/lapor_mesin.js`, `src/lapor_spek.js` | Spek per jenis objek ditambah di pola yang sama |
 | Foto bergeotag dan lencana `gps/exif/wa/tanpa` | `lapor_foto` (0155), logika lencana di `src/lapor_ai.js` | Media tahap 2 di tabel sendiri, logika lencana dipakai ulang |
 | Video bersambung | `lapor_unggah` (0158) | Dipakai apa adanya |
-| Tautan web bertoken | `lapor_sesi.token_sha` | Pola sama untuk berkas |
+| Tautan web dan kuki perangkat | `lapor_sesi.token_sha`, `lapor_perangkat` (0159) | Token per anggota ditukar kuki (D20) |
 | Kelompok kejadian sama | `lapor_kelompok` (0160) | Induk berkas (D2) |
 | Register tempat pengungsian | `titik_pengungsian` (0134), meja `pengungsi` per titik (0135) | D6 |
 | Rekap dampak | meja `dampak` (`src/meja_spek.js`) | D5 |
-| Lifeline | `lf_usulan`, `lf_status` (0141) | D7 |
+| Lifeline | sumber bukti `meja_dampak` di `src/lifeline_usulan.js` (`BUKTI_SAH`), tabel 0141 | D7: lewat kolom prasarana meja `dampak`, tanpa tulis langsung |
 | Jitupasna | `sk_jitupasna_baris` (0123), `sk_harga` | D8 |
-| Antrean luring | `public/inti/antre.js` | D10 |
+| Antrean luring | `public/inti/antre.js` (saluran `rahasia` hanya memori) | D10, D21 |
 | Spek form lintas modul | `public/inti/spek.js` | D10 |
 
 ## 4. Praktik lazim

@@ -466,9 +466,9 @@ Aturan berhentinya sama dengan §2.1. Kode memegang alur, AI hanya mengurai berk
 ### 2.31 Data lanjutan BPBD (Lapor Bencana tahap 2 dan 3: rumah, prasarana, pengungsi, korban per objek, tim, penutupan): baca dulu, baru bangun
 
 Sebelum menyentuh pendataan per objek sesudah laporan awal BPBD (rumah per rumah, prasarana, tempat pengungsian dan pengungsi per jiwa, korban per orang, usaha, kebutuhan, tim BPBD, pertanyaan harian, penutupan dan versi beku), baca dokumen di
-`data/kajian-bnpb/lapor-lanjutan/` dengan urutan otoritas ini (kode di `src/lapor_lanjut*.js`, langkah tahap 2 di `src/lapor_mesin.js`, `migrations/0161_lapor_data.sql`, `tests/lapor/lanjut_*` milik `warga-api`; `public/lapor/data/**` dan rincian di `public/lapor/meja*` milik `layar-peta`):
+`data/kajian-bnpb/lapor-lanjutan/` dengan urutan otoritas ini (kode di `src/lapor_lanjut*.js`, langkah tahap 2 di `src/lapor_mesin.js`, `migrations/0161_lapor_data.sql`, `tests/lapor/lanjut_*` milik `warga-api`; `src/meja*.js` bagian sumber daftar milik `warga-api`; usulan fase di `scripts/siklus/pasang.py` milik `siklus`; antrean `lj_kabar` di gateway `scripts/wa/**` milik `wa-bot`; `public/lapor/data/**` dan rincian di `public/lapor/meja*` milik `layar-peta`):
 
-1. `KEPUTUSAN-LANJUTAN.md`: keputusan pemilik K1–K8, rancangan D1–D17, pertanyaan terbuka Q1–Q10 dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` tetap berlaku.
+1. `KEPUTUSAN-LANJUTAN.md`: keputusan pemilik K1–K8, rancangan D1–D22, pertanyaan terbuka Q1–Q15 dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` tetap berlaku.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (spek objek, penanda, rekap, kondisi akhir), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LJ-*`), `GLOSARIUM.md`.
 
