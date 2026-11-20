@@ -90,6 +90,8 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   const env = {...process.env, UJI_JEJAK_DIR: dir, UJI_JEJAK_AKAR: AKAR,
     NODE_OPTIONS: `${process.env.NODE_OPTIONS || ""} --import=${pathToFileURL(join(AKAR, "scripts/agents/uji_jejak.mjs")).href}`.trim()};
   delete env.NODE_TEST_CONTEXT;   // dipanggil dari dalam uji lain: tanpa ini node --test tidak menjalankan tiap berkas di prosesnya sendiri
+  // dipanggil dari uji yang sedang dicatat (pre-push): tanpa ini tiap uji di sini tercatat atas nama uji luar sebagai proses anak (20 Nov 2026, semua push ditolak)
+  delete env.UJI_JEJAK_UJI; delete env.UJI_JEJAK_ANAK;
   const j = spawnSync("node", [...flag, ...r.uji], {cwd: AKAR, stdio: "inherit", env});
   if (petaF) {
     try {
