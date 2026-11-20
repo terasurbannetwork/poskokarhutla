@@ -8,9 +8,12 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.4.1'
+export const VERSI = '2.4.2'
 
 export const CHANGELOG = [
+  { versi: '2.4.2', tanggal: '2026-11-20', isi: [
+    'Laporan besar (misalnya 39 kejadian) tidak lagi gagal karena waktu habis: Claude diberi waktu sampai 25 menit, dan bila tetap habis di draf pertama, draf memakai deck sistem apa adanya dengan catatan, bukan gagal.',
+  ] },
   { versi: '2.4.1', tanggal: '2026-11-20', isi: [
     'Paparan banjir sepekan: peta slide 1 jadi multipeta, satu panel per pulau dengan skala sama, label tidak saling tumpuk.',
   ] },

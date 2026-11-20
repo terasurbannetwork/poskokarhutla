@@ -141,7 +141,7 @@ test('kunci agen global, tanya 24 jam, hapus sesi menghapus transkrip', () => {
   assert.ok(lepas); assert.equal(A.ambilKunciAgen(dasar, 'P2'), null); assert.equal(A.agenSibuk(dasar), 'P1')
   lepas(); assert.equal(A.agenSibuk(dasar), null); assert.ok(A.ambilKunciAgen(dasar, 'P2'))
   assert.equal(A.ambilKunciAgen(dasar, 'P3', Date.now() + 21 * 60e3), null, 'jalan panjang (resume + sesi baru) belum basi')
-  assert.ok(A.ambilKunciAgen(dasar, 'P3', Date.now() + 36 * 60e3), 'kunci basi diambil alih')
+  assert.ok(A.ambilKunciAgen(dasar, 'P3', Date.now() + 56 * 60e3), 'kunci basi diambil alih (2 x 25 menit + 5)')
   A.catatTanya(dasar, 'P1', { tanya: ['a?'], status: 'bertanya' })
   assert.deepEqual(A.bacaTanya(dasar, 'P1').tanya, ['a?']); assert.equal(A.bacaTanya(dasar, 'P1', Date.now() + 25 * 3600e3), null)
   const t = path.join(rumah, '.claude', 'projects', 'x'); fs.mkdirSync(t, { recursive: true }); fs.writeFileSync(path.join(t, 'sesi-0009abcd.jsonl'), 'bahan')
@@ -281,4 +281,18 @@ test('cariKemarin banjir_sepekan (K42): acuan = paparan mingguan buatan tangan t
   assert.deepEqual(k.skrip.map((f) => path.basename(f)), ['buat.py'])
   assert.match(A.pedoman('banjir_sepekan'), /Pedoman: Paparan Situasi Banjir Sepekan/)
   assert.equal(A.cariKemarin({ dasar, jenis: 'banjir_sepekan', tanggal: '2026-11-09', repo }), null)
+})
+
+test('lewat batas waktu (20 Nov, harian 39 kejadian): draf pertama memakai deck generator, revisi tidak; batas waktu bisa diatur', () => {
+  const dasar = fs.mkdtempSync(path.join(os.tmpdir(), 'agen-waktu-')), deck = path.join(dasar, 'Laporan Kejadian Bencana Harian 201126.pptx')
+  fs.writeFileSync(deck, Buffer.concat([Buffer.from([0x50, 0x4b, 3, 4]), Buffer.from('ppt/presentation.xml'), Buffer.alloc(2000)])) // cukup untuk pemeriksaan kepala zip bacaHasil
+  const ruang = A.siapkanRuang({ dasar, id: 'P-201126-01', n: 1, dasarBerkas: [deck] })
+  const h = A.pakaiDasar(ruang)
+  assert.equal(path.basename(h.pptx), 'Laporan Kejadian Bencana Harian 201126.pptx')
+  assert.ok(fs.existsSync(path.join(ruang, 'keluaran', 'Laporan Kejadian Bencana Harian 201126.pptx')))
+  assert.match(JSON.stringify(h.catatan), /kehabisan waktu/)
+  const ruang2 = A.siapkanRuang({ dasar, id: 'P-201126-01', n: 2, sebelum: deck })
+  assert.equal(A.pakaiDasar(ruang2), null, 'revisi tidak jatuh ke deck dasar')
+  assert.equal(A.waktuAgen({}), 25 * 60e3)
+  assert.equal(A.waktuAgen({ BL_AGEN_MENIT: '40' }), 40 * 60e3)
 })

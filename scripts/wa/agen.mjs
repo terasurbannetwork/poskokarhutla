@@ -18,7 +18,22 @@ export const REPO = path.resolve(DI, '../..')
 const PEDOMAN_DIR = path.join(DI, 'agen')
 export const MODEL_AGEN = 'claude-opus-5-5'
 export const MAKS_GILIRAN = 80
-export const WAKTU_AGEN_MS = 15 * 60e3
+// 20 Nov 2026: 15 menit tidak cukup untuk laporan harian 39 kejadian (P-201126-01 lewat batas waktu tanpa deck); BL_AGEN_MENIT menimpa
+export const WAKTU_AGEN_MS = 25 * 60e3
+export const waktuAgen = (env = {}) => (Number(env.BL_AGEN_MENIT) > 0 ? Number(env.BL_AGEN_MENIT) * 60e3 : WAKTU_AGEN_MS)
+// Draf pertama (ruang tanpa sebelum/) yang kehabisan waktu sebelum agen menulis deck: deck generator di dasar/ dipakai apa adanya,
+// bukan "Draf v1 gagal" (pemilik 20 Nov 2026). Revisi tidak pernah jatuh ke sini: deck dasar akan membuang revisi sebelumnya.
+export function pakaiDasar(ruang) {
+  try {
+    const pptx = (d) => fs.readdirSync(path.join(ruang, d)).filter((f) => /\.pptx$/i.test(f))
+    const dasar = pptx('dasar')
+    if (pptx('sebelum').length || dasar.length !== 1) return null
+    fs.copyFileSync(path.join(ruang, 'dasar', dasar[0]), path.join(ruang, 'keluaran', dasar[0]))
+    fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), JSON.stringify({ pptx: dasar[0], ringkasan: 'Deck generator dipakai apa adanya.', perubahan: [],
+      catatan: { dicek: ['Claude kehabisan waktu sebelum selesai merapikan; draf ini deck generator tanpa penyempurnaan. Balas 1 untuk revisi bila perlu.'] }, tanya: [] }))
+    return bacaHasil(ruang)
+  } catch { return null }
+}
 export const USD_AGEN = 4 // Q15 bawaan sementara; BL_AGEN_USD menimpa
 // Batas biaya per laporan dicabut (pemilik 19 Nov 2026: "gausah ada batasnya", revisi v4 P-191126-06 tertahan); BL_AGEN_PROYEK_USD > 0 memasangnya lagi.
 // Batas per jalan (BL_AGEN_USD) dan batas harian bersama (BL_BATAS_USD) tetap.
@@ -482,7 +497,7 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
   }
   const satu = async (resume) => {
     const henti = new AbortController()
-    const jam = setTimeout(() => henti.abort(), ctx.waktuAgen ?? WAKTU_AGEN_MS); jam.unref?.()
+    const jam = setTimeout(() => henti.abort(), ctx.waktuAgen ?? waktuAgen(env)); jam.unref?.()
     let akhir = null, sesiBaru = resume, giliran = 0
     try {
       for await (const m of query({ prompt, options: { ...opsiDasar, abortController: henti, ...(resume ? { resume } : {}) } })) {
@@ -522,6 +537,7 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
   // deck yang sudah ditulis lengkap (hasil.json + pptx sah) dipakai walau agen terhenti sesudahnya (sapu bug 19 Nov); pagar angka tetap jalan
   const selamatkan = () => { try { const h = bacaHasil(ruang); return h.pptx ? { sesi: r.sesiBaru, biaya: usd, hasil: { ...h, catatan: [...h.catatan, 'Agen terhenti sesudah deck selesai; deck dipakai apa adanya.'] } } : null } catch { return null } }
   if (!r.akhir) { const sl = selamatkan(); if (sl) return sl }
+  if (!r.akhir && r.waktu) { const dg = pakaiDasar(ruang); if (dg) return { sesi: r.sesiBaru, biaya: usd, hasil: dg } }
   if (!r.akhir) throw Object.assign(new GalatAgen(r.waktu ? 'waktu' : 'jalan', r.waktu ? 'agen lewat batas waktu' : `agen galat: ${String(r.galat?.message || 'berhenti tanpa hasil').slice(0, 200)}`, usd), { sesi: r.sesiBaru })
   const a = r.akhir
   if (a.subtype !== 'success' || a.is_error) {
