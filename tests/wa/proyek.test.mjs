@@ -2007,6 +2007,23 @@ test('banjir sepekan: perintah periode bebas', () => {
   assert.match(BANTUAN, /buat banjir sepekan 16-19 nov/)
 })
 
+test('laporan gempa: perintah dengan lokasi dan tanggal opsional', () => {
+  const p = (t) => parsePerintah(t, NOW)
+  assert.deepEqual(p('buat gempa nias'), { aksi: 'buat', jenis: 'gempa', tanggal: '2026-10-29', lokasi: 'nias', saja: true })
+  assert.deepEqual(p('buat gempa'), { aksi: 'buat', jenis: 'gempa', tanggal: '2026-10-29', lokasi: '', saja: true })
+  assert.deepEqual(p('buat gempa maluku tenggara 27 okt'), { aksi: 'buat', jenis: 'gempa', tanggal: '2026-10-27', lokasi: 'maluku tenggara', saja: true })
+  assert.deepEqual(p('buat laporan gempa nias kemarin'), { aksi: 'buat', jenis: 'gempa', tanggal: '2026-10-28', lokasi: 'nias', saja: true })
+  assert.equal(p('buat gempa bumi cianjur').lokasi, 'cianjur')
+  assert.equal(p('buat gempa nias; rm -rf').lokasi, 'nias rm rf', 'tanda baca dibuang sebelum jadi argumen generator')
+  const lap = LAPORAN_PROYEK.find((l) => l.id === 'gempa')
+  assert.ok(lap && lap.lokasi && !LAPORAN.some((l) => l.id === 'gempa'), 'hanya lewat proyek bot, tidak pernah terjadwal')
+  assert.deepEqual(lap.args('2026-11-19', { lokasi: 'nias' }, '/o'),
+    ['gempa_bot.py', '--tanggal', '2026-11-19', '--out', '/o', '--berkas', 'Laporan Khusus Gempa 191126', '--lokasi', 'nias'])
+  assert.deepEqual(lap.args('2026-11-19', {}, '/o').slice(-2), ['--berkas', 'Laporan Khusus Gempa 191126'], 'tanpa lokasi: tanpa --lokasi')
+  assert.equal(lap.berkas('2026-11-19'), 'Laporan Khusus Gempa 191126')
+  assert.match(BANTUAN, /buat gempa nias/)
+})
+
 function duniaSepekan(o = {}) {
   const d = duniaV2(o)
   const asli = d.ctx.dep.fetch

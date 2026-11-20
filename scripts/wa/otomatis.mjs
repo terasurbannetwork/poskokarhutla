@@ -64,6 +64,12 @@ export const LAPORAN_PROYEK = [
   { id: 'banjir_sepekan', judul: 'Paparan Situasi Banjir Sepekan', butuh: [], jam: 0, unggah: false, periode: true, waktu: 20 * 60e3,
     berkas: (d) => `Paparan Situasi Banjir Sepekan ${ddmmyy(d)}`,
     args: (d, f, out) => ['banjir_sepekan.py', '--awal', f.awal || geserHari(d, -6), '--akhir', d, '--out', out, ...(f.wa?.length ? ['--wa', ...f.wa] : [])] },
+  // gempa (pemilik 20 Nov 2026: "kalau saya minta bot wa bikin laporan gempa, kayak gini", Laporan Khusus Gempa Nias 191126): dua halaman,
+  // generator gempa_bot.py menyusun semuanya dari BMKG, laphar terurai, dan model repo; tanpa bahan WA. f.lokasi = teks tempat dari perintah
+  // ("buat gempa nias"); kosong = gempa M5 ke atas terbaru sampai tanggal proyek. Hanya mode V2 (tanpa --isian), sama dengan banjir_sepekan.
+  { id: 'gempa', judul: 'Laporan Khusus Gempa', butuh: [], jam: 0, unggah: false, lokasi: true, waktu: 15 * 60e3,
+    berkas: (d) => `Laporan Khusus Gempa ${ddmmyy(d)}`,
+    args: (d, f, out) => ['gempa_bot.py', '--tanggal', d, '--out', out, '--berkas', `Laporan Khusus Gempa ${ddmmyy(d)}`, ...(f.lokasi ? ['--lokasi', f.lokasi] : [])] },
 ]
 
 export const ddmmyy = (d) => `${d.slice(8, 10)}${d.slice(5, 7)}${d.slice(2, 4)}`

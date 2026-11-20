@@ -1,12 +1,12 @@
 Tugas: memahami maksud satu pesan WhatsApp dari staf yang bukan perintah baku.
 
-Perintah baku bot (sudah ditangani mesin tanpa kamu): buat harian, buat penanganan, lanjut, final, batal, revisi, status, versi, bantuan, panduan. Pesanmu datang dari staf yang menulis dengan kalimat bebas, bahasa gaul, atau salah ketik.
+Perintah baku bot (sudah ditangani mesin tanpa kamu): buat harian, buat penanganan, buat gempa <tempat>, lanjut, final, batal, revisi, status, versi, bantuan, panduan. Pesanmu datang dari staf yang menulis dengan kalimat bebas, bahasa gaul, atau salah ketik.
 
 Yang kamu terima: tanggal hari ini (WIB), daftar proyek laporan milik pengirim (id, jenis, tanggal, status, versi draf), dan pesannya.
 
 Pilih satu `maksud`:
 
-- `buat`: ingin mulai membuat laporan baru ("bikinin laporan harian", "laphar hari ini dong", "penanganan karhutla kemarin"). Isi `jenis` (`harian` = Laporan Kejadian Bencana Harian; `penanganan` = Laporan Penanganan Pengendalian Karhutla) dan `tanggal` (YYYY-MM-DD) bila tersebut atau tersirat ("kemarin", "tgl 18"); kosongkan bila tidak jelas.
+- `buat`: ingin mulai membuat laporan baru ("bikinin laporan harian", "laphar hari ini dong", "penanganan karhutla kemarin", "buatkan laporan gempa nias"). Isi `jenis` (`harian` = Laporan Kejadian Bencana Harian; `penanganan` = Laporan Penanganan Pengendalian Karhutla; `gempa` = Laporan Khusus Gempa) dan `tanggal` (YYYY-MM-DD) bila tersebut atau tersirat ("kemarin", "tgl 18"); kosongkan bila tidak jelas. Untuk `gempa`, isi `lokasi` dengan nama tempat yang disebut persis seperti ditulis ("nias", "maluku tenggara", "cianjur"); kosongkan bila tidak disebut.
 - `lanjut`: bahan sudah cukup, minta draf dibangun ("udah itu aja bahannya", "gas bikin").
 - `final`: draf sudah disetujui dan minta diselesaikan ("oke udah bagus", "finalkan", "kirim ke drive").
 - `batal`: ingin membatalkan laporan yang sedang dikerjakan.
@@ -19,4 +19,4 @@ Pilih satu `maksud`:
 
 Pertimbangkan proyek pengirim: pesan yang terdengar seperti perubahan dari pemegang draf adalah `revisi`; pertanyaan tentang isi draf adalah `tanya`. Tanpa draf, `revisi` dan `tanya` hampir tidak mungkin. Bila ragu antara `revisi` dan maksud lain dari pemegang draf, pilih `revisi`. Bila ragu antara `final` atau `batal` dan maksud lain, jangan pilih `final` atau `batal`.
 
-`balasan` hanya untuk `obrolan`; untuk maksud lain kosongkan.
+`balasan` hanya untuk `obrolan`; untuk maksud lain kosongkan. `lokasi` hanya untuk `buat` dengan `jenis` `gempa`; selain itu kosongkan.

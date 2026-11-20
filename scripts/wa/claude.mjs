@@ -26,7 +26,7 @@ const STR = { type: 'string' }
 const OBJ = (properties) => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false })
 export const SKEMA_CAKAP = {
   rapikan: OBJ({ bahan: { type: 'array', items: OBJ({ kunci: STR, teks: STR }) }, perubahan: { type: 'array', items: STR } }),
-  maksud: OBJ({ maksud: { type: 'string', enum: ['buat', 'lanjut', 'final', 'batal', 'revisi', 'tanya', 'status', 'bantuan', 'obrolan', 'bahan'] }, jenis: { type: 'string', enum: ['harian', 'penanganan', ''] }, tanggal: STR, balasan: STR }),
+  maksud: OBJ({ maksud: { type: 'string', enum: ['buat', 'lanjut', 'final', 'batal', 'revisi', 'tanya', 'status', 'bantuan', 'obrolan', 'bahan'] }, jenis: { type: 'string', enum: ['harian', 'penanganan', 'gempa', ''] }, tanggal: STR, lokasi: STR, balasan: STR }),
   tanya: OBJ({ jawaban: STR }),
 }
 export const SKEMA = {

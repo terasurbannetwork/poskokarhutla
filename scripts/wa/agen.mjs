@@ -364,7 +364,8 @@ export const KONTRAK = [
 ].join('\n')
 export function pedoman(jenis) {
   const baca = (f) => { try { return fs.readFileSync(path.join(PEDOMAN_DIR, f), 'utf8') } catch { return '' } }
-  const khusus = { harian: 'PEDOMAN-HARIAN.md', penanganan: 'PEDOMAN-PENANGANAN.md', banjir_sepekan: 'PEDOMAN-BANJIR-SEPEKAN.md' }[jenis]
+  const khusus = { harian: 'PEDOMAN-HARIAN.md', penanganan: 'PEDOMAN-PENANGANAN.md', banjir_sepekan: 'PEDOMAN-BANJIR-SEPEKAN.md',
+    gempa: 'PEDOMAN-GEMPA.md' }[jenis]
   return [baca('PEDOMAN.md'), khusus ? baca(khusus) : '', KONTRAK].filter(Boolean).join('\n\n')
 }
 const daftarBerkas = (dir) => { try { return fs.readdirSync(dir).filter((f) => fs.lstatSync(path.join(dir, f)).isFile()) } catch { return [] } }

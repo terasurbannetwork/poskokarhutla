@@ -53,7 +53,7 @@ export function pagarRapikan(mentah, rapi) {
 export const MAKSUD = ['buat', 'lanjut', 'final', 'batal', 'revisi', 'tanya', 'status', 'bantuan', 'obrolan', 'bahan']
 export const MAKS_MAKSUD = 500
 export const syaratMaksud = (teks) => { const t = String(teks || '').trim(); return t.length >= 2 && t.length <= MAKS_MAKSUD }
-const JENIS = new Set(['harian', 'penanganan'])
+const JENIS = new Set(['harian', 'penanganan', 'gempa'])
 const tgl = (d) => new Date(d.getTime() + 7 * 3600e3).toISOString().slice(0, 10)
 
 // Hasil Claude dibersihkan: maksud di luar daftar = bahan; jenis hanya harian/penanganan; tanggal hanya 14 hari ke belakang sampai besok.
@@ -66,7 +66,9 @@ export function bersihkanMaksud(h, now = new Date()) {
     if (tanggal < awal || tanggal > akhir) tanggal = null
   }
   const balasan = typeof h?.balasan === 'string' ? h.balasan.replace(/[·—–]/g, ',').trim().slice(0, 400) : ''
-  return { maksud, jenis, tanggal, balasan }
+  // lokasi hanya untuk laporan gempa ("laporan gempa nias"): huruf, angka, spasi, paling panjang 40
+  const lokasi = jenis === 'gempa' && typeof h?.lokasi === 'string' ? h.lokasi.replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 40) : ''
+  return { maksud, jenis, tanggal, balasan, lokasi }
 }
 
 // D33 (pemeriksa bersih 19 Nov): tanpa draf, kalimat yang ditebak revisi/tanya/obrolan kosong tetap bahan (bahan tidak boleh hilang);

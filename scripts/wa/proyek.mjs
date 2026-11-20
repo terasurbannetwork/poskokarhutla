@@ -56,7 +56,10 @@ export const waSha = req('./daftar.cjs').waSha
 // ---------- perintah ----------
 const JENIS_KATA = { harian: 'harian', bencana: 'harian', 'harian bencana': 'harian', 'kejadian bencana': 'harian',
   penanganan: 'penanganan', karhutla: 'penanganan', 'penanganan karhutla': 'penanganan',
-  'banjir sepekan': 'banjir_sepekan', 'paparan banjir': 'banjir_sepekan', 'paparan banjir sepekan': 'banjir_sepekan', 'banjir mingguan': 'banjir_sepekan' }
+  'banjir sepekan': 'banjir_sepekan', 'paparan banjir': 'banjir_sepekan', 'paparan banjir sepekan': 'banjir_sepekan', 'banjir mingguan': 'banjir_sepekan',
+  gempa: 'gempa', 'gempa bumi': 'gempa', gempabumi: 'gempa', 'laporan gempa': 'gempa', 'laporan khusus gempa': 'gempa' }
+// Lokasi laporan gempa: teks tempat bebas (huruf, angka, spasi), paling panjang 40 huruf; dicocokkan generator ke wilayah BMKG.
+export const bersihLokasi = (s) => String(s ?? '').replace(/[^\p{L}\p{N} ]+/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 40)
 
 // Periode paparan banjir sepekan (pemilik 19 Nov 2026: "bisa diatur juga tanggal yang dimau tanggal berapa aja") -> {awal, akhir} | null.
 // Kosong = 7 hari sampai hari ini; satu tanggal = 7 hari sampai tanggal itu; "16-19 nov", "16 sampai 19 nov", "28 okt s.d. 3 nov",
@@ -124,6 +127,14 @@ export function parsePerintah(teks, now = new Date()) {
     if (sisa === kata || sisa.startsWith(kata + ' ')) { jenis = JENIS_KATA[kata]; sisa = sisa.slice(kata.length).trim(); break }
   }
   if (/^saja\b/.test(sisa)) { saja = true; sisa = sisa.replace(/^saja\b ?/, '') }
+  if (jenis && lapDari(jenis)?.lokasi) { // "buat gempa nias", "buat gempa nias 19 nov", "buat gempa": tempat lalu tanggal opsional di ujung
+    const kata = sisa.split(' ').filter(Boolean)
+    for (let i = 0; i <= kata.length; i++) { // ekor terpanjang yang terbaca sebagai tanggal; sisanya lokasi
+      const ekor = kata.slice(i).join(' ')
+      const tanggal = ekor ? parseTanggal(ekor, now) : tanggalWib(now)
+      if (tanggal) return { aksi: 'buat', jenis, tanggal, lokasi: bersihLokasi(kata.slice(0, i).join(' ')), saja: true }
+    }
+  }
   if (jenis && lapDari(jenis)?.periode) { // tanpa bahan yang ditunggu: langsung dibangun (setara buat saja)
     const pr = parsePeriode(sisa, now)
     return pr ? { aksi: 'buat', jenis, tanggal: pr.akhir, awal: pr.awal, saja: true } : { aksi: 'bantuan' }
@@ -140,6 +151,7 @@ export const BANTUAN = [
   '- *buat harian*: mulai laporan kejadian bencana',
   '- *buat penanganan*: mulai laporan penanganan karhutla',
   '- *buat banjir sepekan 16-19 nov*: paparan banjir sepekan, periode bebas, langsung dibuat',
+  '- *buat gempa nias*: laporan khusus gempa terbaru di tempat itu (data BMKG dan BPBD), langsung dibuat',
   '- Kirim atau teruskan bahan yang diminta',
   '- *lanjut*: buat laporan dari bahan ada',
   '',
@@ -222,6 +234,10 @@ export function periodeProyek(dasar, p) {
   return d?.akhir === p.tanggal && d.awal ? d : { awal: geserHari(p.tanggal, -6), akhir: p.tanggal }
 }
 const catatPeriode = (dasar, p, awal) => tulisJson(periodeP(dasar, p.id), { awal, akhir: p.tanggal })
+// Lokasi laporan gempa: Worker hanya menyimpan jenis dan tanggal, teks tempatnya disimpan di mesin per proyek (pola periode).
+const lokasiP = (dasar, id) => path.join(dirProyek(dasar), id, 'lokasi.json')
+export const lokasiProyek = (dasar, p) => bersihLokasi(bacaJson(lokasiP(dasar, p.id), {})?.lokasi || '')
+const catatLokasi = (dasar, p, lokasi) => tulisJson(lokasiP(dasar, p.id), { lokasi: bersihLokasi(lokasi) })
 // WA Koordalops tiap hari periode dari bahan tersimpan (laphar D dikirim pagi D+1): berkas untuk --wa generator dan bahan agen.
 async function koordalopsPeriode(ctx, dep, awal, akhir, ke) {
   const harian = LAPORAN.find((l) => l.id === 'harian'), log = ctx.log || (() => {}), kini = tanggalWib(ctx.now || new Date()), hasil = []
@@ -670,7 +686,7 @@ async function buat(cmd, dari, sha, ctx) {
   }
   if (!jenis) return balas(susun('Jenis laporan belum jelas', null, null, `Bahan ${labelTanggal(cmd.tanggal)} belum menunjukkan jenis laporannya.`, ['Ketik salah satu:', `- *buat harian ${cmd.tanggal}*`, `- *buat penanganan ${cmd.tanggal}*`]))
   const lap = lapDari(jenis)
-  if (lap.periode && !pakaiV2(env, dari)) return balas(susun(`${lap.judul} belum bisa dibuat`, null, null, 'Laporan ini hanya dibuat lewat Claude (mode V2). Hubungi pemilik bot.'))
+  if ((lap.periode || lap.lokasi) && !pakaiV2(env, dari)) return balas(susun(`${lap.judul} belum bisa dibuat`, null, null, 'Laporan ini hanya dibuat lewat Claude (mode V2). Hubungi pemilik bot.'))
   const { terpilih, teks } = await bahan.pilihSesuai(lap)
   // Bahan teks Claude: bahan terpilih generator ditambah pesan lain dalam lingkup bertanggal itu (teks, PDF, foto, Excel).
   // Foto grup operasi yang tidak terpilih tidak ikut: itu bukti lapangan, bukan bahan laporan, dan OCR-nya mahal.
@@ -686,6 +702,8 @@ async function buat(cmd, dari, sha, ctx) {
   catatIndeks(dasar, p, sha, dari)
   if (lap.periode && cmd.awal && !['draf', 'membangun'].includes(p.status)) catatPeriode(dasar, p, cmd.awal)
   const periode = lap.periode ? periodeProyek(dasar, p) : null
+  if (lap.lokasi && cmd.lokasi !== undefined && !['draf', 'membangun'].includes(p.status)) catatLokasi(dasar, p, cmd.lokasi)
+  const lokasi = lap.lokasi ? lokasiProyek(dasar, p) : null
   const berkasKunci = lockProyek(dasar, p.id)
   if (p.status === 'membangun') {
     if (kunciHidup(berkasKunci)) return balas(tSibuk(p, p.versi || null))
@@ -708,7 +726,7 @@ async function buat(cmd, dari, sha, ctx) {
   const pindah = async (ke, o) => { if (status === ke) return true; const ok = await pindahStatus(ctx, p, ke, sha, o); if (ok) status = ke; return ok }
   const kunciSibuk = tandaiSibuk(ctx, sha, p.id)
   const prog = await mulaiProgres(ctx)
-  const gagalBangun = () => catatGagal(ctx, sha, { langkah: 'bangun', id: p.id, cmd: { jenis, tanggal: cmd.tanggal, saja: !!cmd.saja, ...(periode ? { awal: periode.awal } : {}), ...(cmd.firespot ? { firespot: cmd.firespot } : {}), ...(cmd.terimaKurang ? { terimaKurang: true } : {}), ...(cmd.rincian !== undefined ? { rincian: cmd.rincian } : {}) } })
+  const gagalBangun = () => catatGagal(ctx, sha, { langkah: 'bangun', id: p.id, cmd: { jenis, tanggal: cmd.tanggal, saja: !!cmd.saja, ...(periode ? { awal: periode.awal } : {}), ...(lap.lokasi ? { lokasi } : {}), ...(cmd.firespot ? { firespot: cmd.firespot } : {}), ...(cmd.terimaKurang ? { terimaKurang: true } : {}), ...(cmd.rincian !== undefined ? { rincian: cmd.rincian } : {}) } })
   try {
     const bahanTeks = [], tidakTerbaca = []
     let jumlahGambar = 0
@@ -716,7 +734,7 @@ async function buat(cmd, dari, sha, ctx) {
     // tanpa saring `batal`: WA Koordalops hari-hari periode memang masuk sebelum batal, tetap dipakai saat dibangun ulang
     const kd = periode ? await koordalopsPeriode(ctx, { ...dep, fetch: fetchLingkup(dep, lingkup.boleh) }, periode.awal, periode.akhir, path.join(dirProyek(dasar), p.id, 'koordalops')) : []
     for (const x of kd) bahanTeks.push({ id: `koordalops-${x.tanggal}`, nama: `koordalops-${x.tanggal}`, jenis: 'rekap_koordalops_24', teks: x.teks })
-    for (const m of periode ? [] : pakai.values()) {
+    for (const m of (periode || lap.lokasi) ? [] : pakai.values()) { // gempa: semua data dari generator, pesan WA tidak dibaca
       const simpan = pakaiV2(env, dari) && jumlahGambar < MAKS_BAHAN_GAMBAR ? path.join(kerjaEkstrak, 'gambar') : null
       const e = await ekstrak(m, ctx, kerjaEkstrak, { simpanGambar: simpan })
       if (!e) continue
@@ -734,6 +752,7 @@ async function buat(cmd, dari, sha, ctx) {
     // Bentrok dan bahan tak terbaca ditanyakan sekali sesudah `lanjut`; `lanjut` lagi (status bertanya) atau `buat saja` membangun dan mencatatnya.
     const celah = [
       ...(periode ? [`Periode laphar Koordalops ${labelTanggal(periode.awal)} sampai ${labelTanggal(periode.akhir)}; WA Koordalops tersimpan di bot: ${kd.length ? kd.map((x) => labelTanggal(x.tanggal)).join(', ') : 'tidak ada'}.`] : []),
+      ...(lap.lokasi ? [`Gempa dicari dari data BMKG: ${lokasi ? `"${lokasi}"` : 'M5 ke atas terbaru'}, sampai ${labelTanggal(cmd.tanggal)}.`] : []),
       ...kurang.map((k) => `${labelBahan(k)} untuk ${labelTanggal(cmd.tanggal)} belum ada.`),
       ...(adaCutoff(lap) && cmd.tanggal === tanggalWib(now) && jamWib(now) < lap.jam ? [`Belum cut-off ${lap.jam}.00 WIB, angka sistem hari ini belum lengkap.`] : []),
     ]
@@ -756,6 +775,7 @@ async function buat(cmd, dari, sha, ctx) {
     // K18: penanganan saat FIRMS sudah memuat lintasan siang tetapi situs belum = pemakai memilih *tunggu* atau *hitung*.
     let lapBangun = lap
     if (periode) lapBangun = { ...lap, args: (d, f, o) => lap.args(d, { ...f, awal: periode.awal, wa: kd.map((x) => x.f) }, o) }
+    if (lap.lokasi) lapBangun = { ...lap, args: (d, f, o) => lap.args(d, { ...f, lokasi }, o) }
     // terima kurang (per laporan, nomor terdaftar mana pun): WA Koordalops merinci lebih sedikit dari jumlah menonjol; draf memakai yang dirinci dan mencatatnya
     if (cmd.terimaKurang && lap.id === 'harian') {
       lapBangun = { ...lap, args: (d, f, o) => [...lap.args(d, f, o), '--terima-kurang'] }
@@ -2428,7 +2448,7 @@ async function tanyaFinal(sha, ctx) {
 
 // "mau lapor bencana" dari nomor yang belum berizin Lapor Bencana jatuh ke sini dan Claude membacanya sebagai `buat harian` (pemilik 20 Nov 2026):
 // kata kerja "lapor" tanpa jenis laporan ditanya balik dulu, tidak langsung membuka proyek. "laporan harian", "buat penanganan" tetap jalan.
-export const LAPOR_KEJADIAN = (t) => /\blapor\b/i.test(String(t ?? '')) && !/\b(harian|laphar|penanganan|karhutla|buat|bikin\w*)\b/i.test(String(t ?? ''))
+export const LAPOR_KEJADIAN = (t) => /\blapor\b/i.test(String(t ?? '')) && !/\b(harian|laphar|penanganan|karhutla|gempa|buat|bikin\w*)\b/i.test(String(t ?? ''))
 const T_LAPOR_KEJADIAN = susun('Maksudnya yang mana?', null, null,
   ['1. Membuat *Laporan Kejadian Bencana Harian* (deck): ketik *buat harian*.',
     '2. Melaporkan kejadian bencana di lapangan: nomor ini belum terdaftar di Lapor Bencana. Minta admin mendaftarkan nomor Anda.'])
@@ -2441,7 +2461,8 @@ async function alurMaksud(pesan, dari, sha, ctx) {
   switch (m.maksud) {
     case 'buat':
       if (LAPOR_KEJADIAN(pesan.teks)) { await ctx.balas(T_LAPOR_KEJADIAN); return { status: 'tanya lapor' } }
-      return { cmd: { aksi: 'buat', jenis: m.jenis, tanggal: m.tanggal || hariIni, saja: false } }
+      return { cmd: { aksi: 'buat', jenis: m.jenis, tanggal: m.tanggal || hariIni, saja: false,
+        ...(m.jenis === 'gempa' ? { lokasi: bersihLokasi(m.lokasi), saja: true } : {}) } } // gempa tanpa bahan: langsung dibangun
     case 'lanjut': case 'status': case 'bantuan': return { cmd: { aksi: m.maksud } }
     case 'batal': return { cmd: { aksi: 'batal', tanya: true } }
     case 'final': await tanyaFinal(sha, ctx); return { status: 'tanya final' }

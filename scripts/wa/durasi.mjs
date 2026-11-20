@@ -9,6 +9,7 @@ const BAWAAN = {
   'v1:bangun:harian': [1, 3], 'v1:bangun:penanganan': [3, 10], 'v1:revisi': [1, 2],
   'v2:bangun:harian': [4, 8], 'v2:bangun:penanganan': [6, 12], 'v2:revisi': [2, 5],
   'v2:bangun:banjir_sepekan': [6, 12], // generator sekitar 1,5 menit (uji 19 Nov), sisanya agen
+  'v2:bangun:gempa': [4, 9], // generator sekitar 2 menit di laptop uji (20 Nov), sisanya agen
 }
 const MAKS_CATAT = 10
 const durasiP = (dasar) => path.join(dasar, 'proyek', 'durasi.json')

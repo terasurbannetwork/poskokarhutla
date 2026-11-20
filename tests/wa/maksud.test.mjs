@@ -42,7 +42,9 @@ test('T38 galat mesin tidak memicu rapikan', () => {
 
 test('A16 maksud dibersihkan: di luar daftar = bahan, jenis dan tanggal disaring, balasan tanpa titik tengah', () => {
   const now = new Date('2026-11-19T03:00:00Z')
-  assert.deepEqual(M.bersihkanMaksud({ maksud: 'hapus semua', jenis: 'x', tanggal: '2026-11-18', balasan: '' }, now), { maksud: 'bahan', jenis: null, tanggal: '2026-11-18', balasan: '' })
+  assert.deepEqual(M.bersihkanMaksud({ maksud: 'hapus semua', jenis: 'x', tanggal: '2026-11-18', balasan: '' }, now), { maksud: 'bahan', jenis: null, tanggal: '2026-11-18', balasan: '', lokasi: '' })
+  assert.equal(M.bersihkanMaksud({ maksud: 'buat', jenis: 'gempa', tanggal: '2026-11-19', lokasi: 'Nias <b>Barat</b>' }, now).lokasi, 'Nias b Barat b', 'lokasi gempa dibersihkan')
+  assert.equal(M.bersihkanMaksud({ maksud: 'buat', jenis: 'harian', lokasi: 'nias' }, now).lokasi, '', 'lokasi hanya untuk gempa')
   assert.equal(M.bersihkanMaksud({ maksud: 'buat', jenis: 'harian', tanggal: '2025-01-01' }, now).tanggal, null)
   assert.equal(M.bersihkanMaksud({ maksud: 'buat', tanggal: '2026-11-20' }, now).tanggal, '2026-11-20', 'besok boleh')
   assert.equal(M.bersihkanMaksud({ maksud: 'obrolan', balasan: 'Halo · siap — bantu' }, now).balasan, 'Halo , siap , bantu')

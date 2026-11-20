@@ -8,7 +8,7 @@ import {createHash} from "node:crypto";
 import {berantai, siapkan, ADMIN} from "./_bnpb.mjs";
 import {badanPanjang} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: modul rute saling impor dengannya
-import {cekUkuranVersi} from "../../src/wa_proyek.js";
+import {cekUkuranVersi, BL_JENIS} from "../../src/wa_proyek.js";
 
 const uji = berantai();
 const U = await siapkan("uji-wa-proyek", {r2: true, ikat: {WA_MESIN: "mesin-rahasia"}}), {api, mf, DB} = U;
@@ -55,7 +55,7 @@ uji("bl proyek: buka atau ambil per nomor, jenis, tanggal; kode P-DDMMYY-NN; bah
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "penanganan", tanggal: HARI})).j.proyek.id, AWAL + "02", "jenis lain = proyek lain");
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: B, jenis: "harian", tanggal: HARI})).j.proyek.id, AWAL + "03", "nomor lain = proyek lain (Q6)");
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "banjir_sepekan", tanggal: HARI})).j.proyek.id, AWAL + "04", "paparan banjir sepekan (K42) = jenis sah");
-  for (const salah of [{wa_sha: "6281200000001"}, {wa_sha: A.toUpperCase()}, {jenis: "gempa"}, {jenis: "../x"}, {tanggal: "2026-02-31"}, {tanggal: "2020-01-01"}, {bahan: [{wa_id: "a b"}]}, {bahan: [{wa_id: "1", jenis_bahan: "BMKG"}]}, {bahan: Array(51).fill({wa_id: "1"})}])
+  for (const salah of [{wa_sha: "6281200000001"}, {wa_sha: A.toUpperCase()}, {jenis: "kekeringan"}, {jenis: "../x"}, {tanggal: "2026-02-31"}, {tanggal: "2020-01-01"}, {bahan: [{wa_id: "a b"}]}, {bahan: [{wa_id: "1", jenis_bahan: "BMKG"}]}, {bahan: Array(51).fill({wa_id: "1"})}])
     assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "harian", tanggal: HARI, ...salah})).s, 400, JSON.stringify(salah).slice(0, 60));
   const g = await m("POST", "/api/wa/proyek", {id: AWAL + "01", wa_sha: A}); assert.equal(g.s, 200); assert.equal(g.j.bahan.length, 3);
   assert.equal((await m("POST", "/api/wa/proyek", {id: AWAL + "01", wa_sha: B})).s, 404, "proyek orang lain = 404");
@@ -284,4 +284,9 @@ uji("daftar staf /pelaporan: sesi staf saja, tanpa isian, bahan, wa_sha; nama pe
   assert.equal(r.j.proyek.find(p => p.id === AWAL + "03").pemegang, "Pemakai terdaftar", "nomor tanpa daftar setuju");
   assert.deepEqual(r.j.detak.map(d => d.mesin), ["gateway"]);
   assert.equal(r.h.get("cache-control"), "no-store");
+});
+
+test("jenis proyek bot: laporan khusus gempa sah (K46)", () => {
+  assert.ok(BL_JENIS.includes("gempa"), "gempa ada di BL_JENIS");
+  assert.ok(!BL_JENIS.includes("kekeringan"), "kekeringan belum punya generator bot");
 });
