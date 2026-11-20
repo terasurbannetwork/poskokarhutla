@@ -111,10 +111,11 @@ uji("meja: tamu ditolak, membuka = dilihat, balas dan status mengisi kabar, pind
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/balas`, {catatan: "x"}, ADMIN)).s, 400);
   const bl = await api("POST", `/api/lapor/meja/${nomor}/balas`, {catatan: "Tim sedang menuju lokasi."}, ADMIN); assert.equal(bl.s, 200);
   assert.equal(bl.j.status, "ditelaah"); assert.equal(bl.j.balasan[0].teks, "Tim sedang menuju lokasi.");
-  const st = await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditindaklanjuti", catatan: "Tim BPBD berangkat"}, ADMIN); assert.equal(st.s, 200); assert.equal(st.j.status, "ditindaklanjuti");
+  let st = await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditindaklanjuti", catatan: "Tim BPBD berangkat"}, ADMIN); assert.equal(st.s, 400); assert.equal(st.j.perluTindakan, true, "Ditindaklanjuti wajib tindakan (K70)");
+  st = await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditindaklanjuti", catatan: "Tim BPBD berangkat", tindakan: ["evakuasi"]}, ADMIN); assert.equal(st.s, 200); assert.equal(st.j.status, "ditindaklanjuti");
   const k = await api("GET", "/api/lapor/kabar", undefined, MESIN); assert.equal(k.s, 200);
   assert.deepEqual(k.j.kabar.map(x => x.jenis), ["balasan", "status"]); assert.ok(k.j.kabar.every(x => x.wa === WA && x.nomor === nomor));
-  assert.match(k.j.kabar[1].teks, /Ditindaklanjuti/);
+  assert.match(k.j.kabar[1].teks, /Ditindaklanjuti\. Tindakan: Evakuasi warga\./);
   assert.equal((await api("GET", "/api/lapor/kabar")).s, 403);
   assert.equal((await api("POST", `/api/lapor/kabar/${k.j.kabar[0].id}/terkirim`, {}, MESIN)).s, 200);
   assert.equal((await api("POST", `/api/lapor/kabar/${k.j.kabar[0].id}/terkirim`, {}, MESIN)).s, 404, "sudah ditandai");
@@ -408,7 +409,34 @@ uji("bukti: JPEG disimpan di R2, GPS sah dicatat, maks 10, token atau publik mem
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/teruskan`, {}, bogor.h)).s, 403, "teruskan hanya BNPB");
   // kembali ke ditindaklanjuti untuk uji alun: BNPB membuka kembali lalu menindaklanjuti
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditelaah", catatan: "cek ulang"}, ADMIN)).s, 200);
-  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditindaklanjuti"}, ADMIN)).s, 200);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditindaklanjuti", tindakan: ["evakuasi"]}, ADMIN)).s, 200);
+});
+
+uji("pengecekan lapangan dan tindakan (K69-K70, LA-73): BPBD wilayah saja, revisi = versi baru berasal petugas, tidak valid memindah tiket, append-only", async () => {
+  let r = await api("GET", `/api/lapor/meja/${nomor}`, undefined, bogor.h); assert.equal(r.s, 200);
+  assert.ok(r.j.tindakanPilihan.some(x => x.kode === "alat_berat"), "katalog longsor dari bencana.json lewat ASSETS");
+  assert.ok(r.j.tindakan.some(x => x.kode === "evakuasi"), "tindakan saat Ditindaklanjuti tersimpan");
+  const awal = r.j.revisi.find(x => x.nama === "meninggal"); assert.ok(awal);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/tindakan`, {tindakan: ["alat_berat"]}, bandung.h)).s, 404, "di luar wilayah");
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/tindakan`, {tindakan: ["pompa"]}, bogor.h)).s, 400, "pompa bukan katalog longsor");
+  r = await api("POST", `/api/lapor/meja/${nomor}/tindakan`, {tindakan: ["alat_berat"], tindakanLain: "Buka jalur desa"}, bogor.h); assert.equal(r.s, 200, r.t.slice(0, 200));
+  assert.deepEqual(r.j.tindakan.slice(-2).map(x => x.label), ["Pengerahan alat berat", "Buka jalur desa"]);
+  assert.match(r.j.tindakan.at(-1).oleh, /^BPBD /);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "valid", catatan: "x"}, bogor.h)).s, 400, "catatan wajib");
+  const vAwal = await n("lapor_versi", `nomor = '${nomor}'`);
+  const baru = (awal.nilai ?? 0) + 3;
+  r = await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "sebagian", catatan: "Dicek bersama kades, korban bertambah", ubah: {meninggal: baru}}, bogor.h); assert.equal(r.s, 200, r.t.slice(0, 300));
+  assert.equal(r.j.status, "ditindaklanjuti", "Sebagian benar tidak memindah status");
+  assert.deepEqual(r.j.revisi.find(x => x.nama === "meninggal"), {...awal, nilai: baru, petugas: true});
+  assert.equal(r.j.periksa.at(-1).hasil, "sebagian"); assert.deepEqual(r.j.periksa.at(-1).perubahan, [{nama: "meninggal", dari: awal.nilai, ke: baru}]);
+  assert.equal(await n("lapor_versi", `nomor = '${nomor}'`), vAwal + 1, "versi baru");
+  assert.equal(await n("lapor_pdf", `nomor = '${nomor}' AND status = 'antre'`) >= 1, true, "PDF versi baru diantre");
+  r = await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "tidak_valid", catatan: "Tidak ada longsor di titik itu"}, bogor.h); assert.equal(r.s, 200);
+  assert.equal(r.j.status, "tidak_valid"); assert.equal(await n("lapor_periksa", `nomor = '${nomor}'`), 2);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "valid", catatan: "cek ulang lagi"}, bogor.h)).s, 409, "tiket tertutup");
+  // kembali ke ditindaklanjuti untuk uji alun
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditelaah", catatan: "cek ulang"}, ADMIN)).s, 200);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditindaklanjuti", tindakan: ["evakuasi"]}, ADMIN)).s, 200);
 });
 
 async function laporanBaru(wa) {   // laporan longsor lengkap sampai terkirim, tanpa foto; mengembalikan nomornya

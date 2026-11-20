@@ -2,6 +2,8 @@
    sekarang dan rute Worker /api/lapor/meja/<nomor>/periksa|tindakan nanti (LA-73).
    Pengecekan tidak pernah menimpa isian pelapor: revisi angka menjadi versi baru berasal "petugas" dengan kutipan catatan pengecek (D110). */
 
+import {berlakuSesi} from "./lapor_spek.js";
+
 export const HASIL_PERIKSA = {valid: "Valid", sebagian: "Sebagian benar", tidak_valid: "Tidak valid"};
 
 /* angka yang boleh direvisi petugas (D110): korban, pengungsi, rumah, fasilitas. Jenis, lokasi, dan waktu kejadian tidak (D37 induk). */
@@ -60,6 +62,10 @@ export function terapkanRevisi(isian, ubah, {pelaku, catatan, waktu}) {
   }
   return {isian: baru, perubahan};
 }
+
+/* angka yang bisa direvisi di rincian meja: nilai sekarang (null = belum didata, 0 = tidak ada) dan tanda sudah dikoreksi petugas */
+export const revisiTampil = s => berlakuSesi(s).filter(i => ISIAN_REVISI.includes(i.nama)).map(i => { const x = s.isian[i.nama];
+  return {nama: i.nama, label: i.label, nilai: !x || x.belum ? null : x.nihil ? 0 : x.nilai, petugas: x?.asal?.sumber === "petugas"}; });
 
 /* status tujuan dari hasil: tidak_valid memindah tiket (dari status yang boleh, PINDAH); valid dan sebagian tidak mengubah status (D109). */
 export const statusDariHasil = (hasil, dari, PINDAH) => hasil === "tidak_valid" && PINDAH[dari]?.includes("tidak_valid") ? "tidak_valid" : null;

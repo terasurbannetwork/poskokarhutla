@@ -1735,7 +1735,7 @@ export const blDetakSemua = async (env, p) => (await sedia(env, p, "bl_detak", "
 Object.assign(MATRIKS, {
   lapor_pelapor:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
   lapor_izin:          {lp_pelapor: ["baca"], lp_mesin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca", "tambah", "ubah", "hapus"]},
-  lapor_sesi:          {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
+  lapor_sesi:          {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},   // staf ubah: hanya revisi angka pengecekan (D110), lewat rev
   lapor_pesan:         {lp_pelapor: ["tambah"], lp_staf: ["baca"]},
   lapor_foto:          {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
   lapor_tiket:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
@@ -1743,8 +1743,8 @@ Object.assign(MATRIKS, {
   lapor_balasan:       {lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
   lapor_kabar:         {lp_pelapor: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "tambah", "ubah"]},
   lapor_urut:          {lp_pelapor: ["tambah"]},
-  lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
-  lapor_pdf:           {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_mesin: ["baca", "ubah"]},
+  lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
+  lapor_pdf:           {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "ubah"]},
   lapor_bukti:         {lp_staf: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_mesin: ["baca"]},
   lapor_akses:         {lp_staf: ["tambah"]},
   lapor_unduh:         {lp_staf: ["tambah"]},
@@ -1767,6 +1767,8 @@ Object.assign(MATRIKS, {
   lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
   lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
   lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
+  lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
+  lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
 });
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
@@ -1996,4 +1998,17 @@ export async function lpVersiInfo(env, p, nomor) {
     return {versi: r.versi, ada: r.ada > 0};
   } catch (e) { if (/no such table/i.test(String(e?.message))) return {versi: 1, ada: false}; throw e; }
 }
+/* pengecekan lapangan dan tindakan (migrasi 0162): hanya INSERT dan SELECT; g = hanya bila pernyataan sebelumnya mengubah baris */
+export const lpPeriksaDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_periksa", "baca",
+  "SELECT hasil, catatan, perubahan, oleh, waktu FROM lapor_periksa WHERE nomor = ?1 ORDER BY waktu, id LIMIT 50").bind(nomor).all()).results;
+export const lpStmtPeriksa = (env, p, nomor, hasil, catatan, perubahan, oleh, kini, g = false) => sedia(env, p, "lapor_periksa", "tambah",
+  lpIns(g, "", "lapor_periksa", "nomor, hasil, catatan, perubahan, oleh, waktu")).bind(nomor, hasil, catatan, perubahan, oleh, kini);
+/* hasil pengecekan terakhir per laporan untuk daftar meja (SQLite: kolom polos ikut baris max(id)).
+   ponytail: membaca seluruh lapor_periksa tiap muat daftar; batasi ke nomor yang tampil bila tabelnya membesar (kuota baca D1 Free) */
+export const lpPeriksaTerakhirSemua = async (env, p) => (await sedia(env, p, "lapor_periksa", "baca",
+  "SELECT nomor, hasil, max(id) id FROM lapor_periksa GROUP BY nomor").all()).results;
+export const lpTindakanDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_tindakan", "baca",
+  "SELECT kode, label, oleh, waktu FROM lapor_tindakan WHERE nomor = ?1 ORDER BY waktu, id LIMIT 100").bind(nomor).all()).results;
+export const lpStmtTindakan = (env, p, nomor, kode, label, oleh, kini, g = false) => sedia(env, p, "lapor_tindakan", "tambah",
+  lpIns(g, "", "lapor_tindakan", "nomor, kode, label, oleh, waktu")).bind(nomor, kode, label, oleh, kini);
 export const lpPdfTerakhir = async (env, p, nomor) => (await sedia(env, p, "lapor_pdf", "baca", "SELECT max(versi) v FROM lapor_pdf WHERE nomor = ?1 AND status = 'jadi'").bind(nomor).first())?.v ?? null;

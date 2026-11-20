@@ -488,3 +488,23 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | --- | --- | --- | --- |
 | Q60 | Tindakan tampil di halaman lacak pelapor dan di Alun-alun? | **[BAWAAN SEMENTARA]** Masuk kabar status ke pelapor saja; lacak dan Alun-alun belum. | LA-72 |
 | Q61 | Pengecekan Valid oleh BPBD menaikkan tingkat keyakinan laporan (lencana "dicek BPBD") di Alun-alun dan PDF? | **[BAWAAN SEMENTARA]** Lencana hanya di meja. | LA-72 |
+
+## Keputusan pemilik (gabung sekab dan verifikasi di daftar meja, 20 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K73 | 20 Nov 2026 | Pemilik: "kalo kaya Kota administrasi jakarta timur kalo misalnya bencananya sama yaudah di merge aja." |
+| K74 | 20 Nov 2026 | Pemilik: "di kanan ada dong ya harusnya aksinya untuk memverifikasi dan nanti dia disetujui atau nggak sebagai bencananya bener atau nggak." |
+
+## Keputusan rancangan (pelaksanaan K73-K74, agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D119 | Daftar meja menggabung laporan berjenis sama di kab/kota yang sama di bawah satu kepala, berantai selama jarak antarlaporan paling lama 72 jam (`JEDA_GABUNG`, HIPOTESIS Q62). Laporan Tidak valid tetap baris sendiri. Gabungan ini hanya tampilan: nomor kejadian KJ (K66), gugus (A9), Buku Besar, dan angka tidak berubah; kepala tetap menampilkan angka tertinggi (D28, D107) dan chip KJ atau gugus bila ada. Jumlah warga hanya ditulis bila nomor semua pelapor terlihat (BNPB). | Meja dibaca per kejadian; pencocokan resmi tetap satu (`pasang.py`). |
+| D120 | Kolom Aksi tiap laporan yang belum ditutup memuat tombol Verifikasi (ikon telaah, terisi) yang membuka rincian langsung di kartu Pengecekan lapangan (D108) dengan fokus di pilihan hasil. Disetujui = Valid; tidak = Tidak valid (tiket ditutup, D109). | Satu jalur verifikasi, bukan tombol setuju kedua. |
+| D121 | Kolom Status menampilkan hasil pengecekan terakhir ("Dicek: valid", "Dicek: sebagian benar", "Dicek: tidak valid"); tombol Verifikasi berwarna hijau bila hasil terakhir Valid. Worker membacanya dari `lapor_periksa` (satu kueri per muat daftar). | Petugas tahu mana yang sudah dicek tanpa membuka. |
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q62 | Jendela gabung di meja: berapa lama laporan berjenis sama di satu kab/kota masih dianggap kejadian yang sama, dan apakah per jenis berbeda (banjir berhari-hari, gempa sekali)? | **[BAWAAN SEMENTARA]** 72 jam berantai untuk semua jenis, sama dengan jendela jenis tanpa aturan di A9. | LA-75 |
+| Q63 | Verifikasi satu kepala gabungan sekaligus (semua laporan di bawahnya Valid atau Tidak valid dalam satu ketukan)? | **[BAWAAN SEMENTARA]** Tidak; tiap laporan dicek sendiri. | LA-75 |

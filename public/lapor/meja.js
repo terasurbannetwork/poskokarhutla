@@ -40,6 +40,7 @@ const chipGugus = g => { if (adaKj(g)) { const k = el("span", "mj-gugus kuat"); 
 const adaKorban = b => (b.dampak?.meninggal || 0) + (b.dampak?.hilang || 0) + (b.dampak?.luka || 0) > 0;
 
 const provTutup = new Set(), gugusTutup = new Set();
+const JEDA_GABUNG = 72 * 3600e3;   // HIPOTESIS (Q62): sama dengan jendela jenis tanpa aturan di src/lapor_gugus.js
 let semua = [], saringStatus = null, saringJenis = new Set(), saringKab = "", cepat = new Set(), urut = {k: "waktu", arah: -1}, pilih = null, peta = null, penanda = [], popup = null, petaMini = null;
 const fotoCache = new Map(), dlg = $("rinci");
 
@@ -365,11 +366,13 @@ function gambarTabel(daftar) {
     const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); } jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
     const lok = el("div"); lok.append(el("b", null, b.wilayah?.kab || "Tanpa lokasi"), el("small", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.prov].filter(Boolean).join(", ")));
     const aksi = el("div", "mj-aksi-baris");
+    // verifikasi (pemilik 20 Nov 2026: "di kanan ada aksinya untuk memverifikasi"): membuka rincian langsung di kartu Pengecekan lapangan
+    if (!["selesai", "tidak_valid"].includes(b.status)) { const v = tombolAksi("m-telaah", `Verifikasi ${b.nomor}`, () => bukaRinci(b.nomor, true, "periksa")); v.classList.add("mj-verif"); if (b.periksa) v.dataset.hasil = b.periksa; aksi.append(v); }
     aksi.append(tombolAksi("m-buka", `Buka ${b.nomor}`, () => bukaRinci(b.nomor)));
     if (b.wa) aksi.append(tombolAksi("m-wa", `Chat WhatsApp ${b.nama || ""}`, {href: `https://wa.me/${b.wa}`, target: "_blank", rel: "noopener"}));
     if (b.lat != null) aksi.append(tombolAksi("m-lokasi", "Lihat di peta", () => { peta?.flyTo({center: [b.lon, b.lat], zoom: 13}); pindahTampil("peta"); requestAnimationFrame(() => bukaPopup(b)); }));
     tr.append(sel("", el("b", null, tglRingkas(b.waktuLapor))), sel("", el("span", "mj-nomor", b.nomor)),
-      sel("", jn), sel("", lok), sel("angka", korbanSel(b)), sel("angka", korbanSel(b, BANGUNAN)), sel("angka", cincin(b.lengkap)), sel("angka", ft), sel("angka", pil(b.status), ...(b.tanggap?.dibuka != null ? [el("small", "mj-tanggap", `dibuka ${durasi(b.tanggap.dibuka)}`)] : b.status === "baru" ? [el("small", "mj-tanggap belum", `belum dibuka, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))}`)] : [])), sel("angka", aksi));
+      sel("", jn), sel("", lok), sel("angka", korbanSel(b)), sel("angka", korbanSel(b, BANGUNAN)), sel("angka", cincin(b.lengkap)), sel("angka", ft), sel("angka", pil(b.status), ...(b.periksa ? [el("small", `mj-cek ${b.periksa}`, ({valid: "Dicek: valid", sebagian: "Dicek: sebagian benar", tidak_valid: "Dicek: tidak valid"})[b.periksa])] : []), ...(b.tanggap?.dibuka != null ? [el("small", "mj-tanggap", `dibuka ${durasi(b.tanggap.dibuka)}`)] : b.status === "baru" ? [el("small", "mj-tanggap belum", `belum dibuka, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))}`)] : [])), sel("angka", aksi));
     tr.addEventListener("click", () => bukaRinci(b.nomor));
     return tr;
   };
@@ -383,15 +386,22 @@ function gambarTabel(daftar) {
       .map(([k, t, ik]) => [maks(k), t, ik]).filter(([n]) => n > 0);
     const pil = () => { const p = el("span", "mj-gugus-angka"); p.title = "Angka tertinggi antarlaporan, tidak dijumlah"; p.append(el("small", null, "Tertinggi"));
       for (const [n, t, ik] of angka) { const s = el("span"); s.append(ikon(ik), `${F(n)} ${t}`); p.append(s); } return p; };
-    const tx = el("div", "mj-gugus-teks"); tx.append(el("b", null, `${xs[0].jenis || "Kejadian"}, ${xs.length} laporan dari ${F(g.n_pelapor || xs.length)} warga`),
+    const tx = el("div", "mj-gugus-teks"); tx.append(el("b", null, `${xs[0].jenis || "Kejadian"}, ${xs.length} laporan${g.n_pelapor ? ` dari ${F(g.n_pelapor)} warga` : ""}`),
       el("small", null, [desa.length ? `Desa/Kel. ${desa.join(", ")}` : null, xs[0].wilayah?.kab, `${tglRingkas(xs.find(b => b.terkirim === waktu[0])?.waktuLapor || "")} sampai ${tglRingkas(xs.find(b => b.terkirim === waktu.at(-1))?.waktuLapor || "")}`].filter(Boolean).join(", ")));
-    const kanan = el("div", "mj-gugus-kanan"); kanan.append(...(angka.length ? [pil()] : []), chipGugus(g));
+    const kanan = el("div", "mj-gugus-kanan"); kanan.append(...(angka.length ? [pil()] : []), ...(g.chip ? [chipGugus(g.chip)] : []));
     bt.append(ikon("m-bawah"), ik, tx, kanan);
     bt.addEventListener("click", () => { gugusTutup.has(g.kode) ? gugusTutup.delete(g.kode) : gugusTutup.add(g.kode); gambarTabel(tersaringSekarang()); });
     td.append(bt); tr.append(td); return tr; };
-  const susun = xs => { const grup = new Map(); for (const b of xs) { const k = b.kejadian?.kode || b.gugus?.kode || `#${b.nomor}`; grup.set(k, [...(grup.get(k) || []), b]); }
-    return [...grup.values()].flatMap(g => g.length < 2 ? g.map(baris)
-      : [kepalaGugus(g[0].kejadian || g[0].gugus, g), ...(gugusTutup.has((g[0].kejadian || g[0].gugus).kode) ? [] : g.map(b => { const tr = baris(b); tr.classList.add("mj-anggota"); return tr; }))]); };
+  /* gabung di meja (pemilik 20 Nov 2026: "kalo bencananya sama yaudah di merge", D119): jenis sama di kab/kota yang sama, berantai selama jarak
+     antarlaporan paling lama JEDA_GABUNG; tidak valid tetap baris sendiri. Hanya tampilan: nomor KJ (K66) dan gugus (A9) tidak berubah. */
+  const susun = xs => { const per = new Map();
+    for (const b of xs) { const kab = b.wilayah?.kabKode || b.wilayah?.kab, k = b.jenisId && kab && b.status !== "tidak_valid" ? `${b.jenisId}|${kab}` : `#${b.nomor}`; per.set(k, [...(per.get(k) || []), b]); }
+    const grup = [...per.values()].flatMap(ys => { const r = []; for (const y of [...ys].sort((a, b) => a.terkirim - b.terkirim)) { const g = r.at(-1); if (g && y.terkirim - g.at(-1).terkirim <= JEDA_GABUNG) g.push(y); else r.push([y]); }
+      return r.map(g => ys.filter(b => g.includes(b))); });   // urutan dalam kelompok ikut urutan daftar
+    return grup.flatMap(g => { if (g.length < 2) return g.map(baris);
+      const ada = g.find(b => b.kejadian)?.kejadian || g.find(b => b.gugus)?.gugus, wa = g.map(b => b.wa);
+      const kepala = {kode: `${g[0].jenisId}|${g[0].wilayah?.kabKode || g[0].wilayah?.kab}|${Math.min(...g.map(b => b.terkirim))}`, n_pelapor: wa.every(Boolean) ? new Set(wa).size : null, chip: ada || null};
+      return [kepalaGugus(kepala, g), ...(gugusTutup.has(kepala.kode) ? [] : g.map(b => { const tr = baris(b); tr.classList.add("mj-anggota"); return tr; }))]; }); };
   $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : susun(xs))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
 }
 const fotoLaporan = nomor => { if (!fotoCache.has(nomor)) fotoCache.set(nomor, fetch(`/api/lapor/meja/${nomor}`).then(r => r.json()).then(j => j.foto || []).catch(() => [])); return fotoCache.get(nomor); };
@@ -560,7 +570,7 @@ async function kecilkanFoto(f) {
     c.width = Math.round(bmp.width * sk); c.height = Math.round(bmp.height * sk); c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", 0.82); }
   catch { return null; }
 }
-async function bukaRinci(nomor, lihat = true) {
+async function bukaRinci(nomor, lihat = true, fokus = null) {
   pilih = nomor;
   if (lihat) { petaMini?.remove(); petaMini = null; dlg.replaceChildren(el("p", "mj-kosong", "Memuat rincian...")); if (!dlg.open) dlg.showModal(); }
   // BPBD: rincian selalu lewat POST lihat, karena identitas pelapor hanya diberikan pada pembukaan yang tercatat (D95)
@@ -698,6 +708,7 @@ async function bukaRinci(nomor, lihat = true) {
   const posisi = dlg.querySelector(".mj-rinci-gulung")?.scrollTop || 0;
   petaMini?.remove(); petaMini = null;
   dlg.replaceChildren(kep, gulung); if (!lihat) gulung.scrollTop = posisi;
+  if (fokus === "periksa") { const k = dlg.querySelector(".mj-periksa"); if (k) { k.closest(".mj-kartu").scrollIntoView({block: "start"}); k.querySelector("input")?.focus({preventScroll: true}); } }
   if (j.lat != null && window.maplibregl) {
     petaMini = new maplibregl.Map({container: wPeta, style: "https://tiles.openfreemap.org/styles/positron", center: [j.lon, j.lat], zoom: 13, interactive: false, attributionControl: false});
     const t = el("span", "mj-titik"); t.style.setProperty("--jn", warnaJenis(jenisId)); t.style.setProperty("--st", WARNA[j.status]); t.append(ikon(ikonJenis(jenisId)), el("i"));

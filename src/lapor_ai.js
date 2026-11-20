@@ -24,6 +24,7 @@ import {buatWilayah} from "./lapor_wilayah.js";
 import {buatInfo} from "./lapor_info.js";
 import {urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
 import * as H from "./hak.js";
+import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 60], [HARI, 120]], BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
@@ -158,9 +159,10 @@ async function tokenLacak(env, nomor) {   // kunci turunan berlabel domain "lapo
 }
 
 /* ---------------- data publik via ASSETS ---------------- */
-let WIL, INFO;
+let WIL, INFO, REG;
 const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); throw new Error(`aset ${jalur} ${r.status}`); } return r.json(); };
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
+const registriDari = env => REG ||= muatAset(env)("/bencana.json").catch(e => { REG = null; throw e; });   // katalog tindakan (AGENTS 2.28, D112)
 const infoDari = env => INFO ||= buatInfo({muat: muatAset(env), wilayah: wilayahDari(env)});
 const modelDari = env => buatModel({kunci: env.ANTHROPIC_API_KEY, model: env.LAPOR_MODEL || undefined, dasar: /^https:\/\//.test(env.LAPOR_BASE_URL || "") ? env.LAPOR_BASE_URL : "", catat: u => console.log(`lapor model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});   // tanpa kunci = null = pertanyaan templat
 
@@ -738,7 +740,8 @@ async function mejaDaftar(env, req, url, kini) {
   // kejadian yang sama (K66, D107): dua laporan atau lebih yang terlihat akun ini; jumlah warga dari nomor berbeda, dihitung sebelum identitas dibuang
   const kj = new Map((await bacaTabel(() => H.lpKejadianSemuaNomor(env, STAF), [])).map(x => [x.nomor, x.kode])), hit = new Map();
   for (const b of lihat) { const k = kj.get(b.nomor); if (k) { const x = hit.get(k) || {n: 0, wa: new Set()}; x.n++; x.wa.add(b.wa); hit.set(k, x); } }
-  const baris = lihat.map(b => { const k = kj.get(b.nomor), x = k && hit.get(k); return {...b, kejadian: x && x.n >= 2 ? {kode: k, n_laporan: x.n, n_pelapor: x.wa.size} : null}; })
+  const cek = new Map((await bacaTabel(() => H.lpPeriksaTerakhirSemua(env, STAF), [])).map(x => [x.nomor, x.hasil]));   // hasil pengecekan terakhir (K69, D108)
+  const baris = lihat.map(b => { const k = kj.get(b.nomor), x = k && hit.get(k); return {...b, periksa: cek.get(b.nomor) || null, kejadian: x && x.n >= 2 ? {kode: k, n_laporan: x.n, n_pelapor: x.wa.size} : null}; })
     .map(b => c.jenis === "bnpb" ? b : {...b, wa: null, nama: null});   // BPBD: identitas pelapor hanya lewat POST lihat yang tercatat (D95)
   return kirim(200, {akun: {jenis: c.jenis, label: c.label}, baris});
 }
@@ -750,6 +753,12 @@ async function rincianObj(env, c, baris, identitas = c.jenis === "bnpb") {   // 
   const o = mejaRinciTampil(s, pel, await tokenLacak(env, nomor));
   o.kejadian = await bacaTabel(async () => { const k = await H.lpKejadianNomor(env, STAF, nomor); if (!k) return null;
     const r = (await H.lpKejadianRingkas(env, STAF, [k.kode]))[k.kode]; return r && r.n_laporan >= 2 ? {kode: k.kode, ...r} : null; }, null);
+  // pengecekan lapangan dan tindakan (K69-K70); sebelum migrasi 0162 kosong
+  const prov = s.isian.lokasi?.nilai?.wilayah?.provKode, [periksa, tindakan, reg] = await Promise.all([bacaTabel(() => H.lpPeriksaDaftar(env, STAF, nomor), []),
+    bacaTabel(() => H.lpTindakanDaftar(env, STAF, nomor), []), registriDari(env).catch(() => null)]);
+  o.periksa = periksa.map(x => { let perubahan = []; try { perubahan = JSON.parse(x.perubahan); } catch {} return {hasil: x.hasil, label: HASIL_PERIKSA[x.hasil], catatan: x.catatan, oleh: x.oleh, perubahan, waktu: waktuLapor(x.waktu, prov)}; });
+  o.tindakan = tindakan.map(x => ({kode: x.kode, label: x.label, oleh: x.oleh, waktu: waktuLapor(x.waktu, prov)}));
+  o.tindakanPilihan = reg ? tindakanUntuk(s.isian.jenis?.nilai, reg) : []; o.revisi = revisiTampil(s);
   if (!identitas) { o.pelapor = {peran: o.pelapor?.peran ?? null, tersembunyi: true}; o.transkrip = []; }
   return {...o, akun: {jenis: c.jenis, label: c.label}, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status])};
 }
@@ -816,17 +825,54 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
       ...wa.map(x => H.lpStmtKabarBpbd(env, STAF, x, nomor, kabNama, teks, kini))]);
     if (!r[0].meta.changes) return galat(409, "Status laporan baru saja berubah. Muat ulang.");
     tambahan = {bpbdTerdaftar: wa.length > 0, antre: r.slice(3).reduce((n, x) => n + x.meta.changes, 0)};
+  } else if (aksi === "periksa") {   // pengecekan lapangan (K69, D108-D110): revisi = versi baru berasal petugas (pola susulan A12), tidak valid memindah tiket
+    if (["selesai", "tidak_valid"].includes(t.status)) return galat(409, "Tiket sudah ditutup.");
+    const s = dariBaris(baris), v = sahkanPeriksa(b.o, new Set(revisiTampil(s).map(x => x.nama)));
+    if (v.galat) return galat(400, v.galat);
+    const r = terapkanRevisi(s.isian, v.ubah, {pelaku: oleh, catatan: v.catatan, waktu: kini}), ke = statusDariHasil(v.hasil, t.status, PINDAH), stmts = [];
+    let versiBaru = null;
+    if (r.perubahan.length) {
+      const vi = await H.lpVersiInfo(env, STAF, nomor), label = Object.fromEntries(revisiTampil(s).map(x => [x.nama, x.label]));
+      versiBaru = vi.versi + 1; s.isian = r.isian;
+      const w = s.isian.lokasi?.nilai, {id: _i, wa: _w, nomor: _n, terkirim: _t, ...kerja} = s;
+      let ringkas = JSON.stringify(ringkasSesi(s)); if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length, wilayah: wilayahKecil(s)});
+      stmts.push(H.lpStmtSesiUbah(env, STAF, {id: baris.id, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null,
+        kerja: JSON.stringify(kerja), ringkas}, baris.rev, kini),
+        H.lpStmtVersi(env, STAF, nomor, versiBaru, JSON.stringify(s.isian), JSON.stringify(r.perubahan.map(x => ({...x, label: label[x.nama], petugas: oleh}))), kini, true),
+        H.lpStmtPdfAntre(env, STAF, nomor, versiBaru, kini, true));
+    }
+    const ket = `Pengecekan lapangan: ${HASIL_PERIKSA[v.hasil]}. ${v.catatan}${versiBaru ? `. Revisi versi ${versiBaru}: ${r.perubahan.map(x => `${x.nama.replace(/_/g, " ")} ${x.dari ?? "belum didata"} menjadi ${x.ke}`).join(", ")}` : ""}`.slice(0, 1000);
+    const g = stmts.length > 0;   // dengan revisi: semua baris berikut hanya jalan bila sesi berhasil diubah (rev sama)
+    if (ke) stmts.push(H.lpStmtTiketPindah(env, STAF, nomor, t.status, ke, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, ke, ket, oleh, kini),
+      H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS[ke]}. ${v.catatan}`, kini));
+    else stmts.push(H.lpStmtRiwayat(env, STAF, nomor, t.status, t.status, ket, oleh, kini, g));
+    stmts.push(H.lpStmtPeriksa(env, STAF, nomor, v.hasil, v.catatan, JSON.stringify(r.perubahan), oleh, kini, true));
+    let hasil;
+    try { hasil = await H.lpBatch(env, STAF, stmts); } catch (e) { if (/UNIQUE|constraint/i.test(String(e?.message))) return galat(409, "Laporan baru saja berubah. Muat ulang."); throw e; }
+    if (!hasil[0].meta.changes || !hasil.at(-1).meta.changes) return galat(409, "Laporan baru saja berubah. Muat ulang.");
+  } else if (aksi === "tindakan") {   // tambah tindakan selama Ditindaklanjuti (K70, D112)
+    if (t.status !== "ditindaklanjuti") return galat(409, "Tindakan dicatat saat tiket Ditindaklanjuti.");
+    const s = dariBaris(baris), v = sahkanTindakan(b.o, s.isian.jenis?.nilai, await registriDari(env)); if (v.galat) return galat(400, v.galat);
+    const teks = v.tindakan.map(x => x.label).join(", ");
+    await H.lpBatch(env, STAF, [...v.tindakan.map(x => H.lpStmtTindakan(env, STAF, nomor, x.kode, x.label, oleh, kini)),
+      H.lpStmtRiwayat(env, STAF, nomor, t.status, t.status, `Tindakan: ${teks}`, oleh, kini),
+      H.lpStmtKabar(env, STAF, baris.wa, nomor, "status", `Tindakan untuk laporan ${nomor}: ${teks}.`, null, kini)]);
   } else {
     const ke = b.o.ke;
     if (!PINDAH[t.status]?.includes(ke)) return galat(409, "Perpindahan status tidak sah.");
+    if (ke === "tidak_valid" && catatan.length < 5) return galat(400, "Tulis alasan laporan tidak valid di kotak catatan.");
+    let tindakan = [];   // Ditindaklanjuti wajib menyebut tindakan (K70, D112)
+    if (ke === "ditindaklanjuti") { const v = sahkanTindakan(b.o, dariBaris(baris).isian.jenis?.nilai, await registriDari(env)); if (v.galat) return galat(400, v.galat, {perluTindakan: true}); tindakan = v.tindakan; }
+    const teksT = tindakan.length ? `Tindakan: ${tindakan.map(x => x.label).join(", ")}` : null;
     // Selesai wajib minimal satu foto penanganan, atau alasan tertulis tanpa foto yang tercatat di riwayat (K60, D87, Q49)
     const alasan = String(b.o.tanpaBukti || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300);
     const nb = ke === "selesai" ? await bacaTabel(() => H.lpBuktiHitung(env, STAF, nomor), 0) : 0;
     if (ke === "selesai" && !nb && alasan.length < 5) return galat(400, "Lampirkan minimal satu foto penanganan, atau tulis alasan tanpa foto.", {perluBukti: true});
     if (["selesai", "tidak_valid"].includes(t.status) && !catatan) return galat(400, "Membuka kembali wajib dengan catatan.");
-    const tanpa = ke === "selesai" && !nb ? `Tanpa foto penanganan: ${alasan}` : null, catatanRiwayat = [catatan, tanpa].filter(Boolean).join(". ").slice(0, 1000) || null;
+    const tanpa = ke === "selesai" && !nb ? `Tanpa foto penanganan: ${alasan}` : null, catatanRiwayat = [teksT, catatan, tanpa].filter(Boolean).join(". ").slice(0, 1000) || null;
     const r = await H.lpBatch(env, STAF, [H.lpStmtTiketPindah(env, STAF, nomor, t.status, ke, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, nomor, t.status, ke, catatanRiwayat, oleh, kini),
-      H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS[ke]}.${catatan ? ` ${catatan}` : ""}${ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, kini)]);
+      H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS[ke]}.${teksT ? ` ${teksT}.` : ""}${catatan ? ` ${catatan}` : ""}${ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, kini),
+      ...tindakan.map(x => H.lpStmtTindakan(env, STAF, nomor, x.kode, x.label, oleh, kini, true))]);
     if (!r[0].meta.changes) return galat(409, "Status laporan baru saja berubah. Muat ulang.");   // balapan dua staf
   }
   const baru = await H.lpSesiNomor(env, STAF, nomor);
@@ -839,7 +885,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   return mejaRinci(env, h.c, x);
 }
 async function mejaPost(env, req, url, kini, ctx, x) {
-  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas)$/.exec(x);
+  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan)$/.exec(x);
   return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
 }
 
