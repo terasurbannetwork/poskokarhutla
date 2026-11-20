@@ -19,6 +19,7 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | K7 | 20 Nov 2026 | Dua pintu: chat WA dan form web per objek. |
 | K8 | 20 Nov 2026 | Tidak ada pencocokan orang antarkab/kota (pengungsi dengan korban hilang). |
 | K9 | 20 Nov 2026 | Data pribadi pengungsi dan korban dihapus 5 tahun sesudah kejadian selesai (menjawab Q4). |
+| K10 | 20 Nov 2026 | Kriteria RB, RS, RR rumah dan prasarana memakai angka modul Siklus: RB lebih dari 70% rusak, RS 30 sampai 70%, RR kurang dari 30% (menjawab Q1). |
 
 ## Keputusan rancangan (D, agent, bisa dibatalkan pemilik)
 
@@ -52,7 +53,7 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 
 | No | Pertanyaan | Bawaan sementara | Tiket terdampak |
 | --- | --- | --- | --- |
-| Q1 | Kriteria RB, RS, RR rumah dan prasarana dari pedoman mana? | **[BAWAAN SEMENTARA]** Sama dengan `siklus/GLOSARIUM.md`: RB lebih dari 70% rusak, RS 30 sampai 70%, RR kurang dari 30%; form menampilkan contoh ciri tiap tingkat. Sumber pedoman ditulis di RISET sebelum LJ-04 tayang. | LJ-04 |
+| Q1 | Kriteria RB, RS, RR rumah dan prasarana dari pedoman mana? | **Dijawab pemilik 20 Nov 2026 (K10):** angka modul Siklus (`siklus/GLOSARIUM.md`, `siklus/ALGORITMA.md`); form menampilkan contoh ciri tiap tingkat. | LJ-04 |
 | Q2 | Siapa yang menerima penutupan ke Buku Besar? | **[BAWAAN SEMENTARA]** Staf berperan Pusdalops di `/lapor/meja`. | LJ-13 |
 | Q3 | Pertanyaan harian dikirim jam berapa dan ke siapa? | **[BAWAAN SEMENTARA]** 16.00 WIB, hanya ke ketua berkas; F0 hanya nomor uji dan PEMILIK. | LJ-10 |
 | Q4 | Berapa lama data pribadi disimpan sesudah kejadian selesai? | **Dijawab pemilik 20 Nov 2026 (K9):** 5 tahun, lalu dihapus. Rinciannya D23. | LJ-17 |

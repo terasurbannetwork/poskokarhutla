@@ -8,7 +8,7 @@ Ambil tiket berurutan, kerjakan hanya cakupannya. Tiap tiket layar ditinjau pemi
 | LJ-01 | `migrations/0161_lapor_data.sql`; entri `MATRIKS` `src/hak.js`; `tests/warga/cakupan.json` | `warga-api` | `migrasi-idempoten` | migrasi jalan dua kali di Miniflare | LJ-00 |
 | LJ-02 | `src/lapor_lanjut_spek.js`: spek tujuh jenis, isian `pribadi`, nihil per metrik, penanda, rekap, kondisi akhir, sidik | `warga-api` | `validasi-model` | `tests/lapor/lanjut_spek.test.mjs` | LJ-01 |
 | LJ-03 | Pembukaan berkas dari tiket (syarat kab izin), token per anggota ke kuki, rute `berkas`, `daftar`, `tampil`, `lj_akses`, entri `src/worker.js` (Q6, Q11, Q15) | `warga-api` | `guard-api`, `security-reviewer` | uji rute bagian 2 baris berkas, token, tersamar | LJ-02 |
-| LJ-04 | Rute objek, nihil, dan media (foto, dokumen, video bersambung ke `lj_media`), rumah dan prasarana (Q1, Q9, Q12) | `warga-api` | `guard-api`, `security-reviewer` | uji rute objek, `rev`, `klien_id`, media | LJ-03 |
+| LJ-04 | Rute objek, nihil, dan media (foto, dokumen, video bersambung ke `lj_media`), rumah dan prasarana (K10, Q9, Q12) | `warga-api` | `guard-api`, `security-reviewer` | uji rute objek, `rev`, `klien_id`, media | LJ-03 |
 | LJ-05 | Mesin WA tahap 2: pesan pembuka, rumah dan prasarana, isian pribadi lewat kode (D19), gerbang izin `lj_tim` di `src/lapor_ai.js` | `warga-api` | `security-reviewer` | uji mesin bagian 3 | LJ-04 |
 | LJ-06 | Titik pengungsian dan jiwa (WA dan rute), sambung `titik_pengungsian` (Q10, Q13) | `warga-api` | `security-reviewer` | uji rute titik dan jiwa | LJ-05 |
 | LJ-07 | Korban per orang dan perubahan status pencarian (Q8) | `warga-api` | `security-reviewer` | uji rute korban | LJ-05 |

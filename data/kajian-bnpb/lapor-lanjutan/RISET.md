@@ -7,7 +7,7 @@
 | Juklak 7/2023 Lampiran I huruf A (sudah jadi meja `dampak`, `juklak/DATA-DAMPAK.md`) | Bagian kejadian, kebutuhan, akibat terhadap manusia, sosial ekonomi, prasarana vital, rumah, pelayanan dasar; data dinamis dimutakhirkan minimal sehari sekali (BAB II) | Daftar jenis objek (D3), pertanyaan harian (D12) |
 | Meja `pengungsi` (Juklak pengungsi terpilah, `src/meja_spek.js`) | Kelompok umur, L/P, ibu hamil per trimester, menyusui, disabilitas, yatim piatu, terpisah wali, kebutuhan per sektor | Isian `jiwa` dan `titik` |
 | UU 27/2022 Pelindungan Data Pribadi | Data anak dan data kesehatan termasuk data spesifik; dasar pemrosesan, pembatasan tujuan, akses terbatas | KEAMANAN-PRIVASI |
-| Kriteria RB/RS/RR di repo (`siklus/GLOSARIUM.md`, `siklus/ALGORITMA.md` baris 318) | RB lebih dari 70%, RS 30 sampai 70%, RR kurang dari 30% | Isian rumah dan prasarana; sumber pedomannya masih Q1 |
+| Kriteria RB/RS/RR di repo (`siklus/GLOSARIUM.md`, `siklus/ALGORITMA.md` baris 318) | RB lebih dari 70%, RS 30 sampai 70%, RR kurang dari 30% | Isian rumah dan prasarana; dipakai atas keputusan pemilik K10 |
 
 ## 2. Temuan dari data yang ada
 

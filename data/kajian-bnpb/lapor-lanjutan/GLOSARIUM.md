@@ -10,7 +10,7 @@
 | Anggota tim, `bpbd_tim` | Nomor WA yang ditambah ketua; hanya berhak atas berkas itu |
 | Objek | Satu rumah, prasarana, tempat pengungsian, jiwa, korban, usaha, atau kebutuhan |
 | Jiwa | Satu orang pengungsi, berinduk kepala keluarga |
-| RB, RS, RR | Rusak berat (lebih dari 70%), sedang (30 sampai 70%), ringan (kurang dari 30%); sumber pedoman Q1 |
+| RB, RS, RR | Rusak berat (lebih dari 70%), sedang (30 sampai 70%), ringan (kurang dari 30%); angka modul Siklus (K10) |
 | Fungsi prasarana | Putus, terbatas, atau berfungsi |
 | Nihil | Metrik sudah diperiksa dan memang tidak ada; bernilai 0 |
 | Isian pribadi | Nama orang, HP, NIK, kontak keluarga, ciri, keadaan kesehatan; disimpan di kolom `pribadi`, diurai kode, tidak pernah ke AI |
