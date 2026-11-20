@@ -12,7 +12,7 @@ import {Galat, pelakuBlMesin as M, pelakuBlStaf, BL_STATUS, BL_POLA, blProyekBuk
   blVersiTambah, blVersiBaca, blVersiDaftar, blPolaById, blPolaJenis, blPolaNilai, blPolaSimpan, blPolaPutus, blDaftarTulis, BL_TOLAK_HARI, blMenungguHitung, blTerdaftar,
   blBiayaBaca, blBiayaTambah, blDetakBaca, blDetakTulis, blDetakSemua} from "./hak.js";
 
-export const BL_JENIS = ["harian", "penanganan"];   // tahap 1 (Q3 BAWAAN SEMENTARA); jenis tahap 2 ditambah di BL-16. CHECK 0154 sengaja tidak mengunci daftar ini.
+export const BL_JENIS = ["harian", "penanganan", "banjir_sepekan"];   // tahap 1 (Q3 BAWAAN SEMENTARA); banjir_sepekan K42 (19 Nov 2026). CHECK 0154 sengaja tidak mengunci daftar ini.
 const RE_SHA = /^[0-9a-f]{64}$/, RE_ID = /^P-\d{6}-\d{2}$/, RE_WA_ID = /^[\w.:@-]{1,128}$/, RE_JB = /^[a-z0-9_]{2,40}$/, RE_MESIN = /^[a-z0-9_-]{2,40}$/,
   RE_OPERASI = /^[a-z_]{2,30}$/, RE_POLA_ID = /^[a-z0-9-]{8,64}$/, RE_PRATINJAU = /^pratinjau-(\d{1,3})$/, RE_KONTROL = /[\u0000-\u001f\u007f]/;
 const MAKS_JSON = 16384, MAKS_BAHAN = 50, MAKS_MENUNGGU = 1000, HARI = 864e5, MUNDUR_HARI = 90;

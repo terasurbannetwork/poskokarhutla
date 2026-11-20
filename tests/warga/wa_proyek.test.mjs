@@ -54,6 +54,7 @@ uji("bl proyek: buka atau ambil per nomor, jenis, tanggal; kode P-DDMMYY-NN; bah
   assert.deepEqual(b.j.bahan.map(x => x.wa_id).sort(), ["41", "42", "43"]);
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "penanganan", tanggal: HARI})).j.proyek.id, AWAL + "02", "jenis lain = proyek lain");
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: B, jenis: "harian", tanggal: HARI})).j.proyek.id, AWAL + "03", "nomor lain = proyek lain (Q6)");
+  assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "banjir_sepekan", tanggal: HARI})).j.proyek.id, AWAL + "04", "paparan banjir sepekan (K42) = jenis sah");
   for (const salah of [{wa_sha: "6281200000001"}, {wa_sha: A.toUpperCase()}, {jenis: "gempa"}, {jenis: "../x"}, {tanggal: "2026-02-31"}, {tanggal: "2020-01-01"}, {bahan: [{wa_id: "a b"}]}, {bahan: [{wa_id: "1", jenis_bahan: "BMKG"}]}, {bahan: Array(51).fill({wa_id: "1"})}])
     assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "harian", tanggal: HARI, ...salah})).s, 400, JSON.stringify(salah).slice(0, 60));
   const g = await m("POST", "/api/wa/proyek", {id: AWAL + "01", wa_sha: A}); assert.equal(g.s, 200); assert.equal(g.j.bahan.length, 3);
