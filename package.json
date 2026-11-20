@@ -28,7 +28,7 @@
     "tinjau:pasang": "sed \"s#REPO#$PWD#g\" scripts/agents/tinjau_lokal.plist > ~/Library/LaunchAgents/id.centurisk97.tinjau-lokal.plist && (launchctl bootout gui/$(id -u)/id.centurisk97.tinjau-lokal 2>/dev/null; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.tinjau-lokal.plist) && echo http://localhost:8800"
   },
   "devDependencies": {
-    "miniflare": "3.20250718.3",
+    "miniflare": "4.20260415.0",
     "wrangler": "^4.151.0"
   }
 }
