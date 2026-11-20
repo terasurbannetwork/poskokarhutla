@@ -488,7 +488,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       try { w = await wilayah(sesi.isian.lokasi.nilai.lat, sesi.isian.lokasi.nilai.lon); } catch { w = null; }
       if (!w) { delete sesi.isian.lokasi; return jawab("Titik itu belum terbaca sebagai desa di Indonesia. Pastikan GPS menyala dan Anda di dekat lokasi kejadian, lalu bagikan lagi.", null, false, "lokasi"); }
       sesi.calonWilayah = w; sesi.status = "wilayah";
-      return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa terdekat dari titik Anda`]);
+      return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa/kelurahan lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa/kelurahan terdekat dari titik Anda`]);
     }
     if (!sesi.tunda) return tanyaJenis("*Lokasi tercatat*");
     sesi.status = "bercerita";
@@ -501,11 +501,11 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (sesi.langkahWilayah === "pilih") {
       if (p >= 0 && p < w.sekitar.length) sesi.calonWilayah = {...w.sekitar[p], sekitar: w.sekitar};
       else if (p === w.sekitar.length) { sesi.status = "lokasi"; delete sesi.langkahWilayah; delete sesi.isian.lokasi; return jawab(T.lokasi(), null, false, "lokasi"); }
-      else return jawab("*Pilih desa lokasi kejadian:*", [...w.sekitar.map(d => d.desa), "Bagikan lokasi ulang"], false, null, [...w.sekitar.map(d => `Kec. ${d.kec}, ${d.jarakKm.toLocaleString("id-ID")} km dari titik Anda`), "Ambil titik GPS lagi"]);
+      else return jawab("*Pilih desa/kelurahan lokasi kejadian:*", [...w.sekitar.map(d => d.desa), "Bagikan lokasi ulang"], false, null, [...w.sekitar.map(d => `Kec. ${d.kec}, ${d.jarakKm.toLocaleString("id-ID")} km dari titik Anda`), "Ambil titik GPS lagi"]);
     } else if (p === 1) {
       sesi.langkahWilayah = "pilih";
-      return jawab("*Pilih desa lokasi kejadian:*", [...w.sekitar.map(d => d.desa), "Bagikan lokasi ulang"], false, null, [...w.sekitar.map(d => `Kec. ${d.kec}, ${d.jarakKm.toLocaleString("id-ID")} km dari titik Anda`), "Ambil titik GPS lagi"]);
-    } else if (p !== 0) return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa terdekat dari titik Anda`]);
+      return jawab("*Pilih desa/kelurahan lokasi kejadian:*", [...w.sekitar.map(d => d.desa), "Bagikan lokasi ulang"], false, null, [...w.sekitar.map(d => `Kec. ${d.kec}, ${d.jarakKm.toLocaleString("id-ID")} km dari titik Anda`), "Ambil titik GPS lagi"]);
+    } else if (p !== 0) return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa/kelurahan lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa/kelurahan terdekat dari titik Anda`]);
     const {sekitar, ...pilihan} = sesi.calonWilayah;
     sesi.isian.lokasi.nilai.wilayah = pilihan;
     delete sesi.calonWilayah; delete sesi.langkahWilayah;

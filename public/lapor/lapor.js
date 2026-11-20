@@ -1215,7 +1215,7 @@ const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || 
    diterjemahkan sekali jalan lewat /api/lapor/terjemah, disimpan per bahasa di perangkat. Nama bahasa tidak diterjemahkan. */
 // seluruh halaman ikut bahasa pilihan (pemilik 20 Nov 2026: "bahasa itu dari awal, langsung pop up pilih bahasa"), termasuk layar terima kasih di akhir;
 // yang dilewati: nama bahasa, isian, balon pesan (bot dari server, pelapor kata-katanya sendiri), nama pelapor, nomor tiket, maskot, animasi pembuka
-const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
+const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, .lp-dialog-bahasa, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
 const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr-${b}`) || "{}"); } catch { return {}; } };
 const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr-${b}`, JSON.stringify(m)); } catch {} };
 // akar yang diterjemahkan: kartu langkah, panel isian kanan, kepala chat, dan pemisah di log (bukan balon pesan: balon bot sudah dari server, balon pelapor kata-katanya sendiri)
@@ -1248,15 +1248,29 @@ async function terjemahSekali() {
 }
 { let tunda = 0; const ob = new MutationObserver(() => { if (bahasaKini() === "id") return; clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 60); });
   ob.observe(document.body, {childList: true, subtree: true}); setTimeout(terjemahKartu, 0); }
-/* jendela pilih bahasa saat pertama membuka situs (sesudah animasi pembuka) */
+/* jendela pilih bahasa saat pertama membuka situs (sesudah animasi pembuka); dikelompokkan per wilayah (pemilik 20 Nov 2026: "bagusin") */
+const WILAYAH_BAHASA = [["Nasional", ["id", "en"]], ["Jawa", ["jv", "su", "mad"]], ["Bali dan Nusa Tenggara", ["ban", "sas"]],
+  ["Sumatra", ["min", "bbc", "btx", "btm", "bts", "nia", "ace", "msa", "ljp"]], ["Kalimantan", ["bjn", "nij"]], ["Sulawesi", ["bug", "mak", "sda", "gor"]], ["Maluku dan Papua", ["abs", "pmy"]]];
 async function dialogBahasa() {
   if (!daftarBahasa) { try { daftarBahasa = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch { daftarBahasa = []; } }
   if (daftarBahasa.length < 2) return;
-  const d = el("dialog", "lp-dialog-bahasa"), h = el("h2", null, "Pilih bahasa"), sub = el("p", null, "Choose your language. Pilih bahasa daerah Anda."), kisi = el("div", "lp-bahasa-kisi");
-  h.id = "judulDialogBahasa"; d.setAttribute("aria-labelledby", h.id);
-  for (const b of daftarBahasa) kisi.append(tombolOpsi(b.nama, null, () => { try { localStorage.setItem("lapor-bahasa", b.kode); } catch {} d.close(); d.remove(); chipBahasa(); terjemahKartu(); }));
+  const d = el("dialog", "lp-dialog-bahasa"), kep = el("div", "lp-db-kepala"), m = el("div", "lp-db-maskot"), tx = el("div"), h = el("h2", null, "Pilih bahasa Anda");
+  m.innerHTML = maskot("sapa"); h.id = "judulDialogBahasa"; d.setAttribute("aria-labelledby", h.id);
+  tx.append(h, el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."));
+  kep.append(m, tx);
+  const kode = new Map(daftarBahasa.map(b => [b.kode, b.nama])), kini = bahasaKini(), isi = el("div", "lp-db-isi");
+  const pilih = b => { try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove(); chipBahasa(); terjemahKartu(); };
+  const terpakai = new Set();
+  for (const [wil, ks] of [...WILAYAH_BAHASA, ["Lainnya", daftarBahasa.map(b => b.kode)]]) {
+    const ada = ks.filter(k => kode.has(k) && !terpakai.has(k)); if (!ada.length) continue;
+    const g = el("section", "lp-db-grup"), kisi = el("div", "lp-db-kisi"); g.append(el("h3", null, wil), kisi);
+    for (const k of ada) { terpakai.add(k); const b = el("button", k === kini ? "aktif" : ""); b.type = "button";
+      b.append(el("b", null, kode.get(k).replace(/^Bahasa /, ""))); if (k === "id") b.append(el("small", null, "Bawaan"));
+      b.addEventListener("click", () => pilih(k)); kisi.append(b); }
+    isi.append(g);
+  }
   d.addEventListener("cancel", () => { try { localStorage.setItem("lapor-bahasa", "id"); } catch {} d.remove(); });   // Esc = Indonesia, tidak ditanya lagi
-  d.append(h, sub, kisi); document.body.append(d); d.showModal();
+  d.append(kep, isi); document.body.append(d); d.showModal(); d.querySelector("button")?.focus();
 }
 
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */

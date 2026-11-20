@@ -435,3 +435,24 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q | Pertanyaan | Bawaan sementara | Menahan |
 | --- | --- | --- | --- |
 | Q57 | Masa uji: nomor ketikan tetap dibatasi daftar izin `lapor_izin`, atau web dibuka untuk semua nomor? | **[BAWAAN SEMENTARA]** Tetap daftar izin sampai pemilik membuka F2. | — |
+
+## Keputusan pemilik (kejadian sama, 20 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K66 | 20 Nov 2026 | Saat melapor, bila sudah ada laporan berdekatan (misalnya kecamatan yang sama), pelapor ditanya apakah ia melaporkan kejadian yang sama ("Apakah Anda mau melapor bencana xxx?"). Bila ya, laporan tidak mulai dari awal; pelapor ditanya detail yang ingin ditambahkan. Di meja laporan, laporan-laporan itu dikelompokkan sebagai satu kejadian dengan satu nomor. |
+
+## Keputusan rancangan (pelaksanaan K66)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D103 | Kandidat dicari sesudah lokasi terbaca: laporan terkirim di kecamatan yang sama (kode kecamatan wilayah), berstatus bukan `tidak_valid` dan bukan `selesai`, dengan waktu kejadian atau waktu kirim dalam jendela jenisnya (tabel A9: 6 jam jenis lokal, 12 jam jenis luas; jenis berlangsung lama seperti kekeringan dan abrasi 72 jam). Paling banyak 3 kandidat terdekat waktu, satu per jenis. Laporan dari nomor yang sama juga ditawarkan (bisa jadi laporan lanjutan). | Pemilik menyebut "satu kecamatan"; jendela memakai ambang gugus yang sudah ada. |
+| D104 | Pertanyaan: "Di Kec. X sudah ada laporan {jenis} sejak {waktu} dari {N} warga. Apakah ini kejadian yang sama?" dengan pilihan tiap kandidat dan "Bukan, kejadian lain". Tanpa nama, nomor, atau isi laporan lain (D12). | Privasi pelapor lain. |
+| D105 | Bila ya: jenis, subjenis, dan waktu kejadian diambil dari kejadian itu dan dikunci; pelapor ditanya "Ada detail yang ingin Anda tambahkan?" (kronologi bebas, diurai mesin menjadi isian yang biasa), lalu foto, lalu ringkasan dan kirim. Isian lain tidak ditanya satu per satu; yang disebut di detail tetap tercatat. Laporan tetap laporan sendiri dengan nomor tiket sendiri dan pelapornya sendiri. | "Tidak mulai dari awal"; tiket per pelapor tetap supaya kabar status sampai ke masing-masing. |
+| D106 | Nomor kejadian `KJ-ddmmyy-NN` diberikan saat laporan kedua dikonfirmasi sama (laporan pertama ikut masuk). Laporan yang dikonfirmasi pelapor menempel tetap; gugus otomatis A9 tetap tampil sebagai saran untuk laporan yang tidak dikonfirmasi. Staf bisa melepas laporan dari kejadian di meja (tercatat di riwayat). | Konfirmasi pelapor lebih kuat dari tebakan jarak; staf memegang koreksi. |
+| D107 | Meja menampilkan satu baris per kejadian: jenis, lokasi, waktu awal, jumlah laporan dan pelapor, status terjauh, dan angka dampak tertinggi antarlaporan berlabel "tertinggi dari N laporan" (tidak dijumlah, D28). Baris bisa dibuka untuk melihat tiap laporan. Kejadian ini terpisah dari Buku Besar Kejadian; penempelan ke Buku Besar tetap lewat pencocok `pasang.py` (LA-25). | Tidak ada buku kejadian kedua (AGENTS 2.15): nomor KJ hanya pengelompokan laporan warga. |
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q58 | Jangkauan "berdekatan": kecamatan yang sama saja, atau juga radius sekian km melewati batas kecamatan? | **[BAWAAN SEMENTARA]** Kecamatan yang sama. | LA-68 |
+| Q59 | Sesudah "ya", pertanyaan dampak (korban, rumah, pengungsi) tetap ditanya satu per satu atau cukup dari detail bebas? | **[BAWAAN SEMENTARA]** Cukup dari detail bebas (D105). | LA-68 |

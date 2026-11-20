@@ -146,3 +146,10 @@ Ambil berurutan menurut kolom Tergantung; kerjakan hanya cakupannya; tutup denga
 ### Rute Worker (19 Nov 2026 malam)
 
 Tahap 1 (commit 492cc6484) dan tahap 2 di Worker: LA-58 video (rute `unggah/*` multipart R2, video dengan Range, sampul di PDF), LA-59 bahasa (rute `pesan` dan `GET /api/lapor/bahasa`), LA-62 bukti, LA-63 bersambung (cron menit 17 membuang yang basi 24 jam), LA-64 agregat (rute bersesi kampus; pipeline harian belum), LA-66 meja BPBD (sesi `/masuk` dengan akun pemkab, pemkot, pemprov), LA-67 teruskan dan pesan WA lewat antrean kabar. Migrasi 0157 dan 0158 diterapkan pemilik ke D1 produksi sebelum deploy. Diperiksa `guard-api`, `security-reviewer`, `migrasi-idempoten`; temuannya ditindaklanjuti dengan uji. Belum: perintah WA `ikuti` dan `bahasa`, video lewat WA, pesan WA penutup berfoto, pipeline agregat harian, kolom selisih resmi (LA-25), keputusan pemilik soal tautan lacak bertoken untuk BPBD (Q56).
+
+### Kejadian sama (K66)
+
+| Tiket | Isi | Pengerja | Pemeriksa | Q |
+| --- | --- | --- | --- | --- |
+| LA-68 | Mesin: kandidat sekecamatan sesudah lokasi (D103), pertanyaan tanpa data orang (D104), jalur ya: kunci jenis/subjenis/waktu, detail bebas, foto, kirim (D105); server lokal dan Worker menyediakan kandidat dan menyimpan `kejadian` (nomor KJ, D106) | `warga-api` | `security-reviewer`, pemeriksa bersih | Q58, Q59 |
+| LA-69 | Meja: satu baris per kejadian, angka tertinggi berlabel, buka untuk tiap laporan, lepas dari kejadian (D107) | `layar-peta` | `inp-reviewer`, `selera-angka` | |
