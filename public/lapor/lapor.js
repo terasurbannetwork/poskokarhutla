@@ -859,7 +859,8 @@ function tampilDaftarLaporan() {
 }
 async function bukaChat() {
   ke("chat");
-  if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } tanyaBahasa(() => kirim({teks: "lapor", tampil: false})); }
+  if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
+    tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }
 }
 
 /* bantuan: definisi juklak dan pertanyaan umum */
@@ -1209,6 +1210,18 @@ async function tampilAlun() {
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */
 const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || "id"; } catch { return "id"; } };
+/* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */
+function tanyaNomor(lanjut) {
+  tambah("bot", "*Nomor WhatsApp Anda*\nPetugas BNPB dan BPBD memakai nomor ini untuk menghubungi Anda dan mengirim kabar status laporan. Tanpa kode, tanpa sandi.", {simpanKe: false});
+  const f = el("form", "lp-nomor-chat"), isi = el("div", "lp-nomor-isi"), awal = el("span", "lp-awalan", "+62"), inp = el("input"), b = el("button", "lp-utama", "Lanjut");
+  Object.assign(inp, {type: "tel", inputMode: "numeric", autocomplete: "tel-national", maxLength: 13, placeholder: "812 3456 7890", required: true}); inp.setAttribute("aria-label", "Nomor WhatsApp");
+  awal.setAttribute("aria-hidden", "true"); isi.append(awal, inp); b.type = "submit"; f.noValidate = true; f.append(isi, b);
+  inp.addEventListener("input", () => { let v = inp.value.replace(/\D/g, ""); if (v.startsWith("62")) v = v.slice(2); if (v.startsWith("0")) v = v.slice(1); inp.value = v.slice(0, 13); inp.setCustomValidity(""); });
+  f.addEventListener("submit", async e => { e.preventDefault();
+    if (!/^8\d{8,12}$/.test(inp.value)) { inp.setCustomValidity("Nomor WhatsApp diawali 8, contoh 812 3456 7890"); inp.reportValidity(); return; }
+    const v = inp.value; wadah.replaceChildren(); tambah("saya", `+62 ${v}`, {simpanKe: false}); await mulai(`62${v}`, {diChat: true}); lanjut(); });
+  wadah.replaceChildren(f); fPesan.hidden = true; inp.focus();
+}
 /* pilihan bahasa di dalam chat (pemilik 20 Nov 2026: "nanti disuruh pilih ada di chat bot nya"): ditanya sekali saat chat pertama dibuka,
    bisa diganti dengan mengetik "bahasa". Daftar dari server: tanpa model AI hanya Indonesia, pertanyaan dilewati. */
 let daftarBahasa = null;
@@ -1228,12 +1241,12 @@ async function tanyaBahasa(lanjut, paksa = false) {
 
 
 /* ============ mulai ============ */
-async function mulai(nomor) {
+async function mulai(nomor, {diChat = false} = {}) {
   wa = String(nomor); simpan.tulis("lapor-wa", wa); // localStorage JSON bisa mengembalikan angka; nomor selalu teks
   cache = simpan.baca(kunciCache()) || {transkrip: [], laporan: []};
   for (const t of cache.transkrip) tambah(t.dari, t.teks, {foto: t.foto, berkas: t.berkas, simpanKe: false});
   if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true});
-  tampilBantu(); tampilBeranda(); ke("beranda");
+  tampilBantu(); tampilBeranda(); if (!diChat) ke("beranda");
   try {
     const j = await (await fetch(`/api/lapor/sesi?wa=${nomor}`, {signal: AbortSignal.timeout(15000)})).json();
     if (j.status && !["terkirim", "batal"].includes(j.status)) {
@@ -1265,10 +1278,12 @@ if (!pernah) {
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : 6000);   // pemilik 19 Nov 2026 malam: "masih kurang lama"
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
-if (LOKAL) { if (tersimpan) mulai(tersimpan); else { ke("masuk"); iNomor.focus(); } }
+/* tanpa nomor: langsung beranda (pemilik 20 Nov 2026 "masuknya kaya langsung halaman utama"); nomor ditanya bot di chat, seperti bot WA */
+function mulaiTamu() { tampilBantu(); tampilBeranda(); ke("beranda"); }
+if (LOKAL) { if (tersimpan) mulai(tersimpan); else mulaiTamu(); }
 else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server, tidak pernah diketik ulang di sini
   let j = null; try { j = await (await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"})).json(); } catch {}
   if (j?.akun) { await mulai(`sesi-${j.akun.id}`); if (j.akun.nama) cache.pelapor ||= j.akun.nama; $("tabWa").textContent = j.akun.wa || ""; return; }
   if (tersimpan && !String(tersimpan).startsWith("sesi-")) return mulai(tersimpan);   // nomor yang pernah diketik di perangkat ini
-  ke("masuk"); iNomor.focus();   // K65: cukup ketik nomor, tanpa kode WA
+  mulaiTamu();   // K65: tanpa kode WA; nomor ditanya di chat
 })();

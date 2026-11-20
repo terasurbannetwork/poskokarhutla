@@ -10,7 +10,7 @@ export const BAHASA = [   // label dalam bahasa Indonesia supaya mudah dikenali 
   ["sas", "Bahasa Sasak"], ["min", "Bahasa Minang"], ["bbc", "Bahasa Batak Toba"], ["btx", "Bahasa Batak Karo"], ["btm", "Bahasa Batak Mandailing"],
   ["bts", "Bahasa Batak Simalungun"], ["nia", "Bahasa Nias"], ["ace", "Bahasa Aceh"], ["msa", "Bahasa Melayu"], ["ljp", "Bahasa Lampung"],
   ["bjn", "Bahasa Banjar"], ["nij", "Bahasa Dayak Ngaju"], ["bug", "Bahasa Bugis"], ["mak", "Bahasa Makassar"], ["sda", "Bahasa Toraja"],
-  ["gor", "Bahasa Gorontalo"], ["abs", "Melayu Ambon"], ["pmy", "Melayu Papua"], ["lain", "Bahasa daerah lain (ketik saja)"],
+  ["gor", "Bahasa Gorontalo"], ["abs", "Bahasa Ambon"], ["pmy", "Bahasa Papua"], ["lain", "Bahasa daerah lain (ketik saja)"],
 ];
 const NAMA = {id: "Indonesian", en: "English", jv: "Javanese (ngoko alus, polite)", su: "Sundanese (lemes, polite)", mad: "Madurese", ban: "Balinese (polite register)",
   sas: "Sasak", min: "Minangkabau", bbc: "Batak Toba", btx: "Batak Karo", btm: "Batak Mandailing", bts: "Batak Simalungun", nia: "Nias", ace: "Acehnese",
