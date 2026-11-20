@@ -64,7 +64,7 @@ uji("bl proyek: buka atau ambil per nomor, jenis, tanggal; kode P-DDMMYY-NN; bah
   /* proyek final tidak dibuka lagi: buka ulang membuat proyek baru */
   await DB.prepare("UPDATE bl_proyek SET status = 'final', versi = 1 WHERE id = ?").bind(AWAL + "03").run();
   const baru = await m("POST", "/api/wa/proyek", {wa_sha: B, jenis: "harian", tanggal: HARI});
-  assert.equal(baru.j.proyek.id, AWAL + "04"); assert.equal(baru.j.baru, true);
+  assert.equal(baru.j.proyek.id, AWAL + "05", "nomor 04 sudah dipakai proyek banjir_sepekan di atas"); assert.equal(baru.j.baru, true);
 });
 
 /* ALUR "Status proyek", ditulis ulang di sini dari dokumen (bukan diimpor dari src) supaya uji tidak menyalin galat kode */
