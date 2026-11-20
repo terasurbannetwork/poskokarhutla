@@ -61,7 +61,10 @@ export function buatInfo({muat, wilayah}) {
     if (!c) {
       const lokal = [], osm = await berkas(muat, `/data/osm_nasional/${L.wilayah?.provKode}.json`) || {};
       for (const [k, t] of Object.entries(JENIS_T)) for (const [la, lo, nama] of osm[k] || []) { const d = km(lat, lon, la, lo); if (d <= 5 && nama) lokal.push({nama, jenis: t, jarakKm: d}); }
-      c = {semua: rapikan(lokal), lengkap: false};
+      // rumah ibadah: berkas terpisah per provinsi (scripts/scrape/osm_nasional.py); Overpass sering gagal, jadi ini sumber utamanya
+      const ib = await berkas(muat, `/data/osm_nasional/ibadah/${L.wilayah?.provKode}.json`);
+      for (const [la, lo, nama] of ib || []) { const d = km(lat, lon, la, lo); if (d <= 5 && nama) lokal.push({nama, jenis: "Rumah ibadah", jarakKm: d}); }
+      c = {semua: rapikan(lokal), lengkap: false, ibadahLokal: !!ib};
       if (cacheSekitar.size >= 200) cacheSekitar.delete(cacheSekitar.keys().next().value);
       cacheSekitar.set(kunci, c);
       const ql = `[out:json][timeout:8];(nwr(around:3000,${lat},${lon})["amenity"~"place_of_worship|school|community_centre|townhall|shelter|clinic|hospital|doctors"]["name"];way(around:1500,${lat},${lon})["highway"~"primary|secondary|tertiary|residential|unclassified"]["name"];);out center 160;`;
@@ -73,7 +76,8 @@ export function buatInfo({muat, wilayah}) {
       ctx?.waitUntil?.(c.overpass);   // sisa unduhan tetap jalan sesudah jawaban terkirim
     }
     // Overpass ditunggu paling lama 2,5 detik, sisanya mengisi cache untuk ketukan berikutnya (pemilik 19 Nov 2026: "lama banget")
-    if (!c.lengkap) await Promise.race([c.overpass, new Promise(r => setTimeout(r, 2500))]);
+    const cukup = c.lengkap || (q.jenis === "ibadah" && c.ibadahLokal);   // daftar lokal sudah lengkap untuk rumah ibadah, Overpass hanya tambahan
+    if (!cukup) await Promise.race([c.overpass, new Promise(r => setTimeout(r, 2500))]);
     const SARING = {pengungsian: /^(Sekolah|Kantor atau balai|Balai warga|Rumah ibadah|Titik kumpul|Shelter)$/, sekolah: /^Sekolah$/, faskes: /^(Puskesmas|Rumah sakit|Klinik)$/,
       ibadah: /^Rumah ibadah$/, jalan: /^(Jalan|Jembatan)$/};
     const semua = c.semua.filter(x => (SARING[q.jenis] || SARING.pengungsian).test(x.jenis));
@@ -82,7 +86,7 @@ export function buatInfo({muat, wilayah}) {
       "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Puskesmas": "puskesmas faskes", "Rumah sakit": "rs rsud rumah sakit faskes", "Klinik": "klinik faskes", "Jalan": "jalan jl", "Jembatan": "jembatan", "Shelter": "shelter tempat evakuasi"};
     const kata = String(q.q || "").slice(0, 80).trim().toLowerCase().split(/\s+/).filter(k => k && !KATA_UMUM.has(k));   // kata keadaan ("rusak", "putus") bukan bagian nama tempat
     const cocok = kata.length ? semua.filter(x => { const h = `${x.nama} ${x.jenis} ${SEBUT[x.jenis] || ""}`.toLowerCase(); return kata.every(k => h.includes(k)); }) : semua;
-    return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !c.lengkap}];
+    return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !cukup}];
   }
 
   /* ---------- nomor penting di sekitar lokasi terverifikasi (pemilik 19 Nov 2026: damkar, BPBD daerah, rumah sakit terdekat, kepolisian) ----------

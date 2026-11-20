@@ -867,3 +867,16 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-cek{display:block;margin-top:3px;font-size:.6875rem;font-weight:700;white-space:nowrap;color:var(--brand2)}
 .mj-cek.valid{color:var(--ok-tx)}
 .mj-cek.tidak_valid{color:var(--bad-tx)}
+
+/* panel laporan darurat mengambang kiri bawah di atas peta (pemilik 20 Nov 2026); mode daftar: blok biasa di atas tabel */
+.mj-isi{position:relative}
+.mj-darurat{position:absolute;left:12px;bottom:64px;z-index:4;width:min(320px,calc(100% - 24px));max-height:min(46%,360px);overflow:auto;margin:0;padding:10px 12px;box-shadow:var(--mj-bayang)}
+.mj-darurat[hidden]{display:none}
+.mj-darurat-kepala{flex-wrap:wrap;gap:6px 10px}
+.mj-darurat-izin{margin-left:0}
+.mj-darurat-daftar{grid-template-columns:1fr}
+.mj-isi[data-tampil="daftar"] > .mj-darurat{position:static;width:auto;max-height:none;margin:12px 16px 0}
+.mj-isi[data-tampil="daftar"] > .mj-darurat .mj-darurat-daftar{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+@media (max-width:900px){.mj-isi[data-tampil="peta"] > .mj-darurat{bottom:12px;width:calc(100% - 76px);max-height:34%}}
+/* bahasa pelapor di meja */
+.mj-pil-bahasa{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink2);font-size:.6875rem;font-weight:700;vertical-align:middle;white-space:nowrap}

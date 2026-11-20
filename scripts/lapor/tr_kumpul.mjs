@@ -48,7 +48,10 @@ export function kumpul() {
     ...BAHASA.map(([, n]) => `Lanjut dalam bahasa ${n.replace(/^Bahasa /, "")}`),   // tombol jendela bahasa (template di lapor.js)
   ];
   const peta = new Map();   // kunci -> teks asli
-  for (const t of semua) { const k = kunciTr(t); if (layak(k) && !peta.has(k)) peta.set(k, t); }
+  const tambah = t => { const k = kunciTr(t); if (layak(k) && !peta.has(k)) peta.set(k, t); };
+  for (const t of semua) { tambah(t); if (t.includes("\n")) t.split("\n").forEach(tambah); }   // pesan bot tersusun saat jalan: tiap baris tetap juga butir (dariIndonesia menerjemahkan per baris)
+  // ket tombol berisi "=" juga tersaring sebagai kode; satuan pil angka ("orang", "KK") lolos dari filter KODE (kata tunggal huruf kecil dianggap kode), jadi dimasukkan langsung
+  for (const m of baca("src/lapor_spek.js").matchAll(/\b(?:satuan|ket):\s*"([^"]+)"/g)) { const k = kunciTr(m[1]); if (!peta.has(k)) peta.set(k, m[1]); }
   return new Map([...peta].sort(([a], [b]) => a < b ? -1 : 1));
 }
 

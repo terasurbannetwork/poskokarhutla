@@ -45,10 +45,23 @@ export const kunciTr = t => String(t ?? "").replace(/\s+/g, " ").trim();   // sa
 export async function dariIndonesia(model, {teks, pilihan = null, ket = null, nama = null}, bahasa, kamus = null) {
   if (bahasa === "id" || !teks) return {teks, pilihan, ket};
   // kamus statis (scripts/lapor/tr_buat.mjs): pertanyaan tetap mesin sudah diterjemahkan sebelumnya, tanpa model dan seketika (pemilik 20 Nov 2026)
-  if (kamus) { const k = t => !kunciTr(t) ? t : kamus[kunciTr(t)];
-    const tt = k(teks), pp = pilihan?.map(k), kk = ket?.map(k);
-    if (tt && !pp?.some(x => x == null) && !kk?.some(x => x == null)) return {teks: tt, pilihan: pp ?? pilihan, ket: kk ?? ket}; }
-  if (!model) return {teks, pilihan, ket};
+  // butir tanpa kunci utuh dicoba per baris; semua baris berhuruf ketemu = lengkap, sebagian = parsial (dipakai bila model tidak menolong)
+  let parsial = null;
+  if (kamus) {
+    const baris = t => { const k = kunciTr(t); if (!k) return {h: t, penuh: true}; if (kamus[k]) return {h: kamus[k], penuh: true};
+      let penuh = true; const h = String(t).split("\n").map(b => { const kb = kunciTr(b); if (!/\p{L}/u.test(kb)) return b; const v = kamus[kb]; if (v) return v; penuh = false; return b; }).join("\n");
+      return {h, penuh}; };
+    const tt = baris(teks), pp = pilihan?.map(baris), kk = ket?.map(baris);
+    const hasil = {teks: tt.h, pilihan: pp ? pp.map(x => x.h) : pilihan, ket: kk ? kk.map(x => x.h) : ket};
+    if (tt.penuh && !pp?.some(x => !x.penuh) && !kk?.some(x => !x.penuh)) return hasil;
+    parsial = hasil;
+  }
+  if (!model) return parsial || {teks, pilihan, ket};
+  const hasilModel = await lewatModel(model, {teks, pilihan, ket, nama}, bahasa);
+  return hasilModel || parsial || {teks, pilihan, ket};
+}
+async function lewatModel(model, {teks, pilihan, ket, nama}, bahasa) {
+  const gagal = null;
   // D12: yang ke AI disamarkan juga untuk arah keluar; nama pelapor diganti penanda lalu dipulihkan (tinjauan keamanan tahap 2)
   const tutup = t => { let x = samarkan(String(t ?? "")); if (nama && nama.length >= 2) x = x.split(nama).join("[NAMA]"); return x; };
   const buka = t => nama ? String(t).split("[NAMA]").join(nama) : String(t);
@@ -58,9 +71,9 @@ export async function dariIndonesia(model, {teks, pilihan = null, ket = null, na
     const j = await model({sistem: `You translate messages from the BNPB disaster reporting assistant from Indonesian into ${bahasa === "lain" ? "simple Indonesian that a speaker of any Indonesian regional language understands (keep it Indonesian, just simpler)" : NAMA_BAHASA[bahasa]}.
 Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). Keep all numbers, ticket numbers (like LA-191126-01), phone numbers (112, 117), URLs, names, and placeholders in square brackets (like [NAMA]) exactly. Translate "pilihan" (button labels) and "ket" (button hints) item by item, same count and order; empty strings stay empty. Polite register. Output only the translation.`,
       skema, teks: JSON.stringify({teks: aman, pilihan: pAman || [], ket: kAman || []})});
-    if (!angkaSama(aman, j?.teks || "") || !wajarPanjang(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return {teks, pilihan, ket}; // angka atau penanda nama hilang = kirim Indonesia
+    if (!angkaSama(aman, j?.teks || "") || !wajarPanjang(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return gagal; // angka atau penanda nama hilang = kirim Indonesia
     return {teks: buka(j.teks), pilihan: pilihan && j?.pilihan?.length === pilihan.length ? j.pilihan.map(buka) : pilihan, ket: ket && j?.ket?.length === ket.length ? j.ket.map(buka) : ket};
-  } catch { return {teks, pilihan, ket}; }
+  } catch { return gagal; }
 }
 
 /* teks antarmuka kartu (judul, keterangan, tombol, placeholder) -> bahasa pilihan, sekaligus satu panggilan (pemilik 20 Nov 2026: kartu masih bahasa Indonesia).

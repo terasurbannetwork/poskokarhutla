@@ -1941,9 +1941,6 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-nomor-chat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;width:100%}
 .lp-nomor-chat .lp-nomor-isi input{flex:1;min-width:0;min-height:48px;border:0;background:transparent;padding:0 12px;font:600 1rem var(--font)}
 .lp-nomor-chat .lp-utama{min-height:48px;padding:0 20px}
-.lp-bahasa-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand);font:700 .8125rem var(--font);cursor:pointer;white-space:nowrap}
-.lp-bahasa-chip[hidden]{display:none}
-.lp-bahasa-chip svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
 #kartuLangkah .lp-bahasa-kisi{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr))!important;gap:8px}
 #kartuLangkah .lp-bahasa-kisi button{min-height:44px;padding:8px 12px}
 /* jendela pilih bahasa di awal (pemilik 20 Nov 2026, "bagusin") */
@@ -2003,3 +2000,21 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-darurat-pita b{display:block;font:800 1.0625rem var(--display)}
 .lp-darurat-pita small{display:block;font-size:.8125rem;line-height:1.4;color:color-mix(in oklab,var(--on-pekat) 88%,transparent)}
 .lp-darurat-panah{flex:none;width:22px;height:22px;margin-left:auto}
+
+/* layar terima kasih: nomor tiket putih di atas latar gelap; penilaian wajib */
+.lp-terima .lp-tk-nomor{color:var(--on-head)!important}
+.lp-terima{cursor:default!important}
+.lp-terima-nilai{display:grid;justify-items:center;gap:8px;margin-top:18px;color:var(--on-head)}
+.lp-terima-nilai b{font:700 .9375rem var(--font)}
+.lp-terima .lp-nilai button{color:var(--on-head)}
+.lp-terima .lp-nilai button:hover,.lp-terima .lp-nilai button[aria-pressed="true"]{background:color-mix(in oklab,var(--on-head) 18%,transparent)}
+/* tombol batalkan laporan di kepala chat */
+.lp-batal-tombol{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 .8125rem var(--font);cursor:pointer;flex:none}
+.lp-batal-tombol[hidden]{display:none}
+.lp-batal-tombol svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+@media (max-width:520px){.lp-batal-tombol{padding:0 10px;font-size:.75rem}}
+.lp-dialog-batal{width:min(420px,calc(100vw - 32px));padding:22px;border:0;border-radius:20px;background:var(--card);color:var(--ink);box-shadow:var(--bayang)}
+.lp-dialog-batal::backdrop{background:color-mix(in oklab,var(--head-bg) 60%,transparent)}
+.lp-dialog-batal h2{font:800 1.125rem var(--display);margin:0 0 8px}
+.lp-dialog-batal p{margin:0 0 16px;color:var(--ink2);font-size:.9375rem;line-height:1.5}
+.lp-batal-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px}

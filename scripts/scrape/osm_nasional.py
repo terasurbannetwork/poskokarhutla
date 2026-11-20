@@ -3,7 +3,7 @@
 Pakai:  python3 scripts/scrape/osm_nasional.py
 Mentah: data/raw/osm/prov-fasilitas-<kode>.json dan prov-vital-<kode>.json dari
         scripts/scrape/tarik_osm.py fasilitas|vital <kode ...> (workflow osm-nasional.yml).
-Baris tiap kategori: [lat, lon, nama]; rumah ibadah hanya dihitung (terlalu banyak untuk dipetakan).
+Baris tiap kategori: [lat, lon, nama]; rumah ibadah BERNAMA disimpan terpisah di ibadah/<kode>.json (tidak membengkakkan berkas utama), sisanya hanya dihitung.
 Provinsi yang mentahnya belum lengkap dilewati, berkas lamanya dibiarkan.
 Sumber: OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap).
 """
@@ -44,7 +44,7 @@ def kategori(t):
 
 
 def susun(els):
-    out, ibadah, seen = {k: [] for k in KATEGORI}, 0, set()
+    out, ibadah, seen, nama_ib = {k: [] for k in KATEGORI}, 0, set(), set()
     for el in els:
         if (el["type"], el["id"]) in seen:
             continue
@@ -52,6 +52,10 @@ def susun(els):
         k = kategori(el.get("tags", {}))
         if k == "ibadah":
             ibadah += 1
+            c = el if "lat" in el else el.get("center")
+            nm = el.get("tags", {}).get("name", "").strip()
+            if c and nm:
+                nama_ib.add((round(c["lat"], 5), round(c["lon"], 5), nm))
             continue
         c = el if "lat" in el else el.get("center")
         if not k or not c:
@@ -60,6 +64,7 @@ def susun(els):
     for v in out.values():
         v.sort()
     out["ibadah_n"] = ibadah
+    out["ibadah"] = [list(t) for t in sorted(nama_ib)]
     return out
 
 
@@ -72,6 +77,8 @@ def bangun():
             print("lewati", kode, "(mentah belum lengkap)", file=sys.stderr)
             continue
         d = susun([el for p in ps for el in json.load(open(p))["elements"]])
+        os.makedirs(os.path.join(KELUAR, "ibadah"), exist_ok=True)
+        json.dump(d.pop("ibadah"), open(os.path.join(KELUAR, "ibadah", f"{kode}.json"), "w"), ensure_ascii=False, separators=(",", ":"))
         json.dump(d, open(os.path.join(KELUAR, f"{kode}.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     for f in sorted(os.listdir(KELUAR)):
         if f[:2].isdigit():
@@ -87,11 +94,14 @@ def uji():
            {"type": "node", "id": 1, "lat": -6.2, "lon": 106.8, "tags": {"amenity": "clinic", "name": "Puskesmas Tebet"}},
            {"type": "way", "id": 2, "center": {"lat": -6.3, "lon": 106.9}, "tags": {"bridge": "yes", "highway": "primary"}},
            {"type": "node", "id": 3, "lat": -6.4, "lon": 106.7, "tags": {"amenity": "place_of_worship"}},
+           {"type": "node", "id": 6, "lat": -6.4000001, "lon": 106.7, "tags": {"amenity": "place_of_worship", "name": "Masjid Al-Ikhlas"}},
+           {"type": "node", "id": 7, "lat": -6.4, "lon": 106.7, "tags": {"amenity": "place_of_worship", "name": "Masjid Al-Ikhlas"}},
            {"type": "node", "id": 4, "lat": -6.4, "lon": 106.7, "tags": {"emergency": "assembly_point"}},
            {"type": "node", "id": 5, "lat": -6.4, "lon": 106.7, "tags": {"amenity": "bank"}}]
     d = susun(els)
     assert d["puskesmas"] == [[-6.2, 106.8, "Puskesmas Tebet"]], d  # duplikat dibuang
-    assert len(d["jembatan"]) == 1 and len(d["titik_kumpul"]) == 1 and d["ibadah_n"] == 1
+    assert len(d["jembatan"]) == 1 and len(d["titik_kumpul"]) == 1 and d["ibadah_n"] == 3
+    assert d["ibadah"] == [[-6.4, 106.7, "Masjid Al-Ikhlas"]], d["ibadah"]  # bernama masuk, tak bernama tidak, kembar koordinat sama dibuang
     assert sum(len(d[k]) for k in KATEGORI) == 3  # bank tidak masuk
 
 

@@ -363,7 +363,7 @@ function gambarTabel(daftar) {
     const ft = el("span", "mj-mini"); ft.textContent = b.foto ? "" : "Tanpa foto";
     if (b.foto) fotoLaporan(b.nomor).then(fs => { if (fs[0]) { const im = el("img"); im.src = fs[0].sampul || fs[0].url; im.alt = ""; im.loading = "lazy"; ft.append(im); if (fs.length > 1) ft.append(el("small", null, `+${fs.length - 1}`)); } });
     const jn = el("div", "mj-sel-jenis"), ik = el("span", "mj-jenis-ikon kecil"); ik.style.setProperty("--jn", warnaJenis(b.jenisId)); ik.append(ikon(ikonJenis(b.jenisId)));
-    const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); } jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
+    const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); } jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.bahasa ? [el("span", "mj-pil-bahasa", b.bahasa)] : []), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
     const lok = el("div"); lok.append(el("b", null, b.wilayah?.kab || "Tanpa lokasi"), el("small", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.prov].filter(Boolean).join(", ")));
     const aksi = el("div", "mj-aksi-baris");
     // verifikasi (pemilik 20 Nov 2026: "di kanan ada aksinya untuk memverifikasi"): membuka rincian langsung di kartu Pengecekan lapangan
@@ -589,6 +589,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
   const kt = el("div", "mj-rk-judul"), h2 = el("h2", null, nilai("jenis")?.tampil || "Laporan"); h2.id = "rinciJudul";
   const sub = nilai("subjenis")?.tampil, meta = el("p", "mj-rk-meta"), w = j.wilayah || b?.wilayah;
   meta.append(el("span", "mj-nomor", nomor), el("span", null, [w?.kab, w?.prov].filter(Boolean).join(", ") || "Tanpa lokasi"), el("span", null, `Dilaporkan ${j.waktuLapor}`), el("span", null, `Lengkap ${j.lengkap}%`));
+  { const bh = j.bahasa || b?.bahasa; if (bh && bh !== "Bahasa Indonesia") { const pb = el("span", "mj-pil-bahasa", bh); pb.title = "Bahasa yang dipakai pelapor; isi laporan tetap Bahasa Indonesia"; meta.append(pb); } }   // pemilik 20 Nov 2026
   kt.append(h2, ...(sub ? [el("p", "mj-rk-sub", sub)] : []), meta);
   const tutup = el("button", "mj-tutup"); tutup.type = "button"; tutup.setAttribute("aria-label", "Tutup rincian"); tutup.append(ikon("m-tutup")); tutup.addEventListener("click", () => dlg.close());
   atas.append(ik, kt, pil(j.status, j.statusLabel[j.status]), tutup); kep.append(atas, tahapan(j.status));

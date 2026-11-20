@@ -106,7 +106,7 @@ export function ringkasSesi(s) {
   const w = s.isian.lokasi?.nilai?.wilayah, angka = n => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
   return {waktuKejadian: s.isian.waktu?.nilai || null, waktuMs: s.isian.waktu?.ms || null, subjenis: s.isian.subjenis?.nilai || null,
     wilayah: w ? {kode: w.kode, desa: w.desa, kec: w.kec, kab: w.kab, kabKode: w.kabKode, prov: w.prov, provKode: w.provKode} : null,
-    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null,   // K68
+    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
     dampak: {meninggal: angka("meninggal"), hilang: angka("hilang"), luka: angka("luka"), mengungsi: angka("mengungsi_jiwa"),
       rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(n), 0), terendam: angka("rumah_terendam")}};
 }
@@ -115,7 +115,8 @@ export function barisMeja(r) {
   return {nomor: r.nomor, status: r.status, statusLabel: STATUS[r.status], waktuLapor: waktuLapor(r.terkirim, prov), terkirim: r.terkirim,
     waktuKejadian: k.waktuKejadian || null, wa: r.wa, nama: r.nama || null, peran: PERAN[r.peran] || null, instansi: r.pkab ? `BPBD ${r.pkab}` : null,
     jenis: labelJenis(r.jenis), jenisId: r.jenis || null, subjenis: k.subjenis || null, lat: r.lat ?? null, lon: r.lon ?? null, wilayah: k.wilayah || null,
-    lengkap: k.lengkap ?? 0, foto: k.foto || 0, darurat: k.darurat || null, balasan: r.balasan || 0, versi: r.versi || 1, adaSusulan: !!r.ada_susulan, dampak: k.dampakMeja || null};
+    lengkap: k.lengkap ?? 0, foto: k.foto || 0, darurat: k.darurat || null, balasan: r.balasan || 0, versi: r.versi || 1, adaSusulan: !!r.ada_susulan, dampak: k.dampakMeja || null,
+    bahasa: k.bahasa ? BAHASA.find(([kd]) => kd === k.bahasa)?.[1] || null : null};
 }
 export function barisAlun(r) {
   const k = r.ringkas ? JSON.parse(r.ringkas) : {}, w = k.wilayah || {};
