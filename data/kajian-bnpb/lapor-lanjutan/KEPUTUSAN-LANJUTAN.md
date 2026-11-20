@@ -18,6 +18,7 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | K6 | 20 Nov 2026 | Tim BPBD juga bisa mengisi, bukan hanya pelapor awal. |
 | K7 | 20 Nov 2026 | Dua pintu: chat WA dan form web per objek. |
 | K8 | 20 Nov 2026 | Tidak ada pencocokan orang antarkab/kota (pengungsi dengan korban hilang). |
+| K9 | 20 Nov 2026 | Data pribadi pengungsi dan korban dihapus 5 tahun sesudah kejadian selesai (menjawab Q4). |
 
 ## Keputusan rancangan (D, agent, bisa dibatalkan pemilik)
 
@@ -44,6 +45,7 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | D19 | Data pribadi tidak pernah dikirim ke AI. Isian pribadi (nama orang, HP, NIK, kontak keluarga, ciri, keadaan kesehatan) ditanyakan satu per satu dan diurai kode (pola nomor, angka, pilihan bernomor); teks bebas lain disaring `samarkan` sebelum ke AI. | D12 induk; UU 27/2022. |
 | D20 | Hak berkas melekat pada orang, bukan berkas: tiap anggota tim mendapat token sendiri yang ditukar menjadi kuki HttpOnly (pola `lapor_perangkat`, 0159). Media disajikan lewat kuki, tidak pernah lewat token di URL. Mencabut anggota hanya mematikan tokennya. | Hak ketua dan anggota berbeda; jejak per pengisi; tidak memutus anggota lain. |
 | D21 | Antrean luring: isian non-pribadi dan foto rumah, prasarana, usaha boleh tersimpan di IndexedDB perangkat (`antre.js` biasa). Isian `pribadi` dan foto wajah memakai saluran `rahasia` (memori saja, tidak menyentuh penyimpanan perangkat): bila halaman ditutup sebelum terkirim, bagian itu hilang dan layar memperingatkannya sebelum keluar. | Kompromi K4 dan K5: data pribadi tidak tertinggal di ponsel bersama. |
+| D23 | Masa simpan (K9): hitungan 5 tahun mulai saat staf menerima penutupan berkas (status `selesai` atau `selesai_catatan`); berkas yang dibuka lagi mengulang hitungan dari penutupan berikutnya. Saat lewat, kolom `pribadi` semua objek berkas dikosongkan dan media berjenis `wajah` serta foto korban hilang dihapus dari R2. Foto rumah, prasarana, dan usaha, isian `data`, rekap, jejak (yang hanya menyimpan sidik pribadi), dan versi beku tetap ada. Penghapusan dicatat di `lj_jejak` dan berjalan bertahap di cron bersih-bersih menit 17 yang sudah ada. | K9; tujuan dibatasi UU 27/2022; rekap tetap bisa dipakai Jitupasna dan riset. |
 | D22 | Tiap buka berkas, tampil data pribadi utuh, dan unduh media oleh siapa pun tercatat di `lj_akses`. | Akuntabilitas akses data spesifik. |
 
 ## Pertanyaan terbuka (Q) dengan bawaan sementara
@@ -53,7 +55,7 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | Q1 | Kriteria RB, RS, RR rumah dan prasarana dari pedoman mana? | **[BAWAAN SEMENTARA]** Sama dengan `siklus/GLOSARIUM.md`: RB lebih dari 70% rusak, RS 30 sampai 70%, RR kurang dari 30%; form menampilkan contoh ciri tiap tingkat. Sumber pedoman ditulis di RISET sebelum LJ-04 tayang. | LJ-04 |
 | Q2 | Siapa yang menerima penutupan ke Buku Besar? | **[BAWAAN SEMENTARA]** Staf berperan Pusdalops di `/lapor/meja`. | LJ-13 |
 | Q3 | Pertanyaan harian dikirim jam berapa dan ke siapa? | **[BAWAAN SEMENTARA]** 16.00 WIB, hanya ke ketua berkas; F0 hanya nomor uji dan PEMILIK. | LJ-10 |
-| Q4 | Berapa lama data pribadi disimpan sesudah kejadian selesai? | **[BAWAAN SEMENTARA, wajib dijawab sebelum F1]** Selama F0 tidak ada hapus otomatis dan tidak ada ekspor massal data pribadi. Penghapusan nanti = mengosongkan kolom `pribadi` (D4); rekap dan versi beku tetap utuh. | tiket sesudah Q4 dijawab |
+| Q4 | Berapa lama data pribadi disimpan sesudah kejadian selesai? | **Dijawab pemilik 20 Nov 2026 (K9):** 5 tahun, lalu dihapus. Rinciannya D23. | LJ-17 |
 | Q5 | Anggota tim perlu dikonfirmasi admin, atau cukup ditambah ketua? | **[BAWAAN SEMENTARA]** Cukup ditambah ketua yang terkonfirmasi; admin dan staf Pusdalops melihat daftar anggota dan bisa mencabut. | LJ-09 |
 | Q6 | NIK disimpan utuh atau hanya empat digit akhir? | **[BAWAAN SEMENTARA]** Utuh di kolom `pribadi`, terbaca oleh tim berkas; staf melihat tersamar (`************1234`) sampai menekan Tampilkan (tercatat). | LJ-03 |
 | Q7 | Perlu jumlah objek minimal sebelum boleh ditutup? | **[BAWAAN SEMENTARA]** Tidak ada minimum; metrik "belum didata" membuat status selesai dengan catatan (D13). | LJ-13 |
@@ -71,4 +73,4 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | Fase | Isi | Syarat lanjut |
 | --- | --- | --- |
 | F0 Uji | Nomor uji dan PEMILIK; semua jenis objek, WA dan web, penutupan | RENCANA-UJI bagian 3 hijau |
-| F1 Rintisan | Beberapa BPBD terpilih dari F1 paket induk | Q2, Q3, Q4 dijawab |
+| F1 Rintisan | Beberapa BPBD terpilih dari F1 paket induk | Q2, Q3 dijawab; LJ-17 selesai |

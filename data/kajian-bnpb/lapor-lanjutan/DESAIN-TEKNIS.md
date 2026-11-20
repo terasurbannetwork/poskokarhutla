@@ -137,7 +137,7 @@ Semua rute: metode dibatasi, isian divalidasi spek, batas laju per nomor (pola r
 ## ADR
 
 1. **Satu tabel objek JSON**, bukan tabel per jenis: CHECK SQLite tidak bisa diubah tanpa membangun ulang tabel, dan spek jenis akan berubah (pola `meja_catatan`).
-2. **`pribadi` kolom terpisah**: data pribadi bisa dikosongkan saat masa simpan habis (Q4) tanpa menyentuh rekap, jejak, atau versi.
+2. **`pribadi` kolom terpisah**: data pribadi bisa dikosongkan saat masa simpan 5 tahun habis (K9, D23) tanpa menyentuh rekap, jejak, atau versi.
 3. **Tidak memakai tabel `korban` (0034)**: tabel itu satu baris per kejadian berisi jumlah dan CHECK bencana terbatas; tahap 2 per orang.
 4. **Tidak memakai `lapor_kabar` atau `lapor_kabar_bpbd`**: CHECK jenis tertutup dan bentuknya per tiket atau per lembaga.
 5. **Tidak membuat baris `orang`** untuk pengungsi atau korban: register `orang` untuk pegawai dan relawan.

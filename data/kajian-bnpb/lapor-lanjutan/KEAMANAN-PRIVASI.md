@@ -39,7 +39,7 @@ Tahap 2 mengumpulkan data pribadi orang yang sedang tertimpa bencana, termasuk a
 10. Tiap buka berkas, Tampilkan, dan unduh media tercatat di `lj_akses` (D22).
 11. BPBD yang melapor di luar kab izinnya tidak mendapat berkas (D1).
 12. Nomor WA tidak masuk repo; fixture uji memakai nomor rekaan yang tidak bisa dihubungi, tidak pernah nomor pemilik.
-13. Masa simpan (Q4): selama F0 tidak ada hapus otomatis dan tidak ada ekspor massal data pribadi; F1 tidak dimulai sebelum Q4 dijawab.
+13. Masa simpan (K9, D23): data pribadi dihapus 5 tahun sesudah penutupan berkas diterima staf; sebelum itu tidak ada ekspor massal data pribadi.
 
 ## Ancaman
 

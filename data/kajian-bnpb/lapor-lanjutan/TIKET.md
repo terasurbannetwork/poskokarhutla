@@ -21,7 +21,6 @@ Ambil tiket berurutan, kerjakan hanya cakupannya. Tiap tiket layar ditinjau pemi
 | LJ-14 | Usulan fase dari penutupan yang diterima lewat sumber `lapor_ai` di `pasang.py`; isi `kejadian_id` dan `kab4` berkas dari tautan | `siklus` | `validasi-model` | uji `pasang.py` yang ada ditambah kasus penutupan | LJ-13 |
 | LJ-15 | Layar `/lapor/data/`: tab jenis, peta, form per objek, foto, nihil per metrik, tim (tambah dan cabut), antrean luring dengan saluran `rahasia` untuk pribadi | `layar-peta` | `inp-reviewer`, `selera-angka`, `security-reviewer` | uji luring bagian 4; tinjau `http://localhost:8800/lapor/data/` | LJ-04 sampai LJ-09 |
 | LJ-16 | Tab "Data lanjutan" di rincian `/lapor/meja`, Tampilkan tercatat, daftar berkas lintas kab, terima penutupan dan Jitupasna, pilihan sumber `beda_sumber` di meja `dampak` | `layar-peta` | `inp-reviewer`, `selera-angka`, `security-reviewer` | tinjau `http://localhost:8800/lapor/meja` | LJ-12, LJ-13 |
-
-Q4 (masa simpan) dijawab pemilik sebelum F1; penghapusan data pribadi (mengosongkan `pribadi`) dikerjakan sebagai tiket sesudah jawabannya ada, tidak dikarang sekarang.
+| LJ-17 | Hapus data pribadi 5 tahun sesudah penutupan diterima (D23): cron menit 17, bertahap, kosongkan `pribadi`, hapus media wajah dan foto korban di R2, catat di `lj_jejak`; uji: berkas 5 tahun lewat sehari dikosongkan, berkas dibuka lagi tidak | `warga-api` | `security-reviewer`, `migrasi-idempoten` | uji rute penghapusan | LJ-13 |
 
 Tiap perubahan perilaku bot WA menaikkan versi Lapor AI di changelog Lapor (bukan changelog Bot Laporan; dua produk terpisah).

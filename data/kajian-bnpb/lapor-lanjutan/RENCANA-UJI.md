@@ -41,6 +41,7 @@ Perilaku yang tinggal di luar TypeScript (migrasi, CHECK, rute, R2, cron, kuki) 
 | Pertanyaan harian: tidak jalan di luar menit jam kirim; satu per berkas per tanggal WIB; hanya nomor boleh kirim fase; teks tanpa nama dan HP | `lj_tanya`, `lj_kabar` |
 | Penutupan membekukan versi tanpa data pribadi; ubah sesudahnya membuat versi 2, versi 1 utuh | `lj_beku` |
 | Tiket `LA-` baru `selesai` sesudah staf menerima penutupan | `lapor_tiket` |
+| Lewat 5 tahun sesudah penutupan: `pribadi` kosong, media wajah hilang dari R2, rekap dan versi beku utuh; berkas yang dibuka lagi belum dihapus | `lj_objek`, R2, `lj_beku` |
 
 ## 3. Uji mesin WA (`tests/lapor/mesin.test.mjs`, ditambah)
 
