@@ -1,0 +1,549 @@
+"""Mesin Laporan Khusus Gempa satu halaman, gaya baku pemilik 20 Nov 2026 (dibakukan dari Laporan Khusus Gempa M5,4 Nias Barat 191126).
+
+Pemilik 20 Nov 2026: "ke depan kalau mau bikin laporan gempa, kayak gini ya". Tiap kejadian cukup satu buat.py berisi KONFIG
+lalu `gempa_khusus.bangun(KONFIG)`; tata letak, warna, dan aturan ada di sini saja. Contoh: gempa-nias-2026-11-19/buat.py.
+
+Isi halaman (kiri ke kanan):
+- Judul dua baris, baris baru sesudah titik koma; bagian [..] oranye.
+- Peta guncangan per kab/kota (MMI MODEL repo scripts/gempa/guncangan.py, bukan pengamatan), cincin jarak putus-putus tiap
+  100 km di lapisan paling bawah, cap "Laporan dibuat ... WIB", pil kab/kota merah = ada laporan (laphar BPBD atau daftar
+  dirasakan BMKG), biru = belum ada laporan; dua kartu di bawah peta adalah legenda pil itu.
+- Blok magnitudo navy + panel parameter berikon (waktu, kedalaman, pusat gempa, potensi tsunami).
+- Tabel kondisi menurut BPBD dan BMKG, tabel penduduk dalam jangkauan guncangan (model).
+- Kotak arti MMI (semua kelas di peta, bahasa umum) dan kotak tautan "Skala lengkap" ke situs BMKG.
+
+Halaman kedua (pemilik 20 Nov 2026): kiri prediksi gempa susulan, kanan penanganan yang sudah dilakukan dan langkah yang disarankan.
+- Susulan: model repo scripts/gempa/susulan.py (Reasenberg-Jones, kalibrasi Indonesia), hanya target yang terbit (M >= 5);
+  peluang kumulatif sejak gempa utama; susulan tercatat dari USGS FDSN dalam jendela Gardner-Knopoff.
+- Langkah disarankan dipilih dengan aturan tetap dari katalog tindakan gempa (public/bencana.json, logbook Pusdalops), tidak dikarang.
+"""
+import importlib.util, json, math, os, sys
+from collections import Counter, defaultdict
+from datetime import datetime, timedelta, timezone
+
+DI_SINI = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.abspath(os.path.join(DI_SINI, '..', '..', '..'))
+LB = os.path.join(REPO, 'data', 'laporan-bnpb')
+
+_s = importlib.util.spec_from_file_location('bl', os.path.join(LB, 'mingguan/2026-11-09/banjir-longsor', 'buat.py'))
+BL = importlib.util.module_from_spec(_s); _s.loader.exec_module(BL)
+R, judul, tabel, kartu, label_peta, kepala_panel, rt, f0 = BL.R, BL.judul, BL.tabel, BL.kartu, BL.label_peta, BL.kepala_panel, BL.rt, BL.f0
+TEKS, NAVY, MERAH, PUTIH, GARIS, KAB_TINT, TEKS3 = BL.TEKS, BL.NAVY, BL.MERAH, BL.PUTIH, BL.GARIS, BL.KAB_TINT, BL.TEKS3
+sys.path.insert(0, os.path.join(REPO, 'scripts', 'gempa'))
+import guncangan as G   # noqa: E402
+from pptx.enum.shapes import MSO_SHAPE   # noqa: E402
+from PIL import ImageFont   # noqa: E402
+
+ROMAWI = {1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X'}
+DARI_ROMAWI = {v: k for k, v in ROMAWI.items()}
+# tangga warna dari terang ke gelap; kelas terendah yang diwarnai memakai warna pertama (Nias: II terang, III; Banda: III..VI)
+TANGGA = ['FBE7D6', 'F4C3A0', 'E8894A', 'D9600B', 'A84808']
+# arti tiap kelas MMI dalam bahasa umum untuk pimpinan (pemilik 20 Nov 2026: kalimat baku BMKG seperti cerobong asap dan bandul
+# lonceng dibuang; "bikin yang umum dan jelas"). Ringkasan dari skala MMI BMKG; skala lengkap lewat kotak tautan.
+MMI_RINGKAS = {
+    1: 'Tidak terasa; hanya terekam alat.',
+    2: 'Terasa oleh orang yang sedang diam.',
+    3: 'Terasa jelas di dalam rumah.',
+    4: 'Terasa banyak orang; jendela bergetar.',
+    5: 'Terasa hampir semua orang; benda jatuh.',
+    6: 'Warga panik keluar rumah; rusak ringan.',
+    7: 'Bangunan kurang kokoh rusak sedang.',
+    8: 'Bangunan biasa rusak berat.',
+    9: 'Bangunan kokoh rusak berat.',
+    10: 'Sebagian besar bangunan hancur.',
+}
+URL_MMI = 'https://www.bmkg.go.id/gempabumi/skala-mmi'
+BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+FON = os.path.join(REPO, 'data', 'kajian-bnpb', 'skill', 'deck-bnpb', 'assets', 'fonts', 'Roboto-Bold.ttf')
+lebar = lambda t, pt: ImageFont.truetype(FON, int(pt * 20)).getlength(t) / 20   # lebar teks Roboto tebal dalam pt
+PETA = (43.2, 102, 418, 338)   # x, y, w, h peta di slide
+PX = (2000, int(2000 * 338 / 418))
+band = lambda m: int(m + 0.5)
+
+
+def nama_kab(kab):
+    return kab if kab.startswith('Kota') else f'Kab. {kab}'
+
+
+def angka(v, d=2):
+    return f'{abs(v):.{d}f}'.replace('.', ',')
+
+
+def koordinat(lat, lon):
+    return f"{angka(lat)} {'LU' if lat >= 0 else 'LS'} {angka(lon)} BT"
+
+
+def _hitung(c):
+    pend = json.load(open(os.path.join(REPO, 'public', 'data', 'penduduk.json'), encoding='utf-8'))['kec']
+    pk = json.load(open(os.path.join(REPO, 'public', 'banjir', 'data', 'pusat_kec.json'), encoding='utf-8'))
+    g = c['gempa']
+    kelas, maks, dekat = defaultdict(Counter), defaultdict(float), {}
+    for kunci, (la, lo) in pk.items():
+        kp, kab = kunci.split('|')[:2]
+        if kp not in c['prov'] or kab == 'None':
+            continue
+        r = G.jarak_km(g['lat'], g['lon'], la, lo)
+        m = G.mmi_perkiraan(g['m'], r, g['dalam'], g.get('jenis'))
+        kelas[kab][band(m)] += pend.get(kunci, 0)
+        maks[kab] = max(maks[kab], m)
+        dekat[kab] = min(dekat.get(kab, 1e9), r)
+    return kelas, maks, dekat
+
+
+def bangun(c):
+    """c: lihat KONFIG di gempa-nias-2026-11-19/buat.py."""
+    sini, nama = c['sini'], c['nama']
+    BL.B.SINI = sini
+    os.makedirs(os.path.join(sini, 'bahan', 'ikon'), exist_ok=True)
+    g = c['gempa']
+    KELAS, MAKS, DEKAT = _hitung(c)
+    print('MMI maks:', {kab: round(m, 2) for kab, m in sorted(MAKS.items(), key=lambda t: -t[1])[:10]})
+    ada = sorted({band(m) for m in MAKS.values() if band(m) >= 2}, reverse=True)[:4]   # paling banyak 4 kelas diwarnai
+    WARNA = {b: TANGGA[i] for i, b in enumerate(sorted(ada))}
+    gelap = lambda b: WARNA.get(b) in ('D9600B', 'A84808')
+
+    _pil_asli, _ikon_asli = BL.pil_status, BL.ikon
+
+    def pil_status(k, x, y, w, h, teks, merah, pt=9.19, warna=None):
+        b = DARI_ROMAWI.get(teks)
+        if b not in WARNA:
+            return _pil_asli(k, x, y, w, h, teks, merah, pt, warna)
+        k.bulat(x, y, w, h, WARNA[b])
+        k.teks(x, y, w, h, [R(teks, min(pt, 8.5), PUTIH if gelap(b) else TEKS, True)], rata='c', bungkus=False)
+
+    BL.pil_status = pil_status
+    # pil peta dan kartu legenda: ikon menurut arti status laporan (dokumen = ada laporan, data = model)
+    BL.ikon = lambda konsep, token='kertas': _ikon_asli({'peringatan': 'ringkasan', 'rumah': 'data'}.get(konsep, konsep), token)
+
+    lon0, lon1, la1 = c['ext']
+    EXT = (lon0, lon1, la1, la1 - (lon1 - lon0) * 338 / 418)
+    KM_PX = PX[0] / ((lon1 - lon0) * 111.32 * math.cos(math.radians(g['lat'])))
+    proyeksi = lambda f: (lambda lon, lat: (PETA[0] + f(lon, lat)[0] / PX[0] * PETA[2], PETA[1] + f(lon, lat)[1] / PX[1] * PETA[3]))
+
+    Dk = BL.Deck()
+    j1, j2 = c['judul']   # baris baru sesudah titik koma (pemilik 20 Nov 2026)
+    s, k = Dk.slide(judul(j1, pt=20) + ['\n'] + judul(j2, pt=20))
+
+    # ================================================================ peta
+    warna = {(kp, kab): WARNA[band(m)] for kp in c['prov'] for kab, m in MAKS.items() if band(m) in WARNA}
+    png = os.path.join(sini, 'bahan', 'peta-guncangan.png')
+    proj = proyeksi(BL.gambar_peta(png, EXT, PX, warna, BL.SEMUA_PROV))
+    from PIL import Image, ImageDraw
+    peta = Image.open(png).convert('RGBA')
+    laut = lambda x, y: peta.getpixel((min(PX[0] - 1, max(0, int((x - PETA[0]) / PETA[2] * PX[0]))),
+                                       min(PX[1] - 1, max(0, int((y - PETA[1]) / PETA[3] * PX[1])))))[3] == 0
+    # cincin jarak tiap 100 km di lapisan PALING BAWAH: peta (laut transparan) ditumpuk di atasnya (pemilik 20 Nov 2026)
+    lap = Image.new('RGBA', peta.size, (0, 0, 0, 0)); dr = ImageDraw.Draw(lap)
+    cx = (g['lon'] - EXT[0]) / (EXT[1] - EXT[0]) * PX[0]
+    cy = (EXT[2] - g['lat']) / (EXT[2] - EXT[3]) * PX[1]
+    for r in c['radius']:
+        rp = r * KM_PX
+        for a in range(0, 360, 4):
+            dr.arc([cx - rp, cy - rp, cx + rp, cy + rp], a, a + 2.2, fill=(122, 134, 153, 95), width=4)
+    Image.alpha_composite(lap, peta).save(png)
+    k.gambar(png, *PETA)
+
+    ex, ey = proj(g['lon'], g['lat'])
+    pos = c['pos']
+    lebar_label = lambda kab, b: (len(kab) * 9 + len(f'MMI {ROMAWI[b]}') * 7.5) * 0.53 + 26   # rumus label_peta
+    hindari = [(48, 106, 192, 16), (256 - 6, 379, 205, 58), (48, 395, 160, 45)]   # cap waktu, legenda, panah utara + skala
+    hindari += [(min(x, 461 - lebar_label(kab, band(MAKS[kab]))), y, lebar_label(kab, band(MAKS[kab])), 15.8) for kab, (x, y) in pos.items()]
+    pusat_kotak = (ex - 72.5, ey + 30, 145, 15) if c.get('pil_pusat', 'bawah') == 'bawah' else (ex - 205, ey - 7.5, 145, 15)
+    hindari.append(pusat_kotak)
+    beririsan = lambda a, b: a[0] < b[0] + b[2] and b[0] < a[0] + a[2] and a[1] < b[1] + b[3] and b[1] < a[1] + a[3]
+    km_pt = PETA[2] / PX[0] * KM_PX
+    for r in c['radius']:   # label cincin: pil kecil abu di laut, ditaruh sebelum label kab/kota supaya di bawahnya
+        rp = r * km_pt
+        for sudut in (135, 120, 150, 105, 165, 225, 45, 315, 180, 90, 270, 0, 210, 240, 30, 60, 300, 330):
+            lx_, ly_ = ex + rp * math.cos(math.radians(sudut)), ey + rp * math.sin(math.radians(sudut))
+            kotak = (lx_ - 17, ly_ - 6, 34, 12)
+            if not (50 <= kotak[0] and kotak[0] + 34 <= 455 and 108 <= kotak[1] and kotak[1] + 12 <= 436):
+                continue
+            if any(beririsan(kotak, h) for h in hindari) or not all(laut(px, py) for px, py in
+                                                                       ((lx_ - 17, ly_), (lx_ + 17, ly_), (lx_, ly_ - 6), (lx_, ly_ + 6))):
+                continue
+            k.bulat(*kotak, PUTIH, 'C9D1DC', radius=6)
+            k.teks(*kotak, [R(f'{r} km', 7, TEKS3, True)], rata='c', bungkus=False)
+            hindari.append(kotak)
+            break
+    # cap waktu pembuatan laporan (WIB = UTC+7), dihitung saat dibangun
+    kini = datetime.now(timezone.utc) + timedelta(hours=7)
+    cap = f'Laporan dibuat {kini.day} {BULAN[kini.month - 1]} {kini.year}, pukul {kini:%H.%M} WIB'
+    print(cap)
+    k.bulat(48, 106, 192, 16, PUTIH, GARIS, radius=8)
+    k.gambar(_ikon_asli('kalender', 'navy'), 54, 109, 10, 10)
+    k.teks(68, 106, 170, 16, [R(cap, 7.5, TEKS, True)], bungkus=False)
+    titik = c.get('titik', {})
+    for kab, (lx, ly) in pos.items():
+        b = band(MAKS[kab])
+        label_peta(k, lx, ly, c.get('label', {}).get(kab, kab), f'MMI {ROMAWI[b]}', kab in c['dilapor'],
+                   proj(*titik.get(kab, BL.pusat(c['prov'][0], kab))))
+    # pusat gempa: ikon + pil koordinat (di bawah ikon, atau di kiri dengan garis penunjuk)
+    teks_pusat = f"Pusat gempa, {koordinat(g['lat'], g['lon'])}"
+    if c.get('pil_pusat', 'bawah') == 'bawah':
+        k.garis(ex, ey + 11, ex, ey + 30, MERAH, 0.75)
+    else:
+        k.garis(ex - 205 + 150, ey, ex - 11, ey, MERAH, 0.75)
+        k.kotak(ex - 205 + 147.5, ey - 2.5, 5, 5, PUTIH, MERAH, bentuk=MSO_SHAPE.OVAL)
+    k.kotak(ex - 11, ey - 11, 22, 22, PUTIH, MERAH, 1.0, bentuk=MSO_SHAPE.OVAL)
+    k.ikon_bulat('gempa', ex - 9, ey - 9, 18, MERAH)
+    k.bulat(*pusat_kotak, PUTIH, MERAH, radius=7)
+    k.teks(*pusat_kotak, [R(teks_pusat, 8, MERAH, True)], rata='c', bungkus=False)
+    BL.unsur_peta(k, 100 / 111 * PETA[2] / (EXT[1] - EXT[0]))
+    lx, ly = 256, 379
+    k.bulat(lx - 6, ly, 205, 58, PUTIH, GARIS, radius=4)
+    for j in range(4):   # contoh garis putus cincin jarak
+        k.garis(lx + j * 5, ly + 45, lx + j * 5 + 3, ly + 45, '9AA5B4', 1.25)
+    k.teks(lx + 24, ly + 40, 175, 10, [R('Jarak dari pusat gempa, tiap 100 km', 7.5, TEKS)], bungkus=False)
+    k.teks(lx, ly + 3, 195, 12, [R('Guncangan terkuat per kab/kota (MMI, model)', 7.5, TEKS, True)], bungkus=False)
+    for i, b in enumerate(ada):
+        k.kotak(lx + i * 48, ly + 21, 16, 11, WARNA[b], GARIS, 0.5)
+        k.teks(lx + i * 48 + 19, ly + 19, 28, 15, [R(ROMAWI[b], 9, TEKS, True)], bungkus=False)
+    # kartu = legenda pil di peta: merah = ada laporan, biru = belum ada laporan (guncangan hanya perkiraan model)
+    kartu(k, 43.2, 446.4, 206.1, 'Ada laporan', 'Tercatat di laporan BPBD atau dirasakan BMKG', True)
+    kartu(k, 254.3, 446.4, 206.1, 'Belum ada laporan', 'Guncangan berdasarkan perhitungan model', False)
+
+    # ================================================================ blok magnitudo + panel parameter berikon
+    m_teks = f"M{angka(g['m'], 1)}"
+    k.bulat(471.3, 101, 66, 38, NAVY, radius=4)
+    k.teks(471.3, 102, 66, 22, [R(m_teks, 17, PUTIH, True)], rata='c', bungkus=False)
+    k.teks(471.3, 124, 66, 11, [R('Magnitudo', 7, PUTIH)], rata='c', bungkus=False)
+    p = c['par']
+    PAR = [('Waktu (WIB)', p['waktu'], NAVY, 'kalender', 'navy'),
+           ('Kedalaman', f"{g['dalam']:g} km", NAVY, 'turun', 'navy'),
+           (p.get('pusat_label', 'Pusat gempa di laut'), p['pusat'], NAVY, 'wilayah', 'navy'),
+           ('Potensi tsunami', p.get('tsunami', 'Tidak ada'), '1F6FB2' if p.get('tsunami', 'Tidak ada') == 'Tidak ada' else MERAH,
+            'tsunami', 'biru')]
+    x0, x1 = 541.3, 916.8
+    k.bulat(x0, 101, x1 - x0, 38, PUTIH, GARIS, radius=4)
+    IK = 13
+    for PV in (8, 7.5, 7):   # ukuran nilai diturunkan bila empat butir belum muat
+        isi = [max(lebar(a, 7), lebar(b, PV)) + 2 + IK + 4 for a, b, *_ in PAR]
+        jeda = (x1 - x0 - sum(isi)) / len(PAR)
+        if jeda >= 8:
+            break
+    print('strip: nilai', PV, 'pt, jeda', round(jeda, 1)); assert jeda >= 6, 'strip parameter terlalu sempit'
+    x = x0
+    for n, ((a, b, w, ik, tk), wt) in enumerate(zip(PAR, isi)):
+        if n:
+            k.garis(x, 110, x, 130, GARIS, 0.75)
+        tx = x + jeda / 2
+        k.gambar(_ikon_asli(ik, tk), tx, 120 - IK / 2, IK, IK)
+        k.teks(tx + IK + 4, 106, wt - IK - 4, 11, [R(a, 7, TEKS3)], bungkus=False, jangkar='b')
+        k.teks(tx + IK + 4, 119, wt - IK - 4, 13, [R(b, PV, w, True)], bungkus=False, jangkar='t')
+        x += wt + jeda
+
+    # ================================================================ kotak arti MMI (dihitung dulu: tingginya menentukan ruang tabel)
+    # semua kelas yang tampil di peta (dan kelas BMKG di tabel kondisi), satu deret dari lemah ke kuat (pemilik 20 Nov 2026)
+    kelas_box = sorted(set(ada) | {DARI_ROMAWI[l[2]] for l in c['lapor'] if l[2] != '-'})
+    h_box = 56   # judul, batang skala bersambung, keterangan dua baris rata tengah di bawah tiap kelas
+    yk = 496 - 6.5 - h_box   # teks terbawah >= 7 pt dari tepi bawah panel (gerbang T-7)
+
+    # ================================================================ kondisi per kab/kota
+    kepala_panel(k, 471.3, 147, 445.5, 'Kondisi pascagempa menurut BPBD dan BMKG', 'gempa')
+    kol = [('', 98, 'l'), ('', 56, 'c'), ('', 40, 'c'), ('', 48, 'c'), ('', 203.5, 'l')]
+    baris = []
+    for l in c['lapor']:
+        kab, nm, bm, kon = l[:4]
+        jarak = l[4] if len(l) > 4 else f'{DEKAT[kab]:.0f} km'
+        n = max(1, math.ceil(len(kon) * 4.05 / 200))   # taksiran baris Roboto 7,8 pt di kolom 203,5 pt (Nias: 103 huruf = 3 baris)
+        baris.append(('data', [('runs', [R(nm, 8.6, TEKS, True)]), jarak, ('pil', ROMAWI[band(MAKS[kab])], False, 8.5),
+                               ('pil', bm, False, 8.5) if bm != '-' else '-', rt(kon, 7.8)], max(26, 10 * n + 6)))
+    yb = tabel(k, 471.3, 184, kol, baris, kepala=24, pt=8.6)
+    _kepala2(k, 471.3, 184, kol, ['KAB/KOTA', 'JARAK KE|PUSAT', 'MMI|MODEL', 'MMI|BMKG', 'KONDISI DAN TINDAKAN'], 24)
+
+    # ================================================================ penduduk dalam jangkauan guncangan (model)
+    y = yb + 10
+    kepala_panel(k, 471.3, y, 445.5, 'Penduduk dalam jangkauan guncangan (model)', 'pengungsi')
+    kolom = ada[:3]   # kelas tertinggi yang diwarnai, paling banyak tiga kolom
+    ambang = min(ada) + 1 if len(ada) > 1 else min(ada)
+    urut = sorted(((kab, m) for kab, m in MAKS.items() if band(m) >= ambang), key=lambda t: -t[1])
+    ruang = yk - 8 - (y + 36) - 20 - 17   # tinggi untuk baris data di atas kotak MMI (baris total sekitar 17 pt)
+    hb = 14 if ruang >= 14 * len(urut) else 12.5   # baris dirapatkan dulu sebelum digabung
+    muat = int(ruang // hb)
+    tampil, lain = (urut, []) if len(urut) <= muat else (urut[:muat - 1], urut[muat - 1:])
+    assert len(tampil) >= 2, f'tabel penduduk hanya muat {muat} baris: pendekkan teks kondisi'
+    lebar_kol = [170, 75] + [200.5 / len(kolom)] * len(kolom)
+    kol = [('', lebar_kol[0], 'l'), ('', lebar_kol[1], 'c')] + [('', w, 'c') for w in lebar_kol[2:]]
+    baris = [('data', [nama_kab(kab), ('pil', ROMAWI[band(m)], False, 8.5)] + [f0(KELAS[kab][b] or None) for b in kolom], hb)
+             for kab, m in tampil]
+    if lain:
+        cl = Counter()
+        for kab, _ in lain:
+            cl.update(KELAS[kab])
+        baris.append(('data', [f'{len(lain)} kab/kota lainnya', '-'] + [f0(cl[b] or None) for b in kolom], hb))
+    ct = Counter()
+    for kab, _ in urut:
+        ct.update(KELAS[kab])
+    baris.append(('total', [f'Total {len(urut)} kab/kota', ''] + [f0(ct[b]) for b in kolom]))
+    yt = tabel(k, 471.3, y + 36, kol, baris, kepala=20, pt=8.6, minh=12)
+    _kepala2(k, 471.3, y + 36, kol, ['KAB/KOTA', 'MMI MAKS'] + [f'JIWA MMI {ROMAWI[b]}' for b in kolom], 20)
+    print('jiwa per kelas:', {ROMAWI[b]: ct[b] for b in kolom}, 'tabel kondisi berakhir', round(yb), 'tabel penduduk', round(yt), 'kotak MMI', round(yk))
+    assert yt <= yk - 4, 'tabel penduduk menabrak kotak MMI'
+
+    # ================================================================ kotak arti MMI + kotak tautan BMKG
+    k.bulat(471.3, yk, 445.5, h_box, KAB_TINT, radius=4)
+    k.teks(479.3, yk + 3, 325, 11, [R('MMI (Modified Mercalli Intensity)', 7.5, NAVY, True),
+                                    R(': skala I sampai XII kuat guncangan di suatu tempat', 7.5, TEKS)], bungkus=False)
+    x0k, x1k = 479.3, 916.8 - 100 - 8   # deret kelas di kiri kotak tautan
+    wk = (x1k - x0k) / len(kelas_box)
+    for n, b in enumerate(kelas_box):   # batang skala: kotak warna bersambung dari lemah (kiri) ke kuat (kanan)
+        cx = x0k + n * wk
+        k.kotak(cx, yk + 18, wk, 12, WARNA.get(b, 'FFFFFF'), 'FFFFFF', 0.75)
+        k.teks(cx, yk + 18, wk, 12, [R(f'MMI {ROMAWI[b]}', 7.5, PUTIH if gelap(b) else TEKS, True)], rata='c', bungkus=False)
+        k.teks(cx + 3, yk + 32, wk - 6, 18, [R(MMI_RINGKAS[b], 7, TEKS)], rata='c', jangkar='t', spasi=0.95)
+    bw = 100; bx = 916.8 - bw
+    for sh in (k.bulat(bx, yk, bw, h_box, NAVY, radius=4),
+               k.teks(bx + 12, yk + h_box / 2 - 12.5, bw - 40, 13, [R('Skala lengkap', 8.5, PUTIH, True)], bungkus=False, jangkar='b'),
+               k.teks(bx + 12, yk + h_box / 2 + 0.5, bw - 40, 11, [R('di situs BMKG', 7, 'C9D1DC')], bungkus=False, jangkar='t')):
+        sh.click_action.hyperlink.address = URL_MMI
+    ax, ay = bx + bw - 14, yk + h_box / 2   # panah garis putih
+    k.garis(ax - 12, ay, ax, ay, PUTIH, 1.5)
+    k.garis(ax - 4.5, ay - 4.5, ax, ay, PUTIH, 1.5)
+    k.garis(ax - 4.5, ay + 4.5, ax, ay, PUTIH, 1.5)
+
+    sumber2 = halaman_susulan(Dk, c, MAKS, datetime.now(WIB))   # 'kini' di atas UTC+7 tanpa zona WIB; jangan dikurangi dengan t0
+
+    os.makedirs(c.get('keluar', sini), exist_ok=True)
+    isi = os.path.join(c.get('keluar', sini), f'{nama}.pptx')
+    Dk.I.simpan(isi)
+    if '--isi' in sys.argv:
+        print('isi saja:', isi); return isi
+    sys.path.insert(0, os.path.join(LB, 'generator'))
+    import lewat_deck
+    keluar = lewat_deck.bingkai(
+        isi, 'kajian', c['judul_dokumen'], c['subjudul'], c['tanggal'], sampul=False,
+        susun=[{'halaman': 1, 'sumber': c['sumber']}, {'halaman': 2, 'sumber': sumber2}],
+        spek_tambah={'subjek_dokumen': c['judul_dokumen'], 'tanpa_alur': 'laporan khusus dua halaman'})
+    print(keluar)
+    return keluar
+
+
+def _kepala2(k, x, y, kol, judul2, h):
+    cx = x
+    for (j, w, rata), t in zip(kol, judul2):
+        runs = []
+        for i, bag in enumerate(t.split('|')):
+            runs += (['\n'] if i else []) + [R(bag, 7, PUTIH, True, 0.5)]
+        k.teks(cx, y, w, h, runs, rata=rata, kiri=8 if rata == 'l' else 1, kanan=1, spasi=0.9)
+        cx += w
+
+
+# ======================================================================== halaman 2: gempa susulan, penanganan, langkah
+WIB = timezone(timedelta(hours=7))
+
+
+def persen(p):
+    v = p * 100
+    return '<1%' if v < 1 else f'{v:.1f}%'.replace('.', ',') if v < 10 else f'{v:.0f}%'
+
+
+# kategori peluang untuk pimpinan (pemilik 20 Nov 2026): label kata besar, persen kecil. Ambang diadaptasi dari skala peluang
+# IPCC (Mastrandrea dkk. 2010: very unlikely 0-10%, unlikely 0-33%, about as likely as not 33-66%, likely 66-100%), dipotong
+# supaya tidak tumpang tindih. Bukan standar BMKG atau BNPB; selalu ditulis "diadaptasi dari skala peluang IPCC".
+KATEGORI = ((0.10, 'Sangat kecil'), (0.33, 'Kecil'), (0.66, 'Sedang'), (1.01, 'Besar'))
+WARNA_KAT = {'Sangat kecil': 'A9BCD6', 'Kecil': '5E7FA8', 'Sedang': 'E8894A', 'Besar': 'C8102E'}   # aksen kartu dan batang grafik
+TEKS_KAT = {'Sangat kecil': '5E7FA8', 'Kecil': '3E5F8A', 'Sedang': 'C2621F', 'Besar': 'C8102E'}    # warna teks kategori (lebih gelap)
+
+
+def kategori(p):
+    return next(nama for batas, nama in KATEGORI if p < batas)
+
+
+def susulan_teramati(g, t0):
+    """Cacah gempa M >= 4 sesudah gempa utama dalam jarak Gardner-Knopoff (sama dengan susulan.jarak_gk), dari USGS FDSN.
+    -> (cacah, radius_km), cacah None bila USGS tidak terjangkau."""
+    import urllib.request
+    r = 10 ** (0.1238 * g['m'] + 0.983)
+    u = ('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=4'
+         f"&starttime={(t0 + timedelta(minutes=1)).astimezone(timezone.utc):%Y-%m-%dT%H:%M:%S}"
+         f"&latitude={g['lat']}&longitude={g['lon']}&maxradiuskm={r:.0f}")
+    try:
+        return len(json.load(urllib.request.urlopen(u, timeout=30))['features']), r
+    except Exception as e:   # laporan tetap jadi; kalimatnya menyebut data belum tersedia
+        print('USGS gagal:', e)
+        return None, r
+
+
+def riwayat_sekitar(g, n=3):
+    """(cacah gempa M >= 5 dalam 100 km sejak 2000 dari riwayat USGS, <= n gempa merusak terkuat dalam 200 km dari katalog BMKG)."""
+    d = os.path.join(REPO, 'public', 'gempa', 'data')
+    m5 = json.load(open(os.path.join(d, 'riwayat_m5.json'), encoding='utf-8'))['baris']
+    n_m5 = sum(1 for x in m5 if x[0] >= '2000' and G.jarak_km(g['lat'], g['lon'], x[1], x[2]) <= 100)
+    kat = json.load(open(os.path.join(d, 'katalog_merusak.json'), encoding='utf-8'))['baris']
+    dekat = [r for r in kat if r.get('lintang') is not None and r.get('magnitudo') is not None
+             and G.jarak_km(g['lat'], g['lon'], r['lintang'], r['bujur']) <= 200]
+    pilih = sorted(sorted(dekat, key=lambda r: -r['magnitudo'])[:n], key=lambda r: r['tanggal'], reverse=True)
+    for r in pilih:
+        th, bl, hr = r['tanggal'].split('-')
+        r['tanggal_id'] = f"{int(hr)} {BULAN[int(bl) - 1]} {th}"
+        r['jarak_km'] = G.jarak_km(g['lat'], g['lon'], r['lintang'], r['bujur'])   # dari pusat gempa laporan ini
+    return (n_m5, pilih) if pilih else None
+
+
+def langkah(c, MAKS, p7):
+    """Langkah yang disarankan: aturan tetap atas katalog tindakan gempa public/bencana.json (logbook Pusdalops)."""
+    reg = json.load(open(os.path.join(REPO, 'public', 'bencana.json'), encoding='utf-8'))
+    label = reg['tindakan']
+    boleh = next(b for b in reg['bencana'] if b['id'] == 'gempa')['kemampuan']['tindakan']
+    daftar = [('pantau', 'Pantau gempa susulan bersama BMKG dan BPBD. Peluang susulan M5 ke atas dalam 7 hari sejak gempa utama '
+                         f'tergolong {kategori(p7).lower()} ({persen(p7)}).'),
+              ('imbauan', 'Sampaikan imbauan agar warga mengikuti informasi resmi BMKG dan menjauhi bangunan yang retak.')]
+    kuat = [kab for kab, m in MAKS.items() if band(m) >= 5]
+    if kuat:
+        daftar.append(('kaji_cepat', f'Lakukan kaji cepat kerusakan di {len(kuat)} kab/kota dengan guncangan MMI V ke atas menurut model.'))
+    rasa = sorted(c['dilapor'] - c['bpbd'])   # dirasakan menurut BMKG tetapi belum ada laporan BPBD
+    if rasa:
+        siapa = ' dan '.join(nama_kab(x) for x in rasa) if len(rasa) <= 2 else f'{len(rasa)} kab/kota'
+        daftar.append(('kaji_cepat', f'Minta BPBD {siapa} mendata kondisi karena getaran dirasakan menurut BMKG.'))
+    if c.get('kerusakan'):
+        daftar += [('posko', 'Aktifkan posko dan rapat koordinasi penanganan di kab/kota terdampak.'),
+                   ('logistik', 'Siapkan distribusi logistik bagi warga terdampak.'),
+                   ('pengungsian', 'Siapkan tempat pengungsian dan tenda bagi warga yang rumahnya rusak.'),
+                   ('kesehatan', 'Siagakan layanan kesehatan bagi korban luka.')]
+    assert all(t in boleh for t, _ in daftar), 'tindakan di luar katalog gempa'
+    gabung = {}   # satu butir per tindakan; kalimat tindakan yang sama digabung berurutan
+    for t, teks in daftar:
+        gabung[t] = f'{gabung[t]} {teks}' if t in gabung else teks
+    return [(label[t], teks) for t, teks in gabung.items()]
+
+
+def halaman_susulan(Dk, c, MAKS, kini):
+    import susulan as SU
+    g = c['gempa']
+    M = SU.muat_model()
+    assert M['terbit'] and M['terbit_target']['m5'], 'model susulan M5 tidak terbit: halaman susulan tidak boleh tampil'
+    P = M['param']
+    t0 = datetime(*c['waktu_utama'], tzinfo=WIB)
+    t = (kini - t0).total_seconds() / 86400   # umur gempa saat laporan dibuat (hari), hanya dicetak ke log
+    # peluang kumulatif sejak gempa utama (pemilik 20 Nov 2026: "diprediksi dari waktu saat terjadinya gempa utama"),
+    # jendela mulai SU.T0 (1 jam sesudah gempa utama) seperti saat model diuji
+    kum = lambda d: SU.peluang(g['m'], SU.T0, d - SU.T0, 5.0, P)['p']
+    p24, p3, p7 = kum(1), kum(3), kum(7)
+    print('susulan sejak gempa utama: 24 jam', round(p24, 4), '3 hari', round(p3, 4), '7 hari', round(p7, 4), '; umur laporan', round(t, 2), 'hari')
+
+    s, k = Dk.slide(judul(f'Peluang gempa susulan M5 ke atas dalam 7 hari sejak gempa utama [{kategori(p7).lower()}];', pt=20) + ['\n']
+                    + judul(c['judul2'], pt=20))
+    # ================================================================ kiri: prediksi gempa susulan
+    kepala_panel(k, 43.2, 101, 418, 'Prediksi gempa susulan (model)', 'gempa')
+    k.teks(43.2, 137, 418, 12, [R('Peluang terjadi paling sedikit satu gempa susulan M5 ke atas, dihitung sejak gempa utama',
+                                  7.5, TEKS3)], bungkus=False)
+    w3 = (418 - 2 * 6) / 3
+    for i, (lab, p) in enumerate((('24 jam pertama', p24), ('3 hari pertama', p3), ('7 hari pertama', p7))):
+        # kartu: aksen kiri warna kategori, judul waktu, kategori besar + persen kecil sebaris, batang tipis 0-100%
+        x = 43.2 + i * (w3 + 6)
+        nm = kategori(p)
+        k.bulat(x, 152, w3, 51, PUTIH, GARIS, radius=4)
+        k.kotak(x, 152.4, 4, 50.2, WARNA_KAT[nm])
+        k.teks(x + 12, 155, w3 - 20, 12, [R(lab, 8.5, TEKS3, True)], bungkus=False)
+        k.teks(x + 12, 166, w3 - 20, 18, [R(nm, 13, TEKS_KAT[nm], True)], bungkus=False)
+        lb = w3 - 20 - 62   # batang tipis 0-100% dan persen sebaris di bawah kategori (kategori dapat ruang penuh)
+        k.bulat(x + 12, 189, lb, 4, 'E3E8EF', radius=2)
+        k.bulat(x + 12, 189, max(4, lb * p), 4, WARNA_KAT[nm], radius=2)
+        k.teks(x + w3 - 66, 184, 58, 12, [R(f'Peluang {persen(p)}', 7.5, TEKS3)], rata='r', bungkus=False)
+    # catatan dihitung dulu: tingginya menentukan ruang grafik di atasnya
+    n_amat, rgk = susulan_teramati(g, t0)
+    ku = M['kinerja_uji']['m5']
+    th = int(M['kinerja_uji']['rentang'][1][:4])
+    baris = [('Susulan tercatat', 'Data susulan dari USGS belum tersedia.' if n_amat is None else
+              f'{n_amat} gempa M4 ke atas dalam radius {rgk:.0f} km sejak gempa utama (USGS).' if n_amat else
+              f'Belum ada gempa M4 ke atas dalam radius {rgk:.0f} km sejak gempa utama (USGS).'),
+             ('Kategori', 'Sangat kecil di bawah 10%; kecil 10 sampai 33%; sedang 33 sampai 66%; besar di atas 66%. '
+                          'Diadaptasi dari skala peluang IPCC.')]
+    if g['dalam'] >= 70:
+        baris.append(('Gempa dalam', f"Kedalaman {g['dalam']:g} km. Gempa dalam umumnya memicu lebih sedikit susulan; "
+                                     'model ini belum membedakan kedalaman.'))
+    nb = [max(1, math.ceil(len(b) * 3.5 / 318)) for _, b in baris]   # taksiran baris Roboto 7,5 pt di kolom 318 pt
+    hb = 8 + sum(10 * n + 4 for n in nb) + 4
+    y_cat = 496 - 7 - hb
+
+    # ================================================================ grafik peluang kumulatif sejak gempa utama, hari ke-1 sampai ke-7
+    hari = []
+    for d in range(1, 8):
+        akhir = t0 + timedelta(days=d)
+        hari.append((f'Hari ke-{d}', f's.d. {akhir.day} {BULAN[akhir.month - 1]}', kum(d)))
+    # warna batang = kategori peluangnya (terang ke gelap seiring naiknya kategori)
+    k.teks(43.2, 207, 260, 13, [R('Peluang kumulatif sejak gempa utama', 8.5, TEKS, True)], bungkus=False)
+    ada_kat = [nm for _, nm in KATEGORI if any(kategori(p) == nm for *_, p in hari)]
+    lx = 461.2
+    for nm in reversed(ada_kat):   # legenda kategori yang muncul, rata kanan sejajar judul grafik
+        w = lebar(nm, 7) + 4
+        lx -= w
+        k.teks(lx, 207, w, 13, [R(nm, 7, TEKS3)], bungkus=False)
+        lx -= 13
+        k.kotak(lx, 210.5, 9, 7, WARNA_KAT[nm])
+        lx -= 10
+    dasar = y_cat - 30                     # label hari dan tanggal di bawah garis dasar
+    puncak = 236                           # ruang label persen di atas batang tertinggi
+    skala = max(p for *_, p in hari) * 1.12
+    py = lambda p: dasar - p / skala * (dasar - puncak)
+    for batas, _ in KATEGORI[:-1]:         # garis ambang kategori yang masuk rentang grafik
+        if batas < skala:
+            yg = py(batas)
+            for x in range(int(43.2), int(445), 6):
+                k.garis(x, yg, x + 3, yg, 'B8C2D0', 0.75)
+            k.teks(445, yg - 6, 16.2, 12, [R(f'{batas * 100:.0f}%', 6.5, TEKS3)], rata='r', bungkus=False)
+    slot = 418 / 7
+    for n, (lab, tgl, p) in enumerate(hari):
+        cx = 43.2 + n * slot + slot / 2
+        top = min(py(p), dasar - 1.5)
+        utama = n + 1 in (1, 3, 7)   # batang yang sama dengan angka di kotak atas
+        bt = k.kotak(cx - 17, top, 34, dasar - top, WARNA_KAT[kategori(p)], NAVY if utama else None, 1.25,
+                     bentuk=MSO_SHAPE.ROUND_2_SAME_RECTANGLE)   # ujung atas membulat (pemilik 20 Nov 2026)
+        bt.adjustments[0] = min(0.5, 6 / min(34, max(dasar - top, 1)))
+        bt.adjustments[1] = 0
+        teks_p = persen(p)
+        wp = lebar(teks_p, 8.5 if utama else 7.5) + 6
+        k.bulat(cx - wp / 2, top - 15, wp, 12, PUTIH, radius=3)   # latar putih: garis ambang tidak menimpa angka
+        k.teks(cx - 28, top - 15, 56, 12, [R(teks_p, 8.5 if utama else 7.5, TEKS if utama else TEKS3, utama)],
+               rata='c', bungkus=False)
+        k.teks(cx - 28, dasar + 3, 56, 11, [R(lab, 7.5, TEKS if utama else TEKS3, utama)], rata='c', bungkus=False)
+        k.teks(cx - 28, dasar + 13, 56, 10, [R(tgl, 6.5, TEKS3)], rata='c', bungkus=False)
+    k.garis_datar(43.2, 461.2, dasar, TEKS3, 0.75)
+    assert dasar - puncak >= 60, 'ruang grafik susulan terlalu pendek'
+
+    # ================================================================ kotak catatan
+    k.bulat(43.2, y_cat, 418, hb, KAB_TINT, radius=4)
+    yy = y_cat + 8
+    for (a, b), n in zip(baris, nb):
+        k.teks(51.2, yy, 82, 10, [R(a, 7.5, NAVY, True)], bungkus=False, jangkar='t')
+        k.teks(135, yy, 318, 10 * n, [R(b, 7.5, TEKS)], jangkar='t', spasi=0.95)
+        yy += 10 * n + 4
+    # ================================================================ kanan: penanganan dan langkah
+    kepala_panel(k, 471.3, 101, 445.5, 'Penanganan yang sudah dilakukan', 'lembaga')
+    kol = [('', 150, 'l'), ('', 295.5, 'l')]
+    pen = c.get('penanganan') or [('-', 'Belum ada laporan penanganan dari BPBD.')]
+    baris = [('data', [('runs', [R(a, 8.6, TEKS, True)]), rt(b, 8)], 22) for a, b in pen]
+    yb = tabel(k, 471.3, 140, kol, baris, kepala=20, pt=8.6)
+    _kepala2(k, 471.3, 140, kol, ['PELAKU', 'TINDAKAN'], 20)
+    y = yb + 12
+    kepala_panel(k, 471.3, y, 445.5, 'Langkah yang disarankan', 'ringkasan')
+    y += 40
+    daftar = langkah(c, MAKS, p7)
+    nl = [max(1, math.ceil(len(t) * 4.0 / 424)) for _, t in daftar]   # taksiran baris Roboto 8 pt di kolom 424 pt
+    tinggi_isi = sum(14 + 11 * n for n in nl)
+    sisa = 489 - y - tinggi_isi - 10 * (len(daftar) - 1)
+    riwayat = riwayat_sekitar(g)
+    if riwayat:   # selalu tampil (pemilik 20 Nov 2026); baris dikurangi bila ruang sempit: 6 + 36 kepala seksi + 18 kepala tabel
+        muat = min(len(riwayat[1]), int((sisa - 60) // 14))
+        riwayat = (riwayat[0], riwayat[1][:muat]) if muat >= 1 else None
+        print('riwayat: baris tampil', muat, 'dari', len(riwayat[1]) if riwayat else 0)
+    jarak = 10 if riwayat else min(18, max(8, (489 - y - tinggi_isi) / max(1, len(daftar) - 1)))
+    for (lab, teks), n_ in zip(daftar, nl):
+        k.nomor(471.3, y + 1, [d[0] for d in daftar].index(lab) + 1, 14)
+        k.teks(492, y, 424.8, 13, [R(lab, 8.6, NAVY, True)], bungkus=False, jangkar='t')
+        k.teks(492, y + 14, 424.8, 11 * n_, [R(teks, 8, TEKS)], jangkar='t', spasi=0.95)
+        y += 14 + 11 * n_ + jarak
+    assert y - jarak <= 489, 'daftar langkah melewati batas halaman'
+    if riwayat:
+        y = y - jarak + 6
+        n_m5, merusak = riwayat
+        kepala_panel(k, 471.3, y, 445.5, 'Riwayat gempa di sekitar pusat gempa', 'kalender',
+                     kanan=f'{n_m5} gempa M5 ke atas dalam radius 100 km sejak 2000 (USGS)')
+        kol = [('', 85, 'l'), ('', 75, 'c'), ('', 125, 'c'), ('', 95.5, 'l'), ('', 65, 'c')]
+        baris = [('data', [r['tanggal_id'], f"M{angka(r['magnitudo'], 1)}", f"{r['jarak_km']:.0f} km",
+                           r['lokasi'].replace('Sumatra', 'Sumatera'),
+                           {True: 'Ya', False: 'Tidak'}.get(r['tsunami'], '-')], 14) for r in merusak]
+        tabel(k, 471.3, y + 36, kol, baris, kepala=18, pt=8.4, minh=13)
+        _kepala2(k, 471.3, y + 36, kol, ['TANGGAL', 'MAGNITUDO', 'JARAK DARI PUSAT GEMPA', 'LOKASI', 'TSUNAMI'], 18)
+    return 'Model susulan Reasenberg-Jones (USGS); BPBD lewat Pusdalops BNPB; katalog gempa merusak BMKG; logbook Pusdalops'

@@ -1,0 +1,17 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Khusus Gempa Bumi M7,1 Laut Banda, 17-11-2026.",
+ "judul_dokumen": "Laporan Khusus Gempa Bumi M7,1 Laut Banda",
+ "kajian": "rehab",
+ "tanggal": "2026-11-17",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\insidental\\gempa-banda-2026-11-17\\Laporan Khusus Gempa M7,1 Laut Banda 171126 (tanpa radius) (isi).pptx",
+   "halaman": 1,
+   "sumber": "BMKG 17 Nov 2026; BPBD lewat Pusdalops BNPB; MMI model Zhao 2006 intraslab; penduduk WorldPop 2026"
+  }
+ ],
+ "subjek_dokumen": "Laporan Khusus Gempa Bumi M7,1 Laut Banda",
+ "tanpa_alur": "laporan khusus satu halaman"
+}
