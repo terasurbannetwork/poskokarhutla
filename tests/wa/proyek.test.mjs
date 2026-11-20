@@ -1960,3 +1960,14 @@ test('banjir sepekan: periode lintas tahun dan satu tanggal ISO', () => {
   assert.deepEqual([p('buat banjir sepekan 28 des - 3 jan').awal, p('buat banjir sepekan 28 des - 3 jan').tanggal], ['2026-12-28', '2027-01-03'])
   assert.deepEqual([p('buat banjir sepekan 2027-01-03').awal, p('buat banjir sepekan 2027-01-03').tanggal], ['2026-12-28', '2027-01-03'])
 })
+
+test('T39b: "mau lapor bencana" ditanya balik, tidak membuka proyek; "laporan harian" tetap daftar bahan', async () => {
+  const d = dunia()
+  denganMaksud(d, () => ({ maksud: 'buat', jenis: 'harian', tanggal: TGL, balasan: '' }))
+  const r = await tangani({ dari: DARI, teks: 'mau lapor bencana' }, d.ctx)
+  assert.equal(r.status, 'tanya lapor')
+  assert.match(d.balasan.at(-1), /^\*Maksudnya yang mana\?\*/)
+  assert.equal(d.proyek.size, 0, 'tidak ada proyek baru')
+  await tangani({ dari: DARI, teks: 'tolong bikinin laporan harian' }, d.ctx)
+  assert.match(d.balasan.at(-1), DAFTAR_BAHAN)
+})
