@@ -11,7 +11,7 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot} from "./admin_halaman.js";
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
@@ -665,6 +665,7 @@ const RUTE = {
   ...RUTE_RUMAH_RUSAK,   // rumah rusak RB/RS/RR per rumah, akun atau regu berkode (public/rumah_rusak*)
   ...RUTE_KUNCI_API,   // penerbitan kunci API mitra (/api/v1/*, src/api_v1.js); API-nya sendiri ditangani langsung di fetch()
   "GET /admin/kunci-api": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKunciApi()),
+  "GET /admin/biaya-bot": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanBiayaBot()),
   "GET /admin/kontak": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKontak()),
   ...RUTE_BANGUNAN,   // paparan bangunan Open Buildings dari R2 MEDIA bangunan/, hanya pengguna masuk (src/bangunan.js)
   ...RUTE_RISIKO7,   // peta peluang api 7 hari (eksperimental) dari R2 MEDIA risiko/, hanya admin atau akun pemirsa (src/risiko7.js)

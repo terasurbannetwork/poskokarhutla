@@ -6,7 +6,7 @@ export const MODEL_BAWAAN = "claude-sonnet-5-5";
 
 /* dasar: alamat router API (mis. 9router, harus https publik) di depan akun Anthropic; kosong = api.anthropic.com langsung.
    Lewat router: header x-app: cli (router meneruskan apa adanya, tanpa itu output_config.format dibuang) dan TANPA beta/fallbacks (router bisa menolaknya). */
-export function buatModel({kunci, model = MODEL_BAWAAN, fetch: f = globalThis.fetch, batasMs = 15000, catat = () => {}, dasar = ""} = {}) {
+export function buatModel({kunci, model = MODEL_BAWAAN, fetch: f = globalThis.fetch, batasMs = 15000, maksToken = 2048, catat = () => {}, dasar = ""} = {}) {
   if (!kunci) return null;
   return async ({sistem, skema, teks}) => {
     const router = String(dasar || "").replace(/\/+$/, "");
@@ -18,7 +18,7 @@ export function buatModel({kunci, model = MODEL_BAWAAN, fetch: f = globalThis.fe
         ...(router ? {"x-app": "cli"} : {"anthropic-beta": "server-side-fallback-2026-07-01"}),
       },
       body: JSON.stringify({
-        model, max_tokens: 2048,
+        model, max_tokens: maksToken,
         system: [{type: "text", text: sistem, cache_control: {type: "ephemeral"}}],
         messages: [{role: "user", content: teks}],
         output_config: {effort: "low", format: {type: "json_schema", schema: skema}},

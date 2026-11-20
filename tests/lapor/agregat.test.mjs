@@ -50,3 +50,21 @@ test("terjemahan keluar: nomor HP dan nama pelapor tidak sampai ke AI, nama dipu
   const ubahAngka = async ({teks}) => { const o = JSON.parse(teks); return {teks: o.teks.replace("3 rumah", "5 rumah"), pilihan: o.pilihan, ket: o.ket}; };
   assert.match((await dariIndonesia(ubahAngka, {teks: "Ada 3 rumah rusak.", nama: null}, "jv")).teks, /^Ada 3 rumah/, "angka berubah = Indonesia");
 });
+
+import {terjemahUi, HURUF_PANGGILAN} from "../../src/lapor_bahasa.js";
+test("terjemah teks layar: daftar panjang dipotong per panggilan, satu potongan gagal tidak menggagalkan yang lain (privasi bahasa Bali 20 Nov 2026)", async () => {
+  const p = "Laporan dan identitas Anda hanya dapat dibaca petugas BNPB dan BPBD yang menangani kejadian. Laporan tidak ditampilkan di halaman publik.";
+  const daftar = Array.from({length: 40}, (_, i) => `${p} Bagian ${i}.`), panggil = [];
+  const model = async ({teks}) => { const o = JSON.parse(teks); panggil.push(o.teks.length);
+    assert.ok(o.teks.join("").length <= HURUF_PANGGILAN, "satu panggilan tidak melewati batas huruf");
+    if (o.teks.some(t => t.includes("Bagian 0."))) return null;   // potongan pertama gagal (mis. max_tokens)
+    return {teks: o.teks.map(t => `[BAN] ${t}`)}; };
+  const h = await terjemahUi(model, daftar, "ban");
+  assert.ok(panggil.length > 1, "lebih dari satu panggilan");
+  assert.equal(h.length, 40);
+  assert.equal(h[0], null, "potongan gagal tetap null");
+  assert.equal(h[39], `[BAN] ${daftar[39]}`, "urutan terjaga, potongan lain tetap diterjemahkan");
+  assert.equal(h.filter(Boolean).length, 40 - panggil[0]);
+  const panjang = "a".repeat(590) + " 1";
+  assert.equal((await terjemahUi(async ({teks}) => ({teks: JSON.parse(teks).teks}), [panjang], "ban"))[0], panjang, "paragraf 590 huruf tidak terpotong");
+});

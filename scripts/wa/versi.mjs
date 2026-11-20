@@ -8,9 +8,12 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.4.3'
+export const VERSI = '2.4.4'
 
 export const CHANGELOG = [
+  { versi: '2.4.4', tanggal: '2026-11-20', isi: [
+    'Pemakaian Claude per kegiatan dan per laporan dikirim ke halaman pemantau biaya admin tiap 10 menit.',
+  ] },
   { versi: '2.4.3', tanggal: '2026-11-20', isi: [
     'Laporan besar: batas langkah Claude dinaikkan, dan bila langkah atau anggaran habis sebelum deck selesai, draf pertama juga memakai deck sistem dengan catatan, bukan gagal.',
   ] },

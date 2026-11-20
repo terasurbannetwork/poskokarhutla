@@ -2065,6 +2065,11 @@ async function final(dari, sha, ctx, id = null) {
   } finally { lepas() }
 }
 
+// Detak 10 menit: kirim ringkasan biaya lokal (per kegiatan, per laporan) ke pemantau /admin/biaya-bot. Galat hanya dicatat.
+export async function kirimBiaya(ctx) {
+  try { await worker(ctx, '/api/wa/biaya/rinci', { method: 'POST', body: Biaya.ringkas(ctx.dasar || RUMAH) }); return true } catch (e) { (ctx.log || (() => {}))('kirim biaya gagal', e.message); return false }
+}
+
 // Untuk detak 10 menit: lanjutkan tiap proyek final yang belum ditutup. ctx seperti tangani tanpa balas; T-FINAL lewat ctx.kirimKe(dari, teks).
 export async function ulangFinal(ctx) {
   const dasar = ctx.dasar || RUMAH, now = (ctx.now || new Date()).getTime()

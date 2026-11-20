@@ -21,7 +21,7 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], aktivasi: ["🗺️", "Aktivasi daerah"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], aktivasi: ["🗺️", "Aktivasi daerah"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], "biaya-bot": ["💵", "Biaya bot WA"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
 const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
@@ -47,7 +47,7 @@ const GRUP_ADMIN = [
   ["Publik", "🌐", ["statistik", "pesan", "foto", "sosmed"].map(butirAdmin)],
   ["Ruang kerja", "🏛️", [["koordinasi", "🏛️", "Ruang Koordinasi", "/admin/" + BNPB[0]], ["dalops", "🌊", "Ruang Pusdalops", "/bnpb/dalops"], ["direktori", "📚", "Direktori", "/direktori"],
     ...["posko", "instansi", "pipa", "command-center", "ai"].map(butirAdmin)]],
-  ["Pengaturan", "⚙️", ["akun", "kunci-api", "kontak"].map(butirAdmin)]];
+  ["Pengaturan", "⚙️", ["akun", "kunci-api", "biaya-bot", "kontak"].map(butirAdmin)]];
 const GRUP_STAF = [["Ruang Koordinasi", "🏛️", SUB], ["Ruang kerja", "🧰", ["posko", "pipa", "command-center", "ai"]]];
 const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
 const navGrup = (grup, kini) => grup.filter(g => g[2].length).map(([judul, ik, isi]) => isi.length === 1 ? butirNav(isi[0], kini)
@@ -223,6 +223,11 @@ export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link
 export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
 <script src="/admin/bersama.js?v=5"></script>
 <script src="/admin/kunci_api.js?v=2"></script>`);
+
+/* Biaya Claude Bot Laporan BNPB (/admin/biaya-bot, admin saja): harian dari D1 bl_biaya, per kegiatan dan per laporan dari ringkasan mesin bot. Data dari /api/wa/biaya/ringkas. */
+export const halamanBiayaBot = () => halaman("biaya-bot", "Memuat biaya bot…", `<link href="/admin/biaya_bot.css?v=1" rel="stylesheet">
+<script src="/admin/bersama.js?v=5"></script>
+<script src="/admin/biaya_bot.js?v=1"></script>`);
 
 /* Buku kontak pemangku kepentingan (/admin/kontak): kepala daerah, BPBD, TNI, Polri, dll. Data dari /api/kontak/admin (src/kontak.js). */
 export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<link href="/admin/akun.css?v=5" rel="stylesheet">

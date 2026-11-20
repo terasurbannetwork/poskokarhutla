@@ -21,6 +21,7 @@ import {buatWilayah} from "../../src/lapor_wilayah.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
+const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `public/lapor/tr/${b}.json`), "utf8")); } catch { return null; } };   // kamus statis, sama dengan Worker
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
@@ -229,7 +230,7 @@ async function pesan(body) {
   if (h.pelapor) d.pelapor[wa] = h.pelapor;
   simpan(d);
   const out = {...keluaran(h, h.sesi), ...tambahan, pelapor: h.pelapor ? {nama: h.pelapor.nama, peran: h.pelapor.peran} : null};
-  if (bahasa !== "id") { const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa); Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa, pilihanAsli: out.pilihan}); }
+  if (bahasa !== "id") { const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa, kamusTr(bahasa)); Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa, pilihanAsli: out.pilihan}); }
   return [200, out];
 }
 

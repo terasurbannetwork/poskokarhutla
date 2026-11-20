@@ -463,6 +463,17 @@ Sebelum menyentuh pelaporan kejadian lewat chatbot (identitas pelapor, isian dat
 
 Aturan berhentinya sama dengan §2.1. Kode memegang alur, AI hanya mengurai berkutipan; angka tanpa kutipan dibuang dan kosong tidak pernah jadi nol; laporan warga tidak pernah membuat kejadian resmi atau tampil publik; nomor WA pelapor hanya di monitoring staf, tidak pernah di repo; tinjau di `http://localhost:8800/lapor/` (server tinjau menjawab `/api/lapor/*` dengan mesin lokal, tidak meneruskan ke produksi).
 
+### 2.31 Data lanjutan BPBD (Lapor Bencana tahap 2 dan 3: rumah, prasarana, pengungsi, korban per objek, tim, penutupan): baca dulu, baru bangun
+
+Sebelum menyentuh pendataan per objek sesudah laporan awal BPBD (rumah per rumah, prasarana, tempat pengungsian dan pengungsi per jiwa, korban per orang, usaha, kebutuhan, tim BPBD, pertanyaan harian, penutupan dan versi beku), baca dokumen di
+`data/kajian-bnpb/lapor-lanjutan/` dengan urutan otoritas ini (kode di `src/lapor_lanjut*.js`, langkah tahap 2 di `src/lapor_mesin.js`, `migrations/0161_lapor_data.sql`, `tests/lapor/lanjut_*` milik `warga-api`; `public/lapor/data/**` dan rincian di `public/lapor/meja*` milik `layar-peta`):
+
+1. `KEPUTUSAN-LANJUTAN.md`: keputusan pemilik K1–K8, rancangan D1–D17, pertanyaan terbuka Q1–Q10 dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (spek objek, penanda, rekap, kondisi akhir), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LJ-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Hanya tingkat `bpbd` terkonfirmasi; angka rekap dihitung dari daftar, tidak diketik; kosong tidak pernah jadi nol; tidak ada pencocokan orang; data pribadi tidak pernah di `public/` atau pesan WA ke luar tim; penutupan dan fase Buku Besar hanya lewat penerimaan staf; versi beku tidak pernah ditimpa.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

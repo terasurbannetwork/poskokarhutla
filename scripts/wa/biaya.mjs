@@ -31,6 +31,12 @@ export function catat(dasar, { usd, proyek = null, kini = new Date(), kegiatan =
 // -> [{kegiatan, label, usd}] bulan ini, terbesar dulu
 export const perKegiatan = (dasar, kini = new Date()) => Object.entries(baca(dasar).kegiatan[bulanWib(kini)] || {})
   .map(([k, usd]) => ({ kegiatan: k, label: KEGIATAN[k] || k, usd: Number(usd) || 0 })).filter((x) => x.usd > 0).sort((a, b) => b.usd - a.usd)
+// Ringkasan untuk pemantau /admin/biaya-bot (dikirim mesin tiap 10 menit): 12 bulan dan 200 laporan terakhir, tanpa nomor.
+export function ringkas(dasar) {
+  const s = baca(dasar), bln = Object.keys(s.bulan).sort().slice(-12), pr = Object.entries(s.proyek).sort((a, c) => c[1].waktu - a[1].waktu).slice(0, 200)
+  return { bulan: Object.fromEntries(bln.map((b) => [b, Number(s.bulan[b]) || 0])), kegiatan: Object.fromEntries(Object.keys(s.kegiatan).sort().slice(-12).map((b) => [b, s.kegiatan[b]])),
+    proyek: Object.fromEntries(pr.map(([id, v]) => [id, { usd: Number(v.usd) || 0, waktu: Math.round(Number(v.waktu)) || 1 }])) }
+}
 export const proyek = (dasar, id) => Number(baca(dasar).proyek[id]?.usd || 0)
 export const bulan = (dasar, kini = new Date()) => Number(baca(dasar).bulan[bulanWib(kini)] || 0)
 export const terakhir = (dasar, n = 5) => Object.entries(baca(dasar).proyek).sort((a, b) => b[1].waktu - a[1].waktu).slice(0, n).map(([id, v]) => ({ id, usd: v.usd }))

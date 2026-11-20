@@ -323,15 +323,23 @@ async function pesan(env, req, url, kini, ctx) {
   if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
   if (s.tolak) return galat(409, s.tolak);
   if (s.batas) return kirim(200, {balasan: s.teks, teksWa: s.teks, status: r.lama?.status || null});
-  return kirim(200, await keluarBahasa(model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa, saluran));
+  return kirim(200, await keluarBahasa(model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa, saluran, env));
 }
 /* balasan mesin (Indonesia) -> bahasa pilihan; angka dijaga dua arah di dariIndonesia, gagal = Indonesia.
    Pintu WA (pemilik 20 Nov 2026: "bot WA bisa bahasa daerah juga"): yang dikirim gateway adalah teksWa, jadi itu yang diterjemahkan. */
-async function keluarBahasa(model, out, bahasa, saluran = "web") {
-  if (!model || bahasa === "id") return out;
-  if (saluran === "wa") { if (!out.teksWa) return out; const tr = await dariIndonesia(model, {teks: out.teksWa, nama: out.pelapor?.nama || null}, bahasa); return Object.assign(out, {teksWa: tr.teks, bahasa}); }
+const KAMUS_TR = new Map();   // kamus statis per bahasa dari aset public/lapor/tr, sekali per isolat
+async function kamusTr(env, bahasa) {
+  if (!env?.ASSETS || bahasa === "id") return null;
+  if (!KAMUS_TR.has(bahasa)) KAMUS_TR.set(bahasa, env.ASSETS.fetch(new Request(`https://aset.lokal/lapor/tr/${bahasa}.json`)).then(r => r.ok ? r.json() : null).catch(() => null));
+  return KAMUS_TR.get(bahasa);
+}
+async function keluarBahasa(model, out, bahasa, saluran = "web", env = null) {
+  if (bahasa === "id") return out;
+  const kamus = await kamusTr(env, bahasa);
+  if (!model && !kamus) return out;
+  if (saluran === "wa") { if (!out.teksWa) return out; const tr = await dariIndonesia(model, {teks: out.teksWa, nama: out.pelapor?.nama || null}, bahasa, kamus); return Object.assign(out, {teksWa: tr.teks, bahasa}); }
   if (!out.balasan) return out;
-  const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa);
+  const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa, kamus);
   return Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa, pilihanAsli: out.pilihan});   // label Indonesia untuk aturan layar (pilihan tunggal, Lainnya)
 }
 async function bahasaGet(env, req, url, kini) {
@@ -458,7 +466,7 @@ async function fotoPost(env, req, url, kini, ctx) {
   if (m.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
   const h = m.h, prov = provDari(h.sesi), bahasa = bahasaSah(o.bahasa);
   return kirim(200, await keluarBahasa(modelDari(env), {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: fid, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null, akurasi: meta.akurasi ?? null,
-    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: h.sesi.foto.length, maks: MAKS_FOTO}}, bahasa, id.saluran));
+    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: h.sesi.foto.length, maks: MAKS_FOTO}}, bahasa, id.saluran, env));
 }
 /* satu foto atau video masuk ke laporan yang sedang diisi: putaran mesin + baris lapor_foto dalam satu batch D1. tulisR2 menulis berkas sesudah mesin menerima, buangR2 membuangnya bila batch gagal. */
 async function masukkanMedia(env, url, id, kini, baris, lama, info, kunci, tulisR2, buangR2) {
@@ -617,7 +625,7 @@ async function unggahSelesai(env, req, url, kini, uid) {
     await H.lpUnggahHapus(env, P, uid);
     const h = mm.h, prov = provDari(h.sesi);
     return kirim(200, await keluarBahasa(modelDari(env), {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: uid, jenis: "video", durasi: dRound, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null,
-      waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu}}, bahasaSah(u.bahasa), saluran));
+      waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu}}, bahasaSah(u.bahasa), saluran, env));
   } catch (e) {   // galat tak terduga: tidak meninggalkan berkas yatim
     if (selesai) await env.MEDIA.delete([kunci, kunciSampul]).catch(() => {});
     await H.lpUnggahHapus(env, P, uid).catch(() => {});

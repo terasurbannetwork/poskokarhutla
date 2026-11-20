@@ -437,6 +437,7 @@ const ULANG_FINAL = BL ? ARAH.buatUlangFinal({
   jalankan: async () => {
     const [Pr, O] = await Promise.all([import('../proyek.mjs'), muatOtomatis()])
     const h = await Pr.ulangFinal({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe })
+    if (typeof Pr.kirimBiaya === 'function') await Pr.kirimBiaya({ env: process.env, dep: O.depBawaan(process.env), dasar: RUMAH, log })   // pemantau /admin/biaya-bot
     // K18: proyek penanganan yang memilih *tunggu* dibangun begitu situs memuat lintasan siang (detak 10 menit yang sama).
     if (typeof Pr.ulangSatelit === 'function') {
       try { await Pr.ulangSatelit({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe, balasKe: (d, masuk) => balasanKe(d, '[satelit]', Number(masuk) || Date.now()) }) } catch (e) { log('[satelit] ulang gagal', String((e && e.message) || e)) }

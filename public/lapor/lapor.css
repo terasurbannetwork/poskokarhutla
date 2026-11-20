@@ -637,9 +637,19 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-alun-dampak{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .lp-alun-dampak span{padding:3px 10px;border-radius:999px;background:var(--surface);font-size:.75rem;font-weight:700}
 /* Alun-alun hidup (K59): peta, gugus, ikuti, bukti penanganan */
-.lp-peta-alun-kartu{display:grid;gap:8px;margin:0 16px;padding:12px;background:var(--card);border-radius:16px;box-shadow:var(--bayang)}
-.lp-peta-alun{height:clamp(260px,42vh,420px);border-radius:12px;overflow:hidden}
-.lp-peta-alun-kartu > p{margin:0;font-size:.75rem}
+/* Alun-alun: peta mengisi seluruh layar; saringan mengambang di atas, daftar kejadian panel terang di kiri (HP: lembar bawah) */
+#lAlun{overflow:hidden;padding:0!important}
+.lp-alun-peta{position:relative;flex:1;min-height:0;isolation:isolate}
+#petaAlun > .lp-peta-alun{position:absolute;inset:0}   /* menang atas .maplibregl-map{position:relative} */
+#lAlun #saringAlun{position:absolute;z-index:2;top:12px;left:12px;right:12px;margin:0!important}
+.lp-alun-panel{position:absolute;z-index:2;left:12px;right:12px;bottom:12px;max-height:42%;overflow-y:auto;overscroll-behavior:contain;background:color-mix(in oklab,var(--card) 94%,transparent);border:1px solid var(--line);border-radius:18px;box-shadow:var(--bayang)}
+#lAlun .lp-alun{padding:12px}
+.lp-alun-kartu.sorot{animation:lp-sorot 1.6s ease-out}
+@keyframes lp-sorot{0%,40%{box-shadow:0 0 0 3px var(--head-bg)}}
+@media (min-width:900px){
+  #lAlun #saringAlun{left:452px;right:16px;top:16px}
+  .lp-alun-panel{top:16px;left:16px;right:auto;bottom:auto;width:420px;max-height:calc(100% - 32px)}   /* setinggi isinya */
+}
 .lp-alun-warga{display:inline-flex;align-items:center;gap:6px;margin:4px 0 0;padding:4px 10px;justify-self:start;border-radius:999px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2);font-size:.75rem;font-weight:800}
 .lp-alun-warga svg{width:14px;height:14px}
 .lp-alun-berubah{background:var(--warn);color:var(--on-head)}
@@ -653,7 +663,6 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-alun-ikuti.aktif{background:color-mix(in oklab,var(--ok) 14%,var(--card));color:var(--ok);border-color:var(--ok)}
 .lp-alun-pop{display:grid;gap:2px;font:600 .8125rem/1.35 var(--font)}
 .lp-alun-pop small{color:var(--ink2)}
-@media (min-width:900px){.lp-peta-alun-kartu{margin:0 48px}}
 @media (min-width:900px){.lp-alun{grid-template-columns:repeat(auto-fill,minmax(380px,1fr));padding:16px 48px 48px}.lp-alun-kartu{grid-template-columns:150px minmax(0,1fr)}}
 
 /* Bantuan: kompartemen per kelompok, tanpa meluber (pemilik 19 Nov 2026: "kenapa sampai samping over") */
@@ -1943,6 +1952,9 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-dialog-bahasa::backdrop{background:color-mix(in oklab,var(--head-bg) 60%,transparent);backdrop-filter:blur(4px)}
 .lp-db-kepala{display:flex;align-items:center;gap:16px;padding:20px 24px;background:linear-gradient(135deg,var(--head-bg),var(--brand2));color:var(--on-head)}
 .lp-db-maskot{width:72px;flex:none}
+.lp-db-tutup{margin-left:auto;align-self:flex-start;flex:none;color:var(--on-head)}
+.lp-db-tutup svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.lp-db-tutup:hover{background:color-mix(in oklab,var(--on-head) 15%,transparent)}
 .lp-db-kepala h2{margin:0;font:800 1.375rem/1.2 var(--display,var(--font));color:var(--on-head)}
 .lp-db-kepala p{margin:4px 0 0;font-size:.875rem;opacity:.85}
 .lp-db-isi{display:grid;gap:16px;padding:20px 24px 24px;overflow-y:auto}

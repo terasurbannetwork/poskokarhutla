@@ -66,6 +66,7 @@ function teksWa(e, teks) {
   }
 }
 function tambah(dari, teks, {galat = false, foto = null, berkas = null, simpanKe = true} = {}) {
+  if (dari === "bot") teks = trStatis(teks);   // teks bot buatan layar dari kamus statis; balasan server sudah dalam bahasa pilihan
   const li = el("li", dari), sebelum = log.lastElementChild;
   if (galat) li.classList.add("lp-galat");
   const ganti = !sebelum || !sebelum.classList.contains(dari);
@@ -1187,14 +1188,17 @@ function gambarAlun() {
     k.append(m, tx); return w.replaceChildren(k);
   }
   w.replaceChildren(...daftar.map(x => kartuAlun(x, ikut)));
+  if (alunPeta) requestAnimationFrame(() => alunPeta.resize());
 }
 async function gambarPetaAlun(daftar) {
-  const wp = $("petaAlun"), titik = daftar.filter(x => x.titik);
-  wp.hidden = !titik.length; if (!titik.length) return;
-  try { await muatMaplibre(); } catch { wp.hidden = true; return; }
+  const wp = $("petaAlun"), titik = daftar.filter(x => x.titik);   // peta selalu tampil penuh; tanpa titik = seluruh Indonesia
+  try { await muatMaplibre(); } catch { return; }
   const fc = {type: "FeatureCollection", features: titik.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.titik.lon, x.titik.lat]},
     properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: tok(x.status === "selesai" ? "--ok" : "--warn")}}))};
-  const pas = () => { const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates); alunPeta.fitBounds(b, {padding: 48, maxZoom: 11, duration: 0}); };
+  const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
+    const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
+    const lebar = matchMedia("(min-width:900px)").matches;   // ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan saringan di atas
+    alunPeta.fitBounds(b, {padding: lebar ? {top: 110, bottom: 48, left: 440, right: 48} : {top: 100, bottom: 48 + innerHeight * .42, left: 32, right: 32}, maxZoom: 11, duration: 0}); };
   if (alunPeta) { alunPeta.getSource("alun")?.setData(fc); pas(); return; }
   alunPeta = new maplibregl.Map({container: wp.querySelector(".lp-peta-alun"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 4, attributionControl: {compact: true}});
   alunPeta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
@@ -1205,7 +1209,7 @@ async function gambarPetaAlun(daftar) {
     alunPeta.addLayer({id: "titik", type: "circle", source: "alun", filter: ["!", ["has", "point_count"]], paint: {"circle-color": ["get", "warna"], "circle-radius": 8, "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
     alunPeta.on("click", "kelompok", e => { const f = e.features[0]; alunPeta.getSource("alun").getClusterExpansionZoom(f.properties.cluster_id).then(z => alunPeta.easeTo({center: f.geometry.coordinates, zoom: z})); });
     alunPeta.on("click", "titik", e => { const p = e.features[0].properties, box = el("div", "lp-alun-pop"); box.append(el("b", null, p.judul), el("small", null, p.tempat), el("small", null, p.status));
-      const lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button"; lihat.addEventListener("click", () => document.getElementById(`alun-${p.id}`)?.scrollIntoView({behavior: "smooth", block: "center"})); box.append(lihat);
+      const lihat = el("button", "lp-teks-tombol", "Lihat kartu"); lihat.type = "button"; lihat.addEventListener("click", () => { const k = document.getElementById(`alun-${p.id}`); if (!k) return; k.scrollIntoView({behavior: "smooth", block: "nearest"}); k.classList.remove("sorot"); void k.offsetWidth; k.classList.add("sorot"); }); box.append(lihat);
       new maplibregl.Popup({offset: 10, closeButton: false}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(alunPeta); });
     for (const l of ["kelompok", "titik"]) { alunPeta.on("mouseenter", l, () => { alunPeta.getCanvas().style.cursor = "pointer"; }); alunPeta.on("mouseleave", l, () => { alunPeta.getCanvas().style.cursor = ""; }); }
     pas();
@@ -1241,28 +1245,59 @@ async function terjemahKartu() {   // satu putaran sekaligus; perubahan selama b
     .finally(() => { trJalan = null; if (trUlang) { trUlang = false; terjemahKartu(); } });
   return trJalan;
 }
-async function terjemahSekali() {
-  const b = bahasaKini(); if (b === "id") return;
-  const kamus = trBaca(b), sasaran = [];
+/* kamus statis per bahasa (public/lapor/tr/<kode>.json, dibuat scripts/lapor/tr_buat.mjs): semua teks tetap sudah diterjemahkan sebelumnya,
+   jadi layar berganti seketika tanpa menunggu AI (pemilik 20 Nov 2026: "semua statis, lu terjemahin aja semua dulu"). API hanya untuk teks tersusun saat jalan. */
+const kunciTr = t => String(t).replace(/\s+/g, " ").trim();
+const TR_VERSI = "20261120a";   // naikkan tiap kamus public/lapor/tr dibuat ulang
+const STATIS = new Map();   // kode -> {kunci: terjemahan} | Promise
+function muatStatis(b) {
+  if (!STATIS.has(b)) STATIS.set(b, fetch(`/lapor/tr/${b}.json?v=${TR_VERSI}`).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => { STATIS.set(b, k); return k; }));
+  return STATIS.get(b);
+}
+if (bahasaKini() !== "id") muatStatis(bahasaKini());   // diambil sejak awal, selagi animasi pembuka
+const statisSiap = b => { const k = STATIS.get(b); return k && !(k instanceof Promise) ? k : null; };
+const trStatis = t => { const b = bahasaKini(); if (b === "id") return t; const k = statisSiap(b); return k?.[kunciTr(t)] || t; };   // balon bot buatan layar
+function kumpulSasaran() {
+  const sasaran = [];
   for (const akar of AKAR_TR()) {
     const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT);
-    for (let n; (n = jalan.nextNode());) { const t = n.nodeValue.trim(); if (t.length > 1 && t.length <= 150 && /\p{L}{2}/u.test(t) && !/^LA-\d/.test(t) && !sudahTr.has(n) && !n.parentElement?.closest(LEWATI_TR)) sasaran.push({n, t}); }
-    for (const e of akar.querySelectorAll?.("[placeholder]") || []) if (!sudahTr.has(e)) sasaran.push({e, at: "placeholder", t: e.getAttribute("placeholder")});
+    for (let n; (n = jalan.nextNode());) { const t = kunciTr(n.nodeValue); if (t.length > 1 && t.length <= 600 && /\p{L}{2}/u.test(t) && !/^LA-\d/.test(t) && !sudahTr.has(n) && !n.parentElement?.closest(LEWATI_TR)) sasaran.push({n, t}); }
+    for (const e of akar.querySelectorAll?.("[placeholder]") || []) if (!sudahTr.has(e)) sasaran.push({e, at: "placeholder", t: kunciTr(e.getAttribute("placeholder"))});
   }
-  const belum = [...new Set(sasaran.map(x => x.t).filter(t => !(t in kamus)))];
+  return sasaran;
+}
+// teks Indonesia asli tiap simpul yang diterjemahkan, supaya ganti bahasa bisa di tempat tanpa muat ulang (pemilik 20 Nov 2026: "kenapa balik ke animasi")
+const ASLI_TR = new Map();   // simpul teks atau elemen -> teks asli
+function kembalikanAsli() {
+  for (const [x, v] of ASLI_TR) { if (x.isConnected) { if (x.nodeType === 3) x.nodeValue = v; else x.setAttribute("placeholder", v); } sudahTr.delete(x); }
+  ASLI_TR.clear();
+}
+function pasangTr(sasaran, kamus) {
+  for (const x of sasaran) { const tr = kamus[x.t]; if (!tr) continue;
+    const sp = x.n || x.e; if (sp.isConnected && !ASLI_TR.has(sp)) ASLI_TR.set(sp, x.n ? x.n.nodeValue : x.e.getAttribute(x.at));
+    if (x.n) { if (x.n.isConnected) { const v = x.n.nodeValue, kiri = v.match(/^\s*/)[0], kanan = v.match(/\s*$/)[0]; x.n.nodeValue = kiri + tr + kanan; sudahTr.add(x.n); } }
+    else if (x.e.isConnected) { x.e.setAttribute(x.at, tr); sudahTr.add(x.e); } }
+}
+// sinkron dari kamus statis: dipanggil langsung di MutationObserver (sebelum layar dilukis), jadi tidak ada kilasan bahasa Indonesia
+function terjemahStatis() { const b = bahasaKini(); if (b === "id") return; const k = statisSiap(b); if (k) pasangTr(kumpulSasaran(), k); }
+async function terjemahSekali() {
+  const b = bahasaKini(); if (b === "id") return;
+  const statis = await muatStatis(b), kamus = {...trBaca(b), ...statis}, sasaran = kumpulSasaran();
+  pasangTr(sasaran, kamus);
+  const belum = [...new Set(sasaran.filter(x => !kamus[x.t] && x.t.length <= 150).map(x => x.t))];
+  if (!belum.length) return 0;
   const potong = []; for (let i = 0; i < belum.length; i += 60) potong.push(belum.slice(i, i + 60));
+  const simpan = trBaca(b);
   await Promise.all(potong.map(async bag => {   // potongan dikirim bersamaan; butir null = gagal, dicoba lagi pada putaran berikutnya
     try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: b, teks: bag}), signal: AbortSignal.timeout(45000)});
-      const j = await r.json(); if (r.ok) bag.forEach((t, k) => { if (typeof j.teks?.[k] === "string" && j.teks[k]) kamus[t] = j.teks[k]; }); } catch {}
+      const j = await r.json(); if (r.ok) bag.forEach((t, k) => { if (typeof j.teks?.[k] === "string" && j.teks[k]) kamus[t] = simpan[t] = j.teks[k]; }); } catch {}
   }));
-  trTulis(b, kamus);
+  trTulis(b, simpan);
   if (bahasaKini() !== b) return;   // bahasa diganti sementara menunggu
-  for (const x of sasaran) { const tr = kamus[x.t]; if (!tr) continue;
-    if (x.n) { if (x.n.isConnected) { x.n.nodeValue = x.n.nodeValue.replace(x.t, tr); sudahTr.add(x.n); } }
-    else if (x.e.isConnected) { x.e.setAttribute(x.at, tr); sudahTr.add(x.e); } }
-  return sasaran.filter(x => !kamus[x.t] && (x.n ? x.n.isConnected : x.e.isConnected)).length;   // jumlah yang belum terjemah
+  pasangTr(sasaran, kamus);
+  return sasaran.filter(x => !kamus[x.t] && x.t.length <= 150 && (x.n ? x.n.isConnected : x.e.isConnected)).length;   // jumlah yang belum terjemah
 }
-{ let tunda = 0; const ob = new MutationObserver(() => { if (bahasaKini() === "id") return; clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 60); });
+{ let tunda = 0; const ob = new MutationObserver(() => { if (bahasaKini() === "id") return; terjemahStatis(); clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 60); });
   ob.observe(document.body, {childList: true, subtree: true}); setTimeout(terjemahKartu, 0); }
 /* jendela pilih bahasa saat pertama membuka situs (sesudah animasi pembuka); dikelompokkan per wilayah (pemilik 20 Nov 2026: "bagusin") */
 const WILAYAH_BAHASA = [["Nasional", ["id", "en"]], ["Jawa", ["jv", "su", "mad"]], ["Bali dan Nusa Tenggara", ["ban", "sas"]],
@@ -1273,12 +1308,15 @@ async function dialogBahasa() {
   const d = el("dialog", "lp-dialog-bahasa"), kep = el("div", "lp-db-kepala"), m = el("div", "lp-db-maskot"), tx = el("div"), h = el("h2", null, "Pilih bahasa Anda");
   m.innerHTML = maskot("sapa"); h.id = "judulDialogBahasa"; d.setAttribute("aria-labelledby", h.id);
   const subJ = el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."); tx.append(h, subJ);
-  kep.append(m, tx);
+  // tombol tutup kanan atas (pemilik 20 Nov 2026: "di kanan atas ada buat closenya"); sama dengan Esc
+  const bTutup = el("button", "lp-ikon lp-db-tutup"); bTutup.type = "button"; bTutup.setAttribute("aria-label", "Tutup"); bTutup.append(ikon("i-tutup"));
+  bTutup.addEventListener("click", () => d.dispatchEvent(new Event("cancel")));
+  kep.append(m, tx, bTutup);
   const kode = new Map(daftarBahasa.map(b => [b.kode, b.nama])), kini = bahasaKini(), isi = el("div", "lp-db-isi");
   // klik hanya memilih; baru dipakai sesudah Lanjut (pemilik 20 Nov 2026: "diokein dulu baru dia bisa lanjut")
   let terpilih = kini; const tombol = new Map();
   const pakai = b => { const lama = bahasaKini(); try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove();
-    if (lama !== b && lama !== "id") return location.reload();   // dari bahasa daerah ke bahasa lain: muat ulang supaya teks Indonesia asli diterjemahkan lagi
+    if (lama !== b) kembalikanAsli();   // teks Indonesia asli dipulihkan dulu, lalu diterjemahkan ke bahasa baru; tanpa muat ulang dan tanpa animasi pembuka
     chipBahasa(); labelBahasaMenu(); terjemahKartu(); };
   // pratinjau: judul, keterangan, dan tombol Lanjut langsung memakai bahasa yang dipilih (pemilik 20 Nov 2026), dari simpanan atau satu permintaan terjemah
   let urutPratinjau = 0;
@@ -1286,11 +1324,11 @@ async function dialogBahasa() {
     const grup = [...d.querySelectorAll(".lp-db-grup h3")], asli = ["Pilih bahasa Anda", "Sigap akan bertanya dan menjawab dalam bahasa ini.", `Lanjut dalam bahasa ${nama}`, ...grup.map(x => x.dataset.asli ||= x.textContent)];
     const pasang = t => { if (no !== urutPratinjau) return; h.textContent = t[0]; subJ.textContent = k === "en" ? t[1] : `${t[1]} Choose your language.`; lanjut.lastChild.textContent = t[2]; grup.forEach((x, i) => { x.textContent = t[3 + i]; }); };
     if (k === "id") return pasang(asli);
-    const kamus = trBaca(k), belum = asli.filter(t => !kamus[t]);
+    const kamus = {...trBaca(k), ...await muatStatis(k)}, belum = asli.filter(t => !kamus[t]);   // kamus statis dulu: pratinjau seketika
     pasang(asli.map(t => kamus[t] || t));
     if (!belum.length) return;
     try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: k, teks: belum}), signal: AbortSignal.timeout(20000)});
-      const j = await r.json(); if (r.ok) belum.forEach((t, i) => { if (typeof j.teks?.[i] === "string" && j.teks[i]) kamus[t] = j.teks[i]; }); trTulis(k, kamus); } catch {}
+      const j = await r.json(); if (r.ok) belum.forEach((t, i) => { if (typeof j.teks?.[i] === "string" && j.teks[i]) kamus[t] = j.teks[i]; }); trTulis(k, {...trBaca(k), ...Object.fromEntries(belum.filter(t => kamus[t]).map(t => [t, kamus[t]]))}); } catch {}
     pasang(asli.map(t => kamus[t] || t)); };
   const tandai = () => { for (const [k, b] of tombol) { const on = k === terpilih; b.classList.toggle("aktif", on); b.setAttribute("aria-pressed", String(on)); }
     pratinjau(terpilih); };

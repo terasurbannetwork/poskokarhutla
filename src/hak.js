@@ -1587,7 +1587,7 @@ Object.assign(MATRIKS, {
   bl_versi:  {bl_mesin: ["baca", "tambah"]},
   bl_pola:   {bl_mesin: ["baca", "tambah", "ubah"]},
   bl_daftar: {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
-  bl_biaya:  {bl_mesin: ["baca", "tambah", "ubah"]},
+  bl_biaya:  {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
   bl_detak:  {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
 });
 export const pelakuBlMesin = {peran: "bl_mesin"}, pelakuBlStaf = {peran: "bl_staf"};
@@ -1717,6 +1717,8 @@ export const blDaftarSetuju = async (env, p, waSha) => !!(await sedia(env, p, "b
 export const blTerdaftar = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT wa_sha FROM bl_daftar WHERE status = 'setuju' ORDER BY wa_sha LIMIT 5000").all()).results.map(r => r.wa_sha);
 
 /* ---- biaya harian (A10, Q5), mikro-USD ---- */
+/* pemantau biaya /admin/biaya-bot: jumlah harian sejak tanggal (PK tanggal, paling banyak 400 baris) */
+export const blBiayaRentang = async (env, p, dari) => (await sedia(env, p, "bl_biaya", "baca", "SELECT tanggal, usd_mikro FROM bl_biaya WHERE tanggal >= ?1 ORDER BY tanggal LIMIT 400").bind(dari).all()).results;
 export const blBiayaBaca = async (env, p, tanggal) => (await sedia(env, p, "bl_biaya", "baca", "SELECT usd_mikro FROM bl_biaya WHERE tanggal = ?1").bind(tanggal).first())?.usd_mikro ?? 0;
 export const blBiayaTambah = async (env, p, tanggal, usdMikro) => (await sedia(env, p, "bl_biaya", "tambah", `INSERT INTO bl_biaya (tanggal, usd_mikro) VALUES (?1, ?2)
   ON CONFLICT (tanggal) DO UPDATE SET usd_mikro = bl_biaya.usd_mikro + excluded.usd_mikro RETURNING usd_mikro`).bind(tanggal, usdMikro).first()).usd_mikro;

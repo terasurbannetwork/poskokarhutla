@@ -37,7 +37,7 @@ const pasang = (id, status, v = 1, wa = A) => DB.prepare("INSERT INTO bl_proyek 
 
 uji("bl rute: tanpa kunci mesin 403, staf tanpa sesi 401", async () => {
   const rute = [["POST", "/api/wa/proyek"], ["POST", "/api/wa/proyek/status"], ["POST", "/api/wa/proyek/versi"], ["GET", "/api/wa/proyek/versi?id=P-010126-01"], ["POST", "/api/wa/proyek/pola"],
-    ["GET", "/api/wa/proyek/pola?jenis=harian"], ["GET", "/api/wa/terdaftar"], ["POST", "/api/wa/daftar"], ["POST", "/api/wa/detak"], ["GET", "/api/wa/biaya"], ["POST", "/api/wa/biaya"]];
+    ["GET", "/api/wa/proyek/pola?jenis=harian"], ["GET", "/api/wa/terdaftar"], ["POST", "/api/wa/daftar"], ["POST", "/api/wa/detak"], ["GET", "/api/wa/biaya"], ["POST", "/api/wa/biaya"], ["POST", "/api/wa/biaya/rinci"]];
   for (const [mt, j] of rute) for (const h of [{}, ADMIN, {authorization: "Bearer salah"}, {authorization: "mesin-rahasia"}]) {
     const r = await api(mt, j, mt === "POST" ? {wa_sha: A} : undefined, h); assert.equal(r.s, 403, `${mt} ${j} ${JSON.stringify(h)}`);
   }
@@ -246,6 +246,26 @@ uji("detak dan biaya: sebelumnya dikembalikan, biaya ditambah bukan ditimpa", as
   assert.equal((await m("GET", "/api/wa/biaya?tanggal=2026-11-18")).j.usd_mikro, 1500000);
   for (const u of [0, -5, 1.5, "10", 6e7]) assert.equal((await m("POST", "/api/wa/biaya", {tanggal: "2026-11-18", usd_mikro: u})).s, 400, String(u));
   assert.equal((await m("GET", "/api/wa/biaya?tanggal=x")).s, 400);
+});
+
+uji("pemantau biaya /admin/biaya-bot: rinci mesin ke R2, ringkas admin saja dengan harian D1", async () => {
+  assert.equal((await api("GET", "/api/wa/biaya/ringkas")).s, 401, "tanpa sesi admin");
+  assert.equal((await m("GET", "/api/wa/biaya/ringkas")).s, 401, "kunci mesin bukan admin");
+  const kosong = await api("GET", "/api/wa/biaya/ringkas", undefined, ADMIN); assert.equal(kosong.s, 200, kosong.t); assert.equal(kosong.j.rinci, null, "mesin belum mengirim");
+  await m("POST", "/api/wa/biaya", {usd_mikro: 2500000});
+  const sah = {bulan: {"2026-11": 42.77}, kegiatan: {"2026-11": {laporan: 37.29, rapikan: 0.06}}, proyek: {"P-191126-06": {usd: 27.2, waktu: Date.now() - 1000}}};
+  const k = await m("POST", "/api/wa/biaya/rinci", sah); assert.equal(k.s, 200, k.t);
+  for (const salah of [{...sah, bulan: {"2026-13": 1}}, {...sah, bulan: {"2026-11": -1}}, {...sah, bulan: {"2026-11": "1"}}, {...sah, kegiatan: {"2026-11": {"Laporan!": 1}}},
+    {...sah, proyek: {"6281200000001": {usd: 1, waktu: 1}}}, {...sah, proyek: {"P-191126-06": {usd: 1, waktu: 1.5}}}, {...sah, bulan: []}, {...sah, proyek: Object.fromEntries(Array.from({length: 201}, (_, i) => [`P-191126-${String(i % 100).padStart(2, "0")}${i >= 100 ? "x" : ""}`, {usd: 1, waktu: 1}]))}])
+    assert.equal((await m("POST", "/api/wa/biaya/rinci", salah)).s, 400, JSON.stringify(salah).slice(0, 80));
+  for (const salah of [{...sah, kegiatan: {"2026-11": {laporan: "1"}}}, {...sah, bulan: {"2026-11": 1e6 + 1}}])
+    assert.equal((await m("POST", "/api/wa/biaya/rinci", salah)).s, 400, JSON.stringify(salah).slice(0, 80));
+  assert.equal((await m("POST", "/api/wa/biaya/rinci", {...sah, isi: "x".repeat(70000)})).s, 413, "badan lewat 64 KB ditolak");
+  const r = await api("GET", "/api/wa/biaya/ringkas", undefined, ADMIN); assert.equal(r.s, 200, r.t);
+  assert.deepEqual(r.j.rinci.kegiatan, sah.kegiatan); assert.equal(r.j.rinci.proyek["P-191126-06"].usd, 27.2); assert.ok(r.j.rinci.diperbarui > 0);
+  assert.equal(r.j.hari_ini, HARI); assert.ok(r.j.harian.some(x => x.tanggal === HARI && x.usd_mikro >= 2500000), "harian dari D1 bl_biaya");
+  assert.ok(r.j.harian.every(x => x.tanggal >= r.j.dari), "hanya 90 hari terakhir");
+  assert.ok(!JSON.stringify(r.j).includes("wa_sha"));
 });
 
 uji("daftar staf /pelaporan: sesi staf saja, tanpa isian, bahan, wa_sha; nama pemegang dari daftar setuju", async () => {
