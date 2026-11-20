@@ -1962,3 +1962,11 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 @media (max-width:480px){.lp-cc2-daftar{grid-template-columns:minmax(0,1fr)!important}.lp-cc2-daftar a{overflow-wrap:anywhere}}
 @media (max-width:560px){.lp-bahasa-chip{padding:0;width:40px;justify-content:center}.lp-bahasa-chip span{display:none}#lChat .lp-chat-judul{min-width:0}#lChat .lp-chat-judul b,#lChat .lp-chat-judul small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 @media (max-width:560px){.lp-langkah-rtrw .lp-langkah-isi{grid-template-columns:minmax(0,1fr)!important}.lp-langkah-rtrw .lp-baris-isian{grid-template-columns:repeat(2,minmax(0,1fr))!important}.lp-langkah-rtrw .lp-isi input{width:100%;min-width:0}}
+/* tombol ganti bahasa: menu samping (layar lebar) dan beranda (HP) */
+.lp-bahasa-menu{display:flex;align-items:center;gap:10px;margin:8px 0 0;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:600 .875rem var(--font);cursor:pointer}
+.lp-bahasa-menu[hidden]{display:none!important}
+.lp-bahasa-menu svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-bahasa-menu:hover{background:var(--surface)}
+.lp-bahasa-hp{margin:0 0 12px;width:max-content;border-color:color-mix(in oklab,var(--on-head) 30%,transparent);background:color-mix(in oklab,var(--on-head) 12%,transparent);color:var(--on-head)}
+@media (min-width:900px){.lp-bahasa-hp{display:none!important}}
+@media (max-width:899px){.lp-tab .lp-bahasa-menu{display:none!important}}

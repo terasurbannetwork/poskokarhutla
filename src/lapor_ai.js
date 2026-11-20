@@ -311,7 +311,7 @@ async function pesan(env, req, url, kini, ctx) {
 async function keluarBahasa(model, out, bahasa) {
   if (!model || bahasa === "id" || !out.balasan) return out;
   const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa);
-  return Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa});
+  return Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa, pilihanAsli: out.pilihan});   // label Indonesia untuk aturan layar (pilihan tunggal, Lainnya)
 }
 async function bahasaGet(env, req, url, kini) {
   const lj = await lajuPublik(env, req, "lapor.bahasa", 120, kini); if (lj) return lj;

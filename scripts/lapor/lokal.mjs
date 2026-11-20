@@ -215,7 +215,7 @@ async function pesan(body) {
   if (h.pelapor) d.pelapor[wa] = h.pelapor;
   simpan(d);
   const out = {...keluaran(h, h.sesi), ...tambahan, pelapor: h.pelapor ? {nama: h.pelapor.nama, peran: h.pelapor.peran} : null};
-  if (bahasa !== "id") { const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa); Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa}); }
+  if (bahasa !== "id") { const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa); Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa, pilihanAsli: out.pilihan}); }
   return [200, out];
 }
 

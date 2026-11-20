@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=132" rel="stylesheet">
+<link href="/lapor/lapor.css?v=133" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -85,6 +85,7 @@
     <header class="lp-hero" style="--foto:url(/img/foto-pasca.jpg)">
       <div class="lp-hero-isi">
         <p class="lp-alis"><span class="lp-titik-hidup" aria-hidden="true"></span>Selamat datang di Lapor Bencana BNPB</p>
+        <button type="button" class="lp-bahasa-menu lp-bahasa-hp" hidden aria-label="Ganti bahasa"><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span>Indonesia</span></button>
         <h1 id="sapa">Lihat kejadian bencana? Laporkan di sini.</h1>
         <p class="lp-hero-sub">Laporan Anda diterima petugas BNPB dan diteruskan ke BPBD setempat. Pantau tindak lanjutnya lewat nomor laporan.</p>
         <div class="lp-hero-aksi">
@@ -351,6 +352,7 @@
     <button type="button" data-ke="alun"><svg aria-hidden="true"><use href="#i-pengungsian"/></svg>Alun-alun</button>
     <button type="button" data-ke="tentang"><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Cara melapor</button>
     <button type="button" data-ke="privasi"><svg aria-hidden="true"><use href="#i-status"/></svg>Kebijakan privasi</button>
+    <button type="button" class="lp-bahasa-menu" hidden aria-label="Ganti bahasa"><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span>Indonesia</span></button>
     <div class="lp-tab-profil" id="tabProfil" hidden><span class="lp-tab-avatar" id="tabAvatar"></span><span><b id="tabNama"></b><small id="tabWa"></small></span></div>
     <!-- Sigap di ruang kosong menu samping (pemilik 19 Nov 2026: "ini agar disini") -->
     <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
@@ -361,6 +363,6 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=105"></script>
+<script type="module" src="/lapor/lapor.js?v=108"></script>
 </body>
 </html>

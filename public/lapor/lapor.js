@@ -162,17 +162,17 @@ function kartuPilihan(j) {
     const lain = el("input"); lain.type = "text"; lain.placeholder = "Tulis kebutuhan lain, misalnya genset atau popok"; lain.maxLength = 120;
     const lLain = el("label", "lp-isi lp-lain"); lLain.append("Kebutuhan lain", lain); lLain.hidden = true;
     // pilihan "tidak ada" dan sejenisnya meniadakan pilihan lain, dan sebaliknya (pemilik 19 Nov 2026: "masa bisa milih belum ada kebutuhan mendesak tapi bisa milih yang lain")
-    const TUNGGAL = /^(Belum ada|Tidak ada|Tidak tahu|Semua masih)/i, tombol = [];
+    const TUNGGAL = /^(Belum ada|Tidak ada|Tidak tahu|Semua masih)/i, tombol = [], asli = i => (j.pilihanAsli || j.pilihan)[i];   // aturan memakai label Indonesia, bukan terjemahan
     const segar = () => { tombol.forEach((t, k) => t.setAttribute("aria-pressed", String(dipilih.has(k)))); s.disabled = !dipilih.size;
-      const iL = j.pilihan.indexOf("Lainnya"); lLain.hidden = !(iL >= 0 && dipilih.has(iL)); };
+      const iL = (j.pilihanAsli || j.pilihan).indexOf("Lainnya"); lLain.hidden = !(iL >= 0 && dipilih.has(iL)); };
     j.pilihan.forEach((o, i) => { const b = tombolOpsi(o, j.ket?.[i], () => {
         if (dipilih.has(i)) dipilih.delete(i);
-        else { if (TUNGGAL.test(o)) dipilih.clear(); else for (const k of [...dipilih]) if (TUNGGAL.test(j.pilihan[k])) dipilih.delete(k); dipilih.add(i); }
-        segar(); if (o === "Lainnya" && !lLain.hidden) lain.focus(); }); tombol[i] = b;
+        else { if (TUNGGAL.test(asli(i))) dipilih.clear(); else for (const k of [...dipilih]) if (TUNGGAL.test(asli(k))) dipilih.delete(k); dipilih.add(i); }
+        segar(); if (asli(i) === "Lainnya" && !lLain.hidden) lain.focus(); }); tombol[i] = b;
       const u = el("span", "lp-opsi-ubin"); u.append(ikon(ikonKebutuhan(o))); b.prepend(u); b.setAttribute("aria-pressed", "false");
       kotak.get(j.grup?.[i] || "").append(b); });
     const s = el("button", "lp-utama", "Simpan pilihan"); s.type = "button"; s.disabled = true;
-    s.addEventListener("click", () => kirim({pilih: [...dipilih], lain: lain.value.trim(), tampil: [...dipilih].map(i => j.pilihan[i] === "Lainnya" && lain.value.trim() ? `Lainnya: ${lain.value.trim()}` : j.pilihan[i]).join(", ")}));
+    s.addEventListener("click", () => kirim({pilih: [...dipilih], lain: lain.value.trim(), tampil: [...dipilih].map(i => asli(i) === "Lainnya" && lain.value.trim() ? `Lainnya: ${lain.value.trim()}` : j.pilihan[i]).join(", ")}));
     isi.append(d, lLain, s); return;
   }
   if (j.pilihan.join("|") === "Kirim|Ubah|Batal") { // menu ringkasan: tiga aksi berbobot berbeda
@@ -508,13 +508,19 @@ function kartuFoto(j) {
 
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
    gaya sama dengan pembuka (.lp-pembuka), maskot senang; sekali per nomor tiket supaya tidak muncul lagi saat riwayat chat dimuat ulang */
+const TEKS_TERIMA = ["Laporan terkirim", "Terima kasih", "Nomor tiket", "Laporan Anda kami teruskan ke petugas BNPB dan BPBD setempat.", "Ketuk di mana saja untuk lanjut"];
+/* terjemahan layar terima kasih disiapkan lebih dulu: elemen tersembunyi berisi teksnya ikut diterjemahkan penerjemah halaman dan masuk simpanan */
+function hangatkanTerima() { if (bahasaKini() === "id" || document.querySelector(".lp-tr-hangat")) return; const h = el("div", "lp-tr-hangat"); h.hidden = true;
+  for (const t of TEKS_TERIMA) h.append(el("span", null, t)); document.body.append(h); }
 function ucapanTerimaKasih(nomor) {
   const kunci = `lapor-tk-${nomor}`; try { if (sessionStorage.getItem(kunci) || localStorage.getItem(kunci)) return; localStorage.setItem(kunci, "1"); } catch { return; }
   const pb = el("div", "lp-pembuka lp-terima"); pb.setAttribute("role", "status");
   const riak = el("span", "lp-pb-riak"); riak.setAttribute("aria-hidden", "true"); riak.append(el("i"), el("i"), el("i"));
   const m = el("div", "lp-pembuka-maskot"); m.innerHTML = maskot("senang");
-  pb.append(riak, m, el("p", "lp-pembuka-sapa", "Laporan terkirim"), el("p", "lp-pembuka-judul", `Terima kasih${cache.pelapor ? `, ${cache.pelapor}` : ""}!`),
-    el("p", "lp-pembuka-bnpb", `Nomor tiket ${nomor}. Laporan Anda kami teruskan ke petugas BNPB dan BPBD setempat.`), el("p", "lp-terima-lewati", "Ketuk di mana saja untuk lanjut"));
+  // teks tetap dipisah dari nama dan nomor supaya terjemahannya sudah ada di perangkat (disiapkan saat chat dibuka, hangatkanTerima)
+  const judul = el("p", "lp-pembuka-judul"); judul.append(el("span", null, TEKS_TERIMA[1]), cache.pelapor ? el("span", "lp-nama-orang", `, ${cache.pelapor}!`) : "!");
+  const bnpb = el("p", "lp-pembuka-bnpb"); bnpb.append(el("span", null, TEKS_TERIMA[2]), " ", el("b", "lp-tk-nomor", nomor), el("br"), el("span", null, TEKS_TERIMA[3]));
+  pb.append(riak, m, el("p", "lp-pembuka-sapa", TEKS_TERIMA[0]), judul, bnpb, el("p", "lp-terima-lewati", TEKS_TERIMA[4]));
   document.body.append(pb);
   const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => pb.remove(), 700); };
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1500 : 5000);
@@ -865,7 +871,7 @@ function tampilDaftarLaporan() {
   w.replaceChildren(...isi);
 }
 async function bukaChat() {
-  ke("chat"); chipBahasa();
+  ke("chat"); chipBahasa(); hangatkanTerima();
   if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
@@ -1222,16 +1228,17 @@ const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || 
    diterjemahkan sekali jalan lewat /api/lapor/terjemah, disimpan per bahasa di perangkat. Nama bahasa tidak diterjemahkan. */
 // seluruh halaman ikut bahasa pilihan (pemilik 20 Nov 2026: "bahasa itu dari awal, langsung pop up pilih bahasa"), termasuk layar terima kasih di akhir;
 // yang dilewati: nama bahasa, isian, balon pesan (bot dari server, pelapor kata-katanya sendiri), nama pelapor, nomor tiket, maskot, animasi pembuka
-const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, .lp-dialog-bahasa, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
+const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, .lp-dialog-bahasa, .lp-nama-orang, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
 const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr2-${b}`) || "{}"); } catch { return {}; } };
 try { for (const k of Object.keys(localStorage)) if (k.startsWith("lapor-tr-")) localStorage.removeItem(k); } catch {}   // cache lama bisa berisi teks asli dari terjemahan gagal
 const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr2-${b}`, JSON.stringify(m)); } catch {} };
 // akar yang diterjemahkan: kartu langkah, panel isian kanan, kepala chat, dan pemisah di log (bukan balon pesan: balon bot sudah dari server, balon pelapor kata-katanya sendiri)
 const AKAR_TR = () => [document.body];
-let trJalan = null, trUlang = false;
+let trJalan = null, trUlang = false, trCoba = 0;
 async function terjemahKartu() {   // satu putaran sekaligus; perubahan selama berjalan memicu satu putaran lagi sesudahnya
   if (trJalan) { trUlang = true; return trJalan; }
-  trJalan = terjemahSekali().finally(() => { trJalan = null; if (trUlang) { trUlang = false; terjemahKartu(); } });
+  trJalan = terjemahSekali().then(sisa => { if (sisa && ++trCoba <= 4) setTimeout(terjemahKartu, 4000 * trCoba); else if (!sisa) trCoba = 0; })   // ada yang belum terjemah: ulang sampai 4 kali
+    .finally(() => { trJalan = null; if (trUlang) { trUlang = false; terjemahKartu(); } });
   return trJalan;
 }
 async function terjemahSekali() {
@@ -1253,6 +1260,7 @@ async function terjemahSekali() {
   for (const x of sasaran) { const tr = kamus[x.t]; if (!tr) continue;
     if (x.n) { if (x.n.isConnected) { x.n.nodeValue = x.n.nodeValue.replace(x.t, tr); sudahTr.add(x.n); } }
     else if (x.e.isConnected) { x.e.setAttribute(x.at, tr); sudahTr.add(x.e); } }
+  return sasaran.filter(x => !kamus[x.t] && (x.n ? x.n.isConnected : x.e.isConnected)).length;   // jumlah yang belum terjemah
 }
 { let tunda = 0; const ob = new MutationObserver(() => { if (bahasaKini() === "id") return; clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 60); });
   ob.observe(document.body, {childList: true, subtree: true}); setTimeout(terjemahKartu, 0); }
@@ -1267,7 +1275,9 @@ async function dialogBahasa() {
   tx.append(h, el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."));
   kep.append(m, tx);
   const kode = new Map(daftarBahasa.map(b => [b.kode, b.nama])), kini = bahasaKini(), isi = el("div", "lp-db-isi");
-  const pilih = b => { try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove(); chipBahasa(); terjemahKartu(); };
+  const pilih = b => { const lama = bahasaKini(); try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove();
+    if (lama !== b && lama !== "id") return location.reload();   // dari bahasa daerah ke bahasa lain: muat ulang supaya teks Indonesia asli diterjemahkan lagi, bukan terjemahan sebelumnya
+    chipBahasa(); labelBahasaMenu(); terjemahKartu(); };
   const terpakai = new Set();
   for (const [wil, ks] of [...WILAYAH_BAHASA, ["Lainnya", daftarBahasa.map(b => b.kode)]]) {
     const ada = ks.filter(k => kode.has(k) && !terpakai.has(k)); if (!ada.length) continue;
@@ -1302,6 +1312,14 @@ async function chipBahasa() {
   const b = $("bBahasa"); if (!b) return; b.hidden = daftarBahasa.length < 2;
   $("bahasaKini").textContent = daftarBahasa.find(x => x.kode === bahasaKini())?.nama || "Bahasa Indonesia";
 }
+/* tombol bahasa di menu samping dan beranda (pemilik 20 Nov 2026: "agar ada pilih bahasa juga kalau tiba-tiba mau ganti") */
+async function labelBahasaMenu() {
+  if (!daftarBahasa) { try { daftarBahasa = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch { daftarBahasa = []; } }
+  const nama = (daftarBahasa.find(x => x.kode === bahasaKini())?.nama || "Bahasa Indonesia").replace(/^Bahasa /, "");
+  for (const b of document.querySelectorAll(".lp-bahasa-menu")) { b.hidden = daftarBahasa.length < 2; b.querySelector("span").textContent = nama; }
+}
+for (const b of document.querySelectorAll(".lp-bahasa-menu")) b.addEventListener("click", () => dialogBahasa());
+labelBahasaMenu();
 $("bBahasa")?.addEventListener("click", () => tanyaBahasa(() => { tambah("bot", "Baik. Pesan berikutnya dijawab dalam bahasa pilihan Anda.", {simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); else fPesan.hidden = false; }, true));
 async function tanyaBahasa(lanjut, paksa = false) {
   let sudah = null; try { sudah = localStorage.getItem("lapor-bahasa"); } catch {}
