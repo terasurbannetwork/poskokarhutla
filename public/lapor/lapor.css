@@ -1932,3 +1932,9 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-nomor-chat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;width:100%}
 .lp-nomor-chat .lp-nomor-isi input{flex:1;min-width:0;min-height:48px;border:0;background:transparent;padding:0 12px;font:600 1rem var(--font)}
 .lp-nomor-chat .lp-utama{min-height:48px;padding:0 20px}
+.lp-bahasa-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand);font:700 .8125rem var(--font);cursor:pointer;white-space:nowrap}
+.lp-bahasa-chip[hidden]{display:none}
+.lp-bahasa-chip svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+@media (max-width:560px){.lp-bahasa-chip span{max-width:90px;overflow:hidden;text-overflow:ellipsis}}
+#kartuLangkah .lp-bahasa-kisi{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr))!important;gap:8px}
+#kartuLangkah .lp-bahasa-kisi button{min-height:44px;padding:8px 12px}

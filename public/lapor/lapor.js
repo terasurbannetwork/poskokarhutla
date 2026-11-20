@@ -858,9 +858,9 @@ function tampilDaftarLaporan() {
   w.replaceChildren(...isi);
 }
 async function bukaChat() {
-  ke("chat");
+  ke("chat"); chipBahasa();
   if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
-    tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }
+    tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor), true); }   // bahasa ditanya tiap laporan baru (pemilik 20 Nov 2026 "mana pilihan bahasanya")
 }
 
 /* bantuan: definisi juklak dan pertanyaan umum */
@@ -1225,6 +1225,13 @@ function tanyaNomor(lanjut) {
 /* pilihan bahasa di dalam chat (pemilik 20 Nov 2026: "nanti disuruh pilih ada di chat bot nya"): ditanya sekali saat chat pertama dibuka,
    bisa diganti dengan mengetik "bahasa". Daftar dari server: tanpa model AI hanya Indonesia, pertanyaan dilewati. */
 let daftarBahasa = null;
+/* tombol bahasa di kepala chat: bahasa yang dipakai selalu terlihat dan bisa diganti kapan saja (pemilik 20 Nov 2026 "mana pilihan bahasanya") */
+async function chipBahasa() {
+  if (!daftarBahasa) { try { daftarBahasa = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch { daftarBahasa = []; } }
+  const b = $("bBahasa"); if (!b) return; b.hidden = daftarBahasa.length < 2;
+  $("bahasaKini").textContent = daftarBahasa.find(x => x.kode === bahasaKini())?.nama || "Bahasa Indonesia";
+}
+$("bBahasa")?.addEventListener("click", () => tanyaBahasa(() => { tambah("bot", "Baik. Pesan berikutnya dijawab dalam bahasa pilihan Anda.", {simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); else fPesan.hidden = false; }, true));
 async function tanyaBahasa(lanjut, paksa = false) {
   let sudah = null; try { sudah = localStorage.getItem("lapor-bahasa"); } catch {}
   if (sudah && !paksa) return lanjut();
@@ -1233,7 +1240,7 @@ async function tanyaBahasa(lanjut, paksa = false) {
   tambah("bot", "*Pilih bahasa percakapan*\nSaya bisa menjawab dalam bahasa Indonesia, bahasa Inggris, atau bahasa daerah Anda. Petugas membaca terjemahannya dan teks asli Anda.", {simpanKe: false});
   const kisi = el("div", "lp-opsi lp-bahasa-kisi");
   for (const b of daftarBahasa) kisi.append(tombolOpsi(b.nama, null, () => {
-    try { localStorage.setItem("lapor-bahasa", b.kode); } catch {}
+    try { localStorage.setItem("lapor-bahasa", b.kode); } catch {} chipBahasa();
     wadah.replaceChildren(); tambah("saya", b.nama, {simpanKe: false}); lanjut();
   }));
   wadah.replaceChildren(kisi); fPesan.hidden = true;
@@ -1244,12 +1251,12 @@ async function tanyaBahasa(lanjut, paksa = false) {
 async function mulai(nomor, {diChat = false} = {}) {
   wa = String(nomor); simpan.tulis("lapor-wa", wa); // localStorage JSON bisa mengembalikan angka; nomor selalu teks
   cache = simpan.baca(kunciCache()) || {transkrip: [], laporan: []};
-  for (const t of cache.transkrip) tambah(t.dari, t.teks, {foto: t.foto, berkas: t.berkas, simpanKe: false});
-  if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true});
+  // dari chat (nomor baru diisi): riwayat lama tidak ditampilkan, supaya tidak tercampur dengan percakapan baru yang bisa berbahasa lain
+  if (!diChat) { for (const t of cache.transkrip) tambah(t.dari, t.teks, {foto: t.foto, berkas: t.berkas, simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); }
   tampilBantu(); tampilBeranda(); if (!diChat) ke("beranda");
   try {
     const j = await (await fetch(`/api/lapor/sesi?wa=${nomor}`, {signal: AbortSignal.timeout(15000)})).json();
-    if (j.status && !["terkirim", "batal"].includes(j.status)) {
+    if (!diChat && j.status && !["terkirim", "batal"].includes(j.status)) {
       if (!cache.transkrip.length) for (const t of j.transkrip || []) tambah(t.dari === "pelapor" ? "saya" : t.dari, t.teks || (t.lokasi ? "Lokasi dibagikan" : ""));
       terapkan(j);
     }
@@ -1267,10 +1274,10 @@ $("fNomor").addEventListener("submit", e => {
   mulai(`62${iNomor.value}`);
 });
 const tersimpan = simpan.baca("lapor-wa");
-/* pembuka: maskot dan sapaan, sekali per sesi peramban */
+/* pembuka: maskot dan sapaan tiap halaman dibuka (pemilik 20 Nov 2026 "animasinya mana yang di awal"); ketuk untuk melewati */
 $("maskotHero").innerHTML = maskot("sapa");
 if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
-let pernah = false; try { pernah = sessionStorage.getItem("lapor-pembuka") === "1"; sessionStorage.setItem("lapor-pembuka", "1"); } catch {}
+const pernah = false;
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Lapor Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
