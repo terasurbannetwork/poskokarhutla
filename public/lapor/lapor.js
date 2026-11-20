@@ -1272,7 +1272,7 @@ async function dialogBahasa() {
   if (daftarBahasa.length < 2) return;
   const d = el("dialog", "lp-dialog-bahasa"), kep = el("div", "lp-db-kepala"), m = el("div", "lp-db-maskot"), tx = el("div"), h = el("h2", null, "Pilih bahasa Anda");
   m.innerHTML = maskot("sapa"); h.id = "judulDialogBahasa"; d.setAttribute("aria-labelledby", h.id);
-  tx.append(h, el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."));
+  const subJ = el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."); tx.append(h, subJ);
   kep.append(m, tx);
   const kode = new Map(daftarBahasa.map(b => [b.kode, b.nama])), kini = bahasaKini(), isi = el("div", "lp-db-isi");
   // klik hanya memilih; baru dipakai sesudah Lanjut (pemilik 20 Nov 2026: "diokein dulu baru dia bisa lanjut")
@@ -1280,8 +1280,20 @@ async function dialogBahasa() {
   const pakai = b => { const lama = bahasaKini(); try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove();
     if (lama !== b && lama !== "id") return location.reload();   // dari bahasa daerah ke bahasa lain: muat ulang supaya teks Indonesia asli diterjemahkan lagi
     chipBahasa(); labelBahasaMenu(); terjemahKartu(); };
+  // pratinjau: judul, keterangan, dan tombol Lanjut langsung memakai bahasa yang dipilih (pemilik 20 Nov 2026), dari simpanan atau satu permintaan terjemah
+  let urutPratinjau = 0;
+  const pratinjau = async k => { const no = ++urutPratinjau, nama = kode.get(k)?.replace(/^Bahasa /, "") || "Indonesia";
+    const grup = [...d.querySelectorAll(".lp-db-grup h3")], asli = ["Pilih bahasa Anda", "Sigap akan bertanya dan menjawab dalam bahasa ini.", `Lanjut dalam bahasa ${nama}`, ...grup.map(x => x.dataset.asli ||= x.textContent)];
+    const pasang = t => { if (no !== urutPratinjau) return; h.textContent = t[0]; subJ.textContent = k === "en" ? t[1] : `${t[1]} Choose your language.`; lanjut.lastChild.textContent = t[2]; grup.forEach((x, i) => { x.textContent = t[3 + i]; }); };
+    if (k === "id") return pasang(asli);
+    const kamus = trBaca(k), belum = asli.filter(t => !kamus[t]);
+    pasang(asli.map(t => kamus[t] || t));
+    if (!belum.length) return;
+    try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: k, teks: belum}), signal: AbortSignal.timeout(20000)});
+      const j = await r.json(); if (r.ok) belum.forEach((t, i) => { if (typeof j.teks?.[i] === "string" && j.teks[i]) kamus[t] = j.teks[i]; }); trTulis(k, kamus); } catch {}
+    pasang(asli.map(t => kamus[t] || t)); };
   const tandai = () => { for (const [k, b] of tombol) { const on = k === terpilih; b.classList.toggle("aktif", on); b.setAttribute("aria-pressed", String(on)); }
-    lanjut.lastChild.textContent = `Lanjut dalam bahasa ${kode.get(terpilih)?.replace(/^Bahasa /, "") || "Indonesia"}`; };
+    pratinjau(terpilih); };
   const terpakai = new Set();
   for (const [wil, ks] of [...WILAYAH_BAHASA, ["Lainnya", daftarBahasa.map(b => b.kode)]]) {
     const ada = ks.filter(k => kode.has(k) && !terpakai.has(k)); if (!ada.length) continue;
