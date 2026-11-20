@@ -1275,20 +1275,27 @@ async function dialogBahasa() {
   tx.append(h, el("p", null, "Sigap akan bertanya dan menjawab dalam bahasa ini. Choose your language."));
   kep.append(m, tx);
   const kode = new Map(daftarBahasa.map(b => [b.kode, b.nama])), kini = bahasaKini(), isi = el("div", "lp-db-isi");
-  const pilih = b => { const lama = bahasaKini(); try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove();
-    if (lama !== b && lama !== "id") return location.reload();   // dari bahasa daerah ke bahasa lain: muat ulang supaya teks Indonesia asli diterjemahkan lagi, bukan terjemahan sebelumnya
+  // klik hanya memilih; baru dipakai sesudah Lanjut (pemilik 20 Nov 2026: "diokein dulu baru dia bisa lanjut")
+  let terpilih = kini; const tombol = new Map();
+  const pakai = b => { const lama = bahasaKini(); try { localStorage.setItem("lapor-bahasa", b); } catch {} d.close(); d.remove();
+    if (lama !== b && lama !== "id") return location.reload();   // dari bahasa daerah ke bahasa lain: muat ulang supaya teks Indonesia asli diterjemahkan lagi
     chipBahasa(); labelBahasaMenu(); terjemahKartu(); };
+  const tandai = () => { for (const [k, b] of tombol) { const on = k === terpilih; b.classList.toggle("aktif", on); b.setAttribute("aria-pressed", String(on)); }
+    lanjut.lastChild.textContent = `Lanjut dalam bahasa ${kode.get(terpilih)?.replace(/^Bahasa /, "") || "Indonesia"}`; };
   const terpakai = new Set();
   for (const [wil, ks] of [...WILAYAH_BAHASA, ["Lainnya", daftarBahasa.map(b => b.kode)]]) {
     const ada = ks.filter(k => kode.has(k) && !terpakai.has(k)); if (!ada.length) continue;
     const g = el("section", "lp-db-grup"), kisi = el("div", "lp-db-kisi"); g.append(el("h3", null, wil), kisi);
-    for (const k of ada) { terpakai.add(k); const b = el("button", k === kini ? "aktif" : ""); b.type = "button";
-      b.append(el("b", null, kode.get(k).replace(/^Bahasa /, ""))); if (bahasaTersimpan() && k === kini) b.append(el("small", null, "Dipakai")); else if (k === "id" && !bahasaTersimpan()) b.append(el("small", null, "Bawaan"));
-      b.addEventListener("click", () => pilih(k)); kisi.append(b); }
+    kisi.style.setProperty("--kol", kolomSimetris(ada.length));   // baris penuh ujung ke ujung, dibagi rata per kelompok
+    for (const k of ada) { terpakai.add(k); const b = el("button"); b.type = "button";
+      b.append(el("b", null, kode.get(k).replace(/^Bahasa /, "")), ikon("i-centang", "lp-db-centang"));
+      b.addEventListener("click", () => { terpilih = k; tandai(); }); b.addEventListener("dblclick", () => pakai(k)); tombol.set(k, b); kisi.append(b); }
     isi.append(g);
   }
+  const kaki = el("div", "lp-db-kaki"), lanjut = el("button", "lp-utama"); lanjut.type = "button"; lanjut.append(ikon("i-centang"), el("span"));
+  lanjut.addEventListener("click", () => pakai(terpilih)); kaki.append(lanjut);
   d.addEventListener("cancel", () => { try { if (!localStorage.getItem("lapor-bahasa")) localStorage.setItem("lapor-bahasa", "id"); } catch {} d.remove(); });   // Esc = tetap bahasa terakhir (Indonesia bila belum pernah memilih)
-  d.append(kep, isi); document.body.append(d); d.showModal(); (d.querySelector("button.aktif") || d.querySelector("button"))?.focus();
+  d.append(kep, isi, kaki); document.body.append(d); tandai(); d.showModal(); (d.querySelector("button.aktif") || d.querySelector("button"))?.focus();
 }
 
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */

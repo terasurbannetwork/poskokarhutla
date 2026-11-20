@@ -1970,3 +1970,12 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-bahasa-hp{margin:0 0 12px;width:max-content;border-color:color-mix(in oklab,var(--on-head) 30%,transparent);background:color-mix(in oklab,var(--on-head) 12%,transparent);color:var(--on-head)}
 @media (min-width:900px){.lp-bahasa-hp{display:none!important}}
 @media (max-width:899px){.lp-tab .lp-bahasa-menu{display:none!important}}
+/* pilihan bahasa terpilih: biru tua, tulisan putih, centang; tombol Lanjut di kaki (pemilik 20 Nov 2026) */
+.lp-db-kisi button .lp-db-centang{width:18px;height:18px;flex:none;opacity:0;fill:none;stroke:currentColor;stroke-width:2.4}
+.lp-db-kisi button.aktif{background:var(--head-bg)!important;border-color:var(--head-bg)!important;color:var(--on-head)!important}
+.lp-db-kisi button.aktif .lp-db-centang{opacity:1}
+.lp-db-kaki{padding:14px 24px 20px;border-top:1px solid var(--line);background:var(--card)}
+.lp-db-kaki .lp-utama{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;border-radius:14px}
+.lp-db-kaki .lp-utama svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4}
+.lp-db-kisi{grid-template-columns:repeat(var(--kol,4),minmax(0,1fr))!important}
+@media (max-width:560px){.lp-db-kisi{grid-template-columns:repeat(min(var(--kol,2),2),minmax(0,1fr))!important}}
