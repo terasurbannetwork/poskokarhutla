@@ -290,7 +290,7 @@ test('lewat batas waktu (20 Nov, harian 39 kejadian): draf pertama memakai deck 
   const h = A.pakaiDasar(ruang)
   assert.equal(path.basename(h.pptx), 'Laporan Kejadian Bencana Harian 201126.pptx')
   assert.ok(fs.existsSync(path.join(ruang, 'keluaran', 'Laporan Kejadian Bencana Harian 201126.pptx')))
-  assert.match(JSON.stringify(h.catatan), /kehabisan waktu/)
+  assert.match(JSON.stringify(h.catatan), /tidak sempat selesai/)
   const ruang2 = A.siapkanRuang({ dasar, id: 'P-201126-01', n: 2, sebelum: deck })
   assert.equal(A.pakaiDasar(ruang2), null, 'revisi tidak jatuh ke deck dasar')
   assert.equal(A.waktuAgen({}), 25 * 60e3)

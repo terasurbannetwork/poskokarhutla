@@ -17,7 +17,7 @@ const DI = path.dirname(fileURLToPath(import.meta.url))
 export const REPO = path.resolve(DI, '../..')
 const PEDOMAN_DIR = path.join(DI, 'agen')
 export const MODEL_AGEN = 'claude-opus-5-5'
-export const MAKS_GILIRAN = 80
+export const MAKS_GILIRAN = 120 // 20 Nov: 25 menit dengan langkah 17 dtk = ~88 giliran
 // 20 Nov 2026: 15 menit tidak cukup untuk laporan harian 39 kejadian (P-201126-01 lewat batas waktu tanpa deck); BL_AGEN_MENIT menimpa
 export const WAKTU_AGEN_MS = 25 * 60e3
 export const waktuAgen = (env = {}) => (Number(env.BL_AGEN_MENIT) > 0 ? Number(env.BL_AGEN_MENIT) * 60e3 : WAKTU_AGEN_MS)
@@ -30,7 +30,7 @@ export function pakaiDasar(ruang) {
     if (pptx('sebelum').length || dasar.length !== 1) return null
     fs.copyFileSync(path.join(ruang, 'dasar', dasar[0]), path.join(ruang, 'keluaran', dasar[0]))
     fs.writeFileSync(path.join(ruang, 'keluaran', 'hasil.json'), JSON.stringify({ pptx: dasar[0], ringkasan: 'Deck generator dipakai apa adanya.', perubahan: [],
-      catatan: { dicek: ['Claude kehabisan waktu sebelum selesai merapikan; draf ini deck generator tanpa penyempurnaan. Balas 1 untuk revisi bila perlu.'] }, tanya: [] }))
+      catatan: { dicek: ['Claude tidak sempat selesai merapikan (batas waktu atau batas langkah); draf ini deck generator tanpa penyempurnaan. Balas 1 untuk revisi bila perlu.'] }, tanya: [] }))
     return bacaHasil(ruang)
   } catch { return null }
 }
@@ -542,6 +542,8 @@ export async function jalankan(ctx, { jenis, id, ruang, prompt, sesi = null, pyB
   const a = r.akhir
   if (a.subtype !== 'success' || a.is_error) {
     const sl = selamatkan(); if (sl) return sl
+    // habis giliran atau anggaran sebelum deck ditulis = sama dengan lewat waktu (20 Nov: 53 giliran x 17 dtk; 25 menit bisa melewati 80 giliran)
+    if (['error_max_turns', 'error_max_budget_usd'].includes(a.subtype)) { const dg = pakaiDasar(ruang); if (dg) return { sesi: r.sesiBaru, biaya: usd, hasil: dg } }
     const kode = a.subtype === 'error_max_budget_usd' ? 'anggaran' : a.subtype === 'error_max_turns' ? 'giliran' : 'jalan'
     throw Object.assign(new GalatAgen(kode, `agen berhenti: ${a.subtype}${a.errors?.length ? ' ' + String(a.errors[0]).slice(0, 160) : ''}`, usd), { sesi: r.sesiBaru })
   }
