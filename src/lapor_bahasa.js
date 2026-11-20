@@ -22,6 +22,8 @@ const SKEMA = {type: "object", properties: {teks: {type: "string"}}, required: [
 const angkaDi = t => new Set(String(t).match(/\d+(?:[.,]\d+)?/g) || []);
 // dua arah: angka tidak boleh bertambah, hilang, atau berubah. ponytail: kata bilangan ("limang", "tiga") tidak terperiksa; batasnya dikenal,
 // mesin tetap meminta kutipan angka dari teks terjemahan, dan teks asli tersimpan berdampingan untuk diperiksa petugas
+// K72: terjemahan yang jauh lebih panjang dari aslinya bukan terjemahan (model dibelokkan menulis jawaban); dibuang, teks asli dipakai
+export const wajarPanjang = (asal, hasil) => String(hasil).length <= String(asal).length * 2.5 + 40;
 const angkaSama = (a, b) => { const x = angkaDi(a), y = angkaDi(b); return x.size === y.size && [...x].every(v => y.has(v)); };
 
 /* pesan pelapor -> bahasa Indonesia. Hasil {teks, asli, diterjemahkan}. */
@@ -33,7 +35,7 @@ export async function keIndonesia(model, teks, bahasa) {
 Rules: translate meaning only, add nothing. Keep every number exactly as written: digits stay digits, number words stay number words translated literally (do not convert words to digits or digits to words). Keep place names, people names, and road names unchanged. If the text is already Indonesian, return it unchanged.`, skema: SKEMA, teks: aman});
     const hasil = String(j?.teks || "").trim();
     if (!hasil) return {teks: asli, asli, diterjemahkan: false};
-    if (!angkaSama(aman, hasil)) return {teks: asli, asli, diterjemahkan: false}; // angka bertambah, hilang, atau berubah = tolak terjemahan
+    if (!angkaSama(aman, hasil) || !wajarPanjang(aman, hasil)) return {teks: asli, asli, diterjemahkan: false}; // angka berubah atau terlalu panjang = tolak terjemahan
     return {teks: hasil, asli, diterjemahkan: hasil !== asli};
   } catch { return {teks: asli, asli, diterjemahkan: false}; }
 }
@@ -56,7 +58,7 @@ export async function dariIndonesia(model, {teks, pilihan = null, ket = null, na
     const j = await model({sistem: `You translate messages from the BNPB disaster reporting assistant from Indonesian into ${bahasa === "lain" ? "simple Indonesian that a speaker of any Indonesian regional language understands (keep it Indonesian, just simpler)" : NAMA_BAHASA[bahasa]}.
 Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). Keep all numbers, ticket numbers (like LA-191126-01), phone numbers (112, 117), URLs, names, and placeholders in square brackets (like [NAMA]) exactly. Translate "pilihan" (button labels) and "ket" (button hints) item by item, same count and order; empty strings stay empty. Polite register. Output only the translation.`,
       skema, teks: JSON.stringify({teks: aman, pilihan: pAman || [], ket: kAman || []})});
-    if (!angkaSama(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return {teks, pilihan, ket}; // angka atau penanda nama hilang = kirim Indonesia
+    if (!angkaSama(aman, j?.teks || "") || !wajarPanjang(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return {teks, pilihan, ket}; // angka atau penanda nama hilang = kirim Indonesia
     return {teks: buka(j.teks), pilihan: pilihan && j?.pilihan?.length === pilihan.length ? j.pilihan.map(buka) : pilihan, ket: ket && j?.ket?.length === ket.length ? j.ket.map(buka) : ket};
   } catch { return {teks, pilihan, ket}; }
 }
@@ -81,6 +83,6 @@ async function terjemahSatu(model, teks, bahasa) {
     const j = await model({sistem: `You translate short user-interface labels of the BNPB disaster reporting app from Indonesian into ${NAMA_BAHASA[bahasa]}. Translate item by item, same count and order. Keep numbers, units, place names, and "WhatsApp", "GPS", "BNPB", "BPBD" unchanged. Short and polite. Output only the translations.`,
       skema, teks: JSON.stringify({teks})});
     if (!Array.isArray(j?.teks) || j.teks.length !== teks.length) return teks.map(() => null);
-    return teks.map((t, i) => typeof j.teks[i] === "string" && j.teks[i].trim() && angkaSama(t, j.teks[i]) ? j.teks[i] : null);
+    return teks.map((t, i) => typeof j.teks[i] === "string" && j.teks[i].trim() && angkaSama(t, j.teks[i]) && wajarPanjang(t, j.teks[i]) ? j.teks[i] : null);
   } catch { return teks.map(() => null); }
 }

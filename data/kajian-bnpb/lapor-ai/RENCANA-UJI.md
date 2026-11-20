@@ -235,3 +235,12 @@ Semua uji jalan tanpa jaringan dan tanpa kunci API (model ditiru rekaman) kecual
 - foto bertanda buram, lama, mirip, dan yang dikoreksi staf (dasar `T_BURAM` dan ambang);
 - median `lama_dibuka` dan `lama_tindak`;
 - jumlah tugas lewat tenggat tanpa tindakan.
+
+## 20. Gerbang topik dan larangan data (`tests/lapor/gerbang_topik.test.mjs`, K72)
+
+- Saringan kode menangkap permintaan data, upaya membelokkan, dan tugas umum AI; contoh cerita kejadian wajar tetap lolos.
+- Skema keluaran model: teks bebas hanya isian berkutipan; `tanggapan` dan `topik` enum.
+- Model palsu yang "nakal" (menjawab lewat tanggapan, isian, jenis) tidak bisa menaruh satu kata karangannya di balasan atau laporan.
+- Permintaan data: model tidak dipanggil, balasan templat, tidak tercatat sebagai kronologi.
+- Luar topik 3 kali: sesi tanpa model; plafon 30 panggilan model per sesi.
+- Penerjemah membuang hasil yang jauh lebih panjang dari aslinya.

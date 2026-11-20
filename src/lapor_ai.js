@@ -12,12 +12,12 @@ import {sesiMasuk} from "./masuk_sesi.js";
 import {hakKm} from "./kemitraan.js";
 import {bersihMedia} from "./media_bersih.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "./media_berkas.js";
-import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi, MAKS_TEKS_UI, PANJANG_TEKS_UI} from "./lapor_bahasa.js";
+import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi, MAKS_TEKS_UI, PANJANG_TEKS_UI, HURUF_PANGGILAN} from "./lapor_bahasa.js";
 import {samarkan} from "./samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab} from "./lapor_meja_hak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "./lapor_gugus.js";
 import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
-import {putaran, lengkap, T, waktuLapor} from "./lapor_mesin.js";
+import {putaran, lengkap, T, waktuLapor, saringTopik} from "./lapor_mesin.js";
 import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
@@ -298,7 +298,8 @@ async function pesan(env, req, url, kini, ctx) {
   if (batas) return batas;
   // bahasa pilihan (K58, D80-D82): web dan WA (gateway mengirim pilihan nomor itu), hanya bila model tersedia; pesan diterjemahkan ke Indonesia sebelum mesin, teks asli disimpan berdampingan
   const model = modelDari(env), bahasa = model ? bahasaSah(o.bahasa) : "id";
-  const terj = await keIndonesia(model, typeof o.teks === "string" ? o.teks.slice(0, 2000) : "", bahasa), teks = terj.teks;
+  const mentahTeks = typeof o.teks === "string" ? o.teks.slice(0, 2000) : "";
+  const terj = saringTopik(mentahTeks) ? {teks: mentahTeks, asli: mentahTeks, diterjemahkan: false} : await keIndonesia(model, mentahTeks, bahasa), teks = terj.teks;   // K72: pesan luar topik tidak diterjemahkan model
   if (/^(cek\s+)?status(\s+laporan)?$/i.test(teks.trim())) return statusLaporan(env, id);
   let lokasi = null;
   if (o.lokasi && typeof o.lokasi === "object") {
@@ -323,7 +324,7 @@ async function pesan(env, req, url, kini, ctx) {
   if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
   if (s.tolak) return galat(409, s.tolak);
   if (s.batas) return kirim(200, {balasan: s.teks, teksWa: s.teks, status: r.lama?.status || null});
-  return kirim(200, await keluarBahasa(model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa, saluran, env));
+  return kirim(200, await keluarBahasa(r.h.sesi?.tanpaModel ? null : model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa, saluran, env));
 }
 /* balasan mesin (Indonesia) -> bahasa pilihan; angka dijaga dua arah di dariIndonesia, gagal = Indonesia.
    Pintu WA (pemilik 20 Nov 2026: "bot WA bisa bahasa daerah juga"): yang dikirim gateway adalah teksWa, jadi itu yang diterjemahkan. */
@@ -901,6 +902,7 @@ async function agregatGet(env, req, url, kini) {
   return kirim(200, {dibuat: new Date(kini).toLocaleString("id-ID", {dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta"}), batas: BATAS_SEL, kolom: KOLOM_AGREGAT, baris});
 }
 
+const BATAS_TERJEMAH_HARI = 3000;
 /* terjemahan teks kartu (judul, tombol, placeholder) ke bahasa pilihan; tanpa data pelapor. Dibatasi per IP (biaya model); klien menyimpan hasilnya per bahasa. */
 async function terjemahPost(env, req, url, kini) {
   // 60 per jam habis dalam beberapa menit ganti bahasa (pemilik 20 Nov 2026: halaman tetap Indonesia); hasil disimpan per butir di cache colo supaya model jarang dipanggil
@@ -911,8 +913,11 @@ async function terjemahPost(env, req, url, kini) {
   if (bahasa === "id") return kirim(200, {teks});
   const c = globalThis.caches?.default, kunci = t => new Request(`https://cache.lokal/lapor/tr/${bahasa}/${encodeURIComponent(t)}`);
   const hasil = await Promise.all(teks.map(async t => { try { const r = c && await c.match(kunci(t)); return r ? await r.text() : null; } catch { return null; } }));
-  const belum = teks.filter((t, i) => hasil[i] == null);
-  if (belum.length) {
+  let hurufBelum = 0;   // K72: teks belum ter-cache per permintaan dibatasi 2 panggilan model, jadi plafon harian = panggilan, bukan permintaan
+  const belum = teks.filter((t, i) => hasil[i] == null).filter(t => (hurufBelum += t.length) <= HURUF_PANGGILAN * 2);
+  /* K72: plafon harian SELURUH situs untuk panggilan model di rute ini, supaya rute terjemahan tidak bisa dipakai sebagai layanan terjemah gratis.
+     Teks tetap halaman sudah di cache colo, jadi pemakaian wajar jauh di bawahnya; lewat plafon = butir null, klien tetap Indonesia dan mencoba lagi besok. */
+  if (belum.length && !(await laju(env, "global", "lapor.terjemah.model", [[24 * JAM, BATAS_TERJEMAH_HARI]], kini))) {
     const tr = await terjemahUi(modelDari(env), belum, bahasa);
     belum.forEach((t, j) => { const x = tr[j]; if (x == null) return; teks.forEach((u, i) => { if (u === t) hasil[i] = x; });
       if (c) c.put(kunci(t), new Response(x, {headers: {"cache-control": "public, max-age=2592000"}})).catch(() => {}); });

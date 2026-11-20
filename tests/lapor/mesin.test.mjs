@@ -33,7 +33,7 @@ test("angka tanpa kutipan atau kutipan tanpa angka itu ditolak; 0 hanya dari kal
   ], jenis_tebak: [], darurat_jiwa: false, tanggapan: "Ada 3 rumah, aman."}, teks, "banjir");
   assert.deepEqual(Object.keys(v.isian).sort(), ["meninggal", "rumah_berat"]);
   assert.equal(v.isian.rumah_berat.nilai, 3);
-  assert.equal(v.tanggapan, "", "tanggapan berangka atau berkata aman dibuang");
+  assert.equal(v.tanggapan, "", "tanggapan bukan id (kalimat bebas model) dibuang");
 });
 
 test("nomor baru: identitas dulu, cerita pertama disimpan dan dipakai sesudahnya (tanpa model)", async () => {
@@ -95,9 +95,9 @@ test("dengan model: uraian berkutipan masuk, kelompok ditanya sekaligus, lokasi 
   const model = async ({teks}) => {
     if (teks.includes("banjir")) return {isian: [{nama: "lokasi", nilai: "Desa Air Tenang, Aceh Tamiang", kutipan: "Desa Air Tenang, Aceh Tamiang"}],
       jenis_tebak: [{jenis: "banjir", subjenis: "Banjir luapan sungai", yakin: 0.8}, {jenis: "banjir", subjenis: "Banjir bandang", yakin: 0.5}],
-      darurat_jiwa: false, tanggapan: "Terima kasih sudah melapor."};
+      darurat_jiwa: false, tanggapan: "terima_kasih", topik: "bencana"};
     return {isian: [{nama: "rumah_berat", nilai: "3", kutipan: "tiga rusak berat"}, {nama: "mengungsi_jiwa", nilai: "12", kutipan: "dua belas orang mengungsi"}],
-      jenis_tebak: [], darurat_jiwa: false, tanggapan: "Baik, kami catat."};
+      jenis_tebak: [], darurat_jiwa: false, tanggapan: "terima_kasih", topik: "bencana"};
   };
   const pelapor = {wa: "6280000000000", nama: "Budi", peran: "warga"};
   let h = await obrol(["lapor", "1", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "1", "1", ...kr1("banjir"), "1", "Ada banjir, air masuk rumah warga di Desa Air Tenang, Aceh Tamiang"], {model, pelapor});

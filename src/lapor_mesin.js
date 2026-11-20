@@ -59,7 +59,7 @@ export function validasiUraian(keluaran, teks, jenis) {
       if (!Number.isFinite(n) || n < 0 || n > spek.maks) continue;
       if (!angkaDalam(kutipan).has(n) && !(n === 0 && NEGASI.test(kutipan))) continue;
       isian[spek.nama] = {nilai: n, kutipan};
-    } else if (!kataPelapor(nilai, t)) continue;   // K69: isian teks hanya dari kata pelapor sendiri, model tidak bisa menyisipkan kalimatnya
+    } else if (!kataPelapor(nilai, t)) continue;   // K72: isian teks hanya dari kata pelapor sendiri, model tidak bisa menyisipkan kalimatnya
     else if (spek.tipe === "lokasi") {
       if (nilai.length >= 3) isian.lokasi = {nilai: {teks: nilai.slice(0, 200)}, kutipan};
     } else if (nilai) isian[spek.nama] = {nilai: nilai.slice(0, spek.maks || 200), kutipan};
@@ -68,13 +68,13 @@ export function validasiUraian(keluaran, teks, jenis) {
   const jenisTebak = (Array.isArray(keluaran.jenis_tebak) ? keluaran.jenis_tebak : [])
     .filter(j => ids.has(j?.jenis)).sort((a, b) => (b.yakin || 0) - (a.yakin || 0)).slice(0, 4)
     .map(j => ({jenis: j.jenis, subjenis: JENIS.find(x => x.id === j.jenis).sub.some(s => s.nama === j.subjenis) ? j.subjenis : null}));
-  // tanggapan (K69): model hanya memilih id; kalimatnya dari kode, jadi model tidak bisa menulis jawaban bebas ke pelapor
+  // tanggapan (K72): model hanya memilih id; kalimatnya dari kode, jadi model tidak bisa menulis jawaban bebas ke pelapor
   const tanggapan = Object.hasOwn(TANGGAPAN, keluaran.tanggapan) ? TANGGAPAN[keluaran.tanggapan] : "";
   const topik = TOPIK.includes(keluaran.topik) ? keluaran.topik : "bencana";
   return {isian, jenisTebak, darurat: keluaran.darurat_jiwa === true, tanggapan, topik};
 }
 
-/* ---------- gerbang topik (K69, pemilik 20 Nov 2026: "agar dia ga dimanfaatkan ... haram mereka dapat data BNPB") ----------
+/* ---------- gerbang topik (K72, pemilik 20 Nov 2026: "agar dia ga dimanfaatkan ... haram mereka dapat data BNPB") ----------
    Layanan ini hanya mencatat laporan kejadian bencana. Model tidak pernah memegang data BNPB (masukannya hanya pesan pelapor dan nama isian kosong),
    tidak pernah menulis kalimat ke pelapor (tanggapan = id, isian teks = kata pelapor sendiri), dan tidak dipanggil untuk pesan yang jelas di luar laporan.
    Pesan luar topik tidak masuk laporan; sesudah BATAS_LUAR kali dalam satu sesi, sesi itu jalan tanpa model (biaya nol), alurnya tetap templat. */
@@ -88,13 +88,16 @@ export const TOLAK = {
 };
 /* saringan tanpa model: permintaan data, upaya membelokkan asisten, dan tugas umum AI. Sengaja sempit (kata kerja permintaan + objek),
    supaya cerita kejadian yang menyebut "data" atau "daftar" tidak ikut tertolak. */
-const RE_MINTA_DATA = /\b(minta|mintak|kirim(?:kan|in)?|kasih|berikan|beri|bagi(?:kan)?|share|unduh|download|lihat(?:kan)?|tampilkan|sebutkan|tunjukkan|buka(?:kan)?|akses|ekspor|export|bocorkan|cari(?:kan)?)\s+(?:saya\s+|aku\s+|gw\s+|gue\s+|dong\s+|semua\s+|seluruh\s+)*(data|rekap|rekapan|daftar laporan|database|basis data|statistik|dokumen|file|berkas|nomor (?:hp|wa|telepon|pelapor)|kontak|alamat|nik|identitas|laporan (?:orang|warga|lain)|isi laporan)/i;
-const RE_DATA_LAIN = /\b(data|rekap|statistik|jumlah laporan|daftar laporan)\b.{0,40}\b(bnpb|bpbd|pusdalops|internal|rahasia|seluruh indonesia|se-?indonesia|semua provinsi|semua kabupaten|nasional)\b/i;
-const RE_BELOK = /\b(abaikan|lupakan|ignore|disregard|override)\b.{0,40}\b(instruksi|perintah|aturan|instruction|prompt|rules?)\b|\b(system prompt|prompt sistem|jailbreak|mode developer|developer mode|dan mode|kamu sekarang adalah|you are now|act as|berperan sebagai|pura-pura jadi)\b/i;
+const RE_MINTA_DATA = /\b(minta|mintak|kirim(?:kan|in)?|kasih|berikan|beri|bagi(?:kan)?|share|unduh|download|lihat(?:kan)?|tampilkan|sebutkan|tunjukkan|buka(?:kan)?|akses|ekspor|export|bocorkan|cari(?:kan)?)\s+(?:saya\s+|aku\s+|gw\s+|gue\s+|dong\s+|semua\s+|seluruh\s+)*(data|rekap|rekapan|daftar laporan|database|basis data|statistik|dokumen|nomor (?:hp|wa|telepon|pelapor)|kontak pelapor|nik|identitas|laporan (?:orang|warga lain|lain)|isi laporan)\b/i;
+const RE_DATA_LAIN = /\b(minta|kirim(?:kan|in)?|kasih|berikan|tampilkan|sebutkan|tunjukkan|bocorkan|berapa)\b.{0,30}\b(data|rekap|statistik|jumlah laporan|daftar laporan)\b.{0,40}\b(bnpb|internal|rahasia|seluruh indonesia|se-?indonesia|semua provinsi|semua kabupaten|nasional)\b/i;
+const RE_BELOK = /\b(abaikan|lupakan|ignore|disregard|override)\b.{0,40}\b(instruksi|perintah|aturan|instructions?|prompts?|rules?)\b|\b(system prompt|prompt sistem|jailbreak|mode developer|developer mode|dan mode|kamu sekarang adalah|you are now|act as|berperan sebagai|pura-pura jadi)\b/i;
 const RE_TUGAS_UMUM = /^(tolong\s+|coba\s+|bisa\s+|bisakah\s+(kamu\s+)?)?(buat(?:kan|in)?|tulis(?:kan|in)?|kerjakan|terjemahkan|translate|ringkas(?:kan)?|jelaskan|hitung(?:kan)?|carikan|rekomendasikan|write|explain|summarize)\s+(aku\s+|saya\s+)?(puisi|pantun|lagu|cerpen|cerita fiksi|esai|essay|makalah|skripsi|tugas|pr\b|kode|code|program|script|resep|surat lamaran|cv|caption|artikel|soal|jawaban soal|rumus|kalimat|teks|terjemahan|apa itu|siapa|bagaimana cara)/i;
+/* cerita kejadian sering menyebut "data", BPBD, atau angka; pesan yang memuat kata kejadian atau angka diserahkan ke penilaian model (D117), bukan ditolak kode */
+const RE_KEJADIAN = /\d|\b(banjir|longsor|gempa|tsunami|erupsi|abu|kebakaran|terbakar|api|asap|angin|puting|hujan|kering|kekeringan|abrasi|gelombang|rob|air|rumah|rusak|korban|meninggal|hilang|luka|ungsi|mengungsi|pengungsi|posko|terdampak|retak|roboh|jalan|jembatan|sungai|tanggul|desa|kampung)\b/i;
 export function saringTopik(teks) {
   const t = rapi(teks);
-  if (RE_MINTA_DATA.test(t) || RE_DATA_LAIN.test(t)) return "minta_data";
+  if (RE_DATA_LAIN.test(t)) return "minta_data";   // minta data BNPB atau nasional: ditolak walau menyebut kejadian
+  if (RE_MINTA_DATA.test(t) && !RE_KEJADIAN.test(t)) return "minta_data";
   if (RE_BELOK.test(t) || RE_TUGAS_UMUM.test(t)) return "bukan_bencana";
   return null;
 }
@@ -158,7 +161,7 @@ export const SKEMA = {
     jenis_tebak: {type: "array", items: {type: "object", additionalProperties: false, required: ["jenis", "subjenis", "yakin"],
       properties: {jenis: {type: "string"}, subjenis: {type: "string"}, yakin: {type: "number"}}}},
     darurat_jiwa: {type: "boolean"},
-    tanggapan: {type: "string", enum: Object.keys(TANGGAPAN)},   // K69: id, bukan kalimat
+    tanggapan: {type: "string", enum: Object.keys(TANGGAPAN)},   // K72: id, bukan kalimat
     topik: {type: "string", enum: TOPIK},
   },
 };
@@ -643,6 +646,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     sesi.status = "melengkapi"; sesi.tanya = null;
   }
 
+  let tambahKr = "";   // keterangan tambahan kronologi berpandu yang menunggu gerbang topik (K72)
   /* ----- kronologi berpandu: satu pilihan per langkah, langkah fenomena boleh lebih dari satu, lalu keterangan tambahan ----- */
   if (sesi.status === "kronologi") {
     const langkah = langkahKronologi(sesi.isian.jenis?.nilai), kr = sesi.kr ||= {i: 0, frasa: []}, p = pilih(); let waspada = null;
@@ -662,7 +666,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (!kr.tulis && p === 0) { kr.tulis = true; const h = jawab("*Keterangan tambahan*\nTulis di kotak pesan, lalu kirim."); sesi.isiAwal = h.isiAwal = "Keterangan: "; return h; }
     const tambah = (p === 1 && !kr.tulis) ? "" : samarkan(String(teks || "").replace(/^keterangan:\s*/i, "")).trim().slice(0, 300);
-    setIsian(sesi, "kronologi", {nilai: [rangkaiKronologi(kr.frasa), tambah].filter(Boolean).join(" ")}, {sumber: "pilihan", waktu: kini});
+    // K72: keterangan tambahan baru ditempel sesudah lolos gerbang topik di bawah (bukan di sini), supaya pesan luar topik tidak masuk laporan
+    setIsian(sesi, "kronologi", {nilai: rangkaiKronologi(kr.frasa)}, {sumber: "pilihan", waktu: kini});
+    tambahKr = tambah;
     sesi.status = "melengkapi"; sesi.tanya = null; delete sesi.kr;
     if (!tambah) return putaranInti({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kini}); // langsung ke pertanyaan berikutnya
     // keterangan tambahan ikut diurai di bawah (angka korban dan lain-lain yang disebut tertangkap berkutipan)
@@ -760,7 +766,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       catch { hasil = null; } // model gagal: jatuh ke pengurai sederhana, pelapor tidak melihat galat (ALUR 6)
     }
     if (!hasil) hasil = saring ? {isian: {}, jenisTebak: [], darurat: false, tanggapan: "", topik: saring} : uraiSederhana(masukan, ditanya, sesi);
-    /* K69: luar topik = saringan kode, atau model menilai bukan bencana DAN tidak ada isian sah. Tidak masuk laporan, tidak jadi kronologi. */
+    /* K72: luar topik = saringan kode, atau model menilai bukan bencana DAN tidak ada isian sah. Tidak masuk laporan, tidak jadi kronologi. */
     const luar = saring || (hasil.topik && hasil.topik !== "bencana" && (hasil.topik === "minta_data" || !Object.keys(hasil.isian).length)) ? (saring || hasil.topik) : null;
     if (luar) {
       sesi.luar = (sesi.luar || 0) + 1;
@@ -779,7 +785,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       }
       setIsian(sesi, nama, {nilai: x.nilai}, {...asal, kutipan: x.kutipan});
     }
-    if (ditanya === "waktu" && !terjawab(sesi, "waktu") && !keluhan) { // model tidak menangkap waktu: coba langsung dari teks
+    if (!luar && tambahKr) setIsian(sesi, "kronologi", {nilai: [sesi.isian.kronologi?.nilai, tambahKr].filter(Boolean).join(" ")}, {sumber: "pilihan", waktu: kini});
+    if (!luar && ditanya === "waktu" && !terjawab(sesi, "waktu") && !keluhan) { // model tidak menangkap waktu: coba langsung dari teks
       const w = uraiWaktu(masukan, kini, sesi.isian.lokasi?.nilai?.wilayah?.provKode);
       if (w.galat) keluhan = KELUH_WAKTU[w.galat]; else setIsian(sesi, "waktu", {nilai: w.tampil, ms: w.ms}, {...asal, kutipan: kecil(masukan)});
     }
