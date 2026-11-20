@@ -1925,3 +1925,6 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-pb-merek small{font-size:.8125rem}
 .lp-bahasa-hp{display:none;margin:12px 0 0;max-width:320px}
 @media (max-width:899px){.lp-bahasa-hp{display:flex}}
+/* pilihan bahasa di chat (pemilik 20 Nov 2026): kisi rata ujung ke ujung */
+.lp-bahasa-kisi{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
+.lp-bahasa-kisi button{min-height:44px}

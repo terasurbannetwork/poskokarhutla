@@ -5,13 +5,17 @@
 
 import {samarkan} from "./samarkan.js";
 
-export const BAHASA = [
-  ["id", "Bahasa Indonesia"], ["en", "English"], ["jv", "Basa Jawa"], ["su", "Basa Sunda"], ["min", "Baso Minang"], ["bug", "Basa Ugi (Bugis)"],
-  ["mad", "Basa Madura"], ["ban", "Basa Bali"], ["bjn", "Bahasa Banjar"], ["bbc", "Hata Batak Toba"], ["ace", "Bahsa Acèh"], ["mak", "Basa Mangkasara"],
-  ["lain", "Bahasa daerah lain (ketik saja)"],
+export const BAHASA = [   // label dalam bahasa Indonesia supaya mudah dikenali (pemilik 20 Nov 2026: "bahasa batak gitu"); mutu model per bahasa belum diukur (Q43)
+  ["id", "Bahasa Indonesia"], ["en", "English"], ["jv", "Bahasa Jawa"], ["su", "Bahasa Sunda"], ["mad", "Bahasa Madura"], ["ban", "Bahasa Bali"],
+  ["sas", "Bahasa Sasak"], ["min", "Bahasa Minang"], ["bbc", "Bahasa Batak Toba"], ["btx", "Bahasa Batak Karo"], ["btm", "Bahasa Batak Mandailing"],
+  ["bts", "Bahasa Batak Simalungun"], ["nia", "Bahasa Nias"], ["ace", "Bahasa Aceh"], ["msa", "Bahasa Melayu"], ["ljp", "Bahasa Lampung"],
+  ["bjn", "Bahasa Banjar"], ["nij", "Bahasa Dayak Ngaju"], ["bug", "Bahasa Bugis"], ["mak", "Bahasa Makassar"], ["sda", "Bahasa Toraja"],
+  ["gor", "Bahasa Gorontalo"], ["abs", "Melayu Ambon"], ["pmy", "Melayu Papua"], ["lain", "Bahasa daerah lain (ketik saja)"],
 ];
-const NAMA = {id: "Indonesian", en: "English", jv: "Javanese (ngoko alus, polite)", su: "Sundanese (lemes, polite)", min: "Minangkabau", bug: "Buginese", mad: "Madurese",
-  ban: "Balinese (polite register)", bjn: "Banjarese", bbc: "Batak Toba", ace: "Acehnese", mak: "Makassarese"};
+const NAMA = {id: "Indonesian", en: "English", jv: "Javanese (ngoko alus, polite)", su: "Sundanese (lemes, polite)", mad: "Madurese", ban: "Balinese (polite register)",
+  sas: "Sasak", min: "Minangkabau", bbc: "Batak Toba", btx: "Batak Karo", btm: "Batak Mandailing", bts: "Batak Simalungun", nia: "Nias", ace: "Acehnese",
+  msa: "Malay as spoken in Sumatra and Riau", ljp: "Lampung", bjn: "Banjarese", nij: "Ngaju Dayak", bug: "Buginese", mak: "Makassarese", sda: "Toraja-Sa'dan",
+  gor: "Gorontalo", abs: "Ambonese Malay", pmy: "Papuan Malay"};
 export const bahasaSah = b => BAHASA.some(([k]) => k === b) ? b : "id";
 
 const SKEMA = {type: "object", properties: {teks: {type: "string"}}, required: ["teks"], additionalProperties: false};

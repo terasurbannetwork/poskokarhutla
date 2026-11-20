@@ -416,3 +416,22 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | No | Tanggal | Keputusan |
 | --- | --- | --- |
 | K64 | 19 Nov 2026 | Jawaban Q56: "biarin dulu". Rincian meja untuk BPBD tetap memuat tautan lacak bertoken (foto, PDF, Word); risiko tautan yang masih terbuka sesudah anggota dicabut diterima sementara. Identitas pelapor untuk BPBD tetap hanya lewat POST yang tercatat (D95). |
+
+## Keputusan pemilik (masuk tanpa kode, 20 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K65 | 20 Nov 2026 | Pelapor di web tidak diminta kode WA. Cukup mengetik nomor WhatsApp-nya, seperti bot sebelumnya. Pemilik: "gausah ada minta kode WA". |
+
+## Keputusan rancangan (pelaksanaan K65)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D99 | Pintu web menerima nomor yang diketik tanpa kode. Sesi `/masuk` yang sudah ada tetap diterima dan dianggap terverifikasi. | K65. |
+| D100 | Nomor ketikan diikat ke perangkat: kunci perangkat acak di kuki HttpOnly `lapor_perangkat` (SameSite=Lax, jalur `/api/lapor`), hanya sidiknya di D1. Riwayat laporan, sesi berjalan, kotak balasan, status, foto, dan unggahan sebuah nomor hanya terbaca dari perangkat yang membuatnya. Perangkat lain yang mengetik nomor sama memulai laporan baru dan tidak melihat yang lama. | Tanpa kode, siapa pun bisa mengetik nomor orang lain; ikatan perangkat mencegah orang membaca laporan dan balasan petugas milik nomor itu. |
+| D101 | Laporan dari nomor ketikan ditandai `nomor belum diverifikasi` di meja, PDF, dan pesan ke BPBD tidak memuat nomor (aturan D97 tetap). Tingkat `bpbd_klaim` dari nomor ketikan tidak naik jadi `bpbd` (D19 tetap memerlukan konfirmasi). | Petugas tahu nomornya belum dibuktikan. |
+| D102 | Batas pemakaian per IP dan per perangkat berlaku di samping batas per nomor (D33 dan kuota pesan), karena nomor bisa diganti-ganti. Selama masa uji, nomor tetap harus ada di `lapor_izin`. | Nomor palsu atau berganti tidak membuka banjir laporan. |
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q57 | Masa uji: nomor ketikan tetap dibatasi daftar izin `lapor_izin`, atau web dibuka untuk semua nomor? | **[BAWAAN SEMENTARA]** Tetap daftar izin sampai pemilik membuka F2. | — |

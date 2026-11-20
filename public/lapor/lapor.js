@@ -6,8 +6,8 @@
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
 import {maskot} from "/lapor/maskot.js?v=12"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
-/* Produksi (Worker, src/lapor_ai.js): pelapor web masuk lewat Satu Pintu Masuk (/masuk, kode WA) dan nomor diambil dari sesi; kiriman POST bersesi wajib x-pb: 1.
-   Server tinjau lokal (localhost:8800) tetap memakai nomor yang diketik. */
+/* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
+   dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
 const LOKAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 { const asli = window.fetch.bind(window);
   window.fetch = (u, o = {}) => (String(u).startsWith("/api/lapor/") && (o.method || "GET").toUpperCase() !== "GET") ? asli(u, {...o, credentials: "same-origin", headers: {...(o.headers || {}), "x-pb": "1"}}) : asli(u, o); }
@@ -658,7 +658,9 @@ function tampilIsian(isian, lengkap) {
 }
 
 /* ============ kotak tulis, suara ============ */
-fPesan.addEventListener("submit", e => { e.preventDefault(); const t = iTeks.value.trim(); if (!t) return; iTeks.value = ""; kirim({teks: t}); });
+fPesan.addEventListener("submit", e => { e.preventDefault(); const t = iTeks.value.trim(); if (!t) return; iTeks.value = "";
+  if (/^(bahasa|ganti bahasa|language)$/i.test(t)) { tambah("saya", t, {simpanKe: false}); return tanyaBahasa(() => { tambah("bot", "Baik. Pesan berikutnya dijawab dalam bahasa pilihan Anda.", {simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); else fPesan.hidden = false; }, true); }
+  kirim({teks: t}); });
 iTeks.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (e.isComposing || e.keyCode === 229) return; fPesan.requestSubmit(); } });
 const Pengenal = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (Pengenal) {
@@ -857,7 +859,7 @@ function tampilDaftarLaporan() {
 }
 async function bukaChat() {
   ke("chat");
-  if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } kirim({teks: "lapor", tampil: false}); }
+  if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } tanyaBahasa(() => kirim({teks: "lapor", tampil: false})); }
 }
 
 /* bantuan: definisi juklak dan pertanyaan umum */
@@ -1207,18 +1209,23 @@ async function tampilAlun() {
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */
 const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || "id"; } catch { return "id"; } };
-(async () => {
-  const sel = $("pilihBahasa"); if (!sel) return;
-  let daftar = []; try { daftar = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch {}
-  if (daftar.length < 2) return; // tanpa model AI: hanya Indonesia, pemilih tidak tampil
-  sel.replaceChildren(...daftar.map(b => Object.assign(document.createElement("option"), {value: b.kode, textContent: b.nama})));
-  sel.value = daftar.some(b => b.kode === bahasaKini()) ? bahasaKini() : "id"; sel.closest(".lp-tab-bahasa").hidden = false;
-  const hp = sel.closest(".lp-tab-bahasa").cloneNode(true); hp.classList.add("lp-bahasa-hp"); $("sapa").after(hp); // layar sempit: menu samping jadi bilah bawah
-  const sel2 = hp.querySelector("select"); sel2.removeAttribute("id"); sel2.value = sel.value;
-  for (const [a, b] of [[sel, sel2], [sel2, sel]]) a.addEventListener("change", () => { b.value = a.value; });
-  for (const x of [sel, sel2]) x.addEventListener("change", () => { try { localStorage.setItem("lapor-bahasa", x.value); } catch {}
-    statusEl.textContent = x.value === "id" ? "" : "Pesan berikutnya dijawab dalam bahasa pilihan Anda. Petugas membaca terjemahannya dan teks asli Anda."; });
-})();
+/* pilihan bahasa di dalam chat (pemilik 20 Nov 2026: "nanti disuruh pilih ada di chat bot nya"): ditanya sekali saat chat pertama dibuka,
+   bisa diganti dengan mengetik "bahasa". Daftar dari server: tanpa model AI hanya Indonesia, pertanyaan dilewati. */
+let daftarBahasa = null;
+async function tanyaBahasa(lanjut, paksa = false) {
+  let sudah = null; try { sudah = localStorage.getItem("lapor-bahasa"); } catch {}
+  if (sudah && !paksa) return lanjut();
+  if (!daftarBahasa) { try { daftarBahasa = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch { daftarBahasa = []; } }
+  if (daftarBahasa.length < 2) return lanjut();
+  tambah("bot", "*Pilih bahasa percakapan*\nSaya bisa menjawab dalam bahasa Indonesia, bahasa Inggris, atau bahasa daerah Anda. Petugas membaca terjemahannya dan teks asli Anda.", {simpanKe: false});
+  const kisi = el("div", "lp-opsi lp-bahasa-kisi");
+  for (const b of daftarBahasa) kisi.append(tombolOpsi(b.nama, null, () => {
+    try { localStorage.setItem("lapor-bahasa", b.kode); } catch {}
+    wadah.replaceChildren(); tambah("saya", b.nama, {simpanKe: false}); lanjut();
+  }));
+  wadah.replaceChildren(kisi); fPesan.hidden = true;
+}
+
 
 /* ============ mulai ============ */
 async function mulai(nomor) {
@@ -1249,6 +1256,7 @@ $("fNomor").addEventListener("submit", e => {
 const tersimpan = simpan.baca("lapor-wa");
 /* pembuka: maskot dan sapaan, sekali per sesi peramban */
 $("maskotHero").innerHTML = maskot("sapa");
+if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
 let pernah = false; try { pernah = sessionStorage.getItem("lapor-pembuka") === "1"; sessionStorage.setItem("lapor-pembuka", "1"); } catch {}
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Lapor Bencana"); pb.hidden = false;
@@ -1261,7 +1269,6 @@ if (LOKAL) { if (tersimpan) mulai(tersimpan); else { ke("masuk"); iNomor.focus()
 else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server, tidak pernah diketik ulang di sini
   let j = null; try { j = await (await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"})).json(); } catch {}
   if (j?.akun) { await mulai(`sesi-${j.akun.id}`); if (j.akun.nama) cache.pelapor ||= j.akun.nama; $("tabWa").textContent = j.akun.wa || ""; return; }
-  $("fNomor").hidden = true; $("lMasuk").querySelector(".lp-sampul p").textContent = "Masuk dengan nomor WhatsApp Anda. Kami kirim kode enam angka lewat WhatsApp, tanpa sandi.";
-  const a = Object.assign(el("a", "lp-utama lp-masuk-wa"), {href: `/masuk?ke=${encodeURIComponent("/lapor/")}`}); a.append(ikon("i-kirim"), "Masuk dengan kode WhatsApp");
-  $("fNomor").after(a); ke("masuk");
+  if (tersimpan && !String(tersimpan).startsWith("sesi-")) return mulai(tersimpan);   // nomor yang pernah diketik di perangkat ini
+  ke("masuk"); iNomor.focus();   // K65: cukup ketik nomor, tanpa kode WA
 })();

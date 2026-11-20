@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=122" rel="stylesheet">
+<link href="/lapor/lapor.css?v=123" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -338,7 +338,7 @@
         <div class="lp-nomor-isi"><span class="lp-awalan" aria-hidden="true">+62</span>
           <input id="iNomor" type="tel" inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national" maxlength="13" placeholder="812 3456 7890" required></div>
         <button class="lp-utama" type="submit">Lanjut</button>
-        <p class="lp-redup lp-kecil">Uji lokal. Di situs, nomor diambil dari masuk dengan kode WhatsApp.</p>
+        <p class="lp-redup lp-kecil">Tanpa kode dan tanpa sandi. Nomor hanya dilihat petugas BNPB dan BPBD untuk menghubungi Anda.</p>
       </div>
     </form>
   </section>
@@ -350,7 +350,6 @@
     <button type="button" data-ke="alun"><svg aria-hidden="true"><use href="#i-pengungsian"/></svg>Alun-alun</button>
     <button type="button" data-ke="tentang"><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Cara melapor</button>
     <button type="button" data-ke="privasi"><svg aria-hidden="true"><use href="#i-status"/></svg>Kebijakan privasi</button>
-    <label class="lp-tab-bahasa" hidden><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span class="lp-sr">Bahasa percakapan</span><select id="pilihBahasa" aria-label="Bahasa percakapan"></select></label>
     <div class="lp-tab-profil" id="tabProfil" hidden><span class="lp-tab-avatar" id="tabAvatar"></span><span><b id="tabNama"></b><small id="tabWa"></small></span></div>
     <!-- Sigap di ruang kosong menu samping (pemilik 19 Nov 2026: "ini agar disini") -->
     <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
@@ -361,6 +360,6 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=91"></script>
+<script type="module" src="/lapor/lapor.js?v=93"></script>
 </body>
 </html>
