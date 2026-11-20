@@ -127,6 +127,20 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
     try { const r = await panggil('GET', '/api/lapor/bahasa', undefined, { timeout: 15000 }); const j = await r.json().catch(() => ({})); daftarBahasa = r.ok && Array.isArray(j.bahasa) ? j.bahasa : [] } catch { daftarBahasa = [] }
     daftarWaktu = Date.now(); return daftarBahasa
   }
+  /* membaca maksud dari kalimat biasa (pemilik 20 Nov 2026: "bisa baca kira-kira kita mau arahnya kemana"): nama bahasa dan sebutan sehari-harinya */
+  const SEBUT_BAHASA = { id: ['indonesia', 'bahasa indonesia'], en: ['english', 'inggris', 'bahasa inggris'], jv: ['jawa', 'jowo', 'basa jawa'], su: ['sunda', 'basa sunda'],
+    mad: ['madura', 'meduro'], ban: ['bali'], sas: ['sasak', 'lombok'], min: ['minang', 'minangkabau', 'padang'], bbc: ['batak toba', 'toba'], btx: ['karo', 'batak karo'],
+    btm: ['mandailing', 'batak mandailing'], bts: ['simalungun', 'batak simalungun'], nia: ['nias'], ace: ['aceh'], msa: ['melayu'], ljp: ['lampung'], bjn: ['banjar'],
+    nij: ['dayak', 'ngaju', 'dayak ngaju'], bug: ['bugis', 'ugi'], mak: ['makassar', 'mangkasara'], sda: ['toraja'], gor: ['gorontalo'], abs: ['ambon'], pmy: ['papua'] }
+  const cariBahasa = (teks, d) => {   // kode bahasa yang disebut dalam teks, sebutan terpanjang menang ("batak toba" mengalahkan "toba")
+    const t = ' ' + String(teks).toLowerCase().replace(/[^a-z\u00c0-\u024f ]+/g, ' ').replace(/\s+/g, ' ') + ' '
+    let hasil = null, panjang = 0
+    for (const b of d) for (const sb of [...(SEBUT_BAHASA[b.kode] || []), b.nama.toLowerCase()]) if (t.includes(' ' + sb + ' ') && sb.length > panjang) { hasil = b; panjang = sb.length }
+    return hasil
+  }
+  // maksud ganti bahasa hanya bila kalimat menyebut kata bahasa, atau sangat pendek ("english please", "sunda aja");
+  // "rumah saya di jawa barat terendam" bukan permintaan ganti bahasa
+  const maksudBahasa = (t) => /\b(bahasa|basa|bhs|language|speak)\b/i.test(t) || t.trim().split(/\s+/).length <= 3
   const teksDaftarBahasa = (d) => `*Pilih bahasa / Choose language*\nBalas dengan nomornya.\n\n${d.map((b, i) => `${i + 1}. ${b.nama}`).join('\n')}`
   const bhs = (wa) => (pilihanBahasa[wa] && pilihanBahasa[wa] !== 'id' ? { bahasa: pilihanBahasa[wa] } : {})
   const pesan = (wa, o) => ke('/api/lapor/pesan', { wa, saluran: 'wa', ...bhs(wa), ...o })
@@ -155,13 +169,19 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
     const teks = c.conversation || c.extendedTextMessage?.text || ''
     if (!String(teks).trim()) return // stiker, suara, video, dokumen: tidak dilayani
     const t = String(teks).trim()
-    if (tungguBahasa.has(wa)) {   // jawaban atas daftar bahasa: nomor 1..n
+    if (tungguBahasa.has(wa)) {   // jawaban atas daftar bahasa: nomor 1..n atau nama bahasanya
       const st = tungguBahasa.get(wa), n = Number(t); tungguBahasa.delete(wa)
-      if (Number.isInteger(n) && n >= 1 && n <= st.daftar.length) {
-        const b = st.daftar[n - 1]; pilihanBahasa[wa] = b.kode; simpanBahasa()
+      const b = Number.isInteger(n) && n >= 1 && n <= st.daftar.length ? st.daftar[n - 1] : cariBahasa(t, st.daftar)
+      if (b) {
+        pilihanBahasa[wa] = b.kode; simpanBahasa()
         if (st.lanjut) return balas(await pesan(wa, { teks: st.lanjut }))
         return balas(`*${b.nama}*\nPesan berikutnya dijawab dalam bahasa ini. Ketik *bahasa* untuk mengganti, atau *lapor* untuk mulai melapor.`)
       }
+    }
+    // kalimat biasa yang menyebut bahasa ("pakai bahasa sunda dong", "english please"): langsung diganti, laporan yang sedang diisi tidak terganggu
+    if (t.length <= 80 && maksudBahasa(t)) {
+      const d = await ambilDaftarBahasa(), b = d.length > 1 ? cariBahasa(t, d) : null
+      if (b && !/^lapor\b/i.test(t)) { pilihanBahasa[wa] = b.kode; simpanBahasa(); return balas(`*${b.nama}*\nPesan berikutnya dijawab dalam bahasa ini. Lanjutkan saja laporannya, atau ketik *lapor* untuk mulai.`) }
     }
     if (/^(bahasa|ganti bahasa|language|basa)$/i.test(t) || (/^lapor\b/i.test(t) && !(wa in pilihanBahasa))) {
       const d = await ambilDaftarBahasa()
