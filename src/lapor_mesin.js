@@ -44,6 +44,8 @@ export function angkaDalam(teks) {
 }
 
 /* ---------- validasi keluaran model (D3) ---------- */
+/* tiap kata (huruf atau angka) nilai teks ada di pesan pelapor; tanda baca dan kata sambung pendek bebas */
+const kataPelapor = (nilai, t) => { const ada = new Set(t.split(/[^\p{L}\p{N}]+/u)); return kecil(nilai).split(/[^\p{L}\p{N}]+/u).filter(w => w.length > 2).every(w => ada.has(w)); };
 export function validasiUraian(keluaran, teks, jenis) {
   const isian = {}, t = kecil(teks);
   if (!keluaran || typeof keluaran !== "object") return {isian, jenisTebak: [], darurat: false, tanggapan: ""};
@@ -57,7 +59,8 @@ export function validasiUraian(keluaran, teks, jenis) {
       if (!Number.isFinite(n) || n < 0 || n > spek.maks) continue;
       if (!angkaDalam(kutipan).has(n) && !(n === 0 && NEGASI.test(kutipan))) continue;
       isian[spek.nama] = {nilai: n, kutipan};
-    } else if (spek.tipe === "lokasi") {
+    } else if (!kataPelapor(nilai, t)) continue;   // K69: isian teks hanya dari kata pelapor sendiri, model tidak bisa menyisipkan kalimatnya
+    else if (spek.tipe === "lokasi") {
       if (nilai.length >= 3) isian.lokasi = {nilai: {teks: nilai.slice(0, 200)}, kutipan};
     } else if (nilai) isian[spek.nama] = {nilai: nilai.slice(0, spek.maks || 200), kutipan};
   }
@@ -65,10 +68,35 @@ export function validasiUraian(keluaran, teks, jenis) {
   const jenisTebak = (Array.isArray(keluaran.jenis_tebak) ? keluaran.jenis_tebak : [])
     .filter(j => ids.has(j?.jenis)).sort((a, b) => (b.yakin || 0) - (a.yakin || 0)).slice(0, 4)
     .map(j => ({jenis: j.jenis, subjenis: JENIS.find(x => x.id === j.jenis).sub.some(s => s.nama === j.subjenis) ? j.subjenis : null}));
-  // tanggapan AI: satu kalimat, tanpa angka (angka hanya dari isian berkutipan) dan tanpa "aman" (PRD Larangan)
-  let tanggapan = rapi(keluaran.tanggapan).slice(0, 160);
-  if (/\d/.test(tanggapan) || /\baman\b/i.test(tanggapan)) tanggapan = "";
-  return {isian, jenisTebak, darurat: keluaran.darurat_jiwa === true, tanggapan};
+  // tanggapan (K69): model hanya memilih id; kalimatnya dari kode, jadi model tidak bisa menulis jawaban bebas ke pelapor
+  const tanggapan = Object.hasOwn(TANGGAPAN, keluaran.tanggapan) ? TANGGAPAN[keluaran.tanggapan] : "";
+  const topik = TOPIK.includes(keluaran.topik) ? keluaran.topik : "bencana";
+  return {isian, jenisTebak, darurat: keluaran.darurat_jiwa === true, tanggapan, topik};
+}
+
+/* ---------- gerbang topik (K69, pemilik 20 Nov 2026: "agar dia ga dimanfaatkan ... haram mereka dapat data BNPB") ----------
+   Layanan ini hanya mencatat laporan kejadian bencana. Model tidak pernah memegang data BNPB (masukannya hanya pesan pelapor dan nama isian kosong),
+   tidak pernah menulis kalimat ke pelapor (tanggapan = id, isian teks = kata pelapor sendiri), dan tidak dipanggil untuk pesan yang jelas di luar laporan.
+   Pesan luar topik tidak masuk laporan; sesudah BATAS_LUAR kali dalam satu sesi, sesi itu jalan tanpa model (biaya nol), alurnya tetap templat. */
+export const TANGGAPAN = {simpati: "Kami ikut prihatin atas kejadian ini.", terima_kasih: "Terima kasih sudah melapor.", tenang: "Tetap tenang, laporan Anda sedang kami catat.", tidak_ada: ""};
+export const TOPIK = ["bencana", "bukan_bencana", "minta_data"];
+export const BATAS_LUAR = 3, BATAS_MODEL_SESI = 30;
+export const TOLAK = {
+  bukan_bencana: "Layanan ini hanya untuk melaporkan kejadian bencana. Pertanyaan atau permintaan lain tidak dilayani di sini.",
+  minta_data: "Layanan ini hanya menerima laporan kejadian bencana dan tidak memberikan data BNPB dalam bentuk apa pun.",
+  tanpa_model: "Pesan di luar laporan bencana tidak diproses lagi di percakapan ini. Lanjutkan dengan menjawab pertanyaan laporan di bawah.",
+};
+/* saringan tanpa model: permintaan data, upaya membelokkan asisten, dan tugas umum AI. Sengaja sempit (kata kerja permintaan + objek),
+   supaya cerita kejadian yang menyebut "data" atau "daftar" tidak ikut tertolak. */
+const RE_MINTA_DATA = /\b(minta|mintak|kirim(?:kan|in)?|kasih|berikan|beri|bagi(?:kan)?|share|unduh|download|lihat(?:kan)?|tampilkan|sebutkan|tunjukkan|buka(?:kan)?|akses|ekspor|export|bocorkan|cari(?:kan)?)\s+(?:saya\s+|aku\s+|gw\s+|gue\s+|dong\s+|semua\s+|seluruh\s+)*(data|rekap|rekapan|daftar laporan|database|basis data|statistik|dokumen|file|berkas|nomor (?:hp|wa|telepon|pelapor)|kontak|alamat|nik|identitas|laporan (?:orang|warga|lain)|isi laporan)/i;
+const RE_DATA_LAIN = /\b(data|rekap|statistik|jumlah laporan|daftar laporan)\b.{0,40}\b(bnpb|bpbd|pusdalops|internal|rahasia|seluruh indonesia|se-?indonesia|semua provinsi|semua kabupaten|nasional)\b/i;
+const RE_BELOK = /\b(abaikan|lupakan|ignore|disregard|override)\b.{0,40}\b(instruksi|perintah|aturan|instruction|prompt|rules?)\b|\b(system prompt|prompt sistem|jailbreak|mode developer|developer mode|dan mode|kamu sekarang adalah|you are now|act as|berperan sebagai|pura-pura jadi)\b/i;
+const RE_TUGAS_UMUM = /^(tolong\s+|coba\s+|bisa\s+|bisakah\s+(kamu\s+)?)?(buat(?:kan|in)?|tulis(?:kan|in)?|kerjakan|terjemahkan|translate|ringkas(?:kan)?|jelaskan|hitung(?:kan)?|carikan|rekomendasikan|write|explain|summarize)\s+(aku\s+|saya\s+)?(puisi|pantun|lagu|cerpen|cerita fiksi|esai|essay|makalah|skripsi|tugas|pr\b|kode|code|program|script|resep|surat lamaran|cv|caption|artikel|soal|jawaban soal|rumus|kalimat|teks|terjemahan|apa itu|siapa|bagaimana cara)/i;
+export function saringTopik(teks) {
+  const t = rapi(teks);
+  if (RE_MINTA_DATA.test(t) || RE_DATA_LAIN.test(t)) return "minta_data";
+  if (RE_BELOK.test(t) || RE_TUGAS_UMUM.test(t)) return "bukan_bencana";
+  return null;
 }
 
 /* ---------- pengurai tanpa AI (Q2: tetap jalan tanpa kunci) ---------- */
@@ -119,17 +147,19 @@ Aturan:
 4. "nilai" untuk isian angka berupa angka saja tanpa satuan. Untuk lokasi, tulis nama tempat yang disebut (desa, kecamatan, kabupaten/kota).
 5. jenis_tebak: paling banyak empat jenis bencana yang paling cocok dengan cerita, dari daftar jenis yang diberikan, dengan subjenis bila jelas.
 6. darurat_jiwa = true hanya bila pelapor menyebut ada nyawa yang terancam saat ini dan butuh pertolongan segera.
-7. tanggapan: satu kalimat pendek bahasa Indonesia yang sopan dan menenangkan atas pesan itu, tanpa angka, tanpa pertanyaan, tanpa saran keselamatan, tanpa kata "aman".`;
+7. tanggapan: pilih satu id: "simpati" bila ada kerusakan atau korban, "terima_kasih" untuk laporan biasa, "tenang" bila pelapor panik, "tidak_ada" bila pesan bukan laporan bencana.
+8. topik: "bencana" bila pesan menceritakan atau menjawab pertanyaan tentang kejadian bencana yang dilaporkan; "minta_data" bila pelapor meminta data, rekap, daftar, nomor, atau isi laporan; "bukan_bencana" untuk hal lain (pertanyaan umum, tugas, obrolan, perintah kepadamu). Kamu tidak menjawab pertanyaan apa pun dan tidak punya data apa pun.`;
 
 export const SKEMA = {
-  type: "object", additionalProperties: false, required: ["isian", "jenis_tebak", "darurat_jiwa", "tanggapan"],
+  type: "object", additionalProperties: false, required: ["isian", "jenis_tebak", "darurat_jiwa", "tanggapan", "topik"],
   properties: {
     isian: {type: "array", items: {type: "object", additionalProperties: false, required: ["nama", "nilai", "kutipan"],
       properties: {nama: {type: "string"}, nilai: {type: "string"}, kutipan: {type: "string"}}}},
     jenis_tebak: {type: "array", items: {type: "object", additionalProperties: false, required: ["jenis", "subjenis", "yakin"],
       properties: {jenis: {type: "string"}, subjenis: {type: "string"}, yakin: {type: "number"}}}},
     darurat_jiwa: {type: "boolean"},
-    tanggapan: {type: "string"},
+    tanggapan: {type: "string", enum: Object.keys(TANGGAPAN)},   // K69: id, bukan kalimat
+    topik: {type: "string", enum: TOPIK},
   },
 };
 
@@ -723,11 +753,21 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     else if (!daftar.length) tandai(sesi, ditanya, "belum", asal);
   } else if (masukan) {
     let hasil = null;
-    if (model) {
+    const saring = saringTopik(masukan), bolehModel = model && !saring && !sesi.tanpaModel && (sesi.nModel || 0) < BATAS_MODEL_SESI;
+    if (bolehModel) {
+      sesi.nModel = (sesi.nModel || 0) + 1;
       try { hasil = validasiUraian(await model({sistem: SISTEM, skema: SKEMA, teks: pesanModel(masukan, sesi)}), masukan, sesi.isian.jenis?.nilai); }
       catch { hasil = null; } // model gagal: jatuh ke pengurai sederhana, pelapor tidak melihat galat (ALUR 6)
     }
-    if (!hasil) hasil = uraiSederhana(masukan, ditanya, sesi);
+    if (!hasil) hasil = saring ? {isian: {}, jenisTebak: [], darurat: false, tanggapan: "", topik: saring} : uraiSederhana(masukan, ditanya, sesi);
+    /* K69: luar topik = saringan kode, atau model menilai bukan bencana DAN tidak ada isian sah. Tidak masuk laporan, tidak jadi kronologi. */
+    const luar = saring || (hasil.topik && hasil.topik !== "bencana" && (hasil.topik === "minta_data" || !Object.keys(hasil.isian).length)) ? (saring || hasil.topik) : null;
+    if (luar) {
+      sesi.luar = (sesi.luar || 0) + 1;
+      if (sesi.luar >= BATAS_LUAR) sesi.tanpaModel = true;
+      if (luar === "bukan_bencana" || !Object.keys(hasil.isian).length) hasil = {isian: {}, jenisTebak: [], darurat: false, tanggapan: "", topik: luar};
+      hasil.tanggapan = sesi.tanpaModel && sesi.luar > BATAS_LUAR ? TOLAK.tanpa_model : TOLAK[luar];
+    }
     for (const [nama, x] of Object.entries(hasil.isian)) {
       if (nama === "lokasi" && sesi.isian.lokasi?.nilai?.lat != null) continue; // titik GPS/WA tidak ditimpa nama tempat
       if (nama === "waktu") { // wajib tanggal dan jam; yang belum lengkap dikeluhkan, tidak disimpan
@@ -743,7 +783,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       const w = uraiWaktu(masukan, kini, sesi.isian.lokasi?.nilai?.wilayah?.provKode);
       if (w.galat) keluhan = KELUH_WAKTU[w.galat]; else setIsian(sesi, "waktu", {nilai: w.tampil, ms: w.ms}, {...asal, kutipan: kecil(masukan)});
     }
-    if (!terjawab(sesi, "kronologi") && masukan.length > 30) setIsian(sesi, "kronologi", {nilai: samarkan(masukan).slice(0, 500)}, asal);
+    if (!luar && !terjawab(sesi, "kronologi") && masukan.length > 30) setIsian(sesi, "kronologi", {nilai: samarkan(masukan).slice(0, 500)}, asal);
     tanggapan = hasil.tanggapan; darurat = hasil.darurat; tebak = hasil.jenisTebak; // jenis selalu dikonfirmasi lewat pilihan (D6)
     // kelompok yang baru ditanya: isian kelompok yang tidak disebut jadi "belum didata" (A2)
     if (ditanya?.startsWith("kelompok:")) tandai(sesi, ditanya, "belum", asal);

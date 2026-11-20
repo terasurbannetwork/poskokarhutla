@@ -154,3 +154,11 @@ Tahap 1 (commit 492cc6484) dan tahap 2 di Worker: LA-58 video (rute `unggah/*` m
 | LA-68 | Mesin: kandidat sekecamatan sesudah lokasi (D103), pertanyaan tanpa data orang (D104), jalur ya: kunci jenis/subjenis/waktu, detail bebas, foto, kirim (D105); server lokal dan Worker menyediakan kandidat dan menyimpan `kejadian` (nomor KJ, D106) | `warga-api` | `security-reviewer`, pemeriksa bersih | Q58, Q59 |
 | LA-69 | Meja: satu baris per kejadian, angka tertinggi berlabel, buka untuk tiap laporan, lepas dari kejadian (D107) | `layar-peta` | `inp-reviewer`, `selera-angka` | |
 | LA-70 | Lapor darurat (K68): jalur `darurat` di mesin, tombol dan banner merah di /lapor, pita merah, nada, dan notifikasi di /lapor/meja; uji di tests/lapor/mesin.test.mjs | `warga-api`, `layar-peta` | `inp-reviewer`, `selera-angka` | selesai 20 Nov 2026 |
+
+## Pengecekan lapangan dan jenis tindakan (K69-K71, 20 Nov 2026)
+
+| Tiket | Isi | Pengerja | Pemeriksa | Q |
+| --- | --- | --- | --- | --- |
+| LA-71 | Selesai lokal: `src/lapor_periksa.js` (hasil, revisi, katalog tindakan, demo), aksi `periksa` dan `tindakan` di `scripts/lapor/lokal.mjs`, `PINDAH` diperluas (D109), `AKSI_BPBD`, kartu Pengecekan lapangan dan Tindakan di `public/lapor/meja.js`, pil Tertinggi berikon; uji `tests/lapor/lokal_periksa.test.mjs` | `warga-api`, `layar-peta` | `inp-reviewer`, `security-reviewer` | |
+| LA-72 | Tindakan dan lencana pengecekan di halaman lacak, PDF, dan Alun-alun | `layar-peta`, `warga-api` | `selera-angka` | Q60, Q61 |
+| LA-73 | Belum: Worker. Migrasi `lapor_periksa` dan `lapor_tindakan` (append-only), SQL di `src/hak.js`, aksi `periksa` dan `tindakan` di `mejaUbah` `src/lapor_ai.js` (revisi lewat `lpStmtVersi`), Ditindaklanjuti wajib tindakan di rute status, `tests/lapor/rute.test.mjs`, `tests/warga/cakupan.json` | `warga-api` | `migrasi-idempoten`, `guard-api` | |

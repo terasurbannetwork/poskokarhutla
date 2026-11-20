@@ -49,7 +49,7 @@ if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { const sb = new URLSe
   if (sb) document.cookie = /^(kab:\d{2}\.\d{2}|prov:\d{2})$/.test(sb) ? `lapor_sebagai=${sb}; path=/; SameSite=Strict` : "lapor_sebagai=; path=/; max-age=0"; }
 let akunMeja = {jenis: "bnpb", label: "BNPB"};
 const akunBpbd = () => akunMeja.jenis === "bpbd";
-async function muat() {
+async function muat(latar = false) {
   try {
     const res = await fetch("/api/lapor/meja", {cache: "no-store"}), j = await res.json();
     if (!res.ok) { $("waktuSegar").textContent = j.galat || "Tidak berhak"; return; }
@@ -57,7 +57,7 @@ async function muat() {
       const sub = document.querySelector(".mj-merek small"); if (sub) sub.textContent = akunBpbd() ? `${akunMeja.label}, laporan di wilayah Anda` : "Lapor Bencana, khusus staf"; }
     semua = j.baris || [];
     $("bSegar").classList.remove("galat"); $("waktuSegar").textContent = `Data diperbarui ${new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}).replace(":", ".")}`;
-    gambar(); gambarDarurat();
+    if (!latar) gambar(); gambarDarurat();   // tab di latar: hanya pita darurat, tabel digambar saat tab tampak lagi
     if (pilih && dlg.open) bukaRinci(pilih, false);
   } catch { $("bSegar").classList.add("galat"); $("waktuSegar").textContent = "Gagal memuat, ketuk untuk ulang"; }
 }
@@ -709,7 +709,7 @@ async function bukaRinci(nomor, lihat = true) {
 $("qCari").addEventListener("input", () => gambar());
 $("bUlang").addEventListener("click", () => { saringJenis.clear(); saringStatus = null; saringKab = ""; cepat.clear(); $("qCari").value = ""; periode = 0; gambar(); });
 $("bPas").addEventListener("click", () => pasPeta());
-$("bSegar").addEventListener("click", muat);
+$("bSegar").addEventListener("click", () => muat());
 /* sidebar fleksibel kiri atau kanan (pemilik 19 Nov 2026 "semua sidebar bisa fleksibel dibuat kiri kanan"); pilihan diingat per perangkat */
 const sisi = {menu: "kiri", ringkas: "kanan"};
 try { Object.assign(sisi, JSON.parse(localStorage.getItem("meja-sisi") || "{}")); } catch {}
@@ -736,5 +736,6 @@ terapSisi();
   t.addEventListener("dblclick", () => { mj.style.removeProperty("--lebar-menu"); try { localStorage.removeItem(KUNCI); } catch {} });
   t.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault();
     const tambah = (e.key === "ArrowRight") === (sisi.menu !== "kanan"); simpanLebar(atur(t.parentElement.offsetWidth + (tambah ? 24 : -24))); }); }
-setInterval(() => { if (!dlg.open) muat(); }, 20000);   // 20 detik, juga saat tab di latar: laporan darurat harus cepat terlihat (K68)
+setInterval(() => { if (!dlg.open) muat(document.hidden); }, 20000);   // 20 detik, juga saat tab di latar: laporan darurat harus cepat terlihat (K68); di latar hanya pita darurat
+document.addEventListener("visibilitychange", () => { if (!document.hidden && !dlg.open) muat(); });
 muat();

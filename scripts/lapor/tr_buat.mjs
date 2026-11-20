@@ -22,8 +22,12 @@ const tebal = t => (String(t).match(/\*/g) || []).length;
 const sah = (a, b) => typeof b === "string" && b.trim() && angka(a) === angka(b) && tebal(a) === tebal(b);
 const SKEMA = {type: "object", properties: {teks: {type: "array", items: {type: "string"}}}, required: ["teks"], additionalProperties: false};
 
-async function terjemah(kode, daftar) {
-  const sistem = `You translate the user interface, chatbot questions, and disaster preparedness guidance of BNPB's disaster reporting app (Indonesia) from Indonesian into ${NAMA_BAHASA[kode]}.
+// --ulang-sama: butir yang terjemahannya persis sama dengan teks Indonesia diterjemahkan ulang dengan perintah lebih keras (pemilik 20 Nov 2026:
+// Minang masih "Laporan", "Ditindaklanjuti", "Tambah kabar", "Gempa bumi"). Hasil yang tetap sama sesudah itu diterima sebagai kata serapan.
+const ULANG_SAMA = process.argv.includes("--ulang-sama");
+const SAMA_KERAS = kode => `\nEvery item below was left in Indonesian by an earlier pass. Give the real ${NAMA_BAHASA[kode]} wording (for example, Minangkabau "Gempa bumi" -> "Gampo bumi", "Sudah" -> "Alah"). Return an item unchanged only when ${NAMA_BAHASA[kode]} speakers really say exactly those words.`;
+async function terjemah(kode, daftar, keras = false) {
+  const sistem = (keras ? SAMA_KERAS(kode) + "\n" : "") + `You translate the user interface, chatbot questions, and disaster preparedness guidance of BNPB's disaster reporting app (Indonesia) from Indonesian into ${NAMA_BAHASA[kode]}.
 Translate EVERY item fully into ${NAMA_BAHASA[kode]}, including short labels such as menu names, tab names, and button text. Do not leave Indonesian words untranslated when ${NAMA_BAHASA[kode]} has its own word; keep a loanword only when speakers really use it.
 Keep exactly: digits and numbers, units, *asterisks* around bold text, _underscores_, line breaks, "- " bullets, placeholders in square brackets, URLs, phone numbers, @handles, and these names: BNPB, BPBD, BMKG, PVMBG, WhatsApp, GPS, Google Maps, KK, NIK, SIG, AI, Sigap.
 Place names stay as written. Polite, plain register that ordinary villagers understand. Same count and order as the input. Output only the translations.`;
@@ -36,14 +40,16 @@ async function satuBahasa(kode, sumber) {
   const berkas = path.join(DIR, `${kode}.json`);
   let lama = {}; try { lama = JSON.parse(fs.readFileSync(berkas, "utf8")); } catch {}
   const kamus = Object.fromEntries([...sumber.keys()].filter(k => lama[k]).map(k => [k, lama[k]]));
-  const belum = [...sumber.keys()].filter(k => !kamus[k]);
+  const sama = k => kamus[k] === sumber.get(k) && /\p{L}{3}/u.test(k);
+  const keras = ULANG_SAMA && kode !== "en";
+  const belum = [...sumber.keys()].filter(k => !kamus[k] || keras && sama(k));
   const potong = []; let bag = [], n = 0;
   for (const k of belum) { const t = sumber.get(k); if (bag.length && (n + t.length > 3500 || bag.length >= 60)) { potong.push(bag); bag = []; n = 0; } bag.push(k); n += t.length; }
   if (bag.length) potong.push(bag);
   let gagal = 0;
   const kerja = async ks => {
     for (let coba = 1; coba <= 3; coba++) {
-      try { const hasil = await terjemah(kode, ks.map(k => sumber.get(k)));
+      try { const hasil = await terjemah(kode, ks.map(k => sumber.get(k)), keras);
         ks.forEach((k, i) => { if (sah(sumber.get(k), hasil[i])) kamus[k] = hasil[i].trim(); else gagal++; }); return; }
       catch (e) { if (coba === 3) { gagal += ks.length; console.error(`${kode}: ${e.message}`); } }
     }

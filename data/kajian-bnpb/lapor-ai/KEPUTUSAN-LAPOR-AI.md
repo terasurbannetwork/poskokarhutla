@@ -458,3 +458,27 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | --- | --- | --- | --- |
 | Q58 | Jangkauan "berdekatan": kecamatan yang sama saja, atau juga radius sekian km melewati batas kecamatan? | **[BAWAAN SEMENTARA]** Kecamatan yang sama. | LA-68 |
 | Q59 | Sesudah "ya", pertanyaan dampak (korban, rumah, pengungsi) tetap ditanya satu per satu atau cukup dari detail bebas? | **[BAWAAN SEMENTARA]** Cukup dari detail bebas (D105). | LA-68 |
+
+## Keputusan pemilik (pengecekan lapangan dan jenis tindakan, 20 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K69 | 20 Nov 2026 | Pemilik: "Dimana BPBD bisa menyatakan dia tidak valid? ... kasih halaman pengecekan lah. Jadi ketika BPBD orangnya melakukan pengecekan dia bisa menyatakan datanya valid atau nggak kemudian menambahkan laporan atau merevisi laporan." |
+| K70 | 20 Nov 2026 | Pemilik setuju ("Yes gas") usulan sesi: saat tiket dipindah ke Ditindaklanjuti, petugas memilih jenis tindakan yang dilakukan (bukan hanya status), dari katalog tindakan per bencana yang bersumber logbook. |
+| K71 | 20 Nov 2026 | Pil "Tertinggi" di kepala kejadian meja diberi ikon per angka (meninggal, hilang, luka, mengungsi, rumah rusak). |
+
+## Keputusan rancangan (pelaksanaan K69-K71, agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D108 | Pengecekan lapangan adalah kartu "Pengecekan lapangan" di rincian `/lapor/meja`, untuk BNPB dan BPBD wilayahnya (hak meja D95, aksi `periksa`). Bukan halaman bertoken baru: BPBD sudah punya meja bersesi; tautan bertoken `/lapor/v/` (D23) tetap untuk kontak tanpa akun. Hasil sama dengan verifikasi D23: Valid, Sebagian benar, Tidak valid. Catatan wajib (minimal 5 huruf). Riwayat pengecekan append-only (pelaku, waktu, hasil, catatan, perubahan) dan tercatat di riwayat tiket. Tiket Selesai atau Tidak valid tidak dicek lagi. | Satu pintu kerja BPBD; tanpa tautan baru yang bisa diteruskan. |
+| D109 | Hasil Tidak valid memindah tiket ke `tidak_valid` dan mengabari pelapor dengan catatannya. Valid dan Sebagian benar tidak mengubah status (pindah status tetap keputusan petugas, A8). `PINDAH` diperluas: `diteruskan` dan `ditindaklanjuti` juga boleh ke `tidak_valid`, karena cek lapangan bisa terjadi sesudah diteruskan. Tombol status Tidak valid wajib alasan di kotak catatan. | Menjawab "di mana BPBD menyatakan tidak valid": sebelumnya hanya dari Dilihat dan Ditelaah. |
+| D110 | Revisi: hanya bila Sebagian benar; hanya angka korban, pengungsi, rumah, fasilitas, dan jalan (`ISIAN_REVISI` di `src/lapor_periksa.js`), bilangan bulat 0 sampai 1.000.000; 0 berarti "tidak ada" (nihil), kosong tetap "belum didata". Jenis, lokasi, dan waktu kejadian tidak direvisi (D37). Revisi menulis versi laporan baru (append-only, pola susulan A12); nilai yang berubah berasal `petugas` dengan kutipan "Koreksi lapangan <pelaku>: <catatan>" (D3), nilai lama tetap di versi sebelumnya; PDF dan Word dibuat ulang. | Laporan pelapor tidak pernah ditimpa; angka petugas tetap berkutipan. |
+| D111 | "Menambahkan laporan" oleh petugas = catatan pengecekan + foto penanganan (K60, sudah ada) + tindakan (D112). Tidak ada formulir laporan kedua; data per objek BPBD masuk paket data lanjutan (AGENTS 2.31). | Tidak ada buku laporan kedua. |
+| D112 | Jenis tindakan: pilihan centang dari `kemampuan.tindakan` per bencana di `public/bencana.json` (katalog logbook Pusdalops, AGENTS 2.28, tanpa karangan) ditambah "tindakan lain" teks bebas. Pindah ke Ditindaklanjuti wajib minimal satu tindakan; selama Ditindaklanjuti tindakan bisa ditambah (aksi `tindakan`). Jenis tanpa katalog (karhutla di modulnya sendiri, kebakaran gedung, lainnya) hanya isian bebas. Tindakan tersimpan append-only (pelaku, waktu), tampil di rincian dan riwayat, dan masuk kabar ke pelapor. | Pimpinan bisa melihat apa yang dilakukan, bukan hanya status. |
+| D113 | Pil Tertinggi memakai ikon yang sama dengan sel dampak (`m-meninggal`, `m-hilang`, `m-luka`, `m-tenda`, `m-rumah`). | Satu kosakata ikon. |
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q60 | Tindakan tampil di halaman lacak pelapor dan di Alun-alun? | **[BAWAAN SEMENTARA]** Masuk kabar status ke pelapor saja; lacak dan Alun-alun belum. | LA-72 |
+| Q61 | Pengecekan Valid oleh BPBD menaikkan tingkat keyakinan laporan (lencana "dicek BPBD") di Alun-alun dan PDF? | **[BAWAAN SEMENTARA]** Lencana hanya di meja. | LA-72 |
