@@ -282,7 +282,8 @@
     const kering = ik.status === "El Niño" || ik.iod_status === "IOD positif";
     const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : "");
     el.innerHTML = teks; el.title = `ONI ${ik.oni_terakhir.musim} ${ik.oni_terakhir.tahun}: ${o > 0 ? "+" : ""}${o.toFixed(2).replace(".", ",")} °C, DMI 8 minggu ${ik.dmi_8_minggu > 0 ? "+" : ""}${String(ik.dmi_8_minggu).replace(".", ",")} °C\n${ik.cpc_status || ""}${kering ? "\nKemarau lebih kering dari biasa: kalender musim memakai pola tahun El Niño." : ""}\nSumber: NOAA CPC & OSMC`;
-    const upd = $("#upd"); upd ? upd.before(el) : null;
+    const SEMBUNYI = true;   // pemilik 20 Nov 2026 "Ini sembunyikan dulu ya": pil El Niño di kepala halaman disembunyikan; ENSO_STATUS tetap diisi. Pulihkan = false.
+    const upd = $("#upd"); upd && !SEMBUNYI ? upd.before(el) : null;
   }
 
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", hubungkan) : hubungkan();

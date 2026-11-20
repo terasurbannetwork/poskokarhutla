@@ -130,3 +130,6 @@ Added 1 Nov 2026:
 
 Added 11 Nov 2026:
 - /operasi bilah alat: tombol "Salin teks WA" dan "Cetak / PDF" dicabut dari markup kerangka() di public/operasi_laporan.js (komentar di tempatnya). Handler data-aksi, fungsi salin(), dan CSS .ops-tbl tetap. Pulihkan = kembalikan dua <button class="ops-tbl" data-aksi="salin|cetak">.
+
+Added 20 Nov 2026:
+- Header pill "El Niño <kekuatan>" / "La Niña" / "ENSO netral" (lencanaIklim in public/lapisan5.js): `SEMBUNYI = true` skips inserting it before #upd. window.ENSO_STATUS still set. Restore: set SEMBUNYI to false.
