@@ -23,7 +23,7 @@ Laporan kedua dari kab yang sama dalam kelompok yang sama tidak membuat berkas b
 | Jenis | Isian | Foto (Q12) |
 | --- | --- | --- |
 | `rumah` | W: kepala keluarga penghuni (P), desa, kecamatan, alamat atau RT/RW, tingkat (`rb`, `rs`, `rr`, `tidak_rusak`), terendam (ya/tidak), status huni (`dihuni`, `mengungsi`, `rata`), jumlah jiwa. O: pemilik (P, atau "sama"), NIK KK (P), keterangan | 2 wajib, video O |
-| `prasarana` | W: jenis (`jembatan`, `jalan`, `sekolah`, `faskes`, `ibadah`, `kantor`, `irigasi`, `listrik`, `air`, `sinyal`, `spbu`, `lainnya`), nama, desa, tingkat (`rb`, `rs`, `rr`), fungsi (`putus`, `terbatas`, `berfungsi`). Jalan dan jembatan W: panjang rusak (m), kendaraan yang bisa lewat (`tidak_ada`, `motor`, `mobil`, `truk`). O: jalur alternatif | 2 wajib, video O |
+| `prasarana` | W: jenis (`jembatan`, `jalan`, `sekolah`, `faskes`, `ibadah`, `kantor`, `pasar`, `listrik`, `air`, `sinyal`, `irigasi`, `transportasi`, `spbu`, `lainnya`; sama dengan kolom prasarana dan pelayanan dasar meja `dampak`, sinyal = `telekom`), nama, desa, tingkat (`rb`, `rs`, `rr`), fungsi (`putus`, `terbatas`, `berfungsi`). Jalan dan jembatan W: panjang rusak (m), kendaraan yang bisa lewat (`tidak_ada`, `motor`, `mobil`, `truk`). O: jalur alternatif | 2 wajib, video O |
 | `titik` | W: nama, desa, jenis dan tipe tempat (nilai meja `pengungsi`), tanggal buka, enam sektor meja `pengungsi` (`keb_air`, `keb_pangan`, `keb_sandang`, `keb_kesehatan`, `keb_hunian`, `keb_pendidikan`: `ada/tidak`). O: MCK, dapur umum, listrik (`ada/tidak`), kapasitas jiwa | 1 wajib |
 | `jiwa` | W: titik (`TP-`), nama (P), umur (tahun) atau kelompok umur, L/P, desa asal, tanggal masuk, kepala keluarga (diri sendiri atau rujukan jiwa lain di berkas). W untuk kepala keluarga: nomor HP (P) atau "tidak ada". O: NIK (P), rentan (P: `balita`, `hamil_t1..t3`, `menyusui`, `lansia`, `disabilitas_*`, `sakit`), kebutuhan khusus (P), tanggal keluar | Wajah (P) W untuk umur 18 tahun ke atas kecuali "menolak difoto" (Q10, Q13); di bawah 18 tidak diminta |
 | `korban` | W: status (`meninggal`, `hilang`, `luka_berat`, `luka_ringan`), nama (P), umur, L/P, desa, kontak keluarga (P: nama dan HP atau "tidak ada"). Hilang W: lokasi dan waktu terakhir terlihat, status pencarian (`dicari`, `ditemukan_hidup`, `ditemukan_meninggal`). Luka O: dirawat di. Meninggal O: tempat, sumber konfirmasi (`rs`, `keluarga`, `aparat`). O: ciri (P) | Tidak wajib; hilang O foto semasa hidup (P, Q8) |
@@ -71,12 +71,15 @@ S(luka)      = korban status in (luka_berat, luka_ringan)
 S(mengungsi, t) = jiwa dengan masuk <= t dan (keluar null atau keluar > t)
 S(jembatan_rb) = prasarana jenis='jembatan', tingkat='rb'   (rs, rr serupa)
 jalan_km     = jumlah panjang rusak prasarana jenis='jalan' / 1000
-S(<vital>_unit) = prasarana jenis=<vital>  (listrik, air, sinyal->telekom, spbu, irigasi)
+S(<vital>_unit) = prasarana jenis=<vital>  (listrik, air, sinyal->telekom, irigasi, transportasi, spbu)
+S(<layanan>_<tingkat>) = prasarana jenis in (sekolah, faskes, ibadah, kantor, pasar)
 rincian umur dan L/P = pemilahan S(m) per kelompok umur meja dampak
 titik_hari(tp, t) = per kelompok umur meja pengungsi x L/P dari S(mengungsi, t) di tp
 ```
 
 Mengisi objek untuk metrik yang ditandai nihil mencabut tanda nihilnya dan dicatat di jejak.
+
+Tiga metrik kondisi akhir juga bernilai 0 dari data: `hilang` bila ada korban hilang tetapi semua sudah ditemukan, `mengungsi` bila ada jiwa tetapi tidak ada yang aktif pada `t`, `prasarana_putus` bila ada prasarana tetapi tidak ada yang putus. `mengungsi` wajib dihitung dengan tanggal; tanpa tanggal nilainya kosong. Nama nihil di luar daftar metrik diabaikan. Objek tanpa umur atau jenis kelamin dihitung di total, tidak di rincian.
 
 Rekap ke meja `dampak` (D5): kolom bersumber `daftar`; nilai `null` tidak ditulis. Bila kolom ketikan untuk metrik sama berisi nilai lain, keduanya disimpan dan meja menandai `beda_sumber`; mesin tidak memilih. Catatan berstatus `diverifikasi` atau `masuk_logbook` mendapat penanda `rekap_baru`, isinya tidak berubah sampai petugas menerima.
 
