@@ -1284,7 +1284,7 @@ async function terjemahKartu() {   // satu putaran sekaligus; perubahan selama b
 /* kamus statis per bahasa (public/lapor/tr/<kode>.json, dibuat scripts/lapor/tr_buat.mjs): semua teks tetap sudah diterjemahkan sebelumnya,
    jadi layar berganti seketika tanpa menunggu AI (pemilik 20 Nov 2026: "semua statis, lu terjemahin aja semua dulu"). API hanya untuk teks tersusun saat jalan. */
 const kunciTr = t => String(t).replace(/\s+/g, " ").trim();
-const TR_VERSI = "20261120c";   // naikkan tiap kamus public/lapor/tr dibuat ulang
+const TR_VERSI = "20261120d";   // naikkan tiap kamus public/lapor/tr dibuat ulang
 const STATIS = new Map();   // kode -> {kunci: terjemahan} | Promise
 function muatStatis(b) {
   if (!STATIS.has(b)) STATIS.set(b, fetch(`/lapor/tr/${b}.json?v=${TR_VERSI}`).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => { STATIS.set(b, k); return k; }));
