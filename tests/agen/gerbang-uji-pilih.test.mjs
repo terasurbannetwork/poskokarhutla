@@ -5,6 +5,8 @@ import {test} from "node:test";
 import assert from "node:assert/strict";
 import {mkdtempSync, writeFileSync, mkdirSync, readFileSync, existsSync} from "node:fs";
 import {spawnSync, execFileSync} from "node:child_process";
+// hook pre-push menjalankan uji dengan GIT_DIR dan kawan-kawan menunjuk repo utama; repo mini di bawah harus memakai .git miliknya sendiri
+for (const k of Object.keys(process.env)) if (k.startsWith("GIT_")) delete process.env[k];
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {pilih, gabung} from "../../scripts/agents/uji_pilih.mjs";
