@@ -797,3 +797,22 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-gugus-angka{padding:3px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.75rem;font-weight:700}
 .mj-anggota td:first-child{box-shadow:inset 4px 0 0 var(--brand2)}
 .mj-anggota td{background:color-mix(in oklab,var(--brand2) 3%,var(--card))}
+
+/* Lapor darurat (K68): pita merah di atas meja, kartu per laporan, baris tabel bertanda */
+.mj-darurat{display:grid;gap:10px;margin:12px 16px 0;padding:12px 14px;border:1.5px solid var(--bad);border-radius:16px;background:color-mix(in oklab,var(--bad) 7%,var(--card))}
+.mj-darurat-kepala{display:flex;align-items:center;gap:10px;color:var(--bad-tx)}
+.mj-darurat-kepala i{width:10px;height:10px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 0 color-mix(in oklab,var(--bad) 60%,transparent);animation:mj-denyut 1.6s infinite}
+.mj-darurat-kepala b{font:800 .9375rem var(--mj-display)}
+.mj-darurat-izin{margin-left:auto;min-height:32px;padding:0 12px;border:1px solid var(--bad);border-radius:999px;background:var(--card);color:var(--bad-tx);font-weight:700;cursor:pointer}
+.mj-darurat-daftar{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.mj-darurat-kartu{display:grid;gap:2px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:12px;background:var(--card);color:var(--ink);cursor:pointer;font:inherit}
+.mj-darurat-kartu:hover{border-color:var(--bad)}
+.mj-darurat-kartu b{font:800 .875rem var(--mj-display)}
+.mj-darurat-kartu span{font-size:.8125rem;color:var(--ink2)}
+.mj-darurat-kartu small{font-size:.75rem;color:var(--bad-tx);font-weight:700}
+.mj-darurat-kartu.baru{animation:mj-sorot-darurat 2.4s ease-out 2}
+.mj-chip-darurat{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:999px;background:var(--bad);color:var(--on-brand);font-size:.6875rem;font-weight:800;vertical-align:middle}
+.mj-baris-darurat td:first-child{box-shadow:inset 4px 0 0 var(--bad)}
+@keyframes mj-denyut{70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes mj-sorot-darurat{0%,30%{background:color-mix(in oklab,var(--bad) 18%,var(--card))}}
+@media (prefers-reduced-motion:reduce){.mj-darurat-kepala i,.mj-darurat-kartu.baru{animation:none}}

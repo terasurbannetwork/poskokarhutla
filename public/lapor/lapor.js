@@ -52,9 +52,9 @@ function ke(tab) {
 // menu: Bantuan dilebur ke Beranda, diganti Kebijakan privasi (pemilik 19 Nov 2026)
 document.querySelectorAll("#tab button").forEach(b => b.addEventListener("click", () => b.dataset.ke === "lapor" ? bukaChat() : b.dataset.ke === "privasi" ? bukaPrivasi() : ke(b.dataset.ke)));
 $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
-$("bLaporBaru").addEventListener("click", bukaChat);
+$("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
-document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: bukaChat, info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
+document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
   penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi siaga"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 
@@ -629,7 +629,7 @@ function selesaiBalas(j) {
     const form = idAwal; if (j.minta === "identitas") idAwal = null;
     setTimeout(() => j.minta === "identitas" ? kirim({form, tampil: false}) : kirim({teks: "2", tampil: false}), 0); return; }
   $("mengetik").hidden = true;
-  if (j.balasan) tambah("bot", j.minta === "setuju" ? "Halo, saya Sigap, asisten AI Lapor Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : j.balasan);
+  if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Lapor Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah.") : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
   if (j.nomor && j.susulan) { const l = (cache.laporan || []).find(x => x.nomor === j.nomor); if (l) { l.versi = j.susulan; if (j.foto) l.foto = j.foto; } cache.fotoSesi = []; } // susulan: kartu tetap, versi naik
   else if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now()}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
@@ -885,7 +885,13 @@ function tampilDaftarLaporan() {
   }
   w.replaceChildren(...isi);
 }
-async function bukaChat() {
+async function bukaChat(darurat = false) {
+  if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti
+    ke("chat"); chipBahasa(); hangatkanTerima();
+    if (log.children.length) log.append(el("li", "tengah", "Laporan darurat"));
+    const mulaiDarurat = () => kirim({teks: "darurat", tampil: false});
+    return tanyaBahasa(() => wa ? mulaiDarurat() : tanyaNomor(mulaiDarurat));
+  }
   ke("chat"); chipBahasa(); hangatkanTerima();
   if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum

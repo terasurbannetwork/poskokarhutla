@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/inti/tema.css" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
-<link href="/lapor/meja.css?v=47" rel="stylesheet">
+<link href="/lapor/meja.css?v=48" rel="stylesheet">
 </head>
 <!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
      peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
@@ -90,6 +90,8 @@
     <div class="mj-chip" id="saringCepat" role="group" aria-label="Saring cepat"></div>
     <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" title="Hapus semua saringan"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
   </div>
+  <!-- Lapor darurat (K68): laporan darurat yang belum selesai selalu di atas, berbunyi saat ada yang baru; BNPB dan BPBD wilayahnya -->
+  <section class="mj-darurat" id="pitaDarurat" aria-label="Laporan darurat" aria-live="polite" hidden></section>
   <div class="mj-isi" id="isi">
     <!-- peta dasbor: saring jenis berikon di atas peta, ringkasan di kiri, legenda tengah bawah (tiru /bnpb/dalops) -->
     <section class="mj-peta-wadah" id="bagPeta" aria-label="Peta laporan">
@@ -113,6 +115,6 @@
   <dialog class="mj-rinci" id="rinci" closedby="any" aria-labelledby="rinciJudul"></dialog>
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
-<script type="module" src="/lapor/meja.js?v=42"></script>
+<script type="module" src="/lapor/meja.js?v=43"></script>
 </body>
 </html>

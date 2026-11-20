@@ -1991,3 +1991,15 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-db-kaki .lp-utama svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4}
 .lp-db-kisi{grid-template-columns:repeat(var(--kol,4),minmax(0,1fr))!important}
 @media (max-width:560px){.lp-db-kisi{grid-template-columns:repeat(min(var(--kol,2),2),minmax(0,1fr))!important}}
+
+/* Lapor darurat (K68): tombol dan kartu merah, dibedakan dari Lapor kejadian */
+.lp-tombol-besar.lp-tombol-darurat{background:var(--bad)!important;color:var(--on-pekat)!important}
+.lp-tombol-besar.lp-tombol-darurat:hover{background:color-mix(in oklab,var(--bad) 86%,var(--head-bg))!important}
+.lp-darurat-wadah{padding-bottom:0!important}
+.lp-darurat-pita{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border:0;border-radius:16px;background:var(--bad);color:var(--on-pekat);text-align:left;font:inherit;cursor:pointer;transition:background var(--dur-1) var(--ease)}
+.lp-darurat-pita:hover{background:color-mix(in oklab,var(--bad) 86%,var(--head-bg))}
+.lp-darurat-pita .lp-lk-ikon{position:static;backdrop-filter:none;flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:color-mix(in oklab,var(--on-pekat) 18%,transparent)}
+.lp-darurat-pita .lp-lk-ikon svg{width:24px;height:24px}
+.lp-darurat-pita b{display:block;font:800 1.0625rem var(--display)}
+.lp-darurat-pita small{display:block;font-size:.8125rem;line-height:1.4;color:color-mix(in oklab,var(--on-pekat) 88%,transparent)}
+.lp-darurat-panah{flex:none;width:22px;height:22px;margin-left:auto}

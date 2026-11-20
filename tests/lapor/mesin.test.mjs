@@ -279,3 +279,24 @@ test("kejadian sama: pilihan di luar daftar ditanyakan ulang; beberapa kandidat 
   h = await obrolKj([...HINGGA_LOKASI, "2"], dua);
   assert.equal(h.sesi.isian.jenis.nilai, "longsor");
 });
+
+test("lapor darurat (K68): identitas, lokasi, jenis, korban, foto boleh dilewati, ringkasan lalu kirim", async () => {
+  const L = {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}};
+  const h1 = await obrol(["darurat", "1", "1", "Budi Santoso", L]);
+  assert.equal(h1.sesi.status, "darurat_jenis"); assert.ok(h1.sesi.darurat); assert.equal(h1.minta, "jenis");
+  assert.ok(!h1.pilihan.includes("Lainnya") && h1.pilihan.length === JENIS.filter(j => j.id !== "lainnya").length);
+  const h2 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1"]);
+  assert.equal(h2.sesi.isian.jenis.nilai, JENIS[0].id); assert.ok(h2.sesi.isian.waktu?.ms, "waktu kejadian = saat dilaporkan");
+  assert.deepEqual(h2.pilihan, ["Ya, ada", "Tidak ada", "Belum tahu"]);
+  const h3 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "ya ada yang terjebak"]);
+  assert.equal(h3.sesi.darurat.korban, "ya"); assert.equal(h3.sesi.status, "foto");
+  const h4 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "3", "1"]);
+  assert.equal(h4.sesi.status, "ringkasan"); assert.equal(h4.sesi.darurat.korban, "belum_tahu"); assert.match(h4.balasan, /Ringkasan laporan darurat/);
+  const h5 = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "2", "1", "1"]);
+  assert.equal(h5.sesi.status, "terkirim"); assert.ok(h5.kirim);
+});
+
+test("lapor darurat: kata darurat di tengah laporan biasa membuka laporan darurat baru", async () => {
+  const h = await obrol(["lapor", "1", "1", "Budi Santoso", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "darurat"]);
+  assert.ok(h.sesi.darurat); assert.equal(h.sesi.status, "identitas");
+});

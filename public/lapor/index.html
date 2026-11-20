@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=138" rel="stylesheet">
+<link href="/lapor/lapor.css?v=139" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -33,6 +33,7 @@
   <symbol id="i-bahasa" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></symbol>
   <symbol id="i-putar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5v5l4.5-2.5z"/></symbol>
   <symbol id="i-status" viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M7 5.5H5v15h14v-15h-2"/><path d="m8.5 13.5 2.3 2.3 4.7-4.6"/></symbol>
+  <symbol id="i-sirene" viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 18h14v3H5zM12 3v2M4.2 6.2l1.4 1.4M19.8 6.2l-1.4 1.4M2 12h2M20 12h2"/></symbol>
   <symbol id="i-kirim" viewBox="0 0 24 24"><path d="M4 12 20 4l-6 16-2.5-6.5z"/></symbol>
   <symbol id="i-panah" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-kembali" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
@@ -89,6 +90,8 @@
         <h1 id="sapa">Lihat kejadian bencana? Laporkan di sini.</h1>
         <p class="lp-hero-sub">Laporan Anda diterima petugas BNPB dan diteruskan ke BPBD setempat. Pantau tindak lanjutnya lewat nomor laporan.</p>
         <div class="lp-hero-aksi">
+          <!-- Lapor darurat (K68, pemilik 20 Nov 2026): kejadian sedang berlangsung, beberapa ketukan saja, langsung ke meja BNPB dan BPBD -->
+          <button class="lp-tombol-besar lp-tombol-darurat" id="bDarurat" type="button"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Lapor darurat</button>
           <button class="lp-tombol-besar" id="bLaporBaru" type="button"><svg aria-hidden="true"><use href="#i-kirim"/></svg>Lapor kejadian</button>
           <button class="lp-tombol-kaca" id="bCekStatus" type="button"><svg aria-hidden="true"><use href="#i-status"/></svg>Cek status laporan</button>
         </div>
@@ -125,6 +128,12 @@
 
       <section class="lp-kompartemen" aria-labelledby="hLayanan">
       <h2 class="lp-kompartemen-kepala" id="hLayanan"><svg aria-hidden="true"><use href="#i-daftar"/></svg>Apa yang ingin Anda lakukan?</h2>
+      <div class="lp-kompartemen-isi lp-darurat-wadah">
+        <button class="lp-darurat-pita" type="button" data-aksi="darurat">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-sirene"/></svg></span>
+          <span><b>Lapor darurat</b><small>Kejadian sedang berlangsung? Cukup lokasi, jenis, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima.</small></span>
+          <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
+      </div>
       <div class="lp-layanan-kisi lp-kompartemen-isi">
         <button class="lp-layanan-kartu utama" type="button" data-aksi="lapor" style="--foto:url(/img/bencana-banjir.jpg)">
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-kirim"/></svg></span>
@@ -353,6 +362,6 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=115"></script>
+<script type="module" src="/lapor/lapor.js?v=117"></script>
 </body>
 </html>

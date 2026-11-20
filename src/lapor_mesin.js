@@ -14,7 +14,7 @@ export const NAMA_LAYANAN = "Lapor Bencana BNPB";
 export const TEMPLAT = ["Kejadian:", "Kronologi:"].join("\n");
 const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa"]);
 const KATA_BATAL = /^(batal|batalkan)$/i, KATA_BELUM = /^(belum tahu|tidak tahu|gak tahu|ga tahu|nggak tahu|belum|lewati|skip)$/i;
-const KATA_TIDAK = /^(tidak ada|tidak|nihil|nol|ga ada|gak ada|nggak ada|tdk ada)$/i, KATA_KIRIM = /^kirim$/i, KATA_LAPOR = /^(lapor|halo|hai|hi|p|ping|mulai)$/i;
+const KATA_TIDAK = /^(tidak ada|tidak|nihil|nol|ga ada|gak ada|nggak ada|tdk ada)$/i, KATA_KIRIM = /^kirim$/i, KATA_LAPOR = /^(lapor|halo|hai|hi|p|ping|mulai)$/i, KATA_DARURAT = /^(lapor )?darurat!?$/i;
 const NEGASI = /\b(tidak ada|tidak|nihil|tanpa|nol|belum ada)\b/i;
 const PERAN = {warga: "Warga", bpbd_klaim: "Petugas BPBD", bpbd: "Petugas BPBD"};
 
@@ -341,7 +341,7 @@ export function nilaiTampil(i, x) {
 }
 
 export function ringkasan(sesi, pelapor) {
-  const b = berlakuSesi(sesi), baris = [`*Ringkasan laporan*`, `Pelapor: ${pelapor.nama} (${PERAN[pelapor.peran]})`,
+  const b = berlakuSesi(sesi), baris = [sesi.darurat ? "*Ringkasan laporan darurat*" : `*Ringkasan laporan*`, ...(sesi.darurat?.korban ? [`Korban: ${{ya: "ada orang terluka, hilang, atau terjebak", tidak: "tidak ada", belum_tahu: "belum tahu"}[sesi.darurat.korban]}`] : []), `Pelapor: ${pelapor.nama} (${PERAN[pelapor.peran]})`,
     `Waktu dilaporkan: ${sesi.terkirim ? waktuLapor(sesi.terkirim, sesi.isian.lokasi?.nilai?.wilayah?.provKode) : "dicatat otomatis saat dikirim"}`];
   for (const k of KELOMPOK) {
     const isi = b.filter(i => i.kelompok === k.id);
@@ -401,6 +401,12 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: []};
     if (teks.length > 30 && !KATA_LAPOR.test(teks)) sesi.tunda = teks; // cerita di pesan pertama, diurai sesudah identitas (A7 langkah 3)
   }
+  /* Lapor darurat (K68, pemilik 20 Nov 2026): jalur pendek saat kejadian sedang berlangsung. Lokasi, jenis, ada korban atau tidak, foto opsional,
+     lalu ringkasan dan kirim; dilengkapi kemudian lewat Tambah kabar. Kata "darurat" di tengah laporan biasa membuka laporan darurat baru. */
+  if (KATA_DARURAT.test(teks) && !sesi.darurat) {
+    if (sesi.status !== "identitas") sesi = {status: "identitas", langkah: pelapor ? "kenal" : "setuju", isian: {}, ditanya: [], dibuat: kini, transkrip: []};
+    sesi.darurat = {}; delete sesi.tunda;
+  }
   sesi.diubah = kini;
   sesi.transkrip.push({dari: "pelapor", teks: teks ? samarkan(teks) : null, lokasi: !!lokasi, waktu: kini});
   const jawab = (balasan, pilihan = null, kirim = false, minta = null, ket = null) => { // minta: "lokasi" | "templat" (petunjuk untuk layar web); ket: penjelasan tiap pilihan
@@ -418,6 +424,13 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Jenis bencana*\nPilih yang paling mirip dengan kejadiannya.`, JENIS.map(j => j.label), false, "jenis", JENIS.map(j => j.ket));
     h.kunci = opsi; h.saran = 0; sesi.kunci = opsi; return h;
   };
+  const JENIS_DARURAT = JENIS.filter(j => j.id !== "lainnya");
+  const tanyaDarurat = kepalaTeks => {
+    sesi.status = "darurat_jenis"; const opsi = JENIS_DARURAT.map(j => j.id);
+    const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Kejadian apa yang sedang terjadi?*\nPilih yang paling mirip.`, JENIS_DARURAT.map(j => j.label), false, "jenis", JENIS_DARURAT.map(j => j.ket));
+    h.kunci = opsi; h.saran = 0; sesi.kunci = opsi; return h;
+  };
+  const tanyaKorban = (kepala = "") => jawab(`${kepala}*Ada korban?*\nAda orang terluka, hilang, atau terjebak?`, ["Ya, ada", "Tidak ada", "Belum tahu"]);
   /* kejadian yang sama (K66, D103-D105): sesudah lokasi (dan RT/RW) terkonfirmasi, pemanggil menyuntik kandidat laporan sekecamatan lewat `kandidat`;
      tanpa fungsi itu atau tanpa kandidat, jalur lama tidak berubah. Teks tanpa nama, nomor, atau isi laporan lain (D104). */
   const tawarKejadian = kepalaTeks => {
@@ -493,12 +506,29 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     return jawab(T.lokasi(), null, false, "lokasi");
   }
 
+  /* ----- lapor darurat (K68) ----- */
+  if (sesi.status === "darurat_jenis") {
+    const p = pilih(); if (p < 0) return tanyaDarurat();
+    setIsian(sesi, "jenis", {nilai: JENIS_DARURAT[p].id}, {sumber: "pilihan", waktu: kini});
+    const prov = sesi.isian.lokasi?.nilai?.wilayah?.provKode;
+    sesi.isian.waktu = {nilai: `Sedang berlangsung saat dilaporkan, ${waktuLapor(kini, prov)}`, ms: kini, sumber: "darurat", waktu: kini};
+    sesi.status = "darurat_korban"; return tanyaKorban();
+  }
+  if (sesi.status === "darurat_korban") {
+    let p = pilih(); if (p < 0) p = /^(ya|ada|iya)\b/i.test(teks) ? 0 : /^tidak/i.test(teks) ? 1 : /belum|tidak tahu/i.test(teks) ? 2 : -1;
+    if (p < 0) return tanyaKorban("Pilih salah satu.\n\n");
+    sesi.darurat.korban = ["ya", "tidak", "belum_tahu"][p];
+    sesi.status = "foto"; sesi.foto ||= [];
+    return jawab(`*Foto atau video kejadian*\nKirim kalau aman diambil. Keselamatan Anda lebih penting; lewati saja kalau tidak sempat.`, ["Lewati, langsung ke kirim"], false, "foto", ["Laporan darurat tetap terkirim tanpa foto"]);
+  }
+
   /* ----- lokasi wajib sebelum cerita ----- */
   if (sesi.status === "lokasi") {
     if (!lokasi) return jawab(T.lokasiWajib(), null, false, "lokasi");
     const salah = terimaLokasi(sesi, lokasi, kini);
     if (salah) return jawab(salah, null, false, "lokasi");
     lokasi = null;
+    if (sesi.darurat && sesi.isian.lokasi.nilai.wilayah) return tanyaDarurat(`*Lokasi tercatat*\nDesa/Kel. ${sesi.isian.lokasi.nilai.wilayah.desa}, Kec. ${sesi.isian.lokasi.nilai.wilayah.kec}`);   // darurat: tanpa RT/RW
     if (sesi.isian.lokasi.nilai.wilayah) { sesi.status = "rtrw"; return jawab(`*Lokasi tercatat*\nDesa/Kel. ${sesi.isian.lokasi.nilai.wilayah.desa}, Kec. ${sesi.isian.lokasi.nilai.wilayah.kec}\n\n*RT dan RW*\nLengkapi nomor RT dan RW, atau pilih *Tidak tahu*.`); } // dari pencarian desa: wilayah sudah pasti
     if (wilayah) {
       let w = null;
@@ -507,6 +537,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       sesi.calonWilayah = w; sesi.status = "wilayah";
       return jawab(teksWilayah(w, sesi.isian.lokasi?.nilai), ["Benar", "Bukan, pilih desa/kelurahan lain"], false, null, ["Lanjut isi RT dan RW", `${w.sekitar.length} desa/kelurahan terdekat dari titik Anda`]);
     }
+    if (sesi.darurat) return tanyaDarurat("*Lokasi tercatat*");
     if (!sesi.tunda) return tanyaJenis("*Lokasi tercatat*");
     sesi.status = "bercerita";
     // lanjut mengurai cerita tertunda di bawah
@@ -526,6 +557,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     const {sekitar, ...pilihan} = sesi.calonWilayah;
     sesi.isian.lokasi.nilai.wilayah = pilihan;
     delete sesi.calonWilayah; delete sesi.langkahWilayah;
+    if (sesi.darurat) return tanyaDarurat(`*Lokasi tercatat*\nDesa/Kel. ${pilihan.desa}, Kec. ${pilihan.kec}`);
     sesi.status = "rtrw";
     return jawab("*RT dan RW*\nIsi nomor RT dan RW. Pilih *Tidak tahu* bila tidak tahu, misalnya kejadian di hutan atau kebun.");
   }

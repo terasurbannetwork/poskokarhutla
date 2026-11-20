@@ -442,6 +442,7 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | --- | --- | --- |
 | K66 | 20 Nov 2026 | Saat melapor, bila sudah ada laporan berdekatan (misalnya kecamatan yang sama), pelapor ditanya apakah ia melaporkan kejadian yang sama ("Apakah Anda mau melapor bencana xxx?"). Bila ya, laporan tidak mulai dari awal; pelapor ditanya detail yang ingin ditambahkan. Di meja laporan, laporan-laporan itu dikelompokkan sebagai satu kejadian dengan satu nomor. |
 | K67 | 20 Nov 2026 | Menjawab Q57 (pemilik: "di local tadi ga ada masalah"): nomor yang diketik di web tidak lagi dibatasi daftar izin `lapor_izin`, sama dengan server tinjau. Penjaganya laju IP, ikatan perangkat, dan kuota per perangkat; jalur WA mesin tetap memakai daftar izin dan nomor ketikan tidak pernah naik ke peran BPBD (D101). |
+| K68 | 20 Nov 2026 | Lapor darurat (pemilik: "butuh alert yang saat itu kejadian dan langsung bisa tanggap darurat dari stakeholder"): jalur pendek untuk kejadian yang sedang berlangsung. Identitas, lokasi (tanpa RT/RW), jenis, ada korban atau orang terjebak (ya, tidak, belum tahu), foto opsional, ringkasan, kirim; dilengkapi kemudian lewat Tambah kabar. Peringatan: meja BNPB dan meja BPBD kab/kota wilayahnya (pita merah di atas meja, nada, notifikasi peramban, segar 20 detik). Tidak dikirim ke WA BPBD atau Pusdalops, dan tidak tampil di Alun-alun sebelum ditindaklanjuti (jawaban pemilik 20 Nov 2026). |
 
 ## Keputusan rancangan (pelaksanaan K66)
 
