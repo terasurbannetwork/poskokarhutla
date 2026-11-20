@@ -19,6 +19,21 @@ Format resmi sejak 13 Nov 2026: 2 slide, tanpa sampul, penutup, daftar isi, atau
 - Dampak yang belum ada angkanya ditulis strip "-" di tengah sel, bukan "dalam pendataan" panjang.
 - Pita bawah berkepala "RENCANA AKSI": satu kartu per jenis bencana yang tampil (harus sesuai jenis di tabel), kalimat utuh dengan angka KK atau rumah yang dijumlah dari WA.
 
+- Warna jenis (standar sejak 20 Nov 2026, pemilik: "banjir, cuaca, dan gempa warnanya mirip2"): banjir biru, cuaca ekstrem hijau tua, tanah longsor emas, gempa bumi abu gelap. Sudah dari generator; jangan diganti.
+- Kejadian banyak (lebih dari 14 baris): generator menggabung baris tabel per jenis, provinsi, dan status ("5 kab/kota", jumlah KK). Kejadian baru dan yang masih berlangsung di provinsi yang sama tetap dua baris karena tanggal MULAI-nya beda (contoh Aceh: "Kab. Aceh Singkil 14 Nov" biru dan "2 kab/kota 19 Nov" oranye). Jangan dipecah lagi jadi satu baris per lokasi; teksnya akan bertumpuk.
+- Peta: ikon peringatan dini tidak boleh menutup lencana jenis lain (misalnya kotak gempa di pojok bulatan provinsi).
+
+## Slide Rincian Lokasi (bila pemakai memilih slide rincian)
+
+Bentuk final laporan 20 Nov 2026 (31 kejadian), sudah dibangun generator; agen hanya merapikan bila ada yang meluber.
+
+- Urutan: Ringkasan, Rincian lokasi, Status siaga. Judul "Rincian lokasi: N kejadian di N kab/kota dan N provinsi".
+- Kiri: peta multipanel per zona dengan skala sama (seperti peta paparan banjir sepekan), batas kab/kota, kab/kota terdampak diwarnai warna jenis, nomor di luar wilayah dengan titik dan garis penunjuk; legenda jenis di bawah (bukan tabel per jenis); skala 100 km dan arah utara di pita judul panel, tidak menimpa label.
+- Kanan, kolom: BENCANA (dikelompokkan, berikon) | PROV. | KAB/KOTA (bulatan nomor di kiri nama, tanpa kolom NO) | DAMPAK | KERUSAKAN | MULAI. Kepala tabel rata tengah. Tanpa kolom pengungsi dan kondisi mutakhir.
+- DAMPAK: pil KK saja; kalau sudah ada KK, jiwa tidak ditulis. Tanpa angka: pil "Pendataan" (miring) atau "–".
+- KERUSAKAN: pil abu berikon dalam kisi slot berlebar sama di tengah kolom. Pil rumah = jumlah semua rumah (rusak ringan, sedang, berat digabung), satu gaya dengan pil lain. Lalu satu pil per sarana dengan nama pendek: "1 sekolah", "1 jalan", "2 jembatan", "1 tanggul", "1 fasum", "±32 ha", bukan kalimat ("Atap SMK Al Muchsin roboh" ditulis "1 sekolah"). Pil "–" atau "Pendataan" hanya bila kerusakan tanpa data sama sekali.
+- Jangan terlihat sesak: pil lebih pendek dari tinggi baris, jarak antarpil tetap.
+
 ## Slide 2: Status Siaga Bencana
 
 - Peta dengan penanda peringatan dini; label tidak bertumpuk.

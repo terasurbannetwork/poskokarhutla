@@ -8,9 +8,16 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.4.4'
+export const VERSI = '2.5'
 
 export const CHANGELOG = [
+  { versi: '2.5', tanggal: '2026-11-20', isi: [
+    'Laporan harian dengan kejadian banyak: sesudah *lanjut*, bot menyebut jumlah kejadian di WA Koordalops, yang masuk laporan, dan yang tidak dimuat, lalu menawarkan slide rincian kejadian. Balas *1* untuk menambah, *2* tanpa rincian.',
+    'Slide rincian kejadian: peta kab/kota per zona bernomor dan tabel per kab/kota dengan dampak KK dan kerusakan (rumah, sekolah, jalan, jembatan, dan lainnya).',
+    'Tabel slide 1 tidak lagi bertumpuk saat kejadian banyak: kab/kota digabung per provinsi, kejadian baru dan yang masih berlangsung tetap dipisah.',
+    'Warna jenis bencana lebih mudah dibedakan: banjir biru, cuaca ekstrem hijau tua, tanah longsor emas, gempa bumi abu gelap.',
+    'Perbaikan: gunung api Siaga kembali tampil di laporan harian dengan format WA PVMBG terbaru; peringatan hujan sangat lebat (Awas) tertulis benar; kartu cuaca ekstrem tidak tergeser.',
+  ] },
   { versi: '2.4.4', tanggal: '2026-11-20', isi: [
     'Pemakaian Claude per kegiatan dan per laporan dikirim ke halaman pemantau biaya admin tiap 10 menit.',
   ] },

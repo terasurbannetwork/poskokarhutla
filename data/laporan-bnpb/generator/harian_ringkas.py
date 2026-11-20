@@ -53,7 +53,7 @@ def pil_kondisi(teks):
 # 11 Nov pemilik: "yang ongoing tuh BENCANANYA, bukan penanganannya". Banjir/longsor berlangsung selama air belum surut atau TMA
 # masih naik turun; kekeringan selama air bersih masih disalurkan. Angin kencang, cuaca ekstrem, gempa: kejadiannya sudah lewat.
 BERLANGSUNG = {
-    'banjir': r'belum surut|fluktuatif|menggenang|tergenang|terendam|genangan|berangsur surut|sebagian.*(?:surut|genang)|masih diguyur|naik|meluap',
+    'banjir': r'belum surut|fluktuatif|menggenang|tergenang|terendam|genangan|berangsur surut|mulai surut|sebagian.*(?:surut|genang)|masih diguyur|naik|meluap',   # 20 Nov: "mulai surut" = masih ada genangan (Lima Puluh Kota)
     'longsor': r'belum surut|belum (?:bisa|dapat) dilalui|tertutup material|pencarian|longsor susulan|fluktuatif',
     'kekeringan': r'air bersih|distribusi|dropping|kekeringan|krisis air',
 }
@@ -80,13 +80,19 @@ def pvmbg_normal(t):   # 14 Nov: "Level *IV (Awas)*", "*Laporan Khusus Gunung Ap
     t = re.sub(r'Level \*([IV]+ \(\w+\))\*', r'Level \1', t)
     t = t.replace('*Laporan Khusus Gunung Api pada', '*Laporan khusus gunung api pada')
     t = re.sub(r'(?m)^\*(Visual|Kegempaan|Rekomendasi):\*[ \t]*$', r'\1:', t)
+    # 19-20 Nov: kepala "> LAPORAN KHUSUS GUNUNG API PADA LEVEL III (Siaga)" kapital dan judul gunung bernomor "*1. Gn. Anak Krakatau (...)*"
+    # (tanpa ini gunung Siaga hilang dari panel Status Siaga dan peta slide 1; laporan manual 19 Nov sudah menormalkannya di jalan.py)
+    t = re.sub(r'(?m)^> LAPORAN KHUSUS GUNUNG API PADA LEVEL (\w+) \((\w+)\)\s*$', lambda m: f'*Laporan khusus gunung api pada Level {m[1]} ({m[2]})*', t)
+    t = re.sub(r'(?m)^\*\d+\. (Gn\. )', r'*\1', t)
     return re.sub(r'(\*Gn\. [^(*\n]+?) \([^)]*\)\*', r'\1*', t)
 
 
 def blok_wa(teks, lokasi):
     """Teks satu kejadian di WA Koordalops (untuk angka yang tidak diurai wa_harian, mis. pengungsi KK)."""
     for b in re.split(r'\n(?=\d+\.\s)', teks):
-        if re.search(rf'\bdi (?:Kab\.? |Kota |Kabupaten )?{re.escape(lokasi.replace("Kota ", ""))}\b', b.split('\n')[0]):
+        # 20 Nov: nama kab/kota sudah ejaan batas wilayah ("Lima Puluh Kota", "Kepulauan Mentawai"), WA bisa "Lima puluh Kota", "Kep. Mentawai"
+        nm_ = re.escape(re.sub(r'^Kepulauan ', 'Kep. ', lokasi.replace('Kota ', ''))).replace(r'Kep\.\ ', r'(?:Kep\.\s*|Kepulauan\s+)')
+        if re.search(rf'\bdi (?:Kab\.? |Kota\.? |Kabupaten )?(?:{nm_}|{re.escape(lokasi.replace("Kota ", ""))})\b', b.split('\n')[0], re.I):
             return b
     return ''
 
@@ -125,7 +131,8 @@ SINGKAT_PANEL = {'11': 'Aceh', '12': 'Sumut', '13': 'Sumbar', '14': 'Riau', '15'
 
 # Titik penanda peringatan dini per provinsi di peta (lon, lat, sisi label). Diambil dari letak yang sudah dirapikan di laporan manual
 # 14-16 Nov (pemilik 16 Nov: "bisa diperbaiki ga agar tidak numpuk2": Banten di atas Anak Krakatau, Jakarta ke kanan, Jabar dan Jateng berjauhan).
-TITIK_PROV = {'11': (97.8, 2.3, 'kanan'), '12': (99.2, 0.7, 'kanan'), '13': (100.6, -0.7, 'kiri'), '14': (101.9, 0.4, 'kanan'), '15': (103.0, -1.7, 'kanan'),
+# 20 Nov 2026 pemilik ("Sama ini bro ketutup"): Sumut 99,2 BT 0,7 LU menutup lencana gempa Nias Barat di pojok bulatan Sumut -> 98,2 BT 1,0 LU
+TITIK_PROV = {'11': (97.8, 2.3, 'kanan'), '12': (98.2, 1.0, 'kanan'), '13': (100.6, -0.7, 'kiri'), '14': (101.9, 0.4, 'kanan'), '15': (103.0, -1.7, 'kanan'),
               '16': (104.2, -3.4, 'kanan'), '17': (102.3, -3.7, 'kiri'), '18': (105.0, -4.9, 'kiri'), '19': (106.4, -2.4, 'kanan'), '21': (104.4, 0.9, 'kanan'),
               '31': (107.55, -5.75, 'kanan'), '32': (107.85, -7.3, 'kanan'), '33': (109.45, -7.05, 'kanan'), '34': (110.4, -8.2, 'kiri'), '35': (112.5, -7.6, 'kanan'),
               '36': (106.55, -5.45, 'kiri'), '51': (115.1, -8.4, 'kanan'), '52': (117.0, -8.6, 'kanan'), '53': (121.5, -8.7, 'kanan'), '61': (110.5, 0.0, 'kiri'),
@@ -219,8 +226,9 @@ def peringatan(w, harian, jp, pusat, T, prov_kejadian):
     for kunci, wr, pil in (('awas', 'merah', 'Awas'), ('siaga', 'oranye', 'Siaga')):
         kd = [k for k in (kode_prov(p, harian) for p in w.get(kunci) or []) if k]
         if kd:
-            baris.append((f'hujansolid_{wr}', 'Hujan lebat', bungkus([SINGKAT_PANEL[k] for k in kd]), pil, wr, per))
-            peta += [(*TITIK_PROV[k][:2], f"{'' if k in prov_kejadian or k in TANPA_NAMA else harian.NAMA[k]}|Hujan lebat", wr, TITIK_PROV[k][2]) for k in kd]
+            nm_h = 'Hujan sangat lebat' if kunci == 'awas' else 'Hujan lebat'   # 20 Nov: BMKG "Awas (hujan sangat lebat): Kalimantan Barat"
+            baris.append((f'hujansolid_{wr}', nm_h, bungkus([SINGKAT_PANEL[k] for k in kd]), pil, wr, per))
+            peta += [(*TITIK_PROV[k][:2], f"{'' if k in prov_kejadian or k in TANPA_NAMA else harian.NAMA[k]}|{nm_h}", wr, TITIK_PROV[k][2]) for k in kd]
     kd = [k for k in (kode_prov(p, harian) for p in w.get('angin') or []) if k]
     if kd:
         baris.append(('anginsolid_oranye', 'Angin kencang', bungkus([SINGKAT_PANEL[k] for k in kd]), 'Berpotensi', 'oranye', per))
@@ -242,9 +250,11 @@ def rencana_aksi(kej, wa_teks, harian):
     Kalimat utuh, angka ditulis ± seperti WA (pemilik 11 Nov: "jangan pakai klausa/frasa nanggung")."""
     f0 = harian.f0
     per = collections.OrderedDict()
-    for j in ['banjir', 'cuaca', 'kekeringan', 'longsor'] + [x['jenis'] for x in kej]:
-        if any(x['jenis'] == j for x in kej): per.setdefault(j, [x for x in kej if x['jenis'] == j])
-    lok = lambda xs: daftar_kata([x['lokasi'] for x in xs])
+    sama = lambda j: 'cuaca' if j == 'angin' else j   # 20 Nov: angin dan cuaca satu kartu Cuaca ekstrem (slide menyatukannya), tidak tergeser gempa
+    for j in ['banjir', 'cuaca', 'kekeringan', 'longsor'] + [sama(x['jenis']) for x in kej]:
+        if any(sama(x['jenis']) == j for x in kej): per.setdefault(j, [x for x in kej if sama(x['jenis']) == j])
+    # 20 Nov: lebih dari tiga lokasi ditulis jumlahnya ("di tujuh kab/kota", laporan manual 201126); daftar panjang meluber dari kartu
+    lok = lambda xs: daftar_kata([x['lokasi'] for x in xs]) if len(xs) <= 3 else f"{ANGKA_KATA.get(len(xs), len(xs))} kab/kota"
     kk = lambda xs: sum(int(x['angka'].get('kk') or 0) for x in xs)
     kartu = []
     for j, xs in per.items():
@@ -255,7 +265,7 @@ def rencana_aksi(kej, wa_teks, harian):
         elif j == 'kekeringan':
             kartu.append(('tetes_putih', 'Kekeringan', f"Mendukung BPBD {lok(xs)} menyalurkan air bersih" + (f" ke ±{f0(kk(xs))} KK." if kk(xs) else '.')))
         elif j in ('cuaca', 'angin'):
-            rm = sum(int(x['angka'].get('rumah_dampak') or 0) for x in xs)
+            rm = sum(int(x['angka'].get('rumah_dampak') or x['angka'].get('rumah') or 0) for x in xs)   # angin: wa_harian mengisi 'rumah' (RR/RS/RB)
             kartu.append(('angin_putih', 'Cuaca ekstrem', f"Mengkaji cepat ±{f0(rm)} rumah terdampak angin kencang di {lok(xs)}." if rm else f"Mengkaji cepat dampak cuaca ekstrem di {lok(xs)}."))
         elif j == 'longsor':
             md = sum(int(x['angka'].get('meninggal') or 0) for x in xs)
@@ -267,15 +277,16 @@ def rencana_aksi(kej, wa_teks, harian):
             kartu.append(('awas_putih', nm, f"Memantau penanganan {nm.lower()} di {lok(xs)}."))
     ungsi = [(x['lokasi'], pengungsi_kk(blok_wa(wa_teks, x['lokasi']))) for x in kej]
     ungsi = sorted([u for u in ungsi if u[1]], key=lambda u: -u[1])
-    if ungsi:
-        kartu.insert(1, ('tenda_putih', 'Pengungsi', f"Memantau layanan ±{f0(sum(n for _, n in ungsi))} KK pengungsi di {daftar_kata([l for l, _ in ungsi])}."))
+    if ungsi and len(kartu) < 3:   # 20 Nov: kartu jenis bencana didahulukan (laporan manual 201126: banjir, longsor, cuaca ekstrem; pengungsi tidak menggeser jenis)
+        tempat_u = daftar_kata([l for l, _ in ungsi]) if len(ungsi) <= 2 else f"{ANGKA_KATA.get(len(ungsi), len(ungsi))} kab/kota"
+        kartu.insert(1, ('tenda_putih', 'Pengungsi', f"Memantau layanan ±{f0(sum(n for _, n in ungsi))} KK pengungsi di {tempat_u}."))
     return kartu[:3]
 
 
 # ----------------------------------------------------------------------------- MULAI
 def mulai_lama(T, out):
     """{(prov, lokasi): mulai} dari data.json laporan 1-4 hari sebelumnya (keluaran bot di folder tanggal sebelahnya, lalu folder repo)."""
-    import jalur
+    import jalur, harian_rincian
     hasil = {}
     for n in range(4, 0, -1):   # yang paling dekat menang
         d = T - dt.timedelta(days=n)
@@ -288,7 +299,7 @@ def mulai_lama(T, out):
         if not f: continue
         for x in json.load(open(f, encoding='utf-8'))['kejadian']:
             if x.get('mulai') and x.get('jenis') != 'karhutla':
-                hasil[(x['prov'], x['lokasi'])] = x['mulai']
+                hasil[(x['prov'], harian_rincian.kunci_lok(x.get('lokasi_asli') or x['lokasi']))] = x['mulai']   # 20 Nov: kunci ejaan longgar (nama geo lawan nama WA)
     return hasil
 
 
@@ -747,11 +758,14 @@ def utama():
     ap.add_argument('--jam'); ap.add_argument('--out', default='.')
     ap.add_argument('--isian', help='JSON medan bahan hasil urai bot (BL-06); menimpa medan yang sama dari bahan WA, angka sistem dikunci')
     ap.add_argument('--terima-kurang', action='store_true', help='WA Koordalops merinci lebih sedikit dari jumlah menonjol; hanya atas perintah pemilik')   # --jam diterima supaya pemanggil sama dengan harian.py; cut-off format ini selalu 07.00
+    # 20 Nov 2026 pemilik (laporan 31 kejadian): slide Rincian Lokasi (harian_rincian.py) sesudah ringkasan; bot menanyakannya bila kejadian banyak
+    ap.add_argument('--rincian', choices=('ya', 'tidak'), default='tidak', help='tambah slide Rincian Lokasi Kejadian (peta kab/kota + tabel per kab/kota)')
+    ap.add_argument('--hitung', action='store_true', help='cetak JSON {laporan, tampil, banyak} kejadian slide 1 lalu keluar (bot: tanya slide rincian)')
     g = ap.parse_args()
     if g.uji:
         return uji()
     os.chdir(G)
-    import harian, lewat_deck, pdf, wa_harian, desain_kemarin
+    import harian, lewat_deck, pdf, wa_harian, desain_kemarin, harian_rincian
     T = dt.date.fromisoformat(g.tanggal)
     tpl = os.path.join(G, 'cache', 'templat', 'harian-221026.pptx')
     if not os.path.exists(tpl):
@@ -759,14 +773,16 @@ def utama():
     baca = lambda p: open(p, encoding='utf-8').read()
     teks_k = wa_normal(baca(g.koordalops))
     wa = wa_harian.koordalops(teks_k, terima_kurang=g.terima_kurang)
-    w = wa_harian.bmkg(baca(g.bmkg).replace('Sumatra ', 'Sumatera '))   # 16 Nov: "Sumatra Barat"
-    ga = wa_harian.pvmbg(pvmbg_normal(baca(g.pvmbg)))
-    if g.isian: terap_isian_harian(wa, w, ga, baca_isian(g.isian, ISIAN_HARIAN))
+    if not g.hitung or (g.bmkg and g.pvmbg):   # --hitung (bot, sebelum bertanya slide rincian) cukup WA Koordalops
+        w = wa_harian.bmkg(baca(g.bmkg).replace('Sumatra ', 'Sumatera '))   # 16 Nov: "Sumatra Barat"
+        ga = wa_harian.pvmbg(pvmbg_normal(baca(g.pvmbg)))
+        if g.isian: terap_isian_harian(wa, w, ga, baca_isian(g.isian, ISIAN_HARIAN))
     if wa['sampai'][:10] != g.tanggal:
         sys.exit(f"WA Koordalops s.d. {wa['sampai']} bukan hari laporan {g.tanggal}")
     out = os.path.abspath(g.out); ke = os.path.join(out, f'kerja-{T:%d%m%y}'); os.makedirs(ke, exist_ok=True)
 
     # 6 Nov pemilik: slide tanpa karhutla; jumlah laporan dikurangi laporan karhutla
+    laporan_wa, n_karhutla = wa['laporan'], sum(x['jenis'] == 'karhutla' for x in wa['kejadian'])
     wa['laporan'] -= sum(x['jenis'] == 'karhutla' for x in wa['kejadian'])
     wa['kejadian'] = [x for x in wa['kejadian'] if x['jenis'] != 'karhutla']
     for x in wa['kejadian']:   # 16 Nov: "Tanah Longsor dan Banjir di Kab. Aceh Tengah" terurai banjir; korbannya tertimbun longsor
@@ -774,15 +790,21 @@ def utama():
     # 11 Nov pemilik: slide 1 = kejadian baru + kejadian yang bencananya masih berlangsung
     buang = [f"{x['jenis']} {x['lokasi']}" for x in wa['kejadian'] if not (x.get('baru') or masih_berlangsung(x))]
     wa['kejadian'] = [x for x in wa['kejadian'] if x.get('baru') or masih_berlangsung(x)]
-    harian.angka_karhutla = lambda kej, web, tanggal, jam: (T, '07:00', set(), lambda k: {})   # format ini tanpa karhutla: tidak perlu hitung satelit
+    if g.hitung:   # bot: jumlah kejadian slide 1 dan apakah tabelnya digabung per provinsi (baris lebih dari harian.GABUNG_BARIS)
+        # wa = jumlah di kepala WA; karhutla tidak dimuat format ini; selesai = kejadian yang bencananya sudah lewat (tidak tampil)
+        print(json.dumps({'wa': laporan_wa, 'karhutla': n_karhutla, 'selesai': len(buang), 'tampil': len(wa['kejadian']), 'banyak': len(wa['kejadian']) > harian.GABUNG_BARIS}))
+        return
+    harian.angka_karhutla =lambda kej, web, tanggal, jam: (T, '07:00', set(), lambda k: {})   # format ini tanpa karhutla: tidak perlu hitung satelit
     web = harian.ambil_web(os.path.join(ke, 'web'))
     D = harian.susun(wa, web, T, None)
     lama, awal = mulai_lama(T, out), wa['mulai'][:10]
     for x in D['kejadian']:
-        x['mulai'] = awal if x.get('baru') else lama.get((x['prov'], x['lokasi']), awal)
+        x['mulai'] = awal if x.get('baru') else lama.get((x['prov'], harian_rincian.kunci_lok(x['lokasi'])), awal)
         pil = pil_kondisi(x['teks']['kondisi'])
         if pil: x['kondisi_pil'] = pil
-        x['lokasi'] = PENDEK_LOK.get(x['lokasi'], x['lokasi'])
+        try: x['lokasi'] = harian_rincian.nama_geo(x['prov'], x['lokasi'])   # 20 Nov: ejaan batas wilayah ("Lima puluh Kota" -> "Lima Puluh Kota", "Kep. Mentawai")
+        except Exception as e: print('PERINGATAN', e)
+        x['lokasi_asli'] = x['lokasi']; x['lokasi'] = PENDEK_LOK.get(x['lokasi'], x['lokasi'])   # nama utuh untuk slide rincian (peta dan tabel)
         if not (x['angka'].get('kk') or x['angka'].get('meninggal')): print('dampak strip (tanpa KK/MD di WA):', x['lokasi'], '|', x['teks']['dampak'][:60])   # 16 Nov atasan: "Di strip aja"
     print('dibuang (sudah selesai):', buang, '| tampil:', [(x['jenis'], x['lokasi'], x['mulai'], 'baru' if x.get('baru') else 'berlangsung') for x in D['kejadian']])
     json.dump({**D, 'kejadian': [{**x, 'perhatian': False} for x in D['kejadian']]}, open(os.path.join(ke, 'data.json'), 'w'), ensure_ascii=False, indent=1)   # 6 Nov: peta tanpa perlu perhatian
@@ -807,6 +829,7 @@ def utama():
     dk = harian.Deck(ke, D, wa, w, T, None); dk.BJ = None; dk.TANPA_BARU = False; dk.V3 = dk.KRIS_ISI = True; dk.ALT_RINCI = False
     dk.CD_PIL = 960120; dk.INFO_PIL = True; dk.LAMPIRAN = True; dk.SIAGA = True; dk.GA_GAYAS = ['lingkaran']; dk.GA = ga; dk.LAMP_TAMBAH = []; dk.HAL_TAMBAH = []
     dk.TANPA_KONDISI = True; dk.KARTU_ALT = dk.SIAGA_INFO = dk.TINDAK_INFO = dk.KOLOM_MULAI = True; dk.INFO_Y = (1280160, 5010912)
+    dk.INFO_GABUNG = harian.GABUNG_BARIS   # 20 Nov 2026: kejadian banyak = baris digabung per (jenis, provinsi, baru/berlangsung)
     dk.PERINGATAN_PETA = peta; dk.PERINGATAN_BARIS = baris; dk.PERINGATAN_KET = True; dk.RES_T = 1325880
     dk.JUDUL_STRIP = 'RENCANA AKSI'; dk.STRIP_KARTU = kartu
     for x in D['kejadian']:   # pemilik 10 Nov: angin kencang dan cuaca ekstrem satu nama di judul, kartu, peta, legenda, dan tabel
@@ -824,6 +847,8 @@ def utama():
         return o_
     dk.judul = lambda: (lambda a, b: (judul_jenis(a), b))(*judul_asli())
     dk.lbl_kolom, dk.lbl_hot, dk.lbl_kum = f'FIRESPOT DAN SISA {HL}', 'firespot', f'TERBAKAR 1 JAN–{HL}'
+    if g.rincian == 'ya':
+        harian_rincian.pasang(dk, harian, teks_k)
     dk.bangun(tpl, nama)
 
     bl = lambda t: f"{t.day} {harian.BULAN[t.month - 1][:3]} {t.year}"
@@ -837,6 +862,11 @@ def utama():
     h_siaga = next(i for i, t in hal.items() if 'Status siaga bencana' in t)
     bagian = [{'judul': 'Ringkasan Situasi', 'label': 'Ringkasan', 'halaman_tetap': [1]}, {'judul': 'Status Siaga Bencana', 'label': 'Status siaga', 'halaman_tetap': [2]}]
     susun = [{'sumber': sk, 'halaman': h_ring, 'bagian': 1}, {'sumber': sv, 'halaman': h_siaga, 'bagian': 2}]
+    if g.rincian == 'ya':   # urutan Ringkasan, Rincian lokasi, Status siaga (laporan 201126)
+        h_rinc = next(i for i, t in hal.items() if harian_rincian.JUDUL_PANEL in t)
+        sr_ = f'Laporan Harian Dit. Koordalops BNPB, {bl(mulai)} {mulai:%H.%M} s.d. {bl(sampai)} {sampai:%H.%M} WIB'
+        bagian = [bagian[0], {'judul': 'Rincian Lokasi', 'label': 'Rincian lokasi', 'halaman_tetap': [2]}, {**bagian[1], 'halaman_tetap': [3]}]
+        susun = [susun[0], {'sumber': sr_, 'halaman': h_rinc, 'bagian': 2}, {**susun[1], 'bagian': 3}]
     lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', f'Periode {bl(mulai)}, {mulai:%H.%M} sampai {bl(sampai)}, {sampai:%H.%M} WIB', T, pdf=False,
                        tanpa_kepada=TANPA_KEPADA, bagian=bagian, spek_tambah={'panel_sisi': 'gelap'}, susun=susun)
     sementara = nama + '.tmp'   # 2 Nov: ejaan resmi "Kota Parepare"

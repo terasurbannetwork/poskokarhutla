@@ -186,3 +186,9 @@ Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya car
 | --- | --- | --- | --- |
 | Q25 | Tinjau visual menambah 1 sampai 3 menit dan sekitar $0,10 sampai $0,80 per draf. Diterima? | **[BAWAAN SEMENTARA]** Ya, nyala untuk semua draf V2; bisa dimatikan `BL_TINJAU_VISUAL=0`. | tidak menahan |
 | Q26 | Vision untuk bot V1 (nomor lain)? | **[BAWAAN SEMENTARA]** Hanya tanya draf bergambar; revisi V1 tetap teks. | tidak menahan |
+
+## Laporan harian dengan kejadian banyak (20 Nov 2026)
+
+| No | Keputusan pemilik |
+| --- | --- |
+| K43 | (20 Nov) Laporan harian 20 Nov memuat 39 kejadian di WA Koordalops; draf bot P-201126-01 lewat batas waktu agen dan jatuh ke deck generator yang tabelnya bertumpuk ("tadi saya perintahkan ke bot, tapi hasilnya jelek"). Laporan dibuat manual (`data/laporan-bnpb/harian/2026-11/2026-11-20`, Revisi 29), lalu "pembuatan laporan hari ini dipelajari juga untuk bot wa, supaya kasus dengan kejadian yang banyak seperti ini bisa langsung membuat dengan format yang seperti ini", "mungkin ada juga pertanyaan tambah slide rincian kejadian". Jawaban pemilik atas dua pertanyaan: (a) bot bertanya sesudah *lanjut*, hanya bila kejadian banyak, "sekalian kasih tau ada berapa kejadian untuk laporan yg itu"; (b) warna jenis baru jadi standar ("ya"). Hasil: generator `harian_ringkas.py` menggabung baris tabel slide 1 bila lebih dari 14 (per jenis, provinsi, dan status baru atau berlangsung), `--rincian ya` menambah slide Rincian Lokasi (`harian_rincian.py`: peta multipanel per zona, tabel pil KK dan kerusakan dengan aturan baku), `--hitung` memberi jumlah untuk pertanyaan bot; bot v2.5 menanyakan slide rincian (*1* Ya, *2* Tidak; *lanjut* kedua dan *buat saja* tanpa rincian). Warna: banjir #2F86D1, cuaca ekstrem #3D6B5A, tanah longsor #A07A32, gempa bumi #4B4F58 (semua dari palet tema BNPB). |

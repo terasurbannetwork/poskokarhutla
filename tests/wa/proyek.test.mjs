@@ -39,6 +39,7 @@ function dunia({ pesan = LENGKAP(), berkas = {}, claude, ops, ocr, tahanGenerato
   let nomor = 0
   const jawab = (o) => ({ ok: true, status: 200, json: async () => o, text: async () => JSON.stringify(o) })
   const dep = {
+    hitungKejadian: null, // K43: tawaran slide rincian mati di dunia bawaan; uji K43 menyuntiknya
     fetch: async (u, o = {}) => {
       const url = new URL(u)
       if (url.pathname === '/api/wa/masuk') return jawab({ pesan: url.searchParams.get('tanggal') === TGL ? pesan : [] })
@@ -800,6 +801,55 @@ function duniaSatelit(st) {
   d.ctx.dep.statusSatelit = async (t) => { d.panggilSat.push(t); return d.st }
   return d
 }
+
+// K43 (pemilik 20 Nov 2026, laporan 39 kejadian): sesudah *lanjut*, laporan harian dengan kejadian banyak ditanya dulu soal slide rincian, dengan jumlahnya
+const BANYAK = { wa: 39, karhutla: 4, selesai: 5, tampil: 30, banyak: true }
+function duniaRincian(h) {
+  const d = dunia(); d.panggilHitung = []
+  d.ctx.dep.hitungKejadian = async (t, teks) => { d.panggilHitung.push([t, !!teks]); return h }
+  return d
+}
+test('K43: kejadian banyak = tanya slide rincian beserta jumlah kejadian; 1 membangun dengan --rincian ya, 2 tanpa', async () => {
+  const d = duniaRincian(BANYAK)
+  await perintah(d, 'buat harian 26 okt'); await perintah(d, 'lanjut')
+  assert.equal(d.gen().length, 0, 'belum dibangun sebelum dijawab'); assert.deepEqual(d.statusLog, ['bertanya'])
+  assert.deepEqual(d.panggilHitung, [[TGL, true]])
+  assert.equal(d.balasan.at(-1), '*Kejadian banyak*\n_P-291026-01_\n\nWA Koordalops 26 Okt mencatat *39* kejadian.\nMasuk laporan: *30* kejadian (kejadian baru dan yang masih berlangsung).\nTidak dimuat: 4 karhutla (laporan harian tanpa karhutla), 5 sudah selesai.\n_Tabel slide 1 digabung per provinsi supaya tetap terbaca._\n\nTambah slide rincian kejadian (peta kab/kota dan tabel per kab/kota)?\n*1* Ya, tambah\n*2* Tidak')
+  gayaWa(d.balasan.at(-1))
+  assert.equal((await perintah(d, '1')).status, 'rincian ya')
+  assert.equal(d.gen().length, 1)
+  assert.deepEqual(d.gen()[0].args.slice(-2), ['--rincian', 'ya'])
+  assert.equal(d.panggilHitung.length, 1, 'jawaban tidak menghitung ulang')
+
+  const e = duniaRincian(BANYAK)
+  await perintah(e, 'buat harian 26 okt'); await perintah(e, 'lanjut')
+  assert.equal((await perintah(e, '2')).status, 'rincian tidak')
+  assert.equal(e.gen().length, 1); assert.ok(!e.gen()[0].args.includes('--rincian'))
+})
+test('K43: kejadian sedikit, hitung galat, *buat saja*, dan *lanjut* kedua tidak bertanya; kata rincian tanpa tawaran = petunjuk', async () => {
+  const d = duniaRincian({ ...BANYAK, tampil: 9, banyak: false })
+  await perintah(d, 'buat harian 26 okt'); await perintah(d, 'lanjut')
+  assert.equal(d.gen().length, 1); assert.ok(!d.gen()[0].args.includes('--rincian'))
+  const g = dunia(); g.ctx.dep.hitungKejadian = async () => { throw new Error('python') }
+  await perintah(g, 'buat harian 26 okt'); await perintah(g, 'lanjut')
+  assert.equal(g.gen().length, 1, 'hitung galat tidak menahan laporan')
+  const s = duniaRincian(BANYAK)
+  await perintah(s, 'buat saja harian 26 okt')
+  assert.equal(s.gen().length, 1); assert.deepEqual(s.panggilHitung, [])
+  const l = duniaRincian(BANYAK)
+  await perintah(l, 'buat harian 26 okt'); await perintah(l, 'lanjut'); await perintah(l, 'lanjut')
+  assert.equal(l.gen().length, 1, 'lanjut kedua = bangun tanpa rincian'); assert.ok(!l.gen()[0].args.includes('--rincian'))
+  // menu draf lain yang dikirim sesudah tawaran menang: angka tidak lagi menjawab tawaran (kata *tambah rincian* tetap)
+  const m = duniaRincian(BANYAK)
+  await perintah(m, 'buat harian 26 okt'); await perintah(m, 'lanjut')
+  const fm = path.join(m.dasar, 'proyek', 'menu.json'), isiM = JSON.parse(fs.readFileSync(fm, 'utf8'))
+  fs.writeFileSync(fm, JSON.stringify(Object.fromEntries(Object.keys(isiM).map((k) => [k, 'P-291026-09']))))
+  assert.equal((await perintah(m, '1')).status, 'menu tanpa draf'); assert.equal(m.gen().length, 0)
+  assert.equal((await perintah(m, 'tambah rincian')).status, 'rincian ya'); assert.deepEqual(m.gen()[0].args.slice(-2), ['--rincian', 'ya'])
+  const t = duniaRincian(BANYAK)
+  assert.equal((await perintah(t, 'tambah rincian')).status, 'rincian tanpa tawaran')
+  assert.match(t.balasan.at(-1), /^\*Tidak ada tawaran rincian\*/)
+})
 
 test('K18: daftar bahan penanganan memuat baris data satelit; harian tidak; status satelit galat tidak menahan', async () => {
   const d = duniaSatelit(BELUM)
