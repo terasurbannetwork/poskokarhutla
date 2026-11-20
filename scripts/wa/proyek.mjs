@@ -105,7 +105,7 @@ export function parsePerintah(teks, now = new Date()) {
   const rv = t.match(/^revisi (p-\d{6}-\d{2})$/)
   if (rv) return { aksi: 'revisi', id: rv[1].toUpperCase() }
   if (t === 'lanjut') return { aksi: 'lanjut' } // K17: bangun proyek terbuka pengirim (bot selalu menunggu kata ini)
-  if (t === 'hitung' || t === 'tunggu') return { aksi: 'satelit', kata: t } // K18: menjawab pilihan data satelit; tanpa pilihan hidup = petunjuk
+  if (t === 'hitung' || t === 'tunggu' || t === 'sekarang') return { aksi: 'satelit', kata: t } // K18/K44: menjawab pilihan data satelit; tanpa pilihan hidup = petunjuk
   // K43: menjawab tawaran slide rincian laporan harian (angka *1*/*2* dijawab di penyalur bila tawaran hidup)
   if (t === 'tambah rincian' || t === 'rincian ya' || t === 'pakai rincian') return { aksi: 'rincian', ya: true }
   if (t === 'tanpa rincian' || t === 'rincian tidak') return { aksi: 'rincian', ya: false }
@@ -765,8 +765,17 @@ async function buat(cmd, dari, sha, ctx) {
       if (cmd.firespot === 'firms') {
         lapBangun = { ...lap, args: (d, f, o) => [...lap.args(d, f, o), '--firespot', 'firms'] }
         catatan.push(CATATAN_FIRMS)
+      } else if (cmd.satelit === 'sekarang') {
+        catatan.push(CATATAN_SEKARANG)
       } else {
         const st = await statusSatelit(ctx, cmd.tanggal)
+        // K44 (pemilik 20 Nov 2026): lintasan siang belum masuk FIRMS = jangan langsung bangun; pemakai memilih *sekarang* atau *tunggu*.
+        if (st && st.lintasan_siang === false) {
+          await pindah('bertanya')
+          catatSatelit(ctx, p.id, { sha, dari, jenis, tanggal: cmd.tanggal, keadaan: 'pilih', pilih: 'lintasan' })
+          await prog.akhir('berhenti')
+          return await balas(tPilihLintasan(p, st))
+        }
         if (st && st.situs_memuat === false && st.lintasan_siang === true) {
           await pindah('bertanya')
           catatSatelit(ctx, p.id, { sha, dari, jenis, tanggal: cmd.tanggal, keadaan: 'pilih' })
@@ -1747,6 +1756,10 @@ export function barisSatelit(st) {
 }
 export const tPilihSatelit = (p, st) => susun('Situs belum memuat data satelit', p, null, barisSatelit(st),
   ['Pilih salah satu:', '- *tunggu*: dibangun otomatis begitu situs memuat lintasan itu', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs'])
+// K44: lintasan siang belum masuk FIRMS. *sekarang* = bangun dengan data yang ada (dicatat di draf); *tunggu* = dibangun begitu FIRMS dan situs lengkap.
+export const CATATAN_SEKARANG = 'Dibangun sebelum lintasan siang masuk FIRMS: hotspot dan firespot hari ini belum lengkap.'
+export const tPilihLintasan = (p, st) => susun('Data satelit belum lengkap', p, null, barisSatelit(st),
+  ['Pilih salah satu:', '- *sekarang*: buat sekarang dengan data yang ada', '- *tunggu*: dibangun otomatis begitu lintasan siang masuk FIRMS dan situs memuatnya'])
 const satelitP = (dasar) => path.join(dirProyek(dasar), 'satelit.json')
 const SATELIT_BASI_MS = 24 * 3600e3 // pilihan lebih tua dari ini diabaikan
 const TUNGGU_MAKS_MS = 3 * 3600e3, TUNGGU_NOL_MAKS = 3 // lewat ini pemegang ditanya sekali lagi
@@ -1769,12 +1782,16 @@ async function pilihanSatelit(ctx, sha) {
 }
 
 async function pilihSatelit(kata, e, dari, sha, ctx) {
+  if (kata === 'sekarang') return buat({ aksi: 'buat', jenis: e.jenis, tanggal: e.tanggal, saja: true, lanjut: true, satelit: 'sekarang' }, dari, sha, ctx)
   if (kata === 'hitung') return buat({ aksi: 'buat', jenis: e.jenis, tanggal: e.tanggal, saja: true, lanjut: true, firespot: 'firms' }, dari, sha, ctx)
   // *tunggu*: jam pesan ini disimpan sebagai jam pesan masuk saat draf dikirim detak (jendela balasan limiter); hitungan mundur mulai lagi.
   const kini = (ctx.now || new Date()).getTime()
   catatSatelit(ctx, e.id, { ...e, keadaan: 'tunggu', masuk: kini, mulaiTunggu: kini, nol: 0, ditanyaUlang: false })
+  if (e.pilih === 'lintasan') return ctx.balas(susun('Menunggu data satelit', { id: e.id }, null, ['Laporan dibangun otomatis begitu lintasan siang masuk FIRMS dan situs memuatnya.', 'Dicek tiap 10 menit.'], 'Ketik *sekarang* bila ingin membuat dengan data yang ada.'))
   return ctx.balas(susun('Menunggu situs', { id: e.id }, null, ['Laporan dibangun otomatis begitu situs memuat lintasan siang.', 'Dicek tiap 10 menit.'], 'Ketik *hitung* bila ingin membangun sekarang.'))
 }
+const tTanyaUlangLintasan = (id, st) => susun('Data satelit masih belum lengkap', { id }, null, st ? barisSatelit(st) : 'Data satelit: status belum terbaca.',
+  ['Pilih lagi:', '- *sekarang*: buat sekarang dengan data yang ada', '- *tunggu*: tetap menunggu data lengkap'])
 const tTanyaUlangSatelit = (id, st) => susun('Situs masih belum memuat', { id }, null, st ? barisSatelit(st) : 'Data satelit: status belum terbaca.',
   ['Pilih lagi:', '- *hitung*: bangun sekarang, firespot dihitung langsung dari FIRMS dengan rumus yang sama dengan situs', '- *tunggu*: tetap menunggu situs'])
 
@@ -1834,11 +1851,11 @@ export async function ulangSatelit(ctx) {
     if (!MENUNGGU.includes(p.status)) { catatSatelit(ctx, id, null); hasil.push({ id, status: 'buang' }); continue }
     const st = await statusSatelit(ctx, e.tanggal)
     const c = { ...ctx, ...(ctx.balasKe ? ctx.balasKe(e.dari, e.masuk) : {}) }
-    if (st?.situs_memuat !== true) {
+    if (st?.situs_memuat !== true || (e.pilih === 'lintasan' && st?.lintasan_siang !== true)) {
       const nol = st ? 0 : Number(e.nol || 0) + 1
       const ulang = !e.ditanyaUlang && (nol >= TUNGGU_NOL_MAKS || kini - Number(e.mulaiTunggu || e.waktu || kini) >= TUNGGU_MAKS_MS)
       catatSatelit(ctx, id, { ...e, waktu: e.waktu, nol, ditanyaUlang: e.ditanyaUlang || ulang })
-      if (ulang && c.balas) { try { await c.balas(tTanyaUlangSatelit(id, st)) } catch (x) { log('ulang satelit tanya', id, x.message) } }
+      if (ulang && c.balas) { try { await c.balas((e.pilih === 'lintasan' ? tTanyaUlangLintasan : tTanyaUlangSatelit)(id, st)) } catch (x) { log('ulang satelit tanya', id, x.message) } }
       hasil.push({ id, status: ulang ? 'tanya ulang' : 'tunggu' })
       continue
     }

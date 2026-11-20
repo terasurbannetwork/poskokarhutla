@@ -889,6 +889,44 @@ test('K18: situs belum memuat lintasan siang = pilih tunggu atau hitung; hitung 
   assert.equal(e.gen().length, 1); assert.ok(!e.gen()[0].args.includes('--firespot'))
 })
 
+// K44 (pemilik 20 Nov 2026): lintasan siang belum masuk FIRMS = jangan langsung bangun; pilih *sekarang* atau *tunggu*
+const PAGI = { firms_terakhir_wib: '10:44', lintasan_siang: false, situs_memuat: false }
+test('K44: lintasan siang belum masuk FIRMS = tidak dibangun, pilih sekarang (bangun dengan catatan) atau tunggu', async () => {
+  const d = duniaSatelit(PAGI)
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')
+  assert.equal(d.gen().length, 0, 'tidak dibangun sebelum dipilih'); assert.deepEqual(d.statusLog, ['bertanya'])
+  assert.equal(d.balasan.at(-1), '*Data satelit belum lengkap*\n_P-291026-01_\n\nData satelit: lintasan siang belum masuk FIRMS (terakhir 10.44 WIB), situs belum memuat.\n\nPilih salah satu:\n- *sekarang*: buat sekarang dengan data yang ada\n- *tunggu*: dibangun otomatis begitu lintasan siang masuk FIRMS dan situs memuatnya')
+  gayaWa(d.balasan.at(-1))
+  assert.equal(await klasifikasi({ dari: DARI, teks: 'sekarang' }, d.ctx), 'perintah')
+  assert.equal((await perintah(d, 'sekarang')).status, 'sekarang')
+  assert.equal(d.gen().length, 1); assert.ok(!d.gen()[0].args.includes('--firespot'))
+  assert.match(d.kirim[0].caption, /Dibangun sebelum lintasan siang masuk FIRMS: hotspot dan firespot hari ini belum lengkap\./)
+  // situs sudah memuat lintasan pagi tetap ditahan: yang kurang lintasan siangnya
+  const e = duniaSatelit({ ...PAGI, situs_memuat: true })
+  await perintah(e, 'buat penanganan 26 okt'); await perintah(e, 'lanjut')
+  assert.equal(e.gen().length, 0); assert.match(e.balasan.at(-1), /^\*Data satelit belum lengkap\*/)
+  // status satelit galat tidak menahan
+  const g = duniaSatelit(null); await bangun(g, 'buat penanganan 26 okt')
+  assert.equal(g.gen().length, 1)
+})
+
+test('K44: tunggu = detak membangun hanya sesudah lintasan siang masuk FIRMS DAN situs memuatnya', async () => {
+  const d = duniaSatelit({ ...PAGI, situs_memuat: true })
+  await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')
+  assert.equal((await perintah(d, 'tunggu')).status, 'tunggu')
+  assert.equal(d.balasan.at(-1), '*Menunggu data satelit*\n_P-291026-01_\n\nLaporan dibangun otomatis begitu lintasan siang masuk FIRMS dan situs memuatnya.\nDicek tiap 10 menit.\n\nKetik *sekarang* bila ingin membuat dengan data yang ada.')
+  const keluar = []
+  const ctxDetak = { ...d.ctx, balas: undefined, balasFile: undefined, balasKe: (dari) => ({ balas: async (t) => keluar.push({ dari, t }), balasFile: async (p, nama, caption) => keluar.push({ dari, nama, caption }) }) }
+  assert.deepEqual(await ulangSatelit(ctxDetak), [{ id: 'P-291026-01', status: 'tunggu' }], 'situs memuat lintasan pagi belum cukup')
+  d.st = BELUM // lintasan siang masuk, situs belum
+  assert.deepEqual(await ulangSatelit(ctxDetak), [{ id: 'P-291026-01', status: 'tunggu' }])
+  assert.equal(d.gen().length, 0)
+  d.st = { ...BELUM, situs_memuat: true }
+  assert.deepEqual(await ulangSatelit(ctxDetak), [{ id: 'P-291026-01', status: 'bangun' }])
+  assert.equal(d.gen().length, 1)
+  assert.doesNotMatch(keluar[0].caption, /Dibangun sebelum lintasan siang/)
+})
+
 test('K18: tunggu = dicek detak 10 menit (ulangSatelit), dibangun begitu situs memuat; hitung tetap bisa selama menunggu', async () => {
   const d = duniaSatelit(BELUM)
   await perintah(d, 'buat penanganan 26 okt'); await perintah(d, 'lanjut')

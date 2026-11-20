@@ -233,6 +233,17 @@ def utama():
     satelit.hitung = hitung_web
     penanganan.satelit = satelit
     pasang_firespot(penanganan, g.firespot, firespot_web)
+    # Pemilik 20 Nov 2026 ("kalau omc dan armada gaada 22nya, hapus aja slide itu"): tanpa armada udara dan tanpa OMC = deck tanpa slide Operasi
+    # (jalur yang sama dengan deck tanpa --operasi). Armada saja kosong = panel ARMADA UDARA dibuang (tanpa_panel_armada di bingkai).
+    tanpa_armada = False
+    if g.operasi:
+        op0 = operasi(open(g.operasi, encoding='utf-8').read())
+        tanpa_armada = not penanganan.bnpb.armada_ada(op0)
+        if tanpa_armada and not penanganan.bnpb.omc_ada(op0):
+            print('PERINGATAN isian: bahan Satgas tidak memuat armada udara maupun OMC; slide Operasi tidak dibuat', file=sys.stderr)
+            g.operasi = None
+        elif tanpa_armada:
+            print('PERINGATAN isian: bahan Satgas tidak memuat armada udara; panel ARMADA UDARA dibuang', file=sys.stderr)
     penanganan.bangun(D, JAM, None, S, g.operasi, ha_utuh=True, belum_kini=True, luas_00=False)
 
     # ---- bingkai (bingkai.py 13 Nov)
@@ -248,6 +259,7 @@ def utama():
                             for s in re.split(r'(<p:sp>.*?</p:sp>)', x, flags=re.S))
                 x = re.sub(r'<a:t>(HOTSPOT|FIRESPOT|LUAS TERBAKAR|BELUM PADAM)\*</a:t>', r'<a:t>\1</a:t>', x)
                 if it.filename == 'ppt/slides/slide3.xml' and g.operasi: x = tanpa_kartu_personel(x)
+                if it.filename == 'ppt/slides/slide3.xml' and g.operasi and tanpa_armada: x = penanganan.bnpb.tanpa_panel_armada(x)
                 b = x.encode('utf-8')
             zo.writestr(it, b)
     BL = penanganan.bnpb.BULAN

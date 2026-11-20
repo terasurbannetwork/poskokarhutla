@@ -8,9 +8,12 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.5'
+export const VERSI = '2.5.1'
 
 export const CHANGELOG = [
+  { versi: '2.5.1', tanggal: '2026-11-20', isi: [
+    'Laporan penanganan karhutla: bila lintasan satelit siang belum masuk FIRMS, bot tidak langsung membuat laporan. Pilih *sekarang* untuk membuat dengan data yang ada (draf diberi catatan), atau *tunggu* supaya laporan dibuat otomatis begitu lintasan siang masuk FIRMS dan situs memuatnya.',
+  ] },
   { versi: '2.5', tanggal: '2026-11-20', isi: [
     'Laporan harian dengan kejadian banyak: sesudah *lanjut*, bot menyebut jumlah kejadian di WA Koordalops, yang masuk laporan, dan yang tidak dimuat, lalu menawarkan slide rincian kejadian. Balas *1* untuk menambah, *2* tanpa rincian.',
     'Slide rincian kejadian: peta kab/kota per zona bernomor dan tabel per kab/kota dengan dampak KK dan kerusakan (rumah, sekolah, jalan, jembatan, dan lainnya).',
