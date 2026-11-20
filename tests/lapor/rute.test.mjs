@@ -17,7 +17,8 @@ let nomor, token, fotoId;
 const biner = async (j, bytes) => { const r = await mf.dispatchFetch("http://bnpb.lokal" + j, {method: "POST", headers: MESIN, body: bytes}); return {s: r.status}; };
 
 uji("penjaga: tanpa kunci, kunci salah, nomor tidak berizin, tamu web ditolak", async () => {
-  assert.equal((await api("POST", "/api/lapor/pesan", {wa: WA, teks: "lapor"})).s, 401, "tanpa kunci dan tanpa sesi");
+  assert.equal((await api("POST", "/api/lapor/pesan", {teks: "lapor"})).s, 401, "tanpa kunci, tanpa sesi, tanpa nomor");
+  assert.equal((await api("POST", "/api/lapor/pesan", {wa: WA, teks: "lapor"})).s, 403, "nomor ketikan tanpa x-pb (K65)");
   assert.equal((await pesan(WA, {teks: "lapor"}, {authorization: "Bearer salah"})).s, 403);
   assert.equal((await pesan(WA, {teks: "lapor"})).s, 403, "nomor belum di lapor_izin");
   assert.equal((await api("GET", "/api/lapor/izin")).s, 403);
@@ -34,8 +35,9 @@ uji("izin: mesin dan admin mendaftarkan, mencabut; GET hanya mesin", async () =>
   assert.deepEqual(g.j.wa, [WA, WA2, WA3]);
 });
 
-async function ketik(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(wa).run();   // alur panjang melampaui 20 per menit; batasnya diuji tersendiri di bawah
+async function _ketik(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(wa).run();   // alur panjang melampaui 20 per menit; batasnya diuji tersendiri di bawah
   const r = await pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300)); return r.j; }
+const ketik = _ketik;
 uji("alur mesin sampai terkirim: nomor tiket, tiket baru, antrean PDF, foto WA, transkrip", async () => {
   let r = await ketik(WA, {teks: "lapor", saluran: "wa"});
   assert.match(r.teksWa, /Setuju/); assert.equal(r.teksWa, r.balasan.length ? r.teksWa : "");
@@ -198,7 +200,7 @@ uji("info daerah: prakiraan, nomor penting, cari desa, tempat sekitar (data publ
 
 /* ---------- hasil pemeriksaan bersih 19 Nov 2026 ---------- */
 const WA4 = "6281200000014", WA5 = "6281200000015";
-async function keFoto(wa) {
+async function keFoto(wa, ketik = _ketik) {
   let r = await ketik(wa, {teks: "lapor"});
   for (const t of ["1", "1", "Siti Aminah"]) r = await ketik(wa, {teks: t});
   r = await ketik(wa, {lokasi: LOK}); r = await ketik(wa, {teks: "1"}); r = await ketik(wa, {teks: "Tidak tahu"});
@@ -674,11 +676,19 @@ uji("bahasa: tanpa model hanya Indonesia, pesan tidak diterjemahkan, daftar baha
   const r = await pesan(WV3, {teks: "halo", bahasa: "en", saluran: "web"}); assert.equal(r.s, 200); assert.ok(!/\[EN\]/.test(r.t) && r.j.bahasa === undefined, "tanpa kunci: Indonesia saja");
 });
 
+uji("terjemah teks kartu: tanpa model teks kembali apa adanya, bentuk salah 400, paling banyak 60 butir dipotong 160 karakter", async () => {
+  const r = await api("POST", "/api/lapor/terjemah", {bahasa: "su", teks: ["Pakai lokasi saat ini", "Cari desa"]}, {origin: "http://bnpb.lokal"}); assert.equal(r.s, 200, r.t.slice(0, 200));
+  assert.deepEqual(r.j.teks, ["Pakai lokasi saat ini", "Cari desa"]);
+  assert.equal((await api("POST", "/api/lapor/terjemah", {bahasa: "su", teks: "bukan daftar"}, {origin: "http://bnpb.lokal"})).s, 400);
+  const banyak = await api("POST", "/api/lapor/terjemah", {bahasa: "su", teks: Array(80).fill("x".repeat(200))}, {origin: "http://bnpb.lokal"});
+  assert.equal(banyak.j.teks.length, 60); assert.equal(banyak.j.teks[0].length, 160);
+});
+
 uji("bahasa: terjemah masuk disamarkan, asli tersimpan, balasan diterjemahkan, angka berubah ditolak, pintu WA tetap Indonesia", async () => {
   const B = await siapkan("uji-lapor-bahasa", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", ANTHROPIC_API_KEY: "kunci-uji"}, luar: luarModel});
   const WB = "6281200000041", kirimB = (b, h = MESIN) => B.api("POST", "/api/lapor/pesan", {wa: WB, ...b}, h);
   assert.equal((await B.api("POST", "/api/lapor/izin", {wa: WB}, MESIN)).s, 200);
-  const l = await B.api("GET", "/api/lapor/bahasa"); assert.equal(l.s, 200); assert.equal(l.j.bahasa.length, 13); assert.deepEqual(l.j.bahasa[1], {kode: "en", nama: "English"});
+  const l = await B.api("GET", "/api/lapor/bahasa"); assert.equal(l.s, 200); assert.equal(l.j.bahasa.length, (await import("../../src/lapor_bahasa.js")).BAHASA.length);   // daftar 25 bahasa sejak K65 assert.deepEqual(l.j.bahasa[1], {kode: "en", nama: "English"});
   // pesan pertama web berbahasa Inggris: terjemahan masuk ke mesin; yang sampai ke model tidak memuat nomor HP
   const masuk = "Hello I am Budi, call me 081234567890, flood in Bogor"; keModel.length = 0;
   let r = await kirimB({teks: masuk, bahasa: "en", saluran: "web"}); assert.equal(r.s, 200, r.t.slice(0, 300));
@@ -711,7 +721,7 @@ uji("bahasa: rincian meja memuat teks asli dan nama bahasa, foto memuat video (f
     foto: [{id: "a".repeat(16), jenis: "video", eks: "webm", durasi: 12, lencana: "gps", lencanaTeks: "Lokasi GPS perangkat"}, {id: "b".repeat(16), lencana: "tanpa", lencanaTeks: "Tanpa lokasi"}],
     transkrip: [{dari: "pelapor", teks: "banjir tiga rumah", asli: "banjir telung omah", bahasa: "jv", waktu: kini}, {dari: "bot", teks: "Terima kasih", waktu: kini}]};
   const o = mejaRinciTampil(s, {nama: "Budi"}, "t".repeat(32));
-  assert.equal(o.bahasa, "Basa Jawa"); assert.equal(o.transkrip[0].asli, "banjir telung omah"); assert.equal(o.transkrip[1].asli, null);
+  assert.equal(o.bahasa, "Bahasa Jawa"); assert.equal(o.transkrip[0].asli, "banjir telung omah"); assert.equal(o.transkrip[1].asli, null);
   assert.deepEqual([o.foto[0].jenis, o.foto[0].durasi, o.foto[0].url.endsWith(".webm?t=" + "t".repeat(32))], ["video", 12, true]); assert.equal(o.foto[1].jenis, "foto"); assert.equal(o.foto[1].url, `/api/lapor/foto/${"b".repeat(16)}?t=${"t".repeat(32)}`);
 });
 
@@ -721,4 +731,154 @@ uji("video tanpa kotak film: berkepala ftyp tanpa mvhd ditolak walau durasi pera
   const {id, r} = await videoUtuh(W4, b, {durasi: 5});
   assert.equal(r.s, 400, r.t.slice(0, 200)); assert.match(r.j.galat, /Durasi video tidak terbaca/);
   assert.equal(await n("lapor_unggah", `id = '${id}'`), 0); assert.equal(await adaR2(`lapor/foto/${id}.vid`), false);
+});
+
+/* ---------- pintu web tanpa kode (K65, D99-D102, Q57; migrasi 0159): nomor diketik, terikat perangkat lewat kuki HttpOnly ---------- */
+const WK = "6281200000051", WK2 = "6281200000052", ORI = "http://bnpb.lokal";
+const kukiDari = r => /^(lapor_perangkat=[0-9a-f]{64});/.exec(r.h.get("set-cookie") || "")?.[1] ?? null;
+function perangkat(ip) {   // satu peramban: menyimpan kukinya sendiri; kuota nomor ketikan berkunci nomor:perangkat
+  let kuki = null; const h = () => ({origin: ORI, "x-pb": "1", ...(kuki ? {cookie: kuki} : {}), ...(ip ? {"cf-connecting-ip": ip} : {})});
+  const lacakKuki = r => { kuki ||= kukiDari(r); return r; };
+  return {get kuki() { return kuki; }, h,
+    async pesan(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?1 OR kunci LIKE ?1 || ':%'").bind(wa).run(); return lacakKuki(await api("POST", "/api/lapor/pesan", {wa, ...b}, h())); },
+    async ketik(wa, b) { const r = await this.pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300)); return r.j; },
+    get: async j => lacakKuki(await api("GET", j, undefined, h())), post: async (j, b) => lacakKuki(await api("POST", j, b, h()))};
+}
+const A = perangkat(), B = perangkat();
+let nomorK, fotoK, tokenK;
+
+uji("pintu web tanpa kode: penjaga x-pb, origin, izin; kuki HttpOnly; hanya sidik di D1; kuki karangan tidak dikenal", async () => {
+  for (const wa of [WK, WK2]) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
+  assert.equal((await api("POST", "/api/lapor/pesan", {wa: WK, teks: "lapor"}, {origin: ORI})).s, 403, "tanpa x-pb");
+  assert.equal((await api("POST", "/api/lapor/pesan", {wa: WK, teks: "lapor"}, {origin: "https://jahat.example", "x-pb": "1"})).s, 403, "origin lain");
+  assert.equal((await api("POST", "/api/lapor/pesan", {wa: TAK, teks: "lapor"}, {origin: ORI, "x-pb": "1"})).s, 403, "nomor tidak di lapor_izin (Q57)");
+  assert.equal((await api("POST", "/api/lapor/pesan", {teks: "lapor"}, {origin: ORI, "x-pb": "1"})).s, 401, "tanpa nomor");
+  assert.equal(await n("lapor_perangkat"), 0, "penolakan tidak membuat ikatan"); assert.equal(await n("lapor_sesi", `wa = '${TAK}'`), 0);
+  const r = await A.pesan(WK, {teks: "lapor"}); assert.equal(r.s, 200, r.t.slice(0, 200));
+  const sc = r.h.get("set-cookie"); assert.match(sc, /^lapor_perangkat=[0-9a-f]{64}; /);
+  for (const bagian of ["HttpOnly", "Secure", "SameSite=Lax", "Path=/api/lapor", "Max-Age=31536000"]) assert.ok(sc.includes(bagian), `${bagian} di ${sc}`);
+  const mentah = A.kuki.split("=")[1];
+  assert.equal(await n("lapor_perangkat", `perangkat_sha = '${sha256(mentah)}' AND wa = '${WK}'`), 1, "D1 menyimpan sha256 kunci");
+  assert.equal(await n("lapor_perangkat", `perangkat_sha = '${mentah}'`), 0, "kunci mentah tidak tersimpan");
+  assert.equal(await n("lapor_milik", `jenis = 'sesi' AND perangkat_sha = '${sha256(mentah)}'`), 1, "sesi terikat ke perangkat");
+  assert.equal(r.h.get("cache-control"), "private, no-store");
+  assert.equal((await api("POST", "/api/lapor/pesan", {wa: WK, teks: "1"}, {"x-pb": "1", cookie: A.kuki})).s, 403, "kuki tanpa Origin ditolak seperti sesi lain");
+  const sama = await A.post("/api/lapor/pesan", {wa: WK, teks: "1"}); assert.equal(sama.s, 200); assert.equal(sama.h.get("set-cookie"), null, "kuki yang sah tidak diterbitkan ulang");
+  const karang = "ab".repeat(32), f = await api("POST", "/api/lapor/pesan", {wa: WK2, teks: "lapor"}, {origin: ORI, "x-pb": "1", cookie: `lapor_perangkat=${karang}`});
+  assert.equal(f.s, 200); assert.ok(kukiDari(f) && !kukiDari(f).includes(karang), "kuki karangan diganti kuki terbitan server");
+  assert.equal(await n("lapor_perangkat", `perangkat_sha = '${sha256(karang)}'`), 0);
+});
+
+uji("pintu web tanpa kode: nomor ketikan melapor sampai terkirim (foto GPS), ditandai belum terverifikasi di meja", async () => {
+  await DB.prepare("DELETE FROM lapor_sesi WHERE wa = ?").bind(WK).run(); await DB.prepare("DELETE FROM lapor_milik WHERE jenis = 'sesi' AND perangkat_sha = ?").bind(sha256(A.kuki.split("=")[1])).run();
+  const k = (b) => A.ketik(WK, b);
+  let r = await k({teks: "lapor"});
+  for (const t of ["1", "1", "Ani Pelapor"]) r = await k({teks: t});
+  r = await k({lokasi: LOK}); r = await k({teks: "1"}); r = await k({teks: "Tidak tahu"});
+  r = await k({teks: String(r.pilihan.findIndex(x => /longsor/i.test(x)) + 1)});
+  for (const t of ["1", ...langkahKronologi("longsor").map(() => "1"), "2", "kemarin jam 05.30"]) r = await k({teks: t});
+  let foto = false;
+  for (let i = 0; i < 60 && r.status !== "terkirim"; i++) {
+    if (r.status === "ringkasan") { r = await k({teks: "1"}); break; }
+    if (r.minta === "foto" && !foto) {
+      foto = true; await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WK).run();
+      const f = await A.post("/api/lapor/foto", {wa: WK, data: B64, gps: {lat: -6.6, lon: 106.8, akurasi: 12, waktu: Date.now()}}); assert.equal(f.s, 200, f.t.slice(0, 300));
+      assert.equal(f.j.fotoBaru.lencana, "gps"); fotoK = f.j.fotoBaru.id; r = await k({teks: "1"}); continue;
+    }
+    r = await k({teks: r.pilihan ? "1" : i % 2 ? "belum tahu" : "tidak ada"});
+  }
+  assert.ok(foto); assert.equal(r.status, "terkirim", JSON.stringify(r).slice(0, 300)); nomorK = r.nomor; tokenK = /t=([0-9a-f]{32})/.exec(r.lacak)[1];
+  assert.equal(await n("lapor_tiket", `nomor = '${nomorK}'`), 1);
+  const m = await api("GET", `/api/lapor/meja/${nomorK}`, undefined, ADMIN); assert.equal(m.s, 200);
+  assert.equal(m.j.nomorTerverifikasi, false, "D101"); assert.equal(m.j.pelapor.wa, WK);
+  const banding = await api("GET", `/api/lapor/meja/${nomor}`, undefined, ADMIN); assert.equal(banding.j.nomorTerverifikasi, true, "laporan lewat mesin tetap terverifikasi");
+  assert.equal(JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE nomor = ?").bind(nomorK).first()).kerja).verifikasi, "ketik");
+  assert.equal((await api("GET", `/api/lapor/lacak?t=${tokenK}`)).s, 200, "token lacak tetap seperti biasa");
+});
+
+uji("pintu web tanpa kode: perangkat lain dengan nomor sama tidak melihat sesi, kotak, status, foto; memulai sesi baru", async () => {
+  assert.equal((await api("POST", `/api/lapor/meja/${nomorK}/lihat`, {}, ADMIN)).s, 200);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomorK}/balas`, {catatan: "Tim menuju lokasi."}, ADMIN)).s, 200);
+  const q = j => `${j}${j.includes("?") ? "&" : "?"}wa=${WK}`;
+  const sa = await A.get(q("/api/lapor/sesi")); assert.equal(sa.s, 200); assert.equal(sa.j.nomor, nomorK);
+  const sb = await B.get(q("/api/lapor/sesi")); assert.equal(sb.s, 200); assert.ok(kukiDari(sb), "perangkat baru diberi kuki");
+  assert.deepEqual(sb.j, {transkrip: []}, "perangkat B tidak melihat sesi A");
+  const ka = await A.get(q("/api/lapor/kotak?sejak=0")); assert.ok(ka.j.pesan.some(x => x.nomor === nomorK && /Tim menuju lokasi/.test(x.teks)), "A melihat balasan");
+  const kb = await B.get(q("/api/lapor/kotak?sejak=0")); assert.deepEqual(kb.j.pesan, [], "B tidak melihat balasan");
+  const ta = await A.pesan(WK, {teks: "cek status"}); assert.match(ta.j.teksWa, new RegExp(nomorK));
+  const tb = await B.pesan(WK, {teks: "cek status"}); assert.equal(tb.s, 200); assert.ok(!tb.t.includes(nomorK), "status B tidak memuat laporan A");
+  const foto = async kuki => (await mf.dispatchFetch(`http://bnpb.lokal/api/lapor/foto/${fotoK}`, {headers: kuki ? {cookie: kuki} : {}})).status;
+  assert.equal(await foto(A.kuki), 200, "foto sesi A untuk perangkat A"); assert.equal(await foto(B.kuki), 404, "perangkat B"); assert.equal(await foto(null), 404, "tanpa kuki");
+  assert.equal((await B.post("/api/lapor/nilai", {wa: WK, nomor: nomorK, nilai: 5})).s, 400, "menilai laporan perangkat lain");
+  assert.equal((await A.post("/api/lapor/nilai", {wa: WK, nomor: nomorK, nilai: 5})).s, 200);
+  assert.equal((await B.post("/api/lapor/susulan", {wa: WK, nomor: nomorK})).s, 404, "susulan laporan perangkat lain");
+  const sebelum = await n("lapor_sesi", `wa = '${WK}'`);
+  const b1 = await B.ketik(WK, {teks: "lapor"}); assert.equal(b1.status, "identitas", "B memulai dari awal"); assert.ok(!b1.nomor);
+  assert.equal(await n("lapor_sesi", `wa = '${WK}'`), sebelum + 1, "sesi B baru, sesi A tidak dilanjutkan");
+  const sa2 = await A.get(q("/api/lapor/sesi")); assert.equal(sa2.j.nomor, nomorK, "A tetap melihat laporannya");
+  // mesin dan sesi /masuk tidak diubah: mesin masih menjawab nomor yang sama
+  assert.equal((await api("GET", q("/api/lapor/sesi"), undefined, MESIN)).s, 200);
+});
+
+uji("pintu web tanpa kode: unggahan video hanya untuk perangkat pembuatnya", async () => {
+  await keFoto(WK2, (wa, b) => A.ketik(wa, b));
+  const m = await A.post("/api/lapor/unggah/mulai", {wa: WK2, ukuran: 5000, durasi: 5, gps: GPS()}); assert.equal(m.s, 200, m.t.slice(0, 200));
+  assert.equal(await n("lapor_milik", `jenis = 'unggah' AND id = '${m.j.id}'`), 1);
+  const st = (d, w = WK2) => d.get(`/api/lapor/unggah/${m.j.id}?wa=${w}`);
+  assert.equal((await st(A)).s, 200); assert.equal((await B.get(`/api/lapor/unggah/${m.j.id}?wa=${WK2}`)).s, 404, "B belum terikat ke WK2: ikatan baru, tapi bukan pemilik");
+  assert.equal((await B.post("/api/lapor/unggah/mulai", {wa: WK2, ukuran: 5000})).s, 409, "B tidak punya laporan di tahap foto");
+  const put = async (d, bytes) => { const r = await mf.dispatchFetch(`http://bnpb.lokal/api/lapor/unggah/${m.j.id}/0?wa=${WK2}`, {method: "PUT", headers: d.h(), body: bytes}); return r.status; };
+  assert.equal(await put(B, Buffer.alloc(5000)), 404, "bagian dari perangkat lain");
+  assert.equal(await put({h: () => ({origin: ORI, "x-pb": "1"})}, Buffer.alloc(5000)), 401, "tanpa kuki, badan besar ditolak sebelum dibaca");
+  assert.equal(await put(A, Buffer.alloc(5000)), 200);
+});
+
+uji("pintu web tanpa kode: batas per perangkat (nomor), per IP (ikatan baru), per perangkat (pesan)", async () => {
+  const C = perangkat(), nomorC = ["6281200000061", "6281200000062", "6281200000063", "6281200000064", "6281200000065", "6281200000066"];
+  for (const wa of nomorC) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
+  for (const wa of nomorC.slice(0, 5)) assert.equal((await C.get(`/api/lapor/sesi?wa=${wa}`)).s, 200, wa);
+  assert.equal((await C.get(`/api/lapor/sesi?wa=${nomorC[5]}`)).s, 429, "satu perangkat paling banyak 5 nomor");
+  assert.equal((await C.get(`/api/lapor/sesi?wa=${nomorC[0]}`)).s, 200, "nomor yang sudah terikat tetap bisa");
+  let kode = 0; const IP = "203.0.113.77";
+  for (let i = 0; i < 21; i++) kode = (await perangkat(IP).get(`/api/lapor/sesi?wa=${WK}`)).s;
+  assert.equal(kode, 429, "ikatan baru per IP: 20 per jam");
+  const D = perangkat("203.0.113.88"); await D.ketik(WK2, {teks: "lapor"});
+  const dev = sha256(D.kuki.split("=")[1]); await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lapor.perangkat', ?)").bind(dev, Date.now())));
+  const r = await D.pesan(WK2, {teks: "1"}); assert.equal(r.s, 429, "120 pesan per jam per perangkat"); assert.match(r.j.balasan, /Kuota pesan/);
+});
+
+uji("pintu web tanpa kode: klaim BPBD dari nomor ketikan tidak naik; lewat mesin naik (D101)", async () => {
+  const WB = "6281200000071", WM = "6281200000072";
+  for (const wa of [WB, WM]) assert.equal((await api("POST", "/api/lapor/izin", {wa, peran: "bpbd", kab: "Kab. Bogor"}, MESIN)).s, 200);
+  const E = perangkat("203.0.113.99");
+  for (const [wa, k] of [[WB, t => E.ketik(WB, t)], [WM, t => ketik(WM, t)]]) {
+    let r = await k({teks: "lapor"}); r = await k({teks: "1"}); r = await k({teks: "2"});   // peran: Petugas BPBD
+    r = await k({form: {nama: "Dedi", peran: "bpbd", kab: "Kab. Bogor", jabatan: "Staf"}}).catch(() => r);
+    r = await k({teks: "Dedi"}).catch(() => r);
+    await k({teks: "Halo"});
+    const p = await DB.prepare("SELECT peran FROM lapor_pelapor WHERE wa = ?").bind(wa).first();
+    if (wa === WM) assert.equal(p?.peran, "bpbd", `${wa} ${JSON.stringify(p)}`);
+    else {   // nomor ketikan: profil disimpan di sesinya sendiri, tidak menimpa profil pemilik nomor (tinjauan keamanan 20 Nov 2026)
+      assert.equal(p, null, "profil nomor ketikan tidak ditulis ke lapor_pelapor");
+      const k = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ? ORDER BY diubah DESC LIMIT 1").bind(wa).first()).kerja);
+      assert.equal(k.pelaporKetik?.peran, "bpbd_klaim");
+    }
+  }
+});
+
+uji("pintu web tanpa kode: WA pemilik nomor tidak melanjutkan sesi yang dibuat orang lain dari nomor ketikan (D100)", async () => {
+  const WX = "6281200000077"; assert.equal((await api("POST", "/api/lapor/izin", {wa: WX}, MESIN)).s, 200);
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'lapor.ikat'").run();   // uji sebelumnya sengaja menghabiskan batas ikatan per IP
+  const C = perangkat("203.0.113.77"); await C.ketik(WX, {teks: "lapor"}); await C.ketik(WX, {teks: "1"});
+  assert.equal(await n("lapor_sesi", `wa = '${WX}'`), 1);
+  const r = await pesan(WX, {teks: "lapor", saluran: "wa"}); assert.equal(r.s, 200, r.t.slice(0, 200));
+  assert.equal(await n("lapor_sesi", `wa = '${WX}'`), 2, "lewat WA mulai sesi baru, bukan melanjutkan sesi ketikan");
+});
+
+uji("pintu web tanpa kode: nomor orang lain tidak membuka nama terdaftarnya (tinjauan keamanan 20 Nov 2026)", async () => {
+  const WM = "6281200000072";   // profil "Dedi" ditulis lewat jalur WA di uji sebelumnya
+  assert.ok(await DB.prepare("SELECT nama FROM lapor_pelapor WHERE wa = ?").bind(WM).first());
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi IN ('lapor.ikat', 'lapor.ketik')").run();
+  const F = perangkat("203.0.113.88"); let r = await F.ketik(WM, {teks: "lapor"}); r = await F.ketik(WM, {teks: "1"});
+  assert.ok(!JSON.stringify(r).includes("Dedi"), "nama pemilik nomor tidak tampil di perangkat lain");
 });

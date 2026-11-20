@@ -5071,3 +5071,12 @@
 {"t":"2026-11-20T10:25:59.343+07:00","sesi":"95a63e8f","prompt":"Bahasanya bisa apa saja?","label":[],"berkas":[]}
 {"t":"2026-11-20T10:30:16.549+07:00","sesi":"95a63e8f","prompt":"Lah gausah gini khusus. Ini dia masuknya kaya langsung halaman utama tapi nanti dia kaya biasa yang diminta nama dan nomor hape di bot\n\nOke dan kemudian lu bisa ga untuk bertanya ke merekanya juga pakai bahasa daerah?\nGa ada Melayu Ambon cukup AMbon saja dan ga ada Melayu Papua cukup Papua saja\nKenapa tidak sah?","label":[],"berkas":[]}
 {"t":"2026-11-20T10:34:11.813+07:00","sesi":"95a63e8f","prompt":"Eh animasinya mana yang di awal?\nMana pilihan bahasanya?","label":[],"berkas":[]}
+{"t":"2026-11-20T10:41:06.089+07:00","sesi":"95a63e8f","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-20T10:41:06.159+07:00","sesi":"95a63e8f","prompt":"<bash-input>npx wrangler d1 migrations apply poskowarga --remote</bash-input><bash-stdout> ⛅️ wrangler 4.151.0\n────────────────────\nResource location: remote\n\nMigrations to be applied:\n┌──────────────────────────┐\n│ name                     │\n├──────────────────────────┤\n│ 0159_lapor_perangkat.sql │\n└──────────────────────────┘\n? About to apply 1 migration(s)\nYour database may not be available to serve requests during the migration, continue? › (Y/n)\n[The user typed into the terminal pane (tab 0) while this command was running, so output after that point is not included; it may still be running there, or they may have stopped it. Use read_terminal with tab_id \"0\" to check on it.]</bash-stdout><bash-stderr></bash-stderr>","label":["warga-api"],"berkas":["0159_lapor_perangkat.sql"]}
+{"t":"2026-11-20T10:41:16.048+07:00","sesi":"95a63e8f","prompt":"Ini guasah ada","label":[],"berkas":[]}
+{"t":"2026-11-20T10:42:00.452+07:00","sesi":"95a63e8f","prompt":"Ini kenapa masih bahasa Indonesia ya? Kan pilihannya bahasa Sunda","label":[],"berkas":[]}
+{"t":"2026-11-20T10:49:00.087+07:00","sesi":"95a63e8f","prompt":"Masih bahasa Indonesia","label":[],"berkas":[]}
+{"t":"2026-11-20T10:49:00.137+07:00","sesi":"95a63e8f","prompt":"Masih bahasa Indoensia. Coba review sesmuanya","label":[],"berkas":[]}
+{"t":"2026-11-20T10:49:00.183+07:00","sesi":"95a63e8f","prompt":"Ini gw bilang atu sekolah tapi ketika gw pilih dua kenapa lu ga revisi ya?","label":[],"berkas":[]}
+{"t":"2026-11-20T10:49:29.350+07:00","sesi":"95a63e8f","prompt":"Ini kenapa ada bahasa inggris?","label":[],"berkas":[]}
+{"t":"2026-11-20T10:50:30.211+07:00","sesi":"95a63e8f","prompt":"Ini juga harusnya bahasa Daerah","label":[],"berkas":[]}

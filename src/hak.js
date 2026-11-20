@@ -1749,6 +1749,8 @@ Object.assign(MATRIKS, {
   lapor_kabar_bpbd:    {lp_staf: ["baca", "tambah"], lp_mesin: ["baca", "ubah"]},
   laju_bnpb:           {sistem: ["baca", "tambah"], lp_pelapor: ["baca", "tambah"]},
   lapor_unggah:        {lp_pelapor: ["baca", "tambah", "ubah", "hapus"], lp_cron: ["baca", "hapus"]},   // lp_cron = bersih-bersih menit 17 (D90)
+  lapor_perangkat:     {lp_pelapor: ["baca", "tambah", "ubah"]},   // migrasi 0159: ikatan nomor ketikan dan perangkat (K65, D100)
+  lapor_milik:         {lp_pelapor: ["baca", "tambah", "hapus"], lp_publik: ["baca"], lp_cron: ["hapus"]},
 });
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
@@ -1828,7 +1830,7 @@ export const lpStmtFoto = (env, p, f, g = false) => sedia(env, p, "lapor_foto", 
   lpIns(g, "", "lapor_foto", "id, sesi, kunci_r2, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu"))
   .bind(f.id, f.sesi, f.kunci, f.lat ?? null, f.lon ?? null, f.akurasi ?? null, f.waktuAmbil ?? null, f.waktuTerima, f.lencana, f.pintu);
 export const lpFotoById = (env, p, id) => sedia(env, p, "lapor_foto", "baca",
-  "SELECT f.id, f.kunci_r2, s.wa, s.token_sha, s.nomor FROM lapor_foto f JOIN lapor_sesi s ON s.id = f.sesi WHERE f.id = ?1").bind(id).first();
+  "SELECT f.id, f.sesi sesi_id, f.kunci_r2, s.wa, s.token_sha, s.nomor FROM lapor_foto f JOIN lapor_sesi s ON s.id = f.sesi WHERE f.id = ?1").bind(id).first();
 
 /* ---- unggah video bersambung (migrasi 0158, K61, D89): bagian = JSON {"<n>": etag}, json_set atomik ---- */
 export const lpUnggahBaru = (env, p, u) => sedia(env, p, "lapor_unggah", "tambah",
@@ -1839,9 +1841,28 @@ export const lpUnggahBaca = (env, p, id) => sedia(env, p, "lapor_unggah", "baca"
 export const lpUnggahHitung = async (env, p, wa) => (await sedia(env, p, "lapor_unggah", "baca", "SELECT count(*) n FROM lapor_unggah WHERE wa = ?1").bind(wa).first()).n;
 export const lpUnggahBagian = (env, p, id, n, etag, kini) => sedia(env, p, "lapor_unggah", "ubah",
   "UPDATE lapor_unggah SET bagian = json_set(bagian, ?2, ?3), akhir = ?4 WHERE id = ?1").bind(id, `$."${Number(n)}"`, etag, kini).run();
-export const lpUnggahHapus = (env, p, id) => sedia(env, p, "lapor_unggah", "hapus", "DELETE FROM lapor_unggah WHERE id = ?1").bind(id).run();
+export const lpUnggahHapus = (env, p, id) => env.DB.batch([sedia(env, p, "lapor_unggah", "hapus", "DELETE FROM lapor_unggah WHERE id = ?1").bind(id),
+  sedia(env, p, "lapor_milik", "hapus", "DELETE FROM lapor_milik WHERE jenis = 'unggah' AND id = ?1").bind(id)]).catch(e => { if (/no such table/i.test(String(e?.message))) return sedia(env, p, "lapor_unggah", "hapus", "DELETE FROM lapor_unggah WHERE id = ?1").bind(id).run(); throw e; });   // sebelum 0159 hanya baris unggah
 export const lpUnggahBasi = async (env, p, batas) => (await sedia(env, p, "lapor_unggah", "baca",
   "SELECT id, kunci_r2, upload_id FROM lapor_unggah WHERE akhir <= ?1 ORDER BY akhir LIMIT 20").bind(batas).all()).results;
+
+/* ---- pintu web tanpa kode (migrasi 0159, K65, D100): nomor ketikan terikat ke perangkat. dev = sha256 kunci kuki lapor_perangkat. ---- */
+export const lpPerangkatBaris = async (env, p, dev) => (await sedia(env, p, "lapor_perangkat", "baca", "SELECT wa, terakhir FROM lapor_perangkat WHERE perangkat_sha = ?1 LIMIT 20").bind(dev).all()).results;
+export const lpPerangkatTambah = (env, p, dev, wa, kini) => sedia(env, p, "lapor_perangkat", "tambah",
+  "INSERT OR IGNORE INTO lapor_perangkat (perangkat_sha, wa, dibuat, terakhir) VALUES (?1, ?2, ?3, ?3)").bind(dev, wa, kini).run();
+export const lpPerangkatSentuh = (env, p, dev, wa, kini) => sedia(env, p, "lapor_perangkat", "ubah", "UPDATE lapor_perangkat SET terakhir = ?3 WHERE perangkat_sha = ?1 AND wa = ?2").bind(dev, wa, kini).run();
+export const lpMilikStmt = (env, p, jenis, id, dev, g = false) => sedia(env, p, "lapor_milik", "tambah", lpIns(g, "OR IGNORE ", "lapor_milik", "jenis, id, perangkat_sha")).bind(jenis, id, dev);
+export const lpMilikTambah = (env, p, jenis, id, dev) => lpMilikStmt(env, p, jenis, id, dev).run();
+export const lpMilikAda = async (env, p, jenis, id, dev) => !!await sedia(env, p, "lapor_milik", "baca", "SELECT 1 a FROM lapor_milik WHERE jenis = ?1 AND id = ?2 AND perangkat_sha = ?3").bind(jenis, id, dev).first();
+const LP_SESI_S = LP_SESI.split(", ").map(k => "s." + k).join(", ");
+export const lpSesiAktifPerangkat = (env, p, wa, dev) => sedia(env, p, "lapor_sesi", "baca",
+  `SELECT ${LP_SESI_S} FROM lapor_sesi s JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id WHERE s.wa = ?1 AND m.perangkat_sha = ?2 ORDER BY s.diubah DESC LIMIT 1`).bind(wa, dev).first();
+export const lpSesiMilikPerangkat = async (env, p, wa, dev) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.nomor, s.kerja, s.terkirim, t.status tiket FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id
+   WHERE s.wa = ?1 AND m.perangkat_sha = ?2 AND s.nomor IS NOT NULL ORDER BY s.terkirim DESC LIMIT 5`).bind(wa, dev).all()).results;
+export const lpKabarWebPerangkat = async (env, p, wa, dev, sejak) => (await sedia(env, p, "lapor_kabar", "baca",
+  `SELECT k.nomor, k.teks, k.dibuat waktu, k.jenis FROM lapor_kabar k JOIN lapor_sesi s ON s.nomor = k.nomor JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id
+   WHERE k.wa = ?1 AND m.perangkat_sha = ?2 AND k.dibuat > ?3 AND k.jenis != 'pdf' ORDER BY k.id LIMIT 50`).bind(wa, dev, sejak).all()).results;
 
 /* ---- monitoring staf dan alun-alun ---- */
 const LP_KOLOM_FILTER = {jenis: "s.jenis = ?", status: "t.status = ?", kab: "s.kab = ?", prov: "s.kab LIKE ? || '%'"};   // prov (2 angka) hanya diisi server dari cakupan akun BPBD

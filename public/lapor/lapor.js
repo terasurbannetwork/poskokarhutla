@@ -1210,6 +1210,35 @@ async function tampilAlun() {
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */
 const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || "id"; } catch { return "id"; } };
+/* kartu langkah ikut bahasa pilihan (pemilik 20 Nov 2026: "kenapa masih bahasa Indonesia, kan pilihannya bahasa Sunda"). Teks tetap kartu dikumpulkan,
+   diterjemahkan sekali jalan lewat /api/lapor/terjemah, disimpan per bahasa di perangkat. Nama bahasa tidak diterjemahkan. */
+const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, input, textarea, select, .lp-nomor-chat";   // tombol jawaban ikut; yang sudah diterjemahkan server kembali apa adanya
+const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr-${b}`) || "{}"); } catch { return {}; } };
+const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr-${b}`, JSON.stringify(m)); } catch {} };
+// akar yang diterjemahkan: kartu langkah, panel isian kanan, kepala chat, dan pemisah di log (bukan balon pesan: balon bot sudah dari server, balon pelapor kata-katanya sendiri)
+const AKAR_TR = () => [wadah, $("panelIsian"), document.querySelector("#lChat .lp-chat-judul"), ...log.querySelectorAll("li.tengah")].filter(Boolean);
+async function terjemahKartu() {
+  const b = bahasaKini(); if (b === "id") return;
+  const kamus = trBaca(b), sasaran = [];
+  for (const akar of AKAR_TR()) {
+    const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT);
+    for (let n; (n = jalan.nextNode());) { const t = n.nodeValue.trim(); if (t.length > 1 && t.length <= 150 && /\p{L}{2}/u.test(t) && !/^LA-\d/.test(t) && !sudahTr.has(n) && !n.parentElement?.closest(LEWATI_TR)) sasaran.push({n, t}); }
+    for (const e of akar.querySelectorAll?.("[placeholder]") || []) if (!sudahTr.has(e)) sasaran.push({e, at: "placeholder", t: e.getAttribute("placeholder")});
+  }
+  const belum = [...new Set(sasaran.map(x => x.t).filter(t => !(t in kamus)))];
+  for (let i = 0; i < belum.length; i += 60) {
+    try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: b, teks: belum.slice(i, i + 60)}), signal: AbortSignal.timeout(20000)});
+      const j = await r.json(); if (r.ok) belum.slice(i, i + 60).forEach((t, k) => { if (j.teks?.[k]) kamus[t] = j.teks[k]; }); } catch { return; }
+  }
+  trTulis(b, kamus);
+  if (bahasaKini() !== b) return;   // bahasa diganti sementara menunggu
+  for (const x of sasaran) { const tr = kamus[x.t]; if (!tr) continue;
+    if (x.n) { if (x.n.isConnected) { x.n.nodeValue = x.n.nodeValue.replace(x.t, tr); sudahTr.add(x.n); } }
+    else if (x.e.isConnected) { x.e.setAttribute(x.at, tr); sudahTr.add(x.e); } }
+}
+{ let tunda = 0; const ob = new MutationObserver(() => { clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 30); });
+  for (const akar of [wadah, $("panelIsian"), log]) if (akar) ob.observe(akar, {childList: true, subtree: true}); }
+
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */
 function tanyaNomor(lanjut) {
   tambah("bot", "*Nomor WhatsApp Anda*\nPetugas BNPB dan BPBD memakai nomor ini untuk menghubungi Anda dan mengirim kabar status laporan. Tanpa kode, tanpa sandi.", {simpanKe: false});

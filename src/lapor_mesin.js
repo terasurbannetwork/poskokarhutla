@@ -626,7 +626,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     // lalu terima dengan konfirmasi (pemilik 19 Nov 2026: "kalau 5 ya tanya lagi 2 lagi; kalau tidak tahu, terima tapi konfirmasi")
     const sn = isianNama[ditanya], target = Number(sesi.isian[sn.bila]?.nilai) || 0, lama = sesi.kurangNama?.nama === ditanya ? sesi.kurangNama.daftar : [];
     const tidakTahu = (sesi.kurangNama && p === 0) || /^(tidak tahu|gak tahu|ga tahu|nggak tahu|belum tahu)$/i.test(masukan);
-    const baru = tidakTahu ? [] : String(masukan).replace(/^[^:]{2,60}:\s*/, "").split(/\s*(?:^|\s)\d{1,2}\.\s*|\n|;/).map(t => t.trim()).filter(t => t.length > 1);
+    const baru = tidakTahu ? [] : String(masukan).replace(/^[^:]{2,60}:\s*/, "").split(/\s*(?:^|\s)\d{1,2}\.\s*|\n|;|,\s+/).map(t => t.trim()).filter(t => t.length > 1);
     const daftar = [...new Set([...lama, ...baru.map(t => samarkan(t).slice(0, 80))])];
     delete sesi.kurangNama;
     // nama yang tampak tidak sesuai jenisnya (misalnya "SD 03" untuk fasilitas kesehatan) dikonfirmasi dulu
@@ -640,6 +640,11 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       return jawab(`*Periksa lagi*\n${aneh.map(t => `"${t}"`).join(", ")} tampaknya bukan ${pola[1]}. Benar ini ${pola[1]} yang rusak?`, ["Benar, tetap catat", "Ubah"], false, null, ["Catat seperti yang ditulis", "Tulis ulang namanya"]);
     }
     if (daftar.length) setIsian(sesi, ditanya, {nilai: daftar.join("; ")}, {sumber: "pesan", waktu: kini});
+    // nama lebih banyak dari jumlah yang dilaporkan: jumlahnya ikut naik (pemilik 20 Nov 2026: "gw bilang satu sekolah tapi pilih dua kenapa ga revisi")
+    if (daftar.length > target && sn.bila) {
+      setIsian(sesi, sn.bila, {nilai: daftar.length}, {sumber: "pesan", waktu: kini});
+      tanggapan = `Jumlah ${sn.label.toLowerCase().replace(/^nama /, "").replace(/ rusak$/, "")} yang rusak diperbarui dari ${target} menjadi ${daftar.length}, sesuai nama yang Anda sebutkan.`;
+    }
     if (daftar.length && target > daftar.length && !tidakTahu && !lama.length) {
       sesi.kurangNama = {nama: ditanya, daftar}; const sisa = target - daftar.length;
       const h = jawab(`*${sn.label}*\nAnda melaporkan ${target}, baru ${daftar.length} nama yang tertulis. Sebutkan ${sisa} lainnya, atau pilih *Tidak tahu*.`, ["Tidak tahu"], false, null, [`Catat ${daftar.length} dari ${target} saja`]);

@@ -20,7 +20,7 @@ import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
 import {hitungGugus} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
-import {BAHASA, bahasaSah, keIndonesia, dariIndonesia} from "../../src/lapor_bahasa.js";
+import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
@@ -640,6 +640,7 @@ export async function tanganiLapor(req, res, url) {
       if (!s || !Number.isInteger(n) || n < 1 || n > 5) return kirim([400, {galat: "Nilai tidak sah."}]);
       s.nilai = {nilai: n, waktu: Date.now()}; simpan(d); return kirim([200, {ok: true}]);
     }
+    if (j === "/api/lapor/terjemah" && req.method === "POST") { const b = await badan(req); return kirim([200, {teks: await terjemahUi(model, b.teks, bahasaSah(b.bahasa))}]); }
     if (j === "/api/lapor/bahasa") return kirim([200, {bahasa: model ? BAHASA.map(([kode, nama]) => ({kode, nama})) : [{kode: "id", nama: "Bahasa Indonesia"}]}]);
     if (j === "/api/lapor/penting") return kirim(await penting(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/sekitar") return kirim(await sekitar(Object.fromEntries(url.searchParams)));

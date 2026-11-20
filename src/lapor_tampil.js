@@ -128,7 +128,7 @@ export function barisAlun(r) {
 export function mejaRinciTampil(s, p, t) {
   const prov = s.isian.lokasi?.nilai?.wilayah?.provKode, nomor = s.nomor;
   return {nomor, token: t, status: s.tiket.status, pindah: PINDAH[s.tiket.status], statusLabel: STATUS,
-    pelapor: {nama: p?.nama, wa: s.wa, peran: PERAN[p?.peran], kab: p?.kab || null, jabatan: p?.jabatan || null},
+    pelapor: {nama: p?.nama, wa: s.wa, peran: PERAN[p?.peran], kab: p?.kab || null, jabatan: p?.jabatan || null}, nomorTerverifikasi: s.verifikasi !== "ketik",   // D101: nomor ketikan tanpa kode belum terbukti milik pelapor
     waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), versi: s.jumlahVersi || 1, adaSusulan: !!s.adaSusulan, jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
     lat: s.isian.lokasi?.nilai?.lat ?? null, lon: s.isian.lokasi?.nilai?.lon ?? null,
     foto: (s.foto || []).map(f => ({url: urlMedia(f, `?t=${t}`), sampul: `/api/lapor/foto/${f.id}?t=${t}`, jenis: f.jenis || "foto", durasi: f.durasi ?? null, lencana: f.lencanaTeks, waktu: f.waktuAmbil ? waktuLapor(f.waktuAmbil, prov) : null})),

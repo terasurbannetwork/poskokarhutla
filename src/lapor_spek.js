@@ -169,7 +169,7 @@ export const ISIAN = [
     ["Makanan siap saji", "", null, [...UNGSI, "karhutla"], "Logistik"], ["Paket pangan atau sembako", "Beras, mi instan, lauk", null, null, "Logistik"],
     ["Air bersih atau air minum", "", null, null, "Logistik"], ["Paket sandang", "Pakaian dan selimut", null, UNGSI, "Logistik"],
     ["Matras, kasur lipat, atau tikar", "", null, UNGSI, "Logistik"], ["Tenda atau terpal", "", null, UNGSI, "Logistik"],
-    ["Family kit", "Perlengkapan mandi dan kebersihan keluarga", null, UNGSI, "Logistik"], ["Kidsware", "Perlengkapan bayi dan anak", null, UNGSI, "Logistik"],
+    ["Paket kebersihan keluarga (family kit)", "Perlengkapan mandi dan kebersihan keluarga", null, UNGSI, "Logistik"], ["Perlengkapan bayi dan anak (kidsware)", "Popok, susu, botol, dan kebutuhan anak", null, UNGSI, "Logistik"],   // nama katalog LogPal dalam kurung (pemilik 20 Nov 2026: tidak ada bahasa Inggris di pilihan)
     ["Obat dan layanan kesehatan", "", null, null, "Logistik"], ["Masker", "Untuk asap atau abu", null, ["karhutla", "erupsi"], "Logistik"],
     // Peralatan: khas per jenis bencana, dari permintaan yang paling sering tercatat di logbook Pusdalops 2024-2026
     ["Perahu karet untuk evakuasi", "", null, ["banjir", "tsunami", "abrasi"], "Peralatan"], ["Pompa air", "Menyedot genangan", null, ["banjir"], "Peralatan"],

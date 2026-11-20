@@ -10,7 +10,7 @@ export const BAHASA = [   // label dalam bahasa Indonesia supaya mudah dikenali 
   ["sas", "Bahasa Sasak"], ["min", "Bahasa Minang"], ["bbc", "Bahasa Batak Toba"], ["btx", "Bahasa Batak Karo"], ["btm", "Bahasa Batak Mandailing"],
   ["bts", "Bahasa Batak Simalungun"], ["nia", "Bahasa Nias"], ["ace", "Bahasa Aceh"], ["msa", "Bahasa Melayu"], ["ljp", "Bahasa Lampung"],
   ["bjn", "Bahasa Banjar"], ["nij", "Bahasa Dayak Ngaju"], ["bug", "Bahasa Bugis"], ["mak", "Bahasa Makassar"], ["sda", "Bahasa Toraja"],
-  ["gor", "Bahasa Gorontalo"], ["abs", "Bahasa Ambon"], ["pmy", "Bahasa Papua"], ["lain", "Bahasa daerah lain (ketik saja)"],
+  ["gor", "Bahasa Gorontalo"], ["abs", "Bahasa Ambon"], ["pmy", "Bahasa Papua"],
 ];
 const NAMA = {id: "Indonesian", en: "English", jv: "Javanese (ngoko alus, polite)", su: "Sundanese (lemes, polite)", mad: "Madurese", ban: "Balinese (polite register)",
   sas: "Sasak", min: "Minangkabau", bbc: "Batak Toba", btx: "Batak Karo", btm: "Batak Mandailing", bts: "Batak Simalungun", nia: "Nias", ace: "Acehnese",
@@ -53,4 +53,19 @@ Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). K
     if (!angkaSama(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return {teks, pilihan, ket}; // angka atau penanda nama hilang = kirim Indonesia
     return {teks: buka(j.teks), pilihan: pilihan && j?.pilihan?.length === pilihan.length ? j.pilihan.map(buka) : pilihan, ket: ket && j?.ket?.length === ket.length ? j.ket.map(buka) : ket};
   } catch { return {teks, pilihan, ket}; }
+}
+
+/* teks antarmuka kartu (judul, keterangan, tombol, placeholder) -> bahasa pilihan, sekaligus satu panggilan (pemilik 20 Nov 2026: kartu masih bahasa Indonesia).
+   Hanya teks tetap buatan layar, bukan isian pelapor. Butir yang angkanya berubah atau jumlahnya tidak cocok tetap Indonesia. */
+export const MAKS_TEKS_UI = 60, PANJANG_TEKS_UI = 160;
+export async function terjemahUi(model, daftar, bahasa) {
+  const teks = (Array.isArray(daftar) ? daftar : []).slice(0, MAKS_TEKS_UI).map(t => String(t ?? "").slice(0, PANJANG_TEKS_UI));
+  if (!model || bahasa === "id" || !NAMA[bahasa] || !teks.length) return teks;
+  const skema = {type: "object", properties: {teks: {type: "array", items: {type: "string"}}}, required: ["teks"], additionalProperties: false};
+  try {
+    const j = await model({sistem: `You translate short user-interface labels of the BNPB disaster reporting app from Indonesian into ${NAMA[bahasa]}. Translate item by item, same count and order. Keep numbers, units, place names, and "WhatsApp", "GPS", "BNPB", "BPBD" unchanged. Short and polite. Output only the translations.`,
+      skema, teks: JSON.stringify({teks})});
+    if (!Array.isArray(j?.teks) || j.teks.length !== teks.length) return teks;
+    return teks.map((t, i) => typeof j.teks[i] === "string" && j.teks[i].trim() && angkaSama(t, j.teks[i]) ? j.teks[i] : t);
+  } catch { return teks; }
 }
