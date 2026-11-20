@@ -24,6 +24,7 @@ import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../s
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
+const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUBLIK = path.join(AKAR, "public");
@@ -431,7 +432,7 @@ async function sekitar(q) {
   // cari per kata pada nama dan jenis, dengan sebutan sehari-hari ("balai desa" = kantor desa, "sd" = sekolah dasar); tidak ada yang cocok = tampilkan yang terdekat
   const SEBUT = {"Kantor atau balai": "balai desa kantor kelurahan aula", "Balai warga": "balai warga aula gedung serbaguna", "Rumah ibadah": "masjid musala mushola surau gereja pura vihara klenteng",
     "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Puskesmas": "puskesmas faskes", "Rumah sakit": "rs rsud rumah sakit faskes", "Klinik": "klinik faskes", "Jalan": "jalan jl", "Jembatan": "jembatan", "Shelter": "shelter tempat evakuasi"};
-  const kata = String(q.q || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const kata = String(q.q || "").trim().toLowerCase().split(/\s+/).filter(k => k && !KATA_UMUM.has(k));   // kata keadaan ("rusak", "putus") bukan bagian nama tempat
   const cocok = kata.length ? semua.filter(x => { const h = `${x.nama} ${x.jenis} ${SEBUT[x.jenis] || ""}`.toLowerCase(); return kata.every(k => h.includes(k)); }) : semua;
   return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !c.lengkap}];
 }

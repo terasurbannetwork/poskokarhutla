@@ -58,14 +58,15 @@ Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). K
 /* teks antarmuka kartu (judul, keterangan, tombol, placeholder) -> bahasa pilihan, sekaligus satu panggilan (pemilik 20 Nov 2026: kartu masih bahasa Indonesia).
    Hanya teks tetap buatan layar, bukan isian pelapor. Butir yang angkanya berubah atau jumlahnya tidak cocok tetap Indonesia. */
 export const MAKS_TEKS_UI = 60, PANJANG_TEKS_UI = 160;
-export async function terjemahUi(model, daftar, bahasa) {
+export async function terjemahUi(model, daftar, bahasa) {   // butir gagal = null (klien mencoba lagi nanti, tidak menyimpan teks asli sebagai terjemahan)
   const teks = (Array.isArray(daftar) ? daftar : []).slice(0, MAKS_TEKS_UI).map(t => String(t ?? "").slice(0, PANJANG_TEKS_UI));
-  if (!model || bahasa === "id" || !NAMA[bahasa] || !teks.length) return teks;
+  if (bahasa === "id" || !NAMA[bahasa]) return teks;
+  if (!model || !teks.length) return teks.map(() => null);
   const skema = {type: "object", properties: {teks: {type: "array", items: {type: "string"}}}, required: ["teks"], additionalProperties: false};
   try {
     const j = await model({sistem: `You translate short user-interface labels of the BNPB disaster reporting app from Indonesian into ${NAMA[bahasa]}. Translate item by item, same count and order. Keep numbers, units, place names, and "WhatsApp", "GPS", "BNPB", "BPBD" unchanged. Short and polite. Output only the translations.`,
       skema, teks: JSON.stringify({teks})});
-    if (!Array.isArray(j?.teks) || j.teks.length !== teks.length) return teks;
-    return teks.map((t, i) => typeof j.teks[i] === "string" && j.teks[i].trim() && angkaSama(t, j.teks[i]) ? j.teks[i] : t);
-  } catch { return teks; }
+    if (!Array.isArray(j?.teks) || j.teks.length !== teks.length) return teks.map(() => null);
+    return teks.map((t, i) => typeof j.teks[i] === "string" && j.teks[i].trim() && angkaSama(t, j.teks[i]) ? j.teks[i] : null);
+  } catch { return teks.map(() => null); }
 }

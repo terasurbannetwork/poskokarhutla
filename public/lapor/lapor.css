@@ -1935,7 +1935,6 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-bahasa-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand);font:700 .8125rem var(--font);cursor:pointer;white-space:nowrap}
 .lp-bahasa-chip[hidden]{display:none}
 .lp-bahasa-chip svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
-@media (max-width:560px){.lp-bahasa-chip span{max-width:90px;overflow:hidden;text-overflow:ellipsis}}
 #kartuLangkah .lp-bahasa-kisi{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr))!important;gap:8px}
 #kartuLangkah .lp-bahasa-kisi button{min-height:44px;padding:8px 12px}
 /* jendela pilih bahasa di awal (pemilik 20 Nov 2026, "bagusin") */
@@ -1954,3 +1953,12 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-db-kisi button:hover,.lp-db-kisi button:focus-visible{border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
 .lp-db-kisi button.aktif{border-color:var(--brand);background:color-mix(in oklab,var(--brand2) 12%,var(--card))}
 @media (max-width:560px){.lp-db-kepala{padding:16px}.lp-db-maskot{width:56px}.lp-db-isi{padding:16px}.lp-db-kisi{grid-template-columns:1fr 1fr}}
+/* HP (pemilik 20 Nov 2026: "cek tampilannya di handphone"): bilah bawah lima menu satu baris, label tidak terpotong */
+@media (max-width:899px){
+  .lp-tab{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .lp-tab button{min-height:56px;padding:6px 2px;font-size:.6875rem;line-height:1.15;text-align:center}
+  .lp-tab .lp-sigap{display:none}
+}
+@media (max-width:480px){.lp-cc2-daftar{grid-template-columns:minmax(0,1fr)!important}.lp-cc2-daftar a{overflow-wrap:anywhere}}
+@media (max-width:560px){.lp-bahasa-chip{padding:0;width:40px;justify-content:center}.lp-bahasa-chip span{display:none}#lChat .lp-chat-judul{min-width:0}#lChat .lp-chat-judul b,#lChat .lp-chat-judul small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+@media (max-width:560px){.lp-langkah-rtrw .lp-langkah-isi{grid-template-columns:minmax(0,1fr)!important}.lp-langkah-rtrw .lp-baris-isian{grid-template-columns:repeat(2,minmax(0,1fr))!important}.lp-langkah-rtrw .lp-isi input{width:100%;min-width:0}}

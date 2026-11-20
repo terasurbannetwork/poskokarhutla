@@ -676,12 +676,12 @@ uji("bahasa: tanpa model hanya Indonesia, pesan tidak diterjemahkan, daftar baha
   const r = await pesan(WV3, {teks: "halo", bahasa: "en", saluran: "web"}); assert.equal(r.s, 200); assert.ok(!/\[EN\]/.test(r.t) && r.j.bahasa === undefined, "tanpa kunci: Indonesia saja");
 });
 
-uji("terjemah teks kartu: tanpa model teks kembali apa adanya, bentuk salah 400, paling banyak 60 butir dipotong 160 karakter", async () => {
+uji("terjemah teks kartu: tanpa model null per butir, bentuk salah 400, paling banyak 60 butir", async () => {
   const r = await api("POST", "/api/lapor/terjemah", {bahasa: "su", teks: ["Pakai lokasi saat ini", "Cari desa"]}, {origin: "http://bnpb.lokal"}); assert.equal(r.s, 200, r.t.slice(0, 200));
-  assert.deepEqual(r.j.teks, ["Pakai lokasi saat ini", "Cari desa"]);
+  assert.deepEqual(r.j.teks, [null, null], "tanpa model: null, supaya klien tidak menyimpan teks asli sebagai terjemahan");
   assert.equal((await api("POST", "/api/lapor/terjemah", {bahasa: "su", teks: "bukan daftar"}, {origin: "http://bnpb.lokal"})).s, 400);
   const banyak = await api("POST", "/api/lapor/terjemah", {bahasa: "su", teks: Array(80).fill("x".repeat(200))}, {origin: "http://bnpb.lokal"});
-  assert.equal(banyak.j.teks.length, 60); assert.equal(banyak.j.teks[0].length, 160);
+  assert.equal(banyak.j.teks.length, 60);
 });
 
 uji("bahasa: terjemah masuk disamarkan, asli tersimpan, balasan diterjemahkan, angka berubah ditolak, pintu WA tetap Indonesia", async () => {

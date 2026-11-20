@@ -3,6 +3,7 @@
    Tanpa D1. Yang dikirim ke Overpass OSM hanya koordinat kejadian. Label uji model tidak ditampilkan ke warga (pemilik 19 Nov 2026). */
 import {Besok} from "./lapor_besok.js";
 import {km} from "./lapor_tampil.js";
+const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
 const TINGKAT = ["Normal", "Waspada", "Siaga", "Awas"];
 const adaKode = k => /^\d{2}\.\d{2}(\.\d{2})?$/.test(k || "");
@@ -79,7 +80,7 @@ export function buatInfo({muat, wilayah}) {
     // cari per kata pada nama dan jenis, dengan sebutan sehari-hari ("balai desa" = kantor desa, "sd" = sekolah dasar); tidak ada yang cocok = tampilkan yang terdekat
     const SEBUT = {"Kantor atau balai": "balai desa kantor kelurahan aula", "Balai warga": "balai warga aula gedung serbaguna", "Rumah ibadah": "masjid musala mushola surau gereja pura vihara klenteng",
       "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Puskesmas": "puskesmas faskes", "Rumah sakit": "rs rsud rumah sakit faskes", "Klinik": "klinik faskes", "Jalan": "jalan jl", "Jembatan": "jembatan", "Shelter": "shelter tempat evakuasi"};
-    const kata = String(q.q || "").slice(0, 80).trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const kata = String(q.q || "").slice(0, 80).trim().toLowerCase().split(/\s+/).filter(k => k && !KATA_UMUM.has(k));   // kata keadaan ("rusak", "putus") bukan bagian nama tempat
     const cocok = kata.length ? semua.filter(x => { const h = `${x.nama} ${x.jenis} ${SEBUT[x.jenis] || ""}`.toLowerCase(); return kata.every(k => h.includes(k)); }) : semua;
     return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !c.lengkap}];
   }

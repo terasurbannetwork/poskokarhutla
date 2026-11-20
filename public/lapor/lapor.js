@@ -427,24 +427,31 @@ function kartuTempat(j = {}) {
   const segarPilihan = () => { pilihan.replaceChildren(...[...dipilih.keys()].map(n => { const c = el("button", "lp-tempat-chip"); c.type = "button"; c.append(n, ikon("i-tutup")); c.addEventListener("click", () => { dipilih.delete(n); segarPilihan(); muat(q.value); }); return c; }));
     pilihan.hidden = !dipilih.size; };
   let ulangTempat = 0;
+  // teks yang diketik di pencarian bisa langsung dicatat sebagai nama (pemilik 20 Nov 2026: "ketika tidak ada di pilihan kenapa ga bisa diinput")
+  const tambahKetik = (t, ada = []) => { const v = String(t || "").trim();
+    if (v.length < 3 || ada.some(x => x.nama.toLowerCase() === v.toLowerCase()) || dipilih.has(v)) return [];
+    const b = el("button", "lp-tempat lp-tempat-ketik"); b.type = "button"; const ic = el("span", "lp-tempat-ikon"); ic.append(ikon("i-plus"));
+    const tx = el("span"); tx.append(el("b", null, `Catat "${v}"`), el("small", null, "Nama yang Anda ketik, tidak ada di daftar")); b.append(ic, tx);
+    b.addEventListener("click", () => { dipilih.set(v, {nama: v}); q.value = ""; segarPilihan(); muat(""); }); return [b]; };
   const muat = async t => {
     if (!daftar.querySelector(".lp-tempat")) daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Mencari tempat di sekitar lokasi..."));
     try { const j = await (await fetch(`/api/lapor/sekitar?wa=${encodeURIComponent(wa)}&jenis=${jenisT}&q=${encodeURIComponent(t || "")}`, {signal: AbortSignal.timeout(15000)})).json();
       // daftar rumah ibadah dan balai warga menyusul dari OpenStreetMap daring yang kadang penuh: coba lagi sampai tiga kali,
       // dan selama belum lengkap jangan pernah bilang "tidak ada" (pemilik 19 Nov 2026 "kenapa ga ada")
       if (j.sebagian && ulangTempat < 3) { ulangTempat++; setTimeout(() => muat(q.value.trim()), 4000); }
-      if (!j.tempat?.length) return daftar.replaceChildren(el("p", "lp-redup lp-kecil", j.sebagian && ulangTempat < 3 ? "Mengambil daftar dari OpenStreetMap, tunggu sebentar..."
+      if (!j.tempat?.length) return daftar.replaceChildren(...tambahKetik(t), el("p", "lp-redup lp-kecil", j.sebagian && ulangTempat < 3 ? "Mengambil daftar dari OpenStreetMap. Boleh langsung tulis namanya di kolom pencarian atau kolom bawah."
         : j.sebagian ? "Daftar dari OpenStreetMap sedang tidak bisa diambil. Tulis namanya di kolom bawah." : "Tidak ada tempat seperti ini tercatat di OpenStreetMap dalam 3 km dari lokasi. Tulis namanya di kolom bawah."));
       const kisi = j.tempat.map(x => { const b = el("button", "lp-tempat"); b.type = "button"; b.setAttribute("aria-pressed", String(dipilih.has(x.nama)));
         const ic = el("span", "lp-tempat-ikon"); ic.append(ikon(/ibadah|sekolah/i.test(x.jenis) ? "i-fasilitas" : /puskesmas|klinik|sakit/i.test(x.jenis) ? "i-plus" : /jalan|jembatan/i.test(x.jenis) ? "i-lokasi" : "i-rumah"));
         const tx = el("span"); tx.append(el("b", null, x.nama), el("small", null, `${x.jenis}, ${x.jarakKm.toLocaleString("id-ID")} km`)); b.append(ic, tx);
         b.addEventListener("click", () => { dipilih.has(x.nama) ? dipilih.delete(x.nama) : dipilih.set(x.nama, x); b.setAttribute("aria-pressed", String(dipilih.has(x.nama))); segarPilihan(); });
         return b; });
-      daftar.replaceChildren(...(j.terdekat ? [el("p", "lp-tempat-catatan", `Tidak ada nama yang cocok dengan "${t}". Ini tempat terdekat dari lokasi kejadian.`)] : []), ...kisi);
+      daftar.replaceChildren(...tambahKetik(t, j.tempat), ...(j.terdekat ? [el("p", "lp-tempat-catatan", `Tidak ada nama yang cocok dengan "${t}". Ini tempat terdekat dari lokasi kejadian.`)] : []), ...kisi);
     } catch { daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Daftar tempat belum bisa dimuat. Tulis di kolom Tempat lain.")); }
   };
   let tunda; q.addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => muat(q.value.trim()), 300); });
-  s.addEventListener("click", () => { const semua = [...dipilih.keys(), ...(lain.value.trim() ? [lain.value.trim()] : [])];
+  s.addEventListener("click", () => { const ketik = !dipilih.size && !lain.value.trim() && q.value.trim().length >= 3 ? [q.value.trim()] : [];   // hanya mengetik di pencarian = itu namanya
+    const semua = [...dipilih.keys(), ...(lain.value.trim() ? [lain.value.trim()] : []), ...ketik];
     if (!semua.length) { statusEl.textContent = "Pilih atau tulis paling sedikit satu tempat."; return; }
     kirim({teks: `${awalan}:\n${semua.map((n, i) => `${i + 1}. ${n}`).join("\n")}`, tampil: `${awalan}: ${semua.join(", ")}`}); });
   const tt = el("button", "lp-kedua", "Belum tahu"); tt.type = "button"; tt.addEventListener("click", () => kirim({teks: "belum tahu", tampil: `Belum tahu ${awalan.toLowerCase()}`}));
@@ -1216,8 +1223,9 @@ const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || 
 // seluruh halaman ikut bahasa pilihan (pemilik 20 Nov 2026: "bahasa itu dari awal, langsung pop up pilih bahasa"), termasuk layar terima kasih di akhir;
 // yang dilewati: nama bahasa, isian, balon pesan (bot dari server, pelapor kata-katanya sendiri), nama pelapor, nomor tiket, maskot, animasi pembuka
 const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, .lp-dialog-bahasa, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
-const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr-${b}`) || "{}"); } catch { return {}; } };
-const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr-${b}`, JSON.stringify(m)); } catch {} };
+const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr2-${b}`) || "{}"); } catch { return {}; } };
+try { for (const k of Object.keys(localStorage)) if (k.startsWith("lapor-tr-")) localStorage.removeItem(k); } catch {}   // cache lama bisa berisi teks asli dari terjemahan gagal
+const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr2-${b}`, JSON.stringify(m)); } catch {} };
 // akar yang diterjemahkan: kartu langkah, panel isian kanan, kepala chat, dan pemisah di log (bukan balon pesan: balon bot sudah dari server, balon pelapor kata-katanya sendiri)
 const AKAR_TR = () => [document.body];
 let trJalan = null, trUlang = false;
@@ -1236,9 +1244,9 @@ async function terjemahSekali() {
   }
   const belum = [...new Set(sasaran.map(x => x.t).filter(t => !(t in kamus)))];
   const potong = []; for (let i = 0; i < belum.length; i += 60) potong.push(belum.slice(i, i + 60));
-  await Promise.all(potong.map(async bag => {   // potongan dikirim bersamaan
+  await Promise.all(potong.map(async bag => {   // potongan dikirim bersamaan; butir null = gagal, dicoba lagi pada putaran berikutnya
     try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: b, teks: bag}), signal: AbortSignal.timeout(45000)});
-      const j = await r.json(); if (r.ok) bag.forEach((t, k) => { if (j.teks?.[k]) kamus[t] = j.teks[k]; }); } catch {}
+      const j = await r.json(); if (r.ok) bag.forEach((t, k) => { if (typeof j.teks?.[k] === "string" && j.teks[k]) kamus[t] = j.teks[k]; }); } catch {}
   }));
   trTulis(b, kamus);
   if (bahasaKini() !== b) return;   // bahasa diganti sementara menunggu
@@ -1265,12 +1273,12 @@ async function dialogBahasa() {
     const ada = ks.filter(k => kode.has(k) && !terpakai.has(k)); if (!ada.length) continue;
     const g = el("section", "lp-db-grup"), kisi = el("div", "lp-db-kisi"); g.append(el("h3", null, wil), kisi);
     for (const k of ada) { terpakai.add(k); const b = el("button", k === kini ? "aktif" : ""); b.type = "button";
-      b.append(el("b", null, kode.get(k).replace(/^Bahasa /, ""))); if (k === "id") b.append(el("small", null, "Bawaan"));
+      b.append(el("b", null, kode.get(k).replace(/^Bahasa /, ""))); if (bahasaTersimpan() && k === kini) b.append(el("small", null, "Dipakai")); else if (k === "id" && !bahasaTersimpan()) b.append(el("small", null, "Bawaan"));
       b.addEventListener("click", () => pilih(k)); kisi.append(b); }
     isi.append(g);
   }
-  d.addEventListener("cancel", () => { try { localStorage.setItem("lapor-bahasa", "id"); } catch {} d.remove(); });   // Esc = Indonesia, tidak ditanya lagi
-  d.append(kep, isi); document.body.append(d); d.showModal(); d.querySelector("button")?.focus();
+  d.addEventListener("cancel", () => { try { if (!localStorage.getItem("lapor-bahasa")) localStorage.setItem("lapor-bahasa", "id"); } catch {} d.remove(); });   // Esc = tetap bahasa terakhir (Indonesia bila belum pernah memilih)
+  d.append(kep, isi); document.body.append(d); d.showModal(); (d.querySelector("button.aktif") || d.querySelector("button"))?.focus();
 }
 
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */
@@ -1344,7 +1352,7 @@ const pernah = false;
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Lapor Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
-  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => { pb.remove(); if (!bahasaTersimpan()) dialogBahasa(); }, 700); };
+  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => { pb.remove(); dialogBahasa(); }, 700); };   // tiap situs dibuka (pemilik 20 Nov 2026: "kenapa pilih bahasanya ga muncul di awal"); bahasa terakhir ditandai
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : 6000);   // pemilik 19 Nov 2026 malam: "masih kurang lama"
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
