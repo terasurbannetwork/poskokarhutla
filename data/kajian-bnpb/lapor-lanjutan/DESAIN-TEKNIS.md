@@ -23,6 +23,8 @@ Folder baru `public/lapor/data/` berada di bawah `public/lapor/` (bukan folder a
 
 ## Skema D1 (0161, hanya `CREATE ... IF NOT EXISTS`, tanpa trigger, tanpa ALTER)
 
+Ringkasan; berkas `migrations/0161_lapor_data.sql` adalah acuan dan memuat CHECK lengkap (format nomor WA, rentang koordinat, kunci R2 di `lapor/data/`, FK ke `lj_berkas` dan `lj_objek`, token selalu berkedaluwarsa).
+
 ```sql
 CREATE TABLE IF NOT EXISTS lj_berkas (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
@@ -32,8 +34,10 @@ CREATE TABLE IF NOT EXISTS lj_berkas (
   kab4 TEXT CHECK (kab4 IS NULL OR (length(kab4) = 4 AND kab4 NOT GLOB '*[^0-9]*')),
   status TEXT NOT NULL CHECK (status IN ('terbuka', 'usul_tutup', 'selesai', 'selesai_catatan')),
   isian TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(isian) AND length(isian) <= 6000),
+  ditutup INTEGER,                   -- waktu penutupan diterima staf; awal hitungan 5 tahun (D23)
   dibuat INTEGER NOT NULL, diubah INTEGER NOT NULL,
-  UNIQUE (induk, kab)
+  UNIQUE (induk, kab),
+  CHECK ((status IN ('selesai', 'selesai_catatan')) = (ditutup IS NOT NULL))
 );
 CREATE TABLE IF NOT EXISTS lj_tim (
   berkas TEXT NOT NULL, wa TEXT NOT NULL,

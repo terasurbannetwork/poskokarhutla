@@ -1464,9 +1464,20 @@
     "table lapor_perangkat": "pintu web tanpa kode",
     "table lapor_milik": "pintu web tanpa kode",
     "table lapor_kelompok": "kejadian yang sama",
-    "table lapor_kelompok_urut": "kejadian yang sama"
+    "table lapor_kelompok_urut": "kejadian yang sama",
+    "table lapor_periksa": "pengecekan lapangan dan tindakan",
+    "table lapor_tindakan": "pengecekan lapangan dan tindakan"
   },
   "dikecualikan": {
+    "table lj_berkas": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_tim": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_objek": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_jejak": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_media": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_tanya": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_kabar": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_beku": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_akses": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
     "table alun_lembaga": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
     "table alun_riwayat": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

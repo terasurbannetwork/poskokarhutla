@@ -1755,6 +1755,18 @@ Object.assign(MATRIKS, {
   lapor_milik:         {lp_pelapor: ["baca", "tambah", "hapus"], lp_publik: ["baca"], lp_cron: ["hapus"]},
   lapor_kelompok:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "hapus"]},   // migrasi 0160: kejadian yang sama (K66, D103-D107)
   lapor_kelompok_urut: {lp_pelapor: ["tambah"]},
+  /* data lanjutan BPBD (migrasi 0161, paket lapor-lanjutan, LJ-01). lj_tim = ketua dan anggota berkas lewat kuki per orang (D20);
+     lp_cron = pertanyaan harian (D12) dan hapus data pribadi 5 tahun (D23); lp_mesin = gateway WA (antrean lj_kabar, gerbang izin anggota D11).
+     Append-only: lj_jejak, lj_beku, lj_akses tanpa ubah dan hapus. Staf membaca pribadi hanya lewat Tampilkan yang menulis lj_akses (D22). */
+  lj_berkas:           {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "ubah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca"]},
+  lj_tim:              {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
+  lj_objek:            {lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca"], lp_cron: ["baca", "ubah"]},
+  lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
+  lj_media:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
+  lj_tanya:            {lj_tim: ["baca", "ubah"], lp_cron: ["baca", "tambah"]},
+  lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
+  lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
 });
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";

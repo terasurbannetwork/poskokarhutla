@@ -5,7 +5,7 @@ Ambil tiket berurutan, kerjakan hanya cakupannya. Tiap tiket layar ditinjau pemi
 | Tiket | Cakupan | Pengerja | Pemeriksa | Bukti siap | Bergantung |
 | --- | --- | --- | --- | --- | --- |
 | LJ-00 | Bagian §2.31 di AGENTS.md; pemilik berkas baru di roster | sesi induk | `higiene-repo` | `npm run uji:agen` | paket ini |
-| LJ-01 | `migrations/0161_lapor_data.sql`; entri `MATRIKS` `src/hak.js`; `tests/warga/cakupan.json` | `warga-api` | `migrasi-idempoten` | migrasi jalan dua kali di Miniflare | LJ-00 |
+| LJ-01 | `migrations/0161_lapor_data.sql`; entri `MATRIKS` `src/hak.js`; `tests/warga/cakupan.json` | `warga-api` | `migrasi-idempoten` | `node --test tests/lapor/lanjut_migrasi.test.mjs` (semua migrasi di SQLite, 0161 dua kali, CHECK, UNIQUE, FK) | LJ-00 |
 | LJ-02 | `src/lapor_lanjut_spek.js`: spek tujuh jenis, isian `pribadi`, nihil per metrik, penanda, rekap, kondisi akhir, sidik | `warga-api` | `validasi-model` | `tests/lapor/lanjut_spek.test.mjs` | LJ-01 |
 | LJ-03 | Pembukaan berkas dari tiket (syarat kab izin), token per anggota ke kuki, rute `berkas`, `daftar`, `tampil`, `lj_akses`, entri `src/worker.js` (Q6, Q11, Q15) | `warga-api` | `guard-api`, `security-reviewer` | uji rute bagian 2 baris berkas, token, tersamar | LJ-02 |
 | LJ-04 | Rute objek, nihil, dan media (foto, dokumen, video bersambung ke `lj_media`), rumah dan prasarana (K10, Q9, Q12) | `warga-api` | `guard-api`, `security-reviewer` | uji rute objek, `rev`, `klien_id`, media | LJ-03 |

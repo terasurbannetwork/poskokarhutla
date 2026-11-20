@@ -161,5 +161,6 @@
   "0157_lapor_lanjut.sql": "e712ca824661247ccede2c8b314101b8b9c06d3e46b0b27d61785e00aa66928d",
   "0158_lapor_unggah.sql": "6468f3c2e3a4058d24af108ae6fb4d31f70b069f7c79ad11998d5fe5191b8ca2",
   "0159_lapor_perangkat.sql": "52afcff47b42dc8366039f70db0e3381b6463e2382bbefe4691376904e81de09",
-  "0160_lapor_kelompok.sql": "606f6d4f5f1109fd89b182d7a45edccebe7009c5df518d499bce0909c8dc8569"
+  "0160_lapor_kelompok.sql": "606f6d4f5f1109fd89b182d7a45edccebe7009c5df518d499bce0909c8dc8569",
+  "0161_lapor_data.sql": "e9bb0501745e53cafa3b860cba1f5b10be13f8f3b0b7f1c8d60a06737ce220b0"
 }
