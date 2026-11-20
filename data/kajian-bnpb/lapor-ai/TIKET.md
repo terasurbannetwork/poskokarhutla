@@ -153,4 +153,4 @@ Tahap 1 (commit 492cc6484) dan tahap 2 di Worker: LA-58 video (rute `unggah/*` m
 | --- | --- | --- | --- | --- |
 | LA-68 | Mesin: kandidat sekecamatan sesudah lokasi (D103), pertanyaan tanpa data orang (D104), jalur ya: kunci jenis/subjenis/waktu, detail bebas, foto, kirim (D105); server lokal dan Worker menyediakan kandidat dan menyimpan `kejadian` (nomor KJ, D106) | `warga-api` | `security-reviewer`, pemeriksa bersih | Q58, Q59 |
 | LA-69 | Meja: satu baris per kejadian, angka tertinggi berlabel, buka untuk tiap laporan, lepas dari kejadian (D107) | `layar-peta` | `inp-reviewer`, `selera-angka` | |
-| LA-70 | Lapor darurat (K68): mesin `darurat` di src/lapor_mesin.js, tombol dan banner di /lapor, pita merah dan bunyi di /lapor/meja | Uji tests/lapor/mesin.test.mjs (lapor darurat); tinjau http://localhost:8800/lapor/ dan /lapor/meja | selesai 20 Nov 2026 |  |
+| LA-70 | Lapor darurat (K68): jalur `darurat` di mesin, tombol dan banner merah di /lapor, pita merah, nada, dan notifikasi di /lapor/meja; uji di tests/lapor/mesin.test.mjs | `warga-api`, `layar-peta` | `inp-reviewer`, `selera-angka` | selesai 20 Nov 2026 |
