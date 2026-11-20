@@ -27,7 +27,7 @@ while read -r lref lsha rref rsha; do
   for f in $berkas; do
     case "$f" in
       public/data/*|public/banjir/data/*) ;;
-      public/*|src/*|wrangler.jsonc|migrations/*|tests/agen/*|tests/warga/*|tests/sippa/*|package.json|package-lock.json) pakai=1; sha_dorong=$lsha; sha_github=$rsha; ref_github=$rref ;;
+      public/*|src/*|wrangler.jsonc|migrations/*|tests/agen/*|tests/warga/*|tests/sippa/*|package.json|package-lock.json) pakai=1; sha_dorong=$lsha; dasar_dorong=$dasar; sha_github=$rsha; ref_github=$rref ;;
     esac
     # uji:sippa hanya bila berkas SIPPA ikut berubah (pemilik 20 Nov 2026: "seringnya ga berubah"); terbit.yml tetap menjalankannya penuh
     case "$f" in public/pipa/*|tests/sippa/*|src/sippa*|migrations/005[5-7]*|package.json|package-lock.json) sippa=1 ;; esac
@@ -82,13 +82,24 @@ if [ -L "$tmp/node_modules" ]; then ln -s "$modul" "$tmp/$(readlink "$tmp/node_m
 echo "pre-push: uji di commit $(echo "$sha_dorong" | cut -c1-9) ..." >&2
 # uji:agen dan uji:warga bersamaan (tidak saling bergantung); keluaran ke berkas supaya tidak bertumpuk, dicetak bila gagal
 echo "pre-push: uji:agen dan uji:warga jalan bersamaan${sippa:+, lalu uji:sippa}" >&2
+# Hanya uji yang terdampak (pemilik 20 Nov 2026, pola pangantara): scripts/agents/uji_pilih.mjs memilih dari peta ketergantungan yang
+# dicatat tiap kali uji jalan (.git/uji-peta-<suite>.json, satu berkas per suite karena suite jalan bersamaan). Belum ada peta atau
+# yang berubah pemicu besar = PENUH. Salinan tanpa pemilih (commit lama) = npm run penuh seperti dulu. terbit.yml tetap penuh.
+uji() {   # uji <skrip npm>
+  if [ -f "$tmp/scripts/agents/uji_pilih.mjs" ]; then
+    (cd "$tmp" && node scripts/agents/uji_pilih.mjs "$1" ${dasar_dorong:+--dasar "$dasar_dorong"} --sampai "$sha_dorong" --peta "$umum/uji-peta-$1.json")
+  else
+    (cd "$tmp" && npm run "$1")
+  fi
+}
+umum=$(cd "$(git rev-parse --git-common-dir)" && pwd)
 gagal=
-(cd "$tmp" && npm run uji:agen >"$log/agen" 2>&1) & pa=$!
-(cd "$tmp" && npm run uji:warga >"$log/warga" 2>&1) & pw=$!
+uji uji:agen >"$log/agen" 2>&1 & pa=$!   # npm run uji:agen
+uji uji:warga >"$log/warga" 2>&1 & pw=$!   # npm run uji:warga
 wait $pa || gagal="uji:agen"
 wait $pw || gagal="${gagal:+$gagal dan }uji:warga"
-if [ -z "$gagal" ] && [ -n "$sippa" ]; then (cd "$tmp" && npm run uji:sippa >"$log/sippa" 2>&1) || gagal="uji:sippa"; fi
-for u in agen warga sippa; do [ -f "$log/$u" ] && grep -E '^ℹ (pass|fail) ' "$log/$u" | sed "s/^/pre-push uji:$u: /" >&2; done
+if [ -z "$gagal" ] && [ -n "$sippa" ]; then uji uji:sippa >"$log/sippa" 2>&1 || gagal="uji:sippa"; fi   # npm run uji:sippa
+for u in agen warga sippa; do [ -f "$log/$u" ] && grep -E '^uji_pilih|^ℹ (pass|fail) ' "$log/$u" | sed "s/^/pre-push uji:$u: /" >&2; done
 if [ -n "$gagal" ]; then
   for u in agen warga sippa; do [ -f "$log/$u" ] && grep -qE '^ℹ fail [1-9]|ERR!|Error' "$log/$u" && { echo "---- uji:$u (80 baris terakhir) ----" >&2; tail -80 "$log/$u" >&2; }; done
   echo "pre-push DITOLAK: $gagal gagal. Betulkan ujinya dulu; deploy akan gagal juga di GitHub." >&2

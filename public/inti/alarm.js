@@ -93,8 +93,11 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
   <div class="al-aksi"><a class="al-pri" href="/lapor/meja#daftar">Buka laporan</a><a class="al-sek" href="/lapor/meja#peta">Lihat di peta</a></div>
 </div>`;
   }
+  /* Worker menyisipkan /inti/keluar.js hanya ke halaman bersesi (src/worker.js pasangKeluar): tanpa itu pengunjung publik, jangan bertanya sama sekali */
+  const bersesi = () => !!document.querySelector('script[src^="/inti/keluar.js"], #keluar');
   async function jajakLapor() {
     if (laporOk === false || document.visibilityState !== "visible") return;
+    if (!bersesi()) { laporOk = false; return; }
     try {
       const r = await fetch(`/api/lapor/meja?dari=${Math.floor((Date.now() - LAPOR_JENDELA) / 6e4) * 6e4}`, {cache: "no-store", credentials: "same-origin"});
       if (r.status === 401 || r.status === 403) { laporOk = false; return; }
