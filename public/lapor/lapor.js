@@ -206,12 +206,18 @@ function kartuSetuju(j) {
   isi.append(atas, d, priv);
 }
 
-function kartuIdentitas() {
+/* lanjutAwal: dipanggil dari tanyaNomor sebelum nomor dikenal (K65). Kolom WhatsApp bisa diisi; isian disimpan di idAwal dan
+   dikirim diam-diam saat mesin memintanya sesudah persetujuan (pemilik 20 Nov 2026: "tanya dulu warga atau BPBD terus namanya siapa"). */
+let idAwal = null;
+function kartuIdentitas(lanjutAwal = null) {
   const isi = kartu("identitas");
   let peran = "warga";
   const nama = el("input"); nama.type = "text"; nama.autocomplete = "name"; nama.maxLength = 80; nama.required = true; nama.placeholder = "Nama lengkap";
   const lNama = el("label", "lp-isi"); lNama.append("Nama", nama);
-  const nomor = el("div", "lp-nomor-isi"); const ino = el("input"); ino.value = wa.slice(2); ino.readOnly = true; ino.setAttribute("aria-label", "Nomor WhatsApp"); nomor.append(el("span", "lp-awalan", "+62"), ino);
+  const nomor = el("div", "lp-nomor-isi"); const ino = el("input"); ino.setAttribute("aria-label", "Nomor WhatsApp");
+  if (lanjutAwal) { Object.assign(ino, {type: "tel", inputMode: "numeric", autocomplete: "tel-national", maxLength: 13, placeholder: "812 3456 7890"});
+    ino.addEventListener("input", () => { let v = ino.value.replace(/\D/g, ""); if (v.startsWith("62")) v = v.slice(2); if (v.startsWith("0")) v = v.slice(1); ino.value = v.slice(0, 13); }); }
+  else { ino.value = wa.slice(2); ino.readOnly = true; } nomor.append(el("span", "lp-awalan", "+62"), ino);
   const lWa = el("div", "lp-isi"); lWa.append("WhatsApp", nomor);
   const seg = el("div", "lp-segmen lp-peran"), bpbd = el("div", "lp-baris-isian"); bpbd.hidden = true;
   const kab = el("input"); kab.placeholder = "Kabupaten/kota"; kab.maxLength = 80; const jab = el("input"); jab.placeholder = "Jabatan"; jab.maxLength = 80;
@@ -227,7 +233,11 @@ function kartuIdentitas() {
   s.addEventListener("click", () => {
     if (nama.value.trim().length < 2) { nama.focus(); statusEl.textContent = "Tulis nama Anda."; return; }
     if (peran === "bpbd" && (kab.value.trim().length < 3 || jab.value.trim().length < 2)) { statusEl.textContent = "Petugas BPBD wajib mengisi kabupaten/kota dan jabatan."; return; }
-    kirim({form: {nama: nama.value.trim(), peran, kab: kab.value.trim(), jabatan: jab.value.trim()}, tampil: `${nama.value.trim()}, ${peran === "bpbd" ? `Petugas BPBD ${kab.value.trim()}` : "warga"}`});
+    const form = {nama: nama.value.trim(), peran, kab: kab.value.trim(), jabatan: jab.value.trim()}, tampil = `${form.nama}, ${peran === "bpbd" ? `Petugas BPBD ${form.kab}` : "warga"}`;
+    if (!lanjutAwal) return kirim({form, tampil});
+    if (!/^8\d{8,12}$/.test(ino.value)) { ino.focus(); statusEl.textContent = "Nomor WhatsApp diawali 8, contoh 812 3456 7890."; return; }
+    idAwal = form; wadah.replaceChildren(); tambah("saya", `${tampil}\n+62 ${ino.value}`, {simpanKe: false});
+    mulai(`62${ino.value}`, {diChat: true}).then(lanjutAwal);
   });
   const baris = el("div", "lp-id-baris"); baris.append(lNama, lWa);
   isi.append(baris, lPeran, bpbd, s);
@@ -614,6 +624,10 @@ async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampi
   } finally { sibuk = false; }
 }
 function selesaiBalas(j) {
+  // identitas sudah diisi di kartu awal: pertanyaan "kenal" (Ganti) dan kartu identitas mesin dijawab diam-diam dengan isian itu
+  if (idAwal && (j.minta === "identitas" || (j.pilihanAsli || j.pilihan)?.join("|") === "Ya|Ganti")) {
+    const form = idAwal; if (j.minta === "identitas") idAwal = null;
+    setTimeout(() => j.minta === "identitas" ? kirim({form, tampil: false}) : kirim({teks: "2", tampil: false}), 0); return; }
   $("mengetik").hidden = true;
   if (j.balasan) tambah("bot", j.minta === "setuju" ? "Halo, saya Sigap, asisten AI Lapor Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
@@ -1349,16 +1363,9 @@ async function dialogBahasa() {
 }
 
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */
-function tanyaNomor(lanjut) {
-  tambah("bot", "*Nomor WhatsApp Anda*\nPetugas BNPB dan BPBD memakai nomor ini untuk menghubungi Anda dan mengirim kabar status laporan. Tanpa kode, tanpa sandi.", {simpanKe: false});
-  const f = el("form", "lp-nomor-chat"), isi = el("div", "lp-nomor-isi"), awal = el("span", "lp-awalan", "+62"), inp = el("input"), b = el("button", "lp-utama", "Lanjut");
-  Object.assign(inp, {type: "tel", inputMode: "numeric", autocomplete: "tel-national", maxLength: 13, placeholder: "812 3456 7890", required: true}); inp.setAttribute("aria-label", "Nomor WhatsApp");
-  awal.setAttribute("aria-hidden", "true"); isi.append(awal, inp); b.type = "submit"; f.noValidate = true; f.append(isi, b);
-  inp.addEventListener("input", () => { let v = inp.value.replace(/\D/g, ""); if (v.startsWith("62")) v = v.slice(2); if (v.startsWith("0")) v = v.slice(1); inp.value = v.slice(0, 13); inp.setCustomValidity(""); });
-  f.addEventListener("submit", async e => { e.preventDefault();
-    if (!/^8\d{8,12}$/.test(inp.value)) { inp.setCustomValidity("Nomor WhatsApp diawali 8, contoh 812 3456 7890"); inp.reportValidity(); return; }
-    const v = inp.value; wadah.replaceChildren(); tambah("saya", `+62 ${v}`, {simpanKe: false}); await mulai(`62${v}`, {diChat: true}); lanjut(); });
-  wadah.replaceChildren(f); fPesan.hidden = true; inp.focus();
+function tanyaNomor(lanjut) {   // sapaan lalu kartu identitas lengkap (peran, nama, WhatsApp) sebelum persetujuan
+  tambah("bot", "*Halo, saya Sigap*\nAsisten AI Lapor Bencana BNPB. Saya bantu sampai laporan Anda lengkap dan diterima petugas. Kenalan dulu, ya. Tanpa kode, tanpa sandi.", {simpanKe: false});
+  fPesan.hidden = true; kartuIdentitas(lanjut);
 }
 /* pilihan bahasa di dalam chat (pemilik 20 Nov 2026: "nanti disuruh pilih ada di chat bot nya"): ditanya sekali saat chat pertama dibuka,
    bisa diganti dengan mengetik "bahasa". Daftar dari server: tanpa model AI hanya Indonesia, pertanyaan dilewati. */
