@@ -69,6 +69,9 @@ for (const sesi of sid) {
   console.log(`  mulai ${baris[0].timestamp}, akhir ${baris.at(-1).timestamp}, total ${det(total)}`)
   console.log(`  langkah model ${nModel}, rata-rata tunggu model ${det(nModel ? tunggu / nModel : 0)}, total tunggu model ${det(tunggu)}, total alat ${det(alat)}`)
   console.log(`  token keluar ${keluar}, masuk ${masuk}, cache ${cache}; pesan galat API ${galat}`)
+  // laju tulis kasar: token keluar dibagi waktu tunggu model (termasuk waktu sampai token pertama); bandingkan antarproyek
+  // atau dengan ukur_latensi.mjs. Rendah dengan token kecil per langkah = jalur API lambat; token besar per langkah = memang menulis banyak.
+  console.log(`  laju tulis model ${(keluar / Math.max(1, tunggu / 1000)).toFixed(1)} token/dtk, rata-rata ${Math.round(keluar / Math.max(1, nModel))} token per langkah`)
   console.log(`  alat dipakai: ${Object.entries(hitAlat).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(', ') || '-'}`)
   const tampil = opsi.includes('--semua') ? langkah : [...langkah].sort((a, b) => b.jeda - a.jeda).slice(0, 15).sort((a, b) => a.t - b.t)
   console.log(`  ${opsi.includes('--semua') ? 'semua langkah' : '15 langkah terlama'} (jeda = waktu sejak langkah sebelumnya):`)
