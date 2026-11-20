@@ -860,7 +860,7 @@ function tampilDaftarLaporan() {
 async function bukaChat() {
   ke("chat"); chipBahasa();
   if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
-    tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor), true); }   // bahasa ditanya tiap laporan baru (pemilik 20 Nov 2026 "mana pilihan bahasanya")
+    tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
 
 /* bantuan: definisi juklak dan pertanyaan umum */
@@ -1209,15 +1209,24 @@ async function tampilAlun() {
 }
 
 /* ============ bahasa (K58, D80): dipilih pelapor, tidak ditebak; disimpan di perangkat. Percakapan diterjemahkan server, data tetap Indonesia ============ */
+const bahasaTersimpan = () => { try { return !!localStorage.getItem("lapor-bahasa"); } catch { return true; } };
 const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || "id"; } catch { return "id"; } };
 /* kartu langkah ikut bahasa pilihan (pemilik 20 Nov 2026: "kenapa masih bahasa Indonesia, kan pilihannya bahasa Sunda"). Teks tetap kartu dikumpulkan,
    diterjemahkan sekali jalan lewat /api/lapor/terjemah, disimpan per bahasa di perangkat. Nama bahasa tidak diterjemahkan. */
-const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, input, textarea, select, .lp-nomor-chat";   // tombol jawaban ikut; yang sudah diterjemahkan server kembali apa adanya
+// seluruh halaman ikut bahasa pilihan (pemilik 20 Nov 2026: "bahasa itu dari awal, langsung pop up pilih bahasa"), termasuk layar terima kasih di akhir;
+// yang dilewati: nama bahasa, isian, balon pesan (bot dari server, pelapor kata-katanya sendiri), nama pelapor, nomor tiket, maskot, animasi pembuka
+const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
 const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr-${b}`) || "{}"); } catch { return {}; } };
 const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr-${b}`, JSON.stringify(m)); } catch {} };
 // akar yang diterjemahkan: kartu langkah, panel isian kanan, kepala chat, dan pemisah di log (bukan balon pesan: balon bot sudah dari server, balon pelapor kata-katanya sendiri)
-const AKAR_TR = () => [wadah, $("panelIsian"), document.querySelector("#lChat .lp-chat-judul"), ...log.querySelectorAll("li.tengah")].filter(Boolean);
-async function terjemahKartu() {
+const AKAR_TR = () => [document.body];
+let trJalan = null, trUlang = false;
+async function terjemahKartu() {   // satu putaran sekaligus; perubahan selama berjalan memicu satu putaran lagi sesudahnya
+  if (trJalan) { trUlang = true; return trJalan; }
+  trJalan = terjemahSekali().finally(() => { trJalan = null; if (trUlang) { trUlang = false; terjemahKartu(); } });
+  return trJalan;
+}
+async function terjemahSekali() {
   const b = bahasaKini(); if (b === "id") return;
   const kamus = trBaca(b), sasaran = [];
   for (const akar of AKAR_TR()) {
@@ -1226,18 +1235,29 @@ async function terjemahKartu() {
     for (const e of akar.querySelectorAll?.("[placeholder]") || []) if (!sudahTr.has(e)) sasaran.push({e, at: "placeholder", t: e.getAttribute("placeholder")});
   }
   const belum = [...new Set(sasaran.map(x => x.t).filter(t => !(t in kamus)))];
-  for (let i = 0; i < belum.length; i += 60) {
-    try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: b, teks: belum.slice(i, i + 60)}), signal: AbortSignal.timeout(20000)});
-      const j = await r.json(); if (r.ok) belum.slice(i, i + 60).forEach((t, k) => { if (j.teks?.[k]) kamus[t] = j.teks[k]; }); } catch { return; }
-  }
+  const potong = []; for (let i = 0; i < belum.length; i += 60) potong.push(belum.slice(i, i + 60));
+  await Promise.all(potong.map(async bag => {   // potongan dikirim bersamaan
+    try { const r = await fetch("/api/lapor/terjemah", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({bahasa: b, teks: bag}), signal: AbortSignal.timeout(45000)});
+      const j = await r.json(); if (r.ok) bag.forEach((t, k) => { if (j.teks?.[k]) kamus[t] = j.teks[k]; }); } catch {}
+  }));
   trTulis(b, kamus);
   if (bahasaKini() !== b) return;   // bahasa diganti sementara menunggu
   for (const x of sasaran) { const tr = kamus[x.t]; if (!tr) continue;
     if (x.n) { if (x.n.isConnected) { x.n.nodeValue = x.n.nodeValue.replace(x.t, tr); sudahTr.add(x.n); } }
     else if (x.e.isConnected) { x.e.setAttribute(x.at, tr); sudahTr.add(x.e); } }
 }
-{ let tunda = 0; const ob = new MutationObserver(() => { clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 30); });
-  for (const akar of [wadah, $("panelIsian"), log]) if (akar) ob.observe(akar, {childList: true, subtree: true}); }
+{ let tunda = 0; const ob = new MutationObserver(() => { if (bahasaKini() === "id") return; clearTimeout(tunda); tunda = setTimeout(terjemahKartu, 60); });
+  ob.observe(document.body, {childList: true, subtree: true}); setTimeout(terjemahKartu, 0); }
+/* jendela pilih bahasa saat pertama membuka situs (sesudah animasi pembuka) */
+async function dialogBahasa() {
+  if (!daftarBahasa) { try { daftarBahasa = (await (await fetch("/api/lapor/bahasa", {signal: AbortSignal.timeout(10000)})).json()).bahasa || []; } catch { daftarBahasa = []; } }
+  if (daftarBahasa.length < 2) return;
+  const d = el("dialog", "lp-dialog-bahasa"), h = el("h2", null, "Pilih bahasa"), sub = el("p", null, "Choose your language. Pilih bahasa daerah Anda."), kisi = el("div", "lp-bahasa-kisi");
+  h.id = "judulDialogBahasa"; d.setAttribute("aria-labelledby", h.id);
+  for (const b of daftarBahasa) kisi.append(tombolOpsi(b.nama, null, () => { try { localStorage.setItem("lapor-bahasa", b.kode); } catch {} d.close(); d.remove(); chipBahasa(); terjemahKartu(); }));
+  d.addEventListener("cancel", () => { try { localStorage.setItem("lapor-bahasa", "id"); } catch {} d.remove(); });   // Esc = Indonesia, tidak ditanya lagi
+  d.append(h, sub, kisi); document.body.append(d); d.showModal();
+}
 
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */
 function tanyaNomor(lanjut) {
@@ -1310,7 +1330,7 @@ const pernah = false;
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Lapor Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
-  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => pb.remove(), 700); };
+  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => { pb.remove(); if (!bahasaTersimpan()) dialogBahasa(); }, 700); };
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : 6000);   // pemilik 19 Nov 2026 malam: "masih kurang lama"
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
