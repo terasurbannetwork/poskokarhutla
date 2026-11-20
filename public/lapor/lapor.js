@@ -608,7 +608,7 @@ async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampi
     selesaiBalas(j);
   } catch (e) {
     $("mengetik").hidden = true;
-    tambah("bot", `Pesan belum terkirim. ${e.name === "TimeoutError" ? "Jaringan lambat" : e.message}. Coba lagi.`, {galat: true, simpanKe: false});
+    tambah("bot", `Pesan belum terkirim. ${e.name === "TimeoutError" ? "Jaringan lambat" : String(e.message).replace(/[.\s]+$/, "")}. Coba lagi.`, {galat: true, simpanKe: false});
     if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true});
   } finally { sibuk = false; }
 }

@@ -12,7 +12,7 @@ import {sesiMasuk} from "./masuk_sesi.js";
 import {hakKm} from "./kemitraan.js";
 import {bersihMedia} from "./media_bersih.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "./media_berkas.js";
-import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "./lapor_bahasa.js";
+import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi, MAKS_TEKS_UI, PANJANG_TEKS_UI} from "./lapor_bahasa.js";
 import {samarkan} from "./samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab} from "./lapor_meja_hak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "./lapor_gugus.js";
@@ -78,7 +78,9 @@ async function pelapor(env, req, url, body) {
       const lj = await lajuIP(env, req, "lapor.ketik", [[JAM, 240]], Date.now()); if (lj) return lj;   // sebelum izin: pintu tanpa kode tidak jadi penebak daftar izin dan pembakar baca D1
     }
   }
-  const izin = await H.lpIzin(env, P, wa);
+  // K67 (pemilik 20 Nov 2026: "di local tadi ga ada masalah"): nomor ketikan di web tidak memakai daftar izin masa uji, sama dengan server tinjau.
+  // Penjaganya laju IP, ikatan perangkat, dan kuota per perangkat; izin tetap dibaca untuk WA dan sesi /masuk, dan nomor ketikan tidak pernah naik ke bpbd (D101).
+  const izin = ketik ? {wa, peran: null, kab: null} : await H.lpIzin(env, P, wa);
   if (!izin) return galat(403, "Nomor ini belum diizinkan memakai layanan lapor (masa uji).");
   if (ketik) { const r = await ikatPerangkat(env, req, wa); if (r instanceof Response) return r; perangkat = r; }   // sesudah izin: nomor tak berizin tidak membuat ikatan atau kuki
   return {wa, saluran, izin, perangkat, ketik};
@@ -893,10 +895,21 @@ async function agregatGet(env, req, url, kini) {
 
 /* terjemahan teks kartu (judul, tombol, placeholder) ke bahasa pilihan; tanpa data pelapor. Dibatasi per IP (biaya model); klien menyimpan hasilnya per bahasa. */
 async function terjemahPost(env, req, url, kini) {
-  const lj = await lajuPublik(env, req, "lapor.terjemah", 60, kini); if (lj) return lj;
+  // 60 per jam habis dalam beberapa menit ganti bahasa (pemilik 20 Nov 2026: halaman tetap Indonesia); hasil disimpan per butir di cache colo supaya model jarang dipanggil
+  const lj = await lajuPublik(env, req, "lapor.terjemah", 600, kini); if (lj) return lj;
   const b = await bacaBody(req, 16384); if (b.galat) return galat(b.status || 400, b.galat);
   if (!Array.isArray(b.o.teks)) return galat(400, "teks harus daftar");
-  return kirim(200, {teks: await terjemahUi(modelDari(env), b.o.teks, bahasaSah(b.o.bahasa))});
+  const bahasa = bahasaSah(b.o.bahasa), teks = b.o.teks.slice(0, MAKS_TEKS_UI).map(t => String(t ?? "").slice(0, PANJANG_TEKS_UI));
+  if (bahasa === "id") return kirim(200, {teks});
+  const c = globalThis.caches?.default, kunci = t => new Request(`https://cache.lokal/lapor/tr/${bahasa}/${encodeURIComponent(t)}`);
+  const hasil = await Promise.all(teks.map(async t => { try { const r = c && await c.match(kunci(t)); return r ? await r.text() : null; } catch { return null; } }));
+  const belum = teks.filter((t, i) => hasil[i] == null);
+  if (belum.length) {
+    const tr = await terjemahUi(modelDari(env), belum, bahasa);
+    belum.forEach((t, j) => { const x = tr[j]; if (x == null) return; teks.forEach((u, i) => { if (u === t) hasil[i] = x; });
+      if (c) c.put(kunci(t), new Response(x, {headers: {"cache-control": "public, max-age=2592000"}})).catch(() => {}); });
+  }
+  return kirim(200, {teks: hasil});
 }
 const jaga = f => async (env, req, ...a) => {
   if (!env.SESI_KUNCI) return galat(503, "server belum dikonfigurasi (SESI_KUNCI)");

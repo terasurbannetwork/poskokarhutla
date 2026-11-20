@@ -754,11 +754,10 @@ function perangkat(ip) {   // satu peramban: menyimpan kukinya sendiri; kuota no
 const A = perangkat(), B = perangkat();
 let nomorK, fotoK, tokenK;
 
-uji("pintu web tanpa kode: penjaga x-pb, origin, izin; kuki HttpOnly; hanya sidik di D1; kuki karangan tidak dikenal", async () => {
+uji("pintu web tanpa kode: penjaga x-pb, origin; kuki HttpOnly; hanya sidik di D1; kuki karangan tidak dikenal", async () => {
   for (const wa of [WK, WK2]) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
   assert.equal((await api("POST", "/api/lapor/pesan", {wa: WK, teks: "lapor"}, {origin: ORI})).s, 403, "tanpa x-pb");
   assert.equal((await api("POST", "/api/lapor/pesan", {wa: WK, teks: "lapor"}, {origin: "https://jahat.example", "x-pb": "1"})).s, 403, "origin lain");
-  assert.equal((await api("POST", "/api/lapor/pesan", {wa: TAK, teks: "lapor"}, {origin: ORI, "x-pb": "1"})).s, 403, "nomor tidak di lapor_izin (Q57)");
   assert.equal((await api("POST", "/api/lapor/pesan", {teks: "lapor"}, {origin: ORI, "x-pb": "1"})).s, 401, "tanpa nomor");
   assert.equal(await n("lapor_perangkat"), 0, "penolakan tidak membuat ikatan"); assert.equal(await n("lapor_sesi", `wa = '${TAK}'`), 0);
   const r = await A.pesan(WK, {teks: "lapor"}); assert.equal(r.s, 200, r.t.slice(0, 200));
@@ -953,4 +952,12 @@ uji("kejadian yang sama: Bukan = jalur lama (pilih jenis) dan tidak memberi nomo
   assert.equal(r.minta, "jenis"); assert.match(r.balasan, /Jenis bencana/);
   assert.equal(await n("lapor_kelompok"), 0);
   tawarKejadian = false;
+});
+
+uji("K67: nomor ketikan di web tanpa daftar izin; lewat mesin WA tetap wajib izin", async () => {
+  assert.equal(await n("lapor_izin", `wa = '${TAK}'`), 0);
+  assert.equal((await pesan(TAK, {teks: "lapor"})).s, 403, "jalur mesin WA tetap daftar izin");
+  const C = perangkat(), r = await C.pesan(TAK, {teks: "lapor"});
+  assert.equal(r.s, 200, r.t.slice(0, 200));
+  assert.equal(await n("lapor_perangkat", `wa = '${TAK}'`), 1, "nomor ketikan terikat perangkat");
 });

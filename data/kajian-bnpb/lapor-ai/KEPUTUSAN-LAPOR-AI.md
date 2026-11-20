@@ -434,13 +434,14 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 
 | Q | Pertanyaan | Bawaan sementara | Menahan |
 | --- | --- | --- | --- |
-| Q57 | Masa uji: nomor ketikan tetap dibatasi daftar izin `lapor_izin`, atau web dibuka untuk semua nomor? | **[BAWAAN SEMENTARA]** Tetap daftar izin sampai pemilik membuka F2. | — |
+| Q57 | Masa uji: nomor ketikan tetap dibatasi daftar izin `lapor_izin`, atau web dibuka untuk semua nomor? | **Dijawab K67**: web dibuka untuk semua nomor ketikan. | — |
 
 ## Keputusan pemilik (kejadian sama, 20 Nov 2026)
 
 | No | Tanggal | Keputusan |
 | --- | --- | --- |
 | K66 | 20 Nov 2026 | Saat melapor, bila sudah ada laporan berdekatan (misalnya kecamatan yang sama), pelapor ditanya apakah ia melaporkan kejadian yang sama ("Apakah Anda mau melapor bencana xxx?"). Bila ya, laporan tidak mulai dari awal; pelapor ditanya detail yang ingin ditambahkan. Di meja laporan, laporan-laporan itu dikelompokkan sebagai satu kejadian dengan satu nomor. |
+| K67 | 20 Nov 2026 | Menjawab Q57 (pemilik: "di local tadi ga ada masalah"): nomor yang diketik di web tidak lagi dibatasi daftar izin `lapor_izin`, sama dengan server tinjau. Penjaganya laju IP, ikatan perangkat, dan kuota per perangkat; jalur WA mesin tetap memakai daftar izin dan nomor ketikan tidak pernah naik ke peran BPBD (D101). |
 
 ## Keputusan rancangan (pelaksanaan K66)
 
