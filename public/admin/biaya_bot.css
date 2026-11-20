@@ -1,13 +1,16 @@
 /* Biaya bot WA (/admin/biaya-bot). Warna hanya token tema.css (AGENTS 3.9); kartu dan tabel dari kit dasbor. */
-.bb-grafik-wadah{padding:12px 16px 8px;overflow-x:auto}
+.bb-grafik-wadah{position:relative;padding:16px 20px 10px;overflow-x:auto}
 .bb-grafik{display:block;width:100%;min-width:560px;height:auto}   /* layar sempit: geser di dalam kartu, angka sumbu tetap terbaca */
 .bb-kisi{stroke:var(--line);stroke-width:1}
 .bb-sumbu{font:600 var(--fs-1) var(--font);fill:var(--ink2)}
 .bb-sasaran{fill:transparent}
-.bb-isi{fill:var(--brand2)}
+.bb-isi{fill:var(--brand2);transition:fill var(--dur-1) var(--ease)}
+.bb-nilai{font:700 var(--fs-1) var(--font);fill:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none}
 .bb-batang{outline:none;cursor:default}
-.bb-batang:is(:hover,:focus-visible) .bb-isi{fill:var(--brand-accent)}
-.bb-batang:focus-visible .bb-sasaran{fill:var(--surface)}
+.bb-batang.aktif .bb-isi,.bb-batang:focus-visible .bb-isi{fill:var(--brand)}
+.bb-batang.aktif .bb-sasaran,.bb-batang:focus-visible .bb-sasaran{fill:var(--surface)}
+.bb-tip{z-index:3}
+@media (prefers-reduced-motion:reduce){.bb-isi{transition:none}}
 .bb-angka{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .bb-porsi{display:flex;align-items:center;gap:8px}
 .bb-porsi>span:last-child{min-width:3ch;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2)}

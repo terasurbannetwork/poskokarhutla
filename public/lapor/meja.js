@@ -135,7 +135,9 @@ function gambarNav(daftar) {
     grup("Tampilan"), item("m-lokasi", "Peta laporan", ke("peta"), {aktif: tampil === "peta"}), item("m-daftar", "Daftar laporan", ke("daftar"), {aktif: tampil === "daftar", n: daftar.filter(cocokJenis).filter(cocokStatus).length}),
     grup("Antrean kerja"), ...ANTREAN.map(([t, st, ik]) => item(ik, t, () => { saringStatus = st; gambar(); },
       {n: st ? daftar.filter(b => st.includes(b.status)).length : daftar.length, aktif: String(saringStatus) === String(st), st: st ? WARNA[st[0]] : null})),
-    grup("Pintu lain"), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-ringkas", "Pantau Dalops", null, {href: "/bnpb/dalops"}));
+    grup("Pintu lain"), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}),
+    // Pantau Dalops halaman internal BNPB: tidak untuk akun BPBD (pemilik 20 Nov 2026 "ya sembunyikan")
+    ...(akunBpbd() ? [] : [item("m-ringkas", "Pantau Dalops", null, {href: "/bnpb/dalops"})]));
 }
 
 /* ---------- kepala: kotak angka = saring status ---------- */
@@ -224,7 +226,9 @@ function pasPeta(ada = tersaringSekarang().filter(b => b.lat != null), durasi = 
 }
 /* pop-up titik (pemilik 19 Nov 2026 "bagusin lagi"): foto lebar dengan nomor tiket di atasnya, dampak berlabel (angka tanpa label tidak terbaca),
    aksi: Buka rincian selebar kartu, Arah dan Bagikan sejajar di bawahnya */
-const SEL_POP = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka-luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"]];
+/* dampak berikon dalam dua kelompok selebar kartu (pemilik 20 Nov 2026 "kasih icon"); kolom = jumlah sel, jadi baris selalu rata */
+const SEL_POP = [["Korban dan pengungsi", [["meninggal", "meninggal", "m-meninggal"], ["hilang", "hilang", "m-hilang"], ["luka", "luka-luka", "m-luka"], ["mengungsi", "mengungsi", "m-tenda"]]],
+  ["Kerusakan", [["rumah", "rumah rusak", "m-rumah"], ["fasilitas", "fasilitas rusak", "m-fasilitas"], ["jalan", "jalan, jembatan", "m-jalan"]]]];
 function bukaPopup(b) {
   popup?.remove();
   const w = el("div", "mj-pop"), kep = el("div", "mj-pop-kepala"); kep.style.setProperty("--jn", warnaJenis(b.jenisId));
@@ -238,9 +242,14 @@ function bukaPopup(b) {
   const isi = el("div", "mj-pop-isi");
   isi.append(baris("m-lokasi", [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.kab?.replace(/^Kota Administrasi /, "Kota ")].filter(Boolean).join(", ") || "Tanpa lokasi"),
     baris("m-log", b.waktuLapor), baris("m-orang", [b.nama || "Tanpa nama", b.peran].filter(Boolean).join(", ")));
-  const d = b.dampak || {}, ada = SEL_POP.filter(([k]) => d[k] != null), dp = el("div", "mj-pop-dampak");
-  if (ada.length) for (const [k, lb] of ada) { const c = el("div", d[k] > 0 ? `isi ${k}` : ""); c.append(el("b", null, F(d[k])), el("small", null, lb)); dp.append(c); }
-  else dp.append(el("p", null, "Dampak belum didata"));
+  const d = b.dampak || {}, dp = el("div", "mj-pop-dampak");
+  for (const [judul, sel] of SEL_POP) {
+    const ada = sel.filter(([k]) => d[k] != null); if (!ada.length) continue;
+    const g = el("div", "mj-pop-grup"); g.style.setProperty("--n", ada.length);
+    for (const [k, lb, ik] of ada) { const c = el("div", `mj-pop-sel ${k}${d[k] > 0 ? " isi" : ""}`), a = el("span", "mj-pop-angka"); a.append(ikon(ik), el("b", null, F(d[k]))); c.append(a, el("small", null, lb)); g.append(c); }
+    dp.append(el("p", "mj-pop-judul", judul), g);
+  }
+  if (!dp.childElementCount) dp.append(el("p", "mj-pop-kosong", "Dampak belum didata"));
   isi.append(dp);
   const buka = el("button", "mj-pop-buka"); buka.type = "button"; buka.append(el("span", null, "Buka rincian"), ikon("m-panah")); buka.addEventListener("click", () => { popup?.remove(); bukaRinci(b.nomor); });
   // Arah: Google Maps menuntun ke titik; Bagikan: ringkasan tanpa nomor WA pelapor (D12), lewat lembar bagikan perangkat atau salin
@@ -250,7 +259,7 @@ function bukaPopup(b) {
   bagi.addEventListener("click", () => bagikan(b, bagi));
   const kaki = el("div", "mj-pop-kaki"); kaki.append(buka, arah, bagi);
   w.append(kep, foto, isi, kaki);
-  popup = new maplibregl.Popup({offset: 22, maxWidth: "310px", className: "mj-popup", closeButton: false}).setLngLat([b.lon, b.lat]).setDOMContent(w).addTo(peta);
+  popup = new maplibregl.Popup({offset: 22, maxWidth: "330px", className: "mj-popup", closeButton: false}).setLngLat([b.lon, b.lat]).setDOMContent(w).addTo(peta);
 }
 
 async function bagikan(b, tombol) {
@@ -660,5 +669,17 @@ function terapSisi() {
 $("sisiMenu").addEventListener("click", () => { sisi.menu = sisi.menu === "kanan" ? "kiri" : "kanan"; terapSisi(); });
 $("sisiRingkas").addEventListener("click", e => { e.stopPropagation(); sisi.ringkas = sisi.ringkas === "kiri" ? "kanan" : "kiri"; terapSisi(); });
 terapSisi();
+/* lebar menu samping bisa ditarik (memori sidebar-bisa-ditarik; pola pasangTarik di public/bnpb/operasi_lapangan.js); peta menyesuaikan lewat ResizeObserver */
+{ const mj = document.querySelector(".mj"), t = $("tarikMenu"), KUNCI = "meja-lebar-menu";
+  const atur = w => { w = Math.round(Math.min(420, Math.max(200, w))); mj.style.setProperty("--lebar-menu", w + "px"); return w; };
+  const simpanLebar = w => { try { localStorage.setItem(KUNCI, String(w)); } catch {} };
+  try { const w = +localStorage.getItem(KUNCI); if (w) atur(w); } catch {}
+  let x0 = 0, w0 = 0, w = 0;
+  const gerak = e => { const d = e.clientX - x0; w = atur(w0 + (sisi.menu === "kanan" ? -d : d)); };
+  const lepas = () => { t.classList.remove("aktif"); mj.classList.remove("menu-tarik"); removeEventListener("pointermove", gerak); removeEventListener("pointerup", lepas); simpanLebar(w); };
+  t.addEventListener("pointerdown", e => { e.preventDefault(); x0 = e.clientX; w0 = w = t.parentElement.offsetWidth; t.classList.add("aktif"); mj.classList.add("menu-tarik"); addEventListener("pointermove", gerak); addEventListener("pointerup", lepas); });
+  t.addEventListener("dblclick", () => { mj.style.removeProperty("--lebar-menu"); try { localStorage.removeItem(KUNCI); } catch {} });
+  t.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault();
+    const tambah = (e.key === "ArrowRight") === (sisi.menu !== "kanan"); simpanLebar(atur(t.parentElement.offsetWidth + (tambah ? 24 : -24))); }); }
 setInterval(() => { if (!dlg.open) muat(); }, 20000);   // 20 detik, juga saat tab di latar: laporan darurat harus cepat terlihat (K68)
 muat();
