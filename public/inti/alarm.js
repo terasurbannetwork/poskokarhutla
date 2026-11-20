@@ -45,6 +45,7 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
 @media (max-width:900px){body:has(#laci.on) .al{right:16px;width:min(420px,calc(100vw - 32px));bottom:calc(72dvh + 8px);max-height:calc(28dvh - 16px);overflow:auto}}
 .al-hd{display:flex;gap:10px;align-items:flex-start;padding:14px 16px 12px;background:linear-gradient(135deg,#0b2545,#163a66);color:#fff}
 .al-ey{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#f5a06b;white-space:nowrap}
+.al-ey.al-ey-d{color:#ff9a8a}
 .al-hd h3{margin:6px 0 0;font:700 16px/1.35 var(--display,inherit);color:#fff}
 .al-x{margin-left:auto;border:0;background:rgb(255 255 255 / .14);color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;flex:none}
 .al-isi{padding:12px 16px 4px;display:grid;gap:8px}
@@ -73,7 +74,44 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
 .al-op-l{justify-self:start;font-size:12.5px;font-weight:700;color:inherit;text-decoration:underline;text-underline-offset:2px}
 </style>`);
 
+  /* ---------------- laporan warga masuk (pemilik 20 Nov 2026: "tidak hanya Peringatan tapi juga kaya Laporan Warga") ----------------
+     HANYA sesi staf meja laporan: GET /api/lapor/meja (src/lapor_ai.js mejaDaftar) sudah membatasi per wilayah akun dan membuang identitas pelapor untuk BPBD.
+     401/403 pada jajak pertama = pengunjung publik: berhenti selamanya di halaman ini (laporan warga tidak pernah tampil publik, lapor-ai D7, Q11).
+     Hanya laporan terkirim 2 jam terakhir; kartu tanpa tombol bagikan WA (D12). Kunci "lapor:<nomor>" di localStorage yang sama dengan alarm. */
+  const LAPOR_JEDA = 180e3, LAPOR_JENDELA = 2 * 36e5, LAPOR_MAKS = 3;
+  const KORBAN_DARURAT = {ya: "Ada korban atau orang terjebak", tidak: "Tidak ada korban", belum_tahu: "Korban belum diketahui"};
+  let laporOk = null;   // null belum tahu | true staf | false publik
+  function kartuLapor(b) {
+    const w = b.wilayah || {}, tempat = [w.desa && `Desa/Kel. ${w.desa}`, w.kab].filter(Boolean).join(", "), d = b.dampak || {};
+    const angka = [[d.meninggal, "meninggal"], [d.hilang, "hilang"], [d.luka, "luka"], [d.mengungsi, "mengungsi"], [d.rumah, "rumah rusak"]].filter(([n]) => n > 0).map(([n, l]) => `${Number(n).toLocaleString("id-ID")} ${l}`);
+    const teks = [b.darurat ? `${KORBAN_DARURAT[b.darurat.korban] || "Korban belum diisi"}.` : "", angka.length ? `Dampak dilaporkan: ${angka.join(", ")}.` : "Dampak belum dilaporkan.",
+      `${b.instansi ? "Laporan petugas" : "Laporan warga"}, belum terverifikasi; periksa di meja laporan.`].filter(Boolean).join(" ");
+    return `<div class="al" role="alertdialog" aria-live="assertive" aria-label="Laporan masuk">
+  <div class="al-hd"><div><span class="al-ey${b.darurat ? " al-ey-d" : ""}">${b.darurat ? "Laporan darurat" : b.instansi ? "Laporan BPBD" : "Laporan warga"}</span><h3>${esc(b.jenis || "Kejadian")}${w.kab ? ` di ${esc(w.desa || w.kab)}${w.desa ? `, ${esc(w.kab)}` : ""}` : ""}</h3></div><button class="al-x" type="button" data-tutup aria-label="Tutup">×</button></div>
+  <div class="al-isi"><div class="al-pil">${b.darurat ? `<em class="al-p" style="--w:${WARNA.Awas}">Darurat</em>` : ""}<em class="al-p" style="--w:#1d4e89">${esc(b.statusLabel || "Baru")}</em>${b.subjenis && b.subjenis !== "Belum diketahui" ? `<em class="al-p" style="--w:#6b7489">${esc(b.subjenis)}</em>` : ""}${tempat ? `<em class="al-p" style="--w:#6b7489" translate="no">${esc(w.kab || tempat)}</em>` : ""}<em class="al-p" style="--w:#6b7489">${esc(jam(b.terkirim))}</em></div>
+  <p>${esc(teks)}</p></div>
+  <div class="al-aksi"><a class="al-pri" href="/lapor/meja#daftar">Buka laporan</a><a class="al-sek" href="/lapor/meja#peta">Lihat di peta</a></div>
+</div>`;
+  }
+  async function jajakLapor() {
+    if (laporOk === false || document.visibilityState !== "visible") return;
+    try {
+      const r = await fetch(`/api/lapor/meja?dari=${Math.floor((Date.now() - LAPOR_JENDELA) / 6e4) * 6e4}`, {cache: "no-store", credentials: "same-origin"});
+      if (r.status === 401 || r.status === 403) { laporOk = false; return; }
+      if (!r.ok) return;
+      const j = await r.json(); if (!Array.isArray(j?.baris)) return; laporOk = true;
+      const sudah = new Set(baca()), ada = new Set(antre.map(x => x.kunci)), batas = Date.now() - LAPOR_JENDELA;
+      const baru = j.baris.filter(b => b?.nomor && b.terkirim >= batas && !["selesai", "tidak_valid"].includes(b.status) && !sudah.has("lapor:" + b.nomor) && !ada.has("lapor:" + b.nomor) && !lihat.has("lapor:" + b.nomor))
+        .sort((x, y) => y.terkirim - x.terkirim).slice(0, LAPOR_MAKS);
+      for (const b of baru) antre.push({kunci: "lapor:" + b.nomor, jenis: "lapor", dibuat: new Date(b.terkirim).toISOString(), _p: b.darurat ? 4 : 1.5, _b: b});
+      urut(); (window.requestIdleCallback || setTimeout)(berikut);
+    } catch (e) {}
+  }
+  /* darurat di atas Awas; laporan biasa di antara Waspada dan Siaga; lalu yang terbaru */
+  const urut = () => antre.sort((x, y) => (y._p ?? PRIORITAS[y.tingkat] ?? 0) - (x._p ?? PRIORITAS[x.tingkat] ?? 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
+
   function kartu(a) {
+    if (a.jenis === "lapor") return kartuLapor(a._b);
     const w = WARNA[a.tingkat] || WARNA.Waspada, wil = [a.kab, a.prov && window.namaProv ? namaProv(a.prov) : ""].filter(Boolean).join(", ");
     return `<div class="al" role="alertdialog" aria-live="assertive" aria-label="Peringatan dini">
   <div class="al-hd"><div><span class="al-ey">Peringatan ${esc(a.tingkat)}</span><h3>${esc(a.judul)}</h3></div><button class="al-x" type="button" data-tutup aria-label="Tutup">×</button></div>
@@ -179,13 +217,14 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
       for (const a of daftar) if (a?.kunci) dikenal.add(a.kunci);
       pertama = false;
       // Tingkat tertinggi tampil dulu (Awas > Siaga > Waspada), lalu yang terbaru.
-      antre.sort((x, y) => (PRIORITAS[y.tingkat] || 0) - (PRIORITAS[x.tingkat] || 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
+      urut();
       (window.requestIdleCallback || setTimeout)(berikut);
     } catch (e) {}
     finally { sibuk = false; }
   }
 
-  setTimeout(jajak, 3000);
+  setTimeout(jajak, 3000); setTimeout(jajakLapor, 4000);
   setInterval(() => { if (!document.hidden) jajak(); }, JEDA);
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") jajak(); });
+  setInterval(() => { if (!document.hidden) jajakLapor(); }, LAPOR_JEDA);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { jajak(); jajakLapor(); } });
 })();

@@ -277,7 +277,6 @@ export default {
       "tab_sembunyi": [
         "posko",
         "informasi",
-        "metode",
         "prakiraan",
         "daftar",
         "provinsi",
@@ -470,7 +469,7 @@ export default {
         "insight",
         "tren",
         "foto",
-        "tentang",
+        "metode",
         "informasi"
       ],
       "tab_sembunyi": [
@@ -664,7 +663,6 @@ export default {
       },
       "tab_sembunyi": [
         "informasi",
-        "metode",
         "posko"
       ],
       "sumber_status": [
@@ -837,8 +835,7 @@ export default {
         "tentang"
       ],
       "tab_sembunyi": [
-        "informasi",
-        "metode"
+        "informasi"
       ],
       "sumber_status": [
         [
@@ -1016,8 +1013,7 @@ export default {
         "metode"
       ],
       "tab_sembunyi": [
-        "informasi",
-        "metode"
+        "informasi"
       ],
       "sumber_status": [
         [
@@ -1171,8 +1167,7 @@ export default {
         "metode"
       ],
       "tab_sembunyi": [
-        "informasi",
-        "metode"
+        "informasi"
       ],
       "sumber_status": [
         [
@@ -1347,7 +1342,6 @@ export default {
       ],
       "tab_sembunyi": [
         "informasi",
-        "metode",
         "posko"
       ],
       "sumber_status": [

@@ -1,5 +1,5 @@
 "use strict";
-/* Tab Metode (tidak di menu, A24): cara status dihitung dan batasnya, ditulis dari angka berkas data supaya tidak basi. */
+/* Tab Metode: cara status dihitung dan batasnya, ditulis dari angka berkas data supaya tidak basi. Bagian yang butuh berkas tambahan dimuat sesudah kartu utama (lanjut). */
 const Metode = {
   /* bagian dari data baru; angka dari berkas, bagian tanpa datanya dibuang */
   baru(tabel, kartu) {
@@ -63,13 +63,62 @@ const Metode = {
       kartu("Status", `Status wilayah dihitung sendiri: ${Kartu.hl("Deteksi Centurisk97")}`, tabel(["Tingkat", "SPI-3", "Kelembapan tanah (persentil)"],
         [[pill(1), "≤ −1", "≤ 20"], [pill(2), "≤ −1,5", "≤ 10"], [pill(3), "≤ −2, dan butuh penguat: tanah ≤ 10 atau SPI-6 ≤ −1,5", "≤ 10 (penguat)"]], "n num"), `ambang Centurisk97, ${AMBANG_PIL().toLowerCase()} (lihat Uji balik); tanah menaikkan status paling banyak satu tingkat dari SPI-3, dan tanah saja paling tinggi Siaga`) +
       kartu("Hujan", `SPI-3 dari hujan bulanan 1991–2020${sp ? `, sampai ${bulanPanjang(sp.bulan)} di ${fmt(sp.sel)} sel` : ""}`, tabel(["Bahan", "Keterangan"],
-        [["Hujan", "NASA POWER (MERRA-2), jumlah tiga bulan dibanding sebaran gamma 1991–2020"], ["Jeda data", "sekitar enam minggu; bulan terakhir yang terisi di hampir semua sel"], ["Dibuang", "sel yang rata-rata tiga bulannya di bawah 50 mm (SPI tak bermakna)"]]), "NASA POWER; McKee 1993; BMKG hanya menerbitkan peta gambar") +
+        [["Hujan", "NASA POWER (MERRA-2), jumlah tiga bulan dibanding sebaran gamma 1991–2020"], ["Jeda data", `sekitar enam sampai delapan minggu; bulan terakhir yang terisi${sp ? " sekarang " + bulanPanjang(sp.bulan) : ""}, di hampir semua sel`], ["Dibuang", "sel yang rata-rata tiga bulannya di bawah 50 mm (SPI tak bermakna)"]]), "NASA POWER; McKee 1993; BMKG hanya menerbitkan peta gambar") +
       kartu("Tanah", `Kelembapan tanah 7–28 cm: ${Kartu.hl(fmt(M.tanah.sel))} sel sudah berpersentil`, tabel(["Bahan", "Keterangan"],
         [["Persentil", "dibanding ERA5-Land 2015–2025 pada dasarian yang sama"], ["Aturan", "tanah boleh menaikkan satu tingkat dari SPI; tanah sendirian paling tinggi Siaga; Awas butuh tanah ≤ 10 atau SPI-6 ≤ −1,5, tanpa itu paling tinggi Siaga"], ["Sel baru", "klimatologi sel bertambah tiap hari, jadi lapisan ini makin penuh"]]), "ECMWF IFS (Open-Meteo), ERA5-Land") +
       kartu("Kode DC", "Kode kekeringan (DC) hanya lapisan peta, tidak ikut menentukan status", tabel(["Kelas DC", "Nilai"],
         [["Rendah", "< 80"], ["Sedang", "80–189"], ["Tinggi", "190–299"], ["Sangat tinggi", "300–424"], ["Ekstrem", "≥ 425"]], "n num"), "Canadian Forest Fire Danger Rating System") +
       kartu("Wilayah", `Kabupaten/kota naik tingkat bila ${Kartu.hl("30%")} penduduknya di kecamatan bertingkat itu`, tabel(["Bahan", "Keterangan"],
-        [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "status gabungan kami bukan status resmi; BMKG tidak menerbitkan data terstruktur. SK status darurat BNPB tampil terpisah di pop-up wilayah"]]), "WorldPop; BMKG") + this.baru(tabel, kartu);
-    if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { const h = d && Peluang.batasan(d, {judul: "Peluang kekeringan"}); if (h) $("#metode")?.insertAdjacentHTML("beforeend", h.replace(/<b>0\. /, "<b>")); });
- },
+        [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "status gabungan kami bukan status resmi; BMKG tidak menerbitkan data terstruktur. SK status darurat BNPB tampil terpisah di pop-up wilayah"]]), "WorldPop; BMKG") + this.baru(tabel, kartu) + this.jadwal(M, tabel, kartu);
+    const pelu = typeof Peluang === "undefined" ? Promise.resolve(null) : Peluang.muat("../banjir/data/kering_peluang.json").catch(() => null);
+    Promise.all([this.lanjut(tabel, kartu), pelu]).then(([h, d]) => { const el = $("#metode"); if (!el) return; const p = d && Peluang.batasan(d, {judul: "Peluang kekeringan"});
+      el.insertAdjacentHTML("beforeend", h + (p ? p.replace(/<b>0\. /, "<b>") : "")); });
+  },
+  /* kapan tiap bahan diperbarui: tanggal dari meta, jadwal dari alur kerja (data.yml, lintas.yml, statis.yml) */
+  jadwal(M, tabel, kartu) {
+    const sp = M.spi, tgl = t => t ? new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "long", year: "numeric"}) : null;
+    return kartu("Jadwal", `Status dihitung ulang sekali sehari, bahan terbaru bertanggal ${Kartu.hl(tgl(M.hari_ini) || "belum ada")}`, tabel(["Bahan", "Keterangan"],
+      [["Status dan turunannya", `satu rantai skrip sekali sehari pada alur data lintas bencana, sekitar pukul 09.10 WIB; GitHub bisa menunda puluhan menit. Isinya: hari tanpa hujan, prakiraan, padi, uji balik, peringatan BMKG, bukti, dampak, posko, dan riwayat`],
+       ["Kelembapan tanah dan DC", `diperbarui di alur data harian, malam hari WIB${M.tanah?.tgl ? `; data terakhir ${tgl(M.tanah.tgl)}` : ""}${M.dc?.tgl ? `, DC ${tgl(M.dc.tgl)}` : ""}`],
+       ["Hujan bulanan (SPI)", sp ? `terakhir ${bulanPanjang(sp.bulan)}, tertinggal beberapa minggu dari hari ini karena NASA POWER terlambat terbit` : "tertinggal beberapa minggu dari hari ini"],
+       ["Pembanding Copernicus", "diambil sekali sehari bersama MIROVA dan nowcast longsor; bila gagal, berkas lama dibiarkan"],
+       ["Tampungan air", "dihitung ulang sebulan sekali dari OpenStreetMap"]]), "Alur kerja data Centurisk97");
+  },
+  /* bahan yang bukan bagian status: dimuat sesudah kartu utama, yang tidak terbaca dibuang dari tampilan */
+  async lanjut(tabel, kartu) {
+    const ambil = u => muatJSON(u).catch(() => null), o = [], pc = x => x == null ? "belum ada data" : fmt(Math.round(x * 100)) + "%", t3 = x => x == null ? "belum ada data" : F3m(x);
+    const F3m = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}).replace("-", "−");
+    const [bm, gdo, bay, bayN, pk, em, tt] = await Promise.all([ambil("../banjir/data/peringatan_bmkg.json"), ambil("data/gdo.json"), ambil("data/peluang_bayangan.json"), ambil("data/peluang_bayangan_nilai.json"),
+      S.posko ? S.posko : ambil("../data/posko_kekeringan.json"), ambil("data/embung.json"), ambil("data/tutupan.json")]);
+    if (bm?.ringkas) { const r = bm.ringkas, kt = r.kabupaten_tingkat || {};
+      o.push(kartu("BMKG", `Peringatan dini BMKG tampil apa adanya: ${Kartu.hl(fmt(r.kabupaten))} kabupaten dan kota pada ${esc(bm.rentang || "dasarian terbaru")}`, tabel(["Bahan", "Keterangan"],
+        [["Sumber", "teks daftar wilayah di halaman Peringatan Dini Kekeringan Meteorologis BMKG; warna gambar peta tidak didigitasi"], ["Isi terbaru", esc(`${bm.judul || ""}: ${fmt(r.kecamatan)} kecamatan di ${fmt(r.provinsi)} provinsi; kabupaten Waspada ${fmt(kt["1"] || 0)}, Siaga ${fmt(kt["2"] || 0)}, Awas ${fmt(kt["3"] || 0)}`)],
+         ["Arsip", "satu catatan per dasarian, tidak pernah ditimpa; dasarian sebelum pengambilan pertama tidak bisa diisi mundur karena halaman BMKG hanya memuat dasarian terbaru"], ["Label", "BMKG, terpisah dari Deteksi Centurisk97; keduanya tidak digabung menjadi satu status"]]), "BMKG")); }
+    if (gdo?.kesepakatan) { const K = gdo.kesepakatan, U = gdo.uji, V = U?.vonis;
+      o.push(kartu("Pembanding", `Pembanding Copernicus GDO: kesepakatan empat kelas ${Kartu.hl("kappa " + t3(K.semua_bulan?.kappa_4kelas))} di semua bulan`, tabel(["Bahan", "Keterangan"],
+        [["Bahan", "SPI-3 ERA5 dan anomali kelembapan tanah GloFAS dari Global Drought Observatory, kisi 0,25 derajat, lewat peta WMS; indeks gabungan CDI hanya mencakup Eropa, jadi dibuang"],
+         ["Kesepakatan", `${fmt(K.semua_bulan?.n)} kabupaten-bulan: kappa empat kelas ${t3(K.semua_bulan?.kappa_4kelas)}, kappa Waspada ke atas ${t3(K.semua_bulan?.kappa_waspada)}${K.bulan_terakhir ? `; bulan terakhir ${blnIso(K.bulan_terakhir.bulan)} (${fmt(K.bulan_terakhir.n)} kabupaten) kappa ${t3(K.bulan_terakhir.kappa_4kelas)}` : ""}. Kappa 0 berarti sama dengan kebetulan`],
+         ["Wilayah", "kabupaten naik tingkat bila 30% penduduknya di piksel bertingkat itu, aturan yang sama dengan status kita"],
+         ...(V ? [["Uji kejadian", esc(`laporan kekeringan per kabupaten-bulan, aturan dipilih di ${(U.periode_latih || []).map(blnIso).join(" sampai ")} dan diuji ${(U.periode_uji || []).map(blnIso).join(" sampai ")}. ${V.kalimat || ""}`)]] : [])]), "Copernicus Emergency Management Service, GDO; Centurisk97")); }
+    if (bay?.model) { const m = bay.model, r = bayN?.retrospektif;
+      o.push(kartu("Uji berdampingan", `Model peluang kabupaten-bulan berjalan di samping aturan status: AUC-PR uji ${Kartu.hl(t3(m.aucpr_uji_t1))} lawan klimatologi ${t3(m.aucpr_uji_klim)}`, tabel(["Bahan", "Keterangan"],
+        [["Rumus", esc(m.rumus || "")], ["Uji balik", esc(`${m.uji || ""}; aturan lama SPI-3 ${t3(m.aucpr_uji_aturan_lama)}, laju dasar ${pc(m.dasar_uji)}`)], ["Batas", "ini peringkat kabupaten-bulan, bukan peringatan: alarm palsu setinggi klimatologi. Tidak menggantikan status"],
+         ["Penilaian maju", bayN?.bulan_dinilai?.length ? esc(`${fmt(bayN.n)} kabupaten-bulan, ${fmt(bayN.positif)} kejadian`) : `belum ada bulan yang dinilai sebagai bukti maju; arsip dicatat tanpa ditimpa${bayN?.catatan ? ". " + esc(bayN.catatan) : ""}`],
+         ...(r ? [["Penilaian mundur", esc(`${(r.bulan_dinilai || []).map(blnIso).join(", ")}: ${fmt(r.n)} kabupaten-bulan, ${fmt(r.positif)} kejadian; AUC-PR model ${t3(r.aucpr?.model)}, klimatologi ${t3(r.aucpr?.klim)}. Kurang dari 30 kejadian belum cukup untuk menyimpulkan`)]] : [])]), "Centurisk97; laporan Pusdalops BNPB")); }
+    if (S.riw?.bobot) { const w = S.riw.bobot, tg = S.riw.tahun || [];
+      o.push(kartu("Riwayat", `Kalender musim dan indeks risiko kekeringan kabupaten dari hujan ${esc(tg.join("–"))}`, tabel(["Bahan", "Keterangan"],
+        [["Kalender", `hujan bulanan rata-rata per provinsi, rata-rata pada tahun El Niño (${fmt((S.riw.tahun_el_nino || []).length)} tahun), dan porsi tahun dengan bulan kering di bawah ${fmt(S.riw.bulan_kering_mm)} mm (Schmidt-Ferguson)`],
+         ["Indeks 0–100", `${fmt(Math.round(w.kekerapan * 100))}% kekerapan tahun bersiaga, ${fmt(Math.round(w.besaran * 100))}% besaran, ${fmt(Math.round(w.tren * 100))}% tren paruh akhir lawan paruh awal`], ["Batas", esc((S.riw.catatan || "").split(". ").slice(1).join(". "))]]), "NASA POWER; ONI NOAA CPC; DIBI BNPB")); }
+    if (pk?.param) { const P = pk.param, N = pk.nasional || {};
+      o.push(kartu("Posko", `Kebutuhan air bersih dihitung dari penduduk kecamatan bertingkat: ${Kartu.hl(fmt(P.liter_orang_hari) + " liter")} per orang per hari`, tabel(["Bahan", "Keterangan"],
+        [["Kebutuhan", `batas minimum air minum, masak, dan kebersihan dasar (Sphere Handbook 2018); ${fmt(N.kec)} kecamatan Siaga atau Awas di ${fmt(N.kab)} kabupaten dikelompokkan jadi ${fmt(N.posko)} gugus posko`],
+         ["Tangki", `truk ${fmt(P.kap_tangki_l)} liter satu rit adalah asumsi Centurisk97, bukan data armada BPBD; hasilnya ${fmt(N.tangki)} rit sehari`], ["Gugus", `kecamatan bertingkat dalam ${fmt(P.gabung_km)} km satu kabupaten digabung; waktu tempuh memakai ${fmt(P.laju_kmj)} km/jam dengan faktor kelok ${F2(P.kelok)}`],
+         ["Batas atas", "semua penduduk kecamatan dihitung walau tidak semua kehilangan sumber air; sumber air terdekat tidak dimodelkan. Angka ini ukuran skala logistik, bukan jumlah penerima"]]), "Sphere Handbook 2018; WorldPop; OpenStreetMap")); }
+    if (em?.total != null) o.push(kartu("Tampungan", `Tampungan air dari OpenStreetMap: ${Kartu.hl(fmt(em.total))} objek, batas bawah yang kasar`, tabel(["Bahan", "Keterangan"],
+      [["Isi", esc(em.sumber || "")], ["Kabupaten", "kabupaten kecamatan dengan titik tengah terdekat, tanpa poligon batas kabupaten"], ["Batas", "peta OSM tidak lengkap dan kolam kecil ikut tercacah; nol bukan bukti tak ada tampungan"]]), "OpenStreetMap" + (em.tanggal ? ", diambil " + em.tanggal : "")));
+    if (tt) o.push(kartu("Simulasi", "Simulasi neraca air tanah memakai bak satu lapis FAO-56 di kisi 0,5 derajat", tabel(["Bahan", "Keterangan"],
+      [["Bak", "FAO Irrigation and Drainage Paper 56 bab 8: kebutuhan air tanaman dari ET0 Penman-Monteith; dijalankan hari demi hari di peramban"], ["Titik mulai", "kondisi hari ini, atau 1 Juni dengan simpanan penuh; skenario hujan El Niño kuat dan Normal dari NASA POWER bulanan"],
+       ["Tutupan lahan", `sel 0,05 derajat dari kawasan hutan, konsesi, dan gambut di repo; luas sawah ${Kartu.hl("bukan pengamatan")}: lahan budidaya dikali faktor tunggal supaya jumlahnya sama dengan acuan nasional ${fmt(tt.lbs_ha)} hektare, ${esc(tt.lbs_dari || "")}. Pakai untuk membandingkan perlakuan, bukan sebagai luas sawah sel itu`]]), "FAO-56; NASA POWER; KLHK"));
+    return o.join("");
+  },
 };

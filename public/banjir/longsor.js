@@ -30,7 +30,7 @@ const Longsor = (() => {
     const ring = n[1] + n[2] + n[3], data = S.st.hari?.[0] ? ` Data sampai ${tgl(S.st.hari[0])}.` : "";
     const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">${ring ? `Awas ${fmt(n[3])}, Siaga ${fmt(n[2])}, Waspada ${fmt(n[1])} dari ${fmt(ring)} kecamatan, ${kapan}.` : `Tidak ada kecamatan berstatus longsor ${kapan}.`}${data}</p>`
       + (rows.length ? Kartu.hbar(rows, W) : "");
-    return Kartu.kartu(EY.status, "Status longsor kecamatan", isi, "");
+    return Kartu.kartu(EY.status, "Status longsor kecamatan", isi + '<p style="margin:10px 0 0"><a href="/banjir/metode#metode-longsor" data-metode-longsor>Metode longsor</a></p>', "");
   }
   async function nowcast() {
     const nc = D.nc; if (!nc) return "";
@@ -62,6 +62,9 @@ const Longsor = (() => {
       if (k === kunci && el.dataset.siap) return;   /* data dan hari sama: jangan gambar ulang */
       kunci = k; el.dataset.siap = "1";
       el.innerHTML = status() + '<div id="lsNow"><p style="margin:12px 0">Memuat nowcast longsor…</p></div><div id="lsLain"></div>';
+      /* tautan ke bagian Metode longsor di tab Metode (tab dirender sekali; ke() menunggu render selesai) */
+      el.onclick = e => { const t = e.target.closest("[data-metode-longsor]"); if (!t) return; e.preventDefault(); bukaTab("metode"); Metode.render(); Metode.ke("metode-longsor");
+        history.replaceState(null, "", "/banjir/metode#metode-longsor"); };
       await muat();
       if (kunci !== k) return;
       $("#lsLain").innerHTML = riwayat() + musim();
