@@ -122,6 +122,18 @@ test("npm run dorong: kalah rebutan lalu menyusul dan masuk, dua commit utuh", (
   assert.ok(!existsSync(join(a, ".git/dorong.kunci")), "kunci harus dilepas");
 });
 
+// 20 Nov 2026: commit data hampir tiap jam membuat uji 20 menit diulang dari nol untuk kode yang sama. Sidik kode yang lolos dicatat,
+// jadi percobaan ulang sesudah main bergerak karena data tidak menjalankan uji lagi.
+test("npm run dorong: main bergerak karena commit data, percobaan ulang tidak menguji ulang kode yang sama", () => {
+  const lawanData = d => `echo x >> ${d}/hitung\n[ -e ${d}/sudah ] && exit 0\ntouch ${d}/sudah\nmkdir -p ${d}/b/public/data\necho 1 > ${d}/b/public/data/a.json\ngit -C ${d}/b add public/data/a.json\ngit -C ${d}/b commit -q -m data\ngit -C ${d}/b push -q origin main\n`;
+  const {d, a, log} = arenaPush(lawanData);
+  const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.deepEqual(log(), ["kerjaan", "data", "awal"]);
+  assert.equal(readFileSync(join(d, "hitung"), "utf8"), "x\n", "uji harus jalan sekali saja");
+  assert.match(r.stderr + r.stdout, /uji dilewati/);
+});
+
 test("npm run dorong: uji merah berhenti di percobaan pertama, tidak ada yang masuk", () => {
   const {d, a, log} = arenaPush(d => `echo x >> ${d}/hitung\nexit 1\n`);
   const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});

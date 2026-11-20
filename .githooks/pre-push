@@ -29,9 +29,19 @@ while read -r lref lsha rref rsha; do
       public/data/*|public/banjir/data/*) ;;
       public/*|src/*|wrangler.jsonc|migrations/*|tests/agen/*|tests/warga/*|tests/sippa/*|package.json|package-lock.json) pakai=1; sha_dorong=$lsha; sha_github=$rsha; ref_github=$rref ;;
     esac
+    # uji:sippa hanya bila berkas SIPPA ikut berubah (pemilik 20 Nov 2026: "seringnya ga berubah"); terbit.yml tetap menjalankannya penuh
+    case "$f" in public/pipa/*|tests/sippa/*|src/sippa*|migrations/005[5-7]*|package.json|package-lock.json) sippa=1 ;; esac
   done
 done
 [ -z "$pakai" ] && exit 0
+# Sidik kode = pohon commit tanpa berkas data (public/**/data/). Workflow data meng-commit ke main hampir tiap jam; tanpa ini tiap commit data
+# di tengah uji 20 menit membuang uji yang sudah lolos dan mengulangnya dari nol untuk kode yang sama (pemilik 20 Nov 2026: "kenapa sering lama").
+lolos="$(git rev-parse --git-common-dir)/uji-lolos"
+sidik=$(git ls-tree -r "$sha_dorong" | grep -vE '	public/(.+/)?data/' | git hash-object --stdin)
+if [ -n "$sidik" ] && grep -qx "$sidik" "$lolos" 2>/dev/null; then
+  echo "pre-push: kode $(echo "$sha_dorong" | cut -c1-9) sama dengan yang sudah lolos uji (hanya data yang berbeda); uji dilewati." >&2
+  exit 0
+fi
 
 utama=$(git rev-parse --show-toplevel)
 if [ ! -d "$utama/node_modules" ]; then
@@ -50,7 +60,8 @@ done
 echo $$ > "$kunci/pid"
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
 rmdir "$tmp"
-bersih() { rm -rf "$tmp"; rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; }
+log=$(mktemp -d "${TMPDIR:-/tmp}/uji-push-log.XXXXXX") || exit 1
+bersih() { rm -rf "$tmp" "$log"; rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; }
 trap bersih EXIT INT TERM HUP
 # git membaca posisi GitHub sebelum hook ini jalan. Kalau main bergerak selama antre atau uji, push ini pasti ditolak ("cannot lock ref");
 # berhenti di sini dengan pesan yang bisa dibaca, dan jangan buang menit uji. npm run dorong menyusul lalu mengulang sendiri (10 Nov 2026).
@@ -69,14 +80,22 @@ unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OB
 modul=$(cd "$utama/node_modules" && pwd -P) || { echo "pre-push: node_modules tidak terbaca." >&2; exit 1; }
 if [ -L "$tmp/node_modules" ]; then ln -s "$modul" "$tmp/$(readlink "$tmp/node_modules")"; else ln -s "$modul" "$tmp/node_modules"; fi
 echo "pre-push: uji di commit $(echo "$sha_dorong" | cut -c1-9) ..." >&2
+# uji:agen dan uji:warga bersamaan (tidak saling bergantung); keluaran ke berkas supaya tidak bertumpuk, dicetak bila gagal
+echo "pre-push: uji:agen dan uji:warga jalan bersamaan${sippa:+, lalu uji:sippa}" >&2
 gagal=
-(cd "$tmp" && npm run uji:agen) >&2 || gagal="uji:agen"
-if [ -z "$gagal" ]; then (cd "$tmp" && npm run uji:warga) >&2 || gagal="uji:warga"; fi
-if [ -z "$gagal" ]; then (cd "$tmp" && npm run uji:sippa) >&2 || gagal="uji:sippa"; fi
+(cd "$tmp" && npm run uji:agen >"$log/agen" 2>&1) & pa=$!
+(cd "$tmp" && npm run uji:warga >"$log/warga" 2>&1) & pw=$!
+wait $pa || gagal="uji:agen"
+wait $pw || gagal="${gagal:+$gagal dan }uji:warga"
+if [ -z "$gagal" ] && [ -n "$sippa" ]; then (cd "$tmp" && npm run uji:sippa >"$log/sippa" 2>&1) || gagal="uji:sippa"; fi
+for u in agen warga sippa; do [ -f "$log/$u" ] && grep -E '^ℹ (pass|fail) ' "$log/$u" | sed "s/^/pre-push uji:$u: /" >&2; done
 if [ -n "$gagal" ]; then
+  for u in agen warga sippa; do [ -f "$log/$u" ] && grep -qE '^ℹ fail [1-9]|ERR!|Error' "$log/$u" && { echo "---- uji:$u (80 baris terakhir) ----" >&2; tail -80 "$log/$u" >&2; }; done
   echo "pre-push DITOLAK: $gagal gagal. Betulkan ujinya dulu; deploy akan gagal juga di GitHub." >&2
   echo "(Hanya pemilik manusia, darurat: LEWATI_UJI=1 git push, atau git push --no-verify.)" >&2
   exit 1
 fi
+# catat sidik yang lolos SEBELUM cek posisi: bila main bergerak karena commit data, percobaan ulang dorong tidak menguji ulang kode yang sama
+{ [ -f "$lolos" ] && tail -49 "$lolos"; echo "$sidik"; } > "$lolos.baru" && mv "$lolos.baru" "$lolos"
 cek_github "$1"
 exit 0
