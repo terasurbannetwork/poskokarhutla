@@ -1460,7 +1460,9 @@
     "POST /api/lapor/terjemah": "terjemah teks kartu",
     "table lapor_unggah": "video bersambung",
     "table lapor_perangkat": "pintu web tanpa kode",
-    "table lapor_milik": "pintu web tanpa kode"
+    "table lapor_milik": "pintu web tanpa kode",
+    "table lapor_kelompok": "kejadian yang sama",
+    "table lapor_kelompok_urut": "kejadian yang sama"
   },
   "dikecualikan": {
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

@@ -393,7 +393,7 @@ export async function putaran(arg) {
   } else if (h.sesi) { delete h.sesi.jejak; delete h.sesi.akhir; }
   return h;
 }
-async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, kini}) {
+async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, kandidat = null, kini}) {
   const teks = tanpaEkor(pesan?.teks);
   let lokasi = pesan?.lokasi || null;
   const keluar = [];
@@ -417,6 +417,23 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     const opsi = JENIS.map(j => j.id); sesi.status = "melengkapi"; sesi.tanya = "jenis"; sesi.jenisDulu = true; sesi.ditanya ||= []; sesi.pilihanData = opsi;
     const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Jenis bencana*\nPilih yang paling mirip dengan kejadiannya.`, JENIS.map(j => j.label), false, "jenis", JENIS.map(j => j.ket));
     h.kunci = opsi; h.saran = 0; sesi.kunci = opsi; return h;
+  };
+  /* kejadian yang sama (K66, D103-D105): sesudah lokasi (dan RT/RW) terkonfirmasi, pemanggil menyuntik kandidat laporan sekecamatan lewat `kandidat`;
+     tanpa fungsi itu atau tanpa kandidat, jalur lama tidak berubah. Teks tanpa nama, nomor, atau isi laporan lain (D104). */
+  const tawarKejadian = kepalaTeks => {
+    const k = sesi.kejadianTawar, w = sesi.isian.lokasi?.nilai?.wilayah, lbl = id => JENIS.find(j => j.id === id)?.label || "kejadian";
+    const baris = k.map(x => `Di Kec. ${w.kec} sudah ada laporan ${lbl(x.jenis).toLowerCase()} sejak ${waktuLapor(x.waktu?.ms ?? x.ref, w.provKode)} dari ${x.n || 1} warga.`);
+    return jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Kejadian yang sama?*\n${baris.join("\n")}\nApakah Anda melaporkan ${k.length > 1 ? "salah satu kejadian ini" : "kejadian ini"}?`,
+      [...k.map(x => `Ya, ${lbl(x.jenis).toLowerCase()} ini`), "Bukan, kejadian lain"], false, null, [...k.map(() => "Lanjut tanpa mengisi dari awal"), "Isi laporan baru dari awal"]);
+  };
+  const lanjutJenis = async kepalaTeks => {
+    const w = sesi.isian.lokasi?.nilai?.wilayah;
+    let k = [];
+    if (kandidat && w?.kode) { try { k = (await kandidat({kecKode: String(w.kode).slice(0, 8), wa: pesan?.wa || null, kini})) || []; } catch { k = []; } }   // galat pencarian: jalur lama
+    if (!k.length) return tanyaJenis(kepalaTeks);
+    sesi.kejadianTawar = k.slice(0, 3).map(x => ({nomor: x.nomor, jenis: x.jenis, subjenis: x.subjenis || null, ref: x.ref, n: x.n || 1, waktu: x.waktu || null, kode: x.kejadian || null}));
+    sesi.status = "kejadian";
+    return tawarKejadian(kepalaTeks);
   };
   const langkahKr = (sambungFn, i) => { // satu langkah kronologi: pilihan tunggal, atau pilihan ganda untuk fenomena
     const L = langkahKronologi(sesi.isian.jenis?.nilai), l = L[i];
@@ -519,8 +536,28 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       if (!rt || !rw) return jawab(`${!rt && !rw ? "RT dan RW" : !rt ? "RT" : "RW"} belum terisi. Isi angkanya, misalnya *RT: 03* dan *RW: 05*, atau ketik *tidak tahu*.`);
       Object.assign(sesi.isian.lokasi.nilai, {rt: rt.padStart(3, "0"), rw: rw.padStart(3, "0")});
     }
-    if (!sesi.tunda) return tanyaJenis("*Lokasi tercatat*");
+    if (!sesi.tunda) return lanjutJenis("*Lokasi tercatat*");
     sesi.status = "bercerita";
+  }
+
+  /* ----- kejadian yang sama: pilih salah satu kandidat atau "Bukan" (K66); sesudah "ya", detail bebas lalu foto (D105, Q59) ----- */
+  if (sesi.status === "kejadian") {
+    const p = pilih(), k = sesi.kejadianTawar || [];
+    if (p < 0 || p > k.length) return tawarKejadian("");
+    delete sesi.kejadianTawar;
+    if (p === k.length) return tanyaJenis(null);   // bukan: jalur lama
+    const c = k[p], asalK = {sumber: "kejadian", waktu: kini};
+    setIsian(sesi, "jenis", {nilai: c.jenis}, asalK);
+    setIsian(sesi, "subjenis", {nilai: c.subjenis || "Belum diketahui"}, asalK);
+    setIsian(sesi, "waktu", c.waktu?.nilai ? {nilai: c.waktu.nilai, ms: c.waktu.ms} : {nilai: waktuLapor(c.ref, sesi.isian.lokasi?.nilai?.wilayah?.provKode), ms: c.ref}, asalK);
+    sesi.kejadian = {induk: c.nomor, kode: c.kode || null, ya: true};
+    sesi.status = "detail";
+    return jawab("*Detail tambahan*\nAda detail yang ingin Anda tambahkan? Tulis di kotak pesan, misalnya yang Anda lihat sendiri, korban, atau kebutuhan. Angka yang Anda sebut ikut dicatat.", ["Tidak ada, lanjut"], false, null, ["Langsung ke foto"]);
+  }
+  if (sesi.status === "detail") {
+    if (pilih() === 0 || KATA_TIDAK.test(teks)) { sesi.status = "foto"; sesi.foto ||= []; return jawab(T.foto(0), ["Tidak bisa mengirim foto"], false, "foto", ["Lanjut tanpa foto"]); }
+    if (!teks) return jawab("*Detail tambahan*\nTulis detailnya di kotak pesan, atau pilih *Tidak ada, lanjut*.", ["Tidak ada, lanjut"], false, null, ["Langsung ke foto"]);
+    sesi.status = "melengkapi"; sesi.tanya = null;   // diurai di bawah seperti pesan biasa (angka berkutipan)
   }
 
   /* ----- foto (pemilik 19 Nov 2026: "kenapa ga ada disuruh foto"); metadata disiapkan server (lencana D11, D16) ----- */
@@ -703,7 +740,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     sesi.isiAwal = h.isiAwal = TEMPLAT.replace("Kejadian:", `Kejadian: ${j?.label || ""}${sub && sub !== "Belum diketahui" ? `, ${sub}` : ""}`);
     return h;
   }
-  const next = berikutnya(sesi);
+  const next = sesi.kejadian?.ya ? null : berikutnya(sesi);   // kejadian yang sama: isian lain tidak ditanya satu per satu (Q59)
   sesi.tanya = next;
   if (next?.startsWith("kelompok:")) sesi.ditanya.push(next);
   if (!next && !sesi.fotoSelesai) { sesi.status = "foto"; sesi.foto ||= []; return jawab(sambung(T.foto(0)), ["Tidak bisa mengirim foto"], false, "foto", ["Lanjut tanpa foto"]); }

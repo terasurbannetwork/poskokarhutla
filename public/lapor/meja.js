@@ -33,7 +33,9 @@ const tglRingkas = t => String(t || "").replace(/(\d{1,2}) ([A-Z][a-z]{2})[a-z]*
 const cincin = p => { const c = el("span", "mj-cincin", `${p}%`); c.style.setProperty("--p", p); c.setAttribute("role", "img"); c.setAttribute("aria-label", `Lengkap ${p} persen`); return c; };
 const durasi = m => m == null ? null : m < 60 ? `${m} menit` : m < 1440 ? `${Math.floor(m / 60)} jam${m % 60 ? ` ${m % 60} menit` : ""}` : `${Math.floor(m / 1440)} hari${Math.floor(m % 1440 / 60) ? ` ${Math.floor(m % 1440 / 60)} jam` : ""}`;
 /* gugus (A9): laporan berjenis sama, berdekatan waktu dan tempat, dari paling sedikit dua pelapor berbeda; bukan verifikasi */
-const chipGugus = g => { const c = el("span", `mj-gugus${g.label === "gugus kuat" ? " kuat" : ""}`); c.append(ikon("m-gugus"), `${g.label === "gugus kuat" ? "Gugus kuat" : "Gugus"}, ${F(g.n_laporan)} laporan`);
+const adaKj = g => String(g?.kode || "").startsWith("KJ-");   // nomor kejadian dikonfirmasi pelapor (K66), berbeda dari gugus tebakan jarak (GL-)
+const chipGugus = g => { if (adaKj(g)) { const k = el("span", "mj-gugus kuat"); k.append(ikon("m-gugus"), g.kode); k.title = `${g.kode}: ${F(g.n_laporan)} laporan dari ${F(g.n_pelapor)} warga yang mengonfirmasi kejadian yang sama.`; return k; }
+  const c = el("span", `mj-gugus${g.label === "gugus kuat" ? " kuat" : ""}`); c.append(ikon("m-gugus"), `${g.label === "gugus kuat" ? "Gugus kuat" : "Gugus"}, ${F(g.n_laporan)} laporan`);
   c.title = `${g.kode}: ${F(g.n_laporan)} laporan dari ${F(g.n_pelapor)} pelapor berbeda, berdekatan waktu dan tempat. Bukan verifikasi.`; return c; };
 const adaKorban = b => (b.dampak?.meninggal || 0) + (b.dampak?.hilang || 0) + (b.dampak?.luka || 0) > 0;
 
@@ -345,9 +347,9 @@ function gambarTabel(daftar) {
     bt.append(ikon("m-bawah"), ik, tx, kanan);
     bt.addEventListener("click", () => { gugusTutup.has(g.kode) ? gugusTutup.delete(g.kode) : gugusTutup.add(g.kode); gambarTabel(tersaringSekarang()); });
     td.append(bt); tr.append(td); return tr; };
-  const susun = xs => { const grup = new Map(); for (const b of xs) { const k = b.gugus?.kode || `#${b.nomor}`; grup.set(k, [...(grup.get(k) || []), b]); }
+  const susun = xs => { const grup = new Map(); for (const b of xs) { const k = b.kejadian?.kode || b.gugus?.kode || `#${b.nomor}`; grup.set(k, [...(grup.get(k) || []), b]); }
     return [...grup.values()].flatMap(g => g.length < 2 ? g.map(baris)
-      : [kepalaGugus(g[0].gugus, g), ...(gugusTutup.has(g[0].gugus.kode) ? [] : g.map(b => { const tr = baris(b); tr.classList.add("mj-anggota"); return tr; }))]); };
+      : [kepalaGugus(g[0].kejadian || g[0].gugus, g), ...(gugusTutup.has((g[0].kejadian || g[0].gugus).kode) ? [] : g.map(b => { const tr = baris(b); tr.classList.add("mj-anggota"); return tr; }))]); };
   $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : susun(xs))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
 }
 const fotoLaporan = nomor => { if (!fotoCache.has(nomor)) fotoCache.set(nomor, fetch(`/api/lapor/meja/${nomor}`).then(r => r.json()).then(j => j.foto || []).catch(() => [])); return fotoCache.get(nomor); };
@@ -374,6 +376,14 @@ function drafLogbook(j, tombol) {
   window.open("/bnpb/logbook", "_blank", "noopener");
 }
 
+/* kejadian yang sama (K66, D106): nomor KJ dari konfirmasi pelapor; staf BNPB bisa melepas laporan ini bila salah kelompok (tercatat di riwayat) */
+function kartuKejadianRinci(kj, kartu, kirim) {
+  const w = el("div", "mj-isi-kartu"), info = el("p", "mj-label", `${kj.kode}, ${F(kj.n_laporan)} laporan dari ${F(kj.n_pelapor)} warga yang mengonfirmasi kejadian yang sama. Angka tiap laporan tidak dijumlah.`);
+  w.append(info);
+  if (!akunBpbd()) { const bt = el("button", "mj-tombol"); bt.type = "button"; bt.append(ikon("m-larang"), "Lepas dari kejadian"); bt.title = "Laporan ini tidak lagi dihitung bagian kejadian itu; tercatat di riwayat tiket";
+    bt.addEventListener("click", () => kirim("lepas", {}, bt)); w.append(bt); }
+  return kartu(`Kejadian ${kj.kode}`, "m-gugus", w);
+}
 /* gugus di rincian: anggota dengan angka dampak per laporan, tidak dijumlah (D28) */
 function kartuGugusRinci(g, kartu) {
   const w = el("div", "mj-isi-kartu"), info = el("p", "mj-label", `${g.kode}, ${F(g.n_laporan)} laporan dari ${F(g.n_pelapor)} pelapor berbeda. Angka tiap laporan tidak dijumlah.`);
@@ -574,7 +584,7 @@ async function bukaRinci(nomor, lihat = true) {
     ["kejadian", "Kejadian dan lokasi", "m-kejadian", [...ambil("Kejadian"), (() => { const lf = el("div", "mj-isian-kisi"); lf.append(kLokasi, ...(kFoto ? [kFoto] : [])); return kFoto ? lf : kLokasi; })()]],
     ["dampak", "Dampak", "m-korban", ambil("Korban", "Warga terdampak", "Pengungsian", "Kerusakan rumah", "Fasilitas dan jalan", "Data khusus")],
     ["kebutuhan", "Kebutuhan dan layanan", "m-tenda", ambil("Kelompok rentan", "Layanan dasar", "Kebutuhan")],
-    ["lain", "Gugus dan percakapan", "m-pesan", [...(j.gugus ? [kartuGugusRinci(j.gugus, kartu)] : []), kTr]]];
+    ["lain", "Gugus dan percakapan", "m-pesan", [...(j.kejadian ? [kartuKejadianRinci(j.kejadian, kartu, kirim)] : []), ...(j.gugus ? [kartuGugusRinci(j.gugus, kartu)] : []), kTr]]];
   const terpakai = new Set(BAGIAN.flatMap(x => x[3]));   // kelompok baru yang belum dipetakan tetap tampil di Dampak
   for (const k of kartuKelompok.values()) if (!terpakai.has(k)) BAGIAN[1][3].push(k);
   const deret = el("nav", "mj-bagian-nav"); deret.setAttribute("aria-label", "Bagian laporan");

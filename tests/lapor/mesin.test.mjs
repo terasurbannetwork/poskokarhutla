@@ -209,3 +209,73 @@ test("model: alamat router dipakai bila dasar diisi; header beta dan fallbacks t
   await buatModel({kunci: "k", fetch: f})(arg);
   assert.equal(panggilan[1].u, "https://api.anthropic.com/v1/messages"); assert.ok(panggilan[1].h["anthropic-beta"]); assert.equal(panggilan[1].b.fallbacks, "default"); assert.equal(panggilan[1].h["x-app"], undefined);
 });
+
+/* ---------- kejadian yang sama (K66, D103-D105; TIKET LA-68) ---------- */
+const WIL = {kode: "32.01.01.2001", desa: "Sukamaju", kec: "Cibinong", kab: "Kabupaten Bogor", kabKode: "32.01", prov: "Jawa Barat", provKode: "32", sekitar: [{kode: "32.01.01.2001", desa: "Sukamaju", kec: "Cibinong", jarakKm: 1}]};
+const wilayahUji = async () => ({...WIL});
+const LOK = {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}};
+const WAKTU_INDUK = Date.UTC(2026, 10, 20, 3, 0), KINI_KJ = Date.UTC(2026, 10, 20, 4, 0);
+const KAND = {nomor: "LA-201126-01", jenis: "banjir", subjenis: "Banjir bandang", ref: WAKTU_INDUK, n: 2, waktu: {nilai: "20 November 2026, 10.00 WIB", ms: WAKTU_INDUK}, kejadian: null};
+async function obrolKj(langkah, kandidat) {
+  let sesi = null, pelapor = null, hasil;
+  for (const pesan of langkah) {
+    hasil = await putaran({sesi, pelapor, pesan: typeof pesan === "string" ? {teks: pesan, wa: "6280000000000"} : {wa: "6280000000000", ...pesan}, model: null, wilayah: wilayahUji, kandidat, kini: KINI_KJ});
+    sesi = hasil.sesi; pelapor = hasil.pelapor;
+  }
+  return hasil;
+}
+const HINGGA_LOKASI = ["lapor", "1", "1", "Budi Santoso", LOK, "1", "tidak tahu"];
+
+test("kejadian sama: kandidat sekecamatan ditawarkan sesudah RT/RW, tanpa nama, nomor tiket, atau isi laporan lain", async () => {
+  let dipanggil = null;
+  const h = await obrolKj(HINGGA_LOKASI, async a => { dipanggil = a; return [KAND]; });
+  assert.equal(dipanggil.kecKode, "32.01.01", "kode kecamatan dari kode desa");
+  assert.match(h.balasan, /\*Kejadian yang sama\?\*/);
+  assert.match(h.balasan, /Di Kec\. Cibinong sudah ada laporan banjir sejak 20 November 2026, 10\.00 WIB dari 2 warga\./);
+  assert.match(h.balasan, /Apakah Anda melaporkan kejadian ini\?/);
+  assert.deepEqual(h.pilihan, ["Ya, banjir ini", "Bukan, kejadian lain"]);
+  assert.doesNotMatch(h.balasan, /LA-\d|Budi|6280/, "tanpa nomor tiket, nama, atau nomor WA");
+  assert.equal(h.sesi.status, "kejadian");
+});
+
+test("kejadian sama: ya mengunci jenis, subjenis, waktu, lalu detail bebas, foto, ringkasan, kirim; isian lain tidak ditanya", async () => {
+  const kand = async () => [KAND];
+  let h = await obrolKj([...HINGGA_LOKASI, "1"], kand);
+  assert.match(h.balasan, /Ada detail yang ingin Anda tambahkan\?/);
+  assert.equal(h.sesi.isian.jenis.nilai, "banjir");
+  assert.equal(h.sesi.isian.subjenis.nilai, "Banjir bandang");
+  assert.equal(h.sesi.isian.waktu.nilai, "20 November 2026, 10.00 WIB");
+  assert.equal(h.sesi.isian.waktu.ms, WAKTU_INDUK);
+  assert.deepEqual(h.sesi.kejadian, {induk: "LA-201126-01", kode: null, ya: true});
+  h = await obrolKj([...HINGGA_LOKASI, "1", "meninggal 3, air setinggi dada dan 40 kk mengungsi"], kand);
+  assert.equal(h.sesi.isian.meninggal?.nilai, 3, "angka dari detail bebas tercatat");
+  assert.equal(h.sesi.status, "foto", "sesudah detail langsung foto, bukan pertanyaan isian satu per satu");
+  h = await obrolKj([...HINGGA_LOKASI, "1", "1", "1"], kand);   // tanpa detail, tanpa foto
+  assert.equal(h.sesi.status, "ringkasan");
+  assert.ok(h.sesi.isian.lokasi && !h.sesi.isian.meninggal, "tak ada isian dampak yang dikarang");
+  h = await obrolKj([...HINGGA_LOKASI, "1", "1", "1", "kirim"], kand);
+  assert.equal(h.kirim, true);
+  assert.equal(h.sesi.kejadian.induk, "LA-201126-01");
+});
+
+test("kejadian sama: Bukan = jalur lama (pilih jenis); tanpa kandidat atau tanpa fungsi = tidak ada pertanyaan baru", async () => {
+  const bukan = await obrolKj([...HINGGA_LOKASI, "2"], async () => [KAND]);
+  assert.match(bukan.balasan, /Jenis bencana/);
+  assert.equal(bukan.sesi.kejadian, undefined);
+  for (const kand of [async () => [], null, async () => { throw new Error("D1 mati"); }]) {
+    const h = await obrolKj(HINGGA_LOKASI, kand);
+    assert.match(h.balasan, /Jenis bencana/, "perilaku lama tidak berubah sama sekali");
+    assert.notEqual(h.sesi.status, "kejadian");
+  }
+});
+
+test("kejadian sama: pilihan di luar daftar ditanyakan ulang; beberapa kandidat satu pilihan per jenis", async () => {
+  const dua = async () => [KAND, {...KAND, nomor: "LA-201126-02", jenis: "longsor", subjenis: "Longsor tanah", n: 1}];
+  let h = await obrolKj(HINGGA_LOKASI, dua);
+  assert.deepEqual(h.pilihan, ["Ya, banjir ini", "Ya, tanah longsor ini", "Bukan, kejadian lain"]);
+  assert.match(h.balasan, /salah satu kejadian ini/);
+  h = await obrolKj([...HINGGA_LOKASI, "9"], dua);
+  assert.equal(h.sesi.status, "kejadian", "angka di luar daftar tidak mengunci apa pun");
+  h = await obrolKj([...HINGGA_LOKASI, "2"], dua);
+  assert.equal(h.sesi.isian.jenis.nilai, "longsor");
+});

@@ -38,3 +38,23 @@ export function hitungGugus(laporan) {
   const urut = new Map(); for (const g of jadi) { const d = tglWIB(g.mulai), n = (urut.get(d) || 0) + 1; urut.set(d, n); g.kode = `GL-${d}-${String(n).padStart(2, "0")}`; }
   return {gugus: jadi, per: Object.fromEntries(jadi.flatMap(g => g.anggota.map(n => [n, g.kode])))};
 }
+
+/* ---------- kejadian yang sama, ditawarkan saat melapor (KEPUTUSAN K66, D103-D107, ALGORITMA A9) ----------
+   laporan: [{nomor, jenis, subjenis, wilayah: {kode, kec}, ref (ms: waktu kejadian atau kirim, yang lebih baru), status, n (jumlah warga di kejadiannya, 1 bila belum), kejadian (kode KJ atau null), waktu: {nilai, ms}|null}]
+   Kecamatan sama (kode desa berawalan kode kecamatan), status bukan tidak_valid/selesai, dalam jendela jenisnya (GUGUS_ATURAN.jam; jenis tanpa aturan 72 jam).
+   Paling banyak 3, satu per jenis, terbaru dulu. Tanpa nama, nomor WA, atau isi laporan di hasil (D104). */
+export const JENDELA_JENIS_JAM = 72, MAKS_KANDIDAT = 3;
+export function kandidatKejadian(laporan, {kecKode, kini}) {
+  if (!kecKode) return [];
+  const per = new Map();
+  for (const l of laporan) {
+    if (!l.jenis || !String(l.wilayah?.kode || "").startsWith(kecKode) || ["tidak_valid", "selesai"].includes(l.status) || !Number.isFinite(l.ref)) continue;
+    if (kini - l.ref > (GUGUS_ATURAN[l.jenis]?.jam ?? JENDELA_JENIS_JAM) * 3600e3) continue;
+    if (!per.has(l.jenis) || l.ref > per.get(l.jenis).ref) per.set(l.jenis, l);
+  }
+  return [...per.values()].sort((a, b) => b.ref - a.ref).slice(0, MAKS_KANDIDAT);
+}
+/* KJ-ddmmyy-NN dari tanggal WIB laporan induk */
+export const tglKejadian = tglWIB;
+export const kodeKejadian = (ms, n) => `KJ-${tglWIB(ms)}-${String(n).padStart(2, "0")}`;
+export const RE_KJ = /^KJ-\d{6}-\d{2,3}$/;

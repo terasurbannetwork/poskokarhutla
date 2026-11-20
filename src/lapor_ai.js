@@ -15,7 +15,7 @@ import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "./media_berkas.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "./lapor_bahasa.js";
 import {samarkan} from "./samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab} from "./lapor_meja_hak.js";
-import {hitungGugus} from "./lapor_gugus.js";
+import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "./lapor_gugus.js";
 import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
 import {putaran, lengkap, T, waktuLapor} from "./lapor_mesin.js";
 import {JENIS} from "./lapor_spek.js";
@@ -183,6 +183,14 @@ function naikBpbd(pel, izin) {   // D19: klaim BPBD jadi bpbd bila nomor dikonfi
   if (pel?.peran === "bpbd_klaim" && izin?.peran === "bpbd") { pel.peran = "bpbd"; if (izin.kab && !pel.kab) pel.kab = izin.kab; return true; }
   return false;
 }
+/* kejadian yang sama (K66, D103): laporan terkirim sekecamatan dalam jendela jenisnya; tanpa tabel 0160 = kosong = jalur lama. Tanpa data orang di hasil (D104). */
+async function kandidatDari(env, kecKode, kini) {
+  if (!/^\d{2}\.\d{2}\.\d{2}$/.test(kecKode || "")) return [];
+  const baris = await bacaTabel(() => H.lpKandidatKejadian(env, P, kecKode.slice(0, 5), kini - 72 * JAM), []);
+  return kandidatKejadian(baris.map(r => { const k = ringkasDari(r);
+    return {nomor: r.nomor, jenis: r.jenis, subjenis: k.subjenis || null, wilayah: k.wilayah || null, ref: Math.max(k.waktuMs || 0, r.terkirim || 0), status: r.status, n: r.n || 1, kejadian: r.kode || null,
+      waktu: k.waktuKejadian && k.waktuMs ? {nilai: k.waktuKejadian, ms: k.waktuMs} : null}; }), {kecKode, kini});
+}
 async function putar(env, ctx, url, id, pesan, kini) {
   const {wa, saluran} = id, izin = id.ketik ? null : id.izin;   // D101: nomor ketikan tidak pernah menaikkan bpbd_klaim
   const baris = await sesiAktif(env, id), lama = baris ? dariBaris(baris) : null;
@@ -191,7 +199,7 @@ async function putar(env, ctx, url, id, pesan, kini) {
   const kirimIsh = /^(1|kirim)$/i.test(String(pesan.teks || "").trim()) || pesan.pilih?.[0] === 1;
   if (lama?.status === "ringkasan" && !lama.susulanDari && kirimIsh && await terkirimHari(env, id, kini) >= MAKS_TERKIRIM_HARI) return {batas: true};   // sebelum model dipanggil
   const awal = lama?.transkrip?.length ?? 0, lanjut = !!lama && !SELESAI.has(lama.status);   // putaran menambah ke objek yang sama: panjang awal dicatat sebelumnya
-  const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), pesan: {...pesan, wa, saluran}, kini});
+  const h = await putaran({sesi: lama, pelapor: pel, model: modelDari(env), wilayah: wilayahDari(env), kandidat: a => kandidatDari(env, a.kecKode, a.kini), pesan: {...pesan, wa, saluran}, kini});
   if (naikBpbd(h.pelapor, izin)) h.sesi.tingkat = "bpbd";
   // lanjut dihitung sebelum putaran: putaran mengubah objek lama di tempat. Sesi selesai diganti sesi baru, selebihnya baris yang sama
   h.sesi.id = lanjut ? lama.id : `${kini.toString(36)}${acak(3)}`;
@@ -239,7 +247,7 @@ async function simpanSusulan(env, url, {wa, saluran, perangkat}, {h, baris, awal
 }
 async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama, lanjut, pel, awal}, kini, tambahStmt = []) {
   if (h.kirim && h.sesi.susulanDari) return simpanSusulan(env, url, {wa, saluran, perangkat}, {h, baris, awal}, kini);
-  const s = h.sesi, pesanBaru = s.transkrip.slice(lanjut ? awal : 0), g = [], tambahan = {};
+  const s = h.sesi, pesanBaru = s.transkrip.slice(lanjut ? awal : 0), g = [], kj = [], tambahan = {};
   let nomor = null, tokenSha = null, ringkas = null, token = null;
   if (h.kirim) {   // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
     if (await H.lpHitungTerkirim(env, P, wa, kini - HARI) >= MAKS_TERKIRIM_HARI) return {batas: true, teks: BATAS_KIRIM_TEKS};
@@ -257,12 +265,20 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
       {label: "Unduh PDF", url: `/api/lapor/unduh/${nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${nomor}.docx${q}`}]});
     g.push(H.lpStmtTiketBaru(env, P, nomor, s.id, kini, true), H.lpStmtRiwayat(env, P, nomor, null, "baru", null, "Sistem", kini, true), H.lpStmtPdfAntre(env, P, nomor, VERSI, kini, true));
   }
+  if (h.kirim && s.kejadian) {   // kejadian yang sama (K66, D106): kode diberikan saat laporan kedua dikonfirmasi; laporan induk ikut ditandai
+    const induk = s.kejadian.induk, ib = RE_NOMOR.test(induk) ? await bacaTabel(() => H.lpSesiNomor(env, P, induk), null) : null;
+    const ada = ib ? await bacaTabel(() => H.lpKejadianKode(env, P, induk), null) : null;
+    let kode = ada;
+    if (ib && !kode) { try { kode = kodeKejadian(ib.terkirim, await H.lpKejadianBerikut(env, P, tglKejadian(ib.terkirim))); } catch (e) { if (!tabelBelum(e)) throw e; } }
+    if (kode) { s.kejadian = {kode, induk}; if (!ada) kj.push(H.lpStmtKejadianInduk(env, P, induk, kode, kini)); kj.push(H.lpStmtKejadianAnggota(env, P, nomor, induk, kini)); }   // di akhir batch: INSERT OR IGNORE bisa 0 baris dan memutus rantai changes() > 0 di atas
+    else delete s.kejadian;
+  }
   const w = s.isian.lokasi?.nilai, baru = {id: s.id, wa, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null,
     lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(s), nomor, token_sha: tokenSha, terkirim: nomor ? s.terkirim : null, ringkas};
   for (const t of pesanBaru) g.push(H.lpStmtPesan(env, P, s.id, t.dari, saluran === "wa" ? "wa" : "web", t.teks, t.waktu, true));
   const p = h.pelapor;
   if (s.verifikasi !== "ketik" && p?.nama && (!pel || pel.nama !== p.nama || pel.peran !== p.peran || pel.kab !== (p.kab ?? null) || pel.jabatan !== (p.jabatan ?? null))) g.push(H.lpStmtPelapor(env, P, wa, p, kini, true));
-  g.push(...tambahStmt);
+  g.push(...tambahStmt, ...kj);
   // satu batch: pembaruan sesi (rev dijaga) lebih dulu, sisanya hanya menulis bila pembaruan itu mengubah baris (changes() > 0): tidak ada sesi bernomor tanpa tiket
   const r = await H.lpBatch(env, P, [lanjut ? H.lpStmtSesiUbah(env, P, baru, baris.rev, kini) : H.lpStmtSesiBaru(env, P, baru, kini), ...(lanjut ? [] : stmtMilikSesi(env, perangkat, s.id)), ...g]);
   if (!r[0].meta.changes) return {bentrok: true};
@@ -707,7 +723,11 @@ async function mejaDaftar(env, req, url, kini) {
   const {c} = h, q = url.searchParams, f = {dari: q.has("dari") ? Number(q.get("dari")) : NaN, sampai: q.has("sampai") ? Number(q.get("sampai")) : NaN,
     jenis: /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null, status: Object.hasOwn(STATUS, q.get("status") || "") ? q.get("status") : null, kab: /^\d{2}(\.\d{2})?$/.test(q.get("kab") || "") ? q.get("kab") : null,
     prov: c.jenis === "bpbd" ? c.prov : null};   // BPBD: saring kasar di SQL, lalu tepat per kab/kota di bawah
-  const baris = (await H.lpMejaDaftar(env, STAF, f)).map(barisMeja).filter(b => dalamWilayah(c, b.wilayah))
+  const lihat = (await H.lpMejaDaftar(env, STAF, f)).map(barisMeja).filter(b => dalamWilayah(c, b.wilayah));
+  // kejadian yang sama (K66, D107): dua laporan atau lebih yang terlihat akun ini; jumlah warga dari nomor berbeda, dihitung sebelum identitas dibuang
+  const kj = new Map((await bacaTabel(() => H.lpKejadianSemuaNomor(env, STAF), [])).map(x => [x.nomor, x.kode])), hit = new Map();
+  for (const b of lihat) { const k = kj.get(b.nomor); if (k) { const x = hit.get(k) || {n: 0, wa: new Set()}; x.n++; x.wa.add(b.wa); hit.set(k, x); } }
+  const baris = lihat.map(b => { const k = kj.get(b.nomor), x = k && hit.get(k); return {...b, kejadian: x && x.n >= 2 ? {kode: k, n_laporan: x.n, n_pelapor: x.wa.size} : null}; })
     .map(b => c.jenis === "bnpb" ? b : {...b, wa: null, nama: null});   // BPBD: identitas pelapor hanya lewat POST lihat yang tercatat (D95)
   return kirim(200, {akun: {jenis: c.jenis, label: c.label}, baris});
 }
@@ -717,6 +737,8 @@ async function rincianObj(env, c, baris, identitas = c.jenis === "bnpb") {   // 
   const {s, pel} = await lengkapi(env, STAF, baris), nomor = s.nomor;
   s.bukti = await bacaTabel(() => H.lpBuktiDaftar(env, STAF, nomor), []);
   const o = mejaRinciTampil(s, pel, await tokenLacak(env, nomor));
+  o.kejadian = await bacaTabel(async () => { const k = await H.lpKejadianNomor(env, STAF, nomor); if (!k) return null;
+    const r = (await H.lpKejadianRingkas(env, STAF, [k.kode]))[k.kode]; return r && r.n_laporan >= 2 ? {kode: k.kode, ...r} : null; }, null);
   if (!identitas) { o.pelapor = {peran: o.pelapor?.peran ?? null, tersembunyi: true}; o.transkrip = []; }
   return {...o, akun: {jenis: c.jenis, label: c.label}, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status])};
 }
@@ -767,6 +789,10 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
     if (!r[0].meta.changes) { await env.MEDIA.delete(kunci).catch(() => {}); return galat(400, "Paling banyak 10 foto penanganan per laporan."); }
   } else if (aksi === "bukti-publik") {   // D88, Q47: tampil di Alun-alun hanya bila ditandai per foto
     if (typeof b.o.id !== "string" || !/^[0-9a-f]{16}$/.test(b.o.id) || !await H.lpBuktiPublik(env, STAF, nomor, b.o.id, b.o.publik === true)) return galat(404, "Foto penanganan tidak ditemukan.");
+  } else if (aksi === "lepas") {   // D106: hanya BNPB (bolehAksi); laporan keluar dari kejadiannya, tercatat di riwayat tiket
+    const k = await bacaTabel(() => H.lpKejadianNomor(env, STAF, nomor), null);
+    if (!k) return galat(409, "Laporan ini tidak tergabung dalam kejadian.");
+    await H.lpKejadianLepas(env, STAF, nomor, k.kode, [H.lpStmtRiwayat(env, STAF, nomor, t.status, t.status, `Dilepas dari kejadian ${k.kode}`, oleh, kini)]);
   } else if (aksi === "teruskan") {   // LA-67 (D97, Q55): hanya BNPB; antrean pemberitahuan WA ke akun lembaga kab/kota, tanpa isi laporan, paling banyak 20 per kab per hari
     if (!PINDAH[t.status]?.includes("diteruskan")) return galat(409, "Perpindahan status tidak sah.");
     const w = wilayahBaris(baris), kabNama = w?.kab || null;
@@ -802,7 +828,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   return mejaRinci(env, h.c, x);
 }
 async function mejaPost(env, req, url, kini, ctx, x) {
-  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan)$/.exec(x);
+  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas)$/.exec(x);
   return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
 }
 

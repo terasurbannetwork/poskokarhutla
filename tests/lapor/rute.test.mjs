@@ -36,7 +36,10 @@ uji("izin: mesin dan admin mendaftarkan, mencabut; GET hanya mesin", async () =>
 });
 
 async function _ketik(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(wa).run();   // alur panjang melampaui 20 per menit; batasnya diuji tersendiri di bawah
-  const r = await pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300)); return r.j; }
+  const r = await pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300));
+  if (r.j.status === "kejadian" && !tawarKejadian) return _ketik(wa, {teks: String(r.j.pilihan.length)});   // laporan sekecamatan sebelumnya: skrip lama menjawab "Bukan, kejadian lain" supaya alurnya tetap sama
+  return r.j; }
+let tawarKejadian = false;   // true hanya di uji "kejadian yang sama", yang membaca tawarannya sendiri
 const ketik = _ketik;
 uji("alur mesin sampai terkirim: nomor tiket, tiket baru, antrean PDF, foto WA, transkrip", async () => {
   let r = await ketik(WA, {teks: "lapor", saluran: "wa"});
@@ -743,7 +746,9 @@ function perangkat(ip) {   // satu peramban: menyimpan kukinya sendiri; kuota no
   const lacakKuki = r => { kuki ||= kukiDari(r); return r; };
   return {get kuki() { return kuki; }, h,
     async pesan(wa, b) { await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?1 OR kunci LIKE ?1 || ':%'").bind(wa).run(); return lacakKuki(await api("POST", "/api/lapor/pesan", {wa, ...b}, h())); },
-    async ketik(wa, b) { const r = await this.pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300)); return r.j; },
+    async ketik(wa, b) { const r = await this.pesan(wa, b); assert.equal(r.s, 200, r.t.slice(0, 300));
+      if (r.j.status === "kejadian" && !tawarKejadian) return this.ketik(wa, {teks: String(r.j.pilihan.length)});   // lihat _ketik
+      return r.j; },
     get: async j => lacakKuki(await api("GET", j, undefined, h())), post: async (j, b) => lacakKuki(await api("POST", j, b, h()))};
 }
 const A = perangkat(), B = perangkat();
@@ -883,4 +888,69 @@ uji("pintu web tanpa kode: nomor orang lain tidak membuka nama terdaftarnya (tin
   await DB.prepare("DELETE FROM laju_bnpb WHERE aksi IN ('lapor.ikat', 'lapor.ketik')").run();
   const F = perangkat("203.0.113.88"); let r = await F.ketik(WM, {teks: "lapor"}); r = await F.ketik(WM, {teks: "1"});
   assert.ok(!JSON.stringify(r).includes("Dedi"), "nama pemilik nomor tidak tampil di perangkat lain");
+});
+
+/* ---------- kejadian yang sama (K66, D103-D107; TIKET LA-68, LA-69; migrasi 0160) ---------- */
+uji("kejadian yang sama: tawaran sekecamatan tanpa data orang lain, ya, nomor KJ untuk dua laporan, meja mengelompokkan, lepas hanya BNPB", async () => {
+  tawarKejadian = true;
+  const WA_I = "6281299990011", WA_K = "6281299990012", kini = Date.now();
+  assert.equal((await api("POST", "/api/lapor/izin", {wa: WA_K}, MESIN)).s, 200);
+  // laporan induk terkirim di Kec. Bogor Tengah (kode 32.71.03), banjir, 30 menit lalu: disisipkan langsung supaya uji tidak mengulang alur panjang
+  const wil = {kode: "32.71.03.1001", desa: "Gudang", kec: "Bogor Tengah", kab: "Kota Bogor", kabKode: "32.71", prov: "Jawa Barat", provKode: "32"}, t0 = kini - 1800e3, tk = kini - 3600e3;
+  const kerja = {id: "kjinduk000000001", wa: WA_I, status: "terkirim", nomor: "LA-191126-71", terkirim: t0, foto: [], transkrip: [],
+    isian: {jenis: {nilai: "banjir"}, subjenis: {nilai: "Banjir bandang"}, lokasi: {nilai: {lat: -6.6, lon: 106.8, wilayah: wil}}, waktu: {nilai: "20 November 2026, 10.00 WIB", ms: tk}}};
+  const ringkas = {waktuKejadian: "20 November 2026, 10.00 WIB", waktuMs: tk, subjenis: "Banjir bandang", wilayah: wil, lengkap: 30, foto: 0, dampakMeja: null, dampak: {}};
+  await DB.batch([
+    DB.prepare("INSERT INTO lapor_sesi (id, wa, status, tingkat, jenis, kab, lat, lon, nomor, token_sha, terkirim, kerja, ringkas, rev, dibuat, diubah) VALUES ('kjinduk000000001', ?, 'terkirim', 'warga', 'banjir', '32.71', -6.6, 106.8, 'LA-191126-71', ?, ?, ?, ?, 0, ?, ?)")
+      .bind(WA_I, "e".repeat(64), t0, JSON.stringify(kerja), JSON.stringify(ringkas), t0, t0),
+    DB.prepare("INSERT INTO lapor_tiket (nomor, sesi, status, diubah) VALUES ('LA-191126-71', 'kjinduk000000001', 'baru', ?)").bind(t0)]);
+  let r = await ketik(WA_K, {teks: "lapor"});
+  for (const t of ["1", "1", "Dewi Uji"]) r = await ketik(WA_K, {teks: t});
+  r = await ketik(WA_K, {lokasi: LOK}); assert.equal(r.status, "wilayah");
+  r = await ketik(WA_K, {teks: "1"}); assert.equal(r.status, "rtrw");
+  r = await ketik(WA_K, {teks: "Tidak tahu"});
+  assert.equal(r.status, "kejadian", JSON.stringify(r).slice(0, 300));
+  assert.match(r.balasan, /\*Kejadian yang sama\?\*/); assert.match(r.balasan, /Di Kec\. Bogor Tengah sudah ada laporan banjir sejak \d+ \w+ 2026, \d\d\.\d\d WIB dari 1 warga\./); assert.match(r.balasan, /Apakah Anda melaporkan salah satu kejadian ini\?/, "dua jenis ditawarkan (longsor dari uji lain, banjir ini)");
+  assert.ok(!JSON.stringify(r).includes(WA_I) && !JSON.stringify(r).includes("LA-191126-71"), "tanpa nomor WA atau nomor tiket laporan lain (D104)");
+  const iya = r.pilihan.findIndex(x => /^Ya, banjir/.test(x)); assert.ok(iya >= 0); assert.equal(r.pilihan.at(-1), "Bukan, kejadian lain");
+  r = await ketik(WA_K, {teks: String(iya + 1)}); assert.match(r.balasan, /Ada detail yang ingin Anda tambahkan\?/); assert.equal(r.status, "detail");
+  r = await ketik(WA_K, {teks: "meninggal 1 orang, jalan terputus"}); assert.equal(r.status, "foto");
+  r = await ketik(WA_K, {teks: "1"}); assert.equal(r.status, "ringkasan");
+  r = await ketik(WA_K, {teks: "1"}); assert.equal(r.status, "terkirim", JSON.stringify(r).slice(0, 300));
+  const baru = r.nomor; assert.match(baru, /^LA-\d{6}-\d{2}$/); assert.notEqual(baru, "LA-191126-71", "tiket sendiri");
+  const kj = await DB.prepare("SELECT nomor, kode, induk FROM lapor_kelompok ORDER BY nomor").all();
+  assert.equal(kj.results.length, 2); assert.equal(kj.results[0].kode, kj.results[1].kode); const dW = new Date(t0 + 7 * 3600e3), ddmmyy = `${String(dW.getUTCDate()).padStart(2, "0")}${String(dW.getUTCMonth() + 1).padStart(2, "0")}${String(dW.getUTCFullYear()).slice(2)}`;
+  assert.equal(kj.results[0].kode, `KJ-${ddmmyy}-01`, "tanggal WIB laporan induk");
+  assert.equal(await n("lapor_kelompok", `nomor = 'LA-191126-71' AND induk IS NULL`), 1, "induk ikut ditandai"); assert.equal(await n("lapor_kelompok", `nomor = '${baru}' AND induk = 'LA-191126-71'`), 1);
+  const kode = kj.results[0].kode;
+  // meja BNPB: dua baris membawa kejadian; jumlah laporan dan warga
+  const bd = (await api("GET", "/api/lapor/meja", undefined, ADMIN)).j.baris.filter(x => x.kejadian);
+  assert.deepEqual(bd.map(x => x.nomor).sort(), ["LA-191126-71", baru].sort()); assert.deepEqual(bd[0].kejadian, {kode, n_laporan: 2, n_pelapor: 2});
+  assert.deepEqual((await api("GET", `/api/lapor/meja/${baru}`, undefined, ADMIN)).j.kejadian, {kode, n_laporan: 2, n_pelapor: 2});
+  // BPBD kota itu melihat kejadian tanpa nomor WA; tidak bisa melepas; BPBD kota lain tidak melihatnya sama sekali
+  const dB = (await api("GET", "/api/lapor/meja", undefined, bogor.h)).j.baris.filter(x => x.kejadian);
+  assert.equal(dB.length, 2); assert.ok(dB.every(x => x.wa == null)); assert.equal(dB[0].kejadian.n_pelapor, 2);
+  assert.equal((await api("POST", `/api/lapor/meja/${baru}/lepas`, {}, bogor.h)).s, 403, "BPBD tidak melepas (D106)");
+  assert.equal((await api("POST", `/api/lapor/meja/${baru}/lepas`, {}, bandung.h)).s, 404, "luar wilayah");
+  assert.equal((await api("POST", `/api/lapor/meja/${baru}/lepas`, {})).s, 403, "tamu");
+  assert.equal(await n("lapor_kelompok"), 2, "penolakan tidak menyentuh kejadian");
+  // BNPB melepas: tercatat di riwayat; tinggal satu laporan = kejadian bubar
+  const lp = await api("POST", `/api/lapor/meja/${baru}/lepas`, {}, ADMIN); assert.equal(lp.s, 200, lp.t.slice(0, 200)); assert.equal(lp.j.kejadian, null);
+  assert.equal(await n("lapor_kelompok"), 0);
+  assert.equal(await n("lapor_tiket_riwayat", `nomor = '${baru}' AND catatan = 'Dilepas dari kejadian ${kode}'`), 1);
+  assert.equal((await api("POST", `/api/lapor/meja/${baru}/lepas`, {}, ADMIN)).s, 409, "sudah lepas");
+});
+
+uji("kejadian yang sama: Bukan = jalur lama (pilih jenis) dan tidak memberi nomor KJ", async () => {
+  tawarKejadian = true;
+  const WA_B = "6281299990013", kini = Date.now();
+  assert.equal((await api("POST", "/api/lapor/izin", {wa: WA_B}, MESIN)).s, 200);
+  await DB.prepare("UPDATE lapor_sesi SET terkirim = ? WHERE id = 'kjinduk000000001'").bind(kini - 600e3).run();
+  let r = await ketik(WA_B, {teks: "lapor"});
+  for (const t of ["1", "1", "Eko Uji"]) r = await ketik(WA_B, {teks: t});
+  r = await ketik(WA_B, {lokasi: LOK}); r = await ketik(WA_B, {teks: "1"}); r = await ketik(WA_B, {teks: "Tidak tahu"});
+  assert.equal(r.status, "kejadian"); r = await ketik(WA_B, {teks: String(r.pilihan.length)});
+  assert.equal(r.minta, "jenis"); assert.match(r.balasan, /Jenis bencana/);
+  assert.equal(await n("lapor_kelompok"), 0);
+  tawarKejadian = false;
 });

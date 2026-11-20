@@ -18,7 +18,7 @@ import {putaran, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/
 import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
-import {hitungGugus} from "../../src/lapor_gugus.js";
+import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
 import {samarkan} from "../../src/samarkan.js";
@@ -133,6 +133,19 @@ async function susulan(body) {
   d.sesi[h.sesi.id] = h.sesi; d.aktif[wa] = h.sesi.id; simpan(d);
   return [200, {...keluaran(h, h.sesi), susulanDari: asal.nomor}];
 }
+/* kejadian yang sama (K66, D103-D107): kandidat dari laporan terkirim sekecamatan; anggota kejadian = sesi yang membawa kejadian.kode */
+const anggotaKejadian = (d, kode) => Object.values(d.sesi).filter(s => s.nomor && s.kejadian?.kode === kode);
+function kandidatLokal(d, kecKode, kini) {
+  return kandidatKejadian(Object.values(d.sesi).filter(s => s.nomor).map(s => ({nomor: s.nomor, jenis: s.isian.jenis?.nilai, subjenis: s.isian.subjenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah,
+    ref: Math.max(s.isian.waktu?.ms || 0, s.terkirim || 0), status: s.tiket?.status, kejadian: s.kejadian?.kode || null,
+    n: s.kejadian?.kode ? new Set(anggotaKejadian(d, s.kejadian.kode).map(x => x.wa)).size : 1, waktu: s.isian.waktu?.ms ? {nilai: s.isian.waktu.nilai, ms: s.isian.waktu.ms} : null})), {kecKode, kini});
+}
+function pasangKejadian(d, sesi, kini) { // sesudah laporan terkirim: kode KJ dari induk (K66, D106); induk ikut ditandai
+  const induk = Object.values(d.sesi).find(x => x.nomor && x.nomor === sesi.kejadian?.induk);
+  if (!induk) { delete sesi.kejadian; return; }
+  if (!induk.kejadian?.kode) { const t = tglKejadian(induk.terkirim), n = ((d.urutKj ||= {})[t] || 0) + 1; d.urutKj[t] = n; induk.kejadian = {kode: kodeKejadian(induk.terkirim, n)}; }
+  sesi.kejadian = {kode: induk.kejadian.kode, induk: induk.nomor};
+}
 const KUOTA_JAM = 60, KUOTA_MENIT = 20, kuota = {}; // ponytail: hitungan di memori proses; Worker memakai tabel laju D1
 async function pesan(body) {
   const wa = nomorWa(body.wa);
@@ -170,7 +183,7 @@ async function pesan(body) {
     if (!c) return [400, {galat: "Desa tidak ditemukan."}];
     lokasi = {lat: c.lat, lon: c.lon, sumber: "cari", wilayah: c.wilayah};
   }
-  const h = await putaran({sesi: sesiAktif, pelapor: d.pelapor[wa] || null, model, wilayah,
+  const h = await putaran({sesi: sesiAktif, pelapor: d.pelapor[wa] || null, model, wilayah, kandidat: ({kecKode, kini: k}) => kandidatLokal(d, kecKode, k),
     pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, kembali: body.kembali === true, saluran: "web"}, kini}); // rute ini hanya dipakai layar web
   h.sesi.id ||= `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;
   h.sesi.wa = wa; h.sesi.bahasa = bahasa;
@@ -204,6 +217,7 @@ async function pesan(body) {
     h.sesi.token = crypto.randomBytes(16).toString("hex");
     h.sesi.tiket = {status: "baru", riwayat: [{ke: "baru", pelaku: "Sistem", catatan: null, waktu: kini}]};
     h.sesi.versi = [{versi: 1, isi: structuredClone(h.sesi.isian), waktu: kini}];
+    if (h.sesi.kejadian) pasangKejadian(d, h.sesi, kini);
     h.inti = T.terkirim(h.pelapor.nama, h.sesi.nomor);
     const q = `?t=${h.sesi.token}`;
     tambahan = {nomor: h.sesi.nomor, lacak: `/lapor/lacak.html${q}`, foto: h.sesi.foto?.[0] ? `/api/lapor/foto/${h.sesi.foto[0].id}${q}` : null, unduhan: [ // foto pertama untuk kartu Laporan saya
@@ -513,6 +527,8 @@ const tanggap = s => { const pertama = ke => s.tiket.riwayat.find(r => r.ke === 
 const gugusSemua = d => hitungGugus(Object.values(d.sesi).filter(s => s.nomor).map(s => { const L = s.isian.lokasi?.nilai;
   return {nomor: s.nomor, jenis: s.isian.jenis?.nilai, lat: L?.lat ?? null, lon: L?.lon ?? null, kab: L?.wilayah?.kab || null, desa: L?.wilayah?.kode || null,
     t: s.isian.waktu?.ms || s.terkirim, wa: s.wa, fotoSah: (s.foto || []).some(f => f.lencana === "gps" || f.lencana === "exif"), status: s.tiket.status}; }));
+/* satu baris per kejadian di meja (D107): hanya bila ada dua laporan atau lebih; jumlah warga = nomor WA berbeda */
+const kejadianTampil = (d, s) => { const a = s.kejadian?.kode ? anggotaKejadian(d, s.kejadian.kode) : []; return a.length >= 2 ? {kode: s.kejadian.kode, n_laporan: a.length, n_pelapor: new Set(a.map(x => x.wa)).size} : null; };
 function meja(c) {
   const d = baca(), G = gugusSemua(d), gk = Object.fromEntries(G.gugus.map(g => [g.kode, g]));
   return [200, {akun: {jenis: c.jenis, label: c.label}, baris: Object.values(d.sesi).filter(s => s.nomor && dalamWilayah(c, s.isian.lokasi?.nilai?.wilayah)).sort((a, b) => b.terkirim - a.terkirim).map(s => {
@@ -521,7 +537,7 @@ function meja(c) {
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
       lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tanggap: tanggap(s),
-      gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null};
+      gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null, kejadian: kejadianTampil(d, s)};
   })}];
 }
 function mejaRinci(c, nomor, lihat = false) {
@@ -537,6 +553,7 @@ function mejaRinci(c, nomor, lihat = false) {
     waktuLapor: waktuLapor(s.terkirim, prov), waktuKejadian: s.isian.waktu?.nilai || null, isian: isianTampil(s), lengkap: lengkap(s), dampak: dampakRingkas(s), tanggap: tanggap(s),
     // nilai mentah per isian (null = belum, 0 = tidak ada) dan waktu kejadian ms: bahan draf logbook Pusdalops di meja (K56)
     nilai: Object.fromEntries(berlakuSesi(s).map(i => { const x = s.isian[i.nama]; return [i.nama, !x || x.belum ? null : x.nihil ? 0 : x.nilai]; })), waktuKejadianMs: s.isian.waktu?.ms ?? null,
+    kejadian: kejadianTampil(d, s),
     gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
         return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
@@ -567,6 +584,12 @@ function mejaUbah(c, nomor, aksi, body) {
     fs.mkdirSync(BUKTI, {recursive: true, mode: 0o700}); fs.writeFileSync(path.join(BUKTI, `${id}.jpg`), buf, {mode: 0o600});
     (s.bukti ||= []).push({id, waktu: kini, oleh: c.pelaku, publik: false, ...(gpsSah ? {lat: g.lat, lon: g.lon, akurasi: g.akurasi} : {})});
     s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: c.pelaku, catatan: `Foto penanganan ditambahkan${gpsSah ? "" : " (tanpa lokasi GPS)"}`, waktu: kini});
+  } else if (aksi === "lepas") { // D106: hanya BNPB (bolehAksi); laporan keluar dari kejadiannya, tercatat di riwayat tiket
+    const kode = s.kejadian?.kode;
+    if (!kode) return [409, {galat: "Laporan ini tidak tergabung dalam kejadian."}];
+    delete s.kejadian;
+    const sisa = anggotaKejadian(d, kode); if (sisa.length < 2) for (const x of sisa) delete x.kejadian; // kejadian minimal dua laporan
+    s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: c.pelaku, catatan: `Dilepas dari kejadian ${kode}`, waktu: kini});
   } else if (aksi === "teruskan") { // LA-67 (D97): hanya BNPB (bolehAksi); lokal hanya mengubah status, pemberitahuan BPBD butuh Worker dan bot
     if (!PINDAH[s.tiket.status]?.includes("diteruskan")) return [409, {galat: "Perpindahan status tidak sah."}];
     s.tiket.riwayat.push({dari: s.tiket.status, ke: "diteruskan", pelaku: c.pelaku, catatan: "Diteruskan ke meja BPBD (pemberitahuan menunggu Worker)", waktu: kini});
@@ -659,7 +682,7 @@ export async function tanganiLapor(req, res, url) {
       const c = await akunMeja(req);
       if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);
       if (j === "/api/lapor/meja") return kirim(meja(c));
-      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan))?$/.exec(j);
+      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas))?$/.exec(j);
       // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
       if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));
       if (m && !m[2]) return kirim(mejaRinci(c, m[1], url.searchParams.get("lihat") === "1"));

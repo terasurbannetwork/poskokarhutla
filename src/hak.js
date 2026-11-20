@@ -1751,6 +1751,8 @@ Object.assign(MATRIKS, {
   lapor_unggah:        {lp_pelapor: ["baca", "tambah", "ubah", "hapus"], lp_cron: ["baca", "hapus"]},   // lp_cron = bersih-bersih menit 17 (D90)
   lapor_perangkat:     {lp_pelapor: ["baca", "tambah", "ubah"]},   // migrasi 0159: ikatan nomor ketikan dan perangkat (K65, D100)
   lapor_milik:         {lp_pelapor: ["baca", "tambah", "hapus"], lp_publik: ["baca"], lp_cron: ["hapus"]},
+  lapor_kelompok:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "hapus"]},   // migrasi 0160: kejadian yang sama (K66, D103-D107)
+  lapor_kelompok_urut: {lp_pelapor: ["tambah"]},
 });
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
@@ -1863,6 +1865,35 @@ export const lpSesiMilikPerangkat = async (env, p, wa, dev) => (await sedia(env,
 export const lpKabarWebPerangkat = async (env, p, wa, dev, sejak) => (await sedia(env, p, "lapor_kabar", "baca",
   `SELECT k.nomor, k.teks, k.dibuat waktu, k.jenis FROM lapor_kabar k JOIN lapor_sesi s ON s.nomor = k.nomor JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id
    WHERE k.wa = ?1 AND m.perangkat_sha = ?2 AND k.dibuat > ?3 AND k.jenis != 'pdf' ORDER BY k.id LIMIT 50`).bind(wa, dev, sejak).all()).results;
+
+/* ---- kejadian yang sama (migrasi 0160, K66, D103-D107). Sebelum 0160 semua bacaan memberi kosong lewat pemanggil (tabelBelum). ---- */
+/* kandidat: laporan terkirim sekab sejak waktu tertentu, lengkap dengan kode kejadian dan jumlah warga di kejadiannya; kecamatan disaring pemanggil dari ringkasan */
+export const lpKandidatKejadian = async (env, p, kab, sejak) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.nomor, s.jenis, s.terkirim, s.ringkas, t.status, k.kode,
+     CASE WHEN k.kode IS NULL THEN 1 ELSE (SELECT count(DISTINCT s2.wa) FROM lapor_kelompok k2 JOIN lapor_sesi s2 ON s2.nomor = k2.nomor WHERE k2.kode = k.kode) END n
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_kelompok k ON k.nomor = s.nomor
+   WHERE s.kab = ?1 AND s.terkirim > ?2 ORDER BY s.terkirim DESC LIMIT 150`).bind(kab, sejak).all()).results;
+export const lpKejadianKode = async (env, p, nomor) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT kode FROM lapor_kelompok WHERE nomor = ?1").bind(nomor).first())?.kode ?? null;
+export const lpKejadianBerikut = async (env, p, tgl) => (await sedia(env, p, "lapor_kelompok_urut", "tambah",
+  "INSERT INTO lapor_kelompok_urut (tgl, n) VALUES (?1, 1) ON CONFLICT (tgl) DO UPDATE SET n = n + 1 RETURNING n").bind(tgl).first()).n;
+/* induk lebih dulu (bila belum punya kode), lalu laporan baru menyalin kode induk lewat SELECT: dua laporan serentak ke induk yang sama tetap satu kode. Dipakai dalam batch sesudah sesi bernomor. */
+export const lpStmtKejadianInduk = (env, p, induk, kode, kini) => sedia(env, p, "lapor_kelompok", "tambah",
+  "INSERT OR IGNORE INTO lapor_kelompok (nomor, kode, induk, dibuat) SELECT ?1, ?2, NULL, ?3 WHERE EXISTS (SELECT 1 FROM lapor_sesi WHERE nomor = ?1)").bind(induk, kode, kini);
+export const lpStmtKejadianAnggota = (env, p, nomor, induk, kini) => sedia(env, p, "lapor_kelompok", "tambah",
+  "INSERT OR IGNORE INTO lapor_kelompok (nomor, kode, induk, dibuat) SELECT ?1, kode, ?2, ?3 FROM lapor_kelompok WHERE nomor = ?2 AND EXISTS (SELECT 1 FROM lapor_sesi WHERE nomor = ?1)").bind(nomor, induk, kini);
+/* ringkasan kejadian per kode untuk daftar meja: {kode: {n_laporan, n_pelapor}}; hanya kode yang diminta */
+export async function lpKejadianRingkas(env, p, kodes) {
+  if (!kodes.length) return {};
+  const r = (await sedia(env, p, "lapor_kelompok", "baca",
+    `SELECT k.kode, count(*) n_laporan, count(DISTINCT s.wa) n_pelapor FROM lapor_kelompok k JOIN lapor_sesi s ON s.nomor = k.nomor WHERE k.kode IN (${kodes.map((_, i) => "?" + (i + 1)).join(",")}) GROUP BY k.kode`).bind(...kodes).all()).results;
+  return Object.fromEntries(r.map(x => [x.kode, {n_laporan: x.n_laporan, n_pelapor: x.n_pelapor}]));
+}
+export const lpKejadianNomor = async (env, p, nomor) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT nomor, kode FROM lapor_kelompok WHERE nomor = ?1").bind(nomor).first());
+export const lpKejadianSemuaNomor = async (env, p) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT nomor, kode FROM lapor_kelompok ORDER BY dibuat DESC LIMIT 3000").all()).results;
+/* lepas satu laporan; bila kejadiannya tinggal satu laporan, sisanya ikut dilepas (kejadian minimal dua laporan). Satu batch. */
+export const lpKejadianLepas = (env, p, nomor, kode, ekstra = []) => env.DB.batch([
+  sedia(env, p, "lapor_kelompok", "hapus", "DELETE FROM lapor_kelompok WHERE nomor = ?1 AND kode = ?2").bind(nomor, kode),
+  sedia(env, p, "lapor_kelompok", "hapus", "DELETE FROM lapor_kelompok WHERE kode = ?1 AND (SELECT count(*) FROM lapor_kelompok WHERE kode = ?1) < 2").bind(kode), ...ekstra]);
 
 /* ---- monitoring staf dan alun-alun ---- */
 const LP_KOLOM_FILTER = {jenis: "s.jenis = ?", status: "t.status = ?", kab: "s.kab = ?", prov: "s.kab LIKE ? || '%'"};   // prov (2 angka) hanya diisi server dari cakupan akun BPBD
