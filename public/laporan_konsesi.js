@@ -11,11 +11,11 @@
     hph: ["HPH", "#2f6f8f", "Hutan alam (PBPH-HA, penebangan kayu)"], tambang: ["Tambang", "#7a5c99", "Izin pinjam pakai kawasan hutan untuk tambang (PPKH)"]};
   /* instansi pemilik peta batas per jenis (scripts/scrape/lahan.py, konsesi.geojson "sumber"). Bukan ATR/BPN: HGU tidak dipakai */
   const SB = {sawit: ["KLHK", "Peta izin perkebunan sawit KLHK (data 2012, diperbarui 2014)"],
-    hti: ["KLHK / Kemenhut", "Izin PBPH-HT KLHK/Kemenhut (data 2020–2022)"],
-    hph: ["KLHK", "Peta izin PBPH-HA (HPH) KLHK 2014"],
+    hti: ["Kemenhut", "PBPH-HT Kemenhut (PBPH_AR_50K Mei 2026)"],
+    hph: ["Kemenhut", "PBPH-HA/RE Kemenhut (PBPH_AR_50K Mei 2026)"],
     tambang: ["Kemenhut", "PPKH Ditjen Planologi Kehutanan, Kementerian Kehutanan (Jan 2026)"]};
   const SB_LAIN = [["Titik panas", "NASA FIRMS", "VIIRS S-NPP 375 m, keyakinan nominal/tinggi (arsip SP + NRT)"],
-    ["Kawasan hutan", "KLHK", "Peta kawasan hutan KLHK versi 2017"],
+    ["Kawasan hutan", "Kemenhut", "Peta kawasan hutan Kemenhut Juni 2026 (pengukuhan s.d. Des 2025)"],
     ["Lahan gambut", "Kementan (BBSDLP) lewat PRIMS BRGM", "Peta gambut 1:250.000; Kaltim dari PIPPIB (indikatif)"],
     ["Batas wilayah", "Kemendagri", "Kode dan batas provinsi, kabupaten/kota, kecamatan Kemendagri"],
     ["Grup & pemegang saham", "Centurisk97", "Atribut grup peta konsesi dan penelusuran kepemilikan perusahaan"],

@@ -3333,7 +3333,7 @@ const Laci = {
       ${lipat("Cuaca di lokasi", `<div class="kv"><div><b>${fmt(p.fwi)}</b><span>FWI<em>${FWI_KELAS[kelasFWI(p.fwi)][0].toLowerCase()}</em></span></div><div><b>${fmt(p.ffmc)}</b><span>FFMC${p.ffmc > 82 ? "<em>mudah sulut</em>" : ""}</span></div><div><b>${fmt(p.dc)}</b><span>DC<em>${kelasDC}</em></span></div></div>
         ${p.cuaca ? `<table class="tb2"><tbody>${baris("Suhu siang", fmt(p.t) + " °C")}${baris("Kelembapan", fmt(p.rh) + "%")}${baris("Angin", `${fmt(p.ws)} km/jam dari ${arah(p.wd)}`)}</tbody></table>` : `<p class="fnd">Cuaca hari ini tidak tersedia untuk sel ini.</p>`}`)}
       ${lipat("Lahan & penanggung jawab", `        <table class="tb2"><tbody>${baris("Bahaya InaRISK", S.inarisk?.[p.id] != null ? fmt(S.inarisk[p.id]) + " (" + kelasInarisk(S.inarisk[p.id]) + ")" : "tidak ada data")}${baris("Lahan gambut", p.gambut ? "ya" : p.gambut === false ? "tidak" : "–")}</tbody></table>
-        <div class="sg-ket" style="margin:8px 0 0;border-radius:10px;width:auto;justify-content:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>Sumber peta lahan</b>: kawasan hutan 2017 · sawit & HPH sekitar 2014 · HTI 2020–2022 · tambang 2026</span></div>`)}
+        <div class="sg-ket" style="margin:8px 0 0;border-radius:10px;width:auto;justify-content:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>Sumber peta lahan</b>: kawasan hutan Kemenhut Juni 2026 · HTI & HPH PBPH Mei 2026 · sawit sekitar 2014 · tambang 2026</span></div>`)}
       ${(() => {
         /* estimasi pipeline (p.bara) tampil apa adanya; bentuk tak lengkap = blok tidak tampil. Tengah a[1], ujung skenario rendah/tinggi, 2 angka penting */
         const b = p.bara, ok3 = x => Array.isArray(x) && x.length === 3 && x.every(Number.isFinite);
@@ -6376,7 +6376,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
         ["in", "Cuaca dan FWI", "Open-Meteo (model) di sel 0,5° terdekat", "FWI " + mtA(p.fwi)],
         ["in", "Kecamatan", "batas wilayah kode Kemendagri", esc(p.kec)],
         ["in", "Gambut", "Global Forest Watch, peta gambut 2023", p.gambut ? "ya" : "tidak"],
-        ["in", "Penanggung jawab lahan", "kawasan hutan KLHK 2017 dan konsesi lewat GFW", esc((p.tanggung || []).join(", ") || "–")],
+        ["in", "Penanggung jawab lahan", "kawasan hutan Kemenhut Juni 2026 dan konsesi (PBPH Kemenhut Mei 2026, sawit GFW)", esc((p.tanggung || []).join(", ") || "–")],
         ["in", "Daops terdekat", "API SiPongi + geokode OpenStreetMap", `${esc(p.daops || "–")}<small>${fmt(p.jarak_daops)} km</small>`],
         S.inarisk?.[p.id] != null ? ["in", "Indeks bahaya InaRISK", "BNPB, raster 100 m", mtA(S.inarisk[p.id], 3)] : null,
         ["hasil", "Penyedia data untuk satu cluster", "", "7 penyedia"]]);
@@ -6406,8 +6406,8 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Gambut", "Peta gambut 1:250.000 Kementan (BBSDLP) lewat PRIMS BRGM; Kaltim: gambut indikatif moratorium PIPPIB (PRIMS)", "boleh di luar PRIMS dengan tautan ke wali data; non-komersial", "sel 2 × 2 piksel z8 ± 1,2 km (gambut bila pusat sel di poligon)", "manual", "lahan/gambut.geojson"],
       ["Kesatuan Hidrologis Gambut (KHG)", "BRGM, PRIMS (prims.brgm.go.id), GeoServer WFS prims:khg", "boleh di luar PRIMS dengan tautan ke wali data; non-komersial", "518 KHG, poligon disederhanakan ± 220 m", "manual", "lahan/khg.geojson"],
       ["Kawasan bernama di kotak cari (taman nasional, tahura, suaka margasatwa, cagar alam, TWA, danau)", "OpenStreetMap via Overpass; gunung api: katalog MAGMA (lingkaran 10 km); metropolitan: gabungan kab/kota", "ODbL, (c) kontributor OpenStreetMap", "batas digitasi OSM, bukan SK penetapan; disederhanakan ± 110 m", "manual (scripts/scrape/kawasan_cari.py)", "kawasan_cari.json, kawasan_cari.geojson"],
-      ["Konsesi sawit, HTI, HPH, tambang", "GFW (data KLHK; sawit & HPH ± 2014), Trase (HTI 2020–2022, CC BY 4.0), Kemenhut PPKH (tambang Jan 2026)", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
-      ["Kawasan hutan", "KLHK versi 2017 lewat akun GFW di ArcGIS Online", "tidak dicantumkan", "poligon disederhanakan", "manual", "lahan/kawasan.geojson"],
+      ["Konsesi sawit, HTI, HPH, tambang", "Kemenhut PBPH_AR_50K Mei 2026 (HTI & HPH aktif), GFW (data KLHK; sawit ± 2014, HPH lama), Trase (HTI lama 2020–2022, CC BY 4.0), Kemenhut PPKH (tambang Jan 2026)", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
+      ["Kawasan hutan", "Kemenhut KWSHUTAN_AR_250K Juni 2026 REV1 (GDB resmi)", "izin terbit dari Kemenhut", "poligon disederhanakan", "manual", "lahan/kawasan.geojson"],
       ["Luas terbakar resmi 2018–2026", "KLHK SiPongi (2018–2023 sama dengan kutipan Tulisan Hukum JDIH BPK 2024)", "tidak dicantumkan", "per provinsi per tahun", "tetap", "luas_resmi.json"],
       ["Luas terbakar satelit 2002–2025", "GWIS (EU JRC/Copernicus), MODIS MCD64A1 C6.1 per GADM 3.6", "CC BY 4.0", "per provinsi lama (Kaltim termasuk Kaltara; Papua lama)", "manual", "luas_satelit.json"],
       ["Peta dasar", "OpenFreeMap; citra Esri World Imagery (© Esri, Maxar, Earthstar)", "atribusi di peta", "ubin", "langsung", "–"],
