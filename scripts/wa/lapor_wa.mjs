@@ -66,7 +66,7 @@ export async function keJpeg(buf, { kerja = os.tmpdir(), perintah = 'sips' } = {
   } catch { return null } finally { fs.rmSync(dir, { recursive: true, force: true }) }
 }
 
-export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () => {}, timeoutMs = 45000, kerja } = {}) {
+export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () => {}, timeoutMs = 45000, kerja, bahasaBerkas } = {}) {
   const base = String(worker || '').replace(/\/$/, '')
   const pem = normalWa(pemilik)
   let izin = new Set()
@@ -114,11 +114,26 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
       return t || GANGGUAN
     } catch (e) { log('[lapor] Worker tak terjangkau', jalur, samar(e?.message || e)); return GANGGUAN }
   }
-  const pesan = (wa, o) => ke('/api/lapor/pesan', { wa, saluran: 'wa', ...o })
+  /* bahasa per nomor (pemilik 20 Nov 2026: "update bot WA, dia bisa bahasa daerah juga"; KEPUTUSAN-LAPOR-AI K58, D80): ditanya sekali saat pertama
+     mengetik "lapor", diganti kapan saja dengan "bahasa". Pilihan disimpan di Mac mini (bukan repo); Worker menerjemahkan pesan dan teksWa. */
+  const berkasBahasa = bahasaBerkas || path.join(os.homedir(), '.lapor-wa', 'bahasa.json')
+  let pilihanBahasa = {}
+  try { pilihanBahasa = JSON.parse(fs.readFileSync(berkasBahasa, 'utf8')) || {} } catch {}
+  const simpanBahasa = () => { try { fs.mkdirSync(path.dirname(berkasBahasa), { recursive: true, mode: 0o700 }); fs.writeFileSync(berkasBahasa, JSON.stringify(pilihanBahasa), { mode: 0o600 }) } catch (e) { log('[lapor] simpan bahasa gagal', samar(e?.message || e)) } }
+  const tungguBahasa = new Map()
+  let daftarBahasa = null, daftarWaktu = 0
+  async function ambilDaftarBahasa() {
+    if (daftarBahasa && Date.now() - daftarWaktu < 3600e3) return daftarBahasa
+    try { const r = await panggil('GET', '/api/lapor/bahasa', undefined, { timeout: 15000 }); const j = await r.json().catch(() => ({})); daftarBahasa = r.ok && Array.isArray(j.bahasa) ? j.bahasa : [] } catch { daftarBahasa = [] }
+    daftarWaktu = Date.now(); return daftarBahasa
+  }
+  const teksDaftarBahasa = (d) => `*Pilih bahasa / Choose language*\nBalas dengan nomornya.\n\n${d.map((b, i) => `${i + 1}. ${b.nama}`).join('\n')}`
+  const bhs = (wa) => (pilihanBahasa[wa] && pilihanBahasa[wa] !== 'id' ? { bahasa: pilihanBahasa[wa] } : {})
+  const pesan = (wa, o) => ke('/api/lapor/pesan', { wa, saluran: 'wa', ...bhs(wa), ...o })
   async function foto(wa, buf, waktu) {
     const jpg = await keJpeg(buf, { kerja })
     if (!jpg) return 'Foto tidak terbaca. Kirim ulang sebagai foto biasa (bukan berkas).'
-    return ke('/api/lapor/foto', { wa, data: jpg.toString('base64'), waktu })
+    return ke('/api/lapor/foto', { wa, data: jpg.toString('base64'), waktu, ...bhs(wa) })
   }
 
   // c = isi pesan ternormalkan Baileys. unduh() -> Buffer foto. Balasan dikirim lewat kirim(wa, {text}, {jid, balasan:true, masuk}).
@@ -139,7 +154,20 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
     }
     const teks = c.conversation || c.extendedTextMessage?.text || ''
     if (!String(teks).trim()) return // stiker, suara, video, dokumen: tidak dilayani
-    return balas(await pesan(wa, { teks: String(teks) }))
+    const t = String(teks).trim()
+    if (tungguBahasa.has(wa)) {   // jawaban atas daftar bahasa: nomor 1..n
+      const st = tungguBahasa.get(wa), n = Number(t); tungguBahasa.delete(wa)
+      if (Number.isInteger(n) && n >= 1 && n <= st.daftar.length) {
+        const b = st.daftar[n - 1]; pilihanBahasa[wa] = b.kode; simpanBahasa()
+        if (st.lanjut) return balas(await pesan(wa, { teks: st.lanjut }))
+        return balas(`*${b.nama}*\nPesan berikutnya dijawab dalam bahasa ini. Ketik *bahasa* untuk mengganti, atau *lapor* untuk mulai melapor.`)
+      }
+    }
+    if (/^(bahasa|ganti bahasa|language|basa)$/i.test(t) || (/^lapor\b/i.test(t) && !(wa in pilihanBahasa))) {
+      const d = await ambilDaftarBahasa()
+      if (d.length > 1) { tungguBahasa.set(wa, { daftar: d, lanjut: /^lapor\b/i.test(t) ? t : null }); return balas(teksDaftarBahasa(d)) }
+    }
+    return balas(await pesan(wa, { teks: t }))
   }
 
   // Kabar keluar. id yang sudah terkirim tetapi gagal ditandai disimpan agar tidak dikirim ulang.

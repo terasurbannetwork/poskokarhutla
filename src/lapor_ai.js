@@ -278,8 +278,8 @@ async function pesan(env, req, url, kini, ctx) {
   const saluran = id.saluran === "web" ? "web" : o.saluran === "web" ? "web" : "wa";
   const batas = await kuota(env, req, id, kini);
   if (batas) return batas;
-  // bahasa pilihan (K58, D80-D82): hanya pintu web dan hanya bila model tersedia; pesan diterjemahkan ke Indonesia sebelum mesin, teks asli disimpan berdampingan
-  const model = modelDari(env), bahasa = saluran === "web" && model ? bahasaSah(o.bahasa) : "id";
+  // bahasa pilihan (K58, D80-D82): web dan WA (gateway mengirim pilihan nomor itu), hanya bila model tersedia; pesan diterjemahkan ke Indonesia sebelum mesin, teks asli disimpan berdampingan
+  const model = modelDari(env), bahasa = model ? bahasaSah(o.bahasa) : "id";
   const terj = await keIndonesia(model, typeof o.teks === "string" ? o.teks.slice(0, 2000) : "", bahasa), teks = terj.teks;
   if (/^(cek\s+)?status(\s+laporan)?$/i.test(teks.trim())) return statusLaporan(env, id);
   let lokasi = null;
@@ -305,11 +305,14 @@ async function pesan(env, req, url, kini, ctx) {
   if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
   if (s.tolak) return galat(409, s.tolak);
   if (s.batas) return kirim(200, {balasan: s.teks, teksWa: s.teks, status: r.lama?.status || null});
-  return kirim(200, await keluarBahasa(model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa));
+  return kirim(200, await keluarBahasa(model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa, saluran));
 }
-/* balasan mesin (Indonesia) -> bahasa pilihan; angka dijaga dua arah di dariIndonesia, gagal = Indonesia. teksWa tidak diterjemahkan (pintu WA tetap Indonesia). */
-async function keluarBahasa(model, out, bahasa) {
-  if (!model || bahasa === "id" || !out.balasan) return out;
+/* balasan mesin (Indonesia) -> bahasa pilihan; angka dijaga dua arah di dariIndonesia, gagal = Indonesia.
+   Pintu WA (pemilik 20 Nov 2026: "bot WA bisa bahasa daerah juga"): yang dikirim gateway adalah teksWa, jadi itu yang diterjemahkan. */
+async function keluarBahasa(model, out, bahasa, saluran = "web") {
+  if (!model || bahasa === "id") return out;
+  if (saluran === "wa") { if (!out.teksWa) return out; const tr = await dariIndonesia(model, {teks: out.teksWa, nama: out.pelapor?.nama || null}, bahasa); return Object.assign(out, {teksWa: tr.teks, bahasa}); }
+  if (!out.balasan) return out;
   const tr = await dariIndonesia(model, {teks: out.balasan, pilihan: out.pilihan, ket: out.ket, nama: out.pelapor?.nama || null}, bahasa);
   return Object.assign(out, {balasan: tr.teks, pilihan: tr.pilihan, ket: tr.ket, bahasa, pilihanAsli: out.pilihan});   // label Indonesia untuk aturan layar (pilihan tunggal, Lainnya)
 }
@@ -435,9 +438,9 @@ async function fotoPost(env, req, url, kini, ctx) {
   const m = await masukkanMedia(env, url, id, kini, baris, lama, info, kunci, () => env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}}), () => env.MEDIA.delete(kunci).catch(() => {}));
   if (m.tolak) return galat(409, m.tolak);
   if (m.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
-  const h = m.h, prov = provDari(h.sesi), bahasa = saluran === "web" ? bahasaSah(o.bahasa) : "id";
+  const h = m.h, prov = provDari(h.sesi), bahasa = bahasaSah(o.bahasa);
   return kirim(200, await keluarBahasa(modelDari(env), {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: fid, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null, akurasi: meta.akurasi ?? null,
-    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: h.sesi.foto.length, maks: MAKS_FOTO}}, bahasa));
+    waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu, ke: h.sesi.foto.length, maks: MAKS_FOTO}}, bahasa, id.saluran));
 }
 /* satu foto atau video masuk ke laporan yang sedang diisi: putaran mesin + baris lapor_foto dalam satu batch D1. tulisR2 menulis berkas sesudah mesin menerima, buangR2 membuangnya bila batch gagal. */
 async function masukkanMedia(env, url, id, kini, baris, lama, info, kunci, tulisR2, buangR2) {
@@ -514,7 +517,7 @@ async function unggahMulai(env, req, url, kini) {
   const g = o.gps && typeof o.gps === "object" && titikSah(o.gps.lat, o.gps.lon) && angka(o.gps.akurasi) && o.gps.akurasi >= 0 && angka(o.gps.waktu) ? {lat: o.gps.lat, lon: o.gps.lon, akurasi: o.gps.akurasi, waktu: o.gps.waktu} : null;
   const durasi = angka(o.durasi) && o.durasi >= 0 && o.durasi < 36000 ? Math.round(o.durasi) : null, jumlah = Math.ceil(ukuran / BAGIAN);
   const fid = acak(8), kunci = `lapor/foto/${fid}.vid`, mp = await env.MEDIA.createMultipartUpload(kunci);
-  try { await H.lpUnggahBaru(env, P, {id: fid, wa, kunci, uploadId: mp.uploadId, ukuran, jumlah, gps: g ? JSON.stringify(g) : null, durasi, bahasa: saluran === "web" ? bahasaSah(o.bahasa) : "id", kini}); if (id.perangkat) await H.lpMilikTambah(env, P, "unggah", fid, id.perangkat); }
+  try { await H.lpUnggahBaru(env, P, {id: fid, wa, kunci, uploadId: mp.uploadId, ukuran, jumlah, gps: g ? JSON.stringify(g) : null, durasi, bahasa: bahasaSah(o.bahasa), kini}); if (id.perangkat) await H.lpMilikTambah(env, P, "unggah", fid, id.perangkat); }
   catch (e) { await mp.abort().catch(() => {}); throw e; }
   return kirim(200, {id: fid, bagian: BAGIAN, jumlah, diterima: []});
 }
@@ -596,7 +599,7 @@ async function unggahSelesai(env, req, url, kini, uid) {
     await H.lpUnggahHapus(env, P, uid);
     const h = mm.h, prov = provDari(h.sesi);
     return kirim(200, await keluarBahasa(modelDari(env), {...keluaran(h, h.sesi), teksWa: h.balasan, fotoBaru: {id: uid, jenis: "video", durasi: dRound, lencana: meta.lencana, lencanaTeks: meta.lencanaTeks, lat: meta.lat ?? null, lon: meta.lon ?? null,
-      waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu}}, saluran === "web" ? bahasaSah(u.bahasa) : "id"));
+      waktuTeks: waktuLapor(waktuAmbil, prov), sumberWaktu}}, bahasaSah(u.bahasa), saluran));
   } catch (e) {   // galat tak terduga: tidak meninggalkan berkas yatim
     if (selesai) await env.MEDIA.delete([kunci, kunciSampul]).catch(() => {});
     await H.lpUnggahHapus(env, P, uid).catch(() => {});

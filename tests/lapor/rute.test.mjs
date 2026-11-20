@@ -684,7 +684,7 @@ uji("terjemah teks kartu: tanpa model null per butir, bentuk salah 400, paling b
   assert.equal(banyak.j.teks.length, 60);
 });
 
-uji("bahasa: terjemah masuk disamarkan, asli tersimpan, balasan diterjemahkan, angka berubah ditolak, pintu WA tetap Indonesia", async () => {
+uji("bahasa: terjemah masuk disamarkan, asli tersimpan, balasan diterjemahkan, angka berubah ditolak, pintu WA ikut bahasa pilihan", async () => {
   const B = await siapkan("uji-lapor-bahasa", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", ANTHROPIC_API_KEY: "kunci-uji"}, luar: luarModel});
   const WB = "6281200000041", kirimB = (b, h = MESIN) => B.api("POST", "/api/lapor/pesan", {wa: WB, ...b}, h);
   assert.equal((await B.api("POST", "/api/lapor/izin", {wa: WB}, MESIN)).s, 200);
@@ -705,12 +705,14 @@ uji("bahasa: terjemah masuk disamarkan, asli tersimpan, balasan diterjemahkan, a
   r = await kirimB({teks: "Setuju sekali, ada 3 rumah", bahasa: "en", saluran: "web"}); assert.equal(r.s, 200); mauUbahAngka = false;
   sesi = JSON.parse((await B.DB.prepare("SELECT kerja FROM lapor_sesi WHERE wa = ?").bind(WB).first()).kerja);
   const t2 = sesi.transkrip.filter(x => x.dari === "pelapor").at(-1); assert.equal(t2.teks, "Setuju sekali, ada 3 rumah"); assert.equal(t2.asli, undefined);
-  // pintu WA (mesin tanpa saluran web) dengan bahasa = tetap Indonesia, model terjemah tidak dipanggil
+  // pintu WA dengan bahasa (pemilik 20 Nov 2026: bot WA bisa bahasa daerah): pesan masuk diterjemahkan, teksWa yang dikirim gateway keluar dalam bahasa pilihan
   keModel.length = 0; await B.DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WB).run();
-  r = await kirimB({teks: "lanjut", bahasa: "en", saluran: "wa"}); assert.equal(r.s, 200); assert.equal(keModel.length, 0); assert.ok(!/\[EN\]/.test(r.t));
+  r = await kirimB({teks: "lanjut", bahasa: "en", saluran: "wa"}); assert.equal(r.s, 200); assert.equal(keModel.length, 1, "pesan WA ikut diterjemahkan masuk"); assert.match(r.j.teksWa, /^\[EN\] /);
+  await B.DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WB).run();
+  r = await kirimB({teks: "lanjut", saluran: "wa"}); assert.ok(!/^\[EN\]/.test(r.j.teksWa), "WA tanpa bahasa tetap Indonesia");
   // nomor pilihan ("1") tidak diterjemahkan; bahasa tak dikenal = Indonesia
   await B.DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WB).run();
-  r = await kirimB({teks: "1", bahasa: "en", saluran: "web"}); assert.equal(keModel.length, 0, "angka saja tidak dikirim ke model");
+  keModel.length = 0; r = await kirimB({teks: "1", bahasa: "en", saluran: "web"}); assert.equal(keModel.length, 0, "angka saja tidak dikirim ke model");
   r = await kirimB({teks: "halo", bahasa: "xx", saluran: "web"}); assert.equal(r.s, 200); assert.equal(keModel.length, 0); assert.ok(!/\[EN\]/.test(r.t));
 });
 

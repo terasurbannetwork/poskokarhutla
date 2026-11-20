@@ -29,6 +29,7 @@ async function worker(st = {}) {
       if (u === '/api/lapor/izin' && req.method === 'GET') return kirim({ wa: st.izin })
       if (u === '/api/lapor/izin') { const j = json(); if (j.cabut) st.izin = st.izin.filter((x) => x !== j.wa); else st.izin.push(j.wa); return kirim({ ok: true }) }
       if (st.kode && (u === '/api/lapor/foto' || u === '/api/lapor/pesan')) return kirim({ galat: 'x', sisaDetik: 5, teksWa: st.kode === 409 ? 'Belum tahap foto.' : 'Kuota habis, coba lagi nanti.' }, st.kode)
+      if (u === '/api/lapor/bahasa' && st.bahasa) return kirim({ bahasa: st.bahasa })
       if (u === '/api/lapor/pesan') return kirim({ teksWa: '*Lapor Bencana BNPB*\n\n1 Warga\n2 Petugas BPBD' })
       if (u === '/api/lapor/foto') return kirim({ teksWa: '*Foto diterima*' })
       if (u === '/api/lapor/kabar') return kirim({ kabar: st.kabar })
@@ -51,7 +52,8 @@ const jpegDenganExif = () => {
 
 function pasang(w, opsi = {}) {
   const kirim = []
-  const L = buat({ worker: w.url, mesin: MESIN, pemilik: '081200000001', kirim: async (wa, isi, o) => { kirim.push({ wa, isi, o }); return opsi.hasilKirim ?? { ok: true } }, ...opsi.buat })
+  const bahasaBerkas = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'lapor-wa-bhs-')), 'bahasa.json')   // jangan pernah menulis pilihan bahasa nyata di Mac mini
+  const L = buat({ worker: w.url, mesin: MESIN, pemilik: '081200000001', bahasaBerkas, kirim: async (wa, isi, o) => { kirim.push({ wa, isi, o }); return opsi.hasilKirim ?? { ok: true } }, ...opsi.buat })
   return { L, kirim }
 }
 
@@ -226,4 +228,25 @@ test('URL unduhan bukan origin Worker ditolak: PDF kabar dan foto bahan tidak di
   await buatPdf({ worker: w.url, mesin: MESIN, kerja, skrip }).putaran()
   assert.equal(luar.log.filter((x) => x.url.startsWith('/berkas/')).length, 0, 'tidak ada permintaan ke origin lain')
   luar.tutup(); w.tutup()
+})
+
+test('bahasa (K58): lapor pertama menampilkan daftar bernomor, pilihan disimpan dan ikut tiap pesan; perintah bahasa mengganti; tanpa daftar langsung diteruskan', async () => {
+  const w = await worker({ bahasa: [{ kode: 'id', nama: 'Bahasa Indonesia' }, { kode: 'en', nama: 'English' }, { kode: 'su', nama: 'Bahasa Sunda' }] })
+  const { L, kirim } = pasang(w)
+  await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: 'lapor' } })
+  assert.match(kirim.at(-1).isi.text, /Pilih bahasa[\s\S]*3\. Bahasa Sunda/)
+  assert.equal(w.log.filter((x) => x.url === '/api/lapor/pesan').length, 0, 'daftar dulu, belum ke mesin')
+  await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: '3' } })
+  let p = w.log.filter((x) => x.url === '/api/lapor/pesan').map((x) => x.badan)
+  assert.deepEqual(p.at(-1), { wa: NOMOR, saluran: 'wa', bahasa: 'su', teks: 'lapor' }, 'lapor diteruskan dengan bahasa pilihan')
+  await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: 'Banjir di desa' } })
+  p = w.log.filter((x) => x.url === '/api/lapor/pesan').map((x) => x.badan)
+  assert.equal(p.at(-1).bahasa, 'su')
+  await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: 'bahasa' } })
+  await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: '1' } })
+  assert.match(kirim.at(-1).isi.text, /Bahasa Indonesia/)
+  await L.tangani({ wa: NOMOR, jid: 'j', c: { conversation: 'lanjut' } })
+  p = w.log.filter((x) => x.url === '/api/lapor/pesan').map((x) => x.badan)
+  assert.equal(p.at(-1).bahasa, undefined, 'Indonesia = tanpa kunci bahasa')
+  w.tutup()
 })
