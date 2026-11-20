@@ -834,7 +834,8 @@ function tampilProfil() {
 function tampilBeranda() {
   tampilProfil();
   const p = cache.pelapor;
-  $("sapa").textContent = p ? `Halo ${p.split(" ")[0]}, lihat kejadian bencana? Laporkan di sini.` : "Lihat kejadian bencana? Laporkan di sini.";
+  // simpul teks terpisah: "Halo" dan kalimat ikut kamus terjemahan, nama tidak (pemilik 20 Nov 2026: judul tetap bahasa Indonesia saat English)
+  if (p) { const nm = el("span", "lp-nama-orang", ` ${p.split(" ")[0]}`); $("sapa").replaceChildren("Halo", nm, ", lihat kejadian bencana? Laporkan di sini."); } else $("sapa").textContent = "Lihat kejadian bencana? Laporkan di sini.";
   const l = cache.laporan?.[0];
   $("kTerbaru").hidden = !l;
   if (l) { // kartu laporan terbaru: foto jenis bencana, nomor, langkah status, tombol lacak (pemilik 19 Nov 2026: "bagusin")
