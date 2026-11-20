@@ -37,7 +37,7 @@ const chipGugus = g => { const c = el("span", `mj-gugus${g.label === "gugus kuat
   c.title = `${g.kode}: ${F(g.n_laporan)} laporan dari ${F(g.n_pelapor)} pelapor berbeda, berdekatan waktu dan tempat. Bukan verifikasi.`; return c; };
 const adaKorban = b => (b.dampak?.meninggal || 0) + (b.dampak?.hilang || 0) + (b.dampak?.luka || 0) > 0;
 
-const provTutup = new Set();
+const provTutup = new Set(), gugusTutup = new Set();
 let semua = [], saringStatus = null, saringJenis = new Set(), saringKab = "", cepat = new Set(), urut = {k: "waktu", arah: -1}, pilih = null, peta = null, penanda = [], popup = null, petaMini = null;
 const fotoCache = new Map(), dlg = $("rinci");
 
@@ -331,7 +331,24 @@ function gambarTabel(daftar) {
     tr.addEventListener("click", () => bukaRinci(b.nomor));
     return tr;
   };
-  $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : xs.map(baris))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
+  /* laporan satu gugus (kejadian yang sama) dikumpulkan berurutan di bawah satu kepala gugus (pemilik 20 Nov 2026: "harusnya ada kaya merge,
+     dilihat sebagai satu bencana atau dibuat saling dekat"). Angka di kepala = tertinggi antarlaporan, tidak dijumlah (D28, D107). */
+  const kepalaGugus = (g, xs) => { const tr = el("tr", "mj-gugus-kepala"), td = el("td"), bt = el("button"); td.colSpan = KOLOM.length; bt.type = "button";
+    const tutup = gugusTutup.has(g.kode); bt.setAttribute("aria-expanded", String(!tutup));
+    const ik = el("span", "mj-jenis-ikon kecil"); ik.style.setProperty("--jn", warnaJenis(xs[0].jenisId)); ik.append(ikon(ikonJenis(xs[0].jenisId)));
+    const desa = [...new Set(xs.map(b => b.wilayah?.desa).filter(Boolean))], waktu = xs.map(b => b.terkirim).sort((a, b) => a - b);
+    const maks = k => Math.max(...xs.map(b => b.dampak?.[k] ?? -1)), angka = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"]]
+      .map(([k, t]) => [maks(k), t]).filter(([n]) => n > 0).map(([n, t]) => `${F(n)} ${t}`);
+    const tx = el("div", "mj-gugus-teks"); tx.append(el("b", null, `${xs[0].jenis || "Kejadian"}, ${xs.length} laporan dari ${F(g.n_pelapor || xs.length)} warga`),
+      el("small", null, [desa.length ? `Desa/Kel. ${desa.join(", ")}` : null, xs[0].wilayah?.kab, `${tglRingkas(xs.find(b => b.terkirim === waktu[0])?.waktuLapor || "")} sampai ${tglRingkas(xs.find(b => b.terkirim === waktu.at(-1))?.waktuLapor || "")}`].filter(Boolean).join(", ")));
+    const kanan = el("div", "mj-gugus-kanan"); kanan.append(...(angka.length ? [el("span", "mj-gugus-angka", `Tertinggi: ${angka.join(", ")}`)] : []), chipGugus(g));
+    bt.append(ikon("m-bawah"), ik, tx, kanan);
+    bt.addEventListener("click", () => { gugusTutup.has(g.kode) ? gugusTutup.delete(g.kode) : gugusTutup.add(g.kode); gambarTabel(tersaringSekarang()); });
+    td.append(bt); tr.append(td); return tr; };
+  const susun = xs => { const grup = new Map(); for (const b of xs) { const k = b.gugus?.kode || `#${b.nomor}`; grup.set(k, [...(grup.get(k) || []), b]); }
+    return [...grup.values()].flatMap(g => g.length < 2 ? g.map(baris)
+      : [kepalaGugus(g[0].gugus, g), ...(gugusTutup.has(g[0].gugus.kode) ? [] : g.map(b => { const tr = baris(b); tr.classList.add("mj-anggota"); return tr; }))]); };
+  $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : susun(xs))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
 }
 const fotoLaporan = nomor => { if (!fotoCache.has(nomor)) fotoCache.set(nomor, fetch(`/api/lapor/meja/${nomor}`).then(r => r.json()).then(j => j.foto || []).catch(() => [])); return fotoCache.get(nomor); };
 

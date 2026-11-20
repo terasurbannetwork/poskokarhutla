@@ -785,3 +785,15 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-rk-angka{display:flex!important;flex-wrap:wrap}
 .mj-rk-angka>*{flex:1 1 150px;min-width:0}
 .mj-dok-kisi > :last-child:nth-child(odd){grid-column:1 / -1}
+/* gugus di Daftar: satu kepala per kejadian yang sama, anggota berurutan dengan garis kiri (pemilik 20 Nov 2026) */
+.mj-gugus-kepala td{padding:0!important;background:color-mix(in oklab,var(--brand2) 7%,var(--card))}
+.mj-gugus-kepala button{display:flex;align-items:center;gap:12px;width:100%;padding:10px 16px;border:0;background:none;text-align:left;cursor:pointer;color:var(--ink)}
+.mj-gugus-kepala button>svg{width:16px;height:16px;flex:none;transition:transform var(--dur-2,.15s)}
+.mj-gugus-kepala button[aria-expanded="false"]>svg{transform:rotate(-90deg)}
+.mj-gugus-teks{display:grid;gap:2px;min-width:0;flex:1}
+.mj-gugus-teks b{font:800 .875rem var(--mj-display,inherit);color:var(--brand)}
+.mj-gugus-teks small{font-size:.75rem;color:var(--ink2)}
+.mj-gugus-kanan{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.mj-gugus-angka{padding:3px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.75rem;font-weight:700}
+.mj-anggota td:first-child{box-shadow:inset 4px 0 0 var(--brand2)}
+.mj-anggota td{background:color-mix(in oklab,var(--brand2) 3%,var(--card))}
