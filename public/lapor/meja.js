@@ -3,9 +3,6 @@
    Kotak angka di kepala = saring status. Semua saringan berlaku serentak untuk peta, ringkasan, dan tabel.
    INP (aturan pemilik 2): tombol saring berganti keadaan seketika, peta dan tabel digambar ulang sesudah cat berikutnya.
    Angka dampak antarlaporan tidak dijumlah (laporan warga bisa ganda untuk satu kejadian): ringkasan menghitung LAPORAN, bukan korban. */
-/* tinjau lokal tampilan BPBD (LA-66): ?sebagai=kab:31.75 | prov:31 | bnpb menyetel kuki lapor_sebagai. Hanya di localhost; Worker mengabaikan kuki ini. */
-{ const s = new URLSearchParams(location.search).get("sebagai");
-  if (s && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) document.cookie = /^(kab|prov):[\d.]{2,5}$/.test(s) ? `lapor_sebagai=${s}; path=/; samesite=strict` : "lapor_sebagai=; path=/; max-age=0"; }
 const $ = id => document.getElementById(id);
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
 const ikon = id => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"), u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", `#${id}`); s.setAttribute("aria-hidden", "true"); s.append(u); return s; };
@@ -382,11 +379,13 @@ function gambarTabel(daftar) {
     const tutup = gugusTutup.has(g.kode); bt.setAttribute("aria-expanded", String(!tutup));
     const ik = el("span", "mj-jenis-ikon kecil"); ik.style.setProperty("--jn", warnaJenis(xs[0].jenisId)); ik.append(ikon(ikonJenis(xs[0].jenisId)));
     const desa = [...new Set(xs.map(b => b.wilayah?.desa).filter(Boolean))], waktu = xs.map(b => b.terkirim).sort((a, b) => a - b);
-    const maks = k => Math.max(...xs.map(b => b.dampak?.[k] ?? -1)), angka = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"]]
-      .map(([k, t]) => [maks(k), t]).filter(([n]) => n > 0).map(([n, t]) => `${F(n)} ${t}`);
+    const maks = k => Math.max(...xs.map(b => b.dampak?.[k] ?? -1)), angka = [["meninggal", "meninggal", "m-meninggal"], ["hilang", "hilang", "m-hilang"], ["luka", "luka", "m-luka"], ["mengungsi", "mengungsi", "m-tenda"], ["rumah", "rumah rusak", "m-rumah"]]
+      .map(([k, t, ik]) => [maks(k), t, ik]).filter(([n]) => n > 0);
+    const pil = () => { const p = el("span", "mj-gugus-angka"); p.title = "Angka tertinggi antarlaporan, tidak dijumlah"; p.append(el("small", null, "Tertinggi"));
+      for (const [n, t, ik] of angka) { const s = el("span"); s.append(ikon(ik), `${F(n)} ${t}`); p.append(s); } return p; };
     const tx = el("div", "mj-gugus-teks"); tx.append(el("b", null, `${xs[0].jenis || "Kejadian"}, ${xs.length} laporan dari ${F(g.n_pelapor || xs.length)} warga`),
       el("small", null, [desa.length ? `Desa/Kel. ${desa.join(", ")}` : null, xs[0].wilayah?.kab, `${tglRingkas(xs.find(b => b.terkirim === waktu[0])?.waktuLapor || "")} sampai ${tglRingkas(xs.find(b => b.terkirim === waktu.at(-1))?.waktuLapor || "")}`].filter(Boolean).join(", ")));
-    const kanan = el("div", "mj-gugus-kanan"); kanan.append(...(angka.length ? [el("span", "mj-gugus-angka", `Tertinggi: ${angka.join(", ")}`)] : []), chipGugus(g));
+    const kanan = el("div", "mj-gugus-kanan"); kanan.append(...(angka.length ? [pil()] : []), chipGugus(g));
     bt.append(ikon("m-bawah"), ik, tx, kanan);
     bt.addEventListener("click", () => { gugusTutup.has(g.kode) ? gugusTutup.delete(g.kode) : gugusTutup.add(g.kode); gambarTabel(tersaringSekarang()); });
     td.append(bt); tr.append(td); return tr; };
@@ -512,6 +511,49 @@ function kartuBukti(j, nomor, kirim) {
   w.append(...(j.bukti?.length ? [kisi] : [el("p", "mj-redup", j.status === "ditindaklanjuti" ? "Sebelum Selesai, lampirkan minimal satu foto penanganan. Pelapor melihatnya di halaman lacak." : "Foto penanganan dilihat pelapor di halaman lacak.")]), tb, masuk);
   k.append(h, w); return k;
 }
+/* pilihan tindakan (K70, D111): checkbox berlabel dari katalog jenis bencana (bencana.json, AGENTS 2.28) + tindakan lain; nilai() = badan kiriman */
+function pemilihTindakan(pilihan, judul) {
+  const fs = el("fieldset", "mj-pilih"), lg = el("legend", "mj-label", judul), kisi = el("div", "mj-pilih-kisi");
+  for (const t of pilihan || []) { const lb = el("label"), cb = el("input"); cb.type = "checkbox"; cb.name = "tindakan"; cb.value = t.kode; lb.append(cb, t.label); kisi.append(lb); }
+  const lain = el("input"); lain.type = "text"; lain.name = "tindakanLain"; lain.maxLength = 120; lain.placeholder = pilihan?.length ? "Tindakan lain (opsional)" : "Tulis tindakan yang dilakukan"; lain.setAttribute("aria-label", "Tindakan lain");
+  fs.append(lg, ...(pilihan?.length ? [kisi] : []), lain);
+  return {el: fs, nilai: () => ({tindakan: [...fs.querySelectorAll("input[name=tindakan]:checked")].map(x => x.value), tindakanLain: lain.value})};
+}
+/* daftar tindakan tercatat: label, pelaku, waktu */
+function daftarTindakan(xs) {
+  const ul = el("ul", "mj-tindakan"); for (const t of xs) { const li = el("li"); li.append(ikon("m-centang"), el("b", null, t.label), el("small", null, [t.waktu, t.oleh].filter(Boolean).join(", "))); ul.append(li); }
+  return ul;
+}
+/* pengecekan lapangan (K69, D108-D110): hasil Valid, Sebagian benar, atau Tidak valid; catatan wajib; revisi angka hanya bila Sebagian benar.
+   Revisi tidak menimpa isian pelapor: server menulis versi baru berasal petugas. */
+function kartuPeriksa(j, kirim) {
+  const k = el("section", "mj-kartu"), h = el("h3"), akhir = j.periksa?.at(-1); h.append(ikon("m-telaah"), "Pengecekan lapangan");
+  if (akhir) { const p = el("span", `mj-periksa-pil ${akhir.hasil}`, akhir.label); h.append(p); }
+  const w = el("div", "mj-isi-kartu"), tutup = ["selesai", "tidak_valid"].includes(j.status);
+  if (j.periksa?.length) { const ol = el("ol", "mj-periksa-riwayat");
+    for (const x of [...j.periksa].reverse()) { const li = el("li"); li.append(el("b", null, x.label), el("small", null, [x.waktu, x.oleh].filter(Boolean).join(", ")), el("p", null, x.catatan));
+      if (x.perubahan?.length) li.append(el("p", "mj-redup", `Direvisi: ${x.perubahan.map(p => `${(j.revisi.find(r => r.nama === p.nama)?.label || p.nama)} ${p.dari ?? "belum didata"} menjadi ${F(p.ke)}`).join(", ")}`));
+      ol.append(li); } w.append(ol); }
+  if (tutup) { if (!j.periksa?.length) w.append(el("p", "mj-redup", "Tiket sudah ditutup.")); k.append(h, w); return k; }
+  const f = el("form", "mj-periksa"); f.noValidate = false;
+  const hs = el("fieldset", "mj-pilih"), lg = el("legend", "mj-label", "Hasil cek di lokasi"), kisi = el("div", "mj-hasil");
+  for (const [v, t] of [["valid", "Valid"], ["sebagian", "Sebagian benar"], ["tidak_valid", "Tidak valid"]]) { const lb = el("label", v), r = el("input"); r.type = "radio"; r.name = "hasil"; r.value = v; r.required = true; lb.append(r, t); kisi.append(lb); }
+  hs.append(lg, kisi);
+  const cat = el("textarea"); cat.name = "catatan"; cat.required = true; cat.minLength = 5; cat.maxLength = 1000; cat.placeholder = "Apa yang dilihat di lokasi, siapa yang ditemui"; cat.setAttribute("aria-label", "Catatan pengecekan");
+  // revisi angka: nilai awal = isian sekarang; hanya yang diubah dikirim
+  const rv = el("details", "mj-revisi"), sm = el("summary", null, "Revisi angka laporan"), rk = el("div", "mj-revisi-kisi"), input = [];
+  for (const r of j.revisi || []) { const lb = el("label"), i = el("input"); i.type = "number"; i.inputMode = "numeric"; i.min = "0"; i.max = "1000000"; i.step = "1"; i.name = r.nama; i.placeholder = "belum didata";
+    if (r.nilai != null) i.value = String(r.nilai); i.dataset.awal = i.value; lb.append(el("span", null, r.label), i); rk.append(lb); input.push(i); }
+  rv.append(sm, el("p", "mj-redup", "Angka asli pelapor tetap tersimpan sebagai versi sebelumnya. Isi ini hanya bila hasilnya Sebagian benar."), rk);
+  const gl = el("p", "mj-pesan-galat"); gl.setAttribute("role", "alert");
+  const sb = el("button", "mj-tombol isi lebar"); sb.type = "submit"; sb.append(ikon("m-centang"), "Simpan pengecekan");
+  f.append(hs, cat, ...(input.length ? [rv] : []), gl, sb);
+  f.addEventListener("submit", e => { e.preventDefault(); gl.textContent = "";
+    const hasil = f.elements.hasil.value, ubah = Object.fromEntries(input.filter(i => i.value !== i.dataset.awal && i.value !== "").map(i => [i.name, Number(i.value)]));
+    if (hasil !== "sebagian" && Object.keys(ubah).length) { gl.textContent = "Ada angka yang diubah: pilih Sebagian benar, atau kembalikan angkanya."; return; }
+    kirim("periksa", {hasil, catatan: cat.value, ubah}, sb, gl); });
+  w.append(f); k.append(h, w); return k;
+}
 /* kecilkan ke JPEG sisi terpanjang 1600 px (metadata asli tidak ikut) */
 async function kecilkanFoto(f) {
   try { const bmp = await createImageBitmap(f), sk = Math.min(1, 1600 / Math.max(bmp.width, bmp.height)), c = document.createElement("canvas");
@@ -553,24 +595,37 @@ async function bukaRinci(nomor, lihat = true) {
   const tk = wadah(), catatan = el("textarea"); catatan.placeholder = "Tulis catatan tiket atau balasan untuk pelapor"; catatan.maxLength = 1000; catatan.setAttribute("aria-label", "Catatan atau balasan");
   const galat = el("p", "mj-pesan-galat"); galat.setAttribute("role", "alert");
   const st = el("div", "mj-deret");
-  const kirim = async (aksi, badan, tombol) => {
-    galat.textContent = ""; tombol.disabled = true;
+  const kirim = async (aksi, badan, tombol, gEl = galat) => {   // gEl: kartu lain (pengecekan, tindakan) menampilkan galatnya sendiri
+    gEl.textContent = ""; tombol.disabled = true;
     try {
       const res = await fetch(`/api/lapor/meja/${nomor}/${aksi}`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(badan)});
-      const h = await res.json(); if (!res.ok) { galat.textContent = h.galat || "Gagal menyimpan."; return; }
+      const h = await res.json(); if (!res.ok) { gEl.textContent = h.galat || "Gagal menyimpan."; return; }
       catatan.value = ""; fotoCache.delete(nomor); await muat(); bukaRinci(nomor, false);
-    } catch { galat.textContent = "Gagal menyimpan, periksa sambungan."; } finally { tombol.disabled = false; }
+    } catch { gEl.textContent = "Gagal menyimpan, periksa sambungan."; } finally { tombol.disabled = false; }
   };
+  // Ditindaklanjuti wajib menyebut tindakan (K70, D112): ketukan pertama membuka pilihan tindakan, ketukan kedua menyimpan
+  const pmTindak = (j.pindah || []).includes("ditindaklanjuti") ? pemilihTindakan(j.tindakanPilihan, "Tindakan yang dilakukan") : null; if (pmTindak) pmTindak.el.hidden = true;
   for (const ke of j.pindah || []) { const bt = el("button", `mj-tombol status${ke === "tidak_valid" ? " lemah" : ""}`); bt.type = "button"; bt.style.setProperty("--st", WARNA[ke]); bt.append(el("i"), LABEL[ke]);
+    if (ke === "tidak_valid") bt.title = "Tulis alasannya di kotak catatan. Untuk hasil cek di lokasi, pakai kartu Pengecekan lapangan.";
     // Selesai tanpa foto penanganan: tulis alasan di kotak catatan, lalu ketuk Selesai lagi (K60, D87); server menolak tanpa salah satunya
-    bt.addEventListener("click", () => kirim("status", {ke, catatan: catatan.value, ...(ke === "selesai" && !(j.bukti || []).length ? {tanpaBukti: catatan.value} : {})}, bt)); st.append(bt); }
+    bt.addEventListener("click", () => {
+      if (ke === "ditindaklanjuti" && pmTindak.el.hidden) { pmTindak.el.hidden = false; bt.lastChild.textContent = "Simpan, tindaklanjuti"; pmTindak.el.querySelector("input")?.focus(); return; }
+      kirim("status", {ke, catatan: catatan.value, ...(ke === "ditindaklanjuti" ? pmTindak.nilai() : {}), ...(ke === "selesai" && !(j.bukti || []).length ? {tanpaBukti: catatan.value} : {})}, bt); });
+    st.append(bt); }
   const balas = el("button", "mj-tombol isi lebar"); balas.type = "button"; balas.append(ikon("m-pesan"), "Kirim balasan ke pelapor"); balas.addEventListener("click", () => kirim("balas", {teks: catatan.value}, balas));
   const dok = el("div", "mj-dok-kisi"); for (const u of j.unduhan || []) { const a = Object.assign(el("a", "mj-tombol"), {href: u.url}); a.append(ikon("m-unduh"), `Unduh ${u.label}`); dok.append(a); }
   const draf = el("button", "mj-tombol"); draf.type = "button"; draf.append(ikon("m-daftar"), "Draf logbook"); draf.title = "Buka Logbook Pusdalops dengan isian dari laporan ini"; draf.addEventListener("click", () => drafLogbook(j, draf)); if (!akunBpbd()) dok.append(draf); // Logbook Pusdalops milik BNPB
   const lacak = Object.assign(el("a", "mj-tombol"), {href: `/lapor/lacak.html?t=${j.token}`, target: "_blank", rel: "noopener"}); lacak.append(ikon("m-tiket"), "Lacak"); lacak.title = "Halaman lacak yang dilihat pelapor"; dok.append(lacak);
   const lbl = t => el("p", "mj-label", t);
-  tk.append(catatan, balas, ...(st.childElementCount ? [lbl("Pindahkan status ke"), st] : []), galat, lbl("Dokumen"), dok);
+  tk.append(catatan, balas, ...(st.childElementCount ? [lbl("Pindahkan status ke"), st] : []), ...(pmTindak ? [pmTindak.el] : []), galat, lbl("Dokumen"), dok);
   const kTiket = kartu("Tindak lanjut", "m-tiket", tk);
+  const kPeriksa = kartuPeriksa(j, kirim);
+  // tindakan tercatat; saat Ditindaklanjuti bisa ditambah (D111)
+  const kTindakan = j.tindakan?.length || j.status === "ditindaklanjuti" ? kartu(`Tindakan${j.tindakan?.length ? ` (${j.tindakan.length})` : ""}`, "m-tangan", (() => { const wt = wadah();
+    if (j.tindakan?.length) wt.append(daftarTindakan(j.tindakan));
+    if (j.status === "ditindaklanjuti") { const pm = pemilihTindakan(j.tindakanPilihan, "Tambah tindakan"), gt = el("p", "mj-pesan-galat"), bt = el("button", "mj-tombol lebar"); gt.setAttribute("role", "alert");
+      bt.type = "button"; bt.append(ikon("m-tangan"), "Catat tindakan"); bt.addEventListener("click", () => kirim("tindakan", pm.nilai(), bt, gt)); wt.append(pm.el, gt, bt); }
+    return wt; })()) : null;
   const kBukti = kartuBukti(j, nomor, kirim);
 
   // pelapor
@@ -618,7 +673,7 @@ async function bukaRinci(nomor, lihat = true) {
     return wt; })());
 
   // dua kolom: kiri tindakan (menempel saat digulir), kanan isi laporan
-  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, kBukti, ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
+  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, kPeriksa, ...(kTindakan ? [kTindakan] : []), kBukti, ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
   /* isi laporan dikategorikan (pemilik 19 Nov 2026 "harus dikategoriin, ada bagian dengan pill"): tiap bagian berpil berikon,
      deret pil di atas untuk lompat ke bagian; kartu tiap kelompok isian masuk bagiannya */
   const kartuKelompok = new Map([...per].map(([kel, xs]) => [kel, kartuKel([kel, xs])]));

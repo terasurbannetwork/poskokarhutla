@@ -818,7 +818,10 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-gugus-teks b{font:800 .875rem var(--mj-display,inherit);color:var(--brand)}
 .mj-gugus-teks small{font-size:.75rem;color:var(--ink2)}
 .mj-gugus-kanan{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.mj-gugus-angka{padding:3px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.75rem;font-weight:700}
+.mj-gugus-angka{display:inline-flex;align-items:center;gap:10px;padding:3px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.75rem;font-weight:700}
+.mj-gugus-angka small{font-weight:600;color:var(--ink2)}
+.mj-gugus-angka span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.mj-gugus-angka svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--ink2)}
 .mj-anggota td:first-child{box-shadow:inset 4px 0 0 var(--brand2)}
 .mj-anggota td{background:color-mix(in oklab,var(--brand2) 3%,var(--card))}
 
@@ -840,3 +843,29 @@ body{display:flex;flex-direction:column;height:100dvh}
 @keyframes mj-denyut{70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @keyframes mj-sorot-darurat{0%,30%{background:color-mix(in oklab,var(--bad) 18%,var(--card))}}
 @media (prefers-reduced-motion:reduce){.mj-darurat-kepala i,.mj-darurat-kartu.baru{animation:none}}
+/* pengecekan lapangan dan tindakan (K69-K70): pilihan berlabel penuh, target sentuh 44px, warna dari token */
+.mj-pilih{margin:0;padding:0;border:0;display:grid;gap:8px;min-width:0}
+.mj-pilih-kisi,.mj-hasil{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}
+.mj-hasil{grid-template-columns:repeat(3,1fr)}
+.mj-pilih label{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);font-size:.8125rem;font-weight:600;cursor:pointer}
+.mj-pilih label:has(input:checked){border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.mj-hasil label.tidak_valid:has(input:checked){border-color:var(--bad);background:color-mix(in oklab,var(--bad) 8%,var(--card))}
+.mj-hasil label.valid:has(input:checked){border-color:var(--ok);background:color-mix(in oklab,var(--ok) 8%,var(--card))}
+.mj-pilih input[type=checkbox],.mj-pilih input[type=radio]{accent-color:var(--brand2);inline-size:1.1em;aspect-ratio:1;margin:0;flex:none}
+.mj-pilih input[type=text],.mj-revisi input{width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.mj-pilih input[type=text]:focus-visible,.mj-revisi input:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.mj-periksa{display:grid;gap:10px}
+.mj-revisi summary{cursor:pointer;font-weight:700;font-size:.8125rem;color:var(--brand2);padding:6px 0}
+.mj-revisi-kisi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:6px}
+.mj-revisi-kisi label{display:grid;gap:4px;font-size:.75rem;color:var(--ink2)}
+.mj-revisi input:user-invalid{border-color:var(--bad)}
+.mj-periksa-pil{margin-left:auto;padding:2px 10px;border-radius:999px;font-size:.6875rem;font-weight:700;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.mj-periksa-pil.valid{background:color-mix(in oklab,var(--ok) 14%,var(--card));color:var(--ok-tx)}
+.mj-periksa-pil.tidak_valid{background:color-mix(in oklab,var(--bad) 14%,var(--card));color:var(--bad-tx)}
+.mj-periksa-riwayat{list-style:none;margin:0 0 4px;padding:0;display:grid;gap:8px}
+.mj-periksa-riwayat li{padding:8px 10px;border-left:3px solid var(--line);display:grid;gap:2px}
+.mj-periksa-riwayat p{margin:0;font-size:.8125rem}
+.mj-tindakan{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mj-tindakan li{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center;font-size:.8125rem}
+.mj-tindakan li small{grid-column:2;color:var(--ink2)}
+.mj-tindakan svg{width:16px;height:16px;fill:none;stroke:var(--ok-tx);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}

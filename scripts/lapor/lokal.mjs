@@ -25,10 +25,12 @@ const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
+import {HASIL_PERIKSA, ISIAN_REVISI, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "../../src/lapor_periksa.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUBLIK = path.join(AKAR, "public");
+const registri = () => JSON.parse(fs.readFileSync(path.join(PUBLIK, "bencana.json"), "utf8")); // katalog tindakan (AGENTS 2.28), dibaca ulang supaya suntingan langsung terpakai
 const PORT = Number(process.env.LAPOR_PORT || 8810);
 const DIR = path.join(os.homedir(), ".lapor-lokal"), BERKAS = path.join(DIR, "data.json"), FOTO = path.join(DIR, "foto"), DOK = path.join(DIR, "dok");
 
@@ -61,8 +63,8 @@ const PERAN = {warga: "Warga", bpbd_klaim: "Petugas BPBD (belum dikonfirmasi)", 
 export const STATUS = {baru: "Laporan diterima", dilihat: "Sudah dilihat petugas", ditelaah: "Sedang ditelaah", diteruskan: "Diteruskan ke BPBD setempat",
   ditindaklanjuti: "Ditindaklanjuti", selesai: "Selesai ditangani", tidak_valid: "Tidak dapat ditindaklanjuti"};
 export const URUTAN = ["baru", "dilihat", "ditelaah", "diteruskan", "ditindaklanjuti", "selesai"];
-const PINDAH = {baru: ["dilihat"], dilihat: ["ditelaah", "tidak_valid"], ditelaah: ["diteruskan", "ditindaklanjuti", "tidak_valid"], diteruskan: ["ditindaklanjuti"],
-  ditindaklanjuti: ["selesai"], selesai: ["ditelaah"], tidak_valid: ["ditelaah"]}; // ALGORITMA A8 + "dilihat" otomatis saat petugas membuka
+const PINDAH = {baru: ["dilihat"], dilihat: ["ditelaah", "tidak_valid"], ditelaah: ["diteruskan", "ditindaklanjuti", "tidak_valid"], diteruskan: ["ditindaklanjuti", "tidak_valid"],
+  ditindaklanjuti: ["selesai", "tidak_valid"], selesai: ["ditelaah"], tidak_valid: ["ditelaah"]}; // ALGORITMA A8 + "dilihat" otomatis saat petugas membuka
 
 function isianTampil(sesi) {
   return berlakuSesi(sesi).map(i => {
@@ -555,6 +557,11 @@ function mejaRinci(c, nomor, lihat = false) {
     // nilai mentah per isian (null = belum, 0 = tidak ada) dan waktu kejadian ms: bahan draf logbook Pusdalops di meja (K56)
     nilai: Object.fromEntries(berlakuSesi(s).map(i => { const x = s.isian[i.nama]; return [i.nama, !x || x.belum ? null : x.nihil ? 0 : x.nilai]; })), waktuKejadianMs: s.isian.waktu?.ms ?? null,
     kejadian: kejadianTampil(d, s),
+    // pengecekan lapangan dan tindakan (K69-K70): riwayat append-only; pilihan tindakan dari katalog jenis; angka yang boleh direvisi
+    periksa: (s.periksa || []).map(x => ({...x, label: HASIL_PERIKSA[x.hasil], waktu: waktuLapor(x.waktu, prov)})),
+    tindakan: (s.tindakan || []).map(x => ({...x, waktu: waktuLapor(x.waktu, prov)})),
+    tindakanPilihan: tindakanUntuk(s.isian.jenis?.nilai, registri()),
+    revisi: berlakuSesi(s).filter(i => ISIAN_REVISI.includes(i.nama)).map(i => { const x = s.isian[i.nama]; return {nama: i.nama, label: i.label, nilai: !x || x.belum ? null : x.nihil ? 0 : x.nilai, petugas: x?.asal?.sumber === "petugas"}; }),
     gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
         return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,
@@ -602,17 +609,43 @@ function mejaUbah(c, nomor, aksi, body) {
     const b = (s.bukti || []).find(x => x.id === body.id);
     if (!b) return [404, {galat: "Foto penanganan tidak ditemukan."}];
     b.publik = body.publik === true;
+  } else if (aksi === "periksa") { // pengecekan lapangan (K69, D108-D110): hasil + catatan; revisi angka = versi baru berasal petugas; tidak valid memindah tiket
+    if (["selesai", "tidak_valid"].includes(s.tiket.status)) return [409, {galat: "Tiket sudah ditutup."}];
+    const v = sahkanPeriksa(body, new Set(berlakuSesi(s).map(i => i.nama)));
+    if (v.galat) return [400, {galat: v.galat}];
+    const r = terapkanRevisi(s.isian, v.ubah, {pelaku: c.pelaku, catatan: v.catatan, waktu: kini}), st = s.tiket.status, ke = statusDariHasil(v.hasil, st, PINDAH);
+    if (r.perubahan.length) {
+      const label = Object.fromEntries(berlakuSesi(s).map(i => [i.nama, i.label])), versi = (s.versi || []).length + 1;
+      s.isian = r.isian;
+      (s.versi ||= []).push({versi, isi: structuredClone(s.isian), waktu: kini, petugas: c.pelaku, perubahan: r.perubahan.map(x => ({...x, label: label[x.nama]}))});
+      for (const x of ["pdf", "docx"]) fs.rmSync(path.join(DOK, `${nomor}.${x}`), {force: true});
+      buatDokumen(s, d.pelapor[s.wa]);
+    }
+    (s.periksa ||= []).push({hasil: v.hasil, catatan: v.catatan, oleh: c.pelaku, waktu: kini, perubahan: r.perubahan});
+    const ket = `Pengecekan lapangan: ${HASIL_PERIKSA[v.hasil]}. ${v.catatan}${r.perubahan.length ? `. Revisi versi ${s.versi.length}: ${r.perubahan.map(x => `${x.nama.replace(/_/g, " ")} ${x.dari ?? "belum didata"} menjadi ${x.ke}`).join(", ")}` : ""}`;
+    s.tiket.riwayat.push({dari: st, ke: ke || st, pelaku: c.pelaku, catatan: ket.slice(0, 1000), waktu: kini});
+    if (ke) { s.tiket.status = ke; delete s.susulanBaru; (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[ke]}. ${v.catatan}`, waktu: kini, status: true}); }
+  } else if (aksi === "tindakan") { // tambah tindakan saat tiket ditindaklanjuti (K70, D111-D112)
+    if (s.tiket.status !== "ditindaklanjuti") return [409, {galat: "Tindakan dicatat saat tiket Ditindaklanjuti."}];
+    const v = sahkanTindakan(body, s.isian.jenis?.nilai, registri()); if (v.galat) return [400, {galat: v.galat}];
+    (s.tindakan ||= []).push(...v.tindakan.map(x => ({...x, oleh: c.pelaku, waktu: kini})));
+    s.tiket.riwayat.push({dari: s.tiket.status, ke: s.tiket.status, pelaku: c.pelaku, catatan: `Tindakan: ${v.tindakan.map(x => x.label).join(", ")}`, waktu: kini});
+    (d.kotak[s.wa] ||= []).push({nomor, teks: `Tindakan untuk laporan ${nomor}: ${v.tindakan.map(x => x.label).join(", ")}.`, waktu: kini, status: true});
   } else if (aksi === "status") {
     if (!PINDAH[s.tiket.status]?.includes(body.ke)) return [409, {galat: "Perpindahan status tidak sah."}];
+    if (body.ke === "tidak_valid" && catatan.length < 5) return [400, {galat: "Tulis alasan laporan tidak valid di kotak catatan."}];
+    let tindakan = []; // Ditindaklanjuti wajib menyebut tindakan yang dilakukan (K70, D112)
+    if (body.ke === "ditindaklanjuti") { const v = sahkanTindakan(body, s.isian.jenis?.nilai, registri()); if (v.galat) return [400, {galat: v.galat, perluTindakan: true}]; tindakan = v.tindakan; }
+    if (tindakan.length) (s.tindakan ||= []).push(...tindakan.map(x => ({...x, oleh: c.pelaku, waktu: kini})));
     // Selesai wajib minimal satu foto penanganan, atau alasan tertulis tanpa foto yang tercatat di riwayat (K60, D87, Q49)
     const alasan = String(body.tanpaBukti || "").replace(/\s+/g, " ").trim().slice(0, 300);
     if (body.ke === "selesai" && !(s.bukti || []).length && alasan.length < 5) return [400, {galat: "Lampirkan minimal satu foto penanganan, atau tulis alasan tanpa foto.", perluBukti: true}];
     if (["selesai", "tidak_valid"].includes(s.tiket.status) && !catatan) return [400, {galat: "Membuka kembali wajib dengan catatan."}];
     const tanpa = body.ke === "selesai" && !(s.bukti || []).length ? `Tanpa foto penanganan: ${alasan}` : null;
-    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: [catatan, tanpa].filter(Boolean).join(". ") || null, pelaku: c.pelaku, waktu: kini}); // append-only
+    delete s.susulanBaru; s.tiket.riwayat.push({dari: s.tiket.status, ke: body.ke, catatan: [tindakan.length ? `Tindakan: ${tindakan.map(x => x.label).join(", ")}` : null, catatan, tanpa].filter(Boolean).join(". ") || null, pelaku: c.pelaku, waktu: kini}); // append-only
     s.tiket.status = body.ke;
     const nb = (s.bukti || []).length;
-    (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[body.ke]}.${catatan ? ` ${catatan}` : ""}${body.ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, waktu: kini, status: true});
+    (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[body.ke]}.${tindakan.length ? ` Tindakan: ${tindakan.map(x => x.label).join(", ")}.` : ""}${catatan ? ` ${catatan}` : ""}${body.ke === "selesai" && nb ? ` Lihat ${nb} foto penanganan di halaman lacak.` : ""}`, waktu: kini, status: true});
   } else return [404, {galat: "aksi"}];
   simpan(d);
   return mejaRinci(c, nomor);
@@ -683,7 +716,7 @@ export async function tanganiLapor(req, res, url) {
       const c = await akunMeja(req);
       if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);
       if (j === "/api/lapor/meja") return kirim(meja(c));
-      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas))?$/.exec(j);
+      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan))?$/.exec(j);
       // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
       if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));
       if (m && !m[2]) return kirim(mejaRinci(c, m[1], url.searchParams.get("lihat") === "1"));

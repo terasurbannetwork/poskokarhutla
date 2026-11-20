@@ -13,8 +13,8 @@ export const PERAN = {warga: "Warga", bpbd_klaim: "Petugas BPBD (belum dikonfirm
 export const STATUS = {baru: "Laporan diterima", dilihat: "Sudah dilihat petugas", ditelaah: "Sedang ditelaah", diteruskan: "Diteruskan ke BPBD setempat",
   ditindaklanjuti: "Ditindaklanjuti", selesai: "Selesai ditangani", tidak_valid: "Tidak dapat ditindaklanjuti"};
 export const URUTAN = ["baru", "dilihat", "ditelaah", "diteruskan", "ditindaklanjuti", "selesai"];
-export const PINDAH = {baru: ["dilihat"], dilihat: ["ditelaah", "tidak_valid"], ditelaah: ["diteruskan", "ditindaklanjuti", "tidak_valid"], diteruskan: ["ditindaklanjuti"],
-  ditindaklanjuti: ["selesai"], selesai: ["ditelaah"], tidak_valid: ["ditelaah"]}; // ALGORITMA A8 + "dilihat" otomatis saat petugas membuka
+export const PINDAH = {baru: ["dilihat"], dilihat: ["ditelaah", "tidak_valid"], ditelaah: ["diteruskan", "ditindaklanjuti", "tidak_valid"], diteruskan: ["ditindaklanjuti", "tidak_valid"],
+  ditindaklanjuti: ["selesai", "tidak_valid"], selesai: ["ditelaah"], tidak_valid: ["ditelaah"]}; // ALGORITMA A8 + "dilihat" otomatis saat petugas membuka
 /* susulan (F-28, Q26): 72 jam sejak terkirim, tiket belum selesai/tidak_valid, kurang dari 10 versi; s.jumlahVersi dipasang pemuat */
 export const JENDELA_SUSULAN = 72 * 3600e3, KUNCI_SUSULAN = ["jenis", "subjenis", "lokasi", "waktu", "rtrw"];
 export const bolehSusulan = (s, kini = Date.now()) => !!s?.nomor && kini - s.terkirim <= JENDELA_SUSULAN && !["selesai", "tidak_valid"].includes(s.tiket?.status) && (s.jumlahVersi || 1) < 10;
