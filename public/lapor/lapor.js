@@ -50,7 +50,7 @@ function ke(tab) {
   if (tab === "chat") requestAnimationFrame(() => gulir.scrollTo({top: gulir.scrollHeight}));
 }
 // menu: Bantuan dilebur ke Beranda, diganti Kebijakan privasi (pemilik 19 Nov 2026)
-document.querySelectorAll("#tab button").forEach(b => b.addEventListener("click", () => b.dataset.ke === "lapor" ? bukaChat() : b.dataset.ke === "privasi" ? bukaPrivasi() : ke(b.dataset.ke)));
+document.querySelectorAll("#tab button[data-ke]").forEach(b => b.addEventListener("click", () => b.dataset.ke === "lapor" ? bukaChat() : b.dataset.ke === "privasi" ? bukaPrivasi() : ke(b.dataset.ke)));
 $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
 $("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
@@ -298,7 +298,7 @@ function kartuLokasi() {
 /* hasil pencarian tempat: kab/kota dan kecamatan di atas; memilihnya mempersempit daftar desa di dalamnya (laporan butuh desa),
    atau langsung dipakai bila kabupatenCukup (info dan prediksi per kab/kota) */
 async function cariTempat(q, dalam, wadahHasil, pilihDesa, kabupatenCukup) {
-  const j = await (await fetch(`/api/lapor/cari?q=${encodeURIComponent(q)}&dalam=${encodeURIComponent(dalam)}`, {signal: AbortSignal.timeout(10000)})).json();
+  const j = await (await fetch(`/api/lapor/cari?wa=${encodeURIComponent(wa || "")}&q=${encodeURIComponent(q)}&dalam=${encodeURIComponent(dalam)}`, {signal: AbortSignal.timeout(10000)})).json();
   const label = {kab: "Kab/kota", kec: "Kecamatan", desa: "Desa/kel."}, ik = {kab: "i-daftar", kec: "i-lokasi", desa: "i-rumah"};
   // daftar satu kolom: ubin ikon per tingkat, nama dengan bagian yang cocok ditebalkan, panah (pemilik 19 Nov 2026: "bagusin lagi")
   const sorot = t => { const n = t.replace(/^(Desa\/Kel\.|Kecamatan|Kelurahan|Desa)\s+/i, ""), i = q ? n.toLowerCase().indexOf(q.toLowerCase()) : -1, b = el("b");
