@@ -218,8 +218,8 @@ function pasPeta(ada = tersaringSekarang().filter(b => b.lat != null), durasi = 
   if (!peta || !ada.length) return;
   const bb = new maplibregl.LngLatBounds(); for (const b of ada) bb.extend([b.lon, b.lat]);
   // ruang untuk panel: ringkasan kiri, status kanan, deret jenis atas, legenda bawah (panel yang tersembunyi di layar sempit tidak dihitung)
-  const w = document.querySelector(".mj-kiri-peta")?.offsetWidth ? document.querySelector(".mj-kiri-peta").offsetWidth + 24 : 40, kiri = sisi.ringkas === "kiri";
-  peta.fitBounds(bb, {padding: {top: 100, bottom: 100, left: kiri ? w : 60, right: kiri ? 60 : w}, maxZoom: 11, duration: durasi});
+  const w = document.querySelector(".mj-kiri-peta")?.offsetWidth ? document.querySelector(".mj-kiri-peta").offsetWidth + 24 : 40;
+  peta.fitBounds(bb, {padding: {top: 100, bottom: 100, left: 60, right: w}, maxZoom: 11, duration: durasi});
 }
 /* pop-up titik (pemilik 19 Nov 2026 "bagusin lagi"): foto lebar dengan nomor tiket di atasnya, dampak berlabel (angka tanpa label tidak terbaca),
    aksi: Buka rincian selebar kartu, Arah dan Bagikan sejajar di bawahnya */
@@ -710,32 +710,18 @@ $("qCari").addEventListener("input", () => gambar());
 $("bUlang").addEventListener("click", () => { saringJenis.clear(); saringStatus = null; saringKab = ""; cepat.clear(); $("qCari").value = ""; periode = 0; gambar(); });
 $("bPas").addEventListener("click", () => pasPeta());
 $("bSegar").addEventListener("click", () => muat());
-/* sidebar fleksibel kiri atau kanan (pemilik 19 Nov 2026 "semua sidebar bisa fleksibel dibuat kiri kanan"); pilihan diingat per perangkat */
-const sisi = {menu: "kiri", ringkas: "kanan"};
-try { Object.assign(sisi, JSON.parse(localStorage.getItem("meja-sisi") || "{}")); } catch {}
-function terapSisi() {
-  document.querySelector(".mj").classList.toggle("menu-kanan", sisi.menu === "kanan");
-  document.querySelector(".mj-kiri-peta").classList.toggle("di-kiri", sisi.ringkas === "kiri");
-  const lab = (id, nama, ke) => { const b = $(id); b.setAttribute("aria-label", `Pindahkan ${nama} ke ${ke}`); b.title = `Pindahkan ${nama} ke ${ke}`; };
-  lab("sisiMenu", "menu", sisi.menu === "kanan" ? "kiri" : "kanan"); lab("sisiRingkas", "ringkasan", sisi.ringkas === "kiri" ? "kanan" : "kiri");
-  try { localStorage.setItem("meja-sisi", JSON.stringify(sisi)); } catch {}
-  if (peta) requestAnimationFrame(() => peta.resize());
-}
-$("sisiMenu").addEventListener("click", () => { sisi.menu = sisi.menu === "kanan" ? "kiri" : "kanan"; terapSisi(); });
-$("sisiRingkas").addEventListener("click", e => { e.stopPropagation(); sisi.ringkas = sisi.ringkas === "kiri" ? "kanan" : "kiri"; terapSisi(); });
-terapSisi();
 /* lebar menu samping bisa ditarik (memori sidebar-bisa-ditarik; pola pasangTarik di public/bnpb/operasi_lapangan.js); peta menyesuaikan lewat ResizeObserver */
 { const mj = document.querySelector(".mj"), t = $("tarikMenu"), KUNCI = "meja-lebar-menu";
   const atur = w => { w = Math.round(Math.min(420, Math.max(200, w))); mj.style.setProperty("--lebar-menu", w + "px"); return w; };
   const simpanLebar = w => { try { localStorage.setItem(KUNCI, String(w)); } catch {} };
   try { const w = +localStorage.getItem(KUNCI); if (w) atur(w); } catch {}
   let x0 = 0, w0 = 0, w = 0;
-  const gerak = e => { const d = e.clientX - x0; w = atur(w0 + (sisi.menu === "kanan" ? -d : d)); };
+  const gerak = e => { const d = e.clientX - x0; w = atur(w0 + d); };
   const lepas = () => { t.classList.remove("aktif"); mj.classList.remove("menu-tarik"); removeEventListener("pointermove", gerak); removeEventListener("pointerup", lepas); simpanLebar(w); };
   t.addEventListener("pointerdown", e => { e.preventDefault(); x0 = e.clientX; w0 = w = t.parentElement.offsetWidth; t.classList.add("aktif"); mj.classList.add("menu-tarik"); addEventListener("pointermove", gerak); addEventListener("pointerup", lepas); });
   t.addEventListener("dblclick", () => { mj.style.removeProperty("--lebar-menu"); try { localStorage.removeItem(KUNCI); } catch {} });
   t.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault();
-    const tambah = (e.key === "ArrowRight") === (sisi.menu !== "kanan"); simpanLebar(atur(t.parentElement.offsetWidth + (tambah ? 24 : -24))); }); }
+    const tambah = e.key === "ArrowRight"; simpanLebar(atur(t.parentElement.offsetWidth + (tambah ? 24 : -24))); }); }
 setInterval(() => { if (!dlg.open) muat(document.hidden); }, 20000);   // 20 detik, juga saat tab di latar: laporan darurat harus cepat terlihat (K68); di latar hanya pita darurat
 document.addEventListener("visibilitychange", () => { if (!document.hidden && !dlg.open) muat(); });
 muat();

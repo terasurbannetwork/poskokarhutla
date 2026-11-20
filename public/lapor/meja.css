@@ -733,23 +733,14 @@ body{display:flex;flex-direction:column;height:100dvh}
 /* ===== sidebar fleksibel kiri atau kanan ===== */
 .mj-merek-baris{display:flex;align-items:center;gap:6px;padding-right:10px;border-bottom:1px solid var(--line)}
 .mj-merek-baris .mj-merek{flex:1;min-width:0;border-bottom:0!important}
-.mj-sisi{display:grid;place-items:center;flex:none;width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--brand2);cursor:pointer}
-.mj-sisi:hover{border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 7%,var(--card))}
-.mj-sisi svg{width:15px;height:15px}
-.mj.menu-kanan{grid-template-columns:minmax(0,1fr) var(--lebar-menu,240px)!important;grid-template-areas:"isi samping"!important}
-.mj.menu-kanan .mj-samping{border-right:0;border-left:1px solid var(--line)}
 /* pegangan tarik lebar menu samping (memori sidebar-bisa-ditarik): tepi dalam menu, ikut pindah saat menu di kanan */
 .mj-samping{position:relative}
 .mj-tarik{position:absolute;top:0;bottom:0;right:-4px;z-index:3;width:8px;padding:0;border:0;background:none;cursor:col-resize;touch-action:none}
 .mj-tarik::after{content:"";position:absolute;top:50%;left:2px;width:4px;height:40px;margin-top:-20px;border-radius:4px;background:var(--line);opacity:0;transition:opacity .15s}
 .mj-samping:hover .mj-tarik::after,.mj-tarik:focus-visible::after,.mj-tarik.aktif::after{opacity:1}
 .mj-tarik.aktif::after,.mj-tarik:hover::after{background:var(--brand2)}
-.mj.menu-kanan .mj-tarik{right:auto;left:-4px}
 .mj.menu-tarik,.mj.menu-tarik *{cursor:col-resize!important;user-select:none}
 .mj-ringkas{position:relative}
-.mj-ringkas>.mj-sisi{position:absolute;top:8px;right:40px;z-index:1;width:26px;height:26px}
-.mj-kiri-peta.di-kiri{left:12px!important;right:auto!important}
-@media (max-width:900px){.mj.menu-kanan{grid-template-columns:1fr!important;grid-template-areas:"isi"!important}}
 
 /* pop-up titik, putaran 3 (pemilik 19 Nov 2026 "bagusin lagi"): dampak berlabel, nomor di atas foto, aksi dua baris */
 .mj-popup .maplibregl-popup-content{width:300px}

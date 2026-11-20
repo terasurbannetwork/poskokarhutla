@@ -474,6 +474,17 @@ Sebelum menyentuh pendataan per objek sesudah laporan awal BPBD (rumah per rumah
 
 Aturan berhentinya sama dengan §2.1. Hanya tingkat `bpbd` terkonfirmasi; angka rekap dihitung dari daftar, tidak diketik; kosong tidak pernah jadi nol; tidak ada pencocokan orang; data pribadi tidak pernah di `public/` atau pesan WA ke luar tim; penutupan dan fase Buku Besar hanya lewat penerimaan staf; versi beku tidak pernah ditimpa; data pribadi dihapus 5 tahun sesudah penutupan (K9).
 
+### 2.32 Prakiraan lawan Kejadian (`/bnpb/dalops`, prakiraan `/prediksi` di Dalops, seksi Prakiraan dan kejadian, titik Lapor Bencana di peta): baca dulu, baru bangun
+
+Sebelum menyentuh prakiraan di Dalops, pencocokan prakiraan dengan kejadian Dalops dan laporan Lapor Bencana, rute titik laporan untuk Dalops, atau label logbook untuk rapor `/prediksi`, baca dokumen di
+`data/kajian-bnpb/prediksi-kejadian/` dengan urutan otoritas ini (kode di `public/bnpb/dalops*.js` dan `tests/bnpb/dalops_prakiraan*` milik `ruang-bnpb`; `src/dalops.js` dan `src/prediksi.js` milik `warga-api`; `scripts/prediksi/**` milik `prediksi`):
+
+1. `KEPUTUSAN-PREDIKSI-KEJADIAN.md`: keputusan pemilik K1-K6, rancangan D1-D10, pertanyaan terbuka Q1-Q4 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (jendela plus minus satu hari, empat kotak, label logbook), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Prakiraan tetap satu mesin (`scripts/prediksi`), Dalops hanya membaca; tidak ada "salah alarm" dan tidak ada "aman"; laporan warga hanya bukti positif; data laporan tidak pernah di `public/` atau `/prediksi`; DIBI dan logbook dinilai terpisah, tanpa rata-rata; tanpa tombol pindah sisi panel.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
