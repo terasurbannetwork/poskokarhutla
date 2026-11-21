@@ -2170,3 +2170,4 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pred-chip b{font-weight:800}
 .lp-pred-chip.lv3 svg{background:color-mix(in oklab,var(--card) 22%,transparent)}
 .lp-pred-imbauan h4{border-bottom:1px solid var(--line);padding-bottom:10px}
+.lp-pb-merek b{color:var(--on-head)!important}   /* tulisan BNPB di pembuka putih (pemilik 21 Nov 2026) */
