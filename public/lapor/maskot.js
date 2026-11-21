@@ -49,14 +49,17 @@ export function maskot(pose = "sapa", judul = "") {
       <path d="M67 206h14M67 211h14M67 216h14" class="sg-ht-kisi" stroke-width="2" stroke-linecap="round"/>
       <circle cx="80" cy="183" r="3" class="sg-ht-tombol"/>
     </g>
-    <path d="M62 212c0-4 4-7 9-7h8c5 0 8 3 8 8v6c0 6-5 10-11 10h-4c-6 0-10-4-10-10Z" fill="${u("kulit")}" class="sg-o"/>
-    <path d="M66 214h16" class="sg-ruas" stroke-width="2" stroke-linecap="round"/>
+    <!-- kepalan tangan menggenggam HT: empat ruas jari melingkar di depan, jempol di atas (pemilik 21 Nov 2026: "tangan benerin") -->
+    <rect x="57" y="203" width="32" height="24" rx="11" fill="${u("kulit")}" class="sg-o"/>
+    <path d="M61 210h24M61 216h24M62 222h22" class="sg-ruas" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="86" cy="204" rx="6" ry="5" fill="${u("kulit")}" class="sg-o"/>
     <!-- tangan kanan melambai: telapak terbuka empat jari dan jempol -->
     <g class="mk-lambai">
       <path d="M162 178c18-4 30-20 34-42" class="sg-lengan" stroke-width="20" stroke-linecap="round" fill="none"/>
       <path d="M185 145l22 4" class="sg-manset" stroke-width="9" stroke-linecap="round"/>
-      <path d="M187 141c-3-7-3-17 0-26 1-4 7-4 7 0v-9c0-4 7-4 7 0v-3c0-4 7-4 7 0v4c0-4 6-4 6 0v14c3-4 9-2 7 3l-5 11c-3 6-8 9-14 9h-4c-4 0-8-1-11-3Z" fill="${u("kulit")}" class="sg-o"/>
-      <path d="M194 116v8M201 113v10M208 114v9" class="sg-ruas" stroke-width="2" stroke-linecap="round"/>
+      <!-- telapak lebar dengan jempol: terbaca juga saat maskot kecil -->
+      <path d="M185 142c-5-8-6-23-2-33 2-6 8-10 15-10h4c8 0 13 5 13 13v13c4-5 12-4 12 3 0 3-2 6-4 9-4 6-11 10-19 10h-7c-5 0-9-2-12-5Z" fill="${u("kulit")}" class="sg-o"/>
+      <path d="M192 103v14M199 101v16M206 102v15" class="sg-ruas" stroke-width="2.4" stroke-linecap="round"/>
     </g>
     <!-- kepala -->
     <g class="mk-kepala">
