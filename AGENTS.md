@@ -485,6 +485,28 @@ Sebelum menyentuh prakiraan di Dalops, pencocokan prakiraan dengan kejadian Dalo
 
 Aturan berhentinya sama dengan §2.1. Prakiraan tetap satu mesin (`scripts/prediksi`), Dalops hanya membaca; tidak ada "salah alarm" dan tidak ada "aman"; laporan warga hanya bukti positif; data laporan tidak pernah di `public/` atau `/prediksi`; DIBI dan logbook dinilai terpisah, tanpa rata-rata; tanpa tombol pindah sisi panel.
 
+### 2.33 Aplikasi dan peringatan dini Pantau Bencana (PWA `/lapor`, langganan kecamatan, notifikasi Waspada, arahan titik evakuasi): baca dulu, baru bangun
+
+Sebelum menyentuh pemasangan `/lapor` sebagai aplikasi (manifest, service worker), langganan peringatan per lokasi, atau pengiriman Web Push dari prakiraan `/prediksi`, baca dokumen di
+`data/kajian-bnpb/pwa-peringatan/` dengan urutan otoritas ini (kode Worker dan migrasi milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; pembaca prakiraan `scripts/prediksi/**` milik `prediksi`):
+
+1. `KEPUTUSAN-PWA.md`: keputusan pemilik, rancangan D1 dan seterusnya, pertanyaan terbuka Q1 dan seterusnya dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PW-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tidak pernah menulis "aman"; prakiraan kita dan pernyataan BMKG terpisah; langganan menyimpan kode wilayah, bukan riwayat GPS.
+
+### 2.34 Lapor tanpa sinyal (`/lapor` luring: simpan di HP, kirim otomatis saat ada sinyal): baca dulu, baru bangun
+
+Sebelum menyentuh laporan luring, antrean `public/inti/antre.js` untuk `/lapor`, service worker `/lapor`, atau pembentukan laporan dari butir antrean di Worker, baca dokumen di
+`data/kajian-bnpb/lapor-luring/` dengan urutan otoritas ini (kode Worker milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; `public/inti/antre.js` milik `inti-layar`):
+
+1. `KEPUTUSAN-LURING.md`: keputusan pemilik, rancangan, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` (K37, D41 sampai D45) dan `data/kajian-bnpb/keterpaduan/` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LR-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Mesin percakapan tetap satu (`src/lapor_mesin.js`), tidak disalin ke HP; foto tetap hanya dari kamera; kosong tidak pernah jadi nol.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
