@@ -634,10 +634,14 @@ export const pbRenlapLajuMinta = async (env, p, oleh, sejak) => (await sedia(env
    Satu Pintu Masuk (migrasi 0133_masuk; src/masuk.js; data/kajian-bnpb/pintu-masuk/DESAIN-TEKNIS.md §2, §4.1). Hak dicek di rute (publik berlaju, kode sah, atau sesi_masuk).
    Semua kueri lewat kunci utama atau indeks mk_kode_nomor / UNIQUE mk_akun.wa. Kode hanya HMAC; pesan wa_antre jenis 'otp' berbagi id dengan mk_kode (hapus lewat kunci utama). */
 export const mkJedaTerakhir = async (env, nsha, sejak) => (await env.DB.prepare("SELECT max(dibuat) d FROM mk_kode WHERE nomor_sha = ? AND dibuat > ?").bind(nsha, sejak).first())?.d ?? null;
+/* satu-satunya penulis antrean WA (FITUR §9, src/keluar.js): pernyataan untuk dimasukkan ke batch pemanggil. dummy = pesan contoh, tidak pernah ditarik gateway */
+export const stmtAntreWa = (env, {id, tujuan, pesan, jenis, rujukan, kini, dummy = 0}) =>
+  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat, dummy) VALUES (?, ?, ?, ?, ?, 'antre', 0, ?, ?)")
+    .bind(id, tujuan, pesan.slice(0, 1500), jenis, rujukan, kini, dummy ? 1 : 0);
 /* kode baru dan pesan antrean dalam satu batch; kode lama nomor itu TETAP sah (D18: peminta iseng tidak mematikan kode korban) */
 export const mkKodeBaru = (env, id, nsha, kodeSha, nomor, pesan, kini, habis) => env.DB.batch([
   env.DB.prepare("INSERT INTO mk_kode (id, nomor_sha, kode_sha, saluran, coba, dibuat, habis) VALUES (?, ?, ?, 'wa', 0, ?, ?)").bind(id, nsha, kodeSha, kini, habis),
-  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat) VALUES (?, ?, ?, 'otp', ?, 'antre', 0, ?)").bind(id, nomor, pesan, id, kini)]);
+  stmtAntreWa(env, {id, tujuan: nomor, pesan, jenis: "otp", rujukan: id, kini})]);
 /* semua kode aktif nomor itu naik `coba` dalam satu pernyataan, sebelum dibandingkan; RETURNING membawa nilai sesudah naik */
 export const mkNaikCobaSemua = async (env, nsha, kini, maks) => (await env.DB.prepare("UPDATE mk_kode SET coba = coba + 1 WHERE id IN (SELECT id FROM mk_kode WHERE nomor_sha = ?1 AND dipakai IS NULL AND habis > ?2 ORDER BY dibuat DESC LIMIT ?3) RETURNING id, coba, kode_sha, saluran").bind(nsha, kini, maks).all()).results;
 /* sesudah satu kode menang: kode aktif lain nomor itu hangus dan semua baris otp-nya (termasuk milik pemenang) dihapus lewat kunci utama */
@@ -808,7 +812,7 @@ export const mkUndangAda = (env, nomor, tabel, akunId, kini) => env.DB.prepare("
 /* undangan dan pesan WA dalam satu batch; id sama dipakai kedua baris */
 export const mkUndangBaru = (env, u, pesan, kini) => env.DB.batch([
   env.DB.prepare("INSERT INTO mk_undang (id, wa, nama, tabel, akun_id, oleh_tabel, oleh_id, status, dibuat, habis) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'terkirim', ?8, ?9)").bind(u.id, u.wa, u.nama ?? null, u.tabel, u.akun_id ?? null, u.oleh_tabel, u.oleh_id, kini, kini + u.umur),
-  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat) VALUES (?1, ?2, ?3, 'undang', ?1, 'antre', 0, ?4)").bind(u.id, u.wa, pesan, kini)]);
+  stmtAntreWa(env, {id: u.id, tujuan: u.wa, pesan, jenis: "undang", rujukan: u.id, kini})]);
 /* olehTabel/olehId (opsional): anggota biasa hanya melihat kirimannya sendiri, disaring di SQL sebelum LIMIT */
 export const mkUndangDaftar = async (env, tabel, akunId, maks, olehTabel = null, olehId = null) => (await env.DB.prepare("SELECT id, wa, nama, status, dibuat, habis, oleh_tabel, oleh_id FROM mk_undang WHERE tabel = ?1 AND akun_id IS ?2 AND status <> 'dicabut' AND (?4 IS NULL OR (oleh_tabel = ?4 AND oleh_id = ?5)) ORDER BY dibuat DESC LIMIT ?3").bind(tabel, akunId, maks, olehTabel, olehId).all()).results;
 export const mkUndangById = (env, id) => env.DB.prepare("SELECT id, tabel, akun_id, oleh_tabel, oleh_id, status FROM mk_undang WHERE id = ?").bind(id).first();

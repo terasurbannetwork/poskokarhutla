@@ -17,6 +17,7 @@ import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {pelakuSistem, hitungLaju, stmtLaju} from "./hak.js";
 import {halStatistik} from "./bencana.js";
+import {kirimEmail} from "./keluar.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, WIB = 7 * JAM;
 export const HAL = halStatistik();   // id bencana dari registry + halaman tetap
@@ -361,12 +362,9 @@ export async function kirimPesan(env, req, ctx, kini) {
 
 /* notifikasi lewat Resend (https://resend.com). Tanpa EMAIL_API_KEY/EMAIL_TO/EMAIL_FROM: dilewati diam-diam, admin melihat spanduk. */
 export async function kabariEmail(env, p) {
-  const r = await fetch("https://api.resend.com/emails", {method: "POST", headers: {authorization: `Bearer ${env.EMAIL_API_KEY}`, "content-type": "application/json"},
-    body: JSON.stringify({from: env.EMAIL_FROM, to: env.EMAIL_TO.split(",").map(s => s.trim()).filter(Boolean), reply_to: p.email,
-      subject: `[Posko] ${KATEGORI[p.kategori]}: pesan dari ${p.nama || p.email}`,
-      text: `${p.isi}\n\n— ${p.nama || "(tanpa nama)"}${p.instansi ? ", " + p.instansi : ""} <${p.email}>\nKategori: ${KATEGORI[p.kategori]}\n${p.tautan ? "Tampilan: " + p.tautan + "\n" : ""}\nBalas email ini untuk menjawab langsung. Kotak pesan: /admin/pesan`})});
-  if (!r.ok) throw new Error(`Resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
-  return true;
+  return kirimEmail(env, env.EMAIL_TO.split(",").map(s => s.trim()).filter(Boolean), {subject: `[Posko] ${KATEGORI[p.kategori]}: pesan dari ${p.nama || p.email}`,
+    text: `${p.isi}\n\n— ${p.nama || "(tanpa nama)"}${p.instansi ? ", " + p.instansi : ""} <${p.email}>\nKategori: ${KATEGORI[p.kategori]}\n${p.tautan ? "Tampilan: " + p.tautan + "\n" : ""}\nBalas email ini untuk menjawab langsung. Kotak pesan: /admin/pesan`},
+    {balasKe: p.email});
 }
 
 export async function daftarPesan(env, req, url, kini) {
