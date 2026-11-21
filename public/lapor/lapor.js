@@ -1550,7 +1550,7 @@ else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server,
    Empat lapis gelap mengelilingi lubang bercincin di elemen yang dijelaskan, kartu "1 dari N" bermaskot Sigap, Lewati tur, Kembali, Lanjut.
    Muncul sekali sesudah pilih bahasa pada kunjungan pertama; bisa diulang dari gelembung Sigap. Langkah yang elemennya tidak tampil (layar HP) dilewati. */
 const TUR = [
-  [null, "Selamat datang di Pantau Bencana", "Saya Sigap. Saya tunjukkan cara melapor kejadian bencana ke BNPB dan BPBD. Tur ini sekitar 30 detik."],
+  [null, "Selamat datang di Pantau Bencana", "Saya SIGAP, Super Intelligence Assistance BNPB. Saya tunjukkan cara melapor kejadian bencana ke BNPB dan BPBD. Tur ini sekitar 30 detik."],
   ["#bDarurat", "Lapor darurat", "Kejadian sedang berlangsung? Cukup lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima."],
   ["#bLaporBaru", "Lapor kejadian", "Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera."],
   ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
@@ -1575,8 +1575,9 @@ function mulaiTur() {
   const lewat = el("button", "lp-tur-lewat", "Lewati tur"), mundur = el("button", "lp-kedua", "Kembali"), maju = el("button", "lp-utama", "Lanjut");
   for (const b of [lewat, mundur, maju]) b.type = "button";
   const aksi = el("div", "lp-tur-aksi"), kanan = el("div"); kanan.append(mundur, maju); aksi.append(lewat, kanan);
-  const kepala = el("div", "lp-tur-kepala"), teks = el("div"); teks.append(ke, h); kepala.append(m, teks);
-  k.append(kepala, p, titik, aksi); w.append(...gelap, lubang, k); document.body.append(w);
+  // maskot setinggi kartu di kiri, isi di kanan (pemilik 21 Nov 2026: "agar setinggi ini full dia")
+  const kanan2 = el("div", "lp-tur-kanan"); kanan2.append(ke, h, p, titik, aksi);
+  k.append(m, kanan2); w.append(...gelap, lubang, k); document.body.append(w);
   const asal = document.activeElement; let i = 0, sasaran = null;
   const tata = () => {   // lubang dan kartu mengikuti elemen; tanpa elemen = kartu di tengah dan seluruh layar gelap
     const vw = innerWidth, vh = innerHeight, pad = 8;
