@@ -2148,3 +2148,25 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-hero h1{line-height:1.16!important}
 .lp-hero-sub{line-height:1.7!important}
 @media (max-width:1199px){.lp-hg-tip{display:none!important}}   /* kolom tengah hero terlalu sempit: gelembung menimpa judul */
+/* kartu info dan prediksi dirapikan (pemilik 21 Nov 2026: "bagusin", "kasih icon") */
+.lp-pred{padding:18px 20px!important;gap:14px!important;border-radius:20px!important}
+.lp-pred-kepala{display:flex!important;align-items:center!important;gap:12px!important;flex-wrap:wrap}
+.lp-pred-ik{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.lp-pred-ik svg{width:20px;height:20px}
+.lp-pred-judul{display:grid;gap:2px;flex:1;min-width:0}
+.lp-pred-judul b{font:800 1.0625rem/1.25 var(--display);color:var(--ink)}
+.lp-pred-judul small{font-size:.8125rem;line-height:1.4;color:var(--ink2)}
+.lp-pred-waktu{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--surface);color:var(--ink2);font:600 .75rem var(--font)}
+.lp-pred-waktu svg{width:14px;height:14px}
+.lp-pred-hari{gap:12px!important;padding:16px!important;border-radius:16px!important;background:linear-gradient(180deg,color-mix(in oklab,var(--brand2) 5%,var(--card)),var(--card) 60%)}
+.lp-pred-hari h4{display:flex;align-items:baseline;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.lp-pred-hari h4 b{font:800 1rem var(--display);color:var(--ink)}
+.lp-pred-hari h4 small{font:600 .8125rem var(--font);color:var(--ink2)}
+.lp-pred-hujan svg{width:48px!important;height:48px!important;padding:11px!important;border-radius:14px!important}
+.lp-pred-hujan b{font-size:1.625rem!important}
+.lp-pred-ancaman{gap:8px!important}
+.lp-pred-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 6px!important;font:600 .75rem var(--font)!important}
+.lp-pred-chip svg{width:18px;height:18px;padding:3px;border-radius:50%;background:color-mix(in oklab,var(--card) 60%,transparent);flex:none}
+.lp-pred-chip b{font-weight:800}
+.lp-pred-chip.lv3 svg{background:color-mix(in oklab,var(--card) 22%,transparent)}
+.lp-pred-imbauan h4{border-bottom:1px solid var(--line);padding-bottom:10px}

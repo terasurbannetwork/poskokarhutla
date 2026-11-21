@@ -73,17 +73,15 @@ function tipKe(w, arah, pengguna) {
 document.addEventListener("click", e => {
   const b = e.target.closest(".lp-hg-tip button"); if (!b) return;
   const w = b.closest(".lp-hg-tip");
-  if (b.dataset.tip === "jeda") { const henti = w.dataset.jeda !== "1"; w.dataset.jeda = henti ? "1" : ""; b.textContent = henti ? "Putar" : "Jeda"; return; }
-  if (b.dataset.tip) { w.dataset.jeda = "1"; const j = w.querySelector(".lp-hg-jeda"); if (j) j.textContent = "Putar"; tipKe(w, +b.dataset.tip, true); return; }
+  if (b.dataset.tip) { tipKe(w, +b.dataset.tip, true); return; }   // gilir tetap jalan (pemilik 21 Nov 2026: "jalan aja terus")
   const x = b.dataset.tipAksi;
   if (x === "tur") mulaiTur(); else if (x === "status") $("bCekStatus").click(); else document.querySelector(`#lBeranda [data-aksi="${x}"]`)?.click();
 });
 for (const ev of ["pointerenter", "focusin"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w) w.dataset.tahan = "1"; }, true);
 for (const ev of ["pointerleave", "focusout"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w && !w.matches(":hover, :focus-within")) w.dataset.tahan = ""; }, true);
 if (tipGerak) {
-  document.querySelectorAll(".lp-hg-jeda").forEach(j => { j.hidden = false; });
   setInterval(() => { if (document.hidden) return;
-    for (const w of document.querySelectorAll(".lp-hg-tip")) if (w.offsetParent && w.dataset.jeda !== "1" && w.dataset.tahan !== "1") tipKe(w, 1, false); }, 8000);
+    for (const w of document.querySelectorAll(".lp-hg-tip")) if (w.offsetParent && w.dataset.tahan !== "1") tipKe(w, 1, false); }, 8000);
 }
 
 /* ============ pesan di log ============ */
@@ -1201,19 +1199,27 @@ async function ambilDaerah(q, tampil) {
   } catch (e) { tambahInfo("bot", `${e.message || "Data belum bisa dimuat"}. Coba lagi.`); kartuLokasiInfo(); }
 }
 /* prediksi 3 hari sebagai kartu per hari: curah hujan besar berikon, ancaman berwarna per tingkat (pemilik 19 Nov 2026: "bagusin") */
+// ikon pil ancaman (pemilik 21 Nov 2026: "kasih icon")
+const IKON_ANCAMAN = t => /asap|pm2/i.test(t) ? "k-daun" : /banjir/i.test(t) ? "b-banjir" : /longsor/i.test(t) ? "b-longsor" : /angin|puting/i.test(t) ? "b-angin"
+  : /rob|gelombang|abrasi/i.test(t) ? "b-gelombang" : /panas|api|karhutla/i.test(t) ? "b-api" : /kering/i.test(t) ? "b-matahari" : /petir|hujan/i.test(t) ? "b-hujan" : "i-kejadian";
 function kartuPrediksi(j, hariIni = false) { // hariIni: format yang sama untuk Info hari ini, satu hari plus imbauan
   const li = el("li", "bot baru lp-pred-li"), w = el("div", "lp-pred"), kp = el("div", "lp-pred-kepala");
   const lok = j.wilayah?.desa ? `Desa/Kel. ${j.wilayah.desa}, Kec. ${j.wilayah.kec}, ${j.kab}` : `${j.kab}, ${j.prov}`;
-  kp.append(el("b", null, hariIni ? `Info hari ini, ${lok}` : `Prediksi 3 hari, ${j.kab}`), el("small", null, `Diperbarui ${j.dibuat} WIB`)); w.append(kp);
+  // kepala berikon, lokasi di baris kedua, waktu pembaruan sebagai pil (pemilik 21 Nov 2026: "bagusin")
+  const kpIk = el("span", "lp-pred-ik"); kpIk.append(ikon(hariIni ? "i-lokasi" : "i-kalender"));
+  const kpT = el("span", "lp-pred-judul"); kpT.append(el("b", null, hariIni ? "Info hari ini" : "Prediksi 3 hari"), el("small", null, hariIni ? lok : j.kab));
+  const kpW = el("span", "lp-pred-waktu"); kpW.append(ikon("k-jam"), `Diperbarui ${j.dibuat} WIB`);
+  kp.append(kpIk, kpT, kpW); w.append(kp);
   const kisi = el("div", `lp-pred-kisi${hariIni ? " hari-ini" : ""}`);
   for (const h of hariIni ? j.perHari.slice(0, 1) : j.perHari) {
-    const c = el("section", "lp-pred-hari"); c.append(el("h4", null, h.tanggal));
+    const c = el("section", "lp-pred-hari"), [hr, ...tg] = String(h.tanggal).split(", "), h4 = el("h4");
+    h4.append(el("b", null, hr), ...(tg.length ? [el("small", null, tg.join(", "))] : [])); c.append(h4);
     const mm = h.hujanMm, kat = mm == null ? null : mm < 1 ? "Tidak hujan" : mm > 150 ? "Ekstrem" : mm > 100 ? "Sangat lebat" : mm > 50 ? "Lebat" : mm > 20 ? "Sedang" : "Ringan";
-    const hj = el("div", `lp-pred-hujan ${mm > 50 ? "tinggi" : mm > 20 ? "sedang" : ""}`); hj.append(ikon("b-banjir"));
+    const hj = el("div", `lp-pred-hujan ${mm > 50 ? "tinggi" : mm > 20 ? "sedang" : ""}`); hj.append(ikon(mm > 50 ? "b-petir" : "b-hujan"));
     const ht = el("span"); ht.append(el("b", null, mm == null ? "Tidak ada data" : `${mm.toLocaleString("id-ID")} mm`), el("small", null, kat ? `Hujan ${kat.toLowerCase()}${mm >= 5 && h.puncak != null ? `, puncak pukul ${String(h.puncak).padStart(2, "0")}.00` : ""}` : "")); hj.append(ht); c.append(hj);
     const an = el("div", "lp-pred-ancaman");
     if (!h.ancaman.length) an.append(el("span", "lp-pred-chip aman", "Semua ancaman normal"));
-    for (const a of h.ancaman) an.append(el("span", `lp-pred-chip lv${a.lv}`, `${a.label}: ${a.tingkat}`));
+    for (const a of h.ancaman) { const ch = el("span", `lp-pred-chip lv${a.lv}`); ch.append(ikon(IKON_ANCAMAN(a.label)), el("span", null, a.label), el("b", null, a.tingkat)); an.append(ch); }
     c.append(an); kisi.append(c);
   }
   if (hariIni) { // imbauan dari aturan dampak /prediksi
