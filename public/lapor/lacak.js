@@ -11,7 +11,7 @@ async function muat() {
   try {
     const r = await fetch(`/api/lapor/lacak?t=${encodeURIComponent(t || "")}`, {signal: AbortSignal.timeout(15000)}), j = await r.json();
     if (!r.ok) throw new Error(j.galat || "Laporan tidak ditemukan.");
-    document.title = `Lacak ${j.nomor}, Lapor Bencana BNPB`;
+    document.title = `Lacak ${j.nomor}, Pantau Bencana BNPB`;
     $("nomor").textContent = j.nomor;
     const GB = {"Banjir": "banjir", "Tanah longsor": "longsor", "Gelombang pasang dan abrasi": "rob", "Cuaca ekstrem": "cuaca", "Kekeringan": "kekeringan", "Kebakaran hutan dan lahan": "karhutla", "Gempa bumi": "gempa", "Tsunami": "tsunami", "Erupsi gunung api": "gunungapi"}[j.jenis];
     if (GB) $("pita").style.setProperty("--foto", `url(/img/bencana-${GB}.jpg)`);

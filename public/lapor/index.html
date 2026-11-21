@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" href="/lapor/lambang-bnpb.png">
 <link rel="apple-touch-icon" href="/lapor/lambang-bnpb.png">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Lapor Bencana BNPB</title>
+<title>Pantau Bencana BNPB, Pelaporan Ancaman dan Tanggap Darurat Bencana</title>
 <meta name="description" content="Laporkan kejadian bencana ke BNPB lewat percakapan yang dipandu.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0b2545">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=140" rel="stylesheet">
+<link href="/lapor/lapor.css?v=141" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -87,7 +87,7 @@
   <section class="lp-layar" id="lBeranda" data-tab="beranda">
     <header class="lp-hero" style="--foto:url(/img/foto-pasca.jpg)">
       <div class="lp-hero-isi">
-        <p class="lp-alis"><span class="lp-titik-hidup" aria-hidden="true"></span>Selamat datang di Lapor Bencana BNPB</p>
+        <p class="lp-alis"><span class="lp-titik-hidup" aria-hidden="true"></span>Selamat datang di Pantau Bencana BNPB</p>
         <button type="button" class="lp-bahasa-menu lp-bahasa-hp" hidden aria-label="Ganti bahasa"><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span>Indonesia</span></button>
         <h1 id="sapa">Lihat kejadian bencana? Laporkan di sini.</h1>
         <p class="lp-hero-sub">Laporan Anda diterima petugas BNPB dan diteruskan ke BPBD setempat. Pantau tindak lanjutnya lewat nomor laporan.</p>
@@ -168,7 +168,7 @@
     <header class="lp-chat-kepala">
       <button class="lp-ikon" id="bTutupInfo" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button>
       <span class="lp-info-ikon" id="infoIkon" aria-hidden="true"></span>
-      <div class="lp-chat-judul"><b id="infoJudul">Info bencana di daerah</b><small id="infoSub">Asisten AI Lapor Bencana</small></div>
+      <div class="lp-chat-judul"><b id="infoJudul">Info bencana di daerah</b><small id="infoSub">Asisten AI Pantau Bencana</small></div>
     </header>
     <div class="lp-gulir" id="gulirInfo"><ol class="lp-log" id="logInfo" role="log" aria-live="polite"></ol><div class="lp-langkah-wadah" id="kartuInfo"></div></div>
   </section>
@@ -179,7 +179,8 @@
     <div class="lp-pb-merek"><img src="/lapor/lambang-bnpb.png" alt="" width="44" height="44"><span><b>BNPB</b><small>Badan Nasional Penanggulangan Bencana</small></span></div>
     <div class="lp-pembuka-maskot" id="maskotPembuka"></div>
     <p class="lp-pembuka-sapa">Selamat datang di</p>
-    <p class="lp-pembuka-judul">Lapor <em>Bencana</em></p>
+    <p class="lp-pembuka-judul">Pantau <em>Bencana</em></p>
+    <p class="lp-pembuka-nama">Pelaporan Ancaman dan Tanggap Darurat Bencana</p>
     <p class="lp-pembuka-bnpb">Lihat kejadian, laporkan, kami teruskan ke BPBD setempat</p>
     <span class="lp-pb-muat" aria-hidden="true"><i></i></span>
   </div>
@@ -228,7 +229,7 @@
 
   <!-- ===== layar kebijakan privasi (tata letak meniru halaman privasi Anthropic; isi untuk layanan BNPB) ===== -->
   <section class="lp-layar" id="lPrivasi" hidden>
-    <header class="lp-chat-kepala"><button class="lp-ikon" id="bTutupPrivasi" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button><div class="lp-chat-judul"><b>Kebijakan privasi</b><small>Lapor Bencana BNPB</small></div></header>
+    <header class="lp-chat-kepala"><button class="lp-ikon" id="bTutupPrivasi" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button><div class="lp-chat-judul"><b>Kebijakan privasi</b><small>Pantau Bencana BNPB</small></div></header>
     <article class="lp-legal" id="isiPrivasi"></article>
   </section>
 
@@ -237,14 +238,14 @@
     <!-- kepala sama dengan beranda: maskot Sigap dan kartu kontak BNPB disalin dari beranda saat layar dibuka (pemilik 19 Nov 2026) -->
     <header class="lp-hero" id="heroTentang" style="--foto:url(/img/bencana-banjir.jpg)">
       <div class="lp-hero-isi">
-        <p class="lp-alis">Tentang Lapor Bencana</p>
+        <p class="lp-alis">Tentang Pantau Bencana</p>
         <h1>Satu pintu warga melaporkan kejadian bencana ke BNPB</h1>
         <p class="lp-hero-sub">Laporan dipandu asisten AI sampai lengkap, lalu diterima petugas BNPB dan diteruskan ke BPBD setempat.</p>
       </div>
     </header>
     <div class="lp-tentang">
       <section class="lp-tt-blok">
-        <h2><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Apa itu Lapor Bencana</h2>
+        <h2><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Apa itu Pantau Bencana</h2>
         <div class="lp-tt-kisi tiga">
           <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-pesan"/></svg></span><b>Dipandu, bukan formulir</b><p>Asisten bertanya satu per satu. Sebagian besar jawaban cukup dipilih, tidak perlu mengetik panjang.</p></article>
           <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-status"/></svg></span><b>Bernomor tiket</b><p>Tiap laporan mendapat nomor tiket. Statusnya bisa dipantau dari diterima sampai selesai ditangani.</p></article>
@@ -300,7 +301,7 @@
     <header class="lp-chat-kepala">
       <button class="lp-ikon" id="bKembali" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button>
       <img class="lp-avatar" src="/img/lembaga/sumber-bnpb.png" alt="" width="36" height="36">
-      <div class="lp-chat-judul"><b>Lapor Bencana BNPB</b><small id="langkahTeks">Asisten AI</small></div>
+      <div class="lp-chat-judul"><b>Pantau Bencana BNPB</b><small id="langkahTeks">Asisten AI</small></div>
       <button class="lp-batal-tombol" id="bBatal" type="button" hidden><svg aria-hidden="true"><use href="#i-tutup"/></svg>Batalkan laporan</button>
       <button class="lp-ikon lp-isian-tombol" id="bIsian" type="button" aria-controls="panelIsian" aria-expanded="false"><svg aria-hidden="true"><use href="#i-daftar"/></svg><span id="lengkapKecil">0%</span></button>
     </header>
@@ -331,7 +332,7 @@
   <!-- ===== masuk (uji lokal) ===== -->
   <section class="lp-layar" id="lMasuk" hidden>
     <div class="lp-sampul lp-sampul-penuh">
-      <div class="lp-sampul-atas"><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" width="40" height="40"><span>Lapor Bencana BNPB</span></div>
+      <div class="lp-sampul-atas"><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" width="40" height="40"><span>Pantau Bencana BNPB</span></div>
       <h1>Laporkan kejadian bencana</h1>
       <p>Masukkan nomor WhatsApp untuk mulai. Nomor dipakai untuk mengenali Anda dan mengirim kabar status laporan.</p>
     </div>
@@ -347,7 +348,7 @@
   </section>
 
   <nav class="lp-tab" id="tab" aria-label="Menu">
-    <a class="lp-tab-merek" href="/lapor/"><img src="/img/lembaga/sumber-bnpb.png" alt="" width="36" height="36"><span>Lapor Bencana<small>BNPB</small></span></a>
+    <a class="lp-tab-merek" href="/lapor/"><img src="/img/lembaga/sumber-bnpb.png" alt="" width="36" height="36"><span>Pantau Bencana<small>BNPB</small></span></a>
     <button type="button" data-ke="beranda" aria-current="page"><svg aria-hidden="true"><use href="#i-rumah-tab"/></svg>Beranda</button>
     <button type="button" data-ke="laporan"><svg aria-hidden="true"><use href="#i-pesan"/></svg>Laporan<span class="lp-titik-baru" id="titikBaru" hidden></span><span class="lp-tab-jumlah" id="tabJumlah" hidden></span></button>
     <button type="button" data-ke="alun"><svg aria-hidden="true"><use href="#i-pengungsian"/></svg>Alun-alun</button>
@@ -364,6 +365,6 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=119"></script>
+<script type="module" src="/lapor/lapor.js?v=120"></script>
 </body>
 </html>

@@ -22,7 +22,7 @@ import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
 import {buatInfo} from "./lapor_info.js";
-import {urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
+import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
 import * as H from "./hak.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 
@@ -457,6 +457,7 @@ async function fotoPost(env, req, url, kini, ctx) {
     const gpsSah = !!g && titikSah(g.lat, g.lon) && angka(g.akurasi) && g.akurasi >= 0 && g.akurasi <= 1000 && angka(g.waktu) && Math.abs(kini - g.waktu) <= 10 * MENIT;
     const xLok = x && titikSah(x.lat, x.lon) ? {lat: x.lat, lon: x.lon} : null, xWaktu = x && angka(x.waktu) && x.waktu <= kini + 5 * MENIT ? x.waktu : null;   // EXIF tidak sah dibuang
     if (xWaktu && kini - xWaktu > 48 * JAM) return galat(400, "Foto diambil lebih dari 48 jam lalu. Kirim foto terbaru dari lokasi.");
+    if (x && x.kamera === false) return galat(400, "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar hasil sunting tidak diterima.");   // web: tanpa Make/Model kamera (21 Nov 2026)
     if (gpsSah && xLok && kmDua(g.lat, g.lon, xLok.lat, xLok.lon) > 5) return galat(400, "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini.");
     meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
       : xLok ? {lencana: "exif", lencanaTeks: "Lokasi dari data foto", lat: xLok.lat, lon: xLok.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
@@ -661,7 +662,7 @@ async function unduh(env, req, url, kini, ctx, x) {
   if (!baris || !(RE_TOKEN.test(t) && baris.token_sha && await sha(t) === baris.token_sha) && !await stafMeja(env, req)) return galat(404, "tidak ada");
   const v = await H.lpPdfTerakhir(env, PUBLIK, m[1]) ?? VERSI;   // versi terbaru yang sudah jadi; versi baru menyusul, sementara yang lama tetap bisa diunduh
   const o = env.MEDIA ? await env.MEDIA.get(`lapor/dok/${m[1]}.${v}.${m[2]}`) : null;
-  if (!o) return new Response("Dokumen sedang dibuat. Coba lagi beberapa detik lagi.", {status: 202, headers: {"content-type": "text/plain; charset=utf-8", ...HDR}});
+  if (!o) return new Response(HALAMAN_TUNGGU_DOK, {status: 202, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", ...HDR}});   // dibuka langsung dari tautan: halaman tunggu yang memuat ulang sendiri, bukan berkas teks
   return new Response(o.body, {headers: {"content-type": m[2] === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "content-disposition": `attachment; filename="Laporan ${m[1]}.${m[2]}"`, "x-content-type-options": "nosniff", ...HDR}});
 }

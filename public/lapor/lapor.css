@@ -2018,3 +2018,7 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-dialog-batal h2{font:800 1.125rem var(--display);margin:0 0 8px}
 .lp-dialog-batal p{margin:0 0 16px;color:var(--ink2);font-size:.9375rem;line-height:1.5}
 .lp-batal-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* nama lengkap aplikasi di animasi pembuka (pemilik 21 Nov 2026: "Pantau Bencana (Pelaporan Ancaman dan Tanggap Darurat Bencana)") */
+.lp-pembuka-nama{margin-top:6px;font:700 clamp(.9375rem,1.8vw,1.1875rem) var(--font);letter-spacing:.01em;color:var(--on-head)}
+@media (prefers-reduced-motion:no-preference){.lp-pembuka-nama{animation:lp-naik .6s 1s var(--ease) both}}

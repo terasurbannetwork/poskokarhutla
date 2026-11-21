@@ -1,4 +1,4 @@
-/* Mesin percakapan Lapor Bencana BNPB (data/kajian-bnpb/lapor-ai: KEPUTUSAN D2 D3 D5 D6 D18 D19, ALGORITMA A1 A2 A7).
+/* Mesin percakapan Pantau Bencana BNPB (data/kajian-bnpb/lapor-ai: KEPUTUSAN D2 D3 D5 D6 D18 D19, ALGORITMA A1 A2 A7).
    Murni: tanpa D1, tanpa fetch, tanpa jam dinding. Dipakai Worker (src/lapor_ai.js, nanti) dan server lokal scripts/lapor/lokal.mjs.
    Kode memegang alur; model (disuntik, boleh null) hanya mengurai pesan jadi isian berkutipan dan memberi satu kalimat tanggapan.
    putaran({sesi, pelapor, pesan: {teks?, lokasi?}, model, kini}) -> {sesi, pelapor, balasan, inti, pilihan, kirim}
@@ -7,7 +7,7 @@
 import {JENIS, KELOMPOK, ISIAN, isianNama, berlaku, berlakuSesi, KRONOLOGI, rangkaiKronologi, opsiBerlaku, langkahKronologi} from "./lapor_spek.js";
 import {samarkan} from "./samarkan.js";
 
-export const NAMA_LAYANAN = "Lapor Bencana BNPB";
+export const NAMA_LAYANAN = "Pantau Bencana BNPB";
 /* templat cerita (pemilik 19 Nov 2026: "langsung keluar kaya templatenya"); lokasi tidak ada di sini karena wajib dibagikan lebih dulu */
 // templat cerita hanya untuk uraian; waktu, korban, pengungsi, rumah, dan kebutuhan ditanya sesudahnya satu per satu lewat pilihan dan kotak angka
 // (pemilik 19 Nov 2026: "kenapa langsung semua", "mengungsi nanti dulu, rumah rusak nanti dulu, kebutuhan pilihan")

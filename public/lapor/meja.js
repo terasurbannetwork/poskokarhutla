@@ -55,7 +55,7 @@ async function muat(latar = false) {
     const res = await fetch("/api/lapor/meja", {cache: "no-store"}), j = await res.json();
     if (!res.ok) { $("waktuSegar").textContent = j.galat || "Tidak berhak"; return; }
     if (j.akun) { akunMeja = j.akun; document.body.classList.toggle("mj-bpbd", akunBpbd());
-      const sub = document.querySelector(".mj-merek small"); if (sub) sub.textContent = akunBpbd() ? `${akunMeja.label}, laporan di wilayah Anda` : "Lapor Bencana, khusus staf"; }
+      const sub = document.querySelector(".mj-merek small"); if (sub) sub.textContent = akunBpbd() ? `${akunMeja.label}, laporan di wilayah Anda` : "Pantau Bencana, khusus staf"; }
     semua = j.baris || [];
     $("bSegar").classList.remove("galat"); $("waktuSegar").textContent = `Data diperbarui ${new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}).replace(":", ".")}`;
     if (!latar) gambar(); gambarDarurat();   // tab di latar: hanya pita darurat, tabel digambar saat tab tampak lagi
@@ -421,7 +421,7 @@ function drafLogbook(j, tombol) {
     dampak: {md: s(n.meninggal), hilang: s(n.hilang), luka: s(n.luka), mengungsi_jiwa: s(n.mengungsi_jiwa), mengungsi_kk: s(n.mengungsi_kk), rumah_rb: s(n.rumah_berat), rumah_rs: s(n.rumah_sedang),
       rumah_rr: s(n.rumah_ringan), rumah_terendam: s(n.rumah_terendam), luas_ha: ""},
     kendala: [...new Set([...pilihan(n.layanan_terganggu, KENDALA_LOGBOOK), ...(/putus|hanya motor/i.test(n.akses_jalan || "") ? ["akses"] : [])])], kebutuhan: pilihan(n.kebutuhan, KEBUTUHAN_LOGBOOK), sumber_instansi: "",
-    catatan: `Dari laporan warga ${j.nomor} (Lapor Bencana), belum terverifikasi. ${String(n.kronologi || "").slice(0, 400)}`.trim()};
+    catatan: `Dari laporan warga ${j.nomor} (Pantau Bencana), belum terverifikasi. ${String(n.kronologi || "").slice(0, 400)}`.trim()};
   let lama = null; try { lama = localStorage.getItem("logbook_draf_v1"); } catch {}
   if (lama && tombol.dataset.yakin !== "1") { tombol.dataset.yakin = "1"; tombol.lastChild.textContent = "Ganti draf lama? Ketuk lagi"; return; }   // jangan diam-diam menimpa draf petugas
   try { localStorage.setItem("logbook_draf_v1", JSON.stringify(d)); } catch { tombol.lastChild.textContent = "Draf tidak bisa disimpan"; return; }
@@ -472,7 +472,7 @@ function kartuTeruskan(j, b, kirim) {
     const d = j.dampak || {}, korban = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka-luka"], ["mengungsi", "mengungsi"]].filter(([x]) => d[x] > 0).map(([x, t]) => `${F(d[x])} ${t}`).join(", ");
     const jenis = j.isian.find(x => x.nama === "jenis")?.tampil, lok = j.isian.find(x => x.nama === "lokasi")?.tampil;
     const teks = [`*Teruskan laporan warga ${j.nomor || ""}*`.replace(" *", "*"), `${jenis || "Kejadian"}, ${lok || ""}`, `Dilaporkan ${j.waktuLapor}`, korban && `Dampak menurut pelapor: ${korban}`,
-      `Lokasi: https://www.google.com/maps?q=${j.lat},${j.lon}`, "Laporan warga lewat Lapor Bencana BNPB, belum terverifikasi. Mohon cek lapangan dan kabari BNPB."].filter(Boolean).join("\n");
+      `Lokasi: https://www.google.com/maps?q=${j.lat},${j.lon}`, "Laporan warga lewat Pantau Bencana BNPB, belum terverifikasi. Mohon cek lapangan dan kabari BNPB."].filter(Boolean).join("\n");
     const baris = (p.bpbd || []).map(x => { const r = el("div", "mj-bpbd"), t = el("div"); t.append(el("b", null, x.nama), el("small", null, [x.nomor ? `Pusdalops ${x.nomor}` : "Nomor Pusdalops belum tercatat", x.jarakKm != null ? `${String(x.jarakKm).replace(".", ",")} km` : null].filter(Boolean).join(", ")));
       const aksi = el("div", "mj-deret"), wa = x.nomor && x.nomor.replace(/\D/g, "").replace(/^0/, "62");
       if (wa && wa.length >= 9) { const a = Object.assign(el("a", "mj-tombol"), {href: `https://wa.me/${wa}?text=${encodeURIComponent(teks)}`, target: "_blank", rel: "noopener"}); a.append(ikon("m-wa"), "Kirim WA"); aksi.append(a); }

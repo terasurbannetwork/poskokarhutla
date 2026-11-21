@@ -1,4 +1,4 @@
-// Pintu WA Lapor Bencana BNPB (LA-20; data/kajian-bnpb/lapor-ai D1, D6, K2, K24). Mesin percakapan ada di Worker; di sini hanya
+// Pintu WA Pantau Bencana BNPB (LA-20; data/kajian-bnpb/lapor-ai D1, D6, K2, K24). Mesin percakapan ada di Worker; di sini hanya
 // jembatan: salinan izin (/api/lapor/izin), perintah PEMILIK `lapor izin|cabut`, teks/lokasi/foto ke Worker, balasan `teksWa` apa adanya,
 // dan tarikan kabar (balasan, status, PDF). Murni dan bisa diuji: fetch dan kirim disuntik. Nomor tidak pernah dilog utuh.
 import { execFile } from 'node:child_process'
@@ -99,7 +99,7 @@ export function buat({ worker, mesin, pemilik, kirim, fetchFn = fetch, log = () 
     if (status !== 200) { await kirim(ke, { text: `*Gagal disimpan*\nlapor ${p.cabut ? 'cabut' : 'izin'} ${samar(p.wa)} belum tersimpan (HTTP ${status || 'jaringan'}). Ulangi sebentar lagi.` }, { jid: ke }); return 'gagal' }
     await segarkan()
     const siapa = p.wa.slice(0, 4) + '****' + p.wa.slice(-4)
-    await kirim(ke, { text: p.cabut ? `*Izin lapor dicabut*\n${siapa} tidak lagi dilayani Lapor Bencana.` : `*Izin lapor diberikan*\n${siapa} dilayani Lapor Bencana${p.kab ? `, petugas BPBD ${p.kab}` : ''}.` }, { jid: ke })
+    await kirim(ke, { text: p.cabut ? `*Izin lapor dicabut*\n${siapa} tidak lagi dilayani Pantau Bencana.` : `*Izin lapor diberikan*\n${siapa} dilayani Pantau Bencana${p.kab ? `, petugas BPBD ${p.kab}` : ''}.` }, { jid: ke })
     return p.cabut ? 'cabut' : 'izin'
   }
 

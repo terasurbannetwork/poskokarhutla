@@ -495,6 +495,7 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | --- | --- | --- |
 | K73 | 20 Nov 2026 | Pemilik: "kalo kaya Kota administrasi jakarta timur kalo misalnya bencananya sama yaudah di merge aja." |
 | K74 | 20 Nov 2026 | Pemilik: "di kanan ada dong ya harusnya aksinya untuk memverifikasi dan nanti dia disetujui atau nggak sebagai bencananya bener atau nggak." |
+| K75 | 21 Nov 2026 | Nama aplikasi: **Pantau Bencana** (Pelaporan Ancaman dan Tanggap Darurat Bencana), menggantikan nama tampilan "Lapor Bencana" di /lapor, meja, lacak, bot, dan dokumen. Foto dan video di web hanya dari kamera: tanpa tombol galeri, berkas lebih tua dari 5 menit atau tanpa data kamera (tangkapan layar) ditolak; Worker menolak foto yang EXIF-nya tanpa Make/Model. Jalur WA belum bisa membedakan galeri. |
 
 ## Keputusan rancangan (pelaksanaan K73-K74, agent, bisa dibatalkan pemilik)
 

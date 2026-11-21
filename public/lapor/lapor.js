@@ -1,4 +1,4 @@
-/* Lapor Bencana BNPB (/lapor): aplikasi pesan dengan tab Beranda, Laporan, Bantuan, dan layar chat berkartu langkah.
+/* Pantau Bencana BNPB (/lapor): aplikasi pesan dengan tab Beranda, Laporan, Bantuan, dan layar chat berkartu langkah.
    Mesin di server (src/lapor_mesin.js lewat /api/lapor/*); layar ini hanya menampilkan dan mengirim jawaban.
    - Teks bot berformat WA (*tebal*) disisipkan sebagai node teks, tidak pernah sebagai HTML.
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
@@ -81,7 +81,7 @@ function tambah(dari, teks, {galat = false, foto = null, berkas = null, simpanKe
   if (berkas) { const a = el("span", "lp-lampiran"); a.append(el("span", null, "PDF"), berkas); g.append(a); }
   if (teks) teksWa(g, teks);
   li.append(g);
-  if (dari !== "saya" && ganti) log.append(el("li", "tengah lp-pengirim-baris", dari === "admin" ? "Admin BNPB" : "Asisten AI Lapor Bencana"));
+  if (dari !== "saya" && ganti) log.append(el("li", "tengah lp-pengirim-baris", dari === "admin" ? "Admin BNPB" : "Asisten AI Pantau Bencana"));
   log.append(li);
   if (simpanKe) { cache.transkrip.push({dari, teks, foto: foto?.startsWith("data:") ? null : foto, berkas}); cache.transkrip = cache.transkrip.slice(-200); simpanCache(); }
   requestAnimationFrame(() => gulir.scrollTo({top: gulir.scrollHeight, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}));
@@ -490,31 +490,27 @@ function kartuFoto(j) {
   const hitung = el("p", "lp-foto-hitung"); hitung.append(ikon("i-kamera"), `${nFoto} dari ${MAKS} foto, ${nVideo} dari ${VIDEO_MAKS_N} video`, el("small", null, "Ambil langsung dari kamera supaya waktu dan lokasinya terekam. Video paling lama 60 detik."));
   const masukan = el("input"); masukan.type = "file"; masukan.accept = "image/jpeg,image/*"; masukan.capture = "environment"; masukan.hidden = true;
   const rekam = el("input"); rekam.type = "file"; rekam.accept = "video/*"; rekam.capture = "environment"; rekam.hidden = true;   // video (K57)
-  const galeri = el("input"); galeri.type = "file"; galeri.accept = "image/jpeg,image/*,video/mp4,video/quicktime,video/webm"; galeri.hidden = true;
   const ambil = el("button", "lp-utama"); ambil.type = "button"; ambil.append(ikon("i-kamera"), "Ambil foto");
   const ambilV = el("button", "lp-kedua"); ambilV.type = "button"; ambilV.append(ikon("i-putar"), "Rekam video");
-  const pilihG = el("button", "lp-kedua", "Pilih dari galeri"); pilihG.type = "button";
   ambil.addEventListener("click", () => { siapkanGps(); masukan.click(); });
   ambilV.addEventListener("click", () => { siapkanGps(); rekam.click(); });
-  pilihG.addEventListener("click", () => { siapkanGps(); galeri.click(); });
-  const pilihBerkas = f => f && (f.type.startsWith("video/") ? unggahVideo(f) : unggahFoto(f));
+  // hanya rekaman yang baru diambil: berkas lebih tua dari 5 menit (dari galeri) atau tanpa data kamera (tangkapan layar) ditolak
+  const pilihBerkas = async f => { if (!f) return; const salah = await bukanKamera(f); if (salah) { statusEl.textContent = salah; return; } f.type.startsWith("video/") ? unggahVideo(f) : unggahFoto(f); };
   masukan.addEventListener("change", () => pilihBerkas(masukan.files[0]));
   rekam.addEventListener("change", () => pilihBerkas(rekam.files[0]));
-  galeri.addEventListener("change", () => pilihBerkas(galeri.files[0]));
   const lanjut = el("div", "lp-opsi"); j.pilihan.forEach((o, i) => lanjut.append(tombolOpsi(o, j.ket?.[i], () => kirim({teks: String(i + 1), tampil: o}))));
   if (nFoto >= MAKS) ambil.disabled = true;
   if (nVideo >= VIDEO_MAKS_N) ambilV.disabled = true;
-  if (nFoto >= MAKS && nVideo >= VIDEO_MAKS_N) pilihG.disabled = true;
-  const aksi = el("div", "lp-aksi-dua"); aksi.append(ambil, ambilV, pilihG);
+  const aksi = el("div", "lp-aksi-dua"); aksi.append(ambil, ambilV);   // tanpa galeri (pemilik 21 Nov 2026: langsung dari kamera supaya tidak bisa dipalsukan)
   isi.closest(".lp-langkah").classList.add("lp-langkah-foto");
   for (const b of [...lanjut.children]) { b.classList.add("lp-foto-lanjut"); aksi.append(b); } // tiga aksi sebaris
-  aksi.classList.add("lp-foto-aksi"); pilihG.prepend(ikon("i-unduh"));
+  aksi.classList.add("lp-foto-aksi");
   if (daftarFoto.length < MAKS) { // ubin tambah foto selalu ada di ujung kisi
     const z = el("button", `lp-foto-ajak${daftarFoto.length ? " kecil" : ""}`); z.type = "button";
     z.append(ikon(daftarFoto.length ? "i-plus" : "i-kamera"), el("b", null, daftarFoto.length ? "Tambah foto" : "Foto keadaan di lokasi"), el("small", null, daftarFoto.length ? `Sisa ${MAKS - daftarFoto.length} foto` : "Kerusakan, genangan, atau pengungsian. Hindari memotret wajah orang."));
     z.addEventListener("click", () => { siapkanGps(); masukan.click(); }); kisi.append(z); }
   for (const b of aksi.querySelectorAll(".lp-foto-lanjut")) b.prepend(ikon("i-panah"));
-  isi.append(hitung, kisi, aksi, masukan, rekam, galeri);
+  isi.append(hitung, kisi, aksi, masukan, rekam);
 }
 
 /* layar terima kasih sesudah laporan terkirim (pemilik 19 Nov 2026: "harusnya ada animasi terima kasih, kaya waktu pertama kali buka"):
@@ -574,7 +570,11 @@ function kartuTiket(j) {
 
 async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri tahu, jangan buka halaman kosong
   e.preventDefault();
-  try { const r = await fetch(url, {method: "GET"}); if (r.status === 202) { statusEl.textContent = "Dokumen sedang dibuat, coba lagi beberapa detik lagi."; return; }
+  try { let r = await fetch(url, {method: "GET"});
+    // belum jadi: tunggu di tempat (cek tiap 10 detik, paling lama 6 menit), lalu unduh sendiri (pemilik 21 Nov 2026: yang terbuka malah teks "sedang dibuat")
+    for (let i = 0; r.status === 202 && i < 36; i++) { statusEl.textContent = "PDF sedang dibuat, biasanya 3 menit. Akan terunduh sendiri, dan juga dikirim ke WhatsApp Anda."; await new Promise(t => setTimeout(t, 10000)); r = await fetch(url, {method: "GET"}); }
+    if (r.status === 202) { statusEl.textContent = "PDF belum jadi. Nanti dikirim ke WhatsApp Anda."; return; }
+    statusEl.textContent = "";
     const b = await r.blob(), a = Object.assign(document.createElement("a"), {href: URL.createObjectURL(b), download: decodeURIComponent((r.headers.get("content-disposition") || "").match(/filename="([^"]+)"/)?.[1] || "laporan")}); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
   catch { statusEl.textContent = "Unduhan gagal, coba lagi."; }
 }
@@ -635,7 +635,7 @@ function selesaiBalas(j) {
     const form = idAwal; if (j.minta === "identitas") idAwal = null;
     setTimeout(() => j.minta === "identitas" ? kirim({form, tampil: false}) : kirim({teks: "2", tampil: false}), 0); return; }
   $("mengetik").hidden = true;
-  if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Lapor Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah.") : j.balasan);
+  if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Pantau Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah.") : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
   if (j.nomor && j.susulan) { const l = (cache.laporan || []).find(x => x.nomor === j.nomor); if (l) { l.versi = j.susulan; if (j.foto) l.foto = j.foto; } cache.fotoSesi = []; } // susulan: kartu tetap, versi naik
   else if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now()}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
@@ -719,6 +719,17 @@ if (Pengenal) {
 /* ============ lokasi dan foto ============ */
 function siapkanGps() { // GPS perangkat saat memotret (KEPUTUSAN D11)
   navigator.geolocation?.getCurrentPosition(p => { posisi = {lat: p.coords.latitude, lon: p.coords.longitude, akurasi: p.coords.accuracy, waktu: Date.now()}; }, () => { posisi = null; }, {enableHighAccuracy: true, maximumAge: 0, timeout: 20000});
+}
+const SEGAR_MS = 5 * 60e3;
+async function bukanKamera(f) {
+  const kini = Date.now(), video = f.type.startsWith("video/");
+  if (!video) {
+    const x = window.bacaExif ? window.bacaExif(await f.slice(0, 262144).arrayBuffer()) : null;
+    if (!x || !x.kamera) return "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar dari galeri tidak diterima.";
+    if (x.waktu && Math.abs(kini - x.waktu) > SEGAR_MS) return "Foto ini diambil lebih dari 5 menit lalu. Ambil foto baru langsung dengan kamera.";
+  }
+  if (f.lastModified && kini - f.lastModified > SEGAR_MS) return `${video ? "Video" : "Foto"} ini bukan rekaman baru. Ambil langsung dengan kamera.`;
+  return null;
 }
 async function unggahFoto(file) {
   if (!file || sibuk) return;
@@ -1006,7 +1017,7 @@ fetch("/lapor/edukasi.json", {signal: AbortSignal.timeout(10000)}).then(r => r.o
 
 /* ============ kebijakan privasi di dalam aplikasi (tata letak halaman legal; isi untuk layanan BNPB, draf menunggu tinjauan hukum) ============ */
 const PRIVASI = [
-  ["Data yang kami kumpulkan", [["p", "Saat Anda melapor lewat Lapor Bencana BNPB, kami mencatat:"], ["ul", ["Identitas pelapor: nama, nomor WhatsApp, dan peran (warga atau petugas BPBD beserta kabupaten/kota dan jabatan).",
+  ["Data yang kami kumpulkan", [["p", "Saat Anda melapor lewat Pantau Bencana BNPB, kami mencatat:"], ["ul", ["Identitas pelapor: nama, nomor WhatsApp, dan peran (warga atau petugas BPBD beserta kabupaten/kota dan jabatan).",
     "Isi laporan: jenis dan karakteristik kejadian, waktu kejadian, lokasi (titik GPS atau desa yang Anda pilih, RT dan RW), jumlah korban, pengungsi, dan kerusakan dalam bentuk angka, serta kebutuhan.",
     "Foto yang Anda kirim beserta waktu dan lokasi pengambilannya.", "Percakapan dengan asisten AI, waktu pesan, dan nilai yang Anda berikan untuk percakapan."]],
     ["p", "Kami tidak meminta nama korban atau Nomor Induk Kependudukan. Nomor telepon, NIK, dan alamat surel yang tertulis di pesan disamarkan sebelum diproses asisten AI."]]],
@@ -1023,9 +1034,9 @@ const PRIVASI = [
 function bukaPrivasi() {
   const w = $("isiPrivasi");
   if (!w.childElementCount) {
-    const kp = el("header", "lp-legal-kepala"); kp.append(el("p", "lp-alis lp-alis-terang", "Lapor Bencana BNPB"), el("h1", null, "Kebijakan Privasi"), el("p", "lp-legal-catatan", "Draf untuk uji coba. Isi akan ditinjau bagian hukum BNPB sebelum layanan dibuka untuk umum."));
+    const kp = el("header", "lp-legal-kepala"); kp.append(el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan Privasi"), el("p", "lp-legal-catatan", "Draf untuk uji coba. Isi akan ditinjau bagian hukum BNPB sebelum layanan dibuka untuk umum."));
     const daftar = el("ol", "lp-legal-daftar"), isi = el("div", "lp-legal-isi"), meta = el("dl", "lp-legal-meta");
-    isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Lapor Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
+    isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Pantau Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
     PRIVASI.forEach(([judul, blok], i) => {
       const id = `privasi-${i + 1}`, a = Object.assign(el("a"), {href: `#${id}`}); a.append(el("span", null, String(i + 1).padStart(2, "0")), judul);
       a.addEventListener("click", e => { e.preventDefault(); $(id).scrollIntoView({behavior: "smooth", block: "start"}); });
@@ -1386,7 +1397,7 @@ async function dialogBahasa(selesai = null) {   // selesai(): dipanggil sesudah 
 
 /* nomor WhatsApp ditanya di chat bila perangkat ini belum punya (K65: tanpa kode). Nama ditanya mesin pada langkah identitas. */
 function tanyaNomor(lanjut) {   // sapaan lalu kartu identitas lengkap (peran, nama, WhatsApp) sebelum persetujuan
-  tambah("bot", "*Halo, saya Sigap*\nAsisten AI Lapor Bencana BNPB. Saya bantu sampai laporan Anda lengkap dan diterima petugas. Kenalan dulu, ya. Tanpa kode, tanpa sandi.", {simpanKe: false});
+  tambah("bot", "*Halo, saya Sigap*\nAsisten AI Pantau Bencana BNPB. Saya bantu sampai laporan Anda lengkap dan diterima petugas. Kenalan dulu, ya. Tanpa kode, tanpa sandi.", {simpanKe: false});
   fPesan.hidden = true; kartuIdentitas(lanjut);
 }
 /* pilihan bahasa di dalam chat (pemilik 20 Nov 2026: "nanti disuruh pilih ada di chat bot nya"): ditanya sekali saat chat pertama dibuka,
@@ -1439,7 +1450,7 @@ $("maskotHero").innerHTML = maskot("sapa");
 if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
 const pernah = false;
 if (!pernah) {
-  const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Lapor Bencana"); pb.hidden = false;
+  const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Pantau Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
   const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => { pb.remove(); dialogBahasa(); }, 700); };   // tiap situs dibuka (pemilik 20 Nov 2026: "kenapa pilih bahasanya ga muncul di awal"); bahasa terakhir ditandai
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : 6000);   // pemilik 19 Nov 2026 malam: "masih kurang lama"

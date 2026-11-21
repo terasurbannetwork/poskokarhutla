@@ -1,4 +1,4 @@
-/* Bentuk jawaban Lapor Bencana BNPB (murni, tanpa D1 dan tanpa fetch): isian untuk layar, jawaban lacak, rincian meja, bahan dokumen PDF/Word, baris alun-alun.
+/* Bentuk jawaban Pantau Bencana BNPB (murni, tanpa D1 dan tanpa fetch): isian untuk layar, jawaban lacak, rincian meja, bahan dokumen PDF/Word, baris alun-alun.
    Port dari scripts/lapor/lokal.mjs (acuan perilaku yang disetujui pemilik 19 Nov 2026); src/lapor_ai.js memuat sesi lalu memanggil fungsi di sini.
    Objek sesi yang masuk = sesi mesin (isian, foto, transkrip) + s.tiket {status, riwayat}, s.balasan [{teks, waktu, oleh}], s.token (tautan lacak) bila perlu. */
 import {lengkap, nilaiTampil, waktuLapor, KELOMPOK} from "./lapor_mesin.js";
@@ -73,7 +73,7 @@ export function bahanDokumen(s, p, fotoUrl) {
         `Pengungsi: ${angka("mengungsi_jiwa") ? `${angka("mengungsi_jiwa").toLocaleString("id-ID")} jiwa${angka("mengungsi_kk") ? ` (${angka("mengungsi_kk").toLocaleString("id-ID")} KK)` : ""}${ada("titik_pengungsian") ? ` di ${v("titik_pengungsian").nilai}` : ""}` : v("mengungsi_jiwa")?.nihil ? "nihil" : "belum didata"}.`,
         `Kerusakan rumah: ${rumah.length ? rumah.join(", ") : "belum didata atau nihil"}.`, `Fasilitas umum: ${fas.length ? fas.join("; ") : "belum didata atau nihil"}.`, ...khusus.map(k => `${k}.`)]],
       ["Kebutuhan mendesak", ada("kebutuhan") ? v("kebutuhan").nilai : "belum didata"],
-      ["Sumber", `Laporan ${s.tingkat === "bpbd" ? "petugas BPBD" : "warga"} melalui Lapor Bencana BNPB, ${waktuLapor(s.terkirim, prov)}${s.tingkat === "bpbd" ? "" : ", belum terverifikasi"}.`]]};
+      ["Sumber", `Laporan ${s.tingkat === "bpbd" ? "petugas BPBD" : "warga"} melalui Pantau Bencana BNPB, ${waktuLapor(s.terkirim, prov)}${s.tingkat === "bpbd" ? "" : ", belum terverifikasi"}.`]]};
   // foto: url bertoken (mesin mengunduh sendiri), bukan berkas lokal
   const foto = (s.foto || []).map(f => ({url: fotoUrl(f), ket: `${f.jenis === "video" ? `Video ${f.durasi ?? "?"} detik, ` : ""}${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
   return {narasi, foto, nomor: s.nomor, tingkat_label: s.tingkat === "bpbd" ? "" : "Laporan warga, belum terverifikasi",
@@ -141,3 +141,9 @@ export function mejaRinciTampil(s, p, t) {
 }
 /* kode pelaku di D1 ("admin:<awalan>", "staf:<id>", "Sistem") tidak ditampilkan ke layar */
 export const pelakuLabel = k => String(k || "").startsWith("staf:") ? "Staf BNPB" : String(k || "").startsWith("admin:") ? "Admin BNPB" : k || "Sistem";
+
+/* PDF dibuat mesin di Mac mini, biasanya dalam 3 menit (antrean diambil tiap menit); halaman ini memuat ulang tiap 10 detik sampai berkasnya ada */
+export const HALAMAN_TUNGGU_DOK = `<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="10"><title>Dokumen sedang dibuat</title>
+<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#eef2f8;color:#0b1f3a;font:16px/1.5 system-ui,sans-serif"><main style="max-width:420px;margin:16px;padding:24px;background:#fff;border-radius:16px;text-align:center">
+<h1 style="font-size:20px;margin:0 0 8px">Dokumen laporan sedang dibuat</h1><p style="margin:0 0 8px">Biasanya selesai dalam 3 menit. Halaman ini memuat ulang sendiri dan mengunduh berkasnya begitu siap.</p>
+<p style="margin:0;color:#4a5b75;font-size:14px">PDF juga dikirim ke nomor WhatsApp pelapor begitu jadi.</p></main>`;

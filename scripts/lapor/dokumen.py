@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Laporan kejadian bencana (Lapor Bencana BNPB) ke Word dan PDF (data/kajian-bnpb/lapor-ai KEPUTUSAN K8, K17, K18, D21).
+"""Laporan kejadian bencana (Pantau Bencana BNPB) ke Word dan PDF (data/kajian-bnpb/lapor-ai KEPUTUSAN K8, K17, K18, D21).
 
 Bentuk: halaman 1 = narasi gaya laporan pemantauan Koordalops (judul "Bencana Alam ... di ...", lokasi, waktu, kronologis,
 dampak bernomor, kebutuhan, sumber) supaya bisa disalin Pusdalops tanpa diketik ulang; lalu rincian isian per kelompok,
@@ -131,7 +131,7 @@ def bangun(c, docx_keluar):
     _teks(p, "Laporan Kejadian Bencana", 19, True, NAVY)
     p = b.add_paragraph()
     _rapat(p, 2, 0)
-    _teks(p, "Lapor Bencana BNPB, diteruskan ke BPBD setempat", 9, False, ABU)
+    _teks(p, "Pantau Bencana BNPB, diteruskan ke BPBD setempat", 9, False, ABU)
     _latar(k, "0B2545")
     for q, (isi, uk, tebal) in zip([k.paragraphs[0], k.add_paragraph()], (("Nomor tiket", 8, False), (c["nomor"], 11.5, True))):
         q.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -239,7 +239,7 @@ def bangun(c, docx_keluar):
 
     p = d.add_paragraph()
     _rapat(p, 14, 0)
-    _teks(p, "Laporan ini disusun otomatis dari percakapan Lapor Bencana BNPB. Angka berasal dari pelapor dan belum diverifikasi kecuali dinyatakan lain.", 8, False, ABU, True)
+    _teks(p, "Laporan ini disusun otomatis dari percakapan Pantau Bencana BNPB. Angka berasal dari pelapor dan belum diverifikasi kecuali dinyatakan lain.", 8, False, ABU, True)
     kaki = s.footer.paragraphs[0]
     kaki.alignment = WD_ALIGN_PARAGRAPH.CENTER
     _teks(kaki, f"Badan Nasional Penanggulangan Bencana  |  Copyright 2026  |  {c['nomor']}", 8, False, ABU)

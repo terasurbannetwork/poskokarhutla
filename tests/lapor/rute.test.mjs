@@ -251,6 +251,7 @@ uji("foto: gps, exif, waktu tidak sah dibuang (mesin dan web), tidak disimpan; h
   // exif waktu > 48 jam lalu tetap ditolak
   await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(WA4).run();
   assert.equal((await foto({data: B64, exif: {waktu: kini - 72 * 3600e3}}, H)).s, 400);
+  assert.equal((await foto({data: B64, exif: {kamera: false, waktu: kini}}, H)).s, 400, "tanpa data kamera (tangkapan layar) ditolak");
 });
 
 uji("nilai: harus angka bulat 1-5 bertipe number dan 30 per jam per nomor", async () => {

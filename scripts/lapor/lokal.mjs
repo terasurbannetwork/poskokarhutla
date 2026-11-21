@@ -20,6 +20,7 @@ import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
+import {HALAMAN_TUNGGU_DOK} from "../../src/lapor_tampil.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
 const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `public/lapor/tr/${b}.json`), "utf8")); } catch { return null; } };   // kamus statis, sama dengan Worker
 import {samarkan} from "../../src/samarkan.js";
@@ -245,6 +246,7 @@ async function foto(body) {
   const kini = Date.now(), g = body.gps, x = body.exif;
   const gpsSah = g && Number.isFinite(g.lat) && Number.isFinite(g.lon) && g.akurasi <= 1000 && kini - g.waktu <= 10 * 6e4;
   if (x?.waktu && kini - x.waktu > 48 * 3600e3) return [400, {galat: "Foto diambil lebih dari 48 jam lalu. Kirim foto terbaru dari lokasi."}];
+  if (x && x.kamera === false) return [400, {galat: "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar hasil sunting tidak diterima."}];
   if (gpsSah && x?.lat != null && km(g.lat, g.lon, x.lat, x.lon) > 5) return [400, {galat: "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini."}];
   const meta = gpsSah ? {lencana: "gps", lencanaTeks: "Lokasi GPS perangkat", lat: g.lat, lon: g.lon, akurasi: g.akurasi}
     : x?.lat != null ? {lencana: "exif", lencanaTeks: "Lokasi dari data foto", lat: x.lat, lon: x.lon} : {lencana: "tanpa", lencanaTeks: "Tanpa lokasi"};
@@ -372,7 +374,7 @@ function unduh(res, nama, t) {
   // templat dokumen berubah sesudah berkas dibuat: hapus berkas lama supaya dibuat ulang dengan tampilan baru
   try { if (fs.statSync(f).mtimeMs < fs.statSync(path.join(AKAR, "scripts/lapor/dokumen.py")).mtimeMs) for (const x of ["pdf", "docx"]) fs.rmSync(path.join(DOK, `${m[1]}.${x}`), {force: true}); } catch {}
   if (!fs.existsSync(f) && !fs.existsSync(path.join(DOK, `${m[1]}.pdf`)) && Date.now() - (sedangBuat[m[1]] || 0) > 60000) { sedangBuat[m[1]] = Date.now(); buatDokumen(s, d.pelapor[s.wa]); } // belum ada: buat ulang
-  if (!fs.existsSync(f)) { res.writeHead(202, {"content-type": "text/plain; charset=utf-8"}); return res.end("Dokumen sedang dibuat. Coba lagi beberapa detik lagi."); }
+  if (!fs.existsSync(f)) { res.writeHead(202, {"content-type": "text/html; charset=utf-8", "cache-control": "no-store"}); return res.end(HALAMAN_TUNGGU_DOK); }
   res.writeHead(200, {"content-type": m[2] === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "content-disposition": `attachment; filename="Laporan ${m[1]}.${m[2]}"`, "cache-control": "private, no-store"});
   fs.createReadStream(f).pipe(res);
