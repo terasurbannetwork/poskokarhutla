@@ -496,6 +496,9 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | K73 | 20 Nov 2026 | Pemilik: "kalo kaya Kota administrasi jakarta timur kalo misalnya bencananya sama yaudah di merge aja." |
 | K74 | 20 Nov 2026 | Pemilik: "di kanan ada dong ya harusnya aksinya untuk memverifikasi dan nanti dia disetujui atau nggak sebagai bencananya bener atau nggak." |
 | K75 | 21 Nov 2026 | Nama aplikasi: **Pantau Bencana** (Pelaporan Ancaman dan Tanggap Darurat Bencana), menggantikan nama tampilan "Lapor Bencana" di /lapor, meja, lacak, bot, dan dokumen. Foto dan video di web hanya dari kamera: tanpa tombol galeri, berkas lebih tua dari 5 menit atau tanpa data kamera (tangkapan layar) ditolak; Worker menolak foto yang EXIF-nya tanpa Make/Model. Jalur WA belum bisa membedakan galeri. |
+| K76 | 21 Nov 2026 | Maskot Sigap memakai label "Sigap, Super Intelligence BNPB" dan memandu fitur beranda di gelembungnya, bergilir: lapor darurat, lapor kejadian, cek status, info dan prediksi, edukasi, nomor penting; tiap gelembung punya tombol menuju fiturnya (pemilik: "dia kaya memberikan arahan. Apa saja fiturnya"). Gilir otomatis 8 detik bisa dijeda (WCAG 2.2.2) dan mati bila gerak dikurangi. |
+| K77 | 21 Nov 2026 | Tombol Lapor darurat, Lapor kejadian, dan Cek status laporan di hero sebaris (pemilik: "Agar sebaris"); di kolom sempit ikon di atas label. |
+| K78 | 21 Nov 2026 | Pilihan jenis bencana tanpa "Lainnya" (pemilik: "Hilangkan lainnya"), mengganti sebagian keputusan 19 Nov; id `lainnya` tetap dikenali untuk laporan lama. |
 
 ## Keputusan rancangan (pelaksanaan K73-K74, agent, bisa dibatalkan pemilik)
 

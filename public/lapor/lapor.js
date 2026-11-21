@@ -57,6 +57,30 @@ $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "stat
 document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
   penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi siaga"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
+/* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
+   tombol Jeda sesuai WCAG 2.2.2; tanpa gilir otomatis bila pengguna meminta gerak dikurangi. Delegasi: salinan di Cara melapor ikut jalan. */
+const tipGerak = matchMedia("(prefers-reduced-motion: no-preference)").matches;
+function tipKe(w, arah, pengguna) {
+  const sl = [...w.querySelectorAll(".lp-hg-slide")], i = sl.findIndex(x => !x.hidden), j = (i + arah + sl.length) % sl.length;
+  sl[i].hidden = true; sl[j].hidden = false;
+  w.querySelector(".lp-hg-urut").textContent = `${j + 1} dari ${sl.length}`;
+  w.querySelector(".lp-hg-isi").setAttribute("aria-live", pengguna ? "polite" : "off");
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest(".lp-hg-tip button"); if (!b) return;
+  const w = b.closest(".lp-hg-tip");
+  if (b.dataset.tip === "jeda") { const henti = w.dataset.jeda !== "1"; w.dataset.jeda = henti ? "1" : ""; b.textContent = henti ? "Putar" : "Jeda"; return; }
+  if (b.dataset.tip) { w.dataset.jeda = "1"; const j = w.querySelector(".lp-hg-jeda"); if (j) j.textContent = "Putar"; tipKe(w, +b.dataset.tip, true); return; }
+  const x = b.dataset.tipAksi;
+  if (x === "status") $("bCekStatus").click(); else document.querySelector(`#lBeranda [data-aksi="${x}"]`)?.click();
+});
+for (const ev of ["pointerenter", "focusin"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w) w.dataset.tahan = "1"; }, true);
+for (const ev of ["pointerleave", "focusout"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w && !w.matches(":hover, :focus-within")) w.dataset.tahan = ""; }, true);
+if (tipGerak) {
+  document.querySelectorAll(".lp-hg-jeda").forEach(j => { j.hidden = false; });
+  setInterval(() => { if (document.hidden) return;
+    for (const w of document.querySelectorAll(".lp-hg-tip")) if (w.offsetParent && w.dataset.jeda !== "1" && w.dataset.tahan !== "1") tipKe(w, 1, false); }, 8000);
+}
 
 /* ============ pesan di log ============ */
 function teksWa(e, teks) {

@@ -2022,3 +2022,26 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 /* nama lengkap aplikasi di animasi pembuka (pemilik 21 Nov 2026: "Pantau Bencana (Pelaporan Ancaman dan Tanggap Darurat Bencana)") */
 .lp-pembuka-nama{margin-top:6px;font:700 clamp(.9375rem,1.8vw,1.1875rem) var(--font);letter-spacing:.01em;color:var(--on-head)}
 @media (prefers-reduced-motion:no-preference){.lp-pembuka-nama{animation:lp-naik .6s 1s var(--ease) both}}
+/* tiga tombol hero sebaris (pemilik 21 Nov 2026: "Agar sebaris"): kolom sama lebar; kolom sempit = ikon di atas label */
+@media (min-width:900px){
+.lp-hero-aksi{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));container-type:inline-size}
+.lp-hero-aksi>button{min-width:0;padding:0 14px 0 8px!important;font-size:.9375rem!important;gap:10px!important;line-height:1.2;text-align:left}
+.lp-hero-aksi>button svg{width:36px!important;height:36px!important;padding:9px}
+@container (width < 540px){
+.lp-hero-aksi>button{flex-direction:column;justify-content:center;gap:6px!important;min-height:92px!important;padding:10px 6px!important;font-size:.8125rem!important;text-align:center}
+}
+}
+/* Sigap memandu fitur beranda bergilir (pemilik 21 Nov 2026) */
+.lp-hg-tip{display:grid;gap:4px}
+.lp-hg-slide b{margin:2px 0 2px}
+.lp-hg-buka{display:inline-flex;align-items:center;gap:4px;margin-top:8px;min-height:28px;padding:0 10px 0 12px;border:0;border-radius:999px;background:var(--brand-accent);color:var(--on-pekat);font:700 .75rem var(--font);cursor:pointer;touch-action:manipulation}
+.lp-hg-buka svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4}
+.lp-hg-buka:hover{background:color-mix(in oklab,var(--brand-accent) 88%,var(--head-bg))}
+.lp-hg-kendali{display:flex;align-items:center;gap:4px;margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+.lp-hg-kendali button{display:grid;place-items:center;min-width:28px;height:28px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--brand2);font:700 .75rem var(--font);cursor:pointer;touch-action:manipulation}
+.lp-hg-kendali button:hover{background:color-mix(in oklab,var(--brand2) 10%,transparent)}
+.lp-hg-kendali button:focus-visible,.lp-hg-buka:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.lp-hg-kendali svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2}
+.lp-hg-urut{font:600 .6875rem var(--font);color:var(--ink3,var(--ink2));min-width:48px;text-align:center}
+.lp-hg-jeda{margin-left:auto;padding:0 8px!important}
+@media (prefers-reduced-motion:no-preference){.lp-hg-slide:not([hidden]){animation:lp-naik .35s var(--ease) both}}

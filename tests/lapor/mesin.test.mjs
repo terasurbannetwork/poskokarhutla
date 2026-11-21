@@ -50,8 +50,9 @@ test("nomor baru: identitas dulu, cerita pertama disimpan dan dipakai sesudahnya
   assert.ok(h.sesi.isian.kronologi, "cerita tertunda jadi kronologi");
   assert.match(h.balasan, /Jenis bencana/);
   assert.equal(h.pilihan[0], "Banjir", "saran dari cerita di urutan teratas");
-  assert.equal(h.pilihan.length, JENIS.length, "semua jenis tetap bisa dipilih, termasuk Lainnya");
-  assert.equal(h.pilihan.at(-1), "Lainnya", "Lainnya di urutan terakhir");
+  // pemilik 21 Nov 2026: "Hilangkan lainnya" dari pilihan jenis bencana
+  assert.equal(h.pilihan.length, JENIS.length - 1, "semua jenis bisa dipilih kecuali Lainnya");
+  assert.ok(!h.pilihan.includes("Lainnya"), "Lainnya tidak ditawarkan");
 });
 
 test("BPBD yang mengaku sendiri = bpbd_klaim, ditanya kab dan jabatan", async () => {

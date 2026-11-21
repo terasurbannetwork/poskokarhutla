@@ -6,6 +6,8 @@
    - kirim = true saat laporan baru saja dikirim (penyimpan menerbitkan nomor, tiket, PDF). */
 import {JENIS, KELOMPOK, ISIAN, isianNama, berlaku, berlakuSesi, KRONOLOGI, rangkaiKronologi, opsiBerlaku, langkahKronologi} from "./lapor_spek.js";
 import {samarkan} from "./samarkan.js";
+/* pilihan jenis tanpa "Lainnya" (pemilik 21 Nov 2026: "Hilangkan lainnya"); id lainnya tetap di JENIS untuk laporan lama */
+const JENIS_PILIH = JENIS.filter(j => j.id !== "lainnya"), JENIS_DARURAT = JENIS_PILIH;
 
 export const NAMA_LAYANAN = "Pantau Bencana BNPB";
 /* templat cerita (pemilik 19 Nov 2026: "langsung keluar kaya templatenya"); lokasi tidak ada di sini karena wajib dibagikan lebih dulu */
@@ -172,7 +174,7 @@ export function pesanModel(teks, sesi) {
   const kosong = berlakuSesi(sesi).filter(i => (sesi.ubah || !terjawab(sesi, i.nama)) && !i.tipe.startsWith("pilihan") && !i.tipe.startsWith("opsi"))
     .map(i => ({nama: i.nama, label: i.label, tipe: i.tipe, satuan: i.satuan || null}));
   return [
-    `Jenis bencana yang tersedia: ${JSON.stringify(JENIS.map(j => ({jenis: j.id, label: j.label, subjenis: j.sub.map(s => s.nama)})))}`,
+    `Jenis bencana yang tersedia: ${JSON.stringify(JENIS_PILIH.map(j => ({jenis: j.id, label: j.label, subjenis: j.sub.map(s => s.nama)})))}`,
     `Jenis laporan saat ini: ${jenis || "belum diketahui"}.`,
     `${sesi.ubah ? "Pelapor sedang mengubah isian. Isian yang boleh diubah" : "Isian yang masih kosong"}: ${JSON.stringify(kosong)}`,
     `Pertanyaan terakhir kepada pelapor: ${sesi.tanya ? labelTanya(sesi.tanya) : "belum ada"}`,
@@ -453,11 +455,10 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   };
   /* sesudah lokasi, jenis bencana dipilih dulu (kartu bergambar), baru cerita (pemilik 19 Nov 2026: "pilihan bencananya dulu") */
   const tanyaJenis = kepalaTeks => {
-    const opsi = JENIS.map(j => j.id); sesi.status = "melengkapi"; sesi.tanya = "jenis"; sesi.jenisDulu = true; sesi.ditanya ||= []; sesi.pilihanData = opsi;
-    const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Jenis bencana*\nPilih yang paling mirip dengan kejadiannya.`, JENIS.map(j => j.label), false, "jenis", JENIS.map(j => j.ket));
+    const opsi = JENIS_PILIH.map(j => j.id); sesi.status = "melengkapi"; sesi.tanya = "jenis"; sesi.jenisDulu = true; sesi.ditanya ||= []; sesi.pilihanData = opsi;
+    const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Jenis bencana*\nPilih yang paling mirip dengan kejadiannya.`, JENIS_PILIH.map(j => j.label), false, "jenis", JENIS_PILIH.map(j => j.ket));
     h.kunci = opsi; h.saran = 0; sesi.kunci = opsi; return h;
   };
-  const JENIS_DARURAT = JENIS.filter(j => j.id !== "lainnya");
   const tanyaDarurat = kepalaTeks => {
     sesi.status = "darurat_jenis"; const opsi = JENIS_DARURAT.map(j => j.id);
     const h = jawab(`${kepalaTeks ? `${kepalaTeks}\n\n` : ""}*Kejadian apa yang sedang terjadi?*\nPilih yang paling mirip.`, JENIS_DARURAT.map(j => j.label), false, "jenis", JENIS_DARURAT.map(j => j.ket));
@@ -709,7 +710,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     keluhan = "Sebutkan jumlahnya dengan angka, misalnya *2*. Tulis *0* bila tidak ada."; // "Ada" saja tidak cukup
   } else if (sesi.pilihan && p >= 0 && ditanya === "jenis") {
     const opsi = sesi.pilihanData[p];
-    if (opsi === "lainnya") { sesi.pilihanData = JENIS.map(j => j.id); return jawab("*Pilih jenis bencana:*", JENIS.map(j => j.label), false, null, JENIS.map(j => j.ket)); }
+    if (opsi === "lainnya") { sesi.pilihanData = JENIS_PILIH.map(j => j.id); return jawab("*Pilih jenis bencana:*", JENIS_PILIH.map(j => j.label), false, null, JENIS_PILIH.map(j => j.ket)); }
     setIsian(sesi, "jenis", {nilai: opsi.jenis || opsi}, {sumber: "pilihan", waktu: kini}); // karakteristik selalu dipilih pelapor sesudahnya
   } else if (sesi.pilihan && p >= 0 && ditanya === "subjenis") {
     const sub = sesi.pilihanData[p];
@@ -829,7 +830,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   }
   if (next === "jenis") {
     const saran = [...new Set(tebak.map(t => t.jenis))];
-    const opsi = [...saran, ...JENIS.map(j => j.id).filter(id => !saran.includes(id))];
+    const opsi = [...saran, ...JENIS_PILIH.map(j => j.id).filter(id => !saran.includes(id))];
     sesi.pilihanData = opsi; sesi.saran = saran.length;
     const j = id => JENIS.find(x => x.id === id);
     const h = jawab(sambung(saran.length ? `*Jenis bencana*\nDari cerita Anda, yang paling mirip ada di urutan teratas. Pilih satu.` : "*Jenis bencana*\nPilih yang paling mirip dengan kejadiannya."),
