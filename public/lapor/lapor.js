@@ -72,7 +72,7 @@ document.addEventListener("click", e => {
   if (b.dataset.tip === "jeda") { const henti = w.dataset.jeda !== "1"; w.dataset.jeda = henti ? "1" : ""; b.textContent = henti ? "Putar" : "Jeda"; return; }
   if (b.dataset.tip) { w.dataset.jeda = "1"; const j = w.querySelector(".lp-hg-jeda"); if (j) j.textContent = "Putar"; tipKe(w, +b.dataset.tip, true); return; }
   const x = b.dataset.tipAksi;
-  if (x === "status") $("bCekStatus").click(); else document.querySelector(`#lBeranda [data-aksi="${x}"]`)?.click();
+  if (x === "tur") mulaiTur(); else if (x === "status") $("bCekStatus").click(); else document.querySelector(`#lBeranda [data-aksi="${x}"]`)?.click();
 });
 for (const ev of ["pointerenter", "focusin"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w) w.dataset.tahan = "1"; }, true);
 for (const ev of ["pointerleave", "focusout"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w && !w.matches(":hover, :focus-within")) w.dataset.tahan = ""; }, true);
@@ -1514,7 +1514,7 @@ const pernah = false;
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Pantau Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
-  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => { pb.remove(); dialogBahasa(); }, 700); };   // tiap situs dibuka (pemilik 20 Nov 2026: "kenapa pilih bahasanya ga muncul di awal"); bahasa terakhir ditandai
+  const tutup = () => { if (pb.classList.contains("pergi")) return; pb.classList.add("pergi"); setTimeout(() => { pb.remove(); dialogBahasa(turPertama); }, 700); };   // tiap situs dibuka (pemilik 20 Nov 2026: "kenapa pilih bahasanya ga muncul di awal"); bahasa terakhir ditandai
   setTimeout(tutup, matchMedia("(prefers-reduced-motion: reduce)").matches ? 1200 : 6000);   // pemilik 19 Nov 2026 malam: "masih kurang lama"
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
@@ -1527,3 +1527,65 @@ else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server,
   if (tersimpan && !String(tersimpan).startsWith("sesi-")) return mulai(tersimpan);   // nomor yang pernah diketik di perangkat ini
   mulaiTamu();   // K65: tanpa kode WA; nomor ditanya di chat
 })();
+
+/* ============ tur beranda (pemilik 21 Nov 2026: "dibuat tour gini", rujukan flood-check.dawnstackai.com) ============
+   Empat lapis gelap mengelilingi lubang bercincin di elemen yang dijelaskan, kartu "1 dari N" bermaskot Sigap, Lewati tur, Kembali, Lanjut.
+   Muncul sekali sesudah pilih bahasa pada kunjungan pertama; bisa diulang dari gelembung Sigap. Langkah yang elemennya tidak tampil (layar HP) dilewati. */
+const TUR = [
+  [null, "Selamat datang di Pantau Bencana", "Saya Sigap. Saya tunjukkan cara melapor kejadian bencana ke BNPB dan BPBD. Tur ini sekitar 30 detik."],
+  ["#bDarurat", "Lapor darurat", "Kejadian sedang berlangsung? Cukup lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima."],
+  ["#bLaporBaru", "Lapor kejadian", "Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera."],
+  ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
+  ['#lBeranda [data-aksi="info"]', "Info dan prediksi", "Kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan di daerah Anda."],
+  ['#lBeranda [data-aksi="edukasi"]', "Edukasi siaga bencana", "Yang perlu dilakukan sebelum, saat, dan sesudah bencana."],
+  ['#lBeranda [data-aksi="penting"]', "Nomor penting", "BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat dari lokasi Anda."],
+  [".lp-bahasa-menu", "Pilih bahasa", "Saya bisa bertanya dalam bahasa daerah Anda. Laporan tetap diterima petugas dalam bahasa Indonesia."],
+  ['#tab [data-ke="laporan"]', "Laporan Anda", "Semua laporan yang pernah Anda kirim dan statusnya ada di sini."],
+];
+const turTampak = sel => [...document.querySelectorAll(sel)].find(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; });
+try { if (!localStorage.getItem("lapor-tur")) document.body.classList.add("lp-tur-nanti"); } catch {}   // kunjungan pertama: gelembung Sigap menunggu tur selesai
+function turPertama() { let sudah = true; try { sudah = !!localStorage.getItem("lapor-tur"); } catch {} if (!sudah && !$("lBeranda").hidden) mulaiTur(); else document.body.classList.remove("lp-tur-nanti"); }
+function mulaiTur() {
+  if (document.querySelector(".lp-tur")) return;
+  try { localStorage.setItem("lapor-tur", "1"); } catch {}
+  const langkah = TUR.filter(([sel]) => !sel || turTampak(sel)), N = langkah.length;
+  const w = el("div", "lp-tur"), gelap = [0, 1, 2, 3].map(() => el("div", "lp-tur-gelap")), lubang = el("div", "lp-tur-lubang");
+  const k = el("div", "lp-tur-kartu"); k.setAttribute("role", "dialog"); k.setAttribute("aria-modal", "true"); k.setAttribute("aria-labelledby", "turJudul");
+  const m = el("div", "lp-tur-maskot"); m.innerHTML = maskot("sapa");
+  const ke = el("p", "lp-tur-ke"), h = el("h2", null), p = el("p", "lp-tur-isi"), titik = el("div", "lp-tur-titik"); h.id = "turJudul";
+  for (let i = 0; i < N; i++) titik.append(el("i"));
+  const lewat = el("button", "lp-tur-lewat", "Lewati tur"), mundur = el("button", "lp-kedua", "Kembali"), maju = el("button", "lp-utama", "Lanjut");
+  for (const b of [lewat, mundur, maju]) b.type = "button";
+  const aksi = el("div", "lp-tur-aksi"), kanan = el("div"); kanan.append(mundur, maju); aksi.append(lewat, kanan);
+  const kepala = el("div", "lp-tur-kepala"), teks = el("div"); teks.append(ke, h); kepala.append(m, teks);
+  k.append(kepala, p, titik, aksi); w.append(...gelap, lubang, k); document.body.append(w);
+  const asal = document.activeElement; let i = 0, sasaran = null;
+  const tata = () => {   // lubang dan kartu mengikuti elemen; tanpa elemen = kartu di tengah dan seluruh layar gelap
+    const vw = innerWidth, vh = innerHeight, pad = 8;
+    const r = sasaran?.getBoundingClientRect(), x = r ? Math.max(0, r.left - pad) : vw / 2, y = r ? Math.max(0, r.top - pad) : vh / 2, rw = r ? r.width + pad * 2 : 0, rh = r ? r.height + pad * 2 : 0;
+    Object.assign(gelap[0].style, {left: "0", top: "0", width: "100%", height: `${y}px`});
+    Object.assign(gelap[1].style, {left: "0", top: `${y + rh}px`, width: "100%", height: `${Math.max(0, vh - y - rh)}px`});
+    Object.assign(gelap[2].style, {left: "0", top: `${y}px`, width: `${x}px`, height: `${rh}px`});
+    Object.assign(gelap[3].style, {left: `${x + rw}px`, top: `${y}px`, width: `${Math.max(0, vw - x - rw)}px`, height: `${rh}px`});
+    lubang.hidden = !r; if (r) Object.assign(lubang.style, {left: `${x}px`, top: `${y}px`, width: `${rw}px`, height: `${rh}px`});
+    k.classList.toggle("tengah", !r);
+    if (!r) { k.style.left = k.style.top = ""; return; }
+    const kw = k.offsetWidth, kh = k.offsetHeight, jarak = 14;
+    const top = y + rh + jarak + kh <= vh - 8 ? y + rh + jarak : y - jarak - kh >= 8 ? y - jarak - kh : Math.max(8, vh - kh - 8);
+    k.style.left = `${Math.min(vw - kw - 8, Math.max(8, x + rw / 2 - kw / 2))}px`; k.style.top = `${top}px`;
+  };
+  const tampil = n => {
+    i = n; const [sel, judul, isi] = langkah[i]; sasaran = sel ? turTampak(sel) : null;
+    ke.textContent = `${i + 1} dari ${N}`; h.textContent = judul; p.textContent = isi;
+    [...titik.children].forEach((t, j) => t.classList.toggle("aktif", j === i));
+    mundur.hidden = i === 0; maju.textContent = i === 0 ? "Mulai" : i === N - 1 ? "Selesai" : "Lanjut";
+    sasaran?.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
+    tata(); requestAnimationFrame(tata); setTimeout(tata, 400); maju.focus();
+  };
+  const selesai = () => { document.body.classList.remove("lp-tur-nanti"); removeEventListener("resize", tata); removeEventListener("scroll", tata, true); removeEventListener("keydown", tombol, true); w.remove(); asal?.focus?.(); };
+  const tombol = e => { if (e.key === "Escape") { e.preventDefault(); selesai(); } else if (e.key === "ArrowRight") { e.preventDefault(); i < N - 1 ? tampil(i + 1) : selesai(); } else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); tampil(i - 1); }
+    else if (e.key === "Tab") { const f = [...k.querySelectorAll("button:not([hidden])")], a = f.indexOf(document.activeElement); if (e.shiftKey ? a <= 0 : a === f.length - 1) { e.preventDefault(); f[e.shiftKey ? f.length - 1 : 0].focus(); } } };
+  lewat.addEventListener("click", selesai); mundur.addEventListener("click", () => tampil(i - 1)); maju.addEventListener("click", () => i < N - 1 ? tampil(i + 1) : selesai());
+  addEventListener("resize", tata); addEventListener("scroll", tata, true); addEventListener("keydown", tombol, true);
+  tampil(0);
+}

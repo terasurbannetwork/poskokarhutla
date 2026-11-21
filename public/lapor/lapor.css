@@ -2060,3 +2060,39 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-terima-besar .lp-nilai button{width:clamp(56px,9vw,88px);height:clamp(56px,9vw,88px);border-radius:50%;font-size:clamp(2rem,5vw,3.25rem);line-height:1}
 .lp-terima-besar .lp-nilai button:focus-visible{outline:3px solid var(--on-head);outline-offset:3px}
 @media (prefers-reduced-motion:no-preference){.lp-terima-besar{animation:lp-naik .5s var(--ease) both}}
+/* tur beranda (pemilik 21 Nov 2026, rujukan flood-check): lapis gelap, lubang bercincin, kartu langkah */
+.lp-tur{position:fixed;inset:0;z-index:70}
+.lp-tur-gelap{position:fixed;background:color-mix(in oklab,var(--head-bg) 55%,transparent)}
+.lp-tur-lubang{position:fixed;border-radius:14px;pointer-events:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--card) 92%,transparent),0 0 24px 4px color-mix(in oklab,var(--card) 25%,transparent)}
+.lp-tur-kartu{position:fixed;width:min(360px,calc(100vw - 16px));padding:16px 18px 14px;border-radius:16px;background:var(--card);color:var(--ink);box-shadow:0 10px 30px color-mix(in oklab,var(--head-bg) 22%,transparent)}
+.lp-tur-kartu.tengah{left:50%;top:50%;translate:-50% -50%}
+.lp-tur-kepala{display:flex;align-items:center;gap:10px}
+.lp-tur-maskot{width:44px;flex:none}
+.lp-tur-ke{margin:0;font:700 .75rem var(--font);color:var(--brand2)}
+.lp-tur-kartu h2{margin:2px 0 0;font:800 1.125rem/1.25 var(--display)}
+.lp-tur-isi{margin:10px 0 12px;font-size:.875rem;line-height:1.55;color:var(--ink2);text-align:justify}
+.lp-tur-titik{display:flex;gap:6px;margin-bottom:12px}
+.lp-tur-titik i{width:6px;height:6px;border-radius:999px;background:var(--line)}
+.lp-tur-titik i.aktif{width:18px;background:var(--brand2)}
+.lp-tur-aksi{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lp-tur-aksi>div{display:flex;gap:8px}
+.lp-tur-aksi .lp-utama,.lp-tur-aksi .lp-kedua{min-height:40px;width:auto;padding:0 16px}
+.lp-tur-lewat{border:0;background:none;padding:8px 4px;color:var(--ink2);font:600 .8125rem var(--font);cursor:pointer}
+.lp-tur-lewat:hover{color:var(--ink)}
+.lp-tur button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.lp-tur-lubang{transition:left .3s var(--ease),top .3s var(--ease),width .3s var(--ease),height .3s var(--ease)}.lp-tur-kartu{transition:left .3s var(--ease),top .3s var(--ease)}}
+/* kartu tur diperbesar (pemilik 21 Nov 2026: "gedein aja, 3 kali lipat") */
+.lp-tur-kartu{width:min(620px,calc(100vw - 16px));padding:28px 32px 24px;border-radius:24px}
+.lp-tur-kepala{gap:18px}
+.lp-tur-maskot{width:88px}
+.lp-tur-ke{font-size:1rem}
+.lp-tur-kartu h2{font-size:clamp(1.5rem,3vw,2.125rem);margin-top:4px}
+.lp-tur-isi{margin:18px 0 20px;font-size:clamp(1rem,1.8vw,1.25rem)}
+.lp-tur-titik{gap:8px;margin-bottom:20px}
+.lp-tur-titik i{width:9px;height:9px}
+.lp-tur-titik i.aktif{width:28px}
+.lp-tur-aksi .lp-utama,.lp-tur-aksi .lp-kedua{min-height:52px;padding:0 24px;font-size:1.0625rem}
+.lp-tur-lewat{font-size:1rem}
+/* gelembung Sigap di hero baru muncul sesudah tur selesai (pemilik 21 Nov 2026) */
+body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
+.lp-tur-nanti .lp-hg-tip{visibility:hidden}

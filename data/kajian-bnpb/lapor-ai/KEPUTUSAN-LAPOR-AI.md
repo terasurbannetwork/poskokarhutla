@@ -499,6 +499,10 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | K76 | 21 Nov 2026 | Maskot Sigap memakai label "Sigap, Super Intelligence BNPB" dan memandu fitur beranda di gelembungnya, bergilir: lapor darurat, lapor kejadian, cek status, info dan prediksi, edukasi, nomor penting; tiap gelembung punya tombol menuju fiturnya (pemilik: "dia kaya memberikan arahan. Apa saja fiturnya"). Gilir otomatis 8 detik bisa dijeda (WCAG 2.2.2) dan mati bila gerak dikurangi. |
 | K77 | 21 Nov 2026 | Tombol Lapor darurat, Lapor kejadian, dan Cek status laporan di hero sebaris (pemilik: "Agar sebaris"); di kolom sempit ikon di atas label. |
 | K78 | 21 Nov 2026 | Pilihan jenis bencana tanpa "Lainnya" (pemilik: "Hilangkan lainnya"), mengganti sebagian keputusan 19 Nov; id `lainnya` tetap dikenali untuk laporan lama. |
+| K79 | 21 Nov 2026 | Percakapan tampil penuh dalam bahasa pilihan, termasuk balon jawaban pelapor yang disusun layar; yang dikirim ke mesin dan dibaca di meja tetap bahasa Indonesia (pemilik: "harusnya bahasa chat gw semua juga minang. Cuma pas nanti dibaca di meja pantau dia bahasa Indonesia"). |
+| K80 | 21 Nov 2026 | Kartu isian laporan menampilkan perkiraan menit tersisa dari laju pelapor sendiri; Sigap di panel samping berganti kalimat tiap pertanyaan dan punya tombol Saran lain (pemilik: "omongannya yang penting berubah-ubah"). |
+| K81 | 21 Nov 2026 | Layar terima kasih dua tahap: terima kasih dulu, diketuk baru "Bagaimana pengalaman melapor Anda?" besar di tengah, dipilih baru kembali; penilaian tidak lagi ada di kartu tiket (pemilik: "disininya gausah ada lagi"). |
+| K82 | 21 Nov 2026 | Tur beranda bersorot meniru flood-check.dawnstackai.com: 9 langkah (sambutan, lapor darurat, lapor kejadian, cek status, info dan prediksi, edukasi, nomor penting, bahasa, laporan), muncul sekali sesudah pilih bahasa pada kunjungan pertama, bisa diulang dari gelembung Sigap (Lihat tur). |
 
 ## Keputusan rancangan (pelaksanaan K73-K74, agent, bisa dibatalkan pemilik)
 
