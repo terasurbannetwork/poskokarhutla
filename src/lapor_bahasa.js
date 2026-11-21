@@ -37,7 +37,7 @@ Rules: translate meaning only, add nothing. Keep every number exactly as written
     if (!hasil) return {teks: asli, asli, diterjemahkan: false};
     if (!angkaSama(aman, hasil) || !wajarPanjang(aman, hasil)) return {teks: asli, asli, diterjemahkan: false}; // angka berubah atau terlalu panjang = tolak terjemahan
     return {teks: hasil, asli, diterjemahkan: hasil !== asli};
-  } catch { return {teks: asli, asli, diterjemahkan: false}; }
+  } catch (e) { console.warn(`lapor bahasa masuk gagal: ${String(e?.message || e).slice(0, 160)}`); return {teks: asli, asli, diterjemahkan: false}; }   // gagal model tidak boleh diam (21 Nov 2026: kunci produksi ditolak tanpa jejak)
 }
 
 /* balasan mesin (Indonesia) -> bahasa pilihan. Teks dan label tombol dalam satu panggilan; gagal = Indonesia apa adanya. */
@@ -73,7 +73,7 @@ Rules: keep WhatsApp formatting (*bold*, _italic_, line breaks, "- " bullets). K
       skema, teks: JSON.stringify({teks: aman, pilihan: pAman || [], ket: kAman || []})});
     if (!angkaSama(aman, j?.teks || "") || !wajarPanjang(aman, j?.teks || "") || !String(j?.teks || "").includes("[NAMA]") && aman.includes("[NAMA]")) return gagal; // angka atau penanda nama hilang = kirim Indonesia
     return {teks: buka(j.teks), pilihan: pilihan && j?.pilihan?.length === pilihan.length ? j.pilihan.map(buka) : pilihan, ket: ket && j?.ket?.length === ket.length ? j.ket.map(buka) : ket};
-  } catch { return gagal; }
+  } catch (e) { console.warn(`lapor bahasa keluar gagal: ${String(e?.message || e).slice(0, 160)}`); return gagal; }
 }
 
 /* teks antarmuka kartu (judul, keterangan, tombol, placeholder) -> bahasa pilihan, sekaligus satu panggilan (pemilik 20 Nov 2026: kartu masih bahasa Indonesia).
@@ -97,5 +97,5 @@ async function terjemahSatu(model, teks, bahasa) {
       skema, teks: JSON.stringify({teks})});
     if (!Array.isArray(j?.teks) || j.teks.length !== teks.length) return teks.map(() => null);
     return teks.map((t, i) => typeof j.teks[i] === "string" && j.teks[i].trim() && angkaSama(t, j.teks[i]) && wajarPanjang(t, j.teks[i]) ? j.teks[i] : null);
-  } catch { return teks.map(() => null); }
+  } catch (e) { console.warn(`lapor bahasa ui gagal: ${String(e?.message || e).slice(0, 160)}`); return teks.map(() => null); }
 }
