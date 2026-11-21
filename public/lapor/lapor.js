@@ -60,10 +60,14 @@ $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 /* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
    tombol Jeda sesuai WCAG 2.2.2; tanpa gilir otomatis bila pengguna meminta gerak dikurangi. Delegasi: salinan di Cara melapor ikut jalan. */
 const tipGerak = matchMedia("(prefers-reduced-motion: no-preference)").matches;
+for (const w of document.querySelectorAll(".lp-hg-tip")) {   // titik kemajuan menggantikan "1 dari 7" yang tampil (teksnya tetap untuk pembaca layar)
+  const n = w.querySelectorAll(".lp-hg-slide").length, t = el("span", "lp-hg-titik"); t.setAttribute("aria-hidden", "true");
+  for (let i = 0; i < n; i++) t.append(el("i", i ? null : "aktif")); w.querySelector(".lp-hg-urut").after(t); }
 function tipKe(w, arah, pengguna) {
   const sl = [...w.querySelectorAll(".lp-hg-slide")], i = sl.findIndex(x => !x.hidden), j = (i + arah + sl.length) % sl.length;
   sl[i].hidden = true; sl[j].hidden = false;
   w.querySelector(".lp-hg-urut").textContent = `${j + 1} dari ${sl.length}`;
+  w.querySelectorAll(".lp-hg-titik i").forEach((t, k) => t.classList.toggle("aktif", k === j));
   w.querySelector(".lp-hg-isi").setAttribute("aria-live", pengguna ? "polite" : "off");
 }
 document.addEventListener("click", e => {
@@ -112,6 +116,14 @@ function tambah(dari, teks, {galat = false, foto = null, berkas = null, simpanKe
 }
 
 /* ============ kartu langkah ============ */
+function kartuBatal() {
+  const isi = kartu("i-tutup", "Laporan dibatalkan"), aksi = el("div", "lp-aksi-dua");
+  const baru = el("button", "lp-utama"), pulang = el("button", "lp-kedua"); baru.type = pulang.type = "button";
+  baru.append(ikon("i-plus"), "Buat laporan baru"); pulang.append(ikon("i-rumah-tab"), "Ke beranda");
+  baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
+  pulang.addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
+  aksi.append(pulang, baru); isi.append(aksi); baru.focus();
+}
 function kartu(kunci, judul) {
   const [ik, jd] = KEPALA[kunci] || [kunci, judul];
   const k = el("section", "lp-langkah"), kp = el("div", "lp-langkah-kepala"), isi = el("div", "lp-langkah-isi");
@@ -648,6 +660,7 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.form?.isian?.[0]?.nama === "rt") kartuRtRw(j);
   else if (j.form) kartuAngka(j);
   else if (j.pilihan?.length) kartuPilihan(j);
+  else if (j.status === "batal") kartuBatal();   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
   else tulis = j.status !== "terkirim" && j.status !== "batal";
   fPesan.hidden = !tulis;
   $("bBatal").hidden = !j.status || ["terkirim", "batal", "identitas"].includes(j.status);
@@ -740,7 +753,6 @@ function suasanaSigap(j, geser = 1) {
   if (pose !== poseSigap) { $("sigapMaskot").innerHTML = maskot(pose); poseSigap = pose; }
   const isi = [el("b", null, judul), el("span", null, teks)];
   if (pose === "sedih") { const a = el("a", "lp-sigap-tel"); a.href = "tel:112"; a.append(ikon("i-telepon"), "Telepon 112"); isi.push(a); }
-  if (j.status !== "terkirim") { const b = el("button", "lp-sigap-lain", "Saran lain"); b.type = "button"; b.addEventListener("click", () => suasanaSigap(sigapAkhir, 1)); isi.push(b); }
   $("sigapTeks").replaceChildren(...isi); $("sigapPanel").dataset.pose = pose;
 }
 function tampilIsian(isian, lengkap) {
@@ -1551,7 +1563,7 @@ else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server,
    Muncul sekali sesudah pilih bahasa pada kunjungan pertama; bisa diulang dari gelembung Sigap. Langkah yang elemennya tidak tampil (layar HP) dilewati. */
 const TUR = [
   [null, "Selamat datang di Pantau Bencana", "Saya SIGAP, Super Intelligence Assistance BNPB. Saya tunjukkan cara melapor kejadian bencana ke BNPB dan BPBD. Tur ini sekitar 30 detik."],
-  ["#bDarurat", "Lapor darurat", "Kejadian sedang berlangsung? Cukup lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima."],
+  ["#bDarurat", "Lapor darurat", "Lapor keadaan darurat bencana yang sedang berlangsung dan butuh penanganan sesegera mungkin. Cukup isi lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima informasinya dan menindaklanjutinya."],
   ["#bLaporBaru", "Lapor kejadian", "Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera."],
   ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
   ['#lBeranda [data-aksi="info"]', "Info dan prediksi", "Kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan di daerah Anda."],

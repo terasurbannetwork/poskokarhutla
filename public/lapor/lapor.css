@@ -2129,3 +2129,22 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-tur-kartu>.lp-tur-maskot{position:relative;height:auto;min-height:100%}
 .lp-tur-kartu>.lp-tur-maskot svg{position:absolute;inset:-6px 0 -6px 0;width:100%;height:calc(100% + 12px);max-height:none}
 @media (max-width:560px){.lp-tur-kartu{grid-template-columns:96px minmax(0,1fr)}}
+/* gelembung SIGAP di hero dirapikan (pemilik 21 Nov 2026: "bagusin lah"): tombol aksi di barisnya sendiri, titik kemajuan, tinggi tetap */
+@media (min-width:900px){
+.lp-hg-tip{width:min(300px,100%);max-width:300px!important;padding:16px 18px 12px!important;border-radius:20px!important;gap:6px!important}
+.lp-hg-tip .lp-hg-label{font-size:.6875rem;letter-spacing:.01em}
+.lp-hg-tip .lp-hg-isi{display:grid;min-height:9.75rem;align-content:start}
+.lp-hg-tip .lp-hg-slide b{margin:2px 0 6px!important;font-size:1.0625rem!important;line-height:1.25;text-wrap:balance}
+.lp-hg-tip .lp-hg-slide{font-size:.8125rem;line-height:1.5;color:var(--ink2);text-wrap:pretty}
+.lp-hg-tip .lp-hg-buka{display:flex;width:fit-content;margin-top:12px;min-height:32px;padding:0 12px 0 14px;font-size:.8125rem}
+.lp-hg-tip .lp-hg-kendali{margin-top:8px;padding-top:10px;gap:2px}
+.lp-hg-tip .lp-hg-urut{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.lp-hg-titik{display:flex;align-items:center;gap:5px;padding:0 4px}
+.lp-hg-titik i{width:6px;height:6px;border-radius:999px;background:var(--line);transition:width .2s var(--ease),background .2s var(--ease)}
+.lp-hg-titik i.aktif{width:16px;background:var(--brand2)}
+.lp-hg-tip .lp-hg-jeda{margin-left:auto;min-width:0;height:26px;padding:0 10px!important;border:1px solid var(--line)!important;border-radius:999px!important;color:var(--ink2)!important;font:600 .6875rem var(--font)!important}
+}
+/* judul hero tidak terlalu rapat (pemilik 21 Nov 2026) */
+.lp-hero h1{line-height:1.16!important}
+.lp-hero-sub{line-height:1.7!important}
+@media (max-width:1199px){.lp-hg-tip{display:none!important}}   /* kolom tengah hero terlalu sempit: gelembung menimpa judul */
