@@ -459,7 +459,7 @@ function kartuTempat(j = {}) {
   const daftar = el("div", "lp-tempat-kisi"), pilihan = el("div", "lp-tempat-pilihan"), lain = el("input"); lain.type = "text"; lain.placeholder = "Tempat lain yang tidak ada di daftar, misalnya tenda di lapangan desa"; lain.maxLength = 80;
   const lLain = el("label", "lp-isi"); lLain.append(jenisT === "pengungsian" ? "Tempat lain" : "Tidak ada di daftar? Tulis namanya", lain); if (jenisT !== "pengungsian") lain.placeholder = "Nama yang tidak ada di daftar";
   const s = el("button", "lp-utama"); s.type = "button"; s.append(ikon("i-centang"), simpanT);
-  const segarPilihan = () => { pilihan.replaceChildren(...[...dipilih.keys()].map(n => { const c = el("button", "lp-tempat-chip"); c.type = "button"; c.append(n, ikon("i-tutup")); c.addEventListener("click", () => { dipilih.delete(n); segarPilihan(); muat(q.value); }); return c; }));
+  const segarPilihan = () => { pilihan.replaceChildren(...[...dipilih.keys()].map(n => { const c = el("button", "lp-tempat-chip"); c.type = "button"; c.append(n, ikon("i-tutup")); c.addEventListener("click", () => { dipilih.delete(n); segarPilihan(); gambarDaftar(q.value.trim()); }); return c; }));
     pilihan.hidden = !dipilih.size; };
   let ulangTempat = 0;
   // teks yang diketik di pencarian bisa langsung dicatat sebagai nama (pemilik 20 Nov 2026: "ketika tidak ada di pilihan kenapa ga bisa diinput")
@@ -467,31 +467,49 @@ function kartuTempat(j = {}) {
     if (v.length < 3 || ada.some(x => x.nama.toLowerCase() === v.toLowerCase()) || dipilih.has(v)) return [];
     const b = el("button", "lp-tempat lp-tempat-ketik"); b.type = "button"; const ic = el("span", "lp-tempat-ikon"); ic.append(ikon("i-plus"));
     const tx = el("span"); tx.append(el("b", null, `Catat "${v}"`), el("small", null, "Nama yang Anda ketik, tidak ada di daftar")); b.append(ic, tx);
-    b.addEventListener("click", () => { dipilih.set(v, {nama: v}); q.value = ""; segarPilihan(); muat(""); }); return [b]; };
-  const muat = async t => {
-    if (!daftar.querySelector(".lp-tempat")) daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Mencari tempat di sekitar lokasi..."));
-    try { const j = await (await fetch(`/api/lapor/sekitar?wa=${encodeURIComponent(wa)}&jenis=${jenisT}&q=${encodeURIComponent(t || "")}`, {signal: AbortSignal.timeout(15000)})).json();
+    b.addEventListener("click", () => { dipilih.set(v, {nama: v}); q.value = ""; segarPilihan(); gambarDaftar(""); }); return [b]; };
+  /* daftar diambil sekali, disaring di perangkat tiap huruf diketik (pemilik 21 Nov 2026: "gw ketik sd kenapa yang lain ga langsung berubah, harusnya gausah di enter").
+     Nama yang memuat semua kata menang; sebutan umum ("sd" = sekolah) hanya dipakai bila tidak ada nama yang cocok. */
+  let semuaTempat = null, sebagian = false;
+  const SEBUT_T = {"Kantor atau balai": "balai desa kantor kelurahan aula", "Balai warga": "balai warga aula gedung serbaguna", "Rumah ibadah": "masjid musala mushola surau gereja pura vihara klenteng",
+    "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Puskesmas": "puskesmas faskes", "Rumah sakit": "rs rsud rumah sakit faskes", "Klinik": "klinik faskes", "Jalan": "jalan jl", "Jembatan": "jembatan", "Shelter": "shelter tempat evakuasi"};
+  const UMUM_T = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
+  const saring = t => { const kata = String(t || "").toLowerCase().split(/\s+/).filter(k => k && !UMUM_T.has(k)); if (!kata.length) return {tempat: semuaTempat};
+    const ada = (h, k) => h.split(/[^\p{L}\p{N}]+/u).some(w => w.startsWith(k));   // awal kata: "sd" cocok "SD Negeri", tidak cocok "TK Bustanul"
+    const nama = semuaTempat.filter(x => kata.every(k => ada(x.nama.toLowerCase(), k)));
+    if (nama.length) return {tempat: nama};
+    const luas = semuaTempat.filter(x => { const h = `${x.nama} ${x.jenis} ${SEBUT_T[x.jenis] || ""}`.toLowerCase(); return kata.every(k => ada(h, k)); });
+    return luas.length ? {tempat: luas} : {tempat: semuaTempat.slice(0, 12), terdekat: true}; };
+  const gambarDaftar = t => {
+    if (!semuaTempat) return;
+    const j = saring(t);
+    if (!j.tempat.length) return daftar.replaceChildren(...tambahKetik(t), el("p", "lp-redup lp-kecil", sebagian && ulangTempat < 3 ? "Mengambil daftar dari OpenStreetMap. Boleh langsung tulis namanya di kolom pencarian atau kolom bawah."
+      : sebagian ? "Daftar dari OpenStreetMap sedang tidak bisa diambil. Tulis namanya di kolom bawah." : "Tidak ada tempat seperti ini tercatat di OpenStreetMap dalam 3 km dari lokasi. Tulis namanya di kolom bawah."));
+    const kisi = j.tempat.slice(0, 40).map(x => { const b = el("button", "lp-tempat"); b.type = "button"; b.setAttribute("aria-pressed", String(dipilih.has(x.nama)));
+      const ic = el("span", "lp-tempat-ikon"); ic.append(ikon(/ibadah|sekolah/i.test(x.jenis) ? "i-fasilitas" : /puskesmas|klinik|sakit/i.test(x.jenis) ? "i-plus" : /jalan|jembatan/i.test(x.jenis) ? "i-lokasi" : "i-rumah"));
+      const tx = el("span"); tx.append(el("b", null, x.nama), el("small", null, `${x.jenis}, ${x.jarakKm.toLocaleString("id-ID")} km`)); b.append(ic, tx);
+      b.addEventListener("click", () => { dipilih.has(x.nama) ? dipilih.delete(x.nama) : dipilih.set(x.nama, x); b.setAttribute("aria-pressed", String(dipilih.has(x.nama))); segarPilihan(); });
+      return b; });
+    daftar.replaceChildren(...tambahKetik(t, j.tempat), ...(j.terdekat ? [el("p", "lp-tempat-catatan", `Tidak ada nama yang cocok dengan "${t}". Ini tempat terdekat dari lokasi kejadian.`)] : []), ...kisi);
+  };
+  const muat = async () => {
+    if (!semuaTempat) daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Mencari tempat di sekitar lokasi..."));
+    try { const j = await (await fetch(`/api/lapor/sekitar?wa=${encodeURIComponent(wa)}&jenis=${jenisT}&semua=1`, {signal: AbortSignal.timeout(15000)})).json();
       // daftar rumah ibadah dan balai warga menyusul dari OpenStreetMap daring yang kadang penuh: coba lagi sampai tiga kali,
       // dan selama belum lengkap jangan pernah bilang "tidak ada" (pemilik 19 Nov 2026 "kenapa ga ada")
-      if (j.sebagian && ulangTempat < 3) { ulangTempat++; setTimeout(() => muat(q.value.trim()), 4000); }
-      if (!j.tempat?.length) return daftar.replaceChildren(...tambahKetik(t), el("p", "lp-redup lp-kecil", j.sebagian && ulangTempat < 3 ? "Mengambil daftar dari OpenStreetMap. Boleh langsung tulis namanya di kolom pencarian atau kolom bawah."
-        : j.sebagian ? "Daftar dari OpenStreetMap sedang tidak bisa diambil. Tulis namanya di kolom bawah." : "Tidak ada tempat seperti ini tercatat di OpenStreetMap dalam 3 km dari lokasi. Tulis namanya di kolom bawah."));
-      const kisi = j.tempat.map(x => { const b = el("button", "lp-tempat"); b.type = "button"; b.setAttribute("aria-pressed", String(dipilih.has(x.nama)));
-        const ic = el("span", "lp-tempat-ikon"); ic.append(ikon(/ibadah|sekolah/i.test(x.jenis) ? "i-fasilitas" : /puskesmas|klinik|sakit/i.test(x.jenis) ? "i-plus" : /jalan|jembatan/i.test(x.jenis) ? "i-lokasi" : "i-rumah"));
-        const tx = el("span"); tx.append(el("b", null, x.nama), el("small", null, `${x.jenis}, ${x.jarakKm.toLocaleString("id-ID")} km`)); b.append(ic, tx);
-        b.addEventListener("click", () => { dipilih.has(x.nama) ? dipilih.delete(x.nama) : dipilih.set(x.nama, x); b.setAttribute("aria-pressed", String(dipilih.has(x.nama))); segarPilihan(); });
-        return b; });
-      daftar.replaceChildren(...tambahKetik(t, j.tempat), ...(j.terdekat ? [el("p", "lp-tempat-catatan", `Tidak ada nama yang cocok dengan "${t}". Ini tempat terdekat dari lokasi kejadian.`)] : []), ...kisi);
-    } catch { daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Daftar tempat belum bisa dimuat. Tulis di kolom Tempat lain.")); }
+      semuaTempat = j.tempat || []; sebagian = !!j.sebagian;
+      if (sebagian && ulangTempat < 3) { ulangTempat++; setTimeout(muat, 4000); }
+      gambarDaftar(q.value.trim());
+    } catch { if (!semuaTempat) daftar.replaceChildren(el("p", "lp-redup lp-kecil", "Daftar tempat belum bisa dimuat. Tulis di kolom Tempat lain.")); }
   };
-  let tunda; q.addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => muat(q.value.trim()), 300); });
+  q.addEventListener("input", () => gambarDaftar(q.value.trim()));
   s.addEventListener("click", () => { const ketik = !dipilih.size && !lain.value.trim() && q.value.trim().length >= 3 ? [q.value.trim()] : [];   // hanya mengetik di pencarian = itu namanya
     const semua = [...dipilih.keys(), ...(lain.value.trim() ? [lain.value.trim()] : []), ...ketik];
     if (!semua.length) { statusEl.textContent = "Pilih atau tulis paling sedikit satu tempat."; return; }
     kirim({teks: `${awalan}:\n${semua.map((n, i) => `${i + 1}. ${n}`).join("\n")}`, tampil: `${awalan}: ${semua.join(", ")}`}); });
   const tt = el("button", "lp-kedua", "Belum tahu"); tt.type = "button"; tt.addEventListener("click", () => kirim({teks: "belum tahu", tampil: `Belum tahu ${awalan.toLowerCase()}`}));
   const aksi = el("div", "lp-aksi-dua"); aksi.append(tt, s); pilihan.hidden = true;
-  isi.append(cari, pilihan, daftar, lLain, aksi); muat("");
+  isi.append(cari, pilihan, daftar, lLain, aksi); muat();
 }
 
 function kartuFoto(j) {
@@ -562,7 +580,7 @@ function ucapanTerimaKasih(nomor) {
   const bnpb = el("p", "lp-pembuka-bnpb"); bnpb.append(el("span", null, TEKS_TERIMA[2]), " ", el("b", "lp-tk-nomor", nomor), el("br"), el("span", null, TEKS_TERIMA[3]));
   // dua tahap (pemilik 21 Nov 2026): terima kasih dulu, diketuk baru penilaian besar di tengah, dipilih baru kembali.
   // Penilaian tetap wajib: layar tidak bisa ditutup sebelum satu emoji dipilih (pemilik 20 Nov 2026)
-  const tutup = () => { try { localStorage.setItem(kunci, "1"); } catch {} setTimeout(() => { pb.classList.add("pergi"); setTimeout(() => pb.remove(), 700); }, 1200); };
+  const tutup = () => { try { localStorage.setItem(kunci, "1"); } catch {} setTimeout(() => { pb.classList.add("pergi"); setTimeout(() => pb.remove(), 400); }, 350); };   // langsung pindah sesudah emoji diketuk (pemilik 21 Nov 2026: "susah banget di hape")
   const lanjut = el("button", "lp-terima-lanjut", TEKS_TERIMA[4]); lanjut.type = "button";
   let tahap = 1;
   const keNilai = () => { if (tahap !== 1) return; tahap = 2;
