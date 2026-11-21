@@ -2205,3 +2205,4 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-menu-tur svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
 .lp-menu-tur:hover{background:var(--surface)}
 @media (max-width:899px){.lp-tab .lp-menu-tur{display:none!important}}
+.sg-tangan-tepi{fill:var(--head-bg);stroke:var(--head-bg)}
