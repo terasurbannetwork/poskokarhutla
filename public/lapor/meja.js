@@ -256,8 +256,60 @@ function bukaPopup(b) {
   const bagi = el("button", "mj-pop-kecil"); bagi.type = "button"; bagi.append(ikon("m-bagi"), el("span", null, "Bagikan")); bagi.title = "Bagikan ringkasan laporan";
   bagi.addEventListener("click", () => bagikan(b, bagi));
   const kaki = el("div", "mj-pop-kaki"); kaki.append(buka, arah, bagi);
+  const tp = el("div", "mj-pop-tempat"); if (b.tempat) isi.append(tp);
   w.append(kep, foto, isi, kaki);
   popup = new maplibregl.Popup({offset: 22, maxWidth: "330px", className: "mj-popup", closeButton: false}).setLngLat([b.lon, b.lat]).setDOMContent(w).addTo(peta);
+  const ini = popup; ini.on("close", () => { if (tandaUntuk === ini) hapusTanda(); });
+  tandaiTempat(b, tp, ini);
+}
+/* sekolah, faskes, tempat ibadah, jalan rusak, dan titik pengungsian yang disebut pelapor ditandai di peta saat pop-up dibuka
+   (pemilik 21 Nov 2026: "langsung ditandai ya disini"). Titik dicari dari data OSM per provinsi (public/data/osm_nasional) dalam 5 km dari laporan;
+   jalan dari OpenStreetMap daring (hanya koordinat laporan dan nama jalan yang dikirim). Nama yang tidak ketemu tetap ditulis di pop-up. */
+const JSON_OSM = new Map();
+const muatJson = u => { if (!JSON_OSM.has(u)) JSON_OSM.set(u, fetch(u).then(r => r.ok ? r.json() : null).catch(() => null)); return JSON_OSM.get(u); };
+const TANDA = {sekolah: ["Sekolah rusak", "m-fasilitas", "--bad"], faskes: ["Fasilitas kesehatan rusak", "m-fasilitas", "--bad"], ibadah: ["Tempat ibadah rusak", "m-fasilitas", "--bad"],
+  jalan: ["Jalan rusak", "m-jalan", "--bad"], pengungsian: ["Titik pengungsian", "m-tenda", "--warn"]};
+let tandaTempat = [], tandaUntuk = null;
+function hapusTanda() { for (const m of tandaTempat) m.remove(); tandaTempat = []; tandaUntuk = null;
+  if (peta?.getLayer("mj-jalan")) peta.removeLayer("mj-jalan"); if (peta?.getSource("mj-jalan")) peta.removeSource("mj-jalan"); }
+const normNama = t => String(t).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
+async function tandaiTempat(b, wadah, ini) {
+  hapusTanda(); tandaUntuk = ini;
+  if (!b.tempat || b.lat == null || !peta) return;
+  const prov = b.wilayah?.provKode;
+  const [osm, ib] = await Promise.all([prov ? muatJson(`/data/osm_nasional/${prov}.json`) : null, prov ? muatJson(`/data/osm_nasional/ibadah/${prov}.json`) : null]);
+  if (tandaUntuk !== ini) return;
+  const titik = []; for (const v of Object.values(osm || {})) if (Array.isArray(v)) for (const x of v) if (x?.[2]) titik.push(x);
+  for (const x of ib || []) if (x?.[2]) titik.push(x);
+  const cari = nama => { const n = normNama(nama); let hasil = null, dekat = 5;
+    for (const [la, lo, nm] of titik) { const m = normNama(nm); if (m !== n && !(n.length >= 6 && m.includes(n)) && !(m.length >= 6 && n.includes(m))) continue;
+      const d = jarakKm(b.lat, b.lon, la, lo); if (d <= dekat) { hasil = [la, lo]; dekat = d; } }
+    return hasil; };
+  const warna = k => { const c = document.createElement("canvas").getContext("2d"); c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(k).trim() || "red";   // token oklch -> rgb untuk MapLibre
+    c.fillRect(0, 0, 1, 1); const [r, g, bl] = c.getImageData(0, 0, 1, 1).data; return `rgb(${r},${g},${bl})`; };
+  const ringkas = [];
+  for (const [jenis, daftar] of Object.entries(b.tempat)) {
+    const [lb, ik, tk] = TANDA[jenis] || TANDA.sekolah, ada = [];
+    if (jenis !== "jalan") for (const nama of daftar) { const t = cari(nama); if (!t) continue; ada.push(nama);
+      const n = el("span", "mj-tanda"); n.style.setProperty("--tw", `var(${tk})`); n.append(ikon(ik), el("b", null, nama)); n.title = `${lb}: ${nama}`;
+      tandaTempat.push(new maplibregl.Marker({element: bungkusPenanda(n), anchor: "left", offset: [-14, 0]}).setLngLat([t[1], t[0]]).addTo(peta)); }
+    ringkas.push({jenis, lb, ik, tk, daftar, ada});
+  }
+  const tulis = () => wadah.replaceChildren(el("p", "mj-pop-judul", "Ditandai di peta"), ...ringkas.map(r => { const g = el("div", "mj-pop-tempat-baris"); g.style.setProperty("--tw", `var(${r.tk})`);
+    const t = el("span"); t.append(el("b", null, `${r.lb}: `), ...r.daftar.flatMap((n, i) => [i ? ", " : "", r.ada.includes(n) ? n : el("em", null, `${n} (belum ketemu di peta)`)]));
+    g.append(ikon(r.ik), t); return g; }));
+  tulis();
+  const jalan = b.tempat.jalan; if (!jalan) return;
+  try {
+    const J = await (await fetch(`/api/lapor/meja/${encodeURIComponent(b.nomor)}/jalan`, {credentials: "same-origin", signal: AbortSignal.timeout(35000)})).json();   // Overpass dicari server (src/lapor_jalan.js)
+    if (tandaUntuk !== ini) return;
+    const r = ringkas.find(x => x.jenis === "jalan"), kena = new Set((J.ketemu || []).map(normNama));
+    r.ada = jalan.filter(n => kena.has(normNama(n))); tulis();
+    if (!J.fitur?.length) return;
+    peta.addSource("mj-jalan", {type: "geojson", data: {type: "FeatureCollection", features: J.fitur}});
+    peta.addLayer({id: "mj-jalan", type: "line", source: "mj-jalan", layout: {"line-cap": "round", "line-join": "round"}, paint: {"line-color": warna("--bad"), "line-width": 6, "line-opacity": 0.85}});
+  } catch { /* OSM daring gagal: nama jalan tetap tertulis di pop-up */ }
 }
 
 async function bagikan(b, tombol) {

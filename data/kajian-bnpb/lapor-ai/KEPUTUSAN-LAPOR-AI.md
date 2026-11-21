@@ -503,6 +503,8 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | K80 | 21 Nov 2026 | Kartu isian laporan menampilkan perkiraan menit tersisa dari laju pelapor sendiri; Sigap di panel samping berganti kalimat tiap pertanyaan dan punya tombol Saran lain (pemilik: "omongannya yang penting berubah-ubah"). |
 | K81 | 21 Nov 2026 | Layar terima kasih dua tahap: terima kasih dulu, diketuk baru "Bagaimana pengalaman melapor Anda?" besar di tengah, dipilih baru kembali; penilaian tidak lagi ada di kartu tiket (pemilik: "disininya gausah ada lagi"). |
 | K82 | 21 Nov 2026 | Tur beranda bersorot meniru flood-check.dawnstackai.com: 9 langkah (sambutan, lapor darurat, lapor kejadian, cek status, info dan prediksi, edukasi, nomor penting, bahasa, laporan), muncul sekali sesudah pilih bahasa pada kunjungan pertama, bisa diulang dari gelembung Sigap (Lihat tur). |
+| K83 | 21 Nov 2026 | Sekolah, fasilitas kesehatan, tempat ibadah, jalan rusak, dan titik pengungsian yang disebut pelapor ditandai di peta meja saat pop-up laporan dibuka (pemilik: "langsung ditandai ya disini"). Titik dicari dari data OSM per provinsi dalam 5 km dari laporan, jalan dari Overpass OSM; nama yang tidak ketemu tetap ditulis di pop-up. |
+| K84 | 21 Nov 2026 | Pencarian tempat di kartu chat menyaring langsung tiap huruf tanpa Enter; nama yang cocok di awal kata menang (pemilik: "gw ketik sd kenapa yang lain ga langsung berubah"). |
 
 ## Keputusan rancangan (pelaksanaan K73-K74, agent, bisa dibatalkan pemilik)
 

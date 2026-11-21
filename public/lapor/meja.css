@@ -880,3 +880,11 @@ body{display:flex;flex-direction:column;height:100dvh}
 @media (max-width:900px){.mj-isi[data-tampil="peta"] > .mj-darurat{bottom:12px;width:calc(100% - 76px);max-height:34%}}
 /* bahasa pelapor di meja */
 .mj-pil-bahasa{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink2);font-size:.6875rem;font-weight:700;vertical-align:middle;white-space:nowrap}
+/* tempat rusak dan titik pengungsian dari laporan, ditandai di peta (pemilik 21 Nov 2026) */
+.mj-tanda{display:inline-flex;align-items:center;gap:6px;max-width:220px;padding:4px 10px 4px 4px;border:2px solid var(--card);border-radius:999px;background:var(--tw,var(--bad));color:var(--on-pekat);font:700 .75rem var(--font);box-shadow:0 3px 10px -2px color-mix(in oklab,var(--ink) 35%,transparent)}
+.mj-tanda svg{width:20px;height:20px;padding:3px;border-radius:50%;background:color-mix(in oklab,var(--card) 25%,transparent);flex:none}
+.mj-tanda b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.mj-pop-tempat{display:grid;gap:6px}
+.mj-pop-tempat-baris{display:flex;align-items:flex-start;gap:8px;font-size:.8125rem;line-height:1.4;color:var(--ink)}
+.mj-pop-tempat-baris svg{width:16px;height:16px;margin-top:2px;flex:none;color:var(--tw,var(--bad))}
+.mj-pop-tempat-baris em{color:var(--ink2);font-style:normal}

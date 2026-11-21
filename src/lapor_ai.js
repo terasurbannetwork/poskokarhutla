@@ -23,6 +23,7 @@ import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
 import {buatInfo} from "./lapor_info.js";
 import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
+import {jalanOsm} from "./lapor_jalan.js";
 import * as H from "./hak.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 
@@ -882,6 +883,9 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
 }
 async function mejaGet(env, req, url, kini, ctx, x) {
   const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
+  const mj = /^(LA-\d{6}-\d{2,3})\/jalan$/.exec(x);   // ruas jalan rusak untuk peta meja (K83); nama diambil dari laporan, bukan dari peminta
+  if (mj) { const baris = await H.lpSesiNomor(env, STAF, mj[1]); if (!baris || !dalamWilayah(h.c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");
+    const b = barisMeja(baris); return kirim(200, await jalanOsm(b.lat, b.lon, b.tempat?.jalan || [])); }
   if (!RE_NOMOR.test(x)) return galat(404, "rute lapor tidak ada");
   return mejaRinci(env, h.c, x);
 }

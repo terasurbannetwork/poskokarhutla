@@ -20,7 +20,8 @@ import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
-import {HALAMAN_TUNGGU_DOK} from "../../src/lapor_tampil.js";
+import {HALAMAN_TUNGGU_DOK, tempatRusak} from "../../src/lapor_tampil.js";
+import {jalanOsm} from "../../src/lapor_jalan.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
 const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `public/lapor/tr/${b}.json`), "utf8")); } catch { return null; } };   // kamus statis, sama dengan Worker
 import {samarkan} from "../../src/samarkan.js";
@@ -546,7 +547,7 @@ function meja(c) {
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
-      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tanggap: tanggap(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, periksa: s.periksa?.at(-1)?.hasil || null,
+      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tempat: tempatRusak(s), tanggap: tanggap(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, periksa: s.periksa?.at(-1)?.hasil || null,
       gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null, kejadian: kejadianTampil(d, s)};
   })}];
 }
@@ -723,6 +724,10 @@ export async function tanganiLapor(req, res, url) {
       const c = await akunMeja(req);
       if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);
       if (j === "/api/lapor/meja") return kirim(meja(c));
+      const mj = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})\/jalan$/.exec(j);   // ruas jalan rusak untuk peta meja (K83), sama dengan Worker
+      if (mj) { const s = Object.values(baca().sesi).find(x => x.nomor === mj[1]), w = s?.isian.lokasi?.nilai;
+        if (!s || !dalamWilayah(c, w?.wilayah)) return kirim([404, {galat: "Laporan tidak ditemukan."}]);
+        return kirim([200, await jalanOsm(w?.lat, w?.lon, tempatRusak(s)?.jalan || [])]); }
       const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan))?$/.exec(j);
       // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
       if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));

@@ -101,12 +101,20 @@ export const dampakRingkas = s => { const a = n => { const x = s.isian[n]; retur
   const rumah = ["rumah_berat", "rumah_sedang", "rumah_ringan"].map(a), adaRumah = rumah.some(v => v != null);
   return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null}; };
 
+/* nama tempat rusak dan titik pengungsian per jenis, untuk ditandai di peta meja (pemilik 21 Nov 2026: "sekolah mana yang rusak, tempat mengungsi, jalan rusak, langsung ditandai") */
+const NAMA_TEMPAT = {sekolah: "nama_sekolah", faskes: "nama_faskes", ibadah: "nama_ibadah", jalan: "nama_jalan", pengungsian: "titik_pengungsian"};
+export const tempatRusak = s => { const o = {};
+  for (const [k, n] of Object.entries(NAMA_TEMPAT)) { const x = s.isian[n]; if (!x || x.belum || x.nihil || typeof x.nilai !== "string") continue;
+    const d = x.nilai.split(/\n|[,;]\s*/).map(t => t.replace(/^\s*\d+[.)]\s*/, "").replace(/^[^:]{0,40}:\s*$/, "").trim()).filter(t => t.length >= 3 && t.length <= 80).slice(0, 10);
+    if (d.length) o[k] = d; }
+  return Object.keys(o).length ? o : null; };
+
 /* ---------- ringkasan beku saat terkirim (kolom lapor_sesi.ringkas): meja dan alun-alun tidak perlu mengurai sesi utuh ---------- */
 export function ringkasSesi(s) {
   const w = s.isian.lokasi?.nilai?.wilayah, angka = n => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
   return {waktuKejadian: s.isian.waktu?.nilai || null, waktuMs: s.isian.waktu?.ms || null, subjenis: s.isian.subjenis?.nilai || null,
     wilayah: w ? {kode: w.kode, desa: w.desa, kec: w.kec, kab: w.kab, kabKode: w.kabKode, prov: w.prov, provKode: w.provKode} : null,
-    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
+    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
     dampak: {meninggal: angka("meninggal"), hilang: angka("hilang"), luka: angka("luka"), mengungsi: angka("mengungsi_jiwa"),
       rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(n), 0), terendam: angka("rumah_terendam")}};
 }
@@ -115,7 +123,7 @@ export function barisMeja(r) {
   return {nomor: r.nomor, status: r.status, statusLabel: STATUS[r.status], waktuLapor: waktuLapor(r.terkirim, prov), terkirim: r.terkirim,
     waktuKejadian: k.waktuKejadian || null, wa: r.wa, nama: r.nama || null, peran: PERAN[r.peran] || null, instansi: r.pkab ? `BPBD ${r.pkab}` : null,
     jenis: labelJenis(r.jenis), jenisId: r.jenis || null, subjenis: k.subjenis || null, lat: r.lat ?? null, lon: r.lon ?? null, wilayah: k.wilayah || null,
-    lengkap: k.lengkap ?? 0, foto: k.foto || 0, darurat: k.darurat || null, balasan: r.balasan || 0, versi: r.versi || 1, adaSusulan: !!r.ada_susulan, dampak: k.dampakMeja || null,
+    lengkap: k.lengkap ?? 0, foto: k.foto || 0, darurat: k.darurat || null, balasan: r.balasan || 0, versi: r.versi || 1, adaSusulan: !!r.ada_susulan, dampak: k.dampakMeja || null, tempat: k.tempat || null,
     bahasa: k.bahasa ? BAHASA.find(([kd]) => kd === k.bahasa)?.[1] || null : null};
 }
 export function barisAlun(r) {
