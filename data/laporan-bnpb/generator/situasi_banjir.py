@@ -55,8 +55,15 @@ def rb(n):
     return '–' if n is None else f'{n:,}'.replace(',', '.')
 
 
+def romawi(s):
+    """'Koto Vii' -> 'Koto VII' (nama kecamatan GloFAS ditulis kapital awal, 21 Nov 2026)."""
+    return re.sub(r'\b([IVXivx]+)\b', lambda m: m[1].upper() if re.fullmatch(r'(?i)x{0,3}(ix|iv|v?i{0,3})', m[1]) else m[1], s or '')
+
+
 def kab_bersih(s):
-    return re.sub(r'^(kab\.?|kabupaten)\s+', '', (s or '').strip(), flags=re.I)
+    # WA 20 Nov: "Kab. Lima puluh Kota" lawan "Lima Puluh Kota" jadi dua baris; kata huruf kecil (selain "dan") dikapitalkan
+    t = re.sub(r'^(kab\.?|kabupaten)\s+', '', re.sub(r'\s+', ' ', (s or '').strip()), flags=re.I)
+    return ' '.join(w if w == 'dan' or not w.islower() else w[:1].upper() + w[1:] for w in t.split(' '))
 
 
 # ---------------------------------------------------------------- data
@@ -514,12 +521,18 @@ def butir_kerusakan(t):
     t = rapi(t).rstrip('.')
     if t == '–': return []
     out = []
-    for b in re.split(r',\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):
-        b = b.strip().rstrip('.')
+    # koma desimal ("494,5 ha", WA Lima Puluh Kota 20 Nov 2026) bukan pemisah butir
+    for b in re.split(r'(?:(?<!\d),|,(?!\d))\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):
+        b = re.sub(r'\s+', ' ', b).strip().rstrip('.')
         if not b: continue
+        if len(b) > 48: b = re.sub(r'\s*\([^)]*\)', '', b)   # keterangan berkurung dibuang bila butir terlalu panjang untuk satu baris
         lb = b.lower()
         ik = 'jembatan-putih.png' if 'jembatan' in lb else 'jalan-putih.png' if re.search(r'jalan|akses', lb) else 'rumah-putih.png' if re.search(r'rumah|ruko|fas', lb) else 'awas-putih.png'
         out.append((ik, b[:1].upper() + b[1:]))
+    # paling banyak 4 butir per kab/kota: rumah, jembatan, jalan dulu, sisanya diringkas (21 Nov 2026: 10 butir Lima Puluh Kota saling tindih)
+    if len(out) > 4:
+        urut = sorted(out, key=lambda x: ['rumah-putih.png', 'jembatan-putih.png', 'jalan-putih.png'].index(x[0]) if x[0] != 'awas-putih.png' else 3)
+        out = urut[:3] + [('awas-putih.png', f'Dan {len(urut) - 3} jenis kerusakan lain')]
     return out
 
 
@@ -529,7 +542,8 @@ def angka_kerusakan(t):
     def jml(pola):
         xs = [int(m.replace('.', '').replace(',', '')) for m in re.findall(pola, t, re.I)]
         return sum(xs) if xs else None
-    return (jml(r'([\d.,]+)\s*unit\s*rumah'), jml(r'(\d+)\s*(?:unit\s*)?jembatan'), jml(r'(\d+)\s*(?:titik\s*|ruas\s*)?(?:akses\s*)?jalan'))
+    # "344 rumah terdampak" tanpa "unit" (WA 20 Nov 2026)
+    return (jml(r'(\d[\d.]*)\s*(?:unit\s*)?rumah'), jml(r'(\d+)\s*(?:unit\s*)?jembatan'), jml(r'(\d+)\s*(?:titik\s*|ruas\s*)?(?:akses\s*)?jalan'))
 
 
 def pil_kondisi(st):
@@ -682,7 +696,7 @@ def slide_lengkap(L):
     pilih = titik[:len(urut_b)]; urut_kab = list(dict.fromkeys(t['kab'] for t in pilih))
     pilih = [t for k in urut_kab for t in pilih if t['kab'] == k]
     pilih = [dict(t, kab_tampil=t['kab'] if i == 0 or pilih[i - 1]['kab'] != t['kab'] else '') for i, t in enumerate(pilih)]
-    brS = [[t['kab_tampil'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
+    brS = [[t['kab_tampil'], (romawi(t['kec']), INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
             ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
             tgl(t["tgl"])] for t in pilih]
     tabel(sl, 6.55, 1.4, 6.19, kolS, brS, .4, 6.95)
@@ -776,9 +790,12 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     sl = buka('sudah')
     belum = [o for o in lap if o['status'] == 'Belum surut']
     n_kec = sum(o['kec'] or 0 for o in lap); n_kk = sum(o['kk'] or 0 for o in lap)
+    # jumlah kecamatan hanya di judul bila tiap kab/kota punya angkanya; total jadi batas bawah atau "–" (catatan Bang Ghozi 16 Nov 2026)
+    kec_lengkap = all(o['kec'] for o in lap)
+    kec_tot = rb(n_kec) if kec_lengkap else (f'≥{rb(n_kec)}' if n_kec else '–')
     if lap:
         mulai = min(o['mulai'] for o in lap)
-        judul(sl, ['Terdapat', f' {len(lap)}', f' kab/kota di {prov} terdampak banjir (', f'{n_kec}', ' kecamatan, ', rb(n_kk),
+        judul(sl, ['Terdapat', f' {len(lap)}', f' kab/kota di {prov} terdampak banjir (', *([f'{n_kec}', ' kecamatan, '] if kec_lengkap else ['', '']), rb(n_kk),
                    f' KK) pada periode {tgl(mulai, True)} s.d. {tgl(wa1, True)} {wa1[:4]}'])
     else:
         judul(sl, ['Tidak ada kab/kota di ', prov, f' yang dilaporkan banjir pada {tgl(wa0 or tanggal, True)} s.d. {tgl(wa1 or tanggal, True)} 2026'])
@@ -791,7 +808,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     kol = [('Kab/Kota', 2.0, 'l'), ('Kec.', .5, 'c'), ('Mulai', .65, 'c'), ('Selesai', .75, 'c'), ('KK terdampak', 1.1, 'c'), ('Mengungsi', .95, 'c'), ('Kondisi', 1.4, 'c')]
     br = [{'pita': prov}] + [[o['kab'], rb(o['kec']), tgl(o['mulai']), tgl(o['surut_tgl']) if o['surut_tgl'] else '–', rb(o['kk']), rb(o['ungsi']),
                               pil_kondisi(o['status'])] for o in lap]
-    br.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(n_kec), '', '', rb(n_kk), rb(sum(o['ungsi'] or 0 for o in lap) or None), '']})
+    br.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', kec_tot, '', '', rb(n_kk), rb(sum(o['ungsi'] or 0 for o in lap) or None), '']})
     # tabel kondisi mutakhir di bawah: tinggi baris tabel atas diperkecil (paling kecil .24) supaya kondisi muat; yang tak muat = KK terkecil
     m_eff, rk_ = len(br) - .35, .28
     rh1 = min(.33, max(.23, (6.95 - 1.4 - .23 - .14 - .23 - len(belum) * rk_ - .23) / m_eff)) if belum else .33
@@ -799,7 +816,13 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     n_k = int((6.95 - yb - .14 - .23) // rk_)
     if belum and n_k >= 1:   # kondisi mutakhir kab/kota yang belum surut, kata-kata laporan Koordalops
         kol2 = [('Kab/Kota', 1.35, 'l'), ('Laporan', .58, 'c'), ('Kondisi terakhir', 4.26, 'j', 8, 'bungkus')]
-        tabel(sl, 6.55, yb + .14, 6.19, kol2, [[o['kab'], tgl(o['akhir']), (rapi(o['kondisi']), INK, False)] for o in belum[:n_k]], rk_, 6.95)
+        # tinggi baris ikut panjang teks (21 Nov 2026: kondisi Pasaman Barat 3 baris menimpa baris di atasnya); ~80 huruf per baris 8 pt
+        sisa, br2 = 6.95 - yb - .14 - .23, []
+        for o in belum:
+            t_ = rapi(o['kondisi']); h_ = max(rk_, .135 * math.ceil(len(t_) / 80) + .04)
+            if h_ > sisa + 1e-6: break
+            br2.append({'sel': [o['kab'], tgl(o['akhir']), (t_, INK, False)], 'h': h_}); sisa -= h_
+        tabel(sl, 6.55, yb + .14, 6.19, kol2, br2, rk_, 6.95)
     sumber(sl, f'Laporan Dit. Koordalops BNPB, {tgl(wa0 or tanggal)} s.d. {tgl(wa1 or tanggal)} {(wa1 or tanggal)[:4]}; Logbook Pusdalops BNPB')
 
     # ---- 2. prakiraan N hari, provinsi pilihan
