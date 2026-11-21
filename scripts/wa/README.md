@@ -24,7 +24,7 @@ node otomatis.mjs --kering               # uji tanpa kirim apa pun (butuh worker
 Python generator (harus 3.12 ke atas + Pillow, seluruh pohon prosesnya; `otomatis.mjs` menaruh `~/.wa-bot/py/bin` paling depan di PATH, ubah lewat `WA_PY_BIN`):
 
 ```bash
-uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow openpyxl   # openpyxl: Excel gelar udara (16 Nov 2026)
+uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow openpyxl python-pptx pymupdf   # openpyxl: Excel gelar udara (16 Nov 2026); pymupdf: gambar slide draf (21 Nov 2026)
 cp "<Laporan Kejadian Bencana Harian 221026.pptx milik pemilik>" data/laporan-bnpb/generator/cache/templat/harian-221026.pptx   # di luar git
 ```
 
