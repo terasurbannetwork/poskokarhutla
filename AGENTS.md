@@ -507,6 +507,17 @@ Sebelum menyentuh laporan luring, antrean `public/inti/antre.js` untuk `/lapor`,
 
 Aturan berhentinya sama dengan §2.1. Mesin percakapan tetap satu (`src/lapor_mesin.js`), tidak disalin ke HP; foto tetap hanya dari kamera; kosong tidak pernah jadi nol.
 
+### 2.35 Laporan ke kejadian (`/lapor`: gugus satu desa, halaman publik kejadian hari ini, usulan sekali klik ke Buku Besar): baca dulu, baru bangun
+
+Sebelum menyentuh pengelompokan laporan per desa, halaman publik laporan terverifikasi, atau tombol usulan laporan terverifikasi BPBD ke Buku Besar Kejadian, baca dokumen di
+`data/kajian-bnpb/lapor-kejadian/` dengan urutan otoritas ini (kode Worker dan migrasi milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; `scripts/siklus/pasang.py` milik `siklus`):
+
+1. `KEPUTUSAN-LAPOR-KEJADIAN.md`: keputusan pemilik K85 sampai K87 (dari paket induk lapor-ai), rancangan, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Laporan belum terverifikasi tidak pernah tampil publik; pencocok kejadian tetap satu (`pasang.py`); tidak ada buku kejadian kedua; data pribadi pelapor tidak pernah di halaman publik.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

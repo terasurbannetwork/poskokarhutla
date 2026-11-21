@@ -81,7 +81,7 @@ import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemir
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_LOGPAL} from "./logpal.js";
-import {RUTE_LAPOR, bersihkanLapor} from "./lapor_ai.js";
+import {RUTE_LAPOR, bersihkanLapor, peringatanTiapMenit, bersihPeringatanLapor} from "./lapor_ai.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
@@ -1015,6 +1015,9 @@ const W = {
       try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
       try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat
       if (m === 46) try { console.log("adsb", JSON.stringify(await panenAdsb(env, sekarang))); } catch (e) { console.error("adsb", e?.message); }   // tiap jam menit 46; 7 permintaan berjeda 1,1 dtk (adsb.fi); migrasi 0086 belum jalan = dilewati
+      /* peringatan dini warga Pantau Bencana (PW-07): menit 29 tiap jam; murah saat diam (satu baca pw_kendali + prediksi.json bertembolok); tanpa kunci VAPID warga langsung lewat */
+      if (m === 29) try { const h = await peringatanTiapMenit(env, sekarang); if (h.peristiwa || h.kirim) console.log("peringatan warga", JSON.stringify(h)); } catch (e) { console.error("peringatan warga", e?.message); }   // sekali per jam (anggaran cron akun Free); paling banyak 40 notifikasi per putaran
+      if (m === 17) try { await bersihPeringatanLapor(env, sekarang); } catch (e) { console.error("bersih peringatan", e?.message); }
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));

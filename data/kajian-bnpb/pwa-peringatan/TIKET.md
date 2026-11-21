@@ -21,3 +21,9 @@ Ambil tiket berurutan, kerjakan hanya cakupannya. Tiap tiket layar ditinjau pemi
 | PW-14 | Versi aplikasi dan changelog Pantau Bencana naik; buka ke publik hanya sesudah Q2, Q7, Q8, dan PW-13 terjawab | sesi induk | `higiene-repo` | changelog dan keputusan pemilik tertulis | semua |
 
 Catatan lintas tiket: tidak ada tiket yang menambah jadwal cron, mengubah `wrangler.jsonc` selain `vars`, atau mengubah `src/push.js` (hanya mengimpor `enkripsi` dan `kirimKe`; bila perlu diekspor tambahan, itu perubahan kecil milik `warga-api` dengan uji `tests/warga/push.test.mjs` tetap hijau).
+
+## Status pembangunan 22 Nov 2026
+
+Dibangun dan diuji: PW-01 (migrasi 0163, belum diterapkan ke D1 produksi), PW-02 (`src/pw_inti.js`, uji `tests/lapor/peringatan.test.mjs`), PW-03 (manifest dan ikon dari lambang 160 px; menunggu lambang resolusi tinggi dari pemilik), PW-04 (satu service worker `public/sw-lapor.js` lingkup `/lapor/`, dipakai bersama paket lapor-luring; dipindah ke akar situs supaya tertangkap aturan `/sw*.js` yang ada dan `_headers` tetap di bawah 80 aturan), PW-05 dan PW-08 (`public/lapor/peringatan.js`, kartu Pasang dan kartu peringatan di beranda), PW-06 dan PW-09 (rute `/api/lapor/peringatan/*` termasuk `cari` kecamatan tanpa akun), PW-07 (cron menit 29 tiap jam, paling banyak 40 notifikasi per putaran, sesuai gerbang anggaran cron akun Free), PW-11 (tiruan lokal di `scripts/lapor/lokal.mjs`).
+
+Menunggu pemilik: kunci VAPID warga (`VAPID_PUBLIK_WARGA` sebagai var, `VAPID_PRIVAT_WARGA` dan `VAPID_SUBJEK` sebagai secret), penerapan migrasi 0163 ke D1 produksi, lambang BNPB resolusi tinggi, uji iPhone dan Android nyata (PW-12), paragraf kebijakan privasi (PW-13). Belum dibangun: rute staf `ringkas` dan `jeda` (PW-07 bagian staf), gerbang PW-10.

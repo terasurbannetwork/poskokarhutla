@@ -1,0 +1,21 @@
+{
+  "name": "Pantau Bencana BNPB",
+  "short_name": "Pantau Bencana",
+  "description": "Pelaporan Ancaman dan Tanggap Darurat Bencana. Lapor kejadian, terima peringatan dini, dan lapor tanpa sinyal.",
+  "lang": "id",
+  "start_url": "/lapor/?dari=pwa",
+  "scope": "/lapor/",
+  "id": "/lapor/",
+  "display": "standalone",
+  "background_color": "#0b2545",
+  "theme_color": "#0b2545",
+  "icons": [
+    {"src": "/lapor/ikon/192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/lapor/ikon/512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/lapor/ikon/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Lapor darurat", "short_name": "Darurat", "url": "/lapor/?aksi=darurat", "icons": [{"src": "/lapor/ikon/192.png", "sizes": "192x192"}]},
+    {"name": "Lapor kejadian", "short_name": "Lapor", "url": "/lapor/?aksi=lapor", "icons": [{"src": "/lapor/ikon/192.png", "sizes": "192x192"}]}
+  ]
+}

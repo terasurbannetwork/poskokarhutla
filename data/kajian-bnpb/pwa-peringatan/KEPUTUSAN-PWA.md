@@ -68,3 +68,9 @@ Hanya K1 dan K2 yang berasal dari pemilik untuk paket ini. Semua yang lain di ba
 | F1 | Pasang (manifest, service worker, tombol, panduan iPhone) tanpa notifikasi | PW-03 sampai PW-05 |
 | F2 | Langganan dan kirim ke perangkat uji saja | PW-01, PW-02, PW-06 sampai PW-09, Q11, Q17 |
 | F3 | Terbuka untuk publik | jawaban Q2, Q7, Q8 dan tinjauan hukum BNPB |
+
+## Jawaban pemilik 21 Nov 2026
+
+Pemilik: "Gas semua". Semua bawaan sementara pada pertanyaan terbuka di berkas ini diterima sebagai keputusan pemilik per 21 Nov 2026, kecuali butir yang menurut TIKET memerlukan berkas atau tindakan dari pemilik sendiri (lambang BNPB resolusi tinggi, kunci VAPID sebagai secret Worker, penerapan migrasi D1 produksi, tinjauan hukum kebijakan privasi); butir itu tetap menunggu pemilik.
+
+Satu service worker dan satu manifest untuk `/lapor`: paket `pwa-peringatan` (PW-03, PW-04) dan `lapor-luring` (LR-03) memakai satu berkas service worker dan satu `manifest.webmanifest` bersama, dibangun sekali di PW-03 dan PW-04 lalu diperluas oleh LR-03. Tidak ada service worker kedua untuk lingkup yang sama.

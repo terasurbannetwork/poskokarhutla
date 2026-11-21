@@ -24,6 +24,7 @@ import {buatWilayah} from "./lapor_wilayah.js";
 import {buatInfo} from "./lapor_info.js";
 import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, STATUS, PINDAH, TAMPIL_ALUN, nomorWa, tglWib, keluaran, lanjutan, sesiTampil, jawabStatus, bahanDokumen, lacakTampil, ringkasSesi, barisMeja, barisAlun, mejaRinciTampil, labelJenis, pelakuLabel} from "./lapor_tampil.js";
 import {jalanOsm} from "./lapor_jalan.js";
+import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 
@@ -1011,7 +1012,11 @@ const RUTE = {
   "GET /api/lapor/kabar": kabarGet,
   "POST /api/lapor/kabar/:x": kabarTerkirim,
   "GET /api/lapor/meja": mejaDaftar,
+  ...buatRutePeringatan({wilayah: wilayahDari, muat: muatAset}),   // peringatan dini warga (paket pwa-peringatan, PW-06, PW-09)
   "GET /api/lapor/meja/:x": mejaGet,
   "POST /api/lapor/meja/:x": mejaPost,
 };
 export const RUTE_LAPOR = Object.fromEntries(Object.entries(RUTE).map(([k, f]) => [k, jaga(f)]));
+/* cron peringatan dini warga (PW-07): dipanggil tiap menit dari scheduled() di src/worker.js */
+export const peringatanTiapMenit = (env, kini) => jalankanPeringatan(env, kini, muatAset);
+export const bersihPeringatanLapor = (env, kini) => bersihPeringatan(env, kini);

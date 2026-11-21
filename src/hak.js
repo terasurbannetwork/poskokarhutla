@@ -1770,6 +1770,50 @@ Object.assign(MATRIKS, {
   lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
 });
+/* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
+   pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
+Object.assign(MATRIKS, {
+  pw_langganan: {pw_publik: ["baca", "tambah", "ubah", "hapus"], pw_cron: ["baca", "hapus"], lp_staf: ["baca"]},
+  pw_status:    {pw_cron: ["baca", "tambah", "ubah", "hapus"]},
+  pw_peristiwa: {pw_cron: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca"]},
+  pw_kendali:   {pw_cron: ["baca", "tambah", "ubah"], lp_staf: ["baca", "tambah", "ubah"]},
+});
+export const pelakuPwPublik = {peran: "pw_publik"}, pelakuPwCron = {peran: "pw_cron"};
+const PW_KOL = "id, endpoint, p256dh, auth, kec_kode, kab_kode, kec_nama, jenis, ambang, bahasa, uji";
+export const pwMilik = async (env, p, endpoint) => (await sedia(env, p, "pw_langganan", "baca", `SELECT kec_kode, kec_nama, jenis, ambang, bahasa FROM pw_langganan WHERE endpoint = ?1 LIMIT 3`).bind(endpoint).all()).results;
+export const pwJumlah = (env, p) => sedia(env, p, "pw_langganan", "baca", "SELECT count(*) n FROM pw_langganan").first("n");
+export const pwSimpanStmt = (env, p, b, kini) => sedia(env, p, "pw_langganan", "tambah",
+  `INSERT INTO pw_langganan (${PW_KOL}, dibuat, terakhir_aktif) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?12)
+   ON CONFLICT(id) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, kec_nama = excluded.kec_nama, jenis = excluded.jenis, ambang = excluded.ambang,
+   bahasa = excluded.bahasa, terakhir_aktif = excluded.terakhir_aktif`).bind(b.id, b.endpoint, b.p256dh, b.auth, b.kec_kode, b.kab_kode, b.kec_nama, b.jenis, b.ambang, b.bahasa, b.uji, kini);
+export const pwHapusLainStmt = (env, p, endpoint, simpan) => sedia(env, p, "pw_langganan", "hapus",
+  `DELETE FROM pw_langganan WHERE endpoint = ?1 AND kec_kode NOT IN (SELECT value FROM json_each(?2))`).bind(endpoint, JSON.stringify(simpan));
+export const pwBerhenti = (env, p, endpoint) => sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE endpoint = ?1").bind(endpoint).run();
+export const pwBatch = (env, p, stmts) => { if (!String(p?.peran).startsWith("pw_")) throw new Galat(403, "batch peringatan hanya untuk pelaku pw_*"); return env.DB.batch(stmts); };
+export const pwKendali = async (env, p) => Object.fromEntries((await sedia(env, p, "pw_kendali", "baca", "SELECT kunci, nilai FROM pw_kendali").all()).results.map(r => [r.kunci, r.nilai]));
+export const pwKendaliStmt = (env, p, kunci, nilai) => sedia(env, p, "pw_kendali", "ubah",
+  "INSERT INTO pw_kendali (kunci, nilai) VALUES (?1, ?2) ON CONFLICT(kunci) DO UPDATE SET nilai = excluded.nilai").bind(kunci, String(nilai));
+export const pwStatusKab = async (env, p, kab, sejak) => (await sedia(env, p, "pw_status", "baca", "SELECT jenis, tanggal, level FROM pw_status WHERE kab_kode = ?1 AND tanggal >= ?2").bind(kab, sejak).all()).results;
+export const pwStatusSemua = async (env, p, sejak) => (await sedia(env, p, "pw_status", "baca", "SELECT kab_kode, jenis, tanggal, level FROM pw_status WHERE tanggal >= ?1").bind(sejak).all()).results;
+export const pwStatusStmt = (env, p, kab, jenis, tanggal, level) => sedia(env, p, "pw_status", "tambah",
+  `INSERT INTO pw_status (kab_kode, jenis, tanggal, level) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(kab_kode, jenis, tanggal) DO UPDATE SET level = max(level, excluded.level)`).bind(kab, jenis, tanggal, level);
+export const pwPeristiwaStmt = (env, p, berkas, kab, ringkas, kini, tahan) => sedia(env, p, "pw_peristiwa", "tambah",
+  "INSERT INTO pw_peristiwa (dibuat_berkas, kab_kode, ringkas, dibuat, ditahan_sampai) VALUES (?1, ?2, ?3, ?4, ?5)").bind(berkas, kab, ringkas, kini, tahan ?? null);
+export const pwPeristiwaBerikut = (env, p, kini) => sedia(env, p, "pw_peristiwa", "baca",
+  "SELECT id, kab_kode, ringkas, kursor FROM pw_peristiwa WHERE selesai = 0 AND (ditahan_sampai IS NULL OR ditahan_sampai <= ?1) ORDER BY id LIMIT 1").bind(kini).first();
+export const pwPenerima = async (env, p, kab, kursor, uji) => (await sedia(env, p, "pw_langganan", "baca",
+  `SELECT ${PW_KOL} FROM pw_langganan WHERE kab_kode = ?1 AND id > ?2 ${uji ? "AND uji = 1" : ""} ORDER BY id LIMIT 60`).bind(kab, kursor).all()).results;
+export const pwPeristiwaMajuStmt = (env, p, id, kursor, selesai, ok, gagal, mati) => sedia(env, p, "pw_peristiwa", "ubah",
+  "UPDATE pw_peristiwa SET kursor = ?2, selesai = ?3, ok = ok + ?4, gagal = gagal + ?5, mati = mati + ?6 WHERE id = ?1").bind(id, kursor, selesai ? 1 : 0, ok, gagal, mati);
+export const pwHapusIdStmt = (env, p, id) => sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE id = ?1").bind(id);
+export const pwBersih = (env, p, kini, tglBatas) => env.DB.batch([
+  sedia(env, p, "pw_peristiwa", "hapus", "DELETE FROM pw_peristiwa WHERE dibuat < ?1").bind(kini - 30 * 864e5),
+  sedia(env, p, "pw_status", "hapus", "DELETE FROM pw_status WHERE tanggal < ?1").bind(tglBatas),
+  sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE terakhir_aktif < ?1").bind(kini - 180 * 864e5)]);
+export const pwRingkasStaf = async (env, p, kini) => ({
+  langganan: (await sedia(env, p, "pw_langganan", "baca", "SELECT kab_kode, count(*) n FROM pw_langganan GROUP BY kab_kode ORDER BY n DESC LIMIT 50").all()).results,
+  peristiwa: (await sedia(env, p, "pw_peristiwa", "baca", "SELECT id, kab_kode, ringkas, dibuat, selesai, ok, gagal, mati FROM pw_peristiwa WHERE dibuat >= ?1 ORDER BY id DESC LIMIT 100").bind(kini - 7 * 864e5).all()).results});
+
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
 /* g = true: INSERT ... SELECT ... WHERE changes() > 0, hanya menulis bila pernyataan sebelumnya dalam batch (pembaruan sesi) benar-benar mengubah baris */

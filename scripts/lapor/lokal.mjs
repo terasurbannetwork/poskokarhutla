@@ -22,6 +22,7 @@ import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../sr
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
 import {HALAMAN_TUNGGU_DOK, tempatRusak} from "../../src/lapor_tampil.js";
 import {jalanOsm} from "../../src/lapor_jalan.js";
+import {JENIS_PW, MAKS_KEC, endpointSah, titikTerdekat, NAMA_HARI, label as labelPw} from "../../src/pw_inti.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
 const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `public/lapor/tr/${b}.json`), "utf8")); } catch { return null; } };   // kamus statis, sama dengan Worker
 import {samarkan} from "../../src/samarkan.js";
@@ -415,6 +416,40 @@ async function daerah(q) {
   return [200, {wilayah: w, kab: k.nama, prov: k.pn, info, prediksi, perHari: kartu, waspada, dibuat}];
 }
 
+/* ---------- peringatan dini warga, tiruan lokal (paket pwa-peringatan PW-11) ----------
+   Sama bentuknya dengan rute Worker (src/pw_peringatan.js); langganan disimpan di memori proses dan tidak ada notifikasi sungguhan.
+   Kunci VAPID lokal dibuat sekali per proses supaya peramban bisa berlangganan dan alurnya bisa dicoba di localhost:8800. */
+const PW_LOKAL = new Map();   // endpoint -> {kec, jenis, ambang}
+let PW_KUNCI = null;
+const pwKunci = () => { if (!PW_KUNCI) { const {publicKey} = crypto.generateKeyPairSync("ec", {namedCurve: "P-256"}); PW_KUNCI = publicKey.export({format: "jwk"}); } const raw = Buffer.concat([Buffer.from([4]), Buffer.from(PW_KUNCI.x, "base64url"), Buffer.from(PW_KUNCI.y, "base64url")]); return raw.toString("base64url"); };
+async function peringatanLokal(rute, req, url) {
+  const kec = async kd => { if (!/^\d{2}\.\d{2}\.\d{2}$/.test(kd || "")) return null; const d = (await wilayah.cariNama("", kd))[0]; return d?.kec ? {kode: kd, nama: d.kec, kab: d.kabKode.replace(".", ""), prov: d.provKode, desa: d.kode} : null; };
+  if (rute === "kunci") return [200, {tersedia: true, publik: pwKunci(), lokal: true}];
+  if (rute === "cari") { const q = String(url.searchParams.get("q") || ""); return [200, {hasil: q.trim().length < 2 ? [] : (await wilayah.cariNama(q, "")).filter(x => x.tingkat === "kec").slice(0, 12).map(x => ({kode: x.kode, judul: x.judul, sub: x.sub}))}]; }
+  if (rute === "arah") {
+    const x = await kec(url.searchParams.get("kec")); if (!x) return [400, {galat: "Kecamatan tidak dikenal."}];
+    const lat = Number(url.searchParams.get("lat")), lon = Number(url.searchParams.get("lon"));
+    const asal = Number.isFinite(lat) && Number.isFinite(lon) && url.searchParams.get("lat") ? {lat, lon} : await wilayah.pusat(x.desa);
+    const baca = j => { try { return JSON.parse(fs.readFileSync(path.join(PUBLIK, j), "utf8")); } catch { return null; } };
+    const P = baca("prediksi/data/prediksi.json"), k = P?.kab.find(r => r.id === x.kab), KOL = P ? Object.fromEntries(Object.entries(P.kode).map(([c, v]) => [c, v.kol])) : {};
+    const hari = k ? P.kode.HJN.hari.map((t, i) => ({tanggal: t, nama: NAMA_HARI(t), butir: JENIS_PW.map(([c]) => ({jenis: c, label: labelPw(c), lv: Besok.levelKode(k, KOL, i + 1, c)})).filter(b => b.lv != null)})) : [];
+    return [200, {kec: x.nama, kab: k?.nama || null, hari, titik: asal ? titikTerdekat(asal, baca(`data/osm_nasional/${x.prov}.json`), baca(`data/osm_nasional/ibadah/${x.prov}.json`)) : [], catatan: "Jarak garis lurus, bukan rute. Tempat ini belum tentu ditetapkan sebagai titik evakuasi."}];
+  }
+  if (req.method !== "POST") return [404, {galat: "rute peringatan tidak ada"}];
+  const b = await badan(req);
+  if (!endpointSah(b?.endpoint)) return [400, {galat: "Langganan peramban tidak sah."}];
+  if (rute === "status") { const a = PW_LOKAL.get(b.endpoint); return [200, {aktif: !!a, kec: a?.kec || [], jenis: a?.jenis ?? null, ambang: a?.ambang ?? null}]; }
+  if (rute === "berhenti") { PW_LOKAL.delete(b.endpoint); return [200, {ok: true}]; }
+  if (rute === "langganan" || rute === "ubah") {
+    const kodes = [...new Set((b.kec || []).map(String))]; if (!kodes.length || kodes.length > MAKS_KEC) return [400, {galat: `Pilih 1 sampai ${MAKS_KEC} kecamatan.`}];
+    const info = []; for (const kd of kodes) { const x = await kec(kd); if (!x) return [400, {galat: `Kecamatan ${kd} tidak dikenal.`}]; info.push({kode: x.kode, nama: x.nama}); }
+    const jenis = Number.isInteger(b.jenis) && b.jenis >= 1 && b.jenis <= 15 ? b.jenis : 15, ambang = [1, 2, 3].includes(b.ambang) ? b.ambang : 1;
+    PW_LOKAL.set(b.endpoint, {kec: info, jenis, ambang}); console.log("peringatan lokal: langganan", info.map(x => x.nama).join(", "));
+    return [200, {ok: true, kec: info, jenis, ambang}];
+  }
+  return [404, {galat: "rute peringatan tidak ada"}];
+}
+
 /* ---------- tempat di sekitar lokasi kejadian untuk titik pengungsian (pemilik 19 Nov 2026: "connect ke OpenStreetMap, bisa dipilih beberapa") ----------
    Dua sumber: data OSM lokal (public/data/osm_nasional: sekolah, kantor pemerintahan, titik kumpul, puskesmas) dan Overpass API OSM untuk rumah ibadah,
    balai warga, dan sekolah dalam radius 3 km (data lokal hanya menghitung rumah ibadah). Yang dikirim ke Overpass hanya koordinat kejadian. */
@@ -720,6 +755,7 @@ export async function tanganiLapor(req, res, url) {
       if (url.searchParams.get("format") === "csv") { res.writeHead(200, {"content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="lapor-agregat.csv"', "cache-control": "no-store"}); res.end(keCsv(baris)); return true; }
       return kirim([200, {dibuat: new Date().toLocaleString("id-ID", {dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta"}), batas: BATAS_SEL, kolom: KOLOM_AGREGAT, baris}]);
     }
+    if (j.startsWith("/api/lapor/peringatan/")) return kirim(await peringatanLokal(j.slice("/api/lapor/peringatan/".length), req, url));
     if (j.startsWith("/api/lapor/meja")) {
       const c = await akunMeja(req);
       if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);

@@ -505,6 +505,9 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | K82 | 21 Nov 2026 | Tur beranda bersorot meniru flood-check.dawnstackai.com: 9 langkah (sambutan, lapor darurat, lapor kejadian, cek status, info dan prediksi, edukasi, nomor penting, bahasa, laporan), muncul sekali sesudah pilih bahasa pada kunjungan pertama, bisa diulang dari gelembung Sigap (Lihat tur). |
 | K83 | 21 Nov 2026 | Sekolah, fasilitas kesehatan, tempat ibadah, jalan rusak, dan titik pengungsian yang disebut pelapor ditandai di peta meja saat pop-up laporan dibuka (pemilik: "langsung ditandai ya disini"). Titik dicari dari data OSM per provinsi dalam 5 km dari laporan, jalan dari Overpass OSM; nama yang tidak ketemu tetap ditulis di pop-up. |
 | K84 | 21 Nov 2026 | Pencarian tempat di kartu chat menyaring langsung tiap huruf tanpa Enter; nama yang cocok di awal kata menang (pemilik: "gw ketik sd kenapa yang lain ga langsung berubah"). |
+| K85 | 21 Nov 2026 | Pemilik: "Laporan berulang di satu desa dikelompokkan otomatis jadi satu kejadian, dengan jumlah pelapornya." Gugus K33 ditambah aturan satu desa; rincian di `data/kajian-bnpb/lapor-kejadian/`. |
+| K86 | 21 Nov 2026 | Pemilik: "Halaman publik kejadian hari ini berisi laporan terverifikasi tanpa data pribadi, untuk wartawan dan warga." Mengubah D7 dan Q11 untuk laporan yang sudah diverifikasi saja; laporan belum terverifikasi tetap tidak publik. Rincian di `data/kajian-bnpb/lapor-kejadian/`. |
+| K87 | 21 Nov 2026 | Pemilik: "Dari tiket ke kejadian resmi: laporan warga yang sudah diverifikasi BPBD diusulkan masuk Buku Besar Kejadian, cukup sekali klik staf." Mengubah D7 dan D29: laporan terverifikasi BPBD boleh diusulkan menjadi kejadian baru, keputusan tetap di tangan staf. Rincian di `data/kajian-bnpb/lapor-kejadian/`. |
 
 ## Keputusan rancangan (pelaksanaan K73-K74, agent, bisa dibatalkan pemilik)
 

@@ -51,3 +51,9 @@ K37 (mode luring) disetujui 19 Nov 2026 dan D41-D45, Q28, tiket LA-35 dan LA-36 
 | Q9 | Batas antrean per perangkat? | **[BAWAAN SEMENTARA]** 5 butir, 3 foto per butir, total 20 MB; sesudahnya formulir menolak simpan dan menyarankan kirim yang menunggu dulu. HIPOTESIS. | LR-05 |
 | Q10 | Jalur tambahan lewat SMS atau telepon (tanpa data seluler)? | **[BAWAAN SEMENTARA]** Di luar lingkup; formulir hanya menampilkan 112 dan nomor penting. Perlu keputusan kerja sama operator di luar repo ini. | tidak ada |
 | Q11 | Ajakan "Pasang ke layar utama" (manifest) untuk meredam pembuangan data iOS? | **[BAWAAN SEMENTARA]** Ya, ajakan lembut sekali pada langkah Siapkan; tidak memaksa. | LR-03 |
+
+## Jawaban pemilik 21 Nov 2026
+
+Pemilik: "Gas semua". Semua bawaan sementara pada pertanyaan terbuka di berkas ini diterima sebagai keputusan pemilik per 21 Nov 2026, kecuali butir yang menurut TIKET memerlukan berkas atau tindakan dari pemilik sendiri (lambang BNPB resolusi tinggi, kunci VAPID sebagai secret Worker, penerapan migrasi D1 produksi, tinjauan hukum kebijakan privasi); butir itu tetap menunggu pemilik.
+
+Satu service worker dan satu manifest untuk `/lapor`: paket `pwa-peringatan` (PW-03, PW-04) dan `lapor-luring` (LR-03) memakai satu berkas service worker dan satu `manifest.webmanifest` bersama, dibangun sekali di PW-03 dan PW-04 lalu diperluas oleh LR-03. Tidak ada service worker kedua untuk lingkup yang sama.

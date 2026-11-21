@@ -27,3 +27,11 @@ Ambil tiket berurutan; kerjakan hanya cakupannya. Tiap tiket ditutup dengan bukt
 3. Q3 menahan LR-09 hanya pada aturan pita darurat.
 4. Fase 2 (LR-13, LR-14) hanya sesudah uji perangkat nyata (LR-12) menunjukkan perlunya.
 5. Perubahan perilaku halaman `/lapor` menaikkan versi aset (`?v=`) dan `VERSI` service worker.
+
+## Status pembangunan 22 Nov 2026
+
+Dibangun dan diuji di Chrome tanpa layar (halaman terbuka tanpa sinyal, formulir tersimpan, terkirim otomatis begitu sinyal kembali, nomor tiket terbit): LR-03 (cangkang luring di service worker bersama `public/sw-lapor.js`), LR-04 (formulir luring di `public/lapor/luring.js`: jenis, GPS, ada korban, catatan persetujuan), LR-05 (saluran `lapor-luring` di `public/inti/antre.js`, pita belum terkirim, hapus dari HP).
+
+Perubahan rancangan: pengiriman tidak memakai rute dan tabel baru (LR-07, LR-08 tidak dibangun). Butir luring diputar ulang lewat alur Lapor darurat di `/api/lapor/pesan` langkah demi langkah, jadi mesin percakapan tetap satu dan meja menerima laporan biasa. Akibatnya waktu kejadian tercatat saat terkirim, bukan saat disimpan; lencana "dikirim dari luring" (LR-09) belum ada.
+
+Belum dibangun: foto luring (LR-06), lencana dan aturan pita darurat terlambat (LR-09, Q3), gerbang (LR-11), uji perangkat nyata (LR-12), Background Sync (LR-13).

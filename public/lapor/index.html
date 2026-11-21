@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <link rel="icon" type="image/png" href="/lapor/lambang-bnpb.png">
-<link rel="apple-touch-icon" href="/lapor/lambang-bnpb.png">
+<link rel="apple-touch-icon" href="/lapor/ikon/apple-180.png">
+<link rel="manifest" href="/lapor/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pantau Bencana">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <title>Pantau Bencana BNPB, Pelaporan Ancaman dan Tanggap Darurat Bencana</title>
 <meta name="description" content="Laporkan kejadian bencana ke BNPB lewat percakapan yang dipandu.">
@@ -13,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=146" rel="stylesheet">
+<link href="/lapor/lapor.css?v=147" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -152,6 +155,11 @@
           <b>Nomor penting</b><small>BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat.</small></button>
       </div>
 
+      </section>
+      <!-- aplikasi dan peringatan dini (paket pwa-peringatan): diisi public/lapor/peringatan.js -->
+      <section class="lp-kompartemen lp-pw" id="pwKartu" aria-labelledby="hPw" hidden>
+      <h2 class="lp-kompartemen-kepala" id="hPw"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Aplikasi dan peringatan dini</h2>
+      <div class="lp-kompartemen-isi" id="pwIsi"></div>
       </section>
       <section class="lp-kompartemen" aria-labelledby="hBantu">
       <h2 class="lp-kompartemen-kepala" id="hBantu"><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Butuh bantuan?</h2>
@@ -368,5 +376,7 @@
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
 <script type="module" src="/lapor/lapor.js?v=125"></script>
+<script type="module" src="/lapor/peringatan.js?v=1"></script>
+<script type="module" src="/lapor/luring.js?v=1"></script>
 </body>
 </html>
