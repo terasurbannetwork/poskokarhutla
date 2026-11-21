@@ -4,7 +4,7 @@
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
    - Cache: percakapan dan daftar laporan disimpan di localStorage per nomor supaya muat ulang langsung tampil.
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
-import {maskot} from "/lapor/maskot.js?v=18"; // bervesi: berkas .js disajikan immutable
+import {maskot} from "/lapor/maskot.js?v=19"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -266,10 +266,10 @@ function kartuIdentitas(lanjutAwal = null) {
   isi.closest(".lp-langkah").classList.add("lp-langkah-id"); seg.classList.add("lp-peran");
   s.addEventListener("click", () => {
     if (nama.value.trim().length < 2) { nama.focus(); statusEl.textContent = "Tulis nama Anda."; return; }
-    if (peran === "bpbd" && (kab.value.trim().length < 3 || jab.value.trim().length < 2)) { statusEl.textContent = "Petugas BPBD wajib mengisi kabupaten/kota dan jabatan."; return; }
+    if (peran === "bpbd" && (kab.value.trim().length < 3 || jab.value.trim().length < 2)) { statusEl.textContent = "Petugas BPBD, isi kabupaten/kota dan jabatan Anda."; return; }
     const form = {nama: nama.value.trim(), peran, kab: kab.value.trim(), jabatan: jab.value.trim()}, tampil = `${form.nama}, ${peran === "bpbd" ? `Petugas BPBD ${form.kab}` : "warga"}`;
     if (!lanjutAwal) return kirim({form, tampil});
-    if (!/^8\d{8,12}$/.test(ino.value)) { ino.focus(); statusEl.textContent = "Nomor WhatsApp diawali 8, contoh 812 3456 7890."; return; }
+    if (!/^8\d{8,12}$/.test(ino.value)) { ino.focus(); statusEl.textContent = "Nomor WhatsApp dimulai dengan 8, misalnya 812 3456 7890."; return; }
     idAwal = form; wadah.replaceChildren(); tambah("saya", `${tampil}\n+62 ${ino.value}`, {simpanKe: false});
     mulai(`62${ino.value}`, {diChat: true}).then(lanjutAwal);
   });
@@ -300,7 +300,7 @@ function isiLokasi(wadahIsi, {judul, ket, pakaiPosisi, pilihCari, kabupatenCukup
     if (q.value.trim().length < 3) { hasil.replaceChildren(); return; }
     tunda = setTimeout(async () => {
       try { await cariTempat(q.value.trim(), "", hasil, pilihCari, kabupatenCukup); }
-      catch { hasil.replaceChildren(el("li", "lp-catatan-kecil", "Pencarian gagal. Coba lagi.")); }
+      catch { hasil.replaceChildren(el("li", "lp-catatan-kecil", "Pencarian belum berhasil. Coba lagi.")); }
     }, 300);
   });
   const blok = el("div", "lp-lok"); blok.append(kp);
@@ -437,7 +437,7 @@ function kartuWaktu(j) {
   const bJam = el("span", "lp-jam-baris"); bJam.append(jm, sek, el("span", "lp-zona", zona)); // tombol jam sekarang di dalam bar jam
   const lJam = el("div", "lp-isi"); lJam.append(`Jam, waktu setempat (${zona})`, bJam);
   const s = el("button", "lp-utama", "Simpan waktu"); s.type = "button";
-  s.addEventListener("click", () => { if (!jam) { jm.focus(); statusEl.textContent = "Isi jam kejadian, perkiraan pun boleh."; return; } kirim({form: {tanggal, jam}, tampil: `${tanggal.split("-").reverse().join("/")}, ${jam.replace(":", ".")} ${zona}`}); });
+  s.addEventListener("click", () => { if (!jam) { jm.focus(); statusEl.textContent = "Isi jam kejadian. Perkiraan juga boleh."; return; } kirim({form: {tanggal, jam}, tampil: `${tanggal.split("-").reverse().join("/")}, ${jam.replace(":", ".")} ${zona}`}); });
   isi.append(hari, lTgl, lJam, s);
 }
 
@@ -515,7 +515,7 @@ function kartuTempat(j = {}) {
   q.addEventListener("input", () => gambarDaftar(q.value.trim()));
   s.addEventListener("click", () => { const ketik = !dipilih.size && !lain.value.trim() && q.value.trim().length >= 3 ? [q.value.trim()] : [];   // hanya mengetik di pencarian = itu namanya
     const semua = [...dipilih.keys(), ...(lain.value.trim() ? [lain.value.trim()] : []), ...ketik];
-    if (!semua.length) { statusEl.textContent = "Pilih atau tulis paling sedikit satu tempat."; return; }
+    if (!semua.length) { statusEl.textContent = "Pilih atau tulis setidaknya satu tempat."; return; }
     kirim({teks: `${awalan}:\n${semua.map((n, i) => `${i + 1}. ${n}`).join("\n")}`, tampil: `${awalan}: ${semua.join(", ")}`}); });
   const tt = el("button", "lp-kedua", "Belum tahu"); tt.type = "button"; tt.addEventListener("click", () => kirim({teks: "belum tahu", tampil: `Belum tahu ${awalan.toLowerCase()}`}));
   const aksi = el("div", "lp-aksi-dua"); aksi.append(tt, s); pilihan.hidden = true;
@@ -630,11 +630,11 @@ async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri
   e.preventDefault();
   try { let r = await fetch(url, {method: "GET"});
     // belum jadi: tunggu di tempat (cek tiap 10 detik, paling lama 6 menit), lalu unduh sendiri (pemilik 21 Nov 2026: yang terbuka malah teks "sedang dibuat")
-    for (let i = 0; r.status === 202 && i < 36; i++) { statusEl.textContent = "PDF sedang dibuat, biasanya 3 menit. Akan terunduh sendiri, dan juga dikirim ke WhatsApp Anda."; await new Promise(t => setTimeout(t, 10000)); r = await fetch(url, {method: "GET"}); }
-    if (r.status === 202) { statusEl.textContent = "PDF belum jadi. Nanti dikirim ke WhatsApp Anda."; return; }
+    for (let i = 0; r.status === 202 && i < 36; i++) { statusEl.textContent = "PDF sedang dibuat, biasanya 3 menit. Berkasnya terunduh sendiri dan juga dikirim ke WhatsApp Anda."; await new Promise(t => setTimeout(t, 10000)); r = await fetch(url, {method: "GET"}); }
+    if (r.status === 202) { statusEl.textContent = "PDF belum selesai. Kami kirim ke WhatsApp Anda nanti."; return; }
     statusEl.textContent = "";
     const b = await r.blob(), a = Object.assign(document.createElement("a"), {href: URL.createObjectURL(b), download: decodeURIComponent((r.headers.get("content-disposition") || "").match(/filename="([^"]+)"/)?.[1] || "laporan")}); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
-  catch { statusEl.textContent = "Unduhan gagal, coba lagi."; }
+  catch { statusEl.textContent = "Unduhan belum berhasil. Coba lagi."; }
 }
 
 /* terapkan keadaan mesin ke layar */
@@ -678,7 +678,7 @@ async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampi
   try {
     const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, teks, lokasi, form, pilih, lain, kembali, saluran: "web", bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
     const j = await r.json();
-    if (!r.ok) throw new Error(j.galat || "Gagal mengirim");
+    if (!r.ok) throw new Error(j.galat || "Sambungan terputus");
     if (j.kembali) { await ulangChat(); return; }
     selesaiBalas(j);
   } catch (e) {
@@ -693,7 +693,7 @@ function selesaiBalas(j) {
     const form = idAwal; if (j.minta === "identitas") idAwal = null;
     setTimeout(() => j.minta === "identitas" ? kirim({form, tampil: false}) : kirim({teks: "2", tampil: false}), 0); return; }
   $("mengetik").hidden = true;
-  if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Pantau Bencana BNPB. Sebelum mulai, mohon baca dan setujui pemakaian data di bawah.") : j.balasan);
+  if (j.balasan) tambah("bot", j.minta === "setuju" ? (idAwal ? "Terima kasih. Sebelum mulai, baca dan setujui pemakaian data di bawah." : "Halo, saya Sigap, asisten AI Pantau Bencana BNPB. Sebelum mulai, baca dan setujui pemakaian data di bawah.") : j.balasan);
   if (j.pelapor?.nama) cache.pelapor = j.pelapor.nama;
   if (j.nomor && j.susulan) { const l = (cache.laporan || []).find(x => x.nomor === j.nomor); if (l) { l.versi = j.susulan; if (j.foto) l.foto = j.foto; } cache.fotoSesi = []; } // susulan: kartu tetap, versi naik
   else if (j.nomor) { cache.laporan = [{nomor: j.nomor, lacak: j.lacak, foto: j.foto || null, status: "baru", statusLabel: "Laporan diterima", waktu: Date.now()}, ...(cache.laporan || []).filter(l => l.nomor !== j.nomor)]; cache.fotoSesi = []; }
@@ -785,7 +785,7 @@ if (Pengenal) {
   const bMic = $("bMic"), dengar = new Pengenal(); let awal = "", aktif = false;
   dengar.lang = "id-ID"; dengar.interimResults = true; dengar.continuous = true; bMic.hidden = false;
   bMic.addEventListener("click", () => { if (aktif) dengar.stop(); else { awal = iTeks.value; dengar.start(); } });
-  dengar.addEventListener("start", () => { aktif = true; bMic.classList.add("aktif"); bMic.setAttribute("aria-pressed", "true"); statusEl.textContent = "Mendengarkan, ketuk mikrofon lagi untuk berhenti."; });
+  dengar.addEventListener("start", () => { aktif = true; bMic.classList.add("aktif"); bMic.setAttribute("aria-pressed", "true"); statusEl.textContent = "Mendengarkan. Ketuk mikrofon lagi untuk berhenti."; });
   dengar.addEventListener("end", () => { aktif = false; bMic.classList.remove("aktif"); bMic.setAttribute("aria-pressed", "false"); if (statusEl.textContent.startsWith("Mendengarkan")) statusEl.textContent = ""; });
   dengar.addEventListener("error", e => { statusEl.textContent = e.error === "not-allowed" ? "Izin mikrofon ditolak." : "Suara belum tertangkap. Coba lagi."; });
   dengar.addEventListener("result", e => { const kata = [...e.results].map(r => r[0].transcript).join(" ").trim(); iTeks.value = awal ? `${awal.replace(/\s+$/, "")} ${kata}` : kata; });
@@ -800,7 +800,7 @@ async function bukanKamera(f) {
   const kini = Date.now(), video = f.type.startsWith("video/");
   if (!video) {
     const x = window.bacaExif ? window.bacaExif(await f.slice(0, 262144).arrayBuffer()) : null;
-    if (!x || !x.kamera) return "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar dari galeri tidak diterima.";
+    if (!x || !x.kamera) return "Ambil foto langsung dengan kamera ponsel. Tangkapan layar dan gambar dari galeri tidak diterima.";
     if (x.waktu && Math.abs(kini - x.waktu) > SEGAR_MS) return "Foto ini diambil lebih dari 5 menit lalu. Ambil foto baru langsung dengan kamera.";
   }
   if (f.lastModified && kini - f.lastModified > SEGAR_MS) return `${video ? "Video" : "Foto"} ini bukan rekaman baru. Ambil langsung dengan kamera.`;
@@ -812,13 +812,13 @@ async function unggahFoto(file) {
   try {
     const exif = window.bacaExif ? window.bacaExif(await file.slice(0, 262144).arrayBuffer()) : null;
     const kecil = window.fotoKecil ? await window.fotoKecil(file) : file;
-    if (!kecil) throw new Error("Foto tidak terbaca atau terlalu besar");
+    if (!kecil) throw new Error("Foto tidak terbaca atau terlalu besar. Coba ambil ulang");
     const data = await new Promise((ok, gagal) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = gagal; r.readAsDataURL(kecil); });
     tambah("saya", "", {foto: data, simpanKe: false});
     sibuk = true; wadah.replaceChildren(); $("mengetik").hidden = false; statusEl.textContent = "";
     const r = await fetch("/api/lapor/foto", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, data, gps: posisi, exif, bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
     const j = await r.json(); sibuk = false;
-    if (!r.ok) throw new Error(j.galat || "Foto gagal dikirim");
+    if (!r.ok) throw new Error(j.galat || "Foto belum terkirim");
     const fb = j.fotoBaru || {};
     cache.fotoSesi = [...(cache.fotoSesi || []), {src: data, lencana: fb.lencana, lencanaTeks: fb.lencanaTeks, lat: fb.lat, lon: fb.lon, waktuTeks: fb.waktuTeks, sumberWaktu: fb.sumberWaktu}]; simpanCache();
     selesaiBalas(j);
@@ -860,7 +860,7 @@ async function unggahBersambung(berkas, x) {
       }
       return {s: 200, j: {media_id: id}};
     } catch {
-      statusEl.textContent = navigator.onLine ? "Sinyal lemah, mencoba lagi..." : "Tanpa sinyal. Video tersimpan di HP dan dilanjutkan otomatis saat tersambung.";
+      statusEl.textContent = navigator.onLine ? "Sinyal lemah. Mencoba lagi..." : "Tidak ada sinyal. Video tersimpan di HP dan dikirim otomatis saat tersambung lagi.";
       if (!navigator.onLine) break; await tunggu(2000 * 2 ** coba);
     }
   }
@@ -1003,14 +1003,14 @@ async function bukaChat(darurat = false) {
 
 /* bantuan: definisi juklak dan pertanyaan umum */
 const BANTU = [
-  ["Melapor", "Apa saja yang perlu disiapkan?", "Lokasi kejadian (sebaiknya Anda di lokasi), perkiraan waktu kejadian, dan bila bisa foto keadaan di lokasi. Data korban dan kerusakan boleh perkiraan; bila belum tahu, biarkan kosong."],
-  ["Melapor", "Kenapa lokasi wajib?", "Petugas perlu tahu desa yang terdampak untuk mengirim bantuan dan memeriksa laporan. Lokasi dicocokkan otomatis ke desa, kecamatan, kabupaten/kota, dan provinsi."],
-  ["Melapor", "Apakah laporan saya langsung dianggap resmi?", "Belum. Laporan warga diperiksa dulu oleh petugas BNPB dan BPBD setempat. Status pemeriksaan bisa Anda lacak lewat nomor tiket."],
-  ["Istilah", "Apa itu pengungsi?", "Orang yang terpaksa keluar dari tempat tinggalnya karena bencana, termasuk yang dievakuasi sebelum dampak, dan tinggal sementara di tenda, gedung publik, atau rumah kerabat."],
+  ["Melapor", "Apa saja yang perlu disiapkan?", "Siapkan lokasi kejadian (sebaiknya Anda berada di lokasi), perkiraan waktu kejadian, dan foto keadaan di lokasi bila bisa. Data korban dan kerusakan boleh perkiraan. Bila belum tahu, biarkan kosong."],
+  ["Melapor", "Kenapa lokasi wajib?", "Petugas perlu tahu desa yang terdampak untuk mengirim bantuan dan memeriksa laporan. Sistem mencocokkan lokasi otomatis ke desa, kecamatan, kabupaten/kota, dan provinsi."],
+  ["Melapor", "Apakah laporan saya langsung dianggap resmi?", "Belum. Petugas BNPB dan BPBD setempat memeriksa laporan warga dulu. Anda bisa melacak status pemeriksaan lewat nomor tiket."],
+  ["Istilah", "Apa itu pengungsi?", "Orang yang terpaksa meninggalkan tempat tinggalnya karena bencana, termasuk yang dievakuasi sebelum dampak. Mereka tinggal sementara di tenda, gedung publik, atau rumah kerabat."],
   ["Istilah", "Bagaimana menghitung KK?", "Hitung per Kartu Keluarga, bukan per orang. Satu rumah tangga dengan satu Kartu Keluarga dihitung 1 KK berapa pun anggotanya."],
   ["Istilah", "Rusak berat, sedang, ringan, terendam", "Rusak berat: roboh atau sebagian besar struktur utama, dinding, dan lantai rusak. Rusak sedang: sebagian kecil struktur rusak tetapi bangunan masih berdiri. Rusak ringan: retak pada plesteran, struktur masih bisa dipakai. Terendam: tergenang air tanpa kerusakan struktur."],
-  ["Istilah", "Skala guncangan gempa", "Pilih fenomena yang Anda lihat: hampir tidak terasa, terasa tanpa kerusakan, kerusakan ringan, sedang, atau berat. Pilihan mengikuti Skala Intensitas Gempabumi BMKG (SIG I sampai V)."],
-  ["Status", "Apa arti status laporan?", "Laporan diterima, sudah dilihat petugas, sedang ditelaah, diteruskan ke BPBD setempat, ditindaklanjuti, lalu selesai ditangani. Setiap perubahan bertanggal dan tampil di halaman lacak."],
+  ["Istilah", "Skala guncangan gempa", "Pilih keadaan yang Anda lihat: hampir tidak terasa, terasa tanpa kerusakan, kerusakan ringan, sedang, atau berat. Pilihan mengikuti Skala Intensitas Gempabumi BMKG (SIG I sampai V)."],
+  ["Status", "Apa arti status laporan?", "Urutannya: diterima, dilihat petugas, ditelaah, diteruskan ke BPBD setempat, ditindaklanjuti, lalu selesai ditangani. Tanggal setiap perubahan tampil di halaman lacak."],
   /* edukasi siaga (pemilik 19 Nov 2026): teks tetap, bukan jawaban AI. ponytail: disusun dari praktik kesiapsiagaan umum; perlu ditinjau Direktorat Kesiapsiagaan BNPB sebelum publik. */
   ["Edukasi siaga", "Gempa bumi: saat guncangan", "Lindungi kepala dan leher, berlindung di bawah meja yang kuat, jauhi kaca dan lemari. Bila di luar, jauhi bangunan, tiang, dan pohon. Keluar bangunan sesudah guncangan berhenti, lewat tangga, bukan lift."],
   ["Edukasi siaga", "Tsunami: tanda dan tindakan", "Bila di pantai terasa gempa kuat atau lama, atau air laut tiba-tiba surut, segera menjauh dari pantai ke tempat tinggi tanpa menunggu peringatan. Jangan kembali sebelum ada pengumuman resmi."],
@@ -1019,7 +1019,7 @@ const BANTU = [
   ["Edukasi siaga", "Kebakaran hutan dan lahan: asap", "Kurangi kegiatan di luar saat asap tebal, pakai masker yang rapat, dan utamakan perlindungan bayi, lansia, ibu hamil, dan penderita sesak napas. Jangan membakar lahan atau sampah."],
   ["Edukasi siaga", "Erupsi gunung api: hujan abu", "Ikuti radius bahaya dari PVMBG dan perintah petugas. Saat hujan abu, pakai masker dan kacamata, tutup sumber air, dan bersihkan abu dari atap supaya tidak roboh."],
   ["Edukasi siaga", "Tas siaga bencana", "Siapkan tas berisi air minum, makanan tahan lama, obat pribadi, senter, peluit, salinan dokumen penting, uang tunai, dan pakaian ganti. Letakkan di tempat yang mudah diambil."],
-  ["Privasi", "Siapa yang bisa membaca laporan saya?", "Hanya petugas BNPB dan BPBD yang menangani. Nomor WhatsApp dan foto tidak ditampilkan ke publik. Rincian ada di kebijakan privasi."],
+  ["Privasi", "Siapa yang bisa membaca laporan saya?", "Hanya petugas BNPB dan BPBD yang menangani laporan. Nomor WhatsApp dan foto tidak tampil ke publik. Rincian ada di kebijakan privasi."],
 ];
 /* FAQ gaya halaman Tentang (details name="faq": satu terbuka sekaligus); edukasi dari edukasi.json bila ada (riset sumber resmi) */
 let EDU = null, grupAktif = "Semua";
@@ -1098,20 +1098,20 @@ const PRIVASI = [
     "Isi laporan: jenis dan karakteristik kejadian, waktu kejadian, lokasi (titik GPS atau desa yang Anda pilih, RT dan RW), jumlah korban, pengungsi, dan kerusakan dalam bentuk angka, serta kebutuhan.",
     "Foto yang Anda kirim beserta waktu dan lokasi pengambilannya.", "Percakapan dengan asisten AI, waktu pesan, dan nilai yang Anda berikan untuk percakapan."]],
     ["p", "Kami tidak meminta nama korban atau Nomor Induk Kependudukan. Nomor telepon, NIK, dan alamat surel yang tertulis di pesan disamarkan sebelum diproses asisten AI."]]],
-  ["Untuk apa data dipakai", [["ul", ["Menyusun laporan kejadian bencana dan meneruskannya kepada petugas BNPB dan BPBD yang menangani.", "Memeriksa kebenaran laporan dan menghubungi Anda bila perlu konfirmasi.",
-    "Mengirim kabar status laporan kepada Anda.", "Menyusun statistik kejadian tanpa identitas pelapor untuk perencanaan penanggulangan bencana."]]]],
-  ["Asisten AI", [["p", "Pesan Anda diproses asisten AI untuk menangkap isian laporan. Hanya teks pesan yang sudah disamarkan yang dikirim ke penyedia layanan AI; identitas, foto, dan koordinat Anda tidak dikirim. Asisten AI tidak memutuskan status kejadian; keputusan tetap di tangan petugas."]]],
-  ["Siapa yang dapat melihat", [["p", "Laporan dan identitas Anda hanya dapat dibaca petugas BNPB dan BPBD yang menangani kejadian. Laporan tidak ditampilkan di halaman publik. Halaman lacak laporan hanya terbuka bagi pemegang tautan yang dikirim kepada Anda."]]],
-  ["Penyimpanan dan keamanan", [["p", "Data disimpan di layanan yang dikelola untuk BNPB dengan akses terbatas dan tercatat. Riwayat status laporan tidak dapat diubah, hanya ditambah. Lama penyimpanan sementara 2 tahun sesudah laporan selesai ditangani, menunggu ketetapan BNPB."]]],
-  ["Hak Anda", [["p", "Sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi, Anda dapat meminta salinan data Anda, meminta perbaikan, atau meminta penghapusan identitas Anda dengan mengetik \"hapus data\" di percakapan. Isian kejadian yang tidak memuat data pribadi tetap disimpan untuk penanganan bencana."]]],
-  ["Laporan palsu", [["p", "Laporan yang sengaja tidak benar menghambat penanganan bencana. Laporan yang terbukti tidak benar ditandai tidak dapat ditindaklanjuti."]]],
-  ["Perubahan kebijakan", [["p", "Kebijakan ini dapat diperbarui. Tanggal berlaku tercantum di bagian atas halaman ini."]]],
-  ["Kontak", [["p", "Pertanyaan tentang data Anda dapat disampaikan ke BNPB melalui call center 117 atau persuratan@bnpb.go.id."]]],
+  ["Untuk apa data dipakai", [["ul", ["Menyusun laporan kejadian bencana dan meneruskannya ke petugas BNPB dan BPBD yang menangani.", "Memeriksa kebenaran laporan dan menghubungi Anda bila perlu konfirmasi.",
+    "Mengirim kabar status laporan ke Anda.", "Menyusun statistik kejadian tanpa identitas pelapor untuk perencanaan penanggulangan bencana."]]]],
+  ["Asisten AI", [["p", "Pesan Anda diproses asisten AI untuk menangkap isian laporan. Hanya teks pesan yang sudah disamarkan yang dikirim ke penyedia layanan AI; identitas, foto, dan koordinat Anda tidak dikirim. Asisten AI tidak memutuskan status kejadian. Petugas yang memutuskan."]]],
+  ["Siapa yang dapat melihat", [["p", "Hanya petugas BNPB dan BPBD yang menangani kejadian yang bisa membaca laporan dan identitas Anda. Laporan tidak tampil di halaman publik. Halaman lacak hanya terbuka bagi pemegang tautan yang kami kirim kepada Anda."]]],
+  ["Penyimpanan dan keamanan", [["p", "Data disimpan di layanan yang dikelola untuk BNPB. Aksesnya terbatas dan tercatat. Riwayat status laporan tidak bisa diubah, hanya ditambah. Untuk sementara, data disimpan 2 tahun sesudah laporan selesai ditangani, sampai BNPB menetapkan aturan resmi."]]],
+  ["Hak Anda", [["p", "Sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi, Anda bisa meminta salinan data, perbaikan data, atau penghapusan identitas Anda dengan mengetik \"hapus data\" di percakapan. Isian kejadian yang tidak memuat data pribadi tetap disimpan untuk penanganan bencana."]]],
+  ["Laporan palsu", [["p", "Laporan yang sengaja dibuat tidak benar menghambat penanganan bencana. Laporan yang terbukti tidak benar kami tandai tidak bisa ditindaklanjuti."]]],
+  ["Perubahan kebijakan", [["p", "Kami bisa memperbarui kebijakan ini. Tanggal berlaku ada di bagian atas halaman."]]],
+  ["Kontak", [["p", "Ada pertanyaan tentang data Anda? Hubungi BNPB lewat call center 117 atau persuratan@bnpb.go.id."]]],
 ];
 function bukaPrivasi() {
   const w = $("isiPrivasi");
   if (!w.childElementCount) {
-    const kp = el("header", "lp-legal-kepala"); kp.append(el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan Privasi"), el("p", "lp-legal-catatan", "Draf untuk uji coba. Isi akan ditinjau bagian hukum BNPB sebelum layanan dibuka untuk umum."));
+    const kp = el("header", "lp-legal-kepala"); kp.append(el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
     const daftar = el("ol", "lp-legal-daftar"), isi = el("div", "lp-legal-isi"), meta = el("dl", "lp-legal-meta");
     isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Pantau Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
     PRIVASI.forEach(([judul, blok], i) => {
@@ -1531,7 +1531,7 @@ iNomor.addEventListener("input", () => { let v = iNomor.value.replace(/\D/g, "")
 iNomor.addEventListener("beforeinput", e => { if (e.inputType === "insertText" && e.data && /\D/.test(e.data)) e.preventDefault(); });
 $("fNomor").addEventListener("submit", e => {
   e.preventDefault();
-  if (!/^8\d{8,12}$/.test(iNomor.value)) { iNomor.setCustomValidity("Nomor WhatsApp diawali 8, contoh 812 3456 7890"); iNomor.reportValidity(); return; }
+  if (!/^8\d{8,12}$/.test(iNomor.value)) { iNomor.setCustomValidity("Nomor WhatsApp dimulai dengan 8, misalnya 812 3456 7890"); iNomor.reportValidity(); return; }
   mulai(`62${iNomor.value}`);
 });
 const tersimpan = simpan.baca("lapor-wa");
@@ -1561,7 +1561,7 @@ else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server,
    Muncul sekali sesudah pilih bahasa pada kunjungan pertama; bisa diulang dari gelembung Sigap. Langkah yang elemennya tidak tampil (layar HP) dilewati. */
 const TUR = [
   [null, "Selamat datang di Pantau Bencana", "Saya SIGAP, Super Intelligence Assistance BNPB. Saya tunjukkan cara melapor kejadian bencana ke BNPB dan BPBD. Tur ini sekitar 30 detik."],
-  ["#bDarurat", "Lapor darurat", "Lapor keadaan darurat bencana yang sedang berlangsung dan butuh penanganan sesegera mungkin. Cukup isi lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima informasinya dan menindaklanjutinya."],
+  ["#bDarurat", "Lapor darurat", "Laporkan bencana yang sedang berlangsung dan butuh penanganan cepat. Cukup isi lokasi, jenis kejadian, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerimanya dan menindaklanjuti."],
   ["#bLaporBaru", "Lapor kejadian", "Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera."],
   ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
   ['#lBeranda [data-aksi="info"]', "Info dan prediksi", "Kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan di daerah Anda."],

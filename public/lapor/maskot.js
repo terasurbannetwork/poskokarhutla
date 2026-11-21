@@ -60,9 +60,9 @@ export function maskot(pose = "sapa", judul = "") {
       <!-- telapak lebar dengan jempol: terbaca juga saat maskot kecil -->
       <!-- tangan kartun terbuka: empat jari dan jempol; lapis tepi digambar dulu lalu lapis kulit, jadi siluetnya satu tanpa garis di dalam
            (pemilik 21 Nov 2026: "tangannya ga natural sebagai animasi") -->
-      <g class="sg-tangan-tepi"><path d="M190 121L187.5 107M195 119L194 102M200 119L201 103M205 121L207.5 109M188 129L180.5 121" stroke-width="9" stroke-linecap="round"/><ellipse cx="197" cy="127" rx="10.5" ry="11" stroke-width="3.5"/></g>
-      <path d="M190 121L187.5 107M195 119L194 102M200 119L201 103M205 121L207.5 109M188 129L180.5 121" stroke="${u("kulit")}" stroke-width="5.6" stroke-linecap="round" fill="none"/>
-      <ellipse cx="197" cy="127" rx="10.5" ry="11" fill="${u("kulit")}"/>
+      <g class="sg-tangan-tepi"><path d="M189.5 126Q187 119 185.5 112M194.5 123Q193.5 115 193 107M199.5 123Q200.5 115 201.5 108M204 126Q206 120 208 114M187.5 135Q183 131 180 127" stroke-width="9" stroke-linecap="round"/><ellipse cx="196.5" cy="133" rx="10.5" ry="11.5" stroke-width="3.5"/></g>
+      <path d="M189.5 126Q187 119 185.5 112M194.5 123Q193.5 115 193 107M199.5 123Q200.5 115 201.5 108M204 126Q206 120 208 114M187.5 135Q183 131 180 127" stroke="${u("kulit")}" stroke-width="5.6" stroke-linecap="round" fill="none"/>
+      <ellipse cx="196.5" cy="133" rx="10.5" ry="11.5" fill="${u("kulit")}"/>
     </g>
     <!-- kepala -->
     <g class="mk-kepala">

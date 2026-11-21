@@ -82,14 +82,14 @@
    "saat": [
     "Jika guncangan kuat atau lama terasa di pantai, segera evakuasi sendiri tanpa menunggu sirene atau perintah.",
     "Menuju perbukitan atau gedung tinggi yang kokoh.",
-    "Tidak perlu melihat datangnya tsunami atau menangkap ikan di pantai yang airnya surut.",
+    "Jangan menunggu sampai melihat tsunami datang, dan jangan menangkap ikan di pantai yang airnya surut.",
     "Jika macet, kunci dan tinggalkan kendaraan, lalu lanjutkan berjalan kaki. Hindari jembatan.",
     "Bertahan di tempat yang tinggi. Gelombang kedua dan ketiga biasanya lebih besar dari yang pertama.",
     "Di kapal di tengah laut, jangan mendekat ke pantai atau pelabuhan."
    ],
    "sesudah": [
     "Tetap di tempat evakuasi sampai pihak berwenang menyatakan ancaman berakhir.",
-    "Peringatan yang sudah berakhir tidak berarti gempa susulan berhenti.",
+    "Peringatan yang berakhir tidak berarti gempa susulan berhenti.",
     "Jauhi air genangan karena bisa tercemar dan ada ancaman tersengat listrik.",
     "Waspada instalasi listrik dan pipa gas. Jangan masuk bangunan yang masih dikelilingi genangan.",
     "Cuci tangan dengan sabun dan air bersih bila terkena air genangan. Buang makanan yang terkena air.",
@@ -148,7 +148,7 @@
     "Matikan listrik bila ada instruksi petugas. Jangan menyentuh alat listrik saat berdiri di air.",
     "Jangan berjalan di arus air. Beberapa langkah saja bisa membuat jatuh. Bila terpaksa, pijak tempat yang tidak bergerak dan cek dengan tongkat.",
     "Jangan mengemudi di wilayah banjir. Bila air naik, tinggalkan mobil dan pindah ke tempat yang tinggi.",
-    "Waspada saluran air dan tempat lewat air deras. Jangan beraktivitas dekat sungai saat hujan deras."
+    "Waspadai saluran air dan tempat lewat air deras. Jangan beraktivitas dekat sungai saat hujan deras."
    ],
    "sesudah": [
     "Hindari air banjir karena bisa tercemar dan menyetrum. Waspada instalasi listrik.",
@@ -206,13 +206,13 @@
     "Longsor terjadi cepat dan waktu evakuasi mandiri terbatas, jadi jangan menunggu.",
     "Segera menjauh dari arah suara gemuruh dan arah datangnya longsoran.",
     "Jika sirine peringatan longsor berbunyi, menuju zona evakuasi yang sudah ditentukan.",
-    "Laporkan tanda yang Anda temukan kepada aparat setempat."
+    "Laporkan tanda yang Anda temukan ke aparat setempat."
    ],
    "sesudah": [
     "Hindari wilayah longsor karena tanahnya masih labil.",
     "Waspada longsor susulan bila hujan turun lagi.",
     "Ikuti arahan BPBD dan aparat setempat sebelum kembali ke rumah.",
-    "Laporkan kerusakan dan korban kepada aparat setempat."
+    "Laporkan kerusakan dan korban ke aparat setempat."
    ],
    "sumber": [
     {
@@ -271,7 +271,7 @@
    ],
    "sesudah": [
     "Pastikan tidak ada anggota keluarga yang cedera dan beri pertolongan darurat.",
-    "Laporkan kerusakan listrik, gas, atau lainnya kepada pihak berwenang.",
+    "Laporkan kerusakan listrik, gas, atau lainnya ke pihak berwenang.",
     "Jika sedang di perjalanan, lanjutkan dengan hati-hati.",
     "Waspada longsor di lereng bila hujan lebat menyertai."
    ],
@@ -451,12 +451,12 @@
     "Buat tandon air di pekarangan untuk menampung air hujan.",
     "Bersama warga, buat embung atau waduk kecil untuk menampung hujan.",
     "Jangan merusak hutan atau kawasan cagar alam.",
-    "Petani dapat memakai mulsa untuk menjaga kelembapan tanah."
+    "Petani bisa memakai mulsa untuk menjaga kelembapan tanah."
    ],
    "saat": [
     "Kurangi pemakaian air dan matikan keran bila tidak dipakai.",
     "Atur jadwal pemakaian air yang masih ada bersama warga.",
-    "Lapor dan minta bantuan air bersih kepada pihak berwenang.",
+    "Lapor dan minta bantuan air bersih ke pihak berwenang.",
     "Ikuti informasi terkini dari radio, televisi, dan sumber resmi pemerintah."
    ],
    "sesudah": [
@@ -510,7 +510,7 @@
    "sesudah": [
     "Hindari air yang menggenang karena bisa tercemar dan menyetrum.",
     "Pantau masa berlaku peringatan di BMKG sebelum kembali beraktivitas.",
-    "Laporkan kerusakan rumah, perahu, atau jalan kepada aparat setempat."
+    "Laporkan kerusakan rumah, perahu, atau jalan ke aparat setempat."
    ],
    "sumber": [
     {
@@ -618,7 +618,7 @@
     "Ketahui rute evakuasi dari rumah dan dari luar rumah.",
     "Ketahui letak mematikan air, gas, dan listrik.",
     "Tentukan tempat berlindung di dalam rumah.",
-    "Catat anggota keluarga yang rentan: anak, lansia, ibu hamil, penyandang disabilitas.",
+    "Catat anggota keluarga yang rentan: anak, lansia, ibu hamil, dan orang dengan disabilitas.",
     "Latih rencana ini secara berkala. BNPB menetapkan 26 April sebagai Hari Kesiapsiagaan Bencana.",
     "Saat bencana, putuskan cepat apakah tinggal atau berpindah. Bila tidak dalam bahaya, tetap tinggal dan cari informasi terbaru. Bila harus berpindah, patuhi instruksi pemerintah setempat.",
     "Siapkan juga hewan peliharaan: kalung identitas, foto, dan tas darurat."
@@ -733,11 +733,11 @@
   {
    "id": "kelompok-rentan",
    "judul": "Kelompok rentan",
-   "ringkas": "Bayi, anak, ibu hamil, lansia, dan penyandang disabilitas butuh persiapan dan perhatian khusus.",
+   "ringkas": "Bayi, anak, ibu hamil, lansia, dan orang dengan disabilitas butuh persiapan dan perhatian khusus.",
    "gambar": null,
    "butir": [
-    "Catat anggota keluarga yang rentan dalam rencana keluarga: anak, lansia, ibu hamil, penyandang disabilitas.",
-    "Penyandang disabilitas: sampaikan peringatan dini sesuai jenis disabilitasnya, latih bersama kerabat dekat, dan petakan kebutuhan mereka saat dan sesudah bencana.",
+    "Catat anggota keluarga yang rentan dalam rencana keluarga: anak, lansia, ibu hamil, dan orang dengan disabilitas.",
+    "Orang dengan disabilitas: sampaikan peringatan dini sesuai jenis disabilitasnya, latih bersama kerabat dekat, dan petakan kebutuhan mereka saat dan sesudah bencana.",
     "Bayi: usahakan ASI tetap diberikan di pengungsian. Waspadai donasi susu formula karena air bersih terbatas dan lingkungan kotor, dan minta pendampingan konselor ASI.",
     "Ibu hamil: butuh dukungan gizi, makanan tambahan, dan tablet tambah darah. Periksakan diri ke petugas kesehatan di pengungsian.",
     "Lansia dan penderita penyakit kronis: bawa obat rutin dalam tas siaga.",
@@ -811,7 +811,7 @@
    "butir": [
     "Gempa tidak bisa diprediksi. Kabar yang menyebut waktu gempa akan terjadi patut dicurigai.",
     "Cek ke kanal resmi: akun @infoBMKG, bmkg.go.id, aplikasi InfoBMKG atau WRS-BMKG untuk gempa dan tsunami; MAGMA Indonesia untuk gunung api; BNPB, BPBD, dan pemda untuk kejadian di daerah.",
-    "Jangan terpancing isu yang tidak bertanggung jawab. Jangan percaya informasi dari sumber yang tidak jelas.",
+    "Jangan terpancing isu dari pihak yang tidak bertanggung jawab. Jangan percaya informasi dari sumber yang tidak jelas.",
     "Jangan menyebarkan kabar yang belum terverifikasi. Cek dulu sebelum membagikan.",
     "Jangan bertindak karena informasi yang belum jelas. Ikuti arahan petugas."
    ],
