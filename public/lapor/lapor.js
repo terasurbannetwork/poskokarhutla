@@ -543,7 +543,7 @@ const TEKS_TERIMA = ["Laporan terkirim", "Terima kasih", "Nomor tiket", "Laporan
 /* terjemahan layar terima kasih disiapkan lebih dulu: elemen tersembunyi berisi teksnya ikut diterjemahkan penerjemah halaman dan masuk simpanan */
 function hangatkanTerima() { if (bahasaKini() === "id" || document.querySelector(".lp-tr-hangat")) return; const h = el("div", "lp-tr-hangat"); h.hidden = true;
   for (const t of TEKS_TERIMA) h.append(el("span", null, t)); document.body.append(h); }
-/* kartu penilaian 5 emoji; dipakai di layar terima kasih (wajib) dan di kartu tiket */
+/* kartu penilaian 5 emoji; hanya di layar terima kasih tahap kedua (wajib) */
 function kotakPenilaian(nomor, sesudah) {
   const nilai = el("div", "lp-nilai"), tanya = el("b", null, TEKS_TERIMA[5]);
   ["😠", "🙁", "😐", "🙂", "🤩"].forEach((e, i) => { const b = el("button", null, e); b.type = "button"; b.setAttribute("aria-label", `Nilai ${i + 1} dari 5`);
@@ -560,11 +560,18 @@ function ucapanTerimaKasih(nomor) {
   // teks tetap dipisah dari nama dan nomor supaya terjemahannya sudah ada di perangkat (disiapkan saat chat dibuka, hangatkanTerima)
   const judul = el("p", "lp-pembuka-judul"); judul.append(el("span", null, TEKS_TERIMA[1]), cache.pelapor ? el("span", "lp-nama-orang", `, ${cache.pelapor}!`) : "!");
   const bnpb = el("p", "lp-pembuka-bnpb"); bnpb.append(el("span", null, TEKS_TERIMA[2]), " ", el("b", "lp-tk-nomor", nomor), el("br"), el("span", null, TEKS_TERIMA[3]));
-  // penilaian wajib: layar tidak bisa ditutup sebelum satu emoji dipilih (pemilik 20 Nov 2026)
+  // dua tahap (pemilik 21 Nov 2026): terima kasih dulu, diketuk baru penilaian besar di tengah, dipilih baru kembali.
+  // Penilaian tetap wajib: layar tidak bisa ditutup sebelum satu emoji dipilih (pemilik 20 Nov 2026)
   const tutup = () => { try { localStorage.setItem(kunci, "1"); } catch {} setTimeout(() => { pb.classList.add("pergi"); setTimeout(() => pb.remove(), 700); }, 1200); };
-  const {tanya, nilai} = kotakPenilaian(nomor, tutup), kotak = el("div", "lp-terima-nilai"); kotak.append(tanya, nilai);
-  pb.append(riak, m, el("p", "lp-pembuka-sapa", TEKS_TERIMA[0]), judul, bnpb, kotak);
-  document.body.append(pb); nilai.querySelector("button")?.focus();
+  const lanjut = el("button", "lp-terima-lanjut", TEKS_TERIMA[4]); lanjut.type = "button";
+  let tahap = 1;
+  const keNilai = () => { if (tahap !== 1) return; tahap = 2;
+    const {tanya, nilai} = kotakPenilaian(nomor, tutup), kotak = el("div", "lp-terima-nilai lp-terima-besar"); tanya.classList.add("lp-terima-tanya"); kotak.append(tanya, nilai);
+    const m2 = el("div", "lp-pembuka-maskot"); m2.innerHTML = maskot("sapa");
+    pb.replaceChildren(riak, m2, kotak); pb.classList.add("tahap-nilai"); nilai.querySelector("button")?.focus(); };
+  pb.addEventListener("click", e => { if (tahap === 1) keNilai(); });
+  pb.append(riak, m, el("p", "lp-pembuka-sapa", TEKS_TERIMA[0]), judul, bnpb, lanjut);
+  document.body.append(pb); lanjut.focus();
 }
 /* kartu tiket (pemilik 19 Nov 2026: "bagusin maksimal"): pita sukses, tiket bersobek dengan nomor, langkah berikutnya, aksi berikon, penilaian */
 function kartuTiket(j) {
@@ -586,10 +593,9 @@ function kartuTiket(j) {
   const aksi = el("div", "lp-tk-aksi");
   const a = Object.assign(el("a", "lp-utama"), {href: lacak.url}); a.append(ikon("i-status"), "Lacak laporan"); aksi.append(a);
   for (const u of dok) { const b = Object.assign(el("a", "lp-kedua"), {href: u.url}); b.append(ikon("i-unduh"), u.label.replace("Unduh ", "Unduh ")); b.addEventListener("click", e => unduh(e, u.url)); aksi.append(b); }
-  const kotakNilai = el("div", "lp-tk-nilai"), {tanya, nilai} = kotakPenilaian(j.nomor); kotakNilai.append(tanya, nilai);
   ucapanTerimaKasih(j.nomor);
   const baru = el("button", "lp-tk-baru"); baru.type = "button"; baru.append(ikon("i-plus"), "Buat laporan baru"); baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
-  isi.append(pita, tiket, aksi, kotakNilai, baru);
+  isi.append(pita, tiket, aksi, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
 }
 
 async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri tahu, jangan buka halaman kosong
@@ -639,7 +645,7 @@ function terapkan(j, {dariCache = false} = {}) {
 async function kirim({teks = "", lokasi = null, form = null, pilih = null, tampil = null, foto = null, lain = null, kembali = false}) {
   if (sibuk) return;
   sibuk = true; statusEl.textContent = "";
-  if (tampil !== false && (tampil || teks)) tambah("saya", tampil || teks, {foto}); // tampil:false = perintah diam (membuka laporan)
+  if (tampil !== false && (tampil || teks)) tambah("saya", tampil ? trTampil(tampil) : teks, {foto}); // tampil:false = perintah diam (membuka laporan)
   wadah.replaceChildren(); fPesan.hidden = true; $("mengetik").hidden = false;
   try {
     const r = await fetch("/api/lapor/pesan", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, teks, lokasi, form, pilih, lain, kembali, saluran: "web", bahasa: bahasaKini()}), signal: AbortSignal.timeout(60000)});
@@ -679,17 +685,44 @@ $("bBatal").addEventListener("click", () => {
 $("bIsian").addEventListener("click", () => $("bIsian").setAttribute("aria-expanded", String($("panelIsian").classList.toggle("buka")))); // ponsel: lembar bawah; layar lebar: selalu tampil
 $("bTutupIsian").addEventListener("click", () => { $("panelIsian").classList.remove("buka"); $("bIsian").setAttribute("aria-expanded", "false"); });
 /* Sigap di panel isian bereaksi pada keadaan laporan */
-let poseSigap = "";
-function suasanaSigap(j) {
-  const ang = n => Number((j.isian || []).find(x => x.nama === n)?.tampil?.match?.(/\d+/)?.[0] || 0), L = j.lengkap || 0;
-  const [pose, judul, teks] = j.status === "terkirim" ? ["senang", "Terima kasih banyak!", "Laporan Anda sudah sampai ke petugas BNPB dan BPBD setempat."]
-    : ang("meninggal") > 0 || ang("hilang") > 0 || j.darurat ? ["sedih", "Turut prihatin", "Utamakan keselamatan. Bila ada yang perlu ditolong sekarang, telepon 112."]
-    : L >= 70 ? ["semangat", "Sedikit lagi, ayo!", "Tinggal beberapa pertanyaan."]
-    : L >= 30 ? ["semangat", "Bagus, lanjutkan", "Tiap jawaban membantu petugas menyiapkan bantuan."]
-    : ["sapa", "Halo, saya Sigap", "Saya bantu sampai laporan lengkap."];
+let poseSigap = "", sigapKe = 0, sigapPrihatin = false, sigapAkhir = null;
+/* perkiraan waktu sisa dari laju pelapor sendiri (detik per isian terjawab, 10 sampai 40 detik), pemilik 21 Nov 2026: "kasih kira-kira estimasi waktunya" */
+const lajuIsian = {mulai: 0, awal: 0};
+function perkiraan(isian) {
+  const jawab = isian.filter(x => !["kosong", "belum"].includes(x.status)).length, sisa = isian.length - jawab;
+  if (!lajuIsian.mulai || jawab < lajuIsian.awal) Object.assign(lajuIsian, {mulai: Date.now(), awal: jawab});
+  const n = jawab - lajuIsian.awal, laju = n >= 3 ? Math.min(40, Math.max(10, (Date.now() - lajuIsian.mulai) / 1000 / n)) : 20;
+  const menit = Math.ceil(sisa * laju / 60);
+  return {sisa, menit, teks: !sisa ? "" : menit <= 1 ? "kurang dari 1 menit lagi" : `sekitar ${menit} menit lagi`};
+}
+/* Sigap di panel isian berganti kalimat tiap pertanyaan baru dan bisa diketuk untuk saran lain (pemilik 21 Nov 2026: "omongannya yang penting berubah-ubah") */
+function kalimatSigap(j) {
+  const L = j.lengkap || 0, {sisa, teks} = perkiraan(j.isian || []);
+  if (j.status === "terkirim") return [["senang", "Terima kasih banyak!", "Laporan Anda sudah sampai ke petugas BNPB dan BPBD setempat."]];
+  const awal = [["sapa", "Halo, saya Sigap", "Saya bantu sampai laporan lengkap."],
+    ["sapa", "Pelan-pelan saja", "Jawab yang Anda tahu. Kalau tidak tahu, pilih Tidak tahu."],
+    ["sapa", "Data Anda terlindungi", "Nomor WhatsApp dan identitas Anda tidak tampil ke publik."]];
+  const tengah = [["semangat", "Bagus, lanjutkan", "Tiap jawaban membantu petugas menyiapkan bantuan."],
+    ["semangat", "Sudah separuh jalan", sisa ? `Tinggal ${sisa} pertanyaan, ${teks}.` : "Tinggal sedikit lagi."],
+    ["semangat", "Foto itu penting", "Ambil langsung dari kamera supaya lokasi dan waktunya terekam."]];
+  const akhir = [["semangat", "Sedikit lagi, ayo!", sisa ? `Tinggal ${sisa} pertanyaan, ${teks}.` : "Laporan siap dikirim."],
+    ["semangat", "Hampir selesai", "Sebentar lagi laporan Anda sampai ke BNPB dan BPBD."],
+    ["semangat", "Ada yang belum ditanya?", "Tulis saja di kolom pesan, saya catat di laporan."]];
+  return L >= 70 ? akhir : L >= 30 ? tengah : awal;
+}
+function suasanaSigap(j, geser = 1) {
+  sigapAkhir = j;
+  const ang = n => Number((j.isian || []).find(x => x.nama === n)?.tampil?.match?.(/\d+/)?.[0] || 0);
+  const korban = ang("meninggal") > 0 || ang("hilang") > 0 || j.darurat;
+  sigapKe += geser;
+  // prihatin tampil saat korban pertama tercatat, lalu muncul lagi tiap empat pertanyaan; di antaranya Sigap memberi semangat dan saran
+  const prihatin = j.status !== "terkirim" && korban && (!sigapPrihatin || sigapKe % 4 === 0);
+  if (korban) sigapPrihatin = true;
+  const pil = kalimatSigap(j), [pose, judul, teks] = prihatin ? ["sedih", "Turut prihatin", "Utamakan keselamatan. Bila ada yang perlu ditolong sekarang, telepon 112."] : pil[sigapKe % pil.length];
   if (pose !== poseSigap) { $("sigapMaskot").innerHTML = maskot(pose); poseSigap = pose; }
   const isi = [el("b", null, judul), el("span", null, teks)];
   if (pose === "sedih") { const a = el("a", "lp-sigap-tel"); a.href = "tel:112"; a.append(ikon("i-telepon"), "Telepon 112"); isi.push(a); }
+  if (j.status !== "terkirim") { const b = el("button", "lp-sigap-lain", "Saran lain"); b.type = "button"; b.addEventListener("click", () => suasanaSigap(sigapAkhir, 1)); isi.push(b); }
   $("sigapTeks").replaceChildren(...isi); $("sigapPanel").dataset.pose = pose;
 }
 function tampilIsian(isian, lengkap) {
@@ -703,7 +736,7 @@ function tampilIsian(isian, lengkap) {
   if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
   const jawab = x => !["kosong", "belum"].includes(x.status);
   const belum = isian.filter(x => !jawab(x));
-  $("ringkasIsian").textContent = `${isian.filter(jawab).length} dari ${isian.length} terjawab`;
+  const pk = perkiraan(isian); $("ringkasIsian").textContent = `${isian.filter(jawab).length} dari ${isian.length} terjawab${pk.teks ? `, ${pk.teks}` : ""}`;
   $("sisaIsian").hidden = false;
   $("sisaIsian").textContent = belum.length ? `Belum: ${belum.slice(0, 3).map(x => x.label).join(", ")}${belum.length > 3 ? `, dan ${belum.length - 3} lagi` : ""}` : "Semua terjawab, laporan siap dikirim";
   $("sisaIsian").classList.toggle("selesai", !belum.length);
@@ -1328,6 +1361,11 @@ function muatStatis(b) {
 if (bahasaKini() !== "id") muatStatis(bahasaKini());   // diambil sejak awal, selagi animasi pembuka
 const statisSiap = b => { const k = STATIS.get(b); return k && !(k instanceof Promise) ? k : null; };
 const trStatis = t => { const b = bahasaKini(); if (b === "id") return t; const k = statisSiap(b); if (!k) return t; return k[kunciTr(t)] || String(t).split("\n").map(b => k[kunciTr(b)] || b).join("\n"); };   // balon bot (utuh, lalu per baris) buatan layar
+/* balon jawaban pelapor yang disusun layar ("Jalan atau jembatan rusak: Jl. X", "Meninggal 1, Hilang 2") ikut bahasa pilihan; nama dan angka tetap.
+   Yang dikirim ke mesin tetap teks Indonesia, jadi meja Pantau membaca bahasa Indonesia (pemilik 21 Nov 2026). */
+const trTampil = t => { const b = bahasaKini(); if (b === "id") return t; const k = statisSiap(b); if (!k) return t; if (k[kunciTr(t)]) return k[kunciTr(t)];
+  const satu = x => { const m = x.match(/^(.*?)(\s+[\d.,]+(?:\s*\S{0,6})?)$/); return k[kunciTr(x)] || (m && k[kunciTr(m[1])] ? k[kunciTr(m[1])] + m[2] : x); };
+  const [kepala, ...ekor] = String(t).split(": "); return ekor.length ? `${satu(kepala)}: ${ekor.join(": ")}` : String(t).split(", ").map(satu).join(", "); };
 function kumpulSasaran() {
   const sasaran = [];
   for (const akar of AKAR_TR()) {

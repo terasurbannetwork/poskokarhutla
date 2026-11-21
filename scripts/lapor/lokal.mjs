@@ -431,7 +431,10 @@ async function sekitar(q) {
     const lokal = [];
     let osm = {}; try { osm = JSON.parse(fs.readFileSync(path.join(PUBLIK, `data/osm_nasional/${L.wilayah?.provKode}.json`), "utf8")); } catch {}
     for (const [k, t] of Object.entries(JENIS_T)) for (const [la, lo, nama] of osm[k] || []) { const d = km(lat, lon, la, lo); if (d <= 5 && nama) lokal.push({nama, jenis: t, jarakKm: d}); }
-    c = {semua: rapikan(lokal), lengkap: false};
+    // rumah ibadah: berkas terpisah per provinsi, sama dengan Worker (src/lapor_info.js); Overpass sering gagal, jadi ini sumber utamanya
+    let ib = null; try { ib = JSON.parse(fs.readFileSync(path.join(PUBLIK, `data/osm_nasional/ibadah/${L.wilayah?.provKode}.json`), "utf8")); } catch {}
+    for (const [la, lo, nama] of ib || []) { const d = km(lat, lon, la, lo); if (d <= 5 && nama) lokal.push({nama, jenis: "Rumah ibadah", jarakKm: d}); }
+    c = {semua: rapikan(lokal), lengkap: false, ibadahLokal: !!ib};
     cacheSekitar.set(kunci, c);
     const ql = `[out:json][timeout:8];(nwr(around:3000,${lat},${lon})["amenity"~"place_of_worship|school|community_centre|townhall|shelter|clinic|hospital|doctors"]["name"];way(around:1500,${lat},${lon})["highway"~"primary|secondary|tertiary|residential|unclassified"]["name"];);out center 160;`;
     // server Overpass utama sering penuh (502): coba cermin berurutan, jawaban bukan JSON dianggap gagal
@@ -443,7 +446,8 @@ async function sekitar(q) {
         c.semua = rapikan([...c.semua, ...tambah]); c.lengkap = true; })
       .catch(e => { console.error("overpass gagal", e.message); cacheSekitar.delete(kunci); }); // gagal: dicoba lagi pada permintaan berikutnya
   }
-  if (!c.lengkap) await Promise.race([c.overpass, new Promise(r => setTimeout(r, 2500))]);
+  const cukup = c.lengkap || (q.jenis === "ibadah" && c.ibadahLokal);   // daftar lokal rumah ibadah sudah lengkap, Overpass hanya tambahan
+  if (!cukup) await Promise.race([c.overpass, new Promise(r => setTimeout(r, 2500))]);
   // satu pemilih untuk titik pengungsian dan nama fasilitas rusak (pemilik 19 Nov 2026: "SD rusak kasih pilihan langsung", juga faskes, ibadah, jalan)
   const SARING = {pengungsian: /^(Sekolah|Kantor atau balai|Balai warga|Rumah ibadah|Titik kumpul|Shelter)$/, sekolah: /^Sekolah$/, faskes: /^(Puskesmas|Rumah sakit|Klinik)$/,
     ibadah: /^Rumah ibadah$/, jalan: /^(Jalan|Jembatan)$/};
@@ -453,7 +457,7 @@ async function sekitar(q) {
     "Sekolah": "sekolah sd smp sma smk madrasah", "Titik kumpul": "titik kumpul lapangan evakuasi", "Puskesmas": "puskesmas faskes", "Rumah sakit": "rs rsud rumah sakit faskes", "Klinik": "klinik faskes", "Jalan": "jalan jl", "Jembatan": "jembatan", "Shelter": "shelter tempat evakuasi"};
   const kata = String(q.q || "").trim().toLowerCase().split(/\s+/).filter(k => k && !KATA_UMUM.has(k));   // kata keadaan ("rusak", "putus") bukan bagian nama tempat
   const cocok = kata.length ? semua.filter(x => { const h = `${x.nama} ${x.jenis} ${SEBUT[x.jenis] || ""}`.toLowerCase(); return kata.every(k => h.includes(k)); }) : semua;
-  return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !c.lengkap}];
+  return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !cukup}];
 }
 
 /* ---------- nomor penting di sekitar lokasi terverifikasi (pemilik 19 Nov 2026: damkar, BPBD daerah, rumah sakit terdekat, kepolisian) ----------

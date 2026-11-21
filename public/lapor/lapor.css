@@ -2045,3 +2045,18 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-hg-urut{font:600 .6875rem var(--font);color:var(--ink3,var(--ink2));min-width:48px;text-align:center}
 .lp-hg-jeda{margin-left:auto;padding:0 8px!important}
 @media (prefers-reduced-motion:no-preference){.lp-hg-slide:not([hidden]){animation:lp-naik .35s var(--ease) both}}
+/* aksi foto ujung ke ujung (pemilik 21 Nov 2026): kolom mengikuti jumlah tombol, tanpa sisa kolom kosong */
+@media (min-width:701px){.lp-foto-aksi{grid-template-columns:none!important;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}}
+.lp-sigap-lain{justify-self:start;margin-top:6px;min-height:28px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand2);font:700 .75rem var(--font);cursor:pointer;touch-action:manipulation}
+.lp-sigap-lain:hover{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.lp-sigap-lain:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+/* layar terima kasih dua tahap (pemilik 21 Nov 2026): tombol lanjut, lalu penilaian besar di tengah */
+.lp-terima-lanjut{margin-top:22px;min-height:44px;padding:0 22px;border:1.5px solid color-mix(in oklab,var(--on-head) 45%,transparent);border-radius:999px;background:color-mix(in oklab,var(--on-head) 10%,transparent);color:var(--on-head);font:700 .9375rem var(--font);cursor:pointer}
+.lp-terima-lanjut:focus-visible{outline:2px solid var(--on-head);outline-offset:3px}
+.lp-terima:not(.tahap-nilai){cursor:pointer!important}
+.lp-terima-besar{gap:22px;margin-top:8px}
+.lp-terima-besar .lp-terima-tanya{max-width:16ch;font:800 clamp(2rem,5vw,3.75rem)/1.05 var(--display);letter-spacing:-.02em;text-align:center;text-wrap:balance}
+.lp-terima-besar .lp-nilai{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(8px,2vw,20px)}
+.lp-terima-besar .lp-nilai button{width:clamp(56px,9vw,88px);height:clamp(56px,9vw,88px);border-radius:50%;font-size:clamp(2rem,5vw,3.25rem);line-height:1}
+.lp-terima-besar .lp-nilai button:focus-visible{outline:3px solid var(--on-head);outline-offset:3px}
+@media (prefers-reduced-motion:no-preference){.lp-terima-besar{animation:lp-naik .5s var(--ease) both}}
