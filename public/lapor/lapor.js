@@ -661,7 +661,6 @@ function terapkan(j, {dariCache = false} = {}) {
   else if (j.status === "batal") kartuBatal();   // sesudah dibatalkan tetap ada jalan keluar (pemilik 21 Nov 2026: "gw ga bisa klik")
   else tulis = j.status !== "terkirim" && j.status !== "batal";
   fPesan.hidden = !tulis;
-  $("bBatal").hidden = !j.status || ["terkirim", "batal", "identitas"].includes(j.status);
   if (tulis && j.isiAwal && !iTeks.value.trim()) { iTeks.value = j.isiAwal; const n1 = iTeks.value.indexOf("\n1. "), t = n1 >= 0 ? n1 + 4 : iTeks.value.indexOf(":") + 2; iTeks.setSelectionRange(t, t); } // daftar bernomor: kursor di belakang "1. "
   if (tulis) iTeks.focus();
   tampilIsian(j.isian || [], j.lengkap || 0);
@@ -702,15 +701,6 @@ function selesaiBalas(j) {
   terapkan(j);
 }
 
-/* batalkan laporan (pemilik 20 Nov 2026): konfirmasi dulu, lalu "batal" lewat jalur kirim yang sama */
-$("bBatal").addEventListener("click", () => {
-  const d = el("dialog", "lp-dialog-batal"), h = el("h2", null, "Batalkan laporan ini?"), p = el("p", null, "Isian yang sudah Anda kirim tidak akan diteruskan ke petugas."), a = el("div", "lp-batal-aksi");
-  const tidak = el("button", "lp-kedua", "Lanjutkan melapor"), ya = el("button", "lp-utama", "Ya, batalkan"); tidak.type = ya.type = "button";
-  const tutup = () => { d.close(); d.remove(); };
-  tidak.addEventListener("click", tutup); d.addEventListener("cancel", () => d.remove());
-  ya.addEventListener("click", () => { tutup(); kirim({teks: "batal", tampil: "Batalkan laporan"}); });
-  a.append(tidak, ya); d.setAttribute("aria-labelledby", "judulBatal"); h.id = "judulBatal"; d.append(h, p, a); document.body.append(d); d.showModal(); tidak.focus();
-});
 $("bIsian").addEventListener("click", () => $("bIsian").setAttribute("aria-expanded", String($("panelIsian").classList.toggle("buka")))); // ponsel: lembar bawah; layar lebar: selalu tampil
 $("bTutupIsian").addEventListener("click", () => { $("panelIsian").classList.remove("buka"); $("bIsian").setAttribute("aria-expanded", "false"); });
 /* Sigap di panel isian bereaksi pada keadaan laporan */
@@ -1618,7 +1608,8 @@ function mulaiTur() {
     ke.textContent = `${i + 1} dari ${N}`; h.textContent = judul; p.textContent = isi;
     [...titik.children].forEach((t, j) => t.classList.toggle("aktif", j === i));
     mundur.hidden = i === 0; maju.textContent = i === 0 ? "Mulai" : i === N - 1 ? "Selesai" : "Lanjut";
-    sasaran?.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
+    if (sasaran) sasaran.style.scrollMarginTop = "16px";   // HP: sasaran di atas agar kartu muat di bawahnya, tidak menutupinya
+    sasaran?.scrollIntoView({block: innerWidth <= 560 ? "start" : "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
     tata(); requestAnimationFrame(tata); setTimeout(tata, 400); maju.focus();
   };
   const selesai = () => { document.body.classList.remove("lp-tur-nanti"); removeEventListener("resize", tata); removeEventListener("scroll", tata, true); removeEventListener("keydown", tombol, true); w.remove(); asal?.focus?.(); };

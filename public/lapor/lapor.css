@@ -2008,16 +2008,6 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-terima-nilai b{font:700 .9375rem var(--font)}
 .lp-terima .lp-nilai button{color:var(--on-head)}
 .lp-terima .lp-nilai button:hover,.lp-terima .lp-nilai button[aria-pressed="true"]{background:color-mix(in oklab,var(--on-head) 18%,transparent)}
-/* tombol batalkan laporan di kepala chat */
-.lp-batal-tombol{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 .8125rem var(--font);cursor:pointer;flex:none}
-.lp-batal-tombol[hidden]{display:none}
-.lp-batal-tombol svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-@media (max-width:520px){.lp-batal-tombol{padding:0 10px;font-size:.75rem}}
-.lp-dialog-batal{width:min(420px,calc(100vw - 32px));padding:22px;border:0;border-radius:20px;background:var(--card);color:var(--ink);box-shadow:var(--bayang)}
-.lp-dialog-batal::backdrop{background:color-mix(in oklab,var(--head-bg) 60%,transparent)}
-.lp-dialog-batal h2{font:800 1.125rem var(--display);margin:0 0 8px}
-.lp-dialog-batal p{margin:0 0 16px;color:var(--ink2);font-size:.9375rem;line-height:1.5}
-.lp-batal-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 /* nama lengkap aplikasi di animasi pembuka (pemilik 21 Nov 2026: "Pantau Bencana (Pelaporan Ancaman dan Tanggap Darurat Bencana)") */
 .lp-pembuka-nama{margin-top:6px;font:700 clamp(.9375rem,1.8vw,1.1875rem) var(--font);letter-spacing:.01em;color:var(--on-head)}
@@ -2196,3 +2186,14 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .sg-sabuk{fill:var(--head-bg)}.sg-gesper{fill:color-mix(in oklab,var(--on-head) 80%,var(--brand-accent))}
 .mk.sg :is(.sg-helm-gigir,.sg-sabuk){stroke:var(--head-bg);stroke-width:2;stroke-linejoin:round;paint-order:stroke}
 .mk.sg .sg-sepatu{stroke:color-mix(in oklab,var(--on-head) 45%,var(--head-bg))!important;stroke-width:2.5}   /* sepatu tetap gelap netral, bergaris tepi terang supaya terbaca di latar navy */
+/* HP (pemilik 21 Nov 2026, laporan dari HP): kartu tur bertumpuk, maskot besar di atas, tombol muat; badge Laporan di pojok ikon agar label sebaris tab lain */
+@media (max-width:560px){
+.lp-tur-kartu{grid-template-columns:minmax(0,1fr)!important;padding:16px 18px 14px;max-height:calc(100dvh - 16px);overflow:auto}
+.lp-tur-kartu>.lp-tur-maskot{min-height:0;height:min(130px,17vh);margin-bottom:4px}
+.lp-tur-kartu>.lp-tur-maskot svg{position:static;width:auto;height:100%}
+.lp-tur-kartu h2{font-size:1.375rem}
+.lp-tur-isi{margin:10px 0 14px;font-size:.9375rem}
+.lp-tur-aksi .lp-utama,.lp-tur-aksi .lp-kedua{min-height:46px;padding:0 18px;font-size:.9375rem}
+.lp-tur-lewat{white-space:nowrap;font-size:.875rem}
+}
+@media (max-width:899px){.lp-tab .lp-tab-jumlah{position:absolute;top:4px;left:calc(50% + 6px);margin:0;min-width:18px;padding:1px 5px;font-size:.625rem;line-height:1.3;background:var(--brand2);color:var(--on-head)}}
