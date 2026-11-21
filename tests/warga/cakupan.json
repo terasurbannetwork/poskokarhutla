@@ -1466,6 +1466,10 @@
     "table lapor_kelompok": "kejadian yang sama",
     "table lapor_kelompok_urut": "kejadian yang sama",
     "table lapor_periksa": "pengecekan lapangan dan tindakan",
+    "table pw_langganan": "langganan: x-pb wajib, endpoint di luar layanan push ditolak",
+    "table pw_status": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
+    "table pw_peristiwa": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
+    "table pw_kendali": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
     "table lapor_tindakan": "pengecekan lapangan dan tindakan"
   },
   "dikecualikan": {
