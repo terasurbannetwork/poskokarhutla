@@ -2187,3 +2187,12 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-lap-kaki{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;margin-top:auto!important;padding-top:12px;border-top:1px solid var(--line)}
 .lp-lap-kaki .lp-lap-aksi{margin:0!important;padding:7px 14px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 10%,var(--card));font-size:.8125rem}
 .lp-lap-kartu.draf .lp-lap-kaki{justify-content:flex-start;border-top:0;padding-top:4px}
+
+/* maskot Sigap dirapikan (pemilik 21 Nov 2026: "bagusin"): iris, hidung, ruas jari, gigir helm, saku, sabuk; warna dari token */
+.sg-iris{fill:color-mix(in oklab,var(--brand2) 70%,var(--head-bg))}
+.sg-hidung,.sg-ruas{stroke:color-mix(in oklab,var(--brand-accent) 55%,var(--head-bg));opacity:.55}
+.sg-helm-gigir{fill:color-mix(in oklab,var(--brand-accent) 88%,var(--head-bg))}
+.sg-saku{fill:color-mix(in oklab,var(--brand-accent) 82%,var(--head-bg))}
+.sg-sabuk{fill:var(--head-bg)}.sg-gesper{fill:color-mix(in oklab,var(--on-head) 80%,var(--brand-accent))}
+.mk.sg :is(.sg-helm-gigir,.sg-sabuk){stroke:var(--head-bg);stroke-width:2;stroke-linejoin:round;paint-order:stroke}
+.mk.sg .sg-sepatu{stroke:color-mix(in oklab,var(--on-head) 45%,var(--head-bg))!important;stroke-width:2.5}   /* sepatu tetap gelap netral, bergaris tepi terang supaya terbaca di latar navy */

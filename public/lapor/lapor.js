@@ -4,7 +4,7 @@
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
    - Cache: percakapan dan daftar laporan disimpan di localStorage per nomor supaya muat ulang langsung tampil.
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
-import {maskot} from "/lapor/maskot.js?v=12"; // bervesi: berkas .js disajikan immutable
+import {maskot} from "/lapor/maskot.js?v=14"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
