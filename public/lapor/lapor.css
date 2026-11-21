@@ -2199,3 +2199,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 @media (max-width:899px){.lp-tab .lp-tab-jumlah{position:absolute;top:4px;left:calc(50% + 6px);margin:0;min-width:18px;padding:1px 5px;font-size:.625rem;line-height:1.3;background:var(--brand2);color:var(--on-head)}}
 .mk.sg .sg-ht-badan{stroke:color-mix(in oklab,var(--on-head) 45%,var(--head-bg))!important;stroke-width:2.5}   /* HT terbaca di latar navy (pemilik 21 Nov 2026: "tangan benerin") */
 .mk.sg .sg-ht-antena{stroke:color-mix(in oklab,var(--on-head) 45%,var(--head-bg))}
+
+/* tombol Mulai tur di menu samping, segaya tombol bahasa */
+.lp-menu-tur{display:flex;align-items:center;gap:10px;margin:8px 0 0;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:600 .875rem var(--font);cursor:pointer}
+.lp-menu-tur svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-menu-tur:hover{background:var(--surface)}
+@media (max-width:899px){.lp-tab .lp-menu-tur{display:none!important}}

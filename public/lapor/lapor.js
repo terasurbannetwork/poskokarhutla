@@ -4,7 +4,7 @@
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
    - Cache: percakapan dan daftar laporan disimpan di localStorage per nomor supaya muat ulang langsung tampil.
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
-import {maskot} from "/lapor/maskot.js?v=15"; // bervesi: berkas .js disajikan immutable
+import {maskot} from "/lapor/maskot.js?v=17"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -1573,6 +1573,7 @@ const TUR = [
 const turTampak = sel => [...document.querySelectorAll(sel)].find(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; });
 try { if (!localStorage.getItem("lapor-tur")) document.body.classList.add("lp-tur-nanti"); } catch {}   // kunjungan pertama: gelembung Sigap menunggu tur selesai
 function turPertama() { let sudah = true; try { sudah = !!localStorage.getItem("lapor-tur"); } catch {} if (!sudah && !$("lBeranda").hidden) mulaiTur(); else document.body.classList.remove("lp-tur-nanti"); }
+$("bMulaiTur")?.addEventListener("click", () => { if ($("lBeranda").hidden) ke("beranda"); setTimeout(mulaiTur, 150); });   // tur menunjuk elemen beranda
 function mulaiTur() {
   if (document.querySelector(".lp-tur")) return;
   try { localStorage.setItem("lapor-tur", "1"); } catch {}
