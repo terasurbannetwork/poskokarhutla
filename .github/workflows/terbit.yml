@@ -30,7 +30,7 @@ jobs:
       # miniflare dari package-lock.json untuk uji worker; wrangler 4.42.0 untuk deploy tetap diunduh npx di langkah terbit.
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"   # sama dengan mesin lokal dan pre-push (21 Nov 2026: di Node 22 workerd uji mati acak di tengah berkas)
           cache: npm
       - name: Pasang dependensi uji
         run: npm ci
@@ -44,7 +44,9 @@ jobs:
         run: npm run uji:agen
       - name: Uji worker (D1, route, foto)
         timeout-minutes: 26   # 16 mnt 21 dtk pada 10 Nov; uji Siklus G2-G4 (11 Nov) melewati 18
-        run: npm run uji:warga
+        # berkas tests/warga yang sama dengan `npm run uji:warga` (pre-push); berkas yang gagal HANYA karena crash runtime workerd
+        # ("fetch failed", "poisoned stub") diulang sekali, kegagalan asersi tidak pernah diulang (scripts/agents/uji_ulang.mjs)
+        run: node scripts/agents/uji_ulang.mjs tests/warga/*.test.mjs
       - name: Uji SIPPA (klien dan gerbang)
         timeout-minutes: 5
         run: npm run uji:sippa

@@ -21,6 +21,13 @@ test("pre-push ada, executable, menjalankan uji:agen dan uji:warga di clone loka
   assert.match(hook, /npm run uji:warga/);
   // tiap uji yang dijalankan terbit.yml sebelum deploy juga dijalankan pre-push
   for (const u of baca(W + "terbit.yml").matchAll(/run:\s*npm run (uji:[\w-]+)/g)) assert.match(hook, new RegExp(`npm run ${u[1]}\\b`), `pre-push belum menjalankan ${u[1]}`);
+  // langkah pembungkus ulang-crash (scripts/agents/uji_ulang.mjs, 21 Nov 2026) harus menjalankan glob yang sama persis dengan skrip npm
+  // yang dijalankan pre-push, supaya CI tidak diam-diam menguji himpunan berkas lain
+  const skrip = JSON.parse(baca("package.json")).scripts;
+  for (const u of baca(W + "terbit.yml").matchAll(/run:\s*node scripts\/agents\/uji_ulang\.mjs ([^\n]+)/g)) {
+    const nama = Object.keys(skrip).find(k => /^node --test /.test(skrip[k]) && skrip[k].split(/\s+/).filter(x => !x.startsWith("--")).slice(1).join(" ") === u[1].trim());
+    assert.ok(nama, `uji_ulang.mjs ${u[1]} tidak sama dengan glob skrip npm mana pun`); assert.match(hook, new RegExp(`npm run ${nama}\\b`), `pre-push belum menjalankan ${nama}`);
+  }
   assert.match(hook, /LEWATI_UJI/);
   assert.match(hook, /trap bersih EXIT/);
 });
@@ -58,7 +65,7 @@ test("terbit.yml: permissions issues: write, langkah failure() terbit-gagal, lan
 test("terbit.yml: tiap langkah uji punya timeout-minutes sendiri yang muat di batas job", () => {
   const t = baca(W + "terbit.yml");
   const job = Number(t.match(/^ {4}timeout-minutes:\s*(\d+)/m)?.[1]);
-  const langkah = [...t.matchAll(/- name: [^\n]+\n((?: {8}[^\n]*\n)*?) {8}run: npm run (uji:[\w-]+)/g)];
+  const langkah = [...t.matchAll(/- name: [^\n]+\n((?: {8}[^\n]*\n)*?) {8}run: (?:npm run (uji:[\w-]+)|node scripts\/agents\/(uji_ulang)\.mjs)/g)].map(([x, b, u, w]) => [x, b, u || w]);
   assert.ok(langkah.length >= 3, "langkah uji tidak ditemukan");
   let jumlah = 0;
   for (const [, badan, u] of langkah) {
