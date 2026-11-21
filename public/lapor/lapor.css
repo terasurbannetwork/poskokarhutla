@@ -2171,3 +2171,19 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pred-chip.lv3 svg{background:color-mix(in oklab,var(--card) 22%,transparent)}
 .lp-pred-imbauan h4{border-bottom:1px solid var(--line);padding-bottom:10px}
 .lp-pb-merek b{color:var(--on-head)!important}   /* tulisan BNPB di pembuka putih (pemilik 21 Nov 2026) */
+/* tombol hero: label satu baris di kolom lebar (pemilik 21 Nov 2026: "agar sebaris") */
+@media (min-width:900px){
+.lp-hero-aksi{grid-template-columns:repeat(3,minmax(0,max-content))!important}
+.lp-hero-aksi>button{white-space:nowrap}
+@container (width < 540px){.lp-hero-aksi>button{white-space:normal}}
+}
+/* maskot hero lebih hidup: cahaya hangat di belakang dan bayangan lembut */
+.lp-hero-tengah .lp-hero-maskot{filter:drop-shadow(0 22px 26px color-mix(in oklab,var(--head-bg) 70%,transparent)) drop-shadow(0 0 34px color-mix(in oklab,var(--brand-accent) 28%,transparent))}
+/* daftar Laporan: kartu rata tinggi, tombol di kaki kartu */
+.lp-laporan-kisi{align-items:stretch}
+.lp-lap-kartu{min-height:190px}
+.lp-lap-isi{display:flex!important;flex-direction:column;gap:12px!important;padding:18px 20px!important}
+.lp-lap-kep{display:grid!important;gap:6px!important;justify-content:stretch!important}
+.lp-lap-kaki{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;margin-top:auto!important;padding-top:12px;border-top:1px solid var(--line)}
+.lp-lap-kaki .lp-lap-aksi{margin:0!important;padding:7px 14px;border-radius:999px;background:color-mix(in oklab,var(--brand2) 10%,var(--card));font-size:.8125rem}
+.lp-lap-kartu.draf .lp-lap-kaki{justify-content:flex-start;border-top:0;padding-top:4px}

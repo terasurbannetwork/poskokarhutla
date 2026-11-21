@@ -968,6 +968,7 @@ function tampilDaftarLaporan() {
   if (aktif) { const b = el("button", "lp-lap-kartu draf"); b.type = "button"; const g = el("div", "lp-lap-gambar"); const ic = el("span", "lp-lap-ikon"); ic.append(ikon("i-pesan")); const mk = el("span", "lp-lap-maskot"); mk.innerHTML = maskot("semangat"); g.append(ic, el("span", "lp-pil ditelaah", "Belum dikirim"), mk);
     const tx = el("div", "lp-lap-isi"), bar = el("span", "lp-lap-bar"), bi = el("i"); bi.style.width = `${cache.keadaan.lengkap || 0}%`; bar.append(bi);
     const aksi = el("span", "lp-lap-aksi"); aksi.append(ikon("i-panah"), "Lanjutkan melapor");
+    aksi.classList.add("lp-lap-kaki");
     tx.append(el("b", null, "Laporan yang belum selesai"), el("small", null, `Lengkap ${cache.keadaan.lengkap || 0} persen`), bar, aksi); b.append(g, tx); b.addEventListener("click", () => ke("chat")); isi.push(b); }
   for (const l of daftar) {
     const id = ID_JENIS[l.jenis], a = Object.assign(el("a", "lp-lap-kartu"), {href: l.lacak}), g = el("div", "lp-lap-gambar");
@@ -987,8 +988,9 @@ function tampilDaftarLaporan() {
     const kep = el("span", "lp-lap-kep"), tombolKep = el("span", "lp-lap-tombol");
     if (bisaSusul) { const tk = el("button", "lp-lap-susul"); tk.type = "button"; tk.append(ikon("i-tambah-teks"), "Tambah kabar");
       tk.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); mulaiSusulan(l.nomor); }); tombolKep.append(tk); }
-    tombolKep.append(aksi); kep.append(el("b", null, l.jenis || "Laporan"), tombolKep);
-    tx.append(kep, meta, lk); a.append(g, tx); isi.push(a);
+    // judul dan meta di atas, langkah di tengah, tombol di kaki kartu supaya semua kartu rata (pemilik 21 Nov 2026: "bagusin lagi")
+    tombolKep.append(aksi); tombolKep.classList.add("lp-lap-kaki"); kep.append(el("b", null, l.jenis || "Laporan"), meta);
+    tx.append(kep, lk, tombolKep); a.append(g, tx); isi.push(a);
   }
   if (!isi.length) {
     const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
