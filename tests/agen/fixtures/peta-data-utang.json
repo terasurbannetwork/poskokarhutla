@@ -37,6 +37,10 @@
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
+  "public/data/bpbd_kontak.json": {
+   "alasan": "Pemilik 22 Nov 2026: pengecualian bertanggal. Nomor BPBD dan damkar dipanen tangan dari situs .go.id, tiap nomor dicek tertulis di halaman sumbernya (data/kajian-bnpb/lapor-ai/riset/kontak-bpbd, K88, Q64). Pengecek otomatis tidak dipakai karena banyak situs BPBD menolak bot dan akan membuang nomor yang masih benar. Panen diulang manual berkala. Dipakai src/lapor_info.js dan src/lapor_ai.js lewat src/lapor_kontak.js.",
+   "tanggal": "2026-11-22"
+  },
   "public/banjir/data/uji_aifs.json": {
    "alasan": "Sakelar vonis uji balik AIFS yang dibaca ansambel_hujan.py (aifs_lolos, lewat path UJI_AIFS); bukan data tampil.",
    "tanggal": "2026-11-11"

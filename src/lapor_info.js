@@ -130,7 +130,8 @@ export function buatInfo({muat, wilayah}) {
       : jenis === "polisi" ? (osm.polisi || []).filter(x => !bukanPolisi.test(x[2] || "")) : osm[jenis] || [];
     const dekat = (jenis, n) => pilah(jenis).map(([la, lo, nama]) => ({nama, lat: la, lon: lo, jarakKm: Math.round(km(lat, lon, la, lo) * 10) / 10})).sort((a, b) => a.jarakKm - b.jarakKm).slice(0, n);
     // kantor kab ini belum terdata di bpbd.json tetapi nomornya tercatat: tampilkan BPBD kab ini, bukan kantor kab tetangga
-    const bKab = kabIni(bpbdKab) ? bp(bpbdKab) : kKab.tingkat === "kab" ? {nama: kKab.nama, alamat: null, nomor: kKab.nomor, jarakKm: null} : bp(bpbdKab);
+    // kantor kab tetangga tidak ditampilkan sebagai BPBD warga (Kota Kupang dulu tampil "BPBD Timor Tengah Selatan"): cukup BPBD provinsi
+    const bKab = kabIni(bpbdKab) ? bp(bpbdKab) : kKab.tingkat === "kab" ? {nama: kKab.nama, alamat: null, nomor: kKab.nomor, jarakKm: null} : null;
     const bProv = bp(bpbdProv) || (kProv.tingkat === "prov" ? {nama: kProv.nama, alamat: null, nomor: kProv.nomor, jarakKm: null} : null);
     const dk = kontakDamkar(K, wk);
     return [200, {wilayah: w, nasional: NOMOR_NASIONAL.map(([n, l]) => ({nomor: n, label: l})), bpbd: [bKab, bProv].filter(Boolean), damkar: dk,
