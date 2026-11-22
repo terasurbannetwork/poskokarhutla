@@ -56,7 +56,9 @@ def rb(n):
 
 
 def kab_bersih(s):
-    return re.sub(r'^(kab\.?|kabupaten)\s+', '', (s or '').strip(), flags=re.I)
+    # WA menulis "Lima puluh Kota"; tanpa huruf kapital baku jadi dua baris dengan "Lima Puluh Kota" (22 Nov 2026)
+    s = re.sub(r'\s+', ' ', re.sub(r'^(kab\.?|kabupaten)\s+', '', (s or '').strip(), flags=re.I))
+    return ' '.join(w if w.isupper() else w[:1].upper() + w[1:] for w in s.split(' '))
 
 
 # ---------------------------------------------------------------- data
@@ -515,8 +517,9 @@ def butir_kerusakan(t):
     t = rapi(t).rstrip('.')
     if t == '–': return []
     out = []
-    for b in re.split(r',\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):
+    for b in re.split(r'(?<!\d),\s*(?![^()]*\))|,(?!\d)\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):   # "494,5 ha" tidak dipecah (22 Nov 2026)
         b = b.strip().rstrip('.')
+        if len(b) > 45: b = re.sub(r'\s*\([^)]*\)', '', b)   # rincian dalam kurung membuat butir dua baris dan menimpa butir berikutnya (22 Nov 2026)
         if not b: continue
         lb = b.lower()
         ik = 'jembatan-putih.png' if 'jembatan' in lb else 'jalan-putih.png' if re.search(r'jalan|akses', lb) else 'rumah-putih.png' if re.search(r'rumah|ruko|fas', lb) else 'awas-putih.png'
@@ -616,14 +619,16 @@ def slide_lengkap(L):
         ubin(sl, .6 + (i % 4) * (w4 + .07), 1.45 + (i // 4) * .66, w4, .6, n_, ket, isi, tg, ik)
     nama = list(dict.fromkeys([o['kab'] for o in lap] + [v['kab'] for v in sorted(kab_pr.values(), key=lambda v: (-v['a'], -v['s'], -v['mm'])) if v['a'] or v['s']]))
     lpk = {o['kab']: o for o in lap}
-    kol = [('Kab/Kota', 1.5, 'l'), ('Kondisi kini', 1.2, 'c'), ('KK', .68, 'c'), ('Jiwa', .72, 'c'), ('Mengungsi', .8, 'c'), ('Status darurat', 1.75, 'c'),
-           ('Berakhir', .9, 'c'), ('Prakiraan', 1.08, 'c'), ('Mulai Siaga', .8, 'c'), ('Hujan 3 hari', .85, 'c')]
+    # pemilik 22 Nov 2026: "Ini mulai banjirnya kapan masukin. Dan itu sudah surut. kapan surutnya"
+    kol = [('Kab/Kota', 1.45, 'l'), ('Kondisi kini', 1.1, 'c'), ('Mulai banjir', .72, 'c'), ('Surut', .62, 'c'), ('KK', .6, 'c'), ('Jiwa', .65, 'c'), ('Mengungsi', .75, 'c'),
+           ('Status darurat', 1.6, 'c'), ('Berakhir', .85, 'c'), ('Prakiraan', 1.0, 'c'), ('Mulai Siaga', .72, 'c'), ('Hujan 3 hari', .75, 'c')]
     br = []
     for n in nama:
         o, v = lpk.get(n), kab_pr.get(n, {'hari': [0] * n_hari, 'mm': 0, 'tgl': None})
         lv = max(v['hari']); ms = next((hari[i] for i, x in enumerate(v['hari']) if x >= 2), None)
         pd_, sd_ = pil_darurat((o.get('butir') or {}).get('Penetapan status')) if o else ('–', '–')
-        br.append([n, pil_kondisi(o['status']) if o else '–', rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
+        br.append([n, pil_kondisi(o['status']) if o else '–', tgl(o['mulai']) if o and o.get('mulai') else '–',
+                   tgl(o['surut_tgl']) if o and o.get('surut_tgl') else '–', rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
                    pd_, sd_, pil_level(lv), tgl(ms) if ms else '–', f"{round(v['mm'])} mm" if v['tgl'] else '–'])
     tabel(sl, .6, 2.86, 12.13, kol, br, .4, 6.95)
     sumber(sl, f'{sk}; {gis}')
@@ -890,6 +895,8 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
 
 def uji():
     assert kab_bersih('Kab. Pidie Jaya') == 'Pidie Jaya' and kab_bersih('Kota Subulussalam') == 'Kota Subulussalam'
+    assert [x[1] for x in butir_kerusakan('494,5 ha lahan terdampak, 344 rumah terdampak')] == ['494,5 ha lahan terdampak', '344 rumah terdampak']
+    assert kab_bersih('Kab. Lima puluh Kota') == 'Lima Puluh Kota' and kab_bersih('Kab. Kep.  Mentawai') == 'Kep. Mentawai'
     assert rb(10089) == '10.089' and rb(None) == '–' and tgl('2026-11-09') == '9 Nov' and tgl('2026-10-24', True) == '24 Oktober'
     st = {'hari': ['2026-11-14', '2026-11-15'], 'kec': {
         '11|Pidie Jaya|A': {'b': [2, 3], 'h3d': [90, 130]}, '11|Pidie Jaya|B': {'b': [1, 2], 'h3d': [50, 85]},
