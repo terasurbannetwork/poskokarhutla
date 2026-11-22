@@ -4,6 +4,7 @@
 import {Besok} from "./lapor_besok.js";
 import {km} from "./lapor_tampil.js";
 import {cincinDari, kotak, dalam} from "./lapor_wilayah.js";
+import {kontakBpbd, kontakDamkar} from "./lapor_kontak.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
 const TINGKAT = ["Normal", "Waspada", "Siaga", "Awas"];
@@ -111,13 +112,28 @@ export function buatInfo({muat, wilayah}) {
     const nomor = t => /\d{3}/.test(t || "") ? String(t).replace(/[^\d+ -]/g, "").trim() : null;
     const bpbdKab = kantor.find(x => normKab(x.kab) === normKab(w.kab)) || kantor.filter(x => !/provinsi/i.test(x.nama)).sort((a, b) => km(lat, lon, a.lat, a.lon) - km(lat, lon, b.lat, b.lon))[0];
     const bpbdProv = kantor.find(x => /provinsi/i.test(x.nama));
-    const bp = x => x && {nama: /provinsi/i.test(x.nama) ? `BPBD Provinsi ${w.prov}` : `BPBD ${x.kab}`, alamat: x.alamat || null, nomor: nomor(x.pusdalops), jarakKm: Math.round(km(lat, lon, x.lat, x.lon) * 10) / 10, lat: x.lat, lon: x.lon};
+    /* nomor dari panen situs resmi .go.id (bpbd_kontak.json, K88); kantor bpbd.json hanya untuk alamat, arah, dan jarak.
+       Kantor kab lain yang terdekat tidak pernah diberi nomor kab ini, dan sebaliknya. */
+    const K = await berkas(muat, "/data/bpbd_kontak.json"), wk = {...w, kabKode: w.kabKode || String(w.kode || "").slice(0, 5)};
+    const kKab = kontakBpbd({wilayah: Object.fromEntries(Object.entries(K?.wilayah || {}).filter(([k]) => k.length === 4))}, wk);
+    const kProv = kontakBpbd({wilayah: Object.fromEntries(Object.entries(K?.wilayah || {}).filter(([k]) => k.length === 2))}, wk);
+    const kabIni = x => x && normKab(x.kab) === normKab(w.kab) && !/provinsi/i.test(x.nama);
+    const bp = x => x && {nama: /provinsi/i.test(x.nama) ? `BPBD Provinsi ${w.prov}` : `BPBD ${x.kab}`, alamat: x.alamat || null,
+      nomor: /provinsi/i.test(x.nama) ? (kProv.tingkat === "prov" ? kProv.nomor : nomor(x.pusdalops)) : kabIni(x) ? (kKab.tingkat === "kab" ? kKab.nomor : nomor(x.pusdalops)) : null,
+      jarakKm: Math.round(km(lat, lon, x.lat, x.lon) * 10) / 10, lat: x.lat, lon: x.lon};
     const osm = await berkas(muat, `/data/osm_nasional/${w.provKode}.json`) || {};
     // OSM kadang menandai puskesmas sebagai rumah sakit: pindahkan menurut namanya
     const pkm = /^(puskesmas|pustu|poskesdes|polindes)\b/i;
-    const pilah = jenis => jenis === "rs" ? (osm.rs || []).filter(x => !pkm.test(x[2] || "")) : jenis === "puskesmas" ? [...(osm.puskesmas || []), ...(osm.rs || []).filter(x => pkm.test(x[2] || ""))] : osm[jenis] || [];
+    // OSM juga menandai pos Satpol PP dan Dishub sebagai kantor polisi: bukan polisi, dibuang
+    const bukanPolisi = /\b(satpol|satuan polisi pamong|pamong praja|dishub|dinas perhubungan)\b/i;
+    const pilah = jenis => jenis === "rs" ? (osm.rs || []).filter(x => !pkm.test(x[2] || "")) : jenis === "puskesmas" ? [...(osm.puskesmas || []), ...(osm.rs || []).filter(x => pkm.test(x[2] || ""))]
+      : jenis === "polisi" ? (osm.polisi || []).filter(x => !bukanPolisi.test(x[2] || "")) : osm[jenis] || [];
     const dekat = (jenis, n) => pilah(jenis).map(([la, lo, nama]) => ({nama, lat: la, lon: lo, jarakKm: Math.round(km(lat, lon, la, lo) * 10) / 10})).sort((a, b) => a.jarakKm - b.jarakKm).slice(0, n);
-    return [200, {wilayah: w, nasional: NOMOR_NASIONAL.map(([n, l]) => ({nomor: n, label: l})), bpbd: [bp(bpbdKab), bp(bpbdProv)].filter(Boolean),
+    // kantor kab ini belum terdata di bpbd.json tetapi nomornya tercatat: tampilkan BPBD kab ini, bukan kantor kab tetangga
+    const bKab = kabIni(bpbdKab) ? bp(bpbdKab) : kKab.tingkat === "kab" ? {nama: kKab.nama, alamat: null, nomor: kKab.nomor, jarakKm: null} : bp(bpbdKab);
+    const bProv = bp(bpbdProv) || (kProv.tingkat === "prov" ? {nama: kProv.nama, alamat: null, nomor: kProv.nomor, jarakKm: null} : null);
+    const dk = kontakDamkar(K, wk);
+    return [200, {wilayah: w, nasional: NOMOR_NASIONAL.map(([n, l]) => ({nomor: n, label: l})), bpbd: [bKab, bProv].filter(Boolean), damkar: dk,
       rs: dekat("rs", 3), puskesmas: dekat("puskesmas", 2), polisi: dekat("polisi", 2)}];
   }
   /* ---------- rapor daerah (pemilik 22 Nov 2026: rapor wilayah /akademisi masuk bot, hanya yang terkait bencana; KEPUTUSAN-LAPOR-AI K89) ----------

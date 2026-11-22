@@ -14,6 +14,7 @@ import {bersihMedia} from "./media_bersih.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "./media_berkas.js";
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi, MAKS_TEKS_UI, PANJANG_TEKS_UI, HURUF_PANGGILAN} from "./lapor_bahasa.js";
 import {samarkan} from "./samarkan.js";
+import {kontakBpbd, kalimatBpbd} from "./lapor_kontak.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab} from "./lapor_meja_hak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "./lapor_gugus.js";
 import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
@@ -165,6 +166,9 @@ let WIL, INFO, REG;
 const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); throw new Error(`aset ${jalur} ${r.status}`); } return r.json(); };
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
 const registriDari = env => REG ||= muatAset(env)("/bencana.json").catch(e => { REG = null; throw e; });   // katalog tindakan (AGENTS 2.28, D112)
+// nomor BPBD dari panen situs resmi (K88); gagal muat = 117, laporan tetap tersimpan
+let KONTAK;
+const kontakDari = env => KONTAK ||= muatAset(env)("/data/bpbd_kontak.json").catch(() => { KONTAK = null; return null; });
 const infoDari = env => INFO ||= buatInfo({muat: muatAset(env), wilayah: wilayahDari(env)});
 const modelDari = env => buatModel({kunci: env.ANTHROPIC_API_KEY, model: env.LAPOR_MODEL || undefined, dasar: /^https:\/\//.test(env.LAPOR_BASE_URL || "") ? env.LAPOR_BASE_URL : "", catat: u => console.log(`lapor model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});   // tanpa kunci = null = pertanyaan templat
 
@@ -261,12 +265,13 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
     nomor = `LA-${tgl.slice(8, 10)}${tgl.slice(5, 7)}${tgl.slice(2, 4)}-${String(n).padStart(2, "0")}`;
     token = await tokenLacak(env, nomor); tokenSha = await sha(token);
     s.nomor = nomor;
-    h.inti = h.balasan = T.terkirim(h.pelapor.nama, nomor);
+    const kb = kontakBpbd(await kontakDari(env), s.isian.lokasi?.nilai?.wilayah);   // K88: arahkan pelapor ke BPBD setempat
+    h.inti = h.balasan = T.terkirim(h.pelapor.nama, nomor, kalimatBpbd(kb));
     const akhir = s.transkrip.at(-1); if (akhir?.dari === "bot") akhir.teks = h.inti;   // transkrip memuat nomor sebenarnya, bukan "(nomor menyusul)"
     ringkas = JSON.stringify(ringkasSesi(s));
     if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length, wilayah: wilayahKecil(s)});   // CHECK kolom: ringkasan tidak boleh memutus penyimpanan
     const q = `?t=${token}`;
-    Object.assign(tambahan, {nomor, lacak: `/lapor/lacak.html${q}`, foto: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}${q}` : null, unduhan: [
+    Object.assign(tambahan, {nomor, bpbd: {nama: kb.nama, nomor: kb.nomor, tingkat: kb.tingkat}, lacak: `/lapor/lacak.html${q}`, foto: s.foto?.[0] ? `/api/lapor/foto/${s.foto[0].id}${q}` : null, unduhan: [
       {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
       {label: "Unduh PDF", url: `/api/lapor/unduh/${nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${nomor}.docx${q}`}]});
     g.push(H.lpStmtTiketBaru(env, P, nomor, s.id, kini, true), H.lpStmtRiwayat(env, P, nomor, null, "baru", null, "Sistem", kini, true), H.lpStmtPdfAntre(env, P, nomor, VERSI, kini, true));
@@ -1012,12 +1017,12 @@ const RUTE = {
   "POST /api/lapor/pdf/:x": pdfPost,
   "GET /api/lapor/kabar": kabarGet,
   "POST /api/lapor/kabar/:x": kabarTerkirim,
-  "GET /api/lapor/meja": mejaDaftar,
   ...buatRutePeringatan({wilayah: wilayahDari, muat: muatAset}),   // peringatan dini warga (paket pwa-peringatan, PW-06, PW-09)
+  "GET /api/lapor/meja": mejaDaftar,
   "GET /api/lapor/meja/:x": mejaGet,
   "POST /api/lapor/meja/:x": mejaPost,
 };
-export const RUTE_LAPOR = Object.fromEntries(Object.entries(RUTE).map(([k, f]) => [k, jaga(f)]));
 /* cron peringatan dini warga (PW-07): dipanggil tiap menit dari scheduled() di src/worker.js */
 export const peringatanTiapMenit = (env, kini) => jalankanPeringatan(env, kini, muatAset);
 export const bersihPeringatanLapor = (env, kini) => bersihPeringatan(env, kini);
+export const RUTE_LAPOR = Object.fromEntries(Object.entries(RUTE).map(([k, f]) => [k, jaga(f)]));

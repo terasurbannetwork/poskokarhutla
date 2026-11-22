@@ -237,7 +237,7 @@ export const T = {
   cerita: () => `*Ceritakan kejadiannya*\nTulis singkat apa yang terjadi dan urutannya. Waktu, korban, pengungsi, kerusakan, dan kebutuhan ditanyakan sesudah ini satu per satu.\n\n${TEMPLAT}`,
   foto: n => n ? `*Foto atau video diterima (${n})*\nTambah foto atau video lain, atau ketuk *Lanjut* bila sudah cukup.`
     : "*Foto atau video kejadian*\nKirim foto atau video pendek (paling lama 60 detik) keadaan di lokasi, misalnya kerusakan, genangan, atau pengungsian. Ambil langsung dari kamera supaya lokasi dan waktunya terekam. Hindari merekam wajah orang bila bisa.\nDi WhatsApp: kirim foto atau video, lalu bagikan lokasi.",
-  terkirim: (nama, nomor) => `*Laporan terkirim*\nTerima kasih sudah melaporkan, ${nama}.\n\nNomor tiket laporan Anda:\n*${nomor}*\n\nTim kami akan menghubungi Anda sesegera mungkin untuk mengonfirmasi laporan. Simpan nomor tiket ini untuk cek status.`,
+  terkirim: (nama, nomor, bpbd = "") => `*Laporan terkirim*\nTerima kasih sudah melaporkan, ${nama}.\n\nNomor tiket laporan Anda:\n*${nomor}*\n\nTim kami akan menghubungi Anda sesegera mungkin untuk mengonfirmasi laporan. Simpan nomor tiket ini untuk cek status.${bpbd ? `\n\n${bpbd}` : ""}`,   // bpbd: kalimatBpbd (K88)
   darurat: () => "Bila ada nyawa terancam sekarang, hubungi 112 atau BPBD setempat.",
   batal: () => `*Laporan dibatalkan*\nKetik *lapor* untuk membuat laporan baru.`,
 };

@@ -19,6 +19,7 @@ import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
 import {buatInfo} from "../../src/lapor_info.js";
+import {kontakBpbd, kalimatBpbd} from "../../src/lapor_kontak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
 import {HALAMAN_TUNGGU_DOK, tempatRusak} from "../../src/lapor_tampil.js";
@@ -227,9 +228,11 @@ async function pesan(body) {
     h.sesi.tiket = {status: "baru", riwayat: [{ke: "baru", pelaku: "Sistem", catatan: null, waktu: kini}]};
     h.sesi.versi = [{versi: 1, isi: structuredClone(h.sesi.isian), waktu: kini}];
     if (h.sesi.kejadian) pasangKejadian(d, h.sesi, kini);
-    h.inti = T.terkirim(h.pelapor.nama, h.sesi.nomor);
+    let K = null; try { K = JSON.parse(fs.readFileSync(path.join(PUBLIK, "data/bpbd_kontak.json"), "utf8")); } catch {}
+    const kb = kontakBpbd(K, h.sesi.isian.lokasi?.nilai?.wilayah);   // K88: arahkan pelapor ke BPBD setempat (sama dengan Worker)
+    h.inti = T.terkirim(h.pelapor.nama, h.sesi.nomor, kalimatBpbd(kb));
     const q = `?t=${h.sesi.token}`;
-    tambahan = {nomor: h.sesi.nomor, lacak: `/lapor/lacak.html${q}`, foto: h.sesi.foto?.[0] ? `/api/lapor/foto/${h.sesi.foto[0].id}${q}` : null, unduhan: [ // foto pertama untuk kartu Laporan saya
+    tambahan = {nomor: h.sesi.nomor, bpbd: {nama: kb.nama, nomor: kb.nomor, tingkat: kb.tingkat}, lacak: `/lapor/lacak.html${q}`, foto: h.sesi.foto?.[0] ? `/api/lapor/foto/${h.sesi.foto[0].id}${q}` : null, unduhan: [ // foto pertama untuk kartu Laporan saya
       {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
       {label: "Unduh PDF", url: `/api/lapor/unduh/${h.sesi.nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${h.sesi.nomor}.docx${q}`}]};
     buatDokumen(h.sesi, h.pelapor);
@@ -500,37 +503,6 @@ async function sekitar(q) {
   return [200, {...(cocok.length ? {tempat: cocok.slice(0, 24)} : {tempat: semua.slice(0, 12), terdekat: true}), sebagian: !cukup}];
 }
 
-/* ---------- nomor penting di sekitar lokasi terverifikasi (pemilik 19 Nov 2026: damkar, BPBD daerah, rumah sakit terdekat, kepolisian) ----------
-   BPBD: public/data/bpbd.json (peta BPBD BNPB; nomor Pusdalops bila tercatat). Fasilitas: public/data/osm_nasional/<prov>.json (OSM: rs, puskesmas,
-   klinik, polisi; berkoordinat, tanpa nomor telepon, jadi diberi tautan arah). Nomor darurat nasional: 112 terpadu, 110 polisi, 113 pemadam kebakaran,
-   115 Basarnas, 117 BNPB, 119 ambulans. Lokasi wajib dari GPS atau desa terpilih. */
-const NOMOR_NASIONAL = [["112", "Darurat terpadu"], ["113", "Pemadam kebakaran"], ["119", "Ambulans dan gawat darurat"], ["110", "Polisi"], ["115", "SAR (Basarnas)"], ["117", "BNPB"]];
-const normKab = t => String(t || "").toLowerCase().replace(/kota administrasi|kabupaten|kab\.|kota|adm\./g, "").replace(/[^a-z]/g, "");
-async function penting(q) {
-  let lat = Number(q.lat), lon = Number(q.lon), w = null;
-  const semuaKantor = JSON.parse(fs.readFileSync(path.join(PUBLIK, "data/bpbd.json"), "utf8")).kantor;
-  if (q.kode && /^\d{2}\.\d{2}(\.\d{2})?$/.test(q.kode)) { // daerah tingkat kab/kec (mis. "Daerah terakhir" dari Info): titik acuan = kantor BPBD kab itu
-    const d = (await wilayah.cariNama("", q.kode))[0]; w = d ? {...d, desa: null} : null;
-    const k = w && semuaKantor.find(x => x.prov === w.provKode && normKab(x.kab) === normKab(w.kab));
-    if (k) ({lat, lon} = k); else if (d) { const c = await wilayah.pusat(d.kode); if (c) ({lat, lon} = c); } // kantor BPBD kab belum terdata: pakai titik desa pertama di kab itu
-  } else if (q.kode) { const c = await wilayah.pusat(String(q.kode)); if (c) ({lat, lon, wilayah: w} = c); }
-  else if (Number.isFinite(lat)) w = await wilayah(lat, lon);
-  if (!w || !Number.isFinite(lat)) return [400, {galat: "Lokasi belum terbaca. Pakai lokasi saat ini atau cari desa Anda."}];
-  const kantor = semuaKantor.filter(x => x.prov === w.provKode);
-  const nomor = t => /\d{3}/.test(t || "") ? String(t).replace(/[^\d+ -]/g, "").trim() : null;
-  const bpbdKab = kantor.find(x => normKab(x.kab) === normKab(w.kab)) || kantor.filter(x => !/provinsi/i.test(x.nama)).sort((a, b) => km(lat, lon, a.lat, a.lon) - km(lat, lon, b.lat, b.lon))[0];
-  const bpbdProv = kantor.find(x => /provinsi/i.test(x.nama));
-  const bp = x => x && {nama: /provinsi/i.test(x.nama) ? `BPBD Provinsi ${PROV_NAMA(w)}` : `BPBD ${x.kab}`, alamat: x.alamat || null, nomor: nomor(x.pusdalops), jarakKm: Math.round(km(lat, lon, x.lat, x.lon) * 10) / 10, lat: x.lat, lon: x.lon};
-  let osm = {};
-  try { osm = JSON.parse(fs.readFileSync(path.join(PUBLIK, `data/osm_nasional/${w.provKode}.json`), "utf8")); } catch {}
-  // OSM kadang menandai puskesmas sebagai rumah sakit: pindahkan menurut namanya
-  const pkm = /^(puskesmas|pustu|poskesdes|polindes)\b/i;
-  const pilah = jenis => jenis === "rs" ? (osm.rs || []).filter(x => !pkm.test(x[2] || "")) : jenis === "puskesmas" ? [...(osm.puskesmas || []), ...(osm.rs || []).filter(x => pkm.test(x[2] || ""))] : osm[jenis] || [];
-  const dekat = (jenis, n) => pilah(jenis).map(([la, lo, nama]) => ({nama, lat: la, lon: lo, jarakKm: Math.round(km(lat, lon, la, lo) * 10) / 10})).sort((a, b) => a.jarakKm - b.jarakKm).slice(0, n);
-  return [200, {wilayah: w, nasional: NOMOR_NASIONAL.map(([n, l]) => ({nomor: n, label: l})), bpbd: [bp(bpbdKab), bp(bpbdProv)].filter(Boolean),
-    rs: dekat("rs", 3), puskesmas: dekat("puskesmas", 2), polisi: dekat("polisi", 2)}];
-}
-const PROV_NAMA = w => w.prov;
 
 /* ---------- Alun-alun warga (K30, Q14 dijawab 19 Nov 2026) ----------
    Hanya laporan berstatus ditindaklanjuti atau selesai. Tanpa nama, nomor WA, foto, kronologi bebas, dan nomor tiket (tiket = kunci lacak).
@@ -746,7 +718,7 @@ export async function tanganiLapor(req, res, url) {
     }
     if (j === "/api/lapor/terjemah" && req.method === "POST") { const b = await badan(req); return kirim([200, {teks: await terjemahUi(model, b.teks, bahasaSah(b.bahasa))}]); }
     if (j === "/api/lapor/bahasa") return kirim([200, {bahasa: model ? BAHASA.map(([kode, nama]) => ({kode, nama})) : [{kode: "id", nama: "Bahasa Indonesia"}]}]);
-    if (j === "/api/lapor/penting") return kirim(await penting(Object.fromEntries(url.searchParams)));
+    if (j === "/api/lapor/penting") return kirim(await info.penting(Object.fromEntries(url.searchParams)));   // satu mesin dengan Worker (src/lapor_info.js)
     if (j === "/api/lapor/sekitar") return kirim(await sekitar(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/rapor") return kirim(await info.rapor(Object.fromEntries(url.searchParams)));   // satu mesin dengan Worker (src/lapor_info.js)

@@ -623,7 +623,14 @@ function kartuTiket(j) {
   for (const u of dok) { const b = Object.assign(el("a", "lp-kedua"), {href: u.url}); b.append(ikon("i-unduh"), u.label.replace("Unduh ", "Unduh ")); b.addEventListener("click", e => unduh(e, u.url)); aksi.append(b); }
   ucapanTerimaKasih(j.nomor);
   const baru = el("button", "lp-tk-baru"); baru.type = "button"; baru.append(ikon("i-plus"), "Buat laporan baru"); baru.addEventListener("click", () => kirim({teks: "lapor", tampil: "Buat laporan baru"}));
-  isi.append(pita, tiket, aksi, baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
+  // K88 (pemilik 21 Nov 2026: "di akhir diarahkan ke BPBD mereka masing-masing"): nomor dari situs resmi, bila belum tercatat 117
+  const bp = j.bpbd, hub = el("div", "lp-tk-bpbd");
+  if (bp?.nomor) {
+    const t = el("div"); t.append(el("b", null, "Hubungi BPBD setempat"), el("span", null, bp.tingkat === "nasional" ? "Nomor BPBD daerah Anda belum tercatat. Hubungi Call Center BNPB." : bp.nama));
+    const tel = Object.assign(el("a", "lp-tk-tel"), {href: `tel:${bp.nomor.replace(/[^\d+]/g, "")}`}); tel.append(ikon("i-telepon"), `Telepon ${bp.nomor}`);
+    hub.append(t, tel);
+  }
+  isi.append(pita, tiket, aksi, ...(bp?.nomor ? [hub] : []), baru);   // penilaian hanya di layar terima kasih (pemilik 21 Nov 2026: "disininya gausah ada lagi")
 }
 
 async function unduh(e, url) { // dokumen dibuat di latar; bila belum jadi, beri tahu, jangan buka halaman kosong

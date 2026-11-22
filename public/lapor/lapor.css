@@ -2269,3 +2269,24 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-lr-lok .lp-kedua{width:auto;justify-self:start;min-height:40px;padding:0 14px}
 .lp-lr-lok small{font-size:.8125rem;color:var(--ink2)}
 .lp-lr-dialog>a,.lp-lr-dialog>button{margin-top:8px}
+
+/* K88: kartu Hubungi BPBD setempat di akhir laporan (nomor dari situs resmi, bila belum tercatat 117) */
+.lp-tk-bpbd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 22px 0;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.lp-tk-bpbd>div{flex:1 1 180px;display:grid;gap:2px}
+.lp-tk-bpbd b{font:700 .9375rem var(--font);color:var(--ink)}
+.lp-tk-bpbd span{font-size:.875rem;color:var(--ink2)}
+.lp-tk-tel{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:12px;background:var(--bad);color:var(--on-pekat);font:700 .9375rem var(--font);text-decoration:none!important}
+.lp-tk-tel svg{width:18px;height:18px}
+
+/* smoke test HP 22 Nov 2026: target sentuh 44 px di layar sentuh (WCAG 2.5.5), huruf yang dibaca warga tidak di bawah 12 px */
+@media (pointer:coarse){.maplibregl-ctrl-group button{min-width:44px;min-height:44px}}
+.lp-cc2-sosial a{font-size:.75rem!important}
+.lp-lap-kartu .lp-terbaru-langkah span,.lp-terbaru-langkah span{font-size:.6875rem!important;hyphens:auto}
+@media (max-width:899px){.lp-tab button{font-size:.75rem}}
+/* HP 320 px: kolom maskot 110 px membuat judul hanya 162 px lebar sehingga tombol Lapor darurat jatuh di bawah layar pertama.
+   Di layar sesempit ini hero satu kolom; Sigap pindah ke bawah tombol. Layar 360 px ke atas tidak berubah. */
+@media (max-width:340px){
+  .lp-hero{grid-template-columns:minmax(0,1fr)!important}
+  .lp-hero-tengah{grid-column:1!important;grid-row:auto!important;justify-self:end;width:110px}
+  .lp-hero-sub{font-size:.875rem}
+}
