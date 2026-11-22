@@ -1,5 +1,5 @@
 """Laporan harian 221126 (format laporan 13 Nov: VERSI_AWAL=1 ALT=2), data WA Koordalops 21-22 Nov 07.00;
-turunan harian/2026-11/2026-11-20/jalan.py (21 Nov tidak ada laporan di repo). Website dari origin/main 22 Nov; BMKG dan PVMBG 22 Nov.
+turunan harian/2026-11/2026-11-20/jalan.py. Website diunduh segar; BMKG dan PVMBG 22 Nov. Tidak ada laporan 21 Nov.
 16 Nov pemilik ("kalau di slide 1 ada kayak 'dan 9 lainnya', itu sebutin aja lgsg daerahnya"): kotak hujan dan panel peringatan menulis semua nama.
 13 Nov pemilik ("kalau ada GIS BNPB di footer/sumber, hapus aja ya kata2nya"): kaki sumber tanpa "GIS BNPB"."""
 import datetime as dt, json, os, subprocess, sys
@@ -12,9 +12,6 @@ if AWAL:
 # cuaca ekstrem ungu, tanah longsor cokelat (tetap), gempa bumi abu tua. Hanya deck ini; warna generator untuk hari lain tidak diubah.
 # warna harus dari palet tema BNPB (proyek-bnpb/tema.json): warna di luar palet digeser mesin deck ke warna palet terdekat (ungu sempat jadi slate).
 # banjir biru #2F86D1 (aksen biru), cuaca ekstrem hijau tua #3D6B5A (kategori nonalam), tanah longsor emas #A07A32 (skala emas), gempa bumi abu gelap #4B4F58 (kategori sosial)
-# 22 Nov: kebakaran Serang = gedung pabrik (Bencana Non Alam Kebakaran Gedung), bukan permukiman: label jenis di deck ini saja
-harian.JENIS_LAIN['kebakaran_permukiman'] = type(harian.JENIS_LAIN['kebakaran_permukiman'])(['Kebakaran gedung', *harian.JENIS_LAIN['kebakaran_permukiman'][1:]])
-harian.JENIS_SINGKAT['kebakaran_permukiman'] = 'kebakaran gedung'
 for _j, _w in (('banjir', ('2F86D1', 'DCEBF8')), ('cuaca', ('3D6B5A', 'E3EDE8')), ('angin', ('3D6B5A', 'E3EDE8')), ('longsor', ('A07A32', 'F4ECDC')), ('gempabumi', ('4B4F58', 'E6EAF0'))):
     harian.JENIS_LAIN[_j] = harian.JENIS_LAIN[_j][:2] + _w
 OUT = S; os.makedirs(OUT, exist_ok=True)   # 2 Nov pemilik: format baseline paparan Kepala 011126 lewat mesin ppt-konsultan jadi resmi
@@ -76,17 +73,15 @@ def wa_normal(t):
     t = t.replace('*(Kejadian Baru)*', '(Kejadian Baru)').replace('*(Pengkinian Data)*', '(Pengkinian Data)')   # urai_wa harian_lanjut: kepala tanpa bintang
     t = t.replace('Kota. Sukabumi', 'Kota Sukabumi').replace('Kota. Bengkulu', 'Kota Bengkulu').replace('Kab. Banggai Kep.', 'Kab. Banggai Kepulauan')
     t = _re.sub(r'\*([A-Z])\. Provinsi ', r'*\1. Prov. ', t)   # 13-14 Nov: kepala blok "Provinsi Jawa Timur", "Provinsi Lampung"
+    t = t.replace('Cuaca Ekstrim', 'Cuaca Ekstrem').replace('Alam Banjr ', 'Alam Banjir ').replace('Kota Adm. Jakarta', 'Kota Administrasi Jakarta')   # 22 Nov: salah ketik di WA
     t = t.replace('Kab. Kep. Mentawai', 'Kab. Kepulauan Mentawai').replace('Kab. Lima puluh Kota', 'Kab. Lima Puluh Kota')   # 20 Nov: singkatan dan huruf kecil di WA
-    # 22 Nov: kepala baru "... adalah sejumlah 22 (dua puluh dua) kejadian." tanpa "Laporan kejadian bencana sejumlah" dan "berdampak signifikan"
-    t = _re.sub(r'adalah sejumlah (\d+) \([^)]*\) kejadian\.', r'Laporan kejadian bencana sejumlah \1, berdampak signifikan sejumlah \1.', t)
-    t = t.replace('Entry nomor18', 'Entry nomor 18').replace('Bencana Alam Banjr ', 'Bencana Alam Banjir ').replace('Cuaca Ekstrim Kab.', 'Cuaca Ekstrem di Kab.').replace('Banjir Kota Dumai', 'Banjir di Kota Dumai')   # 22 Nov: salah ketik WA
     n_ = len(_re.findall(r'\n\d+\.\s', t)); print('WA: kejadian dirinci', n_)   # 13 Nov: "1. Tanah Longsor" tanpa kata Bencana
     return _re.sub(r'(berdampak signifikan sejumlah\s+)\d+', lambda m: m[1] + str(n_), t)
 BMKG_TEKS = open(f'{S}/wa-bmkg.txt', encoding='utf-8').read().replace('Sumatra ', 'Sumatera ')   # 16 Nov: "Sumatra Barat", "Sumatra Selatan"
 wa = wa_harian.koordalops(wa_normal(open(f'{S}/wa-koordalops.txt', encoding='utf-8').read())); w = wa_harian.bmkg(BMKG_TEKS)
 # 16 Nov pemilik ("hapus aja yang pekanbaru"): PM2,5 Pekanbaru 2.534,7 galat sensor (lonjakan 1 jam ke ~7.500 lalu kembali ~0, data putus 12-15 Nov;
 # METAR WIBB 06.00 WIB jarak pandang 6 km tanpa haze; CAMS 3-22 ug/m3; firespot Riau 0) -> dibuang dari semua bagian slide
-w['pm'] = [r for r in w['pm'] if r[0] != 'Pekanbaru']   # 17 Nov: Pekanbaru 15.140,9 lagi; 18-19 Nov: 22.915,9 (sensor yang sama; 19 Nov WA BMKG sendiri menulis galat), dibuang dengan alasan 16 Nov
+w['pm'] = [r for r in w['pm'] if r[0] != 'Pekanbaru' or r[1] < 500]   # 22 Nov: Pekanbaru 27,7 Sedang wajar, tidak dibuang   # 17 Nov: Pekanbaru 15.140,9 lagi; 18-19 Nov: 22.915,9 (sensor yang sama; 19 Nov WA BMKG sendiri menulis galat), dibuang dengan alasan 16 Nov
 for x in wa['kejadian']:   # 16 Nov: "Tanah Longsor dan Banjir di Kab. Aceh Tengah" (1 MD tertimbun longsor) terurai sebagai banjir
     if x['lokasi'] == 'Aceh Tengah': x['jenis'] = 'longsor'
     if x['lokasi'] == 'Seluma': x['jenis'] = 'banjir'   # 17 Nov: "Banjir dan Abrasi di Kab. Seluma" (168 rumah banjir, 1 rumah abrasi) terurai sebagai gelombang pasang
@@ -279,41 +274,43 @@ wa['laporan'] -= n_kh; print('tanpa karhutla: laporan', wa['laporan'], 'menonjol
 # (surut, pengungsi pulang), Kota Bengkulu (sudah surut), angin Probolinggo (tinggal bantuan logistik). Aceh Selatan tidak ada di WA hari ini (aturan 17 Nov).
 # Karhutla Sumsel, Kalteng, Kalsel, Bombana dibuang (format tanpa karhutla). Kota Subulussalam: Kejadian Baru (banjir naik kembali) sesudah surut 19 Nov.
 # Kejadian baru (27 lokasi, 28 kejadian): Laphar 19 Nov.
-# 22 Nov (WA 21-22 Nov; laporan 21 Nov tidak ada di repo): masih berlangsung = banjir Aceh Singkil (belum surut; MULAI sama dengan 20 Nov),
-# Kota Subulussalam (air belum surut; Kejadian Baru laphar 19 Nov), Mandailing Natal (beberapa titik mulai surut = genangan masih ada; WA 19-20 Nov menulisnya
-# sudah surut -> MULAI = laphar 21 Nov, preseden Lima Puluh Kota 20 Nov), Sambas banjir (TMA 15-100 cm; Kejadian Baru laphar 19 Nov).
-# Tidak masuk: Tapanuli Tengah (sudah surut, pembersihan lumpur). Karhutla Karangasem, Kaltim, Kalteng dibuang (format tanpa karhutla).
-# Kejadian baru (Kejadian Baru di WA): Laphar 21 Nov. Sambas punya tiga kejadian (banjir lama, cuaca dan longsor baru): status baru dari label WA, bukan dari nama lokasi.
-BERLANGSUNG = {'Aceh Singkil': '2026-11-14', 'Kota Subulussalam': '2026-11-19', 'Mandailing Natal': '2026-11-21', 'Sambas': '2026-11-19'}
-MULAI_BARU = {}
-BARU_TGL = '2026-11-21'
+# 22 Nov (WA 21-22 Nov; laporan 21 Nov tidak dibuat): masih berlangsung = banjir Aceh Singkil (belum surut; MULAI sama dengan laporan 20 Nov),
+# Kota Subulussalam (belum surut, masih menggenangi rumah; MULAI 19 Nov seperti laporan 20 Nov), Mandailing Natal (baru sebagian titik mulai surut;
+# WA 19-20 Nov sudah memuatnya, jeda <= 30 hari, MULAI = laphar 19 Nov), Sambas (TMA 15-100 cm; MULAI 19 Nov seperti laporan 20 Nov).
+# Tidak masuk: Tapanuli Tengah (sudah surut, pembersihan lumpur). Karhutla Bali, Kaltim, Kalteng dibuang (format tanpa karhutla).
+# Kejadian baru (14 lokasi, 15 kejadian; Sambas cuaca ekstrem dan longsor baru, banjirnya berlangsung): Laphar 21 Nov.
+BERLANGSUNG = {('banjir', 'Aceh Singkil'): '2026-11-14', ('banjir', 'Kota Subulussalam'): '2026-11-19', ('banjir', 'Mandailing Natal'): '2026-11-19', ('banjir', 'Sambas'): '2026-11-19'}
+MULAI_BARU = {k: '2026-11-21' for k in (('banjir', 'Padang Lawas Utara'), ('cuaca', 'Simalungun'), ('banjir', 'Kota Dumai'), ('banjir', 'Rokan Hulu'), ('banjir', 'Kuantan Singingi'), ('kebakaran_permukiman', 'Serang'), ('longsor', 'Kota Administrasi Jakarta Selatan'), ('longsor', 'Cianjur'), ('cuaca', 'Demak'), ('longsor', 'Purbalingga'), ('angin', 'Lamongan'), ('cuaca', 'Sambas'), ('longsor', 'Sambas'), ('gempabumi', 'Maluku Barat Daya'))}
+KJ = lambda x: (x['jenis'], x.get('lokasi'))   # 22 Nov: Sambas banjir berlangsung, cuaca ekstrem dan longsor baru -> kunci (jenis, lokasi)
+harian.JENIS_LAIN['kebakaran_permukiman'] = ('Kebakaran gedung',) + harian.JENIS_LAIN['kebakaran_permukiman'][1:]   # 22 Nov: Serang = kebakaran pabrik, bukan permukiman
 # label WA "Kejadian Baru" padahal kejadian lama (atasan 11 Nov: Blora = kejadian 9 Nov, KK bertambah) -> bukan baru, dan bencananya sudah lewat
 for x in D['kejadian'] + wa['kejadian']:
     if x.get('lokasi') == 'Blora': x['baru'] = False
-lama = [f"{x['jenis']} {x['lokasi'] or x['prov']}" for x in D['kejadian'] if not x.get('baru') and x['lokasi'] not in BERLANGSUNG]
-D['kejadian'] = [x for x in D['kejadian'] if x.get('baru') or x['lokasi'] in BERLANGSUNG]; wa['kejadian'] = [x for x in wa['kejadian'] if x.get('baru') or x.get('lokasi') in BERLANGSUNG]
+lama = [f"{x['jenis']} {x['lokasi'] or x['prov']}" for x in D['kejadian'] if not x.get('baru') and KJ(x) not in BERLANGSUNG]
+D['kejadian'] = [x for x in D['kejadian'] if x.get('baru') or KJ(x) in BERLANGSUNG]; wa['kejadian'] = [x for x in wa['kejadian'] if x.get('baru') or KJ(x) in BERLANGSUNG]
 for x in D['kejadian']:
-    x['baru'] = bool(x.get('baru')); x['mulai'] = BARU_TGL if x['baru'] else BERLANGSUNG[x['lokasi']]   # 22 Nov: Sambas banjir lama, cuaca dan longsor baru
+    x['baru'] = KJ(x) in MULAI_BARU; x['mulai'] = MULAI_BARU.get(KJ(x)) or BERLANGSUNG[KJ(x)]
     # 16 Nov atasan (Bang Ghozi, WA 10.12: "Di strip aja"): Pesisir Selatan hanya "±2.280 jiwa" tanpa KK -> kolom DAMPAK tetap strip, jiwa tidak ditulis
-    if x['lokasi'] == 'Kota Adm. Jakarta Selatan': x['lokasi_asli'] = 'Kota Administrasi Jakarta Selatan'; x['lok_tampil'] = 'Kota Jakarta Selatan'   # 22 Nov: nama peta kab (public/geo/kabupaten/31.json)
-    # 22 Nov: nama terpotong di kolom KAB/KOTA slide 1 -> singkatan lazim Koordalops (cara Hulu Sungai Sel. 12 Nov), hanya teks tampilan tabel
-    _SINGKAT = {'Kota Subulussalam': 'Kt. Subulussalam', 'Padang Lawas Utara': 'Kab. Paluta', 'Mandailing Natal': 'Kab. Madina', 'Kota Adm. Jakarta Selatan': 'Kota Jakarta Selatan', 'Maluku Barat Daya': 'Kab. MBD'}
-    if x['lokasi'] in _SINGKAT: x['lok_teks'] = _SINGKAT[x['lokasi']]
     if x['lokasi'] == 'Hulu Sungai Selatan': x['lokasi'] = 'Hulu Sungai Sel.'  # 13 Nov: nama penuh terpotong di kolom KAB/KOTA   # 12 Nov: nama penuh terpotong di kolom KAB/KOTA (singkatan resmi Koordalops)
 print('sudah selesai, dibuang:', lama, '| tampil:', [(x['jenis'], x['lokasi'], x['mulai'], 'baru' if x['baru'] else 'berlangsung') for x in D['kejadian']])
 # 7 Nov pemilik ("yang banjir cek masih ada apa udah surut", "pake label pill ya, termasuk yg kk dll nya"): pil KONDISI per kejadian dari
 # Kondisi Mutakhir laphar Koordalops 6 Nov (sampai 7 Nov 07.00 WIB); jenis pil: selesai, surut (masih genangan), tangani, waspada
 # 11 Nov: pil KONDISI dari Kondisi Mutakhir WA Koordalops 10 Nov 07.00 s.d. 11 Nov 07.00 WIB (Revisi 14 tanpa kolom Kondisi, tetap diisi)
-KONDISI = {'Aceh Singkil': ('Belum surut', 'waspada'), 'Kota Subulussalam': ('Belum surut', 'waspada'), 'Padang Lawas Utara': ('Dalam penanganan', 'tangani'),
-           'Simalungun': ('Dalam penanganan', 'tangani'), 'Mandailing Natal': ('Mulai surut', 'surut'), 'Kota Dumai': ('Belum surut', 'waspada'),
-           'Rokan Hulu': ('Berangsur surut', 'surut'), 'Kuantan Singingi': ('Belum surut', 'waspada'), 'Serang': ('Pencarian korban', 'tangani'),
-           'Kota Adm. Jakarta Selatan': ('Kaji cepat BPBD', 'tangani'), 'Cianjur': ('Ditangani BPBD', 'tangani'), 'Demak': ('Jalan bisa dilalui', 'selesai'),
-           'Purbalingga': ('Penguatan tebing', 'tangani'), 'Lamongan': ('Kondusif', 'selesai'), ('banjir', 'Sambas'): ('Air 15–100 cm', 'waspada'),
+# 22 Nov: pil KONDISI dari Kondisi Mutakhir WA Koordalops 21 Nov 07.00 s.d. 22 Nov 07.00 WIB
+KONDISI = {'Aceh Singkil': ('Belum surut', 'waspada'), 'Kota Subulussalam': ('Belum surut', 'waspada'), 'Mandailing Natal': ('Mulai surut', 'surut'),
+           ('banjir', 'Sambas'): ('Belum surut', 'waspada'), 'Padang Lawas Utara': ('Penanganan', 'tangani'), 'Simalungun': ('Penanganan', 'tangani'),
+           'Kota Dumai': ('Belum surut', 'waspada'), 'Rokan Hulu': ('Berangsur surut', 'surut'), 'Kuantan Singingi': ('Belum surut', 'waspada'),
+           'Serang': ('Pencarian korban', 'tangani'), 'Kota Administrasi Jakarta Selatan': ('Kaji cepat BPBD', 'tangani'), 'Cianjur': ('Ditangani BPBD', 'tangani'),
+           'Demak': ('Kondusif', 'selesai'), 'Purbalingga': ('Penguatan tebing', 'tangani'), 'Lamongan': ('Kondusif', 'selesai'),
            ('cuaca', 'Sambas'): ('Ditangani pemda', 'tangani'), ('longsor', 'Sambas'): ('Ditangani BPBD', 'tangani'), 'Maluku Barat Daya': ('Pendataan', 'tangani')}
 for x in D['kejadian']:
     if (x['jenis'], x['lokasi']) in KONDISI: x['kondisi_pil'] = KONDISI[(x['jenis'], x['lokasi'])]   # 20 Nov: Pesisir Selatan banjir dan longsor
     elif x['lokasi'] in KONDISI: x['kondisi_pil'] = KONDISI[x['lokasi']]
     else: print('PERINGATAN tanpa pil kondisi:', x['jenis'], x['lokasi'])
+# 22 Nov: nama penuh terpotong pil DAMPAK di kolom KAB/KOTA slide 1 -> singkatan resmi daerah (hanya teks tabel, lokasi peta dan rincian tetap)
+SINGKAT = {'Kota Administrasi Jakarta Selatan': 'Kota Jakarta Selatan'}   # 22 Nov: tanpa kolom MULAI nama lain muat utuh
+for x in D['kejadian']:
+    if x['lokasi'] in SINGKAT: x['lok_teks'] = SINGKAT[x['lokasi']]
 for x in D['kejadian']:   # 19 Nov: Pamekasan pil "±10 KK" + "1 MD" + MULAI melebihi baris (MD terpotong "1 MI") -> kolom DAMPAK cukup 1 MD (korban jiwa didahulukan)
     if x['lokasi'] == 'Pamekasan': x['angka'] = {k_: v_ for k_, v_ in x['angka'].items() if k_ != 'kk'}
 for x in D['kejadian']:   # 18 Nov: "Kab. Tulang Bawang Barat" terpotong di kolom KAB/KOTA (cara yang sama dengan Hulu Sungai Sel. 12 Nov)
@@ -490,7 +487,8 @@ if AWAL:   # pil "10 KK mengungsi" menempel pil kondisi pada lebar kolom 9 Nov: 
     dk.HAL_TAMBAH[0] = ([_P(f'Hingga {_hz.day} {harian.BULAN[_hz.month - 1][:3]}, '), _Q(f"{harian.f0(LP3['n_kec'])} kecamatan"), _P(' berstatus Siaga banjir atau longsor, udara '),
                          _Q(f"{harian.f0(B3['udara_n'])} kab/kota"), _P(' tidak sehat, dan '), _Q(f"{len({r['wilayah'] for r in B3['rob']})} pesisir"), _P(' berpotensi banjir rob')], dk.HAL_TAMBAH[0][1])   # 12 Nov: karhutla diganti banjir rob   # muat dua baris   # 11 Nov pemilik: daerah di atas ambang Tidak Sehat
     if ALT2:   # 10 Nov pemilik, Revisi 5 alt 2: "4 kejadian menonjol di 3 provinsi" di judul "gausah ada"
-        dk.KARTU_ALT = dk.SIAGA_INFO = dk.TINDAK_INFO = dk.KOLOM_MULAI = True;   # 11 Nov: kolom MULAI di Informasi Bencana
+        dk.KARTU_ALT = dk.SIAGA_INFO = dk.TINDAK_INFO = dk.KOLOM_MULAI = True; dk.KOLOM_MULAI = False   # 22 Nov pemilik: "tanggal mulai di tabel hapus" (slide 1)
+          # 11 Nov: kolom MULAI di Informasi Bencana
         dk.INFO_Y = (1280160, 5010912)   # pemilik 10 Nov: Informasi Bencana dan Status Siaga naik sejajar atas kartu
         # WA BMKG 16 Nov: PM2,5 Pekanbaru 2.534,7 Berbahaya, Samarinda 72,4 dan Kemayoran 67,5 Tidak Sehat (lainnya Sedang); periode 16-19 Nov;
         # Siaga hujan lebat 8 provinsi (Aceh, Sumut, Sumbar, Sumsel, Banten, Jabar, Jateng, Papua Pegunungan); angin kencang nihil
@@ -500,7 +498,7 @@ if AWAL:   # pil "10 KK mengungsi" menempel pil kondisi pada lebar kolom 9 Nov: 
         # 20 Nov pemilik ("Sama ini bro ketutup"): ikon hujan lebat Sumut digeser dari 99,2 BT 0,7 LU ke barat daya, tidak menutup lencana gempa Nias Barat
         dk.PERINGATAN_PETA = [(97.8, 2.3, '|Hujan lebat, angin kencang', 'oranye', 'kanan'), (98.2, 1.0, '|Hujan lebat', 'oranye', 'kanan'),
                               (101.9, 0.4, 'Riau|Hujan lebat', 'oranye', 'kanan'), (106.4, -2.4, 'Kep. Bangka Belitung|Hujan lebat', 'oranye', 'kanan'),
-                              (107.9, -7.45, '|Hujan lebat, angin kencang', 'oranye', 'kanan'), (109.15, -7.45, '|Hujan lebat', 'oranye', 'kanan'), (115.1, -8.4, 'Bali|Hujan lebat', 'oranye', 'kanan'),
+                              (115.1, -8.4, 'Bali|Hujan lebat', 'oranye', 'kanan'),
                               (109.3, 1.4, '|Hujan sangat lebat', 'merah', 'kiri'), (119.3, -2.4, 'Sulawesi Barat|Hujan lebat', 'oranye', 'kiri'),
                               (124.8, 1.1, 'Sulawesi Utara|Hujan lebat', 'oranye', 'kanan'), (135.6, -3.0, 'Papua Tengah|Hujan lebat', 'oranye', 'kiri'), (139.6, -2.7, 'Papua|Hujan lebat', 'oranye', 'kiri')]
         # 11 Nov atasan ("Yang akan dilakukan BNPB harusnya tally dengan jenis bencana yang ditampilkan"): satu kartu per jenis
@@ -516,18 +514,18 @@ if AWAL:   # pil "10 KK mengungsi" menempel pil kondisi pada lebar kolom 9 Nov: 
         # + Bengkulu Utara 230 + Seluma 66 + Surakarta 275 + Kebumen 20 + Boyolali 11 + Semarang 453 + Melawi 178 + Sambas 48 = 6.517 KK (Aceh, Sumut, Sumbar, Bengkulu, Jateng, Kalbar);
         # longsor Pesisir Selatan (jalan Bayang-Solok) dan Kep. Mentawai 1 rumah; cuaca ekstrem rumah Mojokerto 13 + Kota Mojokerto 5 + Jombang 12 + Malang 3 + Pinrang 7 + Enrekang 8 = 48,
         # 11 siswa luka ringan (Kota Mojokerto), 1 sekolah rusak (Dompu)
-        # WA Koordalops 22 Nov: banjir Aceh Singkil 3.517 + Subulussalam 2.362 + Padang Lawas Utara 800 + Mandailing Natal 492 + Rokan Hulu 14 + Kuantan Singingi 233
-        # + Sambas 281 = 7.699 KK (Aceh, Sumut, Riau, Kalbar; Dumai pendataan); longsor Jakarta Selatan, Cianjur, Purbalingga, Sambas;
-        # cuaca ekstrem Simalungun 1 MD, Demak, Lamongan (angin kencang), Sambas 8 rumah; gempa M 7,2 Maluku Barat Daya dalam pendataan
+        # WA Koordalops 22 Nov: banjir Aceh Singkil 3.517 + Subulussalam 2.362 + Padang Lawas Utara 800 + Mandailing Natal 492 + Sambas 281 + Kuantan Singingi 233
+        # + Rokan Hulu 14 = 7.699 KK (Aceh, Sumut, Riau, Kalbar; Kota Dumai pendataan); longsor Cianjur 9 + Purbalingga 2 + Sambas 1 = 12 KK (Jakarta Selatan pendataan);
+        # cuaca ekstrem Simalungun 1 MD, Sambas 8 rumah, Demak dan Lamongan akses jalan
         dk.STRIP_KARTU = [('banjir_putih', 'Banjir', 'Memantau banjir di empat provinsi yang berdampak pada ±7.699 KK.'),
-                          ('longsor_putih', 'Tanah longsor', 'Mengkaji cepat longsor di Jakarta Selatan, Cianjur, Purbalingga, dan Sambas.'),
-                          ('angin_putih', 'Cuaca ekstrem', 'Memantau cuaca ekstrem di empat kab/kota; 1 orang meninggal di Simalungun.')]
+                          ('longsor_putih', 'Tanah longsor', 'Memantau longsor di empat kab/kota yang berdampak pada ±12 KK.'),
+                          ('angin_putih', 'Cuaca ekstrem', 'Mengkaji cepat 1 korban meninggal dan ±8 rumah terdampak di empat kab/kota.')]
         dk.PERINGATAN_KET = True   # 11 Nov pemilik: keterangan ikon kalender (periode berlaku) dan jam (waktu diukur)
         dk.RES_T = 1325880   # 11 Nov pemilik: periode tetap di bawah daerah, baris dipertinggi supaya tidak padat
         dk.PERINGATAN_BARIS = [('hujansolid_merah', 'Hujan sangat lebat', 'Kalimantan Barat', 'Awas', 'merah', '20–22 November'),
                                ('hujansolid_oranye', 'Hujan lebat', 'Aceh, Sumut, Riau, Babel,\nJabar, Jateng, Jatim, Bali,\nSulut, Sulbar, Papua Tengah,\nPapua', 'Siaga', 'oranye', '20–22 November'),
                                ('anginsolid_oranye', 'Angin kencang', 'Aceh, Jabar', 'Berpotensi', 'oranye', '20–22 November')]
-        tindak_asli = dk.tindak(); tindak_asli = [(tindak_asli[0][0], tindak_asli[0][1], [t.replace('Mengkaji cepat dampak', 'Kaji cepat') for t in tindak_asli[0][2]])] + [(tindak_asli[2][0], 'Peringatan dini', ['•  Hujan sangat lebat berpotensi di Kalimantan Barat', '•  Hujan lebat berpotensi di 12 provinsi'])]; dk.tindak = lambda: tindak_asli   # WA BMKG 20 Nov; PM2,5 Sedang
+        tindak_asli = dk.tindak(); tindak_asli = [(tindak_asli[0][0], tindak_asli[0][1], [t.replace('Mengkaji cepat dampak', 'Kaji cepat') for t in tindak_asli[0][2]])] + [(tindak_asli[2][0], 'Peringatan dini', ['•  Hujan sangat lebat berpotensi di Kalimantan Barat', '•  Hujan lebat berpotensi di 12 provinsi'])]; dk.tindak = lambda: tindak_asli   # WA BMKG 20 Nov dan 22 Nov sama (periode 20-22 Nov); PM2,5 Sedang
         for x in D['kejadian']:   # pemilik: "ini juga gabung aja jadi cuaca ekstrem", "ini langsung 10 KK aja"; satu nama di judul, kartu, peta, legenda, dan tabel
             if x['jenis'] == 'angin': x['jenis'] = 'cuaca'
             if x.get('dampak_pil') == '10 KK mengungsi': x['dampak_pil'] = '10 KK'
@@ -556,21 +554,21 @@ if AWAL:   # pil "10 KK mengungsi" menempel pil kondisi pada lebar kolom 9 Nov: 
 if False: import hujan_kab; _HK = hujan_kab.siapkan(harian, ke, T, [k_ for k_, v_ in B3['level'].items() if v_ in ('awas', 'siaga')]); dk.KOTAK_PETA = hujan_kab.kotak(_HK, harian)
 # 20 Nov pemilik ("Tambah slide rincian"): slide Rincian Lokasi sesudah ringkasan, satu baris per kejadian dari teks WA Koordalops
 sys.path.insert(0, S); import rincian
-_TIMPA = {('banjir', 'Aceh Singkil'): {'kerusakan': '±3.517 rumah, 2 jembatan, Listrik', 'kondisi': 'Belum surut'},
-          ('banjir', 'Kota Subulussalam'): {'kerusakan': '±2.010 rumah, jalan, puskesdes', 'kondisi': 'Belum surut, 4 KK mengungsi'},
-          ('banjir', 'Mandailing Natal'): {'kerusakan': '±492 rumah, 7 jalan', 'kondisi': 'Sebagian mulai surut'},
-          ('banjir', 'Kota Dumai'): {'kondisi': 'Belum surut'},
-          ('cuaca', 'Lamongan'): {'kerusakan': '1 jalan, tiang listrik, PJU', 'kondisi': 'Kondusif'},   # WA memakai titik koma: satu pil sepanjang 9,2 juta EMU
-          ('kebakaran_permukiman', 'Serang'): {'dampak': '59 jiwa', 'kerusakan': '1 pabrik', 'kondisi': 'Pencarian korban'},
-          ('banjir', 'Rokan Hulu'): {'kerusakan': '±14 rumah, 2 fasum'},
-          ('cuaca', 'Simalungun'): {'kerusakan': 'Jalan, 1 mobil', 'kondisi': 'Ditangani pemda'},
-          ('longsor', 'Kota Adm. Jakarta Selatan'): {'kerusakan': '1 jalan putus', 'kondisi': 'Kaji cepat BPBD DKI'},
-          ('longsor', 'Cianjur'): {'kerusakan': '1 rumah rusak ringan, 8 terancam, 2 bangunan', 'kondisi': 'Ditangani BPBD'},
-          ('cuaca', 'Demak'): {'kerusakan': 'Jalan raya', 'kondisi': 'Jalan bisa dilalui'},
-          ('longsor', 'Purbalingga'): {'kerusakan': '1 rumah rusak berat, 2 terdampak, 3 terancam', 'kondisi': 'Penguatan tebing'},
-          ('banjir', 'Sambas'): {'kondisi': 'Air 15–100 cm'},
-          ('gempabumi', 'Maluku Barat Daya'): {'kondisi': 'Pendataan'}}
-_isi_r = rincian.siapkan(wa_normal(open(f'{S}/wa-koordalops.txt', encoding='utf-8').read()), _TIMPA)   # 22 Nov: teks dinormalkan ("Cuaca Ekstrim Kab. Simalungun" tanpa "di" menelan blok Mandailing Natal)
+_TIMPA = {   # 22 Nov: sel kerusakan diringkas dari teks WA yang sama (angka disalin apa adanya) supaya kisi muat satu baris
+    ('banjir', 'Aceh Singkil'): {'kerusakan': '±3.517 rumah, 2 jembatan, 5 tiang listrik'},
+    ('banjir', 'Kota Subulussalam'): {'kerusakan': '±2.010 rumah, jalan, lahan, puskesdes'},
+    ('banjir', 'Mandailing Natal'): {'kerusakan': '±492 rumah, ±7 jalan'},
+    ('banjir', 'Rokan Hulu'): {'kerusakan': '±14 rumah, 2 fasum'},
+    ('cuaca', 'Simalungun'): {'dampak': '1 MD', 'kerusakan': 'Jalan, 1 mobil'},   # pemilik 20 Nov: tanpa angka cukup nama sarananya
+    ('cuaca', 'Demak'): {'kerusakan': 'Jalan'},
+    ('cuaca', 'Lamongan'): {'kerusakan': '1 jalan, tiang listrik, PJU'},
+    ('longsor', 'Kota Administrasi Jakarta Selatan'): {'kerusakan': '1 jalan warga'},
+    ('longsor', 'Cianjur'): {'kerusakan': '1 rumah rusak ringan, 2 bangunan, 1 lahan'},
+    ('longsor', 'Purbalingga'): {'kerusakan': '3 rumah, 1 rusak berat'},
+    ('kebakaran_permukiman', 'Serang'): {'kerusakan': '1 pabrik'}}
+_wa_r = wa_normal(open(f'{S}/wa-koordalops.txt', encoding='utf-8').read())   # 22 Nov: butir "* " dan judul tanpa "di" -> teks yang sudah dinormalkan
+_wa_r = _wa_r.replace('Cuaca Ekstrem Kab. Simalungun', 'Cuaca Ekstrem di Kab. Simalungun').replace('Banjir Kota Dumai', 'Banjir di Kota Dumai').replace('Bencana Alam Angin Kencang', 'Bencana Alam Cuaca Ekstrem')
+_isi_r = rincian.siapkan(_wa_r, _TIMPA)
 _nk = len(D['kejadian']); _nkab = len({x['lokasi'] for x in D['kejadian']}); _npv = len({x['prov'] for x in D['kejadian']})
 dk.HAL_TAMBAH = list(dk.HAL_TAMBAH or []) + [([('Rincian lokasi: ', harian.INK, True), (f'{_nk} kejadian', harian.ORG, True), (' di ', harian.INK, True), (f'{_nkab} kab/kota', harian.ORG, True),
                                                (' dan ', harian.INK, True), (f'{_npv} provinsi', harian.ORG, True)], lambda: rincian.gambar(dk, harian, _isi_r))]
@@ -579,7 +577,7 @@ dk.HAL_TAMBAH = list(dk.HAL_TAMBAH or []) + [([('Rincian lokasi: ', harian.INK, 
 _ib = harian.Deck.info_bencana
 def _info_gabung(s_, *a_, **k_):
     asli_ = s_.LN; grup_ = {}
-    for x in asli_: grup_.setdefault((x['jenis'], x['prov'], bool(x.get('baru')), x['mulai']), []).append(x)   # 22 Nov: kunci ikut tanggal mulai (Aceh Singkil 14 Nov, Subulussalam 19 Nov). pemilik 20 Nov: kejadian baru dan masih berlangsung tidak satu baris (tanggal mulai beda)
+    for x in asli_: grup_.setdefault((x['jenis'], x['prov'], bool(x.get('baru')), x['mulai']), []).append(x)   # 22 Nov: Aceh Singkil dan Subulussalam sama-sama berlangsung, mulai beda -> tetap dua baris   # pemilik 20 Nov: kejadian baru dan masih berlangsung tidak satu baris (tanggal mulai beda)
     def satu(xs):
         if len(xs) == 1: return xs[0]
         assert len({x['mulai'] for x in xs}) == 1, ('tanggal mulai beda dalam satu baris gabungan', [(x['lokasi'], x['mulai']) for x in xs])
@@ -588,7 +586,14 @@ def _info_gabung(s_, *a_, **k_):
     s_.LN = [satu(v) for v in grup_.values()]; print('tabel info: baris', len(asli_), '->', len(s_.LN))
     try: return _ib(s_, *a_, **k_)
     finally: s_.LN = asli_
-harian.Deck.info_bencana = _info_gabung
+harian.Deck.info_bencana = _info_gabung   # 22 Nov pemilik ("samain aja" dengan laporan 20 Nov): baris digabung per provinsi seperti 20 Nov
+# 22 Nov pemilik ("bagian peta jawa rapihin, jgn seolah2 ada yg di laut", "jgn terlalu numpuk2", "jgn pake garis"): semua lingkaran provinsi
+# di darat, tanpa garis penunjuk. Lingkaran seluruh peta diperkecil (0,8) supaya Banten dan DKI muat berdampingan; label Anak Krakatau
+# pindah ke kiri segitiga supaya Banten punya ruang. Urut barat-timur: Banten, DKI, Jabar, Merapi, Jateng, Semeru, Jatim, Bali.
+dk.SKALA_LINGKARAN = {p_: 0.75 for p_ in ('36', '31', '32', '33', '35')}   # hanya Jawa; lingkaran pulau lain tetap
+dk.GUNUNG_LABEL = {'Anak Krakatau': 'kiri'}
+dk.POSISI_DARAT = {'36': (106.4, -6.75), '31': (107.35, -6.25), '32': (108.45, -7.2), '33': (111.2, -6.95), '35': (113.85, -7.92)}   # Banten di Lebak (jauh dari Anak Krakatau), DKI sedikit ke timur Jakarta
+dk.LABEL_URUT = {'36': ['bawah'], '31': ['atas'], '32': ['bawah'], '33': ['atas'], '35': ['atas']}
 dk.lbl_kolom, dk.lbl_hot, dk.lbl_kum =f'FIRESPOT DAN SISA {HL}', 'firespot', f'TERBAKAR 1 JAN–{HL}'; dk.bangun(tpl, nama)
 print('ok', nama, '| hari data', D['hari'], '| cutoff', D['cutoff'], '| kejadian', dk.N_TOT, 'karhutla', len(dk.KH), 'ditangani', len(dk.KH_T), 'perlu perhatian', len(dk.SER), 'selesai', dk.N_SEL, '| Prioritas ditambah', D['prioritas_baru'])
 for x in D['kejadian']:

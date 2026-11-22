@@ -10,7 +10,7 @@ def urai_wa(teks):
         jenis_t, awal, nama, isi = m[1], m[2], m[3].strip(), m[4]
         nama = {'Kep. Mentawai': 'Kepulauan Mentawai', 'Lima puluh Kota': 'Lima Puluh Kota'}.get(nama, nama)
         lok = f'Kota {nama}' if awal == 'Kota' else nama
-        j = 'banjir' if jenis_t.startswith('Banjir') else 'longsor' if 'Longsor' in jenis_t else 'cuaca' if 'Cuaca' in jenis_t or 'Angin' in jenis_t else 'gempabumi' if 'Gempa' in jenis_t else 'kebakaran_permukiman' if 'Kebakaran' in jenis_t else jenis_t.lower()
+        j = 'banjir' if jenis_t.startswith('Banjir') else 'longsor' if 'Longsor' in jenis_t else 'cuaca' if 'Cuaca' in jenis_t else 'gempabumi' if 'Gempa' in jenis_t else 'kebakaran_permukiman' if 'Kebakaran Gedung' in jenis_t else jenis_t.lower()   # 22 Nov: kebakaran pabrik Serang
         f = {}
         for k, kunci in (('dampak', 'Dampak'), ('pengungsi', 'Pengungsi'), ('kerusakan', 'Kerusakan'), ('kondisi', 'Kondisi Mutakhir')):
             mm = re.search(rf'^- {kunci}\s*:\s*(.*)$', isi, re.M); f[k] = mm[1].strip() if mm else ''
@@ -50,7 +50,7 @@ def siapkan(teks_wa, timpa=None):
     return isi
 
 
-URUT_J = {'banjir': 0, 'cuaca': 1, 'angin': 1, 'longsor': 2, 'gempabumi': 3, 'kebakaran_permukiman': 4}   # 22 Nov: kebakaran gedung Serang
+URUT_J = {'banjir': 0, 'cuaca': 1, 'angin': 1, 'longsor': 2, 'gempabumi': 3, 'kebakaran_permukiman': 4}
 # pemilik 20 Nov: kelompok per bencana seperti versi awal (kolom BENCANA), kolom KONDISI MUTAKHIR dihapus; DAMPAK dan KERUSAKAN digabung
 # jadi satu kolom pil berlajur tetap (KK, rumah, kerusakan lain), tanpa pengulangan
 # pemilik 20 Nov: nomor (= label peta) di kiri nama kab/kota, tanpa kolom NO
@@ -137,7 +137,7 @@ def gambar(dk, H, isi):
     G = 137160; WM = 3401568;   # 20 Nov: peta dirampingkan supaya tabel tidak sesak (pemilik: "jangan keliatan sesak")
     XT = X0 + WM + G; WT = W - WM - G
     baris = sorted(s.LN, key=lambda x: (URUT_J.get(x['jenis'], 9), int(x['prov'])))
-    nama_j = lambda j: 'Cuaca ekstrem' if j in ('cuaca', 'angin') else 'Kebakaran' if j == 'kebakaran_permukiman' else H.JENIS_LAIN[j][0]   # 22 Nov: 'Kebakaran gedung' menabrak kolom PROV. dan legenda
+    nama_j = lambda j: 'Cuaca ekstrem' if j in ('cuaca', 'angin') else 'Kebakaran' if j == 'kebakaran_permukiman' else H.JENIS_LAIN[j][0]   # 22 Nov: kolom BENCANA sempit
     warna_j = lambda j: H.JENIS_LAIN['angin' if j == 'cuaca' else j][2]
     ikon_j = lambda j: H.JENIS_LAIN['angin' if j == 'cuaca' else j][1] + '_putih'
     sz = 700
@@ -178,16 +178,13 @@ def gambar(dk, H, isi):
     for x in baris:
         if URUT_J.get(x['jenis']) not in [URUT_J.get(j) for j in jenis]: jenis.append(x['jenis'])
     yl = YB - 91440 - LEG + 45720; xl = MX
-    # 22 Nov: lima jenis tidak muat selebar panel (Kebakaran terpotong): jarak dirapatkan dulu, lalu huruf 650 bila masih lebih
-    d = 128016; szl = 700; jarak = 164592
-    for szl in (700, 650, 600):
-        isi_l = sum(d + 45720 + s.lebar_runs([(nama_j(j), H.TEKS, False)], szl) for j in jenis)
-        jarak = min(164592, (MW - isi_l) / max(1, len(jenis) - 1))
-        if jarak >= 109728: break
+    # 22 Nov: lima jenis tidak muat selebar panel peta -> jarak antarlegenda dipersempit secukupnya
+    _lw = sum(128016 + 45720 + s.lebar_runs([(nama_j(j), H.TEKS, False)], 700) for j in jenis); gap_ = 164592
+    while gap_ > 45720 and _lw + gap_ * (len(jenis) - 1) > XT - 91440 - MX: gap_ -= 18288
     for j in jenis:
-        t_ = nama_j(j); lw_ = s.lebar_runs([(t_, H.TEKS, False)], szl)
-        o += s.kotak(xl, yl + (LEG - 45720 - d) // 2, d, d, warna_j(j), 'ellipse') + s.tx(xl + d + 45720, yl, lw_ + 18288, LEG - 45720, [t_], sz=szl, c=H.TEKS, an='ctr', wrap='none')
-        xl += d + 45720 + lw_ + jarak
+        d = 128016; t_ = nama_j(j); lw_ = s.lebar_runs([(t_, H.TEKS, False)], 700)
+        o += s.kotak(xl, yl + (LEG - 45720 - d) // 2, d, d, warna_j(j), 'ellipse') + s.tx(xl + d + 45720, yl, lw_ + 18288, LEG - 45720, [t_], sz=700, c=H.TEKS, an='ctr', wrap='none')
+        xl += d + 45720 + lw_ + gap_
     # ---- kanan: tabel
     o += s.kotak(XT, Y0, WT, YB - Y0, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=2500)
     o += s.tx(XT + 164592, Y0 + 91440, 4000000, 182880, ['RINCIAN LOKASI KEJADIAN'], sz=750, b=True, c=H.NAVY, spc=100)
@@ -218,7 +215,7 @@ def gambar(dk, H, isi):
         """(KK, rumah, lain) untuk tiga lajur pil kolom DAMPAK (pemilik 20 Nov: "gabung aja, pastiin pembagian pillnya dan gaada pengulangan",
         "untuk rumah rusak sedang/berat/ringan/dll gabungin aja jadi pill rumah"). KK: angka KK, atau jiwa bila KK tidak ada. Rumah: "N rumah" dari butir
         kerusakan pertama berbentuk angka + rumah; rincian rusak ringan/sedang/berat sesudahnya dibuang (sudah termasuk N). Lain: sisa butir kerusakan."""
-        m = re.search(r'±?[\d.]+ KK', r['dampak']) or re.search(r'±?[\d.]+ jiwa', r['dampak'])
+        m = re.search(r'±?[\d.]+ KK', r['dampak']) or re.search(r'±?[\d.]+ jiwa', r['dampak']) or re.search(r'[\d.]+ MD', r['dampak'])   # 22 Nov: Simalungun 1 MD
         kk = m[0] if m else None
         butir = [] if r['kerusakan'] in ('–', 'Pendataan') else r['kerusakan'].split(', ')
         rumah = None
@@ -265,7 +262,8 @@ def gambar(dk, H, isi):
             while m < len(baris) and URUT_J.get(baris[m]['jenis']) == URUT_J.get(x['jenis']) and baris[m]['prov'] == x['prov']: m += 1
             pv = H.AKRONIM.get(H.PENDEK(x['prov']), H.PENDEK(x['prov']))
             o += s.tx(kol[1][1] + 54864, y, kol[1][2] - 54864, (m - n) * rp, [pv], sz=sz, b=True, c=H.INK, an='ctr', wrap='none')
-        lok = x.get('lok_tampil') or x.get('lokasi_asli', x['lokasi']); lok = lok if lok.startswith('Kota ') else f'Kab. {lok}'   # 22 Nov: lok_tampil (Kota Jakarta Selatan)
+        lok = x.get('lokasi_asli', x['lokasi']); lok = lok if lok.startswith('Kota ') else f'Kab. {lok}'
+        lok = {'Kota Administrasi Jakarta Selatan': 'Kota Jakarta Selatan'}.get(lok, lok)   # 22 Nov: nama penuh terpotong
         r = isi(x)
         d = min(140208, rp - 9144); xn = kol[2][1] + 54864   # bulatan nomor berwarna jenis di kiri nama kab/kota
         o += s.kotak(xn, y + (rp - d) / 2, d, d, warna_j(x['jenis']), 'ellipse') + s.tx(xn - 30000, y, d + 60000, rp, [str(n + 1)], sz=700, b=True, c='FFFFFF', al='ctr', an='ctr', wrap='none')

@@ -47,7 +47,6 @@
    "tangani": true,
    "perhatian": false,
    "mulai": "2026-11-19",
-   "lok_teks": "Kt. Subulussalam",
    "kondisi_pil": [
     "Belum surut",
     "waspada"
@@ -74,9 +73,8 @@
    "tangani": true,
    "perhatian": false,
    "mulai": "2026-11-21",
-   "lok_teks": "Kab. Paluta",
    "kondisi_pil": [
-    "Dalam penanganan",
+    "Penanganan",
     "tangani"
    ]
   },
@@ -86,7 +84,7 @@
    "lokasi": "Simalungun",
    "status": "berjalan",
    "baru": true,
-   "label": "Cuaca Ekstrem",
+   "label": "Cuaca Ekstrem Kab. Simalungun",
    "angka": {
     "meninggal": 1.0
    },
@@ -100,7 +98,7 @@
    "perhatian": false,
    "mulai": "2026-11-21",
    "kondisi_pil": [
-    "Dalam penanganan",
+    "Penanganan",
     "tangani"
    ]
   },
@@ -124,8 +122,7 @@
    },
    "tangani": false,
    "perhatian": false,
-   "mulai": "2026-11-21",
-   "lok_teks": "Kab. Madina",
+   "mulai": "2026-11-19",
    "kondisi_pil": [
     "Mulai surut",
     "surut"
@@ -137,7 +134,7 @@
    "lokasi": "Kota Dumai",
    "status": "belum",
    "baru": true,
-   "label": "Banjir",
+   "label": "Banjir Kota Dumai",
    "angka": {},
    "teks": {
     "dampak": "Pendataan",
@@ -228,7 +225,7 @@
   {
    "jenis": "longsor",
    "prov": "31",
-   "lokasi": "Kota Adm. Jakarta Selatan",
+   "lokasi": "Kota Administrasi Jakarta Selatan",
    "status": "berjalan",
    "baru": true,
    "label": "Tanah Longsor",
@@ -242,13 +239,11 @@
    "tangani": true,
    "perhatian": false,
    "mulai": "2026-11-21",
-   "lokasi_asli": "Kota Administrasi Jakarta Selatan",
-   "lok_tampil": "Kota Jakarta Selatan",
-   "lok_teks": "Kota Jakarta Selatan",
    "kondisi_pil": [
     "Kaji cepat BPBD",
     "tangani"
-   ]
+   ],
+   "lok_teks": "Kota Jakarta Selatan"
   },
   {
    "jenis": "longsor",
@@ -293,7 +288,7 @@
    "perhatian": false,
    "mulai": "2026-11-21",
    "kondisi_pil": [
-    "Jalan bisa dilalui",
+    "Kondusif",
     "selesai"
    ]
   },
@@ -365,7 +360,7 @@
    "perhatian": false,
    "mulai": "2026-11-19",
    "kondisi_pil": [
-    "Air 15–100 cm",
+    "Belum surut",
     "waspada"
    ]
   },
@@ -436,7 +431,6 @@
    "tangani": true,
    "perhatian": false,
    "mulai": "2026-11-21",
-   "lok_teks": "Kab. MBD",
    "kondisi_pil": [
     "Pendataan",
     "tangani"
