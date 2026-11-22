@@ -11,6 +11,7 @@ import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
 import {kirimEmail as kirimSurel} from "./keluar.js";
+import {uraiCsv} from "../public/inti/impor.js";
 import {halamanAdmin} from "./statistik.js";
 import {tautkanLaporanRegu, tugasRegu} from "./instansi.js";
 import {halamanPosko, HALAMAN_STAF} from "./admin_halaman.js";
@@ -326,26 +327,12 @@ async function tambahKontak(env, req, kini) {
   return json({kontak: await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt WHERE perusahaan_id = ?").bind(c.v.perusahaan_id).first()}, 201);
 }
 /* CSV: baris pertama = kepala (wajib perusahaan_id dan nama_pt; opsional kontak,email,wa,telepon,catatan), pemisah , atau ;, kutip ganda untuk isi bertanda baca */
-export function uraiCsvKontak(teks) {
-  const baris = []; let b = [], f = "", q = false;
-  const s = String(teks).replace(/^﻿/, "");
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (q) { if (c === '"') { if (s[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
-    else if (c === '"') q = true;
-    else if (c === "," || c === ";") { b.push(f); f = ""; }
-    else if (c === "\n" || c === "\r") { if (c === "\r" && s[i + 1] === "\n") i++; b.push(f); f = ""; if (b.some(x => x.trim())) baris.push(b); b = []; }
-    else f += c;
-  }
-  b.push(f); if (b.some(x => x.trim())) baris.push(b);
-  return baris;
-}
 async function imporKontak(env, req, kini) {
   const mod = await modOK(env, req); if (!mod) return tolakMod();
   const b = await bacaBody(req, MAKS_CSV + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   if (typeof b.o.csv !== "string" || !b.o.csv.trim()) return gagal(400, "csv wajib (teks CSV dengan baris kepala)");
   if (b.o.csv.length > MAKS_CSV) return gagal(413, `csv ${b.o.csv.length} karakter, maksimal ${MAKS_CSV}`);
-  const [kepala, ...isi] = uraiCsvKontak(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
+  const [kepala, ...isi] = uraiCsv(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
   if (!kol.includes("perusahaan_id") || !kol.includes("nama_pt")) return gagal(400, "baris kepala wajib memuat perusahaan_id dan nama_pt");
   const dikenal = ["perusahaan_id", "nama_pt", "kontak", "email", "wa", "telepon", "catatan"], asing = kol.filter(k => !dikenal.includes(k));
   if (asing.length) return gagal(400, `kolom tidak dikenal: ${asing.join(", ")} (boleh: ${dikenal.join(", ")})`);

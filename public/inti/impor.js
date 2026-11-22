@@ -1,6 +1,8 @@
-/* Pembaca berkas .xlsx untuk impor data kejadian dan dampak di /meja (JK-20). Fungsi murni tanpa DOM dan tanpa pustaka:
+/* Rumah tunggal impor (FITUR.md §7.5, WEBSITE.md §6d): pengurai CSV dan pembaca .xlsx untuk semua modul, layar dan Worker.
+   Gerbang tests/agen/gerbang-impor.test.mjs menolak pengurai CSV tulisan tangan di berkas lain.
+   Pembaca berkas .xlsx (asal: impor data kejadian dan dampak di /meja, JK-20). Fungsi murni tanpa DOM dan tanpa pustaka:
    zip dibuka dengan DecompressionStream('deflate-raw') (peramban dan Node 18+), XML dibaca dengan ekspresi reguler (sharedStrings, sel inline, tanggal Excel).
-   Dipakai public/bnpb/meja.js; diuji tests/bnpb/meja_impor.test.mjs. Kolom lembar = nama kolom spek (GET /api/meja/spek), baris kunci di bawah baris label.
+   Dipakai public/bnpb/meja.js, src/posko.js, src/lapangan_panel.js, public/admin/kontak.js, public/logpal/logpal.js, scripts/logpal/impor.mjs; diuji tests/inti/impor.test.mjs. Kolom lembar = nama kolom spek (GET /api/meja/spek), baris kunci di bawah baris label.
    Aturan: sel kosong = belum didata (tidak dikirim), 0 = nihil/terjawab. Batas: zip biasa (bukan zip64), lembar pertama bernama "Data" atau lembar pertama. */
 
 export const MAKS_BARIS = 50, MAKS_BYTE = 240 * 1024;   // batas POST /api/meja/impor: 50 baris dan 256 KB per kirim (disisakan ruang), 5 kirim per jam
@@ -114,4 +116,29 @@ export async function potong(a, n = MAKS_BARIS, maks = MAKS_BYTE) {
   }
   if (cur.length) out.push(cur);
   return out;
+}
+
+/* ---------- CSV ---------- */
+/* Kutip ganda RFC 4180 (pemisah dan baris baru boleh di dalam kutip), BOM dibuang, CRLF/LF, baris kosong dibuang.
+   pisah: "," atau ";"; tanpa pisah ditebak dari baris pertama (Excel Indonesia menyimpan dengan ;). Hasil: larik baris, tiap baris larik sel. */
+export function uraiCsv(teks, pisah) {
+  const t = String(teks ?? "").replace(/^\uFEFF/, ""), b0 = t.slice(0, Math.max(0, t.search(/[\r\n]|$/))).replace(/"[^"]*"/g, "");   // tebakan pemisah mengabaikan isi kutip
+  const p = pisah || ((b0.match(/;/g) || []).length > (b0.match(/,/g) || []).length ? ";" : ",");
+  const out = []; let r = [], sel = "", kutip = false;
+  const tutup = () => { r.push(sel); sel = ""; if (r.some(x => x.trim())) out.push(r); r = []; };
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (kutip) { if (c === '"') { if (t[i + 1] === '"') { sel += '"'; i++; } else kutip = false; } else sel += c; }
+    else if (c === '"') kutip = true;
+    else if (c === p) { r.push(sel); sel = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && t[i + 1] === "\n") i++; tutup(); }
+    else sel += c;
+  }
+  if (sel || r.length) tutup();
+  return out;
+}
+/* baris pertama = kepala; tiap baris lain jadi objek {kepala: sel}. Sel yang tidak ada = undefined. */
+export function csvObjek(teks, pisah) {
+  const [kepala = [], ...isi] = uraiCsv(teks, pisah);
+  return isi.map(a => Object.fromEntries(kepala.map((k, i) => [k, a[i]])));
 }

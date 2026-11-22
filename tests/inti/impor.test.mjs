@@ -1,10 +1,11 @@
-// Pembaca .xlsx impor Data BPBD (public/bnpb/meja_impor.js): zip, sharedStrings, tanggal Excel, pemetaan kolom spek. Tanpa jaringan dan tanpa pustaka.
-// Jalankan: node --test tests/bnpb/meja_impor.test.mjs
+// Pembaca .xlsx impor Data BPBD (public/inti/impor.js): zip, sharedStrings, tanggal Excel, pemetaan kolom spek. Tanpa jaringan dan tanpa pustaka.
+// Jalankan: node --test tests/inti/impor.test.mjs
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {deflateRawSync} from "node:zlib";
-import {bacaXlsx, barisDariLembar, potong, tanggalExcel, angkaId, ubahSel} from "../../public/bnpb/meja_impor.js";
+import {bacaXlsx, barisDariLembar, potong, tanggalExcel, angkaId, ubahSel} from "../../public/inti/impor.js";
+import * as CSV from "../../public/inti/impor.js";
 import "../../src/worker.js";   // memecah siklus impor meja.js <-> meja_spek.js
 import {MEJA} from "../../src/meja_spek.js";
 
@@ -79,3 +80,13 @@ test("lembar besar: kemajuan dilaporkan tiap 200 baris", async () => {
   const h = await barisDariLembar(rows, KOLOM, (a, b) => lap.push([a, b]));
   assert.equal(h.baris.length, 450); assert.deepEqual(lap.map(x => x[0]), [200, 400]);
 });
+
+test("uraiCsv: kutip ganda, pemisah dan baris baru di dalam kutip, BOM, CRLF, baris kosong dibuang", () => {
+  const {uraiCsv, csvObjek} = CSV
+  assert.deepEqual(uraiCsv('\uFEFFa,b\r\n"x, ""y""","baris\nbaru"\r\n\r\n,\n'), [["a", "b"], ['x, "y"', "baris\nbaru"]])
+  assert.deepEqual(uraiCsv("nama;kab\nBudi, S.T.;Pulang Pisau\n"), [["nama", "kab"], ["Budi, S.T.", "Pulang Pisau"]], "titik koma ditebak dari baris pertama")
+  assert.deepEqual(uraiCsv("a;b\n1;2", ","), [["a;b"], ["1;2"]], "pisah tegas menang atas tebakan")
+  assert.deepEqual(uraiCsv('"a;b;c",d\n1,2'), [["a;b;c", "d"], ["1", "2"]], "titik koma di dalam kutip tidak ikut dihitung")
+  assert.deepEqual(uraiCsv(""), []); assert.deepEqual(uraiCsv("a,b"), [["a", "b"]])
+  assert.deepEqual(csvObjek("kode,nama\n62,Kalteng\n63"), [{kode: "62", nama: "Kalteng"}, {kode: "63", nama: undefined}])
+})

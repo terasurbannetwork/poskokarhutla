@@ -1,11 +1,11 @@
 /* Meja Kerja petugas BPBD (/meja). Masuk dengan kode di fragmen #k= (disimpan di peramban ini, bukan di URL), tanpa akun.
    Formulir dibangun dari GET /api/meja/spek; daftar dan perpindahan status lewat /api/meja/catatan. Tanpa skrip/gaya inline (CSP ketat).
-   Semua teks dari data lewat esc(). Modul ES (impor kelengkapan.js dan meja_impor.js).
+   Semua teks dari data lewat esc(). Modul ES (impor kelengkapan.js dan /inti/impor.js).
    Meja "Data kejadian dan dampak" (kolom `bagian` di spek): formulir per bagian yang bisa dilipat, pilihan Nihil per bagian, meter kelengkapan hidup (debounce),
    draf isian tersimpan di perangkat, impor .xlsx per 50 baris. */
 import {kelengkapan, butir, BAGIAN} from "/inti/kelengkapan.js";
 import {periksa, gambar as gambarSpek, dariMeja} from "/inti/spek.js";
-import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
+import {bacaXlsx, barisDariLembar, potong, angkaId} from "/inti/impor.js";
 import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/titik_pengungsian.js";
 {
   const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15;

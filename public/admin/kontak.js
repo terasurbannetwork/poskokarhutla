@@ -123,22 +123,6 @@
     gambar();
   }
 
-  /* CSV: koma atau titik koma (Excel Indonesia), kutip ganda boleh memuat pemisah dan baris baru */
-  function uraiCsv(t) {
-    t = t.replace(/^﻿/, "");
-    const pisah = (t.split("\n")[0].match(/;/g) || []).length > (t.split("\n")[0].match(/,/g) || []).length ? ";" : ",";
-    const out = []; let row = [], sel = "", kutip = false;
-    for (let i = 0; i < t.length; i++) {
-      const c = t[i];
-      if (kutip) { if (c === '"' && t[i + 1] === '"') { sel += '"'; i++; } else if (c === '"') kutip = false; else sel += c; }
-      else if (c === '"') kutip = true;
-      else if (c === pisah) { row.push(sel); sel = ""; }
-      else if (c === "\n" || c === "\r") { if (c === "\r" && t[i + 1] === "\n") i++; row.push(sel); out.push(row); row = []; sel = ""; }
-      else sel += c;
-    }
-    if (sel || row.length) { row.push(sel); out.push(row); }
-    return out.filter(r => r.some(x => x.trim()));
-  }
   /* awalan rumus (= + - @) dinetralkan dengan ' hanya di kolom teks bebas; kolom nomor dijaga server (digit saja), jadi tidak dirusak */
   const BEBAS = new Set(["nama", "jabatan", "lembaga", "ajudan", "catatan", "kab"]);
   const selCsv = (v, c) => { v = v == null ? "" : String(v); const rumus = BEBAS.has(c) && /^[=+\-@]/.test(v); return rumus || /[",;\n\r]/.test(v) ? '"' + (rumus ? "'" : "") + v.replace(/"/g, '""') + '"' : v; };
@@ -148,6 +132,7 @@
     a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   }
   async function impor(berkas) {
+    const {uraiCsv} = await import("/inti/impor.js");   // pengurai CSV bersama (FITUR §7.5)
     const sel = uraiCsv(await berkas.text()), kepala = (sel.shift() || []).map(x => x.trim().toLowerCase());
     const hilang = ["nama", "jabatan", "kategori"].filter(c => !kepala.includes(c));
     if (hilang.length) { pesanImpor = {teks: "Judul kolom tidak ada: " + hilang.join(", ")}; return gambar(); }

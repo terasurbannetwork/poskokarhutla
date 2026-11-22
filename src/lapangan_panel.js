@@ -5,7 +5,8 @@
    Daftar orang TIDAK memuat wa/email mentah, dan vektor wajah tidak pernah keluar dari Worker.
    ponytail: satu impor memuat paling banyak 5000 baris dan kueri dikelompokkan per batch D1; di Workers Free (CPU 10 ms) impor sebesar itu butuh paket berbayar, pecah per unit bila terpotong. */
 import {gagal, json, acak, bacaBody, normalWA, adminOK, sha} from "./worker.js";
-import {superOK, modOK, tx, num, RE_EMAIL, uraiCsvKontak} from "./posko.js";
+import {superOK, modOK, tx, num, RE_EMAIL} from "./posko.js";
+import {uraiCsv} from "../public/inti/impor.js";
 import {modAtauStaf, dalamWilayahStaf, wilayahStaf} from "./staf.js";
 import {laju, lajuIP, kodeBaru} from "./bnpb.js";
 import {JENIS_ORANG, RADIUS_BAWAAN_M, RETENSI_FOTO_MS, tanggalWIB, awalHariWIB} from "./lapangan_konst.js";
@@ -71,7 +72,7 @@ async function impor(env, req, kini) {
   if (b.o.mode !== "pratinjau" && b.o.mode !== "simpan") return gagal(400, "mode harus pratinjau atau simpan");
   if (typeof b.o.csv !== "string" || !b.o.csv.trim()) return gagal(400, "csv wajib (teks CSV dengan baris kepala)");
   if (b.o.csv.length > MAKS_CSV) return gagal(413, `csv ${b.o.csv.length} karakter, maksimal ${MAKS_CSV}`);
-  const [kepala, ...isi] = uraiCsvKontak(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
+  const [kepala, ...isi] = uraiCsv(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
   if (!kol.includes("nama") || !kol.includes("nip")) return gagal(400, "baris kepala wajib memuat nama dan nip");
   const asing = kol.filter(k => !KOLOM_CSV.includes(k));
   if (asing.length) return gagal(400, `kolom tidak dikenal: ${asing.join(", ")} (boleh: ${KOLOM_CSV.join(", ")})`);
