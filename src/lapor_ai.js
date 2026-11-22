@@ -997,6 +997,7 @@ const RUTE = {
   "GET /api/lapor/sekitar": sekitarGet,
   "GET /api/lapor/penting": infoGet("penting"),
   "GET /api/lapor/daerah": infoGet("daerah"),
+  "GET /api/lapor/rapor": infoGet("rapor"),
   "GET /api/lapor/kotak": kotakGet,
   "POST /api/lapor/nilai": nilaiPost,
   "POST /api/lapor/susulan": susulanPost,

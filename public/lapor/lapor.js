@@ -1145,7 +1145,7 @@ async function tarikKotak() {
 }
 
 /* ============ info daerah, prediksi 3 hari, nomor penting: ringkasan langsung di chat (pemilik 19 Nov 2026) ============ */
-const INFO = {info: ["Info dan prediksi daerah", "Hari ini dan 3 hari ke depan", "i-lokasi"], prediksi: ["Prediksi 3 hari", "Hujan, banjir, longsor, asap, angin", "i-kalender"], penting: ["Nomor penting", "BPBD, rumah sakit, polisi, pemadam", "i-telepon"]};
+const INFO = {info: ["Info dan prediksi daerah", "Hari ini, 3 hari ke depan, dan rapor daerah", "i-lokasi"], prediksi: ["Prediksi 3 hari", "Hujan, banjir, longsor, asap, angin", "i-kalender"], penting: ["Nomor penting", "BPBD, rumah sakit, polisi, pemadam", "i-telepon"]};
 let infoMode = "info";
 function tambahInfo(dari, teks) {
   const li = el("li", `${dari} baru`);
@@ -1182,13 +1182,41 @@ async function ambilDaerah(q, tampil) {
       tambahInfo("bot", j.wilayah.desa ? `*Nomor penting sekitar Desa/Kel. ${j.wilayah.desa}*\nKec. ${j.wilayah.kec}, ${j.wilayah.kab}` : `*Nomor penting di ${j.wilayah.kab}*\nJarak dihitung dari kantor BPBD. Pakai lokasi saat ini untuk jarak dari tempat Anda.`);
       kartuPenting(j); $("kartuInfo").append(opsiLanjut(q));
     } else {
+      const rap = infoMode === "info" ? fetch(`/api/lapor/rapor?${qs}`).then(r => r.ok ? r.json() : null).catch(() => null) : null;   // rapor daerah ikut di Info (K89), gagal = dilewati
       const r = await fetch(`/api/lapor/daerah?${qs}`), j = await r.json(); if (!r.ok) throw new Error(j.galat);
       cache.daerah = {q, wilayah: j.wilayah}; simpanCache();
       // info dan prediksi digabung (pemilik 19 Nov 2026): hari ini dengan imbauan, lalu prakiraan 3 hari
       if (j.perHari?.length) { if (infoMode !== "prediksi") kartuPrediksi(j, true); kartuPrediksi(j); } else tambahInfo("bot", infoMode === "prediksi" ? j.prediksi : j.info);
+      const jr = await rap; if (jr) kartuRapor(jr);
       $("kartuInfo").replaceChildren(opsiLanjut(q));
     }
   } catch (e) { tambahInfo("bot", `${e.message || "Data belum bisa dimuat"}. Coba lagi.`); kartuLokasiInfo(); }
+}
+/* rapor daerah (pemilik 22 Nov 2026, KEPUTUSAN-LAPOR-AI K89): angka sama dengan tab Wilayah /akademisi; data kosong tidak ditulis 0 */
+const KELAS_LV = {"Rendah": 0, "Sedang": 1, "Tinggi": 2, "Sangat tinggi": 3};
+function kartuRapor(j) {
+  const li = el("li", "bot baru lp-pred-li"), w = el("div", "lp-pred"), kp = el("div", "lp-pred-kepala"), angka = v => v.toLocaleString("id-ID");
+  const tgl = t => new Date(`${t}T00:00:00Z`).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});
+  const kpIk = el("span", "lp-pred-ik"); kpIk.append(ikon("i-kejadian"));
+  const kpT = el("span", "lp-pred-judul"); kpT.append(el("b", null, "Rapor daerah"), el("small", null, `${j.kab}, ${j.prov}`)); kp.append(kpIk, kpT); w.append(kp);
+  const kisi = el("div", "lp-pred-kisi"), kotak = (judul, sub) => { const c = el("section", "lp-pred-hari"), h4 = el("h4"); h4.append(el("b", null, judul), ...(sub ? [el("small", null, sub)] : [])); c.append(h4); kisi.append(c); return c; };
+  const besar = (c, ik, nilai, ket, kelas = "") => { const d = el("div", `lp-pred-hujan ${kelas}`), t = el("span"); d.append(ikon(ik)); t.append(el("b", null, nilai), el("small", null, ket)); d.append(t); c.append(d); };
+  const chips = (c, xs) => { const a = el("div", "lp-pred-ancaman"); for (const [teks, lv, ik] of xs) { const ch = el("span", `lp-pred-chip ${lv}`); ch.append(ikon(ik), el("span", null, teks)); a.append(ch); } c.append(a); };
+  const r = j.risiko, c1 = kotak("Tingkat risiko");
+  if (r) { const lv = KELAS_LV[r.kelas] ?? 0; besar(c1, "i-kejadian", r.kelas, `${angka(r.kecamatan)} kecamatan${r.kecTinggi ? `, ${angka(r.kecTinggi)} berisiko tinggi` : ""}`, lv >= 2 ? "tinggi" : lv === 1 ? "sedang" : "");
+    if (r.contohTinggi?.length) chips(c1, r.contohTinggi.map(n => [`Kec. ${n}`, "lv1", "i-lokasi"])); }
+  else c1.append(el("small", null, "Belum ada data"));
+  const k = j.kejadian;
+  if (k) { const c2 = kotak("Kejadian setahun terakhir");
+    besar(c2, "i-kalender", angka(k.total), `${k.total ? "kejadian" : "tidak ada kejadian"} tercatat di DIBI BNPB, ${tgl(k.dari)} sampai ${tgl(k.sampai)}`);
+    if (k.jenis.length) chips(c2, k.jenis.map(x => [`${x.jenis} ${angka(x.n)}`, "", IKON_ANCAMAN(x.jenis)])); }
+  const kini = [];
+  for (const x of j.darurat || []) kini.push([`${x.status}: ${x.jenis}${x.berakhir ? ` sampai ${tgl(x.berakhir)}` : ""}`, "lv3", "i-kejadian"]);
+  for (const g of j.gunung || []) kini.push([`Gunung ${g.nama} ${g.tingkat}, ${angka(g.jarakKm)} km`, `lv${g.level - 1}`, "i-kejadian"]);
+  if (j.titik) kini.push([`Titik panas 24 jam: ${angka(j.titik.n)}`, j.titik.n ? "lv1" : "aman", "b-api"]);
+  if (kini.length) { const c = kotak("Kondisi sekarang"); c.style.gridColumn = "1 / -1"; kisi.prepend(c); chips(c, kini); }   // paling mendesak di atas, selebar kartu (tanpa ruang kosong)
+  w.append(kisi); li.append(w); $("logInfo").append(li);
+  requestAnimationFrame(() => $("gulirInfo").scrollTo({top: $("gulirInfo").scrollHeight, behavior: "smooth"}));
 }
 /* prediksi 3 hari sebagai kartu per hari: curah hujan besar berikon, ancaman berwarna per tingkat (pemilik 19 Nov 2026: "bagusin") */
 // ikon pil ancaman (pemilik 21 Nov 2026: "kasih icon")

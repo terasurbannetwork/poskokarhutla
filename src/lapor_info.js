@@ -3,6 +3,7 @@
    Tanpa D1. Yang dikirim ke Overpass OSM hanya koordinat kejadian. Label uji model tidak ditampilkan ke warga (pemilik 19 Nov 2026). */
 import {Besok} from "./lapor_besok.js";
 import {km} from "./lapor_tampil.js";
+import {cincinDari, kotak, dalam} from "./lapor_wilayah.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
 const TINGKAT = ["Normal", "Waspada", "Siaga", "Awas"];
@@ -119,5 +120,53 @@ export function buatInfo({muat, wilayah}) {
     return [200, {wilayah: w, nasional: NOMOR_NASIONAL.map(([n, l]) => ({nomor: n, label: l})), bpbd: [bp(bpbdKab), bp(bpbdProv)].filter(Boolean),
       rs: dekat("rs", 3), puskesmas: dekat("puskesmas", 2), polisi: dekat("polisi", 2)}];
   }
-  return {daerah, sekitar, penting};
+  /* ---------- rapor daerah (pemilik 22 Nov 2026: rapor wilayah /akademisi masuk bot, hanya yang terkait bencana; KEPUTUSAN-LAPOR-AI K89) ----------
+     Angka sama dengan tab Wilayah /akademisi (renderWil, kondisiWil): indeks risiko = rata-rata kecamatan tanpa bobot, kejadian = DIBI setahun,
+     status darurat yang masih berlaku, titik panas 24 jam di dalam batas kab (data lebih tua dari 12 jam = tidak ditampilkan, bukan 0),
+     gunung api level Waspada ke atas dalam 60 km dari pusat kab. Hanya berkas publik; lembaga, logbook, dan kesiapan daerah (R2 staf) tidak ikut. */
+  const namaKab = t => String(t || "").toLowerCase().replace(/^kabupaten\s+/, "").trim();
+  async function rapor(q) {
+    let w = null;
+    if (adaKode(q.kode)) { const d = (await wilayah.cariNama("", q.kode))[0]; w = d ? {...d, desa: null} : null; }
+    else if (q.kode) w = (await wilayah.pusat(String(q.kode)))?.wilayah;
+    else if (Number.isFinite(Number(q.lat)) && Number.isFinite(Number(q.lon)) && q.lat != null) w = await wilayah(Number(q.lat), Number(q.lon));
+    if (!w) return [404, {galat: "Lokasi tidak terbaca sebagai desa di Indonesia."}];
+    const [R, D, S, T, A, G] = await Promise.all(["/banjir/data/risiko_kecamatan.json", "/data/dibi_kejadian.json", "/data/status_darurat.json", "/data/titik24.json",
+      "/banjir/data/abu_gunungapi.json", `/geo/kabupaten/${w.provKode}.json`].map(j => berkas(muat, j)));
+    const nk = namaKab(w.kab), pv = w.provKode, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    // indeks risiko
+    let risiko = null;
+    if (R) { const ki = Object.fromEntries(R.kolom.map((n, i) => [n, i])), kec = R.kec.filter(r => r[ki.prov] === pv && namaKab(r[ki.kab]) === nk), sk = kec.filter(r => r[ki.risiko] != null);
+      if (sk.length) { const skor = sk.reduce((a, r) => a + r[ki.risiko], 0) / sk.length, kelas = R.kelas[R.ambang.filter(x => skor >= x).length];
+        const pend = kec.reduce((a, r) => a + (r[ki.pend] || 0), 0), tinggi = sk.filter(r => r[ki.risiko] >= R.ambang[1]).sort((a, b) => b[ki.risiko] - a[ki.risiko]);
+        risiko = {skor: Math.round(skor), kelas, kecamatan: kec.length, penduduk: pend || null, kecTinggi: tinggi.length, contohTinggi: tinggi.slice(0, 3).map(r => r[ki.kec])}; } }
+    // kejadian DIBI setahun
+    let kejadian = null;
+    if (D) { const xs = D.kejadian.filter(x => x.kab_kode === w.kabKode), per = new Map(); let n = 0, meninggal = 0, terdampak = 0, mengungsi = 0;
+      for (const x of xs) { const k = x.kejadian || 1; n += k; per.set(x.jenis, (per.get(x.jenis) || 0) + k); meninggal += x.meninggal || 0; terdampak += x.terdampak || 0; mengungsi += x.mengungsi || 0; }
+      kejadian = {dari: D.dari, sampai: D.sampai, total: n, jenis: [...per].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([jenis, n]) => ({jenis, n})), meninggal, terdampak, mengungsi}; }
+    // status keadaan darurat yang masih berlaku hari ini
+    // tanpa tanggal berakhir: dianggap berlaku sampai batas pedoman (batas_hari: 14 kab, 31 prov), bukan selamanya
+    const sampaiBatas = x => new Date(Date.parse(`${x.mulai}T00:00:00Z`) + ((x.batas_hari || 14) - 1) * 864e5).toISOString().slice(0, 10);
+    const darurat = S ? S.sk.filter(x => String(x.prov_kode) === pv && (x.skala !== "kabupaten" || x.kab_kode === w.kabKode) && x.mulai && x.mulai <= kini && (x.berakhir ? x.berakhir >= kini : sampaiBatas(x) >= kini))
+      .map(x => ({status: x.status, jenis: x.jenis, skala: x.skala, mulai: x.mulai, berakhir: x.berakhir || null})) : null;
+    // batas kab untuk titik panas dan pusat kab untuk gunung api
+    const f = G?.features?.find(g => namaKab(g.properties.kab) === nk), c = f && cincinDari(f.geometry), b = c && kotak(c);
+    const segar = T?.acuan && Date.now() - Date.parse(T.acuan) < 12 * 36e5;
+    const titik = c && segar ? {n: T.titik.filter(([la, lo]) => lo >= b[0] && lo <= b[2] && la >= b[1] && la <= b[3] && dalam(lo, la, c)).length, acuan: T.acuan} : null;
+    const pusatK = b && [(b[1] + b[3]) / 2, (b[0] + b[2]) / 2];
+    const gunung = pusatK && A ? A.gunung.filter(g => g.level >= 2).map(g => ({nama: g.nama, level: g.level, tingkat: TINGKAT[g.level - 1], jarakKm: Math.round(km(pusatK[0], pusatK[1], g.lat, g.lon))}))
+      .filter(g => g.jarakKm <= 60).sort((a, b) => b.level - a.level || a.jarakKm - b.jarakKm) : null;
+    const tgl = t => new Date(`${t}T00:00:00Z`).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});
+    const angka = v => v.toLocaleString("id-ID");
+    const teks = [`*Rapor daerah: ${w.kab}, ${w.prov}*`,
+      risiko ? `\n*Tingkat risiko bencana: ${risiko.kelas}*\n- ${angka(risiko.kecamatan)} kecamatan${risiko.kecTinggi ? `, ${angka(risiko.kecTinggi)} di antaranya berisiko tinggi` : ""}` : "\n*Tingkat risiko bencana:* belum ada data",
+      darurat?.length ? `\n*Status keadaan darurat berlaku*\n${darurat.map(x => `- ${x.status}: ${x.jenis} (tingkat ${x.skala}), ${tgl(x.mulai)}${x.berakhir ? ` sampai ${tgl(x.berakhir)}` : ""}`).join("\n")}` : "",
+      kejadian ? `\n*Kejadian bencana ${tgl(kejadian.dari)} sampai ${tgl(kejadian.sampai)}: ${angka(kejadian.total)}*${kejadian.jenis.map(x => `\n- ${x.jenis}: ${angka(x.n)}`).join("")}` : "",
+      titik ? `\n*Titik panas 24 jam terakhir:* ${angka(titik.n)}` : "",
+      gunung?.length ? `\n*Gunung api terdekat*\n${gunung.map(g => `- ${g.nama}: ${g.tingkat}, ${angka(g.jarakKm)} km`).join("\n")}` : "",
+      "\nSumber: DIBI BNPB, data.bnpb.go.id, NASA FIRMS, PVMBG, indeks risiko Centurisk97."].filter(Boolean).join("\n");
+    return [200, {wilayah: w, kab: w.kab, prov: w.prov, risiko, kejadian, darurat, titik, gunung, teks}];
+  }
+  return {daerah, sekitar, penting, rapor};
 }

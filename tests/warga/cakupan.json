@@ -1421,6 +1421,7 @@
     "GET /api/lapor/sekitar": "info daerah",
     "GET /api/lapor/penting": "info daerah",
     "GET /api/lapor/daerah": "info daerah",
+    "GET /api/lapor/rapor": "info daerah",
     "GET /api/lapor/kotak": "info daerah",
     "POST /api/lapor/nilai": "info daerah",
     "GET /api/lapor/lacak": "lacak tanpa login",

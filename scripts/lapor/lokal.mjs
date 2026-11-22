@@ -18,11 +18,13 @@ import {putaran, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/
 import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
+import {buatInfo} from "../../src/lapor_info.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "../../src/lapor_gugus.js";
 import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "../../src/media_berkas.js";
 import {HALAMAN_TUNGGU_DOK, tempatRusak} from "../../src/lapor_tampil.js";
 import {jalanOsm} from "../../src/lapor_jalan.js";
 import {JENIS_PW, MAKS_KEC, endpointSah, titikTerdekat, NAMA_HARI, label as labelPw} from "../../src/pw_inti.js";
+
 import {BAHASA, bahasaSah, keIndonesia, dariIndonesia, terjemahUi} from "../../src/lapor_bahasa.js";
 const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `public/lapor/tr/${b}.json`), "utf8")); } catch { return null; } };   // kamus statis, sama dengan Worker
 import {samarkan} from "../../src/samarkan.js";
@@ -54,6 +56,7 @@ function dasarApi() {   // ANTHROPIC_BASE_URL: router API (9router); dari env at
 const model = process.argv.includes("--tanpa-ai") ? null
   : buatModel({kunci: kunciApi(), dasar: dasarApi(), model: process.env.LAPOR_MODEL || undefined, catat: u => console.log(`model ${u.model} masuk ${u.masuk} keluar ${u.keluar} cache ${u.cache ?? 0} ${u.henti}`)});
 const wilayah = buatWilayah(async p => JSON.parse(await fs.promises.readFile(path.join(PUBLIK, p), "utf8")));
+const info = buatInfo({muat: async p => JSON.parse(await fs.promises.readFile(path.join(PUBLIK, p), "utf8")), wilayah});
 
 const baca = () => { try { return JSON.parse(fs.readFileSync(BERKAS, "utf8")); } catch { return {pelapor: {}, sesi: {}, aktif: {}, urut: {}, kotak: {}}; } };
 const simpan = d => { fs.mkdirSync(DIR, {recursive: true, mode: 0o700}); fs.writeFileSync(BERKAS, JSON.stringify(d), {mode: 0o600}); };
@@ -746,6 +749,7 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/penting") return kirim(await penting(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/sekitar") return kirim(await sekitar(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
+    if (j === "/api/lapor/rapor") return kirim(await info.rapor(Object.fromEntries(url.searchParams)));   // satu mesin dengan Worker (src/lapor_info.js)
     if (j === "/api/lapor/alun") return kirim(await alun(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/susulan" && req.method === "POST") return kirim(await susulan(await badan(req)));
     if (j === "/api/lapor/agregat") { // K62, D91-D93: lokal tanpa login (loopback); Worker: hanya sesi kampus mitra /kemitraan, unduhan dicatat
