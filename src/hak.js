@@ -2242,7 +2242,7 @@ export const pfSesiBaru = async (env, tokenSha, profilId, akunId, kini, habis) =
   env.DB.prepare("INSERT INTO instansi_sesi_profil (sesi_sha, profil_id, akun_id, dibuat, kedaluwarsa) SELECT ?1, p.id, p.akun_id, ?4, ?5 FROM instansi_profil p JOIN instansi_akun a ON a.id = p.akun_id WHERE p.id = ?2 AND p.akun_id = ?3 AND p.status = 'aktif' AND a.status = 'aktif'").bind(tokenSha, profilId, akunId, kini, habis),
   env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE profil_id = ?1 AND kedaluwarsa <= ?2").bind(profilId, kini)]))[0].meta.changes === 1;
 export const pfSesiDari = (env, tokenSha, kini) => env.DB.prepare(
-  `SELECT p.id profil_id, p.nama profil_nama, p.jabatan profil_jabatan, p.pin_wajib_ganti, a.id akun_id, a.jenis, a.tingkat, a.wilayah, a.prov, a.kab, a.cakupan, a.username
+  `SELECT p.id profil_id, p.nama profil_nama, p.jabatan profil_jabatan, p.pin_wajib_ganti, a.id akun_id, a.jenis, a.tingkat, a.wilayah, COALESCE(a.prov, CASE WHEN a.tingkat = 'prov' THEN json_extract(a.cakupan, '$[0]') END) prov, a.kab, a.cakupan, a.username
    FROM instansi_sesi_profil s JOIN instansi_profil p ON p.id = s.profil_id AND p.status = 'aktif' JOIN instansi_akun a ON a.id = s.akun_id AND a.status = 'aktif'
    WHERE s.sesi_sha = ?1 AND s.kedaluwarsa > ?2`).bind(tokenSha, kini).first();
 export const pfSesiCabut = (env, tokenSha) => env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE sesi_sha = ?1").bind(tokenSha).run();

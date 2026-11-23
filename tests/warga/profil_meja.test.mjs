@@ -51,6 +51,14 @@ uji("UP-21 meja: sesi profil pemprov Sumatera Barat melihat provinsinya saja; pe
   assert.equal(log.rute, "POST /api/lapor/meja/LA-261101-01/balas".replace("LA-261101-01", "LA-261101-01")); assert.ok(!JSON.stringify(log).includes("Tim BPBD"), "isi pesan tidak masuk log");
 });
 
+uji("meja: akun pemprov hasil buat massal lama (kolom prov kosong, hanya cakupan) tetap melihat provinsinya", async () => {
+  await DB.prepare("UPDATE instansi_akun SET prov = NULL WHERE id = ?").bind(sumbar.id).run();   // bentuk baris buatMassal sebelum 23 Nov 2026
+  try {
+    const d = await api("GET", "/api/lapor/meja", undefined, pakai(sumbar.p)); assert.equal(d.s, 200, d.t.slice(0, 200));
+    assert.ok(d.j.baris.some(x => x.nomor === "LA-261101-01")); assert.ok(!d.j.baris.some(x => x.nomor === "LA-261101-02"));
+  } finally { await DB.prepare("UPDATE instansi_akun SET prov = '13' WHERE id = ?").bind(sumbar.id).run(); }
+});
+
 uji("UP-21 meja: tanpa sesi profil 403; sesi /masuk dengan nomor akun pemda tidak membuka meja; staf BNPB tetap penuh; x-pb wajib untuk non-GET", async () => {
   assert.equal((await api("GET", "/api/lapor/meja", undefined, {})).s, 403);
   const tok = "ab".repeat(32), mk = "mk00000000000001";

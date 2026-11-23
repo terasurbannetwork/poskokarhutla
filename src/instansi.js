@@ -75,7 +75,7 @@ export function susunDefs(kunciKec) {
   const defs = [], pakai = new Set();
   const unik = (dasar, prov) => { let u = dasar; if (pakai.has(u)) u = dasar + PROV[prov][0]; for (let i = 2; pakai.has(u); i++) u = dasar + PROV[prov][0] + i; pakai.add(u); return u; };
   for (const [kode, [s, nama]] of Object.entries(PROV)) {
-    defs.push({jenis: "pemprov", tingkat: "prov", wilayah: `Provinsi ${nama}`, kunci: kode, cakupan: [kode], username: unik("pemprov" + s, kode)});
+    defs.push({jenis: "pemprov", tingkat: "prov", wilayah: `Provinsi ${nama}`, kunci: kode, cakupan: [kode], prov: kode, username: unik("pemprov" + s, kode)});
     defs.push({jenis: "polda", tingkat: "prov", wilayah: `Polda ${kode === "31" ? "Metro Jaya" : nama}`, kunci: kode, cakupan: [kode], username: unik(kode === "31" ? "poldametrojaya" : "polda" + s, kode)});
   }
   for (const [k, nama, cakupan] of KODAM) defs.push({jenis: "kodam", tingkat: "prov", wilayah: `Kodam ${nama}`, kunci: k, cakupan, username: unik("kodam" + k, cakupan[0])});
