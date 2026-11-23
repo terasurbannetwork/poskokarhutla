@@ -58,8 +58,8 @@ test("adaptor gempa: S.tanggal terisi = keterangan Tanggal dan nama berkas memak
   const L = await d.win.UnduhTabelGempa.kumpul(); assert.equal(L.tabel[0].ket, "Tanggal: 15 Nov 2026"); assert.equal(L.iso, "2026-11-15");
   assert.equal(d.win.UnduhTabel.model.namaBerkas({id: "gempa"}, L, "xlsx"), "gempa-provinsi-2026-11-15.xlsx");
 });
-test("adaptor gempa menggambar ulang daftar saat registri siap; peta.js memasang tombol hanya lewat UnduhTabel.tombol()", async () => {
+test("adaptor gempa menggambar ulang daftar saat registri siap; panel.js memasang tombol hanya lewat UnduhTabel.tombol()", async () => {
   const d = dunia({daftar: [reg("gempa", true)]}); vm.runInContext(baca("public/gempa/unduh.js"), d.k); await tunggu(); assert.equal(d.ctx.digambar, 1);
-  const peta = baca("public/gempa/peta.js"); assert.match(peta, /UnduhTabel\?\.tombol\(\)/);
+  const panel = baca("public/gempa/panel.js"); assert.match(panel, /UnduhTabel\?\.tombol\(\)/);
   const ad = baca("public/gempa/unduh.js"); assert.doesNotMatch(ad, /XLSX|jspdf|docx|aoa_to_sheet|autoTable|toBlob/); assert.doesNotMatch(ad, / · /);
 });
