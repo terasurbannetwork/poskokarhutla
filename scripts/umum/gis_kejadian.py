@@ -121,7 +121,7 @@ def ambil(tahun):
                 return kej
         except OSError as e:
             print(f"gis_kejadian {tahun}: percobaan {ke + 1} gagal: {e}", file=sys.stderr)
-        time.sleep(1)
+        time.sleep(2)
     return []
 
 
@@ -145,7 +145,7 @@ def jalan(semua):
         else:
             simpan(th, kej)
             print(f"gis_kejadian {th}: {len(kej)} baris")
-        time.sleep(1)
+        time.sleep(2)
 
 
 CONTOH = """<table><thead><tr><td><b>No.</td><td><b>Kode Identitas Bencana</b></td><td><b>ID Kabupaten</b></td><td><b>Tanggal Kejadian</b></td>
