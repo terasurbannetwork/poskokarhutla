@@ -4,7 +4,7 @@
 
 | Berkas | Isi | Pemilik |
 | --- | --- | --- |
-| `migrations/<nomor berikut>_segel.sql` (kini 0170) | tabel `segel`, `segel_cabut` | warga-api |
+| `migrations/<nomor berikut>_segel.sql` (0170 sudah dipakai LK-03; ambil nomor kosong berikut saat dikerjakan) | tabel `segel`, `segel_cabut` | warga-api |
 | `src/hak.js` bagian Segel | semua SQL segel; `stmtSegel` untuk batch pembeku | warga-api |
 | `src/segel.js` | `buatKode`, `normalKode`, `statusSegel` (murni), rute | warga-api |
 | `src/laporan_karhutla.js`, `src/laporan_bencana.js`, `src/pb_dokumen.js` | panggil `stmtSegel` di titik beku | warga-api |

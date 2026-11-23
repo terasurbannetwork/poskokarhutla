@@ -4,7 +4,7 @@ Kerjakan urut. Tiket yang ditahan Q tidak dikerjakan sebelum pemilik menjawab at
 
 | Tiket | Isi | Pengerja | Bukti siap | Bergantung |
 | --- | --- | --- | --- | --- |
-| SG-01 | Migrasi segel (nomor berikut, kini 0170) + sidik di `tests/warga/migrasi_beku.json` | warga-api | `migrasi_beku.test.mjs`; pemeriksa `migrasi-idempoten` | Q1 |
+| SG-01 | Migrasi segel (nomor kosong berikut saat dikerjakan; 0170 sudah dipakai LK-03) + sidik di `tests/warga/migrasi_beku.json` | warga-api | `migrasi_beku.test.mjs`; pemeriksa `migrasi-idempoten` | Q1 |
 | SG-02 | Bagian Segel di `src/hak.js`: `stmtSegel`, cari, daftar, cabut, pemeriksa tabel | warga-api | `gerbang-d1`, `gerbang-d1-pindai` | SG-01 |
 | SG-03 | `src/segel.js` fungsi murni `buatKode`, `normalKode`, `statusSegel` + U1 sampai U3 | warga-api | U1-U3 hijau | SG-02 |
 | SG-04 | Rute publik `GET /api/verifikasi/<kode>` dengan hitung ulang sidik dan batas laju | warga-api | T6-T8, T11, T13; rute masuk `tests/warga/cakupan.json`; `guard-api`, `security-reviewer` | SG-03 |
