@@ -505,8 +505,9 @@ const m3Anggota = () => { const E = T.hasil?.X.M.ens, a = E && E.e0 >= 0 && E.e0
 const adaM3 = () => m3Anggota().length >= 30;
 function lanjutHtml() {
   const H = T.hasil; if (!H) return ""; const pop = popSel(), ok = adaM3() && T.sk === "dasar";
-  return `<div class="lbl" style="margin-top:14px">Skenario muka sungai <span class="pill l3" style="height:17px;font-size:9.5px">skenario</span></div>
+  return `<div class="lbl" style="margin-top:14px">Skenario muka sungai <span class="pill l3" style="height:17px;font-size:9.5px">hipotesis</span></div>
     <p class="fnd">Hasilnya langsung, tanpa jam. Semua alur sungai di kotak dianggap naik setinggi muka air yang dipilih. Tanah yang lebih rendah dari muka air itu, diukur dari alur terdekat (HAND), ikut tergenang. Dipakai untuk penyaringan awal, bukan prakiraan.</p>
+    <p class="fnd">${ujiHand()}</p>
     <button class="btn sec" id="gnHand" style="width:100%">${T.tampil === "hand" ? "Kembali ke genangan 72 jam" : "Tampilkan skenario muka sungai"}</button>
     <div id="gnHandH">${T.tampil === "hand" ? handHtml() : ""}</div>
     ${bandingHtml()}<div class="lbl" style="margin-top:14px">Pita ketidakpastian hujan</div>
@@ -679,6 +680,12 @@ function dok() {
 }
 
 /* ---------- skenario muka sungai (HAND, sim_hand.js) ---------- */
+/* hasil uji balik dari scripts/banjir/uji_hand.mjs; angka dibaca dari berkasnya, tidak diketik */
+function ujiHand() {
+  if (T.ujiHand === undefined) { T.ujiHand = null; muatJSON("data/lab/uji_hand.json").then(d => { T.ujiHand = d; const p = $("#gnUji"); if (p) p.outerHTML = ujiHand(); }).catch(() => {}); }
+  const u = T.ujiHand?.uji, n = v => String(Math.round(v * 100) / 100).replace(".", ",");
+  return `<span id="gnUji">${u ? `Belum lulus uji balik. Di ${u.nSitus} kecamatan dengan riwayat genangan, tebakan tempat yang sering tergenang tidak lebih baik daripada memilih tanah terendah di kotak (skor ${n(u.csi)} lawan ${n(u.csiPembanding)}; HAND unggul di ${u.situsMenang} kecamatan).` : "Belum lulus uji balik."}</span>`;
+}
 /* warna bangunan per kelas kedalaman lewat feature-state: menggeser hanya mengubah state bangunan yang kelasnya berubah. Ekspresi cat yang
    memuat muka air memaksa MapLibre menyusun ulang semua bangunan (diukur: ~1 detik untuk 95 ribu bangunan di Batujajar) */
 const WARNA_BGN = ["match", ["number", ["feature-state", "d"], 0], 1, "#f6b26b", 2, "#e8742c", 3, "#b8401c", "#e6d9bd"];
