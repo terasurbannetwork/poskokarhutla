@@ -9,8 +9,8 @@
 | `scripts/umum/bencana.py` | pemeriksa bentuk `kemampuan.alat` | `pipa-umum` |
 | `public/banjir/*`, `public/gunungapi/*` | memasang panel di halaman masing-masing (satu baris pemanggil) | `banjir`, `gunungapi-kering` |
 | `src/alat.js` | `GET /api/alat/pos?bencana=`, `GET /api/alat/seri?pos=&jam=24` | `warga-api` |
-| `migrations/<berikut>_sensor_geofon.sql` | tambah jenis `geofon` ke CHECK `sensor_alat.jenis` (tabel dibuat ulang idempoten) | `warga-api` |
-| `tests/alat/*` | uji integrasi rute, uji murni tingkat dan basi | `penulis-gerbang` |
+| `migrations/<berikut>_sensor_geofon.sql` | tambah jenis `geofon` ke CHECK `sensor_alat.jenis` (tabel dibuat ulang idempoten). `sensor_baca` dan `sensor_lapor` punya `REFERENCES sensor_alat (id)` (migrasi 0089): pembuatan ulang wajib menjaga FK dan baris, diperiksa khusus oleh `migrasi-idempoten` | `warga-api`; kontrak alat dan firmware geofon diperiksa agent `sensor` |
+| `tests/warga/alat_*.test.mjs` | uji integrasi rute dan uji murni tingkat dan basi (pola `tests/warga/logbook_sensor.test.mjs`) | `warga-api` (glob `tests/warga/**` sudah miliknya) |
 
 ## Bentuk pos (KEPUTUSAN D2)
 
@@ -36,8 +36,8 @@
 
 ## Sumber luar
 
-Adapter di `src/alat.js` per sumber: `sensor` (D1), `sihka` (baca `public/banjir/data/pos_sungai.json` yang sudah ada), `pvmbg` (baca `gunungapi_status.json` dan `kegempaan.json`). Sumber berizin (Q1) ditambah sebagai adapter baru yang membaca R2 `ews/<sumber>/terkini.json`, diisi Worker terjadwal; jadwal masuk cron tunggal `* * * * *` yang sudah ada (batas 5 jadwal akun Free).
+Adapter di `src/alat.js` per sumber: `sensor` (D1), `sihka` (baca `public/banjir/data/pos_sungai.json` yang sudah ada), `pvmbg` (baca `gunungapi_status.json` dan `kegempaan.json`). Sumber berizin (Q1) ditambah sebagai adapter baru yang membaca `ews/<sumber>/terkini.json` di binding R2 `MEDIA`, diisi Worker terjadwal; jadwal masuk cron tunggal `* * * * *` yang sudah ada (batas 5 jadwal akun Free).
 
 ## CCTV
 
-Daftar kamera di R2 `ews/cctv.json` (bukan di `public/`, karena alamat aliran bisa berisi token): `{id, pos, nama, url_hls, izin: "<surat/tanggal>"}`. Entri tanpa `izin` ditolak saat dimuat.
+Daftar kamera di `ews/cctv.json` pada binding R2 `MEDIA` (bukan di `public/`, karena alamat aliran bisa berisi token): `{id, pos, nama, url_hls, izin: "<surat/tanggal>"}`. Entri tanpa `izin` ditolak saat dimuat.

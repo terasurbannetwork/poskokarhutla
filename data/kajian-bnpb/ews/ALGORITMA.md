@@ -6,7 +6,7 @@
 tingkat(pos):
   bila basi(pos)                     -> "tanpa_data"        (abu, label "Tidak ada data terkini")
   bila pos.sumber == "pvmbg"         -> level resmi PVMBG (Normal, Waspada, Siaga, Awas)
-  bila pos.sumber == "sihka" dan status_resmi ada -> Siaga 3/2/1 dari pengelola (aturan pos_air.js sekarang)
+  bila pos.sumber == "sihka" dan status_resmi ada -> status resmi apa adanya ("Siaga 3/2/1", nama pengelola), tidak dipetakan (KEPUTUSAN D3, Q7)
   bila pos.ambang kosong             -> null               (nilai tampil tanpa warna tingkat)
   selain itu                         -> tingkatAmbang(ambang, nilai)  (fungsi yang sama di src/sensor.js)
 ```
@@ -32,7 +32,7 @@ Angka 0 hanya ditulis bila memang dihitung dari daftar yang ada. Sumber gagal di
 
 ## G4. Grafik seri waktu
 
-- Sensor sendiri: `sensor_baca` per alat 24 jam, paling banyak 288 titik untuk tma dan hujan (tiap 5 menit).
+- Sensor sendiri: `sensor_baca` per alat 24 jam, paling banyak 288 titik untuk tma dan hujan (interval 5 menit, **[BAWAAN SEMENTARA, HIPOTESIS]** KEPUTUSAN Q8).
 - Geofon: ringkasan per menit (maks dan rata-rata), paling banyak 1.440 titik (Q6). Data mentah tidak dikirim ke peramban.
 - Celah lebih dari 2x interval kirim digambar sebagai putus garis, bukan garis lurus yang menyambung.
 

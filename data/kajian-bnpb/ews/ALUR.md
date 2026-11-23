@@ -9,7 +9,7 @@
 ## A2. Sumber luar (SIHKA sekarang, sumber berizin nanti)
 
 1. Pipeline yang sudah ada menarik data (SIHKA lewat `scripts/banjir/*`, MAGMA lewat `scripts/gunungapi/magma.py`).
-2. Sumber berizin baru (bila Q1 dijawab) ditarik Worker terjadwal, di-cache di R2 `ews/<sumber>/terkini.json`, tidak di D1 (D9).
+2. Sumber berizin baru (bila Q1 dijawab) ditarik Worker terjadwal, di-cache di `ews/<sumber>/terkini.json` di binding R2 `MEDIA`, tidak di D1 (D9).
 3. Adapter mengubah tiap sumber ke bentuk pos bersama (KEPUTUSAN D2).
 
 ## A3. Petugas membuka halaman bencana

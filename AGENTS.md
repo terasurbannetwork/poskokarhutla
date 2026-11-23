@@ -532,9 +532,9 @@ Aturan berhentinya sama dengan §2.1. Angka pengisi InaRISK (penduduk karangan, 
 ### 2.37 Panel EWS sensor dan CCTV (`/banjir`, `/gunungapi`: pos sensor, alat terputus, grafik, CCTV): baca dulu, baru bangun
 
 Sebelum menyentuh panel pemantauan alat di halaman banjir dan gunung api (kartu pos, pemberitahuan alat terputus, seri waktu, CCTV, jenis sensor geofon, sumber EWS vendor atau MHEWS), baca dokumen di
-`data/kajian-bnpb/ews/` dengan urutan otoritas ini (mesin layar `public/inti/pantau_alat.*` dan kunci `kemampuan.alat` di `public/bencana.json` milik `inti-layar`; `src/alat.js`, `src/sensor.js`, dan migrasinya milik `warga-api`; pemasangan di `public/banjir/**` milik `banjir`, di `public/gunungapi/**` milik `gunungapi-kering`):
+`data/kajian-bnpb/ews/` dengan urutan otoritas ini (mesin layar `public/inti/pantau_alat.*` dan kunci `kemampuan.alat` di `public/bencana.json` milik `inti-layar`; `src/alat.js`, `src/sensor.js`, migrasinya, dan `tests/warga/alat_*` milik `warga-api` (kontrak alat geofon diperiksa `sensor`); pemasangan di `public/banjir/**` milik `banjir`, di `public/gunungapi/**` milik `gunungapi-kering`):
 
-1. `KEPUTUSAN-EWS.md`: keputusan pemilik K1–K4, rancangan D1–D9, pertanyaan terbuka Q1–Q6 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-EWS.md`: keputusan pemilik K1–K4, rancangan D1–D9, pertanyaan terbuka Q1–Q8 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`EW-*`), `GLOSARIUM.md`.
 
