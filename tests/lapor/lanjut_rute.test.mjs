@@ -7,6 +7,7 @@ import {siapkan, berantai, ADMIN, sha256} from "../warga/_bnpb.mjs";
 import {JPEG_SAH} from "../warga/_bantu.mjs";
 import {profilAktif} from "../warga/_profil.mjs";
 import "../../src/worker.js";
+import * as H from "../../src/hak.js";
 import {bukaBerkas, samarPribadi, kabSama, bersihSesiLanjut} from "../../src/lapor_lanjut.js";
 
 const uji = berantai();
@@ -161,7 +162,7 @@ uji("objek: penjaga x-pb, kuki, jenis yang belum dibuka, isian wajib", async () 
   await DB.prepare("DELETE FROM laju_bnpb").run();
   assert.equal((await tulis({jenis: "rumah", isian: RUMAH}, {cookie: kuki, origin: ASAL})).s, 403, "tanpa x-pb");
   assert.equal((await tulis({jenis: "rumah", isian: RUMAH}, XPB)).s, 401, "tanpa kuki");
-  assert.equal((await tulis({jenis: "jiwa", isian: {}})).s, 400, "jiwa menyusul di LJ-06");
+  assert.equal((await tulis({jenis: "korban", isian: {}})).s, 400, "korban menyusul di LJ-07");
   const r = await tulis({jenis: "rumah", isian: {desa: "Paledang"}}); assert.equal(r.s, 400); assert.ok(r.j.isian.includes("kk") && r.j.isian.includes("tingkat"));
 });
 
@@ -343,4 +344,280 @@ uji("WA: berkas tertutup menutup jalur tim; kunci mesin salah dan jalur web keti
   assert.equal((await api("POST", "/api/lapor/pesan", {wa: ANGGOTA, teks: "data rumah"}, {authorization: "Bearer salah"})).s, 403);
   const web = await api("POST", "/api/lapor/pesan", {wa: ANGGOTA, teks: "data rumah"}, {"x-pb": "1", origin: ASAL}); assert.notEqual(web.j?.status, "data_lanjutan", "jalur web nomor ketikan tidak membuka jalur tim");
   await wa(ANGGOTA, "batal"); assert.equal(await n("lj_sesi"), 0, "batal membuang draf berisi pribadi");
+});
+
+/* ---------- LJ-06: titik pengungsian (register TP) dan jiwa pengungsi, web dan WA. Nomor rekaan. ---------- */
+const TITIK = {nama: "Gedung Serbaguna", desa: "Paledang", jenis_tempat: "terkonsentrasi", tipe_tempat: "fasilitas_umum", tgl_buka: "2026-11-20",
+  keb_air: "ada", keb_pangan: "ada", keb_sandang: "tidak", keb_kesehatan: "tidak", keb_hunian: "tidak", keb_pendidikan: "tidak"};
+const JIWA = {nama: "Sari Rahmawati", umur: 30, jk: "p", desa_asal: "Paledang", masuk: "2026-11-21", kk: "diri", hp: "081234567000", nik: NIK_UJI, rentan: ["lansia", "sakit"], kebutuhan: "obat tekanan darah"};
+const tp = id => DB.prepare("SELECT * FROM titik_pengungsian WHERE id = ?").bind(id).first();
+let tp1, tp2, tpLuar, jiwa1, jiwa2, jiwa3;
+
+uji("titik baru: membuat baris register TP di kab berkas, bertanda pembuat berkas, jejak ada; kab tak dikenal ditolak", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  const r = await tulis({jenis: "titik", isian: TITIK, lat: -6.6, lon: 106.8}); assert.equal(r.s, 201, r.t);
+  tp1 = r.j.objek.titik_id; assert.match(tp1, /^TP-[A-Z2-7]{8}$/); assert.equal(r.j.objek.data.nama, "Gedung Serbaguna");
+  const b = await tp(tp1);
+  assert.equal(b.kab4, "3271"); assert.equal(b.prov, "32"); assert.equal(b.nama, "Gedung Serbaguna"); assert.equal(b.desa, "Paledang"); assert.equal(b.jenis_tempat, "terkonsentrasi");
+  assert.equal(b.buka, "2026-11-20"); assert.equal(b.tutup, null); assert.equal(b.lat, -6.6); assert.equal(b.pembuat, `lapor_lanjut:${berkasId}`);
+  assert.equal(await n("lj_jejak", `objek = '${r.j.objek.id}' AND aksi = 'tambah'`), 1);
+  assert.equal((await tulis({jenis: "titik", isian: {...TITIK, jenis_tempat: "lain"}})).s, 400);
+  await DB.prepare("UPDATE lj_berkas SET kab = '99.99' WHERE id = ?").bind(berkasId).run();
+  const x = await tulis({jenis: "titik", isian: TITIK}); assert.equal(x.s, 409); assert.match(x.j.galat, /belum dikenali/);
+  await DB.prepare("UPDATE lj_berkas SET kab = '32.71' WHERE id = ?").bind(berkasId).run();
+  assert.equal(await n("titik_pengungsian"), 1, "tidak ada baris register karangan");
+});
+
+uji("titik dekat TP terbuka: 409 dengan daftar; paksa membuat baru; titik tanpa lat lon tidak diperiksa", async () => {
+  const d = await tulis({jenis: "titik", isian: {...TITIK, nama: "Lapangan Dekat"}, lat: -6.6005, lon: 106.8}); assert.equal(d.s, 409, d.t);
+  assert.equal(d.j.dekat[0].id, tp1); assert.ok(d.j.dekat[0].jarak_m < 200); assert.equal(await n("titik_pengungsian"), 1);
+  const p = await tulis({jenis: "titik", isian: {...TITIK, nama: "Lapangan Dekat"}, lat: -6.6005, lon: 106.8, paksa: true}); assert.equal(p.s, 201, p.t); tp2 = p.j.objek.titik_id;
+  const jauh = await tulis({jenis: "titik", isian: {...TITIK, nama: "Sekolah Jauh"}, lat: -6.65, lon: 106.85}); assert.equal(jauh.s, 201, jauh.t);
+  assert.equal(await n("titik_pengungsian"), 3);
+  const tanpa = await tulis({jenis: "titik", isian: {...TITIK, nama: "Tanpa Titik"}}); assert.equal(tanpa.s, 201); assert.equal((await tp(tanpa.j.objek.titik_id)).lat, null);
+});
+
+uji("titik tautkan: TP sekab terbuka ditautkan tanpa baris baru dan tidak ditimpa; kab lain, tutup, ganda, kode salah ditolak", async () => {
+  const reg = (id, kab4, tutup = null) => DB.prepare("INSERT INTO titik_pengungsian (id, prov, kab4, nama, jenis_tempat, tutup, dibuat, pembuat) VALUES (?, '32', ?, 'Milik Meja', 'terkonsentrasi', ?, ?, 'meja:uji')").bind(id, kab4, tutup, kini).run();
+  await reg("TP-BBBBBBBB", "3271"); await reg("TP-CCCCCCCC", "3273"); await reg("TP-DDDDDDDD", "3271", "2026-11-22");
+  const sebelum = await n("titik_pengungsian");
+  const l = await tulis({jenis: "titik", isian: {...TITIK, nama: "Nama Lain", tp: "TP-BBBBBBBB"}}); assert.equal(l.s, 201, l.t); assert.equal(l.j.objek.titik_id, "TP-BBBBBBBB");
+  assert.equal(await n("titik_pengungsian"), sebelum, "tidak ada baris baru");
+  const u = await tulis({id: l.j.objek.id, rev: l.j.objek.rev, isian: {...TITIK, nama: "Diubah Berkas"}}); assert.equal(u.s, 200, u.t);
+  assert.equal((await tp("TP-BBBBBBBB")).nama, "Milik Meja", "register buatan orang lain tidak ditimpa");
+  assert.equal((await tulis({jenis: "titik", isian: {...TITIK, tp: "TP-BBBBBBBB"}})).s, 409, "sudah tercatat di berkas ini");
+  assert.equal((await tulis({jenis: "titik", isian: {...TITIK, tp: "TP-CCCCCCCC"}})).s, 404, "kab lain");
+  assert.equal((await tulis({jenis: "titik", isian: {...TITIK, tp: "TP-DDDDDDDD"}})).s, 409, "sudah ditutup");
+  assert.equal((await tulis({jenis: "titik", isian: {...TITIK, tp: "TP-ZZZZZZZZ"}})).s, 404);
+  assert.equal((await tulis({jenis: "titik", isian: {...TITIK, tp: "tp-abc"}})).s, 400);
+  assert.equal(await n("titik_pengungsian"), sebelum);
+  tpLuar = "TP-CCCCCCCC";
+});
+
+uji("titik ubah: nama, desa, bentuk, dan tanggal buka disinkronkan ke register buatan berkas ini; rev kalah tidak menyentuh register", async () => {
+  const o = (await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j.objek.find(x => x.titik_id === tp1);
+  const kalah = await tulis({id: o.id, rev: o.rev + 5, isian: {...TITIK, nama: "Tidak Boleh"}}); assert.equal(kalah.s, 409); assert.equal((await tp(tp1)).nama, "Gedung Serbaguna");
+  const r = await tulis({id: o.id, rev: o.rev, isian: {...TITIK, nama: "Gedung Serbaguna Baru", desa: "Babakan", jenis_tempat: "tidak_terkonsentrasi", tgl_buka: "2026-11-19"}}); assert.equal(r.s, 200, r.t);
+  const b = await tp(tp1); assert.equal(b.nama, "Gedung Serbaguna Baru"); assert.equal(b.desa, "Babakan"); assert.equal(b.jenis_tempat, "tidak_terkonsentrasi"); assert.equal(b.buka, "2026-11-19");
+  assert.equal(r.j.objek.titik_id, tp1);
+});
+
+uji("jiwa: wajib titik berkas ini; kk diri atau kepala keluarga aktif; pribadi terpisah; tanpa titik lokasi; HP wajib bagi kepala keluarga", async () => {
+  await DB.batch([DB.prepare("INSERT INTO lj_berkas (id, induk, kab, status, isian, dibuat, diubah) VALUES (?, 'LA-231126-09', '32.71', 'terbuka', '{}', ?, ?)").bind("e".repeat(16), kini, kini),
+    DB.prepare("INSERT INTO lj_objek (id, berkas, jenis, urut, data, titik_id, oleh, dibuat, diubah) VALUES (?, ?, 'titik', 1, '{}', 'TP-EEEEEEEE', 'uji', ?, ?)").bind("d".repeat(16), "e".repeat(16), kini, kini)]);
+  for (const t of ["TP-EEEEEEEE", tpLuar, "TP-bukan"]) { const x = await tulis({jenis: "jiwa", isian: {...JIWA, titik: t}}); assert.equal(x.s, 400, t); assert.ok(x.j.isian.includes("titik"), t + " " + x.t); }
+  const tanpaHp = await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, hp: undefined}}); assert.equal(tanpaHp.s, 400); assert.ok(tanpaHp.j.isian.includes("hp"));
+  const r = await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1}, lat: -6.6, lon: 106.8}); assert.equal(r.s, 201, r.t); jiwa1 = r.j.objek;
+  assert.equal(jiwa1.titik_id, tp1); assert.equal(jiwa1.data.titik, tp1); assert.equal(jiwa1.pribadi.nama, "Sari Rahmawati"); assert.deepEqual(jiwa1.pribadi.rentan, ["lansia", "sakit"]);
+  assert.equal(jiwa1.data.nama, undefined); assert.equal(jiwa1.lat, null, "lokasi orang tidak disimpan"); assert.ok(!jiwa1.penanda.includes("tanpa_titik"));
+  assert.deepEqual(jiwa1.kurang_foto, {foto: 0, wajah: 1});
+  const j = await DB.prepare("SELECT sebelum, sesudah FROM lj_jejak WHERE objek = ?").bind(jiwa1.id).first(); assert.ok(!/Sari|obat|3171|6281234/.test(JSON.stringify(j)), "jejak tanpa pribadi");
+  const a = await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama: "Rina", kk: jiwa1.id, hp: undefined}}); assert.equal(a.s, 201, a.t); jiwa2 = a.j.objek;
+  for (const kk of ["f".repeat(16), jiwa2.id, "xyz"]) { const x = await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama: "Salah", kk, hp: undefined}}); assert.equal(x.s, 400, kk); assert.ok(x.j.isian.includes("kk")); }
+  const k3 = await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama: "Joko", nik: "3171010101010003"}}); assert.equal(k3.s, 201); jiwa3 = k3.j.objek;
+  assert.equal(await n("lj_objek", `berkas = '${berkasId}' AND jenis = 'jiwa' AND status = 'aktif'`), 4, "tiga baru dan satu dari uji LJ-03");
+});
+
+uji("jiwa: batal titik berjiwa, batal atau ubah kepala keluarga yang masih dirujuk = 409; sesudah rujukan lepas boleh", async () => {
+  const batal = (o, alasan = "salah catat ulang") => api("POST", "/api/lapor/data/batal", {objek: o.id, rev: o.rev, alasan}, {cookie: kuki, ...XPB});
+  const titik = (await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j.objek.find(x => x.titik_id === tp1);
+  assert.equal((await batal(titik)).s, 409); assert.equal((await batal(jiwa1)).s, 409);
+  const u = await tulis({id: jiwa1.id, rev: jiwa1.rev, isian: {...JIWA, titik: tp1, kk: jiwa3.id}}); assert.equal(u.s, 409, "kk jiwa1 diubah ke orang lain sementara Rina masih merujuk"); assert.match(u.j.galat, /merujuk/);
+  const lepas = await tulis({id: jiwa2.id, rev: jiwa2.rev, isian: {...JIWA, titik: tp1, nama: "Rina", kk: jiwa3.id, hp: undefined}}); assert.equal(lepas.s, 200, lepas.t);
+  const baru = await tulis({id: jiwa1.id, rev: jiwa1.rev, isian: {...JIWA, titik: tp1, kk: jiwa3.id}}); assert.equal(baru.s, 200, "tidak ada yang merujuk lagi: boleh pindah kepala keluarga"); jiwa1 = baru.j.objek;
+  assert.equal((await batal(jiwa1, "orang ini pindah ke desa lain")).s, 200); jiwa1 = null;
+});
+
+uji("wajah: hanya jiwa dewasa yang tidak menolak, maksimal dua, tanpa titik objek; foto biasa ke jiwa dan wajah ke objek lain ditolak", async () => {
+  const B64 = Buffer.from(JPEG_SAH).toString("base64"), foto = b => api("POST", "/api/lapor/data/foto", {data: B64, ...b}, {cookie: kuki, ...XPB});
+  assert.equal((await foto({objek: jiwa3.id})).s, 400, "foto biasa ke jiwa"); assert.equal((await foto({objek: jiwa3.id, jenis: "video"})).s, 400);
+  const rumah = (await tulis({jenis: "rumah", isian: RUMAH})).j.objek; assert.equal((await foto({objek: rumah.id, jenis: "wajah"})).s, 400, "wajah ke rumah");
+  const anak = (await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama: "Anak Kecil", umur: 10, kk: jiwa3.id, hp: undefined}})).j.objek;
+  assert.deepEqual(anak.kurang_foto, {foto: 0, wajah: 0}); const a = await foto({objek: anak.id, jenis: "wajah"}); assert.equal(a.s, 400); assert.match(a.j.galat, /di bawah 18/);
+  const tolakFoto = (await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama: "Tidak Mau", kk: jiwa3.id, hp: undefined, menolak_foto: true}})).j.objek;
+  assert.deepEqual(tolakFoto.kurang_foto, {foto: 0, wajah: 0}); const m = await foto({objek: tolakFoto.id, jenis: "wajah"}); assert.equal(m.s, 400); assert.match(m.j.galat, /menolak/);
+  assert.equal(await n("lj_media", `objek IN ('${anak.id}', '${tolakFoto.id}')`), 0);
+  const w1 = await foto({objek: jiwa3.id, jenis: "wajah", gps: {lat: -6.6, lon: 106.8, akurasi: 5, waktu: Date.now()}}); assert.equal(w1.s, 201, w1.t);
+  assert.deepEqual(w1.j.objek.kurang_foto, {foto: 0, wajah: 0}); assert.equal(w1.j.objek.lat, null, "wajah tidak mengisi titik objek"); assert.equal(w1.j.objek.media[0].jenis, "wajah"); assert.equal(w1.j.objek.media[0].lat, null);
+  const md = await DB.prepare("SELECT kunci_r2, lat, lencana FROM lj_media WHERE id = ?").bind(w1.j.foto).first();
+  assert.match(md.kunci_r2, new RegExp(`^lapor/data/${berkasId}/wajah/[0-9a-f]{16}\\.jpg$`)); assert.equal(md.lat, null);
+  assert.equal((await foto({objek: jiwa3.id, jenis: "wajah"})).s, 201); const tiga = await foto({objek: jiwa3.id, jenis: "wajah"}); assert.equal(tiga.s, 400); assert.match(tiga.j.galat, /Paling banyak 2 foto wajah/);
+  assert.equal(await n("lj_media", `objek = '${jiwa3.id}' AND jenis = 'wajah'`), 2);
+  globalThis.wajahId = w1.j.foto;
+});
+
+uji("wajah dan pribadi jiwa: tim dan staf Pusdalops boleh; akun lembaga tidak boleh wajah; pribadi tersamar untuk staf dan lembaga, rekap tanpa pribadi", async () => {
+  const id = globalThis.wajahId, media = h => api("GET", `/api/lapor/data/media?id=${id}`, undefined, h);
+  assert.equal((await media({cookie: kuki})).s, 200); assert.equal((await media(ADMIN)).s, 200);
+  assert.equal((await media(akunBogor)).s, 404, "akun lembaga kab hanya foto, bukan wajah"); assert.equal((await media(akunJabar)).s, 404); assert.equal((await media({})).s, 404);
+  for (const h of [ADMIN, akunBogor]) {
+    const r = await api("GET", `/api/lapor/data/berkas?id=${berkasId}`, undefined, h); assert.equal(r.s, 200, r.t);
+    const o = r.j.objek.find(x => x.id === jiwa3.id);
+    assert.equal(o.pribadi.nama, "J***"); assert.equal(o.pribadi.hp, "*********7000"); assert.equal(o.pribadi.nik, "************0003");
+    assert.equal(o.pribadi.rentan, "(disembunyikan)"); assert.equal(o.pribadi.kebutuhan, "(disembunyikan)");
+    assert.ok(!/Joko|Sari Rahmawati|obat tekanan|3171010101010003|081234567000|6281234567000/.test(r.t), "tidak ada pribadi jiwa utuh");
+    assert.ok(!/lapor\/data|kunci_r2/.test(r.t));
+  }
+  const p = await api("GET", `/api/lapor/data/berkas?id=${berkasId}`, undefined, akunJabar); assert.equal(p.j.objek, undefined); assert.ok(!/Joko|obat tekanan/.test(p.t));
+  const d = await api("GET", "/api/lapor/data/daftar", undefined, ADMIN); assert.ok(!/Joko|obat tekanan|7000/.test(d.t));
+  const tim = await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki}); assert.equal(tim.j.objek.find(x => x.id === jiwa3.id).pribadi.nama, "Joko");
+  assert.ok(tim.j.rekap.mengungsi >= 3);
+});
+
+/* ---------- LJ-06 WA: mesin murni, perintah "data pengungsian" dan "data pengungsi" ---------- */
+const adaDi = (balasan, nama) => Number(new RegExp(`(\\d+)\\. ${nama}`).exec(balasan)?.[1]);
+const jalan = async (nomor, ...teks) => { let r; for (const t of teks) r = await kata(nomor, t); return r; };
+uji("WA titik pengungsian: urutan butir dari spek, ringkasan, simpan membuat TP; titik dekat meminta konfirmasi sebelum memaksa", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  let r = await kata(ANGGOTA, "data pengungsian"); assert.match(r.j.balasan, /Nama tempat pengungsian/);
+  r = await jalan(ANGGOTA, "Posko WA", "Paledang", "1", "1", "hari ini", "1", "1", "2", "2", "2", "2"); assert.match(r.j.balasan, /Ada MCK/);
+  r = await kata(ANGGOTA, "lewati semua"); assert.match(r.j.balasan, /Kirim foto tempat pengungsian, kurang 1/);
+  r = await kata(ANGGOTA, "", {lokasi: {lat: -6.6003, lon: 106.8}}); assert.match(r.j.balasan, /Titik lokasi diterima/);
+  r = await kata(ANGGOTA, "lewati"); assert.match(r.j.balasan, /Ringkasan tempat pengungsian/); assert.match(r.j.balasan, /Nama tempat pengungsian: Posko WA/); assert.match(r.j.balasan, /Titik lokasi: sudah dibagikan/);
+  assert.equal(await n("titik_pengungsian", "nama = 'Posko WA'"), 0);
+  r = await kata(ANGGOTA, "simpan"); assert.equal(r.s, 200); assert.match(r.j.balasan, /kurang dari 200 m/); assert.match(r.j.balasan, /Gedung Serbaguna Baru/); assert.equal(await n("titik_pengungsian", "nama = 'Posko WA'"), 0);
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /tempat pengungsian nomor \d+ sudah masuk/);
+  const b = await DB.prepare("SELECT * FROM titik_pengungsian WHERE nama = 'Posko WA'").first();
+  assert.equal(b.kab4, "3271"); assert.equal(b.pembuat, `lapor_lanjut:${berkasId}`); assert.equal(b.lat, -6.6003); assert.match(b.buka, /^\d{4}-\d{2}-\d{2}$/);
+  const o = await DB.prepare("SELECT * FROM lj_objek WHERE titik_id = ? AND jenis = 'titik'").bind(b.id).first(); assert.equal(o.oleh, "tim:" + ANGGOTA); assert.equal(JSON.parse(o.data).keb_air, "ada");
+  globalThis.tpWa = b.id;
+  await kata(ANGGOTA, "selesai");
+});
+
+uji("WA jiwa: pilih titik dan kepala keluarga dari daftar bernomor, wajah dari foto, anak tanpa foto, menolak tercatat, HP dan NIK tersamar di balasan", async () => {
+  const mulai = await kata(ANGGOTA, "data pengungsi"); assert.match(mulai.j.balasan, /Tempat pengungsian\*\n1\./);
+  const no = adaDi(mulai.j.balasan, "Posko WA"); assert.ok(no >= 1);
+  let r = await jalan(ANGGOTA, String(no), "Wati WA", "25", "2", "Paledang", "hari ini"); assert.match(r.j.balasan, /Kepala keluarga\*\n1\. Orang ini sendiri kepala keluarga\nBalas dengan nomor\./);
+  r = await kata(ANGGOTA, "1"); assert.match(r.j.balasan, /Nomor HP kepala keluarga/); assert.match(r.j.balasan, /Data pribadi/);
+  r = await kata(ANGGOTA, "081234567001"); assert.match(r.j.balasan, /NIK/);
+  r = await kata(ANGGOTA, "lewati semua"); assert.match(r.j.balasan, /Kirim foto wajah/); assert.match(r.j.balasan, /menolak/);
+  const f = await waFoto(ANGGOTA, {lokasi: {lat: -6.7, lon: 106.9}}); assert.equal(f.s, 200, f.t); assert.match(f.j.balasan, /Ringkasan pengungsi/); assert.match(f.j.balasan, /Foto wajah: 1/);
+  assert.match(f.j.balasan, /Tempat pengungsian: Posko WA/); assert.match(f.j.balasan, /Kepala keluarga: dia sendiri/); assert.match(f.j.balasan, /\*{8}7001/); assert.ok(!f.t.includes("081234567001") && !f.t.includes("6281234567001"));
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /pengungsi nomor \d+ sudah masuk/);
+  const wati = await DB.prepare("SELECT * FROM lj_objek WHERE jenis = 'jiwa' AND oleh = ? AND klien_id LIKE 'wa-%'").bind("tim:" + ANGGOTA).first();
+  assert.equal(wati.titik_id, globalThis.tpWa); assert.equal(wati.lat, null, "lokasi pada foto wajah tidak jadi titik objek"); assert.equal(JSON.parse(wati.pribadi).nama, "Wati WA"); assert.equal(JSON.parse(wati.pribadi).hp, "6281234567001"); assert.equal(JSON.parse(wati.data).kk, "diri");
+  const md = (await DB.prepare("SELECT * FROM lj_media WHERE objek = ?").bind(wati.id).all()).results; assert.equal(md.length, 1); assert.equal(md[0].jenis, "wajah"); assert.equal(md[0].pintu, "wa"); assert.equal(md[0].lat, null);
+  assert.match(md[0].kunci_r2, new RegExp(`^lapor/data/${berkasId}/wajah/[0-9a-f]{16}\\.jpg$`));
+  const r2 = await U.mf.getR2Bucket("MEDIA"); assert.equal((await r2.list({prefix: `lapor/data/${berkasId}/draf/`})).objects.length, 0); assert.ok(await r2.head(md[0].kunci_r2));
+  assert.ok(semuaBalasan.every(t => !t.includes("081234567001") && !t.includes(NIK_UJI)), "tidak ada balasan dengan HP atau NIK utuh");
+
+  r = await kata(ANGGOTA, "lagi"); assert.match(r.j.balasan, /Nama lengkap pengungsi/, "titik, desa asal, dan tanggal masuk jadi bawaan");
+  r = await jalan(ANGGOTA, "Anak WA", "10", "1"); assert.match(r.j.balasan, /Kepala keluarga\*\n1\. Orang ini sendiri kepala keluarga\n2\. keluarga Wati WA/);
+  r = await kata(ANGGOTA, "2"); assert.match(r.j.balasan, /Boleh dilewati/); assert.ok(!/Nomor HP/.test(r.j.balasan), "HP hanya milik kepala keluarga");
+  r = await kata(ANGGOTA, "lewati semua"); assert.match(r.j.balasan, /Ringkasan pengungsi/, "anak: tanpa permintaan foto wajah"); assert.match(r.j.balasan, /Kepala keluarga: keluarga Wati WA/);
+  const tolakAnak = await waFoto(ANGGOTA); assert.equal(tolakAnak.s, 409); assert.match(tolakAnak.j.balasan, /di bawah 18 tahun/);
+  await kata(ANGGOTA, "simpan");
+  const anak = await DB.prepare("SELECT data FROM lj_objek WHERE jenis = 'jiwa' AND oleh = ? AND klien_id LIKE 'wa-%' ORDER BY urut DESC").bind("tim:" + ANGGOTA).first(); assert.equal(JSON.parse(anak.data).kk, wati.id); assert.equal(JSON.parse(anak.data).umur, 10);
+
+  r = await kata(ANGGOTA, "lagi"); r = await jalan(ANGGOTA, "Tolak WA", "40", "1", "1", "tidak ada", "lewati semua"); assert.match(r.j.balasan, /Kirim foto wajah/);
+  r = await kata(ANGGOTA, "menolak"); assert.match(r.j.balasan, /Dicatat: menolak difoto/); assert.match(r.j.balasan, /Ringkasan pengungsi/);
+  await kata(ANGGOTA, "simpan");
+  const tolak = await DB.prepare("SELECT id, data FROM lj_objek WHERE jenis = 'jiwa' AND oleh = ? AND klien_id LIKE 'wa-%' ORDER BY urut DESC").bind("tim:" + ANGGOTA).first();
+  assert.equal(JSON.parse(tolak.data).menolak_foto, true); assert.equal(await n("lj_media", `objek = '${tolak.id}'`), 0);
+  await kata(ANGGOTA, "selesai"); assert.equal(await n("lj_sesi", `wa = '${ANGGOTA}'`), 0);
+});
+
+uji("WA jiwa tanpa tempat pengungsian di berkas: diarahkan mengisi tempat dulu; titik di berkas lain tidak muncul", async () => {
+  await DB.prepare("UPDATE lj_objek SET status = 'batal' WHERE berkas = ? AND jenis = 'jiwa'").bind(berkasId).run();
+  await DB.prepare("UPDATE lj_objek SET status = 'batal' WHERE berkas = ? AND jenis = 'titik'").bind(berkasId).run();
+  const r = await kata(ANGGOTA, "data pengungsi"); assert.equal(r.s, 200); assert.match(r.j.balasan, /Belum ada tempat pengungsian/); assert.equal(await n("lj_sesi", `wa = '${ANGGOTA}'`), 0);
+  await DB.prepare("UPDATE lj_objek SET status = 'aktif' WHERE berkas = ? AND jenis IN ('jiwa', 'titik')").bind(berkasId).run();
+});
+
+/* ---------- LJ-06 sesudah pemeriksaan: persetujuan wajah, teks bersih, batas titik, tutup TP, guard atomik ---------- */
+const hariWib = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+const batalWeb = (o, alasan = "salah catat ulang") => api("POST", "/api/lapor/data/batal", {objek: o.id, rev: o.rev, alasan}, {cookie: kuki, ...XPB});
+
+uji("S2 teks titik bersih: nama dan desa memuat surel atau nomor ditolak 400 dengan butirnya; urutan gerbang foto: jenis salah 400 sebelum objek dicari", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  const a = await tulis({jenis: "titik", isian: {...TITIK, nama: "Posko hubungi budi@contoh.id"}}); assert.equal(a.s, 400); assert.deepEqual(a.j.isian, ["nama"]);
+  const b = await tulis({jenis: "titik", isian: {...TITIK, desa: "Paledang 081234567890"}}); assert.equal(b.s, 400); assert.deepEqual(b.j.isian, ["desa"]);
+  assert.equal((await api("POST", "/api/lapor/data/foto", {objek: "f".repeat(16), jenis: "video", data: "x"}, {cookie: kuki, ...XPB})).s, 400);
+});
+
+uji("S3 batas titik: 30 aktif per berkas = 409; titik baru dibatasi 30 per jam per IP (429)", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  const ada = await n("lj_objek", `berkas = '${berkasId}' AND jenis = 'titik' AND status = 'aktif'`);
+  await DB.batch(Array.from({length: 30 - ada}, (_, i) => DB.prepare("INSERT INTO lj_objek (id, berkas, jenis, urut, data, titik_id, oleh, dibuat, diubah) VALUES (?, ?, 'titik', ?, '{}', ?, 'uji', ?, ?)")
+    .bind(`z${String(i).padStart(15, "0")}`, berkasId, 500 + i, `TP-F${String(i).padStart(7, "0")}`, kini, kini)));
+  const r = await tulis({jenis: "titik", isian: {...TITIK, nama: "Ke-31"}}); assert.equal(r.s, 409); assert.match(r.j.galat, /paling banyak 30/);
+  let s = 0; for (let i = 0; i < 30; i++) s = (await tulis({jenis: "titik", isian: {...TITIK, nama: "Ke-31"}})).s;
+  assert.equal(s, 429, "laju lapor.data.titik 30 per jam");
+  await DB.prepare("DELETE FROM lj_objek WHERE id LIKE 'z%' AND berkas = ?").bind(berkasId).run(); await DB.prepare("DELETE FROM laju_bnpb").run();
+});
+
+uji("R2 batal titik menutup TP buatan berkas ini (hari ini WIB); TP tautan milik pihak lain tidak disentuh; batal tanpa rev yang cocok tidak menutup", async () => {
+  const buat = (await tulis({jenis: "titik", isian: {...TITIK, nama: "Titik Salah Buat"}})).j.objek;
+  assert.equal((await batalWeb({id: buat.id, rev: buat.rev + 9})).s, 409); assert.equal((await tp(buat.titik_id)).tutup, null);
+  assert.equal((await batalWeb(buat)).s, 200); assert.equal((await tp(buat.titik_id)).tutup, hariWib);
+  const tautan = (await tulis({jenis: "titik", isian: {...TITIK, nama: "Tautan Lagi", tp: "TP-BBBBBBBB"}}));
+  if (tautan.s === 409) await DB.prepare("UPDATE lj_objek SET status = 'batal' WHERE berkas = ? AND titik_id = 'TP-BBBBBBBB'").bind(berkasId).run();
+  const t2r = await tulis({jenis: "titik", isian: {...TITIK, nama: "Tautan Lagi", tp: "TP-BBBBBBBB"}}); assert.equal(t2r.s, 201, t2r.t); const t2 = t2r.j.objek; assert.equal(t2.titik_id, "TP-BBBBBBBB");
+  assert.equal((await batalWeb(t2)).s, 200); assert.equal((await tp("TP-BBBBBBBB")).tutup, null, "milik meja: tidak ditutup");
+});
+
+uji("guard atomik di SQL: batal titik berjiwa dan simpan jiwa ke titik yang sudah batal sama-sama changes 0, tidak ada baris tertulis", async () => {
+  const jaga = async stmts => (await H.ljBatch(env, H.pelakuLjTim, stmts))[0].meta.changes;
+  const titik = (await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j.objek.find(x => x.titik_id === tp1);
+  assert.equal(await jaga([H.ljStmtObjekBatal(env, H.pelakuLjTim, titik.id, berkasId, titik.rev, kini, titik.titik_id)]), 0, "masih ada jiwa aktif");
+  const t = (await tulis({jenis: "titik", isian: {...TITIK, nama: "Akan Batal"}})).j.objek; await batalWeb(t);
+  const sebelum = await n("lj_objek", "jenis = 'jiwa'");
+  const baris = {id: "c".repeat(16), berkas: berkasId, jenis: "jiwa", data: "{}", pribadi: null, titik_id: t.titik_id, syaratTitik: t.titik_id, oleh: "uji"};
+  assert.equal(await jaga([H.ljStmtObjekBaru(env, H.pelakuLjTim, baris, kini)]), 0, "titik sudah batal: INSERT jiwa tidak terjadi");
+  assert.equal(await n("lj_objek", "jenis = 'jiwa'"), sebelum);
+  const ada = (await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j.objek.find(x => x.id === jiwa3.id);
+  assert.equal(await jaga([H.ljStmtObjekUbah(env, H.pelakuLjTim, {id: ada.id, berkas: berkasId, data: JSON.stringify(ada.data), pribadi: null, titik_id: t.titik_id, syaratTitik: t.titik_id}, ada.rev, kini)]), 0, "UPDATE jiwa ke titik batal ditolak");
+});
+
+uji("R4 kepala keluarga harus di titik yang sama dengan jiwanya", async () => {
+  const lain = (await tulis({jenis: "titik", isian: {...TITIK, nama: "Titik Lain KK"}, lat: -6.7, lon: 106.9})).j.objek.titik_id;
+  const kk = (await tulis({jenis: "jiwa", isian: {...JIWA, titik: lain, nama: "KK Lain Titik", nik: undefined}})).j.objek;
+  const x = await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama: "Beda Titik", kk: kk.id, hp: undefined}}); assert.equal(x.s, 400); assert.ok(x.j.isian.includes("kk"));
+  const ok = await tulis({jenis: "jiwa", isian: {...JIWA, titik: lain, nama: "Se Titik", kk: kk.id, hp: undefined}}); assert.equal(ok.s, 201, ok.t);
+});
+
+uji("S1 web: ubah jiwa jadi anak atau menolak difoto menghapus baris wajah dan berkas R2, jejak mencatat; tetap dewasa tidak menghapus", async () => {
+  const B64 = Buffer.from(JPEG_SAH).toString("base64"), r2 = await U.mf.getR2Bucket("MEDIA");
+  const buat = async nama => { const o = (await tulis({jenis: "jiwa", isian: {...JIWA, titik: tp1, nama, nik: undefined}})).j.objek;
+    const f = await api("POST", "/api/lapor/data/foto", {objek: o.id, jenis: "wajah", data: B64}, {cookie: kuki, ...XPB}); assert.equal(f.s, 201, f.t);
+    const k = (await DB.prepare("SELECT kunci_r2 FROM lj_media WHERE id = ?").bind(f.j.foto).first()).kunci_r2; assert.ok(await r2.head(k)); return {o: f.j.objek, k}; };
+  const a = await buat("Jadi Anak"), b = await buat("Jadi Menolak"), c = await buat("Tetap Dewasa");
+  const tetap = await tulis({id: c.o.id, rev: c.o.rev, isian: {...JIWA, titik: tp1, nama: "Tetap Dewasa", umur: 41, nik: undefined}}); assert.equal(tetap.s, 200); assert.ok(await r2.head(c.k)); assert.equal(await n("lj_media", `objek = '${c.o.id}'`), 1);
+  const u1 = await tulis({id: a.o.id, rev: a.o.rev, isian: {...JIWA, titik: tp1, nama: "Jadi Anak", umur: 12, kk: a.o.data.kk, nik: undefined, hp: undefined, kk: jiwa3.id}}); assert.equal(u1.s, 200, u1.t);
+  assert.equal(await n("lj_media", `objek = '${a.o.id}'`), 0); assert.equal(await r2.head(a.k), null); assert.deepEqual(u1.j.objek.kurang_foto, {foto: 0, wajah: 0});
+  assert.equal(await n("lj_jejak", `objek = '${a.o.id}' AND aksi = 'hapus_wajah'`), 1);
+  const u2 = await tulis({id: b.o.id, rev: b.o.rev, isian: {...JIWA, titik: tp1, nama: "Jadi Menolak", nik: undefined, menolak_foto: true}}); assert.equal(u2.s, 200, u2.t);
+  assert.equal(await n("lj_media", `objek = '${b.o.id}'`), 0); assert.equal(await r2.head(b.k), null);
+});
+
+uji("S1 WA: ubah umur jadi anak sesudah foto wajah membuang foto draf dan tidak ada lj_media; menolak lewat ubah juga; paksa titik hilang saat lokasi berubah; KK tanpa nama", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  const r2 = await U.mf.getR2Bucket("MEDIA"), draf = async () => (await r2.list({prefix: `lapor/data/${berkasId}/draf/`})).objects.length;
+  const mulai = await kata(ANGGOTA, "data pengungsi"), no = adaDi(mulai.j.balasan, "Posko WA");
+  await jalan(ANGGOTA, String(no), "Umur Ubah", "40", "2", "Paledang", "hari ini", "1", "tidak ada", "lewati semua");
+  let f = await waFoto(ANGGOTA); assert.match(f.j.balasan, /Foto wajah: 1/); assert.equal(await draf(), 1);
+  let r = await kata(ANGGOTA, "ubah umur"); r = await kata(ANGGOTA, "10"); assert.match(r.j.balasan, /Foto wajah: 0/); assert.equal(await draf(), 0, "foto draf dibuang dari R2");
+  assert.ok(!JSON.parse((await DB.prepare("SELECT keadaan FROM lj_sesi WHERE wa = ?").bind(ANGGOTA).first()).keadaan).buang?.length, "daftar buang dikosongkan");
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /sudah masuk/);
+  const o = await DB.prepare("SELECT id FROM lj_objek WHERE jenis = 'jiwa' AND oleh = ? AND klien_id LIKE 'wa-%' ORDER BY urut DESC").bind("tim:" + ANGGOTA).first(); assert.equal(await n("lj_media", `objek = '${o.id}'`), 0);
+  await kata(ANGGOTA, "selesai");
+  // menolak lewat ubah sesudah foto
+  await jalan(ANGGOTA, "data pengungsi", String(no), "Mau Tolak", "40", "1", "Paledang", "hari ini", "1", "tidak ada", "lewati semua");
+  await waFoto(ANGGOTA); assert.equal(await draf(), 1); await kata(ANGGOTA, "ubah menolak foto"); r = await kata(ANGGOTA, "1"); assert.match(r.j.balasan, /Foto wajah: 0/); assert.equal(await draf(), 0);
+  await kata(ANGGOTA, "batal");
+  // paksa hilang saat lokasi berubah
+  await jalan(ANGGOTA, "data pengungsian", "Posko Dekat", "Paledang", "1", "1", "hari ini", "1", "1", "2", "2", "2", "2", "lewati semua");
+  await kata(ANGGOTA, "", {lokasi: {lat: -6.6004, lon: 106.8}}); await kata(ANGGOTA, "lewati");
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /kurang dari 200 m/);
+  const keadaan = async () => JSON.parse((await DB.prepare("SELECT keadaan FROM lj_sesi WHERE wa = ?").bind(ANGGOTA).first()).keadaan);
+  assert.equal((await keadaan()).paksa, true);
+  await kata(ANGGOTA, "", {lokasi: {lat: -6.8, lon: 107.0}}); assert.equal((await keadaan()).paksa, undefined, "lokasi berubah: izin paksa dicabut");
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /sudah masuk/); await kata(ANGGOTA, "selesai");
+  // R3: kepala keluarga tanpa nama tampil "tanpa nama"
+  const tpDekat = (await DB.prepare("SELECT id FROM titik_pengungsian WHERE nama = 'Posko Dekat'").first()).id;
+  await DB.prepare("INSERT INTO lj_objek (id, berkas, jenis, urut, data, pribadi, titik_id, oleh, dibuat, diubah) VALUES (?, ?, 'jiwa', 900, ?, NULL, ?, 'uji', ?, ?)")
+    .bind("8".repeat(16), berkasId, JSON.stringify({titik: tpDekat, kk: "diri", umur: 30, jk: "p", masuk: "2026-11-01", desa_asal: "X"}), tpDekat, kini, kini).run();
+  const m2 = await kata(ANGGOTA, "data pengungsi"), n2 = adaDi(m2.j.balasan, "Posko Dekat");
+  r = await jalan(ANGGOTA, String(n2), "Anggota X", "5", "1", "Paledang", "hari ini"); assert.match(r.j.balasan, /2\. keluarga tanpa nama/);
+  await kata(ANGGOTA, "batal");
 });

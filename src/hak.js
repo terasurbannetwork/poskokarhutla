@@ -1766,11 +1766,12 @@ Object.assign(MATRIKS, {
   lj_tim:              {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
   lj_objek:            {lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca"], lp_cron: ["baca", "ubah"]},
   lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
-  lj_media:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
+  lj_media:            {lj_tim: ["baca", "tambah", "hapus"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
   lj_tanya:            {lj_tim: ["baca", "ubah"], lp_cron: ["baca", "tambah"]},
   lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
   lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
   lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
+  titik_pengungsian:   {lj_tim: ["baca", "tambah", "ubah"]},   // LJ-06: register TP dibuat atau disinkronkan dari objek titik berkas (D6); tp* di atas tetap untuk rute meja
   lj_sesi:             {lj_tim: ["baca", "tambah", "ubah", "hapus"], lp_mesin: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0165: draf percakapan WA tahap 2 (D24), dibuang 24 jam
   lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
@@ -2098,13 +2099,17 @@ export const ljObjekId = (env, p, id) => sedia(env, p, "lj_objek", "baca", `SELE
 export const ljObjekKlien = (env, p, klien) => sedia(env, p, "lj_objek", "baca", `SELECT ${LJ_OBJEK} FROM lj_objek WHERE klien_id = ?1`).bind(klien).first();
 export const ljStmtObjekBaru = (env, p, o, kini) => sedia(env, p, "lj_objek", "tambah",
   `INSERT INTO lj_objek (id, berkas, jenis, urut, data, pribadi, titik_id, desa, lat, lon, klien_id, oleh, dibuat, diubah)
-   SELECT ?1, ?2, ?3, coalesce(max(urut), 0) + 1, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?12 FROM lj_objek WHERE berkas = ?2 AND jenis = ?3`)
-  .bind(o.id, o.berkas, o.jenis, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, o.klien_id ?? null, o.oleh, kini);
+   SELECT ?1, ?2, ?3, coalesce(max(urut), 0) + 1, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?12 FROM lj_objek WHERE berkas = ?2 AND jenis = ?3
+   HAVING (?13 IS NULL OR EXISTS (SELECT 1 FROM lj_objek t WHERE t.berkas = ?2 AND t.jenis = 'titik' AND t.status = 'aktif' AND t.titik_id = ?13))`)
+  .bind(o.id, o.berkas, o.jenis, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, o.klien_id ?? null, o.oleh, kini, o.syaratTitik ?? null);   // syaratTitik (jiwa): titik harus masih aktif saat INSERT, atomik (LJ-06)
 export const ljStmtObjekUbah = (env, p, o, rev, kini) => sedia(env, p, "lj_objek", "ubah",
-  "UPDATE lj_objek SET data = ?3, pribadi = ?4, titik_id = ?5, desa = ?6, lat = ?7, lon = ?8, rev = rev + 1, diubah = ?9 WHERE id = ?1 AND berkas = ?2 AND rev = ?10 AND status = 'aktif'")
-  .bind(o.id, o.berkas, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, kini, rev);
-export const ljStmtObjekBatal = (env, p, id, berkas, rev, kini) => sedia(env, p, "lj_objek", "ubah",
-  "UPDATE lj_objek SET status = 'batal', rev = rev + 1, diubah = ?4 WHERE id = ?1 AND berkas = ?2 AND rev = ?3 AND status = 'aktif'").bind(id, berkas, rev, kini);
+  `UPDATE lj_objek SET data = ?3, pribadi = ?4, titik_id = ?5, desa = ?6, lat = ?7, lon = ?8, rev = rev + 1, diubah = ?9 WHERE id = ?1 AND berkas = ?2 AND rev = ?10 AND status = 'aktif'
+   AND (?11 IS NULL OR EXISTS (SELECT 1 FROM lj_objek t WHERE t.berkas = ?2 AND t.jenis = 'titik' AND t.status = 'aktif' AND t.titik_id = ?11))`)
+  .bind(o.id, o.berkas, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, kini, rev, o.syaratTitik ?? null);
+/* titikId (hanya saat objeknya titik): batal ditolak bila masih ada jiwa aktif di titik itu, atomik di SQL (LJ-06) */
+export const ljStmtObjekBatal = (env, p, id, berkas, rev, kini, titikId = null) => sedia(env, p, "lj_objek", "ubah",
+  `UPDATE lj_objek SET status = 'batal', rev = rev + 1, diubah = ?4 WHERE id = ?1 AND berkas = ?2 AND rev = ?3 AND status = 'aktif'
+   AND (?5 IS NULL OR NOT EXISTS (SELECT 1 FROM lj_objek j WHERE j.berkas = ?2 AND j.jenis = 'jiwa' AND j.status = 'aktif' AND json_extract(j.data, '$.titik') = ?5))`).bind(id, berkas, rev, kini, titikId);
 /* titik dari foto hanya mengisi objek yang belum bertitik (ALGORITMA 3: isian manual didahulukan) */
 export const ljStmtObjekTitik = (env, p, id, lat, lon, kini, g = false) => sedia(env, p, "lj_objek", "ubah",
   `UPDATE lj_objek SET lat = ?2, lon = ?3, diubah = ?4 WHERE id = ?1 AND lat IS NULL${g ? " AND changes() > 0" : ""}`).bind(id, lat, lon, kini);
@@ -2114,6 +2119,8 @@ export const ljStmtJejak = (env, p, j, kini, g = false) => sedia(env, p, "lj_jej
   .bind(j.berkas, j.objek ?? null, j.aksi, j.sebelum ?? null, j.sesudah ?? null, j.pribadi_sidik ?? null, j.oleh, kini);
 export const ljMedia = async (env, p, objek) => (await sedia(env, p, "lj_media", "baca",
   "SELECT id, objek, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu FROM lj_media WHERE objek = ?1 ORDER BY waktu_terima").bind(objek).all()).results;
+export const ljWajahKunci = async (env, p, objek) => (await sedia(env, p, "lj_media", "baca", "SELECT kunci_r2 FROM lj_media WHERE objek = ?1 AND jenis = 'wajah'").bind(objek).all()).results.map(r => r.kunci_r2);
+export const ljStmtWajahHapus = (env, p, objek) => sedia(env, p, "lj_media", "hapus", "DELETE FROM lj_media WHERE objek = ?1 AND jenis = 'wajah' AND changes() > 0").bind(objek);
 export const ljMediaSatu = (env, p, id) => sedia(env, p, "lj_media", "baca",
   "SELECT m.id, m.objek, m.kunci_r2, m.jenis, o.berkas FROM lj_media m JOIN lj_objek o ON o.id = m.objek WHERE m.id = ?1").bind(id).first();
 /* batas jumlah per objek dan jenis dicek di pernyataan yang sama (atomik); changes() = 0 berarti sudah penuh */
@@ -2121,6 +2128,22 @@ export const ljStmtMediaBaru = (env, p, m, maks) => sedia(env, p, "lj_media", "t
   `INSERT INTO lj_media (id, objek, kunci_r2, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu, oleh)
    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE (SELECT count(*) FROM lj_media WHERE objek = ?2 AND jenis = ?4) < ?13`)
   .bind(m.id, m.objek, m.kunci_r2, m.jenis, m.lat ?? null, m.lon ?? null, m.akurasi ?? null, m.waktu_ambil ?? null, m.waktu_terima, m.lencana, m.pintu, m.oleh, maks);
+
+/* LJ-06: register titik pengungsian dari objek `titik` (D6). Baris register yang dibuat berkas ditandai pembuat = "lapor_lanjut:<berkas>"; hanya baris itu yang disinkronkan
+   saat objek diubah. Tulis selalu dalam batch yang sama dengan objek dan dijaga changes() > 0 (jejak sebelumnya). Kueri memakai PK dan indeks titik_pengungsian_kab_koordinat. */
+export const ljTpById = (env, p, id) => sedia(env, p, "titik_pengungsian", "baca", "SELECT id, kab4, nama, tutup, pembuat FROM titik_pengungsian WHERE id = ?1").bind(id).first();
+export const ljTpSekitar = async (env, p, kab4, lat, lon, d) => (await sedia(env, p, "titik_pengungsian", "baca",
+  `SELECT id, nama, lat, lon FROM titik_pengungsian WHERE kab4 = ?1 AND lat BETWEEN ?2 AND ?3 AND lon BETWEEN ?4 AND ?5 AND tutup IS NULL
+   ORDER BY ((lat - ?6) * (lat - ?6) + (lon - ?7) * (lon - ?7)) LIMIT 50`).bind(kab4, lat - d, lat + d, lon - d, lon + d, lat, lon).all()).results;   // terdekat dulu sebelum LIMIT
+export const ljStmtTpBaru = (env, p, t, kini) => sedia(env, p, "titik_pengungsian", "tambah",
+  `INSERT INTO titik_pengungsian (id, prov, kab4, kec, desa, nama, jenis_tempat, lat, lon, kejadian_id, buka, dibuat, pembuat)
+   SELECT ?1, ?2, ?3, NULL, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE changes() > 0`)
+  .bind(t.id, t.kab4.slice(0, 2), t.kab4, t.desa ?? null, t.nama, t.jenis_tempat, t.lat ?? null, t.lon ?? null, t.kejadian_id ?? null, t.buka ?? null, kini, t.pembuat);
+/* batal titik yang TP-nya dibuat berkas ini: tutup TP (dijaga pembuat, belum tutup, dan pernyataan sebelumnya mengubah baris); tautan milik pihak lain tidak disentuh */
+export const ljStmtTpTutup = (env, p, id, tgl, pembuat) => sedia(env, p, "titik_pengungsian", "ubah",
+  "UPDATE titik_pengungsian SET tutup = ?2 WHERE id = ?1 AND pembuat = ?3 AND tutup IS NULL AND changes() > 0").bind(id, tgl, pembuat);
+export const ljStmtTpUbah = (env, p, t) => sedia(env, p, "titik_pengungsian", "ubah",
+  "UPDATE titik_pengungsian SET nama = ?2, desa = ?3, jenis_tempat = ?4, buka = ?5 WHERE id = ?1 AND pembuat = ?6 AND changes() > 0").bind(t.id, t.nama, t.desa ?? null, t.jenis_tempat, t.buka ?? null, t.pembuat);
 
 /* LJ-05: pintu WA tahap 2. Anggota tim aktif = baris lj_tim tanpa dicabut pada berkas yang masih terbuka (D11); draf percakapan di lj_sesi (migrasi 0165, D24). */
 export const ljTimAktif = (env, p, wa) => sedia(env, p, "lj_tim", "baca",

@@ -101,3 +101,51 @@ test("keadaan tidak melewati batas 5500 karakter: isian terlalu panjang ditolak,
   const besar = {...lama, isian: {...lama.isian, ket: "x".repeat(5600)}};
   const t = putaranData({keadaan: besar, pesan: {teks: "RT 1"}, kini: T0}); assert.match(t.balasan, /terlalu panjang/); assert.equal(t.keadaan, besar);
 });
+
+/* ---------- LJ-06: titik pengungsian dan jiwa (konteks titik dan kk dari berkas) ---------- */
+const KONTEKS = {titik: [{id: "TP-AAAAAAAA", nama: "Gedung A"}, {id: "TP-BBBBBBBB", nama: "Masjid B"}], kk: [{id: "k".repeat(16), nama: "Budi", titik: "TP-BBBBBBBB"}, {id: "l".repeat(16), nama: "Ani", titik: "TP-AAAAAAAA"}]};
+const ketikK = (k, teks, extra = {}) => putaranData({keadaan: k, pesan: {teks, ...extra}, kini: T0, konteks: KONTEKS});
+const alurK = (k, ...teks) => teks.reduce((r, t) => ketikK(r.keadaan, t), {keadaan: k});
+
+test("perintah pengungsian dan pengungsi dikenali", () => {
+  for (const t of ["data pengungsian", "Tempat pengungsian", "data pengungsi"]) assert.ok(perintahData(t), t);
+  assert.ok(!perintahData("data pengungsi saya"));
+});
+
+test("titik: butir dari spek (sektor ada atau tidak, tanggal hari ini), bawaan desa untuk lagi, hasil lolos validasi spek", () => {
+  let r = ketik(null, "data pengungsian"); assert.match(r.balasan, /Nama tempat pengungsian/);
+  r = alur(r.keadaan, "Posko X", "Paledang", "1", "2"); assert.match(r.balasan, /Tanggal tempat ini dibuka/);
+  r = ketik(r.keadaan, "hari ini"); assert.equal(r.keadaan.isian.tgl_buka, new Date(T0 + 7 * 36e5).toISOString().slice(0, 10)); assert.match(r.balasan, /Ada kebutuhan air bersih/); assert.match(r.balasan, /1\. ada\n2\. tidak/);
+  r = alur(r.keadaan, "1", "1", "2", "2", "2", "2"); assert.match(r.balasan, /Ada MCK/); r = ketik(r.keadaan, "lewati semua"); assert.equal(r.keadaan.tahap, "foto");
+  r = ketik(r.keadaan, "lewati"); assert.match(r.balasan, /Bentuk pengungsian: terkonsentrasi/); assert.match(r.balasan, /Jenis tempat: tanah lapang/);
+  const s = ketik(r.keadaan, "simpan"); assert.equal(s.simpan.jenis, "titik"); assert.equal(validasi("titik", s.simpan.isian).galat.length, 0); assert.deepEqual(s.keadaan.bawaan, {desa: "Paledang"});
+  assert.equal(ketik(s.keadaan, "lagi").keadaan.butir, "nama");
+});
+
+test("jiwa: tanpa titik di berkas diarahkan dulu; satu titik terisi otomatis; beberapa titik dipilih dengan nomor", () => {
+  const kosong = putaranData({keadaan: null, pesan: {teks: "data pengungsi"}, kini: T0, konteks: {titik: [], kk: []}}); assert.equal(kosong.keadaan, null); assert.match(kosong.balasan, /data pengungsian/);
+  const satu = putaranData({keadaan: null, pesan: {teks: "data pengungsi"}, kini: T0, konteks: {titik: [KONTEKS.titik[0]], kk: []}}); assert.equal(satu.keadaan.isian.titik, "TP-AAAAAAAA"); assert.equal(satu.keadaan.butir, "nama");
+  let r = ketikK(null, "data pengungsi"); assert.match(r.balasan, /Tempat pengungsian\*\n1\. Gedung A\n2\. Masjid B\nBalas dengan nomor\./);
+  assert.match(ketikK(r.keadaan, "3").balasan, /belum sesuai/); r = ketikK(r.keadaan, "2"); assert.equal(r.keadaan.isian.titik, "TP-BBBBBBBB");
+});
+
+test("jiwa: kepala keluarga dari daftar titik itu; rentan boleh banyak; dewasa diminta wajah, anak dan menolak tidak; NIK dan HP tersamar", () => {
+  let r = alurK(null, "data pengungsi", "2", "Wati", "25", "2", "Paledang", "2026-11-21");
+  assert.match(r.balasan, /1\. Orang ini sendiri kepala keluarga\n2\. keluarga Budi\nBalas/); assert.ok(!/Ani/.test(r.balasan), "hanya KK di titik yang dipilih");
+  r = ketikK(r.keadaan, "2"); assert.equal(r.keadaan.isian.kk, "k".repeat(16)); assert.match(r.balasan, /NIK/, "HP hanya untuk kepala keluarga: tidak ditanya");
+  r = alurK(r.keadaan, "3171010101010009"); assert.match(r.balasan, /Kelompok rentan\*\n1\. balita[\s\S]*boleh lebih dari satu/);
+  r = ketikK(r.keadaan, "6 11"); assert.deepEqual(r.keadaan.isian.rentan, ["lansia", "sakit"]); assert.match(r.balasan, /Kebutuhan khusus/);
+  r = ketikK(r.keadaan, "lewati semua"); assert.equal(r.keadaan.tahap, "foto"); assert.match(r.balasan, /Kirim foto wajah/); assert.equal(r.keadaan.isian.menolak_foto, undefined);
+  const tolak = ketikK(r.keadaan, "menolak"); assert.equal(tolak.keadaan.isian.menolak_foto, true); assert.equal(tolak.keadaan.tahap, "ringkas"); assert.ok(fotoMasuk(tolak.keadaan, {i: "f"}, KONTEKS).ditolak, "yang menolak tidak difoto");
+  const f = fotoMasuk(r.keadaan, {i: "f1", lat: -6.6, lon: 106.8}, KONTEKS); assert.equal(f.keadaan.tahap, "ringkas"); assert.equal(f.keadaan.lat, null, "wajah tidak jadi titik");
+  assert.match(f.balasan, /Foto wajah: 1/); assert.match(f.balasan, /Kepala keluarga: keluarga Budi/); assert.match(f.balasan, /\*{12}0009/); assert.ok(!f.balasan.includes("3171010101010009"));
+  assert.match(f.balasan, /Kelompok rentan: lansia, sakit/); assert.ok(!/Titik lokasi/.test(f.balasan));
+  assert.ok(fotoMasuk({...f.keadaan, foto: [{i: "a"}, {i: "b"}]}, {i: "c"}, KONTEKS).ditolak, "paling banyak 2 wajah");
+  const s = ketikK(f.keadaan, "simpan"); assert.equal(validasi("jiwa", s.simpan.isian).galat.length, 0); assert.deepEqual(s.keadaan.bawaan, {titik: "TP-BBBBBBBB", desa_asal: "Paledang", masuk: "2026-11-21"});
+  const anak = alurK(null, "data pengungsi", "1", "Anak", "9", "1", "Paledang", "kemarin", "1", "tidak ada", "lewati semua"); assert.equal(anak.keadaan.tahap, "ringkas", "anak: tanpa foto wajah"); assert.ok(fotoMasuk(anak.keadaan, {i: "x"}, KONTEKS).ditolak);
+  assert.equal(anak.keadaan.isian.masuk, new Date(T0 + 7 * 36e5 - 864e5).toISOString().slice(0, 10));
+});
+
+test("jiwa: lokasi yang dibagikan diabaikan (lokasi orang tidak disimpan); tanpa nama titik ringkasan memakai nama titik", () => {
+  let r = alurK(null, "data pengungsi", "1"); r = ketikK(r.keadaan, "", {lokasi: {lat: -6.6, lon: 106.8}}); assert.equal(r.keadaan.lat, null); assert.ok(!/Titik lokasi diterima/.test(r.balasan));
+});

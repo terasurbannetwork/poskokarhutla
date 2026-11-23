@@ -151,3 +151,8 @@ test("versi beku: sidik stabil terhadap urutan, berubah bila satu objek berubah,
   const c = await L.isiBeku({berkas, semua: [{...x, pribadi: {nama: "Sari R"}}, y], rekap: {}, kondisi: {}, penutupan: {}});
   assert.notEqual(c.sidik, a.sidik);
 });
+
+test("penanda: jiwa tidak pernah bertanda tanpa_titik (lokasi orang tidak disimpan, LJ-06); rumah tanpa titik tetap bertanda", () => {
+  assert.deepEqual(L.penanda({id: "a", jenis: "jiwa", data: {}, pribadi: null, status: "aktif"}), []);
+  assert.deepEqual(L.penanda({id: "b", jenis: "rumah", data: {}, pribadi: null, status: "aktif"}), ["tanpa_titik"]);
+});

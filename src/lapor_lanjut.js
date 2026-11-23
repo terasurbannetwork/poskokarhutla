@@ -11,7 +11,10 @@ import {hakMeja} from "./lapor_ai.js";
 import {modAtauStaf} from "./staf.js";
 import {bakuKab, dalamWilayah} from "./lapor_meja_hak.js";
 import {tglWib} from "./lapor_tampil.js";
-import {rekap, validasi, penanda, kurangFoto, titikObjek} from "./lapor_lanjut_spek.js";
+import {rekap, validasi, penanda, kurangFoto, titikObjek, DEWASA} from "./lapor_lanjut_spek.js";
+import {NAMA_KAB4} from "./siklus_kab.js";
+import {teksBersih} from "./meja_spek.js";
+import {kodeTp, jarakM, BOX, DEKAT_M} from "./pengungsian_titik.js";
 import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, BASI_MS} from "./lapor_lanjut_mesin.js";
 import * as H from "./hak.js";
 
@@ -144,7 +147,8 @@ async function tampilPost(env, req, url, kini) {
 }
 
 /* ---------- LJ-04: simpan objek (rumah dan prasarana), batal, foto ---------- */
-const JENIS_RUTE = new Set(["rumah", "prasarana"]);   // jiwa dan titik di LJ-06, korban di LJ-07, usaha dan kebutuhan di LJ-08: butuh pemeriksaan tambahan
+const JENIS_RUTE = new Set(["rumah", "prasarana", "titik", "jiwa"]);   // korban di LJ-07, usaha dan kebutuhan di LJ-08: butuh pemeriksaan tambahan
+const MAKS_WAJAH = 2, MAKS_TITIK = 30, RE_TP = /^TP-[A-Z2-7]{8}$/;
 const MAKS_FOTO_OBJEK = 10, RE_KLIEN = /^[0-9A-Za-z_-]{8,64}$/, MENIT = 60e3;
 const angka = v => typeof v === "number" && Number.isFinite(v);
 const titikSah = (lat, lon) => angka(lat) && angka(lon) && lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;   // = CHECK lj_objek dan lj_media
@@ -169,6 +173,41 @@ async function objekLengkap(env, b, id) {
   return objekKeluar(o, media, semua, induk?.terkirim ?? null);
 }
 
+/* LJ-06: aturan antarobjek titik pengungsian dan jiwa (D6). Keluaran {tolak} atau {titik_id, tpBaru?, tpUbah?}; tulis register TP ikut batch objek.
+   Register yang dibuat berkas ini bertanda pembuat "lapor_lanjut:<berkas>"; hanya baris itu yang disinkronkan saat titik diubah. */
+async function kaitan(env, t, jenis, v, o, lama, manual) {
+  const semua = (await H.ljObjek(env, TIM, t.b.id)).filter(x => x.status === "aktif").map(x => ({...x, data: JSON.parse(x.data)}));
+  const pembuat = `lapor_lanjut:${t.b.id}`;
+  if (jenis === "jiwa") {
+    const d = v.data, titikSendiri = semua.filter(x => x.jenis === "titik").map(x => x.titik_id);
+    if (!titikSendiri.includes(d.titik)) return {tolak: tolak(400, "Tempat pengungsian itu bukan titik di berkas ini. Isi data tempat pengungsian dulu.", {isian: ["titik"]})};
+    if (d.kk !== "diri" && !semua.some(x => x.jenis === "jiwa" && x.id === d.kk && x.data.kk === "diri" && x.data.titik === d.titik && x.id !== lama?.id)) return {tolak: tolak(400, "Kepala keluarga harus \"diri\" atau pengungsi yang berstatus kepala keluarga di tempat pengungsian yang sama.", {isian: ["kk"]})};
+    if (lama && JSON.parse(lama.data).kk === "diri" && d.kk !== "diri" && semua.some(x => x.jenis === "jiwa" && x.id !== lama.id && x.data.kk === lama.id)) return {tolak: tolak(409, "Masih ada anggota keluarga yang merujuk orang ini sebagai kepala keluarga. Ubah dulu kepala keluarga mereka.")};
+    return {titik_id: d.titik, syaratTitik: d.titik};
+  }
+  for (const f of ["nama", "desa"]) { const g = teksBersih(v.data[f]); if (g) return {tolak: tolak(400, `${f}: ${g}`, {isian: [f]})}; }   // S2: aturan yang sama dengan register meja
+  const d = v.data, reg = {nama: d.nama, desa: d.desa, jenis_tempat: d.jenis_tempat, buka: d.tgl_buka, pembuat};
+  if (lama) return {titik_id: lama.titik_id, ...(lama.titik_id && {tpUbah: {id: lama.titik_id, ...reg}})};
+  const kab4 = t.b.kab4 || (/^\d{2}\.\d{2}$/.test(t.b.kab) ? t.b.kab.replace(".", "") : null);
+  if (!kab4 || !Object.hasOwn(NAMA_KAB4, kab4)) return {tolak: tolak(409, "Kabupaten atau kota berkas ini belum dikenali sistem, jadi tempat pengungsian belum bisa didaftarkan. Hubungi staf BNPB.")};
+  if (semua.filter(x => x.jenis === "titik").length >= MAKS_TITIK) return {tolak: tolak(409, `Satu berkas paling banyak ${MAKS_TITIK} tempat pengungsian. Batalkan yang salah, atau hubungi staf BNPB bila memang lebih banyak.`)};   // S3
+  const tp = o.isian?.tp;
+  if (tp != null) {   // tautkan ke TP register yang sudah ada: kab sama dan belum tutup
+    if (typeof tp !== "string" || !RE_TP.test(tp)) return {tolak: tolak(400, "Kode tempat pengungsian tidak sah.", {isian: ["tp"]})};
+    const r = await H.ljTpById(env, TIM, tp);
+    if (!r || r.kab4 !== kab4) return {tolak: tolak(404, "Tempat pengungsian itu tidak ditemukan di kabupaten atau kota berkas ini.")};   // kab lain sama dengan tidak ada
+    if (r.tutup) return {tolak: tolak(409, "Tempat pengungsian itu sudah ditutup.")};
+    if (semua.some(x => x.jenis === "titik" && x.titik_id === tp)) return {tolak: tolak(409, "Tempat pengungsian itu sudah tercatat di berkas ini.")};
+    return {titik_id: tp};
+  }
+  if (manual && o.paksa !== true) {   // titik baru di dekat TP terbuka: pilih tautkan, kecuali pengguna memaksa
+    const dekat = (await H.ljTpSekitar(env, TIM, kab4, o.lat, o.lon, BOX)).map(x => ({id: x.id, nama: x.nama, jarak_m: Math.round(jarakM(o.lat, o.lon, x.lat, x.lon))})).filter(x => x.jarak_m < DEKAT_M).sort((a, b) => a.jarak_m - b.jarak_m);
+    if (dekat.length) return {tolak: tolak(409, "Ada tempat pengungsian terbuka kurang dari 200 m dari titik ini. Tautkan ke tempat itu, atau kirim ulang dengan paksa bila memang tempat yang berbeda.", {dekat})};
+  }
+  const id = kodeTp();
+  return {titik_id: id, tpBaru: {id, kab4, lat: manual ? o.lat : null, lon: manual ? o.lon : null, kejadian_id: t.b.kejadian_id ?? null, ...reg}};
+}
+
 /* simpan atau ubah satu objek; dipakai pintu web (objekPost) dan pintu WA (LJ-05) supaya validasi, pribadi terpisah, jejak, dan rev satu jalur.
    t = {tim: {wa, peran}, b: berkas, oleh}; o = {jenis | id+rev, isian, lat?, lon?, klien_id?}. Keluaran {kode, isi} (isi = badan JSON jawaban). */
 const tolak = (kode, pesan, tambah = {}) => ({kode, isi: {galat: pesan, ...tambah}});
@@ -190,16 +229,24 @@ async function simpanObjek(env, t, o, kini) {
   if (!JENIS_RUTE.has(jenis)) return tolak(400, "Jenis objek ini belum bisa disimpan.");
   const v = validasi(jenis, o.isian && typeof o.isian === "object" ? o.isian : {});
   if (v.galat.length) return tolak(400, "Isian belum lengkap atau tidak sah.", {isian: v.galat});
-  const manual = o.lat != null || o.lon != null;
+  const manual = jenis !== "jiwa" && (o.lat != null || o.lon != null);   // jiwa tidak punya titik sendiri: lokasi orang tidak disimpan
   if (manual && !titikSah(o.lat, o.lon)) return tolak(400, "Titik di luar Indonesia atau tidak sah.");
+  const kait = jenis === "titik" || jenis === "jiwa" ? await kaitan(env, t, jenis, v, o, lama, manual) : {};
+  if (kait.tolak) return kait.tolak;
   const data = JSON.stringify(v.data), pribadi = Object.keys(v.pribadi).length ? JSON.stringify(v.pribadi) : null;
   if (data.length > 4000 || (pribadi?.length ?? 0) > 2000) return tolak(400, "Isian terlalu panjang.");
-  const baris = {id: ubah ? lama.id : acak(8), berkas: t.b.id, jenis, data, pribadi, desa: v.data.desa ?? null,
+  const baris = {id: ubah ? lama.id : acak(8), berkas: t.b.id, jenis, data, pribadi, titik_id: kait.titik_id ?? null, syaratTitik: kait.syaratTitik ?? null, desa: v.data.desa ?? null,
     lat: manual ? o.lat : ubah ? lama.lat : null, lon: manual ? o.lon : ubah ? lama.lon : null, klien_id: o.klien_id ?? null, oleh: t.oleh};
   const jejak = {berkas: t.b.id, objek: baris.id, aksi: ubah ? "ubah" : "tambah", sebelum: ubah ? lama.data : null, sesudah: data, pribadi_sidik: await sidikPribadi(env, pribadi), oleh: t.oleh};
+  /* S1: jiwa yang kini di bawah 18 tahun atau menolak difoto kehilangan wajahnya (baris dan R2); persetujuan dicek saat isian berubah, bukan hanya saat foto masuk */
+  const kunciWajah = ubah && jenis === "jiwa" && !(v.data.umur >= DEWASA && !v.data.menolak_foto) ? await H.ljWajahKunci(env, TIM, lama.id) : [];
   let r;
   for (let coba = 0; ; coba++) {   // urut berikutnya diambil di SQL; dua simpan serentak bisa bentrok UNIQUE, ulang sekali
-    try { r = await H.ljBatch(env, TIM, [ubah ? H.ljStmtObjekUbah(env, TIM, baris, o.rev, kini) : H.ljStmtObjekBaru(env, TIM, baris, kini), H.ljStmtJejak(env, TIM, jejak, kini, true)]); break; }
+    try {   // objek dulu (r[0] penentu 409), jejak dijaga changes(), lalu register TP dijaga jejak: rev kalah = register tidak tersentuh
+      r = await H.ljBatch(env, TIM, [ubah ? H.ljStmtObjekUbah(env, TIM, baris, o.rev, kini) : H.ljStmtObjekBaru(env, TIM, baris, kini), H.ljStmtJejak(env, TIM, jejak, kini, true),
+        ...(kait.tpBaru ? [H.ljStmtTpBaru(env, TIM, kait.tpBaru, kini)] : []), ...(kait.tpUbah ? [H.ljStmtTpUbah(env, TIM, kait.tpUbah)] : []),
+        ...(kunciWajah.length ? [H.ljStmtWajahHapus(env, TIM, baris.id), H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: baris.id, aksi: "hapus_wajah", sesudah: JSON.stringify({jumlah: kunciWajah.length}), oleh: t.oleh}, kini, true)] : [])]); break;
+    }
     catch (e) {
       const m = String(e?.message);
       if (!ubah && /UNIQUE.*klien_id/i.test(m)) {   // kiriman ulang yang balapan dengan kiriman pertama: tetap idempoten
@@ -209,7 +256,8 @@ async function simpanObjek(env, t, o, kini) {
       if (ubah || coba || !/UNIQUE/i.test(m)) throw e;
     }
   }
-  if (!r[0].meta.changes) return tolak(409, "Data ini sudah diubah orang lain. Muat ulang lalu coba lagi.");
+  if (!r[0].meta.changes) return tolak(409, "Data ini sudah diubah orang lain, atau tempat pengungsiannya baru saja dibatalkan. Muat ulang lalu coba lagi.");
+  if (kunciWajah.length && env.MEDIA) await env.MEDIA.delete(kunciWajah).catch(() => {});
   return {kode: ubah ? 200 : 201, isi: {objek: await objekLengkap(env, t.b, baris.id)}};
 }
 /* POST /api/lapor/data/objek {jenis, isian, lat?, lon?, klien_id?} baru, atau {id, rev, isian, ...} ubah */
@@ -217,10 +265,12 @@ async function objekPost(env, req, url, kini) {
   const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;
   const t = await timTulis(env, req, kini); if (t instanceof Response) return t;
   const bb = await bacaBody(req, 16384); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  if (bb.o?.jenis === "titik" && bb.o.id == null) { const l2 = await lajuIP(env, req, "lapor.data.titik", [[JAM, 30]], kini); if (l2) return l2; }   // S3: titik baru dibatasi
   const r = await simpanObjek(env, t, bb.o || {}, kini);
   return kirim(r.kode, r.isi);
 }
 
+const tutupTp = (lama, kini) => { const hari = tglWib(kini), buka = JSON.parse(lama.data).tgl_buka; return buka && buka > hari ? buka : hari; };
 /* POST /api/lapor/data/batal {objek, rev, alasan}: ketua membatalkan objek mana pun, anggota hanya objek isiannya (KEAMANAN-PRIVASI) */
 async function batalPost(env, req, url, kini) {
   const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;
@@ -233,8 +283,14 @@ async function batalPost(env, req, url, kini) {
   const lama = await H.ljObjekId(env, TIM, o.objek);
   if (!lama || lama.berkas !== t.b.id) return galat(404, "Objek tidak ditemukan.");
   if (t.tim.peran !== "ketua" && lama.oleh !== t.oleh) return galat(403, "Anggota hanya bisa membatalkan data yang diisinya sendiri.");
-  const r = await H.ljBatch(env, TIM, [H.ljStmtObjekBatal(env, TIM, lama.id, t.b.id, o.rev, kini),
-    H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: lama.id, aksi: "batal", sesudah: JSON.stringify({alasan}), oleh: t.oleh}, kini, true)]);
+  if (lama.jenis === "titik" || lama.jenis === "jiwa") {   // LJ-06: titik berpengungsi dan KK yang dirujuk tidak bisa dibatalkan dulu
+    const aktif = (await H.ljObjek(env, TIM, t.b.id)).filter(x => x.status === "aktif" && x.jenis === "jiwa" && x.id !== lama.id).map(x => JSON.parse(x.data));
+    if (lama.jenis === "titik" && aktif.some(d => d.titik === lama.titik_id)) return galat(409, "Masih ada pengungsi di tempat ini. Batalkan atau pindahkan pengungsinya dulu.");
+    if (lama.jenis === "jiwa" && aktif.some(d => d.kk === lama.id)) return galat(409, "Masih ada anggota keluarga yang merujuk orang ini sebagai kepala keluarga. Ubah dulu kepala keluarga mereka.");
+  }
+  const r = await H.ljBatch(env, TIM, [H.ljStmtObjekBatal(env, TIM, lama.id, t.b.id, o.rev, kini, lama.jenis === "titik" ? lama.titik_id : null),
+    H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: lama.id, aksi: "batal", sesudah: JSON.stringify({alasan}), oleh: t.oleh}, kini, true),
+    ...(lama.jenis === "titik" && lama.titik_id ? [H.ljStmtTpTutup(env, TIM, lama.titik_id, tutupTp(lama, kini), `lapor_lanjut:${t.b.id}`)] : [])]);   // R2: TP buatan berkas ini ditutup; tautan milik pihak lain tidak disentuh
   if (!r[0].meta.changes) return galat(409, "Data ini sudah diubah atau dibatalkan. Muat ulang lalu coba lagi.");
   return kirim(200, {objek: lama.id, status: "batal"});
 }
@@ -247,8 +303,16 @@ async function fotoPost(env, req, url, kini) {
   const bb = await bacaBytes(req, 3.6e6); if (bb.galat) return galat(bb.status || 400, bb.galat);
   let o; try { o = JSON.parse(new TextDecoder().decode(bb.b) || "{}"); } catch { return galat(400, "body bukan JSON"); }
   if (!RE_ID.test(String(o?.objek))) return galat(400, "Objek tidak sah.");
+  const wajah = o.jenis === "wajah";   // LJ-06: pengungsi hanya foto wajah (dewasa, tidak menolak); objek lain hanya foto biasa
+  if (o.jenis != null && o.jenis !== "foto" && !wajah) return galat(400, "Jenis foto tidak sah.");   // sebelum membaca objek: isian salah tidak membocorkan ada tidaknya objek
   const ob = await H.ljObjekId(env, TIM, o.objek);
   if (!ob || ob.berkas !== t.b.id || ob.status !== "aktif") return galat(404, "Objek tidak ditemukan.");
+  if (wajah !== (ob.jenis === "jiwa")) return galat(400, wajah ? "Foto wajah hanya untuk pengungsi." : "Pengungsi hanya menerima foto wajah, kirim dengan jenis \"wajah\".");
+  if (wajah) {
+    const d = JSON.parse(ob.data);
+    if (!(d.umur >= DEWASA)) return galat(400, "Foto wajah tidak diminta untuk anak di bawah 18 tahun.");
+    if (d.menolak_foto) return galat(400, "Pengungsi ini menolak difoto.");
+  }
   let mentah = null; try { const s = String(o.data || "").replace(/^data:image\/jpeg;base64,/, ""); if (s.length <= 3.5e6) mentah = Uint8Array.from(atob(s), c => c.charCodeAt(0)); } catch {}
   if (!mentah || mentah.length < 1000 || mentah.length > 2.5 * 1048576 || mentah[0] !== 0xff || mentah[1] !== 0xd8) return galat(400, "Foto harus JPEG, paling besar 2,5 MB.");
   const bersih = bersihMedia("image/jpeg", mentah); if (!bersih) return galat(400, "Struktur foto tidak sah atau rusak.");
@@ -256,21 +320,21 @@ async function fotoPost(env, req, url, kini) {
   if (x && x.kamera === false) return galat(400, "Foto harus diambil langsung dengan kamera ponsel. Tangkapan layar atau gambar hasil sunting tidak diterima.");
   const gpsSah = !!g && titikSah(g.lat, g.lon) && angka(g.akurasi) && g.akurasi >= 0 && g.akurasi <= 1000 && angka(g.waktu) && Math.abs(kini - g.waktu) <= 10 * MENIT;
   const xLok = x && titikSah(x.lat, x.lon) ? {lat: x.lat, lon: x.lon} : null, xWaktu = x && angka(x.waktu) && x.waktu <= kini + 5 * MENIT ? x.waktu : null;
-  if (gpsSah && xLok && kmDua(g.lat, g.lon, xLok.lat, xLok.lon) > 5) return galat(400, "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini.");
-  const meta = gpsSah ? {lencana: "gps", lat: g.lat, lon: g.lon, akurasi: g.akurasi} : xLok ? {lencana: "exif", ...xLok} : {lencana: "tanpa"};
-  const r = await simpanFoto(env, t, ob, bersih, meta, xWaktu, "web", kini);
+  if (!wajah && gpsSah && xLok && kmDua(g.lat, g.lon, xLok.lat, xLok.lon) > 5) return galat(400, "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini.");
+  const meta = wajah ? {lencana: "tanpa"} : gpsSah ? {lencana: "gps", lat: g.lat, lon: g.lon, akurasi: g.akurasi} : xLok ? {lencana: "exif", ...xLok} : {lencana: "tanpa"};   // wajah tanpa lokasi
+  const r = await simpanFoto(env, t, ob, bersih, meta, xWaktu, "web", kini, wajah ? "wajah" : "foto");
   return kirim(r.kode, r.isi);
 }
 /* satu foto bersih ke R2 dan lj_media (batas 10 per objek atomik), titik objek diisi dari foto bila belum ada; dipakai pintu web dan WA */
-async function simpanFoto(env, t, ob, bersih, meta, waktuAmbil, pintu, kini) {
-  const id = acak(8), kunci = `lapor/data/${t.b.id}/${ob.id}/${id}.jpg`;
+async function simpanFoto(env, t, ob, bersih, meta, waktuAmbil, pintu, kini, jenis = "foto") {
+  const id = acak(8), maks = jenis === "wajah" ? MAKS_WAJAH : MAKS_FOTO_OBJEK, kunci = jenis === "wajah" ? `lapor/data/${t.b.id}/wajah/${id}.jpg` : `lapor/data/${t.b.id}/${ob.id}/${id}.jpg`;
   await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}});
   try {
     const titik = meta.lat != null ? titikObjek({lat: ob.lat, lon: ob.lon}, [meta]) : null;
-    const r = await H.ljBatch(env, TIM, [H.ljStmtMediaBaru(env, TIM, {id, objek: ob.id, kunci_r2: kunci, jenis: "foto", ...meta, waktu_ambil: waktuAmbil, waktu_terima: kini, pintu, oleh: t.oleh}, MAKS_FOTO_OBJEK),
+    const r = await H.ljBatch(env, TIM, [H.ljStmtMediaBaru(env, TIM, {id, objek: ob.id, kunci_r2: kunci, jenis, ...meta, waktu_ambil: waktuAmbil, waktu_terima: kini, pintu, oleh: t.oleh}, maks),
       ...(titik && ob.lat == null ? [H.ljStmtObjekTitik(env, TIM, ob.id, titik.lat, titik.lon, kini, true)] : []),
-      H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: ob.id, aksi: "foto", sesudah: JSON.stringify({media: id, lencana: meta.lencana}), oleh: t.oleh}, kini, true)]);
-    if (!r[0].meta.changes) { await env.MEDIA.delete(kunci).catch(() => {}); return tolak(400, `Paling banyak ${MAKS_FOTO_OBJEK} foto per objek.`); }
+      H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: ob.id, aksi: "foto", sesudah: JSON.stringify({media: id, jenis, lencana: meta.lencana}), oleh: t.oleh}, kini, true)]);
+    if (!r[0].meta.changes) { await env.MEDIA.delete(kunci).catch(() => {}); return tolak(400, `Paling banyak ${maks} foto${jenis === "wajah" ? " wajah" : ""} per objek.`); }
   } catch (e) { await env.MEDIA.delete(kunci).catch(() => {}); throw e; }
   return {kode: 201, isi: {objek: await objekLengkap(env, t.b, ob.id), foto: id}};
 }
@@ -280,7 +344,7 @@ async function mediaGet(env, req, url, kini) {
   const lj = await lajuIP(env, req, "lapor.data.baca", BACA, kini); if (lj) return lj;
   const id = url.searchParams.get("id"); if (!RE_ID.test(id || "")) return galat(400, "Media tidak sah.");
   if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
-  const m = await H.ljMediaSatu(env, STAF, id); if (!m) return galat(404, "Media tidak ditemukan.");
+  const m = await H.ljMediaSatu(env, STAF, id); if (!m) return galat(404, "Media tidak ditemukan.");   // semua jalan gagal di bawah memberi 404 yang sama: ada tidaknya media tak terbaca tamu
   const tim = await timDari(env, req, kini);
   let oleh = null;
   if (tim && tim.berkas === m.berkas) oleh = `tim:${tim.wa}`;
@@ -319,17 +383,26 @@ async function bacaDraf(env, wa, kini) {
 }
 /* draf -> objek lewat simpanObjek yang sama dengan web; foto draf dipindah ke kunci akhir dan lj_media pintu wa. Keluaran {urut, kurang} atau {galat} */
 async function simpanDariDraf(env, t, d, kini) {
-  const r = await simpanObjek(env, t, {jenis: d.jenis, isian: d.isian, lat: d.lat, lon: d.lon, klien_id: `${d.klien}-${t.tim.wa}`}, kini);
-  if (r.kode >= 400) return {galat: r.isi.isian ? `Butir ${r.isi.isian.join(", ")} belum sah. Ketik *ubah* diikuti nama butirnya.` : r.isi.galat};
+  const r = await simpanObjek(env, t, {jenis: d.jenis, isian: d.isian, lat: d.lat, lon: d.lon, klien_id: `${d.klien}-${t.tim.wa}`, ...(d.paksa && {paksa: true})}, kini);
+  if (r.kode >= 400) return {galat: r.isi.isian ? `Butir ${r.isi.isian.join(", ")} belum sah. Ketik *ubah* diikuti nama butirnya.` : r.isi.galat, dekat: r.isi.dekat};
   const ob = r.isi.objek;
+  const wajah = d.jenis === "jiwa", boleh = !wajah || (ob.data.umur >= DEWASA && !ob.data.menolak_foto);   // S1: persetujuan dicek lagi di titik simpan akhir
   for (const f of d.foto) {
-    const kunci = kunciFotoDraf(t.b.id, f.i), x = env.MEDIA ? await env.MEDIA.get(kunci) : null; if (!x) continue;   // kiriman ulang: foto sudah dipindah
-    const meta = f.la != null ? {lencana: "wa", lat: f.la, lon: f.lo} : {lencana: "tanpa"};
-    try { await simpanFoto(env, t, await H.ljObjekId(env, TIM, ob.id), new Uint8Array(await x.arrayBuffer()), meta, f.w ?? null, "wa", kini); }
+    const kunci = kunciFotoDraf(t.b.id, f.i);
+    if (!boleh) { if (env.MEDIA) await env.MEDIA.delete(kunci).catch(() => {}); continue; }   // anak atau menolak: foto draf dibuang, tidak pernah jadi lj_media
+    const x = env.MEDIA ? await env.MEDIA.get(kunci) : null; if (!x) continue;   // kiriman ulang: foto sudah dipindah
+    const meta = !wajah && f.la != null ? {lencana: "wa", lat: f.la, lon: f.lo} : {lencana: "tanpa"};
+    try { await simpanFoto(env, t, await H.ljObjekId(env, TIM, ob.id), new Uint8Array(await x.arrayBuffer()), meta, f.w ?? null, "wa", kini, wajah ? "wajah" : "foto"); }
     finally { await env.MEDIA.delete(kunci).catch(() => {}); }
   }
   const akhir = d.foto.length ? (await objekLengkap(env, t.b, ob.id)) : ob;
   return {urut: ob.urut, kurang: akhir.kurang_foto?.foto ?? 0};
+}
+/* daftar titik dan kepala keluarga berkas untuk mesin WA (LJ-06): pilihan bernomor, nama KK hanya dibaca tim berkas itu sendiri */
+async function konteksWa(env, berkas) {
+  const aktif = (await H.ljObjek(env, TIM, berkas)).filter(x => x.status === "aktif").map(x => ({...x, data: JSON.parse(x.data)}));
+  return {titik: aktif.filter(x => x.jenis === "titik" && x.titik_id).map(x => ({id: x.titik_id, nama: x.data.nama})),
+    kk: aktif.filter(x => x.jenis === "jiwa" && x.data.kk === "diri").map(x => ({id: x.id, nama: (x.pribadi ? JSON.parse(x.pribadi).nama : null) || "tanpa nama", titik: x.data.titik}))};
 }
 export async function pesanTim(env, wa, o, kini = Date.now()) {
   const teks = typeof o?.teks === "string" ? o.teks : "";
@@ -338,12 +411,17 @@ export async function pesanTim(env, wa, o, kini = Date.now()) {
     const {tim, sesi, k, pindah} = d;
     if (k && RE_LAPOR.test(teks)) { await bersihDraf(env, tim.berkas, k); await H.ljSesiHapus(env, TIM, wa); return null; }   // keluar dari mode data ke alur laporan biasa
     if (!k && !perintahData(teks)) return null;
-    const r = putaranData({keadaan: k, pesan: {teks, lokasi: o.lokasi}, kini});
+    const r = putaranData({keadaan: k, pesan: {teks, lokasi: o.lokasi}, kini, konteks: await konteksWa(env, tim.berkas)});
     let balasan = r.balasan;
+    if (r.keadaan?.buang?.length) { await bersihDraf(env, tim.berkas, {foto: r.keadaan.buang.map(i => ({i}))}); delete r.keadaan.buang; }   // wajah draf yang tak boleh lagi (umur atau menolak berubah)
     if (r.simpan) {
       const b = await H.ljBerkas(env, TIM, tim.berkas);
       if (!b || b.status !== "terbuka") return jawabWa("Berkas ini sudah ditutup. Data tidak bisa diubah.");
       const h = await simpanDariDraf(env, {tim, b, oleh: `tim:${wa}`}, r.simpan, kini);
+      if (h.dekat?.length && k) {   // titik baru dekat TP terbuka: *simpan* sekali lagi = memang tempat berbeda (paksa)
+        await H.ljSesiUbah(env, TIM, wa, JSON.stringify({...k, paksa: true}), sesi.diubah, Math.max(kini, sesi.diubah + 1));
+        return jawabWa(`Ada tempat pengungsian terbuka kurang dari 200 m dari titik ini: ${h.dekat.map(x => `${x.nama} (${x.jarak_m} m)`).join(", ")}.\nBila ini memang tempat yang berbeda, ketik *simpan* sekali lagi. Bila sama, ketik *batal* lalu tautkan lewat tautan data di web.`);
+      }
       if (h.galat) return jawabWa(`${h.galat}\n\nIsian Anda masih ada. Ketik *simpan* untuk mencoba lagi, atau *batal*.`);
       balasan = balasanTersimpan(r.simpan.jenis, h.urut) + (h.kurang ? `\nFoto masih kurang ${h.kurang}; tambahkan lewat tautan data di web.` : "");
       await H.ljSesiBaru(env, TIM, wa, tim.berkas, JSON.stringify(r.keadaan), kini);   // keadaan sesudah simpan tanpa isian pribadi
@@ -366,7 +444,7 @@ export async function fotoTim(env, wa, o, kini = Date.now()) {
     const mentah = jpegWa(o.data); if (!mentah) return galatWa(400, "Foto harus JPEG, paling besar 5 MB.");
     const bersih = bersihMedia("image/jpeg", mentah); if (!bersih) return galatWa(400, "Struktur foto tidak sah atau rusak.");   // EXIF dibuang
     const L = titikWa(o.lokasi), id = acak(8), w = angka(o.waktu) && o.waktu > kini - 48 * JAM && o.waktu <= kini + 5 * MENIT ? o.waktu : kini;
-    const m = fotoMasuk(d.k, {i: id, w, ...(L || {})});
+    const m = fotoMasuk(d.k, {i: id, w, ...(L || {})}, d.k.jenis === "jiwa" ? await konteksWa(env, d.tim.berkas) : undefined);
     if (m.ditolak) return galatWa(409, m.balasan);
     const kunci = kunciFotoDraf(d.tim.berkas, id);
     await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}});
