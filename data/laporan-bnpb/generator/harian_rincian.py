@@ -204,7 +204,7 @@ def judul(H, kej):
 def nama_geo(prov, lok):
     """Nama kab/kota di public/geo/kabupaten/<prov>.json untuk nama WA ("Kep. Mentawai", "Lima puluh Kota", "Kota. Bengkulu")."""
     fitur = [f['properties']['kab'] for f in json.load(open(os.path.join(GEO, 'kabupaten', f'{prov}.json'), encoding='utf-8'))['features']]
-    kunci = lambda t: re.sub(r'\s+', ' ', re.sub(r'^Kep\.\s*', 'Kepulauan ', re.sub(r'^Kota\.\s*', 'Kota ', t.strip()))).lower()
+    kunci = lambda t: re.sub(r'\s+', '', re.sub(r'^Kota Adm(?:\.|inistrasi)\s*', 'Kota Administrasi ', re.sub(r'^Kep\.\s*', 'Kepulauan ', re.sub(r'^Kota\.\s*', 'Kota ', t.strip())))).lower()   # 23 Nov: "Limapuluh Kota", "Kota Adm. Jakarta Selatan"
     cocok = [f for f in fitur if kunci(f) == kunci(lok)]
     if not cocok: raise ValueError(f'rincian: kab/kota {lok!r} tidak ada di batas wilayah provinsi {prov}')
     return cocok[0]

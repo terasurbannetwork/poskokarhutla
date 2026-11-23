@@ -303,7 +303,7 @@ def mulai_lama(T, out):
     return hasil
 
 
-PENDEK_LOK = {'Hulu Sungai Selatan': 'Hulu Sungai Sel.'}   # 12-13 Nov: nama penuh terpotong di kolom KAB/KOTA
+PENDEK_LOK = {'Hulu Sungai Selatan': 'Hulu Sungai Sel.', 'Kota Administrasi Jakarta Selatan': 'Kota Jakarta Selatan'}   # 12-13 Nov: nama penuh terpotong di kolom KAB/KOTA
 
 
 # ----------------------------------------------------------------------------- BL-06 bot laporan: isian, nama shape, kunci

@@ -23,7 +23,7 @@ def _angka(t): return float(t.replace('.', '').replace(',', '.'))
 
 def urai_wa(teks):
     """Teks WA Koordalops -> daftar kejadian: jenis, prov (kode), lokasi, baru, kk, luka, mengungsi, rumah {RB, RS, RR, rusak, terdampak}, status, sd."""
-    kode = {re.sub(r'^Kep\. ', 'Kepulauan ', v): k for k, v in H.NAMA.items()}; kode.update({'NTT': '53', 'NTB': '52'})
+    kode = {re.sub(r'^Kep\. ', 'Kepulauan ', v): k for k, v in H.NAMA.items()}; kode.update({'NTT': '53', 'NTB': '52', 'DK. Jakarta': '31', 'DK Jakarta': '31'})   # 23 Nov: WA "Prov. DK. Jakarta"
     prov, cur, out = None, None, []
     for b in teks.splitlines():
         b = re.sub(r'\s+', ' ', b.replace('⁠', '')).strip()
