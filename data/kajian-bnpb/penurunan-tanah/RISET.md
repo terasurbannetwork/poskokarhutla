@@ -46,3 +46,50 @@ Resep A memakai conda (GDAL 3.13, scipy, h5py), mengunduh puluhan gigabyte semen
 ## 5. Yang tidak ada
 
 Tidak ada data GNSS mentah atau levelling di repo, tidak ada deret waktu penurunan, tidak ada angka penurunan per kelurahan, tidak ada proyeksi rob tahunan, tidak ada uji balik rob terhadap penurunan.
+
+## 6. Riset dan laporan tambahan (dicari 23 Nov 2026)
+
+Dicari sesudah pemilik mengirim dua video pendek media sosial: Gedebage, Bandung ("sampai 17 cm per tahun menurut pengukuran satelit tim ITB") dan Muara Baru, Jakarta Utara ("tanah turun sampai 10 cm per tahun, sekitar 24 kali lebih cepat daripada laut"). Berkas videonya tidak tersimpan di repo; isinya dicatat dari judul. Angka di bawah dibaca dari abstrak, ringkasan hasil pencarian, dan berita, belum dari teks lengkap. Tidak ada yang masuk `subsiden_literatur.json` (beku J4) atau layar sebelum sumber primernya dibaca.
+
+### 6.1 Cekungan Bandung (belum ada di paket ini)
+
+| Wilayah | Angka | Periode dan metode | Sumber |
+| --- | --- | --- | --- |
+| Gedebage, Dayeuhkolot | rata-rata sekitar 10 cm/tahun, maksimum sekitar 17 | Sentinel-1 InSAR 2014-2021, divalidasi GPS (Springer 2023, penulis ITB) | ringkasan https://pengabdian.dpmk.itb.ac.id/proyek/pemetaaan-dampak-penurunan-muka-tanah-di-wilayah-gedebage-kota-bandung |
+| Gedebage | 4 sampai 15 cm/tahun | GNSS dan InSAR 2016-2019 (IOP Conf. Series 2021, KK Geodesi ITB) | https://www.proquest.com/docview/2591369949 |
+| Cekungan Bandung, bagian tengah | sampai 18,7 cm/tahun, disertai kerusakan bangunan | geodesi satelit (Rygus dkk. 2023) | https://bvbvf1.bib-bvb.de/vufind/PrimoRecord/cdi_proquest_journals_2863873888 |
+| Cekungan Bandung | -24 sampai +4 cm/tahun | ENVISAT dan ALOS PALSAR 2002-2011 (Ge dkk. 2014) | sama dengan baris di atas (rujukan sekunder) |
+
+Catatan: Bandung tidak berpantai, jadi dampaknya banjir genangan cekungan (Citarum hulu, Dayeuhkolot, Baleendah, Gedebage), bukan rob. Keluaran untuk Bandung harus dipasang ke peta genangan dan kejadian banjir, bukan ke proyeksi rob. Lihat Q3 di KEPUTUSAN.
+
+### 6.2 Pantura dan Jawa
+
+| Wilayah | Angka | Periode dan metode | Sumber |
+| --- | --- | --- | --- |
+| Seluruh Jawa, 10 zona (sekitar 60 juta jiwa) | puncak Jakarta sekitar 15, Semarang 16, Pekalongan 11 cm/tahun | Sentinel-1 SBAS 2017-2023 | https://mdpi.com/2076-3417/15/7/3732 |
+| Semarang dan Demak | maksimum 10 sampai 12 cm/tahun; sekitar 20 persen luas Semarang | SBAS dengan GACOS 2015-2022 (Aditiya dan Ito 2023, IJAEOG) | https://doaj.org/article/bc659cefcb624b38a679829477d8e2d1 |
+| Pantura (BRIN, berita) | Jakarta utara 5-6, Pekalongan 10-19, Demak 16, Sidoarjo 14 cm/tahun | PS-InSAR, belum ada laporan primer | https://news.republika.co.id/berita/tfw5st475/temuan-brin-jakarta-cirebon-hingga-demak-permukaan-tanah-pesisir-pantura-terus-menurun , https://www.medcom.id/pendidikan/riset-penelitian/lKYDnWok-penurunan-tanah-di-jakarta-mengkhawatirkan-tak-terasa-tapi-dampaknya-nyata |
+| Muka laut pantura | 2,4 sampai 4,3 mm/tahun (rata-rata sekitar 0,42 cm/tahun, 1993-2025) | altimetri | https://inet.detik.com/science/d-8513502/pantura-makin-tenggelam-kenaikan-muka-laut-hingga-4-3-mm-per-tahun |
+| Pantura (BMKG) | penurunan tanah disebut pemicu banjir; contoh Semarang, Pekalongan, Demak | pernyataan | https://lestari.kompas.com/read/2024/03/15/180000586/bmkg-ungkap-sebab-pantura-langganan-banjir--permukaan-tanah-turun-tiap-tahun |
+
+### 6.3 Jakarta Utara dan Muara Baru
+
+| Sumber | Angka | Catatan |
+| --- | --- | --- |
+| Dinas SDA DKI | Muara Baru sekitar 10 cm/tahun (tertinggi); Muara Angke melandai dari sekitar 7 (2023) ke 4,5 cm/tahun (2026); 255 titik, rata-rata 3,9 cm/tahun (data 2023, Muara Baru 7,7 dan 10 di titik lain); pemantauan berikutnya Agustus 2026 | https://dsda.jakarta.go.id/detail-artikel/penurunan-permukaan-tanah-jakarta-melambat-perlindungan-pesisir-terus-diperkuat/172 , https://dsda.jakarta.go.id/detail-artikel/19 . Calon pembanding validasi (Q11) karena berupa pengukuran lapangan berkala. |
+| Jurnal BRIN 2024 (PS-InSAR dan MICMAC) | rata-rata -5,71 cm/tahun, dominan Jakarta Utara dan Barat | https://ejournal.brin.go.id/JTL/article/view/1125 |
+| Undip (DInSAR 2016-2019) | Jakarta Utara rata-rata -11, maksimum -15,6 cm/tahun | https://ejournal3.undip.ac.id/index.php/geodesi/article/download/25161/22370 |
+| Pernyataan Menko (CNBC, Nov 2024) | Muara Baru 10 cm/tahun, perkiraan 1 m dalam 10 tahun | https://www.cnbcindonesia.com/news/20241105172015-7-585866/penampakan-tanda-tanda-jakarta-terancam-tenggelam-muncul-di-muara-baru/amp . Berita, bukan pengukuran. |
+
+Klaim video "24 kali lebih cepat dari laut" sama dengan 10 dibagi sekitar 0,42 cm/tahun; perbandingan ini sah sebagai ilustrasi tetapi mencampur angka titik maksimum dengan rerata regional muka laut. Layar tidak meniru gaya ini (D1: dua angka terpisah berlabel).
+
+### 6.4 Data terbuka global yang bisa jadi masukan tanpa LiCSBAS
+
+| Dataset | Isi | Sumber | Yang perlu dicek |
+| --- | --- | --- | --- |
+| Shirzaei dkk. 2024 | gerak tanah vertikal InSAR 51 kota pesisir, Jakarta termasuk tiga paling berisiko | https://zenodo.org/records/19831243 , https://katalog.lib.cas.cz/KNAV/EdsRecord/edsair,edsair.doi...........113f7fcf15d574aa46658f5636a8fd37 | lisensi, resolusi, periode, apakah ada kota selain Jakarta di Indonesia |
+| Tay dkk. 2022, Nature Sustainability | 48 kota pesisir, median 16,2 mm/tahun | https://www.nature.com/articles/s41893-022-00947-z | ketersediaan raster |
+| Oelsmann dkk. 2026, Nature Communications | gabungan dataset gerak tanah; penduduk pesisir mengalami sekitar 6 mm/tahun kenaikan muka laut relatif | (hasil pencarian, belum dibuka) | ketersediaan data per lokasi |
+| ESA, Sinking cities Indonesia | ringkasan bukti geodesi satelit per kota | https://earth.esa.int/eogateway/documents/20142/37627/Sinking-cities-Indonesia-space-geodetic-evidence-rates-spatial-distribution-land-subsidence.pdf | rujukan, bukan data |
+
+Bila lisensinya terbuka, Shirzaei 2024 menjadi opsi E di bagian 3: data siap pakai untuk Jakarta tanpa menunggu Q1, tetap berlabel hipotesis dan tetap lewat gerbang pola `subsiden.py`. Belum diunduh.
