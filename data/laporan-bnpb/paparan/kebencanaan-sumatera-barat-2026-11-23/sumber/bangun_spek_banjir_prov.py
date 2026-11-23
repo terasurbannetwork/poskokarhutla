@@ -178,25 +178,30 @@ def deck(kode, nama, s, impor, kota, foto):
         K_, B_ = (80, 90, 30, 60, 80, 30), (120, 120, 45, 80, 100, 60)
         # gaya halaman logistik deck Bali dan NTT (pemilik 23 Nov 2026): alat 2026 lalu bantuan 2025 bertanda (2025); diserahkan 23 Nov 2026
         # pemilik 23 Nov 2026 "bagusin": alat 2026 dan bantuan 2025 dua kolom terpisah, tanpa tanda (2025) dan titik koma
-        LG = [('Provinsi Sumatera Barat', 'Motor Trail, 9 Tenda, 24 Lampu Solar Cell', 'Truk Serbaguna, 126 Lentera, 120 Terpal', (240, 240, 90, 160, 200, 120)),
+        LG = [('Provinsi Sumatera Barat', 'Motor Trail; 9 Tenda; 24 Lampu Solar Cell', 'Truk; 126 Lentera; 120 Terpal', (240, 240, 90, 160, 200, 120)),
               ('Kota Padang', 'Mobil Rescue', 'Mobil Pick Up', B_), ('Agam', 'Mobil Rescue', '–', B_),
               ('Solok', 'Mobil Rescue', 'Mobil Pick Up', B_), ('Lima Puluh Kota', 'Mobil Rescue', 'Mobil Pick Up', B_),
               ('Tanah Datar', 'Perahu dan Mesin Perahu', 'Mobil Rescue', B_), ('Kepulauan Mentawai', 'Perahu dan Mesin Perahu', 'Mobil Pick Up', B_),
               ('Pasaman Barat', 'Motor Trail', 'Mobil Pick Up', B_), ('Pasaman', 'Motor Trail', 'Mobil Pick Up', B_),
               ('Kota Pariaman', 'Mobil Rescue', 'Mobil Pick Up', K_), ('Pesisir Selatan', 'Mobil Rescue', 'Mobil Pick Up', K_),
               ('Kota Payakumbuh', 'Perahu dan Mesin Perahu', 'Mobil Pick Up', K_), ('Solok Selatan', 'Perahu dan Mesin Perahu', 'Mobil Tangki Air', K_),
-              ('Sijunjung', 'Perahu dan Mesin Perahu', 'Mobil Pick Up', K_), ('Padang Pariaman', '4 Tenda Pengungsi, 24 Lampu Solar Cell', 'Mobil Rescue', K_),
-              ('Dharmasraya', '4 Tenda Pengungsi, 24 Lampu Solar Cell', 'Mobil Pick Up', K_), ('Kota Solok', '–', 'Mobil Truk Serbaguna', K_),
+              ('Sijunjung', 'Perahu dan Mesin Perahu', 'Mobil Pick Up', K_), ('Padang Pariaman', '4 Tenda Pengungsi; 24 Lampu Solar Cell', 'Mobil Rescue', K_),
+              ('Dharmasraya', '4 Tenda Pengungsi; 24 Lampu Solar Cell', 'Mobil Pick Up', K_), ('Kota Solok', '–', 'Mobil Truk Serbaguna', K_),
               ('Kota Sawahlunto', '–', 'Mobil Pick Up', K_), ('Kota Padang Panjang', '–', 'Mobil Pick Up', K_), ('Kota Bukittinggi', '–', 'Mobil Pick Up', K_)]
         assert len(LG) == 20
-        tl('logistik.csv', ['kab', 'alat', 'lalu', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, al, ll, *v] for n, al, ll, v in LG])
+        # gaya Bali (pemilik 23 Nov 2026 "balik lagi ke versi awal"): satu kolom, alat 2026 lalu bantuan 2025 bertanda (2025)
+        gab = lambda al, ll: '; '.join([x for x in al.split('; ') if al != '–'] + [f'{x} (2025)' for x in ll.split('; ') if ll != '–']) or '–'
+        tl('logistik.csv', ['kab', 'alat', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, gab(al, ll), *v] for n, al, ll, v in LG])
         S_L = 'Direktorat Logistik BNPB, 23 Nov 2026'
         P_L = 'bnpb-logpal-sumbar-2026'
         a(f'{s}.lg.n', len(LG), 'BPBD', P_L, S_L)
         HL = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'temuan', 'rasio': .99, 'cut_off': False, 'pesan': 'Bantuan logistik', 'sumber': S_L,
               'judul': f'Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {t(f"{s}.lg.n", "|satuan")} di {nama}',
               'tabel': {'judul_panel': 'Bantuan per BPBD', 'ikon': 'tanggap-darurat', 'peringkat': False, 'sel_dua_baris': True, 'baris_maks_pt': 40, 'total': True,   # kepala cukup ini (pemilik 23 Nov 2026)
-                        'data': c('logistik.csv', [{'nama': 'kab', 'kepala': 'BPBD', 'bobot': 1.3}, {'nama': 'alat', 'kepala': 'Kendaraan dan peralatan 2026', 'rata': 'l', 'bobot': 2.6}, {'nama': 'lalu', 'kepala': 'Sudah diterima 2025', 'rata': 'l', 'bobot': 2.2},
+                        'data': c('logistik.csv', [{'nama': 'kab', 'kepala': 'BPBD', 'bobot': 1.3}, {'nama': 'alat', 'kepala': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 5.2,
+                                                    'pil_daftar': {'gaya': ['tint.basah.pita', None, 'navy'], 'gaya_lama': ['tint.netral.muda', 'garis', 'teks-3'], 'lama': '(2025)',
+                                                                   'ikon': {'rescue': 'tanggap-darurat', 'perahu': 'banjir', 'trail': 'wilayah', 'tenda': 'pengungsi', 'lampu': 'prabencana',
+                                                                            'lentera': 'prabencana', 'terpal': 'rumah', 'pick up': 'infrastruktur', 'truk': 'infrastruktur', 'tangki': 'air-baku'}}},
                                                    F('selimut', 'Selimut'), F('matras', 'Matras'), F('kasur', 'Kasur Lipat'), F('terpal', 'Terpal'), F('makanan', 'Makanan'), F('family', 'Family Kit')], S_L)}}
 
     IMP = lambda n: {'jenis': 'impor', 'pptx': f'data/sumut-aceh/impor/{impor}.pptx', 'halaman': n, 'sumber': sumber_impor(impor, n)}

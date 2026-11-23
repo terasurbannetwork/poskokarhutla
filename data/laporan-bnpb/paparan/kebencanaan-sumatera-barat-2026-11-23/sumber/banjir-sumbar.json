@@ -432,15 +432,34 @@
             },
             {
               "nama": "alat",
-              "kepala": "Kendaraan dan peralatan 2026",
+              "kepala": "Kendaraan dan peralatan",
               "rata": "l",
-              "bobot": 2.6
-            },
-            {
-              "nama": "lalu",
-              "kepala": "Sudah diterima 2025",
-              "rata": "l",
-              "bobot": 2.2
+              "bobot": 5.2,
+              "pil_daftar": {
+                "gaya": [
+                  "tint.basah.pita",
+                  null,
+                  "navy"
+                ],
+                "gaya_lama": [
+                  "tint.netral.muda",
+                  "garis",
+                  "teks-3"
+                ],
+                "lama": "(2025)",
+                "ikon": {
+                  "rescue": "tanggap-darurat",
+                  "perahu": "banjir",
+                  "trail": "wilayah",
+                  "tenda": "pengungsi",
+                  "lampu": "prabencana",
+                  "lentera": "prabencana",
+                  "terpal": "rumah",
+                  "pick up": "infrastruktur",
+                  "truk": "infrastruktur",
+                  "tangki": "air-baku"
+                }
+              }
             },
             {
               "nama": "selimut",
