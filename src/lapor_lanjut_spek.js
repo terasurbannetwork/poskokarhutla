@@ -88,6 +88,11 @@ export function validasi(jenis, isian = {}) {
   return {galat, data, pribadi};
 }
 
+/* foto wajah (jenis media `wajah`) hanya untuk dua jenis: jiwa dewasa yang tidak menolak (Q10, Q13) dan korban yang masih dicari (Q8: foto semasa hidup dari keluarga).
+   Satu fungsi untuk web, WA, dan penghapusan saat syaratnya hilang (batasi tujuan, UU 27/2022): ditemukan atau meninggal = foto dihapus. */
+export const JENIS_WAJAH = new Set(["jiwa", "korban"]);
+export const wajahBoleh = (jenis, d = {}) => jenis === "jiwa" ? d.umur >= DEWASA && !d.menolak_foto : jenis === "korban" && d.status === "hilang" && d.pencarian === "dicari";
+
 /* foto wajib menurut jenis; jiwa: wajah untuk umur dewasa kecuali menolak difoto (Q10, Q13) */
 export function fotoWajib(jenis, data = {}) {
   if (jenis === "jiwa") return {foto: 0, wajah: data.umur >= DEWASA && !data.menolak_foto ? 1 : 0};
@@ -111,7 +116,7 @@ export function titikObjek(objek, media = []) {
 /* objek: {id, jenis, data, pribadi, lat, lon, status}; konteks: {objek: semua objek berkas, media: media objek ini, waktuKejadian ms, dalamKab(lat, lon)?} */
 export function penanda(objek, {objek: semua = [], media = [], waktuKejadian = null, dalamKab = null} = {}) {
   const hasil = [], t = titikObjek(objek, media);
-  if (!t && objek.jenis !== "jiwa") hasil.push("tanpa_titik");   // jiwa memang tanpa titik: lokasi orang tidak disimpan (LJ-06)
+  if (!t && !JENIS_WAJAH.has(objek.jenis)) hasil.push("tanpa_titik");   // jiwa dan korban memang tanpa titik: lokasi orang tidak disimpan (LJ-06, LJ-07)
   if (t && media.some(m => adaTitik(m) && jarakM(t.lat, t.lon, m.lat, m.lon) > AMBANG.foto_jauh_m)) hasil.push("foto_jauh");
   if (waktuKejadian != null && media.some(m => m.waktu_ambil != null && m.waktu_ambil < waktuKejadian - AMBANG.foto_lama_jam * 3600e3)) hasil.push("foto_lama");
   const lain = semua.filter(x => x.id !== objek.id && x.jenis === objek.jenis && x.status !== "batal");

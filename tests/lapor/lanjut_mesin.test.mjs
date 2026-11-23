@@ -149,3 +149,46 @@ test("jiwa: kepala keluarga dari daftar titik itu; rentan boleh banyak; dewasa d
 test("jiwa: lokasi yang dibagikan diabaikan (lokasi orang tidak disimpan); tanpa nama titik ringkasan memakai nama titik", () => {
   let r = alurK(null, "data pengungsi", "1"); r = ketikK(r.keadaan, "", {lokasi: {lat: -6.6, lon: 106.8}}); assert.equal(r.keadaan.lat, null); assert.ok(!/Titik lokasi diterima/.test(r.balasan));
 });
+
+/* ---------- LJ-07: korban per orang dan perubahan status pencarian ---------- */
+const KORBAN = ["2", "Wati Hilang", "25", "2", "Paledang", "Joko", "081234567000"];   // status hilang, nama, umur, jk p, desa, kontak nama, kontak hp
+test("LJ-07 perintah: data korban membuka mode; ubah hilang dikenali, bentuk salah dijawab bantuan, bukan perintah lain null", async () => {
+  const {perintahStatus, balasanStatus} = await import("../../src/lapor_lanjut_mesin.js");
+  assert.ok(perintahData("data korban")); assert.ok(perintahData("ubah hilang 3 ditemukan hidup"));
+  assert.deepEqual(perintahStatus("Ubah hilang 3 ditemukan hidup"), {nomor: 3, pencarian: "ditemukan_hidup"});
+  assert.deepEqual(perintahStatus("ubah hilang 12 ditemukan_meninggal"), {nomor: 12, pencarian: "ditemukan_meninggal"});
+  assert.deepEqual(perintahStatus("ubah hilang 2 dicari"), {nomor: 2, pencarian: "dicari"});
+  for (const t of ["ubah hilang", "ubah hilang 3", "ubah hilang tiga dicari", "ubah hilang 3 selamat"]) assert.match(perintahStatus(t).bantuan, /ubah hilang/, t);
+  for (const t of ["ubah alamat", "hilang 3 ditemukan hidup", "data korban saya"]) assert.equal(perintahStatus(t), null, t);
+  assert.ok(!perintahData("data korban saya"));
+  assert.equal(balasanStatus("ditemukan_hidup"), "ditemukan hidup");
+});
+
+test("LJ-07 korban meninggal atau luka: butir dari spek, tanpa foto sama sekali, ringkasan menyamarkan HP dan NIK, hasil lolos validasi spek", () => {
+  let r = ketik(null, "data korban"); assert.match(r.balasan, /Keadaan korban\*\n1\. meninggal dunia\n2\. hilang\n3\. luka berat\n4\. luka ringan/); assert.ok(!/[A-Z]{5}|!/.test(r.balasan.replace(/\*[^*]+\*/g, "")), "tanpa tanda seru dan huruf kapital semua");
+  r = alur(r.keadaan, "1", "Pak Budi", "61", "1", "Paledang", "Siti", "6281234567000"); assert.match(r.balasan, /Dirawat di mana/, "wajib selesai; opsional ditawarkan");
+  assert.equal(r.keadaan.isian.status, "meninggal"); assert.equal(r.keadaan.isian.kontak_hp, "6281234567000");
+  r = alur(r.keadaan, "lewati", "lewati", "lewati", "lewati"); assert.match(r.balasan, /NIK/);
+  r = ketik(r.keadaan, "3171010101010009"); assert.equal(r.keadaan.tahap, "ringkas", "meninggal: tidak ada tahap foto"); assert.match(r.balasan, /Ringkasan korban/);
+  assert.match(r.balasan, /Keadaan korban: meninggal dunia/); assert.match(r.balasan, /\*{12}0009/); assert.match(r.balasan, /\*{8}7000/); assert.ok(!r.balasan.includes("3171010101010009") && !r.balasan.includes("6281234567000"));
+  assert.ok(!/Titik lokasi|Foto/.test(r.balasan), "tanpa baris foto atau titik");
+  assert.ok(fotoMasuk(r.keadaan, {i: "f"}).ditolak); assert.match(fotoMasuk(r.keadaan, {i: "f"}).balasan, /masih dicari/);
+  assert.equal(ketik(r.keadaan, "", {lokasi: {lat: -6.6, lon: 106.8}}).keadaan.lat, null, "lokasi orang tidak disimpan");
+  const s = ketik(r.keadaan, "simpan"); assert.equal(s.simpan.jenis, "korban"); assert.equal(validasi("korban", s.simpan.isian).galat.length, 0); assert.deepEqual(s.keadaan.bawaan, {desa: "Paledang"}); assert.deepEqual(s.keadaan.isian, {});
+  const luka = alur(null, "data korban", "3", "Bu Rina", "40", "2", "Paledang", "Siti", "tidak ada", "lewati semua"); assert.equal(luka.keadaan.tahap, "ringkas"); assert.ok(fotoMasuk(luka.keadaan, {i: "f"}).ditolak);
+});
+
+test("LJ-07 korban hilang: butir bersyarat wajib, foto semasa hidup opsional (lewati boleh, maks 2, tanpa titik), dibuang bila status berubah dari hilang", () => {
+  let r = alur(null, "data korban", ...KORBAN); assert.match(r.balasan, /Terakhir terlihat di mana/); assert.equal(r.keadaan.opsi, false, "wajib bersyarat hilang");
+  r = ketik(r.keadaan, "lewati"); assert.match(r.balasan, /wajib diisi/);
+  r = alur(r.keadaan, "Dekat jembatan", "2026-11-21"); assert.match(r.balasan, /Status pencarian\*\n1\. masih dicari\n2\. ditemukan hidup\n3\. ditemukan meninggal dunia/);
+  r = ketik(r.keadaan, "1"); assert.equal(r.keadaan.isian.pencarian, "dicari"); assert.match(r.balasan, /Dirawat/);
+  r = ketik(r.keadaan, "lewati semua"); assert.equal(r.keadaan.tahap, "foto"); assert.match(r.balasan, /foto korban semasa hidup/); assert.match(r.balasan, /lewati/);
+  const lewat = ketik(r.keadaan, "lewati"); assert.equal(lewat.keadaan.tahap, "ringkas"); assert.match(lewat.balasan, /Foto semasa hidup: 0\n/); assert.ok(!/kurang/.test(lewat.balasan));
+  let f = fotoMasuk(r.keadaan, {i: "f1", lat: -6.6, lon: 106.8}); assert.equal(f.keadaan.tahap, "ringkas"); assert.equal(f.keadaan.lat, null, "foto korban tidak mengisi titik"); assert.match(f.balasan, /Foto semasa hidup: 1/);
+  f = fotoMasuk(f.keadaan, {i: "f2"}); assert.ok(!f.ditolak); assert.ok(fotoMasuk(f.keadaan, {i: "f3"}).ditolak, "paling banyak 2");
+  const s = ketik(f.keadaan, "simpan"); assert.equal(s.simpan.foto.length, 2); assert.equal(validasi("korban", s.simpan.isian).galat.length, 0);
+  // status berubah dari hilang sesudah foto: foto draf dibuang, pemanggil menghapusnya dari R2
+  let u = ketik(f.keadaan, "ubah status"); u = ketik(u.keadaan, "1"); assert.equal(u.keadaan.foto.length, 0); assert.deepEqual(u.keadaan.buang, ["f1", "f2"]);
+  let u2 = ketik(f.keadaan, "ubah pencarian"); u2 = ketik(u2.keadaan, "2"); assert.equal(u2.keadaan.foto.length, 0, "ditemukan hidup: bukan lagi dicari"); assert.ok(fotoMasuk(u2.keadaan, {i: "x"}).ditolak);
+});

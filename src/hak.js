@@ -2116,6 +2116,8 @@ export const ljStmtAkses = (env, p, berkas, objek, aksi, oleh, kini, g = false) 
    menolak balapan dan pemanggil mengulang. Ubah dan batal dijaga rev (409 bila kalah). */
 const LJ_OBJEK = "id, berkas, jenis, urut, data, pribadi, titik_id, desa, lat, lon, status, klien_id, oleh, rev, dibuat, diubah";
 export const ljObjekId = (env, p, id) => sedia(env, p, "lj_objek", "baca", `SELECT ${LJ_OBJEK} FROM lj_objek WHERE id = ?1`).bind(id).first();
+/* LJ-07: korban dicari lewat nomor urut di berkas (perintah WA "ubah hilang <nomor>"); UNIQUE (berkas, jenis, urut) */
+export const ljObjekUrut = (env, p, berkas, jenis, urut) => sedia(env, p, "lj_objek", "baca", `SELECT ${LJ_OBJEK} FROM lj_objek WHERE berkas = ?1 AND jenis = ?2 AND urut = ?3 AND status = 'aktif'`).bind(berkas, jenis, urut).first();
 export const ljObjekKlien = (env, p, klien) => sedia(env, p, "lj_objek", "baca", `SELECT ${LJ_OBJEK} FROM lj_objek WHERE klien_id = ?1`).bind(klien).first();
 export const ljStmtObjekBaru = (env, p, o, kini) => sedia(env, p, "lj_objek", "tambah",
   `INSERT INTO lj_objek (id, berkas, jenis, urut, data, pribadi, titik_id, desa, lat, lon, klien_id, oleh, dibuat, diubah)
@@ -2143,10 +2145,14 @@ export const ljWajahKunci = async (env, p, objek) => (await sedia(env, p, "lj_me
 export const ljStmtWajahHapus = (env, p, objek) => sedia(env, p, "lj_media", "hapus", "DELETE FROM lj_media WHERE objek = ?1 AND jenis = 'wajah' AND changes() > 0").bind(objek);
 export const ljMediaSatu = (env, p, id) => sedia(env, p, "lj_media", "baca",
   "SELECT m.id, m.objek, m.kunci_r2, m.jenis, o.berkas FROM lj_media m JOIN lj_objek o ON o.id = m.objek WHERE m.id = ?1").bind(id).first();
-/* batas jumlah per objek dan jenis dicek di pernyataan yang sama (atomik); changes() = 0 berarti sudah penuh */
+/* batas jumlah per objek dan jenis dicek di pernyataan yang sama (atomik); objek harus masih aktif dan foto wajah hanya bila syaratnya masih terpenuhi saat tulis
+   (= wajahBoleh di lapor_lanjut_spek.js; 18 = DEWASA): changes() = 0 berarti penuh, objek batal, atau syarat gugur (LJ-07, balapan dengan ubah status) */
 export const ljStmtMediaBaru = (env, p, m, maks) => sedia(env, p, "lj_media", "tambah",
   `INSERT INTO lj_media (id, objek, kunci_r2, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu, oleh)
-   SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE (SELECT count(*) FROM lj_media WHERE objek = ?2 AND jenis = ?4) < ?13`)
+   SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE (SELECT count(*) FROM lj_media WHERE objek = ?2 AND jenis = ?4) < ?13
+   AND EXISTS (SELECT 1 FROM lj_objek o WHERE o.id = ?2 AND o.status = 'aktif' AND (?4 <> 'wajah'
+     OR (o.jenis = 'jiwa' AND coalesce(json_extract(o.data, '$.umur'), -1) >= 18 AND coalesce(json_extract(o.data, '$.menolak_foto'), 0) = 0)
+     OR (o.jenis = 'korban' AND json_extract(o.data, '$.status') = 'hilang' AND json_extract(o.data, '$.pencarian') = 'dicari')))`)
   .bind(m.id, m.objek, m.kunci_r2, m.jenis, m.lat ?? null, m.lon ?? null, m.akurasi ?? null, m.waktu_ambil ?? null, m.waktu_terima, m.lencana, m.pintu, m.oleh, maks);
 
 /* LJ-06: register titik pengungsian dari objek `titik` (D6). Baris register yang dibuat berkas ditandai pembuat = "lapor_lanjut:<berkas>"; hanya baris itu yang disinkronkan

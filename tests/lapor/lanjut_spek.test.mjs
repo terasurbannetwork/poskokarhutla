@@ -156,3 +156,16 @@ test("penanda: jiwa tidak pernah bertanda tanpa_titik (lokasi orang tidak disimp
   assert.deepEqual(L.penanda({id: "a", jenis: "jiwa", data: {}, pribadi: null, status: "aktif"}), []);
   assert.deepEqual(L.penanda({id: "b", jenis: "rumah", data: {}, pribadi: null, status: "aktif"}), ["tanpa_titik"]);
 });
+
+test("LJ-07 wajahBoleh satu fungsi per jenis: jiwa dewasa tidak menolak; korban hanya hilang yang masih dicari; jenis lain tidak pernah", () => {
+  assert.ok(L.wajahBoleh("jiwa", {umur: 18})); assert.ok(!L.wajahBoleh("jiwa", {umur: 17})); assert.ok(!L.wajahBoleh("jiwa", {umur: 30, menolak_foto: true})); assert.ok(!L.wajahBoleh("jiwa", {}));
+  assert.ok(L.wajahBoleh("korban", {status: "hilang", pencarian: "dicari"}));
+  for (const d of [{status: "hilang", pencarian: "ditemukan_hidup"}, {status: "hilang", pencarian: "ditemukan_meninggal"}, {status: "meninggal"}, {status: "luka_berat"}, {status: "luka_ringan"}, {}]) assert.ok(!L.wajahBoleh("korban", d), JSON.stringify(d));
+  assert.ok(!L.wajahBoleh("rumah", {status: "hilang", pencarian: "dicari"})); assert.deepEqual([...L.JENIS_WAJAH], ["jiwa", "korban"]);
+  assert.deepEqual(L.kurangFoto("korban", {status: "hilang", pencarian: "dicari"}), {foto: 0, wajah: 0}, "foto semasa hidup opsional");
+});
+
+test("LJ-07 penanda: korban tidak bertanda tanpa_titik (lokasi orang tidak disimpan); nik_ganda korban dengan korban menyala", () => {
+  const a = ob("korban", {status: "meninggal"}, {pribadi: {nik: "3171010101010077"}}), b = ob("korban", {status: "luka_berat"}, {pribadi: {nik: "3171010101010077"}});
+  assert.deepEqual(L.penanda(a, {objek: [a]}), []); assert.ok(L.penanda(a, {objek: [a, b]}).includes("nik_ganda"));
+});
