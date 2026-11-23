@@ -190,7 +190,7 @@ def deck(kode, nama, s, impor, kota, foto):
               ('Kota Sawahlunto', '–', 'Mobil Pick Up', K_), ('Kota Padang Panjang', '–', 'Mobil Pick Up', K_), ('Kota Bukittinggi', '–', 'Mobil Pick Up', K_)]
         assert len(LG) == 20
         # gaya Bali (pemilik 23 Nov 2026 "balik lagi ke versi awal"): satu kolom, alat 2026 lalu bantuan 2025 bertanda (2025)
-        gab = lambda al, ll: '; '.join([x for x in al.split('; ') if al != '–'] + [f'{x} (2025)' for x in ll.split('; ') if ll != '–']) or '–'
+        gab = lambda al, ll: '; '.join([x for x in al.split('; ') if al != '–'] + [x for x in ll.split('; ') if ll != '–']) or '–'   # tahun diabaikan (pemilik 23 Nov 2026)
         tl('logistik.csv', ['kab', 'alat', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, gab(al, ll), *v] for n, al, ll, v in LG])
         S_L = 'Direktorat Logistik BNPB, 23 Nov 2026'
         P_L = 'bnpb-logpal-sumbar-2026'

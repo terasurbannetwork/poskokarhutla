@@ -1,6 +1,6 @@
 # Laporan QA deck Paparan Kebencanaan Sumatera Barat 231126
 
-Berkas `Paparan Kebencanaan Sumatera Barat 231126.pptx` dan `Paparan Kebencanaan Sumatera Barat 231126.pdf`, spek `banjir-sumbar`, diperiksa 23-11-2026 11.15 WIB.
+Berkas `Paparan Kebencanaan Sumatera Barat 231126.pptx` dan `Paparan Kebencanaan Sumatera Barat 231126.pdf`, spek `banjir-sumbar`, diperiksa 23-11-2026 11.28 WIB.
 Vonis: **GAGAL** (4 pemeriksaan gagal). Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; di awal musim hujan 2026 banjir kembali melanda dan kecamatan berstatus banjir perlu disiapkan.
@@ -21,8 +21,8 @@ Pesan kunci: Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; 
 | Tata letak | qa/periksa.py D-14 Label keyakinan di tabel dan kartu | LOLOS | – |
 | Tata letak | qa/periksa.py D-9 Hex di luar tema.json nol | LOLOS | – |
 | Tata letak | qa/periksa.py D-16 Format angka id-ID | LOLOS | – |
-| Tata letak | qa/periksa.py D-22 Angka ketikan nol | GAGAL | slide 15 'Rounded Rectangle 40': angka "126" diketik, tidak ada di manifest injeksi: "126 Lentera" |
-| Tata letak | qa/periksa.py D-6 Angka silang | GAGAL | banjir-sumbar#15: angka "Motor Trail; 9 Tenda; 24 Lampu Solar Cell; Truk (2025); 126 Lentera (2025); 120 Terpal (2025)" (csvteks:data/sumut-aceh/sb/logistik.csv#alat) ada di manifest tetapi tidak tampil di berkas; banjir-sumbar#15: angka "Mobil Rescue; Mobil Pick Up (2025)" (csvteks:data/sumut-aceh/sb/logistik.csv#alat) ada di manifest tetapi tidak tampil di berkas; banjir-sumbar#15: angka "Mobil Rescue; Mobil Pick Up (2025)" (csvteks:data/sumut-aceh/sb/logistik.csv#alat) ada di manifest tetapi tidak tampil di berkas (dan 16 lagi) |
+| Tata letak | qa/periksa.py D-22 Angka ketikan nol | GAGAL | slide 15 'Rounded Rectangle 39': angka "126" diketik, tidak ada di manifest injeksi: "126 Lentera" |
+| Tata letak | qa/periksa.py D-6 Angka silang | GAGAL | banjir-sumbar#15: angka "Motor Trail; 9 Tenda; 24 Lampu Solar Cell; Truk; 126 Lentera; 120 Terpal" (csvteks:data/sumut-aceh/sb/logistik.csv#alat) ada di manifest tetapi tidak tampil di berkas; banjir-sumbar#15: angka "4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Rescue" (csvteks:data/sumut-aceh/sb/logistik.csv#alat) ada di manifest tetapi tidak tampil di berkas; banjir-sumbar#15: angka "4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Pick Up" (csvteks:data/sumut-aceh/sb/logistik.csv#alat) ada di manifest tetapi tidak tampil di berkas |
 | Tata letak | qa/periksa.py D-52 Teks isi dua baris atau lebih rata kanan-kiri | LOLOS | – |
 | Tata letak | Garis besar: pesan_kunci, lalu pesan, jenis_slide S35, judul_bentuk S7 tiap slide isi (S34) | LOLOS | – |
 | Tata letak | Tiap slide isi selain navigasi memuat grafik native, tabel native, atau peta (S36) | LOLOS | – |
