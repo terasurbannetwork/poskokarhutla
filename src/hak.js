@@ -1275,7 +1275,7 @@ export const twTokenBuat = async (env, p, {id, orgId, kejadianId, tokenSha}, kin
 export const twTokenCabut = async (env, p, orgId, kejadianId, kini) => (await sedia(env, p, "tw_token", "ubah", "UPDATE tw_token SET cabut = ?3 WHERE org_id = ?1 AND kejadian_id = ?2 AND cabut IS NULL").bind(orgId, kejadianId, kini).run()).meta.changes;
 /* null = tak dikenal; cabut != null = tercabut; fase dari kejadian (rute menolak 'selesai', 'dibatalkan', 'digabung') */
 export const twTokenCari = (env, p, tokenSha) => twPilih(env, p, "tw_token",
-  "SELECT t.id, t.org_id, t.kejadian_id, t.cabut, k.fase FROM tw_token t JOIN sk_kejadian k ON k.id = t.kejadian_id WHERE t.token_sha = ?1").bind(tokenSha).first();
+  "SELECT t.id, t.org_id, t.kejadian_id, t.cabut, t.dibuat, k.fase FROM tw_token t JOIN sk_kejadian k ON k.id = t.kejadian_id WHERE t.token_sha = ?1").bind(tokenSha).first();
 
 /* ---- tawaran ---- */
 /* Q2: NGO internasional wajib menyebut mitra lokal (organisasi terdaftar). barang selain daftar meja logistik = "lainnya" + barang_lain. */

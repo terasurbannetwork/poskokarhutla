@@ -10,6 +10,7 @@ import * as H from "./hak.js";
 import {NAMA_KAB4} from "./siklus_kab.js";
 import {NO, masukan, kab4Sah, lihat, dalamBP, ujiLaju} from "./siklus_kejadian.js";
 import {PROV} from "./instansi.js";
+import {TTL_MAKS} from "./token.js";
 import {BARANG} from "./meja_spek.js";
 
 const JAM = 36e5, T = H.pelakuTwTulis, B = H.pelakuTwBaca;
@@ -74,7 +75,7 @@ async function tokenBuat(c) {
   if (!o) return gagal(400, "organisasi tidak terdaftar");
   const token = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   await H.twTokenBuat(c.env, T, {id: acak(8), orgId, kejadianId: k.id, tokenSha: await sha(token)}, c.kini);
-  return json({token, org_id: orgId, org_nama: o.nama, catatan: "token tampil sekali; kirim lewat tautan /bantu#t=<token>"}, 201);
+  return json({token, org_id: orgId, org_nama: o.nama, kedaluwarsa: c.kini + TTL_MAKS, catatan: "token tampil sekali, berlaku 90 hari atau sampai kejadian ditutup; kirim lewat tautan /bantu#t=<token>"}, 201);
 }
 async function tokenCabut(c) {
   const k = await kejadianBoleh(c); if (!k) return NO();
@@ -148,12 +149,12 @@ export const RUTE_TIGAW = {
 /* ================================================================ organisasi bertoken (/api/bantu) */
 const KEPALA = {"cache-control": "no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow"};
 const jawab = r => { for (const [k, v] of Object.entries(KEPALA)) r.headers.set(k, v); return r; };
-/* token dari header x-bantu: lolos -> {t, org}; selain itu Response 401 (tak dikenal, tercabut, kejadian ditutup: jawaban sama) atau 429 bila IP terlalu sering salah */
+/* token dari header x-bantu: lolos -> {t, org}; selain itu Response 401 (tak dikenal, tercabut, kejadian ditutup, umur lewat 90 hari: jawaban sama) atau 429 bila IP terlalu sering salah */
 async function cekToken(env, req, kini) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   const h = req.headers.get("x-bantu") || "";
   const t = RE_TOKEN.test(h) ? await H.twTokenCari(env, B, await sha(h)) : null;
-  const org = t && !t.cabut && !FINAL.includes(t.fase) ? await H.twOrgById(env, B, t.org_id) : null;
+  const org = t && !t.cabut && !FINAL.includes(t.fase) && kini - t.dibuat <= TTL_MAKS ? await H.twOrgById(env, B, t.org_id) : null;
   if (org) return {t, org};
   const lewat = await lajuIP(env, req, "bantu.gagal", [[JAM, 300]], kini); if (lewat) return lewat;   // hanya tebakan salah dihitung per IP
   return gagal(401, "tautan tidak berlaku; minta tautan baru ke koordinator");

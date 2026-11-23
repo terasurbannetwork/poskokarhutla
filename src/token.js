@@ -7,7 +7,8 @@
 import {sha} from "./worker.js";
 import {tkSimpan, tkPakai, tkCabut, pelakuTkTerbit, pelakuTkPeriksa} from "./hak.js";
 
-const MENIT = 60e3, TTL_MIN = MENIT, TTL_MAKS = 90 * 24 * 60 * MENIT;
+const MENIT = 60e3, TTL_MIN = MENIT;
+export const TTL_MAKS = 90 * 24 * 60 * MENIT;   // juga batas umur tw_token (src/tiga_w.js)
 const RE_JENIS = /^[a-z0-9_]{2,40}$/, RE_CAKUPAN = /^[a-z0-9_:]{1,40}$/, RE_TOKEN = /^[A-Za-z0-9_-]{43}$/;
 const b64url = b => btoa(String.fromCharCode(...b)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 const hexAcak = n => [...crypto.getRandomValues(new Uint8Array(n))].map(x => x.toString(16).padStart(2, "0")).join("");

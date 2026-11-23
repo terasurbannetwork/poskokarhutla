@@ -37,5 +37,5 @@ Saat bencana besar, kementerian, TNI dan Polri, NGO, dunia usaha, kampus, dan le
 | Q3 | 3W tampil untuk siapa? | **[BAWAAN SEMENTARA]** staf, BPBD (kab wilayahnya), dan organisasi lewat tautan tokennya (hanya baris miliknya); tidak publik. | TW-08 |
 | Q4 | Ambang tumpang tindih? | **[BAWAAN SEMENTARA, HIPOTESIS]** lebih dari 3 organisasi di klaster dan kab yang sama dengan status berjalan. | tidak menahan |
 | Q5 | Nilai rupiah tawaran dicatat? | **[BAWAAN SEMENTARA]** tidak; jumlah dan satuan saja. | tidak menahan |
-| Q6 | Siapa yang membuat tautan token untuk organisasi? | **[BAWAAN SEMENTARA]** staf Pusdalops, per organisasi per kejadian, berlaku sampai kejadian selesai atau dicabut. | TW-05 |
+| Q6 | Siapa yang membuat tautan token untuk organisasi? | **[BAWAAN SEMENTARA]** staf Pusdalops, per organisasi per kejadian, berlaku sampai kejadian selesai atau dicabut, paling lama 90 hari sejak terbit (23 Nov 2026, sama dengan batas `src/token.js`; kejadian panjang = terbitkan token baru). | TW-05 |
 | Q7 | Alasan penolakan atau pengalihan untuk organisasi dipisah dari catatan internal staf? | **[BAWAAN SEMENTARA]** ya: `alasan_organisasi` tampil ke organisasi, `alasan_internal` hanya staf. | TW-07 |

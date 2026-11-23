@@ -226,6 +226,15 @@ uji("dicabut: langsung 401; mencabut dua kali 409, id tak ada 404; kunci lain te
   const d = await api("GET", "/api/kunci-api/admin/daftar", undefined, ADMIN); assert.ok(d.j.kunci.find(k => k.id === hanyaBangunan.id).dicabut > 0);
 });
 
+uji("kedaluwarsa: kunci lewat 365 hari 401 seperti dicabut; terbit dan daftar menyebut kedaluwarsa", async () => {
+  const k = await terbit("Mitra Lama", ["rumah_rusak"]); assert.equal(k.kedaluwarsa - k.dibuat, 365 * 864e5);
+  assert.equal((await api("GET", "/api/v1/rumah-rusak/rekap", undefined, {...K(k.kunci), ...ip()})).s, 200);
+  await DB.prepare("UPDATE kunci_api SET dibuat = ? WHERE id = ?").bind(Date.now() - 366 * 864e5, k.id).run();
+  const r = await api("GET", "/api/v1/rumah-rusak/rekap", undefined, {...K(k.kunci), ...ip()}); assert.equal(r.s, 401); assert.match(r.t, /kedaluwarsa/);
+  const d = (await api("GET", "/api/kunci-api/admin/daftar", undefined, ADMIN)).j.kunci.find(x => x.id === k.id);
+  assert.ok(d.kedaluwarsa < Date.now(), "daftar menampilkan masa berlaku yang sudah lewat"); assert.equal(d.dicabut, null);
+});
+
 uji("terakhir diperbarui paling sering sekali per jam, bukan tiap permintaan", async () => {
   const baca = async () => (await DB.prepare("SELECT terakhir FROM kunci_api WHERE id = ?").bind(hanyaRumah.id).first()).terakhir;
   await tunggu(200); const t0 = await baca();   // pemakaian di uji sebelumnya sudah mengisinya

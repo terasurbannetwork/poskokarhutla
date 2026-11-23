@@ -223,7 +223,7 @@ export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link
 /* Kunci API mitra (/admin/kunci-api): terbitkan, salin sekali, daftar, cabut. Data dari /api/kunci-api/admin/*. */
 export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=5" rel="stylesheet">
 <script src="/admin/bersama.js?v=5"></script>
-<script src="/admin/kunci_api.js?v=2"></script>`);
+<script src="/admin/kunci_api.js?v=3"></script>`);
 
 /* Biaya Claude Bot Laporan BNPB (/admin/biaya-bot, admin saja): harian dari D1 bl_biaya, per kegiatan dan per laporan dari ringkasan mesin bot. Data dari /api/wa/biaya/ringkas. */
 export const halamanBiayaBot = () => halaman("biaya-bot", "Memuat biaya bot…", `<link href="/admin/biaya_bot.css?v=1" rel="stylesheet">
