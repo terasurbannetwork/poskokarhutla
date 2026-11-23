@@ -660,6 +660,7 @@ async function unggahSelesai(env, req, url, kini, uid) {
 }
 /* D90: dipanggil cron bersih-bersih menit 17. Unggahan 24 jam tanpa bagian baru: multipart di-abort, baris dibuang; paling banyak 20 per putaran. */
 export async function bersihkanLapor(env, kini = Date.now()) {
+  await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)
   if (!env.MEDIA) return {lewat: "tanpa R2 MEDIA"};
   let basi; try { basi = await H.lpUnggahBasi(env, H.pelakuLpCron, kini - UNGGAH_BASI); } catch (e) { if (tabelBelum(e)) return {lewat: "migrasi 0158 belum diterapkan"}; throw e; }
@@ -744,12 +745,14 @@ async function pdfPost(env, req, url, kini, ctx, x) {
 async function kabarGet(env, req) {
   if (!await mesinSah(env, req)) return galat(403, "perlu kunci mesin");
   const bpbd = await bacaTabel(() => H.lpKabarBpbdAntre(env, MESIN), []);   // butir BPBD berjenis "bpbd", id berawalan "b": bot yang ada mengirim teksnya apa adanya (D97)
-  return kirim(200, {kabar: [...await H.lpKabarAntre(env, MESIN), ...bpbd.map(x => ({id: `b${x.id}`, wa: x.wa, jenis: "bpbd", teks: x.teks, url: null, nomor: null}))]});
+  const lj = await bacaTabel(() => H.ljKabarAntre(env, MESIN, 20), []);   // LJ-11: antrean tahap 2, id berawalan "l"; paling banyak 20 per putaran
+  return kirim(200, {kabar: [...await H.lpKabarAntre(env, MESIN), ...bpbd.map(x => ({id: `b${x.id}`, wa: x.wa, jenis: "bpbd", teks: x.teks, url: null, nomor: null})),
+    ...lj.map(x => ({id: `l${x.id}`, wa: x.wa, jenis: x.jenis, teks: x.teks, url: null, nomor: null}))]});
 }
 async function kabarTerkirim(env, req, url, kini, ctx, x) {
   if (!await mesinSah(env, req)) return galat(403, "perlu kunci mesin");
-  const m = /^(b?)(\d{1,12})\/terkirim$/.exec(x); if (!m) return galat(404, "rute lapor tidak ada");
-  const n = m[1] ? await H.lpKabarBpbdTerkirim(env, MESIN, Number(m[2]), kini) : await H.lpKabarTerkirim(env, MESIN, Number(m[2]), kini);
+  const m = /^([bl]?)(\d{1,12})\/terkirim$/.exec(x); if (!m) return galat(404, "rute lapor tidak ada");
+  const n = m[1] === "l" ? await bacaTabel(() => H.ljKabarTerkirim(env, MESIN, Number(m[2]), kini), 0) : m[1] ? await H.lpKabarBpbdTerkirim(env, MESIN, Number(m[2]), kini) : await H.lpKabarTerkirim(env, MESIN, Number(m[2]), kini);
   return n ? kirim(200, {ok: true}) : galat(404, "kabar tidak ada atau sudah ditandai");
 }
 

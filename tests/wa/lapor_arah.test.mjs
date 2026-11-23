@@ -184,6 +184,32 @@ test('kabar: kirim teks dan PDF lalu tandai terkirim; tunda = tidak ditandai; ti
   w.tutup()
 })
 
+test('kabar tahap 2 (id l...): teks biasa terkirim, ditandai; gagal tandai diulang; teks bertoken tidak masuk log', async () => {
+  const TOKEN = 'tok_RAHASIA_abc123'
+  const w = await worker({ kabar: [
+    { id: 'l42', wa: NOMOR, jenis: 'pembuka', teks: `Pendataan: https://x.id/lapor/data/${TOKEN}`, url: null, nomor: null },
+    { id: 'l43', wa: NOMOR, jenis: 'harian', teks: 'Pertanyaan harian 16.00', url: null, nomor: null },
+  ] })
+  const logs = [], percobaan = []
+  let gagalTanda = true
+  const fetchPalsu = async (u, o) => {
+    if (String(u).endsWith('/kabar/l42/terkirim')) { percobaan.push(1); if (gagalTanda) return new Response('{}', { status: 503 }) }
+    return fetch(u, o)
+  }
+  const { L, kirim } = pasang(w, { buat: { log: (...a) => logs.push(a.join(' ')), fetchFn: fetchPalsu } })
+  try {
+    assert.equal((await L.kabar()).n, 2)
+    assert.deepEqual(kirim.map((k) => [k.wa, k.isi.text]), [[NOMOR, `Pendataan: https://x.id/lapor/data/${TOKEN}`], [NOMOR, 'Pertanyaan harian 16.00']])
+    assert.ok(w.log.some((x) => x.url === '/api/lapor/kabar/l43/terkirim'))
+    gagalTanda = false
+    await L.kabar() // l42 hanya ditandai ulang, tidak dikirim ulang
+    assert.equal(kirim.length, 2)
+    assert.equal(percobaan.length, 2)
+    assert.ok(w.log.some((x) => x.url === '/api/lapor/kabar/l42/terkirim'))
+    assert.ok(!logs.join('\n').includes(TOKEN), 'token tidak boleh masuk log')
+  } finally { w.tutup() }
+})
+
 test('lapor_pdf: tarik antrean, unduh foto jadi .berkas, jalankan dokumen, unggah pdf dan docx', async () => {
   const w = await worker({ antre: [{ nomor: 'LA-191126-01', versi: 2, bahan: { nomor: 'LA-191126-01', foto: [{ url: '/berkas/f.jpg', lencana: 'GPS' }] } }] })
   const kerja = fs.mkdtempSync(path.join(os.tmpdir(), 'uji-lapor-'))

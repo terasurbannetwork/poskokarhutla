@@ -1768,7 +1768,7 @@ Object.assign(MATRIKS, {
   lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
   lj_media:            {lj_tim: ["baca", "tambah", "hapus"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
   lj_tanya:            {lj_tim: ["baca", "ubah"], lp_cron: ["baca", "tambah"]},
-  lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_staf: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_staf: ["tambah"], lp_cron: ["tambah", "hapus"], lp_mesin: ["baca", "ubah"]},   // LJ-11: lp_cron hapus pembuka basi dan baris terkirim lama
   lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
   lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
   titik_pengungsian:   {lj_tim: ["baca", "tambah", "ubah"]},   // LJ-06: register TP dibuat atau disinkronkan dari objek titik berkas (D6); tp* di atas tetap untuk rute meja
@@ -1885,6 +1885,14 @@ export const lpStmtKabar = (env, p, wa, nomor, jenis, teks, url, kini) => sedia(
 export const lpKabarAntre = async (env, p, batas = 50) => (await sedia(env, p, "lapor_kabar", "baca",
   "SELECT id, wa, jenis, teks, url, nomor FROM lapor_kabar WHERE terkirim IS NULL ORDER BY id LIMIT ?1").bind(batas).all()).results;
 export const lpKabarTerkirim = async (env, p, id, kini) => (await sedia(env, p, "lapor_kabar", "ubah", "UPDATE lapor_kabar SET terkirim = ?2 WHERE id = ?1 AND terkirim IS NULL").bind(id, kini).run()).meta.changes;
+/* LJ-11: antrean WA tahap 2 untuk gateway. Teks dikosongkan ("-", CHECK menolak kosong) saat terkirim karena pembuka dan tim memuat token tautan mentah. */
+export const ljKabarAntre = async (env, p, batas = 50) => (await sedia(env, p, "lj_kabar", "baca",
+  "SELECT id, wa, jenis, teks FROM lj_kabar WHERE terkirim IS NULL ORDER BY id LIMIT ?1").bind(batas).all()).results;
+export const ljKabarTerkirim = async (env, p, id, kini) => (await sedia(env, p, "lj_kabar", "ubah",
+  "UPDATE lj_kabar SET terkirim = ?2, teks = '-' WHERE id = ?1 AND terkirim IS NULL").bind(id, kini).run()).meta.changes;
+/* belum terkirim: pembuka dan tim (bertoken) dibuang sesudah 1 hari, jenis lain sesudah 7 hari supaya baris gagal permanen tidak menyumbat LIMIT antrean */
+export const ljKabarBersih = async (env, p, tokenSebelum, terkirimSebelum, macetSebelum) => (await sedia(env, p, "lj_kabar", "hapus",
+  "DELETE FROM lj_kabar WHERE (terkirim IS NULL AND (dibuat < ?3 OR (jenis IN ('pembuka', 'tim') AND dibuat < ?1))) OR terkirim < ?2").bind(tokenSebelum, terkirimSebelum, macetSebelum).run()).meta.changes;
 export const lpKabarWeb = async (env, p, wa, sejak) => (await sedia(env, p, "lapor_kabar", "baca",
   "SELECT nomor, teks, dibuat waktu, jenis FROM lapor_kabar WHERE wa = ?1 AND dibuat > ?2 AND jenis != 'pdf' ORDER BY id LIMIT 50").bind(wa, sejak).all()).results;
 /* antrean cetak: yang 'antre', atau 'cetak' > 5 menit tanpa hasil (mesin mati di tengah) dan masih di bawah 3 percobaan; yang diambil langsung ditandai 'cetak' */
