@@ -192,11 +192,11 @@ def deck(kode, nama, s, impor, kota, foto):
         # pemilik 23 Nov 2026: "bikin sub kolom: 2025 dan 2026", "jangan pake icon dan pill"
         ks = lambda v: v.replace('; ', ', ')
         tl('logistik.csv', ['kab', 'l25', 'l26', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, ks(ll), ks(al), *v] for n, al, ll, v in LG])
-        S_L = 'Direktorat Logistik BNPB, 23 Nov 2026'
+        S_L = 'Direktorat Logistik BNPB, diserahkan 23 November 2026'
         P_L = 'bnpb-logpal-sumbar-2026'
         a(f'{s}.lg.n', len(LG), 'BPBD', P_L, S_L)
         HL = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'temuan', 'rasio': .99, 'cut_off': False, 'pesan': 'Bantuan logistik', 'sumber': S_L,
-              'judul': f'Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {t(f"{s}.lg.n", "|satuan")} di {nama}',
+              'judul': f'Bantuan Peralatan dan Logistik yang Diserahkan kepada {t(f"{s}.lg.n", "|satuan")} di {nama}',   # pemilik 23 Nov 2026 "ganti jadi gini"
               'tabel': {'judul_panel': 'Bantuan per BPBD', 'ikon': 'tanggap-darurat', 'peringkat': False, 'sel_dua_baris': True, 'baris_maks_pt': 40, 'total': True,   # kepala cukup ini (pemilik 23 Nov 2026)
                         'data': c('logistik.csv', [{'nama': 'kab', 'kepala': 'BPBD', 'bobot': 1.3}, {'nama': 'l25', 'kepala': '2025', 'grup': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 2.4},
                                                    {'nama': 'l26', 'kepala': '2026', 'grup': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 2.8},
