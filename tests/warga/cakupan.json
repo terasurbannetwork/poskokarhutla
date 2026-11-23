@@ -16,6 +16,7 @@
     "table lj_kabar": "pembukaan: BPBD di kab izinnya",
     "table lj_akses": "staf BNPB: pribadi dan nomor tim tersamar",
     "table lj_objek": "berkas untuk tim: data pribadi utuh",
+    "table lj_sesi": "WA rumah: dari data rumah sampai simpan",
     "table lf_status": "T3 tetapkan menulis status",
     "table lf_riwayat": "T3 tetapkan menulis status",
     "trigger lf_riwayat_tetap_ubah": "T3 tetapkan menulis status",

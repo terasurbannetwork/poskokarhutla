@@ -2138,7 +2138,7 @@ export const ljSesiUbah = async (env, p, wa, keadaan, diubahLama, kini) => (awai
   "UPDATE lj_sesi SET keadaan = ?2, diubah = ?4 WHERE wa = ?1 AND diubah = ?3").bind(wa, keadaan, diubahLama, kini).run()).meta.changes;
 export const ljSesiHapus = (env, p, wa, sebelum = null) => sedia(env, p, "lj_sesi", "hapus", "DELETE FROM lj_sesi WHERE wa = ?1 AND (?2 IS NULL OR diubah < ?2)").bind(wa, sebelum).run();
 export const ljSesiBasi = async (env, p, sebelum) => (await sedia(env, p, "lj_sesi", "baca",
-  "SELECT wa, keadaan FROM lj_sesi WHERE diubah < ?1 ORDER BY diubah LIMIT 100").bind(sebelum).all()).results;
+  "SELECT wa, berkas, keadaan FROM lj_sesi WHERE diubah < ?1 ORDER BY diubah LIMIT 100").bind(sebelum).all()).results;
 
 /* ---------- Tautan bertoken pihak luar (FITUR §6; src/token.js, migrasi 0164) ----------
    tk_terbit = rute staf yang menerbitkan atau mencabut; tk_periksa = rute publik yang menerima token. Pemeriksaan dan pencatatan pakai

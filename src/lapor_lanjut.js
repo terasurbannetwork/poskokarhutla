@@ -12,7 +12,7 @@ import {modAtauStaf} from "./staf.js";
 import {bakuKab, dalamWilayah} from "./lapor_meja_hak.js";
 import {tglWib} from "./lapor_tampil.js";
 import {rekap, validasi, penanda, kurangFoto, titikObjek} from "./lapor_lanjut_spek.js";
-import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, samarPribadi, BASI_MS, MAKS_FOTO_DRAF} from "./lapor_lanjut_mesin.js";
+import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, BASI_MS} from "./lapor_lanjut_mesin.js";
 import * as H from "./hak.js";
 
 const JAM = 3600e3, HARI = 864e5, UMUR_TOKEN = 30 * HARI;   // Q11: 30 hari
@@ -293,6 +293,94 @@ async function mediaGet(env, req, url, kini) {
   const r2 = await env.MEDIA.get(m.kunci_r2); if (!r2) return galat(404, "Media tidak ditemukan.");
   await H.ljStmtAkses(env, STAF, m.berkas, m.objek, "media", oleh, kini).run();
   return new Response(r2.body, {headers: {...HDR, "content-type": "image/jpeg", "x-content-type-options": "nosniff", "content-disposition": "inline"}});
+}
+
+/* ---------- LJ-05: pintu WA tahap 2 (D9, D11, D24). Dipanggil src/lapor_ai.js pada jalur mesin (Bearer WA_MESIN) SEBELUM daftar izin Lapor: nomor yang
+   punya baris lj_tim aktif (dicabut null, berkas terbuka) dan punya draf lj_sesi atau mengetik perintah tahap 2 ditangani di sini; selain itu null = lanjut ke
+   alur Lapor biasa (nomor anggota tanpa lapor_izin tetap 403 di sana: izin anggota hanya berlaku untuk jalur berkas, D11). Mesin murni: src/lapor_lanjut_mesin.js.
+   ponytail: bila satu nomor aktif di beberapa berkas, yang dipakai berkas terbaru; pilih berkas lewat pesan menyusul bila terbukti perlu. ---------- */
+const jawabWa = (balasan, tambah = {}) => kirim(200, {balasan, teksWa: balasan, status: "data_lanjutan", ...tambah});
+const galatWa = (kode, pesan) => kirim(kode, {galat: pesan, balasan: pesan, teksWa: pesan, status: "data_lanjutan"});
+const RE_LAPOR = /^\s*lapor\s*$/i;
+async function bersihDraf(env, berkas, k) {   // foto draf di R2 ikut dibuang bersama draf
+  const kunci = (k?.foto || []).map(f => kunciFotoDraf(berkas, f.i));
+  if (kunci.length && env.MEDIA) await env.MEDIA.delete(kunci).catch(() => {});
+}
+/* baca draf anggota; draf rusak, basi (24 jam), atau milik berkas lain dibuang. Keluaran {tim, sesi, k} atau null bila bukan anggota aktif */
+async function bacaDraf(env, wa, kini) {
+  const tim = await H.ljTimAktif(env, TIM, wa); if (!tim) return null;
+  let sesi = await H.ljSesi(env, TIM, wa), k = null, pindah = false;
+  if (sesi) {
+    try { k = JSON.parse(sesi.keadaan); } catch {}
+    pindah = !!k?.isian && Object.keys(k.isian).length > 0 && sesi.berkas !== tim.berkas;
+    if (!k || kini - sesi.diubah > BASI_MS || sesi.berkas !== tim.berkas) { await bersihDraf(env, sesi.berkas, k); await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }
+  }
+  return {tim, sesi, k, pindah};
+}
+/* draf -> objek lewat simpanObjek yang sama dengan web; foto draf dipindah ke kunci akhir dan lj_media pintu wa. Keluaran {urut, kurang} atau {galat} */
+async function simpanDariDraf(env, t, d, kini) {
+  const r = await simpanObjek(env, t, {jenis: d.jenis, isian: d.isian, lat: d.lat, lon: d.lon, klien_id: `${d.klien}-${t.tim.wa}`}, kini);
+  if (r.kode >= 400) return {galat: r.isi.isian ? `Butir ${r.isi.isian.join(", ")} belum sah. Ketik *ubah* diikuti nama butirnya.` : r.isi.galat};
+  const ob = r.isi.objek;
+  for (const f of d.foto) {
+    const kunci = kunciFotoDraf(t.b.id, f.i), x = env.MEDIA ? await env.MEDIA.get(kunci) : null; if (!x) continue;   // kiriman ulang: foto sudah dipindah
+    const meta = f.la != null ? {lencana: "wa", lat: f.la, lon: f.lo} : {lencana: "tanpa"};
+    try { await simpanFoto(env, t, await H.ljObjekId(env, TIM, ob.id), new Uint8Array(await x.arrayBuffer()), meta, f.w ?? null, "wa", kini); }
+    finally { await env.MEDIA.delete(kunci).catch(() => {}); }
+  }
+  const akhir = d.foto.length ? (await objekLengkap(env, t.b, ob.id)) : ob;
+  return {urut: ob.urut, kurang: akhir.kurang_foto?.foto ?? 0};
+}
+export async function pesanTim(env, wa, o, kini = Date.now()) {
+  const teks = typeof o?.teks === "string" ? o.teks : "";
+  try {
+    const d = await bacaDraf(env, wa, kini); if (!d) return null;
+    const {tim, sesi, k, pindah} = d;
+    if (k && RE_LAPOR.test(teks)) { await bersihDraf(env, tim.berkas, k); await H.ljSesiHapus(env, TIM, wa); return null; }   // keluar dari mode data ke alur laporan biasa
+    if (!k && !perintahData(teks)) return null;
+    const r = putaranData({keadaan: k, pesan: {teks, lokasi: o.lokasi}, kini});
+    let balasan = r.balasan;
+    if (r.simpan) {
+      const b = await H.ljBerkas(env, TIM, tim.berkas);
+      if (!b || b.status !== "terbuka") return jawabWa("Berkas ini sudah ditutup. Data tidak bisa diubah.");
+      const h = await simpanDariDraf(env, {tim, b, oleh: `tim:${wa}`}, r.simpan, kini);
+      if (h.galat) return jawabWa(`${h.galat}\n\nIsian Anda masih ada. Ketik *simpan* untuk mencoba lagi, atau *batal*.`);
+      balasan = balasanTersimpan(r.simpan.jenis, h.urut) + (h.kurang ? `\nFoto masih kurang ${h.kurang}; tambahkan lewat tautan data di web.` : "");
+      await H.ljSesiBaru(env, TIM, wa, tim.berkas, JSON.stringify(r.keadaan), kini);   // keadaan sesudah simpan tanpa isian pribadi
+    } else if (!r.keadaan) {
+      if (sesi) await H.ljSesiHapus(env, TIM, wa);
+      await bersihDraf(env, tim.berkas, k);
+    } else if (sesi) {
+      if (!await H.ljSesiUbah(env, TIM, wa, JSON.stringify(r.keadaan), sesi.diubah, Math.max(kini, sesi.diubah + 1))) return galatWa(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
+    } else await H.ljSesiBaru(env, TIM, wa, tim.berkas, JSON.stringify(r.keadaan), kini);
+    return jawabWa(pindah ? `Isian yang belum disimpan dari berkas sebelumnya dibuang karena Anda sekarang terdaftar di berkas baru.\n\n${balasan}` : balasan);
+  } catch (e) { if (tabelBelum(e)) return perintahData(teks) ? galatWa(503, "Data lanjutan belum aktif (migrasi 0165 belum diterapkan).") : null; throw e; }
+}
+const jpegWa = d => {
+  try { const s = String(d || "").replace(/^data:image\/jpeg;base64,/, ""); if (s.length > 6.9e6) return null; const m = Uint8Array.from(atob(s), c => c.charCodeAt(0)); return m.length >= 1000 && m.length <= 5 * 1048576 && m[0] === 0xff && m[1] === 0xd8 ? m : null; } catch { return null; }
+};
+export async function fotoTim(env, wa, o, kini = Date.now()) {
+  try {
+    const d = await bacaDraf(env, wa, kini); if (!d?.k) return null;   // tanpa draf data: foto biasa alur Lapor
+    if (!env.MEDIA) return galatWa(503, "Penyimpanan foto belum aktif.");
+    const mentah = jpegWa(o.data); if (!mentah) return galatWa(400, "Foto harus JPEG, paling besar 5 MB.");
+    const bersih = bersihMedia("image/jpeg", mentah); if (!bersih) return galatWa(400, "Struktur foto tidak sah atau rusak.");   // EXIF dibuang
+    const L = titikWa(o.lokasi), id = acak(8), w = angka(o.waktu) && o.waktu > kini - 48 * JAM && o.waktu <= kini + 5 * MENIT ? o.waktu : kini;
+    const m = fotoMasuk(d.k, {i: id, w, ...(L || {})});
+    if (m.ditolak) return galatWa(409, m.balasan);
+    const kunci = kunciFotoDraf(d.tim.berkas, id);
+    await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}});
+    if (!await H.ljSesiUbah(env, TIM, wa, JSON.stringify(m.keadaan), d.sesi.diubah, Math.max(kini, d.sesi.diubah + 1))) { await env.MEDIA.delete(kunci).catch(() => {}); return galatWa(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang."); }
+    return jawabWa(m.balasan);
+  } catch (e) { if (tabelBelum(e)) return null; throw e; }
+}
+/* cron bersih-bersih (dipanggil bersihkanLapor): draf lebih tua dari 24 jam dibuang bersama foto drafnya, paling banyak 100 per putaran */
+export async function bersihSesiLanjut(env, kini = Date.now()) {
+  try {
+    const basi = await H.ljSesiBasi(env, H.pelakuLpCron, kini - BASI_MS);
+    for (const r of basi) { let k = null; try { k = JSON.parse(r.keadaan); } catch {} await bersihDraf(env, r.berkas, k); await H.ljSesiHapus(env, H.pelakuLpCron, r.wa, kini - BASI_MS); }
+    return basi.length;
+  } catch (e) { if (tabelBelum(e)) return 0; throw e; }
 }
 
 /* migrasi 0161 belum diterapkan: 503 jelas, bukan 500 */

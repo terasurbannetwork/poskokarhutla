@@ -166,14 +166,14 @@ function putar(k, pesan, kini) {
   return kembali(ringkasan(k));
 }
 
-/* satu foto diterima: pemanggil sudah memeriksa JPEG dan menulis ke R2 hanya bila diterima. f = {i: id acak, lat?, lon?} */
+/* satu foto diterima: pemanggil sudah memeriksa JPEG dan menulis ke R2 hanya bila diterima. f = {i: id acak, w?: waktu pesan ms, lat?, lon?} */
 export function fotoMasuk(keadaan, f) {
   const k = keadaan ? structuredClone(keadaan) : null;
   if (!k || k.tahap === "sesudah") return {ditolak: true, balasan: "Belum ada isian yang menunggu foto. Ketik *data rumah* atau *data prasarana* dulu."};
   if (k.tahap === "isi") return {ditolak: true, balasan: "Foto diminta sesudah semua isian terjawab. Jawab dulu pertanyaan ini.\n\n" + tanya(k)};
   if (k.foto.length >= MAKS_FOTO_DRAF) return {ditolak: true, balasan: `Paling banyak ${MAKS_FOTO_DRAF} foto per objek. Ketik *simpan* untuk menyimpan.`};
   const lok = titikWa(f);
-  k.foto.push({i: f.i, ...(lok && {la: lok.lat, lo: lok.lon})});
+  k.foto.push({i: f.i, ...(Number.isFinite(f.w) && {w: f.w}), ...(lok && {la: lok.lat, lo: lok.lon})});
   if (lok && k.lat == null) { k.lat = lok.lat; k.lon = lok.lon; }
   const awal = k.tahap; maju(k);
   const awalan = awal === "foto" && k.tahap === "foto" ? `Foto diterima. Kurang ${fotoKurang(k)} lagi.` : "Foto diterima.";

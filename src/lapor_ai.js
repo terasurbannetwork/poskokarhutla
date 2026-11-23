@@ -27,7 +27,7 @@ import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, 
 import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
-import {bukaBerkas} from "./lapor_lanjut.js";
+import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
@@ -302,7 +302,9 @@ const teksWaDari = (h, tambahan, token, url) => h.kirim ? `${h.inti}\n\nLacak la
 
 async function pesan(env, req, url, kini, ctx) {
   const b = await bacaBody(req, 16384); if (b.galat) return galat(b.status || 400, b.galat);
-  const o = b.o, id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
+  const o = b.o;
+  if (req.headers.get("authorization") && await mesinSah(env, req)) { const w = nomorWa(o?.wa), j = w && await pesanTim(env, w, o, kini); if (j) return j; }   // tahap 2 data lanjutan BPBD (LJ-05, D11): anggota tim berkas lolos di sini saja
+  const id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
   const {wa, perangkat} = id;
   // ponytail: saluran bawaan = jalur masuk (mesin = wa, sesi = web); mesin boleh meneruskan saluran "web" hanya bila gateway web memintanya
   const saluran = id.saluran === "web" ? "web" : o.saluran === "web" ? "web" : "wa";
@@ -449,6 +451,7 @@ async function fotoPost(env, req, url, kini, ctx) {
   let o; try { o = JSON.parse(new TextDecoder().decode(bb.b) || "{}"); } catch { return galat(400, "body bukan JSON"); }
   if (!o || typeof o !== "object") return galat(400, "body harus objek JSON");
   const id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
+  if (req.headers.get("authorization") && await mesinSah(env, req)) { const w = nomorWa(o.wa), j = w && await fotoTim(env, w, o, kini); if (j) return j; }   // foto ke draf data lanjutan (LJ-05)
   const {wa, saluran} = id, mesin = saluran === "wa";
   const batas = await kuota(env, req, id, kini); if (batas) return batas;
   const mentah = b64(o.data, mesin ? 6.9e6 : 3.5e6);
@@ -649,6 +652,7 @@ async function unggahSelesai(env, req, url, kini, uid) {
 }
 /* D90: dipanggil cron bersih-bersih menit 17. Unggahan 24 jam tanpa bagian baru: multipart di-abort, baris dibuang; paling banyak 20 per putaran. */
 export async function bersihkanLapor(env, kini = Date.now()) {
+  await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)
   if (!env.MEDIA) return {lewat: "tanpa R2 MEDIA"};
   let basi; try { basi = await H.lpUnggahBasi(env, H.pelakuLpCron, kini - UNGGAH_BASI); } catch (e) { if (tabelBelum(e)) return {lewat: "migrasi 0158 belum diterapkan"}; throw e; }
   for (const u of basi) { await env.MEDIA.resumeMultipartUpload(u.kunci_r2, u.upload_id).abort().catch(() => {}); await H.lpUnggahHapus(env, H.pelakuLpCron, u.id); }
