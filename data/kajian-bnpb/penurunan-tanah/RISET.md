@@ -93,3 +93,18 @@ Klaim video "24 kali lebih cepat dari laut" sama dengan 10 dibagi sekitar 0,42 c
 | ESA, Sinking cities Indonesia | ringkasan bukti geodesi satelit per kota | https://earth.esa.int/eogateway/documents/20142/37627/Sinking-cities-Indonesia-space-geodetic-evidence-rates-spatial-distribution-land-subsidence.pdf | rujukan, bukan data |
 
 Vonis 23 Nov 2026: Shirzaei 2024 menjadi opsi E di bagian 3, data siap pakai untuk Jakarta tanpa menunggu Q1. Karena sudah vertikal, langkah `vertikal` dilewati; tetapi `agregasi` (`subsiden.py:103`) menerima kisi mm/tahun, bukan titik cm/tahun, jadi perlu satu pembaca kecil (titik ke kisi, atau titik-dalam-poligon langsung) beserta konversi satuan dan kolom simpangan baku sebagai `vstd`. Sesudah itu tetap lewat gerbang pola Jakarta Utara lawan Selatan dan label hipotesis (D4). Kerangka IGS14 berarti laju absolut, bukan relatif terhadap titik acuan lokal seperti LiCSBAS; perbedaan ini ditulis di berkas keluaran. Kota lain tetap menunggu Q1 atau literatur. Unduhan menunggu izin pemilik.
+
+### 6.5 Pemeriksaan awal data Shirzaei 2024 Jakarta (24 Nov 2026)
+
+Berkas `data/banjir/subsiden/LLIVS_IGS14_Jakarta.csv.gz` (md5 cocok dengan figshare). Dihitung dengan Python stdlib, tanpa batas kecamatan:
+
+| Ukuran | Nilai |
+| --- | --- |
+| Baris | 65.251, unik 49.901 (15.350 baris duplikat persis) |
+| Cakupan | bujur 106,686 sampai 106,974; lintang -6,374 sampai -6,090 |
+| Gerak vertikal | median +0,23 cm/tahun; p5 -1,36; p95 +1,01; paling turun -6,23 |
+| Simpangan baku | median 0,014 cm/tahun |
+| Utara (lintang di atas -6,15) lawan selatan (di bawah -6,25) | median +0,16 lawan +0,16 cm/tahun |
+| Kotak sekitar Muara Baru (bujur 106,79-106,82, lintang -6,115 sampai -6,09) | 147 titik, median -1,88, paling turun -5,83 cm/tahun |
+
+Vonis sementara: data ini TIDAK lolos gerbang pola `subsiden.py` (Jakarta Utara harus lebih turun minimal 1 cm/tahun dari Jakarta Selatan); dengan potongan lintang kasar selisihnya nol. Angkanya juga jauh di bawah literatur dan pengukuran Dinas SDA (Muara Baru sekitar 10 cm/tahun, bagian 6.3). Dugaan yang belum diperiksa: kerangka IGS14 dan titik acuan membuat median kota bergeser ke nol atau positif, periode pengamatannya berbeda, atau berkas ini hanya sebagian kota. Langkah berikut sebelum dipakai: baca bagian metode makalah Shirzaei 2024 (periode, satelit, acuan), lalu hitung ulang per kecamatan dengan batas `public/geo/kecamatan/31.json` (berkas beku J4, hanya dibaca). Sebelum itu tidak ada angka dari data ini yang tayang.
