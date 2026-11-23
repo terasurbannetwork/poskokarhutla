@@ -1,21 +1,21 @@
-bpbd,alat,selimut,matras,kasur,terpal,mss,fk,lalu
-Provinsi Sumbar,"Motor trail, 9 tenda, 24 lampu",240,240,90,160,200,120,"Truk, 126 lentera, 120 terpal"
-Kota Padang,Mobil rescue,120,120,45,80,100,60,Mobil pick up
-Agam,Mobil rescue,120,120,45,80,100,60,–
-Solok,Mobil rescue,120,120,45,80,100,60,Mobil pick up
-Lima Puluh Kota,Mobil rescue,120,120,45,80,100,60,Mobil pick up
-Tanah Datar,Perahu dan mesin,120,120,45,80,100,60,Mobil rescue
-Kepulauan Mentawai,Perahu dan mesin,120,120,45,80,100,60,Mobil pick up
-Pasaman Barat,Motor trail,120,120,45,80,100,60,Mobil pick up
-Pasaman,Motor trail,120,120,45,80,100,60,Mobil pick up
-Kota Pariaman,Mobil rescue,80,90,30,60,80,30,Mobil pick up
-Pesisir Selatan,Mobil rescue,80,90,30,60,80,30,Mobil pick up
-Kota Payakumbuh,Perahu dan mesin,80,90,30,60,80,30,Mobil pick up
-Solok Selatan,Perahu dan mesin,80,90,30,60,80,30,Mobil tangki air
-Sijunjung,Perahu dan mesin,80,90,30,60,80,30,Mobil pick up
-Padang Pariaman,"4 tenda, 24 lampu",80,90,30,60,80,30,Mobil rescue
-Dharmasraya,"4 tenda, 24 lampu",80,90,30,60,80,30,Mobil pick up
-Kota Solok,–,80,90,30,60,80,30,Truk
-Kota Sawahlunto,–,80,90,30,60,80,30,Mobil pick up
-Kota Padang Panjang,–,80,90,30,60,80,30,Mobil pick up
-Kota Bukittinggi,–,80,90,30,60,80,30,Mobil pick up
+kab,alat,selimut,matras,kasur,terpal,makanan,family
+Provinsi Sumatera Barat,"Motor Trail; 9 Tenda; 24 Lampu Solar Cell; Truk, 126 Lentera, 120 Terpal (2025)",240,240,90,160,200,120
+Kota Padang,Mobil Rescue; Mobil Pick Up (2025),120,120,45,80,100,60
+Agam,Mobil Rescue,120,120,45,80,100,60
+Solok,Mobil Rescue; Mobil Pick Up (2025),120,120,45,80,100,60
+Lima Puluh Kota,Mobil Rescue; Mobil Pick Up (2025),120,120,45,80,100,60
+Tanah Datar,Perahu dan Mesin Perahu; Mobil Rescue (2025),120,120,45,80,100,60
+Kepulauan Mentawai,Perahu dan Mesin Perahu; Mobil Pick Up (2025),120,120,45,80,100,60
+Pasaman Barat,Motor Trail; Mobil Pick Up (2025),120,120,45,80,100,60
+Pasaman,Motor Trail; Mobil Pick Up (2025),120,120,45,80,100,60
+Kota Pariaman,Mobil Rescue; Mobil Pick Up (2025),80,90,30,60,80,30
+Pesisir Selatan,Mobil Rescue; Mobil Pick Up (2025),80,90,30,60,80,30
+Kota Payakumbuh,Perahu dan Mesin Perahu; Mobil Pick Up (2025),80,90,30,60,80,30
+Solok Selatan,Perahu dan Mesin Perahu; Mobil Tangki Air (2025),80,90,30,60,80,30
+Sijunjung,Perahu dan Mesin Perahu; Mobil Pick Up (2025),80,90,30,60,80,30
+Padang Pariaman,4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Rescue (2025),80,90,30,60,80,30
+Dharmasraya,4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Pick Up (2025),80,90,30,60,80,30
+Kota Solok,Mobil Truk Serbaguna (2025),80,90,30,60,80,30
+Kota Sawahlunto,Mobil Pick Up (2025),80,90,30,60,80,30
+Kota Padang Panjang,Mobil Pick Up (2025),80,90,30,60,80,30
+Kota Bukittinggi,Mobil Pick Up (2025),80,90,30,60,80,30

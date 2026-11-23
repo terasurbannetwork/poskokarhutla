@@ -176,31 +176,27 @@ def deck(kode, nama, s, impor, kota, foto):
     HL = None
     if s == 'wb.sb':
         K_, B_ = (80, 90, 30, 60, 80, 30), (120, 120, 45, 80, 100, 60)
-        LG = [('Provinsi Sumbar', 'Motor trail, 9 tenda, 24 lampu', (240, 240, 90, 160, 200, 120), 'Truk, 126 lentera, 120 terpal'),
-              ('Kota Padang', 'Mobil rescue', B_, 'Mobil pick up'), ('Agam', 'Mobil rescue', B_, '–'),
-              ('Solok', 'Mobil rescue', B_, 'Mobil pick up'), ('Lima Puluh Kota', 'Mobil rescue', B_, 'Mobil pick up'),
-              ('Tanah Datar', 'Perahu dan mesin', B_, 'Mobil rescue'), ('Kepulauan Mentawai', 'Perahu dan mesin', B_, 'Mobil pick up'),
-              ('Pasaman Barat', 'Motor trail', B_, 'Mobil pick up'), ('Pasaman', 'Motor trail', B_, 'Mobil pick up'),
-              ('Kota Pariaman', 'Mobil rescue', K_, 'Mobil pick up'), ('Pesisir Selatan', 'Mobil rescue', K_, 'Mobil pick up'),
-              ('Kota Payakumbuh', 'Perahu dan mesin', K_, 'Mobil pick up'), ('Solok Selatan', 'Perahu dan mesin', K_, 'Mobil tangki air'),
-              ('Sijunjung', 'Perahu dan mesin', K_, 'Mobil pick up'), ('Padang Pariaman', '4 tenda, 24 lampu', K_, 'Mobil rescue'),
-              ('Dharmasraya', '4 tenda, 24 lampu', K_, 'Mobil pick up'), ('Kota Solok', '–', K_, 'Truk'),
-              ('Kota Sawahlunto', '–', K_, 'Mobil pick up'), ('Kota Padang Panjang', '–', K_, 'Mobil pick up'), ('Kota Bukittinggi', '–', K_, 'Mobil pick up')]
+        # gaya halaman logistik deck Bali dan NTT (pemilik 23 Nov 2026): alat 2026 lalu bantuan 2025 bertanda (2025); diserahkan 23 Nov 2026
+        LG = [('Provinsi Sumatera Barat', 'Motor Trail; 9 Tenda; 24 Lampu Solar Cell; Truk, 126 Lentera, 120 Terpal (2025)', (240, 240, 90, 160, 200, 120)),
+              ('Kota Padang', 'Mobil Rescue; Mobil Pick Up (2025)', B_), ('Agam', 'Mobil Rescue', B_),
+              ('Solok', 'Mobil Rescue; Mobil Pick Up (2025)', B_), ('Lima Puluh Kota', 'Mobil Rescue; Mobil Pick Up (2025)', B_),
+              ('Tanah Datar', 'Perahu dan Mesin Perahu; Mobil Rescue (2025)', B_), ('Kepulauan Mentawai', 'Perahu dan Mesin Perahu; Mobil Pick Up (2025)', B_),
+              ('Pasaman Barat', 'Motor Trail; Mobil Pick Up (2025)', B_), ('Pasaman', 'Motor Trail; Mobil Pick Up (2025)', B_),
+              ('Kota Pariaman', 'Mobil Rescue; Mobil Pick Up (2025)', K_), ('Pesisir Selatan', 'Mobil Rescue; Mobil Pick Up (2025)', K_),
+              ('Kota Payakumbuh', 'Perahu dan Mesin Perahu; Mobil Pick Up (2025)', K_), ('Solok Selatan', 'Perahu dan Mesin Perahu; Mobil Tangki Air (2025)', K_),
+              ('Sijunjung', 'Perahu dan Mesin Perahu; Mobil Pick Up (2025)', K_), ('Padang Pariaman', '4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Rescue (2025)', K_),
+              ('Dharmasraya', '4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Pick Up (2025)', K_), ('Kota Solok', 'Mobil Truk Serbaguna (2025)', K_),
+              ('Kota Sawahlunto', 'Mobil Pick Up (2025)', K_), ('Kota Padang Panjang', 'Mobil Pick Up (2025)', K_), ('Kota Bukittinggi', 'Mobil Pick Up (2025)', K_)]
         assert len(LG) == 20
-        tl('logistik.csv', ['bpbd', 'alat', 'selimut', 'matras', 'kasur', 'terpal', 'mss', 'fk', 'lalu'], [[n, al, *v, l] for n, al, v, l in LG])
-        S_L = 'Rencana distribusi bantuan logistik dan peralatan BNPB 2026, Nov 2026'
+        tl('logistik.csv', ['kab', 'alat', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, al, *v] for n, al, v in LG])
+        S_L = 'Direktorat Logistik BNPB, 23 Nov 2026'
         P_L = 'bnpb-logpal-sumbar-2026'
-        for k, j_ in (('rescue', 6), ('perahu', 5), ('trail', 3), ('tenda', 12), ('lampu', 72)):
-            a(f'{s}.lg.{k}', j_, {'rescue': 'unit', 'perahu': 'set', 'trail': 'unit', 'tenda': 'set', 'lampu': 'unit'}[k], P_L, S_L)
-        assert sum(1 for x in LG if x[1] == 'Mobil rescue') == 6 and sum(1 for x in LG if x[1] == 'Perahu dan mesin') == 5
         a(f'{s}.lg.n', len(LG), 'BPBD', P_L, S_L)
-        HL = {'jenis': 'tabel-peringkat', 'jenis_slide': 'tabel', 'judul_bentuk': 'deskriptif', 'judul_ikon': 'tanggap-darurat', 'cut_off': False, 'pesan': 'Rencana distribusi logistik 2026', 'sumber': S_L,
-              'judul': f'Bantuan 2026 untuk {t(f"{s}.lg.n", "|satuan")} {nama}: {t(f"{s}.lg.rescue", "|satuan")} mobil rescue, {t(f"{s}.lg.perahu", "|satuan")} perahu, {t(f"{s}.lg.trail", "|satuan")} motor trail',
-              'tabel': {'judul_panel': 'Rincian per BPBD, 2026', 'ikon': 'tanggap-darurat', 'baris_maks_pt': 22, 'total': True, 'peringkat': False,
-                        'data': c('logistik.csv', [{'nama': 'bpbd', 'kepala': 'BPBD', 'bobot': 1.5}, {'nama': 'alat', 'kepala': 'Peralatan 2026', 'bobot': 2.2},
-                                                   {'nama': 'lalu', 'kepala': 'Diterima 2025', 'bobot': 1.5},
-                                                   F('selimut', 'Selimut'), F('matras', 'Matras'), F('kasur', 'Kasur'), F('terpal', 'Terpal'),
-                                                   F('mss', 'Makanan'), F('fk', 'Family kit')], S_L)}}
+        HL = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'temuan', 'rasio': .99, 'cut_off': False, 'pesan': 'Bantuan logistik', 'sumber': S_L,
+              'judul': f'Logistik: Bantuan Peralatan dan Logistik 2026 yang Diserahkan kepada {t(f"{s}.lg.n", "|satuan")} di {nama}',
+              'tabel': {'judul_panel': 'Bantuan per BPBD, logistik tahun 2026, diserahkan 23 November 2026', 'ikon': 'tanggap-darurat', 'peringkat': False, 'sel_dua_baris': True, 'baris_maks_pt': 40, 'total': True,
+                        'data': c('logistik.csv', [{'nama': 'kab', 'kepala': 'BPBD', 'bobot': 1.3}, {'nama': 'alat', 'kepala': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 4.4},
+                                                   F('selimut', 'Selimut'), F('matras', 'Matras'), F('kasur', 'Kasur Lipat'), F('terpal', 'Terpal'), F('makanan', 'Makanan'), F('family', 'Family Kit')], S_L)}}
 
     IMP = lambda n: {'jenis': 'impor', 'pptx': f'data/sumut-aceh/impor/{impor}.pptx', 'halaman': n, 'sumber': sumber_impor(impor, n)}
     SUB = 'Fokus Banjir'

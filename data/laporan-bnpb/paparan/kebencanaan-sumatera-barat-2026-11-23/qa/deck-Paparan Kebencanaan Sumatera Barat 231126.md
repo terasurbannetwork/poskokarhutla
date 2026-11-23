@@ -1,6 +1,6 @@
 # Laporan QA deck Paparan Kebencanaan Sumatera Barat 231126
 
-Berkas `Paparan Kebencanaan Sumatera Barat 231126.pptx` dan `Paparan Kebencanaan Sumatera Barat 231126.pdf`, spek `banjir-sumbar`, diperiksa 23-11-2026 10.45 WIB.
+Berkas `Paparan Kebencanaan Sumatera Barat 231126.pptx` dan `Paparan Kebencanaan Sumatera Barat 231126.pdf`, spek `banjir-sumbar`, diperiksa 23-11-2026 10.54 WIB.
 Vonis: **GAGAL** (2 pemeriksaan gagal). Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; di awal musim hujan 2026 banjir kembali melanda dan kecamatan berstatus banjir perlu disiapkan.
@@ -12,8 +12,8 @@ Pesan kunci: Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; 
 | Font | qa/periksa.py D-5 Huruf terkecil | LOLOS | – |
 | Font | qa/periksa.py D-23 Glif di luar Roboto nol | LOLOS | – |
 | Ikon | Gambar raster hanya logo, foto Commons, peta dasar, dan ikon (S37) | LOLOS | – |
-| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 143 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
-| Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 16 slide, huruf terkecil 6.5 pt, 542 angka, judul PDF [3, 2, 2, 2, 2, 1] baris |
+| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 142 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
+| Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 16 slide, huruf terkecil 6.5 pt, 539 angka, judul PDF [3, 2, 2, 2, 2, 1] baris |
 | Tata letak | qa/periksa.py T-2 Jumlah halaman PDF = dokumen asal | LOLOS | – |
 | Tata letak | qa/periksa.py D-17 Judul paling banyak 2 baris, tanpa teks terpotong | GAGAL | slide 7 'TextBox 1': judul 3 baris (perkiraan lebar teks) > 2; slide 8 'TextBox 1': judul 3 baris (perkiraan lebar teks) > 2; slide 9 'TextBox 1': judul 3 baris (perkiraan lebar teks) > 2 (dan 1 lagi) |
 | Tata letak | qa/periksa.py T-6 Kerangka slide (Buku Pegangan: garis y95 dan y507,6, nomor halaman, pil CUT OFF di slide data) | LOLOS | – |
@@ -26,7 +26,7 @@ Pesan kunci: Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; 
 | Tata letak | qa/periksa.py D-52 Teks isi dua baris atau lebih rata kanan-kiri | LOLOS | – |
 | Tata letak | Garis besar: pesan_kunci, lalu pesan, jenis_slide S35, judul_bentuk S7 tiap slide isi (S34) | LOLOS | – |
 | Tata letak | Tiap slide isi selain navigasi memuat grafik native, tabel native, atau peta (S36) | LOLOS | – |
-| Tata letak | Dua slide isi berurutan tidak berjenis sama, kecuali seri dan lampiran (S35) | LOLOS | tabel > grafik > peta > tabel |
+| Tata letak | Dua slide isi berurutan tidak berjenis sama, kecuali seri dan lampiran (S35) | LOLOS | tabel > grafik > peta > matriks |
 | Tata letak | Judul slide isi tidak kembar setelah angka dibuang (S6) | LOLOS | – |
 | Tata letak | Paling banyak 6 butir per kotak teks (S38) | LOLOS | – |
 | Anti-AI | qa/periksa.py D-1 Em dash nol | LOLOS | – |
@@ -56,5 +56,5 @@ Judul dibaca berurutan sebagai ringkasan sebelum dikirim.
 | 12 | grafik; temuan | Gempa dan Tsunami: Skor risiko tertinggi {{angka:wb.sb.g.top}} di Kepulauan Mentawai; korban {{angka:wb.sb.g.m/satuan}} sejak 2008 | Gempa dan tsunami |
 | 13 | peta; temuan | Karhutla dan Gunung Api: Seluas {{angka:wb.sb.k.luas/satuan}} lahan terbakar sepanjang 2026; Kerinci dan Marapi berstatus Waspada | Karhutla dan gunung api |
 | 14 | pembatas-seksi | – | – |
-| 15 | tabel; deskriptif | Bantuan 2026 untuk {{angka:wb.sb.lg.n/satuan}} Sumatera Barat: {{angka:wb.sb.lg.rescue/satuan}} mobil rescue, {{angka:wb.sb.lg.perahu/satuan}} perahu, {{angka:wb.sb.lg.trail/satuan}} motor trail | Rencana distribusi logistik 2026 |
+| 15 | matriks; temuan | Logistik: Bantuan Peralatan dan Logistik 2026 yang Diserahkan kepada {{angka:wb.sb.lg.n/satuan}} di Sumatera Barat | Bantuan logistik |
 | 16 | penutup | – | – |

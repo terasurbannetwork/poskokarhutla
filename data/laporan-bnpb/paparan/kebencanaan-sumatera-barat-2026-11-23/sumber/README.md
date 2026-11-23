@@ -52,4 +52,4 @@ Sisa temuan QA (D-17 perkiraan judul 3 baris, T-7 kartu Siaga) ada di slide impo
 
 - `--surut 2026-11-23`: konfirmasi Koordalops 23 Nov 10.39 bahwa 8 kab/kota sudah tidak tergenang dan warga sudah kembali ke rumah.
 - WA Koordalops 23 Nov ikut dibaca (kejadian baru Lima Puluh Kota, ditulis "Limapuluh Kota", disamakan di `kab_bersih`).
-- Bagian 04 Dukungan logistik: rencana distribusi bantuan logistik dan peralatan 2026 untuk BPBD Provinsi Sumatera Barat dan 19 BPBD kab/kota (`data/logistik.csv`).
+- Bagian 04 Dukungan logistik: rencana distribusi bantuan logistik dan peralatan 2026 untuk BPBD Provinsi Sumatera Barat dan 19 BPBD kab/kota (`data/logistik.csv`), gaya halaman logistik deck Bali dan NTT, diserahkan 23 Nov 2026.
