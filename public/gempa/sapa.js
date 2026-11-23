@@ -9,6 +9,7 @@
     ikon: {gempa: '<path d="M2 12h4l2-6 4 12 3-9 2 3h5"/>', dirasa: '<circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"/>'},
     siap: () => S.tersedia && S.gempa.length > 0,
     async hitung() {
+      if (typeof NamaWil !== "undefined") await NamaWil.siap();   /* nama kab BMKG dirapikan (PB-68.1) sebelum kartu ditulis */
       const kini = Date.now(), A = S.gempa.filter(g => g.m >= 5); if (!A.length) return null;
       const d1 = A.filter(g => kini - g.t <= 24 * H), d0 = A.filter(g => kini - g.t > 24 * H && kini - g.t <= 48 * H);
       const prov = {}; A.forEach(g => { const o = prov[g.prov || "-"] ||= {k: g.prov || "-", n: 0, m: 0, mmi: 0}; o.n++; o.m = Math.max(o.m, g.m); o.mmi = Math.max(o.mmi, g.mmi_maks || 0); });

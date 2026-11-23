@@ -97,7 +97,7 @@ const Insight = {
 
   /* 6. susulan: kejadian utama yang masih aktif (D1) + peluang susulan M 5+ 7 hari (model susulan; tanpa model hanya cacah). Kosong = dibuang. */
   async exSusulan() {
-    const kej = ((await Sus.daftar()) || []).filter(k => k.aktif).sort((a, b) => b.m - a.m).slice(0, 8); if (!kej.length) return "";
+    const kej = ((await Sus.daftar()) || []).filter(k => k.aktif).sort((a, b) => b.m - a.m).slice(0, 8); if (!kej.length) return ""; await NamaWil.siap();
     const pel = await Promise.all(kej.map(k => Sus.peluang(k.kode).catch(() => null))), jml = kej.reduce((a, k) => a + Math.max(0, (k.jumlah || 1) - 1), 0);
     const rows = kej.map((k, i) => { const n = Math.max(0, (k.jumlah || 1) - 1), r = pel[i]?.m5, nm0 = wilayahPendek(k.nama || ""), nm = esc(nm0);
       return {nama: esc(nm0.length > (innerWidth < 640 ? 15 : 24) ? nm0.slice(0, innerWidth < 640 ? 14 : 23) + "…" : nm0), v: n, teks: fmt(n) + " susulan", warna: KG.TANAH, pil: [[mTulis(k.m), warnaM(k.m)], ...(r ? [[peluangTeks(r), "#3f6fa8"]] : [])],
@@ -115,7 +115,7 @@ const Insight = {
   exCerita() { return Cerita.kartu("gempa"); },
   async dataCerita() {
     const kej = ((await Sus.daftar()) || []).filter(k => k.jumlah > 1).sort((a, b) => b.m - a.m || Date.parse(b.mulai) - Date.parse(a.mulai))[0]; if (!kej) return "";
-    const k = await Sus.kej(kej.kode); if (!k?.gempa) return "";   // peluang susulan sudah punya kartu sendiri: judul cerita tinggal satu temuan
+    const k = await Sus.kej(kej.kode); if (!k?.gempa) return ""; await NamaWil.siap();   // peluang susulan sudah punya kartu sendiri: judul cerita tinggal satu temuan
     const t0 = Date.parse(k.mulai), S = k.gempa.filter(x => x.id !== k.utama_id && Date.parse(x.waktu) > t0); if (!S.length) return "";
     const hari = x => Math.floor((Date.parse(x.waktu) - t0) / 864e5), nH = Math.max(...S.map(hari)) + 1, nilai = Array.from({length: nH}, () => [0]), terbesar = S.reduce((a, x) => x.m > a.m ? x : a, S[0]);
     for (const x of S) nilai[hari(x)][0]++;

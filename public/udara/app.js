@@ -51,19 +51,21 @@ const TAB_SEMBUNYI = new Set(["informasi"]); /* ada tapi tidak di menu (A24); Me
 const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   simulasi: '<path d="M4 4v16h16"/><path d="M7 15c3-1 3-8 6-8s3 7 7 6"/>',
+  operasi: '<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7z"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', metode: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 function bukaTab(id, dorong = true) {
-  if (!TABS.some(t => t[0] === id)) id = "peta";
+  if (id === "operasi" ? !$("#p-operasi") : !TABS.some(t => t[0] === id)) id = "peta";   /* tab Operasi hanya ada bila operasi.js menyisipkannya (PB-85, F-40) */
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/udara/" + id);   /* tautan bersih tanpa tagar; worker melayani index.html untuk jalur ini */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi, informasi: window.Informasi})[id]?.render(); });
+    ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi, informasi: window.Informasi, operasi: window.UdaraOperasi})[id]?.render(); });
 }
 /* tab Kejadian hanya ada bila ada kejadian segar (A18): dipanggil lagi sesudah berkasnya terbaca */
 const tbTab = ([k, n]) => `<button data-t="${k}" aria-current="${document.querySelector("#p-" + k)?.classList.contains("on") ? "page" : (k === "peta" ? "page" : "false")}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`;
 const isiTab = () => { const T = TABS.filter(t => !TAB_SEMBUNYI.has(t[0]) && (t[0] !== "kejadian" || (typeof Kejadian !== "undefined" && Kejadian.ada()))), el = $("#tabs");
+  if (document.querySelector("#p-operasi")) T.push(["operasi", "Operasi"]);   /* PB-85 (F-40): disisipkan operasi.js hanya untuk sesi yang boleh membaca rute operasi */
   if (el.children.length && [...el.children].map(b => b.dataset.t).join() === T.map(t => t[0]).join()) return;   /* himpunan tab sama: jangan tulis ulang (fokus dan menu tetap) */
   el.innerHTML = T.map(tbTab).join(""); };
 { isiTab();
@@ -85,7 +87,7 @@ async function muatData() {
   S.h0 = S.hari = Math.max(0, uk.hari.indexOf(tglWIB(SEKARANG())));
   /* METAR boleh tidak ada: kartu dan lapisannya dibuang */
   S.metar = await muatJSON("../data/metar.json").catch(() => []);
-  $("#upd").textContent = "Data " + jamWIB(uk.dibuat);
+  $("#upd").innerHTML = jamData(uk.dibuat);
   await Kejadian.muatAwal(); isiTab();
 }
 /* stasiun METAR segar (laporan <= maksJam jam, jarak pandang terbaca) */

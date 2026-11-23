@@ -67,7 +67,7 @@ def seri_laporan(ag, n, ikut=frozenset()):
     nas = ambil(ag["nas"], [sum(v[d] for v in kab_semua.values()) for d in range(n)])
     kode = ag["_kode"]
     kab = [{"prov": k.split("|")[0], "kode": kode[k], "nama": nama_kab(k), **ambil(w, kab_semua[k])}
-           for k, w in ag["kab"].items() if k in kode and (k in ikut or any(m is not None and m >= 31 for m in w["maks"]))]
+           for k, w in ag["kab"].items() if k in kode]   # semua kab, supaya tabel tidak kosong untuk provinsi tanpa HTH panjang
     return nas, prov, kab
 
 
@@ -152,13 +152,39 @@ def tabel_padi(padi):
                        "Hujan prakiraan belum dikoreksi bias."}
 
 
+# Ejaan ganda dari poligon kedua di pusat_kec.json/penduduk.json (bagian kab yang sama): satu kab di laporan.
+ALIAS_KAB = {"75|Pahuwato": "75|Pohuwato"}
+
+
+def satukan_alias(penduduk, pusat, wilayah):
+    """Salinan penduduk/pusat/wilayah dengan kunci kab beralias diganti ejaan baku, supaya kecamatannya jatuh ke satu kab."""
+    def kec(k):
+        p, kb, kc = k.split("|")
+        return ALIAS_KAB.get(f"{p}|{kb}", f"{p}|{kb}") + "|" + kc
+    pend = {**penduduk, "kec": {}}
+    for k, v in penduduk["kec"].items():
+        pend["kec"][kec(k)] = pend["kec"].get(kec(k), 0) + v
+    pus = {kec(k): v for k, v in pusat.items()}
+    wil = wilayah
+    if wilayah and wilayah.get("kab"):
+        kab = {}
+        for k, v in wilayah["kab"].items():
+            a = ALIAS_KAB.get(k, k)
+            if a not in kab or (v.get("lv") or 0) > (kab[a].get("lv") or 0):
+                kab[a] = v
+        wil = {**wilayah, "kab": kab}
+    return pend, pus, wil
+
+
 def bangun(harian, penduduk, pusat, wilayah, prakiraan, padi, sekarang):
     H.validasi_harian(harian)
+    kode = H.kode_kab(penduduk)   # dari daftar ASLI sebelum alias disatukan: kode kab sesudah ejaan ganda (mis. Pohuwato 7507) tidak bergeser
+    penduduk, pusat, wilayah = satukan_alias(penduduk, pusat, wilayah)
     isi, ag = H.hitung(harian, penduduk, pusat)
     n = len(isi["tgl30"])
-    ag["_kode"] = H.kode_kab(penduduk)
+    ag["_kode"] = kode
     nas, prov, kab = seri_laporan(ag, n, frozenset(k for k, v in ((wilayah or {}).get("kab") or {}).items() if (v.get("lv") or 0) >= 2))
-    prov_urut = [p for _, p in sorted(((w["j31"][-1], p) for p, w in ag["prov"].items()), reverse=True)]
+    prov_urut = [p for j, p in sorted(((w["j31"][-1], p) for p, w in ag["prov"].items()), reverse=True) if j > 0]   # hanya yang memang punya penduduk HTH 31 hari atau lebih; urutan seri nol bukan peringkat
     t_ref = harian["tgl"].index(harian["hari_ini"]) - 1
     tambahan = [t for t in (tabel_spi(prakiraan), tabel_padi(padi)) if t]
     d = L.susun("kekeringan", "Laporan Harian Kekeringan", isi["tgl30"], METRIK, nas, prov, kab, cutoff=harian["dibuat"], hari_lengkap=isi["tgl30"][-1],
@@ -225,7 +251,7 @@ def uji():
     assert d["nasional"]["jiwa31"][-1] == 3010 and d["nasional"]["kab31"][-1] == 2 and d["nasional"]["hth_maks"][-1] == 40
     assert [o["kode"] for o in d["kab"]] == ["1101", "1102", "7201"] and d["prov"]["11"]["jiwa31"][-1] == 3000   # Zeta (hujan tiap hari) dimuat karena Siaga
     ag0 = dict(H.hitung(h, penduduk, pusat)[1], _kode=H.kode_kab(penduduk))
-    assert [o["kode"] for o in seri_laporan(ag0, len(d["hari"]))[2]] == ["1101", "7201"]   # tanpa status: hanya HTH >= 31
+    assert [o["kode"] for o in seri_laporan(ag0, len(d["hari"]))[2]] == ["1101", "1102", "7201"]   # semua kab dimuat (tabel tidak kosong untuk provinsi tanpa HTH panjang)
     assert [s["tingkat"] for s in d["sorot"]][:2] == ["awas", "siaga"] and d["sorot"][0]["judul"] == "1 kabupaten berstatus Awas"
     assert len(d["prakiraan"]["hari"]) == 7 and d["prakiraan"]["baris"][0]["nilai"][0] is not None and len(d["tambahan"]) == 2
     tb = d["tambahan"][0]

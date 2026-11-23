@@ -114,7 +114,8 @@ s += (CHORO ? [] : bul.slice(0, 7)).map((r, n) => {
   if (!pos) pos = [r.x + Math.cos(-3 * Math.PI / 4) * r.r, r.y + Math.sin(-3 * Math.PI / 4) * r.r];
   lencana.push(pos);
   return `<g transform="translate(${pos[0].toFixed(1)},${pos[1].toFixed(1)})"><circle r="${CHORO ? 10 : 7.5}" class="rk"/><text y="${CHORO ? 4.8 : 3.4}" class="rk-t">${n + 1}</text></g>`; }).join('');
-const OR = process.env.BENCANA === 'banjir' ? '#2F6FB5' : '#D9600B';   // lingkaran banjir biru (penanganan_banjir.py), karhutla oranye
+// lingkaran banjir biru (penanganan_banjir.py), gempa coklat dan kekeringan oker (PB-58, sama dengan warna_peta PROFIL kisi.py), karhutla oranye
+const OR = {banjir: '#2F6FB5', gempa: '#7B4B2A', kekeringan: '#B5651D'}[process.env.BENCANA] || '#D9600B';
 // Roboto disematkan sebagai data URL: headless shell tidak selalu melihat font sistem dan jatuh ke serif (pemilik 28 Okt: font wajib Roboto)
 // Mesin tanpa Roboto di ~/Library/Fonts memakai salinan repo public/vendor/roboto (Regular + Bold; tebal 600-900 jatuh ke Bold)
 const muka = (f, w) => `@font-face{font-family:Roboto;font-weight:${w};src:url(data:font/ttf;base64,${fs.readFileSync(f).toString('base64')})}`;

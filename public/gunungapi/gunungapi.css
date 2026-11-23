@@ -43,3 +43,9 @@ details.lipat>.isi{padding:2px 14px 12px}
 .ex-std .ex-tabel thead th{text-align:center}.ex-std .ex-tabel thead th button{justify-content:center;width:100%}
 #metode .gl-cari{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;margin:10px 0}
 #metode .gl-has{display:grid;gap:8px;max-height:420px;overflow:auto}#metode .gl-has p{margin:0;font-size:0.844rem;line-height:1.55;text-align:justify}
+
+/* PB-79b: baris ukuran + unduh di atas daftar gunung, keterangan tanggal erupsi */
+.gn-ukuran{display:flex;align-items:center;gap:8px;padding:0 2px 6px}
+.gn-ukuran-seg{flex:1;min-width:0}
+.gn-ukuran-ud{margin-left:auto}
+.gn-tglket{margin:0 2px 8px;font-size:12px;color:var(--ink2)}

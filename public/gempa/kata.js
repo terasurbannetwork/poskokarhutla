@@ -27,9 +27,28 @@ const TSUNAMI = {1: ["Tsunami Waspada", "#e0b400"], 2: ["Tsunami Siaga", "#e8743
 /* teks wilayah BMKG "Pusat gempa berada di darat 21 km Barat Daya Kota Bogor" -> "Darat 21 km Barat Daya Kota Bogor" */
 const ARAH_EN = {utara: "N", timurlaut: "NE", timur: "E", tenggara: "SE", selatan: "S", baratdaya: "SW", barat: "W", baratlaut: "NW"};
 /* teks mentah BMKG "Pusat gempa 60 km TimurLaut LABUANBAJO-NTT": arah kamel dipisah, tempat KAPITAL dijadikan huruf judul, akhiran provinsi dibuang, KAB- jadi "Kab.". Spasi nama tempat yang menyatu (LABUANBAJO) tak bisa dipulihkan tanpa kamus. */
-const rapiTempat = r => { if (r !== r.toUpperCase() || !/[A-Z]/.test(r)) return r; const p = r.split("-").map(x => x.trim()).filter(Boolean); if (p.length > 1 && /^[A-Z]{2,5}$/.test(p[p.length - 1])) p.pop();
-  return p.map(x => x === "KAB" ? "Kab." : x[0] + x.slice(1).toLowerCase()).join(" ").replace(/^Kab\. /, "Kab. "); };
-const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa( berada di)?\s*/i, "").replace(/(Barat|Timur)(Laut|Daya)\b/g, "$1 $2").replace(/^((?:(?:darat|laut)\s+)?\d+\s*km\s+(?:utara|timur laut|timur|tenggara|selatan|barat daya|barat laut|barat)\s+)(\S.*)$/i, (_, h, r) => h.toLowerCase() + rapiTempat(r)).trim(); /* arah huruf kecil seperti laci: "60 km timur laut Labuanbajo" */ if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
+/* BMKG menulis nama kabupaten tanpa spasi ("BURUSELATAN-MALUKU", "KEBARMANOKWARI-PAPUABRT"). Kamus dibangun dari nama kabupaten dan kecamatan di pusat_kec.json
+   (sumber yang sama dengan tab Simulasi, yang menulis "Seram Bagian Timur"); tanpa kamus (belum dimuat) nama tampil seperti dulu. */
+const PROV_BMKG = new Set(["MALUKU", "GORONTALO", "PAPUA", "PAPUABRT", "PAPUABRTDY", "PAPUAPGNN", "PAPUAPGNGN", "PAPUATGH", "PAPUASLT", "SULTENG", "SULSEL", "SULTRA", "SULUT", "SULBAR", "KALTIM", "KALTENG", "KALSEL", "KALBAR", "KALTARA", "SUMUT", "SUMBAR", "SUMSEL", "BABEL", "MALUT", "KEPRI", "BENGKULU", "LAMPUNG", "JAMBI", "RIAU", "ACEH", "BALI", "BANTEN", "JABAR", "JATENG", "JATIM"]);
+const NamaWil = {
+  kamus: null, _p: null,
+  skuas: t => String(t).toLowerCase().replace(/[^a-z]/g, ""),
+  bangun(pusat) { const k = {}; for (const key of Object.keys(pusat || {})) { const [, kab, kec] = key.split("|"); for (const n of [kab, kec]) if (n && n !== "None") k[this.skuas(n)] ||= n; }
+    k.okeibil = "Oke Ibil"; /* kecamatan Oke Ibil (Pegunungan Bintang) belum ada di pusat_kec.json */ this.kamus = k; return k; },
+  siap() { return this._p ||= (typeof muatJSON === "function" ? muatJSON("../banjir/data/pusat_kec.json").then(d => this.bangun(d), () => null) : Promise.resolve(null)); },
+  /* "buruselatan" -> "Buru Selatan": utuh bila ada di kamus, kalau tidak dipecah jadi paling sedikit potongan nama; null bila tak tertutup */
+  nama(sk) { const K = this.kamus; if (!K || !sk) return null; if (K[sk]) return K[sk];
+    const n = sk.length, best = Array(n + 1).fill(null); best[0] = []; for (let i = 0; i < n; i++) { if (!best[i]) continue; for (let j = i + 2; j <= n; j++) { const w = K[sk.slice(i, j)]; if (w && (!best[j] || best[j].length > best[i].length + 1)) best[j] = [...best[i], w]; } }
+    return best[n] ? best[n].join(" ") : null; },
+};
+const rapiTempat = r => { if (r !== r.toUpperCase() || !/[A-Z]/.test(r)) return r; const p = r.split("-").map(x => x.trim()).filter(Boolean); if (p.length > 1 && (/^[A-Z]{2,5}$/.test(p[p.length - 1]) || PROV_BMKG.has(p[p.length - 1]))) p.pop();
+  return p.map(x => x === "KAB" ? "Kab." : NamaWil.nama(NamaWil.skuas(x)) || x[0] + x.slice(1).toLowerCase()).join(" ").replace(/^Kab\. /, "Kab. "); };
+/* USGS menulis "115 km ESE of Bitung, Indonesia": arah 16 mata angin dibulatkan ke 8 arah BMKG, ", Indonesia" dibuang (ID saja; EN tetap teks USGS) */
+const ARAH_USGS = {N: "utara", NNE: "utara", NE: "timur laut", ENE: "timur laut", E: "timur", ESE: "timur", SE: "tenggara", SSE: "tenggara",
+  S: "selatan", SSW: "selatan", SW: "barat daya", WSW: "barat daya", W: "barat", WNW: "barat", NW: "barat laut", NNW: "barat laut"};
+const usgsID = t => { if (window.BAHASA === "en") return String(t || "").replace(/, Indonesia$/, "");
+  const m = String(t || "").match(/^(\d+)\s*km\s+([NSEW]{1,3})\s+of\s+(.+?)(?:,\s*Indonesia)?$/); return m && ARAH_USGS[m[2]] ? `${m[1]} km ${ARAH_USGS[m[2]]} ${m[3]}` : String(t || "").replace(/, Indonesia$/, ""); };
+const wilayahPendek = t => { const s = usgsID(String(t || "").replace(/^Pusat gempa( berada di)?\s*/i, "")).replace(/(Barat|Timur)(Laut|Daya)\b/g, "$1 $2").replace(/^((?:(?:darat|laut)\s+)?\d+\s*km\s+(?:utara|timur laut|timur|tenggara|selatan|barat daya|barat laut|barat)\s+)(\S.*)$/i, (_, h, r) => h.toLowerCase() + rapiTempat(r)).trim(); /* arah huruf kecil seperti laci: "60 km timur laut Labuanbajo" */ if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
   /* EN: "darat 21 km Barat Daya Kota Bogor" -> "21 km SW of Kota Bogor (onshore)"; nama tempat BMKG tetap apa adanya */
   const m = window.BAHASA === "en" && s.match(/^(darat|laut)?\s*(\d+)\s*km\s+(utara|timur\s?laut|timur|tenggara|selatan|barat\s?daya|barat\s?laut|barat)\s+(.+)$/i);
   if (m) return `${m[2]} km ${ARAH_EN[m[3].toLowerCase().replace(/\s/g, "")]} of ${m[4]}${m[1] ? (/^d/i.test(m[1]) ? " (onshore)" : " (offshore)") : ""}`;

@@ -34,7 +34,7 @@ const Insight = {
         <g class="gf">${this.p(U.L + (n[l] ? Math.max(3, X(n[l])) : 0) + 8, y + 7, fmt(n[l]) + " gunung", WARNA_LV[l], FG_LV[l])[0]}</g>
         ${l >= 2 && nm.length ? `<text x="${U.L + 4}" y="${y + U.rh + 9}" font-size="11" opacity=".7">${esc(nm.slice(0, innerWidth < 640 ? 3 : 8).join(", "))}${nm.length > (innerWidth < 640 ? 3 : 8) ? "…" : ""}</text>` : ""}</g>`; }).join("");
     Kartu.leg([[WARNA_LV[4], "Awas"], [WARNA_LV[3], "Siaga"], [WARNA_LV[2], "Waspada"], [WARNA_LV[1], "Normal"]]);
-    return this.ex(sa ? `${this.hl(fmt(sa) + " gunung")} berstatus Siaga atau Awas ${labelHari(S.st.dibuat)}, ${fmt(n[2])} gunung lainnya Waspada` : `Tidak ada gunung berstatus Siaga atau Awas ${labelHari(S.st.dibuat)}; ${this.hl(fmt(n[2]) + " gunung")} Waspada`, "", "",
+    return this.ex("Status gunung api", "", "",
       `<svg viewBox="0 0 ${U.W} ${baris.length * (U.rh + 14) + 4}" role="img" aria-label="Gunung api per level">${g}</svg>`, SUMBER); },
 
   /* 1b. cerita satu gunung (C16): gunung berstatus tertinggi hari ini, dirangkai dari status MAGMA, factsheet letusan, indeks risiko riwayat, dan uji tren BNPB; baris tanpa data dibuang */
@@ -69,7 +69,7 @@ const Insight = {
         <g class="gf">${this.p(U.L + Math.max(3, X(x.n)) + 8, y + 7, fmt(x.n) + " erupsi", WARNA_LV[x.lv], FG_LV[x.lv])[0]}${x.tinggi ? this.p(U.L + Math.max(3, X(x.n)) + 8 + (fmt(x.n) + " erupsi").length * 7.2 + 22, y + 7, "abu " + fmt(x.tinggi) + " m", BATA)[0] : ""}</g></g>`; }).join("");
     const terakhir = E[0];
     Kartu.leg([[WARNA_LV[4], "Awas"], [WARNA_LV[3], "Siaga"], [WARNA_LV[2], "Waspada"], [WARNA_LV[1], "Normal"]]);
-    return this.ex(dlm.length ? `${this.hl(fmt(dlm.length) + " erupsi")} tercatat dalam ${jam} jam terakhir di ${fmt(Object.keys(per).length)} gunung; ${this.nm(T[0].nm)} terbanyak` : `Erupsi terakhir tercatat pada ${tglJam(terakhir.waktu)} di ${this.nm(terakhir.gunung)}`, "", "",
+    return this.ex("Erupsi", "", "",
       T.length ? `<svg viewBox="0 0 ${U.W} ${T.length * U.rh + 4}" role="img" aria-label="Erupsi per gunung">${g}</svg>` : `<p class="kosong">${esc(terakhir.ket)}</p>`, "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM), informasi letusan"); },
 
   /* 3. perubahan level yang dicatat Centurisk97 tiap kali data diperbarui */
@@ -82,7 +82,7 @@ const Insight = {
       return `<g><text x="${U.L - 10}" y="${y + 21}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(p.nama)}</text>
         ${this.p(U.L, y + 7, LEVEL[p.dari][1], WARNA_LV[p.dari], FG_LV[p.dari])[0]}<text x="${U.L + 100}" y="${y + 21}" font-size="14" font-weight="700">${p.ke > p.dari ? "↑" : "↓"}</text>
         ${this.p(U.L + 124, y + 7, LEVEL[p.ke][1], WARNA_LV[p.ke], FG_LV[p.ke])[0]}<text x="${U.L + 240}" y="${y + 21}" font-size="12" opacity=".7">${this.tgl(p.tgl + "T12:00:00+07:00")}</text></g>`; }).join("");
-    return this.ex(`${this.hl(this.nm(p0.nama))} ${naik ? "naik" : "turun"} dari Level ${LEVEL[p0.dari][0]} ${LEVEL[p0.dari][1]} ke Level ${LEVEL[p0.ke][0]} ${LEVEL[p0.ke][1]} pada ${this.tgl(p0.tgl + "T12:00:00+07:00")}`, "", "",
+    return this.ex("Perubahan level", "", "",
       `<svg viewBox="0 0 ${U.W} ${Math.min(P.length, 10) * U.rh + 4}" role="img" aria-label="Perubahan level">${g}</svg>`, "Sumber: perbandingan status MAGMA Indonesia (PVMBG) dari pembaruan ke pembaruan"); },
 
   /* 4. bandara di jalur abu (skenario 72 jam, ambang penerbangan 2 mg/m3) */
@@ -93,7 +93,7 @@ const Insight = {
       {k: "gn", n: "Gunung", v: r => nmG(r.gunung)?.nama || r.gunung, h: r => { const g = nmG(r.gunung); return g ? `<span translate="no">${esc(g.nama)}</span> ${pilLv(g.level, true)}${g.vona ? " " + pilVona(g.vona) : ""}` : esc(r.gunung); }},
       {k: "jam", n: "Abu tiba", num: 1, v: r => r.jam_tiba ?? 99, h: r => r.jam_tiba != null ? `jam ke-${fmt(r.jam_tiba)}` : "–"}];
     const cepat = [...B].sort((a, b) => a.jam_tiba - b.jam_tiba)[0], gn = new Set(B.map(b => b.gunung)).size;
-    return this.ex(`${this.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam dari ${fmt(gn)} gunung; tercepat ${this.nm(cepat.iata || cepat.icao)} dalam ${this.hl(fmt(cepat.jam_tiba) + " jam")}`, "", "",
+    return this.ex("Bandara di jalur abu", "", "",
       this.tabel("bandara", kol, B, r => `data-gn="${esc(nmG(r.gunung)?.nama || "")}"`, 10, "bandara", r => -r.jam_tiba), "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Centurisk97 (angin ECMWF IFS via Open-Meteo), OurAirports"); },
 
   /* 5. penduduk di KRB III per gunung */
@@ -106,7 +106,7 @@ const Insight = {
         <rect class="gx" x="${U.L}" y="${y + 6}" width="${w}" height="${U.rh - 12}" rx="5" fill="${WARNA_LV[x.nm.level]}" data-tip="${tip}"/>
         <g class="gf">${this.p(U.L + w + 8, y + 7, jiwaTxt(x.jiwa) + " jiwa", WARNA_LV[x.nm.level], FG_LV[x.nm.level])[0]}${sek ? this.p(U.L + w + 8 + (jiwaTxt(x.jiwa) + " jiwa").length * 7.2 + 22, y + 7, fmt(sek) + " sekolah", "#3b82f6")[0] : ""}</g></g>`; }).join("");
     Kartu.leg([[WARNA_LV[4], "Awas"], [WARNA_LV[3], "Siaga"], [WARNA_LV[2], "Waspada"], [WARNA_LV[1], "Normal"]]);
-    return this.ex(`Sekitar ${this.hl(jiwaAngka(tot) + " jiwa")} tinggal di KRB III ${fmt(P.length)} gunung api; terbanyak di ${this.nm(P[0].nama)} (${jiwaTxt(P[0].jiwa)} jiwa)`, "", "",
+    return this.ex("Paparan KRB III", "", "",
       `<svg viewBox="0 0 ${U.W} ${T.length * U.rh + 4}" role="img" aria-label="Penduduk di KRB III per gunung">${g}</svg>`, "Sumber: KRB PVMBG 2018 (ESDM), perkiraan WorldPop 2026 1 km, OpenStreetMap"); },
 
   /* 5b. arahan Permen ESDM 15/2011 per KRB untuk level gunung saat ini (data/pedoman_krb.json); hanya gunung Waspada ke atas dengan zona KRB PVMBG (zona proksi tidak disebut KRB). Sistem tidak memerintah. */
@@ -119,7 +119,7 @@ const Insight = {
     const ng = G.filter(x => R.some(r => r.g === x.g)).length, tot = R.reduce((a, r) => a + r.jiwa, 0);
     const kol = [{k: "gn", n: "Gunung", v: r => r.g.nama, h: r => `<span translate="no">${esc(r.g.nama)}</span> ${pilLv(r.g.level, true)}`}, {k: "zn", n: "KRB", v: r => r.z.length, h: r => pilZona(r.z)},
       {k: "tk", n: "Arahan", t: "Permen ESDM No. 15 Tahun 2011, sebagaimana ditayangkan MAGMA Indonesia", v: r => r.tk, h: r => esc(r.tk)}, {k: "jw", n: "Jiwa", t: "Perkiraan penduduk WorldPop 1 km, bukan sensus", num: 1, v: r => r.jiwa, h: r => r.jiwa > 0 ? jiwaTxt(r.jiwa) : "0"}];
-    return this.ex(`${this.hl(fmt(ng) + " gunung")} berstatus Waspada ke atas punya arahan resmi per KRB; sekitar ${this.hl(jiwaAngka(tot) + " jiwa")} tinggal di KRB gunung-gunung itu, dan perintah mengungsi datang dari pemerintah daerah`, "", "",
+    return this.ex("Arahan per KRB", "", "",
       this.tabel("arahan", kol, R, r => `data-gn="${esc(r.g.nama)}"`, 9, "arahan", r => r.key), ""); },
 
   /* 6. izin tambang di zona KRB */
@@ -129,7 +129,7 @@ const Insight = {
       {k: "gn", n: "Gunung", v: r => r.gn, h: r => `<span translate="no">${esc(r.gn)}</span>`}, {k: "zona", n: "Zona", v: r => ZN[r.zona], h: r => pilZona(r.zona)},
       {k: "keg", n: "Kegiatan", v: r => r.kegiatan || "", h: r => esc(r.kegiatan || "–")}];
     const n3 = R.filter(r => r.zona === "III").length, gn = new Set(R.map(r => r.gn)).size;
-    return this.ex(`${this.hl(fmt(R.length) + " izin tambang")} berada di KRB ${fmt(gn)} gunung api, ${this.hl(fmt(n3))} di antaranya di KRB III`, "", "",
+    return this.ex("Izin tambang", "", "",
       this.tabel("tambang", kol, R, r => `data-gn="${esc(r.gn)}"`, 10, "izin", r => ZN[r.zona] * 1e3 + (r.lv || 0)), "Sumber: WIUP ESDM (badan usaha), KRB PVMBG 2018"); },
 
   /* 7. kinerja arah abu: kedua angka dengan n jujur; kartu ini tidak disembunyikan walau angkanya sederhana */
@@ -149,7 +149,7 @@ const Insight = {
         <g class="gf">${P.map((t, q) => { const o = this.p(px, py, t, W4[q])[0]; px += pw(t); return o; }).join("")}</g></g>`; }).join("");
     const H = R.length * rowH + 4, xa = L + X(acak(a));
     const garis = `<line x1="${xa}" x2="${xa}" y1="0" y2="${H - 4}" stroke="currentColor" stroke-dasharray="4 3" opacity=".55"/><text x="${xa}" y="${H + 10}" text-anchor="middle" font-size="11" opacity=".7">acak ${fmt(acak(a))}%</text>`;
-    return this.ex(`Arah awan abu skenario cocok dalam 45° dengan laporan PVMBG pada ${this.hl(fmt(cocok(a)) + " dari " + fmt(a.n) + " kejadian")} berambang, ${ket(a)}${b?.n ? `; ${this.hl(fmt(cocok(b)) + " dari " + fmt(b.n))} kejadian tanpa ambang cocok, ${ket(b)}${b.klimatologi_persen != null ? ", tetapi belum terbukti lebih baik dari arah angin musiman" : ""}` : ""}`, "", "",
+    return this.ex("Uji model", "", "",
       `<svg viewBox="0 0 ${U.W} ${H + 16}" role="img" aria-label="Uji balik arah abu">${g}${garis}</svg>`, `Arah angin musiman = tebakan memakai arah angin rata-rata bulan itu. Hanya arah yang bisa diuji (laporan PVMBG 8 mata angin, tanpa jarak); sampel kecil. Uji balik memakai tinggi kolom dari VONA kejadian itu sendiri, bukan tinggi yang tersedia sebelum kejadian. Sumber: VONA PVMBG vs angin ECMWF IFS, ${esc(a.periode || "")}`); },
 
   /* ---- kartu dari arsip MAGMA 2018-2026 (data/rezim_letusan.json: SNAPSHOT dari data lokal pemilik, tanggal data tertulis di judul). Kartu standar .ex-std tanpa kaki (AGENTS.md 3.5). ---- */
@@ -186,7 +186,7 @@ const Insight = {
       {k: "kx", n: "Kolom maks (m)", t: "Tinggi kolom abu tertinggi di atas puncak (m) sejak 1 Jan 2024", num: 1, v: r => r.kolom_maks ?? -1, h: r => m(r.kolom_maks)},
       {k: "l9", n: "Per hari, 90 hari", t: "Rata-rata letusan per hari dalam 90 hari terakhir arsip", num: 1, v: r => r.per_hari_90, h: r => n2(r.per_hari_90)},
       {k: "l3", n: "Per hari, 365 hari sebelumnya", t: "Rata-rata letusan per hari dalam 365 hari sebelum 90 hari terakhir", num: 1, v: r => r.per_hari_365_sebelumnya, h: r => n2(r.per_hari_365_sebelumnya)}];
-    return this.std(this.LABEL.rezim, `Arsip MAGMA per ${this.tglArsip(this.rz.akhir)}: ${this.hl(fmt(tot) + " letusan")} di ${fmt(R.length)} gunung sejak 1 Jan 2024, ${this.hl(dua + "%")} dari ${this.nm(R[0].gunung)} dan ${this.nm(R[1].gunung)}`,
+    return this.std(this.LABEL.rezim, "Rezim letusan",
       this.batang(rows, "Letusan per gunung") + this.tabelStd("rezim", kol, R, r => `data-gn="${esc(r.gunung)}"`, 10, "gunung", r => -r.n)
       + this.ket("Snapshot arsip, tidak diperbarui otomatis. Jumlah letusan sebelum 2024 tidak dibandingkan: pencatatan berubah dari sekitar 450 menjadi lebih dari 6.000 letusan per tahun, jadi lompat itu terutama mengikuti perubahan cara mencatat, sebagian aktivitas nyata.")); },
 
@@ -203,7 +203,7 @@ const Insight = {
         pil: [...(st === "jelas" ? [] : [[KET[st], "#8a6d1f"]]), [a1[0] + " " + pc(a1[1], a.n) + "%", "#4f8fc0"], ...(a2 ? [[a2[0] + " " + pc(a2[1], a.n) + "%", "#6b7a90"]] : []), ["n = " + fmt(a.n) + ", " + fmt(a.musim) + " musim", "#9aa4b2"]],
         tip: `<b>${esc(g)}</b>, arah abu per musim (arsip ${tg})${tipM}`}; });
     const sah = ada.filter(x => x.st === "jelas").slice(0, 3);
-    const judul = sah.length ? `Musim ${this.SM[m]}: abu ${this.gabung(sah.map(x => `${this.hl(this.nm(x.g))} paling sering ke ${x.a.arah[0][0]}`))}${ada.length > sah.length ? `; ${fmt(ada.length - sah.length)} gunung lain belum jelas` : ""}` : `Musim ${this.SM[m]} belum punya gunung dengan arah abu yang jelas: datanya sedikit atau dua arah teratas hampir sama`;
+    const judul = "Arah abu per musim";
     return this.std(this.LABEL.arahabu, judul, this.batang(rows, "Arah abu musim ini") + this.ket(`Arah dari laporan erupsi MAGMA (8 mata angin) sejak 1 Jan 2024 sampai ${tg}, gunung dengan sedikitnya 200 penyebutan arah. Persen = bagian dari penyebutan arah pada musim itu; arahkan kursor ke batang untuk keempat musim. Arah dianggap jelas bila selisih dua arah teratas sedikitnya 10 poin persen dan sedikitnya 3 musim ikut. Ini kebiasaan, bukan prakiraan angin hari ini.`)); },
 
   /* 11. cakupan VONA: VONA gunung yang sama 0 sampai +30 menit sesudah letusan, dibanding kontrol (waktu letusan digeser -37 jam). Yang dibaca selisihnya. Selisih antar gunung bukan bukti kelalaian. */
@@ -219,7 +219,7 @@ const Insight = {
       ...yrs.map(y => ({k: "y" + y, n: y + " (%)", t: `Persen letusan ${y} dengan VONA 0 sampai 30 menit sesudahnya; tanda "–" bila kurang dari 20 letusan`, num: 1, v: r => r.th[y] && r.th[y][1] >= 20 ? r.th[y][0] / r.th[y][1] : -1, h: r => r.th[y] && r.th[y][1] >= 20 ? this.d(100 * r.th[y][0] / r.th[y][1], 0) : "–"}))];
     const beda = X.map(x => { const e = Object.entries(x.th).filter(([, v]) => v[1] >= 20).map(([y, v]) => [100 * v[0] / v[1], y]); return e.length > 1 ? {g: x.g, lo: e.reduce((m, v) => v[0] < m[0] ? v : m), hi: e.reduce((m, v) => v[0] > m[0] ? v : m)} : null; }).filter(Boolean).sort((p, q) => (q.hi[0] - q.lo[0]) - (p.hi[0] - p.lo[0]))[0];
     this.T.cakupan ||= {urut: "s", turun: true, hal: 0};
-    return this.std(this.LABEL.cakupan, `VONA terbit 0 sampai 30 menit sesudah letusan ${this.hl(poin(a.sel))} lebih sering daripada kebetulan untuk ${this.nm(a.g)}, tetapi hanya ${this.hl(poin(z.sel))} untuk ${this.nm(z.g)}; selisih itu bisa berarti satu VONA mewakili letusan yang berlangsung menerus, bukan kelalaian`,
+    return this.std(this.LABEL.cakupan, "Cakupan VONA",
       this.batang(rows, "Cakupan VONA di atas kontrol") + this.tabelStd("cakupan", kol, X, r => `data-gn="${esc(r.g)}"`, 10, "gunung", r => -r.sel)
       + this.ket(`Letusan tercakup bila ada VONA gunung yang sama 0 sampai 30 menit sesudahnya. Kontrol: pencocokan yang sama dengan waktu letusan digeser -37 jam, jadi selisihnya yang dibaca, bukan angka mentah. Gunung dengan sedikitnya 50 letusan sejak 1 Jan 2024. ${beda ? `Cakupan berbeda antartahun (${this.nm(beda.g)}: ${this.d(beda.lo[0], 0)}% pada ${beda.lo[1]}, ${this.d(beda.hi[0], 0)}% pada ${beda.hi[1]}), jadi satu angka tidak mewakili seluruh masa.` : ""} ${fmt(R.vona_unik_terpakai)} dari ${fmt(R.vona_unik)} VONA unik terpakai (arsip ${this.tglArsip(R.vona_rentang[0])} sampai ${this.tglArsip(R.vona_rentang[1])}). Tidak ada angka gabungan seluruh gunung: ${this.nm("Semeru")} saja ${fmt(Math.round(100 * semeru.n / tot))}% dari letusan dan mendominasinya.`)); },
 
@@ -246,7 +246,7 @@ const Insight = {
       {k: "mn", n: "Rata-rata 7 hari", t: "Rata-rata jumlah gempa vulkanik per jendela 7 hari pada riwayat gunung itu sendiri", num: 1, v: r => r.mean, h: r => this.d(r.mean)},
       {k: "rs", n: "Kelipatan", t: "7 hari terakhir dibagi rata-rata riwayatnya sendiri (masing-masing ditambah 1)", num: 1, v: r => r.rs, h: r => this.d(r.rs) + " kali"},
       {k: "pc", n: "Persentil", t: "Persen jendela 7 hari riwayatnya yang lebih rendah dari 7 hari terakhir", num: 1, v: r => r.pct, h: r => fmt(r.pct)}];
-    const judul = A.length ? `${this.hl(fmt(A.length) + " gunung")} punya gempa vulkanik 7 hari terakhir${A.akhir ? " sampai " + this.tglArsip(A.akhir) : ""} di atas kebiasaannya sendiri (sedikitnya 1,5 kali); ${this.hl(this.nm(A[0].nm))} tertinggi, ${this.hl(this.d(A[0].rs) + " kali")} rata-ratanya` : `Tidak ada gunung yang gempa vulkaniknya 7 hari terakhir memenuhi ketiga syarat daftar pantau`;
+    const judul = "Pantau kegempaan";
     return this.std(this.LABEL.pantau, judul, `<div class="ex-pl">${this.pilHip(uji)}</div>` + (A.length ? this.tabelStd("pantau", kol, A, r => `data-gn="${esc(r.nm)}"`, 10, "gunung", r => -r.rs) : "")
       + this.ket("Syarat masuk daftar: gempa vulkanik 7 hari terakhir sedikitnya 10, sedikitnya 1,5 kali rata-rata 7 harinya sendiri, dan di atas persentil 90 riwayatnya. " + uji)); },
 
@@ -261,7 +261,7 @@ const Insight = {
       {k: "j3", n: "Jiwa KRB III", t: "Perkiraan penduduk di KRB III saja", num: 1, v: r => r.j3, h: r => r.j3 > 0 ? jiwaTxt(r.j3) : "0"},
       {k: "n", n: "Letusan sejak 2024", t: "Jumlah letusan di daftar informasi letusan MAGMA sejak 1 Jan 2024; guguran atau aktivitas tanpa letusan tidak terhitung", num: 1, v: r => r.n, h: r => fmt(r.n)},
       {k: "l9", n: "Per hari, 90 hari", t: "Rata-rata letusan per hari dalam 90 hari terakhir arsip", num: 1, v: r => r.l9, h: r => this.d(r.l9, 2)}];
-    const judul = sepi.length >= 2 ? `${this.gabung(sepi.map(x => this.hl(this.nm(x.nm))))} berstatus Normal (Level I) dan nyaris tanpa letusan sejak 2024, padahal ${this.hl(jiwaTxt(sepi.reduce((a, x) => a + x.jw, 0)) + " jiwa")} tinggal di KRB III dan II-nya` : `${this.hl(this.nm(P[0].nm))} berpenduduk KRB III dan II terbesar (${this.hl(jiwaTxt(P[0].jw) + " jiwa")}), ${fmt(P[0].n)} letusan sejak 2024`;
+    const judul = "Paparan lawan aktivitas";
     return this.std(this.LABEL.paparan, judul, this.tabelStd("paparan", kol, P, r => `data-gn="${esc(r.nm)}"`, 10, "gunung", r => -r.jw) + this.ket("KRB edisi 2018; radius bahaya terkini dari rekomendasi PVMBG bisa lebih luas daripada KRB itu (mis. Ibu dan Lewotobi Laki-laki). Level I Normal bukan jaminan tanpa bahaya; ikuti rekomendasi PVMBG dan BPBD. Penduduk perkiraan WorldPop 1 km. Letusan dari daftar informasi letusan MAGMA, snapshot arsip " + this.tglArsip(this.rz.akhir) + ".")); },
 
   /* 8. tabel standar. Penduduk dalam radius pindah ke tab Dampak (Insight karhutla tidak memuatnya) */
@@ -278,7 +278,7 @@ const Insight = {
       {k: "rd", n: "Radius", num: 1, v: r => r.radius_km ?? -1, h: r => r.radius_km ? fmt(r.radius_km) + " km" : "–"},
       {k: "pd", n: "Jiwa dalam radius", num: 1, v: r => r.penduduk_radius ?? -1, h: r => r.penduduk_radius > 0 ? jiwaTxt(r.penduduk_radius) : "–"},
       {k: "tg", n: "Tinggi puncak", num: 1, v: r => r.tinggi ?? -1, h: r => r.tinggi > 0 ? fmt(r.tinggi) + " m" : "–"}];
-    return this.ex(`${this.hl(fmt(G.length) + " gunung api")} dipantau PVMBG, ${fmt(S.n[2] + S.n[3] + S.n[4])} di atas Level I`, "", "",
+    return this.ex("Daftar gunung", "", "",
       this.tabel("daftar", kol, G, r => `data-gn="${esc(r.nama)}"`, 10, "gunung", r => this.skor(r) + (r.penduduk_radius || 0) / 1e9), SUMBER); },
 
   /* tabel standar inti: kepala gelap, kolom bisa diurut, paginasi */

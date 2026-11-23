@@ -3,7 +3,10 @@
    Mode atas (Terkini, Riwayat), baris pil + tombol unduh CSV + label hari, tabel provinsi dengan Grand total, lalu kartu
    "Gempa per tahun" dan "Tren gempa". Kelas CSS sama dengan karhutla (salinan aturannya ada di gempa.css).
    Status tsunami: kolom Tsunami hanya menghitung gempa yang dinyatakan BMKG berpotensi tsunami (kode 1 sampai 3); kosong "–", bukan penilaian aman.
-   Riwayat per provinsi hanya dari riwayat_prov.json (USGS M 5+); katalog merusak dan tsunami BMKG tidak punya kunci provinsi, jadi tidak ada pilnya. */
+   Riwayat per provinsi hanya dari riwayat_prov.json (USGS M 5+); katalog merusak dan tsunami BMKG tidak punya kunci provinsi, jadi tidak ada pilnya.
+   Fitur paritas F4 dipasang di sini (bukan di peta.js): tanggal terpilih (PB-73, S.tanggal lewat dalamRentang), segmen ukuran provinsi (PB-76,
+   segmenUkuran, gerbang kemampuan.layar.ukuran_provinsi), tombol unduh mesin bersama (PB-71, UnduhTabel; CSV lama hanya cadangan bila registri
+   mematikannya), dan ringkasan, baris rinci, serta riwayat provinsi di daftar satu provinsi (ringkasProv, rinciGempa, riwayatSingkat di peta.js). */
 const ikP = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const SARING = {semua: () => true, dirasakan: g => !!g.mmi_maks, m5: g => g.m >= 5};
 const PIL_KINI = [["semua", "Semua", '<path d="M4 6h16M4 12h16M4 18h16"/>'], ["dirasakan", "Dirasakan", IKON_GEMPA.getar], ["m5", "M 5+", IKON_GEMPA.gempa]];
@@ -23,7 +26,7 @@ const Panel = {
   mode: "kini", pil: {kini: "semua", riw: "tahun"}, trenV: "7h", csv: null, R: null, _rm: null, hari: null, akhir: null, ytd: null, _gagal: false, _kc: null, _ag: null, _agD: null,
   /* ---------- helper kecil ---------- */
   seg(aria, daftar, aktif) { return `<div class="tr-sw"><div class="seg penuh" role="group" aria-label="${aria}">${daftar.map(([v, n, d]) => `<button data-pil="${v}" aria-pressed="${aktif === v}">${ikP(d)}${n}</button>`).join("")}</div>`
-    + `<button type="button" class="ud-btn" data-csv aria-label="Unduh tabel CSV" title="Unduh tabel (CSV)">${ikP('<path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/>')}</button></div>`; },
+    + (window.UnduhTabel?.tombol() || `<button type="button" class="ud-btn" data-csv aria-label="Unduh tabel CSV" title="Unduh tabel (CSV)">${ikP('<path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/>')}</button>`) + `</div>`; },
   baris: label => `<div class="tr-baris"><div class="tr-hari"><b>${label}</b></div></div>`,
   kepala(g, kol) { const u = S.urut; return `<div class="tb kepala" style="grid-template-columns:${g}"><span></span>${kol.map(([k, n, c, tip]) => `<span class="${[c, k && u.k === k ? "urut" : ""].join(" ").trim()}"${k ? ` data-s="${k}"` : ""}${k && u.k === k ? ` data-arah="${u.turun ? 0 : 1}"` : ""}${tip ? ` title="${esc(tip)}"` : ""}>${n}</span>`).join("")}</div>`; },
   hariIni: () => new Date().toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", weekday: "short", day: "numeric", month: "short"}).replace(",", ""),
@@ -33,9 +36,11 @@ const Panel = {
     const box = $("#rows"), j = S.jalur;
     if (this.mode === "riw") { box.innerHTML = j.length ? this.kartu(j[0]) : this.tabelRiw(); return; }
     const d = dalamRentang(), pil = this.pil.kini, dF = d.filter(SARING[pil]), rentang = S.rentang === 168 ? "7 hari" : S.rentang + " jam";
-    const label = `${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : rentang + " terakhir"}, ${this.hariIni()}`;
-    const atas = this.seg("Saringan gempa", PIL_KINI, pil) + this.baris(label);
-    if (!dF.length) { this.csv = null; box.innerHTML = atas + `<div class="kosong">${S.tersedia ? `Tidak ada gempa ${pil === "semua" ? "" : "dengan saringan ini "}${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + rentang + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
+    const label = S.tanggal ? new Date(S.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", weekday: "short", day: "numeric", month: "short", year: "numeric"}).replace(",", "")
+      : `${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : rentang + " terakhir"}, ${this.hariIni()}`;
+    const uk = !j.length && typeof segmenUkuran === "function" ? segmenUkuran(S.ukuranIzin || [], ukAktif().slug) : "";
+    const atas = this.seg("Saringan gempa", PIL_KINI, pil) + (uk ? `<div class="tr-sw">${uk}</div>` : "") + this.baris(label);
+    if (!dF.length) { this.csv = null; box.innerHTML = atas + `<div class="kosong">${S.tersedia && S.tanggal ? `Tidak ada gempa ${pil === "semua" ? "" : "dengan saringan ini "}${esc(periodeTeks())}.` : S.tersedia ? `Tidak ada gempa ${pil === "semua" ? "" : "dengan saringan ini "}${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + rentang + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
     box.innerHTML = j.length ? this.kartu(j[0]) + atas + this.daftarProv(dF, j[0]) : atas + this.tabelKini(dF) + this.kartu(null);
   },
   tabelKini(d) {
@@ -48,13 +53,15 @@ const Panel = {
       + isi.map((p, i) => `<button class="tb" data-k="${esc(p.k)}" style="grid-template-columns:${G}"><span class="rk">${i + 1}</span><span class="kom"><b>${esc(p.nama)}</b></span><span class="n"><b>${fmt(p.n)}</b></span><span class="n">${f(p.mmi)}</span><span>${pilM(p.m)}</span><span class="n">${f(p.ts)}</span></button>`).join("");
   },
   daftarProv(d, k) {
-    const G = "20px minmax(0,2.4fr) minmax(70px,.9fr) minmax(80px,1.2fr)", per = 20, u = S.urut, arah = u.turun ? -1 : 1;
+    const G = "20px minmax(0,2.4fr) minmax(64px,.8fr) minmax(84px,1fr)", per = 20, u = S.urut, arah = u.turun ? -1 : 1;
     const isi = d.filter(g => (g.prov || "-") === k).sort((a, b) => arah * (u.k === "m" ? a.m - b.m : a.t - b.t) || b.t - a.t);
     S.hal = Math.min(S.hal, Math.max(0, Math.ceil(isi.length / per) - 1));
     this.csv = {nama: namaProv(k), baris: [["Lokasi", "Kekuatan (M)", "Waktu"], ...isi.map(g => [wilayahPendek(g.wilayah), g.m, jamPendek(g.waktu)])]};
-    return this.kepala(G, [[null, "Lokasi"], ["m", "Kekuatan"], ["t", "Waktu"]])
-      + isi.slice(S.hal * per, S.hal * per + per).map((g, i) => `<button class="tb" data-g="${esc(g.id)}" style="grid-template-columns:${G}"><span class="rk">${S.hal * per + i + 1}</span><span class="kom">${esc(wilayahPendek(g.wilayah))}</span><span>${pilM(g.m)}</span><span class="n">${esc(jamPendek(g.waktu))}</span></button>`).join("")
-      + paginasi(S.hal, isi.length, per, "gempa");
+    /* nama kab BMKG ("HALMAHERASELATAN") baru rapi sesudah kamus NamaWil dimuat: muat sekali saat daftar provinsi dibuka, lalu gambar ulang */
+    if (typeof NamaWil !== "undefined" && !NamaWil.kamus && !this._kamus) { this._kamus = 1; NamaWil.siap().then(() => { if (S.jalur.length) nanti(renderDaftar); }); }
+    return ringkasProv(k, isi) + this.kepala(G, [[null, "Lokasi"], ["m", "Kekuatan"], ["t", "Waktu"]])
+      + isi.slice(S.hal * per, S.hal * per + per).map((g, i) => { const r = rinciGempa(g); return `<button class="tb tb-g" data-g="${esc(g.id)}" style="grid-template-columns:${G}"><span class="rk">${S.hal * per + i + 1}</span><span class="kom gk"><span class="gk-t">${esc(wilayahPendek(g.wilayah))}</span>${r ? `<small class="gk-s">${esc(r)}</small>` : ""}</span><span>${pilM(g.m)}</span><span class="n">${esc(jamPendek(g.waktu))}</span></button>`; }).join("")
+      + (isi.length > per ? paginasi(S.hal, isi.length, per, "gempa") : "") + riwayatSingkat(k);
   },
   /* ---------- Riwayat: satu sumber, riwayat_prov.json (USGS) ---------- */
   ringkas() { const D = S.rwProv; if (!D) return null; if (this._ag && this._agD === D) return this._ag;

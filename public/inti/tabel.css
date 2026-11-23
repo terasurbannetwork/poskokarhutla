@@ -9,6 +9,8 @@ thead th{position:sticky;top:0;background:var(--brand);color:#fff;font-size:10.5
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) thead th{color:oklch(18% .035 256)}}
 thead th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
 tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+/* sel yang isinya hanya label/pil selalu di tengah (pemilik, 16 Nov 2026) */
+tbody td:has(> .pill:only-child),tbody td:has(> span:only-child > .pill:only-child){text-align:center}
 tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
 tbody tr:hover{background:oklch(42% .11 255 / .06)}
 tfoot td{padding:9px 10px;background:var(--brand);color:#fff;font-weight:800}

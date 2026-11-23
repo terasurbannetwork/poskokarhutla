@@ -97,7 +97,8 @@ def catat(hari=3, head=butir_head):
     arsip = json.load(open(ARSIP)) if os.path.exists(ARSIP) else {"sumber": SUMBER, "catatan": "Append-only: perkiraan dicatat sekali saat gempa M>=5 pertama terlihat, tidak diubah. Dinilai lawan korban nyata (EM-DAT/BNPB) kemudian.", "butir": []}
     galat = periksa_arsip(head(), arsip["butir"])
     if galat:
-        sys.exit(f"pager arsip DITOLAK, tidak append-only: {galat}")
+        print(f"pager arsip DITOLAK, tidak append-only: {galat}", file=sys.stderr)
+        sys.exit(3)
     n_lama = len(arsip["butir"])
     ada = {b["id"] for b in arsip["butir"]}
     pusat = json.load(open(os.path.join(AKAR, "public/banjir/data/pusat_kec.json")))

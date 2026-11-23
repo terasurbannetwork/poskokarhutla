@@ -2,10 +2,12 @@
 Pakai: python3 -I tambah_peta.py <deck.pptx> <peta.png> <angka_nasional.json> [operasi]  (deck ditimpa; 'operasi' = halaman operasi ikut)"""
 import json, math, os, re, sys, zipfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from kisi import lebar_teks, BANJIR, IKON_BANJIR, HGX, HGX_MUDA, nol   # noqa: E402
+from kisi import lebar_teks, BANJIR, IKON_BANJIR, HGX, HGX_MUDA, nol, JENIS, PRF, GRUP, KEPALA, IKON, tampil, teks, agregat, TANPA_PANAH   # noqa: E402
+def esc(t): return t.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')   # teks profil kisi.py masuk XML
 DECK, PNG, AN = sys.argv[1], sys.argv[2], sys.argv[3]
 OPERASI = sys.argv[4:] == ['operasi']
-A = json.load(open(AN))['prov']
+AJ = json.load(open(AN)); A = AJ['prov']
+NASJ = AJ.get('nasional') or {}   # PB-58: angka nasional laporan sumber (sama dengan layar), bila generator menulisnya
 NAMA = {k: v['nama'] for k, v in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..', 'public', 'data', 'laporan.json')))['prov'].items()}
 I, IP = 3, 2
 PAR = json.load(open('param.json'))
@@ -28,19 +30,29 @@ HOT = sum(nol(A[k]['hot'][I]) for k in A); HOTP = sum(nol(A[k]['hot'][IP]) for k
 LUAS = sum(bul(nol(A[k]['luas'][I])) for k in A); BEL = sum(bul(nol(A[k]['belum'][I])) for k in A)
 FS = sum(nol(A[k]['fs'][I]) for k in A)
 top = rows[0]
+TOT = {g: teks(g, NASJ[g]) if NASJ.get(g) is not None else (lambda a: '–' if a is None else teks(g, a))(agregat(g, [A[k][g][I] for k in A]))
+       for g in GRUP}   # PB-58: nasional per kelompok; dari laporan bila ada (rerata hujan berbobot di sumber), selain itu agregat provinsi
 out = []
 for b in keep:
     t = ''.join(re.findall(r'<a:t>([^<]*)</a:t>', b))
     if t.startswith('Penanganan dan Pengendalian'):
-        b = settexts(b, ['Peta Status Banjir, Longsor dan Rob 2026' if BANJIR else 'Peta Hotspot untuk Pengendalian dan Penanganan Karhutla 2026'])
+        b = settexts(b, [('Peta Status Banjir, Longsor dan Rob 2026' if JENIS == 'banjir' else esc(PRF['judul_peta'])) if BANJIR
+                         else 'Peta Hotspot untuk Pengendalian dan Penanganan Karhutla 2026'])
     elif t.startswith(('5 provinsi', '6 provinsi')):
         runs = re.findall(r'<a:r>.*?</a:r>', b, re.S)
         oranye = re.search(r'<a:rPr.*?</a:rPr>', runs[0], re.S).group(0); biasa = re.search(r'<a:rPr.*?</a:rPr>', runs[1], re.S).group(0)
         SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(A[top]["hot"][I])} titik', 1), ('). Total: ', 0), (f'{f0(HOT)} titik', 1),
                (', ', 0), (f'{f0(LUAS)} ha', 1), (' terbakar' + (f' ({LBL_LUAS})' if LBL_LUAS else '') + ', ', 0), (f'{f0(BEL)} ha', 1), (' belum padam' + (f' ({LBL_HA})' if LBL_HA else ''), 0)]
-        if BANJIR:   # terpapar dalam ribu jiwa (penanganan_banjir.py); rob: titik pantau BMKG; satu provinsi tanpa titik pantau tidak ikut jumlah (nol)
+        if JENIS == 'banjir':   # terpapar dalam ribu jiwa (penanganan_banjir.py); rob: titik pantau BMKG; satu provinsi tanpa titik pantau tidak ikut jumlah (nol)
             SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(nol(A[top]["hot"][I]))} kecamatan', 1), ('); total ', 0),
                    (f'{f0(HOT)} kecamatan', 1), (' banjir, ', 0), (f'{f0(FS)}', 1), (' longsor, ', 0), (f'{f0(BEL)} ribu jiwa', 1), (' terpapar', 0)]   # rob di kotak; kalimat penuh menabrak pil CUT OFF
+        elif BANJIR:   # PB-58: provinsi teratas + nasional dua kelompok pertama (kalimat penuh menabrak pil CUT OFF, seperti banjir)
+            (g1, _, b1), (g2, d2, b2) = PRF['sub'][:2]
+            SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (teks(g1, nol(A[top][g1][I])) + b1, 1), ('); nasional ', 0), (TOT[g1] + b1, 1),
+                   (d2, 0), (TOT[g2] + b2, 1)]
+            if tampil(g1, nol(A[top][g1][I])) == 0:   # semua provinsi 0: tidak ada yang "terbanyak"
+                SUB = [('Nasional ', 0), (TOT[g1] + b1, 1), (d2, 0), (TOT[g2] + b2, 1)]
+            SUB = [(esc(t), o) for t, o in SUB]
         baru = ''.join(f'<a:r>{oranye if o else biasa}<a:t>{t}</a:t></a:r>' for t, o in SUB)
         b = b[:b.index(runs[0])] + baru + b[b.index(runs[-1]) + len(runs[-1]):]
     out.append(b)
@@ -72,7 +84,9 @@ KP = [('051C2C', 'AFC3DA', 'rIdIk1', 'HOTSPOT', f0(HOT), 'titik'),
       ('C9503A', 'FFE3DC', 'rIdIkFs', 'FIRESPOT', f0(FS), 'titik'),
       ('3F5F80', 'D3DFEA', 'rIdIk2', 'LUAS TERBAKAR', f0(LUAS), 'ha'),
       ('D9600B', 'FFDCC2', 'rIdIk3', 'BELUM PADAM', f0(BEL), 'ha')]
-if BANJIR:
+if BANJIR and JENIS != 'banjir':   # PB-58: dari profil kisi.py
+    KP = [(HGX[g], HGX_MUDA[g], IKON[g], esc(KEPALA[g][0].rstrip('*')), TOT[g], esc(KEPALA[g][1].strip(' ()'))) for g in GRUP]
+elif BANJIR:
     KP = [(HGX['hot'], HGX_MUDA['hot'], 'rIdB1', 'BANJIR', f0(HOT), 'kec'), (HGX['fs'], HGX_MUDA['fs'], 'rIdB2', 'LONGSOR', f0(FS), 'kec'),
           (HGX['luas'], HGX_MUDA['luas'], 'rIdB3', 'ROB SIAGA', f0(LUAS), 'titik'), (HGX['belum'], HGX_MUDA['belum'], 'rIdB4', 'TERPAPAR', f0(BEL), 'ribu jiwa')]
 for n, (col, muda, rid, lab, val, sat) in enumerate(KP):
@@ -90,7 +104,9 @@ out.append(kotak(cx[1], top_isi, CW[1], hh, [[('PROVINSI', 750, True, '6B7280', 
 KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'fs', 'C9503A', 'FFE3DC', 'rIdIkFs', 'FIRESPOT*', '(titik)'),
        (4, 'luas', '3F5F80', 'E6ECF3', 'rIdIk2', 'LUAS TERBAKAR*', '(ha)'),
        (5, 'belum', 'D9600B', 'FFE6D5', 'rIdIk3', 'BELUM PADAM*', '(ha)')]
-if BANJIR:
+if BANJIR and JENIS != 'banjir':
+    KOL = [(j, g, HGX[g], HGX_MUDA[g], IKON[g], esc(KEPALA[g][0]), esc('(' + KEPALA[g][1].strip(' ()') + ')')) for j, g in zip((2, 3, 4, 5), GRUP)]
+elif BANJIR:
     KOL = [(j, g, HGX[g], HGX_MUDA[g], f'rIdB{j - 1}', t, sat) for j, g, t, sat in
            ((2, 'hot', 'BANJIR*', '(kec)'), (3, 'fs', 'LONGSOR*', '(kec)'), (4, 'luas', 'ROB SIAGA*', '(titik)'), (5, 'belum', 'TERPAPAR*', '(ribu jiwa)'))]
 for j, key, col, muda, rid, t, sat in KOL:
@@ -100,7 +116,9 @@ for j, key, col, muda, rid, t, sat in KOL:
     tw = max(lebar_teks([(t, 600, True)]), lebar_teks([(sat, 600, False)])); x0 = bx + (bw - 100584 - 18288 - tw) // 2   # ikon + tulisan rata tengah
     out.append(gambar(rid, x0, top_isi + (hh - 100584) // 2, 100584, 100584, 'Ikon ' + t))
     out.append(kotak(x0 + 118872, top_isi, tw + 45720, hh, [[(t, 600, True, 'FFFFFF')], [(sat, 600, False, muda)]], anchor='ctr', wrap='none'))
-TOP = rows[:10]
+# PB-58: gempa dan kekeringan hanya provinsi yang ada kejadiannya hari D; bila kelompok utama 0 di semua provinsi (kekeringan musim hujan),
+# peringkat menurut kelompok kedua yang tidak 0, supaya tabel tidak berisi sepuluh baris nol
+TOP = ((ada or sorted([k for k in rows if nol(A[k]['fs'][I]) > 0], key=lambda k: -nol(A[k]['fs'][I])) or rows) if BANJIR and JENIS != 'banjir' else rows)[:10]
 MX = {key: max(nol(A[k][key][I]) for k in TOP) or 1 for _, key, *_ in KOL}
 ry = top_isi + hh + 45720; rh = (dasar - ry) // 10
 for n, k in enumerate(TOP):
@@ -109,16 +127,17 @@ for n, k in enumerate(TOP):
     out.append(kotak(cx[0] + 27432, y + (rh - 192024) // 2, 192024, 192024, [[(str(n + 1), 700, True, 'FFFFFF')]], fill='051C2C', geomp='ellipse', algn='ctr'))
     out.append(kotak(cx[1] + 45720, y, CW[1] - 45720, rh, [[(NAMA[k], 800 if len(NAMA[k]) <= 18 else 700, True, '1A1A1A')]], anchor='ctr'))
     for j, key, col, *_ in KOL:
-        v = o[key][I]; cur, prv = bul(nol(v)), bul(nol(o[key][IP]))   # persen dari angka yang tampil, vs 19 Okt
+        v = o[key][I]; cur, prv = tampil(key, nol(v)), tampil(key, nol(o[key][IP]))   # persen dari angka yang tampil (DES 0 = bul lama)
         pr = bul((cur - prv) / prv * 100) if prv else None
         ar, ac = (('', 'A9B4C2') if v is None else ('baru', 'A9B4C2') if pr is None and cur else ('0%', '6B7280') if not pr   # 0 setelah 0 = 0%, bukan "baru"
                   else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1'))
+        if key in TANPA_PANAH: ar, ac = '', 'A9B4C2'   # PB-58: M terbesar tanpa persen
         if not BANJIR:   # karhutla: tabel slide peta tanpa persen, angka di tengah kolom (pemilik 31 Okt 2026: "jangan pakai persenan")
-            out.append(kotak(cx[j] + 27432, y, CW[j] - 27432, rh, [[('–' if v is None else f0(v), 850, True, '1A1A1A')]], algn='ctr', anchor='ctr'))
+            out.append(kotak(cx[j] + 27432, y, CW[j] - 27432, rh, [[('–' if v is None else teks(key, v), 850, True, '1A1A1A')]], algn='ctr', anchor='ctr'))
             continue
         VW = CW[j] - 329184   # angka rata kanan di kolom tetap, persen rata kiri di kolom tetap: lurus ke bawah
-        out.append(kotak(cx[j], y, VW, rh, [[('–' if v is None else f0(v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
-        out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580, True, ac)]], algn='l', anchor='ctr', wrap='none'))   # "▲3.200%" satu baris (29 Okt)
+        out.append(kotak(cx[j], y, VW, rh, [[('–' if v is None else teks(key, v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
+        out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580 if JENIS == "banjir" else 600, True, ac)]], algn='l', anchor='ctr', wrap='none'))   # "▲3.200%" satu baris (29 Okt)
 # 3) peta di kiri, selebar sisa panel, ditengahkan vertikal
 X0 = L; W = RX - 182880 - L; H = round(W * 1664 / 4144); Y0 = top_isi + (dasar - top_isi - H) // 2
 i = nid()
@@ -127,7 +146,9 @@ out.append(f'<p:pic><p:nvPicPr><p:cNvPr id="{i}" name="Peta hotspot 20 Okt"/><p:
 # 4) legenda di bawah panel, posisi & ukuran sama dengan slide tabel
 LEG = [('ellipse', 'D9600B', 'Ukuran lingkaran sebanding jumlah hotspot'), ('rect', '051C2C', 'Provinsi dengan hotspot'), ('rect', 'DCE1E7', 'Tanpa hotspot'),
        ('rect', 'D9600B', 'naik dari hari sebelumnya'), ('rect', '2F86D1', 'turun dari hari sebelumnya')]
-if BANJIR:
+if BANJIR and JENIS != 'banjir':
+    LEG = [(g, c, esc(t)) for g, c, t in PRF['leg']]
+elif BANJIR:
     LEG = [('ellipse', '2F6FB5', 'Ukuran lingkaran sebanding kecamatan Siaga atau Awas banjir'), ('rect', '051C2C', 'Provinsi dengan kecamatan Siaga atau Awas'),
            ('rect', 'DCE1E7', 'Tanpa kecamatan Siaga atau Awas')] + LEG[3:]
 elif os.environ.get('PETA_CHOROPLETH') == '1':   # pemilik 10 Nov 2026; kelas dan warna sama dengan KELAS di peta.mjs

@@ -58,7 +58,7 @@ const Peta = {
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 8, 14], "circle-color": ["interpolate", ["linear"], ["get", "p"], 0, "#bcd6f0", .25, "#6aa7e3", .5, "#7a4fc4", .8, "#c9503a"],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
     if (S.kec && !this._pm) { this._pm = 1; panelMode = "st"; }   /* tabel bertingkat Status jadi tab awal bila datanya ada */
-    Status.pasang(); Rawan.pasang(); Tambahan.pasang(); Awan.pasang(); Kejadian.pasangLapis(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
+    Status.pasang(); Rawan.pasang(); Tambahan.pasang(); Awan.pasang(); Kejadian.pasangLapis(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); window.TanggalCuaca?.terapkanPeta(); },   /* tanggal terpilih ikut bertahan sesudah gaya peta dimuat ulang (PB-79c) */
   /* hujan atau embusan digambar 1 piksel per sel di kanvas yang sama; MapLibre menghaluskan antarsel. Sumber kanvas, bukan gambar berurl data:
      (url data: dilaporkan CSP connect-src di konsol). */
   gambarMedan() {
@@ -155,16 +155,19 @@ $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"
   else if (J.length && n < J.length) { S.stJalur = J.slice(0, n); renderCrumb(); nanti(renderPanel); } });
 function renderPanel() {
   const q = ($("#cari").value || "").trim().toLowerCase(), rows = $("#rows"),
-    nc = S.nc.map((a, i) => ({a, i})).filter(({a}) => !q || (a.wilayah + " " + a.headline + " " + a.event).toLowerCase().includes(q)),
-    gl = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).filter(o => !q || namaProv(o.prov).toLowerCase().includes(q));
+    pd = window.TanggalCuaca,   /* tanggal terpilih (tanggal.js, PB-79c): hanya peringatan yang berlaku pada tanggal itu */
+    nc = S.nc.map((a, i) => ({a, i})).filter(({a}) => (!q || (a.wilayah + " " + a.headline + " " + a.event).toLowerCase().includes(q)) && (!pd || pd.nc(a))),
+    gl = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).filter(o => (!q || namaProv(o.prov).toLowerCase().includes(q)) && (!pd || pd.gl(o)));
   $("#panelMode").innerHTML = `<button data-m="nc" aria-pressed="${panelMode === "nc"}">Nowcast <b>${fmt(nc.length)}</b>${S.kec ? "" : " wilayah"}</button><button data-m="gl" aria-pressed="${panelMode === "gl"}">Gelombang <b>${fmt(gl.length)}</b>${S.kec ? "" : " provinsi"}</button>${Status.tabPanel()}`;
   if (panelMode === "st") return void (rows.innerHTML = Status.barisPanel(q));
-  rows.innerHTML = panelMode === "nc"
+  const isi = panelMode === "nc"
     ? nc.map(({a, i}) => barisRw(`data-nc="${i}"`, sevWarna(a.severity), esc(a.headline?.match(/\bdi (.+)$/)?.[1] || namaProv(a.prov?.[0]) || a.event), jamRentang(a.mulai, a.selesai),
         `<em>${esc(SEV_ID[a.severity] || a.severity)}</em>${esc(a.event.toLowerCase())}, ${fmt(a.n)} kecamatan`, esc(hurufJudul(a.wilayah)))).join("")
     : gl.map(o => barisRw(`data-gl="${o.prov}"`, GEL[o.lv - 1][3], esc(namaProv(o.prov)), "", `<em>Gelombang ${GEL[o.lv - 1][1].toLowerCase()}</em>${fmt(o.total)} perairan`)).join("");
   /* tanpa peringatan berlaku: sebut terbitan BMKG yang dipakai, supaya bukan terbaca "BMKG menyatakan aman" (berkasnya terbit berkala, nowcast hidup 2-3 jam) */
-  if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(panelMode === "nc" ? (S.ncDibuat ?? S.per.dibuat) : S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
+  const unduh = window.UnduhTabel?.tombol() || "";   /* hanya bila registri menyalakan kemampuan.layar.unduh_tabel (PB-79c) */
+  if (isi) return void (rows.innerHTML = (unduh ? `<div style="display:flex;justify-content:flex-end;padding:0 2px 6px">${unduh}</div>` : "") + isi);
+  rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.tanggal ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} BMKG yang berlaku pada tanggal itu.` : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(panelMode === "nc" ? (S.ncDibuat ?? S.per.dibuat) : S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
 }
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; renderCrumb(); $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(renderPanel); });
 { let td; $("#cari").addEventListener("input", () => { clearTimeout(td); td = setTimeout(renderPanel, 150); }); }

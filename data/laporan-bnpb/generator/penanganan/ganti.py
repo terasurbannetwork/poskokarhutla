@@ -9,7 +9,8 @@ def f0(v): return f"{bul(v):,}".replace(',', '.')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kisi import (GRUP, KOL0, PITCH0, GW0, SELA, GW, PITCH, BW, LW, GX, LX, BX,   # noqa: E402  kisi tabel, dipakai cek6.py juga
                   HGX, HGX_MUDA, KEPALA, KEPALA_SZ, IKON_W, IKON_SELA, IKON, lebar_teks,
-                  Y_KEPALA, Y_HARI, H_KEPALA, H_HARI, NX, BANJIR, IKON_BANJIR, nol)
+                  Y_KEPALA, Y_HARI, H_KEPALA, H_HARI, NX, BANJIR, IKON_BANJIR, nol,
+                  JENIS, PRF, tampil, teks, agregat, TANPA_PANAH)   # PB-58: profil per bencana; DES 0 + jumlah = perilaku lama
 s1 = open(SP + '/deck/x/ppt/slides/slide1.xml').read()
 SHAPES = lambda s: list(re.finditer(r'<p:sp>.*?</p:sp>', s, re.S))
 def geom(b):
@@ -70,9 +71,9 @@ def isi_baris(s, base, H, k, nid, aoff=18288, ah=137160, hapus_lama=True):
         v = A[k][grp]; tiga = v[1:4]; mx = max(map(nol, tiga)) or 1
         for i in range(3):
             h = max(18288, round(H * nol(tiga[i]) / mx)); top = base - h
-            arr, ct, cb = ('', ABU, ABU) if tiga[i] is None else banding(bul(tiga[i]), bul(nol(v[i])))  # panah dari angka yang tampil
+            arr, ct, cb = ('', ABU, ABU) if tiga[i] is None or grp in TANPA_PANAH else banding(tampil(grp, tiga[i]), tampil(grp, nol(v[i])))  # panah dari angka yang tampil
             bar = setcol_fill(setgeom(T['bar'], BX[grp][i], top, BW, h), cb)
-            lab = settext(setgeom(T['lab3' if i == 2 else 'lab'], LX[grp][i], top - 173736, LW, 164592), '–' if tiga[i] is None else f0(tiga[i]))
+            lab = settext(setgeom(T['lab3' if i == 2 else 'lab'], LX[grp][i], top - 173736, LW, 164592), '–' if tiga[i] is None else teks(grp, tiga[i]))
             ar = setcol_text(settext(setgeom(T['arr'], LX[grp][i], base + aoff, LW, ah), arr), ct)
             baru += [bar, lab, ar]
     out = []
@@ -93,8 +94,8 @@ def ganti_total(s, y, kode, nid=None):
     baru = []
     for grp in GRUP:
         for i in range(3):
-            xs = [A[k][grp][i + 1] for k in kode if A[k][grp][i + 1] is not None]   # jumlah = jumlah angka yang tampil; semua "–" = "–"
-            baru.append(settext(setgeom(cetak, LX[grp][i], y, LW, cy), f0(sum(bul(x) for x in xs)) if xs else '–'))
+            a = agregat(grp, [A[k][grp][i + 1] for k in kode])   # dari angka yang tampil (jumlah, maks, atau rerata per kelompok); semua "–" = "–"
+            baru.append(settext(setgeom(cetak, LX[grp][i], y, LW, cy), '–' if a is None else teks(grp, a)))
     if nid is not None:
         baru = [re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid[0] + 1 + j}"', b, count=1) for j, b in enumerate(baru)]
         nid[0] += len(baru)
@@ -157,6 +158,23 @@ def banjir_teks(s1):
     s1 = rep(s1, '<a:t>21 Okt 2026, 07.00 WIB</a:t>', f'<a:t>{PAR["cutoff"]}</a:t>')
     return rep(s1, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System).</a:t>',
                '<a:t>*Kecamatan Siaga atau Awas dari prakiraan hujan dan indeks bahaya InaRISK; rob dari titik pantau BMKG; terpapar = penduduk kecamatan Siaga atau Awas banjir (WorldPop). –: tidak dipantau.</a:t>')
+
+
+def xml(t): return t.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def profil_teks(s1):
+    """PB-58: judul, subjudul, cut-off, dan catatan kaki slide tabel untuk bencana selain banjir, dari PROFIL kisi.py.
+    Subjudul = angka baris jumlah kolom D (6 provinsi), satu per kelompok, dengan kata dari PRF['sub']."""
+    s1 = runs_ganti(s1, 'Penanganan dan Pengendalian Karhutla', [(PRF['judul_tabel'], 0), (PAR['hari'], 1), (f' {PAR["bulan"]} ', 2), (PAR['tahun'], 3)])
+    isi = [('6 provinsi', 0), (f' teratas, {PAR["hari"]} {PAR["bln"]}: ', 1)]
+    for j, (g_, depan, belakang) in enumerate(PRF['sub']):
+        a = agregat(g_, [A[k][g_][3] for k in TOP6])
+        isi += [(xml(depan), 1)] if depan else []
+        isi += [('–' if a is None else teks(g_, a), 0), (xml(belakang), 1)]
+    s1 = runs_ganti(s1, '5 provinsi', isi)
+    s1 = rep(s1, '<a:t>21 Okt 2026, 07.00 WIB</a:t>', f'<a:t>{PAR["cutoff"]}</a:t>')
+    return rep(s1, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System).</a:t>', f'<a:t>{xml(PRF["kaki"])}</a:t>')
 
 
 def sp_di_y(s, y):
@@ -245,8 +263,10 @@ REL_S2 = re.findall(r'<Relationship Id="(\w+)" Type="[^"]*/image" Target="([^"]+
 BARU = [T0 + i * PB + 338328 for i in range(6)]
 for base, k in zip(BARU, P5): s1 = isi_baris(s1, base, 118872, k, nid, aoff=9144, ah=128016, hapus_lama=False)
 s1 = rep(s1, '<a:t>Jumlah 5 provinsi</a:t>', '<a:t>Jumlah 6 provinsi</a:t>')
-if BANJIR:
+if JENIS == 'banjir':
     s1 = ganti_total(banjir_teks(s1), 5330952, P5, nid)
+elif BANJIR:   # PB-58: gempa, kekeringan
+    s1 = ganti_total(profil_teks(s1), 5330952, P5, nid)
 else:
     s1 = rep(s1, '<a:t>5 provinsi</a:t>', '<a:t>6 provinsi</a:t>')
     s1 = rep(s1, '<a:t> prioritas; ±</a:t>', '<a:t> teratas; ±</a:t>')
@@ -332,7 +352,9 @@ zo.writestr('ppt/media/ikon-firespot.png', open(os.path.join(os.path.dirname(os.
 for n in IKON_BANJIR.values() if BANJIR else ():
     zo.writestr(f'ppt/media/ikon-{n}.png', open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ikon', f'{n}.png'), 'rb').read())
 zo.close()
-if BANJIR:
+if JENIS == 'banjir':
     print('ok banjir', {g_: f0(sum(bul(nol(A[k][g_][3])) for k in TOP6)) for g_ in GRUP})
+elif BANJIR:
+    print('ok', JENIS, {g_: (lambda a: '–' if a is None else teks(g_, a))(agregat(g_, [A[k][g_][3] for k in TOP6])) for g_ in GRUP})
 else:
     print('ok luas20', f0(L5), 'luas18', f0(T5), 'padam', f0(D5), bul(D5 / T5 * 100), '% belum5', f0(B5), 'belum8', f0(B8))

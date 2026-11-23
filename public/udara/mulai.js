@@ -30,3 +30,5 @@ PilihCantik.pasang();   /* <select> jadi pil, seperti karhutla */
 /* tombol lipat Overlay: tutup/buka semua grup sekaligus */
 $("#lapisLipat").addEventListener("click", e => { e.stopPropagation(); const ds = [...document.querySelectorAll("#lapis details")], buka = ds.every(d => !d.open);
   ds.forEach(d => d.open = buka); const b = e.currentTarget; b.classList.toggle("tutup", !buka); b.title = b.ariaLabel = buka ? "Tutup semua grup" : "Buka semua grup"; });
+/* PB-85 (F-40): tab Operasi, tersembunyi untuk tamu; logika dan probe hak baca di operasi.js (dimuat di sini supaya index.html tidak berubah). */
+{ const s = document.createElement("script"); s.src = "operasi.js?v=1"; s.onload = () => window.UdaraOperasi?.pasang(); document.head.append(s); }

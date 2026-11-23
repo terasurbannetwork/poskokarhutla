@@ -1,0 +1,22 @@
+/* inti/peta_kab.css (PB-81.3): grup kontrol di kotak Overlay, kartu legenda, dan tooltip lapisan per kab/kota. Hanya var(--...) dari tema.css. */
+.pk-grup{padding:6px 0 2px;border-top:1px solid var(--line)}
+.pk-hd{font-size:var(--fs-1);font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.pk-nyala{display:flex;align-items:center;gap:6px;cursor:pointer}
+.pk-kontrol{display:flex;flex-direction:column;gap:6px;padding:4px 0 2px}
+.pk-kontrol[hidden]{display:none}
+.pk-baris{display:flex;flex-direction:column;gap:3px;font-size:var(--fs-1);font-weight:700;color:var(--ink2)}
+.pk-baris select{width:100%;min-height:30px;border:1px solid var(--line);border-radius:var(--r-xs);background:var(--card);color:var(--ink);font:inherit;font-weight:600;padding:0 6px}
+.pk-gagal{color:var(--bad-tx)}
+.pk-leg{width:fit-content;max-width:100%;padding:6px 14px 8px}
+.pk-leg[hidden]{display:none}
+.pk-leg .legscale{min-width:180px}
+.pk-na{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:var(--fs-1);color:var(--ink2)}
+.pk-na i{display:inline-block;width:14px;height:10px;border-radius:2px;border:1px solid var(--line)}
+.pk-ket{margin-top:4px;max-width:300px;font-size:10px;line-height:1.3;color:var(--ink2)}
+.pk-pil{display:inline-flex;align-items:center;height:18px;padding:0 8px;border-radius:var(--r-pill);font-size:10.5px;font-weight:700;background:color-mix(in oklch, var(--warn) 22%, transparent);color:var(--warn-tx)}
+.pk-tip{position:fixed;z-index:60;display:flex;flex-direction:column;gap:2px;max-width:260px;padding:8px 11px;border-radius:var(--r-sm);background:var(--card);color:var(--ink);box-shadow:var(--shadow-lg);border:1px solid var(--line);pointer-events:none;font-size:var(--fs-2)}
+.pk-tip[hidden]{display:none}
+.pk-tip small{color:var(--ink2);font-size:10.5px;line-height:1.25}
+.pk-tn{font-family:var(--display);font-size:var(--fs-3)}
+.pk-tv{font-size:var(--fs-4);font-variant-numeric:tabular-nums}
+.pk-tv b{font-size:var(--fs-6)}

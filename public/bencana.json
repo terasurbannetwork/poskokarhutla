@@ -235,7 +235,19 @@
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
-        "tindakan": []
+        "tindakan": [],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -450,7 +462,19 @@
           "air_bersih",
           "status_darurat",
           "omc"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -467,6 +491,7 @@
         "peta",
         "insight",
         "tren",
+        "dampak",
         "foto",
         "metode",
         "informasi"
@@ -630,7 +655,27 @@
           "pengungsian",
           "sar",
           "dapur_umum"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": false,
+          "sinyal": true,
+          "peta_kab": false,
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -786,8 +831,10 @@
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "cuaca"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "cuaca",
@@ -806,7 +853,27 @@
           "imbauan",
           "pantau",
           "buka_akses"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": false,
+          "citra": true,
+          "sinyal": true,
+          "peta_kab": true,
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -964,8 +1031,11 @@
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "gempa",
+            "tsunami"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "gempa",
@@ -984,7 +1054,31 @@
           "posko",
           "perbaikan_darurat",
           "kesehatan"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": false,
+          "sinyal": true,
+          "peta_kab": true,
+          "cari": [
+            "desa",
+            "kab",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "gempa",
+            "dirasakan",
+            "terbesar"
+          ]
+        }
       }
     },
     {
@@ -1127,7 +1221,7 @@
           "kunci": [
             "udara"
           ],
-          "tangga": false
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "udara",
@@ -1139,7 +1233,30 @@
         "tindakan": [
           "masker",
           "imbauan"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": true,
+          "sinyal": false,
+          "peta_kab": true,
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "pm25",
+            "jiwa"
+          ]
+        }
       }
     },
     {
@@ -1313,7 +1430,31 @@
           "rambu",
           "patroli",
           "tanggul"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": true,
+          "sinyal": true,
+          "peta_kab": false,
+          "cari": [
+            "kab",
+            "desa",
+            "bandara",
+            "bpbd",
+            "posko",
+            "faskes",
+            "sekolah"
+          ],
+          "ukuran_provinsi": [
+            "radius",
+            "erupsi",
+            "tinggi"
+          ]
+        }
       }
     },
     {
@@ -1476,7 +1617,31 @@
           "posko",
           "pantau",
           "status_darurat"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": true,
+          "cari": [
+            "desa",
+            "kab",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "status",
+            "spi",
+            "jiwa"
+          ]
+        }
       }
     },
     {
@@ -1625,7 +1790,19 @@
           "rambu",
           "sar",
           "pengungsian"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     }
   ]

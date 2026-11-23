@@ -18,11 +18,11 @@ LV = {1: "I (Normal)", 2: "II (Waspada)", 3: "III (Siaga)", 4: "IV (Awas)"}
 URUT = {"awas": 0, "siaga": 1, "waspada": 2, "info": 3}
 
 METRIK = [
-    {"k": "siaga_awas", "label": "Gunung Siaga + Awas", "satuan": "gunung", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
-    {"k": "waspada_ke_atas", "label": "Gunung Waspada ke atas", "satuan": "gunung", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
-    {"k": "erupsi", "label": "Erupsi tercatat", "satuan": "erupsi", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
+    {"k": "siaga_awas", "label": "Siaga + Awas", "satuan": "gunung", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "waspada_ke_atas", "label": "Waspada ke atas", "satuan": "gunung", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "erupsi", "label": "Erupsi", "satuan": "erupsi", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
     {"k": "kenaikan", "label": "Kenaikan level", "satuan": "gunung", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
-    {"k": "bandara_abu", "label": "Bandara di jalur abu 72 jam", "satuan": "bandara", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "bandara_abu", "label": "Jalur abu 72 jam", "satuan": "bandara", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
 ]
 
 

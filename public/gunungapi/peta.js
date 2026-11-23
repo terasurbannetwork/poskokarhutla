@@ -21,7 +21,18 @@ function cincin(lat, lon, rKm, n = 64) {
   return k; }
 const urut = (a, b) => b.level - a.level || a.nama.localeCompare(b.nama);
 const letusanDari = nama => (S.st.letusan || []).filter(e => e.gunung === nama);
-const saring = () => { const q = S.q.trim().toLowerCase(); return S.st.gunung.filter(g => (!S.level || g.level === S.level) && (!q || (g.nama + " " + g.prov).toLowerCase().includes(q))).sort(urut); };
+/* tanggal pilihan (PB-79b, inti/pilih_tanggal.js lewat tanggal.js): gunung yang punya erupsi tercatat pada tanggal WIB itu (S.st.letusan). Level yang tampil tetap level terkini PVMBG. */
+const tglWIB = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
+const erupsiPadaTgl = iso => new Set((S.st.letusan || []).filter(e => tglWIB(Date.parse(e.waktu)) === iso).map(e => e.gunung));
+const saring = () => { const q = S.q.trim().toLowerCase(), tg = S.tanggal ? erupsiPadaTgl(S.tanggal) : null;
+  return S.st.gunung.filter(g => (!S.level || g.level === S.level) && (!tg || tg.has(g.nama)) && (!q || (g.nama + " " + g.prov).toLowerCase().includes(q))).sort(urut); };
+/* ukuran kolom angka daftar (PB-79b, F-39; mesin segmen di inti/tabel.js, gerbang kemampuan.layar.ukuran_provinsi). Panel gunung api berisi daftar GUNUNG, bukan provinsi:
+   ukuran memilih kolom angka dan urutannya dari data yang sudah dimuat (radius PVMBG, erupsi tercatat, tinggi puncak). Level tetap pernyataan resmi PVMBG, tanpa tafsir ulang. */
+const KAT_UKURAN = [
+  {slug: "radius", label: "Radius", kunci: "rd", judul: "Radius rekomendasi PVMBG (km)", sel: g => g.radius_km ? fmt(g.radius_km) + " km" : "–"},
+  {slug: "erupsi", label: "Erupsi", kunci: "er", judul: "Erupsi tercatat pada jendela data", sel: g => S.st.letusan ? fmt(letusanDari(g.nama).length) : "–"},
+  {slug: "tinggi", label: "Tinggi", kunci: "tg", judul: "Tinggi puncak (m di atas permukaan laut)", sel: g => g.tinggi ? fmt(g.tinggi) + " m" : "–"}];
+const ukAktif = () => { const z = S.ukuranIzin || []; return z.length ? (z.find(u => u.slug === S.ukuran) || z[0]) : KAT_UKURAN[0]; };
 
 const Peta = {
   async init() {
@@ -171,17 +182,28 @@ function renderLevelSeg() {
   const op = [[0, "Semua"], [4, "Awas"], [3, "Siaga"], [2, "Waspada"], [1, "Normal"]].filter(([l]) => !l || S.n[l]);
   $("#levelSeg").innerHTML = op.map(([l, n]) => `<button data-l="${l}" aria-pressed="${S.level === l}">${n}${l ? ` <b class="num">${S.n[l]}</b>` : ""}</button>`).join(""); }
 /* tabel standar panel kiri (kepala gelap, kolom bisa diurut): sama dengan daftar provinsi karhutla dan wilayah kekeringan */
-const KOL = {nm: g => g.nama, pv: g => g.prov, rd: g => g.radius_km ?? -1, lv: g => g.level * 1e3 + (g.radius_km || 0)};
+const KOL = {nm: g => g.nama, pv: g => g.prov, rd: g => g.radius_km ?? -1, er: g => letusanDari(g.nama).length, tg: g => g.tinggi ?? -1, lv: g => g.level * 1e3 + (g.radius_km || 0)};
 const urutDaftar = L => { const {k, d} = S.urut, f = KOL[k]; return [...L].sort((a, b) => { const x = f(a), y = f(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * d || a.nama.localeCompare(b.nama); }); };
 function renderDaftar() {
-  const L = urutDaftar(saring()), gr = "grid-template-columns:20px minmax(0,1fr) minmax(0,.8fr) 44px 92px", u = k => S.urut.k === k ? " urut" : "";
-  const kepala = `<div class="tb kepala" style="${gr}"><span></span><span data-s="nm" class="${u("nm")}">Gunung</span><span data-s="pv" class="${u("pv")}">Provinsi</span><span class="n ${u("rd")}" data-s="rd">Radius</span><span data-s="lv" class="${u("lv")}" style="text-align:right">Status</span></div>`;
-  $("#rows").innerHTML = L.length ? kepala + L.map((g, i) => `<button class="tb" role="listitem" data-n="${esc(g.nama)}" style="${gr}"><span class="rk">${i + 1}</span><span style="font-weight:600" translate="no">${esc(g.nama)}</span>
-    <span style="justify-self:stretch;text-align:left!important;color:var(--ink2)" title="${esc(g.prov)}">${esc(g.prov)}</span><span class="n">${g.radius_km ? fmt(g.radius_km) + " km" : "–"}</span><span style="text-align:right">${pilLv(g.level, true)}</span></button>`).join("")
-    : `<div class="kosong">Tidak ada gunung yang cocok.</div>`; }
+  const L = urutDaftar(saring()), gr = "grid-template-columns:20px minmax(0,1fr) minmax(0,.8fr) 56px 92px", u = k => S.urut.k === k ? " urut" : "", uk = ukAktif();
+  const kepala = `<div class="tb kepala" style="${gr}"><span></span><span data-s="nm" class="${u("nm")}">Gunung</span><span data-s="pv" class="${u("pv")}">Provinsi</span><span class="n ${u(uk.kunci)}" data-s="${uk.kunci}" title="${esc(uk.judul)}">${uk.label}</span><span data-s="lv" class="${u("lv")}" style="text-align:right">Status</span></div>`;
+  const seg = typeof segmenUkuran === "function" ? segmenUkuran(S.ukuranIzin, uk.slug) : "";   /* hanya bila registri menyalakan kemampuan.layar.ukuran_provinsi */
+  const unduh = window.UnduhTabel?.tombol() || "";   /* hanya bila registri menyalakan kemampuan.layar.unduh_tabel */
+  const atas = seg || unduh ? `<div class="gn-ukuran">${seg ? `<div class="gn-ukuran-seg">${seg}</div>` : ""}${unduh ? `<div class="gn-ukuran-ud">${unduh}</div>` : ""}</div>` : "";
+  const ket = S.tanggal ? `<p class="gn-tglket">Gunung yang erupsi pada ${esc(+S.tanggal.slice(8) + " " + BLN[+S.tanggal.slice(5, 7) - 1] + " " + S.tanggal.slice(0, 4))}; level yang tampil adalah level terkini PVMBG.</p>` : "";
+  const kosong = S.tanggal && !S.q.trim() && !S.level ? "Tidak ada erupsi tercatat pada tanggal itu." : "Tidak ada gunung yang cocok.";
+  $("#rows").innerHTML = atas + ket + (L.length ? kepala + L.map((g, i) => `<button class="tb" role="listitem" data-n="${esc(g.nama)}" style="${gr}"><span class="rk">${i + 1}</span><span style="font-weight:600" translate="no">${esc(g.nama)}</span>
+    <span style="justify-self:stretch;text-align:left!important;color:var(--ink2)" title="${esc(g.prov)}">${esc(g.prov)}</span><span class="n">${uk.sel(g)}</span><span style="text-align:right">${pilLv(g.level, true)}</span></button>`).join("")
+    : `<div class="kosong">${kosong}</div>`); }
+/* pilih ukuran (segmen): urut ikut ukuran */
+function pilihUkuran(slug) { const u = KAT_UKURAN.find(x => x.slug === slug); if (!u || !(S.ukuranIzin || []).some(x => x.slug === slug)) return false;
+  S.ukuran = slug; S.urut = {k: u.kunci, d: -1}; renderDaftar(); return true; }
 $("#rows").addEventListener("click", e => {
-  const kol = e.target.closest(".kepala span[data-s]"); if (kol) { const k = kol.dataset.s; S.urut = {k, d: S.urut.k === k ? -S.urut.d : k === "lv" ? -1 : 1}; return nanti(renderDaftar); }
+  const uk = e.target.closest("[data-ukuran-k]"); if (uk) return void pilihUkuran(uk.dataset.ukuranK);
+  const kol = e.target.closest(".kepala span[data-s]"); if (kol) { const k = kol.dataset.s; S.urut = {k, d: S.urut.k === k ? -S.urut.d : k === "lv" || k === "er" ? -1 : 1}; return nanti(renderDaftar); }
   const b = e.target.closest("[data-n]"); if (!b) return; const g = S.st.gunung.find(x => x.nama === b.dataset.n); if (g) { Peta.terbang(g); Detail.buka(g); } });
+/* registri menyalakan segmen ukuran: daftar digambar ulang sekali bila ada ukuran yang dinyalakan */
+if (typeof ukuranRegistri === "function") ukuranRegistri().then(d => { S.ukuranIzin = ukuranDiizinkan(d, "gunungapi", KAT_UKURAN); if (!S.ukuranIzin.length) return; S.ukuran = ukAktif().slug; if (S.st) renderDaftar(); });
 $("#levelSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.level = +b.dataset.l; renderLevelSeg(); nanti(() => Peta.segarkan()); });
 $("#cari").addEventListener("input", e => { S.q = e.target.value; nanti(() => Peta.segarkan()); });
 

@@ -209,8 +209,17 @@ def ganti_operasi(s, op):
         assert f'<a:t>{pendek[n]}</a:t>' in s and f'<a:t>{v:,}</a:t>'.replace(',', '.') in s, f'personel {n} {v} beda dengan templat: isi ulang halaman personel'
     pat, wb = sum(r[1] for r in ARMADA), sum(r[2] for r in ARMADA)
     omc = {n: o for n, o in op['omc'].items() if o['sortie'] or o['sasaran']}   # Kalsel 26 Okt: disasar Hercules yang terbang dari Kalteng
-    ada = [n for n, *_ in OMC_BARIS if n in omc] or [n for n, *_ in OMC_BARIS if (op['omc'].get(n) or {}).get('hujan')]   # 15 Nov 2026: OMC nihil di semua provinsi, baris = provinsi yang hujannya dilaporkan   # baris templat tanpa OMC dibuang (Kalbar 26 Okt; pemilik 27 Okt 2026)
-    hujan = [n for n in ada if op['omc'][n].get('hujan')]
+    # baris templat tanpa OMC dibuang (Kalbar 26 Okt; pemilik 27 Okt 2026); 15 Nov 2026: OMC nihil di semua provinsi, baris = provinsi yang hujannya dilaporkan.
+    # Pemilik 16 Nov 2026 ("Ya, tambahkan"): provinsi di luar 4 baris templat (Jambi, Riau) mengisi baris templat yang kosong, namanya diganti.
+    TPL = [n for n, *_ in OMC_BARIS]
+    pilih = [n for n in TPL if n in omc] + [n for n in omc if n not in TPL]
+    if not pilih:
+        pilih = [n for n in TPL if (op['omc'].get(n) or {}).get('hujan')] + [n for n, o in op['omc'].items() if n not in TPL and o.get('hujan')]
+    if len(pilih) > len(TPL): print('PERINGATAN panel OMC hanya 4 baris; tidak tampil:', pilih[len(TPL):]); pilih = pilih[:len(TPL)]
+    bebas, slot = [n for n in TPL if n not in pilih], {}   # slot: nama baris templat -> provinsi yang tampil di baris itu
+    for n in pilih: slot[n if n in TPL else bebas.pop(0)] = n
+    ada = [t for n in pilih for t, v in slot.items() if v == n]   # nama baris templat, urut tampil
+    hujan = [n for n in pilih if op['omc'][n].get('hujan')]
     hujan_wa = [n for n, o in op['omc'].items() if o.get('hujan')]   # subjudul: semua provinsi yang hujannya dilaporkan WA, bukan hanya 4 baris OMC
     s = teks(s, '51', str(pat + wb)); s = teks(s, '4 provinsi', 'OMC#'); s = teks(s, '3 provinsi', f'{len(hujan_wa)} provinsi'); s = teks(s, 'OMC#', f'{len(omc)} provinsi')   # penanda: hasil pertama bisa sama dengan teks kedua
     s = teks(s, '15', str(pat)); s = teks(s, '36', str(wb))
@@ -224,7 +233,8 @@ def ganti_operasi(s, op):
     lama_sas = ['Ketapang, Kayong Utara', 'Barito Selatan, Seruyan, Kotawaringin Timur dan Barat', 'Ogan Ilir, OKI, Banyuasin, Palembang', 'Tabalong, Banjar, Barito Kuala']
     lama_has = ['13 kab/kota, termasuk 2 sasaran', 'di 4 kabupaten sasaran', 'Ogan Ilir dan Lahat', 'radar BMKG 24 jam']
     for (nama, yt, yp, yd), ls, lh in zip(OMC_BARIS, lama_sas, lama_has):
-        o = op['omc'].get(nama) or {'sortie': 0, 'hujan': None, 'sasaran': ''}
+        if slot.get(nama, nama) != nama: s = ubah_sp(s, 795528, yt, teks_baru=slot[nama])   # nama provinsi baris templat diganti
+        o = op['omc'].get(slot.get(nama, nama)) or {'sortie': 0, 'hujan': None, 'sasaran': ''}
         s = teks(s, ls, daftar_sasaran(o['sasaran']) if o['sasaran'] else 'tidak ada sortie')
         h = o['hujan']
         label = label_hujan(h) if h else 'BELUM HUJAN'
@@ -270,6 +280,75 @@ def ganti_operasi(s, op):
     assert not jumlah or sum(jumlah.values()) == pat + wb, f'pemilik {jumlah} tidak berjumlah {pat + wb} unit armada'
     if not ARMADA: return kepala_omc(tanpa_instansi(s))   # panel kanan dibuang utuh oleh tanpa_panel_armada
     return kepala_omc(pemilik(armada(tanpa_instansi(s), ARMADA, 5990000 if jumlah else 6300000), jumlah))
+
+
+def tanpa_panel_omc(x):
+    """Pemilik 17 Nov 2026 ("jadinya hapus aja panelnya"): hari tanpa sortie OMC, panel MODIFIKASI CUACA dibuang seluruhnya dan panel ARMADA UDARA
+    direntang selebar slide. Kepala panel armada (ikon, judul, pil) digeser saja; kolom batang (mulai x 7.792.060) diregangkan k kali supaya
+    batang tetap sebanding jumlah unitnya dan label "N unit" tetap di ujung batang. Dipanggil sesudah tanpa_kartu_personel dan omc_nihil."""
+    kiri = re.search(r'<a:off x="548640" y="(\d+)"/>\s*<a:ext cx="5478628" cy="(\d+)"/>', x)
+    kanan = re.search(r'<a:off x="6164428" y="(\d+)"/>\s*<a:ext cx="5478628" cy="(\d+)"/>', x)
+    assert kiri and kanan, 'dua panel slide Operasi tidak ditemukan'
+    atas, bawah = int(kiri.group(1)), int(kiri.group(1)) + int(kiri.group(2))
+    dx = 548640 - 6164428; BATANG = 7792060; LEBAR = 11643068 - 548640
+    ujung = max(int(m.group(1)) + int(m.group(2)) for m in re.finditer(r'<a:off x="(\d+)" y="\d+"/>\s*<a:ext cx="(\d+)" cy="\d+"/>', x)
+                if 6164428 < int(m.group(1)) and int(m.group(1)) + int(m.group(2)) < 11643068 - 1000)   # ujung kanan isi panel armada
+    k = (ujung - (BATANG + dx)) / (ujung - BATANG)
+    def ubah(m):
+        b = m.group(0); o = re.search(r'<a:off x="(-?\d+)" y="(-?\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"/>', b)
+        if not o: return b
+        x0, y, cx, cy = map(int, o.groups())
+        if not atas <= y < bawah: return b
+        if x0 < 6100000: return ''   # panel MODIFIKASI CUACA dan semua isinya
+        if x0 == 6164428 and cx == 5478628: x1, cx1 = 548640, LEBAR   # bingkai panel armada
+        elif x0 >= BATANG and y > 2000000:   # kolom batang: diregangkan; label unit (cx 640080) hanya digeser
+            x1 = round(BATANG + dx + (x0 - BATANG) * k); cx1 = cx if cx == 640080 else round(cx * k)
+        else: x1, cx1 = x0 + dx, cx
+        return b.replace(o.group(0), f'<a:off x="{x1}" y="{y}"/><a:ext cx="{cx1}" cy="{cy}"/>', 1)
+    return re.sub(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', ubah, x, flags=re.S)
+
+
+def omc_nihil(x, hari):
+    """Pemilik 17 Nov 2026 ("bilang aja tidak ada OMC yang dilakukan"; lalu: "2 header ini tetep ada ... cuma tulis italic dan fontnya jadi abu"):
+    hari tanpa sortie OMC di semua provinsi, kepala bagian OMC DAN HUJAN dan SEMAI OMC (ikon, judul, pil tanggal, lencana) tetap, tetapi tabel
+    di bawah keduanya (pita kolom dan baris "tidak ada sortie" berpil hujan, yang terbaca seolah hujan itu hasil OMC) diganti satu kalimat
+    miring abu. Subjudul ikut: tanpa "OMC di 0 provinsi dengan hujan di N provinsi". Dipanggil bingkai.py SESUDAH panel direntang
+    (tanpa_kartu_personel), atas XML slide Operasi; `hari` = tanggal kegiatan, mis. "16 November 2026"."""
+    garis = sorted(int(m.group(1)) for m in re.finditer(r'<a:off x="676656" y="(\d+)"/>\s*<a:ext cx="5222596" cy="0"/>', x))
+    panel = [tuple(map(int, m.groups())) for m in re.finditer(r'<a:off x="548640" y="(\d+)"/>\s*<a:ext cx="5478628" cy="(\d+)"/>', x)]
+    assert garis and panel, 'panel MODIFIKASI CUACA tidak ditemukan'
+    atas, bawah = garis[0], panel[0][0] + panel[0][1]   # garis di bawah judul panel s.d. dasar panel
+    KEPALA = 250000   # tinggi baris kepala bagian di bawah garisnya (ikon, judul, pil tanggal, lencana)
+    blok = [(m.span(), m.group(0), re.search(r'<a:off x="(\d+)" y="(\d+)"/>', m.group(0))) for m in re.finditer(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', x, re.S)]
+    teks_y = lambda t: [int(o.group(2)) for _, b, o in blok if o and f'<a:t>{t}</a:t>' in b]
+    bagian = [max(L for L in garis if L <= teks_y(t)[0]) for t in ('OMC DAN HUJAN', 'SEMAI OMC')]   # garis tiap kepala bagian
+    def buang(m):
+        o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>', m.group(0))
+        if not o or int(o.group(1)) >= 6100000 or not atas < int(o.group(2)) < bawah: return m.group(0)
+        return m.group(0) if any(L <= int(o.group(2)) < L + KEPALA for L in bagian) else ''
+    x = re.sub(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', buang, x, flags=re.S)
+    nid = max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', x)))
+    rpr = ('<a:rPr lang="id-ID" sz="960" i="1" dirty="0"><a:solidFill><a:srgbClr val="6B7280"/></a:solidFill>'
+           '<a:latin typeface="Roboto" pitchFamily="34" charset="0"/><a:ea typeface="Roboto" pitchFamily="34" charset="-122"/>'
+           '<a:cs typeface="Roboto" pitchFamily="34" charset="-120"/></a:rPr>')
+    # pemilik 17 Nov: lencana "N dari M provinsi hujan" dibuang (pil latar + teksnya berbagi xfrm yang sama)
+    lencana = [re.search(r'<a:off [^>]*/>\s*<a:ext [^>]*/>', b).group(0) for _, b, _ in blok if 'provinsi hujan</a:t>' in b]
+    for f in lencana:
+        x = re.sub(r'<p:sp>(?:(?!</p:sp>).)*?' + re.escape(f) + r'(?:(?!</p:sp>).)*?</p:sp>', '', x, flags=re.S)
+    # kalimat di tengah ruang kosong tiap bagian, mendatar dan tegak (pemilik 17 Nov: "bikin center")
+    batas = bagian[1:] + [bawah]
+    for k, (L, B) in enumerate(zip(bagian, batas)):
+        nid += 1; y = L + KEPALA
+        x = x.replace('</p:spTree>', f'<p:sp><p:nvSpPr><p:cNvPr id="{nid}" name="OMC nihil {k + 1}"></p:cNvPr><p:cNvSpPr txBox="1"/><p:nvPr></p:nvPr></p:nvSpPr>'
+                      f'<p:spPr><a:xfrm><a:off x="676656" y="{y}"/><a:ext cx="5222596" cy="{B - y}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst></a:avLst></a:prstGeom>'
+                      '<a:noFill/><a:ln></a:ln></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" rtlCol="0" anchor="ctr"></a:bodyPr><a:lstStyle/>'
+                      f'<a:p><a:pPr algn="ctr" indent="0" marL="0"><a:buNone/></a:pPr><a:r>{rpr}<a:t>Tidak ada OMC yang dilakukan pada {hari}.</a:t></a:r></a:p></p:txBody></p:sp></p:spTree>')
+    # subjudul: "7 armada udara dan OMC di 0 provinsi dengan hujan di 3 provinsi" -> "7 armada udara tergelar, tidak ada OMC yang dilakukan"
+    pp = r'(?:<a:pPr(?:(?!</a:pPr>).)*?</a:pPr>)?'
+    x, n = re.subn(r'<a:t> armada udara,? dan OMC di </a:t></a:r>' + pp + r'<a:r>(?:(?!</a:r>).)*?</a:r>' + pp + r'<a:r>(?:(?!</a:r>).)*?<a:t> dengan hujan di </a:t></a:r>'
+                   + pp + r'<a:r>(?:(?!</a:r>).)*?</a:r>', '<a:t> armada udara tergelar, tidak ada OMC yang dilakukan</a:t></a:r>', x, count=1, flags=re.S)
+    assert n == 1, 'subjudul slide Operasi tidak berpola "armada udara dan OMC di ... dengan hujan di ..."'
+    return x
 
 
 SEMAI_Y, SEMAI_P = (5340096, 5783580), 443484   # y nama baris semai templat (Kalteng, Sumsel); jarak baris templat

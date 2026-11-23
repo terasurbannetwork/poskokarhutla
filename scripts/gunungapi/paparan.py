@@ -591,7 +591,7 @@ def tulis(unduh_saja=False):
     ada = {} if os.environ.get("PAPARAN_ULANG") else {x["id"]: x for x in lama.get("gunung", []) if x["id"] in geo_lama}
     gs = [g for g in semua if slug(g["nama"]) not in ada]
     print(f"{len(ada)} gunung dipakai ulang, {len(gs)} dihitung", file=sys.stderr)
-    krb = muat_krb()
+    krb = muat_krb() if gs else []   # tak ada gunung baru = KRB tak dibutuhkan; server ESDM sering mati dan dulu menghentikan seluruh langkah harian (paparan beku sejak 7 Nov 2026)
     piks = piksel_penduduk(gs) if gs else {}
     citra_lama = {x["id"]: x.get("citra", []) for x in lama.get("gunung", [])}
     hasil, geo, log = [], {}, []

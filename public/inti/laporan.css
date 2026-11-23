@@ -109,3 +109,18 @@
   .lp-kep,.lp-tb thead th,.lp-tb tfoot td,.lp-tb tr.lp-grp td,.lp-pil,.lp-lv,.lp-bf,.lp-bar,.lp-gr rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
   [data-ex="prov"],[data-ex="kab"]{break-before:page}
 }
+
+/* PB-83: dialog unduh laporan rentang tanggal */
+.lp-dlg-rt{width:min(520px,calc(100vw - 24px))}
+.lp-dlg-rt .seg button,.lp-rt-b,.lp-rt-u{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.lp-dlg-rt svg{width:16px;height:16px;flex:none}
+.lp-rt-tgl{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lp-rt-tgl label{display:grid;gap:6px;font-size:12px;font-weight:700;color:var(--ink2)}
+.lp-rt-b{height:42px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.lp-rt-b:hover{border-color:var(--brand2)}
+.lp-rt-ket{margin:0;font-size:13px;color:var(--ink2)}
+.lp-rt-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lp-rt-u{height:44px;border-radius:999px;border:1px solid var(--brand);background:var(--brand);color:var(--card);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.lp-rt-u.sek{background:var(--card);color:var(--brand)}
+.lp-rt-u:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:480px){.lp-rt-tgl,.lp-rt-aksi{grid-template-columns:1fr}}

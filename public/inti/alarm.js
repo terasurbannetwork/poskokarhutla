@@ -11,6 +11,32 @@
   /* jenis yang berbunyi saat kartunya muncul (bunyi sama dengan /monitor), HANYA bila alert-nya baru masuk sesudah jajak pertama. Peramban menolak bunyi sebelum pengunjung mengetuk halaman: gagal diam, kartu tetap tampil. */
   const BERBUNYI = new Set(["banjir"]), SUARA = "/suara/alarm-api.mp3";
   const RUTE = {karhutla: "/", banjir: "/banjir/", gempa: "/gempa/", tsunami: "/gempa/", cuaca: "/cuaca/"};
+  /* K13 (PB-68.7): di halaman satu bencana, alarm jenis SAMA = kartu penuh; jenis LAIN = pil di kepala halaman yang membuka kartu penuh saat diklik.
+     Halaman tanpa jenis tunggal (/semua, /peringatan, command center, dll) = null: semua kartu penuh seperti dulu. Fungsi murni, diuji tests/layar/pb_alarm_pil.test.mjs. */
+  const HALAMAN = [["/banjir/longsor", ["longsor"]], ["/banjir", ["banjir"]], ["/gempa", ["gempa", "tsunami"]], ["/cuaca", ["cuaca"]], ["/gunungapi", ["gunungapi"]], ["/kekeringan", ["kekeringan"]], ["/udara", ["udara"]], ["/pesisir", ["pesisir", "rob"]]];
+  const JENIS_NAMA = {karhutla: "Karhutla", banjir: "Banjir", gempa: "Gempa bumi", tsunami: "Tsunami", cuaca: "Cuaca ekstrem", gunungapi: "Gunung api", udara: "Kualitas udara", kekeringan: "Kekeringan", pesisir: "Pesisir", longsor: "Longsor", rob: "Rob"};
+  const jenisHalaman = jalur => {
+    const p = String(jalur || "/").replace(/index\.html$/, "").replace(/\.html$/, "").replace(/\/+$/, "") || "/";
+    if (p === "/") return ["karhutla"];
+    for (const [d, j] of HALAMAN) if (p === d || p.startsWith(d + "/")) return j;
+    return null;
+  };
+  const modeTampil = (jenis, jalur) => { const j = jenisHalaman(jalur); return !j || j.includes(jenis) ? "kartu" : "pil"; };
+  const TINGKAT = ["Awas", "Siaga", "Waspada"];
+  const urutAlarm = (x, y) => (PRIORITAS[y.tingkat] || 0) - (PRIORITAS[x.tingkat] || 0) || String(y.dibuat).localeCompare(String(x.dibuat));
+  /* satu pil per JENIS: label "Banjir: 1 Awas, 24 Siaga" (tingkat tertinggi dulu), warna = tingkat tertinggi, klik membuka alarm tertinggi (items[0]). Kelompok diurut tingkat tertinggi lalu jumlah. */
+  const kelompokPil = daftar => {
+    const g = new Map();
+    for (const a of daftar) { if (!g.has(a.jenis)) g.set(a.jenis, []); g.get(a.jenis).push(a); }
+    return [...g].map(([jenis, items]) => {
+      items = items.slice().sort(urutAlarm);
+      const n = JENIS_NAMA[jenis] || jenis, cacah = {};
+      for (const a of items) { const t = PRIORITAS[a.tingkat] ? a.tingkat : "Waspada"; cacah[t] = (cacah[t] || 0) + 1; }
+      const rinci = TINGKAT.filter(t => cacah[t]).map(t => `${cacah[t]} ${t}`).join(", ");
+      return {jenis, nama: n, items, jumlah: items.length, tertinggi: PRIORITAS[items[0].tingkat] ? items[0].tingkat : "Waspada", label: `${n}: ${rinci}`};
+    }).sort((x, y) => PRIORITAS[y.tertinggi] - PRIORITAS[x.tertinggi] || y.jumlah - x.jumlah);
+  };
+  window.AlarmMode = {jenisHalaman, modeTampil, kelompokPil};
   const WARNA = {Waspada: "#e3b94e", Siaga: "#e58a45", Awas: "#c9503a"};
   const PRIORITAS = {Waspada: 1, Siaga: 2, Awas: 3};
   /* logo WhatsApp (path Simple Icons), bagikan judul + teks + tautan peta lewat wa.me */
@@ -32,7 +58,7 @@
   const hariWib = ms => Math.floor((ms + 7 * 36e5) / 864e5), hariIni = ms => hariWib(ms) === hariWib(Date.now());
   const jamTgl = ms => !Number.isFinite(ms) ? "" : hariIni(ms) ? jamWib(ms) : `${fTglWib.format(ms)} ${jamWib(ms)}`;
   const bunyi = () => { try { new Audio(SUARA).play().catch(() => {}); } catch (e) {} };
-  let antre = [], tampil = false, sejak = Math.floor(Date.now() / 36e5) * 36e5 - 24 * 36e5, el = null;   // sejak dibulatkan ke jam: semua tab berbagi kunci cache tepi (kuota baca D1)
+  let antre = [], ringkas = [], tampil = false, sejak = Math.floor(Date.now() / 36e5) * 36e5 - 24 * 36e5, el = null;   // sejak dibulatkan ke jam: semua tab berbagi kunci cache tepi (kuota baca D1)
   /* per tampilan halaman: opr = null (belum tahu) | true (operator berhak tulis) | false (publik); lihat = kunci yang sudah ditampilkan/ditutup di halaman ini; usai = kunci yang diketahui final;
      dikenal = kunci yang sudah pernah ada di jajak mana pun; pertama = jajak pertama belum selesai (isinya tidak berbunyi) */
   let opr = null, pertama = true, sibuk = false;
@@ -51,6 +77,12 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
 .al-isi{padding:12px 16px 4px;display:grid;gap:8px}
 .al-pil{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:none}
 .al-p{display:inline-flex;align-items:center;font-style:normal;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;background:color-mix(in oklab,var(--w) 16%,var(--card,#fff));color:var(--t,color-mix(in oklab,var(--w) 55%,#000))}
+.al-bar{position:fixed;z-index:59;right:16px;bottom:16px;width:min(420px,calc(100vw - 32px));display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;pointer-events:none}.al-bar[hidden]{display:none}
+.al-bar:empty{display:none}
+.al-pl{pointer-events:auto;flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line,#d5dbe3);border-radius:999px;background:var(--card,#fff);color:var(--ink,#0b2545);font:700 12.5px/1.2 var(--font,system-ui);box-shadow:0 2px 8px rgb(0 0 0 / .18);cursor:pointer;white-space:nowrap}
+.al-pl svg{width:14px;height:14px;flex:none}
+.al-pl-Waspada svg{color:var(--warn-tx,#b8860b)}.al-pl-Siaga svg{color:var(--f2-tx,#c2570c)}.al-pl-Awas svg{color:var(--bad-tx,#c9503a)}
+@media (max-width:600px){.al-bar{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;max-height:52px;scrollbar-width:none}.al-bar>:first-child{margin-left:auto}.al-pl{min-height:44px}}
 .al-isi p{margin:0;color:var(--ink2,#4a5568);font-size:13px}
 .al-aksi{display:flex;gap:8px;padding:12px 16px 14px}
 .al-aksi a{flex:1;display:inline-flex;justify-content:center;align-items:center;min-height:40px;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none}
@@ -112,6 +144,32 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
   }
   /* darurat di atas Awas; laporan biasa di antara Waspada dan Siaga; lalu yang terbaru */
   const urut = () => antre.sort((x, y) => (y._p ?? PRIORITAS[y.tingkat] ?? 0) - (x._p ?? PRIORITAS[x.tingkat] ?? 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
+  const LONCENG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+  let bar = null;
+  function gambarPil() {
+    if (!ringkas.length) { bar?.remove(); bar = null; return; }
+    if (!bar) { bar = document.createElement("div"); bar.className = "al-bar"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "Peringatan dini jenis lain");
+      bar.addEventListener("click", e => { const b = e.target.closest("[data-pl]"); if (b) bukaPil(b.dataset.pl); }); document.body.append(bar); }
+    taruh();
+    bar.innerHTML = kelompokPil(ringkas).map(k =>
+      `<button type="button" class="al-pl al-pl-${esc(k.tertinggi)}" data-pl="${esc(k.jenis)}" aria-label="${esc(`Peringatan ${k.label}: buka`)}">${LONCENG}${esc(k.label)}</button>`).join("");
+  }
+  /* strip pil memakai jangkar kartu (kanan bawah); bila kartu terbuka, strip naik di atasnya. Tinggi kartu berubah (bagian operator datang belakangan), jadi diikuti ResizeObserver. */
+  /* laci rincian (#laci.on, kanan layar) terbuka: pil bergeser ke kiri laci supaya tidak menutup isinya; di layar sempit laci menutupi lebar penuh, pil tetap */
+  let amatiLaci = null;
+  const geserLaci = () => { const lc = document.querySelector?.("#laci"); if (!lc) return "";
+    if (!amatiLaci && window.MutationObserver) { amatiLaci = new MutationObserver(() => taruh()); amatiLaci.observe(lc, {attributes: true, attributeFilter: ["class"]}); }   /* dipasang malas: #laci bisa belum ada saat alarm.js dimuat */
+    if (!lc.classList.contains("on") || innerWidth <= 600) return ""; const k = lc.getBoundingClientRect().left; return k > 200 ? Math.round(innerWidth - k + 16) + "px" : ""; };
+  const taruh = () => { if (!bar) return; bar.style.bottom = (el && el.isConnected ? el.offsetHeight + 24 : 16) + "px"; bar.style.right = geserLaci();
+    bar.hidden = innerWidth <= 600 && !!document.querySelector?.("#laci.on"); };   /* layar sempit: laci selebar layar, pil disembunyikan selama laci terbuka */
+  let amati = null;
+  function bukaPil(jenis) {
+    const k = kelompokPil(ringkas.filter(a => a.jenis === jenis))[0]; if (!k) return;
+    const a = k.items[0]; ringkas = ringkas.filter(x => x.kunci !== a.kunci); gambarPil();
+    antre.unshift({...a, _bunyi: false});
+    if (tampil && el) { el.remove(); el = null; tampil = false; amati?.disconnect(); }   // satu kartu pada satu waktu: kartu yang sedang terbuka ditutup seperti tombol x
+    berikut();
+  }
 
   function kartu(a) {
     if (a.jenis === "lapor") return kartuLapor(a._b);
@@ -185,9 +243,10 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
     if (a.jenis !== "karhutla" || opr === false) tandai(a.kunci);   // karhutla: operatorCc yang menentukan (operator belum final tidak ditandai)
     if (BERBUNYI.has(a.jenis) && a._bunyi) bunyi();
     const t = document.createElement("div"); t.innerHTML = kartu(a); el = t.firstElementChild; document.body.append(el);
-    const k = el;
+    const k = el; taruh();
+    if (window.ResizeObserver) { amati?.disconnect(); amati = new ResizeObserver(taruh); amati.observe(k); }
     k.addEventListener("click", e => {
-      if (e.target.closest("[data-tutup]")) { el.remove(); el = null; tampil = false; setTimeout(berikut, 400); return; }
+      if (e.target.closest("[data-tutup]")) { el.remove(); el = null; tampil = false; amati?.disconnect(); taruh(); setTimeout(berikut, 400); return; }
       const b = e.target.closest("[data-ke]"); if (b && !b.disabled) aksiCc(k, b.dataset.ke);
     });
     k.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches?.("[data-cat]")) k.querySelector("[data-ke]:not(:disabled)")?.click(); });
@@ -199,7 +258,7 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
     let n = 0;
     for (const a of daftar) {
       if (opr === false || n >= 20) break;
-      if (a?.jenis !== "karhutla" || !a.kunci || !sudah.has(a.kunci) || ada.has(a.kunci) || lihat.has(a.kunci) || usai.has(a.kunci)) continue;
+      if (a?.jenis !== "karhutla" || modeTampil(a.jenis, location.pathname) === "pil" || !a.kunci || !sudah.has(a.kunci) || ada.has(a.kunci) || lihat.has(a.kunci) || usai.has(a.kunci)) continue;
       n++; const r = await cc(urlStatus(a.kunci));
       if (r.s === 401 || r.s === 403) { opr = false; break; }
       if (r.s === 404) { usai.add(a.kunci); continue; }   // di luar wilayah/contoh: jangan ditanya ulang tiap menit
@@ -214,8 +273,15 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
     sibuk = true;
     try {
       const r = await fetch(`/api/peringatan/aktif?sejak=${sejak}`, {cache: "no-store"}); if (!r.ok) return;
-      const j = await r.json(), sudah = new Set(baca()), ada = new Set(antre.map(x => x.kunci)), daftar = j.peringatan || [];
-      for (const a of daftar) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci) && !lihat.has(a.kunci)) { antre.push({...a, _bunyi: !pertama && !dikenal.has(a.kunci)}); ada.add(a.kunci); }
+      const j = await r.json(), sudah = new Set(baca()), ada = new Set([...antre, ...ringkas].map(x => x.kunci)), daftar = j.peringatan || [];
+      for (const a of daftar) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci) && !lihat.has(a.kunci)) {
+        const b = {...a, _bunyi: !pertama && !dikenal.has(a.kunci)};
+        if (modeTampil(a.jenis, location.pathname) === "pil") { ringkas.push(b); if (BERBUNYI.has(a.jenis) && b._bunyi) bunyi(); } else antre.push(b);
+        ada.add(a.kunci);
+      }
+      ringkas = ringkas.filter(a => daftar.some(x => x?.kunci === a.kunci));   // alarm yang sudah kedaluwarsa di server hilang dari kepala halaman
+      ringkas.sort((x, y) => (PRIORITAS[y.tingkat] || 0) - (PRIORITAS[x.tingkat] || 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
+      gambarPil();
       await ulangOperator(daftar, sudah, ada);
       for (const a of daftar) if (a?.kunci) dikenal.add(a.kunci);
       pertama = false;

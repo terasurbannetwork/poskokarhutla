@@ -102,6 +102,27 @@ def bobot_panggilan(n, hari):
     return n * max(1.0, ANGGOTA / 10 * hari / 14)
 
 
+def selaraskan_cache(c, tgl):
+    """Open-Meteo seasonal mulai dari hari lari (tgl[0] maju tiap hari), sedangkan satu lari penuh (103 titik, bobot ~5.700) melebihi KUOTA_LARI
+    sehingga cache sebagian selalu berumur sehari lebih tua saat dilanjutkan. Dulu itu ValueError tiap hari (prakiraan beku sejak 19 Okt 2026).
+    Kini cache dipangkas ke tanggal pertama batch baru bila tanggal itu ada di cache (kalender yang sama, lari awal berbeda <= UMUR_CACHE_HARI).
+    False bila tak bisa disejajarkan (pemanggil membuang cache atau galat)."""
+    lama = c["tgl"]
+    if tgl[0] not in lama:
+        return False
+    o = lama.index(tgl[0])
+    if o == 0 or o > UMUR_CACHE_HARI:
+        return False
+    c["tgl"] = lama[o:]
+    c["terbit"] = c["tgl"][0]
+    for v in c["titik"].values():
+        v["p"] = v["p"][o:]
+    for k in c["et0_blok"]:
+        c["et0_blok"][k] = c["et0_blok"][k][o:]
+    print(f"  musiman: cache sebagian dipangkas {o} hari ke tanggal batch baru {c['terbit']}", file=sys.stderr)
+    return tgl[:len(c["tgl"])] == c["tgl"][:len(tgl)]
+
+
 def unduh_musiman(sel_kunci, lama=None, sekarang=None, ambil_fn=ambil, jeda=1.0, simpan_fn=None):
     """Isi/lanjutkan `lama` (cache) sampai lengkap atau KUOTA_LARI. Mengembalikan cache (dict)."""
     titik, anak = pilih_titik(sel_kunci, DERAJAT_P)
@@ -129,7 +150,8 @@ def unduh_musiman(sel_kunci, lama=None, sekarang=None, ambil_fn=ambil, jeda=1.0,
                 return False
             tgl, mat = ambil_var(ch, var)
             if c["tgl"] is not None and tgl[:len(c["tgl"])] != c["tgl"][:len(tgl)]:
-                raise ValueError("tanggal batch baru beda dari cache sebagian")
+                if not selaraskan_cache(c, tgl):
+                    raise ValueError("tanggal batch baru beda dari cache sebagian")
             if c["tgl"] is None or len(tgl) < len(c["tgl"]):
                 c["tgl"] = tgl
                 c["terbit"] = tgl[0]
@@ -167,7 +189,13 @@ def muat_musiman(sel_kunci, sekarang=None, paksa=False, ambil_fn=ambil):
     else:
         c = None
     try:
-        c = unduh_musiman(sel_kunci, c, sekarang, ambil_fn, simpan_fn=lambda x: simpan(jalur, {**x, "dibuat": x.get("dibuat") or stempel}))
+        try:
+            c = unduh_musiman(sel_kunci, c, sekarang, ambil_fn, simpan_fn=lambda x: simpan(jalur, {**x, "dibuat": x.get("dibuat") or stempel}))
+        except ValueError as e:
+            if c is None or "tanggal batch" not in str(e):
+                raise
+            print("::warning title=prakiraan::cache sebagian tak sejajar dengan batch baru; diunduh ulang dari nol", file=sys.stderr)
+            c = unduh_musiman(sel_kunci, None, sekarang, ambil_fn, simpan_fn=lambda x: simpan(jalur, {**x, "dibuat": x.get("dibuat") or stempel}))
         c["dibuat"] = c.get("dibuat") or stempel
     except KuotaHabis as e:
         print(f"::warning title=prakiraan::kuota Open-Meteo habis ({str(e)[:80]}); memakai cache sebagian bila ada", file=sys.stderr)
@@ -775,6 +803,13 @@ def uji():
     assert not H.lewati({**segar, "lengkap": False}, now, 7) and not H.lewati({"dibuat": segar["dibuat"]}, now, 7) and not H.lewati(None, now, 7)
     assert not H.lewati(segar, now, 7, "2026-10-16T07:00+07:00") and H.lewati(segar, now, 7, "2026-10-14T07:00+07:00")
     assert not H.boleh_timpa(segar, False) and H.boleh_timpa(segar, True) and H.boleh_timpa({"lengkap": False}, False) and H.boleh_timpa(None, False)
+    # cache sebagian berumur sehari: dipangkas ke tanggal batch baru; geser > UMUR_CACHE_HARI atau tanggal tak ada = tak bisa
+    d0 = dt.date(2026, 11, 15)
+    tg = [(d0 + dt.timedelta(days=i)).isoformat() for i in range(150)]
+    cc = {"tgl": tg, "terbit": tg[0], "titik": {"a": {"p": [[1.0]] * 150, "et0": None}}, "et0_blok": {"b": [2.0] * 150}}
+    assert selaraskan_cache(cc, tg[1:150]) and cc["tgl"] == tg[1:] and cc["terbit"] == tg[1] and len(cc["titik"]["a"]["p"]) == 149 and len(cc["et0_blok"]["b"]) == 149
+    assert not selaraskan_cache({"tgl": tg, "titik": {}, "et0_blok": {}}, tg[9:]) and not selaraskan_cache({"tgl": tg, "titik": {}, "et0_blok": {}}, ["2027-01-01"] * 3)
+    assert not selaraskan_cache({"tgl": tg[1:], "titik": {}, "et0_blok": {}}, tg)
     print("ok prakiraan")
 
 

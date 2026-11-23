@@ -1,6 +1,6 @@
 @import url("../dampak.css");
 /* Tab Dampak banjir: kartu #dampak bergaya Insight; bagian dk-* dipakai bersama karhutla (public/dampak.css). */
-#dampak .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+#dampak .ex{margin-left:0;margin-right:0;padding:0;border-radius:18px;overflow:hidden}
 #dampak .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
 #dampak .ex-bd{padding:16px 22px 10px}
 #dampak .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}

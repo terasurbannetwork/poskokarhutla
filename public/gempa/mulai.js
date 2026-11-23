@@ -10,17 +10,34 @@ async function muatData() {
   S.tersedia = !!d?.dibuat;
   S.gempa = (d?.gempa || []).map(g => ({...g, t: Date.parse(g.waktu)}));
   S.dibuat = d?.dibuat || null;
-  $("#upd").textContent = S.dibuat ? "Data " + jamWIB(S.dibuat) : "Belum ada data";
+  $("#upd").innerHTML = S.dibuat ? jamData(S.dibuat) : "Belum ada data";
 }
 
-/* ================================================================ cari: provinsi dan lokasi gempa */
+/* ================================================================ cari: provinsi, lokasi gempa, lalu lapisan umum dari mesin inti (PB-75, inti/cari.js) */
+const PLACEHOLDER_LUAS = "Cari provinsi, lokasi gempa, desa, faskes, atau sekolah";
+/* adaptor mesin: lapisan dipilih registri kemampuan.layar.cari; terbang memakai peta halaman ini */
+const pasangCariLuas = () => { if (typeof CariLuas === "undefined" || pasangCariLuas.sudah) return typeof CariLuas !== "undefined";
+  pasangCariLuas.sudah = true; CariLuas.tema({id: "gempa", nama: k => S.nama?.[k] || k,
+    terbang: t => t.bb ? peta.fitBounds([[t.bb[0], t.bb[1]], [t.bb[2], t.bb[3]]], {padding: kiriPad(), maxZoom: 13, duration: 700}) : peta.flyTo({center: t.c, zoom: 11, duration: 700})});
+  CariLuas.aktif().then(y => { if (y) $("#cari").placeholder = PLACEHOLDER_LUAS; }); return true; };
+/* profil kab/kota (PB-74, inti/profil_kab.js): hasil cari jenis kab atau desa membuka dialog profil_wilayah bila registri menyalakan kemampuan.layar.profil_kab.
+   Mesinnya dimuat malas saat pertama dibutuhkan; bila index.html sudah memuatnya lewat tag script, ProfilKab sudah ada dan tidak dimuat ulang. */
+const muatProfilKab = () => muatProfilKab.p ||= new Promise(ok => { if (window.ProfilKab) return ok(window.ProfilKab.pasang("gempa"));
+  const sc = document.createElement("script"); sc.src = "../inti/profil_kab.js"; sc.async = true;
+  sc.onload = () => ok(window.ProfilKab?.pasang("gempa") || null); sc.onerror = () => { muatProfilKab.p = null; ok(null); }; document.head.appendChild(sc); });
+const bukaProfilKab = async h => { if (!h || (h.t !== "kab" && h.t !== "desa")) return false; const P = await muatProfilKab(); return P ? P.buka(h.id) : false; };
 $("#cari").addEventListener("input", e => {
   const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
   const prov = Object.entries(S.nama).filter(([, n]) => n.toLowerCase().includes(q)).slice(0, 6).map(([k, n]) => `<button data-k="${esc(k)}">${esc(n)}<br><small>Provinsi</small></button>`),
     gem = S.gempa.filter(g => g.wilayah.toLowerCase().includes(q)).slice(0, 6).map(g => `<button data-g="${esc(g.id)}">${esc(wilayahPendek(g.wilayah))}<br><small>${mTulis(g.m)}, ${esc(waktuGempa(g.waktu))}</small></button>`);
-  h.innerHTML = [...prov, ...gem].join("") || `<div class="kosong" style="padding:12px">Tidak ditemukan.</div>`; h.hidden = false; });
+  const dasar = [...prov, ...gem].join("");
+  h.innerHTML = dasar + `<div id="cariLuas"></div>`; if (!dasar) h.innerHTML = `<div class="kosong" id="cariKosong" style="padding:12px">Tidak ditemukan.</div><div id="cariLuas"></div>`; h.hidden = false;
+  /* lapisan umum dimuat malas, ditunda, dan hanya dirender bila ketikan masih sama */
+  if (pasangCariLuas()) CariLuas.ketik(e.target.value, ({hasil}) => { if ($("#cari").value.trim().toLowerCase() !== q) return;
+    const w = document.getElementById("cariLuas"); if (!w) return; S.hasilLuas = hasil; w.innerHTML = CariLuas.html(hasil); document.getElementById("cariKosong")?.toggleAttribute("hidden", hasil.length > 0); }); });
 $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = "";
   if (b.dataset.k) return turun(b.dataset.k);
+  if (b.dataset.ci != null) { const h = S.hasilLuas?.[+b.dataset.ci]; CariLuas.pilih(+b.dataset.ci); return void nanti(() => bukaProfilKab(h)); }
   const g = S.gempa.find(x => x.id === b.dataset.g); if (g) Peta.pilih(g); });
 
 addEventListener("bahasa", () => { if (S.gempa) { renderDaftar(); renderPita(); } });   /* teks wilayah mengikuti bahasa (wilayahPendek) */

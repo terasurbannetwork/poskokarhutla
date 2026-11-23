@@ -39,8 +39,8 @@ const nilaiMode = (r, m) => m === "tanah" ? (r[4] ?? r[3]) : m === "spi" ? r[6] 
 const warnaSel = (r, m) => m === "status" ? (r[7] ? WARNA_LV[r[7]] : "") : warnaTangga(m, nilaiMode(r, m));
 const MODE = [["status", "Status"], ["hth", "HTH"], ["prakiraan", "Prakiraan"], ["padi", "Padi"], ["spi", "Hujan"], ["tanah", "Tanah"], ["dc", "Kode DC"]];
 const MODE_WIL = m => m === "status" || m === "padi";   /* mode yang mewarnai poligon wilayah; sisanya kisi */
-const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], grid: ["#1d4e89", "#69a7e8", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"], embung: ["#0f4c75", "#7ec0e8", "sungai"], gambut: ["#5a3420", "#c9a07a", "rasio"]};
-const UBIN_PENDEK = {wilayah: "Status", grid: "Kisi", satelit: "Satelit", embung: "Embung", gambut: "Gambut"};
+const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], grid: ["#1d4e89", "#69a7e8", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"], embung: ["#0f4c75", "#7ec0e8", "sungai"], gambut: ["#5a3420", "#c9a07a", "rasio"], kejadian: ["#8c2f1b", "#e58a45", "peringatan"]};
+const UBIN_PENDEK = {wilayah: "Status", grid: "Kisi", satelit: "Satelit", embung: "Embung", gambut: "Gambut", kejadian: "Kejadian"};
 let PI = null, LG = null, legBuka = innerWidth > 900, LAMBANG = {};
 const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `../lambang/kabkota/${LAMBANG[prov + "|" + kab]}.png` : prov && `../lambang/provinsi/${prov}.png`;
   return f ? `<img class="lambang" src="${f}" alt="" loading="lazy" onerror="this.remove()">` : ""; };
@@ -82,6 +82,7 @@ const Peta = {
     peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
     this.aturWilayah(false); this.interaksi();
     nanti(() => this.lihat("satelit") && this.pasangSatelit());
+    nanti(() => window.KekKejadian?.pasang());   /* lapisan Kejadian kekeringan (kejadian.js), dipasang lagi bila masih dicentang */
     ["embung", "gambut"].forEach(k => this.lihat(k) && this.lapisanSumber(k)); },   /* gaya dimuat ulang (tema): lapisan sumber air dipasang lagi bila masih dicentang */
   /* lapisan "Sumber air dan lahan": embung = lingkaran per kabupaten (jumlah objek OSM, titik = rata-rata kecamatan, BUKAN lokasi tampungan); gambut = kompleks konsesi berlahan gambut di sel Siaga/Awas (kekeringan_bukti.json) */
   async lapisanSumber(k) {
@@ -155,7 +156,7 @@ const Peta = {
     /* zoom keluar sendiri: kabupaten -> provinsi tanpa menerbangkan peta */
     peta.on("zoomend", e => { if (!e.originalEvent || S.jalur.length < 1 || peta.getZoom() >= 5.2) return; S.jalur = []; nanti(() => Peta.aturWilayah(false)); });
     peta.on("click", e => {
-      if (!peta.getLayer("wil-fill") || peta.getLayoutProperty("wil-fill", "visibility") === "none") return;
+      if (!peta.getLayer("wil-fill") || peta.getLayoutProperty("wil-fill", "visibility") === "none" || window.KekKejadian?.diKlik(e)) return;
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]}); if (!w.length) return;
       const k = w[0].properties.kunci; S.jalur.length >= 1 ? Analisa.wilayah(k) : turun(k); }); },
 };
@@ -168,7 +169,15 @@ function renderCrumb() {
   if (j[0]) b.push(`<span>›</span><button data-n="1">${esc(namaProv(j[0]))}</button>`);
   $("#crumb").innerHTML = b.join(""); }
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
+/* ---------- ukuran tabel (PB-79a, F-39): segmen di atas daftar; mesin segmen di inti/tabel.js, menyala dari registri kemampuan.layar.ukuran_provinsi.
+   Ukuran = urutan daftar menurut data yang ada: Status (tingkat lalu jiwa), SPI (paling kering dulu), Jiwa (terbanyak dulu). Tanpa data baru. */
+const KAT_UKURAN = [{slug: "status", label: "Status", urut: null}, {slug: "spi", label: "SPI", urut: {k: "spi", d: 1}}, {slug: "jiwa", label: "Jiwa", urut: {k: "jiwa", d: -1}}];
+const ukAktif = () => { const k = S.urut?.k; return !k || k === "lv" ? "status" : k === "spi" ? "spi" : k === "jiwa" ? "jiwa" : null; };
+function pilihUkuran(slug) { const u = KAT_UKURAN.find(x => x.slug === slug); if (!u || !(S.ukuranIzin || []).some(x => x.slug === slug)) return false; S.urut = u.urut ? {...u.urut} : null; nanti(renderDaftar); return true; }
+const barAlat = () => { const seg = typeof segmenUkuran === "function" ? segmenUkuran(S.ukuranIzin || [], ukAktif()) : "", ud = window.UnduhTabel?.tombol() || "";
+  return seg || ud ? `<div class="kk-bar">${seg ? `<div class="kk-seg">${seg}</div>` : ""}${ud}</div>` : ""; };
 function renderDaftar() {
+  const hr = window.KekTanggal?.html(); if (hr != null) { $("#rows").innerHTML = hr; return; }   /* tanggal dipilih: daftar harian dari tanggal.js */
   const j = S.jalur, g = "grid-template-columns:20px minmax(0,1fr) 46px 54px 78px", T = j.length ? S.wil.kab : S.wil.prov;
   const item = [...new Map(S.fiturWil.map(f => [f.properties.kunci, f.properties])).values()].map(p => ({kunci: p.kunci, nama: p.nama, a: T[p.kunci]}))
     .filter(i => i.a).sort((a, b) => b.a.lv - a.a.lv || b.a.jiwa[0] - a.a.jiwa[0] || a.nama.localeCompare(b.nama));
@@ -178,26 +187,30 @@ function renderDaftar() {
   const u = k => U?.k === k ? ' class="urut"' + (U.d > 0 ? ' data-arah="1"' : "") : "";
   const n = tepat(j.length ? S.wil.prov[j[0]]?.kab_n || [0, 0, 0] : S.meta.nasional.kab_n);
   const pn = t => `<span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${t}</span>`;   /* pil netral: bulan SPI dan ambang belum teruji (A17) */
-  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn(AMBANG_PIL())}</div></div>`;
+  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn(AMBANG_PIL())}</div></div>${barAlat()}`;
   const kepala = `<div class="tb kepala" style="${g}"><span></span><span data-s="nm"${u("nm")}>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n" data-s="spi"${u("spi")}>SPI</span><span class="n" data-s="jiwa"${u("jiwa")}>Jiwa</span><span data-s="lv"${u("lv")} style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = ringkas + kepala + (item.map((i, k) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${k + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
     <span class="n">${i.a.spi3 != null ? F2(i.a.spi3) : "–"}</span><span class="n">${i.a.jiwa[0] ? rb(i.a.jiwa[0]) : "–"}</span>
     <span style="text-align:right">${i.a.lv ? pill(i.a.lv) : `<span style="color:var(--ink2);font-size:11.5px">Normal</span>`}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah.</div>`);
 }
-$("#rows").addEventListener("click", e => { const kol = e.target.closest(".kepala span[data-s]");
+$("#rows").addEventListener("click", e => { const uk = e.target.closest("[data-ukuran-k]"); if (uk) return void pilihUkuran(uk.dataset.ukuranK);
+  const kol = e.target.closest(".kepala span[data-s]");
   if (kol) { const k = kol.dataset.s; S.urut = {k, d: S.urut?.k === k ? -S.urut.d : k === "nm" || k === "spi" ? 1 : -1};
     document.querySelectorAll("#rows .kepala span[data-s]").forEach(x => { const on = x.dataset.s === k; x.classList.toggle("urut", on); if (on && S.urut.d > 0) x.dataset.arah = "1"; else delete x.dataset.arah; });   /* tanda urut langsung, daftar menyusul sesudah frame */
     return nanti(renderDaftar); }
-  const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 1 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
+  const b = e.target.closest(".tb:not(.kepala)[data-k]"); if (!b) return; S.jalur.length >= 1 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
-/* ---------- cari: provinsi dan kabupaten yang berstatus */
+/* ---------- cari: provinsi dan kabupaten yang berstatus, lalu lapisan umum dari mesin inti (PB-79a, F-38; cari.js) */
 $("#cari").addEventListener("input", e => {
   const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
   const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.wil.kab).map(k => { const p = k.split("|"); return {k, n: p[1], j: "Kab., " + namaProv(p[0])}; })];
   const hs = idx.filter(i => i.n.toLowerCase().includes(q)).slice(0, 12);
-  h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan.</div>`; h.hidden = false; });
-$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = ""; const p = b.dataset.k.split("|");
+  h.innerHTML = (hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" id="cariKosong" style="padding:12px">Tidak ditemukan.</div>`) + `<div id="cariLuas"></div>`; h.hidden = false;
+  window.KekCari?.ketik(e.target.value); });
+$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = "";
+  if (b.dataset.ci != null) return void window.KekCari?.pilih(+b.dataset.ci);
+  const p = b.dataset.k.split("|");
   if (p.length === 2) { S.jalur = [p[0]]; nanti(() => Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k))); } else turun(b.dataset.k); });
 
 /* ---------- mode & overlay */
@@ -214,7 +227,7 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   setLapis("wilayah", MODE_WIL(S.mode)); setLapis("grid", !MODE_WIL(S.mode)); blnPeta();
   nanti(() => { Peta.segarkan(); if (lama === "padi" || S.mode === "padi") Peta.aturWilayah(false); renderLegenda(); }); });   /* poligon hanya digambar ulang bila warna padi masuk/keluar */
 document.addEventListener("click", e => { const b = e.target.closest("#blnPeta button"); if (!b) return; S.bln = +b.dataset.b; blnPeta(); nanti(() => { Peta.segarkan(); renderLegenda(); }); });
-$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta || i.dataset.l?.startsWith("nasa_")) return;   /* nasa_* diurus inti/peta/nasa.js */
+$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta || i.dataset.l?.startsWith("nasa_") || i.dataset.l === "kejadian") return;   /* nasa_* diurus inti/peta/nasa.js */
   const k = i.dataset.l, id = {wilayah: ["wil-fill"], grid: ["grid-fill"], satelit: ["satelit"], embung: ["embung-c"], gambut: ["gambut-c"]}[k];
   if (k === "satelit") Peta.pasangSatelit();
   (i.checked && (k === "embung" || k === "gambut") ? Peta.lapisanSumber(k) : Promise.resolve()).then(() => {
@@ -241,6 +254,7 @@ function renderLegenda() {
     ${grid && m === "dc" ? `<div class="lbl">Kode kekeringan (DC)</div><div class="leg" style="margin:4px 0 8px">${[[50, "< 80 rendah"], [150, "80 sedang"], [250, "190 tinggi"], [350, "300 sangat tinggi"], [500, "≥ 425 ekstrem"]].map(([v, t]) => sw(warnaTangga("dc", v), t)).join("")}</div>` : ""}
     ${Peta.lihat("embung") && S.embung ? `<div class="lbl">Embung, waduk, bendungan (OpenStreetMap)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#1d6fa5"></i>lingkaran = jumlah objek per kabupaten (titik bukan lokasi embung), ${fmt(S.embung.total)} objek se-Indonesia; kasar, tidak lengkap</span></div>` : ""}
     ${Peta.lihat("gambut") && S.bukti?.gambut?.daftar?.length ? `<div class="lbl">Konsesi berlahan gambut di sel Siaga atau Awas</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a4a2c"></i>${fmt(S.bukti.gambut.daftar.length)} cluster teratas (menurut DC) dari ${fmt(S.bukti.gambut.n_kering)}, tanpa nama perusahaan; indikator kasar per sel 0,5°</span></div>` : ""}
+    ${window.KekKejadian?.legenda() || ""}
     <div class="lbl" style="margin-top:2px">Deteksi Centurisk97</div></div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
 
@@ -248,7 +262,7 @@ function renderLegenda() {
 const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
 const Analisa = {
   buka(html, kepala) { const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${html}</div>`;
-    d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => { if (e.target === d) d.close(); }; d.showModal(); },
+    d.querySelector("[data-tutup]").onclick = () => d.close(); d.querySelector("[data-profil]")?.addEventListener("click", ev => window.KekCari?.profil(ev.currentTarget.dataset.profil)); d.onclick = e => { if (e.target === d) d.close(); }; d.showModal(); },
   wilayah(kunci) {
     const p = kunci.split("|"), kab = p.length === 2, a = (kab ? S.wil.kab : S.wil.prov)[kunci] || (kab && (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]) ? {lv: 0, jiwa: [0, 0, 0], total: (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]).total || 0} : null); if (!a) return;   /* kabupaten tanpa status tetap punya HTH, prakiraan, padi */
     const nama = kab ? p[1] : namaProv(p[0]), sub = kab ? "Kabupaten/kota, " + namaProv(p[0]) : "Provinsi", sp = S.meta.spi;
@@ -258,7 +272,9 @@ const Analisa = {
       ${a.spi3 != null ? kot("SPI " + spiBulan(), F2(a.spi3), katSpi(a.spi3)) : ""}${a.mm3 != null ? kot("Hujan 3 bulan", fmt(a.mm3) + " mm", sp ? "sampai " + spiBulan() : "") : ""}${a.pct != null ? kot("Tanah", fmt(a.pct), "persentil") : ""}${a.dc != null ? kot("Kode DC", fmt(a.dc), "rata-rata tertimbang") : ""}
       ${!kab ? kot("Kabupaten/kota", `${fmt(a.kab_n[0])}`, `${fmt(a.kab_n[2])} Awas`) : ""}</div>
       <p class="fnd">Deteksi Centurisk97</p>`;
-    const isi = `<div id="skBlok"></div>` + dasar + this.blokLain(kunci, kab);
+    const kd = kab && window.KekCari?.profilAktif ? window.KekTanggal?.kode(kunci) : null;   /* profil kab/kota (F-37) hanya bila registri menyala dan kodenya diketahui */
+    const profil = kd ? `<p><button type="button" class="kk-profil" data-profil="${esc(kd)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>Profil kabupaten/kota</button></p>` : "";
+    const isi = `<div id="skBlok"></div>` + dasar + profil + this.blokLain(kunci, kab);
     this.buka(isi, kepala); this.isiSK(kunci, kab); },
   /* blok HTH, prakiraan SEAS5, padi, IRBI: tiap blok dibuang bila datanya tidak ada */
   blokLain(kunci, kab) {
@@ -287,3 +303,6 @@ const Analisa = {
     if (nKab) sec.append(el("p", "fnd", `${fmt(nKab)} kabupaten/kota di provinsi ini punya SK status darurat BNPB ${S.resmi.tahun_data} (riwayat)`));
     sec.append(el("p", "fnd", `Riwayat SK ${S.resmi.tahun_data} yang menyebut kekeringan; bukan status berlaku. ${S.resmi.sumber || ""}`)); w.append(sec); },
 };
+
+/* ukuran tabel dari registri (PB-79a, F-39): kemampuan.layar.ukuran_provinsi; registri gagal atau kosong = tanpa segmen, daftar seperti semula */
+if (typeof ukuranRegistri === "function") ukuranRegistri().then(r => { S.ukuranIzin = ukuranDiizinkan(r, "kekeringan", KAT_UKURAN); if (S.ukuranIzin.length && S.wil && !S.tanggal) nanti(renderDaftar); });

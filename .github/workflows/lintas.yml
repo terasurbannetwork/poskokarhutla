@@ -457,3 +457,9 @@ jobs:
           done
           echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
           exit 1
+
+      # Penjaga data beku (PB-68.10): langkah `continue-on-error` menelan galat prakiraan.py, neraca.py, paparan.py hampir empat minggu sementara run hijau.
+      # Periksa umur (tanggal di dalam berkas) keluaran kunci workflow ini: kuning = ::warning, merah = langkah gagal. Ambang di scripts/agents/cek_basi.py.
+      - name: Periksa data tidak beku
+        if: always()
+        run: python3 scripts/agents/cek_basi.py lintas

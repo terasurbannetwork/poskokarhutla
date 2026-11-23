@@ -1,0 +1,29 @@
+/* inti/brief.css (PB-72, F-35): lembar gaya cetak brief pimpinan dua halaman A4. Hanya aktif saat html.bf-mencetak (window.print).
+   Warna dari sistem (Canvas, CanvasText) dan token tema; kertas selalu terang. Pola: ringkasan.css `rk-mencetak`. */
+#bf-cetak{display:none}
+@media print{
+  @page{size:A4;margin:14mm 15mm 13mm}
+  html.bf-mencetak{color-scheme:light}
+  html.bf-mencetak,html.bf-mencetak body{height:auto!important;overflow:visible!important;background:Canvas!important}
+  html.bf-mencetak body>*:not(#bf-cetak){display:none!important}
+  html.bf-mencetak #bf-cetak{display:block!important;color:CanvasText;font:9.4pt/1.42 var(--font);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #bf-cetak .bf-hal{height:268mm;overflow:hidden;break-after:page}
+  #bf-cetak .bf-hal:last-child{break-after:auto}
+  #bf-cetak .bf-kop{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.2pt solid CanvasText;padding-bottom:6pt;margin-bottom:12pt}
+  #bf-cetak .bf-kop b{display:block;font:700 8.5pt var(--font);letter-spacing:.14em}
+  #bf-cetak .bf-kop span{font:700 13pt var(--display)}
+  #bf-cetak .bf-kr{text-align:right;font-size:8.6pt;color:GrayText}
+  #bf-cetak h2{font:700 8.6pt var(--font);text-transform:uppercase;letter-spacing:.1em;margin:13pt 0 5pt;padding:0}
+  #bf-cetak p{margin:0 0 5pt}
+  #bf-cetak .bf-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin:0 0 6pt}
+  #bf-cetak .bf-kpi>div{border:.5pt solid GrayText;padding:5pt 6pt}
+  #bf-cetak .bf-kpi span{display:block;font:600 7.4pt var(--font);text-transform:uppercase;letter-spacing:.06em;color:GrayText}
+  #bf-cetak .bf-kpi b{display:block;font:700 16pt/1.2 var(--display);margin:2pt 0}
+  #bf-cetak .bf-kpi i{display:block;font-style:normal;font-size:7.8pt;color:GrayText}
+  #bf-cetak table{width:100%;border-collapse:collapse;font-size:8.8pt}
+  #bf-cetak td,#bf-cetak th{border:0;border-bottom:.5pt solid GrayText;padding:3pt 6pt 3pt 0;text-align:left;vertical-align:top;white-space:normal;position:static;background:none}
+  #bf-cetak th{text-align:center;color:GrayText;font:600 7.4pt var(--font);text-transform:uppercase;letter-spacing:.06em;border-bottom:.8pt solid CanvasText}
+  #bf-cetak .bf-li{margin:0;padding-left:15pt;display:grid;gap:4pt}
+  #bf-cetak .bf-ket{font-size:7.8pt;color:GrayText}
+  #bf-cetak .bf-kosong{color:GrayText;font-style:italic}
+}

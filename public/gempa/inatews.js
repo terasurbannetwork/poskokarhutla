@@ -91,7 +91,11 @@ const Ina = {
   waktu: t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"}).replace(",", "") + " WIB",
   jam: t => new Date(t).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"}) + " WIB",
   /* teks BMKG apa adanya: KAPITAL dijadikan huruf judul (singkatan sampai 4 huruf, mis. NTT, tetap), tanda hubung jadi koma */
-  tempat: s => { const r = String(s || "").trim().replace(/\b[A-Z]{2,}(?:-[A-Z]{2,})*\b/g, t => t.split("-").map(x => x.length <= 4 ? x : x[0] + x.slice(1).toLowerCase()).join(", ")); return r ? (typeof wilayahPendek === "function" ? wilayahPendek(r) : r) : "–"; },
+  /* teks BMKG mentah ("127 km BaratLaut GORONTALOUTARA-GORONTALO") dirapikan wilayahPendek+NamaWil selagi masih huruf besar ("Gorontalo Utara");
+     kamus belum dimuat = cara lama (huruf besar dikecilkan) */
+  tempat: s => { const mentah = String(s || "").trim();
+    if (mentah && typeof wilayahPendek === "function" && typeof NamaWil !== "undefined" && NamaWil.kamus) { const w = wilayahPendek(mentah); if (!/\b[A-Z]{4,}\b/.test(w)) return w; }
+    const r = mentah.replace(/\b[A-Z]{2,}(?:-[A-Z]{2,})*\b/g, t => t.split("-").map(x => x.length <= 4 ? x : x[0] + x.slice(1).toLowerCase()).join(", ")); return r ? (typeof wilayahPendek === "function" ? wilayahPendek(r) : r) : "–"; },
   dalam: d => d == null || !isFinite(d) ? "–" : fmt(d) + " km",
   pilLevel: l => { const v = Ina.LEVEL[String(l).toUpperCase()]; return `<span class="pill pm" style="--w:${v ? v[1] : "#5b6575"}">${v ? v[0] : esc(l)}</span>`; },
   pilMMI: (s, n) => `<span class="lc-mmi" style="--w:${typeof MMI_WARNA !== "undefined" ? MMI_WARNA[Math.min(12, Math.max(1, n))] : "#c9961a"};color:${n <= 3 ? "#3b3320" : "#fff"}">MMI ${esc(s)}</span>`,
@@ -112,8 +116,9 @@ const Ina = {
   jamID: s => { const m = String(s || "").match(/^(\d\d):(\d\d)/); return m ? m[1] + "." + m[2] : "–"; },
   async muatRiwayat() { const R = this.RW[this.st.rw], j = await this.arsip(R.f.replace("data/", "")), L = (j[R.kunci || "baris"] || []).map(R.ubah || (x => x)), dash = v => v == null || v === "" ? "–" : esc(v);
     const rows = L.map(x => { const v = {}; for (const [c] of R.kol) v[c] = c === "koor" ? [this.koord(x.lintang, x.bujur), x.lintang ?? -99] : c === "korban_meninggal" ? [dash(x.korban_meninggal ?? x.korban_meninggal_teks), x.korban_meninggal ?? -1]
-        : c === "tanggal" ? [x.tanggal_teks ? esc(x.tanggal_teks) : this.tglID(x.tanggal), x.tanggal || ""] : c === "jam" ? [this.jamID(x.jam), x.jam || ""] : c === "tsunami" ? [x.tsunami == null ? "–" : x.tsunami ? "Ya" : "Tidak", x.tsunami == null ? -1 : +x.tsunami] : ["magnitudo", "kedalaman_km", "magnitudo_gempa", "tinggi_maks_m"].includes(c) ? [dash(x[c] == null ? null : fmt(x[c])), x[c] ?? -1]
-        : ["dirasakan", "korban_kerusakan", "catatan", "catatan_pengamatan"].includes(c) ? [x[c] ? `<span class="ina-ln" title="${esc(x[c])}">${esc(x[c])}</span>` : "–", x[c] || ""] : [dash(x[c]), x[c] ?? ""];
+        : c === "tanggal" ? [x.tanggal_teks ? esc(x.tanggal_teks) : this.tglID(x.tanggal), x.tanggal || ""] : c === "jam" ? [this.jamID(x.jam), x.jam || ""] : c === "tsunami" ? [x.tsunami == null ? "–" : `<span class="pill pm" style="--w:var(${x.tsunami ? "--bad" : "--ink2"})">${x.tsunami ? "Ya" : "Tidak"}</span>`, x.tsunami == null ? -1 : +x.tsunami] : ["magnitudo", "kedalaman_km", "magnitudo_gempa", "tinggi_maks_m"].includes(c) ? [dash(x[c] == null ? null : fmt(x[c])), x[c] ?? -1]
+        : c === "dirasakan" ? this.selDirasakan(x[c]) : c === "korban_kerusakan" ? this.selKorban(x[c])
+        : ["catatan", "catatan_pengamatan"].includes(c) ? [x[c] ? `<span class="ina-ln" title="${esc(x[c])}">${esc(x[c])}</span>` : "–", x[c] || ""] : [dash(x[c]), x[c] ?? ""];
       return {tak: true, v, teks: Object.values(x).filter(y => typeof y === "string").join(" ").toLowerCase(), t: Date.parse(x.tanggal) || 0, m: 0}; });
     return {langsung: false, riwayat: j, rows}; },
   KOL0: [["t", "Waktu"], ["m", "Kekuatan", 1], ["dalam", "Kedalaman", 1], ["tempat", "Wilayah"], ["info", "Keterangan"]],
@@ -130,14 +135,37 @@ const Ina = {
     const kat = async () => (await this.katalog());
     if (j === "terkini" || j === "realtime") { const k = await kat(), dari = Date.now() - (j === "terkini" ? 864e5 : 5 * 864e5), s = k.daftar.filter(x => x.t >= dari);
       return {langsung: k.langsung, rows: s.map(x => ({key: x.id, bids: [], t: x.t, lat: x.lat, lon: x.lon, m: x.m, dalam: x.dalam, tempat: x.tempat,
-        info: [x.fokal === "mt_yes" ? "Mekanisme sumber tersedia" : esc(x.status || "–"), x.fokal === "mt_yes" ? 1 : 0]}))}; }
+        info: [this.pilStatus(x), x.fokal === "mt_yes" ? 2 : /^conf/i.test(x.status || "") ? 1 : 0]}))}; }
     if (j === "riwayat") return this.muatRiwayat();
     if (j === "tsunami") { const {grup, langsung} = await this.grupTsunami();
       return {langsung, rows: grup.flatMap(g => g.buletin.map(b => ({key: g.key, bid: b.id, bids: [b.id], tsu: g, t: b.t, lat: b.lat, lon: b.lon, m: b.m, dalam: b.dalam, tempat: b.area, b}))).sort((x, y) => x.bid < y.bid ? 1 : -1)}; }
     const r = await this.buletin(j), k = await kat().catch(() => ({daftar: []}));
     return {langsung: r.langsung, rows: r.daftar.map(b => { const kj = this.cocok(b, k.daftar), pot = this.potensi(b.potensi), mm = j === "dirasakan" ? this.felt(b.felt) : [];
       return {key: kj?.id || "bul" + b.id, bids: [b.id], t: b.t, lat: b.lat, lon: b.lon, m: b.m, dalam: b.dalam, tempat: b.area,
-        info: [j === "dirasakan" ? (mm.length ? mm.map(x => this.pilMMI(x.mmi, x.nilai) + " " + esc(x.wilayah)).join(" ") : esc(b.felt || "–")) : pot ? `<span class="pill pm" style="--w:${pot[1]}">${pot[0]}</span> <small>menurut BMKG</small>` : "BMKG tidak menyebut tsunami", mm.length ? Math.max(...mm.map(x => x.nilai)) : 0]}; })}; },
+        info: [j === "dirasakan" ? (mm.length ? this.daftarMMI(mm) : esc(b.felt || "–")) : pot ? `<span class="pill pm" style="--w:${pot[1]}" title="Status resmi BMKG">${pot[0]}</span>` : `<span class="pill pm" style="--w:var(--ink2)" title="Buletin BMKG tidak memuat status tsunami">Tidak disebut BMKG</span>`, mm.length ? Math.max(...mm.map(x => x.nilai)) : 0]}; })}; },
+  /* status katalog BMKG (QuakeML: confirmed, preliminary, automatic) ke pil berbahasa Indonesia; mekanisme sumber didahulukan */
+  pilStatus(x) { const s = String(x.status || "").toLowerCase(), P = (n, w, t) => `<span class="pill pm" style="--w:var(${w})"${t ? ` title="${t}"` : ""}>${n}</span>`;
+    if (x.fokal === "mt_yes") return P("Mekanisme sumber", "--brand2", "Terkonfirmasi BMKG dan mekanisme sumbernya sudah tersedia");
+    return s.startsWith("conf") ? P("Terkonfirmasi", "--ok", "Sudah ditinjau analis BMKG") : s.startsWith("pre") || s.startsWith("auto") ? P("Otomatis", "--warn", "Hasil otomatis, belum ditinjau analis BMKG") : s ? esc(x.status) : "–"; },
+  /* wilayah dirasakan: satu chip per wilayah (MMI + nama), terkuat dulu, tiga pertama tampil, sisanya "+N lainnya" dengan daftar di title */
+  daftarMMI(mm) { const A = [...mm].sort((a, b) => b.nilai - a.nilai), M = 3, ch = x => `<span class="ina-mi">${this.pilMMI(x.mmi, x.nilai)}<span translate="no">${esc(x.wilayah)}</span></span>`;
+    const lagi = A.slice(M); return `<div class="ina-mm">${A.slice(0, M).map(ch).join("")}${lagi.length ? `<span class="ina-mi ina-mi-lagi" title="${esc(lagi.map(x => x.wilayah + " (MMI " + x.mmi + ")").join(", "))}">+${lagi.length} lainnya</span>` : ""}</div>`; },
+  /* Riwayat: teks bebas katalog PDF BMKG dibaca jadi ringkasan visual; teks lengkap tetap di title. Tidak menebak: yang tidak terbaca tidak ditampilkan sebagai angka. */
+  ROMN: {I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10, XI: 11, XII: 12},
+  selDirasakan(t) { if (!t) return ["–", -1]; const teks = String(t).replace(/�/g, "-");
+    let mx = 0, rm = ""; if (/MMI|SIG/i.test(teks)) for (const m of teks.matchAll(/\b(XII|XI|X|IX|VIII|VII|VI|V|IV|III|II)\b/g)) { const n = this.ROMN[m[1]]; if (n > mx) { mx = n; rm = m[1]; } }
+    const wil = teks.replace(/^[\s\-–•]+/, "").split(/\s*\b(?:XII|XI|X|IX|VIII|VII|VI|V|IV|III|II)\b|\(|Pusat gempa/)[0].replace(/\s+(?:dengan|daerah).*$/i, "").replace(/[\s:,.\-–]+$/, "");
+    return [`<span class="ina-rk" title="${esc(teks)}">${mx ? this.pilMMI(rm, mx) : ""}<span class="ina-rk-t">${esc(wil || teks)}</span></span>`, mx || 0]; },
+  selKorban(t) { if (!t) return ["–", -1]; const teks = String(t), jml = re => { let j = 0, ada = false; for (const m of teks.matchAll(re)) { const n = +m[1].replace(/\./g, ""); if (Number.isFinite(n)) { j += n; ada = true; } } return ada ? j : null; };
+    const mati = jml(/meninggal[^:\d]{0,20}:?\s*[-–]?\s*(?:±|sekitar|lebih dari)?\s*([\d.]*\d)\s*(?:orang|jiwa)?/gi),
+      luka = jml(/luka(?:-luka)?[^:\d]{0,20}:?\s*[-–]?\s*(?:±|sekitar|lebih dari)?\s*([\d.]*\d)\s*(?:orang|jiwa)?/gi),
+      bgn = jml(/([\d.]*\d)\s*(?:\([a-z ]+\)\s*)?(?:unit\s*)?(?:rumah|bangunan|gedung)/gi), rusak = /rusak|hancur|roboh|retak/i.test(teks);
+    const IK = {mati: '<path d="M12 2a7 7 0 0 0-7 7v4l2 2v5h10v-5l2-2V9a7 7 0 0 0-7-7Z"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/>', luka: '<path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z"/>', rumah: '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/>'},
+      ch = (ik, n, l, w) => `<span class="ina-kc" style="--w:var(${w})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[ik]}</svg><b>${fmt(n)}</b> ${l}</span>`;
+    const C = [mati ? ch("mati", mati, "meninggal", "--bad") : "", luka ? ch("luka", luka, "luka", "--warn") : "", bgn ? ch("rumah", bgn, "bangunan rusak", "--ink2") : rusak ? `<span class="ina-kc" style="--w:var(--ink2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.rumah}</svg>Ada kerusakan</span>` : ""].join("");
+    return [`<span class="ina-rk" title="${esc(teks)}">${C ? `<span class="ina-kcs">${C}</span>` : `<span class="ina-rk-t">${esc(teks)}</span>`}</span>`, mati ?? (luka ? 0 : -1)]; },
+  /* bilah sumber di atas tabel: status (titik hidup/arsip/galat), keterangan, tautan sumber di kanan */
+  bilah([k, a, b], url, teks) { return `<div class="ina-st ina-st-${k}"><span class="ina-st-s"><i aria-hidden="true"></i>${esc(a)}</span>${b ? `<span class="ina-st-k">${esc(b)}</span>` : ""}<a href="${esc(url)}" target="_blank" rel="noopener">${esc(teks)} ↗</a></div>`; },
   tp: r => r.tp ??= Ina.tempat(r.tempat),
   sel(r, c) { if (r.v) return r.v[c][0]; if (c === "pd") return this.pilPD(r.b); if (c === "koor") return `<span translate="no">${this.koord(r.lat, r.lon)}</span>`; if (c === "lagi") return `<span class="ina-lg">Selengkapnya ›</span>`;
     return c === "t" ? `<span translate="no">${esc(Ina.waktu(r.t))}</span>` : c === "m" ? pilM(r.m) : c === "dalam" ? Ina.dalam(r.dalam) : c === "tempat" ? `<span translate="no">${esc(Ina.tp(r))}</span>` : r.info[0]; },
@@ -160,6 +188,7 @@ const Ina = {
   /* chrome (pilihan, judul) urgent; isi tabel ditunda lewat nanti() */
   async render(segar) {
     const el = $("#katalog"); if (!el) return;
+    if (typeof NamaWil !== "undefined" && !NamaWil.kamus) await NamaWil.siap();   /* nama kab BMKG di tabel dirapikan dulu (Ina.tempat, cache r.tp) */
     if (!el.dataset.siap) { el.dataset.siap = 1;
       el.addEventListener("click", e => { const b = e.target.closest("[data-j]"); if (b) return this.pilih(b.dataset.j);
         const h = e.target.closest("[data-h]"); if (h) { if (h.disabled) return; this.st.hal = +h.dataset.h; el.querySelectorAll(".pgn-b").forEach(b => { b.classList.toggle("on", b === h); if (b === h) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }); return nanti(() => { this.gambarTabel(); el.querySelector(`.pgn-b[data-h="${this.st.hal}"]`)?.focus(); }); }
@@ -175,8 +204,8 @@ const Ina = {
     d.rows.forEach((r, i) => r.i = i); this.baris = d.rows; this.st.hal = segar ? this.st.hal : 0;
     const rw = j === "riwayat" ? `<div class="ina-rw"><label>Katalog <select id="inaRw" aria-label="Katalog riwayat">${Object.entries(this.RW).map(([k, v]) => `<option value="${k}"${k === this.st.rw ? " selected" : ""}>${v.n}</option>`).join("")}</select></label><input id="inaCari" type="search" placeholder="Cari lokasi, tahun, atau kata kunci" value="${esc(this.st.q)}" aria-label="Cari di katalog"></div>` : "";
     const gl = j === "riwayat" ? (Array.isArray(d.riwayat?.gagal_urai) ? d.riwayat.gagal_urai.length : +d.riwayat?.gagal_urai || 0) : 0;
-    const st = j === "riwayat" ? `<p class="ina-st">Diurai dari katalog PDF resmi BMKG; nilai yang tidak terbaca ditampilkan strip.${gl ? ` ${fmt(gl)} baris tidak terbaca dan tidak ditampilkan.` : ""} <a href="${esc(d.riwayat?.sumber || this.PRODUK_URL)}" target="_blank" rel="noopener">PDF BMKG ↗</a></p>` + rw : `<p class="ina-st">${d.galat ? "Katalog BMKG belum bisa dibaca." : d.langsung ? "Dibaca langsung dari BMKG, " + esc(this.jam(Date.now())) : "BMKG tidak terjangkau dari peramban ini, ditampilkan arsip Centurisk97 dari data BMKG."} <a href="${this.PRODUK_URL}" target="_blank" rel="noopener">bmkg.go.id/gempabumi ↗</a></p>`;
-    el.innerHTML = Kartu.ex(this.judul(j, d.rows, d.langsung), "", "", st + `<div id="inaTabel"></div>`, "", seg).replace('<article class="ex">', '<article class="ex ex-std">').replace('<span class="ex-ey"></span>', '<span class="ex-ey">Katalog BMKG</span>');
+    const st = j === "riwayat" ? this.bilah(["arsip", "Katalog PDF resmi BMKG", "Nilai yang tidak terbaca ditampilkan strip" + (gl ? `; ${fmt(gl)} baris tidak terbaca dan tidak ditampilkan` : "")], d.riwayat?.sumber || this.PRODUK_URL, "PDF BMKG") + rw : this.bilah(d.galat ? ["galat", "Katalog BMKG belum bisa dibaca"] : d.langsung ? ["hidup", "Langsung dari BMKG", "Diperbarui " + this.jam(Date.now())] : ["arsip", "Arsip Centurisk97 dari data BMKG", "BMKG tidak terjangkau dari peramban ini"], this.PRODUK_URL, "bmkg.go.id/gempabumi");
+    el.innerHTML = Kartu.ex(this.judul(j, d.rows, d.langsung), "", "", `<div class="ina-isi">${st}<div id="inaTabel"></div></div>`, "", seg).replace('<article class="ex">', '<article class="ex ex-std">').replace('<span class="ex-ey"></span>', '<span class="ex-ey">Katalog BMKG</span>');
     this.gambarTabel(); },
   /* Real-time: hanya baris dan tabel diperbarui; kartu, pilihan, dan fokus tidak disentuh, dan dilewati bila laci terbuka atau fokus di kartu */
   async segarkan() { const el = $("#katalog"); if (document.hidden || !el || this.st.jenis !== "realtime" || !$("#p-katalog")?.classList.contains("on") || $("#inaDetail")?.classList.contains("on") || el.contains(document.activeElement)) return;
@@ -198,7 +227,9 @@ const Ina = {
     if (!r) return; const n = ++this._n, el = this.laci();
     el.innerHTML = this.kepala(r) + `<div class="bd ina-bd" id="inaIsi"><div class="kosong"><div class="spin"></div>Memuat detail kejadian…</div></div>`; el.classList.add("on");
     el.querySelector(".tutup").onclick = () => this.tutup();
-    nanti(async () => { const d = await this.rakit(r).catch(() => null); if (n !== this._n) return;
+    nanti(async () => { if (typeof NamaWil !== "undefined") await NamaWil.siap();
+      { const h = $("#inaJudul"); if (h && n === this._n) h.textContent = this.tempat(r.tempat); }
+      const d = await this.rakit(r).catch(() => null); if (n !== this._n) return;
       const isi = $("#inaIsi"); if (!isi) return; const a = d?.fl?.area || d?.m5?.area, h = $("#inaJudul"); if (h && a) h.textContent = this.tempat(a);
       isi.innerHTML = this.isi(r, d); this.pasangIsi(isi, r, d, n); });
   },
@@ -230,14 +261,16 @@ const Ina = {
     /* 1. parameter apa adanya per buletin, berlabel; tidak dirata-rata */
     const jn = {m5: "Gempa M 5,0+", dirasakan: "Gempa dirasakan", tsunami: "Peringatan dini tsunami"}, par = [...d.bul.filter(b => b.jenis !== "tsunami")];
     if (d.tsu) par.push(d.tsu.buletin[0], ...(d.tsu.buletin.length > 1 ? [d.tsu.buletin[d.tsu.buletin.length - 1]] : []));
-    const kat = d.kat ? `<tr><td>Katalog BMKG (pemutakhiran)</td><td class="n" translate="no">${esc(mTulis(d.kat.m))}, ${esc(this.dalam(d.kat.dalam))}</td></tr>` : "";
-    kes.push(sek("Parameter menurut BMKG", `<div class="tw"><table class="tb2"><thead><tr><th>Buletin</th><th>Rilis</th><th class="n">Kekuatan</th><th class="n">Kedalaman</th></tr></thead><tbody>${par.map(b => `<tr><td>${jn[b.jenis]}<br><small translate="no">${esc(b.id)}${b.subjek && b.jenis === "tsunami" ? ", " + esc(b.subjek) : ""}</small></td><td translate="no">${esc(this.waktu(b.terbit))}</td><td class="n">${esc(mTulis(b.m))}</td><td class="n">${esc(this.dalam(b.dalam))}</td></tr>`).join("")}</tbody></table></div>${kat ? `<table class="tb2"><tbody>${kat}</tbody></table>` : ""}
-      <p class="fnd">Setiap buletin ditulis seperti yang dirilis BMKG. Parameter awal bisa berbeda dari pemutakhiran, keduanya tidak dirata-rata.</p>`));
+    /* satu baris per buletin: nama, waktu rilis, nomor di kiri; kekuatan dan kedalaman rata kanan (laci sempit, tanpa tabel empat kolom) */
+    const prBaris = (judul, kecil, m, dlm, kelas = "") => `<div class="ina-pr${kelas}"><div class="ina-pr-k"><b>${judul}</b>${kecil.map(x => `<small translate="no">${x}</small>`).join("")}</div><div class="ina-pr-v" translate="no"><b>${esc(mTulis(m))}</b><small>kedalaman ${esc(this.dalam(dlm))}</small></div></div>`;
+    const kat = d.kat ? prBaris("Pemutakhiran katalog BMKG", ["nilai terkini di katalog"], d.kat.m, d.kat.dalam, " ina-pr-kat") : "";
+    kes.push(sek("Parameter menurut BMKG", `<div class="ina-par">${par.map(b => prBaris(jn[b.jenis], [`Rilis ${esc(this.waktu(b.terbit))}`, `Nomor ${esc(b.id)}${b.subjek && b.jenis === "tsunami" ? ", " + esc(b.subjek) : ""}`], b.m, b.dalam)).join("")}${kat}</div>
+      <p class="fnd">Ditulis seperti dirilis BMKG. Nilai awal bisa berbeda dari pemutakhiran, dan keduanya tidak dirata-rata.</p>`));
     if (d.nb) { const b = d.nb; kes.unshift(sek("Informasi BMKG", `<p>${this.pilPD(b)} <span class="pill pm" style="--w:${b.berakhir ? "#5b6575" : "#d64545"}">${b.berakhir ? "Dinyatakan berakhir" : "Belum dinyatakan berakhir"}</span></p><p class="fnd" translate="no">${esc(b.deskripsi || b.judul || "")}</p>
       <table class="tb2"><tbody>${this.baru(esc(this.waktu(b.terbit)), "Waktu rilis")}${b.instruksi ? this.baru(esc(b.instruksi), "Imbauan") : ""}${this.baru(esc(b.id), "Nomor buletin")}</tbody></table>`)); }
     /* 2. status tsunami resmi (tidak pernah ditafsir ulang) */
     const pot = d.bul.map(b => this.potensi(b.potensi)).find(Boolean) || (d.tsu ? ["Potensi tsunami", "#d64545"] : null);
-    kes.push(sek("Status tsunami, BMKG", `<p><span class="pill pm" style="--w:${pot ? pot[1] : "#5b6575"}">${pot ? pot[0] : "BMKG tidak menyebut tsunami"}</span></p><p class="fnd">${pot ? "Status resmi BMKG apa adanya." : "BMKG tidak menyebut tsunami pada buletin ini; ketiadaan pernyataan tidak kami tafsirkan."}</p>`));
+    kes.push(sek("Status tsunami, BMKG", `<div class="ina-tsb"><span class="pill pm" style="--w:${pot ? pot[1] : "#5b6575"}">${pot ? pot[0] : "BMKG tidak menyebut tsunami"}</span><span class="fnd">${pot ? "Status resmi BMKG apa adanya." : "Ketiadaan pernyataan tidak kami tafsirkan."}</span></div>`));
     /* 3. peta guncangan utuh */
     const mmi = (d.fl || d.m5 || d.bul[0]); const idm = mmi?.id;
     kes.push(sek("Peta guncangan", idm ? `<div class="ina-fg">${this.gbr(C + idm + ".mmi.jpg", "Peta guncangan (shakemap) BMKG")}</div>` : ""));
@@ -275,7 +308,7 @@ const Ina = {
   pasangIsi(isi, r, d, n) {
     if (d.narasi) $("#inaNarasi")?.append(this.narasi(d.narasi));
     const st = $("#inaStasiun"); if (st && d.stasiun?.length) { const S = d.stasiun, gambar = semua => { const A = semua ? S : S.slice(0, 12);
-      st.innerHTML = `<div class="tw"><table class="tb2"><thead><tr><th>Stasiun</th><th class="n">Jarak</th><th class="n">MMI</th><th class="n">PGA EW/NS/UD (gal)</th></tr></thead><tbody>${A.map(s => `<tr><td translate="no">${esc(s[1])}<br><small>${esc(s[0])}</small></td><td class="n">${esc(fmt(s[4]))} km</td><td class="n">${esc(s[5])}</td><td class="n" translate="no">${esc(fmt(s[6]))} / ${esc(fmt(s[7]))} / ${esc(fmt(s[8]))}</td></tr>`).join("")}</tbody></table></div>${!semua && S.length > 12 ? `<button class="btn sec" data-semua>Tampilkan semua ${fmt(S.length)} stasiun</button>` : ""}`;
+      st.innerHTML = `<div class="tw"><table class="tb2"><thead><tr><th>Stasiun</th><th class="n">Jarak</th><th class="n">MMI</th><th class="n">PGA EW/NS/UD (gal)</th></tr></thead><tbody>${A.map(s => `<tr><td translate="no">${esc(s[1])}<br><small>${esc(s[0])}</small></td><td class="n">${esc(fmt(s[4]))} km</td><td class="n">${esc(s[5])}</td><td class="n" translate="no">${esc(fmt(s[6]))} / ${esc(fmt(s[7]))} / ${esc(fmt(s[8]))}</td></tr>`).join("")}</tbody></table></div>${!semua && S.length > 12 ? `<button class="btn sec ina-semua" data-semua>Tampilkan semua ${fmt(S.length)} stasiun<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>` : ""}`;
       st.querySelector("[data-semua]")?.addEventListener("click", () => nanti(() => gambar(true))); }; gambar(false); }
     isi.querySelectorAll("figure.ina-f img").forEach(i => i.addEventListener("error", () => { const f = i.closest("figure"), g = f?.parentElement; f?.remove(); if (g && !g.children.length) g.closest(".lc-sek")?.remove(); }, {once: true})); },
 

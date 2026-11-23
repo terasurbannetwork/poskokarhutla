@@ -236,7 +236,19 @@ export default {
         "ekonomi": false,
         "pencegahan": false,
         "prioritas": false,
-        "tindakan": []
+        "tindakan": [],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -451,7 +463,19 @@ export default {
           "air_bersih",
           "status_darurat",
           "omc"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -468,6 +492,7 @@ export default {
         "peta",
         "insight",
         "tren",
+        "dampak",
         "foto",
         "metode",
         "informasi"
@@ -631,7 +656,27 @@ export default {
           "pengungsian",
           "sar",
           "dapur_umum"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": false,
+          "sinyal": true,
+          "peta_kab": false,
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -787,8 +832,10 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "cuaca"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "cuaca",
@@ -807,7 +854,27 @@ export default {
           "imbauan",
           "pantau",
           "buka_akses"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": false,
+          "citra": true,
+          "sinyal": true,
+          "peta_kab": true,
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -965,8 +1032,11 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "gempa",
+            "tsunami"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "gempa",
@@ -985,7 +1055,31 @@ export default {
           "posko",
           "perbaikan_darurat",
           "kesehatan"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": false,
+          "sinyal": true,
+          "peta_kab": true,
+          "cari": [
+            "desa",
+            "kab",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "gempa",
+            "dirasakan",
+            "terbesar"
+          ]
+        }
       }
     },
     {
@@ -1128,7 +1222,7 @@ export default {
           "kunci": [
             "udara"
           ],
-          "tangga": false
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "udara",
@@ -1140,7 +1234,30 @@ export default {
         "tindakan": [
           "masker",
           "imbauan"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": true,
+          "sinyal": false,
+          "peta_kab": true,
+          "cari": [
+            "kab",
+            "desa",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "pm25",
+            "jiwa"
+          ]
+        }
       }
     },
     {
@@ -1314,7 +1431,31 @@ export default {
           "rambu",
           "patroli",
           "tanggul"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": true,
+          "citra": true,
+          "sinyal": true,
+          "peta_kab": false,
+          "cari": [
+            "kab",
+            "desa",
+            "bandara",
+            "bpbd",
+            "posko",
+            "faskes",
+            "sekolah"
+          ],
+          "ukuran_provinsi": [
+            "radius",
+            "erupsi",
+            "tinggi"
+          ]
+        }
       }
     },
     {
@@ -1477,7 +1618,31 @@ export default {
           "posko",
           "pantau",
           "status_darurat"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": true,
+          "brief": true,
+          "pilih_tanggal": true,
+          "profil_kab": true,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": true,
+          "cari": [
+            "desa",
+            "kab",
+            "faskes",
+            "sekolah",
+            "bandara",
+            "posko",
+            "bpbd"
+          ],
+          "ukuran_provinsi": [
+            "status",
+            "spi",
+            "jiwa"
+          ]
+        }
       }
     },
     {
@@ -1626,7 +1791,19 @@ export default {
           "rambu",
           "sar",
           "pengungsian"
-        ]
+        ],
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     }
   ]

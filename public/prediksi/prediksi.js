@@ -544,7 +544,7 @@ async function ambil(f) { try { const r = await fetch("data/" + f, {cache: "no-c
 async function mulai() {
   [PR.d, PR.skor, PR.uji, PR.kal, PR.lalu, PR.kalender, PR.aktif] = await Promise.all(["prediksi.json", "skor.json", "ujibalik.json", "kalibrasi.json", "lalu.json", "kalender_risiko.json", "kalibrasi_aktif.json"].map(ambil));
   if (!PR.d) { $("#tabelBesok").innerHTML = '<p class="kosong">Data prediksi belum tersedia.</p>'; $("#upd").textContent = "Data belum ada"; return; }
-  $("#upd").textContent = "Diperbarui " + jamWIB(PR.d.dibuat);
+  $("#upd").innerHTML = jamData(PR.d.dibuat);
   PR.KOL = Object.fromEntries(Object.entries(PR.d.kode).map(([kd, v]) => [kd, v.kol]));
   const prov = [...new Map(PR.d.kab.map(k => [k.prov, k.pn])).entries()].sort((a, b) => a[1].localeCompare(b[1], "id"));
   $("#prov").insertAdjacentHTML("beforeend", prov.map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join(""));

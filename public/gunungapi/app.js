@@ -17,7 +17,7 @@ const WARNA_VONA = {green: "#2e9e5b", yellow: "#e0b400", orange: "#e8743b", red:
 const pilVona = v => v?.kode && WARNA_VONA[v.kode] ? `<span class="pl" style="--w:${WARNA_VONA[v.kode]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 16l20-6-8 12-2-6z"/></svg>VONA ${NAMA_VONA[v.kode]}</span>` : "";
 const tglJam = t => new Date(t).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
 
-const S = {st: null, level: 0, q: "", urut: {k: "lv", d: -1}, geo: {prov: null}};   /* level 0 = semua */
+const S = {st: null, level: 0, q: "", urut: {k: "lv", d: -1}, geo: {prov: null}, tanggal: null, ukuran: "radius", ukuranIzin: []};   /* level 0 = semua */
 /* kode provinsi BPS -> nama (Berita memberi kode); tabel administratif statis */
 const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14: "Riau", 15: "Jambi", 16: "Sumatera Selatan", 17: "Bengkulu", 18: "Lampung", 19: "Kep. Bangka Belitung", 21: "Kepulauan Riau",
   31: "DKI Jakarta", 32: "Jawa Barat", 33: "Jawa Tengah", 34: "DI Yogyakarta", 35: "Jawa Timur", 36: "Banten", 51: "Bali", 52: "Nusa Tenggara Barat", 53: "Nusa Tenggara Timur", 61: "Kalimantan Barat",
@@ -75,7 +75,8 @@ const SimTab = {
   jeda() { const k = window.Sim?.keadaan; if (k?.main) $("#smMain")?.click(); },
 };
 function bukaTab(id, dorong = true, gid = "") {
-  if (!TABS.some(t => t[0] === id) || (TAB_SEMBUNYI.has(id) && !["informasi", "metode"].includes(id))) id = "peta";
+  if (id === "operasi" && !$("#p-operasi")) id = "peta";   /* tab Operasi hanya ada bila operasi.js menyisipkannya (PB-79b, F-40) */
+  else if (id !== "operasi" && (!TABS.some(t => t[0] === id) || (TAB_SEMBUNYI.has(id) && !["informasi", "metode"].includes(id)))) id = "peta";
   if (id === "simulasi" && gid) S.simId = gid;
   if (id !== "simulasi") SimTab.jeda();
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -83,8 +84,8 @@ function bukaTab(id, dorong = true, gid = "") {
   /* tautan bersih tanpa tagar: /gunungapi/insight (worker mengarahkan jalur ini ke index.html); Simulasi membawa gunungnya: /gunungapi/simulasi?g=semeru */
   if (dorong) history.replaceState(null, "", "/gunungapi/" + id + (id === "simulasi" && (S.simId || window.Sim?.keadaan?.id) ? "?g=" + (S.simId || window.Sim.keadaan.id) : ""));
   nanti(() => { if (id === "peta" && peta) peta.resize();
-    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({kejadian: Kejadian, insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, simulasi: SimTab, foto: window.Foto, metode: Metode, informasi: window.Informasi})[id]?.render(); });
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1&bencana=gunungapi"; } }
+    ({kejadian: Kejadian, insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, simulasi: SimTab, foto: window.Foto, metode: Metode, informasi: window.Informasi, operasi: window.GunungapiOperasi})[id]?.render(); });
 }
 { $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
   const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
@@ -100,7 +101,10 @@ async function muatData() {
   const st = await muatJSON("../banjir/data/gunungapi_status.json");
   if (!st.gunung?.length) throw new Error("data gunung api kosong");
   S.st = st; muatJSON("../geo/provinsi.json").then(g => { S.geo.prov = g; }).catch(() => {});
-  $("#upd").textContent = "Data " + jamWIB(st.dibuat);
+  $("#upd").innerHTML = jamData(st.dibuat);
   /* hitungan dari daftar, bukan dari tulisan pada berkas: satu sumber kebenaran */
   S.n = {1: 0, 2: 0, 3: 0, 4: 0}; st.gunung.forEach(g => S.n[g.level]++);
+  window.PilihTanggal?.gambar();   /* tanggal erupsi yang bisa dipilih baru diketahui sesudah status termuat (PB-79b) */
 }
+/* PB-79b (F-40): tab Operasi, tersembunyi untuk tamu; logika dan probe hak baca di operasi.js (dimuat di sini supaya index.html tidak berubah). */
+{ const s = document.createElement("script"); s.src = "operasi.js?v=1"; s.onload = () => window.GunungapiOperasi?.pasang(); document.head.append(s); }

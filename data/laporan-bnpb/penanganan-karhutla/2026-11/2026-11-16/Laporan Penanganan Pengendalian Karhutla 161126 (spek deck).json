@@ -1,0 +1,49 @@
+{
+ "format": "penanganan",
+ "pesan_kunci": "Laporan Penanganan Pengendalian Karhutla, 16-11-2026.",
+ "judul_dokumen": "Laporan Penanganan Pengendalian Karhutla",
+ "kajian": "rehab",
+ "tanggal": "2026-11-16",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-16\\Laporan Penanganan Pengendalian Karhutla 161126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Satelit NASA FIRMS (VIIRS dan MODIS), 16 Nov 2026 18.00 WIB; luas terbakar hari utuh 15 Nov"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-16\\Laporan Penanganan Pengendalian Karhutla 161126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "NASA FIRMS 16 Nov 18.00 WIB; luas terbakar hari utuh 15 Nov; PM2,5 CAMS 15 Nov; hujan model Open-Meteo, kelas BMKG"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-16\\Laporan Penanganan Pengendalian Karhutla 161126 (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Laporan Penanganan Karhutla Satgas, 16 Nov 2026 (kegiatan 15 Nov 2026)"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi Hotspot dan Firespot",
+   "label": "Situasi",
+   "halaman_tetap": [
+    1,
+    2
+   ]
+  },
+  {
+   "judul": "Operasi Penanganan",
+   "label": "Operasi",
+   "halaman_tetap": [
+    3
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "skala_logo_bnpb": 1.0
+}

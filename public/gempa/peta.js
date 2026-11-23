@@ -28,6 +28,14 @@ const UBIN_PENDEK = {wilayah: "Wilayah", gempa: "Terkini", riwayat: "Sejak 1900"
 const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar", "gnss", "sensor", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "dart", "susulan", "gempa", "pilih"];
 const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar"], satelit: ["satelit"], sensor: ["sensor"], dart: ["dart"], gnss: ["gnss"], evakuasi: ["evak-area", "evak-rute", "evak"]};
 const WARNA_WIL = ["rgba(0,0,0,0)", "#fbe3c0", "#f4b97a", "#e6803f", "#c9503a"], BATAS_WIL = [1, 5, 20, 50];
+/* ukuran tabel provinsi (PB-76, F-39; mesin segmen di inti/tabel.js, gerbang kemampuan.layar.ukuran_provinsi). Semua dihitung dari agregat(dalamRentang()),
+   tanpa tingkat Siaga (K12 c). kunci = kolom agregat; batas/leg = skala warna peta dan legenda. Jiwa terpapar tidak dibuat: lihat catatan tiket PB-76. */
+const KAT_UKURAN = [
+  {slug: "gempa", label: "Gempa", kunci: "n", judul: "Gempa per provinsi", batas: BATAS_WIL, leg: ["1", "5", "20", "50+"]},
+  {slug: "dirasakan", label: "Dirasakan", kunci: "mmi", judul: "Gempa dirasakan per provinsi", batas: [1, 3, 10, 30], leg: ["1", "3", "10", "30+"]},
+  {slug: "terbesar", label: "Terbesar", kunci: "m", judul: "Gempa terbesar per provinsi (M)", batas: [0.1, 5, 6, 7], leg: ["< 5", "5", "6", "7+"]}];
+const ukAktif = () => { const z = S.ukuranIzin || []; return z.length ? (z.find(u => u.slug === S.ukuran) || z[0]) : KAT_UKURAN[0]; };
+const warnaWil = u => { const b = u.batas; return ["step", ["coalesce", ["feature-state", "n"], 0], WARNA_WIL[0], b[0], WARNA_WIL[1], b[1], WARNA_WIL[2], b[2], WARNA_WIL[3], b[3], WARNA_WIL[4]]; };
 const RAMP_GRID = [[0.04, [253, 231, 160, 150]], [0.12, [248, 190, 95, 185]], [0.4, [238, 133, 58, 215]], [1, [212, 71, 47, 235]], [2.5, [143, 29, 43, 250]]];
 const RAMP_BAHAYA = [[0, "#ffe9a8"], [.25, "#f9c25b"], [.5, "#ee8a3a"], [.75, "#d4472f"], [1, "#8f1d2b"]];
 const ramp = (st, v) => { if (v <= st[0][0]) return st[0][1]; for (let k = 1; k < st.length; k++) if (v <= st[k][0]) { const [a, ca] = st[k - 1], [b, cb] = st[k], t = (v - a) / (b - a); return ca.map((c, j) => Math.round(c + (cb[j] - c) * t)); } return st[st.length - 1][1]; };
@@ -37,9 +45,13 @@ const warnaDalam = ["match", ["get", "d"], 0, KELAS_DALAM[0][1], 1, KELAS_DALAM[
 const jamPendek = iso => jamWIB(iso).replace(" WIB", "");
 
 /* ---------- keadaan ---------- */
-const S = {gempa: [], dibuat: null, rentang: bacaLokal("gempa-rentang", 72), jalur: [], urut: {k: "n", turun: true}, hal: 0, geo: null, nama: {}, atr: {}, tersedia: false, pilih: null};
+const S = {gempa: [], dibuat: null, rentang: bacaLokal("gempa-rentang", 72), jalur: [], urut: {k: "n", turun: true}, hal: 0, geo: null, nama: {}, atr: {}, tersedia: false, pilih: null, tanggal: null, riwayat: false, ukuran: "gempa", ukuranIzin: []};
 const namaProv = k => k === "-" ? "Perairan" : S.nama[k] ?? k;
-const dalamRentang = () => { const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
+/* tanggal WIB terpilih (PB-73, inti/pilih_tanggal.js lewat tanggal.js) menggantikan jendela jam; null = jendela jam seperti biasa */
+const tglWIB = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
+/* data 7 hari (S.gempa) cukup untuk tanggal baru; tanggal lebih tua dari itu memakai data 30 hari (S.gempa30, dimuat kalender tanggal.js) */
+const dataGempa = () => S.tanggal && S.gempa30 && S.tanggal <= tglWIB(Date.now() - 168 * 36e5) ? S.gempa30 : S.gempa;
+const dalamRentang = () => { if (S.tanggal) return dataGempa().filter(g => tglWIB(g.t) === S.tanggal); const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
 function agregat(daftar) { const o = {};
   for (const g of daftar) { const k = g.prov || "-", a = o[k] ||= {n: 0, m: 0, mmi: 0}; a.n++; a.m = Math.max(a.m, g.m); if (g.mmi_maks) a.mmi++; if (g.tsunami?.kode >= 1) a.ts = (a.ts || 0) + 1; } return o; }
 
@@ -73,7 +85,7 @@ const Peta = {
     if (S.geo) { peta.addSource("prov", {type: "geojson", data: S.geo, promoteId: "kode"});
       const n = ["coalesce", ["feature-state", "n"], 0], hov = ["boolean", ["feature-state", "hover"], false];
       this.taruh({id: "prov-fill", type: "fill", source: "prov", layout: this.vis(this.lihat("wilayah")),
-        paint: {"fill-color": ["step", n, WARNA_WIL[0], BATAS_WIL[0], WARNA_WIL[1], BATAS_WIL[1], WARNA_WIL[2], BATAS_WIL[2], WARNA_WIL[3], BATAS_WIL[3], WARNA_WIL[4]], "fill-opacity": ["case", hov, .8, .55]}});
+        paint: {"fill-color": warnaWil(ukAktif()), "fill-opacity": ["case", hov, .8, .55]}});
       this.taruh({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": ["case", hov, 2, 1], "line-opacity": .5}}); }
     peta.addSource("gempa", {type: "geojson", data: this.geoGempa()});
     this.taruh({id: "gempa", type: "circle", source: "gempa", layout: {...this.vis(this.lihat("gempa")), "circle-sort-key": ["-", 0, ["get", "m"]]},
@@ -86,7 +98,7 @@ const Peta = {
     ["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit", "sensor", "dart", "gnss"].forEach(k => this.lihat(k) && nanti(() => this.pasangLapis(k)));
     Evakuasi.pasang(); Kejadian.pasangLapis(); renderLegenda(); },
   geoGempa() { const kini = Date.now(), t0 = kini - S.rentang * 36e5;
-    return {type: "FeatureCollection", features: S.gempa.map((g, i) => g.t < t0 ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
+    return {type: "FeatureCollection", features: dataGempa().map((g, i) => (S.tanggal ? tglWIB(g.t) !== S.tanggal : g.t < t0) ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
       properties: {i, m: g.m, d: kelasDalam(g.dalam), u: (kini - g.t) / 36e5}})).filter(Boolean)}; },
   async pasangLapis(k) {
     if (!peta?.getSource("gempa") || peta.getLayer(k)) return;
@@ -124,8 +136,9 @@ const Peta = {
     if (!peta?.getSource("gempa")) return;
     peta.getSource("gempa").setData(this.geoGempa()); this.aturWilayah(); },
   /* warna provinsi menurut jumlah gempa di jendela waktu; hover/klik ada di interaksi() */
-  aturWilayah() { if (!S.geo || !peta.getSource("prov")) return; const ag = agregat(dalamRentang());
-    S.geo.features.forEach(f => peta.setFeatureState({source: "prov", id: f.properties.kode}, {n: ag[f.properties.kode]?.n || 0})); },
+  aturWilayah() { if (!S.geo || !peta.getSource("prov")) return; const ag = agregat(dalamRentang()), u = ukAktif();
+    if (peta.getLayer("prov-fill")) peta.setPaintProperty("prov-fill", "fill-color", warnaWil(u));
+    S.geo.features.forEach(f => peta.setFeatureState({source: "prov", id: f.properties.kode}, {n: ag[f.properties.kode]?.[u.kunci] || 0})); },
   terbang(k) { if (k === "-" || !S.geo) { const d = dalamRentang().filter(g => !g.prov); if (!d.length) return; const b = kotak(d.map(g => ({geometry: {coordinates: [g.lon, g.lat]}}))); return peta.fitBounds(b, {padding: kiriPad(), duration: 700, maxZoom: 7}); }
     const f = S.geo.features.find(f => f.properties.kode === k); if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); },
   pilih(g) { S.pilih = g.id; peta.getSource("pilih")?.setData({type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {}}]});
@@ -152,7 +165,7 @@ const Peta = {
     const titik = (id, kartu) => { peta.on("mousemove", id, e => { diTitik = id; kursor("pointer"); PI?.tampilTip(kartu(e.features[0].properties.i), e.originalEvent); });
       peta.on("mouseleave", id, () => { diTitik = 0; kursor(""); tip(); }); };
     for (const k of ["sensor", "dart", "gnss"]) titik(k, i => { const b = S.titikLain[k][i]; return PI.kartuTip({judul: b.judul, sub: `<small class="tp-sub">${b.sub}</small>`}); });
-    titik("gempa", i => this.kartuGempa(S.gempa[i])); titik("riwayat", i => this.kartuRiwayat(S.riwayat.baris[i]));
+    titik("gempa", i => this.kartuGempa(dataGempa()[i])); titik("riwayat", i => this.kartuRiwayat(S.riwayat.baris[i]));
     peta.on("mousemove", "prov-fill", e => { kursor("pointer"); const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "prov", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "prov", id: hov}, {hover: true}); }
       if (!diTitik && PI) PI.tampilTip(this.kartuProv(f.properties.kode), e.originalEvent); });
@@ -163,7 +176,7 @@ const Peta = {
     peta.on("click", e => {
       if (Evakuasi.klik(e)) return;
       const gm = peta.queryRenderedFeatures(e.point, {layers: ["gempa"]});
-      if (gm.length) return this.pilih(S.gempa[gm[0].properties.i]);
+      if (gm.length) return this.pilih(dataGempa()[gm[0].properties.i]);
       const ss = peta.getLayer("susulan") && peta.queryRenderedFeatures(e.point, {layers: ["susulan"]}); if (ss?.length) return Kejadian.pilihSusulan(ss[0].properties.i);
       if (peta.getLayer("riwayat") && peta.queryRenderedFeatures(e.point, {layers: ["riwayat"]}).length) return;
       const w = peta.getLayer("prov-fill") && peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]});
@@ -179,20 +192,46 @@ function renderCrumb() {
   if (j[0]) b.push(`<button data-n="1">${esc(namaProv(j[0]))}</button>`);
   $("#crumb").innerHTML = b.join(""); }
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
-function renderDaftar() { Panel.render(); }   /* isi panel kiri: panel.js */
+function renderDaftar() { Panel.render(); }   /* isi panel kiri: panel.js; fitur F4 (tanggal, ukuran provinsi, unduh mesin, ringkasan provinsi) dipasang di sana */
+/* riwayat M 5+ per provinsi sejak 1900 dari riwayat_prov.json; kolom data: [4,5-4,9, 5-5,9, 6-6,9, >=7, M maks] per tahun. Dipakai riwayatSingkat */
+function riwayatProv() { return Object.entries(S.riwProv || S.rwProv?.prov || {}).filter(([k]) => S.nama[k] && k !== "ID").map(([k, v]) => { let n = 0, m = 0;
+  for (const x of Object.values(v.th || {})) { n += (x[1] || 0) + (x[2] || 0) + (x[3] || 0); m = Math.max(m, x[4] || 0); } return {k, nama: namaProv(k), n, m}; }); }
+/* baris kedua per gempa di daftar satu provinsi: kedalaman, dirasakan, status tsunami BMKG; tanpa teks bila datanya tidak ada */
+const rinciGempa = g => { const x = [g.dalam != null && `kedalaman ${fmt(g.dalam)} km`, g.mmi_maks > 0 && `dirasakan MMI ${ROMAWI[Math.min(12, Math.max(1, Math.round(g.mmi_maks)))]}`,
+  (g.tsunami?.kode ?? 0) >= 1 && "berpotensi tsunami (BMKG)"].filter(Boolean).join(", "); return x ? x[0].toUpperCase() + x.slice(1) : ""; };
+/* periode panel dalam kata: tanggal terpilih (PB-73) atau jendela jam */
+const periodeTeks = () => S.tanggal ? "pada " + new Date(S.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "Asia/Jakarta"}) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir";
+/* kotak angka panel provinsi: ikon kecil + label di atas, angka di bawah (dipakai ringkasan dan riwayat provinsi) */
+const GK_IK = {gempa: "M2 12h4l2-6 4 12 3-9 2 3h5", kuat: "M3 17l6-6 4 4 8-8M15 7h6v6", rasa: "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4", jam: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0", risiko: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"};
+const gkKotak = (ik, v, l, w, x = "") => `<div class="gk-k"><span class="gk-kh"><span class="gk-ik" aria-hidden="true"${w ? ` style="--w:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${GK_IK[ik]}"/></svg></span><span class="gk-l">${l}</span></span><b${w ? ` style="color:${w}"` : ""}>${v}</b>${x}</div>`;   /* kotak sempit: ikon+label di atas, angka di bawah */
+/* ringkasan di atas daftar gempa satu provinsi: periode yang sedang dipilih dan tiga angka dari daftar itu sendiri (tanpa hitungan baru) */
+function ringkasProv(k, isi) {
+  const kuat = isi.reduce((a, g) => !a || g.m > a.m ? g : a, null), rasa = isi.filter(g => g.mmi_maks > 0).length;
+  return `<p class="gk-per">${esc(namaProv(k))}, ${esc(periodeTeks())}</p><div class="gk-ring">${gkKotak("gempa", fmt(isi.length), "Gempa")}${gkKotak("kuat", kuat ? esc(mTulis(kuat.m)) : "–", "Terkuat", kuat ? warnaM(kuat.m) : "")}${gkKotak("rasa", fmt(rasa), "Dirasakan")}</div>`; }
+/* riwayat provinsi di bawah daftar: M 5+ sejak 1900 (riwayat_prov.json) dan indeks risiko (risiko.json), diisi bila datanya sudah dimuat */
+function riwayatSingkat(k) {
+  const r = riwayatProv().find(x => x.k === k), id = "gkRisiko" + k;
+  if (typeof Risiko !== "undefined") Risiko.prov(k).then(v => { const el = document.getElementById(id); if (!el || !v) return;
+    el.querySelector("b").textContent = fmt(v.skor); el.querySelector(".gk-x").innerHTML = `<span class="gk-sub">dari 100</span><span class="lc-mmi" style="--w:${v.w};color:${v.skor < 30 ? "#3b3320" : "#fff"}">${esc(v.kelas)}</span>`; }).catch(() => {});
+  return `<div class="gk-rw"><p class="gk-rw-h">Riwayat provinsi</p><div class="gk-ring">${r ? gkKotak("jam", fmt(r.n), "Sejak 1900", "", '<span class="gk-x"><span class="gk-sub">gempa M 5+</span></span>') + gkKotak("kuat", esc(mTulis(r.m)), "Terbesar", warnaM(r.m)) : ""}<div id="${id}" class="gk-k-wadah">${gkKotak("risiko", "–", "Indeks risiko", "", '<span class="gk-x"></span>')}</div></div></div>`; }
+/* pilih ukuran provinsi (segmen atau kepala kolom): urut ikut ukuran, warna peta dan legenda mengikuti; render berat ditunda */
+function pilihUkuran(slug) { const u = KAT_UKURAN.find(x => x.slug === slug); if (!u || !(S.ukuranIzin || []).some(x => x.slug === slug)) return false;
+  S.ukuran = slug; S.urut = {k: u.kunci, turun: true}; S.hal = 0; nanti(renderDaftar); nanti(() => { Peta.aturWilayah(); renderLegenda(); }); return true; }
 $("#rows").addEventListener("click", e => {
+  const uk = e.target.closest("[data-ukuran-k]"); if (uk) { uk.parentElement.querySelectorAll("[data-ukuran-k]").forEach(x => x.setAttribute("aria-pressed", x === uk)); return void pilihUkuran(uk.dataset.ukuranK); }
   const h = e.target.closest("[data-h]"); if (h) { S.hal = +h.dataset.h; h.parentElement.querySelectorAll(".pgn-b.on").forEach(x => x.classList.remove("on")); if (!h.disabled) h.classList.add("on"); return nanti(renderDaftar); }
-  const s = e.target.closest("[data-s]"); if (s) { const k = s.dataset.s; S.urut = {k, turun: S.urut.k === k ? !S.urut.turun : k !== "nama"}; S.hal = 0;
+  const s = e.target.closest("[data-s]"); if (s) { const k = s.dataset.s; const uk2 = !S.jalur.length && Panel.mode !== "riw" && KAT_UKURAN.find(x => x.kunci === k);
+    if (uk2 && S.ukuran !== uk2.slug && pilihUkuran(uk2.slug)) return; S.urut = {k, turun: S.urut.k === k ? !S.urut.turun : k !== "nama"}; S.hal = 0;
     s.parentElement.querySelectorAll("[data-s]").forEach(x => { x.classList.remove("urut"); x.removeAttribute("data-arah"); }); s.classList.add("urut"); s.dataset.arah = S.urut.turun ? 0 : 1; return nanti(renderDaftar); }
   const p = e.target.closest("[data-k]"); if (p) return turun(p.dataset.k);
-  const g = e.target.closest("[data-g]"); if (g) { const q = S.gempa.find(x => x.id === g.dataset.g); if (q) Peta.pilih(q); } });
+  const g = e.target.closest("[data-g]"); if (g) { const q = dataGempa().find(x => x.id === g.dataset.g); if (q) Peta.pilih(q); } });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
 /* ---------- jendela waktu ---------- */
 const RENTANG = [[24, "24 jam"], [72, "72 jam"], [168, "7 hari"]];
-function renderRentang() { $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${S.rentang === v}">${n}</button>`).join(""); }
-$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.rentang = +b.dataset.v; simpanLokal("gempa-rentang", S.rentang); S.hal = 0;
-  $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.segarkan(); renderDaftar(); renderPita(); renderLegenda(); }); });
+function renderRentang() { $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${S.rentang === v && !S.tanggal}">${n}</button>`).join(""); window.PilihTanggal?.gambar(); }
+$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.rentang = +b.dataset.v; simpanLokal("gempa-rentang", S.rentang); S.hal = 0; S.tanggal = null; window.PilihTanggal?.lepas(); if (S.riwayat) { S.riwayat = false; window.PilihTanggal?.keRealTime(); }   /* dari Riwayat kembali ke tampilan awal */
+  $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));  nanti(() => { Peta.segarkan(); renderDaftar(); renderPita(); renderLegenda(); }); });
 
 /* ---------- pita status tsunami resmi BMKG: hanya bila BMKG menyatakan berpotensi tsunami (kode 1 sampai 3) dalam 24 jam; tanpa pernyataan = tidak tampil, tidak ditafsir aman ---------- */
 function renderPita() {
@@ -221,11 +260,14 @@ function renderLegenda() {
   const T = k => Peta.lihat(k);
   const dia = {3: 8, 5: 14, 7: 26}, skala = (st, f) => `<div class="legscale">${st.map(v => `<i style="background:${f(v)}"></i>`).join("")}</div>`;
   const sumber = ["gempa", "riwayat", "katalog", "kekerapan", "bahaya", "lempeng", "sesar", "sensor", "dart", "gnss", "evakuasi"].filter(T).map(k => { const [n, s, p] = SUMBER[k], tip = typeof p === "function" ? p() : p;
-    return `<span${tip ? ` data-tip="${esc("<b>" + n + "</b><br>" + tip)}"` : ""}>${n}: ${esc(s)}</span>`; }).join("");
+    /* tooltip atribusi = teks, bukan angka: kepala (nama lapisan, sumber singkat) lalu paragraf; dibungkus <div> supaya rapikanTip
+       (inti/tip.js) tidak membaca "label: isi" sebagai angka besar. Label pendek sebelum titik dua ditebalkan tipis. */
+    const atr = tip ? esc(String(tip).replace(new RegExp("^" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ":\\s*", "i"), "")).replace(/^([^:]{2,32}):\s+/, "<b>$1:</b> ") : "";   /* "Batas lempeng: ..." tidak mengulang judul */
+    return `<span${tip ? ` data-tip="${esc(`<div class="tp2-h"><b>${esc(n)}</b><small>${esc(s)}</small></div><div class="tp2-atr">${atr}</div>`)}"` : ""}>${n}: ${esc(s)}</span>`; }).join("");
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${T("gempa") || T("riwayat") || T("katalog") ? `<div class="lbl">Kekuatan</div><div class="leg" style="margin:4px 0 8px">${[3, 5, 7].map(m => `<span style="display:flex;align-items:center"><span class="bulat-slot"><i class="sw dot bulat" style="width:${dia[m]}px;height:${dia[m]}px;margin:0;background:#9aa8b8"></i></span>${mTulis(m)}</span>`).join("")}</div>
       <div class="lbl">Kedalaman</div><div class="leg" style="margin:4px 0 8px">${KELAS_DALAM.map(([n, w, r]) => `<span><i class="sw dot" style="background:${w}"></i>${n}, ${r}</span>`).join("")}</div>` : ""}
-    ${T("wilayah") ? `<div class="lbl">Gempa per provinsi</div>${skala(WARNA_WIL.slice(1), c => c)}<div class="legnum">${BATAS_WIL.map((v, i) => `<span>${v}${i === BATAS_WIL.length - 1 ? "+" : ""}</span>`).join("")}</div>` : ""}
+    ${T("wilayah") ? `<div class="lbl">${ukAktif().judul}</div>${skala(WARNA_WIL.slice(1), c => c)}<div class="legnum">${ukAktif().leg.map(v => `<span>${v}</span>`).join("")}</div>` : ""}
     ${T("kekerapan") ? `<div class="lbl">Kejadian per tahun</div>${skala(RAMP_GRID.map(r => r[0]), v => `rgb(${ramp(RAMP_GRID, v).slice(0, 3).join(",")})`)}<div class="legnum">${RAMP_GRID.map(r => `<span>${fmt(r[0])}</span>`).join("")}</div>` : ""}
     ${T("bahaya") ? `<div class="lbl">Indeks bahaya gempa</div>${skala(RAMP_BAHAYA.map(r => r[0]), v => RAMP_BAHAYA.find(r => r[0] === v)[1])}<div class="legnum">${RAMP_BAHAYA.map(r => `<span>${fmt(r[0])}</span>`).join("")}</div>` : ""}
     ${T("lempeng") ? `<div class="lbl">Batas lempeng</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px dashed #b5523b;border-radius:0;background:none;vertical-align:3px"></i>pertemuan lempeng</span></div>` : ""}
@@ -238,3 +280,7 @@ function renderLegenda() {
     ${Kejadian.aktif ? `<div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#5f6fb0"></i>susulan</span></div>` : ""}
     <div class="lbl">Sumber</div><div class="leg lg-sumber">${sumber}</div></div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
+
+/* registri menyalakan segmen ukuran provinsi (PB-76): tabel dan peta digambar ulang sekali bila ada ukuran yang dinyalakan */
+if (typeof ukuranRegistri === "function") ukuranRegistri().then(d => { S.ukuranIzin = ukuranDiizinkan(d, "gempa", KAT_UKURAN); if (!S.ukuranIzin.length) return;
+  S.ukuran = ukAktif().slug; if (S.tersedia) { renderDaftar(); if (peta) nanti(() => { Peta.aturWilayah(); renderLegenda(); }); } });

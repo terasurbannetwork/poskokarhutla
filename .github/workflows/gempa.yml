@@ -1,6 +1,6 @@
 name: Perbarui data gempa
 
-# Sekali sehari 08.10 WIB: catatan prospektif susulan (append-only) dan laporan harian gempa (USGS FDSN tanpa kunci;
+# Sekali sehari 08.10 WIB: catatan prospektif susulan, guncangan, dan PAGER (append-only) dan laporan harian gempa (USGS FDSN tanpa kunci;
 # arsip BMKG centurisk97.id boleh gagal di dalam skripnya).
 # Keluaran di-commit ke main. TIDAK deploy: titik.yml/terbit.yml mengambil public/gempa/data dari checkout (= main),
 # karena tidak ada workflow yang memulihkan atau menimpa folder itu dari cache.
@@ -28,8 +28,8 @@ jobs:
 
       - name: Uji aturan
         run: |
-          # semua skrip gempa yang punya `uji` (11), bukan hanya 4: self-check offline, detik per skrip
-          for s in bahaya batimetri berita bukti dampak guncangan laporan_gempa peluang_gempa riwayat sesar susulan; do python3 scripts/gempa/$s.py uji; done
+          # semua skrip gempa yang punya `uji` (13), bukan hanya 4: self-check offline, detik per skrip
+          for s in bahaya batimetri berita bukti dampak guncangan laporan_gempa pager peluang_gempa prospektif riwayat sesar susulan; do python3 scripts/gempa/$s.py uji; done
           if command -v node >/dev/null; then
             python3 scripts/gempa/uji_js_susulan.py
             python3 scripts/gempa/uji_js_guncangan.py
@@ -60,11 +60,28 @@ jobs:
         timeout-minutes: 15
         run: python3 scripts/gempa/inatews.py uji && { python3 scripts/gempa/inatews.py || echo "::warning title=inatews::gagal; arsip lama dibiarkan"; }
 
+      # Uji prospektif guncangan (PB-51): prakiraan MMI dan PAGER dicatat <= 48 jam sesudah gempa M>=5 masuk katalog (harus SESUDAH arsip InaTEWS di atas),
+      # dinilai lawan buletin Dirasakan BMKG dan level korban jiwa PAGER USGS. Append-only: skrip menolak bila arsip menyusut atau berubah terhadap HEAD.
+      # Galat jaringan/sumber biasa (keluar 1) = peringatan, berkas lama dibiarkan. Keluar 3 (append-only dilanggar) atau 2 (git gagal) = langkah MERAH;
+      # langkah commit di bawah tetap jalan karena berkas yang ditolak tidak pernah ditulis.
+      - name: Catatan prospektif guncangan dan PAGER
+        id: prospektif
+        timeout-minutes: 10
+        run: |
+          merah=0
+          for perintah in "pager.py catat" "prospektif.py catat" "prospektif.py nilai"; do
+            c=0; python3 scripts/gempa/$perintah || c=$?
+            if [ "$c" -eq 2 ] || [ "$c" -eq 3 ]; then echo "::error title=prospektif::$perintah keluar $c (3 = append-only dilanggar, 2 = git gagal)"; merah=$c
+            elif [ "$c" -ne 0 ]; then echo "::warning title=prospektif::$perintah gagal (keluar $c); arsip lama dibiarkan"; fi
+          done
+          exit $merah
+
       - name: Commit data gempa ke main
+        if: ${{ !cancelled() && (success() || steps.prospektif.outcome == 'failure') }}
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json public/gempa/data/peluang.json public/gempa/data/laju.json public/gempa/data/dart.json public/gempa/data/emsc_prospektif.json $(ls public/gempa/data/inatews_*.json 2>/dev/null | tr '\n' ' ')"
+          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json public/gempa/data/peluang.json public/gempa/data/laju.json public/gempa/data/dart.json public/gempa/data/emsc_prospektif.json public/gempa/data/prospektif_gempa.json public/gempa/data/prospektif_pager.json $(ls public/gempa/data/inatews_*.json 2>/dev/null | tr '\n' ' ')"
           git add $B
           git diff --cached --quiet -- $B && { echo "data gempa tidak berubah"; exit 0; }
           git commit -q -m "data: gempa harian $(TZ=Asia/Jakarta date +%F)" -- $B
@@ -74,3 +91,9 @@ jobs:
           done
           echo "::error title=Push data gempa gagal::git push ke main gagal 3x (bentrok atau token tanpa contents:write)"
           exit 1
+
+      # Penjaga data beku (PB-44, F-30; pola PB-68.10): laporan harian dan catatan prospektif gempa dari tanggal di dalam berkas.
+      # Kuning = ::warning, merah = langkah gagal. Ambang di scripts/agents/cek_basi.py.
+      - name: Periksa data gempa tidak beku
+        if: always()
+        run: python3 scripts/agents/cek_basi.py gempa

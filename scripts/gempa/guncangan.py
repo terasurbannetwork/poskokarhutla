@@ -187,7 +187,7 @@ def ekspor():
     }
     json.dump(model, open(KELUAR, "w"), ensure_ascii=False, indent=1)
     pros = {"diperbarui": kini, "dicatat": 0, "dinilai": 0, "metrik": None,
-            "catatan": "Append-only: ramalan MMI per gempa Dirasakan baru dicatat saat arsip D1 gempa (warga-api) tersedia; belum ada yang dicatat atau dinilai."}
+            "catatan": "Tidak dipakai lagi: uji prospektif berjalan di prospektif_gempa.json (scripts/gempa/prospektif.py, tanpa menunggu arsip D1). Berkas ini hanya penunjuk dan tidak berisi catatan."}
     json.dump(pros, open(PROSPEKTIF, "w"), ensure_ascii=False, indent=1)
     print("ditulis", KELUAR, PROSPEKTIF)
 

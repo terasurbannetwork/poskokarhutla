@@ -501,9 +501,9 @@ function hubung() {
   try { const r = await fetch("../data/kekeringan_neraca.json"); if (!r.ok) throw new Error(r.status); raw = await r.json(); }
   catch (e) { $("#muat").innerHTML = `<div><b>Data simulasi belum tersedia.</b></div>`; return; }
   const lain = async u => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (x) { return null; } };
-  const [tut, pk, gr, kp, pd, am, dk, ub, hd] = await Promise.all([lain("data/tutupan.json"), lain("../data/posko_kekeringan.json"), lain("../data/kekeringan_grid.json"), lain("../data/keputusan.json"), lain("../data/kekeringan_padi.json"), lain("data/air_minum.json"), lain("../data/dampak_kekeringan.json"), lain("../data/kekeringan_ujibalik.json"), lain("data/hindcast.json")]);
+  const [tut, pk, gr, kp, pd, dk, ub, hd] = await Promise.all([lain("data/tutupan.json"), lain("../data/posko_kekeringan.json"), lain("../data/kekeringan_grid.json"), lain("../data/keputusan.json"), lain("../data/kekeringan_padi.json"), lain("../data/dampak_kekeringan.json"), lain("../data/kekeringan_ujibalik.json"), lain("data/hindcast.json")]);
   raw.tutupan = tut && tut.lat.length === raw.sel_data.lat.length && tut.lat.every((v, i) => v === raw.sel_data.lat[i] && tut.lon[i] === raw.sel_data.lon[i]) ? tut : null;   /* urutan sel harus sama dengan neraca; bila beda, tutupan dibuang */
-  S.D = siapkan(raw); S.grid = gr; S.padi = pd; S.uji = ub; S.hind = hd && hd.lat.length === raw.sel_data.lat.length ? hd : null; S.airMinum = am; S.dibi = dk && dk.tahunan ? dk.tahunan : null;
+  S.D = siapkan(raw); S.grid = gr; S.padi = pd; S.uji = ub; S.hind = hd && hd.lat.length === raw.sel_data.lat.length ? hd : null; S.airMinum = null;   /* tabel Susenas air minum belum ada (tanpa penghasil, kurasi tangan); porsi rentan memakai kalibrasi atau asumsi */ S.dibi = dk && dk.tahunan ? dk.tahunan : null;
   S.posko = pk && pk.posko ? pk.posko : [];
   S.pangkalan = pk && pk.kabupaten ? pk.kabupaten.filter(k => k.bpbd && k.bpbd.lat != null).map(k => ({nama: "BPBD " + k.nama, lat: k.bpbd.lat, lon: k.bpbd.lon})) : [];
   S.omcRp = kp && kp.param && kp.param.biaya_omc_hari ? kp.param.biaya_omc_hari[0] : 0;

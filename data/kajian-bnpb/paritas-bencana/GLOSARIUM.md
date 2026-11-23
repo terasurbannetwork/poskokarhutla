@@ -85,6 +85,9 @@ Istilah di paket `data/kajian-bnpb/paritas-bencana/`. Bila istilah bertentangan 
 | Baru, Sebagian, Dipakai (data publik) | Status baris di `docs/multi-bencana/DATA-PUBLIK.md`: Baru belum dipasang, Sebagian dipakai satu bencana tetapi belum bencana lain, Dipakai terpasang dengan skrip, uji, jadwal |
 | Tinjau lokal | `http://localhost:8800/<jalur>`: kode dari folder kerja, data dan login dari produksi; tulisan lewat server ini mengenai produksi |
 | INP | Interaction to Next Paint; klik tidak boleh membekukan layar, kontrol urgent, isi berat ditunda |
+| Adaptor layar | Berkas kecil `public/<id>/<fitur>.js` yang memasok angka dan teks dari data halaman ke mesin inti W8 (pola `Bagikan.tema`); tidak menggambar dan tidak memuat pustaka sendiri (D15) |
+| Pilot gempa | Laman `/gempa` sebagai pemakai pertama mesin W8; tiga bencana lain dinyalakan sesudah pemilik menyetujuinya di PB-78 (K12) |
+| Brief pimpinan | Dua halaman A4 berisi angka halaman bencana pada saat dicetak, tanpa kalimat kebijakan buatan mesin (F-35) |
 
 ## 5. Data dan mesin
 

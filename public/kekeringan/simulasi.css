@@ -6,7 +6,7 @@
 .sm-peta{position:absolute;inset:0}
 #peta{position:absolute;inset:0}
 .sm-muat{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in oklch,var(--paper) 80%,transparent);z-index:5;text-align:center;font-size:13px;color:var(--ink2);transition:opacity .4s}
-.sm-muat.hilang{opacity:0;pointer-events:none}
+.sm-muat.hilang{opacity:0;pointer-events:none;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
 .sm-kiri,.sm-bagan,.sm-bawah{position:absolute;z-index:4}
 .sm-kiri{left:12px;top:12px;bottom:92px;width:330px;overflow:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;padding-right:2px}
 .sm-kartu,.sm-bagan,.sm-bawah{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px}

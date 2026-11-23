@@ -172,17 +172,29 @@ export async function kelompokkan(env) {
   return sentuh.size + await tautkanSusulanKecil(env);
 }
 
-/* Susulan M<5: gempa lebih kecil yang jatuh dalam jendela jarak GK dan masa aktif kejadian ditautkan ke kejadian terdekat (tidak memperpanjang masa aktif).
-   Hanya kejadian yang mulai dalam 35 hari terakhir dipindai, supaya putaran tiap menit murah. */
+/* Susulan M<5 (PB-68.8). Aturan dari pustaka, tidak dikalibrasi sendiri (tak ada angka karangan):
+   Uhrhammer, R. A. 1986, "Characteristics of northern and central California seismicity", Earthquake Notes 57(1):21 (jendela deklaster, dikutip
+   van Stiphout dkk. 2012, CORSSA): jarak R = exp(-1,024 + 0,804 M) km dan waktu T = exp(-2,87 + 1,235 M) hari dari waktu gempa utama.
+   Gempa M<5 yang jatuh di dalam jendela kejadian (pusat G, M utama) tertaut ke kejadian terdekat; tidak memperpanjang masa aktif.
+   Satu-satunya angka kita sendiri: T dipotong 35 hari (anggaran baca D1: hanya kejadian yang mulai dalam 35 hari terakhir dipindai tiap putaran).
+   Uji balik pada katalog BMKG InaTEWS (public/gempa/data/inatews_katalog.json): data/kajian-bnpb/paritas-bencana/uji-balik/susulan-gempa.md
+   (lulus: presisi 0,84 lawan kontrol cincin; gempa Flores M7,7 14 Agt 2026 menarik 104 susulan, kontrol 0). Pembatas: jumlah ini batas bawah,
+   karena D1 hanya menerima BMKG M5+ dan gempa dirasakan serta USGS M4,5+; gempa kecil yang tak pernah masuk katalog Worker tak bisa dihitung.
+   Pindai hanya kejadian yang mulai dalam 35 hari terakhir, supaya putaran tiap menit murah. */
+export const MAKS_HARI_SUSULAN = 35;
+export const jendelaSusulan = m => ({km: Math.exp(-1.024 + 0.804 * m), hari: Math.min(MAKS_HARI_SUSULAN, Math.exp(-2.87 + 1.235 * m))});
+/* x gempa M<5 tertaut ke kejadian k (mulai, lat, lon, m)? Batas jendela termasuk. */
+export const tautSusulan = (k, x) => { const w = jendelaSusulan(k.m); return x.t >= k.mulai && x.t <= k.mulai + w.hari * HARI && km(k.lat, k.lon, x.lat, x.lon) <= w.km; };
+
 async function tautkanSusulanKecil(env) {
-  const dari = Date.now() - 35 * HARI;
-  const kej = (await env.DB.prepare("SELECT * FROM gempa_kejadian WHERE aktif_hingga >= ?").bind(dari).all()).results;
+  const dari = Date.now() - MAKS_HARI_SUSULAN * HARI;
+  const kej = (await env.DB.prepare("SELECT * FROM gempa_kejadian WHERE mulai >= ?").bind(dari).all()).results;
   if (!kej.length) return 0;
   const awal = Math.min(...kej.map(k => k.mulai));
   const kecil = (await env.DB.prepare("SELECT id, t, lat, lon FROM gempa WHERE m < 5 AND kej IS NULL AND t >= ? ORDER BY t LIMIT 5000").bind(awal).all()).results;
   const st = [];
   for (const x of kecil) {
-    const k = kej.filter(c => c.mulai <= x.t && x.t <= c.aktif_hingga && km(c.lat, c.lon, x.lat, x.lon) <= jendelaKm(c.m))
+    const k = kej.filter(c => tautSusulan(c, x))
       .sort((a, b) => km(a.lat, a.lon, x.lat, x.lon) - km(b.lat, b.lon, x.lat, x.lon))[0];
     if (k) st.push(env.DB.prepare("UPDATE gempa SET kej = ? WHERE id = ?").bind(k.kode, x.id));
   }

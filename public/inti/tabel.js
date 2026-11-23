@@ -39,3 +39,18 @@ function pasangTabel(el, o) {
   el.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches?.("tr.klik")) e.target.click(); });
   return {set(baris) { B = baris; st.hal = 0; pilih = -1; kotor = true; gambar(); }};
 }
+
+/* Segmen ukuran tabel provinsi (PB-76, F-39, D15): SATU mesin; adaptor bencana memasok katalog ukuran dan angkanya dari data halaman.
+   Menyala hanya bila /bencana.json mencantumkan slug di kemampuan.layar.ukuran_provinsi untuk id itu (daftar kosong = tanpa segmen).
+   katalog = [{slug, label, ...}]; ukuranDiizinkan mengembalikan katalog yang disaring registri, urutan katalog; segmenUkuran menggambar
+   segmen (tombol membawa data-ukuran-k); ukuranRegistri memuat /bencana.json sekali (registri gagal = []). Mesin tidak menghitung angka. */
+function ukuranDiizinkan(daftar, id, katalog) {
+  const z = (daftar || []).find(b => b.id === id)?.kemampuan?.layar?.ukuran_provinsi;
+  return Array.isArray(z) ? katalog.filter(k => z.includes(k.slug)) : [];
+}
+function segmenUkuran(izin, aktif) {
+  return izin.length ? `<div class="seg penuh" role="group" aria-label="Ukuran provinsi" data-ukuran>${izin.map(k => `<button type="button" data-ukuran-k="${k.slug}" aria-pressed="${k.slug === aktif}">${k.label}</button>`).join("")}</div>` : "";
+}
+function ukuranRegistri() {
+  return ukuranRegistri.p ||= typeof fetch === "function" ? fetch("/bencana.json").then(r => r.ok ? r.json() : Promise.reject(new Error("registri " + r.status))).then(j => j.bencana || [], () => []) : Promise.resolve([]);
+}
