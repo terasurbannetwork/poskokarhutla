@@ -450,8 +450,8 @@ async function fotoPost(env, req, url, kini, ctx) {
   const bb = await bacaBytes(req, 7e6); if (bb.galat) return galat(bb.status || 400, bb.galat);
   let o; try { o = JSON.parse(new TextDecoder().decode(bb.b) || "{}"); } catch { return galat(400, "body bukan JSON"); }
   if (!o || typeof o !== "object") return galat(400, "body harus objek JSON");
-  const id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
   if (req.headers.get("authorization") && await mesinSah(env, req)) { const w = nomorWa(o.wa), j = w && await fotoTim(env, w, o, kini); if (j) return j; }   // foto ke draf data lanjutan (LJ-05)
+  const id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
   const {wa, saluran} = id, mesin = saluran === "wa";
   const batas = await kuota(env, req, id, kini); if (batas) return batas;
   const mentah = b64(o.data, mesin ? 6.9e6 : 3.5e6);

@@ -274,7 +274,7 @@ uji("WA rumah: dari data rumah sampai simpan; foto masuk ke objek; pribadi terpi
   const o = await DB.prepare("SELECT * FROM lj_objek WHERE oleh = ? AND jenis = 'rumah' AND klien_id LIKE 'wa-%'").bind("tim:" + ANGGOTA).first();
   assert.ok(o, "objek tersimpan lewat jalur yang sama dengan web"); assert.equal(o.berkas, berkasId); assert.equal(o.status, "aktif");
   assert.equal(JSON.parse(o.data).tingkat, "rb"); assert.equal(JSON.parse(o.data).kk, undefined); assert.equal(JSON.parse(o.pribadi).kk, "Budi WA"); assert.equal(JSON.parse(o.pribadi).nik_kk, NIK_UJI);
-  assert.equal(o.lat, -6.601, "titik dari lokasi yang dibagikan lewat WA"); assert.match(o.klien_id, /^wa-\d+$/);
+  assert.equal(o.lat, -6.601, "titik dari lokasi yang dibagikan lewat WA"); assert.match(o.klien_id, /^wa-\d+-62\d{8,13}$/);
   const md = (await DB.prepare("SELECT * FROM lj_media WHERE objek = ?").bind(o.id).all()).results;
   assert.equal(md.length, 2); assert.ok(md.every(m => m.pintu === "wa" && m.jenis === "foto"));
   assert.deepEqual(md.map(m => m.lencana).sort(), ["tanpa", "wa"]);
