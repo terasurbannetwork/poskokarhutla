@@ -1,6 +1,6 @@
 # Laporan QA deck Paparan Kebencanaan Sumatera Barat 231126
 
-Berkas `Paparan Kebencanaan Sumatera Barat 231126.pptx` dan `Paparan Kebencanaan Sumatera Barat 231126.pdf`, spek `banjir-sumbar`, diperiksa 23-11-2026 10.54 WIB.
+Berkas `Paparan Kebencanaan Sumatera Barat 231126.pptx` dan `Paparan Kebencanaan Sumatera Barat 231126.pdf`, spek `banjir-sumbar`, diperiksa 23-11-2026 11.08 WIB.
 Vonis: **GAGAL** (2 pemeriksaan gagal). Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; di awal musim hujan 2026 banjir kembali melanda dan kecamatan berstatus banjir perlu disiapkan.
@@ -56,5 +56,5 @@ Judul dibaca berurutan sebagai ringkasan sebelum dikirim.
 | 12 | grafik; temuan | Gempa dan Tsunami: Skor risiko tertinggi {{angka:wb.sb.g.top}} di Kepulauan Mentawai; korban {{angka:wb.sb.g.m/satuan}} sejak 2008 | Gempa dan tsunami |
 | 13 | peta; temuan | Karhutla dan Gunung Api: Seluas {{angka:wb.sb.k.luas/satuan}} lahan terbakar sepanjang 2026; Kerinci dan Marapi berstatus Waspada | Karhutla dan gunung api |
 | 14 | pembatas-seksi | – | – |
-| 15 | matriks; temuan | Logistik: Bantuan Peralatan dan Logistik 2026 yang Diserahkan kepada {{angka:wb.sb.lg.n/satuan}} di Sumatera Barat | Bantuan logistik |
+| 15 | matriks; temuan | Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {{angka:wb.sb.lg.n/satuan}} di Sumatera Barat | Bantuan logistik |
 | 16 | penutup | – | – |

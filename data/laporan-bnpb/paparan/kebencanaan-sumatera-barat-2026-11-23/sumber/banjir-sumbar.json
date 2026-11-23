@@ -414,9 +414,9 @@
       "cut_off": false,
       "pesan": "Bantuan logistik",
       "sumber": "Direktorat Logistik BNPB, 23 Nov 2026",
-      "judul": "Logistik: Bantuan Peralatan dan Logistik 2026 yang Diserahkan kepada {{angka:wb.sb.lg.n|satuan}} di Sumatera Barat",
+      "judul": "Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {{angka:wb.sb.lg.n|satuan}} di Sumatera Barat",
       "tabel": {
-        "judul_panel": "Bantuan per BPBD, logistik tahun 2026, diserahkan 23 November 2026",
+        "judul_panel": "Bantuan per BPBD",
         "ikon": "tanggap-darurat",
         "peringkat": false,
         "sel_dua_baris": true,
@@ -432,9 +432,15 @@
             },
             {
               "nama": "alat",
-              "kepala": "Kendaraan dan peralatan",
+              "kepala": "Kendaraan dan peralatan 2026",
               "rata": "l",
-              "bobot": 4.4
+              "bobot": 2.6
+            },
+            {
+              "nama": "lalu",
+              "kepala": "Sudah diterima 2025",
+              "rata": "l",
+              "bobot": 2.2
             },
             {
               "nama": "selimut",
