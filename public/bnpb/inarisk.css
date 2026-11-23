@@ -28,12 +28,13 @@
 .ir-field select:disabled{background:var(--surface);color:var(--ink2)}
 .ir-field :focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
 .ir-teks{all:unset;cursor:pointer;color:var(--brand2);font-weight:600;font-size:var(--fs-2)}
+.ir-teks[hidden]{display:none}
 .ir-teks:focus-visible{outline:2px solid var(--brand2);border-radius:4px}
 .ir-tombol2{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-block-size:var(--h-ctl);padding:0 16px;border:1px solid color-mix(in srgb,var(--brand2) 45%,var(--line));border-radius:var(--r-sm);background:var(--card);color:var(--brand2);font:600 var(--fs-3) var(--font);text-decoration:none;cursor:pointer}
 .ir-tombol2:hover{background:color-mix(in srgb,var(--brand2) 8%,var(--card))}
 .ir-tombol2:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 .ir-kecil{min-block-size:32px;padding:0 12px;font-size:var(--fs-2)}
-.ir-ikon{all:unset;cursor:pointer;display:grid;place-items:center;inline-size:28px;block-size:28px;border-radius:var(--r-xs);color:var(--brand2);font-size:20px;line-height:1}
+.ir-ikon{all:unset;cursor:pointer;display:grid;place-items:center;inline-size:28px;block-size:28px;border-radius:var(--r-xs);color:var(--brand2);font-size:var(--fs-7);line-height:1}
 .ir-ikon:hover{background:var(--surface)}
 .ir-ikon:focus-visible{outline:2px solid var(--brand2)}
 
@@ -58,7 +59,7 @@
 .ir-dok{list-style:none;margin:0;padding:0;display:grid;gap:4px}
 .ir-dok a{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:8px;border-radius:var(--r-sm);color:var(--ink);text-decoration:none;font-size:var(--fs-3)}
 .ir-dok a:hover{background:var(--surface)}
-.ir-dok i{display:grid;place-items:center;block-size:34px;border-radius:var(--r-xs);background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-tx);font:800 9px var(--font);font-style:normal}
+.ir-dok i{display:grid;place-items:center;block-size:34px;border-radius:var(--r-xs);background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-tx);font:800 var(--fs-1) var(--font);font-style:normal}
 .ir-dok small{display:block;color:var(--ink2);font-size:var(--fs-1)}
 
 /* deret angka */
@@ -122,6 +123,7 @@
 .ir-hal button:disabled{opacity:.45;cursor:default}
 .ir-hal span[aria-hidden]{align-self:center;color:var(--ink2)}
 .ir-tabel-und tbody th b{display:block}
+.ir-tabel-und tbody th small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-inline-size:80ch}
 
 /* Tautan */
 .ir-tautan{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
@@ -202,7 +204,8 @@
 .ir-dlg-kanan small{color:var(--ink2);font-size:var(--fs-1)}
 .ir-dlg-kanan b{font-size:var(--fs-5);display:inline-flex;align-items:center;justify-content:end}
 .ir-avatar{display:grid;place-items:center;inline-size:52px;block-size:52px;border-radius:var(--r-sm);background:linear-gradient(140deg,var(--brand2),var(--ok));color:var(--on-brand);font:800 var(--fs-7) var(--display)}
-.ir-tutup{all:unset;cursor:pointer;display:grid;place-items:center;inline-size:36px;block-size:36px;border-radius:50%;font-size:24px;color:var(--ink2)}
+.ir-tutup{all:unset;cursor:pointer;display:grid;place-items:center;inline-size:36px;block-size:36px;border-radius:50%;font-size:var(--fs-8);color:var(--ink2)}
+.ir-dlg-hd-kecil .ir-tutup{margin-inline-start:auto}
 .ir-tutup:hover{background:var(--surface)}
 .ir-tutup:focus-visible{outline:2px solid var(--brand2)}
 .ir-dlg-sub{margin:0;color:var(--ink2);font-size:var(--fs-2)}
@@ -221,7 +224,7 @@
 .ir-tren{inline-size:100%;block-size:auto}
 .ir-tren .t-lama{fill:var(--ink2)}.ir-tren .t-baru{fill:var(--brand2)}
 .ir-tren .t-dasar{stroke:var(--line)}.ir-tren .t-pisah{stroke:var(--brand2);stroke-dasharray:3 3}
-.ir-tren text{font:600 10px var(--font);fill:var(--ink)}.ir-tren .t-tahun{fill:var(--ink2)}.ir-tren .t-kosong{fill:var(--ink2);font-weight:400}
+.ir-tren text{font:600 var(--fs-1) var(--font);fill:var(--ink)}.ir-tren .t-tahun{fill:var(--ink2)}.ir-tren .t-kosong{fill:var(--ink2);font-weight:400}
 .ir-tren-leg{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:var(--fs-1);color:var(--ink2)}
 .ir-tren-leg i{display:inline-block;inline-size:10px;block-size:10px;border-radius:2px;margin-inline-end:5px;vertical-align:-1px}
 .ir-tren-leg .t-lama{background:var(--ink2)}.ir-tren-leg .t-baru{background:var(--brand2)}
@@ -230,17 +233,17 @@
 .ir-jiwa li{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:var(--fs-2);font-weight:600;color:var(--ink)}
 .ir-jiwa li>span{text-align:end}
 .ir-jiwa-bt{display:flex;block-size:18px;border-radius:3px;overflow:hidden;background:var(--line)}
-.ir-jiwa-bt s{display:grid;place-items:center;inline-size:0;text-decoration:none;color:var(--on-brand);font:700 10px var(--font);white-space:nowrap;overflow:hidden}
+.ir-jiwa-bt s{display:grid;place-items:center;inline-size:0;text-decoration:none;color:var(--on-brand);font:700 var(--fs-1) var(--font);white-space:nowrap;overflow:hidden}
 .ir-jarum{margin:0;display:grid;justify-items:center;gap:6px}
 .ir-jarum svg{inline-size:min(260px,100%);block-size:auto}
 .ir-jarum path{fill:none;stroke-width:14}
 .ir-jarum .j-rendah{stroke:var(--bad)}.ir-jarum .j-sedang{stroke:var(--warn)}.ir-jarum .j-tinggi{stroke:var(--ok)}
 .ir-jarum .j-jarum{stroke:var(--brand2);stroke-width:4;stroke-linecap:round}.ir-jarum .j-pusat{fill:var(--brand2)}
-.ir-jarum .j-angka{font:800 22px var(--display);fill:var(--ink)}
+.ir-jarum .j-angka{font:800 var(--fs-7) var(--display);fill:var(--ink)}
 .ir-jarum figcaption{display:flex;align-items:center;font-weight:600}
 .ir-radar{inline-size:min(280px,100%);block-size:auto;justify-self:center}
 .ir-radar .r-kisi{fill:none;stroke:var(--line)}.ir-radar .r-isi{fill:color-mix(in srgb,var(--brand2) 25%,transparent);stroke:var(--brand2);stroke-width:2}
-.ir-radar .r-titik{fill:var(--brand2)}.ir-radar .r-label{font:700 11px var(--font);fill:var(--ink)}
+.ir-radar .r-titik{fill:var(--brand2)}.ir-radar .r-label{font:700 var(--fs-1) var(--font);fill:var(--ink)}
 .ir-prio{list-style:none;margin:0;padding:0;display:grid}
 .ir-prio li{display:grid;grid-template-columns:36px 1fr 200px 48px;gap:10px;align-items:center;padding:8px 0;border-block-end:1px solid var(--line);font-size:var(--fs-2)}
 .ir-prio i{font-style:normal;color:var(--ink2)}.ir-prio em{font-style:normal;text-align:end;font-variant-numeric:tabular-nums}

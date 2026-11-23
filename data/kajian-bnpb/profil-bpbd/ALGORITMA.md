@@ -9,7 +9,7 @@ Semua ambang ada di satu berkas konstanta (`src/profil_konst.js`, `DESAIN-TEKNIS
 | `PIN_DIGIT` | 6 | Q2 |
 | `PROFIL_MAKS` | 4 profil bukan `dicabut` per akun | K6, D2 |
 | `PROFIL_WAJIB` | 3 profil lengkap sebelum kirim | K6 |
-| `SALAH_BERUNTUN` | 5 salah, lalu kunci `KUNCI_MENIT` | Q2 |
+| `SALAH_BERUNTUN` | 5 salah, lalu kunci `KUNCI_MENIT`, dihitung per profil dan IP (N7) | Q2, N7 |
 | `KUNCI_MENIT` | 15 | Q2 |
 | `SALAH_HARI` | 10 salah dalam satu hari kalender WIB, lalu kunci sampai admin membuka | Q2 |
 | `SESI_PROFIL_JAM` | 12 | Q8 |
@@ -23,7 +23,7 @@ Semua ambang ada di satu berkas konstanta (`src/profil_konst.js`, `DESAIN-TEKNIS
 
 Fungsi murni `profilLengkap(p)` benar bila semua terpenuhi:
 
-1. `nama` 2 sampai 100 karakter, `jabatan` 2 sampai 100, `nip` cocok `RE_NIP` yang ada di `src/instansi.js` (huruf, angka, titik, garis, spasi, 5 sampai 30), `email` huruf kecil cocok `RE_EMAIL`, `wa` hasil `normalWA` (62 diikuti angka, 10 sampai 15 digit).
+1. `nama` 2 sampai 100 karakter, `jabatan` 2 sampai 100, `nip` cocok `RE_NIP` yang ada di `src/instansi.js` dan `RE_EMAIL` yang diimpor dari `src/posko.js` (huruf, angka, titik, garis, spasi, 5 sampai 30), `email` huruf kecil cocok `RE_EMAIL`, `wa` hasil `normalWA` (62 diikuti angka, 10 sampai 15 digit).
 2. `foto = 1`.
 3. `pin_sha` tidak kosong.
 4. `status` bukan `dicabut`.
@@ -34,7 +34,7 @@ Fungsi murni `profilLengkap(p)` benar bila semua terpenuhi:
 
 ### 3.1 Bentuk
 
-PIN sah bila persis 6 angka. Ditolak: semua angka sama (`000000`, `111111`), deret naik atau turun (`012345`, `123456`, `654321`), dan sama dengan 6 angka terakhir `wa` profil itu. Pesan penolakan satu kalimat, tanpa menyebut aturan mana.
+(Rancangan agent D, bisa dibatalkan pemilik; Q2 hanya menetapkan 6 angka.) PIN sah bila persis 6 angka. Ditolak: semua angka sama (`000000`, `111111`), deret naik atau turun (`012345`, `123456`, `654321`), dan sama dengan 6 angka terakhir `wa` profil itu. Pesan penolakan satu kalimat, tanpa menyebut aturan mana.
 
 ### 3.2 Simpan
 
@@ -47,29 +47,39 @@ pin_sha  = hex(HMAC-SHA256(kunci = env.PROFIL_KUNCI, pesan = "pin|" + profil_id 
 
 ### 3.3 Periksa: hitung dulu, bandingkan sesudahnya
 
-Tujuan: sekian percobaan serentak tidak bisa lolos dari batas.
+Tujuan: tebakan serentak tidak bisa lolos dari batas. Dua batas berjalan sendiri-sendiri (N7, bawaan sementara):
+
+| Batas | Dihitung per | Disimpan di | Akibat |
+| --- | --- | --- | --- |
+| 5 salah dalam 15 menit | profil dan IP (`ipHash`) | baris `laju_bnpb`, kunci `pf:<profil>:<ip>`, aksi `profil.pin_salah` (pola `gagalBanyak` dan `catatLaju` yang ada) | PIN dari IP itu ditolak 423 sampai jendela 15 menit lewat; IP lain tidak terkunci |
+| 10 salah dalam satu hari kalender WIB | profil saja | kolom `salah_hari`, `hari_tgl`, `kunci_admin` | profil terkunci sampai admin membuka |
 
 ```
-1. laju akun dan IP (gagalBanyak pola yang ada): bila penuh, 429.
-2. reservasi percobaan, satu pernyataan atomik:
-   UPDATE instansi_profil
-      SET salah = CASE WHEN salah + 1 >= :SALAH_BERUNTUN THEN 0 ELSE salah + 1 END,
-          salah_hari = CASE WHEN hari_tgl = :hari THEN salah_hari + 1 ELSE 1 END,
-          hari_tgl = :hari,
-          kunci_sampai = CASE WHEN salah + 1 >= :SALAH_BERUNTUN THEN :kini + :KUNCI_MENIT*60000 ELSE kunci_sampai END,
-          kunci_admin = CASE WHEN (CASE WHEN hari_tgl = :hari THEN salah_hari + 1 ELSE 1 END) >= :SALAH_HARI THEN 1 ELSE kunci_admin END
-    WHERE id = :profil AND akun_id = :akun AND status = 'aktif' AND kunci_admin = 0 AND kunci_sampai <= :kini
-    RETURNING salah, salah_hari, kunci_sampai, kunci_admin
-   Tidak ada baris = terkunci atau bukan profil aktif milik akun ini: 423, tanpa membandingkan PIN.
+1. laju akun dan IP (LAJU_PIN_AKUN, LAJU_PIN_IP): bila penuh, 429.
+2. reservasi, satu batch atomik:
+   a. INSERT INTO laju_bnpb (kunci pf:profil:ip, aksi profil.pin_salah, waktu kini)
+      SELECT ... WHERE (SELECT count(*) FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > :kini - 15 menit) < :SALAH_BERUNTUN
+   b. UPDATE instansi_profil
+         SET salah_hari = CASE WHEN hari_tgl = :hari THEN salah_hari + 1 ELSE 1 END,
+             hari_tgl = :hari,
+             kunci_admin = CASE WHEN (CASE WHEN hari_tgl = :hari THEN salah_hari + 1 ELSE 1 END) >= :SALAH_HARI THEN 1 ELSE 0 END
+       WHERE id = :profil AND akun_id = :akun AND status = 'aktif' AND kunci_admin = 0 AND changes() > 0
+       RETURNING salah_hari, kunci_admin
+   Baris a tidak tertulis (changes() = 0) atau b tanpa baris = terkunci atau bukan profil aktif milik akun ini: 423, tanpa membandingkan PIN.
 3. bandingkan HMAC jawaban dengan pin_sha (sama panjang, tanpa keluar lebih awal).
-4. benar: UPDATE salah = 0, kunci_sampai = 0, salah_hari = max(salah_hari - 1, 0),
-          pin_pada = :kini WHERE id = :profil   (membatalkan reservasi), lalu terbitkan sesi profil.
-   salah: kembalikan 401 "PIN salah"; bila RETURNING menunjukkan kunci baru, jawaban 423 dengan waktu buka.
+4. benar: kembalikan reservasi, lalu terbitkan sesi profil:
+     DELETE baris laju yang ditulis langkah 2a (id baris dipegang);
+     UPDATE instansi_profil
+        SET salah_hari = max(salah_hari - 1, 0),
+            kunci_admin = CASE WHEN salah_hari - 1 >= :SALAH_HARI THEN 1 ELSE 0 END,
+            pin_pada = :kini, terakhir_masuk = :kini
+      WHERE id = :profil
+   salah: biarkan reservasi; 401 "PIN salah"; bila RETURNING menunjukkan kunci_admin = 1 atau hitungan laju mencapai batas, jawab 423.
 ```
 
-Ketika percobaan kelima memasang kunci, `salah` langsung kembali 0 dalam pernyataan yang sama (semua ekspresi `SET` membaca nilai lama), jadi sesudah 15 menit jendela baru mendapat 5 percobaan penuh. Kunci dibaca dari `kunci_sampai > kini`, bukan dari `salah`. Uji UP-7 menjaga perilaku ini.
+Karena langkah 4 mengurangi `salah_hari` dan menghitung ulang `kunci_admin` dari nilai nyata, PIN benar pada percobaan ke-10 tidak memasang kunci harian; kunci hanya bertahan bila memang ada 10 salah. Paling banyak 5 permintaan serentak lolos dari tiap IP sebelum batas 15 menit penuh, jadi penyerang paralel dari satu IP mendapat 5 tebakan per 15 menit, dan 10 per hari untuk seluruh IP.
 
-Jumlah PIN benar yang ditolak karena reservasi serentak dibatasi: paling banyak `SALAH_BERUNTUN` permintaan lolos sebelum kunci terpasang, jadi penyerang paralel tetap hanya mendapat 5 tebakan per 15 menit dan 10 per hari.
+Risiko pengunci (DoS): pemegang sandi lembaga bisa sengaja menebak salah 10 kali sehari untuk mengunci profil orang lain sampai admin membuka. Batas 15 menit per IP mencegah satu IP mengunci lama, tetapi batas harian tetap per profil (N7). Dicatat di `KEAMANAN-PRIVASI.md` dan diuji (UP-31).
 
 ### 3.4 Atur dan ganti PIN
 
@@ -77,8 +87,8 @@ Jumlah PIN benar yang ditolak karena reservasi serentak dibatasi: paling banyak 
 | --- | --- | --- |
 | Profil `draf` tanpa PIN, PIN pertama (N1) | sesi akun, profil milik akun itu, `pin_sha` kosong | simpan; tanpa memerlukan PIN lama |
 | Ganti PIN sendiri | sesi profil profil itu, PIN lama benar (lewat langkah 3.3 yang sama) | simpan, sesi profil lain milik profil ini dicabut |
-| Atur ulang oleh admin | moderator ke atas | PIN sementara acak (lihat 3.5), `pin_wajib_ganti = 1`, `salah = 0`, `kunci_sampai = 0`, `kunci_admin = 0`, sesi profil dicabut, log `reset_pin` |
-| Buka kunci oleh admin | moderator ke atas | `kunci_admin = 0`, `salah = 0`, `salah_hari = 0`, `kunci_sampai = 0`, log `buka_kunci` |
+| Atur ulang oleh admin | moderator ke atas | PIN sementara acak (lihat 3.5), `pin_wajib_ganti = 1`, `salah_hari = 0`, `kunci_admin = 0`, baris laju `pf:<profil>:*` dihapus, sesi profil dicabut, log `reset_pin` |
+| Buka kunci oleh admin | moderator ke atas | `kunci_admin = 0`, `salah_hari = 0`, baris laju `pf:<profil>:*` dihapus, log `buka_kunci` |
 
 PIN pertama pada profil yang sudah punya `pin_sha` ditolak lewat rute ini (mencegah PIC lain menimpa PIN orang). Profil yang masih kosong PIN-nya bisa diambil siapa pun yang memegang sesi akun; itu risiko yang diterima N1 dan ditutup oleh persetujuan admin yang melihat foto dan nama.
 
@@ -105,6 +115,8 @@ SELECT p.id profil_id, p.nama, p.jabatan, a.* FROM instansi_sesi_profil s
  WHERE s.token_sha = ? AND s.kedaluwarsa > ?
 ```
 
+`sesiProfilDari` ikut mengembalikan `pin_wajib_ganti`. Penegakan ada di tiga pembaca yang sama (`akunAktif`, `hakMeja`, dan pembungkus rute): bila `pin_wajib_ganti = 1`, semua rute selain `POST /profil/:id/gantipin`, `POST /profil/keluar`, dan `GET /profil` menjawab 403 `{galat: "ganti PIN dulu", pin_wajib_ganti: true}`; di `/api/lapor/*` semua rute 403 dengan jawaban yang sama.
+
 Karena `status` profil dan akun dibaca tiap permintaan, mencabut profil atau akun berlaku seketika tanpa menghapus sesi lebih dulu; penghapusan baris sesi tetap dilakukan supaya tabel bersih.
 
 Penerbitan satu sesi profil menghapus sesi profil lain milik profil yang sama yang kedaluwarsa, dan tidak menghapus yang masih berlaku (dua perangkat boleh sekaligus). Ganti profil di perangkat yang sama: rute keluar-profil menghapus baris sesi dari kuki itu dan menghapus kuki di ketiga Path.
@@ -119,6 +131,7 @@ bila a.status != aktif atau a.wajib_ganti: jawaban lama
 bila a.jenis tidak termasuk {pemprov, pemkab, pemkot}: kembalikan a   // jenis lain tidak berubah
 p = sesiProfilDari(...)
 bila p kosong atau p.akun_id != a.id: 401 "pilih profil dan isi PIN dulu" (+ profil_perlu: true)
+bila p.pin_wajib_ganti: 403 pin_wajib_ganti kecuali rute gantipin, keluar, profil;
 catat profil di WeakMap permintaan; kembalikan {...a, profil_id, profil_nama}
 ```
 
@@ -171,7 +184,7 @@ Tabel `instansi_profil_log`, hanya menambah. Satu baris per kejadian:
 | `kerja` | tiap POST sukses (status < 400) di rute kerja, `rute` = kunci rute seperti `POST /api/instansi/konfirmasi/:id`, `objek` = id di jalur | profil dari sesi |
 | `meja` | tiap non-GET yang diizinkan `hakMeja` di rute `/api/lapor/*`, `rute` = metode dan pola jalur | profil dari sesi |
 
-`kerja` ditulis oleh pembungkus `RUTE_INSTANSI` (`src/instansi.js:1757`) yang membaca profil dari WeakMap yang diisi `akunAktif`; satu tulis per permintaan, tanpa pembacaan tambahan. `meja` ditulis oleh `hakMeja` sebelum penangan jalan, jadi menandakan tindakan yang diizinkan, bukan jaminan berhasil; riwayat meja yang ada (`oleh` pelaku) tetap menjadi catatan hasil. Isi badan, teks pesan, dan foto tidak pernah masuk log. `ip` = 12 karakter pertama `ipHash`.
+`kerja` ditulis oleh pembungkus `RUTE_INSTANSI` (`src/instansi.js:1758`) yang membaca profil dari WeakMap yang diisi `akunAktif`; satu tulis per permintaan, tanpa pembacaan tambahan. `meja` ditulis oleh `hakMeja` sebelum penangan jalan, jadi menandakan tindakan yang diizinkan, bukan jaminan berhasil; riwayat meja yang ada (`oleh` pelaku) tetap menjadi catatan hasil. Isi badan, teks pesan, dan foto tidak pernah masuk log. `ip` = 12 karakter pertama `ipHash`.
 
 Retensi: `LOG_RETENSI_HARI`. Trigger menolak UPDATE dan menolak DELETE baris yang umurnya kurang dari 730 hari; pembersihan jam-an (`bersihkanInstansi`) menghapus yang lebih tua.
 
@@ -184,7 +197,7 @@ Retensi: `LOG_RETENSI_HARI`. Trigger menolak UPDATE dan menolak DELETE baris yan
 `hakMeja` (urutan baru):
 
 1. Staf BNPB seperti sekarang.
-2. `sesiProfilDari`; bila ada dan `x-pb: 1` untuk non-GET: `cakupanMeja({jenis, tingkat, prov, kab, wilayah, status: 'aktif', nama: profil_nama})`, `kunci = "pf:" + profil_id`, `oleh = c.pelaku`.
+2. `sesiProfilDari`; bila `pin_wajib_ganti = 1`: 403 `pin_wajib_ganti` (meja tidak punya rute pengecualian); bila ada dan `x-pb: 1` untuk non-GET: `cakupanMeja({jenis, tingkat, prov, kab, wilayah, status: 'aktif', nama: profil_nama})`, `kunci = "pf:" + profil_id`, `oleh = c.pelaku`.
 3. Jalur `/masuk` untuk akun non-pemda: `lpAkunMeja` dikurangi jenis pemda (Q1), jadi tidak ada akun yang bisa masuk meja lewat dua pintu.
 
 `cakupanMeja` tidak berubah; `pelaku` otomatis memuat nama profil sehingga riwayat meja menunjuk orangnya.

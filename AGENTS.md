@@ -540,6 +540,17 @@ Sebelum menyentuh panel pemantauan alat di halaman banjir dan gunung api (kartu 
 
 Aturan berhentinya sama dengan §2.1. Hanya banjir dan gunung api; tidak ada halaman `/ews`; nama `ews` di registri dan `src/ews.js` tetap milik langganan email; tidak pernah menulis "aman"; alat terputus tidak pernah tampil 0; data dan CCTV pihak lain hanya dengan izin tertulis; bacaan sensor tidak memicu peringatan publik.
 
+### 2.38 Akun BPBD dengan profil PIC (`/instansi`: pilih profil, PIN, 3 sampai 4 PIC, log per profil): baca dulu, baru bangun
+
+Sebelum menyentuh profil PIC akun BPBD (layar pilih profil, PIN, sesi profil, log per profil, pembuatan 553 akun pemda, sesi profil di meja `/lapor`), baca dokumen di
+`data/kajian-bnpb/profil-bpbd/` dengan urutan otoritas ini (kode di `src/instansi.js`, fungsi `pf*` di `src/hak.js`, `src/lapor_ai.js` bagian `hakMeja`, `src/masuk*.js`, migrasi profil, `public/instansi*`, `public/admin/instansi.js`, `tests/warga/profil_*` milik `warga-api`; `public/lapor/meja.js` milik `layar-peta`):
+
+1. `KEPUTUSAN-PROFIL.md`: keputusan pemilik K1-K10, rancangan D1-D8, pertanyaan Q1-Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (N1-N7), 4. `ALUR.md`, 5. `ALGORITMA.md` (PIN, kunci, sesi dua tingkat), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PF-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tanpa sesi profil tidak ada akses kerja; PIN hanya tersimpan sebagai hash; foto muka hanya foto profil, tanpa vektor wajah; NIP, HP, email PIC tidak pernah di `public/`; log profil append-only.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

@@ -16,7 +16,8 @@ const hulu = async (url, init, ms) => {
   try { return await fetch(url, {...init, headers: {"user-agent": UA, ...init?.headers}, signal: AbortSignal.timeout(ms)}); } catch { return null; }
 };
 const galatHulu = () => gagal(502, "InaRISK sedang tidak menjawab, coba lagi nanti");
-const fotoAman = f => typeof f === "string" && URL.canParse(f) && new URL(f).protocol === "https:" && HOST_FOTO.has(new URL(f).hostname);
+/* foto lama InaRISK ditulis http://; host yang diizinkan dinaikkan ke https (diuji 23 Nov 2026: 200 image/jpeg), host lain dibuang */
+const fotoAman = f => { if (typeof f !== "string" || !URL.canParse(f)) return null; const u = new URL(f); if (!/^https?:$/.test(u.protocol) || !HOST_FOTO.has(u.hostname)) return null; u.protocol = "https:"; return u.href; };
 
 /* saring query: nama -> pemeriksa (string -> bool) */
 const SARING_UNDUHAN = {page: s => /^\d{1,5}$/.test(s), per_page: s => /^\d{1,2}$/.test(s) && +s >= 1 && +s <= 50, search: s => s.length <= 80,
@@ -83,7 +84,7 @@ async function dampak(env, req) {
   const r = await hulu(API + d.jalur, {method: "POST", headers: {"content-type": "application/json", accept: "application/json"}, body: JSON.stringify(d.badan)}, 20000);
   if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
   let j; try { j = await r.json(); } catch { return galatHulu(); }
-  return json(j?.result ?? null);
+  return json(j?.data?.result ?? j?.result ?? null);   // hulu membungkus: {success, data: {query, result}}
 }
 
 /* bersihkan GeoJSON kegiatan: hanya properti daftar-putih, foto hanya dari host InaRISK */
@@ -91,17 +92,15 @@ export function bersihKegiatan(g) {
   const fitur = Array.isArray(g?.features) ? g.features : [];
   return {type: "FeatureCollection", features: fitur.map(f => {
     const p = {}; for (const k of PROP_AMAN) if (f?.properties && k in f.properties) p[k] = f.properties[k];
-    if ("Foto" in p) p.Foto = Array.isArray(p.Foto) ? p.Foto.filter(fotoAman) : fotoAman(p.Foto) ? p.Foto : null;
+    if ("Foto" in p) p.Foto = Array.isArray(p.Foto) ? p.Foto.map(fotoAman).filter(Boolean) : fotoAman(p.Foto);
     return {type: "Feature", geometry: f?.geometry ?? null, properties: p};
   })};
 }
+/* titik kegiatan: jalur unduh posgagah (jalur peta hanya memuat id); filter tanggal tidak dipakai hulu, layar menyaring kolom Tgl */
 function kegiatan(env, req, url) {
   const m = url.pathname.match(/^\/api\/inarisk\/kegiatan\/(\d{1,10})\/(\d{2,10})\/?$/); if (!m) return gagal(404, "tidak ada");
-  const tgl = s => s === null ? "" : /^\d{4}-\d\d-\d\d$/.test(s) ? s : null, dari = tgl(url.searchParams.get("date_from")), sampai = tgl(url.searchParams.get("date_to"));
-  if (dari === null || sampai === null) return gagal(400, "tanggal harus YYYY-MM-DD");
-  const q = new URLSearchParams(); if (dari) q.set("date_from", dari); if (sampai) q.set("date_to", sampai);
-  return lewatCache(env, req, `kegiatan/${m[1]}/${m[2]}?${q}`, 3600, [[60e3, 60]], "inarisk", async () => {
-    const r = await hulu(`${API}posgagah/geojson/${m[1]}/${m[2]}${q.size ? "?" + q : ""}`, {headers: {accept: "application/json"}}, 20000);
+  return lewatCache(env, req, `kegiatan/${m[1]}/${m[2]}`, 3600, [[60e3, 60]], "inarisk", async () => {
+    const r = await hulu(`${API}posgagah/download-kegiatan-geojson/${m[1]}/${m[2]}`, {headers: {accept: "application/json"}}, 30000);
     if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
     let d; try { d = await r.json(); } catch { return galatHulu(); }
     return new Response(JSON.stringify(bersihKegiatan(d)), {headers: JSON_H});
@@ -115,7 +114,7 @@ function ubin(env, req, url) {
   if (!v || !v.every(x => Number.isFinite(x) && Math.abs(x) <= EPSG3857) || v[0] >= v[2] || v[1] >= v[3]) return gagal(400, "bbox harus xmin,ymin,xmax,ymax EPSG:3857");
   const kotak = v.join(",");
   return lewatCache(env, req, `ubin/${nama}?${kotak}`, 7 * 86400, [[60e3, 600]], "inarisk.ubin", async () => {
-    const dasar = nama === "batas_administrasi" ? `${GIS}Basemap/batas_administrasi/MapServer/export?bbox=${kotak}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&f=image`
+    const dasar = nama === "batas_administrasi" ? `${GIS.replace(/inarisk\/$/, "")}Basemap/batas_administrasi/MapServer/export?bbox=${kotak}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&f=image`
       : `${GIS}${nama}/ImageServer/exportImage?bbox=${kotak}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&f=image`;
     const r = await hulu(dasar, {}, 60000);
     if (!r || !r.ok || !(r.headers.get("content-type") || "").startsWith("image/png")) { r?.body?.cancel(); return galatHulu(); }

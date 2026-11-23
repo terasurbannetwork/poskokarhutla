@@ -67,6 +67,7 @@
     "table org": "T1 organisasi",
     "table tw_baris": "T2 baris 3W",
     "table tw_token": "T5 token",
+    "table tautan_token": "token: terbit, periksa, cabut, kedaluwarsa",
     "table tw_tawaran": "T6 tawaran",
     "table tw_tawaran_riwayat": "T7 keputusan",
     "trigger tw_riwayat_tetap_ubah": "T7b riwayat tawaran append-only",

@@ -1,6 +1,8 @@
 "use strict";
 /* Tab Unduhan (PRD F-8) lewat proksi /api/inarisk/unduhan, dan tab Tautan (F-9) dari tautan.json. */
 const AMAN_HOST = /^https?:\/\/(inarisk2?\.bnpb\.go\.id)\//i;
+/* file_url InaRISK ada yang relatif (/apiv4/upload/file/...): lengkapi dengan host InaRISK; host lain ditolak */
+const urlBerkas = u => { const s = String(u || ""); const p = s.startsWith("/") ? "https://inarisk.bnpb.go.id" + s : s; return AMAN_HOST.test(p) ? p : ""; };
 Ir.tab.unduhan = {
   pasang() {
     const {H} = Ir, PER = 8, f = {cari: $("#unCari"), prov: $("#unProv"), kab: $("#unKab"), kat: $("#unKat"), fmt: $("#unFmt"), urut: $("#unUrut")};
@@ -28,7 +30,7 @@ Ir.tab.unduhan = {
         const rows = j.data?.rows || [], n = j.data?.pagination?.total_data ?? rows.length;
         $("#unJml").textContent = `${H.angka0(n)} berkas`;
         $("#unBaris").innerHTML = rows.map(r => {
-          const url = AMAN_HOST.test(r.file_url || "") ? escUrl(r.file_url) : "";
+          const url = urlBerkas(r.file_url) && escUrl(urlBerkas(r.file_url));
           const fm = String(r.file_format || "").toUpperCase();
           return `<tr><th scope="row"><b>${esc(r.title)}</b><small>${esc(r.description || "")}</small></th><td><span class="ir-pil ir-kat">${esc(r.category || "–")}</span></td>` +
             `<td>${esc(fm || "–")}</td><td class="n">${esc(r.file_size || "–")}</td><td>${r.published_at ? esc(new Date(r.published_at).toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric"})) : "–"}</td>` +

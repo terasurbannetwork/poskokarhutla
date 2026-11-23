@@ -17,7 +17,7 @@ Rujukan berkas dan baris diukur 23 Nov 2026 pada pohon kerja (sebagian berkas se
 | Verifikasi satu wakil: formulir nama, NIP, pangkat, jabatan, unit, email, wa; surat tugas (PDF atau JPEG) dan foto kartu pegawai (JPEG) ke R2 `instansi/dok/<akun>/<jenis>`; admin menyetujui dengan `dikirim` sebagai kunci anti-balapan | `src/instansi.js:203-232`, `:1407-1440` (`ubahAkun`) |
 | Buat massal: `POST /api/instansi/admin/buat` mengiris `defs` dari `mulai` sampai `batas` (maks 200), sandi acak hanya di jawaban; layar admin menyusun teks undangan "penanganan karhutla" dan CSV | `src/instansi.js:1367-1385`, `public/admin/instansi.js:112-114` |
 | Jejak `instansi_jejak` hanya menerima aksi `setuju, tolak, cabut, reset, ganti_sandi, buat_massal, terima_usulan, tolak_usulan` dan menolak UPDATE serta DELETE lewat trigger; tidak ada kolom profil | `migrations/0029_instansi.sql:252-269` |
-| Tiap POST bersesi instansi wajib `x-pb: 1`; POST dengan kuki `sesi_instansi` wajib Origin sama-situs (`tolakOrigin`); tab basi ditolak lewat `x-akun` | `src/instansi.js:1756-1760`, `:641-643`, `src/worker.js:682-690` |
+| Tiap POST bersesi instansi wajib `x-pb: 1`; POST dengan kuki `sesi_instansi` wajib Origin sama-situs (`tolakOrigin`); tab basi ditolak lewat `x-akun` | `src/instansi.js:1758-1762`, `:641-643`, `src/worker.js:682-690` |
 | Batas laju memakai `laju_bnpb` lewat `laju(env, kunci, aksi, [[JAM, n]], kini)` dan `gagalBanyak` | `src/instansi.js:127`, `:226` |
 | Foto media di R2 dibersihkan EXIF lewat `bersihMedia`; dokumen dibaca jenisnya dari byte awal (`jenisDok`), bukan `Content-Type`; berkas disajikan dengan CSP `sandbox` dan `no-store` | `src/instansi.js:225-246`, `src/media_bersih.js` |
 

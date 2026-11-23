@@ -82,7 +82,7 @@ Ir.tab.irbi = {
     }).catch(() => nyatakan("Data IRBI belum ditarik. Jalankan python3 scripts/bnpb/inarisk.py tarik lalu bangun."));
     Ir.api("unduhan?search=irbi&per_page=3&sort=Terbaru").then(j => {
       const baris = j.data?.rows || [];
-      $("#irDok").innerHTML = baris.length ? baris.map(r => `<li><a href="${escUrl(r.file_url)}" target="_blank" rel="noopener noreferrer"><i>${esc(String(r.file_format || "").toUpperCase())}</i><span>${esc(r.title)}<small>${esc(String(r.file_format || "").toUpperCase())}, ${esc(r.file_size || "")}</small></span></a></li>`).join("") : `<li class="ir-p">Belum ada dokumen.</li>`;
+      $("#irDok").innerHTML = baris.length ? baris.map(r => `<li><a href="${escUrl(urlBerkas(r.file_url))}" target="_blank" rel="noopener noreferrer"><i>${esc(String(r.file_format || "").toUpperCase())}</i><span>${esc(r.title)}<small>${esc(String(r.file_format || "").toUpperCase())}, ${esc(r.file_size || "")}</small></span></a></li>`).join("") : `<li class="ir-p">Belum ada dokumen.</li>`;
     }).catch(e => { $("#irDok").innerHTML = `<li class="ir-p">${esc(e.message)}</li>`; });
 
     const filter = () => ({tahun: +$t.value, kolom: $b.value, prov: $p.value, kab: $k.value});

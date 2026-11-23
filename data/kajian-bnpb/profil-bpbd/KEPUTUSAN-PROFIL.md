@@ -46,15 +46,21 @@ Meja Lapor Bencana (`/lapor/meja`, KEPUTUSAN-LAPOR-AI K63, D94) hanya bisa dipak
 | D7 | Pembuatan akun massal memakai `POST /api/instansi/admin/buat` yang ada, diberi saringan jenis supaya hanya membuat akun pemda (553 akun). Teks undangan diganti dari "tugas api" ke langkah daftar 3 PIC. | K1; Polri dan TNI di luar paket ini (Q6). |
 | D8 | Nomor migrasi diambil saat tiket dikerjakan (terakhir di repo 0163). | Menghindari bentrok antarpaket. |
 
+## Jawaban pemilik (23 Nov 2026)
+
+| No | Jawaban |
+| --- | --- |
+| K10 | "Buatkan semua." dan "Push and deploy." Semua tiket PF-00 sampai PF-06 dikerjakan dengan bawaan sementara Q1 sampai Q8 dan N1 sampai N7 (`PRD.md` bagian 5); rumusan persetujuan data pribadi disusun agent. Bawaan tetap bertanda dan bisa diubah pemilik kapan pun. |
+
 ## Pertanyaan terbuka
 
 | No | Pertanyaan | Bawaan sementara | Tiket |
 | --- | --- | --- | --- |
-| Q1 | K9 "ganti" berarti pintu `/masuk` (kode WA) **ditutup** untuk akun BPBD, termasuk anggota dan undangan berantai yang sudah dirancang di paket pintu masuk? | **[BAWAAN SEMENTARA]** Untuk akun pemda: masuk hanya lewat username, sandi, profil, PIN. Kode WA tidak menerbitkan sesi akun pemda. Akun umum `/masuk` dan peran lain tidak berubah. | PB-01 |
-| Q2 | PIN berapa angka, dan berapa kali salah sebelum profil terkunci? | **[BAWAAN SEMENTARA]** 6 angka, disimpan sebagai hash bergaram. Salah 5 kali: profil terkunci 15 menit; 10 kali dalam sehari: terkunci sampai admin membuka. | PB-02 |
-| Q3 | Siapa yang mengatur ulang PIN yang lupa? | **[BAWAAN SEMENTARA]** Admin BNPB dari `/admin/instansi`. PIC lain di lembaga yang sama tidak bisa. | PB-02 |
-| Q4 | Surat tugas dan kartu pegawai tetap wajib sebelum aktif (KEPUTUSAN-MASUK K11)? | **[BAWAAN SEMENTARA]** Tetap wajib, satu kali per akun, di samping 3 PIC. | PB-03 |
-| Q5 | Sandi akun bersama dipegang siapa, dan diganti bila PIC pindah? | **[BAWAAN SEMENTARA]** Sandi lembaga dipegang semua PIC. Admin bisa reset; PIC yang dicabut tidak bisa masuk lagi karena profilnya mati, walau tahu sandinya. | PB-02 |
-| Q6 | Akun Polda, Polres, Kodam, Kodim ikut dibuat dan ikut model profil? | **[BAWAAN SEMENTARA]** Tidak dibuat di paket ini. | PB-05 |
-| Q7 | Log bisa dilihat siapa, dan disimpan berapa lama? | **[BAWAAN SEMENTARA]** Admin BNPB melihat semua; tiap PIC melihat log lembaganya sendiri. Disimpan 2 tahun. | PB-04 |
-| Q8 | Sesi profil berlaku berapa lama, dan apakah ganti profil butuh PIN lagi? | **[BAWAAN SEMENTARA]** Sesi profil 12 jam; ganti profil selalu lewat layar pilih profil dan PIN. | PB-02 |
+| Q1 | K9 "ganti" berarti pintu `/masuk` (kode WA) **ditutup** untuk akun BPBD, termasuk anggota dan undangan berantai yang sudah dirancang di paket pintu masuk? | **[BAWAAN SEMENTARA]** Untuk akun pemda: masuk hanya lewat username, sandi, profil, PIN. Kode WA tidak menerbitkan sesi akun pemda. Akun umum `/masuk` dan peran lain tidak berubah. | PF-04 |
+| Q2 | PIN berapa angka, dan berapa kali salah sebelum profil terkunci? | **[BAWAAN SEMENTARA]** 6 angka, disimpan sebagai hash bergaram. Salah 5 kali: profil terkunci 15 menit; 10 kali dalam sehari: terkunci sampai admin membuka. | PF-02 |
+| Q3 | Siapa yang mengatur ulang PIN yang lupa? | **[BAWAAN SEMENTARA]** Admin BNPB dari `/admin/instansi`. PIC lain di lembaga yang sama tidak bisa. | PF-06 |
+| Q4 | Surat tugas dan kartu pegawai tetap wajib sebelum aktif (KEPUTUSAN-MASUK K11)? | **[BAWAAN SEMENTARA]** Tetap wajib, satu kali per akun, di samping 3 PIC. | PF-02 |
+| Q5 | Sandi akun bersama dipegang siapa, dan diganti bila PIC pindah? | **[BAWAAN SEMENTARA]** Sandi lembaga dipegang semua PIC. Admin bisa reset; PIC yang dicabut tidak bisa masuk lagi karena profilnya mati, walau tahu sandinya. | PF-02 |
+| Q6 | Akun Polda, Polres, Kodam, Kodim ikut dibuat dan ikut model profil? | **[BAWAAN SEMENTARA]** Tidak dibuat di paket ini. | PF-05 |
+| Q7 | Log bisa dilihat siapa, dan disimpan berapa lama? | **[BAWAAN SEMENTARA]** Admin BNPB melihat semua; tiap PIC melihat log lembaganya sendiri. Disimpan 2 tahun. | PF-04 |
+| Q8 | Sesi profil berlaku berapa lama, dan apakah ganti profil butuh PIN lagi? | **[BAWAAN SEMENTARA]** Sesi profil 12 jam; ganti profil selalu lewat layar pilih profil dan PIN. | PF-02 |

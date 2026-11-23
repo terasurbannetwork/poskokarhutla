@@ -51,6 +51,8 @@ Jawaban pemilik atas Q1 sampai Q8 tetap di `KEPUTUSAN-PROFIL.md`. Hal berikut mu
 | N3 | Bila PIC pindah tugas, siapa menggantikan? | Admin mencabut profilnya dan BPBD menambah profil baru (persetujuan sendiri); tidak ada penggantian di tempat | PF-06 |
 | N4 | Apakah foto diperiksa berisi wajah? | Tidak diperiksa mesin (K8); admin melihat foto saat menyetujui | PF-02 |
 | N5 | Apakah halaman `/lapor/meja` boleh dibuka langsung tanpa melewati `/instansi`? | Halaman statis tetap terbuka; rute API-nya menolak tanpa sesi profil, tautan masuknya menunjuk `/instansi` untuk BPBD | PF-04 |
+| N6 | Siapa menghapus data PIC atas permintaan pemilik data, dan lewat apa? | Pemilik repo menghapus baris profil `dicabut` lewat perintah D1; belum ada tombol admin | PF-06 |
+| N7 | Pemegang sandi lembaga bisa mengunci profil orang lain dengan menebak PIN salah sengaja (DoS). Bagaimana kunci dibatasi? | Kunci 15 menit dihitung per profil dan IP; kunci harian (10 salah, sampai admin membuka) tetap per profil. Sisa risiko diterima dan dicatat | PF-02 |
 
 ## 6. Ukuran berhasil
 

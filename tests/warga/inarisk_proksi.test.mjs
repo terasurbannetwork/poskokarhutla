@@ -49,25 +49,24 @@ uji("inarisk: ubin PNG lewat, bbox salah 400, hulu bukan gambar 502", async () =
   assert.equal(r.status, 200); assert.equal(r.headers.get("content-type"), "image/png"); await r.arrayBuffer();
   assert.equal(minta[0].u.pathname, "/server/rest/services/inarisk/layer_bahaya_banjir/ImageServer/exportImage");
   assert.equal(minta[0].u.searchParams.get("imageSR"), "3857"); assert.equal(minta[0].u.searchParams.get("size"), "256,256");
-  await GET("/api/inarisk/ubin/batas_administrasi?bbox=1,1,2,2"); assert.match(minta[1].u.pathname, /Basemap\/batas_administrasi\/MapServer\/export$/);
+  await GET("/api/inarisk/ubin/batas_administrasi?bbox=1,1,2,2"); assert.equal(minta[1].u.pathname, "/server/rest/services/Basemap/batas_administrasi/MapServer/export");   // bukan di folder inarisk/
   for (const bb of ["", "1,2,3", "a,b,c,d", "0,0,30000000,1", "5,5,1,1"]) assert.equal((await GET("/api/inarisk/ubin/layer_bahaya_banjir?bbox=" + bb)).status, 400, bb);
   jawab = () => new Response("<html>token</html>", {headers: {"content-type": "text/html"}});
   assert.equal((await GET("/api/inarisk/ubin/layer_bahaya_gempabumi?bbox=1,1,2,2")).status, 502);
 });
 
 uji("inarisk: kegiatan membuang nama petugas dan foto dari host asing", async () => {
-  minta = []; jawab = () => ok({features: [{type: "Feature", geometry: {type: "Point", coordinates: [1, 2]}, properties: {"User Pemantau": "Budi", Kegiatan: "Simulasi", Lokasi: "Desa A", Tgl: "2026-01-01", email: "a@b.id", telp_hp: "08", Foto: ["https://inarisk2.bnpb.go.id/a.jpg", "https://evil.example/b.jpg"]}}]});
-  const r = await GET("/api/inarisk/kegiatan/12/3171?date_from=2026-01-01&date_to=2026-02-01");
-  assert.equal(r.status, 200); assert.equal(minta[0].u.pathname, "/apiv4/posgagah/geojson/12/3171");
+  minta = []; jawab = () => ok({features: [{type: "Feature", geometry: {type: "Point", coordinates: [1, 2]}, properties: {"User Pemantau": "Budi", Kegiatan: "Simulasi", Lokasi: "Desa A", Tgl: "2026-01-01", email: "a@b.id", telp_hp: "08", Foto: ["http://inarisk2.bnpb.go.id/a.jpg", "https://evil.example/b.jpg"]}}]});
+  const r = await GET("/api/inarisk/kegiatan/12/3171");
+  assert.equal(r.status, 200); assert.equal(minta[0].u.pathname, "/apiv4/posgagah/download-kegiatan-geojson/12/3171");
   const p = r.j.features[0].properties;
   assert.deepEqual(Object.keys(p).sort(), ["Foto", "Kegiatan", "Lokasi", "Tgl"]); assert.deepEqual(p.Foto, ["https://inarisk2.bnpb.go.id/a.jpg"]);
   assert.ok(!r.t.includes("Budi"));
   assert.equal((await GET("/api/inarisk/kegiatan/12/3?date_from=2026-01-01")).status, 404, "pcode 1 digit");
-  assert.equal((await GET("/api/inarisk/kegiatan/12/3171?date_from=bukan")).status, 400);
 });
 
 uji("inarisk: dampak lingkaran dan poligon diteruskan bersih, masukan buruk ditolak", async () => {
-  minta = []; jawab = () => ok({result: {jiwa: 5}, rahasia: "x"});
+  minta = []; jawab = () => ok({success: true, data: {query: {id: 1, name: "Dampak Infra by Radius"}, result: {jiwa: 5}}, rahasia: "x"});   // bentuk hulu nyata 23 Nov 2026
   const c = {type: "circle", center: {lat: -7.8, lng: 110.37}, radius_meter: 1000, geometry: {type: "Point", coordinates: [110.37, -7.8]}, ekstra: "x"};
   const r = await POST(c); assert.equal(r.status, 200); assert.deepEqual(r.j, {jiwa: 5});
   assert.match(minta[0].u.pathname, /spatial-query\/1$/); assert.equal(minta[0].m, "POST");

@@ -809,7 +809,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   /* ----- pertanyaan berikutnya ----- */
   const kepala = [darurat ? T.darurat() : "", keluhan ? `*Belum lengkap.* ${keluhan}` : tanggapan].filter(Boolean).join("\n");
   const sambung = s => kepala ? `${kepala}\n\n${s}` : s;
-  if (sesi.jenisDulu && !sesi.ceritaDiminta && terjawab(sesi, "jenis") && terjawab(sesi, "subjenis") && KRONOLOGI[sesi.isian.jenis.nilai]) { // kronologi berpandu: pilihan per jenis, bukan ketik panjang
+  /* kronologi berpandu: pilihan per jenis, bukan ketik panjang. Berlaku juga untuk jalur cerita tertunda (pesan pertama panjang) yang tidak lewat
+     kartu jenis: tanpa ini kronologi jatuh ke kotak ketik bebas (pemilik 23 Nov 2026: "harusnya cukup pilih-pilih aja"). */
+  if (!sesi.ceritaDiminta && !sesi.kejadian?.ya && !terjawab(sesi, "kronologi") && terjawab(sesi, "jenis") && terjawab(sesi, "subjenis") && KRONOLOGI[sesi.isian.jenis.nilai]) {
     sesi.ceritaDiminta = true; sesi.tanya = null; sesi.status = "kronologi"; sesi.kr = {i: 0, frasa: []};
     return langkahKr(sambung, 0);
   }

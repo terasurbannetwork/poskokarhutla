@@ -1771,6 +1771,7 @@ Object.assign(MATRIKS, {
   lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
   lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
   lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
+  lj_sesi:             {lj_tim: ["baca", "tambah", "ubah", "hapus"], lp_mesin: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0165: draf percakapan WA tahap 2 (D24), dibuang 24 jam
   lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
 });
@@ -2125,6 +2126,19 @@ export const ljStmtMediaBaru = (env, p, m, maks) => sedia(env, p, "lj_media", "t
   `INSERT INTO lj_media (id, objek, kunci_r2, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu, oleh)
    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE (SELECT count(*) FROM lj_media WHERE objek = ?2 AND jenis = ?4) < ?13`)
   .bind(m.id, m.objek, m.kunci_r2, m.jenis, m.lat ?? null, m.lon ?? null, m.akurasi ?? null, m.waktu_ambil ?? null, m.waktu_terima, m.lencana, m.pintu, m.oleh, maks);
+
+/* LJ-05: pintu WA tahap 2. Anggota tim aktif = baris lj_tim tanpa dicabut pada berkas yang masih terbuka (D11); draf percakapan di lj_sesi (migrasi 0165, D24). */
+export const ljTimAktif = (env, p, wa) => sedia(env, p, "lj_tim", "baca",
+  "SELECT t.berkas, t.wa, t.peran, t.nama FROM lj_tim t JOIN lj_berkas b ON b.id = t.berkas WHERE t.wa = ?1 AND t.dicabut IS NULL AND b.status = 'terbuka' ORDER BY t.dibuat DESC LIMIT 1").bind(wa).first();
+export const ljSesi = (env, p, wa) => sedia(env, p, "lj_sesi", "baca", "SELECT wa, berkas, keadaan, diubah FROM lj_sesi WHERE wa = ?1").bind(wa).first();
+export const ljSesiBaru = (env, p, wa, berkas, keadaan, kini) => sedia(env, p, "lj_sesi", "tambah",
+  "INSERT OR REPLACE INTO lj_sesi (wa, berkas, keadaan, diubah) VALUES (?1, ?2, ?3, ?4)").bind(wa, berkas, keadaan, kini).run();
+/* jaga bentrok dua pesan serentak: berubah hanya bila diubah masih yang tadi dibaca; changes = 0 berarti kalah */
+export const ljSesiUbah = async (env, p, wa, keadaan, diubahLama, kini) => (await sedia(env, p, "lj_sesi", "ubah",
+  "UPDATE lj_sesi SET keadaan = ?2, diubah = ?4 WHERE wa = ?1 AND diubah = ?3").bind(wa, keadaan, diubahLama, kini).run()).meta.changes;
+export const ljSesiHapus = (env, p, wa, sebelum = null) => sedia(env, p, "lj_sesi", "hapus", "DELETE FROM lj_sesi WHERE wa = ?1 AND (?2 IS NULL OR diubah < ?2)").bind(wa, sebelum).run();
+export const ljSesiBasi = async (env, p, sebelum) => (await sedia(env, p, "lj_sesi", "baca",
+  "SELECT wa, keadaan FROM lj_sesi WHERE diubah < ?1 ORDER BY diubah LIMIT 100").bind(sebelum).all()).results;
 
 /* ---------- Tautan bertoken pihak luar (FITUR §6; src/token.js, migrasi 0164) ----------
    tk_terbit = rute staf yang menerbitkan atau mencabut; tk_periksa = rute publik yang menerima token. Pemeriksaan dan pencatatan pakai

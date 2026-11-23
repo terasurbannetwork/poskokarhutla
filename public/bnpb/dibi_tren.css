@@ -147,9 +147,8 @@ button.dt-hb-baris{cursor:pointer}
 .dt-tabel thead th[aria-sort] button::after{content:"";display:inline-block;margin-inline-start:6px;border:5px solid transparent;vertical-align:middle}
 .dt-tabel thead th[aria-sort="descending"] button::after{border-top-color:currentColor;margin-block-start:5px}
 .dt-tabel thead th[aria-sort="ascending"] button::after{border-bottom-color:currentColor;margin-block-end:5px}
-.dt-tabel tbody th,.dt-tabel tfoot th{text-align:start;font-weight:600;white-space:nowrap}
+.dt-tabel tbody th,.dt-tabel tfoot th{font-weight:600;white-space:nowrap}
 .dt-tabel td,.dt-tabel tbody th,.dt-tabel tfoot th{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-.dt-tabel td[data-value],.dt-tabel .dt-angka,.dt-tabel tfoot td{text-align:end}
 .dt-tabel tbody tr:hover{background:var(--surface)}
 .dt-tabel tfoot{font-weight:700;background:var(--surface)}
 .dt-cari{max-inline-size:420px}
@@ -212,4 +211,101 @@ button.dt-hb-baris{cursor:pointer}
   .dt-mencetak .dt-kpi{grid-template-columns:repeat(3,minmax(0,1fr))}
   .dt-mencetak #dtPanel-sebaran,.dt-mencetak #dtPanel-tabel{break-before:page}
   .dt-mencetak *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ===== kerangka dasbor halaman berdiri (pemilik 23 Nov 2026: "buat kaya model dashboard kita normalnya"), meniru /lapor/meja:
+   sidebar kiri terang, bilah atas, isi, panel Ringkasan kanan. Peta penuh tinggi saat tab Peta. ===== */
+.db-halaman{display:block;margin:0;padding:0}
+.db-halaman .dt-wadah{margin:0}
+.db-app{display:grid;grid-template-columns:248px minmax(0,1fr);block-size:100dvh;gap:0}
+.db-sisi{display:flex;flex-direction:column;gap:4px;padding:14px 10px 20px;overflow:auto;background:var(--card);border-inline-end:1px solid var(--line)}
+.db-merek{display:flex;align-items:center;gap:10px;padding:2px 8px 12px;margin-bottom:6px;border-bottom:1px solid var(--line);color:var(--brand);text-decoration:none}
+.db-merek img{flex:none;border-radius:50%}
+.db-merek:focus-visible{outline:2px solid var(--brand2);outline-offset:2px;border-radius:var(--r-sm)}
+.db-merek svg{inline-size:26px;block-size:26px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-merek b{display:block;font:800 var(--fs-5)/1.2 var(--display)}
+.db-merek small{font-size:var(--fs-2);color:var(--ink2)}
+.db-segar{display:flex;align-items:center;gap:8px;margin:4px 0 6px;padding:7px 12px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:600;color:var(--ink)}
+.db-segar i{inline-size:8px;block-size:8px;border-radius:50%;background:var(--ok);flex:none}
+.db-grup{display:grid;gap:4px;margin-top:10px}
+.db-grup-j{margin:0 10px 2px;font:700 var(--fs-1)/1.4 var(--font);color:var(--ink2)}
+.db-tabs{display:grid;gap:2px}
+.db-nav,.db-jenis{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:10px;inline-size:100%;padding:8px 10px;border:0;border-radius:10px;
+  background:none;color:var(--ink);font:600 var(--fs-3)/1.3 var(--font);text-align:start;cursor:pointer}
+.db-nav svg,.db-jenis svg{inline-size:18px;block-size:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--brand2)}
+.db-nav:hover,.db-jenis:hover{background:var(--surface)}
+.db-nav:focus-visible,.db-jenis:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.db-nav[aria-selected="true"]{background:color-mix(in oklab,var(--brand2) 11%,var(--card));color:var(--brand)}
+.db-nav[aria-selected="true"]::before,.db-jenis[aria-pressed="true"]::before{content:"";position:absolute;inset-inline-start:0;inset-block:8px;inline-size:3px;border-radius:3px;background:var(--brand2)}
+.db-jenis{grid-template-columns:18px minmax(0,1fr) auto}
+.db-jenis>i{display:none}
+.db-jenis svg{color:var(--ink2)}
+.db-jenis b,.db-nav b{min-inline-size:26px;padding:1px 7px;border-radius:var(--r-pill);background:var(--surface);font-size:var(--fs-1);text-align:center;font-variant-numeric:tabular-nums;color:var(--ink)}
+.db-jenis[aria-pressed="true"]{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.db-jenis[aria-pressed="true"] b{background:var(--brand);color:var(--on-brand)}
+.db-jenis[aria-pressed="false"]{color:var(--ink2);font-weight:500}
+.db-jenis[aria-pressed="false"] b{opacity:.7}
+.db-jenis.dt-nol{opacity:.5}
+.db-cepat{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 4px 4px}
+.db-cepat .dt-btn-teks{block-size:30px;padding:0 8px}
+.db-sisi .dt-f-isi{padding:0 4px}
+.db-sisi .dt-f-isi select{block-size:36px;font-size:var(--fs-3)}
+.db-dua{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.db-dua .dt-f-isi{padding:0}
+.db-sisi .db-grup>.dt-btn-teks{justify-content:flex-start;margin:0 4px;border-radius:10px}
+
+.db-utama{display:grid;grid-template-rows:auto auto minmax(0,1fr);min-inline-size:0;background:var(--paper)}
+.db-atas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 20px;background:var(--card);border-block-end:1px solid var(--line)}
+.db-jejak{display:flex;align-items:center;gap:8px;font:700 var(--fs-4)/1.3 var(--display);color:var(--ink);margin-inline-end:auto}
+.db-jejak svg{inline-size:18px;block-size:18px;fill:none;stroke:var(--brand2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-jejak .dt-wil{margin:0;font:inherit;color:inherit}
+.db-periode{display:flex;padding:3px;border-radius:var(--r-pill);background:var(--surface)}
+.db-periode button{block-size:30px;padding:0 14px;border:0;border-radius:var(--r-pill);background:none;color:var(--ink2);font:600 var(--fs-3) var(--font);cursor:pointer;white-space:nowrap}
+.db-periode button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.db-periode button:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.db-isi{display:grid;grid-template-columns:minmax(0,1fr) 300px;min-block-size:0}
+.db-panel{min-inline-size:0;min-block-size:0;overflow:auto;padding:20px}
+.db-app[data-tab="peta"] .db-isi{grid-template-columns:minmax(0,1fr)}
+.db-app[data-tab="peta"] .db-ringkas{display:none}
+.db-app[data-tab="peta"] .db-panel{padding:0;overflow:auto}
+/* tinggi pasti: layar penuh dikurangi bilah atas (48px); peta tidak ikut tinggi isinya */
+.db-peta{block-size:calc(100dvh - 48px)}
+.db-app[data-tab="peta"] .db-periode{display:none}
+
+/* Ringkasan kanan */
+.db-ringkas{overflow:auto;padding:16px 16px 24px;background:var(--card);border-inline-start:1px solid var(--line)}
+.db-rk-j{display:flex;align-items:center;gap:8px;margin:0 0 10px;font:700 var(--fs-5)/1.3 var(--display);color:var(--ink)}
+.db-rk-j svg{inline-size:18px;block-size:18px;fill:none;stroke:var(--brand2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-rk-isi{display:grid;gap:2px}
+.db-rk-besar{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.db-rk-besar b{font:800 var(--fs-8)/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.db-rk-besar span{font-size:var(--fs-3);color:var(--ink2)}
+.db-rk-label{margin:10px 0 2px;padding-block-start:8px;border-block-start:1px solid var(--line);font:700 var(--fs-1)/1.4 var(--font);color:var(--ink2)}
+.db-rk-b{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:8px;padding:4px 0;font-size:var(--fs-3);color:var(--ink)}
+.db-rk-b b{font:800 var(--fs-4)/1 var(--display);font-variant-numeric:tabular-nums}
+.db-rk-ik{display:grid;place-items:center;inline-size:26px;block-size:26px;border-radius:8px;background:var(--surface);color:var(--brand2)}
+.db-rk-ik svg{inline-size:15px;block-size:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-rk-kab{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.db-rk-kab li{display:grid;grid-template-columns:20px minmax(0,1fr) auto;row-gap:4px;column-gap:8px;align-items:center;padding:4px 2px;font-size:var(--fs-3)}
+.db-rk-kab li>span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-rk-kab b{font-weight:700;font-variant-numeric:tabular-nums}
+.db-rk-kab i{grid-column:2/-1;block-size:3px;border-radius:3px;background:var(--brand2)}
+.db-rk-no{display:grid;place-items:center;inline-size:20px;block-size:20px;border-radius:50%;background:var(--surface);font-size:var(--fs-1);font-weight:700;color:var(--ink2)}
+.db-rk-kab li:first-child .db-rk-no{background:var(--brand);color:var(--on-brand)}
+
+/* isi tab di dalam kerangka: kartu putih berjarak 20px, tanpa bayangan berat */
+.db-panel .dt-kartu{box-shadow:0 1px 3px color-mix(in oklab,var(--ink) 8%,transparent);border:1px solid var(--line)}
+.db-panel .dt-isi{gap:20px}
+.dt-garis{stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:4 3}
+.dt-titik{stroke:var(--ink2);stroke-width:1.4}
+
+@media (max-width:1280px){.db-isi{grid-template-columns:minmax(0,1fr) 260px}}
+@media (max-width:1024px){.db-app{grid-template-columns:1fr;block-size:auto}.db-sisi{border-inline-end:0;border-block-end:1px solid var(--line)}
+  .db-isi{grid-template-columns:1fr}.db-ringkas{border-inline-start:0;border-block-start:1px solid var(--line)}.db-app[data-tab="peta"] .db-panel{block-size:70dvh}}
+@media print{
+  .dt-mencetak .db-app{display:block;block-size:auto}
+  .dt-mencetak .db-sisi,.dt-mencetak .db-periode,.dt-mencetak #dtPanel-peta{display:none!important}
+  .dt-mencetak .db-isi{display:block}.dt-mencetak .db-panel{overflow:visible;padding:0}
+  .dt-mencetak .db-ringkas{border:1px solid var(--line);border-radius:var(--r);margin-block:12px;break-inside:avoid}
+  .dt-mencetak .db-rk-isi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:16px}
 }

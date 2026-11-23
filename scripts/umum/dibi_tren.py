@@ -188,8 +188,8 @@ def jalan():
         "sementara": tahun_ini, "kategori": list(kat), "kab": kab.daftar,
         "kolom_tahun": ["tahun", "kategori", "kab"] + [n for n, _ in ANGKA], "tahun_kab": th,
         "kolom_bulan": ["bulan", "kategori", "prov"] + [n for n, _ in ANGKA_BULAN], "bulan_prov": bl,
-        "penduduk": penduduk_kab(kab), "penduduk_tahun": 2025,
-        "penduduk_sumber": "IRBI BNPB (paparan penduduk per kab/kota, snapshot 2026-10-28) lewat profil daerah kemitraan; cocok per provinsi dan nama, null = tidak cocok",
+        "penduduk": penduduk_kab(kab), "penduduk_tahun": None,   # tahun data penduduk IRBI tidak tercatat di sumber; jangan ditebak (pemilik 23 Nov 2026)
+        "penduduk_sumber": "IRBI BNPB (paparan penduduk per kab/kota, snapshot 2026-10-28) lewat profil daerah kemitraan; cocok per provinsi dan nama, null = tidak cocok. Tahun data penduduk tidak tercatat di sumber",
         "kolom_musim": ["kab", "kategori"] + [f"m{i}" for i in range(1, 13)], "musim_tahun": [2008, final[-1]], "musim_kab": mk})
     print(f"dibi_tren: {len(th)} baris tahun x kab, {len(bl)} baris bulan x prov, {len(mk)} baris musim, penduduk null {sum(x is None for x in penduduk_kab(kab))}/{len(kab.daftar)}, kategori {list(kat)}")
 

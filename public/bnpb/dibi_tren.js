@@ -50,7 +50,8 @@
 
   async function muat() {
     const ambil = u => fetch(u).then(r => { if (!r.ok) throw new Error(`${u}: ${r.status}`); return r.json(); });
-    const [T, H] = await Promise.all([ambil("/data/dibi_tren.json"), ambil("/data/dibi_kejadian.json").catch(() => null)]);
+    const [T, H, SD, PK, RB] = await Promise.all([ambil("/data/dibi_tren.json"), ambil("/data/dibi_kejadian.json").catch(() => null),
+      ...["dibi_status_darurat", "dibi_posko", "dibi_rambu"].map(n => ambil(`/data/${n}.json`).catch(() => null))]);
     const C = Object.fromEntries(T.kolom_tahun.map((k, i) => [k, i])), CB = Object.fromEntries(T.kolom_bulan.map((k, i) => [k, i]));
     const kabNama = new Map(); T.kab.forEach((k, i) => { const n = norm(k[2]); if (!kabNama.has(n)) kabNama.set(n, []); kabNama.get(n).push(i); });
     /* baris harian -> indeks kab (DIBI memakai kode Papua lama, jadi cocokkan lewat kode lalu nama) */
@@ -61,7 +62,15 @@
       return {...x, i, prov: i == null ? x.prov_kode : T.kab[i][1], kat: x.kategori || katDariJenis(x.jenis)};
     });
     const tahun = [...new Set(T.tahun_kab.map(r => r[0]))].sort((a, b) => a - b);
-    return {T, C, CB, harian, tahun, dariH: H?.dari, sampaiH: H?.sampai};
+    /* penanganan dari dataset DIBI lain (scripts/umum/dibi_lain.py): tiap baris diberi kode kab BPS 4 digit dan kode prov */
+    const kabDariNama = (nama, prov) => { const cal = kabNama.get(norm(nama)) || []; const i = cal.find(j => !prov || T.kab[j][1] === prov) ?? cal[0]; return i == null ? "" : T.kab[i][0]; };
+    const PNAMA = new Map(Object.entries(window.Wilayah.PROV).map(([k, v]) => [norm(v), k]));
+    const darurat = (SD?.sk || []).filter(x => x.aktif).map(x => ({kab: x.kab_bps || "", prov: x.prov_kode || "", status: x.status}));
+    const KP = Object.fromEntries((PK?.kolom || []).map((k, i) => [k, i]));
+    const posko = (PK?.posko || []).map(r => { const kd = String(r[KP.id_desa_sdi] || "").split(".").slice(0, 2).join(""); return {kab: kd, prov: kd.slice(0, 2), jiwa: r[KP.jumlah] || 0}; });
+    const KR = Object.fromEntries((RB?.kolom || []).map((k, i) => [k, i]));
+    const rambu = (RB?.rambu || []).map(r => { const prov = PNAMA.get(norm(r[KR.provinsi])) || ""; return {prov, kab: kabDariNama(r[KR.kab], prov), n: r[KR.jumlah] || 0}; });
+    return {T, C, CB, harian, tahun, dariH: H?.dari, sampaiH: H?.sampai, darurat, posko, rambu, ada: {darurat: !!SD, posko: !!PK, rambu: !!RB}};
   }
 
   function pasang(akar, awal = {}) {
@@ -95,13 +104,15 @@
     const ma5 = (deret) => deret.map((_, i) => { const a = deret.slice(Math.max(0, i - 4), i + 1); return a.reduce((x, y) => x + y, 0) / a.length; });
 
     /* ---------- kerangka ---------- */
+    const DAS = !!awal.dasbor;   /* halaman berdiri: kerangka dasbor gaya /lapor/meja (sidebar kiri, bilah atas, Ringkasan kanan) */
+    if (DAS) st.tab = "peta";
     const status = h("p", {class: "dt-sr", role: "status"});
     const tip = h("div", {class: "dt-tip", hidden: true, role: "tooltip"});
     const wilNama = () => st.kab >= 0 ? T.kab[st.kab][2] : st.prov ? PROV[st.prov] || st.prov : "Indonesia";
 
     // filter
     const chips = kategoriAda.map(k => { const [lbl, ik, w] = kat(k);
-      const b = h("button", {type: "button", class: "dt-chip", "aria-pressed": String(st.kat.has(k)), "data-k": k}, warnai(h("i", {"aria-hidden": "true"}), w, "background"), ikon(ik), h("span", {teks: lbl}));
+      const b = h("button", {type: "button", class: DAS ? "db-jenis" : "dt-chip", "aria-pressed": String(st.kat.has(k)), "data-k": k}, warnai(h("i", {"aria-hidden": "true"}), w, "background"), ikon(ik), h("span", {teks: lbl}), h("b", {class: "dt-chip-n"}));
       b.addEventListener("click", () => { st.kat.has(k) ? st.kat.delete(k) : st.kat.add(k); if (!st.kat.size) st.kat.add(k); segarChip(); gambar(); }); return b; });
     const segarChip = () => chips.forEach(b => b.setAttribute("aria-pressed", String(st.kat.has(b.dataset.k))));
     const bAlam = h("button", {type: "button", class: "dt-btn-teks", teks: "Bencana alam"}), bSemua = h("button", {type: "button", class: "dt-btn-teks", teks: "Semua kategori"});
@@ -132,16 +143,17 @@
         h("div", {class: "dt-f-isi dt-f-ulang"}, bUlang)));
 
     // tab (focusgroup bila didukung; panah kiri/kanan dipasang sendiri sebagai cadangan)
-    const TAB = [["tren", "Tren", "data"], ["sebaran", "Sebaran", "wilayah"], ["tabel", "Tabel", "daftar"]];
-    const tabB = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", id: "dtTab-" + k, "aria-selected": String(k === st.tab), tabindex: k === st.tab ? "0" : "-1"}, ikon(ik), h("span", {teks: t})));
+    const TAB = [...(DAS ? [["peta", "Peta", "wilayah"]] : []), ["tren", "Tren", "data"], ["sebaran", "Sebaran", "akses"], ["tabel", "Tabel", "daftar"]];
+    const tabB = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: DAS ? "db-nav" : null, id: "dtTab-" + k, "aria-selected": String(k === st.tab), tabindex: k === st.tab ? "0" : "-1"}, ikon(ik), h("span", {teks: t})));
     const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {role: "tabpanel", id: "dtPanel-" + k, "aria-labelledby": "dtTab-" + k, hidden: k !== st.tab || null, class: "dt-panel"})]));
-    const tabList = h("div", {class: "dt-tabs", role: "tablist", "aria-label": "Tampilan data DIBI"}, tabB);
+    const tabList = h("div", {class: DAS ? "db-tabs" : "dt-tabs", role: "tablist", "aria-label": "Tampilan data DIBI", "aria-orientation": DAS ? "vertical" : null}, tabB);
     const pilihTab = (k, fokus) => { st.tab = k; tabB.forEach((b, i) => { const on = TAB[i][0] === k; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; if (on && fokus) b.focus(); });
-      for (const [kk, p] of Object.entries(panel)) p.hidden = kk !== k; nanti(gambarTab); };
+      for (const [kk, p] of Object.entries(panel)) p.hidden = kk !== k; akar.dataset.tab = k; gambarRingkasan();
+      if (k === "peta") nanti(() => window.dispatchEvent(new Event("resize"))); nanti(gambarTab); };
     tabB.forEach((b, i) => { b.addEventListener("click", () => pilihTab(TAB[i][0]));
-      b.addEventListener("keydown", e => { const j = {ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: TAB.length - 1}[e.key]; if (j == null) return; e.preventDefault(); pilihTab(TAB[(j + TAB.length) % TAB.length][0], true); }); });
+      b.addEventListener("keydown", e => { const j = {ArrowRight: i + 1, ArrowLeft: i - 1, ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: TAB.length - 1}[e.key]; if (j == null) return; e.preventDefault(); pilihTab(TAB[(j + TAB.length) % TAB.length][0], true); }); });
 
-    const ringkasan = h("div", {class: "dt-kpi", "aria-live": "off"});
+    const ringkasan = h("div", {class: DAS ? "db-rk-isi" : "dt-kpi", "aria-live": "off"});
     /* bagikan tautan wilayah ini: Web Share bila ada, selain itu salin ke papan klip */
     const tautan = () => { const u = new URL(location.href), set = (k, v) => v === "" || v == null ? u.searchParams.delete(k) : u.searchParams.set(k, v);
       set("prov", st.prov); set("kab", st.kab >= 0 ? T.kab[st.kab][0].replace(/^(\d\d)(\d\d)$/, "$1.$2") : "");
@@ -155,13 +167,45 @@
         await navigator.clipboard.writeText(u); status.textContent = "Tautan disalin"; bBagi.lastChild.textContent = "Tautan disalin";
         setTimeout(() => (bBagi.lastChild.textContent = "Bagikan tautan wilayah ini"), 2500);
       } catch (e) { if (e.name !== "AbortError") prompt("Salin tautan ini:", u); } });
-    const judulWil = h("span", {class: "dt-wil"});
-    akar.replaceChildren(
+    const judulWil = h("span", {class: "dt-wil"}); let segarPeriode = () => {}, kirimPeta = () => {}, infoPeta = null;
+    /* tab Peta: data peta hanya 365 hari terakhir, jadi bilah atas menulis periode yang benar-benar dipakai peta */
+    const judulPeta = () => { const a = infoPeta?.st; judulWil.textContent = a?.dari ? `${wilNama()}, ${tglPanjang(a.dari)} sampai ${tglPanjang(a.sampai)}` : `${wilNama()}, 365 hari terakhir`; };
+    const sumberCetak = h("p", {class: "dt-cetak-saja", teks: `Sumber: DIBI BNPB (dibi.bnpb.go.id), hanya kejadian yang memenuhi ambang bencana. Diunduh ${tglPanjang(T.dibuat.slice(0, 10))}.`});
+    if (DAS) {
+      /* Peta milik data_bencana.js (sesi Dalops): mode tanam = peta + panel bergaya meja; atur() dari sini, ubah() bila pengguna klik peta */
+      const petaEl = h("div", {class: "db-peta"}); panel.peta.append(petaEl); document.getElementById("app")?.remove();
+      let kendali = null, dariPeta = false;
+      kirimPeta = () => { if (!kendali || dariPeta) return; const satu = st.kat.size === 1 ? kat([...st.kat][0])[1] : "";
+        kendali.atur({dari: String(st.dari), sampai: String(st.sampai), prov: st.prov, kab: st.kab >= 0 ? T.kab[st.kab][0].replace(/^(\d\d)(\d\d)$/, "$1.$2") : "", jenis: satu}); };
+      const terimaPeta = info => { infoPeta = info; if (st.tab === "peta") judulPeta();
+        const p = info?.st?.prov || "", kb = String(info?.st?.kab || "").replace(".", "");
+        const i = kb ? T.kab.findIndex(k => k[0] === kb) : -1; if (p === st.prov && i === st.kab) return;
+        st.prov = p; st.kab = i; sProv.value = p; isiKab(); sKab.value = i; dariPeta = true; gambar(); nanti(() => (dariPeta = false)); };
+      if (window.DataBencana) Promise.resolve(window.DataBencana.pasang(petaEl, {tanam: true, ubah: terimaPeta})).then(k => { if (k?.atur) { kendali = k; kirimPeta(); } }).catch(() => {});
+      const PERIODE = [[5, "5 tahun"], [10, "10 tahun"], [0, "Sejak 2008"], [1, "Tahun ini"]];
+      const segP = h("div", {class: "db-periode", role: "group", "aria-label": "Periode cepat"}, PERIODE.map(([n, t]) => { const b = h("button", {type: "button", "data-n": String(n), teks: t});
+        b.addEventListener("click", () => { st.sampai = thAkhir; st.dari = n === 0 ? Math.max(thAwal, 2008) : n === 1 ? thAkhir : thAkhir - n + 1; sDari.value = st.dari; sSampai.value = st.sampai; gambar(); }); return b; }));
+      segarPeriode = () => segP.querySelectorAll("button").forEach(b => { const n = +b.dataset.n, dari = n === 0 ? Math.max(thAwal, 2008) : n === 1 ? thAkhir : thAkhir - n + 1; b.setAttribute("aria-pressed", String(st.sampai === thAkhir && st.dari === dari)); });
+      const grup = (t, ...isi) => h("section", {class: "db-grup"}, h("h2", {class: "db-grup-j", teks: t}), ...isi);
+      const sisi = h("aside", {class: "db-sisi", "aria-label": "Menu data bencana"},
+        h("a", {class: "db-merek", href: "/bnpb"}, h("img", {src: "/lapor/lambang-bnpb.png", alt: "", width: "34", height: "34"}), h("div", {}, h("b", {id: "dtJudul", teks: "Data Bencana Indonesia"}), h("small", {teks: "Sumber DIBI BNPB"}))),
+        h("p", {class: "db-segar"}, h("i"), h("span", {teks: `Data diperbarui ${tglPanjang(T.dibuat.slice(0, 10))}`})),
+        grup("Tampilan", tabList),
+        grup("Jenis bencana", h("div", {class: "db-cepat"}, bAlam, bSemua), h("div", {class: "db-jenis-daftar"}, chips)),
+        grup("Wilayah", h("div", {class: "dt-f-isi"}, lbl("dtProv", "Provinsi"), sProv), h("div", {class: "dt-f-isi"}, lbl("dtKab", "Kabupaten/kota"), sKab)),
+        grup("Tahun", h("div", {class: "db-dua"}, h("div", {class: "dt-f-isi"}, lbl("dtDari", "Dari"), sDari), h("div", {class: "dt-f-isi"}, lbl("dtSampai", "Sampai"), sSampai)), bUlang),
+        grup("Bagikan", bBagi, bCetak));
+      bAlam.textContent = "Bencana alam"; bSemua.textContent = "Semua";
+      const atas = h("div", {class: "db-atas"}, h("div", {class: "db-jejak"}, ikon("wilayah"), judulWil), segP,
+        h("span", {class: "dt-pil", title: "DIBI menetapkan data final sekitar Februari tahun berikutnya", teks: `Data ${T.sementara} sementara`}));
+      const rk = h("aside", {class: "db-ringkas", "aria-label": "Ringkasan"}, h("h2", {class: "db-rk-j"}, ikon("data"), h("span", {teks: "Ringkasan"})), ringkasan);
+      akar.classList.add("db-app"); akar.dataset.tab = st.tab;
+      akar.replaceChildren(sisi, h("div", {class: "db-utama"}, atas, sumberCetak, h("div", {class: "db-isi"}, h("div", {class: "db-panel"}, ...Object.values(panel)), rk)), status, tip);
+    } else akar.replaceChildren(
       h("div", {class: "dt-kepala"}, h("h2", {class: "dt-judul", id: "dtJudul"}, ikon("data"), h("span", {teks: "Statistik bencana sejak 2008"})),
         h("span", {class: "dt-pil", title: "DIBI menetapkan data final sekitar Februari tahun berikutnya", teks: `Data ${T.sementara} sementara`}), judulWil,
         h("div", {class: "dt-aksi"}, bBagi, bCetak)),
-      h("p", {class: "dt-cetak-saja", teks: `Sumber: DIBI BNPB (dibi.bnpb.go.id), hanya kejadian yang memenuhi ambang bencana. Diunduh ${tglPanjang(T.dibuat.slice(0, 10))}.`}),
-      filter, ringkasan, tabList, ...Object.values(panel), status, tip);
+      sumberCetak, filter, ringkasan, tabList, ...Object.values(panel), status, tip);
 
     /* ---------- tooltip ---------- */
     const tampilTip = (e, isi) => { tip.replaceChildren(...isi); tip.hidden = false;
@@ -175,27 +219,29 @@
     const barisTip = (judul, baris) => [h("b", {teks: judul}), ...baris.map(([w, l, v]) => h("span", {class: "dt-tip-b"}, w ? warnai(h("i"), w, "background") : h("i", {class: "dt-tip-kosong"}), h("span", {teks: l}), h("strong", {teks: v})))];
 
     /* ---------- grafik batang per tahun (bertumpuk) + garis rata-rata 5 tahun ---------- */
-    function grafikTahun(wadah, seri, {garis = true, k = "kejadian"} = {}) {
+    function grafikTahun(wadah, seri0, {garis = true, k = "kejadian"} = {}) {
       const W = Math.max(320, wadah.clientWidth || 640), H = 280, kiri = 52, kanan = 12, atas = 22, bawah = 26;
-      const th = D.tahun, n = th.length, lebarB = (W - kiri - kanan) / n;
-      const jumlah = th.map((_, i) => seri.reduce((a, x) => a + x.nilai[i], 0)), rata = ma5(jumlah);
+      /* rata-rata 5 tahun dihitung atas deret penuh (tahun sebelum rentang ikut), lalu hanya tahun dalam rentang yang digambar */
+      const rataPenuh = ma5(D.tahun.map((_, i) => seri0.reduce((a, x) => a + x.nilai[i], 0))), dalam = D.tahun.map((t, i) => t >= st.dari && t <= st.sampai ? i : -1).filter(i => i >= 0);
+      const th = dalam.map(i => D.tahun[i]), seri = seri0.map(x => ({...x, nilai: dalam.map(i => x.nilai[i])})), n = th.length, lebarB = (W - kiri - kanan) / n;
+      const jumlah = th.map((_, i) => seri.reduce((a, x) => a + x.nilai[i], 0)), rata = dalam.map(i => rataPenuh[i]);
       const puncak = Math.max(1, ...jumlah, ...rata), p10 = 10 ** Math.floor(Math.log10(puncak / 4)), langkah = p10 * [1, 2, 2.5, 5, 10].find(m => p10 * m * 4 >= puncak);
       const maks = Math.ceil(puncak * 1.08 / langkah) * langkah, y = v => atas + (H - atas - bawah) * (1 - v / maks);
       const svg = s("svg", {viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: "dt-svg", role: "group", "aria-label": `${LABEL[k]} per tahun, ${wilNama()}`});
       for (let v = 0; v <= maks + 1e-9; v += langkah) { const yy = y(v); svg.append(s("line", {x1: kiri, x2: W - kanan, y1: yy, y2: yy, class: "dt-grid"}), s("text", {x: kiri - 6, y: yy + 4, class: "dt-sumbu", "text-anchor": "end", teks: nilaiTeks(k, v)})); }
       th.forEach((t, i) => {
-        const x = kiri + i * lebarB, g = s("g", {class: "dt-batang" + (t < st.dari || t > st.sampai ? " dt-luar" : "") + (t === T.sementara ? " dt-sementara" : "")});
+        const x = kiri + i * lebarB, g = s("g", {class: "dt-batang" + (t === T.sementara ? " dt-sementara" : "")});
         let dasar = 0;
-        for (const x0 of seri) { const v = x0.nilai[i]; if (!v) continue; const r = s("rect", {x: x + lebarB * .14, width: lebarB * .72, y: y(dasar + v), height: Math.max(.5, y(dasar) - y(dasar + v)), rx: 1.5}); warnai(r, x0.warna); g.append(r); dasar += v; }
+        for (const x0 of seri) { const v = x0.nilai[i]; if (!v) continue; const r = s("rect", {x: x + lebarB * .2, width: lebarB * .6, y: y(dasar + v), height: Math.max(.5, y(dasar) - y(dasar + v)), rx: 1.5}); warnai(r, x0.warna); g.append(r); dasar += v; }
         g.append(s("rect", {x, width: lebarB, y: atas, height: H - atas - bawah, class: "dt-sasar"}));
         if (n <= 20 || i % 2 === 0) svg.append(s("text", {x: x + lebarB / 2, y: H - 8, class: "dt-sumbu", "text-anchor": "middle", teks: t === T.sementara ? t + "*" : String(t)}));
-        if (jumlah[i] && W / n > 34) svg.append(s("text", {x: x + lebarB / 2, y: y(jumlah[i]) - 5, class: "dt-nilai", "text-anchor": "middle", teks: ringkas(SATUAN[k] === "rp" ? jumlah[i] * 1e6 : jumlah[i]).replace(" ribu", " rb").replace(" juta", " jt").replace(" miliar", " M").replace(" triliun", " T")}));
+        if (jumlah[i] && W / n > 34) svg.append(s("text", {x: x + lebarB / 2, y: Math.min(y(jumlah[i]), garis ? y(rata[i]) : Infinity) - 7, class: "dt-nilai", "text-anchor": "middle", teks: ringkas(SATUAN[k] === "rp" ? jumlah[i] * 1e6 : jumlah[i]).replace(" ribu", " rb").replace(" juta", " jt").replace(" miliar", " M").replace(" triliun", " T")}));
         ikat(g, () => barisTip(`${t}${t === T.sementara ? ", sementara" : ""}`, [...seri.filter(x0 => x0.nilai[i]).map(x0 => [x0.warna, x0.nama, nilaiPenuh(k, x0.nilai[i])]),
           ...(seri.length > 1 ? [[null, "Jumlah", nilaiPenuh(k, jumlah[i])]] : []), ...(garis ? [[null, "Rata-rata 5 tahun", nilaiPenuh(k, rata[i])]] : [])]), `${t}: ${nilaiPenuh(k, jumlah[i])}`);
         svg.append(g);
       });
       if (garis) { const p = rata.map((v, i) => `${i ? "L" : "M"}${(kiri + (i + .5) * lebarB).toFixed(1)},${y(v).toFixed(1)}`).join("");
-        svg.append(s("path", {d: p, class: "dt-garis"}), ...rata.map((v, i) => s("circle", {cx: kiri + (i + .5) * lebarB, cy: y(v), r: 3, class: "dt-titik"}))); }
+        svg.append(s("path", {d: p, class: "dt-garis"}), ...rata.map((v, i) => s("circle", {cx: kiri + (i + .5) * lebarB, cy: y(v), r: 2.5, class: "dt-titik"}))); }
       wadah.replaceChildren(svg);
     }
     const legenda = (seri, garis) => h("div", {class: "dt-legenda"}, seri.map(x => h("span", {}, warnai(h("i"), x.warna, "background"), h("span", {teks: x.nama}))),
@@ -213,12 +259,43 @@
     /* ---------- ringkasan angka ---------- */
     function gambarRingkasan() {
       const n = st.sampai - st.dari + 1, rentang = st.dari === st.sampai ? String(st.dari) : `${st.dari} sampai ${st.sampai}`;
-      judulWil.textContent = `${wilNama()}, ${rentang}`;
+      if (DAS && st.tab === "peta") judulPeta(); else judulWil.textContent = `${wilNama()}, ${rentang}`;
       const kotak = [["kejadian", "Kejadian", "data"], ["mdh", "Meninggal dan hilang", "personel"], ["luka", "Luka dan sakit", "personel"],
         ["terdampak", "Menderita dan mengungsi", "ungsi"], ["rumah", "Rumah rusak", "rumah"], ["rugi_rumah", "Estimasi kerugian rumah", "dana"]];
-      ringkasan.replaceChildren(...kotak.map(([k, l, ik]) => { const v = total(k);
-        return h("div", {class: "dt-kpi-k"}, h("span", {class: "dt-kpi-l"}, ikon(ik), h("span", {teks: l})), h("b", {teks: nilaiTeks(k, v)}),
-          n > 1 ? h("small", {teks: `${nilaiTeks(k, v / n)} per tahun`}) : null); }));
+      /* jumlah per jenis untuk pil di tombol jenis: saringan wilayah dan tahun, tanpa saringan jenis */
+      const perJenis = new Map();
+      for (const r of T.tahun_kab) { if (r[0] < st.dari || r[0] > st.sampai || (st.kab >= 0 ? r[2] !== st.kab : st.prov && T.kab[r[2]][1] !== st.prov)) continue;
+        const nk = T.kategori[r[1]]; perJenis.set(nk, (perJenis.get(nk) || 0) + r[C.kejadian]); }
+      chips.forEach(b => { const v = perJenis.get(b.dataset.k) || 0; b.querySelector(".dt-chip-n").textContent = F(Math.round(v)); b.classList.toggle("dt-nol", !v); });
+      segarPeriode();
+      if (!DAS) { ringkasan.replaceChildren(...kotak.map(([k, l, ik]) => { const v = total(k);
+        return h("div", {class: "dt-kpi-k"}, h("span", {class: "dt-kpi-l"}, ikon(ik), h("span", {teks: l})), h("b", {teks: nilaiTeks(k, Math.round(v))}),
+          n > 1 ? h("small", {teks: `${nilaiTeks(k, v / n)} per tahun`}) : null); })); return; }
+      /* Ringkasan kanan gaya /lapor/meja: kelompok berlabel, baris ikon, label, angka; lalu kab/kota terbanyak */
+      const baris = (ik, l, k, v = total(k)) => h("div", {class: "db-rk-b"}, h("span", {class: "db-rk-ik"}, ikon(ik)), h("span", {teks: l}), h("b", {teks: nilaiTeks(k, Math.round(k === "lahan_ha" ? v * 10 : v) / (k === "lahan_ha" ? 10 : 1))}));
+      const kej = total("kejadian"), perKab = new Map();
+      for (const r of T.tahun_kab) if (lolos(r)) perKab.set(r[2], (perKab.get(r[2]) || 0) + r[C.kejadian]);
+      const top = [...perKab].sort((a, b) => b[1] - a[1]).slice(0, 5), maks = top[0]?.[1] || 1;
+      ringkasan.replaceChildren(
+        h("p", {class: "db-rk-besar"}, h("b", {teks: F(Math.round(kej))}), h("span", {teks: `kejadian${n > 1 ? `, ${F(Math.round(kej / n))} per tahun` : ""}`})),
+        h("p", {class: "db-rk-label", teks: "Korban"}), baris("personel", "Meninggal", "meninggal"), baris("personel", "Hilang", "hilang"), baris("obat", "Luka dan sakit", "luka"), baris("ungsi", "Menderita dan mengungsi", "terdampak"),
+        h("p", {class: "db-rk-label", teks: "Rumah"}), baris("rumah", "Rusak berat", "rr_berat"), baris("rumah", "Rusak sedang", "rr_sedang"), baris("rumah", "Rusak ringan", "rr_ringan"), baris("air", "Terendam", "terendam"),
+        h("p", {class: "db-rk-label", teks: "Fasilitas dan lahan"}), baris("data", "Satuan pendidikan", "f_pendidikan"), baris("sosial", "Rumah ibadat", "f_ibadah"), baris("obat", "Fasilitas kesehatan", "f_kesehatan"),
+        baris("wilayah", "Kantor", "f_kantor"), baris("akses", "Jembatan", "jembatan"), baris("gambut", "Lahan rusak", "lahan_ha"),
+        h("p", {class: "db-rk-label", teks: "Kerugian"}), baris("dana", "Estimasi kerugian rumah", "rugi_rumah"),
+        h("p", {class: "db-rk-label", teks: "Penanganan saat ini"}), ...penanganan(),
+        top.length > 1 ? h("p", {class: "db-rk-label", teks: "Kab/kota terbanyak"}) : "",
+        top.length > 1 ? h("ol", {class: "db-rk-kab"}, top.map(([i, v], j) => h("li", {}, h("span", {class: "db-rk-no", teks: String(j + 1)}), h("span", {teks: T.kab[i][2]}), h("b", {teks: F(Math.round(v))}),
+          (() => { const g = h("i"); g.style.inlineSize = (v / maks * 100).toFixed(1) + "%"; return g; })()))) : "");
+    }
+
+    /* status darurat aktif, posko pengungsian, rambu evakuasi IDRIP untuk wilayah terpilih (tidak ikut saringan tahun dan jenis) */
+    function penanganan() {
+      const kode = st.kab >= 0 ? T.kab[st.kab][0] : "", cocok = x => kode ? x.kab === kode : !st.prov || x.prov === st.prov;
+      const b = (ik, l, v, ada) => h("div", {class: "db-rk-b"}, h("span", {class: "db-rk-ik"}, ikon(ik)), h("span", {teks: l}), h("b", {teks: ada ? F(v) : "–"}));
+      const pk = D.posko.filter(cocok);
+      return [b("tenda", "Status darurat aktif", D.darurat.filter(cocok).length, D.ada.darurat), b("ungsi", "Posko pengungsian", pk.length, D.ada.posko),
+        b("personel", "Jiwa di posko", pk.reduce((a, x) => a + x.jiwa, 0), D.ada.posko), b("akses", "Rambu evakuasi IDRIP", D.rambu.filter(cocok).reduce((a, x) => a + x.n, 0), D.ada.rambu)];
     }
 
     /* ---------- tab Tren ---------- */
@@ -437,7 +514,7 @@
     const gambarTab = () => { if (st.tab === "tren") { trenKej(); trenKorban(); trenRumah(); trenBulan(); trenMusim(); trenHari(); }
       else if (st.tab === "sebaran") gambarSebaran(); else { gambarRekap(); gambarDaftar(); } };
     let antre = false;
-    function gambar() { if (antre) return; antre = true; nanti(() => { antre = false; gambarRingkasan(); gambarTab(); if (akar.id === "dtWadah") history.replaceState(history.state, "", tautan()); }); }
+    function gambar() { if (antre) return; antre = true; nanti(() => { antre = false; gambarRingkasan(); gambarTab(); kirimPeta(); if (akar.id === "dtWadah") history.replaceState(history.state, "", tautan()); }); }
     /* cetak A4: semua tab digambar, hanya wadah ini yang tercetak (kelas jalur di leluhurnya) */
     const jalur = []; for (let e = akar.parentElement; e && e !== document.documentElement; e = e.parentElement) jalur.push(e);
     const siapCetak = () => { document.documentElement.classList.add("dt-mencetak"); jalur.forEach(e => e.classList.add("dt-jalur")); akar.classList.add("dt-jalur-akar");
@@ -451,5 +528,5 @@
   }
 
   window.DibiTren = {pasang};
-  const w = document.getElementById("dtWadah"); if (w) pasang(w);
+  const w = document.getElementById("dtWadah"); if (w) pasang(w, {dasbor: w.dataset.dasbor === "1"});
 })();

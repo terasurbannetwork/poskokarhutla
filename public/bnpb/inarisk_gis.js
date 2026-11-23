@@ -154,12 +154,13 @@ Ir.tab.gis = {
       if (!id || !p) { M.getSource("keg")?.setData(KOSONG); return; }
       pesan("Memuat titik kegiatan…");
       try {
-        const q = new URLSearchParams({date_from: $("#gsDari").value, date_to: $("#gsSampai").value});
-        const gj = await Ir.api(`kegiatan/${id}/${p}?${q}`);
+        /* hulu tidak menyaring tanggal: saring kolom Tgl (YYYY-MM-DD ...) di sini, rentang inklusif */
+        const semua = await Ir.api(`kegiatan/${id}/${p}`), dari = $("#gsDari").value, sampai = $("#gsSampai").value;
         if (no !== minta) return;
+        const gj = {type: "FeatureCollection", features: (semua.features || []).filter(f => { const t = String(f.properties?.Tgl || "").slice(0, 10); return (!dari || t >= dari) && (!sampai || t <= sampai); })};
         M.getSource("keg").setData(gj);
         const n = gj.features?.length || 0;
-        pesan(`${H.angka0(n)} titik ${id === "20" ? "lapor kegiatan" : "sosialisasi"}.`);
+        pesan(`${H.angka0(n)} titik ${id === "20" ? "lapor kegiatan" : "sosialisasi"} pada rentang tanggal ini, dari ${H.angka0(semua.features?.length || 0)} titik di provinsi.`);
         if (n) {
           urlUnduh = URL.createObjectURL(new Blob([JSON.stringify(gj)], {type: "application/geo+json"}));
           Object.assign($("#gsUnduh"), {href: urlUnduh, hidden: false, download: `kegiatan-${p}.geojson`});

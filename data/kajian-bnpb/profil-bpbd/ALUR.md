@@ -51,7 +51,7 @@ profil keempat, sesudah akun aktif: draf --ajukan--> menunggu --setuju profil-->
 | Kejadian | Hasil |
 | --- | --- |
 | PIN salah ke 1 sampai 4 | "PIN salah", hitungan naik, log `pin_salah` |
-| PIN salah ke 5 beruntun | profil terkunci 15 menit, log `terkunci`; PIN benar pun ditolak selama kunci |
+| PIN salah ke 5 dalam 15 menit dari IP yang sama | PIN dari IP itu ditolak 15 menit, log `terkunci`; IP lain tetap bisa mencoba; PIN benar pun ditolak dari IP itu selama jendela (N7) |
 | 10 PIN salah dalam satu hari kalender WIB | profil terkunci sampai admin membuka, log `terkunci_admin` |
 | PIN benar | hitungan beruntun kembali 0, log `pin_ok` |
 

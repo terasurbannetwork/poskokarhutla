@@ -12,23 +12,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/bnpb/data_bencana.css?v=2" rel="stylesheet">
-<link href="/bnpb/dibi_tren.css?v=1" rel="stylesheet">
+<link href="/bnpb/data_bencana.css?v=4" rel="stylesheet">
+<link href="/bnpb/dibi_tren.css?v=4" rel="stylesheet">
 </head>
 <body>
-<header class="ad-top">
-  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
-</header>
-<main class="bn-wrap bd-halaman">
-  <h1 class="bd-judul">Data Bencana Indonesia</h1>
-  <div id="app"><p class="lb-p" role="status">Memuat data bencana…</p></div>
-  <section id="dtWadah" class="dt-wadah" aria-labelledby="dtJudul"></section>
+<!-- tanpa kepala navy situs: merek ada di sidebar, sama dengan /lapor/meja (pemilik 23 Nov 2026) -->
+<main class="db-halaman">
+  <h1 class="dt-sr">Data Bencana Indonesia</h1>
+  <!-- kerangka dasbor gaya /lapor/meja (dibi_tren.js mode dasbor); peta dari data_bencana.js mode tanam -->
+  <section id="dtWadah" class="dt-wadah" data-dasbor="1" aria-labelledby="dtJudul"><p class="dt-muat" role="status">Memuat data bencana…</p></section>
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
 <script src="/bnpb/wilayah.js?v=3"></script>
 <script src="/bnpb/dalops_hitung.js?v=17"></script>
-<script src="/bnpb/data_bencana.js?v=2"></script>
-<script src="/bnpb/data_bencana_halaman.js?v=1"></script>
-<script src="/bnpb/dibi_tren.js?v=1"></script>
+<script src="/bnpb/data_bencana.js?v=4"></script>
+<script src="/bnpb/dibi_tren.js?v=4"></script>
 </body>
 </html>

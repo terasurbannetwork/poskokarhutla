@@ -12,6 +12,7 @@ import {modAtauStaf} from "./staf.js";
 import {bakuKab, dalamWilayah} from "./lapor_meja_hak.js";
 import {tglWib} from "./lapor_tampil.js";
 import {rekap, validasi, penanda, kurangFoto, titikObjek} from "./lapor_lanjut_spek.js";
+import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, samarPribadi, BASI_MS, MAKS_FOTO_DRAF} from "./lapor_lanjut_mesin.js";
 import * as H from "./hak.js";
 
 const JAM = 3600e3, HARI = 864e5, UMUR_TOKEN = 30 * HARI;   // Q11: 30 hari
@@ -30,14 +31,7 @@ async function sidikPribadi(env, s) {
 const kukiData = (k, umurDetik) => `lapor_data=${k}; Max-Age=${umurDetik}; Path=/api/lapor/data; HttpOnly; Secure; SameSite=Lax`;
 
 /* ---------- penyamaran untuk staf dan akun lembaga (Q6, Q15): murni ---------- */
-const samarTeks = s => { const t = String(s); return t.length <= 1 ? "*" : t[0] + "*".repeat(Math.min(t.length - 1, 8)); };
-const samarAngka = s => { const t = String(s); return t === "tidak_ada" ? t : "*".repeat(Math.max(t.length - 4, 0)) + t.slice(-4); };
-export function samarPribadi(p) {
-  if (!p) return null;
-  const o = {};
-  for (const [k, v] of Object.entries(p)) o[k] = /^(hp|kontak_hp|nik|nik_kk)$/.test(k) ? samarAngka(v) : /^(nama|kk|pemilik|kontak_nama)$/.test(k) ? samarTeks(v) : "(disembunyikan)";
-  return o;
-}
+export {samarPribadi};
 export const samarWa = wa => String(wa).slice(0, 4) + "*****" + String(wa).slice(-3);
 /* kab izin (kode "31.75" atau nama "Kab. Bogor") sama dengan wilayah laporan (kode wilayah, bukan isian pelapor; D95 induk) */
 export const kabSama = (izinKab, w) => !!izinKab && !!w?.kabKode && (/^\d{2}\.\d{2}$/.test(izinKab) ? izinKab === w.kabKode : !!w.kab && bakuKab(izinKab) === bakuKab(w.kab));
@@ -175,32 +169,31 @@ async function objekLengkap(env, b, id) {
   return objekKeluar(o, media, semua, induk?.terkirim ?? null);
 }
 
-/* POST /api/lapor/data/objek {jenis, isian, lat?, lon?, klien_id?} baru, atau {id, rev, isian, ...} ubah */
-async function objekPost(env, req, url, kini) {
-  const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;
-  const t = await timTulis(env, req, kini); if (t instanceof Response) return t;
-  const bb = await bacaBody(req, 16384); if (bb.galat) return galat(bb.status || 400, bb.galat);
-  const o = bb.o || {}, ubah = o.id != null;
+/* simpan atau ubah satu objek; dipakai pintu web (objekPost) dan pintu WA (LJ-05) supaya validasi, pribadi terpisah, jejak, dan rev satu jalur.
+   t = {tim: {wa, peran}, b: berkas, oleh}; o = {jenis | id+rev, isian, lat?, lon?, klien_id?}. Keluaran {kode, isi} (isi = badan JSON jawaban). */
+const tolak = (kode, pesan, tambah = {}) => ({kode, isi: {galat: pesan, ...tambah}});
+async function simpanObjek(env, t, o, kini) {
+  const ubah = o.id != null;
   let lama = null;
   if (ubah) {
-    if (!RE_ID.test(String(o.id)) || !Number.isInteger(o.rev)) return galat(400, "Objek atau rev tidak sah.");
+    if (!RE_ID.test(String(o.id)) || !Number.isInteger(o.rev)) return tolak(400, "Objek atau rev tidak sah.");
     lama = await H.ljObjekId(env, TIM, o.id);
-    if (!lama || lama.berkas !== t.b.id) return galat(404, "Objek tidak ditemukan.");
-    if (lama.status !== "aktif") return galat(409, "Objek ini sudah dibatalkan.");
-    if (t.tim.peran !== "ketua" && lama.oleh !== t.oleh) return galat(403, "Anggota hanya bisa mengubah data yang diisinya sendiri. Minta ketua tim untuk mengubahnya.");
-  } else if (o.klien_id != null) {   // antrean luring mengirim ulang: kembalikan objek yang sama
-    if (!RE_KLIEN.test(String(o.klien_id))) return galat(400, "klien_id tidak sah.");
+    if (!lama || lama.berkas !== t.b.id) return tolak(404, "Objek tidak ditemukan.");
+    if (lama.status !== "aktif") return tolak(409, "Objek ini sudah dibatalkan.");
+    if (t.tim.peran !== "ketua" && lama.oleh !== t.oleh) return tolak(403, "Anggota hanya bisa mengubah data yang diisinya sendiri. Minta ketua tim untuk mengubahnya.");
+  } else if (o.klien_id != null) {   // antrean luring (atau kirim ulang WA) mengirim ulang: kembalikan objek yang sama
+    if (!RE_KLIEN.test(String(o.klien_id))) return tolak(400, "klien_id tidak sah.");
     const ada = await H.ljObjekKlien(env, TIM, o.klien_id);
-    if (ada) return ada.berkas === t.b.id ? kirim(200, {objek: await objekLengkap(env, t.b, ada.id), ulang: true}) : galat(409, "Kirim ulang dengan klien_id baru.");
+    if (ada) return ada.berkas === t.b.id ? {kode: 200, isi: {objek: await objekLengkap(env, t.b, ada.id), ulang: true}} : tolak(409, "Kirim ulang dengan klien_id baru.");
   }
   const jenis = ubah ? lama.jenis : o.jenis;
-  if (!JENIS_RUTE.has(jenis)) return galat(400, "Jenis objek ini belum bisa disimpan.");
+  if (!JENIS_RUTE.has(jenis)) return tolak(400, "Jenis objek ini belum bisa disimpan.");
   const v = validasi(jenis, o.isian && typeof o.isian === "object" ? o.isian : {});
-  if (v.galat.length) return kirim(400, {galat: "Isian belum lengkap atau tidak sah.", isian: v.galat});
+  if (v.galat.length) return tolak(400, "Isian belum lengkap atau tidak sah.", {isian: v.galat});
   const manual = o.lat != null || o.lon != null;
-  if (manual && !titikSah(o.lat, o.lon)) return galat(400, "Titik di luar Indonesia atau tidak sah.");
+  if (manual && !titikSah(o.lat, o.lon)) return tolak(400, "Titik di luar Indonesia atau tidak sah.");
   const data = JSON.stringify(v.data), pribadi = Object.keys(v.pribadi).length ? JSON.stringify(v.pribadi) : null;
-  if (data.length > 4000 || (pribadi?.length ?? 0) > 2000) return galat(400, "Isian terlalu panjang.");
+  if (data.length > 4000 || (pribadi?.length ?? 0) > 2000) return tolak(400, "Isian terlalu panjang.");
   const baris = {id: ubah ? lama.id : acak(8), berkas: t.b.id, jenis, data, pribadi, desa: v.data.desa ?? null,
     lat: manual ? o.lat : ubah ? lama.lat : null, lon: manual ? o.lon : ubah ? lama.lon : null, klien_id: o.klien_id ?? null, oleh: t.oleh};
   const jejak = {berkas: t.b.id, objek: baris.id, aksi: ubah ? "ubah" : "tambah", sebelum: ubah ? lama.data : null, sesudah: data, pribadi_sidik: await sidikPribadi(env, pribadi), oleh: t.oleh};
@@ -209,15 +202,23 @@ async function objekPost(env, req, url, kini) {
     try { r = await H.ljBatch(env, TIM, [ubah ? H.ljStmtObjekUbah(env, TIM, baris, o.rev, kini) : H.ljStmtObjekBaru(env, TIM, baris, kini), H.ljStmtJejak(env, TIM, jejak, kini, true)]); break; }
     catch (e) {
       const m = String(e?.message);
-      if (!ubah && /UNIQUE.*klien_id/i.test(m)) {   // kiriman ulang luring yang balapan dengan kiriman pertama: tetap idempoten
+      if (!ubah && /UNIQUE.*klien_id/i.test(m)) {   // kiriman ulang yang balapan dengan kiriman pertama: tetap idempoten
         const ada = await H.ljObjekKlien(env, TIM, o.klien_id);
-        return ada?.berkas === t.b.id ? kirim(200, {objek: await objekLengkap(env, t.b, ada.id), ulang: true}) : galat(409, "Kirim ulang dengan klien_id baru.");
+        return ada?.berkas === t.b.id ? {kode: 200, isi: {objek: await objekLengkap(env, t.b, ada.id), ulang: true}} : tolak(409, "Kirim ulang dengan klien_id baru.");
       }
       if (ubah || coba || !/UNIQUE/i.test(m)) throw e;
     }
   }
-  if (!r[0].meta.changes) return galat(409, "Data ini sudah diubah orang lain. Muat ulang lalu coba lagi.");
-  return kirim(ubah ? 200 : 201, {objek: await objekLengkap(env, t.b, baris.id)});
+  if (!r[0].meta.changes) return tolak(409, "Data ini sudah diubah orang lain. Muat ulang lalu coba lagi.");
+  return {kode: ubah ? 200 : 201, isi: {objek: await objekLengkap(env, t.b, baris.id)}};
+}
+/* POST /api/lapor/data/objek {jenis, isian, lat?, lon?, klien_id?} baru, atau {id, rev, isian, ...} ubah */
+async function objekPost(env, req, url, kini) {
+  const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;
+  const t = await timTulis(env, req, kini); if (t instanceof Response) return t;
+  const bb = await bacaBody(req, 16384); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  const r = await simpanObjek(env, t, bb.o || {}, kini);
+  return kirim(r.kode, r.isi);
 }
 
 /* POST /api/lapor/data/batal {objek, rev, alasan}: ketua membatalkan objek mana pun, anggota hanya objek isiannya (KEAMANAN-PRIVASI) */
@@ -257,16 +258,21 @@ async function fotoPost(env, req, url, kini) {
   const xLok = x && titikSah(x.lat, x.lon) ? {lat: x.lat, lon: x.lon} : null, xWaktu = x && angka(x.waktu) && x.waktu <= kini + 5 * MENIT ? x.waktu : null;
   if (gpsSah && xLok && kmDua(g.lat, g.lon, xLok.lat, xLok.lon) > 5) return galat(400, "Lokasi di foto lebih dari 5 km dari posisi Anda sekarang. Kirim foto yang diambil di lokasi ini.");
   const meta = gpsSah ? {lencana: "gps", lat: g.lat, lon: g.lon, akurasi: g.akurasi} : xLok ? {lencana: "exif", ...xLok} : {lencana: "tanpa"};
+  const r = await simpanFoto(env, t, ob, bersih, meta, xWaktu, "web", kini);
+  return kirim(r.kode, r.isi);
+}
+/* satu foto bersih ke R2 dan lj_media (batas 10 per objek atomik), titik objek diisi dari foto bila belum ada; dipakai pintu web dan WA */
+async function simpanFoto(env, t, ob, bersih, meta, waktuAmbil, pintu, kini) {
   const id = acak(8), kunci = `lapor/data/${t.b.id}/${ob.id}/${id}.jpg`;
   await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: "image/jpeg"}});
   try {
     const titik = meta.lat != null ? titikObjek({lat: ob.lat, lon: ob.lon}, [meta]) : null;
-    const r = await H.ljBatch(env, TIM, [H.ljStmtMediaBaru(env, TIM, {id, objek: ob.id, kunci_r2: kunci, jenis: "foto", ...meta, waktu_ambil: xWaktu, waktu_terima: kini, pintu: "web", oleh: t.oleh}, MAKS_FOTO_OBJEK),
+    const r = await H.ljBatch(env, TIM, [H.ljStmtMediaBaru(env, TIM, {id, objek: ob.id, kunci_r2: kunci, jenis: "foto", ...meta, waktu_ambil: waktuAmbil, waktu_terima: kini, pintu, oleh: t.oleh}, MAKS_FOTO_OBJEK),
       ...(titik && ob.lat == null ? [H.ljStmtObjekTitik(env, TIM, ob.id, titik.lat, titik.lon, kini, true)] : []),
       H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: ob.id, aksi: "foto", sesudah: JSON.stringify({media: id, lencana: meta.lencana}), oleh: t.oleh}, kini, true)]);
-    if (!r[0].meta.changes) { await env.MEDIA.delete(kunci).catch(() => {}); return galat(400, `Paling banyak ${MAKS_FOTO_OBJEK} foto per objek.`); }
+    if (!r[0].meta.changes) { await env.MEDIA.delete(kunci).catch(() => {}); return tolak(400, `Paling banyak ${MAKS_FOTO_OBJEK} foto per objek.`); }
   } catch (e) { await env.MEDIA.delete(kunci).catch(() => {}); throw e; }
-  return kirim(201, {objek: await objekLengkap(env, t.b, ob.id), foto: id});
+  return {kode: 201, isi: {objek: await objekLengkap(env, t.b, ob.id), foto: id}};
 }
 
 /* GET /api/lapor/data/media?id=: tim berkasnya; staf Pusdalops; akun lembaga kab hanya foto (bukan wajah); provinsi tidak. Tercatat. */
