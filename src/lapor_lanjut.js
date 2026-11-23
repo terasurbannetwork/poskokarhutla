@@ -15,7 +15,7 @@ import {rekap, validasi, penanda, kurangFoto, fotoWajib, titikObjek, wajahBoleh,
 import {NAMA_KAB4} from "./siklus_kab.js";
 import {teksBersih} from "./meja_spek.js";
 import {kodeTp, jarakM, BOX, DEKAT_M} from "./pengungsian_titik.js";
-import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
+import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, perintahJawab, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
 import * as H from "./hak.js";
 
 const JAM = 3600e3, HARI = 864e5, UMUR_TOKEN = 30 * HARI;   // Q11: 30 hari
@@ -614,6 +614,8 @@ export async function pesanTim(env, wa, o, kini = Date.now(), origin = "") {
   try {
     const d = await bacaDraf(env, wa, kini); if (!d) return null;
     let {tim, sesi, k, pindah} = d;
+    const jw = k?.tahap === "isi" ? null : perintahJawab(teks);   // LJ-10: peran di berkas ini tidak menentukan; ljTanyaKetua hanya mengembalikan berkas yang nomor ini ketuai
+    if (jw) { const t = await jawabHarian(env, wa, jw, kini); if (t) return jawabWa(t); }   // tanpa pertanyaan hari ini jatuh ke teks biasa
     if (k?.tahap === "nama" && tim.nama != null) { await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }   // nama sudah terisi lewat jalur lain
     const perintah = perintahData(teks);   // perintah tahap 2 dikerjakan dulu; nama ditanya di pesan bukan-perintah berikutnya
     if (k?.tahap === "nama" && perintah) { await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }
@@ -715,3 +717,77 @@ export const RUTE_LAPOR_DATA = Object.fromEntries(Object.entries({
   "POST /api/lapor/data/foto": fotoPost,
   "GET /api/lapor/data/media": mediaGet,
 }).map(([k, f]) => [k, jaga(f)]));
+
+/* ---------- LJ-10: pertanyaan harian ke ketua (D12, Q3). Jam kirim satu tempat; BAWAAN SEMENTARA Q3 = 16.00 WIB, hanya ketua. ---------- */
+export const JAM_TANYA_WIB = 16;   // Q3 (bawaan sementara): ubah di sini bila pemilik menjawab lain
+/* ponytail: 200 berkas per putaran; sisanya dijemput putaran menit 30, lalu esok. Naik bila F1 melewati ~400 berkas terbuka.
+   Anggaran subrequest Free (50 per invokasi): tanyaHarian paling banyak 1 (daftar) + 3 (hitung jenis, 90 id) + 3 (offset menit 30) + 5 (batch tulis, 90 pernyataan; 200 ketua x 3 pernyataan = 600) = 12, rata-rata 3 sampai 4.
+   Invokasi 09.00 UTC: sudah ada gempa, peringatan, ews, tugas api, kabar ulang, himawari (sekitar 8 sampai 12, jaringan + D1), nowcast (menit % 10) = kira-kira 20 sampai 25 + 12 = mendekati 37. Invokasi 09.30 UTC menambah kirimPushDaerah (sampai 40 kiriman + 1 batch): bila push penuh, total bisa melewati 50. MEPET, belum diukur di produksi; mitigasi bila terbukti: geser ulang ke menit 31 atau kecilkan MAKS_TANYA. */
+const MAKS_TANYA = 200, MAKS_PESAN = 1900;
+const BAGIAN_HARIAN = [["rumah", "rumah"], ["prasarana", "prasarana"], ["titik", "tempat pengungsian"], ["jiwa", "pengungsi"], ["korban", "korban"], ["usaha", "usaha"], ["kebutuhan", "kebutuhan"]];
+/* menit pengiriman: jam 16 WIB menit 0, dan menit 30 sebagai ulang (idempoten lewat lj_tanya) */
+export const saatTanya = kini => { const w = new Date(kini + 7 * 3600e3); return w.getUTCHours() === JAM_TANYA_WIB && (w.getUTCMinutes() === 0 || w.getUTCMinutes() === 30); };
+/* hanya jumlah per bagian; bagian tanpa objek ditulis "belum didata", tidak pernah 0 */
+const bagianHarian = ada => {
+  const ok = BAGIAN_HARIAN.filter(([j]) => ada[j] > 0).map(([j, l]) => `${l} ${ada[j]}`), belum = BAGIAN_HARIAN.filter(([j]) => !(ada[j] > 0)).map(([, l]) => l);
+  return (ok.length ? `Tercatat: ${ok.join(", ")}.` : "Belum ada data tercatat.") + (belum.length ? ` Belum didata: ${belum.join(", ")}.` : "");
+};
+const TUTUP_TANYA = "Kejadian ini masih berlangsung? Balas *masih* atau *selesai*.";
+function pesanHarian(item, offset) {   // item: [{nama, induk, ada}]; pesan bernomor bila beberapa berkas atau nomor melanjutkan pesan sebelumnya
+  if (item.length === 1 && !offset) return `Pertanyaan harian data lanjutan ${item[0].nama} (${item[0].induk}).\n${bagianHarian(item[0].ada)}\n${TUTUP_TANYA}`;
+  const kepala = `Ada ${item.length + offset} berkas data lanjutan yang masih terbuka.`, ekor = "Kejadian masih berlangsung? Balas *masih 1* atau *selesai 2* sesuai nomor berkas.";
+  const baris = []; let isi = kepala.length + ekor.length + 40;
+  for (const [i, x] of item.entries()) {
+    const l = `${offset + i + 1}. ${x.nama} (${x.induk}): ${bagianHarian(x.ada)}`;
+    if (isi + l.length > MAKS_PESAN) break;
+    baris.push(l); isi += l.length + 1;
+  }
+  return {teks: `${kepala}\n${baris.join("\n")}${baris.length < item.length ? `\ndan ${item.length - baris.length} berkas lain.` : ""}\n${ekor}`, n: baris.length};
+}
+export async function tanyaHarian(env, kini) {
+  if (!saatTanya(kini)) return {lewat: true};
+  try {
+    const tgl = tglWib(kini), C = H.pelakuLpCron, retry = new Date(kini + 7 * 3600e3).getUTCMinutes() !== 0;
+    const daftar = await H.ljBelumTanya(env, C, tgl, MAKS_TANYA);
+    if (!daftar.length) return {berkas: 0, ketua: 0};
+    const ada = new Map();   // berkas -> {jenis: n}
+    const ids = daftar.map(b => b.id);
+    for (let i = 0; i < ids.length; i += 90) for (const r of await H.ljHitungJenis(env, C, ids.slice(i, i + 90))) (ada.get(r.berkas) ?? ada.set(r.berkas, {}).get(r.berkas))[r.jenis] = r.n;   // D1: maks 100 parameter
+    const perKetua = new Map();
+    for (const b of daftar) (perKetua.get(b.wa) ?? perKetua.set(b.wa, []).get(b.wa)).push({id: b.id, induk: b.induk, nama: b.nama ?? b.kab, ada: ada.get(b.id) ?? {}});
+    const offsetWa = new Map();   // satu kueri berkelompok (bukan satu per ketua) hanya pada putaran ulang
+    if (retry) { const was = [...perKetua.keys()]; for (let i = 0; i < was.length; i += 90) for (const r of await H.ljTanyaHitung(env, C, tgl, was.slice(i, i + 90))) offsetWa.set(r.wa, r.n); }
+    const grup = []; let berkas = 0;
+    for (const [wa, item] of perKetua) {
+      const offset = retry ? offsetWa.get(wa) ?? 0 : 0;   // putaran ulang melanjutkan nomor pesan pagi (ketua dengan banyak berkas)
+      let p = pesanHarian(item, offset), n = item.length;
+      if (typeof p !== "string") { n = p.n; p = p.teks; }
+      const dipilih = item.slice(0, n).map(x => x.id);
+      grup.push([H.ljStmtKabarHarian(env, C, wa, p, kini, tgl, dipilih), ...dipilih.map(b => H.ljStmtTanya(env, C, b, tgl, kini))]); berkas += n;
+    }
+    for (let i = 0; i < grup.length;) {   // batch atomik per kelompok ketua, dipotong di batas ketua (maks ~90 pernyataan)
+      let stmt = []; while (i < grup.length && (!stmt.length || stmt.length + grup[i].length <= 90)) stmt.push(...grup[i++]);
+      await H.ljBatch(env, C, stmt);
+    }
+    return {berkas, ketua: grup.length};
+  } catch (e) { if (tabelBelum(e)) return {berkas: 0, ketua: 0}; throw e; }
+}
+/* jawaban ketua; keluaran teks balasan, atau null bila tidak ada pertanyaan hari ini (jadi teks biasa) */
+async function jawabHarian(env, wa, jw, kini) {
+  const tgl = tglWib(kini), sidik = await sidikPribadi(env, wa), baris = await H.ljTanyaKetua(env, TIM, wa, tgl, sidik);
+  if (!baris.length) return null;
+  let r;
+  if (jw.nomor == null) {
+    if (baris.length > 1) return `Anda ditanya untuk ${baris.length} berkas hari ini. Tulis nomor berkasnya, misalnya *${jw.jawab} 1*.`;
+    r = baris[0];
+  } else { r = baris[jw.nomor - 1]; if (!r) return `Nomor ${jw.nomor} tidak ada. Pertanyaan hari ini bernomor 1 sampai ${baris.length}.`; }
+  const b = await H.ljBerkas(env, TIM, r.berkas);
+  if (!b || b.status !== "terbuka") return "Berkas itu sudah ditutup, jadi tidak perlu dijawab lagi.";
+  await H.ljBatch(env, TIM, [H.ljStmtTanyaJawab(env, TIM, r.berkas, tgl, jw.jawab),   // jawaban boleh ditimpa (terakhir menang); riwayatnya di lj_jejak
+    H.ljStmtJejak(env, TIM, {berkas: r.berkas, aksi: "tanya_" + jw.jawab, sesudah: JSON.stringify({tgl, jawab: jw.jawab}), pribadi_sidik: sidik, oleh: `tim:${wa}`}, kini)]);
+  const nama = namaKab(b) ?? b.kab;
+  if (jw.jawab === "selesai") return `Dicatat: kejadian di ${nama} sudah selesai.\nPenutupan berkas akan dipandu pada langkah berikutnya. Untuk sekarang berkas belum ditutup dan masih bisa diisi.`;
+  const n = {}; for (const x of await H.ljHitungJenis(env, TIM, [r.berkas])) n[x.jenis] = x.n;
+  const belum = BAGIAN_HARIAN.filter(([j]) => !(n[j] > 0)).map(([, l]) => l);
+  return `Terima kasih, dicatat: kejadian di ${nama} masih berlangsung.\n${belum.length ? `Bagian yang belum didata: ${belum.join(", ")}.` : "Semua bagian sudah ada datanya."}\nAda perubahan hari ini? Kirim lewat tautan data, atau ketik *data* untuk melihat pilihan di WhatsApp.`;
+}

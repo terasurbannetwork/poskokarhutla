@@ -1524,7 +1524,7 @@
     "table lapor_tindakan": "pengecekan lapangan dan tindakan"
   },
   "dikecualikan": {
-    "table lj_tanya": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
+    "table lj_tanya": "16.00 WIB: satu pesan bernomor per ketua",
     "table lj_beku": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
     "table alun_lembaga": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

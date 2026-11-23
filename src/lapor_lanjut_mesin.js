@@ -68,6 +68,11 @@ export function perintahNihil(teks) {
   const metrik = m[2] && Object.hasOwn(ALIAS_METRIK, m[2]) ? ALIAS_METRIK[m[2]] : null;
   return metrik ? {metrik, nihil: !m[1]} : {bantuan: BANTUAN_NIHIL};
 }
+/* LJ-10: jawaban ketua atas pertanyaan harian: "masih", "selesai", atau dengan nomor berkas ("masih 2"); selain itu null */
+export function perintahJawab(teks) {
+  const m = /^(masih|selesai)(?: (\d{1,3}))?$/.exec(norm(teks));
+  return m ? {jawab: m[1], nomor: m[2] ? Number(m[2]) : null} : null;
+}
 export const balasanStatus = p => p === "dicari" ? "masih dicari" : p === "ditemukan_hidup" ? "ditemukan hidup" : "ditemukan meninggal dunia";
 
 /* label per jenis menang atas label umum (nama, desa, jenis berarti lain di tiap jenis) */

@@ -1738,7 +1738,7 @@ export const blDetakSemua = async (env, p) => (await sedia(env, p, "bl_detak", "
    lapor_tiket_riwayat dan lapor_pesan append-only: hanya INSERT di sini. Tiap kueri lewat PK atau indeks 0155 (kuota baca D1 Free). */
 Object.assign(MATRIKS, {
   lapor_pelapor:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
-  lapor_izin:          {lp_pelapor: ["baca"], lp_mesin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca", "tambah", "ubah", "hapus"]},
+  lapor_izin:          {lp_pelapor: ["baca"], lp_cron: ["baca"], lp_mesin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca", "tambah", "ubah", "hapus"]},
   lapor_sesi:          {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},   // staf ubah: hanya revisi angka pengecekan (D110), lewat rev
   lapor_pesan:         {lp_pelapor: ["tambah"], lp_staf: ["baca"]},
   lapor_foto:          {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
@@ -1763,7 +1763,7 @@ Object.assign(MATRIKS, {
      lp_cron = pertanyaan harian (D12) dan hapus data pribadi 5 tahun (D23); lp_mesin = gateway WA (antrean lj_kabar, gerbang izin anggota D11).
      Append-only: lj_jejak, lj_beku, lj_akses tanpa ubah dan hapus. Staf membaca pribadi hanya lewat Tampilkan yang menulis lj_akses (D22). */
   lj_berkas:           {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "ubah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca"]},
-  lj_tim:              {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
+  lj_tim:              {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca"], lp_mesin: ["baca"]},
   lj_objek:            {lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca"], lp_cron: ["baca", "ubah"]},
   lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
   lj_media:            {lj_tim: ["baca", "tambah", "hapus"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
@@ -2219,6 +2219,32 @@ export const ljSesiUbah = async (env, p, wa, keadaan, diubahLama, kini) => (awai
 export const ljSesiHapus = (env, p, wa, sebelum = null) => sedia(env, p, "lj_sesi", "hapus", "DELETE FROM lj_sesi WHERE wa = ?1 AND (?2 IS NULL OR diubah < ?2)").bind(wa, sebelum).run();
 export const ljSesiBasi = async (env, p, sebelum) => (await sedia(env, p, "lj_sesi", "baca",
   "SELECT wa, berkas, keadaan FROM lj_sesi WHERE diubah < ?1 ORDER BY diubah LIMIT 100").bind(sebelum).all()).results;
+
+/* LJ-10: pertanyaan harian (D12). Berkas terbuka tanpa baris lj_tanya tanggal itu, ketuanya aktif DAN nomornya di lapor_izin (gerbang fase F0: nomor uji dan PEMILIK).
+   Indeks: lj_berkas_status (status), PK lj_tanya (berkas, tgl), PK lj_tim (berkas, wa). */
+export const ljBelumTanya = async (env, p, tgl, batas) => (await sedia(env, p, "lj_berkas", "baca",
+  `SELECT b.id, b.induk, b.kab, json_extract(b.isian, '$.kab_nama') nama, k.wa FROM lj_berkas b JOIN lj_tim k ON k.berkas = b.id AND k.peran = 'ketua' AND k.dicabut IS NULL
+   WHERE b.status = 'terbuka' AND NOT EXISTS (SELECT 1 FROM lj_tanya t WHERE t.berkas = b.id AND t.tgl = ?1)
+   AND EXISTS (SELECT 1 FROM lapor_izin z WHERE z.wa = k.wa) ORDER BY b.id LIMIT ?2`).bind(tgl, batas).all()).results;
+/* pesan ketua + baris tanyanya dalam SATU rangkaian batch (maks ~90 parameter): pesan ditulis HANYA bila belum ada baris lj_tanya hari itu untuk berkas-berkas ini
+   (batch D1 berjalan serial, jadi putaran yang kalah balapan tidak menulis pesan), lalu tiap baris lj_tanya ditulis hanya bila pesannya benar-benar masuk (changes() > 0 berantai). */
+export const ljStmtKabarHarian = (env, p, wa, teks, kini, tgl, berkas) => sedia(env, p, "lj_kabar", "tambah",
+  `INSERT INTO lj_kabar (wa, jenis, teks, dibuat) SELECT ?1, 'harian', ?2, ?3 WHERE NOT EXISTS (SELECT 1 FROM lj_tanya WHERE tgl = ?4 AND berkas IN (${berkas.map((_, i) => "?" + (i + 5)).join(",")}))`)
+  .bind(wa, teks, kini, tgl, ...berkas);
+export const ljStmtTanya = (env, p, berkas, tgl, kini) => sedia(env, p, "lj_tanya", "tambah",
+  "INSERT INTO lj_tanya (berkas, tgl, waktu) SELECT ?1, ?2, ?3 WHERE changes() > 0").bind(berkas, tgl, kini);
+/* pertanyaan hari ini untuk berkas yang diketuai nomor ini, urut seperti nomor di pesan (waktu, berkas). LIMIT 200 = MAKS_TANYA (satu putaran tak pernah menulis lebih).
+   Nomor yang baru menjadi ketua SESUDAH pertanyaan dikirim (jejak tim_pindah_ketua bersidik nomor ini, waktu > waktu pertanyaan) tidak ikut: pertanyaan itu bukan untuknya. */
+export const ljTanyaKetua = async (env, p, wa, tgl, sidik) => (await sedia(env, p, "lj_tanya", "baca",
+  `SELECT t.berkas, t.jawab FROM lj_tanya t JOIN lj_tim k ON k.berkas = t.berkas AND k.wa = ?1 AND k.peran = 'ketua' AND k.dicabut IS NULL
+   WHERE t.tgl = ?2 AND NOT EXISTS (SELECT 1 FROM lj_jejak j WHERE j.berkas = t.berkas AND j.aksi = 'tim_pindah_ketua' AND j.pribadi_sidik = ?3 AND j.waktu > t.waktu)
+   ORDER BY t.waktu, t.berkas LIMIT 200`).bind(wa, tgl, sidik ?? "").all()).results;
+/* putaran ulang: jumlah pertanyaan hari ini per ketua, SATU kueri berkelompok per 90 nomor (batas 100 parameter D1) */
+export const ljTanyaHitung = async (env, p, tgl, was) => (await sedia(env, p, "lj_tanya", "baca",
+  `SELECT k.wa, count(*) n FROM lj_tim k JOIN lj_tanya t ON t.berkas = k.berkas AND t.tgl = ?1 WHERE k.wa IN (${was.map((_, i) => "?" + (i + 2)).join(",")}) AND k.peran = 'ketua' AND k.dicabut IS NULL GROUP BY k.wa`)
+  .bind(tgl, ...was).all()).results;
+export const ljStmtTanyaJawab = (env, p, berkas, tgl, jawab) => sedia(env, p, "lj_tanya", "ubah",
+  "UPDATE lj_tanya SET jawab = ?3 WHERE berkas = ?1 AND tgl = ?2").bind(berkas, tgl, jawab);
 
 /* ---------- Tautan bertoken pihak luar (FITUR §6; src/token.js, migrasi 0164) ----------
    tk_terbit = rute staf yang menerbitkan atau mencabut; tk_periksa = rute publik yang menerima token. Pemeriksaan dan pencatatan pakai
