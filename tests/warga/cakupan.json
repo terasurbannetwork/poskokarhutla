@@ -6,6 +6,7 @@
     "POST /api/lapor/data/foto": "foto: JPEG kamera tersimpan",
     "POST /api/lapor/data/isian": "LJ-08 isian berkas: hanya ketua",
     "POST /api/lapor/data/nihil": "LJ-08 nihil: nama karangan 400",
+    "POST /api/lapor/data/tim": "pindah ketua: ketua 403",
     "GET /api/lapor/data/media": "foto: JPEG kamera tersimpan",
     "table lj_jejak": "objek rumah: tersimpan urut 1",
     "table lj_media": "foto: JPEG kamera tersimpan",

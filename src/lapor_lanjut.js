@@ -6,16 +6,16 @@
    tersamar, provinsi hanya rekap (Q15). Tiap buka, tampil, dan unduh tercatat di lj_akses (D22). Jawaban privat: cache-control private no-store. */
 import {json, bacaBody, bacaBytes, sha, acak} from "./worker.js";
 import {bersihMedia} from "./media_bersih.js";
-import {lajuIP} from "./bnpb.js";
+import {lajuIP, laju} from "./bnpb.js";
 import {hakMeja} from "./lapor_ai.js";
 import {modAtauStaf} from "./staf.js";
 import {bakuKab, dalamWilayah} from "./lapor_meja_hak.js";
-import {tglWib} from "./lapor_tampil.js";
+import {tglWib, nomorWa} from "./lapor_tampil.js";
 import {rekap, validasi, penanda, kurangFoto, fotoWajib, titikObjek, wajahBoleh, JENIS_WAJAH, TANPA_LOKASI, DEWASA, METRIK_NIHIL, metrikAda, validasiIsianBerkas} from "./lapor_lanjut_spek.js";
 import {NAMA_KAB4} from "./siklus_kab.js";
 import {teksBersih} from "./meja_spek.js";
 import {kodeTp, jarakM, BOX, DEKAT_M} from "./pengungsian_titik.js";
-import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
+import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
 import * as H from "./hak.js";
 
 const JAM = 3600e3, HARI = 864e5, UMUR_TOKEN = 30 * HARI;   // Q11: 30 hari
@@ -457,6 +457,98 @@ async function nihilWa(env, t, u, kini) {
   return r.isi.berubah ? `Tanda nihil untuk ${n} dicabut. Angkanya kembali "belum didata" sampai ada datanya.` : `${n} tidak sedang ditandai nihil. Tidak ada yang diubah.`;
 }
 
+/* ---------- LJ-09: tim (D11, D20, Q5, Q11, Q14). Satu inti untuk web (POST /api/lapor/data/tim) dan WA (tim tambah, tim cabut, tautan).
+   t = {b, tim?, staf?, oleh}: tim = baris lj_tim pemanggil (kuki atau nomor WA), staf = staf BNPB lewat hakData. Keluaran {kode, isi}. ---------- */
+const MAKS_ANGGOTA = 20;   // ponytail: HIPOTESIS tanpa dasar data; naikkan bila BPBD besar terbukti butuh lebih. Ditegakkan atomik di SQL (LJ_PENUH di hak.js), cek di kode hanya untuk pesan
+const namaSah = s => { const n = String(s ?? "").trim().replace(/\s+/g, " "); return n && n.length <= 120 && !teksBersih(n) && !/\d[\d\s.-]{6,}\d/.test(n) ? n : null; };
+const pesanTautan = (b, origin, tk, baru) => (baru ? `Anda ditambahkan ke tim pendataan ${namaKab(b) ?? "kab/kota ini"} oleh ketua tim.` : "Ini tautan data baru untuk Anda.")
+  + `\nBuka tautan pribadi ini untuk mengisi data: ${origin}/lapor/data/?t=${tk}\n` + (baru ? "Tautan ini pribadi dan berlaku 30 hari. Jangan dibagikan." : "Berlaku 30 hari. Jangan dibagikan. Tautan lama sudah tidak berlaku.");
+const jejakTim = async (env, p, b, aksi, wa, oleh, kini) => H.ljStmtJejak(env, p, {berkas: b.id, aksi, sesudah: JSON.stringify({wa: samarWa(wa)}), pribadi_sidik: await sidikPribadi(env, wa), oleh}, kini, true);
+const daftarTim = async (env, p, b, utuh) => (await H.ljTim(env, p, b.id)).map(x => ({wa: utuh ? x.wa : samarWa(x.wa), nama: x.nama, peran: x.peran, aktif: !x.dicabut}));
+async function aturTim(env, t, u, kini, origin) {
+  const {b, tim} = t, ketua = tim?.peran === "ketua", p = tim ? TIM : STAF, aksi = u.aksi;
+  const selesai = async pesan => ({kode: 200, isi: {pesan, tim: await daftarTim(env, p, b, !!tim)}});
+  if (aksi === "pindah_ketua" && !t.staf) return tolak(403, "Hanya staf Pusdalops BNPB yang bisa memindahkan ketua tim.");
+  if (aksi !== "pindah_ketua" && aksi !== "cabut" && !ketua) return tolak(403, "Hanya ketua tim yang bisa mengatur anggota.");
+  if (aksi === "cabut" && !ketua && !t.staf) return tolak(403, "Hanya ketua tim atau staf BNPB yang bisa mencabut anggota.");
+  if ((aksi !== "cabut" || !t.staf) && b.status !== "terbuka") return tolak(409, "Berkas ini sudah ditutup. Tim tidak bisa diubah.");   // hanya staf yang boleh mencabut di berkas tertutup
+  const wa = nomorWa(u.wa); if (!wa) return tolak(400, "Nomor HP tidak sah. Tulis nomor seluler Indonesia, misalnya 081234567890.");
+  const baris = await H.ljTimBaris(env, p, b.id, wa), aktif = !!baris && !baris.dicabut, oleh = t.oleh;
+  if (aksi === "tambah" || aksi === "token_baru") {
+    if (wa === tim.wa) return tolak(400, aksi === "tambah" ? "Itu nomor Anda sendiri." : "Untuk tautan baru bagi Anda sendiri, ketik tautan di WhatsApp.");
+    const nama = aksi === "tambah" && u.nama ? namaSah(u.nama) : null;
+    if (aksi === "tambah" && u.nama && !nama) return tolak(400, "Nama tidak sah. Tulis nama saja, tanpa nomor telepon, NIK, atau surel, paling banyak 120 huruf.");
+    if (aksi === "tambah" ? aktif : !aktif) return tolak(aksi === "tambah" ? 409 : 404, aksi === "tambah" ? "Nomor itu sudah ada di tim." : "Nomor itu bukan anggota aktif tim ini.");
+    if (aksi === "tambah" && (await H.ljTim(env, TIM, b.id)).filter(x => !x.dicabut).length >= MAKS_ANGGOTA) return tolak(409, `Tim sudah penuh (${MAKS_ANGGOTA} orang aktif). Cabut anggota yang sudah tidak bertugas dulu.`);
+    const lain = await H.ljTimAktif(env, TIM, wa);   // nomor aktif di berkas lain: ditolak netral, tanpa menyebut berkas (tanpa oracle)
+    if (lain && lain.berkas !== b.id) return tolak(409, "Nomor itu tidak bisa ditambahkan.");
+    if (await laju(env, await sha(tim.wa), "lapor.tim.kirim", [[JAM, 10]], kini) || await laju(env, await sha(wa), "lapor.tim.target", [[24 * JAM, 3]], kini)) return tolak(429, "Terlalu sering. Coba lagi nanti.");   // tiap aksi mengirim satu WA ke nomor orang lain
+    const tk = acak(16), sh = await sha(tk), kd = kini + UMUR_TOKEN;
+    const kerja = aksi === "token_baru" ? H.ljStmtTimToken(env, TIM, b.id, wa, sh, kd) : baris ? H.ljStmtTimAktifkan(env, TIM, b.id, wa, nama, sh, kd, oleh, kini, MAKS_ANGGOTA) : H.ljStmtTimAnggota(env, TIM, b.id, wa, nama, sh, kd, oleh, kini, MAKS_ANGGOTA);
+    let r;
+    try { r = await H.ljBatch(env, TIM, [kerja, H.ljStmtKabar(env, TIM, wa, "tim", pesanTautan(b, origin, tk, aksi === "tambah"), kini, true), await jejakTim(env, TIM, b, "tim_" + aksi, wa, oleh, kini)]); }
+    catch (e) { if (/UNIQUE|PRIMARY/i.test(String(e?.message))) return tolak(409, "Nomor itu sudah ada di tim."); throw e; }
+    if (!r[0].meta.changes) return tolak(409, "Tim baru saja berubah. Coba lagi.");
+    return selesai(aksi === "tambah" ? `${nama ?? "Anggota"} ditambahkan. Tautan pribadinya sudah dikirim ke nomornya lewat WhatsApp dan berlaku 30 hari.` : "Tautan baru sudah dikirim ke nomor itu lewat WhatsApp. Tautan lamanya tidak berlaku lagi.");
+  }
+  if (!aktif) return tolak(404, "Nomor itu bukan anggota aktif tim ini.");
+  if (aksi === "cabut") {
+    if (baris.peran === "ketua") return tolak(409, "Ketua tidak bisa dicabut. Pindahkan ketua ke anggota lain dulu.");
+    let draf = null; try { draf = JSON.parse((await H.ljSesi(env, TIM, wa))?.keadaan ?? "null"); } catch {}
+    const r = await H.ljBatch(env, p, [H.ljStmtTimCabut(env, p, b.id, wa, kini), await jejakTim(env, p, b, "tim_cabut", wa, oleh, kini), H.ljStmtSesiBuang(env, p, wa, b.id)]);
+    if (!r[0].meta.changes) return tolak(409, "Tim baru saja berubah. Coba lagi.");
+    await bersihDraf(env, b.id, draf);
+    return selesai(`${baris.nama ?? "Anggota"} dicabut dari tim. Tautannya tidak berlaku lagi; data yang sudah ia isi tetap ada di berkas.`);
+  }
+  if (baris.peran === "ketua") return tolak(409, "Nomor itu sudah menjadi ketua.");
+  const r = await H.ljBatch(env, p, [H.ljStmtKetuaNaik(env, p, b.id, wa), await jejakTim(env, p, b, "tim_pindah_ketua", wa, oleh, kini),
+    H.ljStmtKabar(env, p, wa, "tim", `Anda sekarang ketua tim pendataan ${namaKab(b) ?? "kab/kota ini"}. Ketua sebelumnya menjadi anggota.\nTautan pribadi Anda tetap yang sama.`, kini, true), H.ljStmtKetuaTurun(env, p, b.id, wa)]);
+  if (!r[0].meta.changes) return tolak(409, "Tim baru saja berubah. Coba lagi.");
+  return selesai(`${baris.nama ?? "Anggota"} sekarang ketua tim. Ketua sebelumnya menjadi anggota.`);
+}
+/* WA "tautan": tautan baru untuk diri sendiri (ketua atau anggota); tautan lama langsung mati */
+async function tautanSendiri(env, tim, b, origin, kini) {
+  const tk = acak(16), r = await H.ljBatch(env, TIM, [H.ljStmtTimToken(env, TIM, b.id, tim.wa, await sha(tk), kini + UMUR_TOKEN), await jejakTim(env, TIM, b, "tim_tautan", tim.wa, `tim:${tim.wa}`, kini)]);
+  return r[0].meta.changes ? pesanTautan(b, origin, tk, false) : "Tautan baru belum bisa dibuat. Coba lagi.";
+}
+/* POST /api/lapor/data/tim {aksi: tambah|cabut|pindah_ketua|token_baru, wa, nama?, berkas? (staf)}: ketua lewat kuki; staf Pusdalops dan admin lewat sesi (cabut, pindah ketua) */
+async function timPost(env, req, url, kini) {
+  const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;
+  const bb = await bacaBody(req, 1024); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  const o = bb.o ?? {};
+  if (!["tambah", "cabut", "pindah_ketua", "token_baru"].includes(o.aksi)) return galat(400, "Aksi tidak dikenal.");
+  if (typeof o.wa !== "string" || o.wa.length > 30) return galat(400, "Nomor HP tidak sah.");
+  if (o.nama != null && typeof o.nama !== "string") return galat(400, "Nama tidak sah.");
+  if (o.aksi === "tambah" || o.aksi === "token_baru") { const l2 = await lajuIP(env, req, "lapor.data.tim.kabar", [[JAM, 30]], kini); if (l2) return l2; }   // tiap tambah mengirim satu WA ke nomor orang lain
+  if (req.headers.get("x-pb") !== "1") return galat(403, "kiriman web wajib membawa header x-pb: 1");
+  const tim = await timDari(env, req, kini); let t;
+  if (tim) {
+    const b = await H.ljBerkas(env, TIM, tim.berkas); if (!b) return galat(404, "Berkas tidak ditemukan.");
+    t = {tim, b, oleh: `tim:${tim.wa}`};
+  } else {
+    const h = await hakData(env, req, kini); if (h?.tolak) return h.tolak;
+    if (!h) return galat(401, "Buka tautan dari WhatsApp, atau masuk sebagai staf.");
+    if (!RE_ID.test(o.berkas || "")) return galat(400, "Berkas tidak sah.");
+    const b = await H.ljBerkas(env, STAF, o.berkas); if (!b) return galat(404, "Berkas tidak ditemukan.");
+    const lingkup = lingkupLembaga(h.c, b); if (!lingkup) return galat(404, "Berkas tidak ditemukan.");
+    if (lingkup !== "staf") return galat(403, "Hanya staf Pusdalops BNPB yang bisa mengatur tim dari sini.");
+    t = {b, staf: true, oleh: String(h.oleh).slice(0, 200)};
+  }
+  const r = await aturTim(env, t, o, kini, url.origin);
+  return kirim(r.kode, r.isi);
+}
+/* WA: "tim", "tim tambah", "tim cabut", "tautan". Daftar: nomor utuh bagi ketua, tersamar bagi anggota */
+async function timWa(env, tim, b, u, origin, kini) {
+  if (u.bantuan) return u.bantuan;
+  if (u.aksi === "tautan") return await tautanSendiri(env, tim, b, origin, kini);
+  if (u.aksi === "daftar") {
+    const d = (await daftarTim(env, TIM, b, tim.peran === "ketua")).filter(x => x.aktif);
+    return `*Tim pendataan*\n${d.map((x, i) => `${i + 1}. ${x.nama ?? "belum bernama"}${x.peran === "ketua" ? " (ketua)" : ""}, ${x.wa}`).join("\n")}`;
+  }
+  const r = await aturTim(env, {tim, b, oleh: `tim:${tim.wa}`}, u, kini, origin);
+  return r.isi.galat ?? r.isi.pesan;
+}
+
 /* ---------- LJ-05: pintu WA tahap 2 (D9, D11, D24). Dipanggil src/lapor_ai.js pada jalur mesin (Bearer WA_MESIN) SEBELUM daftar izin Lapor: nomor yang
    punya baris lj_tim aktif (dicabut null, berkas terbuka) dan punya draf lj_sesi atau mengetik perintah tahap 2 ditangani di sini; selain itu null = lanjut ke
    alur Lapor biasa (nomor anggota tanpa lapor_izin tetap 403 di sana: izin anggota hanya berlaku untuk jalur berkas, D11). Mesin murni: src/lapor_lanjut_mesin.js.
@@ -517,12 +609,30 @@ async function ubahPencarian(env, t, u, kini) {
     + (u.pencarian === "ditemukan_meninggal" ? " Turut berduka cita." : "") + (ada && u.pencarian !== "dicari" ? "\nFoto semasa hidup yang dilampirkan sudah dihapus dari berkas." : "")
     + "\nPerubahan ini tercatat di riwayat berkas dan masuk ke rekap.";
 }
-export async function pesanTim(env, wa, o, kini = Date.now()) {
+export async function pesanTim(env, wa, o, kini = Date.now(), origin = "") {
   const teks = typeof o?.teks === "string" ? o.teks : "";
   try {
     const d = await bacaDraf(env, wa, kini); if (!d) return null;
-    const {tim, sesi, k, pindah} = d;
+    let {tim, sesi, k, pindah} = d;
+    if (k?.tahap === "nama" && tim.nama != null) { await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }   // nama sudah terisi lewat jalur lain
+    const perintah = perintahData(teks);   // perintah tahap 2 dikerjakan dulu; nama ditanya di pesan bukan-perintah berikutnya
+    if (k?.tahap === "nama" && perintah) { await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }
+    if (tim.peran === "anggota" && tim.nama == null && !RE_LAPOR.test(teks) && !perintah) {   // D11: pesan pertama anggota baru menanyakan nama; jawaban sah apa pun jadi nama
+      if (k?.tahap === "nama") {
+        const nama = namaSah(teks); if (!nama) return jawabWa("Nama belum sah. Tulis nama Anda saja, tanpa nomor telepon, paling banyak 120 huruf.\n\nSiapa nama Anda?");
+        await H.ljBatch(env, TIM, [H.ljStmtTimNama(env, TIM, tim.berkas, wa, nama), await jejakTim(env, TIM, {id: tim.berkas}, "tim_nama", wa, `tim:${wa}`, kini)]);
+        await H.ljSesiHapus(env, TIM, wa);
+        return jawabWa(`Terima kasih, ${nama}. Ketik *data rumah*, *data prasarana*, atau *data* untuk melihat pilihan.`);
+      }
+      if (!k) { await H.ljSesiBaru(env, TIM, wa, tim.berkas, JSON.stringify({v: 1, tahap: "nama"}), kini); return jawabWa("Anda terdaftar sebagai anggota tim pendataan bencana.\nSiapa nama Anda?"); }
+    }
     if (k && RE_LAPOR.test(teks)) { await bersihDraf(env, tim.berkas, k); await H.ljSesiHapus(env, TIM, wa); return null; }   // keluar dari mode data ke alur laporan biasa
+    const tm = k?.tahap === "isi" ? null : perintahTim(teks);   // LJ-09: tidak menyentuh draf yang sedang diisi
+    if (tm) {
+      const b = await H.ljBerkas(env, TIM, tim.berkas);
+      if (!b || b.status !== "terbuka") return jawabWa("Berkas ini sudah ditutup. Tim tidak bisa diubah.");
+      return jawabWa(await timWa(env, tim, b, tm, origin, kini));
+    }
     const u = k?.tahap === "isi" ? null : perintahStatus(teks);   // saat butir sedang ditanyakan, teks itu jawaban, bukan perintah
     if (u) {   // tidak menyentuh draf yang sedang diisi
       if (u.bantuan) return jawabWa(u.bantuan);
@@ -566,7 +676,7 @@ const jpegWa = d => {
 };
 export async function fotoTim(env, wa, o, kini = Date.now()) {
   try {
-    const d = await bacaDraf(env, wa, kini); if (!d?.k) return null;   // tanpa draf data: foto biasa alur Lapor
+    const d = await bacaDraf(env, wa, kini); if (!d?.k || d.k.tahap === "nama") return null;   // tanpa draf data: foto biasa alur Lapor
     if (!env.MEDIA) return galatWa(503, "Penyimpanan foto belum aktif.");
     const mentah = jpegWa(o.data); if (!mentah) return galatWa(400, "Foto harus JPEG, paling besar 5 MB.");
     const bersih = bersihMedia("image/jpeg", mentah); if (!bersih) return galatWa(400, "Struktur foto tidak sah atau rusak.");   // EXIF dibuang
@@ -601,6 +711,7 @@ export const RUTE_LAPOR_DATA = Object.fromEntries(Object.entries({
   "POST /api/lapor/data/batal": batalPost,
   "POST /api/lapor/data/isian": isianPost,
   "POST /api/lapor/data/nihil": nihilPost,
+  "POST /api/lapor/data/tim": timPost,
   "POST /api/lapor/data/foto": fotoPost,
   "GET /api/lapor/data/media": mediaGet,
 }).map(([k, f]) => [k, jaga(f)]));

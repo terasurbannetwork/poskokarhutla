@@ -38,7 +38,17 @@ const BAWA = {rumah: ["desa", "kec"], prasarana: ["desa", "kec"], titik: ["desa"
 let KONTEKS = {titik: [], kk: []};
 const kk = titik => KONTEKS.kk.filter(x => x.titik === titik);
 /* perintah yang membuka mode tahap 2 (dicek pemanggil sebelum daftar izin Lapor) */
-export const perintahData = teks => norm(teks) in MULAI || !!perintahStatus(teks) || !!perintahNihil(teks);
+export const perintahData = teks => norm(teks) in MULAI || !!perintahStatus(teks) || !!perintahNihil(teks) || !!perintahTim(teks);
+/* LJ-09: "tim" (daftar), "tim tambah <nomor> [nama]", "tim cabut <nomor>", "tautan" (tautan baru untuk diri sendiri). Nomor mentah; pemanggil menormalkan. Bentuk salah -> {bantuan}; bukan perintah ini -> null */
+const BANTUAN_TIM = "Untuk mengatur tim, ketik *tim* untuk melihat anggota, *tim tambah* diikuti nomor HP dan nama (contoh: tim tambah 081234567890 Rina), atau *tim cabut* diikuti nomor HP. Hanya ketua tim yang bisa menambah dan mencabut. Untuk tautan data baru bagi Anda sendiri, ketik *tautan*.";
+export function perintahTim(teks) {
+  const t = String(teks ?? "").trim();
+  if (/^(?:minta )?tautan(?: baru)?$/i.test(t)) return {aksi: "tautan"};
+  const m = /^tim(?:\s+(tambah|cabut)(?:\s+(\+?[\d-]{9,18}))?(?:\s+(.+))?)?$/i.exec(t); if (!m) return null;
+  if (!m[1]) return {aksi: "daftar"};
+  const aksi = m[1].toLowerCase();
+  return m[2] && (aksi === "tambah" || !m[3]) ? {aksi, wa: m[2], ...(m[3] && {nama: m[3].trim()})} : {bantuan: BANTUAN_TIM};
+}
 /* "ubah hilang <nomor> ditemukan hidup | ditemukan meninggal | dicari" -> {nomor, pencarian}; bentuk salah -> {bantuan}; bukan perintah ini -> null */
 const CARI = {"ditemukan hidup": "ditemukan_hidup", "ditemukan meninggal": "ditemukan_meninggal", "dicari": "dicari"};
 const BANTUAN_STATUS = "Untuk mengubah status pencarian, tulis *ubah hilang* diikuti nomor korban lalu *ditemukan hidup*, *ditemukan meninggal*, atau *dicari*. Contoh: ubah hilang 3 ditemukan hidup. Nomor korban ada di pesan Tersimpan saat korban dicatat.";

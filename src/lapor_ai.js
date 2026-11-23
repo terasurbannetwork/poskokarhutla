@@ -311,7 +311,7 @@ const teksWaDari = (h, tambahan, token, url) => h.kirim ? `${h.inti}\n\nLacak la
 async function pesan(env, req, url, kini, ctx) {
   const b = await bacaBody(req, 16384); if (b.galat) return galat(b.status || 400, b.galat);
   const o = b.o;
-  if (req.headers.get("authorization") && await mesinSah(env, req)) { const w = nomorWa(o?.wa), j = w && await pesanTim(env, w, o, kini); if (j) return j; }   // tahap 2 data lanjutan BPBD (LJ-05, D11): anggota tim berkas lolos di sini saja
+  if (req.headers.get("authorization") && await mesinSah(env, req)) { const w = nomorWa(o?.wa), j = w && await pesanTim(env, w, o, kini, url.origin); if (j) return j; }   // tahap 2 data lanjutan BPBD (LJ-05, D11): anggota tim berkas lolos di sini saja
   const id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
   const {wa, perangkat} = id;
   // ponytail: saluran bawaan = jalur masuk (mesin = wa, sesi = web); mesin boleh meneruskan saluran "web" hanya bila gateway web memintanya

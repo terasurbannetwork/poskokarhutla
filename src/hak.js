@@ -1768,11 +1768,11 @@ Object.assign(MATRIKS, {
   lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
   lj_media:            {lj_tim: ["baca", "tambah", "hapus"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
   lj_tanya:            {lj_tim: ["baca", "ubah"], lp_cron: ["baca", "tambah"]},
-  lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_staf: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
   lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
   lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
   titik_pengungsian:   {lj_tim: ["baca", "tambah", "ubah"]},   // LJ-06: register TP dibuat atau disinkronkan dari objek titik berkas (D6); tp* di atas tetap untuk rute meja
-  lj_sesi:             {lj_tim: ["baca", "tambah", "ubah", "hapus"], lp_mesin: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0165: draf percakapan WA tahap 2 (D24), dibuang 24 jam
+  lj_sesi:             {lj_tim: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["hapus"], lp_mesin: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0165: draf percakapan WA tahap 2 (D24), dibuang 24 jam
   lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
   lk_periksa_akun:     {lp_staf: ["baca", "tambah"]},   // migrasi 0169: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
@@ -2104,6 +2104,26 @@ export const ljStmtTukarToken = (env, p, lama, baru, kedaluwarsa) => sedia(env, 
   "UPDATE lj_tim SET token_sha = ?2, kedaluwarsa = ?3 WHERE token_sha = ?1 AND dicabut IS NULL").bind(lama, baru, kedaluwarsa);
 export const ljTim = async (env, p, berkas) => (await sedia(env, p, "lj_tim", "baca",
   "SELECT wa, nama, peran, dibuat, dicabut FROM lj_tim WHERE berkas = ?1 ORDER BY dibuat").bind(berkas).all()).results;
+/* LJ-09: atur tim. Tiap pernyataan bergaransi ditulis sesudah pernyataan yang menentukan berhasil tidaknya (changes() > 0), satu DB.batch. */
+export const ljTimBaris = (env, p, berkas, wa) => sedia(env, p, "lj_tim", "baca", "SELECT wa, nama, peran, dicabut FROM lj_tim WHERE berkas = ?1 AND wa = ?2").bind(berkas, wa).first();
+const LJ_PENUH = "(SELECT count(*) FROM lj_tim WHERE berkas = ?1 AND dicabut IS NULL) < ?8";   // batas anggota aktif atomik (?8 = maks, ketua ikut dihitung)
+export const ljStmtTimAnggota = (env, p, berkas, wa, nama, tokenSha, kedaluwarsa, oleh, kini, maks) => sedia(env, p, "lj_tim", "tambah",
+  `INSERT INTO lj_tim (berkas, wa, nama, peran, token_sha, kedaluwarsa, oleh, dibuat) SELECT ?1, ?2, ?3, 'anggota', ?4, ?5, ?6, ?7 WHERE ${LJ_PENUH}`).bind(berkas, wa, nama, tokenSha, kedaluwarsa, oleh, kini, maks);
+export const ljStmtTimAktifkan = (env, p, berkas, wa, nama, tokenSha, kedaluwarsa, oleh, kini, maks) => sedia(env, p, "lj_tim", "ubah",
+  `UPDATE lj_tim SET dicabut = NULL, peran = 'anggota', nama = coalesce(?3, nama), token_sha = ?4, kedaluwarsa = ?5, oleh = ?6, dibuat = ?7 WHERE berkas = ?1 AND wa = ?2 AND dicabut IS NOT NULL AND ${LJ_PENUH}`)
+  .bind(berkas, wa, nama, tokenSha, kedaluwarsa, oleh, kini, maks);
+export const ljStmtTimCabut = (env, p, berkas, wa, kini) => sedia(env, p, "lj_tim", "ubah",
+  "UPDATE lj_tim SET dicabut = ?3, token_sha = NULL, kedaluwarsa = NULL WHERE berkas = ?1 AND wa = ?2 AND dicabut IS NULL AND peran = 'anggota'").bind(berkas, wa, kini);
+export const ljStmtTimToken = (env, p, berkas, wa, tokenSha, kedaluwarsa) => sedia(env, p, "lj_tim", "ubah",
+  "UPDATE lj_tim SET token_sha = ?3, kedaluwarsa = ?4 WHERE berkas = ?1 AND wa = ?2 AND dicabut IS NULL").bind(berkas, wa, tokenSha, kedaluwarsa);
+export const ljStmtTimNama = (env, p, berkas, wa, nama) => sedia(env, p, "lj_tim", "ubah",
+  "UPDATE lj_tim SET nama = ?3 WHERE berkas = ?1 AND wa = ?2 AND dicabut IS NULL AND nama IS NULL").bind(berkas, wa, nama);
+/* pindah ketua: calon naik dulu; ketua lama turun hanya bila calon sudah ketua (EXISTS, tidak bergantung changes() sebelumnya); satu batch = tepat satu ketua sesudahnya */
+export const ljStmtKetuaNaik = (env, p, berkas, wa) => sedia(env, p, "lj_tim", "ubah",
+  "UPDATE lj_tim SET peran = 'ketua' WHERE berkas = ?1 AND wa = ?2 AND peran = 'anggota' AND dicabut IS NULL").bind(berkas, wa);
+export const ljStmtKetuaTurun = (env, p, berkas, wa) => sedia(env, p, "lj_tim", "ubah",
+  "UPDATE lj_tim SET peran = 'anggota' WHERE berkas = ?1 AND peran = 'ketua' AND wa <> ?2 AND EXISTS (SELECT 1 FROM lj_tim WHERE berkas = ?1 AND wa = ?2 AND peran = 'ketua')").bind(berkas, wa);
+export const ljStmtSesiBuang = (env, p, wa, berkas) => sedia(env, p, "lj_sesi", "hapus", "DELETE FROM lj_sesi WHERE wa = ?1 AND berkas = ?2 AND changes() > 0").bind(wa, berkas);
 export const ljObjek = async (env, p, berkas) => (await sedia(env, p, "lj_objek", "baca",
   "SELECT id, jenis, urut, data, pribadi, titik_id, desa, lat, lon, status, oleh, rev, dibuat, diubah FROM lj_objek WHERE berkas = ?1 ORDER BY jenis, urut").bind(berkas).all()).results;
 export const ljObjekSatu = (env, p, id) => sedia(env, p, "lj_objek", "baca", "SELECT id, berkas, jenis, pribadi FROM lj_objek WHERE id = ?1").bind(id).first();
