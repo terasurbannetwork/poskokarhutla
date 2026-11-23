@@ -82,6 +82,7 @@ import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_LOGPAL} from "./logpal.js";
 import {RUTE_LAPOR, bersihkanLapor, peringatanTiapMenit, bersihPeringatanLapor} from "./lapor_ai.js";
+import {RUTE_LAPOR_DATA} from "./lapor_lanjut.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
@@ -646,6 +647,7 @@ const RUTE = {
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
   ...RUTE_LAPOR,   // Lapor Bencana BNPB: chatbot pelaporan kejadian, tiket, meja staf, antrean PDF dan kabar untuk mesin WA (src/lapor_ai.js, migrasi 0155)
+  ...RUTE_LAPOR_DATA,   // data lanjutan BPBD: berkas, tim, objek per rumah, pengungsi, korban (src/lapor_lanjut.js, migrasi 0161, paket lapor-lanjutan)
   ...RUTE_LOGPAL,   // Inventori LogPal: gudang, mutasi, opname, permintaan bantuan BNPB/BPBD (src/logpal.js, migrasi 0112)
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)

@@ -2060,3 +2060,38 @@ export const lpTindakanDaftar = async (env, p, nomor) => (await sedia(env, p, "l
 export const lpStmtTindakan = (env, p, nomor, kode, label, oleh, kini, g = false) => sedia(env, p, "lapor_tindakan", "tambah",
   lpIns(g, "", "lapor_tindakan", "nomor, kode, label, oleh, waktu")).bind(nomor, kode, label, oleh, kini);
 export const lpPdfTerakhir = async (env, p, nomor) => (await sedia(env, p, "lapor_pdf", "baca", "SELECT max(versi) v FROM lapor_pdf WHERE nomor = ?1 AND status = 'jadi'").bind(nomor).first())?.v ?? null;
+
+/* ---------- Data lanjutan BPBD (paket lapor-lanjutan, migrasi 0161, LJ-03). Pelaku: lp_pelapor membuka berkas dari tiket terkirim, lj_tim = ketua
+   dan anggota lewat kuki per orang (D20), lp_staf = staf BNPB dan akun lembaga lewat hakMeja. Semua kueri memakai indeks (gerbang d1-pindai). ---------- */
+export const pelakuLjTim = {peran: "lj_tim"};
+export const ljBatch = (env, p, stmts) => { if (!/^(lp_|lj_tim$)/.test(String(p?.peran))) throw new Galat(403, "batch data lanjutan hanya untuk pelaku lp_* dan lj_tim"); return env.DB.batch(stmts); };
+const LJ_BERKAS = "id, induk, kab, kejadian_id, kab4, status, isian, ditutup, dibuat, diubah";
+export const ljIndukKelompok = async (env, p, nomor) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT coalesce(induk, nomor) induk FROM lapor_kelompok WHERE nomor = ?1").bind(nomor).first())?.induk ?? null;
+export const ljBerkasDari = (env, p, induk, kab) => sedia(env, p, "lj_berkas", "baca", `SELECT ${LJ_BERKAS} FROM lj_berkas WHERE induk = ?1 AND kab = ?2`).bind(induk, kab).first();
+export const ljBerkas = (env, p, id) => sedia(env, p, "lj_berkas", "baca", `SELECT ${LJ_BERKAS} FROM lj_berkas WHERE id = ?1`).bind(id).first();
+/* daftar untuk staf: semua status lewat indeks lj_berkas_status; kab4/kab disaring di kode menurut cakupan akun */
+export const ljBerkasDaftar = async (env, p) => (await sedia(env, p, "lj_berkas", "baca",
+  `SELECT ${LJ_BERKAS} FROM lj_berkas WHERE status IN ('terbuka', 'usul_tutup', 'selesai', 'selesai_catatan') ORDER BY diubah DESC LIMIT 500`).all()).results;
+export const ljStmtBerkasBaru = (env, p, b, kini) => sedia(env, p, "lj_berkas", "tambah",
+  "INSERT OR IGNORE INTO lj_berkas (id, induk, kab, kejadian_id, kab4, status, isian, dibuat, diubah) VALUES (?1, ?2, ?3, ?4, ?5, 'terbuka', ?7, ?6, ?6)").bind(b.id, b.induk, b.kab, b.kejadian_id ?? null, b.kab4 ?? null, kini, b.isian ?? "{}");
+/* ketua hanya ditulis bila berkasnya baru saja dibuat oleh pernyataan sebelumnya (changes() > 0), supaya pelapor kedua tidak menjadi ketua */
+export const ljStmtTimBaru = (env, p, berkas, wa, peran, tokenSha, kedaluwarsa, oleh, kini, g = false) => sedia(env, p, "lj_tim", "tambah",
+  g ? "INSERT INTO lj_tim (berkas, wa, peran, token_sha, kedaluwarsa, oleh, dibuat) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7 WHERE changes() > 0"
+    : "INSERT INTO lj_tim (berkas, wa, peran, token_sha, kedaluwarsa, oleh, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)").bind(berkas, wa, peran, tokenSha, kedaluwarsa, oleh, kini);
+export const ljStmtKabar = (env, p, wa, jenis, teks, kini, g = false) => sedia(env, p, "lj_kabar", "tambah",
+  g ? "INSERT INTO lj_kabar (wa, jenis, teks, dibuat) SELECT ?1, ?2, ?3, ?4 WHERE changes() > 0" : "INSERT INTO lj_kabar (wa, jenis, teks, dibuat) VALUES (?1, ?2, ?3, ?4)").bind(wa, jenis, teks, kini);
+export const ljTimToken = (env, p, tokenSha) => sedia(env, p, "lj_tim", "baca",
+  "SELECT berkas, wa, nama, peran, kedaluwarsa, dicabut FROM lj_tim WHERE token_sha = ?1").bind(tokenSha).first();
+/* tukar token: hanya bila token lama masih sama (sekali pakai, tahan balapan) */
+export const ljStmtTukarToken = (env, p, lama, baru, kedaluwarsa) => sedia(env, p, "lj_tim", "ubah",
+  "UPDATE lj_tim SET token_sha = ?2, kedaluwarsa = ?3 WHERE token_sha = ?1 AND dicabut IS NULL").bind(lama, baru, kedaluwarsa);
+export const ljTim = async (env, p, berkas) => (await sedia(env, p, "lj_tim", "baca",
+  "SELECT wa, nama, peran, dibuat, dicabut FROM lj_tim WHERE berkas = ?1 ORDER BY dibuat").bind(berkas).all()).results;
+export const ljObjek = async (env, p, berkas) => (await sedia(env, p, "lj_objek", "baca",
+  "SELECT id, jenis, urut, data, pribadi, titik_id, desa, lat, lon, status, oleh, rev, dibuat, diubah FROM lj_objek WHERE berkas = ?1 ORDER BY jenis, urut").bind(berkas).all()).results;
+export const ljObjekSatu = (env, p, id) => sedia(env, p, "lj_objek", "baca", "SELECT id, berkas, jenis, pribadi FROM lj_objek WHERE id = ?1").bind(id).first();
+/* jumlah objek aktif per jenis untuk banyak berkas sekaligus (daftar staf) */
+export const ljHitungJenis = async (env, p, ids) => ids.length ? (await sedia(env, p, "lj_objek", "baca",
+  `SELECT berkas, jenis, count(*) n FROM lj_objek WHERE berkas IN (${ids.map((_, i) => "?" + (i + 1)).join(",")}) AND status = 'aktif' GROUP BY berkas, jenis`).bind(...ids).all()).results : [];
+export const ljStmtAkses = (env, p, berkas, objek, aksi, oleh, kini, g = false) => sedia(env, p, "lj_akses", "tambah",
+  g ? "INSERT INTO lj_akses (berkas, objek, aksi, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5 WHERE changes() > 0" : "INSERT INTO lj_akses (berkas, objek, aksi, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5)").bind(berkas, objek, aksi, oleh, kini);

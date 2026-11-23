@@ -39,7 +39,9 @@ Tahap 2 mengumpulkan data pribadi orang yang sedang tertimpa bencana, termasuk a
 10. Tiap buka berkas, Tampilkan, dan unduh media tercatat di `lj_akses` (D22).
 11. BPBD yang melapor di luar kab izinnya tidak mendapat berkas (D1).
 12. Nomor WA tidak masuk repo; fixture uji memakai nomor rekaan yang tidak bisa dihubungi, tidak pernah nomor pemilik.
-13. Masa simpan (K9, D23): data pribadi dihapus 5 tahun sesudah penutupan berkas diterima staf; sebelum itu tidak ada ekspor massal data pribadi.
+13. Token tautan mentah hanya ada di `lj_kabar.teks` sampai gateway mengirimnya; sesudah terkirim teksnya dikosongkan (LJ-11). D1 lain hanya menyimpan sidik.
+14. Nama anggota tim (petugas BPBD, bukan warga terdampak) tampil ke staf Pusdalops dan akun lembaga; nomornya tersamar. Koordalops dan staf BNPB lain tidak membuka berkas.
+15. Masa simpan (K9, D23): data pribadi dihapus 5 tahun sesudah penutupan berkas diterima staf; sebelum itu tidak ada ekspor massal data pribadi.
 
 ## Ancaman
 

@@ -1,6 +1,15 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "POST /api/lapor/data/masuk": "masuk: token sekali pakai",
+    "GET /api/lapor/data/berkas": "berkas untuk tim: data pribadi utuh",
+    "GET /api/lapor/data/daftar": "staf BNPB: pribadi dan nomor tim tersamar",
+    "POST /api/lapor/data/tampil": "staf BNPB: pribadi dan nomor tim tersamar",
+    "table lj_berkas": "pembukaan: BPBD di kab izinnya",
+    "table lj_tim": "masuk: token sekali pakai",
+    "table lj_kabar": "pembukaan: BPBD di kab izinnya",
+    "table lj_akses": "staf BNPB: pribadi dan nomor tim tersamar",
+    "table lj_objek": "berkas untuk tim: data pribadi utuh",
     "table lf_status": "T3 tetapkan menulis status",
     "table lf_riwayat": "T3 tetapkan menulis status",
     "trigger lf_riwayat_tetap_ubah": "T3 tetapkan menulis status",
@@ -1474,15 +1483,10 @@
     "table lapor_tindakan": "pengecekan lapangan dan tindakan"
   },
   "dikecualikan": {
-    "table lj_berkas": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
-    "table lj_tim": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
-    "table lj_objek": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table lj_jejak": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table lj_media": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table lj_tanya": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
-    "table lj_kabar": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table lj_beku": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
-    "table lj_akses": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
     "table alun_lembaga": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
     "table alun_riwayat": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

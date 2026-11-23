@@ -15,7 +15,7 @@ Ambil tiket berurutan, kerjakan hanya cakupannya. Tiap tiket layar ditinjau pemi
 | LJ-08 | Usaha, kebutuhan, isian berkas (status darurat, SK, posko) | `warga-api` | `guard-api` | uji rute | LJ-05 |
 | LJ-09 | Tim: tambah, cabut, pindah ketua, perintah WA `tim tambah/cabut`, nama anggota (Q5, Q14) | `warga-api` | `security-reviewer` | uji rute tim, uji mesin tim | LJ-05 |
 | LJ-10 | Pertanyaan harian: cron menit jam kirim, `lj_tanya`, `lj_kabar` (Q3) | `warga-api` | `guard-api` | uji rute pertanyaan harian | LJ-09 |
-| LJ-11 | Gateway WA mengambil dan mengirim antrean `lj_kabar` | `wa-bot` | `security-reviewer` | uji gateway di `tests/wa/**`, versi Lapor naik | LJ-10 |
+| LJ-11 | Gateway WA mengambil dan mengirim antrean `lj_kabar`; saat ditandai terkirim, kolom `teks` dikosongkan (pesan pembuka memuat token tautan mentah, tinjauan keamanan LJ-03) dan cron bersih-bersih menghapus baris pembuka lebih dari 1 hari | `wa-bot` | `security-reviewer` | uji gateway di `tests/wa/**`, versi Lapor naik | LJ-10 |
 | LJ-12 | Dorong rekap ke meja `dampak` (kolom sistem `lapor_berkas`, sumber `daftar`, `beda_sumber`, `rekap_baru`, pelaku `lapor_lanjut`) dan meja `pengungsi`; terima ke Jitupasna (D8) | `warga-api` | `validasi-model` | uji rute baris rekap dan Jitupasna | LJ-06, LJ-07, LJ-08 |
 | LJ-13 | Penutupan: kondisi akhir, versi beku tanpa pribadi, terima staf, tiket ke `selesai` (Q2, Q7) | `warga-api` | `migrasi-idempoten`, `validasi-model` | uji rute baris penutupan | LJ-10, LJ-12 |
 | LJ-14 | Usulan fase dari penutupan yang diterima lewat sumber `lapor_ai` di `pasang.py`; isi `kejadian_id` dan `kab4` berkas dari tautan | `siklus` | `validasi-model` | uji `pasang.py` yang ada ditambah kasus penutupan | LJ-13 |

@@ -27,6 +27,7 @@ import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, 
 import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
+import {bukaBerkas} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
@@ -122,13 +123,15 @@ async function stafMeja(env, req) {
 }
 const tolakStaf = () => galat(403, "perlu masuk sebagai admin, staf Pusdalops/Koordalops, atau akun lembaga pemda");
 const tabelBelum = e => /no such table/i.test(String(e?.message));
+/* pembukaan berkas data lanjutan tidak pernah menggagalkan laporan yang sudah terkirim: migrasi 0161 belum ada atau galat lain hanya dicatat */
+const bukaBerkasAman = async (env, nomor, kini, origin) => { try { await bukaBerkas(env, nomor, kini, origin); } catch (e) { if (!tabelBelum(e)) console.error("bukaBerkas", nomor, String(e?.message || e)); } };
 // ringkasan dipotong tetap membawa kode wilayah, supaya laporan panjang tetap masuk daftar meja BPBD wilayahnya (tinjauan guard-api)
 const wilayahKecil = s => { const w = s.isian?.lokasi?.nilai?.wilayah; return w ? {provKode: w.provKode ?? null, kabKode: w.kabKode ?? null, kab: w.kab ?? null, prov: w.prov ?? null} : null; };
 const tulisAudit = async f => { try { await f(); } catch (e) { if (!tabelBelum(e)) throw e; } };   // log audit sebelum migrasi 0157 tidak menggagalkan aksi
 const bacaTabel = async (f, awal) => { try { return await f(); } catch (e) { if (tabelBelum(e)) return awal; throw e; } };   // kode tayang sebelum migrasi 0157: bacaan memberi kosong, bukan 500
 /* hak meja (K63, D94-D98): BNPB (admin/staf, Q12) = cakupan penuh; selain itu akun lembaga pemda lewat sesi /masuk (pemilik akun atau anggota aktif) yang jenisnya pemkab/pemkot/pemprov.
    Hasil {c: cakupanMeja, oleh: pelaku riwayat, kunci: kunci batas laju}, {tolak: Response}, atau null (tidak berhak). ponytail: cookie sesi_instansi berjalur /instansi tidak sampai ke /api/lapor, jadi pintu /masuk satu-satunya jalur BPBD. */
-async function hakMeja(env, req, kini) {
+export async function hakMeja(env, req, kini) {
   const oleh = await stafMeja(env, req);
   if (oleh) return {c: cakupanMeja({bnpb: true, nama: oleh}), oleh, kunci: String(oleh).slice(0, 60)};
   let s = null; try { s = await sesiMasuk(env, req, kini); } catch (e) { if (!tabelBelum(e)) throw e; }
@@ -333,6 +336,7 @@ async function pesan(env, req, url, kini, ctx) {
   if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba kirim ulang.");
   if (s.tolak) return galat(409, s.tolak);
   if (s.batas) return kirim(200, {balasan: s.teks, teksWa: s.teks, status: r.lama?.status || null});
+  if (s.tambahan?.nomor && !r.h.sesi.susulanDari && r.h.sesi.tingkat === "bpbd") await bukaBerkasAman(env, s.tambahan.nomor, kini, url.origin);   // data lanjutan BPBD (LJ-03, D1)
   return kirim(200, await keluarBahasa(r.h.sesi?.tanpaModel ? null : model, {...keluaran(r.h, r.h.sesi), ...s.tambahan, teksWa: teksWaDari(r.h, s.tambahan, s.token, url), pelapor: r.h.pelapor ? {nama: r.h.pelapor.nama, peran: r.h.pelapor.peran} : null}, bahasa, saluran, env));
 }
 /* balasan mesin (Indonesia) -> bahasa pilihan; angka dijaga dua arah di dariIndonesia, gagal = Indonesia.
