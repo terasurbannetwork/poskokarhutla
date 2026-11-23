@@ -60,14 +60,14 @@ tr.sm-tidak td:last-child small{color:#a8402c;font-weight:700}
   #simWaktu .sm-laju{margin-left:auto}
 }
 /* label waktu besar dan legenda tinggi gelombang (fase tsunami) */
-.sm-t{position:absolute;z-index:3;top:12px;right:12px;padding:6px 14px;border-radius:12px;background:color-mix(in oklch,var(--card) 88%,transparent);color:var(--ink);font-size:26px;font-weight:800;letter-spacing:-.02em;box-shadow:var(--shadow);pointer-events:none}
-.sm-legts{position:absolute;z-index:3;left:404px;bottom:84px;width:220px;padding:8px 12px;border-radius:12px;background:color-mix(in oklch,var(--card) 90%,transparent);box-shadow:var(--shadow);font-size:11.5px;color:var(--ink)}
+.sm-t{position:absolute;z-index:3;top:12px;right:12px;padding:6px 14px;border-radius:12px;background:color-mix(in oklch,var(--card) 88%,transparent);color:var(--ink);font-size:var(--fs-8);font-weight:800;letter-spacing:-.02em;box-shadow:var(--shadow);pointer-events:none}
+.sm-legts{position:absolute;z-index:3;left:404px;bottom:84px;width:220px;padding:8px 12px;border-radius:12px;background:color-mix(in oklch,var(--card) 90%,transparent);box-shadow:var(--shadow);font-size:var(--fs-1);color:var(--ink)}
 .sm-legts[hidden],.sm-t[hidden]{display:none}
 .sm-legts b{display:block;margin-bottom:5px;font-weight:700}
 .sm-legts i{display:block;height:10px;border-radius:5px;border:1px solid var(--line)}
 .sm-legts span{display:flex;justify-content:space-between;margin-top:3px;color:var(--ink2);font-weight:700}
 .sm-legts u{text-decoration:none}
 @media (max-width:900px){
-  .sm-t{left:8px;top:56px;font-size:20px;padding:4px 10px}
+  .sm-t{left:8px;top:56px;font-size:var(--fs-7);padding:4px 10px}
   .sm-legts{left:8px;bottom:auto;top:100px;width:180px}
 }

@@ -1,6 +1,7 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "POST /api/lapor/darurat/cepat": "satu ketukan: laporan darurat terkirim",
     "POST /api/lapor/data/objek": "objek rumah: tersimpan urut 1",
     "POST /api/lapor/data/batal": "batal: anggota hanya objek isiannya",
     "POST /api/lapor/data/foto": "foto: JPEG kamera tersimpan",
