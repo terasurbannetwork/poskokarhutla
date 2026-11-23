@@ -10,14 +10,8 @@
    "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-talaud-2026-11-22\\Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126 (isi).pptx",
    "halaman": 1,
    "sumber": "BMKG 22 Nov 2026; BPBD lewat Pusdalops BNPB; MMI model; penduduk WorldPop 2026"
-  },
-  {
-   "jenis": "impor",
-   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-talaud-2026-11-22\\Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126 (isi).pptx",
-   "halaman": 2,
-   "sumber": "Model susulan Reasenberg-Jones (USGS); BPBD lewat Pusdalops BNPB; katalog gempa merusak BMKG; logbook Pusdalops"
   }
  ],
  "subjek_dokumen": "Laporan Khusus Gempa Bumi M5,4 Kepulauan Talaud",
- "tanpa_alur": "laporan khusus dua halaman"
+ "tanpa_alur": "laporan khusus satu halaman"
 }

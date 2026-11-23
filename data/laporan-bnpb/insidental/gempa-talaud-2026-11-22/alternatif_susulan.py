@@ -167,6 +167,7 @@ def blok(k, c, y0, y1):
 
 
 def bangun(c):
+    c['dua_halaman'] = True   # mesin sejak 23 Nov 2026 sudah menggambar blok ini sendiri; pembungkus ini hanya untuk membangun ulang alternatif lama
     asli = GK.tabel
 
     def tabel(k, x, y, kol, baris, **kw):
