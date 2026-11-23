@@ -65,7 +65,7 @@ Penghapusan data atas permintaan pemilik data tidak punya tombol di paket ini (p
 
 ## 5. Privasi di layar dan di antarmuka
 
-Kisi pilih profil hanya menampilkan foto, nama, jabatan. NIP, email, HP hanya muncul untuk pemilik profil (setelah PIN) dan admin; di layar admin tersamar (`08••••••21`, `an•••@bpbd.go.id`) sampai tombol "Tampilkan". Penampilan penuh di layar admin tidak menulis log di paket ini; bila pemilik ingin jejak lihat-data, itu keputusan tambahan. Daftar profil tidak muncul di halaman publik, di `public/data`, atau di respons yang bisa dibaca tamu.
+Kisi pilih profil hanya menampilkan foto, nama, jabatan. NIP, email, HP hanya muncul untuk pemilik profil (setelah PIN) dan admin; pengecualian K14: selama profil masih `draf`, NIP, email, dan HP tampil ke siapa pun yang memegang sesi akun lembaga itu supaya bisa disunting tanpa diketik ulang, dan tersembunyi lagi begitu profil diajukan (`menunggu`) atau aktif; profil yang kembali ke `draf` karena pengajuan ditolak tampil penuh lagi ke akun yang sama, sebab memang harus disunting; di layar admin tersamar (`08••••••21`, `an•••@bpbd.go.id`) sampai tombol "Tampilkan". Penampilan penuh di layar admin tidak menulis log di paket ini; bila pemilik ingin jejak lihat-data, itu keputusan tambahan. Daftar profil tidak muncul di halaman publik, di `public/data`, atau di respons yang bisa dibaca tamu.
 
 ## 6. Pemberitahuan insiden
 

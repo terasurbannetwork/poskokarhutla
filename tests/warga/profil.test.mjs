@@ -121,7 +121,7 @@ uji("UP-2 masuk akun pemda membawa profil_mode dan menulis log masuk tanpa profi
   assert.equal((await api("GET", "/api/instansi/profil", undefined, {cookie: mp.cookie})).j.profil_mode, false);
 });
 
-uji("UP-4, UP-11 profil: milik akun sendiri, tanpa NIP, email, HP; profil kelima ditolak lewat rute dan trigger; dicabut tidak dihitung; trigger jenis", async () => {
+uji("UP-4, UP-11 profil: milik akun sendiri, draf membawa NIP, email, HP (K14); profil kelima ditolak lewat rute dan trigger; dicabut tidak dihitung; trigger jenis", async () => {
   const a = await buatAkun("pemkab"), b = await buatAkun("pemkab"), ma = await masukAkun(a), mb = await masukAkun(b);
   const ids = [];
   for (let i = 1; i <= 4; i++) { const r = await buatProfil(ma, 100 + i); assert.equal(r.s, 201, r.t); ids.push(r.j.id); }
@@ -129,7 +129,7 @@ uji("UP-4, UP-11 profil: milik akun sendiri, tanpa NIP, email, HP; profil kelima
   await assert.rejects(DB.prepare("INSERT INTO instansi_profil (id, akun_id, nama, jabatan, nip, email, wa, dibuat, diubah) VALUES ('f'||'0000000000000001', ?, 'Nama', 'Jabatan', '12345678', 'z@bpbd.go.id', '6281234567890', 1, 1)").bind(a.id).run(), /paling banyak 4/);
   const daftar = await api("GET", "/api/instansi/profil", undefined, ma);
   assert.equal(daftar.s, 200); assert.equal(daftar.j.profil.length, 4);
-  for (const p of daftar.j.profil) { assert.ok(!("nip" in p) && !("email" in p) && !("wa" in p), "tanpa data pribadi di kisi"); assert.equal(p.status, "draf"); }
+  for (const p of daftar.j.profil) { assert.ok(p.nip && p.email && p.wa, "K14: data draf tampil ke pemilik akun agar bisa disunting"); assert.equal(p.status, "draf"); }
   assert.ok(!/pin_sha|pin_garam/.test(daftar.t));
   assert.equal((await api("GET", "/api/instansi/profil", undefined, mb)).j.profil.length, 0, "akun lain tidak melihatnya");
   for (const [m, j, body] of [[mb, `/api/instansi/profil/${ids[0]}`, ISI(1)], [mb, `/api/instansi/profil/pin/${ids[0]}`, {pin: "482915"}], [mb, `/api/instansi/profil/foto/${ids[0]}`, JPEG_SAH]]) {
@@ -283,7 +283,8 @@ uji("UP-9, UP-31 sepuluh salah sehari memasang kunci admin; PIN benar ditolak sa
   await DB.prepare("UPDATE instansi_profil SET salah_hari = 4, hari_tgl = hari_tgl - 1 WHERE id = ?").bind(ps[1].id).run();
   assert.equal((await masukPin(m, ps[1].id, "300001", ipBaru())).s, 401);
   assert.equal((await DB.prepare("SELECT salah_hari FROM instansi_profil WHERE id = ?").bind(ps[1].id).first()).salah_hari, 1, "hari berikutnya hitungan kembali");
-  const PIC = (await api("GET", "/api/instansi/profil", undefined, m)).j.profil.find(p => p.id === ps[2].id); assert.ok(!PIC.terkunci);
+  const kisi = (await api("GET", "/api/instansi/profil", undefined, m)).j.profil, PIC = kisi.find(p => p.id === ps[2].id); assert.ok(!PIC.terkunci);
+  for (const p of kisi) assert.ok(p.status === "aktif" && !("nip" in p) && !("email" in p) && !("wa" in p), "profil aktif tanpa sesi profilnya: data pribadi tidak tampil");
 });
 
 uji("UP-10 profil dicabut: sandi dan PIN benar ditolak; sesi berjalan gagal berikutnya; profil lain tetap masuk", async () => {

@@ -140,7 +140,8 @@ export function rutePofil(D) {
     const keluar = [];
     for (const p of ps) {
       const t = p.status === "aktif" ? (p.kunci_admin ? "admin" : await terkunciSampai(env, req, p.id, kini)) : null;
-      keluar.push({...tampil(p, p.id === aktifSaya), ...(t ? {terkunci: t} : {})});
+      keluar.push({...tampil(p, p.id === aktifSaya || p.status === "draf"),   // K14: draf masih disunting pemilik akun; sesudah diajukan hanya profil sendiri
+       ...(t ? {terkunci: t} : {})});
     }
     return json({profil_mode: true, akun: {id: a.id, status: a.status, wilayah: a.wilayah, wajib_ganti: !!a.wajib_ganti, surat: !!a.surat, kartu: !!a.kartu}, profil: keluar, profil_aktif: aktifSaya,
       pin_wajib_ganti: !!sp?.pin_wajib_ganti, maks: K.PROFIL_MAKS, wajib: K.PROFIL_WAJIB, kunci_ada: kunciSah(env)});

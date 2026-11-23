@@ -84,3 +84,10 @@ Meja Lapor Bencana (`/lapor/meja`, KEPUTUSAN-LAPOR-AI K63, D94) hanya bisa dipak
 | --- | --- | --- | --- |
 | Q9 | Siapa "PIC yang sedang jaga"? | **[BAWAAN SEMENTARA]** Semua PIC aktif, urut yang terakhir aktif lebih dulu; jadwal piket menyusul bila diminta. | PF-09 |
 | Q10 | Waktu respons dibandingkan antar-BPBD di layar Kepala (peringkat) atau hanya per BPBD? | **[BAWAAN SEMENTARA]** Tabel per BPBD tanpa peringkat, hanya BPBD dengan paling sedikit 5 laporan dalam 30 hari. | PF-08 |
+
+## Jawaban pemilik (23 Nov 2026, lanjutan)
+
+| No | Jawaban |
+| --- | --- |
+| K14 | Ditanya "Pemilik akun boleh melihat NIP, email, HP PIC yang masih draf, atau tetap ketik ulang?", pemilik menjawab "Boleh, untuk draf". Kisi `GET /api/instansi/profil` mengirim NIP, email, dan HP untuk profil berstatus `draf` ke sesi akun lembaga itu; profil `menunggu`, `aktif`, dan `dicabut` tetap hanya tampil penuh ke profilnya sendiri (sesudah PIN) dan admin BNPB. Gerbang: `tests/warga/profil.test.mjs` UP-4 (draf tampil) dan UP-9 (aktif tersembunyi). |
+
