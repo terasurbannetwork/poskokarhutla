@@ -2300,3 +2300,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 /* teks terjemahan lebih panjang tidak meluber (pemilik 23 Nov 2026): butir tidak boleh menyusut di bawah isinya; turun baris, bukan tumpah */
 .lp-cc2-sosial li{min-width:auto!important}
 @media (min-width:900px){.lp-hero-aksi>button{min-width:auto!important}}
+/* ubin pilihan berikon tidak tumpah di kolom obrolan sempit (pemilik 23 Nov 2026: "Rapikan"): ukur lebar wadah, bukan layar */
+.lp-opsi.lp-simetris{container-type:inline-size}
+@container (width < 520px){.lp-opsi.lp-simetris > button{flex-basis:100%!important}}
+.lp-opsi-ikon button b,.lp-opsi-ikon button small{overflow-wrap:anywhere}
