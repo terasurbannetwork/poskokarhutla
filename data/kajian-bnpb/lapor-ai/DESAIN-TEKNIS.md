@@ -271,3 +271,24 @@ Batas laju tambahan: verifikasi 20 per jam per staf; tanya 30 per jam per nomor;
 - **Meja lanjutan.** Semua olahan (kelompok titik, linimasa, kab terbanyak, urutan Perhatian, waktu tanggap, layar besar) di klien dari satu rute daftar yang diperluas dengan kolom ringan: `korban_ada`, `foto_sah`, `lokasi_tingkat`, `dilihat_pada`, `ditindak_pada`, `gugus`, `gugus_label`, `verif_hasil`, `ada_susulan`, `tugas_tenggat`, `tugas_tindakan`, `ganda_dari`. Tetap paling banyak 1.000 baris, berindeks waktu, tanpa pemindaian penuh (kuota baca D1, memori `d1-kuota-baca`). Ekspor memakai `public/bnpb/dalops_hitung.js` dan `/vendor/jspdf`: `meja.html` memuat berkas itu dengan `<script src>` (rujukan, bukan salinan; pemeriksa `ruang-bnpb` ditambahkan di tiket LA-52).
 - **Rujukan web.** Semua kode web klien baru dirujuk ke skill `modern-web-guidance` sebelum ditulis (aturan pemilik nomor 8): terutama Fullscreen, Screen Wake Lock, service worker, `<dialog>`, dan `prefers-reduced-motion`; fitur Baseline Newly atau Limited hanya dengan deteksi fitur dan cadangan yang jalan.
 - **Tinjau lokal.** Server tinjau `scripts/lapor/lokal.mjs` menjawab rute lapor dengan mesin lokal; rute lanjutan ditambahkan di sana dengan data berkas (bukan D1) sampai Worker dan D1 dipasang, dan tidak meneruskan ke produksi. Tautan tinjau: `http://localhost:8800/lapor`, `/lapor/meja`, `/lapor/meja?layar=besar`, `/lapor/v.html?t=...`.
+
+## Lanjutan 23 Nov 2026 (K90-K92)
+
+### Skema D1 (migrasi berikutnya, nomor diambil saat LA-80 dikerjakan)
+
+- `lapor_selamat`: `id`, `nomor` (62…), `nama_panggil`, `status` (`selamat`, `butuh_bantuan`), `kab`, `token_sha`, `dibuat`, `kedaluwarsa`, `dicabut`. Indeks `nomor`, `token_sha`.
+- `lapor_cari`: `id`, `nomor_pencari`, `nama_dicari`, `ciri`, `lokasi_terakhir`, `waktu_terakhir`, `nomor_dicari` (boleh kosong), `hubungan`, `kab`, `status` (`buka`, `ditemukan_selamat`, `ditemukan_meninggal`, `ke_sar`, `tutup`), `dibuat`, `ditutup_oleh`, `ditutup`. Riwayat status append-only di `lapor_cari_riwayat`.
+- Laporan: kolom `cara` (`biasa`, `darurat`, `sekali_ketuk`) dan `sumber_lokasi` (`gps`, `pilih`, `poster`) bila belum ada padanannya.
+
+### Rute baru
+
+| Rute | Penjaga | Isi |
+| --- | --- | --- |
+| `POST /api/lapor/darurat/cepat` | laju perangkat dan IP (A29) | Buat sesi darurat sekali ketuk; balas nomor tiket, nomor BPBD, token sesi chat |
+| `POST /api/lapor/selamat` | sesi kode sekali pakai tujuan `selamat` | Buat atau ganti tanda; balas tautan |
+| `DELETE /api/lapor/selamat` | sesi yang sama | Cabut tanda dan token |
+| `GET /api/lapor/s/:token` | token | Nama panggilan, status, waktu, kab/kota |
+| `POST /api/lapor/cari` | sesi kode sekali pakai | Laporan orang dicari |
+| `GET /api/lapor/meja/cari`, `POST /api/lapor/meja/cari/:id/status` | hak meja D95 | Daftar orang dicari wilayahnya dan tanda cocok; tutup laporan |
+
+Halaman: `public/lapor/index.html` dan `lapor.js` (tombol, layar sesudah ketuk, kabar selamat, `?d=`), `public/lapor/s/` (tautan selamat), `public/lapor/meja.js` (chip, daftar orang dicari, pembuat poster), `public/lapor/poster.css` (cetak). Poster tidak memakai rute Worker.

@@ -157,3 +157,24 @@ F-15 (minta verifikasi dua arah) digantikan F-18 sampai F-20.
 - Urutan Perhatian bukan nilai kebenaran laporan dan bukan peringkat pelapor.
 - Waktu tanggap bukan penilaian kinerja; tanpa peringkat orang atau BPBD.
 - Mode layar besar tidak menampilkan nama atau nomor pelapor; ekspor bawaan tidak memuatnya.
+
+## Lanjutan 23 Nov 2026: F-49 sampai F-55 (K90-K92)
+
+| No | Fitur | Fase | Dasar |
+| --- | --- | --- | --- |
+| F-49 | Darurat sekali ketuk: satu ketukan mengirim titik GPS ke meja sebagai laporan darurat, percakapan K68 menyusul | F0 | K90, D122, D124 |
+| F-50 | Tombol telepon 112, 117, dan BPBD wilayahnya tampil seketika sesudah ketukan; antrean luring bila tanpa sinyal | F0 | D123, D125 |
+| F-51 | Kabar selamat: tanda "Selamat" atau "Selamat, butuh bantuan" dengan nomor terbukti lewat kode sekali pakai | F0 | K91, D126, D127 |
+| F-52 | Tautan kabar selamat bertoken untuk keluarga, kedaluwarsa 7 hari, bisa dicabut | F0 | D128 |
+| F-53 | Laporan orang belum ditemukan ke meja (chip "Orang dicari"), dicocokkan dengan tanda selamat hanya lewat nomor | F0 | D129, D130 |
+| F-54 | Tautan poster `/lapor/?d=<kode desa>` mengisi desa sebagai usulan; lencana "Lokasi dari poster desa" di meja | F0 | K92, D131, D132 |
+| F-55 | Pembuat poster QR per desa di meja, cetak A4 per desa atau satu kecamatan sekaligus | F0 | D133 |
+
+### Larangan (K90-K92)
+
+- Tidak menulis "aman" di mana pun; status hanya "Selamat" atau "Selamat, butuh bantuan".
+- Tidak ada pencarian tanda selamat berdasarkan nomor HP atau nama.
+- Orang dicari tidak pernah tampil publik dan tidak menambah angka hilang secara otomatis.
+- Mesin tidak pernah mengabari pencari sendiri; petugas yang memutuskan.
+- Poster tidak memuat nama orang atau nomor pribadi, dan nomor telepon hanya dari sumber K88.
+- Darurat sekali ketuk tidak menelepon atas nama pelapor dan tidak mengirim ke WA BPBD (K68 tetap berlaku).

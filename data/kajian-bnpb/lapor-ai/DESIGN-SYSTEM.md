@@ -124,3 +124,18 @@ Gaya warna status tiket dan bahaya hanya dari token (`--info`, `--accent`, `--wa
 ### 7. PDF laporan: tambahan
 
 Bagian Verifikasi (hasil terbaru, penjawab, waktu, koreksi), bagian Susulan (daftar versi dengan selisih, tiap angka berlabel versi), kolom Asal bertambah nilai `suara`, `luring`, `susulan`; bagian Foto menampilkan lencana tambahan (Buram, Lama, Mirip foto di LA-...) hanya pada PDF versi staf, bukan PDF yang dikirim ke pelapor.
+
+## Lanjutan 23 Nov 2026 (K90-K92)
+
+### 8. Komponen baru
+
+| Komponen | Tempat | Isi |
+| --- | --- | --- |
+| Tombol Darurat sekali ketuk | hero `/lapor`, sebaris dengan tombol K77 | Ikon lokasi bersinyal, label "Darurat sekali ketuk", warna `--bad`; ketuk sekali, tanpa dialog konfirmasi |
+| Layar sesudah ketuk | layar penuh | Tiga tombol `tel:` besar bertumpuk (112, 117, BPBD), status kirim di atasnya, tombol "Lengkapi laporan" di bawah |
+| Kartu Kabar selamat | menu dan beranda (Q68) | Dua pilihan besar "Selamat" dan "Selamat, butuh bantuan"; langkah kode sekali pakai seperti `/masuk` |
+| Halaman tautan selamat | `/lapor/s/<token>` | Nama panggilan besar, status berikon, waktu, kab/kota; tanpa peta |
+| Chip meja | `/lapor/meja` | "Sekali ketuk", "Pelapor belum dikenal", "Orang dicari", "Ada kabar selamat dari nomor ini", "Lokasi dari poster desa" |
+| Poster desa | cetak A4 | Kepala navy dengan logo BNPB dan KRIS, judul desa, QR besar di tengah, alamat tautan utuh di bawah QR, tiga langkah berikon, nomor 112, 117, dan BPBD; token dari `public/inti/tema.css` |
+
+Teks lewat skill `bahasa-indonesia-plain`. Tanpa huruf kapital semua, tanpa kata "aman".

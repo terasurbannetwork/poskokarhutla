@@ -524,3 +524,43 @@ Sembilan tambahan pemilik untuk layar staf `/lapor/meja` (diberi kode M1 sampai 
 | Q62 | Jendela gabung di meja: berapa lama laporan berjenis sama di satu kab/kota masih dianggap kejadian yang sama, dan apakah per jenis berbeda (banjir berhari-hari, gempa sekali)? | **[BAWAAN SEMENTARA]** 72 jam berantai untuk semua jenis, sama dengan jendela jenis tanpa aturan di A9. | LA-75 |
 | Q63 | Verifikasi satu kepala gabungan sekaligus (semua laporan di bawahnya Valid atau Tidak valid dalam satu ketukan)? | **[BAWAAN SEMENTARA]** Tidak; tiap laporan dicek sendiri. | LA-75 |
 | Q64 | Sumber nomor BPBD kab/kota untuk K88: `public/data/bpbd.json` (gis.bnpb.go.id) hanya memuat 302 dari 514 kab/kota dan hanya 6 nomor telepon sah (kolom `pusdalops` sisanya nama orang atau kosong). Pemilik punya daftar resmi (Pusdalops BNPB, Direktorat Kesiapsiagaan), atau dipanen dari situs resmi BPBD per daerah lalu dicek? | Pemilik 22 Nov 2026: "Panen situs resmi". Hasil panen pertama (`riset/kontak-bpbd/`): BPBD 213 dari 514 kab/kota dan 28 dari 38 provinsi, damkar 20, hanya nomor yang terbukti tertulis di halaman `.go.id` sumbernya; nomor HP pribadi pejabat dibuang. **[BAWAAN SEMENTARA]** Kab/kota tanpa nomor memakai BPBD provinsi bila tercatat, lalu 117. Sisa 301 kab/kota butuh putaran kedua dengan peramban sungguhan (situs JS, 403) atau daftar resmi Pusdalops. | K88, LA-21 |
+
+# Lanjutan 23 Nov 2026: darurat sekali ketuk, kabar selamat, poster QR desa
+
+Asal: sesi Lapor 23 Nov 2026 mengusulkan sembilan ide yang belum ada di antrean LA-22 sampai LA-77. Pemilik: "Masukin tiga ide teratas ke paket dokumen". Tiga ide itu nomor 1, 2, dan 7 dari usulan tersebut. Ketiganya memakai mesin yang sudah ada (K68, `/masuk`, `Bagi.QR`, `src/lapor_wilayah.js`, K88). Belum ada kode; tiket LA-78 sampai LA-84 di `TIKET.md`.
+
+## Keputusan pemilik (23 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K90 | 23 Nov 2026 | Darurat sekali ketuk: satu ketukan mengirim titik GPS ke meja sebagai laporan darurat, lalu menampilkan tombol telepon 112, 117, dan BPBD wilayahnya, tanpa percakapan lebih dulu. Percakapan K68 menyusul untuk melengkapi. Perluasan K68, bukan jalur kedua. |
+| K91 | 23 Nov 2026 | Kabar selamat untuk keluarga: sesudah kejadian, warga menandai dirinya selamat dan keluarganya bisa melihat tanda itu. Kebalikannya, laporan orang belum ditemukan masuk meja petugas dan tidak pernah tampil publik. |
+| K92 | 23 Nov 2026 | Poster QR per desa untuk kantor desa, Puskesmas, sekolah, dan tempat ibadah. Pindai membuka `/lapor` dengan desa sudah terisi. |
+
+## Keputusan rancangan (pelaksanaan K90-K92, agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D122 | Darurat sekali ketuk memakai mesin K68 (`src/lapor_mesin.js`, jalur `darurat`), tidak ada mesin kedua. Ketukan memanggil `navigator.geolocation` (akurasi tinggi, tunggu paling lama 15 detik, ambil titik terbaik), lalu `POST /api/lapor/darurat/cepat` membuat sesi darurat berisi titik, akurasi, dan waktu perangkat. Jenis bencana `belum_diketahui`, korban `belum_tahu`. Meja menerima peringatan yang sama dengan K68 (pita merah, nada, notifikasi), ditambah chip "Sekali ketuk". | Peringatan cepat tanpa menunggu orang yang sedang terjebak mengetik. |
+| D123 | Peramban tidak bisa menelepon sendiri. Sesudah ketukan, layar menampilkan tiga tombol `tel:` besar: 112, 117, dan BPBD kab/kota dari titik itu (sumber K88, cadangan provinsi lalu 117, tanpa nomor karangan). Tombol tampil seketika, sebelum GPS selesai, karena telepon jalan tanpa data seluler. | Jangan menahan telepon demi GPS. |
+| D124 | Identitas boleh menyusul: bila perangkat sudah terikat ke nomor (ikatan perangkat yang ada), nomor itu dipakai. Bila belum, laporan dikirim dengan label "Pelapor belum dikenal" dan percakapan K68 dibuka untuk melengkapi identitas, jenis, dan foto. Batas: 1 ketukan per perangkat per 30 menit, 3 per IP per jam, di luar kuota laporan biasa. Laporan tanpa identitas tidak bisa diteruskan ke luar meja sebelum identitas lengkap. | K68 mewajibkan identitas; jalur sekali ketuk menukarnya dengan batas laju yang lebih ketat. |
+| D125 | Tanpa sinyal data: titik masuk antrean `public/inti/antre.js` (F-30) dan terkirim saat tersambung, dengan waktu perangkat asli. Tombol telepon tetap tampil. Lokasi ditolak pelapor: laporan tetap dikirim tanpa titik dan percakapan meminta desa. | Kasus terburuk adalah saat paling butuh. |
+| D126 | Kata "aman" dilarang di produk ini (PRD, larangan). Fitur K91 bernama **Kabar selamat**, tombolnya "Saya selamat". Pilihan status hanya dua: "Selamat" dan "Selamat, butuh bantuan". Yang kedua membuka percakapan lapor biasa dengan lokasi terisi. | Mematuhi larangan "aman" tanpa membuang fitur. |
+| D127 | Menandai selamat wajib nomor yang terbukti milik penanda, lewat kode sekali pakai WA dari mesin `/masuk` (`src/masuk.js`). Tanpa kode, tidak ada tanda. | Tanda selamat palsu atas nama orang lain bisa menghentikan pencarian. |
+| D128 | Keluarga melihat tanda lewat tautan bertoken yang dibagikan penanda sendiri (tombol Bagikan ke WA, `wa.me/?text=`). Isi tautan: nama panggilan, status, waktu tanda, kab/kota. Tanpa titik, desa, atau nomor. Token acak 32 byte, disimpan sha256, kedaluwarsa 7 hari, bisa dicabut penanda. Tidak ada pencarian berdasarkan nomor HP (Q66). | Pencarian per nomor membuka jalan menguntit dan menebak nomor (PDP). |
+| D129 | Orang belum ditemukan: formulir pendek di `/lapor` (nama orang yang dicari, ciri, lokasi dan waktu terakhir terlihat, nomor WA orang itu bila ada, hubungan pelapor). Nomor pelapor wajib lewat kode sekali pakai. Masuk meja BNPB dan BPBD kab/kota wilayahnya dengan chip "Orang dicari". Tidak tampil publik, tidak masuk Alun-alun, dan tidak menambah angka hilang secara otomatis (angka resmi tetap dari BPBD). | Data orang dicari sangat pribadi; meja yang memutuskan. |
+| D130 | Pencocokan orang dicari dengan tanda selamat hanya lewat nomor HP yang sama persis, tidak pernah lewat nama (AGENTS 2.15). Bila cocok, meja melihat tanda "Ada kabar selamat dari nomor ini" dan petugas yang memutuskan mengabari pencari. Mesin tidak mengirim kabar sendiri. | Salah cocok nama lebih berbahaya daripada tidak cocok. |
+| D131 | Tautan poster `/lapor/?d=<kode desa 10 angka>`. Kode dibaca lewat `desa_cari.json` (`src/lapor_wilayah.js`). Desa, kecamatan, dan kab/kota diisi sebagai usulan yang tetap dikonfirmasi pelapor. Bila GPS tersedia dan titiknya di luar desa itu, pelapor ditanya mana yang benar. Kode yang tidak dikenal diabaikan tanpa galat. | Poster bisa dipindah atau dipalsukan; pelapor tetap memegang lokasi. |
+| D132 | Laporan dari poster membawa `sumber_lokasi = poster` dan tampil di meja dengan lencana "Lokasi dari poster desa". Meja menghitung laporan per desa yang datang lewat poster. Pindaian tidak dihitung: halaman statis tidak mencatat kunjungan. | Hanya data yang sudah ada; tanpa pelacak baru. |
+| D133 | Pembuat poster ada di `/lapor/meja`, untuk staf BNPB dan BPBD wilayahnya (hak meja D95): pilih kab/kota, lalu kecamatan atau desa, lalu cetak. Satu desa satu halaman A4 tegak, cetak lewat CSS cetak peramban, tanpa PDF di Worker. Isi: logo BNPB dan KRIS, "Lapor kejadian bencana di Desa X", QR (`Bagi.QR`, `public/bagi.js`), alamat tautan tertulis utuh, tiga langkah singkat, nomor 112, 117, dan BPBD kab/kota (K88). Tanpa nama orang. | Pemda mencetak sendiri; tanpa beban server. |
+
+## Pertanyaan terbuka (K90-K92)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q65 | Darurat sekali ketuk boleh terkirim tanpa nama dan nomor (pelapor belum dikenal)? | **[BAWAAN SEMENTARA]** Boleh, dengan batas laju D124 dan label "Pelapor belum dikenal". | LA-78 |
+| Q66 | Keluarga boleh mencari tanda selamat dengan mengetik nomor HP orangnya? | **[BAWAAN SEMENTARA]** Tidak; hanya tautan yang dibagikan penanda (D128). | LA-80 |
+| Q67 | Berapa lama tanda selamat dan laporan orang dicari disimpan? | **[BAWAAN SEMENTARA]** Tanda selamat 30 hari. Orang dicari mengikuti masa simpan laporan Lapor Bencana; ditutup petugas saat orangnya ditemukan. | LA-80 |
+| Q68 | Kabar selamat dibuka kapan saja, atau hanya saat ada kejadian aktif di kab/kota pengguna (darurat K68, kejadian Buku Besar, atau peringatan BMKG)? | **[BAWAAN SEMENTARA]** Kapan saja dari menu; kartu ajakan di beranda hanya saat ada kejadian aktif di kab/kota dari GPS. | LA-81 |
+| Q69 | Poster juga memuat QR ke WA bot (teks awal `lapor desa <kode>`)? | **[BAWAAN SEMENTARA]** Tidak; hanya web. Jalur WA menyusul sesudah ada perintahnya di bot. | LA-84 |
+| Q70 | Darurat sekali ketuk juga lewat WA (kirim lokasi + kata `darurat`)? | **[BAWAAN SEMENTARA]** Belum; WA tetap memakai alur K68. | LA-78 |

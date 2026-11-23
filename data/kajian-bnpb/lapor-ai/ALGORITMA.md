@@ -306,3 +306,25 @@ Tampilan ringan dari data yang sama: `angka = {masuk24, baru_belum_dibuka, lewat
 3. CSV: UTF-8 dengan BOM, pemisah koma, sel diawali `=`, `+`, `-`, `@`, tab, atau CR diberi awalan tanda kutip tunggal.
 4. PDF: jsPDF A4 mendatar, kepala (judul, saringan, waktu cetak, "laporan warga, belum terverifikasi"), baris ringkasan (jumlah laporan, per status, per jenis), tabel paling banyak 200 baris, kaki "Hal n dari m". Kepala tabel rata tengah (aturan ekspor PDF pemilik).
 5. Format angka dan tanggal id-ID; zona WIB.
+
+## Lanjutan 23 Nov 2026
+
+## A29. Darurat sekali ketuk (D122 sampai D125)
+
+1. Klien: `getCurrentPosition` dengan `enableHighAccuracy: true`, `timeout: 15000`, `maximumAge: 60000`; bila `watchPosition` memberi akurasi lebih baik dalam 15 detik, pakai yang terbaik. Akurasi dikirim apa adanya; di atas 1.000 m meja menulis "lokasi kasar".
+2. Server: tolak bila perangkat sudah membuat sekali ketuk dalam 30 menit atau IP sudah 3 kali dalam satu jam (balas 429 dengan tombol telepon tetap di layar). Titik di luar kotak batas Indonesia dibuang (laporan tetap dibuat, tanpa titik).
+3. Wilayah dari titik lewat `src/lapor_wilayah.js`; kab/kota menentukan meja BPBD penerima dan nomor BPBD (K88).
+4. Sesi dibuat di mesin K68 dengan isian `jenis = belum_diketahui`, `korban = belum_tahu`, `cara = sekali_ketuk`. Isian berikutnya mengikuti alur K68 biasa.
+
+## A30. Kabar selamat dan orang dicari (D126 sampai D130)
+
+1. Bukti nomor: `minta kode` dan `periksa kode` dari `src/masuk.js` dengan tujuan `selamat`; batas laju kode mengikuti mesin itu.
+2. Tanda: satu tanda aktif per nomor; tanda baru menggantikan yang lama (yang lama tetap di riwayat). Token tautan dibuat saat tanda dibuat; mencabut tanda mencabut token.
+3. Pencocokan: nomor dinormalkan ke `62…` (aturan yang sama dengan `/masuk`). Orang dicari dengan nomor N cocok dengan tanda selamat aktif dari nomor N. Tanpa nomor orang dicari, tidak ada pencocokan.
+4. Kedaluwarsa: tanda selamat dihapus 30 hari sesudah dibuat (Q67), oleh cron bersih-bersih menit 17 yang ada.
+
+## A31. Poster desa (D131 sampai D133)
+
+1. `d` sah bila 10 angka dan ada di `desa_cari.json`; selain itu diabaikan.
+2. GPS dianggap bertentangan bila titik jatuh di poligon desa lain (`public/geo/desa/<kab>.json`); titik tanpa poligon dianggap tidak bertentangan.
+3. Hitungan meja: jumlah laporan berlencana poster per desa dalam rentang yang dipilih; desa tanpa laporan tidak ditulis 0, cukup tidak tampil.

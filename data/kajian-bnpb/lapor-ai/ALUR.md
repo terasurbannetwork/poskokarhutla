@@ -174,3 +174,35 @@ Bagian 5 di atas (verifikasi dua arah, rancangan awal) digantikan bagian 7. Bagi
 6. Pindah status massal: pilih status tujuan dan catatan; layar menampilkan hasil per laporan (berhasil atau alasan ditolak). Teruskan ke BPBD (F1): pratinjau kontak, daftar tiket, dan teks; konfirmasi mengirim satu pesan dan membuat tugas. Tandai ganda: pilih laporan induk, konfirmasi.
 7. Unduh di bilah ekspor: Excel, CSV, atau PDF ringkas dari baris tersaring.
 8. Layar besar: tombol "Layar besar" meminta layar penuh; tampilan berganti ke angka besar, peta, dan sepuluh teratas; segar sendiri tiap 30 detik; tekan Esc atau tombol Tutup untuk kembali.
+
+## Lanjutan 23 Nov 2026
+
+## 20. Darurat sekali ketuk (F-49, F-50)
+
+1. Pelapor mengetuk Darurat sekali ketuk di beranda. Layar seketika menampilkan tiga tombol telepon (112, 117, BPBD wilayah bila sudah diketahui, selain itu menyusul) dan tulisan "Mengirim lokasi Anda ke petugas".
+2. Peramban meminta izin lokasi. Diizinkan: titik terbaik dalam 15 detik dikirim. Ditolak atau gagal: laporan dikirim tanpa titik.
+3. Tanpa sinyal: titik masuk antrean, pita "Belum terkirim, dikirim otomatis saat ada sinyal". Tombol telepon tetap ada.
+4. Terkirim: nomor tiket tampil, tombol BPBD diperbarui dari titik, lalu percakapan K68 terbuka dengan pertanyaan pertama "Apa yang terjadi?". Pelapor boleh menutupnya; laporan tetap ada.
+5. Meja: pita merah, nada, dan notifikasi seperti K68, chip "Sekali ketuk", dan "Pelapor belum dikenal" bila belum ada identitas.
+
+## 21. Kabar selamat dan orang dicari (F-51 sampai F-53)
+
+Menandai selamat:
+1. Pengguna membuka Kabar selamat (menu, atau kartu ajakan bila ada kejadian aktif, Q68).
+2. Mengisi nama panggilan dan nomor WA, menerima kode enam angka lewat WA (mesin `/masuk`), memasukkan kode.
+3. Memilih "Selamat" atau "Selamat, butuh bantuan". Pilihan kedua membuka percakapan lapor dengan lokasi terisi.
+4. Mendapat tautan dan tombol Bagikan ke WA. Bisa mencabut atau memperbarui tanda dari perangkat yang sama selama 7 hari.
+
+Keluarga membuka tautan: melihat nama panggilan, status, waktu, kab/kota. Tautan kedaluwarsa atau dicabut: "Tautan ini sudah tidak berlaku."
+
+Orang dicari:
+1. Pelapor mengisi formulir orang dicari, membuktikan nomornya dengan kode, lalu mengirim.
+2. Meja BNPB dan BPBD wilayah melihat chip "Orang dicari". Bila nomor orang itu pernah menandai selamat, meja melihat "Ada kabar selamat dari nomor ini".
+3. Petugas mengabari pencari lewat jalur kabar yang ada, lalu menutup laporan (ditemukan selamat, ditemukan meninggal, diserahkan ke tim SAR, atau tidak bisa dilanjutkan).
+
+## 22. Poster QR desa (F-54, F-55)
+
+1. Petugas BNPB atau BPBD membuka Poster QR di meja, memilih kab/kota, lalu kecamatan atau desa, lalu Cetak.
+2. Poster ditempel. Warga memindai, `/lapor/?d=<kode>` terbuka, dan kartu lokasi menampilkan "Desa X, Kec. Y (dari poster). Benar?".
+3. GPS di luar desa itu: "Lokasi HP Anda di Desa Z. Kejadiannya di mana?" dengan dua pilihan.
+4. Laporan terkirim membawa lencana "Lokasi dari poster desa" di meja.

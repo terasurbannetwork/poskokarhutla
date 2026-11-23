@@ -65,3 +65,8 @@
 | Tandai ganda | Menandai laporan sebagai salinan laporan lain (bukan laporan pelapor lain tentang kejadian yang sama) |
 | Layar besar | Mode penuh layar `/lapor/meja?layar=besar` untuk ruang Pusdalops, tanpa data pribadi |
 | Tindakan massal | Aksi atas beberapa laporan sekaligus: pindah status, teruskan ke BPBD, tandai ganda |
+| Darurat sekali ketuk | Laporan darurat yang terkirim dengan satu ketukan berisi titik GPS, dilengkapi kemudian lewat percakapan K68 |
+| Pelapor belum dikenal | Label laporan sekali ketuk dari perangkat yang belum terikat ke nomor |
+| Kabar selamat | Tanda dari warga bahwa dirinya selamat, dilihat keluarga lewat tautan yang ia bagikan |
+| Orang dicari | Laporan orang belum ditemukan dari keluarga, hanya untuk meja petugas |
+| Poster desa | Poster A4 ber-QR yang membuka `/lapor` dengan desa sudah terisi |

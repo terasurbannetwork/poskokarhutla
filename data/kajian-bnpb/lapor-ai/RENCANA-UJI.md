@@ -244,3 +244,30 @@ Semua uji jalan tanpa jaringan dan tanpa kunci API (model ditiru rekaman) kecual
 - Permintaan data: model tidak dipanggil, balasan templat, tidak tercatat sebagai kronologi.
 - Luar topik 3 kali: sesi tanpa model; plafon 30 panggilan model per sesi.
 - Penerjemah membuang hasil yang jauh lebih panjang dari aslinya.
+
+## Lanjutan 23 Nov 2026 (K90-K92)
+
+## 21. Darurat sekali ketuk (`tests/lapor/darurat_cepat.test.mjs`, D1 lokal)
+
+- Ketukan dengan titik membuat sesi `cara = sekali_ketuk`, jenis `belum_diketahui`, dan peringatan meja yang sama dengan K68.
+- Tanpa titik tetap membuat laporan; titik di luar Indonesia dibuang.
+- Ketukan kedua dari perangkat yang sama dalam 30 menit dan ketukan keempat dari IP yang sama dalam satu jam ditolak 429.
+- Nomor BPBD di balasan dari sumber K88; kab tanpa nomor jatuh ke provinsi lalu 117.
+- Laporan "Pelapor belum dikenal" tidak bisa diteruskan ke luar meja.
+- Layar (Playwright di tinjau lokal): tombol telepon tampil sebelum GPS selesai; mode luring memasukkan titik ke antrean.
+
+## 22. Kabar selamat dan orang dicari (`tests/lapor/selamat.test.mjs`, D1 lokal)
+
+- Tanpa sesi kode sekali pakai: ditolak (kode status sama dengan rute lapor lain). Dengan sesi: tanda dibuat dan tautan berlaku 7 hari.
+- `GET /api/lapor/s/:token` tidak pernah memuat nomor, titik, atau desa.
+- Token dicabut atau kedaluwarsa: 404 dengan pesan yang sama.
+- Pencocokan: orang dicari dengan nomor sama dengan tanda aktif memunculkan tanda cocok; nama sama dengan nomor beda tidak cocok.
+- Rute meja orang dicari: akun BPBD hanya melihat kab wilayahnya.
+- Gerbang teks: kata "aman" tidak muncul di berkas layar dan pesan fitur ini.
+
+## 23. Poster desa (`tests/lapor/poster.test.mjs`)
+
+- `?d=` sah mengisi desa, kecamatan, kab; kode asing diabaikan tanpa galat.
+- GPS di desa lain memunculkan pertanyaan pilihan lokasi.
+- Laporan dari poster membawa `sumber_lokasi = poster`.
+- Halaman cetak: satu desa satu halaman A4, QR terbaca (dekode ulang di uji), nomor telepon hanya dari sumber K88.

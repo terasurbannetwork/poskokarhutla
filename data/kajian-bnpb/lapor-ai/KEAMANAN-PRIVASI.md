@@ -85,3 +85,17 @@ Pesan L-SAPA pertama memuat satu kalimat: "Data laporan dan nomor Anda dipakai B
 ### Penyimpanan di perangkat
 
 Butir antre.js tidak menyimpan kunci rahasia (aturan antre.js menolaknya). Pelapor yang meminjam HP dapat melihat butir yang belum terkirim; layar menawarkan Buang kapan saja dan masa tahan 14 hari. Service worker `sw-lapor.js` hanya menyimpan berkas statis, tidak menyimpan jawaban API.
+
+## Lanjutan 23 Nov 2026 (K90-K92)
+
+| Data | Tempat | Siapa melihat | Aturan |
+| --- | --- | --- | --- |
+| Titik sekali ketuk | D1 laporan | Meja BNPB dan BPBD wilayahnya | Sama dengan titik laporan biasa |
+| Tanda selamat (nomor, nama panggilan, status, kab) | D1 `lapor_selamat` | Pemegang tautan (tanpa nomor); meja hanya lewat pencocokan nomor | Dihapus 30 hari (Q67); token sha256, 7 hari |
+| Orang dicari (nama, ciri, lokasi terakhir, nomor) | D1 `lapor_cari` | Meja BNPB dan BPBD wilayahnya | Tidak publik, tidak di `public/`, tidak di ekspor layar besar |
+| Lencana poster | D1 laporan | Meja | Tanpa pelacak kunjungan |
+
+- Tanda selamat dan laporan orang dicari wajib nomor terbukti lewat kode sekali pakai (D127, D129): mencegah tanda palsu atas nama orang lain.
+- Tidak ada pencarian per nomor atau per nama (D128, D130).
+- Sekali ketuk tanpa identitas dijaga batas laju A29; laporan itu tidak diteruskan ke luar meja sebelum identitas lengkap (D124).
+- Poster bisa dipalsukan: alamat tautan ditulis utuh supaya warga bisa memeriksa domainnya, dan isi `?d=` hanya usulan yang dikonfirmasi (D131).
