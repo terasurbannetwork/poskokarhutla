@@ -172,7 +172,7 @@ def lok_asli(x): return x.get('lokasi_asli') or x['lokasi']
 
 def peta(isi_p, ke, nama, bbox, pw, ph, R_px):
     sp = os.path.join(ke, f'{nama}_spek.json')
-    json.dump({'ke': ke, 'nama': nama, 'pw': pw, 'ph': ph, 'bbox': bbox, 'R': R_px,
+    json.dump({'ke': os.path.relpath(ke, os.path.join(G, '..', '..', '..')), 'nama': nama, 'pw': pw, 'ph': ph, 'bbox': bbox, 'R': R_px,
                'lok': [{'no': n, 'prov': x['prov'], 'lokasi': lok_asli(x), 'jenis': x['jenis']} for n, x in isi_p]}, open(sp, 'w', encoding='utf-8'), ensure_ascii=False)
     subprocess.run(['node', os.path.join(G, 'harian_rincian_peta.mjs'), sp], check=True, stdout=subprocess.DEVNULL)
     return json.load(open(os.path.join(ke, f'{nama}.json'), encoding='utf-8'))
