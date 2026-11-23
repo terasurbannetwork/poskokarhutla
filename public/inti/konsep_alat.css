@@ -1,0 +1,77 @@
+/* Konsep Panel EWS (data/kajian-bnpb/ews/DESIGN-SYSTEM.md). Token dari tema.css saja; tanpa literal warna. */
+body{padding-top:var(--top,58px);background:var(--paper)}
+.al-wadah{max-width:1240px;margin:0 auto;padding:20px 16px 48px;display:grid;gap:20px}
+.al-konsep{margin:0;padding:12px 16px;border-radius:12px;background:var(--surface);color:var(--ink2);font:500 .8125rem/1.5 var(--font)}
+.al-konsep code{font-size:.75rem}
+.al-panel{padding:0;overflow:visible}
+.al-panel svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.al-kepala{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.al-kepala h2{display:flex;align-items:center;gap:10px;margin:0;font:800 1.0625rem var(--display);color:var(--ink)}
+.al-kepala h2 svg{width:22px;height:22px;color:var(--brand2)}
+.al-pilih{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--surface)}
+.al-pilih button{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 14px;border:0;border-radius:9px;background:none;color:var(--ink2);font:700 .8125rem var(--font);cursor:pointer}
+.al-pilih button svg{width:17px;height:17px}
+.al-pilih button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.al-pilih button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+
+.al-ringkas{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;padding:16px 18px 0}
+.al-ring{display:grid;gap:2px;padding:12px 14px;border-radius:12px;background:var(--surface)}
+.al-ring b{font:800 1.375rem var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.al-ring small{font:600 .75rem var(--font);color:var(--ink2)}
+.al-ring.siaga b{color:var(--brand-accent)}
+.al-ring.waspada b{color:var(--warn)}
+.al-ring.tanpa b{color:var(--ink2)}
+
+.al-putus[hidden],.al-cari[hidden]{display:none}
+.al-putus{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:14px 18px 0;padding:10px 12px 10px 14px;border-radius:12px;border-left:4px solid var(--warn);background:color-mix(in oklab,var(--warn) 10%,var(--card));font:500 .8125rem/1.45 var(--font);color:var(--ink)}
+.al-putus b{font-weight:800}
+.al-putus span{flex:1;min-width:200px;color:var(--ink2)}
+.al-tutup{border:0;background:none;color:var(--ink2);font:400 1.25rem/1 var(--font);cursor:pointer;padding:4px 6px}
+
+.al-cari{padding:14px 18px 0}
+.al-cari label{display:flex;align-items:center;gap:8px;max-width:360px;padding:0 12px;border-radius:10px;background:var(--surface)}
+.al-cari svg{width:16px;height:16px;color:var(--ink2);flex:none}
+.al-cari input{flex:1;min-width:0;min-height:40px;border:0;background:none;color:var(--ink);font:500 .875rem var(--font)}
+.al-cari input:focus{outline:none}
+.al-cari label:focus-within{box-shadow:inset 0 0 0 1.5px var(--brand2)}
+
+.al-kisi{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;padding:16px 18px 18px;align-items:stretch}
+.al-kartu{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.al-kartu:hover{border-color:color-mix(in oklab,var(--brand2) 45%,var(--line))}
+.al-kartu[aria-pressed="true"]{border-color:var(--brand2);box-shadow:0 0 0 1.5px var(--brand2)}
+.al-kartu:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.al-kartu-kepala{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.al-kartu-kepala b{font:800 .875rem/1.3 var(--display);text-wrap:balance}
+.al-kartu-kepala small{flex:none;font:600 .6875rem var(--font);color:var(--ink2)}
+.al-angka{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.al-angka strong{font:800 2rem/1 var(--display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.al-angka strong.kosong{font:700 .9375rem var(--font);color:var(--ink2)}
+.al-angka small{font:600 .8125rem var(--font);color:var(--ink2)}
+.al-angka .al-umur{flex-basis:100%;font-size:.75rem}
+.al-kartu.basi .al-angka strong{color:var(--ink2)}
+.al-pil{align-self:flex-start;padding:3px 10px;border-radius:999px;font:700 .75rem var(--font);background:var(--surface);color:var(--ink2)}
+.al-pil.normal{background:color-mix(in oklab,var(--ok) 14%,var(--card));color:var(--ok)}
+.al-pil.waspada{background:color-mix(in oklab,var(--warn) 18%,var(--card));color:var(--ink)}
+.al-pil.siaga{background:color-mix(in oklab,var(--brand-accent) 18%,var(--card));color:var(--ink)}
+.al-pil.awas{background:var(--bad);color:var(--on-pekat)}
+.al-pil.info{background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.al-rinci{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:auto 0 0;padding-top:10px;border-top:1px solid var(--line);font:500 .75rem/1.4 var(--font)}
+.al-rinci dt{color:var(--ink2)}
+.al-rinci dd{margin:0;text-align:right;color:var(--ink)}
+.al-kosong{margin:0;padding:12px 0;color:var(--ink2);font:500 .875rem var(--font)}
+
+.al-cctv-kosong{grid-column:1 / -1;display:grid;gap:4px;padding:28px;border:1.5px dashed var(--line);border-radius:14px;text-align:center;font:500 .875rem/1.5 var(--font);color:var(--ink2)}
+.al-cctv-kosong b{color:var(--ink);font:800 1rem var(--display)}
+
+.al-grafik{margin:0 18px 18px;padding:16px;border:1px solid var(--line);border-radius:14px}
+.al-grafik h3{margin:0 0 10px;font:800 .9375rem var(--display);color:var(--ink)}
+.al-g-bungkus{position:relative}
+.al-g-bungkus svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.al-g-garis{stroke:var(--line);stroke-width:1}
+.al-g-sumbu{fill:var(--ink2);font:500 11px var(--font);text-anchor:end}
+.al-g-seri{fill:none;stroke:var(--brand2);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.al-g-tanda{fill:var(--card);stroke:var(--brand2);stroke-width:2}
+.al-g-tip{position:absolute;top:0;transform:translateX(-50%);padding:4px 8px;border-radius:8px;background:var(--ink);color:var(--card);font:600 .75rem var(--font);white-space:nowrap;pointer-events:none}
+
+@media (max-width:640px){.al-kepala{padding:14px}.al-pilih{width:100%}.al-pilih button{flex:1;justify-content:center;padding:0 6px;white-space:nowrap}.al-ringkas{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px 14px 0}.al-ring b{font-size:1.125rem}.al-kisi{grid-template-columns:1fr;padding:14px}.al-putus{margin:12px 14px 0}.al-cari{padding:12px 14px 0}}
