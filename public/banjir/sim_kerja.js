@@ -14,7 +14,7 @@ self.onmessage = async e => {
     else if (jenis === "jalan") { let akhir = 0;
       const r = SimGenangan.jalankan(e.data.cfg, p => { const s = Date.now(); if (s - akhir > 150) { akhir = s; self.postMessage({id, kabar: p}); } });
       self.postMessage({id, ok: true, hasil: r}, [r.kedalaman.buffer, r.hmaks.buffer]); }
-    else if (jenis === "hand") { const h = SimHand.hitung(e.data.prep, e.data.K, SimGenangan, undefined, e.data.air); self.postMessage({id, ok: true, hand: h}, [h.hand.buffer, h.alur.buffer]); }
+    else if (jenis === "hand") { const h = SimHand.hitung(e.data.prep, e.data.K, SimGenangan, undefined, e.data.air); self.postMessage({id, ok: true, hand: h}, [h.hand.buffer, h.alur.buffer, h.lepas.buffer]); }
     else if (jenis === "akses") self.postMessage({id, ok: true, akses: SimHand.akses(e.data.ctx, SimTanggap)});
     else throw new Error("jenis pesan tidak dikenal: " + jenis);
   } catch (err) { self.postMessage({id, ok: false, galat: String(err && err.message || err)}); }

@@ -19,7 +19,7 @@ const T = {k: null, titik: null, sisi: 6000, n: 100, sk: "dasar", op: {ekstrem: 
   tanggul: [], pompa: [], pintu: false, tinggi: 2, laju: .5, alat: null, draf: [],
   dem: null, demKunci: "", prep: null, hasil: null, lihat: "dengan", t: 0, main: false, basi: false,
   lapis: {air: true, longsor: true, citra: true}, kanvas: {}, peta: null, sibuk: false, kerja: undefined, tanpaWorker: false, ex: 1.5, pend: undefined, raf: 0,
-  alatVer: 0, tampil: "72", hm: 2, hd: null, hdV: null, hdAkses: null, cache: {}, lahan: undefined, lahanKunci: "", dcn: 0, tg: null, tgCtx: null, pm: null, pita: null, vek: null, unitDaftar: undefined, awalJalan: false, mob: 2};
+  alatVer: 0, tampil: "72", hm: 2, hdQ: null, hdQp: null, hd: null, hdV: null, hdAkses: null, cache: {}, lahan: undefined, lahanKunci: "", dcn: 0, tg: null, tgCtx: null, pm: null, pita: null, vek: null, unitDaftar: undefined, awalJalan: false, mob: 2};
 const SLh = () => window.SimLahan, STg = () => window.SimTanggap, SHd = () => window.SimHand;
 const ik = d => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const IK = {main: '<path d="M7 5l12 7-12 7z"/>', jeda: '<path d="M8 5v14M16 5v14"/>'};
@@ -426,6 +426,7 @@ function klikPanel(e) {
   if (d.glihat) { if (T.lihat === d.glihat) return; T.lihat = d.glihat; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); return nanti(() => { segarHasil(); jadwal(); }); }
   if (d.glapis) { const k = d.glapis; T.lapis[k] = !T.lapis[k]; b.setAttribute("aria-pressed", T.lapis[k]); return nanti(() => { terapkanLapis(); if (k === "longsor" && T.lapis.longsor) { T.lsKunci = null; T.lukisKunci = null; jadwal(); } }); }
   if (b.id === "gnJalan") { b.textContent = "Menghitung…"; return nanti(jalan); }
+  if (d.gq) return nanti(() => pakaiDebit(d.gq));
   if (b.id === "gnHand") { if (T.tampil === "hand") return nanti(keluarHand); if (T.sibuk || !T.prep) return toast("Tunggu simulasi selesai dulu"); b.textContent = "Menghitung…"; return nanti(hand); }
   if (b.id === "gnPita") { b.textContent = "Menghitung…"; return nanti(pita); }
   if (b.id === "gnTanggap") { b.textContent = "Menghitung…"; return nanti(tanggap); }
@@ -702,7 +703,7 @@ async function hand() {
     if (T.hd?.kunci !== T.demKunci) { status("Menghitung tinggi tanah di atas alur sungai (HAND)…"); const {z: _z, ...K} = D;
       /* air permanen WorldCover (kelas 80: waduk, danau) = sudah air, bukan genangan; laut juga. "basah" dipakai untuk semua hitungan paparan */
       const air = T.lahan?.dom ? Uint8Array.from(T.lahan.dom, c => c === 80 ? 1 : 0) : null, basah = Uint8Array.from(T.prep.laut, (l, k) => l || air?.[k] ? 1 : 0);
-      const r = await kerja({jenis: "hand", prep: {z: T.prep.z, laut: T.prep.laut, acc: T.prep.acc}, K, air}); T.hd = {...r.hand, kunci: T.demKunci, basah, nAir: air ? air.reduce((a, b) => a + b, 0) : 0}; T.hdV = null; }
+      const r = await kerja({jenis: "hand", prep: {z: T.prep.z, laut: T.prep.laut, acc: T.prep.acc}, K, air}); T.hd = {...r.hand, kunci: T.demKunci, basah, nAir: air ? air.reduce((a, b) => a + b, 0) : 0}; T.hdV = null; T.hdQp = null; }
     if (T.hdV?.kunci !== T.demKunci) { status("Memuat bangunan, jalan, dan titik aman (OpenStreetMap)…"); const vek = await muatVektor();
       const keSel = (lo, la) => SG.keSel(D, lo, la), sel = (lo, la) => { const [i, j] = keSel(lo, la).map(Math.round); return i >= 0 && j >= 0 && i < D.nx && j < D.ny ? j * D.nx + i : -1; };
       const hb = [], fs = [];
@@ -713,6 +714,31 @@ async function hand() {
     T.tampil = "hand"; T.hdAkses = null; status(""); pasangBangunan(); terapkanLapis(); T.lukisKunci = null; T.dokKunci = null; dok(); segarLanjut(); gambar(true); hitungAkses();
   } catch (e) { console.warn("SimTampak HAND:", e); status("Gagal: " + e.message); T.tampil = "72"; }
   T.sibuk = false; const b = $("#gnHand"); if (b) b.textContent = T.tampil === "hand" ? "Kembali ke genangan 72 jam" : "Tampilkan skenario muka sungai";
+}
+/* ---------- muka air dari debit GloFAS: kurva debit sintetis sungai utama (SimHand.kurva), hasilnya mengisi penggeser ---------- */
+function kurvaSungai() {
+  const s = T.hasil?.X.sungai; if (!T.hd?.lepas || s?.k == null || !s.sg?.q2) return null; const kunci = T.demKunci + "|" + s.k;
+  if (T.hdQ?.kunci !== kunci) T.hdQ = {kunci, sg: s.sg, K: SHd().kurva(T.hd, T.hd.basah, SHd().utama(T.prep.acc, T.hd.alur, T.hd.basah, s.k), T.prep.z, T.dem.dx)};
+  return T.hdQ.K ? T.hdQ : null;
+}
+const pilihDebit = g => [["puncak", "Prakiraan 7 hari", g.puncak], ["q5", "Q5, 5 tahunan", g.q5], ["q20", "Q20, 20 tahunan", g.q20]].filter(x => Number.isFinite(x[2]));
+function debitHtml() {
+  const Q = kurvaSungai(), s = T.hasil?.X.sungai;
+  if (!Q) return `<p class="fnd" style="margin-top:6px">Muka air dari debit sungai tidak tersedia: ${s?.catat ? "titik sungai GloFAS terdekat belum punya debit 2 tahunan (Q2)" : "tidak ada titik sungai besar GloFAS dalam 3 km dari kotak"}.</p>`;
+  const g = Q.sg, a = pilihDebit(g).find(x => x[0] === T.hdQp), lebih = a ? a[2] - g.q2 : 0, h = a ? SHd().mukaDebit(Q.K, lebih) : null;
+  return `<div class="lbl" style="margin-top:12px">Muka air dari debit sungai <span class="pill l3" style="height:17px;font-size:9.5px">hipotesis</span></div>
+    <p class="fnd">Pilih debit sungai <span translate="no">${esc(g.kec)}</span> dari GloFAS. Debit di atas debit 2 tahunan (Q2, alur penuh) diubah jadi muka air lewat kurva debit sintetis: penampang dari HAND, kemiringan ${angka1(Q.K.S * 1000)} m per km, kekasaran Manning ${fmt(SHd().ASUMSI.MANNING)} <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span>. Hasilnya mengisi penggeser.</p>
+    <div class="simchips" role="group" aria-label="Debit sungai" style="margin-top:6px">${pilihDebit(g).map(([id, nm, q]) => `<button type="button" data-gq="${id}" aria-pressed="${T.hdQp === id}">${nm}<br><span class="num">${fmt(Math.round(q))} m³/detik</span></button>`).join("")}</div>
+    ${a ? `<table class="tb2" style="margin-top:6px"><tbody>
+      <tr><td>Debit 2 tahunan (Q2)</td><td class="n">${fmt(Math.round(g.q2))} m³/detik</td></tr>
+      <tr><td>Debit di atas Q2</td><td class="n">${lebih > 0 ? fmt(Math.round(lebih)) + " m³/detik" : "tidak ada, alur belum meluap"}</td></tr>
+      <tr><td>Muka air sungai utama</td><td class="n">${h.lewat ? `di atas ${fmt(SHd().ASUMSI.MAKS)} m, di luar kurva` : angka1(h.m) + " m"}</td></tr></tbody></table>` : ""}
+    <p class="fnd" style="margin-top:4px">Kurva hanya dihitung dari tanah di dalam kotak dan belum diuji lawan muka air terukur. Anak sungai ikut naik setinggi sungai utama.</p>`;
+}
+function pakaiDebit(id) {
+  const Q = kurvaSungai(); if (!Q) return; const a = pilihDebit(Q.sg).find(x => x[0] === id); if (!a) return;
+  T.hdQp = id; T.hm = Math.round(Math.min(SHd().ASUMSI.MAKS, SHd().mukaDebit(Q.K, a[2] - Q.sg.q2).m) * 10) / 10;
+  const g = $("#gnHm"); if (g) g.value = T.hm; const el = $("#gnDebit"); if (el) el.innerHTML = debitHtml(); jadwal(); hitungAkses();
 }
 function keluarHand() { T.tampil = "72"; terapkanLapis(); T.lukisKunci = null; T.lsKunci = null; T.dokKunci = null; dok(); segarLanjut(); gambar(true); }
 /* tinggi bangunan dikali pembesaran medan supaya tidak tampak rata di atas medan yang dibesarkan */
@@ -739,7 +765,7 @@ function dokHand(el) {
   el.innerHTML = `<div class="gn-waktu gn-muka"><span>Muka air sungai</span><input type="range" id="gnHm" min="0" max="${SHd().ASUMSI.MAKS}" step="0.1" value="${T.hm}" aria-label="Muka air di atas dasar alur sungai, meter"><b id="gnHmV" class="num">${angka1(T.hm)} m</b></div>
     <div class="leg row"><span id="gnLuasT" class="num"></span>${[[.1, "10 cm"], [.5, "50 cm"], [1, "1 m"], [2, "2 m"], [4, "≥ 4 m"]].map(([d, n]) => `<span><i class="sw" style="background:rgba(${warnaAir(d).slice(0, 3).join(",")},.9)"></i>${n}</span>`).join("")}
       <span><i class="sw" style="background:rgb(${ALUR.slice(0, 3).join(",")})"></i>alur sungai dan air permanen</span><span><i class="sw" style="background:#e8742c"></i>bangunan tergenang</span></div>`;
-  const g = $("#gnHm"); g.oninput = () => { T.hm = +g.value; jadwal(); }; g.onchange = hitungAkses;
+  const g = $("#gnHm"); g.oninput = () => { T.hm = +g.value; if (T.hdQp) { T.hdQp = null; const el = $("#gnDebit"); if (el) el.innerHTML = debitHtml(); } jadwal(); }; g.onchange = hitungAkses;
   T.lukisKunci = null; jadwal();
 }
 /* akses darat ke titik aman: Dijkstra di worker, hanya saat penggeser dilepas; jawaban lama yang datang terlambat dibuang */
@@ -771,7 +797,7 @@ function handAngkaHtml(r) {
 }
 function handHtml() {
   const H = T.hd, V = T.hdV, D = T.dem; let dar = 0; for (const l of H.basah) if (!l) dar++;
-  return `<div id="gnHandAngka">${handAngkaHtml(ringkasHand())}</div>
+  return `<div id="gnHandAngka">${handAngkaHtml(ringkasHand())}</div><div id="gnDebit">${debitHtml()}</div>
     <p class="fnd" style="margin-top:6px">Geser muka air di bawah peta. Alur sungai = sel dengan daerah tangkapan ≥ ${angka1(SHd().ASUMSI.ALUR_KM2)} km² <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span>. Tanpa tanggul, drainase, dan aliran; muka air sama di semua alur, jadi anak sungai kecil ikut naik setinggi sungai besar. Jalan yang melintas alur dianggap jembatan yang tetap bisa dilewati.${H.nAir ? ` Air permanen (waduk, danau, ${fmt(Math.round(ha(H.nAir * D.dx ** 2)))} ha, ESA WorldCover) tidak dihitung sebagai genangan.` : ""}${H.nTak ? ` ${fmt(Math.round(H.nTak / dar * 100))} % sel tidak terhitung karena airnya keluar kotak sebelum bertemu alur.` : ""}</p>
     <p class="fnd" style="margin-top:4px">Sumber: DEM SRTM ~30 m (Mapzen Terrarium), sel ${bulat(D.dx)} m; bangunan, jalan, ${fmt(V?.nPoi || 0)} sekolah dan fasilitas kesehatan dari OpenStreetMap (ODbL); penduduk WorldPop disebar menurut tutupan permukiman.</p>`;
 }

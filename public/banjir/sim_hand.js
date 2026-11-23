@@ -14,11 +14,15 @@ const ASUMSI = {
                        ambang yang dipilih per DAS) */
   TERGENANG: 0.1,   /* m; sama dengan SimGenangan.ASUMSI.TERGENANG */
   MAKS: 10,         /* m; batas atas penggeser muka air */
+  MANNING: 0.06,    /* n Manning gabungan alur + dataran banjir untuk kurva debit sintetis (asumsi; nilai bawaan HAND-SRC NOAA OWP, Zheng dkk. 2018) */
+  LERENG_MIN: 1e-4, /* m/m; batas bawah kemiringan sungai utama (DEM datar di dataran rendah membuat S = 0) */
+  UTAMA: 0.5,       /* sel alur dengan tangkapan >= 0,5 x tangkapan sel sungai GloFAS = sungai utama (asumsi) */
 };
 
 /* prep {z, laut, acc} dari siapkanArea, dem {nx, ny, dx}, SG = SimGenangan, air = Uint8Array air permanen (waduk, danau, sungai lebar dari
    WorldCover; boleh null): ikut jadi alur, jadi tanah di tepinya diukur dari permukaan air itu, bukan dari dasar DEM.
-   Kembali {hand: Float32Array (NaN = mengalir keluar kotak sebelum bertemu alur), alur: Uint8Array, nTak, amb (sel)} */
+   Kembali {hand: Float32Array (NaN = mengalir keluar kotak sebelum bertemu alur), alur: Uint8Array, lepas: Int32Array (sel alur tujuan, -1 = keluar kotak),
+   nTak, amb (sel)} */
 function hitung(prep, dem, SG, alurKm2 = ASUMSI.ALUR_KM2, air = null) {
   const {nx, ny, dx} = dem, N = nx * ny, {z, laut, acc} = prep;
   (z && z.length === N && laut && laut.length === N && acc && acc.length === N) || salah("prep tidak cocok dengan ukuran kisi");
@@ -34,7 +38,35 @@ function hitung(prep, dem, SG, alurKm2 = ASUMSI.ALUR_KM2, air = null) {
     lepas[c] = alur[c] ? c : arah[c] < 0 ? -1 : lepas[arah[c]];
     if (lepas[c] < 0) { hand[c] = NaN; if (!laut[c]) nTak++; } else hand[c] = Math.max(0, z[c] - z[lepas[c]]);
   }
-  return {hand, alur, nTak, amb};
+  return {hand, alur, lepas, nTak, amb};
+}
+
+/* sungai utama: sel alur dengan tangkapan >= UTAMA x tangkapan sel k (sel sungai GloFAS). Kembali Uint8Array */
+function utama(acc, alur, laut, k, f = ASUMSI.UTAMA) {
+  const o = new Uint8Array(acc.length), a = acc[k] * f; for (let c = 0; c < acc.length; c++) if (alur[c] && !laut[c] && acc[c] >= a) o[c] = 1; return o;
+}
+/* kurva debit sintetis (synthetic rating curve, Zheng dkk. 2018) untuk sungai utama: sel yang HAND-nya diukur dari sel sungai utama (lepas)
+   menyusun penampang rata-rata. Pada muka air h: volume V = jumlah (h - HAND) dx^2, dasar basah B = jumlah dx^2 (lereng sel diabaikan),
+   panjang L = jumlah sel sungai utama x dx, A = V / L, P = B / L, R = A / P, Q = A R^(2/3) S^(1/2) / n (Manning).
+   S = (z tertinggi - z terendah sel sungai utama) / L, minimal LERENG_MIN. DEM tidak memuat dasar sungai di bawah muka air saat perekaman,
+   jadi Q di sini dibaca sebagai debit DI ATAS kapasitas alur (pemanggil mengurangi Q2, asumsi yang sama dengan mode 72 jam).
+   H = hasil hitung, z = prep.z. Kembali {h: [...], q: [...], L, S, nSel} atau null bila tak ada sungai utama */
+function kurva(H, laut, utm, z, dx, n = ASUMSI.MANNING, langkah = .1) {
+  const N = H.hand.length; let nu = 0, zlo = Infinity, zhi = -Infinity;
+  for (let c = 0; c < N; c++) if (utm[c]) { nu++; if (z[c] < zlo) zlo = z[c]; if (z[c] > zhi) zhi = z[c]; }
+  if (!nu) return null;
+  const L = nu * dx, S = Math.max(ASUMSI.LERENG_MIN, (zhi - zlo) / L), sel = [];
+  for (let c = 0; c < N; c++) { const t = H.lepas[c]; if (t >= 0 && utm[t] && !laut[c] && Number.isFinite(H.hand[c])) sel.push(H.hand[c]); }
+  const h = [], q = [];
+  for (let m = 0; m <= ASUMSI.MAKS + 1e-9; m += langkah) { let V = 0, B = 0; for (const x of sel) if (x < m) { V += (m - x) * dx * dx; B += dx * dx; }
+    const A = V / L, P = B / L, R = P > 0 ? A / P : 0; h.push(Math.round(m * 1000) / 1000); q.push(P > 0 ? A * R ** (2 / 3) * Math.sqrt(S) / n : 0); }
+  return {h, q, L, S, nSel: sel.length};
+}
+/* muka air untuk debit q (m3/dtk di atas kapasitas alur): interpolasi linear di kurva; q > kurva = MAKS dengan lewat = true */
+function mukaDebit(K, q) {
+  if (!(q > 0)) return {m: 0, lewat: false};
+  for (let i = 1; i < K.q.length; i++) if (K.q[i] >= q) { const f = (q - K.q[i - 1]) / (K.q[i] - K.q[i - 1] || 1); return {m: K.h[i - 1] + f * (K.h[i] - K.h[i - 1]), lewat: false}; }
+  return {m: K.h[K.h.length - 1], lewat: true};
 }
 
 /* kedalaman (m) per sel pada muka air m; laut dan sel tanpa HAND = 0 */
@@ -73,6 +105,6 @@ function akses(ctx, ST) {
   return {nAman: sumber.length, nAmanSemua: aman.length, terkurung: [lo, hi], median: q(.5), p90: q(.9)};
 }
 
-const API = {ASUMSI, hitung, kedalaman, ringkas, akses};
+const API = {ASUMSI, hitung, utama, kurva, mukaDebit, kedalaman, ringkas, akses};
 if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.SimHand = API;
 })(typeof self !== "undefined" ? self : globalThis);

@@ -66,3 +66,26 @@ test("akses: genangan yang memotong kotak mengurung warga di seberang titik aman
   const tenggelam = SH.akses({...base, dalam: new Float32Array(N).fill(1)}, ST);
   assert.equal(tenggelam.nAman, 0, "titik aman yang tergenang tidak dihitung");
 });
+
+test("kurva debit sintetis: saluran persegi cocok dengan rumus Manning, kurva naik, mukaDebit membalik kurva", () => {
+  /* 5 sel lebar x 30 baris, semua HAND 0 dan mengalir ke sel tengah barisnya; sungai utama = kolom tengah, turun 0,1 m per baris */
+  const w = 5, n = 30, dx = 50, N = w * n, H = {hand: new Float32Array(N), lepas: new Int32Array(N)}, utm = new Uint8Array(N), z = new Float64Array(N), laut = new Uint8Array(N);
+  for (let k = 0; k < N; k++) { const j = k / w | 0; H.lepas[k] = j * w + 2; z[k] = (n - j) * .1; if (k % w === 2) utm[k] = 1; }
+  const K = SH.kurva(H, laut, utm, z, dx), S = ((n - 1) * .1) / (n * dx), i = K.h.indexOf(2);
+  const harap = 2 * w * dx * 2 ** (2 / 3) * Math.sqrt(S) / SH.ASUMSI.MANNING;
+  assert.ok(Math.abs(K.q[i] - harap) / harap < 1e-6, `Q(2 m) ${K.q[i]}, rumus ${harap}`);
+  for (let t = 1; t < K.q.length; t++) assert.ok(K.q[t] >= K.q[t - 1], "kurva tidak boleh turun");
+  const m = SH.mukaDebit(K, harap); assert.ok(Math.abs(m.m - 2) < .01 && !m.lewat, `mukaDebit ${m.m}`);
+  assert.equal(SH.mukaDebit(K, 0).m, 0); assert.equal(SH.mukaDebit(K, -5).m, 0, "debit di bawah kapasitas alur = tidak meluap");
+  assert.ok(SH.mukaDebit(K, K.q.at(-1) * 2).lewat, "debit melebihi kurva ditandai lewat");
+});
+
+test("lembah V: sungai utama = kolom tengah, kurva dari HAND nyata naik tegas", () => {
+  const {prep, H} = lembah(), k = 20 * nx + c, utm = SH.utama(prep.acc, H.alur, prep.laut, k);
+  for (let j = 14; j < ny - 3; j++) assert.equal(utm[j * nx + c], 1, `baris ${j} kolom tengah harus sungai utama`); /* hulu (tangkapan < separuh) bukan sungai utama */
+  assert.equal(utm[3 * nx + c], 0, "hulu jauh bukan sungai utama");
+  for (let q = 0; q < N; q++) if (utm[q]) assert.equal(q % nx, c, "hanya kolom tengah");
+  const K = SH.kurva(H, prep.laut, utm, prep.z, dx);
+  assert.ok(K.nSel > N / 2 && K.S >= SH.ASUMSI.LERENG_MIN);
+  assert.ok(K.q[10] > 0 && K.q[30] > K.q[10] && K.q[60] > K.q[30], "debit naik bersama muka air");
+});
