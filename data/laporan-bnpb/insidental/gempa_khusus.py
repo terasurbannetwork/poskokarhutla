@@ -399,8 +399,10 @@ def bangun(c):
 
     # ================================================================ kotak arti MMI + kotak tautan BMKG
     k.bulat(MX, yk, MW, h_box, KAB_TINT, radius=4)
-    k.teks(MX + 8, yk + 3, 325, 11, [R('MMI (Modified Mercalli Intensity)', 7.5, NAVY, True),
-                                     R(': skala I sampai XII kuat guncangan di suatu tempat', 7.5, TEKS)], bungkus=False)
+    # 6,8 pt selebar deret kelas: kalimat pilihan pemilik 23 Nov 2026 tidak muat satu baris pada 7,5 pt
+    k.teks(MX + 8, yk + 3, MW - 112, 11, [R('MMI (Modified Mercalli Intensity)', 6.8, NAVY, True),
+                                          R(': ukuran kuatnya guncangan yang dirasakan warga, dari tingkat I sampai XII', 6.8, TEKS)],
+           bungkus=False)
     x0k, x1k = MX + 8, MX + MW - 100 - 8   # deret kelas di kiri kotak tautan
     wk = (x1k - x0k) / len(kelas_box)
     dk = 13 if satu else 18

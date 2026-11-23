@@ -235,7 +235,7 @@
   },
   {
    "kunci": "turunan:spek#1#impor9.34",
-   "tampil": "09.41",
+   "tampil": "09.56",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -713,7 +713,7 @@
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e01beb88bdb9217a75fcde1568ad206fcd48c6e18589e5a06fa067b73e706255",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
-  "isi.pptx": "535239efa4c184fe4894a8573486cdc53a94ce83f24ba056f210e4fdfce7c7db",
-  "spek.json": "a0d34bda1440550511aabe78bcd8accfde1305bdceced90ff5a1928c639e318a"
+  "isi.pptx": "883e39f82a0a0b532792afcfa0d6880d9106aecbfca4534959f8f89df6cce235",
+  "spek.json": "42fe157ffefb2f5b46930de8314e954bd9b705144d5e7bb814d9a23ff9d75857"
  }
 }

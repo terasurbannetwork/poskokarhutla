@@ -1,6 +1,6 @@
 # Laporan QA deck Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126
 
-Berkas `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pptx` dan `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pdf`, spek `spek`, diperiksa 23-11-2026 09.41 WIB.
+Berkas `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pptx` dan `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pdf`, spek `spek`, diperiksa 23-11-2026 09.56 WIB.
 Vonis: **LOLOS**. Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Laporan Khusus Gempa Bumi M5,4 Kepulauan Talaud, 22-11-2026.
