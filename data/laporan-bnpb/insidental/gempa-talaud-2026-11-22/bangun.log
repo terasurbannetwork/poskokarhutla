@@ -1,38 +1,10 @@
 gempa: 2026-11-22 14:54 WIB M5.4 Pusat gempa berada di laut 98 km BaratDaya Melonguane
 laphar: 0 berkas, 0 kab dengan laporan gempa
-laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-tsft8fm6\qa\deck-Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.md (LOLOS)
+laporan QA deck: C:\Users\USER\AppData\Local\Temp\lewat-deck-z_glr5gu\qa\deck-Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.md (LOLOS)
 MMI maks: {'Kepulauan Talaud': 3.66, 'Kepulauan Sangihe': 3.28, 'Kepulauan Siau Tagulandang Biaro': 3.0, 'Halmahera Utara': 2.68, 'Halmahera Barat': 2.47, 'Pulau Morotai': 2.41, 'Minahasa Utara': 2.1, 'Kota Bitung': 2.09, 'Kota Ternate': 2.01, 'Kota Manado': 1.91}
 label otomatis: {'Kepulauan Talaud': (280, 191), 'Kepulauan Sangihe': (206, 235), 'Kepulauan Siau Tagulandang Biaro': (90, 322), 'Halmahera Barat': (181, 343), 'Pulau Morotai': (308, 333)}
-Laporan dibuat 23 Nov 2026, pukul 07.35 WIB
+Laporan dibuat 23 Nov 2026, pukul 09.41 WIB
 strip: nilai 8 pt, jeda 8.5
-tabel kondisi: 2 baris, berakhir 296 ; jiwa MMI VI+ 0 ; kotak MMI 434
-susulan sejak gempa utama: 24 jam 0.064 3 hari 0.0855 7 hari 0.1015 ; umur laporan 0.69 hari
-riwayat: baris tampil 3 dari 3
-Traceback (most recent call last):
-  File "C:\Python314\Lib\shutil.py", line 918, in move
-    os.rename(src, real_dst)
-    ~~~~~~~~~^^^^^^^^^^^^^^^
-OSError: [WinError 17] The system cannot move the file to a different disk drive: 'C:\\Users\\USER\\AppData\\Local\\Temp\\lewat-deck-tsft8fm6\\Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pdf' -> 'D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\insidental\\gempa-talaud-2026-11-22\\Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pdf'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\insidental\gempa-talaud-2026-11-22\buat.py", line 37, in <module>
-    gempa_khusus.bangun(c)
-    ~~~~~~~~~~~~~~~~~~~^^^
-  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\insidental\gempa_khusus.py", line 413, in bangun
-    keluar = lewat_deck.bingkai(
-        isi, 'kajian', c['judul_dokumen'], c['subjudul'], c['tanggal'], sampul=False,
-        susun=[{'halaman': 1, 'sumber': c['sumber']}] + ([{'halaman': 2, 'sumber': sumber2}] if sumber2 else []),
-        spek_tambah={'subjek_dokumen': c['judul_dokumen'],
-                     'tanpa_alur': 'laporan khusus satu halaman' if satu else 'laporan khusus dua halaman'})
-  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\generator\lewat_deck.py", line 111, in bingkai
-    if f.startswith(akar_k): shutil.move(os.path.join(kerja, f), os.path.join(os.path.dirname(keluar), f))
-                             ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Python314\Lib\shutil.py", line 938, in move
-    copy_function(src, real_dst)
-    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
-  File "C:\Python314\Lib\shutil.py", line 514, in copy2
-    _winapi.CopyFile2(src_, dst_, flags)
-    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
-PermissionError: [WinError 32] The process cannot access the file because it is being used by another process
+tabel kondisi: 2 baris, berakhir 272 ; jiwa MMI VI+ 0 ; kotak MMI 434
+blok susulan halaman 1: 282 sampai 426
+D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\insidental\gempa-talaud-2026-11-22\Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pptx

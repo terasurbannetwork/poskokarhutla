@@ -1,6 +1,6 @@
 # Laporan QA deck Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126
 
-Berkas `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pptx` dan `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pdf`, spek `spek`, diperiksa 23-11-2026 07.25 WIB.
+Berkas `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pptx` dan `Laporan Khusus Gempa M5,4 Kepulauan Talaud 221126.pdf`, spek `spek`, diperiksa 23-11-2026 09.41 WIB.
 Vonis: **LOLOS**. Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Laporan Khusus Gempa Bumi M5,4 Kepulauan Talaud, 22-11-2026.
@@ -12,8 +12,8 @@ Pesan kunci: Laporan Khusus Gempa Bumi M5,4 Kepulauan Talaud, 22-11-2026.
 | Font | qa/periksa.py D-5 Huruf terkecil | LOLOS | – |
 | Font | qa/periksa.py D-23 Glif di luar Roboto nol | LOLOS | – |
 | Ikon | Gambar raster hanya logo, foto Commons, peta dasar, dan ikon (S37) | LOLOS | – |
-| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 22 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
-| Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 2 slide, huruf terkecil 6 pt, 56 angka, judul PDF [] baris |
+| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 17 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
+| Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 1 slide, huruf terkecil 6 pt, 34 angka, judul PDF [] baris |
 | Tata letak | qa/periksa.py T-2 Jumlah halaman PDF = dokumen asal | LOLOS | – |
 | Tata letak | qa/periksa.py D-17 Judul paling banyak 2 baris, tanpa teks terpotong | LOLOS | – |
 | Tata letak | qa/periksa.py T-6 Kerangka slide (Buku Pegangan: garis y95 dan y507,6, nomor halaman, pil CUT OFF di slide data) | LOLOS | – |
@@ -42,4 +42,3 @@ Judul dibaca berurutan sebagai ringkasan sebelum dikirim.
 | Slide | Jenis | Judul | Pesan |
 | --- | --- | --- | --- |
 | 1 | impor | – | – |
-| 2 | impor | – | – |
