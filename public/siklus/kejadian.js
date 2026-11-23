@@ -328,5 +328,8 @@ function detailHidup(id, d, P, ulang) {
       }, "bolak", "Pindahkan baris sumber ke kejadian lain") : null);
   })) : kead("kosong", {teks: "Belum ada sumber terpasang"})]});
 
-  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih), h("div", {}, terpasang))];
+  /* penduduk dan sarana dalam 1, 5, 10 km dari titik pusat kejadian (data/kajian-bnpb/inarisk KEPUTUSAN D15); tanpa titik pusat kartu tidak tampil */
+  const sekitar = r.pusat_lat != null && r.pusat_lon != null && globalThis.DampakRadius ? kartu({ey: [ik("jiwa", 12), "Sekitar titik pusat"], id: "k-sekitar", judul: ["Penduduk dan sarana dalam ", hl("1, 5, dan 10 km")],
+    isi: [DampakRadius.tabel(r.pusat_lat, r.pusat_lon, [1, 5, 10], {judul: false, kaki: false, kelasTabel: "", kelasWadah: "tw"})]}) : null;
+  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, sekitar, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih), h("div", {}, terpasang))];
 }

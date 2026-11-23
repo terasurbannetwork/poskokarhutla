@@ -15,7 +15,9 @@
 | `src/inarisk.js` + rute di `src/bnpb.js` | proksi `/api/inarisk/*`, rute halaman | `warga-api` |
 | `tests/warga/inarisk_proksi.test.mjs` | uji proksi dengan fetch tiruan | `warga-api` |
 | `public/bnpb/inarisk_simulasi.js` | tab IRBI: simulasi kapasitas dan risiko besok | `ruang-bnpb` |
-| `public/bnpb/dampak_radius.js` | komponen tabel dampak radius untuk Dalops | `ruang-bnpb` |
+| `public/bnpb/dampak_radius.js` | komponen tabel dampak radius untuk Dalops, `/lapor/meja`, `/siklus` kejadian | `ruang-bnpb` |
+| `.github/workflows/inarisk.yml` | tarikan mingguan, commit bila berubah (IR-09, D16) | `mekanik-mesin` |
+| `public/data/inarisk/perubahan.json` | `{dibuat, sebelumnya, butir[]}`, ditulis `bangun` hanya bila cermin berubah | `ruang-bnpb` |
 
 ## Bentuk JSON cermin
 

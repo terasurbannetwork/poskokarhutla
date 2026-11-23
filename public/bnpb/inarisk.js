@@ -77,6 +77,8 @@ Ir.tab.irbi = {
       Ir.isiOpsi($b, d.kolom.map(k => [k, Ir.NAMA_BAHAYA[k] || k]));
       Ir.rantaiProvKab($p, $k, d.kab, d.prov);
       $("#irKaki").textContent = `Sumber: InaRISK BNPB, ditarik ${Ir.tanggal(d.dibuat)}.`;
+      // IR-09: tarikan mingguan menulis perubahan.json hanya bila ada yang berubah; belum ada berkasnya = belum pernah berubah
+      Ir.muat("perubahan.json").then(p => { if (p?.butir?.length) $("#irKaki").textContent += ` Berubah dari tarikan ${p.sebelumnya ? Ir.tanggal(p.sebelumnya) : "sebelumnya"}: ${p.butir.join(" ")}`; }).catch(() => {});
       for (const el of [$t, $b, $p, $k]) el.addEventListener("change", segarkan);
       $("#irReset").addEventListener("click", () => { $t.selectedIndex = 0; $b.selectedIndex = 0; $p.value = ""; $p.dispatchEvent(new Event("change")); segarkan(); });
       for (const id of ["#irBaris", "#irBskBaris", "#irSimBaris"]) $(id).addEventListener("click", e => { const b = e.target.closest("[data-kab]"); if (b) Ir.bukaDetail(b.dataset.kab, filter()); });

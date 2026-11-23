@@ -785,6 +785,9 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
     ["dampak", "Dampak", "m-korban", ambil("Korban", "Warga terdampak", "Pengungsian", "Kerusakan rumah", "Fasilitas dan jalan", "Data khusus")],
     ["kebutuhan", "Kebutuhan dan layanan", "m-tenda", ambil("Kelompok rentan", "Layanan dasar", "Kebutuhan")],
     ["lain", "Gugus dan percakapan", "m-pesan", [...(j.kejadian ? [kartuKejadianRinci(j.kejadian, kartu, kirim)] : []), ...(j.gugus ? [kartuGugusRinci(j.gugus, kartu)] : []), kTr]]];
+  /* penduduk dan sarana dalam 1, 5, 10 km dari titik laporan (data/kajian-bnpb/inarisk KEPUTUSAN D15), lewat proksi InaRISK; diisi saat terlihat */
+  if (j.lat != null && globalThis.DampakRadius) { const wr = wadah("mj-isi-kartu mj-dr"); wr.append(DampakRadius.tabel(j.lat, j.lon, [1, 5, 10], {judul: false, kaki: false, kelasTabel: "mj-tabel", kelasWadah: "mj-tabel-gulung"}));
+    BAGIAN[1][3].push(kartu("Penduduk dan sarana di sekitar", "m-lokasi", wr)); }
   const terpakai = new Set(BAGIAN.flatMap(x => x[3]));   // kelompok baru yang belum dipetakan tetap tampil di Dampak
   for (const k of kartuKelompok.values()) if (!terpakai.has(k)) BAGIAN[1][3].push(k);
   const deret = el("nav", "mj-bagian-nav"); deret.setAttribute("aria-label", "Bagian laporan");

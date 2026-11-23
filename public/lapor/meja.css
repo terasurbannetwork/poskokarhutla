@@ -894,3 +894,7 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-pic{display:grid;gap:var(--jr-3,12px)}
 .mj-pic-baris{display:flex;align-items:center;justify-content:space-between;gap:var(--jr-3,12px)}
 .mj-pic-baris div{display:grid;gap:2px}
+.mj-dr .dr-tabel tbody tr{cursor:auto}
+.mj-dr .dr-tabel tbody tr:hover{background:none}
+.mj-dr .dr-tabel tbody th{padding:10px 12px;border-top:1px solid var(--line);background:none;color:var(--ink);font-weight:600}
+.mj-dr .dr-tabel .n{text-align:center;font-variant-numeric:tabular-nums}

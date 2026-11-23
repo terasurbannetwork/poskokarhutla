@@ -1,7 +1,8 @@
 """Cermin InaRISK BNPB -> public/data/inarisk/*.json (tiket IR-01; dijalankan TANGAN atau mingguan, bukan di setiap CI).
 
   python3 scripts/bnpb/inarisk.py tarik    # jaringan, ~1.050 panggilan, berjeda 0,4 dtk per jalur x 4 jalur, bisa dilanjutkan
-  python3 scripts/bnpb/inarisk.py bangun   # cache -> keluaran lewat berkas sementara, self-check dulu, baru dipindah
+  python3 scripts/bnpb/inarisk.py bangun   # cache -> keluaran lewat berkas sementara, self-check dulu, baru dipindah;
+                                           # tak berubah = tak ditulis; berubah = perubahan.json (IR-09, workflow inarisk.yml mingguan)
   python3 scripts/bnpb/inarisk.py --cek    # self-check tanpa jaringan: fixture kecil + keluaran nyata bila ada
 
 Rancangan: data/kajian-bnpb/inarisk/ (KEPUTUSAN, RISET, ALUR A1, DESAIN-TEKNIS "Bentuk JSON cermin").
@@ -19,7 +20,7 @@ BASE = "https://inarisk.bnpb.go.id/apiv4/"
 GEO_URL = "https://inarisk.bnpb.go.id/v4/topojson/kabupaten-small.geojson"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 JEDA, JALUR = 0.4, 4
-TAHUN = list(range(2015, 2026))
+TAHUN = list(range(2015, 2026))   # tahun fixture; data penuh memakai tahun yang ada di NDJSON (InaRISK bisa menambah tahun)
 KOLOM = ["total", "gempabumi", "tsunami", "banjir", "longsor", "gunungapi", "karlahut", "kekeringan", "cuaca_ekstrem", "abrasi"]
 FILES = ("irbi", "jiwa", "ikd", "tautan")
 
@@ -79,26 +80,29 @@ def num(v, nd=2):
 
 
 def bangun_irbi(baris, kab, prov):
-    """NDJSON IRBI -> irbi.json. Total = fix_values ?? total. status & pembanding hanya 2025."""
-    nilai, status, pemb = {}, {}, {}
+    """NDJSON IRBI -> irbi.json. Total = fix_values ?? total. status & pembanding hanya tahun terakhir."""
+    rows = []
     for b in baris:
         b = b.strip()
         if not b:
             continue
         o = json.loads(b)
-        if o.get("type") != "row":
-            continue
-        d = o["data"]
+        if o.get("type") == "row":
+            rows.append(o["data"])
+    tahun = sorted({d["tahun"] for d in rows})
+    akhir = tahun[-1] if tahun else None
+    nilai, status, pemb = {}, {}, {}
+    for d in rows:
         k, t = d["pcode"], d["tahun"]
         total = d.get("fix_values") if d.get("fix_values") is not None else d.get("total")
         v = [num(total)] + [num(d.get(c)) for c in KOLOM[1:]]
         nilai.setdefault(k, {})[str(t)] = v
-        if t == 2025:
+        if t == akhir:
             if d.get("status") in ("Tinggi", "Sedang", "Rendah"):
                 status[k] = d["status"]
             if d.get("pembanding") is not None:
                 pemb[k] = num(d["pembanding"])
-    return {"tahun": TAHUN, "kolom": KOLOM, "kab": {k: [n, k[:2]] for k, n in kab.items()}, "prov": prov,
+    return {"tahun": tahun, "kolom": KOLOM, "kab": {k: [n, k[:2]] for k, n in kab.items()}, "prov": prov,
             "nilai": nilai, "status": status, "pembanding": pemb}
 
 
@@ -217,19 +221,57 @@ def periksa_penuh(irbi, jiwa, ikd, tautan, geo):
     kab = irbi["kab"]
     assert len(kab) == 514, len(kab)
     for k in kab:
-        assert sorted(irbi["nilai"][k]) == [str(t) for t in TAHUN], f"{k} tak punya 11 tahun"
-    from collections import Counter
-    c = Counter(irbi["status"].values())
-    assert c["Tinggi"] == 169 and c["Sedang"] == 345 and sum(c.values()) == 514, c
-    t25 = [irbi["nilai"][k]["2025"][0] for k in kab]
-    t25 = [v for v in t25 if v]
-    assert round(sum(t25) / len(t25), 2) == 147.95, sum(t25) / len(t25)
-    periksa_langkat(irbi, jiwa, ikd)
+        assert sorted(irbi["nilai"][k]) == [str(t) for t in irbi["tahun"]], f"{k} tak punya semua tahun"
+    assert irbi["tahun"][0] == 2015 and irbi["tahun"][-1] >= 2025, irbi["tahun"]
+    # angka yang dipatok ke layar InaRISK 23 Nov 2026 (rerata 147,95, Tinggi 169, Langkat 231,47) tinggal di cek_fixture dan
+    # tests/bnpb/inarisk_hitung.test.mjs: data penuh boleh berubah mingguan (IR-09), yang dijaga di sini bentuknya
+    assert len(irbi["status"]) == 514 and set(irbi["status"].values()) <= {"Tinggi", "Sedang", "Rendah"}, len(irbi["status"])
+    assert "1205" in jiwa["kab"] and any(k.startswith("1205/") for k in ikd["analisa"]), "Langkat hilang"
     periksa_rek(ikd)
-    assert len(tautan["baris"]) == 7, len(tautan["baris"])
+    assert tautan["baris"], "tautan kosong"
     assert len(geo["features"]) == 514
     assert {f["properties"]["pcode"] for f in geo["features"]} == set(kab), "pcode batas tak cocok IRBI"
     assert any(x[0] == "12" for x in ikd["daftar"]), "baris IKD provinsi hilang"
+
+
+def beda(lama, baru):
+    """Kalimat perubahan antara dua set keluaran {irbi, jiwa, ikd, tautan, geo}; [] = sama. Murni, tanpa berkas."""
+    out, A = [], lambda n: lama.get(n) or {}
+    li, bi = A("irbi"), baru["irbi"]
+    th = sorted(set(bi["tahun"]) - set(li.get("tahun", [])))
+    if th:
+        out.append(f"Tahun IRBI baru: {', '.join(map(str, th))}.")
+    for t in bi["tahun"]:
+        if t in th:
+            continue
+        n = sum(1 for k, v in bi["nilai"].items() if (li.get("nilai", {}).get(k, {}).get(str(t)) or [None])[0] != v.get(str(t), [None])[0])
+        if n:
+            out.append(f"Skor IRBI {t} berubah di {n} kab/kota.")
+    ls = li.get("status", {})
+    st = [(k, ls.get(k), v) for k, v in sorted(bi["status"].items()) if ls.get(k) != v]
+    if st:
+        contoh = "; ".join(f"{bi['kab'].get(k, [k])[0]} {a or 'belum ada'} ke {b}" for k, a, b in st[:5])
+        out.append(f"Kelas risiko berubah di {len(st)} kab/kota: {contoh}{'; dan lainnya' if len(st) > 5 else ''}.")
+    lk = A("ikd")
+    lama_ikd = {(x[0], x[3]): x[4] for x in lk.get("daftar", [])}
+    baru_ikd = {(x[0], x[3]): x[4] for x in baru["ikd"]["daftar"]}
+    n_baru = len(set(baru_ikd) - set(lama_ikd))
+    n_ubah = sum(1 for k in set(baru_ikd) & set(lama_ikd) if baru_ikd[k] != lama_ikd[k])
+    if n_baru:
+        out.append(f"Baris IKD baru: {n_baru} wilayah-tahun.")
+    if n_ubah:
+        out.append(f"Nilai IKD berubah di {n_ubah} wilayah-tahun.")
+    if lk.get("analisa") is not None and lk.get("analisa") != baru["ikd"]["analisa"]:
+        out.append("Analisa prioritas dan rekomendasi IKD berubah.")
+    lj = A("jiwa").get("kab", {})
+    nj = sum(1 for k, v in baru["jiwa"]["kab"].items() if lj.get(k) != v)
+    if nj:
+        out.append(f"Jiwa terpapar atau penduduk berubah di {nj} kab/kota.")
+    if A("tautan").get("baris") != baru["tautan"]["baris"]:
+        out.append(f"Tautan berubah: {len(A('tautan').get('baris', []))} ke {len(baru['tautan']['baris'])} tautan.")
+    if A("geo") != baru["geo"]:
+        out.append("Batas kab/kota berubah.")
+    return out
 
 
 def cek_fixture():
@@ -247,6 +289,19 @@ def cek_fixture():
     periksa_rek(ikd)
     assert len(ikd["analisa"]["1205/2025"]["rek"]) == 9 + 4 + 13 + 5 + 6 + 13 + 4
     assert merc(0, 0) == [0.0, 0.0]
+    assert irbi["tahun"] == TAHUN, irbi["tahun"]
+    tautan, geo = {"baris": [{"judul": "a"}]}, {"type": "FeatureCollection", "features": []}
+    sama = {"irbi": irbi, "jiwa": jiwa, "ikd": ikd, "tautan": tautan, "geo": geo}
+    assert beda(sama, sama) == [], beda(sama, sama)
+    ubah = json.loads(json.dumps(irbi))
+    ubah["nilai"]["1205"]["2025"][0] = 1.0
+    ubah["status"]["1205"] = "Rendah" if irbi["status"]["1205"] != "Rendah" else "Tinggi"
+    ubah["tahun"] = TAHUN + [2026]
+    for k in ubah["nilai"]:
+        ubah["nilai"][k]["2026"] = ubah["nilai"][k]["2025"]
+    b = beda(sama, dict(sama, irbi=ubah))
+    assert b[0] == "Tahun IRBI baru: 2026." and any("Skor IRBI 2025 berubah di 1" in x for x in b) and any("Langkat" in x for x in b), b
+    assert beda({}, sama)[0].startswith("Tahun IRBI baru"), "keluaran pertama = semua baru"
 
 
 def cek():
@@ -383,11 +438,28 @@ def bangun():
     if miring:
         print(f"PERINGATAN pcode batas vs IRBI tak cocok: {miring}")
     periksa_penuh(irbi, jiwa, ikd, tautan, geo)
+    def lama(n):
+        p = os.path.join(KELUAR, n)
+        if not os.path.exists(p):
+            return None
+        d = json.load(open(p, encoding="utf-8"))
+        for x in ("dibuat", "sumber"):
+            d.pop(x, None)
+        return d
+    sebelum = {n: lama(n + ".json") for n in FILES}
+    sebelum["geo"] = lama("kab.geojson")
+    sebelum_dibuat = (json.load(open(os.path.join(KELUAR, "irbi.json"), encoding="utf-8")).get("dibuat")
+                      if os.path.exists(os.path.join(KELUAR, "irbi.json")) else None)
+    butir = beda(sebelum, {"irbi": irbi, "jiwa": jiwa, "ikd": ikd, "tautan": tautan, "geo": geo})
+    if not butir:
+        print("cermin tidak berubah: berkas dibiarkan")
+        return
     tgl = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
     for d in (irbi, jiwa, ikd, tautan):
         d.update({"dibuat": tgl, "sumber": "InaRISK BNPB (inarisk.bnpb.go.id)"})
     os.makedirs(KELUAR, exist_ok=True)
-    isi = {"irbi.json": irbi, "jiwa.json": jiwa, "ikd.json": ikd, "tautan.json": tautan, "kab.geojson": geo}
+    perubahan = {"dibuat": tgl, "sebelumnya": sebelum_dibuat, "butir": butir, "sumber": "InaRISK BNPB (inarisk.bnpb.go.id)"}
+    isi = {"irbi.json": irbi, "jiwa.json": jiwa, "ikd.json": ikd, "tautan.json": tautan, "kab.geojson": geo, "perubahan.json": perubahan}
     for n, d in isi.items():
         with open(os.path.join(KELUAR, n + ".tmp"), "w", encoding="utf-8") as f:
             json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
@@ -396,6 +468,8 @@ def bangun():
         print(f"{n}: {os.path.getsize(os.path.join(KELUAR, n)) / 1024:.0f} KB")
     print(f"kab tanpa jiwa: {len(tanpa_jiwa)}; kab tanpa analisa IKD: {len(tanpa_ikd)} dari {len(tahun_terakhir_ikd(baris))} kab di daftar; "
           f"kab di IRBI tanpa baris IKD: {len(set(kab) - set(tahun_terakhir_ikd(baris)))}; baris IKD {len(ikd['daftar'])}")
+    for x in butir:
+        print(f"PERUBAHAN: {x}")
 
 
 if __name__ == "__main__":

@@ -23,6 +23,8 @@ situs, dengan angka yang sama dengan InaRISK.
 | F-12 | Simulasi kapasitas | daftar kab terdekat ke ambang IKD berikutnya (0,40 atau 0,80); rencana termurah per prioritas; IRBI dan peringkat perkiraan bila kelas naik |
 | F-13 | Risiko besok | kab dengan waspada prakiraan besok, diurut kelas IRBI Tinggi dulu, dengan skor bahaya padanannya dan jiwa terdampak prakiraan |
 | F-14 | Dalops gunung api | dampak penduduk, sekolah, RS, puskesmas dalam radius 1, 5, 10 km dan radius larangan di tiap kartu gunung Siaga atau Awas |
+| F-15 | `/lapor/meja`, `/siklus` kejadian | dampak radius 1, 5, 10 km dari titik laporan atau titik pusat kejadian (D15) |
+| F-16 | semua tab | cermin diperbarui mingguan; perubahan angka dicatat di `perubahan.json` dan tampil di kaki IRBI (D16) |
 
 ## Larangan
 

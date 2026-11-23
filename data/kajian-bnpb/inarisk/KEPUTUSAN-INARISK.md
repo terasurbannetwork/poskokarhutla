@@ -12,6 +12,8 @@ ditulis dengan bawaan sementara bertanda **[bawaan]**, tidak dikarang.
 - **K3 (aturan tetap pemilik, 11 Nov 2026):** tidak ada data dummy di proyek mana pun.
 
 - **K4 (23 Nov 2026):** "Gas" untuk tiga pengembangan: simulasi naik IKD, dampak radius di Dalops, IRBI dikali prakiraan besok.
+- **K5 (23 Nov 2026):** dua lanjutan: tarikan mingguan otomatis dengan pemberitahuan bila angka berubah (IR-09), dan dampak radius
+  untuk semua kejadian yang punya titik: rincian laporan `/lapor/meja` dan kejadian Buku Besar `/siklus`.
 
 ## Temuan yang mengubah arti "tiru semuanya"
 
@@ -66,6 +68,13 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
   angin ke cuaca ekstrem. Urutan: kelas IRBI total Tinggi dulu, lalu skor bahaya padanannya. Tidak pernah menulis "aman".
 - **D14 (K4):** kejadian logbook Dalops tidak berkoordinat (hanya nama desa), jadi dampak radius dipasang dulu di kartu gunung
   api Siaga dan Awas (berkoordinat puncak): radius 1, 5, 10 km dan radius larangan PVMBG. Hasil dampak dicache Worker 1 hari.
+- **D15 (K5):** dampak radius 1, 5, 10 km dipasang di rincian laporan `/lapor/meja` (titik laporan) dan kejadian Buku Besar
+  (`pusat_lat`, `pusat_lon`); tanpa titik, kartunya tidak tampil, tidak pernah nol. Kartu standar: tanpa kaki Sumber, sumber
+  di `title` tabel. Kejadian logbook tanpa titik tetap menunggu Q6.
+- **D16 (K5):** tarikan mingguan `inarisk.yml` (Selasa 04.45 UTC). `bangun` membandingkan dengan cermin lama dan menulis hanya
+  bila berubah, ditambah `perubahan.json` (kalimat perubahan). Perubahan tampil di ringkasan run, anotasi peringatan, dan kaki
+  tab IRBI. Angka yang dipatok ke layar InaRISK 23 Nov 2026 hanya diuji untuk tarikan tanggal itu; self-check data penuh menjaga
+  bentuk (514 kab, semua tahun, rumus IKD), bukan nilai. Tahun IRBI dibaca dari data, jadi tahun baru ikut tanpa ubah kode.
 
 ## Pertanyaan terbuka
 

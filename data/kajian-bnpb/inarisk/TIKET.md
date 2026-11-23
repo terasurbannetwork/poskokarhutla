@@ -12,7 +12,8 @@ Dikerjakan urut. Tiap tiket layar ditinjau pemilik di `http://localhost:8800/bnp
 | IR-06 | tab IKD + dialog analisa | tabel 2025, analisa Langkat 0,30 Rendah |
 | IR-07 | tab Web GIS: peta dasar, lapisan ArcGIS, gambar + dampak, Lapor Kegiatan | radius 1 km Yogyakarta membalas angka |
 | IR-08 | tab Unduhan, Tautan, Metodologi, Tentang, Disclaimer | filter kategori dan halaman jalan |
-| IR-09 | jadwal mingguan di workflow (`mekanik-mesin`) | workflow jalan sekali |
+| IR-09 | jadwal mingguan di workflow (`mekanik-mesin`), `bangun` hanya menulis bila berubah + `perubahan.json` (D16) | `inarisk.py --cek` (uji `beda`), workflow jalan sekali |
+| IR-14 | dampak radius di `/lapor/meja` dan kejadian `/siklus` (F-15, D15) | kartu tampil untuk laporan berkoordinat, angka terisi di tinjau lokal |
 | IR-11 | simulasi kapasitas (F-12) + rumus IKD di `inarisk_hitung.js` dan `--cek` | uji rumus IKD Langkat 0,30; rencana menutup selisih |
 | IR-12 | risiko besok (F-13) | daftar dari prediksi.json, Tinggi di atas |
 | IR-13 | dampak radius di kartu gunung api Dalops (F-14) + cache dampak di Worker | uji cache proksi; kartu Siaga menampilkan angka |

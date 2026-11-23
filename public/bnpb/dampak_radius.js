@@ -1,7 +1,9 @@
 "use strict";
 /* Dampak radius (data/kajian-bnpb/inarisk PRD F-14, KEPUTUSAN D14): penduduk dan sarana dalam beberapa radius dari satu titik,
    lewat proksi /api/inarisk/dampak (kueri spasial InaRISK, dicache Worker 1 hari). Dipakai kartu gunung api /bnpb/dalops.
-   DampakRadius.tabel(lat, lon, [km...]) -> elemen; diisi saat terlihat di layar. Teks hanya lewat textContent. */
+   Juga rincian laporan /lapor/meja dan kejadian Buku Besar /siklus (KEPUTUSAN D15).
+   DampakRadius.tabel(lat, lon, [km...], {larangan, judul, kaki, kelasTabel, kelasWadah}) -> elemen; diisi saat terlihat di layar.
+   kaki: false untuk kartu standar tanpa kaki Sumber (AGENTS 3.5); sumbernya pindah ke title tabel. Teks hanya lewat textContent. */
 (g => {
   const KOLOM = [["penduduk", "Penduduk"], ["sekolah", "Sekolah"], ["rs", "Rumah sakit"], ["puskesmas", "Puskesmas"]];
   const F = v => typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("id-ID", {maximumFractionDigits: 0}) : "–";
@@ -14,11 +16,11 @@
   }
   /* radius unik terurut, 0 < km <= 50 (batas proksi) */
   const rapikan = ks => [...new Set(ks.filter(k => typeof k === "number" && k > 0 && k <= 50))].sort((a, b) => a - b);
-  function tabel(lat, lon, radius, {larangan = null} = {}) {
+  function tabel(lat, lon, radius, {larangan = null, judul = true, kaki = true, kelasTabel = "ad-tabel dl-tabel", kelasWadah = "ad-tabel-wadah dl-tabel-wadah"} = {}) {
     const ks = rapikan(radius), wadah = el("div", "dr-wadah");
     if (typeof lat !== "number" || typeof lon !== "number" || !ks.length) return wadah;
-    const judul = el("b", "dr-judul", "Dampak dalam radius");
-    const t = el("table", "ad-tabel dl-tabel dr-tabel"), kepala = el("tr");
+    const SUMBER = "Sumber: InaRISK BNPB, kueri spasial; angka dari titik pusat.";
+    const t = el("table", `${kelasTabel} dr-tabel`), kepala = el("tr");
     kepala.append(el("th", null, "Radius"), ...KOLOM.map(([, n]) => Object.assign(el("th", "n", n), {scope: "col"})));
     const badan = el("tbody");
     const baris = ks.map(km => {
@@ -28,9 +30,9 @@
       return {km, sel};
     });
     t.append(el("thead"), badan); t.tHead.append(kepala);
-    const kaki = el("small", "dr-kaki", "Sumber: InaRISK BNPB, kueri spasial; angka dari titik puncak.");
-    wadah.append(judul, el("div", "ad-tabel-wadah dl-tabel-wadah", null), kaki);
-    wadah.children[1].append(t);
+    const gulung = el("div", kelasWadah); gulung.append(t);
+    wadah.append(...(judul ? [el("b", "dr-judul", "Dampak dalam radius")] : []), gulung, ...(kaki ? [el("small", "dr-kaki", SUMBER)] : []));
+    if (!kaki) t.title = SUMBER;
     let sudah = false;
     const isi = () => {
       if (sudah) return; sudah = true;

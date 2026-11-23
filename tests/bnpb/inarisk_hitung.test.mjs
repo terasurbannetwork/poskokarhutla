@@ -59,14 +59,16 @@ test("tingkat IKD dan format Indonesia", () => {
 });
 
 test("cermin nyata cocok dengan layar InaRISK", {skip: !existsSync(BERKAS) && "public/data/inarisk/irbi.json belum ditarik"}, () => {
-  const d = JSON.parse(readFileSync(BERKAS, "utf8"));
-  const daftar = H.urut(d, 2025);
-  const r = H.ringkas(daftar, "total", 2025);
+  const d = JSON.parse(readFileSync(BERKAS, "utf8")), akhir = d.tahun.at(-1);
+  // selalu: 514 kab dan kelas hitungan layar = kolom status API untuk tahun terakhir
+  const r = H.ringkas(H.urut(d, akhir), "total", akhir);
   assert.equal(r.n, 514);
-  assert.equal(H.angka2(r.rerata), "147,95");
-  assert.equal(r.nTinggi, 169);
-  const statusTinggi = Object.values(d.status).filter(s => s === "Tinggi").length;
-  assert.equal(statusTinggi, r.nTinggi, "kelas hitungan = kolom status API");
+  assert.equal(Object.values(d.status).filter(s => s === "Tinggi").length, r.nTinggi, "kelas hitungan = kolom status API");
+  // angka yang dipatok ke layar InaRISK hanya berlaku untuk tarikan 23 Nov 2026; tarikan mingguan (IR-09) boleh mengubahnya
+  if (d.dibuat !== "2026-11-23") return;
+  const r25 = H.ringkas(H.urut(d, 2025), "total", 2025);
+  assert.equal(H.angka2(r25.rerata), "147,95");
+  assert.equal(r25.nTinggi, 169);
   const p25 = H.peringkat(d, 2025), p24 = H.peringkat(d, 2024);
   assert.equal(H.angka2(H.skor(d, "1205", 2025)), "231,47");
   assert.equal(p25.get("1205"), 39);
