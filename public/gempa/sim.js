@@ -55,6 +55,13 @@ const Sim = (() => {
     return best; };
   const lingkaran = (lat, lon, km) => { const c = []; for (let a = 0; a <= 360; a += 4) { const p = geser(lat, lon, a, km); c.push([p[1], p[0]]); } return c; };
 
+  /* skala riak tsunami: akar dari |eta|/4 m, supaya gelombang kecil 0,1 sampai 0,5 m (alfa 0,16 sampai 0,35) tetap terlihat
+     sementara 4 m jenuh penuh. Render kanvas dan legenda memakai fungsi yang sama agar warna dan angka legenda selaras. */
+  const ETA_MAKS = 4, aRiak = e => Math.min(1, Math.sqrt(Math.abs(e) / ETA_MAKS));
+  const rgbRiak = (e, a = aRiak(e)) => e > 0 ? [255, 150 - 110 * a, 40 - 20 * a] : [25 + 15 * (1 - a), 130 - 70 * a, 235 - 20 * a];
+  const alfaRiak = a => 70 + 185 * a;
+  const gradLegenda = () => { const st = [-4, -2, -.5, 0, .5, 2, 4].map(e => { const a = aRiak(e), c = rgbRiak(e || .001, a).map(Math.round);
+      return `rgba(${c},${e ? alfaRiak(a) / 255 : .1}) ${50 + Math.sign(e) * a * 50}%`; }); return `linear-gradient(90deg,${st.join(",")})`; };
   const S = {nyata: [], dom: false, peta: null, D: null, sk: null, hasil: null, t: 0, putar: false, laju: "sedang", basi: false, raf: 0, miring: false, gem: [], pilih: "lembang"};
 
   /* ---------- gempa nyata: bawaan simulasi = gempa M 5+ terkuat 7 hari terakhir (BMKG/USGS lewat /api/gempa/terbaru), bukan skenario tetap ---------- */
@@ -367,7 +374,7 @@ self.onmessage = async e => { const d = e.data;
   /* sumber kanvas dibuat ulang tiap ukurannya berubah: MapLibre 4.7 menggambar hitam bila kanvasnya diubah ukurannya sesudah sumber dibuat */
   function pasangKanvas(id, cv, w, h, kotak, op) { const m = S.peta;
     if (m.getLayer(id)) m.removeLayer(id); if (m.getSource(id)) m.removeSource(id);
-    cv.width = w; cv.height = h;
+    cv.width = w; cv.height = h; if (id === "sm-mmi") S.redup = false;
     m.addSource(id, {type: "canvas", canvas: cv, coordinates: sudut(kotak), animate: false});
     m.addLayer({id, type: "raster", source: id, paint: {"raster-opacity": op, "raster-fade-duration": 0}}, m.getLayer("sm-sesar") ? "sm-sesar" : S.bawah); }
   /* kanvas dibaca ulang MapLibre hanya saat diputar; sesudah jeda dua frame lagi */
@@ -390,9 +397,8 @@ self.onmessage = async e => { const d = e.data;
     const T = H.ts;
     if (T?.layak) { const s = T.swe, c = S.cvTs.getContext("2d"), img = c.createImageData(s.nx, s.ny), px = img.data;
       for (let r = 0; r < s.ny; r++) { const j = T.baris[r]; for (let i = 0; i < s.nx; i++) { const k = j * s.nx + i, e = s.eta[k]; if (!s.h[k] || Math.abs(e) < .005) continue;
-        const a = Math.min(1, Math.abs(e) / .6), o = (r * s.nx + i) * 4;
-        if (e > 0) { px[o] = 214; px[o + 1] = 70 + 90 * (1 - a); px[o + 2] = 50 + 60 * (1 - a); } else { px[o] = 40; px[o + 1] = 110; px[o + 2] = 200; }
-        px[o + 3] = 40 + 215 * a; } }
+        const a = aRiak(e), o = (r * s.nx + i) * 4, w = rgbRiak(e, a);
+        px[o] = w[0]; px[o + 1] = w[1]; px[o + 2] = w[2]; px[o + 3] = alfaRiak(a); } }
       c.putImageData(img, 0, 0);
       const mn = s.t / 60;
       if (T.tibaN !== (T.tibaN = T.wt.perKab.filter(p => p.menit <= mn).length)) m.setPaintProperty("sm-pantai", "circle-opacity", ["case", ["<=", ["get", "menit"], mn], 1, 0]), m.setPaintProperty("sm-pantai", "circle-stroke-opacity", ["case", ["<=", ["get", "menit"], mn], 1, 0]); }
@@ -416,6 +422,11 @@ self.onmessage = async e => { const d = e.data;
       if (T.swe.t + T.swe.dt <= t && t > H.tSelesai) { const tuju = t; t = T.swe.t; /* stepper belum menyusul: jam ikut stepper, bukan sebaliknya */
         if (!S.putar) { cancelAnimationFrame(S.rafK); S.rafK = requestAnimationFrame(() => keWaktu(tuju)); } } }
     S.t = t; lukisWaktu(t);
+    const fase = t > H.tSelesai && T?.layak, lt = $("#smT"), lg = $("#smLegTs");
+    /* label waktu besar: textContent hanya bila berubah; MMI diredupkan sekali saat fase tsunami berganti */
+    const tx = !T?.layak ? "" : "T + " + (t < 60 ? `${fmt(Math.floor(t))} detik` : `${fmt(Math.floor(t / 60))} menit`);
+    if (lt.textContent !== tx) lt.textContent = tx; lt.hidden = !tx; lg.hidden = !T?.layak;
+    if (fase !== !!S.redup && S.peta.getLayer("sm-mmi")) { S.redup = fase; S.peta.setPaintProperty("sm-mmi", "raster-opacity", fase ? .1 : .75); }
     $("#smJam").textContent = jamSim(t); const g = $("#smGeser"); if (g && document.activeElement !== g) g.value = keGeser(t);
     $("#smFase").textContent = t <= H.tSelesai ? "Guncangan" : "Tsunami";
     if (t >= tMaks()) jeda();
@@ -476,6 +487,8 @@ self.onmessage = async e => { const d = e.data;
     const root = $("#sim"); if (!root) return;
     if (!S.dom) { S.dom = true;
       root.innerHTML = `<div id="simPeta" role="img" aria-label="Peta simulasi gempa dan tsunami"></div><div class="card simpanel" id="simPanel"><div class="kosong"><div class="spin"></div>Memuat sesar, penduduk, dan batimetri…</div></div>
+        <div class="sm-t num" id="smT" hidden aria-live="off"></div>
+        <div class="sm-legts" id="smLegTs" hidden><b>Tinggi gelombang (m)</b><i style="background:${gradLegenda()}"></i><span><u>−4</u><u>−2</u><u>0</u><u>+2</u><u>+4</u></span></div>
         <div class="card waktu" id="simWaktu" hidden></div><div class="dok" id="simDok"><div class="box" id="simLegenda"></div></div>`;
       bilahWaktu(); }
     try { S.D ||= await muat(); } catch (e) { $("#simPanel").innerHTML = `<div class="kosong">Data simulasi gagal dimuat. Coba muat ulang halaman.</div>`; console.warn(e); return; }
