@@ -1517,6 +1517,8 @@
     "table lapor_kelompok_urut": "kejadian yang sama",
     "table lapor_periksa": "pengecekan lapangan dan tindakan",
     "table lk_periksa_akun": "rekon: hanya Valid oleh BPBD wilayah",
+    "table lk_tarik": "lk_tarik lewat hak.js: staf menulis, publik membaca",
+    "table lk_usulan": "lk_usulan lewat hak.js: staf menulis dan membaca",
     "table pw_langganan": "langganan: x-pb wajib, endpoint di luar layanan push ditolak",
     "table pw_status": "cron: peristiwa naik tingkat tercatat sekali per terbitan",
     "table pw_peristiwa": "cron: peristiwa naik tingkat tercatat sekali per terbitan",

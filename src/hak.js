@@ -1776,6 +1776,8 @@ Object.assign(MATRIKS, {
   lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
   lk_periksa_akun:     {lp_staf: ["baca", "tambah"]},   // migrasi 0169: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
+  lk_tarik:            {lp_staf: ["baca", "tambah"], lp_publik: ["baca"]},   // migrasi 0170: tarikan dari halaman publik, append-only (LK-03, D8); publik membaca untuk menyaring kartu
+  lk_usulan:           {lp_staf: ["baca", "tambah"]},   // migrasi 0170: usulan ke Buku Besar, append-only (LK-03, D9); status dari sk_kejadian_sumber (A7)
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -2072,6 +2074,20 @@ export async function lpRekonCalon(env, p, dari, sampai, prov) {
   try { return (await sedia(env, p, "lapor_sesi", "baca", sql(true)).bind(dari, sampai, prov || null).all()).results; }
   catch (e) { if (!/no such table: lapor_versi/i.test(String(e?.message))) throw e; return (await sedia(env, p, "lapor_sesi", "baca", sql(false)).bind(dari, sampai, prov || null).all()).results; }
 }
+/* tarikan halaman publik (migrasi 0170, LK-03, A8): semua baris untuk sekumpulan kode kejadian laporan, urut waktu lalu id, supaya penentu
+   terverifikasiBpbd memakai baris terakhir. ponytail: IN sampai 100 kode per panggilan, sama dengan lpPeriksaAkunNomor */
+export const lpTarikKode = async (env, p, kode) => kode.length ? (await sedia(env, p, "lk_tarik", "baca",
+  `SELECT id, kode, aktif, waktu FROM lk_tarik WHERE kode IN (${kode.map((_, i) => "?" + (i + 1)).join(", ")}) ORDER BY kode, waktu, id`).bind(...kode).all()).results : [];
+export const lpStmtTarik = (env, p, kode, aktif, alasan, oleh, kini) => sedia(env, p, "lk_tarik", "tambah",
+  "INSERT INTO lk_tarik (kode, aktif, alasan, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5)").bind(kode, aktif ? 1 : 0, alasan || null, oleh, kini);
+/* usulan ke Buku Besar (migrasi 0170, LK-03, D9, A6): satu per (kejadian laporan, putaran), jadi INSERT kedua pada putaran yang sama gagal UNIQUE
+   dan rute menjawab 409; putaran bawaan 1, putaran berikut hanya sesudah ditolak staf Siklus (menunggu keputusan pemilik) */
+export const lpUsulanKejadian = async (env, p, kejadian) => kejadian.length ? (await sedia(env, p, "lk_usulan", "baca",
+  `SELECT kode, kejadian_laporan, putaran, anggota, jenis, kab4, oleh, waktu FROM lk_usulan WHERE kejadian_laporan IN (${kejadian.map((_, i) => "?" + (i + 1)).join(", ")})`)
+  .bind(...kejadian).all()).results : [];
+export const lpStmtUsulan = (env, p, u) => sedia(env, p, "lk_usulan", "tambah",
+  "INSERT INTO lk_usulan (kode, kejadian_laporan, putaran, anggota, jenis, kab4, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+  .bind(u.kode, u.kejadian_laporan, u.putaran ?? 1, JSON.stringify(u.anggota), u.jenis, u.kab4, u.oleh, u.waktu);
 export const lpTindakanDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_tindakan", "baca",
   "SELECT kode, label, oleh, waktu FROM lapor_tindakan WHERE nomor = ?1 ORDER BY waktu, id LIMIT 100").bind(nomor).all()).results;
 export const lpStmtTindakan = (env, p, nomor, kode, label, oleh, kini, g = false) => sedia(env, p, "lapor_tindakan", "tambah",
