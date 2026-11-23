@@ -609,7 +609,7 @@ def slide_lengkap(L):
     cS = sum(v['s'] for v in kab_pr.values()); cA = sum(v['a'] for v in kab_pr.values()); cW = sum(v['w'] for v in kab_pr.values())
     surut_ = (['', ' semua sudah surut,'] if lap and not belum else [f' {len(belum)}', ' belum surut,'])   # "0 belum surut" janggal (23 Nov 2026)
     judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota {prov} (', rb(kk), ' KK);', *surut_,
-               f' {cA + cS}', f' kecamatan Siaga{"/Awas" if cA else ""} pada', f' {rentang}', ''])
+               f' {sum(1 for v in kab_pr.values() if v["s"] or v["a"])}', f' kabupaten/kota Siaga{"/Awas" if cA else ""} pada', f' {rentang}', ''])   # pemilik 23 Nov 2026: "ubah jadi 6 kabupaten/kota" (tabel per kab/kota)
     w4 = (12.13 - 3 * .07) / 4
     ub = [(rb(len(lap)), 'Kab/kota terdampak banjir', 'EEF3F9', NAVY, 'radius-putih.png'),
           (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'banjir-putih.png'),
