@@ -8,6 +8,7 @@ import path from "node:path";
 import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {denganProfil, PROFIL_KUNCI} from "./_profil.mjs";
 import "../../src/worker.js";   // worker.js dulu: instansi.js dan worker.js saling impor
 import {buatTugas, bersihkanInstansi, personelProvinsi, susunDefs, sandiAcak, tenggat, pesanTagih, kekurangan, kebutuhanTerkonfirmasi, waktuMedia, hitungOrang, pasRekomendasi, pasAkses, infoPadam, verifikasiPadam, butirApiMunculLagi, butirCekUlang, jadwalCekUlang, lahanTugas, bolehCekUlang, tautkanLaporanRegu, KODAM, PROV, JENIS, HASIL, STATUS_API, LAHAN, BANTUAN, UNSUR, ALAT} from "../../src/instansi.js";
 import {KENDALA} from "../../src/posko.js";
@@ -36,7 +37,7 @@ const SKRIP_AI = `export default function (env) { return { run: async (model, {i
 } }; }`;
 const opsiUtama = (nama, ai) => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
   compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, r2Buckets: {MEDIA: nama},
-  bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji"},
+  bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", PROFIL_KUNCI},
   serviceBindings: {ASSETS: aset}, outboundService: async () => new Response("diblok di uji", {status: 599}), cache: false, ...(ai ? {wrappedBindings: {AI: "ai-tiruan"}} : {})});
 const bangun = (nama, ai) => new Miniflare(ai ? {cf: {country: "ID", colo: "CGK"}, workers: [opsiUtama(nama, true), {name: "ai-tiruan", modules: true, script: SKRIP_AI}]}
   : {...opsiUtama(nama, false), cf: {country: "ID", colo: "CGK"}});   // cf tetap: tanpa ini pemeriksa VPN menolak lokasi mesin penguji
@@ -67,7 +68,11 @@ const n = async (tabel, w = "1") => (await DB.prepare(`SELECT count(*) n FROM ${
 const SANDI = new Map();
 const kuki = r => ({cookie: r.sc.map(c => c.split(";")[0]).join("; ")});
 let ipN = 0;
-const masuk = async (username, m = mf) => { const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI.get(username)}, {"cf-connecting-ip": `198.51.100.${++ipN % 250}`}, m); assert.equal(r.s, 200, r.t); return kuki(r); };
+const masuk = async (username, m = mf) => {
+  const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI.get(username)}, {"cf-connecting-ip": `198.51.100.${++ipN % 250}`}, m); assert.equal(r.s, 200, r.t);
+  const db = m === mf ? DB : DBAI, a = await db.prepare("SELECT id FROM instansi_akun WHERE username = ?").bind(username).first();
+  return denganProfil(db, a.id, kuki(r));   // akun BPBD (pemda) wajib sesi profil untuk rute kerja (paket profil-bpbd); jenis lain tidak berubah
+};
 const VERIF = {nama: "Budi Santoso", nip: "198001012005011001", pangkat: "Pembina IV/a", jabatan: "Kepala Pelaksana BPBD", unit: "BPBD Kabupaten", email: "budi@seruyankab.go.id", wa: "081234567890", telepon_kantor: "0536 3001234"};
 /* aktifkan akun lewat SQL (jalur verifikasi penuh diuji terpisah) */
 const aktifkan = async (username, v = {}) => { const x = {...VERIF, ...v};
@@ -172,7 +177,7 @@ uji("instansi: sandiAcak 16 huruf tanpa 0 O 1 l I dan tidak bias", () => {
 uji("instansi: buat akun massal bertahap idempoten, sandi tidak tersimpan, hanya moderator", async () => {
   assert.equal((await api("POST", "/api/instansi/admin/buat", {})).s, 403, "tanpa token");
   assert.equal((await adm("POST", "/api/instansi/admin/buat", {}, GERBANG)).s, 403, "akun gerbang situs bukan moderator");
-  const pusat = JSON.parse(readFileSync(path.join(AKAR, "public/banjir/data/pusat_kec.json"), "utf8")), total = susunDefs(pusat).length;
+  const pusat = JSON.parse(readFileSync(path.join(AKAR, "public/banjir/data/pusat_kec.json"), "utf8")), semua = susunDefs(pusat), total = semua.filter(d => ["pemprov", "pemkab", "pemkot"].includes(d.jenis)).length;   // paket profil-bpbd: buat massal hanya akun BPBD (pemda); Polri dan TNI dibuat lewat sisipan di bawah
   assert.equal((await adm("POST", "/api/instansi/admin/buat", {batas: 201})).s, 400); assert.equal((await adm("POST", "/api/instansi/admin/buat", {mulai: -1})).s, 400);
   let mulai = 0, dibuat = 0;
   while (mulai != null) {
@@ -183,13 +188,20 @@ uji("instansi: buat akun massal bertahap idempoten, sandi tidak tersimpan, hanya
   }
   assert.equal(dibuat, total); assert.equal(await n("instansi_akun"), total); assert.equal(await n("instansi_akun", "status = 'belum_klaim'"), total);
   assert.equal(await n("instansi_akun", "wajib_ganti = 1"), total, "semua akun baru wajib mengganti sandi CSV saat aktif");
-  assert.ok(await n("instansi_jejak", "aksi = 'buat_massal'") >= 9, "tiap halaman pembuatan tercatat di jejak audit");
+  assert.ok(await n("instansi_jejak", "aksi = 'buat_massal'") >= 3, "tiap halaman pembuatan tercatat di jejak audit");
   const ulang = await adm("POST", "/api/instansi/admin/buat", {mulai: 0, batas: 200}); assert.equal(ulang.j.dibuat.length, 0, "ulang tidak membuat"); assert.equal(ulang.j.dilewati, 200);
   assert.equal(await n("instansi_akun"), total, "tidak bertambah");
   const baris = await DB.prepare("SELECT * FROM instansi_akun WHERE username = 'pemkabseruyan'").first(), sandi = SANDI.get("pemkabseruyan");
   assert.equal(baris.sandi_sha, sha256(baris.garam + sandi), "disimpan sha256(garam + sandi)");
   assert.ok(!Object.values(baris).some(x => String(x).includes(sandi)), "sandi asli tidak ada di baris mana pun");
   assert.notEqual(baris.garam, (await DB.prepare("SELECT garam FROM instansi_akun WHERE username = 'pemkabkatingan'").first()).garam, "garam per akun");
+  assert.equal(await n("instansi_akun", "jenis IN ('polda', 'polres', 'kodam', 'kodim')"), 0, "buat massal tidak membuat Polri dan TNI (Q6)");
+  /* akun Polri dan TNI yang dibutuhkan uji-uji berikut: disisipkan langsung dengan bentuk yang sama seperti hasil buat massal lama */
+  const lain = semua.filter(d => !["pemprov", "pemkab", "pemkot"].includes(d.jenis)), garamLain = "c".repeat(32);
+  for (let i = 0; i < lain.length; i += 50) await DB.batch(lain.slice(i, i + 50).map(d => { const sandi = sandiAcak(); SANDI.set(d.username, sandi);
+    return DB.prepare("INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .bind(createHash("sha256").update(d.username).digest("hex").slice(0, 16), d.username, d.jenis, d.tingkat, d.wilayah, d.kunci, JSON.stringify(d.cakupan), d.prov ?? null, d.kab ?? null, garamLain, sha256(garamLain + sandi), Date.now()); }));
+  assert.equal(await n("instansi_akun"), semua.length);
   for (const u of ["pemprovaceh", "pemkotmedan", "kodimseruyan", "poldametrojaya"]) assert.ok(SANDI.has(u), u);
   const sisip = c => DB.prepare("INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, garam, sandi_sha, dibuat) VALUES (?, ?, 'pemprov', 'prov', 'Uji', ?, ?, ?, ?, 1)").bind("1".repeat(16), "ujitrigger", "uji|" + c, c, "a".repeat(32), "b".repeat(64)).run();
   for (const c of ['["ab"]', '["6"]', '[62, 63]', '["62","62"]', '[]', '["62","6x"]']) await assert.rejects(sisip(c), /cakupan|CHECK|constraint/i, `cakupan ${c} harus ditolak D1`);
@@ -609,7 +621,7 @@ uji("instansi: Workers AI tiruan, orang = maksimum per berkas (bukan jumlah), AI
     VALUES ('9999999999999999', 'pemkabseruyan', 'pemkab', 'kab', 'Pemerintah Kabupaten Seruyan', '62|Seruyan', '["62"]', '62', 'Seruyan', ?, ?, 'aktif', 0, 'Budi', '19800101200501', 'Kepala', 'BPBD', 'b@x.go.id', '6281234567890', 1, 1, 1)`)
     .bind(garam, sha256(garam + sandiAI)).run();
   const a = {sandi: sandiAI, username: "pemkabseruyan"};
-  const login = await api("POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: a.sandi}, {"cf-connecting-ip": "203.0.113.77"}, mfAI); assert.equal(login.s, 200, login.t); const h = kuki(login);
+  const login = await api("POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: a.sandi}, {"cf-connecting-ip": "203.0.113.77"}, mfAI); assert.equal(login.s, 200, login.t); const h = await denganProfil(DBAI, "9999999999999999", kuki(login));
   const tid = "7".repeat(16); await DBAI.prepare("INSERT INTO tugas_api (id, prov, kab, lat, lon, level, dibuat, terakhir_terdeteksi) VALUES (?, '62', 'Seruyan', -2.55, 112.0, 3, ?, ?)").bind(tid, Date.now() - JAM, Date.now() - JAM).run();
   const up = (o) => unggah(h, tid, o, mfAI);
   /* dua foto: 4 dan 6 orang -> maksimum 6 */
@@ -727,6 +739,9 @@ uji("instansi: reset sandi, cabut, keluar, dan kedaluwarsa mencabut sesi", async
   assert.equal((await api("GET", "/api/instansi/saya", undefined, h2)).j.akun.wajib_ganti, true, "layar tahu harus mengganti sandi");
   assert.equal((await api("POST", "/api/instansi/gantisandi", {})).s, 401, "ganti sandi butuh sesi"); assert.equal((await api("POST", "/api/instansi/gantisandi", {}, {...h2, "x-pb": "0"})).s, 403, "dan header x-pb");
   const g = await api("POST", "/api/instansi/gantisandi", {}, h2); assert.equal(g.s, 200, g.t); assert.match(g.j.sandi, /^[2-9A-HJ-NP-Za-km-z]{16}$/); assert.notEqual(g.j.sandi, r.j.sandi); assert.equal(g.h.get("cache-control"), "no-store");
+  assert.equal((await api("GET", "/api/instansi/saya", undefined, h2)).s, 200, "sesi akun yang dipakai tetap hidup");
+  assert.equal((await api("GET", "/api/instansi/tugas", undefined, h2)).s, 401, "sandi lembaga berganti: semua sesi profil akun mati (paket profil-bpbd, UP-24)");
+  h2 = await denganProfil(DB, a, {cookie: h2.cookie.replace(/;\s*sesi_profil=[0-9a-f]+/, "")});   // pilih profil dan isi PIN lagi
   assert.equal((await api("GET", "/api/instansi/tugas", undefined, h2)).s, 200, "sesi yang dipakai tetap hidup dan kini bebas");
   assert.equal((await api("GET", "/api/instansi/tugas", undefined, h2b)).s, 401, "sesi lain akun ini dicabut oleh penggantian sandi");
   assert.equal((await api("POST", "/api/instansi/masuk", {username: "pemkabkapuas", sandi: r.j.sandi}, {"cf-connecting-ip": "203.0.113.152"})).s, 401, "sandi reset (diketahui admin) hangus");

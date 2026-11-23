@@ -145,7 +145,7 @@ export const halamanPosko = ctx => halaman("posko", "Memuat Ruang Posko…", `<l
 <script src="/admin/posko.js?v=3"></script>`, ctx);
 
 /* Akun Instansi & Tugas Api (/admin/instansi): helper bersama bersama.js lalu skrip halaman */
-export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi…", `<link href="/admin/instansi.css?v=4" rel="stylesheet">
+export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi…", `<link href="/admin/instansi.css?v=5" rel="stylesheet">
 <link href="/instansi_kebutuhan.css?v=1" rel="stylesheet">
 <link href="/instansi_kartu.css?v=1" rel="stylesheet">
 <link href="/instansi_tugaskan.css?v=1" rel="stylesheet">
@@ -156,7 +156,8 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi�
 <script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
 <script src="/admin/bersama.js?v=5"></script>
-<script src="/admin/instansi.js?v=7"></script>`, ctx);
+<script src="/admin/instansi_profil.js?v=1"></script>
+<script src="/admin/instansi.js?v=8"></script>`, ctx);
 
 /* Inventaris peralatan pemadam (/admin/inventaris): peta gudang digambar SVG sendiri oleh skrip halaman, jadi CSP admin tidak berubah */
 export const halamanInventaris = ctx => halaman("inventaris", "Memuat inventaris alat…", `<link href="/admin/inventaris.css?v=2" rel="stylesheet">

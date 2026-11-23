@@ -10,6 +10,7 @@ import {migrasi} from "./_bantu.mjs";
 import {PB_SQL_TINDAKAN} from "../../src/hak.js";
 import {batasBawaan} from "../../src/pb_isian.js";
 import {tindakanUntuk} from "../../public/ews_tindakan.js";
+import {denganProfil, profilAktif} from "./_profil.mjs";
 
 const uji = berantai();
 const {DB, mf, api, n} = await siapkan("uji-pb-tindakan");
@@ -39,7 +40,7 @@ async function akun(jenis, tingkat, prov, kab) {
     VALUES (?, ?, ?, ?, 'Wilayah uji', ?, ?, ?, ?, ?, ?, 'aktif', 'Petugas Uji', '19800101', 'Kasi', 'BPBD', ?, ?, 1, 1, 0, 1)`)
     .bind(id, "tdkakun" + u, jenis, tingkat, kab ? `${prov}|${kab}` : prov, JSON.stringify([prov]), tingkat === "kab" ? prov : null, kab, "g".repeat(32), "0".repeat(64), `t${u}@b.id`, "62813100000" + u).run();
   await DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(tok), id, Date.now() + 3600e3).run();
-  return {cookie: "sesi_instansi=" + tok, "x-pb": "1", origin: "http://bnpb.lokal"};
+  return {...(await denganProfil(DB, id, {cookie: "sesi_instansi=" + tok})), "x-pb": "1", origin: "http://bnpb.lokal"};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const BANJIR2 = tindakanUntuk("banjir", 2);
 const pos = (b, h = MOD2) => api("POST", "/api/pb/tindakan", b, h);

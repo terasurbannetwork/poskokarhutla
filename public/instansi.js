@@ -42,6 +42,8 @@
     let r; try { r = await fetch(url, {method: metode, headers: h, body: body === undefined ? undefined : raw ? body : JSON.stringify(body)}); }
     catch (e) { return {ok: false, status: 0, j: {galat: GALAT[0]}}; }
     const j = await r.json().catch(() => ({}));
+    if (r.status === 401 && saya && j.profil_perlu) { saya.profil = null; tampil(); pesan("Pilih profil dan isi PIN dulu.", "galat"); return {ok: false, status: r.status, j}; }   // akun BPBD: sesi akun masih hidup, sesi profil tidak
+    if (r.status === 403 && j.pin_wajib_ganti && window.InstansiProfil) { window.InstansiProfil.wajibGanti(); return {ok: false, status: r.status, j}; }   // PIN sementara dari admin: PIN baru wajib dulu
     if (r.status === 401 && saya) { saya = null; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
     if (r.status === 403 && j.wajib_ganti && saya && !saya.akun.wajib_ganti) { saya.akun.wajib_ganti = true; tampil(); }   // sandi awal masih diketahui admin: wajib dibuat baru
     return {ok: r.ok, status: r.status, j};
@@ -71,22 +73,35 @@
   /* ================= tampilan utama ================= */
   function tampil() {
     window.InstansiSaya = saya;   // dibaca instansi_laporan.js (satu panggilan /saya saja)
-    for (const v of ["vMasuk", "vVerif", "vUtama", "vGanti"]) $(v).hidden = true;
+    for (const v of ["vMasuk", "vVerif", "vUtama", "vGanti", "vProfil", "vDaftarPic"]) $(v).hidden = true;
+    $("profilKepala").hidden = true;
     $("keluar").hidden = !saya; $("akun").hidden = !saya;
     if (!saya) { undangAkun = null; $("vMasuk").hidden = false; return; }
     $("akun").textContent = saya.akun.wilayah;
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
+    if (saya.akun.wajib_ganti && saya.profil_mode) { $("vGanti").hidden = false; return; }   // akun BPBD: sandi lembaga baru lebih dulu, baru daftar PIC
+    if (saya.profil_mode && !tampilProfil()) return;
     /* tautan Data Bencana terkunci ke wilayah akun (pemilik 23 Nov 2026 "pintu masuk BPBD"): provinsi dari cakupan, kab/kota dari nama kab akun */
     const ln = $("lnDataBencana"), pv = Array.isArray(saya.cakupan) && saya.cakupan.length === 1 ? saya.cakupan[0] : "";
     if (ln) ln.href = "/instansi/data-bencana" + (pv ? "?prov=" + encodeURIComponent(pv) + (saya.akun.tingkat === "kab" && saya.kab ? "&kab=" + encodeURIComponent(saya.kab) : "") : "");
     if (saya.akun.status === "aktif") { $("vUtama").hidden = false; pasangUndang(); siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
     $("vVerif").hidden = false; isiVerif();
   }
+  /* akun BPBD (profil_mode): belum aktif = daftar PIC; aktif tanpa sesi profil = pilih profil dan PIN; aktif dengan sesi profil = layar kerja dengan kepala profil.
+     Kembalian true bila layar kerja boleh digambar. Kode layar di instansi_profil.js. */
+  let kelolaPic = false;
+  function tampilProfil() {
+    const P = window.InstansiProfil; if (!P) { pesan("Layar profil belum termuat. Muat ulang halaman.", "galat"); return false; }
+    if (saya.akun.status !== "aktif") { $("vDaftarPic").hidden = false; P.daftar($("vDaftarPic")); return false; }
+    if (kelolaPic) { $("vDaftarPic").hidden = false; P.daftar($("vDaftarPic"), {aktif: true, kembali: () => { kelolaPic = false; tampil(); }}); return false; }
+    if (!saya.profil) { $("vProfil").hidden = false; P.pilih($("vProfil"), {kelola: () => { kelolaPic = true; tampil(); }}); return false; }
+    P.kepala($("profilKepala"), saya.profil); return true;
+  }
   /* Pintu Masuk PM-11: kartu Undang rekan (public/inti/undang.js). API /api/masuk/* memakai cookie sesi_masuk, bukan sesi instansi: orang yang masuk dengan sandi lama
      tanpa sesi_masuk diajak masuk dengan nomor WhatsApp (satu kalimat), bukan diberi galat 401. Hanya akun aktif; dipasang sekali per akun. */
   let undangAkun = null;
   async function pasangUndang() {
-    const w = $("undangRekan"), id = saya?.akun?.id; if (!w || !id || undangAkun === id) return;
+    const w = $("undangRekan"), id = saya?.akun?.id; if (!w || !id || undangAkun === id || saya.profil_mode) return;   // akun BPBD tidak memakai undangan WhatsApp (profil PIC)
     undangAkun = id;
     let masuk = false, putus = "";
     try { const r = await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"}); if (r.ok) masuk = (await r.json()).masuk !== false; else putus = "Kartu undang rekan belum bisa dimuat."; } catch (e) { putus = window.PesanLayar?.LURING || "Tidak ada koneksi."; }
@@ -109,6 +124,7 @@
   $("gSalin").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("gSandi").textContent); pesan("Sandi disalin.", "ok"); } catch (e) { pesan("Salin manual: tekan lama pada sandi.", "galat"); } });
   $("gLanjut").addEventListener("click", async () => { $("gSandi").textContent = ""; $("gHasil").hidden = true; $("gAwal").hidden = false; $("gBuat").disabled = false; await muatSaya(); });
   muatBencanaMeta();
+  window.InstansiProfil?.pasang({api, pesan, muatSaya: () => muatSaya(), unggahDok: (j, f, i) => unggahDok(j, f, i), saya: () => saya});
   async function muatSaya() {
     const r = await api("GET", "/api/instansi/saya");
     saya = r.ok ? r.j : null;

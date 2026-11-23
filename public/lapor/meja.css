@@ -889,3 +889,8 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-pop-tempat-baris svg{width:16px;height:16px;margin-top:2px;flex:none;color:var(--tw,var(--bad))}
 .mj-pop-tempat-baris em{color:var(--ink2);font-style:normal}
 .mj-belum-masuk{text-align:center}.mj-belum-masuk b{display:block;font-size:.95rem;color:var(--ink);margin-bottom:4px}.mj-belum-masuk span{display:block;margin-bottom:14px}.mj-belum-masuk .mj-tombol{display:inline-flex;text-decoration:none}
+/* PF-08 dan PF-09 */
+.mj-ditangani{margin:0 0 var(--jr-3,12px);padding:var(--jr-2,8px) var(--jr-3,12px);border-radius:var(--r-sm,10px);background:var(--surface);font-weight:700;color:var(--ink)}
+.mj-pic{display:grid;gap:var(--jr-3,12px)}
+.mj-pic-baris{display:flex;align-items:center;justify-content:space-between;gap:var(--jr-3,12px)}
+.mj-pic-baris div{display:grid;gap:2px}

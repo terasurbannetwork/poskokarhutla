@@ -32,3 +32,10 @@ Istilah dipakai sama di semua dokumen paket ini dan di kode. Urut abjad.
 | Surat tugas dan kartu pegawai | dokumen verifikasi yang ada, satu per akun, tetap wajib (bawaan Q4) |
 | Tolak | aksi admin yang mengembalikan pengajuan dengan alasan; akun `ditolak` dan profil kembali `draf` |
 | UP, GP, L, P | kode uji: integrasi, gerbang, lokal oleh pemilik, produksi |
+| Ambil | aksi profil BPBD menjadikan dirinya penangan satu laporan di meja; satu penangan per laporan |
+| Kirim ulang undangan | pesan templat tanpa sandi ke nomor kontak BPBD lewat `wa_antre` jenis `undang_pf`, atau teks salin |
+| Papan aktivasi | layar `/admin/aktivasi` yang menunjukkan kemajuan 553 BPBD: jumlah PIC, status akun, menunggu, terakhir masuk |
+| Penangan | profil yang mengambil laporan; tampil sebagai "Ditangani: <nama>, <jabatan> BPBD <wilayah>" |
+| p90 | nilai waktu yang dilampaui 10 persen laporan (peringkat terdekat ke ceil(0,9 n)) |
+| PIC yang sedang jaga | belum ada jadwal piket; bawaan: semua PIC aktif, yang terakhir aktif di meja lebih dulu (Q9) |
+| Waktu respons | selisih antara laporan masuk dan dilihat BPBD, atau antara masuk dan diambil; median dan p90 per BPBD, untuk staf BNPB |

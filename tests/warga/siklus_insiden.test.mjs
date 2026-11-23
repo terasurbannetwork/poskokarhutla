@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {AKAR, JPEG_SAH, WEBP_SAH, badanPanjang} from "./_bantu.mjs";
+import {denganProfil, PROFIL_KUNCI} from "./_profil.mjs";
 import "../../src/worker.js";   // worker dulu: instansi.js dan worker.js saling impor
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
 
@@ -19,7 +20,7 @@ const aset = async req => {
   const f = path.join(AKAR, "public", p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
-const U = await siapkan("uji-siklus", {r2: true, asetKu: aset}), {mf, DB, api} = U;
+const U = await siapkan("uji-siklus", {r2: true, asetKu: aset, ikat: {PROFIL_KUNCI}}), {mf, DB, api} = U;
 const W = await mf.getWorker();
 const cron = ms => W.scheduled({cron: "* * * * *", scheduledTime: ms});
 const menit = (jamMs, m) => { const d = new Date(jamMs); d.setUTCMinutes(m, 0, 0); return d.getTime(); };   // menit yang tidak punya tugas cron lain (bukan 15-18, 23, >= 25)
@@ -35,7 +36,8 @@ const ins = async (metode, j, body, h = {}) => {
 const tutup = async r => { const t = await r.text(); let x = null; try { x = JSON.parse(t); } catch (e) {} return {s: r.status, j: x, t, sc: r.headers.getSetCookie?.() ?? []}; };
 const kuki = r => ({cookie: r.sc.map(c => c.split(";")[0]).join("; ")});
 const SANDI = new Map();
-const masuk = async u => { const r = await ins("POST", "/api/instansi/masuk", {username: u, sandi: SANDI.get(u)}, {"cf-connecting-ip": `198.51.100.${++ipN}`}); assert.equal(r.s, 200, r.t); return kuki(r); };
+const masukMentah = async u => { const r = await ins("POST", "/api/instansi/masuk", {username: u, sandi: SANDI.get(u)}, {"cf-connecting-ip": `198.51.100.${++ipN}`}); assert.equal(r.s, 200, r.t); return kuki(r); };
+const masuk = async u => denganProfil(DB, (await DB.prepare("SELECT id FROM instansi_akun WHERE username = ?").bind(u).first()).id, await masukMentah(u));   // akun BPBD: sesi profil (paket profil-bpbd)
 const adm = (metode, j, body) => api(metode, j, body, ADMIN);
 
 /* akun lewat rute admin sungguhan, halaman demi halaman sampai kedua akun uji terbuat */
@@ -47,17 +49,23 @@ const buatAkun = async (...nama) => {
   for (const u of nama) assert.ok(SANDI.has(u), `akun ${u} tidak terbentuk oleh /api/instansi/admin/buat`);
 };
 const VERIF = {nama: "Budi Santoso", nip: "198001012005011001", pangkat: "Pembina IV/a", jabatan: "Kepala Pelaksana BPBD", unit: "BPBD Kabupaten", email: "budi@seruyankab.go.id", wa: "081234567890", telepon_kantor: "0536 3001234"};
-/* jalur aktivasi penuh: masuk, surat + kartu, verifikasi, admin setuju, ganti sandi */
+/* jalur aktivasi penuh akun BPBD (paket profil-bpbd): masuk, sandi baru, surat + kartu, tiga PIC (data, foto, PIN), kirim, admin setuju, pilih profil dengan PIN */
 const aktifkan = async u => {
-  let h = await masuk(u);
+  let h = await masukMentah(u);
   assert.equal((await ins("GET", "/api/instansi/tugas", undefined, h)).s, 403, `${u} belum aktif tidak boleh melihat tugas`);
+  const g = await ins("POST", "/api/instansi/gantisandi", {}, h); assert.equal(g.s, 200, g.t); SANDI.set(u, g.j.sandi);
   const PDF = new TextEncoder().encode("%PDF-1.4\n1 0 obj<<>>endobj\n"), mentah = async (j, b) => (await mf.dispatchFetch("http://instansi.lokal" + j, {method: "POST", headers: {...PB, ...h, "content-length": String(b.length)}, body: b}));
   const pdf = await mentah("/api/instansi/surat", PDF); assert.equal(pdf.status, 200, await pdf.text());
   const kartu = await mentah("/api/instansi/kartu", JPEG_SAH); assert.equal(kartu.status, 200, await kartu.text());
-  assert.equal((await ins("POST", "/api/instansi/verifikasi", VERIF, h)).s, 201);
+  assert.equal((await ins("POST", "/api/instansi/verifikasi", VERIF, h)).s, 409, "akun BPBD memakai pendaftaran PIC, bukan verifikasi lama");
+  for (const i of [1, 2, 3]) {
+    const p = await ins("POST", "/api/instansi/profil", {nama: `PIC ${i} ${u}`, jabatan: "Staf BPBD", nip: `19800101200501${i}${String(u.length).padStart(3, "0")}`, email: `pic${i}.${u}@bpbd.go.id`, wa: `0812345678${i}${i}`, setuju: true}, h); assert.equal(p.s, 201, p.t);
+    assert.equal((await mentah(`/api/instansi/profil/foto/${p.j.id}`, JPEG_SAH)).status, 200);
+    assert.equal((await ins("POST", `/api/instansi/profil/pin/${p.j.id}`, {pin: "482915"}, {...h, "cf-connecting-ip": `198.51.100.${++ipN}`})).s, 200);
+  }
+  assert.equal((await ins("POST", "/api/instansi/kirim", {}, h)).s, 201);
   const q = (await adm("GET", "/api/instansi/admin/antrean")).j.akun.find(x => x.username === u); assert.ok(q, `${u} ada di antrean admin`);
   assert.equal((await adm("POST", `/api/instansi/admin/akun/${q.id}`, {aksi: "setuju", dikirim: q.dikirim})).s, 200);
-  const g = await ins("POST", "/api/instansi/gantisandi", {}, h); assert.equal(g.s, 200, g.t); SANDI.set(u, g.j.sandi);
   h = await masuk(u); assert.equal((await ins("GET", "/api/instansi/tugas", undefined, h)).s, 200, `${u} aktif melihat daftar tugas`);
   return h;
 };

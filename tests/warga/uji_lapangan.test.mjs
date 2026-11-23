@@ -10,6 +10,7 @@ import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: instansi.js dan uji_lapangan.js saling impor
+import {denganProfil, profilAktif} from "./_profil.mjs";
 import {PRAREGISTRASI, KOLAM_TAHAN_HARI, METODE_TERUKUR, wilson, proporsi, hitungQ1, hitungQ2, hitungQ3, hitungQ4, hitungQ5, selangMedian, persen, hash53, mingguISO, layakKontrol, pilihKontrol, kunciKandidat, bacaUji,
   TUTUPAN, METODE_LUAS, YA_TIDAK, TINGGI_NYALA, ANGIN_LOKAL, PENYEBAB, BEKAS_BARU} from "../../src/uji_lapangan.js";
 
@@ -65,7 +66,7 @@ const siapkanAkun = async () => {
     VALUES (?, 'pemprovkalteng', 'pemprov', 'prov', 'Kalimantan Tengah', 'kalteng', '["62"]', '62', ?, ?, 'aktif', 'Budi Santoso', '198001012005011001', 'Kepala BPBD', 'BPBD Provinsi', 'budi@kalteng.go.id', '6281234567890', 1, 1, 0, ?)`)
     .bind(AKUN, "a".repeat(32), "b".repeat(64), BASE).run();
   await DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), AKUN, Date.now(), Date.now() + 30 * HARI).run();
-  COOKIE = {cookie: `sesi_instansi=${token}`};
+  COOKIE = await denganProfil(DB, AKUN, {cookie: `sesi_instansi=${token}`});   // akun BPBD: sesi profil (paket profil-bpbd)
 };
 const tugasBaru = async (o = {}) => {
   const id = hex16(), dibuat = o.dibuat ?? Date.now() - JAM;

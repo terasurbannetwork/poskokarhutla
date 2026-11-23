@@ -44,6 +44,12 @@ Lingkungan uji: `PROFIL_KUNCI` 40 karakter, `ADMIN_TOKEN`, `SESI_KUNCI`, `IP_SAL
 | UP-30 | Profil keempat: akun `aktif` tiga profil, profil keempat dibuat lengkap, diajukan, tidak bisa dipakai masuk sebelum admin `setuju`; sesudah setuju bisa masuk | PF-02, PF-06 |
 | UP-31 | Pengunci: satu IP menebak 5 salah pada profil A; IP kedua tetap bisa masuk dengan PIN benar pada profil A; profil lain di akun yang sama tidak terpengaruh; sepuluh salah dari IP berbeda dalam satu hari memasang `kunci_admin` (batas harian tetap per profil) dan hanya admin yang membukanya | PF-02 |
 | UP-32 | Tiap rute POST `/api/instansi/*` non-admin yang terdaftar di `RUTE_ASLI` (termasuk rute profil) lewat `RUTE_INSTANSI`: tanpa `x-pb` ditolak 403 dan POST sukses di rute kerja menulis log `kerja`; sesi profil dengan `pin_wajib_ganti` ditolak di semua rute kecuali tiga pengecualian | PF-04 |
+| UP-33 | Papan: jumlah PIC per baris sama dengan isi tabel uji (profil bukan `dicabut`, 0 sampai 4); status akun benar untuk tiap keadaan (`belum_ada`, `belum_klaim`, `menunggu`, `aktif_kurang`, `aktif`, `lama`, `ditolak`); `menunggu` benar bila akun atau satu profil menunggu; `terakhir_masuk` = maksimum profil; 38 baris provinsi ada di samping baris kab/kota; tamu dan non-staf 403; staf wilayah lain tidak melihat baris di luar wilayahnya; jawaban papan dan rincian tidak memuat NIP, email, atau HP penuh | PF-07 |
+| UP-34 | Kirim ulang: menulis tepat satu baris `wa_antre` jenis `undang_pf` dengan `tujuan` dari `kontak_pemangku` kategori `bpbd` yang cocok wilayah akun; `kontak_id` dari wilayah lain 400; badan yang memuat nomor tidak dipakai; `pesan` tidak memuat sandi dan memuat username serta tautan `/instansi`; kirim kedua dalam satu jam 429; akun `dicabut` 409; staf wilayah lain 403; tanpa kontak berwa: jawaban `teks_salin` tanpa baris `wa_antre` | PF-07 |
+| UP-35 | Ambil: profil BPBD wilayah laporan mengambil: satu baris `lapor_ambil`, satu baris riwayat "Diambil oleh ..." dengan `dari = ke`, status tiket tidak berubah, log `meja`; label "Ditangani: <nama>, <jabatan> BPBD <wilayah>" ada di daftar dan rincian; ulang oleh profil sama 200 tanpa riwayat ganda; profil lain 409 dengan label pertama; staf BNPB 403; laporan di luar wilayah 404; tiket `selesai` atau `tidak_valid` 409; pengambil `dicabut`: profil lain bisa mengambil; tanpa sesi profil 403; label tidak ada di jawaban lacak publik | PF-08 |
+| UP-36 | Respons: untuk satu BPBD dengan enam laporan dan stempel yang disiapkan, median dan p90 dilihat dan ditangani sama dengan hitungan tangan (peringkat terdekat); laporan belum diambil masuk `belum_diambil`, bukan nol menit; BPBD dengan empat laporan: tanpa median dan p90, tulisan "belum cukup data"; laporan `tidak_valid` dan di luar 30 hari tidak ikut; BPBD dan tamu 403; jawaban tanpa nama PIC, nomor, dan peringkat | PF-08 |
+| UP-37 | PIC di meja: hanya `hakMeja` jenis `bnpb`; BPBD 403; urutan menurut terakhir aktif di meja lalu kab sebelum provinsi; profil `menunggu`, `draf`, `dicabut`, dan akun non-pemda tidak muncul; nomor tersamar; `POST` mengembalikan nomor penuh dan menulis satu baris `lapor_akses` atas nama staf; kab tanpa PIC aktif mengembalikan `kontak_situs` bertanda "situs resmi"; profil di luar daftar PIC wilayah itu 404 | PF-09 |
+| UP-38 | Buku kontak: `GET /api/kontak/admin/pic` hanya admin, nomor tersamar; jawaban pelapor (`src/lapor_kontak.js`, `src/lapor_info.js`) tidak berubah dan tidak memuat nomor PIC walau PIC aktif ada; pindai berkas `public/**` tidak menemukan nomor PIC uji | PF-09 |
 
 ## 2. Gerbang (`tests/agen/gerbang-profil.test.mjs`)
 
@@ -64,6 +70,9 @@ Tiap gerbang punya uji mode gagal (contoh pelanggaran harus tertangkap).
 | GP-11 | `src/lapor_ai.js` `hakMeja` memanggil `sesiProfilDari` sebelum `sesiMasuk` |
 | GP-12 | Tidak ada rute `POST /api/instansi/*` di `src/worker.js` atau `src/profil.js` yang didaftarkan di luar `RUTE_ASLI` (semua lewat pembungkus `RUTE_INSTANSI`, supaya log `kerja` dan `x-pb` berlaku) |
 | GP-13 | `akunAktif`, `hakMeja`, dan pembungkus rute memeriksa `pin_wajib_ganti` dari hasil `sesiProfilDari` (pindai kode; mode gagal: pemeriksaan dihapus) |
+| GP-14 | `src/lapor_kontak.js` dan `src/lapor_info.js` tidak mengimpor fungsi PIC (`pfPic*`); tidak ada nomor PIC di `public/data/**`; `public/lapor/meja.js` hanya memuat nomor PIC dari jawaban rute staf |
+| GP-15 | Kode `undang-ulang` tidak memakai variabel sandi dan tidak menulis sandi ke `wa_antre`; `wa_antre` jenis `undang_pf` hanya ditulis lewat fungsi di `src/hak.js` |
+| GP-16 | `/api/lapor/respons` dan `/api/lapor/meja/:nomor/pic` memanggil `hakMeja` dan menolak jenis selain `bnpb` |
 
 ## 3. Uji lokal oleh pemilik (L)
 
@@ -75,6 +84,9 @@ Server tinjau `http://localhost:8800` memakai kode dari folder kerja dan data, A
 | L-2 | Sesudah setuju di `http://localhost:8800/admin/instansi`: ulang masuk, layar pilih profil tampil seperti layar tontonan, klik foto, isi PIN | PF-03, PF-06 |
 | L-3 | Buka `http://localhost:8800/lapor/meja` dengan profil aktif: meja menampilkan laporan Sumatera Barat saja | PF-04 |
 | L-4 | Layar admin: log menampilkan tindakan L-1 sampai L-3 atas nama profil | PF-06 |
+| L-6 | `http://localhost:8800/admin/aktivasi`: baris provinsi, kolom PIC dan status akun, rincian profil, tombol kirim ulang (teks salin bila tanpa WA) | PF-07 |
+| L-7 | `http://localhost:8800/lapor/meja`: ambil laporan, label penangan, bagian PIC BPBD bertombol tampilkan | PF-08, PF-09 |
+| L-8 | `http://localhost:8800/admin/pimpinan`: kartu respons laporan warga; `http://localhost:8800/admin/kontak`: kolom PIC aktif | PF-08, PF-09 |
 | L-5 | Lebar ponsel 375 px: kisi profil dan dialog PIN terbaca, tombol cukup besar, tidak ada gulir mendatar | PF-03 |
 
 ## 4. Uji produksi (P), dijalankan pemilik sesudah migrasi diterapkan

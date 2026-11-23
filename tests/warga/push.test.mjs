@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import {createECDH, createHmac, createDecipheriv, generateKeyPairSync, verify, randomBytes} from "node:crypto";
 import "../../src/worker.js";   // worker.js dulu: push.js, instansi.js, dan worker.js saling impor
 import {siapkan, berantai, sha256} from "./_bnpb.mjs";
+import {denganProfil, profilAktif} from "./_profil.mjs";
 
 const JAM = 3600e3, HARI = 24 * JAM, uji = berantai();
 const T0 = Date.UTC(2026, 9, 22, 3, 25);   // jam 3 UTC (kelipatan 3), menit 25
@@ -51,7 +52,7 @@ async function akun(T, {user, jenis = "pemkab", tingkat = "kab", prov = "62", ka
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Budi', '198001012005011001', 'Kepala', 'BPBD', 'budi@x.go.id', '6281234567890', 1, 1, 0, ?)`)
     .bind(id, user, jenis, tingkat, wilayah ?? `${jenis} ${kab ?? prov}`, `${prov}|${kab ?? ""}|${++nomor}`, JSON.stringify([prov]), tingkat === "kab" ? prov : null, tingkat === "kab" ? kab : null, "g".repeat(32), "a".repeat(64), st, kini).run();
   await T.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 30 * HARI).run();
-  return {id, h: {cookie: `sesi_instansi=${token}`}};
+  return {id, h: await denganProfil(T.DB, id, {cookie: `sesi_instansi=${token}`})};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const tugas = (T, o) => T.DB.prepare(`INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, isian_terakhir, padam_verif, padam_pada, verif_pada)

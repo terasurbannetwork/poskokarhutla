@@ -64,3 +64,23 @@ Meja Lapor Bencana (`/lapor/meja`, KEPUTUSAN-LAPOR-AI K63, D94) hanya bisa dipak
 | Q6 | Akun Polda, Polres, Kodam, Kodim ikut dibuat dan ikut model profil? | **[BAWAAN SEMENTARA]** Tidak dibuat di paket ini. | PF-05 |
 | Q7 | Log bisa dilihat siapa, dan disimpan berapa lama? | **[BAWAAN SEMENTARA]** Admin BNPB melihat semua; tiap PIC melihat log lembaganya sendiri. Disimpan 2 tahun. | PF-04 |
 | Q8 | Sesi profil berlaku berapa lama, dan apakah ganti profil butuh PIN lagi? | **[BAWAAN SEMENTARA]** Sesi profil 12 jam; ganti profil selalu lewat layar pilih profil dan PIN. | PF-02 |
+
+## Perluasan (pemilik 23 Nov 2026: "Gas ini")
+
+| No | Keputusan pemilik |
+| --- | --- |
+| K11 | Papan aktivasi 553 BPBD: satu layar BNPB yang menunjukkan BPBD mana yang sudah punya 3 PIC, mana yang menunggu persetujuan, mana yang belum pernah masuk, dengan tombol kirim ulang undangan. |
+| K12 | Laporan di meja `/lapor` diambil oleh satu PIC ("Ditangani: Andi, Pusdalops BPBD Padang"). Dari log per profil dihitung waktu respons tiap BPBD (laporan masuk, dilihat, ditangani) sebagai bahan Kepala BNPB tanpa diketik siapa pun. |
+| K13 | Buku kontak darurat dari PIC: nomor PIC terverifikasi dipakai Pusdalops untuk menelepon atau WA PIC yang sedang jaga, menggantikan kontak BPBD hasil panen situs. |
+
+| No | Keputusan rancangan (agent) | Alasan |
+| --- | --- | --- |
+| D9 | K11 memperluas papan aktivasi yang sudah ada (`public/admin/aktivasi.js`, paket pintu-masuk F-11) dengan kolom profil; tidak ada layar kedua. | Satu rumah per papan. |
+| D10 | K12: pengambil laporan adalah profil (bukan akun). Waktu respons dihitung dari stempel yang sudah ada di riwayat meja dan log profil; median dan p90 per BPBD, hanya untuk staf BNPB. Laporan yang belum diambil tidak dihitung nol. | Angka dari mesin; kosong bukan nol. |
+| D11 | K13: nomor PIC hanya tampil untuk staf BNPB (meja BNPB dan buku kontak staf), tidak pernah ke pelapor warga dan tidak pernah di `public/`. Pelapor tetap memakai `public/data/bpbd_kontak.json` (KEPUTUSAN-LAPOR-AI K88). Kab tanpa PIC aktif tetap memakai kontak panen. | Nomor HP PIC data pribadi (KEAMANAN-PRIVASI). |
+| D12 | "PIC yang sedang jaga" belum ada (jadwal piket di luar paket ini). Bawaan sementara: urutan tampil = PIC yang terakhir aktif di meja lebih dulu. | Q9. |
+
+| No | Pertanyaan | Bawaan sementara | Tiket |
+| --- | --- | --- | --- |
+| Q9 | Siapa "PIC yang sedang jaga"? | **[BAWAAN SEMENTARA]** Semua PIC aktif, urut yang terakhir aktif lebih dulu; jadwal piket menyusul bila diminta. | PF-09 |
+| Q10 | Waktu respons dibandingkan antar-BPBD di layar Kepala (peringkat) atau hanya per BPBD? | **[BAWAAN SEMENTARA]** Tabel per BPBD tanpa peringkat, hanya BPBD dengan paling sedikit 5 laporan dalam 30 hari. | PF-08 |

@@ -10,6 +10,7 @@ import {tugasBaruDariBerkas, verifikasiPadam, selesai} from "../../src/instansi.
 import {ringkasAkun} from "../../src/push.js";
 import {siapkan, berantai, sha256} from "./_bnpb.mjs";
 import {AKAR, pecah} from "./_bantu.mjs";
+import {denganProfil, profilAktif} from "./_profil.mjs";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, uji = berantai();
 const T0 = Date.UTC(2026, 9, 22, 4, 7);   // menit 7, bukan menit 18
@@ -30,7 +31,7 @@ async function akun(user) {
     VALUES (?, ?, 'pemprov', 'prov', 'Pemprov Kalteng', ?, '["62"]', NULL, NULL, ?, ?, 'aktif', 'Budi', '198001012005011001', 'Kepala', 'BPBD', 'budi@x.go.id', '6281234567890', 1, 1, 0, ?)`)
     .bind(id, user, "62||" + user, "g".repeat(32), "a".repeat(64), kini).run();
   await U.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 30 * HARI).run();
-  return {cookie: `sesi_instansi=${token}`};
+  return denganProfil(U.DB, id, {cookie: `sesi_instansi=${token}`});   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const sql0047 = () => pecah(readFileSync(path.join(AKAR, "migrations/0047_tugas_bencana.sql"), "utf8"));
 

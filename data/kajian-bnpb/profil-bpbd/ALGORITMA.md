@@ -201,3 +201,87 @@ Retensi: `LOG_RETENSI_HARI`. Trigger menolak UPDATE dan menolak DELETE baris yan
 3. Jalur `/masuk` untuk akun non-pemda: `lpAkunMeja` dikurangi jenis pemda (Q1), jadi tidak ada akun yang bisa masuk meja lewat dua pintu.
 
 `cakupanMeja` tidak berubah; `pelaku` otomatis memuat nama profil sehingga riwayat meja menunjuk orangnya.
+
+## 12. Papan aktivasi per profil (K11, D9)
+
+Dasar: `hitungPapan` di `src/masuk_undang.js:325-340` dan `mkPapanHitung` di `src/hak.js:827`. Papan sekarang menghitung per `<prov>|<kab>` hanya akun `tingkat = 'kab'` dan memakai `mk_anggota`, `mk_masuk_log`, `mk_undang`. Untuk akun pemda sumber itu diganti (K9, Q1) dan diperluas.
+
+Baris papan = satu BPBD: 38 baris provinsi (kunci `<prov>|`) ditambah baris kab/kota dari `daftarKab` yang ada (N9). Per baris, satu kueri berkelompok tambahan (`pfPapanHitung`, tanpa pindai penuh, memakai `instansi_profil_akun`):
+
+| Kolom | Rumus |
+| --- | --- |
+| `pic` | jumlah `instansi_profil` berstatus bukan `dicabut` pada akun pemda baris itu (0 sampai 4) |
+| `pic_aktif` | yang berstatus `aktif` |
+| `status_akun` | `instansi_akun.status`; tanpa baris akun: `belum_ada` |
+| `menunggu` | benar bila akun `menunggu` atau ada profil `menunggu` |
+| `terakhir_masuk` | `max(instansi_profil.terakhir_masuk)` |
+| `profil[]` (hanya di rincian) | id, nama, jabatan, status, `terakhir_masuk`, terkunci (`kunci_admin` atau baris laju aktif), tanpa NIP, email, HP |
+
+`statusPapan` yang ada tidak dipakai untuk akun pemda; status papan baru dari tabel: `belum_ada`, `belum_klaim`, `menunggu`, `aktif_kurang` (aktif tetapi kurang dari 3 PIC aktif), `aktif`, `lama` (aktif, tidak ada profil masuk dalam `K.LAMA_TIDAK_MASUK`), `ditolak`, `dicabut`. Cache 5 menit (`K.PAPAN_CACHE`) tetap; pemeriksaan hak tetap lebih dulu (`papanData`, `aktivasi`).
+
+Kirim ulang undangan (`POST /api/masuk/undang-ulang {akun_id, kontak_id}`):
+
+1. Hak sama dengan papan (`hakStaf`); wilayah akun harus dalam wilayah staf (`dalamWilayahStaf`).
+2. Akun harus pemda dan berstatus `belum_klaim`, `menunggu`, `ditolak`, atau `aktif` (pengingat). `dicabut` ditolak.
+3. `kontak_id` harus baris `kontak_pemangku` berstatus `aktif`, kategori `bpbd`, dengan `prov` dan `kab` sama dengan wilayah akun, dan `wa` terisi. Nomor tujuan selalu dari baris itu, tidak pernah dari badan permintaan.
+4. Laju: satu kirim ulang per akun per jam dan 200 per hari secara global (pola `batas` yang ada).
+5. Satu `INSERT INTO wa_antre` (pola `src/hak.js:639`): `jenis = 'undang_pf'`, `rujukan` = id akun, `pesan` = templat tetap + wilayah dari basis data + username + `https://centurisk97.id/instansi` + kalimat "sandi awal diberikan admin BNPB; bila belum menerimanya, hubungi admin". Tanpa sandi (N10).
+6. Tanpa kontak berwa: jawaban `{teks_salin}` berisi templat yang sama. Bila admin baru saja mengatur ulang sandi di layar yang sama, layar menambahkan baris "Sandi awal: ..." ke teks salin di peramban; server tidak pernah membawa sandi ke teks ini.
+
+## 13. Pengambil laporan dan waktu respons (K12, D10)
+
+### 13.1 Ambil
+
+Aksi baru `ambil` pada `POST /api/lapor/meja/:nomor/ambil` (daftar aksi di `src/lapor_ai.js:907`, `AKSI_BPBD` di `src/lapor_meja_hak.js:38`). Syarat: `h.c.jenis === 'bpbd'` dan sesi profil (bukan staf BNPB), laporan dalam wilayah akun (`dalamWilayah`), tiket bukan `selesai` atau `tidak_valid` (sama seperti D96).
+
+```
+INSERT INTO lapor_ambil (nomor, profil_id, akun_id, nama, jabatan, label, waktu)
+  VALUES (:nomor, :profil, :akun, :nama, :jabatan, :label, :kini)
+  ON CONFLICT (nomor) DO UPDATE SET profil_id = excluded.profil_id, akun_id = excluded.akun_id, nama = excluded.nama,
+        jabatan = excluded.jabatan, label = excluded.label, waktu = excluded.waktu
+  WHERE (SELECT status FROM instansi_profil WHERE id = lapor_ambil.profil_id) = 'dicabut'
+lalu, dalam batch yang sama:
+INSERT INTO lapor_tiket_riwayat (nomor, dari, ke, catatan, pelaku, waktu)
+  SELECT :nomor, :status, :status, 'Diambil oleh ' || :label_pendek, :pelaku, :kini WHERE changes() > 0
+```
+
+Jawaban: sukses 200 `{label}`; profil yang sama sudah mengambil: 200 tanpa riwayat ganda (idempoten, dicek sebelum tulis); diambil profil lain yang aktif: 409 dengan `label` penangan. Status tiket tidak berubah (enum `lapor_tiket.status` tertutup, `migrations/0155_lapor_ai.sql:77`); mencatat di riwayat dengan `dari = ke = status` mengikuti pola foto penanganan (`src/lapor_ai.js:864`).
+
+`label` = `Ditangani: <nama>, <jabatan> <c.label>` (mis. "Ditangani: Andi, Pusdalops BPBD Kota Padang"); `c.label` dari `cakupanMeja` (`src/lapor_meja_hak.js`). Nama dan jabatan disalin ke baris supaya label tetap sama walau profil diubah. Label tampil di daftar meja, rincian, dan baris riwayat; tidak pernah ke jawaban publik atau halaman lacak (N12).
+
+### 13.2 Waktu respons per BPBD
+
+Tiga stempel yang sudah ada atau ditambah paket ini, per laporan:
+
+| Tonggak | Sumber |
+| --- | --- |
+| masuk | `lapor_sesi.terkirim` (dipakai `lpMejaDaftar`, `src/hak.js:1965`) |
+| dilihat | baris pertama `instansi_profil_log` berjenis `meja` dengan `rute` berakhiran `/lihat` dan `objek` = nomor laporan, dari akun BPBD wilayah itu |
+| ditangani | `lapor_ambil.waktu` |
+
+Hitung (`GET /api/lapor/respons`, hanya `hakMeja` jenis `bnpb`):
+
+```
+jendela     = laporan dengan masuk > kini - 30 hari, status bukan tidak_valid
+BPBD        = akun pemda aktif yang cakupannya memuat wilayah laporan (kab lebih dulu; provinsi tidak dihitung sebagai BPBD kab)
+untuk tiap BPBD dengan >= 5 laporan di jendela (Q10):
+  d_i = dilihat_i - masuk_i      (hanya laporan yang sudah dilihat)
+  h_i = ditangani_i - masuk_i    (hanya laporan yang sudah diambil)
+  median, p90 = peringkat terdekat (p90 = nilai ke ceil(0.9 n) pada urutan naik) dari d dan h
+  belum_dilihat = jumlah tanpa dilihat; belum_diambil = jumlah tanpa ambil   (angka terpisah, bukan nol menit)
+BPBD dengan < 5 laporan: baris tampil dengan jumlah laporan dan tulisan "belum cukup data", tanpa median, tanpa p90.
+```
+
+Tidak ada peringkat dan tidak ada urutan menurut kecepatan; urutan baris menurut nama wilayah (Q10, bawaan sementara). Nilai negatif (dilihat sebelum masuk karena jam) dibuang dan dicatat sebagai `dibuang`. Hanya angka agregat, tanpa nama PIC dan tanpa nomor pelapor.
+
+## 14. PIC untuk Pusdalops (K13, D11, D12)
+
+`GET /api/lapor/meja/:nomor/pic` (hanya jenis `bnpb`):
+
+1. Wilayah dari laporan; BPBD kab/kota = akun `pemkab` atau `pemkot` aktif yang `kab` cocok (`bakuKab`), BPBD provinsi = akun `pemprov` aktif provinsi itu (pola `lpAkunKabProv`, `src/hak.js:2017`).
+2. PIC = profil `aktif` pada akun itu. Urutan tampil: `max(waktu log meja profil itu, terakhir_masuk)` menurun (D12, Q9), kab sebelum provinsi.
+3. Jawaban per PIC: `{profil_id, nama, jabatan, bpbd, wa_samar, terakhir_aktif}`; tanpa NIP dan tanpa email.
+4. Tanpa PIC aktif pada kab: `{kontak_situs: kontakBpbd(...)}` dari `bpbd_kontak.json` dengan penanda `sumber: "situs resmi"`.
+5. `POST /api/lapor/meja/:nomor/pic {profil_id}` mengembalikan nomor penuh dan menulis satu baris `lapor_akses` (oleh = pelaku staf, nomor laporan). Profil harus termasuk PIC di langkah 1.
+
+Buku kontak: `GET /api/kontak/admin/pic?prov=&kab=` (gerbang `adminOK` seperti `src/kontak.js:107`) mengembalikan daftar PIC yang sama dengan nomor tersamar saja. Nomor penuh hanya lewat meja BNPB yang mencatat pembukaan di `lapor_akses` (N13, bawaan sementara).

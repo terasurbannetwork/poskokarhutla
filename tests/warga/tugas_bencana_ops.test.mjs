@@ -7,6 +7,7 @@ import "../../src/worker.js";
 import {tugasBaruDariBerkas, tutupKedaluwarsa, bersihkanInstansi, tautkanLaporanRegu} from "../../src/instansi.js";
 import {UMUR_KAJI_CEPAT_JAM} from "../../src/tugas_bencana.js";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
+import {denganProfil} from "./_profil.mjs";
 
 const JAM = 3600e3, MENIT = 60e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const T0 = Date.now();
@@ -27,7 +28,7 @@ async function akun(username, kab = "Seruyan") {
     VALUES (?, ?, 'pemkab', 'kab', ?, ?, '["62"]', '62', ?, ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, 0)`)
     .bind(id, username, "Pemerintah " + kab, "uji|" + username, kab, garam, sha256(garam + SANDI)).run();
   const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(r.s, 200, r.t);
-  return {id, h: {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0], ...PB}};
+  return {id, h: {...(await denganProfil(DB, id, {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]})), ...PB}};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const K = (lat, lon, o = {}) => ({lat, lon, prov: "62", kab: "Seruyan", kec: "Seruyan Hilir", level: 3, n24: 2, ...o});
 const sisipTugas = async (bencana, dibuat, o = {}) => {

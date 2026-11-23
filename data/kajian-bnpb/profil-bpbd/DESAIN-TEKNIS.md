@@ -23,6 +23,14 @@ Rujukan baris diukur 23 Nov 2026 pada pohon kerja yang sedang diubah sesi lain; 
 | `public/lapor/meja.js` (ubah) | tautan masuk untuk BPBD menunjuk `/instansi` (baris 60) | `layar-peta` |
 | `tests/warga/profil*.test.mjs`, `tests/warga/instansi.test.mjs`, `tests/warga/masuk*.test.mjs` (baru dan ubah) | RENCANA-UJI | `warga-api` |
 | `tests/agen/gerbang-profil.test.mjs` (baru) | gerbang GP-* | `penulis-gerbang` |
+| `public/admin/aktivasi.js`, `public/admin/aktivasi.css` (ubah, PF-07) | kolom jumlah PIC, status akun, menunggu, terakhir masuk, rincian profil, tombol kirim ulang | `warga-api` |
+| `src/masuk_undang.js` (ubah, PF-07) | `hitungPapan` dan `aktivasi` memuat baris provinsi dan kolom profil; rute `POST /api/masuk/undang-ulang` | `warga-api` |
+| `migrations/<nomor>_lapor_ambil.sql` (baru, PF-08) | tabel `lapor_ambil`, indeks | `warga-api` |
+| `src/lapor_ai.js`, `src/lapor_meja_hak.js`, `src/hak.js` (ubah, PF-08 dan PF-09) | aksi `ambil`, label di daftar dan rincian meja, `GET /api/lapor/respons`, `GET` dan `POST /api/lapor/meja/:nomor/pic`; fungsi `pf*` dan `lp*` baru | `warga-api` |
+| `public/lapor/meja.js`, `public/lapor/meja.css` (ubah, PF-08 dan PF-09) | tombol Ambil, label penangan, bagian PIC BPBD | `layar-peta` |
+| `public/admin/pimpinan.js` (ubah, PF-08) | kartu "Respons laporan warga" di layar Pimpinan yang sudah ada | `ruang-bnpb` |
+| `src/kontak.js`, `public/admin/kontak.js`, `public/admin/kontak.css` (ubah, PF-09) | `GET /api/kontak/admin/pic`, kolom jumlah PIC dan daftar PIC di baris BPBD | `warga-api` |
+| `tests/warga/profil_papan.test.mjs`, `profil_ambil.test.mjs`, `profil_pic.test.mjs` (baru) | UP-33 sampai UP-38 | `warga-api` |
 | `scripts/agents/roster.json`, `.claude/ilmu-agent/warga-api.md` | catatan wilayah dan ilmu | `mekanik-mesin` |
 
 Tidak ada folder baru di `public/` atau `scripts/`. Kueri baru paket ini lewat fungsi `pf*` di `src/hak.js`, sehingga ratchet `tests/agen/fixtures/d1-sisa.json` dan `d1-pindai.json` tidak naik (GP-4). Berkas lama (`src/instansi.js`) tidak ditambah akses D1 langsung.
@@ -185,3 +193,51 @@ Setiap kueri `pf*` memakai indeks di atas: pencarian profil per akun lewat `inst
 | A5 | Reservasi percobaan sebelum membandingkan | bandingkan lalu hitung | serangan serentak melewati batas |
 | A6 | Log `meja` ditulis oleh `hakMeja` sebelum penangan | tulis sesudah hasil | penangan meja tersebar di dua berkas; riwayat meja sudah mencatat hasil |
 | A7 | Satu cookie baru dengan tiga Path | memperlebar Path `sesi_instansi` ke `/` | memperlebar menyebarkan token akun ke semua rute |
+
+## 10. Perluasan K11 sampai K13
+
+Rujukan baris diukur 23 Nov 2026.
+
+### 10.1 Skema `lapor_ambil` (migrasi PF-08, hanya `CREATE ... IF NOT EXISTS`)
+
+```sql
+CREATE TABLE IF NOT EXISTS lapor_ambil (
+  nomor TEXT PRIMARY KEY,
+  profil_id TEXT NOT NULL CHECK (length(profil_id) = 16),
+  akun_id TEXT NOT NULL CHECK (length(akun_id) = 16),
+  nama TEXT NOT NULL CHECK (length(nama) BETWEEN 2 AND 100),
+  jabatan TEXT NOT NULL CHECK (length(jabatan) BETWEEN 2 AND 100),
+  label TEXT NOT NULL CHECK (length(label) BETWEEN 10 AND 300),
+  waktu INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS lapor_ambil_akun ON lapor_ambil (akun_id, waktu);
+CREATE INDEX IF NOT EXISTS lapor_ambil_waktu ON lapor_ambil (waktu);
+```
+
+Tanpa kunci asing ke `instansi_profil` supaya penghapusan data PIC (N6) tidak menghapus catatan penanganan; tabel hanya memuat nama dan jabatan, bukan NIP, email, atau HP. Statistik respons tidak butuh tabel lain: `lapor_sesi.terkirim` (masuk), `instansi_profil_log` (dilihat), `lapor_ambil.waktu` (ditangani). Bila uji `gerbang-d1-pindai` menunjukkan pindai penuh pada jendela 30 hari, PF-08 menambah `CREATE INDEX IF NOT EXISTS` pada tabel lama (idempoten), bukan `ALTER`.
+
+### 10.2 Rute
+
+| Rute | Gerbang | Guna | Tiket |
+| --- | --- | --- | --- |
+| `GET /api/masuk/aktivasi` (ada, `src/masuk_undang.js:347`) | `hakStaf` | ditambah `pic`, `pic_aktif`, `status_akun`, `menunggu`, baris provinsi; rincian memuat `profil[]` tersamar | PF-07 |
+| `POST /api/masuk/undang-ulang` (baru) | `hakStaf`, `x-pb`, wilayah | `ALGORITMA` 12; menulis satu `wa_antre` jenis `undang_pf` atau mengembalikan `teks_salin` | PF-07 |
+| `POST /api/lapor/meja/:nomor/ambil` (regex `src/lapor_ai.js:907` ditambah `ambil`) | `hakMeja` jenis `bpbd`, `x-pb`, `dalamWilayah` | `ALGORITMA` 13.1 | PF-08 |
+| `GET /api/lapor/respons` (baru) | `hakMeja` jenis `bnpb` | `ALGORITMA` 13.2; tidak berbentuk `/meja/:x` agar tidak jatuh ke `mejaGet` | PF-08 |
+| `GET /api/lapor/meja/:nomor/pic` dan `POST` (regex `mejaGet`, `mejaPost`) | `hakMeja` jenis `bnpb` | `ALGORITMA` 14 | PF-09 |
+| `GET /api/kontak/admin/pic` (baru, `src/kontak.js`) | `adminOK` | PIC aktif satu BPBD, tersamar | PF-09 |
+
+Rute `/api/lapor/*` bukan bagian `RUTE_INSTANSI`; log profil `meja` untuk `ambil` dan `pic` mengikuti `hakMeja` (bagian 5 butir 7). `POST /api/masuk/undang-ulang` memakai pembungkus masuk yang ada, bukan sesi profil.
+
+### 10.3 Layar Kepala: satu rumah
+
+`public/admin/pimpinan.js` sudah memuat tabel "Respons median" per kab (`:77`, data dari `src/meja.js:569`, untuk panggilan tugas api). Angka respons laporan warga ditempatkan di layar yang sama sebagai kartu `.ex.ex-std` baru, bukan layar baru. Konflik kecil: komentar kepala berkas menyebut "tanpa rute data baru"; PF-08 menambah satu rute (`/api/lapor/respons`) karena angkanya tidak ada di API lama, dan memperbarui komentar itu. Hak halaman Pimpinan mengikuti `HALAMAN_STAF.pimpinan` di `src/admin_halaman.js:33`.
+
+### 10.4 Pertimbangan
+
+| Hal | Keputusan |
+| --- | --- |
+| Papan sekarang mengandalkan `mk_anggota` dan `mk_masuk_log` | untuk akun pemda dibaca dari `instansi_profil`; kolom lama dibiarkan bagi jenis akun lain |
+| `wa_antre.jenis` | `undang_pf` (panjang 9, batas 20); gerbang WA menarik semua jenis tanpa perubahan kode karena jenis hanya label (`src/lapangan_wa.js:42`) |
+| Sandi di antrean | tidak pernah; GP-15 menjaga |
+| Pimpinan membaca respons dari tabel log berumur 30 hari | `instansi_profil_log` retensi 730 hari cukup |

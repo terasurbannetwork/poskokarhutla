@@ -11,6 +11,7 @@ import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
+import {denganProfil} from "./_profil.mjs";
 import {susunChecklist, jarakEta, BATAS, PERAN, KESELAMATAN, USULAN, alarmKeselamatan, anginKeRegu, tempuhMenit, bersihkanPenugasan} from "../../src/penugasan.js";
 import {infoPadam} from "../../src/instansi.js";
 
@@ -38,7 +39,8 @@ async function akun(username, {jenis = "pemkab", tingkat = "kab", prov = "62", k
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, ?)`)
     .bind(id, username, jenis, tingkat, tingkat === "kab" ? `Pemerintah ${kab}` : `Provinsi ${prov}`, `uji|${username}`, JSON.stringify(cakupan), tingkat === "kab" ? prov : null, tingkat === "kab" ? kab : null, garam, sha256(garam + SANDI), dummy).run();
   const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(r.s, 200, r.t);
-  return {id, h: {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0], ...PB}, hg: {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]}};
+  const {cookie} = await denganProfil(DB, id, {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
+  return {id, h: {cookie, ...PB}, hg: {cookie}};
 }
 const REK = {cara: [{metode: "Sekat kanal", alasan: "gambut"}], alat: ["Pompa portabel"], kebutuhan: {total: {pompa: [{kelas: "jinjing", hp: 2, unit: [4, 8, 12]}], selang_m: [200, 400, 600], jet_shooter: [2, 4, 6], lance_cm: [50, 100, 150]}, energi: {bbm_l_hari: [30, 60, 90]}}};
 const AKSES = {jalan: {lat: -2.3, lon: 113.9, kelas: "primary", km_garis_lurus: 4.2}, kaki_km: 3.1, jam_tiba: 5.4, dari: {dari: "Posko Uji", jenis: "posko", km_jalan: 38, jam: 1.4}, jalan_kaki_jam: 1.8,

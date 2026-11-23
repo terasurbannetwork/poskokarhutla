@@ -13,6 +13,7 @@ Setiap BPBD provinsi dan kab/kota (553 lembaga) punya satu akun dengan satu user
 | Tamu | Hanya halaman `/instansi` untuk masuk |
 | Sesi akun (username dan sandi benar) | Melihat daftar profil lembaganya, membuat dan melengkapi profil, mengunggah foto, mengatur PIN profil yang belum ber-PIN, mengunggah surat tugas dan kartu pegawai, mengirim untuk persetujuan, memilih profil dan memasukkan PIN. Tidak ada rute kerja |
 | Sesi profil (sesi akun + PIN benar) | Semua rute kerja akun lembaga (tugas, isian, inventaris, meja Lapor Bencana, dan seterusnya) atas nama profil itu; melihat log lembaganya; mengganti PIN sendiri; mengubah datanya sendiri |
+| Staf BNPB di meja (`hakMeja` jenis `bnpb`) | Melihat penangan tiap laporan, daftar PIC aktif BPBD wilayah laporan (tersamar sampai "Tampilkan"), dan angka respons per BPBD di layar Pimpinan. Tidak bisa mengambil laporan |
 | Admin BNPB (moderator ke atas) | Membuat akun massal, menyetujui atau menolak pengajuan, menyetujui profil keempat, mencabut profil, mengatur ulang PIN, membuka kunci, melihat log semua lembaga |
 | Staf verifikator BNPB | Menyetujui atau menolak akun di wilayahnya saja (aturan `ubahAkun` yang ada) |
 
@@ -35,6 +36,9 @@ Setiap BPBD provinsi dan kab/kota (553 lembaga) punya satu akun dengan satu user
 | F-13 | Meja Lapor Bencana dan data lanjutan membaca sesi profil, pelaku di riwayat meja memuat nama profil | D3, K5 | Meja tidak lagi membaca sesi `/masuk` untuk akun pemda |
 | F-14 | Layar admin: daftar profil per akun, setujui, cabut, atur ulang PIN, buka kunci, log | K7, Q7 | Tidak ada ekspor massal data pribadi |
 | F-15 | Tiap tindakan butuh sesi profil: rute kerja menolak sesi akun tanpa PIN | K3, D3 | Tidak ada jalan pintas "ingat saya" |
+| F-16 | Papan aktivasi profil (K11, D9): papan yang ada di `public/admin/aktivasi.js` diperluas dengan kolom jumlah PIC (0 sampai 4), status akun, menunggu persetujuan, terakhir masuk per profil, dan tombol kirim ulang undangan (antrean `wa_antre`, atau teks salin bila tanpa WA) | K11, D9 | Tidak ada layar kedua; NIP, email, HP tidak tampil di papan; nomor tersamar; sandi tidak masuk antrean WA |
+| F-17 | Pengambil laporan (K12, D10): profil BPBD mengambil laporan di meja, label "Ditangani: <nama>, <jabatan> BPBD <wilayah>"; waktu respons per BPBD (masuk ke dilihat, masuk ke ditangani; median dan p90) untuk staf BNPB di layar Pimpinan yang sudah ada | K12, D10, Q10 | Laporan yang belum diambil tidak dihitung nol; tanpa peringkat; tidak ada layar baru; tidak tampil ke pelapor |
+| F-18 | Kontak PIC untuk Pusdalops (K13, D11, D12): PIC aktif tampil di meja BNPB dan di buku kontak `/admin/kontak` untuk staf BNPB; urut yang terakhir aktif di meja lebih dulu; kab tanpa PIC aktif memakai kontak panen | K13, D11, D12, Q9 | Nomor PIC tidak pernah ke pelapor, tidak di `public/`, tidak di `bpbd_kontak.json`; pelapor tetap memakai `src/lapor_kontak.js` |
 
 ## 4. Di luar paket
 
@@ -53,6 +57,12 @@ Jawaban pemilik atas Q1 sampai Q8 tetap di `KEPUTUSAN-PROFIL.md`. Hal berikut mu
 | N5 | Apakah halaman `/lapor/meja` boleh dibuka langsung tanpa melewati `/instansi`? | Halaman statis tetap terbuka; rute API-nya menolak tanpa sesi profil, tautan masuknya menunjuk `/instansi` untuk BPBD | PF-04 |
 | N6 | Siapa menghapus data PIC atas permintaan pemilik data, dan lewat apa? | Pemilik repo menghapus baris profil `dicabut` lewat perintah D1; belum ada tombol admin | PF-06 |
 | N7 | Pemegang sandi lembaga bisa mengunci profil orang lain dengan menebak PIN salah sengaja (DoS). Bagaimana kunci dibatasi? | Kunci 15 menit dihitung per profil dan IP; kunci harian (10 salah, sampai admin membuka) tetap per profil. Sisa risiko diterima dan dicatat | PF-02 |
+| N8 | Siapa menangani laporan bila profil pengambilnya dicabut atau pindah? | Laporan yang pengambilnya berstatus `dicabut` boleh diambil ulang oleh profil BPBD lain di wilayah itu; tidak ada tombol "lepas" di paket ini | PF-08 |
+| N9 | Apakah papan aktivasi ikut memuat 38 BPBD provinsi? | Ya: papan yang ada hanya memuat kab/kota (`mkPapanHitung` menyaring `tingkat = 'kab'`); K11 menyebut 553 BPBD, jadi baris provinsi ditambahkan di bagian atas | PF-07 |
+| N10 | Apakah pesan kirim ulang undangan boleh memuat sandi awal? | Tidak. Sandi awal hanya ada di CSV; pesan antrean WA memuat username, tautan, dan petunjuk menghubungi admin. Sandi baru hanya lewat tombol atur ulang sandi yang ada dan hanya masuk teks salin, tidak ke `wa_antre` | PF-07 |
+| N11 | Apakah nomor PIC cukup "disetujui admin" atau perlu bukti kepemilikan nomor (kode WA)? | Cukup disetujui admin (nomor diisi PIC, dilihat admin saat setuju); layar menulis "disetujui admin", bukan "terverifikasi kode" | PF-09 |
+| N12 | Apakah label penangan terlihat oleh pelapor di halaman lacak? | Tidak | PF-08 |
+| N13 | Apakah buku kontak `/admin/kontak` boleh menampilkan nomor PIC penuh? | Tidak: tersamar saja; nomor penuh hanya lewat meja BNPB yang mencatat pembukaan di `lapor_akses` | PF-09 |
 
 ## 6. Ukuran berhasil
 

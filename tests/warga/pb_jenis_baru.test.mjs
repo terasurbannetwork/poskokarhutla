@@ -8,6 +8,7 @@ import "../../src/worker.js";
 import {tugasBaruDariBerkas, bencanaPer, tutupKedaluwarsa, kecualiLain, KECUALI_LAIN, SARING_JENIS} from "../../src/instansi.js";
 import {DAFTAR_BENCANA, bencanaId, labelBencana, bacaBencana, teksBencana} from "../../src/tugas_bencana.js";
 import {siapkan, sha256} from "./_bnpb.mjs";
+import {denganProfil, profilAktif} from "./_profil.mjs";
 
 const HARI = 24 * 3600e3, T0 = Date.UTC(2026, 10, 15, 4, 7), BERKAS = new Map();
 const aset = async req => { const b = BERKAS.get(new URL(req.url).pathname.split("/").pop()); return b === undefined ? new Response("tidak ada", {status: 404}) : new Response(JSON.stringify(b)); };
@@ -20,7 +21,7 @@ async function akun(U) {
     VALUES (?, 'pbjenis', 'pemprov', 'prov', 'Pemprov Kalteng', '62||pbjenis', '["62"]', NULL, NULL, ?, ?, 'aktif', 'Budi', '198001012005011001', 'Kepala', 'BPBD', 'budi@x.go.id', '6281234567890', 1, 1, 0, ?)`)
     .bind(id, "g".repeat(32), "a".repeat(64), kini).run();
   await U.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 30 * HARI).run();
-  return {cookie: `sesi_instansi=${token}`};
+  return denganProfil(U.DB, id, {cookie: `sesi_instansi=${token}`});   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 
 test("longsor dan pesisir: dibuat dari berkas, tersimpan di tugas_bencana_x, dibaca tanpa kluster, teks per jenis", async () => {

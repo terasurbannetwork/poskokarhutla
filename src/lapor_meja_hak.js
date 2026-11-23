@@ -35,7 +35,7 @@ export function dalamWilayah(c, w) {
 }
 
 /* aksi meja: lihat, balas, status, bukti, bukti-publik. BPBD tidak membuka kembali tiket Selesai atau Tidak valid (D96). */
-const AKSI_BPBD = new Set(["lihat", "balas", "status", "bukti", "bukti-publik", "periksa", "tindakan"]);   // periksa, tindakan: K69-K70
+const AKSI_BPBD = new Set(["lihat", "balas", "status", "bukti", "bukti-publik", "periksa", "tindakan", "ambil"]);   // ambil: PF-08, hanya profil BPBD (dicek di rute)   // periksa, tindakan: K69-K70
 export function bolehAksi(c, aksi, dari = null, ke = null) {
   if (!c) return false;
   if (c.jenis === "bnpb") return true;
@@ -46,3 +46,26 @@ export function bolehAksi(c, aksi, dari = null, ke = null) {
 }
 /* daftar tujuan status yang ditawarkan ke akun ini */
 export const pindahUntuk = (c, dari, semua) => (semua || []).filter(ke => bolehAksi(c, "status", dari, ke));
+
+/* ---- PF-08 (profil-bpbd K12, ALGORITMA 13): label penangan dan waktu respons per BPBD. Fungsi murni. ---- */
+export const labelAmbil = (nama, jabatan, labelBpbd) => `Ditangani: ${nama}, ${jabatan} ${labelBpbd}`;
+/* persentil peringkat terdekat pada urutan naik (n >= 1): p90 = nilai ke ceil(0.9 n) */
+export const persentil = (larik, p) => { const a = [...larik].sort((x, y) => x - y); return a.length ? a[Math.max(0, Math.ceil(p * a.length) - 1)] : null; };
+export const RESPONS_MINIMAL = 5, RESPONS_HARI = 30;
+/* laporan: [{kab (kunci BPBD), masuk, dilihat|null, ambil|null}] -> per BPBD. Kurang dari 5 laporan = tanpa median dan p90 (Q10). Selisih negatif dibuang dan dihitung. Menit bulat. */
+export function hitungRespons(laporan) {
+  const per = new Map();
+  for (const l of laporan) { if (!per.has(l.kab)) per.set(l.kab, []); per.get(l.kab).push(l); }
+  const menit = ms => Math.round(ms / 6e4);
+  return [...per].map(([kab, ls]) => {
+    const r = {kab, laporan: ls.length};
+    if (ls.length < RESPONS_MINIMAL) return {...r, cukup: false, catatan: "belum cukup data"};
+    let dibuang = 0; const d = [], h = [];
+    for (const l of ls) {
+      if (l.dilihat != null) { const x = l.dilihat - l.masuk; x < 0 ? dibuang++ : d.push(x); }
+      if (l.ambil != null) { const x = l.ambil - l.masuk; x < 0 ? dibuang++ : h.push(x); }
+    }
+    return {...r, cukup: true, belum_dilihat: ls.filter(l => l.dilihat == null).length, belum_diambil: ls.filter(l => l.ambil == null).length, dibuang,
+      dilihat: d.length ? {n: d.length, median: menit(persentil(d, 0.5)), p90: menit(persentil(d, 0.9))} : null, ditangani: h.length ? {n: h.length, median: menit(persentil(h, 0.5)), p90: menit(persentil(h, 0.9))} : null};
+  });
+}

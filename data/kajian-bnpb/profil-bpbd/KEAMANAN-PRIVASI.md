@@ -74,3 +74,28 @@ Bila `PROFIL_KUNCI` atau dump D1 diduga bocor: ganti `PROFIL_KUNCI` (semua PIN t
 ## 7. Yang tidak dilakukan
 
 Tidak membaca WA masuk, tidak mengirim PIN lewat WA atau email, tidak ada "ingat saya di perangkat ini" (PIN selalu diminta tiap pilih profil, Q8), tidak ada pemulihan PIN mandiri, tidak ada pencocokan wajah, dan tidak ada data PIC di ekspor massal.
+
+## 8. Perluasan K11 sampai K13
+
+| Data atau hal | Sifat | Aturan |
+| --- | --- | --- |
+| Nomor HP PIC di meja BNPB dan buku kontak | data pribadi (D11) | hanya staf BNPB (`hakMeja` jenis `bnpb`, `adminOK`); tersamar sampai "Tampilkan"; tiap penampilan penuh menulis satu baris `lapor_akses` atas nama staf; tidak pernah di `public/`, `public/data`, `bpbd_kontak.json`, jawaban pelapor, atau halaman lacak |
+| Label penangan (nama dan jabatan) | data pribadi ringan | hanya meja (BPBD wilayah itu dan BNPB); tidak ke pelapor (N12) |
+| Waktu respons | agregat per BPBD | hanya `hakMeja` jenis `bnpb`; BPBD dengan kurang dari 5 laporan tidak menampilkan angka (cegah menunjuk satu laporan atau satu orang); tanpa nama PIC dan tanpa nomor pelapor; tanpa peringkat |
+| Pesan kirim ulang undangan | pesan WA | templat tetap; tujuan hanya nomor di `kontak_pemangku` untuk wilayah akun; tanpa sandi (N10); 1 per akun per jam |
+| Teks salin | teks | sandi baru hanya di peramban admin, tidak disimpan, tidak di log |
+
+Ancaman tambahan:
+
+| Ancaman | Penangkal | Uji |
+| --- | --- | --- |
+| Staf wilayah lain mengirim undangan atau melihat PIC | `dalamWilayahStaf` pada papan dan kirim ulang | UP-33, UP-34 |
+| Nomor tujuan kirim ulang dipalsukan | tujuan selalu dari baris `kontak_pemangku` yang cocok wilayah; badan hanya berisi id | UP-34 |
+| Penyalahgunaan antrean WA untuk spam | laju 1 per akun per jam dan 200 per hari; templat tetap | UP-34 |
+| BPBD mengambil laporan di luar wilayah | `dalamWilayah` sebelum menulis | UP-35 |
+| Satu PIC "menyabotase" dengan mengambil semua laporan | pengambilan tercatat atas nama profil (log `meja`), label terlihat BNPB dan PIC lain; pencabutan oleh admin membebaskan laporan (N8) | UP-35 |
+| Membaca nomor PIC lewat jawaban pelapor | `src/lapor_kontak.js` dan `src/lapor_info.js` tidak mengimpor fungsi PIC; GP-14 | UP-38, GP-14 |
+| Statistik respons membocorkan satu orang | ambang 5 laporan dan tanpa nama | UP-36 |
+| Kontak panen dan nomor PIC tercampur | respons menandai `sumber` per nomor; kontak panen tidak ikut urutan PIC | UP-37 |
+
+Nomor PIC disetujui admin, bukan dibuktikan lewat kode (N11); layar tidak menyebutnya "terverifikasi kode" supaya Pusdalops tidak salah menilai kepastiannya.

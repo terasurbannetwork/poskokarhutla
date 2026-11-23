@@ -103,3 +103,18 @@ Kisi profil adalah daftar tombol dengan nama aksesibel "Pilih profil Budi Santos
 |   [          Masuk         ] |
 +------------------------------+
 ```
+
+## 9. Perluasan K11 sampai K13
+
+Tidak ada layar baru. Semua di tiga layar yang ada, dengan token dan komponen bagian 2 sampai 3.
+
+| Kode | Layar | Susunan |
+| --- | --- | --- |
+| L8 | Papan aktivasi (`/admin/aktivasi`, `public/admin/aktivasi.js`) | tabel yang ada dengan kolom ditambah: "PIC" (angka 0 sampai 4 dengan pil `hijau` bila 3 atau lebih aktif, `kuning` bila 1 sampai 2, `abu` bila 0), "Status akun" (pil: belum ada, belum klaim, menunggu, aktif, ditolak), "Menunggu" (pil `kuning` bila ada yang menunggu persetujuan), "Terakhir masuk" (tanggal relatif WIB, kolom yang sama dengan urutan yang ada). Baris provinsi di bagian atas, dipisah label seksi "BPBD provinsi". Rincian baris: daftar profil (`.pf-foto` 40 px, nama, jabatan, pil status, terakhir masuk, ikon kunci bila terkunci) tanpa NIP, email, HP |
+| L8a | Tombol kirim ulang | tombol ikon polos "Kirim ulang undangan" di rincian; sesudah klik tombol berubah menjadi teks "Masuk antrean WhatsApp" dengan `role="status"`; tanpa nomor: tombol "Salin teks undangan" dan bidang teks hanya baca. Pesan galat satu kalimat |
+| L9 | Meja BPBD (`/lapor/meja`) | tombol "Ambil laporan ini" `.lp-tombol.utama` di rincian laporan; sesudah diambil, satu baris label "Ditangani: Andi, Pusdalops BPBD Kota Padang" dengan `.pf-foto` 24 px di daftar dan rincian; baris riwayat memuat catatan pengambilan |
+| L10 | Layar Pimpinan (`/admin/pimpinan`) | kartu `.ex.ex-std` berkepala "Respons laporan warga" berikon (nama seksi, bukan kalimat temuan, `AGENTS.md` 3.5); isi tabel `.ex-tabel`: BPBD, laporan 30 hari, median dilihat, p90 dilihat, median ditangani, p90 ditangani, belum dilihat, belum diambil. BPBD kurang dari 5 laporan: sel angka berisi "belum cukup data"; tanpa warna merah atau hijau, tanpa peringkat, tanpa urutan menurut kecepatan |
+| L11 | Meja BNPB, bagian PIC BPBD | kartu kecil di rincian laporan: baris per PIC (nama, jabatan, BPBD, nomor tersamar `08••••••21`, tombol "Tampilkan", sesudahnya tombol ikon telepon dan WhatsApp), keterangan "terakhir aktif 14.20"; tanpa PIC: baris kontak panen berlabel "kontak situs resmi" |
+| L12 | Buku kontak (`/admin/kontak`) | di baris kategori BPBD tiap kab, kolom "PIC aktif" (angka) dan tombol ikon "Lihat PIC" yang membuka daftar nomor tersamar dengan tautan "Buka di meja" |
+
+Teks lewat `bahasa-indonesia-plain`; contoh: "Belum ada yang mengambil laporan ini.", "Ditangani: Andi, Pusdalops BPBD Kota Padang", "Belum cukup data (kurang dari 5 laporan dalam 30 hari)", "Nomor ini disetujui admin, belum diuji kode." Angka pakai format Indonesia (`selera-angka`): menit dengan satu desimal bila di bawah 10, satuan jam bila lebih dari 120 menit. Kartu berjarak 20 px; tombol ikon polos tanpa garis luar.

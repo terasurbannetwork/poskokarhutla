@@ -74,7 +74,30 @@ Admin mencabut profil lama (sesi profilnya mati saat itu juga). BPBD menambah pr
 
 Nomor WA yang cocok dengan `instansi_akun.wa` pemda tidak lagi menghasilkan ruang instansi atau sesi di `/masuk`. Halaman `/masuk` menampilkan petunjuk "Akun BPBD masuk lewat /instansi". Anggota `mk_anggota` untuk akun pemda tidak menghasilkan hak meja.
 
-## 11. Alur galat
+## 11. Alur J: papan aktivasi (K11)
+
+1. Staf atau admin membuka `/admin/aktivasi`. Papan yang ada menampilkan baris per daerah; paket ini menambah baris 38 BPBD provinsi di atas (N9) dan kolom: jumlah PIC (0 sampai 4, angka profil bukan `dicabut`), status akun (belum ada akun, belum klaim, menunggu, aktif, ditolak, dicabut), menunggu persetujuan (akun `menunggu` atau ada profil `menunggu`), terakhir masuk (paling baru di antara profil).
+2. Klik baris membuka rincian: tiap profil (nama, jabatan, status, terakhir masuk, terkunci atau tidak), tanpa NIP, email, HP penuh.
+3. Tombol "Kirim ulang undangan" ada di rincian. Ada nomor kontak BPBD wilayah itu di buku kontak (`kontak_pemangku` kategori `bpbd`): pesan masuk `wa_antre` dan tombol berubah menjadi "Terkirim ke antrean". Tidak ada nomor: layar menampilkan teks salin. Pesan memuat username dan tautan `/instansi` saja (N10).
+4. Akun yang belum pernah masuk dan perlu sandi baru: admin memakai "Atur ulang sandi" yang sudah ada; sandi baru tampil sekali dan masuk teks salin.
+
+## 12. Alur K: mengambil laporan (K12)
+
+1. Profil BPBD membuka laporan di meja (aksi `lihat` mencatat waktu dilihat). Tombol "Ambil laporan ini" tampil bila belum ada penangan.
+2. Klik: laporan tertulis "Ditangani: Andi, Pusdalops BPBD Padang" di kartu dan rincian; riwayat tiket memuat satu baris "Diambil oleh Andi, Pusdalops BPBD Padang". Profil lain yang menekan tombol sesudahnya melihat label itu dan tidak bisa mengambil.
+3. Penangan membalas, mengubah status, dan menambah foto seperti biasa; semua tindakan tetap atas nama profil yang bertindak.
+4. Pengambil dicabut: laporan boleh diambil ulang (N8).
+5. Staf BNPB melihat label itu dan angka respons per BPBD di layar Pimpinan; BPBD dengan kurang dari 5 laporan dalam 30 hari tertulis "belum cukup data".
+
+## 13. Alur L: Pusdalops menghubungi PIC (K13)
+
+1. Staf BNPB membuka laporan di `/lapor/meja`. Bagian "PIC BPBD" menampilkan PIC aktif BPBD kab/kota lokasi laporan, lalu BPBD provinsi, urut yang terakhir aktif di meja lebih dulu (D12): nama, jabatan, nomor tersamar.
+2. "Tampilkan" membuka nomor penuh dan menulis satu baris `lapor_akses` atas nama staf. Tombol tel dan WA memakai nomor itu.
+3. Daerah tanpa PIC aktif menampilkan kontak panen situs resmi dengan label "kontak situs resmi".
+4. Buku kontak `/admin/kontak` menampilkan jumlah PIC aktif di baris BPBD tiap kab dan daftar PIC bila dibuka.
+5. Pelapor di `/lapor` tetap melihat nomor dari `bpbd_kontak.json`; tidak ada yang berubah.
+
+## 14. Alur galat
 
 | Keadaan | Perilaku |
 | --- | --- |

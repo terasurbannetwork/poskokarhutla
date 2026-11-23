@@ -693,7 +693,7 @@ export const mkCabutSesi = (env, tokenSha) => env.DB.prepare("DELETE FROM mk_ses
    Tiap kueri lewat indeks wa (instansi_akun_wa, pdt_akun_wa, km_akun_wa, staf_wa, orang_wa, relawan_wa_aktif, UNIQUE mk_akun.wa / mk_pemirsa_wa.wa). Nomor selalu bentuk 62...; hanya orang dan relawan dicocokkan juga bentuk 08... */
 const duaBentuk = n => [n, "0" + n.slice(2)];
 const MK_SESI_SQL = {   // [terbitkan hanya bila akun aktif, buang sesi kedaluwarsa akun itu, cabut satu token]
-  instansi: ["INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM instansi_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0", "DELETE FROM instansi_sesi WHERE akun_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM instansi_sesi WHERE token_sha = ?1"],
+  instansi: ["INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM instansi_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0 AND jenis NOT IN ('pemprov', 'pemkab', 'pemkot')", "DELETE FROM instansi_sesi WHERE akun_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM instansi_sesi WHERE token_sha = ?1"],
   pendataan: ["INSERT INTO pdt_sesi (token_sha, akun_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM pdt_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0", "DELETE FROM pdt_sesi WHERE akun_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM pdt_sesi WHERE token_sha = ?1"],
   kemitraan: ["INSERT INTO km_sesi (sha, akun_id, dibuat, sampai) SELECT ?1, id, ?3, ?4 FROM km_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0", "DELETE FROM km_sesi WHERE akun_id = ?1 AND sampai <= ?2", "DELETE FROM km_sesi WHERE sha = ?1"],
   pemirsa: ["INSERT INTO pemirsa_sesi (token_sha, pemirsa_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM pemirsa WHERE id = ?2 AND status = 'aktif' AND diputus IS NULL", "DELETE FROM pemirsa_sesi WHERE pemirsa_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM pemirsa_sesi WHERE token_sha = ?1"]};
@@ -706,8 +706,8 @@ export const mkCabutSesiPeran = (env, jenis, tokenSha) => env.DB.prepare(MK_SESI
 /* satu batch: instansi langsung, instansi lewat keanggotaan (mk_anggota aktif ke akun aktif), pendataan, kampus, staf (tanpa sesi), pemirsa lewat mk_pemirsa_wa */
 export const mkRuangPeran = async (env, nomor, maks) => {
   const [i, a, p, k, s, m] = (await env.DB.batch([
-    env.DB.prepare("SELECT id, jenis, wilayah FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
-    env.DB.prepare("SELECT x.id, x.jenis, x.wilayah FROM mk_akun u JOIN mk_anggota g ON g.mk_id = u.id AND g.tabel = 'instansi_akun' AND g.status = 'aktif' JOIN instansi_akun x ON x.id = g.akun_id AND x.status = 'aktif' AND x.dummy = 0 WHERE u.wa = ?1 AND u.status = 'aktif' LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT id, jenis, wilayah FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 AND jenis NOT IN ('pemprov', 'pemkab', 'pemkot') LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT x.id, x.jenis, x.wilayah FROM mk_akun u JOIN mk_anggota g ON g.mk_id = u.id AND g.tabel = 'instansi_akun' AND g.status = 'aktif' JOIN instansi_akun x ON x.id = g.akun_id AND x.status = 'aktif' AND x.dummy = 0 AND x.jenis NOT IN ('pemprov', 'pemkab', 'pemkot') WHERE u.wa = ?1 AND u.status = 'aktif' LIMIT ?2").bind(nomor, maks),
     env.DB.prepare("SELECT id, unit, unit_lain FROM pdt_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
     env.DB.prepare("SELECT k.id, (SELECT nama FROM institusi WHERE id = k.institusi_id) lembaga FROM km_akun k WHERE k.wa = ?1 AND k.status = 'aktif' AND k.dummy = 0 LIMIT ?2").bind(nomor, maks),
     env.DB.prepare("SELECT id, username FROM staf WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
@@ -789,8 +789,8 @@ export const mkCabutSesiAkun = (env, akunId) => env.DB.prepare("DELETE FROM inst
 /* akun instansi yang boleh diundangkan seseorang: yang nomornya = nomor sesi (pemilik) dan yang ia anggota aktifnya */
 export const mkAkunSaya = async (env, mkId, nomor, maks) => {
   const [a, b] = (await env.DB.batch([
-    env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab, cakupan, 1 pemilik FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
-    env.DB.prepare(`SELECT x.id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab, x.cakupan, 0 pemilik FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id AND x.status = 'aktif' AND x.dummy = 0
+    env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab, cakupan, 1 pemilik FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 AND jenis NOT IN ('pemprov', 'pemkab', 'pemkot') LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare(`SELECT x.id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab, x.cakupan, 0 pemilik FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id AND x.status = 'aktif' AND x.dummy = 0 AND x.jenis NOT IN ('pemprov', 'pemkab', 'pemkot')
       WHERE g.mk_id = ?1 AND g.tabel = 'instansi_akun' AND g.status = 'aktif' LIMIT ?2`).bind(mkId, maks)])).map(x => x.results);
   const ada = new Set(a.map(x => x.id));
   return [...a, ...b.filter(x => !ada.has(x.id))];
@@ -2008,12 +2008,7 @@ export const lpBuktiAlun = async (env, p) => (await sedia(env, p, "lapor_bukti",
 export const lpStmtAkses = (env, p, nomor, oleh, kini) => sedia(env, p, "lapor_akses", "tambah", "INSERT INTO lapor_akses (nomor, oleh, waktu) VALUES (?1, ?2, ?3)").bind(nomor, String(oleh).slice(0, 200), kini);
 export const lpUnduhCatat = (env, p, akun, berkas, kini) => sedia(env, p, "lapor_unduh", "tambah", "INSERT INTO lapor_unduh (akun, berkas, waktu) VALUES (?1, ?2, ?3)").bind(String(akun).slice(0, 200), berkas, kini).run();
 
-/* ---- akun lembaga pemda untuk meja BPBD (D94): pemilik akun (instansi_akun.wa) atau anggota aktif lewat /masuk (mk_anggota). Hanya jenis pemkab, pemkot, pemprov yang aktif; provinsi lebih dulu. ---- */
-export const lpAkunMeja = async (env, wa, mkId) => (await env.DB.prepare(
-  `SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 AND jenis IN ('pemkab', 'pemkot', 'pemprov')
-   UNION SELECT x.id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id
-     WHERE g.mk_id = ?2 AND g.tabel = 'instansi_akun' AND g.status = 'aktif' AND x.status = 'aktif' AND x.dummy = 0 AND x.jenis IN ('pemkab', 'pemkot', 'pemprov')
-   ORDER BY tingkat DESC LIMIT 3`).bind(wa, mkId).all()).results;
+/* Meja BPBD tidak lagi membaca sesi /masuk untuk akun pemda (PF-04, Q1): hak meja dari sesi profil (pfSesiDari), jadi lpAkunMeja dihapus. */
 /* akun lembaga kab/kota aktif di satu provinsi, dengan nomor WA, untuk pemberitahuan teruskan (D97); dicocokkan nama oleh pemanggil (bakuKab) */
 export const lpAkunKabProv = async (env, prov) => (await env.DB.prepare(
   "SELECT id, jenis, kab, wa FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND status = 'aktif' AND dummy = 0 AND jenis IN ('pemkab', 'pemkot') AND wa IS NOT NULL AND wa GLOB '62[0-9]*' AND wa NOT GLOB '*[^0-9]*' LIMIT 200").bind(prov).all()).results;   // format sama dengan CHECK lapor_kabar_bpbd.wa: satu nomor tak baku tidak menggagalkan batch teruskan
@@ -2153,3 +2148,158 @@ export const tkPakai = (env, p, jenis, tokenSha, kini) => sedia(env, p, "tautan_
   .bind(jenis, tokenSha, kini).first();
 export const tkCabut = async (env, p, jenis, id, kini) => (await sedia(env, p, "tautan_token", "ubah",
   "UPDATE tautan_token SET dicabut = ?3 WHERE id = ?2 AND jenis = ?1 AND dicabut IS NULL").bind(jenis, id, kini).run()).meta.changes;   // jenis: modul A tidak mencabut token modul B
+
+/* ---------- Akun BPBD dengan profil PIC (paket data/kajian-bnpb/profil-bpbd/, migrasi 0166, src/profil*.js) ----------
+   Semua SQL profil tinggal di sini (fungsi pf*). pin_garam dan pin_sha tidak pernah dikembalikan ke rute selain pfPinData (untuk memeriksa PIN). */
+const PF_KOLOM = "id, akun_id, nama, jabatan, nip, email, wa, foto, (pin_sha IS NOT NULL) pin_ada, pin_wajib_ganti, status, salah_hari, hari_tgl, kunci_admin, disetujui, dibuat, diubah, terakhir_masuk";
+export const pfProfilAkun = async (env, akunId) => (await env.DB.prepare(`SELECT ${PF_KOLOM} FROM instansi_profil WHERE akun_id = ?1 ORDER BY dibuat, id LIMIT 12`).bind(akunId).all()).results;
+export const pfProfil = (env, akunId, id) => env.DB.prepare(`SELECT ${PF_KOLOM} FROM instansi_profil WHERE id = ?1 AND akun_id = ?2`).bind(id, akunId).first();
+export const pfProfilById = (env, id) => env.DB.prepare(`SELECT ${PF_KOLOM} FROM instansi_profil WHERE id = ?1`).bind(id).first();
+export const pfPinData = (env, akunId, id) => env.DB.prepare("SELECT id, akun_id, pin_garam, pin_sha, pin_wajib_ganti, status, kunci_admin, wa FROM instansi_profil WHERE id = ?1 AND akun_id = ?2").bind(id, akunId).first();
+export const pfBuat = (env, akunId, id, v, kini) => env.DB.prepare(
+  "INSERT INTO instansi_profil (id, akun_id, nama, jabatan, nip, email, wa, dibuat, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8)").bind(id, akunId, v.nama, v.jabatan, v.nip, v.email, v.wa, kini).run();
+export const pfUbah = async (env, akunId, id, v, kini) => (await env.DB.prepare(
+  "UPDATE instansi_profil SET nama = ?3, jabatan = ?4, nip = ?5, email = ?6, wa = ?7, diubah = ?8 WHERE id = ?1 AND akun_id = ?2 AND status IN ('draf', 'aktif')").bind(id, akunId, v.nama, v.jabatan, v.nip, v.email, v.wa, kini).run()).meta.changes;
+export const pfSetFoto = async (env, akunId, id, kini) => (await env.DB.prepare(
+  "UPDATE instansi_profil SET foto = 1, diubah = ?3 WHERE id = ?1 AND akun_id = ?2 AND status IN ('draf', 'aktif')").bind(id, akunId, kini).run()).meta.changes;
+/* PIN pertama: hanya profil draf yang belum ber-PIN (tidak pernah menimpa PIN yang ada) */
+export const pfSetPin = async (env, akunId, id, garam, sha, kini) => (await env.DB.prepare(
+  "UPDATE instansi_profil SET pin_garam = ?3, pin_sha = ?4, pin_pada = ?5, diubah = ?5 WHERE id = ?1 AND akun_id = ?2 AND status = 'draf' AND pin_sha IS NULL").bind(id, akunId, garam, sha, kini).run()).meta.changes;
+/* ganti PIN: bandingkan-dan-tukar pada hash lama; membuka kewajiban ganti PIN dan mencabut sesi profil lain (yang dipakai sekarang tetap hidup) */
+export const pfGantiPin = async (env, akunId, id, shaLama, garam, sha, tokenSekarang, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_profil SET pin_garam = ?4, pin_sha = ?5, pin_wajib_ganti = 0, pin_pada = ?6, diubah = ?6 WHERE id = ?1 AND akun_id = ?2 AND status = 'aktif' AND pin_sha = ?3").bind(id, akunId, shaLama, garam, sha, kini),
+  env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE profil_id = ?1 AND sesi_sha != ?2 AND changes() > 0").bind(id, tokenSekarang)]))[0].meta.changes;
+/* Reservasi percobaan PIN (A5): dua batas dalam satu batch atomik. Baris laju ditulis hanya bila kurang dari `maks` salah dalam jendela; hitungan harian
+   naik hanya bila baris laju tertulis dan profil aktif milik akun ini serta tidak terkunci admin. Kembalian {ok, laju, salah_hari, kunci_admin} (ok = bisa membandingkan). */
+export async function pfReservasiPin(env, akunId, id, kunciLaju, aksi, maks, jendela, hari, hariMaks, kini) {
+  const [a, b] = await env.DB.batch([
+    env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) SELECT ?1, ?2, ?3 WHERE (SELECT count(*) FROM laju_bnpb WHERE kunci = ?1 AND aksi = ?2 AND waktu > ?3 - ?4) < ?5 RETURNING rowid").bind(kunciLaju, aksi, kini, jendela, maks),
+    env.DB.prepare(`UPDATE instansi_profil SET salah_hari = CASE WHEN hari_tgl = ?3 THEN salah_hari + 1 ELSE 1 END, hari_tgl = ?3,
+      kunci_admin = CASE WHEN (CASE WHEN hari_tgl = ?3 THEN salah_hari + 1 ELSE 1 END) >= ?4 THEN 1 ELSE 0 END
+      WHERE id = ?1 AND akun_id = ?2 AND status = 'aktif' AND kunci_admin = 0 AND changes() > 0 RETURNING salah_hari, kunci_admin`).bind(id, akunId, hari, hariMaks)]);
+  const laju = a.results?.[0]?.rowid ?? null, r = b.results?.[0];
+  if (laju && r) return {ok: true, laju, salah_hari: r.salah_hari, kunci_admin: r.kunci_admin};
+  if (laju) await pfLajuBuang(env, laju);   // reservasi tertulis tetapi profil bukan miliknya, bukan aktif, atau terkunci admin
+  return {ok: false, sebab: laju ? "profil" : "laju"};
+}
+/* reservasi tertulis tetapi profil bukan miliknya / bukan aktif / terkunci: baris laju dibuang agar IP yang salah alamat tidak menghukum dirinya sendiri */
+export const pfLajuBuang = (env, rowid) => env.DB.prepare("DELETE FROM laju_bnpb WHERE rowid = ?1").bind(rowid).run();
+/* PIN benar: kembalikan reservasi (baris laju dibuang, hitungan harian turun satu) lalu catat masuk */
+export const pfPinBenar = (env, id, rowid, hariMaks, kini) => env.DB.batch([
+  env.DB.prepare("DELETE FROM laju_bnpb WHERE rowid = ?1").bind(rowid),
+  env.DB.prepare("UPDATE instansi_profil SET kunci_admin = CASE WHEN salah_hari - 1 >= ?2 THEN 1 ELSE 0 END, salah_hari = max(salah_hari - 1, 0), pin_pada = ?3, terakhir_masuk = ?3 WHERE id = ?1").bind(id, hariMaks, kini)]);
+/* kapan PIN dari IP ini boleh dicoba lagi: baris laju tertua dalam jendela + jendela */
+export const pfBukaLaju = async (env, kunciLaju, aksi, jendela, kini) => {
+  const r = await env.DB.prepare("SELECT count(*) n, min(waktu) w FROM laju_bnpb WHERE kunci = ?1 AND aksi = ?2 AND waktu > ?3 - ?4").bind(kunciLaju, aksi, kini, jendela).first();
+  return {n: r?.n ?? 0, buka: r?.w ? r.w + jendela : null};
+};
+export const pfLajuHapusProfil = (env, id) => env.DB.prepare("DELETE FROM laju_bnpb WHERE kunci >= ?1 AND kunci < ?2 AND aksi = 'profil.pin_salah'").bind(`pf:${id}:`, `pf:${id};`);
+/* sesi profil */
+export const pfSesiBaru = async (env, tokenSha, profilId, akunId, kini, habis) => (await env.DB.batch([
+  env.DB.prepare("INSERT INTO instansi_sesi_profil (sesi_sha, profil_id, akun_id, dibuat, kedaluwarsa) SELECT ?1, p.id, p.akun_id, ?4, ?5 FROM instansi_profil p JOIN instansi_akun a ON a.id = p.akun_id WHERE p.id = ?2 AND p.akun_id = ?3 AND p.status = 'aktif' AND a.status = 'aktif'").bind(tokenSha, profilId, akunId, kini, habis),
+  env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE profil_id = ?1 AND kedaluwarsa <= ?2").bind(profilId, kini)]))[0].meta.changes === 1;
+export const pfSesiDari = (env, tokenSha, kini) => env.DB.prepare(
+  `SELECT p.id profil_id, p.nama profil_nama, p.jabatan profil_jabatan, p.pin_wajib_ganti, a.id akun_id, a.jenis, a.tingkat, a.wilayah, a.prov, a.kab, a.cakupan, a.username
+   FROM instansi_sesi_profil s JOIN instansi_profil p ON p.id = s.profil_id AND p.status = 'aktif' JOIN instansi_akun a ON a.id = s.akun_id AND a.status = 'aktif'
+   WHERE s.sesi_sha = ?1 AND s.kedaluwarsa > ?2`).bind(tokenSha, kini).first();
+export const pfSesiCabut = (env, tokenSha) => env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE sesi_sha = ?1").bind(tokenSha).run();
+export const pfStmtSesiCabutAkun = (env, akunId) => env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE akun_id = ?1").bind(akunId);
+export const pfStmtSesiCabutProfil = (env, profilId) => env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE profil_id = ?1").bind(profilId);
+/* log: hanya jenis, rute, id objek; tanpa badan, PIN, atau token */
+export const pfStmtLog = (env, l, kini, syarat = "1") => env.DB.prepare("INSERT INTO instansi_profil_log (waktu, akun_id, profil_id, jenis, rute, objek, oleh, ip) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE " + syarat)
+  .bind(kini, l.akun, l.profil ?? null, l.jenis, l.rute ? String(l.rute).slice(0, 100) : null, l.objek ? String(l.objek).slice(0, 40) : null, l.oleh ? String(l.oleh).slice(0, 40) : null, l.ip ? String(l.ip).slice(0, 12) : null);
+export const pfLog = (env, l, kini) => pfStmtLog(env, l, kini).run();
+/* daftar log berhalaman 50 dengan penunjuk waktu (keyset): selalu dibatasi waktu supaya memakai indeks */
+export async function pfLogDaftar(env, f, sebelum) {
+  const w = ["waktu <= ?1"], p = [sebelum];
+  for (const [k, v] of [["akun_id", f.akun], ["profil_id", f.profil], ["jenis", f.jenis]]) if (v) { p.push(v); w.push(`${k} = ?${p.length}`); }
+  return (await env.DB.prepare(`SELECT id, waktu, akun_id, profil_id, jenis, rute, objek, oleh FROM instansi_profil_log WHERE ${w.join(" AND ")} ORDER BY waktu DESC, id DESC LIMIT 51`).bind(...p).all()).results;
+}
+/* kirim untuk disetujui (ALGORITMA 6): satu batch, semua atau tidak sama sekali; `pic` = PIC pertama yang lengkap. Kembalian = jumlah akun yang naik status (1 atau 0) */
+export const pfKirim = async (env, akunId, pic, ip, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_akun SET nama = ?2, nip = ?3, jabatan = ?4, unit = wilayah, email = ?5, wa = ?6, status = 'menunggu', dikirim = ?7, alasan = NULL WHERE id = ?1 AND status IN ('belum_klaim', 'ditolak') AND surat = 1 AND kartu = 1 AND jenis IN ('pemprov', 'pemkab', 'pemkot')")
+    .bind(akunId, pic.nama, pic.nip, pic.jabatan, pic.email, pic.wa, kini),
+  env.DB.prepare("UPDATE instansi_profil SET status = 'menunggu', diubah = ?2 WHERE akun_id = ?1 AND status = 'draf' AND pin_sha IS NOT NULL AND foto = 1 AND changes() > 0").bind(akunId, kini),
+  pfStmtLog(env, {akun: akunId, jenis: "kirim", ip}, kini, "changes() > 0")]))[0].meta.changes;
+/* sambungan ke ubahAkun: dipasang dalam batch yang sama dengan pembaruan akun */
+export const pfStmtSetujuAkun = (env, akunId, admin, kini) => env.DB.prepare(
+  "UPDATE instansi_profil SET status = 'aktif', disetujui = ?3, oleh = ?2, diubah = ?3 WHERE akun_id = ?1 AND status = 'menunggu' AND (SELECT status FROM instansi_akun WHERE id = ?1) = 'aktif'").bind(akunId, String(admin).slice(0, 40), kini);
+export const pfStmtTolakAkun = (env, akunId, kini) => env.DB.prepare(
+  "UPDATE instansi_profil SET status = 'draf', diubah = ?2 WHERE akun_id = ?1 AND status = 'menunggu' AND (SELECT status FROM instansi_akun WHERE id = ?1) = 'ditolak'").bind(akunId, kini);
+export const pfStmtCabutAkun = (env, akunId) => pfStmtSesiCabutAkun(env, akunId);
+/* aksi admin per profil */
+export const pfSetujuProfil = async (env, id, akunId, admin, maks, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_profil SET status = 'aktif', disetujui = ?3, oleh = ?4, diubah = ?3 WHERE id = ?1 AND akun_id = ?2 AND status = 'menunggu' AND (SELECT status FROM instansi_akun WHERE id = ?2) = 'aktif' AND (SELECT count(*) FROM instansi_profil x WHERE x.akun_id = ?2 AND x.status = 'aktif') < ?5")
+    .bind(id, akunId, kini, String(admin).slice(0, 40), maks),
+  pfStmtLog(env, {akun: akunId, profil: id, jenis: "setuju", oleh: admin}, kini, "changes() > 0")]))[0].meta.changes;
+export const pfCabutProfil = async (env, id, akunId, admin, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_profil SET status = 'dicabut', diubah = ?3, oleh = ?4 WHERE id = ?1 AND akun_id = ?2 AND status != 'dicabut'").bind(id, akunId, kini, String(admin).slice(0, 40)),
+  pfStmtSesiCabutProfil(env, id),
+  pfStmtLog(env, {akun: akunId, profil: id, jenis: "cabut", oleh: admin}, kini, "1")]))[0].meta.changes;
+export const pfResetPin = async (env, id, akunId, garam, sha, admin, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_profil SET pin_garam = ?3, pin_sha = ?4, pin_wajib_ganti = 1, salah_hari = 0, kunci_admin = 0, diubah = ?5 WHERE id = ?1 AND akun_id = ?2 AND status = 'aktif'").bind(id, akunId, garam, sha, kini),
+  pfLajuHapusProfil(env, id), pfStmtSesiCabutProfil(env, id),
+  pfStmtLog(env, {akun: akunId, profil: id, jenis: "reset_pin", oleh: admin}, kini, "1")]))[0].meta.changes;
+export const pfBukaKunci = async (env, id, akunId, admin, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_profil SET kunci_admin = 0, salah_hari = 0, diubah = ?3 WHERE id = ?1 AND akun_id = ?2 AND status = 'aktif'").bind(id, akunId, kini),
+  pfLajuHapusProfil(env, id),
+  pfStmtLog(env, {akun: akunId, profil: id, jenis: "buka_kunci", oleh: admin}, kini, "1")]))[0].meta.changes;
+/* pembersihan jam-an: sesi kedaluwarsa, log lebih dari 730 hari, profil dicabut lebih dari 30 hari yang fotonya masih ada */
+export async function pfBersih(env, kini) {
+  const [s, l] = await env.DB.batch([env.DB.prepare("DELETE FROM instansi_sesi_profil WHERE kedaluwarsa <= ?1").bind(kini),
+    env.DB.prepare("DELETE FROM instansi_profil_log WHERE waktu < ?1").bind(kini - 730 * 864e5)]);
+  const foto = (await env.DB.prepare("SELECT id, akun_id FROM instansi_profil WHERE status = 'dicabut' AND diubah < ?1 AND foto = 1 LIMIT 100").bind(kini - 30 * 864e5).all()).results;
+  return {sesi: s.meta.changes, log: l.meta.changes, foto};
+}
+export const pfFotoDibuang = (env, id) => env.DB.prepare("UPDATE instansi_profil SET foto = 0 WHERE id = ?1 AND status = 'dicabut'").bind(id).run();
+/* profil tambahan (keempat, atau pengganti) sesudah akun aktif: draf lengkap diajukan, menunggu setuju admin */
+export const pfAjukan = async (env, akunId, id, kini) => (await env.DB.batch([
+  env.DB.prepare("UPDATE instansi_profil SET status = 'menunggu', diubah = ?3 WHERE id = ?1 AND akun_id = ?2 AND status = 'draf' AND pin_sha IS NOT NULL AND foto = 1 AND (SELECT status FROM instansi_akun WHERE id = ?2) = 'aktif'").bind(id, akunId, kini)]))[0].meta.changes;
+
+/* ---------- PF-07: papan aktivasi per profil (profil-bpbd K11, ALGORITMA 12) ---------- */
+/* satu baris per akun pemda: jumlah profil bukan dicabut, aktif, menunggu, dan masuk terakhir; wilayah provinsi dari cakupan, kab dari kolom kab */
+export const pfPapanAkun = async env => (await env.DB.prepare(
+  `SELECT a.id, a.jenis, a.tingkat, a.prov, a.kab, json_extract(a.cakupan, '$[0]') pv, a.status,
+     (SELECT count(*) FROM instansi_profil p WHERE p.akun_id = a.id AND p.status != 'dicabut') pic,
+     (SELECT count(*) FROM instansi_profil p WHERE p.akun_id = a.id AND p.status = 'aktif') pic_aktif,
+     (SELECT count(*) FROM instansi_profil p WHERE p.akun_id = a.id AND p.status = 'menunggu') pic_menunggu,
+     (SELECT max(p.terakhir_masuk) FROM instansi_profil p WHERE p.akun_id = a.id) terakhir
+   FROM instansi_akun a WHERE a.jenis IN ('pemprov', 'pemkab', 'pemkot') AND a.dummy = 0`).all()).results;
+/* akun pemda satu wilayah: kab/kota lewat (tingkat, prov, kab); provinsi lewat kunci_wilayah = kode provinsi (susunDefs) */
+export const pfAkunWilayah = (env, prov, kab) => kab
+  ? env.DB.prepare("SELECT id, jenis, tingkat, wilayah, username, status, cakupan, prov, kab FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND kab = ?2 AND jenis IN ('pemkab', 'pemkot') AND dummy = 0").bind(prov, kab).first()
+  : env.DB.prepare("SELECT id, jenis, tingkat, wilayah, username, status, cakupan, prov, kab FROM instansi_akun WHERE jenis = 'pemprov' AND kunci_wilayah = ?1 AND dummy = 0").bind(prov).first();
+export const pfAkunPemdaById = (env, id) => env.DB.prepare("SELECT id, jenis, tingkat, wilayah, username, status, cakupan, prov, kab FROM instansi_akun WHERE id = ?1 AND jenis IN ('pemprov', 'pemkab', 'pemkot') AND dummy = 0").bind(id).first();
+export const pfProfilRinci = async (env, akunId) => (await env.DB.prepare(
+  "SELECT id, nama, jabatan, status, terakhir_masuk, kunci_admin FROM instansi_profil WHERE akun_id = ?1 ORDER BY dibuat, id LIMIT 12").bind(akunId).all()).results;
+/* kontak pemangku kategori bpbd yang aktif dan berwa di satu wilayah (kab null = tingkat provinsi) */
+export const pfKontakBpbd = async (env, prov, kab) => (await env.DB.prepare(
+  "SELECT id, nama, jabatan, wa FROM kontak_pemangku WHERE status = 'aktif' AND kategori = 'bpbd' AND prov = ?1 AND (kab = ?2 OR (?2 IS NULL AND kab IS NULL)) AND wa IS NOT NULL ORDER BY nama LIMIT 20").bind(prov, kab ?? null).all()).results;
+/* satu-satunya penulis wa_antre jenis undang_pf (GP-15); pesan tidak pernah memuat sandi */
+export const pfUndangAntre = (env, {id, tujuan, pesan, rujukan, kini}) => stmtAntreWa(env, {id, tujuan, pesan, jenis: "undang_pf", rujukan, kini}).run();
+
+/* ---------- PF-08: pengambil laporan dan waktu respons (profil-bpbd K12, migrasi 0167) ---------- */
+export const lpAmbilNomor = (env, nomor) => env.DB.prepare("SELECT nomor, profil_id, akun_id, nama, jabatan, label, waktu FROM lapor_ambil WHERE nomor = ?1").bind(nomor).first();
+export const lpAmbilDaftar = async (env, nomors) => nomors.length ? (await env.DB.prepare("SELECT nomor, label FROM lapor_ambil WHERE nomor IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(nomors)).all()).results : [];
+/* satu batch: ambil (atau ambil ulang bila pengambil lama dicabut) lalu satu baris riwayat dengan dari = ke; riwayat hanya bila ambil terjadi (changes() > 0). Kembalian = baris yang berubah (0 = sudah diambil profil aktif lain) */
+export const lpAmbilTulis = async (env, a, kini) => (await env.DB.batch([
+  env.DB.prepare(`INSERT INTO lapor_ambil (nomor, profil_id, akun_id, nama, jabatan, label, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+    ON CONFLICT (nomor) DO UPDATE SET profil_id = excluded.profil_id, akun_id = excluded.akun_id, nama = excluded.nama, jabatan = excluded.jabatan, label = excluded.label, waktu = excluded.waktu
+    WHERE (SELECT status FROM instansi_profil WHERE id = lapor_ambil.profil_id) = 'dicabut'`).bind(a.nomor, a.profil, a.akun, a.nama, a.jabatan, a.label, kini),
+  env.DB.prepare("INSERT INTO lapor_tiket_riwayat (nomor, dari, ke, catatan, pelaku, waktu) SELECT ?1, ?2, ?2, ?3, ?4, ?5 WHERE changes() > 0").bind(a.nomor, a.status, a.catatan, String(a.pelaku).slice(0, 200), kini)]))[0].meta.changes;
+/* bahan hitung respons 30 hari: laporan terkirim (bukan tidak_valid) dengan waktu ambil, lalu waktu dilihat pertama per nomor dari log meja profil */
+export const lpResponsLaporan = async (env, sejak) => (await env.DB.prepare(
+  `SELECT s.nomor, s.terkirim, s.ringkas, a.waktu ambil FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_ambil a ON a.nomor = s.nomor
+   WHERE s.terkirim > ?1 AND t.status != 'tidak_valid' LIMIT 5000`).bind(sejak).all()).results;
+export const lpResponsDilihat = async (env, sejak) => (await env.DB.prepare(
+  "SELECT objek nomor, min(waktu) waktu FROM instansi_profil_log WHERE jenis = 'meja' AND waktu > ?1 AND rute LIKE '%/lihat' AND objek IS NOT NULL GROUP BY objek").bind(sejak).all()).results;
+export const pfAkunBpbdAktif = async env => (await env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE jenis IN ('pemkab', 'pemkot') AND status = 'aktif' AND dummy = 0").all()).results;
+
+/* ---------- PF-09: PIC untuk Pusdalops (profil-bpbd K13, ALGORITMA 14) ---------- */
+/* akun BPBD aktif satu provinsi: kab/kota lewat (tingkat, prov), provinsi lewat kunci_wilayah */
+export const pfPicAkunProv = async (env, prov) => (await env.DB.batch([
+  env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND jenis IN ('pemkab', 'pemkot') AND status = 'aktif' AND dummy = 0").bind(prov),
+  env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE jenis = 'pemprov' AND kunci_wilayah = ?1 AND status = 'aktif' AND dummy = 0").bind(prov)])).flatMap(x => x.results);
+export const pfPicDaftar = async (env, akunIds) => akunIds.length ? (await env.DB.prepare(
+  `SELECT p.id, p.akun_id, p.nama, p.jabatan, p.wa, p.terakhir_masuk, (SELECT max(l.waktu) FROM instansi_profil_log l WHERE l.profil_id = p.id AND l.jenis = 'meja') terakhir_meja
+   FROM instansi_profil p WHERE p.akun_id IN (SELECT value FROM json_each(?1)) AND p.status = 'aktif'`).bind(JSON.stringify(akunIds)).all()).results : [];

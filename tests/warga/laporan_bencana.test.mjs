@@ -12,6 +12,7 @@ import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
+import {denganProfil} from "./_profil.mjs";
 import * as K from "../../public/laporan_karhutla_spek.js";
 import * as SB from "../../public/laporan_bencana_spek.js";
 import {teksWA} from "../../public/laporan_karhutla_wa.js";
@@ -60,7 +61,7 @@ const pemprov = async (kode, nama, U_ = U) => {
   await sisip("instansi_akun", {id, username, jenis: "pemprov", tingkat: "prov", wilayah: "Provinsi " + nama, kunci_wilayah: "k" + id, cakupan: JSON.stringify([kode]), prov: null, kab: null, garam, sandi_sha: sha256(garam + SANDI),
     status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD Provinsi", email: "budi@contoh.go.id", wa: "6281234500" + kode, surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0, dibuat: Date.now() - 3 * HARI, dummy: 0});
   const m = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(m.s, 200, m.t);
-  const cookie = m.h.get("set-cookie").split(";")[0];
+  const {cookie} = await denganProfil(DB, id, {cookie: m.h.get("set-cookie").split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
   return {pemprov: true, h: {cookie}, hp: {cookie, ...PB}};
 };
 const via = (a, j) => a.pemprov && /^\/api\/laporan-karhutla\/(draf|kirim|kiriman)(\?|$)/.test(j) ? j.replace("/api/laporan-karhutla/", "/api/instansi/laporan/") : j;

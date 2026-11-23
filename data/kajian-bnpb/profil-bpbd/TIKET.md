@@ -6,7 +6,7 @@ Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas
 
 ## Urutan
 
-PF-00 dahulu. PF-01 lalu PF-02. Sesudah PF-02: PF-03, PF-04, PF-05, dan PF-06 boleh berjalan, tetapi tiket yang menyentuh `src/instansi.js` (PF-04, PF-05, PF-06) berjalan satu per satu. Layar (PF-03, PF-06 bagian layar) menunggu rute yang dipakainya.
+PF-00 dahulu. PF-01 lalu PF-02. Sesudah PF-02: PF-03, PF-04, PF-05, dan PF-06 boleh berjalan, tetapi tiket yang menyentuh `src/instansi.js` (PF-04, PF-05, PF-06) berjalan satu per satu. Perluasan: PF-07 sesudah PF-06, PF-08 sesudah PF-04, PF-09 sesudah PF-08; ketiganya menyentuh `src/hak.js` dan dua di antaranya `src/lapor_ai.js` dan `public/lapor/meja.js`, jadi berjalan satu per satu. Layar (PF-03, PF-06 bagian layar) menunggu rute yang dipakainya.
 
 ## Tiket
 
@@ -19,6 +19,9 @@ PF-00 dahulu. PF-01 lalu PF-02. Sesudah PF-02: PF-03, PF-04, PF-05, dan PF-06 bo
 | PF-04 | Sesi profil di jalur kerja: `akunAktif` untuk pemda, log `kerja` di pembungkus `RUTE_INSTANSI`, `GET /profil/log`; meja membaca sesi profil (`hakMeja`, `lpAkunMeja` tanpa pemda, log `meja`); `/masuk` melewatkan akun pemda (Q1); pembersihan sesi, log, foto; tautan masuk meja ke `/instansi` | `src/instansi.js`, `src/lapor_ai.js`, `src/hak.js`, `src/masuk.js`, `src/masuk_undang.js`, `public/lapor/meja.js`, `tests/warga/profil_meja.test.mjs`, `tests/warga/profil_log.test.mjs`, `tests/warga/masuk*.test.mjs`, `tests/lapor/**` bila uji meja ikut berubah | `warga-api` (`public/lapor/meja.js`: `layar-peta`, satu baris) | `guard-api`, `security-reviewer` | UP-3, UP-5, UP-19, UP-21, UP-22, UP-28, UP-32; GP-11, GP-12, GP-13; uji menyiapkan profil aktif lewat sisipan D1 langsung; `npm run uji:warga` | PF-02 |
 | PF-05 | Buat massal hanya pemda; teks undangan baru (tiga langkah daftar PIC) dan CSV; tombol dan progres di layar admin | `src/instansi.js` (`buatMassal`), `public/admin/instansi.js`, `tests/warga/instansi.test.mjs` | `warga-api` | `guard-api`, `selera-angka` | UP-1; GP-8, GP-9 | PF-00 |
 | PF-06 | Admin: `setuju` akun mengaktifkan profil (pra-periksa 3), `tolak`; rute `/admin/profil/:akunId`, `/admin/profil/:id` (`setuju`, `cabut`, `reset_pin`, `buka_kunci`), foto admin, `/admin/log`; layar L7 | `src/profil.js`, `src/instansi.js` (`ubahAkun`), `src/hak.js`, `public/admin/instansi.js`, `public/admin/instansi_profil.js`, `tests/warga/profil.test.mjs` | `warga-api` | `guard-api`, `security-reviewer`, `inp-reviewer`, `selera-angka` | UP-15, UP-16, UP-18, UP-30; L-4; tautan `http://localhost:8800/admin/instansi` | PF-02 |
+| PF-07 | K11 papan aktivasi: kolom jumlah PIC, status akun, menunggu, terakhir masuk, baris provinsi, rincian profil tersamar, kirim ulang undangan (`wa_antre` atau teks salin) | `src/masuk_undang.js`, `src/hak.js`, `public/admin/aktivasi.js`, `public/admin/aktivasi.css`, `tests/warga/profil_papan.test.mjs` | `warga-api` | `guard-api`, `security-reviewer`, `inp-reviewer`, `selera-angka` | UP-33, UP-34; GP-15; L-6; tautan `http://localhost:8800/admin/aktivasi` | PF-02 (data profil), PF-06 (status admin) |
+| PF-08 | K12 pengambil laporan dan respons: migrasi `lapor_ambil` (nomor diambil saat tiket) dengan sidik dan entri `cakupan.json`; aksi `ambil`, label di daftar dan rincian meja, `GET /api/lapor/respons`; tombol dan label di meja; kartu "Respons laporan warga" di layar Pimpinan; komentar kepala `pimpinan.js` diperbarui | `migrations/<nomor>_lapor_ambil.sql`, `tests/warga/migrasi_beku.json`, `tests/warga/cakupan.json`, `src/lapor_ai.js`, `src/lapor_meja_hak.js`, `src/hak.js`, `public/lapor/meja.js` dan `meja.css` (`layar-peta`), `public/admin/pimpinan.js` (`ruang-bnpb`), `tests/warga/profil_ambil.test.mjs` | `warga-api` (meja: `layar-peta`; Pimpinan: `ruang-bnpb`, satu kartu) | `migrasi-idempoten`, `guard-api`, `security-reviewer`, `inp-reviewer`, `selera-angka` | UP-35, UP-36; GP-16; L-7, L-8; tautan `http://localhost:8800/lapor/meja` dan `/admin/pimpinan` | PF-04 |
+| PF-09 | K13 kontak PIC untuk staf BNPB: `GET` dan `POST /api/lapor/meja/:nomor/pic`, `GET /api/kontak/admin/pic`, bagian PIC BPBD di meja BNPB, kolom dan daftar PIC di buku kontak; pelapor tidak berubah | `src/lapor_ai.js`, `src/hak.js`, `src/kontak.js`, `public/lapor/meja.js` (`layar-peta`), `public/admin/kontak.js`, `public/admin/kontak.css`, `tests/warga/profil_pic.test.mjs` | `warga-api` (meja: `layar-peta`) | `security-reviewer`, `guard-api`, `selera-angka`, `inp-reviewer` | UP-37, UP-38; GP-14; L-7, L-8; tautan `http://localhost:8800/admin/kontak` | PF-04, PF-08 (berkas `meja.js` dan `lapor_ai.js` bersama, kerja berurutan) |
 
 ## Letak jawaban Q dan N di tiket
 
@@ -29,6 +32,12 @@ PF-00 dahulu. PF-01 lalu PF-02. Sesudah PF-02: PF-03, PF-04, PF-05, dan PF-06 bo
 | Q4 (surat dan kartu tetap wajib) | PF-02 (`kirim`), PF-03 (layar) |
 | Q6 (Polri dan TNI tidak dibuat) | PF-05 |
 | Q7 (log 2 tahun, siapa melihat) | PF-01, PF-04, PF-06 |
+| Q9 (PIC yang jaga) | PF-09 |
+| Q10 (respons tanpa peringkat, ambang 5 laporan) | PF-08 |
+| N7 | PF-02 |
+| N8, N12 | PF-08 |
+| N9, N10 | PF-07 |
+| N11, N13 | PF-09 |
 | N1 sampai N6 | PF-02, PF-03, PF-06 sesuai kolom Tiket di `PRD.md` |
 
 ## Yang harus dilakukan pemilik
@@ -42,7 +51,10 @@ PF-00 dahulu. PF-01 lalu PF-02. Sesudah PF-02: PF-03, PF-04, PF-05, dan PF-06 bo
 | Jalankan buat massal pemda di produksi dan simpan CSV | PF-05, P-2 |
 | Kirim teks undangan ke kontak BPBD; kumpulkan kontak resmi tiap BPBD | PF-05 |
 | Login uji di localhost diketik sendiri | PF-03, PF-06 |
-| Tinjau layar di `http://localhost:8800/instansi`, `/admin/instansi`, `/lapor/meja` | PF-03, PF-04, PF-06 |
+| Tinjau layar di `http://localhost:8800/instansi`, `/admin/instansi`, `/lapor/meja`, `/admin/aktivasi`, `/admin/pimpinan`, `/admin/kontak` | PF-03, PF-04, PF-06, PF-07, PF-08, PF-09 |
+| Terapkan migrasi `lapor_ambil` di D1 produksi | PF-08 |
+| Pastikan buku kontak memuat nomor BPBD tiap daerah (`kontak_pemangku` kategori `bpbd`) supaya kirim ulang lewat WA punya tujuan | PF-07 |
+| Jawab N8 sampai N13 (bawaan sementara berlaku) | PF-07 sampai PF-09 |
 | Bila ada akun uji yang dibuat saat tinjau: hapus lewat cabut sesudah selesai | PF-06 |
 
 ## Paket lanjutan (bukan tiket di sini)

@@ -52,3 +52,20 @@ Pemanggil `hakMeja`: `src/lapor_ai.js:746`, `:788`, `:895` dan `src/lapor_lanjut
 ## 6. Yang sengaja tidak dikerjakan
 
 Pencocokan wajah (K8), baca WA masuk, akun Polda, Polres, Kodam, Kodim (Q6), alur pengganti PIC yang pindah selain cabut dan tambah profil (cukup dengan aksi admin), serta tautan isian lama ke profil pengisinya (isian lama tetap atas nama akun).
+
+## 7. Kode nyata untuk K11 sampai K13 (23 Nov 2026)
+
+| Fakta | Bukti |
+| --- | --- |
+| Papan aktivasi sudah ada: `hitungPapan` menyusun baris `<prov>|<kab>` dari `daftarKab` dan lima kueri berkelompok; hanya kab/kota, hitungan akun `tingkat = 'kab'`; cache tepi 5 menit; hak lewat `hakStaf` | `src/masuk_undang.js:323-365`, `src/hak.js:826-841` |
+| Layar papan: kolom kab, akun aktif, terakhir masuk, undangan, status, aksi; rincian `GET /api/masuk/aktivasi?prov=&kab=` menampilkan kontak pemangku dan tombol undang | `public/admin/aktivasi.js:16-19`, `:90-110` |
+| Antrean WA: tabel `wa_antre (tujuan, pesan, jenis <= 20, rujukan <= 40, status antre/dikirim/gagal)`; satu fungsi sisip dipakai undangan `/masuk`; gerbang menarik baris berstatus `antre` | `migrations/0095_lapangan_orang.sql:50-62`, `src/hak.js:639`, `src/lapangan_wa.js:42` |
+| Meja: aksi `lihat` memindah `baru` ke `dilihat` dan menulis `lapor_akses` untuk BPBD; aksi lain juga menulis `lapor_akses`; riwayat `lapor_tiket_riwayat (dari, ke, catatan, pelaku, waktu)` menerima `dari = ke` (dipakai foto penanganan); status tiket enum tertutup | `src/lapor_ai.js:794-806`, `:864`, `:895`, `migrations/0155_lapor_ai.sql:74-91`, `migrations/0157_lapor_lanjut.sql:20-26` |
+| Daftar aksi meja diatur regex dan `AKSI_BPBD` | `src/lapor_ai.js:907`, `src/lapor_meja_hak.js:38` |
+| Laporan masuk = `lapor_sesi.terkirim`; daftar meja menyaring wilayah dari `kerja` | `src/hak.js:1965-1975`, `src/lapor_ai.js:wilayahBaris` |
+| Layar Pimpinan yang ada memuat tabel "Respons median" per kab dari API lama (`src/meja.js:569`); komentar kepala berkas menyatakan tanpa rute data baru | `public/admin/pimpinan.js:1-3`, `:76-77` |
+| Pelapor memakai kontak panen: `kontakBpbd` memilih kab, lalu provinsi, lalu 117 dari `public/data/bpbd_kontak.json`; `lapor_info` merakit "BPBD terdekat" dari berkas yang sama | `src/lapor_kontak.js:1-30`, `src/lapor_info.js:105-125` |
+| Buku kontak staf: tabel `kontak_pemangku` (kategori `bpbd` dan lain-lain) diakses lewat `GET /api/kontak/admin` (`adminOK`) dan layar `/admin/kontak` | `src/kontak.js:13-17`, `:107`, `public/admin/kontak.js:115` |
+| Pemilik berkas: papan, kontak, meja API = `warga-api`; `public/lapor/meja.js` = `layar-peta`; `public/admin/pimpinan.js` = `ruang-bnpb` | `node scripts/agents/ilmu.mjs pemilik <berkas>` |
+
+Kesimpulan rancangan: tidak membuat layar baru; satu tabel baru (`lapor_ambil`); statistik respons dari stempel yang sudah ada; nomor PIC dikunci ke staf BNPB.

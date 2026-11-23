@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import {siapkan, berantai, ADMIN, sha256} from "../warga/_bnpb.mjs";
 import {JPEG_SAH} from "../warga/_bantu.mjs";
+import {profilAktif} from "../warga/_profil.mjs";
 import {langkahKronologi} from "../../src/lapor_spek.js";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 
@@ -335,6 +336,7 @@ async function lembaga({jenis, tingkat, prov, kab, via = "anggota", waAkun}) {  
     DB.prepare("INSERT INTO mk_akun (id, wa, nama, status, dibuat) VALUES (?, ?, 'Anggota Uji', 'aktif', ?)").bind(mk, waMk, kini),
     ...(via === "anggota" ? [DB.prepare("INSERT INTO mk_anggota (id, mk_id, tabel, akun_id, status, jalur, rujukan, dibuat, diubah) VALUES (?, ?, 'instansi_akun', ?, 'aktif', 'tinjau', 'uji', ?, ?)").bind("ag" + String(nu).padStart(14, "0"), mk, id, kini, kini)] : []),
     DB.prepare("INSERT INTO mk_sesi (token_sha, mk_id, kode_pada, dibuat, habis) VALUES (?, ?, ?, ?, ?)").bind(sha256(tok), mk, kini, kini, kini + 3600e3)]);
+  if (["pemkab", "pemkot", "pemprov"].includes(jenis)) return {id, h: {cookie: (await profilAktif(DB, id)).cookie, origin: "http://bnpb.lokal", "x-pb": "1"}};   // akun BPBD: sesi profil (paket profil-bpbd), bukan sesi /masuk
   return {id, h: {cookie: `sesi_masuk=${tok}`, origin: "http://bnpb.lokal", "x-pb": "1"}};
 }
 const WA_BOGOR = "628120009001";

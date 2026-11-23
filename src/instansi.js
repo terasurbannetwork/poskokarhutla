@@ -23,7 +23,10 @@ import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan, PERAN} from "./penugasan.js";
 import {tandaInstansi} from "./masuk_tanda.js";
-import {sandiPeranTulis, mkSesiPeran, mkCabutSesiPeran, mkCabutSesiAkun, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
+import {rutePofil, profilTanpaTabel, profilLengkap} from "./profil.js";
+import {sesiProfilDari, tokenProfil, kukiProfil} from "./profil_sesi.js";
+import {adaPemda, K as KP} from "./profil_konst.js";
+import {pfLog, pfStmtSesiCabutAkun, pfStmtSetujuAkun, pfStmtTolakAkun, pfSesiCabut, pfBersih, pfFotoDibuang, pfProfilAkun, pfStmtLog, sandiPeranTulis, mkSesiPeran, mkCabutSesiPeran, mkCabutSesiAkun, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
 import {BENCANA, BENCANA_X, DAFTAR_BENCANA, bencanaId, labelBencana, tutupBencana, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
 import {bacaUji, ujiAda, GALAT_BELUM, stmtUji, stmtUjiTugasBaru} from "./uji_lapangan.js";
 
@@ -121,8 +124,16 @@ export async function akunAktif(env, req, kini) {
   const a = await akunMasuk(env, req, kini); if (a instanceof Response) return a;
   if (a.status !== "aktif") return gagal(403, a.status === "ditolak" ? "verifikasi ditolak; perbaiki data lalu kirim ulang" : "akun belum aktif; lengkapi verifikasi dan tunggu persetujuan admin");
   /* sandi awal (CSV) atau hasil reset diketahui admin: sebelum membuat sandi baru, sesi hanya boleh ke rute gantisandi, keluar, dan saya */
-  return a.wajib_ganti ? json({galat: "buat sandi baru dulu: sandi awal diketahui admin", wajib_ganti: true}, 403) : a;
+  if (a.wajib_ganti) return json({galat: "buat sandi baru dulu: sandi awal diketahui admin", wajib_ganti: true}, 403);
+  if (!adaPemda(a.jenis)) return a;   // jenis lain tidak berubah
+  /* akun BPBD (pemprov, pemkab, pemkot): rute kerja butuh sesi PROFIL (pilih profil dan PIN benar), bukan sesi akun saja (K3, PF-04) */
+  let p; try { p = await sesiProfilDari(env, req, kini); } catch (e) { if (profilTanpaTabel(e)) return gagal(503, "fitur profil belum diaktifkan (migrasi 0166 belum diterapkan)"); throw e; }
+  if (!p || p.akun_id !== a.id) return json({galat: "pilih profil dan isi PIN dulu", profil_perlu: true}, 401);
+  if (p.pin_wajib_ganti) return json({galat: "ganti PIN dulu", pin_wajib_ganti: true}, 403);
+  const kerja = {...a, profil_id: p.profil_id, profil_nama: p.profil_nama}; PROFIL_REQ.set(req, kerja);
+  return kerja;
 }
+const PROFIL_REQ = new WeakMap();   // permintaan -> akun bersesi profil; dipakai pembungkus RUTE_INSTANSI untuk log kerja (satu tulis, tanpa baca tambahan)
 const gagalBanyak = async (env, kunci, aksi, maks, kini) => (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
 const catatLaju = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini);
 
@@ -144,7 +155,9 @@ async function masuk(env, req, kini) {
   await env.DB.batch([env.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(await sha(token), a.id, kini, kini + SESI_UMUR),
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND kedaluwarsa <= ?").bind(a.id, kini)]);
   const akun = await env.DB.prepare(`SELECT ${KOLOM_AKUN} FROM instansi_akun WHERE id = ?`).bind(a.id).first();
-  return denganCookie(json({akun: ringkas(akun)}), cookieSet(token, SESI_UMUR / 1000));
+  const pm = adaPemda(akun.jenis);
+  if (pm) await pfLog(env, {akun: a.id, jenis: "masuk", ip: ip.slice(0, 12)}, kini).catch(e => { if (!profilTanpaTabel(e)) throw e; });
+  return denganCookie(json({akun: ringkas(akun), profil_mode: pm}), cookieSet(token, SESI_UMUR / 1000));
 }
 /* jejak audit: satu pernyataan, bisa dipasang dalam batch yang sama dengan aksinya; syarat (mis. "changes() > 0") menjaga jejak tak ditulis bila aksinya kalah balapan */
 const stmtJejak = (env, oleh, akunId, aksi, alasan, kini, syarat = "1") => env.DB.prepare("INSERT INTO instansi_jejak (waktu, oleh, akun_id, aksi, alasan) SELECT ?, ?, ?, ?, ? WHERE " + syarat).bind(kini, oleh, akunId, aksi, alasan ?? null);
@@ -153,6 +166,7 @@ const stmtJejak = (env, oleh, akunId, aksi, alasan, kini, syarat = "1") => env.D
 async function gantiSandi(env, req, kini) {
   const a = await akunMasuk(env, req, kini); if (a instanceof Response) return a;
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`)), s = await sandiBaru();
+  if (adaPemda(a.jenis)) await pfStmtSesiCabutAkun(env, a.id).run().catch(e => { if (!profilTanpaTabel(e)) throw e; });   // sandi lembaga berganti: semua sesi profil mati dulu
   await env.DB.batch([env.DB.prepare("UPDATE instansi_akun SET garam = ?, sandi_sha = ?, wajib_ganti = 0 WHERE id = ?").bind(s.garam, s.sandi_sha, a.id),
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND token_sha != ?").bind(a.id, await sha(m[1])), stmtJejak(env, "pengguna", a.id, "ganti_sandi", null, kini)]);
   await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ?").bind(a.id).run().catch(() => {});   // sesi lain dicabut: perangkat lain tidak boleh tetap menerima push (migrasi 0040 belum ada = dilewati)
@@ -178,17 +192,24 @@ export async function cabutSesi(env, req) {
 export const cabutSemuaSesi = (env, akunId) => mkCabutSesiAkun(env, akunId);
 async function keluar(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`));
+  const tp = tokenProfil(req), sp = tp ? await sesiProfilDari(env, req, kini).catch(() => null) : null;
+  const cabutProfil = async () => { if (tp) await pfSesiCabut(env, await sha(tp)).catch(e => { if (!profilTanpaTabel(e)) throw e; }); };   // keluar selalu mencabut sesi profil, juga bila kuki akun sudah hilang
   if (m) {
     const a = await sesiDari(env, req, kini), ep = await req.json().then(b => b?.endpoint, () => null);   // klien mengirim endpoint perangkat ini (instansi_push.js); tanpa itu hanya sesi yang dicabut
     if (a && akunLain(req, a)) return akunLain(req, a);   // tab basi (akun lain sudah masuk di tab lain) tidak mencabut sesi akun itu
     await env.DB.prepare("DELETE FROM instansi_sesi WHERE token_sha = ?").bind(await sha(m[1])).run();
+    await cabutProfil();
+    if (a && sp) await pfLog(env, {akun: a.id, profil: sp.profil_id, jenis: "keluar"}, kini).catch(() => {});
     if (a && typeof ep === "string" && ep.length <= 1000) await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ? AND endpoint = ?").bind(a.id, ep).run().catch(() => {});
   }
-  return denganCookie(json({ok: true}), cookieSet("", 0));
+  if (!m) await cabutProfil();
+  return denganCookie(json({ok: true}), [...cookieSet("", 0), ...kukiProfil("", 0)]);
 }
 async function saya(env, req, kini) {
   const a = await akunMasuk(env, req, kini); if (a instanceof Response) return a;
-  return json({akun: ringkas(a), cakupan: jsonAman(a.cakupan), kab: a.kab, bantuan: BANTUAN, kendala: KENDALA, hasil: HASIL, lahan: LAHAN});
+  const pm = adaPemda(a.jenis), sp = pm ? await sesiProfilDari(env, req, kini).catch(() => null) : null;   // akun BPBD: layar memilih antara pilih profil, daftar PIC, dan layar kerja
+  return json({akun: ringkas(a), cakupan: jsonAman(a.cakupan), kab: a.kab, bantuan: BANTUAN, kendala: KENDALA, hasil: HASIL, lahan: LAHAN,
+    profil_mode: pm, ...(sp && sp.akun_id === a.id ? {profil: {id: sp.profil_id, nama: sp.profil_nama, jabatan: sp.profil_jabatan}} : {})});
 }
 
 /* ================================================================ verifikasi */
@@ -203,6 +224,7 @@ const BOLEH_VERIFIKASI = ["belum_klaim", "ditolak", "menunggu"];
 async function verifikasi(env, req, kini) {
   const a = await akunMasuk(env, req, kini); if (a instanceof Response) return a;
   if (!BOLEH_VERIFIKASI.includes(a.status)) return gagal(409, a.status === "aktif" ? "akun sudah aktif" : "akun tidak bisa memverifikasi");
+  if (adaPemda(a.jenis)) return gagal(409, "akun BPBD memakai pendaftaran PIC: daftarkan 3 PIC lalu kirim untuk disetujui");
   const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o, f = {nama: isian(o.nama, 2, 100, "nama lengkap"), nip: isian(o.nip, 5, 30, "NIP/NRP"), pangkat: isian(o.pangkat, 1, 60, "pangkat/golongan", false),
     jabatan: isian(o.jabatan, 2, 100, "jabatan"), unit: isian(o.unit, 2, 120, "unit kerja"), email: isian(o.email, 6, 254, "email dinas"), wa: isian(o.wa, 8, 30, "nomor WhatsApp"),
@@ -1358,8 +1380,11 @@ async function bersihkanInstansiIsi(env, kini) {
   try { await env.DB.batch([env.DB.prepare("DELETE FROM tugas_muncul WHERE tugas_id NOT IN (SELECT id FROM tugas_api)"), env.DB.prepare("DELETE FROM tugas_lapangan WHERE tugas_id NOT IN (SELECT id FROM tugas_api)")]); }   // yatim sesudah tugas dihapus; tabel 0037 belum ada = dilewati
   catch (e) { if (!/no such table: tugas_(muncul|lapangan)/i.test(String(e?.message || e))) throw e; }
   let kedaluwarsa = null; try { kedaluwarsa = await tutupKedaluwarsa(env, kini); } catch (e) { console.error("tutup kedaluwarsa", e?.message); }   // gempa: jendela kaji cepat
+  let profil = null;   // sesi profil kedaluwarsa, log lebih dari 730 hari, foto profil dicabut lebih dari 30 hari (migrasi 0166 belum ada = dilewati)
+  try { profil = await pfBersih(env, kini); if (env.MEDIA) for (const f of profil.foto) { await env.MEDIA.delete(`instansi/profil/${f.akun_id}/${f.id}`); await pfFotoDibuang(env, f.id); } }
+  catch (e) { if (!profilTanpaTabel(e)) throw e; }
   const posisi = await bersihkanPenugasan(env, kini);   // posisi pelacak 30 hari; tabel 0035 belum ada = dilewati
-  return {sesi: r[0].meta.changes, tugas: r[r.length - 1].meta.changes, media: media.length, alat_pulang: alat ? r[2].meta.changes : 0, ...(posisi ? {posisi} : {}), ...(kedaluwarsa && Object.keys(kedaluwarsa).length ? {kedaluwarsa} : {})};
+  return {sesi: r[0].meta.changes, ...(profil ? {profil: {sesi: profil.sesi, log: profil.log, foto: profil.foto.length}} : {}), tugas: r[r.length - 1].meta.changes, media: media.length, alat_pulang: alat ? r[2].meta.changes : 0, ...(posisi ? {posisi} : {}), ...(kedaluwarsa && Object.keys(kedaluwarsa).length ? {kedaluwarsa} : {})};
 }
 
 /* ================================================================ admin (modOK: dokumen dan WhatsApp pribadi tidak untuk akun gerbang situs) */
@@ -1369,7 +1394,8 @@ async function buatMassal(env, req, kini) {
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const mulai = num(b.o.mulai ?? 0, 0, 100000, true), batas = num(b.o.batas ?? 100, 1, 200, true);
   if (mulai == null || batas == null || Number.isNaN(mulai) || Number.isNaN(batas)) return gagal(400, "mulai bilangan bulat >= 0 dan batas 1-200");
-  const defs = await muatDefs(env); if (!defs) return gagal(503, "pusat_kec.json tidak terbaca dari aset; daftar akun tidak bisa disusun");
+  const defsSemua = await muatDefs(env); if (!defsSemua) return gagal(503, "pusat_kec.json tidak terbaca dari aset; daftar akun tidak bisa disusun");
+  const defs = defsSemua.filter(d => adaPemda(d.jenis));   // paket profil-bpbd D7, Q6: hanya akun BPBD (pemda); Polri dan TNI tidak dibuat di sini. Disaring SEBELUM slice
   const irisan = defs.slice(mulai, mulai + batas), sandi = [], st = [];
   for (const d of irisan) {
     const s = await sandiBaru(); sandi.push(s.sandi);
@@ -1408,7 +1434,8 @@ async function ubahAkun(env, req, id, kini) {
   const mod = await modAtauStaf(env, req, P_VALIDASI); if (!mod) return tolakMod();
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const alasan = tx(b.o.alasan, 300); if (alasan === undefined) return gagal(400, "alasan maksimal 300 karakter");
-  const ada = await env.DB.prepare("SELECT status, cakupan FROM instansi_akun WHERE id = ?").bind(id).first(); if (!ada) return gagal(404, "akun tidak ada");
+  const ada = await env.DB.prepare("SELECT status, cakupan, jenis FROM instansi_akun WHERE id = ?").bind(id).first(); if (!ada) return gagal(404, "akun tidak ada");
+  const pemda = adaPemda(ada.jenis);   // akun BPBD: profil PIC ikut diaktifkan, dikembalikan, atau dimatikan dalam batch yang sama (paket profil-bpbd)
   /* staf BNPB (verifikator/pusdalops) hanya memutus setuju/tolak untuk akun di wilayahnya; cabut dan reset sandi tetap moderator ke atas */
   if (dariStaf(mod) && (!["setuju", "tolak"].includes(b.o.aksi) || !dalamWilayahStaf(req, jsonAman(ada.cakupan) || []))) return gagal(403, "staf hanya boleh menyetujui atau menolak akun di wilayahnya");
   const cabutSesi = env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ?").bind(id);
@@ -1417,19 +1444,24 @@ async function ubahAkun(env, req, id, kini) {
   if (aksi === "setuju" || aksi === "tolak") {
     if (!Number.isInteger(b.o.dikirim)) return gagal(400, "dikirim wajib: waktu kirim verifikasi yang sedang Anda periksa");
     if (aksi === "tolak" && (!alasan || alasan.length < 3)) return gagal(400, "alasan penolakan wajib (3-300 karakter); wakil membacanya lalu memperbaiki");
+    if (aksi === "setuju" && pemda) {   // pra-periksa: paling sedikit 3 profil menunggu yang lengkap
+      let ps; try { ps = await pfProfilAkun(env, id); } catch (e) { if (profilTanpaTabel(e)) return gagal(503, "fitur profil belum diaktifkan (migrasi 0166 belum diterapkan)"); throw e; }
+      if (ps.filter(p => p.status === "menunggu" && profilLengkap(p)).length < KP.PROFIL_WAJIB) return gagal(409, `kurang dari ${KP.PROFIL_WAJIB} profil lengkap`);
+    }
     const [r] = await env.DB.batch([aksi === "setuju" ? ubah("UPDATE instansi_akun SET status = 'aktif', alasan = NULL, diputus = ?, oleh = ? WHERE id = ? AND status = 'menunggu' AND dikirim = ?", kini, mod, id, b.o.dikirim)
-      : ubah("UPDATE instansi_akun SET status = 'ditolak', alasan = ?, diputus = ?, oleh = ? WHERE id = ? AND status = 'menunggu' AND dikirim = ?", alasan, kini, mod, id, b.o.dikirim), stmtJejak(env, mod, id, aksi, alasan, kini, "changes() > 0")]);
+      : ubah("UPDATE instansi_akun SET status = 'ditolak', alasan = ?, diputus = ?, oleh = ? WHERE id = ? AND status = 'menunggu' AND dikirim = ?", alasan, kini, mod, id, b.o.dikirim), stmtJejak(env, mod, id, aksi, alasan, kini, "changes() > 0"),
+      ...(pemda ? [aksi === "setuju" ? pfStmtSetujuAkun(env, id, mod, kini) : pfStmtTolakAkun(env, id, kini), pfStmtLog(env, {akun: id, jenis: aksi, oleh: mod}, kini, `(SELECT status FROM instansi_akun WHERE id = '${id.replace(/[^0-9a-f]/g, "")}') = '${aksi === "setuju" ? "aktif" : "ditolak"}'`)] : [])]);
     return r.meta.changes ? json({id, status: aksi === "setuju" ? "aktif" : "ditolak"}) : gagal(409, "data verifikasi berubah atau statusnya bukan menunggu; muat ulang lalu periksa lagi");
   }
   if (aksi === "cabut") {
     if (ada.status === "dicabut") return gagal(409, "akun sudah dicabut");
-    await env.DB.batch([ubah("UPDATE instansi_akun SET status = 'dicabut', alasan = ?, diputus = ?, oleh = ? WHERE id = ?", alasan, kini, mod, id), cabutSesi, stmtJejak(env, mod, id, "cabut", alasan, kini),
+    await env.DB.batch([ubah("UPDATE instansi_akun SET status = 'dicabut', alasan = ?, diputus = ?, oleh = ? WHERE id = ?", alasan, kini, mod, id), cabutSesi, stmtJejak(env, mod, id, "cabut", alasan, kini), ...(pemda ? [pfStmtSesiCabutAkun(env, id)] : []),
       ...(await env.DB.prepare("SELECT 1 FROM sqlite_master WHERE name = 'penugasan'").first() ? [env.DB.prepare("UPDATE penugasan SET status = 'dicabut' WHERE akun_id = ? AND status = 'aktif'").bind(id)] : [])]);   // tautan lacak akun yang dicabut ikut mati
     return json({id, status: "dicabut"});
   }
   if (aksi === "reset") {
     const s = await sandiBaru();
-    await env.DB.batch([ubah("UPDATE instansi_akun SET garam = ?, sandi_sha = ?, wajib_ganti = 1, oleh = ? WHERE id = ?", s.garam, s.sandi_sha, mod, id), cabutSesi, stmtJejak(env, mod, id, "reset", alasan, kini)]);
+    await env.DB.batch([ubah("UPDATE instansi_akun SET garam = ?, sandi_sha = ?, wajib_ganti = 1, oleh = ? WHERE id = ?", s.garam, s.sandi_sha, mod, id), cabutSesi, stmtJejak(env, mod, id, "reset", alasan, kini), ...(pemda ? [pfStmtSesiCabutAkun(env, id)] : [])]);
     return json({id, sandi: s.sandi});   // tampil sekali; pengguna WAJIB membuat sandi baru saat masuk
   }
   return gagal(400, "aksi harus setuju/tolak/cabut/reset");
@@ -1752,11 +1784,26 @@ const RUTE_ASLI = {
   "POST /api/instansi/admin/selesai/:id": (env, req, url, kini, ctx, id) => selesaiAdmin(env, req, id, kini),
   "POST /api/instansi/admin/usulan/:id": (env, req, url, kini, ctx, id) => putusUsulan(env, req, id, kini),
   "POST /api/instansi/admin/dummy": (env, req, url, kini) => dummy(env, req, kini),
+  /* akun BPBD dengan profil PIC (data/kajian-bnpb/profil-bpbd/): rute profil, kirim, log; semua lewat pembungkus di bawah (x-pb dan log kerja) */
+  ...rutePofil({akunMasuk, kirimBerkas, tanpaPanjang, jenisDok}),
 };
+/* rute yang tetap terbuka bagi sesi profil yang masih wajib ganti PIN (ALGORITMA 4): ganti PIN, keluar profil, daftar profil */
+const BOLEH_WAJIB_GANTI = new Set(["POST /api/instansi/profil/gantipin/:id", "POST /api/instansi/profil/keluar", "GET /api/instansi/profil"]);
 /* Pembungkus semua rute: (1) kiriman bersesi instansi wajib header x-pb: 1 (cookie SameSite=Lax saja tidak menahan POST lintas situs dengan Origin kosong atau "null");
    (2) tabel 0029 belum ada = 503 yang jelas, bukan 500. Rute admin memakai token/cookie admin dan dijaga adminOK/modOK, jadi tidak ikut aturan (1). */
 export const RUTE_INSTANSI = Object.fromEntries(Object.entries(RUTE_ASLI).map(([kunci, f]) => [kunci, async (env, req, ...sisa) => {
-  if (req.method === "POST" && !kunci.includes("/admin/") && req.headers.get("x-pb") !== "1") return gagal(403, "kiriman instansi wajib membawa header x-pb: 1 (dikirim otomatis oleh halaman /instansi)");
-  try { return await f(env, req, ...sisa); }
+  const admin = kunci.includes("/admin/");
+  if (req.method === "POST" && !admin && req.headers.get("x-pb") !== "1") return gagal(403, "kiriman instansi wajib membawa header x-pb: 1 (dikirim otomatis oleh halaman /instansi)");
+  try {
+    /* sesi profil yang wajib ganti PIN ditolak di semua rute selain tiga pengecualian; tanpa kuki profil = tanpa kueri */
+    if (!admin && kunci.includes(" /api/instansi/") && !BOLEH_WAJIB_GANTI.has(kunci) && tokenProfil(req)) {   // halaman /instansi tetap terbuka supaya layar ganti PIN bisa tampil
+      const p = await sesiProfilDari(env, req, sisa[1] ?? Date.now()).catch(e => { if (!profilTanpaTabel(e)) throw e; return null; });
+      if (p?.pin_wajib_ganti) return json({galat: "ganti PIN dulu", pin_wajib_ganti: true}, 403);
+    }
+    const r = await f(env, req, ...sisa);
+    const p = PROFIL_REQ.get(req);   // diisi akunAktif; hanya POST sukses di rute kerja (bukan admin) yang dicatat: rute dan id objek, tanpa badan
+    if (p && req.method === "POST" && !admin && r.status < 400) await pfLog(env, {akun: p.id, profil: p.profil_id, jenis: "kerja", rute: kunci, objek: sisa[3] ?? null}, sisa[1] ?? Date.now()).catch(e => { if (!profilTanpaTabel(e)) throw e; });
+    return r;
+  }
   catch (e) { if (tanpaTabel(e)) return gagal(503, "fitur instansi belum diaktifkan (migrasi 0029 belum diterapkan)"); throw e; }
 }]));
