@@ -8,7 +8,10 @@ Pertanyaan: kalau muka air semua alur naik m meter, apakah sel dengan HAND < m j
   `python3 scripts/banjir/genangan_historis.py tarik` di data/raw/banjir/genangan_historis/. "Sering" = kelas sedang ke atas (basah >= 1% waktu);
   "pernah" = kelas rendah ke atas (>= 0,5%). Badan air tetap sudah dibuang dari sumber, jadi sel alur sungai lebar terhitung salah alarm (bias ke bawah).
 - Prakiraan: persis jalur layar. DEM ubin Terrarium (SimGenangan.ambilDEM, kotak 6 km, 100 sel, sama dengan bawaan tab Simulasi),
-  SimGenangan.siapkanArea, SimHand.hitung tanpa air permanen WorldCover (layar memakainya; di sini tidak ada, bias ke bawah juga).
+  SimGenangan.siapkanArea, SimHand.hitung. Empat varian dinilai berdampingan:
+    T  = Terrarium tanpa air permanen;   TA = Terrarium + air WorldCover (SimLahan.kisiLahan, kelas 80) = persis layar;
+    F  = FABDEM (tanah tanpa pohon dan bangunan, scripts/banjir/fabdem.mjs) disampel di pusat sel yang sama;   FA = FABDEM + air WorldCover.
+  Sel laut ditentukan dari Terrarium untuk semua varian supaya himpunan sel yang dinilai sama. Pembanding sel terendah memakai DEM varian itu.
 - Situs: pusat kecamatan dengan riwayat genangan sedang+tinggi >= 5% luasnya, diacak berbenih tetap, dibagi dua: separuh KALIBRASI memilih
   ambang alur dan muka air terbaik, separuh UJI hanya dinilai sekali dengan pilihan itu (tidak ikut memilih).
 - Ukuran: CSI = TP / (TP + FP + FN), dijumlah lintas situs. Pembanding: sel TERENDAH di kotak yang sama dengan jumlah sel yang sama dengan
@@ -18,14 +21,17 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import zlib from "node:zlib";
+import crypto from "node:crypto";
+import {bukaFabdem} from "./fabdem.mjs";
 
 const AKAR = new URL("../../", import.meta.url).pathname;
 const MENTAH = path.join(AKAR, "data/raw/banjir");
-const DIR_GLAD = path.join(MENTAH, "genangan_historis"), DIR_DEM = path.join(MENTAH, "uji_hand/dem");
+const DIR_GLAD = path.join(MENTAH, "genangan_historis"), DIR_DEM = path.join(MENTAH, "uji_hand/dem"), DIR_WC = path.join(MENTAH, "uji_hand/wc");
 const KELUAR = process.env.KELUAR || path.join(AKAR, "public/banjir/data/lab/uji_hand.json"), RINGKAS = KELUAR.replace(/\.json$/, "_ringkas.md");
 const KELAS = {Low_risk: 1, Medium_risk: 2, High_risk: 3};
 const CFG = {sisi: +(process.env.SISI || 6000), n: +(process.env.N || 100), situs: 60, benih: 2026, minPersen: 5, jarakKm: 12,
-  alurKm2: [0.25, 0.5, 1, 2, 5], muka: [0.5, 1, 1.5, 2, 3, 4, 5, 7, 10]};
+  alurKm2: [0.25, 0.5, 1, 2, 5], muka: [0.5, 1, 1.5, 2, 3, 4, 5, 7, 10], varian: ["T", "TA", "F", "FA"], layar: "TA"};
+const NAMA_VARIAN = {T: "Terrarium tanpa air permanen", TA: "Terrarium + air WorldCover (layar)", F: "FABDEM tanpa air permanen", FA: "FABDEM + air WorldCover"};
 
 /* ---------- PNG 8-bit RGB/RGBA tanpa interlace (cukup untuk ubin Terrarium) -> RGBA ---------- */
 export function bukaPNG(buf) {
@@ -95,14 +101,24 @@ function mesin() {
     createImageBitmap: async blob => bukaPNG(Buffer.from(await blob.arrayBuffer())),
     OffscreenCanvas: class { getContext() { let d; return {drawImage: bm => { d = bm.data; }, getImageData: () => ({data: d})}; } },
   });
-  for (const f of ["sim_genangan.js", "sim_hand.js"]) vm.runInContext(fs.readFileSync(path.join(AKAR, "public/banjir", f), "utf8"), ctx);
-  return {SG: ctx.SimGenangan, SH: ctx.SimHand};
+  for (const f of ["sim_genangan.js", "sim_hand.js", "sim_lahan.js"]) vm.runInContext(fs.readFileSync(path.join(AKAR, "public/banjir", f), "utf8"), ctx);
+  return {SG: ctx.SimGenangan, SH: ctx.SimHand, SL: ctx.SimLahan};
 }
 /* ubin DEM disimpan di data/raw (tidak di-commit), jadi uji ulang tidak mengunduh lagi */
 async function ambil(url) {
   const nama = path.join(DIR_DEM, url.split("/terrarium/")[1].replaceAll("/", "_"));
   if (!fs.existsSync(nama)) { const r = await fetch(url); if (!r.ok) return r; fs.mkdirSync(DIR_DEM, {recursive: true}); fs.writeFileSync(nama, Buffer.from(await r.arrayBuffer())); }
   const b = fs.readFileSync(nama); return {ok: true, status: 200, blob: async () => new Blob([b])};
+}
+/* ubin WorldCover (PNG Planetary Computer) untuk SimLahan.kisiLahan; 404 disimpan sebagai berkas kosong */
+async function ubinWC(url) {
+  const nama = path.join(DIR_WC, crypto.createHash("sha1").update(url).digest("hex") + ".png");
+  if (!fs.existsSync(nama)) {
+    let r; for (let coba = 0; ; coba++) { try { r = await fetch(url, {signal: AbortSignal.timeout(30000)}); if (r.ok || r.status === 404 || coba >= 3) break; } catch (e) { if (coba >= 3) throw e; }
+      await new Promise(s => setTimeout(s, 2000 * (coba + 1))); }
+    if (r.status !== 404 && !r.ok) salah(`WorldCover HTTP ${r.status}`);
+    fs.mkdirSync(DIR_WC, {recursive: true}); fs.writeFileSync(nama, r.status === 404 ? Buffer.alloc(0) : Buffer.from(await r.arrayBuffer())); }
+  const b = fs.readFileSync(nama); return b.length ? bukaPNG(b).data : null;
 }
 /* ubin GLAD: nama berkas inundation_history_<lat0>_<lon0>_<lat1>_<lon1>.geojson.gz */
 const UBIN = new Map();
@@ -130,7 +146,7 @@ function pilihSitus() {
 }
 
 async function jalankan() {
-  const {SG, SH} = mesin(), {nCalon, situs} = pilihSitus(), hasil = [];
+  const {SG, SH, SL} = mesin(), {nCalon, situs} = pilihSitus(), hasil = [], FB = await bukaFabdem();
   for (const [i, s] of situs.entries()) {
     try {
       const dem = await SG.ambilDEM(s.lat, s.lon, CFG.sisi, CFG.n, ambil), N = dem.nx * dem.ny, prep = SG.siapkanArea(dem);
@@ -138,15 +154,22 @@ async function jalankan() {
       let bb = [1e9, 1e9, -1e9, -1e9]; for (const [x, y] of titik) bb = [Math.min(bb[0], x), Math.min(bb[1], y), Math.max(bb[2], x), Math.max(bb[3], y)];
       const kls = kelasTitik(gladDi(bb), titik), sah = Uint8Array.from(prep.laut, l => l ? 0 : 1);
       const sering = kls.map(k => k >= 2 ? 1 : 0), pernah = kls.map(k => k >= 1 ? 1 : 0);
+      /* FABDEM di pusat sel yang sama; nodata (pantai, laut) memakai Terrarium */
+      await FB.muat([bb[0] - .001, bb[1] - .001, bb[2] + .001, bb[3] + .001]);
+      let nFb = 0; const zF = Float64Array.from(titik, ([x, y], k) => { const v = FB.tinggi(x, y); if (Number.isFinite(v)) { nFb++; return v; } return dem.z[k]; });
+      const prepF = SG.siapkanArea({...dem, z: zF});
+      const L = await SL.kisiLahan(dem, ubinWC), air = L?.dom ? Uint8Array.from(L.dom, c => c === 80 ? 1 : 0) : null;
+      const pakai = {T: [prep, null, dem.z], TA: [prep, air, dem.z], F: [prepF, null, zF], FA: [prepF, air, zF]};
       const grid = {};
-      for (const a of CFG.alurKm2) { const H = SH.hitung(prep, dem, SG, a);
-        for (const m of CFG.muka) { const pred = k => H.hand[k] < m, nPred = (() => { let c = 0; for (let k = 0; k < N; k++) if (sah[k] && pred(k)) c++; return c; })();
-          const low = terendah(dem.z, sah, nPred);
-          grid[`${a}|${m}`] = {sering: hitungSel(pred, sering, sah), pernah: hitungSel(pred, pernah, sah),
-            base: hitungSel(k => low[k], sering, sah), nPred, nTak: H.nTak}; } }
+      for (const v of CFG.varian) { const [pp, aa, zz] = pakai[v];
+        for (const a of CFG.alurKm2) { const H = SH.hitung(pp, dem, SG, a, aa);
+          for (const m of CFG.muka) { const pred = k => H.hand[k] < m, nPred = (() => { let c = 0; for (let k = 0; k < N; k++) if (sah[k] && pred(k)) c++; return c; })();
+            const low = terendah(zz, sah, nPred);
+            grid[`${v}|${a}|${m}`] = {sering: hitungSel(pred, sering, sah), pernah: hitungSel(pred, pernah, sah),
+              base: hitungSel(k => low[k], sering, sah), nPred, nTak: H.nTak}; } } }
       let nSering = 0; for (let k = 0; k < N; k++) if (sah[k] && sering[k]) nSering++;
-      hasil.push({...s, dx: dem.dx, nSah: sah.reduce((a, b) => a + b, 0), nSering, grid});
-      console.error(`${i + 1}/${situs.length} ${s.k} sering ${nSering} sel`);
+      hasil.push({...s, dx: dem.dx, nSah: sah.reduce((a, b) => a + b, 0), nSering, nFabdem: nFb, nAir: air ? air.reduce((a, b) => a + b, 0) : null, grid});
+      console.error(`${i + 1}/${situs.length} ${s.k} sering ${nSering} sel, FABDEM ${nFb}/${N}, air ${air ? air.reduce((a, b) => a + b, 0) : "gagal"}`);
     } catch (e) { console.error(`${i + 1}/${situs.length} ${s.k} GAGAL: ${e.message}`); hasil.push({...s, gagal: e.message}); }
   }
   return {nCalon, hasil};
@@ -155,40 +178,54 @@ async function jalankan() {
 function rangkum({nCalon, hasil}) {
   const ok = hasil.filter(h => !h.gagal), per = peran => ok.filter(h => h.peran === peran);
   const jumlah = (hs, kunci, f) => hs.reduce((t, h) => tambah(t, h.grid[kunci][f]), nol());
-  const kisi = CFG.alurKm2.flatMap(a => CFG.muka.map(m => { const kunci = `${a}|${m}`;
-    return {alurKm2: a, m, csiKal: csi(jumlah(per("kalibrasi"), kunci, "sering")), csiUji: csi(jumlah(per("uji"), kunci, "sering")),
-      baseUji: csi(jumlah(per("uji"), kunci, "base")), csiUjiPernah: csi(jumlah(per("uji"), kunci, "pernah"))}; }));
-  const terbaik = kisi.reduce((b, r) => r.csiKal > b.csiKal ? r : b), kunci = `${terbaik.alurKm2}|${terbaik.m}`;
-  const u = jumlah(per("uji"), kunci, "sering"), b = jumlah(per("uji"), kunci, "base");
-  /* per situs uji: HAND menang lawan pembanding? */
-  const situsUji = per("uji").map(h => ({k: h.k, csi: csi(h.grid[kunci].sering), base: csi(h.grid[kunci].base), nSering: h.nSering}));
-  const menang = situsUji.filter(s => s.csi != null && s.base != null && s.csi > s.base).length, banding = situsUji.filter(s => s.csi != null && s.base != null).length;
   const r3 = v => v == null ? null : Math.round(v * 1000) / 1000;
+  /* satu varian: pilih setelan di separuh kalibrasi, nilai sekali di separuh uji */
+  const nilai = v => {
+    const kisi = CFG.alurKm2.flatMap(a => CFG.muka.map(m => { const kunci = `${v}|${a}|${m}`;
+      return {alurKm2: a, m, csiKal: csi(jumlah(per("kalibrasi"), kunci, "sering")), csiUji: csi(jumlah(per("uji"), kunci, "sering")),
+        baseUji: csi(jumlah(per("uji"), kunci, "base")), csiUjiPernah: csi(jumlah(per("uji"), kunci, "pernah"))}; }));
+    const terbaik = kisi.reduce((b, r) => r.csiKal > b.csiKal ? r : b), kunci = `${v}|${terbaik.alurKm2}|${terbaik.m}`;
+    const u = jumlah(per("uji"), kunci, "sering"), b = jumlah(per("uji"), kunci, "base");
+    const situsUji = per("uji").map(h => ({k: h.k, csi: csi(h.grid[kunci].sering), base: csi(h.grid[kunci].base), nSering: h.nSering}));
+    const menang = situsUji.filter(s => s.csi != null && s.base != null && s.csi > s.base).length, banding = situsUji.filter(s => s.csi != null && s.base != null).length;
+    /* berapa sel kisi (alur x muka) yang HAND-nya mengalahkan pembanding di separuh uji */
+    const unggulKisi = kisi.filter(r => r.csiUji != null && r.baseUji != null && r.csiUji > r.baseUji).length;
+    return {nama: NAMA_VARIAN[v], terpilih: {alurKm2: terbaik.alurKm2, m: terbaik.m, csiKalibrasi: r3(terbaik.csiKal)},
+      uji: {nSitus: per("uji").length, csi: r3(csi(u)), pod: r3(u.tp / (u.tp + u.fn || 1)), far: r3(u.fp / (u.tp + u.fp || 1)),
+        csiPembanding: r3(csi(b)), situsMenang: menang, situsBanding: banding, unggulKisi, nKisi: kisi.length},
+      kisi: kisi.map(r => ({...r, csiKal: r3(r.csiKal), csiUji: r3(r.csiUji), baseUji: r3(r.baseUji), csiUjiPernah: r3(r.csiUjiPernah)})),
+      situs: situsUji.map(s => ({...s, csi: r3(s.csi), base: r3(s.base)}))};
+  };
+  const varian = Object.fromEntries(CFG.varian.map(v => [v, nilai(v)])), layar = varian[CFG.layar];
   return {
     dibuat: new Date().toISOString().slice(0, 16) + "Z",
-    sumber: "Kebenaran: Google Flood Forecasting, riwayat genangan (GLAD 1999-2020), CC BY 4.0. DEM: ubin Terrarium (SRTM ~30 m).",
-    metode: "scripts/banjir/uji_hand.mjs; muka air seragam di semua alur, kotak 6 km 100 sel seperti tab Simulasi, tanpa air permanen WorldCover",
-    konfigurasi: {sisi: CFG.sisi, n: CFG.n, benih: CFG.benih, minPersenRiwayat: CFG.minPersen, jarakKm: CFG.jarakKm, nCalon, nSitus: hasil.length, nGagal: hasil.length - ok.length},
-    terpilih: {alurKm2: terbaik.alurKm2, m: terbaik.m, csiKalibrasi: r3(terbaik.csiKal)},
-    uji: {nSitus: per("uji").length, csi: r3(csi(u)), pod: r3(u.tp / (u.tp + u.fn || 1)), far: r3(u.fp / (u.tp + u.fp || 1)),
-      csiPembanding: r3(csi(b)), situsMenang: menang, situsBanding: banding},
-    kisi: kisi.map(r => ({...r, csiKal: r3(r.csiKal), csiUji: r3(r.csiUji), baseUji: r3(r.baseUji), csiUjiPernah: r3(r.csiUjiPernah)})),
-    situs: situsUji.map(s => ({...s, csi: r3(s.csi), base: r3(s.base)})),
+    sumber: "Kebenaran: Google Flood Forecasting, riwayat genangan (GLAD 1999-2020), CC BY 4.0. DEM: ubin Terrarium (SRTM ~30 m) dan FABDEM V1-2 " +
+      "(Hawker dkk. 2022, CC BY-NC-SA 4.0, hanya uji). Air permanen: ESA WorldCover 2021 v200, CC BY 4.0.",
+    metode: "scripts/banjir/uji_hand.mjs; muka air seragam di semua alur, kotak 6 km 100 sel seperti tab Simulasi; empat varian DEM x air permanen",
+    konfigurasi: {sisi: CFG.sisi, n: CFG.n, benih: CFG.benih, minPersenRiwayat: CFG.minPersen, jarakKm: CFG.jarakKm, nCalon, nSitus: hasil.length, nGagal: hasil.length - ok.length,
+      selFabdem: r3(ok.reduce((t, h) => t + h.nFabdem, 0) / (ok.length * CFG.n * CFG.n) || 0), situsTanpaAir: ok.filter(h => h.nAir == null).length},
+    /* tingkat atas = varian yang sama dengan layar (dibaca sim_tampak.js) */
+    varianLayar: CFG.layar, terpilih: layar.terpilih, uji: layar.uji, kisi: layar.kisi, situs: layar.situs,
+    varian: Object.fromEntries(Object.entries(varian).map(([v, x]) => [v, {nama: x.nama, terpilih: x.terpilih, uji: x.uji, kisi: x.kisi}])),
   };
 }
 
 function tulisRingkas(R) {
   const p = v => v == null ? "–" : String(v).replace(".", ",");
-  const baris = R.kisi.filter(r => r.alurKm2 === R.terpilih.alurKm2).map(r => `| ${p(r.m)} | ${p(r.csiKal)} | ${p(r.csiUji)} | ${p(r.baseUji)} |`);
+  const ringkas = Object.entries(R.varian).map(([v, x]) => `| ${v} | ${x.nama} | ${p(x.terpilih.alurKm2)} km2, ${p(x.terpilih.m)} m | ${p(x.uji.csi)} | ${p(x.uji.csiPembanding)} | ${x.uji.situsMenang}/${x.uji.situsBanding} | ${x.uji.unggulKisi}/${x.uji.nKisi} |`);
+  const a = R.terpilih.alurKm2, muka = Object.entries(R.varian).map(([v, x]) => x.kisi.filter(r => r.alurKm2 === a));
+  const baris = R.varian[R.varianLayar].kisi.filter(r => r.alurKm2 === a).map((r, i) => `| ${p(r.m)} | ${Object.keys(R.varian).map((v, j) => `${p(muka[j][i].csiUji)} / ${p(muka[j][i].baseUji)}`).join(" | ")} |`);
   return `# Uji balik HAND lawan riwayat genangan GLAD\n\nDibuat ${R.dibuat}. ${R.metode}.\n\n` +
-    `Situs ${R.konfigurasi.nSitus} (gagal ${R.konfigurasi.nGagal}) dari ${R.konfigurasi.nCalon} kecamatan dengan riwayat genangan sedang+tinggi >= ${R.konfigurasi.minPersenRiwayat}%.\n\n` +
-    `Terpilih di separuh kalibrasi: ambang alur ${p(R.terpilih.alurKm2)} km2, muka air ${p(R.terpilih.m)} m (CSI ${p(R.terpilih.csiKalibrasi)}).\n\n` +
-    `Separuh uji (${R.uji.nSitus} situs): CSI ${p(R.uji.csi)}, POD ${p(R.uji.pod)}, FAR ${p(R.uji.far)}; pembanding sel terendah CSI ${p(R.uji.csiPembanding)}. ` +
-    `HAND menang di ${R.uji.situsMenang} dari ${R.uji.situsBanding} situs.\n\n| muka air (m) | CSI kalibrasi | CSI uji | pembanding uji |\n|---|---|---|---|\n${baris.join("\n")}\n\n` +
-    `Catatan:\n\n- Setelan terpilih jatuh di tepi kisi. CSI naik terus seiring makin banyak sel ditebak (pola sebaran kebenaran, bukan kemampuan HAND), ` +
+    `Situs ${R.konfigurasi.nSitus} (gagal ${R.konfigurasi.nGagal}) dari ${R.konfigurasi.nCalon} kecamatan dengan riwayat genangan sedang+tinggi >= ${R.konfigurasi.minPersenRiwayat}%. ` +
+    `Sel yang mendapat nilai FABDEM: ${p(R.konfigurasi.selFabdem)} dari sel darat. Situs tanpa data air WorldCover: ${R.konfigurasi.situsTanpaAir}.\n\n` +
+    `Setelan dipilih di separuh kalibrasi, dinilai sekali di separuh uji (${R.uji.nSitus} situs). Pembanding = sel terendah di DEM varian itu, jumlah sel sama.\n\n` +
+    `| varian | DEM dan air | setelan terpilih | CSI uji | pembanding | situs menang | kisi unggul |\n|---|---|---|---|---|---|---|\n${ringkas.join("\n")}\n\n` +
+    `CSI uji / pembanding per muka air, ambang alur ${p(a)} km2:\n\n| muka air (m) | ${Object.keys(R.varian).join(" | ")} |\n|---|${Object.keys(R.varian).map(() => "---").join("|")}|\n${baris.join("\n")}\n\n` +
+    `Catatan:\n\n- Setelan terpilih bisa jatuh di tepi kisi. CSI naik seiring makin banyak sel ditebak (pola sebaran kebenaran, bukan kemampuan HAND), ` +
     `jadi setelan itu bukan optimum dan tidak dipakai di layar. Yang menentukan adalah HAND lawan pembanding di tiap baris.\n` +
     `- Hanya berlaku untuk kecamatan yang memang punya riwayat genangan (situs dipilih dari turunan GLAD yang sama). Salah alarm di kecamatan kering tidak diuji.\n` +
-    `- Situs berjarak minimal ${R.konfigurasi.jarakKm} km satu sama lain. n = ${R.uji.nSitus}, tanpa selang kepercayaan.\n`;
+    `- Situs berjarak minimal ${R.konfigurasi.jarakKm} km satu sama lain. n = ${R.uji.nSitus}, tanpa selang kepercayaan.\n` +
+    `- FABDEM berlisensi non-komersial: dipakai untuk uji ini saja, tidak disajikan di layar.\n`;
 }
 
 function uji() {
