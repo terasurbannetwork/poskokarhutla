@@ -1775,7 +1775,7 @@ Object.assign(MATRIKS, {
   lj_sesi:             {lj_tim: ["baca", "tambah", "ubah", "hapus"], lp_mesin: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0165: draf percakapan WA tahap 2 (D24), dibuang 24 jam
   lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
-  lk_periksa_akun:     {lp_staf: ["baca", "tambah"]},   // migrasi 0168: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
+  lk_periksa_akun:     {lp_staf: ["baca", "tambah"]},   // migrasi 0169: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -2053,7 +2053,7 @@ export const lpStmtPeriksa = (env, p, nomor, hasil, catatan, perubahan, oleh, ki
    ponytail: membaca seluruh lapor_periksa tiap muat daftar; batasi ke nomor yang tampil bila tabelnya membesar (kuota baca D1 Free) */
 export const lpPeriksaTerakhirSemua = async (env, p) => (await sedia(env, p, "lapor_periksa", "baca",
   "SELECT nomor, hasil, max(id) id FROM lapor_periksa GROUP BY nomor").all()).results;
-/* penanda pemeriksa (migrasi 0168, LK-02): baris samping lapor_periksa yang baru saja ditulis di batch yang sama (last_insert_rowid),
+/* penanda pemeriksa (migrasi 0169, LK-02): baris samping lapor_periksa yang baru saja ditulis di batch yang sama (last_insert_rowid),
    hanya bila INSERT sebelumnya mengubah baris */
 export const lpStmtPeriksaAkun = (env, p, t) => sedia(env, p, "lk_periksa_akun", "tambah",
   "INSERT INTO lk_periksa_akun (periksa_id, jenis, tingkat, prov, kab, kab_nama) SELECT last_insert_rowid(), ?1, ?2, ?3, ?4, ?5 WHERE changes() > 0")

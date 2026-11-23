@@ -1,4 +1,4 @@
--- 0168: penanda pemeriksa untuk lapor_periksa (paket data/kajian-bnpb/lapor-kejadian/, tiket LK-02, ALGORITMA A3 butir 2, D4).
+-- 0169: penanda pemeriksa untuk lapor_periksa (paket data/kajian-bnpb/lapor-kejadian/, tiket LK-02, ALGORITMA A3 butir 2, D4).
 -- lapor_periksa.oleh hanya teks bebas (nama staf BNPB bisa berbunyi "BPBD ..."), jadi jenis dan wilayah akun pemeriksa dicatat terpisah
 -- dari cakupan sesi meja saat pengecekan ditulis. Satu baris per baris lapor_periksa, append-only (INSERT dan SELECT saja di matriks hak).
 -- Tanpa nama orang; hanya jenis akun dan kode wilayah. Pengecekan lama tanpa baris di sini dihitung belum terverifikasi.

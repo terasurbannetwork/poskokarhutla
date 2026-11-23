@@ -879,7 +879,7 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
     let hasil;
     try { hasil = await H.lpBatch(env, STAF, [...stmts, akunP]); }
     catch (e) {
-      if (/lk_periksa_akun/i.test(String(e?.message))) hasil = await H.lpBatch(env, STAF, stmts);   // sebelum migrasi 0168 atau penanda ditolak CHECK: pengecekan tetap tercatat, dihitung belum terverifikasi
+      if (/lk_periksa_akun/i.test(String(e?.message))) hasil = await H.lpBatch(env, STAF, stmts);   // sebelum migrasi 0169 atau penanda ditolak CHECK: pengecekan tetap tercatat, dihitung belum terverifikasi
       else if (/UNIQUE|constraint/i.test(String(e?.message))) return galat(409, "Laporan baru saja berubah. Muat ulang.");
       else throw e;
     }

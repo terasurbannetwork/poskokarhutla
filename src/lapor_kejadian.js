@@ -5,7 +5,7 @@
    lapor_periksa.oleh dan lapor_tiket_riwayat.pelaku hanya teks cakupanMeja().pelaku ("BPBD Kabupaten X, Nama" atau nama staf BNPB
    yang bebas, src/lapor_meja_hak.js:16). Nama staf BNPB bisa berbunyi "BPBD ...", dan teks tidak memuat kode wilayah akun, jadi jenis
    dan wilayah pemeriksa TIDAK bisa diturunkan dengan pasti dari teks. Karena itu rute periksa menulis tabel samping lk_periksa_akun
-   (migrasi 0168) dari cakupan sesi, dan pengecekan lama tanpa baris samping dihitung belum terverifikasi (aman: tidak pernah tayang). */
+   (migrasi 0169) dari cakupan sesi, dan pengecekan lama tanpa baris samping dihitung belum terverifikasi (aman: tidak pernah tayang). */
 import {dalamWilayah} from "./lapor_meja_hak.js";
 
 /* urutan "terakhir": waktu menurun, id menurun bila waktu sama (A3 butir 1) */
