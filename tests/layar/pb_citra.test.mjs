@@ -73,7 +73,7 @@ test("pemasangan: index.html memuat css dan mesin sebelum adaptor, dan karhutla 
   const k = baca("public/index.html"); assert.ok(k.includes('src="banding.js"') && k.includes('src="timelapse.js"')); assert.ok(!k.includes("inti/banding") && !k.includes("inti/timelapse"));
 });
 test("selera: pembatas digeser lewat rAF, tanpa warna literal di CSS, tanpa titik tengah di teks tampilan, tanpa kata aman", () => {
-  const b = baca("public/inti/banding.js"); assert.match(b, /rafP = requestAnimationFrame/); assert.match(b, /g\.onpointermove = e => \{ if \(r\) atur\(/);
+  const b = baca("public/inti/banding.js"), alat = baca("public/inti/citra_alat.js"); assert.match(alat, /rafP = requestAnimationFrame/); assert.match(alat, /gar\.onpointermove = e => \{ if \(r\) atur\(/); assert.match(b, /CitraAlat\.pembatas\(/);
   assert.match(b, /await new Promise\(r => tunda\(r\)\); buatPeta\(\)/, "peta dibuat sesudah kerangka tampil");
   for (const f of ["public/inti/banding.css", "public/inti/timelapse.css"]) assert.ok(!/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(|oklch\(|oklab\(/i.test(baca(f).replace(/\/\*[\s\S]*?\*\//g, "")), f + " literal warna");
   for (const f of ["public/inti/banding.js", "public/inti/timelapse.js", "public/gunungapi/citra.js", "public/cuaca/citra.js"]) { const t = baca(f); assert.ok(!/\baman\b/i.test(t), f + " kata aman"); assert.ok(!/[^\\w]·[^\\w]/.test(t.replace(/\/\*[\s\S]*?\*\//g, "")), f + " titik tengah"); }

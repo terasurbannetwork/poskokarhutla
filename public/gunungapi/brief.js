@@ -25,7 +25,7 @@
         baris: ERU.slice().sort((a, b) => Date.parse(b.waktu) - Date.parse(a.waktu)).slice(0, 10).map(e => [tglJamFn(e.waktu), e.gunung, G.find(g => g.nama === e.gunung)?.prov || "belum tersedia"]), kosong: "belum tersedia"},
       daftar: {judul: "IV. Perubahan level terbaru", satuan: "perubahan", kosong: "belum tersedia",
         item: per.slice(0, 8).map(p => `${p.nama}: dari ${LEVEL[p.dari] ? lv(p.dari) : "belum tersedia"} menjadi ${LEVEL[p.ke] ? lv(p.ke) : "belum tersedia"} (${p.tgl})`)},
-      sumber: "Sumber: PVMBG, Badan Geologi KESDM (MAGMA Indonesia): level aktivitas, rekomendasi, dan erupsi tercatat.",
+      sumber: "PVMBG, Badan Geologi KESDM (MAGMA Indonesia): level aktivitas, rekomendasi, dan erupsi tercatat.",
       catatan: "Level adalah pernyataan resmi PVMBG, tidak ditafsir ulang. Level I Normal bukan pernyataan bebas bahaya."};
   }
 

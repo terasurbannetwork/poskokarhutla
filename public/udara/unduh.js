@@ -6,7 +6,6 @@
 (() => {
 if (typeof UnduhTabel === "undefined" || typeof S === "undefined") return;
 const rapi = e => e.textContent.replace(/\s+/g, " ").replace(/\s*[↑↓]$/, "").trim();
-const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 const tglId = iso => +iso.slice(8) + " " + BLN[+iso.slice(5, 7) - 1] + " " + iso.slice(0, 4);
 const hariAktif = () => S.uk?.hari?.[S.hari] || null;
@@ -27,19 +26,13 @@ function stasiun() {
     kolom: ["Stasiun", "PM2,5 terbaru (µg/m³)", "Kategori acuan", "Waktu"],
     baris: [...A].sort((a, b) => b.v - a.v).map(s => [s.nama, Math.round(s.v * 10) / 10, KAT[kat(s.v)].n, typeof jamWIB === "function" ? jamWIB(s.t) : s.t])} : null; }
 
-function tabelHtml(t, nama, ket) {
-  if (!t) return null;
-  const kolom = [...t.querySelectorAll("thead th")].map(rapi), baris = [...t.querySelectorAll("tbody tr")].map(r => [...r.children].map(rapi));
-  return kolom.length && baris.length ? {nama, ket: ket || "", kolom, baris} : null; }
+const tabelHtml = window.UnduhTabel.tabelHtml;
 
 async function kumpul() {
   const tabel = [], p = provinsi(); if (p) tabel.push(p);
   const kj = tabelHtml(document.querySelector("#kejadian table"), "Kejadian", "Deteksi Centurisk97 dari prakiraan model CAMS (hipotesis), bukan pernyataan resmi"); if (kj) tabel.push(kj);
   const st = stasiun(); if (st) tabel.push(st);
-  const reg = (await UnduhTabel.registri().catch(() => [])).find(b => b.id === "udara"), wib = new Date(Date.now() + 7 * 36e5), iso = hariAktif() || wib.toISOString().slice(0, 10);
-  return {judul: "Laporan Kualitas Udara dan Asap", iso, namaTabel: tabel.length === 1 ? slug(tabel[0].nama) : "laporan",
-    tanggal: wib.toLocaleDateString("id-ID", {timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric"}) + ", " + wib.toISOString().slice(11, 16) + " WIB",
-    sumber: "Sumber: " + (reg?.bagikan?.sumber || "Copernicus CAMS lewat Open-Meteo (model); BMKG (pengukuran stasiun)"), tabel}; }
+  return window.UnduhTabel.laporan("udara", "Laporan Kualitas Udara dan Asap", hariAktif(), tabel, "Copernicus CAMS lewat Open-Meteo (model); BMKG (pengukuran stasiun)"); }
 UnduhTabel.tema({id: "udara", label: "Unduh tabel kualitas udara", kumpul});
 
 /* ---------- ukuran tabel provinsi (F-39): urutan kolom yang sudah ada di panel ---------- */

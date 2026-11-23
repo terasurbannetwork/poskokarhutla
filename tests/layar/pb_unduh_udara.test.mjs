@@ -11,7 +11,9 @@ function dunia({stasiun = [], urut = null, izin = []} = {}) {
     UnduhTabel: {tema: a => { pil.a = a; }, registri: async () => [{id: "udara", bagikan: {sumber: "CAMS; BMKG"}}], tombol: () => "<b>unduh</b>"},
     KAT: [{n: "Baik"}, {n: "Sedang"}, {n: "Tidak sehat"}, {n: "Sangat tidak sehat"}, {n: "Berbahaya"}], kat: v => [15.5, 55.4, 150.4, 250.4].reduce((n, b) => n + (v > b), 0),
     renderDaftar() {}, Stasiun: {segar: () => stasiun}, jamWIB: t => "WIB " + t, nanti: f => f()};
-  g.window = g; const c = vm.createContext(g); vm.runInContext(baca("public/udara/unduh.js"), c); return {g, pil, ev, c};
+  g.window = g; const c = vm.createContext(g), stub = g.UnduhTabel;
+  vm.runInContext(baca("public/inti/unduh_tabel.js"), c); Object.assign(g.UnduhTabel, stub);   // tabelHtml dan laporan dari mesin bersama, sisanya tiruan
+  vm.runInContext(baca("public/udara/unduh.js"), c); return {g, pil, ev, c};
 }
 test("unduh udara: tabel provinsi persis seperti yang tampil, berlabel hipotesis model dan hari terpilih", () => {
   const {g} = dunia(), t = g.UnduhTabelUdara.provinsi();

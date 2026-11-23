@@ -23,7 +23,7 @@
         baris: prov.map(([k, a]) => [nama(k), LEVEL[a.lv], spi(a.spi3), rb(a.jiwa[0]), a.kab_n ? fmt(a.kab_n[2]) : null]), kosong: "belum tersedia: tidak ada provinsi berstatus Waspada atau lebih"},
       tabel2: {judul: "III. Kabupaten/kota Awas dengan jiwa terdampak terbanyak", satuan: "kabupaten/kota", kolom: ["Kabupaten/kota", "Provinsi", "SPI", "Jiwa terdampak"],
         baris: awas.slice(0, 10).map(([k, a]) => { const p = k.split("|"); return [p[1], nama(p[0]), spi(a.spi3), rb(a.jiwa[0])]; }), kosong: "belum tersedia: tidak ada kabupaten/kota Awas"},
-      sumber: "Sumber: deteksi Centurisk97 dari hujan satelit (SPI), kelembapan tanah, dan kode kekeringan; BMKG hanya menerbitkan peta gambar.",
+      sumber: "Deteksi Centurisk97 dari hujan satelit (SPI), kelembapan tanah, dan kode kekeringan; BMKG hanya menerbitkan peta gambar.",
       catatan: (kaki || "Ambang status masih hipotesis.") + " Jiwa terdampak = penduduk wilayah berstatus, bukan jumlah penerima bantuan."};
   }
 

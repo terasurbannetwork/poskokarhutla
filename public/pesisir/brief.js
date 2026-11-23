@@ -28,7 +28,7 @@
         baris: S3.slice(0, 10).map(s => [s.nama, s.kab, m1(s.median), fmt(s.abrasi)]), kosong: "belum tersedia"},
       daftar: {judul: "IV. Peringatan gelombang tinggi BMKG Maritim", satuan: "provinsi", kosong: "belum tersedia: tidak ada peringatan gelombang berlaku pada data BMKG",
         item: per ? [...glb].sort((a, b) => b.lv - a.lv || b.total - a.total).slice(0, 8).map(o => `${nama(o.prov)}: ${NM_GEL[o.lv - 1].toLowerCase()}, ${fmt(o.total)} perairan, berlaku sampai ${tglSgk(o.sampai.slice(0, 10))} ${o.sampai.slice(11, 16)} ${o.zona}`) : []},
-      sumber: "Sumber: BMKG Maritim (peringatan gelombang, prediksi pasang surut), Open-Meteo Marine (muka laut dan gelombang model), USGS Landsat lewat Microsoft Planetary Computer (garis pantai).",
+      sumber: "BMKG Maritim (peringatan gelombang, prediksi pasang surut), Open-Meteo Marine (muka laut dan gelombang model), USGS Landsat lewat Microsoft Planetary Computer (garis pantai).",
       catatan: "Status rob berasal dari muka laut model terhadap ambang tiap titik, belum lolos uji balik, dan bukan peringatan resmi; laju abrasi adalah perkiraan citra satelit yang belum dikoreksi pasang surut dan belum dicek lapangan. Tidak ada peringatan berlaku berarti BMKG belum menerbitkannya, bukan jaminan keadaan lapangan."};
   }
 

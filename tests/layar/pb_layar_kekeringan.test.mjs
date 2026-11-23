@@ -29,9 +29,11 @@ test("F-34 unduh: tabel panel dibaca apa adanya (nomor urut dibuang), keterangan
   const el = kids => ({children: kids, textContent: kids.map(k => k.textContent).join(" ")});
   const rows = {querySelector: s => s === ".tb.kepala" ? el([sp(""), sp("Provinsi"), sp("SPI ↑"), sp("Jiwa"), sp("Status")]) : null,
     querySelectorAll: s => s === ".tb:not(.kepala)" ? [el([sp("1"), sp("Aceh"), sp("−2,44"), sp("700"), sp("Awas")]), el([sp("2"), sp("Jawa Barat"), sp("–"), sp("–"), sp("Normal")])] : []};
-  let tema = null; const win = {UnduhTabel: {tema: a => { tema = a; }, registri: async () => [{id: "kekeringan", bagikan: {sumber: "Deteksi Centurisk97"}}]}};
+  let tema = null; const win = {};
   const ctx = {window: win, document: {querySelector: s => s === "#rows" ? rows : null, addEventListener() {}}, S: {tanggal: null, jalur: [], meta: META, wil: {prov: PROV}}, spiBulan: () => "Agustus 2026", AMBANG_PIL: () => "Ambang masih hipotesis", Date, Promise, Object};
-  vm.runInContext(baca("public/kekeringan/unduh.js"), vm.createContext(ctx));
+  const k = vm.createContext(ctx); vm.runInContext(baca("public/inti/unduh_tabel.js"), k);   // laporan dari mesin bersama
+  Object.assign(win.UnduhTabel, {tema: a => { tema = a; }, registri: async () => [{id: "kekeringan", bagikan: {sumber: "Deteksi Centurisk97"}}]});
+  vm.runInContext(baca("public/kekeringan/unduh.js"), k);
   assert.equal(tema.id, "kekeringan");
   const L = await tema.kumpul(), t = L.tabel[0];
   assert.equal(L.tabel.length, 1); assert.equal(t.nama, "Provinsi"); assert.deepEqual(stabil(t.kolom), ["Provinsi", "SPI", "Jiwa", "Status"]);

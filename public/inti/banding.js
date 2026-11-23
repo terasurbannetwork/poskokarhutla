@@ -55,7 +55,7 @@ function gaya(s, byk) {
 /* ---------- tampilan ---------- */
 let REG = null;
 const registri = () => REG ||= typeof fetch === "function" ? fetch("/bencana.json").then(r => r.ok ? r.json() : Promise.reject(new Error("registri " + r.status))).then(j => j.bencana || [], () => []) : Promise.resolve([]);
-let A = null, IZIN = false, BYK = {}, terbuka = false, membuka = false, dibuat = false, p = 50, rafP = 0, kunci = false, tombol = null, sisi = [], PRE = [];
+let A = null, IZIN = false, BYK = {}, terbuka = false, membuka = false, dibuat = false, kunci = false, tombol = null, sisi = [], PRE = [];
 const el = {}, maps = [null, null], terpasang = [null, null];
 const peta = () => A.peta();
 
@@ -66,15 +66,8 @@ function pasangTombol() {
   tombol = document.getElementById("ctBdBuka"); tombol.onclick = () => terbuka ? tutup() : buka();
 }
 
-function atur(v) { p = Math.max(0, Math.min(100, v)); if (rafP) return;
-  rafP = requestAnimationFrame(() => { rafP = 0; el.root.style.setProperty("--p", p + "%"); el.gar.setAttribute("aria-valuenow", Math.round(p)); }); }
-function bangunPembatas() {
-  const g = el.gar; let r = null;
-  g.onpointerdown = e => { r = el.root.getBoundingClientRect(); g.setPointerCapture(e.pointerId); el.root.classList.add("geser"); e.preventDefault(); };
-  g.onpointermove = e => { if (r) atur((e.clientX - r.left) / r.width * 100); };
-  g.onpointerup = g.onpointercancel = () => { r = null; el.root.classList.remove("geser"); };
-  g.onkeydown = e => { const d = {ArrowLeft: -5, ArrowRight: 5, Home: -100, End: 100}[e.key]; if (d != null) { atur(p + d); e.preventDefault(); } };
-}
+let pb = null;
+const atur = v => pb?.atur(v);
 
 /* kamera: ketiga peta saling ikut, tanpa umpan balik; peta halaman yang tertutup cukup disamakan sekali di moveend */
 const sembunyi = m => m === maps[0] && sisi[0].j === "utama";
@@ -125,7 +118,7 @@ function kerangka() {
     + `<button type="button" class="ct-x" aria-label="Tutup banding" title="Tutup banding"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>Tutup</button>`;
   bar.onclick = e => { const b = e.target.closest("button"); if (!b) return; if (b.classList.contains("ct-x")) return tutup();
     const [a, c] = PRE[b.dataset.k][2]; sisi[0] = {...a}; sisi[1] = {...c}; atur(50); etiket(0); etiket(1); tunda(() => { muatGaya(0); muatGaya(1); }); };
-  bangunPembatas();
+  pb = CitraAlat.pembatas(el.root, el.gar);
 }
 /* dua peta dibuat sesudah kerangka tampil (tunda), supaya klik pertama tidak membeku */
 function buatPeta() {

@@ -42,4 +42,4 @@ ul.mt{margin:0;padding-left:18px;display:grid;gap:6px}
 @media(max-width:640px){.page.scroll{padding:12px 10px 32px}.gp-kartu .ex-hd{padding:14px 14px 10px}.gp-kartu .ex-bd{padding:12px 14px 8px}.gp-kartu .ex-ft{padding:10px 14px 12px}}
 
 .dp-t td.c{text-align:center}
-.dp-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+.dp-t td.n{text-align:center;font-variant-numeric:tabular-nums}

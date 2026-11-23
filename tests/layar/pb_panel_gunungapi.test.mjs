@@ -62,7 +62,9 @@ test("adaptor unduh: membaca baris yang tampil, tanpa menghitung ulang", async (
   const rows = {querySelector: () => tb("Gunung", "Provinsi", "Radius", "Status"), querySelectorAll: s => s.includes("data-n") ? [tb("Semeru", "Jawa Timur", "5 km", "Siaga"), tb("Merapi", "DI Yogyakarta", "3 km", "Waspada")] : []};
   const doc = {querySelector: s => s === "#rows" ? rows : null, addEventListener() {}};
   const ctx = vm.createContext({console, Date, Promise, document: doc, S: {tanggal: "2026-11-10", level: 3}, LEVEL: {3: ["III", "Siaga"]},
-    window: {UnduhTabel: {tema: a => { adaptor = a; }, registri: async () => [{id: "gunungapi", bagikan: {sumber: "PVMBG"}}]}}});
+    window: {}});
+  vm.runInContext(baca("public/inti/unduh_tabel.js"), ctx);   // tabelHtml dan laporan dari mesin bersama
+  Object.assign(ctx.window.UnduhTabel, {tema: a => { adaptor = a; }, registri: async () => [{id: "gunungapi", bagikan: {sumber: "PVMBG"}}]});
   vm.runInContext(baca("public/gunungapi/unduh.js"), ctx);
   const d = await adaptor.kumpul(); assert.equal(adaptor.id, "gunungapi");
   assert.equal(d.tabel.length, 1); assert.deepEqual(JSON.parse(JSON.stringify(d.tabel[0].baris[0])), ["Semeru", "Jawa Timur", "5 km", "Siaga"]);

@@ -112,7 +112,21 @@ document.addEventListener("click", e => {
   m.style.top = Math.max(8, Math.min(r.bottom + 6, innerHeight - 180)) + "px"; m.style.left = Math.max(8, Math.min(r.left, innerWidth - 166)) + "px"; document.body.append(m); m.querySelector("button").focus(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") tutup(); });
 
+/* bagian bersama adaptor (PB-79): tabel HTML biasa (kepala dari th, baris dari tbody) dan kepala laporan. Dulu disalin di tiap <bencana>/unduh.js. */
+const rapiSel = e => e.textContent.replace(/\s+/g, " ").replace(/\s*[↑↓]$/, "").trim();
+const slugNama = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+function tabelHtml(t, nama, ket) {
+  if (!t) return null;
+  const kolom = [...t.querySelectorAll("thead th")].map(rapiSel), baris = [...t.querySelectorAll("tbody tr")].map(r => [...r.children].map(rapiSel));
+  return kolom.length && baris.length ? {nama, ket: ket || "", kolom, baris} : null; }
+/* kepala laporan: hari = tanggal terpilih di layar (kosong = hari ini WIB); sumber = registri bagikan.sumber, bawaan bila tak ada */
+async function laporan(id, judul, hari, tabel, bawaan) {
+  const reg = (await window.UnduhTabel.registri().catch(() => [])).find(b => b.id === id), wib = new Date(Date.now() + 7 * 36e5), iso = hari || wib.toISOString().slice(0, 10);
+  return {judul, iso, namaTabel: tabel.length === 1 ? slugNama(tabel[0].nama) : "laporan",
+    tanggal: wib.toLocaleDateString("id-ID", {timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric"}) + ", " + wib.toISOString().slice(11, 16) + " WIB",
+    sumber: "Sumber: " + (reg?.bagikan?.sumber || bawaan), tabel}; }
 window.UnduhTabel = {
+  tabelHtml, laporan,
   /* adaptor mendengarkan "unduh-tabel-siap" untuk menggambar ulang tombolnya setelah registri terbaca */
   tema: a => { A = a; IZIN = a.id === "karhutla";
     registri().then(d => { const ok = izinReg(d, a.id); if (ok !== IZIN) { IZIN = ok; if (typeof CustomEvent === "function") document.dispatchEvent?.(new CustomEvent("unduh-tabel-siap", {detail: {id: a.id}})); } });

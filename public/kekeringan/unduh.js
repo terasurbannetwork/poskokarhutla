@@ -4,7 +4,6 @@
    Pembuat Excel, Word, PDF, PNG ada di mesin inti. Tombol muncul hanya bila registri menyalakan kemampuan.layar.unduh_tabel. */
 (() => {
 const rapi = e => e.textContent.replace(/\s+/g, " ").replace(/\s*[↑↓]$/, "").trim();
-const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 const tgl = iso => +iso.slice(8) + " " + BLN[+iso.slice(5, 7) - 1] + " " + iso.slice(0, 4);
 
@@ -22,10 +21,7 @@ async function kumpul() {
     : (typeof spiBulan === "function" && S_?.meta?.spi ? "SPI " + spiBulan() + "; " : "") + (typeof AMBANG_PIL === "function" ? AMBANG_PIL() : "");
   const hari = S_?.meta?.hari_ini ? tgl(S_.meta.hari_ini) : "";
   const p = panel(d.querySelector("#rows"), nm, ket, tg ? tgl(tg) : hari), tabel = p ? [p] : [];
-  const reg = (await window.UnduhTabel.registri().catch(() => [])).find(b => b.id === "kekeringan"), wib = new Date(Date.now() + 7 * 36e5), iso = tg || S_?.meta?.hari_ini || wib.toISOString().slice(0, 10);
-  return {judul: "Laporan Situasi Kekeringan", iso, namaTabel: tabel.length === 1 ? slug(tabel[0].nama) : "laporan",
-    tanggal: wib.toLocaleDateString("id-ID", {timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric"}) + ", " + wib.toISOString().slice(11, 16) + " WIB",
-    sumber: "Sumber: " + (reg?.bagikan?.sumber || "Deteksi Centurisk97"), tabel}; }
+  return window.UnduhTabel.laporan("kekeringan", "Laporan Situasi Kekeringan", tg || S_?.meta?.hari_ini, tabel, "Deteksi Centurisk97"); }
 
 window.UnduhTabel.tema({id: "kekeringan", label: "Unduh tabel kekeringan", kumpul});
 window.UnduhTabelKekeringan = {panel, kumpul};

@@ -21,7 +21,7 @@ const Metode = (() => {
   /* ---- bab-bab; tiap fungsi mengembalikan HTML atau "" (bab disembunyikan) ---- */
   function guncangan(M, E, EP, PG) {
     if (!M) return "";
-    const P = M.param, S2 = M.sitasi || {}, ke = E?.kinerja_uji?.rmse, pg = PG?.dicatat ? ` Catatan prospektif ramalan MMI: ${fmt(PG.dicatat)} dicatat, ${fmt(PG.dinilai || 0)} dinilai.` : "";
+    const P = M.param, S2 = M.sitasi || {}, ke = E?.kinerja_uji?.rmse, pg = PG?.metrik?.dicatat ? ` Catatan prospektif ramalan MMI: ${fmt(PG.metrik.dicatat)} dicatat, ${fmt(PG.metrik.dinilai_mmi || 0)} dinilai.` : "";
     return bab(0, "getar", "Guncangan satu gempa", "dari magnitudo dan jarak ke tingkat guncangan (MMI) di tiap kecamatan",
       "Dari kekuatan, kedalaman, dan jenis gempa, kami menghitung percepatan tanah di pusat tiap kecamatan, lalu mengubahnya ke skala MMI yang dipakai BMKG. Hasilnya perkiraan rata-rata, bukan pengukuran.",
       `${ptg(`<b>Percepatan tanah (PGA).</b> Gempa dangkal kerak memakai ${esc(S2.kerak || "BSSA14")}; gempa antarmuka subduksi dan intraslab (kedalaman 50 km atau lebih) memakai ${esc(S2.antarmuka || "Zhao 2006")}. Di rincian gempa, peta isoseismal, dan kecamatan, Vs30 seragam ${a(M.vs30_baku, 0)} m/s (tanpa efek tapak). Hanya Simulasi memakai peta Vs30 per sel (lihat bab Simulasi).`)}
@@ -162,7 +162,7 @@ const Metode = (() => {
     const el = $("#metode"); if (!el || el.dataset.ok) return; el.dataset.ok = 1;
     el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div><div class="kosong"><div class="spin"></div></div>`;
     const j = u => muatJSON(u).catch(() => null);
-    const [M, MS, meta, bm, B, PL, E, EP, PG, PS, BR, Z, D, EV] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null, typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, j("data/emsc_residu.json"), j("data/emsc_prospektif.json"), j("data/prospektif_guncangan.json"), j("data/prospektif_susulan.json"), j("data/beruntun.json"), j("data/tsunami_zona.json"), j("data/dart.json"), typeof Evakuasi !== "undefined" ? Evakuasi.muat() : null]);
+    const [M, MS, meta, bm, B, PL, E, EP, PG, PS, BR, Z, D, EV] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null, typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, j("data/emsc_residu.json"), j("data/emsc_prospektif.json"), j("data/prospektif_gempa.json"), j("data/prospektif_susulan.json"), j("data/beruntun.json"), j("data/tsunami_zona.json"), j("data/dart.json"), typeof Evakuasi !== "undefined" ? Evakuasi.muat() : null]);
     const bagian = [guncangan(M, E, EP, PG), susulan(MS, PS), simulasi(), tsunami(), evakuasi(EV), zonaTsunami(Z, D), bukti(B), beruntun(BR), paparan(), dataHidup(), laporan(), typeof Peluang !== "undefined" ? Peluang.batasan(PL) : "", batas(), sumber(meta, bm)].filter(Boolean);
     let n = 0; el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div>
       ${bagian.map(h => h.replace(/<b>0\. /, `<b>${++n}. `)).join("")}`;

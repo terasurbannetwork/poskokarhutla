@@ -119,9 +119,13 @@ def jalan(akar=AKAR, maks=100):
     abadi = []
     for web in sorted(versi):
         nama = web.rsplit("/", 1)[1]
-        pola = re.compile(r"[\"'`/]" + re.escape(nama) + r"[\"'`?#]")   # di dalam string (muatan), bukan sebutan di komentar
-        dinamis = web in impor or any(pola.search(t) for p, t in dimuat.items() if "/" + os.path.relpath(p, akar).replace(os.sep, "/") != web) \
-            or any(pola.search(t) for t in sisa)
+        # di dalam string (muatan), bukan sebutan di komentar. Jalur mutlak ("/inti/unduh.js") hanya mengenai berkas itu sendiri,
+        # bukan semua berkas senama (23 Nov 2026: "/inti/unduh.js" membuat enam <bencana>/unduh.js jadi pengecualian, _headers 84)
+        pola = re.compile(r"[\"'`]([^\"'`\s]*/)?" + re.escape(nama) + r"[\"'`?#]")
+        mutlak = lambda a: a.startswith("/") and a != "/" and "$" not in a and "{" not in a   # "/" saja atau templat = sambungan, tetap dianggap dinamis
+        kena = lambda t: any(not mutlak(m.group(1) or "") or m.group(1) + nama == web for m in pola.finditer(t))
+        dinamis = web in impor or any(kena(t) for p, t in dimuat.items() if "/" + os.path.relpath(p, akar).replace(os.sep, "/") != web) \
+            or any(kena(t) for t in sisa)
         if not dinamis:
             abadi.append(web)
     hp = os.path.join(akar, "_headers")

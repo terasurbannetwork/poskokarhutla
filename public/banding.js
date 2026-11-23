@@ -26,7 +26,7 @@
     [`Hutan hilang s.d. 2010 vs s.d. ${TH1}`, "Hutan hilang kumulatif sejak 2001", () => [{j: "hilang", th: 2010}, {j: "hilang", th: TH1}]],
     [`Hutan hilang akibat api s.d. 2015 vs s.d. ${TH1}`, "Hutan hilang akibat kebakaran kumulatif sejak 2001", () => [{j: "api", th: 2015}, {j: "api", th: TH1}]],
   ];
-  let cfgGFW = null, terbuka = false, membuka = false, dibuat = false, p = 50, rafP = 0, kunci = false;
+  let cfgGFW = null, terbuka = false, membuka = false, dibuat = false, kunci = false;
   const sisi = [{j: "sat", tgl: "2019" + yk().slice(4)}, {j: "sat", tgl: yk()}];
   const el = {}, maps = [null, null];
 
@@ -55,15 +55,8 @@
     : s.j === "eox" ? [s.th, "Sentinel-2 bebas awan"] : [s.th, (s.j === "api" ? "Hutan hilang akibat api" : "Hutan hilang") + " s.d. " + s.th];
 
   /* ---------- pembatas: satu tulis CSS per frame ---------- */
-  function atur(v) { p = Math.max(0, Math.min(100, v)); if (rafP) return;
-    rafP = requestAnimationFrame(() => { rafP = 0; el.root.style.setProperty("--p", p + "%"); el.gar.setAttribute("aria-valuenow", Math.round(p)); }); }
-  function bangunPembatas() {
-    const g = el.gar; let r = null;
-    g.onpointerdown = e => { r = el.root.getBoundingClientRect(); g.setPointerCapture(e.pointerId); el.root.classList.add("geser"); e.preventDefault(); };
-    g.onpointermove = e => { if (r) atur((e.clientX - r.left) / r.width * 100); };
-    g.onpointerup = g.onpointercancel = () => { r = null; el.root.classList.remove("geser"); };
-    g.onkeydown = e => { const d = {ArrowLeft: -5, ArrowRight: 5, Home: -100, End: 100}[e.key]; if (d != null) { atur(p + d); e.preventDefault(); } };
-  }
+  let pb = null;
+  const atur = v => pb?.atur(v);
 
   /* ---------- kamera: ketiga peta saling ikut, tanpa umpan balik ---------- */
   const sembunyi = m => m === maps[0] && sisi[0].j === "utama";
@@ -123,7 +116,7 @@
     bar.innerHTML = PRESET.map(([n, t], k) => `<button type="button" data-k="${k}" title="${t}">${n}</button>`).join("") + `<button type="button" class="bd-x" aria-label="Tutup banding" title="Tutup banding"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>Tutup</button>`;
     bar.onclick = e => { const b = e.target.closest("button"); if (!b) return; if (b.classList.contains("bd-x")) return tutup();
       const [a, c] = PRESET[b.dataset.k][2](); sisi[0] = a; sisi[1] = c; atur(50); etiket(0); etiket(1); nanti(() => { muatGaya(0); muatGaya(1); }); };
-    bangunPembatas();
+    pb = CitraAlat.pembatas(el.root, el.gar);
     return true;
   }
   /* dua peta dibuat sesudah kerangka tampil (nanti), supaya klik pertama tidak membeku */

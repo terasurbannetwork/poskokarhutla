@@ -4,7 +4,6 @@
 (() => {
 const rapi = e => e.textContent.replace(/\s+/g, " ").replace(/\s*[↑↓]$/, "").trim();
 const RENT = {24: "24 jam", 72: "72 jam", 168: "7 hari"};
-const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /* tabel provinsi panel peta: baris .tb (div), kolom pertama adalah nomor urut */
 function provinsi(rows, ket) {
@@ -13,11 +12,7 @@ function provinsi(rows, ket) {
   const sel = e => [...e.children].slice(1).map(rapi);
   return {nama: "Provinsi", ket: ket, kolom: sel(kp), baris: br.map(sel)}; }
 
-/* tabel HTML biasa (tab Kejadian, Katalog BMKG): kepala dari th, baris dari tbody */
-function tabelHtml(t, nama, ket) {
-  if (!t) return null;
-  const kolom = [...t.querySelectorAll("thead th")].map(rapi), baris = [...t.querySelectorAll("tbody tr")].map(r => [...r.children].map(rapi));
-  return kolom.length && baris.length ? {nama, ket: ket || "", kolom, baris} : null; }
+const tabelHtml = window.UnduhTabel.tabelHtml;
 
 async function kumpul() {
   const d = document, rentang = typeof S !== "undefined" ? S.rentang : 168, tabel = [];
@@ -25,10 +20,7 @@ async function kumpul() {
   const p = provinsi(d.querySelector("#rows"), tg ? "Tanggal: " + +tg.slice(8) + " " + BLN[+tg.slice(5, 7) - 1] + " " + tg.slice(0, 4) : "Periode: " + (RENT[rentang] || rentang + " jam")); if (p) tabel.push(p);
   const kj = tabelHtml(d.querySelector("#kejadian table"), "Kejadian", typeof Kejadian !== "undefined" && Kejadian.st ? "Halaman " + (Kejadian.st.hal + 1) + ", seperti tampil di layar" : ""); if (kj) tabel.push(kj);
   const jenis = d.querySelector("#katalog .ina-seg [aria-pressed=true]"), kt = tabelHtml(d.querySelector("#inaTabel table"), "Katalog BMKG", jenis ? rapi(jenis) : ""); if (kt) tabel.push(kt);
-  const reg = (await window.UnduhTabel.registri().catch(() => [])).find(b => b.id === "gempa"), wib = new Date(Date.now() + 7 * 36e5), iso = tg || wib.toISOString().slice(0, 10);
-  return {judul: "Laporan Situasi Gempa Bumi", iso, namaTabel: tabel.length === 1 ? slug(tabel[0].nama) : "laporan",
-    tanggal: wib.toLocaleDateString("id-ID", {timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric"}) + ", " + wib.toISOString().slice(11, 16) + " WIB",
-    sumber: "Sumber: " + (reg?.bagikan?.sumber || "BMKG, USGS"), tabel}; }
+  return window.UnduhTabel.laporan("gempa", "Laporan Situasi Gempa Bumi", tg, tabel, "BMKG, USGS"); }
 
 window.UnduhTabel.tema({id: "gempa", label: "Unduh tabel gempa", kumpul});
 window.UnduhTabelGempa = {provinsi, tabelHtml, kumpul};
