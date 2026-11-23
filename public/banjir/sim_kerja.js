@@ -1,8 +1,9 @@
 "use strict";
 /* sim_kerja.js: Web Worker tab Simulasi genangan. Unduh DEM, siapkan area, hitung genangan di luar utas utama supaya klik tidak beku.
-   Pesan masuk {id, jenis: "dem", lat, lon, sisi, n} | {id, jenis: "siap", dem} | {id, jenis: "lahan", K} | {id, jenis: "jalan", cfg};
+   Pesan masuk {id, jenis: "dem", lat, lon, sisi, n} | {id, jenis: "siap", dem} | {id, jenis: "lahan", K} | {id, jenis: "jalan", cfg}
+   | {id, jenis: "hand", prep, K, air} (skenario muka sungai, sim_hand.js) | {id, jenis: "akses", ctx} (titik aman lewat darat);
    keluar {id, kabar} lalu {id, ok, ...} | {id, ok: false, galat}. Larik besar dikirim sebagai transferable. */
-importScripts("sim_genangan.js", "sim_longsor.js", "sim_lahan.js");
+importScripts("sim_genangan.js", "sim_longsor.js", "sim_lahan.js", "sim_tanggap.js", "sim_hand.js");
 const larik = o => Object.values(o).filter(v => ArrayBuffer.isView(v)).map(v => v.buffer);
 self.onmessage = async e => {
   const {id, jenis} = e.data;
@@ -13,6 +14,8 @@ self.onmessage = async e => {
     else if (jenis === "jalan") { let akhir = 0;
       const r = SimGenangan.jalankan(e.data.cfg, p => { const s = Date.now(); if (s - akhir > 150) { akhir = s; self.postMessage({id, kabar: p}); } });
       self.postMessage({id, ok: true, hasil: r}, [r.kedalaman.buffer, r.hmaks.buffer]); }
+    else if (jenis === "hand") { const h = SimHand.hitung(e.data.prep, e.data.K, SimGenangan, undefined, e.data.air); self.postMessage({id, ok: true, hand: h}, [h.hand.buffer, h.alur.buffer]); }
+    else if (jenis === "akses") self.postMessage({id, ok: true, akses: SimHand.akses(e.data.ctx, SimTanggap)});
     else throw new Error("jenis pesan tidak dikenal: " + jenis);
   } catch (err) { self.postMessage({id, ok: false, galat: String(err && err.message || err)}); }
 };
