@@ -1,6 +1,12 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "POST /api/lapor/data/objek": "objek rumah: tersimpan urut 1",
+    "POST /api/lapor/data/batal": "batal: anggota hanya objek isiannya",
+    "POST /api/lapor/data/foto": "foto: JPEG kamera tersimpan",
+    "GET /api/lapor/data/media": "foto: JPEG kamera tersimpan",
+    "table lj_jejak": "objek rumah: tersimpan urut 1",
+    "table lj_media": "foto: JPEG kamera tersimpan",
     "POST /api/lapor/data/masuk": "masuk: token sekali pakai",
     "GET /api/lapor/data/berkas": "berkas untuk tim: data pribadi utuh",
     "GET /api/lapor/data/daftar": "staf BNPB: pribadi dan nomor tim tersamar",
@@ -1485,8 +1491,6 @@
     "table lapor_tindakan": "pengecekan lapangan dan tindakan"
   },
   "dikecualikan": {
-    "table lj_jejak": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
-    "table lj_media": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table lj_tanya": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table lj_beku": "kode menyusul di LJ-02 dst. (paket lapor-lanjutan); migrasi 0161 idempoten, skema diuji gerbang migrasi dan hak MATRIKS",
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

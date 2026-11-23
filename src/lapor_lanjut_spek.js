@@ -61,7 +61,7 @@ export const NAMA_PRIBADI = Object.fromEntries(JENIS.map(j => [j, SPEK[j].isian.
 const TIDAK_ADA = "tidak_ada";
 function satu(nilai, j) {
   if (j.t === "pilih") return j.v.includes(nilai) ? [nilai] : null;
-  if (j.t === "teks") { const s = String(nilai).trim().replace(/\s+/g, " "); return s && s.length <= j.maks ? [s] : null; }
+  if (j.t === "teks") { if (typeof nilai !== "string" && typeof nilai !== "number") return null; const s = String(nilai).trim().replace(/\s+/g, " "); return s && s.length <= j.maks ? [s] : null; }
   if (j.t === "angka") { const n = typeof nilai === "number" ? nilai : Number(String(nilai).replace(",", ".")); return Number.isFinite(n) && n >= j.min && n <= j.maks && (j.desimal || Number.isInteger(n)) ? [n] : null; }
   if (j.t === "tanggal") return /^\d{4}-\d{2}-\d{2}$/.test(nilai) && !Number.isNaN(Date.parse(nilai + "T00:00:00Z")) ? [nilai] : null;
   if (j.t === "ya_tidak") return typeof nilai === "boolean" ? [nilai] : null;

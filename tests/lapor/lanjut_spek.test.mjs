@@ -37,6 +37,11 @@ test("validasi: wajib bersyarat dan nomor HP", () => {
   assert.ok(L.validasi("korban", {status: "hilang", nama: "A", umur: 9, jk: "l", desa: "D", kontak_nama: "B", kontak_hp: "tidak_ada"}).galat.includes("pencarian"));
 });
 
+test("isian teks hanya menerima teks atau angka, bukan objek atau larik (tinjauan guard-api LJ-04)", () => {
+  assert.ok(L.validasi("rumah", {kk: {x: 1}}).galat.includes("kk"));
+  assert.ok(L.validasi("rumah", {alamat: ["a", "b"]}).galat.includes("alamat"));
+});
+
 test("isian pribadi tercatat per jenis (tidak pernah ke AI, D19)", () => {
   assert.deepEqual(L.NAMA_PRIBADI.jiwa, ["nama", "hp", "nik", "rentan", "kebutuhan"]);
   assert.deepEqual(L.NAMA_PRIBADI.korban, ["nama", "kontak_nama", "kontak_hp", "ciri", "nik"]);

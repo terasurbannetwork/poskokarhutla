@@ -118,13 +118,13 @@ Indeks: `lj_berkas (status)`, `lj_berkas (kejadian_id, kab4)`, `lj_objek (berkas
 | `GET /api/lapor/data/daftar` | staf Pusdalops, admin, akun lembaga (Q15) | daftar berkas lintas kab sesuai hak wilayah |
 | `POST /api/lapor/data/tampil` | staf | satu objek `pribadi` utuh, tercatat `lj_akses` |
 | `POST /api/lapor/data/objek` | tim berkas | tambah atau ubah (idempoten `klien_id`, 409 bila `rev` lama) |
-| `POST /api/lapor/data/objek/:id/batal` | ketua; anggota untuk objek isiannya | batal dengan alasan |
+| `POST /api/lapor/data/batal` | ketua; anggota untuk objek isiannya | `{objek, rev, alasan}`, batal dengan alasan |
 | `POST /api/lapor/data/nihil` | tim berkas | tandai atau cabut nihil per metrik |
-| `POST /api/lapor/data/media` | tim berkas | foto atau dokumen; video lewat jalur `lapor_unggah` dengan konteks objek |
+| `POST /api/lapor/data/foto` | tim berkas | foto JPEG kamera `{objek, data, gps, exif}`, EXIF dibuang, foto lama diberi penanda (tidak ditolak); video menyusul di LJ-18 |
 | `POST /api/lapor/data/tim` | ketua (tambah, cabut), staf Pusdalops dan admin (cabut, pindah ketua Q14) | atur tim, terbitkan token |
 | `POST /api/lapor/data/tutup` | ketua | isian penutupan, hasilkan `usul_tutup` |
 | `POST /api/lapor/data/terima` | staf Pusdalops | terima penutupan, terima ke Jitupasna |
-| `GET /api/lapor/data/media/:id` | tim berkas, staf | sajikan media, tercatat `lj_akses` |
+| `GET /api/lapor/data/media?id=` | tim berkas, staf Pusdalops, akun lembaga kab (foto saja, bukan wajah) | sajikan media, tercatat `lj_akses` |
 
 Semua rute: metode dibatasi, isian divalidasi spek, batas laju per nomor (pola rute lapor), ukuran foto mengikuti `lapor_foto`.
 

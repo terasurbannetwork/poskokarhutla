@@ -4,6 +4,7 @@
    Nomor WA rekaan, bukan nomor pemilik. Jalan: node --test tests/lapor/lanjut_rute.test.mjs */
 import assert from "node:assert/strict";
 import {siapkan, berantai, ADMIN, sha256} from "../warga/_bnpb.mjs";
+import {JPEG_SAH} from "../warga/_bantu.mjs";
 import "../../src/worker.js";
 import {bukaBerkas, samarPribadi, kabSama} from "../../src/lapor_lanjut.js";
 
@@ -13,7 +14,7 @@ const env = {DB}, ASAL = "http://bnpb.lokal", kini = Date.now();
 const KETUA = "6281299880001", KODE = "6281299880002", LUAR = "6281299880003", WARGA = "6281299880004";
 const BOGOR = {provKode: "32", prov: "Jawa Barat", kabKode: "32.71", kab: "Kota Bogor", kecKode: "32.71.03", desa: "Paledang"};
 const XPB = {"x-pb": "1", origin: ASAL};
-let berkasId, token, kuki;
+let berkasId, token, kuki, akunBogor, akunJabar;
 
 async function tiket(nomor, wa, tingkat, wilayah = BOGOR) {
   const kerja = {tingkat, isian: {lokasi: {nilai: {lat: -6.6, lon: 106.8, wilayah}}, jenis: {nilai: "banjir"}}, transkrip: []};
@@ -118,9 +119,9 @@ uji("staf BNPB: pribadi dan nomor tim tersamar; Tampilkan memberi utuh dan terca
 });
 
 uji("akun lembaga (Q15): kab sendiri tersamar, kab lain 404 dan tidak di daftar, provinsi rekap saja, Tampilkan ditolak", async () => {
-  const bogor = await lembaga({jenis: "pemkot", tingkat: "kab", prov: "32", kab: "Kota Bogor"});
+  const bogor = akunBogor = await lembaga({jenis: "pemkot", tingkat: "kab", prov: "32", kab: "Kota Bogor"});
   const bandung = await lembaga({jenis: "pemkot", tingkat: "kab", prov: "32", kab: "Kota Bandung"});
-  const jabar = await lembaga({jenis: "pemprov", tingkat: "prov", prov: "32"}), dki = await lembaga({jenis: "pemprov", tingkat: "prov", prov: "31"});
+  const jabar = akunJabar = await lembaga({jenis: "pemprov", tingkat: "prov", prov: "32"}), dki = await lembaga({jenis: "pemprov", tingkat: "prov", prov: "31"});
   const a = await api("GET", `/api/lapor/data/berkas?id=${berkasId}`, undefined, bogor); assert.equal(a.s, 200, a.t);
   assert.equal(a.j.objek[0].pribadi.hp, "*********7890"); assert.ok(!/6281234567890/.test(a.t));
   assert.equal((await api("GET", `/api/lapor/data/berkas?id=${berkasId}`, undefined, bandung)).s, 404);
@@ -147,4 +148,89 @@ uji("batas laju: Tampilkan paling banyak 60 per jam per IP", async () => {
   await DB.prepare("DELETE FROM laju_bnpb").run();
   let s = 0; for (let i = 0; i < 61; i++) s = (await api("POST", "/api/lapor/data/tampil", {objek: "a".repeat(16)}, ADMIN)).s;
   assert.equal(s, 429);
+});
+
+/* ---------- LJ-04: objek rumah dan prasarana, rev, klien_id, batal, foto, media ---------- */
+const RUMAH = {kk: "Budi Santoso", desa: "Paledang", kec: "Bogor Tengah", alamat: "RT 01 RW 02", tingkat: "rb", terendam: false, huni: "mengungsi", jiwa: 4};
+const tulis = (b, h = {cookie: kuki, ...XPB}) => api("POST", "/api/lapor/data/objek", b, h);
+let rumahId, rumahRev;
+
+uji("objek: penjaga x-pb, kuki, jenis yang belum dibuka, isian wajib", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  assert.equal((await tulis({jenis: "rumah", isian: RUMAH}, {cookie: kuki, origin: ASAL})).s, 403, "tanpa x-pb");
+  assert.equal((await tulis({jenis: "rumah", isian: RUMAH}, XPB)).s, 401, "tanpa kuki");
+  assert.equal((await tulis({jenis: "jiwa", isian: {}})).s, 400, "jiwa menyusul di LJ-06");
+  const r = await tulis({jenis: "rumah", isian: {desa: "Paledang"}}); assert.equal(r.s, 400); assert.ok(r.j.isian.includes("kk") && r.j.isian.includes("tingkat"));
+});
+
+uji("objek rumah: tersimpan urut 1, pribadi terpisah, penanda dan kurang foto; klien_id ulang mengembalikan objek yang sama", async () => {
+  const r = await tulis({jenis: "rumah", isian: RUMAH, klien_id: "luring-0001"}); assert.equal(r.s, 201, r.t);
+  const o = r.j.objek; rumahId = o.id; rumahRev = o.rev;
+  assert.equal(o.urut, 1); assert.equal(o.pribadi.kk, "Budi Santoso"); assert.equal(o.data.kk, undefined); assert.equal(o.data.tingkat, "rb");
+  assert.deepEqual(o.penanda, ["tanpa_titik"]); assert.deepEqual(o.kurang_foto, {foto: 2, wajah: 0});
+  const u = await tulis({jenis: "rumah", isian: RUMAH, klien_id: "luring-0001"}); assert.equal(u.s, 200); assert.equal(u.j.objek.id, rumahId); assert.equal(u.j.ulang, true);
+  assert.equal(await n("lj_objek", "jenis = 'rumah' AND status = 'aktif'"), 1);
+  const j = await DB.prepare("SELECT sebelum, sesudah, pribadi_sidik FROM lj_jejak WHERE objek = ?").bind(rumahId).first();
+  assert.ok(!/Budi/.test(JSON.stringify(j)), "jejak tanpa isian pribadi terbaca"); assert.match(j.pribadi_sidik, /^[0-9a-f]{64}$/);
+  const r2 = await tulis({jenis: "rumah", isian: {...RUMAH, kk: "Siti", tingkat: "rs"}}); assert.equal(r2.j.objek.urut, 2);
+});
+
+uji("objek ubah: rev dijaga, kalah 409; prasarana jembatan wajib panjang dan kendaraan", async () => {
+  const a = await tulis({id: rumahId, rev: rumahRev, isian: {...RUMAH, tingkat: "rs"}, lat: -6.6, lon: 106.8}); assert.equal(a.s, 200, a.t);
+  assert.equal(a.j.objek.rev, rumahRev + 1); assert.equal(a.j.objek.data.tingkat, "rs"); assert.deepEqual(a.j.objek.penanda, []);
+  assert.equal((await tulis({id: rumahId, rev: rumahRev, isian: RUMAH})).s, 409, "rev lama kalah");
+  rumahRev = a.j.objek.rev;
+  assert.equal((await tulis({jenis: "prasarana", isian: {jenis: "jembatan", nama: "Jembatan Cisadane", desa: "Paledang", tingkat: "rb", fungsi: "putus"}})).s, 400);
+  const p = await tulis({jenis: "prasarana", isian: {jenis: "jembatan", nama: "Jembatan Cisadane", desa: "Paledang", tingkat: "rb", fungsi: "putus", panjang_m: 40, kendaraan: "tidak_ada"}});
+  assert.equal(p.s, 201, p.t);
+  assert.equal((await tulis({jenis: "rumah", isian: RUMAH, lat: 50, lon: 10})).s, 400, "titik di luar Indonesia");
+});
+
+uji("foto: JPEG kamera tersimpan tanpa EXIF, titik dari GPS mengisi objek tanpa titik; media hanya untuk yang berhak", async () => {
+  const baru = await tulis({jenis: "rumah", isian: {...RUMAH, kk: "Andi"}}); const id = baru.j.objek.id;
+  const foto = b => api("POST", "/api/lapor/data/foto", b, {cookie: kuki, ...XPB});
+  const B64 = Buffer.from(JPEG_SAH).toString("base64"), gps = {lat: -6.601, lon: 106.801, akurasi: 8, waktu: Date.now()};
+  assert.equal((await foto({objek: id, data: Buffer.from("bukan jpeg").toString("base64")})).s, 400);
+  assert.equal((await foto({objek: id, data: B64, exif: {kamera: false}})).s, 400, "tangkapan layar ditolak");
+  assert.equal((await foto({objek: id, data: B64, gps, exif: {lat: -7.5, lon: 110.4}})).s, 400, "GPS dan EXIF lebih dari 5 km");
+  const f = await foto({objek: id, data: B64, gps}); assert.equal(f.s, 201, f.t);
+  assert.equal(f.j.objek.lat, gps.lat); assert.deepEqual(f.j.objek.kurang_foto, {foto: 1, wajah: 0}); assert.equal(f.j.objek.media[0].lencana, "gps");
+  const m = await DB.prepare("SELECT kunci_r2 FROM lj_media WHERE id = ?").bind(f.j.foto).first(); assert.match(m.kunci_r2, /^lapor\/data\/[0-9a-f]{16}\/[0-9a-f]{16}\/[0-9a-f]{16}\.jpg$/);
+  const g = await api("GET", `/api/lapor/data/media?id=${f.j.foto}`, undefined, {cookie: kuki}); assert.equal(g.s, 200); assert.equal(g.h.get("content-type"), "image/jpeg"); assert.equal(g.h.get("cache-control"), "private, no-store");
+  assert.equal((await api("GET", `/api/lapor/data/media?id=${f.j.foto}`)).s, 404, "tanpa hak: sama dengan tidak ada");
+  assert.equal((await api("GET", `/api/lapor/data/media?id=${f.j.foto}`, undefined, ADMIN)).s, 200);
+  const bogor = akunBogor, jabar = akunJabar;
+  assert.equal((await api("GET", `/api/lapor/data/media?id=${f.j.foto}`, undefined, bogor)).s, 200);
+  assert.equal((await api("GET", `/api/lapor/data/media?id=${f.j.foto}`, undefined, jabar)).s, 404, "provinsi hanya rekap");
+  assert.ok(await n("lj_akses", "aksi = 'media'") >= 3);
+});
+
+uji("batal: anggota hanya objek isiannya, ketua semua, alasan wajib; rekap tidak menghitung yang batal; berkas tertutup menolak tulis", async () => {
+  const KA = "a1".repeat(32); await DB.prepare("INSERT INTO lj_tim (berkas, wa, nama, peran, token_sha, kedaluwarsa, oleh, dibuat) VALUES (?, '6281299880009', 'Rina', 'anggota', ?, ?, 'uji', ?)").bind(berkasId, sha256(KA), Date.now() + 864e5, kini).run();
+  const anggota = {cookie: `lapor_data=${KA}`, ...XPB}, batal = (b, h = {cookie: kuki, ...XPB}) => api("POST", "/api/lapor/data/batal", b, h);
+  assert.equal((await batal({objek: rumahId, rev: rumahRev, alasan: "salah rumah"}, anggota)).s, 403);
+  const milik = await tulis({jenis: "rumah", isian: {...RUMAH, kk: "Rina A"}}, anggota); assert.equal(milik.s, 201, milik.t);
+  assert.equal((await batal({objek: milik.j.objek.id, rev: milik.j.objek.rev, alasan: "dobel"}, anggota)).s, 200, "anggota membatalkan isiannya sendiri");
+  assert.equal((await batal({objek: rumahId, rev: rumahRev, alasan: "x"})).s, 400, "alasan terlalu pendek");
+  const sebelum = (await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j.rekap.rumah_rs;
+  assert.equal((await batal({objek: rumahId, rev: rumahRev, alasan: "rumah yang sama tercatat dua kali"})).s, 200);
+  assert.equal((await batal({objek: rumahId, rev: rumahRev, alasan: "rumah yang sama tercatat dua kali"})).s, 409, "sudah batal");
+  assert.equal((await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j.rekap.rumah_rs, sebelum - 1);
+  await DB.prepare("UPDATE lj_berkas SET status = 'selesai_catatan', ditutup = ? WHERE id = ?").bind(kini, berkasId).run();
+  assert.equal((await tulis({jenis: "rumah", isian: RUMAH})).s, 409, "berkas tertutup");
+  await DB.prepare("UPDATE lj_berkas SET status = 'terbuka', ditutup = NULL WHERE id = ?").bind(berkasId).run();
+});
+
+uji("temuan pemeriksa LJ-04: anggota tidak mengubah isian orang lain, alasan tanpa NIK, sidik pribadi berkunci, batas 10 foto atomik", async () => {
+  const KA = "a1".repeat(32), anggota = {cookie: `lapor_data=${KA}`, ...XPB};
+  const k = await tulis({jenis: "rumah", isian: {...RUMAH, kk: "Ketua Isi"}}); const o = k.j.objek;
+  assert.equal((await tulis({id: o.id, rev: o.rev, isian: {...RUMAH, kk: "Diganti"}}, anggota)).s, 403);
+  assert.equal((await api("POST", "/api/lapor/data/batal", {objek: o.id, rev: o.rev, alasan: "salah, NIK 3171010101010001"}, {cookie: kuki, ...XPB})).s, 400);
+  const j = await DB.prepare("SELECT pribadi_sidik FROM lj_jejak WHERE objek = ? ORDER BY id LIMIT 1").bind(o.id).first();
+  assert.notEqual(j.pribadi_sidik, sha256(JSON.stringify({kk: "Ketua Isi"})), "bukan SHA-256 polos yang bisa ditebak");
+  await DB.batch(Array.from({length: 10}, (_, i) => DB.prepare("INSERT INTO lj_media (id, objek, kunci_r2, jenis, waktu_terima, lencana, pintu, oleh) VALUES (?, ?, ?, 'foto', ?, 'tanpa', 'web', 'uji')")
+    .bind(String(i).padStart(16, "c"), o.id, `lapor/data/x/${i}.jpg`, kini)));
+  const f = await api("POST", "/api/lapor/data/foto", {objek: o.id, data: Buffer.from(JPEG_SAH).toString("base64")}, {cookie: kuki, ...XPB});
+  assert.equal(f.s, 400); assert.match(f.j.galat, /Paling banyak 10 foto/);
+  assert.equal(await n("lj_media", `objek = '${o.id}'`), 10);
 });

@@ -2095,3 +2095,47 @@ export const ljHitungJenis = async (env, p, ids) => ids.length ? (await sedia(en
   `SELECT berkas, jenis, count(*) n FROM lj_objek WHERE berkas IN (${ids.map((_, i) => "?" + (i + 1)).join(",")}) AND status = 'aktif' GROUP BY berkas, jenis`).bind(...ids).all()).results : [];
 export const ljStmtAkses = (env, p, berkas, objek, aksi, oleh, kini, g = false) => sedia(env, p, "lj_akses", "tambah",
   g ? "INSERT INTO lj_akses (berkas, objek, aksi, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5 WHERE changes() > 0" : "INSERT INTO lj_akses (berkas, objek, aksi, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5)").bind(berkas, objek, aksi, oleh, kini);
+/* LJ-04: objek, jejak, media. Objek baru mengambil urut berikutnya dalam satu pernyataan (indeks lj_objek_berkas); UNIQUE (berkas, jenis, urut)
+   menolak balapan dan pemanggil mengulang. Ubah dan batal dijaga rev (409 bila kalah). */
+const LJ_OBJEK = "id, berkas, jenis, urut, data, pribadi, titik_id, desa, lat, lon, status, klien_id, oleh, rev, dibuat, diubah";
+export const ljObjekId = (env, p, id) => sedia(env, p, "lj_objek", "baca", `SELECT ${LJ_OBJEK} FROM lj_objek WHERE id = ?1`).bind(id).first();
+export const ljObjekKlien = (env, p, klien) => sedia(env, p, "lj_objek", "baca", `SELECT ${LJ_OBJEK} FROM lj_objek WHERE klien_id = ?1`).bind(klien).first();
+export const ljStmtObjekBaru = (env, p, o, kini) => sedia(env, p, "lj_objek", "tambah",
+  `INSERT INTO lj_objek (id, berkas, jenis, urut, data, pribadi, titik_id, desa, lat, lon, klien_id, oleh, dibuat, diubah)
+   SELECT ?1, ?2, ?3, coalesce(max(urut), 0) + 1, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?12 FROM lj_objek WHERE berkas = ?2 AND jenis = ?3`)
+  .bind(o.id, o.berkas, o.jenis, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, o.klien_id ?? null, o.oleh, kini);
+export const ljStmtObjekUbah = (env, p, o, rev, kini) => sedia(env, p, "lj_objek", "ubah",
+  "UPDATE lj_objek SET data = ?3, pribadi = ?4, titik_id = ?5, desa = ?6, lat = ?7, lon = ?8, rev = rev + 1, diubah = ?9 WHERE id = ?1 AND berkas = ?2 AND rev = ?10 AND status = 'aktif'")
+  .bind(o.id, o.berkas, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, kini, rev);
+export const ljStmtObjekBatal = (env, p, id, berkas, rev, kini) => sedia(env, p, "lj_objek", "ubah",
+  "UPDATE lj_objek SET status = 'batal', rev = rev + 1, diubah = ?4 WHERE id = ?1 AND berkas = ?2 AND rev = ?3 AND status = 'aktif'").bind(id, berkas, rev, kini);
+/* titik dari foto hanya mengisi objek yang belum bertitik (ALGORITMA 3: isian manual didahulukan) */
+export const ljStmtObjekTitik = (env, p, id, lat, lon, kini, g = false) => sedia(env, p, "lj_objek", "ubah",
+  `UPDATE lj_objek SET lat = ?2, lon = ?3, diubah = ?4 WHERE id = ?1 AND lat IS NULL${g ? " AND changes() > 0" : ""}`).bind(id, lat, lon, kini);
+export const ljStmtJejak = (env, p, j, kini, g = false) => sedia(env, p, "lj_jejak", "tambah",
+  g ? "INSERT INTO lj_jejak (berkas, objek, aksi, sebelum, sesudah, pribadi_sidik, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE changes() > 0"
+    : "INSERT INTO lj_jejak (berkas, objek, aksi, sebelum, sesudah, pribadi_sidik, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+  .bind(j.berkas, j.objek ?? null, j.aksi, j.sebelum ?? null, j.sesudah ?? null, j.pribadi_sidik ?? null, j.oleh, kini);
+export const ljMedia = async (env, p, objek) => (await sedia(env, p, "lj_media", "baca",
+  "SELECT id, objek, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu FROM lj_media WHERE objek = ?1 ORDER BY waktu_terima").bind(objek).all()).results;
+export const ljMediaSatu = (env, p, id) => sedia(env, p, "lj_media", "baca",
+  "SELECT m.id, m.objek, m.kunci_r2, m.jenis, o.berkas FROM lj_media m JOIN lj_objek o ON o.id = m.objek WHERE m.id = ?1").bind(id).first();
+/* batas jumlah per objek dan jenis dicek di pernyataan yang sama (atomik); changes() = 0 berarti sudah penuh */
+export const ljStmtMediaBaru = (env, p, m, maks) => sedia(env, p, "lj_media", "tambah",
+  `INSERT INTO lj_media (id, objek, kunci_r2, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu, oleh)
+   SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE (SELECT count(*) FROM lj_media WHERE objek = ?2 AND jenis = ?4) < ?13`)
+  .bind(m.id, m.objek, m.kunci_r2, m.jenis, m.lat ?? null, m.lon ?? null, m.akurasi ?? null, m.waktu_ambil ?? null, m.waktu_terima, m.lencana, m.pintu, m.oleh, maks);
+
+/* ---------- Tautan bertoken pihak luar (FITUR §6; src/token.js, migrasi 0164) ----------
+   tk_terbit = rute staf yang menerbitkan atau mencabut; tk_periksa = rute publik yang menerima token. Pemeriksaan dan pencatatan pakai
+   dalam SATU UPDATE ... RETURNING: token dicabut atau kedaluwarsa tidak pernah lolos, dan dipakai_n/terakhir tidak bisa terlewat. */
+Object.assign(MATRIKS, {tautan_token: {tk_terbit: ["tambah", "ubah"], tk_periksa: ["ubah"]}});
+export const pelakuTkTerbit = {peran: "tk_terbit"}, pelakuTkPeriksa = {peran: "tk_periksa"};
+export const tkSimpan = (env, p, b) => sedia(env, p, "tautan_token", "tambah",
+  "INSERT INTO tautan_token (id, jenis, token_sha, sasaran, cakupan, dibuat, kedaluwarsa, oleh) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+  .bind(b.id, b.jenis, b.token_sha, b.sasaran, b.cakupan, b.dibuat, b.kedaluwarsa, b.oleh).run();
+export const tkPakai = (env, p, jenis, tokenSha, kini) => sedia(env, p, "tautan_token", "ubah",
+  "UPDATE tautan_token SET dipakai_n = dipakai_n + 1, terakhir = ?3 WHERE token_sha = ?2 AND jenis = ?1 AND dicabut IS NULL AND kedaluwarsa > ?3 RETURNING id, sasaran, cakupan, kedaluwarsa")
+  .bind(jenis, tokenSha, kini).first();
+export const tkCabut = async (env, p, id, kini) => (await sedia(env, p, "tautan_token", "ubah",
+  "UPDATE tautan_token SET dicabut = ?2 WHERE id = ?1 AND dicabut IS NULL").bind(id, kini).run()).meta.changes;

@@ -19,8 +19,8 @@ Tahap 2 mengumpulkan data pribadi orang yang sedang tertimpa bencana, termasuk a
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Baca berkas sendiri | ya | ya | ya | ya | kabnya, pribadi tersamar | rekap saja | tidak |
 | Baca berkas kab lain | tidak | tidak | ya | ya | tidak | rekap kab di provinsinya | tidak |
-| Tambah dan ubah objek | ya | ya | tidak | tidak | tidak | tidak | tidak |
-| Batal objek | ya | objek isiannya | tidak | tidak | tidak | tidak | tidak |
+| Tambah objek | ya | ya | tidak | tidak | tidak | tidak | tidak |
+| Ubah dan batal objek | ya | objek isiannya | tidak | tidak | tidak | tidak | tidak |
 | Atur tim | tambah, cabut | tidak | cabut, pindah ketua | cabut, pindah ketua | tidak | tidak | tidak |
 | Tutup berkas | ya | tidak | terima | tidak | tidak | tidak | tidak |
 | Tampilkan pribadi utuh | ya | ya | ya, tercatat | ya, tercatat | tidak | tidak | tidak |
