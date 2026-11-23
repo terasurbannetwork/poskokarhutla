@@ -551,6 +551,17 @@ Sebelum menyentuh profil PIC akun BPBD (layar pilih profil, PIN, sesi profil, lo
 
 Aturan berhentinya sama dengan §2.1. Tanpa sesi profil tidak ada akses kerja; PIN hanya tersimpan sebagai hash; foto muka hanya foto profil, tanpa vektor wajah; NIP, HP, email PIC tidak pernah di `public/`; log profil append-only.
 
+### 2.39 Segel dokumen dan verifikasi (`/verifikasi/<kode>`, QR di lembar cetak, sidik dicek ulang saat dibaca): baca dulu, baru bangun
+
+Sebelum menyentuh register segel, kode dan QR di lembar cetak, halaman publik verifikasi, pencabutan segel, atau penyambungan segel ke titik beku (`lk_snapshot`, `lkb_snapshot`, `pb_dokumen`, `lj_beku`), baca dokumen di
+`data/kajian-bnpb/segel-dokumen/` dengan urutan otoritas ini (kode di `src/segel.js`, bagian Segel `src/hak.js`, migrasi segel, sambungan di `src/laporan_karhutla.js`, `src/laporan_bencana.js`, `src/pb_dokumen.js`, `tests/warga/segel*` milik `warga-api`; `public/verifikasi.*` milik `layar-peta`; `public/inti/segel.js` milik `inti-layar`):
+
+1. `KEPUTUSAN-SEGEL.md`: keputusan pemilik K1-K2, rancangan D1-D15, pertanyaan terbuka Q1-Q10 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-11), 4. `ALUR.md`, 5. `ALGORITMA.md` (kode, sidik, status), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`SG-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Segel tidak membekukan sendiri, hanya menempel pada titik beku yang ada; halaman verifikasi hanya data sampul, tanpa angka isi dan tanpa nama orang; segel bukan tanda tangan elektronik; segel tidak pernah diubah atau dihapus, cabut hanya menambah baris; baris dummy tidak disegel.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
