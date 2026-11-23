@@ -2304,3 +2304,23 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-opsi.lp-simetris{container-type:inline-size}
 @container (width < 520px){.lp-opsi.lp-simetris > button{flex-basis:100%!important}}
 .lp-opsi-ikon button b,.lp-opsi-ikon button small{overflow-wrap:anywhere}
+/* hero di layar laptop (pemilik 23 Nov 2026: "Ini kenapa ya?"): kolom judul dulu yang dapat ruang, kartu kontak menyesuaikan.
+   Tiga kolom butuh lebar hero ~1100 px (layar >= 1350 px); di bawahnya maskot disembunyikan supaya judul tidak tinggal satu kata per baris. */
+@media (min-width:1350px){
+  .lp-hero{grid-template-columns:minmax(380px,1.2fr) minmax(170px,.45fr) minmax(440px,1fr)!important}
+  .lp-hero-kanan{max-width:600px;justify-self:end;width:100%}
+}
+@media (min-width:900px) and (max-width:1349px){
+  .lp-hero{grid-template-columns:minmax(0,1fr) minmax(360px,440px)!important}
+  .lp-hero-tengah{display:none!important}
+}
+/* media sosial: lima sebaris bila kartu cukup lebar, selain itu 3 + 2 rata, tidak ada satu akun sendirian di baris bawah */
+.lp-hero-kanan{container-type:inline-size}
+.lp-cc2-sosial{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))}
+.lp-cc2-sosial li{min-width:0!important}
+@container (width < 540px){
+  .lp-cc2-sosial{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .lp-cc2-sosial li{grid-column:span 2}
+  .lp-cc2-sosial li:nth-child(4){grid-column:2 / span 2;border-left:0}
+  .lp-cc2-sosial li:nth-child(5){grid-column:4 / span 2}
+}
