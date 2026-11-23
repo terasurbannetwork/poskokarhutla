@@ -188,10 +188,10 @@ Urutan: LA-78 dan LA-83 bebas satu sama lain; LA-80 sebelum LA-81 dan LA-82; LA-
 
 | Tiket | Isi | Pengerja | Pemeriksa | Q |
 | --- | --- | --- | --- | --- |
-| LA-78 | Rute `POST /api/lapor/darurat/cepat`, sesi `sekali_ketuk` di mesin K68, batas laju A29, nomor BPBD di balasan, larangan teruskan tanpa identitas; uji §21 | `warga-api` | `guard-api`, `security-reviewer` | Q65, Q70 |
-| LA-79 | Tombol di hero, layar sesudah ketuk dengan tiga tombol `tel:`, GPS 15 detik, antrean luring, lalu percakapan K68; chip meja "Sekali ketuk" dan "Pelapor belum dikenal" | `layar-peta` | `inp-reviewer`, `selera-angka` | |
+| LA-78 | Selesai lokal dan Worker (23 Nov 2026, uji `tests/lapor/darurat_cepat.test.mjs`): rute `POST /api/lapor/darurat/cepat`, sesi `sekali_ketuk` di mesin K68, batas laju A29, nomor BPBD di balasan, larangan teruskan tanpa identitas; uji §21 | `warga-api` | `guard-api`, `security-reviewer` | Q65, Q70 |
+| LA-79 | Sebagian (23 Nov 2026): pita kedua "Darurat sekali ketuk" di bawah Lapor darurat, dialog tiga tombol `tel:`, GPS 15 detik, Lengkapi laporan; belum: antrean IndexedDB dan chip meja. Rencana awal: tombol di hero, layar sesudah ketuk dengan tiga tombol `tel:`, GPS 15 detik, antrean luring, lalu percakapan K68; chip meja "Sekali ketuk" dan "Pelapor belum dikenal" | `layar-peta` | `inp-reviewer`, `selera-angka` | |
 | LA-80 | Migrasi `lapor_selamat`, `lapor_cari`, `lapor_cari_riwayat`; rute selamat, tautan, cari, dan meja cari; kode sekali pakai tujuan `selamat`; pencocokan nomor; bersih-bersih 30 hari; uji §22 | `warga-api` | `migrasi-idempoten`, `security-reviewer`, `guard-api` | Q66, Q67 |
 | LA-81 | Layar Kabar selamat, halaman `/lapor/s/<token>`, Bagikan ke WA, cabut tanda, formulir orang dicari | `layar-peta` | `inp-reviewer`, `security-reviewer` | Q68 |
 | LA-82 | Meja: daftar orang dicari wilayahnya, chip tanda cocok, tutup laporan dengan riwayat | `layar-peta` | `selera-angka` | |
-| LA-83 | `/lapor/?d=<kode desa>`: isi usulan lokasi, pertanyaan bila GPS bertentangan, `sumber_lokasi = poster`, lencana di meja; uji §23 bagian tautan | `layar-peta`, `warga-api` | `inp-reviewer` | |
+| LA-83 | Selesai lokal dan Worker (23 Nov 2026, lihat catatan pelaksanaan di KEPUTUSAN): `/lapor/?d=<kode desa>`: isi usulan lokasi, pertanyaan bila GPS bertentangan, `sumber_lokasi = poster`, lencana di meja; uji §23 bagian tautan | `layar-peta`, `warga-api` | `inp-reviewer` | |
 | LA-84 | Pembuat poster di meja (pilih kab, kecamatan atau desa, cetak A4 per desa), `poster.css`, hitungan laporan poster per desa; uji §23 bagian cetak | `layar-peta` | `selera-angka` | Q69 |

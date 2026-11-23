@@ -77,7 +77,7 @@ export function bahanDokumen(s, p, fotoUrl) {
   // foto: url bertoken (mesin mengunduh sendiri), bukan berkas lokal
   const foto = (s.foto || []).map(f => ({url: fotoUrl(f), ket: `${f.jenis === "video" ? `Video ${f.durasi ?? "?"} detik, ` : ""}${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
   return {narasi, foto, nomor: s.nomor, tingkat_label: s.tingkat === "bpbd" ? "" : "Laporan warga, belum terverifikasi",
-    pelapor: {nama: p.nama, peran: PERAN[p.peran], instansi: p.kab ? `BPBD ${p.kab}${p.jabatan ? `, ${p.jabatan}` : ""}` : null, wa_samar: waSamar(s.wa)},
+    pelapor: {nama: p.nama || "Belum dikenal", peran: PERAN[p.peran] || "Warga", instansi: p.kab ? `BPBD ${p.kab}${p.jabatan ? `, ${p.jabatan}` : ""}` : null, wa_samar: waSamar(s.wa)},
     waktu_kejadian: s.isian.waktu?.nilai || "belum didata", waktu_lapor: waktuLapor(s.terkirim, prov),
     kelompok, kronologi: s.isian.kronologi?.nilai || ""};
 }
@@ -114,7 +114,7 @@ export function ringkasSesi(s) {
   const w = s.isian.lokasi?.nilai?.wilayah, angka = n => { const x = s.isian[n]; return x && !x.belum && !x.nihil ? x.nilai : 0; };
   return {waktuKejadian: s.isian.waktu?.nilai || null, waktuMs: s.isian.waktu?.ms || null, subjenis: s.isian.subjenis?.nilai || null,
     wilayah: w ? {kode: w.kode, desa: w.desa, kec: w.kec, kab: w.kab, kabKode: w.kabKode, prov: w.prov, provKode: w.provKode} : null,
-    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
+    lengkap: lengkap(s), foto: (s.foto || []).length, dampakMeja: dampakRingkas(s), tempat: tempatRusak(s), darurat: s.darurat ? {korban: s.darurat.korban || null, ...(s.darurat.cara ? {cara: s.darurat.cara} : {})} : null, bahasa: s.bahasa && s.bahasa !== "id" ? s.bahasa : null,   // K68; bahasa pelapor untuk petugas meja
     dampak: {meninggal: angka("meninggal"), hilang: angka("hilang"), luka: angka("luka"), mengungsi: angka("mengungsi_jiwa"),
       rumah: ["rumah_berat", "rumah_sedang", "rumah_ringan"].reduce((t, n) => t + angka(n), 0), terendam: angka("rumah_terendam")}};
 }

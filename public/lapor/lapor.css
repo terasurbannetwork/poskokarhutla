@@ -2324,3 +2324,25 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-cc2-sosial li:nth-child(4){grid-column:2 / span 2;border-left:0}
   .lp-cc2-sosial li:nth-child(5){grid-column:4 / span 2}
 }
+/* Darurat sekali ketuk (K90): pita kedua bergaris merah, dialog telepon besar */
+.lp-darurat-wadah{display:grid;gap:12px}
+@media (min-width:760px){.lp-darurat-wadah{grid-template-columns:1fr 1fr}}
+.lp-darurat-pita.sekali{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 2px var(--bad)}
+.lp-darurat-pita.sekali:hover{background:color-mix(in oklab,var(--bad) 8%,var(--card))}
+.lp-darurat-pita.sekali .lp-lk-ikon{background:var(--bad);color:var(--on-pekat)}
+.lp-darurat-pita.sekali small{color:var(--ink2)}
+.lp-sekali{width:min(480px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:22px;border:0;border-radius:20px;background:var(--card);color:var(--ink);box-shadow:var(--bayang)}
+.lp-sekali:modal{overscroll-behavior:contain}
+.lp-sekali::backdrop{overflow:hidden;overscroll-behavior:contain;background:color-mix(in oklab,var(--head-bg) 60%,transparent)}
+.lp-sekali h1{margin:0 0 6px;font:800 1.25rem/1.25 var(--display)}
+.lp-sekali-status{margin:0 0 16px;color:var(--ink2);min-height:2.6em}
+.lp-sekali-telp{display:grid;gap:10px;margin-bottom:16px}
+.lp-sekali-tel{display:flex;align-items:center;gap:14px;min-height:60px;padding:10px 16px;border-radius:14px;background:var(--bad);color:var(--on-pekat);text-decoration:none}
+.lp-sekali-tel:nth-child(n+2){background:color-mix(in oklab,var(--bad) 10%,var(--card));color:var(--ink)}
+.lp-sekali-tel>span:first-child{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:50%;background:color-mix(in oklab,var(--on-pekat) 20%,transparent)}
+.lp-sekali-tel:nth-child(n+2)>span:first-child{background:var(--bad);color:var(--on-pekat)}
+.lp-sekali-tel svg{width:20px;height:20px}
+.lp-sekali-tel b{display:block;font:800 1.0625rem var(--display)}
+.lp-sekali-tel small{display:block;opacity:.85}
+.lp-sekali .lp-utama{width:100%;margin-bottom:10px}
+.lp-sekali form{display:flex;justify-content:flex-end}

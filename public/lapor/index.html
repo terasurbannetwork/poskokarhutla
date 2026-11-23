@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/lapor/lapor.css?v=148" rel="stylesheet">
+<link href="/lapor/lapor.css?v=149" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -138,6 +138,10 @@
         <button class="lp-darurat-pita" type="button" data-aksi="darurat">
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-sirene"/></svg></span>
           <span><b>Lapor darurat</b><small>Kejadian sedang berlangsung? Cukup lokasi, jenis, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima.</small></span>
+          <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
+        <button class="lp-darurat-pita sekali" type="button" data-aksi="sekali">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-lokasi"/></svg></span>
+          <span><b>Darurat sekali ketuk</b><small>Tidak sempat mengetik? Satu ketukan mengirim lokasi Anda ke petugas. Tombol telepon 112 langsung muncul.</small></span>
           <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
       </div>
       <div class="lp-layanan-kisi lp-kompartemen-isi">
@@ -375,7 +379,7 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=126"></script>
+<script type="module" src="/lapor/lapor.js?v=127"></script>
 <script type="module" src="/lapor/peringatan.js?v=1"></script>
 <script type="module" src="/lapor/luring.js?v=1"></script>
 </body>

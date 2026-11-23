@@ -237,7 +237,7 @@ export const T = {
   cerita: () => `*Ceritakan kejadiannya*\nTulis singkat apa yang terjadi dan urutannya. Waktu, korban, pengungsi, kerusakan, dan kebutuhan ditanyakan sesudah ini satu per satu.\n\n${TEMPLAT}`,
   foto: n => n ? `*Foto atau video diterima (${n})*\nTambah foto atau video lain, atau ketuk *Lanjut* bila sudah cukup.`
     : "*Foto atau video kejadian*\nKirim foto atau video pendek (paling lama 60 detik) keadaan di lokasi, misalnya kerusakan, genangan, atau pengungsian. Ambil langsung dari kamera supaya lokasi dan waktunya terekam. Hindari merekam wajah orang bila bisa.\nDi WhatsApp: kirim foto atau video, lalu bagikan lokasi.",
-  terkirim: (nama, nomor, bpbd = "") => `*Laporan terkirim*\nTerima kasih sudah melaporkan, ${nama}.\n\nNomor tiket laporan Anda:\n*${nomor}*\n\nTim kami akan menghubungi Anda sesegera mungkin untuk mengonfirmasi laporan. Simpan nomor tiket ini untuk cek status.${bpbd ? `\n\n${bpbd}` : ""}`,   // bpbd: kalimatBpbd (K88)
+  terkirim: (nama, nomor, bpbd = "") => `*Laporan terkirim*\nTerima kasih sudah melaporkan${nama ? `, ${nama}` : ""}.\n\nNomor tiket laporan Anda:\n*${nomor}*\n\nTim kami akan menghubungi Anda sesegera mungkin untuk mengonfirmasi laporan. Simpan nomor tiket ini untuk cek status.${bpbd ? `\n\n${bpbd}` : ""}`,   // bpbd: kalimatBpbd (K88)
   darurat: () => "Bila ada nyawa terancam sekarang, hubungi 112 atau BPBD setempat.",
   batal: () => `*Laporan dibatalkan*\nKetik *lapor* untuk membuat laporan baru.`,
 };
@@ -376,7 +376,7 @@ export function nilaiTampil(i, x) {
 }
 
 export function ringkasan(sesi, pelapor) {
-  const b = berlakuSesi(sesi), baris = [sesi.darurat ? "*Ringkasan laporan darurat*" : `*Ringkasan laporan*`, ...(sesi.darurat?.korban ? [`Korban: ${{ya: "ada orang terluka, hilang, atau terjebak", tidak: "tidak ada", belum_tahu: "belum tahu"}[sesi.darurat.korban]}`] : []), `Pelapor: ${pelapor.nama} (${PERAN[pelapor.peran]})`,
+  const b = berlakuSesi(sesi), baris = [sesi.darurat ? "*Ringkasan laporan darurat*" : `*Ringkasan laporan*`, ...(sesi.darurat?.korban ? [`Korban: ${{ya: "ada orang terluka, hilang, atau terjebak", tidak: "tidak ada", belum_tahu: "belum tahu"}[sesi.darurat.korban]}`] : []), (pelapor?.nama ? `Pelapor: ${pelapor.nama} (${PERAN[pelapor.peran]})` : "Pelapor: belum dikenal (darurat sekali ketuk)"),
     `Waktu dilaporkan: ${sesi.terkirim ? waktuLapor(sesi.terkirim, sesi.isian.lokasi?.nilai?.wilayah?.provKode) : "dicatat otomatis saat dikirim"}`];
   for (const k of KELOMPOK) {
     const isi = b.filter(i => i.kelompok === k.id);
@@ -401,10 +401,24 @@ function terimaLokasi(sesi, lokasi, kini) { // galat teks atau null
   const lat = Number(lokasi.lat), lon = Number(lokasi.lon);
   if (!(Number.isFinite(lat) && Number.isFinite(lon) && lat > -11.5 && lat < 6.5 && lon > 94 && lon < 141.5)) return "Lokasi itu di luar Indonesia. Bagikan lokasi kejadian.";
   const ketelitian = lokasi.sumber === "gps" && lokasi.akurasi != null && lokasi.akurasi <= 1000 ? "titik GPS"
-    : lokasi.sumber === "wa" ? "lokasi dibagikan lewat WA" : lokasi.sumber === "cari" ? "perkiraan tingkat desa" : "perkiraan";
+    : lokasi.sumber === "wa" ? "lokasi dibagikan lewat WA" : lokasi.sumber === "cari" ? "perkiraan tingkat desa" : lokasi.sumber === "poster" ? "lokasi dari poster desa" : "perkiraan";   // poster: K92, D132
   setIsian(sesi, "lokasi", {nilai: {lat, lon, akurasi: lokasi.akurasi ?? null, ketelitian, ...(lokasi.wilayah ? {wilayah: lokasi.wilayah} : {})}}, {sumber: lokasi.sumber || "lokasi", waktu: kini});
   return null;
 }
+
+/* Darurat sekali ketuk (K90, D122-D125): laporan darurat langsung terkirim berisi titik GPS, tanpa percakapan lebih dulu. Jenis dibiarkan kosong
+   (belum didata, bukan tebakan) dan korban "belum tahu"; pelapor melengkapinya lewat Tambah kabar yang dimulai di langkah jenis darurat.
+   wil = wilayah dari titik (tanpa daftar sekitar) atau null. Penyimpanan (nomor tiket, token, PDF) tetap milik pemanggil, sama dengan laporan biasa. */
+export function sesiSekaliKetuk({pelapor = null, lokasi = null, wil = null, kini}) {
+  const sesi = {status: "terkirim", tingkat: pelapor?.peran || "warga", isian: {}, ditanya: [], dibuat: kini, diubah: kini, terkirim: kini, transkrip: [], foto: [], fotoSelesai: true,
+    darurat: {korban: "belum_tahu", cara: "sekali_ketuk"}};
+  if (lokasi && !terimaLokasi(sesi, {...lokasi, sumber: "gps"}, kini) && wil) sesi.isian.lokasi.nilai.wilayah = wil;
+  sesi.isian.waktu = {nilai: `Sedang berlangsung saat dilaporkan, ${waktuLapor(kini, wil?.provKode)}`, ms: kini, sumber: "darurat", waktu: kini};
+  sesi.transkrip.push({dari: "pelapor", teks: "Darurat sekali ketuk", lokasi: !!sesi.isian.lokasi, waktu: kini}, {dari: "bot", teks: T.terkirim(pelapor?.nama, "(nomor menyusul)"), waktu: kini});
+  return sesi;
+}
+/* melengkapi laporan sekali ketuk lewat Tambah kabar: salinan yang jenisnya masih kosong mulai di pertanyaan jenis darurat, lalu korban dan foto (alur K68) */
+export const mulaiDiJenisDarurat = salinan => !salinan.isian?.jenis?.nilai && !!salinan.darurat;
 
 /* ---------- satu putaran (A1 + A7) ---------- */
 /* Kembali ke pertanyaan sebelumnya bila salah pilih (pemilik 19 Nov 2026: "agar ada pilihan kalau salah pilih"): tiap putaran menyimpan potret sesi
@@ -639,7 +653,7 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     const p = pilih();
     if (p === 0 || KATA_KIRIM.test(teks)) {
       sesi.status = "terkirim"; sesi.terkirim = kini;
-      return jawab(T.terkirim(pelapor.nama, "(nomor menyusul)"), null, true); // penyimpan mengganti teks ini dengan nomor tiket yang terbit
+      return jawab(T.terkirim(pelapor?.nama, "(nomor menyusul)"), null, true); // penyimpan mengganti teks ini dengan nomor tiket yang terbit
     }
     if (p === 2) { sesi.status = "batal"; return jawab(T.batal()); }
     if (p === 1) { sesi.status = "melengkapi"; sesi.tanya = null; sesi.ubah = true; return jawab("Tulis bagian yang mau diubah dengan kalimat biasa, misalnya *rumah rusak berat 5*."); }

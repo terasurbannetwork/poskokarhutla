@@ -14,7 +14,7 @@ import crypto from "node:crypto";
 import vm from "node:vm";
 import {execFile} from "node:child_process";
 import {fileURLToPath, pathToFileURL} from "node:url";
-import {putaran, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/lapor_mesin.js";
+import {putaran, sesiSekaliKetuk, mulaiDiJenisDarurat, lengkap, nilaiTampil, waktuLapor, T, KELOMPOK} from "../../src/lapor_mesin.js";
 import {berlakuSesi, JENIS} from "../../src/lapor_spek.js";
 import {buatModel} from "../../src/lapor_model.js";
 import {buatWilayah} from "../../src/lapor_wilayah.js";
@@ -108,7 +108,7 @@ function bahanDokumen(s, p) {
   const foto = (s.foto || []).filter(f => fs.existsSync(path.join(FOTO, `${f.id}.jpg`))) // video: sampul bingkai pertama
     .map(f => ({berkas: path.join(FOTO, `${f.id}.jpg`), ket: `${f.jenis === "video" ? `Video ${f.durasi ?? "?"} detik, ` : ""}${f.lencanaTeks}${f.waktuAmbil ? `, ${waktuLapor(f.waktuAmbil, prov)}` : ""}`}));
   return {narasi, foto, nomor: s.nomor, tingkat_label: s.tingkat === "bpbd" ? "" : "Laporan warga, belum terverifikasi",
-    pelapor: {nama: p.nama, peran: PERAN[p.peran], instansi: p.kab ? `BPBD ${p.kab}${p.jabatan ? `, ${p.jabatan}` : ""}` : null, wa_samar: waSamar(s.wa)},
+    pelapor: {nama: p.nama || "Belum dikenal", peran: PERAN[p.peran] || "Warga", instansi: p.kab ? `BPBD ${p.kab}${p.jabatan ? `, ${p.jabatan}` : ""}` : null, wa_samar: waSamar(s.wa)},
     waktu_kejadian: s.isian.waktu?.nilai || "belum didata", waktu_lapor: waktuLapor(s.terkirim, prov),
     kelompok, kronologi: s.isian.kronologi?.nilai || ""};
 }
@@ -136,12 +136,33 @@ async function susulan(body) {
   if (hidup && !["terkirim", "batal", "susulan"].includes(hidup.status) && !hidup.susulanDari) return [409, {galat: "Selesaikan atau batalkan dulu laporan yang sedang diisi."}];
   const {nomor, token, tiket, versi, jejak, akhir, susulanBaru, balasan, nilai, ...dasar} = structuredClone(asal);
   const s = {...dasar, id: `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`, status: "ringkasan", susulanDari: asal.nomor, transkrip: [], foto: [], fotoSelesai: true, ditanya: [], dibuat: kini};
-  const h = await putaran({sesi: s, pelapor: d.pelapor[wa], model, wilayah, kini, pesan: {wa, teks: "2", saluran: body.saluran || "web"}}); // masuk mode Ubah
+  const lengkapiDarurat = mulaiDiJenisDarurat(s);   // laporan sekali ketuk (K90): mulai di jenis, korban, foto
+  if (lengkapiDarurat) s.status = "darurat_jenis";
+  const h = await putaran({sesi: s, pelapor: d.pelapor[wa], model, wilayah, kini, pesan: {wa, teks: lengkapiDarurat ? "" : "2", saluran: body.saluran || "web"}}); // masuk mode Ubah
   h.sesi.transkrip = h.sesi.transkrip.filter(t => t.dari === "bot");
-  h.inti = `*Tambah kabar untuk ${asal.nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
+  h.inti = lengkapiDarurat ? `*Lengkapi laporan darurat ${asal.nomor}*\nLokasi Anda sudah diterima petugas. Jawab beberapa pertanyaan ini bila sempat.\n\n${h.inti}` : `*Tambah kabar untuk ${asal.nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
   h.sesi.transkrip.at(-1).teks = h.inti; h.sesi.akhir = {...(h.sesi.akhir || {}), inti: h.inti, balasan: h.inti};
   d.sesi[h.sesi.id] = h.sesi; d.aktif[wa] = h.sesi.id; simpan(d);
   return [200, {...keluaran(h, h.sesi), susulanDari: asal.nomor}];
+}
+/* darurat sekali ketuk (K90, D122-D125): sama dengan Worker, batas per nomor 30 menit di memori proses */
+const sekaliTerakhir = {};
+async function daruratCepat(body) {
+  const wa = nomorWa(body.wa); if (!wa) return [400, {galat: "Nomor WhatsApp tidak sah."}];
+  const kini = Date.now();
+  if (kini - (sekaliTerakhir[wa] || 0) < 30 * 6e4) return [429, {galat: "Laporan darurat dari perangkat ini baru saja terkirim. Petugas sudah menerimanya; telepon 112 bila ada nyawa terancam."}];
+  const L = body.lokasi, ok = L && Number.isFinite(L.lat) && Number.isFinite(L.lon) && L.lat >= -12 && L.lat <= 7 && L.lon >= 94 && L.lon <= 142;
+  const lokasi = ok ? {lat: L.lat, lon: L.lon, ...(Number.isFinite(L.akurasi) && L.akurasi >= 0 ? {akurasi: L.akurasi} : {})} : null;
+  let wil = null; if (lokasi) { try { const w = await wilayah(lokasi.lat, lokasi.lon); if (w) { const {sekitar, ...x} = w; wil = x; } } catch {} }
+  const d = baca(), pel = d.pelapor[wa] || null, hidup = d.sesi[d.aktif[wa]];
+  const sesi = sesiSekaliKetuk({pelapor: pel, lokasi, wil, kini});
+  sesi.id = hidup && !["terkirim", "batal"].includes(hidup.status) && !hidup.susulanDari ? hidup.id : `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;   // draf biasa diganti (K68)
+  sesi.wa = wa;
+  const h = {sesi, pelapor: pel, kirim: true, inti: ""};
+  const tambahan = terbitBaru(d, h, kini);
+  d.sesi[sesi.id] = sesi; d.aktif[wa] = sesi.id; simpan(d);
+  sekaliTerakhir[wa] = kini;
+  return [200, {...tambahan, balasan: h.inti, wilayah: wil ? {desa: wil.desa, kec: wil.kec, kab: wil.kab} : null}];
 }
 /* kejadian yang sama (K66, D103-D107): kandidat dari laporan terkirim sekecamatan; anggota kejadian = sesi yang membawa kejadian.kode */
 const anggotaKejadian = (d, kode) => Object.values(d.sesi).filter(s => s.nomor && s.kejadian?.kode === kode);
@@ -155,6 +176,25 @@ function pasangKejadian(d, sesi, kini) { // sesudah laporan terkirim: kode KJ da
   if (!induk) { delete sesi.kejadian; return; }
   if (!induk.kejadian?.kode) { const t = tglKejadian(induk.terkirim), n = ((d.urutKj ||= {})[t] || 0) + 1; d.urutKj[t] = n; induk.kejadian = {kode: kodeKejadian(induk.terkirim, n)}; }
   sesi.kejadian = {kode: induk.kejadian.kode, induk: induk.nomor};
+}
+/* laporan baru terkirim: nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8); dipakai /pesan dan darurat sekali ketuk */
+function terbitBaru(d, h, kini) {
+  const tgl = tglWib(kini), n = (d.urut[tgl] || 0) + 1;
+  d.urut[tgl] = n;
+  h.sesi.nomor = `LA-${tgl.slice(8, 10)}${tgl.slice(5, 7)}${tgl.slice(2, 4)}-${String(n).padStart(2, "0")}`;
+  h.sesi.token = crypto.randomBytes(16).toString("hex");
+  h.sesi.tiket = {status: "baru", riwayat: [{ke: "baru", pelaku: "Sistem", catatan: null, waktu: kini}]};
+  h.sesi.versi = [{versi: 1, isi: structuredClone(h.sesi.isian), waktu: kini}];
+  if (h.sesi.kejadian) pasangKejadian(d, h.sesi, kini);
+  let K = null; try { K = JSON.parse(fs.readFileSync(path.join(PUBLIK, "data/bpbd_kontak.json"), "utf8")); } catch {}
+  const kb = kontakBpbd(K, h.sesi.isian.lokasi?.nilai?.wilayah);   // K88: arahkan pelapor ke BPBD setempat (sama dengan Worker)
+  h.inti = T.terkirim(h.pelapor?.nama, h.sesi.nomor, kalimatBpbd(kb));
+  const q = `?t=${h.sesi.token}`;
+  const tambahan = {nomor: h.sesi.nomor, bpbd: {nama: kb.nama, nomor: kb.nomor, tingkat: kb.tingkat}, lacak: `/lapor/lacak.html${q}`, foto: h.sesi.foto?.[0] ? `/api/lapor/foto/${h.sesi.foto[0].id}${q}` : null, unduhan: [ // foto pertama untuk kartu Laporan saya
+    {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
+    {label: "Unduh PDF", url: `/api/lapor/unduh/${h.sesi.nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${h.sesi.nomor}.docx${q}`}]};
+  buatDokumen(h.sesi, h.pelapor || {});   // sekali ketuk tanpa profil: dokumen tanpa nama, sama dengan Worker (lengkapi)
+  return tambahan;
 }
 const KUOTA_JAM = 60, KUOTA_MENIT = 20, kuota = {}; // ponytail: hitungan di memori proses; Worker memakai tabel laju D1
 async function pesan(body) {
@@ -191,7 +231,7 @@ async function pesan(body) {
   if (lokasi?.kode) { // dipilih dari pencarian desa
     const c = await wilayah.pusat(String(lokasi.kode));
     if (!c) return [400, {galat: "Desa tidak ditemukan."}];
-    lokasi = {lat: c.lat, lon: c.lon, sumber: "cari", wilayah: c.wilayah};
+    lokasi = {lat: c.lat, lon: c.lon, sumber: lokasi.poster === true ? "poster" : "cari", wilayah: c.wilayah};   // poster: K92, D131
   }
   const h = await putaran({sesi: sesiAktif, pelapor: d.pelapor[wa] || null, model, wilayah, kandidat: ({kecKode, kini: k}) => kandidatLokal(d, kecKode, k),
     pesan: {wa, teks, lokasi, form: body.form || null, pilih: Array.isArray(body.pilih) ? body.pilih.slice(0, 20) : null, foto: body.foto || null, lain: typeof body.lain === "string" ? body.lain.slice(0, 120) : null, kembali: body.kembali === true, saluran: "web"}, kini}); // rute ini hanya dipakai layar web
@@ -201,11 +241,14 @@ async function pesan(body) {
   let tambahan = {};
   if (h.kirim && h.sesi.susulanDari) { // laporan susulan (F-28, ALGORITMA A12): perubahan digabung ke tiket yang sama sebagai versi baru
     const asal = Object.values(d.sesi).find(x => x.nomor === h.sesi.susulanDari);
-    for (const k of KUNCI_SUSULAN) if (asal.isian[k]) h.sesi.isian[k] = asal.isian[k]; else delete h.sesi.isian[k]; // jenis, lokasi, waktu terkunci
+    for (const k of KUNCI_SUSULAN) if (asal.isian[k]) h.sesi.isian[k] = asal.isian[k]; else if (!(k === "jenis" && asal.darurat)) delete h.sesi.isian[k]; // jenis, lokasi, waktu terkunci; jenis kosong sekali ketuk boleh diisi (K90)
     const lama = new Map(isianTampil(asal).map(x => [x.nama, x])), perubahan = [];
     for (const x of isianTampil(h.sesi)) { const l = lama.get(x.nama); const a = l && l.status !== "kosong" ? l.tampil : "belum didata", b = x.status !== "kosong" ? x.tampil : "belum didata";
       const kosong = v => /^(belum didata|tidak tahu|belum tahu|belum diketahui)$/i.test(v); // dari kosong ke "tidak tahu" bukan perubahan
       if (a !== b && !(kosong(a) && kosong(b))) perubahan.push({nama: x.nama, label: x.label, dari: a, ke: b}); }
+    if (asal.darurat?.cara === "sekali_ketuk" && h.sesi.darurat?.korban && h.sesi.darurat.korban !== asal.darurat.korban) {   // K90: sama dengan Worker
+      const K = {ya: "ada", tidak: "tidak ada", belum_tahu: "belum tahu"}; perubahan.push({nama: "korban_darurat", label: "Ada korban", dari: K[asal.darurat.korban], ke: K[h.sesi.darurat.korban]});
+      asal.darurat = {...asal.darurat, korban: h.sesi.darurat.korban}; }
     const versi = asal.versi.length + 1, st = asal.tiket.status;
     asal.isian = structuredClone(h.sesi.isian);
     asal.foto = [...(asal.foto || []), ...(h.sesi.foto || [])].slice(0, 20);
@@ -220,23 +263,7 @@ async function pesan(body) {
       {label: "Unduh PDF", url: `/api/lapor/unduh/${asal.nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${asal.nomor}.docx${q}`}]};
     for (const x of ["pdf", "docx"]) fs.rmSync(path.join(DOK, `${asal.nomor}.${x}`), {force: true});
     buatDokumen(asal, d.pelapor[asal.wa]);
-  } else if (h.kirim) { // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
-    const tgl = tglWib(kini), n = (d.urut[tgl] || 0) + 1;
-    d.urut[tgl] = n;
-    h.sesi.nomor = `LA-${tgl.slice(8, 10)}${tgl.slice(5, 7)}${tgl.slice(2, 4)}-${String(n).padStart(2, "0")}`;
-    h.sesi.token = crypto.randomBytes(16).toString("hex");
-    h.sesi.tiket = {status: "baru", riwayat: [{ke: "baru", pelaku: "Sistem", catatan: null, waktu: kini}]};
-    h.sesi.versi = [{versi: 1, isi: structuredClone(h.sesi.isian), waktu: kini}];
-    if (h.sesi.kejadian) pasangKejadian(d, h.sesi, kini);
-    let K = null; try { K = JSON.parse(fs.readFileSync(path.join(PUBLIK, "data/bpbd_kontak.json"), "utf8")); } catch {}
-    const kb = kontakBpbd(K, h.sesi.isian.lokasi?.nilai?.wilayah);   // K88: arahkan pelapor ke BPBD setempat (sama dengan Worker)
-    h.inti = T.terkirim(h.pelapor.nama, h.sesi.nomor, kalimatBpbd(kb));
-    const q = `?t=${h.sesi.token}`;
-    tambahan = {nomor: h.sesi.nomor, bpbd: {nama: kb.nama, nomor: kb.nomor, tingkat: kb.tingkat}, lacak: `/lapor/lacak.html${q}`, foto: h.sesi.foto?.[0] ? `/api/lapor/foto/${h.sesi.foto[0].id}${q}` : null, unduhan: [ // foto pertama untuk kartu Laporan saya
-      {label: "Lacak laporan", url: `/lapor/lacak.html${q}`, lacak: true},
-      {label: "Unduh PDF", url: `/api/lapor/unduh/${h.sesi.nomor}.pdf${q}`}, {label: "Unduh Word", url: `/api/lapor/unduh/${h.sesi.nomor}.docx${q}`}]};
-    buatDokumen(h.sesi, h.pelapor);
-  }
+  } else if (h.kirim) tambahan = terbitBaru(d, h, kini);
   d.sesi[h.sesi.id] = h.sesi; d.aktif[wa] = h.sesi.id;
   if (h.pelapor) d.pelapor[wa] = h.pelapor;
   simpan(d);
@@ -724,6 +751,7 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/rapor") return kirim(await info.rapor(Object.fromEntries(url.searchParams)));   // satu mesin dengan Worker (src/lapor_info.js)
     if (j === "/api/lapor/alun") return kirim(await alun(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/susulan" && req.method === "POST") return kirim(await susulan(await badan(req)));
+    if (j === "/api/lapor/darurat/cepat" && req.method === "POST") return kirim(await daruratCepat(await badan(req)));
     if (j === "/api/lapor/agregat") { // K62, D91-D93: lokal tanpa login (loopback); Worker: hanya sesi kampus mitra /kemitraan, unduhan dicatat
       const d = baca(), baris = agregat(Object.values(d.sesi).filter(s => s.nomor).map(s => { const w = s.isian.lokasi?.nilai?.wilayah || {};
         return {provKode: w.provKode, prov: w.prov, kabKode: w.kabKode, kab: w.kab, jenis: JENIS.find(x => x.id === s.isian.jenis?.nilai)?.label || null, kejadian: s.isian.waktu?.ms ?? null,

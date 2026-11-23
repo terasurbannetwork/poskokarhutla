@@ -54,7 +54,7 @@ document.querySelectorAll("#tab button[data-ke]").forEach(b => b.addEventListene
 $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
 $("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
-document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
+document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
   penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi siaga"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 /* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
@@ -305,7 +305,7 @@ function isiLokasi(wadahIsi, {judul, ket, pakaiPosisi, pilihCari, kabupatenCukup
   });
   const blok = el("div", "lp-lok"); blok.append(kp);
   if (terakhir) { const t = el("button", "lp-lok-gps terakhir"); t.type = "button"; const tI = el("span", "lp-lok-gps-ikon"); tI.append(ikon("i-centang"));
-    const tT = el("span", "lp-lok-gps-teks"); tT.append(el("b", null, terakhir.judul), el("small", null, `Daerah terakhir, ${terakhir.sub}`)); t.append(tI, tT, ikon("i-panah"));
+    const tT = el("span", "lp-lok-gps-teks"); tT.append(el("b", null, terakhir.judul), el("small", null, terakhir.ket ?? `Daerah terakhir, ${terakhir.sub}`)); t.append(tI, tT, ikon("i-panah"));
     t.addEventListener("click", terakhir.aksi); blok.append(t); }
   const baris = el("div", "lp-lok-baris"); baris.append(gps, el("p", "lp-atau", "atau"), cari); // GPS, atau, cari: satu baris tetap
   blok.append(baris, galat, hasil);
@@ -326,8 +326,15 @@ function kartuLokasi() {
   const isi = kartu("lokasi"); isi.closest(".lp-langkah").classList.add("lp-langkah-lok");
   isiLokasi(isi, {judul: "Di mana kejadiannya?", ket: "Paling tepat bila Anda sedang di lokasi kejadian.",
     pakaiPosisi: p => kirim({lokasi: {lat: p.coords.latitude, lon: p.coords.longitude, akurasi: p.coords.accuracy, sumber: "gps"}, tampil: `Lokasi saat ini, akurasi ${Math.round(p.coords.accuracy).toLocaleString("id-ID")} m`}),
-    pilihCari: d => kirim({lokasi: {kode: d.kode}, tampil: `${d.judul}, ${d.sub.split(",")[0]}`}), kabupatenCukup: false});
+    pilihCari: d => kirim({lokasi: {kode: d.kode}, tampil: `${d.judul}, ${d.sub.split(",")[0]}`}), kabupatenCukup: false,
+    terakhir: POSTER ? {judul: "Desa dari poster yang Anda pindai", ket: "Pakai bila kejadiannya di desa ini", aksi: () => kirim({lokasi: {kode: POSTER, poster: true}, tampil: "Lokasi dari poster desa"})} : null});
 }
+/* poster QR desa (K92, D131): /lapor/?d=<kode desa> menawarkan desa itu di kartu lokasi; pelapor tetap memilih sendiri, desa yang terbaca tampil
+   di pesan berikutnya dan bisa dibatalkan dengan Kembali. Kode disimpan per tab supaya bertahan sampai kartu lokasi muncul. */
+const POSTER = (() => { const k = s => { const d = String(s || "").replace(/\D/g, ""); return d.length === 10 ? `${d.slice(0, 2)}.${d.slice(2, 4)}.${d.slice(4, 6)}.${d.slice(6)}` : null; };
+  let x = k(new URLSearchParams(location.search).get("d"));
+  try { if (x) sessionStorage.setItem("lapor-poster", x); else x = k(sessionStorage.getItem("lapor-poster")); } catch {}
+  return x; })();
 
 /* hasil pencarian tempat: kab/kota dan kecamatan di atas; memilihnya mempersempit daftar desa di dalamnya (laporan butuh desa),
    atau langsung dipakai bila kabupatenCukup (info dan prediksi per kab/kota) */
@@ -995,6 +1002,43 @@ function tampilDaftarLaporan() {
     tx.append(el("h2", null, "Belum ada laporan"), el("p", null, "Laporan yang Anda kirim muncul di sini lengkap dengan nomor tiket, status penanganan, dan balasan petugas."), b); k.append(m, tx); isi.push(k);
   }
   w.replaceChildren(...isi);
+}
+/* Darurat sekali ketuk (K90, D122-D125): telepon tampil seketika (jalan tanpa data seluler), lokasi terbaik dalam 15 detik dikirim ke petugas,
+   lalu Lengkapi laporan membuka Tambah kabar di langkah jenis darurat. Nomor tetap wajib (Q65 belum dijawab).
+   ponytail: tanpa sinyal dicoba lagi saat "online" selama halaman terbuka; antrean IndexedDB bila laporan harus bertahan saat halaman ditutup. */
+function sekaliKetuk() {
+  if (!wa) { ke("chat"); hangatkanTerima(); return tanyaNomor(() => { ke("beranda"); sekaliKetuk(); }); }
+  const d = el("dialog", "lp-sekali"), h = el("h1", null, "Darurat sekali ketuk"); h.id = "lpSekaliJudul"; d.setAttribute("aria-labelledby", h.id);
+  const st = el("p", "lp-sekali-status", "Membaca lokasi Anda."); st.setAttribute("role", "status");
+  const tel = (no, judul, ket) => { const a = el("a", "lp-sekali-tel"); a.href = `tel:${no}`; const ic = el("span"); ic.append(ikon("i-telepon")); const tx = el("span"); tx.append(el("b", null, judul), el("small", null, ket)); a.append(ic, tx); return a; };
+  const telp = el("div", "lp-sekali-telp"), a112 = tel("112", "Telepon 112", "Darurat terpadu"); a112.autofocus = true;
+  telp.append(a112, tel("117", "Telepon 117", "Call center BNPB"));
+  const lengkapi = el("button", "lp-utama", "Lengkapi laporan"); lengkapi.type = "button"; lengkapi.hidden = true;
+  const f = el("form"); f.method = "dialog"; f.append(Object.assign(el("button", "lp-kedua", "Tutup"), {value: "tutup"}));
+  d.append(h, st, telp, lengkapi, f); document.body.append(d);
+  let terbaik = posisi && Date.now() - posisi.waktu < 120000 ? {lat: posisi.lat, lon: posisi.lon, akurasi: posisi.akurasi} : null, jalan = false, jaga = null;
+  const kirimSekarang = async () => {
+    if (jalan) return; jalan = true; clearTimeout(batas); if (jaga != null) navigator.geolocation.clearWatch(jaga);
+    const ulang = teks => { jalan = false; st.textContent = teks; addEventListener("online", kirimSekarang, {once: true}); };
+    if (!navigator.onLine) return ulang("Belum ada sinyal. Telepon tetap bisa. Lokasi dikirim otomatis begitu ada sinyal, selama halaman ini tetap terbuka.");
+    st.textContent = "Mengirim lokasi ke petugas.";
+    try {
+      const r = await fetch("/api/lapor/darurat/cepat", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, lokasi: terbaik}), signal: AbortSignal.timeout(20000)}), j = await r.json();
+      if (!r.ok) { st.textContent = j.galat || "Laporan belum terkirim. Telepon 112."; return; }
+      st.textContent = `Terkirim ke petugas BNPB dan BPBD. Nomor laporan ${j.nomor}.${j.wilayah ? ` Lokasi: Desa/Kel. ${j.wilayah.desa}, Kec. ${j.wilayah.kec}.` : " Lokasi belum terbaca; sebutkan desa Anda saat menelepon."}`;
+      if (j.bpbd?.nomor && j.bpbd.nomor !== "117") telp.append(tel(j.bpbd.nomor.replace(/[^\d+]/g, ""), `Telepon ${j.bpbd.nama}`, j.bpbd.nomor));
+      lengkapi.hidden = false; lengkapi.addEventListener("click", () => { d.close(); mulaiSusulan(j.nomor); }, {once: true});
+      segarkanLaporan().then(tampilBeranda).catch(() => {});
+    } catch { ulang("Jaringan bermasalah. Dicoba lagi saat ada sinyal. Telepon tetap bisa."); }
+  };
+  const batas = setTimeout(kirimSekarang, 15000);
+  d.addEventListener("close", () => { if (jaga != null) navigator.geolocation.clearWatch(jaga); d.remove(); });
+  d.showModal();
+  if (!("geolocation" in navigator)) { kirimSekarang(); return; }
+  jaga = navigator.geolocation.watchPosition(p => { const c = p.coords;
+    if (!terbaik || c.accuracy < terbaik.akurasi) terbaik = {lat: c.latitude, lon: c.longitude, akurasi: c.accuracy};
+    if (!jalan) st.textContent = `Lokasi terbaca, ketelitian ${Math.round(terbaik.akurasi).toLocaleString("id-ID")} m.`;
+    if (terbaik.akurasi <= 50) kirimSekarang(); }, () => kirimSekarang(), {enableHighAccuracy: true, maximumAge: 60000, timeout: 15000});
 }
 async function bukaChat(darurat = false) {
   if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti

@@ -558,9 +558,15 @@ Asal: sesi Lapor 23 Nov 2026 mengusulkan sembilan ide yang belum ada di antrean 
 
 | Q | Pertanyaan | Bawaan sementara | Menahan |
 | --- | --- | --- | --- |
-| Q65 | Darurat sekali ketuk boleh terkirim tanpa nama dan nomor (pelapor belum dikenal)? | **[BAWAAN SEMENTARA]** Boleh, dengan batas laju D124 dan label "Pelapor belum dikenal". | LA-78 |
+| Q65 | Darurat sekali ketuk boleh terkirim tanpa nama dan nomor (pelapor belum dikenal)? | **[BAWAAN SEMENTARA, diubah saat LA-78 23 Nov 2026]** Nomor WA tetap wajib: perangkat yang belum punya nomor mengisi kartu identitas dulu, lalu ketukan dikirim. Nama boleh kosong ("Belum dikenal" di ringkasan dan dokumen). Pintu tanpa nomor butuh perubahan skema dan keputusan pemilik. | LA-78 |
 | Q66 | Keluarga boleh mencari tanda selamat dengan mengetik nomor HP orangnya? | **[BAWAAN SEMENTARA]** Tidak; hanya tautan yang dibagikan penanda (D128). | LA-80 |
 | Q67 | Berapa lama tanda selamat dan laporan orang dicari disimpan? | **[BAWAAN SEMENTARA]** Tanda selamat 30 hari. Orang dicari mengikuti masa simpan laporan Lapor Bencana; ditutup petugas saat orangnya ditemukan. | LA-80 |
 | Q68 | Kabar selamat dibuka kapan saja, atau hanya saat ada kejadian aktif di kab/kota pengguna (darurat K68, kejadian Buku Besar, atau peringatan BMKG)? | **[BAWAAN SEMENTARA]** Kapan saja dari menu; kartu ajakan di beranda hanya saat ada kejadian aktif di kab/kota dari GPS. | LA-81 |
 | Q69 | Poster juga memuat QR ke WA bot (teks awal `lapor desa <kode>`)? | **[BAWAAN SEMENTARA]** Tidak; hanya web. Jalur WA menyusul sesudah ada perintahnya di bot. | LA-84 |
 | Q70 | Darurat sekali ketuk juga lewat WA (kirim lokasi + kata `darurat`)? | **[BAWAAN SEMENTARA]** Belum; WA tetap memakai alur K68. | LA-78 |
+
+Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
+- D122: jenis dibiarkan kosong (belum didata), bukan id `belum_diketahui`. Melengkapi lewat Tambah kabar yang mulai di langkah jenis darurat, lalu korban dan foto; jenis kosong dan korban darurat laporan itu boleh diisi susulan, isian lain tetap terkunci.
+- D124: lihat Q65. Batas 1 per perangkat (atau nomor) per 30 menit dan 3 per IP per jam berjalan di Worker; server lokal hanya batas per nomor.
+- D125: tanpa sinyal, kiriman dicoba lagi saat peramban kembali tersambung selama halaman terbuka. Antrean IndexedDB (`antre.js`) belum dipakai. Laporan tanpa titik tidak menanyakan desa di Tambah kabar; pelapor diminta menyebut desanya saat menelepon.
+- D131: tanpa pertanyaan GPS bertentangan. Kartu lokasi menawarkan "Desa dari poster yang Anda pindai" di samping GPS dan pencarian; pelapor memilih sendiri, desa yang terbaca tampil di pesan berikutnya dan bisa dibatalkan dengan Kembali. Ketelitian lokasi tercatat "lokasi dari poster desa" (D132), tanpa kolom `sumber_lokasi` baru.

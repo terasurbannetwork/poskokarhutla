@@ -19,7 +19,7 @@ import {kontakBpbd, kalimatBpbd} from "./lapor_kontak.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk, bakuKab, labelAmbil, hitungRespons, RESPONS_HARI} from "./lapor_meja_hak.js";
 import {hitungGugus, kandidatKejadian, kodeKejadian, tglKejadian} from "./lapor_gugus.js";
 import {agregat, keCsv, BATAS_SEL, KOLOM as KOLOM_AGREGAT} from "./lapor_agregat.js";
-import {putaran, lengkap, T, waktuLapor, saringTopik} from "./lapor_mesin.js";
+import {putaran, sesiSekaliKetuk, mulaiDiJenisDarurat, lengkap, T, waktuLapor, saringTopik} from "./lapor_mesin.js";
 import {JENIS} from "./lapor_spek.js";
 import {buatModel} from "./lapor_model.js";
 import {buatWilayah} from "./lapor_wilayah.js";
@@ -235,11 +235,15 @@ async function simpanSusulan(env, url, {wa, saluran, perangkat}, {h, baris, awal
   const asal = dariBaris(aBaris), [tiket, vi] = await Promise.all([H.lpTiket(env, P, nomor), H.lpVersiInfo(env, P, nomor)]);
   asal.tiket = {status: tiket?.status}; asal.jumlahVersi = vi.versi;
   if (!bolehSusulan(asal, kini)) return {tolak: "Kabar tambahan hanya bisa dikirim 72 jam sejak laporan terkirim, sebelum laporan selesai ditangani."};
-  for (const k of KUNCI_SUSULAN) if (asal.isian[k]) copy.isian[k] = asal.isian[k]; else delete copy.isian[k];   // jenis, lokasi, waktu terkunci
+  for (const k of KUNCI_SUSULAN) if (asal.isian[k]) copy.isian[k] = asal.isian[k]; else if (!(k === "jenis" && asal.darurat)) delete copy.isian[k];   // jenis, lokasi, waktu terkunci; jenis kosong laporan darurat sekali ketuk boleh diisi (K90)
   const lama = new Map(isianTampil(asal).map(x => [x.nama, x])), perubahan = [], kosong = v => /^(belum didata|tidak tahu|belum tahu|belum diketahui)$/i.test(v);
   for (const x of isianTampil(copy)) {
     const l = lama.get(x.nama), a = l && l.status !== "kosong" ? l.tampil : "belum didata", b = x.status !== "kosong" ? x.tampil : "belum didata";
     if (a !== b && !(kosong(a) && kosong(b))) perubahan.push({nama: x.nama, label: x.label, dari: a, ke: b});
+  }
+  if (asal.darurat?.cara === "sekali_ketuk" && copy.darurat?.korban && copy.darurat.korban !== asal.darurat.korban) {   // K90: korban darurat diisi lewat Tambah kabar, tercatat di versi
+    perubahan.push({nama: "korban_darurat", label: "Ada korban", dari: KORBAN_DARURAT[asal.darurat.korban], ke: KORBAN_DARURAT[copy.darurat.korban]});
+    asal.darurat = {...asal.darurat, korban: copy.darurat.korban};
   }
   const versi = vi.versi + 1, st = tiket.status, token = await tokenLacak(env, nomor), pesanBaru = copy.transkrip.slice(awal);
   asal.isian = structuredClone(copy.isian);
@@ -277,7 +281,7 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
     token = await tokenLacak(env, nomor); tokenSha = await sha(token);
     s.nomor = nomor;
     const kb = kontakBpbd(await kontakDari(env), s.isian.lokasi?.nilai?.wilayah);   // K88: arahkan pelapor ke BPBD setempat
-    h.inti = h.balasan = T.terkirim(h.pelapor.nama, nomor, kalimatBpbd(kb));
+    h.inti = h.balasan = T.terkirim(h.pelapor?.nama, nomor, kalimatBpbd(kb));
     const akhir = s.transkrip.at(-1); if (akhir?.dari === "bot") akhir.teks = h.inti;   // transkrip memuat nomor sebenarnya, bukan "(nomor menyusul)"
     ringkas = JSON.stringify(ringkasSesi(s));
     if (ringkas.length > 4000) ringkas = JSON.stringify({lengkap: lengkap(s), foto: (s.foto || []).length, wilayah: wilayahKecil(s)});   // CHECK kolom: ringkasan tidak boleh memutus penyimpanan
@@ -302,7 +306,9 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   if (s.verifikasi !== "ketik" && p?.nama && (!pel || pel.nama !== p.nama || pel.peran !== p.peran || pel.kab !== (p.kab ?? null) || pel.jabatan !== (p.jabatan ?? null))) g.push(H.lpStmtPelapor(env, P, wa, p, kini, true));
   g.push(...tambahStmt, ...kj);
   // satu batch: pembaruan sesi (rev dijaga) lebih dulu, sisanya hanya menulis bila pembaruan itu mengubah baris (changes() > 0): tidak ada sesi bernomor tanpa tiket
-  const r = await H.lpBatch(env, P, [lanjut ? H.lpStmtSesiUbah(env, P, baru, baris.rev, kini) : H.lpStmtSesiBaru(env, P, baru, kini), ...(lanjut ? [] : stmtMilikSesi(env, perangkat, s.id)), ...g]);
+  // sesi baru yang langsung terkirim (darurat sekali ketuk, K90): INSERT tidak menulis nomor dan token, jadi diikuti UPDATE rev 0 di batch yang sama
+  const r = await H.lpBatch(env, P, [lanjut ? H.lpStmtSesiUbah(env, P, baru, baris.rev, kini) : H.lpStmtSesiBaru(env, P, baru, kini), ...(!lanjut && nomor ? [H.lpStmtSesiUbah(env, P, baru, 0, kini)] : []),
+    ...(lanjut ? [] : stmtMilikSesi(env, perangkat, s.id)), ...g]);
   if (!r[0].meta.changes) return {bentrok: true};
   return {tambahan, token};
 }
@@ -330,7 +336,7 @@ async function pesan(env, req, url, kini, ctx) {
       if (typeof L.kode !== "string" || !RE_KODE_DESA.test(L.kode)) return galat(400, "Kode desa tidak sah.");
       const c = await wilayahDari(env).pusat(L.kode);
       if (!c) return galat(400, "Desa tidak ditemukan.");
-      lokasi = {lat: c.lat, lon: c.lon, sumber: "cari", wilayah: c.wilayah};
+      lokasi = {lat: c.lat, lon: c.lon, sumber: L.poster === true ? "poster" : "cari", wilayah: c.wilayah};   // poster: tautan /lapor/?d= (K92, D131), dipilih pelapor sendiri
     } else {
       if (!titikSah(L.lat, L.lon)) return galat(400, "Lokasi di luar Indonesia atau tidak sah.");
       lokasi = {lat: L.lat, lon: L.lon, sumber: typeof L.sumber === "string" ? L.sumber.slice(0, 20) : "perangkat", ...(angka(L.akurasi) && L.akurasi >= 0 ? {akurasi: L.akurasi} : {})};
@@ -387,14 +393,44 @@ async function susulanPost(env, req, url, kini) {
   const {nomor: _n, token: _t, tiket: _ti, versi: _v, jejak: _j, akhir: _a, susulanBaru: _s, balasan: _b, nilai: _ni, jumlahVersi: _jv, adaSusulan: _as, terkirim: _te, id: _id, ...dasar} = structuredClone(asal);
   const copy = {...dasar, id: `${kini.toString(36)}${acak(3)}`, wa, status: "ringkasan", susulanDari: nomor, transkrip: [], foto: [], fotoSelesai: true, ditanya: [], dibuat: kini};
   const pel = await profil(env, id, copy);
-  const h = await putaran({sesi: copy, pelapor: pel, model: null, wilayah: wilayahDari(env), kini, pesan: {wa, teks: "2", saluran}});   // masuk mode Ubah
+  const lengkapiDarurat = mulaiDiJenisDarurat(copy);   // laporan sekali ketuk (K90): mulai di jenis, korban, foto
+  if (lengkapiDarurat) copy.status = "darurat_jenis";
+  const h = await putaran({sesi: copy, pelapor: pel, model: null, wilayah: wilayahDari(env), kini, pesan: {wa, teks: lengkapiDarurat ? "" : "2", saluran}});   // masuk mode Ubah
   h.sesi.transkrip = h.sesi.transkrip.filter(t => t.dari === "bot");
-  h.inti = `*Tambah kabar untuk ${nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
+  h.inti = lengkapiDarurat ? `*Lengkapi laporan darurat ${nomor}*\nLokasi Anda sudah diterima petugas. Jawab beberapa pertanyaan ini bila sempat.\n\n${h.inti}` : `*Tambah kabar untuk ${nomor}*\nTulis apa yang berubah dengan kalimat biasa, misalnya *air naik lagi sepinggang*, *meninggal jadi 2*, atau *pengungsi 30 orang*.\nJenis bencana, lokasi, dan waktu kejadian tidak berubah. Kabar ini masuk ke tiket yang sama sebagai versi baru.`;
   h.sesi.transkrip.at(-1).teks = h.inti; h.sesi.akhir = {...(h.sesi.akhir || {}), inti: h.inti, balasan: h.inti};
   h.sesi.id = copy.id; h.sesi.wa = wa;
   const w = h.sesi.isian.lokasi?.nilai;
   await H.lpBatch(env, P, [H.lpStmtSesiBaru(env, P, {id: copy.id, wa, status: h.sesi.status, tingkat: h.sesi.tingkat, jenis: h.sesi.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null, lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(h.sesi)}, kini), ...stmtMilikSesi(env, id.perangkat, copy.id)]);
   return kirim(200, {...keluaran(h, h.sesi), susulanDari: nomor, teksWa: h.balasan});
+}
+
+/* Darurat sekali ketuk (K90, D122-D125): satu permintaan membuat laporan darurat terkirim berisi titik GPS. Nomor tetap wajib
+   (Q65 belum dijawab pemilik: pintu tanpa identitas tidak dibuka); identitas dari jalur yang sama dengan /pesan.
+   Batas di luar kuota pesan: 1 per perangkat (atau nomor) per 30 menit, 3 per IP per jam (A29). Draf laporan biasa yang belum terkirim diganti, sama dengan K68. */
+const JEDA_SEKALI = 30 * 60000;
+const KORBAN_DARURAT = {ya: "ada", tidak: "tidak ada", belum_tahu: "belum tahu"};
+async function daruratCepat(env, req, url, kini) {
+  const b = await bacaBody(req, 1024); if (b.galat) return galat(b.status || 400, b.galat);
+  const o = b.o, id = await pelapor(env, req, url, o); if (id instanceof Response) return id;
+  const lj = await lajuPublik(env, req, "lapor.sekali.ip", 3, kini); if (lj) return lj;
+  // per nomor juga (tinjauan keamanan 23 Nov 2026): nomor ketikan orang lain dari perangkat berganti tetap paling banyak 1 per 30 menit dan 3 per hari
+  const r0 = await H.lpKuota(env, P, [{kunci: id.perangkat || id.wa, aksi: "lapor.sekali", batas: [[JEDA_SEKALI, 1]]}, {kunci: id.wa, aksi: "lapor.sekali.wa", batas: [[JEDA_SEKALI, 1], [HARI, 3]]}], kini);
+  if (r0) return json({galat: "Laporan darurat dari perangkat ini baru saja terkirim. Petugas sudah menerimanya; telepon 112 bila ada nyawa terancam.", sisaDetik: r0.sisa}, 429, {...HDR, "retry-after": String(r0.sisa)});
+  const L = o.lokasi && typeof o.lokasi === "object" ? o.lokasi : null;
+  const lokasi = L && titikSah(L.lat, L.lon) ? {lat: L.lat, lon: L.lon, ...(angka(L.akurasi) && L.akurasi >= 0 ? {akurasi: L.akurasi} : {})} : null;   // titik di luar Indonesia dibuang, laporan tetap dibuat (A29)
+  let wil = null;
+  if (lokasi) { try { const w = await wilayahDari(env)(lokasi.lat, lokasi.lon); if (w) { const {sekitar, ...x} = w; wil = x; } } catch { wil = null; } }
+  const hb = await sesiAktif(env, id), hidup = hb ? dariBaris(hb) : null, lanjut = !!hidup && !SELESAI.has(hidup.status) && !hidup.susulanDari;
+  const pel = await profil(env, id, null); naikBpbd(pel, id.ketik ? null : id.izin);
+  const sesi = sesiSekaliKetuk({pelapor: pel, lokasi, wil, kini});
+  sesi.id = lanjut ? hidup.id : `${kini.toString(36)}${acak(3)}`; sesi.wa = id.wa;
+  if (id.ketik) { sesi.verifikasi = "ketik"; if (pel) sesi.pelaporKetik = pel; }
+  const h = {sesi, pelapor: pel, kirim: true, inti: "", balasan: ""};
+  const s = await simpanPutaran(env, url, {wa: id.wa, saluran: "web", perangkat: id.perangkat}, {h, baris: lanjut ? hb : null, lama: hidup, lanjut, pel, awal: 0}, kini);
+  if (s.bentrok) return galat(409, "Pesan lain dari nomor ini sedang diproses. Coba lagi.");
+  if (s.batas) return galat(429, s.teks.replace(/\*/g, ""));
+  return kirim(200, {...s.tambahan, balasan: h.inti, wilayah: wil ? {desa: wil.desa, kec: wil.kec, kab: wil.kab} : null});
 }
 
 /* cek status laporan milik nomor ini */
@@ -1129,6 +1165,7 @@ const RUTE = {
   "GET /api/lapor/kotak": kotakGet,
   "POST /api/lapor/nilai": nilaiPost,
   "POST /api/lapor/susulan": susulanPost,
+  "POST /api/lapor/darurat/cepat": daruratCepat,
   "GET /api/lapor/lacak": lacak,
   "GET /api/lapor/unduh/:x": unduh,
   "GET /api/lapor/alun": alun,
