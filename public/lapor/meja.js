@@ -50,10 +50,22 @@ if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { const sb = new URLSe
   if (sb) document.cookie = /^(kab:\d{2}\.\d{2}|prov:\d{2})$/.test(sb) ? `lapor_sebagai=${sb}; path=/; SameSite=Strict` : "lapor_sebagai=; path=/; max-age=0"; }
 let akunMeja = {jenis: "bnpb", label: "BNPB"};
 const akunBpbd = () => akunMeja.jenis === "bpbd";
+/* belum masuk atau akun tanpa hak (pemilik 23 Nov 2026 "bagusin"): pil singkat, alasan lengkap di tabel beserta tombol masuk; bukan kalimat galat server di pil */
+function belumMasuk(status, galat) {
+  const masuk = status === 401 || status === 403;
+  $("bSegar").classList.add("galat"); $("bSegar").title = galat || "";
+  $("waktuSegar").textContent = masuk ? "Belum masuk" : "Gagal memuat, ketuk untuk ulang";
+  if (!masuk) return;
+  const td = el("td", "mj-kosong mj-belum-masuk"), a = el("a", "mj-tombol", "Masuk");
+  a.href = "/masuk?ke=" + encodeURIComponent(location.pathname + location.search);
+  td.colSpan = KOLOM.length;
+  td.append(el("b", null, "Masuk dulu untuk melihat laporan"), el("span", null, "Halaman ini untuk staf BNPB (Pusdalops, Koordalops) dan BPBD dengan akun lembaga pemda."), a);
+  const tr = el("tr"); tr.append(td); $("tbody").replaceChildren(tr);
+}
 async function muat(latar = false) {
   try {
     const res = await fetch("/api/lapor/meja", {cache: "no-store"}), j = await res.json();
-    if (!res.ok) { $("waktuSegar").textContent = j.galat || "Tidak berhak"; return; }
+    if (!res.ok) { belumMasuk(res.status, j.galat); return; }
     if (j.akun) { akunMeja = j.akun; document.body.classList.toggle("mj-bpbd", akunBpbd());
       const sub = document.querySelector(".mj-merek small"); if (sub) sub.textContent = akunBpbd() ? `${akunMeja.label}, laporan di wilayah Anda` : "Pantau Bencana, khusus staf"; }
     semua = j.baris || [];

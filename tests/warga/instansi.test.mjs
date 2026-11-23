@@ -760,6 +760,11 @@ uji("instansi: halaman /instansi dan /admin/instansi, CSP, nav admin, tanpa pemi
   assert.equal((await buka("/peringatan")).status, 303, "halaman lain tetap tertutup");
   const lama = await mf.dispatchFetch("http://instansi.lokal/instansi.html", {redirect: "manual"}); await lama.text(); assert.equal(lama.status, 303); assert.equal(lama.headers.get("location"), "/instansi");
   const tanpa = await mf.dispatchFetch("http://instansi.lokal/admin/instansi", {redirect: "manual"}); await tanpa.text(); assert.equal(tanpa.status, 303, "halaman admin butuh sesi admin");
+  /* Data Bencana untuk BPBD (pemilik 23 Nov 2026): di bawah /instansi supaya cookie sesi ikut; tanpa sesi ke /instansi, akun aktif dan admin terbuka */
+  const db0 = await buka("/instansi/data-bencana"); assert.equal(db0.status, 303); assert.equal(db0.headers.get("location"), "/instansi", "tanpa sesi: ke pintu /instansi, bukan /admin/masuk");
+  await aktifkan("pemkabseruyan"); const dbA = await api("GET", "/instansi/data-bencana?prov=62&kab=Seruyan", undefined, await masuk("pemkabseruyan"));
+  assert.equal(dbA.s, 200); assert.match(dbA.t, /Data Bencana Indonesia/); assert.match(dbA.t, /data_bencana\.js/);
+  assert.equal((await api("GET", "/instansi/data-bencana", undefined, ADMIN)).s, 200, "staf atau admin juga boleh");
   const a = await api("GET", "/admin/instansi", undefined, ADMIN); assert.equal(a.s, 200); assert.match(a.t, /\/admin\/instansi\.js/); assert.match(a.t, /\/admin\/bersama\.js/);
   assert.match((await api("GET", "/admin/posko", undefined, ADMIN)).t, /href="\/admin\/instansi"/, "tautan ke /admin/instansi di navigasi admin");
   for (const f of ["public/instansi.html", "public/instansi.js", "public/instansi.css", "public/admin/instansi.js", "public/admin/instansi.css", "src/instansi.js"]) {

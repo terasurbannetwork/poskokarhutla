@@ -57,7 +57,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
   if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
     /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
-    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
+    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
   const H = new URL(hulu);

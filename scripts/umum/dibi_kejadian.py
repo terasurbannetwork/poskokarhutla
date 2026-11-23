@@ -2,9 +2,13 @@
 -> public/data/dibi_kejadian.json
 
 Akses DIBI memakai superset() milik scripts/banjir/kejadian.py (dasbor publik 1, tanpa login; tidak resmi).
-Kolom dampak DIBI (diperiksa Okt 2026 lewat kueri kolom): meninggal, hilang, luka_sakit, menderita, mengungsi,
-rumah_rusak_berat/sedang/ringan, rumah_terendam, pendidikan_rusak, kantor_rusak, jembatan_rusak, fasum_rusak.
-TIDAK ADA di DIBI: fasilitas peribadatan dan kesehatan (tidak dicantumkan, bukan 0).
+Kolom dampak DIBI (diperiksa ulang 23 Nov 2026 lewat kueri kolom): meninggal, hilang, luka_sakit, menderita, mengungsi,
+rumah_rusak_berat/sedang/ringan, rumah_terendam, pendidikan_rusak, rumah_ibadat_rusak, fasyankes_rusak, kantor_rusak,
+jembatan_rusak, fasum_rusak, lahan_hektar, estimasi_kerugian_rumah (juta Rp = 60 x berat + 30 x sedang + 15 x ringan + 1 x terendam).
+Catatan Okt 2026 bahwa ibadah dan faskes tidak ada di DIBI SALAH: kolomnya ada (2024: 417 dan 82, infografis BNPB 415 dan 82).
+SEMUA baris tetap dimuat (label evaluasi PRAREG-CAMPUR dan /prediksi didefinisikan atas berkas ini), tetapi baris
+is_bencana = FALSE (di bawah ambang Juklak BNPB 7/2023) diberi kunci "bencana": 0. Angka resmi = baris TANPA kunci itu:
+365 hari per 23 Nov 2026 = 3.097 resmi dari 4.198 baris. Layar jumlah/dampak WAJIB menyaring bencana != 0.
 Kolom dikelompokkan + SUM: baris kembar (hari, kab, jenis sama) tergabung dan `kejadian` = jumlahnya.
 
 {"dibuat","sumber","dari","sampai","catatan","kolom":[...],"kejadian":[{tanggal,jenis,prov_kode,prov,kab_kode,kab,kejadian,<dampak>}]}
@@ -28,8 +32,8 @@ def _muat(nama, rel):
 DAMPAK = {"meninggal": "meninggal", "hilang": "hilang", "luka": "luka_sakit", "terdampak": "menderita", "mengungsi": "mengungsi",
           "rr_berat": "rumah_rusak_berat", "rr_sedang": "rumah_rusak_sedang", "rr_ringan": "rumah_rusak_ringan",
           "terendam": "rumah_terendam", "f_pendidikan": "pendidikan_rusak", "f_kantor": "kantor_rusak",
-          "jembatan": "jembatan_rusak", "f_umum": "fasum_rusak"}
-TAK_ADA = ["f_ibadah", "f_kesehatan"]
+          "jembatan": "jembatan_rusak", "f_umum": "fasum_rusak", "f_ibadah": "rumah_ibadat_rusak", "f_kesehatan": "fasyankes_rusak",
+          "lahan_ha": "lahan_hektar", "rugi_rumah": "estimasi_kerugian_rumah"}
 NAMA_BERKAS_BANJIR = "scripts/banjir/kejadian.py"
 
 
@@ -47,7 +51,9 @@ def ubah(r, wib):
     o = {"tanggal": dt.datetime.fromtimestamp(r["dt"] / 1000, wib).date().isoformat(), "jenis": str(r["jenis_bencana"]).strip(),
          "prov_kode": kode[:2], "prov": str(r.get("provinsi") or "").strip(),
          "kab_kode": f"{kode[:2]}.{kode[2:]}" if kode else None, "kab": str(r.get("kabupaten") or "").strip(),
-         "kejadian": angka(r.get("jumlah_kejadian")) or 1}
+         "kategori": str(r.get("kategori_bencana") or "").strip(), "kejadian": angka(r.get("jumlah_kejadian")) or 1}
+    if r.get("is_bencana") is False:
+        o["bencana"] = 0   # di bawah ambang bencana: ikut untuk pencocokan, tidak untuk angka resmi
     for kunci, kol in DAMPAK.items():
         if angka(r.get(kol)):
             o[kunci] = angka(r[kol])
@@ -65,7 +71,7 @@ def jalan():
     wib = K.WIB
     hari = dt.datetime.now(wib).date()
     dari, sampai = (hari - dt.timedelta(days=365)).isoformat(), hari.isoformat()
-    kol = ["dt", "provinsi", "kabupaten", "id_kab_bps", "jenis_bencana"]
+    kol = ["dt", "provinsi", "kabupaten", "id_kab_bps", "jenis_bencana", "kategori_bencana", "is_bencana"]
     met = [("jumlah_kejadian", "SUM(jumlah_kejadian)")] + [(c, f"SUM({c})") for c in DAMPAK.values()]
     baris = K.superset(kol, met, [{"col": "tahun", "op": "IN", "val": [hari.year - 1, hari.year]}], 50000)
     if len(baris) >= 50000:
@@ -74,10 +80,11 @@ def jalan():
     kolom = [k for k in DAMPAK if any(k in x for x in kej)]
     umum_simpan(KELUAR, {
         "sumber": "DIBI BNPB (dibi.bnpb.go.id, Superset dasbor publik)", "dari": dari, "sampai": sampai,
-        "catatan": "Semua jenis bencana, per kabupaten per hari; baris kembar (hari, kabupaten, jenis sama) digabung dan 'kejadian' = jumlahnya. "
+        "catatan": "Semua jenis bencana, per kabupaten per hari; baris di bawah ambang bencana DIBI (is_bencana salah) bertanda bencana = 0 dan TIDAK masuk angka resmi; baris kembar (hari, kabupaten, jenis sama) digabung dan 'kejadian' = jumlahnya. "
                    "Angka 0 dihilangkan per baris (kunci tak ada = 0). terdampak = kolom DIBI 'menderita'; luka = 'luka_sakit'; "
-                   "f_umum = fasilitas umum rusak (kolom tambahan DIBI). Fasilitas peribadatan dan kesehatan TIDAK ADA di DIBI "
-                   "sehingga tidak dicantumkan (bukan 0). DIBI tidak resmi lewat API dan sering diperbarui susulan.",
+                   "f_umum = fasilitas umum rusak; f_ibadah = rumah ibadat; f_kesehatan = fasilitas pelayanan kesehatan; lahan_ha = lahan rusak (hektar); "
+                   "rugi_rumah = estimasi kerugian rumah DIBI dalam juta rupiah. kategori = kategori_bencana DIBI. "
+                   "DIBI tidak resmi lewat API dan sering diperbarui susulan; tahun berjalan masih sementara.",
         "kolom": kolom, "kejadian": kej})
     print(f"dibi_kejadian: {len(kej)} kejadian {dari}..{sampai}, kolom {kolom}")
 
@@ -85,9 +92,12 @@ def jalan():
 def uji():
     wib = dt.timezone(dt.timedelta(hours=7))
     r = {"dt": 1772204400628.0, "provinsi": "DI Yogyakarta ", "kabupaten": "Bantul", "id_kab_bps": 3402, "jenis_bencana": "Gerakan Tanah ",
-         "jumlah_kejadian": 2.0, "meninggal": 1, "hilang": 0, "luka_sakit": 3.0, "rumah_terendam": 0}
+         "jumlah_kejadian": 2.0, "meninggal": 1, "hilang": 0, "luka_sakit": 3.0, "rumah_terendam": 0, "kategori_bencana": "Longsor ",
+         "rumah_ibadat_rusak": 2, "lahan_hektar": 1.4}
     o = ubah(r, wib)
     assert o["prov_kode"] == "34" and o["kab_kode"] == "34.02" and o["jenis"] == "Gerakan Tanah" and o["prov"] == "DI Yogyakarta"
+    assert o["kategori"] == "Longsor" and o["f_ibadah"] == 2 and o["lahan_ha"] == 1 and "bencana" not in o
+    assert ubah(dict(r, is_bencana=False), wib)["bencana"] == 0 and "bencana" not in ubah(dict(r, is_bencana=True), wib)
     assert o["kejadian"] == 2 and o["meninggal"] == 1 and o["luka"] == 3 and "hilang" not in o and "terendam" not in o
     assert o["tanggal"] == "2026-02-27", o["tanggal"]
     a, b, c = dict(o, tanggal="2026-01-01"), dict(o, tanggal="2026-03-01"), dict(o, tanggal="2020-01-01")

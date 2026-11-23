@@ -888,3 +888,4 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-pop-tempat-baris{display:flex;align-items:flex-start;gap:8px;font-size:.8125rem;line-height:1.4;color:var(--ink)}
 .mj-pop-tempat-baris svg{width:16px;height:16px;margin-top:2px;flex:none;color:var(--tw,var(--bad))}
 .mj-pop-tempat-baris em{color:var(--ink2);font-style:normal}
+.mj-belum-masuk{text-align:center}.mj-belum-masuk b{display:block;font-size:.95rem;color:var(--ink);margin-bottom:4px}.mj-belum-masuk span{display:block;margin-bottom:14px}.mj-belum-masuk .mj-tombol{display:inline-flex;text-decoration:none}

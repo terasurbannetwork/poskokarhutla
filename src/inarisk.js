@@ -1,0 +1,132 @@
+/* Proksi InaRISK untuk /bnpb/inarisk (data/kajian-bnpb/inarisk/DESAIN-TEKNIS.md): daftar izin ketat, parameter disaring,
+   nama petugas dibuang, galat hulu jadi 502 tanpa badan hulu. Tanpa kunci; batas laju lewat laju_bnpb.
+   ponytail: batas laju baca-lalu-tulis (laju_bnpb), dihitung hanya saat cache luput. */
+import {json, gagal, ipHash} from "./worker.js";
+import {lajuIP} from "./bnpb.js";
+
+const API = "https://inarisk.bnpb.go.id/apiv4/", GIS = "https://gis.bnpb.go.id/server/rest/services/inarisk/";
+const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+const BAHAYA = ["banjir", "banjir_bandang", "gempabumi", "kekeringan", "letusan_gunungapi", "tanah_longsor", "likuefaksi", "tsunami", "gelombang_ekstrim_dan_abrasi", "kebakaran_hutan_dan_lahan", "cuaca_ekstrim", "multi"];
+export const LAPISAN = new Set([...BAHAYA.map(b => "layer_bahaya_" + b), ...BAHAYA.filter(b => b !== "tanah_longsor").map(b => "layer_risiko_" + b),
+  ...BAHAYA.filter(b => b !== "banjir").map(b => "layer_kerentanan_" + b), "layer_peta_kapasitas", "batas_administrasi"]);
+const PROP_AMAN = ["Kegiatan", "Lokasi", "Deskripsi", "Tgl", "Foto", "Pcode", "Organisasi"], HOST_FOTO = new Set(["inarisk.bnpb.go.id", "inarisk2.bnpb.go.id"]);
+const MAKS_BADAN = 64 * 1024, MAKS_TITIK = 2000, EPSG3857 = 20037509;
+
+const hulu = async (url, init, ms) => {
+  try { return await fetch(url, {...init, headers: {"user-agent": UA, ...init?.headers}, signal: AbortSignal.timeout(ms)}); } catch { return null; }
+};
+const galatHulu = () => gagal(502, "InaRISK sedang tidak menjawab, coba lagi nanti");
+const fotoAman = f => typeof f === "string" && URL.canParse(f) && new URL(f).protocol === "https:" && HOST_FOTO.has(new URL(f).hostname);
+
+/* saring query: nama -> pemeriksa (string -> bool) */
+const SARING_UNDUHAN = {page: s => /^\d{1,5}$/.test(s), per_page: s => /^\d{1,2}$/.test(s) && +s >= 1 && +s <= 50, search: s => s.length <= 80,
+  category: s => /^[\w .,&-]{1,60}$/.test(s), file_format: s => /^[\w.-]{1,20}$/.test(s), sort: s => /^[\w.,:-]{1,40}$/.test(s), region: s => /^\d{1,10}$/.test(s)};
+function paramUnduhan(url) {
+  const o = new URLSearchParams();
+  for (const [k, ok] of Object.entries(SARING_UNDUHAN)) { const v = url.searchParams.get(k); if (v !== null && ok(v)) o.set(k, v); }
+  return o;
+}
+
+/* GET berkas cache: kunci sintetis, hanya 200 disimpan */
+async function lewatCache(env, req, kunci, ttl, batas, aksi, ambil) {
+  const c = globalThis.caches?.default, kc = new Request("https://cache.lokal/inarisk/" + kunci);
+  const ada = await c?.match(kc).catch(() => null);
+  if (ada) return ada;
+  const lj = await lajuIP(env, req, aksi, batas); if (lj) return lj;
+  const r = await ambil(); if (!r || r.status !== 200) return r;
+  const h = new Headers(r.headers); h.set("cache-control", "public, max-age=" + ttl);
+  const hasil = new Response(r.body, {status: 200, headers: h});
+  if (c) await c.put(kc, hasil.clone()).catch(() => {});
+  return hasil;
+}
+const JSON_H = {"content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff"};
+
+const unduhan = (jalur) => (env, req, url) => {
+  const q = paramUnduhan(url);
+  return lewatCache(env, req, jalur + "?" + q, 3600, [[60e3, 60]], "inarisk", async () => {
+    const r = await hulu(API + jalur + (q.size ? "?" + q : ""), {headers: {accept: "application/json"}}, 20000);
+    if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
+    let d; try { d = await r.json(); } catch { return galatHulu(); }
+    return new Response(JSON.stringify(d), {headers: JSON_H});
+  });
+};
+
+const angka = (x, a, b) => typeof x === "number" && Number.isFinite(x) && x >= a && x <= b;
+/* badan dampak bersih {jalur, badan} atau string galat */
+export function dampakBersih(b) {
+  if (!b || typeof b !== "object" || Array.isArray(b)) return "badan harus objek";
+  if (b.type === "polygon") {
+    const g = b.geometry, r = g?.type === "Polygon" && Array.isArray(g.coordinates) ? g.coordinates : null;
+    if (!r || !r.length || r.length > 20) return "geometry harus Polygon";
+    let n = 0;
+    for (const cincin of r) {
+      if (!Array.isArray(cincin) || cincin.length < 4) return "cincin poligon minimal 4 titik";
+      n += cincin.length; if (n > MAKS_TITIK) return `poligon maksimal ${MAKS_TITIK} titik`;
+      for (const p of cincin) if (!Array.isArray(p) || p.length < 2 || !angka(p[0], -180, 180) || !angka(p[1], -90, 90)) return "koordinat poligon tidak valid";
+    }
+    return {jalur: "dashboards/dashboard-jakarta/spatial-query/0", badan: {type: "polygon", crs: "EPSG:4326", geometry: {type: "Polygon", coordinates: r.map(c => c.map(p => [p[0], p[1]]))}}};
+  }
+  if (b.type !== "circle" && b.type !== "point") return "type harus circle, point, atau polygon";
+  const c = b.center, p = b.geometry?.coordinates;
+  if (!c || !angka(c.lat, -90, 90) || !angka(c.lng, -180, 180)) return "center tidak valid";
+  if (b.geometry?.type !== "Point" || !Array.isArray(p) || !angka(p[0], -180, 180) || !angka(p[1], -90, 90)) return "geometry harus Point";
+  const badan = {type: b.type, crs: "EPSG:4326", center: {lat: c.lat, lng: c.lng}, geometry: {type: "Point", coordinates: [p[0], p[1]]}};
+  if (b.type === "circle" || b.radius_meter !== undefined) { if (!angka(b.radius_meter, 1, 50000)) return "radius_meter harus 1 sampai 50000"; badan.radius_meter = b.radius_meter; }
+  return {jalur: "dashboards/dashboard-jakarta/spatial-query/1", badan};
+}
+async function dampak(env, req) {
+  const teks = await req.text();
+  if (teks.length > MAKS_BADAN) return gagal(413, "badan terlalu besar");
+  let b; try { b = JSON.parse(teks); } catch { return gagal(400, "JSON tidak valid"); }
+  const d = dampakBersih(b); if (typeof d === "string") return gagal(400, d);
+  const lj = await lajuIP(env, req, "inarisk", [[60e3, 60]]); if (lj) return lj;
+  const r = await hulu(API + d.jalur, {method: "POST", headers: {"content-type": "application/json", accept: "application/json"}, body: JSON.stringify(d.badan)}, 20000);
+  if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
+  let j; try { j = await r.json(); } catch { return galatHulu(); }
+  return json(j?.result ?? null);
+}
+
+/* bersihkan GeoJSON kegiatan: hanya properti daftar-putih, foto hanya dari host InaRISK */
+export function bersihKegiatan(g) {
+  const fitur = Array.isArray(g?.features) ? g.features : [];
+  return {type: "FeatureCollection", features: fitur.map(f => {
+    const p = {}; for (const k of PROP_AMAN) if (f?.properties && k in f.properties) p[k] = f.properties[k];
+    if ("Foto" in p) p.Foto = Array.isArray(p.Foto) ? p.Foto.filter(fotoAman) : fotoAman(p.Foto) ? p.Foto : null;
+    return {type: "Feature", geometry: f?.geometry ?? null, properties: p};
+  })};
+}
+function kegiatan(env, req, url) {
+  const m = url.pathname.match(/^\/api\/inarisk\/kegiatan\/(\d{1,10})\/(\d{2,10})\/?$/); if (!m) return gagal(404, "tidak ada");
+  const tgl = s => s === null ? "" : /^\d{4}-\d\d-\d\d$/.test(s) ? s : null, dari = tgl(url.searchParams.get("date_from")), sampai = tgl(url.searchParams.get("date_to"));
+  if (dari === null || sampai === null) return gagal(400, "tanggal harus YYYY-MM-DD");
+  const q = new URLSearchParams(); if (dari) q.set("date_from", dari); if (sampai) q.set("date_to", sampai);
+  return lewatCache(env, req, `kegiatan/${m[1]}/${m[2]}?${q}`, 3600, [[60e3, 60]], "inarisk", async () => {
+    const r = await hulu(`${API}posgagah/geojson/${m[1]}/${m[2]}${q.size ? "?" + q : ""}`, {headers: {accept: "application/json"}}, 20000);
+    if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
+    let d; try { d = await r.json(); } catch { return galatHulu(); }
+    return new Response(JSON.stringify(bersihKegiatan(d)), {headers: JSON_H});
+  });
+}
+
+function ubin(env, req, url) {
+  const nama = decodeURIComponent(url.pathname.split("/")[4] || ""), bb = (url.searchParams.get("bbox") || "").split(",");
+  if (!LAPISAN.has(nama)) return gagal(404, "lapisan tidak ada");
+  const v = bb.length === 4 && bb.every(s => /^-?\d+(\.\d+)?$/.test(s)) ? bb.map(Number) : null;
+  if (!v || !v.every(x => Number.isFinite(x) && Math.abs(x) <= EPSG3857) || v[0] >= v[2] || v[1] >= v[3]) return gagal(400, "bbox harus xmin,ymin,xmax,ymax EPSG:3857");
+  const kotak = v.join(",");
+  return lewatCache(env, req, `ubin/${nama}?${kotak}`, 7 * 86400, [[60e3, 600]], "inarisk.ubin", async () => {
+    const dasar = nama === "batas_administrasi" ? `${GIS}Basemap/batas_administrasi/MapServer/export?bbox=${kotak}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&f=image`
+      : `${GIS}${nama}/ImageServer/exportImage?bbox=${kotak}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&f=image`;
+    const r = await hulu(dasar, {}, 60000);
+    if (!r || !r.ok || !(r.headers.get("content-type") || "").startsWith("image/png")) { r?.body?.cancel(); return galatHulu(); }
+    return new Response(r.body, {headers: {"content-type": "image/png", "x-content-type-options": "nosniff"}});
+  });
+}
+
+export const RUTE_INARISK = {
+  "GET /api/inarisk/unduhan": unduhan("downloads"),
+  "GET /api/inarisk/unduhan/ringkas": unduhan("downloads/summary"),
+  "POST /api/inarisk/dampak": (env, req) => dampak(env, req),
+  "GET /api/inarisk/kegiatan/:x": (env, req, url) => kegiatan(env, req, url),
+  "GET /api/inarisk/ubin/:x": (env, req, url) => ubin(env, req, url),
+};

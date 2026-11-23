@@ -1351,3 +1351,4 @@
 {"t":"2026-11-20T11:59:27.423+07:00","berkas":"scripts/lapor/lokal.mjs","blob":"70083c889804fa3f092a0040eb64ef7b8f191871","aturan":"d4b0f392b95e","vonis":"dikerjakan","ringkas":"LA-68/69 kejadian yang sama (K66, D103-D107)","sha":"accc19a37"}
 {"t":"2026-11-20T11:59:27.490+07:00","berkas":"public/lapor/meja.js","blob":"254d844365f9e2242a767b33dab3ca1c28790fa1","aturan":"d4b0f392b95e","vonis":"dikerjakan","ringkas":"LA-68/69 kejadian yang sama (K66, D103-D107)","sha":"accc19a37"}
 {"t":"2026-11-20T11:59:27.557+07:00","berkas":"tests/lapor/lokal_kejadian.test.mjs","blob":"0c712a8ea2badecc5639734410e9ec9f0f320aa3","aturan":"d4b0f392b95e","vonis":"dikerjakan","ringkas":"LA-68/69 kejadian yang sama (K66, D103-D107)","sha":"accc19a37"}
+{"t":"2026-11-23T11:32:10.488+07:00","berkas":"src/inarisk.js","blob":"c41c6bf5c116363f3ca8ace0469055f3feabaf8e","aturan":"d4b0f392b95e","vonis":"dikerjakan","ringkas":"IR-03 proksi InaRISK","sha":"864310603"}

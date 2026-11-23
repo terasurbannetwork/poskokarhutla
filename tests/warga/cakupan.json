@@ -1072,6 +1072,7 @@
     "POST /api/sensor/lapor": "sensor: lapor dari gateway tersimpan",
     "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin",
     "GET /bnpb/dokumen": "GET /bnpb/dokumen: kerangka publik tanpa cache",
+    "GET /bnpb/inarisk": "inarisk: CSP /bnpb/inarisk memuat Esri dan host foto",
     "GET /bnpb/saham": "saham: halaman /bnpb/saham pribadi",
     "GET /bnpb/katalog-dokumen": "katalog dokumen: halaman terbuka",
     "GET /bnpb/bahan": "GET /bnpb/dokumen: kerangka publik tanpa cache",

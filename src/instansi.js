@@ -9,7 +9,7 @@
 import {json, gagal, acak, sha, shaBytes, bacaBody, bacaBytes, normalWA, ipHash} from "./worker.js";
 import {tx, num, wib, tglSah, modOK, superOK, KENDALA, RE_PID, RE_EMAIL, cekKontak, reguDari} from "./posko.js";
 import {bersihMedia} from "./media_bersih.js";
-import {laju} from "./bnpb.js";
+import {laju, halamanBnpbPublik} from "./bnpb.js";
 import {nilaiGps, jaringanRelay} from "./gps.js";
 import {jaringanHosting} from "./publik.js";
 import {jenisBerkas, durasiMP4, ATURAN_MEDIA, jarakM} from "./foto.js";
@@ -1709,6 +1709,16 @@ async function halamanPublik(env, url) {
 /* rute digabung ke RUTE di src/worker.js. Tanpa admin = sesi instansi (cookie sesi_instansi) di tiap handler; "modOK" = moderator ke atas; "superOK" = Super Admin. */
 const RUTE_ASLI = {
   "GET /instansi": (env, req, url) => halamanPublik(env, url),
+  /* Data Bencana Indonesia untuk BPBD dan akun lembaga lain (pemilik 23 Nov 2026 "pintu masuk BPBD"): di bawah /instansi supaya cookie sesi
+     (Path=/instansi) ikut terkirim; staf Pusdalops/Koordalops/Pimpinan juga boleh. Datanya DIBI publik (public/data), jadi akun aktif apa pun boleh.
+     Tanpa sesi: 303 ke /instansi. Halaman sama dengan /bnpb/data-bencana; wilayah awal dari ?prov= dan ?kab= yang dipasang tautan di /instansi. */
+  "GET /instansi/data-bencana": async (env, req, url, kini) => {
+    if (!(await modAtauStaf(env, req, ["pusdalops", "koordalops", "pimpinan"]))) {
+      const a = await akunAktif(env, req, kini);
+      if (a instanceof Response) return a.status === 401 ? new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}}) : a;
+    }
+    return halamanBnpbPublik(env, url, "data-bencana", {pribadi: true});
+  },
   "GET /admin/instansi": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanInstansi, HALAMAN_STAF.instansi),
   "POST /api/instansi/masuk": (env, req, url, kini) => masuk(env, req, kini),
   "POST /api/instansi/keluar": (env, req, url, kini) => keluar(env, req, kini),

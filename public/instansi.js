@@ -76,6 +76,9 @@
     if (!saya) { undangAkun = null; $("vMasuk").hidden = false; return; }
     $("akun").textContent = saya.akun.wilayah;
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
+    /* tautan Data Bencana terkunci ke wilayah akun (pemilik 23 Nov 2026 "pintu masuk BPBD"): provinsi dari cakupan, kab/kota dari nama kab akun */
+    const ln = $("lnDataBencana"), pv = Array.isArray(saya.cakupan) && saya.cakupan.length === 1 ? saya.cakupan[0] : "";
+    if (ln) ln.href = "/instansi/data-bencana" + (pv ? "?prov=" + encodeURIComponent(pv) + (saya.akun.tingkat === "kab" && saya.kab ? "&kab=" + encodeURIComponent(saya.kab) : "") : "");
     if (saya.akun.status === "aktif") { $("vUtama").hidden = false; pasangUndang(); siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
     $("vVerif").hidden = false; isiVerif();
   }

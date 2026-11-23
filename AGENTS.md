@@ -518,6 +518,28 @@ Sebelum menyentuh pengelompokan laporan per desa, halaman publik laporan terveri
 
 Aturan berhentinya sama dengan §2.1. Laporan belum terverifikasi tidak pernah tampil publik; pencocok kejadian tetap satu (`pasang.py`); tidak ada buku kejadian kedua; data pribadi pelapor tidak pernah di halaman publik.
 
+### 2.36 Cermin InaRISK (`/bnpb/inarisk`: IRBI, IKD, Web GIS, Unduhan, Tautan, Metodologi, Tentang, Disclaimer): baca dulu, baru bangun
+
+Sebelum menyentuh cermin InaRISK (data IRBI, IKD, jiwa terpapar, lapisan ArcGIS BNPB, proksi unduhan dan dampak radius), baca dokumen di
+`data/kajian-bnpb/inarisk/` dengan urutan otoritas ini (kode di `scripts/bnpb/inarisk.py`, `public/data/inarisk/**`, `public/bnpb/inarisk*`, `tests/bnpb/inarisk_*` milik `ruang-bnpb`; `src/inarisk.js`, rute di `src/bnpb.js`, `tests/warga/inarisk_*` milik `warga-api`):
+
+1. `KEPUTUSAN-INARISK.md`: keputusan pemilik K1-K3, temuan angka pengisi InaRISK, rancangan D1-D10, pertanyaan terbuka Q1-Q4 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-11), 4. `ALUR.md`, 5. `ALGORITMA.md` (kelas, peringkat, tren dua dasar), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`IR-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Angka pengisi InaRISK (penduduk karangan, persen jenis kelamin, komponen V dan C nasional) tidak pernah ditiru; IRBI tidak dihitung ulang; nama petugas Lapor Kegiatan tidak pernah sampai ke peramban atau repo; proksi hanya jalur di daftar izin.
+
+### 2.37 Panel EWS sensor dan CCTV (`/banjir`, `/gunungapi`: pos sensor, alat terputus, grafik, CCTV): baca dulu, baru bangun
+
+Sebelum menyentuh panel pemantauan alat di halaman banjir dan gunung api (kartu pos, pemberitahuan alat terputus, seri waktu, CCTV, jenis sensor geofon, sumber EWS vendor atau MHEWS), baca dokumen di
+`data/kajian-bnpb/ews/` dengan urutan otoritas ini (mesin layar `public/inti/pantau_alat.*` dan kunci `kemampuan.alat` di `public/bencana.json` milik `inti-layar`; `src/alat.js`, `src/sensor.js`, dan migrasinya milik `warga-api`; pemasangan di `public/banjir/**` milik `banjir`, di `public/gunungapi/**` milik `gunungapi-kering`):
+
+1. `KEPUTUSAN-EWS.md`: keputusan pemilik K1–K4, rancangan D1–D9, pertanyaan terbuka Q1–Q6 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`EW-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Hanya banjir dan gunung api; tidak ada halaman `/ews`; nama `ews` di registri dan `src/ews.js` tetap milik langganan email; tidak pernah menulis "aman"; alat terputus tidak pernah tampil 0; data dan CCTV pihak lain hanya dengan izin tertulis; bacaan sensor tidak memicu peringatan publik.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
