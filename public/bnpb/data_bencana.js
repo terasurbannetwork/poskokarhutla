@@ -32,6 +32,9 @@
   const CADANG_PROV = {fakfak: "92"};   // tidak ada di wilayah.json
   /* skala warna berurutan satu rona (pemilik: bukan hijau-kuning-merah polos); batas bawah tiap kelas per tingkat peta */
   const BATAS = {prov: [1, 20, 50, 100, 200], kab: [1, 3, 6, 12, 25]};
+  /* per 100 ribu penduduk (pemilik 23 Nov 2026, lewat sesi DIBI: "supaya provinsi kecil yang rawan tidak tenggelam oleh Jawa"); kira-kira kuintil data Nov 2026 */
+  const BATAS_LAJU = {prov: [0.01, 0.6, 1, 2, 3], kab: [0.01, 0.6, 1.5, 3, 7]};
+  const F1 = v => Number(v).toLocaleString("id-ID", {maximumFractionDigits: v < 10 ? 1 : 0});
   const RONA = [.16, .34, .52, .72, 1];   // campuran --card -> --brand2 -> --brand
   const KOLOM = ["meninggal", "hilang", "luka", "terdampak", "mengungsi", "rr_berat", "rr_sedang", "rr_ringan", "terendam", "f_pendidikan", "f_kantor", "jembatan", "f_umum", "f_ibadah", "f_kesehatan", "lahan_ha"];
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -59,7 +62,7 @@
       if (!kabDaftar.has(prov)) kabDaftar.set(prov, new Map()); kabDaftar.get(prov).set(n, x.kab);
       return {...x, prov, kabN: n, kel: kelompok(x.jenis)};
     });
-    return {d, baris, kabDaftar, kolomAda: new Set(d.kolom || [])};
+    return {d, baris, kabDaftar, provNama, kolomAda: new Set(d.kolom || [])};
   }
 
   function jumlah(baris) {
@@ -92,7 +95,7 @@
     const jepit = t => t < D.d.dari ? D.d.dari : t > D.d.sampai ? D.d.sampai : t;
     const q = TANAM ? new URLSearchParams() : new URLSearchParams(location.search), awalTahun = D.d.sampai.slice(0, 4) + "-01-01";
     const BAKU = {dari: jepit(awalTahun), sampai: D.d.sampai, prov: "", kab: "", jenis: ""};
-    const st = {...BAKU};
+    const st = {...BAKU, ukur: "jumlah", lapis: new Set()};   // ukur: jumlah | per100; lapis: posko, rambu
     const css = getComputedStyle(document.documentElement), kuas = document.createElement("canvas").getContext("2d", {willReadFrequently: true});
     /* token tema berupa oklch, MapLibre hanya paham rgb: warnai satu piksel lalu baca kembali */
     const rgba = n => { kuas.clearRect(0, 0, 1, 1); kuas.fillStyle = css.getPropertyValue(n).trim(); kuas.fillRect(0, 0, 1, 1); return [...kuas.getImageData(0, 0, 1, 1).data]; };
@@ -111,15 +114,17 @@
         if (/^\d{2}\.?\d{2}$/.test(k)) { const kode = k.includes(".") ? k : k.slice(0, 2) + "." + k.slice(2), x = D.baris.find(y => y.kab_kode === kode); st.kab = x ? x.kabN : ""; if (x) st.prov = x.prov; }
         else st.kab = norm(k); }
       if (p.jenis !== undefined) st.jenis = KEL.some(x => x[0] === p.jenis) ? p.jenis : "";
+      if (p.ukur !== undefined) st.ukur = p.ukur === "per100" ? "per100" : "jumlah";
+      if (p.lapis !== undefined) { st.lapis = new Set((p.lapis || []).filter(x => x === "posko" || x === "rambu")); muatLapis(); }
       terap(simpan);
     };
 
     /* ---------- panel Ringkasan (kiri, gaya /lapor/meja) ---------- */
     const elTotal = h("b", {class: "bd-total-n"}), elWil = h("span", {class: "bd-total-wil"}), elBand = h("span", {class: "bd-total-band"}), elAkt = h("span", {class: "bd-total-akt", hidden: true});
-    const kJenis = h("div", {class: "bd-rk-jenis", role: "group", "aria-label": "Saring jenis bencana"}), kPering = h("ol", {class: "bd-rk-kab"}), lPering = h("p", {class: "bd-rk-label"});
+    const kJenis = h("div", {class: "bd-rk-jenis", role: "group", "aria-label": "Saring jenis bencana"}), kPering = h("ol", {class: "bd-rk-kab"}), lPering = h("p", {class: "bd-rk-label"}), kLapis = h("div", {class: "bd-rk-lapis"});
     const ringkas = h("details", {class: "bd-ringkas", open: true}, h("summary", null, ikon("data"), h("span", {teks: "Ringkasan"})),
       h("div", {class: "bd-ringkas-isi"}, h("div", {class: "bd-rk-total"}, h("span", {class: "bd-rk-label", teks: "Jumlah kejadian bencana"}), elTotal, elWil, elBand, elAkt),
-        h("p", {class: "bd-rk-label", teks: "Per jenis bencana"}), kJenis, lPering, kPering));
+        h("p", {class: "bd-rk-label", teks: "Per jenis bencana"}), kJenis, lPering, kPering, kLapis));
 
     /* ---------- kartu Dampak dan Kerusakan (di luar peta; tidak dipakai mode tanam) ---------- */
     const A = {}; const ubin = (...xs) => xs.map(([k, ik, l]) => { const n = h("b"); A[k] = n; return h("div", {class: "bd-ang"}, h("i", null, ikon(ik)), n, h("span", {teks: l})); });
@@ -168,7 +173,14 @@
 
     const jejak = h("nav", {class: "bd-jejak", "aria-label": "Tingkat wilayah"});
     const alat = h("div", {class: "dl-peta-alat bd-alat"}, ...(TANAM ? [] : [h("div", {class: "bd-unduh"}, bUnduh, mUnduh), bFilter]));   // kelas dl-peta-alat: tab Dalops menaruh pemilih jenis bencana di sini
-    const legenda = h("div", {class: "bd-legenda", "aria-label": "Legenda"});
+    /* legenda tengah bawah = skala warna + pengatur ukuran dan lapisan (satu bilah, gaya .mj-legenda) */
+    const lgSkala = h("div", {class: "bd-lg-skala"});
+    const bUkur = [["jumlah", "Jumlah"], ["per100", "Per 100 ribu jiwa"]].map(([k, t]) => { const b = h("button", {type: "button", "data-ukur": k, "aria-pressed": "false", teks: t});
+      b.addEventListener("click", () => { if (st.ukur === k) return; st.ukur = k; terap(false); }); return b; });
+    const bLapis = [["posko", "Posko pengungsian", "tenda"], ["rambu", "Rambu evakuasi", "pin"]].map(([k, t, ik]) => { const b = h("button", {type: "button", "data-lapis": k, "aria-pressed": "false"}, ikon(ik), h("span", {teks: t}));
+      b.addEventListener("click", () => { st.lapis.has(k) ? st.lapis.delete(k) : st.lapis.add(k); muatLapis(); terap(false); }); return b; });
+    const legenda = h("div", {class: "bd-legenda", "aria-label": "Legenda dan lapisan peta"}, lgSkala,
+      h("div", {class: "bd-lg-alat"}, h("div", {class: "bd-seg", role: "group", "aria-label": "Ukuran warna peta"}, ...bUkur), h("hr"), ...bLapis));
     const tip = h("div", {class: "bd-tip", hidden: true, role: "status"});
     const kanvas = h("div", {class: "bd-kanvas"});
     const kotakRinci = h("section", {class: "bd-rinci", hidden: true, "aria-live": "polite"});
@@ -196,6 +208,12 @@
         M.addLayer({id: "w-isi", type: "fill", source: "w", paint: {"fill-color": ["coalesce", ["get", "w"], warna("--surface")], "fill-opacity": ["case", ["boolean", ["feature-state", "sorot"], false], .95, .85]}});
         M.addLayer({id: "w-garis", type: "line", source: "w", paint: {"line-color": ["case", ["boolean", ["feature-state", "sorot"], false], warna("--ink"), warna("--card")], "line-width": ["case", ["boolean", ["feature-state", "sorot"], false], 2, .8]}});
         M.addLayer({id: "w-pilih", type: "line", source: "w", filter: ["==", ["get", "pilih"], 1], paint: {"line-color": warna("--brand-accent"), "line-width": 3}});
+        /* rambu evakuasi IDRIP: garis putus-putus di kab/kota yang tercakup data rambu */
+        M.addLayer({id: "w-rambu", type: "line", source: "w", filter: ["==", ["get", "rambu"], 1], paint: {"line-color": warna("--ok-tx"), "line-width": 2.2, "line-dasharray": [2, 1.4]}});
+        /* posko pengungsian (DIBI): titik oranye, ukuran menurut jiwa */
+        M.addSource("posko", {type: "geojson", data: {type: "FeatureCollection", features: []}});
+        M.addLayer({id: "posko-titik", type: "circle", source: "posko", paint: {"circle-radius": ["interpolate", ["linear"], ["sqrt", ["get", "jiwa"]], 0, 4, 10, 7, 40, 14],
+          "circle-color": warna("--brand-accent"), "circle-opacity": .9, "circle-stroke-color": warna("--card"), "circle-stroke-width": 1.5}});
         /* kejadian masih berlangsung (logbook Dalops): titik merah bercincin di tengah provinsi atau kab, angka = kab/kota */
         M.addSource("akt", {type: "geojson", data: {type: "FeatureCollection", features: []}});
         M.addLayer({id: "akt-cincin", type: "circle", source: "akt", paint: {"circle-radius": ["+", 11, ["*", 2, ["sqrt", ["get", "n"]]]], "circle-color": warna("--bad"), "circle-opacity": .22}});
@@ -204,12 +222,19 @@
           paint: {"text-color": warna("--card")}});
         r(); }));
       const sorot = id => { if (idSorot != null) M.setFeatureState({source: "w", id: idSorot}, {sorot: false}); idSorot = id; if (id != null) M.setFeatureState({source: "w", id}, {sorot: true}); };
-      M.on("mousemove", "w-isi", e => { const f = e.features[0]; if (!f) return; sorot(f.id); M.getCanvas().style.cursor = "pointer";
+      M.on("mousemove", "w-isi", e => { const f = e.features[0]; if (!f || e.originalEvent.bdPosko || M.queryRenderedFeatures(e.point, {layers: ["posko-titik"]}).length) return; sorot(f.id); M.getCanvas().style.cursor = "pointer";
         const p = f.properties, top = JSON.parse(p.top || "[]"), akt = JSON.parse(p.akt || "[]");
-        tip.replaceChildren(h("b", {teks: p.nama}), h("span", {teks: F(p.n) + " kejadian"}), ...top.map(([k, n]) => h("small", {teks: `${namaKel(k)}: ${F(n)}`})),
+        tip.replaceChildren(h("b", {teks: p.nama}), h("span", {teks: F(p.n) + " kejadian"}),
+          ...(st.ukur === "per100" ? [h("span", {teks: p.laju != null ? `${F1(p.laju)} per 100 ribu jiwa` : "Tanpa data penduduk"})] : []),
+          ...top.map(([k, n]) => h("small", {teks: `${namaKel(k)}: ${F(n)}`})),
+          ...(p.rambuTeks ? [h("small", {class: "bd-tip-rambu", teks: p.rambuTeks})] : []),
           ...(akt.length ? [h("span", {class: "bd-tip-akt", teks: "Masih berlangsung: " + akt.join(", ")})] : []));
         tip.hidden = false; tip.style.left = Math.min(e.point.x + 14, peta.clientWidth - 230) + "px"; tip.style.top = (e.point.y + 14) + "px"; });
       M.on("mouseleave", "w-isi", () => { sorot(null); tip.hidden = true; M.getCanvas().style.cursor = ""; });
+      M.on("mousemove", "posko-titik", e => { const p = e.features[0]?.properties; if (!p) return; e.originalEvent.bdPosko = true;
+        tip.replaceChildren(h("b", {teks: p.lokasi || "Posko pengungsian"}), h("span", {teks: `${F(p.jiwa)} jiwa mengungsi`}), h("small", {teks: [p.desa, p.kec, p.kab].filter(Boolean).join(", ")}),
+          h("small", {teks: `Laporan ${p.tgl ? tglPendek(p.tgl) : "tanpa tanggal"}${p.sumber ? ", " + p.sumber : ""}`}));
+        tip.hidden = false; tip.style.left = Math.min(e.point.x + 14, peta.clientWidth - 230) + "px"; tip.style.top = (e.point.y + 14) + "px"; });
       M.on("click", "w-isi", e => { const p = e.features[0]?.properties; if (!p) return;
         if (!st.prov) Object.assign(st, {prov: p.id, kab: ""}); else st.kab = st.kab === p.kode ? "" : p.kode;
         terap(true); });
@@ -217,6 +242,14 @@
 
     /* ---------- gambar peta ---------- */
     const warnaN = (n, tingkat) => { if (!n) return null; let i = 0; for (const [j, b] of BATAS[tingkat].entries()) if (n >= b) i = j; return SKALA[i]; };
+    const warnaL = (v, tingkat) => { if (!v) return null; let i = 0; for (const [j, b] of BATAS_LAJU[tingkat].entries()) if (v >= b) i = j; return SKALA[i]; };
+    const TANPA = campur(cCard, rgba("--ink2"), .32);   // wilayah tanpa data penduduk: abu, bukan nol
+    const perLaju = () => st.ukur === "per100" && PEND;
+    /* nilai warna satu wilayah: jumlah, atau per 100 ribu jiwa bila ukur per100 (null = tanpa data penduduk) */
+    const ukurWil = (n, jiwa, tingkat) => { if (!perLaju()) return {w: warnaN(n, tingkat), laju: null};
+      if (!jiwa) return {w: TANPA, laju: null}; const laju = n / jiwa * 1e5; return {w: warnaL(laju, tingkat), laju}; };
+    const teksRambu = (k, nama) => { if (!st.lapis.has("rambu") || !RAMBU?.size) return null; const a = RAMBU.get(k);
+      return a ? `Rambu evakuasi IDRIP ${RAMBU.tahun}: ${F(a.n)}` : `${nama}: tidak tercakup data rambu IDRIP`; };
     const ringkasAkt = (xs, perKab) => { const m = new Map(); for (const x of xs) { const a = m.get(x.kata) || new Set(); a.add(perKab ? x.mulai : x.kabN); m.set(x.kata, a); }
       return [...m].map(([k, v]) => perKab ? `${k} sejak ${tglPendek([...v].sort()[0])}` : `${k} di ${F(v.size)} kab/kota`); };
     let tingkatGeo = null;
@@ -230,33 +263,63 @@
       if (!st.prov) {
         const g = await ambil("/geo/provinsi.json"), per = hitung(x => x.prov), ak = kel(x => x.prov, akt);
         g.features.forEach(f => { const k = f.properties.kode, a = per.get(k) || {n: 0, kel: {}}, xa = ak.get(k) || [];
-          fitur.push({type: "Feature", properties: {id: k, kode: k, nama: PROV[k] || k, n: a.n, w: warnaN(a.n, tingkat), top: top(a), akt: JSON.stringify(ringkasAkt(xa, false))}, geometry: f.geometry});
+          const u = ukurWil(a.n, PEND?.prov.get(k), tingkat);
+          let rambuTeks = null; if (st.lapis.has("rambu") && RAMBU?.size) { const xs = [...RAMBU].filter(([kk]) => kk.startsWith(k + "|")); rambuTeks = xs.length ? `Rambu evakuasi IDRIP ${RAMBU.tahun}: ${F(xs.reduce((t, [, v]) => t + v.n, 0))} di ${F(xs.length)} kab/kota` : "Tidak tercakup data rambu IDRIP"; }
+          fitur.push({type: "Feature", properties: {id: k, kode: k, nama: PROV[k] || k, n: a.n, w: u.w, laju: u.laju, rambuTeks, top: top(a), akt: JSON.stringify(ringkasAkt(xa, false))}, geometry: f.geometry});
           if (xa.length) titik.push({type: "Feature", properties: {n: new Set(xa.map(x => x.kabN)).size}, geometry: {type: "Point", coordinates: pusat(f.geometry)}}); });
       } else {
         let g; try { g = await ambil(`/geo/kabupaten/${st.prov}.json`); } catch (e) { g = {features: []}; }
         const per = hitung(x => x.kabN), ak = kel(x => x.kabN, akt);
         g.features.forEach((f, i) => { const kn = norm(f.properties.kab), a = per.get(kn) || {n: 0, kel: {}}, xa = ak.get(kn) || [];
-          fitur.push({type: "Feature", properties: {id: st.prov + "-" + i, kode: kn, nama: f.properties.kab, n: a.n, w: warnaN(a.n, tingkat), pilih: st.kab === kn ? 1 : 0, top: top(a), akt: JSON.stringify(ringkasAkt(xa, true))}, geometry: f.geometry});
+          const u = ukurWil(a.n, PEND?.kab.get(st.prov + "|" + kn), tingkat), rk = st.prov + "|" + kn;
+          fitur.push({type: "Feature", properties: {id: st.prov + "-" + i, kode: kn, nama: f.properties.kab, n: a.n, w: u.w, laju: u.laju, pilih: st.kab === kn ? 1 : 0,
+            rambu: st.lapis.has("rambu") && RAMBU?.has(rk) ? 1 : 0, rambuTeks: teksRambu(rk, f.properties.kab), top: top(a), akt: JSON.stringify(ringkasAkt(xa, true))}, geometry: f.geometry});
           if (xa.length) titik.push({type: "Feature", properties: {n: 1}, geometry: {type: "Point", coordinates: pusat(f.geometry)}}); });
       }
       M.getSource("w").setData({type: "FeatureCollection", features: fitur});
       M.getSource("akt").setData({type: "FeatureCollection", features: titik});
+      const pos = st.lapis.has("posko") && Array.isArray(POSKO) ? POSKO.filter(x => !st.prov || x.prov === st.prov) : [];
+      M.getSource("posko").setData({type: "FeatureCollection", features: pos.map(x => ({type: "Feature", properties: {jiwa: x.jiwa || 0, lokasi: x.lokasi, desa: x.desa, kec: x.kec, kab: x.kab, tgl: x.tgl, sumber: x.sumber}, geometry: {type: "Point", coordinates: [x.lng, x.lat]}}))});
       const kunci = st.prov || "id";
       if (kunci !== tingkatGeo) { tingkatGeo = kunci;
         if (!st.prov) bingkai([[94.8, -11.2], [141.2, 6.2]]);
         else if (fitur.length) { const b = tengah({coordinates: fitur.map(f => f.geometry.coordinates)}); if (b[0][0] < b[1][0]) bingkai(b); } }
     }
     function gambarLegenda() {
-      const b = BATAS[st.prov ? "kab" : "prov"];
-      legenda.replaceChildren(h("b", {teks: st.prov ? "Kejadian per kab/kota" : "Kejadian per provinsi"}), h("span", {class: "bd-lg-kotak bd-lg-nol"}, h("i"), "0"),
-        ...b.map((x, i) => { const s = h("span", {class: "bd-lg-kotak"}, h("i"), i === b.length - 1 ? `${F(x)} ke atas` : x === b[i + 1] - 1 ? F(x) : `${F(x)}–${F(b[i + 1] - 1)}`); s.querySelector("i").style.background = SKALA[i]; return s; }),
-        ...(opsi.aktif ? [h("hr"), h("span", {class: "bd-lg-akt"}, h("i"), "Masih berlangsung")] : []));
+      const tk = st.prov ? "kab" : "prov", laju = perLaju(), b = laju ? BATAS_LAJU[tk] : BATAS[tk], kotak = (teks, warnaKotak, kls) => { const s = h("span", {class: "bd-lg-kotak" + (kls ? " " + kls : "")}, h("i"), teks); if (warnaKotak) s.querySelector("i").style.background = warnaKotak; return s; };
+      const label = (x, i) => laju ? (i === 0 ? `di bawah ${F1(b[1])}` : i === b.length - 1 ? `${F1(x)} ke atas` : `${F1(x)}–${F1(b[i + 1])}`)
+        : (i === b.length - 1 ? `${F(x)} ke atas` : x === b[i + 1] - 1 ? F(x) : `${F(x)}–${F(b[i + 1] - 1)}`);
+      lgSkala.replaceChildren(h("b", {teks: (laju ? "Kejadian per 100 ribu jiwa, " : "Kejadian per ") + (st.prov ? "kab/kota" : "provinsi")}), kotak("0", null, "bd-lg-nol"), ...b.map((x, i) => kotak(label(x, i), SKALA[i])),
+        ...(laju ? [kotak("Tanpa data penduduk", TANPA)] : []),
+        ...(opsi.aktif ? [h("span", {class: "bd-lg-akt"}, h("i"), "Masih berlangsung")] : []),
+        ...(st.lapis.has("posko") ? [h("span", {class: "bd-lg-posko"}, h("i"), "Posko, besar = jiwa")] : []),
+        ...(st.lapis.has("rambu") ? [h("span", {class: "bd-lg-rambu"}, h("i"), "Tercakup data rambu IDRIP")] : []));
+      bUkur.forEach(x => x.setAttribute("aria-pressed", String(x.dataset.ukur === st.ukur)));
+      bUkur[1].disabled = !PEND; bUkur[1].title = PEND ? "" : "Data penduduk belum termuat";
+      bLapis.forEach(x => x.setAttribute("aria-pressed", String(st.lapis.has(x.dataset.lapis))));
     }
 
     /* ---------- data yang datang belakangan: logbook aktif (staf) dan tren bulanan (banding) ---------- */
     let AKT = [], TREN = null;
     if (opsi.aktif) opsi.aktif().then(xs => { AKT = (xs || []).filter(x => (x.kab_kode || "").includes("|")).map(x => { const [pv, nm] = x.kab_kode.split("|"); return {...x, prov: pv, kabN: norm(nm), namaKab: nm}; }); terap(false); }).catch(() => {});
-    ambil("/data/dibi_tren.json").then(t => { TREN = t; terap(false); }).catch(() => {});
+    ambil("/data/dibi_tren.json").then(t => { TREN = t; siapPend(); terap(false); }).catch(() => {});
+    /* penduduk (IRBI BNPB lewat dibi_tren.json): null = tidak ada, tidak pernah 0; provinsi = jumlah kab berpenduduk */
+    let PEND = null;
+    function siapPend() { if (PEND || !Array.isArray(TREN?.penduduk)) return; PEND = {kab: new Map(), prov: new Map()};
+      TREN.kab.forEach(([, pv, nm], i) => { const v = TREN.penduduk[i]; if (v == null) return; PEND.kab.set(pv + "|" + norm(nm), v); PEND.prov.set(pv, (PEND.prov.get(pv) || 0) + v); }); }
+    /* lapisan posko dan rambu dimuat saat pertama dinyalakan */
+    let POSKO = null, RAMBU = null;
+    const provDariNama = Object.fromEntries([...Object.entries(PROV).map(([k, v]) => [norm(v), k]), ["daerahistimewayogyakarta", "34"], ["dkijakarta", "31"]]);
+    const kabKunci = (pv, nm) => { const n = norm(nm); return pv + "|" + (D.provNama.has(n) || !D.provNama.has("kota" + n) ? n : "kota" + n); };
+    function muatLapis() {
+      if (st.lapis.has("posko") && !POSKO) { POSKO = []; ambil("/data/dibi_posko.json").then(d => { const K = d.kolom, i = Object.fromEntries(K.map((k, j) => [k, j]));
+        POSKO = d.posko.filter(x => x[i.lat] != null && x[i.lng] != null).map(x => { const n = norm(x[i.kab]), pv = (D.provNama.get(n) || [])[0] || "";
+          return {prov: pv, kabN: n, kab: x[i.kab], kec: x[i.kec], desa: x[i.desa], lokasi: x[i.lokasi], jiwa: x[i.jumlah], lat: x[i.lat], lng: x[i.lng], tgl: x[i.sumber_tgl], sumber: x[i.sumber]}; });
+        POSKO.tanpaTitik = d.posko.length - POSKO.length; terap(false); }).catch(() => { POSKO = null; }); }
+      if (st.lapis.has("rambu") && !RAMBU) { RAMBU = new Map(); ambil("/data/dibi_rambu.json").then(d => { const K = d.kolom, i = Object.fromEntries(K.map((k, j) => [k, j])), m = new Map();
+        for (const x of d.rambu) { const pv = provDariNama[norm(x[i.provinsi])]; if (!pv) continue; const k = kabKunci(pv, x[i.kab]), a = m.get(k) || {n: 0, jenis: {}}; a.n += x[i.jumlah] || 0; const j = d.jenis[x[i.jenis]] || "Lainnya"; a.jenis[j] = (a.jenis[j] || 0) + (x[i.jumlah] || 0); m.set(k, a); }
+        RAMBU = m; RAMBU.tahun = (d.catatan.match(/IDRIP (\d{4})/) || [])[1] || ""; terap(false); }).catch(() => { RAMBU = null; }); }
+    }
     const diWil = x => (!st.prov || x.prov === st.prov) && (!st.kab || x.kabN === st.kab);
 
     /* banding periode sama tahun lalu: bulan penuh di dalam rentang, sumber bulan_prov (DIBI is_bencana) supaya kedua tahun sebanding */
@@ -392,14 +455,28 @@
         return b; }));
       kJenis.classList.toggle("bd-saring", !!st.jenis);
       const perWil = new Map(); for (const x of rows) { if (x.bencana === 0) continue; const k = st.prov ? x.kabN : x.prov; perWil.set(k, (perWil.get(k) || 0) + x.kejadian); }
-      const atas = [...perWil].sort((a, b) => b[1] - a[1]).slice(0, 8), maks = atas[0]?.[1] || 1;
-      lPering.textContent = st.prov ? "Kab/kota terbanyak" : "Provinsi terbanyak";
+      const laju = perLaju(), jiwaWil = k => st.prov ? PEND?.kab.get(st.prov + "|" + k) : PEND?.prov.get(k);
+      const nilai = laju ? [...perWil].filter(([k]) => jiwaWil(k)).map(([k, n]) => [k, n / jiwaWil(k) * 1e5]) : [...perWil];
+      const atas = nilai.sort((a, b) => b[1] - a[1]).slice(0, 8), maks = atas[0]?.[1] || 1;
+      lPering.textContent = (st.prov ? "Kab/kota" : "Provinsi") + (laju ? " tertinggi per 100 ribu jiwa" : " terbanyak");
       kPering.replaceChildren(...atas.map(([k, n], i) => { const nama = st.prov ? D.kabDaftar.get(st.prov)?.get(k) || k : PROV[k] || k;
-        const b = h("button", {type: "button", "aria-pressed": String(st.kab === k)}, h("i"), h("em", {teks: String(i + 1)}), h("span", {teks: nama}), h("b", {teks: F(n)}));
+        const b = h("button", {type: "button", "aria-pressed": String(st.kab === k)}, h("i"), h("em", {teks: String(i + 1)}), h("span", {teks: nama}), h("b", {teks: laju ? F1(n) : F(n)}));
         b.querySelector("i").style.inlineSize = Math.round(n / maks * 100) + "%";
         b.addEventListener("click", () => { if (st.prov) st.kab = st.kab === k ? "" : k; else Object.assign(st, {prov: k, kab: ""}); terap(true); });
         return h("li", null, b); }));
       if (!atas.length) kPering.replaceChildren(h("li", {class: "bd-kosong", teks: "Tidak ada kejadian pada saringan ini."}));
+      /* posko dan rambu di panel Ringkasan; rambu: kab rawan lawan cakupan data IDRIP, "tidak tercakup" bukan "nol" */
+      const isiLapis = [];
+      if (st.lapis.has("posko") && Array.isArray(POSKO)) { const ps = POSKO.filter(x => (!st.prov || x.prov === st.prov) && (!st.kab || x.kabN === st.kab));
+        isiLapis.push(h("p", {class: "bd-rk-label", teks: "Posko pengungsian (DIBI)"}), h("div", {class: "bd-rk-mini"}, h("span", null, h("b", {teks: F(ps.length)}), h("small", {teks: "lokasi"})), h("span", null, h("b", {teks: F(ps.reduce((t, x) => t + (x.jiwa || 0), 0))}), h("small", {teks: "jiwa"}))),
+          ...(POSKO.tanpaTitik && !st.prov ? [h("p", {class: "bd-catat", teks: `${F(POSKO.tanpaTitik)} posko tanpa koordinat tidak tampil di peta.`})] : [])); }
+      if (st.lapis.has("rambu") && RAMBU?.size) {
+        const kabRawan = new Map(); for (const x of rows) { if (x.bencana === 0 || (st.prov && x.prov !== st.prov)) continue; const k = x.prov + "|" + x.kabN; kabRawan.set(k, (kabRawan.get(k) || 0) + x.kejadian); }
+        const daftar = [...kabRawan].sort((a, b) => b[1] - a[1]).slice(0, 8);
+        isiLapis.push(h("p", {class: "bd-rk-label", teks: "Kab/kota rawan dan rambu evakuasi"}), h("ul", {class: "bd-rk-rambu"}, ...daftar.map(([k, n]) => { const [pv, kn] = k.split("|"), a = RAMBU.get(k);
+          return h("li", {class: a ? "" : "bd-luar"}, h("span", {teks: D.kabDaftar.get(pv)?.get(kn) || kn}), h("small", {teks: `${F(n)} kejadian`}), h("b", {teks: a ? `${F(a.n)} rambu` : "di luar data"})); })),
+          h("p", {class: "bd-catat", teks: `Data rambu hanya mencakup ${F(RAMBU.size)} kab/kota program IDRIP ${RAMBU.tahun}. "Di luar data" berarti belum terdata, bukan tidak ada rambu.`})); }
+      kLapis.replaceChildren(...isiLapis);
 
       /* kartu Dampak dan Kerusakan; kolom yang tidak ada di data tampil "–" */
       elPer.textContent = periode;
@@ -429,12 +506,12 @@
       gambar(rows, akt);
       gambarRinci(kabNama, s);
       gambarBelum();
-      opsi.ubah?.({st: {...st}, per, s, kolomAda: [...D.kolomAda], kabNama, banding: bd});
+      opsi.ubah?.({st: {...st, lapis: [...st.lapis]}, per, s, kolomAda: [...D.kolomAda], kabNama, banding: bd});
     }
 
     if (TANAM) terap(false);
     else atur({dari: q.get("dari") ?? undefined, sampai: q.get("sampai") ?? undefined, prov: q.get("prov") ?? undefined, kab: q.get("kab") ?? undefined}, false);
-    return {segar: () => M?.resize(), atur: p => atur(p, false), keadaan: () => ({...st})};
+    return {segar: () => M?.resize(), atur: p => atur(p, false), keadaan: () => ({...st, lapis: [...st.lapis]})};
   }
 
   window.DataBencana = {pasang, kelompok, norm, KEL: KEL.map(([k, t, ik, w]) => ({k, nama: t, ikon: ik, warna: w}))};

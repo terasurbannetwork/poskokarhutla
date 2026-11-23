@@ -65,11 +65,11 @@
     /* penanganan dari dataset DIBI lain (scripts/umum/dibi_lain.py): tiap baris diberi kode kab BPS 4 digit dan kode prov */
     const kabDariNama = (nama, prov) => { const cal = kabNama.get(norm(nama)) || []; const i = cal.find(j => !prov || T.kab[j][1] === prov) ?? cal[0]; return i == null ? "" : T.kab[i][0]; };
     const PNAMA = new Map(Object.entries(window.Wilayah.PROV).map(([k, v]) => [norm(v), k]));
-    const darurat = (SD?.sk || []).filter(x => x.aktif).map(x => ({kab: x.kab_bps || "", prov: x.prov_kode || "", status: x.status}));
+    const darurat = (SD?.sk || []).filter(x => x.aktif).map(x => ({kab: x.kab_bps || "", prov: x.prov_kode || "", status: x.status, nomor: x.nomor, jenis: (x.jenis || []).join(", "), mulai: x.mulai, berakhir: x.berakhir}));
     const KP = Object.fromEntries((PK?.kolom || []).map((k, i) => [k, i]));
-    const posko = (PK?.posko || []).map(r => { const kd = String(r[KP.id_desa_sdi] || "").split(".").slice(0, 2).join(""); return {kab: kd, prov: kd.slice(0, 2), jiwa: r[KP.jumlah] || 0}; });
+    const posko = (PK?.posko || []).map(r => { const kd = String(r[KP.id_desa_sdi] || "").split(".").slice(0, 2).join(""); return {kab: kd, prov: kd.slice(0, 2), jiwa: r[KP.jumlah] || 0, lokasi: r[KP.lokasi], desa: r[KP.desa], kec: r[KP.kec], tgl: r[KP.sumber_tgl]}; });
     const KR = Object.fromEntries((RB?.kolom || []).map((k, i) => [k, i]));
-    const rambu = (RB?.rambu || []).map(r => { const prov = PNAMA.get(norm(r[KR.provinsi])) || ""; return {prov, kab: kabDariNama(r[KR.kab], prov), n: r[KR.jumlah] || 0}; });
+    const rambu = (RB?.rambu || []).map(r => { const prov = PNAMA.get(norm(r[KR.provinsi])) || ""; return {prov, kab: kabDariNama(r[KR.kab], prov), n: r[KR.jumlah] || 0, jenis: (RB.jenis || [])[r[KR.jenis]] ?? r[KR.jenis]}; });
     return {T, C, CB, harian, tahun, dariH: H?.dari, sampaiH: H?.sampai, darurat, posko, rambu, ada: {darurat: !!SD, posko: !!PK, rambu: !!RB}};
   }
 
@@ -89,6 +89,7 @@
       tab: "tren", korban: "mdh", rumah: "rumah", sebar: "kejadian", hari: "kejadian", per100: false};
     /* tautan wilayah: ?prov=32&kab=32.01&dari=2015&sampai=2025&kat=0,3 (indeks kategori di dibi_tren.json) */
     const angkaQ = n => { const v = parseInt(q.get(n), 10); return D.tahun.includes(v) ? v : null; };
+    if (q.get("tab")) st.tabAwal = q.get("tab");
     if (angkaQ("dari")) st.dari = angkaQ("dari"); if (angkaQ("sampai")) st.sampai = angkaQ("sampai"); if (st.dari > st.sampai) st.sampai = st.dari;
     if (q.get("kat")) { const k = new Set(q.get("kat").split(",").map(Number).filter(i => T.kategori[i]).map(i => T.kategori[i])); if (k.size) st.kat = k; }
     if (st.kab >= 0) st.prov = T.kab[st.kab][1]; else st.kab = -1;
@@ -105,7 +106,7 @@
 
     /* ---------- kerangka ---------- */
     const DAS = !!awal.dasbor;   /* halaman berdiri: kerangka dasbor gaya /lapor/meja (sidebar kiri, bilah atas, Ringkasan kanan) */
-    if (DAS) st.tab = "peta";
+    if (DAS) st.tab = ["peta", "tren", "sebaran", "tabel", "profil"].includes(st.tabAwal) ? st.tabAwal : "peta";
     const status = h("p", {class: "dt-sr", role: "status"});
     const tip = h("div", {class: "dt-tip", hidden: true, role: "tooltip"});
     const wilNama = () => st.kab >= 0 ? T.kab[st.kab][2] : st.prov ? PROV[st.prov] || st.prov : "Indonesia";
@@ -143,7 +144,7 @@
         h("div", {class: "dt-f-isi dt-f-ulang"}, bUlang)));
 
     // tab (focusgroup bila didukung; panah kiri/kanan dipasang sendiri sebagai cadangan)
-    const TAB = [...(DAS ? [["peta", "Peta", "wilayah"]] : []), ["tren", "Tren", "data"], ["sebaran", "Sebaran", "akses"], ["tabel", "Tabel", "daftar"]];
+    const TAB = [...(DAS ? [["peta", "Peta", "wilayah"]] : []), ["tren", "Tren", "data"], ["sebaran", "Sebaran", "akses"], ["tabel", "Tabel", "daftar"], ...(DAS ? [["profil", "Profil kab/kota", "rumah"]] : [])];
     const tabB = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: DAS ? "db-nav" : null, id: "dtTab-" + k, "aria-selected": String(k === st.tab), tabindex: k === st.tab ? "0" : "-1"}, ikon(ik), h("span", {teks: t})));
     const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {role: "tabpanel", id: "dtPanel-" + k, "aria-labelledby": "dtTab-" + k, hidden: k !== st.tab || null, class: "dt-panel"})]));
     const tabList = h("div", {class: DAS ? "db-tabs" : "dt-tabs", role: "tablist", "aria-label": "Tampilan data DIBI", "aria-orientation": DAS ? "vertical" : null}, tabB);
@@ -159,6 +160,7 @@
       set("prov", st.prov); set("kab", st.kab >= 0 ? T.kab[st.kab][0].replace(/^(\d\d)(\d\d)$/, "$1.$2") : "");
       set("dari", st.dari !== Math.max(thAwal, 2008) ? st.dari : ""); set("sampai", st.sampai !== thAkhir ? st.sampai : "");
       const bawaan = alam(), sama = bawaan.size === st.kat.size && [...bawaan].every(k => st.kat.has(k));
+      set("tab", DAS && st.tab !== "peta" ? st.tab : "");
       set("kat", sama ? "" : [...st.kat].map(k => idxKat.get(k)).sort((a, b) => a - b).join(",")); return u; };
     const bBagi = h("button", {type: "button", class: "dt-btn-teks"}, ikon("akses"), h("span", {teks: "Bagikan tautan wilayah ini"}));
     const bCetak = h("button", {type: "button", class: "dt-btn-teks"}, ikon("daftar"), h("span", {teks: "Cetak A4"}));
@@ -167,7 +169,7 @@
         await navigator.clipboard.writeText(u); status.textContent = "Tautan disalin"; bBagi.lastChild.textContent = "Tautan disalin";
         setTimeout(() => (bBagi.lastChild.textContent = "Bagikan tautan wilayah ini"), 2500);
       } catch (e) { if (e.name !== "AbortError") prompt("Salin tautan ini:", u); } });
-    const judulWil = h("span", {class: "dt-wil"}); let segarPeriode = () => {}, kirimPeta = () => {}, infoPeta = null;
+    const judulWil = h("span", {class: "dt-wil"}); let segarPeriode = () => {}, kirimPeta = () => {}, infoPeta = null, cetakProfil = () => {};
     /* tab Peta: data peta hanya 365 hari terakhir, jadi bilah atas menulis periode yang benar-benar dipakai peta */
     const judulPeta = () => { const a = infoPeta?.st; judulWil.textContent = a?.dari ? `${wilNama()}, ${tglPanjang(a.dari)} sampai ${tglPanjang(a.sampai)}` : `${wilNama()}, 365 hari terakhir`; };
     const sumberCetak = h("p", {class: "dt-cetak-saja", teks: `Sumber: DIBI BNPB (dibi.bnpb.go.id), hanya kejadian yang memenuhi ambang bencana. Diunduh ${tglPanjang(T.dibuat.slice(0, 10))}.`});
@@ -178,8 +180,10 @@
       kirimPeta = () => { if (!kendali || dariPeta) return; const satu = st.kat.size === 1 ? kat([...st.kat][0])[1] : "";
         kendali.atur({dari: String(st.dari), sampai: String(st.sampai), prov: st.prov, kab: st.kab >= 0 ? T.kab[st.kab][0].replace(/^(\d\d)(\d\d)$/, "$1.$2") : "", jenis: satu}); };
       const terimaPeta = info => { infoPeta = info; if (st.tab === "peta") judulPeta();
-        const p = info?.st?.prov || "", kb = String(info?.st?.kab || "").replace(".", "");
-        const i = kb ? T.kab.findIndex(k => k[0] === kb) : -1; if (p === st.prov && i === st.kab) return;
+        if (!kendali) return;   /* laporan awal peta (sebelum atur() pertama) tidak boleh menimpa wilayah dari tautan */
+        const p = info?.st?.prov || "", kbm = String(info?.st?.kab || ""), kb = kbm.replace(".", "");
+        /* peta bisa melapor kab sebagai kode BPS ("33.25") atau nama; cocokkan keduanya */
+        const i = !kbm ? -1 : /^\d{4}$/.test(kb) ? T.kab.findIndex(k => k[0] === kb) : T.kab.findIndex(k => (!p || k[1] === p) && norm(k[2]) === norm(kbm)); if (p === st.prov && i === st.kab) return;
         st.prov = p; st.kab = i; sProv.value = p; isiKab(); sKab.value = i; dariPeta = true; gambar(); nanti(() => (dariPeta = false)); };
       if (window.DataBencana) Promise.resolve(window.DataBencana.pasang(petaEl, {tanam: true, ubah: terimaPeta})).then(k => { if (k?.atur) { kendali = k; kirimPeta(); } }).catch(() => {});
       const PERIODE = [[5, "5 tahun"], [10, "10 tahun"], [0, "Sejak 2008"], [1, "Tahun ini"]];
@@ -359,14 +363,14 @@
     }
 
     /* bulan rawan: pola bulanan tiap jenis, tahun final saja (tanpa tahun sementara). Per kab/kota dari musim_kab bila ada, selain itu per provinsi. */
-    function trenMusim() {
+    function trenMusim(wadah = bTren.musim, ket = bTren.musimKet) {
       const per = new Map(), tambah = (ki, i, v) => { if (!per.has(ki)) per.set(ki, Array(12).fill(0)); per.get(ki)[i] += v; };
       const tingkatKab = st.kab >= 0 && T.musim_kab, akhirFinal = T.sementara - 1;
       if (tingkatKab) { const c0 = 2; for (const r of T.musim_kab) if (r[0] === st.kab) for (let i = 0; i < 12; i++) tambah(r[1], i, r[c0 + i] || 0); }
       else for (const r of T.bulan_prov) { const th = Math.floor(r[0] / 100); if (th >= T.sementara || (st.prov && r[2] !== st.prov)) continue; tambah(r[1], r[0] % 100 - 1, r[CB.kejadian]); }
-      bTren.musimKet.textContent = `Pola ${D.tahun[0]} sampai ${akhirFinal}, ${tingkatKab ? T.kab[st.kab][2] : st.prov ? PROV[st.prov] || st.prov : "Indonesia"}`;
+      ket.textContent = `Pola ${D.tahun[0]} sampai ${akhirFinal}, ${tingkatKab ? T.kab[st.kab][2] : st.prov ? PROV[st.prov] || st.prov : "Indonesia"}`;
       const baris = kategoriAda.filter(k => st.kat.has(k) && per.has(idxKat.get(k))).map(k => ({k, n: per.get(idxKat.get(k))})).map(x => ({...x, jml: x.n.reduce((a, b) => a + b, 0)})).filter(x => x.jml).sort((a, b) => b.jml - a.jml);
-      if (!baris.length) { bTren.musim.replaceChildren(h("p", {class: "dt-catatan", teks: "Belum ada kejadian tercatat untuk saringan ini."})); return; }
+      if (!baris.length) { wadah.replaceChildren(h("p", {class: "dt-catatan", teks: "Belum ada kejadian tercatat untuk saringan ini."})); return; }
       const kisi = h("div", {class: "dt-kal dt-musim", role: "grid", "aria-label": "Bulan rawan per jenis bencana"},
         h("div", {class: "dt-kal-baris dt-kal-kepala", role: "row"}, h("span", {role: "columnheader", teks: "Jenis"}), BLN.map(b => h("span", {role: "columnheader", teks: b})), h("span", {role: "columnheader", teks: "Puncak"})),
         baris.map(({k, n, jml}) => { const maks = Math.max(...n), puncak = n.map((v, i) => v === maks ? BLN[i] : null).filter(Boolean);
@@ -374,7 +378,7 @@
             n.map((v, i) => { const p = v / jml * 100, c = h("span", {role: "gridcell", class: "dt-kal-sel" + (v === maks ? " dt-puncak" : ""), "data-tingkat": v ? String(Math.min(5, Math.ceil(v / maks * 5))) : "0", teks: v ? (p < 1 ? "<1%" : F(Math.round(p)) + "%") : ""});
               ikat(c, () => barisTip(`${kat(k)[0]}, ${BLN_PANJANG[i]}`, [[null, "Kejadian", F(v)], [null, "Bagian dari setahun", F(Math.round(p * 10) / 10) + "%"]]), `${kat(k)[0]} ${BLN_PANJANG[i]}: ${F(Math.round(p))} persen`); c.setAttribute("role", "gridcell"); return c; }),
             h("span", {role: "gridcell", class: "dt-kal-jml", title: `${F(jml)} kejadian`, teks: jml < 12 ? "data sedikit" : puncak.join(", ")})); }));
-      bTren.musim.replaceChildren(h("div", {class: "dt-gulir", tabindex: "0", role: "region", "aria-label": "Tabel bulan rawan"}, kisi),
+      wadah.replaceChildren(h("div", {class: "dt-gulir", tabindex: "0", role: "region", "aria-label": "Tabel bulan rawan"}, kisi),
         st.kab >= 0 && !T.musim_kab ? h("p", {class: "dt-catatan", teks: `Pola bulanan per kabupaten/kota belum tersedia. Yang tampil: ${PROV[st.prov] || st.prov}.`}) : "");
     }
 
@@ -511,15 +515,54 @@
     unduhDaftar.addEventListener("click", () => csv(`kejadian-dibi-${D.dariH}-${D.sampaiH}.csv`, KOL_DAFTAR.map(c => c[1]), (bTab.semua || []).map(x => KOL_DAFTAR.map(([k]) => x[k] ?? ""))));
 
     /* ---------- gambar ---------- */
+    /* ---------- Profil satu kab/kota untuk BPBD (satu halaman A4): angka, tren, bulan rawan, kejadian terakhir, penanganan ---------- */
+    const bPro = {isi: h("div", {class: "db-profil"})};
+    if (panel.profil) panel.profil.append(bPro.isi);
+    function gambarProfil() {
+      if (!panel.profil) return;
+      if (st.kab < 0) { bPro.isi.replaceChildren(h("div", {class: "dt-kartu db-profil-kosong"}, ikon("rumah"), h("p", {teks: "Pilih kabupaten/kota di sidebar, atau klik wilayahnya di peta, untuk melihat profilnya."}))); return; }
+      const kb = T.kab[st.kab], kode = kb[0], pend = T.penduduk?.[st.kab], nTh = st.sampai - st.dari + 1, kej = total("kejadian");
+      const angka = [["Kejadian", F(Math.round(kej))], ["Rata-rata per tahun", F(Math.round(kej / nTh * 10) / 10)],
+        ["Per 100 ribu penduduk per tahun", pend ? F(Math.round(kej / nTh / pend * 1e5 * 100) / 100) : "–"], ["Meninggal dan hilang", F(Math.round(total("mdh")))],
+        ["Menderita dan mengungsi", ringkas(total("terdampak"))], ["Rumah rusak", F(Math.round(total("rumah")))]];
+      const grafik = h("div", {class: "dt-grafik db-profil-grafik"}), musim = h("div"), musimKet = h("span", {class: "dt-pil dt-pil-netral"});
+      const terakhir = D.harian.filter(x => x.i === st.kab).sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 8);
+      const darurat = D.darurat.filter(x => x.kab === kode), posko = D.posko.filter(x => x.kab === kode), rambu = D.rambu.filter(x => x.kab === kode);
+      const perRambu = new Map(); rambu.forEach(x => perRambu.set(x.jenis, (perRambu.get(x.jenis) || 0) + x.n));
+      const bagi = h("button", {type: "button", class: "dt-btn-teks"}, ikon("akses"), h("span", {teks: "Bagikan tautan profil"})), cetak = h("button", {type: "button", class: "dt-btn-teks"}, ikon("daftar"), h("span", {teks: "Cetak A4"}));
+      bagi.addEventListener("click", () => bBagi.click()); cetak.addEventListener("click", () => cetakProfil());
+      const daftar = (kosong, baris) => baris.length ? h("ul", {class: "db-pf-daftar"}, baris) : h("p", {class: "dt-catatan", teks: kosong});
+      bPro.isi.replaceChildren(
+        h("header", {class: "db-pf-kepala"}, h("div", {}, h("h2", {teks: kb[2]}), h("p", {teks: `${PROV[kb[1]] || kb[1]}${pend ? `, penduduk ${F(pend)} jiwa` : ""}, ${st.dari} sampai ${st.sampai}`})), h("div", {class: "dt-aksi"}, bagi, cetak)),
+        h("div", {class: "db-pf-angka"}, angka.map(([l, v]) => h("div", {}, h("b", {teks: v}), h("span", {teks: l})))),
+        kartu("data", "Kejadian per tahun", null, grafik),
+        kartu("cuaca", "Bulan rawan per jenis bencana", musimKet, musim),
+        h("div", {class: "dt-dua"},
+          kartu("kalender", "Kejadian terakhir", null, daftar("Belum ada kejadian tercatat dalam 365 hari terakhir.", terakhir.map(x => h("li", {}, h("b", {teks: tglPanjang(x.tanggal)}), h("span", {teks: x.jenis}),
+            h("small", {teks: [x.meninggal ? `${F(x.meninggal)} meninggal` : "", x.mengungsi ? `${F(x.mengungsi)} mengungsi` : "", (x.rr_berat || 0) + (x.rr_sedang || 0) + (x.rr_ringan || 0) ? `${F((x.rr_berat || 0) + (x.rr_sedang || 0) + (x.rr_ringan || 0))} rumah rusak` : ""].filter(Boolean).join(", ")}))))),
+          kartu("tenda", "Status darurat aktif", null, !D.ada.darurat ? h("p", {class: "dt-catatan", teks: "Data status darurat DIBI belum tersedia."}) :
+            daftar("Tidak ada status darurat aktif yang tercatat di DIBI.", darurat.map(x => h("li", {}, h("b", {teks: x.status}), h("span", {teks: x.jenis}), h("small", {teks: `${x.nomor || ""}, ${tglPanjang(x.mulai)} sampai ${tglPanjang(x.berakhir)}`})))))),
+        h("div", {class: "dt-dua"},
+          kartu("ungsi", "Posko pengungsian", null, !D.ada.posko ? h("p", {class: "dt-catatan", teks: "Data posko DIBI belum tersedia."}) :
+            daftar("Tidak ada posko pengungsian yang tercatat di DIBI.", posko.sort((a, b) => b.jiwa - a.jiwa).slice(0, 10).map(x => h("li", {}, h("b", {teks: `${F(x.jiwa)} jiwa`}), h("span", {teks: x.lokasi || x.desa || "Posko"}), h("small", {teks: [x.desa, x.kec, x.tgl ? tglPanjang(x.tgl) : ""].filter(Boolean).join(", ")}))))),
+          kartu("akses", "Rambu evakuasi IDRIP", null, !D.ada.rambu ? h("p", {class: "dt-catatan", teks: "Data rambu DIBI belum tersedia."}) :
+            rambu.length ? daftar("", [...perRambu].sort((a, b) => b[1] - a[1]).map(([j, n]) => h("li", {}, h("b", {teks: F(n)}), h("span", {teks: String(j)}))))
+              : h("p", {class: "dt-catatan", teks: "Kab/kota ini tidak ada di data rambu IDRIP. Data IDRIP hanya mencakup kab/kota program IDRIP, jadi ini bukan berarti tidak ada rambu."}))),
+        h("p", {class: "db-pf-sumber", teks: `Sumber: DIBI BNPB (dibi.bnpb.go.id), hanya kejadian yang memenuhi ambang bencana${pend ? "; penduduk IRBI BNPB" : ""}. Data ${T.sementara} sementara. Diunduh ${tglPanjang(T.dibuat.slice(0, 10))}.`}));
+      grafikTahun(grafik, seriKat("kejadian")); trenMusim(musim, musimKet);
+    }
+
     const gambarTab = () => { if (st.tab === "tren") { trenKej(); trenKorban(); trenRumah(); trenBulan(); trenMusim(); trenHari(); }
-      else if (st.tab === "sebaran") gambarSebaran(); else { gambarRekap(); gambarDaftar(); } };
+      else if (st.tab === "sebaran") gambarSebaran(); else if (st.tab === "profil") gambarProfil(); else if (st.tab === "tabel") { gambarRekap(); gambarDaftar(); } };
     let antre = false;
     function gambar() { if (antre) return; antre = true; nanti(() => { antre = false; gambarRingkasan(); gambarTab(); kirimPeta(); if (akar.id === "dtWadah") history.replaceState(history.state, "", tautan()); }); }
     /* cetak A4: semua tab digambar, hanya wadah ini yang tercetak (kelas jalur di leluhurnya) */
     const jalur = []; for (let e = akar.parentElement; e && e !== document.documentElement; e = e.parentElement) jalur.push(e);
-    const siapCetak = () => { document.documentElement.classList.add("dt-mencetak"); jalur.forEach(e => e.classList.add("dt-jalur")); akar.classList.add("dt-jalur-akar");
+    const siapCetak = (hanyaProfil) => { document.documentElement.classList.add("dt-mencetak"); document.documentElement.classList.toggle("dt-cetak-profil", !!hanyaProfil);
+      if (hanyaProfil) { jalur.forEach(e => e.classList.add("dt-jalur")); akar.classList.add("dt-jalur-akar"); panel.profil.classList.add("dt-panel-cetak"); gambarProfil(); return; } jalur.forEach(e => e.classList.add("dt-jalur")); akar.classList.add("dt-jalur-akar");
       Object.values(panel).forEach(p => p.classList.add("dt-panel-cetak")); gambarRingkasan(); trenKej(); trenKorban(); trenRumah(); trenBulan(); trenMusim(); gambarSebaran(); gambarRekap(); };
-    const usaiCetak = () => { document.documentElement.classList.remove("dt-mencetak"); jalur.forEach(e => e.classList.remove("dt-jalur")); akar.classList.remove("dt-jalur-akar"); Object.values(panel).forEach(p => p.classList.remove("dt-panel-cetak")); nanti(gambarTab); };
+    const usaiCetak = () => { document.documentElement.classList.remove("dt-mencetak", "dt-cetak-profil"); jalur.forEach(e => e.classList.remove("dt-jalur")); akar.classList.remove("dt-jalur-akar"); Object.values(panel).forEach(p => p.classList.remove("dt-panel-cetak")); nanti(gambarTab); };
+    cetakProfil = () => { siapCetak(true); requestAnimationFrame(() => setTimeout(() => window.print(), 50)); };
     bCetak.addEventListener("click", () => { siapCetak(); requestAnimationFrame(() => setTimeout(() => window.print(), 50)); });
     window.addEventListener("afterprint", () => { if (document.documentElement.classList.contains("dt-mencetak")) usaiCetak(); });
     gambar();

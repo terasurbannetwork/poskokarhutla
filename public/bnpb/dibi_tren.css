@@ -309,3 +309,39 @@ button.dt-hb-baris{cursor:pointer}
   .dt-mencetak .db-ringkas{border:1px solid var(--line);border-radius:var(--r);margin-block:12px;break-inside:avoid}
   .dt-mencetak .db-rk-isi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:16px}
 }
+
+/* ===== Profil kab/kota untuk BPBD (satu halaman A4) ===== */
+.db-profil{display:grid;gap:20px}
+.db-profil-kosong{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:var(--fs-4)}
+.db-profil-kosong svg{inline-size:28px;block-size:28px;flex:none;fill:none;stroke:var(--brand2);stroke-width:1.8}
+.db-profil-kosong p{margin:0}
+.db-pf-kepala{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.db-pf-kepala h2{margin:0;font:800 var(--fs-8)/1.15 var(--display);color:var(--ink)}
+.db-pf-kepala p{margin:4px 0 0;font-size:var(--fs-4);color:var(--ink2)}
+.db-pf-angka{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.db-pf-angka>div{display:grid;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.db-pf-angka b{font:800 var(--fs-7)/1.1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.db-pf-angka span{font-size:var(--fs-2);color:var(--ink2)}
+.db-profil-grafik{min-block-size:240px}
+.db-pf-daftar{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.db-pf-daftar li{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:2px;padding:8px 10px;border-radius:var(--r-sm);background:var(--surface);font-size:var(--fs-3)}
+.db-pf-daftar b{font-weight:700;color:var(--ink);white-space:nowrap}
+.db-pf-daftar small{grid-column:1/-1;color:var(--ink2);font-size:var(--fs-2)}
+.db-pf-sumber{margin:0;font-size:var(--fs-2);color:var(--ink2)}
+@media (max-width:1280px){.db-pf-angka{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media print{
+  html.dt-cetak-profil .db-app>:not(.db-utama),html.dt-cetak-profil .db-atas,html.dt-cetak-profil .db-ringkas,html.dt-cetak-profil .dt-cetak-saja,
+  html.dt-cetak-profil [role="tabpanel"]:not(#dtPanel-profil),html.dt-cetak-profil .db-pf-kepala .dt-aksi{display:none!important}
+  html.dt-cetak-profil .db-isi{display:block}
+  html.dt-cetak-profil #dtPanel-profil{display:block!important}
+  html.dt-cetak-profil .db-profil{gap:8px}
+  html.dt-cetak-profil .db-pf-angka{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+  html.dt-cetak-profil .db-pf-angka>div{padding:6px 8px}
+  html.dt-cetak-profil .db-pf-angka b{font-size:var(--fs-5)}
+  html.dt-cetak-profil .dt-kartu{padding:8px 10px;gap:6px}
+  html.dt-cetak-profil .db-profil-grafik{min-block-size:0}
+  html.dt-cetak-profil .db-profil .dt-svg{max-block-size:170px}
+  html.dt-cetak-profil .dt-kal-sel{block-size:18px}
+  html.dt-cetak-profil .db-pf-daftar li{padding:3px 6px}
+  html.dt-cetak-profil .dt-dua{grid-template-columns:1fr 1fr}
+}

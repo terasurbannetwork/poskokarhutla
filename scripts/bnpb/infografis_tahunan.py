@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""Infografis tahunan "Bencana Indonesia <tahun>" (model infografis resmi BNPB) -> PPTX, PDF, PNG.
+"""Infografis "Bencana Indonesia <periode>" (model infografis resmi BNPB) -> PPTX, PDF, PNG.
 
-Pakai:  python3 scripts/bnpb/infografis_tahunan.py 2025 [--keluar FOLDER] [--cetak-saja]
+Pakai:  python3 scripts/bnpb/infografis_tahunan.py 2025|2026-10|2026-T3 [--keluar FOLDER] [--cetak-saja]
+        (tahun | bulan | triwulan)
 Data  : HANYA public/data/dibi_tren.json (DIBI, is_bencana = TRUE), kategori bencana alam.
+Bulan dan triwulan: DIBI tidak punya rincian fasilitas dan rumah berat/sedang/ringan per bulan, jadi slide hanya memuat ukuran
+        yang ada (meninggal+hilang digabung, rumah rusak total, estimasi kerugian rumah) plus pembanding periode yang sama tahun lalu.
+        Periode yang belum genap (bulan berjalan) DITOLAK: angkanya bergerak tiap hari dan tidak sebanding dengan tahun lalu yang
+        sudah penuh. Periode genap di tahun berjalan tetap berlabel data sementara beserta tanggal potong DIBI.
 Mesin : skill ppt-konsultan (bnpb/scripts/deck.py, proyek assets/proyek-infografis). Satu slide jenis `bebas` berkanvas.
 Keluar: <proyek>/keluaran/<tahun>/Bencana Indonesia <tahun>.{pptx,pdf,png} + tabel-angka.json (angka dan selisih ke resmi bila ada).
 """
-import argparse, datetime as dt, json, math, os, shutil, subprocess, sys
+import argparse, datetime as dt, json, math, os, re, shutil, subprocess, sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -58,6 +63,69 @@ def hitung(tahun):
          'p': {f['properties']['kode']: int(prov.get(f['properties']['kode'], 0)) for f in json.load(open(GEO))['features']},
          'amb': {'a': 50, 'b': 150}}
     return v, d
+
+
+BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+SAT = {'total': 'kejadian', 'k': 'kejadian', 'd': 'jiwa', 'r': 'unit', 'f': 'unit', 'p': 'kejadian', 'amb': '', 'rg': 'Rp', 'b': '%'}
+SAT_L = {'kejadian': 'kejadian', 'mdh': 'jiwa', 'terdampak': 'jiwa', 'rumah': 'unit'}
+
+
+def satuan(k):
+    a, _, b = k.partition('.')
+    return SAT_L[b] if a == 'l' else SAT[a]
+
+
+def periode(s):
+    """'2025' | '2026-10' | '2026-T3' -> {tahun, awal, akhir (bulan), kode, label, jenis}."""
+    m = re.fullmatch(r'(\d{4})(?:-(?:(0[1-9]|1[0-2])|T([1-4])))?', s)
+    if not m:
+        sys.exit(f'periode "{s}" tidak dikenal; pakai 2025, 2026-10 (bulan), atau 2026-T3 (triwulan)')
+    y, bl, tw = int(m[1]), m[2], m[3]
+    if bl:
+        b = int(bl)
+        return dict(tahun=y, awal=b, akhir=b, kode=s, label=f'{BULAN[b - 1]} {y}', jenis='bulan')
+    if tw:
+        q = int(tw)
+        return dict(tahun=y, awal=3 * q - 2, akhir=3 * q, kode=s, label=f'Triwulan {"I II III IV".split()[q - 1]} {y}', jenis='triwulan')
+    return dict(tahun=y, awal=1, akhir=12, kode=s, label=str(y), jenis='tahun')
+
+
+def hitung_periode(per, d):
+    """Bulan atau triwulan dari bulan_prov. Jumlahkan dulu (kejadian bisa pecahan), baru bulatkan."""
+    kat, kol = d['kategori'], d['kolom_bulan']
+    ci = {k: i for i, k in enumerate(kol)}
+
+    def jumlah(tahun):
+        lo, hi = tahun * 100 + per['awal'], tahun * 100 + per['akhir']
+        jen = defaultdict(lambda: defaultdict(float))
+        prov = defaultdict(float)
+        for r in d['bulan_prov']:
+            if lo <= r[0] <= hi and kat[r[1]] in ALAM:
+                for k in ('kejadian', 'mdh', 'luka', 'terdampak', 'rumah', 'rugi_rumah'):
+                    jen[kat[r[1]]][k] += r[ci[k]]
+                prov[r[2]] += r[ci['kejadian']]
+        return jen, prov
+    jen, prov = jumlah(per['tahun'])
+    if not jen:
+        sys.exit(f'periode {per["label"]} tidak ada di DIBI')
+    S = lambda j, k: sum(x[k] for x in j.values())
+    lalu, _ = jumlah(per['tahun'] - 1)
+    n = per['akhir'] - per['awal'] + 1
+    a = max(1, round(50 * n / 12))   # ambang warna peta tahunan (50 dan 150) diskalakan ke lama periode
+    v = {'total': int(round(S(jen, 'kejadian'))),
+         'k': {s: int(round(jen[c]['kejadian'])) for s, c, _, _ in JENIS},
+         'd': {'mdh': int(round(S(jen, 'mdh'))), 'luka': int(round(S(jen, 'luka'))), 'terdampak': int(round(S(jen, 'terdampak')))},
+         'r': {'rumah': int(round(S(jen, 'rumah')))},
+         'rg': int(round(S(jen, 'rugi_rumah'))) * 1_000_000,   # kolom DIBI dalam juta rupiah
+         'p': {f['properties']['kode']: int(round(prov.get(f['properties']['kode'], 0))) for f in json.load(open(GEO))['features']},
+         'amb': {'a': a, 'b': max(a + 1, round(150 * n / 12))}}
+    if lalu:
+        L = {'kejadian': S(lalu, 'kejadian'), 'mdh': S(lalu, 'mdh'), 'terdampak': S(lalu, 'terdampak'), 'rumah': S(lalu, 'rumah')}
+        L = {k: int(round(x)) for k, x in L.items()}
+        now = {'kejadian': v['total'], 'mdh': v['d']['mdh'], 'terdampak': v['d']['terdampak'], 'rumah': v['r']['rumah']}
+        v['l'] = L
+        v['b'] = {k: int(round((now[k] - L[k]) / L[k] * 100)) for k in L if L[k]}   # tanpa pembanding bila periode lalu 0
+    return v
 
 
 def datar(v, pre=''):
@@ -180,7 +248,8 @@ def kepala(teks, ikon, x, y, w):
             {'k': 'garis', 'pt': True, 'x': x, 'y': y + 19, 'x2': x + w, 'y2': y + 19, 'warna': 'garis-kuat', 'tebal': 0.75}]
 
 
-def kanvas(v, tahun):
+def kanvas(v, per, catatan=''):
+    tahun = per['tahun']
     el = []
     # ---- peta
     el += kepala('Sebaran kejadian bencana alam per provinsi', 'wilayah', 0, 0, MW)
@@ -204,9 +273,13 @@ def kanvas(v, tahun):
         el.append(T(lab, cx + 34, cy + ch / 2 - 1, cw - 38, ch / 2 - 2, 7.5, False, 'teks', jangkar='t', maks=2, bungkus=True))
     # ---- kolom kanan
     X, RW = 580.0, W - 580.0
+    if per['jenis'] != 'tahun':
+        return el + kanan_periode(v, per, catatan, X, RW)
     el.append(K(X, 0, RW, 68, 'navy', None, 'bulat', 5))
-    el.append(T('Total bencana %d' % tahun, X + 12, 6, RW - 24, 16, 10, True, 'kertas'))
-    el.append(T('{{angka:ig.total}}', X + 12, 21, RW - 24, 36, 30, True, 'kertas'))
+    el.append(T('Total bencana %d' % tahun, X + 12, 3 if catatan else 6, RW - 24, 14 if catatan else 16, 10, True, 'kertas'))
+    el.append(T('{{angka:ig.total}}', X + 12, 17 if catatan else 21, RW - 24, 30 if catatan else 36, 26 if catatan else 30, True, 'kertas'))
+    if catatan:
+        el.append(T(catatan, X + 12, 47, RW - 24, 10, 7, False, 'kertas'))
     y = 76
     el += kepala('Dampak', 'jiwa', X, y, RW)
     for i, (s, ik, lab) in enumerate([('meninggal', 'jiwa', 'Meninggal dunia'), ('hilang', 'wilayah', 'Hilang'),
@@ -236,14 +309,54 @@ def kanvas(v, tahun):
     return el
 
 
-def spek(v, tahun, sementara):
-    sumber = 'DIBI BNPB (dibi.bnpb.go.id), kejadian berstatus bencana alam sesuai Juklak BNPB 7/2023, data %d%s' % (tahun, ' (sementara)' if sementara else '')
+def kanan_periode(v, per, catatan, X, RW):
+    """Kolom kanan bulan/triwulan: hanya ukuran yang ada per bulan di DIBI + pembanding tahun lalu."""
+    el = [K(X, 0, RW, 68, 'navy', None, 'bulat', 5),
+          T('Total bencana %s' % per['label'], X + 12, 3, RW - 24, 14, 10, True, 'kertas'),
+          T('{{angka:ig.total}}', X + 12, 17, RW - 24, 30, 26, True, 'kertas')]
+    if catatan:
+        el.append(T(catatan, X + 12, 47, RW - 24, 10, 7, False, 'kertas'))
+    y = 76
+    el += kepala('Dampak', 'jiwa', X, y, RW)
+    for i, (s, ik, lab) in enumerate([('mdh', 'jiwa', 'Meninggal dunia dan hilang'), ('luka', 'kesehatan', 'Luka atau sakit'),
+                                      ('terdampak', 'pengungsi', 'Menderita dan mengungsi')]):
+        yy = y + 25 + i * 27
+        el += [IK(ik, X, yy, 22), T('{{angka:ig.d.%s}}' % s, X + 30, yy, 88, 22, 12, True, 'navy'), T(lab, X + 120, yy, RW - 120, 22, 8.5, False, 'teks')]
+    y = 76 + 25 + 3 * 27 + 2
+    el += kepala('Dampak kerusakan rumah', 'infrastruktur', X, y, RW)
+    bw, by = (RW - 5) / 2, y + 24
+    for i, (tok, lab) in enumerate([('{{angka:ig.r.rumah}}', 'Rumah rusak'), ('{{angka:ig.rg|rupiah}}', 'Estimasi kerugian rumah (rumus DIBI)')]):
+        bx = X + i * (bw + 5)
+        el += [K(bx, by, bw, 34, 'tint.netral.muda', 'garis', 'bulat', 4), T(tok, bx + 4, by + 1, bw - 8, 18, 11, True, 'navy', 'c'),
+               T(lab, bx + 4, by + 19, bw - 8, 13, 7.5, False, 'teks', 'c')]
+    if 'l' not in v:
+        return el
+    y = by + 44
+    el += kepala('Dibanding %s tahun lalu' % ('periode yang sama' if per['jenis'] == 'triwulan' else 'bulan yang sama'), 'ringkasan', X, y, RW)
+    cx = [(X + 108, 54), (X + 164, 56), (X + 224, RW - 224)]   # periode ini, tahun lalu, perubahan
+    hy = y + 24
+    for (cxx, cw), t in zip(cx, ('%d' % per['tahun'], '%d' % (per['tahun'] - 1), 'Perubahan')):
+        el.append(T(t, cxx, hy, cw, 11, 7.5, True, 'teks-2', 'r'))
+    kini = {'kejadian': 'total', 'mdh': 'd.mdh', 'terdampak': 'd.terdampak', 'rumah': 'r.rumah'}
+    for i, (s, lab) in enumerate([('kejadian', 'Kejadian'), ('mdh', 'Meninggal dan hilang'), ('terdampak', 'Menderita dan mengungsi'), ('rumah', 'Rumah rusak')]):
+        yy = hy + 13 + i * 18
+        ub = ('{{angka:ig.b.%s|arah|persen}}' % s) if s in v['b'] else ('tetap' if v['l'][s] == 0 else 'tidak ada')   # periode lalu 0: tanpa persen
+        el.append(T(lab, X, yy, 106, 16, 8, False, 'teks'))
+        for (cxx, cw), isi, tebal, warna in zip(cx, ('{{angka:ig.%s}}' % kini[s], '{{angka:ig.l.%s}}' % s, ub), (True, False, True), ('navy', 'teks-2', 'navy')):
+            el.append(T(isi, cxx, yy, cw, 16, 9, tebal, warna, 'r'))
+    return el
+
+
+def spek(v, per, sementara, potong=''):
+    thn, lab = per['jenis'] == 'tahun', per['label']
+    sumber = 'DIBI BNPB (dibi.bnpb.go.id), bencana alam sesuai Juklak BNPB 7/2023, data %s' % lab   # label sementara di badan slide: baris Sumber hanya sumber dan tanggal
+    jns = 'tahunan' if thn else 'bulanan' if per['jenis'] == 'bulan' else 'triwulanan'
     return {'kajian': 'infografis', 'tanggal': dt.date.today().isoformat(),
-            'pesan_kunci': 'Rekap kejadian dan dampak bencana alam Indonesia tahun %d dari DIBI BNPB.' % tahun,
-            'judul_dokumen': 'Bencana Indonesia %d' % tahun, 'subjek_dokumen': 'Infografis tahunan kejadian dan dampak bencana alam',
-            'slide': [{'jenis': 'bebas', 'jenis_slide': 'panel', 'judul_bentuk': 'deskriptif', 'pesan': 'Rekap tahunan kejadian dan dampak bencana alam',
-                       'cut_off': False, 'judul': 'Bencana Indonesia %d' % tahun, 'sumber': sumber,
-                       'modul': [{'x': 0, 'y': 0, 'w': 1, 'h': 1, 'kanvas': {'elemen': kanvas(v, tahun), 'sumber': sumber}}]}]}, sumber
+            'pesan_kunci': 'Rekap kejadian dan dampak bencana alam Indonesia %s %s dari DIBI BNPB.' % ('tahun' if thn else 'periode', lab),
+            'judul_dokumen': 'Bencana Indonesia %s' % lab, 'subjek_dokumen': 'Infografis %s kejadian dan dampak bencana alam' % jns,
+            'slide': [{'jenis': 'bebas', 'jenis_slide': 'panel', 'judul_bentuk': 'deskriptif', 'pesan': 'Rekap %s kejadian dan dampak bencana alam' % jns,
+                       'cut_off': False, 'judul': 'Bencana Indonesia %s' % lab, 'sumber': sumber,
+                       'modul': [{'x': 0, 'y': 0, 'w': 1, 'h': 1, 'kanvas': {'elemen': kanvas(v, per, 'Data DIBI per %s, belum final' % potong if sementara else ''), 'sumber': sumber}}]}]}, sumber
 
 
 def siapkan_proyek():
@@ -262,24 +375,35 @@ def siapkan_proyek():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('tahun', type=int)
+    ap.add_argument('periode', help='2025 (tahun), 2026-10 (bulan), 2026-T3 (triwulan)')
     ap.add_argument('--keluar')
     ap.add_argument('--cetak-saja', action='store_true', help='cetak angka saja, tanpa membangun')
     a = ap.parse_args()
-    v, d = hitung(a.tahun)
-    sementara = a.tahun >= d.get('sementara', 9999)
+    per = periode(a.periode)
+    d = json.load(open(DIBI))
+    potong = d['dibuat'][:10]   # tanggal potong DIBI
+    if per['jenis'] == 'tahun':
+        v, d = hitung(per['tahun'])
+    else:
+        # periode berjalan ditolak: angkanya bergerak tiap hari dan tidak sebanding dengan periode yang sama tahun lalu yang sudah penuh
+        if per['tahun'] * 100 + per['akhir'] >= int(potong[:4]) * 100 + int(potong[5:7]):
+            sys.exit(f'{per["label"]} belum genap pada tanggal potong data {potong}; infografis hanya dibuat untuk bulan atau triwulan yang sudah lewat')
+        v = hitung_periode(per, d)
+    sementara = per['tahun'] >= d.get('sementara', 9999)
+    tgl = dt.date.fromisoformat(potong)
+    potong_id = '%d %s %d' % (tgl.day, BULAN[tgl.month - 1], tgl.year)
     if a.cetak_saja:
         print(json.dumps(v, ensure_ascii=False, indent=1)); return
     siapkan_proyek()
-    keluar = Path(a.keluar) if a.keluar else PROYEK / 'keluaran' / str(a.tahun)
+    kode, nama = per['kode'], f'Bencana Indonesia {per["label"]}'
+    keluar = Path(a.keluar) if a.keluar else PROYEK / 'keluaran' / str(per['tahun'])
     keluar.mkdir(parents=True, exist_ok=True)
-    sp, sumber = spek(v, a.tahun, sementara)
+    sp, sumber = spek(v, per, sementara, potong_id)
     (PROYEK / 'data/infografis').mkdir(exist_ok=True)
-    json.dump(v, open(PROYEK / f'data/infografis/ig-{a.tahun}.json', 'w'), ensure_ascii=False)
+    json.dump(v, open(PROYEK / f'data/infografis/ig-{kode}.json', 'w'), ensure_ascii=False)
     reg = {}
-    ket = {'total': 'kejadian', 'k': 'kejadian', 'd': 'jiwa', 'r': 'unit', 'f': 'unit', 'p': 'kejadian', 'amb': ''}
     for k, _ in datar(v):
-        reg['ig.' + k] = {'berkas': f'infografis/ig-{a.tahun}.json', 'jalur': k, 'satuan': ket[k.split('.')[0]], 'keyakinan': 'terverifikasi', 'sumber': sumber}
+        reg['ig.' + k] = {'berkas': f'infografis/ig-{kode}.json', 'jalur': k, 'satuan': satuan(k), 'keyakinan': 'terverifikasi', 'sumber': sumber}
     pa = PROYEK / 'data/angka.json'   # gerbang QA D-6 membaca data/angka.json proyek, jadi entri digabung ke sana
     if pa.is_symlink():
         pa.unlink()
@@ -287,17 +411,17 @@ def main():
     ang['angka'] = {k: x for k, x in ang['angka'].items() if not k.startswith('ig.')}
     ang['angka'].update(reg)
     json.dump(ang, open(pa, 'w'), ensure_ascii=False)
-    sf = PROYEK / f'spek/infografis-{a.tahun}.json'
+    sf = PROYEK / f'spek/infografis-{kode}.json'
     json.dump(sp, open(sf, 'w'), ensure_ascii=False, indent=1)
-    nama = f'Bencana Indonesia {a.tahun}'
     pptx = keluar / f'{nama}.pptx'
     py = SKILL / '.venv/bin/python'
     r = subprocess.run([str(py), 'scripts/deck.py', str(sf), str(pptx), '--pdf', '--akar', str(PROYEK)], cwd=SKILL)
     if r.returncode:
         sys.exit(r.returncode)
     subprocess.run(['pdftoppm', '-r', '150', '-png', '-singlefile', str(pptx.with_suffix('.pdf')), str(keluar / nama)], check=True)
-    tabel = {k: {'sistem': x, 'resmi': RESMI_2024.get(k), 'selisih': (x - RESMI_2024[k]) if a.tahun == 2024 and k in RESMI_2024 else None} for k, x in datar(v) if not k.startswith(('p.', 'amb.'))}
-    json.dump(tabel, open(keluar / 'tabel-angka.json', 'w'), ensure_ascii=False, indent=1)
+    thn = per['jenis'] == 'tahun'
+    tabel = {k: {'sistem': x, 'resmi': RESMI_2024.get(k), 'selisih': (x - RESMI_2024[k]) if per['tahun'] == 2024 and thn and k in RESMI_2024 else None} for k, x in datar(v) if not k.startswith(('p.', 'amb.'))}
+    json.dump(tabel, open(keluar / ('tabel-angka.json' if thn else f'tabel-angka {per["label"]}.json'), 'w'), ensure_ascii=False, indent=1)
     subprocess.run([str(py), 'scripts/aturan_slide.py', str(pptx)], cwd=SKILL)
     print('selesai:', keluar)
 
