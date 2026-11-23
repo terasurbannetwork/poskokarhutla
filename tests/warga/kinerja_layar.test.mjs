@@ -21,7 +21,10 @@ const WF = [{nama: "Titik Himawari tiap 30 menit", berkas: "himawari.yml", aktif
   {nama: "Titik panas tiap 3 jam", berkas: "titik.yml", aktif: true, terakhir: {status: "in_progress", hasil: null, umur_jam: 0.1, url: "https://github.com/x/2"}, sukses_umur_jam: 3, gagal_beruntun: 0},
   {nama: "Arsip bulanan dengan nama workflow yang sangat panjang sekali untuk menguji lebar kolom", berkas: "arsip-bulanan-panjang.yml", aktif: false, terakhir: null, sukses_umur_jam: null, gagal_beruntun: 0}];
 const KES = m => ({kini: "2026-11-23T04:00:00.000Z", status: {ok: false, basi: ["himawari"], sumber: {titik: {dibuat: "x", umur_jam: 0.3, ambang_jam: 8}, himawari: {dibuat: null, umur_jam: null, ambang_jam: 1}, jeda_satelit: {umur_jam: 2, ambang_jam: null}}},
-  workflow: m === "tanpa_token" ? {tersedia: false, alasan: "tanpa token"} : {tersedia: true, daftar: WF}});
+  workflow: m === "tanpa_token" ? {tersedia: false, alasan: "tanpa token"} : {tersedia: true, daftar: WF},
+  d1: m === "tanpa_token" ? {tersedia: false, alasan: "tanpa token"} : {tersedia: true, batas: {baca: 5e6, tulis: 1e5},
+    hari: [...Array.from({length: 5}, (_, i) => ({tanggal: `2026-11-${17 + i}`, baca: 3143797, tulis: 12000, kueri_baca: 900000, kueri_tulis: 4000})), {tanggal: "2026-11-22", baca: null, tulis: null, kueri_baca: null, kueri_tulis: null},
+      {tanggal: "2026-11-23", baca: 4200000, tulis: 23456, kueri_baca: 1000000, kueri_tulis: 5000}]}});
 const BERKAS = {dibuat: "2026-11-23T11:22+07:00", ringkas: {segar: 1, telat: 1}, berkas: [{modul: "karhutla", berkas: "public/data/meta.json", batas_jam: 8, sumber: "titik.yml", umur_jam: 0.1, status: "segar"},
   {modul: "banjir", berkas: "public/banjir/data/meta.json", batas_jam: 30, sumber: "banjir.yml", umur_jam: 41, status: "telat"}]};
 
@@ -125,7 +128,7 @@ else {
     await tab.tungguFungsi("document.querySelectorAll('.ex-tabel tbody tr').length >= 7");
     assert.match(await tab.eval("document.querySelector('.ex-tabel tbody tr')?.innerText"), /Himawari[\s\S]*gagal[\s\S]*3/);
     const t = await tab.teks();
-    for (const re of [/workflow gagal terakhir/, /sedang jalan/, /nonaktif/, /basi/, /telat/, /41 jam lalu/]) assert.match(t, re);
+    for (const re of [/workflow gagal terakhir/, /sedang jalan/, /nonaktif/, /basi/, /telat/, /41 jam lalu/, /kuota baca D1 hari ini[\s\S]*84%|84%[\s\S]*kuota baca D1 hari ini/, /4\.200\.000/, /Kuota D1/]) assert.match(t, re);
     assert.deepEqual([...new Set(t.match(TERLARANG) || [])], []);
     assert.equal(await tab.eval("getComputedStyle(document.querySelector('.kj-bar')).display"), "none", "filter periode dan wilayah tidak berlaku di tab ini");
     assert.ok((await tab.lebihLebar()).sw <= w + 1, "scroll horizontal");
@@ -134,7 +137,7 @@ else {
   });
   test("tab Kesehatan tanpa GITHUB_TOKEN: rak workflow menjelaskan, rak lain tetap terisi", async () => {
     mode = "tanpa_token"; await buka("/admin/kinerja?tab=kesehatan"); mode = "ok";
-    await tab.tungguFungsi("/GITHUB_TOKEN belum dipasang/.test(document.body.innerText)");
+    await tab.tungguFungsi("/GITHUB_TOKEN belum dipasang/.test(document.body.innerText) && /CF_ANALITIK_TOKEN dan CF_AKUN_ID belum dipasang/.test(document.body.innerText)");
     assert.match(await tab.teks(), /Sumber data sekarang[\s\S]*titik/);
   });
 }
