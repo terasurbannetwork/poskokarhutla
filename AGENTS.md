@@ -562,6 +562,28 @@ Sebelum menyentuh register segel, kode dan QR di lembar cetak, halaman publik ve
 
 Aturan berhentinya sama dengan §2.1. Segel tidak membekukan sendiri, hanya menempel pada titik beku yang ada; halaman verifikasi hanya data sampul, tanpa angka isi dan tanpa nama orang; segel bukan tanda tangan elektronik; segel tidak pernah diubah atau dihapus, cabut hanya menambah baris; baris dummy tidak disegel.
 
+### 2.40 Tsunami genangan (`/gempa/sim`: genangan darat, zoom pantai, run-up historis, skenario praterhitung): baca dulu, baru bangun
+
+Sebelum menyentuh hitungan genangan tsunami (GeoClaw, grid bersarang, sumber Okada), pustaka skenario per pantai, run-up NOAA NCEI, atau lapisan genangan di tab Simulasi, baca dokumen di
+`data/kajian-bnpb/tsunami-genangan/` dengan urutan otoritas ini (kode di `public/gempa/**` dan `scripts/gempa/**` milik `gempa`; workflow hitung milik `mekanik-mesin`):
+
+1. `KEPUTUSAN-TSUNAMI.md`: keputusan pemilik K1-K7 (GeoClaw, DEMNAS publik, hitung lokal dulu, tiga kotak pertama), rancangan D1-D17, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (uji balik kelas A/B, kriteria beku), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`TS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Simulasi, bukan peringatan: status tsunami resmi hanya BMKG; tidak pernah menulis "aman"; pantai di luar kotak halus "belum dihitung", tidak pernah 0; genangan berlabel hipotesis sampai uji balik kelas A lulus; kriteria uji dibekukan sebelum kejadian uji dihitung; FABDEM tidak di layar publik.
+
+### 2.41 Bangunan di lereng terjal (modul longsor: bangunan Overture x lereng DEMNAS dan GLO-30 per kecamatan dan desa): baca dulu, baru bangun
+
+Sebelum menyentuh hitungan lereng per piksel, ekstraksi bangunan Overture, aturan "dua peta sepakat", agregat bangunan di lereng per kecamatan atau desa, atau pencocokannya dengan desa longsor, baca dokumen di
+`data/kajian-bnpb/lereng-bangunan/` dengan urutan otoritas ini (kode di `scripts/longsor/**`, `public/longsor/**`, `tests/longsor/**` milik `longsor`; sambungan ke Peta Paparan F2 milik `siklus`):
+
+1. `KEPUTUSAN-LERENG.md`: keputusan pemilik K1-K3, rancangan D1-D16, pertanyaan terbuka Q1-Q18 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (ambang persen, kelas sepakat, mitigasi DSM, uji desa), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LT-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Satu mesin paparan (tanpa mesin kedua di samping F2 siklus); Overture dan Open Buildings tidak dijumlahkan; bangunan hilang tidak pernah 0; tanpa koordinat bangunan di keluaran publik; tidak pernah "aman" atau "rawan" sebagai vonis; angka video rujukan pembanding, bukan sasaran setel.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

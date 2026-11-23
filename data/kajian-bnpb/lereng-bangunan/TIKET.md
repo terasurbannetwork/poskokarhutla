@@ -1,0 +1,39 @@
+# TIKET: Bangunan di lereng terjal (LT-*)
+
+Status per 23 Nov 2026. Ambil satu tiket, kerjakan hanya cakupannya. Pengulas dipilih dari kolom "bisa" katalog agent, tidak pernah pengerja yang sama (AGENTS.md 3.2). Tiket model dan uji memanggil `validasi-model`; tiket layar memanggil `selera-angka` dan `inp-reviewer`. Pengerja default `longsor` (wilayah `scripts/longsor/**`, `public/longsor/**`, `tests/longsor/**`). Tiket yang menunggu pertanyaan memakai bawaan sementara yang ditandai sampai pemilik menjawab. Unduhan data hanya sesudah izin pemilik; tidak ada commit oleh subagent.
+
+| ID | Tiket | Cakupan | Pengerja | Pengulas | Status |
+| --- | --- | --- | --- | --- | --- |
+| LT-00 | Paket dokumen `data/kajian-bnpb/lereng-bangunan/` | folder ini | longsor | pemeriksa bersih | selesai (tulis), menunggu pemeriksa |
+| LT-01 | Bagian "baca dulu, baru bangun" di AGENTS.md dan penunjuk di ilmu `longsor` | `AGENTS.md`, ilmu agent | sesi induk | higiene-repo | belum dimulai; di luar wilayah longsor |
+| LT-02 | Riset sumber: bunyi ambang 40 persen (nama peraturan), lisensi DEMNAS, ODbL untuk agregat, atribusi GLO-30, datum vertikal tiap DEM | `RISET.md` (perbarui) | longsor | validasi-model | belum dimulai; menjawab Q1, Q2, Q11 |
+| LT-03 | Batas: asal dan nama desa pada `public/geo/desa`, tally desa dengan kecamatan BIG longsor, status grid Open Buildings (kini hanya 13, 33, 63; Jawa Barat 32 tidak ada) dan usulan membuatnya lewat `bangunan.yml` (usulan ke mekanik-mesin dan pipa-umum) | `scripts/longsor/lereng_bangunan.py` (bagian batas), catatan | longsor | validasi-model | belum dimulai; Q6 |
+| LT-04 | Pembaca DEM dan lereng persen Horn, uji sintetis, pemuatan `tiff_mini.py` lewat importlib | `scripts/longsor/lereng_dem.py` | longsor | validasi-model | belum dimulai |
+| LT-05 | DEMNAS Bandung Raya: pemilik mengunduh lembar, pengerja mengindeks, hitung cakupan per kab | `data/raw/lereng/dem/` (gitignored), indeks | longsor | validasi-model | menunggu Q2 dan unduhan pemilik |
+| LT-06 | GLO-30 ubin Bandung Raya | `data/raw/lereng/dem/` | longsor | validasi-model | menunggu izin unduh |
+| LT-07 | Overture Bandung Raya lewat DuckDB: hitung bangunan per kab, bandingkan dengan 687 ribu Bandung Barat (hanya dilaporkan) | `lereng_bangunan.py` | longsor | validasi-model | menunggu izin unduh; Q17 |
+| LT-08 | Klasifikasi per bangunan S, D, G, L, T dengan median jejak dan cincin; ukur waktu dan memori satu kab/kota | `lereng_bangunan.py` | longsor | validasi-model | setelah LT-04 sampai LT-07; Q3 |
+| LT-09 | Agregat desa dan kecamatan, kerapatan, cakupan, kelengkapan (hanya Open Buildings; ambang kelas diuji dari sampel, bukan dari konst.py), `<kab4>.json`, `indeks.json`, anggaran ukuran | `lereng_bangunan.py`, `public/longsor/data/lereng/**` | longsor | validasi-model, selera-angka | setelah LT-08 dan LT-12 (daftar desa dan sidik sudah di-commit sebelum agregat dihitung); Q9 |
+| LT-10 | Audit DSM: sampel bangunan, perbandingan atap dan cincin, audit FABDEM internal | catatan di `RISET.md` | longsor | validasi-model | setelah LT-08; Q12 |
+| LT-11 | Kepekaan: ambang 30, 45, 60 di samping hitungan utama 40; varian jejak, cincin saja tanpa jejak, titik, maksimum, skala sama, DEMNAS dihaluskan ke sekitar 24 m, buang desa bertetangga positif, rilis Overture lebih awal bila ada | `lereng_bangunan.py` (mode kepekaan) | longsor | validasi-model | setelah LT-09; Q1 dan Q3 |
+| LT-12 | Daftar desa longsor 2025 sampai Januari 2026 menurut aturan inklusi tertulis (ALGORITMA 8), bertanggal dan bersumber; jumlah tidak dipaksa 21; desa gagal cocok ke `kd` dicatat; commit daftar dan sidik SEBELUM LT-09 | `scripts/longsor/data_kejadian_desa.json`, sidik | longsor | validasi-model | menunggu Q7; pemilik meninjau; sebelum LT-09 |
+| LT-13 | Bekukan kriteria uji, lima pembanding, vonis berbasis selang selisih berpasangan, dan skor utama, sidik, commit sebelum label dibuka | `lereng_param.json`, `lereng_sidik.json` | longsor | validasi-model | setelah LT-09 dan LT-12; Q8 |
+| LT-14 | Uji desa awal: AUC dalam strata, pembanding, bootstrap, permutasi, dengan dan tanpa kasus perintis; tulis `uji.json` | `lereng_uji.py`, `public/longsor/data/lereng/uji.json` | longsor | validasi-model | setelah LT-13 |
+| LT-15 | Citra Sentinel-2 sebelum dan sesudah di atas DEMNAS untuk kejadian perintis, perubahan tutupan, uji klaim "awal lereng 45 sampai 60 persen" | `lereng_kejadian.py`, `kejadian/**` | longsor | validasi-model | setelah LT-05; Q16; unduhan citra butuh izin |
+| LT-16 | Potongan melintang cekungan: garis, sampel dua DEM, keluaran profil | `lereng_kejadian.py` | longsor | validasi-model | setelah LT-05 dan LT-06 |
+| LT-17 | `lereng.html`, `lereng.js`, `lereng.css`: pilihan kab/kota, kartu Ringkasan, Peringkat, Desa, ekspor, pil status, hak tampil | `public/longsor/lereng.*` | longsor | selera-angka, inp-reviewer | setelah LT-09; Q13, Q14; tautan tinjau `http://localhost:8800/longsor/lereng` |
+| LT-18 | Peta kolom 3D per kecamatan (rujuk skill `modern-web-guidance`; MapLibre `fill-extrusion` bila lolos) | `public/longsor/lereng.js` | longsor | selera-angka, inp-reviewer | setelah LT-17 |
+| LT-19 | Kartu Kejadian: pembanding citra sebelum dan sesudah, potongan melintang interaktif | `lereng.js` | longsor | selera-angka, inp-reviewer | setelah LT-15 dan LT-16 |
+| LT-20 | Tab Metode: sumber, ambang, dua peta sepakat, risiko DSM, kelengkapan, hasil uji, batas | `lereng.js` | longsor | selera-angka, validasi-model | setelah LT-14; Q15 |
+| LT-21 | Uji bentuk keluaran dan layar, self-check `uji` tiap skrip | `tests/longsor/lereng.test.mjs`, `__main__` skrip | longsor | validasi-model | bersama LT-04, LT-09, LT-17 |
+| LT-22 | Gerbang: tanpa kata aman, kosong bukan nol, label hipotesis mengikuti vonis, tanpa koordinat bangunan di `public/`; daftar layar di `gerbang-kartu-std` | `tests/agen/gerbang-lereng-bangunan.test.mjs` | penulis-gerbang | validasi-model | bersama LT-17 |
+| LT-23 | Sambungan ke Peta Paparan F2: bahaya tetap "lereng terjal" | `scripts/siklus/paparan.py`, `bahaya_kelas.py` (baca dan tambah), `data/terkunci/lereng/` | siklus | validasi-model | fase 2; Q5 |
+| LT-24 | Perluasan: Jawa Barat, Jawa, Sumatra, nasional per kotak; catat "belum ada DEMNAS"; usulan workflow lab saja | indeks, keluaran; `.github/workflows` (usulan) | longsor, mekanik-mesin | validasi-model | fase 2, berulang; Q10, Q17 |
+| LT-25 | Uji tingkat kecamatan nasional dengan DIBI dan MAGMA | `lereng_uji.py` | longsor | validasi-model | fase 3; setelah LT-24 tahap Jawa |
+| LT-26 | Prospektif: bekukan lapisan, bandingkan dengan kejadian baru, append-only | `lereng_uji.py`, `public/longsor/data/lereng/prospektif.json` | longsor | validasi-model | fase 3; setelah LT-14 |
+| LT-27 | Sel halus 110 m untuk sesi staf lewat R2 dan rute; sel kecil digabung | `src/**`, `migrations/**` bila perlu, `data/terkunci/lereng/` | warga-api | guard-api, security-reviewer | fase lanjut; Q4 |
+| LT-28 | Tutup tiket: perbarui ilmu agent `longsor` dan catat kasus | ilmu agent | longsor | higiene-repo | setelah tiket terakhir fase |
+
+Fase 1: LT-02 sampai LT-22 untuk Bandung Raya. Fase 2: LT-23 dan LT-24. Fase 3: LT-25 dan LT-26. Fase lanjut: LT-27.
+
+Jumlah: 29 tiket (LT-00 sampai LT-28; LT-00 selesai tulis, sisanya belum dimulai atau menunggu pemilik).
