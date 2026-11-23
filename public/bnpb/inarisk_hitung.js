@@ -72,8 +72,9 @@
     const pend = bil(j?.penduduk);
     if (pend === null || !Array.isArray(j.terpapar)) return [];
     return bencana.map((b, i) => {
-      const t = Math.min(pend, Math.max(0, Number(j.terpapar[i]) || 0));
-      const persen = (t / pend) * 100;
+      const v = j.terpapar[i];
+      if (typeof v !== "number" || !Number.isFinite(v)) return {nama: b.nama, terpapar: null, persen: null, sisa: null};   // kosong bukan nol
+      const t = Math.min(pend, Math.max(0, v)), persen = (t / pend) * 100;
       return {nama: b.nama, terpapar: t, persen, sisa: 100 - persen};
     });
   }
@@ -83,13 +84,56 @@
     return v < ambang.rendah ? "Rendah" : v <= ambang.tinggi ? "Sedang" : "Tinggi";
   }
 
+  /* ===== simulasi kapasitas (ALGORITMA §10, KEPUTUSAN D11-D12) ===== */
+  // bobot P1..P7 terukur dari 532 analisa IKD InaRISK (galat terbesar 0,0003); bukan angka resmi, diuji ulang di --cek
+  const BOBOT_IKD = [0.06, 0.06, 0.075, 0.105, 0.21, 0.35, 0.14];
+  const ikdDariP = P => P.reduce((s, v, i) => s + BOBOT_IKD[i] * (Number(v) || 0), 0);
+  const kelasC = v => (typeof v !== "number" || !Number.isFinite(v)) ? null : v < 0.4 ? 1 : v <= 0.8 ? 2 : 3;
+  /* rencana termurah: prioritas berbobot terbesar dulu, tiap P paling tinggi 1, sampai melewati ambang kelas berikut */
+  function rencanaKapasitas(P, indeks = ikdDariP(P)) {
+    const c = kelasC(indeks);
+    if (c === null || c === 3 || !Array.isArray(P) || P.length !== 7 || P.some(v => typeof v !== "number")) return null;
+    const ambang = c === 1 ? 0.4 : 0.8 + 1e-9;   // kelas 3 = di atas 0,80
+    let sisa = ambang - indeks + 1e-6;
+    const langkah = [];
+    for (const i of [0, 1, 2, 3, 4, 5, 6].sort((a, b) => BOBOT_IKD[b] - BOBOT_IKD[a] || a - b)) {
+      if (sisa <= 0) break;
+      const ruang = 1 - P[i];
+      if (ruang <= 0) continue;
+      const naik = Math.min(ruang, sisa / BOBOT_IKD[i]);
+      langkah.push({p: i + 1, dari: P[i], ke: P[i] + naik});
+      sisa -= naik * BOBOT_IKD[i];
+    }
+    return {ambang: c === 1 ? 0.4 : 0.8, selisih: ambang - indeks, cLama: c, cBaru: sisa <= 1e-6 ? c + 1 : c, langkah};
+  }
+
+  /* ===== risiko besok (ALGORITMA §11, D13): waspada prakiraan tenggang 1 x kelas IRBI ===== */
+  const PADANAN = {banjir: "banjir", longsor: "longsor", karhutla: "karlahut", asap: "karlahut", melaut: "abrasi", angin: "cuaca_ekstrem"};
+  const URUT_KELAS = {Tinggi: 0, Sedang: 1, Rendah: 2};
+  function risikoBesok(waspada, irbi, tahun = TAHUN_HV2021) {
+    const per = new Map();
+    for (const w of waspada || []) {
+      if (w.tenggang !== 1 || !irbi.nilai[w.kab]) continue;
+      const x = per.get(w.kab) || {pcode: w.kab, aturan: [], skorBahaya: null, jiwa: null};
+      if (!x.aturan.some(a => a.aturan === w.aturan)) x.aturan.push({aturan: w.aturan, maka: w.maka, kolom: PADANAN[w.aturan] || null});
+      const sb = PADANAN[w.aturan] ? skor(irbi, w.kab, tahun, PADANAN[w.aturan]) : null;
+      if (sb !== null && (x.skorBahaya === null || sb > x.skorBahaya)) x.skorBahaya = sb;
+      const j = w.dampak?.jiwa;
+      if (typeof j === "number" && (x.jiwa === null || j > x.jiwa)) x.jiwa = j;
+      per.set(w.kab, x);
+    }
+    return [...per.values()].map(x => { const s = skor(irbi, x.pcode, tahun); return {...x, skor: s, kelas: kelas(s, "total", tahun)}; })
+      .sort((a, b) => (URUT_KELAS[a.kelas] ?? 3) - (URUT_KELAS[b.kelas] ?? 3) || (b.skorBahaya ?? -1) - (a.skorBahaya ?? -1) || (b.jiwa ?? -1) - (a.jiwa ?? -1) || (a.pcode < b.pcode ? -1 : 1));
+  }
+
   const fmt2 = new Intl.NumberFormat("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
   const fmt0 = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 0});
   const fmt1 = new Intl.NumberFormat("id-ID", {minimumFractionDigits: 0, maximumFractionDigits: 1});
   const angka2 = v => (typeof v === "number" && Number.isFinite(v) ? fmt2.format(v) : "–");
   const angka0 = v => (typeof v === "number" && Number.isFinite(v) ? fmt0.format(v) : "–");
-  const persen1 = v => (typeof v === "number" && Number.isFinite(v) ? fmt1.format(v) + "%" : "–");
+  /* persen satu desimal; nilai kecil bukan nol tidak dibulatkan jadi 0% atau 100% */
+  const persen1 = v => !(typeof v === "number" && Number.isFinite(v)) ? "–" : v > 0 && v < 0.05 ? "<0,1%" : v > 99.95 && v < 100 ? ">99,9%" : fmt1.format(v) + "%";
 
-  const X = {TAHUN_HV2021, kelas, skor, urut, peringkat, ringkas, sebelumnya, tren, jiwaPersen, tingkatIkd, angka2, angka0, persen1};
+  const X = {TAHUN_HV2021, BOBOT_IKD, ikdDariP, kelasC, rencanaKapasitas, PADANAN, risikoBesok, kelas, skor, urut, peringkat, ringkas, sebelumnya, tren, jiwaPersen, tingkatIkd, angka2, angka0, persen1};
   if (typeof module !== "undefined" && module.exports) module.exports = X; else g.InariskHitung = X;
 })(globalThis);

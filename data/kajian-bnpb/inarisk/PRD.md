@@ -20,6 +20,9 @@ situs, dengan angka yang sama dengan InaRISK.
 | F-9 | Tautan | daftar tautan luar per kategori |
 | F-10 | Metodologi | kerangka 6 langkah, rumus risiko, komponen H V C, sumber data |
 | F-11 | Tentang, Disclaimer | profil InaRISK, perjalanan 2012-sekarang, enam butir disclaimer |
+| F-12 | Simulasi kapasitas | daftar kab terdekat ke ambang IKD berikutnya (0,40 atau 0,80); rencana termurah per prioritas; IRBI dan peringkat perkiraan bila kelas naik |
+| F-13 | Risiko besok | kab dengan waspada prakiraan besok, diurut kelas IRBI Tinggi dulu, dengan skor bahaya padanannya dan jiwa terdampak prakiraan |
+| F-14 | Dalops gunung api | dampak penduduk, sekolah, RS, puskesmas dalam radius 1, 5, 10 km dan radius larangan di tiap kartu gunung Siaga atau Awas |
 
 ## Larangan
 

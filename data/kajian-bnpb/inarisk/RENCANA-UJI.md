@@ -8,6 +8,8 @@
 | Rute dan CSP tidak merusak yang lain | `npm run uji:warga` |
 | Pemilik berkas dan paket dokumen | `npm run uji:agen` |
 | Token warna tidak bertambah | `node --test tests/agen/gerbang-token-warna.test.mjs` |
+| Rumus IKD dari P1-P7 cocok untuk semua analisa (galat <= 0,001); rencana simulasi menutup selisih ke ambang | `node --test tests/bnpb/inarisk_hitung.test.mjs`, `python3 scripts/bnpb/inarisk.py --cek` |
+| Dampak radius: POST sama dua kali hanya satu ke hulu | `node --test tests/warga/inarisk_proksi.test.mjs` |
 | Layar 1440 dan 390, konsol bersih, tiap tab terbuka, dialog detail Langkat menampilkan 231,47 | playwright di `http://localhost:8800/bnpb/inarisk` |
 | Klik tab, baris, filter tidak membekukan (INP) | pengulas `inp-reviewer` |
 | Angka di kartu dan pop-up format Indonesia, tanpa presisi palsu | pengulas `selera-angka` |

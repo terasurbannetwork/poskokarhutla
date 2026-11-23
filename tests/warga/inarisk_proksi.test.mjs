@@ -56,11 +56,12 @@ uji("inarisk: ubin PNG lewat, bbox salah 400, hulu bukan gambar 502", async () =
 });
 
 uji("inarisk: kegiatan membuang nama petugas dan foto dari host asing", async () => {
-  minta = []; jawab = () => ok({features: [{type: "Feature", geometry: {type: "Point", coordinates: [1, 2]}, properties: {"User Pemantau": "Budi", Kegiatan: "Simulasi", Lokasi: "Desa A", Tgl: "2026-01-01", email: "a@b.id", telp_hp: "08", Foto: ["http://inarisk2.bnpb.go.id/a.jpg", "https://evil.example/b.jpg"]}}]});
+  minta = []; jawab = () => ok({features: [{type: "Feature", geometry: {type: "Point", coordinates: [1, 2]}, properties: {"User Pemantau": "Budi", Kegiatan: "Simulasi", Lokasi: "Desa A", Deskripsi: "dipandu 0812-3456-7890 a@b.id", Tgl: "2026-01-01", email: "a@b.id", telp_hp: "08", Foto: ["http://inarisk2.bnpb.go.id/a.jpg", "https://evil.example/b.jpg"]}}]});
   const r = await GET("/api/inarisk/kegiatan/12/3171");
   assert.equal(r.status, 200); assert.equal(minta[0].u.pathname, "/apiv4/posgagah/download-kegiatan-geojson/12/3171");
   const p = r.j.features[0].properties;
-  assert.deepEqual(Object.keys(p).sort(), ["Foto", "Kegiatan", "Lokasi", "Tgl"]); assert.deepEqual(p.Foto, ["https://inarisk2.bnpb.go.id/a.jpg"]);
+  assert.deepEqual(Object.keys(p).sort(), ["Deskripsi", "Foto", "Kegiatan", "Lokasi", "Tgl"]);
+  assert.ok(!/0812|a@b\.id/.test(r.t), "nomor HP dan email di teks bebas disamarkan"); assert.deepEqual(p.Foto, ["https://inarisk2.bnpb.go.id/a.jpg"]);
   assert.ok(!r.t.includes("Budi"));
   assert.equal((await GET("/api/inarisk/kegiatan/12/3?date_from=2026-01-01")).status, 404, "pcode 1 digit");
 });
@@ -93,4 +94,36 @@ uji("inarisk: CSP /bnpb/inarisk memuat Esri dan host foto; halaman lain tak beru
   const csp = async j => (await mf.dispatchFetch("http://ir.lokal" + j)).headers.get("content-security-policy");
   const a = await csp("/bnpb/inarisk"); assert.match(a, /img-src [^;]*inarisk2\.bnpb\.go\.id/); assert.match(a, /img-src [^;]*arcgisonline\.com/); assert.match(a, /connect-src [^;]*arcgisonline/); assert.match(a, /frame-ancestors 'none'/);
   const s = await csp("/bnpb/saham"); assert.ok(!/arcgisonline|inarisk/.test(s));
+});
+
+uji("inarisk: unduhan hanya kolom layar, foto berport/berinfo pengguna ditolak", async () => {
+  const {rapikanUnduhan, bersihKegiatan} = await import("../../src/inarisk.js");
+  const d = rapikanUnduhan({success: true, data: {pagination: {total_data: 1}, rows: [{title: "A", file_url: "/apiv4/x.pdf", uploader_name: "Budi", metadata: {email: "a@b.id"}}]}});
+  assert.deepEqual(Object.keys(d.data.rows[0]).sort(), ["category", "description", "file_format", "file_size", "file_url", "id", "published_at", "title"]);
+  assert.ok(!JSON.stringify(d).includes("Budi"));
+  assert.deepEqual(rapikanUnduhan({data: {categories: [{name: "Peta", count: 3, x: 1}]}}).data.categories, [{name: "Peta", count: 3}]);
+  const g = bersihKegiatan({features: [{properties: {Foto: ["http://evil@inarisk2.bnpb.go.id/a.jpg", "https://inarisk2.bnpb.go.id:8080/b.jpg", "http://inarisk2.bnpb.go.id/c.jpg"]}}]});
+  assert.deepEqual(g.features[0].properties.Foto, ["https://inarisk2.bnpb.go.id/c.jpg"]);
+});
+
+uji("inarisk: hulu yang mengalihkan (3xx) tidak diikuti, jadi 502", async () => {
+  minta = []; jawab = () => new Response(null, {status: 302, headers: {location: "https://evil.example/x"}});
+  const r = await GET("/api/inarisk/unduhan/ringkas?category=Peta%20Lain"); assert.equal(r.status, 502); assert.equal(minta.length, 1, "tidak ada permintaan ke host lain");
+});
+
+uji("inarisk: dampak dengan badan sama dicache, hulu hanya dipanggil sekali", async () => {
+  let n = 0;
+  const mf2 = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
+    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-inarisk-cache"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin"},
+    serviceBindings: {ASSETS: () => new Response("tidak ada", {status: 404})},
+    outboundService: async () => { n++; return ok({success: true, data: {result: {penduduk: 7}}}); }});
+  try {
+    const DB = await mf2.getD1Database("DB"); await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
+    const badan = JSON.stringify({type: "circle", center: {lat: -7.54, lng: 110.44}, radius_meter: 5000, geometry: {type: "Point", coordinates: [110.44, -7.54]}});
+    for (let i = 0; i < 2; i++) {
+      const r = await mf2.dispatchFetch("http://ir.lokal/api/inarisk/dampak", {method: "POST", headers: {"content-type": "application/json"}, body: badan});
+      assert.equal(r.status, 200); assert.deepEqual(await r.json(), {penduduk: 7});
+    }
+    assert.equal(n, 1, "permintaan kedua dari cache");
+  } finally { await mf2.dispose(); }
 });

@@ -90,14 +90,19 @@
 .ir-gulir-panjang{max-block-size:none}
 .ir-tabel{inline-size:100%;border-collapse:separate;border-spacing:0;font-size:var(--fs-2);font-variant-numeric:tabular-nums}
 .ir-tabel thead th{position:sticky;inset-block-start:0;z-index:1;background:var(--head-bg);color:var(--on-head);font-weight:700;text-align:center;padding:9px 6px;line-height:1.25}
-.ir-tabel td,.ir-tabel tbody th{padding:8px;border-block-end:1px solid var(--line);text-align:start;vertical-align:middle}
-.ir-tabel tbody th{font-weight:600;color:var(--ink)}
-.ir-tabel tbody th small{display:block;font-weight:400;color:var(--ink2);font-size:var(--fs-1);max-inline-size:60ch}
-.ir-tabel .n{text-align:end;white-space:nowrap}
+.ir-tabel td{padding:8px;border-block-end:1px solid var(--line);vertical-align:middle}
+.ir-tabel .ir-lbl{text-align:start}
+.ir-tabel .ir-lbl{font-weight:600;color:var(--ink)}
+.ir-tabel .ir-lbl small{display:block;font-weight:400;color:var(--ink2);font-size:var(--fs-1);max-inline-size:60ch}
+.ir-tabel .n,.ir-tabel td{text-align:center}
+.ir-tabel .n{white-space:nowrap}
+.ir-tabel td.ir-lbl{text-align:start}
 .ir-tabel tr.ir-pilih>*{background:color-mix(in srgb,var(--brand2) 9%,var(--card))}
 .ir-tabel tbody tr:hover>*{background:var(--surface)}
+.ir-kartu-tabel .ir-tabel tbody tr{content-visibility:auto;contain-intrinsic-size:auto 44px}
+[aria-busy="true"]{opacity:.55;transition:opacity var(--dur-1) var(--ease)}
 .ir-tabel .naik{color:var(--bad-tx)}.ir-tabel .turun{color:var(--ok-tx)}
-.ir-tabel-kv th{font-weight:500}
+.ir-tabel-kv .ir-lbl{font-weight:500}
 .ir-tebal{font-weight:800}
 
 /* rerata per bahaya */
@@ -122,8 +127,8 @@
 .ir-hal button[aria-current]{background:var(--brand2);border-color:var(--brand2);color:var(--on-brand)}
 .ir-hal button:disabled{opacity:.45;cursor:default}
 .ir-hal span[aria-hidden]{align-self:center;color:var(--ink2)}
-.ir-tabel-und tbody th b{display:block}
-.ir-tabel-und tbody th small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-inline-size:80ch}
+.ir-tabel-und .ir-lbl b{display:block}
+.ir-tabel-und .ir-lbl small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-inline-size:80ch}
 
 /* Tautan */
 .ir-tautan{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
@@ -233,6 +238,7 @@
 .ir-jiwa li{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:var(--fs-2);font-weight:600;color:var(--ink)}
 .ir-jiwa li>span{text-align:end}
 .ir-jiwa-bt{display:flex;block-size:18px;border-radius:3px;overflow:hidden;background:var(--line)}
+.ir-jiwa-kosong{display:grid;place-items:center;font:500 var(--fs-1) var(--font);font-style:normal;color:var(--ink2);background:var(--surface)}
 .ir-jiwa-bt s{display:grid;place-items:center;inline-size:0;text-decoration:none;color:var(--on-brand);font:700 var(--fs-1) var(--font);white-space:nowrap;overflow:hidden}
 .ir-jarum{margin:0;display:grid;justify-items:center;gap:6px}
 .ir-jarum svg{inline-size:min(260px,100%);block-size:auto}
@@ -265,7 +271,7 @@
 @media (max-width:1100px){.ir-irbi{grid-template-columns:1fr}.ir-kiri{position:static;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.ir-peta-tabel{grid-template-columns:1fr}.ir-kartu-peta{block-size:460px}.ir-dlg-g2{grid-template-columns:1fr 1fr}.ir-k-jiwa{grid-column:1/-1}.ir-langkah,.ir-butir,.ir-tiga,.ir-sumber{grid-template-columns:repeat(2,minmax(0,1fr))}.ir-linimasa{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){.ir-angka,.ir-fakta{grid-template-columns:1fr 1fr}.ir-a-utama{grid-column:1/-1}.ir-saring,.ir-saring-und,.ir-langkah,.ir-butir,.ir-tiga,.ir-sumber,.ir-linimasa,.ir-dlg-g1,.ir-dlg-g2,.ir-dlg-g2b,.ir-dlg-ft{grid-template-columns:1fr}.ir-k-tren{grid-column:auto}
   .ir-jiwa li{grid-template-columns:100px 1fr}.ir-prio li{grid-template-columns:30px 1fr 60px 40px}.ir-dlg-kanan{display:none}.ir-gis-lapis{inline-size:calc(100% - 24px);inset-block-end:auto;max-block-size:55%}.ir-gis-lapis:not([open]){max-block-size:none}
-  .ir-tabel-und thead{display:none}.ir-tabel-und tr{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:10px 0;border-block-end:1px solid var(--line)}.ir-tabel-und td,.ir-tabel-und th{border:0;padding:0}.ir-tabel-und tbody th{grid-column:1/-1}}
+  .ir-tabel-und thead{display:none}.ir-tabel-und tr{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:10px 0;border-block-end:1px solid var(--line)}.ir-tabel-und td{border:0;padding:0}.ir-tabel-und .ir-lbl{grid-column:1/-1}}
 
 /* ringkasan PDF: hanya dialog detail yang tercetak */
 @media print{
@@ -278,3 +284,9 @@
   body.ir-cetak .ir-dlg-g1{grid-template-columns:repeat(3,1fr)}body.ir-cetak .ir-k-tren{grid-column:span 2}
   body.ir-cetak *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* simulasi kapasitas dan risiko besok (PRD F-12, F-13) */
+.ir-gulir-sedang{max-block-size:440px}
+.ir-rencana{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}
+.ir-rencana li{padding:2px 8px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--brand2) 10%,var(--card));color:var(--brand2);font-weight:600;white-space:nowrap}
+.ir-tabel td.n small{display:block;color:var(--ink2);font-size:var(--fs-1)}

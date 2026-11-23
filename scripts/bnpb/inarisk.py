@@ -197,6 +197,9 @@ def periksa_langkat(irbi, jiwa, ikd):
     assert ikd["prioritas"][0] == "Perkuatan Kebijakan Dan Kelembagaan"
 
 
+BOBOT_IKD = (0.06, 0.06, 0.075, 0.105, 0.21, 0.35, 0.14)
+
+
 def periksa_rek(ikd):
     ni, na, npri = len(ikd["indikator"]), len(ikd["aksi"]), len(ikd["prioritas"])
     assert len(set(ikd["indikator"])) == ni and len(set(ikd["aksi"])) == na, "katalog berduplikat"
@@ -204,6 +207,10 @@ def periksa_rek(ikd):
         assert len(a["nilai"]) == npri, kunci
         for p, i, s in a["rek"]:
             assert 1 <= p <= npri and 0 <= i < ni and 0 <= s < na, (kunci, p, i, s)
+        # rumus IKD terukur (KEPUTUSAN D11, sama dengan BOBOT_IKD di public/bnpb/inarisk_hitung.js): bila InaRISK mengubah bobot, cek ini merah
+        if a.get("indeks") is not None and all(v is not None for v in a["nilai"]):
+            hit = sum(w * v for w, v in zip(BOBOT_IKD, a["nilai"]))
+            assert abs(hit - a["indeks"]) <= 0.001, f"{kunci}: rumus IKD {hit:.4f} lawan indeks {a['indeks']:.4f}"
 
 
 def periksa_penuh(irbi, jiwa, ikd, tautan, geo):

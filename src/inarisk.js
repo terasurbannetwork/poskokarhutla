@@ -1,8 +1,9 @@
 /* Proksi InaRISK untuk /bnpb/inarisk (data/kajian-bnpb/inarisk/DESAIN-TEKNIS.md): daftar izin ketat, parameter disaring,
    nama petugas dibuang, galat hulu jadi 502 tanpa badan hulu. Tanpa kunci; batas laju lewat laju_bnpb.
    ponytail: batas laju baca-lalu-tulis (laju_bnpb), dihitung hanya saat cache luput. */
-import {json, gagal, ipHash} from "./worker.js";
+import {json, gagal, bacaBytes} from "./worker.js";
 import {lajuIP} from "./bnpb.js";
+import {samarkan} from "./samarkan.js";
 
 const API = "https://inarisk.bnpb.go.id/apiv4/", GIS = "https://gis.bnpb.go.id/server/rest/services/inarisk/";
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
@@ -13,11 +14,12 @@ const PROP_AMAN = ["Kegiatan", "Lokasi", "Deskripsi", "Tgl", "Foto", "Pcode", "O
 const MAKS_BADAN = 64 * 1024, MAKS_TITIK = 2000, EPSG3857 = 20037509;
 
 const hulu = async (url, init, ms) => {
-  try { return await fetch(url, {...init, headers: {"user-agent": UA, ...init?.headers}, signal: AbortSignal.timeout(ms)}); } catch { return null; }
+  /* redirect tidak diikuti (Workers tidak mendukung "error"): balasan 3xx bukan ok, jadi jadi 502; host hulu hanya yang tertulis di sini */
+  try { return await fetch(url, {...init, redirect: "manual", headers: {"user-agent": UA, ...init?.headers}, signal: AbortSignal.timeout(ms)}); } catch { return null; }
 };
 const galatHulu = () => gagal(502, "InaRISK sedang tidak menjawab, coba lagi nanti");
 /* foto lama InaRISK ditulis http://; host yang diizinkan dinaikkan ke https (diuji 23 Nov 2026: 200 image/jpeg), host lain dibuang */
-const fotoAman = f => { if (typeof f !== "string" || !URL.canParse(f)) return null; const u = new URL(f); if (!/^https?:$/.test(u.protocol) || !HOST_FOTO.has(u.hostname)) return null; u.protocol = "https:"; return u.href; };
+const fotoAman = f => { if (typeof f !== "string" || !URL.canParse(f)) return null; const u = new URL(f); if (!/^https?:$/.test(u.protocol) || !HOST_FOTO.has(u.hostname) || u.username || u.password || u.port) return null; u.protocol = "https:"; return u.href; };
 
 /* saring query: nama -> pemeriksa (string -> bool) */
 const SARING_UNDUHAN = {page: s => /^\d{1,5}$/.test(s), per_page: s => /^\d{1,2}$/.test(s) && +s >= 1 && +s <= 50, search: s => s.length <= 80,
@@ -48,9 +50,18 @@ const unduhan = (jalur) => (env, req, url) => {
     const r = await hulu(API + jalur + (q.size ? "?" + q : ""), {headers: {accept: "application/json"}}, 20000);
     if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
     let d; try { d = await r.json(); } catch { return galatHulu(); }
-    return new Response(JSON.stringify(d), {headers: JSON_H});
+    return new Response(JSON.stringify(rapikanUnduhan(d)), {headers: JSON_H});
   });
 };
+/* hanya kolom yang dipakai layar; kolom baru di hulu (mis. nama pengunggah) tidak ikut keluar */
+const KOLOM_BERKAS = ["id", "title", "description", "category", "file_format", "file_size", "file_url", "published_at"];
+export function rapikanUnduhan(d) {
+  const x = d?.data;
+  if (!x || typeof x !== "object") return {data: null};
+  if (Array.isArray(x.rows)) return {data: {pagination: x.pagination ?? null, rows: x.rows.map(r => Object.fromEntries(KOLOM_BERKAS.map(k => [k, r?.[k] ?? null])))}};
+  const daftar = a => Array.isArray(a) ? a.map(v => ({name: v?.name ?? null, count: v?.count ?? null})) : [];
+  return {data: {categories: daftar(x.categories), formats: daftar(x.formats)}};
+}
 
 const angka = (x, a, b) => typeof x === "number" && Number.isFinite(x) && x >= a && x <= b;
 /* badan dampak bersih {jalur, badan} atau string galat */
@@ -76,15 +87,19 @@ export function dampakBersih(b) {
   return {jalur: "dashboards/dashboard-jakarta/spatial-query/1", badan};
 }
 async function dampak(env, req) {
-  const teks = await req.text();
-  if (teks.length > MAKS_BADAN) return gagal(413, "badan terlalu besar");
-  let b; try { b = JSON.parse(teks); } catch { return gagal(400, "JSON tidak valid"); }
+  /* badan dibaca berbatas (tidak pernah menampung badan raksasa), divalidasi, lalu hasil dicache 1 hari per badan bersih:
+     kartu gunung api Dalops meminta radius yang sama tiap muat halaman. Batas laju dihitung saat cache luput (lewatCache). */
+  const bb = await bacaBytes(req, MAKS_BADAN); if (bb.galat) return gagal(bb.status, "badan terlalu besar");
+  let b; try { b = JSON.parse(new TextDecoder().decode(bb.b)); } catch { return gagal(400, "JSON tidak valid"); }
   const d = dampakBersih(b); if (typeof d === "string") return gagal(400, d);
-  const lj = await lajuIP(env, req, "inarisk", [[60e3, 60]]); if (lj) return lj;
-  const r = await hulu(API + d.jalur, {method: "POST", headers: {"content-type": "application/json", accept: "application/json"}, body: JSON.stringify(d.badan)}, 20000);
-  if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
-  let j; try { j = await r.json(); } catch { return galatHulu(); }
-  return json(j?.data?.result ?? j?.result ?? null);   // hulu membungkus: {success, data: {query, result}}
+  const badan = JSON.stringify(d.badan);
+  const sidik = [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(d.jalur + badan)))].map(x => x.toString(16).padStart(2, "0")).join("");
+  return lewatCache(env, req, "dampak/" + sidik, 86400, [[60e3, 60]], "inarisk", async () => {
+    const r = await hulu(API + d.jalur, {method: "POST", headers: {"content-type": "application/json", accept: "application/json"}, body: badan}, 20000);
+    if (!r || !r.ok) { r?.body?.cancel(); return galatHulu(); }
+    let j; try { j = await r.json(); } catch { return galatHulu(); }
+    return json(j?.data?.result ?? j?.result ?? null);   // hulu membungkus: {success, data: {query, result}}
+  });
 }
 
 /* bersihkan GeoJSON kegiatan: hanya properti daftar-putih, foto hanya dari host InaRISK */
@@ -92,6 +107,8 @@ export function bersihKegiatan(g) {
   const fitur = Array.isArray(g?.features) ? g.features : [];
   return {type: "FeatureCollection", features: fitur.map(f => {
     const p = {}; for (const k of PROP_AMAN) if (f?.properties && k in f.properties) p[k] = f.properties[k];
+    /* teks bebas petugas: nomor HP, email, NIK disamarkan (nama orang di teks bebas tidak bisa dikenali mesin; KEPUTUSAN Q5) */
+    for (const k of ["Deskripsi", "Lokasi", "Organisasi"]) if (typeof p[k] === "string") p[k] = samarkan(p[k]);
     if ("Foto" in p) p.Foto = Array.isArray(p.Foto) ? p.Foto.map(fotoAman).filter(Boolean) : fotoAman(p.Foto);
     return {type: "Feature", geometry: f?.geometry ?? null, properties: p};
   })};
@@ -108,9 +125,9 @@ function kegiatan(env, req, url) {
 }
 
 function ubin(env, req, url) {
-  const nama = decodeURIComponent(url.pathname.split("/")[4] || ""), bb = (url.searchParams.get("bbox") || "").split(",");
+  const nama = url.pathname.split("/")[4] || "", bb = (url.searchParams.get("bbox") || "").split(",");   // nama lapisan hanya [a-z_], tidak perlu didekode
   if (!LAPISAN.has(nama)) return gagal(404, "lapisan tidak ada");
-  const v = bb.length === 4 && bb.every(s => /^-?\d+(\.\d+)?$/.test(s)) ? bb.map(Number) : null;
+  const v = bb.length === 4 && bb.every(s => /^-?\d+(\.\d+)?(e-?\d{1,3})?$/i.test(s)) ? bb.map(Number) : null;
   if (!v || !v.every(x => Number.isFinite(x) && Math.abs(x) <= EPSG3857) || v[0] >= v[2] || v[1] >= v[3]) return gagal(400, "bbox harus xmin,ymin,xmax,ymax EPSG:3857");
   const kotak = v.join(",");
   return lewatCache(env, req, `ubin/${nama}?${kotak}`, 7 * 86400, [[60e3, 600]], "inarisk.ubin", async () => {

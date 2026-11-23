@@ -40,7 +40,11 @@ test("data mini: peringkat, seri, tren dua dasar, sebelumnya", () => {
 
 test("jiwa terpapar dibatasi penduduk; penduduk kosong = bagian kosong", () => {
   const r = H.jiwaPersen({penduduk: 1000, terpapar: [500, 2000, null]}, [{nama: "A"}, {nama: "B"}, {nama: "C"}]);
-  assert.deepEqual(r.map(x => x.persen), [50, 100, 0]);
+  assert.deepEqual(r.map(x => x.persen), [50, 100, null], "terpapar kosong tetap kosong, bukan 0");
+  assert.equal(H.persen1(0.0425), "<0,1%");
+  assert.equal(H.persen1(99.9575), ">99,9%");
+  assert.equal(H.persen1(0), "0%");
+  assert.equal(H.persen1(100), "100%");
   assert.deepEqual(H.jiwaPersen({penduduk: 0, terpapar: [1]}, [{nama: "A"}]), []);
 });
 
@@ -69,4 +73,28 @@ test("cermin nyata cocok dengan layar InaRISK", {skip: !existsSync(BERKAS) && "p
   assert.equal(p24.get("1205"), 160);
   assert.equal(p25.get("8204"), 1);
   assert.equal(p24.get("8204"), 13);
+});
+
+test("rumus IKD dari P1-P7 dan rencana kapasitas termurah", () => {
+  const P = [0.435, 0.7000000009999999, 0.3466666666, 0.24, 0.2, 0.315, 0.2];   // Langkat 2025, indeks InaRISK 0,29955
+  assert.ok(Math.abs(H.ikdDariP(P) - 0.29955) < 0.001);
+  const r = H.rencanaKapasitas(P);
+  assert.equal(r.cLama, 1); assert.equal(r.cBaru, 2); assert.equal(r.ambang, 0.4);
+  assert.equal(r.langkah[0].p, 6, "P6 berbobot terbesar dinaikkan dulu");
+  const Pbaru = [...P]; for (const l of r.langkah) Pbaru[l.p - 1] = l.ke;
+  assert.ok(H.ikdDariP(Pbaru) >= 0.4, "rencana benar-benar melewati ambang");
+  assert.equal(H.rencanaKapasitas([1, 1, 1, 1, 1, 1, 1]), null, "kelas 3 tidak perlu rencana");
+  assert.equal(H.kelasC(0.8), 2); assert.equal(H.kelasC(0.81), 3);
+  const hampir = H.rencanaKapasitas([0.39, 0.39, 0.39, 0.39, 0.39, 0.39, 0.39]);
+  assert.equal(hampir.langkah.length, 1); assert.ok(hampir.langkah[0].ke < 0.45);
+});
+
+test("risiko besok: kelas IRBI Tinggi di atas, aturan padanan, hanya tenggang 1", () => {
+  const irbi = {kolom: ["total", "banjir", "karlahut"], tahun: [2025], nilai: {"1101": {2025: [200, 36, 4]}, "1102": {2025: [100, 12, 30]}, "1103": {2025: [300, 1, 1]}}};
+  const w = [{kab: "1102", tenggang: 1, aturan: "asap", maka: "Masker", dampak: {jiwa: 900}}, {kab: "1101", tenggang: 1, aturan: "banjir", maka: "Waspada banjir", dampak: {jiwa: 10}},
+    {kab: "1103", tenggang: 2, aturan: "banjir", maka: "x", dampak: {jiwa: 1}}, {kab: "1101", tenggang: 1, aturan: "banjir", maka: "Waspada banjir", dampak: {jiwa: 20}}];
+  const r = H.risikoBesok(w, irbi);
+  assert.deepEqual(r.map(x => x.pcode), ["1101", "1102"]);
+  assert.equal(r[0].kelas, "Tinggi"); assert.equal(r[0].skorBahaya, 36); assert.equal(r[0].jiwa, 20); assert.equal(r[0].aturan.length, 1);
+  assert.equal(r[1].skorBahaya, 30, "asap dipadankan ke karhutla");
 });

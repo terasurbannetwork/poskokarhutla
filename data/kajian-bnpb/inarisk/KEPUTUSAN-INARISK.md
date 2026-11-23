@@ -11,6 +11,8 @@ ditulis dengan bawaan sementara bertanda **[bawaan]**, tidak dikarang.
   pencegahan, portal, dan `gis.bnpb.go.id/server/rest/services`.
 - **K3 (aturan tetap pemilik, 11 Nov 2026):** tidak ada data dummy di proyek mana pun.
 
+- **K4 (23 Nov 2026):** "Gas" untuk tiga pengembangan: simulasi naik IKD, dampak radius di Dalops, IRBI dikali prakiraan besok.
+
 ## Temuan yang mengubah arti "tiru semuanya"
 
 Pembongkaran kode InaRISK (`IrbiPage-*.js`, 23 Nov 2026) menunjukkan tiga angka di layar IRBI
@@ -53,6 +55,18 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
 - **D10:** "Unduh Ringkasan PDF" memakai cetak peramban (`window.print`) dengan gaya cetak dialog
   detail, tanpa pustaka PDF.
 
+- **D11 (K4):** rumus IKD dari prioritas ditemukan dengan regresi atas 532 analisa (galat terbesar 0,0003, bobot berjumlah 1):
+  IKD = 0,06 P1 + 0,06 P2 + 0,075 P3 + 0,105 P4 + 0,21 P5 + 0,35 P6 + 0,14 P7. Buku IRBI 2024 tidak menuliskannya; dipakai
+  sebagai rumus terukur, bukan resmi, dan diuji ulang tiap tarik (`--cek`).
+- **D12 (K4):** simulasi kapasitas: skor tiap bahaya dibagi kelas C (buku hlm. 28-29). Data 2025 menunjukkannya (banjir kelas 1
+  terbanyak 26, kelas 2 terbanyak 13), tapi tidak persis untuk semua kab, jadi IRBI simulasi = IRBI x C lama / C baru berlabel
+  "perkiraan". Rencana termurah = naikkan prioritas berbobot terbesar yang masih punya ruang, sampai melewati ambang.
+- **D13 (K4):** IRBI x besok memakai `waspada` tenggang 1 dari `/prediksi/data/prediksi.json` (prakiraan kita, bukan BMKG).
+  Padanan aturan ke kolom IRBI: banjir ke banjir, longsor ke longsor, karhutla dan asap ke karhutla, melaut ke abrasi,
+  angin ke cuaca ekstrem. Urutan: kelas IRBI total Tinggi dulu, lalu skor bahaya padanannya. Tidak pernah menulis "aman".
+- **D14 (K4):** kejadian logbook Dalops tidak berkoordinat (hanya nama desa), jadi dampak radius dipasang dulu di kartu gunung
+  api Siaga dan Awas (berkoordinat puncak): radius 1, 5, 10 km dan radius larangan PVMBG. Hasil dampak dicache Worker 1 hari.
+
 ## Pertanyaan terbuka
 
 - **Q1:** sumber resmi penduduk per jenis kelamin per kab? **[bawaan]** tidak ditampilkan.
@@ -63,3 +77,7 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
   menunggu jawaban.
 - **Q4:** STEP-A dan portal tidak dicermin: STEP-A tipis (banyak responden 0), portal butuh token.
   **[bawaan]** dilewati.
+
+- **Q5:** teks bebas petugas di titik Lapor Kegiatan (Deskripsi, Lokasi) bisa memuat nama orang; nomor HP, email, dan NIK
+  disamarkan mesin, nama tidak bisa. **[bawaan]** tetap ditampilkan, karena sudah publik di InaRISK.
+- **Q6:** dampak radius untuk kejadian logbook butuh pencari koordinat dari nama desa. **[bawaan]** belum dibuat.

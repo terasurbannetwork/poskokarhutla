@@ -51,3 +51,20 @@ Jarum 0-1 dipetakan ke busur 180 derajat. Radar 7 sumbu, nilai 0-1.
 ## 9. Warna koroplet
 
 Tiga kelas (Tinggi, Sedang, Rendah) dengan token warna; kab tanpa skor abu.
+
+## 10. Simulasi kapasitas (D11, D12)
+
+`ikdDariP(P) = Σ w_i P_i`, w = [0,06; 0,06; 0,075; 0,105; 0,21; 0,35; 0,14]. Ambang berikut: 0,40 bila IKD < 0,40, 0,80 bila
+<= 0,80, selain itu sudah kelas 3. Rencana: urutkan prioritas menurut w menurun; tiap langkah naikkan P_i maksimal ke 1 sampai
+selisih tertutup (butuh dP = sisa / w_i). Hasil: daftar [prioritas, dari, ke]. IRBI perkiraan = IRBI x C lama / C baru.
+Urutan daftar: selisih ke ambang naik, lalu IRBI turun terbesar.
+
+## 11. Risiko besok (D13)
+
+Ambil `waspada` dengan `tenggang` 1, gabung per kab (beberapa aturan jadi satu baris). Kunci urut: kelas IRBI total (Tinggi,
+Sedang, Rendah), lalu skor bahaya padanan terbesar, lalu jiwa terdampak prakiraan.
+
+## 12. Dampak radius gunung api (D14)
+
+Tiga POST ke proksi per gunung (1, 5, 10 km) ditambah radius larangan bila lain; dimuat saat kartunya terlihat
+(IntersectionObserver). Nilai kosong tampil "–".

@@ -3,7 +3,7 @@
    Data: irbi.json, jiwa.json, ikd.json lewat Ir.muat. Ringkasan PDF = cetak peramban (gaya @media print di inarisk.css). */
 (() => {
   const {H} = Ir;
-  const tgl = s => new Date(s).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"});
+  const tgl = s => Ir.tanggal(s);
 
   /* ---- grafik ---- */
   function jarum(v, ambang = {rendah: 0.4, tinggi: 0.8}) {
@@ -21,12 +21,13 @@
     const n = nilai.length, R = 78, c = 100, sudut = i => -Math.PI / 2 - i * 2 * Math.PI / n;   // P2 di kiri seperti InaRISK
     const pt = (i, r) => [c + r * Math.cos(sudut(i)), c + r * Math.sin(sudut(i))];
     const poli = r => nilai.map((_, i) => pt(i, r).map(x => x.toFixed(1)).join(",")).join(" ");
-    const data = nilai.map((v, i) => pt(i, R * Math.max(0, Math.min(1, v || 0))));
+    const ada = v => typeof v === "number" && Number.isFinite(v);   // prioritas tanpa nilai tidak digambar sebagai nol
+    const data = nilai.map((v, i) => ada(v) ? pt(i, R * Math.max(0, Math.min(1, v))) : null);
     return `<svg class="ir-radar" viewBox="-12 -8 224 216" role="img" aria-label="Indeks per prioritas: ${nilai.map((v, i) => `P${i + 1} ${H.angka2(v)}`).join(", ")}">` +
       [0.25, 0.5, 0.75, 1].map(f => `<polygon class="r-kisi" points="${poli(R * f)}"/>`).join("") +
       nilai.map((_, i) => { const [x, y] = pt(i, R); return `<line class="r-kisi" x1="${c}" y1="${c}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`; }).join("") +
-      `<polygon class="r-isi" points="${data.map(p => p.map(x => x.toFixed(1)).join(",")).join(" ")}"/>` +
-      data.map(([x, y], i) => `<circle class="r-titik" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" data-tip="<b>P${i + 1}</b> ${esc(nama[i] || "")}<br>Indeks: ${H.angka2(nilai[i])}"/>`).join("") +
+      `<polygon class="r-isi" points="${data.filter(Boolean).map(p => p.map(x => x.toFixed(1)).join(",")).join(" ")}"/>` +
+      data.map((p, i) => !p ? "" : `<circle class="r-titik" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="5" data-tip="<b>P${i + 1}</b> ${esc(nama[i] || "")}<br>Indeks: ${H.angka2(nilai[i])}"/>`).join("") +
       nilai.map((_, i) => { const [x, y] = pt(i, R + 14); return `<text class="r-label" x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="middle">P${i + 1}</text>`; }).join("") + `</svg>`;
   }
   function trenSvg(grup, kolom) {
@@ -44,7 +45,7 @@
       `<ul class="ir-tren-leg">${grup.some(g => !g.baru) ? `<li><i class="t-lama"></i>HV 2015, 9 jenis bencana</li>` : ""}${grup.some(g => g.baru) ? `<li><i class="t-baru"></i>HV 2021, 11 jenis bencana</li>` : ""}</ul>`;
   }
   function jiwaSvg(baris) {
-    return `<ul class="ir-jiwa">${baris.map(b => `<li data-tip="<b>${esc(b.nama)}</b><br>Terpapar: ${H.angka0(b.terpapar)} jiwa<br>Persen: ${H.persen1(b.persen)}">` +
+    return `<ul class="ir-jiwa">${baris.map(b => b.persen === null ? `<li><span>${esc(b.nama)}</span><i class="ir-jiwa-bt ir-jiwa-kosong">tidak ada data</i></li>` : `<li data-tip="<b>${esc(b.nama)}</b><br>Terpapar: ${H.angka0(b.terpapar)} jiwa<br>Persen: ${H.persen1(b.persen)}">` +
       `<span>${esc(b.nama)}</span><i class="ir-jiwa-bt"><s class="j-ya" data-w="${b.persen.toFixed(2)}">${b.persen >= 8 ? H.persen1(b.persen) : ""}</s><s class="j-tidak" data-w="${b.sisa.toFixed(2)}">${b.sisa >= 8 ? H.persen1(b.sisa) : ""}</s></i></li>`).join("")}</ul>` +
       `<ul class="ir-tren-leg"><li><i class="j-ya"></i>Jiwa terpapar</li><li><i class="j-tidak"></i>Jiwa tidak terpapar</li></ul>`;
   }
@@ -117,7 +118,7 @@
     isi.innerHTML = kepala("dlgIkdJ", nama, baris?.[2] || "Tingkat provinsi", `<small>Indeks kapasitas</small><b>${H.angka2(baris?.[4] ?? null)}</b><small>Tingkat kapasitas</small><b><i class="ir-titik ${tk ? "t-" + tk.toLowerCase() : ""}"></i>${esc(tk || "–")}</b>`) +
       `<p class="ir-dlg-sub">Hasil analisa IKD tahun ${tahun}</p>` +
       (a ? `<div class="ir-dlg-g2 ir-dlg-g2b">${kotak("Tingkat kapasitas daerah", jarum(a.indeks))}${kotak("Indeks per prioritas", radar(a.nilai, ikd.prioritas))}</div>` +
-        `<ul class="ir-prio">${a.nilai.map((v, i) => `<li><i>P${i + 1}</i><span>${esc(ikd.prioritas[i])}</span><b class="ir-prio-bt"><s data-w="${(Math.max(0, Math.min(1, v || 0)) * 100).toFixed(1)}"></s></b><em>${H.angka2(v)}</em></li>`).join("")}</ul>` +
+        `<ul class="ir-prio">${a.nilai.map((v, i) => `<li><i>P${i + 1}</i><span>${esc(ikd.prioritas[i])}</span><b class="ir-prio-bt">${typeof v === "number" ? `<s data-w="${(Math.max(0, Math.min(1, v)) * 100).toFixed(1)}"></s>` : ""}</b><em>${H.angka2(v)}</em></li>`).join("")}</ul>` +
         kotak("Rekomendasi kebijakan", rekomendasi(ikd, a, true), "ir-k-rek")
         : `<p class="ir-p">Analisa IKD tahun ${tahun} belum tersedia untuk wilayah ini.</p>`) +
       `<footer class="ir-dlg-ft"><p><b>Sumber</b>InaRISK BNPB, IKD final.</p><div class="ir-dlg-aksi"><button type="button" class="bn-tombol" data-tutup>Tutup</button></div></footer>`;

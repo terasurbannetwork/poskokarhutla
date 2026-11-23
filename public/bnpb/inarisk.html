@@ -13,7 +13,7 @@
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
 <link href="/inti/kartu.css" rel="stylesheet">
-<link href="/bnpb/inarisk.css?v=5" rel="stylesheet">
+<link href="/bnpb/inarisk.css?v=9" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -79,6 +79,25 @@
             </div>
           </section>
         </div>
+        <section class="ir-kartu ir-kartu-tabel" aria-labelledby="irBskJ">
+          <div class="ir-kartu-hd"><h2 id="irBskJ">Risiko besok</h2><span class="ir-ket" id="irBskKet"></span></div>
+          <div class="ir-gulir ir-gulir-sedang" tabindex="0" role="region" aria-labelledby="irBskJ">
+            <table class="ir-tabel">
+              <thead><tr><th scope="col">Kabupaten/kota</th><th scope="col">Kelas IRBI</th><th scope="col" class="n">Skor IRBI</th><th scope="col">Waspada besok</th><th scope="col" class="n" title="Skor IRBI jenis bahaya yang dipadankan dengan waspada itu">Skor bahaya</th><th scope="col" class="n" title="Perkiraan jiwa terdampak dari prakiraan">Jiwa terdampak</th><th scope="col"><span class="ir-sr">Detail</span></th></tr></thead>
+              <tbody id="irBskBaris"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="ir-kartu ir-kartu-tabel" aria-labelledby="irSimJ">
+          <div class="ir-kartu-hd"><h2 id="irSimJ">Simulasi kapasitas daerah</h2><span class="ir-pil k-kosong" title="Rumus IKD dari P1-P7 dan pembagian skor dengan kelas kapasitas diukur dari data InaRISK, belum diuji balik">perkiraan</span></div>
+          <p class="ir-p" id="irSimKet"></p>
+          <div class="ir-gulir ir-gulir-sedang" tabindex="0" role="region" aria-labelledby="irSimJ">
+            <table class="ir-tabel">
+              <thead><tr><th scope="col">Kabupaten/kota</th><th scope="col" class="n">IKD</th><th scope="col" class="n" title="Kenaikan IKD yang dibutuhkan untuk naik satu kelas kapasitas">Kurang ke ambang</th><th scope="col">Rencana termurah</th><th scope="col" class="n">IRBI sekarang</th><th scope="col" class="n" title="IRBI x kelas kapasitas lama / kelas baru">IRBI perkiraan</th><th scope="col" class="n">Peringkat</th></tr></thead>
+              <tbody id="irSimBaris"></tbody>
+            </table>
+          </div>
+        </section>
         <section class="ir-kartu" aria-labelledby="irBahJ">
           <div class="ir-kartu-hd"><h2 id="irBahJ">Rerata skor per jenis bahaya</h2><span class="ir-ket" id="irBahKet"></span></div>
           <div class="ir-bahaya" id="irBahayaRata"></div>
@@ -206,11 +225,11 @@
         <table class="ir-tabel">
           <thead><tr><th scope="col">Skor</th><th scope="col">Rendah</th><th scope="col">Sedang</th><th scope="col">Tinggi</th></tr></thead>
           <tbody>
-            <tr><th scope="row">IRBI 2025 (dasar 2021)</th><td>di bawah 14,67</td><td>14,67 sampai 176</td><td>di atas 176</td></tr>
-            <tr><th scope="row">IRBI 2015 sampai 2024 (dasar 2015)</th><td>di bawah 13</td><td>13 sampai 144</td><td>di atas 144</td></tr>
-            <tr><th scope="row">Per jenis bahaya</th><td>di bawah 5,33</td><td>5,33 sampai 12</td><td>di atas 12</td></tr>
-            <tr><th scope="row">Tanah longsor</th><td>di bawah 6,67</td><td>6,67 sampai 15</td><td>di atas 15</td></tr>
-            <tr><th scope="row">Letusan gunung api</th><td>di bawah 4</td><td>4 sampai 9</td><td>di atas 9</td></tr>
+            <tr><td class="ir-lbl">IRBI 2025 (dasar 2021)</td><td>di bawah 14,67</td><td>14,67 sampai 176</td><td>di atas 176</td></tr>
+            <tr><td class="ir-lbl">IRBI 2015 sampai 2024 (dasar 2015)</td><td>di bawah 13</td><td>13 sampai 144</td><td>di atas 144</td></tr>
+            <tr><td class="ir-lbl">Per jenis bahaya</td><td>di bawah 5,33</td><td>5,33 sampai 12</td><td>di atas 12</td></tr>
+            <tr><td class="ir-lbl">Tanah longsor</td><td>di bawah 6,67</td><td>6,67 sampai 15</td><td>di atas 15</td></tr>
+            <tr><td class="ir-lbl">Letusan gunung api</td><td>di bawah 4</td><td>4 sampai 9</td><td>di atas 9</td></tr>
           </tbody>
         </table>
       </div>
@@ -311,11 +330,12 @@
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
 <script src="/inti/format.js"></script>
 <script src="/inti/tip.js"></script>
-<script src="/bnpb/inarisk_hitung.js?v=1"></script>
-<script src="/bnpb/inarisk.js?v=3"></script>
-<script src="/bnpb/inarisk_detail.js?v=2"></script>
-<script src="/bnpb/inarisk_ikd.js?v=1"></script>
-<script src="/bnpb/inarisk_gis.js?v=2"></script>
-<script src="/bnpb/inarisk_unduh.js?v=2"></script>
+<script src="/bnpb/inarisk_hitung.js?v=9"></script>
+<script src="/bnpb/inarisk.js?v=9"></script>
+<script src="/bnpb/inarisk_simulasi.js?v=9"></script>
+<script src="/bnpb/inarisk_detail.js?v=9"></script>
+<script src="/bnpb/inarisk_ikd.js?v=9"></script>
+<script src="/bnpb/inarisk_gis.js?v=9"></script>
+<script src="/bnpb/inarisk_unduh.js?v=9"></script>
 </body>
 </html>

@@ -134,7 +134,7 @@ Ir.tab.gis = {
         const NAMA = [["penduduk", "Penduduk"], ["sekolah", "Sekolah"], ["rs", "Rumah sakit"], ["puskesmas", "Puskesmas"], ["madrasah", "Madrasah"], ["bandara", "Bandara"], ["bangunan", "Bangunan"],
           ["kantor_ojk", "Kantor OJK"], ["kantor_pajak", "Kantor pajak"], ["obvitnas", "Objek vital nasional"], ["pariwisata", "Pariwisata"], ["pelabuhan", "Pelabuhan"], ["perguruan_tinggi", "Perguruan tinggi"]];
         isi.querySelector("[role=status]").outerHTML = `<section class="ir-k"><h3>Dampak penduduk dan sarana</h3><table class="ir-tabel ir-tabel-kv"><tbody>` +
-          NAMA.map(([k, n]) => `<tr><th scope="row">${n}</th><td class="n${Number(r[k]) > 0 ? " ir-tebal" : ""}">${r[k] == null ? "–" : H.angka0(Number(r[k]))}</td></tr>`).join("") +
+          NAMA.map(([k, n]) => `<tr><td class="ir-lbl">${n}</td><td class="n${Number(r[k]) > 0 ? " ir-tebal" : ""}">${r[k] == null || r[k] === "" || !Number.isFinite(Number(r[k])) ? "–" : H.angka0(Number(r[k]))}</td></tr>`).join("") +
           `</tbody></table></section><p class="ir-ket">Sumber: InaRISK BNPB, kueri spasial dasbor Web GIS.</p>`;
       } catch (err) { isi.querySelector("[role=status]").textContent = err.message; }
     }

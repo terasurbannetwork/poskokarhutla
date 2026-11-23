@@ -13,4 +13,7 @@ Dikerjakan urut. Tiap tiket layar ditinjau pemilik di `http://localhost:8800/bnp
 | IR-07 | tab Web GIS: peta dasar, lapisan ArcGIS, gambar + dampak, Lapor Kegiatan | radius 1 km Yogyakarta membalas angka |
 | IR-08 | tab Unduhan, Tautan, Metodologi, Tentang, Disclaimer | filter kategori dan halaman jalan |
 | IR-09 | jadwal mingguan di workflow (`mekanik-mesin`) | workflow jalan sekali |
+| IR-11 | simulasi kapasitas (F-12) + rumus IKD di `inarisk_hitung.js` dan `--cek` | uji rumus IKD Langkat 0,30; rencana menutup selisih |
+| IR-12 | risiko besok (F-13) | daftar dari prediksi.json, Tinggi di atas |
+| IR-13 | dampak radius di kartu gunung api Dalops (F-14) + cache dampak di Worker | uji cache proksi; kartu Siaga menampilkan angka |
 | IR-10 | fase 2 (menunggu Q3): lapisan ACEBS dan SPAB | - |

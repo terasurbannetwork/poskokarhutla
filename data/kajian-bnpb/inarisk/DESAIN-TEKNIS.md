@@ -14,6 +14,8 @@
 | `tests/bnpb/inarisk_hitung.test.mjs` | uji fungsi murni dengan data cermin | `ruang-bnpb` |
 | `src/inarisk.js` + rute di `src/bnpb.js` | proksi `/api/inarisk/*`, rute halaman | `warga-api` |
 | `tests/warga/inarisk_proksi.test.mjs` | uji proksi dengan fetch tiruan | `warga-api` |
+| `public/bnpb/inarisk_simulasi.js` | tab IRBI: simulasi kapasitas dan risiko besok | `ruang-bnpb` |
+| `public/bnpb/dampak_radius.js` | komponen tabel dampak radius untuk Dalops | `ruang-bnpb` |
 
 ## Bentuk JSON cermin
 

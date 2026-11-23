@@ -58,7 +58,10 @@ const Ir = (() => {
     addEventListener("hashchange", tampil);
     tampil();
   });
-  return {H, NAMA_BAHAYA, tab, muat, api, warna, kelasCss, pil, isiOpsi, rantaiProvKab};
+  /* kerja berat sesudah frame berikut tercat (INP): chrome kontrol bereaksi dulu */
+  const nanti = fn => { let s = 0; const go = () => { if (!s++) fn(); }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
+  const tanggal = (x, o = {day: "numeric", month: "long", year: "numeric"}) => { const t = Date.parse(x); return Number.isNaN(t) ? "–" : new Date(t).toLocaleDateString("id-ID", o); };
+  return {H, NAMA_BAHAYA, tab, muat, api, warna, kelasCss, pil, isiOpsi, rantaiProvKab, nanti, tanggal};
 })();
 
 /* ===== tab IRBI ===== */
@@ -73,13 +76,13 @@ Ir.tab.irbi = {
       Ir.isiOpsi($t, [...d.tahun].reverse().map(t => [t, t]));
       Ir.isiOpsi($b, d.kolom.map(k => [k, Ir.NAMA_BAHAYA[k] || k]));
       Ir.rantaiProvKab($p, $k, d.kab, d.prov);
-      $("#irKaki").textContent = `Sumber: InaRISK BNPB, ditarik ${new Date(d.dibuat).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"})}.`;
-      for (const el of [$t, $b, $p, $k]) el.addEventListener("change", gambar);
-      $("#irReset").addEventListener("click", () => { $t.selectedIndex = 0; $b.selectedIndex = 0; $p.value = ""; $p.dispatchEvent(new Event("change")); gambar(); });
-      $("#irBaris").addEventListener("click", e => { const b = e.target.closest("[data-kab]"); if (b) Ir.bukaDetail(b.dataset.kab, filter()); });
+      $("#irKaki").textContent = `Sumber: InaRISK BNPB, ditarik ${Ir.tanggal(d.dibuat)}.`;
+      for (const el of [$t, $b, $p, $k]) el.addEventListener("change", segarkan);
+      $("#irReset").addEventListener("click", () => { $t.selectedIndex = 0; $b.selectedIndex = 0; $p.value = ""; $p.dispatchEvent(new Event("change")); segarkan(); });
+      for (const id of ["#irBaris", "#irBskBaris", "#irSimBaris"]) $(id).addEventListener("click", e => { const b = e.target.closest("[data-kab]"); if (b) Ir.bukaDetail(b.dataset.kab, filter()); });
       pasangPeta(geo);
       gambar();
-    }).catch(() => nyatakan("Data IRBI belum ditarik. Jalankan python3 scripts/bnpb/inarisk.py tarik lalu bangun."));
+    }).catch(() => nyatakan("Data IRBI belum tersedia. Coba muat ulang halaman nanti."));
     Ir.api("unduhan?search=irbi&per_page=3&sort=Terbaru").then(j => {
       const baris = j.data?.rows || [];
       $("#irDok").innerHTML = baris.length ? baris.map(r => `<li><a href="${escUrl(urlBerkas(r.file_url))}" target="_blank" rel="noopener noreferrer"><i>${esc(String(r.file_format || "").toUpperCase())}</i><span>${esc(r.title)}<small>${esc(String(r.file_format || "").toUpperCase())}, ${esc(r.file_size || "")}</small></span></a></li>`).join("") : `<li class="ir-p">Belum ada dokumen.</li>`;
@@ -101,12 +104,16 @@ Ir.tab.irbi = {
         st.siap = true;
         warnaiPeta();
         const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, className: "ir-pop"});
+        let pAkhir = "";
         M.on("mousemove", "kab-isi", e => {
-          const f = e.features[0], p = f.properties.pcode, s = H.skor(st.d, p, filter().tahun, filter().kolom);
+          const f = e.features[0], p = f.properties.pcode;
+          if (p === pAkhir) { pop.setLngLat(e.lngLat); return; }   // kab sama: geser saja, tanpa membangun ulang isi
+          pAkhir = p;
+          const {tahun, kolom} = filter(), s = H.skor(st.d, p, tahun, kolom);
           M.getCanvas().style.cursor = "pointer";
-          pop.setLngLat(e.lngLat).setHTML(`<b>${esc(st.d.kab[p]?.[0] || f.properties.nama)}</b><br>${esc(H.angka2(s))} ${esc(H.kelas(s, filter().kolom, filter().tahun) || "")}`).addTo(M);
+          pop.setLngLat(e.lngLat).setHTML(`<b>${esc(st.d.kab[p]?.[0] || f.properties.nama)}</b><br>${esc(H.angka2(s))} ${esc(H.kelas(s, kolom, tahun) || "")}`).addTo(M);
         });
-        M.on("mouseleave", "kab-isi", () => { M.getCanvas().style.cursor = ""; pop.remove(); });
+        M.on("mouseleave", "kab-isi", () => { pAkhir = ""; M.getCanvas().style.cursor = ""; pop.remove(); });
         M.on("click", "kab-isi", e => Ir.bukaDetail(e.features[0].properties.pcode, filter()));
       });
     }
@@ -121,6 +128,8 @@ Ir.tab.irbi = {
     function bingkai(prov, kab) {
       if (!st.siap) return;
       const kode = kab || prov;
+      if (kode === st.kodeBingkai) return;   // ganti tahun atau bahaya tidak menggeser peta
+      st.kodeBingkai = kode;
       if (!kode) { st.peta.fitBounds([[94.8, -11.2], [141.2, 6.2]], {padding: 12, duration: 500}); return; }
       const b = new maplibregl.LngLatBounds();
       for (const f of st.geo.features) if (String(f.properties.pcode).startsWith(kode)) for (const c of f.geometry.coordinates.flat(f.geometry.type === "MultiPolygon" ? 2 : 1)) b.extend(c);
@@ -151,7 +160,7 @@ Ir.tab.irbi = {
         const seb = H.sebelumnya(d, x.pcode, tahun, kolom), beda = seb === null ? null : x.skor - seb;
         const panah = beda === null ? "–" : `${beda > 0 ? "↑" : beda < 0 ? "↓" : ""} ${H.angka2(Math.abs(beda))}`;
         const nm = namaKab(x);
-        return `<tr${x.pcode === kab ? ' class="ir-pilih"' : ""}><td class="n">${i + 1}</td><th scope="row">${nm}<small>${esc(d.prov[x.pcode.slice(0, 2)] || "")}</small></th><td class="n">${H.angka2(x.skor)}</td><td>${Ir.pil(H.kelas(x.skor, kolom, tahun))}</td>` +
+        return `<tr${x.pcode === kab ? ' class="ir-pilih"' : ""}><td class="n">${i + 1}</td><td class="ir-lbl">${nm}<small>${esc(d.prov[x.pcode.slice(0, 2)] || "")}</small></td><td class="n">${H.angka2(x.skor)}</td><td>${Ir.pil(H.kelas(x.skor, kolom, tahun))}</td>` +
           `<td class="n">${H.angka2(seb)}</td><td class="n ${beda > 0 ? "naik" : beda < 0 ? "turun" : ""}">${panah}</td><td><button type="button" class="ir-ikon" data-kab="${esc(x.pcode)}" aria-label="Lihat detail ${nm}">›</button></td></tr>`;
       }).join("") || `<tr><td colspan="7" class="ir-p">Tidak ada kabupaten/kota bersekor.</td></tr>`;
       if (kab) document.querySelector("#irBaris .ir-pilih")?.scrollIntoView({block: "nearest"});
@@ -167,8 +176,17 @@ Ir.tab.irbi = {
       for (const s of document.querySelectorAll("#irBahayaRata s[data-w]")) s.style.setProperty("inline-size", s.dataset.w + "%");
       warnaiPeta();
       bingkai(prov, kab);
+      Ir.tambahanIrbi?.(filter(), d);   // simulasi kapasitas dan risiko besok (inarisk_simulasi.js)
     }
-    $("#irBahayaRata").addEventListener("click", e => { const b = e.target.closest("[data-kolom]"); if (!b) return; $b.value = b.dataset.kolom === $b.value ? "total" : b.dataset.kolom; gambar(); });
+    /* urgent: tanda tombol dan status sibuk; berat (kartu, 514 baris, peta): ditunda, yang terakhir menang */
+    let giliran = 0;
+    function segarkan() {
+      const no = ++giliran;
+      for (const b of document.querySelectorAll("#irBahayaRata [data-kolom]")) b.setAttribute("aria-pressed", String(b.dataset.kolom === $b.value));
+      $("#irBaris").setAttribute("aria-busy", "true");
+      Ir.nanti(() => { if (no !== giliran) return; gambar(); $("#irBaris").removeAttribute("aria-busy"); });
+    }
+    $("#irBahayaRata").addEventListener("click", e => { const b = e.target.closest("[data-kolom]"); if (!b) return; $b.value = b.dataset.kolom === $b.value ? "total" : b.dataset.kolom; segarkan(); });
     this.tampil = () => st.peta?.resize();
   },
 };

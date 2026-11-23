@@ -25,7 +25,7 @@ Ir.tab.ikd = {
       $("#ikJml").textContent = `${H.angka0(n)} data`;
       $("#ikBaris").innerHTML = iris.map(r => {
         const tk = H.tingkatIkd(r[4]), ada = ikd.analisa[`${r[0]}/${r[3]}`];
-        return `<tr><th scope="row">${esc(r[1])}</th><td>${esc(r[0].length === 2 ? "Tingkat provinsi" : r[2])}</td><td class="n">${r[3]}</td><td class="n">${H.angka2(r[4])}</td>` +
+        return `<tr><td class="ir-lbl">${esc(r[1])}</td><td>${esc(r[0].length === 2 ? "Tingkat provinsi" : r[2])}</td><td class="n">${r[3]}</td><td class="n">${H.angka2(r[4])}</td>` +
           `<td><span class="ir-tk"><i class="ir-titik ${tk ? "t-" + tk.toLowerCase() : ""}"></i>${esc(tk || "–")}</span></td>` +
           `<td>${ada ? `<button type="button" class="ir-tombol2 ir-kecil" data-ikd="${esc(r[0])}" data-th="${r[3]}">Lihat analisa</button>` : `<span class="ir-ket">Analisa belum dicermin</span>`}</td></tr>`;
       }).join("") || `<tr><td colspan="6" class="ir-p">Tidak ada IKD final untuk pilihan ini.</td></tr>`;

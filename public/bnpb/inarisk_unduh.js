@@ -27,16 +27,16 @@ Ir.tab.unduhan = {
       $("#unBaris").setAttribute("aria-busy", "true");
       Ir.api("unduhan?" + q()).then(j => {
         if (no !== minta) return;   // balasan lama yang kalah cepat dibuang
-        const rows = j.data?.rows || [], n = j.data?.pagination?.total_data ?? rows.length;
-        $("#unJml").textContent = `${H.angka0(n)} berkas`;
+        const rows = j.data?.rows || [], n = j.data?.pagination?.total_data;
+        $("#unJml").textContent = typeof n === "number" ? `${H.angka0(n)} berkas` : "Jumlah berkas belum diketahui";
         $("#unBaris").innerHTML = rows.map(r => {
           const url = urlBerkas(r.file_url) && escUrl(urlBerkas(r.file_url));
           const fm = String(r.file_format || "").toUpperCase();
-          return `<tr><th scope="row"><b>${esc(r.title)}</b><small>${esc(r.description || "")}</small></th><td><span class="ir-pil ir-kat">${esc(r.category || "–")}</span></td>` +
-            `<td>${esc(fm || "–")}</td><td class="n">${esc(r.file_size || "–")}</td><td>${r.published_at ? esc(new Date(r.published_at).toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric"})) : "–"}</td>` +
+          return `<tr><td class="ir-lbl"><b>${esc(r.title)}</b><small>${esc(r.description || "")}</small></td><td><span class="ir-pil ir-kat">${esc(r.category || "–")}</span></td>` +
+            `<td>${esc(fm || "–")}</td><td class="n">${esc(r.file_size || "–")}</td><td>${esc(Ir.tanggal(r.published_at, {day: "numeric", month: "short", year: "numeric"}))}</td>` +
             `<td>${url ? `<a class="ir-tombol2 ir-kecil" href="${url}" target="_blank" rel="noopener noreferrer">Unduh</a>` : ""}</td></tr>`;
         }).join("") || `<tr><td colspan="6" class="ir-p">Tidak ada berkas untuk pilihan ini.</td></tr>`;
-        halaman($("#unHal"), hal, Math.ceil(n / PER), n, PER, h => { hal = h; muat(); });
+        if (typeof n === "number") halaman($("#unHal"), hal, Math.ceil(n / PER), n, PER, h => { hal = h; muat(); }); else $("#unHal").innerHTML = "";
       }).catch(e => { if (no === minta) $("#unBaris").innerHTML = `<tr><td colspan="6" class="ir-p">${esc(e.message)}</td></tr>`; })
         .finally(() => { if (no === minta) $("#unBaris").removeAttribute("aria-busy"); });
     }
