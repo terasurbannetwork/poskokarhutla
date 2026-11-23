@@ -2151,5 +2151,5 @@ export const tkSimpan = (env, p, b) => sedia(env, p, "tautan_token", "tambah",
 export const tkPakai = (env, p, jenis, tokenSha, kini) => sedia(env, p, "tautan_token", "ubah",
   "UPDATE tautan_token SET dipakai_n = dipakai_n + 1, terakhir = ?3 WHERE token_sha = ?2 AND jenis = ?1 AND dicabut IS NULL AND kedaluwarsa > ?3 RETURNING id, sasaran, cakupan, kedaluwarsa")
   .bind(jenis, tokenSha, kini).first();
-export const tkCabut = async (env, p, id, kini) => (await sedia(env, p, "tautan_token", "ubah",
-  "UPDATE tautan_token SET dicabut = ?2 WHERE id = ?1 AND dicabut IS NULL").bind(id, kini).run()).meta.changes;
+export const tkCabut = async (env, p, jenis, id, kini) => (await sedia(env, p, "tautan_token", "ubah",
+  "UPDATE tautan_token SET dicabut = ?3 WHERE id = ?2 AND jenis = ?1 AND dicabut IS NULL").bind(jenis, id, kini).run()).meta.changes;   // jenis: modul A tidak mencabut token modul B

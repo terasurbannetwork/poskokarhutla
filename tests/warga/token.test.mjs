@@ -21,16 +21,17 @@ uji("token: terbit, periksa, cabut, kedaluwarsa, dan D1 hanya menyimpan sha-256"
   assert.deepEqual(await U.DB.prepare("SELECT dipakai_n, terakhir FROM tautan_token WHERE id = ?").bind(t.id).first(), {dipakai_n: 2, terakhir: KINI + 2000}, "pemakaian tercatat");
   assert.equal(await periksa(env, "lain", t.token, KINI), null, "jenis lain ditolak");
   assert.equal(await periksa(env, "mitra_3w", t.token, KINI + 7 * HARI), null, "tepat di batas kedaluwarsa ditolak");
-  assert.equal(await cabut(env, t.id, KINI + 3000), true); assert.equal(await cabut(env, t.id, KINI + 4000), false, "cabut dua kali");
+  assert.equal(await cabut(env, "lain", t.id, KINI + 2500), false, "jenis lain tidak bisa mencabut");
+  assert.equal(await cabut(env, "mitra_3w", t.id, KINI + 3000), true); assert.equal(await cabut(env, "mitra_3w", t.id, KINI + 4000), false, "cabut dua kali");
   assert.equal(await periksa(env, "mitra_3w", t.token, KINI + 5000), null, "dicabut ditolak");
   assert.equal((await U.DB.prepare("SELECT dipakai_n FROM tautan_token WHERE id = ?").bind(t.id).first()).dipakai_n, 2, "pemeriksaan gagal tidak menambah hitungan");
 });
 
 uji("token: masukan salah ditolak sebelum D1; skema menolak baris tanpa kedaluwarsa yang sah", async () => {
-  for (const o of [{jenis: "Mitra"}, {ttlMs: 30e3}, {ttlMs: 91 * HARI}, {cakupan: ["A B"]}, {sasaran: "teks"}, {sasaran: {x: "y".repeat(600)}}, {oleh: ""}])
+  for (const o of [{jenis: "Mitra"}, {ttlMs: 30e3}, {ttlMs: 91 * HARI}, {cakupan: ["A B"]}, {sasaran: "teks"}, {sasaran: ["larik"]}, {sasaran: {x: "y".repeat(600)}}, {oleh: ""}])
     await assert.rejects(() => baru(o), Error, JSON.stringify(o));
   for (const t of ["", "pendek", "x".repeat(43) + "=", null, 123]) assert.equal(await periksa(env, "mitra_3w", t, KINI), null);
-  assert.equal(await cabut(env, "bukan-id", KINI), false);
+  assert.equal(await cabut(env, "mitra_3w", "bukan-id", KINI), false);
   await assert.rejects(() => tkSimpan(env, pelakuTkTerbit, {id: "a".repeat(16), jenis: "mitra_3w", token_sha: "b".repeat(64), sasaran: "{}", cakupan: "[]", dibuat: KINI, kedaluwarsa: KINI, oleh: "s"}), /CHECK/);
   await assert.rejects(() => tkSimpan(env, pelakuTkTerbit, {id: "c".repeat(16), jenis: "mitra_3w", token_sha: "B".repeat(64), sasaran: "{}", cakupan: "[]", dibuat: KINI, kedaluwarsa: KINI + 1, oleh: "s"}), /CHECK/);
   assert.throws(() => tkPakai(env, {peran: "sistem"}, "mitra_3w", "b".repeat(64), KINI), /tidak berhak/);

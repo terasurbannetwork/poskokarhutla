@@ -5,9 +5,9 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { berkas, baca } from './fixtures/ratchet.mjs'
 
-const BATAS = 164, POLA = /(?:token|kode|kunci)\w*_sha\b/i
+const BATAS = 164, POLA = /(?:token|kode|kunci|akses|tautan|rahasia|secret)\w*?(?:_sha\d*|_hash)\b|\bsha\d*_(?:token|kode|kunci)/i
 const nomor = (f) => Number(f.match(/migrations\/(\d{4})_/)?.[1])
-const buang = (s) => s.replace(/--.*$/gm, '')
+const buang = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/--.*$/gm, '')
 
 test('migrasi sesudah 0164 tidak membuat kolom token sendiri (pakai tautan_token)', () => {
   const salah = berkas('migrations', /\.sql$/).filter((f) => nomor(f) > BATAS && POLA.test(buang(baca(f))))
@@ -17,6 +17,6 @@ test('migrasi sesudah 0164 tidak membuat kolom token sendiri (pakai tautan_token
 test('rumah token ada dan pemindai tidak buta', () => {
   assert.match(baca('migrations/0164_tautan_token.sql'), /token_sha/)
   assert.match(baca('src/token.js'), /export async function terbitkan/)
-  for (const k of ['token_sha TEXT', 'ADD COLUMN kode_sha TEXT', 'kunci_api_sha', 'tw_kode_sha']) assert.ok(POLA.test(k), k)
-  for (const s of ['-- token_sha', 'sha256 TEXT', 'foto_sha TEXT']) assert.ok(!POLA.test(buang(s)), s)
+  for (const k of ['token_sha TEXT', 'ADD COLUMN kode_sha TEXT', 'kunci_api_sha', 'tw_kode_sha', 'token_sha256 TEXT', 'token_hash TEXT', 'sha_token TEXT', 'akses_sha TEXT', 'tautan_sha TEXT']) assert.ok(POLA.test(k), k)
+  for (const s of ['-- token_sha', '/* token_sha */', 'sha256 TEXT', 'foto_sha TEXT', 'berkas_hash TEXT']) assert.ok(!POLA.test(buang(s)), s)
 })
