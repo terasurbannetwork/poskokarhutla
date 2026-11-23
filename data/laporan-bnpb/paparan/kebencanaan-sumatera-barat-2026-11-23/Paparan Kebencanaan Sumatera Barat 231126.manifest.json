@@ -1542,67 +1542,7 @@
     "02  ",
     "03  ",
     "04  ",
-    "Motor Trail",
-    "9 Tenda",
-    "24 Lampu Solar Cell",
-    "2025",
-    "Truk",
-    "126 Lentera",
-    "120 Terpal",
-    "Mobil Rescue",
-    "2025",
-    "Mobil Pick Up",
-    "Mobil Rescue",
-    "Mobil Rescue",
-    "2025",
-    "Mobil Pick Up",
-    "Mobil Rescue",
-    "2025",
-    "Mobil Pick Up",
-    "Perahu dan Mesin Perahu",
-    "2025",
-    "Mobil Rescue",
-    "Perahu dan Mesin Perahu",
-    "2025",
-    "Mobil Pick Up",
-    "Motor Trail",
-    "2025",
-    "Mobil Pick Up",
-    "Motor Trail",
-    "2025",
-    "Mobil Pick Up",
-    "Mobil Rescue",
-    "2025",
-    "Mobil Pick Up",
-    "Mobil Rescue",
-    "2025",
-    "Mobil Pick Up",
-    "Perahu dan Mesin Perahu",
-    "2025",
-    "Mobil Pick Up",
-    "Perahu dan Mesin Perahu",
-    "2025",
-    "Mobil Tangki Air",
-    "Perahu dan Mesin Perahu",
-    "2025",
-    "Mobil Pick Up",
-    "4 Tenda Pengungsi",
-    "24 Lampu Solar Cell",
-    "2025",
-    "Mobil Rescue",
-    "4 Tenda Pengungsi",
-    "24 Lampu Solar Cell",
-    "2025",
-    "Mobil Pick Up",
-    "2025",
-    "Mobil Truk Serbaguna",
-    "2025",
-    "Mobil Pick Up",
-    "2025",
-    "Mobil Pick Up",
-    "2025",
-    "Mobil Pick Up",
-    "Direktorat Logistik BNPB, 23 Nov 2026"
+    "Direktorat Logistik BNPB, diserahkan 23 November 2026"
    ],
    "warna": [
     [
@@ -1611,6 +1551,10 @@
     ],
     [
      "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
      "inti"
     ],
     [
@@ -1626,10 +1570,6 @@
      "inti"
     ],
     [
-     "BFC5CC",
-     "pil"
-    ],
-    [
      "C9D1E3",
      "aksen"
     ],
@@ -1642,23 +1582,15 @@
      "pil"
     ],
     [
-     "DCEBF8",
-     "pil"
-    ],
-    [
      "EEF5FC",
      "permukaan"
-    ],
-    [
-     "F3F5F8",
-     "pil"
     ],
     [
      "FFFFFF",
      "inti"
     ]
    ],
-   "judul_spek": "Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {{angka:wb.sb.lg.n|satuan}} di Sumatera Barat",
+   "judul_spek": "Bantuan Peralatan dan Logistik yang Diserahkan kepada {{angka:wb.sb.lg.n|satuan}} di Sumatera Barat",
    "pesan": "Bantuan logistik",
    "pembatas": false,
    "kontras": null,
@@ -1671,47 +1603,6 @@
    "gambar": [
     "logo",
     "logo",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
     "ikon"
    ],
    "panel": [
@@ -3560,7 +3451,7 @@
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor7.1",
-   "tampil": "10",
+   "tampil": "6",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
@@ -6198,16 +6089,24 @@
    "rendah": null,
    "tinggi": null,
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "naskah": "banjir-sumbar#15"
   },
   {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Motor Trail; 9 Tenda; 24 Lampu Solar Cell; Truk (2025); 126 Lentera (2025); 120 Terpal (2025)",
+   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#l25",
+   "tampil": "Truk, 126 Lentera, 120 Terpal",
    "nilai": null,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#l26",
+   "tampil": "Motor Trail, 9 Tenda, 24 Lampu Solar Cell",
+   "nilai": null,
+   "naskah": "banjir-sumbar#15",
+   "keyakinan": "resmi",
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6215,7 +6114,7 @@
    "nilai": 240.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6223,7 +6122,7 @@
    "nilai": 240.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6231,7 +6130,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6239,7 +6138,7 @@
    "nilai": 160.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6247,7 +6146,7 @@
    "nilai": 200.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6255,15 +6154,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Rescue; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6271,7 +6162,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6279,7 +6170,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6287,7 +6178,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6295,7 +6186,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6303,7 +6194,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6311,7 +6202,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6319,7 +6210,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6327,7 +6218,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6335,7 +6226,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6343,7 +6234,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6351,7 +6242,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6359,15 +6250,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Rescue; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6375,7 +6258,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6383,7 +6266,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6391,7 +6274,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6399,7 +6282,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6407,7 +6290,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6415,15 +6298,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Rescue; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6431,7 +6306,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6439,7 +6314,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6447,7 +6322,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6455,7 +6330,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6463,7 +6338,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6471,15 +6346,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Perahu dan Mesin Perahu; Mobil Rescue (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6487,7 +6354,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6495,7 +6362,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6503,7 +6370,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6511,7 +6378,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6519,7 +6386,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6527,15 +6394,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Perahu dan Mesin Perahu; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6543,7 +6402,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6551,7 +6410,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6559,7 +6418,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6567,7 +6426,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6575,7 +6434,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6583,15 +6442,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Motor Trail; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6599,7 +6450,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6607,7 +6458,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6615,7 +6466,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6623,7 +6474,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6631,7 +6482,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6639,15 +6490,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Motor Trail; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6655,7 +6498,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6663,7 +6506,7 @@
    "nilai": 120.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6671,7 +6514,7 @@
    "nilai": 45.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6679,7 +6522,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6687,7 +6530,7 @@
    "nilai": 100.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6695,15 +6538,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Rescue; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6711,7 +6546,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6719,7 +6554,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6727,7 +6562,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6735,7 +6570,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6743,7 +6578,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6751,15 +6586,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Rescue; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6767,7 +6594,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6775,7 +6602,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6783,7 +6610,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6791,7 +6618,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6799,7 +6626,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6807,15 +6634,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Perahu dan Mesin Perahu; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6823,7 +6642,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6831,7 +6650,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6839,7 +6658,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6847,7 +6666,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6855,7 +6674,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6863,15 +6682,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Perahu dan Mesin Perahu; Mobil Tangki Air (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6879,7 +6690,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6887,7 +6698,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6895,7 +6706,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6903,7 +6714,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6911,7 +6722,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6919,15 +6730,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Perahu dan Mesin Perahu; Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6935,7 +6738,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6943,7 +6746,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -6951,7 +6754,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -6959,7 +6762,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -6967,7 +6770,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -6975,15 +6778,15 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Rescue (2025)",
+   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#l26",
+   "tampil": "4 Tenda Pengungsi, 24 Lampu Solar Cell",
    "nilai": null,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -6991,7 +6794,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -6999,7 +6802,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -7007,7 +6810,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -7015,7 +6818,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -7023,7 +6826,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -7031,15 +6834,15 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "4 Tenda Pengungsi; 24 Lampu Solar Cell; Mobil Pick Up (2025)",
+   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#l26",
+   "tampil": "4 Tenda Pengungsi, 24 Lampu Solar Cell",
    "nilai": null,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -7047,7 +6850,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -7055,7 +6858,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -7063,7 +6866,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -7071,7 +6874,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -7079,7 +6882,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -7087,15 +6890,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Truk Serbaguna (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -7103,7 +6898,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -7111,7 +6906,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -7119,7 +6914,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -7127,7 +6922,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -7135,7 +6930,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -7143,15 +6938,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -7159,7 +6946,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -7167,7 +6954,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -7175,7 +6962,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -7183,7 +6970,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -7191,7 +6978,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -7199,15 +6986,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -7215,7 +6994,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -7223,7 +7002,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -7231,7 +7010,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -7239,7 +7018,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -7247,7 +7026,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -7255,15 +7034,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
-  },
-  {
-   "kunci": "csvteks:data/sumut-aceh/sb/logistik.csv#alat",
-   "tampil": "Mobil Pick Up (2025)",
-   "nilai": null,
-   "naskah": "banjir-sumbar#15",
-   "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#selimut",
@@ -7271,7 +7042,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#matras",
@@ -7279,7 +7050,7 @@
    "nilai": 90.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#kasur",
@@ -7287,7 +7058,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#terpal",
@@ -7295,7 +7066,7 @@
    "nilai": 60.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#makanan",
@@ -7303,7 +7074,7 @@
    "nilai": 80.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "csv:data/sumut-aceh/sb/logistik.csv#family",
@@ -7311,7 +7082,7 @@
    "nilai": 30.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+   "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
   },
   {
    "kunci": "turunan:banjir-sumbar#15#jumlah:selimut",
@@ -7319,7 +7090,7 @@
    "nilai": 2080.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "dari": []
   },
   {
@@ -7328,7 +7099,7 @@
    "nilai": 2190.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "dari": []
   },
   {
@@ -7337,7 +7108,7 @@
    "nilai": 780.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "dari": []
   },
   {
@@ -7346,7 +7117,7 @@
    "nilai": 1460.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "dari": []
   },
   {
@@ -7355,7 +7126,7 @@
    "nilai": 1880.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "dari": []
   },
   {
@@ -7364,7 +7135,7 @@
    "nilai": 930.0,
    "naskah": "banjir-sumbar#15",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, 23 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Direktorat Logistik BNPB, diserahkan 23 November 2026",
    "dari": []
   },
   {
@@ -7459,18 +7230,18 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/logo-bersama/kris-rope.pptx": "73406bfb95cd58d7879f44e969c0f7f5ea8e5a8896fa052d8a6c2045ed92071c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-australia/foto/bencana-rob.jpg": "3635f50f1523ac94bf6be84f50ab167587cdc12f482a04bb28dbfe6196573635",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "064af923e44215bfc03bf2d2041054d26c8085f8c4a35b2f5ebf597f10849441",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/impor/sumbar.pptx": "8c4fea04fbd90ff0fc649a3af6412b2561d51609835eee7a2d5e078a3ee61d3d",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "dccb06e8bd019ddff537288efd308d035f3543ad98707a0112b796cf006ce190",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/impor/sumbar.pptx": "f8f3bb2c52f000892ee0125fda691558ecb210c554243535d484ae42f13b48f8",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/banjir25.csv": "36062a4de5d9b46edecb21d973e47f752e5be363b01559c1d1a980cd6fc4c474",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/gempa_kab.csv": "aae86f24797abfa0d82e71bc2a6b19c652881079428f8ec28f36b1e369a795bb",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/gempa_tabel.csv": "d2668aa6d38801404ac248079fbfe966c4322f333ccc6cd49b76d749b0d317bc",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/karhutla.csv": "d810a619766ffc8604f5310c1d47211fdde09ba3e73f345a17e0142a4e08a77d",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/logistik.csv": "7f7563b9f8b7ad742d6078f3ab5dc16bee3e2494a15175e1b51c4d5ab741a48f",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/logistik.csv": "a683560b9e3c064e7740a2e19f6d26189a072bbc59d0c5e2426bd61a6470202f",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/luas_kab.csv": "5706cbb406454e79b982cce55151ddb982f59648fe7b28329f0f40c2d4130118",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kabupaten/13.json": "de5012a3e1aa157176ba1b587baa47b0842b14f3fca80a47027ce209d2537d73",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-0154b5346a9e.png": "d9f0286138fc048bad310a0fedcf05d3986b159ec53efc73e29e9990642b84c8",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/banjir-sumbar.json": "0cbc461dd8c5fab31ce63361aab246eb41cada7b1fee94326040d4f1e0c15d22",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/banjir-sumbar.json": "96cde180ad92f409584e9859bf5bfe028aadc8ae54af376d030d7d2f458221ed",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "6032d109e6c774fc12a5e5ffff68a8df1b103941a1bfa6818d80d8f3b5b9a5e3",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

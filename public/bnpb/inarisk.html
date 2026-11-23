@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b2545">
+<title>Risiko Bencana Indonesia (InaRISK), Centurisk97</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/inti/kartu.css" rel="stylesheet">
+<link href="/bnpb/inarisk.css?v=9" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
+  <nav class="ir-nav" aria-label="Bagian InaRISK">
+    <a href="#irbi" aria-current="page">IRBI</a>
+    <a href="#ikd">IKD</a>
+    <a href="#gis">Web GIS</a>
+    <a href="#unduhan">Unduhan</a>
+    <a href="#tautan">Tautan</a>
+    <a href="#metodologi">Metodologi</a>
+    <a href="#tentang">Tentang</a>
+    <a href="#disclaimer">Disclaimer</a>
+  </nav>
+</header>
+
+<main class="bn-wrap ir">
+  <!-- IRBI -->
+  <section class="ir-bag" data-bag="irbi" aria-labelledby="irJudulIrbi">
+    <h1 class="ir-sr" id="irJudulIrbi">Indeks Risiko Bencana Indonesia</h1>
+    <div class="ir-irbi">
+      <aside class="ir-kiri">
+        <section class="ir-kartu" aria-labelledby="irFilterJ">
+          <div class="ir-kartu-hd"><h2 id="irFilterJ">Filter</h2><button type="button" class="ir-teks" id="irReset">Atur ulang</button></div>
+          <label class="ir-field">Tahun<select id="irTahun"></select></label>
+          <label class="ir-field">Jenis bahaya<select id="irBahaya"></select></label>
+          <label class="ir-field">Provinsi<select id="irProv"><option value="">Semua provinsi</option></select></label>
+          <label class="ir-field">Kabupaten/kota<select id="irKab" disabled><option value="">Pilih provinsi dulu</option></select></label>
+        </section>
+        <section class="ir-kartu" aria-labelledby="irMetJ">
+          <div class="ir-kartu-hd"><h2 id="irMetJ">Metodologi IRBI</h2></div>
+          <p class="ir-p">IRBI menggambarkan tingkat risiko bencana di satu wilayah dari tiga komponen.</p>
+          <ul class="ir-hvc">
+            <li><i class="ir-lb ir-lb-h">H</i>Bahaya</li>
+            <li><i class="ir-lb ir-lb-v">V</i>Kerentanan</li>
+            <li><i class="ir-lb ir-lb-c">C</i>Kapasitas</li>
+          </ul>
+          <a class="ir-tombol2" href="#metodologi">Lihat metodologi</a>
+        </section>
+        <section class="ir-kartu" aria-labelledby="irDokJ">
+          <div class="ir-kartu-hd"><h2 id="irDokJ">Dokumen terkait</h2></div>
+          <ul class="ir-dok" id="irDok"><li class="ir-p">Memuat dokumen…</li></ul>
+          <a class="ir-tombol2" href="#unduhan">Lihat semua dokumen</a>
+        </section>
+      </aside>
+      <div class="ir-kanan">
+        <div class="ir-angka" id="irAngka" aria-live="polite"></div>
+        <div class="ir-peta-tabel">
+          <section class="ir-kartu ir-kartu-peta" aria-labelledby="irPetaJ">
+            <div class="ir-kartu-hd"><h2 id="irPetaJ">Peta indeks risiko bencana</h2><span class="ir-ket" id="irPetaKet"></span></div>
+            <div class="ir-peta" id="irPeta"></div>
+            <ul class="ir-legenda" aria-label="Legenda kelas risiko">
+              <li><i class="k-tinggi"></i>Tinggi</li><li><i class="k-sedang"></i>Sedang</li><li><i class="k-rendah"></i>Rendah</li><li><i class="k-kosong"></i>Tanpa skor</li>
+            </ul>
+          </section>
+          <section class="ir-kartu ir-kartu-tabel" aria-labelledby="irPerJ">
+            <div class="ir-kartu-hd"><h2 id="irPerJ">Peringkat IRBI kabupaten/kota</h2><span class="ir-ket" id="irPerKet"></span></div>
+            <div class="ir-gulir" tabindex="0" role="region" aria-labelledby="irPerJ">
+              <table class="ir-tabel">
+                <thead><tr><th scope="col">#</th><th scope="col">Kabupaten/kota</th><th scope="col" class="n" id="irThSkor">Skor</th><th scope="col">Kelas</th><th scope="col" class="n" id="irThSeb" title="2025: skor pembanding InaRISK (SEB 60). Tahun lain: skor tahun sebelumnya.">Skor sebelumnya</th><th scope="col" class="n">Perubahan</th><th scope="col"><span class="ir-sr">Detail</span></th></tr></thead>
+                <tbody id="irBaris"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <section class="ir-kartu ir-kartu-tabel" aria-labelledby="irBskJ">
+          <div class="ir-kartu-hd"><h2 id="irBskJ">Risiko besok</h2><span class="ir-ket" id="irBskKet"></span></div>
+          <div class="ir-gulir ir-gulir-sedang" tabindex="0" role="region" aria-labelledby="irBskJ">
+            <table class="ir-tabel">
+              <thead><tr><th scope="col">Kabupaten/kota</th><th scope="col">Kelas IRBI</th><th scope="col" class="n">Skor IRBI</th><th scope="col">Waspada besok</th><th scope="col" class="n" title="Skor IRBI jenis bahaya yang dipadankan dengan waspada itu">Skor bahaya</th><th scope="col" class="n" title="Perkiraan jiwa terdampak dari prakiraan">Jiwa terdampak</th><th scope="col"><span class="ir-sr">Detail</span></th></tr></thead>
+              <tbody id="irBskBaris"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="ir-kartu ir-kartu-tabel" aria-labelledby="irSimJ">
+          <div class="ir-kartu-hd"><h2 id="irSimJ">Simulasi kapasitas daerah</h2><span class="ir-pil k-kosong" title="Rumus IKD dari P1-P7 dan pembagian skor dengan kelas kapasitas diukur dari data InaRISK, belum diuji balik">perkiraan</span></div>
+          <p class="ir-p" id="irSimKet"></p>
+          <div class="ir-gulir ir-gulir-sedang" tabindex="0" role="region" aria-labelledby="irSimJ">
+            <table class="ir-tabel">
+              <thead><tr><th scope="col">Kabupaten/kota</th><th scope="col" class="n">IKD</th><th scope="col" class="n" title="Kenaikan IKD yang dibutuhkan untuk naik satu kelas kapasitas">Kurang ke ambang</th><th scope="col">Rencana termurah</th><th scope="col" class="n">IRBI sekarang</th><th scope="col" class="n" title="IRBI x kelas kapasitas lama / kelas baru">IRBI perkiraan</th><th scope="col" class="n">Peringkat</th></tr></thead>
+              <tbody id="irSimBaris"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="ir-kartu" aria-labelledby="irBahJ">
+          <div class="ir-kartu-hd"><h2 id="irBahJ">Rerata skor per jenis bahaya</h2><span class="ir-ket" id="irBahKet"></span></div>
+          <div class="ir-bahaya" id="irBahayaRata"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- IKD -->
+  <section class="ir-bag" data-bag="ikd" hidden aria-labelledby="irJudulIkd">
+    <div class="ir-kepala">
+      <h1 id="irJudulIkd">Indeks Ketahanan Daerah (IKD)</h1>
+      <p>Hasil penilaian kapasitas daerah yang sudah ditetapkan final. Pilih tahun dan wilayah, lalu buka analisanya untuk melihat indeks per prioritas, tingkat kapasitas, dan rekomendasi kebijakan.</p>
+    </div>
+    <div class="ir-kartu ir-saring">
+      <label class="ir-field">Tahun IKD<select id="ikTahun"></select></label>
+      <label class="ir-field">Provinsi<select id="ikProv"><option value="">Semua provinsi</option></select></label>
+      <label class="ir-field">Kabupaten/kota<select id="ikKab" disabled><option value="">Pilih provinsi dulu</option></select></label>
+      <p class="ir-jml" id="ikJml" aria-live="polite"></p>
+    </div>
+    <section class="ir-kartu ir-kartu-tabel" aria-labelledby="ikTabJ">
+      <h2 class="ir-sr" id="ikTabJ">Daftar IKD</h2>
+      <div class="ir-gulir ir-gulir-panjang" tabindex="0" role="region" aria-labelledby="ikTabJ">
+        <table class="ir-tabel">
+          <thead><tr><th scope="col">Wilayah</th><th scope="col">Provinsi</th><th scope="col" class="n">Tahun IKD</th><th scope="col" class="n">Indeks kapasitas</th><th scope="col">Tingkat kapasitas</th><th scope="col"><span class="ir-sr">Aksi</span></th></tr></thead>
+          <tbody id="ikBaris"></tbody>
+        </table>
+      </div>
+      <div class="ir-hal" id="ikHal"></div>
+    </section>
+  </section>
+
+  <!-- Web GIS -->
+  <section class="ir-bag" data-bag="gis" hidden aria-labelledby="irJudulGis">
+    <h1 class="ir-sr" id="irJudulGis">Web GIS</h1>
+    <div class="ir-gis">
+      <div class="ir-gis-peta" id="gsPeta"></div>
+      <div class="ir-gis-alat" role="toolbar" aria-label="Alat peta">
+        <button type="button" data-alat="titik" aria-pressed="false" title="Titik dengan radius 1 km"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>Titik</button>
+        <button type="button" data-alat="lingkaran" aria-pressed="false" title="Klik pusat lalu klik tepi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1"/></svg>Lingkaran</button>
+        <button type="button" data-alat="poligon" aria-pressed="false" title="Klik titik sudut, klik ganda untuk selesai"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7l7-4 7 5-3 11H8z"/></svg>Poligon</button>
+        <button type="button" data-alat="hapus" title="Hapus gambar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Hapus</button>
+        <span class="ir-gis-pisah"></span>
+        <label class="ir-gis-tgl">Lapor kegiatan dari <input type="date" id="gsDari"></label>
+        <label class="ir-gis-tgl">sampai <input type="date" id="gsSampai"></label>
+        <a class="ir-teks" id="gsUnduh" href="#" download="lapor-kegiatan.geojson" hidden>Unduh GeoJSON</a>
+      </div>
+      <details class="ir-gis-lapis" open>
+        <summary><span>Lapisan peta</span><small id="gsAktif">0 aktif</small></summary>
+        <div class="ir-gis-isi" id="gsLapis"></div>
+        <button type="button" class="ir-tombol2" id="gsMati">Matikan semua lapisan</button>
+      </details>
+      <p class="ir-gis-pesan" id="gsPesan" role="status"></p>
+    </div>
+  </section>
+
+  <!-- Unduhan -->
+  <section class="ir-bag" data-bag="unduhan" hidden aria-labelledby="irJudulUnd">
+    <div class="ir-kepala">
+      <h1 id="irJudulUnd">Unduhan</h1>
+      <p>Data, peta, dan dokumen pendukung InaRISK dari instansi resmi. Berkas diunduh langsung dari server BNPB.</p>
+    </div>
+    <form class="ir-kartu ir-saring ir-saring-und" id="unForm">
+      <label class="ir-field ir-lebar">Cari berkas<input type="search" id="unCari" maxlength="80" placeholder="Judul, kata kunci, atau deskripsi"></label>
+      <label class="ir-field">Provinsi<select id="unProv"><option value="">Semua provinsi</option></select></label>
+      <label class="ir-field">Kabupaten/kota<select id="unKab" disabled><option value="">Pilih provinsi dulu</option></select></label>
+      <label class="ir-field">Kategori<select id="unKat"><option value="">Semua kategori</option></select></label>
+      <label class="ir-field">Format<select id="unFmt"><option value="">Semua format</option></select></label>
+      <label class="ir-field">Urutan<select id="unUrut"><option value="Terbaru">Terbaru</option><option value="Nama A-Z">Nama A-Z</option></select></label>
+      <p class="ir-jml" id="unJml" aria-live="polite"></p>
+    </form>
+    <section class="ir-kartu ir-kartu-tabel" aria-labelledby="unTabJ">
+      <h2 class="ir-sr" id="unTabJ">Daftar berkas</h2>
+      <div class="ir-gulir ir-gulir-panjang" tabindex="0" role="region" aria-labelledby="unTabJ">
+        <table class="ir-tabel ir-tabel-und">
+          <thead><tr><th scope="col">Nama berkas</th><th scope="col">Kategori</th><th scope="col">Format</th><th scope="col" class="n">Ukuran</th><th scope="col">Tanggal</th><th scope="col"><span class="ir-sr">Aksi</span></th></tr></thead>
+          <tbody id="unBaris"></tbody>
+        </table>
+      </div>
+      <div class="ir-hal" id="unHal"></div>
+    </section>
+  </section>
+
+  <!-- Tautan -->
+  <section class="ir-bag" data-bag="tautan" hidden aria-labelledby="irJudulTaut">
+    <div class="ir-kepala"><h1 id="irJudulTaut">Tautan</h1><p>Dasbor dan layanan peta BNPB yang terkait dengan InaRISK.</p></div>
+    <div id="tbIsi" class="ir-tautan"></div>
+  </section>
+
+  <!-- Metodologi -->
+  <section class="ir-bag ir-teks-bag" data-bag="metodologi" hidden aria-labelledby="irJudulMet">
+    <div class="ir-kepala">
+      <h1 id="irJudulMet">Metodologi InaRISK</h1>
+      <p>InaRISK menghitung risiko bencana dari data bahaya, kerentanan, dan kapasitas per kabupaten/kota, mengacu pada Kerangka Sendai untuk Pengurangan Risiko Bencana dan peraturan di Indonesia.</p>
+    </div>
+    <ul class="ir-fakta">
+      <li><b>38</b><span>provinsi</span></li>
+      <li><b>514</b><span>kabupaten/kota</span></li>
+      <li><b>11</b><span>jenis bahaya pada dasar kajian 2021</span></li>
+      <li><b>71</b><span>indikator kapasitas (IKD) dalam 7 prioritas</span></li>
+    </ul>
+    <section class="ir-kartu" aria-labelledby="mtKerJ">
+      <div class="ir-kartu-hd"><h2 id="mtKerJ">Kerangka metodologi</h2></div>
+      <ol class="ir-langkah">
+        <li><i>01</i><b>Bahaya</b><span>Kelas bahaya 1 sampai 3 per jenis bencana, dikali bobot jenisnya: tanah longsor 5, letusan gunung api 3, jenis lain 4.</span></li>
+        <li><i>02</i><b>Kerentanan sosial</b><span>Jiwa terpapar per km², dengan ambang di bawah 500, 500 sampai 1.000, dan di atas 1.000 jiwa.</span></li>
+        <li><i>03</i><b>Kerentanan fisik dan ekonomi</b><span>Potensi kerugian rupiah dari rumah, fasilitas umum, fasilitas kritis, dan lahan produktif.</span></li>
+        <li><i>04</i><b>Kerentanan lingkungan</b><span>Potensi kerusakan hutan lindung, hutan alam, mangrove, dan rawa dalam hektare.</span></li>
+        <li><i>05</i><b>Kapasitas</b><span>Kelas dari IKD: di bawah 0,40 kelas 1, 0,40 sampai 0,80 kelas 2, di atas 0,80 kelas 3.</span></li>
+        <li><i>06</i><b>Risiko</b><span>Skor risiko tiap jenis bahaya dijumlah menjadi IRBI kabupaten/kota. IRBI provinsi dan nasional adalah rerata kabupaten/kotanya.</span></li>
+      </ol>
+    </section>
+    <section class="ir-kartu ir-rumus" aria-labelledby="mtRumJ">
+      <div class="ir-kartu-hd"><h2 id="mtRumJ">Model risiko</h2></div>
+      <div class="ir-rumus-isi">
+        <p class="ir-rumus-r">R = H × V ÷ C</p>
+        <dl><dt>R</dt><dd>risiko per jenis bahaya</dd><dt>H</dt><dd>bahaya</dd><dt>V</dt><dd>kerentanan</dd><dt>C</dt><dd>kapasitas</dd></dl>
+      </div>
+      <p class="ir-p">Rumus ini dipakai dalam tabel hitung Buku IRBI 2024 (halaman 16 sampai 29). Halaman Metodologi InaRISK menuliskan R = (H × V × (1 − C))<sup>1/3</sup>, dan kartu IRBI InaRISK menyebut bobot H 40%, V 30%, C 30%. Tabel skor di buku tidak memakai bobot itu.</p>
+      <p class="ir-p">Skor 2015 sampai 2024 memakai dasar kajian bahaya dan kerentanan 2015 (9 jenis bencana). Skor 2025 memakai dasar 2021 (11 jenis bencana, ditambah banjir bandang dan likuefaksi). Dua dasar ini tidak bisa dibandingkan langsung.</p>
+    </section>
+    <section class="ir-kartu" aria-labelledby="mtKlsJ">
+      <div class="ir-kartu-hd"><h2 id="mtKlsJ">Kelas risiko</h2></div>
+      <div class="ir-gulir" tabindex="0" role="region" aria-labelledby="mtKlsJ">
+        <table class="ir-tabel">
+          <thead><tr><th scope="col">Skor</th><th scope="col">Rendah</th><th scope="col">Sedang</th><th scope="col">Tinggi</th></tr></thead>
+          <tbody>
+            <tr><td class="ir-lbl">IRBI 2025 (dasar 2021)</td><td>di bawah 14,67</td><td>14,67 sampai 176</td><td>di atas 176</td></tr>
+            <tr><td class="ir-lbl">IRBI 2015 sampai 2024 (dasar 2015)</td><td>di bawah 13</td><td>13 sampai 144</td><td>di atas 144</td></tr>
+            <tr><td class="ir-lbl">Per jenis bahaya</td><td>di bawah 5,33</td><td>5,33 sampai 12</td><td>di atas 12</td></tr>
+            <tr><td class="ir-lbl">Tanah longsor</td><td>di bawah 6,67</td><td>6,67 sampai 15</td><td>di atas 15</td></tr>
+            <tr><td class="ir-lbl">Letusan gunung api</td><td>di bawah 4</td><td>4 sampai 9</td><td>di atas 9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="ir-kartu" aria-labelledby="mtSumJ">
+      <div class="ir-kartu-hd"><h2 id="mtSumJ">Sumber data</h2></div>
+      <ul class="ir-sumber">
+        <li><b>BPS</b><span>Badan Pusat Statistik</span></li>
+        <li><b>BIG</b><span>Badan Informasi Geospasial</span></li>
+        <li><b>BMKG</b><span>Badan Meteorologi, Klimatologi, dan Geofisika</span></li>
+        <li><b>Kementerian PUPR</b><span>Kementerian Pekerjaan Umum dan Perumahan Rakyat</span></li>
+        <li><b>K/L dan pemda</b><span>Kementerian, lembaga, dan pemerintah daerah</span></li>
+        <li><b>Lainnya</b><span>Instansi terkait lainnya</span></li>
+      </ul>
+    </section>
+  </section>
+
+  <!-- Tentang -->
+  <section class="ir-bag ir-teks-bag" data-bag="tentang" hidden aria-labelledby="irJudulTen">
+    <div class="ir-kepala">
+      <h1 id="irJudulTen">Tentang InaRISK</h1>
+      <p>InaRISK (Indonesia Risk Management) adalah platform resmi BNPB untuk mendukung pengelolaan risiko bencana di Indonesia secara terpadu, terbuka, dan berbasis data.</p>
+    </div>
+    <div class="ir-tiga">
+      <section class="ir-kartu" aria-labelledby="tnApaJ">
+        <div class="ir-kartu-hd"><h2 id="tnApaJ">Apa itu InaRISK</h2></div>
+        <p class="ir-p">Sistem informasi risiko bencana berbasis web yang menyajikan informasi risiko secara spasial dan nonspasial untuk mendukung:</p>
+        <ul class="ir-cek"><li>perencanaan pembangunan berkelanjutan</li><li>pengurangan risiko bencana</li><li>pengambilan keputusan berbasis data</li><li>kesiapsiagaan dan respons bencana</li></ul>
+      </section>
+      <section class="ir-kartu" aria-labelledby="tnMisJ">
+        <div class="ir-kartu-hd"><h2 id="tnMisJ">Misi</h2></div>
+        <ul class="ir-misi">
+          <li><b>Informasi risiko yang akurat</b><span>Menyajikan data dan informasi risiko bencana yang mutakhir dan dapat dipercaya.</span></li>
+          <li><b>Mendukung pengambilan keputusan</b><span>Membantu pemerintah dan pemangku kepentingan mengambil keputusan berbasis risiko.</span></li>
+          <li><b>Meningkatkan kolaborasi</b><span>Mendorong kerja sama lintas sektor dalam pengelolaan risiko bencana.</span></li>
+          <li><b>Budaya sadar risiko</b><span>Meningkatkan kesadaran masyarakat untuk memahami dan mengelola risiko bencana.</span></li>
+        </ul>
+      </section>
+      <section class="ir-kartu" aria-labelledby="tnKelJ">
+        <div class="ir-kartu-hd"><h2 id="tnKelJ">Dikelola oleh</h2></div>
+        <p class="ir-p"><b>BNPB</b>, Badan Nasional Penanggulangan Bencana: lembaga pemerintah nonkementerian yang melaksanakan tugas pemerintahan di bidang penanggulangan bencana sesuai peraturan perundang-undangan.</p>
+        <a class="ir-tombol2" href="https://bnpb.go.id" rel="noopener noreferrer" target="_blank">Situs BNPB</a>
+      </section>
+    </div>
+    <section class="ir-kartu" aria-labelledby="tnJlnJ">
+      <div class="ir-kartu-hd"><h2 id="tnJlnJ">Perjalanan InaRISK</h2></div>
+      <ol class="ir-linimasa">
+        <li><b>Inisiasi</b><small>2012</small><span>Pengembangan awal sistem informasi risiko bencana oleh BNPB.</span></li>
+        <li><b>Pengembangan</b><small>2014 sampai 2016</small><span>Penguatan data, metodologi, dan fitur secara bertahap.</span></li>
+        <li><b>Integrasi nasional</b><small>2017 sampai 2019</small><span>Integrasi data lintas kementerian/lembaga dan pemerintah daerah.</span></li>
+        <li><b>Penguatan platform</b><small>2020 sampai 2022</small><span>Pembaruan teknologi dan layanan untuk pengguna.</span></li>
+        <li><b>Transformasi digital</b><small>2023 sampai sekarang</small><span>Inovasi berkelanjutan sebagai platform manajemen risiko.</span></li>
+      </ol>
+    </section>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="ir-bag ir-teks-bag" data-bag="disclaimer" hidden aria-labelledby="irJudulDis">
+    <div class="ir-kepala">
+      <h1 id="irJudulDis">Disclaimer</h1>
+      <p>Informasi InaRISK disediakan untuk informasi umum dan untuk mendukung pengelolaan risiko bencana di Indonesia. Baca ketentuan berikut dengan saksama.</p>
+    </div>
+    <section class="ir-kartu" aria-labelledby="dsUmJ">
+      <div class="ir-kartu-hd"><h2 id="dsUmJ">Pernyataan umum</h2></div>
+      <p class="ir-p">Informasi di InaRISK disusun BNPB dan mitra dari sumber yang dianggap akurat. BNPB tidak memberi jaminan tersurat maupun tersirat atas kelengkapan, ketepatan, keandalan, atau kesesuaian informasi untuk tujuan tertentu.</p>
+    </section>
+    <ol class="ir-butir">
+      <li><b>Sumber data</b><span>Data berasal dari berbagai sumber yang dikumpulkan berkala dan bisa berubah tanpa pemberitahuan.</span></li>
+      <li><b>Bukan peringatan dini</b><span>Informasi risiko di sini bukan peringatan dini. Untuk peringatan dini, ikuti kanal resmi BNPB atau BMKG.</span></li>
+      <li><b>Tujuan penggunaan</b><span>Dipakai untuk mendukung perencanaan, mitigasi, dan pengambilan keputusan. Penggunaan di luar tujuan itu menjadi tanggung jawab pengguna.</span></li>
+      <li><b>Batasan tanggung jawab</b><span>BNPB tidak bertanggung jawab atas kerugian langsung maupun tidak langsung akibat penggunaan informasi InaRISK.</span></li>
+      <li><b>Hak cipta</b><span>Konten, data, dan tampilan InaRISK dilindungi hak cipta BNPB. Halaman ini mencerminkan data InaRISK untuk kerja internal dan menyebut sumbernya.</span></li>
+      <li><b>Perubahan ketentuan</b><span>BNPB dapat mengubah ketentuan ini sewaktu-waktu. Tinjau halaman ini secara berkala.</span></li>
+    </ol>
+    <section class="ir-kartu" aria-labelledby="dsCerJ">
+      <div class="ir-kartu-hd"><h2 id="dsCerJ">Tentang cermin ini</h2></div>
+      <p class="ir-p">Angka IRBI, IKD, dan jiwa terpapar ditarik dari API InaRISK apa adanya. Tiga angka di layar InaRISK tidak ditampilkan di sini karena berasal dari rumus pengisi di kode tampilannya, bukan dari data: total populasi per kabupaten/kota, persen laki-laki dan perempuan, serta komponen kerentanan dan kapasitas nasional. Jumlah penduduk di sini diambil dari data jiwa terpapar InaRISK.</p>
+    </section>
+  </section>
+
+  <p class="ir-kaki" id="irKaki">Sumber: InaRISK BNPB.</p>
+</main>
+
+<!-- dialog detail IRBI -->
+<dialog class="ir-dlg" id="dlgIrbi" closedby="any" aria-labelledby="dlgIrbiJ">
+  <div class="ir-dlg-isi" id="dlgIrbiIsi"></div>
+</dialog>
+<!-- dialog analisa IKD -->
+<dialog class="ir-dlg" id="dlgIkd" closedby="any" aria-labelledby="dlgIkdJ">
+  <div class="ir-dlg-isi" id="dlgIkdIsi"></div>
+</dialog>
+<!-- dialog hasil gambar Web GIS -->
+<dialog class="ir-dlg ir-dlg-kecil" id="dlgDampak" closedby="any" aria-labelledby="dlgDampakJ">
+  <div class="ir-dlg-isi" id="dlgDampakIsi"></div>
+</dialog>
+<div id="tip" role="tooltip" hidden></div>
+
+<script src="/vendor/maplibre/maplibre-gl.js"></script>
+<script src="/inti/format.js"></script>
+<script src="/inti/tip.js"></script>
+<script src="/bnpb/inarisk_hitung.js?v=9"></script>
+<script src="/bnpb/inarisk.js?v=9"></script>
+<script src="/bnpb/inarisk_simulasi.js?v=9"></script>
+<script src="/bnpb/inarisk_detail.js?v=9"></script>
+<script src="/bnpb/inarisk_ikd.js?v=9"></script>
+<script src="/bnpb/inarisk_gis.js?v=9"></script>
+<script src="/bnpb/inarisk_unduh.js?v=9"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+/* Akun BPBD dengan profil PIC (data/kajian-bnpb/profil-bpbd/DESIGN-SYSTEM.md): kisi pilih profil, dialog PIN, kartu daftar PIC, kepala kerja, log.
+   Hanya token dari /inti/tema.css (tanpa literal warna), tanpa huruf kapital semua, jarak antarkartu 20 px, area ketuk minimal 44 px. */
+.pf-judul{display:flex;align-items:center;gap:var(--jr-3);margin:0 0 var(--jr-4);font:700 var(--fs-6)/1.2 var(--display);color:var(--ink)}
+.pf-ik{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pf-kecil{margin:0;font-size:var(--fs-3);color:var(--ink2)}
+.pf-kisi{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--jr-5)}
+.pf-sel{display:grid;justify-items:center;gap:var(--jr-2);padding:var(--jr-4);border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);font:inherit;cursor:pointer;min-height:44px;box-shadow:var(--shadow)}
+.pf-sel:hover:not([aria-disabled="true"]){border-color:var(--brand2)}
+.pf-sel[aria-disabled="true"]{cursor:default}
+.pf-sel[aria-disabled="true"] .pf-foto{opacity:.55}
+.pf-foto{display:inline-grid;place-items:center;flex:none;border-radius:var(--r-pill);object-fit:cover;background:var(--surface);color:var(--ink2);font:700 var(--fs-6)/1 var(--display);overflow:hidden}
+.pf-foto.b{width:96px;height:96px}.pf-foto.m{width:56px;height:56px;font-size:var(--fs-5)}.pf-foto.k{width:40px;height:40px;font-size:var(--fs-3)}
+.pf-nama{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 var(--fs-5)/1.25 var(--font);color:var(--ink)}
+.pf-jabatan{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-3);color:var(--ink2)}
+.pf-kunci{font-size:var(--fs-2);color:var(--bad-tx);text-align:center}
+.pf-pil{display:inline-block;padding:2px var(--jr-3);border-radius:var(--r-pill);font:600 var(--fs-2)/1.5 var(--font);background:var(--surface);color:var(--ink2)}
+.pf-pil.ok{background:color-mix(in oklch,var(--ok) 16%,var(--card));color:var(--ok-tx)}
+.pf-pil.tunggu{background:color-mix(in oklch,var(--warn) 22%,var(--card));color:var(--warn-tx)}
+.pf-pil.bad{background:color-mix(in oklch,var(--bad) 14%,var(--card));color:var(--bad-tx)}
+/* tombol ikon polos: tanpa garis luar dan tanpa kotak */
+.pf-ikon{display:inline-grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:0;background:none;color:var(--ink2);cursor:pointer;border-radius:var(--r-sm)}
+.pf-ikon:hover{color:var(--ink)}
+.pf-ikon:disabled{opacity:.5;cursor:default}
+.pf-aksi{display:flex;flex-wrap:wrap;align-items:center;gap:var(--jr-2)}
+/* kartu: satu per bagian, kepala = nama seksi berikon, jarak 20 px */
+.pf-kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.pf-kartu+.pf-kartu,.pf-isi>.pf-kartu+.pf-kartu{margin-top:var(--jr-5)}
+.pf-kartu>header{display:flex;align-items:center;gap:var(--jr-3);padding:var(--jr-4) var(--jr-5);background:var(--surface);border-bottom:1px solid var(--line);font:700 var(--fs-5)/1.2 var(--display);color:var(--ink)}
+.pf-kartu>header .pf-pil{margin-left:auto}
+.pf-badan{display:grid;gap:var(--jr-4);padding:var(--jr-5)}
+.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--jr-4)}
+.pf-isi{display:grid;gap:var(--jr-5);align-content:start}
+.pf-dua{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--jr-5);align-items:start}
+.pf-dua>.pf-kartu+.pf-kartu{margin-top:0}
+.pf-badan label{display:grid;gap:var(--jr-1);font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.pf-badan input[type="text"],.pf-badan input[type="email"],.pf-badan input[type="tel"]{min-height:var(--h-ctl);padding:0 var(--jr-3);border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:inherit}
+.pf-foto-baris{display:flex;align-items:center;gap:var(--jr-4);flex-wrap:wrap}
+.pf-setuju{display:grid;grid-template-columns:auto 1fr;gap:var(--jr-3);align-items:start;font-weight:500}
+.pf-setuju input{width:22px;height:22px;margin-top:2px}
+.pf-pemberitahuan{padding:var(--jr-3) var(--jr-4);border-radius:var(--r-sm);background:var(--surface);font-size:var(--fs-3);line-height:1.55;color:var(--ink)}
+.pf-ringkas{display:flex;align-items:center;gap:var(--jr-4)}
+/* dialog PIN */
+.pf-dlg{width:min(92vw,380px);padding:0;border:0;border-radius:var(--r);background:var(--card);color:var(--ink);box-shadow:var(--shadow-lg)}
+.pf-dlg::backdrop{background:color-mix(in oklch,var(--ink) 55%,transparent)}
+.pf-dlg-isi{display:grid;gap:var(--jr-4);padding:var(--jr-5)}
+.pf-dlg-kepala{display:flex;align-items:center;gap:var(--jr-3)}
+.pf-pin{display:flex;align-items:center;gap:var(--jr-2)}
+.pf-pin+.pf-pin,.pf-baris-pin{margin-top:0}
+.pf-baris-pin{display:grid;gap:var(--jr-1);font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.pf-pin input{flex:1;min-width:0;height:48px;padding:0;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:700 var(--fs-7)/1 var(--font);text-align:center}
+.pf-pesan{min-height:1.4em;margin:0;font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.pf-pesan.galat{color:var(--bad-tx)}
+.pf-pesan.ok{color:var(--ok-tx)}
+.pf-dlg-aksi{display:grid;grid-template-columns:1fr 1fr;gap:var(--jr-3)}
+/* kepala kerja */
+.pf-kepala{display:flex;align-items:center;gap:var(--jr-3);flex-wrap:wrap;margin:0 0 var(--jr-5);padding:var(--jr-3) var(--jr-4);border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.pf-kepala .pf-ringkas{flex:1;min-width:160px}
+.pf-gulir{overflow-x:auto}
+.pf-tabel{width:100%;border-collapse:collapse;font-size:var(--fs-3)}
+.pf-tabel th{padding:var(--jr-2) var(--jr-3);background:var(--head-bg);color:var(--on-head);text-align:center;font-weight:600}
+.pf-tabel td{padding:var(--jr-2) var(--jr-3);border-bottom:1px solid var(--line);color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.pf-sel{transition:none}}

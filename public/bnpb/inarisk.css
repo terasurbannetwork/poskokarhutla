@@ -1,0 +1,292 @@
+/* Cermin InaRISK /bnpb/inarisk (data/kajian-bnpb/inarisk/DESIGN-SYSTEM.md). Warna hanya token public/inti/tema.css. */
+.ir-sr{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ir{display:grid;gap:20px}
+.ir-bag{display:grid;gap:20px;min-inline-size:0}
+.ir-bag[hidden]{display:none}
+
+/* navigasi bagian di kepala situs: satu baris, gulir bila sempit */
+.ad-top .ir-nav{position:static;transform:none;max-width:none;margin-left:auto;scroll-snap-type:inline proximity}
+.ir-nav a{scroll-snap-align:start}
+.ir-nav a[aria-current]{position:relative}
+.ir-nav a[aria-current]::after{content:"";position:absolute;inset:auto 12px 2px;border-block-end:2px solid var(--brand-accent,var(--on-head))}
+@media (max-width:900px){.ad-top{flex-wrap:wrap}.ad-top .ir-nav{order:2;inline-size:100%;margin:0}}
+
+/* kartu */
+.ir-kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;min-inline-size:0;display:grid;gap:12px;align-content:start}
+.ir-kartu-hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ir-kartu-hd h2{margin:0;font:700 var(--fs-4)/1.3 var(--display);color:var(--ink)}
+.ir-ket{font-size:var(--fs-2);color:var(--ink2)}
+.ir-p{margin:0;color:var(--ink2);font-size:var(--fs-3);line-height:1.55;text-align:justify}
+.ir-kepala{display:grid;gap:6px}
+.ir-kepala h1{margin:0;font:800 var(--fs-8)/1.15 var(--display);color:var(--brand)}
+.ir-kepala p{margin:0;max-inline-size:70ch;color:var(--ink2);line-height:1.55}
+.ir-kaki{margin:0;color:var(--ink2);font-size:var(--fs-2)}
+
+/* pemilih */
+.ir-field{display:grid;gap:5px;font-size:var(--fs-2);font-weight:600;color:var(--ink2)}
+.ir-field select,.ir-field input{min-block-size:var(--h-ctl);border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);padding:0 10px;font:500 var(--fs-3) var(--font)}
+.ir-field select:disabled{background:var(--surface);color:var(--ink2)}
+.ir-field :focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.ir-teks{all:unset;cursor:pointer;color:var(--brand2);font-weight:600;font-size:var(--fs-2)}
+.ir-teks[hidden]{display:none}
+.ir-teks:focus-visible{outline:2px solid var(--brand2);border-radius:4px}
+.ir-tombol2{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-block-size:var(--h-ctl);padding:0 16px;border:1px solid color-mix(in srgb,var(--brand2) 45%,var(--line));border-radius:var(--r-sm);background:var(--card);color:var(--brand2);font:600 var(--fs-3) var(--font);text-decoration:none;cursor:pointer}
+.ir-tombol2:hover{background:color-mix(in srgb,var(--brand2) 8%,var(--card))}
+.ir-tombol2:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.ir-kecil{min-block-size:32px;padding:0 12px;font-size:var(--fs-2)}
+.ir-ikon{all:unset;cursor:pointer;display:grid;place-items:center;inline-size:28px;block-size:28px;border-radius:var(--r-xs);color:var(--brand2);font-size:var(--fs-7);line-height:1}
+.ir-ikon:hover{background:var(--surface)}
+.ir-ikon:focus-visible{outline:2px solid var(--brand2)}
+
+/* pil kelas */
+.ir-pil{display:inline-flex;align-items:center;padding:2px 10px;border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:700;white-space:nowrap}
+.ir-pil.k-tinggi{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad-tx)}
+.ir-pil.k-sedang{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn-tx)}
+.ir-pil.k-rendah{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok-tx)}
+.ir-pil.k-kosong,.ir-kat{background:var(--surface);color:var(--ink2)}
+.ir-titik{display:inline-block;inline-size:9px;block-size:9px;border-radius:50%;background:var(--line);margin-inline-end:6px}
+.ir-titik.t-tinggi{background:var(--ok)}.ir-titik.t-sedang{background:var(--warn)}.ir-titik.t-rendah{background:var(--bad)}
+.ir-tk{display:inline-flex;align-items:center}
+
+/* IRBI: kiri filter, kanan isi */
+.ir-irbi{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.ir-kiri{display:grid;gap:20px;position:sticky;top:76px}
+.ir-kanan{display:grid;gap:20px;min-inline-size:0}
+.ir-hvc{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ir-hvc li{display:flex;align-items:center;gap:10px;font-size:var(--fs-3);color:var(--ink)}
+.ir-lb{display:grid;place-items:center;inline-size:26px;block-size:26px;border-radius:50%;font:800 var(--fs-2) var(--font);font-style:normal;color:var(--on-brand)}
+.ir-lb-h{background:var(--bad)}.ir-lb-v{background:var(--warn)}.ir-lb-c{background:var(--ok)}
+.ir-dok{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.ir-dok a{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:8px;border-radius:var(--r-sm);color:var(--ink);text-decoration:none;font-size:var(--fs-3)}
+.ir-dok a:hover{background:var(--surface)}
+.ir-dok i{display:grid;place-items:center;block-size:34px;border-radius:var(--r-xs);background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad-tx);font:800 var(--fs-1) var(--font);font-style:normal}
+.ir-dok small{display:block;color:var(--ink2);font-size:var(--fs-1)}
+
+/* deret angka */
+.ir-angka{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
+.ir-a{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 16px;display:grid;gap:6px;align-content:start;min-inline-size:0}
+.ir-a h2{margin:0;font:700 var(--fs-2)/1.3 var(--font);color:var(--brand2)}
+.ir-a-utama{background:linear-gradient(150deg,var(--brand),var(--brand2));border:0}
+.ir-a-utama h2,.ir-a-utama .ir-a-k{color:color-mix(in srgb,var(--on-brand) 85%,transparent)}
+.ir-a-n{margin:0;font:800 calc(var(--fs-8) * 1.3)/1 var(--display);color:var(--on-brand);font-variant-numeric:tabular-nums}
+.ir-a-utama .ir-pil{justify-self:start}
+.ir-a-n2{margin:0;font:800 var(--fs-8)/1.05 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.ir-a-nm{margin:0;font:700 var(--fs-5)/1.25 var(--display);color:var(--ink)}
+.ir-a-m{margin:0;display:flex;align-items:center;gap:8px;font:700 var(--fs-5) var(--font);color:var(--ink);font-variant-numeric:tabular-nums}
+.ir-a-k{margin:0;font-size:var(--fs-1);color:var(--ink2)}
+
+/* peta + peringkat sama tinggi */
+.ir-peta-tabel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px}
+.ir-kartu-peta,.ir-peta-tabel .ir-kartu-tabel{block-size:620px;grid-template-rows:auto minmax(0,1fr) auto}
+.ir-peta{min-block-size:0;border-radius:var(--r-sm);overflow:hidden;background:var(--surface)}
+.ir-legenda{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:14px;font-size:var(--fs-2);color:var(--ink2)}
+.ir-legenda i{display:inline-block;inline-size:12px;block-size:12px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+.k-tinggi{background:var(--bad)}.k-sedang{background:var(--warn)}.k-rendah{background:var(--ok)}.k-kosong{background:var(--line)}
+.ir-pop .maplibregl-popup-content{font:500 var(--fs-2)/1.45 var(--font);color:var(--ink);border-radius:var(--r-sm);padding:8px 12px}
+
+/* tabel */
+.ir-gulir{overflow:auto;min-block-size:0;border-radius:var(--r-sm);scrollbar-width:thin}
+.ir-gulir:focus-visible{outline:2px solid var(--brand2)}
+.ir-gulir-panjang{max-block-size:none}
+.ir-tabel{inline-size:100%;border-collapse:separate;border-spacing:0;font-size:var(--fs-2);font-variant-numeric:tabular-nums}
+.ir-tabel thead th{position:sticky;inset-block-start:0;z-index:1;background:var(--head-bg);color:var(--on-head);font-weight:700;text-align:center;padding:9px 6px;line-height:1.25}
+.ir-tabel td{padding:8px;border-block-end:1px solid var(--line);vertical-align:middle}
+.ir-tabel .ir-lbl{text-align:start}
+.ir-tabel .ir-lbl{font-weight:600;color:var(--ink)}
+.ir-tabel .ir-lbl small{display:block;font-weight:400;color:var(--ink2);font-size:var(--fs-1);max-inline-size:60ch}
+.ir-tabel .n,.ir-tabel td{text-align:center}
+.ir-tabel .n{white-space:nowrap}
+.ir-tabel td.ir-lbl{text-align:start}
+.ir-tabel tr.ir-pilih>*{background:color-mix(in srgb,var(--brand2) 9%,var(--card))}
+.ir-tabel tbody tr:hover>*{background:var(--surface)}
+.ir-kartu-tabel .ir-tabel tbody tr{content-visibility:auto;contain-intrinsic-size:auto 44px}
+[aria-busy="true"]{opacity:.55;transition:opacity var(--dur-1) var(--ease)}
+.ir-tabel .naik{color:var(--bad-tx)}.ir-tabel .turun{color:var(--ok-tx)}
+.ir-tabel-kv .ir-lbl{font-weight:500}
+.ir-tebal{font-weight:800}
+
+/* rerata per bahaya */
+.ir-bahaya{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.ir-bh{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:var(--fs-2);color:var(--ink)}
+.ir-bh b{font:800 var(--fs-4) var(--font);font-variant-numeric:tabular-nums}
+.ir-bh small{grid-column:1/-1;color:var(--ink2);font-size:var(--fs-1)}
+.ir-bh-bt{grid-column:1/-1;block-size:5px;border-radius:var(--r-pill);background:var(--line);overflow:hidden}
+.ir-bh-bt s{display:block;block-size:100%;inline-size:0;border-radius:inherit}
+.ir-bh:hover{background:var(--surface)}
+.ir-bh[aria-pressed="true"]{border-color:var(--brand2);box-shadow:inset 0 0 0 1px var(--brand2)}
+.ir-bh:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+
+/* saring IKD / Unduhan */
+.ir-saring{grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:end}
+.ir-saring-und{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ir-saring-und .ir-lebar{grid-column:span 1}
+.ir-jml{margin:0;align-self:center;font-weight:700;color:var(--ink)}
+.ir-hal{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.ir-hal nav{display:flex;gap:6px}
+.ir-hal button{min-inline-size:36px;min-block-size:36px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:600 var(--fs-2) var(--font);cursor:pointer}
+.ir-hal button[aria-current]{background:var(--brand2);border-color:var(--brand2);color:var(--on-brand)}
+.ir-hal button:disabled{opacity:.45;cursor:default}
+.ir-hal span[aria-hidden]{align-self:center;color:var(--ink2)}
+.ir-tabel-und .ir-lbl b{display:block}
+.ir-tabel-und .ir-lbl small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-inline-size:80ch}
+
+/* Tautan */
+.ir-tautan{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.ir-taut{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ir-taut a{display:grid;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);text-decoration:none;color:var(--ink)}
+.ir-taut a:hover{border-color:var(--brand2)}
+.ir-taut span{font-size:var(--fs-2);color:var(--ink2);overflow-wrap:anywhere}
+
+/* Metodologi, Tentang, Disclaimer */
+.ir-fakta{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.ir-fakta li{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;display:grid;gap:4px}
+.ir-fakta b{font:800 var(--fs-8)/1 var(--display);color:var(--brand2)}
+.ir-fakta span{color:var(--ink2);font-size:var(--fs-3)}
+.ir-langkah{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ir-langkah li,.ir-butir li{display:grid;gap:6px;padding:14px;border:1px solid var(--line);border-radius:var(--r-sm);align-content:start}
+.ir-langkah i{justify-self:start;padding:2px 10px;border-radius:var(--r-pill);background:var(--surface);color:var(--brand2);font:700 var(--fs-2) var(--font);font-style:normal}
+.ir-langkah b,.ir-butir b{color:var(--ink)}
+.ir-langkah span,.ir-butir span{color:var(--ink2);font-size:var(--fs-2);line-height:1.5}
+.ir-rumus-isi{display:flex;flex-wrap:wrap;align-items:center;gap:28px;padding:16px 20px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.ir-rumus-r{margin:0;font:700 var(--fs-8)/1.1 var(--display);color:var(--ink)}
+.ir-rumus-isi dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:var(--fs-2)}
+.ir-rumus-isi dt{font-weight:800;color:var(--ink)}.ir-rumus-isi dd{margin:0;color:var(--ink2)}
+.ir-sumber{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ir-sumber li{display:grid;gap:2px;padding:10px 12px;border-inline-start:3px solid var(--brand2)}
+.ir-sumber span{font-size:var(--fs-2);color:var(--ink2)}
+.ir-tiga{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+.ir-cek,.ir-misi{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ir-cek li{padding-inline-start:24px;position:relative;color:var(--ink)}
+.ir-cek li::before{content:"✓";position:absolute;inset-inline-start:0;color:var(--brand2);font-weight:800}
+.ir-misi li{display:grid;gap:2px}.ir-misi span{color:var(--ink2);font-size:var(--fs-2)}
+.ir-linimasa{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;border-block-start:2px solid var(--brand2);padding-block-start:16px}
+.ir-linimasa li{display:grid;gap:4px;position:relative}
+.ir-linimasa li::before{content:"";position:absolute;inset-block-start:-23px;inset-inline-start:0;inline-size:12px;block-size:12px;border-radius:50%;background:var(--card);border:2px solid var(--brand2)}
+.ir-linimasa small{color:var(--brand2);font-weight:700}.ir-linimasa span{color:var(--ink2);font-size:var(--fs-2)}
+.ir-butir{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:b}
+.ir-butir li{background:var(--card);box-shadow:var(--shadow);counter-increment:b}
+.ir-butir li::before{content:counter(b,decimal-leading-zero);justify-self:start;padding:2px 10px;border-radius:var(--r-pill);background:var(--surface);color:var(--brand2);font:700 var(--fs-2) var(--font)}
+
+/* Web GIS */
+.ir-gis{position:relative;block-size:calc(100dvh - 140px);min-block-size:560px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:var(--surface)}
+.ir-gis-peta{position:absolute;inset:0}
+.ir-gis-alat{position:absolute;z-index:2;inset:12px 12px auto 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 8px;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(6px);border-radius:var(--r-pill);box-shadow:var(--shadow);font-size:var(--fs-2)}
+.ir-gis-alat button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--r-pill);color:var(--ink);font-weight:600}
+.ir-gis-alat button svg{inline-size:16px;block-size:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ir-gis-alat button:hover{background:var(--surface)}
+.ir-gis-alat button[aria-pressed="true"]{background:var(--brand2);color:var(--on-brand)}
+.ir-gis-alat button:focus-visible{outline:2px solid var(--brand2)}
+.ir-gis-pisah{inline-size:1px;block-size:22px;background:var(--line);margin-inline:4px}
+.ir-gis-tgl{display:inline-flex;align-items:center;gap:6px;color:var(--ink2)}
+.ir-gis-tgl input,.ir-gis-tgl select{border:1px solid var(--line);border-radius:var(--r-sm);padding:4px 6px;font:500 var(--fs-2) var(--font);color:var(--ink);background:var(--card)}
+.ir-gis-lapis{position:absolute;z-index:2;inset:72px auto 40px 12px;inline-size:290px;display:flex;flex-direction:column;background:color-mix(in srgb,var(--card) 96%,transparent);backdrop-filter:blur(6px);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.ir-gis-lapis:not([open]){inset-block-end:auto}
+.ir-gis-lapis summary{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;font-weight:700;color:var(--ink)}
+.ir-gis-lapis summary small{color:var(--ink2);font-weight:500}
+.ir-gis-isi{overflow:auto;flex:1;padding:0 10px 10px;display:grid;gap:10px;align-content:start;scrollbar-width:thin}
+.ir-gis-lapis>.ir-tombol2{margin:10px}
+.ir-gis-grup{border:0;margin:0;padding:0;display:grid;gap:2px}
+.ir-gis-grup legend{inline-size:100%;padding:6px 10px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--accent) 14%,var(--card));color:var(--accent-tx);font-weight:700;font-size:var(--fs-2)}
+.ir-gis-grup label{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--r-xs);font-size:var(--fs-2);color:var(--ink);cursor:pointer}
+.ir-gis-grup label:hover{background:var(--surface)}
+.ir-gis-grup input{accent-color:var(--accent)}
+.ir-opas{justify-content:space-between}
+.ir-opas input{flex:1}
+.ir-opas output{min-inline-size:36px;text-align:end;color:var(--ink2)}
+.ir-gis-pesan{position:absolute;z-index:2;inset:auto auto 14px 50%;transform:translateX(-50%);margin:0;max-inline-size:min(560px,80%);padding:6px 14px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--card) 94%,transparent);box-shadow:var(--shadow);font-size:var(--fs-2);color:var(--ink)}
+.ir-gis-pesan:empty{display:none}
+
+/* dialog */
+.ir-dlg{inline-size:min(1240px,calc(100vw - 32px));max-block-size:calc(100dvh - 32px);padding:0;border:0;border-radius:var(--r);background:var(--paper);color:var(--ink);box-shadow:var(--shadow-lg)}
+.ir-dlg-kecil{inline-size:min(560px,calc(100vw - 32px))}
+.ir-dlg::backdrop{background:color-mix(in srgb,var(--ink) 55%,transparent);backdrop-filter:blur(2px)}
+.ir-dlg-isi{display:grid;gap:16px;padding:20px 22px}
+.ir-dlg-hd{display:flex;align-items:center;gap:14px}
+.ir-dlg-hd h2{margin:0;font:800 var(--fs-8)/1.1 var(--display);color:var(--ink)}
+.ir-dlg-hd-kecil h2{font-size:var(--fs-6)}
+.ir-dlg-hd p{margin:2px 0 0;color:var(--ink2)}
+.ir-dlg-kanan{margin-inline-start:auto;display:grid;grid-auto-flow:column;grid-template-rows:auto auto;gap:0 18px;text-align:end}
+.ir-dlg-kanan small{color:var(--ink2);font-size:var(--fs-1)}
+.ir-dlg-kanan b{font-size:var(--fs-5);display:inline-flex;align-items:center;justify-content:end}
+.ir-avatar{display:grid;place-items:center;inline-size:52px;block-size:52px;border-radius:var(--r-sm);background:linear-gradient(140deg,var(--brand2),var(--ok));color:var(--on-brand);font:800 var(--fs-7) var(--display)}
+.ir-tutup{all:unset;cursor:pointer;display:grid;place-items:center;inline-size:36px;block-size:36px;border-radius:50%;font-size:var(--fs-8);color:var(--ink2)}
+.ir-dlg-hd-kecil .ir-tutup{margin-inline-start:auto}
+.ir-tutup:hover{background:var(--surface)}
+.ir-tutup:focus-visible{outline:2px solid var(--brand2)}
+.ir-dlg-sub{margin:0;color:var(--ink2);font-size:var(--fs-2)}
+.ir-dlg-g1{display:grid;grid-template-columns:1fr 1fr .8fr 1.6fr .8fr;gap:14px}
+.ir-dlg-g2{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:14px}
+.ir-dlg-g2b{grid-template-columns:1fr 1fr}
+.ir-k{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 16px;display:grid;gap:8px;align-content:start;min-inline-size:0}
+.ir-k h3{margin:0;font:700 var(--fs-3)/1.3 var(--font);color:var(--brand)}
+.ir-k h3 small{font-weight:500;color:var(--ink2)}
+.ir-k-n{margin:0;font:800 var(--fs-8)/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.ir-k-k{margin:0;font-size:var(--fs-2);color:var(--ink2)}
+.ir-k .ir-pil{justify-self:stretch;justify-content:center}
+.ir-k-kelas{margin:0;display:flex;align-items:center;gap:10px;font:800 var(--fs-7)/1 var(--display);background:none}
+.ir-k-kelas i{inline-size:22px;block-size:22px;border-radius:50%;background:currentColor}
+.ir-k-kelas.k-tinggi{color:var(--bad-tx)}.ir-k-kelas.k-sedang{color:var(--warn-tx)}.ir-k-kelas.k-rendah{color:var(--ok-tx)}.ir-k-kelas.k-kosong{color:var(--ink2)}
+.ir-tren{inline-size:100%;block-size:auto}
+.ir-tren .t-lama{fill:var(--ink2)}.ir-tren .t-baru{fill:var(--brand2)}
+.ir-tren .t-dasar{stroke:var(--line)}.ir-tren .t-pisah{stroke:var(--brand2);stroke-dasharray:3 3}
+.ir-tren text{font:600 var(--fs-1) var(--font);fill:var(--ink)}.ir-tren .t-tahun{fill:var(--ink2)}.ir-tren .t-kosong{fill:var(--ink2);font-weight:400}
+.ir-tren-leg{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:var(--fs-1);color:var(--ink2)}
+.ir-tren-leg i{display:inline-block;inline-size:10px;block-size:10px;border-radius:2px;margin-inline-end:5px;vertical-align:-1px}
+.ir-tren-leg .t-lama{background:var(--ink2)}.ir-tren-leg .t-baru{background:var(--brand2)}
+.ir-tren-leg .j-ya,.ir-jiwa .j-ya{background:var(--bad)}.ir-tren-leg .j-tidak,.ir-jiwa .j-tidak{background:var(--info)}
+.ir-jiwa{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.ir-jiwa li{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:var(--fs-2);font-weight:600;color:var(--ink)}
+.ir-jiwa li>span{text-align:end}
+.ir-jiwa-bt{display:flex;block-size:18px;border-radius:3px;overflow:hidden;background:var(--line)}
+.ir-jiwa-kosong{display:grid;place-items:center;font:500 var(--fs-1) var(--font);font-style:normal;color:var(--ink2);background:var(--surface)}
+.ir-jiwa-bt s{display:grid;place-items:center;inline-size:0;text-decoration:none;color:var(--on-brand);font:700 var(--fs-1) var(--font);white-space:nowrap;overflow:hidden}
+.ir-jarum{margin:0;display:grid;justify-items:center;gap:6px}
+.ir-jarum svg{inline-size:min(260px,100%);block-size:auto}
+.ir-jarum path{fill:none;stroke-width:14}
+.ir-jarum .j-rendah{stroke:var(--bad)}.ir-jarum .j-sedang{stroke:var(--warn)}.ir-jarum .j-tinggi{stroke:var(--ok)}
+.ir-jarum .j-jarum{stroke:var(--brand2);stroke-width:4;stroke-linecap:round}.ir-jarum .j-pusat{fill:var(--brand2)}
+.ir-jarum .j-angka{font:800 var(--fs-7) var(--display);fill:var(--ink)}
+.ir-jarum figcaption{display:flex;align-items:center;font-weight:600}
+.ir-radar{inline-size:min(280px,100%);block-size:auto;justify-self:center}
+.ir-radar .r-kisi{fill:none;stroke:var(--line)}.ir-radar .r-isi{fill:color-mix(in srgb,var(--brand2) 25%,transparent);stroke:var(--brand2);stroke-width:2}
+.ir-radar .r-titik{fill:var(--brand2)}.ir-radar .r-label{font:700 var(--fs-1) var(--font);fill:var(--ink)}
+.ir-prio{list-style:none;margin:0;padding:0;display:grid}
+.ir-prio li{display:grid;grid-template-columns:36px 1fr 200px 48px;gap:10px;align-items:center;padding:8px 0;border-block-end:1px solid var(--line);font-size:var(--fs-2)}
+.ir-prio i{font-style:normal;color:var(--ink2)}.ir-prio em{font-style:normal;text-align:end;font-variant-numeric:tabular-nums}
+.ir-prio-bt{block-size:6px;border-radius:var(--r-pill);background:var(--line);overflow:hidden}
+.ir-prio-bt s{display:block;block-size:100%;inline-size:0;background:var(--brand2)}
+.ir-k-rek{gap:12px}
+.ir-rek{border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));border-radius:var(--r-sm);overflow:hidden}
+.ir-rek h4{margin:0;display:flex;align-items:center;gap:10px;padding:8px 12px;background:color-mix(in srgb,var(--warn) 16%,var(--card));color:var(--warn-tx);font:700 var(--fs-3) var(--font)}
+.ir-rek-p{padding:2px 10px;border-radius:var(--r-pill);background:var(--warn-tx);color:var(--on-brand);font-size:var(--fs-1)}
+.ir-rek ul{margin:0;padding:10px 12px 12px 30px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 24px;font-size:var(--fs-2);color:var(--ink);line-height:1.45}
+.ir-rek li::marker{color:var(--warn-tx)}
+.ir-rek li b{display:block;font-weight:600}.ir-rek li span{color:var(--brand2)}
+.ir-dlg-ft{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:center}
+.ir-dlg-ft p{margin:0;padding:10px 14px;border-radius:var(--r-sm);background:var(--surface);font-size:var(--fs-2);color:var(--ink2)}
+.ir-dlg-ft p b{display:block;color:var(--ink)}
+.ir-dlg-aksi{display:flex;gap:10px}
+
+@media (max-width:1280px){.ir-angka{grid-template-columns:repeat(3,minmax(0,1fr))}.ir-a-utama{grid-column:span 3}.ir-dlg-g1{grid-template-columns:repeat(3,1fr)}.ir-k-tren{grid-column:span 2}}
+@media (max-width:1100px){.ir-irbi{grid-template-columns:1fr}.ir-kiri{position:static;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.ir-peta-tabel{grid-template-columns:1fr}.ir-kartu-peta{block-size:460px}.ir-dlg-g2{grid-template-columns:1fr 1fr}.ir-k-jiwa{grid-column:1/-1}.ir-langkah,.ir-butir,.ir-tiga,.ir-sumber{grid-template-columns:repeat(2,minmax(0,1fr))}.ir-linimasa{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.ir-angka,.ir-fakta{grid-template-columns:1fr 1fr}.ir-a-utama{grid-column:1/-1}.ir-saring,.ir-saring-und,.ir-langkah,.ir-butir,.ir-tiga,.ir-sumber,.ir-linimasa,.ir-dlg-g1,.ir-dlg-g2,.ir-dlg-g2b,.ir-dlg-ft{grid-template-columns:1fr}.ir-k-tren{grid-column:auto}
+  .ir-jiwa li{grid-template-columns:100px 1fr}.ir-prio li{grid-template-columns:30px 1fr 60px 40px}.ir-dlg-kanan{display:none}.ir-gis-lapis{inline-size:calc(100% - 24px);inset-block-end:auto;max-block-size:55%}.ir-gis-lapis:not([open]){max-block-size:none}
+  .ir-tabel-und thead{display:none}.ir-tabel-und tr{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:10px 0;border-block-end:1px solid var(--line)}.ir-tabel-und td{border:0;padding:0}.ir-tabel-und .ir-lbl{grid-column:1/-1}}
+
+/* ringkasan PDF: hanya dialog detail yang tercetak */
+@media print{
+  @page{size:A4;margin:10mm}
+  body.ir-cetak>*:not(dialog[open]){display:none!important}
+  body.ir-cetak dialog[open]{position:static;inline-size:auto;max-block-size:none;box-shadow:none;overflow:visible}
+  body.ir-cetak dialog::backdrop{display:none}
+  body.ir-cetak .ir-tutup,body.ir-cetak .ir-dlg-aksi{display:none}
+  body.ir-cetak .ir-k,body.ir-cetak .ir-rek{break-inside:avoid}
+  body.ir-cetak .ir-dlg-g1{grid-template-columns:repeat(3,1fr)}body.ir-cetak .ir-k-tren{grid-column:span 2}
+  body.ir-cetak *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* simulasi kapasitas dan risiko besok (PRD F-12, F-13) */
+.ir-gulir-sedang{max-block-size:440px}
+.ir-rencana{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}
+.ir-rencana li{padding:2px 8px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--brand2) 10%,var(--card));color:var(--brand2);font-weight:600;white-space:nowrap}
+.ir-tabel td.n small{display:block;color:var(--ink2);font-size:var(--fs-1)}

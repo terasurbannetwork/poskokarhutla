@@ -61,7 +61,7 @@ export const NAMA_PRIBADI = Object.fromEntries(JENIS.map(j => [j, SPEK[j].isian.
 const TIDAK_ADA = "tidak_ada";
 function satu(nilai, j) {
   if (j.t === "pilih") return j.v.includes(nilai) ? [nilai] : null;
-  if (j.t === "teks") { const s = String(nilai).trim().replace(/\s+/g, " "); return s && s.length <= j.maks ? [s] : null; }
+  if (j.t === "teks") { if (typeof nilai !== "string" && typeof nilai !== "number") return null; const s = String(nilai).trim().replace(/\s+/g, " "); return s && s.length <= j.maks ? [s] : null; }
   if (j.t === "angka") { const n = typeof nilai === "number" ? nilai : Number(String(nilai).replace(",", ".")); return Number.isFinite(n) && n >= j.min && n <= j.maks && (j.desimal || Number.isInteger(n)) ? [n] : null; }
   if (j.t === "tanggal") return /^\d{4}-\d{2}-\d{2}$/.test(nilai) && !Number.isNaN(Date.parse(nilai + "T00:00:00Z")) ? [nilai] : null;
   if (j.t === "ya_tidak") return typeof nilai === "boolean" ? [nilai] : null;
@@ -111,7 +111,7 @@ export function titikObjek(objek, media = []) {
 /* objek: {id, jenis, data, pribadi, lat, lon, status}; konteks: {objek: semua objek berkas, media: media objek ini, waktuKejadian ms, dalamKab(lat, lon)?} */
 export function penanda(objek, {objek: semua = [], media = [], waktuKejadian = null, dalamKab = null} = {}) {
   const hasil = [], t = titikObjek(objek, media);
-  if (!t) hasil.push("tanpa_titik");
+  if (!t && objek.jenis !== "jiwa") hasil.push("tanpa_titik");   // jiwa memang tanpa titik: lokasi orang tidak disimpan (LJ-06)
   if (t && media.some(m => adaTitik(m) && jarakM(t.lat, t.lon, m.lat, m.lon) > AMBANG.foto_jauh_m)) hasil.push("foto_jauh");
   if (waktuKejadian != null && media.some(m => m.waktu_ambil != null && m.waktu_ambil < waktuKejadian - AMBANG.foto_lama_jam * 3600e3)) hasil.push("foto_lama");
   const lain = semua.filter(x => x.id !== objek.id && x.jenis === objek.jenis && x.status !== "batal");

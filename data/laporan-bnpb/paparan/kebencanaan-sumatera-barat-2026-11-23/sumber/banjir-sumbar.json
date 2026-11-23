@@ -413,8 +413,8 @@
       "rasio": 0.99,
       "cut_off": false,
       "pesan": "Bantuan logistik",
-      "sumber": "Direktorat Logistik BNPB, 23 Nov 2026",
-      "judul": "Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {{angka:wb.sb.lg.n|satuan}} di Sumatera Barat",
+      "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026",
+      "judul": "Bantuan Peralatan dan Logistik yang Diserahkan kepada {{angka:wb.sb.lg.n|satuan}} di Sumatera Barat",
       "tabel": {
         "judul_panel": "Bantuan per BPBD",
         "ikon": "tanggap-darurat",
@@ -431,35 +431,18 @@
               "bobot": 1.3
             },
             {
-              "nama": "alat",
-              "kepala": "Kendaraan dan peralatan",
+              "nama": "l25",
+              "kepala": "2025",
+              "grup": "Kendaraan dan peralatan",
               "rata": "l",
-              "bobot": 5.2,
-              "pil_daftar": {
-                "gaya": [
-                  "tint.basah.pita",
-                  null,
-                  "navy"
-                ],
-                "gaya_lama": [
-                  "tint.netral.muda",
-                  "garis",
-                  "teks-3"
-                ],
-                "lama": "(2025)",
-                "ikon": {
-                  "rescue": "tanggap-darurat",
-                  "perahu": "banjir",
-                  "trail": "wilayah",
-                  "tenda": "pengungsi",
-                  "lampu": "prabencana",
-                  "lentera": "prabencana",
-                  "terpal": "rumah",
-                  "pick up": "infrastruktur",
-                  "truk": "infrastruktur",
-                  "tangki": "air-baku"
-                }
-              }
+              "bobot": 2.4
+            },
+            {
+              "nama": "l26",
+              "kepala": "2026",
+              "grup": "Kendaraan dan peralatan",
+              "rata": "l",
+              "bobot": 2.8
             },
             {
               "nama": "selimut",
@@ -493,7 +476,7 @@
             }
           ],
           "keyakinan": "resmi",
-          "sumber": "Direktorat Logistik BNPB, 23 Nov 2026"
+          "sumber": "Direktorat Logistik BNPB, diserahkan 23 November 2026"
         }
       }
     },

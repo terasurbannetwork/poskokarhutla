@@ -189,19 +189,17 @@ def deck(kode, nama, s, impor, kota, foto):
               ('Dharmasraya', '4 Tenda Pengungsi; 24 Lampu Solar Cell', 'Mobil Pick Up', K_), ('Kota Solok', '–', 'Mobil Truk Serbaguna', K_),
               ('Kota Sawahlunto', '–', 'Mobil Pick Up', K_), ('Kota Padang Panjang', '–', 'Mobil Pick Up', K_), ('Kota Bukittinggi', '–', 'Mobil Pick Up', K_)]
         assert len(LG) == 20
-        # gaya Bali (pemilik 23 Nov 2026 "balik lagi ke versi awal"): satu kolom, alat 2026 lalu bantuan 2025 bertanda (2025)
-        gab = lambda al, ll: '; '.join([x for x in al.split('; ') if al != '–'] + [f'{x} (2025)' for x in ll.split('; ') if ll != '–']) or '–'
-        tl('logistik.csv', ['kab', 'alat', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, gab(al, ll), *v] for n, al, ll, v in LG])
-        S_L = 'Direktorat Logistik BNPB, 23 Nov 2026'
+        # pemilik 23 Nov 2026: "bikin sub kolom: 2025 dan 2026", "jangan pake icon dan pill"
+        ks = lambda v: v.replace('; ', ', ')
+        tl('logistik.csv', ['kab', 'l25', 'l26', 'selimut', 'matras', 'kasur', 'terpal', 'makanan', 'family'], [[n, ks(ll), ks(al), *v] for n, al, ll, v in LG])
+        S_L = 'Direktorat Logistik BNPB, diserahkan 23 November 2026'
         P_L = 'bnpb-logpal-sumbar-2026'
         a(f'{s}.lg.n', len(LG), 'BPBD', P_L, S_L)
         HL = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'temuan', 'rasio': .99, 'cut_off': False, 'pesan': 'Bantuan logistik', 'sumber': S_L,
-              'judul': f'Bantuan Peralatan dan Logistik 2026 Diserahkan 23 November 2026 kepada {t(f"{s}.lg.n", "|satuan")} di {nama}',
+              'judul': f'Bantuan Peralatan dan Logistik yang Diserahkan kepada {t(f"{s}.lg.n", "|satuan")} di {nama}',   # pemilik 23 Nov 2026 "ganti jadi gini"
               'tabel': {'judul_panel': 'Bantuan per BPBD', 'ikon': 'tanggap-darurat', 'peringkat': False, 'sel_dua_baris': True, 'baris_maks_pt': 40, 'total': True,   # kepala cukup ini (pemilik 23 Nov 2026)
-                        'data': c('logistik.csv', [{'nama': 'kab', 'kepala': 'BPBD', 'bobot': 1.3}, {'nama': 'alat', 'kepala': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 5.2,
-                                                    'pil_daftar': {'gaya': ['tint.basah.pita', None, 'navy'], 'gaya_lama': ['tint.netral.muda', 'garis', 'teks-3'], 'lama': '(2025)',
-                                                                   'ikon': {'rescue': 'tanggap-darurat', 'perahu': 'banjir', 'trail': 'wilayah', 'tenda': 'pengungsi', 'lampu': 'prabencana',
-                                                                            'lentera': 'prabencana', 'terpal': 'rumah', 'pick up': 'infrastruktur', 'truk': 'infrastruktur', 'tangki': 'air-baku'}}},
+                        'data': c('logistik.csv', [{'nama': 'kab', 'kepala': 'BPBD', 'bobot': 1.3}, {'nama': 'l25', 'kepala': '2025', 'grup': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 2.4},
+                                                   {'nama': 'l26', 'kepala': '2026', 'grup': 'Kendaraan dan peralatan', 'rata': 'l', 'bobot': 2.8},
                                                    F('selimut', 'Selimut'), F('matras', 'Matras'), F('kasur', 'Kasur Lipat'), F('terpal', 'Terpal'), F('makanan', 'Makanan'), F('family', 'Family Kit')], S_L)}}
 
     IMP = lambda n: {'jenis': 'impor', 'pptx': f'data/sumut-aceh/impor/{impor}.pptx', 'halaman': n, 'sumber': sumber_impor(impor, n)}

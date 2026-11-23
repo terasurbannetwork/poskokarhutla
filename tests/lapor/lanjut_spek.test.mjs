@@ -37,6 +37,11 @@ test("validasi: wajib bersyarat dan nomor HP", () => {
   assert.ok(L.validasi("korban", {status: "hilang", nama: "A", umur: 9, jk: "l", desa: "D", kontak_nama: "B", kontak_hp: "tidak_ada"}).galat.includes("pencarian"));
 });
 
+test("isian teks hanya menerima teks atau angka, bukan objek atau larik (tinjauan guard-api LJ-04)", () => {
+  assert.ok(L.validasi("rumah", {kk: {x: 1}}).galat.includes("kk"));
+  assert.ok(L.validasi("rumah", {alamat: ["a", "b"]}).galat.includes("alamat"));
+});
+
 test("isian pribadi tercatat per jenis (tidak pernah ke AI, D19)", () => {
   assert.deepEqual(L.NAMA_PRIBADI.jiwa, ["nama", "hp", "nik", "rentan", "kebutuhan"]);
   assert.deepEqual(L.NAMA_PRIBADI.korban, ["nama", "kontak_nama", "kontak_hp", "ciri", "nik"]);
@@ -145,4 +150,9 @@ test("versi beku: sidik stabil terhadap urutan, berubah bila satu objek berubah,
   assert.ok(!a.isi.includes("Sari Rahasia") && !a.isi.includes("6281234567890") && !a.isi.includes("pribadi"));
   const c = await L.isiBeku({berkas, semua: [{...x, pribadi: {nama: "Sari R"}}, y], rekap: {}, kondisi: {}, penutupan: {}});
   assert.notEqual(c.sidik, a.sidik);
+});
+
+test("penanda: jiwa tidak pernah bertanda tanpa_titik (lokasi orang tidak disimpan, LJ-06); rumah tanpa titik tetap bertanda", () => {
+  assert.deepEqual(L.penanda({id: "a", jenis: "jiwa", data: {}, pribadi: null, status: "aktif"}), []);
+  assert.deepEqual(L.penanda({id: "b", jenis: "rumah", data: {}, pribadi: null, status: "aktif"}), ["tanpa_titik"]);
 });

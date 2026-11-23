@@ -1,6 +1,7 @@
 /* Bantuan bersama uji Siklus Bencana (tests/warga/siklus_*.test.mjs): worker.js utuh di Miniflare + D1 + R2, migrasi apa adanya, aset palsu /siklus/*.
    Aktor: tamu, staf PD/KO/PM (login sungguhan lewat /api/staf), SA dan MOD (token admin), BP (akun instansi, login sungguhan). */
 import assert from "node:assert/strict";
+import {denganProfil} from "./_profil.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor
 import {siapkan, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 
@@ -32,7 +33,7 @@ export async function mulai(nama, {ikat = {}, r2 = true} = {}) {
       status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD", email: "budi@contoh.go.id", wa: "628123456789", surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0, dibuat: t, ...o};
     await DB.prepare(`INSERT INTO instansi_akun (${Object.keys(baris).join(", ")}) VALUES (${Object.keys(baris).map(() => "?").join(", ")})`).bind(...Object.values(baris)).run();
     const m = await api("POST", "/api/instansi/masuk", {username, sandi: "SandiUji123456"}, {...PB, ...ip()}); assert.equal(m.s, 200, m.t);
-    const cookie = m.h.get("set-cookie").split(";")[0];
+    const {cookie} = await denganProfil(DB, id, {cookie: m.h.get("set-cookie").split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
     return {h: {cookie, ...ip()}, hp: {cookie, ...PB, ...ip()}, via: "/api/instansi/siklus", id};
   };
   const SA = {h: {...ADMIN}, hp: {...ADMIN, ...PB}, via: "/api/siklus"}, MOD = {h: {...MOD2}, hp: {...MOD2, ...PB}, via: "/api/siklus"}, TAMU = {h: {...ip()}, hp: {...PB, ...ip()}, via: "/api/siklus"};

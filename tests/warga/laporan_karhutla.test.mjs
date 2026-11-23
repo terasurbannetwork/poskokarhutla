@@ -10,6 +10,7 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
+import {denganProfil} from "./_profil.mjs";
 import * as S from "../../public/laporan_karhutla_spek.js";
 import {teksWA} from "../../public/laporan_karhutla_wa.js";
 import {KATEGORI} from "../../src/inventaris.js";
@@ -37,7 +38,7 @@ const pemprov = async (kode, o = {}) => {
     status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD Provinsi", email: "budi@contoh.go.id", wa: "6281234500" + kode, surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0,
     dibuat: Date.now() - 3 * HARI, dummy: 0, ...o});
   const m = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(m.s, 200, m.t);
-  const cookie = m.h.get("set-cookie").split(";")[0];
+  const {cookie} = await denganProfil(DB, id, {cookie: m.h.get("set-cookie").split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
   return {id, pemprov: true, h: {cookie}, hp: {cookie, ...PB}};
 };
 let nipN = 0;
@@ -325,7 +326,7 @@ uji("hak: operator provinsi hanya provinsinya (lain 404), pemkab dan tamu ditola
   /* akun kabupaten tidak mengisi laporan */
   const g = "c".repeat(32), id = id16(); await sisip("instansi_akun", {id, username: "pemkabkapuaslk", jenis: "pemkab", tingkat: "kab", wilayah: "Kab Kapuas", kunci_wilayah: "kk" + id, cakupan: '["62"]', prov: "62", kab: "Kapuas", garam: g, sandi_sha: sha256(g + SANDI),
     status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD", email: "b@contoh.go.id", wa: "628123456789", surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0, dibuat: 1, dummy: 0});
-  const m = await api("POST", "/api/instansi/masuk", {username: "pemkabkapuaslk", sandi: SANDI}, {...PB, ...ipBaru()}); const kab = {h: {cookie: m.h.get("set-cookie").split(";")[0]}}; kab.hp = {...kab.h, ...PB};
+  const m = await api("POST", "/api/instansi/masuk", {username: "pemkabkapuaslk", sandi: SANDI}, {...PB, ...ipBaru()}); const kab = {h: await denganProfil(DB, id, {cookie: m.h.get("set-cookie").split(";")[0]})}; kab.hp = {...kab.h, ...PB};
   assert.equal((await jalan(kab, "prov:62")).s, 403);
   /* staf: hanya sumbernya */
   assert.equal((await jalan(SU, "udara")).s, 201); assert.equal((await jalan(SU, "omc")).s, 403); assert.equal((await jalan(ST, "omc")).s, 201); assert.equal((await jalan(ST, "udara")).s, 403); assert.equal((await jalan(SO, "koordalops")).s, 201);

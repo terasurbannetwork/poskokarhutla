@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import {randomBytes} from "node:crypto";
 import "../../src/worker.js";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
+import {denganProfil} from "./_profil.mjs";
 
 const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai(), id16 = () => randomBytes(8).toString("hex");
 const U = await siapkan("uji-banjir-surut"), {DB, api} = U;
@@ -15,7 +16,7 @@ async function akun(username) {
     VALUES (?, ?, 'pemkab', 'kab', 'Pemerintah Seruyan', ?, '["62"]', '62', 'Seruyan', ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, 0)`)
     .bind(id, username, "uji|" + username, garam, sha256(garam + SANDI)).run();
   const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, "cf-connecting-ip": `198.51.100.${++ipN}`}); assert.equal(r.s, 200, r.t);
-  return {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0], ...PB};
+  return {...(await denganProfil(DB, id, {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]})), ...PB};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const tugas = async (bencana, o = {}) => {
   const id = id16(), t = Date.now() - 30 * JAM;

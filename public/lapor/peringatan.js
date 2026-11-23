@@ -36,6 +36,7 @@ function kartuPasang() {
   const k = el("section", "lp-pw-kartu"), kep = el("div", "lp-pw-kep"), ik = el("span", "lp-pw-ik"); ik.append(ikon("i-unduh"));
   const t = el("div"); t.append(el("b", null, "Pasang di HP"), el("small", null, "Buka lebih cepat dari layar utama, bisa dibuka tanpa sinyal, dan menerima peringatan."));
   kep.append(ik, t); k.append(kep);
+  const os = el("p", "lp-pw-os"); os.append("Tersedia di", el("span", "lp-pil", "iOS"), el("span", "lp-pil", "Android")); k.append(os);
   if (terpasang()) { const ok = el("p", "lp-pw-ok"); ok.append(ikon("i-centang"), "Aplikasi sudah terpasang di perangkat ini."); k.append(ok); return k; }
   if (pasangTunda) {
     const b = el("button", "lp-utama"); b.type = "button"; b.append(ikon("i-unduh"), "Pasang aplikasi");

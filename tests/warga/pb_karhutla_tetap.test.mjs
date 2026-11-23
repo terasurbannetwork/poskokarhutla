@@ -11,6 +11,7 @@ import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
 import {siapkan, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
+import {denganProfil} from "./_profil.mjs";
 
 const JAM = 3600e3, MENIT = 60e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, DASAR = Date.UTC(2026, 9, 1, 0, 0, 0);   // 1 Okt 2026 00:00 UTC, tetap
 const GOLDEN = path.join(AKAR, "tests/warga/fixtures/pb_karhutla_golden.json");
@@ -30,7 +31,7 @@ async function akun() {
   await DB.prepare(`INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, jabatan, unit, email, wa, surat, kartu, dikirim, diputus, wajib_ganti, dibuat, dummy)
     VALUES (?, 'pbuji1', 'pemkab', 'kab', 'Pemerintah Kab Satu', 'uji|pbuji1', '["62"]', '62', 'Kab Satu', ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, 0)`).bind(id, garam, sha256(garam + SANDI)).run();
   const r = await api("POST", "/api/instansi/masuk", {username: "pbuji1", sandi: SANDI}, {...PB, "cf-connecting-ip": "198.51.100.7"}); assert.equal(r.s, 200, r.t);
-  return {id, h: {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0], ...PB}};
+  return {id, h: {...(await denganProfil(DB, id, {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]})), ...PB}};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 async function tugas(lat, lon, {rek = REK, status = "buka", bencana, extra = {}} = {}) {
   const id = id16(), x = {padam_verif: null, padam_pada: null, verif_pada: null, cek_ulang_pada: null, ...extra};

@@ -301,3 +301,11 @@ test("lapor darurat: kata darurat di tengah laporan biasa membuka laporan darura
   const h = await obrol(["lapor", "1", "1", "Budi Santoso", {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}, "darurat"]);
   assert.ok(h.sesi.darurat); assert.equal(h.sesi.status, "identitas");
 });
+
+test("cerita pertama yang tidak dipakai tetap memakai kronologi berpandu, bukan ketik bebas (pemilik 23 Nov 2026)", async () => {
+  const jenis = JENIS.findIndex(j => j.id === "abrasi");
+  const h = await obrol(["tolong buatkan puisi tentang laut yang indah sekali ya", "1", "1", "Budi Santoso",
+    {lokasi: {lat: -6.19, lon: 106.87, akurasi: 12, sumber: "gps"}}, String(jenis + 1), "1"]);
+  assert.equal(h.sesi.status, "kronologi", "langsung ke langkah kronologi berpilihan");
+  assert.ok(h.pilihan?.length > 1, "kronologi dijawab dengan memilih");
+});

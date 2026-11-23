@@ -6,12 +6,13 @@
 | --- | --- | --- |
 | `src/lapor_lanjut_spek.js` | spek tujuh jenis objek dan isian berkas, validasi, penanda, rekap, kondisi akhir, sidik (fungsi murni ALGORITMA) | `warga-api` |
 | `src/lapor_lanjut.js` | rute `/api/lapor/data/*`, pembukaan berkas, tim dan token, pertanyaan harian, penutupan, dorong ke meja, terima ke Jitupasna | `warga-api` |
-| `src/lapor_mesin.js` | langkah percakapan tahap 2 (pesan pembuka, objek, tim, jawaban harian, penutupan) | `warga-api` |
+| `src/lapor_lanjut_mesin.js` | mesin murni percakapan WA tahap 2 tanpa AI (D24): rumah dan prasarana sekarang; tim, jawaban harian, penutupan menyusul (LJ-08, LJ-09, LJ-10) | `warga-api` |
 | `src/lapor_ai.js` | gerbang izin: nomor aktif di `lj_tim` lolos hanya untuk jalur berkas (D11); selesai unggah video bersambung berkonteks objek menulis `lj_media` | `warga-api` |
 | `src/meja_spek.js`, `src/meja.js` | kolom sistem `lapor_berkas` di meja `dampak`; sumber `daftar`, penanda `beda_sumber` dan `rekap_baru`; pelaku sistem `lapor_lanjut` (pola `sisipLogistik`) | `warga-api` |
 | `src/hak.js` | entri `MATRIKS` tabel `lj_*` untuk rute lapor data | `warga-api` |
 | `src/worker.js` | daftar rute (`RUTE_LAPOR`), halaman `/lapor/data` (kuki berkas, bukan sesi staf, jadi masuk `PUBLIK_TANPA_SESI` untuk halamannya saja) | `warga-api` |
 | `migrations/0161_lapor_data.sql` | tabel `lj_*` | `warga-api` |
+| `migrations/0165_lj_sesi.sql` | `lj_sesi`: draf percakapan WA per nomor anggota (D24) | `warga-api` |
 | `tests/warga/cakupan.json` | entri tiap tabel dan rute baru | `warga-api` |
 | `scripts/siklus/pasang.py` | usulan fase dari penutupan berkas lewat sumber `lapor_ai` yang sudah ada | `siklus` |
 | `scripts/wa/**` (gateway) | ambil antrean `lj_kabar`, kirim, tandai terkirim | `wa-bot` |
@@ -98,6 +99,19 @@ CREATE TABLE IF NOT EXISTS lj_akses (       -- append-only (D22)
 );
 ```
 
+Tambahan 0165 (LJ-05, D24), draf percakapan WA tahap 2, satu baris per nomor, tanpa trigger dan tanpa ALTER:
+
+```sql
+CREATE TABLE IF NOT EXISTS lj_sesi (
+  wa TEXT PRIMARY KEY CHECK (length(wa) BETWEEN 10 AND 15 AND wa GLOB '62[0-9]*' AND wa NOT GLOB '*[^0-9]*'),
+  berkas TEXT NOT NULL REFERENCES lj_berkas (id),
+  keadaan TEXT NOT NULL CHECK (json_valid(keadaan) AND length(keadaan) <= 6000),   -- isian yang sedang diketik, termasuk pribadi; mesin menolak > 5500
+  diubah INTEGER NOT NULL                                                         -- penjaga bentrok dua pesan serentak dan umur draf (24 jam)
+);
+```
+
+Hak (`MATRIKS`): `lj_tim` baca, tambah, ubah, hapus; `lp_mesin` baca; `lp_cron` baca, hapus. Keadaan sesudah simpan tidak menyimpan isian apa pun (hanya jenis, desa, kecamatan terakhir).
+
 Indeks: `lj_berkas (status)`, `lj_berkas (kejadian_id, kab4)`, `lj_objek (berkas, jenis, status)`, `lj_objek (titik_id)`, `lj_tim (wa)`, `lj_jejak (berkas, id)`, `lj_media (objek)`, `lj_kabar (terkirim, id)`, `lj_akses (berkas, waktu)`.
 
 ## R2
@@ -118,13 +132,13 @@ Indeks: `lj_berkas (status)`, `lj_berkas (kejadian_id, kab4)`, `lj_objek (berkas
 | `GET /api/lapor/data/daftar` | staf Pusdalops, admin, akun lembaga (Q15) | daftar berkas lintas kab sesuai hak wilayah |
 | `POST /api/lapor/data/tampil` | staf | satu objek `pribadi` utuh, tercatat `lj_akses` |
 | `POST /api/lapor/data/objek` | tim berkas | tambah atau ubah (idempoten `klien_id`, 409 bila `rev` lama) |
-| `POST /api/lapor/data/objek/:id/batal` | ketua; anggota untuk objek isiannya | batal dengan alasan |
+| `POST /api/lapor/data/batal` | ketua; anggota untuk objek isiannya | `{objek, rev, alasan}`, batal dengan alasan |
 | `POST /api/lapor/data/nihil` | tim berkas | tandai atau cabut nihil per metrik |
-| `POST /api/lapor/data/media` | tim berkas | foto atau dokumen; video lewat jalur `lapor_unggah` dengan konteks objek |
+| `POST /api/lapor/data/foto` | tim berkas | foto JPEG kamera `{objek, data, gps, exif}`, EXIF dibuang, foto lama diberi penanda (tidak ditolak); video menyusul di LJ-18 |
 | `POST /api/lapor/data/tim` | ketua (tambah, cabut), staf Pusdalops dan admin (cabut, pindah ketua Q14) | atur tim, terbitkan token |
 | `POST /api/lapor/data/tutup` | ketua | isian penutupan, hasilkan `usul_tutup` |
 | `POST /api/lapor/data/terima` | staf Pusdalops | terima penutupan, terima ke Jitupasna |
-| `GET /api/lapor/data/media/:id` | tim berkas, staf | sajikan media, tercatat `lj_akses` |
+| `GET /api/lapor/data/media?id=` | tim berkas, staf Pusdalops, akun lembaga kab (foto saja, bukan wajah) | sajikan media, tercatat `lj_akses` |
 
 Semua rute: metode dibatasi, isian divalidasi spek, batas laju per nomor (pola rute lapor), ukuran foto mengikuti `lapor_foto`.
 
@@ -135,7 +149,7 @@ Semua rute: metode dibatasi, isian divalidasi spek, batas laju per nomor (pola r
 - **Meja `pengungsi`.** Satu catatan per (titik, tanggal) lewat indeks unik 0135.
 - **Lifeline.** Hanya lewat kolom prasarana meja `dampak` (D7).
 - **Jitupasna.** `sk_jitupasna_baris` hanya dari rute terima; Jitupasna final menolak dengan pesan (D8).
-- **WA.** Mesin tahap 2 di `lapor_mesin.js` lewat gateway yang ada; tidak ada router WA baru. Antrean keluar `lj_kabar` diambil gateway.
+- **WA.** Mesin tahap 2 di `lapor_lanjut_mesin.js` (D24), disambung di `pesan()` dan `fotoPost()` `src/lapor_ai.js` pada jalur mesin (Bearer `WA_MESIN`) SEBELUM daftar izin: nomor dengan baris `lj_tim` aktif (dicabut kosong, berkas terbuka) yang punya `lj_sesi` atau mengetik perintah tahap 2 dilayani `pesanTim` dan `fotoTim` di `src/lapor_lanjut.js`, dengan jawaban berbentuk sama (`balasan`, `teksWa`, `status: "data_lanjutan"`); selain itu alur Lapor biasa tak berubah. Objek disimpan lewat `simpanObjek` yang sama dengan web (`oleh` = `tim:<wa>`, `klien_id` = `wa-<mulai>`), foto lewat `simpanFoto` (pintu `wa`, lencana `wa` bila gateway mengirim lokasi). Tidak ada router WA baru; antrean keluar `lj_kabar` diambil gateway.
 - **Cron.** Cron menit yang ada; pemeriksaan pertanyaan harian hanya pada menit jam kirim (ALGORITMA 6).
 
 ## ADR

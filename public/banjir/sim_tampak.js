@@ -6,6 +6,8 @@
    rob.json (muka laut). Dipanggil dari Simulasi.render() bila Simulasi.mode === "genangan". Pola kamera & medan: public/sim_3d.js.
    Tambahan (20 Okt 2026): tutupan lahan nyata per sel (sim_lahan.js: CN dan Manning), pita ketidakpastian dari 51 anggota ECMWF, lapis tanggap
    (sim_tanggap.js: pangkalan, jalan OSM yang tak terendam, titik aman) dan peringkat perlakuan; titik awal = kejadian aktif paling genting (Simulasi.awal).
+   Tambahan (23 Nov 2026): skenario muka sungai seketika berbasis HAND (sim_hand.js, gagasan RainFlow Lab): penggeser muka air, bangunan OSM 3D
+   berwarna bila tergenang, angka paparan ikut penggeser, akses darat ke titik aman dihitung di worker saat penggeser dilepas.
    INP: klik hanya mengubah fragmen panel; kerja berat di worker; animasi berlaju adaptif dan berhenti sendiri bila frame > 300 ms. */
 const SimTampak = (() => {
 /* sim_longsor.js dimuat SESUDAH berkas ini (urutan index.html): SL diisi saat render pertama */
@@ -17,8 +19,8 @@ const T = {k: null, titik: null, sisi: 6000, n: 100, sk: "dasar", op: {ekstrem: 
   tanggul: [], pompa: [], pintu: false, tinggi: 2, laju: .5, alat: null, draf: [],
   dem: null, demKunci: "", prep: null, hasil: null, lihat: "dengan", t: 0, main: false, basi: false,
   lapis: {air: true, longsor: true, citra: true}, kanvas: {}, peta: null, sibuk: false, kerja: undefined, tanpaWorker: false, ex: 1.5, pend: undefined, raf: 0,
-  alatVer: 0, cache: {}, lahan: undefined, lahanKunci: "", dcn: 0, tg: null, tgCtx: null, pm: null, pita: null, vek: null, unitDaftar: undefined, awalJalan: false, mob: 2};
-const SLh = () => window.SimLahan, STg = () => window.SimTanggap;
+  alatVer: 0, tampil: "72", hm: 2, hd: null, hdV: null, hdAkses: null, cache: {}, lahan: undefined, lahanKunci: "", dcn: 0, tg: null, tgCtx: null, pm: null, pita: null, vek: null, unitDaftar: undefined, awalJalan: false, mob: 2};
+const SLh = () => window.SimLahan, STg = () => window.SimTanggap, SHd = () => window.SimHand;
 const ik = d => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const IK = {main: '<path d="M7 5l12 7-12 7z"/>', jeda: '<path d="M8 5v14M16 5v14"/>'};
 const jeda = () => new Promise(r => nanti(r));
@@ -44,7 +46,8 @@ function kerja(pesan, kabar) {
     T.tanpaWorker = true; berhenti();
     return jeda().then(() => pesan.jenis === "dem" ? SG.ambilDEM(pesan.lat, pesan.lon, pesan.sisi, pesan.n).then(dem => ({dem}))
       : pesan.jenis === "lahan" ? SLh().kisiLahan(pesan.K).then(lahan => ({lahan}))
-      : pesan.jenis === "siap" ? {prep: SG.siapkanArea(pesan.dem, SL.lereng)} : {hasil: SG.jalankan(pesan.cfg, kabar)}); }
+      : pesan.jenis === "siap" ? {prep: SG.siapkanArea(pesan.dem, SL.lereng)} : pesan.jenis === "hand" ? {hand: SHd().hitung(pesan.prep, pesan.K, SG, undefined, pesan.air)}
+      : pesan.jenis === "akses" ? {akses: SHd().akses(pesan.ctx, STg())} : {hasil: SG.jalankan(pesan.cfg, kabar)}); }
   return new Promise((ok, gagal) => { const id = ++idN; tunggu.set(id, {ok, gagal, kabar}); T.kerja.postMessage({...pesan, id}); });
 }
 
@@ -140,7 +143,7 @@ const adaPerlakuan = () => T.tanggul.length || T.pompa.length || T.pintu;
 function status(s) { const el = $("#gnStatus"); if (el) el.textContent = s; }
 async function jalan() {
   if (T.sibuk) return; const P = pusat(); if (!P) return toast("Pilih kecamatan atau titik dulu");
-  T.sibuk = true; berhenti(); const b = $("#gnJalan"); if (b) b.disabled = true;
+  T.sibuk = true; berhenti(); T.tampil = "72"; T.dokKunci = null; const b = $("#gnJalan"); if (b) b.disabled = true;
   try {
     autoSisi(); const kunci = [P.lat.toFixed(4), P.lon.toFixed(4), T.sisi, T.n].join("|");
     if (T.demKunci !== kunci) { status("Mengunduh medan (DEM)…"); const r = await kerja({jenis: "dem", lat: P.lat, lon: P.lon, sisi: T.sisi, n: T.n}); T.dem = r.dem; T.prep = null; T.demKunci = kunci; }
@@ -258,7 +261,7 @@ function dataAlat() {
 }
 function terapkanLapis() { const m = T.peta; if (!m?.getLayer("gn-sat")) return;
   const v = (id, on) => m.getLayer(id) && m.setLayoutProperty(id, "visibility", on ? "visible" : "none");
-  v("gn-sat", T.lapis.citra); v("gn-air", T.lapis.air); v("gn-longsor", T.lapis.longsor);
+  const hd = T.tampil === "hand"; v("gn-sat", T.lapis.citra); v("gn-air", T.lapis.air); v("gn-longsor", T.lapis.longsor && !hd); v("gn-bgn", hd);
   m.setPaintProperty("gn-kotak", "line-color", T.lapis.citra || gelap() ? "#ffffff" : "#0b2545"); }
 const hasilLihat = () => T.hasil && (T.lihat === "dengan" && T.hasil.dengan ? T.hasil.dengan : T.hasil.dasar);
 /* warna kedalaman (m) dan indeks kerawanan longsor */
@@ -276,6 +279,7 @@ function lukis(id, N, warna) { const c = T.kanvas[id]; if (!c) return; const px 
   c.cx.putImageData(c.img, 0, 0); segarKanvas(id); }
 /* t dikuantisasi 0,25 jam; lukis dilewati bila bingkai sama; longsor hanya bila jam bulat berubah */
 function gambar(paksa) {
+  if (T.tampil === "hand") return gambarHand(paksa);
   T.raf = 0; const m = T.peta, R = hasilLihat(); if (!m || !R || !m.getSource("gn-air")) return 0;
   const t0 = performance.now(), t = Math.round(T.t * 4) / 4, kunci = t + "|" + T.lihat + "|" + T.nJalan;
   if (!paksa && kunci === T.lukisKunci) return 0; T.lukisKunci = kunci;
@@ -295,8 +299,10 @@ function tip() {
   if (i < 0 || j < 0 || i >= D.nx || j >= D.ny) { T.tipKunci = ""; return el.classList.remove("on"); }
   /* ukur dulu (ukuran isi sebelumnya), baru tulis; isi hanya diganti bila sel/jam berubah */
   const w = el.offsetWidth || 220, hgt = el.offsetHeight || 70, x = e.originalEvent.clientX, y = e.originalEvent.clientY;
-  const k = j * D.nx + i, a = Math.floor(T.t), kunci = k + "|" + a + "|" + T.lihat + "|" + T.nJalan;
-  if (kunci !== T.tipKunci) { T.tipKunci = kunci; const N = D.nx * D.ny, d = R.kedalaman[a * N + k], p = SL.peluang(T.prep.lr[k], mJam(a));
+  const k = j * D.nx + i, a = Math.floor(T.t), hd = T.tampil === "hand" && T.hd, kunci = k + "|" + (hd ? "h" + T.hm : a + "|" + T.lihat) + "|" + T.nJalan;
+  if (kunci !== T.tipKunci && hd) { T.tipKunci = kunci; const h = T.hd.hand[k], d = h < T.hm ? T.hm - h : 0;
+    el.innerHTML = T.prep.laut[k] ? "<b>Laut</b>" : !Number.isFinite(h) ? "<b>Tak terhitung</b><br>Air dari sel ini keluar kotak sebelum bertemu alur" : `<b>${d >= .02 ? `Air ${angka1(d)} m` : "Kering"}</b><br>${T.hd.alur[k] ? "Alur sungai" : `${angka1(h)} m di atas alur terdekat (HAND)`}<br>Muka air sungai ${angka1(T.hm)} m`; }
+  else if (kunci !== T.tipKunci) { T.tipKunci = kunci; const N = D.nx * D.ny, d = R.kedalaman[a * N + k], p = SL.peluang(T.prep.lr[k], mJam(a));
     el.innerHTML = T.prep.laut[k] ? "<b>Laut</b>" : `<b>${d >= .02 ? `Air ${angka1(d)} m` : "Kering"}</b><br>Ketinggian tanah ${angka1(T.prep.z[k])} m (DEM simulasi), air maks 72 jam ${angka1(R.hmaks[k])} m<br>Lereng ${bulat(T.prep.lr[k])}°, indeks kerawanan longsor ${F2(p)} (relatif)`; }
   el.classList.add("on"); el.style.left = Math.min(innerWidth - w - 8, x + 14) + "px"; el.style.top = Math.max(8, y - hgt - 12) + "px";
 }
@@ -420,6 +426,7 @@ function klikPanel(e) {
   if (d.glihat) { if (T.lihat === d.glihat) return; T.lihat = d.glihat; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); return nanti(() => { segarHasil(); jadwal(); }); }
   if (d.glapis) { const k = d.glapis; T.lapis[k] = !T.lapis[k]; b.setAttribute("aria-pressed", T.lapis[k]); return nanti(() => { terapkanLapis(); if (k === "longsor" && T.lapis.longsor) { T.lsKunci = null; T.lukisKunci = null; jadwal(); } }); }
   if (b.id === "gnJalan") { b.textContent = "Menghitung…"; return nanti(jalan); }
+  if (b.id === "gnHand") { if (T.tampil === "hand") return nanti(keluarHand); if (T.sibuk || !T.prep) return toast("Tunggu simulasi selesai dulu"); b.textContent = "Menghitung…"; return nanti(hand); }
   if (b.id === "gnPita") { b.textContent = "Menghitung…"; return nanti(pita); }
   if (b.id === "gnTanggap") { b.textContent = "Menghitung…"; return nanti(tanggap); }
   if (b.id === "gnPeringkat") { b.textContent = "Menghitung…"; return nanti(peringkatan); }
@@ -498,7 +505,11 @@ const m3Anggota = () => { const E = T.hasil?.X.M.ens, a = E && E.e0 >= 0 && E.e0
 const adaM3 = () => m3Anggota().length >= 30;
 function lanjutHtml() {
   const H = T.hasil; if (!H) return ""; const pop = popSel(), ok = adaM3() && T.sk === "dasar";
-  return `${bandingHtml()}<div class="lbl" style="margin-top:14px">Pita ketidakpastian hujan</div>
+  return `<div class="lbl" style="margin-top:14px">Skenario muka sungai <span class="pill l3" style="height:17px;font-size:9.5px">skenario</span></div>
+    <p class="fnd">Hasilnya langsung, tanpa jam. Semua alur sungai di kotak dianggap naik setinggi muka air yang dipilih. Tanah yang lebih rendah dari muka air itu, diukur dari alur terdekat (HAND), ikut tergenang. Dipakai untuk penyaringan awal, bukan prakiraan.</p>
+    <button class="btn sec" id="gnHand" style="width:100%">${T.tampil === "hand" ? "Kembali ke genangan 72 jam" : "Tampilkan skenario muka sungai"}</button>
+    <div id="gnHandH">${T.tampil === "hand" ? handHtml() : ""}</div>
+    ${bandingHtml()}<div class="lbl" style="margin-top:14px">Pita ketidakpastian hujan</div>
     <p class="fnd">Lima hitungan: hujan 3 hari persentil 10, 50, 90 dari 51 anggota ECMWF, ditambah P50 dengan kelembapan tanah satu kelas lebih kering dan lebih basah.</p>
     <button class="btn sec" id="gnPita" style="width:100%" ${ok ? "" : "disabled"}>${T.pita ? "Hitung ulang pita" : "Hitung pita (5 hitungan)"}</button>
     ${!adaM3() ? `<p class="fnd">Tidak tersedia: tak ada sebaran per anggota ansambel untuk area dan tanggal ini.</p>` : T.sk !== "dasar" ? `<p class="fnd">Pilih skenario Prakiraan untuk menghitung pita.</p>` : ""}
@@ -565,14 +576,18 @@ async function muatVektor() {
     el = document.createElement("div"); el.style.cssText = `position:fixed;left:-9999px;top:0;width:${px}px;height:${px}px;visibility:hidden`; document.body.append(el);
     const ly = (id, sl, type) => ({id, type, source: "openmaptiles", "source-layer": sl, paint: {[type + "-opacity"]: 0}});
     m = new maplibregl.Map({container: el, interactive: false, attributionControl: false, fadeDuration: 0, pixelRatio: 1, center: [D.lon, D.lat], zoom: zm,
-      style: {version: 8, sources: {openmaptiles: src}, layers: [ly("t", "transportation", "line"), ly("p", "poi", "circle")]}});
+      style: {version: 8, sources: {openmaptiles: src}, layers: [ly("t", "transportation", "line"), ly("p", "poi", "circle"), ly("b", "building", "fill")]}});
     await new Promise(res => { const to = setTimeout(res, 15000); m.once("idle", () => { clearTimeout(to); res(); }); });
-    const q = sl => m.querySourceFeatures("openmaptiles", {sourceLayer: sl}), garis = [], poi = [], lihat = new Set();
+    const q = sl => m.querySourceFeatures("openmaptiles", {sourceLayer: sl}), garis = [], poi = [], bangunan = [], lihat = new Set();
     if (!q("transportation").length) await new Promise(r => setTimeout(r, 5000)); /* idle kadang datang sebelum ubin vektor terurai */
     for (const f of q("transportation")) { const g = f.geometry, k = f.properties.class; if (!STg().LAJU_JALAN[k]) continue; for (const ln of g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : []) garis.push({p: ln, k}); }
     for (const f of q("poi")) { const c = f.properties.class, j = KELAS_POI[c]; if (!j || f.geometry.type !== "Point") continue; const [lon, lat] = f.geometry.coordinates, id = lon.toFixed(5) + "," + lat.toFixed(5); if (lihat.has(id)) continue; lihat.add(id);
       poi.push({nama: f.properties.name || (j === "sekolah" ? "Sekolah" : "Fasilitas kesehatan"), jenis: j, lat, lon}); }
-    v = garis.length || poi.length ? {garis, poi} : null;
+    /* bangunan: tiap poligon sekali (ubin bersebelahan mengulang fitur yang sama); bangunan yang terpotong batas ubin bisa terhitung dua (ponytail: kecil, gabung per osm id bila perlu) */
+    for (const f of q("building")) { const g = f.geometry; for (const p of g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : []) {
+      const r = p[0]; if (!r?.length) continue; let x = 0, y = 0; for (const [a, b] of r) { x += a; y += b; } const c = [x / r.length, y / r.length], id = c[0].toFixed(6) + "," + c[1].toFixed(6);
+      if (lihat.has(id)) continue; lihat.add(id); bangunan.push({g: p, c, t: f.properties.render_height}); } }
+    v = garis.length || poi.length || bangunan.length ? {garis, poi, bangunan} : null;
   } catch (e) { console.warn("SimTampak: ubin OSM (jalan, titik aman) tidak termuat", e); }
   finally { try { m?.remove(); } catch {} el?.remove(); }
   if (v) T.vek = {kunci: T.demKunci, v}; return v;
@@ -649,7 +664,8 @@ function peringkatHtml() {
 
 /* dok jam + legenda: dibangun sekali per hasil; #gnMain/#gnT tidak diganti (fokus tetap) */
 function dok() {
-  const el = $("#simLegenda"); if (!el) return; const R = hasilLihat(), kunci = R ? "h" + T.nJalan + T.lapis.longsor : "kosong";
+  const el = $("#simLegenda"); if (!el) return; if (T.tampil === "hand" && T.hd) return dokHand(el);
+  const R = hasilLihat(), kunci = R ? "h" + T.nJalan + T.lapis.longsor : "kosong";
   if (T.dokKunci === kunci && el.querySelector(R ? "#gnT" : ".fnd")) return jadwal(); T.dokKunci = kunci;
   el.innerHTML = R ? `<div class="gn-waktu"><button type="button" class="gn-ib" id="gnMain" aria-label="Putar 72 jam">${ik(IK.main)}</button>
       <input type="range" id="gnT" min="0" max="${J}" step="1" value="${Math.floor(T.t)}" aria-label="Jam simulasi"><b id="gnJam" class="num"></b></div>
@@ -660,6 +676,97 @@ function dok() {
   ikonMain(); $("#gnMain").onclick = putar;
   $("#gnT").oninput = e => { berhenti(); T.t = +e.target.value; jadwal(); };
   T.lukisKunci = null; jadwal();
+}
+
+/* ---------- skenario muka sungai (HAND, sim_hand.js) ---------- */
+/* warna bangunan per kelas kedalaman lewat feature-state: menggeser hanya mengubah state bangunan yang kelasnya berubah. Ekspresi cat yang
+   memuat muka air memaksa MapLibre menyusun ulang semua bangunan (diukur: ~1 detik untuk 95 ribu bangunan di Batujajar) */
+const WARNA_BGN = ["match", ["number", ["feature-state", "d"], 0], 1, "#f6b26b", 2, "#e8742c", 3, "#b8401c", "#e6d9bd"];
+const kelasBgn = d => d >= 3 ? 3 : d >= 1 ? 2 : d >= SHd().ASUMSI.TERGENANG ? 1 : 0;
+function warnaiBangunan() {
+  const m = T.peta, V = T.hdV; if (!m?.getSource("gn-bgn") || !V) return; const h = V.bangunan, K = V.kelas;
+  for (let i = 0; i < h.length; i++) { const c = kelasBgn(T.hm - h[i]); if (c !== K[i]) { K[i] = c; m.setFeatureState({source: "gn-bgn", id: i}, {d: c}); } }
+}
+const ALUR = [0, 150, 160, 200]; /* hijau toska: beda dari biru genangan */
+async function hand() {
+  if (T.sibuk || !T.prep || !SHd()) return; T.sibuk = true; berhenti();
+  try {
+    const D = T.dem, N = D.nx * D.ny;
+    if (T.hd?.kunci !== T.demKunci) { status("Menghitung tinggi tanah di atas alur sungai (HAND)…"); const {z: _z, ...K} = D;
+      /* air permanen WorldCover (kelas 80: waduk, danau) = sudah air, bukan genangan; laut juga. "basah" dipakai untuk semua hitungan paparan */
+      const air = T.lahan?.dom ? Uint8Array.from(T.lahan.dom, c => c === 80 ? 1 : 0) : null, basah = Uint8Array.from(T.prep.laut, (l, k) => l || air?.[k] ? 1 : 0);
+      const r = await kerja({jenis: "hand", prep: {z: T.prep.z, laut: T.prep.laut, acc: T.prep.acc}, K, air}); T.hd = {...r.hand, kunci: T.demKunci, basah, nAir: air ? air.reduce((a, b) => a + b, 0) : 0}; T.hdV = null; }
+    if (T.hdV?.kunci !== T.demKunci) { status("Memuat bangunan, jalan, dan titik aman (OpenStreetMap)…"); const vek = await muatVektor();
+      const keSel = (lo, la) => SG.keSel(D, lo, la), sel = (lo, la) => { const [i, j] = keSel(lo, la).map(Math.round); return i >= 0 && j >= 0 && i < D.nx && j < D.ny ? j * D.nx + i : -1; };
+      const hb = [], fs = [];
+      for (const b of vek?.bangunan || []) { const k = sel(b.c[0], b.c[1]), h = k < 0 ? NaN : T.hd.hand[k]; if (!Number.isFinite(h)) continue;
+        fs.push({type: "Feature", properties: {i: hb.length, t: b.t}, geometry: {type: "Polygon", coordinates: b.g}}); hb.push(h); }
+      T.hdV = {kunci: T.demKunci, laju: vek ? STg().rasterJalan(vek.garis, keSel, D.nx, D.ny) : new Float32Array(N), ada: !!vek, nPoi: vek?.poi.length || 0,
+        aman: (vek?.poi || []).map(p => sel(p.lon, p.lat)).filter(k => k >= 0), bangunan: Float32Array.from(hb), kelas: new Uint8Array(hb.length), fc: {type: "FeatureCollection", features: fs}}; }
+    T.tampil = "hand"; T.hdAkses = null; status(""); pasangBangunan(); terapkanLapis(); T.lukisKunci = null; T.dokKunci = null; dok(); segarLanjut(); gambar(true); hitungAkses();
+  } catch (e) { console.warn("SimTampak HAND:", e); status("Gagal: " + e.message); T.tampil = "72"; }
+  T.sibuk = false; const b = $("#gnHand"); if (b) b.textContent = T.tampil === "hand" ? "Kembali ke genangan 72 jam" : "Tampilkan skenario muka sungai";
+}
+function keluarHand() { T.tampil = "72"; terapkanLapis(); T.lukisKunci = null; T.lsKunci = null; T.dokKunci = null; dok(); segarLanjut(); gambar(true); }
+/* tinggi bangunan dikali pembesaran medan supaya tidak tampak rata di atas medan yang dibesarkan */
+function pasangBangunan() {
+  const m = T.peta; if (!m?.getSource("gn-alat")) return; const s = m.getSource("gn-bgn");
+  if (s) { m.removeFeatureState({source: "gn-bgn"}); s.setData(T.hdV.fc); } else { m.addSource("gn-bgn", {type: "geojson", data: T.hdV.fc, promoteId: "i"});
+    m.addLayer({id: "gn-bgn", type: "fill-extrusion", source: "gn-bgn", minzoom: 12, paint: {"fill-extrusion-opacity": .92, "fill-extrusion-color": WARNA_BGN, "fill-extrusion-height": 6}}, "gn-kotak"); }
+  T.hdV.kelas.fill(0);
+  m.setPaintProperty("gn-bgn", "fill-extrusion-height", ["*", ["coalesce", ["get", "t"], 6], T.ex]);
+}
+function gambarHand(paksa) {
+  T.raf = 0; const m = T.peta, H = T.hd; if (!m || !H || !m.getSource("gn-air")) return 0;
+  const t0 = performance.now(), mm = T.hm, kunci = "h|" + mm + "|" + T.nJalan; if (!paksa && kunci === T.lukisKunci) return 0; T.lukisKunci = kunci;
+  const laut = T.prep.laut, basah = H.basah, hd = H.hand;
+  lukis("gn-air", hd.length, k => laut[k] ? null : basah[k] || H.alur[k] ? ALUR : hd[k] < mm ? warnaAir(mm - hd[k]) : null);
+  warnaiBangunan();
+  const r = ringkasHand(), lu = $("#gnLuasT"); if (lu) lu.textContent = `${bulat(ha(r.luas))} ha tergenang`;
+  const v = $("#gnHmV"); if (v) v.textContent = angka1(mm) + " m"; segarHandAngka(r);
+  return performance.now() - t0;
+}
+const ringkasHand = () => SHd().ringkas(T.hd.hand, T.hd.basah, T.hm, T.dem.dx, {pop: popSel(), laju: T.hdV?.laju, bangunan: T.hdV?.ada ? T.hdV.bangunan : null, alur: T.hd.alur, ambangJalan: STg().ASUMSI.AMBANG_JALAN});
+function dokHand(el) {
+  const kunci = "hand" + T.nJalan; if (T.dokKunci === kunci && el.querySelector("#gnHm")) return jadwal(); T.dokKunci = kunci;
+  el.innerHTML = `<div class="gn-waktu gn-muka"><span>Muka air sungai</span><input type="range" id="gnHm" min="0" max="${SHd().ASUMSI.MAKS}" step="0.1" value="${T.hm}" aria-label="Muka air di atas dasar alur sungai, meter"><b id="gnHmV" class="num">${angka1(T.hm)} m</b></div>
+    <div class="leg row"><span id="gnLuasT" class="num"></span>${[[.1, "10 cm"], [.5, "50 cm"], [1, "1 m"], [2, "2 m"], [4, "≥ 4 m"]].map(([d, n]) => `<span><i class="sw" style="background:rgba(${warnaAir(d).slice(0, 3).join(",")},.9)"></i>${n}</span>`).join("")}
+      <span><i class="sw" style="background:rgb(${ALUR.slice(0, 3).join(",")})"></i>alur sungai dan air permanen</span><span><i class="sw" style="background:#e8742c"></i>bangunan tergenang</span></div>`;
+  const g = $("#gnHm"); g.oninput = () => { T.hm = +g.value; jadwal(); }; g.onchange = hitungAkses;
+  T.lukisKunci = null; jadwal();
+}
+/* akses darat ke titik aman: Dijkstra di worker, hanya saat penggeser dilepas; jawaban lama yang datang terlambat dibuang */
+let aksesId = 0;
+async function hitungAkses() {
+  const V = T.hdV, pop = popSel(), D = T.dem, id = ++aksesId, m = T.hm; if (!V || T.tampil !== "hand") return;
+  if (!V.aman.length || !pop) { T.hdAkses = {tak: !pop ? "Butuh estimasi penduduk area ini (penduduk.json)." : V.ada ? "Tidak ada sekolah atau fasilitas kesehatan OSM di dalam kotak." : "Peta OSM tidak termuat."}; return segarHandAngka(); }
+  T.hdAkses = {...(T.hdAkses || {}), hitung: true}; segarHandAngka();
+  try { const r = await kerja({jenis: "akses", ctx: {nx: D.nx, ny: D.ny, dx: D.dx, laju: V.laju, dalam: SHd().kedalaman(T.hd.hand, T.hd.basah, m), laut: T.hd.basah, aman: V.aman, pop, alur: T.hd.alur}});
+    if (id === aksesId) { T.hdAkses = {...r.akses, m}; segarHandAngka(); } }
+  catch (e) { if (id === aksesId) { T.hdAkses = {tak: "Gagal menghitung akses: " + e.message}; segarHandAngka(); } }
+}
+function segarHandAngka(r) { const el = $("#gnHandAngka"); if (el && T.hd) el.innerHTML = handAngkaHtml(r || ringkasHand()); }
+function handAngkaHtml(r) {
+  const V = T.hdV, A = T.hdAkses, tot = V?.bangunan.length || 0;
+  const ak = !A ? "" : A.tak ? `<p class="fnd" style="margin-top:4px">${esc(A.tak)}</p>` : A.nAman === 0 ? `<p class="fnd" style="margin-top:4px">Semua ${fmt(A.nAmanSemua)} sekolah dan fasilitas kesehatan di kotak ikut tergenang pada muka air ${angka1(A.m)} m.</p>`
+    : A.nAman == null ? `<p class="fnd" style="margin-top:4px">Menghitung akses ke titik aman…</p>`
+    : `<div class="lbl" style="margin-top:10px">Akses darat ke titik aman, muka air ${angka1(A.m)} m${A.hitung ? " (menghitung ulang…)" : ""}</div>
+    <table class="tb2" style="margin-top:4px"><tbody>
+      <tr><td>Sekolah dan fasilitas kesehatan yang tetap kering</td><td class="n">${fmt(A.nAman)} dari ${fmt(A.nAmanSemua)}</td></tr>
+      <tr><td>Orang terkurung air: semua jalan ke titik aman terendam ≥ ${fmt(STg().ASUMSI.AMBANG_JALAN * 100)} cm (orde besaran)</td><td class="n">${tengah(A.terkurung) > 0 ? rentang(A.terkurung) : "0"}</td></tr>
+      <tr><td>Waktu ke titik aman kering (median, 90 %)</td><td class="n">${waktu(A.median)}, ${waktu(A.p90)}</td></tr></tbody></table>`;
+  return `<table class="tb2" style="margin-top:8px"><tbody>
+      <tr><td>Luas tergenang ≥ 10 cm</td><td class="n">${bulat(ha(r.luas))} ha</td></tr>
+      <tr><td>Kedalaman maks</td><td class="n">${angka1(r.dalam)} m</td></tr>
+      <tr><td>Bangunan tergenang ≥ 10 cm (OpenStreetMap)</td><td class="n">${tot ? `${fmt(r.bangunan)} dari ${fmt(tot)}` : "tidak ada data bangunan"}</td></tr>
+      <tr><td>Orang di genangan ≥ 10 cm (orde besaran)</td><td class="n">${r.jiwa ? (r.luas ? rentang(r.jiwa) : "0") : "tak ada estimasi"}</td></tr>
+      <tr><td>Jalan terendam ≥ ${fmt(STg().ASUMSI.AMBANG_JALAN * 100)} cm (perkiraan panjang)</td><td class="n">${V?.ada ? `${angka1(r.jalanKm)} km` : "jalan OSM tidak termuat"}</td></tr></tbody></table>${ak}`;
+}
+function handHtml() {
+  const H = T.hd, V = T.hdV, D = T.dem; let dar = 0; for (const l of H.basah) if (!l) dar++;
+  return `<div id="gnHandAngka">${handAngkaHtml(ringkasHand())}</div>
+    <p class="fnd" style="margin-top:6px">Geser muka air di bawah peta. Alur sungai = sel dengan daerah tangkapan ≥ ${angka1(SHd().ASUMSI.ALUR_KM2)} km² <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span>. Tanpa tanggul, drainase, dan aliran; muka air sama di semua alur, jadi anak sungai kecil ikut naik setinggi sungai besar. Jalan yang melintas alur dianggap jembatan yang tetap bisa dilewati.${H.nAir ? ` Air permanen (waduk, danau, ${fmt(Math.round(ha(H.nAir * D.dx ** 2)))} ha, ESA WorldCover) tidak dihitung sebagai genangan.` : ""}${H.nTak ? ` ${fmt(Math.round(H.nTak / dar * 100))} % sel tidak terhitung karena airnya keluar kotak sebelum bertemu alur.` : ""}</p>
+    <p class="fnd" style="margin-top:4px">Sumber: DEM SRTM ~30 m (Mapzen Terrarium), sel ${bulat(D.dx)} m; bangunan, jalan, ${fmt(V?.nPoi || 0)} sekolah dan fasilitas kesehatan dari OpenStreetMap (ODbL); penduduk WorldPop disebar menurut tutupan permukiman.</p>`;
 }
 
 /* ---------- masuk / keluar mode ---------- */

@@ -54,15 +54,16 @@
   }
   async function muat() {
     const isi = document.getElementById("aiIsi");
-    try { const h = await TAMPIL[tab](); if (typeof h === "string") isi.innerHTML = h; isi.removeAttribute("aria-busy"); if (sorotId) { const id = sorotId; sorotId = null; sorot(id); } } catch (e) { isi.removeAttribute("aria-busy"); if (e.message !== "perlu masuk") isi.innerHTML = kosong("Gagal memuat: " + e.message); }
+    try { const h = await TAMPIL[tab](); if (typeof h === "string") isi.innerHTML = h; isi.removeAttribute("aria-busy"); for (const w of isi.querySelectorAll("[data-profil-akun]")) window.AdminProfil.isi(w); if (sorotId) { const id = sorotId; sorotId = null; sorot(id); } } catch (e) { isi.removeAttribute("aria-busy"); if (e.message !== "perlu masuk") isi.innerHTML = kosong("Gagal memuat: " + e.message); }
   }
 
   /* ---- Validasi ---- */
+  const pemda = a => window.AdminProfil?.jenisPemda(a.jenis);   // akun BPBD: data wakil = profil PIC (public/admin/instansi_profil.js)
   const kartuVerif = a => { const v = a.verifikasi;
     return `<article class="ai-kartu" data-id="${esc(a.id)}" data-dikirim="${esc(a.dikirim)}"><div class="ai-kepala"><b>${esc(a.wilayah)}</b>${pil(JENIS[a.jenis])}${dum(a)}${a.email_resmi === false ? pil("Email bukan .go.id atau .mil.id", "merah") : ""}</div>
       <p class="ai-meta">Username ${esc(a.username)}, dikirim ${jam(a.dikirim)}</p>
-      <dl class="ai-data"><div><dt>Nama</dt><dd>${esc(v.nama)}</dd></div><div><dt>Pangkat</dt><dd>${esc(v.pangkat || "tanpa pangkat")}</dd></div><div><dt>NIP atau NRP</dt><dd>${esc(v.nip)}</dd></div><div><dt>Jabatan</dt><dd>${esc(v.jabatan)}</dd></div>
-        <div><dt>Unit</dt><dd>${esc(v.unit)}</dd></div><div><dt>Email</dt><dd>${esc(v.email)}</dd></div><div><dt>WhatsApp</dt><dd>${esc(v.wa)}</dd></div>${v.telepon_kantor ? `<div><dt>Telepon kantor</dt><dd>${esc(v.telepon_kantor)}</dd></div>` : ""}</dl>
+      ${pemda(a) ? `<div class="ai-profil" data-profil-akun="${esc(a.id)}"></div>` : `<dl class="ai-data"><div><dt>Nama</dt><dd>${esc(v.nama)}</dd></div><div><dt>Pangkat</dt><dd>${esc(v.pangkat || "tanpa pangkat")}</dd></div><div><dt>NIP atau NRP</dt><dd>${esc(v.nip)}</dd></div><div><dt>Jabatan</dt><dd>${esc(v.jabatan)}</dd></div>
+        <div><dt>Unit</dt><dd>${esc(v.unit)}</dd></div><div><dt>Email</dt><dd>${esc(v.email)}</dd></div><div><dt>WhatsApp</dt><dd>${esc(v.wa)}</dd></div>${v.telepon_kantor ? `<div><dt>Telepon kantor</dt><dd>${esc(v.telepon_kantor)}</dd></div>` : ""}</dl>`}
       <div class="ai-doks"><a class="ad-tombol kecil" href="${API}/surat/${esc(a.id)}" target="_blank" rel="noopener">Buka surat tugas atau SK</a><a href="${API}/kartu/${esc(a.id)}" target="_blank" rel="noopener"><img src="${API}/kartu/${esc(a.id)}" alt="Kartu pegawai ${esc(v.nama)}" loading="lazy"></a></div>
       <div class="db-aksi">${ikS("cek", "Setujui", {"data-akun": "setuju"})}${ikS("tutup", "Tolak dengan alasan", {"data-akun": "tolak"}, "bahaya")}${ikS("cabut", "Cabut", {"data-akun": "cabut"}, "bahaya")}</div></article>`; };
   async function tampilValidasi() {
@@ -75,8 +76,8 @@
   const opsi = (o, pilih, semua) => `<option value="">${semua}</option>` + Object.entries(o).map(([k, v]) => `<option value="${esc(k)}" ${String(pilih) === String(k) ? "selected" : ""}>${esc(v)}</option>`).join("");
   /* tab Akun: kerangka (buat massal, filter) digambar SEKALI; paginasi dan filter hanya mengganti #aiTabel, dengan chrome urgent lebih dulu */
   async function tampilAkun() {
-    document.getElementById("aiIsi").innerHTML = `<div id="aiUbin"></div>` + kartuS("akun", "Buat akun massal", "Akun", `<p class="ai-meta">Membuat semua akun yang belum ada (pemprov, polda, kodam, pemkab atau pemkot, polres, kodim) bertahap 100 per permintaan. Akun yang sudah ada dilewati,
-      jadi aman diulang. Sandi hanya tampil sekali dan masuk ke berkas CSV yang diunduh di peramban ini, jangan menutup halaman sebelum selesai. Sandi di CSV hanya sandi AWAL: wakil WAJIB membuat sandi baru yang tidak diketahui admin saat pertama masuk sesudah akunnya aktif.</p>
+    document.getElementById("aiIsi").innerHTML = `<div id="aiUbin"></div>` + kartuS("akun", "Buat akun massal", "Akun", `<p class="ai-meta">Membuat semua akun BPBD yang belum ada (provinsi, kabupaten, dan kota; Polri dan TNI tidak ikut) bertahap 100 per permintaan. Akun yang sudah ada dilewati,
+      jadi aman diulang. Sandi hanya tampil sekali dan masuk ke berkas CSV yang diunduh di peramban ini, jangan menutup halaman sebelum selesai. Sandi di CSV hanya sandi AWAL: BPBD WAJIB membuat sandi baru yang tidak diketahui admin saat pertama masuk, lalu mendaftarkan 3 PIC.</p>
       <div class="ai-aksi"><button class="ad-tombol utama" id="aiBuat">Buat akun yang belum ada</button><button class="ad-tombol" id="aiCsv" ${hasilBuat.length ? "" : "disabled"}>Unduh CSV (${num(hasilBuat.length)} akun)</button></div><p id="aiProgres" class="ai-meta"></p>`)
       + kartuS("akun", "Daftar akun", "Instansi", `<div class="ai-bar"><label>Jenis<select id="aiFJenis">${opsi(JENIS, filter.jenis, "Semua")}</select></label><label>Provinsi<select id="aiFProv">${opsi(PROV, filter.prov, "Semua")}</select></label>
       <label>Status<select id="aiFStatus">${opsi(STATUS, filter.status, "Semua")}</select></label></div><div id="aiTabel" aria-live="polite"></div>`);
@@ -106,10 +107,12 @@
     const d = await ambil(`${API}/akun/${id}`), v = d.akun.verifikasi, AKSI = {setuju: "Disetujui", tolak: "Ditolak", cabut: "Dicabut", reset: "Sandi direset", ganti_sandi: "Sandi diganti pengguna", buat_massal: "Dibuat massal", terima_usulan: "Usulan kontak diterima", tolak_usulan: "Usulan kontak ditolak"};
     w.innerHTML = `<div class="ai-kartu"><div class="ai-kepala"><b>${esc(d.akun.username)}</b>${pil(STATUS[d.akun.status], WARNA[d.akun.status])}</div>
       <p class="ai-meta">${esc(d.akun.wilayah)}${v.nama ? `<br>${esc(v.nama)}, NIP/NRP ${esc(v.nip)}, ${esc(v.jabatan)}, ${esc(v.unit)}<br>${esc(v.email)}, WhatsApp ${esc(v.wa)}` : "<br>Belum mengisi verifikasi"}</p>
+      ${window.AdminProfil?.jenisPemda(d.akun.jenis) ? `<div class="ai-profil" data-profil-akun="${esc(d.akun.id)}"></div>` : ""}
       <h3>Jejak audit</h3>${d.jejak.length ? `<ul>${d.jejak.map(x => `<li>${jam(x.waktu)}: ${esc(AKSI[x.aksi] || x.aksi)} oleh ${esc(x.oleh)}${x.alasan ? `, ${esc(x.alasan)}` : ""}</li>`).join("")}</ul>` : `<p class="ai-meta">Belum ada aksi.</p>`}</div>`;
+    const pw = w.querySelector("[data-profil-akun]"); if (pw) window.AdminProfil.isi(pw, true);   // akun BPBD: profil PIC dan log profil
   }
-  /* teks undangan siap tempel ke WhatsApp wakil instansi; sandi di sini sandi AWAL, wajib diganti sesudah akun aktif */
-  const undangan = r => `Yth. ${r.wilayah},\n\nAkun Centurisk97 untuk penanganan karhutla di wilayah Anda sudah dibuat.\nUsername: ${r.username}\nSandi awal: ${r.sandi}\n\n1. Masuk di ${location.origin}/instansi\n2. Isi verifikasi: nama, NIP/NRP, jabatan, surat tugas, kartu pegawai.\n3. Sesudah disetujui admin, buat sandi baru.\n\nTugas api di wilayah Anda muncul di sana setiap kali data satelit terbit, berisi lokasi, arah ke titik masuk, dan kebutuhan regu. Mohon tidak meneruskan pesan ini ke pihak lain.`;
+  /* teks undangan siap tempel ke WhatsApp kontak BPBD; sandi di sini sandi AWAL, wajib diganti saat pertama masuk (tiga langkah daftar PIC, paket profil-bpbd) */
+  const undangan = r => `Yth. ${r.wilayah},\n\nAkun Centurisk97 untuk BPBD Anda sudah dibuat.\nUsername: ${r.username}\nSandi awal: ${r.sandi}\n\n1. Masuk di ${location.origin}/instansi, lalu buat sandi baru. Sandi ini dipakai bersama semua PIC; simpan di pengelola sandi bersama.\n2. Daftarkan 3 PIC (paling banyak 4): nama, jabatan, NIP, email, nomor HP, foto, dan PIN 6 angka milik tiap PIC. Unggah juga surat tugas dan foto kartu pegawai.\n3. Kirim untuk disetujui. Sesudah admin BNPB menyetujui, tiap PIC masuk dengan memilih profilnya lalu mengisi PIN.\n\nMohon tidak meneruskan pesan ini ke pihak lain.`;
   const csv = rows => "﻿username,jenis,wilayah,sandi,undangan\n" + rows.map(r => [r.username, r.jenis, r.wilayah, r.sandi, undangan(r)].map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n") + "\n";
   function unduhCsv() {
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv(hasilBuat)], {type: "text/csv;charset=utf-8"}));
@@ -117,7 +120,7 @@
   }
   const segarkanCsv = () => { const b = document.getElementById("aiCsv"); if (b) { b.disabled = !hasilBuat.length; b.textContent = `Unduh CSV (${num(hasilBuat.length)} akun)`; } };
   async function buatMassal(t) {
-    if (!confirm("Buat semua akun instansi yang belum ada? Sandi hanya tampil sekali, simpan CSV yang diunduh.")) return;
+    if (!confirm("Buat semua akun BPBD yang belum ada? Sandi hanya tampil sekali, simpan CSV yang diunduh.")) return;
     t.disabled = true; let mulai = 0, dilewati = 0; const p = document.getElementById("aiProgres");
     while (mulai != null) {
       const r = await kirim(`${API}/buat`, {mulai, batas: 100});
@@ -214,6 +217,7 @@
 
   app.addEventListener("click", async e => {
     const t = e.target.closest("button"); if (!t) return;
+    if (t.dataset.pf && await window.AdminProfil.klik(t, pesanTeks)) return;   // setuju, cabut, atur ulang PIN, buka kunci, tampilkan data pribadi, log
     if (t.dataset.tab) {   // chrome urgent (tombol aktif, aria-busy, "Memuat…"), isi tab menyusul sesudah satu frame; hanya #aiIsi yang diganti
       tab = t.dataset.tab; history.replaceState(null, "", "#" + tab); for (const b of app.querySelectorAll("[data-tab]")) b.setAttribute("aria-pressed", String(b.dataset.tab === tab)); document.getElementById("aiPesan").textContent = "";
       const isi = document.getElementById("aiIsi"); isi.setAttribute("aria-busy", "true"); isi.innerHTML = `<p class="ad-redup">Memuat…</p>`; return sesudahCat(muat);

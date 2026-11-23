@@ -11,10 +11,11 @@ import {NAMA_KAB4, kab4Dari} from "./siklus_kab.js";
 import * as H from "./hak.js";
 
 const LAJU_TULIS = [[36e5, 60]];
-const BASE32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", WIB = 7 * 36e5, BOX = 0.002, DEKAT_M = 200, BASI_HARI = 3;
+const BASE32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", WIB = 7 * 36e5, BASI_HARI = 3;
+export const BOX = 0.002, DEKAT_M = 200;
 const JENIS = ["terkonsentrasi", "tidak_terkonsentrasi"], RE_ID = /^TP-[A-Z2-7]{8}$/, RE_KJ = /^KJ-\d{4}-[0-9A-Za-z]{8}$/;
 const hariIni = kini => new Date(kini + WIB).toISOString().slice(0, 10);
-const kodeTp = () => "TP-" + Array.from(crypto.getRandomValues(new Uint8Array(8)), b => BASE32[b % 32]).join("");
+export const kodeTp = () => "TP-" + Array.from(crypto.getRandomValues(new Uint8Array(8)), b => BASE32[b % 32]).join("");
 const rad = x => x * Math.PI / 180;
 export const jarakM = (a, b, c, d) => { const h = Math.sin(rad(c - a) / 2) ** 2 + Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(rad(d - b) / 2) ** 2; return 12742e3 * Math.asin(Math.sqrt(h)); };
 const aman = f => async (...a) => { try { return await f(...a); } catch (e) { if (/no such table: titik_pengungsian/i.test(String(e?.message || e))) return gagal(503, "Titik pengungsian belum diaktifkan"); throw e; } };

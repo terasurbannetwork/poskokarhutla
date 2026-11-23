@@ -4,7 +4,7 @@
    yang cancelled, bukan run yang tidak pernah dibuat. Cron Worker andal, jadi dari sini: bila run sukses terakhir > 4 jam dan tak ada run
    grup data yang antre/jalan, picu workflow_dispatch sekali. Paling banyak sekali per 3 jam (run terbaru apa pun < 3 jam = lewat).
    Butuh secret GITHUB_TOKEN (fine-grained, Actions: read and write, repo ini saja); tanpa token = lewat diam-diam. */
-const REPO = "terasurbannetwork/poskokarhutla", JAM = 3600e3, BASI = 4 * JAM, JEDA = 3 * JAM;
+export const REPO = "terasurbannetwork/poskokarhutla"; const JAM = 3600e3, BASI = 4 * JAM, JEDA = 3 * JAM;
 export const PIPA = /workflows\/(titik|data|banjir|gempa|lintas|prediksi|statis|titik_palsu|kemitraan|pemetaan)\.yml$/;   // grup concurrency `data` (dijaga tests/warga/jaga_titik.test.mjs)
 
 export async function jagaTitik(env, sekarang, ambil = fetch) {

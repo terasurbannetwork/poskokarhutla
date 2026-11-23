@@ -11,7 +11,7 @@ Skala provinsi: titik = pusat kotak public/geo/provinsi.json.
 Masa berlaku (Pedoman Penetapan Status Keadaan Darurat BNPB 2016 hal. 15): kab/kota 7-14 hari, provinsi 14 hari-1 bulan, nasional 1-3 bulan; lebih dari itu butuh SK perpanjangan.
 status dinormalkan ke Siaga Darurat | Tanggap Darurat | Transisi Darurat ke Pemulihan.
 
-Tiap baris membawa sumber_baris: "ckan" | "drive_pusdalops". Baris Drive (SK 2026 dan penambal celah, dipanen LOKAL dari folder "FILE SK"
+Tiap baris membawa sumber_baris: "ckan" | "drive_pusdalops" | "dibi" (sumber ketiga: public/data/dibi_status_darurat.json dari dibi_lain.py, gagal-lunak). Baris Drive (SK 2026 dan penambal celah, dipanen LOKAL dari folder "FILE SK"
 Pusdalops) dibaca dari cache data/raw/pusdalops-drive/sk/sk_drive.json bila ada; tanpa berkas itu keluaran sama persis seperti sebelumnya
 (CI tak terpengaruh). Dedupe nomor+wilayah, CKAN menang. SK pindaian (tanpa teks) dicatat butuh_ocr, belum di-OCR.
 
@@ -444,6 +444,76 @@ def panen_drive(folder=None):
         print("  ", th, h)
 
 
+DIBI_SK = os.path.join(AKAR, "public/data/dibi_status_darurat.json")
+
+
+def baca_dibi_sk(jalur=None):
+    """Baris SK DIBI (dibi_lain.py) -> [] bila berkas tak ada/rusak: gagal tarik DIBI tak boleh menggagalkan skrip ini."""
+    try:
+        return json.load(open(jalur or DIBI_SK, encoding="utf-8")).get("sk", [])
+    except (OSError, ValueError, AttributeError):
+        return []
+
+
+def _titik_kab():
+    try:
+        return {v["kemendagri"]: v["pusat"] for v in json.load(open(os.path.join(AKAR, "public/data/kemitraan/kode.json"), encoding="utf-8")).values()
+                if v.get("kemendagri") and v.get("pusat")}
+    except (OSError, ValueError):
+        return {}
+
+
+def ubah_dibi(r, titik_kab, titik_prov):
+    """Baris dibi_status_darurat.json -> entri keluaran bentuk CKAN, sumber_baris 'dibi'."""
+    if not (r.get("mulai") and r.get("status")):
+        return None
+    kab = r.get("kab_kode") or None
+    p = titik_kab.get(kab) if kab else titik_prov.get(r.get("prov_kode"))
+    return {"sumber_baris": "dibi", "nomor": r.get("nomor") or "", "prov_kode": r.get("prov_kode") or "", "prov": r.get("prov") or "", "kab_kode": kab,
+            "kab": r.get("kab") or "", "skala": "kabupaten" if kab else "provinsi", "jenis": ", ".join(r.get("jenis") or []),
+            "klasifikasi": r.get("klasifikasi") or "", "status": r["status"], "mulai": r["mulai"], "berakhir": r.get("berakhir"),
+            "tautan": r.get("tautan") or "", "lat": p[0] if p else None, "lon": p[1] if p else None}
+
+
+def _wilayah(o):
+    return o.get("kab_kode") or o.get("prov_kode") or ""
+
+
+def _jenis_sama(a, b):
+    ka, kb = kelas_jenis(a), kelas_jenis(b)
+    return bool(ka & kb) if ka and kb else str(a or "").strip().lower() == str(b or "").strip().lower()
+
+
+def _beririsan(a, b):
+    """Periode inklusif; berakhir kosong = terbuka."""
+    ea, eb = a.get("berakhir") or "9999-12-31", b.get("berakhir") or "9999-12-31"
+    return a["mulai"] <= eb and b["mulai"] <= ea
+
+
+def gabung_dibi(daftar, dibi):
+    """Tambah SK DIBI (sumber ketiga) ke daftar CKAN+Drive. Sumber resmi menang: baris DIBI dilewati bila nomor+wilayah sama, atau wilayah sama
+    + status sama + jenis sejenis + periode beririsan dengan baris yang sudah ada (termasuk sesama DIBI). Kembalikan (daftar, n_dibi_dipakai)."""
+    ada = {kunci_sk(o) for o in daftar}
+    per = {}
+    for o in daftar:
+        per.setdefault(_wilayah(o), []).append(o)
+    out, n = list(daftar), 0
+    for o in dibi:
+        k = kunci_sk(o)
+        if k in ada or any(x["status"] == o["status"] and _jenis_sama(x["jenis"], o["jenis"]) and _beririsan(x, o) for x in per.get(_wilayah(o), [])):
+            continue
+        ada.add(k)
+        per.setdefault(_wilayah(o), []).append(o)
+        out.append(o)
+        n += 1
+    return out, n
+
+
+def dibi_ke_sk(baris):
+    titik, prov = _titik_kab(), pusat_provinsi()
+    return [o for o in (ubah_dibi(r, titik, prov) for r in baris) if o]
+
+
 def baca_dibi():
     try:
         return json.load(open(os.path.join(AKAR, "public/data/dibi_kejadian.json"), encoding="utf-8"))
@@ -491,20 +561,22 @@ def jalan():
                     else:
                         buang += 1
     sk, n_drive = gabung(sk, baca_drive())
+    sk, n_dibi = gabung_dibi(sk, dibi_ke_sk(baca_dibi_sk()))
     sk.sort(key=lambda x: (x["mulai"], x["nomor"]), reverse=True)
     tanpa_titik = sum(1 for x in sk if x["lat"] is None)
     dibi = baca_dibi()
     ringkas = perkaya(sk, dibi)
     d = {
-        "sumber": "data.bnpb.go.id (CKAN) kompilasi data status keadaan darurat bencana seluruh Indonesia" + (" + Drive Pusdalops" if n_drive else ""),
+        "sumber": "data.bnpb.go.id (CKAN) kompilasi data status keadaan darurat bencana seluruh Indonesia" + (" + Drive Pusdalops" if n_drive else "") + (" + DIBI" if n_dibi else ""),
         "tahun": sorted(set(paket) | {int(x["mulai"][:4]) for x in sk if x["sumber_baris"] != "ckan"}),
         "catatan": f"{buang} baris dibuang (tanpa tanggal mulai atau status tak dikenal). berakhir null = tanggal berakhir kosong di sumber. "
                    f"Titik kabupaten dari resource 'Kabupaten yang Menetapkan'; skala provinsi memakai pusat kotak provinsi; "
-                   f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB. {n_drive} SK dari Drive Pusdalops (sumber_baris drive_pusdalops; CKAN menang bila nomor+wilayah sama)." + catatan_masa(dibi, ringkas, sum(1 for x in sk if x["jeda_kejadian_hari"] is not None)),
+                   f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB. {n_drive} SK dari Drive Pusdalops (sumber_baris drive_pusdalops; CKAN menang bila nomor+wilayah sama). "
+                   f"{n_dibi} SK dari DIBI (sumber_baris dibi, dibi_status_darurat.json; dilewati bila nomor+wilayah sama atau wilayah, status, jenis, dan periode beririsan dengan SK sumber resmi)." + catatan_masa(dibi, ringkas, sum(1 for x in sk if x["jeda_kejadian_hari"] is not None)),
         "ringkas": ringkas, "sk": sk}
     pasang_tahun(d, d["tahun"])
     simpan(KELUAR, d)
-    print(f"status_darurat: tahun {sorted(paket)}, {len(sk)} SK, {buang} dibuang, {tanpa_titik} tanpa titik, ringkas {ringkas}")
+    print(f"status_darurat: tahun {sorted(paket)}, {len(sk)} SK ({n_drive} drive, {n_dibi} SK baru dari DIBI), {buang} dibuang, {tanpa_titik} tanpa titik, ringkas {ringkas}")
 
 
 def ulang():
@@ -514,9 +586,14 @@ def ulang():
         o.setdefault("sumber_baris", "ckan")
     d["sk"] = [o for o in d["sk"] if o["sumber_baris"] == "ckan"]   # baris Drive lama dibuang; cache terbaru yang dipakai
     d["sk"], n = gabung(d["sk"], baca_drive())
+    d["sk"], n_dibi = gabung_dibi(d["sk"], dibi_ke_sk(baca_dibi_sk()))
+    n += n_dibi
     if n:
         d["sk"].sort(key=lambda x: (x["mulai"], x["nomor"]), reverse=True)
         d["tahun"] = sorted({y for y in d["tahun"] if y >= 2018} | {int(x["mulai"][:4]) for x in d["sk"] if x["sumber_baris"] != "ckan"})
+    d["sumber"] = d["sumber"].split(" + ")[0] + (" + Drive Pusdalops" if any(x["sumber_baris"] == "drive_pusdalops" for x in d["sk"]) else "") + (" + DIBI" if n_dibi else "")
+    kal = f"{sum(1 for x in d['sk'] if x['sumber_baris'] == 'dibi')} SK dari DIBI (sumber_baris dibi, dibi_status_darurat.json; dilewati bila nomor+wilayah sama atau wilayah, status, jenis, dan periode beririsan dengan SK sumber resmi)."
+    d["catatan"] = re.sub(r"\d+ SK dari DIBI \(.*?resmi\)\.", kal, d["catatan"]) if "SK dari DIBI" in d["catatan"] else d["catatan"].replace(" Masa berlaku:", " " + kal + " Masa berlaku:", 1)
     dibi = baca_dibi()
     ringkas = perkaya(d["sk"], dibi)
     d["catatan"] = d["catatan"].split(" Masa berlaku:")[0] + catatan_masa(dibi, ringkas, sum(1 for x in d["sk"] if x["jeda_kejadian_hari"] is not None))
@@ -618,6 +695,23 @@ def uji():
     gb, nd = gabung(ck, [o, dict(o, nomor="Z-9")])
     assert nd == 1 and len(gb) == 2 and gb[0]["sumber_baris"] == "ckan" and gb[1]["nomor"] == "Z-9"   # CKAN menang atas nomor+wilayah sama
     assert gabung(ck, [])[0] == ck
+    # DIBI sebagai sumber ketiga: resmi menang; nomor sama, atau wilayah+status+jenis+periode beririsan, dilewati; beda status/wilayah/periode masuk
+    dr = {"nomor": "X/1", "status": "Tanggap Darurat", "jenis": ["Banjir", "Tanah longsor"], "klasifikasi": "H", "prov_kode": "11", "prov": "Aceh", "kab_kode": "11.12", "kab": "Aceh Tamiang",
+          "mulai": "2026-01-10", "berakhir": "2026-01-25", "tautan": None}
+    kd = dibi_ke_sk([dr, dict(dr, nomor="Q/9", mulai="2026-03-01", berakhir="2026-03-10"), dict(dr, nomor="100.3.3.2/3/2026", mulai="2026-06-01", berakhir="2026-06-05"),
+                     dict(dr, nomor="S/2", status="Siaga Darurat"), dict(dr, nomor="K/3", kab_kode="11.01", kab="Aceh Selatan"), dict(dr, nomor="J/4", jenis=["Kekeringan"]),
+                     dict(dr, nomor="X/1b", mulai="2026-03-05", berakhir="2026-03-12"), dict(dr, mulai=None)])
+    assert len(kd) == 7 and all(x["sumber_baris"] == "dibi" for x in kd) and kd[0]["jenis"] == "Banjir, Tanah longsor" and kd[0]["lat"] is not None and kd[0]["tautan"] == ""
+    res = [dict(o, nomor="B/5", mulai="2026-01-07", berakhir="2026-01-20", status="Tanggap Darurat", jenis="Banjir")]   # resmi, beririsan dgn dr (10-25 Jan)
+    gd, nd2 = gabung_dibi(res, kd)
+    nomor = {x["nomor"] for x in gd if x["sumber_baris"] == "dibi"}
+    assert gd[0] is res[0] and "X/1" not in nomor and "100.3.3.2/3/2026" in nomor, nomor   # beririsan dilewati; nomor lain walau wilayah sama (jun) masuk
+    assert {"Q/9", "S/2", "K/3", "J/4"} <= nomor and "X/1b" not in nomor and nd2 == len(nomor), nomor
+    g2, n3 = gabung_dibi([dict(res[0], nomor="X/1", status="Siaga Darurat")], kd[:1])   # nomor+wilayah sama (status beda pun) dilewati
+    assert n3 == 0 and len(g2) == 1
+    g3, n4 = gabung_dibi([], [kd[0], dict(kd[0], nomor="X/1c", mulai="2026-01-20", berakhir="2026-02-01")])   # sesama DIBI beririsan tidak dobel
+    assert n4 == 1
+    assert baca_dibi_sk("/tidak/ada.json") == [] and gabung_dibi(ck, [])[0] == ck   # gagal-lunak
     d26 = {"catatan": "x", "tahun": [2025, 2026]}
     pasang_tahun(d26, d26["tahun"])
     assert d26["tahun_berjalan_ada"] == (dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).year in (2025, 2026))

@@ -12,10 +12,10 @@ for (const f of readdirSync(DIR).filter(f => /^\d{4}_.*\.sql$/.test(f)).sort()) 
 const k = Date.now(), A = "a".repeat(16), O = "o".repeat(16);
 const sisip = sql => db.exec(sql);
 
-test("0161 idempoten: diterapkan kedua kali tanpa galat, sembilan tabel lj_*", () => {
+test("0161 idempoten: diterapkan kedua kali tanpa galat, sepuluh tabel lj_* (0161 sembilan, 0165 lj_sesi)", () => {
   db.exec(readFileSync(new URL("0161_lapor_data.sql", DIR), "utf8"));
   const t = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE 'lj_%' ORDER BY name").all().map(r => r.name);
-  assert.deepEqual(t, ["lj_akses", "lj_beku", "lj_berkas", "lj_jejak", "lj_kabar", "lj_media", "lj_objek", "lj_tanya", "lj_tim"]);
+  assert.deepEqual(t, ["lj_akses", "lj_beku", "lj_berkas", "lj_jejak", "lj_kabar", "lj_media", "lj_objek", "lj_sesi", "lj_tanya", "lj_tim"]);
   assert.equal(db.prepare("SELECT count(*) n FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'lj_%'").get().n, 0);   // tanpa trigger
 });
 
@@ -43,4 +43,13 @@ test("lj_media hanya di lapor/data/; lj_tim token selalu berkedaluwarsa; lj_kaba
   assert.throws(() => sisip(`INSERT INTO lj_tim (berkas, wa, peran, token_sha, oleh, dibuat) VALUES ('${A}', '6281200000001', 'anggota', '${"a".repeat(64)}', 'x', ${k})`));
   sisip(`INSERT INTO lj_tim (berkas, wa, peran, token_sha, kedaluwarsa, oleh, dibuat) VALUES ('${A}', '6281200000001', 'anggota', '${"a".repeat(64)}', ${k + 1}, 'x', ${k})`);
   assert.throws(() => sisip(`INSERT INTO lj_kabar (wa, jenis, teks, dibuat) VALUES ('6281200000001', 'promosi', 'x', ${k})`));
+});
+
+test("lj_sesi: nomor WA 62, keadaan JSON paling panjang 6000, berkas harus ada (tinjauan migrasi-idempoten 0165)", () => {
+  const isi = (wa, keadaan, berkas = A) => db.prepare("INSERT INTO lj_sesi (wa, berkas, keadaan, diubah) VALUES (?, ?, ?, ?)").run(wa, berkas, keadaan, k);
+  isi("6281299880001", "{}");
+  assert.throws(() => isi("0812999", "{}"));
+  assert.throws(() => isi("6281299880002", "bukan json"));
+  assert.throws(() => isi("6281299880003", JSON.stringify({x: "a".repeat(6001)})));
+  assert.throws(() => isi("6281299880004", "{}", "z".repeat(16)), "FK ke lj_berkas");
 });

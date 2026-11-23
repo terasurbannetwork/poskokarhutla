@@ -10,6 +10,7 @@ import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
+import {denganProfil} from "./_profil.mjs";
 import {buatTugas, TAHAN_BUKAN_API} from "../../src/instansi.js";
 
 const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
@@ -46,7 +47,7 @@ async function akun(username, kab) {
     VALUES (?, ?, 'pemkab', 'kab', ?, ?, '["62"]', '62', ?, ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, 0)`)
     .bind(id, username, `Pemerintah ${kab}`, `uji|${username}`, kab, garam, sha256(garam + SANDI)).run();
   const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(r.s, 200, r.t);
-  return {id, h: {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0], ...PB}};
+  return {id, h: {...(await denganProfil(DB, id, {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]})), ...PB}};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 async function tugas(kab, lat = -2.2, lon = 113.9) {
   const id = id16(), t = Date.now() - JAM;
@@ -278,7 +279,7 @@ uji("lapor: tanpa 0062 info.lapor null, token 503, jalur akun bukan api tanpa al
   const garam = "g".repeat(32), aid = id16(), un = "pemkabtanpa";
   await S.DB.prepare(`INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, jabatan, unit, email, wa, surat, kartu, dikirim, diputus, wajib_ganti, dibuat, dummy)
     VALUES (?, ?, 'pemkab', 'kab', 'Pemerintah Kab Satu', 'uji|x', '["62"]', '62', 'Kab Satu', ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, 0)`).bind(aid, un, garam, sha256(garam + SANDI)).run();
-  const ms = await sapi("POST", "/api/instansi/masuk", {username: un, sandi: SANDI}, {...PB, ...ipBaru()}), h = {cookie: ms.h.get("set-cookie").split(",")[0].split(";")[0], ...PB};
+  const ms = await sapi("POST", "/api/instansi/masuk", {username: un, sandi: SANDI}, {...PB, ...ipBaru()}), h = {...(await denganProfil(S.DB, aid, {cookie: ms.h.get("set-cookie").split(",")[0].split(";")[0]})), ...PB};
   const tid = id16(), t0 = Date.now() - JAM;
   await S.DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, isian_terakhir, dummy) VALUES (?, '62', 'Kab Satu', 'Kec', -2.2, 113.9, 3, 10, 50, ?, ?, 'buka', ?, 0)").bind(tid, t0, t0, t0).run();
   const tk = (await sapi("POST", `/api/instansi/penugasan/${tid}`, {nama: "Sari Lapangan", peran: "anggota", wa: "0812 3456 7002", orang: 2}, {...h, ...ipBaru()})).j.token;

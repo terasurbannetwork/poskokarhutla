@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
+import {denganProfil} from "./_profil.mjs";
 import {siapkan, berantai, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
 import {buatTugas, tautkanLaporanRegu} from "../../src/instansi.js";
@@ -30,7 +31,7 @@ async function akun(username, kab = "Kab Satu") {
     .bind(id, username, `Pemerintah ${kab}`, `uji|${username}`, kab, garam, sha256(garam + SANDI)).run();
   const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(r.s, 200, r.t);
   const kue = r.h.get("set-cookie").split(",")[0].split(";")[0];
-  return {id, h: {cookie: kue, ...PB}};
+  return {id, h: {...(await denganProfil(DB, id, {cookie: kue})), ...PB}};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 async function tugas(kab, {lat = -2.2, lon = 113.9, status = "buka", konfirmasi = Date.now() - JAM, dibuat = Date.now() - JAM} = {}) {
   const id = id16();

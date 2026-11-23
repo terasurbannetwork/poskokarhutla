@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {denganProfil} from "./_profil.mjs";
 import "../../src/worker.js";   // worker.js dulu: instansi.js dan worker.js saling impor
 import {buatTugas, pasKartu, jenisTugas, teksJenis} from "../../src/instansi.js";
 
@@ -68,7 +69,7 @@ test("layar akun: teks verifikasi; bukan api menutup tanpa dihitung padam; api a
   KAB = {prov: AK.prov ?? JSON.parse(AK.cakupan)[0], kab: AK.kab ?? "Kabupaten Uji"};
   await DB.prepare("UPDATE instansi_akun SET status = 'aktif', wajib_ganti = 0, nama = 'Budi Santoso', nip = '198001012005011001', jabatan = 'Kepala BPBD', unit = 'BPBD', email = 'b@x.go.id', wa = '6281234567890', surat = 1, kartu = 1, dikirim = 1, diputus = 1 WHERE username = ?").bind(U).run();
   const m = await api("POST", "/api/instansi/masuk", {username: U, sandi: sandi[U]}, {"cf-connecting-ip": "198.51.100.7"}); assert.equal(m.s, 200, m.t);
-  h = {cookie: m.sc.map(c => c.split(";")[0]).join("; ")};
+  h = await denganProfil(DB, (await DB.prepare("SELECT id FROM instansi_akun WHERE username = ?").bind(U).first()).id, {cookie: m.sc.map(c => c.split(";")[0]).join("; ")});   // akun BPBD: sesi profil (paket profil-bpbd)
   await bersih(); berkas(Date.now() - 5 * MENIT, [V("K1", -2.5, 112), K("K2", -2.0, 113.5, {level: 3})]); await buatTugas(env, Date.now());
   const daftar = (await api("GET", "/api/instansi/tugas", undefined, h)).j.tugas, ver = daftar.filter(t => t.jenis === "verifikasi"), pem = daftar.filter(t => t.jenis === "pemadaman");
   assert.equal(ver.length, 1); assert.equal(pem.length, 1); assert.equal(ver[0].judul, JUDUL); assert.match(ver[0].arahan, /kabari lewat laporan/); assert.equal(pem[0].judul, null);

@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/bnpb/bnpb.css?v=1">
 <link rel="stylesheet" href="/instansi.css?v=7">
+<link rel="stylesheet" href="/instansi_profil.css?v=1">
 <link rel="stylesheet" href="/instansi_kebutuhan.css?v=1">
 <link rel="stylesheet" href="/instansi_kartu.css?v=1">
 <link rel="stylesheet" href="/instansi_alat.css?v=1">
@@ -53,7 +54,7 @@
           <button type="button" id="mMata" class="in-mata" aria-pressed="false" aria-label="Tampilkan sandi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="coret" d="M4 4l16 16"/></svg></button></span></label>
       <button type="submit" id="mKirim" class="lp-tombol utama">Masuk</button>
     </form>
-    <p class="lp-kecil"><a href="/masuk?ke=%2Finstansi">Masuk dengan nomor WhatsApp</a></p>
+    <p class="lp-kecil">BPBD masuk dengan username dan sandi lembaga, lalu memilih profil dan mengisi PIN. Polri dan TNI: <a href="/masuk?ke=%2Finstansi">Masuk dengan nomor WhatsApp</a></p>
   </section>
 
   <section id="vGanti" class="in-masuk" hidden>
@@ -66,6 +67,9 @@
     <div id="gHasil" class="in-langkah-isi" hidden><p>Sandi baru kamu. Catat atau simpan di pengelola sandi SEKARANG, karena tidak akan ditampilkan lagi. Bila hilang, minta reset ke admin.</p>
       <p id="gSandi" class="in-sandi"></p><button type="button" id="gSalin" class="lp-tombol">Salin sandi</button><button type="button" id="gLanjut" class="lp-tombol utama">Saya sudah menyimpannya, lanjut</button></div>
   </section>
+
+  <section id="vProfil" class="pf-isi" hidden></section>
+  <section id="vDaftarPic" class="pf-isi" hidden></section>
 
   <section id="vVerif" class="in-verif" hidden>
     <p id="verifBanner" class="lp-banner" role="status"></p>
@@ -92,6 +96,7 @@
   </section>
 
   <section id="vUtama" hidden>
+    <div id="profilKepala" class="pf-kepala" hidden></div>
     <div id="banner" class="in-banner" role="status" hidden></div>
     <div id="push" class="in-push" hidden>
       <p id="pushInfo" class="lp-kecil" role="status" aria-live="polite"></p>
@@ -102,6 +107,7 @@
       <button type="button" data-tab="tugas" aria-pressed="true">Tugas api</button>
       <button type="button" data-tab="kontak" aria-pressed="false">Kontak konsesi</button>
       <a class="in-tab-tautan" href="/instansi/logpal">Inventori LogPal</a>
+      <a class="in-tab-tautan" id="lnDataBencana" href="/instansi/data-bencana">Data bencana</a>
     </nav>
     <div id="isi" class="in-isi"></div>
   </section>
@@ -120,7 +126,8 @@
 <script src="/instansi_uji.js?v=1" defer></script>
 <script src="/inti/exif.js?v=1" defer></script>
 <script src="/inti/antre.js?v=1" defer></script>
-<script src="/instansi.js?v=15" defer></script>
+<script src="/instansi_profil.js?v=1" defer></script>
+<script src="/instansi.js?v=17" defer></script>
 <script src="/inti/foto_kecil.js?v=1" defer></script>
 <script src="/instansi_alat.js?v=3" defer></script>
 <script src="/instansi_laporan.js?v=2" defer></script>

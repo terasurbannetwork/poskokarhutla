@@ -57,7 +57,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
   if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
     /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
-    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
+    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/instansi/data-bencana", "/bnpb/data-bencana.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
   const H = new URL(hulu);
@@ -74,6 +74,18 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
       if (req.method === "GET" && (jalur === "/admin/biaya-bot" || jalur === "/api/wa/biaya/ringkas") && await biayaBotLokal(req, res, jalur, H, akar)) return;
       /* Lapor Bencana AI (data/kajian-bnpb/lapor-ai) sebelum rutenya terbit: /api/lapor/* dijawab mesin lokal, TIDAK diteruskan ke produksi */
       if (jalur.startsWith("/api/lapor/")) { const {tanganiLapor} = await import(pathToFileURL(path.join(akar, "scripts/lapor/lokal.mjs")).href); if (await tanganiLapor(req, res, url)) return; }
+      /* Cermin InaRISK (data/kajian-bnpb/inarisk) sebelum rutenya terbit: proksi src/inarisk.js dijalankan lokal ke InaRISK asli;
+         D1 batas laju diganti tiruan yang selalu lolos (server ini hanya loopback) */
+      if (jalur.startsWith("/api/inarisk/")) {
+        const {RUTE_INARISK} = await import(pathToFileURL(path.join(akar, "src/inarisk.js")).href);
+        const kunci = `${req.method} ${jalur.replace(/^(\/api\/inarisk\/(?:kegiatan|ubin))\/.+$/, "$1/:x")}`, fn = RUTE_INARISK[kunci];
+        if (fn) {
+          const badan = req.method === "POST" ? await new Promise(ok => { const b = []; req.on("data", c => b.push(c)); req.on("end", () => ok(Buffer.concat(b))); }) : undefined;
+          const DB = {prepare: () => ({bind: () => ({first: async () => ({n: 0}), run: async () => ({})})})};
+          const r = await fn({DB, IP_SALT: "lokal"}, new Request(new URL(req.url, "http://lokal"), {method: req.method, headers: req.headers, body: badan}), url);
+          res.writeHead(r.status, Object.fromEntries(r.headers)); return res.end(Buffer.from(await r.arrayBuffer()));
+        }
+      }
       const kepala = {};
       for (const [k, v] of Object.entries(req.headers)) if (!["host", "connection", "accept-encoding", "content-length"].includes(k)) kepala[k] = v;
       if (kepala.origin) kepala.origin = H.origin;

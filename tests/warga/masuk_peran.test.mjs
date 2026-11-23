@@ -44,7 +44,7 @@ function jar(lines) {
 const lengkap = j => ({cookie: j.cookie, ...H()});   // POST bercookie wajib Origin sama situs (tolakOrigin) dan x-pb
 const semuaCookie = [];   // seluruh set-cookie yang pernah dikeluarkan rute /api/masuk/*: U-19 memeriksa tak satu pun sesi_admin
 const catat = async r => { r = await r; semuaCookie.push(...r.h.getSetCookie()); return r; };   // menerima hasil api() atau janjinya
-const instansi = (o = {}) => { const id = id16(); return sisip("instansi_akun", {id, username: "akun" + id.slice(0, 8), jenis: "pemkab", tingkat: "kab", wilayah: "Kabupaten Contoh", kunci_wilayah: "k" + id, cakupan: '["62"]', prov: "62", kab: "Contoh",
+const instansi = (o = {}) => { const id = id16(); return sisip("instansi_akun", {id, username: "akun" + id.slice(0, 8), jenis: "polres", tingkat: "kab", wilayah: "Kabupaten Contoh", kunci_wilayah: "k" + id, cakupan: '["62"]', prov: "62", kab: "Contoh",
   garam: "a".repeat(32), sandi_sha: "0".repeat(64), status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD", email: `b${id.slice(0, 6)}@contoh.go.id`, wa: nomor(0), surat: 1, kartu: 1, wajib_ganti: 0, dibuat: T0, ...o}).then(() => id); };
 const pendataan = (o = {}) => { const id = id16(); return sisip("pdt_akun", {id, username: "pdt" + id.slice(0, 8), nama: "Sari", jabatan: "Analis", unit: "pusdatin", email: `p${id.slice(0, 6)}@bnpb.go.id`, wa: nomor(0), garam: "a".repeat(32), sandi_hash: "0".repeat(64), status: "aktif", dibuat: T0, ...o}).then(() => id); };
 let instN = 0;
@@ -91,7 +91,7 @@ uji("peran U-12b: GET /masuk tanpa public/masuk.html menjawab halaman sementara 
 uji("peran U-13: nomor sama dengan instansi_akun.wa aktif mendapat cookie instansi di dua Path yang diterima /api/instansi/*; log masuk dicatat", async () => {
   const id = await instansi({wa: nomor(1)});
   const j = await login(1); catat(j.r);
-  assert.deepEqual(j.r.j.ruang, [{jenis: "instansi", nama_ruang: "Ruang instansi", lembaga: "Pemerintah kabupaten", wilayah: "Kabupaten Contoh", ke: "/instansi", butuh_sandi: false}]);
+  assert.deepEqual(j.r.j.ruang, [{jenis: "instansi", nama_ruang: "Ruang instansi", lembaga: "Polres", wilayah: "Kabupaten Contoh", ke: "/instansi", butuh_sandi: false}]);
   assert.ok(!j.r.t.includes(id) && !j.r.t.includes(nomor(1)) && !j.r.t.includes(lokal(1)), "tanpa id internal dan tanpa nomor");
   const ci = cabutCookie(j.lines, "sesi_instansi"); assert.equal(ci.length, 2);
   assert.deepEqual(ci.map(l => l.match(/Path=([^;]+)/)[1]).sort(), ["/api/instansi", "/instansi"]);

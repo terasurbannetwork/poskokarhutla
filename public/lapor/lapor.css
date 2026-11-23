@@ -2215,6 +2215,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pw-kep small{display:block;margin-top:2px;font-size:.8125rem;line-height:1.5;color:var(--ink2)}
 .lp-pw-ik{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:12px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
 .lp-pw-ik svg{width:20px;height:20px}
+.lp-pw-os{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0;font:600 .8125rem var(--font);color:var(--ink2)}
 .lp-pw-ok{display:flex;align-items:center;gap:8px;margin:0;font:600 .875rem var(--font);color:var(--ok)}
 .lp-pw-ok svg{width:18px;height:18px;flex:none}
 .lp-pw-langkah{margin:0;padding-left:20px;display:grid;gap:6px;font-size:.875rem;line-height:1.5;color:var(--ink)}
@@ -2296,3 +2297,10 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-cc2-sosial{flex-wrap:wrap!important;row-gap:8px;padding:8px 0!important}
 .lp-cc2-sosial li{flex:1 1 auto!important}
 .lp-cc2-sosial a{padding:0 6px!important;white-space:nowrap}
+/* teks terjemahan lebih panjang tidak meluber (pemilik 23 Nov 2026): butir tidak boleh menyusut di bawah isinya; turun baris, bukan tumpah */
+.lp-cc2-sosial li{min-width:auto!important}
+@media (min-width:900px){.lp-hero-aksi>button{min-width:auto!important}}
+/* ubin pilihan berikon tidak tumpah di kolom obrolan sempit (pemilik 23 Nov 2026: "Rapikan"): ukur lebar wadah, bukan layar */
+.lp-opsi.lp-simetris{container-type:inline-size}
+@container (width < 520px){.lp-opsi.lp-simetris > button{flex-basis:100%!important}}
+.lp-opsi-ikon button b,.lp-opsi-ikon button small{overflow-wrap:anywhere}

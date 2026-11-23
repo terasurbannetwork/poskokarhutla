@@ -52,6 +52,8 @@ export const PAPAN_CACHE = 5 * MENIT;            // umur hitungan papan aktivasi
 export const PAPAN_JENDELA_LOG = 120 * HARI;     // log masuk yang dibaca papan; lebih tua dari ini tampil "lama"
 export const LAMA_TIDAK_MASUK = 30 * HARI;       // lewat ini akun aktif berstatus "lama tidak masuk"
 export const KONTAK_RINCI_MAKS = 200;            // kontak pemangku yang ditampilkan di rincian satu kabupaten
+export const LAJU_UNDANG_ULANG_AKUN = [[JAM, 1]];     // kirim ulang undangan akun BPBD: satu per akun per jam (PF-07)
+export const LAJU_UNDANG_ULANG_HARI = [[24 * JAM, 200]];   // dan 200 per hari untuk seluruh sistem
 export const LAJU_IP_PAPAN = [[JAM, 120]];       // GET papan dan rincian per alamat
 /* peta kategori kontak pemangku -> jenis akun instansi yang boleh dimasuki otomatis (ALGORITMA §4); kategori lain tidak aktif otomatis */
 export const PETA_KATEGORI = {
