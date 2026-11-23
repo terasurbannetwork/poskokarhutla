@@ -10,7 +10,7 @@
   /* 6 grup di navbar (pemilik 11 Nov 2026: 13 butir dirampingkan); tetap tanpa daftar turun (pemilik 4 Nov 2026): grup berisi lebih dari
      satu halaman menampilkan deretan sub-halaman di bawah kepala. Rute lama tetap; tautan grup membuka halaman pertamanya. */
   const GRUP = [
-    ["Pantau", "banjir", [["/bnpb/dalops", "Pantau kejadian", "banjir"], ["/admin/pantau", "Meja Pantau", "meja"]]],
+    ["Pantau", "banjir", [["/bnpb/dalops", "Pantau kejadian", "banjir"], ["/admin/pantau", "Meja Pantau", "meja"], ["/lapor/meja", "Laporan warga", "daftar"]]],
     ["Logbook", "daftar", [["/bnpb/logbook", "Logbook", "daftar"]]],
     ["Laporan", "simpan", [["/bnpb/bahan", "Bahan laporan", "daftar"], ["/admin/laporan-karhutla", "Laporan Karhutla", "simpan"], ["/laporan-bnpb", "Laporan Koordalops", "simpan"], ["/bnpb/dokumen", "Dokumen", "simpan"]]],
     ["Operasi", "personel", [["/bnpb/operasi", "Operasi", "personel"], ["/?operasi", "Operasi lapangan", "pin"], ["/admin/omc", "Sortie OMC", "awan"]]],
@@ -50,11 +50,18 @@
   /* satu pohon menu (pemilik 11 Nov 2026 "recategorize, pastikan ga berulang"): Pusdalops sekali di puncak, tiap grup jadi butir;
      grup berisi lebih dari satu halaman terbuka-tutup di tempat (tanpa pindah halaman) dan menampilkan halamannya bersarang di bawahnya.
      Seksi halaman yang sedang dibuka (tab Logbook, isi Laporan, jenis bencana Dalops) diisi ke slot yang bersarang di bawah butir halaman itu. */
+  /* kepala navy kosong di layar lebar (pemilik 20 Nov 2026 "headernya ada tapi kosong isinya ... kepalanya di atas kiri aja", model /lapor/meja):
+     merek pindah ke puncak panel kiri, tombol Keluar ikut ke baris merek; header.ad-top disembunyikan menu_pusdalops.css hanya >= 901px (layar sempit tetap memakai menu atas) */
+  const merek = el("div", "mp-merek"), merekA = el("a", "mp-merek-a"), logo = el("img"), nama = el("span", null, "Pusdalops");
+  merekA.href = "/bnpb/dalops"; logo.src = "/lapor/lambang-bnpb.png"; logo.alt = ""; logo.width = logo.height = 34;
+  nama.append(el("small", null, "Pusat Pengendalian Operasi, khusus staf")); merekA.append(logo, nama); merek.append(merekA);
+  const lebar = matchMedia("(min-width:901px)");
+  const taruhKeluar = () => { const k = document.getElementById("keluar"); if (k) (lebar.matches ? merek : kepala).append(k); };
+  lebar.addEventListener("change", taruhKeluar);
   const isi = el("nav", "db-nav-isi mp-side-isi"), slot = el("div", "mp-slot");
   const panah = () => { const s = ikon("daftar"); s.replaceChildren(); const p = document.createElementNS(NS, "path"); p.setAttribute("d", "M9 6l6 6-6 6"); s.append(p); s.classList.add("mp-panah"); return s; };
   const daun = [];   // [elemen butir halaman, href]
-  isi.append(kepalaGrup("Pusdalops", "daftar"));
-  for (const g of GRUP) {
+  for (const g of GRUP) {   // judul pohon "Pusdalops" kini di baris merek
     const aktifG = g === grup;
     if (g[2].length === 1) {
       const a = butir(g[2][0][0], g[0], g[1], false); daun.push([a, g[2][0][0]]); isi.append(a);
@@ -69,7 +76,7 @@
     d.append(ringkas, anak); isi.append(d);
   }
   const kaki = el("div", "db-nav-kaki");
-  samping.append(isi, kaki);
+  samping.append(merek, isi, kaki);
   /* halaman aktif navy selama seksinya kosong; bila seksi terisi, seksi yang navy dan halaman ditebalkan saja */
   const tandai = () => { const kosong = !slot.childElementCount; for (const [a, href] of daun) { a.setAttribute("aria-current", String(kosong && href === kini)); a.hidden = !kosong && href === kini; } };   /* seksi terisi: butir halaman itu sendiri tidak ditampilkan (pemilik 11 Nov 2026 "ngapain ada Pantau kejadian"), seksinya langsung di bawah grup */
   tandai(); new MutationObserver(tandai).observe(slot, {childList: true});
@@ -111,6 +118,6 @@
   let tunda; new MutationObserver(() => { clearTimeout(tunda); tunda = setTimeout(seksiOtomatis, 120); }).observe(document.body, {childList: true, subtree: true});
   window.MenuPusdalops = {pakaiSlot: () => { slot.dataset.halaman = "1"; return slot; }, slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
   const pasangSamping = () => { const main = document.querySelector("body > main"); if (!main || main.closest(".mp-a")) return;
-    const w = el("div", "mp-a"); main.before(w); w.append(samping, main); document.body.classList.add("mp-model-a"); };
+    const w = el("div", "mp-a"); main.before(w); w.append(samping, main); document.body.classList.add("mp-model-a"); taruhKeluar(); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasangSamping); else pasangSamping();
 })();

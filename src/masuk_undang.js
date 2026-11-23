@@ -8,7 +8,8 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb, HALAMAN_STAF} from "./admin_halaman.js";
 import {stafPeran, dalamWilayahStaf, dariStaf, wilayahStaf} from "./staf.js";
 import {modOK, RE_EMAIL} from "./posko.js";
-import {emailAktif, kirimEmail} from "./ews.js";
+import {emailAktif} from "./ews.js";
+import {kirimEmail} from "./keluar.js";
 import {sesiUntuk as sesiInstansi, cabutSemuaSesi, PROV as PROV_INSTANSI} from "./instansi.js";
 import {mkInstansiById, mkAkunPilihan, mkUndangBerlaku, mkKontakCocok, mkAnggotaCari, mkMenungguHitung, mkAnggotaTulis, mkLogMasuk, mkJedaTerakhir, mkHanguskan, mkKodeEmailBaru,
   mkDomainCocok, mkDomainTulis, mkDomainHapus, mkAnggotaMenunggu, mkAnggotaAkun, mkAnggotaById, mkAnggotaSetujui, mkAnggotaCabut, mkAkunSaya, mkUndangHitung, mkSudahAnggota, mkUndangAda,

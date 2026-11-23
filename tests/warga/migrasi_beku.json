@@ -154,5 +154,15 @@
   "0150_alun_terpadu.sql": "4bfc5715376ba49c22e48f4359f0fc9d3abd4bf9ecbbb3c5899366290fa32832",
   "0151_staf_aktif_indeks.sql": "c0f23a53aeedaf0c96391a17f513b3813dfa2b7d163a677fccf6a0514ec470ae",
   "0152_staf_peran_tanpa_batas.sql": "64686d937ac0b6430aa894851ce22e3f239c75dafd8a71144e2d5e6f44f36118",
-  "0153_pb_renlap_tindakan.sql": "e7df4db449034192f8bcd8914da3cdd3c68f65e77f9726805fa95bbdca1e55de"
+  "0153_pb_renlap_tindakan.sql": "e7df4db449034192f8bcd8914da3cdd3c68f65e77f9726805fa95bbdca1e55de",
+  "0154_bl_proyek.sql": "b3ee96fb0fbee28aa81e0899b465da97e1ebe4989e8746fb8618eee4ae4c38f8",
+  "0155_lapor_ai.sql": "6b63603b4ff73efb6c14a5911cd4786244bd371fa3437c4202dcbd8284398590",
+  "0156_lapor_versi.sql": "fdfd9fbe199ba9fd592af5a3aa15bb5cc4de84c8db3f4498d041acff180580a2",
+  "0157_lapor_lanjut.sql": "e712ca824661247ccede2c8b314101b8b9c06d3e46b0b27d61785e00aa66928d",
+  "0158_lapor_unggah.sql": "6468f3c2e3a4058d24af108ae6fb4d31f70b069f7c79ad11998d5fe5191b8ca2",
+  "0159_lapor_perangkat.sql": "52afcff47b42dc8366039f70db0e3381b6463e2382bbefe4691376904e81de09",
+  "0160_lapor_kelompok.sql": "606f6d4f5f1109fd89b182d7a45edccebe7009c5df518d499bce0909c8dc8569",
+  "0161_lapor_data.sql": "e9bb0501745e53cafa3b860cba1f5b10be13f8f3b0b7f1c8d60a06737ce220b0",
+  "0162_lapor_periksa.sql": "42e0ff3b0fd8997b699664f644fb051659b97083197cf870ea666522dfa8a585",
+  "0163_pw_peringatan.sql": "f8acae3d40d925331d91edd90e80653eb84df03ba815534a31e90e05a165ee79"
 }

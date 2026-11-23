@@ -264,6 +264,14 @@
       ],
       "port": 8792,
       "autoPort": false
+    },
+    {
+      "name": "lapor",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/lapor/lokal.mjs"
+      ],
+      "port": 8810
     }
   ]
 }

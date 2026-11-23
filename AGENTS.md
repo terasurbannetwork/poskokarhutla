@@ -444,13 +444,79 @@ Aturan berhentinya sama dengan §2.1. Daftar tindakan hanya dari logbook atau su
 ### 2.29 Bot Laporan WA dengan Claude API (forward bahan, `buat`, revisi lewat chat, `final` ke Drive tim IT): baca dulu, baru bangun
 
 Sebelum menyentuh mesin proyek laporan di bot WA, pemanggil Claude API, operasi ubah deck, kunci angka sistem, atau tabel `bl_*`, baca dokumen di
-`data/kajian-bnpb/bot-laporan/` dengan urutan otoritas ini (kode di `scripts/wa/proyek.mjs`, `scripts/wa/claude.mjs`, `scripts/wa/claude/**`, `tests/wa/**` milik `wa-bot`; `data/laporan-bnpb/generator/ubah.py` dan perubahan generator milik `pipa-data`; `src/wa_proyek.js`, bagian bot laporan `src/hak.js`, migrasi `bl_*` milik `warga-api`):
+`data/kajian-bnpb/bot-laporan/` dengan urutan otoritas ini (kode di `scripts/wa/proyek.mjs`, `scripts/wa/claude.mjs`, `scripts/wa/claude/**`, kecerdasan percakapan V2.1 `scripts/wa/maksud.mjs`, versi dan ikon `scripts/wa/versi.mjs`, `scripts/wa/hias.cjs`, mesin agen V2 `scripts/wa/agen.mjs`, `scripts/wa/agen_pagar.mjs`, `scripts/wa/agen_isi.py`, `scripts/wa/agen/**`, `tests/wa/**` milik `wa-bot`; `data/laporan-bnpb/generator/ubah.py` dan perubahan generator milik `pipa-data`; `src/wa_proyek.js`, bagian bot laporan `src/hak.js`, migrasi `bl_*` milik `warga-api`):
 
-1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K14, rancangan D1–D11, pertanyaan terbuka Q1–Q14 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-BOT-LAPORAN.md`: keputusan pemilik K1–K30 (V2: K22–K28, V2.1: K29–K30), rancangan D1–D35 (V2: D14–D29, V2.1: D30–D35), pertanyaan terbuka Q1–Q24 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (kutipan, operasi ubah, kunci, banding 7 hari), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
-9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BL-*`), `GLOSARIUM.md`.
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`BL-*`, V2 dan V2.1 `BV-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Claude tidak pernah menulis angka sistem dan tidak pernah menyunting PPTX langsung; deck selalu dari generator yang ada; versi append-only; hanya nomor terdaftar; kunci API hanya di `.env` mesin; jalur terjadwal `otomatis.mjs` tidak diubah.
+Aturan berhentinya sama dengan §2.1. Bot V1: Claude tidak pernah menulis angka sistem dan tidak pernah menyunting PPTX langsung; deck selalu dari generator yang ada. Bot V2 (`BL_VERSI=2`, K23): agen Claude Code menyempurnakan deck generator di ruang kerjanya sendiri, angka sistem dijaga pagar angka mesin, agen tidak pernah mengirim, mengunggah, commit, atau mengubah generator. Bot V2.1 (K29, K30): kalimat bebas dipahami Claude Haiku, *final* dan *batal* dari kalimat bebas selalu ditanya dulu, rapikan bahan tidak pernah menambah angka (pagar D31), kumpul revisi dikerjakan sekali saat *lanjut*. Tiap perubahan perilaku bot menaikkan `VERSI` dan changelog (gerbang `tests/wa/versi.test.mjs`); versi append-only; hanya nomor terdaftar; kunci API hanya di `.env` mesin; jalur terjadwal `otomatis.mjs` tidak diubah.
+
+### 2.30 Lapor Bencana BNPB (chatbot AI pelaporan kejadian, pintu WA dan web `/lapor`, monitoring dan peta `/lapor/meja`): baca dulu, baru bangun
+
+Sebelum menyentuh pelaporan kejadian lewat chatbot (identitas pelapor, isian data umum dan khusus yang dituntun AI, foto bergeotag, tiket dan PDF laporan, monitoring dan dashboard peta), baca dokumen di
+`data/kajian-bnpb/lapor-ai/` dengan urutan otoritas ini (kode di `src/lapor_spek.js`, `src/lapor_mesin.js`, `src/lapor_model.js`, `src/samarkan.js` dan rute nanti milik `warga-api`; `public/lapor/**` milik `layar-peta`; `scripts/lapor/**` dan sambungan gateway `scripts/wa/**` milik `wa-bot`; agent `lapor-ai` dibuat di LA-00):
+
+1. `KEPUTUSAN-LAPOR-AI.md`: keputusan pemilik K1–K30, rancangan D1–D22, pertanyaan terbuka Q1–Q15 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (putaran, isian berikutnya, kutipan angka, identitas, tiket), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LA-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Kode memegang alur, AI hanya mengurai berkutipan; angka tanpa kutipan dibuang dan kosong tidak pernah jadi nol; laporan warga tidak pernah membuat kejadian resmi atau tampil publik; nomor WA pelapor hanya di monitoring staf, tidak pernah di repo; tinjau di `http://localhost:8800/lapor/` (server tinjau menjawab `/api/lapor/*` dengan mesin lokal, tidak meneruskan ke produksi).
+
+### 2.31 Data lanjutan BPBD (Lapor Bencana tahap 2 dan 3: rumah, prasarana, pengungsi, korban per objek, tim, penutupan): baca dulu, baru bangun
+
+Sebelum menyentuh pendataan per objek sesudah laporan awal BPBD (rumah per rumah, prasarana, tempat pengungsian dan pengungsi per jiwa, korban per orang, usaha, kebutuhan, tim BPBD, pertanyaan harian, penutupan dan versi beku), baca dokumen di
+`data/kajian-bnpb/lapor-lanjutan/` dengan urutan otoritas ini (kode di `src/lapor_lanjut*.js`, langkah tahap 2 di `src/lapor_mesin.js`, `migrations/0161_lapor_data.sql`, `tests/lapor/lanjut_*` milik `warga-api`; `src/meja*.js` bagian sumber daftar milik `warga-api`; usulan fase di `scripts/siklus/pasang.py` milik `siklus`; antrean `lj_kabar` di gateway `scripts/wa/**` milik `wa-bot`; `public/lapor/data/**` dan rincian di `public/lapor/meja*` milik `layar-peta`):
+
+1. `KEPUTUSAN-LANJUTAN.md`: keputusan pemilik K1–K10, rancangan D1–D23, pertanyaan terbuka Q1–Q15 (Q4 dan Q1 terjawab K9, K10) dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-15), 4. `ALUR.md`, 5. `ALGORITMA.md` (spek objek, penanda, rekap, kondisi akhir), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LJ-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Hanya tingkat `bpbd` terkonfirmasi; angka rekap dihitung dari daftar, tidak diketik; kosong tidak pernah jadi nol; tidak ada pencocokan orang; data pribadi tidak pernah di `public/` atau pesan WA ke luar tim; penutupan dan fase Buku Besar hanya lewat penerimaan staf; versi beku tidak pernah ditimpa; data pribadi dihapus 5 tahun sesudah penutupan (K9).
+
+### 2.32 Prakiraan lawan Kejadian (`/bnpb/dalops`, prakiraan `/prediksi` di Dalops, seksi Prakiraan dan kejadian, titik Lapor Bencana di peta): baca dulu, baru bangun
+
+Sebelum menyentuh prakiraan di Dalops, pencocokan prakiraan dengan kejadian Dalops dan laporan Lapor Bencana, rute titik laporan untuk Dalops, atau label logbook untuk rapor `/prediksi`, baca dokumen di
+`data/kajian-bnpb/prediksi-kejadian/` dengan urutan otoritas ini (kode di `public/bnpb/dalops*.js` dan `tests/bnpb/dalops_prakiraan*` milik `ruang-bnpb`; `src/dalops.js` dan `src/prediksi.js` milik `warga-api`; `scripts/prediksi/**` milik `prediksi`):
+
+1. `KEPUTUSAN-PREDIKSI-KEJADIAN.md`: keputusan pemilik K1-K6, rancangan D1-D10, pertanyaan terbuka Q1-Q4 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (jendela plus minus satu hari, empat kotak, label logbook), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Prakiraan tetap satu mesin (`scripts/prediksi`), Dalops hanya membaca; tidak ada "salah alarm" dan tidak ada "aman"; laporan warga hanya bukti positif; data laporan tidak pernah di `public/` atau `/prediksi`; DIBI dan logbook dinilai terpisah, tanpa rata-rata; tanpa tombol pindah sisi panel.
+
+### 2.33 Aplikasi dan peringatan dini Pantau Bencana (PWA `/lapor`, langganan kecamatan, notifikasi Waspada, arahan titik evakuasi): baca dulu, baru bangun
+
+Sebelum menyentuh pemasangan `/lapor` sebagai aplikasi (manifest, service worker), langganan peringatan per lokasi, atau pengiriman Web Push dari prakiraan `/prediksi`, baca dokumen di
+`data/kajian-bnpb/pwa-peringatan/` dengan urutan otoritas ini (kode Worker dan migrasi milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; pembaca prakiraan `scripts/prediksi/**` milik `prediksi`):
+
+1. `KEPUTUSAN-PWA.md`: keputusan pemilik, rancangan D1 dan seterusnya, pertanyaan terbuka Q1 dan seterusnya dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PW-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tidak pernah menulis "aman"; prakiraan kita dan pernyataan BMKG terpisah; langganan menyimpan kode wilayah, bukan riwayat GPS.
+
+### 2.34 Lapor tanpa sinyal (`/lapor` luring: simpan di HP, kirim otomatis saat ada sinyal): baca dulu, baru bangun
+
+Sebelum menyentuh laporan luring, antrean `public/inti/antre.js` untuk `/lapor`, service worker `/lapor`, atau pembentukan laporan dari butir antrean di Worker, baca dokumen di
+`data/kajian-bnpb/lapor-luring/` dengan urutan otoritas ini (kode Worker milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; `public/inti/antre.js` milik `inti-layar`):
+
+1. `KEPUTUSAN-LURING.md`: keputusan pemilik, rancangan, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya. Paket induk `data/kajian-bnpb/lapor-ai/` (K37, D41 sampai D45) dan `data/kajian-bnpb/keterpaduan/` tetap berlaku.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LR-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Mesin percakapan tetap satu (`src/lapor_mesin.js`), tidak disalin ke HP; foto tetap hanya dari kamera; kosong tidak pernah jadi nol.
+
+### 2.35 Laporan ke kejadian (`/lapor`: gugus satu desa, halaman publik kejadian hari ini, usulan sekali klik ke Buku Besar): baca dulu, baru bangun
+
+Sebelum menyentuh pengelompokan laporan per desa, halaman publik laporan terverifikasi, atau tombol usulan laporan terverifikasi BPBD ke Buku Besar Kejadian, baca dokumen di
+`data/kajian-bnpb/lapor-kejadian/` dengan urutan otoritas ini (kode Worker dan migrasi milik `warga-api`; layar `public/lapor/**` milik `layar-peta`; `scripts/siklus/pasang.py` milik `siklus`):
+
+1. `KEPUTUSAN-LAPOR-KEJADIAN.md`: keputusan pemilik K85 sampai K87 (dari paket induk lapor-ai), rancangan, pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Laporan belum terverifikasi tidak pernah tampil publik; pencocok kejadian tetap satu (`pasang.py`); tidak ada buku kejadian kedua; data pribadi pelapor tidak pernah di halaman publik.
 
 ## 3. Bentuk kerja
 

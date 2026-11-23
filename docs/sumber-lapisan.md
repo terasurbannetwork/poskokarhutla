@@ -1,6 +1,6 @@
 # Sumber lapisan peta setara daftar Nusantara Atlas, hanya yang sah dipakai
 
-Diperiksa 17 Okt 2026. Data Nusantara Atlas/TheTreeMap sendiri berpemilik: **tidak diambil, tidak di-scrape**.
+Diperiksa 17 Okt 2026; kawasan hutan & PBPH diperbarui 20 Nov 2026 dari GDB resmi Kemenhut. Data Nusantara Atlas/TheTreeMap sendiri berpemilik: **tidak diambil, tidak di-scrape**.
 Yang dicantumkan di sini hanya data berlisensi terbuka atau layanan publik pemerintah.
 
 Tanda status repo: **SUDAH ADA** (berkasnya ada dan bisa langsung dipakai) · **SEBAGIAN** (ada, tapi versinya lama,
@@ -15,21 +15,21 @@ membalas 200 dengan header CORS.
 
 | # | Lapisan | Status repo | Kandidat terbaik | Lisensi (sesuai teks penerbit) | Akses |
 |---|---|---|---|---|---|
-| 1 | Kawasan lindung | SEBAGIAN: `public/data/lahan/kawasan.geojson` (KLHK 2017 via GFW, fungsi `HK` 292 poligon) | Kemenhut `KWSHUTAN_AR_250K` (Juni 2026), `ZONA_TN_AR_50K` · WDPA | Kemenhut: tidak ada lisensi tertulis, BELUM TERVERIFIKASI · WDPA: "Terms of Use" Protected Planet, **non-komersial, tidak boleh diunduhkan ulang** | UBIN (ArcGIS export) |
+| 1 | Kawasan lindung | SUDAH ADA (20 Nov 2026): `public/data/lahan/kawasan.geojson` dari GDB resmi Kemenhut `KWSHUTAN_AR_250K_JUNI2026_REV1`, 9 provinsi pantauan, fungsi `HK` 303 + `THR` 38 poligon | `ZONA_TN_AR_50K` (zonasi) · WDPA | Kemenhut: GDB diterima pemilik langsung dari kementerian dengan izin terbit ulang (20 Nov 2026) · WDPA: "Terms of Use" Protected Planet, **non-komersial, tidak boleh diunduhkan ulang** | UBIN (ArcGIS export) |
 | 2 | Kota & desa | SEBAGIAN: `public/data/osm/<kode>.json` kunci `desa` (OSM `place=*`, 9 provinsi prioritas), batas desa mentah `data/raw/desa/` (cahyadsn/wilayah_boundaries, MIT), batas kecamatan BIG di `public/geo/` | OSM `place=city/town/village/hamlet` (Geofabrik) + ibu kota dari Kepmendagri | ODbL 1.0 | OLAH |
 | 3 | Jalan trans | SEBAGIAN: `public/data/jalan.geojson` kelas 1 (trunk/primary) | OSM `route=road` + `highway=trunk/primary` bernama "Trans …" | ODbL 1.0 | OLAH |
 | 4 | Jalan per kelas | SEBAGIAN: `jalan.geojson` cuma kelas 1–3 + sungai; `unclassified`/`track` hanya di graf waktu tempuh, mentah 9 provinsi di `data/raw/osm/prov-jalan-*.json` | OSM `highway=*` (+ `tracktype`, `service`) · Gaveau dkk. jalan logging Borneo 1973–2010 | ODbL 1.0 · CIFOR: CC BY 4.0 (disimpulkan dari berkas saudara, BELUM TERVERIFIKASI untuk berkas jalan) | OLAH |
 | 5 | Perairan | SEBAGIAN: `jalan.geojson` kelas 6 (`waterway=river`), titik `air` di `public/data/osm/`, `public/data/kanal.json`, sungai mentah `data/raw/osm/*-sungai-*` | OSM `waterway=*`, `natural=water` · Kemenhut PL2025 kelas Tubuh Air | ODbL 1.0 · Kemenhut BELUM TERVERIFIKASI | OLAH / UBIN |
 | 6 | Kawasan terbangun | BELUM | JRC GHSL GHS-BUILT-S R2023A, epoch 2025 (100 m) atau 2018 (10 m) · Kemenhut PL2025 kelas Permukiman | GHSL: "Reuse of this data is authorised with proper acknowledgment of the source" (AWS Open Data menulis CC BY 4.0) | OLAH / UBIN |
 | 7 | Kebun sawit industri | SEBAGIAN: `konsesi.geojson` jenis sawit (izin KLHK ~2014, bukan tutupan) | Descals dkk. 2024, global oil palm extent 2021 kelas 1 = industri | CC BY 4.0 | OLAH (304 MB) |
-| 8 | Hutan tanaman industri | SEBAGIAN: `konsesi.geojson` jenis hti (Trase, izin 2020–2022) | Kemenhut PL2025 kelas HTI · WRI SDPT v2.0 (`gfw_planted_forests`) | Kemenhut BELUM TERVERIFIKASI · SDPT: CC BY 4.0 | UBIN, diuji |
+| 8 | Hutan tanaman industri | SUDAH ADA (izin): `konsesi.geojson` jenis hti = PBPH HT aktif Kemenhut Mei 2026 (256 poligon, GDB resmi) + 57 izin Trase 2020–2022 yang tak lagi ber-PBPH; tutupan belum | Kemenhut PL2025 kelas HTI · WRI SDPT v2.0 (`gfw_planted_forests`) | Kemenhut BELUM TERVERIFIKASI · SDPT: CC BY 4.0 | UBIN, diuji |
 | 9 | Sawit rakyat | BELUM | Descals dkk. 2024 kelas 2 = smallholder | CC BY 4.0 | OLAH (berkas sama dengan #7) |
 | 10 | Kebun kelapa | BELUM | Descals dkk. 2023, Global Coconut Layer 2020 v1-2 | CC BY 4.0 | OLAH (45 MB) |
 | 11 | Tambang | SEBAGIAN: `konsesi.geojson` jenis tambang (PPKH Jan 2026, izin di kawasan hutan saja) | Maus dkk. 2022 v2 (ada ubin GFW) · Tang & Werner 2023 · Kemenhut PL2025 kelas Pertambangan | Maus: CC-BY-SA-4.0 · Tang & Werner: CC BY 4.0 | UBIN (Maus, diuji) / OLAH |
 | 12 | Hutan primer (lahan kering, mangrove, rawa) | BELUM (yang ada cuma kehilangan tutupan di `lapisan_tambahan.json`) | Kemenhut PL2025 skala 1:50.000 (kelas 2001/2004/2005) · Turubanova 2018 (2001) · GMW v3 · JRC TMF v1.2025 | Kemenhut BELUM TERVERIFIKASI · Turubanova: bebas pakai dengan sitasi, nama lisensi BELUM TERVERIFIKASI · GMW: CC BY 4.0 · TMF: "Copernicus / JRC open data", bebas dengan atribusi | UBIN, diuji |
 | 13 | Tutupan pohon 2020 JRC (EUDR) | BELUM | JRC GFC2020 (ubin GFW `v2020.3`; terbaru di JRC V4) | "free of charge … without restriction of use" (Regulasi Copernicus), wajib sitasi | UBIN, diuji |
 | + | Gambut | SUDAH ADA: `public/data/lahan/gambut.geojson` (GFW peatlands v20230315, CC BY 4.0) | tetap yang ada; KHG resmi tidak ditemukan terbuka | — | — |
-| + | Status kawasan hutan | SUDAH ADA (versi 2017): `public/data/lahan/kawasan.geojson` | Kemenhut `KWSHUTAN_AR_250K` Juni 2026 | BELUM TERVERIFIKASI | UBIN |
+| + | Status kawasan hutan | SUDAH ADA (Juni 2026): `public/data/lahan/kawasan.geojson` (2.648 poligon, 9 provinsi) dari GDB `KWSHUTAN_AR_250K_JUNI2026_REV1` | ubin nasional tetap lewat ArcGIS export | izin terbit ulang dari Kemenhut (pemilik, 20 Nov 2026) | GDB → `scripts/scrape/kemenhut_gdb.py` → `lahan.py --kawasan` |
 
 ## Catatan per lapisan
 
@@ -184,8 +184,8 @@ tanpa skrip dan tanpa berkas data baru.
    primer 2001 (#12), mangrove GMW v3 (#12), SDPT perkebunan & HTI (#8). Perlu ±0 MB dan sudah diuji.
 2. **Kemenhut PL2025 lewat ArcGIS export**: satu sumber untuk hutan primer per tipe, HTI, perkebunan, tambang,
    permukiman, tubuh air, transmigrasi. Satu lapisan dengan filter `layerDefs` per kelas. Uji dulu waktu muat di zoom
-   5–7; kalau server terlalu lambat, ubinnya disimpan di cache Worker. Sekalian ganti `kawasan.geojson` 2017 dengan
-   `KWSHUTAN` Juni 2026 sebagai ubin.
+   5–7; kalau server terlalu lambat, ubinnya disimpan di cache Worker. (`kawasan.geojson` sudah KWSHUTAN Juni 2026 sejak
+   20 Nov 2026, dari GDB resmi.)
 3. **Tambang Maus v2** lewat ubin vektor GFW (#11). Legenda menyebut CC BY-SA.
 4. **Jalan kelas 4–5 dan sungai kecil dari mentah yang sudah ada** (`data/raw/osm/prov-jalan-*.json`, 9 provinsi) →
    PMTiles. Tanpa tarik ulang.
@@ -210,3 +210,17 @@ tanpa skrip dan tanpa berkas data baru.
   TERVERIFIKASI). Untuk BIG, `scripts/geo/batas.py` merujuk UU 4/2011 untuk Informasi Geospasial Dasar; peta
   Kemenhut adalah Informasi Geospasial Tematik, dan status pakai ulangnya perlu dikonfirmasi ke Ditjen Planologi
   sebelum ditarik massal atau diterbitkan ulang sebagai berkas.
+
+## Pembaruan 20 Nov 2026: GDB resmi Kemenhut
+
+Pemilik menerima dua file geodatabase langsung dari Kementerian Kehutanan dan mengizinkan poligonnya diterbitkan ulang:
+
+| GDB | Isi | Dipakai di | Cara bangun ulang |
+|---|---|---|---|
+| `KWSHUTAN_AR_250K_JUNI2026_REV1.gdb` | 30.896 poligon kawasan hutan 38 provinsi, pengukuhan s.d. Des 2025, kolom `FUNGSIKWS` 6 digit (100100 HL, 100300 HP, 100400 HPT, 100500 HPK, 100700 APL, 1002x0/1002x1 konservasi darat/laut, 100260 Tahura, 500xxx perairan) | `public/data/lahan/kawasan.geojson` (9 provinsi pantauan, tanpa APL/perairan) | `scripts/scrape/kemenhut_gdb.py`, lalu `python3 scripts/scrape/lahan.py --kawasan` |
+| `PBPH_AR_50K_052026.gdb` | 541 PBPH aktif; `FCODE` ZM03040240 = HT (hti), ZM03040160 = HA (hph), ZM03040280 = RE/multiusaha (dimasukkan hph) | `public/data/lahan/konsesi.geojson` jenis hti & hph (`tahun_data` 2026, `aktif` true) | `scripts/scrape/kemenhut_gdb.py`, lalu `python3 scripts/scrape/konsesi.py` |
+
+Batas izin lama (HPH GFW 2014, HTI Trase 2020–2022) tetap dimuat sebagai riwayat (`aktif` false) hanya bila nama pemegangnya
+tidak ada di PBPH 2026 DAN titik wakilnya di luar semua poligon PBPH 2026 (560 poligon lama digantikan).
+GDB-nya tidak di-commit (`data/raw/`); di CI `konsesi.py` melihat GDB tidak ada lalu membiarkan berkas terbit.
+Layanan ArcGIS PPKH ikut menutup query (20 Nov 2026, kapabilitas tinggal `Map`); tambang diambil dari berkas terbit.

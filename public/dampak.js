@@ -392,7 +392,7 @@ const Dampak = (() => {
       hbar(ks.map(([c, v]) => ({n: nmK(c), v: v.rp[1], lo: v.rp[0], hi: v.rp[2], w: KAT[c]?.[1], dk: "eko|" + c, txt: rp(v.rp[1]), tip: `<b>${esc(KAT[c]?.[0] || c)}</b><br>± ${rb(v.ha[1])} ha × US$${fmt(v.usd_ha)}/ha (2015)<br>${rp(v.rp[1])} (${rp(v.rp[0])}–${rp(v.rp[2])})`})), {L: sempit() ? 140 : 230})
       + `<div class="lbl" style="margin:14px 0 4px">Cluster aktif menurut jenis areal konsesi</div>`
       + tabel(["Jenis areal", ">Luas cluster", ">Cluster", "Provinsi terluas"], kjs.map(([j, a]) => baris("ksj|" + j, `<td><b>${esc(JNK[j] || j)}</b></td><td class="n">${rb(a.luas)} ha</td><td class="n">${fmt(a.n)}</td><td>${Object.entries(a.prov).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => esc(namaProv(k))).join(", ")}</td>`))),
-      `Sumber: ${sm("wb16", "World Bank 2016 (The Cost of Fire)")}, ${sm("bps", "BPS")} inflasi, peta konsesi (sawit/HPH ± 2014, HTI 2020–2022, tambang 2026); api di areal konsesi tidak otomatis berarti pemegang izinnya pelaku`);
+      `Sumber: ${sm("wb16", "World Bank 2016 (The Cost of Fire)")}, ${sm("bps", "BPS")} inflasi, peta konsesi (HTI/HPH PBPH Kemenhut Mei 2026, sawit ± 2014, tambang 2026); api di areal konsesi tidak otomatis berarti pemegang izinnya pelaku`);
   }
   function popEko(c) { const v = D.ekonomi[c];
     dlg(esc(KAT[c]?.[0] || c), "Nilai kerusakan & kerugian lahan terbakar", tabel(["Skenario", ">Luas", ">Nilai (Rp 2026)"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rb(v.ha[i])} ha</td><td class="n">${rp(v.rp[i])}</td></tr>`))

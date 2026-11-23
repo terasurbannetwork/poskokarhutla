@@ -7,6 +7,7 @@
    Bentuk dokumen: {nama, pemilik: "BNPB"|"BPBD", provinsi, kab (opsional, gudang kab/kota dipasangkan ke akun pemkab/pemkot), kapasitas_ton, items: [{id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan, ...kolom aset opsional}]}.
    Kode provinsi dari public/data/logpal/provinsi.csv (publik); koordinat gudang dari src/logpal_statis.js (bukan aset publik). id gudang dan barang deterministik (sha256 kode + id asal), jadi SQL aman dijalankan ulang:
    INSERT OR IGNORE. Gudang BPBD tanpa kab dipasangkan ke akun pemprov aktif provinsinya; dijalankan ulang sesudah akun dibuat, pasangan yang masih kosong terisi. */
+import {csvObjek} from "../../public/inti/impor.js";
 import {readFileSync, readdirSync, writeFileSync, realpathSync, existsSync} from "node:fs";
 import {createHash} from "node:crypto";
 import path from "node:path";
@@ -35,17 +36,7 @@ export function potongTeks(isi, maks = BATAS_POTONG) {
   return hasil;
 }
 
-export function uraiCsv(t) {
-  const R = []; let r = [], c = "", dq = false;
-  for (let i = 0; i < t.length; i++) {
-    const h = t[i];
-    if (dq) { if (h === '"') { if (t[i + 1] === '"') { c += '"'; i++; } else dq = false; } else c += h; }
-    else if (h === '"') dq = true; else if (h === ",") { r.push(c); c = ""; } else if (h === "\n") { r.push(c.replace(/\r$/, "")); R.push(r); r = []; c = ""; } else c += h;
-  }
-  if (c || r.length) { r.push(c); R.push(r); }
-  const k = R.shift().map(s => s.replace(/^﻿/, ""));
-  return R.filter(a => a.length > 1 || a[0]).map(a => Object.fromEntries(k.map((x, i) => [x, a[i]])));
-}
+export const uraiCsv = t => csvObjek(t, ",");   // pengurai bersama public/inti/impor.js (FITUR §7.5)
 const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const ANGKA = ["tahun", "nilai", "rr", "rb", "harga"];
 const TEKS = ["kode_barang", "nup", "merek", "seri", "cara", "label", "batch", "lokasi", "dokumen"];

@@ -39,10 +39,29 @@ KAWASAN = {'Gunung Argopuro': ['35|Probolinggo|Krucil', '35|Probolinggo|Tiris', 
            'TN Way Kambas': ['18|Lampung Timur|Labuhan Ratu', '18|Lampung Timur|Way Bungur', '18|Lampung Timur|Purbolinggo', '18|Lampung Timur|Sukadana'],   # = deck Lampung 241026
            'Gunung Arjuno': ['35|Pasuruan|Prigen', '35|Pasuruan|Purwosari', '35|Malang|Singosari', '35|Malang|Lawang', '35|Malang|Karangploso',
                              '35|Kota Batu|Bumiaji', '35|Mojokerto|Gondang', '35|Mojokerto|Pacet', '35|Mojokerto|Trawas', '35|Mojokerto|Jatirejo']}
-JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', SLATE, T_SLATE), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F6FB5', 'DCE7F5'), 'angin': ('Angin kencang', 'angin', '0E7490', 'D5EEF2'),
-             'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2'), 'longsor': ('Tanah longsor', 'longsor', '7A5230', 'EFE4D8'),
+# 20 Nov 2026 pemilik ("banjir, cuaca, dan gempa warnanya mirip2 jadi susah bedain", lalu "ya" jadikan standar): rona berbeda dari palet tema BNPB
+# (proyek-bnpb/tema.json; warna di luar palet digeser mesin deck ke warna terdekat): banjir biru #2F86D1, cuaca ekstrem hijau tua #3D6B5A,
+# tanah longsor emas #A07A32, gempa bumi abu gelap #4B4F58
+JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', '4B4F58', 'E6EAF0'), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F86D1', 'DCEBF8'), 'angin': ('Angin kencang', 'angin', '3D6B5A', 'E3EDE8'),
+             'cuaca': ('Cuaca ekstrem', 'angin', '3D6B5A', 'E3EDE8'), 'longsor': ('Tanah longsor', 'longsor', 'A07A32', 'F4ECDC'),
              'erupsi': ('Erupsi', 'gunung', 'C8102E', 'F8DDE0'), 'gelombang_pasang': ('Gelombang pasang', 'banjir', '2F6FB5', 'DCE7F5'),
              'kebakaran_permukiman': ('Kebakaran permukiman', 'api', 'A23B2A', 'F5E1DD')}   # 11 Nov: dua jenis baru dari wa_harian, tanpa entri ini deck KeyError   # 7 Nov atasan: erupsi Bromo 5 Nov 17.11 WIB masuk Informasi bencana slide 1   # 1 Nov: longsor Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
+GABUNG_BARIS = 14   # baris tabel Informasi Bencana slide 1 yang masih terbaca (7 pt); lebih dari ini baris digabung per provinsi (20 Nov 2026)
+
+
+def gabung_baris(kej):
+    """Baris tabel Informasi Bencana per (jenis, provinsi, kejadian baru/masih berlangsung, tanggal mulai): lokasi tunggal tetap, lebih dari satu jadi
+    lok_teks "N kab/kota" dengan jumlah KK dan MD. Kejadian baru dan masih berlangsung tidak pernah satu baris (tanggal mulainya beda)."""
+    grup = {}
+    for x in kej: grup.setdefault((x['jenis'], x['prov'], bool(x.get('baru')), x.get('mulai')), []).append(x)   # tanggal mulai beda = baris sendiri
+    out = []
+    for xs in grup.values():
+        if len(xs) == 1: out.append(xs[0]); continue
+        kk = sum(x['angka'].get('kk') or 0 for x in xs); md = sum(x['angka'].get('meninggal') or 0 for x in xs)
+        out.append({**xs[0], 'lok_teks': f'{len(xs)} kab/kota', 'angka': {'kk': kk, 'meninggal': md}, 'dampak_pil': None})
+    return out
+
+
 WEB = ('peta_karhutla.json', 'peta_karhutla_kab.json', 'peta_karhutla_wil.json', 'harian30.json', 'kluster_awal.json')
 
 
@@ -531,7 +550,8 @@ class Deck:
         titik = {}
         for p in per:
             px, py = s.TT['pusat'][p]; dx, dy = GESER.get(p, (0, 0)); titik[p] = (MX + (px + dx) / s.TT['PW'] * MW, MY + (py + dy) / s.TT['PH'] * MH)
-        besar = lambda xs: k * (lambda u: 219456 if u <= 1 else 265176 if u <= 3 else 310896)(sum(1 for x in xs if x['jenis'] == 'karhutla') or len(xs))
+        besar = lambda xs: k * (getattr(s, 'SKALA_LINGKARAN', None) or {}).get(xs[0]['prov'], 1) * (lambda u:   # 22 Nov: {prov: skala} lingkaran provinsi yang rapat (Jawa)
+ 219456 if u <= 1 else 265176 if u <= 3 else 310896)(sum(1 for x in xs if x['jenis'] == 'karhutla') or len(xs))
         # 10 Nov pemilik ("di peta, tambahin titik gunung yang lagi siaga, terus kasih icon"): penanda berikon di koordinat gunung Level III/IV PVMBG;
         # nama di bawahnya. Lingkaran provinsi yang menimpa penanda digeser ke utara, posisi gunung tidak pernah digeser
         GA_T, dg = [], int(146304 * k)
@@ -547,9 +567,24 @@ class Deck:
                 for _, gx, gy, _w in GA_T:
                     if (cx - gx) ** 2 + (cy - gy) ** 2 < perlu ** 2: cy = gy - (perlu ** 2 - (cx - gx) ** 2) ** .5
                 titik[p] = (cx, cy)
+        # 22 Nov pemilik ("jgn seolah2 ada yg di laut"): POSISI_DARAT = {prov: (lon, lat)} memasang lingkaran tepat di darat;
+        # TUNJUK_DARAT = {prov: (lon_lingkaran, lat_lingkaran, lon_darat, lat_darat)} untuk provinsi yang terlalu rapat (Banten, DKI):
+        # lingkaran di luar, garis tipis ke titik lokasinya di darat. Tanpa atribut ini perilaku lama.
+        geo_ = lambda lon_, lat_: (MX + (lon_ - 95.0) / 45.9 * MW, MY + (6.2 - lat_) / 17.2 * MH)
+        for p, (lon_, lat_) in (getattr(s, 'POSISI_DARAT', None) or {}).items():
+            if p in titik: titik[p] = geo_(lon_, lat_)
+        for p, (lc_, bc_, ld_, bd_) in (getattr(s, 'TUNJUK_DARAT', None) or {}).items():
+            if p not in titik: continue
+            (x1, y1), (x2, y2) = geo_(lc_, bc_), geo_(ld_, bd_); titik[p] = (x1, y1)
+            fl_ = ' flipH="1"' if (x2 < x1) != (y2 < y1) else ''
+            o += (f'<p:cxnSp><p:nvCxnSpPr><p:cNvPr id="{s.nid()}" name="Tunjuk"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr><p:spPr><a:xfrm{fl_}><a:off x="{int(min(x1, x2))}" y="{int(min(y1, y2))}"/>'
+                  f'<a:ext cx="{int(abs(x2 - x1))}" cy="{int(abs(y2 - y1))}"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="4B4F58"/></a:solidFill></a:ln></p:spPr></p:cxnSp>')
+            dd_ = 64008 * k; o += s.kotak(x2 - dd_ / 2, y2 - dd_ / 2, dd_, dd_, '4B4F58', 'ellipse', ln='FFFFFF', lw=6350)
         terisi = [(cx - besar(per[p]) / 2, cy - besar(per[p]) / 2, cx + besar(per[p]) / 2, cy + besar(per[p]) / 2) for p, (cx, cy) in titik.items()]
         # 14 Nov: ruang nama gunung selebar teksnya (bukan selebar segitiga); label "Jabar" sempat menimpa "Anak Krakatau"
-        terisi += [(gx - max(dg, len(nm_g) * 46000 * k) / 2, gy - dg / 2, gx + max(dg, len(nm_g) * 46000 * k) / 2, gy + dg / 2 + 137160) for nm_g, gx, gy, _w in GA_T]
+        GL_ = getattr(s, 'GUNUNG_LABEL', None) or {}   # 22 Nov: {nama: 'kiri'} label gunung di kiri segitiga (bawaan di bawah)
+        terisi += [((gx - dg / 2 - 18288 - len(nm_g) * 46000 * k, gy - dg / 2, gx + dg / 2, gy + dg / 2) if GL_.get(nm_g) == 'kiri' else
+                    (gx - max(dg, len(nm_g) * 46000 * k) / 2, gy - dg / 2, gx + max(dg, len(nm_g) * 46000 * k) / 2, gy + dg / 2 + 137160)) for nm_g, gx, gy, _w in GA_T]
         # 10 Nov pemilik: peringatan dini masuk peta, lingkaran putih bertanda seru, garis dan tanda oranye atau merah; PERINGATAN_PETA = [(lon, lat, label, 'merah'|'oranye', sisi label)]
         PD_T, dp = [], int(201168 * k)
         for lon_, lat_, lab_, wr_, sisi_ in (getattr(s, 'PERINGATAN_PETA', None) or [] if V3 else []):
@@ -584,6 +619,7 @@ class Deck:
             calon = {'kanan': (cx + d / 2 + 54864, cy - 73152, cx + d / 2 + 54864 + lw, cy + 73152), 'kiri': (cx - d / 2 - 54864 - lw, cy - 73152, cx - d / 2 - 54864, cy + 73152),
                      'bawah': (cx - lw / 2, cy + yb, cx + lw / 2, cy + yb + 146304), 'atas': (cx - lw / 2, cy - d / 2 - 173736, cx + lw / 2, cy - d / 2 - 27432)}
             urut = ['kiri', 'bawah', 'kanan'] if p in KIRI else ['bawah', 'kanan', 'kiri'] if p in BAWAH else ['kanan', 'kiri', 'bawah']
+            urut = (getattr(s, 'LABEL_URUT', None) or {}).get(p, urut)   # 22 Nov: urutan sisi label per provinsi dari jalan.py
             # 14 Nov: semua sisi menabrak -> sisi dengan tumpang tindih terkecil (dulu urut[0]: "Jabar" menimpa "Anak Krakatau")
             luas_t = lambda r: sum(max(0, min(r[2], q[2]) - max(r[0], q[0])) * max(0, min(r[3], q[3]) - max(r[1], q[1])) for q in terisi)
             sisi = next((u for u in urut + (['atas'] if V3 else []) if not tabrak(calon[u])), None if k < 1 else min(urut + (['atas'] if V3 else []), key=lambda u: (calon[u][0] < MX or calon[u][2] > MX + MW, luas_t(calon[u]))))   # 10 Nov: penanda gunung menutup sisi lain, label naik ke atas lingkaran
@@ -594,7 +630,8 @@ class Deck:
                   else s.tx(r[0], cy - 73152, 1463040, 146304, [nm], sz=int(750 * k), b=True, an='ctr'))
         for nm_g, gx, gy, w_g in GA_T:
             o += s.kotak(gx - dg / 2, gy - dg / 2, dg, dg, w_g, 'triangle', ln='FFFFFF', lw=12700)   # 10 Nov pemilik: "cukup segitiga warna oren untuk siaga dan merah untuk awas"
-            o += s.tx(gx - 457200, gy + dg / 2, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='ctr', an='ctr', wrap='none')
+            if GL_.get(nm_g) == 'kiri': o += s.tx(gx - dg / 2 - 18288 - 914400, gy - 68580, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='r', an='ctr', wrap='none')
+            else: o += s.tx(gx - 457200, gy + dg / 2, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='ctr', an='ctr', wrap='none')
         for gx, gy, lab_, c_, sisi_, lw_ in PD_T:
             ik_ = ('asapsolid' if 'PM2' in lab_ else 'anginsolid' if 'ngin' in lab_ else 'hujansolid') + ('_merah' if c_ == MERAH else '_oranye')   # 10 Nov pemilik: lingkaran besar berisi ikon bahaya, lencana kecil bertanda seru di kanan atas
             lab_ = [(lab_.split('|')[0], INK, True)]
@@ -732,6 +769,12 @@ class Deck:
         """Versi 3 (6 Nov pemilik): panel kanan slide ringkasan = INFORMASI BENCANA, satu baris per kejadian menonjol: bencana, provinsi,
         kab/kota, dampak KK ("kalau gaada infonya strip aja"). Urut karhutla (sisa terbesar), kekeringan, lalu bencana lainnya; nama jenis
         hanya di baris pertama kelompoknya."""
+        # 20 Nov 2026 pemilik (laporan 31 kejadian, tabel bertumpuk): bila baris lebih dari INFO_GABUNG, kab/kota satu jenis, satu provinsi, dan satu
+        # status (kejadian baru atau masih berlangsung, tanggal mulai beda) digabung jadi satu baris "N kab/kota" dengan jumlah KK; lokasi tunggal tetap
+        if getattr(s, 'INFO_GABUNG', 0) and len(s.LN) > s.INFO_GABUNG and not getattr(s, '_gabung', False):
+            asli = s.LN; s.LN = gabung_baris(asli); s._gabung = True
+            try: return s.info_bencana(X, W)
+            finally: s.LN = asli; s._gabung = False
         Y, H = getattr(s, 'INFO_Y', None) or (2331720, 3017520)   # 10 Nov pemilik: panel bisa dinaikkan sejajar atas kartu
         PIL_ = getattr(s, 'INFO_PIL', False)
         o = s.kotak(X, Y, W, H, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.tx(X + 164592, Y + 109728, W - 329184, 182880, ['INFORMASI BENCANA'], sz=750, b=True, c=NAVY, spc=100)
@@ -785,6 +828,7 @@ class Deck:
             while m < len(baris) and sama(baris[m]): m += 1
             return m - n
         def lok(x):
+            if x.get('lok_teks'): return x['lok_teks']   # 20 Nov: baris gabungan per provinsi ("4 kab/kota") bila kejadian terlalu banyak untuk satu baris per lokasi
             if x['lokasi']: return x['lokasi'] if x['lokasi'].startswith(('Kota ', 'TN ', 'Gunung ')) else f"Kab. {x['lokasi']}"
             ks = x.get('kab_api') or []
             for m in range(len(ks), 0, -1):

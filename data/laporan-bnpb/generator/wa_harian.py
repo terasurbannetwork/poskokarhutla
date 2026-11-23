@@ -16,7 +16,7 @@ KOREKSI = {'Kota. ': 'Kota ', 'Supit Urung': 'Supit Urang', 'Kota Parepare': 'Ko
 
 def kode_prov(nama):
     n = re.sub(r'\s+', ' ', re.sub(r'^\s*(Prov\.|Provinsi)\s*', '', nama, flags=re.I).strip()).lower()   # WA 14 Nov: "Provinsi Sumatera Utara"
-    n = {'kepulauan bangka belitung': 'kep. bangka belitung', 'bangka belitung': 'kep. bangka belitung', 'ntt': 'nusa tenggara timur', 'ntb': 'nusa tenggara barat', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta'}.get(n, n)
+    n = {'kepulauan bangka belitung': 'kep. bangka belitung', 'bangka belitung': 'kep. bangka belitung', 'ntt': 'nusa tenggara timur', 'ntb': 'nusa tenggara barat', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta', 'dk. jakarta': 'dki jakarta', 'dk jakarta': 'dki jakarta', 'daerah khusus jakarta': 'dki jakarta'}.get(n, n)
     if n not in _PROV:
         raise ValueError(f'provinsi tidak dikenal: {nama!r}')
     return _PROV[n]
@@ -65,6 +65,7 @@ def _jenis_lokasi(judul):
     else:
         # 30 Okt: "Kota" dipertahankan; data kita menamai kota "Kota Sorong", beda dengan kabupaten "Sorong" (angka Kab. Sorong sempat terpakai)
         lok = re.sub(r'^(Kab\.|Kabupaten|Kawasan)\s+', '', di.strip())
+        lok = re.sub(r'^Kota\.\s*', 'Kota ', lok)   # 19 Nov: "Kota. Mataram", "Kota. Bontang"
         lok = re.sub(r'^Taman Nasional\s+([^,]+),.*$', r'TN \1', lok)   # "Taman Nasional Way Kambas, Kab. Lampung Timur" -> kawasan TN Way Kambas
     if lok.lower() in _PROV: lok = ''   # WA 30 Okt: "di Kalimantan Barat" tanpa "Prov." = kejadian tingkat provinsi
     for a, b in KOREKSI.items():
@@ -100,25 +101,32 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
 
 
 def koordalops(teks, pagi=True, terima_kurang=False):
-    t = teks.replace('⁠', '').replace('\xa0', ' ').replace('unit tumah', 'unit rumah')   # 12 Nov NTT: "15.812 unit tumah RS"
+    t = teks.replace('⁠', '').replace('\xa0', ' ').replace('unit tumah', 'unit rumah').replace('Banjr ', 'Banjir ')   # 12 Nov NTT: "15.812 unit tumah RS"; 21 Nov Nias: "Banjr"
     m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)', t)   # WA 9 Nov: "pukul 07.00 WIB s.d ... pkl 07.00"
     if not m:
         raise ValueError('kepala laporan Koordalops tidak ditemukan')
     mulai, sampai = f'{m[3]}-{m[2]}-{m[1]} {m[4]}', f'{m[7]}-{m[6]}-{m[5]} {m[8]}'
     if pagi and not sampai.endswith('07.00'):   # pagi=False: laporan sela 19.00 (pemilik 27 Okt memakainya untuk harian 271026)
         raise ValueError(f'pakai laporan pagi (s.d. 07.00), bukan {sampai}')
-    out = {'mulai': mulai, 'sampai': sampai, 'laporan': int(re.search(r'Laporan kejadian bencana sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I)[1]),   # 4 Nov: "sejumlah kejadian 31"
-           'menonjol': int(re.search(r'berdampak signifikan sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I)[1]), 'kejadian': []}
+    # 21 Nov: format rekap "rekapitulasi kejadian bencana ... adalah sejumlah 29" tanpa baris menonjol; semua kejadian dirinci = menonjol
+    lap = re.search(r'Laporan kejadian bencana sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I) or re.search(r'rekapitulasi kejadian bencana.*?adalah sejumlah\s+(\d+)', t, re.I | re.S)   # 4 Nov: "sejumlah kejadian 31"
+    if not lap:
+        raise ValueError('jumlah kejadian Koordalops tidak ditemukan')
+    mon = re.search(r'berdampak signifikan sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I)
+    out = {'mulai': mulai, 'sampai': sampai, 'laporan': int(lap[1]), 'menonjol': int(mon[1]) if mon else int(lap[1]), 'kejadian': []}
     for blok in re.split(r'\n\*[A-Z]\.\s*', t)[1:]:
         prov = kode_prov(blok.split('*', 1)[0])
-        for e in re.split(r'\n\d+\.(?:\s+|(?=[A-Z]))', '\n' + blok.split('*', 1)[1])[1:]:   # WA 26 Okt: "1.Bencana" tanpa spasi
+        # WA 26 Okt: "1.Bencana" tanpa spasi; 19 Nov: "1 .Bencana" (spasi sebelum titik, kejadian ke-16 Morowali Utara sempat tidak terurai)
+        for e in re.split(r'\n\d+[ \t]*\.(?:\s+|(?=[A-Z]))', '\n' + blok.split('*', 1)[1])[1:]:
             kepala = e.split('\n', 1)[0]
-            baru = bool(re.search(r'\(Kejadian Baru\)', kepala, re.I))   # 30 Okt manager: halaman utama hanya merinci kejadian baru
-            judul = re.sub(r'\*?\((?:Pengkinian Data|Kejadian Baru)\)\*?', '', kepala, flags=re.I).replace('Bencana Alam', '').replace('Bencana Non Alam', '').strip()
+            # 19 Nov: label berbintang salah letak "*(Pengkinian Data*)"; bintang di dalam atau di luar kurung sama saja
+            LABEL = r'\*?\(\s*\*?\s*(?:Pengkinian Data|Kejadian Baru)\s*\*?\s*\)\*?'
+            baru = bool(re.search(r'\(\s*\*?\s*Kejadian Baru\s*\*?\s*\)', kepala, re.I))   # 30 Okt manager: halaman utama hanya merinci kejadian baru
+            judul = re.sub(LABEL, '', kepala, flags=re.I).replace('Bencana Alam', '').replace('Bencana Non Alam', '').strip()
             if not judul:
                 continue
             ambil = lambda kunci: (lambda m: m.group(1).strip() if m else '')(re.search(rf'(?:^|[-*•])[ \t]*{kunci}\s*:\s*(.*)', e, re.I | re.M))   # 12 Nov: butir "* Dampak:", sebelumnya "- Dampak:"
-            dampak, sd, kondisi = ambil('Dampak'), ambil('Penetapan status'), ambil('Kondisi mutakhir')
+            dampak, sd, kondisi = ambil('Dampak'), ambil('Penetapan status'), ambil('Kondisi (?:mutakhir|terkini)')
             # 12 Nov: pengungsi dan kerusakan pindah ke butir sendiri; angka dihitung dari ketiganya
             semua = ' '.join(x for x in (dampak, ambil('Pengungsi'), ambil('Kerusakan')) if x)
             jenis, lok = _jenis_lokasi(judul)

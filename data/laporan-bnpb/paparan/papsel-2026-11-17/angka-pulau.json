@@ -1,0 +1,2535 @@
+{
+ "HARI": [
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13",
+  "2026-11-14",
+  "2026-11-15",
+  "2026-11-16"
+ ],
+ "HK": [
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13",
+  "2026-11-14",
+  "2026-11-15",
+  "2026-11-16"
+ ],
+ "prov": {
+  "hot": [
+   135,
+   699,
+   812,
+   139,
+   64,
+   214,
+   167,
+   192
+  ],
+  "luas": [
+   293,
+   1373,
+   1716,
+   255,
+   126,
+   436,
+   364,
+   419
+  ],
+  "belum": [
+   214,
+   677,
+   1058,
+   153,
+   79,
+   180,
+   214,
+   275
+  ],
+  "padam": [
+   793,
+   702,
+   50,
+   787,
+   1268,
+   211,
+   39,
+   188
+  ],
+  "kum": 319778
+ },
+ "kab": {
+  "Asmat": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "padam": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 0
+  },
+  "Boven Digoel": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0
+   ],
+   "luas": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    0,
+    0
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "padam": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4
+   ],
+   "komp": 1
+  },
+  "Mappi": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "luas": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "padam": [
+    6,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 0
+  },
+  "Merauke": {
+   "hot": [
+    135,
+    699,
+    812,
+    139,
+    64,
+    212,
+    166,
+    192
+   ],
+   "luas": [
+    293,
+    1373,
+    1716,
+    255,
+    126,
+    432,
+    364,
+    419
+   ],
+   "belum": [
+    214,
+    677,
+    1058,
+    153,
+    79,
+    180,
+    214,
+    275
+   ],
+   "padam": [
+    785,
+    698,
+    50,
+    787,
+    1268,
+    211,
+    39,
+    184
+   ],
+   "komp": 126
+  }
+ },
+ "rank": [
+  "Merauke",
+  "Mappi",
+  "Asmat",
+  "Boven Digoel"
+ ],
+ "level": {
+  "0": 82,
+  "1": 40,
+  "2": 5
+ },
+ "n_komp": 127,
+ "prio": [
+  {
+   "id": "K0001",
+   "lon": 138.2997,
+   "lat": -8.1738,
+   "level": 2,
+   "n": 264,
+   "px24": 23,
+   "kab": "Merauke",
+   "kec": "Kontuar",
+   "tanggung": "Hutan Suaka Alam",
+   "gambut": false
+  },
+  {
+   "id": "K0002",
+   "lon": 140.836,
+   "lat": -8.9484,
+   "level": 2,
+   "n": 14,
+   "px24": 14,
+   "kab": "Merauke",
+   "kec": "Naukenjerai",
+   "tanggung": "Taman Nasional",
+   "gambut": false
+  },
+  {
+   "id": "K0003",
+   "lon": 139.0228,
+   "lat": -8.012,
+   "level": 2,
+   "n": 26,
+   "px24": 12,
+   "kab": "Merauke",
+   "kec": "Kimaam",
+   "tanggung": "Hutan produksi dapat dikonversi",
+   "gambut": false
+  }
+ ],
+ "prio_total": 0,
+ "kl": [
+  [
+   138.2997,
+   -8.1738,
+   2
+  ],
+  [
+   140.836,
+   -8.9484,
+   2
+  ],
+  [
+   139.0228,
+   -8.012,
+   2
+  ],
+  [
+   138.5685,
+   -8.1908,
+   2
+  ],
+  [
+   138.2114,
+   -8.2134,
+   2
+  ],
+  [
+   140.8038,
+   -8.9365,
+   1
+  ],
+  [
+   140.9473,
+   -8.9446,
+   1
+  ],
+  [
+   140.9796,
+   -8.4386,
+   1
+  ],
+  [
+   141.0175,
+   -8.8929,
+   1
+  ],
+  [
+   140.7967,
+   -8.8528,
+   1
+  ],
+  [
+   138.1353,
+   -8.1905,
+   1
+  ],
+  [
+   140.7587,
+   -7.9367,
+   1
+  ],
+  [
+   140.9021,
+   -8.6413,
+   1
+  ],
+  [
+   140.6826,
+   -7.2681,
+   1
+  ],
+  [
+   140.8732,
+   -8.5468,
+   1
+  ],
+  [
+   138.2116,
+   -8.1226,
+   1
+  ],
+  [
+   140.9452,
+   -8.9335,
+   1
+  ],
+  [
+   140.7686,
+   -8.8965,
+   1
+  ],
+  [
+   140.3141,
+   -8.3556,
+   1
+  ],
+  [
+   138.5948,
+   -8.2168,
+   1
+  ],
+  [
+   138.1683,
+   -8.1761,
+   1
+  ],
+  [
+   138.2102,
+   -8.1375,
+   1
+  ],
+  [
+   140.9565,
+   -8.9294,
+   1
+  ],
+  [
+   140.9546,
+   -8.7715,
+   1
+  ],
+  [
+   140.5006,
+   -8.5765,
+   1
+  ],
+  [
+   139.8182,
+   -7.91,
+   1
+  ],
+  [
+   139.5344,
+   -8.1326,
+   1
+  ],
+  [
+   138.4797,
+   -8.2897,
+   1
+  ],
+  [
+   140.4859,
+   -8.2593,
+   1
+  ],
+  [
+   140.5604,
+   -8.3421,
+   1
+  ],
+  [
+   140.9313,
+   -8.9633,
+   1
+  ],
+  [
+   139.1982,
+   -7.799,
+   1
+  ],
+  [
+   139.182,
+   -7.3685,
+   1
+  ],
+  [
+   140.4785,
+   -8.5552,
+   1
+  ],
+  [
+   139.812,
+   -7.9216,
+   1
+  ],
+  [
+   139.995,
+   -8.1524,
+   1
+  ],
+  [
+   138.6483,
+   -7.4629,
+   1
+  ],
+  [
+   139.4112,
+   -8.0627,
+   1
+  ],
+  [
+   138.6741,
+   -7.4798,
+   1
+  ],
+  [
+   138.9218,
+   -7.6054,
+   1
+  ],
+  [
+   138.8008,
+   -7.7698,
+   1
+  ],
+  [
+   138.8271,
+   -7.7523,
+   1
+  ],
+  [
+   138.1409,
+   -7.593,
+   1
+  ],
+  [
+   138.2312,
+   -7.518,
+   1
+  ],
+  [
+   138.3776,
+   -7.4535,
+   1
+  ]
+ ],
+ "lv_kec": {
+  "Asmat|Agats": -1,
+  "Asmat|Akat": -1,
+  "Asmat|Aswi": -1,
+  "Asmat|Atsj": -1,
+  "Asmat|Awyu": -1,
+  "Asmat|Ayip": -1,
+  "Asmat|Betcbamu": -1,
+  "Asmat|Der Koumur": -1,
+  "Asmat|Fayit": -1,
+  "Asmat|Jetsy": -1,
+  "Asmat|Joerat": -1,
+  "Asmat|Joutu": -1,
+  "Asmat|Kolf Braza": -1,
+  "Asmat|Kopay": -1,
+  "Asmat|Koroway Buluanop": -1,
+  "Asmat|Pantai Kasuari": -1,
+  "Asmat|Pulau Tiga": -1,
+  "Asmat|Safan": -1,
+  "Asmat|Sawa Erma": -1,
+  "Asmat|Sirets": -1,
+  "Asmat|Suator": -1,
+  "Asmat|Suru-suru": -1,
+  "Asmat|Unir Sirau": -1,
+  "Boven Digoel|Ambatkwi": -1,
+  "Boven Digoel|Arimop": -1,
+  "Boven Digoel|Bomakia": -1,
+  "Boven Digoel|Firiwage": -1,
+  "Boven Digoel|Fofi": 0,
+  "Boven Digoel|Iniyandit": -1,
+  "Boven Digoel|Jair": -1,
+  "Boven Digoel|Kawagit": -1,
+  "Boven Digoel|Ki": -1,
+  "Boven Digoel|Kombay": -1,
+  "Boven Digoel|Kombut": -1,
+  "Boven Digoel|Kouh": -1,
+  "Boven Digoel|Mandobo": -1,
+  "Boven Digoel|Manggelum": -1,
+  "Boven Digoel|Mindiptana": -1,
+  "Boven Digoel|Ninati": -1,
+  "Boven Digoel|Sesnuk": -1,
+  "Boven Digoel|Subur": -1,
+  "Boven Digoel|Waropko": -1,
+  "Boven Digoel|Yaniruma": -1,
+  "Mappi|Assue": -1,
+  "Mappi|Bamgi": -1,
+  "Mappi|Citak-Mitak": -1,
+  "Mappi|Edera": -1,
+  "Mappi|Haju": -1,
+  "Mappi|Kaibar": -1,
+  "Mappi|Mambioman Bapai": -1,
+  "Mappi|Minyamur": -1,
+  "Mappi|Obaa": -1,
+  "Mappi|Passue": -1,
+  "Mappi|Passue Bawah": -1,
+  "Mappi|Syahcame": -1,
+  "Mappi|Ti Zain": -1,
+  "Mappi|Venaha": -1,
+  "Mappi|Yakomi": -1,
+  "Merauke|Animha": 0,
+  "Merauke|Elikobal": 0,
+  "Merauke|Ilwayab": 1,
+  "Merauke|Jagebob": 1,
+  "Merauke|Kaptel": 1,
+  "Merauke|Kimaam": 2,
+  "Merauke|Kontuar": 2,
+  "Merauke|Kurik": 0,
+  "Merauke|Malind": 1,
+  "Merauke|Merauke": 1,
+  "Merauke|Muting": -1,
+  "Merauke|Naukenjerai": 2,
+  "Merauke|Ngguti": 0,
+  "Merauke|Okaba": 1,
+  "Merauke|Padua": 1,
+  "Merauke|Semangga": 1,
+  "Merauke|Sota": 1,
+  "Merauke|Tabonji": 1,
+  "Merauke|Tanah Miring": 1,
+  "Merauke|Tubang": 1,
+  "Merauke|Ulilin": 1,
+  "Merauke|Waan": 0
+ },
+ "gambut_kec": [],
+ "fk_kec": [
+  [
+   "Kontuar",
+   359
+  ],
+  [
+   "Kimaam",
+   319
+  ],
+  [
+   "Naukenjerai",
+   204
+  ],
+  [
+   "Sota",
+   135
+  ],
+  [
+   "Okaba",
+   82
+  ],
+  [
+   "Semangga",
+   78
+  ],
+  [
+   "Tanah Miring",
+   75
+  ],
+  [
+   "Jagebob",
+   49
+  ],
+  [
+   "Waan",
+   44
+  ],
+  [
+   "Merauke",
+   43
+  ],
+  [
+   "Padua",
+   33
+  ],
+  [
+   "Animha",
+   24
+  ],
+  [
+   "Tabonji",
+   24
+  ],
+  [
+   "Kurik",
+   20
+  ],
+  [
+   "Kaptel",
+   19
+  ],
+  [
+   "Ilwayab",
+   17
+  ],
+  [
+   "Malind",
+   15
+  ],
+  [
+   "Tubang",
+   15
+  ],
+  [
+   "Elikobal",
+   10
+  ],
+  [
+   "Ngguti",
+   9
+  ],
+  [
+   "Ulilin",
+   9
+  ],
+  [
+   "Muting",
+   2
+  ]
+ ],
+ "fk_belum": [
+  "Kontuar",
+  88
+ ],
+ "kec": {
+  "Asmat|Agats": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Akat": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Aswi": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Atsj": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Awyu": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Ayip": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Betcbamu": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Der Koumur": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Fayit": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Jetsy": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Joerat": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Joutu": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Kolf Braza": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Kopay": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Koroway Buluanop": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Pantai Kasuari": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Pulau Tiga": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Safan": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Sawa Erma": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Sirets": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Suator": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Suru-suru": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Asmat|Unir Sirau": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Ambatkwi": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Arimop": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Bomakia": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Firiwage": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Fofi": {
+   "hot": [
+    0,
+    0,
+    0,
+    2,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 4
+  },
+  "Boven Digoel|Iniyandit": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Jair": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Kawagit": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Ki": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Kombay": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Kombut": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Kouh": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Mandobo": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Manggelum": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Mindiptana": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Ninati": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Sesnuk": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Subur": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Waropko": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Boven Digoel|Yaniruma": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Assue": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Bamgi": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Citak-Mitak": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Edera": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Haju": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Kaibar": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Mambioman Bapai": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Minyamur": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Obaa": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Passue": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Passue Bawah": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Syahcame": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Ti Zain": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Venaha": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Mappi|Yakomi": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Merauke|Animha": {
+   "hot": [
+    16,
+    5,
+    0,
+    2,
+    0,
+    1
+   ],
+   "luas": 2,
+   "belum": 0,
+   "padam": 6
+  },
+  "Merauke|Elikobal": {
+   "hot": [
+    8,
+    1,
+    0,
+    1,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 2
+  },
+  "Merauke|Ilwayab": {
+   "hot": [
+    9,
+    2,
+    0,
+    4,
+    2,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 8
+  },
+  "Merauke|Jagebob": {
+   "hot": [
+    33,
+    7,
+    1,
+    0,
+    8,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Merauke|Kaptel": {
+   "hot": [
+    8,
+    2,
+    0,
+    4,
+    2,
+    3
+   ],
+   "luas": 4,
+   "belum": 0,
+   "padam": 10
+  },
+  "Merauke|Kimaam": {
+   "hot": [
+    206,
+    7,
+    3,
+    22,
+    40,
+    41
+   ],
+   "luas": 85,
+   "belum": 45,
+   "padam": 12
+  },
+  "Merauke|Kontuar": {
+   "hot": [
+    158,
+    10,
+    29,
+    63,
+    56,
+    43
+   ],
+   "luas": 91,
+   "belum": 88,
+   "padam": 6
+  },
+  "Merauke|Kurik": {
+   "hot": [
+    10,
+    6,
+    0,
+    3,
+    1,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 6
+  },
+  "Merauke|Malind": {
+   "hot": [
+    5,
+    2,
+    0,
+    7,
+    0,
+    1
+   ],
+   "luas": 2,
+   "belum": 0,
+   "padam": 10
+  },
+  "Merauke|Merauke": {
+   "hot": [
+    29,
+    0,
+    2,
+    7,
+    1,
+    4
+   ],
+   "luas": 8,
+   "belum": 8,
+   "padam": 10
+  },
+  "Merauke|Muting": {
+   "hot": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Merauke|Naukenjerai": {
+   "hot": [
+    74,
+    30,
+    2,
+    41,
+    5,
+    52
+   ],
+   "luas": 116,
+   "belum": 70,
+   "padam": 41
+  },
+  "Merauke|Ngguti": {
+   "hot": [
+    0,
+    2,
+    0,
+    2,
+    1,
+    4
+   ],
+   "luas": 8,
+   "belum": 8,
+   "padam": 0
+  },
+  "Merauke|Okaba": {
+   "hot": [
+    40,
+    21,
+    11,
+    4,
+    4,
+    2
+   ],
+   "luas": 4,
+   "belum": 0,
+   "padam": 4
+  },
+  "Merauke|Padua": {
+   "hot": [
+    13,
+    0,
+    0,
+    0,
+    20,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Merauke|Semangga": {
+   "hot": [
+    30,
+    24,
+    0,
+    19,
+    1,
+    4
+   ],
+   "luas": 8,
+   "belum": 0,
+   "padam": 23
+  },
+  "Merauke|Sota": {
+   "hot": [
+    66,
+    9,
+    8,
+    18,
+    2,
+    32
+   ],
+   "luas": 79,
+   "belum": 54,
+   "padam": 14
+  },
+  "Merauke|Tabonji": {
+   "hot": [
+    2,
+    0,
+    8,
+    0,
+    14,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 0
+  },
+  "Merauke|Tanah Miring": {
+   "hot": [
+    56,
+    8,
+    0,
+    8,
+    3,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 16
+  },
+  "Merauke|Tubang": {
+   "hot": [
+    7,
+    1,
+    0,
+    4,
+    2,
+    1
+   ],
+   "luas": 2,
+   "belum": 0,
+   "padam": 6
+  },
+  "Merauke|Ulilin": {
+   "hot": [
+    3,
+    2,
+    0,
+    0,
+    0,
+    4
+   ],
+   "luas": 8,
+   "belum": 0,
+   "padam": 0
+  },
+  "Merauke|Waan": {
+   "hot": [
+    37,
+    0,
+    0,
+    3,
+    4,
+    0
+   ],
+   "luas": 0,
+   "belum": 0,
+   "padam": 6
+  }
+ },
+ "kaw_nama": [
+  "Kontuar",
+  "Kimaam"
+ ],
+ "kaw": {
+  "hot": [
+   364,
+   17,
+   32,
+   85,
+   96,
+   84
+  ],
+  "luas": 176,
+  "belum": 133
+ },
+ "kaw_komp": 25,
+ "kaw_level": {
+  "1": 8,
+  "2": 4
+ },
+ "kaw_kec_level": {
+  "Kontuar": {
+   "1": 4,
+   "2": 2
+  },
+  "Kimaam": {
+   "1": 4,
+   "2": 2
+  }
+ },
+ "kaw_tanggung": [
+  [
+   "Hutan Suaka Alam",
+   3
+  ],
+  [
+   "Hutan produksi dapat dikonversi",
+   1
+  ]
+ ],
+ "kaw_puncak": {
+  "hari": "2026-11-05",
+  "hot": 680
+ },
+ "kimaam_nama": [
+  "Kimaam",
+  "Kontuar",
+  "Waan",
+  "Tabonji",
+  "Padua"
+ ],
+ "kimaam": {
+  "hot": 673,
+  "hot_5_distrik": 779
+ },
+ "banjir": {
+  "kab": {
+   "Asmat": {
+    "banjir": [
+     [
+      "Suru-suru",
+      76.2
+     ],
+     [
+      "Joerat",
+      76.1
+     ],
+     [
+      "Kolf Braza",
+      76.0
+     ],
+     [
+      "Joutu",
+      64.0
+     ],
+     [
+      "Agats",
+      62.3
+     ],
+     [
+      "Sirets",
+      62.3
+     ],
+     [
+      "Akat",
+      57.9
+     ],
+     [
+      "Betcbamu",
+      56.6
+     ],
+     [
+      "Atsj",
+      55.0
+     ],
+     [
+      "Ayip",
+      55.0
+     ],
+     [
+      "Pulau Tiga",
+      54.7
+     ],
+     [
+      "Jetsy",
+      51.7
+     ],
+     [
+      "Unir Sirau",
+      50.5
+     ],
+     [
+      "Kopay",
+      49.9
+     ],
+     [
+      "Safan",
+      49.9
+     ],
+     [
+      "Fayit",
+      49.6
+     ],
+     [
+      "Suator",
+      49.6
+     ],
+     [
+      "Koroway Buluanop",
+      46.6
+     ],
+     [
+      "Sawa Erma",
+      44.0
+     ],
+     [
+      "Pantai Kasuari",
+      42.1
+     ],
+     [
+      "Aswi",
+      42.1
+     ]
+    ],
+    "longsor": [],
+    "h3": 76.2,
+    "n_kec": 23,
+    "dibi_banjir": 2,
+    "dibi_longsor": 0
+   },
+   "Boven Digoel": {
+    "banjir": [
+     [
+      "Ninati",
+      80.3
+     ],
+     [
+      "Manggelum",
+      75.4
+     ],
+     [
+      "Kouh",
+      75.2
+     ],
+     [
+      "Waropko",
+      74.9
+     ],
+     [
+      "Kombay",
+      73.2
+     ],
+     [
+      "Kawagit",
+      68.6
+     ],
+     [
+      "Mindiptana",
+      66.0
+     ],
+     [
+      "Iniyandit",
+      66.0
+     ],
+     [
+      "Bomakia",
+      63.9
+     ],
+     [
+      "Yaniruma",
+      63.2
+     ],
+     [
+      "Arimop",
+      61.2
+     ],
+     [
+      "Fofi",
+      60.5
+     ],
+     [
+      "Jair",
+      52.1
+     ],
+     [
+      "Subur",
+      49.6
+     ],
+     [
+      "Ambatkwi",
+      48.5
+     ],
+     [
+      "Ki",
+      48.5
+     ],
+     [
+      "Kombut",
+      47.8
+     ],
+     [
+      "Firiwage",
+      47.1
+     ],
+     [
+      "Sesnuk",
+      46.9
+     ],
+     [
+      "Mandobo",
+      45.9
+     ]
+    ],
+    "longsor": [
+     [
+      "Ninati",
+      80.3
+     ],
+     [
+      "Waropko",
+      74.9
+     ],
+     [
+      "Mindiptana",
+      66.0
+     ],
+     [
+      "Ambatkwi",
+      48.5
+     ]
+    ],
+    "h3": 80.3,
+    "n_kec": 20,
+    "dibi_banjir": 0,
+    "dibi_longsor": 0
+   },
+   "Mappi": {
+    "banjir": [
+     [
+      "Ti Zain",
+      79.2
+     ],
+     [
+      "Citak-Mitak",
+      64.5
+     ],
+     [
+      "Kaibar",
+      60.9
+     ],
+     [
+      "Assue",
+      60.5
+     ],
+     [
+      "Bamgi",
+      59.8
+     ],
+     [
+      "Venaha",
+      58.2
+     ],
+     [
+      "Passue Bawah",
+      54.4
+     ],
+     [
+      "Edera",
+      52.4
+     ],
+     [
+      "Yakomi",
+      51.1
+     ],
+     [
+      "Passue",
+      46.4
+     ],
+     [
+      "Minyamur",
+      46.1
+     ],
+     [
+      "Obaa",
+      45.1
+     ],
+     [
+      "Mambioman Bapai",
+      45.0
+     ],
+     [
+      "Haju",
+      44.7
+     ],
+     [
+      "Syahcame",
+      43.6
+     ]
+    ],
+    "longsor": [],
+    "h3": 79.2,
+    "n_kec": 15,
+    "dibi_banjir": 2,
+    "dibi_longsor": 0
+   },
+   "Merauke": {
+    "banjir": [
+     [
+      "Elikobal",
+      65.1
+     ],
+     [
+      "Muting",
+      55.7
+     ],
+     [
+      "Ulilin",
+      47.2
+     ],
+     [
+      "Jagebob",
+      45.5
+     ],
+     [
+      "Tabonji",
+      44.3
+     ],
+     [
+      "Animha",
+      43.3
+     ],
+     [
+      "Kaptel",
+      42.8
+     ],
+     [
+      "Padua",
+      42.1
+     ]
+    ],
+    "longsor": [],
+    "h3": 65.1,
+    "n_kec": 22,
+    "dibi_banjir": 2,
+    "dibi_longsor": 0
+   }
+  },
+  "hari": [
+   "2026-11-16",
+   "2026-11-17",
+   "2026-11-18",
+   "2026-11-19"
+  ],
+  "n_kec": 80,
+  "kec_waspada_b": 64,
+  "kec_waspada_l": 4,
+  "kec_waspada": 64,
+  "maks_st": 2,
+  "dibi": {
+   "banjir": 6,
+   "longsor": 0,
+   "th0": "2008",
+   "th1": "2025",
+   "v": {
+    "2008": 0,
+    "2009": 0,
+    "2010": 0,
+    "2011": 0,
+    "2012": 0,
+    "2013": 0,
+    "2014": 0,
+    "2015": 2,
+    "2016": 0,
+    "2017": 0,
+    "2018": 0,
+    "2019": 0,
+    "2020": 0,
+    "2021": 0,
+    "2022": 0,
+    "2023": 2,
+    "2024": 2,
+    "2025": 0,
+    "2026": 0
+   },
+   "v_longsor": {
+    "2008": 0,
+    "2009": 0,
+    "2010": 0,
+    "2011": 0,
+    "2012": 0,
+    "2013": 0,
+    "2014": 0,
+    "2015": 0,
+    "2016": 0,
+    "2017": 0,
+    "2018": 0,
+    "2019": 0,
+    "2020": 0,
+    "2021": 0,
+    "2022": 0,
+    "2023": 0,
+    "2024": 0,
+    "2025": 0,
+    "2026": 0
+   }
+  }
+ },
+ "nasional": {
+  "hot": 1,
+  "luas": 1,
+  "belum": 1,
+  "n_prov": 38
+ },
+ "kaw_seri": {
+  "Kontuar": {
+   "luas": [
+    118,
+    237,
+    504,
+    6,
+    68,
+    184,
+    147,
+    91
+   ],
+   "belum": [
+    104,
+    169,
+    340,
+    6,
+    61,
+    113,
+    101,
+    88
+   ],
+   "padam": [
+    81,
+    0,
+    8,
+    21,
+    305,
+    0,
+    0,
+    6
+   ]
+  },
+  "Kimaam": {
+   "luas": [
+    47,
+    409,
+    334,
+    17,
+    6,
+    54,
+    87,
+    85
+   ],
+   "belum": [
+    41,
+    263,
+    266,
+    14,
+    0,
+    27,
+    68,
+    45
+   ],
+   "padam": [
+    54,
+    29,
+    0,
+    266,
+    291,
+    12,
+    0,
+    12
+   ]
+  }
+ },
+ "kl_hari": [
+  {
+   "hari": "2026-11-09",
+   "aktif": 451
+  },
+  {
+   "hari": "2026-11-10",
+   "aktif": 412
+  },
+  {
+   "hari": "2026-11-11",
+   "aktif": 377
+  },
+  {
+   "hari": "2026-11-12",
+   "aktif": 425
+  },
+  {
+   "hari": "2026-11-13",
+   "aktif": 288
+  },
+  {
+   "hari": "2026-11-14",
+   "aktif": 186
+  },
+  {
+   "hari": "2026-11-15",
+   "aktif": 107
+  },
+  {
+   "hari": "2026-11-16",
+   "aktif": 127
+  }
+ ],
+ "kec_pen": [
+  {
+   "kab": "Merauke",
+   "kec": "Kontuar",
+   "belum": 88,
+   "belum0": 104,
+   "padam": 421,
+   "komp": 10,
+   "level": 2,
+   "tanggung": "Hutan Suaka Alam"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Naukenjerai",
+   "belum": 70,
+   "belum0": 0,
+   "padam": 325,
+   "komp": 16,
+   "level": 2,
+   "tanggung": "Taman Nasional"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Sota",
+   "belum": 54,
+   "belum0": 18,
+   "padam": 271,
+   "komp": 13,
+   "level": 1,
+   "tanggung": "Taman Nasional"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Kimaam",
+   "belum": 45,
+   "belum0": 41,
+   "padam": 664,
+   "komp": 15,
+   "level": 2,
+   "tanggung": "Hutan Suaka Alam"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Merauke",
+   "belum": 8,
+   "belum0": 0,
+   "padam": 167,
+   "komp": 5,
+   "level": 1,
+   "tanggung": "Area penggunaan lain (lahan masyarakat)"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Ngguti",
+   "belum": 8,
+   "belum0": 0,
+   "padam": 14,
+   "komp": 2,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Tabonji",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 323,
+   "komp": 9,
+   "level": 1,
+   "tanggung": "Hutan Suaka Alam"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Okaba",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 303,
+   "komp": 3,
+   "level": 1,
+   "tanggung": "Hutan produksi dapat dikonversi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Tanah Miring",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 276,
+   "komp": 7,
+   "level": 1,
+   "tanggung": "Hutan produksi dapat dikonversi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Animha",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 215,
+   "komp": 4,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Semangga",
+   "belum": 0,
+   "belum0": 2,
+   "padam": 178,
+   "komp": 11,
+   "level": 1,
+   "tanggung": "Hutan produksi dapat dikonversi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Jagebob",
+   "belum": 0,
+   "belum0": 18,
+   "padam": 131,
+   "komp": 2,
+   "level": 1,
+   "tanggung": "Areal konsesi sawit"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Kurik",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 122,
+   "komp": 6,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Ilwayab",
+   "belum": 0,
+   "belum0": 27,
+   "padam": 108,
+   "komp": 2,
+   "level": 1,
+   "tanggung": "Hutan produksi dapat dikonversi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Kaptel",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 104,
+   "komp": 2,
+   "level": 1,
+   "tanggung": "Hutan produksi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Waan",
+   "belum": 0,
+   "belum0": 5,
+   "padam": 91,
+   "komp": 7,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Malind",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 74,
+   "komp": 3,
+   "level": 1,
+   "tanggung": "Area penggunaan lain (lahan masyarakat)"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Tubang",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 70,
+   "komp": 2,
+   "level": 1,
+   "tanggung": "Hutan produksi dapat dikonversi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Elikobal",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 62,
+   "komp": 1,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Padua",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 47,
+   "komp": 4,
+   "level": 1,
+   "tanggung": "Hutan produksi dapat dikonversi"
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Muting",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 23,
+   "komp": 0,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Merauke",
+   "kec": "Ulilin",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 20,
+   "komp": 2,
+   "level": 1,
+   "tanggung": "Area penggunaan lain (lahan masyarakat)"
+  },
+  {
+   "kab": "Mappi",
+   "kec": "Mambioman Bapai",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 8,
+   "komp": 0,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Boven Digoel",
+   "kec": "Fofi",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 4,
+   "komp": 1,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Boven Digoel",
+   "kec": "Jair",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 2,
+   "komp": 0,
+   "level": 0,
+   "tanggung": ""
+  },
+  {
+   "kab": "Mappi",
+   "kec": "Edera",
+   "belum": 0,
+   "belum0": 0,
+   "padam": 2,
+   "komp": 0,
+   "level": 0,
+   "tanggung": ""
+  }
+ ],
+ "dibuat": {
+  "harian30": "2026-11-17T12:30+07:00",
+  "peta": "2026-11-17T12:32+07:00",
+  "cluster": "2026-11-16 akhir hari"
+ }
+}

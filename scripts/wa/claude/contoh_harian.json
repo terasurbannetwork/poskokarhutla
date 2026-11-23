@@ -1,0 +1,1248 @@
+[
+ {
+  "id": "harian-01",
+  "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+    "teks": "Mohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 25/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 07.00 WIB sebagai berikut:\n\n1.⁠ ⁠Laporan kejadian bencana sejumlah 24 (dua puluh empat) kejadian.\n\n2.⁠ ⁠Kejadian menonjol/kejadian berdampak signifikan sejumlah 17 (tujuh belas) kejadian.\n\n*A. Prov. Aceh*\n1. Bencana Alam Angin Kencang di Kota Lhokseumawe *(Kejadian Baru)*\n- Dampak: 27 unit kios RB, 1 unit rumah RR \n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi mutakhir: Masih dalam penanganan \n- Detail: Entry no 16 laphar 25/10/2026\n\n*B. Prov. Sumatera Utara*\n1. Bencana Alam Banjir di Kab. Tapanuli Tengah *(Pengkinian Data)*\n- Dampak: 106 KK / 424 jiwa terdampak (masih dalam pendataan); ±106 unit rumah terdampak; 1 unit rumah hanyut; dan beberapa akses jalan terdampak\n- Penetapan Status: Transisi Darurat ke Pemulihan TMT 1/10/2026 s.d 31/12/2026\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Banjir sudah surut, namun untuk saat ini cuaca masih hujan; sedang dilakukan pembersihan terhadap dampak banjir oleh tim gabungan\n- Detail: Entry no 04 laphar 25/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Angin Kencang",
+    "kutipan": "Bencana Alam Angin Kencang di Kota Lhokseumawe",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Aceh",
+    "kutipan": "A. Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kota Lhokseumawe",
+    "kutipan": "Angin Kencang di Kota Lhokseumawe",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "dampak",
+    "nilai": "27 unit kios RB, 1 unit rumah RR",
+    "kutipan": "Dampak: 27 unit kios RB, 1 unit rumah RR",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "rumah_rusak_ringan",
+    "nilai": "1",
+    "kutipan": "1 unit rumah RR",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Masih dalam penanganan",
+    "kutipan": "Kondisi mutakhir: Masih dalam penanganan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Banjir",
+    "kutipan": "Bencana Alam Banjir di Kab. Tapanuli Tengah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Sumatera Utara",
+    "kutipan": "B. Prov. Sumatera Utara",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Tapanuli Tengah",
+    "kutipan": "Banjir di Kab. Tapanuli Tengah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "106",
+    "kutipan": "106 KK / 424 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "terdampak_jiwa",
+    "nilai": "424",
+    "kutipan": "106 KK / 424 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "dampak",
+    "nilai": "±106 unit rumah terdampak; 1 unit rumah hanyut; dan beberapa akses jalan terdampak",
+    "kutipan": "±106 unit rumah terdampak; 1 unit rumah hanyut; dan beberapa akses jalan terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Transisi Darurat ke Pemulihan TMT 1/10/2026 s.d 31/12/2026",
+    "kutipan": "Penetapan Status: Transisi Darurat ke Pemulihan TMT 1/10/2026 s.d 31/12/2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Banjir sudah surut, namun untuk saat ini cuaca masih hujan; sedang dilakukan pembersihan terhadap dampak banjir oleh tim gabungan",
+    "kutipan": "Banjir sudah surut, namun untuk saat ini cuaca masih hujan; sedang dilakukan pembersihan terhadap dampak banjir oleh tim gabungan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Kejadian 1 tanpa penetapan status (tertulis \"-\"), jadi status_darurat tidak diisi. 27 unit kios RB bukan rumah, tidak masuk rumah_rusak_berat."
+ },
+ {
+  "id": "harian-02",
+  "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+    "teks": "*C. Prov. Sumatera Barat*\n1. Bencana Alam Banjir Bandang di Kab. Solok *(Pengkinian Data)*\n- Dampak: 2 (dua) jiwa MD, 2 jiwa LB, 12 jiwa LR, 77 jiwa mengungsi, 19 unit rumah RB, 9 unit rumah RS, 33 unit rumah RR, 13 unit rumah terendam dan 10 unit rumah terancam\n- Penetapan Status: Transisi Darurat ke Pemulihan TMT 13/10/2026 s.d 13/04/2027\n- Pendampingan BNPB: Tim BNPB\n- Kondisi Mutakhir: Masih dalam penanganan\n- Detail: Entry no 12 laphar 25/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Banjir Bandang",
+    "kutipan": "Bencana Alam Banjir Bandang di Kab. Solok",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Sumatera Barat",
+    "kutipan": "C. Prov. Sumatera Barat",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Solok",
+    "kutipan": "Banjir Bandang di Kab. Solok",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "meninggal",
+    "nilai": "2",
+    "kutipan": "2 (dua) jiwa MD",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "luka",
+    "nilai": "2 jiwa LB, 12 jiwa LR",
+    "kutipan": "2 jiwa LB, 12 jiwa LR",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "mengungsi_jiwa",
+    "nilai": "77",
+    "kutipan": "77 jiwa mengungsi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "rumah_rusak_berat",
+    "nilai": "19",
+    "kutipan": "19 unit rumah RB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "rumah_rusak_sedang",
+    "nilai": "9",
+    "kutipan": "9 unit rumah RS",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "rumah_rusak_ringan",
+    "nilai": "33",
+    "kutipan": "33 unit rumah RR",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "rumah_terendam",
+    "nilai": "13",
+    "kutipan": "13 unit rumah terendam",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Transisi Darurat ke Pemulihan TMT 13/10/2026 s.d 13/04/2027",
+    "kutipan": "Transisi Darurat ke Pemulihan TMT 13/10/2026 s.d 13/04/2027",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "Tim BNPB",
+    "kutipan": "Pendampingan BNPB: Tim BNPB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Masih dalam penanganan",
+    "kutipan": "Kondisi Mutakhir: Masih dalam penanganan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Luka berat dan luka ringan ditulis apa adanya, tidak dijumlah. 10 unit rumah terancam tidak punya medan."
+ },
+ {
+  "id": "harian-03",
+  "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+    "teks": "*D. Prov. Riau*\n1. Bencana Alam Kebakaran Hutan dan Lahan di Prov. Riau *(Pengkinian Data)*\n- Dampak: Estimasi luas lahan terbakar ±20.714,53 Ha (BPBDPK Riau, 01 Januari s.d 25 Oktober 2026); Luas lahan terbakar (target yang akan dipadamkan) per 25 Okt 2026 ± 6 Ha\n- Penetapan Status: Siaga Darurat  TMT 13/2//2026 s.d 30/11/2026\n- Pendampingan BNPB: Tim BNPB\n- Kondisi Mutakhir: Target luas lahan yang dipadamkan per 25 Okt 2026 ± 6 Ha; luas yang berhasil dipadamkan ± 4,25 Ha; sisa luas lahan yang masih dalam penanganan ± 1,75 Ha\n- Detail: Entry no 15 laphar 25/10/2026\n\n*E. Prov. Jambi*\n1. Bencana Alam Kebakaran Hutan dan Lahan di Prov. Jambi *(Pengkinian Data)*\n- Dampak: Luas lahan terbakar (target yang akan dipadamkan) per 25 Okt 2026 ±118,5.5 ha\n- Penetapan Status: Siaga Darurat TMT 27/04/2026 s.d 30/11/2026\n- Pendampingan BNPB: Tim BNPB\n- Kondisi Mutakhir: Target luas lahan yang dipadamkan per 25 Okt 2026 ± 118,5 ha; luas yang berhasil dipadamkan ±64 ha; sisa luas lahan yang masih dalam penanganan ±54,5 ha\n- Detail: Entry no 18 laphar 25/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Kebakaran Hutan dan Lahan",
+    "kutipan": "Bencana Alam Kebakaran Hutan dan Lahan di Prov. Riau",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Riau",
+    "kutipan": "D. Prov. Riau",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Siaga Darurat TMT 13/2//2026 s.d 30/11/2026",
+    "kutipan": "Penetapan Status: Siaga Darurat  TMT 13/2//2026 s.d 30/11/2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "Tim BNPB",
+    "kutipan": "Pendampingan BNPB: Tim BNPB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Kebakaran Hutan dan Lahan",
+    "kutipan": "Bencana Alam Kebakaran Hutan dan Lahan di Prov. Jambi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Jambi",
+    "kutipan": "E. Prov. Jambi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Siaga Darurat TMT 27/04/2026 s.d 30/11/2026",
+    "kutipan": "Siaga Darurat TMT 27/04/2026 s.d 30/11/2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Luas lahan terbakar, luas yang dipadamkan, dan sisa luas karhutla adalah angka sistem; tidak diambil dari bahan walaupun tertulis."
+ },
+ {
+  "id": "harian-04",
+  "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/koordalops_261026_24.txt",
+    "teks": "*O. Prov. Sulawesi Selatan*\n1. Bencana Alam Kebakaran Hutan dan Lahan di Kab. Enrekang *(Kejadian Baru)*\n- Dampak: ± 40 Ha lahan terbakar\n- ⁠Penetapan status: -\n- ⁠Pendampingan BNPB: -\n- ⁠Kondisi mutakhir: Pantauan di lokasi, kebakaran masih berlangsung hingga saat ini di kawasan hutan pada pos 5 jalur pendakian Gunung Latimojong melalui Dusun Angin - angin\n- Detail: Entry no 10 laphar 25/10/2026\n\n2. Bencana Alam Banjir Bandang  di Kab. Bone *(Kejadian Baru)*\n- Dampak: ±91 KK terdampak\n- ⁠Penetapan status: -\n- ⁠Pendampingan BNPB: -\n- ⁠Kondisi mutakhir: Telah dilakukan distribusi air bersih sebanyak 11.200 liter ke Kelurahan Majang, Jeppe'e, Mattirowalie, Kecamatan Tanete Riattang Barat\n- Detail: Entry no 14 laphar 25/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Kebakaran Hutan dan Lahan",
+    "kutipan": "Bencana Alam Kebakaran Hutan dan Lahan di Kab. Enrekang",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Sulawesi Selatan",
+    "kutipan": "O. Prov. Sulawesi Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Enrekang",
+    "kutipan": "Kebakaran Hutan dan Lahan di Kab. Enrekang",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "lokasi",
+    "nilai": "kawasan hutan pada pos 5 jalur pendakian Gunung Latimojong melalui Dusun Angin - angin",
+    "kutipan": "di kawasan hutan pada pos 5 jalur pendakian Gunung Latimojong melalui Dusun Angin - angin",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "kebakaran masih berlangsung hingga saat ini",
+    "kutipan": "Pantauan di lokasi, kebakaran masih berlangsung hingga saat ini",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Banjir Bandang",
+    "kutipan": "Bencana Alam Banjir Bandang  di Kab. Bone",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Sulawesi Selatan",
+    "kutipan": "O. Prov. Sulawesi Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Bone",
+    "kutipan": "Banjir Bandang  di Kab. Bone",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "91",
+    "kutipan": "±91 KK terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kecamatan",
+    "nilai": "Tanete Riattang Barat",
+    "kutipan": "Kecamatan Tanete Riattang Barat",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "distribusi air bersih sebanyak 11.200 liter ke Kelurahan Majang, Jeppe'e, Mattirowalie",
+    "kutipan": "Telah dilakukan distribusi air bersih sebanyak 11.200 liter ke Kelurahan Majang, Jeppe'e, Mattirowalie",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Kejadian baru tanpa penetapan status. Luas lahan terbakar Enrekang adalah angka sistem, tidak diambil."
+ },
+ {
+  "id": "harian-05",
+  "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-27/wa-koordalops-sela19.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-27/wa-koordalops-sela19.txt",
+    "teks": "Mohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 26/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 19.00 WIB sebagai berikut:\n\n*D. Prov. Banten*\n1. Bencana Alam Kekeringan di Kota Tangerang Selatan *(Pengkinian Data)*\n- Dampak: 3.523 KK / 13.265 jiwa terdampak\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Telah dilakukan distribusi bantuan air bersih sebanyak 2.684.100 liter (08/06/2026 s.d 23/10/2026)\n- Detail: Entry no 05 laphar 26/10/2026\n\n*E. Prov. Jawa Tengah*\n1. Bencana Alam Kekeringan di Kab. Sragen *(Pengkinian Data)*\n- Dampak: ±5.500 KK / ±18.495 jiwa terdampak\n- Penetapan Status: Siaga Darurat TMT 01/07/2026 s.d 31/12/2026\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Telah dilakukan distribusi bantuan air bersih sebanyak 9 tangki (41.000 Liter) 4 desa di 2 kecamatan\n- Detail: Entry no 07 laphar 26/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "waktu_kejadian",
+    "nilai": "26/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 19.00 WIB",
+    "kutipan": "tanggal 26/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 19.00 WIB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "periode laporan"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Kekeringan",
+    "kutipan": "Bencana Alam Kekeringan di Kota Tangerang Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Banten",
+    "kutipan": "D. Prov. Banten",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kota Tangerang Selatan",
+    "kutipan": "Kekeringan di Kota Tangerang Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "3.523",
+    "kutipan": "3.523 KK / 13.265 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "terdampak_jiwa",
+    "nilai": "13.265",
+    "kutipan": "3.523 KK / 13.265 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "distribusi bantuan air bersih sebanyak 2.684.100 liter (08/06/2026 s.d 23/10/2026)",
+    "kutipan": "Telah dilakukan distribusi bantuan air bersih sebanyak 2.684.100 liter (08/06/2026 s.d 23/10/2026)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Kekeringan",
+    "kutipan": "Bencana Alam Kekeringan di Kab. Sragen",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Jawa Tengah",
+    "kutipan": "E. Prov. Jawa Tengah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Sragen",
+    "kutipan": "Kekeringan di Kab. Sragen",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "5.500",
+    "kutipan": "±5.500 KK / ±18.495 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "terdampak_jiwa",
+    "nilai": "18.495",
+    "kutipan": "±5.500 KK / ±18.495 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Siaga Darurat TMT 01/07/2026 s.d 31/12/2026",
+    "kutipan": "Siaga Darurat TMT 01/07/2026 s.d 31/12/2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "distribusi bantuan air bersih sebanyak 9 tangki (41.000 Liter) 4 desa di 2 kecamatan",
+    "kutipan": "distribusi bantuan air bersih sebanyak 9 tangki (41.000 Liter) 4 desa di 2 kecamatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Laporan sela pukul 19.00, bukan laporan pagi 07.00. Tanda ± tidak ikut di nilai."
+ },
+ {
+  "id": "harian-06",
+  "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-05/wa-menko.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-05/wa-menko.txt",
+    "teks": "*A. Prov. Aceh*\n1. Bencana Alam Banjir di Kota Subulussalam, Prov. Aceh *(Pengkinian Data)*\n- Dampak:\n* Korban Jiwa ; ± 2.255  KK  terdampak (pendataan)\n* Pengungsi ; 32 KK mengungsi (sudah kembali kerumah masing-masing)\n* Kerusakan ; ± 2.255  unit rumah terdampak (pendataan). Jalan desa, lahan dan kebun pertanian, sekolah serta tempat ibadah terendam banjir (pendataan)\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Banjir sudah surut\n- Detail: Entry nomor 7 laphar 4/11/2026.\n\n1. Bencana Alam Tanah Longsor di Kab. Gayo Lues, Prov. Aceh *(Kejadian Baru)*\n- Dampak:\n* Korban Jiwa ; 1 (satu) jiwa MD An. [nama korban]\n* Pengungsi ; nihil\n* Kerusakan ; Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total. Arus lalu lintas Gayo Lues – Abdya saat ini lumpuh total dan Jembatan Agusen Toa ambruk.\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total, tidak bisa dilalui kendaraan roda empat dan roda dua.\n- Detail: Entry nomor 8 laphar 4/11/2026\n\n1. Bencana Alam Banjir di Kab. Aceh Selatan, Prov. Aceh *(Pengkinian Data)*\n- Dampak:\n* Korban Jiwa ; ± 222 KK / 794 jiwa terdampak (pendataan)\n* Pengungsi ; 56 KK / 196 Jiwa mengungsi (pendataan)\n* Kerusakan ; ± 222 unit rumah terdampak (pendataan)\n- Penetapan Status: Tanggap Darurat TMT 30 Oktober s.d 12 November 2026\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Air perlahan surut menjadi ± 10-35 cm. Di Gampong Cot Bayu air perlahan surut, rumah warga tergenang air ± 10 s/d 15 cm. Di Gampong Padang Harapan air perlahan surut, rumah warga tergenang air ± 25 s/d 35 cm\n- Detail: Entry nomor 11 laphar 4/11/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Banjir",
+    "kutipan": "Bencana Alam Banjir di Kota Subulussalam",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Aceh",
+    "kutipan": "A. Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kota Subulussalam",
+    "kutipan": "Banjir di Kota Subulussalam, Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "2.255",
+    "kutipan": "± 2.255  KK  terdampak (pendataan)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "mengungsi_kk",
+    "nilai": "32",
+    "kutipan": "32 KK mengungsi (sudah kembali kerumah masing-masing)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Banjir sudah surut",
+    "kutipan": "Kondisi Mutakhir: Banjir sudah surut",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Tanah Longsor",
+    "kutipan": "Bencana Alam Tanah Longsor di Kab. Gayo Lues",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Aceh",
+    "kutipan": "A. Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Gayo Lues",
+    "kutipan": "Tanah Longsor di Kab. Gayo Lues, Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "meninggal",
+    "nilai": "1",
+    "kutipan": "Korban Jiwa ; 1 (satu) jiwa MD",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "dampak",
+    "nilai": "Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total. Arus lalu lintas Gayo Lues – Abdya saat ini lumpuh total dan Jembatan Agusen Toa ambruk.",
+    "kutipan": "Kerusakan ; Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total. Arus lalu lintas Gayo Lues – Abdya saat ini lumpuh total dan Jembatan Agusen Toa ambruk.",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total, tidak bisa dilalui kendaraan roda empat dan roda dua.",
+    "kutipan": "Kondisi Mutakhir: Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total, tidak bisa dilalui kendaraan roda empat dan roda dua.",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Banjir",
+    "kutipan": "Bencana Alam Banjir di Kab. Aceh Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Aceh",
+    "kutipan": "A. Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Aceh Selatan",
+    "kutipan": "Banjir di Kab. Aceh Selatan, Prov. Aceh",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "222",
+    "kutipan": "± 222 KK / 794 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "terdampak_jiwa",
+    "nilai": "794",
+    "kutipan": "± 222 KK / 794 jiwa terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "mengungsi_kk",
+    "nilai": "56",
+    "kutipan": "56 KK / 196 Jiwa mengungsi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "mengungsi_jiwa",
+    "nilai": "196",
+    "kutipan": "56 KK / 196 Jiwa mengungsi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Tanggap Darurat TMT 30 Oktober s.d 12 November 2026",
+    "kutipan": "Tanggap Darurat TMT 30 Oktober s.d 12 November 2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Air perlahan surut menjadi ± 10-35 cm",
+    "kutipan": "Air perlahan surut menjadi ± 10-35 cm",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 3"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Nama korban tidak dipakai di isian. Jumlah unit rumah terdampak tidak punya medan khusus; pengungsi nihil tidak diisi sebagai 0."
+ },
+ {
+  "id": "harian-07",
+  "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-08/wa-koordalops.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-08/wa-koordalops.txt",
+    "teks": "*G. Prov. Jawa Tengah*\n1. Bencana Alam Cuaca Ekstrem di Kab. Kendal *(Kejadian Baru)*\n- Dampak: 1 (satu) jiwa MD, 3 jiwa luka-luka\n- Pengungsi: Nihil\n- Kerusakan: Nihil\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Kondisi sudah kondusif\n- Detail: Entry nomor 16 laphar 7/11/2026\n\n\n*H. Prov. Bali*\n1. Bencana Alam Tanah Longsor di Kab. Badung *(Pengkinian Data)*\n- Dampak: 2 jiwa hilang masih dalam pencarian\n- Pengungsi: Nihil\n- Kerusakan: Dalam pendataan\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Proses pencarian korban masih terus dilaksanakan oleh Tim SAR Gabungan\n- Detail: Entry nomor 11 laphar 7/11/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Cuaca Ekstrem",
+    "kutipan": "Bencana Alam Cuaca Ekstrem di Kab. Kendal",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Jawa Tengah",
+    "kutipan": "G. Prov. Jawa Tengah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Kendal",
+    "kutipan": "Cuaca Ekstrem di Kab. Kendal",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "meninggal",
+    "nilai": "1",
+    "kutipan": "1 (satu) jiwa MD",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "luka",
+    "nilai": "3",
+    "kutipan": "3 jiwa luka-luka",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Kondisi sudah kondusif",
+    "kutipan": "Kondisi Mutakhir: Kondisi sudah kondusif",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Tanah Longsor",
+    "kutipan": "Bencana Alam Tanah Longsor di Kab. Badung",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Bali",
+    "kutipan": "H. Prov. Bali",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Badung",
+    "kutipan": "Tanah Longsor di Kab. Badung",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "hilang",
+    "nilai": "2",
+    "kutipan": "2 jiwa hilang masih dalam pencarian",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "Proses pencarian korban masih terus dilaksanakan oleh Tim SAR Gabungan",
+    "kutipan": "Proses pencarian korban masih terus dilaksanakan oleh Tim SAR Gabungan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Pengungsi dan kerusakan \"Nihil\" atau \"Dalam pendataan\" tidak diisi sebagai angka."
+ },
+ {
+  "id": "harian-08",
+  "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-10/wa-koordalops.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-10/wa-koordalops.txt",
+    "teks": "*E. Prov. Jawa Tengah*\n1. Bencana Alam Cuaca Ekstrem di Kab. Sukoharjo (Kejadian Baru)\n- Dampak: 2 (dua) jiwa LB, ±26 KK terdampak\n- Pengungsi: Nihil\n- Kerusakan: ±26 unit rumah RR\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Sudah kondusif\n- Detail: Entry nomor 13 Laphar 09/11/2026\n\n2. Bencana Alam Angin Kencang di Kab. Blora (Kejadian Baru)\n- Dampak: 5 (lima) jiwa luka, 16 KK terdampak\n- Pengungsi: 9 KK mengungsi di rumah saudara\n- Kerusakan: 10 unit rumah RB, 6 unit rumah RS\n- Penetapan Status: -\n- Pendampingan BNPB: -\n- Kondisi Mutakhir: Masih dilakukan pembersihan material rumah rusak\n- Detail: Entry nomor 11 Laphar 09/11/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Cuaca Ekstrem",
+    "kutipan": "Bencana Alam Cuaca Ekstrem di Kab. Sukoharjo",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Jawa Tengah",
+    "kutipan": "E. Prov. Jawa Tengah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Sukoharjo",
+    "kutipan": "Cuaca Ekstrem di Kab. Sukoharjo",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "luka",
+    "nilai": "2",
+    "kutipan": "2 (dua) jiwa LB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "26",
+    "kutipan": "±26 KK terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "rumah_rusak_ringan",
+    "nilai": "26",
+    "kutipan": "±26 unit rumah RR",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Sudah kondusif",
+    "kutipan": "Kondisi Mutakhir: Sudah kondusif",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Angin Kencang",
+    "kutipan": "Bencana Alam Angin Kencang di Kab. Blora",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Jawa Tengah",
+    "kutipan": "E. Prov. Jawa Tengah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Blora",
+    "kutipan": "Angin Kencang di Kab. Blora",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "luka",
+    "nilai": "5",
+    "kutipan": "5 (lima) jiwa luka",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "16",
+    "kutipan": "16 KK terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "mengungsi_kk",
+    "nilai": "9",
+    "kutipan": "9 KK mengungsi di rumah saudara",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "rumah_rusak_berat",
+    "nilai": "10",
+    "kutipan": "10 unit rumah RB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "rumah_rusak_sedang",
+    "nilai": "6",
+    "kutipan": "6 unit rumah RS",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Masih dilakukan pembersihan material rumah rusak",
+    "kutipan": "Masih dilakukan pembersihan material rumah rusak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 2"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": ""
+ },
+ {
+  "id": "harian-09",
+  "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-28/wa-koordalops.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-28/wa-koordalops.txt",
+    "teks": "*J. Prov. Nusa Tenggara Timur*\n1. Bencana Alam Gempa Bumi di Prov. Nusa Tenggara Timur *(Pengkinian Data)*\n- Dampak: 156 (seratus lima puluh enam) jiwa MD, ± 17.707 KK terdampak, luka-luka: ± 1.620 jiwa (pendataan), ± 27.345 jiwa mengungsi\n- Penetapan Status: Transisi darurat ke pemulihan TMT 27/09/2026 s.d 27/12/2026\n- Pendampingan BNPB: Tim BNPB\n- Kondisi Mutakhir: Hasil sementara Progres Huntara per tanggal 27 Oktober 2026 di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 240 unit\n- Detail: Entry nomor 14 laphar 27/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Gempa Bumi",
+    "kutipan": "Bencana Alam Gempa Bumi di Prov. Nusa Tenggara Timur",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Nusa Tenggara Timur",
+    "kutipan": "J. Prov. Nusa Tenggara Timur",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "meninggal",
+    "nilai": "156",
+    "kutipan": "156 (seratus lima puluh enam) jiwa MD",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "17.707",
+    "kutipan": "± 17.707 KK terdampak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "luka",
+    "nilai": "1.620",
+    "kutipan": "luka-luka: ± 1.620 jiwa (pendataan)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "mengungsi_jiwa",
+    "nilai": "27.345",
+    "kutipan": "± 27.345 jiwa mengungsi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "status_darurat",
+    "nilai": "Transisi darurat ke pemulihan TMT 27/09/2026 s.d 27/12/2026",
+    "kutipan": "Transisi darurat ke pemulihan TMT 27/09/2026 s.d 27/12/2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kondisi_terkini",
+    "nilai": "Progres Huntara per tanggal 27 Oktober 2026 di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 240 unit",
+    "kutipan": "Hasil sementara Progres Huntara per tanggal 27 Oktober 2026 di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 240 unit",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": ""
+ },
+ {
+  "id": "harian-10",
+  "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-28/wa-koordalops.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-28/wa-koordalops.txt",
+    "teks": "*J. Prov. Nusa Tenggara Timur*\n1. Bencana Alam Gempa Bumi di Prov. Nusa Tenggara Timur *(Pengkinian Data)*\n- Dampak: 156 (seratus lima puluh enam) jiwa MD, ± 17.707 KK terdampak, luka-luka: ± 1.620 jiwa (pendataan), ± 27.345 jiwa mengungsi\n- Penetapan Status: Transisi darurat ke pemulihan TMT 27/09/2026 s.d 27/12/2026\n- Pendampingan BNPB: Tim BNPB\n- Kondisi Mutakhir: Hasil sementara Progres Huntara per tanggal 27 Oktober 2026 di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 240 unit\n- Detail: Entry nomor 14 laphar 27/10/2026"
+   },
+   {
+    "id": "b2",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-10/2026-10-29/wa-koordalops.txt",
+    "teks": "*L. Prov. Nusa Tenggara Timur*\n1. Bencana Alam Gempa Bumi di Prov. Nusa Tenggara Timur *(Pengkinian Data)*\n- Dampak: ± 17.707 KK terdampak (masih dalam pendataan), ± 27.331 jiwa mengungsi, Luka-luka: ± 1.620 jiwa (masih dalam pendataan) dan 156 jiwa MD\n- Penetapan Status: Transisi darurat ke pemulihan TMT 27/09/2026 s.d 27/12/2026\n- Pendampingan BNPB:Tim BNPB\n- Kondisi Mutakhir: Hasil sementara Progres Huntara per tanggal 27 Oktober 2026 di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 240 uni\n- Detail: Entry nomor 19 laphar 28/10/2026"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Gempa Bumi",
+    "kutipan": "Bencana Alam Gempa Bumi di Prov. Nusa Tenggara Timur",
+    "sumber_bahan_id": "b2",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Nusa Tenggara Timur",
+    "kutipan": "Prov. Nusa Tenggara Timur",
+    "sumber_bahan_id": "b2",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "meninggal",
+    "nilai": "156",
+    "kutipan": "156 jiwa MD",
+    "sumber_bahan_id": "b2",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "terdampak_kk",
+    "nilai": "17.707",
+    "kutipan": "± 17.707 KK terdampak (masih dalam pendataan)",
+    "sumber_bahan_id": "b2",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "luka",
+    "nilai": "1.620",
+    "kutipan": "Luka-luka: ± 1.620 jiwa (masih dalam pendataan)",
+    "sumber_bahan_id": "b2",
+    "kelompok": "kejadian 1"
+   }
+  ],
+  "pertentangan": [
+   {
+    "medan": "mengungsi_jiwa",
+    "kelompok": "kejadian 1",
+    "a": {
+     "nilai": "27.345",
+     "kutipan": "± 27.345 jiwa mengungsi",
+     "sumber_bahan_id": "b1"
+    },
+    "b": {
+     "nilai": "27.331",
+     "kutipan": "± 27.331 jiwa mengungsi",
+     "sumber_bahan_id": "b2"
+    }
+   }
+  ],
+  "catatan": "Dua bahan menyebut jumlah pengungsi berbeda; keduanya dicatat di pertentangan, tidak dipilih."
+ },
+ {
+  "id": "harian-11",
+  "sumber": "tests/wa/bahan/bmkg_231026_pagi.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/bmkg_231026_pagi.txt",
+    "teks": "Selamat Pagi, *Bapak Kepala BNPB*, \nMohon izin Bapak\n\nBerikut kami sampaikan Laporan Meteorologi dan Klimatologi (BMKG):\n\n\n2. Kondisi Cuaca dan Pertumbuhan Awan (https://www.bmkg.go.id/cuaca/potensi-hujan-sepekan)\n\n*a. Periode 23 – 25 Oktober 2026*\n* Cuaca di Indonesia umumnya didominasi oleh kondisi cerah berawan hingga hujan ringan. Perlu diwaspadai adanya peningkatan hujan dengan intensitas sedang yang terjadi di Kep. Riau, Jambi, Sumatera Selatan, Kep. Bangka Belitung, Bengkulu, Banten, Jawa Timur, Kalimantan Barat, Kalimantan Tengah, Kalimantan Timur, Sulawesi Barat, Sulawesi Selatan, Papua Barat Daya, Papua Pegunungan, Papua, dan Papua Selatan.\n- Selain itu, hujan dengan intensitas lebat yang dapat disertai kilat/petir dan angin kencang dapat terjadi dengan kategori tingkat peringatan dini dan wilayah potensi kejadian sebagai berikut:\n           - *Siaga (hujan lebat – sangat lebat)*: Aceh, Sumatera Utara, Sumatera Barat, Riau, Jawa Barat, dan Kalimantan Utara.\n           - *Angin Kencang*: Kep. Bangka Belitung, Lampung, Banten, Jawa Barat, Jawa Tengah, Kalimantan Barat, Kalimantan Tengah, Kalimantan Selatan, dan Sulawesi Selatan.\n\n*b. Imbauan:*\n* Masyarakat diimbau untuk terus mengantisipasi dampak cuaca panas."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "peringatan_cuaca_periode",
+    "nilai": "23 – 25 Oktober 2026",
+    "kutipan": "a. Periode 23 – 25 Oktober 2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": ""
+   },
+   {
+    "medan": "peringatan_cuaca_wilayah",
+    "nilai": "Aceh, Sumatera Utara, Sumatera Barat, Riau, Jawa Barat, dan Kalimantan Utara",
+    "kutipan": "Siaga (hujan lebat – sangat lebat): Aceh, Sumatera Utara, Sumatera Barat, Riau, Jawa Barat, dan Kalimantan Utara",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Siaga"
+   },
+   {
+    "medan": "peringatan_cuaca_wilayah",
+    "nilai": "Kep. Bangka Belitung, Lampung, Banten, Jawa Barat, Jawa Tengah, Kalimantan Barat, Kalimantan Tengah, Kalimantan Selatan, dan Sulawesi Selatan",
+    "kutipan": "Angin Kencang: Kep. Bangka Belitung, Lampung, Banten, Jawa Barat, Jawa Tengah, Kalimantan Barat, Kalimantan Tengah, Kalimantan Selatan, dan Sulawesi Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Angin Kencang"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "Masyarakat diimbau untuk terus mengantisipasi dampak cuaca panas.",
+    "kutipan": "Masyarakat diimbau untuk terus mengantisipasi dampak cuaca panas.",
+    "sumber_bahan_id": "b1",
+    "kelompok": "imbauan"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": ""
+ },
+ {
+  "id": "harian-12",
+  "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-09/wa-bmkg.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-09/wa-bmkg.txt",
+    "teks": "Selamat Pagi *Bapak Kepala BNPB*\nMohon izin Bapak\n\nBerikut kami sampaikan Laporan Meteorologi dan Klimatologi (BMKG):\n\n1. Lokasi Konsentrasi PM2.5 Tertinggi pada hari Senin, 9 November 2026 pukul 06.00 WIB (https://link.bmkg.go.id/pm2p5-obs)\n* PALANGKARAYA: 54.1 (SEDANG)\n* KEMAYORAN: 42.5 (SEDANG)\n\n2. Kondisi Cuaca dan Pertumbuhan Awan (https://www.bmkg.go.id/cuaca/potensi-hujan-sepekan)\n\nPeriode 9 – 12 November 2026\nCuaca di Indonesia umumnya didominasi oleh kondisi hujan dengan intensitas ringan. Perlu diwaspadai adanya peningkatan hujan dengan intensitas sedang yang terjadi di Riau, Kep. Riau, Jambi, Sumatera Selatan, Bengkulu, Lampung, Banten, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur, Kalimantan Barat, Kalimantan Tengah, Kalimantan Timur, Kalimantan Utara, Kalimantan Selatan, Sulawesi Utara, Gorontalo, Sulawesi Barat, Maluku Utara, Papua Barat Daya, Papua Tengah, Papua Pegunungan, Papua, dan Papua Selatan.\nSelain itu, hujan dengan intensitas lebat yang dapat disertai kilat/petir dan angin kencang dapat terjadi dengan kategori tingkat peringatan dini dan wilayah potensi kejadian sebagai berikut:\n- Awas (hujan sangat lebat – ekstrim): Sumatera Utara.\n- Siaga (hujan lebat): Aceh dan Sumatera Barat.\n- Angin Kencang: Papua Selatan"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "catatan_lain",
+    "nilai": "PALANGKARAYA: 54.1 (SEDANG)",
+    "kutipan": "PALANGKARAYA: 54.1 (SEDANG)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "PM2.5 tertinggi 9 November 2026 pukul 06.00 WIB"
+   },
+   {
+    "medan": "peringatan_cuaca_periode",
+    "nilai": "9 – 12 November 2026",
+    "kutipan": "Periode 9 – 12 November 2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": ""
+   },
+   {
+    "medan": "peringatan_cuaca_wilayah",
+    "nilai": "Sumatera Utara",
+    "kutipan": "Awas (hujan sangat lebat – ekstrim): Sumatera Utara",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Awas"
+   },
+   {
+    "medan": "peringatan_cuaca_wilayah",
+    "nilai": "Aceh dan Sumatera Barat",
+    "kutipan": "Siaga (hujan lebat): Aceh dan Sumatera Barat",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Siaga"
+   },
+   {
+    "medan": "peringatan_cuaca_wilayah",
+    "nilai": "Papua Selatan",
+    "kutipan": "Angin Kencang: Papua Selatan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Angin Kencang"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": ""
+ },
+ {
+  "id": "harian-13",
+  "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-05/wa-pvmbg.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/harian/2026-11/2026-11-05/wa-pvmbg.txt",
+    "teks": "Selamat Pagi *Bapak Kepala BNPB*,\nMohon izin Bapak\n\nBerikut hasil pantauan aktivitas gunung api berdasarkan data dari PVMBG tentang status gunung api pada hari Kamis, 5 November 2026 pukul 06.00 WIB, dengan 0 (nol) gunung api pada Level IV (Awas), 3 (tiga) gunung api pada Level III (Siaga), 24 (dua puluh empat) gunung api pada Level II (Waspada) dan 42 (empat puluh dua) gunung api pada Level I (Normal) dengan rincian sebagai berikut:\n\n*Laporan khusus gunung api pada Level III (Siaga)*\n*Gn. Anak Krakatau*\n Visual:\n* Gunung api terlihat jelas hingga tertutup Kabut 0-III. Teramati asap kawah utama berwarna putih dengan intensitas tipis, sedang hingga tebal tinggi sekitar 50-100 meter dari puncak. Teramati sinar api di malam hari.\n* Cuaca berawan, angin lemah ke arah barat laut. Suhu udara sekitar 26.1-28.4°C. Kelembaban 78-87%.\n\n Kegempaan:\n* 1 kali gempa Tremor Menerus dengan amplitudo 2-64 mm, dominan 50 mm.\n\n\n\nRekomendasi:\n* Masyarakat di sekitar Gunung Api Anak Krakatau dan pengunjung/wisatawan/pendaki tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 5 km dari pusat erupsi Anak Krakatau.\n* Masyarakat di sekitar Gunung Api Anak Krakatau dan pengunjung/wisatawan tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 1 km dari pulau baru di sektor barat laut dan tenggara Gunung Api Anak Krakatau."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "gunung_api_nama",
+    "nilai": "Gn. Anak Krakatau",
+    "kutipan": "Laporan khusus gunung api pada Level III (Siaga) Gn. Anak Krakatau",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Anak Krakatau"
+   },
+   {
+    "medan": "gunung_api_level",
+    "nilai": "Level III",
+    "kutipan": "Level III (Siaga) Gn. Anak Krakatau",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Anak Krakatau"
+   },
+   {
+    "medan": "gunung_api_rekomendasi",
+    "nilai": "tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 5 km dari pusat erupsi Anak Krakatau",
+    "kutipan": "tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 5 km dari pusat erupsi Anak Krakatau",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Anak Krakatau"
+   },
+   {
+    "medan": "gunung_api_rekomendasi",
+    "nilai": "tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 1 km dari pulau baru di sektor barat laut dan tenggara",
+    "kutipan": "tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 1 km dari pulau baru di sektor barat laut dan tenggara",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Anak Krakatau"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "0 (nol) gunung api pada Level IV (Awas), 3 (tiga) gunung api pada Level III (Siaga), 24 (dua puluh empat) gunung api pada Level II (Waspada) dan 42 (empat puluh dua) gunung api pada Level I (Normal)",
+    "kutipan": "dengan 0 (nol) gunung api pada Level IV (Awas), 3 (tiga) gunung api pada Level III (Siaga), 24 (dua puluh empat) gunung api pada Level II (Waspada) dan 42 (empat puluh dua) gunung api pada Level I (Normal)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "rekap status gunung api"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Level ditulis seperti di bahan (Level III), tidak diubah ke angka. Angka 3 pada \"3 (tiga) gunung api\" adalah jumlah gunung, bukan level."
+ },
+ {
+  "id": "harian-14",
+  "sumber": "tests/warga/fixtures/laphar-entri-24okt.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/warga/fixtures/laphar-entri-24okt.txt",
+    "teks": "            A. Kejadian  Bencana\n\n             1.  Bencana   Alam  Kebakaran   Hutan   dan  Lahan  di kawasan   Wilayah   I Taman   Nasional\n                 G. Ciremai  Kab. Kuningan,   Provinsi Jawa  Barat\n                ➢  Kronologis:   Pada  hari Rabu  21  Oktober  2026  sekitar pukul 20.44  WIB  telah terjadi\n                   kebakaran  di kawasan  Hutan Resort SPTN  Wilayah I Kuningan TNGC,  penyebab  kebakaran\n                   masih  dalam penyelidikan\n                ➢  Lokasi:  (1 Kecamatan  / 1 Desa)\n                   ●  Kec. Pasawahan\n                      -  Ds. Cibuntu\n                ➢  Korban   Jiwa:\n                   ●  Nihil\n                ➢  Kerugian   Materiil:\n                   ●  Pendataan\n                ➢  Upaya:\n                   ●  Balai  Taman    Nasional  Gunung    Ciremai   berkoordinasi  dengan    TNI,  POLRI,\n                      FORKOPIMCAM     Pasawahan  dan BPBD  Kab. Kuningan\n                   ●  Tim  Brigade  Pengendalian  Kebakaran   Hutan  dan  Lahan  Taman   Nasional Gunung\n                      Ciremai bersama  masyarakat  sekitar kawasan hutan melakukan upaya  pemadaman   dan\n                      pengamanan\n                   ●  BPBD  Kab. Kuningan menurunkan   tim assessment dan  tim penanganan\n\n                ➢  Kebutuhan    Darurat:\n                   ●  Water  Bombing\n                   ●  Tim Penanganan\n                   ●  Peralatan Pemadaman\n                   ●  Frekuensi dan Alat komunikasi\n                   ●  Alat Berat\n                   ●  Logistik"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "jenis_kejadian",
+    "nilai": "Kebakaran Hutan dan Lahan",
+    "kutipan": "Bencana Alam Kebakaran Hutan dan Lahan di kawasan Wilayah I Taman Nasional G. Ciremai",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "provinsi",
+    "nilai": "Jawa Barat",
+    "kutipan": "Provinsi Jawa Barat",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Kab. Kuningan",
+    "kutipan": "G. Ciremai Kab. Kuningan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kecamatan",
+    "nilai": "Pasawahan",
+    "kutipan": "Kec. Pasawahan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "desa",
+    "nilai": "Cibuntu",
+    "kutipan": "Ds. Cibuntu",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "waktu_kejadian",
+    "nilai": "Rabu 21 Oktober 2026 sekitar pukul 20.44 WIB",
+    "kutipan": "Pada hari Rabu 21 Oktober 2026 sekitar pukul 20.44 WIB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kronologi",
+    "nilai": "telah terjadi kebakaran di kawasan Hutan Resort SPTN Wilayah I Kuningan TNGC, penyebab kebakaran masih dalam penyelidikan",
+    "kutipan": "telah terjadi kebakaran di kawasan Hutan Resort SPTN Wilayah I Kuningan TNGC, penyebab kebakaran masih dalam penyelidikan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "upaya_penanganan",
+    "nilai": "BPBD Kab. Kuningan menurunkan tim assessment dan tim penanganan",
+    "kutipan": "BPBD Kab. Kuningan menurunkan tim assessment dan tim penanganan",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   },
+   {
+    "medan": "kebutuhan_mendesak",
+    "nilai": "Water Bombing ● Tim Penanganan ● Peralatan Pemadaman ● Frekuensi dan Alat komunikasi ● Alat Berat ● Logistik",
+    "kutipan": "Kebutuhan Darurat: ● Water Bombing ● Tim Penanganan ● Peralatan Pemadaman ● Frekuensi dan Alat komunikasi ● Alat Berat ● Logistik",
+    "sumber_bahan_id": "b1",
+    "kelompok": "kejadian 1"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Teks hasil ekstraksi PDF laporan harian Koordalops; spasi dan pindah baris tidak berarti. Korban jiwa nihil tidak diisi sebagai 0."
+ }
+]

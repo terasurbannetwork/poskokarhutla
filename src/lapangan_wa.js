@@ -10,7 +10,7 @@ import {wilayahStaf} from "./staf.js";
 import {laju} from "./bnpb.js";
 import {tanggalWIB, awalHariWIB, KONDISI, KONDISI_API, KONDISI_BANJIR} from "./lapangan_konst.js";
 import * as KM from "./masuk_konst.js";
-import {mkDenyut, mkHapusOtp} from "./hak.js";
+import {mkDenyut, mkHapusOtp, stmtAntreWa} from "./hak.js";
 import {salinOrang} from "./lapangan.js";   // impor melingkar aman: hanya dipanggil saat permintaan
 
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, RE_ID = /^[0-9a-f]{16}$/, RE_KEAHLIAN = /^[a-z_]{2,30}$/;
@@ -21,8 +21,7 @@ const dalamBagian = (larik, n) => Array.from({length: Math.ceil(larik.length / n
 const kodeAcak = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), b => HURUF_KODE[b % HURUF_KODE.length]).join("");
 const jamWIB = ms => `${tanggalWIB(ms)} ${new Date(ms + 7 * JAM).toISOString().slice(11, 16)} WIB`;
 /* dummy ikut tugas/relawan contoh: pesan contoh tidak pernah ditarik gerbang (antre() hanya menarik dummy = 0) */
-const antreWa = (env, tujuan, pesan, jenis, rujukan, kini, dummy = 0) => env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat, dummy) VALUES (?, ?, ?, ?, ?, 'antre', 0, ?, ?)")
-  .bind(acak(8), tujuan, pesan.slice(0, 1500), jenis, rujukan, kini, dummy ? 1 : 0);
+const antreWa = (env, tujuan, pesan, jenis, rujukan, kini, dummy = 0) => stmtAntreWa(env, {id: acak(8), tujuan, pesan, jenis, rujukan, kini, dummy});
 
 /* pesan penugasan (LP-022/040): dipakai panel saat anggota ditambahkan dan balas() saat SIAP; tanpa kode pribadi, hanya tautan layar /petugas */
 export const pesanPenugasan = (t, nama) => `Penugasan Lapangan BNPB untuk ${nama}: ${t.judul}${t.wilayah_teks ? `, ${t.wilayah_teks}` : ""}. Periode ${tanggalWIB(t.mulai)} sampai ${tanggalWIB(t.selesai)} WIB. Titik tugas ${t.lat}, ${t.lon}.`

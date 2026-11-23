@@ -1,0 +1,95 @@
+/* Halaman lacak laporan (/lapor/lacak.html): lebar penuh, pita berfoto dengan nomor dan QR, status bertahap mendatar,
+   kejadian di kiri, balasan dan dokumen di kanan (pemilik 19 Nov 2026: "bagusin"). Token saja; campuran warna di oklab. */
+body{display:block;padding:0;background:var(--surface)}
+.lk{max-width:1280px;margin:0 auto;padding:20px 24px 40px;display:grid;gap:16px}
+.lk svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.lk-pita{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 24px;align-items:end;padding:22px 28px 26px;border-radius:22px;overflow:hidden;color:var(--on-head);
+  background:linear-gradient(105deg,color-mix(in oklab,var(--head-bg) 95%,transparent) 35%,color-mix(in oklab,var(--head-bg) 55%,transparent)),var(--foto,none) center/cover var(--head-bg)}
+.lk-merek{grid-column:1 / -1;display:inline-flex;align-items:center;gap:10px;color:var(--on-head);text-decoration:none;font:800 .9375rem/1.1 var(--display)}
+.lk-merek img{width:36px;height:36px;object-fit:contain}
+.lk-merek small{display:block;font:600 .6875rem var(--font);opacity:.8}
+.lk-pita-isi{display:grid;gap:6px}
+.lk-alis{justify-self:start;margin:0;padding:4px 12px;border-radius:999px;background:color-mix(in oklab,var(--on-head) 16%,transparent);font:700 .75rem var(--font)}
+.lk-pita h1{margin:0;font:800 clamp(1.75rem,4vw,2.75rem)/1.1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.lk-ringkas{margin:0;color:var(--on-head-2);font-size:.9375rem}
+.lk-pita-kanan{display:flex;align-items:end;gap:14px}
+.lk-status{padding:8px 14px;border-radius:999px;background:var(--ok);color:var(--on-pekat);font:800 .8125rem var(--font)}
+.lk-qr canvas{display:block;width:104px;height:104px;border-radius:12px;image-rendering:pixelated}
+.lk-kartu{display:grid;gap:12px;align-content:start;padding:18px 20px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+.lk-kartu h2{display:flex;align-items:center;gap:10px;margin:0;font:800 1rem var(--display);color:var(--ink)}
+.lk-kartu h2 svg{width:32px;height:32px;padding:7px;border-radius:10px;background:color-mix(in oklab,var(--brand2) 12%,var(--card));color:var(--brand2)}
+.lk-tahap{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.lk-tahap li{position:relative;display:grid;gap:6px;align-content:start;padding:12px;border-radius:14px;background:var(--surface)}
+.lk-tahap li.selesai{background:color-mix(in oklab,var(--ok) 10%,var(--card))}
+.lk-tahap li.berikut{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--brand2)}
+.lk-titik{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--card);color:var(--ink2);font:800 .8125rem var(--font);box-shadow:inset 0 0 0 1.5px var(--line)}
+.selesai .lk-titik{background:var(--ok);color:var(--on-pekat);box-shadow:none}
+.berikut .lk-titik{background:var(--brand2);color:var(--on-pekat);box-shadow:none}
+.lk-tahap b{font:800 .875rem var(--display);color:var(--ink)}
+.lk-tahap li:not(.selesai):not(.berikut) b{color:var(--ink2)}
+.lk-tahap small{font-size:.75rem;color:var(--ink2)}
+.lk-tahap p{margin:0;font-size:.8125rem;color:var(--ink)}
+.lk-dua{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;align-items:start}
+.lk-kanan{display:grid;gap:16px}
+.lk-rinci{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lk-rinci div{display:grid;gap:3px;padding:12px 14px;border-radius:12px;background:var(--surface)}
+.lk-rinci div:nth-child(3){grid-column:1 / -1}
+.lk-rinci dt{font:700 .75rem var(--font);color:var(--ink2)}
+.lk-rinci dd{margin:0;font:800 .9375rem/1.4 var(--display);color:var(--ink)}
+.lk-balasan{display:grid;gap:8px}
+.lk-balas{padding:12px 14px;border-radius:14px;background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.lk-balas b{font-size:.75rem;color:var(--brand2)}
+.lk-balas p{margin:2px 0;font-size:.875rem;line-height:1.5;white-space:pre-line}
+.lk-balas small{font-size:.6875rem;color:var(--ink2)}
+.lk-unduh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lk-dok{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;color:var(--ink);text-decoration:none}
+.lk-dok:hover{border-color:var(--brand2)}
+.lk-dok-ikon{grid-row:1 / span 2;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;font:800 .6875rem var(--font);color:var(--on-pekat);background:var(--bad)}
+.lk-dok-ikon.word{background:var(--brand2)}
+.lk-dok b{font:800 .875rem var(--display)}
+.lk-dok small{font-size:.6875rem;color:var(--ink2)}
+.lk-kembali{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);text-decoration:none;font:700 .875rem var(--font)}
+.lk-catatan{margin:0;text-align:center;font-size:.75rem;color:var(--ink2)}
+@media (max-width:900px){.lk{padding:12px 12px 32px}.lk-pita{grid-template-columns:1fr;padding:18px}.lk-pita-kanan{justify-content:space-between}.lk-tahap{grid-template-columns:1fr}.lk-dua{grid-template-columns:1fr}.lk-rinci{grid-template-columns:1fr}}
+/* kolom sama tinggi, kartu terakhir kanan mengisi sisa (pemilik 19 Nov 2026: "ga suka ada white space") */
+.lk-dua{align-items:stretch}
+.lk-kanan{display:flex;flex-direction:column;gap:16px}
+.lk-kanan > .lk-darurat{flex:1}
+.lk-dua > .lk-kartu{height:100%}
+.lk-tahap li > div{display:grid;gap:2px}
+.lk-darurat h2 svg{background:color-mix(in oklab,var(--bad) 12%,var(--card));color:var(--bad)}
+.lk-nas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.lk-nas a{display:grid;gap:2px;padding:12px 14px;border:1px solid color-mix(in oklab,var(--bad) 20%,var(--line));border-radius:14px;color:var(--ink);text-decoration:none}
+.lk-nas a:hover{border-color:var(--bad)}
+.lk-nas b{font:800 1.5rem/1 var(--display);color:var(--bad)}
+.lk-nas small{font-size:.75rem;color:var(--ink2)}
+.lk-titik svg{width:16px;height:16px}
+.lk-tahap li{grid-template-columns:auto 1fr;column-gap:10px;align-items:center}
+.lk-rinci div{grid-template-columns:36px minmax(0,1fr)!important;align-items:center;column-gap:12px}
+.lk-rinci div:nth-child(3){grid-column:auto}
+.lk-rinci div.lebar{grid-column:1 / -1}
+.lk-rinci > div > span:last-child{display:grid;gap:2px;min-width:0}
+.lk-rinci-ikon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:var(--card);color:var(--brand2)}
+.lk-rinci-ikon svg{width:18px;height:18px}
+.lk-status{position:absolute;top:22px;right:28px}
+@media (max-width:900px){.lk-status{top:18px;right:18px}}
+/* tanpa kotak abu: isi putih bergaris tipis (pemilik 19 Nov 2026: "ga suka container abu-abu") */
+.lk-rinci div,.lk-tahap li{background:var(--card)!important;border:1px solid var(--line)}
+.lk-tahap li.selesai{border-color:color-mix(in oklab,var(--ok) 40%,var(--line));background:color-mix(in oklab,var(--ok) 5%,var(--card))!important}
+.lk-tahap li.berikut{border-color:var(--brand2);box-shadow:none}
+.lk-rinci-ikon{background:color-mix(in oklab,var(--brand2) 10%,var(--card))!important}
+/* kepala kartu berwarna (pemilik 19 Nov 2026: "agar ada header-headernya") */
+.lk-kartu{--k:var(--brand2);padding:0!important;gap:0!important;overflow:hidden;border-color:color-mix(in oklab,var(--k) 25%,var(--line))!important}
+.lk-kartu.k-kejadian{--k:var(--brand-accent)}
+.lk-kartu.k-dok{--k:var(--head-bg)}
+.lk-kartu.lk-darurat{--k:var(--bad)}
+.lk-kartu.k-balas{--k:var(--ok)}
+.lk-kartu > h2{padding:12px 18px;background:var(--k);color:var(--on-pekat)!important}
+.lk-kartu > h2 svg{background:color-mix(in oklab,var(--on-pekat) 20%,transparent)!important;color:var(--on-pekat)!important}
+.lk-kartu > :not(h2){margin:16px 18px 18px}
+
+/* foto penanganan petugas (K60) */
+.lk-bukti{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.lk-bukti figure{margin:0;display:grid;gap:4px}
+.lk-bukti img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
+.lk-bukti figcaption{font-size:.75rem;color:var(--ink2)}

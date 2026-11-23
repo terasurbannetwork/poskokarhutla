@@ -64,6 +64,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `data/kajian-bnpb/rantai/**`
 - `WARGA.md`
 - `.dev.vars.example`
+- `scripts/lapor/**`
+- `tests/lapor/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

@@ -1,8 +1,8 @@
 "use strict";
 /* Tab, kepala, burger, tema. Urutan dan ikon mengikuti banjir; daftar tab = "tab" di public/bencana.json. */
 const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["katalog", "Katalog BMKG"], ["insight", "Insight"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Informasi"], ["metode", "Metode"]];
-/* tidak tampil di nav tapi tetap bisa dibuka lewat URL /gempa/metode dan /gempa/informasi dan tautan (A24). */
-const TAB_SEMBUNYI = new Set(["informasi", "metode"]);
+/* tidak tampil di nav tapi tetap bisa dibuka lewat URL /gempa/informasi dan tautan (A24). */
+const TAB_SEMBUNYI = new Set(["informasi"]);
 const ISI_TAB = {kejadian: () => Kejadian.render(), katalog: () => { Ina.render(); TsunamiZona.render(); }, insight: () => { Insight.render(); Beruntun.render(); }, tren: () => Tren.render(), berita: () => Berita.render(), dampak: () => Dampak.render(), foto: () => Foto.render(),
   sim: () => typeof Sim !== "undefined" && Sim.render(), metode: () => Metode.render(), informasi: () => window.Informasi?.render()};
 const IK_TAB = {katalog: '<path d="M4 4h16v16H4zM4 10h16M4 15h16M10 4v16"/>', kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',

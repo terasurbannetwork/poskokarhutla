@@ -27,12 +27,37 @@ async function berkas(publik, jalur) {
 /* jalur /data/ di mana pun = keluaran pipeline: selalu produksi, salinan di folder kerja bisa basi */
 const jalurData = j => /(^|\/)data\//.test(j);
 
+/* /admin/biaya-bot dan /api/wa/biaya/ringkas sebelum Worker baru terbit. Admin dicek ke produksi lewat /admin/kunci-api dengan kuki peramban;
+   harian dibaca dari produksi lewat GET /api/wa/biaya (kunci mesin dari scripts/wa/.env, hanya baca), rincian dari ~/.wa-bot/biaya-lokal.json mesin ini.
+   Mengembalikan false bila produksi sudah punya rutenya (dilayani seperti biasa). */
+async function biayaBotLokal(req, res, jalur, H, akar) {
+  const sudah = await fetch(new URL(jalur, H), {headers: {cookie: req.headers.cookie || ""}, redirect: "manual"});
+  if (sudah.status !== 404) return false;
+  const adm = await fetch(new URL("/admin/kunci-api", H), {headers: {cookie: req.headers.cookie || ""}, redirect: "manual"});
+  if (adm.status !== 200) {
+    if (jalur.startsWith("/api/")) { res.writeHead(401, {"content-type": JENIS[".json"]}); res.end(JSON.stringify({galat: "hanya admin; masuk lagi"})); return true; }
+    res.writeHead(303, {location: "/admin/masuk?ke=" + encodeURIComponent(jalur)}); res.end(); return true;
+  }
+  if (jalur === "/admin/biaya-bot") {
+    const {halamanBiayaBot} = await import(pathToFileURL(path.join(akar, "src/admin_halaman.js")).href);
+    res.writeHead(200, {"content-type": JENIS[".html"], "cache-control": "no-store", "x-tinjau": "lokal-biaya-bot"}); res.end(halamanBiayaBot()); return true;
+  }
+  const env = Object.fromEntries((await fs.readFile(path.join(akar, "scripts/wa/.env"), "utf8").catch(() => "")).split("\n").map(b => /^([A-Z_]+)=(.*)$/.exec(b.trim())).filter(Boolean).map(m => [m[1], m[2].replace(/^["']|["']$/g, "")]));
+  const hariWib = t => new Date(t + 7 * 36e5).toISOString().slice(0, 10), kini = Date.now(), dari = hariWib(kini - 89 * 864e5);
+  const tgl = Array.from({length: 90}, (_, i) => hariWib(kini - (89 - i) * 864e5));
+  const harian = env.WA_MESIN ? (await Promise.all(tgl.map(async t => { try { const r = await fetch(new URL("/api/wa/biaya?tanggal=" + t, H), {headers: {authorization: "Bearer " + env.WA_MESIN}}); return {tanggal: t, usd_mikro: r.ok ? (await r.json()).usd_mikro || 0 : 0}; } catch { return {tanggal: t, usd_mikro: 0}; } }))).filter(x => x.usd_mikro > 0) : [];
+  const Biaya = await import(pathToFileURL(path.join(akar, "scripts/wa/biaya.mjs")).href);
+  const rumah = path.join(process.env.HOME || "", ".wa-bot");
+  const rinci = await fs.stat(path.join(rumah, "biaya-lokal.json")).then(() => ({...Biaya.ringkas(rumah), diperbarui: kini}), () => null);
+  res.writeHead(200, {"content-type": JENIS[".json"], "cache-control": "no-store", "x-tinjau": "lokal-biaya-bot"}); res.end(JSON.stringify({hari_ini: hariWib(kini), dari, harian, rinci})); return true;
+}
+
 export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, rute = null} = {}) {
   const publik = path.join(akar, "public");
   if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
     /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
     /* halaman modul yang dilayani Worker modulnya sendiri (layaniKm, layaniSk, LogPal, SIPPA) */
-    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"]];
+    const MODUL = [["/kemitraan", "/kemitraan.html"], ["/siklus", "/siklus/index.html"], ["/instansi/logpal", "/logpal/index.html"], ["/pipa", "/pipa/index.html"], ["/masuk", "/masuk.html"], ["/lapor", "/lapor/index.html"]];
     rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`]),
       ...MODUL.map(([j, f]) => [{test: p => p === j || p === j + "/"}, f])]; } catch { rute = []; } }
   const H = new URL(hulu);
@@ -45,6 +70,10 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         res.writeHead(200, {"content-type": JENIS[path.extname(lokal).toLowerCase()] || "application/octet-stream", "cache-control": "no-store"});
         return res.end(await fs.readFile(lokal));
       }
+      /* Pemantau biaya bot WA (/admin/biaya-bot) sebelum rutenya terbit: hanya bila produksi belum punya rutenya */
+      if (req.method === "GET" && (jalur === "/admin/biaya-bot" || jalur === "/api/wa/biaya/ringkas") && await biayaBotLokal(req, res, jalur, H, akar)) return;
+      /* Lapor Bencana AI (data/kajian-bnpb/lapor-ai) sebelum rutenya terbit: /api/lapor/* dijawab mesin lokal, TIDAK diteruskan ke produksi */
+      if (jalur.startsWith("/api/lapor/")) { const {tanganiLapor} = await import(pathToFileURL(path.join(akar, "scripts/lapor/lokal.mjs")).href); if (await tanganiLapor(req, res, url)) return; }
       const kepala = {};
       for (const [k, v] of Object.entries(req.headers)) if (!["host", "connection", "accept-encoding", "content-length"].includes(k)) kepala[k] = v;
       if (kepala.origin) kepala.origin = H.origin;

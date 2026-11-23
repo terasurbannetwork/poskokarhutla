@@ -6,7 +6,8 @@
    ponytail: maks 40 penerima per kejadian (batas subrequest akun Free); push ke staf/admin belum ada karena langganan push hanya milik akun instansi,
    Posko pusat dikabari lewat email (staf pimpinan/pusdalops/koordalops + EMAIL_TO). */
 import {siapPush, kirimKe, catatHasil, mati} from "./push.js";
-import {emailAktif, kirimEmail} from "./ews.js";
+import {emailAktif} from "./ews.js";
+import {kirimEmail} from "./keluar.js";
 import {esc} from "./ews_email.js";
 import {PROV} from "./instansi.js";
 import {sha} from "./worker.js";

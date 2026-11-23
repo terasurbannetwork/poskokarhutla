@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { jalankan, pilihTerbaru, cekSiap, LAPORAN } from '../../scripts/wa/otomatis.mjs'
+import { jalankan, pilihTerbaru, cekSiap, LAPORAN, hashBahan } from '../../scripts/wa/otomatis.mjs'
 
 const kenali = (teks) => (teks.match(/^\[(\w+)\]/) || [])[1] || null // stub: "[kunci] isi"
 const wibKe = (jam, tgl = '2026-10-29') => new Date(Date.parse(`${tgl}T00:00:00Z`) + (jam - 7) * 3600e3)
@@ -64,8 +64,9 @@ test('kirim sekali: dua laporan x dua berkas x dua penerima, caption tanpa titik
 test('revisi: bahan berubah -> bangun ulang, kirim ulang dengan awalan "Revisi: "', async () => {
   const d = dunia(LENGKAP)
   await d.jalan()
-  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'))
-  try { await d.jalan() } finally { LENGKAP.pop() }
+  // penanganan tidak lagi memakai BMKG pagi (18 Nov 2026): bahan keduanya diganti supaya dua laporan direvisi
+  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'), P('6', 'satgas', 200, 'baru'))
+  try { await d.jalan() } finally { LENGKAP.pop(); LENGKAP.pop() }
   const baru = d.kirim.file.slice(8)
   assert.equal(baru.length, 8)
   assert.ok(baru.every((f) => f.c.startsWith('Revisi: ')))
@@ -157,8 +158,8 @@ test('unggah /pelaporan: sebelum WA, bidang benar, revisi 0 lalu 1, sekali per b
   assert.ok(d.kirim.unggah[0].pptx.endsWith('.pptx') && d.kirim.unggah[0].pdf.endsWith('.pdf'))
   await d.jalan()
   assert.equal(d.kirim.unggah.length, 2)
-  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'))
-  try { await d.jalan() } finally { LENGKAP.pop() }
+  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'), P('6', 'satgas', 200, 'baru'))
+  try { await d.jalan() } finally { LENGKAP.pop(); LENGKAP.pop() }
   assert.deepEqual(d.kirim.unggah.slice(2).map((u) => u.revisi), [1, 1])
 })
 
@@ -206,7 +207,7 @@ test('Google Drive gagal: WA tetap terkirim tanpa link, PEMILIK dikabari sekali;
 test('tanggal isi: bahan lama (tanggal isi beda) diabaikan, tidak ada laporan yang dibuat', async () => {
   const d = dunia(LENGKAP)
   const log = []
-  const r = await d.jalan({ tanggalIsi: (t, k) => (k === 'bmkg_pagi' ? '2026-10-27' : TGL), log: (...a) => log.push(a.join(' ')) })
+  const r = await d.jalan({ tanggalIsi: (t, k) => (k === 'bmkg_pagi' || k === 'satgas' ? '2026-10-27' : TGL), log: (...a) => log.push(a.join(' ')) })
   assert.equal(d.kirim.exec.length, 0); assert.equal(d.kirim.file.length, 0)
   assert.ok(r.every((x) => x.status === 'tunggu'))
   assert.ok(log.some((l) => l.includes('bahan bertanggal 2026-10-27, bukan 2026-10-29')))
@@ -271,7 +272,7 @@ test('--cutoff: penanganan dibangun tanpa bahan WA, harian menunggu dan PEMILIK 
   const d = dunia([])
   const h = await d.jalan({ cutoff: true })
   assert.equal(h.find((x) => x.id === 'penanganan').status, 'terkirim')
-  assert.deepEqual(h.find((x) => x.id === 'penanganan').bahanBelumMasuk, ['bmkg_pagi', 'satgas'])
+  assert.deepEqual(h.find((x) => x.id === 'penanganan').bahanBelumMasuk, ['satgas'])
   assert.ok(!d.kirim.exec.find((a) => a[0] === 'penanganan_otomatis.py').includes('--bmkg'))
   assert.equal(h.find((x) => x.id === 'harian').status, 'tunggu')
   await d.jalan({ cutoff: true })
@@ -318,4 +319,53 @@ test('Excel gelar udara kemarin tidak dipakai; tanpa Excel penanganan tetap jala
   d.dep.fetch = async (u) => u.includes('/api/wa/berkas') ? { ok: true, status: 200, arrayBuffer: async () => Buffer.from('x') } : { ok: true, status: 200, json: async () => ({ pesan: d.pesan }) }
   await d.jalan()
   assert.ok(!d.kirim.exec.find((x) => x[0] === 'penanganan_otomatis.py').includes('--gelar'))
+})
+
+test('D9 BL-03: jalur terjadwal hanya memakai bahan pengirim WA_IZIN; baris bot laporan dan nomor asing dibuang, grup operasi tetap', async () => {
+  const dari = (p, d) => ({ ...p, dari: d })
+  const pesan = [dari(P('1', 'rekap_koordalops_24', 100, 'a'), '628111'), dari(P('2', 'bmkg_pagi', 101, 'b'), '628111'),
+    dari(P('3', 'satgas', 102, 'c'), '120363@g.us'), dari(P('5', 'pvmbg_pagi', 103, 'd'), '628111'),
+    dari(P('6', 'bmkg_pagi', 300, 'bot'), 'bl:' + 'a'.repeat(64)), dari(P('7', 'pvmbg_pagi', 301, 'asing'), '628999')]
+  const d = dunia(pesan)
+  const env = { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', WA_IZIN: '08111' }
+  await d.jalan({ env })
+  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['harian_ringkas.py', 'penanganan_otomatis.py'])
+  const isi = (a, k) => fs.readFileSync(a[a.indexOf(k) + 1], 'utf8')
+  assert.equal(isi(d.kirim.exec[0], '--bmkg'), '[bmkg_pagi] b')   // bukan bahan bot laporan yang lebih baru
+  assert.equal(isi(d.kirim.exec[0], '--pvmbg'), '[pvmbg_pagi] d') // bukan nomor di luar WA_IZIN
+  assert.equal(isi(d.kirim.exec[1], '--operasi'), '[satgas] c')   // grup operasi tetap
+})
+
+test('5: jalur terjadwal memegang generator.lock bersama selama generator jalan, lalu melepasnya', async () => {
+  const d = dunia(LENGKAP)
+  const asli = d.dep.exec, terkunci = []
+  d.dep.exec = async (...a) => { terkunci.push(fs.existsSync(path.join(d.rumah, 'generator.lock'))); return asli(...a) }
+  await d.jalan()
+  assert.deepEqual(terkunci, [true, true])
+  assert.equal(fs.existsSync(path.join(d.rumah, 'generator.lock')), false)
+})
+
+test('WA_OTOMATIS=0 (K16): laporan terjadwal tidak dibangun dan tidak dikirim; perintah manual bertanggal tetap jalan', async () => {
+  const d = dunia(LENGKAP)
+  const env0 = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', WA_OTOMATIS: '0' }
+  const h = await d.jalan({ env: env0, tanggal: undefined })
+  assert.ok(h.some((x) => /dimatikan/.test(x.status)), 'status dimatikan dilaporkan')
+  assert.equal(d.kirim.exec.length, 0, 'generator tidak jalan')
+  assert.equal(d.kirim.file.length, 0, 'tidak ada kiriman')
+  const m = await d.jalan({ env: env0 })
+  assert.ok(d.kirim.exec.length > 0, 'jalan bertanggal (kirim ulang manual) tetap membangun')
+  assert.ok(!m.some((x) => /dimatikan/.test(x.status)))
+})
+
+test('hash penanganan sama dengan rumus sebelum 18 Nov (bmkg_pagi lalu satgas): laporan terkirim tidak dikirim ulang sebagai Revisi', async () => {
+  const crypto = await import('node:crypto')
+  const lap = LAPORAN.find((l) => l.id === 'penanganan')
+  const lama = (teks) => crypto.createHash('sha256').update(JSON.stringify([...['bmkg_pagi', 'satgas'], ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
+  for (const teks of [{ bmkg_pagi: 'b', satgas: 's' }, { bmkg_pagi: 'b', satgas: 's', gelar_udara: 'g' }, { satgas: 's' }]) assert.equal(hashBahan(lap, teks), lama(teks), JSON.stringify(teks))
+  assert.deepEqual(lap.butuh, ['satgas'], 'BMKG pagi tidak diminta')
+  // BMKG pagi tetap ikut dibaca dan diteruskan (--bmkg) bila ada, supaya hash hari pemasangan sama
+  const d = dunia(LENGKAP)
+  await d.jalan()
+  const a = d.kirim.exec.find((x) => x[0] === 'penanganan_otomatis.py')
+  assert.ok(a.includes('--bmkg') && a.includes('--operasi'))
 })

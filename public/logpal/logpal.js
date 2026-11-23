@@ -11,7 +11,7 @@ function klasifikasi(b){const s=b.toLowerCase(),k=(KATP.find(([,p])=>p.test(s))|
 (function(){
 const DAF={provinsi:'/data/logpal/provinsi.csv',wilayah:'/data/logpal/wilayah.csv',rute:'/api/instansi/logpal/statis?nama=rute',gudang:'/api/instansi/logpal/statis?nama=gudang',usulan:'/api/instansi/logpal/statis?nama=usulan',jangkauan:'/api/instansi/logpal/statis?nama=jangkauan',teks:'/api/instansi/logpal/statis?nama=teks',geo:'/data/logpal/provinsi_peta.json'};
 const D={},C={},memo={},reg={};let GD=null,prov0=null;
-const csv=(t)=>{const R=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const h=t[i];if(q){if(h==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=h}else if(h==='"')q=true;else if(h===','){r.push(c);c=''}else if(h==='\n'){r.push(c.replace(/\r$/,''));R.push(r);r=[];c=''}else c+=h}if(c||r.length){r.push(c);R.push(r)}const k=R.shift().map(s=>s.replace(/^﻿/,''));return R.map(a=>Object.fromEntries(k.map((x,i)=>[x,a[i]])))};
+let CSV;const CSV_SIAP=import('/inti/impor.js').then(m=>{CSV=m.csvObjek});const csv=t=>CSV(t,',');   // pengurai bersama (FITUR §7.5)
 function ada(id){return id in D||(C[id]&&C[id].inputs.every(ada))}
 function nilai(id){if(id in D)return D[id];if(id in memo)return memo[id];const c=C[id];return memo[id]=c.fn(...c.inputs.map(nilai))}
 function jalan(n){const f=reg[n];if(!f)return;document.querySelectorAll('[data-draw="'+n+'"]').forEach(el=>{if(!el.closest('[hidden]'))f(el)})}
@@ -31,7 +31,7 @@ window.dash={
   draw(n,f){if(f)reg[n]=f;else jalan(n)},
   _csv:csv,_semua:semua,_gudang(g){GD=g;turunan()},_kebutuhan(k){D.kebutuhan=k;Object.keys(memo).forEach(x=>delete memo[x]);semua()}
 };
-Promise.all(Object.entries(DAF).map(async([id,u])=>{const r=await fetch(u,{credentials:'same-origin'});return [id,r.ok?await r.text():'']})).then(h=>{let J=null;h.forEach(([id,t])=>{
+Promise.all(Object.entries(DAF).map(async([id,u])=>{const r=await fetch(u,{credentials:'same-origin'});return [id,r.ok?await r.text():'']})).then(async h=>{await CSV_SIAP;let J=null;h.forEach(([id,t])=>{
   if(id==='geo')D.geo=t?JSON.parse(t):{type:'FeatureCollection',features:[]};else if(id==='teks')D.teks=t?JSON.parse(t):{};else if(id==='jangkauan')J=t?csv(t):[];else if(id==='provinsi'){prov0=t?csv(t):[];D.provinsi=prov0}else D[id]=t?csv(t):[]});
   /* jam dan nama gudang per kab/kota datang dari data bersesi, digabung ke wilayah publik */
   const m=new Map((J||[]).map(x=>[x.provinsi+'|'+x.kab,x]));(D.wilayah||[]).forEach(w=>Object.assign(w,m.get(w.provinsi+'|'+w.kab)||{}));

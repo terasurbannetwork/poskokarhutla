@@ -1,0 +1,408 @@
+{
+  "_catatan": "Paparan Sumatera Barat, fokus banjir. Dibangun dari spek/bangun_spek_banjir_prov.py.",
+  "pesan_kunci": "Banjir dan longsor 2025 menelan korban terbesar di Sumatera Barat; di awal musim hujan 2026 banjir kembali melanda dan kecamatan berstatus banjir perlu disiapkan.",
+  "judul_dokumen": "Paparan Kebencanaan Sumatera Barat",
+  "subjek_dokumen": "Fokus Banjir",
+  "kajian": "banjir-sb",
+  "format": "kajian",
+  "tanpa_alur": "pemilik 9 Nov 2026 menghapus halaman ringkasan",
+  "judul_sampul_maks_baris": 2,
+  "bagian": [
+    {
+      "judul": "Banjir 2025",
+      "label": "Banjir 2025"
+    },
+    {
+      "judul": "Situasi Banjir Terkini",
+      "label": "Situasi banjir terkini"
+    },
+    {
+      "judul": "Bencana Lain",
+      "label": "Bencana lain"
+    }
+  ],
+  "tanggal": "2026-11-22",
+  "cut_off": "22 Nov 2026",
+  "slide": [
+    {
+      "jenis": "sampul",
+      "tanpa_tanggal": "pemilik 22 Nov 2026: \"pill jakarta 22nov hapus\"",
+      "layout": "putih",
+      "judul_penuh": true,
+      "skala_subjudul": 0.9,
+      "foto": "foto/bencana-rob.jpg",
+      "kota": "Jakarta",
+      "tanpa_kepada": true,
+      "tanpa_subjudul": true,
+      "judul_turun": 28,
+      "subjudul": "Fokus Banjir",
+      "penyaji": {
+        "nama": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+        "jabatan": "Kepala Badan Nasional Penanggulangan Bencana"
+      }
+    },
+    {
+      "jenis": "daftar-isi"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 1
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "deskriptif",
+      "judul_ikon": "banjir",
+      "rasio": 0.62,
+      "cut_off": false,
+      "pesan": "Banjir dan longsor 2025",
+      "sumber": "DIBI BNPB, Nov 2026",
+      "ulang_angka_boleh": "sorotan mengutip puncak tabel rincian di sebelahnya",
+      "judul": "Banjir dan Longsor 2025: {{angka:wb.sb.25.m|satuan}} Meninggal dan Hilang di {{angka:wb.sb.25.kab|satuan}} Sumatera Barat",
+      "tabel": {
+        "judul_panel": "Dampak per kabupaten dan kota, 2025, urut korban",
+        "ikon": "banjir",
+        "baris_maks_pt": 34,
+        "total": true,
+        "peringkat": false,
+        "data": {
+          "csv": "data/sumut-aceh/sb/banjir25.csv",
+          "kolom": [
+            {
+              "nama": "kab",
+              "kepala": "Kabupaten",
+              "bobot": 1.6
+            },
+            {
+              "nama": "korban",
+              "kepala": "Meninggal dan hilang",
+              "fmt": "0"
+            },
+            {
+              "nama": "mengungsi",
+              "kepala": "Mengungsi",
+              "fmt": "0"
+            },
+            {
+              "nama": "rumah",
+              "kepala": "Rumah rusak",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, Nov 2026"
+        }
+      },
+      "panel": {
+        "judul": "Sorotan dampak",
+        "ikon": "ringkasan",
+        "daftar_ikon": {
+          "mode": "baris",
+          "baris": [
+            {
+              "ikon": "jiwa",
+              "judul": "Agam",
+              "isi": "Korban terbanyak",
+              "angka": "{{angka:wb.sb.25.top}}",
+              "satuan": "jiwa"
+            },
+            {
+              "ikon": "pengungsi",
+              "judul": "Agam",
+              "isi": "Pengungsi terbanyak",
+              "angka": "{{angka:wb.sb.25.topu}}",
+              "satuan": "jiwa"
+            },
+            {
+              "ikon": "rumah",
+              "judul": "Kota Padang",
+              "isi": "Rumah rusak terbanyak",
+              "angka": "{{angka:wb.sb.25.topr}}",
+              "satuan": "rumah"
+            },
+            {
+              "ikon": "pengungsi",
+              "judul": "Mengungsi",
+              "isi": "Seluruh provinsi",
+              "angka": "{{angka:wb.sb.25.u}}",
+              "satuan": "jiwa"
+            },
+            {
+              "ikon": "rumah",
+              "judul": "Rumah rusak",
+              "isi": "Seluruh provinsi",
+              "angka": "{{angka:wb.sb.25.r}}",
+              "satuan": "rumah"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 2
+    },
+    {
+      "jenis": "impor",
+      "pptx": "data/sumut-aceh/impor/sumbar.pptx",
+      "halaman": 1,
+      "sumber": "Laporan Dit. Koordalops BNPB, 8 Nov s.d. 22 Nov 2026; ECMWF IFS, GloFAS, InaRISK BNPB, 22 Nov 2026 16.36 WIB"
+    },
+    {
+      "jenis": "impor",
+      "pptx": "data/sumut-aceh/impor/sumbar.pptx",
+      "halaman": 2,
+      "sumber": "Laporan Dit. Koordalops BNPB, 8 Nov s.d. 22 Nov 2026; Logbook Pusdalops BNPB"
+    },
+    {
+      "jenis": "impor",
+      "pptx": "data/sumut-aceh/impor/sumbar.pptx",
+      "halaman": 3,
+      "sumber": "Laporan Dit. Koordalops BNPB, 8 Nov s.d. 22 Nov 2026"
+    },
+    {
+      "jenis": "impor",
+      "pptx": "data/sumut-aceh/impor/sumbar.pptx",
+      "halaman": 4,
+      "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 22 Nov 2026 16.36 WIB"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 3
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "gempa",
+      "rasio": 0.52,
+      "cut_off": false,
+      "pesan": "Gempa dan tsunami",
+      "sumber": "USGS, diolah BNPB, 2025; DIBI BNPB, Nov 2026",
+      "judul": "Gempa dan Tsunami: Skor risiko tertinggi {{angka:wb.sb.g.top}} di Kepulauan Mentawai; korban {{angka:wb.sb.g.m|satuan}} sejak 2008",
+      "grafik": {
+        "judul_panel": "Skor risiko gempa, dua belas tertinggi",
+        "ikon": "gempa",
+        "judul": "**Skor risiko gempa**, indeks",
+        "keluarga": "netral",
+        "arah": "horizontal",
+        "sorot": "tertinggi",
+        "ubah": false,
+        "persen_batang": false,
+        "data": {
+          "csv": "data/sumut-aceh/sb/gempa_kab.csv",
+          "kolom": [
+            {
+              "nama": "kab",
+              "kepala": "Kabupaten"
+            },
+            {
+              "nama": "skor",
+              "kepala": "Skor",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "USGS, diolah BNPB, 2025"
+        }
+      },
+      "panel": {
+        "judul": "Gempa dan korban",
+        "ikon": "tsunami",
+        "peringkat": false,
+        "data": {
+          "csv": "data/sumut-aceh/sb/gempa_tabel.csv",
+          "kolom": [
+            {
+              "nama": "kab",
+              "kepala": "Kabupaten"
+            },
+            {
+              "nama": "mmaks",
+              "kepala": "M terbesar",
+              "fmt": "1"
+            },
+            {
+              "nama": "n",
+              "kepala": "Jumlah gempa",
+              "fmt": "0"
+            },
+            {
+              "nama": "korban",
+              "kepala": "Korban",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "USGS, diolah BNPB, 2025; DIBI BNPB, Nov 2026"
+        },
+        "baris_maks_pt": 30
+      }
+    },
+    {
+      "ulang_angka_boleh": "label peta dan Data Karhutla berbagi kabupaten yang sama",
+      "jenis": "temuan-visual",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "karhutla",
+      "rasio": 0.62,
+      "cut_off": false,
+      "pesan": "Karhutla dan gunung api",
+      "sumber": "NASA FIRMS, diolah BNPB, 22 Nov 2026; MAGMA Indonesia, PVMBG, 21 Nov 2026; DIBI BNPB, Nov 2026",
+      "judul": "Karhutla dan Gunung Api: Seluas {{angka:wb.sb.k.luas|satuan}} lahan terbakar sepanjang 2026; Kerinci dan Marapi berstatus Waspada",
+      "utama": {
+        "judul": "Perkiraan luas terbakar per kabupaten dan kota, 2026",
+        "ikon": "karhutla",
+        "peta": {
+          "mode": "koroplet",
+          "tingkat": "kabupaten",
+          "wilayah": [
+            "13"
+          ],
+          "ambang": [
+            100,
+            300,
+            600,
+            1000
+          ],
+          "skala": "api",
+          "satuan": "Perkiraan luas terbakar dari citra satelit, hektare, 2026",
+          "penanda": [
+            {
+              "nama": "Kerinci",
+              "lon": 101.264,
+              "lat": -1.697,
+              "ikon": "gunungapi",
+              "warna": "skala.emas.3"
+            },
+            {
+              "nama": "Marapi",
+              "lon": 100.473,
+              "lat": -0.381,
+              "ikon": "gunungapi",
+              "warna": "skala.emas.3"
+            },
+            {
+              "nama": "Talang",
+              "lon": 100.679,
+              "lat": -0.978,
+              "ikon": "gunungapi",
+              "warna": "navy"
+            },
+            {
+              "nama": "Tandikat",
+              "lon": 100.331,
+              "lat": -0.39,
+              "ikon": "gunungapi",
+              "warna": "navy"
+            }
+          ],
+          "label": 8,
+          "label_gaya": "samping",
+          "label_ikon": "karhutla",
+          "unsur_tampil": false,
+          "data": {
+            "csv": "data/sumut-aceh/sb/luas_kab.csv",
+            "kolom": [
+              {
+                "nama": "kab"
+              },
+              {
+                "nama": "luas",
+                "kepala": "Luas",
+                "fmt": "0"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS, diolah BNPB, 22 Nov 2026"
+          }
+        }
+      },
+      "panel": {
+        "judul": "Data Karhutla",
+        "ikon": "karhutla",
+        "total": false,
+        "peringkat": true,
+        "baris_maks_pt": 30,
+        "data": {
+          "csv": "data/sumut-aceh/sb/karhutla.csv",
+          "kolom": [
+            {
+              "nama": "kab",
+              "kepala": "Kabupaten"
+            },
+            {
+              "nama": "hotspot",
+              "kepala": "Hotspot",
+              "fmt": "0"
+            },
+            {
+              "nama": "luas",
+              "kepala": "Luas, ha",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS, diolah BNPB, 22 Nov 2026"
+        }
+      },
+      "pita": {
+        "label": "Gunung api",
+        "kolom": [
+          {
+            "ikon": "gunungapi",
+            "judul": "Kerinci",
+            "isi": "Waspada, radius {{angka:wb.sb.ga.0.r|satuan}}",
+            "warna": "skala.emas.3",
+            "pil": {
+              "teks": "Waspada",
+              "warna": "skala.emas.3",
+              "ikon": "peringatan"
+            },
+            "ket": {
+              "ikon": "wilayah",
+              "teks": "Radius {{angka:wb.sb.ga.0.r|satuan}}"
+            }
+          },
+          {
+            "ikon": "gunungapi",
+            "judul": "Marapi",
+            "isi": "Waspada, radius {{angka:wb.sb.ga.1.r|satuan}}",
+            "warna": "skala.emas.3",
+            "pil": {
+              "teks": "Waspada",
+              "warna": "skala.emas.3",
+              "ikon": "peringatan"
+            },
+            "ket": {
+              "ikon": "wilayah",
+              "teks": "Radius {{angka:wb.sb.ga.1.r|satuan}}"
+            }
+          },
+          {
+            "ikon": "gunungapi",
+            "judul": "Talang dan Tandikat",
+            "isi": "Normal",
+            "pil": {
+              "teks": "Normal",
+              "warna": "tint.netral.pita",
+              "warna_teks": "navy",
+              "ikon": "prabencana"
+            }
+          },
+          {
+            "ikon": "pengungsi",
+            "judul": "Pengungsi erupsi sejak 2008",
+            "isi": "{{angka:wb.sb.ga.u|satuan}}"
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/bencana-rob.jpg",
+      "teks": "Terima Kasih",
+      "laporan": "Fokus Banjir"
+    }
+  ]
+}

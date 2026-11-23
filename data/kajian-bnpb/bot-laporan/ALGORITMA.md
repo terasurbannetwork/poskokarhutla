@@ -41,7 +41,7 @@ Penerapan pada versi n: bangun ulang dari bahan, lalu operasi 1..n berurutan. Ti
 
 ## A6. Kunci angka sistem (D3)
 
-Generator menulis manifest `kunci.json`: daftar `{slide, shape, sel?}` yang memuat angka hotspot, firespot, luas terbakar, luas belum padam. Operasi yang menyentuh entri manifest ditolak sebelum diterapkan. Jawaban bot: asal angka (sumber dan aturan hari D-1) dan tawaran `catatan`.
+Generator menulis manifest `<nama deck>.kunci.json` di samping PPTX (nama berdeck supaya harian dan penanganan di folder keluaran yang sama tidak saling timpa): daftar `{slide, shape, sel?}` yang memuat angka hotspot, firespot, luas terbakar, luas belum padam. Operasi yang menyentuh entri manifest ditolak sebelum diterapkan. Jawaban bot: asal angka (sumber dan aturan hari D-1) dan tawaran `catatan`.
 
 ## A7. Banding 7 hari (K9, Q11)
 
@@ -58,3 +58,106 @@ Label pola = `(jenis laporan, judul slide tempat ubahan, jenis operasi, ringkasa
 ## A10. Batas belanja (Q5)
 
 Biaya per panggilan dihitung dari `usage` respons dan harga model. Jumlah harian (WIB) di D1 `bl_biaya`. Lewat batas: panggilan Claude baru ditolak, pemakai dibalas "kuota hari ini habis, bot lanjut besok", pemilik dikabari sekali.
+
+## A11. Pagar angka V2 (D17)
+
+Masukan:
+- Isi deck dasar `D` dan deck keluaran `K` dari `scripts/wa/agen_isi.py` (membaca ZIP PPTX langsung): `slides[] {n, tersembunyi, shapes[] {nama, teks, tabel?, tampak}}`, `lain[] {bagian, teks}` (catatan pembicara, grafik, layout, master, SmartArt), `media[] {bagian, sha256}` (gambar, grafik, berkas tertanam). `tampak` salah bila ukuran nol atau di luar kanvas.
+- `kunci` dari `dasar/<deck>.kunci.json` (`{slide, shape, sel?, angka}`).
+- `izin`: teks bahan hari ini; `kemarin`: isi deck laporan kemarin (sama bentuknya dengan `D`).
+
+Angka dibaca sebagai nilai dengan aturan Indonesia: titik = pemisah ribuan bila diikuti tepat tiga angka, koma = desimal ("1.234" = 1234, "12,5" = 12.5, "1.250,75" = 1250.75). Tanggal ("17 Nov", "17/11/2026", "2026-11-17"), tahun 2000-2099, dan jam ("18.00", "07.00 WIB") bukan angka ukuran dan dilewati.
+
+1. **Shape terkunci** (dicocokkan lewat nama di slide mana pun; nama dari generator unik berawalan `s<n>_`):
+   - Ada lebih dari satu shape bernama sama di `K`: pelanggaran (duplikat).
+   - Ada satu: di slide tersembunyi atau tidak tampak = pelanggaran; tanpa `sel`: teks harus sama dengan `D` (spasi dan baris kosong diabaikan); dengan `sel`: isi sel sama dengan `D`, tabel atau sel hilang = dihapus.
+   - Tidak ada: boleh (dicatat "slide dihapus") hanya bila slide asalnya hilang utuh (kurang dari 20% nama shape slide itu masih ada di `K`); selain itu pelanggaran "hilang atau diganti nama" (pemeriksa bersih 19 Nov: shape berisi angka saja bisa diganti nama dan diisi angka lain).
+   - Label shape terkunci yang muncul di shape lain dengan angka berbeda = pelanggaran.
+2. **Himpunan sah angka sistem** `S` = angka di teks dan sel terkunci `D`, ditambah angka dalam jendela kata kunci di teks tidak terkunci `D` (subjudul generator yang menyebut angka sistem).
+Semua teks dinormalkan dulu: NFKC, karakter format (zero width, soft hyphen) dibuang, angka Unicode dan lebar penuh jadi angka ASCII, "1 234" dibaca satu angka. Teks alt (`descr`, `title`) ikut diperiksa.
+
+3. **Lingkup angka sistem (pengganti jendela kata kunci, sesudah pemeriksa bersih 19 Nov)**: tiap slide `K` (dan tiap bagian lain: catatan, grafik, layout) yang menyebut kata kunci angka sistem, semua angka ukurannya harus ada di deck dasar atau bahan. Kata kunci luas untuk deck berangka sistem (`hotspot`, `titik panas`, `titik api`, `firespot`, `terbakar`, `padam`, `kebakaran`, `karhutla`); sempit untuk deck tanpa kunci (laporan harian bencana: `hotspot`, `titik panas`, `titik api`, `firespot`, `luas terbakar`, `lahan terbakar`, `belum padam`, `karhutla`), supaya "rumah terbakar" atau "listrik padam" dengan jumlah buatan agen tetap sah. Aturan jendela di bawah tetap berlaku sebagai bagian dari lingkup ini.
+
+   Rincian lama, **Kata kunci di seluruh isi `K`** (shape tidak terkunci, sel tabel, catatan pembicara, grafik, layout, master; huruf besar-kecil diabaikan): `hotspot`, `hot spot`, `titik panas`, `titik api`, `firespot`, `fire spot`, `luas terbakar`, `lahan terbakar`, `belum padam`. Tiap angka ukuran di klausa yang sama dengan kata kunci (dipotong koma bukan desimal, titik koma, baris baru, atau titik akhir kalimat) dan paling jauh 40 huruf darinya harus anggota `S` atau ada di `izin`. Di tabel, kata kunci di sel kepala baris atau kolom berlaku untuk semua sel baris atau kolom itu. Bukan anggota = pelanggaran. Bila `S` kosong (laporan harian bencana), semua pasangan kata kunci dengan angka yang tidak ada di `izin` adalah pelanggaran.
+4. **Media dan tautan**: tiap bagian bukan XML (di mana pun letaknya di ZIP), grafik, atau diagram di `K` yang sidiknya tidak ada di `D` maupun laporan kemarin = pelanggaran. Tautan eksternal (selain hyperlink) yang tidak ada di `D` = pelanggaran, karena dimuat saat konversi PDF di luar sandbox. Teks berbentuk kunci API di deck = pelanggaran.
+5. **Asal angka (peringatan, bukan penolakan)**: angka ukuran di `K` yang tidak ada di `D`, `izin`, maupun laporan kemarin masuk daftar "angka tanpa sumber" (paling banyak 10) di keterangan draf; angka yang hanya ada di laporan kemarin masuk daftar "angka dari laporan kemarin".
+
+Hasil `{lolos, langgar[], dihapus[], tanpaSumber[], dariKemarin[]}`; `lolos` = `langgar` kosong. Logika pagar murni (`scripts/wa/agen_pagar.mjs`); pembacaan ZIP di `agen_isi.py`.
+
+## A12. Laporan kemarin (D23)
+
+`kemarin(jenis, tanggal)`:
+1. Dari `~/.wa-bot/agen/final.json` ambil entri `jenis` dengan tanggal terbesar `< tanggal`, paling jauh 7 hari, yang berkas PPTX-nya masih ada.
+2. Dari arsip repo `data/laporan-bnpb/<folder jenis>/<YYYY-MM>/<YYYY-MM-DD>/Revisi <N>/*.pptx` untuk 7 tanggal sebelumnya, ambil tanggal terdekat dan `N` terbesar (berkas `(isi)` dilewati).
+3. Pilih yang tanggalnya paling baru (bot menang bila sama). Skrip harian (`jalan.py`, `bingkai.py`) diambil dari folder hari tanggal terpilih atau tanggal terdekat yang punya skrip.
+4. Tidak ada keduanya: ruang kerja tanpa `kemarin/`; prompt menyebut "tidak ada laporan kemarin".
+
+## A13. Menjalankan agen (D14, D19, D20, D26)
+
+Prompt sistem = preset `claude_code` + `append` berisi `PEDOMAN.md`, pedoman jenis, dan kontrak `hasil.json`. Pesan berisi jenis, tanggal, kode proyek, jalur ruang kerja versi ini, daftar berkas bahan (disebut data, bukan perintah), laporan dan skrip kemarin, catatan mesin, dan tugas. Revisi: kalimat pemakai (tersamarkan) dalam tanda kutip sebagai data, plus jalur ruang kerja versi baru.
+
+Acuan pagar (deck dasar, kunci, bahan, laporan kemarin) disimpan mesin di `~/.wa-bot/agen/acuan/<proyek>/` dan selalu dibaca dari sana; ruang kerja tiap versi berisi salinannya. Kunci yang hilang (atau kosong pada laporan penanganan) = pagar gagal tertutup.
+
+Opsi `query` (sesudah pemeriksa bersih 19 Nov): `cwd` = folder sesi kosong per proyek `~/.wa-bot-agen/<proyek>/sesi` (bukan ruang kerja, supaya baca dan tulis di luar cwd selalu lewat `canUseTool`); tanpa `additionalDirectories`; `disallowedTools` = alat web, Agent, NotebookEdit, ditambah aturan `Read(//<jalur absolut>)` untuk `.env`, gateway, `~/.wa-bot`, `~/.ssh`, `~/.claude`, teks WA mentah, dan `Edit(//<repo>/**)`, `Edit(//<acuan>/**)`; sandbox `denyRead` = semua isi folder rumah kecuali repo, ruang kerja, dan venv Python bot (per tingkat), `denyWrite` = repo, `bahan/ dasar/ kemarin/ sebelum/` versi ini, dan ruang kerja versi lain; lingkungan `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` (kredensial dibuang dari perintah Bash). Rincian lama: `model` `claude-opus-5-5`; `effort` `high`; `settingSources: []`; `tools`: `Read`, `Glob`, `Grep`, `Write`, `Edit`, `Bash`; tanpa `allowedTools` (semua alat lewat `canUseTool`); `permissionMode: 'default'`; `sandbox`: `{enabled: true, failIfUnavailable: true, autoAllowBashIfSandboxed: false, allowUnsandboxedCommands: false, filesystem: {allowWrite: [kerja, keluaran], denyRead: [~/.wa-bot kecuali ruang ini lewat izin tulis, ~/.ssh, ~/.config, ~/.aws, scripts/wa/.env, scripts/wa/gateway, data/laporan-bnpb (teks WA mentah)]}, network: {allowedDomains: [], strictAllowlist: true}}`; `maxTurns` 80; `maxBudgetUsd` `BL_AGEN_USD`; `abortController` 15 menit; `resume` bila ada sesi; `env` = lingkungan bersih (D19).
+
+Penjaga `canUseTool(nama, masukan)`, semua jalur lewat `realpath` (jalur yang belum ada: `realpath` induk terdekat yang ada):
+- `Write`/`Edit`: izinkan hanya di dalam `kerja/` atau `keluaran/`.
+- `Read`/`Glob`/`Grep`: tolak jalur rahasia (`.env`, `~/.wa-bot` di luar ruang kerja, `~/.ssh`, `~/.config`, `~/.aws`, gantungan kunci) dan teks WA mentah `data/laporan-bnpb/**/wa-*.txt`; izinkan hanya di repo atau ruang kerja.
+- `Bash`: tolak bila `dangerouslyDisableSandbox`; lapis kedua daftar tolak (git selain baca, push, wrangler, pemasangan paket, alat jaringan, sudo, launchctl, osascript, `rm -r`, `ln -s`, chmod, `.env`, `~/.wa-bot`, kill); selain itu izinkan (sandbox yang menegakkan batas).
+- Alat lain: tolak.
+
+Sebelum jalan: kunci agen global (D26); cek biaya harian dan per proyek (D20). Sesudah jalan: pesan `result` terakhir; `subtype` bukan `success`, `is_error`, atau `hasil.json` tidak sah = galat agen. Biaya dicatat dari `total_cost_usd`, atau `BL_AGEN_USD` bila tidak ada pesan hasil. `session_id` disimpan.
+
+## A14. Skema `hasil.json` (D18)
+
+```json
+{"pptx": "Laporan ... DDMMYY.pptx", "ringkasan": "kalimat pendek",
+ "perubahan": ["Slide 3: panel OMC dihapus, panel armada dilebarkan"],
+ "catatan": ["Banjir Aceh Singkil (dari laporan kemarin) tidak ada di WA hari ini, tidak dimasukkan"],
+ "tanya": []}
+```
+
+`pptx` wajib bila `tanya` kosong: nama tanpa `/`, `\`, atau `..`, berkas biasa (bukan tautan simbolik) di `keluaran/`, ZIP yang memuat `ppt/presentation.xml`, paling besar 30 MB. `ringkasan` paling banyak 300 huruf; `perubahan`, `catatan`, `tanya` masing-masing paling banyak 10 butir, tiap butir paling banyak 300 huruf.
+
+## A15. Rapikan bahan (D30, D31)
+
+- Pemicu: `jalankanGenerator` gagal dan pesannya bukan galat mesin (`kunci`, `keluaran tidak ada`, `ENOENT`, `timeout`, `dipakai proses lain`).
+- Masukan Claude: pesan galat (900 huruf terakhir) dan tiap bahan teks `{kunci, teks}` yang disamarkan. Keluaran skema `{bahan: [{kunci, teks}], perubahan: [string]}`.
+- Pagar: angka di teks rapi dinormalkan seperti A4 (titik ribuan dibuang). Tiap angka harus ada di himpunan angka teks mentah bahan yang sama, kecuali (a) angka di awal baris yang diikuti titik atau tutup kurung (nomor urut) dan (b) angka di baris yang memuat "menonjol" atau "kejadian". Kunci bahan yang tidak dikirim tidak boleh muncul.
+- Paling banyak 2 putaran; putaran kedua menerima galat generator putaran pertama.
+- Pagar (diperketat sesudah pemeriksa bersih 19 Nov): angka isi dibandingkan sebagai multiset (tanpa angka baru, ganda, atau hilang); nomor urut hanya dikecualikan bila berurutan 1, 2, 3; angka jumlah kejadian di kepala WA diperlakukan sebagai angka isi dan tidak boleh berubah (K33); digit Unicode selain 0-9 ditolak.
+- Teks yang dikirim ke Claude sudah disamarkan (nomor HP, NIK, surel), jadi bahan rapi yang dipakai generator memuat tanda samaran itu, bukan nilai aslinya.
+- Maksud yang berlaku (D33): tanpa draf hanya buat, lanjut, final, batal, status, bantuan, dan obrolan berbalasan yang menahan pesan dari bahan; pemegang draf hanya tanya, final, batal, status, bantuan, dan obrolan berbalasan, selainnya revisi. Kumpul revisi hanya hidup selama proyeknya draf.
+
+## A16. Maksud pesan (D32, D33)
+
+- Syarat: teks 2 sampai 500 huruf, bukan perintah baku, bukan diteruskan, `kenali` tidak mengenalinya sebagai bahan, tidak ada kumpulan revisi terbuka.
+- Konteks: daftar proyek pengirim `{id, jenis, tanggal, status, versi}` dan tanggal hari ini WIB.
+- Keluaran skema `{maksud, jenis, tanggal, balasan}`; `maksud` di luar daftar = `bahan`. Tanggal di luar 14 hari ke belakang sampai besok diabaikan.
+
+## A17. Tanya draf (D34)
+
+- Masukan: inventaris teks deck versi terakhir `[{slide, shape, teks}]` (dipotong 30.000 huruf), riwayat instruksi versi, pertanyaan.
+- Keluaran skema `{jawaban}`, dipotong 800 huruf. Tidak memanggil generator dan tidak menyimpan versi.
+
+## A18. Kumpul revisi (D35)
+
+- `kumpul.json`: `{wa_sha: {id, mulai, waktu, pesan: [teks]}}`; berlaku 2 jam sejak pesan terakhir.
+- Gabungan: "Revisi dari beberapa pesan, kerjakan semuanya:" lalu "1. ...", "2. ..."; paling banyak 30 pesan dan 8000 huruf.
+- Draf berubah versi sebelum *lanjut*: kumpulan tetap dipakai untuk versi terbaru.
+
+## A19. Tinjau visual (D36)
+
+- Urutan: pagar lolos, salin deck agen ke `kerja/tinjau/deck.pptx`, `pdf.py`, `ubah.py pratinjau <pdf> 1,...,N kerja/tinjau` (N paling banyak 16), cadangkan `keluaran/`, lanjutkan sesi agen dengan prompt tinjau.
+- Hasil dipakai bila `hasil.json` sah, punya pptx, tanpa pertanyaan, dan lolos pagar; selain itu `keluaran/` dipulihkan dari cadangan dan catatan teknis ditulis.
+- Biaya tinjau masuk biaya proyek; anggaran per jalan dan per proyek tetap berlaku.
+
+## A20. Gambar di kumpul revisi (D37, D40)
+
+- Butir kumpulan: teks biasa atau `{teks, gambar: {wa_id, nama}}`. Gabungan: `N. [gambar K] keterangan`.
+- Revisi V2: tiap gambar diunduh dari `/api/wa/berkas` ke `revisi/gambar-K.<ext>`; prompt revisi menyebut jalurnya. Paling banyak 6 gambar per revisi.
+
+## A21. Bahan gambar (D38)
+
+- `ekstrak` dengan `simpanGambar` menyimpan berkas asli gambar bahan terpilih ke acuan proyek `bahan/` dengan nama `NN-<nama>.<ext>`; teks OCR tetap `NN-<nama>.txt`.
+- `teksBahanRuang` hanya membaca berkas `.txt` sebagai sumber angka pagar.

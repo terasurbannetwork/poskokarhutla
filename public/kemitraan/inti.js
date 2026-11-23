@@ -119,6 +119,7 @@
     talenta: '<path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c3 2 9 2 12 0v-5"/>',
     kampus: '<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>',
     dasbor: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    data: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
     tanya: '<path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 1-1 1.7V14M12 18h.01"/>',
     aktifkan: '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
     daerah: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
@@ -128,7 +129,7 @@
     waktu: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   };
   /* urutan dan hak tiap tampilan (PRD §3): ST/SA/PM semua; KK semua kecuali dasbor; BP hanya daerah dan masalah; AG/PL tidak punya tampilan di sini */
-  KM.URUTAN = [["daerah", "Daerah"], ["masalah", "Masalah"], ["riset", "Riset"], ["dana", "Dana"], ["satgas", "Satgas"], ["talenta", "Talenta"], ["kampus", "Kampus"], ["dasbor", "Dasbor"]];
+  KM.URUTAN = [["daerah", "Daerah"], ["masalah", "Masalah"], ["riset", "Riset"], ["dana", "Dana"], ["satgas", "Satgas"], ["talenta", "Talenta"], ["kampus", "Kampus"], ["dasbor", "Dasbor"], ["data", "Data lapor"]];   // data lapor: agregat Lapor Bencana (KEPUTUSAN-LAPOR-AI K62, D93)
   const SEMUA = KM.URUTAN.map(x => x[0]);
   KM.HAK = {SA: SEMUA, ST: SEMUA, PM: SEMUA, KK: SEMUA.filter(x => x !== "dasbor"), BP: ["daerah", "masalah"], AG: [], PL: []};
 

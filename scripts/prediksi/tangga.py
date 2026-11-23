@@ -281,11 +281,13 @@ def muat_h10(H, m, cari, kini):
         n = len(kond)
         nh = sum(1 for x in kond if "Hujan" in x)
         nk = sum(1 for x in kond if "Hujan" not in x and "Petir" not in x)
-        urut = ["Sangat Lebat", "Lebat", "Hujan Petir", "Hujan Sedang", "Hujan Ringan"]   # hanya urutan tampil kondisi terberat; BUKAN peringkat (tk null, Q10)
+        urut = ["Ekstrem", "Sangat Lebat", "Lebat", "Hujan Petir", "Hujan Sedang", "Hujan Ringan"]   # urutan kondisi terberat
         tb = next((x for u in urut for x in kond if u in x), None)
+        # peringkat hanya untuk kelas lebat (pemilik 19 Nov 2026, Q10): sama dengan sepekan BMKG, lebat = 2, sangat lebat/ekstrem = 3; kondisi lain tetap null
+        tk = 3 if tb and ("Sangat Lebat" in tb or "Ekstrem" in tb) else 2 if tb and "Lebat" in tb else None
         hari_tb = next((h["tgl"] for h in hr if h.get("kondisi") == tb), None) if tb else None
         p = f"{tgl(hr[0]['tgl'])} sampai {tgl(hr[-1]['tgl'])}"
-        H.taruh("kab", i, "h10", item("b", "hujan", None, tb or "Tanpa hujan", f"{nh} dari {n} hari berkondisi hujan" + (f"; kondisi terberat {tb} ({tgl(hari_tb)})." if tb else "."), "h10", "kab", p=p))
+        H.taruh("kab", i, "h10", item("b", "hujan", tk, tb or "Tanpa hujan", f"{nh} dari {n} hari berkondisi hujan" + (f"; kondisi terberat {tb} ({tgl(hari_tb)})." if tb else "."), "h10", "kab", p=p))
         H.taruh("kab", i, "h10", item("k", "hujan", None, f"Tanpa hujan {nk} dari {n} hari", "Prakiraan kondisi harian BMKG, bukan peringatan kekeringan.", "h10", "kab", p=p))
     H.tandai("h10", "kb")
 

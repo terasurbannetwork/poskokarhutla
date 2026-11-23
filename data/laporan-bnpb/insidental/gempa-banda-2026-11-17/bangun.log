@@ -1,0 +1,41 @@
+
+MMI maks: {'Kepulauan Tanimbar': 6.4, 'Kota Tual': 6.3, 'Maluku Tenggara': 5.78, 'Seram Bagian Timur': 5.38, 'Maluku Tengah': 3.95, 'Maluku Barat Daya': 3.9, 'Kepulauan Aru': 3.67, 'Seram Bagian Barat': 2.71, 'Kota Ambon': 2.67, 'Buru Selatan': 2.15, 'Buru': 2.05}
+total jiwa VI/V/IV: 179133 111128 258318 y akhir tabel kondisi 322
+deck.py gagal (1):
+Traceback (most recent call last):
+  File "C:\Users\USER/.claude/skills/ppt-konsultan/bnpb\scripts\deck.py", line 5125, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\USER/.claude/skills/ppt-konsultan/bnpb\scripts\deck.py", line 5112, in main
+    pdf = ke_pdf(keluar) if a.pdf else None
+          ~~~~~~^^^^^^^^
+  File "C:\Users\USER/.claude/skills/ppt-konsultan/bnpb\scripts\deck.py", line 5073, in ke_pdf
+    subprocess.run([soffice(), f'-env:UserInstallation={profil.as_uri()}', '--headless',   # as_uri: file:///C:/... sah di Windows (2 Nov 2026)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    '--convert-to', 'pdf', '--outdir', str(outdir), str(pptx)], check=True, capture_output=True, timeout=300)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Roaming\uv\python\cpython-3.13-windows-x86_64-none\Lib\subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Roaming\uv\python\cpython-3.13-windows-x86_64-none\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Roaming\uv\python\cpython-3.13-windows-x86_64-none\Lib\subprocess.py", line 1554, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+OSError: [WinError 193] %1 is not a valid Win32 application
+

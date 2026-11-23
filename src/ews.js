@@ -9,6 +9,7 @@
    D1 tidak menyimpan token itu, dan tautan di email lama tetap berlaku. GET /ews/* TIDAK mengubah apa pun (pemindai tautan email
    membuka GET): hanya mengalihkan ke /peringatan, yang lalu memanggil POST. Semua tautan di email memakai ASAL_PUBLIK, bukan origin permintaan. */
 import {json, gagal, sha, acak, hex, ipHash, turnstileOK, bacaBody, cacheTepi} from "./worker.js";
+import {kirimEmail} from "./keluar.js";
 import {wilayah, cariWilayah, km, dalam} from "./titik.js";
 import {BENCANA, TINGKAT} from "../public/ews_tindakan.js";
 import {muatHimawari, tandaiBaru, saringIndonesia} from "./himawari.js";
@@ -340,12 +341,6 @@ export function nilaiGempa(g, lat, lon) {
 }
 
 /* ---------------- kirim email ---------------- */
-export async function kirimEmail(env, a, {subject, html, text}, tautanBerhenti) {
-  const r = await fetch("https://api.resend.com/emails", {method: "POST", headers: {authorization: `Bearer ${env.EMAIL_API_KEY}`, "content-type": "application/json"},
-    body: JSON.stringify({from: env.EMAIL_FROM, to: [a], subject, html, text,
-      ...(tautanBerhenti ? {headers: {"List-Unsubscribe": `<${tautanBerhenti}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}} : {})})});
-  if (!r.ok) throw new Error(`Resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
-}
 const wilayahSurat = (s, pn) => ({prov: s.prov, kab: s.kab, kec: s.kec, prov_nama: pn[s.prov]});
 const baris = (s, pn) => ({lat: s.lat, lon: s.lon, wilayah: wilayahSurat(s, pn)});
 const rahasiaAda = env => !!(env.EWS_KUNCI || env.IP_SALT);

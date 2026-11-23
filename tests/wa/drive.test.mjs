@@ -32,14 +32,18 @@ function dunia({ token = true, folder = [], masuk = [], gagalUnggah } = {}) {
       }
       if (q.includes('mimeType != ')) return resp({ files: w.masuk })
       if (q.startsWith("name = '")) return resp({ files: w.ada && q.includes(`name = '${w.ada}'`) ? [{ id: 'ADA' }] : [] })
-      if (q.includes("mimeType = 'application/vnd.google-apps.folder'")) return resp({ files: w.folders.filter((f) => q.includes(`'${f.induk}' in parents`)).map((f) => ({ id: f.id })) })
+      if (q.includes("mimeType = 'application/vnd.google-apps.folder'")) return resp({ files: w.folders.filter((f) => q.includes(`'${f.induk}' in parents`)).map((f) => ({ id: f.id, name: f.nama })) })
       return resp({ files: [{ id: 'h1', name: 'Rekap', modifiedTime: '2026-10-28T00:00:00Z', webViewLink: 'https://drive/h1' }] })
     }
     if (u.pathname === '/drive/v3/files' && o.method === 'POST') {
       const b = JSON.parse(o.body); const id = 'N' + (w.folders.length + 1)
-      w.folders.push({ id, nama: b.name, induk: b.parents[0] }); return resp({ id })
+      w.folders.push({ id, nama: b.name, induk: b.parents[0] }); if (w.sesudahBuat) w.sesudahBuat(w.folders.at(-1)); return resp({ id })
     }
-    if (o.method === 'PATCH') { w.moves.push(u.searchParams.get('addParents')); return resp({ id: 'x' }) }
+    if (o.method === 'PATCH') {
+      const b = JSON.parse(o.body || '{}')
+      if (b.name) { const id = decodeURIComponent(u.pathname.split('/').pop()); w.folders.find((x) => x.id === id).nama = b.name; return resp({ id }) }
+      w.moves.push(u.searchParams.get('addParents')); return resp({ id: 'x' })
+    }
     if (u.searchParams.get('alt') === 'media' || u.pathname.endsWith('/export')) return resp(Buffer.from('isi'))
     if (u.searchParams.get('fields') === 'webViewLink') return resp({ webViewLink: 'https://drive/folder' })
     return resp({}, 404)
@@ -201,4 +205,75 @@ test('salin: Laporan Harian Dirdalops diteruskan ke WA ikut ke 3. Laporan Harian
   const sebelum = nama().length
   d.salin({ ...pesan, id: 'dd2' }, Buffer.from('doc')); await d.kuras(); await new Promise((r) => setTimeout(r, 50))
   assert.equal(nama().length - sebelum, 1) // hanya salinan Bahan WA; Dirdalops dilewati karena sudah ada
+})
+
+// ---------- BL-12: final bot laporan ke <tanggal>/Revisi N/ (Q9, AGENTS 3.6) ----------
+test('folderRevisi: Revisi N baru = nomor terbesar yang ada + 1 (Revisi buatan tangan tidak ditimpa), di folder hari kategori', async () => {
+  const { w, d } = duniaLaporan()
+  const hari = await d.pastikanFolder(['1. Laporan Harian Bencana', ...createRequire(import.meta.url)('../../scripts/wa/drive.cjs').jalurTanggal('2026-10-29')], 'LH')
+  w.folders.push({ id: 'X1', nama: 'Revisi 1', induk: hari }, { id: 'X3', nama: 'Revisi 3', induk: hari }, { id: 'XL', nama: 'Revisi lama', induk: hari }, { id: 'Y9', nama: 'Revisi 9', induk: 'LAIN' })
+  const f = await d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' })
+  assert.deepEqual({ nama: f.nama, n: f.n }, { nama: 'Revisi 4', n: 4 })
+  assert.deepEqual(jalurDari(w, 'Revisi 4'), ['1. Laporan Harian Bencana', '2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '4. Kamis, 29 Oktober 2026', 'Revisi 4'])
+  assert.equal(w.folders.find((x) => x.nama === 'Revisi 4').id, f.id)
+  const g = await d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' })
+  assert.equal(g.nama, 'Revisi 5', 'panggilan kedua tidak memakai ulang Revisi 4')
+  const kosong = await d.folderRevisi({ tanggal: '2026-10-05', laporan: 'penanganan' })
+  assert.equal(kosong.nama, 'Revisi 1')
+  const induk = []; for (let x = w.folders.find((y) => y.id === kosong.id); x; x = w.folders.find((y) => y.id === x.induk)) induk.unshift(x.nama)
+  assert.deepEqual(induk, ['2. Laporan Harian Karhutla', '2026', '10. Oktober 2026', '1. 05 Oktober - 11 Oktober 2026', '1. Senin, 05 Oktober 2026', 'Revisi 1'])
+})
+
+test('unggahKeFolder: nama deck polos tanpa "Revisi " dan tanpa (revN), berkas yang sudah ada dilewati, mengembalikan link folder', async () => {
+  const { w, d } = duniaLaporan()
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'l-'))
+  const a = path.join(dir, 'Laporan Kejadian Bencana Harian 291026 (rev3).pptx'), b = path.join(dir, 'Laporan Kejadian Bencana Harian 291026.pdf')
+  fs.writeFileSync(a, 'p'); fs.writeFileSync(b, 'x')
+  const link = await d.unggahKeFolder({ folder: { id: 'RV', nama: 'Revisi 2', n: 2 }, berkas: [{ p: a, mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }, { p: b, mime: 'application/pdf' }] })
+  assert.equal(link, 'https://drive/folder')
+  const nama = () => w.calls.filter((c) => c.u.pathname === '/upload/drive/v3/files').map((c) => JSON.parse(c.o.body))
+  assert.deepEqual(nama(), [{ name: 'Laporan Kejadian Bencana Harian 291026.pptx', parents: ['RV'] }, { name: 'Laporan Kejadian Bencana Harian 291026.pdf', parents: ['RV'] }])
+  w.ada = 'Laporan Kejadian Bencana Harian 291026.pptx'
+  await d.unggahKeFolder({ folder: { id: 'RV' }, berkas: [{ p: a, mime: 'x' }, { p: b, mime: 'application/pdf' }] })
+  assert.equal(nama().length, 3, 'ulangan hanya mengunggah yang belum ada')
+  assert.equal(d.namaPolos('/x/Lap (REV12).pdf'), 'Lap.pdf')
+})
+
+test('unggahLaporan jalur terjadwal tidak berubah: tanpa subfolder Revisi, awalan "Revisi " hanya bila revisi', async () => {
+  const { w, d } = duniaLaporan()
+  const p = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'l-')), 'Laporan Kejadian Bencana Harian 291026.pdf'); fs.writeFileSync(p, 'x')
+  await d.unggahLaporan({ tanggal: '2026-10-29', laporan: 'harian', revisi: false, berkas: [{ p, mime: 'application/pdf' }] })
+  await d.unggahLaporan({ tanggal: '2026-10-29', laporan: 'harian', revisi: true, berkas: [{ p, mime: 'application/pdf' }] })
+  const up = w.calls.filter((c) => c.u.pathname === '/upload/drive/v3/files').map((c) => JSON.parse(c.o.body))
+  const hari = w.folders.find((x) => x.nama === '4. Kamis, 29 Oktober 2026').id
+  assert.deepEqual(up, [{ name: 'Laporan Kejadian Bencana Harian 291026.pdf', parents: [hari] }, { name: 'Revisi Laporan Kejadian Bencana Harian 291026.pdf', parents: [hari] }])
+  assert.ok(!w.folders.some((x) => /^Revisi/.test(x.nama)))
+})
+
+test('folderRevisi dan unggahKeFolder: Drive belum dikonfigurasi = null tanpa jaringan', async () => {
+  let n = 0
+  const d = buat({ env: {}, rumah: fs.mkdtempSync(path.join(os.tmpdir(), 'd-')), log: () => {}, fetch: async () => { n++; return resp({}) } })
+  assert.equal(await d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' }), null)
+  assert.equal(await d.unggahKeFolder({ folder: { id: 'x' }, berkas: [] }), null)
+  assert.equal(n, 0)
+})
+
+test('folderRevisi: "revisi 2" dan "Revisi 3 " ikut dihitung; folder bernomor sama dibuat pihak lain = folder kita dinamai ulang ke nomor bebas berikutnya', async () => {
+  const { w, d } = duniaLaporan()
+  const J = createRequire(import.meta.url)('../../scripts/wa/drive.cjs').jalurTanggal
+  const hari = await d.pastikanFolder(['1. Laporan Harian Bencana', ...J('2026-10-29')], 'LH')
+  w.folders.push({ id: 'K2', nama: 'revisi 2', induk: hari }, { id: 'K3', nama: 'Revisi 3 ', induk: hari })
+  assert.equal((await d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' })).nama, 'Revisi 4')
+  w.sesudahBuat = (x) => { if (x.nama === 'Revisi 5') { w.sesudahBuat = null; w.folders.push({ id: 'TANGAN', nama: 'Revisi 5', induk: hari }) } }
+  const f = await d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' })
+  assert.deepEqual({ nama: f.nama, n: f.n }, { nama: 'Revisi 6', n: 6 })
+  assert.equal(w.folders.find((x) => x.id === f.id).nama, 'Revisi 6', 'folder kita dinamai ulang di Drive')
+  assert.equal(w.folders.find((x) => x.id === 'TANGAN').nama, 'Revisi 5', 'folder pihak lain tidak disentuh')
+})
+
+test('folderRevisi: kunci per tanggal dan laporan; dua panggilan bersamaan memilih nomor berbeda, kunci dilepas', async () => {
+  const { d, rumah } = duniaLaporan()
+  const [a, b] = await Promise.all([d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' }), d.folderRevisi({ tanggal: '2026-10-29', laporan: 'harian' })])
+  assert.deepEqual([a.n, b.n].sort(), [1, 2])
+  assert.deepEqual(fs.readdirSync(path.join(rumah, 'proyek')).filter((x) => x.endsWith('.lock')), [])
 })

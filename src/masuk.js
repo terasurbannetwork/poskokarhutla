@@ -7,7 +7,8 @@
 import {json, gagal, sha, hex, acak, bacaBody, bersihTeks, normalWA, turnstileOK, ipHash, cacheTepi} from "./worker.js";
 import {PROV} from "./bangunan.js";
 import {laju} from "./bnpb.js";
-import {emailAktif, kirimEmail} from "./ews.js";
+import {emailAktif} from "./ews.js";
+import {kirimEmail} from "./keluar.js";
 import {superOK, RE_EMAIL} from "./posko.js";
 import {sesiUntuk as sesiInstansi, cabutSesi as cabutInstansi, aturSandi as sandiInstansi} from "./instansi.js";
 import {sesiUntuk as sesiPendataan, cabutSesi as cabutPendataan, aturSandi as sandiPendataan} from "./pendataan.js";

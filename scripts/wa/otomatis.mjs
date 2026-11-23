@@ -20,23 +20,31 @@ const kenaliAsli = jenis.kenali
 const tanggalIsiAsli = jenis.tanggalIsi || (() => null) // belum ada = semua bahan ditolak (aman), bukan lolos
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
-const { muatEnv, daftar, rumah, RUMAH } = createRequire(import.meta.url)('./umum.cjs')
+const { muatEnv, daftar, rumah, RUMAH, normalWa } = createRequire(import.meta.url)('./umum.cjs')
 const { buat: buatDrive } = createRequire(import.meta.url)('./drive.cjs')
 const GENERATOR = path.resolve(DI, '../../data/laporan-bnpb/generator')
 const execP = promisify(execFile)
+
+// --isian <berkas> hanya bila mesin proyek (proyek.mjs, BL-08) mengisi f.isian; jalur terjadwal tidak pernah mengisinya, jadi argumennya sama persis (D9).
+const isianArg = (f) => (f.isian ? ['--isian', f.isian] : [])
 
 // Aturan jam: harian cut-off 12.00 WIB; penanganan 18.00 WIB (pemilik 16 Nov 2026, sama dengan laporan manual 13 Nov).
 export const LAPORAN = [
   { id: 'harian', judul: 'Laporan Kejadian Bencana Harian', butuh: ['rekap_koordalops_24', 'bmkg_pagi', 'pvmbg_pagi'], jam: 12,
     berkas: (d) => `Laporan Kejadian Bencana Harian ${ddmmyy(d)}`,
     // format laporan manual 16 Nov (kejadian baru + masih berlangsung, Peringatan Dini, Rencana Aksi); harian.py tetap dipakai pembangun manual
-    args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out] },
+    args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out, ...isianArg(f)] },
   // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada. pilihan: bahan tambahan yang dipakai bila ada, tidak ditunggu
   // (Excel 'Gelar Kekuatan Satgas Udara Karhutla' untuk panel Armada Udara, pemilik 16 Nov 2026). Format laporan manual 13 Nov, cut-off 18.00.
-  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], pilihan: ['gelar_udara'], opsional: true, jam: 18, waktu: 25 * 60e3,
+  // Wajib hanya laporan Satgas (18 Nov 2026: penanganan_otomatis.py tidak memakai --bmkg; cuaca dan PM2.5 dari data sistem). Laporan penanganan
+  // lengkap (karhutla_mensesneg) memuat bagian Operasi Darat/Udara yang sama, jadi setara dengan satgas dan dikirim sebagai --operasi.
+  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['satgas'], setara: { satgas: ['karhutla_mensesneg'] }, pilihan: ['gelar_udara'],
+    // ikut: dibaca dan diteruskan bila ada (--bmkg, tidak dipakai generator), tidak diminta. kunciHash: masukan hash seperti sebelum 18 Nov
+    // (bmkg_pagi lalu satgas) supaya laporan yang sudah terkirim pada hari pemasangan tidak dikirim ulang sebagai "Revisi:".
+    ikut: ['bmkg_pagi'], kunciHash: ['bmkg_pagi', 'satgas'], opsional: true, jam: 18, waktu: 25 * 60e3,
     berkas: (d) => `Laporan Penanganan Pengendalian Karhutla ${ddmmyy(d)}`,
     args: (d, f, out) => ['penanganan_otomatis.py', '--tanggal', d, '--jam', '18:00', ...(f.bmkg_pagi ? ['--bmkg', f.bmkg_pagi] : []), ...(f.satgas ? ['--operasi', f.satgas] : []),
-      ...(f.gelar_udara ? ['--gelar', f.gelar_udara] : []), '--out', out] },
+      ...(f.gelar_udara ? ['--gelar', f.gelar_udara] : []), '--out', out, ...isianArg(f)] },
 ]
 
 // Padanan banjir (penanganan_banjir.py): angkanya dari situs yang tayang, tanpa bahan WA (butuh kosong). Cut-off 17.00 WIB seperti penanganan.
@@ -45,6 +53,23 @@ export const LAPORAN_BANJIR = [
   { id: 'penanganan_banjir', judul: 'Laporan Penanganan Banjir, Longsor dan Rob', butuh: [], jam: 17, unggah: false,
     berkas: (d) => `Laporan Penanganan Banjir Longsor dan Rob ${ddmmyy(d)}`,
     args: (d, f, out) => ['penanganan_banjir.py', '--tanggal', d, '--out', out] },
+]
+
+// Laporan hanya lewat proyek bot (perintah), TIDAK PERNAH terjadwal: jalur jalankan() hanya mengulang LAPORAN dan LAPORAN_BANJIR.
+// banjir_sepekan (pemilik 19 Nov 2026: "tambahin laporan paparan banjir sepekan? tapi bisa diatur juga tanggal yang dimau"):
+// periode bebas = tanggal laphar awal s.d. akhir (tanggal proyek = akhir). Data dari WA Koordalops tiap hari periode (f.wa, dikumpulkan
+// proyek.mjs dari bahan tersimpan) dan arsip repo; generator data/laporan-bnpb/generator/banjir_sepekan.py. Hanya mode V2 (tanpa --isian).
+export const geserHari = (iso, h) => new Date(Date.parse(iso + 'T00:00:00Z') + h * 864e5).toISOString().slice(0, 10)
+export const LAPORAN_PROYEK = [
+  { id: 'banjir_sepekan', judul: 'Paparan Situasi Banjir Sepekan', butuh: [], jam: 0, unggah: false, periode: true, waktu: 20 * 60e3,
+    berkas: (d) => `Paparan Situasi Banjir Sepekan ${ddmmyy(d)}`,
+    args: (d, f, out) => ['banjir_sepekan.py', '--awal', f.awal || geserHari(d, -6), '--akhir', d, '--out', out, ...(f.wa?.length ? ['--wa', ...f.wa] : [])] },
+  // gempa (pemilik 20 Nov 2026: "kalau saya minta bot wa bikin laporan gempa, kayak gini", Laporan Khusus Gempa Nias 191126): dua halaman,
+  // generator gempa_bot.py menyusun semuanya dari BMKG, laphar terurai, dan model repo; tanpa bahan WA. f.lokasi = teks tempat dari perintah
+  // ("buat gempa nias"); kosong = gempa M5 ke atas terbaru sampai tanggal proyek. Hanya mode V2 (tanpa --isian), sama dengan banjir_sepekan.
+  { id: 'gempa', judul: 'Laporan Khusus Gempa', butuh: [], jam: 0, unggah: false, lokasi: true, waktu: 15 * 60e3,
+    berkas: (d) => `Laporan Khusus Gempa ${ddmmyy(d)}`,
+    args: (d, f, out) => ['gempa_bot.py', '--tanggal', d, '--out', out, '--berkas', `Laporan Khusus Gempa ${ddmmyy(d)}`, ...(f.lokasi ? ['--lokasi', f.lokasi] : [])] },
 ]
 
 export const ddmmyy = (d) => `${d.slice(8, 10)}${d.slice(5, 7)}${d.slice(2, 4)}`
@@ -87,17 +112,19 @@ export function cekSiap(lap, terpilih, now, tanggal, cutoff = false) {
 }
 
 export const hashBahan = (lap, teks) =>
-  crypto.createHash('sha256').update(JSON.stringify([...lap.butuh, ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
+  crypto.createHash('sha256').update(JSON.stringify([...(lap.kunciHash || lap.butuh), ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
 
 function ambilKunci(berkas) {
   const baca = () => { try { return JSON.parse(fs.readFileSync(berkas, 'utf8')) } catch { return {} } }
   return { baca, tulis: (s) => { fs.mkdirSync(path.dirname(berkas), { recursive: true, mode: 0o700 }); fs.writeFileSync(berkas, JSON.stringify(s, null, 1), { mode: 0o600 }) } }
 }
 
+// 40 menit: penanganan bisa jalan 25 menit (lap.waktu), jadi kunci yang lebih muda dari ini dianggap masih hidup.
+export const KUNCI_BASI_MS = 40 * 60e3
 function kunciProses(berkas) {
   fs.mkdirSync(path.dirname(berkas), { recursive: true, mode: 0o700 })
   try {
-    if (Date.now() - fs.statSync(berkas).mtimeMs > 15 * 60e3) fs.rmSync(berkas, { force: true }) // sisa proses mati
+    if (Date.now() - fs.statSync(berkas).mtimeMs > KUNCI_BASI_MS) fs.rmSync(berkas, { force: true }) // sisa proses mati
   } catch {}
   try { fs.closeSync(fs.openSync(berkas, 'wx')) } catch { return null }
   return () => fs.rmSync(berkas, { force: true })
@@ -116,7 +143,7 @@ export function depBawaan(env) {
     }
   }
   return {
-    fetch: (u, o) => fetch(u, o),
+    fetch: (u, o = {}) => fetch(u, { signal: AbortSignal.timeout(60_000), ...o }), // panggilan Worker yang menggantung tidak menahan antrean pengirim
     exec: (cmd, args, o) => execP(cmd, args, o),
     kirimFile: (target, p, filename, caption, mimetype) => pos('/send-file', { target, path: p, filename, caption, mimetype }),
     kirimTeks: (target, message) => pos('/send', { target, message }),
@@ -137,14 +164,28 @@ const MIME = { pptx: 'application/vnd.openxmlformats-officedocument.presentation
 
 // Bahan 3 hari (D, D-1, D+1) dari worker; tanggal ISI bahan sendiri harus == tanggal laporan (kiriman ulang laporan lama tersimpan dengan tanggal hari ini).
 // Dipakai jalankan() dan perintah WA (perintah.mjs). `semua` = pesan per jenis, terbaru dulu.
-export async function ambilBahan({ env, dep, tanggal, kenali = kenaliAsli, tanggalIsi = tanggalIsiAsli, log = () => {} }) {
+// Jalur terjadwal (D9, BL-03): nomor bot laporan yang disetujui (bukan WA_IZIN) kini ikut tersimpan di wa_masuk; bahannya hanya untuk proyek.mjs.
+// hanyaIzin=true membuang baris yang pengirimnya nomor HP di luar WA_IZIN. Baris grup operasi (@g.us) dan sumber bukan nomor (misal 'form') tetap.
+// WA_IZIN kosong = tanpa saringan (gateway lama tanpa izin tidak meneruskan apa pun).
+export function dariIzin(env) {
+  const izin = new Set(daftar(env.WA_IZIN).map(normalWa).filter(Boolean))
+  return (p) => {
+    if (!izin.size) return true
+    if (/^bl:/.test(String(p.dari ?? ''))) return false // nomor bot laporan (dari = 'bl:' + wa_sha): bukan WA_IZIN
+    const n = normalWa(p.dari)
+    return !n || /@g\.us$/i.test(n) || !/^\d+$/.test(n) || izin.has(n)
+  }
+}
+
+export async function ambilBahan({ env, dep, tanggal, kenali = kenaliAsli, tanggalIsi = tanggalIsiAsli, log = () => {}, hanyaIzin = false }) {
+  const boleh = hanyaIzin ? dariIzin(env) : () => true
   const geser = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 86400e3).toISOString().slice(0, 10)
   const pesanMap = new Map()
   for (const [i, tgl] of [[0, tanggal], [1, geser(tanggal, -1)], [2, geser(tanggal, 1)]]) {
     try {
       const r = await dep.fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/masuk?tanggal=${encodeURIComponent(tgl)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
       if (!r.ok) throw new Error('HTTP ' + r.status)
-      for (const p of (await r.json()).pesan || []) pesanMap.set(String(p.id), p)
+      for (const p of (await r.json()).pesan || []) if (boleh(p)) pesanMap.set(String(p.id), p)
     } catch (e) {
       if (i === 0) throw new Error(`Gagal membaca bahan dari worker: ${e.message}`)
       log('tetangga', tgl, 'gagal dibaca:', e.message) // D-1/D+1 hanya tambahan
@@ -155,11 +196,12 @@ export async function ambilBahan({ env, dep, tanggal, kenali = kenaliAsli, tangg
   const teksDari = async (p) => { if (!teksCache.has(p.id)) teksCache.set(p.id, await ambilTeks(p, dep, env)); return teksCache.get(p.id) }
   const pilihSesuai = async (lap) => {
     const terpilih = {}, teks = {}
-    for (const k of [...lap.butuh, ...(lap.pilihan || [])]) {
-      for (const p of semua[k] || []) {
+    for (const k of [...lap.butuh, ...(lap.pilihan || []), ...(lap.ikut || [])]) {
+      // lap.setara: jenis lain yang boleh mengisi k (bahan k sendiri lebih dulu); tanggal isi dibaca dengan aturan jenis aslinya
+      for (const [p, asal] of [...(semua[k] || []).map((x) => [x, k]), ...(lap.setara?.[k] || []).flatMap((a) => (semua[a] || []).map((x) => [x, a]))]) {
         let t
         try { t = await teksDari(p) } catch (x) { log(lap.id, k, 'teks tak terbaca:', x.message); continue }
-        const td = BERKAS_BINER.test(p.nama_berkas || '') ? tanggalWib(new Date(Number(p.diterima) || Date.parse(p.diterima) || 0)) : tanggalIsi(t, k) // Excel tanpa tanggal isi: tanggal terima
+        const td = BERKAS_BINER.test(p.nama_berkas || '') ? tanggalWib(new Date(Number(p.diterima) || Date.parse(p.diterima) || 0)) : tanggalIsi(t, asal) // Excel tanpa tanggal isi: tanggal terima
         if (td === tanggal) { terpilih[k] = p; teks[k] = t; break }
         log(`bahan bertanggal ${td || 'tak terbaca'}, bukan ${tanggal}`, k, p.id)
       }
@@ -180,7 +222,7 @@ export function siapkanKeluaran(lap, tanggal, teks, dasar) {
   const out = path.join(dasar, 'keluaran', tanggal)
   fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
   const f = {}
-  for (const k of [...lap.butuh, ...(lap.pilihan || [])]) {
+  for (const k of [...lap.butuh, ...(lap.pilihan || []), ...(lap.ikut || [])]) {
     if (teks[k] == null) continue
     const biner = String(teks[k]).match(/^biner:(\.\w+):/) // berkas biner (Excel) dari ambilTeks
     f[k] = path.join(kerja, k + (biner ? biner[1] : '.txt'))
@@ -190,17 +232,32 @@ export function siapkanKeluaran(lap, tanggal, teks, dasar) {
   return { kerja, out, f, berkas: ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` })) }
 }
 
-export async function jalankanGenerator(lap, tanggal, f, out, kerja, dep, env = process.env) {
+// Satu generator jalan pada satu waktu untuk jalur terjadwal, perintah lama, dan mesin proyek (kunci bersama `<rumah>/generator.lock`).
+// Menunggu kunci paling lama `tunggu` (bawaan 30 menit, cukup untuk satu penanganan 25 menit); lewat itu = galat.
+export async function kunciGenerator(berkas, { tunggu = 30 * 60e3, tidur = (ms) => new Promise((r) => setTimeout(r, ms)), jeda = 2000 } = {}) {
+  const batas = Date.now() + tunggu
+  for (;;) {
+    const lepas = kunciProses(berkas)
+    if (lepas) return lepas
+    if (Date.now() >= batas) throw new Error('generator sedang dipakai proses lain terlalu lama (kunci ' + path.basename(berkas) + ')')
+    await tidur(jeda)
+  }
+}
+
+// opsi: kunci (jalur generator.lock bersama; kosong = tanpa kunci), envAnak (tambahan env proses anak), tidur (uji).
+// Kembalian: hasil exec ({stdout, stderr}) supaya pemanggil bisa membaca baris PERINGATAN.
+export async function jalankanGenerator(lap, tanggal, f, out, kerja, dep, env = process.env, opsi = {}) {
+  const lepas = opsi.kunci ? await kunciGenerator(opsi.kunci, { tidur: opsi.tidur || dep.tidur }) : () => {}
   try {
     // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
     const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
-    await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: lap.waktu || 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
+    return (await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: lap.waktu || 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, ...(opsi.envAnak || {}), PATH: pyBin + path.delimiter + (process.env.PATH || '') } })) || {}
   } catch (x) {
     const penuh = String(x.stderr || x.message || x)
     try { fs.writeFileSync(path.join(kerja, 'galat.txt'), penuh, { mode: 0o600 }) } catch {}
     const ujung = penuh.trim().split('\n').filter(Boolean).pop() || ''
     throw new Error(`generator gagal (kode G1, rincian di ${path.join(kerja, 'galat.txt')}): ${ujung.slice(0, 200)}`)
-  }
+  } finally { lepas() }
 }
 
 export { kunciProses, ambilKunci, MIME }
@@ -249,8 +306,11 @@ export async function jalankan(opsi = {}) {
     // Jarak pandang BMKG (JARAK_PANDANG=1): galat tertangkap di dalam modul, tidak menahan laporan.
     if (!opsi.tanggal) try { hasil.push(...await jalankanJarakPandang({ env, now, jam: jamWib(now), state, simpan, kering, dep, log, pemilik })) } catch (e) { log('jarak pandang tak terduga', e.message) }
     if (diLuar) return hasil
+    // Saklar pemilik 18 Nov 2026 (K16 paket bot-laporan): WA_OTOMATIS=0 mematikan laporan terjadwal (harian, penanganan, banjir);
+    // semua laporan lewat `buat` di bot proyek. Renlap dan jarak pandang di atas tetap jalan; perintah manual bertanggal (`kirim ulang`) tetap boleh.
+    if (env.WA_OTOMATIS === '0' && !opsi.tanggal) { hasil.push({ id: '-', status: 'laporan terjadwal dimatikan (WA_OTOMATIS=0)' }); return hasil }
     let bahan
-    try { bahan = await ambilBahan({ env, dep, tanggal, kenali, tanggalIsi, log }) } catch (e) { await galat('sistem', e.message); return [{ id: '-', status: 'galat' }] }
+    try { bahan = await ambilBahan({ env, dep, tanggal, kenali, tanggalIsi, log, hanyaIzin: true }) } catch (e) { await galat('sistem', e.message); return [{ id: '-', status: 'galat' }] }
     delete state.gagal.sistem
     const { pilihSesuai } = bahan
 
@@ -281,7 +341,7 @@ export async function jalankan(opsi = {}) {
         const { kerja, out, f, berkas } = siapkanKeluaran(lap, tanggal, teks, dasar)
         const ada = opsi.ada || fs.existsSync
         const sudahJadi = state.laporan[kunci]?.hash === hash && berkas.every((b) => ada(b.p)) // coba ulang kirim/unggah tanpa membangun lagi
-        if (!sudahJadi) await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env)
+        if (!sudahJadi) await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env, { kunci: path.join(dasar, 'generator.lock') })
         for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
 
         // Unggah ke /pelaporan SEBELUM kirim WA; gagal tidak menahan WA, diulang pada jalan berikut (status terpisah dari terkirim).

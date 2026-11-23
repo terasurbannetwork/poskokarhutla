@@ -17,6 +17,11 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Untuk tab Tangga, `dat
 | K9 | Abrasi tidak diprediksi harian ("ga apa"). |
 | K10 | Kekeringan masuk skala pekan dan bulan (tab Tangga), bukan tabel Besok. |
 | K11 | Cuaca ekstrem masuk prediksi harian. |
+| K12 | (19 Nov, jawaban Q1) Level gelombang ditulis "Sedang", "Tinggi", "Awas" (bukan Waspada/Siaga): Sedang 1,25 sampai di bawah 2,5 m, Tinggi 2,5 sampai di bawah 4 m, Awas 4 m ke atas. Kode `lv` 1..3 tidak berubah. |
+| K13 | (19 Nov, jawaban Q2) Ambang angin 46/63/89 km/jam dipakai. |
+| K14 | (19 Nov, jawaban Q3) Warna titik panas dari peluang 20/50/80% dipakai, hanya untuk tampilan. |
+| K15 | (19 Nov, jawaban Q4) Formulir Konfirmasi tetap belum menerima gelombang dan angin. |
+| K16 | (19 Nov, jawaban Q5) Siklon BMKG tetap belum masuk Perlu tindakan. |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -37,10 +42,4 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Untuk tab Tangga, `dat
 
 ## Pertanyaan terbuka untuk pemilik (Q)
 
-| Q | Pertanyaan | Bawaan sementara |
-| --- | --- | --- |
-| Q1 | Kategori gelombang BMKG Sedang/Tinggi/Sangat tinggi dipetakan ke Waspada/Siaga/Awas. Setuju? | Dipakai (D2). |
-| Q2 | Ambang angin 46/63/89 km/jam (25/34/48 knot). Setuju, atau ada ambang resmi BNPB? | Dipakai (D5). |
-| Q3 | Warna titik panas dari peluang (20/50/80%) hanya untuk tampilan. Setuju? | Dipakai (D10). |
-| Q4 | Formulir Konfirmasi belum menerima Gelombang dan Angin (rute `/api/prediksi/konfirmasi` milik warga-api). Ditambahkan? | Belum. |
-| Q5 | Siklon tropis BMKG (`cuaca_siklon_bmkg.json`, tingkat nasional) masuk "Perlu tindakan"? | Belum. |
+Q1 sampai Q5 sudah dijawab pemilik 19 Nov 2026 (K12 sampai K16). Belum ada pertanyaan terbuka baru.

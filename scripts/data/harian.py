@@ -210,9 +210,10 @@ def penanda_proksi(pts):
     return {"snpp_proksi": n} if n else {}
 
 
-def hotspot(k, w, sekarang=None, lama=None):
-    """Titik panas 7 hari dari FIRMS NRT. Galat sensor selain S-NPP tetap fatal (tidak berubah). S-NPP: galat atau balasan kosong sebelum batas = ::warning dan
-    jalan diteruskan; sesudah FS.SNPP_AKHIR tidak diminta sama sekali. Jendela tanpa S-NPP diisi deteksi S-NPP dari `lama` (jalur hotspot.json sebelumnya)."""
+def hotspot(k, w, sekarang=None, lama=None, hari=HARI):
+    """Titik panas `hari` x 24 jam (bawaan 7) dari FIRMS NRT. Galat sensor selain S-NPP tetap fatal (tidak berubah). S-NPP: galat atau balasan kosong sebelum batas = ::warning dan
+    jalan diteruskan; sesudah FS.SNPP_AKHIR tidak diminta sama sekali. Jendela tanpa S-NPP diisi deteksi S-NPP dari `lama` (jalur hotspot.json sebelumnya).
+    Unduhannya selalu 10 hari UTC (dua jendela 5 hari), jadi `hari` sampai 9 tidak menambah permintaan FIRMS."""
     sekarang = sekarang or dt.datetime.now(dt.timezone.utc)
     hari_ini = sekarang.date()
     tugas = []
@@ -234,7 +235,7 @@ def hotspot(k, w, sekarang=None, lama=None):
 
     with ThreadPoolExecutor(4) as ex:
         teks = list(ex.map(tarik, tugas))
-    batas = sekarang - dt.timedelta(days=HARI)
+    batas = sekarang - dt.timedelta(days=hari)
     titik, lihat = [], set()
     for sensor, _mulai, isi in teks:
         for r in csv.DictReader(io.StringIO(isi or "")):
@@ -450,58 +451,62 @@ def wt_dekat(grid, g, lat, lon, radius=1.0):
 
 
 # ---------------------------------------------------------------- utama
-def main():
-    os.makedirs(KELUAR, exist_ok=True)
-    GB.pasang_kalibrasi()  # kedalaman bara dari isian lapangan bila kalibrasi.json ada dan n >= 10
-    w = Wilayah()
-    sekarang = dt.datetime.now(WIB)
-    hari_ini = sekarang.date().isoformat()
+def titik_7hari(lebar, sekarang):
+    """Potongan HARI x 24 jam dari unduhan yang lebih panjang: sama persis dengan hotspot(..., sekarang, hari=HARI) (diuji di uji())."""
+    return [p for p in lebar if p["t"] >= sekarang - dt.timedelta(days=HARI)]
 
-    print("hotspot...", file=sys.stderr)
-    titik = hotspot(kunci(), w, lama=os.path.join(KELUAR, "hotspot.json"))
-    titik_mentah = titik   # sebelum buang sumber panas tetap: pembanding definisi BMKG memakai titik mentah (titik_unik.BMKG_DEFINISI)
-    # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
-    # jumlah titik, kompleks, status, dan harian30. Gunung api (kawah) tetap dihitung. Matikan: TITIK_PALSU=0.
-    industri = {"aktif": False, "titik": 0, "jenis": {}}
-    if os.environ.get("TITIK_PALSU", "1") != "0":
-        import titik_palsu as TP, harian30
-        sel_ind, jenis_ind = TP.sel_industri()
-        if not sel_ind:
-            print("::warning title=Filter titik palsu mati::public/data/titik_palsu.json tidak ada; titik industri ikut dihitung", file=sys.stderr)
-        if sel_ind:
-            sebelum = titik
-            titik = [p for p in titik if not TP.palsu(p["lat"], p["lon"], sel_ind)]
-            from collections import Counter as _C
-            industri = {"aktif": True, "titik": len(sebelum) - len(titik),
-                        "jenis": dict(_C(jenis_ind[TP.sel(p["lat"], p["lon"])] for p in sebelum if TP.palsu(p["lat"], p["lon"], sel_ind)))}
-            harian30.SARING = lambda la, lo: TP.palsu(la, lo, sel_ind)
-            print(f"titik palsu: {industri['titik']} dari {len(sebelum)} titik dibuang", file=sys.stderr)
-    try:  # riwayat harian 35 hari per provinsi & kab/kota (tren 7/30 hari); gagal di sini tidak menghentikan pembaruan
-        import harian30
-        harian30.perbarui(KELUAR, titik, kunci(), w, ambil, BBOX, hari_ini, dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI))
-    except Exception as e:
-        print(f"::warning title=harian30 gagal::{FS.sensor_url(e)}; harian30.json dibiarkan", file=sys.stderr)
 
-    lama = os.path.join(KELUAR, "fwi.json")
-    if os.environ.get("FWI") == "0" and os.path.exists(lama) and json.load(open(lama)).get("hari_ini") == hari_ini:
-        print("FWI: pakai hitungan hari ini yang sudah ada", file=sys.stderr)  # FWI berbasis cuaca jam 12, cukup dihitung sekali sehari
-        grid = json.load(open(lama))["grid"]
-    else:
-        print("FWI...", file=sys.stderr)
-        try:
-            grid = cuaca_fwi(grid_darat(w))
-        except Exception as e:
-            if not os.path.exists(lama):
-                raise
-            print("FWI gagal, pakai hitungan terakhir:", e, file=sys.stderr)
-            grid = json.load(open(lama))["grid"]
+def km(a1, o1, a2, o2):
+    return haversine({"lat": a1, "lon": o1}, {"lat": a2, "lon": o2})
 
-    def fwi_hari(g, tgl):  # tidak ada data hari ini = None (bukan prakiraan hari lain)
-        return next((h for h in g["hari"] if h["tgl"] == tgl), None)
 
-    print("kejadian api...", file=sys.stderr)
-    kini = dt.datetime.now(dt.timezone.utc)
-    akhir = max((p["t"] for p in titik), default=kini)
+PJ_KONSESI = {"sawit": ("Pemegang izin konsesi sawit (perusahaan perkebunan)", "Areal konsesi sawit"),
+              "hph": ("Pemegang izin konsesi HPH (PBPH hutan alam)", "Areal konsesi HPH (hutan alam)"),
+              "hti": ("Pemegang izin konsesi HTI (PBPH hutan tanaman)", "Areal konsesi HTI (kayu pulp)"),
+              "tambang": ("Pemegang izin tambang (PPKH)", "Areal izin tambang")}
+
+
+def konteks_lahan():
+    """Masukan tetap rakit_kluster dari public/data: daops, indeks risiko riwayat per kecamatan, peta gambut, kawasan hutan, konsesi."""
+    daops = json.load(open(os.path.join(KELUAR, "daops.json"))) if os.path.exists(os.path.join(KELUAR, "daops.json")) else []
+    # riwayat 2015-sekarang per kecamatan (public/data/sejarah.json) -> indeks risiko untuk peringkat prioritas
+    RISIKO = {}
+    jalur_sj = os.path.join(KELUAR, "sejarah.json")
+    if os.path.exists(jalur_sj):
+        sj = json.load(open(jalur_sj))
+        maks = max((sum(v) for v in sj["kec"].values()), default=1)
+        RISIKO = {k: A.risiko_riwayat(v, sj["tahun"], maks) for k, v in sj["kec"].items()}
+    # lahan: gambut (peta, bukan tebakan DC), fungsi kawasan hutan, konsesi -> penanggung jawab lahan
+    return {"daops": daops, "risiko": RISIKO, "gambut": Poligon(os.path.join(KELUAR, "lahan/gambut.geojson")),
+            "kawasan": Poligon(os.path.join(KELUAR, "lahan/kawasan.geojson")), "konsesi": Poligon(os.path.join(KELUAR, "lahan/konsesi.geojson"))}
+
+
+def penanggung(lahan, lon, lat):
+    """Rute penerusan titik panas menurut status lahan (P.32/2016 dan praktik KLHK)."""
+    k = lahan["konsesi"].cari(lon, lat)
+    if k and k.get("aktif") is not False:  # izin berakhir: bukan penanggung jawab lagi
+        # generik, tanpa nama pemegang (keputusan pemilik 14 Okt 2026); konsesi.geojson publik memang tak bernama
+        return PJ_KONSESI.get(k.get("jenis"), ("Pemegang izin konsesi", "Areal konsesi"))
+    kw = lahan["kawasan"].cari(lon, lat)
+    if kw:
+        f = kw.get("fungsi")
+        if f in ("HK",):
+            return "BKSDA / Balai Taman Nasional", kw.get("nama") or "Kawasan konservasi"
+        if f in ("HL", "THR"):
+            return "Pemerintah daerah (KPH/dinas kehutanan)", "Hutan lindung" if f == "HL" else "Tahura"
+        return "KPH / pemegang PBPH", {"HP": "Hutan produksi", "HPT": "Hutan produksi terbatas", "HPK": "Hutan produksi dapat dikonversi"}.get(f, f)
+    return "Desa / camat / bupati", "Area penggunaan lain (lahan masyarakat)"
+
+
+def fwi_hari(g, tgl):  # tidak ada data hari itu = None (bukan prakiraan hari lain)
+    return next((h for h in g["hari"] if h["tgl"] == tgl), None)
+
+
+def rakit_kluster(titik, kini, grid, hari_fwi, w, lahan, garis=True):
+    """Kompleks api (fitur GeoJSON, sudah berlevel, berperingkat, ber-id K####) dan jumlah titik tunggal belum dinilai, dari titik
+    `titik` (bentuk hotspot()) pada jam `kini`: jendela 7 hari, umur cluster, dan hari HS/FS diukur dari `kini`, FWI hari `hari_fwi`.
+    main() memanggilnya dengan jam sekarang; arsip_kemarin() dengan jam beku di ujung hari kemarin. garis=False melewati garis luar
+    dan bara gambut (geometri titik pusat, luas 0): keduanya tidak masuk arsip kluster_hari."""
     hari_akhir = tgl(kini)
     # sel yang dihitung kolom HS hari ini -> wilayah titik yang menghitungnya; dasar kolom FS (titik firespot) supaya FS <= HS
     # di tiap tingkat wilayah, juga untuk cluster yang melintasi batas kecamatan (bukan wilayah pusat cluster)
@@ -519,45 +524,8 @@ def main():
     for p, l in zip(viirs, label):
         kluster.setdefault(l, []).append(p)
 
-    daops = json.load(open(os.path.join(KELUAR, "daops.json"))) if os.path.exists(os.path.join(KELUAR, "daops.json")) else []
-
-    def km(a1, o1, a2, o2):
-        return haversine({"lat": a1, "lon": o1}, {"lat": a2, "lon": o2})
-
-    # riwayat 2015-sekarang per kecamatan (public/data/sejarah.json) -> indeks risiko untuk peringkat prioritas
-    RISIKO = {}
-    jalur_sj = os.path.join(KELUAR, "sejarah.json")
-    if os.path.exists(jalur_sj):
-        sj = json.load(open(jalur_sj))
-        maks = max((sum(v) for v in sj["kec"].values()), default=1)
-        RISIKO = {k: A.risiko_riwayat(v, sj["tahun"], maks) for k, v in sj["kec"].items()}
-
-    # lahan: gambut (peta, bukan tebakan DC), fungsi kawasan hutan, konsesi -> penanggung jawab lahan
-    GAMBUT = Poligon(os.path.join(KELUAR, "lahan/gambut.geojson"))
-    KAWASAN = Poligon(os.path.join(KELUAR, "lahan/kawasan.geojson"))
-    KONSESI = Poligon(os.path.join(KELUAR, "lahan/konsesi.geojson"))
+    daops, RISIKO, GAMBUT = lahan["daops"], lahan["risiko"], lahan["gambut"]
     ada_gambut = bool(GAMBUT.indeks)
-
-    PJ_KONSESI = {"sawit": ("Pemegang izin konsesi sawit (perusahaan perkebunan)", "Areal konsesi sawit"),
-                  "hph": ("Pemegang izin konsesi HPH (PBPH hutan alam)", "Areal konsesi HPH (hutan alam)"),
-                  "hti": ("Pemegang izin konsesi HTI (PBPH hutan tanaman)", "Areal konsesi HTI (kayu pulp)"),
-                  "tambang": ("Pemegang izin tambang (PPKH)", "Areal izin tambang")}
-
-    def penanggung(lon, lat):
-        """Rute penerusan titik panas menurut status lahan (P.32/2016 dan praktik KLHK)."""
-        k = KONSESI.cari(lon, lat)
-        if k and k.get("aktif") is not False:  # izin berakhir: bukan penanggung jawab lagi
-            # generik, tanpa nama pemegang (keputusan pemilik 14 Okt 2026); konsesi.geojson publik memang tak bernama
-            return PJ_KONSESI.get(k.get("jenis"), ("Pemegang izin konsesi", "Areal konsesi"))
-        kw = KAWASAN.cari(lon, lat)
-        if kw:
-            f = kw.get("fungsi")
-            if f in ("HK",):
-                return "BKSDA / Balai Taman Nasional", kw.get("nama") or "Kawasan konservasi"
-            if f in ("HL", "THR"):
-                return "Pemerintah daerah (KPH/dinas kehutanan)", "Hutan lindung" if f == "HL" else "Tahura"
-            return "KPH / pemegang PBPH", {"HP": "Hutan produksi", "HPT": "Hutan produksi terbatas", "HPK": "Hutan produksi dapat dikonversi"}.get(f, f)
-        return "Desa / camat / bupati", "Area penggunaan lain (lahan masyarakat)"
 
     fitur, s1 = [], 0
     t24 = kini - dt.timedelta(hours=24)
@@ -566,7 +534,7 @@ def main():
         lat0 = sum(p["lat"] for p in pts) / len(pts)
         lon0 = sum(p["lon"] for p in pts) / len(pts)
         g = terdekat(grid, lat0, lon0)
-        h = fwi_hari(g, hari_ini)
+        h = fwi_hari(g, hari_fwi)
         di_gambut = GAMBUT.cari(lon0, lat0) is not None or any(GAMBUT.cari(p["lon"], p["lat"]) for p in pts[:20])
         # bara gambut: dipertahankan 7 hari bila di gambut DAN kering (DC > 350); tanpa peta gambut pakai DC saja
         kering = bool(h and h["dc"] > 350) and (di_gambut or not ada_gambut)
@@ -596,9 +564,9 @@ def main():
         jd = round(km(lat0, lon0, d0["lat"], d0["lon"])) if d0 else None
         # garis luar organik (raster jejak piksel 375 m, closing, kontur, Chaikin; lihat garis_api.py), bukan lambung cembung.
         # luas = luas garis luar itu (dulu: jumlah sel pusat deteksi x 14,06 ha); bisa Polygon atau MultiPolygon.
-        bentuk, luas_ha = garis_api(pts)
+        bentuk, luas_ha = garis_api(pts) if garis else (None, 0)
         bara = None  # gambut bawah permukaan (gambut_bara.py): hanya jejak piksel yang jatuh di peta gambut
-        if lv >= 2 and di_gambut:
+        if garis and lv >= 2 and di_gambut:
             # + titik keyakinan rendah di piksel yang sama (menambah tanggal/malam, bukan jejak baru); malam = 18.00-06.00 WIB
             pb = pts + [q for x in {pix(p) for p in pts} for q in rendah.get(x, ())]
             bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"], not 6 <= p["t"].astimezone(WIB).hour < 18)
@@ -625,7 +593,7 @@ def main():
                 # benih simulasi: titik 24 jam terakhir (maks 80), bukan lambung 7 hari
                 "api24": [[round(p["lon"], 4), round(p["lat"], 4)] for p in sorted(p24, key=lambda p: -p["frp"])[:80]] if lv >= 2 else [],
                 "risiko": RISIKO.get("|".join(adm), 0),  # indeks risiko riwayat kecamatan 0-100
-                "gambut": di_gambut, "tanggung": penanggung(lon0, lat0),
+                "gambut": di_gambut, "tanggung": penanggung(lahan, lon0, lat0),
                 "skor": A.skor_dengan_riwayat(A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
                                                      (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd), RISIKO.get("|".join(adm), 0)),
                 "level": lv, "status": STATUS[lv], "firespot": fs, "pola": pola,
@@ -656,6 +624,66 @@ def main():
     fitur.sort(key=lambda f: (-f["properties"]["level"], -f["properties"]["skor"]))
     for i, f in enumerate(fitur):
         f["properties"]["id"] = f"K{i + 1:04d}"
+    return fitur, s1
+
+
+def main():
+    os.makedirs(KELUAR, exist_ok=True)
+    GB.pasang_kalibrasi()  # kedalaman bara dari isian lapangan bila kalibrasi.json ada dan n >= 10
+    w = Wilayah()
+    sekarang = dt.datetime.now(WIB)
+    hari_ini = sekarang.date().isoformat()
+
+    print("hotspot...", file=sys.stderr)
+    # unduhan dibaca HARI + 1 hari ke belakang (masih di dalam 10 hari UTC yang memang diunduh): arsip kemarin berjam beku (arsip_kemarin) butuh
+    # 7 x 24 jam sebelum ujung hari kemarin. Semua keluaran lain memakai `titik` = potongan 7 x 24 jam yang sama persis dengan dulu.
+    unduh = dt.datetime.now(dt.timezone.utc)
+    lebar = hotspot(kunci(), w, sekarang=unduh, lama=os.path.join(KELUAR, "hotspot.json"), hari=HARI + 1)
+    titik = titik_7hari(lebar, unduh)
+    titik_mentah = titik   # sebelum buang sumber panas tetap: pembanding definisi BMKG memakai titik mentah (titik_unik.BMKG_DEFINISI)
+    # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
+    # jumlah titik, kompleks, status, dan harian30. Gunung api (kawah) tetap dihitung. Matikan: TITIK_PALSU=0.
+    industri = {"aktif": False, "titik": 0, "jenis": {}}
+    if os.environ.get("TITIK_PALSU", "1") != "0":
+        import titik_palsu as TP, harian30
+        sel_ind, jenis_ind = TP.sel_industri()
+        if not sel_ind:
+            print("::warning title=Filter titik palsu mati::public/data/titik_palsu.json tidak ada; titik industri ikut dihitung", file=sys.stderr)
+        if sel_ind:
+            sebelum = titik
+            titik = [p for p in titik if not TP.palsu(p["lat"], p["lon"], sel_ind)]
+            lebar = [p for p in lebar if not TP.palsu(p["lat"], p["lon"], sel_ind)]
+            from collections import Counter as _C
+            industri = {"aktif": True, "titik": len(sebelum) - len(titik),
+                        "jenis": dict(_C(jenis_ind[TP.sel(p["lat"], p["lon"])] for p in sebelum if TP.palsu(p["lat"], p["lon"], sel_ind)))}
+            harian30.SARING = lambda la, lo: TP.palsu(la, lo, sel_ind)
+            print(f"titik palsu: {industri['titik']} dari {len(sebelum)} titik dibuang", file=sys.stderr)
+    try:  # riwayat harian 35 hari per provinsi & kab/kota (tren 7/30 hari); gagal di sini tidak menghentikan pembaruan
+        import harian30
+        harian30.perbarui(KELUAR, titik, kunci(), w, ambil, BBOX, hari_ini, dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI))
+    except Exception as e:
+        print(f"::warning title=harian30 gagal::{FS.sensor_url(e)}; harian30.json dibiarkan", file=sys.stderr)
+
+    lama = os.path.join(KELUAR, "fwi.json")
+    if os.environ.get("FWI") == "0" and os.path.exists(lama) and json.load(open(lama)).get("hari_ini") == hari_ini:
+        print("FWI: pakai hitungan hari ini yang sudah ada", file=sys.stderr)  # FWI berbasis cuaca jam 12, cukup dihitung sekali sehari
+        grid = json.load(open(lama))["grid"]
+    else:
+        print("FWI...", file=sys.stderr)
+        try:
+            grid = cuaca_fwi(grid_darat(w))
+        except Exception as e:
+            if not os.path.exists(lama):
+                raise
+            print("FWI gagal, pakai hitungan terakhir:", e, file=sys.stderr)
+            grid = json.load(open(lama))["grid"]
+
+    print("kejadian api...", file=sys.stderr)
+    kini = dt.datetime.now(dt.timezone.utc)
+    akhir = max((p["t"] for p in titik), default=kini)
+    hari_akhir = tgl(kini)
+    lahan = konteks_lahan()
+    fitur, s1 = rakit_kluster(titik, kini, grid, hari_ini, w, lahan)
     def baca_json(nama, awal):
         try:
             return json.load(open(os.path.join(KELUAR, nama)))
@@ -663,7 +691,7 @@ def main():
             return awal
     desa, fasilitas = baca_json("osm/desa.json", {}), baca_json("fasilitas.json", [])
     dekat_permukiman = indeks_permukiman(desa, fasilitas) if desa or fasilitas else None
-    di_konsesi = (lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(KONSESI.cari(lon, lat))) if KONSESI.indeks else None
+    di_konsesi = (lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(lahan["konsesi"].cari(lon, lat))) if lahan["konsesi"].indeks else None
     tugas = tugas_kompleks(fitur, kini, dekat_permukiman, di_konsesi)  # sebelum pemangkasan INTI: butuh api24 dan level asal
     # berkas ringan: kompleks rendah (level 0-1) cukup atribut inti; teks status diambil dari level di peramban
     INTI = {"id", "lat", "lon", "n", "px24", "hari", "level", "prov", "kab", "kec", "teramati", "jam_sejak", "fwi", "dc", "gambut", "risiko", "luas", "sev", "firespot", "pola", "fs_ini", "snpp_proksi"}
@@ -756,6 +784,71 @@ def main():
     from collections import Counter
     print(f"{len(titik)} titik, {len(fitur)} cluster (+{s1} titik tunggal belum dinilai), {len(grid)} sel FWI;",
           "level", dict(Counter(f["properties"]["level"] for f in fitur)), file=sys.stderr)
+    # paling akhir: semua berkas di atas sudah tertulis, jadi gagalnya hanya membiarkan arsip kemarin apa adanya
+    if ulang_kemarin(sekarang):
+        try:
+            arsip_kemarin(lebar, hari_akhir, grid, w, lahan)
+        except Exception as e:
+            print(f"::warning title=Arsip kemarin gagal::{type(e).__name__}: {e}; kluster_hari kemarin dibiarkan", file=sys.stderr)
+
+
+# Arsip kluster_hari/<D>.json ditulis jalan terakhir SEBELUM 00.00 WIB (titik.yml ± 23.15-23.40 WIB), jadi lintasan VIIRS malam Indonesia timur
+# (NOAA-20 ± 15.20-15.40Z, NOAA-21 ± 16.05-16.25Z, tayang di FIRMS ± 3 jam kemudian) tidak pernah masuk: 16 Nov 2026 arsip 139 titik firespot nasional,
+# hari penuh 240 (Papua Selatan 23 lawan 120). Jalan sebelum JAM_ULANG_KEMARIN WIB menghitung ulang arsip kemarin untuk hari kalender penuh:
+# titik.yml cron 40 */3 tiba ± 02.15 dan ± 05.15 WIB, putaran 55 22 ± 06.30 WIB; tiap jalan menimpa dengan data FIRMS yang lebih lengkap.
+JAM_ULANG_KEMARIN = 7
+BEKU = dt.time(23, 59, 59, 999999)   # ujung hari WIB (lihat arsip_kemarin)
+BATAS_TURUN = 0.9                    # arsip_kemarin tidak menimpa arsip yang lebih lengkap
+
+
+def ulang_kemarin(sekarang):
+    """Jalan ini menghitung ulang arsip kemarin? ULANG_KEMARIN=1/0 memaksa; selain itu jam WIB < JAM_ULANG_KEMARIN."""
+    paksa = os.environ.get("ULANG_KEMARIN")
+    if paksa in ("0", "1"):
+        return paksa == "1"
+    return sekarang.astimezone(WIB).hour < JAM_ULANG_KEMARIN
+
+
+def arsip_kemarin(titik, hari_ini, grid, w, lahan, folder=None):
+    """kluster_hari/<hari_ini - 1>.json dihitung ulang untuk HARI KALENDER PENUH itu, dengan data FIRMS sekarang (lintasan malam yang tayang sesudah
+    tengah malam ikut). Jam dibekukan di ujung hari (BEKU = 23.59.59,999999 WIB); karena acq_time FIRMS berresolusi menit, semua jendela jadi
+    jendela hari kalender: titik <= 23.59 hari itu ikut, jendela 7 hari mulai 00.00 enam hari sebelumnya, aktif 72 jam = terakhir terlihat
+    sejak 00.00 dua hari sebelumnya, kolom "< 24 jam" dan "bertitik hari itu" (kolom 3) = terakhir terlihat pada tanggal WIB hari itu.
+    jam_sejak arsip ini TIDAK dibulatkan (main() membulatkan 0,1 jam: cluster terakhir terlihat 00.00-00.03 WIB jatuh ke 24,0 dan keluar dari
+    kolom 3; 17 Nov 2026 empat cluster Maluku). Sama dengan generator firespot_hari.hitung(hari, '23:59') kecuali titik yang tepat 23.59 WIB.
+    `titik` harus mencakup 7 x 24 jam sebelum jam beku (main: unduhan HARI + 1 hari). FWI hari itu dari `grid`: jalan pertama sesudah 00.00 WIB
+    menghitung ulang FWI (fwi.json hari_ini berganti), jadi FWI kemarin bisa sedikit berbeda dari yang dipakai jalan 23.xx karena cuaca terkini.
+    Arsip yang ada TIDAK ditimpa bila jumlah nasional kolom 3 (cluster bertitik hari itu, pengganti HS: arsip tidak menyimpan HS) atau kolom 4
+    (titik firespot) baru < BATAS_TURUN x yang lama: jalan yang rusak (FIRMS sebagian, FWI hilang) tidak boleh merusak arsip yang lebih baik.
+    -> (fitur, ditulis)."""
+    hari = hari_ini - dt.timedelta(days=1)
+    beku = dt.datetime.combine(hari, BEKU, WIB)
+    if not any(fwi_hari(g, hari.isoformat()) for g in grid):
+        print(f"::warning title=Arsip kemarin tanpa FWI::grid FWI tak memuat {hari}; cluster dinilai tanpa cuaca", file=sys.stderr)
+    fitur, _ = rakit_kluster([p for p in titik if p["t"] <= beku], beku, grid, hari.isoformat(), w, lahan, garis=False)
+    for f in fitur:   # tanpa pembulatan: batas 24/72 jam dan kolom 3 tepat di pergantian tanggal WIB
+        q = f["properties"]
+        q["jam_sejak"] = (beku - dt.datetime.fromisoformat(q["akhir"])).total_seconds() / 3600
+    jam_hari = (beku - dt.datetime.combine(hari, dt.time(), WIB)).total_seconds() / 3600
+    folder = folder or os.path.join(KELUAR, "kluster_hari")
+    nas = lambda w_, i: sum(v[i] for k, v in w_.items() if "|" not in k)
+    baru = ringkas_kluster(fitur, jam_hari)
+    jalur = os.path.join(folder, f"{hari.isoformat()}.json")
+    try:
+        lama = json.load(open(jalur))["w"]
+    except (OSError, ValueError, KeyError):
+        lama = None
+    if lama:
+        turun = [(nama, nas(baru, i), nas(lama, i)) for i, nama in ((3, "cluster bertitik hari itu"), (4, "titik firespot"))
+                 if nas(baru, i) < BATAS_TURUN * nas(lama, i)]
+        if turun:
+            print(f"::warning title=Arsip kemarin tidak ditimpa::{hari}: " + "; ".join(f"{n} {b} < {BATAS_TURUN:.0%} dari arsip {l}" for n, b, l in turun)
+                  + "; arsip lama dibiarkan", file=sys.stderr)
+            return fitur, False
+    arsip_kluster(fitur, hari, folder, jam_hari=jam_hari, tambah={"penuh": True, "beku": beku.isoformat()})
+    print(f"arsip kemarin {hari}: hari penuh, {len(fitur)} cluster, titik firespot nasional {nas(baru, 4)}"
+          + (f" (arsip lama {nas(lama, 4)})" if lama else ""), file=sys.stderr)
+    return fitur, True
 
 
 def pecah_kluster(fitur):
@@ -800,15 +893,17 @@ def ringkas_kluster(fitur, jam_hari=0):
     return w
 
 
-def arsip_kluster(fitur, hari, folder, simpan_hari=8, jam_hari=0):
-    """kluster_hari/<hari WIB>.json = ringkas_kluster jalan terakhir hari itu (jalan 3-jam menimpa, jadi yang tersisa = keadaan akhir hari).
+def arsip_kluster(fitur, hari, folder, simpan_hari=8, jam_hari=0, tambah=None):
+    """kluster_hari/<hari WIB>.json = ringkas_kluster pada jam_hari jam sesudah 00.00 WIB hari itu. Jalan 3-jam hari itu menimpanya (yang terakhir
+    ± 23.15-23.40 WIB, BUKAN akhir hari: lintasan malam yang tayang di FIRMS sesudah tengah malam belum ada); jalan dini hari berikutnya menimpanya lagi
+    dengan hari kalender penuh (arsip_kemarin), bertanda penuh: true. Arsip tanpa tanda itu (semua yang ditulis sebelum 18 Nov 2026) terpotong.
     Dibaca tabel wilayah saat hari lampau dipilih. Berkas lebih tua dari simpan_hari dihapus (pemilih hari layar maks 7 hari)."""
     os.makedirs(folder, exist_ok=True)
     with open(os.path.join(folder, f"{hari.isoformat()}.json"), "w") as f:
         # k = pusat cluster level >= 1 (yang digambar peta) supaya peta ikut hari terpilih; poligon tidak diarsip
         k = [[p["id"], round(p["lon"], 4), round(p["lat"], 4), p["level"], p.get("n", 0), p.get("px24", 0)]
              for p in (x["properties"] for x in fitur) if p.get("level", 0) >= 1 and "lon" in p]
-        json.dump({"hari": hari.isoformat(), "w": ringkas_kluster(fitur, jam_hari), "k": k}, f, ensure_ascii=False, separators=(",", ":"))
+        json.dump({"hari": hari.isoformat(), **(tambah or {}), "w": ringkas_kluster(fitur, jam_hari), "k": k}, f, ensure_ascii=False, separators=(",", ":"))
     batas = (hari - dt.timedelta(days=simpan_hari)).isoformat()
     for n in os.listdir(folder):
         if n.endswith(".json") and n[:10] < batas:
@@ -1126,6 +1221,73 @@ def uji():
         assert json.load(open(os.path.join(d, "2026-10-19.json")))["w"]["62"] == [1, 0, 3, 0, 0, 0, 0]
         assert [r[3] for r in json.load(open(os.path.join(d, "2026-10-19.json")))["k"]] == [3], "arsip k: pusat cluster level>=1"
     print("harian uji: arsip kluster OK")
+    # arsip kemarin hari penuh (arsip_kemarin): jam beku di ujung hari, jendela diukur dari jam beku, kolom 3 dari tanggal WIB, tanpa menimpa arsip lebih baik
+    class Kosong:
+        indeks = {}
+        def cari(self, *a):
+            return None
+    lahan = {"daops": [], "risiko": {}, "gambut": Kosong(), "kawasan": Kosong(), "konsesi": Kosong()}
+    D = dt.date(2026, 11, 16)
+    grid = [{"lat": -7.0, "lon": 140.0, "prov": "93", "hari": [{"tgl": D.isoformat(), "fwi": 5.0, "dc": 100, "isi": 2}]}]
+    wib = lambda hari, j, m: dt.datetime.combine(D - dt.timedelta(days=hari), dt.time(j, m), WIB)
+    def pt(t, i=0, c=1, prov="93", lon=140.0):
+        return {"lat": -7.0 + i * 0.0045, "lon": lon, "t": t, "s": "N21", "c": c, "frp": 5.0, "px": 0.4, "adm": [prov, "Kab", "Kec"]}
+    A1 = [pt(wib(0, 23, 10), i) for i in range(AMBANG_MEDIUM_PX)] + [pt(wib(0, 23, 59), 1)]          # lintasan 23.10 + titik tepat 23.59: ikut (n = 5)
+    A1 += [pt(wib(-1, 0, 30), 2)]                                                                     # 00.30 WIB D+1, piksel yang sama: tidak ikut
+    B = [pt(wib(0, 0, m), i, prov="81", lon=128.0) for i, m in enumerate((0, 1, 2, 2))]              # terakhir 00.02 WIB D: dulu 23,97 -> 24,0 jam
+    C = [pt(wib(0, 0, 0) - dt.timedelta(hours=36 * k), 0, 2, "61", 110.0) for k in range(5)]         # 00.00 D .. 00.00 D-6, rantai 36 jam
+    C += [pt(wib(7, 23, 59), 0, 2, "61", 110.0)]                                                      # 23.59 D-7: di luar 7 hari dari jam beku
+    T = A1 + B + C
+    with tempfile.TemporaryDirectory() as d:
+        fit, tulis = arsip_kemarin(T, D + dt.timedelta(days=1), grid, Kosong(), lahan, d)
+        a = json.load(open(os.path.join(d, f"{D}.json")))
+        assert tulis and os.listdir(d) == [f"{D}.json"] and a["hari"] == D.isoformat() and a["penuh"] is True, a.keys()
+        n = {f["properties"]["prov"]: f["properties"]["n"] for f in fit}
+        assert n == {"93": AMBANG_MEDIUM_PX + 1, "81": 4, "61": 5}, f"titik 23.59 ikut, 00.30 D+1 dan 23.59 D-7 tidak: {n}"
+        assert dt.datetime.fromisoformat(next(f for f in fit if f["properties"]["prov"] == "61")["properties"]["awal"]) == wib(6, 0, 0), "jendela 7 hari diukur dari jam beku"
+        assert a["w"]["81"][3] == 1 and a["w"]["81"][5] == 1, f"terakhir 00.02 WIB D = bertitik hari D dan < 24 jam: {a['w']['81']}"
+        assert a["w"]["93"][3:6] == [1, AMBANG_MEDIUM_PX, 1], f"titik firespot = lokasi unik (titik 23.59 di piksel yang sama): {a['w']['93']}"
+        assert a["w"]["61"][3] == 1 and a["w"]["61"][5] == 1, a["w"]["61"]
+        assert fit[0]["geometry"]["type"] == "Point" and fit[0]["properties"]["luas"] == 0, "garis=False: tanpa garis luar"
+        # jalan yang rusak (lintasan malam hilang) tidak menimpa arsip yang lebih lengkap
+        isi = open(os.path.join(d, f"{D}.json")).read()
+        _, tulis = arsip_kemarin(B + C, D + dt.timedelta(days=1), grid, Kosong(), lahan, d)
+        assert not tulis and open(os.path.join(d, f"{D}.json")).read() == isi, "titik firespot turun > 10 persen: arsip lama dibiarkan"
+        _, tulis = arsip_kemarin(T, D + dt.timedelta(days=1), grid, Kosong(), lahan, d)
+        assert tulis, "jalan yang sama lengkapnya menimpa"
+    lama_env = os.environ.pop("ULANG_KEMARIN", None)
+    try:
+        assert ulang_kemarin(dt.datetime(2026, 11, 17, 2, 15, tzinfo=WIB)) and ulang_kemarin(dt.datetime(2026, 11, 16, 23, 30, tzinfo=dt.timezone.utc))
+        assert not ulang_kemarin(dt.datetime(2026, 11, 17, 7, 0, tzinfo=WIB)) and not ulang_kemarin(dt.datetime(2026, 11, 16, 16, 30, tzinfo=WIB))
+        os.environ["ULANG_KEMARIN"] = "0"
+        assert not ulang_kemarin(dt.datetime(2026, 11, 17, 2, 15, tzinfo=WIB))
+    finally:
+        os.environ.pop("ULANG_KEMARIN", None)
+        if lama_env is not None:
+            os.environ["ULANG_KEMARIN"] = lama_env
+    # titik main = potongan 7 x 24 jam dari unduhan 8 hari, sama persis dengan hotspot(hari=7) dulu (FIRMS palsu: satu deteksi per jam per sensor)
+    def palsu_firms(url, coba=4, json_=False):
+        mulai = dt.datetime.combine(dt.date.fromisoformat(url.split("/")[-1]), dt.time(), dt.timezone.utc)
+        sen = url.split("/")[-4]
+        isi = "latitude,longitude,acq_date,acq_time,confidence,frp,scan,track\n"
+        for j in range(5 * 24):
+            t = mulai + dt.timedelta(hours=j, minutes=7 + 13 * (sen == "VIIRS_NOAA21_NRT"))
+            isi += f"{-2 - j * 1e-3:.4f},113.0,{t:%Y-%m-%d},{t:%H%M},{'60' if sen == 'MODIS_NRT' else 'n'},5.0,0.4,0.4\n"
+        return isi
+    class W1:
+        def cari(self, lon, lat):
+            return ["62", "Kab", "Kec"]
+    ambil_asli, globals()["ambil"] = globals()["ambil"], palsu_firms
+    try:
+        kini_uji = dt.datetime(2026, 11, 17, 19, 30, tzinfo=dt.timezone.utc)
+        tujuh = hotspot("K", W1(), kini_uji)
+        lebar = hotspot("K", W1(), kini_uji, hari=HARI + 1)
+        kunci_p = lambda ps: [(p["lat"], p["lon"], p["t"], p["s"]) for p in ps]
+        assert len(lebar) > len(tujuh) and kunci_p(titik_7hari(lebar, kini_uji)) == kunci_p(tujuh), "titik main harus sama dengan hotspot(hari=7)"
+        assert min(p["t"] for p in lebar) < kini_uji - dt.timedelta(days=HARI) - dt.timedelta(hours=7), "unduhan 8 hari menutup jendela 7 hari sebelum ujung kemarin"
+    finally:
+        globals()["ambil"] = ambil_asli
+    print("harian uji: arsip kemarin hari penuh OK")
     # firespot: enam pola, piksel unik, gerbang
     def tt(hari, c, n=1, lat=-3.0, lon=112.0, geser=0.0):  # n titik di piksel berbeda, hari ke-`hari` Okt 2026 siang WIB
         return [{"t": dt.datetime(2026, 10, hari, 5, 0, tzinfo=dt.timezone.utc), "c": c, "lat": lat + i * 0.01 + geser, "lon": lon} for i in range(n)]

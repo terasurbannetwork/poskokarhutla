@@ -1,0 +1,317 @@
+{
+ "judul_tengah_y": 56,
+ "kajian": "harian",
+ "format": "harian",
+ "tanggal": "2026-11-17",
+ "cut_off": "DIBI diunduh 30 Okt 2026",
+ "pesan_kunci": "Banjir 2025 di Aceh, Sumatera Utara, dan Sumatera Barat menelan korban jiwa jauh di atas tahun sebelumnya, hampir seluruhnya dari kejadian akhir November 2025.",
+ "judul_dokumen": "Banjir 2025 di Aceh, Sumatera Utara, dan Sumatera Barat",
+ "_catatan": "Permintaan 17 Nov 2026: data banjir 2025 tiga provinsi, tiga slide, tanpa sampul. Bahan dari buat.py (DIBI di repo poskokarhutla).",
+ "bagian": [
+  {
+   "judul": "Rekap tahunan",
+   "label": "Rekap tahunan",
+   "halaman_tetap": [
+    1
+   ]
+  },
+  {
+   "judul": "Banjir akhir 2025",
+   "label": "Banjir akhir 2025",
+   "halaman_tetap": [
+    2
+   ]
+  },
+  {
+   "judul": "Kab/kota terparah",
+   "label": "Kab/kota terparah",
+   "halaman_tetap": [
+    3
+   ]
+  }
+ ],
+ "slide": [
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "seri": "banjir",
+   "judul_bentuk": "temuan",
+   "rasio": 0.42,
+   "cut_off": false,
+   "pesan": "Lonjakan korban banjir 2025 dibanding dua tahun sebelumnya",
+   "sumber": "DIBI BNPB, rekap tahunan banjir per kab/kota (semua jenis banjir), diunduh 30 Okt 2026; batas kab/kota BIG",
+   "judul": "Korban meninggal dan hilang akibat banjir 2025 di tiga provinsi mencapai {{angka:y.mh25}} jiwa, {{angka:y.kali}} kali lipat tahun 2024",
+   "peta": {
+    "png": "petanya/s1-banjir2025.png",
+    "keyakinan": "terverifikasi",
+    "sumber": "DIBI BNPB, rekap tahunan banjir per kab/kota (semua jenis banjir), diunduh 30 Okt 2026",
+    "unsur_tampil": false,
+    "legenda": {
+     "kartu": true,
+     "judul": "Kejadian banjir 2025",
+     "item": [
+      {
+       "warna": "skala.air.2",
+       "label": "{{angka:b1.a}} s.d. {{angka:b1.b}} kali",
+       "nilai": "{{angka:y.c1}}",
+       "ikon": "banjir",
+       "tint": "tint.basah.pita"
+      },
+      {
+       "warna": "skala.air.4",
+       "label": "{{angka:b1.c}} s.d. {{angka:b1.d}} kali",
+       "nilai": "{{angka:y.c2}}",
+       "ikon": "banjir",
+       "tint": "tint.basah.pita"
+      },
+      {
+       "warna": "skala.air.5",
+       "label": "{{angka:b1.e}} kali atau lebih",
+       "nilai": "{{angka:y.c3}}",
+       "ikon": "banjir",
+       "tint": "tint.basah.pita"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "tanpa_kepala": true,
+    "pita_kelompok": true,
+    "pita_tinggi_pt": 17,
+    "peringkat": false,
+    "data": {
+     "csv": "data/lap/s1.csv",
+     "keyakinan": "terverifikasi",
+     "sumber": "DIBI BNPB, rekap tahunan banjir per kab/kota (semua jenis banjir), diunduh 30 Okt 2026",
+     "kolom": [
+      {
+       "nama": "prov",
+       "kepala": "Provinsi"
+      },
+      {
+       "nama": "tahun",
+       "kepala": "Tahun"
+      },
+      {
+       "nama": "kej",
+       "kepala": "Kejadian",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "mh",
+       "kepala": "Meninggal dan hilang",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "dmp",
+       "kepala": "Terdampak",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "ung",
+       "kepala": "Mengungsi",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "rrb",
+       "kepala": "Rumah rusak berat",
+       "fmt": "0",
+       "jumlah": false
+      }
+     ]
+    },
+    "pita_hitung": false,
+    "sel_dua_baris": true
+   },
+   "bagian": 1
+  },
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "seri": "banjir",
+   "judul_bentuk": "temuan",
+   "rasio": 0.42,
+   "cut_off": false,
+   "pesan": "Rincian korban dan kerusakan banjir akhir 2025 per provinsi",
+   "sumber": "DIBI BNPB, kejadian banjir harian per kab/kota 2 Nov s.d. 30 Des 2025, diunduh 28 Okt 2026; batas kab/kota BIG",
+   "judul": "Banjir November sampai Desember 2025 memaksa {{angka:h.ung}} jiwa mengungsi dan merusak berat {{angka:h.rrb}} rumah di {{angka:h.kab}} kab/kota",
+   "peta": {
+    "png": "petanya/s2-banjir2025.png",
+    "keyakinan": "terverifikasi",
+    "sumber": "DIBI BNPB, kejadian banjir harian per kab/kota 2 Nov s.d. 30 Des 2025, diunduh 28 Okt 2026",
+    "unsur_tampil": false,
+    "legenda": {
+     "kartu": true,
+     "judul": "Rumah rusak berat (unit)",
+     "item": [
+      {
+       "warna": "skala.api.2",
+       "label": "Di bawah {{angka:b2.a}} unit",
+       "nilai": "{{angka:h.c1}}",
+       "ikon": "rumah",
+       "tint": "tint.api.pita"
+      },
+      {
+       "warna": "skala.api.3",
+       "label": "{{angka:b2.a}} s.d. {{angka:b2.b}} unit",
+       "nilai": "{{angka:h.c2}}",
+       "ikon": "rumah",
+       "tint": "tint.api.pita"
+      },
+      {
+       "warna": "skala.api.5",
+       "label": "{{angka:b2.c}} atau lebih unit",
+       "nilai": "{{angka:h.c3}}",
+       "ikon": "rumah",
+       "tint": "tint.api.pita"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "tanpa_kepala": true,
+    "pita_kelompok": true,
+    "pita_tinggi_pt": 17,
+    "peringkat": false,
+    "data": {
+     "csv": "data/lap/s2.csv",
+     "keyakinan": "terverifikasi",
+     "sumber": "DIBI BNPB, kejadian banjir harian per kab/kota 2 Nov s.d. 30 Des 2025, diunduh 28 Okt 2026",
+     "kolom": [
+      {
+       "nama": "kel",
+       "kepala": "Kelompok"
+      },
+      {
+       "nama": "ind",
+       "kepala": "Indikator"
+      },
+      {
+       "nama": "aceh",
+       "kepala": "Aceh",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "sumut",
+       "kepala": "Sumatera Utara",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "sumbar",
+       "kepala": "Sumatera Barat",
+       "fmt": "0",
+       "jumlah": false
+      },
+      {
+       "nama": "jml",
+       "kepala": "Jumlah",
+       "fmt": "0",
+       "jumlah": false
+      }
+     ]
+    },
+    "pita_hitung": false,
+    "sel_dua_baris": true
+   },
+   "bagian": 2
+  },
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "seri": "banjir",
+   "judul_bentuk": "temuan",
+   "rasio": 0.42,
+   "cut_off": false,
+   "pesan": "Kab/kota dengan korban meninggal dan hilang terbanyak",
+   "sumber": "DIBI BNPB, kejadian banjir harian per kab/kota 2 Nov s.d. 30 Des 2025, diunduh 28 Okt 2026; batas kab/kota BIG",
+   "judul": "Empat kab/kota terparah di tiap provinsi menyumbang {{angka:k.persen}} persen dari {{angka:k.mhall}} korban meninggal dan hilang banjir akhir 2025",
+   "peta": {
+    "png": "petanya/s3-banjir2025.png",
+    "keyakinan": "terverifikasi",
+    "sumber": "DIBI BNPB, kejadian banjir harian per kab/kota 2 Nov s.d. 30 Des 2025, diunduh 28 Okt 2026",
+    "unsur_tampil": false,
+    "legenda": {
+     "kartu": true,
+     "judul": "Meninggal dan hilang (jiwa)",
+     "item": [
+      {
+       "warna": "skala.api.2",
+       "label": "{{angka:b3.a}} s.d. {{angka:b3.b}} jiwa",
+       "nilai": "{{angka:k.c1}}",
+       "ikon": "jiwa",
+       "tint": "tint.api.pita"
+      },
+      {
+       "warna": "skala.api.3",
+       "label": "{{angka:b3.c}} s.d. {{angka:b3.d}} jiwa",
+       "nilai": "{{angka:k.c2}}",
+       "ikon": "jiwa",
+       "tint": "tint.api.pita"
+      },
+      {
+       "warna": "skala.api.5",
+       "label": "{{angka:b3.e}} atau lebih jiwa",
+       "nilai": "{{angka:k.c3}}",
+       "ikon": "jiwa",
+       "tint": "tint.api.pita"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "tanpa_kepala": true,
+    "pita_kelompok": true,
+    "pita_tinggi_pt": 17,
+    "peringkat": true,
+    "data": {
+     "csv": "data/lap/s3.csv",
+     "keyakinan": "terverifikasi",
+     "sumber": "DIBI BNPB, kejadian banjir harian per kab/kota 2 Nov s.d. 30 Des 2025, diunduh 28 Okt 2026",
+     "kolom": [
+      {
+       "nama": "prov",
+       "kepala": "Provinsi"
+      },
+      {
+       "nama": "kab",
+       "kepala": "Kab/Kota"
+      },
+      {
+       "nama": "tgl",
+       "kepala": "Tanggal kejadian"
+      },
+      {
+       "nama": "mng",
+       "kepala": "Meninggal",
+       "fmt": "0"
+      },
+      {
+       "nama": "hil",
+       "kepala": "Hilang",
+       "fmt": "0"
+      },
+      {
+       "nama": "ung",
+       "kepala": "Mengungsi",
+       "fmt": "0"
+      },
+      {
+       "nama": "rrb",
+       "kepala": "Rumah rusak berat",
+       "fmt": "0"
+      }
+     ]
+    },
+    "pita_hitung": false,
+    "sel_dua_baris": true
+   },
+   "bagian": 3
+  }
+ ]
+}

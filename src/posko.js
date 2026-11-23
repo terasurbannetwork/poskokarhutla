@@ -10,6 +10,8 @@ import {akunGerbang, json, gagal, acak, sha, shaBytes, adminOK, bacaBody, bacaBy
 import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
+import {kirimEmail as kirimSurel} from "./keluar.js";
+import {uraiCsv} from "../public/inti/impor.js";
 import {halamanAdmin} from "./statistik.js";
 import {tautkanLaporanRegu, tugasRegu} from "./instansi.js";
 import {halamanPosko, HALAMAN_STAF} from "./admin_halaman.js";
@@ -325,26 +327,12 @@ async function tambahKontak(env, req, kini) {
   return json({kontak: await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt WHERE perusahaan_id = ?").bind(c.v.perusahaan_id).first()}, 201);
 }
 /* CSV: baris pertama = kepala (wajib perusahaan_id dan nama_pt; opsional kontak,email,wa,telepon,catatan), pemisah , atau ;, kutip ganda untuk isi bertanda baca */
-export function uraiCsvKontak(teks) {
-  const baris = []; let b = [], f = "", q = false;
-  const s = String(teks).replace(/^﻿/, "");
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (q) { if (c === '"') { if (s[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
-    else if (c === '"') q = true;
-    else if (c === "," || c === ";") { b.push(f); f = ""; }
-    else if (c === "\n" || c === "\r") { if (c === "\r" && s[i + 1] === "\n") i++; b.push(f); f = ""; if (b.some(x => x.trim())) baris.push(b); b = []; }
-    else f += c;
-  }
-  b.push(f); if (b.some(x => x.trim())) baris.push(b);
-  return baris;
-}
 async function imporKontak(env, req, kini) {
   const mod = await modOK(env, req); if (!mod) return tolakMod();
   const b = await bacaBody(req, MAKS_CSV + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   if (typeof b.o.csv !== "string" || !b.o.csv.trim()) return gagal(400, "csv wajib (teks CSV dengan baris kepala)");
   if (b.o.csv.length > MAKS_CSV) return gagal(413, `csv ${b.o.csv.length} karakter, maksimal ${MAKS_CSV}`);
-  const [kepala, ...isi] = uraiCsvKontak(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
+  const [kepala, ...isi] = uraiCsv(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
   if (!kol.includes("perusahaan_id") || !kol.includes("nama_pt")) return gagal(400, "baris kepala wajib memuat perusahaan_id dan nama_pt");
   const dikenal = ["perusahaan_id", "nama_pt", "kontak", "email", "wa", "telepon", "catatan"], asing = kol.filter(k => !dikenal.includes(k));
   if (asing.length) return gagal(400, `kolom tidak dikenal: ${asing.join(", ")} (boleh: ${dikenal.join(", ")})`);
@@ -386,12 +374,7 @@ export function pesanPanggilan(p, batas, tambahan = "") {
   return {subject: `[Posko Karhutla] ${p.titik_n} titik panas di konsesi ${p.nama_pt} (${p.tanggal})`, teks,
     html: `<p style="font:14px/1.55 Arial,sans-serif;color:#1d2733">${esc(isi)}</p>${tambahan ? `<p style="font:14px/1.55 Arial,sans-serif;color:#1d2733">${esc(tambahan)}</p>` : ""}`};
 }
-export async function kirimEmail(env, ke, m) {   // ke = satu alamat atau larik (pengingat.js mengirim ke EMAIL_TO)
-  const reply = (env.EMAIL_TO || "").split(",").map(s => s.trim()).filter(Boolean)[0];
-  const r = await fetch("https://api.resend.com/emails", {method: "POST", signal: AbortSignal.timeout(8000), headers: {authorization: `Bearer ${env.EMAIL_API_KEY}`, "content-type": "application/json"},
-    body: JSON.stringify({from: env.EMAIL_FROM, to: [].concat(ke), ...(reply ? {reply_to: reply} : {}), subject: m.subject, text: m.teks, html: m.html})});
-  if (!r.ok) { r.body?.cancel(); throw new Error(`Resend HTTP ${r.status}`); }   // isi balasan tidak ikut log/respons
-}
+export const kirimEmail = (env, ke, m) => kirimSurel(env, ke, m, {balasKe: (env.EMAIL_TO || "").split(",").map(s => s.trim()).filter(Boolean)[0]});   // pengingat.js mengirim ke EMAIL_TO
 const KOLOM_PANGGILAN = `p.id, p.tanggal, p.perusahaan_id, p.nama_pt, p.prov, p.kab, p.titik_n, p.terdeteksi, p.lat, p.lon, p.status, p.dipanggil_pada, p.batas, p.direspons_pada, p.dicek_pada,
   p.saluran, p.hasil, p.catatan, p.oleh, p.dibuat, p.dummy`;
 async function daftarPanggilan(env, req, url, kini) {

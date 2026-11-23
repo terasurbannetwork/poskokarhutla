@@ -1,0 +1,304 @@
+{
+ "hari": "2026-11-17",
+ "cutoff": "2026-11-17T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2185.0,
+    "mengungsi": 279.0,
+    "rumah_dampak": 2010.0
+   },
+   "teks": {
+    "dampak": "2.185 KK / 9.064 jiwa terdampak (Dalam pendataan)",
+    "status_darurat": "Tanggap Darurat TMT 6/11/2026 s.d 19/11/2026",
+    "kondisi": "Banjir belum surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3393.0,
+    "rumah_dampak": 3393.0
+   },
+   "teks": {
+    "dampak": "± 3.393 KK / 13.146 jiwa terdampak",
+    "status_darurat": "Siaga  Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "TMA fluktuatif, di beberapa wilayah banjir mulai surut dan sudah bisa dilalui kendaraan R2 dan R4",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 254.0,
+    "mengungsi": 233.0
+   },
+   "teks": {
+    "dampak": "± 254 KK / 947 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Banjir masih belum surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4397.0,
+    "mengungsi": 1462.0
+   },
+   "teks": {
+    "dampak": "4.397 KK/15.921 jiwa terdampak (dalam pendataan",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Untuk wilayah Hulu air sudah surut, untuk wilayah Tengah dan Hilir air beranjak surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "17",
+   "lokasi": "Seluma",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir dan Abrasi",
+   "angka": {},
+   "teks": {
+    "dampak": "± 168 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir masih belum surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "33",
+   "lokasi": "Banyumas",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {},
+   "teks": {
+    "dampak": "1 (satu) jiwa meninggal dunia",
+    "status_darurat": "-",
+    "kondisi": "Korban sudah ditemukan dalam keadaan meninggal dunia",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Korban ditemukan",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Sragen",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 5500.0,
+    "jiwa": 18495.0,
+    "tangki": 4.0,
+    "liter": 20000.0
+   },
+   "teks": {
+    "dampak": "± 5.500 KK / ± 18.495 jiwa terdampak",
+    "status_darurat": "Siaga Darurat TMT 1/6/2026 s.d 31/12/2026",
+    "kondisi": "BPBD Kab. Sragen melaksanakan kegiatan pendistribusian air bersih sebanyak 4 Tangki / 20.000 Liter.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-07-07",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "35",
+   "lokasi": "Jember",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 5.0,
+    "rumah": 5.0
+   },
+   "teks": {
+    "dampak": "1 jiwa luka ringan, ± 5 KK terdampak (dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Dalam Penanganan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Sambas",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 117.0,
+    "rumah_dampak": 112.0
+   },
+   "teks": {
+    "dampak": "117 KK terdampak",
+    "status_darurat": "Siaga Darurat Provinsi TMT 19/10/2026 s.d 31/01/2027",
+    "kondisi": "Banjir sudah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Sekadau",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 480.0,
+    "rumah_dampak": 480.0
+   },
+   "teks": {
+    "dampak": "± 480 KK terdampak",
+    "status_darurat": "Siaga Darurat TMT 9/01/2026 s.d 31/12/2026",
+    "kondisi": "Banjir sudah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Melawi",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 178.0
+   },
+   "teks": {
+    "dampak": "± 178 KK",
+    "status_darurat": "Siaga Darurat Provinsi TMT 19/10/2026 s.d 31/01/2027",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "gempabumi",
+   "prov": "81",
+   "lokasi": "Kepulauan Tanimbar",
+   "status": "belum",
+   "baru": true,
+   "label": "Gempa Bumi",
+   "angka": {},
+   "teks": {
+    "dampak": "-",
+    "status_darurat": "-",
+    "kondisi": "Dirasakan kuat, masyarakat sebagian panik, BPBD monitoring pasca gempa",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-17",
+   "kondisi_pil": [
+    "Pemantauan",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "53",
+  "81"
+ ]
+}

@@ -801,6 +801,15 @@
     return bagian("lifeline", "listrik", "Status layanan", "Status layanan kejadian aktif", d);
   }
 
+  /* ---------- laporan warga Lapor Bencana per kejadian (dalops_lapor.js; pemilik 20 Nov 2026 satu pintu di Dalops); dimuat hanya saat dibuka ---------- */
+  function bagianLapor() {
+    if (!window.DalopsLapor?.JENIS[J.k]) return null;
+    const w = h("div", {class: "dl-isi"}), jenis = J.k;
+    const d = h("details", {class: "dl-lf"}, h("summary", {teks: "Lihat laporan warga yang masih berjalan"}), w);
+    d.addEventListener("toggle", () => { if (d.open && !d.dataset.muat) { d.dataset.muat = 1; window.DalopsLapor.isi(w, jenis, {h, F}); } });
+    return bagian("lapor", "personel", "Laporan warga", "Laporan warga per kejadian", d);
+  }
+
   /* ---------- prakiraan banjir per hari + hujan tiga hari per tanggal ---------- */
   function bagianPrakiraan(sk, sudah, hariStatus, wadah, min, pekan = []) {
     const daftar = H.siaga(sk, sudah, min), hari = hariStatus || [], perHari = daftar.some(x => x.h3d?.length);
@@ -1034,7 +1043,7 @@
         : bagian("prakiraan", "peringatan", "Peringatan dini", `Prakiraan ${J.kata} belum termuat`, kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")),
       bagianMitigasi(st, posko, pekan, hari),
       bagianUpaya(pekan, hari),
-      bagianLifeline()].filter(Boolean));   // upaya penanganan paling bawah (pemilik 5 Nov 2026)
+      bagianLifeline(), bagianLapor()].filter(Boolean));   // upaya penanganan paling bawah (pemilik 5 Nov 2026)
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = panel[jenis].querySelector("section[id$='prakiraan']");
     if (pra && !pra.querySelector(".dl-semua") && pra.querySelector(".dl-grup")) pra.querySelector(".ex-jd").append(bukaSemua(pra));

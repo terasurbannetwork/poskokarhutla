@@ -20,7 +20,7 @@ test('sumber.json nyata sah dan tiap sumber punya pemilik, pemakai, jadwal, lise
   const r = py('periksa');
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const d = JSON.parse(readFileSync(SUMBER, 'utf8'));
-  assert.equal(d.sumber.length, 43);
+  assert.equal(d.sumber.length, 47);
   for (const x of d.sumber) {
     for (const k of ['pemilik', 'pemakai', 'jadwal', 'lisensi'])
       assert.ok(String(x[k]).trim(), `${x.id}: ${k} kosong`);

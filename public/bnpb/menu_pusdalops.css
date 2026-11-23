@@ -65,3 +65,18 @@ aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik{background:color-mix(in o
 aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik svg{color:var(--on-brand)}
 aside.db-nav .db-nav-b.mp-induk{font-weight:800}
 @media (prefers-reduced-motion:reduce){aside.db-nav .db-nav-b{transition:none}}
+
+/* kepala di kiri atas (pemilik 20 Nov 2026, model /lapor/meja): di layar lebar bilah navy yang kosong hilang; merek dan tombol Keluar di puncak panel kiri.
+   Layar sempit (< 901px) tetap memakai bilah atas karena panel kiri tersembunyi di sana. */
+.mp-merek{display:none}
+@media (min-width:901px){
+  body.mp-model-a>header.ad-top{display:none}
+  body.mp-model-a .mp-a>.mp-side{top:12px;height:calc(100dvh - 24px)}
+  .mp-merek{display:flex;align-items:center;gap:6px;flex:none;padding:4px 2px 12px;border-bottom:1px solid var(--line)}
+  .mp-merek-a{display:flex;align-items:center;gap:10px;flex:1;min-width:0;color:var(--brand);text-decoration:none}
+  .mp-merek-a img{width:34px;height:34px;flex:none}
+  .mp-merek-a span{display:flex;flex-direction:column;min-width:0;font:800 1.0625rem/1.15 var(--display,inherit)}
+  .mp-merek-a small{font:500 .6875rem/1.3 var(--font,inherit);color:var(--ink2)}
+  .mp-merek #keluar{color:var(--ink2)}
+  .mp-merek #keluar:hover{color:var(--ink);background:var(--surface)}
+}

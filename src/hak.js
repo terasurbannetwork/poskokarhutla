@@ -634,10 +634,14 @@ export const pbRenlapLajuMinta = async (env, p, oleh, sejak) => (await sedia(env
    Satu Pintu Masuk (migrasi 0133_masuk; src/masuk.js; data/kajian-bnpb/pintu-masuk/DESAIN-TEKNIS.md §2, §4.1). Hak dicek di rute (publik berlaju, kode sah, atau sesi_masuk).
    Semua kueri lewat kunci utama atau indeks mk_kode_nomor / UNIQUE mk_akun.wa. Kode hanya HMAC; pesan wa_antre jenis 'otp' berbagi id dengan mk_kode (hapus lewat kunci utama). */
 export const mkJedaTerakhir = async (env, nsha, sejak) => (await env.DB.prepare("SELECT max(dibuat) d FROM mk_kode WHERE nomor_sha = ? AND dibuat > ?").bind(nsha, sejak).first())?.d ?? null;
+/* satu-satunya penulis antrean WA (FITUR §9, src/keluar.js): pernyataan untuk dimasukkan ke batch pemanggil. dummy = pesan contoh, tidak pernah ditarik gateway */
+export const stmtAntreWa = (env, {id, tujuan, pesan, jenis, rujukan, kini, dummy = 0}) =>
+  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat, dummy) VALUES (?, ?, ?, ?, ?, 'antre', 0, ?, ?)")
+    .bind(id, tujuan, pesan.slice(0, 1500), jenis, rujukan, kini, dummy ? 1 : 0);
 /* kode baru dan pesan antrean dalam satu batch; kode lama nomor itu TETAP sah (D18: peminta iseng tidak mematikan kode korban) */
 export const mkKodeBaru = (env, id, nsha, kodeSha, nomor, pesan, kini, habis) => env.DB.batch([
   env.DB.prepare("INSERT INTO mk_kode (id, nomor_sha, kode_sha, saluran, coba, dibuat, habis) VALUES (?, ?, ?, 'wa', 0, ?, ?)").bind(id, nsha, kodeSha, kini, habis),
-  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat) VALUES (?, ?, ?, 'otp', ?, 'antre', 0, ?)").bind(id, nomor, pesan, id, kini)]);
+  stmtAntreWa(env, {id, tujuan: nomor, pesan, jenis: "otp", rujukan: id, kini})]);
 /* semua kode aktif nomor itu naik `coba` dalam satu pernyataan, sebelum dibandingkan; RETURNING membawa nilai sesudah naik */
 export const mkNaikCobaSemua = async (env, nsha, kini, maks) => (await env.DB.prepare("UPDATE mk_kode SET coba = coba + 1 WHERE id IN (SELECT id FROM mk_kode WHERE nomor_sha = ?1 AND dipakai IS NULL AND habis > ?2 ORDER BY dibuat DESC LIMIT ?3) RETURNING id, coba, kode_sha, saluran").bind(nsha, kini, maks).all()).results;
 /* sesudah satu kode menang: kode aktif lain nomor itu hangus dan semua baris otp-nya (termasuk milik pemenang) dihapus lewat kunci utama */
@@ -808,7 +812,7 @@ export const mkUndangAda = (env, nomor, tabel, akunId, kini) => env.DB.prepare("
 /* undangan dan pesan WA dalam satu batch; id sama dipakai kedua baris */
 export const mkUndangBaru = (env, u, pesan, kini) => env.DB.batch([
   env.DB.prepare("INSERT INTO mk_undang (id, wa, nama, tabel, akun_id, oleh_tabel, oleh_id, status, dibuat, habis) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'terkirim', ?8, ?9)").bind(u.id, u.wa, u.nama ?? null, u.tabel, u.akun_id ?? null, u.oleh_tabel, u.oleh_id, kini, kini + u.umur),
-  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat) VALUES (?1, ?2, ?3, 'undang', ?1, 'antre', 0, ?4)").bind(u.id, u.wa, pesan, kini)]);
+  stmtAntreWa(env, {id: u.id, tujuan: u.wa, pesan, jenis: "undang", rujukan: u.id, kini})]);
 /* olehTabel/olehId (opsional): anggota biasa hanya melihat kirimannya sendiri, disaring di SQL sebelum LIMIT */
 export const mkUndangDaftar = async (env, tabel, akunId, maks, olehTabel = null, olehId = null) => (await env.DB.prepare("SELECT id, wa, nama, status, dibuat, habis, oleh_tabel, oleh_id FROM mk_undang WHERE tabel = ?1 AND akun_id IS ?2 AND status <> 'dicabut' AND (?4 IS NULL OR (oleh_tabel = ?4 AND oleh_id = ?5)) ORDER BY dibuat DESC LIMIT ?3").bind(tabel, akunId, maks, olehTabel, olehId).all()).results;
 export const mkUndangById = (env, id) => env.DB.prepare("SELECT id, tabel, akun_id, oleh_tabel, oleh_id, status FROM mk_undang WHERE id = ?").bind(id).first();
@@ -1576,3 +1580,483 @@ export const kuSahkan = async (env, p, {kejadianId, versiLama, potret, oleh}, ki
   const [r] = await skBatch(env, p, [s, skStmtJejakJikaBerubah(env, pelakuSkStaf, oleh, "kaji_ulang", kejadianId, ulang ? "sahkan_ulang" : "sahkan", ulang ? "disahkan" : "draf", "disahkan", `versi ${versiLama + 1}`, kini)]);
   return r.meta.changes > 0;   // D1 menghitung baris pemicu arsip ku_potret juga, jadi bukan === 1
 };
+
+/* ---------- Bot Laporan WA (BL-02; data/kajian-bnpb/bot-laporan/DESAIN-TEKNIS.md, ALUR.md, ALGORITMA.md A1 dan A9, migrasi 0154) ----------
+   SQL saja; validasi masukan di src/wa_proyek.js. Pelaku bl_mesin = mesin bot (Bearer WA_MESIN), bl_staf = daftar untuk tab /pelaporan
+   (tanpa isian, bahan, atau wa_sha). bl_versi append-only: di sini hanya INSERT, tidak ada UPDATE atau DELETE pada tabel itu.
+   Tiap kueri SEARCH lewat PK atau indeks 0154 (kuota baca D1 Free). */
+Object.assign(MATRIKS, {
+  bl_proyek: {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+  bl_bahan:  {bl_mesin: ["baca", "tambah"]},
+  bl_versi:  {bl_mesin: ["baca", "tambah"]},
+  bl_pola:   {bl_mesin: ["baca", "tambah", "ubah"]},
+  bl_daftar: {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+  bl_biaya:  {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+  bl_detak:  {bl_mesin: ["baca", "tambah", "ubah"], bl_staf: ["baca"]},
+});
+export const pelakuBlMesin = {peran: "bl_mesin"}, pelakuBlStaf = {peran: "bl_staf"};
+export const BL_STATUS = ["terbuka", "bertanya", "membangun", "draf", "final", "ditutup", "batal", "kedaluwarsa"];
+export const BL_AKTIF = ["terbuka", "bertanya", "membangun", "draf"];   // proyek yang masih menerima bahan, revisi, dan versi; final dan ditutup tidak dibuka lagi (ALUR)
+/* ALUR "Status proyek": terbuka -> bertanya -> membangun -> draf -> membangun (revisi) -> draf ... -> final -> ditutup; keluar samping batal dan kedaluwarsa.
+   Syarat versi: ke draf dan final butuh versi >= 1; membangun mundur ke terbuka/bertanya hanya bila belum ada versi (bangun v1 gagal atau bot bertanya dulu). */
+export const BL_TRANSISI = {
+  terbuka:     ["bertanya", "membangun", "batal", "kedaluwarsa"],
+  bertanya:    ["terbuka", "membangun", "batal", "kedaluwarsa"],
+  membangun:   ["draf", "terbuka", "bertanya", "batal", "kedaluwarsa"],
+  draf:        ["membangun", "final", "batal", "kedaluwarsa"],
+  final:       ["ditutup"],
+  ditutup: [], batal: [], kedaluwarsa: [],
+};
+export const blBolehPindah = (dari, ke, versi) => !!BL_TRANSISI[dari]?.includes(ke)
+  && (!["draf", "final"].includes(ke) || versi >= 1) && !(dari === "membangun" && ["terbuka", "bertanya"].includes(ke) && versi > 0);
+const BL_KOL_PROYEK = "id, wa_sha, jenis, tanggal, status, versi, drive_url, dibuat, diubah";
+const BL_AKTIF_SQL = "('terbuka', 'bertanya', 'membangun', 'draf')";
+
+/* ---- proyek ---- */
+export const blProyekById = (env, p, id) => sedia(env, p, "bl_proyek", "baca", `SELECT ${BL_KOL_PROYEK} FROM bl_proyek WHERE id = ?1`).bind(id).first();
+const blProyekAktif = (env, p, waSha, jenis, tanggal) => sedia(env, p, "bl_proyek", "baca",
+  `SELECT ${BL_KOL_PROYEK} FROM bl_proyek WHERE wa_sha = ?1 AND status IN ${BL_AKTIF_SQL} AND jenis = ?2 AND tanggal = ?3 ORDER BY dibuat DESC LIMIT 1`).bind(waSha, jenis, tanggal).first();
+/* buka atau ambil proyek aktif per (nomor, jenis, tanggal) (Q6). Kode P-DDMMYY-NN dari tanggal WIB pembuatan, NN urut per hari (maks 99).
+   INSERT ... WHERE NOT EXISTS: dua panggilan bersamaan untuk tuple yang sama tidak membuat dua proyek aktif; bentrok kode = coba nomor berikut. */
+export async function blProyekBuka(env, p, {waSha, jenis, tanggal}, kini) {
+  const ada = await blProyekAktif(env, p, waSha, jenis, tanggal); if (ada) return {proyek: ada, baru: false};
+  const d = new Date(kini + 7 * 3600e3).toISOString(), awal = `P-${d.slice(8, 10)}${d.slice(5, 7)}${d.slice(2, 4)}-`;
+  for (let coba = 0; coba < 4; coba++) {
+    const akhir = await sedia(env, p, "bl_proyek", "baca", "SELECT id FROM bl_proyek WHERE id > ?1 AND id < ?2 ORDER BY id DESC LIMIT 1").bind(awal + "00", awal + "99~").first();
+    const nn = (akhir ? Number(akhir.id.slice(9)) : 0) + 1;
+    if (nn > 99) throw new Galat(429, "kode proyek hari ini habis (99 per hari)");
+    const id = awal + String(nn).padStart(2, "0");
+    try {
+      const r = await sedia(env, p, "bl_proyek", "tambah", `INSERT INTO bl_proyek (id, wa_sha, jenis, tanggal, status, versi, dibuat, diubah)
+        SELECT ?1, ?2, ?3, ?4, 'terbuka', 0, ?5, ?5 WHERE NOT EXISTS (SELECT 1 FROM bl_proyek WHERE wa_sha = ?2 AND status IN ${BL_AKTIF_SQL} AND jenis = ?3 AND tanggal = ?4)`)
+        .bind(id, waSha, jenis, tanggal, kini).run();
+      if (r.meta.changes === 1) return {proyek: await blProyekById(env, p, id), baru: true};
+      const lain = await blProyekAktif(env, p, waSha, jenis, tanggal); if (lain) return {proyek: lain, baru: false};
+    } catch (e) { if (!/UNIQUE|PRIMARY/i.test(String(e?.message ?? e))) throw e; }
+  }
+  throw new Galat(503, "kode proyek bentrok; coba lagi");
+}
+/* pindah status dengan pembanding status dan versi lama (balapan = 0 baris = false). drive_url hanya saat ke ditutup. */
+export async function blProyekPindah(env, p, {id, ke, driveUrl = null}, kini) {
+  const pr = await blProyekById(env, p, id); if (!pr) throw new Galat(404, "proyek tidak ada");
+  if (!blBolehPindah(pr.status, ke, pr.versi)) throw new Galat(409, `transisi ${pr.status} ke ${ke} tidak sah${["draf", "final"].includes(ke) && pr.versi < 1 ? " (belum ada versi)" : ""}`);
+  const r = await sedia(env, p, "bl_proyek", "ubah", "UPDATE bl_proyek SET status = ?2, diubah = ?3, drive_url = COALESCE(?4, drive_url) WHERE id = ?1 AND status = ?5 AND versi = ?6")
+    .bind(id, ke, kini, ke === "ditutup" ? driveUrl : null, pr.status, pr.versi).run();
+  if (r.meta.changes !== 1) throw new Galat(409, "status proyek berubah bersamaan; baca ulang");
+  return {...pr, status: ke, diubah: kini, drive_url: ke === "ditutup" && driveUrl ? driveUrl : pr.drive_url, dari: pr.status};
+}
+/* daftar untuk staf /pelaporan: tanpa wa_sha, isian, bahan; nama pemegang dari bl_daftar setuju bila ada */
+export const blProyekStaf = async (env, p, sejak) => {
+  izin(p, "bl_daftar", "baca");
+  return (await sedia(env, p, "bl_proyek", "baca", `SELECT r.id, r.jenis, r.tanggal, r.status, r.versi, r.drive_url, r.dibuat, r.diubah, d.nama pemegang FROM bl_proyek r
+    LEFT JOIN bl_daftar d ON d.wa_sha = r.wa_sha AND d.status = 'setuju' WHERE r.status IN ('terbuka', 'bertanya', 'membangun', 'draf', 'final', 'ditutup', 'batal', 'kedaluwarsa') AND r.diubah >= ?1
+    ORDER BY r.diubah DESC LIMIT 200`).bind(sejak).all()).results;
+};
+
+/* ---- bahan: tautan ke wa_masuk lewat wa_id; ganda diabaikan (PK); tiap tambah menyegarkan diubah (aktivitas untuk kedaluwarsa Q7) ---- */
+export async function blBahanTambah(env, p, id, bahan, kini) {
+  if (!bahan.length) return 0;
+  const s = bahan.map(b => sedia(env, p, "bl_bahan", "tambah", `INSERT INTO bl_bahan (proyek_id, wa_id, jenis_bahan, ditambah)
+    SELECT ?1, ?2, ?3, ?4 WHERE EXISTS (SELECT 1 FROM bl_proyek WHERE id = ?1 AND status IN ${BL_AKTIF_SQL}) ON CONFLICT (proyek_id, wa_id) DO NOTHING`).bind(id, b.wa_id, b.jenis_bahan ?? null, kini));
+  const r = await env.DB.batch([...s, sedia(env, p, "bl_proyek", "ubah", `UPDATE bl_proyek SET diubah = ?2 WHERE id = ?1 AND status IN ${BL_AKTIF_SQL}`).bind(id, kini)]);
+  return r.slice(0, -1).reduce((n, x) => n + x.meta.changes, 0);
+}
+export const blBahanDaftar = async (env, p, id) => (await sedia(env, p, "bl_bahan", "baca", "SELECT wa_id, jenis_bahan, ditambah FROM bl_bahan WHERE proyek_id = ?1 ORDER BY ditambah, wa_id LIMIT 200").bind(id).all()).results;
+
+/* ---- versi (D6): append-only. n harus = versi proyek + 1 dan proyek masih aktif; INSERT dan naik versi sebatch dengan syarat yang sama,
+   jadi n yang sudah ada = galat PK (tidak pernah menimpa) dan n melompat = 0 baris. Berkas R2 tiap percobaan di awalan unik v<n>-<acak>/ (src/wa_proyek.js). ---- */
+export async function blVersiTambah(env, p, v, kini) {
+  const syarat = `EXISTS (SELECT 1 FROM bl_proyek WHERE id = ?1 AND versi = ?2 - 1 AND status IN ${BL_AKTIF_SQL})`;
+  try {
+    const [a] = await env.DB.batch([
+      sedia(env, p, "bl_versi", "tambah", `INSERT INTO bl_versi (proyek_id, n, isian_r2, ubah_r2, pptx_r2, pdf_r2, instruksi, peringatan, dibuat) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9 WHERE ${syarat}`)
+        .bind(v.id, v.n, v.isian_r2 ?? null, v.ubah_r2 ?? null, v.pptx_r2 ?? null, v.pdf_r2 ?? null, v.instruksi ?? null, v.peringatan ?? null, kini),
+      sedia(env, p, "bl_proyek", "ubah", `UPDATE bl_proyek SET versi = ?2, diubah = ?3 WHERE id = ?1 AND versi = ?2 - 1 AND status IN ${BL_AKTIF_SQL}`).bind(v.id, v.n, kini)]);
+    return a.meta.changes === 1;
+  } catch (e) { if (/UNIQUE|PRIMARY/i.test(String(e?.message ?? e))) throw new Galat(409, `versi ${v.n} sudah ada; versi tidak bisa ditimpa`); throw e; }
+}
+const BL_KOL_VERSI = "proyek_id, n, isian_r2, ubah_r2, pptx_r2, pdf_r2, instruksi, peringatan, dibuat";
+export const blVersiBaca = (env, p, id, n) => sedia(env, p, "bl_versi", "baca", `SELECT ${BL_KOL_VERSI} FROM bl_versi WHERE proyek_id = ?1 AND n = ?2`).bind(id, n).first();
+export const blVersiDaftar = async (env, p, id) => (await sedia(env, p, "bl_versi", "baca", `SELECT ${BL_KOL_VERSI} FROM bl_versi WHERE proyek_id = ?1 ORDER BY n LIMIT 999`).bind(id).all()).results;
+
+/* ---- pola revisi (K10, A9, Q12 BAWAAN SEMENTARA: 3 kejadian dalam 14 hari dari minimal 2 proyek; ditolak = tidak diusulkan 30 hari).
+   Kejadian per (proyek, versi) dicatat pemanggil di R2 (bl_pola hanya punya hitung); fungsi murni blPolaNilai memutuskan status. ---- */
+export const BL_POLA = {hari: 14, kali: 3, proyek: 2, tolakHari: 30};
+const BL_KOL_POLA = "id, jenis, slide_judul, operasi, ringkas, hitung, status, diubah";
+export const blPolaById = (env, p, id) => sedia(env, p, "bl_pola", "baca", `SELECT ${BL_KOL_POLA} FROM bl_pola WHERE id = ?1`).bind(id).first();
+export const blPolaJenis = async (env, p, jenis) => (await sedia(env, p, "bl_pola", "baca", `SELECT ${BL_KOL_POLA} FROM bl_pola WHERE jenis = ?1 AND status IN ('diusulkan', 'aturan') ORDER BY status, diubah DESC LIMIT 100`).bind(jenis).all()).results;
+/* row lama (atau null), label, kejadian dalam jendela -> {baris baru, capai: baru saja mencapai ambang} */
+export function blPolaNilai(lama, label, kejadian, kini) {
+  const jendela = kejadian.filter(k => kini - k.t <= BL_POLA.hari * 864e5), nProyek = new Set(jendela.map(k => k.p)).size;
+  const cukup = jendela.length >= BL_POLA.kali && nProyek >= BL_POLA.proyek;
+  let status = lama?.status ?? "mengamati", diubah = lama?.diubah ?? kini;
+  if (status === "ditolak" && kini - diubah >= BL_POLA.tolakHari * 864e5) { status = "mengamati"; diubah = kini; }
+  const capai = status === "mengamati" && cukup;
+  if (capai) { status = "diusulkan"; diubah = kini; }
+  if (!lama) diubah = kini;
+  return {baris: {id: lama?.id ?? label.id, jenis: lama?.jenis ?? label.jenis, slide_judul: lama?.slide_judul ?? label.slide_judul, operasi: lama?.operasi ?? label.operasi, ringkas: lama?.ringkas ?? label.ringkas, hitung: jendela.length, status, diubah}, capai};
+}
+export const blPolaSimpan = (env, p, b) => sedia(env, p, "bl_pola", "tambah", `INSERT INTO bl_pola (id, jenis, slide_judul, operasi, ringkas, hitung, status, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+  ON CONFLICT (id) DO UPDATE SET hitung = excluded.hitung, status = excluded.status, diubah = excluded.diubah`).bind(b.id, b.jenis, b.slide_judul, b.operasi, b.ringkas, b.hitung, b.status, b.diubah).run();
+/* putusan pemilik atas usulan: aturan atau ditolak, hanya dari diusulkan */
+export const blPolaPutus = async (env, p, id, putusan, kini) => (await sedia(env, p, "bl_pola", "ubah", "UPDATE bl_pola SET status = ?2, diubah = ?3 WHERE id = ?1 AND status = 'diusulkan'").bind(id, putusan, kini).run()).meta.changes === 1;
+
+/* ---- daftar nomor (K14, A1): menunggu dari pesan daftar; setuju/tolak dari putusan pemilik (dijaga gateway). Nomor setuju tidak diturunkan oleh daftar ulang;
+   nomor tolak baru boleh menunggu lagi BL_TOLAK_HARI sesudah ditolak (dibuat = waktu putusan tolak), sebelum itu tetap tolak dan gateway diam. ---- */
+export const BL_TOLAK_HARI = 30;
+export async function blDaftarTulis(env, p, {waSha, nama = null, instansi = null, status}, kini) {
+  const s = status === "menunggu"
+    ? sedia(env, p, "bl_daftar", "tambah", `INSERT INTO bl_daftar (wa_sha, nama, instansi, status, dibuat) VALUES (?1, ?2, ?3, 'menunggu', ?4)
+        ON CONFLICT (wa_sha) DO UPDATE SET nama = excluded.nama, instansi = excluded.instansi, status = 'menunggu', dibuat = excluded.dibuat
+        WHERE bl_daftar.status = 'menunggu' OR (bl_daftar.status = 'tolak' AND bl_daftar.dibuat <= ?5)`).bind(waSha, nama, instansi, kini, kini - BL_TOLAK_HARI * 864e5)
+    : sedia(env, p, "bl_daftar", "ubah", `INSERT INTO bl_daftar (wa_sha, nama, instansi, status, dibuat) VALUES (?1, ?2, ?3, ?4, ?5)
+        ON CONFLICT (wa_sha) DO UPDATE SET status = excluded.status, nama = COALESCE(excluded.nama, bl_daftar.nama), instansi = COALESCE(excluded.instansi, bl_daftar.instansi),
+          dibuat = CASE WHEN excluded.status = 'tolak' AND bl_daftar.status != 'tolak' THEN excluded.dibuat ELSE bl_daftar.dibuat END`).bind(waSha, nama, instansi, status, kini);
+  await s.run();
+  return sedia(env, p, "bl_daftar", "baca", "SELECT status, nama, instansi, dibuat FROM bl_daftar WHERE wa_sha = ?1").bind(waSha).first();
+}
+export const blMenungguHitung = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT count(*) n FROM bl_daftar WHERE status = 'menunggu'").first()).n;
+/* satu nomor (lewat PK): dipakai src/wa.js untuk kiriman gateway berkunci yang membawa wa_sha, jadi pencabutan berlaku seketika tanpa menunggu salinan gateway */
+export const blDaftarSetuju = async (env, p, waSha) => !!(await sedia(env, p, "bl_daftar", "baca", "SELECT 1 ada FROM bl_daftar WHERE wa_sha = ?1 AND status = 'setuju'").bind(waSha).first());
+export const blTerdaftar = async (env, p) => (await sedia(env, p, "bl_daftar", "baca", "SELECT wa_sha FROM bl_daftar WHERE status = 'setuju' ORDER BY wa_sha LIMIT 5000").all()).results.map(r => r.wa_sha);
+
+/* ---- biaya harian (A10, Q5), mikro-USD ---- */
+/* pemantau biaya /admin/biaya-bot: jumlah harian sejak tanggal (PK tanggal, paling banyak 400 baris) */
+export const blBiayaRentang = async (env, p, dari) => (await sedia(env, p, "bl_biaya", "baca", "SELECT tanggal, usd_mikro FROM bl_biaya WHERE tanggal >= ?1 ORDER BY tanggal LIMIT 400").bind(dari).all()).results;
+export const blBiayaBaca = async (env, p, tanggal) => (await sedia(env, p, "bl_biaya", "baca", "SELECT usd_mikro FROM bl_biaya WHERE tanggal = ?1").bind(tanggal).first())?.usd_mikro ?? 0;
+export const blBiayaTambah = async (env, p, tanggal, usdMikro) => (await sedia(env, p, "bl_biaya", "tambah", `INSERT INTO bl_biaya (tanggal, usd_mikro) VALUES (?1, ?2)
+  ON CONFLICT (tanggal) DO UPDATE SET usd_mikro = bl_biaya.usd_mikro + excluded.usd_mikro RETURNING usd_mikro`).bind(tanggal, usdMikro).first()).usd_mikro;
+
+/* ---- detak mesin (K11, Q2) ---- */
+export const blDetakBaca = async (env, p, mesin) => (await sedia(env, p, "bl_detak", "baca", "SELECT terakhir FROM bl_detak WHERE mesin = ?1").bind(mesin).first())?.terakhir ?? null;
+export const blDetakTulis = (env, p, mesin, kini) => sedia(env, p, "bl_detak", "tambah", "INSERT INTO bl_detak (mesin, terakhir) VALUES (?1, ?2) ON CONFLICT (mesin) DO UPDATE SET terakhir = excluded.terakhir").bind(mesin, kini).run();
+export const blDetakSemua = async (env, p) => (await sedia(env, p, "bl_detak", "baca", "SELECT mesin, terakhir FROM bl_detak WHERE mesin > '' ORDER BY mesin LIMIT 20").all()).results;
+
+/* ---------- Lapor Bencana BNPB (LA-05, LA-06, LA-10; data/kajian-bnpb/lapor-ai/DESAIN-TEKNIS.md, migrasi 0155) ----------
+   SQL saja; validasi, izin, dan alur ada di src/lapor_ai.js. Pelaku: lp_pelapor = pemilik nomor (sesi /masuk atau gateway WA_MESIN yang membawa nomor),
+   lp_publik = pemegang tautan lacak atau pembaca alun-alun (tanpa identitas), lp_staf = admin/staf meja, lp_mesin = mesin Mac mini (PDF dan kabar).
+   lapor_tiket_riwayat dan lapor_pesan append-only: hanya INSERT di sini. Tiap kueri lewat PK atau indeks 0155 (kuota baca D1 Free). */
+Object.assign(MATRIKS, {
+  lapor_pelapor:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
+  lapor_izin:          {lp_pelapor: ["baca"], lp_mesin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca", "tambah", "ubah", "hapus"]},
+  lapor_sesi:          {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},   // staf ubah: hanya revisi angka pengecekan (D110), lewat rev
+  lapor_pesan:         {lp_pelapor: ["tambah"], lp_staf: ["baca"]},
+  lapor_foto:          {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_mesin: ["baca"]},
+  lapor_tiket:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
+  lapor_tiket_riwayat: {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
+  lapor_balasan:       {lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
+  lapor_kabar:         {lp_pelapor: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "tambah", "ubah"]},
+  lapor_urut:          {lp_pelapor: ["tambah"]},
+  lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
+  lapor_pdf:           {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  lapor_bukti:         {lp_staf: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_mesin: ["baca"]},
+  lapor_akses:         {lp_staf: ["tambah"]},
+  lapor_unduh:         {lp_staf: ["tambah"]},
+  lapor_kabar_bpbd:    {lp_staf: ["baca", "tambah"], lp_mesin: ["baca", "ubah"]},
+  laju_bnpb:           {sistem: ["baca", "tambah"], lp_pelapor: ["baca", "tambah"]},
+  lapor_unggah:        {lp_pelapor: ["baca", "tambah", "ubah", "hapus"], lp_cron: ["baca", "hapus"]},   // lp_cron = bersih-bersih menit 17 (D90)
+  lapor_perangkat:     {lp_pelapor: ["baca", "tambah", "ubah"]},   // migrasi 0159: ikatan nomor ketikan dan perangkat (K65, D100)
+  lapor_milik:         {lp_pelapor: ["baca", "tambah", "hapus"], lp_publik: ["baca"], lp_cron: ["hapus"]},
+  lapor_kelompok:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "hapus"]},   // migrasi 0160: kejadian yang sama (K66, D103-D107)
+  lapor_kelompok_urut: {lp_pelapor: ["tambah"]},
+  /* data lanjutan BPBD (migrasi 0161, paket lapor-lanjutan, LJ-01). lj_tim = ketua dan anggota berkas lewat kuki per orang (D20);
+     lp_cron = pertanyaan harian (D12) dan hapus data pribadi 5 tahun (D23); lp_mesin = gateway WA (antrean lj_kabar, gerbang izin anggota D11).
+     Append-only: lj_jejak, lj_beku, lj_akses tanpa ubah dan hapus. Staf membaca pribadi hanya lewat Tampilkan yang menulis lj_akses (D22). */
+  lj_berkas:           {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "ubah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca"]},
+  lj_tim:              {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca", "ubah"], lp_mesin: ["baca"]},
+  lj_objek:            {lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca"], lp_cron: ["baca", "ubah"]},
+  lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
+  lj_media:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
+  lj_tanya:            {lj_tim: ["baca", "ubah"], lp_cron: ["baca", "tambah"]},
+  lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_cron: ["tambah"], lp_mesin: ["baca", "ubah"]},
+  lj_beku:             {lj_tim: ["baca", "tambah"], lp_staf: ["baca"]},
+  lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
+  lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
+  lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
+});
+/* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
+   pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
+Object.assign(MATRIKS, {
+  pw_langganan: {pw_publik: ["baca", "tambah", "ubah", "hapus"], pw_cron: ["baca", "hapus"], lp_staf: ["baca"]},
+  pw_status:    {pw_cron: ["baca", "tambah", "ubah", "hapus"]},
+  pw_peristiwa: {pw_cron: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca"]},
+  pw_kendali:   {pw_cron: ["baca", "tambah", "ubah"], lp_staf: ["baca", "tambah", "ubah"]},
+});
+export const pelakuPwPublik = {peran: "pw_publik"}, pelakuPwCron = {peran: "pw_cron"};
+const PW_KOL = "id, endpoint, p256dh, auth, kec_kode, kab_kode, kec_nama, jenis, ambang, bahasa, uji";
+export const pwMilik = async (env, p, endpoint) => (await sedia(env, p, "pw_langganan", "baca", `SELECT kec_kode, kec_nama, jenis, ambang, bahasa FROM pw_langganan WHERE endpoint = ?1 LIMIT 3`).bind(endpoint).all()).results;
+export const pwJumlah = (env, p) => sedia(env, p, "pw_langganan", "baca", "SELECT count(*) n FROM pw_langganan").first("n");
+export const pwSimpanStmt = (env, p, b, kini) => sedia(env, p, "pw_langganan", "tambah",
+  `INSERT INTO pw_langganan (${PW_KOL}, dibuat, terakhir_aktif) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?12)
+   ON CONFLICT(id) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, kec_nama = excluded.kec_nama, jenis = excluded.jenis, ambang = excluded.ambang,
+   bahasa = excluded.bahasa, terakhir_aktif = excluded.terakhir_aktif`).bind(b.id, b.endpoint, b.p256dh, b.auth, b.kec_kode, b.kab_kode, b.kec_nama, b.jenis, b.ambang, b.bahasa, b.uji, kini);
+export const pwHapusLainStmt = (env, p, endpoint, simpan) => sedia(env, p, "pw_langganan", "hapus",
+  `DELETE FROM pw_langganan WHERE endpoint = ?1 AND kec_kode NOT IN (SELECT value FROM json_each(?2))`).bind(endpoint, JSON.stringify(simpan));
+export const pwBerhenti = (env, p, endpoint) => sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE endpoint = ?1").bind(endpoint).run();
+export const pwBatch = (env, p, stmts) => { if (!String(p?.peran).startsWith("pw_")) throw new Galat(403, "batch peringatan hanya untuk pelaku pw_*"); return env.DB.batch(stmts); };
+export const pwKendali = async (env, p) => Object.fromEntries((await sedia(env, p, "pw_kendali", "baca", "SELECT kunci, nilai FROM pw_kendali").all()).results.map(r => [r.kunci, r.nilai]));
+export const pwKendaliStmt = (env, p, kunci, nilai) => sedia(env, p, "pw_kendali", "ubah",
+  "INSERT INTO pw_kendali (kunci, nilai) VALUES (?1, ?2) ON CONFLICT(kunci) DO UPDATE SET nilai = excluded.nilai").bind(kunci, String(nilai));
+export const pwStatusKab = async (env, p, kab, sejak) => (await sedia(env, p, "pw_status", "baca", "SELECT jenis, tanggal, level FROM pw_status WHERE kab_kode = ?1 AND tanggal >= ?2").bind(kab, sejak).all()).results;
+export const pwStatusSemua = async (env, p, sejak) => (await sedia(env, p, "pw_status", "baca", "SELECT kab_kode, jenis, tanggal, level FROM pw_status WHERE tanggal >= ?1").bind(sejak).all()).results;
+export const pwStatusStmt = (env, p, kab, jenis, tanggal, level) => sedia(env, p, "pw_status", "tambah",
+  `INSERT INTO pw_status (kab_kode, jenis, tanggal, level) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(kab_kode, jenis, tanggal) DO UPDATE SET level = max(level, excluded.level)`).bind(kab, jenis, tanggal, level);
+export const pwPeristiwaStmt = (env, p, berkas, kab, ringkas, kini, tahan) => sedia(env, p, "pw_peristiwa", "tambah",
+  "INSERT INTO pw_peristiwa (dibuat_berkas, kab_kode, ringkas, dibuat, ditahan_sampai) VALUES (?1, ?2, ?3, ?4, ?5)").bind(berkas, kab, ringkas, kini, tahan ?? null);
+export const pwPeristiwaBerikut = (env, p, kini) => sedia(env, p, "pw_peristiwa", "baca",
+  "SELECT id, kab_kode, ringkas, kursor FROM pw_peristiwa WHERE selesai = 0 AND (ditahan_sampai IS NULL OR ditahan_sampai <= ?1) ORDER BY id LIMIT 1").bind(kini).first();
+export const pwPenerima = async (env, p, kab, kursor, uji) => (await sedia(env, p, "pw_langganan", "baca",
+  `SELECT ${PW_KOL} FROM pw_langganan WHERE kab_kode = ?1 AND id > ?2 ${uji ? "AND uji = 1" : ""} ORDER BY id LIMIT 60`).bind(kab, kursor).all()).results;
+export const pwPeristiwaMajuStmt = (env, p, id, kursor, selesai, ok, gagal, mati) => sedia(env, p, "pw_peristiwa", "ubah",
+  "UPDATE pw_peristiwa SET kursor = ?2, selesai = ?3, ok = ok + ?4, gagal = gagal + ?5, mati = mati + ?6 WHERE id = ?1").bind(id, kursor, selesai ? 1 : 0, ok, gagal, mati);
+export const pwHapusIdStmt = (env, p, id) => sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE id = ?1").bind(id);
+export const pwBersih = (env, p, kini, tglBatas) => env.DB.batch([
+  sedia(env, p, "pw_peristiwa", "hapus", "DELETE FROM pw_peristiwa WHERE dibuat < ?1").bind(kini - 30 * 864e5),
+  sedia(env, p, "pw_status", "hapus", "DELETE FROM pw_status WHERE tanggal < ?1").bind(tglBatas),
+  sedia(env, p, "pw_langganan", "hapus", "DELETE FROM pw_langganan WHERE terakhir_aktif < ?1").bind(kini - 180 * 864e5)]);
+export const pwRingkasStaf = async (env, p, kini) => ({
+  langganan: (await sedia(env, p, "pw_langganan", "baca", "SELECT kab_kode, count(*) n FROM pw_langganan GROUP BY kab_kode ORDER BY n DESC LIMIT 50").all()).results,
+  peristiwa: (await sedia(env, p, "pw_peristiwa", "baca", "SELECT id, kab_kode, ringkas, dibuat, selesai, ok, gagal, mati FROM pw_peristiwa WHERE dibuat >= ?1 ORDER BY id DESC LIMIT 100").bind(kini - 7 * 864e5).all()).results});
+
+export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
+const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
+/* g = true: INSERT ... SELECT ... WHERE changes() > 0, hanya menulis bila pernyataan sebelumnya dalam batch (pembaruan sesi) benar-benar mengubah baris */
+const lpIns = (g, atau, tabel, kolom) => { const n = kolom.split(",").length, ph = Array.from({length: n}, (_, i) => "?" + (i + 1)).join(", ");
+  return g ? `INSERT ${atau}INTO ${tabel} (${kolom}) SELECT ${ph} WHERE changes() > 0` : `INSERT ${atau}INTO ${tabel} (${kolom}) VALUES (${ph})`; };
+/* tulis banyak pernyataan sekaligus; pelaku harus salah satu pelaku Lapor */
+export const lpBatch = (env, p, stmts) => { if (!String(p?.peran).startsWith("lp_")) throw new Galat(403, "batch Lapor hanya untuk pelaku lp_*"); return env.DB.batch(stmts); };
+
+/* ---- izin uji (K2) dan identitas ---- */
+export const lpIzin = (env, p, wa) => sedia(env, p, "lapor_izin", "baca", "SELECT wa, peran, kab FROM lapor_izin WHERE wa = ?1").bind(wa).first();
+export const lpIzinDaftar = async (env, p) => (await sedia(env, p, "lapor_izin", "baca", "SELECT wa FROM lapor_izin ORDER BY wa LIMIT 500").all()).results.map(r => r.wa);
+export const lpIzinSimpan = (env, p, wa, peran, kab, oleh, kini) => sedia(env, p, "lapor_izin", "tambah",
+  "INSERT INTO lapor_izin (wa, peran, kab, oleh, dibuat) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT (wa) DO UPDATE SET peran = excluded.peran, kab = excluded.kab, oleh = excluded.oleh").bind(wa, peran, kab, oleh, kini).run();
+export const lpIzinCabut = (env, p, wa) => sedia(env, p, "lapor_izin", "hapus", "DELETE FROM lapor_izin WHERE wa = ?1").bind(wa).run();
+export const lpPelapor = (env, p, wa) => sedia(env, p, "lapor_pelapor", "baca", "SELECT wa, nama, peran, kab, jabatan, dibuat, diubah FROM lapor_pelapor WHERE wa = ?1").bind(wa).first();
+export const lpStmtPelapor = (env, p, wa, v, kini, g = false) => sedia(env, p, "lapor_pelapor", "tambah",
+  `${lpIns(g, "", "lapor_pelapor", "wa, nama, peran, kab, jabatan, dibuat, diubah")} ON CONFLICT (wa) DO UPDATE SET nama = excluded.nama, peran = excluded.peran, kab = excluded.kab, jabatan = excluded.jabatan, diubah = excluded.diubah`.replace("?7", "?6"))
+  .bind(wa, String(v.nama).slice(0, 120), v.peran, v.kab ? String(v.kab).slice(0, 120) : null, v.jabatan ? String(v.jabatan).slice(0, 120) : null, kini);
+
+/* ---- sesi ---- */
+export const lpSesiAktif = (env, p, wa) => sedia(env, p, "lapor_sesi", "baca", `SELECT ${LP_SESI} FROM lapor_sesi WHERE wa = ?1 ORDER BY diubah DESC LIMIT 1`).bind(wa).first();
+export const lpSesiNomor = (env, p, nomor) => sedia(env, p, "lapor_sesi", "baca", `SELECT ${LP_SESI} FROM lapor_sesi WHERE nomor = ?1`).bind(nomor).first();
+export const lpSesiToken = (env, p, tokenSha) => sedia(env, p, "lapor_sesi", "baca", `SELECT ${LP_SESI} FROM lapor_sesi WHERE token_sha = ?1`).bind(tokenSha).first();
+export const lpSesiMilik = async (env, p, wa) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.nomor, s.kerja, s.terkirim, t.status tiket FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor WHERE s.wa = ?1 AND s.nomor IS NOT NULL ORDER BY s.terkirim DESC LIMIT 5`).bind(wa).all()).results;
+export const lpHitungTerkirim = async (env, p, wa, sejak) => (await sedia(env, p, "lapor_sesi", "baca", "SELECT count(*) n FROM lapor_sesi WHERE wa = ?1 AND terkirim > ?2").bind(wa, sejak).first()).n;
+export const lpStmtSesiBaru = (env, p, s, kini) => sedia(env, p, "lapor_sesi", "tambah",
+  `INSERT INTO lapor_sesi (id, wa, status, tingkat, jenis, kab, lat, lon, kerja, rev, dibuat, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 0, ?10, ?10)`)
+  .bind(s.id, s.wa, s.status, s.tingkat ?? null, s.jenis ?? null, s.kab ?? null, s.lat ?? null, s.lon ?? null, s.kerja, kini);
+/* pembaruan optimistis: hanya bila rev masih sama (dua pesan serentak dari satu nomor tidak saling menimpa); mengembalikan jumlah baris berubah */
+export const lpStmtSesiUbah = (env, p, s, revLama, kini) => sedia(env, p, "lapor_sesi", "ubah",
+  `UPDATE lapor_sesi SET status = ?1, tingkat = ?2, jenis = ?3, kab = ?4, lat = ?5, lon = ?6, kerja = ?7, nomor = COALESCE(?8, nomor), token_sha = COALESCE(?9, token_sha),
+   terkirim = COALESCE(?10, terkirim), ringkas = COALESCE(?11, ringkas), rev = rev + 1, diubah = ?12 WHERE id = ?13 AND rev = ?14`)
+  .bind(s.status, s.tingkat ?? null, s.jenis ?? null, s.kab ?? null, s.lat ?? null, s.lon ?? null, s.kerja, s.nomor ?? null, s.token_sha ?? null, s.terkirim ?? null, s.ringkas ?? null, kini, s.id, revLama);
+export const lpSesiUbah = async (env, p, s, revLama, kini) => (await lpStmtSesiUbah(env, p, s, revLama, kini).run()).meta.changes;
+export const lpNomorBerikut = async (env, p, tgl) => (await sedia(env, p, "lapor_urut", "tambah",
+  "INSERT INTO lapor_urut (tgl, n) VALUES (?1, 1) ON CONFLICT (tgl) DO UPDATE SET n = n + 1 RETURNING n").bind(tgl).first()).n;
+export const lpStmtPesan = (env, p, sesi, dari, pintu, teks, waktu, g = false) => sedia(env, p, "lapor_pesan", "tambah",
+  lpIns(g, "", "lapor_pesan", "sesi, dari, pintu, teks, waktu")).bind(sesi, dari, pintu, teks == null ? null : String(teks).slice(0, 4000), waktu);
+
+/* ---- tiket, riwayat, balasan, kabar, PDF ---- */
+export const lpStmtTiketBaru = (env, p, nomor, sesi, kini, g = false) => sedia(env, p, "lapor_tiket", "tambah", lpIns(g, "", "lapor_tiket", "nomor, sesi, status, diubah").replace("?3, ?4", "'baru', ?3")).bind(nomor, sesi, kini);
+export const lpStmtRiwayat = (env, p, nomor, dari, ke, catatan, pelaku, kini, g = false) => sedia(env, p, "lapor_tiket_riwayat", "tambah",
+  lpIns(g, "", "lapor_tiket_riwayat", "nomor, dari, ke, catatan, pelaku, waktu")).bind(nomor, dari, ke, catatan, pelaku, kini);
+export const lpStmtPdfAntre = (env, p, nomor, versi, kini, g = false) => sedia(env, p, "lapor_pdf", "tambah", lpIns(g, "OR IGNORE ", "lapor_pdf", "nomor, versi, status, diubah").replace("?3, ?4", "'antre', ?3")).bind(nomor, versi, kini);
+export const lpTiket = (env, p, nomor) => sedia(env, p, "lapor_tiket", "baca", "SELECT nomor, status, diubah FROM lapor_tiket WHERE nomor = ?1").bind(nomor).first();
+export const lpRiwayat = async (env, p, nomor) => (await sedia(env, p, "lapor_tiket_riwayat", "baca",
+  "SELECT dari, ke, catatan, pelaku, waktu FROM lapor_tiket_riwayat WHERE nomor = ?1 ORDER BY id LIMIT 100").bind(nomor).all()).results;
+export const lpBalasan = async (env, p, nomor) => (await sedia(env, p, "lapor_balasan", "baca",
+  "SELECT teks, oleh, waktu FROM lapor_balasan WHERE nomor = ?1 ORDER BY id LIMIT 100").bind(nomor).all()).results;
+/* pindah status bersyarat (status asal harus masih sama); stmt berikutnya yang memakai changes() hanya menulis bila perpindahan ini benar-benar terjadi */
+export const lpStmtTiketPindah = (env, p, nomor, dari, ke, kini) => sedia(env, p, "lapor_tiket", "ubah", "UPDATE lapor_tiket SET status = ?3, diubah = ?4 WHERE nomor = ?1 AND status = ?2").bind(nomor, dari, ke, kini);
+export const lpStmtRiwayatJikaBerubah = (env, p, nomor, dari, ke, catatan, pelaku, kini) => sedia(env, p, "lapor_tiket_riwayat", "tambah",
+  "INSERT INTO lapor_tiket_riwayat (nomor, dari, ke, catatan, pelaku, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6 WHERE changes() > 0").bind(nomor, dari, ke, catatan, pelaku, kini);
+export const lpStmtKabarJikaBerubah = (env, p, wa, nomor, jenis, teks, kini) => sedia(env, p, "lapor_kabar", "tambah",
+  "INSERT INTO lapor_kabar (wa, nomor, jenis, teks, dibuat) SELECT ?1, ?2, ?3, ?4, ?5 WHERE changes() > 0").bind(wa, nomor, jenis, String(teks).slice(0, 2000), kini);
+export const lpStmtBalasan = (env, p, nomor, teks, oleh, kini) => sedia(env, p, "lapor_balasan", "tambah", "INSERT INTO lapor_balasan (nomor, teks, oleh, waktu) VALUES (?1, ?2, ?3, ?4)").bind(nomor, teks, oleh, kini);
+export const lpStmtKabar = (env, p, wa, nomor, jenis, teks, url, kini) => sedia(env, p, "lapor_kabar", "tambah",
+  "INSERT INTO lapor_kabar (wa, nomor, jenis, teks, url, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6)").bind(wa, nomor, jenis, String(teks).slice(0, 2000), url ?? null, kini);
+export const lpKabarAntre = async (env, p, batas = 50) => (await sedia(env, p, "lapor_kabar", "baca",
+  "SELECT id, wa, jenis, teks, url, nomor FROM lapor_kabar WHERE terkirim IS NULL ORDER BY id LIMIT ?1").bind(batas).all()).results;
+export const lpKabarTerkirim = async (env, p, id, kini) => (await sedia(env, p, "lapor_kabar", "ubah", "UPDATE lapor_kabar SET terkirim = ?2 WHERE id = ?1 AND terkirim IS NULL").bind(id, kini).run()).meta.changes;
+export const lpKabarWeb = async (env, p, wa, sejak) => (await sedia(env, p, "lapor_kabar", "baca",
+  "SELECT nomor, teks, dibuat waktu, jenis FROM lapor_kabar WHERE wa = ?1 AND dibuat > ?2 AND jenis != 'pdf' ORDER BY id LIMIT 50").bind(wa, sejak).all()).results;
+/* antrean cetak: yang 'antre', atau 'cetak' > 5 menit tanpa hasil (mesin mati di tengah) dan masih di bawah 3 percobaan; yang diambil langsung ditandai 'cetak' */
+export async function lpPdfAmbil(env, p, kini, batas = 5) {
+  const r = (await sedia(env, p, "lapor_pdf", "baca", "SELECT nomor, versi FROM lapor_pdf WHERE status = 'antre' OR (status = 'cetak' AND diubah < ?1 AND coba < 3) ORDER BY diubah LIMIT ?2").bind(kini - 300e3, batas).all()).results;
+  if (r.length) await env.DB.batch(r.map(x => sedia(env, p, "lapor_pdf", "ubah", "UPDATE lapor_pdf SET status = 'cetak', coba = coba + 1, diubah = ?3 WHERE nomor = ?1 AND versi = ?2").bind(x.nomor, x.versi, kini)));
+  return r;
+}
+export const lpPdfStatus = async (env, p, nomor, versi, status, kini) => (await sedia(env, p, "lapor_pdf", "ubah", "UPDATE lapor_pdf SET status = ?3, diubah = ?4 WHERE nomor = ?1 AND versi = ?2").bind(nomor, versi, status, kini).run()).meta.changes;
+export const lpPdfAda = (env, p, nomor, versi) => sedia(env, p, "lapor_pdf", "baca", "SELECT status FROM lapor_pdf WHERE nomor = ?1 AND versi = ?2").bind(nomor, versi).first();
+
+/* ---- foto ---- */
+export const lpStmtFoto = (env, p, f, g = false) => sedia(env, p, "lapor_foto", "tambah",
+  lpIns(g, "", "lapor_foto", "id, sesi, kunci_r2, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu"))
+  .bind(f.id, f.sesi, f.kunci, f.lat ?? null, f.lon ?? null, f.akurasi ?? null, f.waktuAmbil ?? null, f.waktuTerima, f.lencana, f.pintu);
+export const lpFotoById = (env, p, id) => sedia(env, p, "lapor_foto", "baca",
+  "SELECT f.id, f.sesi sesi_id, f.kunci_r2, s.wa, s.token_sha, s.nomor FROM lapor_foto f JOIN lapor_sesi s ON s.id = f.sesi WHERE f.id = ?1").bind(id).first();
+
+/* ---- unggah video bersambung (migrasi 0158, K61, D89): bagian = JSON {"<n>": etag}, json_set atomik ---- */
+export const lpUnggahBaru = (env, p, u) => sedia(env, p, "lapor_unggah", "tambah",
+  "INSERT INTO lapor_unggah (id, wa, kunci_r2, upload_id, ukuran, jumlah, gps, durasi, bahasa, mulai, akhir) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?10)")
+  .bind(u.id, u.wa, u.kunci, u.uploadId, u.ukuran, u.jumlah, u.gps ?? null, u.durasi ?? null, u.bahasa, u.kini).run();
+export const lpUnggahBaca = (env, p, id) => sedia(env, p, "lapor_unggah", "baca",
+  "SELECT id, wa, kunci_r2, upload_id, ukuran, jumlah, bagian, gps, durasi, bahasa FROM lapor_unggah WHERE id = ?1").bind(id).first();
+export const lpUnggahHitung = async (env, p, wa) => (await sedia(env, p, "lapor_unggah", "baca", "SELECT count(*) n FROM lapor_unggah WHERE wa = ?1").bind(wa).first()).n;
+export const lpUnggahBagian = (env, p, id, n, etag, kini) => sedia(env, p, "lapor_unggah", "ubah",
+  "UPDATE lapor_unggah SET bagian = json_set(bagian, ?2, ?3), akhir = ?4 WHERE id = ?1").bind(id, `$."${Number(n)}"`, etag, kini).run();
+export const lpUnggahHapus = (env, p, id) => env.DB.batch([sedia(env, p, "lapor_unggah", "hapus", "DELETE FROM lapor_unggah WHERE id = ?1").bind(id),
+  sedia(env, p, "lapor_milik", "hapus", "DELETE FROM lapor_milik WHERE jenis = 'unggah' AND id = ?1").bind(id)]).catch(e => { if (/no such table/i.test(String(e?.message))) return sedia(env, p, "lapor_unggah", "hapus", "DELETE FROM lapor_unggah WHERE id = ?1").bind(id).run(); throw e; });   // sebelum 0159 hanya baris unggah
+export const lpUnggahBasi = async (env, p, batas) => (await sedia(env, p, "lapor_unggah", "baca",
+  "SELECT id, kunci_r2, upload_id FROM lapor_unggah WHERE akhir <= ?1 ORDER BY akhir LIMIT 20").bind(batas).all()).results;
+
+/* ---- pintu web tanpa kode (migrasi 0159, K65, D100): nomor ketikan terikat ke perangkat. dev = sha256 kunci kuki lapor_perangkat. ---- */
+export const lpPerangkatBaris = async (env, p, dev) => (await sedia(env, p, "lapor_perangkat", "baca", "SELECT wa, terakhir FROM lapor_perangkat WHERE perangkat_sha = ?1 LIMIT 20").bind(dev).all()).results;
+export const lpPerangkatTambah = (env, p, dev, wa, kini) => sedia(env, p, "lapor_perangkat", "tambah",
+  "INSERT OR IGNORE INTO lapor_perangkat (perangkat_sha, wa, dibuat, terakhir) VALUES (?1, ?2, ?3, ?3)").bind(dev, wa, kini).run();
+export const lpPerangkatSentuh = (env, p, dev, wa, kini) => sedia(env, p, "lapor_perangkat", "ubah", "UPDATE lapor_perangkat SET terakhir = ?3 WHERE perangkat_sha = ?1 AND wa = ?2").bind(dev, wa, kini).run();
+export const lpMilikStmt = (env, p, jenis, id, dev, g = false) => sedia(env, p, "lapor_milik", "tambah", lpIns(g, "OR IGNORE ", "lapor_milik", "jenis, id, perangkat_sha")).bind(jenis, id, dev);
+export const lpMilikTambah = (env, p, jenis, id, dev) => lpMilikStmt(env, p, jenis, id, dev).run();
+export const lpMilikAda = async (env, p, jenis, id, dev) => !!await sedia(env, p, "lapor_milik", "baca", "SELECT 1 a FROM lapor_milik WHERE jenis = ?1 AND id = ?2 AND perangkat_sha = ?3").bind(jenis, id, dev).first();
+const LP_SESI_S = LP_SESI.split(", ").map(k => "s." + k).join(", ");
+export const lpSesiAktifPerangkat = (env, p, wa, dev) => sedia(env, p, "lapor_sesi", "baca",
+  `SELECT ${LP_SESI_S} FROM lapor_sesi s JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id WHERE s.wa = ?1 AND m.perangkat_sha = ?2 ORDER BY s.diubah DESC LIMIT 1`).bind(wa, dev).first();
+export const lpSesiMilikPerangkat = async (env, p, wa, dev) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.nomor, s.kerja, s.terkirim, t.status tiket FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id
+   WHERE s.wa = ?1 AND m.perangkat_sha = ?2 AND s.nomor IS NOT NULL ORDER BY s.terkirim DESC LIMIT 5`).bind(wa, dev).all()).results;
+export const lpKabarWebPerangkat = async (env, p, wa, dev, sejak) => (await sedia(env, p, "lapor_kabar", "baca",
+  `SELECT k.nomor, k.teks, k.dibuat waktu, k.jenis FROM lapor_kabar k JOIN lapor_sesi s ON s.nomor = k.nomor JOIN lapor_milik m ON m.jenis = 'sesi' AND m.id = s.id
+   WHERE k.wa = ?1 AND m.perangkat_sha = ?2 AND k.dibuat > ?3 AND k.jenis != 'pdf' ORDER BY k.id LIMIT 50`).bind(wa, dev, sejak).all()).results;
+
+/* ---- kejadian yang sama (migrasi 0160, K66, D103-D107). Sebelum 0160 semua bacaan memberi kosong lewat pemanggil (tabelBelum). ---- */
+/* kandidat: laporan terkirim sekab sejak waktu tertentu, lengkap dengan kode kejadian dan jumlah warga di kejadiannya; kecamatan disaring pemanggil dari ringkasan */
+export const lpKandidatKejadian = async (env, p, kab, sejak) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.nomor, s.jenis, s.terkirim, s.ringkas, t.status, k.kode,
+     CASE WHEN k.kode IS NULL THEN 1 ELSE (SELECT count(DISTINCT s2.wa) FROM lapor_kelompok k2 JOIN lapor_sesi s2 ON s2.nomor = k2.nomor WHERE k2.kode = k.kode) END n
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_kelompok k ON k.nomor = s.nomor
+   WHERE s.kab = ?1 AND s.terkirim > ?2 ORDER BY s.terkirim DESC LIMIT 150`).bind(kab, sejak).all()).results;
+export const lpKejadianKode = async (env, p, nomor) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT kode FROM lapor_kelompok WHERE nomor = ?1").bind(nomor).first())?.kode ?? null;
+export const lpKejadianBerikut = async (env, p, tgl) => (await sedia(env, p, "lapor_kelompok_urut", "tambah",
+  "INSERT INTO lapor_kelompok_urut (tgl, n) VALUES (?1, 1) ON CONFLICT (tgl) DO UPDATE SET n = n + 1 RETURNING n").bind(tgl).first()).n;
+/* induk lebih dulu (bila belum punya kode), lalu laporan baru menyalin kode induk lewat SELECT: dua laporan serentak ke induk yang sama tetap satu kode. Dipakai dalam batch sesudah sesi bernomor. */
+export const lpStmtKejadianInduk = (env, p, induk, kode, kini) => sedia(env, p, "lapor_kelompok", "tambah",
+  "INSERT OR IGNORE INTO lapor_kelompok (nomor, kode, induk, dibuat) SELECT ?1, ?2, NULL, ?3 WHERE EXISTS (SELECT 1 FROM lapor_sesi WHERE nomor = ?1)").bind(induk, kode, kini);
+export const lpStmtKejadianAnggota = (env, p, nomor, induk, kini) => sedia(env, p, "lapor_kelompok", "tambah",
+  "INSERT OR IGNORE INTO lapor_kelompok (nomor, kode, induk, dibuat) SELECT ?1, kode, ?2, ?3 FROM lapor_kelompok WHERE nomor = ?2 AND EXISTS (SELECT 1 FROM lapor_sesi WHERE nomor = ?1)").bind(nomor, induk, kini);
+/* ringkasan kejadian per kode untuk daftar meja: {kode: {n_laporan, n_pelapor}}; hanya kode yang diminta */
+export async function lpKejadianRingkas(env, p, kodes) {
+  if (!kodes.length) return {};
+  const r = (await sedia(env, p, "lapor_kelompok", "baca",
+    `SELECT k.kode, count(*) n_laporan, count(DISTINCT s.wa) n_pelapor FROM lapor_kelompok k JOIN lapor_sesi s ON s.nomor = k.nomor WHERE k.kode IN (${kodes.map((_, i) => "?" + (i + 1)).join(",")}) GROUP BY k.kode`).bind(...kodes).all()).results;
+  return Object.fromEntries(r.map(x => [x.kode, {n_laporan: x.n_laporan, n_pelapor: x.n_pelapor}]));
+}
+export const lpKejadianNomor = async (env, p, nomor) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT nomor, kode FROM lapor_kelompok WHERE nomor = ?1").bind(nomor).first());
+export const lpKejadianSemuaNomor = async (env, p) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT nomor, kode FROM lapor_kelompok ORDER BY dibuat DESC LIMIT 3000").all()).results;
+/* lepas satu laporan; bila kejadiannya tinggal satu laporan, sisanya ikut dilepas (kejadian minimal dua laporan). Satu batch. */
+export const lpKejadianLepas = (env, p, nomor, kode, ekstra = []) => env.DB.batch([
+  sedia(env, p, "lapor_kelompok", "hapus", "DELETE FROM lapor_kelompok WHERE nomor = ?1 AND kode = ?2").bind(nomor, kode),
+  sedia(env, p, "lapor_kelompok", "hapus", "DELETE FROM lapor_kelompok WHERE kode = ?1 AND (SELECT count(*) FROM lapor_kelompok WHERE kode = ?1) < 2").bind(kode), ...ekstra]);
+
+/* ---- monitoring staf dan alun-alun ---- */
+const LP_KOLOM_FILTER = {jenis: "s.jenis = ?", status: "t.status = ?", kab: "s.kab = ?", prov: "s.kab LIKE ? || '%'"};   // prov (2 angka) hanya diisi server dari cakupan akun BPBD
+export async function lpMejaDaftar(env, p, f) {
+  const where = ["s.terkirim IS NOT NULL"], ikat = [];
+  if (Number.isFinite(f.dari)) { where.push("s.terkirim >= ?"); ikat.push(f.dari); }
+  if (Number.isFinite(f.sampai)) { where.push("s.terkirim <= ?"); ikat.push(f.sampai); }
+  for (const k of Object.keys(LP_KOLOM_FILTER)) if (f[k]) { where.push(LP_KOLOM_FILTER[k]); ikat.push(f[k]); }
+  const sql = susulan => `SELECT s.nomor, s.wa, s.terkirim, s.jenis, s.lat, s.lon, s.ringkas, t.status, pl.nama, pl.peran, pl.kab pkab,
+       (SELECT count(*) FROM lapor_balasan b WHERE b.nomor = s.nomor) balasan${susulan ? `,
+       COALESCE((SELECT max(v.versi) FROM lapor_versi v WHERE v.nomor = s.nomor), 1) versi,
+       (SELECT count(*) FROM lapor_versi w WHERE w.nomor = s.nomor AND w.waktu > COALESCE((SELECT max(r.waktu) FROM lapor_tiket_riwayat r WHERE r.nomor = s.nomor AND r.pelaku != 'Pelapor'), 0)) ada_susulan` : ""}
+     FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_pelapor pl ON pl.wa = s.wa
+     WHERE ${where.join(" AND ")} ORDER BY s.terkirim DESC LIMIT 1000`;
+  try { return (await sedia(env, p, "lapor_sesi", "baca", sql(true)).bind(...ikat).all()).results; }
+  catch (e) { if (!/no such table: lapor_versi/i.test(String(e?.message))) throw e; return (await sedia(env, p, "lapor_sesi", "baca", sql(false)).bind(...ikat).all()).results; }   // kode tayang sebelum 0156
+}
+export const lpAlunBaris = async (env, p, prov, jenis) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.id, s.nomor, s.jenis, s.ringkas, s.terkirim, s.tingkat, t.status FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor
+   WHERE t.status IN ('ditindaklanjuti', 'selesai') AND (?1 IS NULL OR s.kab LIKE ?1 || '%') AND (?2 IS NULL OR s.jenis = ?2) ORDER BY s.terkirim DESC LIMIT 300`).bind(prov || null, jenis || null).all()).results;
+
+/* semua laporan terkirim 30 hari terakhir untuk menghitung gugus (alun-alun) dan agregat; tanpa teks, hanya kolom indeks dan ringkasan beku */
+export const lpGugusBaris = async (env, p, sejak) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.id, s.nomor, s.wa, s.jenis, s.lat, s.lon, s.terkirim, s.ringkas, t.status,
+     EXISTS (SELECT 1 FROM lapor_foto f WHERE f.sesi = s.id AND f.lencana IN ('gps', 'exif')) foto_sah
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor WHERE s.terkirim > ?1 ORDER BY s.terkirim DESC LIMIT 3000`).bind(sejak).all()).results;
+export const lpAgregatBaris = async (env, p, batas = 50000) => (await sedia(env, p, "lapor_sesi", "baca",
+  `SELECT s.wa, s.jenis, s.terkirim, s.ringkas, t.status,
+     EXISTS (SELECT 1 FROM lapor_foto f WHERE f.sesi = s.id AND f.lencana IN ('gps', 'exif')) foto_sah
+   FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor WHERE s.terkirim IS NOT NULL ORDER BY s.terkirim DESC LIMIT ?1`).bind(batas).all()).results;
+
+/* ---- bukti tindak lanjut (migrasi 0157, K60, D87, D88) ---- */
+export const lpBuktiDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_bukti", "baca",
+  "SELECT id, publik, waktu, lat FROM lapor_bukti WHERE nomor = ?1 ORDER BY waktu, id LIMIT 10").bind(nomor).all()).results;
+export const lpBuktiHitung = async (env, p, nomor) => (await sedia(env, p, "lapor_bukti", "baca", "SELECT count(*) n FROM lapor_bukti WHERE nomor = ?1").bind(nomor).first()).n;
+/* tambah hanya bila nomor itu masih di bawah 10 foto (satu pernyataan: tanpa celah baca-lalu-tulis); stmt berikutnya memakai changes() */
+export const lpStmtBukti = (env, p, b) => sedia(env, p, "lapor_bukti", "tambah",
+  "INSERT INTO lapor_bukti (id, nomor, kunci_r2, oleh, lat, lon, akurasi, publik, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, 0, ?8 WHERE (SELECT count(*) FROM lapor_bukti WHERE nomor = ?2) < 10")
+  .bind(b.id, b.nomor, b.kunci, String(b.oleh).slice(0, 200), b.lat ?? null, b.lon ?? null, b.akurasi ?? null, b.waktu);
+export const lpBuktiPublik = async (env, p, nomor, id, publik) => (await sedia(env, p, "lapor_bukti", "ubah", "UPDATE lapor_bukti SET publik = ?3 WHERE id = ?2 AND nomor = ?1").bind(nomor, id, publik ? 1 : 0).run()).meta.changes;
+export const lpBuktiById = (env, p, id) => sedia(env, p, "lapor_bukti", "baca",
+  "SELECT b.id, b.kunci_r2, b.publik, b.nomor, s.token_sha, t.status FROM lapor_bukti b JOIN lapor_sesi s ON s.nomor = b.nomor JOIN lapor_tiket t ON t.nomor = b.nomor WHERE b.id = ?1").bind(id).first();
+export const lpBuktiAlun = async (env, p) => (await sedia(env, p, "lapor_bukti", "baca",
+  "SELECT b.id, b.nomor FROM lapor_bukti b JOIN lapor_tiket t ON t.nomor = b.nomor WHERE b.publik = 1 AND t.status IN ('ditindaklanjuti', 'selesai') ORDER BY b.waktu DESC LIMIT 500").all()).results;
+
+/* ---- jejak akses meja BPBD (D95) dan unduhan agregat (D93) ---- */
+export const lpStmtAkses = (env, p, nomor, oleh, kini) => sedia(env, p, "lapor_akses", "tambah", "INSERT INTO lapor_akses (nomor, oleh, waktu) VALUES (?1, ?2, ?3)").bind(nomor, String(oleh).slice(0, 200), kini);
+export const lpUnduhCatat = (env, p, akun, berkas, kini) => sedia(env, p, "lapor_unduh", "tambah", "INSERT INTO lapor_unduh (akun, berkas, waktu) VALUES (?1, ?2, ?3)").bind(String(akun).slice(0, 200), berkas, kini).run();
+
+/* ---- akun lembaga pemda untuk meja BPBD (D94): pemilik akun (instansi_akun.wa) atau anggota aktif lewat /masuk (mk_anggota). Hanya jenis pemkab, pemkot, pemprov yang aktif; provinsi lebih dulu. ---- */
+export const lpAkunMeja = async (env, wa, mkId) => (await env.DB.prepare(
+  `SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 AND jenis IN ('pemkab', 'pemkot', 'pemprov')
+   UNION SELECT x.id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id
+     WHERE g.mk_id = ?2 AND g.tabel = 'instansi_akun' AND g.status = 'aktif' AND x.status = 'aktif' AND x.dummy = 0 AND x.jenis IN ('pemkab', 'pemkot', 'pemprov')
+   ORDER BY tingkat DESC LIMIT 3`).bind(wa, mkId).all()).results;
+/* akun lembaga kab/kota aktif di satu provinsi, dengan nomor WA, untuk pemberitahuan teruskan (D97); dicocokkan nama oleh pemanggil (bakuKab) */
+export const lpAkunKabProv = async (env, prov) => (await env.DB.prepare(
+  "SELECT id, jenis, kab, wa FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND status = 'aktif' AND dummy = 0 AND jenis IN ('pemkab', 'pemkot') AND wa IS NOT NULL AND wa GLOB '62[0-9]*' AND wa NOT GLOB '*[^0-9]*' LIMIT 200").bind(prov).all()).results;   // format sama dengan CHECK lapor_kabar_bpbd.wa: satu nomor tak baku tidak menggagalkan batch teruskan
+/* satu pesan ke antrean BPBD, hanya bila pernyataan sebelumnya dalam batch mengubah baris (changes() > 0) dan kab itu belum 20 pesan dalam 24 jam (Q55) */
+export const lpStmtKabarBpbd = (env, p, wa, nomor, kab, teks, kini) => sedia(env, p, "lapor_kabar_bpbd", "tambah",
+  "INSERT INTO lapor_kabar_bpbd (wa, nomor, kab, teks, dibuat) SELECT ?1, ?2, ?3, ?4, ?5 WHERE changes() > 0 AND (SELECT count(*) FROM lapor_kabar_bpbd WHERE kab = ?3 AND dibuat > ?5 - 86400000) < 20")
+  .bind(wa, nomor, String(kab).slice(0, 120), String(teks).slice(0, 1000), kini);
+export const lpKabarBpbdAntre = async (env, p, batas = 50) => (await sedia(env, p, "lapor_kabar_bpbd", "baca", "SELECT id, wa, teks FROM lapor_kabar_bpbd WHERE terkirim IS NULL ORDER BY id LIMIT ?1").bind(batas).all()).results;
+export const lpKabarBpbdTerkirim = async (env, p, id, kini) => (await sedia(env, p, "lapor_kabar_bpbd", "ubah", "UPDATE lapor_kabar_bpbd SET terkirim = ?2 WHERE id = ?1 AND terkirim IS NULL").bind(id, kini).run()).meta.changes;
+
+/* kuota Lapor: daftar = [{kunci, aksi, batas: [[jendela ms, maks], ...]}]. Semua batas dibaca dulu; lewat salah satu -> {sisa detik sampai baris tertua keluar dari jendela}
+   tanpa menulis apa pun; lolos semua -> satu baris laju_bnpb per kunci. */
+export async function lpKuota(env, p, daftar, kini) {
+  for (const {kunci, aksi, batas} of daftar) for (const [jendela, maks] of batas) {
+    const r = await sedia(env, p, "laju_bnpb", "baca", "SELECT count(*) n, min(waktu) t FROM laju_bnpb WHERE kunci = ?1 AND aksi = ?2 AND waktu > ?3").bind(kunci, aksi, kini - jendela).first();
+    if (r.n >= maks) return {sisa: Math.max(1, Math.ceil((r.t + jendela - kini) / 1000))};
+  }
+  await env.DB.batch(daftar.map(({kunci, aksi}) => sedia(env, p, "laju_bnpb", "tambah", "INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?1, ?2, ?3)").bind(kunci, aksi, kini)));
+  return null;
+}
+
+/* ---- laporan susulan (migrasi 0156): versi 2+ ---- */
+export const lpStmtVersi = (env, p, nomor, versi, isi, perubahan, waktu, g = false) => sedia(env, p, "lapor_versi", "tambah",
+  lpIns(g, "", "lapor_versi", "nomor, versi, isi, perubahan, waktu")).bind(nomor, versi, isi, perubahan, waktu);
+/* versi terakhir (1 bila belum ada susulan) dan penanda "ada susulan": versi > 1 lebih baru daripada riwayat tiket terakhir oleh selain Pelapor. Tanpa tabel 0156: versi 1, tanpa penanda. */
+export async function lpVersiInfo(env, p, nomor) {
+  try {
+    const r = await sedia(env, p, "lapor_versi", "baca",
+      `SELECT COALESCE(max(v.versi), 1) versi, (SELECT count(*) FROM lapor_versi w WHERE w.nomor = ?1 AND w.waktu > COALESCE((SELECT max(r.waktu) FROM lapor_tiket_riwayat r WHERE r.nomor = ?1 AND r.pelaku != 'Pelapor'), 0)) ada
+       FROM lapor_versi v WHERE v.nomor = ?1`).bind(nomor).first();
+    return {versi: r.versi, ada: r.ada > 0};
+  } catch (e) { if (/no such table/i.test(String(e?.message))) return {versi: 1, ada: false}; throw e; }
+}
+/* pengecekan lapangan dan tindakan (migrasi 0162): hanya INSERT dan SELECT; g = hanya bila pernyataan sebelumnya mengubah baris */
+export const lpPeriksaDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_periksa", "baca",
+  "SELECT hasil, catatan, perubahan, oleh, waktu FROM lapor_periksa WHERE nomor = ?1 ORDER BY waktu, id LIMIT 50").bind(nomor).all()).results;
+export const lpStmtPeriksa = (env, p, nomor, hasil, catatan, perubahan, oleh, kini, g = false) => sedia(env, p, "lapor_periksa", "tambah",
+  lpIns(g, "", "lapor_periksa", "nomor, hasil, catatan, perubahan, oleh, waktu")).bind(nomor, hasil, catatan, perubahan, oleh, kini);
+/* hasil pengecekan terakhir per laporan untuk daftar meja (SQLite: kolom polos ikut baris max(id)).
+   ponytail: membaca seluruh lapor_periksa tiap muat daftar; batasi ke nomor yang tampil bila tabelnya membesar (kuota baca D1 Free) */
+export const lpPeriksaTerakhirSemua = async (env, p) => (await sedia(env, p, "lapor_periksa", "baca",
+  "SELECT nomor, hasil, max(id) id FROM lapor_periksa GROUP BY nomor").all()).results;
+export const lpTindakanDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_tindakan", "baca",
+  "SELECT kode, label, oleh, waktu FROM lapor_tindakan WHERE nomor = ?1 ORDER BY waktu, id LIMIT 100").bind(nomor).all()).results;
+export const lpStmtTindakan = (env, p, nomor, kode, label, oleh, kini, g = false) => sedia(env, p, "lapor_tindakan", "tambah",
+  lpIns(g, "", "lapor_tindakan", "nomor, kode, label, oleh, waktu")).bind(nomor, kode, label, oleh, kini);
+export const lpPdfTerakhir = async (env, p, nomor) => (await sedia(env, p, "lapor_pdf", "baca", "SELECT max(versi) v FROM lapor_pdf WHERE nomor = ?1 AND status = 'jadi'").bind(nomor).first())?.v ?? null;

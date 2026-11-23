@@ -1,0 +1,120 @@
+{
+ "dibuat": "2026-11-16T20:38:15+07:00",
+ "versi": 1,
+ "bencana": "banjir",
+ "misi": "dropping",
+ "status": "zona belum diperiksa",
+ "base": {
+  "kode": "WIMK",
+  "nama": "Lanud Soewondo",
+  "lat": 3.5589,
+  "lon": 98.6719
+ },
+ "base_akhir": null,
+ "tipe": null,
+ "kecepatan_kmj": 200.0,
+ "berangkat": null,
+ "titik": [
+  {
+   "urut": 1,
+   "nama": "Subulussalam",
+   "lat": 2.7949,
+   "lon": 97.8966,
+   "peran": "darat",
+   "menyusul": false,
+   "di_titik_mnt": 0.0
+  },
+  {
+   "urut": 2,
+   "nama": "Sipange, Tukka",
+   "lat": 1.6682233333333332,
+   "lon": 98.86761333333332,
+   "peran": "darat",
+   "menyusul": false,
+   "di_titik_mnt": 0.0
+  },
+  {
+   "urut": 3,
+   "nama": "Bona Lumban, Tukka",
+   "lat": 1.695383,
+   "lon": 98.861882,
+   "peran": "darat",
+   "menyusul": false,
+   "di_titik_mnt": 0.0
+  }
+ ],
+ "leg": [
+  {
+   "no": 1,
+   "dari": "WIMK",
+   "ke": "T1",
+   "haluan": 225,
+   "km": 120.9,
+   "nm": 65.3,
+   "mnt": 36.3,
+   "belokan": null
+  },
+  {
+   "no": 2,
+   "dari": "T1",
+   "ke": "T2",
+   "haluan": 139,
+   "km": 165.3,
+   "nm": 89.3,
+   "mnt": 49.6,
+   "belokan": null
+  },
+  {
+   "no": 3,
+   "dari": "T2",
+   "ke": "T3",
+   "haluan": 348,
+   "km": 3.1,
+   "nm": 1.7,
+   "mnt": 0.9,
+   "belokan": null
+  },
+  {
+   "no": 4,
+   "dari": "T3",
+   "ke": "WIMK",
+   "haluan": 354,
+   "km": 208.3,
+   "nm": 112.5,
+   "mnt": 62.5,
+   "belokan": null
+  }
+ ],
+ "total": {
+  "km": 497.6,
+  "nm": 268.7,
+  "terbang_mnt": 149.3,
+  "di_titik_mnt": 0
+ },
+ "zona": [],
+ "tidak_diperiksa": [
+  {
+   "sumber": "zona",
+   "alasan": "pemeriksaan zona belum dibangun (MU-05, MU-07)"
+  },
+  {
+   "sumber": "NOTAM",
+   "alasan": "NOTAM tidak diperiksa"
+  }
+ ],
+ "perhatian": [],
+ "daya_tahan": {
+  "hasil": "tipe tidak dipilih, daya tahan tidak dihitung"
+ },
+ "sementara": [
+  "Q2"
+ ],
+ "sementara_dipakai": [
+  {
+   "label": "kecepatan jelajah bawaan",
+   "nilai": 200,
+   "satuan": "km/jam",
+   "q": "Q2"
+  }
+ ]
+}

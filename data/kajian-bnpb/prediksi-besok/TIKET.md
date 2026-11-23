@@ -10,6 +10,6 @@ Status per 17 Nov 2026.
 | BS-4 | Tangga kering kita: sepekan HTH, bulan peluang model | dikerjakan |
 | BS-5 | Tab Besok: kendali, pil bencana, Perlu tindakan, tabel, pop-up | dikerjakan |
 | BS-6 | Tampilan Peta | dikerjakan |
-| BS-7 | Konfirmasi menerima GEL dan CEX (Q4, warga-api) | menunggu pemilik |
-| BS-8 | Siklon BMKG di Perlu tindakan (Q5) | menunggu pemilik |
+| BS-7 | Konfirmasi menerima GEL dan CEX | ditolak pemilik (K15) |
+| BS-8 | Siklon BMKG di Perlu tindakan | ditolak pemilik (K16) |
 | BS-9 | Sumber pengamatan gelombang dan angin untuk rapor | belum dirancang |

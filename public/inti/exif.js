@@ -9,7 +9,7 @@ window.bacaExif = buf => {
         const u16 = p => v.getUint16(t + p, le), u32 = p => v.getUint32(t + p, le), ifd = p => { const out = {}, k = u16(p); for (let i = 0; i < k; i++) { const e = p + 2 + i * 12; out[u16(e)] = {n: u32(e + 4), nilai: e + 8}; } return out; };
         const str = e => { const p = e.n > 4 ? u32(e.nilai) : e.nilai; let s = ""; for (let i = 0; i < e.n - 1; i++) s += String.fromCharCode(v.getUint8(t + p + i)); return s; };
         const rat = e => { const p = u32(e.nilai); return [0, 1, 2].map(i => u32(p + i * 8) / (u32(p + i * 8 + 4) || 1)); };
-        const ifd0 = ifd(u32(4)), hasil = {};
+        const ifd0 = ifd(u32(4)), hasil = {kamera: !!(ifd0[0x010f] || ifd0[0x0110])};   // Make atau Model: foto kamera; tangkapan layar dan gambar hasil sunting tanpa keduanya
         if (ifd0[0x8769]) { const ex = ifd(u32(ifd0[0x8769].nilai)), dt = ex[0x9003] && str(ex[0x9003]), off = ex[0x9011] && str(ex[0x9011]), m2 = dt && dt.match(/^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/);
           if (m2) { const w = Date.parse(`${m2[1]}-${m2[2]}-${m2[3]}T${m2[4]}:${m2[5]}:${m2[6]}` + (off && /^[+-]\d\d:\d\d$/.test(off) ? off : "")); if (Number.isFinite(w)) hasil.waktu = w; } }
         if (ifd0[0x8825]) { const g = ifd(u32(ifd0[0x8825].nilai));

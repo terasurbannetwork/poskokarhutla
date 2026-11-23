@@ -67,7 +67,7 @@ const IK_BC = {
 };
 const KOLS = [["nama", "Kab/kota"], ["jiwa", "Jiwa"], ["HJN", "Hujan"], ["BNJ", "Banjir"], ["LSR", "Longsor"], ["API", "Titik panas"], ["ASP", "Asap"], ["GEL", "Gelombang"], ["ROB", "Rob"], ["CEX", "Angin"]];
 const VONIS_KOL = {HJN: "p20", API: "p", BNJ: "ps", LSR: "ps"};
-const KELAS_GEL = ["di bawah 1,25 m", "1,25 sampai di bawah 2,5 m", "2,5 sampai di bawah 4 m", "4 m ke atas"];
+const KELAS_GEL = ["di bawah 1,25 m", "Sedang (1,25 sampai di bawah 2,5 m)", "Tinggi (2,5 sampai di bawah 4 m)", "Awas (4 m ke atas)"];   // label gelombang Sedang, Tinggi, Awas (pemilik 19 Nov 2026, KEPUTUSAN-BESOK K12)
 const KELAS_CEX = ["di bawah ambang 46 km/jam", "angin kencang (46 km/jam ke atas)", "setara Beaufort 8 (63 km/jam ke atas)", "setara Beaufort 10 (89 km/jam ke atas)"];
 const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
 Object.assign(KODE_NAMA, {GEL: "Gelombang", CEX: "Angin"});
@@ -223,7 +223,7 @@ function bukaRincian(id, dari) {
   const s = k.ASP?.[n - 1];
   if (s) baris.push(`<div class="pr-b">${lab("ASP")}<span>PM2,5 ±${fmt(kol("ASP", s, "pm"))} µg/m³, ${ISPU[kol("ASP", s, "kat")]} <span class="pr-pil abu">belum teruji</span></span></div>`);
   const g = k.GEL?.[n - 1];
-  if (g && PR.KOL.GEL) baris.push(`<div class="pr-b">${lab("GEL")}<span>tinggi gelombang maksimum ${fmt(kol("GEL", g, "hs"))} m, ${KELAS_GEL[kol("GEL", g, "lv")]} (kategori BMKG) <span class="pr-pil abu">belum teruji</span></span></div>`);
+  if (g && PR.KOL.GEL) baris.push(`<div class="pr-b">${lab("GEL")}<span>tinggi gelombang maksimum ${fmt(kol("GEL", g, "hs"))} m, ${KELAS_GEL[kol("GEL", g, "lv")]} <span class="pr-pil abu">belum teruji</span></span></div>`);
   const r = k.ROB?.[n - 1];
   if (r) baris.push(`<div class="pr-b">${lab("ROB")}<span>${kol("ROB", r, "lewat") ? "muka laut melewati p95" : "di bawah p95"}, sel ${fmt(kol("ROB", r, "sel"))} <span class="pr-pil abu">belum teruji</span></span></div>`);
   const c = k.CEX?.[n - 1];

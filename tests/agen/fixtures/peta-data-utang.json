@@ -9,8 +9,6 @@
   "public/banjir/data/kejadian_gunungapi_geo.json",
   "public/banjir/data/kejadian_gunungapi_nomor.json",
   "public/banjir/data/model_bahaya.json",
-  "public/banjir/data/paparan_kab.json",
-  "public/banjir/data/siaga_persentil_log.json",
   "public/data/bahan_bakar.json",
   "public/data/bahan_bakar_uji.json",
   "public/data/foto_dasar.json",
@@ -21,11 +19,6 @@
   "public/data/risiko_mingguan_uji.json",
   "public/data/sk_drive.json",
   "public/data/transisi_lahan.json",
-  "public/gempa/data/emsc_prospektif.json",
-  "public/gempa/data/emsc_residu.json",
-  "public/gempa/data/prospektif_guncangan.json",
-  "public/gempa/data/prospektif_susulan.json",
-  "public/udara/data/geoscf.json",
   "public/udara/data/lintasan.json"
  ],
  "tanpa-jadwal": [
@@ -44,6 +37,10 @@
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
+  "public/data/bpbd_kontak.json": {
+   "alasan": "Pemilik 22 Nov 2026: pengecualian bertanggal. Nomor BPBD dan damkar dipanen tangan dari situs .go.id, tiap nomor dicek tertulis di halaman sumbernya (data/kajian-bnpb/lapor-ai/riset/kontak-bpbd, K88, Q64). Pengecek otomatis tidak dipakai karena banyak situs BPBD menolak bot dan akan membuang nomor yang masih benar. Panen diulang manual berkala. Dipakai src/lapor_info.js dan src/lapor_ai.js lewat src/lapor_kontak.js.",
+   "tanggal": "2026-11-22"
+  },
   "public/banjir/data/uji_aifs.json": {
    "alasan": "Sakelar vonis uji balik AIFS yang dibaca ansambel_hujan.py (aifs_lolos, lewat path UJI_AIFS); bukan data tampil.",
    "tanggal": "2026-11-11"
