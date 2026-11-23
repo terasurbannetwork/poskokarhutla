@@ -162,7 +162,7 @@ uji("objek: penjaga x-pb, kuki, jenis yang belum dibuka, isian wajib", async () 
   await DB.prepare("DELETE FROM laju_bnpb").run();
   assert.equal((await tulis({jenis: "rumah", isian: RUMAH}, {cookie: kuki, origin: ASAL})).s, 403, "tanpa x-pb");
   assert.equal((await tulis({jenis: "rumah", isian: RUMAH}, XPB)).s, 401, "tanpa kuki");
-  assert.equal((await tulis({jenis: "usaha", isian: {}})).s, 400, "usaha menyusul di LJ-08");
+  assert.equal((await tulis({jenis: "usaha", isian: {}})).s, 400, "usaha tanpa isian wajib");
   const r = await tulis({jenis: "rumah", isian: {desa: "Paledang"}}); assert.equal(r.s, 400); assert.ok(r.j.isian.includes("kk") && r.j.isian.includes("tingkat"));
 });
 
@@ -807,4 +807,163 @@ uji("LJ-07 WA: perintah status tidak mencegat jawaban saat butir ditanyakan; nom
   const foto = (id, h) => api("POST", "/api/lapor/data/foto", {objek: id, jenis: "wajah", data: B64}, h);
   const a = await foto(milikKetua.id, anggota); assert.equal(a.s, 403); assert.match(a.j.galat, /Anggota hanya bisa menambah foto ke data yang diisinya sendiri/); assert.equal(await n("lj_media", `objek = '${milikKetua.id}'`), 0);
   assert.equal((await foto(milikAnggota.id, anggota)).s, 201, "anggota ke objek isiannya"); assert.equal((await foto(milikAnggota.id, {cookie: kuki, ...XPB})).s, 201, "ketua ke objek anggota");
+});
+
+/* ---------- LJ-08: usaha, kebutuhan, isian berkas (ketua), nihil per metrik ---------- */
+const USAHA = {jenis: "sawah", desa: "Paledang", besaran: 12.5, satuan: "ha"};
+const KEB = {butir: "air", jumlah: 500, satuan: "liter", mendesak: true, desa: "Paledang"};
+const AGA = "d8".repeat(32), anggotaLj8 = {cookie: `lapor_data=${AGA}`, ...XPB};
+const isian = (b, h = {cookie: kuki, ...XPB}) => api("POST", "/api/lapor/data/isian", b, h);
+const nihilApi = (b, h = {cookie: kuki, ...XPB}) => api("POST", "/api/lapor/data/nihil", b, h);
+const berkasWeb = async () => (await api("GET", "/api/lapor/data/berkas", undefined, {cookie: kuki})).j;
+let tpKeb;
+
+uji("LJ-08 usaha: tersimpan tanpa foto tetapi kurang 1 foto; besaran wajib; foto biasa mengisi; desa memuat nomor ditolak", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  await DB.prepare("INSERT INTO lj_tim (berkas, wa, nama, peran, token_sha, kedaluwarsa, oleh, dibuat) VALUES (?, '6281299880021', 'Aga', 'anggota', ?, ?, 'uji', ?)").bind(berkasId, sha256(AGA), Date.now() + 864e5, kini).run();
+  const r = await tulis({jenis: "usaha", isian: USAHA}); assert.equal(r.s, 201, r.t);
+  assert.deepEqual(r.j.objek.kurang_foto, {foto: 1, wajah: 0}); assert.equal(r.j.objek.data.besaran, 12.5); assert.deepEqual(r.j.objek.penanda, ["tanpa_titik"]);
+  const tanpa = await tulis({jenis: "usaha", isian: {jenis: "sawah", desa: "Paledang", satuan: "ha"}}); assert.equal(tanpa.s, 400); assert.ok(tanpa.j.isian.includes("besaran"));
+  assert.equal((await tulis({jenis: "usaha", isian: {...USAHA, satuan: "kg"}})).s, 400);
+  const nomor = await tulis({jenis: "usaha", isian: {...USAHA, desa: "Paledang 0812-3456-7890"}}); assert.equal(nomor.s, 400); assert.deepEqual(nomor.j.isian, ["desa"]);
+  const f = await api("POST", "/api/lapor/data/foto", {objek: r.j.objek.id, data: Buffer.from(JPEG_SAH).toString("base64")}, {cookie: kuki, ...XPB});
+  assert.equal(f.s, 201, f.t); assert.deepEqual(f.j.objek.kurang_foto, {foto: 0, wajah: 0});
+  assert.equal((await api("POST", "/api/lapor/data/foto", {objek: r.j.objek.id, jenis: "wajah", data: Buffer.from(JPEG_SAH).toString("base64")}, {cookie: kuki, ...XPB})).s, 400, "wajah hanya untuk orang");
+  const lat = await tulis({jenis: "usaha", isian: USAHA, lat: -6.6, lon: 106.8}); assert.equal(lat.j.objek.lat, -6.6); assert.deepEqual(lat.j.objek.penanda, []);
+});
+
+uji("LJ-08 kebutuhan: tanpa titik wajib desa; titik harus titik aktif berkas ini (berkas lain 404); tanpa foto; titik berkebutuhan tidak bisa dibatalkan; teks bebas tanpa nomor", async () => {
+  const x = await tulis({jenis: "kebutuhan", isian: {...KEB, desa: undefined}}); assert.equal(x.s, 400); assert.deepEqual(x.j.isian, ["desa"]);
+  const k = await tulis({jenis: "kebutuhan", isian: KEB, lat: -6.6, lon: 106.8}); assert.equal(k.s, 201, k.t);
+  assert.deepEqual(k.j.objek.kurang_foto, {foto: 0, wajah: 0}); assert.deepEqual(k.j.objek.penanda, []); assert.equal(k.j.objek.lat, null, "kebutuhan tanpa titik sendiri"); assert.equal(k.j.objek.titik_id, null);
+  const foto = await api("POST", "/api/lapor/data/foto", {objek: k.j.objek.id, data: Buffer.from(JPEG_SAH).toString("base64")}, {cookie: kuki, ...XPB}); assert.equal(foto.s, 400); assert.equal(await n("lj_media", `objek = '${k.j.objek.id}'`), 0);
+  for (const t of ["TP-EEEEEEEE", "TP-ZZZZZZZZ"]) { const y = await tulis({jenis: "kebutuhan", isian: {...KEB, desa: undefined, titik: t}}); assert.equal(y.s, 404, t); assert.deepEqual(y.j.isian, ["titik"]); }
+  assert.equal((await tulis({jenis: "kebutuhan", isian: {...KEB, desa: undefined, titik: "TP-bukan"}})).s, 400);
+  const tt = await tulis({jenis: "titik", isian: {...TITIK, nama: "Titik Kebutuhan"}, lat: -6.9, lon: 107.2}); assert.equal(tt.s, 201, tt.t); tpKeb = tt.j.objek;
+  const ok = await tulis({jenis: "kebutuhan", isian: {...KEB, desa: undefined, titik: tpKeb.titik_id, bantuan_dari: "PMI Kota Bogor", bantuan_apa: "paket sembako", bantuan_jumlah: 40}}); assert.equal(ok.s, 201, ok.t);
+  assert.equal(ok.j.objek.titik_id, tpKeb.titik_id); assert.equal(ok.j.objek.data.titik, tpKeb.titik_id);
+  const batal = (o, alasan = "salah catat ulang") => api("POST", "/api/lapor/data/batal", {objek: o.id, rev: o.rev, alasan}, {cookie: kuki, ...XPB});
+  const b1 = await batal(tpKeb); assert.equal(b1.s, 409); assert.match(b1.j.galat, /kebutuhan/);
+  assert.equal((await batal(ok.j.objek)).s, 200); assert.equal((await batal(tpKeb)).s, 200, "sesudah kebutuhannya batal, titik boleh batal");
+  const sesudah = await tulis({jenis: "kebutuhan", isian: {...KEB, desa: undefined, titik: tpKeb.titik_id}}); assert.equal(sesudah.s, 404, "titik yang sudah batal tidak aktif lagi");
+  for (const [f, v] of [["bantuan_dari", "Pak Dedi 0812 3456 7890"], ["bantuan_apa", "kirim ke 081234567890"], ["satuan", "3171010101010055"], ["desa", "Paledang 0812-3456-7890"]]) {
+    const r = await tulis({jenis: "kebutuhan", isian: {...KEB, [f]: v}}); assert.equal(r.s, 400, f); assert.deepEqual(r.j.isian, [f]);
+  }
+});
+
+uji("LJ-08 isian berkas: hanya ketua; digabung tanpa menghapus kunci lain; tanggal tidak di masa depan; posko titik harus titik aktif berkas ini; teks tanpa nomor; null menghapus; jejak", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  assert.equal((await isian({isian: {status_darurat: "siaga"}}, anggotaLj8)).s, 403, "anggota tidak mengisi isian berkas");
+  assert.equal((await isian({isian: {status_darurat: "siaga"}}, XPB)).s, 401);
+  assert.equal((await isian({isian: {status_darurat: "siaga"}}, {cookie: kuki, origin: ASAL})).s, 403, "tanpa x-pb");
+  assert.equal((await nihilApi({metrik: "pasar_rb", nihil: true})).s, 200);   // tanda nihil yang tidak boleh hilang saat isian disimpan
+  const hariIni = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10), besok = new Date(Date.now() + 31 * 36e5).toISOString().slice(0, 10);
+  const ok = await isian({isian: {status_darurat: "tanggap_darurat", sk_nomor: "360/123/BPBD/2026", sk_tanggal: hariIni, upaya: "Evakuasi warga dan dapur umum", personel: 35, posko: {nama: "Posko Induk Kota Bogor", nomor: "0251-8321234"}}});
+  assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.isian.status_darurat, "tanggap_darurat"); assert.equal(ok.j.isian.posko.nomor, "02518321234"); assert.deepEqual(ok.j.isian.nihil, ["pasar_rb"]); assert.equal(ok.j.isian.kab_nama, "Kota Bogor");
+  for (const [b, f] of [[{status_darurat: "kiamat"}, "status_darurat"], [{sk_tanggal: besok}, "sk_tanggal"], [{sk_tanggal: "2026-02-30"}, "sk_tanggal"], [{personel: -1}, "personel"], [{personel: 1.5}, "personel"], [{personel: "12"}, "personel"],
+    [{upaya: "x".repeat(501)}, "upaya"], [{nihil: ["meninggal"]}, "nihil"], [{kab_nama: "Palsu"}, "kab_nama"], [{posko: {nomor: "abc"}}, "posko.nomor"], [{posko: {titik: "TP-bukan"}}, "posko.titik"]]) {
+    const r = await isian({isian: b}); assert.equal(r.s, 400, JSON.stringify(b)); assert.ok(r.j.isian.includes(f), JSON.stringify(b) + " " + r.t);
+  }
+  assert.equal((await isian({isian: {}})).s, 400); assert.equal((await isian({})).s, 400);
+  for (const v of ["hubungi 0812 3456 7890", "NIK 3171010101010055", "kirim ke dedi@contoh.id"]) { const r = await isian({isian: {upaya: v}}); assert.equal(r.s, 400, v); assert.deepEqual(r.j.isian, ["upaya"]); }
+  const nm = await isian({isian: {posko: {nama: "Posko 0812 3456 7890"}}}); assert.equal(nm.s, 400); assert.deepEqual(nm.j.isian, ["posko.nama"]);
+  const luar = await isian({isian: {posko: {titik: "TP-EEEEEEEE"}}}); assert.equal(luar.s, 404, "titik berkas lain sama dengan tidak ada");
+  const tp = await tulis({jenis: "titik", isian: {...TITIK, nama: "Posko Dekat Titik"}, lat: -6.95, lon: 107.25}); assert.equal(tp.s, 201, tp.t);
+  const dgTitik = await isian({isian: {posko: {titik: tp.j.objek.titik_id}}}); assert.equal(dgTitik.s, 200, dgTitik.t); assert.equal(dgTitik.j.isian.posko.titik, tp.j.objek.titik_id); assert.equal(dgTitik.j.isian.posko.nama, "Posko Induk Kota Bogor", "posko digabung, nama lama tetap");
+  const hapus = await isian({isian: {sk_nomor: null, personel: "", posko: {nomor: null}}}); assert.equal(hapus.s, 200, hapus.t);
+  assert.equal(hapus.j.isian.sk_nomor, undefined); assert.equal(hapus.j.isian.personel, undefined); assert.equal(hapus.j.isian.posko.nomor, undefined); assert.equal(hapus.j.isian.posko.nama, "Posko Induk Kota Bogor"); assert.equal(hapus.j.isian.upaya, "Evakuasi warga dan dapur umum");
+  const g = await berkasWeb(); assert.equal(g.berkas.isian.status_darurat, "tanggap_darurat", "GET berkas memuat isian"); assert.deepEqual(g.berkas.isian.nihil, ["pasar_rb"]);
+  const jej = (await DB.prepare("SELECT sebelum, sesudah, oleh FROM lj_jejak WHERE berkas = ? AND aksi = 'isian' ORDER BY id").bind(berkasId).all()).results;
+  assert.ok(jej.length >= 3); assert.equal(jej[0].oleh, "tim:" + KETUA); assert.equal(JSON.parse(jej[0].sebelum).status_darurat, null); assert.equal(JSON.parse(jej[0].sesudah).status_darurat, "tanggap_darurat");
+  assert.ok(!/@|3171|0812/.test(JSON.stringify(jej)), "jejak tanpa data pribadi");
+  const [a, b] = await Promise.all([isian({isian: {personel: 10}}), isian({isian: {upaya: "Pencarian korban hilang"}})]);   // dua simpan serentak: tidak saling menghapus
+  assert.equal(a.s, 200); assert.equal(b.s, 200); const akhir = (await berkasWeb()).berkas.isian; assert.equal(akhir.personel, 10); assert.equal(akhir.upaya, "Pencarian korban hilang"); assert.deepEqual(akhir.nihil, ["pasar_rb"]);
+  const panjang = await isian({isian: {upaya: "x".repeat(500)}}); assert.equal(panjang.s, 200);
+  await DB.prepare("UPDATE lj_berkas SET status = 'selesai', ditutup = ? WHERE id = ?").bind(kini, berkasId).run();
+  assert.equal((await isian({isian: {personel: 1}})).s, 409, "berkas tertutup"); assert.equal((await nihilApi({metrik: "pasar_rb", nihil: false})).s, 409);
+  await DB.prepare("UPDATE lj_berkas SET status = 'terbuka', ditutup = NULL WHERE id = ?").bind(berkasId).run();
+});
+
+uji("LJ-08 nihil: nama karangan 400; metrik yang sudah ada objeknya 409; tandai dan cabut; anggota boleh; objek baru mencabut nihil dan tercatat; rekap 0 dari nihil", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  for (const b of [{metrik: "rumah_karangan", nihil: true}, {metrik: "__proto__", nihil: true}, {metrik: "nihil", nihil: true}, {metrik: 7, nihil: true}, {nihil: true}, {metrik: "luka"}, {metrik: "luka", nihil: "ya"}]) assert.equal((await nihilApi(b)).s, 400, JSON.stringify(b));
+  assert.equal((await nihilApi({metrik: "meninggal", nihil: true})).s, 409, "sudah ada korban meninggal"); const k = await nihilApi({metrik: "rumah_rb", nihil: true}); assert.equal(k.s, 409); assert.match(k.j.galat, /rumah rusak berat/);
+  assert.equal((await nihilApi({metrik: "pasar_rb", nihil: true}, XPB)).s, 401); assert.equal((await nihilApi({metrik: "pasar_rb", nihil: true}, {cookie: kuki, origin: ASAL})).s, 403);
+  assert.equal((await nihilApi({metrik: "pasar_rb", nihil: true})).j.berubah, false, "sudah bertanda dari uji isian: tidak berubah");
+  const a = await nihilApi({metrik: "irigasi_unit", nihil: true}, anggotaLj8); assert.equal(a.s, 200, a.t); assert.equal(a.j.berubah, true); assert.deepEqual(a.j.daftar.sort(), ["irigasi_unit", "pasar_rb"]);
+  let r = await rekapWeb(); assert.equal(r.pasar_rb, 0); assert.equal(r.irigasi_unit, 0); assert.equal(r.listrik_unit, undefined, "tanpa nihil dan tanpa objek: tidak ada nilainya");
+  const jej = (aksi) => n("lj_jejak", `berkas = '${berkasId}' AND aksi = '${aksi}'`);
+  assert.equal(await jej("nihil_tandai"), 2);
+  const cab = await nihilApi({metrik: "irigasi_unit", nihil: false}, anggotaLj8); assert.equal(cab.j.berubah, true); assert.deepEqual(cab.j.daftar, ["pasar_rb"]);
+  assert.equal((await nihilApi({metrik: "irigasi_unit", nihil: false})).j.berubah, false, "sudah tidak bertanda"); assert.equal(await jej("nihil_cabut"), 1, "yang tidak berubah tidak dicatat");
+  r = await rekapWeb(); assert.equal(r.irigasi_unit, undefined);
+  /* objek baru untuk metrik bertanda nihil mencabutnya di batch yang sama */
+  const p = await tulis({jenis: "prasarana", isian: {jenis: "pasar", nama: "Pasar Anyar", desa: "Paledang", tingkat: "rb", fungsi: "putus"}}); assert.equal(p.s, 201, p.t); assert.deepEqual(p.j.nihil_dicabut, ["pasar_rb"]);
+  r = await rekapWeb(); assert.equal(r.pasar_rb, 1); assert.deepEqual((await berkasWeb()).berkas.isian.nihil, []);
+  assert.equal(await jej("nihil_cabut_otomatis"), 1); const lj = await DB.prepare("SELECT sesudah, objek, oleh FROM lj_jejak WHERE berkas = ? AND aksi = 'nihil_cabut_otomatis'").bind(berkasId).first();
+  assert.deepEqual(JSON.parse(lj.sesudah), {metrik: ["pasar_rb"]}); assert.equal(lj.objek, p.j.objek.id); assert.equal(lj.oleh, "tim:" + KETUA);
+  assert.equal((await nihilApi({metrik: "pasar_rb", nihil: true})).s, 409, "kini sudah ada data");
+  /* objek lain tidak mencabut nihil metrik lain; ubah objek ke metrik bertanda juga mencabut */
+  assert.equal((await nihilApi({metrik: "listrik_unit", nihil: true})).s, 200); assert.equal((await nihilApi({metrik: "sekolah_rs", nihil: true})).s, 200);
+  const q = await tulis({jenis: "prasarana", isian: {jenis: "sekolah", nama: "SD Paledang", desa: "Paledang", tingkat: "rb", fungsi: "putus"}}); assert.equal(q.s, 201, q.t); assert.equal(q.j.nihil_dicabut, undefined, "sekolah rb bukan sekolah rs");
+  assert.deepEqual((await berkasWeb()).berkas.isian.nihil.sort(), ["listrik_unit", "sekolah_rs"]);
+  const u = await tulis({id: q.j.objek.id, rev: q.j.objek.rev, isian: {jenis: "sekolah", nama: "SD Paledang", desa: "Paledang", tingkat: "rs", fungsi: "putus"}}); assert.equal(u.s, 200, u.t); assert.deepEqual(u.j.nihil_dicabut, ["sekolah_rs"]);
+  assert.deepEqual((await berkasWeb()).berkas.isian.nihil, ["listrik_unit"]);
+  assert.equal((await rekapWeb()).listrik_unit, 0, "nihil lain tetap");
+  const hapusIsian = await isian({isian: {personel: 3}}); assert.deepEqual(hapusIsian.j.isian.nihil, ["listrik_unit"], "simpan isian tidak menghapus nihil");
+});
+
+uji("LJ-08 WA: data usaha dengan foto; data kebutuhan tanpa foto (tempat bisa dilewati, desa lalu wajib); nihil dan cabut nihil; nama salah dijawab sopan; tidak menyentuh draf yang sedang diisi", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run(); semuaBalasan.length = 0;
+  let r = await kata(ANGGOTA, "data usaha"); assert.match(r.j.balasan, /Jenis usaha atau lahan/);
+  r = await jalan(ANGGOTA, "1", "Paledang", "15,5", "1"); assert.match(r.j.balasan, /Kirim foto usaha, kurang 1/);
+  r = await waFoto(ANGGOTA, {lokasi: {lat: -6.61, lon: 106.81}}); assert.equal(r.s, 200, r.t); assert.match(r.j.balasan, /Ringkasan usaha/);
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /usaha nomor \d+ sudah masuk/);
+  const us = await DB.prepare("SELECT * FROM lj_objek WHERE jenis = 'usaha' AND klien_id LIKE 'wa-%'").first(); assert.equal(JSON.parse(us.data).besaran, 15.5); assert.equal(JSON.parse(us.data).jenis, "sawah"); assert.equal(us.lat, -6.61);
+  assert.equal(await n("lj_media", `objek = '${us.id}'`), 1); await kata(ANGGOTA, "selesai");
+  r = await kata(ANGGOTA, "data kebutuhan"); assert.match(r.j.balasan, /Untuk tempat pengungsian mana/);
+  r = await kata(ANGGOTA, "lewati"); assert.match(r.j.balasan, /Nama desa atau kelurahan yang membutuhkan/);
+  r = await jalan(ANGGOTA, "Paledang", "2", "300", "liter", "1"); assert.match(r.j.balasan, /Bantuan sudah datang dari siapa/);
+  r = await kata(ANGGOTA, "lewati semua"); assert.match(r.j.balasan, /Ringkasan kebutuhan/); assert.ok(!/Foto|Titik lokasi/.test(r.j.balasan), "kebutuhan tanpa foto dan titik");
+  assert.equal((await waFoto(ANGGOTA)).s, 409, "foto ke kebutuhan ditolak");
+  r = await kata(ANGGOTA, "simpan"); assert.match(r.j.balasan, /kebutuhan nomor \d+ sudah masuk/);
+  const kb = await DB.prepare("SELECT * FROM lj_objek WHERE jenis = 'kebutuhan' AND klien_id LIKE 'wa-%'").first(); assert.equal(JSON.parse(kb.data).butir, "air"); assert.equal(JSON.parse(kb.data).mendesak, true); assert.equal(kb.titik_id, null); assert.equal(kb.desa, "Paledang");
+  await kata(ANGGOTA, "selesai");
+  /* kebutuhan untuk tempat pengungsian dari daftar bernomor */
+  r = await kata(ANGGOTA, "data kebutuhan"); assert.match(r.j.balasan, /1\. /); const titikNomor = /(\d+)\. Gedung Serbaguna/.exec(r.j.balasan)?.[1] ?? "1";
+  r = await kata(ANGGOTA, titikNomor); assert.match(r.j.balasan, /Jenis kebutuhan/, "dengan tempat dipilih, desa tidak wajib"); await kata(ANGGOTA, "batal");
+  /* nihil */
+  r = await kata(ANGGOTA, "nihil irigasi unit"); assert.equal(r.s, 200); assert.match(r.j.balasan, /irigasi unit ditandai nihil/); assert.deepEqual((await berkasWeb()).berkas.isian.nihil.includes("irigasi_unit"), true);
+  r = await kata(ANGGOTA, "nihil irigasi unit"); assert.match(r.j.balasan, /sudah ditandai nihil/);
+  r = await kata(ANGGOTA, "cabut nihil irigasi unit"); assert.match(r.j.balasan, /dicabut/); r = await kata(ANGGOTA, "cabut nihil irigasi unit"); assert.match(r.j.balasan, /tidak sedang ditandai nihil/);
+  r = await kata(ANGGOTA, "nihil meninggal"); assert.match(r.j.balasan, /korban meninggal sudah ada data/); assert.ok(!/aman/i.test(r.j.balasan));
+  r = await kata(ANGGOTA, "nihil rumah rusak berat"); assert.match(r.j.balasan, /rumah rusak berat sudah ada data/);
+  for (const t of ["nihil", "nihil karangan", "cabut nihil"]) { r = await kata(ANGGOTA, t); assert.match(r.j.balasan, /tulis \*nihil\* diikuti nama datanya/, t); }
+  r = await kata(ANGGOTA, "nihil sekolah rr"); assert.match(r.j.balasan, /sekolah rr ditandai nihil/);
+  await kata(ANGGOTA, "data rumah"); r = await kata(ANGGOTA, "nihil luka"); assert.match(r.j.balasan, /Nama desa/, "saat butir ditanyakan, nihil adalah jawaban (nama kepala keluarga), bukan perintah"); assert.equal(await n("lj_berkas", "isian LIKE '%\"luka\"%'"), 0); await kata(ANGGOTA, "batal");
+  r = await kata(ANGGOTA, "data"); assert.match(r.j.balasan, /data usaha/); assert.match(r.j.balasan, /nihil/);
+  assert.equal(await n("lj_sesi", `wa = '${ANGGOTA}' AND keadaan LIKE '%"tahap":"isi"%'`), 0);
+  assert.equal((await wa(WARGA, "nihil meninggal")).s, 403, "bukan anggota berkas");
+  await DB.prepare("UPDATE lj_berkas SET status = 'selesai', ditutup = ? WHERE id = ?").bind(kini, berkasId).run();
+  r = await kata(ANGGOTA, "cabut nihil sekolah rr"); assert.equal(r.s, 403, "berkas tertutup menutup jalur tim");
+  await DB.prepare("UPDATE lj_berkas SET status = 'terbuka', ditutup = NULL WHERE id = ?").bind(berkasId).run();
+});
+
+uji("LJ-08 review: akun provinsi (rekap) tidak melihat posko, SK, upaya, personel; titik yang jadi posko tidak bisa batal; posko ke titik yang sudah batal 404; isian terlalu panjang 400", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  const tp = await tulis({jenis: "titik", isian: {...TITIK, nama: "Titik Posko Review"}, lat: -7.0, lon: 107.3}); assert.equal(tp.s, 201, tp.t);
+  const ok = await isian({isian: {posko: {nama: "Posko Review", nomor: "0251-8321234", titik: tp.j.objek.titik_id}, upaya: "Dapur umum", personel: 5, sk_nomor: "360/9/2026", status_darurat: "siaga"}}); assert.equal(ok.s, 200, ok.t);
+  assert.equal((await isian({isian: {posko: {}}})).s, 400); assert.equal((await isian({isian: {posko: {nama: null, nomor: "0251123456"}}})).s, 400);
+  const prov = akunJabar;
+  const g = await api("GET", `/api/lapor/data/berkas?id=${berkasId}`, undefined, prov); assert.equal(g.s, 200, g.t);
+  assert.deepEqual(Object.keys(g.j.berkas.isian).sort(), ["nihil", "status_darurat"]); assert.equal(g.j.berkas.isian.status_darurat, "siaga"); assert.ok(!/Posko|0251|Dapur|360\/9/.test(g.t), "akun rekap tanpa posko, upaya, SK");
+  const batal = (o) => api("POST", "/api/lapor/data/batal", {objek: o.id, rev: o.rev, alasan: "salah catat ulang"}, {cookie: kuki, ...XPB});
+  const b = await batal(tp.j.objek); assert.equal(b.s, 409); assert.match(b.j.galat, /dipakai sebagai posko/);
+  const sql = await H.ljBatch(env, H.pelakuLjTim, [H.ljStmtObjekBatal(env, H.pelakuLjTim, tp.j.objek.id, berkasId, tp.j.objek.rev, kini, tp.j.objek.titik_id)]); assert.equal(sql[0].meta.changes, 0, "dijaga atomik di SQL juga");
+  assert.equal((await isian({isian: {posko: null}})).s, 200); assert.equal((await batal(tp.j.objek)).s, 200);
+  const x = await isian({isian: {posko: {nama: "Posko Baru", titik: tp.j.objek.titik_id}}}); assert.equal(x.s, 404, "titik batal");
+  const st = await H.ljBatch(env, H.pelakuLjTim, [H.ljStmtIsian(env, H.pelakuLjTim, berkasId, JSON.stringify({upaya: "x"}), kini, tp.j.objek.titik_id)]); assert.equal(st[0].meta.changes, 0, "guard SQL titik posko");
+  await DB.prepare("UPDATE lj_berkas SET isian = json_set(isian, '$.nihil', json(?)) WHERE id = ?").bind(JSON.stringify(Array.from({length: 120}, (_, i) => "metrik_karangan_panjang_" + i)), berkasId).run();
+  const pj = await isian({isian: {upaya: "y".repeat(500)}}); assert.ok([200, 400].includes(pj.s));
+  await DB.prepare("UPDATE lj_berkas SET isian = json_set(isian, '$.nihil', json('[\"pasar_rb\"]')) WHERE id = ?").bind(berkasId).run();
 });

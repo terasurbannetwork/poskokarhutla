@@ -3,6 +3,7 @@ import {test} from "node:test";
 import assert from "node:assert/strict";
 import {putaranData, fotoMasuk, perintahData, samarPribadi} from "../../src/lapor_lanjut_mesin.js";
 import {validasi} from "../../src/lapor_lanjut_spek.js";
+import * as M from "../../src/lapor_lanjut_mesin.js";
 
 const T0 = 1_760_000_000_000;
 const ketik = (k, teks, extra = {}) => putaranData({keadaan: k, pesan: {teks, ...extra}, kini: T0});
@@ -191,4 +192,22 @@ test("LJ-07 korban hilang: butir bersyarat wajib, foto semasa hidup opsional (le
   // status berubah dari hilang sesudah foto: foto draf dibuang, pemanggil menghapusnya dari R2
   let u = ketik(f.keadaan, "ubah status"); u = ketik(u.keadaan, "1"); assert.equal(u.keadaan.foto.length, 0); assert.deepEqual(u.keadaan.buang, ["f1", "f2"]);
   let u2 = ketik(f.keadaan, "ubah pencarian"); u2 = ketik(u2.keadaan, "2"); assert.equal(u2.keadaan.foto.length, 0, "ditemukan hidup: bukan lagi dicari"); assert.ok(fotoMasuk(u2.keadaan, {i: "x"}).ditolak);
+});
+
+/* ---------- LJ-08: usaha, kebutuhan, perintah nihil ---------- */
+test("LJ-08 perintahNihil: nama persis dan sebutan biasa; cabut; nama salah atau kosong = bantuan; teks lain null; perintahData mengenalnya", () => {
+  assert.deepEqual(M.perintahNihil("nihil meninggal"), {metrik: "meninggal", nihil: true});
+  assert.deepEqual(M.perintahNihil("  Cabut Nihil Rumah Rusak Berat "), {metrik: "rumah_rb", nihil: false});
+  assert.deepEqual(M.perintahNihil("nihil rumah_rb"), {metrik: "rumah_rb", nihil: true});
+  assert.deepEqual(M.perintahNihil("nihil jalan km"), {metrik: "jalan_km", nihil: true});
+  for (const t of ["nihil", "nihil karangan", "cabut nihil", "nihil __proto__", "nihil constructor", "nihil terdampak"]) assert.ok(M.perintahNihil(t).bantuan, t);
+  assert.equal(M.perintahNihil("halo"), null); assert.equal(M.perintahNihil("nihilis"), null);
+  assert.ok(M.perintahData("nihil luka") && M.perintahData("data usaha") && M.perintahData("data kebutuhan")); assert.equal(M.namaMetrik("rumah_rb"), "rumah rusak berat");
+});
+test("LJ-08 data usaha dan data kebutuhan: butir dari spek, tempat pengungsian ditanya sebelum desa, kebutuhan tanpa tahap foto", () => {
+  let r = M.putaranData({keadaan: null, pesan: {teks: "data kebutuhan"}, kini: 1e12, konteks: {titik: [{id: "TP-AAAAAAAA", nama: "Gedung A"}], kk: []}}); assert.match(r.balasan, /Untuk tempat pengungsian mana/); assert.match(r.balasan, /1\. Gedung A/);
+  r = M.putaranData({keadaan: r.keadaan, pesan: {teks: "1"}, kini: 1e12, konteks: {titik: [{id: "TP-AAAAAAAA", nama: "Gedung A"}], kk: []}}); assert.match(r.balasan, /Jenis kebutuhan/, "dengan tempat dipilih desa tidak wajib");
+  r = M.putaranData({keadaan: null, pesan: {teks: "data kebutuhan"}, kini: 1e12, konteks: {titik: [], kk: []}}); assert.match(r.balasan, /Nama desa atau kelurahan yang membutuhkan/, "tanpa titik di berkas: langsung desa");
+  r = M.putaranData({keadaan: null, pesan: {teks: "data usaha"}, kini: 1e12}); assert.match(r.balasan, /Jenis usaha atau lahan/);
+  const f = M.fotoMasuk({v: 1, jenis: "kebutuhan", isian: {}, lewat: [], foto: [], tahap: "ringkas"}, {i: "a1"}); assert.equal(f.ditolak, true);
 });

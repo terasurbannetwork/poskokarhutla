@@ -169,3 +169,35 @@ test("LJ-07 penanda: korban tidak bertanda tanpa_titik (lokasi orang tidak disim
   const a = ob("korban", {status: "meninggal"}, {pribadi: {nik: "3171010101010077"}}), b = ob("korban", {status: "luka_berat"}, {pribadi: {nik: "3171010101010077"}});
   assert.deepEqual(L.penanda(a, {objek: [a]}), []); assert.ok(L.penanda(a, {objek: [a, b]}).includes("nik_ganda"));
 });
+
+/* ---------- LJ-08: isian berkas, metrikAda, kebutuhan tanpa titik sendiri ---------- */
+test("LJ-08 validasiIsianBerkas: butir sah lolos, tak dikenal dan salah bentuk ditolak, null menghapus, tanggal SK tidak di masa depan", () => {
+  const v = L.validasiIsianBerkas({status_darurat: "siaga", sk_nomor: " 360/1/BPBD ", sk_tanggal: "2026-11-20", personel: 0, upaya: "Evakuasi", posko: {nama: "Posko A", nomor: "(0251) 832-1234", titik: "TP-ABCDEFGH"}}, {tglIni: "2026-11-23"});
+  assert.deepEqual(v.galat, []); assert.deepEqual(v.data, {status_darurat: "siaga", sk_nomor: "360/1/BPBD", sk_tanggal: "2026-11-20", personel: 0, upaya: "Evakuasi", posko: {nama: "Posko A", nomor: "02518321234", titik: "TP-ABCDEFGH"}});
+  for (const s of L.STATUS_DARURAT) assert.deepEqual(L.validasiIsianBerkas({status_darurat: s}).galat, []);
+  const buruk = L.validasiIsianBerkas({status_darurat: "aman", sk_tanggal: "2026-11-24", personel: 100001, nihil: [], posko: {nomor: "12", jenis: "x"}}, {tglIni: "2026-11-23", namaPoskoAda: true});
+  assert.deepEqual(buruk.galat.sort(), ["nihil", "personel", "posko.jenis", "posko.nomor", "sk_tanggal", "status_darurat"].sort());
+  assert.deepEqual(L.validasiIsianBerkas({sk_nomor: null, personel: "", posko: {nomor: null}}, {namaPoskoAda: true}).data, {sk_nomor: null, personel: null, posko: {nomor: null}});
+  assert.deepEqual(L.validasiIsianBerkas({posko: {titik: "TP-ABCDEFGH"}}).galat, ["posko.nama"], "posko baru wajib bernama");
+  assert.deepEqual(L.validasiIsianBerkas({posko: {nama: null}}, {namaPoskoAda: true}).data, {posko: null}, "nama dikosongkan sendirian = posko dihapus");
+  assert.deepEqual(L.validasiIsianBerkas("x").galat, ["isian"]); assert.deepEqual(L.validasiIsianBerkas({sk_tanggal: "2026-02-30"}).galat, ["sk_tanggal"]); assert.deepEqual(L.validasiIsianBerkas({personel: 1.5}).galat, ["personel"]);
+});
+test("LJ-08 metrikAda: satu logika dengan rekap; cabutNihil memakainya; kebutuhan dan usaha tidak menyentuh metrik", () => {
+  const xs = [ob("korban", {status: "hilang", pencarian: "ditemukan_hidup"}), ob("jiwa", {masuk: "2026-11-20", keluar: "2026-11-21"}), ob("prasarana", {jenis: "pasar", tingkat: "rb", fungsi: "berfungsi"}), ob("usaha", {jenis: "sawah"}), ob("kebutuhan", {butir: "air"})];
+  assert.deepEqual([...L.metrikAda(xs)].sort(), ["hilang", "mengungsi", "pasar_rb", "prasarana_putus"]);
+  assert.deepEqual([...L.metrikAda([xs[3], xs[4]])], []);
+  assert.deepEqual([...L.cabutNihil(new Set(["hilang", "luka", "pasar_rb"]), xs)], ["luka"]);
+  assert.ok(L.METRIK_NIHIL.has("pasar_rb") && !L.METRIK_NIHIL.has("terdampak"));
+});
+test("LJ-08 penanda: kebutuhan tidak pernah tanpa_titik, usaha tanpa titik tetap bertanda; foto wajib usaha 1, kebutuhan 0", () => {
+  assert.deepEqual(L.penanda(ob("kebutuhan", {butir: "air"})), []); assert.deepEqual(L.penanda(ob("usaha", {jenis: "sawah"})), ["tanpa_titik"]);
+  assert.deepEqual(L.kurangFoto("usaha", {}, []), {foto: 1, wajah: 0}); assert.deepEqual(L.kurangFoto("kebutuhan", {}, []), {foto: 0, wajah: 0});
+});
+test("LJ-08 posko: kosong ditolak; nama dikosongkan bersama butir lain ditolak; hapus lewat {nama:null} sendirian atau posko:null", () => {
+  assert.deepEqual(L.validasiIsianBerkas({posko: {}}, {namaPoskoAda: true}).galat, ["posko"]);
+  assert.deepEqual(L.validasiIsianBerkas({posko: {nama: null, nomor: "0251123456"}}, {namaPoskoAda: true}).galat, ["posko.nama"]);
+  assert.deepEqual(L.validasiIsianBerkas({posko: {nama: "", titik: "TP-ABCDEFGH"}}, {namaPoskoAda: true}).galat, ["posko.nama"]);
+  assert.deepEqual(L.validasiIsianBerkas({posko: {nama: null, nomor: null}}, {namaPoskoAda: true}).galat, [], "semua dikosongkan = boleh");
+  assert.deepEqual(L.validasiIsianBerkas({posko: {nama: null}}, {namaPoskoAda: true}).data, {posko: null});
+  assert.deepEqual(L.validasiIsianBerkas({posko: null}).data, {posko: null});
+});

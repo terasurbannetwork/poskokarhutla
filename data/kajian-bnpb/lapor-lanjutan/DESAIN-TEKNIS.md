@@ -133,7 +133,8 @@ Indeks: `lj_berkas (status)`, `lj_berkas (kejadian_id, kab4)`, `lj_objek (berkas
 | `POST /api/lapor/data/tampil` | staf | satu objek `pribadi` utuh, tercatat `lj_akses` |
 | `POST /api/lapor/data/objek` | tim berkas | tambah atau ubah (idempoten `klien_id`, 409 bila `rev` lama) |
 | `POST /api/lapor/data/batal` | ketua; anggota untuk objek isiannya | `{objek, rev, alasan}`, batal dengan alasan |
-| `POST /api/lapor/data/nihil` | tim berkas | tandai atau cabut nihil per metrik |
+| `POST /api/lapor/data/isian` | ketua berkas (anggota 403) | `{isian: {status_darurat, sk_nomor, sk_tanggal, posko: {nama, titik, nomor}, upaya, personel}}`, digabung ke `lj_berkas.isian` dengan satu `json_patch` (null menghapus butir); `posko.titik` harus titik aktif berkas ini; jejak `isian` (LJ-08) |
+| `POST /api/lapor/data/nihil` | tim berkas | `{metrik, nihil: true\|false}`, hanya nama di `METRIK_NIHIL`; 409 bila metrik sudah punya objek aktif; objek baru atau diubah mencabut nihil metriknya di batch yang sama (jejak `nihil_cabut_otomatis`) (LJ-08) |
 | `POST /api/lapor/data/foto` | tim berkas | foto JPEG kamera `{objek, data, gps, exif}`, EXIF dibuang, foto lama diberi penanda (tidak ditolak); video menyusul di LJ-18 |
 | `POST /api/lapor/data/tim` | ketua (tambah, cabut), staf Pusdalops dan admin (cabut, pindah ketua Q14) | atur tim, terbitkan token |
 | `POST /api/lapor/data/tutup` | ketua | isian penutupan, hasilkan `usul_tutup` |

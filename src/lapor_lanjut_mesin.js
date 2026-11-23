@@ -1,14 +1,14 @@
 /* Mesin percakapan WA tahap 2 data lanjutan BPBD (paket data/kajian-bnpb/lapor-lanjutan/, D9, D24, tiket LJ-05). Fungsi murni: tanpa D1, tanpa jam dinding
    (waktu dari pemanggil), tanpa model AI. Semua isian diurai kode: pilihan bernomor, ya atau tidak, angka dari digit, teks apa adanya, HP dan NIK lewat
    validasi spek (D19: isian pribadi tidak pernah ke AI; paling sederhana = tidak ada AI sama sekali). Urutan butir dari spek (src/lapor_lanjut_spek.js),
-   wajib bersyarat dievaluasi saat itu. Jenis yang dibuka lewat WA: rumah, prasarana, titik pengungsian, jiwa pengungsi (LJ-06), dan korban (LJ-07; usaha dan kebutuhan menyusul LJ-08).
+   wajib bersyarat dievaluasi saat itu. Jenis yang dibuka lewat WA: rumah, prasarana, titik pengungsian, jiwa pengungsi (LJ-06), korban (LJ-07), usaha dan kebutuhan (LJ-08). Tanda nihil per metrik ("nihil meninggal", "cabut nihil meninggal") hanya diurai di sini (perintahNihil).
    Perubahan status pencarian korban hilang ("ubah hilang <nomor> ditemukan hidup") hanya diurai di sini (perintahStatus); pemanggil yang menyimpannya.
    Jiwa memilih titik dan kepala keluarga dari daftar bernomor yang diberikan pemanggil (konteks: titik dan kk dari berkas); foto di alur jiwa = wajah.
    Keadaan = objek JSON kecil yang disimpan pemanggil di lj_sesi; setelah objek tersimpan atau dibatalkan, isian pribadi tidak tersisa di keadaan.
    Uji: tests/lapor/lanjut_mesin.test.mjs */
-import {spek, validasi, kurangFoto, wajahBoleh, JENIS_WAJAH} from "./lapor_lanjut_spek.js";
+import {spek, validasi, kurangFoto, wajahBoleh, JENIS_WAJAH, METRIK_NIHIL} from "./lapor_lanjut_spek.js";
 
-export const JENIS_WA = ["rumah", "prasarana", "titik", "jiwa", "korban"];
+export const JENIS_WA = ["rumah", "prasarana", "titik", "jiwa", "korban", "usaha", "kebutuhan"];
 export const BASI_MS = 24 * 3600e3;          // draf lebih tua dari ini dibuang oleh pemanggil
 export const MAKS_FOTO_DRAF = 10;            // = batas per objek di lj_media
 const MAKS_WAJAH = 2;                        // = batas wajah per jiwa (src/lapor_lanjut.js)
@@ -26,24 +26,37 @@ export function samarPribadi(p) {
 
 /* ---------- teks ---------- */
 const norm = s => String(s ?? "").toLowerCase().replace(/[_\-]+/g, " ").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
-const NAMA_JENIS = {rumah: "rumah", prasarana: "prasarana", titik: "tempat pengungsian", jiwa: "pengungsi", korban: "korban"};
+const NAMA_JENIS = {rumah: "rumah", prasarana: "prasarana", titik: "tempat pengungsian", jiwa: "pengungsi", korban: "korban", usaha: "usaha", kebutuhan: "kebutuhan"};
 const MULAI = {
   "data rumah": {jenis: "rumah", isian: {}}, "data prasarana": {jenis: "prasarana", isian: {}},
   "jembatan rusak": {jenis: "prasarana", isian: {jenis: "jembatan"}}, "jalan rusak": {jenis: "prasarana", isian: {jenis: "jalan"}}, "data": {menu: true},
-  "data pengungsian": {jenis: "titik", isian: {}}, "tempat pengungsian": {jenis: "titik", isian: {}}, "data pengungsi": {jenis: "jiwa", isian: {}}, "data korban": {jenis: "korban", isian: {}}};
-const BAWA = {rumah: ["desa", "kec"], prasarana: ["desa", "kec"], titik: ["desa"], jiwa: ["titik", "desa_asal", "masuk"], korban: ["desa"]};   // bawaan untuk *lagi*
+  "data pengungsian": {jenis: "titik", isian: {}}, "tempat pengungsian": {jenis: "titik", isian: {}}, "data pengungsi": {jenis: "jiwa", isian: {}}, "data korban": {jenis: "korban", isian: {}},
+  "data usaha": {jenis: "usaha", isian: {}}, "data kebutuhan": {jenis: "kebutuhan", isian: {}}};
+const BAWA = {rumah: ["desa", "kec"], prasarana: ["desa", "kec"], titik: ["desa"], jiwa: ["titik", "desa_asal", "masuk"], korban: ["desa"], usaha: ["desa"], kebutuhan: ["titik", "desa"]};   // bawaan untuk *lagi*
 /* konteks dari pemanggil (berkas): {titik: [{id: TP, nama}], kk: [{id, nama, titik}]}. Dipasang di pintu putaranData dan fotoMasuk (keduanya sinkron);
    ponytail: variabel modul, bukan parameter ke tiap fungsi tampil; ganti parameter bila mesin dipakai serentak (tidak: satu putaran sekali jalan) */
 let KONTEKS = {titik: [], kk: []};
 const kk = titik => KONTEKS.kk.filter(x => x.titik === titik);
 /* perintah yang membuka mode tahap 2 (dicek pemanggil sebelum daftar izin Lapor) */
-export const perintahData = teks => norm(teks) in MULAI || !!perintahStatus(teks);
+export const perintahData = teks => norm(teks) in MULAI || !!perintahStatus(teks) || !!perintahNihil(teks);
 /* "ubah hilang <nomor> ditemukan hidup | ditemukan meninggal | dicari" -> {nomor, pencarian}; bentuk salah -> {bantuan}; bukan perintah ini -> null */
 const CARI = {"ditemukan hidup": "ditemukan_hidup", "ditemukan meninggal": "ditemukan_meninggal", "dicari": "dicari"};
 const BANTUAN_STATUS = "Untuk mengubah status pencarian, tulis *ubah hilang* diikuti nomor korban lalu *ditemukan hidup*, *ditemukan meninggal*, atau *dicari*. Contoh: ubah hilang 3 ditemukan hidup. Nomor korban ada di pesan Tersimpan saat korban dicatat.";
 export function perintahStatus(teks) {
   const m = /^ubah hilang(?: (\d{1,5}))?(?: (.+))?$/.exec(norm(teks)); if (!m) return null;
   return Number(m[1]) >= 1 && Object.hasOwn(CARI, m[2]) ? {nomor: Number(m[1]), pencarian: CARI[m[2]]} : {bantuan: BANTUAN_STATUS};
+}
+/* "nihil <metrik>" atau "cabut nihil <metrik>": metrik = nama persis (rumah_rb, jalan_km, ...) atau sebutan biasa (rumah rusak berat). Salah nama -> {bantuan}; bukan perintah ini -> null */
+const NAMA_METRIK = {meninggal: "korban meninggal", hilang: "korban hilang", luka: "korban luka", mengungsi: "pengungsi", rumah_rb: "rumah rusak berat", rumah_rs: "rumah rusak sedang",
+  rumah_rr: "rumah rusak ringan", rumah_terendam: "rumah terendam", prasarana_putus: "prasarana putus", jalan_km: "jalan rusak"};
+export const namaMetrik = m => NAMA_METRIK[m] ?? String(m).replace(/_/g, " ");
+const ALIAS_METRIK = Object.fromEntries([...[...METRIK_NIHIL].map(m => [norm(m), m]), ...Object.entries(NAMA_METRIK).map(([m, n]) => [norm(n), m]),
+  ["korban meninggal dunia", "meninggal"], ["korban hilang", "hilang"], ["korban luka", "luka"], ["pengungsi", "mengungsi"]]);
+const BANTUAN_NIHIL = "Untuk menandai tidak ada, tulis *nihil* diikuti nama datanya, misalnya: nihil meninggal, nihil hilang, nihil luka, nihil mengungsi, nihil rumah rusak berat, nihil prasarana putus. Untuk mencabut tanda, tulis *cabut nihil* diikuti nama yang sama. Jangan tandai nihil bila sudah ada datanya.";
+export function perintahNihil(teks) {
+  const m = /^(cabut )?nihil(?: (.+))?$/.exec(norm(teks)); if (!m) return null;
+  const metrik = m[2] && Object.hasOwn(ALIAS_METRIK, m[2]) ? ALIAS_METRIK[m[2]] : null;
+  return metrik ? {metrik, nihil: !m[1]} : {bantuan: BANTUAN_NIHIL};
 }
 export const balasanStatus = p => p === "dicari" ? "masih dicari" : p === "ditemukan_hidup" ? "ditemukan hidup" : "ditemukan meninggal dunia";
 
@@ -57,6 +70,9 @@ const LABEL_JENIS = {
   korban: {status: "Keadaan korban", nama: "Nama lengkap korban", umur: "Umur, dalam tahun (bayi di bawah 1 tahun tulis 0)", jk: "Jenis kelamin", desa: "Desa atau kelurahan tempat tinggal korban",
     kontak_nama: "Nama keluarga yang bisa dihubungi", kontak_hp: "Nomor HP keluarga itu", terakhir_lokasi: "Terakhir terlihat di mana", terakhir_waktu: "Terakhir terlihat pada tanggal",
     pencarian: "Status pencarian", dirawat: "Dirawat di mana (nama rumah sakit atau puskesmas)", tempat: "Tempat korban sekarang", sumber: "Sumber kabar ini", ciri: "Ciri khusus (pakaian, tanda di tubuh)", nik: "NIK"}};
+LABEL_JENIS.usaha = {jenis: "Jenis usaha atau lahan yang terdampak", desa: "Nama desa atau kelurahan", besaran: "Besaran yang terdampak (angka)", satuan: "Satuan besarannya"};
+LABEL_JENIS.kebutuhan = {titik: "Untuk tempat pengungsian mana? (boleh dilewati bila untuk satu desa)", desa: "Nama desa atau kelurahan yang membutuhkan", butir: "Jenis kebutuhan", jumlah: "Jumlah yang dibutuhkan (angka)",
+  satuan: "Satuannya (misalnya paket, liter, unit)", mendesak: "Apakah mendesak?", bantuan_dari: "Bantuan sudah datang dari siapa (boleh dilewati)", bantuan_apa: "Bantuan apa yang sudah datang", bantuan_jumlah: "Jumlah bantuan yang sudah datang (angka)"};
 const LABEL_BUTIR = {kk: "Nama kepala keluarga", pemilik: "Nama pemilik rumah, bila berbeda", nik_kk: "NIK kepala keluarga", desa: "Nama desa atau kelurahan", kec: "Nama kecamatan",
   alamat: "Alamat atau patokan lokasi", tingkat: "Tingkat kerusakan", terendam: "Apakah terendam banjir?", huni: "Keadaan hunian sekarang", jiwa: "Jumlah jiwa dalam rumah ini",
   ket: "Keterangan tambahan", jenis: "Jenis prasarana", nama: "Nama prasarana", fungsi: "Keadaan fungsi sekarang", panjang_m: "Panjang yang rusak, dalam meter",
@@ -75,10 +91,11 @@ const perlu = (b, isian) => typeof b[2] === "function" ? !!b[2](isian) : !!b[2];
 const kosong = (k, n) => k.isian[n] == null;
 
 function berikut(k) {   // butir wajib dulu; opsional hanya bila bukan sedang mengubah satu butir (balik)
+  if (k.jenis === "kebutuhan" && !k.balik && KONTEKS.titik.length && kosong(k, "titik") && !k.lewat.includes("titik")) return {nama: "titik", opsi: true};   // tempat ditanya sebelum desa: desa hanya wajib bila tanpa tempat
   const bs = BUTIR(k.jenis), w = bs.find(b => perlu(b, k.isian) && kosong(k, b[0]));
   if (w) return {nama: w[0], opsi: false};
   if (k.balik) return null;
-  const o = bs.find(b => !perlu(b, k.isian) && kosong(k, b[0]) && !k.lewat.includes(b[0]) && !(k.jenis === "jiwa" && b[0] === "hp") && !(k.jenis === "korban" && k.isian.status !== "hilang" && ["terakhir_lokasi", "terakhir_waktu", "pencarian"].includes(b[0])));   // HP hanya milik kepala keluarga (wajib bila kk = diri)
+  const o = bs.find(b => !perlu(b, k.isian) && kosong(k, b[0]) && !k.lewat.includes(b[0]) && !(k.jenis === "jiwa" && b[0] === "hp") && !(k.jenis === "kebutuhan" && b[0] === "titik" && !KONTEKS.titik.length) && !(k.jenis === "korban" && k.isian.status !== "hilang" && ["terakhir_lokasi", "terakhir_waktu", "pencarian"].includes(b[0])));   // HP hanya milik kepala keluarga (wajib bila kk = diri)
   return o ? {nama: o[0], opsi: true} : null;
 }
 const fotoKurang = k => { const f = kurangFoto(k.jenis, k.isian, k.foto.map(() => ({jenis: JENIS_WAJAH.has(k.jenis) ? "wajah" : "foto"}))); return f.foto + f.wajah; };
@@ -153,8 +170,8 @@ function tampilNilai(nama, j, v, jenis) {
 function ringkasan(k) {
   const baris = BUTIR(k.jenis).filter(b => k.isian[b[0]] != null).map(b => `${labelButir(b[0], k.jenis)}: ${tampilNilai(b[0], b[1], k.isian[b[0]], k.jenis)}`);
   const kf = fotoKurang(k), wj = JENIS_WAJAH.has(k.jenis);
-  if (k.jenis !== "korban" || wajahBoleh("korban", k.isian) || k.foto.length) baris.push(`${k.jenis === "korban" ? "Foto semasa hidup" : wj ? "Foto wajah" : "Foto"}: ${k.foto.length}${kf ? `, kurang ${kf}` : ""}`);
-  if (!wj) baris.push(`Titik lokasi: ${k.lat != null ? "sudah dibagikan" : "belum ada"}`);
+  if (k.jenis !== "kebutuhan" && (k.jenis !== "korban" || wajahBoleh("korban", k.isian) || k.foto.length)) baris.push(`${k.jenis === "korban" ? "Foto semasa hidup" : wj ? "Foto wajah" : "Foto"}: ${k.foto.length}${kf ? `, kurang ${kf}` : ""}`);
+  if (!wj && k.jenis !== "kebutuhan") baris.push(`Titik lokasi: ${k.lat != null ? "sudah dibagikan" : "belum ada"}`);
   return `*Ringkasan ${NAMA_JENIS[k.jenis]}*\n${baris.join("\n")}\n\nKetik *simpan* untuk menyimpan, *ubah* diikuti nama butir untuk mengubah (misalnya ubah alamat), atau *batal*.`;
 }
 const sapa = k => k.tahap === "isi" ? tanya(k)
@@ -163,7 +180,7 @@ const sapa = k => k.tahap === "isi" ? tanya(k)
     : `Kirim foto ${NAMA_JENIS[k.jenis]}, kurang ${fotoKurang(k)}. Foto diambil langsung dengan kamera. Bagikan lokasi lewat WhatsApp bila bisa. Belum bisa? Ketik *lewati*.`)
   : ringkasan(k);
 
-const BANTUAN = "*Data lanjutan*\nKetik *data rumah*, *data prasarana*, *data pengungsian* (tempat pengungsian), *data pengungsi* (satu orang di tempat pengungsian), atau *data korban* (satu orang meninggal, hilang, atau luka). Untuk jembatan atau jalan yang rusak, ketik *jembatan rusak* atau *jalan rusak*. Untuk korban hilang yang sudah ditemukan, ketik *ubah hilang* diikuti nomor korban.";
+const BANTUAN = "*Data lanjutan*\nKetik *data rumah*, *data prasarana*, *data pengungsian* (tempat pengungsian), *data pengungsi* (satu orang di tempat pengungsian), atau *data korban* (satu orang meninggal, hilang, atau luka). Untuk jembatan atau jalan yang rusak, ketik *jembatan rusak* atau *jalan rusak*. Untuk korban hilang yang sudah ditemukan, ketik *ubah hilang* diikuti nomor korban. Untuk lahan atau usaha yang terdampak, ketik *data usaha*; untuk kebutuhan bantuan, ketik *data kebutuhan*. Untuk menandai tidak ada korban atau kerusakan, ketik *nihil* diikuti nama datanya (misalnya nihil meninggal).";
 /* jiwa: menolak_foto ditanyakan lewat tahap foto (ketik *menolak*), bukan sebagai butir opsional */
 const BARU = (m, bawaan, kini) => ({v: 1, jenis: m.jenis, awal: m.isian, isian: {...m.isian, ...bawaan}, bawaan, lewat: m.jenis === "jiwa" ? ["menolak_foto"] : [], foto: [], lat: null, lon: null, mulai: kini, tahap: "isi"});
 function mulai(m, bawaan, kini) {
@@ -231,6 +248,7 @@ export function fotoMasuk(keadaan, f, konteks) {
   const k = keadaan ? structuredClone(keadaan) : null;
   if (!k || k.tahap === "sesudah") return {ditolak: true, balasan: "Belum ada isian yang menunggu foto. Ketik *data rumah* atau *data prasarana* dulu."};
   if (k.tahap === "isi") return {ditolak: true, balasan: "Foto diminta sesudah semua isian terjawab. Jawab dulu pertanyaan ini.\n\n" + tanya(k)};
+  if (k.jenis === "kebutuhan") return {ditolak: true, balasan: "Kebutuhan tidak dilampiri foto. Ketik *simpan* untuk menyimpan."};
   if (JENIS_WAJAH.has(k.jenis) && !wajahBoleh(k.jenis, k.isian)) return {ditolak: true, balasan: k.jenis === "korban" ? "Foto hanya diterima untuk korban yang masih dicari. Ketik *simpan* untuk menyimpan." : "Foto wajah tidak diminta untuk anak di bawah 18 tahun atau yang menolak difoto. Ketik *simpan* untuk menyimpan."};
   const maks = JENIS_WAJAH.has(k.jenis) ? MAKS_WAJAH : MAKS_FOTO_DRAF;
   if (k.foto.length >= maks) return {ditolak: true, balasan: `Paling banyak ${maks} foto per objek. Ketik *simpan* untuk menyimpan.`};

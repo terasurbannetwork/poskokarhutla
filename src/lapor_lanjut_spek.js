@@ -91,6 +91,8 @@ export function validasi(jenis, isian = {}) {
 /* foto wajah (jenis media `wajah`) hanya untuk dua jenis: jiwa dewasa yang tidak menolak (Q10, Q13) dan korban yang masih dicari (Q8: foto semasa hidup dari keluarga).
    Satu fungsi untuk web, WA, dan penghapusan saat syaratnya hilang (batasi tujuan, UU 27/2022): ditemukan atau meninggal = foto dihapus. */
 export const JENIS_WAJAH = new Set(["jiwa", "korban"]);
+/* jenis tanpa titik sendiri: orang (lokasinya tidak disimpan) dan kebutuhan (tempatnya = titik pengungsian atau desa, LJ-08) */
+export const TANPA_LOKASI = new Set([...JENIS_WAJAH, "kebutuhan"]);
 export const wajahBoleh = (jenis, d = {}) => jenis === "jiwa" ? d.umur >= DEWASA && !d.menolak_foto : jenis === "korban" && d.status === "hilang" && d.pencarian === "dicari";
 
 /* foto wajib menurut jenis; jiwa: wajah untuk umur dewasa kecuali menolak difoto (Q10, Q13) */
@@ -116,7 +118,7 @@ export function titikObjek(objek, media = []) {
 /* objek: {id, jenis, data, pribadi, lat, lon, status}; konteks: {objek: semua objek berkas, media: media objek ini, waktuKejadian ms, dalamKab(lat, lon)?} */
 export function penanda(objek, {objek: semua = [], media = [], waktuKejadian = null, dalamKab = null} = {}) {
   const hasil = [], t = titikObjek(objek, media);
-  if (!t && !JENIS_WAJAH.has(objek.jenis)) hasil.push("tanpa_titik");   // jiwa dan korban memang tanpa titik: lokasi orang tidak disimpan (LJ-06, LJ-07)
+  if (!t && !TANPA_LOKASI.has(objek.jenis)) hasil.push("tanpa_titik");   // jiwa, korban, kebutuhan memang tanpa titik sendiri (LJ-06, LJ-07, LJ-08)
   if (t && media.some(m => adaTitik(m) && jarakM(t.lat, t.lon, m.lat, m.lon) > AMBANG.foto_jauh_m)) hasil.push("foto_jauh");
   if (waktuKejadian != null && media.some(m => m.waktu_ambil != null && m.waktu_ambil < waktuKejadian - AMBANG.foto_lama_jam * 3600e3)) hasil.push("foto_lama");
   const lain = semua.filter(x => x.id !== objek.id && x.jenis === objek.jenis && x.status !== "batal");
@@ -182,11 +184,52 @@ export function rekap(semua, {nihil = new Set(), tgl = null} = {}) {
   }
   return r;
 }
-/* mengisi objek untuk metrik bertanda nihil mencabut nihilnya (ALGORITMA 4); jiwa mana pun mencabut nihil mengungsi */
-export const cabutNihil = (nihil, semua) => {
-  const S = himpunan(semua, null), c = tercakup(semua, "9999-12-31"), n = new Set(nihil);
-  for (const m of [...Object.keys(S), ...Object.keys(c).filter(k => c[k])]) n.delete(m); return n;
+/* metrik yang punya objek (jumlah dari daftar, atau 0 dari data, D13); jiwa mana pun menyentuh mengungsi. Dipakai nihil: tidak boleh ditandai bila sudah ada objek,
+   dan objek baru mencabut nihil metriknya (ALGORITMA 4). Satu logika dengan rekap: himpunan dan tercakup. */
+export const metrikAda = semua => {
+  const S = himpunan(semua, null), c = tercakup(semua, "9999-12-31");
+  return new Set([...Object.keys(S), ...Object.keys(c).filter(k => c[k])]);
 };
+export const cabutNihil = (nihil, semua) => { const a = metrikAda(semua); return new Set([...nihil].filter(m => !a.has(m))); };
+
+/* ---------- isian berkas (F-9, D3): bukan objek, milik ketua; digabung ke lj_berkas.isian lewat json_patch di SQL ---------- */
+export const STATUS_DARURAT = ["siaga", "tanggap_darurat", "transisi", "belum_ditetapkan"];
+const RE_TGL = /^\d{4}-\d{2}-\d{2}$/, RE_TP = /^TP-[A-Z2-7]{8}$/;
+const teksSatu = (v, maks) => { if (typeof v !== "string") return null; const s = v.trim().replace(/\s+/g, " "); return s && s.length <= maks ? s : null; };
+/* masukan {status_darurat?, sk_nomor?, sk_tanggal?, posko?: {nama?, titik?, nomor?}, upaya?, personel?}; null atau "" = hapus butirnya. Keluaran {galat: [nama], data: patch},
+   patch memakai null untuk hapus (RFC 7396). posko: nama wajib bila belum pernah diisi (namaAda); titik cuma diperiksa bentuknya, kepemilikan berkas oleh pemanggil.
+   tglIni (YYYY-MM-DD, WIB) = batas sk_tanggal: tanggal SK tidak di masa depan. */
+export function validasiIsianBerkas(isian = {}, {tglIni, namaPoskoAda = false} = {}) {
+  const data = {}, galat = [];
+  if (!isian || typeof isian !== "object" || Array.isArray(isian)) return {galat: ["isian"], data};
+  const kosong = v => v === null || v === "";
+  for (const [k, v] of Object.entries(isian)) {
+    if (!["status_darurat", "sk_nomor", "sk_tanggal", "posko", "upaya", "personel"].includes(k)) { galat.push(k); continue; }
+    if (kosong(v)) { data[k] = null; continue; }
+    if (k === "status_darurat") STATUS_DARURAT.includes(v) ? data[k] = v : galat.push(k);
+    else if (k === "sk_nomor") { const t = teksSatu(v, 60); t ? data[k] = t : galat.push(k); }
+    else if (k === "sk_tanggal") typeof v === "string" && RE_TGL.test(v) && !Number.isNaN(Date.parse(v + "T00:00:00Z")) && new Date(v + "T00:00:00Z").toISOString().slice(0, 10) === v && (!tglIni || v <= tglIni) ? data[k] = v : galat.push(k);
+    else if (k === "upaya") { const t = teksSatu(v, 500); t ? data[k] = t : galat.push(k); }
+    else if (k === "personel") typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 100000 ? data[k] = v : galat.push(k);
+    else if (k === "posko") {
+      if (typeof v !== "object" || Array.isArray(v)) { galat.push(k); continue; }
+      const p = {};
+      for (const [pk, pv] of Object.entries(v)) {
+        if (!["nama", "titik", "nomor"].includes(pk)) { galat.push("posko." + pk); continue; }
+        if (kosong(pv)) { p[pk] = null; continue; }
+        if (pk === "nama") { const t = teksSatu(pv, 120); t ? p.nama = t : galat.push("posko.nama"); }
+        else if (pk === "titik") typeof pv === "string" && RE_TP.test(pv) ? p.titik = pv : galat.push("posko.titik");
+        else { /* nomor kantor posko: 6-15 digit; akun rekap (provinsi) tidak menerimanya, lihat bentukBerkas */ const n = typeof pv === "string" || typeof pv === "number" ? String(pv).replace(/[\s().-]/g, "") : ""; /^\+?\d{6,15}$/.test(n) ? p.nomor = n : galat.push("posko.nomor"); }   // telepon kantor: 6 sampai 15 angka
+      }
+      const lain = Object.entries(p).some(([k2, x]) => k2 !== "nama" && x != null);
+      if (!Object.keys(v).length) galat.push("posko");   // posko kosong tidak berarti apa pun; hapus dengan posko: null
+      else if ((p.nama === undefined && !namaPoskoAda && lain) || (p.nama === null && lain)) galat.push("posko.nama");
+      if (!galat.some(g => g.startsWith("posko")) && p.nama === null && Object.keys(p).length === 1) data.posko = null;   // nama dikosongkan sendirian = posko dihapus
+      else if (!galat.some(g => g.startsWith("posko"))) data.posko = p;
+    }
+  }
+  return {galat, data};
+}
 
 /* rekap harian satu titik untuk meja pengungsi: <kelompok>_<l|p>, kk, jiwa_total; null bila tidak ada jiwa aktif */
 export function titikHari(semua, tp, tgl) {

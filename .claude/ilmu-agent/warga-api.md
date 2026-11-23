@@ -8,56 +8,24 @@
 
 **Berkas (semua di `src/`, ESM tanpa bundler, Cloudflare Worker + D1 + R2):**
 
-| Berkas | Isi |
-| --- | --- |
-| `src/worker.js` (490 baris) | pintu masuk `fetch` (443) + `scheduled` (480); API `/api/warga*`; tabel `RUTE` (364) untuk statistik/admin/pesan/foto; `cacheTepi` (431); `/api/status` (329-352); `bersihkan` (353) |
-| `src/foto.js` (333) | foto & video lapangan; `RUTE_FOTO` (320) digabung ke `RUTE`; R2 binding `MEDIA` |
-| `src/titik.js` (105) | cron FIRMS: `perbaruiTitik`, `uraiCSV`, `wilayah`/`cariWilayah` (dipakai juga `foto.js`) |
-| `src/statistik.js` (313) | `POST /api/jejak`, `GET /api/statistik`, sesi admin (cookie HMAC), kotak pesan, retensi |
-| `src/publik.js` (196) | klasifikasi manusia/AI/perayap, `catatHit`, `GET /api/publik`, pil header |
-| `src/admin_halaman.js` (84) | kerangka HTML `/admin/*` + halaman publik `/statistik`, `CSP_ADMIN` |
-| `src/og_meta.js` (52) | `metaRute` (murni) + `terapkanOg` (HTMLRewriter) dari `public/data/og/meta.json` |
+`worker.js` (fetch, scheduled, tabel `RUTE`, `cacheTepi`, `/api/status`, `bersihkan`), `foto.js` (`RUTE_FOTO`, R2 `MEDIA`), `titik.js` (cron FIRMS, `wilayah`), `statistik.js`, `publik.js`, `admin_halaman.js`, `og_meta.js`; modul lain: `ls src/`.
 
 Konfigurasi: `wrangler.jsonc` (PRODUKSI: D1 `DB`, ASSETS `html_handling: "none"`, satu cron `17 * * * *`, TANPA r2_buckets),
 `wrangler.warga.jsonc` (USULAN lengkap: + `r2_buckets MEDIA` bucket `poskokarhutla-foto`, cron kedua `15 */3 * * *`).
 Dokumen: `WARGA.md` (§Deploy 76, §Moderasi 110, §Statistik 153, §Foto 174). Klien: `public/warga/index.html`,
 `public/informasi.js`, `public/foto.js`, `public/admin/{statistik,pesan,foto}.js`.
 
-**Rute (kunci `METODE /jalur`; `:id` = 16 hex). Auth: "-" publik, "laju" batas per hash IP, "admin" = `adminOK`.**
+**Rute:** tabel `RUTE` di `src/worker.js` + `RUTE_*` tiap modul (kunci `METODE /jalur`, `:id` = 16 hex di ujung). Daftar lengkap = `tests/warga/cakupan.json`; kode menang atas ilmu. Auth: publik, laju per hash IP, `adminOK`.
 
-| Rute | Handler | Auth |
-| --- | --- | --- |
-| `GET /api/warga` | `daftar` (cache tepi 30 dtk) | - |
-| `POST /api/warga` | `buat` (178) | Turnstile (bila aktif) + laju `lapor` 10/jam 30/hari + global 600/jam |
-| `GET /api/warga/konfig` | sitekey + `BATAS` (cache 300 dtk) | - |
-| `GET /api/warga/:id` | `rincian` (404 bila disembunyikan) | - |
-| `POST /api/warga/:id/konfirmasi` · `/lapor` | `suara` | laju 60/jam · 20/jam |
-| `POST /api/warga/:id/kontak` | `kontak` (WA, 72 jam) | laju 5/jam 15/hari |
-| `POST /api/warga/:id/selesai` | `selesai` | token pelapor (hash) + laju 30/jam |
-| `GET /api/warga/admin`, `POST /api/warga/:id/admin` | `admin` (292) | admin |
-| `GET /api/titik` · `GET /api/status` | `titikTerbaru` (cache 600) · `periksaStatus` (cache 60, 503 bila basi) | - |
-| `POST /api/jejak` · `GET /api/statistik` · `GET /api/publik` | St/Pub | batas memori 6/mnt · admin · - |
-| `POST /api/pesan` · `GET /api/pesan` · `POST /api/pesan/:id` | `kirimPesan`/`daftarPesan`/`ubahPesan` | Turnstile+laju `pesan` · admin · admin |
-| `GET /admin`, `/admin/masuk` (GET+POST), `POST /admin/keluar`, `GET /admin/{statistik,pesan,foto}` | sesi | laju `masuk` 8/15 mnt; halaman admin 303 ke masuk |
-| `GET /statistik`, `GET /f/:id` | halaman publik; index.html + OG foto | - |
-| `GET/POST /api/foto*` (11 rute, daftar di `RUTE_FOTO`) | foto.js | unggah/komentar/suka/aduan laju `foto_laju`; admin/dummy `adminOK` |
-| halaman HTML (`HTML_RUTE` 403) | `layaniHTML` (catat hit + OG + pil) | - |
+Tabel D1: baca `migrations/` (0001 laporan/kontak/suara, 0002 titik_terbaru, 0003 audit_moderasi, 0004 statistik+laju, 0005 pesan, 0007 foto); CHECK katalog `jenis:sub` harus sama dengan `public/informasi_jenis.js`.
 
-**Tabel D1 per migrasi (waktu = ms epoch UTC):**
-- `0001_warga`: `laporan` (CHECK katalog `jenis:sub` HARUS sama dengan `public/informasi_jenis.js`; lat/lon bbox Indonesia; kedaluwarsa maks +7 hari), `kontak` (trigger `kontak_hanya_bantuan`), `suara` (+3 trigger hitung, 3 aduan = disembunyikan), `jejak` (laju; CHECK `aksi` beku).
-- `0002_titik`: `titik_terbaru` (8 putaran terakhir, `isi` JSON <= 2 MB).
-- `0003_moderasi`: `audit_moderasi` (trigger tolak UPDATE/DELETE).
-- `0004_statistik`: `stat_hari` (PK tgl+hal, WITHOUT ROWID), `laju` (aksi `masuk`/`pesan`), `stat_tamu`, `stat_garam`, `stat_ip`.
-- `0005_pesan`: `pesan`. `0006`: `stat_hari` dibangun ulang (CHECK `hal` diperlebar).
-- `0007_foto`: `foto`, `foto_suka`, `foto_komentar`, `foto_aduan`, `audit_foto`, `foto_laju` + 8 trigger.
 
-**Cron** (`scheduled` 480): `15 */3 * * *` (= `CRON_TITIK`) -> `perbaruiTitik`; selain itu (`17 * * * *`) -> `bersihkan` (kontak 72 jam, laporan kedaluwarsa > 7 hari / disembunyikan > 30 hari, jejak 2 hari, retensi statistik) + `bersihkanFoto` + `catatGangguan` + `musnahkanGaram` + `perbaruiRentang` (sehari sekali).
+**Cron:** `15 */3 * * *` (`CRON_TITIK`) menarik FIRMS; `17 * * * *` bersih-bersih (kontak 72 jam, laporan kedaluwarsa, jejak, retensi). R2 foto `foto/<id>` dan `_t`, tanpa `MEDIA` = 503. Free: CPU 10 ms, tulis D1 100 rb/hari: jangan tulis per kunjungan.
 
 **Secret/var (hanya nama):** `IP_SALT` (wajib untuk POST), `ADMIN_TOKEN` (boleh banyak, koma), `SESI_KUNCI`, `TURNSTILE_SECRET` + var `TURNSTILE_SITEKEY`, `FIRMS_MAP_KEY`, `EMAIL_API_KEY`, `EMAIL_TO`, `EMAIL_FROM` (Resend). Lokal: `.dev.vars` (di-gitignore; contoh `.dev.vars.example`).
 
-**R2/foto:** kunci `foto/<id>` (media) dan `foto/<id>_t` (thumbnail), dilayani `media()` (82) dengan Range/ETag; dummy menunjuk `/img/foto-*.jpg` di aset. Tanpa `MEDIA` -> 503 `tanpaMedia()`.
 
-**Uji spin-up miniflare:** `new Miniflare({modules:true, scriptPath:src/worker.js, modulesRoot:AKAR, d1Databases:{DB}, bindings:{IP_SALT,ADMIN_TOKEN,...}, serviceBindings:{ASSETS: fungsi baca public/}, outboundService: fixture FIRMS/Resend/Turnstile, cache:false})`, lalu migrasi dijalankan lewat `migrasi()` + `pecah()` dari `tests/warga/_bantu.mjs` (trigger BEGIN..END utuh). `foto.test.mjs` menambah `r2Buckets`. `tepi.test.mjs` menyalakan cache.
+**Uji:** Miniflare dengan `modules`, D1 `DB`, ASSETS dari `public/`, fixture keluar; migrasi lewat `migrasi()`+`pecah()` di `tests/warga/_bantu.mjs`.
 
 ## Aturan & invarian
 
@@ -75,14 +43,11 @@ Dokumen: `WARGA.md` (§Deploy 76, §Moderasi 110, §Statistik 153, §Foto 174). 
 
 ## Ranjau yang pernah meledak
 
-- **Deploy produksi tidak membawa R2 dan cron FIRMS.** `wrangler.jsonc` (yang dipakai `terbit.yml`/`data.yml`/`titik.yml` lewat `wrangler@3 deploy`) hanya punya cron `17 * * * *` dan tanpa `r2_buckets`; keduanya baru ada di `wrangler.warga.jsonc`. Akibatnya `scheduled` tidak pernah menerima `15 */3 * * *` (titik FIRMS D1 tidak diperbarui) dan unggah foto dijawab 503. WARGA.md §Foto menyuruh menambah `r2_buckets` ke `wrangler.jsonc` manual. Cek: `grep -c r2_buckets wrangler.jsonc`.
+- **Deploy produksi vs `wrangler.warga.jsonc`:** cek `grep -c r2_buckets wrangler.jsonc` dan cron di kedua berkas sebelum menjanjikan foto atau FIRMS D1 (kode menang atas catatan ini).
 - **Roster:** `17 * * * *` = bersih-bersih, FIRMS = `15 */3 * * *`. **Migrasi kembar `... 2.sql`** (salinan Finder) menggagalkan `d1 migrations apply`; `.gitignore` menolaknya.
 - **Cabang lama `/api/warga` di `fetch`** (454-457) memeriksa origin tanpa pengecualian `"null"`: `new URL("null")` melempar -> 500 "galat server". `rute()` (388) sudah benar. Rute baru taruh di tabel `RUTE`, jangan di cabang lama.
 - **CHECK SQLite tidak bisa di-ALTER:** `jejak.aksi` beku, jadi laju baru memakai tabel `laju` (0004) dan `foto_laju` (0007). Memperlebar CHECK = bangun ulang tabel (contoh `0006`).
 - **CHECK dengan NULL lolos diam-diam:** `durasi` video di 0007 memakai `coalesce(durasi, 0)`; `0004` memakai `coalesce(json_type(...), '')`.
-- **Batas CPU Workers Free 10 ms:** `dibuatAset` hanya membaca 1 KB awal berkas (jangan urai `berita.json` 5 MB); cron FIRMS parse ~20 rb baris + poligon di-cache `WIL` per isolat (WARGA.md §Batas).
-- **Anggaran tulis D1 100 rb baris/hari:** statistik memakai satu UPDATE per kiriman + sampel (`pSampel`/`pHit` statistik.js:36-37). Jangan menambah tulis per kunjungan.
-- **CGNAT seluler:** batas laju per hash IP bisa menghukum banyak warga (komentar `ponytail` worker.js:104).
 - **`wilayah()` di-cache di variabel modul** (`WIL`); uji yang mengganti aset harus memakai isolat baru.
 
 ## Gerbang yang menghakimi
@@ -112,11 +77,10 @@ Dipadatkan 30 Okt 2026 (rinci per kasus ada di git log berkas ini). Dikelompokka
 - ALTER ADD COLUMN tidak idempoten: pakai tabel samping (`tugas_kartu` 0041, `tugas_bencana` 0047, `lkb_*` 0048 kembar `lk_*`) atau simpan di JSON kartu. CHECK tak bisa diubah (`pemirsa.tab` json_array_length<=7: TAB 8 tetapi `cekTab` max 7; laju baru lewat `laju_bnpb`, `laju_posko.aksi` CHECK 3 nilai beku).
 - Membangun ulang tabel: tabel sementara + INSERT OR IGNORE + DROP + RENAME + trigger IF NOT EXISTS (0054); `ALTER ... RENAME` memeriksa SELURUH skema, jadi bangun ulang lewat `CREATE TABLE AS` cadangan (0070). Uji 'tanpa migrasi X' harus ikut membuang migrasi yang bergantung (0043 butuh 0029; DROP `penugasan` butuh buang anak ber-FK 0041/0042 dulu).
 - `pecah()` memotong di baris berakhir `;`: komentar `--` taruh di baris sendiri. CHECK tak boleh subquery (isi larik dijaga trigger). Cakupan.json memindai SEMUA `CREATE TABLE`; 'diuji' harus AWALAN nama uji persis. Nomor migrasi baru: `ls migrations` tepat sebelum menulis (sesi lain mengambil 0067); hash di `migrasi_beku.json`.
-- FK: `gudang.akun_id ON DELETE CASCADE` (🧹 dummy instansi menghapus akun); `alat_jejak` sengaja tanpa FK; sumber polimorfik (`foto_label` 0071) tanpa FK -> statistik JOIN CTE sumber.
+- FK: `gudang.akun_id ON DELETE CASCADE`; `alat_jejak` sengaja tanpa FK; sumber polimorfik (`foto_label` 0071) tanpa FK -> statistik JOIN CTE sumber.
 - Jalur tulis lama yang bergantung tabel baru: jangan sisipkan statement tabel baru bila fitur tak dipakai; kerjakan SESUDAH batch dengan try/catch 'no such table'. Fallback CREATE TABLE harus ada di jalur tulis PERTAMA (kasus `sungai_meta` 0066: `simpan()` gagal tertelan di `cuaca_sumber`; uji `sungai_tanpa_migrasi.test.mjs`).
 - Alur status dijaga trigger BEFORE UPDATE (riset PT 0025, Meja Kerja 0026) dan diuji semua pasangan terhadap spek JS; jejak `INSERT..SELECT..WHERE changes()>0` dalam batch supaya UPDATE kalah balapan tak menulis jejak palsu. Balapan deterministik: TRIGGER AFTER INSERT di `laju_bnpb` mengubah baris sumber (409 pasti). Balapan dua staf tidak bisa dipaksa di workerd; uji invarian rantai `dari_status`.
 - Kunci idempoten luring: (oleh, klien_id) meja_catatan, (catatan_id, klien_id) meja_jejak, `relawan_jam.klien_masuk/keluar`; `meja_stok` belum punya klien_id (tambah UNIQUE (gudang_id, klien_id) sebelum diantrekan). Dedupe laporan sensitif lewat klien_id + indeks unik pelapor+klien_id. `waktu_klien` dipakai hanya bila <=5 mnt ke depan, <=14 hari.
-- Dummy: modul A tidak boleh menulis baris dummy=1 ke tabel modul B (gerbang 'dummy sudah ada'; alun->meja 409): tautkan ke dummy yang sudah ada. Dummy tanpa kolom dummy diberi awalan (`sumber_id` 'dummy|', `dummy_`, kab 'Contoh SLA A/B/C'); tabel tanpa FK dihapus manual.
 - CHECK `kedaluwarsa > dibuat AND <= dibuat+7 hari`: uji yang menggeser `dibuat` geser juga kedaluwarsa. `meja_id` CHECK length=16 (penanda klaim 'klaim-diteruskan'). Keadaan `prioritas_dampak` = kelas saja, bukan tanggal (bikin baris tiap hari); antrean BPBD pakai jenis itu, keadaan `j<level>`.
 - D1/workerd menolak 'no such column' untuk ORDER BY subquery berkorelasi ke kolom luar CTE (node:sqlite lolos): nearest-reading lewat `= (SELECT min(abs(..)))`. FTS5 unicode61 tanpa stemming: uji cari pakai kata persis.
 
@@ -177,7 +141,6 @@ Dipadatkan 30 Okt 2026 (rinci per kasus ada di git log berkas ini). Dikelompokka
 - 2026-11-10 · Meja dampak (0119): SQL baru ditaruh di src/hak.js (gerbang-d1, plafon hanya turun). Terima = klaim status dulu (UPDATE bersyarat) lalu tulis Logbook; gagal = batalTerima. Impor 200 baris = satu DB.batch INSERT OR IGNORE (maks 8 kab per impor, subrequest Free 50). buatStaf(kunci) di uji butuh kunci heksadesimal. Cek: node --test tests/warga/meja.test.mjs
 - 2026-11-10 · Entri Jam Aturan baru: acuan = id dokumen di katalog hukum, kutipan = substring segmen seed; sunting jam_aturan.js DAN .json (gerbang-jam-aturan.test.mjs).
 - 2026-11-10 · Siklus G1: src/siklus.js dipasang di worker.js SESUDAH import berantai.js (lebih awal memutus siklus: ReferenceError tabelBelum3). gerbang.test memindai rute hanya dari modul di daftar bn (tambahkan modul baru); entri 'diuji' harus literal uji("..."). Duplikat ingest disaring SEBELUM cek referensi kejadian_id.
-- 2026-11-10 · G3 Jitupasna/R3P: harga dummy wajib disaring dummy = ? (skHargaCari/Daftar); hapus baris dummy di final lolos trigger lewat OLD.dummy = 0; tabel dummy baru butuh indeks parsial dummy = 1 + INDEKS_BOLEH; trigger tanda setuju tak tahu peran (NEW.disetujui_oleh = OLD.oleh, peran PM dijaga rute); teks opsional kosong = null.
 - 2026-11-11 · Rute berizin 'opsional' (pintu, masadepan) di src/siklus.js memperlakukan tamu sebagai WG (h = null), jadi matriks UJ-KP-01 mengecualikannya. Indeks parsial hanya terpakai bila WHERE memuat predikat persis dan kolom urut dibatasi; FK ke sk_kejadian butuh indeks anak (sk_gl_kej) supaya DELETE dummy tidak SCAN. Cek: node --test tests/warga/siklus_rencana_kueri.test.mjs
 - 2026-11-11 · Siklus keamanan: UNIQUE dengan kolom NULLable tak menegakkan apa pun (pakai CREATE UNIQUE INDEX + coalesce); filter lingkup BP di SQL SEBELUM LIMIT, bukan .filter(); batas baris lewat predikat count(*) di skStmtBaris; tulis akun dummy ke baris nyata dijaga lihatTulis. Bukti: tests/warga/siklus_keamanan.test.mjs
 
@@ -198,9 +161,8 @@ Dipadatkan 30 Okt 2026 (rinci per kasus ada di git log berkas ini). Dikelompokka
 - 2026-11-15 · Saring awalan kunci di SQL SEBELUM LIMIT (dlTindakTerkini LIMIT 2000): menyaring di JS menggusur baris sah. Cek telepon pada JSON mentah menolak stempel waktu ms (13 digit cocok RE_HP2); periksa nilai string saja. INSERT ... SELECT ... WHERE EXISTS + dl_tindak dari SELECT atas baris yang baru tertulis menjaga batch tanpa yatim.
 - 2026-11-15 · Kaji ulang KU-04..06: meta.changes D1 menghitung baris pemicu (UPDATE sahkan ulang = changes 2): cek > 0, bukan === 1. Kueri literal yang memindai tabel staf menaikkan ratchet d1-pindai hak.js; jangan diakali jadi templat; jalan sah: indeks lewat migrasi baru atau keputusan pemilik.
 - 2026-11-20 · 2026-11-20 · Kejadian yang sama (K66, LA-68): kandidat disuntik ke putaran({kandidat}); kode KJ di tabel samping lapor_kejadian (0160), bukan kerja JSON induk. Pernyataan penanda kejadian di batch simpanPutaran WAJIB di akhir: INSERT OR IGNORE 0 baris memutus rantai 'WHERE changes() > 0' sesudahnya. Uji lama dengan laporan sekecamatan kena status 'kejadian': _ketik menjawab Bukan kecuali tawarKejadian=true.
-- 2026-11-23 · 2026-11-23 · Akun BPBD dengan profil PIC (migrasi 0166, src/profil*.js): akunAktif menuntut sesi profil untuk pemprov/pemkab/pemkot, jadi ±45 berkas uji lama yang masuk sebagai akun pemda gagal; obatnya satu helper tests/warga/_profil.mjs (denganProfil sisip profil+sesi lewat D1), jangan longgarkan akunAktif. Pintu kode WA ditutup untuk pemda (Q1): uji masuk_* memakai akun polres. Kunci laju_bnpb maks 64 (pf:<profil>:<40 awal hash IP>). Router hanya :id di AKHIR jalur (/profil/foto/:id). gerbang-token: kolom *_sha bernama token/kode/kunci dilarang (pakai sesi_sha). public/instansi.js dan .html pernah kembali ke HEAD diam-diam: grep InstansiProfil sebelum tutup.
-- 2026-11-23 · 2026-11-23 · PF-07..09: papan aktivasi menambah 38 baris provinsi (kab null) dan status dari instansi_profil bila ada akun pemda di baris itu, jadi uji papan lama memfilter tingkat 'kab' dan memberi akun pemda tiga profil aktif. Rute meja /api/lapor/meja/:nomor/pic dan respons memakai hakMeja jenis bnpb; log meja kini mengisi objek = nomor laporan (dipakai hitung waktu dilihat). Konstanta laju masuk_undang hanya di masuk_konst.js (G-6); nomor uji masuk berawalan 62800 (G-5).
-- 2026-11-23 · LJ-06 titik+jiwa lapor-lanjutan: objek titik menulis titik_pengungsian dalam batch yang sama [objek, jejak(changes>0), TP(changes>0)], register buatan berkas bertanda pembuat 'lapor_lanjut:<berkas>' (hanya itu disinkronkan atau ditutup saat batal); kab4 dari lj_berkas.kab4 atau kab 'NN.NN' dicek ke NAMA_KAB4. Jiwa: kk di data, titik = objek titik aktif berkas, tanpa lat/lon; syarat 'titik masih aktif' dan 'titik tanpa jiwa aktif' dijaga di SQL (HAVING/EXISTS, INSERT..SELECT beragregat TETAP menyisip tanpa HAVING). Konteks mesin WA lewat variabel modul KONTEKS. Uji lanjut_*.test.mjs; id objek uji palsu jangan berawalan heks (DELETE LIKE '9%' menghapus objek asli, flaky).
-- 2026-11-23 · 2026-11-23 · Persetujuan wajah dicek di simpan akhir DAN saat isian berubah, bukan hanya saat foto masuk: ubah umur<18 atau menolak_foto menghapus lj_media wajah + objek R2 dalam batch (jejak hapus_wajah); mesin WA memindah foto ke k.buang yang dihapus pemanggil; simpanDariDraf melewati foto draf jiwa yang tak boleh difoto. Cara tahu: lanjut_rute 'S1 web' dan 'S1 WA'.
-- 2026-11-23 · LJ-07 korban: satu fungsi wajahBoleh(jenis,data) di lapor_lanjut_spek.js untuk jiwa (dewasa, tidak menolak) dan korban (hilang+dicari); foto korban jenis 'wajah' kiriman keluarga TIDAK wajib kamera, meninggal/luka tanpa foto sama sekali; status keluar dari hilang/dicari menghapus lj_media+R2 lewat jalur simpanObjek yang sama (web dan perintah WA 'ubah hilang N ...' via ljObjekUrut). Korban tanpa lat/lon. Butir hilang-only (terakhir_*, pencarian) opsional untuk status lain: mesin WA melewatinya. LABEL mesin global: 'rs' = rusak sedang, jangan ditimpa (sumber korban pakai label(v,butir)). GET berkas tidak memuat penanda; hanya respons tulis. Uji: lanjut_rute LJ-07.
-- 2026-11-23 · LJ-07 pemeriksa: ljStmtMediaBaru bersyarat di SQL (objek aktif; wajah hanya bila jiwa dewasa tak menolak atau korban hilang+dicari saat tulis); ubah/batal jiwa-korban SELALU menyertakan ljStmtWajahHapus (guard changes) walau daftar kunci kosong; foto anggota hanya objek sendiri; mediaGet h.tolak jadi 404 (tutup oracle).
+- 2026-11-23 · Profil PIC (0166, src/profil*.js): akunAktif menuntut sesi profil untuk pemda, jadi uji lama akun pemda gagal; obatnya helper tests/warga/_profil.mjs (denganProfil), jangan longgarkan akunAktif. Pintu kode WA ditutup untuk pemda (Q1). Kunci laju_bnpb maks 64. Kolom *_sha bernama token/kode/kunci dilarang (pakai sesi_sha). Papan aktivasi punya 38 baris provinsi (kab null): uji papan memfilter tingkat 'kab'. Konstanta laju masuk_undang hanya di masuk_konst.js; nomor uji masuk berawalan 62800. public/instansi.js pernah kembali ke HEAD diam-diam: grep InstansiProfil sebelum tutup.
+- 2026-11-23 · Lapor lanjutan LJ-06/07 (src/lapor_lanjut*.js): titik menulis titik_pengungsian dalam batch [objek, jejak(changes>0), TP(changes>0)]; register buatan berkas bertanda pembuat 'lapor_lanjut:<berkas>' (hanya itu disinkronkan/ditutup). Jiwa: kk di data, titik = objek titik aktif berkas, tanpa lat/lon; syarat dijaga di SQL (INSERT..SELECT beragregat TETAP menyisip tanpa HAVING). Konteks mesin WA = variabel modul KONTEKS. id objek uji palsu jangan berawalan heks (DELETE LIKE '9%' flaky).
+- 2026-11-23 · Foto wajah: satu fungsi wajahBoleh(jenis,data) untuk jiwa (dewasa, tidak menolak) dan korban (hilang+dicari), dicek di simpan akhir, saat isian berubah, dan di SQL ljStmtMediaBaru; status keluar dari syarat menghapus lj_media+R2 lewat simpanObjek yang sama (web dan WA 'ubah hilang N ...'); ubah/batal jiwa-korban SELALU menyertakan ljStmtWajahHapus. Foto korban dari keluarga tidak wajib kamera; korban tanpa lat/lon. LABEL mesin WA global: 'rs' = rusak sedang, jangan ditimpa. GET berkas tak memuat penanda. mediaGet h.tolak jadi 404 (tutup oracle). Uji: lanjut_rute S1 web/WA, LJ-07.
+- 2026-11-23 · 2026-11-23 · LJ-08 lapor-lanjutan: isian berkas dan nihil hidup di lj_berkas.isian (JSON), diubah HANYA lewat satu UPDATE (json_patch untuk isian, json_set + json_each untuk nihil) supaya dua simpan serentak tidak saling hapus kunci lain; objek baru/ubah menambah ljStmtNihilCabut + jejak di AKHIR batch, dijaga EXISTS lj_objek.diubah=kini (bukan changes(), karena pernyataan sebelumnya bisa sah 0 baris). Salah kurung di subquery json_set menghasilkan 'near WHERE' hanya di D1/workerd. Rute isian = ketua saja (cek peran di rute, bukan MATRIKS); semua jenis objek yang memuat titik (jiwa, kebutuhan) dijaga di ljStmtObjekBatal; kebutuhan tanpa lat/lon dan tanpa foto (TANPA_LOKASI, fotoWajib=0). metrikAda(semua) = satu logika dengan rekap untuk 409 nihil dan pencabutan otomatis. Uji nihil memakai metrik tanpa objek (pasar_rb, irigasi_unit): uji lain menghuni berkas bersama, jadi nihil yang tertinggal membuat uji sesudahnya 'tidak berubah'.
+- 2026-11-23 · 2026-11-23 · LJ-08 review: tingkat rekap (akun provinsi) hanya melihat isian {nihil, status_darurat}, jadi tiap butir isian berkas baru yang memuat nomor atau narasi harus dicek di bentukBerkas; referensi titik dari isian (posko.titik) dijaga dua arah di SQL (ljStmtIsian EXISTS titik aktif, ljStmtObjekBatal menolak titik yang jadi posko); galat CHECK length(isian) dari jalur cabut nihil dipetakan 400, bukan 500.
