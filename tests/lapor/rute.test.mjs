@@ -440,6 +440,8 @@ uji("pengecekan lapangan dan tindakan (K69-K70, LA-73): BPBD wilayah saja, revis
   assert.equal(await n("lapor_pdf", `nomor = '${nomor}' AND status = 'antre'`) >= 1, true, "PDF versi baru diantre");
   r = await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "tidak_valid", catatan: "Tidak ada longsor di titik itu"}, bogor.h); assert.equal(r.s, 200);
   assert.equal(r.j.status, "tidak_valid"); assert.equal(await n("lapor_periksa", `nomor = '${nomor}'`), 2);
+  // LK-02: tiap pengecekan BPBD punya baris penanda dari sesi (jenis bpbd, prov), satu per baris lapor_periksa
+  assert.equal(await n("lk_periksa_akun", `jenis = 'bpbd' AND prov = '${W.provKode}' AND periksa_id IN (SELECT id FROM lapor_periksa WHERE nomor = '${nomor}')`), 2, "penanda pemeriksa BPBD");
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "valid", catatan: "cek ulang lagi"}, bogor.h)).s, 409, "tiket tertutup");
   // kembali ke ditindaklanjuti untuk uji alun
   assert.equal((await api("POST", `/api/lapor/meja/${nomor}/status`, {ke: "ditelaah", catatan: "cek ulang"}, ADMIN)).s, 200);
@@ -561,6 +563,27 @@ async function videoUtuh(wa, vid, {gps = GPS(), durasi = 10, sampul} = {}) {   /
 const R2 = async () => mf.getR2Bucket("MEDIA");
 const adaR2 = async k => !!(await (await R2()).head(k));
 let vidId, vid, nomorV, tokenV;
+
+/* ---------- LK-02 dan LA-76: terverifikasi BPBD dan rekonsiliasi tiga sumber (lapor-kejadian A3, lapor-ai LA-76) ---------- */
+uji("rekon: hanya Valid oleh BPBD wilayah yang dihitung; sebagian, cek staf BNPB, versi sesudah cek tidak; tanpa identitas; BPBD dan tamu ditolak", async () => {
+  const hari = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10), q = `/api/lapor/meja/rekon?dari=${hari}&sampai=${hari}`;
+  const jumlah = async () => { const r = await api("GET", q, undefined, ADMIN); assert.equal(r.s, 200, r.t.slice(0, 200));
+    return r.j.baris.filter(x => x.kab === W.kabKode && x.jenis === "longsor").reduce((a, x) => a + x.n, 0); };
+  const awal = await jumlah();
+  const sah = await laporanBaru("6281200000031"), sebagian = await laporanBaru("6281200000032"), staf = await laporanBaru("6281200000033");
+  for (const [no, hasil, h] of [[sah, "valid", bogor.h], [sebagian, "sebagian", bogor.h], [staf, "valid", ADMIN]]) {
+    const r = await api("POST", `/api/lapor/meja/${no}/periksa`, {hasil, catatan: "Dicek ke lokasi bersama kades"}, h); assert.equal(r.s, 200, r.t.slice(0, 200)); }
+  assert.equal(await n("lk_periksa_akun", `jenis = 'bnpb' AND periksa_id IN (SELECT id FROM lapor_periksa WHERE nomor = '${staf}')`), 1, "cek staf BNPB bertanda bnpb");
+  assert.equal(await jumlah(), awal + 1, "hanya laporan Valid oleh BPBD wilayah");
+  const r = await api("GET", q, undefined, ADMIN);
+  for (const dilarang of [sah, sebagian, staf, "6281200000031", "Budi", "Siti"]) assert.ok(!r.t.includes(dilarang), `bocor: ${dilarang}`);
+  assert.deepEqual(Object.keys(r.j.baris[0]).sort(), ["bulan", "jenis", "kab", "kabNama", "n", "pertama", "prov", "terakhir"]);
+  await DB.prepare("INSERT INTO lapor_versi (nomor, versi, isi, perubahan, waktu) VALUES (?, 2, '{}', '[]', ?)").bind(sah, Date.now() + 1000).run();
+  assert.equal(await jumlah(), awal, "versi sesudah pengecekan: belum terverifikasi");
+  assert.equal((await api("GET", q, undefined, bogor.h)).s, 403, "akun BPBD belum boleh (Q-R1)");
+  assert.equal((await api("GET", q)).s, 403, "tanpa sesi");
+  assert.equal((await api("GET", "/api/lapor/meja/rekon?dari=2026-01-01", undefined, ADMIN)).s, 400);
+});
 
 uji("video bersambung: tiga bagian, satu terpotong ditolak lalu dilanjutkan, status bagian, selesai masuk laporan sebagai video", async () => {
   for (const wa of [WV, WV2, WV3]) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
@@ -996,3 +1019,4 @@ uji("K67: nomor ketikan di web tanpa daftar izin; lewat mesin WA tetap wajib izi
   assert.equal(r.s, 200, r.t.slice(0, 200));
   assert.equal(await n("lapor_perangkat", `wa = '${TAK}'`), 1, "nomor ketikan terikat perangkat");
 });
+

@@ -30,6 +30,7 @@ import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_per
 import * as H from "./hak.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
+import {penandaPemeriksa, waktuVerifikasi} from "./lapor_kejadian.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 60], [HARI, 120]], BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
@@ -874,9 +875,15 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
       H.lpStmtKabarJikaBerubah(env, STAF, baris.wa, nomor, "status", `Status laporan ${nomor}: ${STATUS[ke]}. ${v.catatan}`, kini));
     else stmts.push(H.lpStmtRiwayat(env, STAF, nomor, t.status, t.status, ket, oleh, kini, g));
     stmts.push(H.lpStmtPeriksa(env, STAF, nomor, v.hasil, v.catatan, JSON.stringify(r.perubahan), oleh, kini, true));
+    const iP = stmts.length - 1, akunP = H.lpStmtPeriksaAkun(env, STAF, penandaPemeriksa(c));   // LK-02: jenis dan wilayah pemeriksa dari sesi, bukan dari teks oleh
     let hasil;
-    try { hasil = await H.lpBatch(env, STAF, stmts); } catch (e) { if (/UNIQUE|constraint/i.test(String(e?.message))) return galat(409, "Laporan baru saja berubah. Muat ulang."); throw e; }
-    if (!hasil[0].meta.changes || !hasil.at(-1).meta.changes) return galat(409, "Laporan baru saja berubah. Muat ulang.");
+    try { hasil = await H.lpBatch(env, STAF, [...stmts, akunP]); }
+    catch (e) {
+      if (/lk_periksa_akun/i.test(String(e?.message))) hasil = await H.lpBatch(env, STAF, stmts);   // sebelum migrasi 0168 atau penanda ditolak CHECK: pengecekan tetap tercatat, dihitung belum terverifikasi
+      else if (/UNIQUE|constraint/i.test(String(e?.message))) return galat(409, "Laporan baru saja berubah. Muat ulang.");
+      else throw e;
+    }
+    if (!hasil[0].meta.changes || !hasil[iP].meta.changes) return galat(409, "Laporan baru saja berubah. Muat ulang.");
   } else if (aksi === "tindakan") {   // tambah tindakan selama Ditindaklanjuti (K70, D112)
     if (t.status !== "ditindaklanjuti") return galat(409, "Tindakan dicatat saat tiket Ditindaklanjuti.");
     const s = dariBaris(baris), v = sahkanTindakan(b.o, s.isian.jenis?.nilai, await registriDari(env)); if (v.galat) return galat(400, v.galat);
@@ -967,9 +974,33 @@ async function picPost(env, req, url, kini, nomor) {
   await H.lpBatch(env, STAF, [H.lpStmtAkses(env, STAF, nomor, `${h.oleh} membuka nomor PIC ${p.nama}`, kini)]);
   return kirim(200, {profil_id: p.id, nama: p.nama, jabatan: p.jabatan, wa: p.wa});
 }
+/* rekonsiliasi tiga sumber (lapor-ai LA-76): laporan terverifikasi BPBD (LK-02, A3) per kab/kota, jenis, bulan WIB; tanpa nomor, nama, teks, atau foto.
+   Staf BNPB saja sampai pemilik menjawab Q-R1. ponytail: tarikan lk_tarik belum ada (LK-03), jadi syarat 5 selalu lolos; rentang paling lama 400 hari */
+const tglWibIso = ms => new Date(ms + 7 * JAM).toISOString().slice(0, 10);
+async function rekonGet(env, c, url) {
+  if (c.jenis !== "bnpb") return galat(403, "Rekonsiliasi hanya untuk staf BNPB.");
+  const q = url.searchParams, hari = v => /^\d{4}-\d{2}-\d{2}$/.test(v || "") ? Date.parse(v + "T00:00:00+07:00") : NaN;
+  const dari = hari(q.get("dari")), sampai = hari(q.get("sampai")), prov = /^\d{2}$/.test(q.get("prov") || "") ? q.get("prov") : null;
+  if (!Number.isFinite(dari) || !Number.isFinite(sampai) || sampai < dari || sampai - dari > 400 * 24 * JAM) return galat(400, "dari dan sampai wajib (YYYY-MM-DD), paling lama 400 hari.");
+  const calon = await bacaTabel(() => H.lpRekonCalon(env, STAF, dari, sampai + 24 * JAM - 1, prov), []);
+  const per = new Map();
+  for (let i = 0; i < calon.length; i += 100) for (const r of await bacaTabel(() => H.lpPeriksaAkunNomor(env, STAF, calon.slice(i, i + 100).map(x => x.nomor)), []))
+    (per.get(r.nomor) || per.set(r.nomor, []).get(r.nomor)).push({id: r.id, hasil: r.hasil, waktu: r.waktu, akun: r.jenis ? {jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, kab_nama: r.kab_nama} : null});
+  const grup = new Map();
+  for (const r of calon) {
+    let k = {}; try { k = JSON.parse(r.ringkas || "{}"); } catch {}
+    const w = k.wilayah || null;
+    if (!w?.provKode || !waktuVerifikasi({status: r.status, wilayah: w}, per.get(r.nomor), r.versi_waktu ? [{waktu: r.versi_waktu}] : [], [])) continue;
+    const tgl = tglWibIso(k.waktuMs || r.terkirim), kunci = `${w.kabKode || w.kab}|${r.jenis}|${tgl.slice(0, 7)}`;
+    const g = grup.get(kunci) || grup.set(kunci, {prov: w.provKode, kab: w.kabKode || null, kabNama: w.kab || null, jenis: r.jenis || null, bulan: tgl.slice(0, 7), n: 0, pertama: tgl, terakhir: tgl}).get(kunci);
+    g.n++; if (tgl < g.pertama) g.pertama = tgl; if (tgl > g.terakhir) g.terakhir = tgl;
+  }
+  return kirim(200, {baris: [...grup.values()].sort((a, b) => a.bulan.localeCompare(b.bulan) || String(a.kab).localeCompare(String(b.kab)))});
+}
 async function mejaGet(env, req, url, kini, ctx, x) {
   const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
   const lj = await laju(env, h.kunci, "lapor.mejaget", [[JAM, 600]], kini); if (lj) return lj;   // G4: setara mejaDaftar
+  if (x === "rekon") return rekonGet(env, h.c, url);
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picGet(env, req, url, kini, pc[1]);
   const mj = /^(LA-\d{6}-\d{2,3})\/jalan$/.exec(x);   // ruas jalan rusak untuk peta meja (K83); nama diambil dari laporan, bukan dari peminta
   if (mj) { const baris = await H.lpSesiNomor(env, STAF, mj[1]); if (!baris || !dalamWilayah(h.c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");

@@ -164,3 +164,20 @@ Tahap 1 (commit 492cc6484) dan tahap 2 di Worker: LA-58 video (rute `unggah/*` m
 | LA-73 | Selesai: migrasi `0162_lapor_periksa.sql` (`lapor_periksa`, `lapor_tindakan`, append-only), SQL dan `MATRIKS` di `src/hak.js` (staf: `lapor_sesi` ubah lewat `rev`, `lapor_versi` dan `lapor_pdf` tambah), aksi `periksa` dan `tindakan` di `mejaUbah` `src/lapor_ai.js` (revisi = versi baru + antre PDF dalam satu batch), Ditindaklanjuti wajib tindakan di rute status, rincian memuat `periksa`, `tindakan`, `tindakanPilihan`, `revisi`; uji di `tests/lapor/rute.test.mjs`, tabel di `tests/warga/cakupan.json`. Pemilik menerapkan 0162 ke D1 produksi. | `warga-api` | `migrasi-idempoten`, `guard-api` | |
 | LA-74 | Selesai: gerbang topik K72 (D114-D118) di `src/lapor_mesin.js` (`saringTopik`, `TANGGAPAN`, `TOPIK`, `TOLAK`, batas per sesi, isian teks dari kata pelapor, keterangan kronologi lewat gerbang), `src/lapor_bahasa.js` (`wajarPanjang`), plafon harian rute terjemah di `src/lapor_ai.js`; uji `tests/lapor/gerbang_topik.test.mjs` | `warga-api` | `security-reviewer` | — |
 | LA-75 | Selesai lokal dan Worker: gabung sekab di daftar meja (D119), tombol Verifikasi di kolom Aksi (D120), hasil cek terakhir di kolom Status (D121, `lpPeriksaTerakhirSemua`) | `layar-peta`, `warga-api` | `inp-reviewer` | Q62, Q63 |
+
+## Rekonsiliasi tiga sumber: DIBI, logbook Pusdalops, Lapor Bencana (pemilik 23 Nov 2026, lewat sesi DIBI)
+
+Permintaan pemilik: per kab/kota per bulan, tampilkan kejadian yang ada di satu sumber tetapi tidak ada di sumber lain, supaya BPBD bisa melengkapi laporannya. Bagian DIBI lawan logbook sudah jalan di tab Data Bencana `/bnpb/dalops` (daftar "Belum tercatat di DIBI", `public/bnpb/data_bencana.js`: kab sama, kelompok jenis sama, tanggal DIBI dalam rentang mulai minus 3 hari sampai kabar terakhir plus 3 hari). Tiket ini menambah sumber ketiga.
+
+Batas: Lapor Bencana adalah data warga di D1, tidak pernah tampil publik dan tidak masuk `public/data` (D7, KEAMANAN-PRIVASI). Hanya laporan terverifikasi BPBD yang dihitung, dengan arti `terverifikasiBpbd` di `data/kajian-bnpb/lapor-kejadian/ALGORITMA.md` A3 (`src/lapor_kejadian.js`, LK-02 selesai 23 Nov 2026).
+
+Status 23 Nov 2026: LA-76 dan LA-77 selesai di kode, belum di-commit saat ditulis. Rute menjawab 403 (bukan 401) untuk tanpa sesi dan akun BPBD, sama dengan rute meja lain. Sebelum pemilik menerapkan migrasi 0168, semua pengecekan dihitung belum terverifikasi, jadi kolom Lapor kosong. Syarat 5 (tarikan `lk_tarik`) menunggu LK-03.
+
+| Tiket | Isi | Pengerja | Pemeriksa | Q |
+| --- | --- | --- | --- | --- |
+| LA-76 | Rute staf `GET /api/lapor/meja/rekon?dari=&sampai=&prov=`: agregat laporan terverifikasi BPBD (LK-02) per kab per bulan per kelompok jenis, berisi kode wilayah, kelompok jenis, bulan, jumlah laporan, dan tanggal laporan pertama dan terakhir; tanpa nomor, nama, teks, atau foto. Hak meja staf BNPB saja (bukan akun lembaga) sampai pemilik memutuskan Q-R1. Uji integrasi di `tests/lapor/` (Miniflare, D1 sungguhan): laporan warga belum terverifikasi tidak ikut, laporan `sebagian` tidak ikut, tanpa sesi 401 | `warga-api` | `guard-api`, `security-reviewer` | Q-R1 |
+| LA-77 | Tab Data Bencana Dalops: kartu "Rekonsiliasi tiga sumber" menggantikan "Belum tercatat di DIBI". Satu baris per kab per kelompok jenis per bulan, tiga kolom ada atau tidak ada (DIBI, logbook, Lapor), pencocokan jendela plus minus 3 hari yang sama; tombol Tagih WA per baris dan per provinsi; ekspor ikut lembar Excel. Fungsi pencocok murni diuji di `tests/bnpb/` | `ruang-bnpb` (sesi ini: `public/bnpb/data_bencana.js`) | `inp-reviewer`, `selera-angka` | Q-R2 |
+
+Pertanyaan terbuka (bawaan sementara ditandai):
+- Q-R1: apakah akun lembaga BPBD boleh melihat rekonsiliasi wilayahnya sendiri? Bawaan sementara: tidak, staf BNPB saja.
+- Q-R2: apakah laporan yang hanya ada di Lapor Bencana (tidak ada di DIBI dan logbook) ikut ditagih ke BPBD? Bawaan sementara: ya, tetapi teks tagihan tidak memuat isi laporan warga, hanya jenis, kab, dan tanggal.

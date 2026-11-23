@@ -116,6 +116,8 @@
 .bd-daftar li .bd-wa{grid-column:1/-1;margin-top:6px}
 .bd-daftar-akt li{background:color-mix(in srgb,var(--bad) 8%,var(--card))}
 .bd-kosong{margin:0;font-size:var(--fs-3);color:var(--ink2)}
+.bd-tabel .bd-ada{color:var(--ok-tx)}
+.bd-tabel .bd-tiada{color:var(--bad-tx);font-weight:600}
 .bd-wa{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-block-size:34px;padding:0 12px;border-radius:10px;background:var(--ok-tx);color:var(--on-head);font-size:var(--fs-3);font-weight:700;text-decoration:none;white-space:nowrap}
 .bd-wa:hover{background:var(--ok)}
 .bd-wa:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}

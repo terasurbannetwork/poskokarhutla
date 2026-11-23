@@ -9,7 +9,7 @@
    Peta: provinsi (/geo/provinsi.json); provinsi dipilih = kab/kota (/geo/kabupaten/<prov>.json). DIBI memakai kode provinsi Papua lama (91, 94):
    provinsi tiap baris dicari lewat nama kab di /data/bnpb/wilayah.json.
    opsi.aktif() (tab Dalops saja, logbook staf): kab/kota masih berlangsung jadi titik merah, daftar di rincian kab, dan dicocokkan ke DIBI
-   (kab + kelompok jenis + tanggal plus minus 3 hari, sama dengan rekonsiliasi_dalops_dibi) untuk daftar Belum tercatat di DIBI.
+   (kab + kelompok jenis + tanggal plus minus 3 hari) untuk kartu Rekonsiliasi tiga sumber; opsi.lapor() menambah Lapor Bencana terverifikasi BPBD.
    Banding periode sama tahun lalu dari /data/dibi_tren.json (bulan_prov, sesi DIBI): hanya bulan penuh, tingkat Indonesia dan provinsi.
    Unduh Excel (DalopsHitung.xlsx, tanpa pustaka) dan cetak A4 (window.print, kelas html.bd-cetak). Teks data lewat textContent. */
 (() => {
@@ -300,7 +300,8 @@
     }
 
     /* ---------- data yang datang belakangan: logbook aktif (staf) dan tren bulanan (banding) ---------- */
-    let AKT = [], TREN = null;
+    let AKT = [], TREN = null, LAP = [];
+    if (opsi.lapor) opsi.lapor().then(xs => { LAP = (xs || []).filter(x => x.prov && x.kabNama && x.pertama); terap(false); }).catch(() => {});   // gagal atau bukan staf BNPB: kolom Lapor kosong
     if (opsi.aktif) opsi.aktif().then(xs => { AKT = (xs || []).filter(x => (x.kab_kode || "").includes("|")).map(x => { const [pv, nm] = x.kab_kode.split("|"); return {...x, prov: pv, kabN: norm(nm), namaKab: nm}; }); terap(false); }).catch(() => {});
     ambil("/data/dibi_tren.json").then(t => { TREN = t; siapPend(); terap(false); }).catch(() => {});
     /* penduduk (IRBI BNPB lewat dibi_tren.json): null = tidak ada, tidak pernah 0; provinsi = jumlah kab berpenduduk */
@@ -336,28 +337,33 @@
       return {label: `${BLN3[a % 100 - 1]}${a === b ? "" : " sampai " + BLN3[b % 100 - 1]}`, th, kini: jum(a, b), lalu: jum(a - 100, b - 100), sementara: th >= +(TREN.sementara || 9999)};
     }
 
-    /* kejadian logbook yang belum ada di DIBI: kab sama, kelompok jenis sama, tanggal DIBI di [mulai - 3, terakhir + 3]; semua baris DIBI (termasuk bencana: 0).
-       Jeda 3 hari sejak mulai supaya BPBD sempat mengentri. */
-    function belumDibi() {
-      const hariIni = AKT.reduce((m, x) => x.hari > m ? x.hari : m, "");
-      const indeks = new Map(); for (const x of D.baris) { const k = x.prov + "|" + x.kabN + "|" + x.kel; indeks.set(k, [...(indeks.get(k) || []), x.tanggal]); }
-      return AKT.filter(x => diWil(x) && (!st.jenis || x.kel === st.jenis) && x.mulai && geser(x.mulai, 3) <= hariIni && x.mulai >= D.d.dari)
-        .filter(x => { const lo = geser(x.mulai, -3), hi = geser(x.terakhir || x.mulai, 3); return !(indeks.get(x.prov + "|" + x.kabN + "|" + x.kel) || []).some(t => t >= lo && t <= hi); })
-        .sort((a, b) => a.mulai.localeCompare(b.mulai));
+    /* rekonsiliasi tiga sumber (lapor-ai LA-77): DIBI (semua baris, termasuk bencana: 0), logbook Pusdalops, Lapor Bencana terverifikasi BPBD
+       (opsi.lapor, rute staf /api/lapor/meja/rekon). Kab sama, kelompok jenis sama, jendela 3 hari (rekon_tiga.js). Logbook yang mulainya
+       kurang dari 3 hari lalu belum ditagih supaya BPBD sempat mengentri. Hanya baris yang perlu dilengkapi yang tampil. */
+    function rekonTiga() {
+      const R = window.RekonTiga; if (!R) return [];
+      const hariIni = AKT.reduce((m, x) => x.hari > m ? x.hari : m, "") || new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+      const pas = x => diWil(x) && (!st.jenis || x.kel === st.jenis) && x.lo >= st.dari && x.lo <= st.sampai && x.lo >= D.d.dari;
+      const dibi = D.baris.map(x => ({prov: x.prov, kabN: x.kabN, kel: x.kel, lo: x.tanggal, nama: x.kab}));
+      const logbook = AKT.map(x => ({prov: x.prov, kabN: x.kabN, kel: x.kel, lo: x.mulai, hi: x.terakhir || x.mulai, nama: x.nama, kata: x.kata}));
+      const lapor = LAP.map(x => { const kel = R.KEL_LAPOR[x.jenis] || "lainnya", k = kabKunci(x.prov, x.kabNama || ""); return {prov: x.prov, kabN: k.split("|")[1], kel, lo: x.pertama, hi: x.terakhir, n: x.n, nama: x.kabNama}; });
+      return R.rekon({dibi, logbook, lapor}).filter(r => R.perluDilengkapi(r) && pas({...r, lo: r.mulai}) && (r.dibi || r.lapor || geser(r.mulai, 3) <= hariIni))
+        .map(r => ({...r, kata: r.isi.find(x => x.kata)?.kata || namaKel(r.kel).toLowerCase()}));
     }
-    const pesanTagihDibi = x => `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB mencatat ${x.kata} di ${x.nama} sejak ${tgl(x.mulai)}, kabar terakhir ${tgl(x.terakhir || x.mulai)}. ` +
-      `Kejadian ini belum kami temukan di DIBI (dibi.bnpb.go.id). Mohon dientri ke DIBI beserta data korban, pengungsi, dan kerusakannya. Terima kasih.`;
+    const ADA = ["Ada", "Tidak ada"];
     function gambarBelum() {
-      if (TANAM || !opsi.aktif || !AKT.length) { kotakBelum.hidden = true; return; }
-      const xs = belumDibi(); kotakBelum.hidden = false;
-      const kepala = h("div", {class: "bd-kepala"}, h("h3", null, ikon("kurang"), h("span", {teks: "Belum tercatat di DIBI"})), h("span", {class: "bd-pil", teks: F(xs.length) + " kejadian"}));
-      if (!xs.length) { kotakBelum.replaceChildren(kepala, h("p", {class: "bd-kosong", teks: "Semua kejadian logbook di wilayah ini sudah ada padanannya di DIBI."})); return; }
-      const th = (t, judul) => h("th", {scope: "col", teks: t, title: judul || null});
-      const tabel = h("table", {class: "ad-tabel bd-tabel"}, h("thead", null, h("tr", null, th("Kab/kota"), th("Provinsi"), th("Jenis"), th("Mulai", "Tanggal pertama di logbook Pusdalops"),
-        th("Kabar terakhir"), th("Umur", "Hari sejak mulai sampai hari logbook terakhir"), th("Status"), th("Kirim", "Minta BPBD mengentri ke DIBI lewat WhatsApp"))),
-        h("tbody", null, ...xs.map(x => h("tr", null, h("td", null, h("b", {teks: x.nama})), h("td", {teks: PROV[x.prov] || x.prov}), h("td", {teks: x.kata}), h("td", {teks: tglPendek(x.mulai)}),
-          h("td", {teks: tglPendek(x.terakhir || x.mulai)}), h("td", {class: "n", teks: F(Math.round((Date.parse(x.hari) - Date.parse(x.mulai)) / 864e5)) + " hari"}),
-          h("td", {teks: x.surut ? x.ya : x.tidak}), h("td", null, waLink(pesanTagihDibi(x), "Tagih"))))));
+      if (TANAM || !opsi.aktif || (!AKT.length && !LAP.length)) { kotakBelum.hidden = true; return; }
+      const xs = rekonTiga(), R = window.RekonTiga; kotakBelum.hidden = false;
+      const kepala = h("div", {class: "bd-kepala"}, h("h3", null, ikon("kurang"), h("span", {teks: "Rekonsiliasi tiga sumber"})), h("span", {class: "bd-pil", teks: F(xs.length) + " kejadian"}),
+        ...(st.prov && xs.length ? [waLink(`Yth. rekan BPBD se-${PROV[st.prov] || st.prov}. Kejadian berikut belum lengkap di DIBI atau laporan harian ke Pusdalops BNPB:\n` +
+          xs.map(r => `- ${r.nama}: ${r.kata}, ${r.mulai}${r.dibi ? "" : ", belum di DIBI"}${r.dibi && !r.logbook ? ", belum di laporan harian" : ""}`).join("\n") + "\nMohon dilengkapi beserta data korban, pengungsi, dan kerusakannya. Terima kasih.", "Tagih provinsi")] : []));
+      if (!xs.length) { kotakBelum.replaceChildren(kepala, h("p", {class: "bd-kosong", teks: "Semua kejadian di logbook dan Lapor Bencana wilayah ini sudah ada padanannya."})); return; }
+      const th = (t, judul) => h("th", {scope: "col", teks: t, title: judul || null}), ya = v => h("td", {class: v ? "bd-ada" : "bd-tiada", teks: v ? ADA[0] : ADA[1]});
+      const tabel = h("table", {class: "ad-tabel bd-tabel"}, h("thead", null, h("tr", null, th("Kab/kota"), th("Provinsi"), th("Jenis"), th("Mulai", "Tanggal paling awal di sumber mana pun"), th("Akhir"),
+        th("DIBI"), th("Logbook", "Logbook Pusdalops BNPB"), th("Lapor", "Laporan warga yang sudah diverifikasi BPBD wilayahnya di Lapor Bencana"), th("Kirim", "Minta BPBD melengkapi lewat WhatsApp"))),
+        h("tbody", null, ...xs.map(r => h("tr", null, h("td", null, h("b", {teks: r.nama})), h("td", {teks: PROV[r.prov] || r.prov}), h("td", {teks: r.kata}), h("td", {teks: tglPendek(r.mulai)}),
+          h("td", {teks: tglPendek(r.akhir)}), ya(r.dibi), ya(r.logbook), h("td", {class: r.lapor ? "bd-ada" : "bd-tiada", teks: r.lapor ? F(r.lapor) + " laporan" : ADA[1]}),
+          h("td", null, waLink(R.pesanTagih(r, r.kata), "Tagih"))))));
       kotakBelum.replaceChildren(kepala, h("div", {class: "ad-tabel-wadah bd-tabel-wadah"}, tabel));
     }
 
@@ -412,8 +418,9 @@
           baris: rows.filter(x => x.bencana !== 0).map(x => [x.tanggal, x.jenis, PROV[x.prov] || x.prov, x.kab, ...KOL.map(c => x[c] || 0)])}];
       if (opsi.aktif && AKT.length) {
         lembar.push({nama: "Masih berlangsung", kepala: ["Kab/kota", "Provinsi", "Jenis", "Mulai", "Kabar terakhir"], baris: AKT.filter(x => !x.surut && diWil(x)).map(x => [x.nama, PROV[x.prov] || x.prov, x.kata, x.mulai, x.terakhir])});
-        lembar.push({nama: "Belum di DIBI", kepala: ["Kab/kota", "Provinsi", "Jenis", "Mulai", "Kabar terakhir", "Status"], baris: belumDibi().map(x => [x.nama, PROV[x.prov] || x.prov, x.kata, x.mulai, x.terakhir, x.surut ? x.ya : x.tidak])});
       }
+      if (opsi.aktif && (AKT.length || LAP.length)) lembar.push({nama: "Rekonsiliasi", kepala: ["Kab/kota", "Provinsi", "Jenis", "Mulai", "Akhir", "DIBI", "Logbook", "Lapor (laporan terverifikasi)"],
+        baris: rekonTiga().map(r => [r.nama, PROV[r.prov] || r.prov, r.kata, r.mulai, r.akhir, r.dibi ? ADA[0] : ADA[1], r.logbook ? ADA[0] : ADA[1], r.lapor || ADA[1]])});
       const nama = ["data-bencana", wil, st.dari, st.sampai].join("-").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
       const a = h("a", {href: URL.createObjectURL(new Blob([X(lembar)], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})), download: nama + ".xlsx"});
       document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);

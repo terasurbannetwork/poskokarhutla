@@ -1210,11 +1210,14 @@
     return H.kelompok(d.kejadian, d.hari).map(x => ({...x, jn: j, kel: KEL_DIBI[j], kata: JN[j].kata, ya: JN[j].ya, tidak: JN[j].tidak, hari: d.hari,
       wa: x.surut ? null : H.pesanWA({...x, kurang: []}, H.KATA[JN[j].k])}));
   }))).flat();
+  /* Lapor Bencana terverifikasi BPBD untuk rekonsiliasi tiga sumber (lapor-ai LA-76): 400 hari terakhir, staf BNPB saja; selain itu kosong */
+  const laporRekon = async () => { const hari = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10), kini = Date.now();
+    const r = await fetch(`/api/lapor/meja/rekon?dari=${hari(kini - 399 * 864e5)}&sampai=${hari(kini)}`, {credentials: "same-origin"}); return r.ok ? (await r.json()).baris : []; };
   let dataKarhutla = null;   // jawaban /api/dalops/karhutla, dihitung ulang saat periode berganti   // /banjir/data/posko.json (publik) untuk langkah posko di Mitigasi; gagal = langkah posko dilewati
   async function muat(jenis) {
     const p = panel[jenis], tulis = teks => p.replaceChildren(h("div", {class: "bn-blok"}, h("p", {class: "lb-p", teks})));
     tulis("Memuat data " + jenis + "…");
-    if (jenis === "ringkasan") { ringkas = await window.DataBencana.pasang(p, {aktif: aktifDalops});   // Data Bencana Indonesia, data publik DIBI (data_bencana.js)
+    if (jenis === "ringkasan") { ringkas = await window.DataBencana.pasang(p, {aktif: aktifDalops, lapor: laporRekon});   // Data Bencana Indonesia, data publik DIBI (data_bencana.js)
       if (window.DibiTren) { const t = h("section", {class: "dt-wadah", "aria-labelledby": "dtJudul"}); p.append(t); window.DibiTren.pasang(t, {}); }   // tren, sebaran, tabel sejak 2008 (dibi_tren.js, sesi DIBI)
       return; }
     if (jenis === "laporan_masuk") return window.DalopsLaporanMasuk.muat(p, alat());   // rekap harian WA Koordalops (dalops_laporan_masuk.js)
