@@ -265,7 +265,7 @@ uji("kelola PIC: draf PIC kedua dan form tambah tetap ada sesudah PIC pertama di
   assert.equal(await tab.eval("document.querySelectorAll('.pf-kartu[data-id]').length"), 3);
   /* ubah draf 4 (belum tersimpan) dan isi form tambah, simpan draf 3: draf 4 dan form tambah tetap */
   await ketik(`.pf-kartu[data-id="${draf[1]}"] [name=nama]`, "Draf Kedua Diedit"); await ketik("#pfBaru [name=nama]", "Calon PIC"); await ketik(`.pf-kartu[data-id="${draf[0]}"] [name=nama]`, "Draf Pertama Disimpan");
-  assert.equal(await tab.eval(`document.querySelector('.pf-kartu[data-id="${draf[0]}"] [name=nip]').placeholder`), "Ketik ulang untuk menyimpan", "NIP, email, HP tidak dikirim balik server: kolom kosong memberi petunjuk");
+  for (const k of ["nip", "email", "wa"]) assert.ok(await tab.eval(`document.querySelector('.pf-kartu[data-id="${draf[0]}"] [name=${k}]').value`), `K14: ${k} draf terisi dari server, tidak perlu diketik ulang`);
   for (const [k, v] of [["nip", "198505052010012003"], ["email", "d3@bpbd.go.id"], ["wa", "081288800033"]]) await ketik(`.pf-kartu[data-id="${draf[0]}"] [name=${k}]`, v);
   await tab.eval(`document.querySelector('.pf-kartu[data-id="${draf[0]}"] form').requestSubmit()`);
   for (let i = 0; i < 40 && (await DB.prepare("SELECT nama FROM instansi_profil WHERE id = ?").bind(draf[0]).first()).nama !== "Draf Pertama Disimpan"; i++) await new Promise(r => setTimeout(r, 100));
