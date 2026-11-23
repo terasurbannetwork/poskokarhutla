@@ -635,7 +635,8 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-alun-isi b{font:800 .9375rem var(--display)}
 .lp-alun-isi small{font-size:.8125rem;line-height:1.4}
 .lp-alun-dampak{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.lp-alun-dampak span{padding:3px 10px;border-radius:999px;background:var(--surface);font-size:.75rem;font-weight:700}
+.lp-alun-dampak span{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--surface);font-size:.75rem;font-weight:700}
+.lp-alun-dampak svg{width:14px;height:14px;flex:none;color:var(--brand2)}
 /* Alun-alun hidup (K59): peta, gugus, ikuti, bukti penanganan */
 /* Alun-alun: peta mengisi seluruh layar; saringan mengambang di atas, daftar kejadian panel terang di kiri (HP: lembar bawah) */
 #lAlun{overflow:hidden;padding:0!important}
@@ -2163,9 +2164,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pb-merek b{color:var(--on-head)!important}   /* tulisan BNPB di pembuka putih (pemilik 21 Nov 2026) */
 /* tombol hero: label satu baris di kolom lebar (pemilik 21 Nov 2026: "agar sebaris") */
 @media (min-width:900px){
-.lp-hero-aksi{grid-template-columns:repeat(3,minmax(0,max-content))!important}
-.lp-hero-aksi>button{white-space:nowrap}
-@container (width < 540px){.lp-hero-aksi>button{white-space:normal}}
+.lp-hero-aksi{grid-template-columns:repeat(3,auto)!important;justify-content:start}
+.lp-hero-aksi>button{white-space:normal;text-wrap:balance}   /* label terjemahan lebih panjang turun baris, tidak meluber (pemilik 23 Nov 2026) */
+.lp-hg-buka .lp-hg-ikon{width:15px;height:15px}
 }
 /* maskot hero lebih hidup: cahaya hangat di belakang dan bayangan lembut */
 .lp-hero-tengah .lp-hero-maskot{filter:drop-shadow(0 22px 26px color-mix(in oklab,var(--head-bg) 70%,transparent)) drop-shadow(0 0 34px color-mix(in oklab,var(--brand-accent) 28%,transparent))}
@@ -2290,3 +2291,8 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-hero-tengah{grid-column:1!important;grid-row:auto!important;justify-self:end;width:110px}
   .lp-hero-sub{font-size:.875rem}
 }
+
+/* nama akun media sosial tidak terpotong (pemilik 23 Nov 2026: "kepotong"): lebar kolom ikut panjang nama, turun baris bila tidak muat */
+.lp-cc2-sosial{flex-wrap:wrap!important;row-gap:8px;padding:8px 0!important}
+.lp-cc2-sosial li{flex:1 1 auto!important}
+.lp-cc2-sosial a{padding:0 6px!important;white-space:nowrap}

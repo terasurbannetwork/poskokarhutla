@@ -1325,8 +1325,8 @@ function kartuAlun(x, ikut) {
     el("small", "lp-redup", `${x.waktu || "Waktu belum didata"}, dilaporkan ${x.tingkat.toLowerCase()}`));
   if (x.nWarga) { const n = el("p", "lp-alun-warga"); n.append(ikon("i-orang"), `${x.nWarga.toLocaleString("id-ID")} warga melapor kejadian ini`); isi.append(n); }
   const d = el("div", "lp-alun-dampak");
-  for (const [k, t] of [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["rumah", "rumah rusak"], ["terendam", "rumah terendam"]])
-    if (x.dampak[k]) d.append(el("span", null, `${x.dampak[k].toLocaleString("id-ID")} ${t}`));
+  for (const [k, t, i] of [["meninggal", "meninggal", "i-korban"], ["hilang", "hilang", "i-cari"], ["luka", "luka", "i-plus"], ["mengungsi", "mengungsi", "i-pengungsian"], ["rumah", "rumah rusak", "i-rumah"], ["terendam", "rumah terendam", "b-banjir"]])
+    if (x.dampak[k]) { const p = el("span"); p.append(ikon(i), `${x.dampak[k].toLocaleString("id-ID")} ${t}`); d.append(p); }
   if (d.childElementCount) isi.append(d);
   if (x.bukti?.length) { const bk = el("div", "lp-alun-bukti"); bk.append(el("small", null, "Foto penanganan petugas"));
     const kisi = el("div"); for (const u of x.bukti) { const im = el("img"); im.src = u; im.alt = "Foto penanganan oleh petugas"; im.loading = "lazy"; kisi.append(im); } bk.append(kisi); isi.append(bk); }
