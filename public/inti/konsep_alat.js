@@ -1,4 +1,5 @@
 "use strict";
+try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 /* Konsep Panel EWS (data/kajian-bnpb/ews). Data asli saja: pos SIHKA lewat /api/banjir/sungai-ukur, gunung api dari MAGMA PVMBG.
    Teks dari data selalu lewat textContent. Pos basi tidak pernah tampil 0 (KEPUTUSAN D4); status resmi ditulis apa adanya (D3, Q7). */
 (() => {

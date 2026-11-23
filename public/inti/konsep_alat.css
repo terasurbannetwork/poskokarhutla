@@ -69,7 +69,7 @@ body{padding-top:var(--top,58px);background:var(--paper)}
 .al-g-bungkus{position:relative}
 .al-g-bungkus svg{display:block;width:100%;height:auto;touch-action:pan-y}
 .al-g-garis{stroke:var(--line);stroke-width:1}
-.al-g-sumbu{fill:var(--ink2);font:500 11px var(--font);text-anchor:end}
+.al-g-sumbu{fill:var(--ink2);font:500 var(--fs-1) var(--font);text-anchor:end}
 .al-g-seri{fill:none;stroke:var(--brand2);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
 .al-g-tanda{fill:var(--card);stroke:var(--brand2);stroke-width:2}
 .al-g-tip{position:absolute;top:0;transform:translateX(-50%);padding:4px 8px;border-radius:8px;background:var(--ink);color:var(--card);font:600 .75rem var(--font);white-space:nowrap;pointer-events:none}
