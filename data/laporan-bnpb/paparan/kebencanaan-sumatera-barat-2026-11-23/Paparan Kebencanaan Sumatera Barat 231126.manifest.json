@@ -504,7 +504,7 @@
    "peta": null,
    "struktur": [
     "7",
-    "Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+    "Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
     "01  ",
     "02  ",
     "03  ",
@@ -541,10 +541,6 @@
     ],
     [
      "8A4B2A",
-     "impor"
-    ],
-    [
-     "8F3F07",
      "impor"
     ],
     [
@@ -617,7 +613,6 @@
    "seri": null,
    "visual": [],
    "gambar": [
-    "ikon",
     "ikon",
     "ikon",
     "ikon",
@@ -914,7 +909,7 @@
    "peta": null,
    "struktur": [
     "10",
-    "ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+    "ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
     "01  ",
     "02  ",
     "03  ",
@@ -3442,7 +3437,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3451,16 +3446,16 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor7.1",
-   "tampil": "7",
+   "tampil": "6",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3469,7 +3464,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3478,7 +3473,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3487,7 +3482,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3496,7 +3491,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3505,7 +3500,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3514,7 +3509,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3523,7 +3518,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3532,25 +3527,25 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor23.0",
-   "tampil": "13",
+   "tampil": "10",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor25.0",
-   "tampil": "139",
+   "tampil": "129",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3559,7 +3554,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3568,7 +3563,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3577,7 +3572,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3586,7 +3581,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3595,7 +3590,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3604,7 +3599,25 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#7#impor49.0",
+   "tampil": "25",
+   "nilai": null,
+   "naskah": "banjir-sumbar#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#7#impor50.0",
+   "tampil": "118",
+   "nilai": null,
+   "naskah": "banjir-sumbar#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3613,7 +3626,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3622,7 +3635,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3631,7 +3644,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3640,7 +3653,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3649,7 +3662,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3658,7 +3671,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3667,7 +3680,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3676,16 +3689,16 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor62.0",
-   "tampil": "113",
+   "tampil": "93",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3694,7 +3707,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3703,7 +3716,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3712,7 +3725,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3721,7 +3734,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3730,7 +3743,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3739,7 +3752,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3748,7 +3761,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3757,7 +3770,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3766,7 +3779,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3775,7 +3788,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3784,7 +3797,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3793,7 +3806,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3802,7 +3815,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3811,7 +3824,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3820,7 +3833,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3829,7 +3842,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3838,7 +3851,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3847,25 +3860,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#7#impor97.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "banjir-sumbar#7",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#7#impor98.0",
-   "tampil": "105",
-   "nilai": null,
-   "naskah": "banjir-sumbar#7",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3874,7 +3869,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3883,7 +3878,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3892,25 +3887,25 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor109.0",
-   "tampil": "23",
+   "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor110.0",
-   "tampil": "124",
+   "tampil": "82",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3919,7 +3914,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3928,7 +3923,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3937,7 +3932,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3946,7 +3941,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3955,7 +3950,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3964,7 +3959,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3973,7 +3968,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3982,7 +3977,7 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -3991,97 +3986,79 @@
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor145.0",
-   "tampil": "23",
+   "tampil": "25",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor146.0",
-   "tampil": "124",
+   "tampil": "93",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#7#impor157.0",
-   "tampil": "23",
-   "nilai": null,
-   "naskah": "banjir-sumbar#7",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#7#impor158.0",
-   "tampil": "124",
-   "nilai": null,
-   "naskah": "banjir-sumbar#7",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#7#impor169.0",
-   "tampil": "23",
-   "nilai": null,
-   "naskah": "banjir-sumbar#7",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#7#impor170.0",
-   "tampil": "124",
-   "nilai": null,
-   "naskah": "banjir-sumbar#7",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#7#impor181.0",
    "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#7#impor182.0",
-   "tampil": "105",
+   "kunci": "turunan:banjir-sumbar#7#impor158.0",
+   "tampil": "96",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#7#impor183.2",
+   "kunci": "turunan:banjir-sumbar#7#impor169.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "banjir-sumbar#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#7#impor170.0",
+   "tampil": "81",
+   "nilai": null,
+   "naskah": "banjir-sumbar#7",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#7#impor171.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#7#impor184.0",
+   "kunci": "turunan:banjir-sumbar#7#impor172.0",
    "tampil": "7",
    "nilai": null,
    "naskah": "banjir-sumbar#7",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026; Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -4914,443 +4891,398 @@
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor1.1",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor3.1",
    "tampil": "10",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor5.1",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor7.1",
-   "tampil": "7",
+   "tampil": "129",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor9.1",
-   "tampil": "139",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor10.14",
+   "kunci": "turunan:banjir-sumbar#10#impor8.14",
    "tampil": "4",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor9.0",
+   "tampil": "23",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor9.3",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor11.0",
-   "tampil": "23",
+   "tampil": "0",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor11.3",
-   "tampil": "26",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor13.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor16.16",
+   "kunci": "turunan:banjir-sumbar#10#impor14.16",
    "tampil": "120",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor16.92",
+   "kunci": "turunan:banjir-sumbar#10#impor14.92",
    "tampil": "20",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor17.0",
+   "kunci": "turunan:banjir-sumbar#10#impor15.0",
    "tampil": "10",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor20.16",
+   "kunci": "turunan:banjir-sumbar#10#impor18.16",
    "tampil": "80",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor20.40",
+   "kunci": "turunan:banjir-sumbar#10#impor18.40",
    "tampil": "30",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor20.80",
+   "kunci": "turunan:banjir-sumbar#10#impor18.80",
    "tampil": "50",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor20.150",
+   "kunci": "turunan:banjir-sumbar#10#impor18.150",
    "tampil": "5",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor21.0",
-   "tampil": "139",
+   "kunci": "turunan:banjir-sumbar#10#impor19.0",
+   "tampil": "129",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor24.16",
+   "kunci": "turunan:banjir-sumbar#10#impor22.16",
    "tampil": "40",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor24.40",
+   "kunci": "turunan:banjir-sumbar#10#impor22.40",
    "tampil": "20",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor24.87",
+   "kunci": "turunan:banjir-sumbar#10#impor22.87",
    "tampil": "2",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor28.4",
+   "kunci": "turunan:banjir-sumbar#10#impor25.4",
    "tampil": "23",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor29.4",
+   "kunci": "turunan:banjir-sumbar#10#impor26.4",
    "tampil": "24",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor30.4",
+   "kunci": "turunan:banjir-sumbar#10#impor27.4",
    "tampil": "25",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor31.4",
+   "kunci": "turunan:banjir-sumbar#10#impor28.4",
    "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor36.0",
-   "tampil": "3",
+   "kunci": "turunan:banjir-sumbar#10#impor33.0",
+   "tampil": "4",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor38.0",
+   "tampil": "118",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor39.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor42.0",
-   "tampil": "124",
+   "tampil": "2",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor43.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor47.0",
-   "tampil": "3",
+   "tampil": "93",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor52.0",
-   "tampil": "124",
+   "kunci": "turunan:banjir-sumbar#10#impor48.0",
+   "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor53.0",
-   "tampil": "24",
+   "kunci": "turunan:banjir-sumbar#10#impor51.0",
+   "tampil": "1",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor56.0",
+   "tampil": "96",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor57.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor62.0",
-   "tampil": "105",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor63.0",
    "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor67.0",
+   "kunci": "turunan:banjir-sumbar#10#impor60.0",
    "tampil": "1",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor72.0",
-   "tampil": "124",
+   "kunci": "turunan:banjir-sumbar#10#impor65.0",
+   "tampil": "93",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor73.0",
-   "tampil": "24",
+   "kunci": "turunan:banjir-sumbar#10#impor66.0",
+   "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor77.0",
+   "kunci": "turunan:banjir-sumbar#10#impor69.0",
    "tampil": "1",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor82.0",
-   "tampil": "124",
+   "kunci": "turunan:banjir-sumbar#10#impor74.0",
+   "tampil": "82",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor75.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:banjir-sumbar#10#impor78.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "banjir-sumbar#10",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
    "kunci": "turunan:banjir-sumbar#10#impor83.0",
-   "tampil": "24",
+   "tampil": "81",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor87.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor92.0",
-   "tampil": "113",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor93.0",
+   "kunci": "turunan:banjir-sumbar#10#impor84.0",
    "tampil": "26",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor97.0",
-   "tampil": "1",
+   "kunci": "turunan:banjir-sumbar#10#impor131.0",
+   "tampil": "11",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor102.0",
-   "tampil": "105",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor103.0",
-   "tampil": "26",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor155.0",
-   "tampil": "12",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor156.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "banjir-sumbar#10",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:banjir-sumbar#10#impor157.0",
+   "kunci": "turunan:banjir-sumbar#10#impor132.0",
    "tampil": "10",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor158.2",
+   "kunci": "turunan:banjir-sumbar#10#impor133.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:banjir-sumbar#10#impor159.0",
+   "kunci": "turunan:banjir-sumbar#10#impor134.0",
    "tampil": "10",
    "nilai": null,
    "naskah": "banjir-sumbar#10",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 12.27 WIB",
+   "sumber": "Pengolahan data sistem BNPB dari ECMWF IFS, GloFAS, InaRISK BNPB, 23 Nov 2026 05.51 WIB",
    "dari": []
   },
   {
@@ -7244,8 +7176,8 @@
     "FDF3E7": "FDF1E8",
     "C98A4B": "B08A3E",
     "B84E08": "D9600B",
-    "9A5B1E": "8A4B2A",
-    "D5DBE3": "D3DBE5"
+    "D5DBE3": "D3DBE5",
+    "9A5B1E": "8A4B2A"
    }
   ],
   [
@@ -7299,7 +7231,7 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-australia/foto/bencana-rob.jpg": "3635f50f1523ac94bf6be84f50ab167587cdc12f482a04bb28dbfe6196573635",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "dccb06e8bd019ddff537288efd308d035f3543ad98707a0112b796cf006ce190",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/impor/sumbar.pptx": "d8403a787c59f5f803633bce8351076e9399f99dea9a383ed8512a07700fd2f1",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/impor/sumbar.pptx": "f8f3bb2c52f000892ee0125fda691558ecb210c554243535d484ae42f13b48f8",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/banjir25.csv": "36062a4de5d9b46edecb21d973e47f752e5be363b01559c1d1a980cd6fc4c474",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/gempa_kab.csv": "aae86f24797abfa0d82e71bc2a6b19c652881079428f8ec28f36b1e369a795bb",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sb/gempa_tabel.csv": "d2668aa6d38801404ac248079fbfe966c4322f333ccc6cd49b76d749b0d317bc",
@@ -7309,7 +7241,7 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kabupaten/13.json": "de5012a3e1aa157176ba1b587baa47b0842b14f3fca80a47027ce209d2537d73",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-0154b5346a9e.png": "d9f0286138fc048bad310a0fedcf05d3986b159ec53efc73e29e9990642b84c8",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/banjir-sumbar.json": "81b872f92518bdca5083f5e367f60a31b23e342ab2d888a98096b4886de7c5ab",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/banjir-sumbar.json": "96cde180ad92f409584e9859bf5bfe028aadc8ae54af376d030d7d2f458221ed",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "6032d109e6c774fc12a5e5ffff68a8df1b103941a1bfa6818d80d8f3b5b9a5e3",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }
