@@ -133,6 +133,12 @@ export async function akunAktif(env, req, kini) {
   const kerja = {...a, profil_id: p.profil_id, profil_nama: p.profil_nama}; PROFIL_REQ.set(req, kerja);
   return kerja;
 }
+/* Log kerja per profil (K5): satu titik untuk SEMUA modul, dipanggil rute() di worker.js sesudah penangan sukses. Hanya tulisan (bukan GET) oleh sesi profil pemda
+   (akunAktif mengisi PROFIL_REQ); isi: rute dan id objek, tanpa badan. */
+export async function catatKerja(env, req, kunci, r, kini, objek) {
+  const p = PROFIL_REQ.get(req);
+  if (p && req.method !== "GET" && req.method !== "HEAD" && r?.status < 400) await pfLog(env, {akun: p.id, profil: p.profil_id, jenis: "kerja", rute: kunci, objek: objek ?? null}, kini).catch(e => { if (!profilTanpaTabel(e)) throw e; });
+}
 const PROFIL_REQ = new WeakMap();   // permintaan -> akun bersesi profil; dipakai pembungkus RUTE_INSTANSI untuk log kerja (satu tulis, tanpa baca tambahan)
 const gagalBanyak = async (env, kunci, aksi, maks, kini) => (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
 const catatLaju = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini);
@@ -1801,8 +1807,6 @@ export const RUTE_INSTANSI = Object.fromEntries(Object.entries(RUTE_ASLI).map(([
       if (p?.pin_wajib_ganti) return json({galat: "ganti PIN dulu", pin_wajib_ganti: true}, 403);
     }
     const r = await f(env, req, ...sisa);
-    const p = PROFIL_REQ.get(req);   // diisi akunAktif; hanya POST sukses di rute kerja (bukan admin) yang dicatat: rute dan id objek, tanpa badan
-    if (p && req.method === "POST" && !admin && r.status < 400) await pfLog(env, {akun: p.id, profil: p.profil_id, jenis: "kerja", rute: kunci, objek: sisa[3] ?? null}, sisa[1] ?? Date.now()).catch(e => { if (!profilTanpaTabel(e)) throw e; });
     return r;
   }
   catch (e) { if (tanpaTabel(e)) return gagal(503, "fitur instansi belum diaktifkan (migrasi 0029 belum diterapkan)"); throw e; }

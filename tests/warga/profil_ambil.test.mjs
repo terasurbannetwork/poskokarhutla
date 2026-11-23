@@ -90,6 +90,24 @@ uji("UP-36 respons: median dan p90 sama dengan hitungan tangan; belum diambil bu
   assert.equal((await api("GET", "/api/lapor/respons", undefined, pakai(budi))).s, 403, "BPBD"); assert.equal((await api("GET", "/api/lapor/respons", undefined, {})).s, 403, "tamu");
 });
 
+uji("LB-13 respons?bulan=YYYY-MM: hanya laporan bulan itu (WIB), di bawah 5 = belum cukup data, bulan tak sah atau masa depan 400, BPBD dan tamu 403", async () => {
+  const d = new Date(kini), tgt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - 2, 1)), bln = tgt.toISOString().slice(0, 7), t0 = Date.UTC(tgt.getUTCFullYear(), tgt.getUTCMonth(), 10);
+  const SOLOK = {provKode: "13", prov: "Sumatera Barat", kabKode: "13.72", kab: "Kota Solok", kecKode: "13.72.01", desa: "Tanjung Paku"}, akun = await lembaga("pemkot", "kab", "13", "Kota Solok");
+  for (let i = 0; i < 5; i++) {
+    const nomor = await laporan(SOLOK, {masuk: t0 + i * 1000});
+    await DB.prepare("INSERT INTO instansi_profil_log (waktu, akun_id, profil_id, jenis, rute, objek) VALUES (?, ?, ?, 'meja', ?, ?)").bind(t0 + i * 1000 + (i + 1) * 10 * MENIT, akun, budi.id, `POST /api/lapor/meja/${nomor}/lihat`, nomor).run();
+  }
+  for (let i = 0; i < 2; i++) await laporan(SOLOK, {masuk: t0 + 5 * HARI});
+  const r = await api("GET", `/api/lapor/respons?bulan=${bln}`, undefined, ADMIN); assert.equal(r.s, 200, r.t);
+  assert.equal(r.j.bulan, bln); assert.ok(r.j.jendela_hari >= 28 && r.j.jendela_hari <= 31);
+  const s = r.j.bpbd.find(x => /Solok/.test(x.wilayah)); assert.deepEqual([s.laporan, s.cukup, s.belum_diambil], [7, true, 7]); assert.deepEqual(s.dilihat.n, 5);
+  assert.ok(!r.j.bpbd.some(x => /Pariaman/.test(x.wilayah)), "laporan 10 hari lalu bukan bulan itu");
+  const kosong = await api("GET", "/api/lapor/respons?bulan=2020-01", undefined, ADMIN); assert.equal(kosong.s, 200); assert.deepEqual(kosong.j.bpbd, []);
+  for (const b of ["2026-13", "2026-1", "abc", "2019-12", "", `${tgt.getUTCFullYear() + 5}-01`]) assert.equal((await api("GET", `/api/lapor/respons?bulan=${b}`, undefined, ADMIN)).s, 400, b);
+  assert.equal((await api("GET", `/api/lapor/respons?bulan=${bln}`, undefined, pakai(budi))).s, 403, "BPBD"); assert.equal((await api("GET", `/api/lapor/respons?bulan=${bln}`, undefined, {})).s, 403, "tamu");
+  assert.ok((await api("GET", "/api/lapor/respons", undefined, ADMIN)).j.bpbd.some(x => /Pariaman/.test(x.wilayah)), "tanpa parameter = 30 hari seperti semula");
+});
+
 uji("aksi lihat yang ditolak (luar wilayah) tidak tercatat sebagai dilihat; lihat yang berhasil tercatat sesudah sukses", async () => {
   const ditolak = await api("POST", `/api/lapor/meja/${nomor2}/lihat`, {}, pakai(budi)), sebelum = await n("instansi_profil_log", `jenis = 'meja' AND objek = '${nomor2}'`);
   assert.equal(ditolak.s, 404); assert.equal(sebelum, 0, "ditolak = tidak dihitung dilihat");

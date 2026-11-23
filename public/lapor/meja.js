@@ -119,7 +119,8 @@ const cocokStatus = b => !saringStatus || saringStatus.includes(b.status), cocok
 function gambar() {
   const d0 = dasar(), dSt = d0.filter(cocokStatus), dJn = d0.filter(cocokJenis), d = dSt.filter(cocokJenis);
   gambarAngka(dJn); gambarJenis(dSt); gambarCepat(d); gambarPilihan(); gambarNav(dJn);
-  nanti(() => { gambarPeta(d); gambarRingkas(d); gambarLegenda(d); gambarTabel(d); });
+  nanti(() => { try { gambarPeta(d); } catch (e) { $("peta").replaceChildren(el("p", "mj-kosong", "Peta tidak bisa ditampilkan di perangkat ini. Daftar laporan tetap tersedia.")); }   // tanpa WebGL peta melempar galat; daftar dan tabel jangan ikut mati
+    gambarRingkas(d); gambarLegenda(d); gambarTabel(d); });
 }
 
 /* ---------- dua tampilan terpisah: Peta laporan dan Daftar laporan (pemilik 19 Nov 2026 "di halaman lain, jangan satu halaman sama peta"); alamat #peta / #daftar ---------- */
@@ -804,11 +805,11 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
   petaMini?.remove(); petaMini = null;
   dlg.replaceChildren(kep, gulung); if (!lihat) gulung.scrollTop = posisi;
   if (fokus === "periksa") { const k = dlg.querySelector(".mj-periksa"); if (k) { k.closest(".mj-kartu").scrollIntoView({block: "start"}); k.querySelector("input")?.focus({preventScroll: true}); } }
-  if (j.lat != null && window.maplibregl) {
+  if (j.lat != null && window.maplibregl) try {
     petaMini = new maplibregl.Map({container: wPeta, style: "https://tiles.openfreemap.org/styles/positron", center: [j.lon, j.lat], zoom: 13, interactive: false, attributionControl: false});
     const t = el("span", "mj-titik"); t.style.setProperty("--jn", warnaJenis(jenisId)); t.style.setProperty("--st", WARNA[j.status]); t.append(ikon(ikonJenis(jenisId)), el("i"));
     new maplibregl.Marker({element: bungkusPenanda(t)}).setLngLat([j.lon, j.lat]).addTo(petaMini);
-  }
+  } catch (e) { wPeta.replaceChildren(); }   // tanpa WebGL: rincian tetap terbuka, tanpa peta mini
   if (lihat && peta && j.lat != null) peta.easeTo({center: [j.lon, j.lat], zoom: Math.max(peta.getZoom(), 11)});
 }
 

@@ -931,9 +931,15 @@ async function ambilLaporan(env, h, nomor, t, kini) {
 async function responsGet(env, req, url, kini) {
   const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
   if (h.c.jenis !== "bnpb") return galat(403, "Angka respons hanya untuk staf BNPB.");
+  /* ?bulan=YYYY-MM (LB-13, K8): laporan terkirim dalam bulan itu (WIB); tanpa parameter = 30 hari terakhir. Bulan di luar pola, sebelum 2020, atau belum mulai = 400 */
+  const bln = url.searchParams.get("bulan"); let sejak = kini - RESPONS_HARI * HARI, sampai = kini, hari = RESPONS_HARI;
+  if (bln !== null) {
+    const m = /^(202\d)-(0[1-9]|1[0-2])$/.exec(bln); if (!m) return galat(400, "bulan harus berpola YYYY-MM, mulai 2020");
+    sejak = Date.UTC(+m[1], +m[2] - 1, 1) - 7 * JAM; sampai = Date.UTC(+m[1], +m[2], 1) - 7 * JAM; hari = Math.round((sampai - sejak) / HARI);
+    if (sejak > kini) return galat(400, "bulan itu belum mulai");
+  }
   const lj = await laju(env, h.kunci, "lapor.respons", [[JAM, 60]], kini); if (lj) return lj;
-  const sejak = kini - RESPONS_HARI * HARI;
-  const [laporan, dilihat, akun] = await Promise.all([bacaTabel(() => H.lpResponsLaporan(env, sejak), []), bacaTabel(() => H.lpResponsDilihat(env, sejak), []), bacaTabel(() => H.pfAkunBpbdAktif(env), [])]);
+  const [laporan, dilihat, akun] = await Promise.all([bacaTabel(() => H.lpResponsLaporan(env, sejak, sampai), []), bacaTabel(() => H.lpResponsDilihat(env, sejak), []), bacaTabel(() => H.pfAkunBpbdAktif(env), [])]);
   const lihat = new Map(dilihat.map(x => [x.nomor, x.waktu]));
   const ambilW = new Map(laporan.filter(l => l.ambil != null).map(l => [l.nomor, l.ambil]));
   const kabAkun = new Map(akun.map(a => [`${a.prov}|${bakuKab(a.kab)}`, a]));
@@ -942,7 +948,7 @@ async function responsGet(env, req, url, kini) {
     const w = (() => { try { return JSON.parse(l.ringkas)?.wilayah; } catch { return null; } })(), a = w && kabAkun.get(`${w.provKode}|${bakuKab(w.kab)}`);
     if (a) baris.push({kab: a.wilayah, masuk: l.terkirim, dilihat: lihat.get(l.nomor) ?? null, ambil: ambilW.get(l.nomor) ?? null});
   }
-  return kirim(200, {jendela_hari: RESPONS_HARI, ambang: 5, bpbd: hitungRespons(baris).sort((x, z) => x.kab.localeCompare(z.kab, "id")).map(({kab, ...r}) => ({wilayah: kab, ...r}))});
+  return kirim(200, {jendela_hari: hari, ...(bln !== null ? {bulan: bln} : {}), ambang: 5, bpbd: hitungRespons(baris).sort((x, z) => x.kab.localeCompare(z.kab, "id")).map(({kab, ...r}) => ({wilayah: kab, ...r}))});
 }
 /* PF-09 (ALGORITMA 14): PIC aktif BPBD wilayah laporan untuk staf BNPB; nomor tersamar, nomor penuh hanya lewat POST yang tercatat di lapor_akses */
 async function daftarPic(env, baris) {

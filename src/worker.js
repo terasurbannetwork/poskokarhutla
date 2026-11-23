@@ -39,7 +39,7 @@ import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
 import {RUTE_ORANG_TINJAU} from "./orang_tinjau.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
-import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
+import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
 import {RUTE_BANTU} from "./tiga_w.js";
@@ -703,7 +703,7 @@ async function rute(env, req, url, ctx) {
     const x = tolakOrigin(req, url); if (x) return x;
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }
-  try { return await f(env, req, url, Date.now(), ctx, id); }
+  try { const kini = Date.now(), r = await f(env, req, url, kini, ctx, id); await catatKerja(env, req, req.method + " " + kunci, r, kini, id); return r; }   // log kerja per profil untuk semua modul (profil-bpbd K5)
   catch (e) { console.error("rute", url.pathname, e); return gagal(500, "galat server"); }
 }
 

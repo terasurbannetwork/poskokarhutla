@@ -2373,9 +2373,9 @@ export const lpAmbilTulis = async (env, a, kini) => (await env.DB.batch([
     WHERE (SELECT status FROM instansi_profil WHERE id = lapor_ambil.profil_id) = 'dicabut'`).bind(a.nomor, a.profil, a.akun, a.nama, a.jabatan, a.label, kini),
   env.DB.prepare("INSERT INTO lapor_tiket_riwayat (nomor, dari, ke, catatan, pelaku, waktu) SELECT ?1, ?2, ?2, ?3, ?4, ?5 WHERE changes() > 0").bind(a.nomor, a.status, a.catatan, String(a.pelaku).slice(0, 200), kini)]))[0].meta.changes;
 /* bahan hitung respons 30 hari: laporan terkirim (bukan tidak_valid) dengan waktu ambil, lalu waktu dilihat pertama per nomor dari log meja profil */
-export const lpResponsLaporan = async (env, sejak) => (await env.DB.prepare(
+export const lpResponsLaporan = async (env, sejak, sampai = Number.MAX_SAFE_INTEGER) => (await env.DB.prepare(
   `SELECT s.nomor, s.terkirim, s.ringkas, a.waktu ambil FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_ambil a ON a.nomor = s.nomor
-   WHERE s.terkirim > ?1 AND t.status != 'tidak_valid' LIMIT 5000`).bind(sejak).all()).results;
+   WHERE s.terkirim > ?1 AND s.terkirim <= ?2 AND t.status != 'tidak_valid' LIMIT 5000`).bind(sejak, sampai).all()).results;
 export const lpResponsDilihat = async (env, sejak) => (await env.DB.prepare(
   "SELECT objek nomor, min(waktu) waktu FROM instansi_profil_log WHERE jenis = 'meja' AND waktu > ?1 AND rute LIKE '%/lihat' AND objek IS NOT NULL GROUP BY objek").bind(sejak).all()).results;
 export const pfAkunBpbdAktif = async env => (await env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE jenis IN ('pemkab', 'pemkot') AND status = 'aktif' AND dummy = 0").all()).results;

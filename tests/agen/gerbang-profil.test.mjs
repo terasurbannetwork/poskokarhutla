@@ -306,3 +306,25 @@ test("GP-16 respons dan PIC di meja memanggil hakMeja dan menolak selain bnpb", 
   const g = rutePicTanpaHak(s, kunci);
   assert.deepEqual(g, [], `BPBD atau tamu bisa melihat respons dan PIC. ${SEBAB} (GP-16)\n${g.join("\n")}`);
 });
+
+// GP-17 (K5, D4): log kerja per profil di SEMUA modul lewat satu titik, bukan salinan pfLog per modul
+export function periksaLogKerja({worker, instansi, modul}) {
+  const g = [], w = tanpaKomentar(worker), i = tanpaKomentar(instansi);
+  if (!/await\s+catatKerja\(/.test(w)) g.push("rute() di worker.js tidak memanggil catatKerja sesudah penangan");
+  if (!/export\s+async\s+function\s+catatKerja[\s\S]*?PROFIL_REQ\.get\(req\)[\s\S]*?"GET"[\s\S]*?jenis:\s*"kerja"/.test(i)) g.push("catatKerja tidak memakai PROFIL_REQ, tidak melewatkan GET, atau tidak menulis jenis kerja");
+  if (!/PROFIL_REQ\.set\(req,/.test(i)) g.push("akunAktif tidak mengisi PROFIL_REQ");
+  for (const [f, src] of Object.entries(modul)) if (/\bpfLog\([^;]*jenis:\s*"kerja"/.test(tanpaKomentar(src))) g.push(`${f} menulis log kerja sendiri: catat lewat catatKerja`);
+  return g;
+}
+test("GP-17 mode gagal: titik log kerja dilepas atau modul menyalin pfLog tertangkap", () => {
+  const w = "await catatKerja(env, req, k, r, kini, id);", i = 'export async function catatKerja(e, req) { PROFIL_REQ.get(req); if (m !== "GET") x({jenis: "kerja"}); }\nPROFIL_REQ.set(req, k);';
+  assert.deepEqual(periksaLogKerja({worker: w, instansi: i, modul: {}}), []);
+  assert.equal(periksaLogKerja({worker: "x", instansi: i, modul: {}}).length, 1);
+  assert.equal(periksaLogKerja({worker: w, instansi: i.replace('"GET"', '"X"'), modul: {}}).length, 1);
+  assert.equal(periksaLogKerja({worker: w, instansi: i, modul: {"src/korban.js": 'await pfLog(env, {jenis: "kerja"}, 1)'}}).length, 1);
+});
+test("GP-17 tiap tulisan pemakai akunAktif tercatat: satu titik di rute() dan tak ada pfLog liar di modul", () => {
+  const modul = Object.fromEntries(readdirSync(join(AKAR, "src")).filter(f => f.endsWith(".js") && !["instansi.js", "hak.js"].includes(f) && !f.startsWith("profil")).map(f => [`src/${f}`, baca(`src/${f}`)]));
+  const g = periksaLogKerja({worker: baca("src/worker.js"), instansi: baca("src/instansi.js"), modul});
+  assert.deepEqual(g, [], `Tulisan sesi profil tidak tercatat atas nama profil (K5). ${SEBAB} (GP-17)\n${g.join("\n")}`);
+});

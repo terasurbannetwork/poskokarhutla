@@ -67,14 +67,16 @@
   }
 
   /* ---------- respons laporan warga per BPBD (PF-08, K12): median dan p90 menit dari laporan masuk ke dilihat dan ditangani; tanpa peringkat; kurang dari 5 laporan = belum cukup data ---------- */
-  async function respons() {
-    const {j, g} = await api("/api/lapor/respons", "Respons laporan");
-    if (g || !j) return isi("rsp", kosong(g?.includes("belum diaktifkan") ? "Meja laporan belum diaktifkan." : "Belum ada data."));
-    if (!j.bpbd.length) return isi("rsp", kosong(`Belum ada laporan warga dalam ${N0.format(j.jendela_hari)} hari terakhir.`));
+  async function respons(bulan = "") {
+    const {j, g} = await api("/api/lapor/respons" + (bulan ? "?bulan=" + bulan : ""), "Respons laporan");
+    /* pemilih bulan bawaan peramban (LB-13, K8): kosong = 30 hari terakhir; ganti bulan hanya memuat ulang kartu ini, tanpa kerja berat di klik */
+    const pilih = `<label class="pm-bulan">Bulan <input type="month" id="rsp_bln" value="${esc(bulan)}" min="2020-01" max="${new Date().toISOString().slice(0, 7)}"></label>`, tampil = html => { isi("rsp", pilih + html); const e = document.getElementById("rsp_bln"); if (e) e.onchange = () => respons(e.value); };
+    if (g || !j) return tampil(kosong(g?.includes("belum diaktifkan") ? "Meja laporan belum diaktifkan." : "Belum ada data."));
+    if (!j.bpbd.length) return tampil(kosong(bulan ? `Belum ada laporan warga pada ${esc(bulan)}.` : `Belum ada laporan warga dalam ${N0.format(j.jendela_hari)} hari terakhir.`));
     /* dibulatkan ke 5 menit (angka mesin, bukan janji layanan); jam bila 60 menit atau lebih; p90 hanya bila sampel paling sedikit 20 */
     const lima = m => { const r = Math.max(5, Math.round(m / 5) * 5); return r >= 60 ? `${N0.format(Math.floor(r / 60))} jam${r % 60 ? " " + (r % 60) + " menit" : ""}` : `${r} menit`; };
     const mp = x => x ? `${lima(x.median)} / ${x.n >= 20 ? lima(x.p90) : "sampel sedikit"}` : "–";
-    isi("rsp", `<div class="pm-pils">${pil(`${N0.format(j.jendela_hari)} hari terakhir`, "info", "info")}${pil(`paling sedikit ${N0.format(j.ambang)} laporan per BPBD`, "info", "tunggu")}</div>
+    tampil(`<div class="pm-pils">${pil(j.bulan ? `bulan ${esc(j.bulan)}` : `${N0.format(j.jendela_hari)} hari terakhir`, "info", "info")}${pil(`paling sedikit ${N0.format(j.ambang)} laporan per BPBD`, "info", "tunggu")}</div>
       ${tabel(["BPBD", "Laporan", "Dilihat (median / p90)", "Ditangani (median / p90)"], j.bpbd.map(b => b.cukup
         ? `<tr><td data-label="BPBD"><b>${esc(b.wilayah)}</b></td><td data-label="Laporan" class="n">${N0.format(b.laporan)}</td><td data-label="Dilihat" class="n">${mp(b.dilihat)}${b.belum_dilihat ? `<small>${N0.format(b.belum_dilihat)} belum dilihat</small>` : ""}</td><td data-label="Ditangani" class="n">${mp(b.ditangani)}${b.belum_diambil ? `<small>${N0.format(b.belum_diambil)} belum diambil</small>` : ""}</td></tr>`
         : `<tr><td data-label="BPBD"><b>${esc(b.wilayah)}</b></td><td data-label="Laporan" class="n">${N0.format(b.laporan)}</td><td colspan="2" data-label="Respons">belum cukup data</td></tr>`))}`);
