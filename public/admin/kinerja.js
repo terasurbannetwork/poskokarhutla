@@ -1,4 +1,4 @@
-/* Kinerja pemantauan (/admin/kinerja): tiga tab. Data (kesegaran sumber, tren, Himawari), Proses (corong, waktu tahap, macet, per wilayah), Lapangan (evaluasi isian, verifikasi, alarm palsu, luas, taktik, per instansi).
+/* Kinerja pemantauan (/admin/kinerja): empat tab. Kesehatan (workflow GitHub, sumber basi sekarang, berkas data per modul; GET /api/kesehatan + /data/kesegaran.json, dimuat saat tab dibuka). Data (kesegaran sumber, tren, Himawari), Proses (corong, waktu tahap, macet, per wilayah), Lapangan (evaluasi isian, verifikasi, alarm palsu, luas, taktik, per instansi).
    Semua angka dihitung server (src/sla.js, GET /api/sla); layar ini hanya menyajikan, tidak menghitung ulang. Kontrak: docs/bnpb/RENCANA-LANJUT.md §1.3.
    Satu fetch per filter; pindah tab tidak mengambil ulang. INP: pil filter dan kepala kolom diubah dulu (urgent), isi beratnya menyusul lewat nanti() sesudah satu frame. CSP admin: tanpa gaya/skrip inline, teks lewat esc(). */
 (() => {
@@ -18,7 +18,7 @@
   const wib = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB";
 
   /* ---------- keadaan di URL ---------- */
-  const TABS = [["data", "Data"], ["proses", "Proses"], ["lapangan", "Lapangan"]];
+  const TABS = [["data", "Data"], ["proses", "Proses"], ["lapangan", "Lapangan"], ["kesehatan", "Kesehatan"]];
   const baca = () => { const p = new URLSearchParams(location.search), h = +p.get("hari"), kol = (t, d) => TBL[t].kolom.some(k => k[0] === p.get(d)) ? p.get(d) : TBL[t].urut0;
     return {tab: TABS.some(t => t[0] === p.get("tab")) ? p.get("tab") : "data", hari: HARI.includes(h) ? h : 30, prov: p.get("prov") || "", kab: p.get("kab") || "",
       urut: kol("w", "urut"), arah: p.get("arah") === "naik" ? "naik" : "turun", urutr: kol("r", "urutr"), arahr: p.get("arahr") === "naik" ? "naik" : "turun"}; };
@@ -152,6 +152,41 @@
   }
   const catatanHtml = d => d.catatan?.length ? seksi("Catatan metode", `<ul class="kj-catat">${d.catatan.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`) : "";
 
+  /* ---------- tab Kesehatan: diambil sekali saat tab pertama dibuka, tidak bergantung pada filter periode dan wilayah ---------- */
+  let KES = null, kesJalan = false;
+  async function muatKes() {
+    if (kesJalan) return; kesJalan = true;
+    const ambil = u => fetch(u, {credentials: "same-origin"}).then(async r => ({s: r.status, j: await r.json().catch(() => null)})).catch(() => ({s: 0, j: null}));
+    const [k, b] = await Promise.all([ambil("/api/kesehatan"), ambil("/data/kesegaran.json")]);
+    KES = {k, b}; kesJalan = false; if (S.tab === "kesehatan") gambar();
+  }
+  const jamUmur = j => j == null ? NA : j < 1 ? N0.format(Math.round(j * 60)) + " menit lalu" : j < 48 ? N1.format(j) + " jam lalu" : N1.format(j / 24) + " hari lalu";
+  const HASIL = {success: ["berhasil", "ok"], failure: ["gagal", "bahaya"], timed_out: ["kehabisan waktu", "bahaya"], cancelled: ["dibatalkan", "tunggu"], skipped: ["dilewati", "tunggu"]};
+  const pilRun = w => !w.aktif ? pil("nonaktif", "tunggu") : !w.terakhir ? pil("tidak terlihat", "tunggu") : w.terakhir.status !== "completed" ? pil("sedang jalan", "tunggu")
+    : pil(...(HASIL[w.terakhir.hasil] || [w.terakhir.hasil || "tidak diketahui", "tunggu"]));
+  const BERKAS = {segar: ["segar", "ok"], telat: ["telat", "bahaya"], hilang: ["hilang", "bahaya"], tanpa_stempel: ["tanpa stempel", "tunggu"]};
+  function kesHtml() {
+    if (!KES) { muatKes(); return rangka(); }
+    const {k, b} = KES;
+    if (k.s === 403) { Admin.keMasuk().catch(() => {}); return rangka(); }
+    const wf = k.j?.workflow, st = k.j?.status, br = b.j?.berkas || [];
+    const nGagal = wf?.tersedia ? wf.daftar.filter(w => w.aktif && w.gagal_beruntun).length : null, nTelat = b.j ? br.filter(x => x.status === "telat" || x.status === "hilang").length : null;
+    const ringkas = `<div class="db-ubin-grid db-ubin-baris">${ubin(nGagal == null ? "–" : N0.format(nGagal), "workflow gagal terakhir", nGagal ? "bahaya" : "", "", "waspada")}${ubin(st ? N0.format(st.basi.length) : "–", "sumber basi sekarang", st?.basi.length ? "bahaya" : "", "", "jam")}${ubin(nTelat == null ? "–" : N0.format(nTelat), "berkas data telat atau hilang", nTelat ? "bahaya" : "", "", "berkas")}</div>`;
+    const tWf = !wf ? galat(k.s, k.s === 404 ? "Rute papan kesehatan belum tayang di server ini." : "Papan kesehatan tidak terbaca dari server.") : !wf.tersedia ? kosong(wf.alasan === "tanpa token" ? "Workflow belum bisa dibaca: secret GITHUB_TOKEN belum dipasang di Worker." : `Workflow tidak terbaca dari GitHub (${wf.alasan}). Buka ulang tab ini sebentar lagi.`)
+      : `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr><th>Workflow</th><th>Run terakhir</th><th title="Run selesai yang gagal berturut-turut sejak sukses terakhir">Gagal beruntun</th><th>Sukses terakhir</th></tr></thead><tbody>${wf.daftar.map(w => `<tr>
+        <td data-label="Workflow"><b>${esc(w.nama)}</b><br><span class="kj-redup">${esc(w.berkas)}</span></td>
+        <td data-label="Run terakhir">${pilRun(w)}${w.terakhir ? ` ${/^https:\/\/github\.com\//.test(w.terakhir.url || "") ? `<a href="${esc(w.terakhir.url)}" target="_blank" rel="noopener noreferrer">${esc(jamUmur(w.terakhir.umur_jam))}</a>` : esc(jamUmur(w.terakhir.umur_jam))}` : ""}</td>
+        <td class="n" data-label="Gagal beruntun">${w.gagal_beruntun ? `<b class="bahaya">${N0.format(w.gagal_beruntun)}</b>` : "0"}</td>
+        <td data-label="Sukses terakhir">${esc(jamUmur(w.sukses_umur_jam))}</td></tr>`).join("")}</tbody></table></div>`;
+    const sumber = st ? Object.entries(st.sumber).filter(([, v]) => v && "umur_jam" in v && v.ambang_jam != null) : [];
+    const tSumber = !st ? kosong("Status sumber tidak terbaca.") : `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr><th>Sumber</th><th>Keadaan</th><th>Umur</th><th title="Lebih tua dari batas ini dihitung basi">Batas</th></tr></thead><tbody>${sumber.map(([n, v]) => { const basi = st.basi.includes(n); return `<tr>
+        <td data-label="Sumber">${esc(n)}</td><td data-label="Keadaan">${pil(basi ? "basi" : "segar", basi ? "bahaya" : "ok")}</td><td data-label="Umur">${esc(jamUmur(v.umur_jam))}</td><td class="n" data-label="Batas">${N1.format(v.ambang_jam)} jam</td></tr>`; }).join("")}</tbody></table></div>`;
+    const tBerkas = !b.j ? kosong("Daftar berkas data belum ada. Berkas ini ditulis tiap terbit titik panas.") : `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr><th>Modul</th><th>Berkas</th><th>Keadaan</th><th>Umur</th><th title="Dari jadwal workflow penulisnya">Batas</th><th>Ditulis oleh</th></tr></thead><tbody>${br.map(x => `<tr>
+        <td data-label="Modul">${esc(x.modul)}</td><td data-label="Berkas">${esc(x.berkas.replace(/^public\//, ""))}</td><td data-label="Keadaan">${pil(...(BERKAS[x.status] || [x.status, "tunggu"]))}</td>
+        <td data-label="Umur">${esc(jamUmur(x.umur_jam))}</td><td class="n" data-label="Batas">${x.batas_jam == null ? "–" : N1.format(x.batas_jam) + " jam"}</td><td data-label="Ditulis oleh">${esc(x.sumber || "–")}</td></tr>`).join("")}</tbody></table></div>`;
+    return ringkas + seksi("Workflow GitHub", tWf, "", "waspada") + seksi("Sumber data sekarang", tSumber, "", "jam") + seksi("Berkas data per modul", tBerkas, "", "berkas");
+  }
+
   /* ---------- kerangka: kontrol urgent, isi deferred ---------- */
   const tabHtml = () => `<nav class="ad-tabs kj-tab" aria-label="Kinerja pemantauan">${TABS.map(([k, l]) => `<button type="button" data-tab="${k}" aria-pressed="${S.tab === k}">${l}</button>`).join("")}</nav>`;
   function kontrol() {
@@ -163,6 +198,8 @@
   const galat = (status, pesan) => `<div class="kj-galat" role="alert"><b>${status === 503 ? "Belum aktif" : "Gagal memuat"}</b><p>${esc(pesan)}</p>${status === 503 ? "" : `<button type="button" class="ad-tombol" data-ulang>Coba lagi</button>`}</div>`;
   const kosongSemua = j => !j.sumber?.length && !(j.tahap || []).some(t => t.n) && !j.wilayah?.length && !j.himawari?.alarm && !(j.proses || []).some(x => x.n) && !j.lapangan?.regu?.length;
   function gambar() {
+    const bar = document.querySelector(".kj-bar"); if (bar) bar.hidden = S.tab === "kesehatan";   // periode dan wilayah tidak berlaku untuk kesehatan
+    if (S.tab === "kesehatan") return pasang(kesHtml());
     if (!DATA) return;
     if (kosongSemua(DATA)) return pasang(`<div class="kj-kosong-besar"><b>Belum ada data</b><p>Belum ada riwayat kesegaran, tugas api, maupun alarm Himawari pada periode ini. Layar terisi begitu data pertama masuk.</p></div>`);
     pasang(ISI[S.tab](DATA));

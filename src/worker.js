@@ -45,6 +45,7 @@ import {RUTE_UJI_PILOT} from "./uji_pilot.js";
 import {RUTE_BANTU} from "./tiga_w.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
+import {RUTE_KESEHATAN} from "./kesehatan.js";
 import {RUTE_PIPA} from "./pipa.js";
 import {RUTE_PREDIKSI} from "./prediksi.js";
 import {RUTE_LABEL} from "./label.js";
@@ -617,6 +618,7 @@ const RUTE = {
   ...RUTE_UJI_BANJIR,   // uji lapangan banjir: POST /api/instansi/uji-banjir (akun instansi), GET /api/uji-lapangan/banjir agregat (src/uji_banjir.js)
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
+  ...RUTE_KESEHATAN,   // papan kesehatan staf: sumber basi + workflow GitHub (src/kesehatan.js, FITUR §11)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
   ...RUTE_AI,   // asisten AI internal: agen, percakapan, obrol dengan alat MCP, sesi staf saja (src/ai.js, migrasi 0107)
   ...RUTE_PREDIKSI,   // /prediksi fase 2: konfirmasi lapangan (src/prediksi.js)
