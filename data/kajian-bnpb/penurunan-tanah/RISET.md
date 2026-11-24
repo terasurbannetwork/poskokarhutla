@@ -152,3 +152,29 @@ Laju LOS median (mm/tahun, negatif menjauhi satelit):
 Bacaan: arah pesisir barat laut (Muara Baru, Pluit) sudah terlihat turun di kedua frame, tapi kedua frame tidak sepakat di Kelapa Gading, Cengkareng, Jakarta Selatan, dan Bogor. Laju mentah frame naik di Bogor -77 mm/tahun tidak masuk akal secara fisik dan menandakan galat atmosfer atau unwrapping besar; filter langkah 16 dengan deramp mengubah laju sampai 30 mm/tahun dan membalik tanda di beberapa tempat. Muara Baru hanya 5 sampai 7 piksel sesudah masker karena koherensinya rendah (0,18 di frame turun). Putaran ini belum layak dipakai.
 
 Perbaikan yang perlu dicoba berurutan, tanpa mengubah gerbang: (1) koreksi atmosfer GACOS (unduh per tanggal citra) dan langkah 16 tanpa deramp; (2) jendela lebih kecil (Jakarta saja, acuan dataran stabil di dalam frame) supaya ramp tidak menelan sinyal; (3) ambang masker koherensi lebih ketat dan pemeriksaan `12bad_ifg.txt`; (4) bila CEDA tetap kosong sesudah 2024, ASF HyP3 (Q2) untuk 2024 sampai 2026.
+
+### 6.8 Putaran LiCSBAS kedua Jakarta: GACOS dan jendela kecil (24 Nov 2026)
+
+Perubahan dari putaran pertama, gerbang dan `subsiden.py` tidak diubah:
+
+1. Koreksi atmosfer GACOS dari produk LiCSAR per tanggal (`epochs/<tgl>/<tgl>.sltd.geo.tif` di CEDA, tanpa pesan ke gacos.net), langkah `LiCSBAS03op_GACOS.py --fillhole`. Frame turun: 73 dari 75 tanggal ada. Frame naik: hanya 78 dari 143 tanggal, GACOS kosong (404) sejak Juni 2021 sebagian dan sejak September 2022 seluruhnya, jadi deret naik terpotong di 31 Agustus 2022.
+2. Jendela dipotong ke Jakarta saja (bujur 106,65 sampai 107,00, lintang -6,45 sampai -6,05) dengan `LiCSBAS05op_clip_unw.py`.
+3. Langkah 16 tanpa deramp (`-r` dihapus).
+4. Masker langkah 15 tetap bawaan (C-band). Ambang lebih ketat tidak dipakai karena masalah putaran pertama ada di frame naik, bukan di pikselnya.
+
+| | Frame turun 047D | Frame naik 098A |
+| --- | --- | --- |
+| Citra | 73 (10 Jan 2020 sampai 31 Mar 2023) | 72 (2 Jan 2020 sampai 31 Agu 2022) |
+| Interferogram buruk (`12bad_ifg`) | 10 (putaran 1: 16) | 34 (putaran 1: 179) |
+| Piksel termasker | 1,7% | 5,4% |
+
+`subsiden.py hitung Jakarta 31 ... "2020-2023" -6,30 20200102 20230331` (acuan lintang -6,30 di dalam jendela, Jagakarsa dan sekitarnya): **gerbang pola LOLOS**, Jakarta Utara -1,3 lawan Jakarta Selatan +0,1 cm/tahun, 42 kecamatan, galat acuan 0,55 cm/tahun. Acuan -6,35 memberi angka yang sama. Kecamatan terdalam (median, p90 dalam cm/tahun): Koja -1,9 dan -2,5; Penjaringan -1,7 dan -3,9 (cakupan 78%); Tanjung Priok -1,3 dan -2,2; Cilincing -1,3 dan -2,3; Pademangan -0,7 dan -1,4; Kramatjati dan Makasar -0,7. Jakarta Selatan dan Pusat umumnya antara -0,5 dan +0,3.
+
+Uji kepekaan: filter ruang langkah 16 diperkecil dari 2 km ke 0,5 km mengubah median paling banyak 0,1 cm/tahun, jadi besaran tidak ditekan filter.
+
+Validasi ALGORITMA 6:
+- 6.1 (pembanding literatur) **lolos**: p90 terdalam 3,9 cm/tahun di dalam rentang 2,5 sampai 28; median kecamatan pesisir terdalam 1,9 tidak lebih dangkal dari laju terkecil literatur Jakarta (1, Abidin 2011). Angkanya tetap di bawah titik ukur Muara Baru sekitar 10 cm/tahun (bagian 6.3); dugaan: piksel 300 m dan masker koherensi menyaring cekungan paling cepat yang koherensinya rendah.
+- 6.2 (uji tahan-waktu separuh awal lawan separuh akhir) **belum dijalankan**.
+- 6.3 (GNSS atau levelling) belum ada data (Q11).
+
+Karena 6.2 belum ada vonis, `subsiden.json` dan `proyeksi_tanah.json` hasil putaran ini TIDAK ditaruh di `public/` dan tidak tayang. Berkasnya disimpan di luar repo di mesin pemilik (`~/licsbas/keluaran/`), bersama skrip pengunduh `~/licsbas/ambil.py` dan `~/licsbas/gacos.py` serta `~/licsbas/jalan2.sh`. Semua angka di bagian ini berlabel hipotesis (D4).
