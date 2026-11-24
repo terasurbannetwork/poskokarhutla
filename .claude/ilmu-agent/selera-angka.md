@@ -166,3 +166,4 @@ Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs c
 - 2026-11-24 · Konstanta turunan (luas per sel) harus dihitung dari konstanta grid yang sama (PETAK 0,0034 derajat = 0,378 km = 14,29 ha), bukan dari angka nominal 375 m; cek dengan node -e sebelum menulis tooltip.
 - 2026-11-24 · Layar /lapor/data: tanggal ISO mentah (sk_tanggal, tgl_selesai, keluar) dan tanggal id-ID 'Jun 26' melanggar format '4 Juni 2026'; cek dengan grep 'toLocaleDateString\|tgl_\|sk_tanggal' bukan hanya kode angka.
 - 2026-11-24 · Kapital tidak terlihat di JS: .ex-std .ex-ey di kartu.css memakai text-transform uppercase, jadi teks pil 'Daftar' tampil 'DAFTAR' di kit admin. Cek kapital lewat CSS yang dipakai kartu, bukan hanya string di berkas.
+- 2026-11-24 · Angka publik yang dibulatkan ke nol (kurang dari 5 = null) harus membawa teks tampil dari server; null hanya berarti 'belum', tidak pernah 'tidak ada'. Sumber: paparan_insiden.py angka_publik + tampil.

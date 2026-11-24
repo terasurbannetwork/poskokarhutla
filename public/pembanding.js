@@ -71,6 +71,8 @@
     for (const r of Object.values(d?.insiden || {})) for (const k of r.kompleks || []) { const l = PETA.get(k); if (!l || (r.status === "aktif" && l.status !== "aktif")) PETA.set(k, r); }
     return PETA;
   };
+  /* dipakai insiden_kaya.js: insiden (berisi id) untuk id cluster, atau null */
+  window.PKH_INSIDEN = {cari: async kid => petaInsiden(await mulai("data/insiden.json")).get(kid) || null};
   const insidenHtml = (id, r, d, uji, lin) => r ? insidenIsi(id, r, d, uji, lin) : `<p class="fnd">${TIDAK} insiden untuk cluster ini (hanya cluster tingkat 2 ke atas didaftar sebagai insiden).</p>`;
   nanti(() => mulai("data/insiden.json"));   /* unduh senyap sesudah halaman tenang, supaya klik cluster pertama tidak menunggu */
   const _buka = Laci.buka.bind(Laci);

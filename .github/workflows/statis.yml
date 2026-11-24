@@ -260,6 +260,24 @@ jobs:
           echo "::error title=Push panen bulanan gagal::git push ke main gagal 3x"
           exit 1
 
+      # Desa waspada (PKH-18), bagian bulanan: riwayat_petak.bin + poligon desa -> data/desa_statik.json (di-commit, dilacak git seperti riwayat_petak.bin).
+      - name: Desa waspada statik (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 -I scripts/data/desa_waspada.py --uji
+          python3 -I scripts/data/desa_waspada.py statik
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/desa_statik.json
+          git diff --cached --quiet && { echo "desa_statik tidak berubah"; exit 0; }
+          git commit -q -m "data: desa statik bulanan $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push desa statik gagal::git push ke main gagal 3x"
+          exit 1
+
       # Penjaga data beku (PB-68.10): langkah `continue-on-error` di atas menelan galat, jadi periksa umur berkas keluaran di akhir. Merah = galat.
       - name: Periksa data tidak beku
         if: always()

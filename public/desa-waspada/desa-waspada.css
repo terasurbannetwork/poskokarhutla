@@ -1,0 +1,79 @@
+/* Desa Waspada: hanya yang khas halaman ini. Token dari inti/tema.css; kartu .ex.ex-std dari inti/kartu.css. Tanpa warna literal dan tanpa px untuk huruf. */
+*{box-sizing:border-box}
+html,body{margin:0}
+h3{font-family:var(--display);margin:0}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:var(--r-xs)}
+header.top{justify-content:space-between}
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.stat{display:flex;align-items:center;gap:8px;flex:none}
+
+main{padding:calc(var(--top) + 20px) 16px 40px;max-width:1280px;margin:0 auto;display:grid;gap:20px}
+main>section{min-width:0}
+.ex.ex-std{margin:0;overflow:hidden}
+.ex-std>.ex-bd{padding:16px 22px;gap:12px}
+.ex-std .ex-jd{flex-wrap:wrap;align-items:center}
+.ex-std .ex-jd>h3{display:flex;align-items:center}
+
+/* nama kartu dan kontrol di kepala gelap */
+.dw-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto}
+.dw-ctl select,.dw-ctl input{height:var(--h-ctl);border-radius:var(--r-pill);border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 14px;font-size:var(--fs-3);max-width:100%}
+.dw-ctl select{max-width:14rem}
+.dw-ctl input{width:12rem}
+.dw-ctl select:disabled{opacity:.6}
+.dw-unduh{height:var(--h-ctl);border-radius:var(--r-pill);border:0;background:var(--brand-accent);color:var(--ink);padding:0 16px;font-size:var(--fs-3);font-weight:700;cursor:pointer}
+.dw-unduh:hover{filter:brightness(1.08)}
+
+/* pil teks, bukan hanya warna */
+.dw-pil{display:inline-flex;align-items:center;height:1.4rem;padding:0 .6rem;border-radius:var(--r-pill);background:var(--warn);color:var(--ink);font-size:var(--fs-1);font-weight:800}
+.dw-pk{display:inline-block;padding:0 .4rem;border-radius:var(--r-pill);background:color-mix(in oklch,var(--on-head) 18%,transparent);font-size:var(--fs-1);font-weight:700;letter-spacing:0}
+
+/* ringkasan */
+.dw-ring{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:12px 24px}
+.dw-ring>div{display:grid;gap:2px;min-width:0}
+.dw-ring dt{font-size:var(--fs-2);color:var(--ink2)}
+.dw-ring dd{margin:0;font:800 var(--fs-7)/1.2 var(--display);font-variant-numeric:tabular-nums}
+.dw-def,.dw-ket{margin:0;font-size:var(--fs-3);color:var(--ink2);text-align:justify}
+.dw-awas{margin:0;padding:8px 12px;border-radius:var(--r-sm);background:color-mix(in oklch,var(--warn) 22%,var(--card));font-size:var(--fs-3)}
+.dw-kosong{margin:0;padding:28px;text-align:center;color:var(--ink2)}
+
+/* tabel + peta */
+.dw-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.dw-kiri{min-width:0}
+.dw-kiri .tw{border:1px solid var(--line);border-radius:var(--r-sm);box-shadow:none;max-height:70vh}
+.dw-peta{min-width:0}
+.dw-peta>summary{cursor:pointer;font-weight:700;font-size:var(--fs-3);padding:8px 0}
+.dw-mp{height:40vh;min-height:16rem;border-radius:var(--r-sm);overflow:hidden;background:var(--surface)}
+@media (min-width:640px){.dw-peta>summary{display:none}}
+@media (min-width:1024px){
+  .dw-grid{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+  .dw-peta{position:sticky;top:calc(var(--top) + 12px)}
+  .dw-mp{height:70vh}
+}
+.dw-grid table{font-size:var(--fs-2)}
+.dw-grid th[data-u] button,.dw-grid th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+.dw-grid th[aria-sort=ascending] button::after{content:"\25B2";font-size:var(--fs-1)}
+.dw-grid th[aria-sort=descending] button::after{content:"\25BC";font-size:var(--fs-1)}
+.dw-grid th{white-space:normal}
+.dw-grid td.dw-nama,.dw-grid td:first-child{white-space:normal}
+.dw-grid td.n,.ex-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
+.dw-desa{all:unset;display:block;cursor:pointer;font-weight:700;color:var(--brand2)}
+.dw-desa:hover{text-decoration:underline}
+.dw-desa:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+td small{display:block;font-size:var(--fs-1);color:var(--ink2)}
+tr.dw-pilih{background:color-mix(in oklch,var(--info) 18%,transparent)!important}
+.dw-tip{display:grid;gap:2px;font-size:var(--fs-2);color:var(--ink)}
+
+/* ponsel: kolom sekunder disembunyikan, baris tetap memuat desa, kab/kota, titik, tahun */
+@media (max-width:639px){
+  main{padding-inline:10px}
+  .dw-p{display:none}
+  .ex-std>.ex-bd{padding:12px 14px}
+  .dw-ctl{width:100%}.dw-ctl select,.dw-ctl input{flex:1 1 100%;width:100%;max-width:none}
+  .dw-unduh{flex:1 1 100%}
+}
+.pager{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:var(--fs-3);color:var(--ink2)}
+.pager button{height:var(--h-ctl);padding:0 14px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--card);cursor:pointer}
+.pager button:disabled{opacity:.5;cursor:default}
+.dw-bt{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:var(--fs-3);text-align:justify}
+.ex-std .ex-tabel{overflow:auto}

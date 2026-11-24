@@ -28,6 +28,8 @@ const LAYAR = [
   {skrip: 'public/prediksi/laporan_layar.js', html: 'public/prediksi/index.html', lama: []},
   {skrip: 'public/siklus/inti.js', html: 'public/siklus/index.html', lama: []},
   {skrip: 'public/siklus/publik.js', html: 'public/siklus/publik.html', lama: []},
+  {skrip: 'public/insiden_kaya.js', html: 'public/index.html', lama: []},
+  {skrip: 'public/desa-waspada/desa-waspada.js', html: 'public/desa-waspada/index.html', lama: []},
 ]
 
 test('kartu.css memuat semua bagian kartu standar', () => {

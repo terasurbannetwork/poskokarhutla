@@ -17,3 +17,16 @@ test("layar dirombak: kepala kartu = nama seksi, tanpa baris kesimpulan di isi",
     assert.doesNotMatch(js, /class="ops-lead"/, `${f}: kelas ops-lead (kalimat kesimpulan) masih dipakai`);
   }
 });
+
+// Layar baru (IK-11, DW-09): kepala kartu = nama seksi; tanpa hl() / .hl (kalimat temuan) dan tanpa baris kesimpulan ops-lead.
+test("insiden_kaya dan desa-waspada: tanpa kalimat temuan di kepala kartu", () => {
+  for (const f of ["public/insiden_kaya.js", "public/desa-waspada/desa-waspada.js"]) {
+    const js = readFileSync(new URL(`../../${f}`, import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    assert.doesNotMatch(js, /\bhl\(|class=\\?["']hl|ops-lead/, `${f}: kalimat temuan (.hl) atau ops-lead dipakai; kepala kartu = nama seksi`);
+    assert.match(js, /<h3|el\("h3"/, `${f}: kartu tanpa kepala h3`);
+  }
+});
+test("pemeriksa kalimat temuan menangkap pelanggaran contoh", () => {
+  const re = /\bhl\(|class=\\?["']hl|ops-lead/;
+  for (const jahat of ['x = `<h3>${hl(n)} desa</h3>`', 'x = \'<b class="hl">3</b>\'', 'x = "ops-lead"']) assert.match(jahat, re);
+});

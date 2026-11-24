@@ -1,0 +1,22 @@
+/* insiden_kaya.css — kartu "Perkembangan api" dan "Bangunan dekat api" di laci insiden (insiden_kaya.js). Hanya token tema.css. */
+.ik-wadah{display:grid;gap:20px;margin:12px 0}
+.ik-wadah .ex-ey:empty{display:none}
+.ik-wadah h3{display:flex;align-items:center;gap:8px}
+.ik-wadah h3 svg{width:18px;height:18px;flex:none;color:var(--brand2)}
+.ik-wadah .ex-jd{align-items:center}
+.ik-hari{display:flex;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:2px}
+.ik-hari button{flex:1 1 0;min-width:64px;white-space:nowrap;padding:6px 10px;border:1px solid var(--line);border-radius:var(--r-pill);background:var(--card);color:var(--ink2);font:inherit;font-size:var(--fs-2);font-weight:700;cursor:pointer}
+.ik-hari button[aria-pressed="true"]{background:var(--brand2);border-color:var(--brand2);color:var(--card)}
+.ik-awal{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-3);color:var(--ink);cursor:help}
+.ik-awal svg,.ik-info svg{width:14px;height:14px;flex:none;color:var(--brand2)}
+.ik-info{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-2);color:var(--ink2)}
+.ik-tbl{font-size:var(--fs-2)}
+.ik-tbl th{text-align:center;font-size:var(--fs-2)}
+.ik-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.ik-tbl td small{display:block;color:var(--ink2);font-size:var(--fs-1)}
+.ik-tbl tr.ik-pilih td{background:color-mix(in oklch,var(--accent) 14%,transparent);font-weight:700}
+.ik-dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ik-dua div{display:grid;gap:2px;min-width:0}
+.ik-dua b{font-size:var(--fs-8);font-variant-numeric:tabular-nums;line-height:1.15}
+.ik-dua small{font-size:var(--fs-2);color:var(--ink2)}
+@media (max-width:640px){.ik-dua b{font-size:var(--fs-7)}}
