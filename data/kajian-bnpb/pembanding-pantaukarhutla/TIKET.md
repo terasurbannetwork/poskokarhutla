@@ -107,6 +107,7 @@ Bahan kajian, bukan tiket kode:
 - K4: PKH-31 video vertikal **dibatalkan** ("gausah").
 - K5: Animasi api 3D (PKH-12) disetujui.
 - K6: Kelompok G (PKH-33 sampai 45) ikut "semua gas" dengan urutan bawaan Q8 (pemilik 24 Nov 2026: "Gas semua"). Paket PKH-34 dan PKH-37 tetap lewat paket dokumen dulu.
+- K7: Kolom "pemegang saham" (`pemegang`) di laporan konsesi tetap tampil (pemilik 24 Nov 2026: "Tetap tampil"). Larangan PKH-45 hanya untuk tokoh politik dan pemilik manfaat.
 - Bawaan sementara Q7 (belum dijawab): PKH-42 tampil angka hari saja, tanpa "setara rokok".
 
 ## Rincian kelompok F (disetujui pemilik 24 Nov 2026: "Gas")
