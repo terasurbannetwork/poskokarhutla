@@ -10,7 +10,7 @@ Jenis (semua teks Indonesia, tanpa kata "aman"):
            jadi `px24` = lokasi unik 24 jam, bukan hanya yang baru. Selisihnya belum diukur.
 - ekstrem: provinsi dengan >= 25% sel berpeluang FWI >= 14 (Sangat Tinggi, kelas tertinggi model kita) pada hari BESOK (`peluang.json`);
            nasional = satu ringkasan harian.
-- udara  : kab/kota dengan prakiraan PM2,5 rata-rata 24 jam besok >= 55,5 (Tidak sehat, P.14/2020) (`udara/data/prakiraan.json`, `r24`);
+- udara  : kab/kota dengan prakiraan PM2,5 rata-rata 24 jam besok yang DIBULATKAN >= 56 µg/m³ (Tidak sehat, P.14/2020; kategori dan angka tampil dari bilangan bulat yang sama) (`udara/data/prakiraan.json`, `r24`);
            nasional = satu ringkasan + entri tersendiri untuk Sangat tidak sehat ke atas.
 Jendela efektif: "baru" 48 jam, "meluas" 24 jam, "ekstrem"/"udara" besok. Jendela 7 hari pantaukarhutla butuh riwayat (state) dan tidak
 dipakai; berkas basi (> 2 hari dari `meta.json.dibuat`, ansambel, prakiraan) dilewati per jenis, bukan ditulis sebagai kabar baru.
@@ -35,7 +35,8 @@ BARU_NAS = {"gambut": 20, "lain": 50}
 BARU_JAM = 48
 MELUAS_PX = 50
 EKSTREM_BAGIAN = 0.25
-UDARA_BATAS = [(250.4, "Berbahaya"), (150.4, "Sangat tidak sehat"), (55.4, "Tidak sehat")]  # P.14/2020; di atas batas atas = kategori berikut
+UDARA_BATAS = [(250, "Berbahaya"), (150, "Sangat tidak sehat"), (55, "Tidak sehat")]  # P.14/2020 pada bilangan bulat: di atas batas atas = kategori berikut
+BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 UMUR_MAKS = 2   # hari
 MAKS_ENTRI = 200
 TAK_SAH = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f]")
@@ -58,10 +59,17 @@ def baca(nama):
     return json.load(open(jalur)) if os.path.exists(jalur) else None
 
 
+def tgl_id(d):
+    """'2026-11-25' / date / datetime -> '25 Nov 2026'."""
+    d = d if isinstance(d, (dt.date, dt.datetime)) else dt.date.fromisoformat(str(d)[:10])
+    return f"{d.day} {BULAN[d.month - 1]} {d.year}"
+
+
 def kategori_udara(v):
-    """PM2,5 24 jam -> kategori ISPU; None bila <= 55,4 (Sedang atau lebih baik)."""
+    """PM2,5 24 jam -> kategori ISPU dari nilai DIBULATKAN (angka yang tampil); None bila <= 55 (Sedang atau lebih baik)."""
     if v is None:
         return None
+    v = round(v)
     for batas, nama in UDARA_BATAS:
         if v > batas:
             return nama
@@ -92,13 +100,13 @@ def peringatan_kluster(kluster, sekarang):
             e = {"id": f"baru-{sub}-{tgl}", "jenis": "baru", "prov": pr, "waktu": akhir, "n": p["n"],
                  "nasional": p["n"] >= BARU_NAS[jenis], "lat": p["lat"], "lon": p["lon"],
                  "judul": f"Kebakaran baru{' di lahan gambut' if jenis == 'gambut' else ''}: {lokasi}",
-                 "teks": f"{p['n']} titik panas dalam {BARU_JAM} jam pertama sejak {awal.astimezone(WIB):%d/%m %H.%M} WIB di {lokasi}. Ambang belum diuji pada data kita."}
+                 "teks": f"{p['n']} titik panas dalam {BARU_JAM} jam pertama sejak {tgl_id(awal.astimezone(WIB))} pukul {awal.astimezone(WIB):%H.%M} WIB di {lokasi}. Ambang belum diuji pada data kita."}
             if e["id"] not in baru or baru[e["id"]]["n"] < e["n"]:
                 baru[e["id"]] = e   # dua kompleks sekecamatan sehari: simpan yang lebih besar
         if p["hari"] >= 2 and p["px24"] >= MELUAS_PX and (sekarang - akhir).total_seconds() <= 24 * 3600:
             e = {"id": f"meluas-{sub}-{hari}", "jenis": "meluas", "prov": pr, "waktu": akhir, "n": p["px24"], "nasional": True,
                  "lat": p["lat"], "lon": p["lon"], "judul": f"Banyak lokasi terdeteksi dalam 24 jam: {lokasi}",
-                 "teks": f"{p['px24']} lokasi 375 m terdeteksi terbakar dalam 24 jam terakhir di {lokasi}; kompleks sudah berumur {p['hari']} hari. Ambang belum diuji pada data kita."}
+                 "teks": f"{p['px24']} lokasi 375 m terdeteksi api (titik panas) dalam 24 jam terakhir di {lokasi}; kompleks sudah berumur {p['hari']} hari. Ambang belum diuji pada data kita."}
             if e["id"] not in meluas or meluas[e["id"]]["n"] < e["n"]:
                 meluas[e["id"]] = e
     return list(baru.values()) + list(meluas.values())
@@ -118,13 +126,13 @@ def peringatan_ekstrem(pel, sekarang):
         daftar.append((h["p"][1], PROVINSI[kode]))
         out.append({"id": f"ekstrem-{kode}-{besok}", "jenis": "ekstrem", "prov": kode, "nasional": False,
                     "waktu": dt.datetime.fromisoformat(pel["dibuat"]), "judul": f"Risiko api ekstrem besok: {PROVINSI[kode]}",
-                    "teks": f"Sekitar {pct}% wilayah {PROVINSI[kode]} diperkirakan berbahaya api sangat tinggi (FWI 14 atau lebih) pada {besok}."})
+                    "teks": f"Sekitar {pct}% wilayah {PROVINSI[kode]} masuk kelas api sangat tinggi (FWI 14 atau lebih) pada {tgl_id(besok)}."})
     if daftar:
         top = ", ".join(n for _, n in sorted(daftar, reverse=True)[:5])
         out.append({"id": f"ekstrem-ID-{besok}", "jenis": "ekstrem", "prov": None, "nasional": True,
                     "waktu": dt.datetime.fromisoformat(pel["dibuat"]),
                     "judul": f"Risiko api ekstrem besok di {len(daftar)} provinsi",
-                    "teks": f"{len(daftar)} provinsi memiliki sedikitnya {round(EKSTREM_BAGIAN * 100)}% wilayah berbahaya api sangat tinggi pada {besok}; terparah: {top}."})
+                    "teks": f"{len(daftar)} provinsi memiliki sedikitnya {round(EKSTREM_BAGIAN * 100)}% wilayah masuk kelas api sangat tinggi (FWI 14 atau lebih) pada {tgl_id(besok)}; terparah: {top}."})
     return out
 
 
@@ -144,11 +152,11 @@ def peringatan_udara(prak, sekarang):
         out.append({"id": f"udara-{k['kode']}-{besok}", "jenis": "udara", "prov": k["prov"], "waktu": waktu,
                     "nasional": kat != "Tidak sehat", "lat": k["lat"], "lon": k["lon"],
                     "judul": f"Udara {kat.lower()} diprakirakan besok: {k['nama']}",
-                    "teks": f"Prakiraan PM2,5 rata-rata 24 jam {round(v)} µg/m3 ({kat}) pada {besok} di {k['nama']}, {PROVINSI[k['prov']]}."})
+                    "teks": f"Prakiraan PM2,5 rata-rata 24 jam {round(v)} µg/m³ ({kat}) pada {tgl_id(besok)} di {k['nama']}, {PROVINSI[k['prov']]}."})
     if n:
         out.append({"id": f"udara-ID-{besok}", "jenis": "udara", "prov": None, "nasional": True, "waktu": waktu,
                     "judul": f"Udara tidak sehat diprakirakan besok di {n} kabupaten/kota",
-                    "teks": f"{n} kabupaten/kota diprakirakan berkategori Tidak sehat atau lebih buruk (PM2,5 24 jam lebih dari 55,4 µg/m3) pada {besok}."})
+                    "teks": f"{n} kabupaten/kota diprakirakan berkategori Tidak sehat atau lebih buruk (PM2,5 24 jam lebih dari 55 µg/m³) pada {tgl_id(besok)}."})
     return out
 
 
@@ -230,7 +238,7 @@ def tulis(entri, sekarang, keluar):
         idx.append({"slug": s, "judul": judul, "entri": n, "url": f"/data/feeds/{s}.xml"})
     meta = {"dibuat": iso(sekarang), "penafian": PENAFIAN, "feed": idx,
             "ambang": {"baru_titik_48j": BARU_MIN, "baru_nasional": BARU_NAS, "meluas_lokasi_24j": MELUAS_PX,
-                       "ekstrem_bagian_wilayah": EKSTREM_BAGIAN, "udara_pm25_24j_di_atas": 55.4}}
+                       "ekstrem_bagian_wilayah": EKSTREM_BAGIAN, "udara_pm25_24j_dibulatkan_di_atas": 55}}
     json.dump(meta, open(os.path.join(keluar, "index.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     return idx
 
@@ -269,7 +277,9 @@ def uji():
     u = peringatan_udara(pr, skrg)
     assert [i["id"] for i in u] == ["udara-1471-2026-11-25", "udara-1472-2026-11-25", "udara-ID-2026-11-25"]
     assert [i["nasional"] for i in u] == [False, True, True] and "sangat tidak sehat" in u[1]["judul"]
-    assert kategori_udara(55.4) is None and kategori_udara(55.5) == "Tidak sehat" and kategori_udara(250.5) == "Berbahaya" and kategori_udara(None) is None
+    assert kategori_udara(55.4) is None and kategori_udara(55.6) == "Tidak sehat" and kategori_udara(250.6) == "Berbahaya" and kategori_udara(None) is None
+    assert tgl_id("2026-11-25") == "25 Nov 2026" and tgl_id("2026-08-01") == "1 Agu 2026"
+    assert any("25 Nov 2026" in i["teks"] for i in u) and not any("2026-11-25" in i["teks"] for i in u + x), "tanggal tampil bukan ISO"
     # tulis: XML sah, ter-escape, id stabil antarpanggilan, nasional vs provinsi, penafian
     import tempfile
     semua = list(e.values()) + x + u

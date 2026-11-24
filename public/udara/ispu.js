@@ -18,7 +18,7 @@ const IspuKLH = {
     peta.addLayer({id: "ispu", type: "circle", source: "ispu", layout: {visibility: Peta.lihat("ispu") ? "visible" : "none", "circle-sort-key": ["get", "k"]},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 5, 9, 10], "circle-color": ["match", ["get", "k"], 4, KAT[4].w, 3, KAT[3].w, 2, KAT[2].w, 1, KAT[1].w, KAT[0].w], "circle-stroke-color": "#3f4a5e", "circle-stroke-width": 2.5}}); },
   kartu(i) { const s = this.segar()[i]; if (!s) return ""; const c = kat(s.pm25);
-    return PI.kartuTip({judul: `<span translate="no">${esc(s.nama)}</span>`, sub: `<small>${esc(s.prov || "")}, ${esc(jamWIB(s.t))}</small>`, stat: [["debit", dec1(s.pm25) + " µg/m³", "rata-rata 24 jam, " + KAT[c].n, KAT[c].w, c >= 2], ["peta", "KLH", "belum divalidasi", "#3f4a5e"]]}); },
+    return PI.kartuTip({judul: `<span translate="no">${esc(s.nama)}</span>`, sub: `<small>${esc(s.prov || "")}, ${esc(jamWIB(s.t))}</small>`, stat: [["debit", dec1(s.pm25) + " µg/m³", "PM2,5 rata-rata 24 jam, " + KAT[c].n, KAT[c].w, c >= 2], ["peta", "KLH", "belum divalidasi", "#3f4a5e"]]}); },
   laci(i) { const s = this.segar()[i]; if (!s) return; const c = kat(s.pm25);
     Laci.buka("Stasiun ISPU KLH", `<span translate="no">${esc(s.nama)}</span>`, PIL_ISPU,
       `<div class="grid" style="grid-template-columns:repeat(2,1fr)">${kot('<span style="text-transform:none">PM2,5 rata-rata 24 jam</span>', `<span style="color:${KAT[c].w}">${dec1(s.pm25)} µg/m³</span>`, KAT[c].n)}${kot('<span style="text-transform:none">PM10</span>', s.pm10 != null && isFinite(s.pm10) ? dec1(s.pm10) + " µg/m³" : "tidak ada data", s.pm10 != null && isFinite(s.pm10) ? "terukur" : "stasiun tidak melapor")}</div>

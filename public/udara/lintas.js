@@ -14,8 +14,8 @@ const Lintas = {
   ex() { const P = this.D?.penerima; if (!P?.length) return "";
     const isi = `<div class="tw"><table><thead><tr><th style="text-transform:none">Kota penerima</th><th class="n" style="text-transform:none">PM2,5 (µg/m³)</th><th style="text-transform:none">Asal asap, per provinsi</th></tr></thead><tbody>${P.map(r =>
       `<tr><td><b translate="no">${esc(r.nama)}</b>, ${esc(r.negara)}</td><td class="n">${r.pm != null && isFinite(r.pm) ? fmt(Math.round(r.pm)) : "tidak ada data"}</td><td>${this.asal(r)}</td></tr>`).join("")}</tbody></table></div>
-      <p class="fnd">Angka perkiraan model untuk besok (${esc(this.D.hari)}), bukan pengukuran. Persen dibulatkan ke bawah per 10% (di bawah 10% ditulis begitu) dan hanya ditampilkan bila model menjelaskan sedikitnya 20% kelebihan PM2,5 di atas latar. Provinsi asal berarti api di sana yang dilalui angin ke kota itu, bukan penetapan siapa yang membakar. Belum diuji balik.</p>`;
-    return Insight.kepala(Kartu.ex("x", "", "", isi, ""), "lintas", "Asap lintas negara", PIL_HIPOTESIS); },
+      <p class="fnd">Angka perkiraan model untuk besok (${esc(new Date(this.D.hari + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric"}))}), bukan pengukuran. Persen dibulatkan ke bawah per 10% (di bawah 10% ditulis begitu) dan hanya ditampilkan bila model menjelaskan sedikitnya 20% kelebihan PM2,5 di atas latar. Provinsi asal berarti api di sana yang dilalui angin ke kota itu, bukan penetapan siapa yang membakar. Belum diuji balik.</p>`;
+    return Insight.kepala(Kartu.ex("x", "", "", isi, ""), "lintas", "Asap lintas negara", PIL_HIPOTESIS).replace("<h3>", () => `<h3 title="Model: plume Gauss tunak (sigma Briggs) dari titik panas VIIRS, dijangkarkan ke PM2,5 CAMS; hipotesis, belum diuji balik">`); },
 };
 Insight.IK.lintas = '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>';
 Insight.EX.splice(Insight.EX.indexOf("asal") + 1, 0, "lintas");

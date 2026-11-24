@@ -19,7 +19,7 @@ const Saran = {
   /* skor lead 1 hanya bila tidak null; selain itu jalurnya diam */
   skor() { const sk = this.NP?.lead?.["1"]?.skor; if (!sk || sk.tepat == null) return "";
     const p = sk.persistensi ? `; sebagai pembanding, memakai angka kemarin saja: tepat ${Murni.persen(sk.persistensi.tepat_persistensi)}` : "";
-    return `<p class="fnd">Cek terhadap stasiun ISPU (${fmt(this.NP.lead["1"].n)} pasang): kategori tepat ${Murni.persen(sk.tepat)}, meleset paling banyak satu kategori ${Murni.persen(sk.meleset_paling_banyak_1)}${p}.</p>`; },
+    return `<p class="fnd">Cek terhadap stasiun ISPU (${fmt(this.NP.lead["1"].n)} pengamatan): kategori tepat ${Murni.persen(sk.tepat)}, meleset paling banyak satu kategori ${Murni.persen(sk.meleset_paling_banyak_1)}${p}.</p>`; },
   /* v = PM2,5 rata-rata 24 jam prakiraan hari terpilih (µg/m³); null atau kategori Baik = tanpa blok */
   blok(v) { if (v == null || !isFinite(v)) return ""; const c = kat(v), s = SARAN[c]; if (!s) return "";
     return `<div class="saran" title="${esc(SUMBER_SARAN)}"><p class="fnd"><b>Saran 24 jam ke depan, kategori ${esc(KAT[c].n)}</b></p>

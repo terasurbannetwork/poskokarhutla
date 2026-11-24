@@ -9,11 +9,14 @@
   const TIDAK = "Tidak ada data";
   const V = {}, P = {};   /* V = isi berkas (null = gagal), P = janji unduhan; satu unduhan per berkas */
   const ambil = u => fetch(u, {cache: "no-cache"}).then(r => r.ok ? r.json() : null).catch(() => null);
-  const mulai = u => P[u] ||= ambil(u).then(d => (V[u] = d));
+  const mulai = u => P[u] ||= ambil(u).then(d => { if (d == null) delete P[u]; else V[u] = d; return d; });   /* gagal: tidak disimpan, dicoba lagi pada pemakaian berikut */
   /* true bila semua berkas sudah tiba; kalau belum, kartu menggambar ulang dirinya setelah tiba */
+  const MENUNGGU = new Set();   /* satu penggambaran ulang per kartu */
   const siap = (id, urls) => {
     if (urls.every(u => u in V)) return true;
-    Promise.all(urls.map(mulai)).then(() => document.querySelectorAll(`[data-ex="${id}"]`).forEach(b => { b.innerHTML = Insight.gambar(id); }));
+    if (MENUNGGU.has(id)) return false;
+    MENUNGGU.add(id);
+    Promise.all(urls.map(mulai)).then(() => { MENUNGGU.delete(id); nanti(() => document.querySelectorAll(`[data-ex="${id}"]`).forEach(b => { b.innerHTML = Insight.gambar(id); })); });
     return false;
   };
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -51,25 +54,37 @@
     const tip = `Uji ${tgl(uji.periode_jalan?.[0])} sampai ${tgl(uji.periode_jalan?.[1])}, ${fmt(h.n)} garis dari ${fmt(h.n_hari_jalan)} hari, kebenaran ${uji.kebenaran}. ${uji.catatan || ""}`;
     return `<p class="pk-galat" title="${esc(tip)}">Garis asap cluster ini ada di halaman udara. Skala hasil uji, bukan galat jalur ini: median ${fmt(a)} km di ujung 24 jam${b == null ? "" : `, angin dianggap tetap ${fmt(b)} km`}.</p>`;
   }
-  function insidenHtml(id, d, uji, lin) {
-    const r = Object.values(d?.insiden || {}).filter(x => (x.kompleks || []).includes(id)).sort((x, y) => (y.status === "aktif") - (x.status === "aktif"))[0];
-    if (!r) return `<p class="fnd">${TIDAK} insiden untuk cluster ini (hanya cluster tingkat 2 ke atas didaftar sebagai insiden).</p>`;
+  function insidenIsi(id, r, d, uji, lin) {
     const kota = r.kota_terdekat ? `${esc(r.kota_terdekat.nama)}, ${fmt(r.kota_terdekat.jarak_km)} km` : TIDAK;
     const tak = r.status === "tak_terdeteksi";
     return `<div class="pk-kepala"><b translate="no">${esc(r.nama || TIDAK)}</b>${lencana(r.bukti)}</div>
       <table class="tb2"><tbody>${baris("Kota terdekat", kota, "Pusat kabupaten atau kota terdekat dari pusat insiden")}
-      ${baris("Pernah terbakar", pernah(r), "Persen petak 375 m titik panas 48 jam yang pernah punya api VIIRS S-NPP 2012 sampai 2025 (keyakinan nominal atau tinggi, vegetasi). Hitungan piksel, bukan luas terbakar; batas bawah.")}
+      ${baris("Pernah ada api terdeteksi", pernah(r), "Persen petak 375 m titik panas 48 jam yang pernah punya deteksi api VIIRS S-NPP 2012 sampai 2025 (keyakinan nominal atau tinggi, vegetasi). Hitungan piksel, bukan luas terbakar; batas bawah.")}
       ${baris("Status", tak ? `Tak terlihat sejak ${esc(tgl(r.tak_terdeteksi))}` : r.status === "aktif" ? "Terlihat satelit" : esc(r.status || TIDAK))}</tbody></table>
       ${tak ? munculLagi(r, d) : ""}${galatAsap(id, uji, lin)}`;
   }
+  /* peta kompleksId -> insiden, dibangun sekali per berkas insiden.json */
+  let PETA = null, DARI = null;
+  const petaInsiden = d => {
+    if (PETA && DARI === d) return PETA;
+    PETA = new Map(); DARI = d;
+    for (const r of Object.values(d?.insiden || {})) for (const k of r.kompleks || []) { const l = PETA.get(k); if (!l || (r.status === "aktif" && l.status !== "aktif")) PETA.set(k, r); }
+    return PETA;
+  };
+  const insidenHtml = (id, r, d, uji, lin) => r ? insidenIsi(id, r, d, uji, lin) : `<p class="fnd">${TIDAK} insiden untuk cluster ini (hanya cluster tingkat 2 ke atas didaftar sebagai insiden).</p>`;
+  nanti(() => mulai("data/insiden.json"));   /* unduh senyap sesudah halaman tenang, supaya klik cluster pertama tidak menunggu */
   const _buka = Laci.buka.bind(Laci);
   Laci.buka = function (id) { _buka(id); tambahLaci(id); };
   async function tambahLaci(id) {
-    const [d, uji, lin] = await Promise.all(["data/insiden.json", "/udara/data/uji_lintasan.json", "/udara/data/lintasan.json"].map(u => mulai(u)));
+    const d = await mulai("data/insiden.json"), r = petaInsiden(d).get(id);
+    const [uji, lin] = r ? await Promise.all([mulai("/udara/data/uji_lintasan.json"), mulai("/udara/data/lintasan.json")]) : [];
     if (S.pilihK !== id || $("#laci .pk-laci")) return;
-    const html = `<details class="lipat pk-laci" open><summary>Insiden api</summary><div class="isi">${insidenHtml(id, d, uji, lin)}</div></details>`;
-    const api = [...document.querySelectorAll("#laci details.lipat")].find(x => x.querySelector("summary")?.textContent.startsWith("Api saat ini"));
-    api ? api.insertAdjacentHTML("afterend", html) : $("#laci .bd")?.insertAdjacentHTML("afterbegin", html);
+    const html = `<details class="lipat pk-laci" open><summary>Insiden api</summary><div class="isi">${insidenHtml(id, r, d, uji, lin)}</div></details>`;
+    nanti(() => {
+      if (S.pilihK !== id || $("#laci .pk-laci")) return;
+      const api = [...document.querySelectorAll("#laci details.lipat")].find(x => x.querySelector("summary")?.textContent.startsWith("Api saat ini"));
+      api ? api.insertAdjacentHTML("afterend", html) : $("#laci .bd")?.insertAdjacentHTML("afterbegin", html);
+    });
   }
 
   /* ============================================================ 2. PKH-24: titik panas 24 jam setara (kartu "Titik panas 24 jam" di Ringkasan; ringkasan.js memanggil PKH.setara()) */
@@ -122,11 +137,12 @@
     const ctl = `<div class="pk-ctl">${this.seg("pkhA", [["tahun", "Per tahun"], ["per1000", "Per 1.000 km²"], ["tujuh", "7 hari"]])}${tujuh ? "" : `<select data-set="pkhATh" aria-label="Tahun">${[...tahun].reverse().map(t => `<option value="${t}"${t === y ? " selected" : ""}>${t}</option>`).join("")}</select>`}</div>`;
     const tip = [per ? A.metode?.per1000 : tujuh ? A.metode?.tujuh_hari : A.metode?.riwayat, A.metode?.catatan].filter(Boolean).join(". ");
     if (tujuh && !A.tujuh_hari_tersedia) return kartu(NAMA, IK.asean, `${ctl}<p class="fnd" title="${esc(A.tujuh_hari_catatan || "")}">${TIDAK}: data tujuh hari belum tersedia.</p>`, tip);
+    const j = A.tujuh_hari_jendela, ak = Array.isArray(j) ? j[j.length - 1] : j, akhir = tujuh && ak ? (/^\d{4}-\d\d-\d\d/.test(ak) ? tgl(ak) : esc(String(ak))) : "";
     let no = 0;
     const tr = urut.map(({n, v}) => { const rank = n.peringkat && v != null ? ++no : "–", s = n.tahunan?.[y]?.sel;
       const tp = v == null ? `<b>${esc(n.nama)}</b><br>${TIDAK}` : `<b>${esc(n.nama)}</b><br>${fmt(v)}${per ? " titik per 1.000 km²" : " titik"}${!tujuh && s != null ? `<br>${fmt(s)} sel unik 375 m` : ""}${n.peringkat ? "" : "<br>tidak diperingkat"}`;
       return `<tr class="${n.iso3 === "IDN" ? "pk-idn" : ""}"><td class="n">${rank}</td><td translate="no">${esc(n.nama)}${n.peringkat ? "" : ' <small>(tidak diperingkat)</small>'}</td><td class="n">${v == null ? TIDAK.toLowerCase() : per ? dec(v, 1) : fmt(Math.round(v))}</td><td><span class="pk-bar" data-tip="${esc(tp)}" tabindex="0"><i style="width:${v == null ? 0 : (v / mx * 100).toFixed(1)}%"></i></span></td></tr>`; }).join("");
-    return kartu(NAMA, IK.asean, `${ctl}<div class="tw ex-tabel pk-tabel"><table><thead><tr>${th("Peringkat")}${th("Negara")}${th(per ? "Titik per 1.000 km²" : "Titik panas", tip)}${th("")}</tr></thead><tbody>${tr}</tbody></table></div>`, tip);
+    return kartu(NAMA, IK.asean, `${ctl}<div class="tw ex-tabel pk-tabel"><table><thead><tr>${th("Peringkat")}${th("Negara")}${th(per ? "Titik per 1.000 km²" : tujuh ? `7 hari${akhir ? " s.d. " + akhir : ""}` : "Titik panas", tip)}${th("")}</tr></thead><tbody>${tr}</tbody></table></div>`, tip);
   };
 
   /* ---- PKH-29: petak api per tahun ---- */
@@ -140,10 +156,10 @@
     const nm = seri ? (jenis === "p" ? seri.nama : kunci) : "Indonesia";
     const ys = p.tahun.map(String), W = 940, H = 250, L = 8, T = 30, B = 26, bw = (W - L * 2) / ys.length, mx = Math.max(1, ...ys.map(t => data[t] || 0));
     const bar = ys.map((t, j) => { const v = data[t], ini = +t === p.tahun_berjalan, x = L + j * bw, h = v == null ? 0 : Math.max(1, v / mx * (H - T - B)), y0 = H - B - h;
-      const tp = v == null ? `<b>${t}</b><br>${TIDAK}` : `<b>${t}</b>${ini ? ` (sampai ${tgl(p.sd)})` : ""}<br>${fmt(v)} petak 375 m${bagian?.[t] != null ? `<br>${fmt(bagian[t])}% dari petak nasional` : ""}`;
+      const tp = v == null ? `<b>${t}</b><br>${TIDAK}` : `<b>${t}</b>${ini ? ` (sampai ${tgl(p.sd)})` : ""}<br>${fmt(v)} petak 375 m per tahun${bagian?.[t] != null ? `<br>${fmt(bagian[t])}% dari petak nasional` : ""}`;
       return `<g data-tip="${esc(tp)}"><rect x="${x.toFixed(1)}" y="0" width="${bw.toFixed(1)}" height="${H - B}" class="pk-hit"/>${v == null ? "" : `<rect class="pk-b${ini ? " ini" : ""}" x="${(x + bw * .14).toFixed(1)}" y="${y0.toFixed(1)}" width="${(bw * .72).toFixed(1)}" height="${h.toFixed(1)}" rx="3"/><text class="pk-v" x="${(x + bw / 2).toFixed(1)}" y="${(y0 - 5).toFixed(1)}" text-anchor="middle">${rb(v)}</text>`}<text class="pk-t${ini ? " ini" : ""}" x="${(x + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${t}</text></g>`; }).join("");
     const opsi = `<option value="">Indonesia</option><optgroup label="Gugus pulau">${Object.keys(p.gugus || {}).map(g => `<option value="g:${esc(g)}"${pil === "g:" + g ? " selected" : ""}>${esc(g)}</option>`).join("")}</optgroup><optgroup label="Provinsi">${Object.entries(p.prov || {}).sort((a, b) => a[1].nama.localeCompare(b[1].nama)).map(([k, o]) => `<option value="p:${k}"${pil === "p:" + k ? " selected" : ""}>${esc(o.nama)}</option>`).join("")}</optgroup>`;
-    return kartu(NAMA, IK.petak, `<div class="pk-ctl"><select data-set="pkhP" aria-label="Wilayah">${opsi}</select></div><svg class="pk-grafik" viewBox="0 0 ${W} ${H}" role="img" aria-label="Petak api per tahun, ${esc(nm)}">${bar}</svg>`, `${p.definisi} ${p.sumber}`);
+    return kartu(NAMA, IK.petak, `<div class="pk-ctl"><select data-set="pkhP" aria-label="Wilayah">${opsi}</select></div><svg class="pk-grafik" viewBox="0 0 ${W} ${H}" role="img" aria-label="Petak api per tahun (petak 375 m), ${esc(nm)}">${bar}</svg>`, `${p.definisi} ${p.sumber}`);
   };
 
   /* ---- PKH-30: prospek musim ---- */

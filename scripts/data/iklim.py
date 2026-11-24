@@ -177,7 +177,7 @@ def uji():
 # (Open-Meteo seasonal, ~50 anggota) di satu titik sabuk kebakaran per provinsi. Aturan diuji 2012-2025 per titik sebelum tampil.
 # Rujukan pembanding (MIT, Pantau Karhutla 2026): pipeline/src/haze/outlook.py, pipeline/scripts/backtest_outlook_rule.py.
 # Pakai:  python3 scripts/data/iklim.py prospek        (tarik ONI/Nino3.4/IOD + ansambel; kunci "uji" dibawa dari berkas lama)
-#         python3 scripts/data/iklim.py prospek uji    (hitung ulang uji 2012-2025; lokal: butuh data/raw/asean/viirs-snpp_<tahun>_Indonesia.csv dari asean_titik.py bangun)
+#         python3 scripts/data/iklim.py prospek hitung-uji    (hitung ulang uji 2012-2025; lokal: butuh data/raw/asean/viirs-snpp_<tahun>_Indonesia.csv dari asean_titik.py bangun)
 PROSPEK = os.path.join(AKAR, "public/data/prospek_musim.json")
 NINO_MINGGUAN = "https://www.cpc.ncep.noaa.gov/data/indices/wksst9120.for"
 IOD_BOM = "https://reg.bom.gov.au/clim_data/IDCK000072/iod_1.txt"
@@ -344,11 +344,11 @@ def uji_prospek():
 
 if __name__ == "__main__":
     uji()
-    if sys.argv[1:2] == ["uji"]:
+    if sys.argv[1:2] == ["uji"] or sys.argv[1:3] == ["prospek", "uji"]:
         uji_prospek()   # self-check murni: tanpa jaringan, tanpa menulis keluaran
         print("iklim uji: OK")
     elif sys.argv[1:2] == ["prospek"]:
         uji_prospek()
-        prospek(sys.argv[2:3] == ["uji"])
+        prospek(sys.argv[2:3] == ["hitung-uji"])
     else:
         bangun()

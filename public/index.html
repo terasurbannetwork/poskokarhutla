@@ -4500,7 +4500,7 @@ const Insight = {
         this.st[k] = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); this._bukaMulti = k; return ulang(m); }
       const s = e.target.closest("select[data-set]"); if (!s) return; this.st[s.dataset.set] = s.value; ulang(s); };
     el.onclick = e => {
-      const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return ulang(s); }
+      const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { s.parentElement?.querySelectorAll("[data-set]").forEach(x => x.setAttribute("aria-pressed", String(x === s))); this.st[s.dataset.set] = s.dataset.v; return ulang(s); }
       const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw);
       const kl = e.target.closest("[data-kl]"); if (kl && el.contains(kl)) { bukaTab("peta"); return Laci.buka(kl.dataset.kl); }
       const pt = e.target.closest("[data-peta]"); if (pt) { bukaTab("peta"); return turun(pt.dataset.peta); }

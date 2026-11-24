@@ -10,7 +10,7 @@ Aturan AGENTS global butir 3: perilaku yang tinggal di luar TypeScript wajib pun
 | `python3 -I scripts/data/progresi.py --uji` | self-check fungsi murni A1 sampai A9 |
 | `python3 -I scripts/umum/paparan_insiden.py --uji` | self-check fungsi murni B1 sampai B4 |
 | `python3 -I scripts/data/progresi.py uji-tahan` | uji tahan A10 pada insiden arsip (butuh `data/raw/firms` lokal, tidak di CI) |
-| `node --test tests/insiden/*.test.mjs` | kartu dan fungsi murni layar (format angka, keadaan kosong, `resolved:false`) |
+| `node --test tests/insiden/*.test.mjs` | kartu dan fungsi murni layar (format angka, keadaan kosong, `terukur:false`) |
 | `node --test tests/agen/gerbang-insiden-kaya.test.mjs` | gerbang berkas publik |
 | `npm run uji:insiden` | menjalankan ketiganya (dipasang di IK-00, masuk `npm run uji`) |
 | `npm run uji:agen` | gerbang ilmu agent dan paket modul tetap hijau |
@@ -74,7 +74,7 @@ Hasil ditulis di `tests/insiden/hasil_bangunan_manual.md` oleh pemeriksa bersih,
 | petak tunggal dengan epoch sebelumnya 6 jam sebelum t_pertama | `t_tiba = t_pertama - 3`, `galat = 3` |
 | tanpa epoch sebelumnya | jeda bawaan 12, `t_tiba = t_pertama - 6` |
 | epoch berjarak 1 jam digabung | satu epoch |
-| 25 petak garis lurus bertambah 1 sel per hari | langkah harian, `p90 ≈ 0,38`, `resolved:true` bila ≥ satu sel; setengah sel per hari → `resolved:false`, `laju = null` |
+| 25 petak garis lurus bertambah 1 sel per hari; varian 2 sel per hari | 1 sel per hari: `terukur:false`, `di_batas_resolusi:true`, `p90_km = null` (D6, tidak pernah 0); 2 sel per hari: `terukur:true`, `p90 ≈ 0,75` |
 | petak baru 3 km dari yang sudah ada | tercatat lompatan 3 km, tidak masuk `sebar` laju |
 | petak baru 12 km dari yang sudah ada | bukan lompatan |
 | `ignition` | rata berbobot FRP, `mulai_lebih_awal:true` bila ≥ 5 petak |
