@@ -137,7 +137,7 @@ export async function akunAktif(env, req, kini) {
    (akunAktif mengisi PROFIL_REQ); isi: rute dan id objek, tanpa badan. */
 export async function catatKerja(env, req, kunci, r, kini, objek) {
   const p = PROFIL_REQ.get(req);
-  if (p && req.method !== "GET" && req.method !== "HEAD" && r?.status < 400) await pfLog(env, {akun: p.id, profil: p.profil_id, jenis: "kerja", rute: kunci, objek: objek ?? null}, kini).catch(e => { if (!profilTanpaTabel(e)) throw e; });
+  if (p && req.method !== "GET" && req.method !== "HEAD" && r?.status < 400) await pfLog(env, {akun: p.id, profil: p.profil_id, jenis: "kerja", rute: kunci, objek: objek ?? null}, kini).catch(e => { if (!profilTanpaTabel(e)) console.error("catatKerja", e?.message); });   // tulisan penangan sudah tersimpan: gagal log tidak boleh jadi 500 (klien mengulang, data ganda)
 }
 const PROFIL_REQ = new WeakMap();   // permintaan -> akun bersesi profil; dipakai pembungkus RUTE_INSTANSI untuk log kerja (satu tulis, tanpa baca tambahan)
 const gagalBanyak = async (env, kunci, aksi, maks, kini) => (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;

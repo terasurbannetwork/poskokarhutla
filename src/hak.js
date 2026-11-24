@@ -2502,9 +2502,9 @@ export const lpAmbilTulis = async (env, a, kini) => (await env.DB.batch([
 /* bahan hitung respons 30 hari: laporan terkirim (bukan tidak_valid) dengan waktu ambil, lalu waktu dilihat pertama per nomor dari log meja profil */
 export const lpResponsLaporan = async (env, sejak, sampai = Number.MAX_SAFE_INTEGER) => (await env.DB.prepare(
   `SELECT s.nomor, s.terkirim, s.ringkas, a.waktu ambil FROM lapor_sesi s JOIN lapor_tiket t ON t.nomor = s.nomor LEFT JOIN lapor_ambil a ON a.nomor = s.nomor
-   WHERE s.terkirim > ?1 AND s.terkirim <= ?2 AND t.status != 'tidak_valid' LIMIT 5000`).bind(sejak, sampai).all()).results;
-export const lpResponsDilihat = async (env, sejak) => (await env.DB.prepare(
-  "SELECT objek nomor, min(waktu) waktu FROM instansi_profil_log WHERE jenis = 'meja' AND waktu > ?1 AND rute LIKE '%/lihat' AND objek IS NOT NULL GROUP BY objek").bind(sejak).all()).results;
+   WHERE s.terkirim > ?1 AND s.terkirim <= ?2 AND t.status != 'tidak_valid' ORDER BY s.terkirim LIMIT 5001`).bind(sejak, sampai).all()).results;
+export const lpResponsDilihat = async (env, sejak, sampai = Number.MAX_SAFE_INTEGER) => (await env.DB.prepare(
+  "SELECT objek nomor, min(waktu) waktu FROM instansi_profil_log WHERE jenis = 'meja' AND waktu > ?1 AND waktu <= ?2 AND rute LIKE '%/lihat' AND objek IS NOT NULL GROUP BY objek").bind(sejak, sampai + 30 * 86400000).all()).results;   // batas atas: bulan lama tidak memindai seluruh log; +30 hari supaya laporan akhir bulan yang dilihat bulan berikutnya tetap terhitung
 export const pfAkunBpbdAktif = async env => (await env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab FROM instansi_akun WHERE jenis IN ('pemkab', 'pemkot') AND status = 'aktif' AND dummy = 0").all()).results;
 
 /* ---------- PF-09: PIC untuk Pusdalops (profil-bpbd K13, ALGORITMA 14) ---------- */

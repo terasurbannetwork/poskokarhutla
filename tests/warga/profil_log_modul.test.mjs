@@ -35,3 +35,11 @@ uji("Laporan karhutla: POST draf oleh profil tercatat dan satu kali", async () =
   const r = await api("POST", "/api/instansi/laporan/draf", {tanggal: new Date(kini - 864e5).toISOString().slice(0, 10), sumber: "prov:62", isi: {ringkasan: "ok"}, versi_dasar: 0, klien_id: "k" + "a".repeat(15)}, a.h); assert.ok(r.s < 300, r.t);
   assert.deepEqual(await kerja(a), [{profil_id: a.p.id, rute: "POST /api/instansi/laporan/draf"}]);
 });
+uji("Log kerja gagal (galat selain tabel hilang): tulisan penangan tetap 201, bukan 500", async () => {
+  const a = await akun(4);
+  await DB.prepare("CREATE TRIGGER uji_log_gagal BEFORE INSERT ON instansi_profil_log WHEN NEW.jenis = 'kerja' BEGIN SELECT RAISE(ABORT, 'disk penuh uji'); END").run();
+  try {
+    const r = await api("POST", "/api/instansi/logpal/gudang", {nama: "Gudang Uji Gagal Log", prov: "62", kapasitas_ton: 5}, a.h); assert.equal(r.s, 201, r.t);
+    assert.deepEqual(await kerja(a), []);
+  } finally { await DB.prepare("DROP TRIGGER uji_log_gagal").run(); }
+});

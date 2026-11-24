@@ -1009,7 +1009,8 @@ async function responsGet(env, req, url, kini) {
     if (sejak > kini) return galat(400, "bulan itu belum mulai");
   }
   const lj = await laju(env, h.kunci, "lapor.respons", [[JAM, 60]], kini); if (lj) return lj;
-  const [laporan, dilihat, akun] = await Promise.all([bacaTabel(() => H.lpResponsLaporan(env, sejak, sampai), []), bacaTabel(() => H.lpResponsDilihat(env, sejak), []), bacaTabel(() => H.pfAkunBpbdAktif(env), [])]);
+  const [laporan, dilihat, akun] = await Promise.all([bacaTabel(() => H.lpResponsLaporan(env, sejak, sampai), []), bacaTabel(() => H.lpResponsDilihat(env, sejak, sampai), []), bacaTabel(() => H.pfAkunBpbdAktif(env), [])]);
+  const terpotong = laporan.length > 5000; if (terpotong) laporan.length = 5000;   // ponytail: batas 5000 laporan per jendela; pecah per minggu bila terlampaui
   const lihat = new Map(dilihat.map(x => [x.nomor, x.waktu]));
   const ambilW = new Map(laporan.filter(l => l.ambil != null).map(l => [l.nomor, l.ambil]));
   const kabAkun = new Map(akun.map(a => [`${a.prov}|${bakuKab(a.kab)}`, a]));
@@ -1018,7 +1019,7 @@ async function responsGet(env, req, url, kini) {
     const w = (() => { try { return JSON.parse(l.ringkas)?.wilayah; } catch { return null; } })(), a = w && kabAkun.get(`${w.provKode}|${bakuKab(w.kab)}`);
     if (a) baris.push({kab: a.wilayah, masuk: l.terkirim, dilihat: lihat.get(l.nomor) ?? null, ambil: ambilW.get(l.nomor) ?? null});
   }
-  return kirim(200, {jendela_hari: hari, ...(bln !== null ? {bulan: bln} : {}), ambang: 5, bpbd: hitungRespons(baris).sort((x, z) => x.kab.localeCompare(z.kab, "id")).map(({kab, ...r}) => ({wilayah: kab, ...r}))});
+  return kirim(200, {jendela_hari: hari, ...(bln !== null ? {bulan: bln} : {}), ...(terpotong ? {terpotong: true} : {}), ambang: 5, bpbd: hitungRespons(baris).sort((x, z) => x.kab.localeCompare(z.kab, "id")).map(({kab, ...r}) => ({wilayah: kab, ...r}))});
 }
 /* PF-09 (ALGORITMA 14): PIC aktif BPBD wilayah laporan untuk staf BNPB; nomor tersamar, nomor penuh hanya lewat POST yang tercatat di lapor_akses */
 async function daftarPic(env, baris) {
