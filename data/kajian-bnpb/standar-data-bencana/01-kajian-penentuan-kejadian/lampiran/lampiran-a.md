@@ -24,7 +24,7 @@ Tabel A.1. Peran dalam pengumpulan data kejadian bencana
 | Pihak | Peran |
 | --- | --- |
 | Pusdalops BPBD kabupaten/kota | Menerima laporan, membuat laporan awal, memberikan KIB sebagai nomor kejadian, dan memutakhirkan data harian |
-| Tim Reaksi Cepat BPBD | Melakukan kaji cepat di lokasi, mengisi formulir umum dan lembar khusus, serta mengambil dokumentasi |
+| Tim Reaksi Cepat BPBD | Melakukan *rapid assessment* di lokasi, mengisi formulir umum dan lembar khusus, serta mengambil dokumentasi |
 | Perangkat daerah terkait | Menyediakan data sektor, misalnya dari dinas kesehatan, pertanian, pekerjaan umum, dan sosial |
 | BPBD provinsi | Memeriksa kelengkapan data, menyatukan kejadian lintas kabupaten/kota di provinsinya, dan memverifikasi data statis |
 | Pusdalops BNPB | Memantau sumber resmi untuk peristiwa ancaman, menerima laporan BPBD, menyusun laporan harian nasional, dan menautkan sementara catatan kabupaten/kota dari satu peristiwa sebelum nomor induk terbit |
@@ -54,12 +54,12 @@ Sumber: disusun dalam kajian ini.
 
 Batas waktu: paling lambat 24 jam setelah kejadian diketahui.
 
-1. Pusdalops BPBD memeriksa apakah ada kejadian sejenis yang sedang berlangsung di kabupaten/kota yang sama. Apabila ada dan laporan baru memenuhi aturan batas kejadian dalam Tabel 3.4, laporan digabungkan ke kejadian tersebut dan memakai KIB yang sama. Apabila tidak ada, kejadian baru dibuka dengan KIB baru. Sebelum nomor induk kejadian terbit, Pusdalops BNPB menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa.
+1. Pusdalops BPBD memeriksa apakah ada kejadian sejenis yang sedang berlangsung di kabupaten/kota yang sama. Apabila ada dan laporan baru memenuhi aturan batas kejadian dalam Tabel 3.5, laporan digabungkan ke kejadian tersebut dan memakai KIB yang sama. Apabila tidak ada, kejadian baru dibuka dengan KIB baru. Sebelum nomor induk kejadian terbit, Pusdalops BNPB menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa.
 2. Pusdalops BPBD mengisi isian wajib laporan awal dalam Lampiran B, yaitu kelompok 1–3 ditambah angka dampak sementara dan sumbernya.
 3. Angka yang belum diketahui ditandai "belum didata", bukan diisi nol.
 4. Laporan awal dikirim ke Pusdalops BPBD provinsi dan Pusdalops BNPB.
 
-### A.4.3 Tahap 2: kaji cepat
+### A.4.3 Tahap 2: *rapid assessment*
 
 Batas waktu: 24–72 jam pertama.
 
@@ -67,8 +67,8 @@ Batas waktu: 24–72 jam pertama.
 2. Tim mengisi formulir umum kelompok 4–9 dan lembar khusus sesuai dengan jenis bencananya (Lampiran C).
 3. Tim mengambil foto bergeotag untuk setiap titik kerusakan utama, titik pengungsian, dan tanda besarnya ancaman, misalnya bekas tinggi air, bagian atas longsor, atau ketebalan abu.
 4. Tim mencatat korban dengan prinsip satu orang satu kategori dan memilahnya menurut jenis kelamin, umur, dan disabilitas. Daftar nama korban meninggal dan hilang disimpan dalam berkas terbatas.
-5. Pusdalops BPBD menentukan kriteria kejadian bencana yang terpenuhi (Tabel 3.3) dan kelas sementara (Tabel 3.7), lalu menuliskan indikator penentunya.
-6. Pusdatinkom menerbitkan nomor induk kejadian paling lambat pada akhir kaji cepat, sehingga catatan dari beberapa kabupaten/kota yang berasal dari satu peristiwa dapat ditautkan.
+5. Pusdalops BPBD menentukan kriteria kejadian bencana yang terpenuhi (Tabel 3.4) dan kelas sementara (Tabel 3.8), lalu menuliskan indikator penentunya.
+6. Pusdatinkom menerbitkan nomor induk kejadian paling lambat pada akhir *rapid assessment*, sehingga catatan dari beberapa kabupaten/kota yang berasal dari satu peristiwa dapat ditautkan.
 7. Kejadian yang tidak memenuhi kriteria dicatat sebagai kejadian yang belum memenuhi kriteria.
 
 ### A.4.4 Tahap 3: pemutakhiran harian
@@ -78,14 +78,14 @@ Batas waktu: paling sedikit satu kali sehari selama kejadian berlangsung, atau s
 1. Pos komando atau Pusdalops BPBD memperbarui angka dampak tanpa menjumlahkan angka antarhari. Korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian.
 2. Angka dari hari yang berbeda tidak dijumlahkan.
 3. Apabila angka turun, misalnya karena orang hilang ditemukan selamat, alasan penurunannya dicatat.
-4. Kelas dihitung ulang. Apabila kelas naik menjadi mayor, Pusdalops BPBD memberi tahu Pusdalops BNPB pada hari yang sama.
+4. Kelas dihitung ulang. Apabila kelas naik menjadi intensif, Pusdalops BPBD memberi tahu Pusdalops BNPB pada hari yang sama.
 5. Perubahan status keadaan darurat dicatat beserta nomor dan tanggal surat keputusannya.
 
 ### A.4.5 Tahap 4: penutupan dan verifikasi
 
 Batas waktu: paling lambat pada verifikasi bulanan berikutnya setelah kejadian selesai.
 
-1. Pusdalops BPBD menyatakan kejadian selesai sesuai dengan aturan batas kejadian untuk jenis bencananya (Tabel 3.4 kajian ini, Rancangan Juklak Tabel 2) dan mencatat tanggal selesainya.
+1. Pusdalops BPBD menyatakan kejadian selesai sesuai dengan aturan batas kejadian untuk jenis bencananya (Tabel 3.5 kajian ini, Rancangan Juklak Tabel 2) dan mencatat tanggal selesainya.
 2. BPBD kabupaten/kota melengkapi isian yang masih berstatus "belum didata" serta lembar khusus dengan berkoordinasi bersama perangkat daerah terkait.
 3. BPBD provinsi memeriksa kelengkapan, kelogisan, dan kemungkinan penghitungan ganda, termasuk untuk kejadian lintas kabupaten/kota di provinsinya.
 4. Pusdatinkom memastikan tautan nomor induk kejadian, memutuskan penggabungan atau pemisahan yang masih diragukan, dan mengesahkan kelas akhir.

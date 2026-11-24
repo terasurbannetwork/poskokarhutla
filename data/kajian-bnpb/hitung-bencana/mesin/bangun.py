@@ -60,6 +60,12 @@ def main():
     K.ANAK = cfg.get('anak_judul', K.ANAK)
     K.LABEL = cfg.get('label', K.LABEL)
     K.TATA = cfg.get('tata', {})
+    # sampul opsional per dokumen (jalur relatif ke mesin/)
+    if cfg.get('foto'):
+        K.FOTO_SAMPUL = (K.MESIN / cfg['foto']).resolve().as_posix()
+    K.FOTO_KREDIT = cfg.get('foto_kredit', K.FOTO_KREDIT)
+    K.OLEH = cfg.get('oleh', K.OLEH)
+    K.OLEH_LABEL = cfg.get('oleh_label', K.OLEH_LABEL)
     if cfg.get('gbr'):          # folder PNG gambar milik kajian lain (relatif ke mesin/)
         K.GBR = (K.MESIN / cfg['gbr']).resolve()
     if cfg.get('keluaran'):     # folder keluaran milik kajian lain (relatif ke mesin/)

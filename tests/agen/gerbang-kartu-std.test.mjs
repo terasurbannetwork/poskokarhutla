@@ -5,13 +5,14 @@
    turun; kunci bersih = hapus entri). WAJIB_BERSIH tak boleh masuk daftar. Pemindainya fixtures/kartu_std.mjs (statis, bukan render).
    Layar laporan baru: tambahkan ke LAYAR (skrip + halaman HTML) dan ke SCOPE bila direktori baru.
    Kembaran sempit untuk /operasi: gerbang-tanpa-kesimpulan.test.mjs. */
+import { fileURLToPath } from 'node:url'
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 import {berkas, muatDaftar, banding, tegas} from './fixtures/ratchet.mjs'
 import {pindai, ukurSemua, SCOPE, WAJIB_BERSIH} from './fixtures/kartu_std.mjs'
 
-const ROOT = new URL('../..', import.meta.url).pathname
+const ROOT = fileURLToPath(new URL('../..', import.meta.url))   /* .pathname rusak di Windows ('D:\D:\...') */
 const baca = p => readFileSync(ROOT + p, 'utf8')
 
 const LAYAR = [

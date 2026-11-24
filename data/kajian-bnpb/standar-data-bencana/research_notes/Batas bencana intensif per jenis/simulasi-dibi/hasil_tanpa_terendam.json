@@ -1,0 +1,810 @@
+{
+ "per_jenis": {
+  "Banjir": {
+   "baris": 19279,
+   "md": 4340,
+   "rb": 136430,
+   "ung": 6602072,
+   "intensif": 56,
+   "md_int": 1965,
+   "rb_int": 94506,
+   "ung_int": 1193832,
+   "baru": 9,
+   "umum": 47
+  },
+  "Cuaca Ekstrem": {
+   "baris": 8756,
+   "md": 468,
+   "rb": 38072,
+   "ung": 23704,
+   "intensif": 3,
+   "md_int": 1,
+   "rb_int": 1783,
+   "ung_int": 550,
+   "baru": 1,
+   "umum": 2
+  },
+  "Kebakaran Hutan dan Lahan": {
+   "baris": 9171,
+   "md": 65,
+   "rb": 538,
+   "ung": 2072
+  },
+  "Puting Beliung": {
+   "baris": 6889,
+   "md": 124,
+   "rb": 13029,
+   "ung": 19141,
+   "intensif": 3,
+   "md_int": 1,
+   "rb_int": 858,
+   "ung_int": 942,
+   "baru": 3
+  },
+  "Tanah Longsor": {
+   "baris": 11290,
+   "md": 2970,
+   "rb": 21204,
+   "ung": 158760,
+   "intensif": 39,
+   "md_int": 476,
+   "rb_int": 6008,
+   "ung_int": 82223,
+   "baru": 29,
+   "umum": 10
+  },
+  "Angin Kencang": {
+   "baris": 1713,
+   "md": 43,
+   "rb": 1978,
+   "ung": 1346
+  },
+  "Gempabumi": {
+   "baris": 822,
+   "md": 3044,
+   "rb": 354528,
+   "ung": 1703013,
+   "umum": 58,
+   "intensif": 58,
+   "md_int": 2938,
+   "rb_int": 340869,
+   "ung_int": 1467000
+  },
+  "Kekeringan": {
+   "baris": 1685,
+   "md": 8,
+   "rb": 0,
+   "ung": 7,
+   "intensif": 71,
+   "md_int": 2,
+   "rb_int": 0,
+   "ung_int": 0,
+   "baru": 71,
+   "tanpa_penduduk": 7
+  },
+  "Erupsi Gunung Api": {
+   "baris": 201,
+   "md": 565,
+   "rb": 18528,
+   "ung": 930483,
+   "umum": 8,
+   "intensif": 8,
+   "md_int": 486,
+   "rb_int": 18324,
+   "ung_int": 468271
+  },
+  "Kebakaran Gedung dan Permukiman": {
+   "baris": 1160,
+   "md": 257,
+   "rb": 4108,
+   "ung": 18976
+  },
+  "Lainnya": {
+   "baris": 62,
+   "md": 49,
+   "rb": 2,
+   "ung": 88
+  },
+  "Kebakaran Lahan": {
+   "baris": 86,
+   "md": 1,
+   "rb": 0,
+   "ung": 442
+  },
+  "Banjir Rob": {
+   "baris": 257,
+   "md": 0,
+   "rb": 331,
+   "ung": 14122
+  },
+  "Banjir Bandang": {
+   "baris": 303,
+   "md": 135,
+   "rb": 2406,
+   "ung": 31550,
+   "intensif": 3,
+   "md_int": 52,
+   "rb_int": 305,
+   "ung_int": 8497,
+   "baru": 2,
+   "umum": 1
+  },
+  "Banjir dan Tanah Longsor": {
+   "baris": 570,
+   "md": 216,
+   "rb": 5411,
+   "ung": 220292,
+   "intensif": 30,
+   "md_int": 100,
+   "rb_int": 3907,
+   "ung_int": 197820,
+   "baru": 27,
+   "umum": 3
+  },
+  "Gelombang Pasang / Abrasi": {
+   "baris": 596,
+   "md": 49,
+   "rb": 3557,
+   "ung": 17053
+  },
+  "Gerakan Tanah": {
+   "baris": 165,
+   "md": 0,
+   "rb": 763,
+   "ung": 5653
+  },
+  "Angin Topan": {
+   "baris": 23,
+   "md": 0,
+   "rb": 37,
+   "ung": 10
+  },
+  "Gelombang Pasang ": {
+   "baris": 4,
+   "md": 0,
+   "rb": 7,
+   "ung": 5
+  },
+  "Tsunami": {
+   "baris": 22,
+   "md": 896,
+   "rb": 2117,
+   "ung": 58655,
+   "umum": 3,
+   "intensif": 3,
+   "md_int": 861,
+   "rb_int": 2002,
+   "ung_int": 51434
+  },
+  "Banjir Genangan": {
+   "baris": 34,
+   "md": 1,
+   "rb": 0,
+   "ung": 288
+  },
+  "Epidemi dan Wabah Penyakit": {
+   "baris": 6,
+   "md": 20,
+   "rb": 0,
+   "ung": 0
+  },
+  "Konflik Sosial": {
+   "baris": 22,
+   "md": 93,
+   "rb": 1092,
+   "ung": 14804,
+   "umum": 2,
+   "intensif": 2,
+   "md_int": 69,
+   "rb_int": 333,
+   "ung_int": 8551
+  },
+  "Gagal Teknologi": {
+   "baris": 9,
+   "md": 74,
+   "rb": 5,
+   "ung": 0,
+   "umum": 1,
+   "intensif": 1,
+   "md_int": 63,
+   "rb_int": 0,
+   "ung_int": 0
+  },
+  "Gempa Bumi dan Tsunami": {
+   "baris": 6,
+   "md": 4141,
+   "rb": 34166,
+   "ung": 221450,
+   "umum": 3,
+   "intensif": 3,
+   "md_int": 4125,
+   "rb_int": 33739,
+   "ung_int": 212141
+  },
+  "Abrasi Pantai": {
+   "baris": 9,
+   "md": 0,
+   "rb": 17,
+   "ung": 48
+  },
+  "Banjir Lahar (Lahar)": {
+   "baris": 2,
+   "md": 3,
+   "rb": 0,
+   "ung": 0
+  },
+  "Kecelakaan Industri": {
+   "baris": 2,
+   "md": 16,
+   "rb": 0,
+   "ung": 0
+  },
+  "Epidemi ": {
+   "baris": 1,
+   "md": 0,
+   "rb": 0,
+   "ung": 0
+  },
+  "Kebakaran Hutan ": {
+   "baris": 7,
+   "md": 0,
+   "rb": 0,
+   "ung": 0
+  },
+  "Kebakaran Lahan Gambut ": {
+   "baris": 3,
+   "md": 0,
+   "rb": 0,
+   "ung": 0
+  },
+  "Kekeringan Pertanian": {
+   "baris": 1,
+   "md": 0,
+   "rb": 0,
+   "ung": 0
+  },
+  "Gempabumi Reruntuhan": {
+   "baris": 1,
+   "md": 0,
+   "rb": 4,
+   "ung": 0
+  },
+  "Wabah Penyakit": {
+   "baris": 3,
+   "md": 14,
+   "rb": 0,
+   "ung": 0
+  }
+ },
+ "tahun": {
+  "2017": {
+   "baris": 2898,
+   "intensif": 10,
+   "umum": 2
+  },
+  "2024": {
+   "baris": 3889,
+   "intensif": 11,
+   "umum": 8
+  },
+  "2020": {
+   "baris": 4949,
+   "intensif": 21,
+   "umum": 5
+  },
+  "2016": {
+   "baris": 2313,
+   "intensif": 9,
+   "umum": 4
+  },
+  "2026": {
+   "baris": 3375,
+   "intensif": 16,
+   "umum": 9
+  },
+  "2025": {
+   "baris": 9629,
+   "intensif": 26,
+   "umum": 19
+  },
+  "2022": {
+   "baris": 3728,
+   "intensif": 12,
+   "umum": 2
+  },
+  "2018": {
+   "baris": 3517,
+   "intensif": 44,
+   "umum": 16
+  },
+  "2015": {
+   "baris": 1703,
+   "intensif": 2,
+   "umum": 1
+  },
+  "2021": {
+   "baris": 6233,
+   "intensif": 23,
+   "umum": 14
+  },
+  "2023": {
+   "baris": 5615,
+   "intensif": 9,
+   "umum": 1
+  },
+  "2013": {
+   "baris": 1737,
+   "intensif": 9,
+   "umum": 5
+  },
+  "2019": {
+   "baris": 3894,
+   "intensif": 32,
+   "umum": 9
+  },
+  "2011": {
+   "baris": 1637,
+   "intensif": 3,
+   "umum": 3
+  },
+  "2012": {
+   "baris": 1799,
+   "intensif": 3,
+   "umum": 1
+  },
+  "2014": {
+   "baris": 1987,
+   "intensif": 9,
+   "umum": 3
+  },
+  "2008": {
+   "baris": 963,
+   "intensif": 3,
+   "umum": 3
+  },
+  "2010": {
+   "baris": 2004,
+   "intensif": 14,
+   "umum": 10
+  },
+  "2009": {
+   "baris": 1290,
+   "intensif": 24,
+   "umum": 23
+  }
+ },
+ "contoh": {
+  "Banjir": [
+   [
+    2016,
+    "Kota Bima",
+    "Nusa Tenggara Barat",
+    "rumah setara 677",
+    0,
+    510,
+    17705,
+    8491,
+    105754
+   ],
+   [
+    2013,
+    "Bojonegoro",
+    "Jawa Timur",
+    "rumah setara 815",
+    3,
+    0,
+    11188,
+    1675,
+    0
+   ],
+   [
+    2021,
+    "Sabu Raijua",
+    "Nusa Tenggara Timur",
+    "rumah setara 849",
+    3,
+    353,
+    7231,
+    132,
+    61276
+   ],
+   [
+    2021,
+    "Bima",
+    "Nusa Tenggara Barat",
+    "rumah setara 856",
+    2,
+    399,
+    6661,
+    1596,
+    26756
+   ],
+   [
+    2021,
+    "Malaka",
+    "Nusa Tenggara Timur",
+    "rumah setara 788",
+    11,
+    556,
+    4382,
+    5326,
+    30599
+   ],
+   [
+    2016,
+    "Pangandaran",
+    "Jawa Barat",
+    "rumah setara 719",
+    2,
+    18,
+    1951,
+    1876,
+    21576
+   ],
+   [
+    2025,
+    "Kota Lhokseumawe",
+    "Aceh",
+    "rumah setara 692",
+    5,
+    143,
+    0,
+    138,
+    100519
+   ],
+   [
+    2025,
+    "Kota Padang",
+    "Sumatera Barat",
+    "rumah setara 1590",
+    11,
+    485,
+    0,
+    1402,
+    27153
+   ]
+  ],
+  "Kekeringan": [
+   [
+    2024,
+    "Lombok Tengah",
+    "Nusa Tenggara Barat",
+    "terdampak 26% penduduk",
+    0,
+    0,
+    0,
+    0,
+    274622
+   ],
+   [
+    2017,
+    "Lombok Tengah",
+    "Nusa Tenggara Barat",
+    "terdampak 26% penduduk",
+    0,
+    0,
+    0,
+    0,
+    282793
+   ],
+   [
+    2019,
+    "Sumba Tengah",
+    "Nusa Tenggara Timur",
+    "terdampak 28% penduduk",
+    0,
+    0,
+    0,
+    0,
+    46800
+   ],
+   [
+    2023,
+    "Sinjai",
+    "Sulawesi Selatan",
+    "terdampak 19% penduduk",
+    0,
+    0,
+    0,
+    0,
+    52898
+   ],
+   [
+    2023,
+    "Dompu",
+    "Nusa Tenggara Barat",
+    "terdampak 25% penduduk",
+    0,
+    0,
+    0,
+    0,
+    70024
+   ],
+   [
+    2019,
+    "Nagekeo",
+    "Nusa Tenggara Timur",
+    "terdampak 18% penduduk",
+    0,
+    0,
+    0,
+    0,
+    63662
+   ],
+   [
+    2015,
+    "Buton Utara",
+    "Sulawesi Tenggara",
+    "terdampak 22% penduduk",
+    0,
+    0,
+    0,
+    0,
+    18114
+   ],
+   [
+    2018,
+    "Manggarai",
+    "Nusa Tenggara Timur",
+    "terdampak 36% penduduk",
+    0,
+    0,
+    0,
+    0,
+    53827
+   ]
+  ],
+  "Banjir dan Tanah Longsor": [
+   [
+    2020,
+    "Aceh Utara",
+    "Aceh",
+    "mengungsi>=1000",
+    5,
+    0,
+    20103,
+    42625,
+    26760
+   ],
+   [
+    2021,
+    "Kota Semarang",
+    "Jawa Tengah",
+    "mengungsi>=1000",
+    1,
+    0,
+    13297,
+    1180,
+    71530
+   ],
+   [
+    2021,
+    "Tanah Laut",
+    "Kalimantan Selatan",
+    "mengungsi>=1000",
+    7,
+    1,
+    12652,
+    13062,
+    142579
+   ],
+   [
+    2022,
+    "Aceh Timur",
+    "Aceh",
+    "mengungsi>=1000",
+    0,
+    2,
+    5438,
+    4206,
+    15029
+   ],
+   [
+    2022,
+    "Cilacap",
+    "Jawa Tengah",
+    "mengungsi>=1000",
+    0,
+    8,
+    5000,
+    2422,
+    21187
+   ],
+   [
+    2022,
+    "Aceh Timur",
+    "Aceh",
+    "mengungsi>=1000",
+    0,
+    0,
+    4979,
+    2965,
+    18616
+   ],
+   [
+    2021,
+    "Mandailing Natal",
+    "Sumatera Utara",
+    "mengungsi>=1000",
+    2,
+    33,
+    2296,
+    11546,
+    11480
+   ],
+   [
+    2020,
+    "Garut",
+    "Jawa Barat",
+    "mengungsi>=1000",
+    0,
+    210,
+    2180,
+    1360,
+    8967
+   ]
+  ],
+  "Puting Beliung": [
+   [
+    2019,
+    "Bojonegoro",
+    "Jawa Timur",
+    "rumah setara 909",
+    0,
+    57,
+    0,
+    0,
+    0
+   ],
+   [
+    2018,
+    "Kota Bogor",
+    "Jawa Barat",
+    "rumah setara 700",
+    1,
+    400,
+    0,
+    942,
+    0
+   ],
+   [
+    2019,
+    "Banjarnegara",
+    "Jawa Tengah",
+    "rumah setara 730",
+    0,
+    401,
+    0,
+    0,
+    0
+   ]
+  ],
+  "Tanah Longsor": [
+   [
+    2025,
+    "Cilacap",
+    "Jawa Tengah",
+    "mengungsi>=1000",
+    21,
+    15,
+    0,
+    1069,
+    229
+   ],
+   [
+    2016,
+    "Serang",
+    "Banten",
+    "mengungsi>=1000",
+    0,
+    15,
+    0,
+    1260,
+    0
+   ],
+   [
+    2010,
+    "Garut",
+    "Jawa Barat",
+    "mengungsi>=1000",
+    3,
+    3,
+    0,
+    2483,
+    1
+   ],
+   [
+    2018,
+    "Kota Ternate",
+    "Maluku Utara",
+    "mengungsi>=1000",
+    0,
+    16,
+    0,
+    1924,
+    0
+   ],
+   [
+    2018,
+    "Kuningan",
+    "Jawa Barat",
+    "mengungsi>=1000",
+    0,
+    0,
+    0,
+    1155,
+    0
+   ],
+   [
+    2017,
+    "Bekasi",
+    "Jawa Barat",
+    "mengungsi>=1000",
+    0,
+    0,
+    0,
+    1100,
+    3050
+   ],
+   [
+    2025,
+    "Halmahera Selatan",
+    "Maluku Utara",
+    "mengungsi>=1000",
+    0,
+    1,
+    0,
+    1331,
+    0
+   ],
+   [
+    2018,
+    "Kuningan",
+    "Jawa Barat",
+    "mengungsi>=1000",
+    0,
+    6,
+    0,
+    1500,
+    0
+   ]
+  ],
+  "Banjir Bandang": [
+   [
+    2021,
+    "Lombok Barat",
+    "Nusa Tenggara Barat",
+    "rumah setara 990",
+    5,
+    0,
+    4958,
+    2762,
+    29468
+   ],
+   [
+    2020,
+    "Bantaeng",
+    "Sulawesi Selatan",
+    "rumah setara 694",
+    1,
+    64,
+    0,
+    245,
+    34575
+   ]
+  ],
+  "Cuaca Ekstrem": [
+   [
+    2014,
+    "Kota Bandung",
+    "Jawa Barat",
+    "rumah setara 750",
+    1,
+    0,
+    0,
+    550,
+    0
+   ]
+  ]
+ }
+}

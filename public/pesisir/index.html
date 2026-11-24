@@ -43,7 +43,7 @@
 <link rel="stylesheet" href="pesisir.css">
 <link rel="stylesheet" href="foto.css">
 </head>
-<body>
+<body class="pb-rapi">
 <div id="tip" role="tooltip"></div>
 <header class="top">
   <div class="mark">
@@ -67,7 +67,7 @@
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"></div>
+          <div class="gp-bar"><div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none"></div><span id="gpUnduh"></span></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari lokasi atau provinsi" autocomplete="off" aria-label="Cari lokasi">
@@ -119,9 +119,11 @@
 <script src="peta.js"></script>
 <script src="insight.js"></script>
 <script src="tren.js"></script>
+<script src="../inti/pilih.js"></script>
 <script src="../inti/sinyal.js"></script>
 <script src="dampak.js"></script>
 <script src="metode.js"></script>
+<script type="module" src="../inti/peta/lapis.js"></script>
 <script src="pesisir.js"></script>
 <script src="../inti/kalender.js"></script>
 <script src="../inti/pilih_tanggal.js"></script>

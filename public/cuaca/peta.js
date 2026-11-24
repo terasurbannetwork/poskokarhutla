@@ -10,7 +10,7 @@ const UBIN = {bmkg: ["#7a3b0b", "#f2b544", "peringatan"], gelombang: ["#16405c",
 const UBIN_PENDEK = {bmkg: "BMKG", gelombang: "Ombak", satelit: "Satelit"};
 /* infografis nowcast BMKG: gambar utuh hanya dari https://nowcasting.bmkg.go.id (host persis); selain itu tetap tautan */
 const gambarNcSah = u => { try { const x = new URL(u); return x.protocol === "https:" && x.hostname === "nowcasting.bmkg.go.id"; } catch { return false; } };
-const infografisNc = u => gambarNcSah(u) ? `<p class="fnd"><img src="${escUrl(u)}" alt="Infografis nowcast BMKG untuk peringatan ini" loading="lazy" style="max-width:100%;height:auto;display:block"></p><p class="fnd">Sumber: BMKG</p>` : "";
+const infografisNc = u => gambarNcSah(u) ? `<img src="${escUrl(u)}" alt="Infografis nowcast BMKG untuk peringatan ini" loading="lazy" style="max-width:100%;height:auto;display:block;border-radius:8px">` : "";
 const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 const MEDAN_KOR = [[94.5, 6.5], [141.5, 6.5], [141.5, -11.5], [94.5, -11.5]]; /* kotak gambar hujan: barat laut, timur laut, tenggara, barat daya */
 const sevWarna = s => WARNA_SEV[s] || SEV_ASAL;
@@ -84,22 +84,24 @@ const Peta = {
   /* kartu hover satu baris berikon: sel terdekat (hujan, embusan, peluang ansambel) */
   kartuSel(r) { const i = S.hari, p = S.ensK.get(Math.round(r[0]) + "," + Math.round(r[1])), pe = p?.[3][i];
     return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(r[2]))}</span>`, stat: [["hujan", fmt(Math.round(r[3][i] || 0)) + " mm", "hujan", "#3f7fb8", tingkat(r[3][i], AMB().hujan) > 0],
-      ["angin", fmt(Math.round(r[4][i] || 0)) + " km/jam", "embusan", "#2b8c86", tingkat(r[4][i], AMB().angin_kmj) > 0], ...(pe != null ? [["rasio", Math.round(pe * 100) + "%", "peluang ≥ 50 mm", "#7a4fc4", pe >= .5]] : [])]}); },
+      ["angin", fmt(Math.round(r[4][i] || 0)) + " km/jam", "embusan", "#2b8c86", tingkat(r[4][i], AMB().angin_kmj) > 0], ...(pe != null ? [["rasio", Math.round(pe * 100) + "%", "peluang 50 mm atau lebih", "#7a4fc4", pe >= .5]] : [])]}); },
   kartuProv(o) { return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(o.prov))}</span>`, stat: [["ombak", GEL[o.lv - 1][1], "gelombang", GEL[o.lv - 1][3], o.lv >= 2], ["peringatan", o.total, "perairan", "#3f7fb8"]]}); },
   kartuBmkg(a) { return PI.kartuTip({judul: `<span translate="no">${esc(a.event)}</span>`, stat: [["peringatan", SEV_ID[a.severity] || a.severity, "BMKG", sevWarna(a.severity), a.severity === "Severe" || a.severity === "Extreme"], ["mata", fmt(a.n), "kecamatan", "#3f7fb8"]]}); },
   /* laci rincian di kanan (sama dengan laci karhutla dan banjir): satu peringatan nowcast atau satu provinsi bergelombang */
-  laciBmkg(i) { const a = S.nc[i]; if (!a) return;
+  laciBmkg(i) { const a = S.nc[i]; if (!a) return; const L = LI(), kec = a.wilayah.split(",").map(x => hurufJudul(x.trim())).filter(Boolean);
+    const tautan = a.web && !gambarNcSah(a.web) ? L.tautanLuar(a.web, "Infografis BMKG") : "";
     Laci.buka("Nowcast BMKG", `<span translate="no">${esc(a.event)}</span>`, `${pilSev(a.severity)} BMKG`,
       `${kvs(kot("Kecamatan", fmt(a.n), "dalam peringatan"))}
-      <p class="fnd" translate="no"><b>${esc(hurufJudul(a.wilayah))}</b></p><p class="fnd">${waktuBerlaku(a.mulai, a.selesai)}</p>${a.deskripsi ? `<p class="fnd" translate="no">${esc(hurufJudul(a.deskripsi))}</p>` : ""}
-      ${infografisNc(a.web)}
-      <p class="fnd">Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}${a.web && !gambarNcSah(a.web) ? `. <a href="${escUrl(a.web)}" target="_blank" rel="noopener noreferrer">Infografis</a>` : ""}</p>`); },
-  laciProv(o) { if (!o) return;
+      ${L.seksiLaci({judul: "Wilayah", ikon: "kab", isi: chipLengkap(kec, 8, "kecamatan")})}
+      ${L.seksiLaci({judul: "Peringatan", ikon: "peringatan", isi: `<div class="lc-lbs">${L.barisLaci("waktu", "Berlaku", berlakuNw(a.mulai, a.selesai))}</div>${a.deskripsi ? teksResmi("Teks resmi BMKG", hurufJudul(a.deskripsi)) : ""}${tautan}`,
+        sumber: `Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}`})}
+      ${infografisNc(a.web) ? seksiCu("Infografis BMKG", "mata", infografisNc(a.web)) : ""}`); },
+  laciProv(o) { if (!o) return; const L = LI(), zona = OFS[o.zona] || "+07:00", sb = `Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}`;
+    const per = GEL.map((k, i) => o.kelas[i] ? `<div class="lc-gel">${pilGel(i)}${chipLengkap(o.perairan[i], 6, "perairan")}</div>` : "").join("");
     Laci.buka("Gelombang tinggi", `<span translate="no">${esc(namaProv(o.prov))}</span>`, `${pilGel(o.lv - 1)} ${fmt(o.total)} perairan`,
-      `${kvs(...GEL.map((k, i) => kot(k[1], fmt(o.kelas[i]), k[2])))}
-      ${GEL.map((k, i) => o.kelas[i] ? `<p class="fnd">${pilGel(i)} <span translate="no">${esc(o.perairan[i].join(", "))}</span></p>` : "").join("")}
-      ${o.sinoptik?.length ? `<div class="lbl">Sinoptik BMKG</div>${o.sinoptik.map(t => `<p class="fnd" translate="no">${esc(t)}</p>`).join("")}` : ""}
-      <p class="fnd">${waktuBerlaku(o.dari + (OFS[o.zona] || "+07:00"), o.sampai + (OFS[o.zona] || "+07:00"))}</p><p class="fnd">Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}</p>`); },
+      `${kvs(...GEL.map((k, i) => kot(k[1], fmt(o.kelas[i]), k[2], "ombak")))}
+      ${L.seksiLaci({judul: "Perairan", ikon: "ombak", isi: `${per}<div class="lc-lbs">${L.barisLaci("waktu", "Berlaku", berlakuNw(o.dari + zona, o.sampai + zona))}</div>`, sumber: o.sinoptik?.length ? "" : sb})}
+      ${o.sinoptik?.length ? L.seksiLaci({judul: "Sinoptik BMKG", ikon: "angin", isi: teksResmi(`${fmt(o.sinoptik.length)} butir analisis sinoptik BMKG`, o.sinoptik), sumber: sb}) : ""}`); },
   /* terbang ke satu peringatan: nowcast ke kotaknya, gelombang ke provinsinya */
   fokus(jenis, k) {
     const nc = jenis === "nc", f = nc ? {geometry: {coordinates: S.nc[k].polygon}} : S.geo.features.find(x => x.properties.kode === k); if (!f) return;
@@ -132,9 +134,41 @@ const Peta = {
 
 /* ================================================================ panel kiri: peringatan BMKG yang berlaku */
 let panelMode = "nc";
-/* ubin angka laci gaya Oyenza (inti/peta.css .kv), sama dengan banjir: angka besar, satuan kecil, label di bawah; kolom menyesuaikan jumlah ubin */
-const kot = (l, v, s) => `<div><b>${v}${s ? ` <small>${s}</small>` : ""}</b><span>${l}</span></div>`;
-const kvs = (...t) => { const a = t.filter(Boolean); return `<div class="kv" style="grid-template-columns:repeat(${a.length === 4 ? 2 : Math.min(a.length, 3)},1fr)">${a.join("")}</div>`; };
+/* pembantu laci bersama (inti/peta/lapis.js, dimuat sebagai modul di index.html); cadangan polos bila modul belum termuat */
+/* "Berlaku" di laci: tiap potongan waktu tidak dipatah (cuaca.css .nw); teks polos waktuBerlaku tetap untuk unduhan */
+const berlakuNw = (a, b) => waktuBerlaku(a, b).split(" sampai ").map(x => `<span class="nw">${x}</span>`).join(" sampai ");
+const LI = () => window.LaciInti || {tautanLuar: (h, t) => `<a class="lc-luar" href="${escUrl(h)}" target="_blank" rel="noopener">${esc(t)}</a>`, chipWil: d => d.length ? `<p class="fnd" translate="no">${d.map(x => esc(x.nama || x)).join(", ")}</p>` : "",
+  barisLaci: (i, l, v) => `<div class="lc-lb"><span class="lc-lb-k">${esc(l)}</span><b>${v}</b></div>`, kotakAngka: (l, v, s) => `<div class="kpi kpi-t"><span class="lbl">${esc(l)}</span><b>${v}</b>${s ? `<small>${s}</small>` : ""}</div>`,
+  seksiLaci: ({judul, isi = "", sumber = ""}) => `<section class="lc-sek"><h4 class="lc-h">${esc(judul)}</h4>${isi}${sumber ? `<p class="fnd lc-src">${esc(sumber)}</p>` : ""}</section>`};
+/* pembantu laci cuaca (gaya di cuaca.css, bagian "laci rapi"):
+   seksiCu = satu kartu berkepala ikon (sumber kecil di bawahnya); lipatLaci = teks panjang dilipat dengan ringkasan pendek;
+   matriksLaci = baris ukuran x kolom hari, kolom hari terpilih disorot; deretLaci = deret waktu dua sisi untuk layar sempit;
+   butirLaci = teks resmi panjang dipecah jadi butir bernomor (per kalimat bila satu paragraf). */
+const seksiCu = (judul, ikon, isi, sumber = "") => LI().seksiLaci({judul, ikon, isi, sumber});
+const lipatLaci = (ringkas, isi) => `<details class="cu-lipat"><summary>${ringkas}</summary><div class="cu-lipat-isi">${isi}</div></details>`;
+/* chip wilayah tanpa nama tersembunyi: maks nama pertama tampil sebagai chip, sisanya dilipat sebagai chip lengkap (tidak hanya di title, terbuka di layar sentuh);
+   lain = jumlah wilayah yang tidak tercantum namanya di data, ditulis sebagai teks terlihat */
+const chipLengkap = (daftar, maks, satuan, lain = 0) => { const L = LI(), A = daftar.filter(Boolean), sisa = A.slice(maks);
+  return `${L.chipWil(A.slice(0, maks), {maks})}${sisa.length ? lipatLaci(`${fmt(sisa.length)} ${satuan} lainnya`, L.chipWil(sisa, {maks: sisa.length})) : ""}${lain > 0 ? `<p class="fnd">Dan ${fmt(lain)} ${satuan} lainnya yang namanya tidak tercantum di data.</p>` : ""}`; };
+const matriksLaci = (kolom, baris, aktif = -1) => `<div class="cu-tb cu-mx"><table><thead><tr><th></th>${kolom.map((c, d) => `<th class="n${d === aktif ? " on" : ""}">${c}</th>`).join("")}</tr></thead><tbody>${baris.filter(Boolean).map(([l, v]) => `<tr><th scope="row">${l}</th>${v.map((x, d) => `<td class="n${d === aktif ? " on" : ""}">${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+/* baris dua sisi untuk deret waktu di HP: kiri tanggal atau jam dengan keterangan kecil, kanan angka utama rata kanan dengan angka kedua kecil */
+const deretLaci = baris => `<div class="cu-deret">${baris.map(([kb, ks, nb, ns]) => `<div class="cu-dr"><span><b>${kb}</b>${ks ? `<small>${ks}</small>` : ""}</span><span class="n"><b>${nb}</b>${ns ? `<small>${ns}</small>` : ""}</span></div>`).join("")}</div>`;
+/* singkatan wilayah ("Kec. A", "Kab. B") bukan akhir kalimat: potongan sesudahnya disambung kembali */
+const SINGKAT_LACI = /\b(kec|kab|kel|ds|prov|adm|kp|jl|no|tg|pkl|dll|dst|dsb)\.$/i;
+const kalimatLaci = t => String(t || "").split(/(?<=\.)\s+(?=[A-Z0-9])/).reduce((A, x) => { if (A.length && SINGKAT_LACI.test(A[A.length - 1])) A[A.length - 1] += " " + x; else A.push(x); return A; }, []);
+const butirLaci = teks => { const T = [].concat(teks).flatMap(kalimatLaci).map(t => t.trim()).filter(Boolean);
+  return T.length ? `<ol class="cu-ol" translate="no">${T.map(t => `<li>${esc(t)}</li>`).join("")}</ol>` : ""; };
+/* teks resmi: pendek tampil sebagai butir, panjang (lebih dari 260 huruf) dilipat di bawah ringkasan */
+const teksResmi = (ringkas, teks) => { const p = [].concat(teks).join(" ").length; return p > 260 ? lipatLaci(ringkas, butirLaci(teks)) : butirLaci(teks); };
+/* kotak angka laci berikon (.kpi.kpi-t, sama dengan laci gempa): label berikon di atas, angka besar, keterangan kecil di bawah.
+   Satuan pendek (mm, km/jam, m, %) menempel ke angka; keterangan lain jadi baris kecil. Ikon ditebak dari label bila tidak diberi. */
+const IK_KOT = [[/peluang/i, "rasio"], [/hujan/i, "hujan"], [/embusan|angin/i, "angin"], [/gelombang|tertinggi|model/i, "ombak"], [/tingkat|status/i, "peringatan"], [/wilayah|kabupaten/i, "kab"],
+  [/penduduk/i, "orang"], [/kecamatan|provinsi/i, "peta"], [/pasang|surut/i, "tetes"], [/arus/i, "sungai"], [/jarak pandang/i, "mata"], [/tekanan/i, "kuat"], [/peringkat/i, "debit"], [/pemilik/i, "perisai"],
+  [/hari|besok|lusa|prakiraan|tahun|tercatat/i, "waktu"]];
+const SATUAN_KOT = /^(mm|km\/jam|m|cm|km|knot|hPa|%)$/;
+const kot = (l, v, s, ik) => { const u = s && SATUAN_KOT.test(s), nilai = u ? `${v}${s === "%" ? "" : " "}${s}` : v;
+  return LI().kotakAngka(l, nilai, u ? "" : s || "", ik ?? IK_KOT.find(([r]) => r.test(l))?.[1] ?? ""); };
+const kvs = (...t) => { const a = t.filter(Boolean); return `<div class="grid lc-kot" style="grid-template-columns:repeat(${a.length === 4 ? 2 : Math.min(a.length, 3)},minmax(0,1fr))">${a.join("")}</div>`; };
 const Laci = {
   buka(ey, judul, meta, isi) { const el = $("#laci"); Kejadian.bersih();   /* laci lain terbuka: lapisan dan tautan kejadian dilepas (Kejadian.laci menahan lewat _buka) */
     el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">${ey}</span><h2 id="dlgJudul" translate="no" title="${judul.replace(/<[^>]+>/g, "")}">${judul}</h2>${meta ? `<div class="hd-meta"><span>${meta}</span></div>` : ""}</div>
@@ -183,7 +217,7 @@ function renderLegenda() {
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${S.mode === "hujan" ? `<div class="lbl">Hujan harian (mm)</div>${bar(ST_HUJAN, [1, 20, 50, 100, 150, 250])}` : ""}
     ${S.mode === "angin" ? `<div class="lbl">Embusan angin (km/jam)</div>${bar(ST_ANGIN, [25, 40, 54, 72, 90, 130])}` : ""}
-    ${S.mode === "ens" ? `<div class="lbl">Peluang hujan ≥ 50 mm (ansambel)</div><div class="legscale">${["#bcd6f0", "#6aa7e3", "#7a4fc4", "#c9503a"].map(c => `<i style="background:${c}"></i>`).join("")}</div><div class="legnum"><span>10%</span><span>25%</span><span>50%</span><span>80%</span></div>` : ""}
+    ${S.mode === "ens" ? `<div class="lbl">Peluang hujan 50 mm atau lebih (ansambel)</div><div class="legscale">${["#bcd6f0", "#6aa7e3", "#7a4fc4", "#c9503a"].map(c => `<i style="background:${c}"></i>`).join("")}</div><div class="legnum"><span>10%</span><span>25%</span><span>50%</span><span>80%</span></div>` : ""}
     ${Status.legenda()}
     ${Rawan.legenda()}
     ${Tambahan.legenda()}${Awan.legenda()}

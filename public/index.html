@@ -70,7 +70,8 @@ nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya{flex:none}
 .lainnya summary{list-style:none;display:flex;align-items:center;gap:6px;color:#fff;opacity:.78;padding:8px 13px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
 .lainnya summary::-webkit-details-marker{display:none}
-.lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.lainnya summary svg{width:14px;height:14px;flex:none;opacity:.9}   /* ikon dari inti/tab_lainnya.js: tanpa ukuran ia tergencet jadi 5 px */
+.lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;margin-top:-3px;transform:rotate(45deg)}
 .lainnya summary:hover,.lainnya[open] summary{opacity:1;background:oklch(100% 0 0 / .08)}
 .lainnya:has(button[aria-current="page"]) summary{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}

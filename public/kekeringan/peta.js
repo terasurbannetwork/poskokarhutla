@@ -37,7 +37,8 @@ const warnaTangga = (k, v) => v == null ? "" : TANGGA[k].find(([b]) => v <= b)[1
 /* kolom grid: lat, lon, prov, pct0, pct1, dc, spi3, lv, spi6, mm3 */
 const nilaiMode = (r, m) => m === "tanah" ? (r[4] ?? r[3]) : m === "spi" ? r[6] : m === "dc" ? r[5] : null;
 const warnaSel = (r, m) => m === "status" ? (r[7] ? WARNA_LV[r[7]] : "") : warnaTangga(m, nilaiMode(r, m));
-const MODE = [["status", "Status"], ["hth", "HTH"], ["prakiraan", "Prakiraan"], ["padi", "Padi"], ["spi", "Hujan"], ["tanah", "Tanah"], ["dc", "Kode DC"]];
+const MODE = [["status", "Status"], ["hth", "Tanpa hujan"], ["prakiraan", "Prakiraan"], ["padi", "Padi"], ["spi", "Hujan"], ["tanah", "Tanah"], ["dc", "Kode kering"]];
+const MODE_JUDUL = {status: "Status gabungan hujan dan kelembapan tanah", hth: "Hari tanpa hujan (HTH)", prakiraan: "Prakiraan peluang kering 1 sampai 3 bulan", padi: "Peluang hasil padi tadah hujan turun", spi: "Indeks hujan standar (SPI-3)", tanah: "Kelembapan tanah 7 sampai 28 cm", dc: "Kode kekeringan (Drought Code)"};
 const MODE_WIL = m => m === "status" || m === "padi";   /* mode yang mewarnai poligon wilayah; sisanya kisi */
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], grid: ["#1d4e89", "#69a7e8", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"], embung: ["#0f4c75", "#7ec0e8", "sungai"], gambut: ["#5a3420", "#c9a07a", "rasio"], kejadian: ["#8c2f1b", "#e58a45", "peringatan"]};
 const UBIN_PENDEK = {wilayah: "Status", grid: "Kisi", satelit: "Satelit", embung: "Embung", gambut: "Gambut", kejadian: "Kejadian"};
@@ -137,7 +138,7 @@ const Peta = {
   kartuHth(r) { const k = KELAS_HTH()[r[3]] || "";
     return PI.kartuTip({judul: "Hari tanpa hujan", sub: `<small>${F2(Math.abs(r[0]))}° ${r[0] < 0 ? "LS" : "LU"}, ${F2(r[1])}° BT</small>`, stat: [["hujan", fmt(r[2]) + " hari", k.toLowerCase(), warnaHth(r[2]) || "#9ccfae", r[3] >= 4]]}); },
   kartuPrak(r) { const t = titikPrak(r), ls = t?.[2] || [], bl = BLN_PRAK();
-    return PI.kartuTip({judul: "Prakiraan SEAS5", sub: `<small>${BELUM_UJI.toLowerCase()}</small>`, stat: ls.map((l, i) => ["hujan", fmt(l[3]) + "%", `${bl[i] || ""} SPI-3 ≤ −1${BASELINE_PRAK("pk1", i) != null ? ", " + selisihTxt(l[3], BASELINE_PRAK("pk1", i)) : ""}`, warnaBatas(WARNA_PRAK, l[3]) , i === S.bln && l[3] >= 50])}); },
+    return PI.kartuTip({judul: "Prakiraan SEAS5", sub: `<small>${BELUM_UJI.toLowerCase()}</small>`, stat: ls.map((l, i) => ["hujan", fmt(l[3]) + "%", `${bl[i] || ""} SPI-3 −1 atau kurang${BASELINE_PRAK("pk1", i) != null ? ", " + selisihTxt(l[3], BASELINE_PRAK("pk1", i)) : ""}`, warnaBatas(WARNA_PRAK, l[3]) , i === S.bln && l[3] >= 50])}); },
   kartuSel(r) { if (S.mode === "hth") return this.kartuHth(r); if (S.mode === "prakiraan") return this.kartuPrak(r);
     const W = WARNA_LV, lv = r[7] || 0, tanah = r[4] ?? r[3];
     return PI.kartuTip({judul: esc(namaProv(r[2])), sub: `<small>${F2(Math.abs(r[0]))}° ${r[0] < 0 ? "LS" : "LU"}, ${F2(r[1])}° BT</small>`, stat: [["perisai", LEVEL[lv], "status", W[lv], lv >= 2],
@@ -187,7 +188,7 @@ function renderDaftar() {
   const u = k => U?.k === k ? ' class="urut"' + (U.d > 0 ? ' data-arah="1"' : "") : "";
   const n = tepat(j.length ? S.wil.prov[j[0]]?.kab_n || [0, 0, 0] : S.meta.nasional.kab_n);
   const pn = t => `<span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${t}</span>`;   /* pil netral: bulan SPI dan ambang belum teruji (A17) */
-  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn(AMBANG_PIL())}</div></div>${barAlat()}`;
+  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kk-ka">${[2, 1, 0].map(i => kot(LEVEL[i + 1], `<span style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</span>`, "kabupaten/kota", "peringatan")).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn(AMBANG_PIL())}</div></div>${barAlat()}`;
   const kepala = `<div class="tb kepala" style="${g}"><span></span><span data-s="nm"${u("nm")}>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n" data-s="spi"${u("spi")}>SPI</span><span class="n" data-s="jiwa"${u("jiwa")}>Jiwa</span><span data-s="lv"${u("lv")} style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = ringkas + kepala + (item.map((i, k) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${k + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
     <span class="n">${i.a.spi3 != null ? F2(i.a.spi3) : "–"}</span><span class="n">${i.a.jiwa[0] ? rb(i.a.jiwa[0]) : "–"}</span>
@@ -217,7 +218,7 @@ $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"
 function renderMode() {
   /* mode tanpa satu sel pun bernilai dibuang (A18); tanah muncul sendiri begitu klimatologinya cukup */
   const ada = m => m === "status" || (m === "hth" ? !!S.hth?.sel?.length : m === "prakiraan" ? !!S.prak : m === "padi" ? !!S.padi : S.grid.grid.some(r => nilaiMode(r, m) != null));
-  $("#modePeta").innerHTML = MODE.filter(([m]) => ada(m)).map(([m, n]) => `<button data-mp="${m}" aria-pressed="${S.mode === m}">${n}</button>`).join("");
+  $("#modePeta").innerHTML = MODE.filter(([m]) => ada(m)).map(([m, n]) => `<button data-mp="${m}" aria-pressed="${S.mode === m}" title="${MODE_JUDUL[m] || n}">${n}</button>`).join("");
   if (!$("#blnPeta")) $("#modePeta").insertAdjacentHTML("afterend", '<div class="seg penuh" id="blnPeta" role="group" aria-label="Bulan prakiraan" hidden></div>'); blnPeta(); }
 function blnPeta() { const e = $("#blnPeta"); if (!e) return; const on = S.mode === "prakiraan" && S.prak; e.hidden = !on; if (!on) return;
   e.innerHTML = BLN_PRAK().map((b, i) => `<button data-b="${i}" aria-pressed="${S.bln === i}">${b}</button>`).join(""); }
@@ -242,16 +243,16 @@ function renderLegenda() {
   const m = S.mode, M = S.meta, grid = Peta.lihat("grid") && m !== "status", wil = Peta.lihat("wilayah");
   const sw = (w, t) => `<span><i class="sw" style="background:${w}"></i>${t}</span>`;
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
-    ${wil && m === "padi" ? `<div class="lbl">Padi tadah hujan: ${PADI_BESARAN(padiJenis())} dibanding normal (selisih poin)</div>${skalaW(WARNA_PADI.map(x => x[1]), ["≤ 0", "1–9", "10–24", "≥ 25"])}<div class="lbl" style="margin-top:2px">Tanam mengikuti onset hujan (asumsi), tanpa irigasi, tanpa data sawah</div>` : ""}
+    ${wil && m === "padi" ? `<div class="lbl">Padi tadah hujan: ${PADI_BESARAN(padiJenis())} dibanding normal (selisih poin)</div>${skalaW(WARNA_PADI.map(x => x[1]), ["0 atau kurang", "1–9", "10–24", "25 atau lebih"])}<div class="lbl" style="margin-top:2px">Tanam mengikuti onset hujan (asumsi), tanpa irigasi, tanpa data sawah</div>` : ""}
     ${m === "hth" && Peta.lihat("grid") && S.hth ? (() => { const b = S.hth.batas_kelas, lb = [`1–${b[0]}`, ...b.slice(1).map((x, i) => `${b[i] + 1}–${x}`), `> ${b.at(-1)}`];
       return `<div class="lbl">Hari tanpa hujan (hujan &lt; ${fmt(S.hth.ambang_mm)} mm), kelas BMKG</div>${skalaW(WARNA_HTH, lb)}`; })() : ""}
-    ${Peta.lihat("grid") && m === "prakiraan" ? `<div class="lbl">Peluang SPI-3 ≤ −1, ${esc(BLN_PRAK()[S.bln] || "")} (%)</div>${skalaW(WARNA_PRAK.map(x => x[1]), ["≤ 10", "11–20", "21–35", "36–50", "51–70", "> 70"])}
+    ${Peta.lihat("grid") && m === "prakiraan" ? `<div class="lbl">Peluang SPI-3 −1 atau kurang, ${esc(BLN_PRAK()[S.bln] || "")} (%)</div>${skalaW(WARNA_PRAK.map(x => x[1]), ["10 atau kurang", "11–20", "21–35", "36–50", "51–70", "lebih dari 70"])}
       <div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#0b2545"></i>${BELUM_UJI}, ECMWF SEAS5; ${esc(BIAS_BULAN()[S.bln] || BIAS_TXT())}</span>${BASELINE_PRAK("pk1", S.bln) != null ? `<span>Baseline klimatologi ${fmt(Math.round(BASELINE_PRAK("pk1", S.bln)))}%</span>` : ""}</div>` : ""}
     ${wil && m !== "padi" ? `<div class="lbl">Status kekeringan per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => sw(WARNA_LV[l], LEVEL[l])).join("")}</div>` : ""}
     ${Peta.lihat("grid") && m === "status" ? `<div class="lbl">Status kisi 0,5°</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => sw(WARNA_LV[l], LEVEL[l])).join("")}</div>` : ""}
     ${grid && m === "spi" ? `<div class="lbl">Indeks hujan 3 bulan (SPI-3${M.spi ? ", " + spiBulan() : ""})</div>${skala("spi", [-3, -1.75, -1.25, -.75, 0, .75, 1.25, 2], ["−2", "−1,5", "−1", "−0,5", "+0,5", "+1", "+1,5", "> 1,5"])}` : ""}
     ${grid && m === "tanah" ? `<div class="lbl">Kelembapan tanah 7–28 cm (persentil, ${fmt(M.tanah.sel)} sel)</div>${skala("tanah", [3, 8, 15, 30, 50, 70, 90, 99], ["5", "10", "20", "40", "60", "80", "95", "> 95"])}` : ""}
-    ${grid && m === "dc" ? `<div class="lbl">Kode kekeringan (DC)</div><div class="leg" style="margin:4px 0 8px">${[[50, "< 80 rendah"], [150, "80 sedang"], [250, "190 tinggi"], [350, "300 sangat tinggi"], [500, "≥ 425 ekstrem"]].map(([v, t]) => sw(warnaTangga("dc", v), t)).join("")}</div>` : ""}
+    ${grid && m === "dc" ? `<div class="lbl">Kode kekeringan (DC)</div><div class="leg" style="margin:4px 0 8px">${[[50, "di bawah 80 rendah"], [150, "80 sedang"], [250, "190 tinggi"], [350, "300 sangat tinggi"], [500, "425 atau lebih ekstrem"]].map(([v, t]) => sw(warnaTangga("dc", v), t)).join("")}</div>` : ""}
     ${Peta.lihat("embung") && S.embung ? `<div class="lbl">Embung, waduk, bendungan (OpenStreetMap)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#1d6fa5"></i>lingkaran = jumlah objek per kabupaten (titik bukan lokasi embung), ${fmt(S.embung.total)} objek se-Indonesia; kasar, tidak lengkap</span></div>` : ""}
     ${Peta.lihat("gambut") && S.bukti?.gambut?.daftar?.length ? `<div class="lbl">Konsesi berlahan gambut di sel Siaga atau Awas</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a4a2c"></i>${fmt(S.bukti.gambut.daftar.length)} cluster teratas (menurut DC) dari ${fmt(S.bukti.gambut.n_kering)}, tanpa nama perusahaan; indikator kasar per sel 0,5°</span></div>` : ""}
     ${window.KekKejadian?.legenda() || ""}
@@ -259,37 +260,65 @@ function renderLegenda() {
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
 
 /* ================================================================ popup wilayah */
-const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
+/* kotak angka berikon, ikon, dan bilah per kelas dari mesin bersama (inti/peta/lapis.js, window.LaciInti; gaya di inti/peta.css).
+   Bila modul belum termuat, kotak tetap tampil tanpa ikon dan bilah dibuang. Dipakai juga oleh tanggal.js. */
+const LI = () => window.LaciInti || PI;
+const kot = (l, v, s, ik = "") => LI()?.kotakAngka ? LI().kotakAngka(l, v, s, ik) : `<div class="kpi kpi-t"><span class="lbl">${esc(l)}</span><b>${v}</b>${s ? `<small>${s}</small>` : ""}</div>`;
+const ikS = k => LI()?.ikonSvg ? LI().ikonSvg(k) : "";
 const Analisa = {
-  buka(html, kepala) { const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${html}</div>`;
-    d.querySelector("[data-tutup]").onclick = () => d.close(); d.querySelector("[data-profil]")?.addEventListener("click", ev => window.KekCari?.profil(ev.currentTarget.dataset.profil)); d.onclick = e => { if (e.target === d) d.close(); }; d.showModal(); },
+  /* laci samping seperti gempa, gunung api, cuaca, udara, dan karhutla (pemilik 23 Nov 2026: rincian di sidebar, bukan pop-up; jangan ada yang beda) */
+  buka(html, kepala) { const d = $("#laci"); d.innerHTML = `<div class="hd"><div class="hd-isi kk-hd">${kepala}</div><div class="hd-aksi"><button type="button" class="tutup ik-btn" aria-label="Tutup" title="Tutup" data-tutup><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><div class="bd db kk-bd">${html}</div>`;
+    d.querySelector("[data-tutup]").onclick = () => d.classList.remove("on"); d.querySelector("[data-profil]")?.addEventListener("click", ev => window.KekCari?.profil(ev.currentTarget.dataset.profil)); d.classList.add("on"); d.querySelector(".bd")?.scrollTo?.(0, 0); },
+  /* pembantu kartu laci (rupa .lc-sek/.lc-h/.lc-lb/.lc-src dari inti/peta.css); judul HTML boleh memuat pil */
+  sek: (judul, ik, isi, sumber = "", kls = "") => `<section class="lc-sek${kls ? " " + kls : ""}"><h4 class="lc-h">${ikS(ik)}${judul}</h4>${isi}${sumber ? `<p class="fnd lc-src">${sumber}</p>` : ""}</section>`,
+  baris: (ik, l, v) => LI()?.barisLaci ? LI().barisLaci(ik, l, v) : `<div class="lc-lb"><span class="lc-lb-k">${esc(l)}</span><b>${v}</b></div>`,
+  /* catatan panjang dilipat jadi butir bernomor */
+  lipat: (ringkas, butir) => butir.length ? `<details class="kk-lipat"><summary>${ringkas}</summary><ol>${butir.map(b => `<li>${b}</li>`).join("")}</ol></details>` : "",
+  pilLv: lv => `<span class="lc-pil${lv === 1 ? " terang" : ""}" style="--w:${WARNA_LV[lv]}">${LEVEL[lv]}</span>`,
   wilayah(kunci) {
-    const p = kunci.split("|"), kab = p.length === 2, a = (kab ? S.wil.kab : S.wil.prov)[kunci] || (kab && (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]) ? {lv: 0, jiwa: [0, 0, 0], total: (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]).total || 0} : null); if (!a) return;   /* kabupaten tanpa status tetap punya HTH, prakiraan, padi */
+    const p = kunci.split("|"), kab = p.length === 2, a = (kab ? S.wil.kab : S.wil.prov)[kunci] || (kab && (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]) ? {lv: 0, jiwa: [0, 0, 0], total: (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]).total || 0, tanpaStatus: true} : null); if (!a) return;   /* kabupaten tanpa status tetap punya HTH, prakiraan, padi */
     const nama = kab ? p[1] : namaProv(p[0]), sub = kab ? "Kabupaten/kota, " + namaProv(p[0]) : "Provinsi", sp = S.meta.spi;
-    const kepala = `${kab ? lambang(p[0], p[1]) : lambang(p[0])}<div><h3 id="dlgJudul">${esc(nama)}</h3><p>${esc(sub)}</p></div>`;
-    const dasar = `<div class="grid g4">${kot("Status", `<span style="color:${WARNA_LV[a.lv]}">${LEVEL[a.lv]}</span>`, ["tidak kering", "kering", "kering parah", "kering berat"][a.lv])}
-      ${kot("Jiwa di wilayah kering", rb(a.jiwa[0]), `dari ${rb(a.total)} jiwa`)}${kot("Jiwa Awas", a.jiwa[2] ? rb(a.jiwa[2]) : "–", "di kecamatan Awas")}
-      ${a.spi3 != null ? kot("SPI " + spiBulan(), F2(a.spi3), katSpi(a.spi3)) : ""}${a.mm3 != null ? kot("Hujan 3 bulan", fmt(a.mm3) + " mm", sp ? "sampai " + spiBulan() : "") : ""}${a.pct != null ? kot("Tanah", fmt(a.pct), "persentil") : ""}${a.dc != null ? kot("Kode DC", fmt(a.dc), "rata-rata tertimbang") : ""}
-      ${!kab ? kot("Kabupaten/kota", `${fmt(a.kab_n[0])}`, `${fmt(a.kab_n[2])} Awas`) : ""}</div>
-      <p class="fnd">Deteksi Centurisk97</p>`;
+    const kepala = `${kab ? lambang(p[0], p[1]) : lambang(p[0])}<div class="kk-hd-t"><h3 id="dlgJudul" title="${esc(nama)}" translate="no">${esc(nama)}</h3><p><span translate="no">${esc(sub)}</span>${a.tanpaStatus ? "" : this.pilLv(a.lv)}</p></div>`;
+    const SUMBER_DT = "Deteksi Centurisk97 dari model kekeringan, bukan status resmi BNPB.";
+    /* jiwa per tingkat (kumulatif: Waspada atau lebih, Siaga atau lebih, Awas) sebagai bilah per kelas; tingkat tanpa jiwa dibuang (A18) */
+    const bar = LI()?.kelasBar ? LI().kelasBar([1, 2, 3].map(l => ({label: ["", "Waspada atau lebih", "Siaga atau lebih", "Awas"][l], nilai: a.jiwa[l - 1], teks: rb(a.jiwa[l - 1]) + " jiwa", w: WARNA_LV[l], pil: true, terang: l === 1}))) : "";
+    /* kotak status: Status selebar kartu, sisanya dua sejajar; kotak terakhir yang sendirian ikut melebar (kekeringan.css .kk-kg) */
+    const kotak = [kot("Status", `<span style="color:${WARNA_LV[a.lv]}">${LEVEL[a.lv]}</span>`, ["tidak kering", "kering", "kering parah", "kering berat"][a.lv], "perisai"),
+      bar ? "" : kot("Jiwa di wilayah kering", rb(a.jiwa[0]), `dari ${rb(a.total)} jiwa`, "orang") + (a.jiwa[2] > 0 ? kot("Jiwa Awas", rb(a.jiwa[2]), "jiwa", "orang") : ""),
+      a.spi3 != null ? kot("Indeks hujan (SPI-3)", F2(a.spi3), katSpi(a.spi3).toLowerCase(), "hujan") : "", a.mm3 != null ? kot("Hujan 3 bulan", fmt(a.mm3) + " mm", sp ? "sampai " + spiBulan() : "", "tetes") : "",
+      a.pct != null ? kot("Kelembapan tanah", fmt(a.pct), "persentil", "rasio") : "", a.dc != null ? kot("Kode kekeringan (DC)", fmt(a.dc), "rata-rata tertimbang", "api") : "",
+      !kab && a.kab_n ? kot("Kabupaten/kota kering", fmt(a.kab_n[0]), `${fmt(a.kab_n[2])} berstatus Awas`, "kab") : ""].join("");
+    const istilah = this.lipat("Arti singkatan", [a.spi3 != null ? `SPI-3 (<i>Standardized Precipitation Index</i>): indeks hujan standar tiga bulan${sp ? " sampai " + esc(spiBulan()) : ""}; nilai −1 atau kurang berarti lebih kering dari biasanya.` : "",
+      a.dc != null ? "DC (<i>Drought Code</i>): kode kekeringan lapisan tanah dalam; makin besar makin kering." : "", a.pct != null ? "Persentil kelembapan tanah: posisi terhadap riwayat; makin kecil makin kering." : ""].filter(Boolean));
+    const dasar = a.tanpaStatus ? this.sek("Deteksi kekeringan", "perisai", `<p class="fnd">Status deteksi belum tersedia untuk kabupaten/kota ini.</p>`, SUMBER_DT) :this.sek("Deteksi kekeringan", "perisai", `<div class="kk-kg kk-utama">${kotak}</div>${istilah}`, SUMBER_DT)
+      + (bar ? this.sek("Penduduk menurut tingkat", "orang", `<div class="lc-lbs">${this.baris("orang", "Jumlah penduduk", rb(a.total) + " jiwa")}</div>${bar}`, "Angka bertingkat: Waspada atau lebih sudah memuat Siaga dan Awas. " + SUMBER_DT) : "");
     const kd = kab && window.KekCari?.profilAktif ? window.KekTanggal?.kode(kunci) : null;   /* profil kab/kota (F-37) hanya bila registri menyala dan kodenya diketahui */
-    const profil = kd ? `<p><button type="button" class="kk-profil" data-profil="${esc(kd)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>Profil kabupaten/kota</button></p>` : "";
-    const isi = `<div id="skBlok"></div>` + dasar + profil + this.blokLain(kunci, kab);
+    const profil = kd ? `<button type="button" class="kk-profil" data-profil="${esc(kd)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>Profil kabupaten/kota</button>` : "";
+    const isi = `<div id="skBlok"></div>` + dasar + this.blokLain(kunci, kab) + profil;
     this.buka(isi, kepala); this.isiSK(kunci, kab); },
-  /* blok HTH, prakiraan SEAS5, padi, IRBI: tiap blok dibuang bila datanya tidak ada */
+  /* blok HTH, prakiraan SEAS5, padi, IRBI: tiap blok satu kartu laci; dibuang bila datanya tidak ada */
   blokLain(kunci, kab) {
-    const blk = (j, isi) => `<section class="bk"><h4>${j}</h4>${isi}</section>`, out = [];
+    const out = [], br = (...x) => this.baris(...x);
     const H = S.hth && (kab ? S.hth.kab : S.hth.prov)[kunci];
-    if (H && H.maks > 0) out.push(blk("Hari tanpa hujan", `<div class="grid g4">${kot("HTH terpanjang", fmt(H.maks) + " hari", (KELAS_HTH()[klsHth(H.maks)] || "").toLowerCase())}${kot("Jiwa HTH 31 hari atau lebih", rb(H.j31), `${fmt(Math.round(H.j31 / (H.total || 1) * 100))}% penduduk`)}${kot("Jiwa HTH 61 hari atau lebih", rb(H.j61), "")}</div><p class="fnd">Hujan di bawah ${fmt(S.hth.ambang_mm)} mm dihitung tanpa hujan; model Open-Meteo, bukan pos BMKG</p>`));
+    if (H && H.maks > 0) out.push(this.sek("Hari tanpa hujan", "waktu", `<div class="lc-lbs">${br("waktu", "Rentang terpanjang", `${fmt(H.maks)} hari<span class="lc-sub">${esc((KELAS_HTH()[klsHth(H.maks)] || "").toLowerCase())}</span>`)}${br("orang", "Penduduk tanpa hujan 31 hari atau lebih", `${rb(H.j31)} jiwa<span class="lc-sub">${fmt(Math.round(H.j31 / (H.total || 1) * 100))}% penduduk</span>`)}${br("orang", "Penduduk tanpa hujan 61 hari atau lebih", rb(H.j61) + " jiwa")}</div>`,
+      `Hari dengan hujan di bawah ${fmt(S.hth.ambang_mm)} mm dihitung tanpa hujan. Sumber: model Open-Meteo, bukan pos pengamatan BMKG.`, "kk-bk"));
     const P = S.prak && (kab ? S.prak.kab : S.prak.prov)[kunci];
-    if (prakAda(P)) out.push(blk(`Prakiraan 3 bulan <em class="sp-p oranye">${BELUM_UJI}</em>`, `<div class="bk-t">${P.lead.map((l, i) => { const bs = BASELINE_PRAK("pk1", i);
-      return `<div><b>${esc(BLN_PRAK()[i] || "")}</b><span>${fmt(Math.round(l.pk1))}% SPI-3 ≤ −1${bs != null ? ` <small>(${selisihTxt(l.pk1, bs)} dari baseline ${fmt(Math.round(bs))}%)</small>` : ""}</span><span>${fmt(Math.round(l.pk15))}% ≤ −1,5, ${fmt(Math.round(l.pk2))}% ≤ −2</span><span>median SPI-3 ${F2(l.spi3)}</span></div>`; }).join("")}</div>
-      <p class="fnd">ECMWF SEAS5, 51 anggota; ${esc(BIAS_TXT())}${P.p31 != null ? `, peluang HTH 31 hari atau lebih ${fmt(Math.round(P.p31))}%, 61 hari ${fmt(Math.round(P.p61))}%` : ""}</p>`));
+    if (prakAda(P)) { const B = BIAS_BULAN();
+      const tb = `<table class="kk-tp"><thead><tr><th scope="col">Bulan</th><th scope="col" class="n" title="Peluang SPI-3 −1 atau kurang (agak kering atau lebih)">−1</th><th scope="col" class="n" title="Peluang SPI-3 −1,5 atau kurang (sangat kering atau lebih)">−1,5</th><th scope="col" class="n" title="Peluang SPI-3 −2 atau kurang (kering ekstrem)">−2</th><th scope="col" class="n" title="Median SPI-3 dari 51 anggota">Median</th></tr></thead><tbody>${P.lead.map((l, i) => { const bs = BASELINE_PRAK("pk1", i);
+        return `<tr><th scope="row">${esc(BLN_PRAK()[i] || "")}</th><td class="n">${fmt(Math.round(l.pk1))}%${bs != null ? `<span class="lc-sub">${selisihTxt(l.pk1, bs)} dari ${fmt(Math.round(bs))}%</span>` : ""}</td><td class="n">${fmt(Math.round(l.pk15))}%</td><td class="n">${fmt(Math.round(l.pk2))}%</td><td class="n">${F2(l.spi3)}</td></tr>`; }).join("")}</tbody></table>`;
+      const hth = P.p31 != null ? `<div class="lc-lbs">${br("waktu", "Peluang tanpa hujan 31 hari atau lebih", fmt(Math.round(P.p31)) + "%")}${br("waktu", "Peluang tanpa hujan 61 hari atau lebih", fmt(Math.round(P.p61)) + "%")}</div>` : "";
+      out.push(this.sek(`Prakiraan 3 bulan <em class="sp-p oranye">${BELUM_UJI}</em>`, "hujan", `<p class="fnd">Peluang SPI-3 turun sampai batas kolom atau lebih rendah.</p>${tb}${hth}`
+        + this.lipat("Catatan model", ["Peluang: kemungkinan indeks hujan tiga bulan (SPI-3) turun sampai batas di kepala kolom atau lebih rendah.", "Angka kecil di bawah peluang adalah selisih dari baseline, yaitu peluang yang sama pada iklim normal.", "Prakiraan musiman ECMWF SEAS5 (Pusat Prakiraan Cuaca Jangka Menengah Eropa), 51 anggota.", "Belum diuji balik terhadap kejadian kekeringan.", ...(B.length ? B.map(esc) : [esc(BIAS_TXT())])]), "Sumber: ECMWF SEAS5, diolah Centurisk97.", "kk-bk")); }
     const D = padiWil(kunci);
-    if (D) { const bd = padiBanding(D);
-      out.push(blk("Padi tadah hujan", `<div class="grid g4">${kab ? kot("Peluang gagal panen", fmt(D.gagal) + "%", "hasil turun 50% atau lebih") : ""}${bd ? kot(PADI_BESARAN(bd.j)[0].toUpperCase() + PADI_BESARAN(bd.j).slice(1), fmt(Math.round(bd.v)) + "%", `normal ${fmt(Math.round(bd.n))}% (${poinTxt(bd.d)})`) : kot("Penurunan hasil median", fmt(Math.round(D.turun_med)) + "%", "")}${bd?.j === "median" ? kot("Peluang hasil turun 25% atau lebih", fmt(Math.round(D.turun25)) + "%", D.fase_terberat ? "fase terberat: " + esc(D.fase_terberat) : "") : kot("Penurunan hasil median", fmt(Math.round(D.turun_med)) + "%", D.fase_terberat ? "fase terberat: " + esc(D.fase_terberat) : "")}</div><p class="fnd">Indikator cekaman air, bukan data puso; tanam ${D.tanam ? esc(tglPendek(D.tanam)) + " (asumsi)" : "mengikuti onset hujan (asumsi)"}, tanpa irigasi, tanpa data sawah</p>`)); }
+    if (D) { const bd = padiBanding(D), besar = bd ? PADI_BESARAN(bd.j) : "", fase = D.fase_terberat ? "fase terberat: " + esc(D.fase_terberat) : "";
+      const kp = [kab ? kot("Peluang gagal panen", fmt(D.gagal) + "%", "hasil turun 50% atau lebih", "rasio") : "",
+        bd ? kot(besar[0].toUpperCase() + besar.slice(1), fmt(Math.round(bd.v)) + "%", `normal ${fmt(Math.round(bd.n))}% (${poinTxt(bd.d)})`, "debit") : "",
+        bd?.j === "median" ? kot("Peluang hasil turun 25% atau lebih", fmt(Math.round(D.turun25)) + "%", fase, "rasio") : kot("Penurunan hasil median", fmt(Math.round(D.turun_med)) + "%", fase, "debit")].join("");
+      out.push(this.sek(`Padi tadah hujan <em class="sp-p oranye">Hipotesis, belum diuji balik</em>`, "tetes", `<div class="kk-kg${kab ? " kk-utama" : ""}">${kp}</div>`
+        + this.lipat("Asumsi model", [`Tanggal tanam ${D.tanam ? esc(tglPendek(D.tanam)) + " (asumsi)" : "mengikuti awal musim hujan (asumsi)"}.`, "Tanpa irigasi.", "Tanpa data luas sawah."]), "Indikator cekaman air, bukan data puso (gagal panen resmi).", "kk-bk")); }
     const I = kab && irbiKab(kunci);
-    if (I) out.push(blk("Indeks risiko kekeringan BNPB", `<div class="grid g4">${kot("IRBI 2025", fmt(I.v25), I.tinggi ? "sepertiga teratas" : "di bawah sepertiga teratas")}${kot("Arah 2022–24 dari 2015–17", esc(I.arah), "skala 2025 beda metode")}</div>`));
+    if (I) out.push(this.sek("Indeks risiko kekeringan BNPB", "peringatan", `<div class="kk-kg">${kot("Skor indeks risiko 2025", fmt(I.v25), I.tinggi ? "sepertiga teratas" : "di bawah sepertiga teratas", "peringatan")}${kot("Arah 2022–2024 dari 2015–2017", esc(I.arah), "skala 2025 berbeda metode", "debit")}</div>`,
+      "Sumber: Indeks Risiko Bencana Indonesia (IRBI) BNPB, bahaya kekeringan.", "kk-bk"));
     return out.join(""); },
   /* SK status darurat BNPB: teks lembaga lewat textContent, bukan innerHTML */
   isiSK(kunci, kab) {
@@ -297,11 +326,18 @@ const Analisa = {
     const L = kab ? skKab(kunci) : (skPer().prov[kunci] || []), nKab = kab ? 0 : Object.keys(skPer().kab).filter(k => k.startsWith(kunci + "|")).length;
     if (!L.length && !nKab) return;
     const el = (t, kls, tx) => { const e = document.createElement(t); if (kls) e.className = kls; if (tx != null) e.textContent = tx; return e; };
-    const sec = el("section", "bk sk"), h = el("h4", "", "Status resmi BNPB"); const pil = el("em", "sp-p merah", S.resmi.n_aktif ? `${fmt(S.resmi.n_aktif)} SK berlaku` : "Tidak ada SK berlaku sekarang"); h.append(" ", pil); sec.append(h);
-    for (const s of L) { const r = el("div", "sk-r"); r.append(el("b", "", s.status), el("span", "", s.jenis), el("span", "", `${tglPendek(s.mulai)} ${s.mulai.slice(0, 4)} sampai ${tglPendek(s.akhir)} ${s.akhir.slice(0, 4)}`), el("small", "", "SK " + s.nomor));
-      if (/^https:\/\/drive\.google\.com\//.test(s.surat || "")) { const a = el("a", "", "Surat SK"); a.href = s.surat; a.target = "_blank"; a.rel = "noopener noreferrer"; r.append(a); } sec.append(r); }
-    if (nKab) sec.append(el("p", "fnd", `${fmt(nKab)} kabupaten/kota di provinsi ini punya SK status darurat BNPB ${S.resmi.tahun_data} (riwayat)`));
-    sec.append(el("p", "fnd", `Riwayat SK ${S.resmi.tahun_data} yang menyebut kekeringan; bukan status berlaku. ${S.resmi.sumber || ""}`)); w.append(sec); },
+    const sec = el("section", "lc-sek sk"), h = el("h4", "lc-h", "Status resmi BNPB"); h.insertAdjacentHTML("afterbegin", ikS("perisai")); const pil = el("em", "sp-p merah", S.resmi.n_aktif ? `${fmt(S.resmi.n_aktif)} SK berlaku` : "Tidak ada SK berlaku"); h.append(" ", pil); sec.append(h);
+    /* satu SK = satu blok: status dan jenis, rentang tanggal berikon, nomor kecil, surat sebagai tombol */
+    const kartu = s => { const r = el("div", "sk-r"), a = el("div", "sk-a");
+      a.append(el("b", "", s.status), el("span", "sk-j", s.jenis)); r.append(a);
+      const t = el("div", "sk-t"); t.insertAdjacentHTML("afterbegin", ikS("waktu")); t.append(el("span", "", `${tglPendek(s.mulai)} ${s.mulai.slice(0, 4)} sampai ${tglPendek(s.akhir)} ${s.akhir.slice(0, 4)}`)); r.append(t);
+      const n = el("div", "sk-n"); n.append(el("small", "", "Nomor SK " + s.nomor));
+      if (/^https:\/\/drive\.google\.com\//.test(s.surat || "")) { const l = el("a", "lc-luar", "Surat SK"); l.insertAdjacentHTML("afterbegin", ikS("luar")); l.href = s.surat; l.target = "_blank"; l.rel = "noopener noreferrer"; n.append(l); }
+      r.append(n); return r; };
+    if (L.length) { const dft = el("div", "sk-d"); L.slice(0, 3).forEach(s => dft.append(kartu(s))); sec.append(dft); }
+    if (L.length > 3) { const d = el("details", "kk-lipat"), sm = el("summary", "", `${fmt(L.length - 3)} SK lainnya`), ds = el("div", "sk-d"); L.slice(3).forEach(s => ds.append(kartu(s))); d.append(sm, ds); sec.append(d); }
+    if (nKab) sec.append(el("p", "fnd", `${fmt(nKab)} kabupaten/kota di provinsi ini punya SK status darurat BNPB ${S.resmi.tahun_data} (riwayat).`));
+    sec.append(el("p", "fnd lc-src", `Riwayat SK ${S.resmi.tahun_data} yang menyebut kekeringan, bukan status berlaku. Sumber: ${S.resmi.sumber || "BNPB"}`)); w.append(sec); },
 };
 
 /* ukuran tabel dari registri (PB-79a, F-39): kemampuan.layar.ukuran_provinsi; registri gagal atau kosong = tanpa segmen, daftar seperti semula */

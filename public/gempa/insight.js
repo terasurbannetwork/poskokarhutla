@@ -106,7 +106,7 @@ const Insight = {
     return Kartu.kartu(this.LABEL.susulan, judul, KG.mendatar(rows, {akhir: pel.some(Boolean) ? 190 : 60}), "BMKG, USGS, model susulan Reasenberg-Jones (peluang perkiraan, bukan prakiraan resmi)"); },
 
   /* 6b. peluang gempa (data/peluang.json, kontrak peluang/1; mesin di public/inti/peluang.js). Tanpa mesin atau berkas = dibuang. */
-  async exPeluang() { if (typeof Peluang === "undefined") return ""; return Peluang.kartu(await Peluang.muat("data/peluang.json"), {ey: this.LABEL.peluang, st: this.st, kejadian: "gempa"}); },
+  async exPeluang() { if (typeof Peluang === "undefined") return ""; return Peluang.kartu(await Peluang.muat("data/peluang.json"), {ey: this.LABEL.peluang, st: this.st, kejadian: "gempa", ikon: KepalaGempa.P.peluang}); },
 
   /* 7. fasilitas rawan dari data/bukti.json (lewat bukti.js); data belum ada = dibuang */
   exBsesar: () => Bukti.kartu("sesar"), exBmmi: () => Bukti.kartu("mmi"), exBpesisir: () => Bukti.kartu("pesisir"), exBevakuasi: () => Bukti.kartu("evakuasi"), exBbnpb: () => Bukti.kartu("bnpb"), exBtabel: () => Bukti.tabel(),

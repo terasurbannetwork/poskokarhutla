@@ -1,7 +1,7 @@
 /* Simulasi neraca air: peta penuh dengan panel melayang (rasa sama dengan tab Simulasi karhutla). Warna lewat token tema. */
-.sm-kembali{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:oklch(100% 0 0 / .14);color:inherit;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap}
-.sm-kembali:hover{background:oklch(100% 0 0 / .24)}
-.sm-sim{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--warn);color:oklch(25.5% .075 256);font-size:11.5px;font-weight:800}
+.sm-kembali{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:color-mix(in srgb,var(--on-head) 14%,transparent);color:inherit;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.sm-kembali:hover{background:color-mix(in srgb,var(--on-head) 24%,transparent)}
+.sm-sim{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--warn);color:var(--head-bg);font-size:11.5px;font-weight:800}
 #sim{overflow:hidden}
 .sm-peta{position:absolute;inset:0}
 #peta{position:absolute;inset:0}
@@ -46,7 +46,7 @@
 #grafik text{font-size:9.5px;fill:var(--ink2);font-family:var(--font)}
 #grafik text.v{font-weight:800}
 #grafik text.ks{font-size:9px}
-#grafik text.pf{fill:#fff;font-size:8px;font-weight:700}
+#grafik text.pf{fill:var(--on-pekat);font-size:8px;font-weight:700}
 #grafik .gr{stroke:var(--line)}
 #grafik .kur{stroke:var(--ink);stroke-width:1.2;stroke-dasharray:3 3}
 .sm-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;color:var(--ink2);align-items:center;justify-content:center}
@@ -78,10 +78,10 @@
 .sm-dlg pre{background:var(--surface);border-radius:10px;padding:10px 12px;overflow:auto;font-size:12px;line-height:1.5;margin:6px 0}
 .maplibregl-ctrl-top-left{margin-left:350px}
 .sm-tb{width:100%;border-collapse:collapse;font-size:11.5px}
-.sm-tb th{text-align:center;font-weight:700;color:var(--ink2);padding:3px 4px;border-bottom:1px solid var(--line)}
+.sm-tb th{text-align:center;font-weight:700;color:var(--on-head);background:var(--head-bg);padding:6px;border-bottom:0}
 .sm-tb td:first-child{text-align:left}
 .sm-tb th:first-child{text-align:center}
-.sm-tb td{text-align:center;padding:5px 4px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.sm-tb td{text-align:right;padding:5px 4px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
 .sm-tb td small{display:block;font-size:10px;color:var(--ink2)}
 @media (max-width:1180px){
   #sim{overflow:auto;display:flex;flex-direction:column;gap:10px;padding:0 0 18px}
@@ -94,6 +94,10 @@
   .sm-lintas{flex:1 1 140px;order:2}
   .sm-tgl{order:3;min-width:0}
   .sm-opsi{order:4;flex:1 1 100%;flex-wrap:wrap}
+  /* deretan pilihan selebar baris, terbagi rata */
+  .sm-opsi .seg{flex:1 1 auto;display:flex}.sm-opsi .seg button{flex:1 1 0}
+  /* grafik ber-viewBox 440: jangan diregangkan selebar layar (huruf sumbu jadi raksasa) */
+  #grafik svg{max-width:560px;margin:0 auto}
   .sm-bawah>.sm-leg{position:static;order:5;flex:1 1 100%;background:none;border:0;box-shadow:none;padding:0;flex-wrap:wrap}
   .maplibregl-ctrl-top-left{margin-left:0}
   .sm-nilai{justify-content:flex-start}

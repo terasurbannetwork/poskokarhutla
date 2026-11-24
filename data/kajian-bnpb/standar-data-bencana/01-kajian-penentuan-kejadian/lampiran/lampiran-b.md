@@ -1,6 +1,6 @@
 # Lampiran B. Kamus Data Umum
 
-Lampiran ini merinci isian data umum yang berlaku untuk sembilan jenis bencana. Kolom "Tahap" menunjukkan batas paling lambat pengisian, yaitu 1 untuk laporan awal, 2 untuk kaji cepat, dan 4 untuk penutupan. Setiap isian angka memiliki tiga keadaan, yaitu ada nilai, nihil, atau belum didata.
+Lampiran ini merinci isian data umum yang berlaku untuk sembilan jenis bencana. Kolom "Tahap" menunjukkan batas paling lambat pengisian, yaitu 1 untuk laporan awal, 2 untuk *rapid assessment*, dan 4 untuk penutupan. Setiap isian angka memiliki tiga keadaan, yaitu ada nilai, nihil, atau belum didata.
 
 ## B.1 Identitas, waktu, dan lokasi
 
@@ -9,7 +9,7 @@ Tabel B.1. Isian kelompok identitas, waktu, dan lokasi
 | No | Isian | Isi dan format | Tahap |
 | ---: | --- | --- | ---: |
 | 1.1 | Kode Identitas Bencana (KIB) | Kode 16 digit yang terdiri atas kode provinsi, kode kabupaten/kota, kode jenis bencana, tanggal mulai, dan indeks; diberikan sejak laporan awal dan dipakai oleh semua laporan perkembangan | 1 |
-| 1.2 | Nomor induk kejadian | Diterbitkan oleh Pusdatinkom paling lambat pada akhir kaji cepat; satu nomor untuk semua kabupaten/kota yang terdampak | 2 |
+| 1.2 | Nomor induk kejadian | Diterbitkan oleh Pusdatinkom paling lambat pada akhir *rapid assessment*; satu nomor untuk semua kabupaten/kota yang terdampak | 2 |
 | 1.3 | Jenis dan subjenis bencana | Pilihan kode jenis bencana dan subjenisnya | 1 |
 | 1.4 | Nama kejadian | Jenis dan wilayah, misalnya "Banjir Kabupaten Bogor" | 1 |
 | 1.5 | Kejadian pemicu | Nomor induk kejadian pemicu apabila kejadian ini dipicu oleh kejadian lain | 2 |
@@ -53,7 +53,7 @@ Tabel B.3. Isian kelompok kerusakan, layanan dasar, dan ekonomi
 
 | No | Isian | Isi dan format | Tahap |
 | ---: | --- | --- | ---: |
-| 6.1 | Rumah | Unit rusak berat, rusak sedang, rusak ringan, terendam | 1 |
+| 6.1 | Rumah | Unit rusak berat, rusak sedang, rusak ringan, tidak dapat dihuni sementara, dan terendam; satu rumah hanya masuk satu tingkat. Tingkat kerusakan fisik: rusak berat lebih dari 70 persen, rusak sedang 30 sampai 70 persen, rusak ringan kurang dari 30 persen, dihitung dengan bobot komponen bangunan | 1 |
 | 6.2 | Satuan pendidikan | Unit per tingkat kerusakan | 2 |
 | 6.3 | Fasilitas kesehatan | Unit per tingkat kerusakan; masih berfungsi atau tidak | 2 |
 | 6.4 | Rumah ibadat, kantor, pasar, kios, dan pabrik | Unit per tingkat kerusakan | 2 |
@@ -88,8 +88,9 @@ Tabel B.4. Isian kelompok kebutuhan, penanganan, dan mutu data
 | 10.1 | Sumber data | Pilihan: pendataan lapangan, laporan perangkat daerah, laporan masyarakat, pemberitaan, atau sistem pemantauan | 1 |
 | 10.2 | Pelapor | Jabatan dan instansi | 1 |
 | 10.3 | Status verifikasi | Pilihan: terverifikasi atau belum terverifikasi | 1 |
-| 10.4 | Kriteria kejadian bencana yang terpenuhi | Huruf a sampai d diisi otomatis dari angka dampak; huruf e dan f diisi dari surat yang tercatat pada isian 9.2 dan 9.3 | 2 |
-| 10.5 | Kelas dan indikator penentu | Diisi secara otomatis: mayor atau minor beserta indikator penentunya | 2 |
-| 10.6 | Dokumentasi | Foto yang memuat koordinat dan waktu pengambilan | 2 |
+| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian kelompok 4 sampai 8 bernilai lebih dari nol (orang terancam tidak dihitung); menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | 1 |
+| 10.5 | Kriteria kejadian bencana yang terpenuhi | Huruf a sampai d diisi otomatis dari angka dampak; huruf e dan f diisi dari surat yang tercatat pada isian 9.2 dan 9.3 | 2 |
+| 10.6 | Kelas dan indikator penentu | Diisi secara otomatis: intensif atau ekstensif beserta indikator penentunya, dihitung dari korban meninggal, rumah rusak berat terbobot, dan isian khusus longsor, kekeringan, dan karhutla | 2 |
+| 10.7 | Dokumentasi | Foto yang memuat koordinat dan waktu pengambilan | 2 |
 
 Sumber: Rancangan Juklak Bab III huruf C; Perban BNPB 1/2023 Pasal 24; disusun dalam kajian ini.

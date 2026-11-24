@@ -276,7 +276,7 @@ judul(wu, 'Usulan isian formulir pelaporan kejadian bencana', 'Bagian umum berla
 r = 4
 kepala(wu, r, ['Bagian', 'Jenis', 'Kelompok', 'Nama isian', 'Tipe isian', 'Satuan atau pilihan', 'Wajib pada tahap', '% sudah ditulis', 'Dasar'], [10, 22, 16, 36, 12, 40, 16, 12, 44])
 r += 1
-TAHAP = {1: '1. Laporan awal', 2: '2. Kaji cepat', 3: '3. Pemutakhiran', 4: '4. Penutupan'}
+TAHAP = {1: '1. Laporan awal', 2: '2. Rapid assessment', 3: '3. Pemutakhiran', 4: '4. Penutupan'}
 UMUM = [
     ('Identitas', 'Nomor kejadian', 'Otomatis', 'diberikan sistem pada laporan pertama', 1, None, 'Perban BNPB 1/2023 Pasal 8: nomor induk tiap kejadian'),
     ('Identitas', 'Kode Identitas Bencana (KIB)', 'Otomatis', '16 digit: provinsi, kab/kota, kode bencana, tanggal, indeks', 2, None, 'Juklak 7/2023; Panduan Logbook 2025'),
@@ -346,7 +346,7 @@ KHUSUS = {
                    ('Hari tanpa hujan', 'Angka', 'hari, kategori BMKG', 'Hari tanpa hujan, kemarau'),
                    ('Sawah terancam dan puso', 'Angka', 'ha', 'Puso (gagal panen)'),
                    ('Sumber air kering', 'Angka', 'sumur, mata air, embung', 'Air bersih')],
-    'karhutla': [('Hotspot', 'Otomatis', 'jumlah titik, satelit, tingkat keyakinan', 'Hotspot atau titik api'),
+    'karhutla': [('Hotspot', 'Otomatis', 'jumlah titik, satelit, confidence', 'Hotspot atau titik api'),
                  ('Luas terbakar', 'Angka', 'ha, dengan sumber: lapangan atau citra', 'Luas terbakar'),
                  ('Jenis lahan', 'Pilihan', 'gambut; mineral; semak belukar; kebun; hutan', 'Jenis lahan atau gambut'),
                  ('Status api', 'Pilihan', 'aktif; dikendalikan; pendinginan; padam', 'Status api (padam, dikendalikan, aktif)'),
@@ -363,7 +363,7 @@ KHUSUS = {
     'tsunami': [('Peristiwa pemicu', 'Pilihan', 'gempa (nomor kejadian); longsor bawah laut; erupsi', None),
                 ('Peringatan InaTEWS', 'Otomatis', 'Awas; Siaga; Waspada; waktu terbit dan berakhir', None),
                 ('Waktu tiba gelombang', 'Tanggal dan jam', 'JJ.MM', None),
-                ('Tinggi rayapan (run-up)', 'Angka', 'meter', None),
+                ('Tinggi run-up', 'Angka', 'meter', None),
                 ('Jarak genangan dari pantai', 'Angka', 'meter', None),
                 ('Perahu dan kapal rusak', 'Angka', 'unit', 'Perahu, kapal')],
     'gunungapi': [('Level aktivitas', 'Otomatis', 'Level I sampai IV', 'Level atau status gunung api'),

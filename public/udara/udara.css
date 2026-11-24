@@ -1,12 +1,12 @@
 /* Khusus /udara/: pil kategori, kisi Metode. Dasar rupa dari ../inti/gaya.css, peta.css, tabel.css, insight.css. */
-.kt{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;font-size:10.5px;font-weight:700;white-space:nowrap;background:var(--c);color:var(--f)}
+.kt{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;font-size:0.6562rem;font-weight:700;white-space:nowrap;background:var(--c);color:var(--f)}
 .tb.dipilih{background:var(--surface)}
 .tb .kt{justify-self:end}
 #insight .ex-bd .tw td .kt{height:22px}
 .mt-kisi{display:grid;gap:16px;max-width:980px;margin:0 auto}
-.mt-bag h3{font-size:18px;margin-bottom:10px}
+.mt-bag h3{font-size:1.125rem;margin-bottom:10px}
 .mt-bag p{margin:0 0 8px}
-.mt-bag .kecil{font-size:12px;color:var(--ink2);margin-top:8px}
+.mt-bag .kecil{font-size:0.75rem;color:var(--ink2);margin-top:8px}
 .mt-daftar{margin:0;padding-left:20px;display:grid;gap:8px}
 .mt-bag .tw{box-shadow:none}
 .mt-bag td{white-space:normal}
@@ -14,22 +14,76 @@
 #insight .ex-ey,#tren .ex-ey{display:inline-flex;align-items:center;gap:5px}
 #insight .ex-ey svg,#tren .ex-ey svg{width:12px;height:12px;display:inline-block}
 #insight .ex-bd:empty{display:none}
-/* pil kategori + pil "perkiraan model CAMS" sebaris di kepala kartu */
-.ex-hd > .kt{margin:0 0 8px 6px;vertical-align:top}
+/* pil kepala kartu (sumber data, model, Hipotesis) satu baris di atas nama seksi; pilKeKepala() di app.js memindahkan pil ke sini */
+.ex-hd > .kt{margin:0 6px 8px 0;vertical-align:top}
+.ud-pil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
+.ud-pil .kt,.ex-pl .kt{margin:0}
+.kt-tk{--c:var(--brand2);--f:var(--on-brand);text-transform:none;letter-spacing:0}
+.kt-hipo{--c:var(--warn);--f:var(--head-bg);text-transform:none;letter-spacing:0;cursor:help}
+/* angka di tabel layar ini rata kanan dan tabular; sel berpil tetap di tengah; kepala tabel tetap rata tengah */
+:is(#insight,#tren,#dampak,#metode) .tw td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+:is(#insight,#tren,#dampak,#metode) .tw td.n:has(> .kt){text-align:center}
+:is(#insight,#tren,#dampak,#metode) .tw th{text-align:center}
+:is(#insight,#tren,#dampak,#metode) .tw th > button{justify-content:center}
+/* kotak angka kunci dan catatan metode terlipat di isi kartu */
+.ex-bd > .ud-kv{margin:0 0 12px}
+.ex-bd > details.ud-lipat{margin-top:12px;box-shadow:none}
+.ud-lipat .isi .fnd{font-size:0.75rem;line-height:1.55}
 .ex-hd > .ex-ey{vertical-align:top}
 /* kolom Tren di panel (sama dengan karhutla: .tr-c) */
 .tr-c{display:flex;align-items:center;justify-content:center;gap:4px;color:var(--ink2);overflow:visible!important}
 .tr-c svg{flex:none;color:var(--ink2)}
-.tr-c b{font-size:10.5px;font-variant-numeric:tabular-nums}
+.tr-c b{font-size:0.6562rem;font-variant-numeric:tabular-nums}
 /* kolom panel: nomor, provinsi, µg/m³, jiwa, tren, kategori; layar sempit membuang Tren supaya nama provinsi terbaca */
-#rows .tb{grid-template-columns:20px minmax(0,1fr) 50px 46px 74px 112px}
+#rows .tb{grid-template-columns:16px minmax(0,1fr) 34px 34px 68px 82px}
 @media (max-width:640px){#rows .tb{grid-template-columns:20px minmax(0,1fr) 46px 44px 108px}#rows .tb > :nth-child(5){display:none}}
+/* panel ditarik sempit (di bawah 400 px): kolom Tren baru dibuang supaya nama provinsi tidak terpotong; lebar bawaan 440 px tetap memuat Tren */
+.panel .card.list{container-type:inline-size}
+@container (max-width:400px){#rows .tb{grid-template-columns:20px minmax(0,1fr) 44px 44px 100px}#rows .tb > :nth-child(5){display:none}}
 /* prakiraan 72 jam: kartu jam di kolom kanan, laci kota, tabel dampak */
 #jamKota{flex-wrap:wrap;gap:6px 10px;align-items:center}
 #jamKota[hidden]{display:none}
-#jamKota input[type=range]{flex:1;min-width:120px;accent-color:#e8743b}
-#jamKota b{font-size:11px;white-space:nowrap;min-width:78px;text-align:right}
+#jamKota input[type=range]{flex:1;min-width:120px;accent-color:var(--f2)}
+#jamKota b{font-size:0.6875rem;white-space:nowrap;min-width:78px;text-align:right}
 #jamKota .seg{width:100%;flex-basis:100%}
 .laci svg{max-width:100%;height:auto}
 #dampak .tw{box-shadow:none}
 .dk-peta{height:320px;border-radius:12px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+/* ---------- laci rincian (provinsi, kota, stasiun BMKG, kejadian): pelengkap komponen inti/peta.css ---------- */
+/* kotak angka sebaris: semua hari (atau tiga angka stasiun/kejadian) satu baris sama lebar */
+.laci .grid.ud-hari{grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:8px}
+.laci .ud-hari .kpi{min-width:0}
+.laci .ud-hari .kpi .lbl{padding:6px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.laci .ud-hari .kpi b{font-size:1.0625rem;line-height:1.15;padding:8px 6px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.laci .ud-hari .kpi small{display:block;padding:4px 6px 8px;line-height:1.3}
+.laci .ud-hari .kpi .lc-pil{white-space:normal;line-height:1.25;font-size:0.6562rem;padding:2px 8px}
+/* angka dengan satuan kecil: satuan menempel di kanan, turun baris sendiri bila kotak sempit */
+.ud-ang{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ud-ang small{margin-left:3px;font-size:.68em;font-weight:600;color:var(--ink2);display:inline}
+.laci .ud-hari .ud-ang{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:baseline;column-gap:3px}
+.laci .ud-hari .ud-ang small{margin:0;padding:0;display:inline;font-size:0.6875rem}
+/* pil kategori di laci: teks putih di atas warna pekat, teks gelap di atas warna muda, sama di mode gelap */
+.laci .lc-pil{color:var(--on-pekat)}
+.laci .lc-pil.terang{color:var(--head-bg)}
+/* tabel laci berisi nama dua baris: nama boleh turun baris, nilai tetap sebaris di kanan */
+.laci .tb2.ud-kab td:first-child,.laci .tb2.ud-asal td:first-child{white-space:normal;line-height:1.35;color:var(--ink)}
+.laci .tb2.ud-kab td.n,.laci .tb2.ud-asal td.n{white-space:nowrap;vertical-align:top}
+.laci .tb2.ud-kab tr + tr td,.laci .tb2.ud-asal tr + tr td{border-top:1px solid var(--line)}
+.laci .tb2.ud-asal .ud-nm{display:flex;align-items:flex-start;gap:8px}
+.laci .tb2.ud-asal td.n .lc-sub{white-space:normal;line-height:1.3}
+.ud-dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:4px;background:var(--w)}
+.laci .tb2 .lc-sub{font-size:0.6875rem}
+/* tautan kluster: tombol kecil sebaris yang boleh membungkus */
+.ud-tautan{display:grid;gap:6px}
+.ud-tautan .lc-luar{padding:4px 10px;font-size:0.7188rem}
+/* catatan panjang dilipat, isi berupa butir bernomor */
+.ud-lc-lipat{border-top:1px solid var(--line);padding-top:8px}
+.ud-lc-lipat summary{cursor:pointer;font-size:0.75rem;font-weight:700;color:var(--brand2)}
+.ud-butir{margin:8px 0 0;padding-left:18px;display:grid;gap:5px;font-size:0.7188rem;line-height:1.45;color:var(--ink2)}
+/* kaki kartu tanpa legenda (sumber dipindah ke Metode) tidak menyisakan pita kosong */
+.ex > .ex-ft:empty{display:none}
+/* tombol Chat Admin melayang di pojok kanan bawah: ujung isi laci bisa digulir melewatinya, sumber tidak tertutup */
+.laci .bd{padding-bottom:72px}
+/* kepala laci: nama panjang (kejadian, kota administrasi) turun baris penuh, tanpa elipsis, tidak terpotong di tengah kata */
+.laci .hd h2{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:break-word}
+.laci .hd-meta{flex-wrap:wrap}

@@ -12,8 +12,14 @@ const Dampak = (() => {
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
   const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">BNPB</a>", dibi: "<a href=\"https://dibi.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">DIBI BNPB</a>"};
   /* kartu: pita bagian + kartu Insight dengan pil = nama bagian */
-  const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id];
-    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>`)}</section>`; };
+  /* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5): kalimat temuan tidak dicetak, keterangan data dilipat di akhir isi, sumber tidak jadi kaki */
+  const NAMA = {pend: "Penduduk per provinsi (jiwa)", zona: "Penduduk dan sarana di kecamatan hujan lebat, per hari", sarana: "Pelabuhan dan bandara berstatus Waspada atau lebih", pesisir: "Penduduk kecamatan pesisir per hari (jiwa)",
+    hist: "Korban dan kerugian per tahun", risiko: "Indeks risiko per kabupaten dan kota", sarbnpb: "Sarana menurut kelas bahaya"};
+  const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id], [ket, src] = String(catatan).split(/\s*Sumber:\s*/).map(x => (x || "").trim());
+    const kepala = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg>${NAMA[id] || nm}`;
+    /* keterangan dan asal data dilipat di akhir isi (tautan BNPB dan DIBI tetap bisa dirujuk), bukan kaki "Sumber:" */
+    const lipat = ket || src ? `<details class="mt-tek"><summary>Catatan data</summary><div class="mt-tekisi">${ket ? `<p>${ket}</p>` : ""}${src ? `<p>Asal data: ${src.replace(/[.;]\s*$/, "")}.</p>` : ""}</div></details>` : "";
+    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${((id === "sarana" || id === "zona") && typeof beriAmbang === "function" ? beriAmbang(Kartu.ex(kepala, "", "", isi + lipat, "", ctl)) : Kartu.ex(kepala, "", "", isi + lipat, "", ctl)).replace('<span class="ex-ey"></span>', "")}</section>`; };   /* status kecamatan dan sarana bergantung pada ambang hipotesis: pil sampai teruji, seperti Insight */
   /* batang horizontal berlabel pil: rows [{n, v, tip}] */
   function hbar(rows, w) {
     const Wd = Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44 - (($("#dampak")?.clientWidth || 0) >= 1100 ? 224 : 0))), L = Wd < 500 ? 100 : 160, rh = 26, R = 110, m = Math.max(1, ...rows.map(r => r.v)), X = v => L + v / m * (Wd - L - R);
@@ -59,7 +65,7 @@ const Dampak = (() => {
       .filter(x => x.s && x.t > 0).sort((a, b) => b.t - a.t); if (!B.length && !D.hari.some((_, i) => [...(D.pelabuhan || []), ...(D.bandara || [])].some(r => r[1][i] > 0))) return "";
     const np = B.filter(x => x.j === "Pelabuhan").length, nb = B.length - np, ctl = `<div class="seg" role="group">${D.hari.map((_, i) => `<button data-dks="sh" data-v="${i}" aria-pressed="${j === i}">${lbl3(i)}</button>`).join("")}</div>`;
     const tab = B.length ? `<div class="tw"><table><thead><tr><th>Nama</th><th>Jenis</th><th>Tingkat</th><th class="n">Gelombang atau hujan</th><th class="n">Embusan (km/jam)</th></tr></thead><tbody>${B.slice(0, 15).map(x => `<tr><td translate="no">${esc(x.j === "Bandara" ? x.s[1] : x.s[0])}</td><td>${x.j}</td><td>${pilT(x.t)}</td><td class="n">${x.v}</td><td class="n">${fmt(x.g)}</td></tr>`).join("")}</tbody></table></div>` : "";
-    return bag("sarana", `${Kartu.hl(fmt(np) + " pelabuhan")} dan ${Kartu.hl(fmt(nb) + " bandara")} diprakirakan berstatus Waspada atau lebih ${kapan3(j)}`, tab, `Prakiraan. Sumber: Deteksi Centurisk97 dari Open-Meteo dan Open-Meteo Marine`, ctl); }
+    return bag("sarana", `${Kartu.hl(fmt(np) + " pelabuhan")} dan ${Kartu.hl(fmt(nb) + " bandara")} diprakirakan berstatus Waspada atau lebih ${kapan3(j)}`, tab, `Status dari prakiraan model, bukan pengamatan. Sumber: Deteksi Centurisk97 dari Open-Meteo dan Open-Meteo Marine`, ctl); }
   function pesisir() {
     const v = D.pesisir?.jiwa; if (!v || !D.hari || !v.some(x => x > 0)) return ""; const mx = v.indexOf(Math.max(...v));
     return bag("pesisir", `${Kartu.hl(jt(v[mx]) + " jiwa")} tinggal di kecamatan pesisir dengan gelombang 2,5 m atau lebih ${kapan3(mx)}`,
@@ -86,7 +92,7 @@ const Dampak = (() => {
     const t = j => N[j]?.[3] ?? 0, nm = HZ[st.sb][1];
     const bagian = [["penduduk", v => jt(v) + " jiwa"], ["sekolah", v => fmt(v) + " sekolah"], ["faskes", v => fmt(v) + " fasilitas kesehatan"], ["bandara", v => fmt(v) + " bandara"], ["pelabuhan", v => fmt(v) + " pelabuhan"]].filter(([j]) => J.includes(j) && t(j) > 0).map(([j, f]) => Kartu.hl(f(t(j))));
     if (!bagian.length) return "";
-    const tab = `<div class="tw"><table><thead><tr><th>Jenis</th><th class="n">Tinggi</th><th class="n">Sedang</th><th class="n">Rendah</th><th class="n">Aman</th><th class="n">Porsi tinggi</th></tr></thead><tbody>${J.map(j => { const a = N[j], tot = a.reduce((x, y) => x + y, 0);
+    const tab = `<div class="tw"><table><thead><tr><th>Jenis</th><th class="n">Tinggi</th><th class="n">Sedang</th><th class="n">Rendah</th><th class="n" title="Sarana di luar kelas bahaya Rendah, Sedang, dan Tinggi menurut peta InaRISK">Di luar kelas bahaya</th><th class="n">Porsi tinggi</th></tr></thead><tbody>${J.map(j => { const a = N[j], tot = a.reduce((x, y) => x + y, 0);
       return `<tr><td>${JN[j]}</td><td class="n"><span class="pl" style="--w:${W.merah}">${fmt(a[3])}</span></td><td class="n">${fmt(a[2])}</td><td class="n">${fmt(a[1])}</td><td class="n">${fmt(a[0])}</td><td class="n">${tot ? fmt(Math.round(a[3] / tot * 1000) / 10) + "%" : "–"}</td></tr>`; }).join("")}</tbody></table></div>`;
     const ctl = ada.length > 1 ? `<div class="seg" role="group">${ada.map(h => `<button data-dks="sb" data-v="${h}" aria-pressed="${st.sb === h}">${HZ[h][0]}</button>`).join("")}</div>` : "";
     return bag("sarbnpb", `${bagian.length > 3 ? bagian.slice(0, 3).join(", ") + ", dan sarana lain" : bagian.length > 1 ? bagian.slice(0, -1).join(", ") + (bagian.length > 2 ? "," : "") + " dan " + bagian.at(-1) : bagian[0]} berada di kelas bahaya tinggi (${nm})`, tab, `Kelas bahaya menurut peta InaRISK, bukan kejadian. ${SRC}`, ctl); }

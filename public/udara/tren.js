@@ -22,6 +22,8 @@ const Grafik = {
   gulir: el => el.querySelectorAll(".tw.sk").forEach(w => { w.scrollLeft = w.scrollWidth; }),
 };
 
+/* jiwa untuk kotak angka: "107 juta" (satuan "jiwa" ditulis kecil di sebelahnya); angka model tetap dibulatkan seperti jiwa() */
+const jutaan = v => jiwa(v).replace(/^sekitar /, "").replace(/ jiwa$/, "");
 const Tren = {
   st: {rentang: "30"}, T: {provinsi: {urut: "hari", turun: true, hal: 0}},
   R: undefined,
@@ -39,15 +41,17 @@ const Tren = {
     const nilai = D.map(d => [d.ts - d.stp, d.stp]), tot = nilai.map(v => v[0] + v[1]), pk = tot.indexOf(Math.max(...tot)), ini = D.find(d => !d.depan && d.t === tglWIB(SEKARANG())) || D.filter(d => !d.depan).at(-1);
     const nama = i => Grafik.tgl(D[i].t, {weekday: "long", day: "numeric", month: "long"});
     return this.kartu("Jiwa terpapar", `${Kartu.hl(jiwa(tot[pk]))} menghirup udara tidak sehat pada ${Kartu.hl(Grafik.tgl(D[pk].t))}, tertinggi dalam ${fmt(D.length)} hari${ini ? `; ${Grafik.tgl(ini.t) === Grafik.tgl(D[pk].t) ? "itu juga" : "hari ini"} ${Kartu.hl(jiwa(ini.ts))}` : ""}`,
-      Grafik.kolom({cat: D.map(d => Grafik.tgl(d.t)), seri: [["Tidak sehat", KAT[2].w], ["Sangat tidak sehat atau berbahaya", KAT[3].w]], nilai, aria: "Jiwa terpapar udara tidak sehat per hari", pudar: i => D[i].depan,
-        tip: i => `<b>${nama(i)}</b>${D[i].depan ? " (prakiraan)" : ""}<br>Tidak sehat atau lebih: ${jiwa(tot[i])}<br>Sangat tidak sehat atau berbahaya: ${jiwa(nilai[i][1])}<br>PM2,5 rata-rata: ${fmt(Math.round(D[i].rata))} µg/m³`}) + `<p class="fnd">Tertinggi ${jiwa(tot[pk])} pada ${Grafik.tgl(D[pk].t)}, rentang ${fmt(D.length)} hari.${ini ? ` Terbaru ${Grafik.tgl(ini.t)}: ${jiwa(ini.ts)}.` : ""}</p>`,
+      kotakAngka([[`${jutaan(tot[pk])} <small>jiwa</small>`, `tertinggi, ${Grafik.tgl(D[pk].t)}`], ...(ini ? [[`${jutaan(ini.ts)} <small>jiwa</small>`, `terbaru, ${Grafik.tgl(ini.t)}`]] : []), [`${fmt(D.length)} <small>hari</small>`, "rentang data"]])
+      + Grafik.kolom({cat: D.map(d => Grafik.tgl(d.t)), seri: [["Tidak sehat", KAT[2].w], ["Sangat tidak sehat atau berbahaya", KAT[3].w]], nilai, aria: "Jiwa terpapar udara tidak sehat per hari", pudar: i => D[i].depan,
+        tip: i => `<b>${nama(i)}</b>${D[i].depan ? " (prakiraan)" : ""}<br>Tidak sehat atau lebih: ${jiwa(tot[i])}<br>Sangat tidak sehat atau berbahaya: ${jiwa(nilai[i][1])}<br>PM2,5 rata-rata: ${fmt(Math.round(D[i].rata))} µg/m³`}),
       "Copernicus CAMS lewat Open-Meteo, WorldPop; batang pudar = prakiraan", this.segRentang(), [[KAT[2].w, "tidak sehat"], [KAT[3].w, "sangat tidak sehat atau berbahaya"]]); },
   exRata() {
     const D = this.deret(); if (D.length < 2) return "";
     const v = D.map(d => d.rata), mx = Math.max(...v), pk = v.indexOf(mx), ini = D.find(d => d.t === tglWIB(SEKARANG())) || D.filter(d => !d.depan).at(-1);
     return this.kartu("PM2,5", `PM2,5 rata-rata nasional tertinggi ${Kartu.hl(fmt(Math.round(mx)) + " µg/m³")} pada ${Kartu.hl(Grafik.tgl(D[pk].t))}${ini ? `, ${Grafik.tgl(ini.t) === Grafik.tgl(D[pk].t) ? "itu juga hari ini" : `hari ini ${Kartu.hl(fmt(Math.round(ini.rata)) + " µg/m³")}`}` : ""}`,
-      Grafik.kolom({cat: D.map(d => Grafik.tgl(d.t)), seri: [["PM2,5", KAT[2].w]], nilai: D.map(d => [Math.round(d.rata)]), aria: "PM2,5 rata-rata nasional per hari", fmtNilai: x => fmt(Math.round(x)), pudar: i => D[i].depan,
-        tip: i => `<b>${Grafik.tgl(D[i].t, {weekday: "long", day: "numeric", month: "long"})}</b>${D[i].depan ? " (prakiraan)" : ""}<br>PM2,5 rata-rata berbobot jiwa: ${fmt(Math.round(D[i].rata))} µg/m³<br>Kategori: ${KAT[kat(D[i].rata)].n}`}) + `<p class="fnd">Tertinggi ${fmt(Math.round(mx))} µg/m³ pada ${Grafik.tgl(D[pk].t)}, rentang ${fmt(D.length)} hari.${ini ? ` Terbaru ${Grafik.tgl(ini.t)}: ${fmt(Math.round(ini.rata))} µg/m³.` : ""}</p>`,
+      kotakAngka([[`${fmt(Math.round(mx))} <small>µg/m³</small>`, `tertinggi, ${Grafik.tgl(D[pk].t)}`], ...(ini ? [[`${fmt(Math.round(ini.rata))} <small>µg/m³</small>`, `terbaru, ${Grafik.tgl(ini.t)}`]] : []), [`${fmt(D.length)} <small>hari</small>`, "rentang data"]])
+      + Grafik.kolom({cat: D.map(d => Grafik.tgl(d.t)), seri: [["PM2,5", KAT[2].w]], nilai: D.map(d => [Math.round(d.rata)]), aria: "PM2,5 rata-rata nasional per hari", fmtNilai: x => fmt(Math.round(x)), pudar: i => D[i].depan,
+        tip: i => `<b>${Grafik.tgl(D[i].t, {weekday: "long", day: "numeric", month: "long"})}</b>${D[i].depan ? " (prakiraan)" : ""}<br>PM2,5 rata-rata berbobot jiwa: ${fmt(Math.round(D[i].rata))} µg/m³<br>Kategori: ${KAT[kat(D[i].rata)].n}`}),
       "Copernicus CAMS lewat Open-Meteo, WorldPop; batang pudar = prakiraan; µg/m³", this.segRentang(), null); },
   /* provinsi: berapa hari rata-rata 24 jam melewati batas Baik dan Sedang dalam rentang */
   exProvinsi() {
@@ -62,7 +66,7 @@ const Tren = {
       {k: "maks", n: "PM2,5 tertinggi", num: 1, v: r => r.maks, h: r => fmt(Math.round(r.maks)) + " µg/m³"},
       {k: "ts", n: "Jiwa tidak sehat (terakhir)", num: 1, v: r => r.ts, h: r => r.ts ? kr(r.ts) + " jiwa" : "–"}];
     return this.kartu("Provinsi", `${Kartu.hl(esc(namaProv(top.k)))} paling sering berudara tidak sehat: ${Kartu.hl(fmt(top.hari) + " dari " + fmt(h.length) + " hari")}, PM2,5 rata-rata ${Kartu.hl(fmt(Math.round(top.rata)) + " µg/m³")}`,
-      `<p class="fnd">Terbanyak hari tidak sehat: ${esc(namaProv(top.k))}, ${fmt(top.hari)} dari ${fmt(h.length)} hari, PM2,5 rata-rata ${fmt(Math.round(top.rata))} µg/m³.</p>` + Insight.tabel("tren_prov", kol, R, r => `data-prov="${r.k}"`, 10, "provinsi", r => r.hari), "Copernicus CAMS lewat Open-Meteo, WorldPop; hari tidak sehat = PM2,5 rata-rata 24 jam di atas 55,4 µg/m³"); },
+      Insight.tabel("tren_prov", kol, R, r => `data-prov="${r.k}"`, 10, "provinsi", r => r.hari), "Copernicus CAMS lewat Open-Meteo, WorldPop; hari tidak sehat = PM2,5 rata-rata 24 jam di atas 55,4 µg/m³"); },
 
   /* kalender musim asap: median titik panas nasional per bulan (penanda musim bakar, BUKAN ukuran asap), musim_asap.json / scripts/udara/musim_asap.py. Tanpa klaim sebab. */
   BLN: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
@@ -71,26 +75,30 @@ const Tren = {
     const B = this.M?.bulan; if (!B || !B.median.some(v => v > 0)) return "";
     const md = B.median, pk = md.indexOf(Math.max(...md)), th = B.tahun, cams = Object.fromEntries((this.M.cams || []).map(([b, n, r]) => [+b.slice(5) - 1, [b, r]])), c0 = this.M.cams?.[0];
     return this.kartu("Kalender musim asap", `${Kartu.hl(this.BLN_PENUH[pk])} bulan dengan titik panas terbanyak: median ${Kartu.hl(fmt(md[pk]) + " titik")} per bulan pada ${th[0]} sampai ${th.at(-1)}, kisaran ${fmt(B.min[pk])} sampai ${fmt(B.maks[pk])}`,
-      Grafik.kolom({cat: this.BLN, seri: [["Titik panas", "#c9503a"]], nilai: md.map(v => [v]), aria: "Median titik panas nasional per bulan", fmtNilai: x => kr(Math.round(x)),
-        tip: i => `<b>${this.BLN_PENUH[i]}</b><br>Median titik panas: ${fmt(md[i])}<br>Kisaran: ${fmt(B.min[i])} sampai ${fmt(B.maks[i])}${cams[i] ? `<br>PM2,5 CAMS ${cams[i][0].slice(0, 4)}: ${fmt(cams[i][1])} µg/m³ (perkiraan model CAMS, belum dikoreksi)` : ""}`}) + `<p class="fnd">Bulan terbanyak ${this.BLN_PENUH[pk]}: median ${fmt(md[pk])} titik per bulan, ${th[0]} sampai ${th.at(-1)}, kisaran ${fmt(B.min[pk])} sampai ${fmt(B.maks[pk])}.</p>`,
+      kotakAngka([[this.BLN_PENUH[pk], "bulan titik panas terbanyak"], [`${fmt(md[pk])} <small>titik</small>`, `median per bulan, ${th[0]} sampai ${th.at(-1)}`], [`${fmt(B.min[pk])} sampai ${fmt(B.maks[pk])}`, "kisaran bulan itu"]])
+      + Grafik.kolom({cat: this.BLN, seri: [["Titik panas", "#c9503a"]], nilai: md.map(v => [v]), aria: "Median titik panas nasional per bulan", fmtNilai: x => kr(Math.round(x)),
+        tip: i => `<b>${this.BLN_PENUH[i]}</b><br>Median titik panas: ${fmt(md[i])}<br>Kisaran: ${fmt(B.min[i])} sampai ${fmt(B.maks[i])}${cams[i] ? `<br>PM2,5 CAMS ${cams[i][0].slice(0, 4)}: ${fmt(cams[i][1])} µg/m³ (perkiraan model CAMS, belum dikoreksi)` : ""}`})
+      + lipatCatatan(`<p class="fnd">Titik panas adalah penanda musim bakar, bukan ukuran asap. ${c0 ? `PM2,5 CAMS baru ada sejak ${this.BLN_PENUH[+c0[0].slice(5) - 1]} ${c0[0].slice(0, 4)}, belum cukup untuk kalender PM2,5.` : "PM2,5 CAMS belum cukup panjang untuk kalender PM2,5."}</p>`),
       `NASA FIRMS, semua satelit, ${th[0]} sampai ${th.at(-1)}. Titik panas penanda musim bakar, bukan ukuran asap; ${c0 ? `PM2,5 CAMS baru ada sejak ${this.BLN_PENUH[+c0[0].slice(5) - 1]} ${c0[0].slice(0, 4)}, belum cukup untuk kalender PM2,5` : "PM2,5 CAMS belum cukup panjang untuk kalender PM2,5"}`, "", null, false); },
   /* ENSO: titik panas 1 Jan sampai tanggal data terakhir tiap tahun, diwarnai fase ENSO tahun itu (rata-rata ONI, NOAA CPC); hanya mempertemukan dua deret, tidak menilai sebab */
   exEnso() {
     const T = this.M?.tahun, th = T && Object.keys(T).sort(); if (!th || th.length < 4) return "";
     const FASE = [["El Niño", "#c9503a"], ["Netral", "#9aa4b2"], ["La Niña", "#3f7fb8"]], pk = th.reduce((a, t) => T[t].n > T[a].n ? t : a, th[0]), K = this.M.kini || {}, o = K.oni;
     const f2 = v => (v > 0 ? "+" : "") + v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2}), tg = Grafik.tgl(this.M.sd);
-    return this.kartu("ENSO", `${Kartu.hl(fmt(T[pk].n) + " titik panas")} sampai ${Kartu.hl(tg)} pada ${Kartu.hl(pk)} (${T[pk].fase}${T[pk].sementara ? ", ONI sementara" : ""}), tertinggi sejak ${th[0]}${K.status && o ? `; ENSO kini ${Kartu.hl(K.status)}, ONI ${f2(o.nilai)} (${o.musim} ${o.tahun})` : ""}`,
-      Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: FASE, nilai: th.map(t => FASE.map(([f]) => T[t].fase === f ? T[t].n : 0)), aria: "Titik panas per tahun menurut fase ENSO", fmtNilai: x => kr(Math.round(x)),
-        tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} titik panas (1 Jan sampai ${tg})<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}${T[th[i]].sementara ? " (sementara, tahun belum selesai)" : ""}`}) + `<p class="fnd">Tertinggi ${fmt(T[pk].n)} titik panas sampai ${tg} pada ${pk} (${T[pk].fase}${T[pk].sementara ? ", ONI sementara" : ""}), sejak ${th[0]}.${K.status && o ? ` ENSO kini ${K.status}, ONI ${f2(o.nilai)} (${o.musim} ${o.tahun}).` : ""}</p>`,
+    return this.kartu("ENSO dan titik panas", `${Kartu.hl(fmt(T[pk].n) + " titik panas")} sampai ${Kartu.hl(tg)} pada ${Kartu.hl(pk)} (${T[pk].fase}${T[pk].sementara ? ", ONI sementara" : ""}), tertinggi sejak ${th[0]}${K.status && o ? `; ENSO kini ${Kartu.hl(K.status)}, ONI ${f2(o.nilai)} (${o.musim} ${o.tahun})` : ""}`,
+      kotakAngka([[`${fmt(T[pk].n)} <small>titik</small>`, `tertinggi, ${pk} (${T[pk].fase}${T[pk].sementara ? ", sementara" : ""})`], ...(K.status && o ? [[esc(K.status), `ENSO kini, ONI ${f2(o.nilai)} (${o.musim} ${o.tahun})`]] : []), [tg, "batas tanggal tiap tahun"]])
+      + Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: FASE, nilai: th.map(t => FASE.map(([f]) => T[t].fase === f ? T[t].n : 0)), aria: "Titik panas per tahun menurut fase ENSO", fmtNilai: x => kr(Math.round(x)),
+        tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} titik panas (1 Jan sampai ${tg})<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}${T[th[i]].sementara ? " (sementara, tahun belum selesai)" : ""}`})
+      + lipatCatatan(`<p class="fnd">ENSO (El Niño-Southern Oscillation) adalah ayunan suhu muka laut Pasifik: El Niño membuat kemarau lebih kering, La Niña lebih basah. ONI (Oceanic Niño Index) NOAA CPC dirata-rata setahun: El Niño bila +0,5 atau lebih, La Niña bila -0,5 atau kurang. Titik panas dihitung 1 Januari sampai ${tg} tiap tahun; hanya ${fmt(th.length)} tahun data, titik panas bukan ukuran asap, dan tahun berjalan memakai data NRT (hampir waktu nyata).</p>`, "Arti ENSO dan ONI"),
       `NASA FIRMS, 1 Jan sampai ${tg} tiap tahun; ONI NOAA CPC rata-rata setahun (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang). Hanya ${fmt(th.length)} tahun data, titik panas bukan ukuran asap, dan tahun berjalan memakai data NRT`,
       "", FASE.map(([f, w]) => [w, f]), false); },
 
-  IKON: {"Jiwa terpapar": "jiwa", "PM2,5": "pm", Provinsi: "prov", "Kalender musim asap": "musim", ENSO: "enso"},
+  IKON: {"Jiwa terpapar": "jiwa", "PM2,5": "pm", Provinsi: "prov", "Kalender musim asap": "musim", "ENSO dan titik panas": "enso"},
   IK: {musim: '<path d="M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"/>', enso: '<path d="M3 12c3-6 6-6 9 0s6 6 9 0"/>', jiwa: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', pm: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>', prov: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>'},
   /* semua kartu Tren berangka jiwa/PM2,5: pil "perkiraan model CAMS" di samping pil kategori */
   kartu(ey, judul, isi, sumber, ctl = "", leg = null, model = true) { return Kartu.kartu(`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${this.IK[this.IKON[ey]] || ""}</svg>${ey}`, judul, isi, sumber, ctl, leg).replace("</span><div class=\"ex-jd\">", model ? `</span>${PIL_MODEL}<div class="ex-jd">` : `</span><div class="ex-jd">`); },
   EX: ["jiwa", "rata", "provinsi", "musim", "enso"],
-  gambar(id) { Kartu._leg = null; try { return kepalaKartu(this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""); } catch (e) { console.error(e); return ""; } },
+  gambar(id) { Kartu._leg = null; try { return pilKeKepala(kepalaKartu(this["ex" + id[0].toUpperCase() + id.slice(1)]() || "")); } catch (e) { console.error(e); return ""; } },
   tulis() { const el = $("#tren"); el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join(""); Grafik.gulir(el); },
   async render() {
     const el = $("#tren"); if (!el) return;

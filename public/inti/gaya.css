@@ -38,12 +38,16 @@ nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
 nav.tabs .lainnya .menu button{color:var(--ink);opacity:1;text-align:left;border-radius:10px;padding:8px 12px}
 nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current="page"]{background:var(--surface)}
-.stat{display:flex;align-items:center;gap:10px;font-size:var(--fs-2);white-space:nowrap}
+.stat{display:flex;align-items:center;gap:10px;font-size:0.75rem;white-space:nowrap}
 .stat .jam{font-family:var(--display);font-weight:700;font-size:0.875rem}
+/* pil jam data di kepala, sama dengan karhutla (lapisan5.css): ikon jam + latar kaca dari warna teks kepala; hanya laman bencana baru (data-kartu="seksi" dari inti/kartu.js), banjir tetap rupa lama */
+:root[data-kartu="seksi"] .stat .upd{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:0.7188rem;font-weight:600;white-space:nowrap;background:color-mix(in oklch, currentColor 14%, transparent);color:inherit;opacity:1}
+:root[data-kartu="seksi"] .stat .upd::before{content:"";width:12px;height:12px;flex:none;background:currentColor;opacity:.8;-webkit-mask:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>') center/contain no-repeat;mask:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>') center/contain no-repeat}
+:root[data-kartu="seksi"] .stat .upd:empty{display:none}
 @media (max-width:900px){.stat .upd,.mark small{display:none}}
 @media (max-width:1500px){.mark small,.stat .pjg{display:none}}
 @media (max-width:1100px){.mark > div{display:none}}
-@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:var(--fs-3)}}
+@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:0.8125rem}}
 /* mobile: pilihan bencana & tema disembunyikan (pemilik, 15 Okt 2026) */
 #burger{display:none}
 @media (max-width:640px){.bencana,#tema{display:none!important}}
@@ -71,3 +75,22 @@ main{position:fixed;inset:var(--top) 0 0 0}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 14px}
 .head>*{min-width:0;max-width:100%}
 .head p{margin:4px 0 0;color:var(--ink2);max-width:70ch}
+
+/* tab Kejadian semua bencana: pemilih rentang waktu di atas tabel (dari gempa.css, RentangKj di inti/tabel.js) */
+#kejadian .kj-alat{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 0 12px}
+#kejadian .kj-alat-l{font-size:0.7812rem;font-weight:600;color:var(--ink2)}
+#kejadian .kj-alat .seg{flex:none}
+#kejadian .kj-tgl{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:0.7812rem;font-weight:700;cursor:pointer}
+#kejadian .kj-tgl svg{width:15px;height:15px;flex:none}
+#kejadian .kj-tgl:hover{border-color:var(--brand2)}
+#kejadian .kj-tgl[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--card)}
+@media (max-width:600px){#kejadian .kj-alat{flex-wrap:wrap;justify-content:flex-start}#kejadian .kj-alat-l{width:100%}}
+/* kartu tab Kejadian standar (RentangKj.kartu): pemilih rentang di kepala navy rata kiri berlabel terang, segmen penuh terbagi rata, tabel menempel */
+#kejadian .kj-kartu .ex-hd .kj-alat{justify-content:flex-start;flex-wrap:wrap;margin:12px 0 0;width:100%}
+#kejadian .kj-kartu .ex-hd .kj-alat-l{color:var(--on-head-2)}
+#kejadian .kj-kartu .ex-hd .kj-alat .seg{flex:1 1 auto;display:flex;min-width:0}
+#kejadian .kj-kartu .ex-hd .kj-alat .seg button{flex:1 1 0;min-width:0;text-align:center}
+#kejadian .kj-kartu>.ex-bd{padding:0;gap:0}
+#kejadian .kj-kartu>.ex-bd>.pgn{padding:10px 22px 14px}
+#kejadian .kj-kartu>.ex-bd>.kosong{padding:28px 22px}
+#kejadian .kj-kartu>.ex-bd>.tw{margin:0;border-radius:0}

@@ -1,0 +1,11 @@
+{
+    "folder": "../../pemantauan-medsos/naskah",
+    "gbr": "../../pemantauan-medsos/gbr",
+    "keluaran": "../../pemantauan-medsos/keluaran/Revisi 2",
+    "judul": "Kajian Pemantauan Kabar Kebencanaan di Media Sosial dan Portal Berita",
+    "anak_judul": "Konsep, rancangan sistem, alur verifikasi, dan rencana anggaran biaya untuk deteksi dini kejadian bencana",
+    "label": "KAJIAN SINGKAT BNPB",
+    "nama_keluaran": "Kajian Pemantauan Kabar Kebencanaan di Media Sosial",
+    "berkas": ["00-abstrak.md", "00-ringkasan.md", "01-pendahuluan.md", "02-metode.md", "03-hasil.md", "04-pembahasan.md", "05-kesimpulan.md", "pustaka.md", "lampiran-a.md", "lampiran-b.md"],
+    "tata": {"toc_tingkat": 2, "tinggi_gambar_cm": 23}
+}

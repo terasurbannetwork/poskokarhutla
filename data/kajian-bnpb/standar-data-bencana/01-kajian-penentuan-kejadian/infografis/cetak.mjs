@@ -25,7 +25,7 @@ const KERJA = path.join(DI, '_kerja');
 fs.mkdirSync(KERJA, { recursive: true });
 fs.writeFileSync(path.join(KERJA, 'siap.html'), html);
 
-const KELUAR = path.resolve(DI, '../../keluaran/01 Kajian Penentuan Kejadian Bencana/Revisi 2');
+const KELUAR = path.resolve(DI, '../../keluaran/01 Kajian Penentuan Kejadian Bencana/Revisi 3');
 fs.mkdirSync(KELUAR, { recursive: true });
 const nama = 'Infografis Kajian Penentuan Kejadian Bencana ' + process.argv[2];
 const b = await luncur();

@@ -27,6 +27,7 @@ LABEL = 'KAJIAN BNPB'
 TATA = {}   # dari urutan JSON kunci "tata": toc_tingkat, bab_baru, tinggi_gambar_cm
 KEPADA = '[diisi kemudian]'
 OLEH = 'Tim Ahli dan Tim Sus IT BNPB'
+OLEH_LABEL = 'Disusun oleh'
 
 NAVY, ORANYE, BIRU, MERAH = '051C2C', 'D9600B', '2F86D1', 'C8102E'
 TEKS, TEKS2, TEKS3, GARIS, TINT = '1A1A1A', '2E3440', '6B7280', 'BFC5CC', 'F1F3F6'

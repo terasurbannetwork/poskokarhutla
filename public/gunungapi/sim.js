@@ -20,6 +20,11 @@ const Pb = window.Pb, mem = {}, muatS = (k, u) => mem[k] ||= ambil(u).catch(() =
 const DT = {st: () => Pb?.st ? Promise.resolve(Pb.st) : ambil("../banjir/data/gunungapi_status.json"), abu: () => Pb ? Pb.Data.abu() : muatS("abu", "../banjir/data/abu_gunungapi.json"),
   pap: () => Pb ? Pb.Data.pap() : muatS("pap", "data/paparan.json"), band: () => Pb ? Pb.Data.bandara() : muatS("band", "data/bandara.json"), geo: () => Pb ? Pb.Data.geo() : muatS("geo", "data/paparan_geo.json")};
 const pil = (t, w) => `<span class="pl" style="--w:${w}">${t}</span>`;
+/* kartu panel = kartu standar .ex-std (AGENTS.md 3.5): pil kategori, kepala = nama seksi berikon, isi di .ex-bd */
+const IKS = {awan: '<path d="M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>', orang: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.5 6-5.5s5.4 2.1 6 5.5"/>',
+  batang: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', jalan: '<path d="M6 19a2 2 0 1 0 0-.01M18 5a2 2 0 1 0 0-.01M8 19h5a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h5"/>',
+  titik: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', pesawat: '<path d="M2 16l20-6-8 12-2-6z"/>'};
+const kartuSm = (ey, nama, ik, isi, id = "") => `<article class="ex ex-std sm-ex"${id ? ` id="${id}"` : ""}><header class="ex-hd"><div class="ex-pl"><span class="ex-ey">${ey}</span></div><div class="ex-jd"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ik}</svg>${nama}</h3></div></header><div class="ex-bd">${isi}</div></article>`;
 const kosongFC = () => ({type: "FeatureCollection", features: []});
 const BULAT = (x, d = 0) => fmt(Math.round(x * 10 ** d) / 10 ** d);
 const rupiah = v => v >= 1e9 ? BULAT(v / 1e9, 1) + " miliar" : BULAT(v / 1e6) + " juta";   /* "Rp" ditulis di pemanggil */
@@ -331,19 +336,19 @@ function panel() {
     <div class="sm-fld">${pil("Tinggi kolom di atas puncak", "#e8743b")}${seg("kolom", KOLOM.map(k => [k, k + " km"]), p.kolom)}</div>
     <div class="sm-fld">${pil("Lama erupsi", "#c9503a")}${seg("durasi", DURASI.map(k => [k, k + " jam"]), p.durasi)}</div>
     <div class="sm-fld">${pil("Volume lahar", "#3f7cc4")}${seg("V", [[1e5, "100 rb m³"], [1e6, "1 jt m³"], [1e7, "10 jt m³"]], p.V)}</div>
-    <div class="sm-fld">${pil("Awan panas (H/L)", "#d64545")}${seg("hl", HL.map(k => [k, String(k).replace(".", ",")]), p.hl)}</div>
+    <div class="sm-fld">${pil("Awan panas, rasio tinggi jatuh per jarak luncur (H/L)", "#d64545")}${seg("hl", HL.map(k => [k, String(k).replace(".", ",")]), p.hl)}</div>
     <div id="smHasil"><p class="sm-msg">Menghitung sebaran abu…</p></div>
-    <div class="sm-kartu" id="smKartuDesa"><h3>Hujan abu di desa terdekat</h3><div id="smDesa"></div></div>
+    ${kartuSm("Abu", "Hujan abu di desa terdekat", IKS.awan, `<div id="smDesa"></div>`, "smKartuDesa")}
     <div class="sm-kartu" id="smLahar"></div>
-    <div class="sm-kartu"><h3>Perlakuan evakuasi</h3>
+    ${kartuSm("Evakuasi", "Perlakuan evakuasi", IKS.orang, `
       <div class="sm-fld"><label for="smRad" style="font-size:12.5px">Radius evakuasi <b id="smRadV">${p.radius} km</b></label><input id="smRad" type="range" min="0" max="30" step="1" value="${p.radius}" aria-label="Radius evakuasi (km)"></div>
       <div class="sm-fld">${pil("Mulai evakuasi", "#2fb36a")}${seg("mulai", [[-12, "12 jam sebelum"], [-3, "3 jam sebelum"], [0, "Saat erupsi"], [1, "1 jam sesudah"]], p.mulai)}</div>
       <div class="sm-fld">${pil("Armada tambahan (kendaraan)", "#3f7cc4")}${seg("armada", [[0, "Tidak ada"], [10, "10"], [30, "30"], [60, "60"]], p.armada)}</div>
-      <div id="smEvak"></div></div>
-    <div class="sm-kartu"><h3>Peringkat perlakuan</h3><div id="smRank"><p class="sm-msg">Menunggu hasil model…</p></div></div>
-    <div class="sm-kartu"><h3>Jalan evakuasi</h3><div id="smRute"></div></div>
-    <div class="sm-kartu"><h3>Titik kumpul dan pengungsian</h3><div id="smKumpul"></div></div>
-    <div class="sm-kartu"><h3>Masker dan bandara</h3><div id="smLogistik"></div></div>
+      <div id="smEvak"></div>`)}
+    ${kartuSm("Evakuasi", "Peringkat perlakuan", IKS.batang, `<div id="smRank"><p class="sm-msg">Menunggu hasil model…</p></div>`)}
+    ${kartuSm("Evakuasi", "Jalan evakuasi", IKS.jalan, `<div id="smRute"></div>`)}
+    ${kartuSm("Evakuasi", "Titik kumpul dan pengungsian", IKS.titik, `<div id="smKumpul"></div>`)}
+    ${kartuSm("Logistik", "Masker dan bandara", IKS.pesawat, `<div id="smLogistik"></div>`)}
     <details class="sm-met"><summary>Metode dan batas model</summary><div id="smMet"></div></details>`;
   $("#smMet").innerHTML = `<ul style="margin:0;padding-left:18px">
     <li><b>Skenario, bukan prakiraan.</b> Erupsi diandaikan mulai sekarang; kolom, lama, dan volume pilihanmu. Level resmi tetap dari PVMBG.</li>
@@ -365,7 +370,7 @@ function panel() {
 }
 function legenda() {
   $("#smLeg").innerHTML = `<div><i style="background:${WARNA.abu}"></i>Awan abu</div><div><i style="background:${WARNA.pdc}"></i>Awan panas</div><div><i style="background:${WARNA.lahar}"></i>Lahar</div>
-    <div><i style="background:${WARNA.tebal}"></i>Hujan abu tebal<i style="background:${WARNA.sedang};margin-left:8px"></i>sedang<i style="background:${WARNA.tipis};margin-left:8px"></i>tipis</div><div><i style="background:#e8743b"></i>Radius evakuasi</div><div><i style="background:#8e44ad"></i>Jalan terpotong lahar/awan panas</div><div><i style="background:#2fb36a;border-radius:50%"></i>Titik kumpul<i style="background:#3f7cc4;border-radius:50%;margin-left:8px"></i>Calon pengungsian</div>`;
+    <div><i style="background:${WARNA.tebal}"></i>Hujan abu tebal</div><div><i style="background:${WARNA.sedang}"></i>Hujan abu sedang</div><div><i style="background:${WARNA.tipis}"></i>Hujan abu tipis</div><div><i style="background:#e8743b"></i>Radius evakuasi</div><div><i style="background:#8e44ad"></i>Jalan terpotong lahar atau awan panas</div><div><i style="background:#2fb36a;border-radius:50%"></i>Titik kumpul</div><div><i style="background:#3f7cc4;border-radius:50%"></i>Calon tempat pengungsian</div>`;
 }
 function hasilKartu() {
   const s = S, h = $("#smHasil"), r = s.lahar?.ringkas, hs = s.hasil; if (!h) return;
@@ -388,11 +393,14 @@ function hasilKartu() {
   const pa = s.pitaAbu, pL = s.pitaLahar;
   if (abuTxt && s.maks && pa?.some(v => v > 0)) abuTxt += ` (rentang ${km5(Math.min(...pa, s.maks.jangkau_km))} sampai ${km5(Math.max(...pa, s.maks.jangkau_km))} km bila kolom meleset 0,7 sampai 1,4 kali)`;
   if (laharTxt && pL && utama) laharTxt += ` (${BULAT(Math.min(...pL, r.lahar_km), 1)} sampai ${BULAT(Math.max(...pL, r.lahar_km), 1)} km pada volume sepertiga sampai tiga kali)`;
-  const kec = r && r.pdc_km > 0 ? ` dalam sekitar ${hl(mnt5(utamaPdcMenit(I)))}, laju puncak ${hl(BULAT(r.pdc_v_maks) + " m/dtk")} (ilustrasi model, batas atas garis energi, bukan prakiraan)` : "";
+  const kec = r && r.pdc_km > 0 ? ` dalam sekitar ${hl(mnt5(utamaPdcMenit(I)))}, laju puncak ${hl(BULAT(r.pdc_v_maks) + " m per detik")} (ilustrasi model, batas atas garis energi, bukan prakiraan)` : "";
   const bagian = [abuTxt, laharTxt, r ? `awan panas sampai ${hl(BULAT(r.pdc_km, 1) + " km")}${kec}` : ""].filter(Boolean);
   if (!bagian.length) { h.innerHTML = `<p class="sm-msg">Menghitung…</p>`; return; }
-  const judul = "Skenario: " + bagian.join(", ") + ".";
-  h.innerHTML = Kartu.kartu("Hasil simulasi", judul, r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km².${catatan} Putar waktunya di bawah peta.</p>` : "", "Model skenario Centurisk97 (abu_model.js dan LAHARZ)");
+  /* kartu standar (AGENTS.md 3.5): kepala = nama seksi berikon, hasil per bahaya sebagai butir di isi, sumber dilipat */
+  const huruf = t => t.charAt(0).toUpperCase() + t.slice(1);
+  h.innerHTML = `<article class="ex ex-std"><header class="ex-hd"><div class="ex-pl"><span class="ex-ey">Skenario</span><span class="pl" style="--w:#8a6d1f" title="Ilustrasi model, belum diuji balik; bukan prakiraan letusan">Hipotesis</span></div><div class="ex-jd"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20 9 9h6l6 11z"/><path d="M12 9V6"/></svg>Hasil simulasi</h3></div></header>
+    <div class="ex-bd"><ul class="sm-poin">${bagian.map(b => `<li>${huruf(b)}.</li>`).join("")}</ul>${r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km².${catatan} Putar waktunya di bawah peta.</p>` : ""}
+    <details class="gn-cat"><summary>Sumber data</summary><p>Model skenario Centurisk97 (abu_model.js dan LAHARZ). Hasil ini skenario jika meletus dengan parameter di atas, bukan prakiraan letusan.</p></details></div></article>`;
 }
 const utamaPdcMenit = I => Math.max(0, ...I.map(i => i.pdc_menit || 0));
 const arahMata = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(d / 45) % 8];
@@ -404,7 +412,7 @@ function tabelDesa() {
   const per = 6, T = s.tabel, nil = {abu: d => d.abu || 0, penduduk: d => d.penduduk || 0, km: d => d.km, nama: d => d.nama};
   const urut = s.desa.filter(d => d.abu != null).sort((a, b) => { const x = nil[T.urut](a), y = nil[T.urut](b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * (T.turun ? -1 : 1); });
   const baris = urut.slice(T.hal * per, T.hal * per + per);
-  el.innerHTML = `<div class="tw"><table><thead><tr><th><button data-k="nama">Desa<i></i></button></th><th class="n"><button data-k="penduduk">Jiwa<i></i></button></th><th class="n"><button data-k="km">Jarak<i></i></button></th><th><button data-k="abu">Hujan abu<i>${T.urut === "abu" ? (T.turun ? "↓" : "↑") : ""}</i></button></th><th>Lahar/awan panas (tiba, ilustrasi model)</th></tr></thead><tbody>${baris.map(d => { const k = kelasAbu(d.abu || 0);
+  el.innerHTML = `<div class="tw ex-tabel"><table><thead><tr><th><button data-k="nama">Desa<i></i></button></th><th class="n"><button data-k="penduduk">Jiwa<i></i></button></th><th class="n"><button data-k="km">Jarak<i></i></button></th><th><button data-k="abu">Hujan abu<i>${T.urut === "abu" ? (T.turun ? "↓" : "↑") : ""}</i></button></th><th>Lahar atau awan panas (tiba, ilustrasi model)</th></tr></thead><tbody>${baris.map(d => { const k = kelasAbu(d.abu || 0);
     return `<tr><td>${esc(d.nama)}</td><td class="n">${jiwaTxt(d.penduduk)}</td><td class="n">${BULAT(d.km, 1)} km</td><td>${k ? pil(k[0], k[1]) : "–"}</td><td>${d.pdc ? pil("Awan panas", WARNA.pdc) + ` <small>${mnt5(d.tpdc * 60)}</small> ` : ""}${d.lahar ? pil("Lahar", WARNA.lahar) + ` <small>jam ${BULAT(d.tlahar, 1)}</small>` : ""}${!d.pdc && !d.lahar ? "–" : ""}</td></tr>`; }).join("") || `<tr><td colspan="5" class="kosong">Belum ada hasil.</td></tr>`}</tbody></table></div>${paginasi(T.hal, urut.length, per, "desa")}`;
   pengurutKepala(T, el.querySelector("thead tr"), tabelDesa);
 }
@@ -457,7 +465,7 @@ function peringkatKartu(D, dasar, res) {
   const el = $("#smRank"); if (!el) return;
   const rk = Tanggap.peringkat(dasar, D, {radius: [3, 5, 8, 10, 15, 20], mulai: [-12, -6, -3, 0, 1], armada: [0, 10, 30, 60]}), isi = rk.pareto.slice(0, 8);
   el.innerHTML = `<p class="sm-msg">Dari ${fmt(rk.semua)} paket radius, waktu mulai, dan armada, ini yang tak terkalahkan: tak ada paket lain yang menyelamatkan sama banyak atau lebih dengan biaya lebih murah. Urut menurut biaya. Rencana saat ini: ${jiwaBulat(res.terselamatkan)} jiwa terselamatkan, ${barisRp(res.biaya)}.</p>
-    ${isi.length ? `<div class="tw"><table><thead><tr><th>Paket</th><th class="n">Jiwa terselamatkan</th><th class="n">Biaya</th><th class="n">Jiwa per Rp miliar (tambahan)</th></tr></thead><tbody>${isi.map(b => `<tr><td>${esc(b.nama)}${b.peka ? " " + pil("Peka asumsi", "#e0b400") : ""}</td><td class="n">${jiwaBulat(b.selamat)}</td><td class="n">${barisRp(b.biaya)}</td><td class="n">${b.per_miliar != null ? fmt(Math.round(b.per_miliar)) : "–"}</td></tr>`).join("")}</tbody></table></div>
+    ${isi.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Paket</th><th class="n">Jiwa terselamatkan</th><th class="n">Biaya</th><th class="n">Jiwa per Rp miliar (tambahan)</th></tr></thead><tbody>${isi.map(b => `<tr><td>${esc(b.nama)}${b.peka ? " " + pil("Peka asumsi", "#e0b400") : ""}</td><td class="n">${jiwaBulat(b.selamat)}</td><td class="n">${barisRp(b.biaya)}</td><td class="n">${b.per_miliar != null ? fmt(Math.round(b.per_miliar)) : "–"}</td></tr>`).join("")}</tbody></table></div>
     <p class="sm-msg">Peka asumsi = jiwa terselamatkan turun lebih dari 20% bila kapasitas jalan separuh atau kendaraan pribadi hanya 40%. Hasil model, belum divalidasi.</p>` : `<p class="sm-msg">Tak ada paket yang menyelamatkan lebih banyak dari rencana saat ini pada skenario ini.</p>`}`;
 }
 function kumpulKartu(D) {
@@ -465,14 +473,14 @@ function kumpulKartu(D) {
   D.forEach((d, i) => { if (d.km > s.p.radius || !isFinite(d.tempuh_menit)) return; const k = per.get(d.titik) || per.set(d.titik, {label: d.label, jiwa: 0, desa: 0}).get(d.titik); k.jiwa += d.jiwa; k.desa++; if (!k.label) k.label = d.label; });
   const baris = [...per.values()].sort((a, b) => b.jiwa - a.jiwa).slice(0, 6), ungsi = (s.pg.sekolah || []).filter(x => !["III", "II"].includes(x.zona) && x.km >= s.p.radius).length;
   el.innerHTML = `<p class="sm-msg">${ungsi ? `${fmt(ungsi)} sekolah di luar KRB III/II dan di luar radius tampil di peta sebagai calon tempat pengungsian; daya tampungnya belum ada datanya. ` : ""}Titik kumpul dari jalan aman OSM di luar zona bahaya.</p>
-    ${baris.length ? `<div class="tw"><table><thead><tr><th>Titik kumpul</th><th class="n">Desa</th><th class="n">Jiwa dituju</th></tr></thead><tbody>${baris.map(b => `<tr><td>${esc(b.label || "Jalan aman di luar zona")}</td><td class="n">${fmt(b.desa)}</td><td class="n">${jiwaTxt(b.jiwa)}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
+    ${baris.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Titik kumpul</th><th class="n">Desa</th><th class="n">Jiwa dituju</th></tr></thead><tbody>${baris.map(b => `<tr><td>${esc(b.label || "Jalan di luar zona bahaya")}</td><td class="n">${fmt(b.desa)}</td><td class="n">${jiwaTxt(b.jiwa)}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
 }
 function logistikKartu() {
   const s = S, el = $("#smLogistik"); if (!el) return;
   if (!s.hasil) { el.innerHTML = `<p class="sm-msg">Menunggu sebaran abu…</p>`; return; }
   const m = Tanggap.masker(s.desa.map(d => ({jiwa: d.penduduk || 0, abu: d.abu})), {durasi_jam: s.p.durasi}), top = m.baris.slice().sort((a, b) => b.n - a.n).slice(0, 5), B = s.bandaraTutup || [];
   el.innerHTML = `<p class="sm-msg">${m.baris.length ? `${Kartu.hl(fmt(Math.round(m.total / 100) * 100) + " masker")} untuk ${fmt(m.baris.length)} desa dengan hujan abu sedang atau tebal (2 per orang per hari, ${m.hari} hari), sekitar ${barisRp(m.biaya)} bila Rp 3.500 per masker.` : "Tak ada desa terdaftar dengan hujan abu sedang atau tebal."}</p>
-    ${top.length ? `<div class="tw"><table><thead><tr><th>Desa</th><th class="n">Masker</th></tr></thead><tbody>${top.map(b => `<tr><td>${esc(s.desa[b.i].nama)}</td><td class="n">${fmt(Math.round(b.n / 10) * 10)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${top.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Desa</th><th class="n">Masker</th></tr></thead><tbody>${top.map(b => `<tr><td>${esc(s.desa[b.i].nama)}</td><td class="n">${fmt(Math.round(b.n / 10) * 10)}</td></tr>`).join("")}</tbody></table></div>` : ""}
     <p class="sm-msg">${B.length ? `Bandara di bawah jejak abu di atas ambang penerbangan (2 mg/m³): ${B.slice(0, 5).map(b => `${esc(b.nama)} (jam ke-${b.jam})`).join(", ")}${B.length > 5 ? ` dan ${B.length - 5} lainnya` : ""}. Penutupan bandara ditentukan otoritas penerbangan.` : "Tak ada bandara dalam jejak abu di atas ambang penerbangan pada 72 jam pertama."}</p>`;
 }
 function gambarTanggap() {
@@ -507,7 +515,7 @@ function rute() {
   const hasil = baris.filter(x => x.a != null && (x.b == null || x.b !== x.a)).sort((x, y) => ((y.b ?? 9e3) - y.a) - ((x.b ?? 9e3) - x.a)).slice(0, 8);
   const putus = baris.filter(x => x.a != null && x.b == null).length;
   el.innerHTML = `<p class="sm-msg">Klik ruas hijau di peta untuk menutup jalan. ${s.tutup.size ? `<b>${s.tutup.size} ruas</b> ditutup, <b>${fmt(putus)} desa</b> terputus.` : "Belum ada ruas yang ditutup."} ${s.tutup.size ? `<button type="button" class="btn sec" id="smBuka" style="height:28px;padding:0 10px">Buka semua</button>` : ""}</p>
-    ${hasil.length ? `<div class="tw"><table><thead><tr><th>Desa</th><th class="n">Sebelum</th><th class="n">Sesudah</th></tr></thead><tbody>${hasil.map(x => `<tr><td>${esc(x.d.nama)}</td><td class="n">${mnt5(x.a)}</td><td class="n">${x.b == null ? pil("Terputus", WARNA.pdc) : mnt5(x.b)}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
+    ${hasil.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Desa</th><th class="n">Sebelum</th><th class="n">Sesudah</th></tr></thead><tbody>${hasil.map(x => `<tr><td>${esc(x.d.nama)}</td><td class="n">${mnt5(x.a)}</td><td class="n">${x.b == null ? pil("Terputus", WARNA.pdc) : mnt5(x.b)}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
   $("#smBuka")?.addEventListener("click", () => { s.tutup.clear(); rute(); });
   if (s.laharIdx) evakuasi();   /* ruas tertutup mengubah waktu tempuh -> hitung ulang evakuasi dan peringkat */
 }
@@ -516,7 +524,7 @@ function rute() {
 function waktu() {
   const s = S, el = $("#smWaktu"), IK = {main: '<path d="M7 5l12 7-12 7z"/>', jeda: '<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>'};
   el.innerHTML = `<button type="button" class="sm-main" id="smMain" aria-label="Putar"><svg viewBox="0 0 24 24" aria-hidden="true">${IK.main}</svg></button><b id="smJam"></b>
-    <input id="smT" type="range" min="0" max="72" step="0.25" value="0" aria-label="Jam sejak erupsi (0 sampai 72)"><button type="button" class="btn sec" id="smAwan" style="height:32px;padding:0 12px">Lihat awan</button>${seg("kec", [[0.25, "0,25 jam/dtk"], [1, "1 jam/dtk"], [3, "3 jam/dtk"], [12, "12 jam/dtk"]], 3)}`;
+    <input id="smT" type="range" min="0" max="72" step="0.25" value="0" aria-label="Jam sejak erupsi (0 sampai 72)"><button type="button" class="btn sec" id="smAwan" style="height:32px;padding:0 12px">Lihat awan</button>${seg("kec", [[0.25, "0,25 jam per detik"], [1, "1 jam per detik"], [3, "3 jam per detik"], [12, "12 jam per detik"]], 3)}`;
   const label = () => { const ms = (s.angin ? Date.parse(s.angin.mulai) : Date.now()) + s.t * 36e5; $("#smJam").textContent = `Jam ${fmt(s.t)}, ${jamWIB(ms)}`; };
   const atur = t => { s.t = Math.max(0, Math.min(72, t)); $("#smT").value = s.t; label(); };
   const gambar = () => { gambarAbu(); gambarLahar(); };

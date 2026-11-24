@@ -4,8 +4,9 @@
    DATA BULANAN UNTUK KAJIAN, BUKAN SIAGA: bukan ISPU, bukan model CAMS. Bulan data dan satuan ditulis persis seperti sumber; satuan yang tidak dicantumkan sumber tidak ditebak. */
 const Kualitas = {
   D: null,
-  P: [["spm", "SPM"], ["ozon", "Ozon"], ["so2", "SO2"], ["no2", "NO2"], ["kimia_air_hujan", "Hujan asam"]],
-  NAMA: {spm: "partikel tersuspensi (SPM)", ozon: "ozon permukaan", so2: "SO2", no2: "NO2", kimia_air_hujan: "kimia air hujan"},
+  /* label segmen pendek tapi dijelaskan: rumus kimia memakai angka bawah, nama panjang di title */
+  P: [["spm", '<span title="Partikel tersuspensi (suspended particulate matter)">Partikel (SPM)</span>'], ["ozon", "Ozon"], ["so2", '<span title="Sulfur dioksida">SO₂</span>'], ["no2", '<span title="Nitrogen dioksida">NO₂</span>'], ["kimia_air_hujan", "Hujan asam"]],
+  NAMA: {spm: "partikel tersuspensi (SPM)", ozon: "ozon permukaan", so2: "sulfur dioksida (SO₂)", no2: "nitrogen dioksida (NO₂)", kimia_air_hujan: "kimia air hujan"},
   async muat() { this.D = await fetch("/udara/data/kualitas_bmkg.json").then(r => r.ok ? r.json() : null).catch(() => null); },
   /* bulan dari sumber: "2026-09" jadi "September 2026"; teks lain ("September 2026") dipakai apa adanya */
   bulan(b) { return /^\d{4}-\d{2}$/.test(b || "") ? new Date(b + "-15T12:00:00+07:00").toLocaleDateString("id-ID", {month: "long", year: "numeric"}) : (b || "bulan tak tertulis"); },
@@ -35,7 +36,7 @@ const Kualitas = {
       const kata = k === "kimia_air_hujan" ? "di bawah nilai ambang asam" : "di atas nilai ambang (NAB)";
       judul = `${Kartu.hl(lewat + " dari " + n + " stasiun")} ${kata} untuk ${this.NAMA[k]} ${bln}; tertinggi ${Kartu.hl(esc(t.stasiun) + " " + this.num(t.nilai, 4))}`;
       kol = [{n: "Stasiun", h: r => `<b translate="no">${esc(r.stasiun)}</b>`}, {n: "Lokasi", h: r => `<span translate="no">${esc(L(r.lokasi))}</span>`}, {n: "Nilai", num: 1, h: r => this.num(r.nilai, 4)}, {n: "Ambang (NAB)", num: 1, h: r => this.num(r.nab, 4)}]; }
-    const pilBulanan = '<span class="kt" style="--c:#0b2545;--f:#fff;text-transform:none;letter-spacing:0">data bulanan untuk kajian, bukan siaga</span>';
+    const pilBulanan = pilTk("data bulanan untuk kajian, bukan siaga", "Pengukuran BMKG bulanan; bukan ISPU dan bukan model CAMS");
     return Kartu.ex(judul, "", "", `<div style="margin:0 0 6px">${pilBulanan}</div>` + this.tabel(kol, R), `Data ${bln}, ${satuan}${tertinggal}. Sumber: BMKG kualitas-udara, terbit ${esc((D.dibuat || "").slice(0, 10))}`, Kartu.seg("kualP", ada.map(([x, n]) => [x, n]), {kualP: k}))
       .replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/></svg>Kualitas udara BMKG</span>`); },
 };

@@ -9,15 +9,15 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .panel > *{pointer-events:auto}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;text-align:center}
-.kpi .lbl{display:block;background:var(--brand);color:#fff;padding:4px 6px;font-size:9.5px}
+.kpi .lbl{display:block;background:var(--brand);color:#fff;padding:4px 6px;font-size:0.5938rem}
 :root[data-theme="dark"] .kpi .lbl{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi .lbl{color:oklch(18% .035 256)}}
-.kpi b{display:block;font-family:var(--display);font-size:22px;font-weight:800;padding:6px 4px 0;font-variant-numeric:tabular-nums}
-.kpi small{display:block;color:var(--ink2);font-size:11px;padding:0 6px 7px}
+.kpi b{display:block;font-family:var(--display);font-size:1.375rem;font-weight:800;padding:6px 4px 0;font-variant-numeric:tabular-nums}
+.kpi small{display:block;color:var(--ink2);font-size:0.6875rem;padding:0 6px 7px}
 .list{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .list .top{padding:12px 14px 8px;border-bottom:1px solid var(--line)}
 .crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.crumb button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:999px;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow)}
+.crumb button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:999px;font-weight:700;font-size:0.7812rem;cursor:pointer;box-shadow:var(--shadow)}
 .crumb button:hover{border-color:var(--brand2)}
 .crumb button[data-n]:last-child,.crumb button[data-n]:has(+ .cr-rinci){background:var(--brand);border-color:var(--brand);color:#fff}
 .crumb .cr-rinci{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));border:0;color:#fff}
@@ -25,17 +25,17 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 :root[data-theme="dark"] .crumb button:last-child{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .crumb button:last-child{color:oklch(18% .035 256)}}
 .cari{position:relative}
-.cari input{width:100%;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 34px;font-size:13px}
+.cari input{width:100%;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 34px;font-size:0.8125rem}
 .cari svg{position:absolute;left:12px;top:10px;color:var(--ink2)}
 .hasil{position:absolute;left:0;right:0;top:40px;z-index:10;max-height:280px;overflow:auto;padding:4px}
-.hasil button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.hasil button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:0.8125rem}
 .hasil button:hover,.hasil button:focus{background:var(--surface)}
 .hasil small{color:var(--ink2)}
 .rows{overflow-y:auto;flex:1;padding:4px 6px 8px}
 .row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
-.tb{display:grid;grid-template-columns:20px minmax(0,2.6fr) minmax(50px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr);gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:0;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
+.tb{display:grid;grid-template-columns:20px minmax(0,2.6fr) minmax(50px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr);gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:0;cursor:pointer;font-size:0.7812rem;line-height:1.25;border-bottom:1px solid var(--line)}
 .tb:hover{background:var(--surface)}
-.tb.kepala{position:sticky;top:0;z-index:3;background:oklch(25.5% .075 256);cursor:default;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:7px 8px;border-radius:8px 8px 0 0;border-bottom:0;box-shadow:0 -6px 0 var(--card)}
+.tb.kepala{position:sticky;top:0;z-index:3;background:oklch(25.5% .075 256);cursor:default;font-size:0.5938rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:7px 8px;border-radius:8px 8px 0 0;border-bottom:0;box-shadow:0 -6px 0 var(--card)}
 .tb.kepala:hover{background:oklch(25.5% .075 256)}
 .tb.kepala span[data-s]{cursor:pointer;user-select:none}
 .tb.kepala span[data-s]:hover{color:oklch(85% .08 70)}
@@ -50,34 +50,34 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tb .rk{justify-self:end!important;text-align:right!important}
 .tb .pill{justify-self:center}
 .tb .n{text-align:right;font-variant-numeric:tabular-nums}
-.tb .rk{color:var(--ink2);font-size:11px;font-weight:700;text-align:right}
-.tb .pill{height:19px;padding:0 7px;font-size:10.5px;justify-self:end}
+.tb .rk{color:var(--ink2);font-size:0.6875rem;font-weight:700;text-align:right}
+.tb .pill{height:19px;padding:0 7px;font-size:0.6562rem;justify-self:end}
 .tb.kepala > span:nth-child(2){text-align:center!important;justify-self:center}
 .kartu{margin:-10px -12px;min-width:270px;overflow:hidden;border-radius:12px}
 .kartu .kp{padding:8px 30px 8px 12px;color:#fff;display:flex;align-items:center;gap:10px}
 .kartu .kp>div{min-width:0}
 .lambang{flex:none;width:30px;height:36px;object-fit:contain;filter:drop-shadow(0 1px 2px rgb(0 0 0 / .35))}
 .dlg .dh .lambang{width:40px;height:48px}
-.kartu .kp small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.8}
-.kartu .kp b{display:block;font-family:var(--display);font-size:14px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kartu .kp small{display:block;font-size:0.5938rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.8}
+.kartu .kp b{display:block;font-family:var(--display);font-size:0.875rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kartu .kg{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;padding:4px 12px 2px}
-.kartu .kb{display:flex;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px solid var(--line);font-size:11.5px;line-height:1.3;min-width:0}
+.kartu .kb{display:flex;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px solid var(--line);font-size:0.7188rem;line-height:1.3;min-width:0}
 .kartu .kb span{color:var(--ink2);white-space:nowrap}
 .kartu .kb b{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
 .kartu .kb.penuh{grid-column:1 / -1}
-.kartu .kk{padding:6px 12px 10px;font-size:11px;color:var(--ink2);line-height:1.4}
+.kartu .kk{padding:6px 12px 10px;font-size:0.6875rem;color:var(--ink2);line-height:1.4}
 .kartu .kk button{margin-top:6px;width:100%}
-.maplibregl-popup-close-button{color:#fff;font-size:18px;right:4px;top:3px}
+.maplibregl-popup-close-button{color:#fff;font-size:1.125rem;right:4px;top:3px}
 .row:hover{background:var(--surface)}
-.row .rk{font-size:11px;color:var(--ink2);font-weight:700;text-align:right}
-.row .nm{display:block;font-weight:600;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .sub{display:block;color:var(--ink2);font-size:11px;line-height:1.35;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .rk{font-size:0.6875rem;color:var(--ink2);font-weight:700;text-align:right}
+.row .nm{display:block;font-weight:600;font-size:0.8125rem;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{display:block;color:var(--ink2);font-size:0.6875rem;line-height:1.35;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row .bar{height:4px;border-radius:4px;background:var(--surface);margin-top:5px;overflow:hidden}
 .row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--f2),var(--f3));border-radius:4px}
-.row .vl{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:13px}
-.row .vl small{display:block;font-weight:500;color:var(--ink2);font-size:10.5px}
+.row .vl{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:0.8125rem}
+.row .vl small{display:block;font-weight:500;color:var(--ink2);font-size:0.6562rem}
 .prio{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bad);margin-left:5px;vertical-align:middle}
-.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:0.6875rem;font-weight:700;white-space:nowrap}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .l0{background:oklch(62% .16 150 / .14);color:oklch(45% .13 150)}
 .l1{background:oklch(66% .13 235 / .14);color:oklch(46% .12 240)}
@@ -89,13 +89,13 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 
 .tools{position:absolute;z-index:5;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-end;width:280px}
 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px;width:100%}
-.lapis label{display:flex;align-items:center;gap:7px;font-size:12px;padding:1px 0 1px 4px;cursor:pointer;line-height:1.35}
+.lapis label{display:flex;align-items:center;gap:7px;font-size:0.75rem;padding:1px 0 1px 4px;cursor:pointer;line-height:1.35}
 .lapis details{border-top:1px solid var(--line);padding:3px 0 1px;margin-top:3px}
-.lapis summary{font-size:11.5px;font-weight:800;padding:2px 0;color:var(--ink);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.lapis summary{font-size:0.7188rem;font-weight:800;padding:2px 0;color:var(--ink);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
 .lapis summary::after{content:"";width:6px;height:6px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;margin-right:4px}
 .lapis details:not([open]) > summary::after{transform:rotate(-45deg)}
 .lapis details>label{padding-left:8px}
-.lapis-hd{margin:-10px -12px 6px;padding:8px 12px;border-radius:13px 13px 0 0;background:oklch(25.5% .075 256);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.lapis-hd{margin:-10px -12px 6px;padding:8px 12px;border-radius:13px 13px 0 0;background:oklch(25.5% .075 256);color:#fff;font-size:0.6562rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .lapis-hd+details{border-top:0;margin-top:0}
 .lapis-hd{text-align:center;position:relative}
 .lapis-hd button{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:0;border-radius:7px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer}
@@ -110,26 +110,26 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 @media (min-width:901px){.tools #lapis{display:block}#lapisBtn{display:none!important}}
 .seg[hidden],.seg button[hidden]{display:none!important}
 .lapis input{accent-color:var(--brand2);width:15px;height:15px}
-.leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
+.leg{display:flex;flex-direction:column;gap:4px;font-size:0.7188rem}
 .leg .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
 .leg .dot{border-radius:50%}
 .legscale{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:4px 0 2px}
 .legscale i{flex:1}
-.legnum{display:flex;justify-content:space-between;font-size:10px;color:var(--ink2)}
+.legnum{display:flex;justify-content:space-between;font-size:0.625rem;color:var(--ink2)}
 
 .laci{position:absolute;z-index:8;top:12px;right:12px;bottom:12px;width:390px;display:none;flex-direction:column;overflow:hidden}
 .laci.on{display:flex}
 .laci .hd{padding:14px 16px 13px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)))}
-.laci .hd h2{font-size:19px;line-height:1.2;margin:6px 0 7px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.laci .hd h2{font-size:1.1875rem;line-height:1.2;margin:6px 0 7px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .laci .hd-isi{min-width:0}
 .laci .hd-meta{flex-wrap:nowrap}
 .laci .hd-aksi .ik-btn{width:30px;height:30px;border-radius:9px;border:0;background:var(--brand2);color:#fff}
 .laci .hd-aksi .ik-btn:hover{background:var(--brand);color:#fff}
 .laci .hd-aksi .ik-btn.tutup{background:var(--surface);color:var(--ink)}
 .laci .hd-aksi .ik-btn svg{width:15px;height:15px}
-.laci .hd-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
-.laci .hd-meta{display:flex;flex-wrap:wrap;white-space:nowrap;align-items:center;gap:6px 8px;font-size:12px;color:var(--ink2)}
-.laci .hd-ko{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:11.5px}
+.laci .hd-ey{display:inline-block;font-size:0.625rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
+.laci .hd-meta{display:flex;flex-wrap:wrap;white-space:nowrap;align-items:center;gap:6px 8px;font-size:0.75rem;color:var(--ink2)}
+.laci .hd-ko{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:0.7188rem}
 .laci .hd-ko svg{width:12px;height:12px}
 .laci .bd{overflow-y:auto;padding:14px 16px 18px;grid-auto-rows:max-content;align-content:start;flex:1;min-height:0}
 .tutup{margin-left:auto;border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
@@ -143,13 +143,13 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .kv div:first-child{border-left:0;padding-left:0}   /* tanpa wadah: angka dipisah garis tipis (pemilik, 15 Okt 2026) */
 .kv div:nth-child(2){--k:#e58a45}
 .kv div:nth-child(3){--k:#5f6fb0}
-.kv b{display:block;font-family:var(--display);font-size:22px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
-.kv b small,.kv b sub,.kv b span{display:inline!important;font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:0}
-.kv span{display:flex;flex-direction:column;align-items:flex-start;gap:5px;font-size:11.5px;line-height:1.3;color:var(--ink2);font-weight:500;max-width:100%}
-.kv span em{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--k) 13%, var(--card));color:color-mix(in oklch, var(--k) 80%, var(--ink));white-space:nowrap}
-.sop{border-left:3px solid var(--bad);padding:8px 12px;background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0;font-size:13px}
+.kv b{display:block;font-family:var(--display);font-size:1.375rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.kv b small,.kv b sub,.kv b span{display:inline!important;font-size:0.75rem;font-weight:600;color:var(--ink2);letter-spacing:0}
+.kv span{display:flex;flex-direction:column;align-items:flex-start;gap:5px;font-size:0.7188rem;line-height:1.3;color:var(--ink2);font-weight:500;max-width:100%}
+.kv span em{font-style:normal;font-size:0.6562rem;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--k) 13%, var(--card));color:color-mix(in oklch, var(--k) 80%, var(--ink));white-space:nowrap}
+.sop{border-left:3px solid var(--bad);padding:8px 12px;background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0;font-size:0.8125rem}
 .sop ul{margin:6px 0 0;padding-left:18px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:13.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:0.8438rem}
 .btn.pri{background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
 .btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
 .btn:disabled{opacity:.5;cursor:default}
@@ -159,9 +159,9 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand2);margin:0 auto 10px;animation:putar 1s linear infinite}
 @keyframes putar{to{transform:rotate(360deg)}}
 .handle{display:none}
-.maplibregl-popup-content{background:var(--card);color:var(--ink);border-radius:12px;box-shadow:var(--shadow-lg);padding:10px 12px;font:13px/1.45 var(--font)}
+.maplibregl-popup-content{background:var(--card);color:var(--ink);border-radius:12px;box-shadow:var(--shadow-lg);padding:10px 12px;font:0.8125rem/1.45 var(--font)}
 .maplibregl-popup-tip{border-top-color:var(--card)!important;border-bottom-color:var(--card)!important}
-.maplibregl-ctrl-attrib{font-size:10px}
+.maplibregl-ctrl-attrib{font-size:0.625rem}
 
 @media (max-width:900px){
   .panel{top:auto;left:0;right:0;bottom:0;width:auto;height:46%;gap:0;transition:height .25s}
@@ -180,18 +180,18 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tools .garis-waktu{width:100%;flex-direction:column;align-items:stretch;gap:5px;padding:7px 8px}
 .tools .garis-waktu > .lbl{display:block;text-align:center}
 .tools #hariSeg .seg{display:grid;grid-template-columns:repeat(4,1fr)}
-.tools #hariSeg .seg button{padding:5px 2px;font-size:11px;white-space:nowrap;min-width:0}
+.tools #hariSeg .seg button{padding:5px 2px;font-size:0.6875rem;white-space:nowrap;min-width:0}
 
 /* isi Analisa di laci 390px: kotak status 2 kolom, angka lebih kecil, tabel boleh digeser */
 .laci .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
-.laci .kpi b{font-size:17px;padding-top:5px}
+.laci .kpi b{font-size:1.0625rem;padding-top:5px}
 .laci details.lipat .isi{overflow-x:auto}
 @media (max-width:900px){.laci .grid.g4{grid-template-columns:repeat(4,minmax(0,1fr))}}
 /* empat kotak satu baris (rincian sungai banjir): angka dan keterangan diperkecil supaya muat */
 .laci .grid.g4.satu,.dlg .grid.g4.satu{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.grid.g4.satu .kpi b{font-size:16px;white-space:nowrap}
-.grid.g4.satu .kpi small{font-size:10.5px;line-height:1.3}
-.grid.g4.satu .kpi .sat{margin-left:2px;font-style:normal;font-size:10.5px;font-weight:600;opacity:.7}
+.grid.g4.satu .kpi b{font-size:1rem;white-space:nowrap}
+.grid.g4.satu .kpi small{font-size:0.6562rem;line-height:1.3}
+.grid.g4.satu .kpi .sat{margin-left:2px;font-style:normal;font-size:0.6562rem;font-weight:600;opacity:.7}
 /* hidrograf sungai: kolom sorot per hari */
 .hg .hg-p{opacity:0;transition:opacity .12s}
 .hg .hg-t{transition:r .12s}
@@ -200,4 +200,73 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .hg .hg-k:hover .hg-t{r:6}
 @media (prefers-reduced-motion:reduce){.hg .hg-p,.hg .hg-t{transition:none}}
 /* judul kecil di laci (dulu disalin di cuaca.css dan gempa.css) */
-.lc-h{margin:0;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.lc-h{margin:0;font-size:0.7188rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.lc-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lc-h > svg{flex:none;width:14px;height:14px;color:var(--brand2)}
+
+/* ---------- laci rapi bersama (diangkat dari laci gempa 16 Nov 2026; nama netral, berlaku di laci #laci dan dialog bencana mana pun) ----------
+   Berlaku menurut markup (.lc-sek, .lc-lb, .lc-kelas-bar, .chip-wil, .lc-luar): banjir dan karhutla tidak memakai kelas ini, jadi rupanya tidak berubah.
+   Perilaku yang mengubah kelas lama (.kpi, kartu hover, legenda, .muat, .dk-nav) hanya menyala dengan <body class="pb-rapi">. Pembantu HTML di inti/peta/lapis.js (LaciInti). */
+.lc-lanjut{display:grid;gap:10px}
+.lc-sek{display:grid;gap:6px;min-width:0}
+/* tiap bagian berkepala .lc-h = satu kartu; label kiri, nilai rata kanan, tanpa belang baris */
+.lc-sek:has(> .lc-h){border:1px solid var(--line);border-radius:10px;padding:10px 12px;gap:8px;background:var(--card)}
+.lc-sek table.tb2 tbody tr:nth-child(even){background:none}
+.lc-sek table.tb2 td{padding:7px 0;vertical-align:middle}
+.lc-sek table.tb2 td:first-child{color:var(--ink2)}
+.lc-sek table.tb2 td.n{text-align:right;padding-left:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.lc-sek .fnd{margin:0;font-size:0.7188rem;line-height:1.45;color:var(--ink2)}
+.lc-src{font-size:0.6562rem!important;color:var(--ink2)}
+.lc-v{font-family:var(--display);font-weight:700;font-size:0.875rem}
+.lc-sub{display:block;font-size:0.6875rem;font-weight:500;color:var(--ink2)}
+/* baris label berikon kiri, nilai kanan (kartu Lokasi gempa) */
+.lc-lbs{display:grid}
+.lc-lb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:0.7812rem}
+.lc-lb:last-child{border-bottom:0}
+.lc-lb-k{display:inline-flex;align-items:center;gap:7px;color:var(--ink2);min-width:0}
+.lc-lb-k svg{flex:none;width:14px;height:14px;color:var(--brand2)}
+.lc-lb b{font-weight:700;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+/* angka utama bagian: angka besar kiri, keterangan kecil di bawahnya, pil opsional kanan */
+.lc-big{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lc-big > div{display:grid;gap:2px;min-width:0}
+.lc-big b{font-family:var(--display);font-size:1.1875rem;line-height:1.15;color:var(--ink);font-variant-numeric:tabular-nums}
+.lc-big small{font-size:0.7188rem;color:var(--ink2)}
+/* pil kelas berwarna --w (teks putih; .terang untuk warna muda). Teks memakai token yang TIDAK berbalik di tema gelap (--on-pekat putih, --head-bg navy),
+   karena latarnya warna data yang sama di kedua tema; --on-brand/--ink berbalik dan membuat teks tak terbaca di mode gelap */
+.lc-pil{display:inline-block;padding:2px 9px;border-radius:999px;font-size:0.7188rem;font-weight:700;white-space:nowrap;text-align:center;background:var(--w,var(--brand2));color:var(--on-pekat)}
+.lc-pil.terang{color:var(--head-bg)}
+.lc-pil:not([style*="--w"]){color:var(--on-brand)}
+/* bilah per kelas (jiwa per tingkat/kategori): kolom label, bilah, nilai sejajar antarbaris */
+.lc-kelas-bar{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;align-items:center;gap:6px 8px;font-size:0.75rem}
+.lc-kb{display:contents}
+.lc-kb-l{color:var(--ink2);white-space:nowrap}
+.lc-kb-t{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.lc-kb-t i{display:block;height:100%;border-radius:999px;background:var(--w,var(--brand2))}
+.lc-kb b{font-weight:700;color:var(--ink);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+/* pengukur 0 sampai 100 (indeks risiko) */
+.lc-bar{height:6px;border-radius:999px;background:color-mix(in oklch,var(--w,var(--brand2)) 15%,var(--line));overflow:hidden}
+.lc-bar i{display:block;height:100%;border-radius:999px;background:var(--w,var(--brand2))}
+/* kotak kelas berderet sama lebar, kelas aktif ditandai .on */
+.lc-kls{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;font-size:0.6875rem;color:var(--ink2)}
+.lc-kls span{display:flex;align-items:center;justify-content:center;gap:5px;padding:4px 2px;border-radius:7px;border:1px solid transparent;background:color-mix(in oklch,var(--w,var(--brand2)) 10%,transparent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.lc-kls span.on{border-color:var(--w,var(--brand2));color:var(--ink);font-weight:700;background:color-mix(in oklch,var(--w,var(--brand2)) 18%,transparent)}
+.lc-kls i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--w,var(--brand2))}
+/* chip wilayah: satu chip per wilayah, sisanya "+N lainnya" dengan daftar di title */
+.chip-wil{display:flex;flex-wrap:wrap;gap:6px}
+.chip-wil > span{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:0.75rem;line-height:1.3;white-space:nowrap}
+.chip-wil > span:has(> .lc-pil:first-child){padding-left:2px}
+.chip-wil > span .lc-pil{font-size:0.6562rem;padding:1px 7px}
+.chip-wil > .lagi{color:var(--ink2);font-weight:600;background:var(--surface);cursor:help}
+/* tautan keluar sebagai tombol */
+.lc-luar{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid var(--line);border-radius:999px;font-size:0.75rem;font-weight:600;color:var(--brand2);text-decoration:none;background:var(--card)}
+.lc-luar svg{flex:none;width:14px;height:14px}
+.lc-luar:hover{background:var(--surface);border-color:var(--brand2)}
+.lc-luar:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+/* kotak angka berkepala terang berikon (latar gelap hanya kepala halaman, AGENTS.md 3.5): .kpi.kpi-t, atau semua .kpi di bawah body.pb-rapi */
+:root .kpi.kpi-t,:root .pb-rapi .kpi{box-shadow:none;border-radius:12px}
+:root .kpi.kpi-t .lbl,:root .pb-rapi .kpi .lbl{display:flex;align-items:center;justify-content:center;gap:6px;background:color-mix(in oklch,var(--brand) 8%,var(--card));color:var(--ink);font-size:0.6562rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
+:root .kpi.kpi-t .lbl svg,:root .pb-rapi .kpi .lbl svg{flex:none;width:13px;height:13px;color:var(--brand2)}
+:root .kpi.kpi-t b,:root .pb-rapi .kpi b{padding-top:8px}
+/* body.pb-rapi: layar teraturan baru (gempa, kekeringan, gunung api, cuaca, udara, pesisir) */
+.pb-rapi .muat.hilang{opacity:0;visibility:hidden;pointer-events:none;transition:none}
+.pb-rapi .muat.hilang *{animation:none}

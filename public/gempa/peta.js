@@ -147,7 +147,7 @@ const Peta = {
     return PI.kartuTip({judul: esc(wilayahPendek(g.wilayah)), stat: [
       ...(ts ? [["peringatan", ts[0], "BMKG", ts[1], true]] : []),
       ["gempa", mTulis(g.m), "kekuatan", warnaM(g.m), g.m >= 6], ["dalam", g.dalam == null ? "–" : fmt(g.dalam) + " km", "kedalaman", kd < 0 ? WARNA_DALAM_NA : KELAS_DALAM[kd][1]],
-      ["jam", jamPendek(g.waktu), "WIB", "#3f7fb8"], ...(g.mmi_maks ? [["getar", ROMAWI[g.mmi_maks], "dirasakan", "#c9503a"]] : [])]}); },
+      ["jam", jamPendek(g.waktu), "WIB", "#3f7fb8"], ...(g.mmi_maks ? [["getar", "MMI " + ROMAWI[g.mmi_maks], "dirasakan", "#c9503a"]] : [])]}); },
   kartuRiwayat(b) { const kd = kelasDalam(b[3]); return PI.kartuTip({judul: "Gempa " + b[0].slice(0, 4), stat: [["gempa", mTulis(b[4]), "kekuatan", warnaM(b[4]), b[4] >= 7],
     ["dalam", b[3] ? fmt(b[3]) + " km" : "–", "kedalaman", kd < 0 ? WARNA_DALAM_NA : KELAS_DALAM[kd][1]]]}); },
   /* titik tambahan dari arsip pipa (data/dart.json, gnss.json, inatews_sensor.json): {lat, lon, w warna, judul, sub} */
@@ -192,7 +192,7 @@ function renderCrumb() {
   if (j[0]) b.push(`<button data-n="1">${esc(namaProv(j[0]))}</button>`);
   $("#crumb").innerHTML = b.join(""); }
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
-function renderDaftar() { Panel.render(); }   /* isi panel kiri: panel.js; fitur F4 (tanggal, ukuran provinsi, unduh mesin, ringkasan provinsi) dipasang di sana */
+function renderDaftar() { if (typeof Panel !== "undefined") Panel.render(); }   /* Panel (panel.js) dimuat sesudah peta.js; panggilan sebelum itu (registri unduh siap lebih dulu) dilewati. Isi panel kiri: panel.js; fitur F4 (tanggal, ukuran provinsi, unduh mesin, ringkasan provinsi) dipasang di sana */
 /* riwayat M 5+ per provinsi sejak 1900 dari riwayat_prov.json; kolom data: [4,5-4,9, 5-5,9, 6-6,9, >=7, M maks] per tahun. Dipakai riwayatSingkat */
 function riwayatProv() { return Object.entries(S.riwProv || S.rwProv?.prov || {}).filter(([k]) => S.nama[k] && k !== "ID").map(([k, v]) => { let n = 0, m = 0;
   for (const x of Object.values(v.th || {})) { n += (x[1] || 0) + (x[2] || 0) + (x[3] || 0); m = Math.max(m, x[4] || 0); } return {k, nama: namaProv(k), n, m}; }); }
@@ -212,8 +212,8 @@ function ringkasProv(k, isi) {
 function riwayatSingkat(k) {
   const r = riwayatProv().find(x => x.k === k), id = "gkRisiko" + k;
   if (typeof Risiko !== "undefined") Risiko.prov(k).then(v => { const el = document.getElementById(id); if (!el || !v) return;
-    el.querySelector("b").textContent = fmt(v.skor); el.querySelector(".gk-x").innerHTML = `<span class="gk-sub">dari 100</span><span class="lc-mmi" style="--w:${v.w};color:${v.skor < 30 ? "#3b3320" : "#fff"}">${esc(v.kelas)}</span>`; }).catch(() => {});
-  return `<div class="gk-rw"><p class="gk-rw-h">Riwayat provinsi</p><div class="gk-ring">${r ? gkKotak("jam", fmt(r.n), "Sejak 1900", "", '<span class="gk-x"><span class="gk-sub">gempa M 5+</span></span>') + gkKotak("kuat", esc(mTulis(r.m)), "Terbesar", warnaM(r.m)) : ""}<div id="${id}" class="gk-k-wadah">${gkKotak("risiko", "–", "Indeks risiko", "", '<span class="gk-x"></span>')}</div></div></div>`; }
+    el.querySelector("b").textContent = fmt(v.skor); el.querySelector(".gk-x").innerHTML = `<span class="gk-sub">dari 100</span><span class="lc-pil${pilTerang(v.w) ? " terang" : ""}" style="--w:${v.w}">${esc(v.kelas)}</span>`; }).catch(() => {});
+  return `<div class="gk-rw"><p class="gk-rw-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${GK_IK.jam}"/></svg>Riwayat provinsi</p><div class="gk-ring">${r ? gkKotak("jam", fmt(r.n), "Sejak 1900", "", '<span class="gk-x"><span class="gk-sub">gempa M 5+</span></span>') + gkKotak("kuat", esc(mTulis(r.m)), "Terbesar", warnaM(r.m)) : ""}<div id="${id}" class="gk-k-wadah">${gkKotak("risiko", "–", "Indeks risiko", "", '<span class="gk-x"></span>')}</div></div></div>`; }
 /* pilih ukuran provinsi (segmen atau kepala kolom): urut ikut ukuran, warna peta dan legenda mengikuti; render berat ditunda */
 function pilihUkuran(slug) { const u = KAT_UKURAN.find(x => x.slug === slug); if (!u || !(S.ukuranIzin || []).some(x => x.slug === slug)) return false;
   S.ukuran = slug; S.urut = {k: u.kunci, turun: true}; S.hal = 0; nanti(renderDaftar); nanti(() => { Peta.aturWilayah(); renderLegenda(); }); return true; }

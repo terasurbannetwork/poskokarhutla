@@ -18,7 +18,11 @@ const Berita = {
       : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""; },
   pl: (t, w) => `<em class="br-lb" style="--w:${w}">${t}</em>`,
   /* kartu Insight: pil kategori di kepala, judul, kontrol; legenda/sumber di kaki */
-  kartu(ey, judul, isi, catatan, ctl = "") { return kepalaKartu(Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`)); },
+  /* kepala = nama seksi berikon (AGENTS.md 3.5), ikon sama ukuran dengan kartu Insight */
+  IKB: {"Volume berita": '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', "Peta berita": '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', Sorotan: '<path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',
+    Topik: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.5 7.5h.01"/>', "Daftar berita": '<path d="M4 4h12v16H6a2 2 0 0 1-2-2zM16 8h4v10a2 2 0 0 1-2 2"/><path d="M8 8h4M8 12h4M8 16h4"/>'},
+  kartu(ey, judul, isi, catatan, ctl = "") { const ik = this.IKB[ey] ? `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${this.IKB[ey]}</svg>` : "";
+    return kepalaKartu(Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ik}${ey === "Volume berita" ? "Volume berita (berita per hari)" : ey}</span>`)); },
   hari7() { return Object.keys(this.d.harian).sort().slice(-7); },
 
   async render() {

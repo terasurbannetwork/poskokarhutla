@@ -15,7 +15,7 @@
 11. Petunjuk Pelaksanaan BNPB Nomor 3 Tahun 2022 tentang Pengkajian Cepat.
 12. Petunjuk Pelaksanaan BNPB Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana, ditetapkan 29 Desember 2023. Dibaca dari salinan UNFPA Indonesia: https://indonesia.unfpa.org/sites/default/files/pub-pdf/juklak_standar_data_kejadian_dan_dampak_bencana.pdf
 13. Petunjuk Pelaksanaan BNPB Nomor 9 Tahun 2023 tentang Data dan Informasi Pengungsi Terpilah.
-14. Tim Ahli dan Tim Sus IT BNPB. (2026). Kajian Penentuan Kejadian Bencana, Kelas Mayor dan Minor, dan Standar Data Lapangan. Jakarta: BNPB.
+14. Tim Ahli dan Tim Sus IT BNPB. (2026). Kajian Penentuan Kejadian Bencana, Kelas Bencana, dan Standar Data Lapangan. Jakarta: BNPB.
 
 ## B. Standar dan basis data internasional
 

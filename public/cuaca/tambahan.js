@@ -103,15 +103,14 @@ const Tambahan = (() => {
   function laciMt(s) {
     Laci.buka("Observasi bandara", `<span translate="no">${esc(s.nama)}</span>`, `<span class="pl" style="--w:${s.tanda ? "#c9503a" : "#2b8c86"}">${s.tanda ? "Cuaca ekstrem teramati" : "Teramati biasa"}</span> <span translate="no">${esc(s.icao)}</span>`,
       `${kvs(kot("Angin", fmt(s.angin_kmj), "km/jam"), kot("Embusan", s.embusan_kmj != null ? fmt(s.embusan_kmj) : "–", "km/jam"), kot("Jarak pandang", jarak(s.jarak_pandang_m), ""))}
-      <p class="fnd">Cuaca: ${esc(cuacaMt(s))}</p><p class="fnd" translate="no">${esc(s.raw || "")}</p>
-      <p class="fnd">Sumber: aviationweather.gov (NOAA), METAR bandara, pengamatan ${jamWIB(s.waktu)}. Pengamatan satu titik bandara, bukan seluruh wilayah sekitarnya.</p>`); }
+      ${seksiCu("Pengamatan METAR", "mata", `<div class="lc-lbs">${LI().barisLaci("hujan", "Cuaca", esc(cuacaMt(s)))}${LI().barisLaci("waktu", "Pengamatan", jamWIB(s.waktu))}${LI().barisLaci("pusat", "Kode ICAO", `<span translate="no">${esc(s.icao)}</span>`)}</div>
+        <p class="fnd">Pengamatan satu titik bandara, bukan seluruh wilayah sekitarnya.</p>${s.raw ? lipatLaci("Sandi METAR asli", `<code class="cu-kode" translate="no">${esc(s.raw)}</code>`) : ""}`, "Sumber: aviationweather.gov (NOAA), METAR bandara.")}`); }
   function laciLg(k) { const r = barisBulan().find(x => x[0] === k), m = bulanIni(), urut = [...barisBulan()].sort((a, b) => b[2] - a[2]), n = urut.findIndex(x => x[0] === k) + 1; if (!r) return;
     const tahun = Array.from({length: 12}, (_, i) => D.lg.bulan[i + 1]?.find(x => x[0] === k)?.[2] || 0), mx = Math.max(...tahun, 1);
     Laci.buka("Langganan cuaca ekstrem", `<span translate="no">${esc(kabNama(k))}</span>`, `<span class="pl" style="--w:#e58a45">Peluang dasar</span> <span translate="no">${esc(kabProv(k))}</span>`,
-      `${kvs(kot("Per tahun", fmt(r[2]), "kejadian"), kot("Tercatat", fmt(r[1]), `kejadian, ${namaBulan(m)}`), kot("Peringkat", fmt(n), `dari ${fmt(urut.length)} kab`))}
-      <svg viewBox="0 0 240 60" role="img" style="width:100%">${tahun.map((v, i) => `<rect x="${i * 20 + 2}" y="${50 - v / mx * 44}" width="16" height="${Math.max(1.5, v / mx * 44)}" rx="2" fill="${i + 1 === m ? "#e58a45" : "#9aa4b2"}" data-tip="<b>${namaBulan(i + 1)}</b><br>${d2(v, 1)} kejadian per tahun"/>`).join("")}</svg>
-      <p class="fnd">Peluang dasar dari catatan kejadian logbook BNPB, bukan prakiraan. Ia mencerminkan musim dan kebiasaan lapor kabupaten, bukan bahaya fisik.</p>
-      <p class="fnd">Sumber: ${esc(sumberLg())}</p>`); }
+      `${kvs(kot("Per tahun", fmt(r[2]), "kejadian"), kot("Tercatat", fmt(r[1]), `kejadian, ${namaBulan(m)}`), kot("Peringkat", fmt(n), `dari ${fmt(urut.length)} kabupaten/kota`))}
+      ${seksiCu("Peluang dasar per bulan", "waktu", `<svg class="cu-bulan" viewBox="0 0 240 60" role="img" aria-label="Kejadian per tahun untuk tiap bulan">${tahun.map((v, i) => `<rect x="${i * 20 + 2}" y="${50 - v / mx * 44}" width="16" height="${Math.max(1.5, v / mx * 44)}" rx="2" fill="${i + 1 === m ? "#e58a45" : "#9aa4b2"}" data-tip="<b>${namaBulan(i + 1)}</b><br>${d2(v, 1)} kejadian per tahun"/>`).join("")}</svg><div class="cu-bulan-l" aria-hidden="true">${tahun.map((_, i) => `<span${i + 1 === m ? ' class="on"' : ""}>${namaBulan(i + 1).slice(0, 3)}</span>`).join("")}</div>
+      <p class="fnd">Peluang dasar dari catatan kejadian logbook BNPB, bukan prakiraan. Angka ini mencerminkan musim dan kebiasaan lapor kabupaten, bukan bahaya fisik.</p>`, "Sumber: " + sumberLg())}`); }
   function klik(e) { if (!peta) return false; const L = aktif(); if (!L.length) return false; const f = peta.queryRenderedFeatures(e.point, {layers: L})[0]; if (!f) return false;
     S.pilih = null; renderCrumb(); const o = rangkum(f);
     if (o.mt) { laciMt(o.mt); peta.flyTo({center: [o.mt.lon, o.mt.lat], zoom: Math.max(peta.getZoom(), 7), duration: 600}); }
@@ -128,7 +127,7 @@ const Tambahan = (() => {
 /* ================================================================ kartu Insight: Seberapa tepat prakiraan hujan kita, Langganan cuaca ekstrem */
 Insight.T.langganan = {urut: "p", turun: true, hal: 0};
 Insight.EX.splice(Insight.EX.indexOf("buktiKita") + 1, 0, "uji"); Insight.EX.splice(Insight.EX.indexOf("peluang") + 1, 0, "langganan");
-Object.assign(Insight.LABEL, {uji: "Seberapa tepat prakiraan hujan kita", langganan: "Langganan cuaca ekstrem bulan ini"});
+Object.assign(Insight.LABEL, {uji: "Uji logbook prakiraan hujan Centurisk97", langganan: "Langganan cuaca ekstrem bulan ini (kejadian per tahun)"});
 IK.uji = IK.bukti; IK.langganan = '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>';
 Object.assign(Insight, {
   /* titik skor dengan selang kepercayaan: R = [{label, nilai, lo, hi, warna, tip}], sumbu 0,4 sampai 1, garis putus di 0,5 (tebakan acak) */
@@ -142,18 +141,20 @@ Object.assign(Insight, {
   exUji() { const u = S.uji?.jenis?.cuaca; if (!u?.auc || !u.auc.klimatologi_kab_bulan) return "";
     const A = u.auc, C = u.auc_selang95 || {}, U = this.uk(), BIRU2 = "#4f8fc4", KB = "#7a4fc4", tg = Tambahan.d2, sel = u.selisih_auc_hujan_klimatologi, lolos = sel?.selang95?.[0] > 0, h = A.hujan_harian_maks, k = A.klimatologi_kab_bulan;
     const ci = x => C[x] ? `<br>Selang 95%: ${tg(C[x][0])} sampai ${tg(C[x][1])}` : "";
-    const R = [["Hujan harian terlebat", "hujan_harian_maks", BIRU2], ["Hujan per jam terlebat", "hujan_jam_maks", BIRU2], ["Hujan 3 hari", "hujan_3hari", BIRU2], ["Kebiasaan kab dan bulan", "klimatologi_kab_bulan", KB], ["Kebiasaan bulan, nasional", "klimatologi_bulan_nasional", KB]]
+    const R = [["Hujan harian terlebat", "hujan_harian_maks", BIRU2], ["Hujan per jam terlebat", "hujan_jam_maks", BIRU2], ["Hujan 3 hari", "hujan_3hari", BIRU2], ["Kebiasaan kabupaten dan bulan", "klimatologi_kab_bulan", KB], ["Kebiasaan bulan, nasional", "klimatologi_bulan_nasional", KB]]
       .filter(r => A[r[1]] != null).map(([label, x, warna]) => ({label, nilai: A[x], lo: C[x]?.[0], hi: C[x]?.[1], warna, tip: `<b>${esc(label)}</b><br>Skor ${tg(A[x])}${ci(x)}`}));
     const a50 = u.ambang_mm?.["50"], hj = a50?.hujan, kl = a50?.klimatologi_alarm_sama, pe = u.persistensi, S50 = u.ets50_selang95 || {};
-    const E = hj && kl ? [["Hujan 50 mm", hj, BIRU2, S50.hujan], ["Kebiasaan kab dan bulan", kl, KB, S50.klimatologi_alarm_sama], ...(pe?.ets != null ? [["Ada kejadian kemarin", pe, "#9aa4b2", null]] : [])]
+    const E = hj && kl ? [["Hujan 50 mm", hj, BIRU2, S50.hujan], ["Kebiasaan kabupaten dan bulan", kl, KB, S50.klimatologi_alarm_sama], ...(pe?.ets != null ? [["Ada kejadian kemarin", pe, "#9aa4b2", null]] : [])]
       .filter(r => r[1].ets != null) : [];
     const BAR = E.length ? this.batangH(E.map(([label, o, warna, s]) => ({label, nilai: Math.max(0, o.ets), warna, teks: tg(o.ets, 3), tip: `<b>${esc(label)}</b><br>Skor ETS ${tg(o.ets, 3)}<br>Menangkap ${fmt(pct(o.a, o.a + o.c))}% kejadian, ${fmt(pct(o.b, o.a + o.b))}% alarm palsu${s ? `<br>Selang 95%: ${tg(s[0], 3)} sampai ${tg(s[1], 3)}` : ""}`})), U) : "";
-    const kal = hj && kl ? `<p class="fnd">Ambang 50 mm menangkap ${this.hl(fmt(pct(hj.a, hj.a + hj.c)) + "%")} kejadian dengan ${this.hl(fmt(pct(hj.b, hj.a + hj.b)) + "%")} alarm palsu. Kebiasaan kab dan bulan pada jumlah alarm yang sama menangkap ${this.hl(fmt(pct(kl.a, kl.a + kl.c)) + "%")} dengan ${this.hl(fmt(pct(kl.b, kl.a + kl.b)) + "%")} alarm palsu.</p>` : "";
-    const ver = `<p class="fnd"><span class="pl" style="--w:${lolos ? "var(--ok)" : "var(--bad)"}">${lolos ? "Lolos uji" : "Belum lolos uji"}</span> ${lolos ? "Hujan menebak kejadian cuaca lebih baik daripada kebiasaan kab dan bulan." : "Kebiasaan kab dan bulan menebak lebih baik daripada hujan."} Selisih skor ${tg(sel?.nilai)}${sel?.selang95 ? `, selang 95% ${tg(sel.selang95[0])} sampai ${tg(sel.selang95[1])}` : ""}.</p>`;
-    const cav = `<p class="fnd">Diuji pada ${fmt(u.n_hari)} kab-hari dan ${fmt(u.n_kejadian)} kejadian di ${fmt(S.uji.n_kab)} kabupaten/kota, ${S.uji.periode_uji[0].slice(0, 4)} sampai ${S.uji.periode_uji[1].slice(0, 4)}. Skor atas: 0,5 tebakan acak, 1 sempurna. Catatan:</p><ul class="mt">${(S.uji.caveat || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul>`;
-    Kartu.leg([[BIRU2, "Hujan"], [KB, "Kebiasaan kab dan bulan"], ["#9aa4b2", "Ada kejadian kemarin"]]);
+    const kal = hj && kl ? `<p class="fnd">Ambang 50 mm menangkap ${this.hl(fmt(pct(hj.a, hj.a + hj.c)) + "%")} kejadian dengan ${this.hl(fmt(pct(hj.b, hj.a + hj.b)) + "%")} alarm palsu. Kebiasaan kabupaten dan bulan pada jumlah alarm yang sama menangkap ${this.hl(fmt(pct(kl.a, kl.a + kl.c)) + "%")} dengan ${this.hl(fmt(pct(kl.b, kl.a + kl.b)) + "%")} alarm palsu.</p>` : "";
+    /* vonis uji = pil di kepala (kalimatnya di title); kalimat dan selisih skor dilipat di "Cara uji dan catatan", bukan baris pertama isi (AGENTS.md 3.5) */
+    const vonis = `${lolos ? "Hujan menebak kejadian cuaca lebih baik daripada kebiasaan kabupaten dan bulan." : "Kebiasaan kabupaten dan bulan menebak kejadian cuaca lebih baik daripada hujan."} Selisih skor ${tg(sel?.nilai)}${sel?.selang95 ? `, selang 95% ${tg(sel.selang95[0])} sampai ${tg(sel.selang95[1])}` : ""}.`;
+    const pil = `<span class="pl" style="--w:${lolos ? "var(--ok)" : "var(--bad)"};margin-left:6px" title="${esc(vonis)}">${lolos ? "Lolos uji" : "Belum lolos uji"}</span>`;
+    const cav = `<details class="mt-tek"><summary>Cara uji dan catatan</summary><div class="mt-tekisi"><p>${vonis}</p>${kal}<p>Diuji pada ${fmt(u.n_hari)} kabupaten-hari dan ${fmt(u.n_kejadian)} kejadian di ${fmt(S.uji.n_kab)} kabupaten/kota, ${S.uji.periode_uji[0].slice(0, 4)} sampai ${S.uji.periode_uji[1].slice(0, 4)}. Skor titik: 0,5 sama dengan tebakan acak, 1 sempurna. Skor ETS (skor ancaman setara): 0 sama dengan menebak acak.</p><ul class="mt">${(S.uji.caveat || []).map(c => `<li>${esc(c)}</li>`).join("")}</ul></div></details>`;
+    Kartu.leg([[BIRU2, "Hujan"], [KB, "Kebiasaan kabupaten dan bulan"], ["#9aa4b2", "Ada kejadian kemarin"]]);
     return this.ex(`Hujan ${this.hl(tg(h))} lawan kebiasaan kab dan bulan ${this.hl(tg(k))}: prakiraan hujan ${lolos ? "lolos" : "belum lolos"} uji logbook`, "", "",
-      this.titikCI(R, U) + ver + (BAR ? `<p class="fnd"><b>Skor ETS ambang 50 mm</b> (0 sama dengan menebak acak)</p>` + BAR : "") + kal + cav, `Sumber: Logbook Pusdalops BNPB 2022-2025, hujan ERA5, dibuat ${jamWIB(S.uji.dibuat)}`); },
+      `<p class="ex-sub">Skor pembeda kejadian (0,5 tebakan acak, 1 sempurna)</p>` + this.titikCI(R, U) + (BAR ? `<p class="ex-sub">Skor ETS ambang 50 mm (0 sama dengan menebak acak)</p>` + BAR : "") + cav, `Sumber: Logbook Pusdalops BNPB 2022-2025, hujan ERA5, dibuat ${jamWIB(S.uji.dibuat)}`).replace('<span class="ex-ey"></span>', () => '<span class="ex-ey"></span>' + pil); },
   exLangganan() { const D = Tambahan.D.lg, R = Tambahan.barisBulan(); if (!D || !R.length) return "";
     const m = Tambahan.bulanIni(), top = [...R].sort((a, b) => b[2] - a[2]), t = top[0], U = this.uk();
     const kol = [{k: "kab", n: "Kabupaten/kota", v: r => Tambahan.kabNama(r[0]), h: r => `<span translate="no">${esc(Tambahan.kabNama(r[0]))}</span>, ${esc(Tambahan.kabProv(r[0]))}`},
@@ -161,7 +162,7 @@ Object.assign(Insight, {
     Kartu.leg([[WARNA_LV[3], "4 per tahun atau lebih"], [WARNA_LV[2], "2 sampai 4"], [BIRU, "di bawah 2"]]);
     return this.ex(`${this.hl(fmt(t[2]) + " kejadian per tahun")} tercatat di ${this.nm2(t[0])} pada bulan ${Tambahan.namaBulan(m)}, tertinggi dari ${fmt(R.length)} kabupaten/kota`, "", "",
       this.batangH(top.slice(0, 10).map(r => ({label: Tambahan.kabNama(r[0]), nilai: r[2], warna: r[2] >= 4 ? WARNA_LV[3] : r[2] >= 2 ? WARNA_LV[2] : BIRU, teks: fmt(r[2]), tip: `<b>${esc(Tambahan.kabNama(r[0]))}</b>, ${esc(Tambahan.kabProv(r[0]))}<br>${fmt(r[2])} kejadian per tahun<br>${fmt(r[1])} kejadian tercatat`})), U)
-      + `<p class="fnd">Peluang dasar dari catatan kejadian, bukan prakiraan. Ia mencerminkan musim dan kebiasaan lapor kabupaten, bukan bahaya fisik; logbook tidak memisahkan puting beliung, angin kencang, dan hujan lebat.</p>`
-      + this.tabel("langganan", kol, R, 10, "kabupaten/kota", r => `data-lg="${esc(r[0])}"`), `Sumber: ${esc(Tambahan.sumberLg())}, dibuat ${jamWIB(D.dibuat)}`); },
+      + this.tabel("langganan", kol, R, 10, "kabupaten/kota", r => `data-lg="${esc(r[0])}"`)
+      + `<details class="mt-tek"><summary>Cara membaca</summary><div class="mt-tekisi"><p>Peluang dasar dari catatan kejadian, bukan prakiraan. Angka ini mencerminkan musim dan kebiasaan lapor kabupaten, bukan bahaya fisik; logbook tidak memisahkan puting beliung, angin kencang, dan hujan lebat.</p></div></details>`, `Sumber: ${esc(Tambahan.sumberLg())}, dibuat ${jamWIB(D.dibuat)}`); },
   nm2: k => `<span translate="no">${esc(Tambahan.kabNama(k))}</span>`,
 });

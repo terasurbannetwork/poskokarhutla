@@ -18,7 +18,8 @@ const Peluang = (() => {
   const tgl = t => { const d = new Date(t + "T12:00:00Z"); return {h3: H3[d.getUTCDay()], hari: HL[d.getUTCDay()], tg: d.getUTCDate(), bln: BL[d.getUTCMonth()]}; };
   const angka = (v, des) => Number(v).toLocaleString("id-ID", {minimumFractionDigits: des, maximumFractionDigits: des});
   /* "Magnitudo 5 atau lebih" -> "M 5+" (satuan pendek), selain itu "... atau lebih" -> "...+" */
-  const pendek = (a, b) => { let s = String(a.label).replace(/\s+atau lebih.*$/i, "+"); const l = b?.label, u = b?.satuan;
+  /* mode nama seksi (Kartu.SEKSI, laman bencana baru): tanpa simbol "+", tetap "atau lebih" ("M 5 atau lebih") */
+  const pendek = (a, b) => { let s = String(a.label).replace(/\s+atau lebih.*$/i, Kartu.SEKSI ? " atau lebih" : "+"); const l = b?.label, u = b?.satuan;
     if (l && u && u.length <= 2 && s.startsWith(l)) s = u + s.slice(l.length); return s; };
   const awal = d => Object.keys(d.wilayah).find(k => d.wilayah[k].tingkat === "nasional") ?? Object.keys(d.wilayah)[0];
   const urut = d => Object.keys(d.wilayah).sort((a, b) => { const A = d.wilayah[a], B = d.wilayah[b];
@@ -79,6 +80,16 @@ const Peluang = (() => {
       const html = Kartu.kartu(o.ey || "Peluang", (o.judulPendek && judulB(w, idx)) || jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, [...pil.map(i => [WARNA[i % WARNA.length], esc(d.ambang[i].label)]), ...((w.hari || []).some(h => h.p_dasar) ? [["#8a8f98", "normal"]] : [])]);
       /* kepala gaya B (pemilik 5 Nov 2026): ubin ikon kiri, pil kategori + pil tingkat ambang; judul pendek (puncak lalu arah) hanya bila o.judulPendek, selain itu judul = vonis */
       const tk = (String(d.ambang[idx].label).match(/\(([^)]+)\)/) || [])[1];
+      /* mode nama seksi (laman bencana baru, Kartu.SEKSI): kepala = ikon + nama seksi di h3, vonis dan sumber ke title h3, tanpa ubin ikon kedua.
+         Baris .ex-pl tetap (pil tingkat ambang; laman boleh menyisipkan pil lain), pil kategori di dalamnya dikosongkan supaya pembungkus laman
+         (kepalaKartu cuaca/udara, kepalaSeksi kekeringan, rapiKartu gunung api) tidak menggandakan nama. data-ket menyimpan title supaya
+         Kartu mengembalikannya bila pembungkus laman menimpa title h3 (rapiKartu gunung api). */
+      if (Kartu.SEKSI) {
+        const ey = o.ey || "Peluang", polos = String(ey).replace(/<[^>]*>/g, "").trim(), ik = /<svg/i.test(ey) ? "" : o.ikon ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${o.ikon}</svg>` : Kartu.ikonSeksi(polos);
+        const sb = o.sumber ?? d.sumber ?? "", tt = String(vonis1(w.vonis || w.nama || "")).replace(/<[^>]*>/g, "") + (sb ? ". Sumber: " + String(sb).replace(/<[^>]*>/g, "") : "");
+        return html.replace('<article class="ex">', () => `<article class="ex ex-std" data-kp="1" data-ket="${esc(tt)}">`)
+          .replace(/<span class="ex-ey">[\s\S]*?<\/span><div class="ex-jd"><h3>[\s\S]*?<\/h3>/, () => `<div class="ex-pl"><span class="ex-ey"></span>${tk ? `<span class="ex-tk">${esc(tk)}</span>` : ""}</div><div class="ex-jd"><h3 title="${esc(tt)}">${ik}${ey}</h3>`)
+          .replace(/<em>Sumber:[\s\S]*?<\/em>/, "").replace('<footer class="ex-ft"></footer>', ""); }
       return html.replace(/<span class="ex-ey">([\s\S]*?)<\/span>/, (m, ey) => `<span class="ex-ik" aria-hidden="true"><svg viewBox="0 0 24 24">${o.ikon || IKON_API}</svg></span><div class="ex-pl"><span class="ex-ey">${ey}</span>${tk ? `<span class="ex-tk">${esc(tk)}</span>` : ""}</div>`); },
 
     /* bab Metode: batasan[] + uji_balik; "" bila keduanya kosong */

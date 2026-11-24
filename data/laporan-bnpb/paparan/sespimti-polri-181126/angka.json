@@ -1,0 +1,610 @@
+{
+ "nasional": {
+  "2016": {
+   "kejadian": 2306,
+   "meninggal": 482,
+   "hilang": 96,
+   "mengungsi": 438925,
+   "rumah_rusak": 47798
+  },
+  "2017": {
+   "kejadian": 2866,
+   "meninggal": 309,
+   "hilang": 69,
+   "mengungsi": 324996,
+   "rumah_rusak": 49731
+  },
+  "2018": {
+   "kejadian": 3398,
+   "meninggal": 5477,
+   "hilang": 763,
+   "mengungsi": 892453,
+   "rumah_rusak": 370154
+  },
+  "2019": {
+   "kejadian": 3814,
+   "meninggal": 478,
+   "hilang": 111,
+   "mengungsi": 436234,
+   "rumah_rusak": 73726
+  },
+  "2020": {
+   "kejadian": 4649,
+   "meninggal": 376,
+   "hilang": 42,
+   "mengungsi": 922367,
+   "rumah_rusak": 65744
+  },
+  "2021": {
+   "kejadian": 5402,
+   "meninggal": 728,
+   "hilang": 87,
+   "mengungsi": 684160,
+   "rumah_rusak": 158658
+  },
+  "2022": {
+   "kejadian": 3544,
+   "meninggal": 858,
+   "hilang": 37,
+   "mengungsi": 595422,
+   "rumah_rusak": 95403
+  },
+  "2023": {
+   "kejadian": 5400,
+   "meninggal": 275,
+   "hilang": 33,
+   "mengungsi": 150469,
+   "rumah_rusak": 47214
+  },
+  "2024": {
+   "kejadian": 3472,
+   "meninggal": 540,
+   "hilang": 63,
+   "mengungsi": 528513,
+   "rumah_rusak": 80298
+  },
+  "2025": {
+   "kejadian": 5077,
+   "meninggal": 1735,
+   "hilang": 221,
+   "mengungsi": 1163435,
+   "rumah_rusak": 286572
+  },
+  "2026": {
+   "kejadian": 2204,
+   "meninggal": 427,
+   "hilang": 21,
+   "mengungsi": 246461,
+   "rumah_rusak": 163526
+  }
+ },
+ "jenis2025": {
+  "Banjir": {
+   "kejadian": 2318,
+   "meninggal": 1396,
+   "hilang": 189,
+   "mengungsi": 1126773
+  },
+  "Cuaca ekstrem": {
+   "kejadian": 1020,
+   "meninggal": 80,
+   "hilang": 1,
+   "mengungsi": 1758
+  },
+  "Erupsi gunung api": {
+   "kejadian": 7,
+   "meninggal": 2,
+   "hilang": 0,
+   "mengungsi": 14478
+  },
+  "Gelombang pasang / Abrasi": {
+   "kejadian": 33,
+   "meninggal": 7,
+   "hilang": 0,
+   "mengungsi": 308
+  },
+  "Gempabumi": {
+   "kejadian": 24,
+   "meninggal": 2,
+   "hilang": 0,
+   "mengungsi": 1724
+  },
+  "Kebakaran hutan dan lahan": {
+   "kejadian": 1302,
+   "meninggal": 4,
+   "hilang": 0,
+   "mengungsi": 0
+  },
+  "Kekeringan": {
+   "kejadian": 41,
+   "meninggal": 0,
+   "hilang": 0,
+   "mengungsi": 0
+  },
+  "Longsor": {
+   "kejadian": 332,
+   "meninggal": 244,
+   "hilang": 31,
+   "mengungsi": 17484
+  },
+  "Tsunami": {
+   "kejadian": 1,
+   "meninggal": 0,
+   "hilang": 0,
+   "mengungsi": 910
+  }
+ },
+ "jabar_prov": {
+  "2024-Banjir": {
+   "kejadian": 143,
+   "meninggal": 11,
+   "hilang": 4,
+   "mengungsi": 14208,
+   "rumah_rusak": 10567,
+   "rumah_terendam": 115820
+  },
+  "2024-Longsor": {
+   "kejadian": 78,
+   "meninggal": 33,
+   "hilang": 5,
+   "mengungsi": 5801,
+   "rumah_rusak": 4662,
+   "rumah_terendam": 0
+  },
+  "2025-Banjir": {
+   "kejadian": 200,
+   "meninggal": 7,
+   "hilang": 0,
+   "mengungsi": 22284,
+   "rumah_rusak": 2589,
+   "rumah_terendam": 181722
+  },
+  "2025-Longsor": {
+   "kejadian": 99,
+   "meninggal": 44,
+   "hilang": 12,
+   "mengungsi": 3056,
+   "rumah_rusak": 3175,
+   "rumah_terendam": 1
+  },
+  "2026-Banjir": {
+   "kejadian": 76,
+   "meninggal": 7,
+   "hilang": 0,
+   "mengungsi": 12147,
+   "rumah_rusak": 149,
+   "rumah_terendam": 97321
+  },
+  "2026-Longsor": {
+   "kejadian": 38,
+   "meninggal": 115,
+   "hilang": 0,
+   "mengungsi": 766,
+   "rumah_rusak": 452,
+   "rumah_terendam": 0
+  }
+ },
+ "jabar_kab_top": [
+  {
+   "kode": "3201",
+   "kab": "Bogor",
+   "2024": {
+    "kejadian": 18,
+    "mengungsi": 219,
+    "rumah_terendam": 2312
+   },
+   "2025": {
+    "kejadian": 22,
+    "mengungsi": 1866,
+    "rumah_terendam": 11368
+   },
+   "2026": {
+    "kejadian": 18,
+    "mengungsi": 406,
+    "rumah_terendam": 3074
+   }
+  },
+  {
+   "kode": "3215",
+   "kab": "Karawang",
+   "2024": {
+    "kejadian": 19,
+    "mengungsi": 489,
+    "rumah_terendam": 12765
+   },
+   "2025": {
+    "kejadian": 28,
+    "mengungsi": 2970,
+    "rumah_terendam": 21039
+   },
+   "2026": {
+    "kejadian": 5,
+    "mengungsi": 5012,
+    "rumah_terendam": 8349
+   }
+  },
+  {
+   "kode": "3204",
+   "kab": "Bandung",
+   "2024": {
+    "kejadian": 14,
+    "mengungsi": 2410,
+    "rumah_terendam": 12358
+   },
+   "2025": {
+    "kejadian": 19,
+    "mengungsi": 4414,
+    "rumah_terendam": 35467
+   },
+   "2026": {
+    "kejadian": 9,
+    "mengungsi": 826,
+    "rumah_terendam": 12316
+   }
+  },
+  {
+   "kode": "3209",
+   "kab": "Cirebon",
+   "2024": {
+    "kejadian": 13,
+    "mengungsi": 3006,
+    "rumah_terendam": 54314
+   },
+   "2025": {
+    "kejadian": 16,
+    "mengungsi": 583,
+    "rumah_terendam": 17005
+   },
+   "2026": {
+    "kejadian": 5,
+    "mengungsi": 0,
+    "rumah_terendam": 5035
+   }
+  },
+  {
+   "kode": "3216",
+   "kab": "Bekasi",
+   "2024": {
+    "kejadian": 11,
+    "mengungsi": 632,
+    "rumah_terendam": 11870
+   },
+   "2025": {
+    "kejadian": 13,
+    "mengungsi": 5873,
+    "rumah_terendam": 35275
+   },
+   "2026": {
+    "kejadian": 5,
+    "mengungsi": 4200,
+    "rumah_terendam": 54439
+   }
+  },
+  {
+   "kode": "3202",
+   "kab": "Sukabumi",
+   "2024": {
+    "kejadian": 9,
+    "mengungsi": 1491,
+    "rumah_terendam": 1464
+   },
+   "2025": {
+    "kejadian": 10,
+    "mengungsi": 1906,
+    "rumah_terendam": 1244
+   },
+   "2026": {
+    "kejadian": 4,
+    "mengungsi": 1,
+    "rumah_terendam": 116
+   }
+  },
+  {
+   "kode": "3213",
+   "kab": "Subang",
+   "2024": {
+    "kejadian": 6,
+    "mengungsi": 337,
+    "rumah_terendam": 3039
+   },
+   "2025": {
+    "kejadian": 12,
+    "mengungsi": 47,
+    "rumah_terendam": 3889
+   },
+   "2026": {
+    "kejadian": 2,
+    "mengungsi": 0,
+    "rumah_terendam": 1178
+   }
+  },
+  {
+   "kode": "3212",
+   "kab": "Indramayu",
+   "2024": {
+    "kejadian": 5,
+    "mengungsi": 0,
+    "rumah_terendam": 6493
+   },
+   "2025": {
+    "kejadian": 7,
+    "mengungsi": 128,
+    "rumah_terendam": 2940
+   },
+   "2026": {
+    "kejadian": 5,
+    "mengungsi": 372,
+    "rumah_terendam": 1338
+   }
+  },
+  {
+   "kode": "3274",
+   "kab": "Kota Cirebon",
+   "2024": {
+    "kejadian": 3,
+    "mengungsi": 0,
+    "rumah_terendam": 197
+   },
+   "2025": {
+    "kejadian": 8,
+    "mengungsi": 1004,
+    "rumah_terendam": 10085
+   },
+   "2026": {
+    "kejadian": 4,
+    "mengungsi": 160,
+    "rumah_terendam": 4406
+   }
+  },
+  {
+   "kode": "3273",
+   "kab": "Kota Bandung",
+   "2024": {
+    "kejadian": 3,
+    "mengungsi": 0,
+    "rumah_terendam": 515
+   },
+   "2025": {
+    "kejadian": 11,
+    "mengungsi": 15,
+    "rumah_terendam": 2478
+   },
+   "2026": {
+    "kejadian": 0,
+    "mengungsi": 0,
+    "rumah_terendam": 0
+   }
+  }
+ ],
+ "tangga_dibuat": "2026-11-17T17:04:43+07:00",
+ "musim": "ENSO El Niño Sangat Kuat. Awal musim: MUNDUR (529 ZOM, 61,1% luas daratan). Puncak musim: Desember 2026 (155 ZOM, 36,9% luas daratan). Panjang musim: Sebagian besar wilayah Indonesia (482 ZOM, 51,9% luas daratan). Curah hujan musim: musim hujan di sebagian besar Indonesia (510 ZOM, 69,8% luas daratan). Pemetaan ZOM ke kabupaten belum ada.",
+ "bmkg_des": {
+  "Bogor": {
+   "curah": "Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Sukabumi": {
+   "curah": "Sangat Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Cianjur": {
+   "curah": "Sangat Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Bandung": {
+   "curah": "Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Garut": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Tasikmalaya": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Ciamis": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Kuningan": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Cirebon": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Majalengka": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Sumedang": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Indramayu": {
+   "curah": "Menengah",
+   "sifat": "Normal"
+  },
+  "Subang": {
+   "curah": "Menengah",
+   "sifat": "Normal"
+  },
+  "Purwakarta": {
+   "curah": "Menengah",
+   "sifat": "Normal"
+  },
+  "Karawang": {
+   "curah": "Menengah",
+   "sifat": "Normal"
+  },
+  "Bekasi": {
+   "curah": "Menengah",
+   "sifat": "Normal"
+  },
+  "Bandung Barat": {
+   "curah": "Menengah",
+   "sifat": "Atas Normal"
+  },
+  "Pangandaran": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Kota Bogor": {
+   "curah": "Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Kota Sukabumi": {
+   "curah": "Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Kota Bandung": {
+   "curah": "Menengah",
+   "sifat": "Atas Normal"
+  },
+  "Kota Cirebon": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Kota Bekasi": {
+   "curah": "Menengah",
+   "sifat": "Atas Normal"
+  },
+  "Kota Depok": {
+   "curah": "Tinggi",
+   "sifat": "Atas Normal"
+  },
+  "Kota Cimahi": {
+   "curah": "Menengah",
+   "sifat": "Atas Normal"
+  },
+  "Kota Tasikmalaya": {
+   "curah": "Tinggi",
+   "sifat": "Normal"
+  },
+  "Kota Banjar": {
+   "curah": "Menengah",
+   "sifat": "Normal"
+  }
+ },
+ "bmkg_nov_sifat": {
+  "Bogor": "Normal",
+  "Sukabumi": "Normal",
+  "Cianjur": "Bawah Normal",
+  "Bandung": "Bawah Normal",
+  "Garut": "Bawah Normal",
+  "Tasikmalaya": "Bawah Normal",
+  "Ciamis": "Bawah Normal",
+  "Kuningan": "Bawah Normal",
+  "Cirebon": "Bawah Normal",
+  "Majalengka": "Bawah Normal",
+  "Sumedang": "Bawah Normal",
+  "Indramayu": "Bawah Normal",
+  "Subang": "Bawah Normal",
+  "Purwakarta": "Bawah Normal",
+  "Karawang": "Bawah Normal",
+  "Bekasi": "Bawah Normal",
+  "Bandung Barat": "Bawah Normal",
+  "Pangandaran": "Bawah Normal",
+  "Kota Bogor": "Bawah Normal",
+  "Kota Sukabumi": "Bawah Normal",
+  "Kota Bandung": "Bawah Normal",
+  "Kota Cirebon": "Bawah Normal",
+  "Kota Bekasi": "Bawah Normal",
+  "Kota Depok": "Bawah Normal",
+  "Kota Cimahi": "Bawah Normal",
+  "Kota Tasikmalaya": "Bawah Normal",
+  "Kota Banjar": "Bawah Normal"
+ },
+ "model_banjir": {
+  "Bogor": "Waspada",
+  "Sukabumi": "Siaga",
+  "Cianjur": "Siaga",
+  "Bandung": "Waspada",
+  "Garut": "Waspada",
+  "Tasikmalaya": "Waspada",
+  "Ciamis": "Waspada",
+  "Kuningan": "Siaga",
+  "Cirebon": "Siaga",
+  "Majalengka": "Siaga",
+  "Sumedang": "Waspada",
+  "Indramayu": "Aturan belum terpenuhi",
+  "Subang": "Waspada",
+  "Purwakarta": "Waspada",
+  "Karawang": "Aturan belum terpenuhi",
+  "Bekasi": "Aturan belum terpenuhi",
+  "Bandung Barat": "Waspada",
+  "Pangandaran": "Waspada",
+  "Kota Bogor": "Aturan belum terpenuhi",
+  "Kota Sukabumi": "Siaga",
+  "Kota Bandung": "Waspada",
+  "Kota Cirebon": "Aturan belum terpenuhi",
+  "Kota Bekasi": "Aturan belum terpenuhi",
+  "Kota Depok": "Aturan belum terpenuhi",
+  "Kota Cimahi": "Waspada",
+  "Kota Tasikmalaya": "Waspada",
+  "Kota Banjar": "Waspada"
+ },
+ "model_banjir_x": {
+  "Bogor": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 10%.",
+  "Sukabumi": "Prediksi model: banjir level Siaga pada 19 Nov, peluang Siaga 20%.",
+  "Cianjur": "Prediksi model: banjir level Siaga pada 19 Nov, peluang Siaga 20%.",
+  "Bandung": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Garut": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 35%.",
+  "Tasikmalaya": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 35%.",
+  "Ciamis": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 10%.",
+  "Kuningan": "Prediksi model: banjir level Siaga pada 19 Nov, peluang Siaga 10%.",
+  "Cirebon": "Prediksi model: banjir level Siaga pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Majalengka": "Prediksi model: banjir level Siaga pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Sumedang": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Indramayu": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Subang": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Purwakarta": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Karawang": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Bekasi": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Bandung Barat": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Pangandaran": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 10%.",
+  "Kota Bogor": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Kota Sukabumi": "Prediksi model: banjir level Siaga pada 19 Nov, peluang Siaga 20%.",
+  "Kota Bandung": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Kota Cirebon": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Kota Bekasi": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Kota Depok": "Prediksi model: banjir level Normal pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Kota Cimahi": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga kurang dari 5%.",
+  "Kota Tasikmalaya": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 10%.",
+  "Kota Banjar": "Prediksi model: banjir level Waspada pada 19 Nov, peluang Siaga 10%."
+ },
+ "model_longsor": {
+  "Bogor": "Siaga",
+  "Sukabumi": "Awas",
+  "Cianjur": "Siaga",
+  "Bandung": "Waspada",
+  "Garut": "Siaga",
+  "Tasikmalaya": "Waspada",
+  "Ciamis": "Siaga",
+  "Kuningan": "Siaga",
+  "Cirebon": "Waspada",
+  "Majalengka": "Waspada",
+  "Sumedang": "Waspada",
+  "Indramayu": "Aturan belum terpenuhi",
+  "Subang": "Waspada",
+  "Purwakarta": "Waspada",
+  "Karawang": "Aturan belum terpenuhi",
+  "Bekasi": "Aturan belum terpenuhi",
+  "Bandung Barat": "Waspada",
+  "Pangandaran": "Waspada",
+  "Kota Bogor": "Aturan belum terpenuhi",
+  "Kota Sukabumi": "Aturan belum terpenuhi",
+  "Kota Bandung": "Waspada",
+  "Kota Cirebon": "Aturan belum terpenuhi",
+  "Kota Bekasi": "Aturan belum terpenuhi",
+  "Kota Depok": "Aturan belum terpenuhi",
+  "Kota Cimahi": "Waspada",
+  "Kota Tasikmalaya": "Waspada",
+  "Kota Banjar": "Waspada"
+ },
+ "sepekan_jabar": [
+  "Prakiraan sepekan BMKG: 17 Nov sampai 19 Nov, Siaga (hujan lebat); 20 Nov sampai 23 Nov, Hujan sedang."
+ ]
+}

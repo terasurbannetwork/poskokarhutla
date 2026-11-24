@@ -1,10 +1,10 @@
 {
-    "judul": "Lampiran Kajian Penentuan Kejadian Bencana, Kelas Mayor dan Minor, dan Standar Data Lapangan",
+    "judul": "Lampiran Kajian Penentuan Kejadian Bencana, Kelas Bencana, dan Standar Data Lapangan",
     "anak_judul": "SOP pengumpulan data lapangan, kamus data umum, lembar data khusus untuk sembilan jenis bencana, dan glosarium",
     "label": "LAMPIRAN KAJIAN BNPB",
     "folder": "../../standar-data-bencana/01-kajian-penentuan-kejadian/lampiran",
     "gbr": "../../standar-data-bencana/01-kajian-penentuan-kejadian/gbr",
-    "keluaran": "../../standar-data-bencana/keluaran/01 Kajian Penentuan Kejadian Bencana/Revisi 2",
+    "keluaran": "../../standar-data-bencana/keluaran/01 Kajian Penentuan Kejadian Bencana/Revisi 3",
     "nama_keluaran": "Lampiran Kajian Penentuan Kejadian Bencana",
     "berkas": ["lampiran-a.md", "lampiran-b.md", "lampiran-c.md", "lampiran-d.md"]
 }

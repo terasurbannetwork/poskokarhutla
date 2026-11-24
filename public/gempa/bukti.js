@@ -21,7 +21,7 @@ const Bukti = (() => {
   const cakup = d => Object.values(R(d)).filter(p => Object.values(p).some(v => v.dinilai > 0)).length;
   const sumber = (c) => (c?.sumber || "OpenStreetMap (ODbL), Dapodik, EMIS Kemenag, GEM, AWS Terrain Tiles");
   const nmU = k => esc(innerWidth < 640 ? KG.pendek(namaProv(k)) : namaProv(k));
-  const CATATAN = "Bukan sensus; provinsi yang tidak muncul bukan berarti aman";
+  const CATATAN = "Bukan sensus; provinsi yang tidak muncul belum tentu bebas risiko";
   async function kartu(id) {
     const d = await muat(), c = KARTU[id]; if (!d || !c) return "";
     const K = Object.entries(R(d)).map(([p, v]) => [p, Object.fromEntries(JENIS.map(j => [j, v[j]?.[c.kode] || 0]))]).filter(([, v]) => JENIS.some(j => v[j] > 0))
@@ -40,6 +40,10 @@ const Bukti = (() => {
     const baris = Object.entries(R(d)).map(([k, v]) => { const r = {k, dinilai: 0}; kodes.forEach(c => r[c] = 0); for (const j of JENIS) if (v[j]) { r.dinilai += v[j].dinilai || 0; kodes.forEach(c => { r[c] += v[j][c] || 0; }); } return r; }).filter(r => r.dinilai > 0);
     if (!baris.length) return "";
     const NK = {atas_sesar: "Di atas sesar", mmi_tinggi: "MMI VII+", genangan: "Pesisir rendah", tanpa_evakuasi: "Tanpa evakuasi", genangan_bnpb: "Genangan BNPB"};
+    /* definisi kolom di title kepala tabel (AGENTS.md 3.5), diringkas dari bab Fasilitas rawan di Metode */
+    const NT = {prov: "Provinsi tempat fasilitas berada", dinilai: "Sekolah, fasilitas kesehatan, dan bangunan publik yang lokasinya dinilai", atas_sesar: "Jarak 1 km atau kurang dari jejak sesar aktif GEM",
+      mmi_tinggi: "MMI VII atau lebih pada skenario sesar terdekat (60 km atau kurang)", genangan: "Ketinggian 10 m atau kurang dan 2 km atau kurang dari garis pantai (proksi topografi, bukan peta bahaya tsunami)",
+      tanpa_evakuasi: "Pesisir rendah dan tanah setinggi 20 m atau lebih terdekat lebih dari 2 km", genangan_bnpb: "Di dalam genangan tsunami skenario Mw 9,0 InaRISK BNPB (hanya Kota Ambon)"};
     const aktif = kodes.filter(c => baris.some(r => r[c] > 0));
     const kol = [{k: "prov", n: "Provinsi", v: r => namaProv(r.k), h: r => esc(namaProv(r.k))}, ...[["dinilai", "Fasilitas dinilai"], ...aktif.map(c => [c, NK[c]])]
       .map(([k, n]) => ({k, n, num: 1, v: r => r[k], h: r => r[k] ? `<b>${fmt(r[k])}</b>` : fmt(0)}))];
@@ -47,7 +51,7 @@ const Bukti = (() => {
     const S2 = [...baris].sort((a, b) => { const x = kk.v(a), y = kk.v(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s; });
     T.hal = Math.min(T.hal, Math.max(0, Math.ceil(S2.length / per) - 1));
     const hal = S2.slice(T.hal * per, (T.hal + 1) * per), tot = baris.reduce((a, r) => a + r.dinilai, 0);
-    const isi = `<div class="tw"><table data-bukti><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (T.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (T.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+    const isi = `<div class="tw ex-tabel"><table data-bukti><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" title="${esc(NT[c.k] || "")}" aria-sort="${c === kk ? (T.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (T.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(T.hal, S2.length, per, "provinsi")}`;
     return Kartu.kartu("Fasilitas rawan", `${Kartu.hl(fmt(tot) + " sekolah, fasilitas kesehatan, dan bangunan publik")} dinilai di ${fmt(baris.length)} provinsi`, isi, sumber() + `. ${CATATAN}. Cacah dari semua yang dinilai`); }
   /* pasang pengurut dan paginasi pada wadah yang memuat tabel(); ulang() menggambar ulang wadah */

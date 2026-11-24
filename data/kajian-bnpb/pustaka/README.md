@@ -11,6 +11,7 @@ Catatan rinci hasil membaca penuh dokumen sumber (31 Okt 2026). Tiap angka diber
 | `4-ndpba.md` | NDPBA Indonesia, Pacific Disaster Center (Bahasa) | 272 |
 | `5-lakip.md` | LAKIP BNPB 2025 R1 (kinerja 2025) | 176 |
 | `6-pedoman-status-darurat.md` | Pedoman Penetapan Status Keadaan Darurat Bencana (2016) | 25 |
+| `7-sig-bmkg.md` | Skala Intensitas Gempabumi BMKG (SIG-BMKG), studi awal, Jurnal Meteorologi dan Geofisika 17(2) 2016 | 11 |
 
 `REKOMENDASI-100.md` berisi 100 rekomendasi pengembangan sistem yang disusun dari keenam dokumen.
 

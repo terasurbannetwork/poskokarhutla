@@ -10,16 +10,19 @@ const Dampak = (() => {
   const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8", hist: "M12 3 2 20h20zM12 10v4M12 17v.5",
     krb: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z", fas: "M3 10l9-5 9 5-9 5zM7 12v5c3 2 7 2 10 0v-5", evak: "M6 19a2 2 0 1 0 0-.01M18 5a2 2 0 1 0 0-.01M8 19h5a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h5",
     band: "M2 14l8-2.5V5.5a2 2 0 0 1 4 0v6.5l8 2.5v2.5l-8-2v4l2.5 1.5V22L12 21l-4.5 1v-1.5L10 19v-4l-8 2z"};
-  const BAG = {pend: ["Penduduk terpapar", W.bata], krb: ["Penduduk per zona", "#d64545"], fas: ["Sekolah dan faskes", "#3b82f6"], evak: ["Jalur evakuasi", "#2fb36a"], band: ["Bandara terdampak", "#6d7b91"], hist: ["Korban dan kerugian", W.oranye]};
+  const BAG = {pend: ["Penduduk terpapar", W.bata], krb: ["Penduduk per zona", "#d64545"], fas: ["Sekolah dan fasilitas kesehatan", "#3b82f6"], evak: ["Jalur evakuasi", "#2fb36a"], band: ["Bandara terdampak", "#6d7b91"], hist: ["Korban dan kerugian", W.oranye]};
   const KUNCI = {kejadian: ["Kejadian", "kejadian"], mengungsi: ["Mengungsi", "jiwa"], terdampak: ["Terdampak", "jiwa"], rumah_rusak: ["Rumah rusak", "rumah"]};
   let D = null, P = null, A = null; const st = {k: "mengungsi", sk: "zona", gn: ""};
   const lv = id => S.st.gunung.find(g => idGn(g.nama) === id)?.level || 1, KRB = () => (P?.gunung || []).filter(g => g.zona_sumber === "KRB PVMBG");
   const med = a => { const x = [...a].sort((p, q) => p - q), n = x.length; return n % 2 ? x[(n - 1) / 2] : (x[n / 2 - 1] + x[n / 2]) / 2; };
   const jt = jiwaAngka;
   const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener noreferrer\">BNPB</a>"};
-  /* kartu: pita bagian + kartu Insight dengan pil = nama bagian */
+  /* kartu: pita bagian + kartu Insight; pil = kelompok (KELOMPOK), bukan nama bagian, supaya nama tidak berulang tiga kali */
+  const KELOMPOK = {pend: "Paparan", krb: "Paparan", fas: "Paparan", evak: "Evakuasi", band: "Penerbangan", hist: "Riwayat"};
   const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id];
-    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>`)}</section>`; };
+    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Insight.rapiKartu(Kartu.ex(judul, "", "", isi, catatan, ctl), [KELOMPOK[id], SEKSI[id], `<path d="${IKON[id]}"/>`])}</section>`; };
+  /* kepala kartu = nama seksi berikon (AGENTS.md 3.5); kalimat temuan lama jadi title kepala, keterangan dan sumber dilipat di isi */
+  const SEKSI = {pend: "Penduduk dalam radius rekomendasi", krb: "Penduduk per Kawasan Rawan Bencana", fas: "Sekolah dan fasilitas kesehatan di kawasan rawan", evak: "Waktu tempuh evakuasi per gunung", band: "Bandara di jalur abu skenario", hist: "Korban dan kerugian per tahun"};
   /* batang horizontal berlabel pil: rows [{n, v, txt, w, tip}] */
   function hbar(rows, R = 140) {
     const Wd = Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44 - (($("#dampak")?.clientWidth || 0) >= 1100 ? 224 : 0))), L = Wd < 500 ? 100 : 160, rh = 26, m = Math.max(1, ...rows.map(r => r.v)), X = v => L + v / m * (Wd - L - Math.min(R, Wd - L - 80));
@@ -56,7 +59,7 @@ const Dampak = (() => {
       R = ["III", "II", "I"].map(k => ({n: "KRB " + k, v: z(k), txt: jiwaTxt(z(k)) + " jiwa", w: WARNA_ZONA[k], tip: `<b>KRB ${k}</b><br>${jiwaTxt(z(k))} jiwa`})).filter(r => r.v > 0);
       judul = `Sekitar ${Kartu.hl(jt(z("III")) + " jiwa")} tinggal di KRB III ${nm}, ${jt(z("II"))} jiwa lagi di KRB II`; }
     else { const c = km => jum(g => g.cincin?.find(x => x.km === km)?.penduduk || 0), W4 = ["#d64545", "#e8743b", "#e0b400", "#9aa4b2"];
-      R = [3, 5, 10, 15].map((km, i) => ({n: "≤ " + km + " km", v: c(km), txt: jiwaTxt(c(km)) + " jiwa", w: W4[i], tip: `<b>Dalam ${km} km dari kawah</b><br>${jiwaTxt(c(km))} jiwa`})).filter(r => r.v > 0);
+      R = [3, 5, 10, 15].map((km, i) => ({n: "sampai " + km + " km", v: c(km), txt: jiwaTxt(c(km)) + " jiwa", w: W4[i], tip: `<b>Dalam ${km} km dari kawah</b><br>${jiwaTxt(c(km))} jiwa`})).filter(r => r.v > 0);
       judul = `Sekitar ${Kartu.hl(jt(c(10)) + " jiwa")} tinggal dalam 10 km dari ${nm}, ${jt(c(5))} jiwa dalam 5 km`; }
     if (!R.length) return "";
     const sel = `<select data-dkc="gn" aria-label="Gunung"><option value="">Semua gunung</option>${[...P.gunung].sort((a, b) => a.nama.localeCompare(b.nama)).map(g => `<option value="${esc(g.id)}"${g.id === st.gn ? " selected" : ""}>${esc(g.nama)}</option>`).join("")}</select>`;
@@ -83,7 +86,7 @@ const Dampak = (() => {
     const nmG = id => S.st.gunung.find(g => idGn(g.nama) === id)?.nama || id;
     return bag("band", `${Kartu.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam; tercepat ${esc(B[0].iata || B[0].icao)} dalam ${Kartu.hl(fmt(B[0].jam_tiba) + " jam")}`,
       hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao}, ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
-      "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Centurisk97, OurAirports"); }
+      "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan peringatan resmi Volcanic Ash Advisory Centre (VAAC). Sumber: model abu Centurisk97, OurAirports"); }
   const gambar = () => [terpapar(), krb(), fas(), evak(), band(), hist()].filter(Boolean).join("");
   const BAGIAN = {krb, hist};
   /* kontrol (segmen, pilihan gunung) tetap di tempat: hanya judul, isi, dan kaki yang diganti; pekerjaan berat sesudah paint */

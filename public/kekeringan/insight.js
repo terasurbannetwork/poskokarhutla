@@ -8,6 +8,27 @@ const SUMBER = "Deteksi Centurisk97 (NASA POWER, ECMWF, ERA5-Land), penduduk Wor
 const F3 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}).replace("-", "−");
 const tanda = v => (v > 0 ? "+" : v < 0 ? "−" : "") + F2(Math.abs(v));
 
+/* definisi kolom tabel Insight, ditampilkan sebagai title kepala kolom */
+const DEF_KOLOM = {"DC": "Kode kekeringan (Drought Code): makin tinggi makin kering, lapisan pendukung, tidak ikut menentukan status",
+  "SPI-3": "Indeks hujan standar 3 bulan (Standardized Precipitation Index): −1 atau lebih rendah berarti lebih kering dari biasa",
+  "Tanah": "Persentil kelembapan tanah 7 sampai 28 cm terhadap 1991–2020: makin kecil makin kering",
+  "Hujan 3 bulan (mm)": "Jumlah hujan 3 bulan terakhir, dalam milimeter",
+  "p (acak)": "Peluang jumlah tahun kering sebanyak ini muncul secara acak; makin kecil makin kuat buktinya",
+  "Tampungan air per 100.000 jiwa": "Embung dan waduk yang tercatat di OpenStreetMap (OSM) per 100.000 penduduk; data kasar, nol bukan bukti kekurangan",
+  "IRBI 2025": "Indeks Risiko Bencana Indonesia (IRBI) BNPB 2025 untuk kekeringan",
+  "Peluang model": "Peluang ada laporan kekeringan di kabupaten/kota ini pada bulan target menurut model bayangan (belum menggantikan aturan lama)",
+  "Biasa bulan ini": "Peluang laporan kekeringan pada bulan yang sama menurut pola kejadian 2008–2019",
+  "Aturan lama": "Status gabungan hujan dan kelembapan tanah yang berlaku sekarang",
+  "Jiwa kering": "Penduduk di kecamatan berstatus Siaga atau Awas",
+  "Status BMKG": "Status peringatan dini kekeringan meteorologis dari BMKG",
+  "Selisih (poin)": "Selisih peluang terhadap keadaan normal (hujan klimatologi), dalam poin persen"};
+const defKolom = c => c.t || DEF_KOLOM[c.h] || (/^SPI /.test(c.h) ? "Indeks hujan standar 3 bulan (SPI-3) bulan ini: −1 atau lebih rendah berarti lebih kering dari biasa" : "");
+/* ukuran uji balik dengan nama lengkap (singkatan Inggris hanya di title) dan kotak angka kunci */
+const DEF_UJI = {pod: "Tingkat deteksi (probability of detection, POD): porsi kabupaten-bulan berkejadian yang tertangkap alarm",
+  far: "Alarm palsu (false alarm ratio, FAR): porsi alarm yang tidak disertai laporan kejadian",
+  csi: "Skor keberhasilan (critical success index, CSI): 0 sampai 1, makin tinggi makin baik",
+  acak: "Skor keberhasilan bila alarm dibunyikan acak dengan laju yang sama: pembanding tanpa keterampilan"};
+const kotA = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
 const Insight = {
   st: {jiwa: "3"},
   EX: ["bmkg", "kabupaten", "jiwa", "prakiraan", "peluang", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel", "bayangan"],
@@ -70,7 +91,7 @@ const Insight = {
     const sel = k === "pdkm" ? `<select data-set="das" aria-label="Pilih dasarian"><option value=""${d ? "" : " selected"}>Terbaru</option>${das.map(x => `<option value="${x.v}"${d && d.v === x.v ? " selected" : ""}>${esc(x.n)}</option>`).join("")}</select>` : "";
     const W = k === "pdkm" ? this.bmkgData() : null, N = W?.ringkas?.kecamatan_tingkat;
     const info = W ? `<p style="margin:0 0 10px"><b>${esc(W.judul.replace(/^.*?(Dasarian)/, "$1"))}</b>, terbit ${esc(this.bmkgTanggal(W.tanggal))}</p>` : "";
-    const isi = info + `<p style="margin:0 0 10px"><span class="pill" style="background:#dbe7f7;color:#0b3a73">Status resmi BMKG</span> <a href="${tt}" target="_blank" rel="noopener noreferrer">${esc(ket)}, buka di situs BMKG</a></p>`
+    const isi = info + `<p style="margin:0 0 10px"><span class="pill kk-pil-resmi">Status resmi BMKG</span> <a href="${tt}" target="_blank" rel="noopener noreferrer">${esc(ket)}, buka di situs BMKG</a></p>`
       + `<img src="${esc(u)}" alt="${esc(ket)}" data-bmkg="${k}" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="display:block;max-width:100%;height:auto;margin:0 auto;background:#fff;border-radius:8px">`
       + `<p style="margin:10px 0 0;font-size:12px;opacity:.8">Gambar ini milik BMKG dan tidak diolah. Angka berlabel Deteksi Centurisk97 di kartu lain dihitung sendiri dari data hujan dan tanah, jadi bisa berbeda dari peta ini.</p>`
       + (W ? `<div style="margin-top:12px">${this.bmkgTabel(W)}</div>` : k === "pdkm" && this.st.das ? `<p style="margin:10px 0 0;font-size:12px;opacity:.8">Daftar wilayah dalam teks baru diarsipkan sejak 10 November 2026; untuk dasarian ini hanya peta BMKG yang tersedia.</p>` : "");
@@ -121,7 +142,7 @@ const Insight = {
     const I = S.iklim, E = S.meta.enso; if (!I?.oni?.length || E.oni == null) return "";
     const o = I.oni.slice(-36), W = innerWidth < 640 ? 700 : 940, H = 190, Lm = 20, R = 130, B0 = 116, esk = 38, gap = (W - Lm - R) / o.length, bw = gap * .72, Y = v => B0 - v * esk;
     const w = v => v >= .5 ? MERAH : v <= -.5 ? BIRU : "#9aa4b2";
-    let g = [[.5, "El Niño ≥ +0,5"], [-.5, "La Niña ≤ −0,5"]].map(([v, n]) => `<line x1="${Lm}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" stroke-dasharray="4 4" opacity=".3"/><text x="${W - R + 8}" y="${Y(v) + 4}" font-size="10.5" opacity=".7">${n}</text>`).join("");
+    let g = [[.5, "El Niño +0,5 atau lebih"], [-.5, "La Niña −0,5 atau kurang"]].map(([v, n]) => `<line x1="${Lm}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" stroke-dasharray="4 4" opacity=".3"/><text x="${W - R + 8}" y="${Y(v) + 4}" font-size="10.5" opacity=".7">${n}</text>`).join("");
     g += `<line x1="${Lm}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" stroke="currentColor" opacity=".35"/>`;
     g += o.map((d, i) => { const x = Lm + i * gap + (gap - bw) / 2, h = Math.abs(d.nilai) * esk, y = d.nilai >= 0 ? Y(d.nilai) : Y(0), ini = i === o.length - 1;
       return `<rect class="gy" style="--i:${i}" x="${x}" y="${y}" width="${bw}" height="${Math.max(1, h)}" rx="2" fill="${w(d.nilai)}" opacity="${ini ? 1 : .8}" data-tip="<b>${d.musim} ${d.tahun}</b><br>ONI: ${tanda(d.nilai)}"/>
@@ -129,16 +150,17 @@ const Insight = {
         ${i % 6 === (o.length - 1) % 6 ? `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="10" opacity=".7" font-weight="${ini ? 800 : 400}">${d.musim} ${String(d.tahun).slice(2)}</text>` : ""}`; }).join("");
     if (E.iod) g += this.p(Lm, 2, `${E.iod}${E.dmi != null ? ", DMI " + tanda(E.dmi) : ""}`, E.dmi >= .4 ? "#a8671c" : "#5f6fb0")[0];
     const kuat = Math.abs(E.oni) >= 2 ? "sangat kuat" : Math.abs(E.oni) >= 1.5 ? "kuat" : Math.abs(E.oni) >= 1 ? "sedang" : "lemah";
-    Kartu.leg([[MERAH, "El Niño (ONI ≥ +0,5)"], [BIRU, "La Niña (ONI ≤ −0,5)"], ["#9aa4b2", "Netral"]]);
+    Kartu.leg([[MERAH, "El Niño (ONI +0,5 atau lebih)"], [BIRU, "La Niña (ONI −0,5 atau kurang)"], ["#9aa4b2", "Netral"]]);
     return this.ex(`${E.status} ${kuat}: ONI ${this.hl(tanda(E.oni))} (${E.musim} ${E.tahun})${E.peluang && E.hingga ? `; NOAA: ${this.hl(fmt(E.peluang) + "%")} bertahan hingga ${E.hingga}` : ""}`, "", "",
       `<div class="tw sk"><svg viewBox="0 0 ${W} ${H}" style="min-width:${W > 800 ? 0 : 700}px" role="img" aria-label="Indeks ONI">${g}</svg></div>`, `Sumber: NOAA CPC (ONI), NOAA PSL (IOD)`); },
 
   /* 4. tabel kabupaten/kota paling kering */
   tabel(nama, kol, rows, attr, per, satuan) {
+    /* definisi kolom di title kepala tabel (AGENTS.md 3.5): singkatan dan satuan dijelaskan saat kepala kolom disorot */
     const st = this.T[nama], k = kol.find(c => c.k === st.urut && c.v) || kol.find(c => c.v), w = r => k.v(r) ?? -1;
     const a = [...rows].sort((x, y) => { const p = w(x), q = w(y), d = typeof p === "string" ? p.localeCompare(q) : p - q; return st.turun ? -d : d; });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(a.length / per) - 1)); const dari = st.hal * per;
-    return `<div class="tw"><table class="kl-tb"><thead><tr>${kol.map(c => `<th class="${c.n ? "n" : ""}">${c.v ? `<button data-k="${c.k}">${c.h}<i>${c.k === k.k ? (st.turun ? "↓" : "↑") : ""}</i></button>` : c.h}</th>`).join("")}</tr></thead><tbody>
+    return `<div class="tw"><table class="kl-tb"><thead><tr>${kol.map(c => `<th class="${c.n ? "n" : ""}"${defKolom(c) ? ` title="${esc(defKolom(c))}"` : ""}>${c.v ? `<button data-k="${c.k}">${c.h}<i>${c.k === k.k ? (st.turun ? "↓" : "↑") : ""}</i></button>` : c.h}</th>`).join("")}</tr></thead><tbody>
       ${a.slice(dari, dari + per).map((r, i) => `<tr class="klik" tabindex="0" ${attr(r)}>${kol.map(c => `<td class="${c.n ? "n num" : ""}">${c.s(r, dari + i)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, a.length, per, satuan)}`; },
   exTabel() {
     const R = Object.entries(S.wil.kab).filter(([, v]) => v.lv >= 2).map(([k, v]) => ({k, p: k.split("|")[0], nama: k.split("|")[1], ...v})); if (!R.length) return "";
@@ -146,7 +168,7 @@ const Insight = {
     const kol = [{k: "_", h: "#", s: (r, i) => `<span class="rk">${i + 1}</span>`}, {k: "nama", h: "Kabupaten/kota", v: r => r.nama, s: r => `<b translate="no">${esc(r.nama)}</b>`},
       {k: "prov", h: "Provinsi", v: r => namaProv(r.p), s: r => `<span translate="no">${esc(namaProv(r.p))}</span>`}, {k: "lv", h: "Status", v: r => r.lv * 1e9 + r.jiwa[2], s: r => pill(r.lv)},
       ...(ada("spi3") ? [{k: "spi", h: "SPI " + bulanPanjang(S.meta.spi.bulan), n: 1, v: r => r.spi3, s: r => r.spi3 != null ? `${F2(r.spi3)} <small>${katSpi(r.spi3)}</small>` : "–"}] : []),
-      ...(ada("mm3") ? [{k: "mm", h: "Hujan 3 bln (mm)", n: 1, v: r => r.mm3, s: r => r.mm3 != null ? fmt(r.mm3) : "–"}] : []), ...(ada("pct") ? [{k: "pct", h: "Tanah", n: 1, v: r => r.pct, s: r => r.pct != null ? fmt(r.pct) : "–"}] : []),
+      ...(ada("mm3") ? [{k: "mm", h: "Hujan 3 bulan (mm)", n: 1, v: r => r.mm3, s: r => r.mm3 != null ? fmt(r.mm3) : "–"}] : []), ...(ada("pct") ? [{k: "pct", h: "Tanah", n: 1, v: r => r.pct, s: r => r.pct != null ? fmt(r.pct) : "–"}] : []),
       ...(ada("dc") ? [{k: "dc", h: "DC", n: 1, v: r => r.dc, s: r => r.dc != null ? fmt(r.dc) : "–"}] : []),
       {k: "jiwa", h: "Jiwa kering", n: 1, v: r => r.jiwa[0], s: r => rb(r.jiwa[0])}];
     if (this.T.tabel.urut === "_") this.T.tabel.urut = "lv";
@@ -157,11 +179,11 @@ const Insight = {
   /* 5. prakiraan SEAS5 1-3 bulan: nasional + tabel provinsi TANPA peringkat (urutan nama; pengguna boleh mengurutkan sendiri) */
   /* peluang kekeringan (../banjir/data/kering_peluang.json, kontrak peluang/1; membungkus prakiraan SEAS5). Mesin public/inti/peluang.js; tanpa mesin atau berkas = dibuang. */
   exPeluang() { const d = this.pel; if (typeof Peluang === "undefined" || !d) return "";
-    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "bulan kering", sumber: "ECMWF SEAS5 lewat Open-Meteo, Deteksi Centurisk97"}); },
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "bulan kering", ikon: `<path d="${IK_KERING}"/>`, sumber: "ECMWF SEAS5 lewat Open-Meteo, Deteksi Centurisk97"}); },
   exPrakiraan() {
     const P = S.prak, L = P?.nasional?.lead; if (!L?.length) return "";
     const bl = BLN_PRAK(), M = innerWidth < 640, W = M ? 700 : 940, H = 230, Lm = 20, B0 = 176, T0 = 40, gw = (W - Lm - 10) / L.length, bw = Math.min(70, gw / 4.2);
-    const mx = Math.max(25, ...L.flatMap(l => [l.pk1, l.pk15, l.pk2])), Y = v => B0 - v / mx * (B0 - T0), WR = [JINGGA, MERAH, "#8e2a1f"], NM = ["SPI-3 ≤ −1", "≤ −1,5", "≤ −2"];
+    const mx = Math.max(25, ...L.flatMap(l => [l.pk1, l.pk15, l.pk2])), Y = v => B0 - v / mx * (B0 - T0), WR = [JINGGA, MERAH, "#8e2a1f"], NM = ["SPI-3 −1 atau kurang", "−1,5 atau kurang", "−2 atau kurang"];
     let g = this.p(Lm, 2, BELUM_UJI + ", ECMWF SEAS5 tanpa koreksi bias", NAVY)[0];
     g += L.map((l, i) => { const cx = Lm + gw * i + gw / 2, bs = BASELINE_PRAK("pk1", i);
       const bars = [l.pk1, l.pk15, l.pk2].map((v, j) => { const x = cx + (j - 1) * (bw + 6) - bw / 2, h = Math.max(1, B0 - Y(v));
@@ -173,7 +195,7 @@ const Insight = {
     const rows = Object.entries(P.prov || {}).filter(([, o]) => prakAda(o)).map(([k, o]) => ({k, nm: namaProv(k), lead: o.lead}));
     const kol = [{k: "nm", h: "Provinsi", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`},
       ...L.map((_, i) => ({k: "b" + i, h: `${esc(bl[i] || "")} (%)`, n: 1, v: r => r.lead[i].pk1, s: r => { const bs = BASELINE_PRAK("pk1", i); return `${fmt(Math.round(r.lead[i].pk1))} ${bs != null ? `<small>${selisihTxt(r.lead[i].pk1, bs)}</small>` : ""}`; }}))];
-    return this.ex(`Peluang SPI-3 ≤ −1 bulan ${esc(bl[0] || "depan")} rerata ${this.hl(fmt(Math.round(L[0].pk1)) + "%")}${bs0 != null ? `, baseline klimatologi ${this.hl(fmt(Math.round(bs0)) + "%")} (${selisihTxt(L[0].pk1, bs0)})` : ""}${jiwa ? `; ${this.hl(jt(jiwa) + " jiwa")} di wilayah berpeluang 50% atau lebih` : ""}; belum diuji balik`, "", "",
+    return this.ex(`Peluang SPI-3 −1 atau kurang bulan ${esc(bl[0] || "depan")} rerata ${this.hl(fmt(Math.round(L[0].pk1)) + "%")}${bs0 != null ? `, baseline klimatologi ${this.hl(fmt(Math.round(bs0)) + "%")} (${selisihTxt(L[0].pk1, bs0)})` : ""}${jiwa ? `; ${this.hl(jt(jiwa) + " jiwa")} di wilayah berpeluang 50% atau lebih` : ""}; belum diuji balik`, "", "",
       `<div class="tw sk"><svg viewBox="0 0 ${W} ${H}" style="min-width:${M ? 700 : 0}px" role="img" aria-label="Peluang kering 1 sampai 3 bulan">${g}</svg></div>` + (rows.length ? this.tabel("prakiraan", kol, rows, r => `data-prov="${esc(r.k)}"`, 10, "provinsi") : ""),
       `${esc(BIAS_TXT())}. Sumber: ${esc(P.sumber || "ECMWF SEAS5")} (Centurisk97, belum diuji balik)`); },
 
@@ -212,14 +234,14 @@ const Insight = {
     /* kejadian nyata DIBI BNPB per kabupaten-bulan (ujibalik.py `kejadian`): angka apa adanya, termasuk yang buruk */
     const K = J.kejadian, kw = K?.aturan?.waspada, ksg = K?.aturan?.siaga, pc = x => x == null ? "–" : fmt(Math.round(x * 100)) + "%", nmP = p => p === "semua" ? "Seluruh periode" : p.replace("..", " sampai ");
     const baris = (n, o) => o ? `<tr><td>${esc(nmP(n))}</td><td class="n num">${pc(o.pod)}</td><td class="n num">${pc(o.far)}</td><td class="n num">${o.csi != null ? F3(o.csi) : "–"}</td><td class="n num">${o.csi_acak != null ? F3(o.csi_acak) : "–"}</td></tr>` : "";
-    const tk = kw?.semua ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Kabupaten-bulan vs ${fmt(K.dibi_dalam_periode)} kejadian kering DIBI BNPB (${esc(K.periode_data.map(blnIso).join(" sampai "))})</th><th class="n">Tertangkap (POD)</th><th class="n">Alarm palsu (FAR)</th><th class="n">CSI</th><th class="n">CSI alarm acak</th></tr></thead><tbody>
-      <tr><td colspan="5"><span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${AMBANG_PIL()}</span></td></tr>
-      <tr><td colspan="5"><b>Waspada atau lebih (SPI-3 ≤ −1)</b></td></tr>${Object.entries(kw).map(([n, o]) => baris(n, o)).join("")}${ksg ? `<tr><td colspan="5"><b>Siaga atau lebih (SPI-3 ≤ −1,5)</b></td></tr>${Object.entries(ksg).map(([n, o]) => baris(n, o)).join("")}` : ""}</tbody></table></div>
-      <p class="fnd" style="margin:8px 2px 0">${K.vonis?.layak ? "Lolos kriteria di semua periode uji." : `Belum layak: POD di bawah ${Math.round(K.kriteria_layak.pod_min * 100)}% dan FAR di atas ${Math.round(K.kriteria_layak.far_maks * 100)}% pada tiap periode uji.`} Hanya bagian SPI-3 yang diuji (tanah dan HTH tak punya riwayat harian); SPI-3 pada bulan kejadian adalah diagnosis serentak, bukan prakiraan; ambang tidak disetel pada kejadian ini. DIBI hanya mencatat laporan BPBD, jadi alarm palsu di sini batas atas.</p>` : "";
-    const kal = kw?.semua ? `; terhadap kejadian DIBI aturan menangkap ${this.hl(pc(kw.semua.pod))} kabupaten-bulan berkejadian dan ${this.hl(pc(kw.semua.far))} alarmnya tanpa laporan (${K.vonis?.layak ? "ambang layak" : "ambang tetap hipotesis"})` : "";
+    const S0 = kw?.semua, kotak = S0 ? `<div class="grid g4 kk-kotak">${kotA("Tingkat deteksi", pc(S0.pod), "kabupaten-bulan berkejadian yang tertangkap")}${kotA("Alarm palsu", pc(S0.far), "alarm tanpa laporan kejadian")}${kotA("Skor keberhasilan", S0.csi != null ? F3(S0.csi) : "–", "CSI, 0 sampai 1")}${kotA("Skor alarm acak", S0.csi_acak != null ? F3(S0.csi_acak) : "–", "pembanding tanpa keterampilan")}</div>` : "";
+    const tk = S0 ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Kabupaten-bulan terhadap ${fmt(K.dibi_dalam_periode)} kejadian kering DIBI BNPB (${esc(K.periode_data.map(blnIso).join(" sampai "))})</th><th class="n" title="${esc(DEF_UJI.pod)}">Tingkat deteksi</th><th class="n" title="${esc(DEF_UJI.far)}">Alarm palsu</th><th class="n" title="${esc(DEF_UJI.csi)}">Skor keberhasilan</th><th class="n" title="${esc(DEF_UJI.acak)}">Skor alarm acak</th></tr></thead><tbody>
+      <tr><td colspan="5"><b>Waspada atau lebih (SPI-3 −1 atau kurang)</b></td></tr>${Object.entries(kw).map(([n, o]) => baris(n, o)).join("")}${ksg ? `<tr><td colspan="5"><b>Siaga atau lebih (SPI-3 −1,5 atau kurang)</b></td></tr>${Object.entries(ksg).map(([n, o]) => baris(n, o)).join("")}` : ""}</tbody></table></div>
+      <details class="kk-cara"><summary>Cara membaca</summary><p>${K.vonis?.layak ? "Aturan lolos kriteria di semua periode uji." : `Aturan belum layak: tingkat deteksi di bawah ${Math.round(K.kriteria_layak.pod_min * 100)}% dan alarm palsu di atas ${Math.round(K.kriteria_layak.far_maks * 100)}% pada tiap periode uji.`} Hanya bagian SPI-3 yang diuji, karena kelembapan tanah dan hari tanpa hujan tidak punya riwayat harian. SPI-3 pada bulan kejadian adalah diagnosis serentak, bukan prakiraan, dan ambang tidak disetel pada kejadian ini. DIBI hanya mencatat laporan BPBD, jadi alarm palsu di sini adalah batas atas.</p></details>` : "";
+    const kal = S0 ? `; terhadap kejadian DIBI aturan menangkap ${this.hl(pc(kw.semua.pod))} kabupaten-bulan berkejadian dan ${this.hl(pc(kw.semua.far))} alarmnya tanpa laporan (${K.vonis?.layak ? "ambang layak" : "ambang tetap hipotesis"})` : "";
     Kartu.leg([[MERAH, "tahun yang menonjol dari tahun netral"], ["#9aa4b2", "tahun tidak menonjol"], [BIRU, "rerata tahun netral"]]);
     return this.ex(`Aturan SPI-3 hanya menonjol pada ${this.hl(men.length ? men.join(", ") : "tidak satu pun tahun")}: ${fmt(Math.round(men.length ? v(men[0]) : nt.rerata))}% sel Waspada ke atas pada ${nm}${lain.length ? `, sedangkan ${lain.map(t => `${t} hanya ${fmt(Math.round(v(t)))}%`).join(" dan ")}` : ""} (tahun netral rerata ${fmt(Math.round(nt.rerata))}%)${kal}${A ? `; model cadangan ENSO ${A.bss <= 0 ? "tanpa keterampilan" : "dengan keterampilan kecil"} (BSS ${this.hl(F3(A.bss))})` : ""}`, "", "",
-      `<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="Uji balik aturan SPI-3">${g}</svg>${tk}${tb}`,
+      `${kotak}<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="Uji balik aturan SPI-3">${g}</svg>${tk}${tb}`,
       `Uji ${esc((J.periode || []).join("–"))}, klimatologi ${esc((J.klimatologi || []).join("–"))}; prakiraan SEAS5 sendiri belum diuji (hindcast tidak tersedia). Sumber: Centurisk97${K ? ", DIBI BNPB" : ""}`); },
 
   /* 8. gambut konsesi mengering: penghubung ke Karhutla */
@@ -242,9 +264,9 @@ const Insight = {
     const nT = +String(B.tahun || "").split("-")[1] - +String(B.tahun).split("-")[0] + 1 || 35, nb = B.n_berulang ?? R.filter(r => r.berulang).length, cek = B.n_cek_lapangan ?? R.filter(r => r.cek_lapangan).length;
     const kol = [{k: "nm", h: "Kabupaten/kota", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.pv), s: r => `<span translate="no">${esc(namaProv(r.pv))}</span>`},
       {k: "tahun", h: `Tahun kering (dari ${nT})`, n: 1, v: r => r.tahun, s: r => `${fmt(r.tahun)}${r.berulang ? ' <em class="pill l3">melebihi acak</em>' : ""}`}, ...(R.some(r => r.p != null) ? [{k: "p", h: "p (acak)", n: 1, v: r => r.p, s: r => r.p != null ? F3(r.p) : "–"}] : []),
-      {k: "emb", h: "Tampungan OSM per 100.000 jiwa", n: 1, v: r => r.per100rb, s: r => r.per100rb != null ? `${F1(r.per100rb)}${r.cek_lapangan ? " <small>cek lapangan</small>" : ""}` : "–"},
+      {k: "emb", h: "Tampungan air per 100.000 jiwa", n: 1, v: r => r.per100rb, s: r => r.per100rb != null ? `${F1(r.per100rb)}${r.cek_lapangan ? " <small>cek lapangan</small>" : ""}` : "–"},
       ...(R.some(r => r.irbi != null) ? [{k: "irbi", h: "IRBI 2025", n: 1, v: r => r.irbi, s: r => r.irbi != null ? `${fmt(r.irbi)}${r.irbi_arah ? ` <small>${esc(r.irbi_arah)}</small>` : ""}` : "–"}] : [])];
-    return this.ex(`${this.hl(fmt(nb) + " kabupaten")} kering lebih sering dari peluang acak di antara ${fmt(B.n_kab ?? R.length)} kandidat yang SPI-3 ${esc(B.jendela || "")} ≤ ${F1(B.ambang_spi3).replace("-", "−")} pada ${fmt(B.min_tahun)} tahun atau lebih (${esc(B.tahun || "")})${cek ? `; ${fmt(cek)} kandidat bertampungan OSM sedikit, perlu cek lapangan` : ""}`, "", "",
+    return this.ex(`${this.hl(fmt(nb) + " kabupaten")} kering lebih sering dari peluang acak di antara ${fmt(B.n_kab ?? R.length)} kandidat yang SPI-3 ${esc(B.jendela || "")} ${F1(B.ambang_spi3).replace("-", "−")} atau kurang pada ${fmt(B.min_tahun)} tahun atau lebih (${esc(B.tahun || "")})${cek ? `; ${fmt(cek)} kandidat bertampungan OSM sedikit, perlu cek lapangan` : ""}`, "", "",
       this.tabel("berulang", kol, R, r => `data-kab="${esc(r.kab)}"`, 10, "kabupaten/kota"),
       `Kandidat = kering ${fmt(B.min_tahun)} tahun atau lebih; "melebihi acak" bila jumlah tahun keringnya lebih banyak dari dugaan peluang acak${B.alfa != null ? ` (p di bawah ${F3(B.alfa)})` : ""}. Tampungan OSM kasar dan tidak lengkap, jadi nol bukan bukti kekurangan; rincian di Metode. Sumber: Centurisk97 (NASA POWER), OpenStreetMap (ODbL), InaRISK BNPB`); },
 
@@ -258,12 +280,15 @@ const Insight = {
       {k: "p", h: "Peluang model", n: 1, v: r => r.p, s: r => pc(r.p)}, {k: "kl", h: "Biasa bulan ini", n: 1, v: r => r.kl, s: r => pc(r.kl)},
       {k: "spi", h: "SPI-3", n: 1, v: r => r.spi, s: r => F2(r.spi)}, {k: "lv", h: "Aturan lama", v: r => r.lv ?? -1, s: r => r.lv != null ? pill(r.lv) : "–"}];
     return this.ex(`Model bayangan menempatkan ${this.hl(fmt(R.length) + " kabupaten/kota")} di atas pola biasa untuk ${this.hl(bulanPanjang(B.bulan_t1))}, berdampingan dengan aturan lama`, "", "",
-      `<p style="margin:0 0 8px"><span class="pill" style="background:#f6dcb5;color:#8a4b00">uji berdampingan</span> <span class="pill" style="background:#f6dcb5;color:#8a4b00">${AMBANG_PIL()}</span></p>` +
+      `<div class="grid g4 kk-kotak">${kotA("Ketepatan peringkat", F3(M.aucpr_uji_t1), `pola biasa ${F3(M.aucpr_uji_klim)}, acak ${F3(M.dasar_uji)}`)}${kotA("Aturan lama SPI-3", F3(M.aucpr_uji_aturan_lama), "ketepatan peringkat")}${kotA("Alarm palsu", fmt(Math.round(M.far_uji * 100)) + "%", "kira-kira, alarm tanpa laporan kejadian")}${kotA("Laju alarm", fmt(Math.round(M.alarm_uji * 100)) + "%", "kabupaten-bulan yang diberi alarm")}</div>` +
       this.tabel("bayangan", kol, R, r => `data-kab="${esc(r.k)}"`, 10, "kabupaten/kota") +
-      `<p style="margin:8px 0 0;font-size:12px;opacity:.8">Peluang ada laporan kekeringan di kabupaten itu bulan target, dari pola kejadian 2008–2019 dan SPI-3. Pada uji ${esc(M.uji.split(";")[0])}: ketepatan peringkat ${this.hl(F3(M.aucpr_uji_t1))} (pola biasa saja ${F3(M.aucpr_uji_klim)}, aturan lama SPI-3 ${F3(M.aucpr_uji_aturan_lama)}, acak ${F3(M.dasar_uji)}). Alarm palsu tetap sekitar ${fmt(Math.round(M.far_uji * 100))}% pada laju alarm ${fmt(Math.round(M.alarm_uji * 100))}%: ini urutan kewaspadaan, bukan peringatan. Daftar hanya memuat kabupaten dengan peluang model di atas 1,5 kali pola biasa. SPI-3 di sini dari NASA POWER, sedangkan model dilatih dengan CHIRPS: skalanya sama, angkanya tidak persis sama. Tiga bulan ke depan memakai pola biasa saja.${this.bayN?.cukup === false ? ` Penilaian prospektif belum cukup (${fmt(this.bayN.positif)} kejadian).` : ""}</p>`,
+      `<details class="kk-cara"><summary>Cara membaca</summary><p>Peluang model adalah peluang ada laporan kekeringan di kabupaten/kota itu pada bulan target, dihitung dari pola kejadian 2008–2019 dan SPI-3. Angka di kotak berasal dari uji ${esc(M.uji.split(";")[0])}; ketepatan peringkat diukur dengan luas di bawah kurva presisi dan tingkat deteksi (AUC-PR), makin tinggi makin baik. Daftar ini urutan kewaspadaan, bukan peringatan, dan hanya memuat kabupaten/kota dengan peluang model di atas 1,5 kali pola biasa. SPI-3 di sini dari NASA POWER, sedangkan model dilatih dengan CHIRPS: skalanya sama, angkanya tidak persis sama. Tiga bulan ke depan memakai pola biasa saja.${this.bayN?.cukup === false ? ` Penilaian prospektif belum cukup (${fmt(this.bayN.positif)} kejadian).` : ""}</p></details>`,
       `Sumber: Deteksi Centurisk97; SPI-3 NASA POWER; pola kejadian DIBI dan laporan 2008–2019`); },
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
-    try { const h = f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); return ["kabupaten", "jiwa", "tabel"].includes(id) ? beriAmbang(h) : h; } catch (e) { console.error(e); return ""; } },
+    try { let h = f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`);
+      const hip = S.uji?.kejadian?.vonis?.layak ? null : AMBANG_PIL();
+      const uji = {prakiraan: BELUM_UJI, peluang: BELUM_UJI, padi: "Hipotesis, belum diuji balik", ujibalik: hip, bayangan: hip}[id]; if (uji) h = h.replace(/(<span class="ex-ey">[^<]*<\/span>)/, `$1<span class="ex-ey kk-hip">${uji}</span>`);
+      return kepalaSeksi(["kabupaten", "jiwa", "tabel"].includes(id) ? beriAmbang(h) : h); } catch (e) { console.error(e); return ""; } },
   pasangUrut(box) { const th = box.querySelector("thead:has(button[data-k])") || box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
   render() {
@@ -274,7 +299,11 @@ const Insight = {
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     if (!el.dataset.bmkg) { el.dataset.bmkg = 1; el.addEventListener("error", e => { if (e.target.dataset?.bmkg) this.bmkgGagal(e.target); }, true); }
-    Cerita.sisip(el, "kekeringan");
+    /* kartu Cerita (inti/cerita.js) dibentuk ulang jadi kartu standar: kepala = nama seksi, kalimat temuan dan sumber ke title, kaki Sumber dibuang;
+       disisipkan di tumpukan kartu (sebelum tautan) supaya jaraknya sama dengan kartu lain */
+    Promise.resolve(Cerita.kartu("kekeringan")).then(h => { if (!h || !el.isConnected || el.querySelector(".kk-cerita")) return;
+      const t = document.createElement("div"); t.className = "kk-cerita"; t.innerHTML = kepalaSeksi(h, "Riwayat kekeringan");
+      const ln = el.querySelector(".kl-tautan"); ln ? ln.before(t) : el.append(t); });
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
     else el.insertAdjacentHTML("beforeend", `<div class="kl-tautan"><a href="/kekeringan/simulasi" data-tab="simulasi">Simulasi neraca air 180 hari</a><a href="laporan.html">Laporan harian</a></div>`);
     el.onchange = e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };

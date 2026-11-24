@@ -3,7 +3,7 @@
    (scripts/kekeringan/posko.py, rantai terakhir status.py). Kebutuhan = batas atas: SEMUA penduduk kecamatan Siaga/Awas x 15 liter/orang/hari (Sphere 2018); tangki = asumsi 5.000 liter per rit. */
 const Posko = (() => {
   let D = null;
-  const kartu = (ey, judul, isi, catatan) => Kartu.ex(judul, "", "", isi, catatan).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`);
+  const kartu = (ey, judul, isi, catatan) => kepalaSeksi(Kartu.ex(judul, "", "", isi, catatan).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`));
   const jtP = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
   const juta = l => fmt(Math.round(l / 1e6));
   function batang(rows) {

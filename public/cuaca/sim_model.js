@@ -95,7 +95,7 @@
     else html += kartu("siklon", "Gelombang badai", "Nyalakan siklon di tab Skenario untuk menghitung kenaikan air laut di pelabuhan.");
     const kp = ada ? h.kapal0 : null;
     html += kartu("kapal", "Batas operasi kapal", "Titik perairan dan jam yang melewati batas tiap kelas kapal (gelombang atau angin).",
-      `<table class="sc-tb"><thead><tr><th>Kelas</th><th class="n">Titik</th><th class="n">Jam</th></tr></thead><tbody>${h.kapal.map((k, i) => `<tr><td>${esc(k.nama)}<span class="m">≥ ${fmt(k.hs)} m atau ${fmt(k.kt)} knot</span></td><td class="n">${fmt(k.titik)}${kp ? `<span class="m">prakiraan ${fmt(kp[i].titik)}</span>` : ""}</td><td class="n">${fmt(k.jam)}${kp ? `<span class="m">prakiraan ${fmt(kp[i].jam)}</span>` : ""}</td></tr>`).join("")}</tbody></table>
+      `<table class="sc-tb"><thead><tr><th>Kelas</th><th class="n">Titik</th><th class="n">Jam</th></tr></thead><tbody>${h.kapal.map((k, i) => `<tr><td>${esc(k.nama)}<span class="m">${fmt(k.hs)} m atau lebih atau ${fmt(k.kt)} knot</span></td><td class="n">${fmt(k.titik)}${kp ? `<span class="m">prakiraan ${fmt(kp[i].titik)}</span>` : ""}</td><td class="n">${fmt(k.jam)}${kp ? `<span class="m">prakiraan ${fmt(kp[i].jam)}</span>` : ""}</td></tr>`).join("")}</tbody></table>
       <p class="sc-cat">Dari ${fmt(h.kapal[0].total)} titik gelombang. Batas adalah hipotesis kami, belum dicek ke dokumen BMKG Maritim.</p>`);
     /* uji balik: prakiraan 1 hari pada kejadian DIBI */
     const L = h.ver?.kita?.lead?.["1"], n = L ? L.a + L.c : 0;

@@ -26,7 +26,7 @@ const Insight = {
   eyIk: (id, nama) => `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${Insight.IK[id]}</svg>${nama}`,
   /* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5, 11 Nov 2026): kalimat temuan dan kaki "Sumber:" dibuang; kalimat hanya hidup bila isi kartu kosong */
   kepala(h, id, nama, pil = "") { if (!/<h3>/.test(h)) return h;
-    return kepalaKartu(h.replace(/<h3>[\s\S]*?<\/h3>/, () => `<h3>${Insight.eyIk(id, nama)}</h3>`).replace('<span class="ex-ey"></span>', () => "")).replace("</h3>", () => `</h3>${pil}`); },
+    return kepalaKartu(h.replace(/<h3>[\s\S]*?<\/h3>/, () => `<h3>${Insight.eyIk(id, nama)}</h3>`).replace('<span class="ex-ey"></span>', () => "")).replace('<div class="ex-jd">', () => `${pil}<div class="ex-jd">`); },
   exM: (id, nama, ...a) => Insight.kepala(Kartu.ex(...a), id, nama, PIL_MODEL),
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
   segHari: function (key) { return this.seg(key, hariTampil().map(i => [i, labelHari(i)])); },
@@ -66,7 +66,9 @@ const Insight = {
   exPel() {
     if (typeof Peluang === "undefined" || !this.PL) return "";
     this.st.pelW ??= Object.entries(this.PL.wilayah).map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];   /* awal: kota dengan peluang tertinggi */
-    return Peluang.kartu(this.PL, {ey: this.eyIk("pel", "Peluang PM2,5"), st: this.st, kunci: "pel", kejadian: "PM2,5", sumber: ""}).replace("</span>", "</span>" + PIL_MODEL); },
+    /* ubin ikon gaya B (ikon api bawaan) dibuang: kepala sama dengan kartu lain (ikon kecil di nama seksi), pil model di baris pil */
+    return Peluang.kartu(this.PL, {ey: this.eyIk("pel", "Peluang PM2,5"), st: this.st, kunci: "pel", kejadian: "PM2,5", sumber: ""})
+      .replace(/<span class="ex-ik"[^>]*>[\s\S]*?<\/span>/, "").replace('<div class="ex-pl">', () => '<div class="ex-pl">' + PIL_MODEL + PIL_HIPO("Peluang belum diuji balik; uji yang ada menilai analisis CAMS terhadap METAR bandara, bukan peluangnya")); },
 
   /* 2c. asal asap per kota (asal.json): batang mendatar persen per provinsi asal dari lintasan angin mundur */
   exAsal() {
@@ -106,12 +108,12 @@ const Insight = {
   gambar(id) { return kepalaKartu(({jiwa: () => this.exJiwa(), kab: () => this.exKab(), pel: () => this.exPel(), asal: () => this.exAsal(), jarak: () => this.exJarak(), bmkg: () => Stasiun.ex(), kualitas: () => Kualitas.ex(), tropo: () => Satelit.exTropo(), rapor: () => Satelit.exRapor()})[id]()); },
   pasang(box) {
     const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
-  ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasang(box); }); },
+  ulang(box) { nanti(() => { box.innerHTML = pilKeKepala(this.gambar(box.dataset.ex)); this.pasang(box); }); },
   async render() {
     const el = $("#insight");
     if (typeof Peluang !== "undefined") [this.PL, this.AS] = await Promise.all([Peluang.muat("data/peluang.json"), fetch("data/asal.json").then(r => r.ok ? r.json() : null).catch(() => null)]); if (this.st.hari < S.h0) this.st.hari = this.st.kabHari = S.h0;
     await Promise.all([Satelit.muatKartu(), Kualitas.muat(), typeof Lintas !== "undefined" ? Lintas.muat() : null]);   /* TROPOMI dan rapor model: dimuat malas saat Insight dibuka; berkas hilang = kartu dibuang */
-    el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
+    el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${pilKeKepala(this.gambar(id))}</div>`).join("");
     Cerita.sisip(el, "udara");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasang(b));
     el.addEventListener("change", e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } });
@@ -127,4 +129,5 @@ Cerita.daftar("udara", async () => { const D = await muatJSON("data/musim_asap.j
   const baris = [["#b5651d", "Pernah terjadi", `Tahun ${y} (${T[y].fase}) mencatat ${fmt(T[y].n)} titik panas di Indonesia, paling banyak di antara ${th[0]} sampai ${Math.max(...tuntas.map(Number))}.`]];
   if (tuntas[1]) baris.push(["#6b7fa3", "Pembanding", `Tahun ${tuntas[1]} (${T[tuntas[1]].fase}) mencatat ${fmt(T[tuntas[1]].n)} titik panas; tahun La Niña ${tuntas.filter(k => T[k].fase === "La Niña").map(k => `${k} hanya ${fmt(T[k].n)}`).join(", ")}.`]);
   if (z) baris.unshift(["#c9503a", "Tahun ini", `Per ${new Date(D.sd + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"})} tahun ${z} (${T[z].fase}) sudah mencatat ${fmt(T[z].n)} titik panas, angka sementara.`]);
-  return {judul: z && T[z].n > T[y].n ? `${Kartu.hl("sekitar " + Cerita.kata(T[z].n) + " titik panas")} sudah tercatat pada ${z} (sementara), melampaui ${y} (sekitar ${Cerita.kata(T[y].n)}), tertinggi dari ${th[0]} sampai ${Math.max(...tuntas.map(Number))}` : `${Kartu.hl("sekitar " + Cerita.kata(T[y].n) + " titik panas")} pada ${y}, tahun terbanyak sejak ${th[0]}, saat ${T[y].fase}`, baris, sumber: "NASA FIRMS, MODIS C6.1 + VIIRS S-NPP + VIIRS NOAA-20, hanya titik di daratan Indonesia; ONI NOAA CPC"}; });
+  /* kepala = nama seksi berikon (AGENTS.md 3.5); angka tahunnya sudah tertulis di baris cerita */
+  return {judul: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"/></svg>Riwayat titik panas`, baris, sumber: ""}; });   /* tanpa kaki "Sumber:" (AGENTS.md 3.5); sumber (NASA FIRMS MODIS C6.1 dan VIIRS, ONI NOAA CPC) tertulis di tab Metode */

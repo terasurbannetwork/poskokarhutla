@@ -18,7 +18,11 @@ const Berita = {
       : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""; },
   pl: (t, w) => `<em class="br-lb" style="--w:${w}">${t}</em>`,
   /* kartu Insight: pil kategori di kepala, judul, kontrol; legenda/sumber di kaki */
-  kartu(ey, judul, isi, catatan, ctl = "") { return kepalaKartu(Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`)); },
+  /* kepala = nama seksi berikon, sama dengan kartu Insight dan Tren (ikon 12 px di pil, ikut ukuran huruf di judul) */
+  IKS: {"Volume berita": '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', "Peta berita": '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', Sorotan: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    Topik: '<path d="M20 12 12 20l-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.5"/>', "Daftar berita": '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>'},
+  kartu(ey, judul, isi, catatan, ctl = "") { const ik = this.IKS[ey] ? `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${this.IKS[ey]}</svg>` : "";
+    return kepalaKartu(Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ik}${ey}</span>`)); },
   hari7() { return Object.keys(this.d.harian).sort().slice(-7); },
 
   async render() {

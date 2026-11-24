@@ -1,5 +1,5 @@
 "use strict";
-/* Insight gunung api: kartu bergaya karhutla/banjir (pil kategori, judul satu kalimat berangka merah, grafik berangka, legenda + "Sumber:").
+/* Insight gunung api: kartu standar .ex-std (AGENTS.md 3.5): pil kategori, kepala = nama seksi berikon, grafik berangka, legenda; sumber dilipat di isi (rapi()).
    Mesin kartu dari public/inti (Kartu.ex/leg/pil, paginasi, pengurutKepala); di sini hanya data dan gambar SVG gunung api.
    Kartu tanpa data tidak digambar (A18). Level resmi PVMBG ditampilkan apa adanya; tidak ada tingkat buatan Centurisk97. */
 Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:gunung|erupsi|jiwa))$/;
@@ -94,7 +94,7 @@ const Insight = {
       {k: "jam", n: "Abu tiba", num: 1, v: r => r.jam_tiba ?? 99, h: r => r.jam_tiba != null ? `jam ke-${fmt(r.jam_tiba)}` : "–"}];
     const cepat = [...B].sort((a, b) => a.jam_tiba - b.jam_tiba)[0], gn = new Set(B.map(b => b.gunung)).size;
     return this.ex("Bandara di jalur abu", "", "",
-      this.tabel("bandara", kol, B, r => `data-gn="${esc(nmG(r.gunung)?.nama || "")}"`, 10, "bandara", r => -r.jam_tiba), "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Centurisk97 (angin ECMWF IFS via Open-Meteo), OurAirports"); },
+      this.tabel("bandara", kol, B, r => `data-gn="${esc(nmG(r.gunung)?.nama || "")}"`, 10, "bandara", r => -r.jam_tiba), "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan peringatan resmi Volcanic Ash Advisory Centre (VAAC). Sumber: model abu Centurisk97 (angin ECMWF IFS via Open-Meteo), OurAirports"); },
 
   /* 5. penduduk di KRB III per gunung */
   exKrb() {
@@ -117,7 +117,7 @@ const Insight = {
       ["III", "II", "I"].forEach((z, zi) => { if (ped.krb[z]?.[g.level] && pg.zona?.[z]) R.push({g, z, jiwa: pg.zona[z].penduduk || 0, tk: ped.krb[z][g.level], key: g.level * 1e12 + tot * 1e3 + (99 - gi) * 10 + (3 - zi)}); }); });
     if (!R.length) return "";
     const ng = G.filter(x => R.some(r => r.g === x.g)).length, tot = R.reduce((a, r) => a + r.jiwa, 0);
-    const kol = [{k: "gn", n: "Gunung", v: r => r.g.nama, h: r => `<span translate="no">${esc(r.g.nama)}</span> ${pilLv(r.g.level, true)}`}, {k: "zn", n: "KRB", v: r => r.z.length, h: r => pilZona(r.z)},
+    const kol = [{k: "gn", n: "Gunung", v: r => r.g.nama, h: r => `<span translate="no">${esc(r.g.nama)}</span> ${pilLv(r.g.level, true)}`}, {k: "zn", n: "KRB", t: "Kawasan Rawan Bencana PVMBG: III paling dekat ke kawah, I paling jauh", pil: 1, v: r => r.z.length, h: r => pilZona(r.z)},
       {k: "tk", n: "Arahan", t: "Permen ESDM No. 15 Tahun 2011, sebagaimana ditayangkan MAGMA Indonesia", v: r => r.tk, h: r => esc(r.tk)}, {k: "jw", n: "Jiwa", t: "Perkiraan penduduk WorldPop 1 km, bukan sensus", num: 1, v: r => r.jiwa, h: r => r.jiwa > 0 ? jiwaTxt(r.jiwa) : "0"}];
     return this.ex("Arahan per KRB", "", "",
       this.tabel("arahan", kol, R, r => `data-gn="${esc(r.g.nama)}"`, 9, "arahan", r => r.key), ""); },
@@ -126,7 +126,7 @@ const Insight = {
   exTambang() {
     const R = []; (this.pap?.gunung || []).forEach(g => (g.tambang || []).forEach(t => { if (t.zona && WARNA_ZONA[t.zona]) R.push({...t, gn: g.nama, lv: S.st.gunung.find(x => idGn(x.nama) === g.id)?.level}); })); if (!R.length) return "";
     const ZN = {III: 3, II: 2, I: 1}, kol = [{k: "nm", n: "Pemegang izin", v: r => r.nama, h: r => `<b translate="no">${esc(r.nama)}</b>`}, {k: "kom", n: "Komoditas", v: r => r.komoditas || "", h: r => esc(r.komoditas || "–")},
-      {k: "gn", n: "Gunung", v: r => r.gn, h: r => `<span translate="no">${esc(r.gn)}</span>`}, {k: "zona", n: "Zona", v: r => ZN[r.zona], h: r => pilZona(r.zona)},
+      {k: "gn", n: "Gunung", v: r => r.gn, h: r => `<span translate="no">${esc(r.gn)}</span>`}, {k: "zona", n: "Zona", t: "Kawasan Rawan Bencana PVMBG tempat izin itu berada", pil: 1, v: r => ZN[r.zona], h: r => pilZona(r.zona)},
       {k: "keg", n: "Kegiatan", v: r => r.kegiatan || "", h: r => esc(r.kegiatan || "–")}];
     const n3 = R.filter(r => r.zona === "III").length, gn = new Set(R.map(r => r.gn)).size;
     return this.ex("Izin tambang", "", "",
@@ -154,8 +154,8 @@ const Insight = {
 
   /* ---- kartu dari arsip MAGMA 2018-2026 (data/rezim_letusan.json: SNAPSHOT dari data lokal pemilik, tanggal data tertulis di judul). Kartu standar .ex-std tanpa kaki (AGENTS.md 3.5). ---- */
   std: (ey, judul, isi) => `<article class="ex ex-std"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div></article>`,
-  tabelStd(...a) { return this.tabel(...a).replace('<div class="tw">', '<div class="tw ex-tabel">'); },
-  ket: t => `<p style="margin:0;font-size:12.5px;line-height:1.55;opacity:.8;text-align:justify">${t}</p>`,
+  tabelStd(...a) { return this.tabel(...a); },
+  ket: t => `<details class="gn-cat"><summary>Keterangan dan metode</summary><p>${t}</p></details>`,
   pilHip: t => `<span class="pl" style="--w:#8a6d1f" title="${esc(t)}">Hipotesis</span>`,
   d: (v, n = 1) => v.toLocaleString("id-ID", {maximumFractionDigits: n}),
   gabung: a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " dan " + a.at(-1),
@@ -241,7 +241,7 @@ const Insight = {
     const [a, na] = U.alarm, [t, nt] = U.tenang, pa = this.d(100 * a / na), pt = this.d(100 * t / nt);
     const [ea, en] = U.episode, [ma, mn] = U.meletus.alarm, [mt, mm] = U.meletus.tenang, tgA = U.hari_akhir ? this.tglArsip(U.hari_akhir) : "";
     const uji = `Hasil uji balik pada gunung yang sedang tidak meletus: ${fmt(a)} dari ${fmt(na)} hari alarm diikuti letusan dalam 7 hari (${pa}%) lawan ${fmt(t)} dari ${fmt(nt)} hari tenang (${pt}%); hari alarm itu hanya ${fmt(en)} episode, ${fmt(ea)} di antaranya diikuti letusan. Banyak alarm jatuh di gunung tanpa letusan di arsip; pada gunung yang pernah meletus sejak 2024 saja, ${fmt(ma)} dari ${fmt(mn)} hari alarm (${this.d(100 * ma / mn)}%) lawan ${fmt(mt)} dari ${fmt(mm)} hari tenang (${this.d(100 * mt / mm)}%). Episodenya terlalu sedikit dan jendela riwayat kegempaan baru 90 hari, jadi belum ada kesimpulan dan daftar ini bukan prediksi letusan.`;
-    const kol = [{k: "nm", n: "Gunung", v: r => r.nm, h: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "lv", n: "Level", t: "Level resmi PVMBG saat ini", v: r => this.lvG(r.nm), h: r => pilLv(this.lvG(r.nm), true)},
+    const kol = [{k: "nm", n: "Gunung", v: r => r.nm, h: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "lv", n: "Level", t: "Level resmi PVMBG saat ini", pil: 1, v: r => this.lvG(r.nm), h: r => pilLv(this.lvG(r.nm), true)},
       {k: "nw", n: "7 hari terakhir", t: "Jumlah gempa vulkanik (harmonik, tremor non-harmonik, low frequency, hybrid, vulkanik dangkal, vulkanik dalam) dalam 7 hari terakhir tanpa hari berjalan", num: 1, v: r => r.now, h: r => fmt(r.now)},
       {k: "mn", n: "Rata-rata 7 hari", t: "Rata-rata jumlah gempa vulkanik per jendela 7 hari pada riwayat gunung itu sendiri", num: 1, v: r => r.mean, h: r => this.d(r.mean)},
       {k: "rs", n: "Kelipatan", t: "7 hari terakhir dibagi rata-rata riwayatnya sendiri (masing-masing ditambah 1)", num: 1, v: r => r.rs, h: r => this.d(r.rs) + " kali"},
@@ -256,7 +256,7 @@ const Insight = {
     const P = this.pap.gunung.filter(g => g.zona_sumber === "KRB PVMBG").map(g => { const z = g.zona || {}, r = Z.find(x => x.gunung === g.nama), s = S.st.gunung.find(x => idGn(x.nama) === g.id);
       return s && {nm: g.nama, lv: s.level, j3: z.III?.penduduk || 0, jw: (z.III?.penduduk || 0) + (z.II?.penduduk || 0), n: r?.n || 0, l9: r?.per_hari_90 || 0}; }).filter(Boolean).sort((a, b) => b.jw - a.jw).slice(0, 15); if (P.length < 3) return "";
     const sepi = P.slice(0, 8).filter(x => x.lv === 1 && x.n <= 5).slice(0, 3);
-    const kol = [{k: "nm", n: "Gunung", v: r => r.nm, h: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "lv", n: "Level", t: "Level resmi PVMBG saat ini", v: r => r.lv, h: r => pilLv(r.lv, true)},
+    const kol = [{k: "nm", n: "Gunung", v: r => r.nm, h: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "lv", n: "Level", t: "Level resmi PVMBG saat ini", pil: 1, v: r => r.lv, h: r => pilLv(r.lv, true)},
       {k: "jw", n: "Jiwa KRB III dan II", t: "Perkiraan penduduk (WorldPop 1 km, bukan sensus) di Kawasan Rawan Bencana III dan II PVMBG", num: 1, v: r => r.jw, h: r => jiwaTxt(r.jw)},
       {k: "j3", n: "Jiwa KRB III", t: "Perkiraan penduduk di KRB III saja", num: 1, v: r => r.j3, h: r => r.j3 > 0 ? jiwaTxt(r.j3) : "0"},
       {k: "n", n: "Letusan sejak 2024", t: "Jumlah letusan di daftar informasi letusan MAGMA sejak 1 Jan 2024; guguran atau aktivitas tanpa letusan tidak terhitung", num: 1, v: r => r.n, h: r => fmt(r.n)},
@@ -271,10 +271,10 @@ const Insight = {
     const d = this.pel; if (typeof Peluang === "undefined" || !d) return "";
     if (!this.st.pelW) { const skor = w => (w.hari || []).reduce((a, h) => a + (h.p || []).reduce((x, y) => x + (y || 0), 0), 0);
       this.st.pelW = Object.keys(d.wilayah).sort((a, b) => skor(d.wilayah[b]) - skor(d.wilayah[a]) || (d.wilayah[b].jenis === "bandara") - (d.wilayah[a].jenis === "bandara"))[0]; }
-    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "abu gunung api", sumber: "Skenario jika meletus sekarang, bukan prakiraan letusan atau advisory VAAC (Open-Meteo, MAGMA PVMBG)"}); },
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "abu gunung api", sumber: "Skenario jika meletus sekarang, bukan prakiraan letusan atau peringatan resmi Volcanic Ash Advisory Centre (VAAC) (Open-Meteo, MAGMA PVMBG)"}); },
   exDaftar() {
     const G = S.st.gunung, kol = [{k: "nm", n: "Gunung", v: r => r.nama, h: r => `<b>${esc(r.nama)}</b>`}, {k: "pv", n: "Provinsi", v: r => r.prov, h: r => esc(r.prov)},
-      {k: "lv", n: "Level", v: r => r.level, h: r => pilLv(r.level, true)},
+      {k: "lv", n: "Level", t: "Level resmi PVMBG saat ini", pil: 1, v: r => r.level, h: r => pilLv(r.level, true)},
       {k: "rd", n: "Radius", num: 1, v: r => r.radius_km ?? -1, h: r => r.radius_km ? fmt(r.radius_km) + " km" : "–"},
       {k: "pd", n: "Jiwa dalam radius", num: 1, v: r => r.penduduk_radius ?? -1, h: r => r.penduduk_radius > 0 ? jiwaTxt(r.penduduk_radius) : "–"},
       {k: "tg", n: "Tinggi puncak", num: 1, v: r => r.tinggi ?? -1, h: r => r.tinggi > 0 ? fmt(r.tinggi) + " m" : "–"}];
@@ -287,11 +287,38 @@ const Insight = {
     const R = [...baris].sort((a, b) => { const x = f(a), y = f(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s; });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / per) - 1));
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
-    return `<div class="tw"><table><thead><tr>${kol.map(c => `<th${c.t ? ` title="${esc(c.t)}"` : ""} class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
-      <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${kol.length}" class="kosong">Tidak ada data.</td></tr>`}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
+    return `<div class="tw ex-tabel"><table><thead><tr>${kol.map(c => `<th${c.t ? ` title="${esc(c.t)}"` : ""} class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+      <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : c.pil ? ' class="c"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${kol.length}" class="kosong">Tidak ada data.</td></tr>`}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
-    try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
+    try { return this.rapi(f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`), id); } catch (e) { console.error(e); return ""; } },
+  /* kartu standar AGENTS.md 3.5 untuk SEMUA kartu Insight: .ex-std, kepala = nama seksi berikon (kalimat temuan lama pindah ke title kepala),
+     pil kategori, tanpa kaki "Sumber:"; keterangan dan sumber dilipat di <details> dalam isi. Legenda warna dipindah ke isi (gn-leg), kaki dihapus. Angka dan grafik tidak berubah. */
+  KEPALA: {status: ["Status", "Status gunung api", "gunung"], cerita: ["Cerita", "Gunung berstatus tertinggi", "buku"], letusan: ["Aktivitas", "Erupsi terbaru", "api"], perubahan: ["Status", "Perubahan level", "naik"],
+    rezim: ["Aktivitas", "Rezim letusan sejak 2024", "batang"], arahabu: ["Abu", "Arah abu per musim", "angin"], cakupan: ["Penerbangan", "Cakupan peringatan abu penerbangan (VONA)", "pesawat"],
+    pantau: ["Kegempaan", "Pantau kegempaan", "gelombang"], paparan: ["Paparan", "Penduduk kawasan rawan dan aktivitas letusan", "orang"], bandara: ["Penerbangan", "Bandara di jalur abu", "pesawat"],
+    peluang: ["Abu", "Peluang abu tiga hari ke depan", "awan"], krb: ["Paparan", "Penduduk di Kawasan Rawan Bencana III", "orang"], arahan: ["Paparan", "Arahan per Kawasan Rawan Bencana", "perisai"],
+    tambang: ["Paparan", "Izin tambang di kawasan rawan", "palu"], kinerja: ["Uji model", "Uji balik arah abu", "target"], daftar: ["Status", "Daftar gunung", "daftar"]},
+  IK: {gunung: '<path d="M3 20 9 9h6l6 11z"/><path d="M12 9V6"/>', buku: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7"/>', api: '<path d="M12 3c1.5 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2.2-4.6.3 1.7 1.1 2.6 2.1 3C11 9 11.3 6 12 3z"/>',
+    naik: '<path d="m7 14 5-5 5 5"/><path d="M12 9v11"/><path d="M5 4h14"/>', batang: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', angin: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 16h15a3 3 0 1 1-3 3"/><path d="M3 12h8"/>',
+    pesawat: '<path d="M2 16l20-6-8 12-2-6z"/>', gelombang: '<path d="M2 12h3l2-6 4 12 3-9 2 3h6"/>', orang: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.5 6-5.5s5.4 2.1 6 5.5"/><path d="M16 4.5a3 3 0 0 1 0 6M21 20c-.4-2.4-1.6-4.1-3.4-5"/>',
+    awan: '<path d="M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>', perisai: '<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/>', palu: '<path d="m14 4 6 6-3 3-6-6z"/><path d="M11 7 3 15l3 3 8-8"/>',
+    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>', daftar: '<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>'},
+  rapi(h, id) { return this.rapiKartu(h, this.KEPALA[id] || [this.LABEL[id], this.LABEL[id], ""]); },
+  /* dipakai juga oleh tab Tren dan Dampak: [pil kategori, nama seksi, kunci ikon IK] */
+  rapiKartu(h, [ey, nama, ik] = []) {
+    if (!h || typeof h !== "string") return h;
+    const t = document.createElement("template"); t.innerHTML = h; const a = t.content.querySelector("article.ex"); if (!a) return h;
+    a.classList.add("ex-std");
+    const h3 = a.querySelector(".ex-hd h3"), eyEl = a.querySelector(".ex-hd .ex-ey");
+    if (eyEl && ey) eyEl.textContent = ey;
+    if (h3 && nama) { const lama = h3.textContent.replace(/\s+/g, " ").trim(); if (lama && lama !== nama) h3.title = lama;
+      h3.innerHTML = `${ik ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${this.IK[ik] || ik}</svg>` : ""}${esc(nama)}`; }
+    const ft = a.querySelector(":scope>.ex-ft"), bd = a.querySelector(":scope>.ex-bd"), cat = [];
+    if (ft && bd) { [...ft.children].forEach(x => { if (x.classList.contains("ex-leg")) { x.classList.add("gn-leg"); return bd.append(x); } const tx = x.innerHTML.trim(); if (tx) cat.push(x.tagName === "EM" ? "Sumber data: " + tx.replace(/^Sumber:\s*/, "") : tx); x.remove(); });
+      ft.remove(); }
+    if (cat.length) bd?.insertAdjacentHTML("beforeend", `<details class="gn-cat"><summary>Keterangan dan sumber data</summary>${cat.map(c => `<p>${c}</p>`).join("")}</details>`);
+    return t.innerHTML; },
   pasangUrut(box) { const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
   render() {

@@ -21,6 +21,8 @@ export const SISTEM_CAKAP = baca('sistem_cakap.md')
 export const TUGAS_RAPIKAN = baca('tugas_rapikan.md')
 export const TUGAS_MAKSUD = baca('tugas_maksud.md')
 export const TUGAS_TANYA = baca('tugas_tanya.md')
+// Pengenal jenis cadangan (pemilik 21 Nov 2026): bahan yang lolos dari pola wa_jenis.js ditebak jenisnya oleh Claude
+export const TUGAS_KENALI = baca('tugas_kenali.md')
 export const MODEL_MAKSUD = 'claude-haiku-5-5'
 const STR = { type: 'string' }
 const OBJ = (properties) => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false })
@@ -28,6 +30,8 @@ export const SKEMA_CAKAP = {
   rapikan: OBJ({ bahan: { type: 'array', items: OBJ({ kunci: STR, teks: STR }) }, perubahan: { type: 'array', items: STR } }),
   maksud: OBJ({ maksud: { type: 'string', enum: ['buat', 'lanjut', 'final', 'batal', 'revisi', 'tanya', 'status', 'bantuan', 'obrolan', 'bahan'] }, jenis: { type: 'string', enum: ['harian', 'penanganan', 'gempa', ''] }, tanggal: STR, lokasi: STR, balasan: STR }),
   tanya: OBJ({ jawaban: STR }),
+  // jenis: kunci JENIS_LAPORAN (src/wa_jenis.js) atau 'bukan'; tanggal: YYYY-MM-DD yang ditulis bahan itu sendiri, kosong bila tidak ada
+  kenali: OBJ({ jenis: STR, tanggal: STR, alasan: STR }),
 }
 export const SKEMA = {
   harian: json('skema_isian_harian.json'),
@@ -439,6 +443,16 @@ export function buatKlien({ env = {}, dep = {} } = {}) {
       const rapi = {}
       for (const x of hasil?.bahan || []) if (x && typeof x.kunci === 'string' && typeof x.teks === 'string' && x.teks.trim()) rapi[x.kunci] = x.teks
       return { bahan: rapi, perubahan: (hasil?.perubahan || []).filter((x) => typeof x === 'string').map((x) => potong(x.trim(), 200)).slice(0, 12), biaya: b }
+    },
+    // Pengenal cadangan: teks bahan yang tidak cocok pola + daftar jenis {kunci, label} -> {jenis, tanggal, alasan, biaya} mentah (dibersihkan proyek.mjs)
+    async kenaliJenis(teks, daftar) {
+      const t = String(teks ?? '')
+      const cuplik = t.length > 6000 ? t.slice(0, 4500) + '\n[...]\n' + t.slice(-1200) : t
+      const isi = [blokTeks('jenis', JSON.stringify(daftar || [])), blokTeks('bahan', samarkan(cuplik)),
+        { type: 'text', text: 'Tentukan jenis bahan di atas, sesuai tugas.' }]
+      const { hasil, biaya: b } = await panggil({ effort: 'low', skema: SKEMA_CAKAP.kenali, tugas: TUGAS_KENALI, isi, sistem: SISTEM_CAKAP,
+        modelPakai: env.BL_MODEL_MAKSUD || MODEL_MAKSUD, maksToken: 2000 })
+      return { ...hasil, biaya: b }
     },
     // V2.1 A16: konteks {hari_ini, proyek: [{id, jenis, tanggal, status, versi}]} -> {maksud, jenis, tanggal, balasan, biaya} mentah (dibersihkan maksud.mjs)
     async maksud(teks, konteks) {

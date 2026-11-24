@@ -17,7 +17,9 @@ BAB = 0   # indeks berkas naskah yang sedang disajikan (untuk id catatan akhir b
 
 
 def ih(t):
-    """Markdown sebaris -> HTML."""
+    """Markdown sebaris -> HTML. `<br>` di sel tabel menjadi baris baru (sama dengan word_tulis.runs)."""
+    if re.search(r'<br\s*/?>', t):
+        return '<br>'.join(ih(b) for b in re.split(r'<br\s*/?>', t))
     out = []
     for tx, f in N.inline(t):
         if 'n' in f:
@@ -192,7 +194,7 @@ class Penyaji:
  <div class="sp-sub">{e(K.ANAK)}</div>
  <div class="sp-garis"></div>
  <div class="sp-baris">
-  <div class="sp-oleh">Disusun oleh<b>{e(K.OLEH)}</b></div>
+  <div class="sp-oleh">{e(K.OLEH_LABEL)}<b>{e(K.OLEH)}</b></div>
  </div>
  <div class="pil-tgl">Jakarta, {e(tanggal)}</div>
  <div class="sp-kaki">&copy; {tanggal[-4:]} Badan Nasional Penanggulangan Bencana<br><i>Ketangguhan Bangsa dalam Menghadapi Bencana</i></div>

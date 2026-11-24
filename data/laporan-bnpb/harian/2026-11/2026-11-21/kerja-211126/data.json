@@ -1,0 +1,487 @@
+{
+ "hari": "2026-11-21",
+ "cutoff": "2026-11-21T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2192.0,
+    "mengungsi": 18.0,
+    "rumah_dampak": 2010.0
+   },
+   "teks": {
+    "dampak": "2.192 KK / 9.102 jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "dibeberapa titik air sudah surut namun dibeberapa titik air masih menggenangi rumah warga",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "kondisi_pil": [
+    "Sebagian tergenang",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2756.0,
+    "mengungsi": 103.0
+   },
+   "teks": {
+    "dampak": "±  2.756 KK / 9.684 jiwa terdampak (dalam pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Sebagian besar wilayah terdampak banjir di 8 kecamatan, air telah surut dan masyarakat mulai kembali ke rumah masing-masing. Banjir masih menggenangi 4 kampung di Kec. Bendahara, dengan ketinggian air 3–60 cm. Penanganan dan pemantauan kondisi banjir masih dilakukan oleh BPBD dan unsur terkait",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Sebagian tergenang",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 710.0,
+    "rumah_dampak": 710.0
+   },
+   "teks": {
+    "dampak": "± 710 KK / 2.785 jiwa warga terdampak",
+    "status_darurat": "siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Kondisi banjir di Kec. Trumon Tengah, Trumon, dan Trumon Timur, Kab. Aceh Selatan, saat ini sebagian besar telah surut total, Namun, di Ds. Kapasesak, Kec. Trumon Timur, masih terdapat genangan di rumah warga dengan ketinggian sekitar 15–20 cm.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Sebagian tergenang",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Kota Padangsidimpuan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 50.0,
+    "rumah_dampak": 50.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "± 50 KK terdampak",
+    "status_darurat": "Status Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "Masih dalam upaya penanganan oleh BPBD Kota Padangsidimpuan dan pemerintah daerah",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Ditangani BPBD",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Nias",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3.0,
+    "rumah_dampak": 3.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "3 KK terdampak",
+    "status_darurat": "Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "Banjir telah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "12",
+   "lokasi": "Nias",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {
+    "kk": 1.0,
+    "rumah": 1.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "1 KK terdampak, 4 jiwa luka-luka",
+    "status_darurat": "Status Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "Masih dalam penanganan oleh pemerintah setempat dan masyarakat di lokasi terdampak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Tapanuli Tengah",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "mengungsi": 54.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "dalam pendataan",
+    "status_darurat": "Status Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "Banjir berangsur surut, TMA 20 s.d 50 cm ; pengungsi sudah kembali ke rumah masing-masing",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "13",
+   "lokasi": "Pasaman Barat",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 800.0,
+    "rumah_dampak": 873.0
+   },
+   "teks": {
+    "dampak": "± 800 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 16/11/2026 s/d 18/01/2027",
+    "kondisi": "Kondisi saat ini banjir di beberapa kecamatan sudah surut dan masyarakat telah kembali beraktivitas seperti biasa. Namun, masih terdapat 1 kejorongan di Kecamatan Sasak Ranah Pasisia yang airnya belum surut.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "kondisi_pil": [
+    "Sebagian tergenang",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "14",
+   "lokasi": "Kuantan Singingi",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3.0,
+    "rumah_dampak": 3.0
+   },
+   "teks": {
+    "dampak": "± 3 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir sudah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "14",
+   "lokasi": "Rokan Hilir",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4403.0,
+    "rumah_dampak": 4403.0
+   },
+   "teks": {
+    "dampak": "± 4.403 KK / 17.612 jiwa",
+    "status_darurat": "Siaga Darurat TMT 16/11/2026  s.d 15/12/2026",
+    "kondisi": "Banjir belum surut, ketinggian air 20 s.d 40 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-15",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "14",
+   "lokasi": "Bengkalis",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 150.0,
+    "mengungsi": 2.0,
+    "rumah_dampak": 150.0
+   },
+   "teks": {
+    "dampak": "± 150 KK / 450 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "16",
+   "lokasi": "Musi Rawas Utara",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 6.0,
+    "rumah_dampak": 6.0
+   },
+   "teks": {
+    "dampak": "± 6 KK / 12 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "36",
+   "lokasi": "Serang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 1.0,
+    "rumah": 1.0
+   },
+   "teks": {
+    "dampak": "± 1 KK / 4 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Material pohon tumbang sudah dibersihkan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Sudah dibersihkan",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "32",
+   "lokasi": "Kota Cimahi",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4.0,
+    "rumah_dampak": 5.0
+   },
+   "teks": {
+    "dampak": "± 4 KK / 16 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 01/11/2026 s.d 30/04/2027",
+    "kondisi": "Banjir sudah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "32",
+   "lokasi": "Bogor",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 4.0,
+    "rumah_dampak": 4.0
+   },
+   "teks": {
+    "dampak": "± 4 KK / 16 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 01/11/2026 s.d 30/04/2027",
+    "kondisi": "Untuk saat ini rumah yang rusak belum diperbaiki. Rumah masih dihuni oleh pemiliknya",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Belum diperbaiki",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "35",
+   "lokasi": "Jombang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 15.0,
+    "rumah": 15.0
+   },
+   "teks": {
+    "dampak": "15 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "BPBD melakukan pendataan dampak angin kencang serta melakukan upaya distribusi bantuan terpal kepada masyarakat terdampak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Distribusi terpal",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Kota Singkawang",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "(5 Kecamatan / 13 Desa) terdampak, masih dalam pendataan",
+    "status_darurat": "-",
+    "kondisi": "Air belum surut, rata-rata TMA ± 5 – 30 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Sambas",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 56.0,
+    "rumah_dampak": 56.0
+   },
+   "teks": {
+    "dampak": "± 56 KK terdampak",
+    "status_darurat": "Siaga Darurat TMT 11/05/2026 s.d 31/12/2026",
+    "kondisi": "Ketinggian muka air (TMA - 70 - 90 cm)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "73",
+   "lokasi": "Luwu",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 29.0,
+    "rumah": 29.0
+   },
+   "teks": {
+    "dampak": "± 29 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Korban terdampak saat ini mengungsi ke rumah kerabat dan warga setempat gotong royong melakukan evakuasi material bangunan yang roboh",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-20",
+   "kondisi_pil": [
+    "Gotong royong",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "81",
+  "93"
+ ]
+}
