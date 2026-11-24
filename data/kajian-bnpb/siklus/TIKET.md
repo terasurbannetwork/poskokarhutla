@@ -148,6 +148,8 @@ Status per tiket ada di kolom Status dan di baris `Status:` akhir tiap tiket (`s
 | SK-110 | Rilis G4 [induk] | selesai |
 | SK-111 | Penutupan program [induk] | selesai |
 | SK-112 | Tampilan tahap Rantai di halaman Buku Besar | selesai |
+| SK-113 | Titik perkiraan pusat desa untuk kejadian Logbook | selesai (sisi siklus); penyambungan Worker dan Dalops menunggu |
+| SK-114 | Lapisan InaRISK di Peta Paparan F2 | terbuka, menunggu pemilik (U22) |
 
 ## 3. Gelombang G1: lapis gudang data, Buku Besar, Peta Paparan
 
@@ -906,6 +908,17 @@ Status: selesai
 #### SK-111 Penutupan program [induk]
 Pengerja: induk. Bergantung: SK-110.
 Langkah: `ilmu.mjs kasus siklus` untuk pelajaran program; perbarui `.claude/ilmu-agent/siklus.md`; sapu status tiket; laporkan ke pemilik daftar U yang masih terbuka dan semua angka `asumsi-kebijakan` yang masih dipakai. Bukti: `npm run uji:agen`. Pemeriksa: higiene-repo. Status: selesai (11 Nov 2026). U terbuka: tidak ada, semua dijawab di KEPUTUSAN-AWAL bagian I. Angka `asumsi-kebijakan` yang masih dipakai: stimulan rumah 60/30/15 juta (U8), DTH Rp600.000 x 3 bulan per KK, harga satuan kerusakan tanpa acuan resmi (U4), target personel kesenjangan renkon, skor kesiapan gladi, dan pemetaan tag OSM fasilitas.
+
+#### SK-113 Titik perkiraan pusat desa untuk kejadian Logbook
+Pengerja: siklus. Bergantung: SK-010, SK-023. Uji: `python3 -I scripts/siklus/titik_desa.py uji`, `python3 -I scripts/siklus/bersih_logbook.py uji`.
+Berkas: `scripts/siklus/titik_desa.py`, `scripts/siklus/bersih_logbook.py`, `public/siklus/kejadian.js` (label). Di luar: `src/siklus*.js`, migrasi, `public/bnpb/**`, `scripts/data/dalops_banjir.py`.
+Langkah: ALGORITMA F1.6b. Pencari ketat nama desa lawan kab4 (dan kecamatan) lewat `desa_cari.json` dan poligon desa; titik berlabel `pusat_desa` (perkiraan); koordinat nyata tidak ditimpa. Kartu "Sekitar pusat desa (perkiraan)" bila `pusat_dasar` bernilai `pusat_desa`.
+Bukti: 56.685 kejadian Logbook, 19.248 cocok_desa (34,0 persen). Status: selesai di sisi siklus. Sisa milik lain: (a) warga-api: kolom `pusat_dasar` di `sk_kejadian` (atau berkas sisi) dan `titik` bersih ikut promosi arsip; (b) pipa-data: `dalops_banjir.py` memanggil `titik_desa.Pencari`/`titik_kejadian` pada `desa_teks` baris Dalops; (c) ruang-bnpb: kartu dampak radius Dalops memakai titik itu dengan label perkiraan pusat desa.
+
+#### SK-114 Lapisan InaRISK di Peta Paparan F2 (terbuka)
+Pengerja: siklus (setelah U22). Bergantung: SK-113 tidak; cermin InaRISK IR-* (`data/kajian-bnpb/inarisk/`).
+Keadaan: F2.3 sudah memakai InaRISK hanya sebagai DATA (H diambil per sel halus, diubah ke kelas 0,33/0,66 oleh `bahaya_kelas.py`); paket ini belum memutuskan menampilkan lapisan `layer_bahaya_*` / `layer_risiko_*` (ArcGIS gis.bnpb.go.id, ImageServer exportImage PNG, kadang "Wait timeout") sebagai lapisan peta di `/siklus/paparan`. Tidak dibangun.
+Pertanyaan U22 [pemilik]: tampilkan lapisan InaRISK sebagai gambar peta di F2? Bawaan sementara: ya sebagai pilihan lapisan opsional per bahaya, berlabel "InaRISK BNPB, kelas bahaya" lewat proksi daftar izin (bukan langsung dari peramban), gagal = pesan, bukan layar kosong, dan tidak pernah dihitung ulang atau dicampur dengan kelas sel kita. Syarat tertulis: izin pemakaian gambar ditegaskan di IR, kuota proksi, dan tidak menambah berkas `public/`.
 
 ## 7. Jalur kritis dan paralel
 

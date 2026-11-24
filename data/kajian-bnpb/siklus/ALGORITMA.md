@@ -143,6 +143,17 @@ Invarian: `masuk = bersih + dibuang(1..3)`. Batas 2011 adalah batas rentang data
 
 Kasus uji (10 baris: 2 tanggal kosong, 1 tahun 2923, 1 duplikat persis, 1 kab tak terpetakan, 1 jenis lain, 4 biasa): `masuk 10, bersih 6, dibuang {tanggal_kosong 2, tanggal_mustahil 1, duplikat_persis 1}, ditandai {wilayah_belum_terpetakan 1, jenis_tak_dibandingkan 1}`; 6 + 4 = 10.
 
+### F1.6b Titik perkiraan dari nama desa (SK-113; KEPUTUSAN-INARISK K6, Q6)
+
+Logbook hanya membawa nama desa, kecamatan, dan kab/kota, tanpa koordinat. `scripts/siklus/titik_desa.py` memberi satu titik perkiraan lewat pencari yang sudah ada (`public/data/desa_cari.json` untuk nama, `public/geo/desa/<kab4 berpoin>.json` untuk poligon; tanpa unduhan baru):
+
+1. Nama dinormalkan (huruf kecil, tanpa awalan desa/kel./kelurahan dan tanda baca). Dicocokkan HANYA di kab4 Kemendagri yang dikenal kejadian; kecamatan ada = kandidat dibatasi ke kecamatan itu, tanpa kandidat = `tidak_cocok`, tidak jatuh ke kab.
+2. Tepat satu kandidat dengan poligon = `cocok_desa`; nol atau lebih dari satu = `tidak_cocok` dengan alasan (`desa_tak_ada_di_kab`, `kecamatan_tak_cocok`, `kembar`, `poligon_tak_ada`). Kejadian dengan lebih dari satu desa, kecamatan, atau kab = `tidak_cocok` (`banyak_desa`): satu titik tidak mewakili dua desa. Tidak ada status "cocok kecamatan" dan tidak pernah pusat kab atau kecamatan.
+3. Titik = centroid cincin luar poligon terbesar; bila jatuh di luar poligon (bentuk cekung), titik tengah irisan terlebar di garis lintangnya. Selalu `dasar: "pusat_desa"`, label `estimasi-model`: PERKIRAAN pusat desa, bukan titik kejadian.
+4. Koordinat nyata dari sumber lain tidak pernah ditimpa (`gabung`). Lapis bersih Logbook membawa `titik` hanya untuk `cocok_desa` (tanda `titik_pusat_desa`); baris tanpa titik tidak punya kunci itu, bukan nol.
+
+Hasil ukur 24 Nov 2026 atas `baris.csv` Logbook 2011 sampai 2026: 56.685 kejadian, 19.248 `cocok_desa` (34,0 persen); tidak cocok: banyak_desa 17.878, tanpa_desa 7.537, desa_tak_ada_di_kab 5.821, nama_atau_kab_kosong 3.703 (termasuk multi-kab), kecamatan_tak_cocok 2.345, kecamatan_berbeda 130, kembar 23. 2011 hanya 5,8 persen (nama desa jarang tercatat), 2020 dan 2025 38,8 persen.
+
 ### F1.7 Angka berdampingan dan selisih
 
 Untuk tiap metrik m (meninggal, hilang, luka, terdampak, mengungsi, rumah rusak berat, sedang, ringan) pada satu `KJ-`, ambil nilai tiap sumber yang melapor: `v_s` (bukan `null`). Sumber yang belum melapor tampil "belum ada laporan".

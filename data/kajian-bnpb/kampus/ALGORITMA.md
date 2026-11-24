@@ -139,6 +139,16 @@ Kelas sama dengan §3.2.
 Dua masalah digabung bila kategori (B,A) sama dan Jaccard token judul+uraian (setelah
 buang kata henti `kamus.json:henti`) ≥ 0.5. Induk = yang S tertinggi. Dipakai F-R1.
 
+### 3.6 Masalah dari prioritas IKD terlemah (KM-I01)
+Sumber: `public/data/inarisk/ikd.json` (hanya dibaca), `analisa["<kab4>/<tahun>"]` = `nilai[7]` (P1..P7) dan `rek[[prioritas, indikator, aksi]]`.
+Per kab (kode 4 digit yang ada di `kode.json`; analisa 2 digit = provinsi dilewati) pakai tahun terbaru yang punya analisa.
+Pilih hingga 2 prioritas yang punya rekomendasi indikator, nilai terendah dulu, seri: nomor prioritas menaik. Tiap pilihan = satu butir:
+`auto_id = ikd-<kab4>-<tahun>-P<n>`, judul "Prioritas IKD terlemah: <nama prioritas>", `nilai`, `indeks_kab`, `indikator[]` = teks indikator rekomendasi apa adanya
+(urutan sumber, tanpa duplikat), label "IKD InaRISK <tahun>". Bahaya B = multi dan aspek A = A5 (bawaan: IKD tak membedakan bahaya; A5 kelembagaan dan dokumen).
+Tanpa angka atau kalimat buatan; kab tanpa analisa atau tanpa rekomendasi tak punya butir (bukan nol). Butir tanpa skor S_auto dan tanpa kelas.
+Pencocokan §4 memakai Q = judul + teks indikator (menggantikan uraian) + kamus multi + kamus A5 + prov + pulau; butir IKD tak mengubah masalah §3.3.
+Mesin: `scripts/kemitraan/ikd.py` ke `public/data/kemitraan/masalah_ikd.json`; `cocok_pakar.proses_kab(..., ikd_kab=)`.
+
 ## 4. Pencocokan pakar
 
 ### 4.1 Korpus

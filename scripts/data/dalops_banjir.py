@@ -174,6 +174,35 @@ def rincian_desa(*teks):
                 x["tinggi_cm"] = tinggi_cm("air " + sisa) or x["tinggi_cm"]
     return list(out.values())
 
+# --------------------------------------------------------------- titik perkiraan dari nama desa (KEPUTUSAN-INARISK K6/Q6, 24 Nov 2026)
+def beri_pusat(rows, pencari=None, kab4=None, titik=None):
+    """Tambah r["pusat"] = {lat, lon, dasar: "pusat_desa", kd} HANYA bila baris punya tepat satu desa dan satu kab dan pencarian cocok_desa.
+    PERKIRAAN pusat desa, bukan titik kejadian. Koordinat nyata (lat/lon di baris) tidak pernah ditimpa; tanpa titik = tanpa kunci (bukan 0, bukan pusat kab).
+    Gagal memuat pencari = baris dibiarkan. Mengubah rows di tempat; -> jumlah baris bertitik."""
+    try:
+        if pencari is None:
+            titik = _muat("titik_desa", "scripts/siklus/titik_desa.py")
+            kab4 = _muat("siklus_kunci", "scripts/siklus/kunci.py").kab4
+            pencari = titik.Pencari()
+    except Exception as x:
+        print(f"titik desa dilewati: {x}")
+        return 0
+    n = 0
+    for r in rows:
+        r.pop("pusat", None)
+        desa, kab = r.get("desa") or [], r.get("kab_kode") or []
+        if not desa and r.get("riwayat"):  # baris WA: desa hanya di riwayat; pakai laporan terakhir
+            desa = (r["riwayat"][-1] or {}).get("desa") or []
+        if len(desa) != 1 or len(kab) != 1:
+            continue
+        k4 = kab4(kab[0], r.get("prov_kode"))
+        c = pencari.cari(k4, desa[0].get("nama"), desa[0].get("kec")) if k4 else None
+        g = titik.gabung({"lat": r.get("lat"), "lon": r.get("lon")}, c)
+        if g and g.get("dasar") == "pusat_desa":
+            r["pusat"] = {"lat": g["lat"], "lon": g["lon"], "dasar": "pusat_desa", "kd": c["kd"]}
+            n += 1
+    return n
+
 
 # --------------------------------------------------------------- laporan harian PDF (Dit. Koordalops), murni kecuali baca_pdf
 BULAN = {b: i + 1 for i, b in enumerate(["januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus", "september", "oktober", "november", "desember"])}
@@ -585,6 +614,7 @@ def main_wa(o, LB):
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
     cek_kabar(rows, hari, kini)
+    beri_pusat(rows)
     tulis({**d, "dibuat": kini, "hari": hari, "sumber": "Logbook Pusdalops BNPB + WA Koordalops", "kejadian": rows}, o.unggah)
     print(f"{JENIS} WA: {len(entri)} entri, hari {hari}: {sum(not r['surut'] for r in rows)} belum surut dari {len(rows)} -> {os.path.relpath(keluar(), AKAR)}")
 
@@ -658,6 +688,7 @@ def satu(o, LB, LP):
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
     cek_kabar(rows, hari, kini, arsip=not o.hari)
+    beri_pusat(rows)
     tulis({"v": 1, "dibuat": kini, "hari": hari, "sumber": "Logbook Pusdalops BNPB" + (" + WA Koordalops" if entri else ""), "kejadian": rows}, o.unggah)
     awal = (dt.date.fromisoformat(hari) - dt.timedelta(days=SEPEKAN)).isoformat()
     pekan = [r for r in rows if r["terakhir"] >= awal]
@@ -830,6 +861,18 @@ def uji():
     assert not selesai("Kec. Kaliori air belum surut karena kondisi laut masih tinggi Kec. Kragan air sudah surut")
     assert not selesai("Air berangsur surut") and not selesai("Dalam penanganan BPBD") and selesai("Air laut sudah surut, kondisi kembali normal")
     assert [e["kab"] for e in wa_entri({"hari": "2026-11-06", "kejadian": [{"jenis": "gelombang_pasang", "prov": "33", "lokasi": "Rembang", "teks": {}}]}, kk)] == ["Kab. Rembang"]
+    import tempfile
+    with tempfile.TemporaryDirectory() as t:   # nama fiktif; poligon persegi
+        json.dump({"baris": [["33.08.01.2001", "Tuksongo", "Borobudur"], ["33.08.01.2002", "Hilang", "Borobudur"]], "kab": {}}, open(os.path.join(t, "c.json"), "w"))
+        json.dump({"features": [{"properties": {"kd": "33.08.01.2001"}, "geometry": {"type": "Polygon", "coordinates": [[[110, -8], [111, -8], [111, -7], [110, -7], [110, -8]]]}}]}, open(os.path.join(t, "33.08.json"), "w"))
+        ti = _muat("titik_desa", "scripts/siklus/titik_desa.py")
+        pc, k4 = ti.Pencari(os.path.join(t, "c.json"), t), (lambda m, p=None: "3308" if m == "33|Magelang" else None)
+        R = lambda desa, kab=("33|Magelang",), **x: {"prov_kode": "33", "kab_kode": list(kab), "desa": [{"nama": n, "kec": "Borobudur"} for n in desa], **x}
+        rs = [R(["Tuksongo"]), R(["Hilang"]), R(["Tuksongo", "Hilang"]), R([]), R(["Tuksongo"], kab=("33|Magelang", "33|Lain")),
+              R(["Tuksongo"], lat=-1.5, lon=100.0), R(["Tuksongo"], kab=("33|Tak Dikenal",)), R(["Hilang"], pusat={"lat": 0})]
+        assert beri_pusat(rs, pc, k4, ti) == 1
+        assert rs[0]["pusat"] == {"lat": -7.5, "lon": 110.5, "dasar": "pusat_desa", "kd": "33.08.01.2001"}
+        assert all("pusat" not in rs[i] for i in (1, 2, 3, 4, 5, 6, 7)), "tanpa titik = tanpa kunci; koordinat nyata tidak ditimpa; stale dibuang"
     print("uji dalops_banjir: lulus")
 
 

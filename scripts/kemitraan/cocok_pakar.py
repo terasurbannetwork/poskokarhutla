@@ -11,6 +11,7 @@ AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 sys.path.insert(0, os.path.join(AKAR, "scripts", "kemitraan"))
 from konst import KONST  # noqa: E402
 import geo  # noqa: E402
+import ikd  # noqa: E402
 import indeks_bm25 as ib  # noqa: E402
 import korpus as kp  # noqa: E402
 import teks  # noqa: E402
@@ -113,19 +114,21 @@ def kartu(ix, d, sk, q, pusat, mentah=None, wilayah=()):
             "pecahan": {c: round(d["k"][c], 4) for c in KOMP}, "bm25_mentah": round((mentah or {}).get(d["pi"], 0.0), 4), "km": km, "paper": paper}
 
 
-def proses_kab(profil, kode, prov_nama, pakar, cache, kini=None):
-    """Satu kab -> dokumen R2 `cocok/<kab4>.json`. cache = {bahaya: indeks lengkap} dipakai bersama antar kab."""
+def proses_kab(profil, kode, prov_nama, pakar, cache, kini=None, ikd_kab=None):
+    """Satu kab -> dokumen R2 `cocok/<kab4>.json`. cache = {bahaya: indeks lengkap} dipakai bersama antar kab.
+    ikd_kab = butir ikd.py kab ini: ikut dicocokkan, uraiannya = teks indikator rekomendasi InaRISK (KM-I01)."""
     kab4, pusat = profil["kode"], (kode.get(profil["kode"]) or {}).get("pusat")
     prov = profil.get("prov") or kab4[:2]
     pl, hasil = ib.pulau_dari_prov(prov), []
     wil = teks.token(" ".join([prov_nama.get(prov) or "", pl, ib.nama_cari((kode.get(kab4) or {}).get("nama") or profil.get("nama"))]))
-    for m in profil.get("masalah") or []:
+    for m in (profil.get("masalah") or []) + (ikd_kab or []):
         b = m["B"]
         if b not in cache:
             cache[b] = ib.bangun(pakar, b)
-        q = kueri(m.get("judul"), m.get("uraian"), b, m["A"], prov_nama.get(prov), pl)
+        q = kueri(m.get("judul"), m.get("uraian") or "; ".join(m.get("indikator") or []), b, m["A"], prov_nama.get(prov), pl)
         top, sk, mx, mentah = cocok(cache[b], q, kab4, prov, pusat)
         hasil.append({"auto_id": m.get("auto_id"), "B": b, "A": m["A"], "judul": m.get("judul"), "bm25_maks": round(mx, 4),
+                      **({"sumber": "ikd", "label": m["label"]} if m.get("sumber") == "ikd" else {}),
                       "pakar": [kartu(cache[b], d, sk, q, pusat, mentah, wil) for d in top]})
     return {"v": 1, "kab": kab4, "rekam_dimuat": any(p.get("rekam_dimuat") for p in pakar), "dibangun": (kini or datetime.date.today()).isoformat(), "label_kutipan": LABEL, "status": TERUJI if uji_cocok.status_pakar() else BELUM_DIUJI, "masalah": hasil}
 
@@ -220,6 +223,11 @@ def cek():
     assert utuh and any("early warning" in kt["kalimat"] for pp in utuh for kt in pp["kutipan"]), utuh
     assert terpotong and not any("early warning" in kt["kalimat"] for pp in terpotong for kt in pp["kutipan"]), "kalimat terpotong tidak boleh dikutip"
     assert all(pp["judul"] != "Penelitian lain" for m in proses_kab(profil, kode, prov, pk1, {})["masalah"] for x in m["pakar"] for pp in x["paper"]), "paper lemah relatif tersaring"
+    # KM-I01: butir IKD ikut dicocokkan; uraiannya teks indikator, berlabel sumber
+    bi = {"auto_id": "ikd-6211-2025-P3", "B": "multi", "A": "A5", "sumber": "ikd", "label": "IKD InaRISK 2025", "judul": "Prioritas IKD terlemah: Uji", "indikator": ["peringatan dini banjir"]}
+    d_ik = proses_kab(profil, kode, prov, pk, {}, datetime.date(2026, 11, 5), [bi])
+    assert len(d_ik["masalah"]) == len(profil["masalah"]) + 1 and d_ik["masalah"][-1]["sumber"] == "ikd" and d_ik["masalah"][-1]["label"] == "IKD InaRISK 2025"
+    assert d_ik["masalah"][:-1] == dok["masalah"], "butir IKD tak boleh mengubah masalah otomatis"
     # privasi: tidak menulis ke public/; dokumen JSON tak memuat email/telepon
     with tempfile.TemporaryDirectory() as d:
         kp.jaga_keluar(d)
@@ -248,12 +256,13 @@ def main(a):
     kode = json.load(open(os.path.join(AKAR, "public", "data", "kemitraan", "kode.json"), encoding="utf-8"))
     prov = json.load(open(os.path.join(AKAR, "public", "data", "meta.json"), encoding="utf-8"))["provinsi"]
     berkas = [os.path.join(DAERAH, g("--kab") + ".json")] if g("--kab") else sorted(glob.glob(os.path.join(DAERAH, "[0-9][0-9][0-9][0-9].json")))
-    cache, n = {}, 0
+    cache, n, ikd_semua = {}, 0, ikd.muat()
     for f in berkas:
         profil = json.load(open(f, encoding="utf-8"))
-        if not profil.get("masalah"):
+        ik = ikd_semua.get(profil["kode"])
+        if not profil.get("masalah") and not ik:
             continue
-        dok = proses_kab(profil, kode, prov, pk, cache)
+        dok = proses_kab(profil, kode, prov, pk, cache, ikd_kab=ik)
         p = os.path.join(keluar, f"{dok['kab']}.json")
         kp.tulis(p, dok)
         if "--r2" in a:

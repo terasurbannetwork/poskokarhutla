@@ -14,6 +14,12 @@ ditulis dengan bawaan sementara bertanda **[bawaan]**, tidak dikarang.
 - **K4 (23 Nov 2026):** "Gas" untuk tiga pengembangan: simulasi naik IKD, dampak radius di Dalops, IRBI dikali prakiraan besok.
 - **K5 (23 Nov 2026):** dua lanjutan: tarikan mingguan otomatis dengan pemberitahuan bila angka berubah (IR-09), dan dampak radius
   untuk semua kejadian yang punya titik: rincian laporan `/lapor/meja` dan kejadian Buku Besar `/siklus`.
+- **K6 (24 Nov 2026):** "gas lanjut semua yang tadi berhenti", jawaban atas daftar pengembangan 23 Nov butir 3 sampai 7:
+  (3) prioritas IKD terlemah jadi bahan belanja masalah `/kemitraan`; (4) ACEBS dan SPAB dicermin (menjawab Q3 untuk dua
+  sumber itu; DAS pencegahan dan 8 dashboard lain tetap menunggu); (5) uji IRBI lawan kejadian DIBI per kab, dipisah per dasar
+  HV 2015 dan HV 2021; (6) lapisan bahaya InaRISK dipakai modul Misi Udara dan Siklus lewat tiket modulnya; (7) IRBI lawan
+  dana DSP dan PFB tetap tertahan Q1 Pembiayaan Risiko (saldo hanya dari pemberi data resmi). Q6 dijawab: kejadian logbook
+  diberi titik dari nama desa.
 
 ## Temuan yang mengubah arti "tiru semuanya"
 
@@ -76,6 +82,18 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
   tab IRBI. Angka yang dipatok ke layar InaRISK 23 Nov 2026 hanya diuji untuk tarikan tanggal itu; self-check data penuh menjaga
   bentuk (514 kab, semua tahun, rumus IKD), bukan nilai. Tahun IRBI dibaca dari data, jadi tahun baru ikut tanpa ubah kode.
 
+- **D17 (K6):** SPAB dicermin per kab dari `inarisk2.../spab/api/get-data/{prov}` (kode kab Kemendagri, dicek lewat jumlah
+  kecamatan Aceh 1101 = 18). Kab tanpa sekolah melapor tampil "belum ada data", tidak pernah 0. ACEBS tidak dicermin dulu:
+  kode desa hanya 85,6% jatuh di poligon kab yang sama, di bawah ambang 95%; alamat dan titik per lokasi tidak pernah ke `public/`.
+- **D18 (K6):** uji IRBI lawan DIBI: korelasi peringkat Spearman antar kab, IRBI tahun Y lawan DIBI tahun Y+1 (HV 2015) atau tahun
+  sama (HV 2021, karena 2026 belum setahun), dibandingkan dengan persistensi (peringkat DIBI tahun Y). Hasil 24 Nov 2026: IRBI
+  kalah dari persistensi di 10 dari 10 tahun HV 2015 untuk jumlah kejadian (rerata korelasi 0,10) dan korban (0,03); HV 2021
+  korelasi kejadian -0,30. Jadi IRBI tidak dipakai sebagai alat prioritas kejadian tahun depan; tampil sebagai indeks InaRISK
+  apa adanya, dengan uji ini di Metodologi berlabel "uji kami".
+- **D19 (K6, Q6):** titik kejadian logbook dari nama desa hanya bila tepat satu desa dan satu kab dan nama cocok di kab itu
+  (kecamatan bila ada); titik = pusat poligon desa, `dasar: "pusat_desa"`, berlabel perkiraan di layar; koordinat nyata tidak
+  ditimpa. Cakupan logbook 2011-2026: 34,0% kejadian; Dalops 24 Nov 2026: 6 dari 187 (kebanyakan banyak desa).
+
 ## Pertanyaan terbuka
 
 - **Q1:** sumber resmi penduduk per jenis kelamin per kab? **[bawaan]** tidak ditampilkan.
@@ -89,4 +107,5 @@ Karena K3, angka pengisi itu **tidak ditiru**. Semua bentuk layar lain ditiru.
 
 - **Q5:** teks bebas petugas di titik Lapor Kegiatan (Deskripsi, Lokasi) bisa memuat nama orang; nomor HP, email, dan NIK
   disamarkan mesin, nama tidak bisa. **[bawaan]** tetap ditampilkan, karena sudah publik di InaRISK.
-- **Q6:** dampak radius untuk kejadian logbook butuh pencari koordinat dari nama desa. **[bawaan]** belum dibuat.
+- **Q6:** dampak radius untuk kejadian logbook butuh pencari koordinat dari nama desa. **[terjawab K6]** dibuat; titik desa
+  berlabel perkiraan (pusat desa, bukan titik kejadian).

@@ -6,7 +6,7 @@ Hanya kolom terstruktur; teks bebas (kendala, kebutuhan, narasi) tidak dibawa. T
 Luas (ha) karhutla dari sumber bukan sistem kita = null (KA 6). Baris per kejadian tidak masuk public/.
 Pakai: python3 -I scripts/siklus/bersih_logbook.py bersih [--csv BERKAS] [--keluar DIR] | uji
 """
-import collections, csv, datetime as dt, gzip, importlib.util, json, os, sys, tempfile
+import collections, csv, datetime as dt, glob, gzip, importlib.util, json, os, sys, tempfile
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.normpath(os.path.join(AB, "../.."))
@@ -37,8 +37,16 @@ def _tgl(s):
         return None
 
 
-def bersihkan(baris, ambil, kab4=None, kunci_jenis=None):
-    """baris: iterable dict kolom CSV. -> (per_tahun, laporan)."""
+def titik_desa(dir_titik=None):
+    """{id_kejadian: titik cocok_desa} dari titik_desa.py bangun (SK-139); tidak ada berkas = {} (kejadian tanpa titik, bukan titik tebakan)."""
+    out = {}
+    for f in glob.glob(os.path.join(dir_titik or os.path.join(AKAR, "data/raw/siklus/titik_desa"), "*.json")):
+        out.update({i: {k: t[k] for k in ("lat", "lon", "kd", "dasar")} for i, t in json.load(open(f))["titik"].items() if t.get("status") == "cocok_desa"})
+    return out
+
+
+def bersihkan(baris, ambil, kab4=None, kunci_jenis=None, titik=None):
+    """baris: iterable dict kolom CSV. titik {id: {lat, lon, kd, dasar}} opsional: perkiraan pusat desa, bukan titik kejadian. -> (per_tahun, laporan)."""
     if kab4 is None:
         kn = _muat("kunci")
         kab4, kunci_jenis = kn.kab4, kunci_jenis or kn._KK.kunci_jenis
@@ -82,6 +90,9 @@ def bersihkan(baris, ambil, kab4=None, kunci_jenis=None):
         kunci = list(kunci_jenis("dalops", o["jenis"] or ""))
         o["kunci_jenis"] = kunci
         o["kab4"] = kab4(o["kab_asal"]) if o["kab_asal"] else None
+        if titik and o["id"] in titik:
+            o["titik"] = titik[o["id"]]
+            tanda["titik_pusat_desa"] += 1
         if "karhutla" in kunci and o["ha"] is not None:
             o["ha"] = None
             tanda["dampak_karhutla_dikosongkan"] += 1
@@ -144,6 +155,8 @@ def _uji():
         lap, masalah = _muat("saji").laporan_bersih(d)
         assert masalah == [] and lap["sumber"]["logbook"]["masuk"] == 1
         assert [json.loads(x)["s"] for x in gzip.open(os.path.join(d, "siklus/bersih/logbook/2026.jsonl.gz"), "rt")] == ["logbook"]
+    per, l = bersihkan([ok, dict(ok, id_kejadian="LB2")], ambil, titik={"LB1": {"lat": -6.5, "lon": 106.8, "kd": "32.01.01.2001", "dasar": "pusat_desa"}})
+    assert per[2026][0]["titik"]["dasar"] == "pusat_desa" and "titik" not in per[2026][1] and l["ditandai"]["titik_pusat_desa"] == 1
     print("bersih_logbook: uji hijau")
 
 
@@ -153,7 +166,7 @@ if __name__ == "__main__":
         _uji()
     elif a[:1] == ["bersih"]:
         with open(D._ambil(a, "--csv", CSV_BAWAAN), encoding="utf-8", newline="") as f:
-            per, lap = bersihkan(csv.DictReader(f), dt.date.today())
+            per, lap = bersihkan(csv.DictReader(f), dt.date.today(), titik=titik_desa())
         D.tulis(D._ambil(a, "--keluar", D.KELUAR_BAWAAN), "logbook", per, lap)
         print(json.dumps({k: v for k, v in lap.items() if k != "keluar_per_tahun"}, ensure_ascii=False, indent=1))
     else:

@@ -97,6 +97,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | KM-H01 | Dasbor indikator + ekspor | warga-api + kampus | W + L | M | belum |
 | KM-H02 | Detektor pengingat km | warga-api | W | S | belum |
 | KM-H03 | Dummy isi/hapus | warga-api | W | M | belum |
+| KM-I01 | Masalah dari prioritas IKD terlemah (K6 InaRISK) | kampus | P | M | selesai |
 | KM-H04 | Uji alur ujung ke ujung E1–E9 | penulis-gerbang | G | L | belum |
 | KM-H05 | Uji layar 1440/390 | kampus | L | M | belum |
 | KM-H06 | Penyelarasan konteks bersih | Explore/sonnet | G | M | belum |
@@ -694,6 +695,12 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Tujuan:** sesi induk meng-commit per gelombang dengan path spesifik; pemilik menerapkan migrasi 0080–0084 ke D1 produksi; secret `KM_PIPA_TOKEN`; tab "Kemitraan" untuk staf; terbit lewat `terbit.yml`.
 - **Bukti:** `npm run uji:warga && npm run uji:agen && npm run uji:layar` hijau sebelum push; `npx wrangler d1 migrations apply poskowarga --remote -c wrangler.jsonc` (pemilik).
 - **Ukuran:** S
+
+#### KM-I01 Masalah dari prioritas IKD terlemah
+Status: selesai 24 Nov 2026. Dasar: KEPUTUSAN-KAMPUS butir 26, ALGORITMA §3.6, KEPUTUSAN-INARISK K6 butir 3.
+Berkas: `scripts/kemitraan/ikd.py` (`--tulis`, `--cek`), `public/data/kemitraan/masalah_ikd.json`, `scripts/kemitraan/cocok_pakar.py` (`ikd_kab`).
+Terima: `ikd.py --cek` hijau (tahun terbaru, 2 terendah, kab tanpa rekomendasi tanpa butir, berkas segar); `cocok_pakar.py --cek` hijau (butir IKD ikut cocok, masalah §3.3 tak berubah);
+gerbang cakupan memuat `py:ikd.py`. Sisa: `ikd.py --cek` belum di `package.json` `uji:kemitraan` (milik mekanik-mesin); cocok bulanan `--r2` harus dijalankan ulang agar butir IKD masuk R2.
 
 ## 4. Grafik dependensi (jalur kritis ══>)
 ```

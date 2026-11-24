@@ -98,6 +98,15 @@
             </table>
           </div>
         </section>
+        <section class="ir-kartu ir-kartu-tabel" aria-labelledby="irSpabJ">
+          <div class="ir-kartu-hd"><h2 id="irSpabJ" title="Kabupaten/kota IRBI kelas Tinggi, capaian SPAB terendah lebih dulu. Sumber: InaRISK BNPB, modul SPAB (Satuan Pendidikan Aman Bencana). Capaian rerata sekolah yang melapor.">Sekolah aman di daerah risiko tinggi</h2><span class="ir-ket" id="irSpabKet"></span></div>
+          <div class="ir-gulir ir-gulir-sedang" tabindex="0" role="region" aria-labelledby="irSpabJ">
+            <table class="ir-tabel">
+              <thead><tr><th scope="col">Kabupaten/kota</th><th scope="col" class="n">Skor IRBI</th><th scope="col" class="n" title="Sekolah yang melapor di SPAB">Sekolah</th><th scope="col" class="n" title="Capaian rerata tiga pilar SPAB">Capaian SPAB</th><th scope="col" class="n" title="Sekolah menurut status di SPAB">Optimal</th><th scope="col" class="n">Belum</th><th scope="col" class="n">Tidak</th><th scope="col"><span class="ir-sr">Detail</span></th></tr></thead>
+              <tbody id="irSpabBaris"></tbody>
+            </table>
+          </div>
+        </section>
         <section class="ir-kartu" aria-labelledby="irBahJ">
           <div class="ir-kartu-hd"><h2 id="irBahJ">Rerata skor per jenis bahaya</h2><span class="ir-ket" id="irBahKet"></span></div>
           <div class="ir-bahaya" id="irBahayaRata"></div>
@@ -234,6 +243,16 @@
         </table>
       </div>
     </section>
+    <section class="ir-kartu ir-kartu-tabel" aria-labelledby="mtUjiJ">
+      <div class="ir-kartu-hd"><h2 id="mtUjiJ" title="Spearman antar kabupaten/kota. Kejadian dan korban (meninggal + hilang) DIBI semua jenis. Persistensi: peringkat DIBI tahun yang sama dengan tahun IRBI (tahun sama: tahun sebelumnya). Pukul tepat: bagian 20% kab DIBI teratas yang juga di 20% IRBI teratas. Kab tanpa baris DIBI dihitung tidak tercatat. DIBI 2024 tidak lengkap. Sumber: IRBI InaRISK BNPB, DIBI BNPB.">Uji IRBI lawan kejadian DIBI</h2><span class="ir-pil k-kosong" title="Hitungan Centurisk97, bukan produk InaRISK">uji kami</span></div>
+      <div class="ir-gulir ir-gulir-sedang" tabindex="0" role="region" aria-labelledby="mtUjiJ">
+        <table class="ir-tabel">
+          <thead><tr><th scope="col">IRBI tahun</th><th scope="col">Dasar</th><th scope="col">DIBI tahun</th><th scope="col" class="n">Kejadian IRBI</th><th scope="col" class="n">Kejadian persistensi</th><th scope="col" class="n">Pukul tepat IRBI</th><th scope="col" class="n">Pukul tepat persistensi</th><th scope="col" class="n">Korban IRBI</th><th scope="col" class="n">Korban persistensi</th></tr></thead>
+          <tbody id="mtUjiBaris"><tr><td colspan="9" class="ir-p">Memuat uji…</td></tr></tbody>
+          <tfoot id="mtUjiVonis"></tfoot>
+        </table>
+      </div>
+    </section>
     <section class="ir-kartu" aria-labelledby="mtSumJ">
       <div class="ir-kartu-hd"><h2 id="mtSumJ">Sumber data</h2></div>
       <ul class="ir-sumber">
@@ -333,7 +352,8 @@
 <script src="/bnpb/inarisk_hitung.js?v=9"></script>
 <script src="/bnpb/inarisk.js?v=10"></script>
 <script src="/bnpb/inarisk_simulasi.js?v=9"></script>
-<script src="/bnpb/inarisk_detail.js?v=9"></script>
+<script src="/bnpb/inarisk_detail.js?v=10"></script>
+<script src="/bnpb/inarisk_spab.js?v=1"></script>
 <script src="/bnpb/inarisk_ikd.js?v=9"></script>
 <script src="/bnpb/inarisk_gis.js?v=9"></script>
 <script src="/bnpb/inarisk_unduh.js?v=9"></script>

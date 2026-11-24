@@ -432,6 +432,10 @@
   /* ---------- tabel wilayah bertingkat ---------- */
   /* histori harian satu kab dalam pop-up (dialog bawaan peramban: Esc dan klik latar menutup) */
   let dialog;
+  /* penduduk dan sarana dalam 1, 5, 10 km dari PERKIRAAN pusat desa (x.pusat dari dalops_banjir.beri_pusat, data/kajian-bnpb/inarisk K6 Q6):
+     hanya kejadian dengan tepat satu desa yang cocok; tanpa titik tidak tampil */
+  const sekitarDesa = x => x.pusat && x.pusat.dasar === "pusat_desa" && globalThis.DampakRadius
+    ? [h("h3", {class: "dl-sub", teks: "Penduduk dan sarana sekitar perkiraan pusat desa"}), DampakRadius.tabel(x.pusat.lat, x.pusat.lon, [1, 5, 10], {judul: false, kaki: false})] : [];
   function bukaHistori(x, sub) {
     const rw = (x.riwayat || []).slice().reverse(), denganKondisi = !x.provinsi && !x.tingkatKec;
     const maksKK = Math.max(1, ...rw.map(r => r.kk || 0));
@@ -456,7 +460,7 @@
         h("div", null, h("h2", {id: "dl-dialog-judul", teks: "Histori harian " + x.nama}),
           sub ? h("p", {class: "dl-sub", teks: sub}) : h("div", {class: "dl-sub dl-dialog-info"}, label(namaProv(x.prov_kode, x.prov), "pin"),
             label(J.kata[0].toUpperCase() + J.kata.slice(1) + " sejak " + H.tglPendek(x.mulai), J.ik), label("Kabar terakhir " + H.tglPendek(x.terakhir), "kalender"))), tutup),
-      h("div", {class: "dl-gulir"}, histori));
+      h("div", {class: "dl-gulir"}, histori, ...sekitarDesa(x)));
     /* lebar batang lewat CSSOM (bukan atribut style), aman untuk CSP */
     dialog.querySelectorAll(".dl-hs-isi").forEach(i => { i.style.width = i.dataset.w + "%"; });
     dialog.querySelectorAll("table.dl-hs").forEach(pasangUrut);

@@ -114,3 +114,9 @@ Sumber: paparan "Grand Design Kemitraan BNPB dan Perguruan Tinggi 2027–2029"
     kabupaten" (vonis gerbang model berlaku untuk seluruh negeri). Vonis "gagal" hanya bila SEMUA
     sub-uji bahaya itu gagal; longsor hanya sub-uji `longsor` (bukan `banjir_longsor`). Menang atas
     kalimat "model yang gagal uji" di butir 2 bila dibaca sebagai sumber masalah otomatis.
+
+26. **Prioritas IKD terlemah jadi bahan belanja masalah (24 Nov 2026, KEPUTUSAN-INARISK K6 butir 3).**
+    Menggantikan T-D (IKD diisi manual) untuk bahan masalah: data IKD InaRISK 2019-2026 per kab sudah ada di
+    `public/data/inarisk/ikd.json`. Prioritas bernilai terendah per kab (1-2, tahun analisa terbaru) menjadi butir masalah
+    berlabel "IKD InaRISK <tahun>" dan ikut pencocokan pakar BM25. Butir ini terpisah dari masalah otomatis §3.3 (tanpa
+    skor S_auto, tanpa kelas P1-P3), disimpan di `public/data/kemitraan/masalah_ikd.json`. Kab tanpa analisa tak punya butir.

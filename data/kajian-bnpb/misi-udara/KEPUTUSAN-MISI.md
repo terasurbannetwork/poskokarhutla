@@ -22,6 +22,7 @@ peringatan tsunami menutup pesisir.
 | K4 | 15 Nov 2026 | Aturan terbang berbeda per bencana. Contoh pemilik: gunung api tidak boleh didekati. | "Tapi untuk setiap bencana beda, misal kalo misalnya gunung api kan ga boleh dekat" |
 | K5 | 15 Nov 2026 | Titik tujuan datang dari koordinasi lapangan dan dikirim sebagai tautan Google Maps; sistem harus bisa membacanya. | "sudah koord dgn pak walikota yg akan di kunjungi Desa Jabi2 kecamatan Sultan Doulat dan landing Zone di Lapangan SMP 2 Sultan Daulat" disertai dua tautan `maps.app.goo.gl` |
 | K6 | 15 Nov 2026 | Paket dokumen disusun dulu, baru kode (AGENTS 3.7). | "Ya, susun paketnya" |
+| K7 | 24 Nov 2026 | Lapisan bahaya InaRISK dipakai modul Misi Udara lewat tiket modulnya sendiri (diteruskan dari K6 butir 6 paket `inarisk/`). Hasil penyelidikan sumber: lihat D10 dan MU-15. | "gas lanjut semua yang tadi berhenti" (jawaban atas daftar pengembangan 23 Nov, butir 6) |
 
 ## Prinsip yang mengikat semua tiket
 
@@ -45,6 +46,7 @@ peringatan tsunami menutup pesisir.
 | D7 | Keluaran flight plan tidak ditulis ke `public/`. Keluaran yang memuat kunjungan lapangan tidak di-commit ke repo (repo ini publik). | KEAMANAN-PRIVASI bagian 2; lihat Q9. |
 | D8 | Titik diterima dalam empat bentuk: koordinat desimal, DMS, tautan Google Maps (panjang atau pendek), dan plus code. Nama tempat saja tidak diterima sebagai titik. | K5; nama tempat ambigu. |
 | D9 | Fungsi `rencana` dan `susun_tetap` di `scripts/operasi/renlap_banjir.py` dipindah ke mesin umum di tiket MU-03, lalu dua fungsi itu dihapus dari sana di tiket yang sama; berkasnya sendiri dihapus PB-15. Sampai itu selesai, fungsi itu tetap dipakai untuk kebutuhan mendesak. | Menghindari dua mesin; PB-15. |
+| D10 | Lapisan bahaya InaRISK (`gis.bnpb.go.id/server/rest/services/inarisk`) belum menjadi sumber zona. Probe 24 Nov 2026: semua lapisan bahaya letusan gunung api dan tsunami yang terbuka berupa raster (`layer_bahaya_letusan_gunungapi` dan `_30`, `layer_bahaya_tsunami` dan `_30`: MapServer berisi satu "Raster Layer"; ImageServer `INDEKS_BAHAYA_*` piksel F32; `FeatureServer` tidak ada; `query` ditolak). Layanan vektor KRB yang bernama jelas (`layer_risiko_*`, `layer_kerentanan_*`, `Gunung_Semeru`, `gunung_agung`) menjawab "Token Required". Satu-satunya lapisan vektor tsunami (`RENEVAK_tsunami`) hanya jalur evakuasi ITDC Bali. Raster indeks tidak divektorkan dengan ambang karangan sendiri (prinsip 2). Tiket MU-15 memuat pilihannya. | Zona harus bersumber dan berbentuk pasti; raster indeks tanpa ambang resmi bukan zona larangan. |
 
 ## Pertanyaan terbuka untuk pemilik
 
@@ -67,3 +69,4 @@ peringatan tsunami menutup pesisir.
 | Q15 | Misi malam: dibuat atau ditolak? | [SEMENTARA] tidak ditolak; jam berangkat di luar 06.00 sampai 18.00 waktu setempat dicetak sebagai perhatian | tidak menahan |
 | Q16 | Tiga jarak pemeriksaan tanpa sumber resmi: gunung Level II ke atas tanpa radius diperiksa dalam 30 km dari rute, gunung Level I dicatat dalam 15 km, siklon aktif dicatat dalam 300 km. Angkanya pas? | [SEMENTARA] 30 km, 15 km, 300 km, berlabel sementara | MU-05, MU-07 |
 | Q17 | Angka kerja mesin yang tidak punya sumber resmi: batas basi data (gunung api 48 jam, abu 12 jam, tsunami 6 jam, siklon 12 jam, banjir dan longsor 24 jam, METAR 3 jam), kelonggaran belokan 5 persen di luar jari-jari, saran isi ulang dalam 30 km dari rute, titik acuan plus code pendek dalam 50 km, 2 menit per titik untuk dropping lempar rendah, dan 2 menit orbit per titik pantau (mengikuti `ORBIT_MNT` renlap karhutla). Angkanya pas? | [SEMENTARA] seperti tertulis, semuanya di `batas_terbang.json` berkeyakinan S | tidak menahan |
+| Q18 | Raster InaRISK (indeks bahaya gunung api dan tsunami, kelas 0 sampai 1) boleh dipakai sebagai catatan **perhatian** (tidak pernah larangan, tidak pernah membelokkan rute) dengan kelas dari legenda resmi layanan? Atau menunggu poligon KRB PVMBG/BNPB yang bisa diunduh? Juga: adakah token resmi untuk layanan bertanda "Token Required"? | [SEMENTARA] tidak dipakai; zona tetap hanya dari `gunungapi_status.json`, BMKG, dan zona manual | MU-15 |

@@ -115,6 +115,7 @@ Tidak menghentikan G1. Bawaan sementara tertulis; hasil yang bergantung padanya 
 | U19 | Pasal masa berlaku renkon: Pasal 21 ayat (1) atau Lampiran 1.8? (UA-5) | Pasal 21 ayat (1), sesuai `jam_aturan.json` | F5 |
 | U20 | Dasar iklim F6: delta terhadap historical model atau CHIRPS? (UA-6) | delta historical model, CHIRPS sebagai pembanding bias | F6 |
 | U21 | Hubungan dengan Rantai per KIB dan `meja_dampak`? | Disampaikan sesi lain 10 Nov 2026 sebagai jawaban pemilik "Ya, gabung": Rantai tahap per kejadian jadi tampilan tahap di halaman Buku Besar, KIB logbook kunci tautan ke `KJ-`, Kalender Kewajiban dan Rapor SPM tetap di paket Rantai; pertanyaan Q1-Q14 Rantai masih terbuka. Tunggu konfirmasi pemilik di sesi ini; tiket SK-112 | F1 |
+| U22 | Lapisan InaRISK (`layer_bahaya_*`, `layer_risiko_*`) tampil sebagai gambar peta di F2? (SK-114; KEPUTUSAN-INARISK K6 butir 6) | ya, lapisan opsional per bahaya lewat proksi daftar izin, berlabel InaRISK BNPB; belum dibangun, menunggu pemilik | F2 |
 | U7 | Draf R3P perlu pengesahan siapa di sistem? | peran pimpinan sebagai tanda setuju, tidak menggantikan dokumen resmi | F4 |
 
 ## I. Jawaban (11 November 2026)

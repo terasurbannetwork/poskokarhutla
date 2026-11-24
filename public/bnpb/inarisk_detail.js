@@ -88,8 +88,9 @@
       kotak("Jiwa terpapar per jenis bencana", `<div id="dtJiwa"><p class="ir-p">Memuat…</p></div>`, "ir-k-jiwa") +
       kotak("Tingkat kapasitas daerah", `<div id="dtJarum"><p class="ir-p">Memuat…</p></div>`) +
       kotak(`Kategori prioritas <small id="dtIkdTh"></small>`, `<div id="dtRadar"></div>`) +
-      `</div>` + kotak("Rekomendasi kebijakan prioritas", `<div id="dtRek"><p class="ir-p">Memuat…</p></div>`, "ir-k-rek") +
-      `<footer class="ir-dlg-ft"><p><b>Catatan</b>Data ditampilkan pada skala kabupaten/kota. Hasil analisis bisa berbeda pada tingkat wilayah lain.</p><p><b>Sumber</b>InaRISK BNPB: IRBI, jiwa terpapar, IKD.</p>` +
+      `</div>` + kotak("Sekolah aman bencana (SPAB)", `<div id="dtSpab"><p class="ir-p">Memuat…</p></div>`, "ir-k-spab") +
+      kotak("Rekomendasi kebijakan prioritas", `<div id="dtRek"><p class="ir-p">Memuat…</p></div>`, "ir-k-rek") +
+      `<footer class="ir-dlg-ft"><p><b>Catatan</b>Data ditampilkan pada skala kabupaten/kota. Hasil analisis bisa berbeda pada tingkat wilayah lain.</p><p><b>Sumber</b>InaRISK BNPB: IRBI, jiwa terpapar, IKD, SPAB.</p>` +
       `<div class="ir-dlg-aksi"><button type="button" class="ir-tombol2" id="dtCetak">Unduh ringkasan PDF</button><button type="button" class="bn-tombol" data-tutup>Tutup</button></div></footer>`;
     lebarkan(isi);
     if (!dlg.open) dlg.showModal();
@@ -102,6 +103,11 @@
       $("#dtJiwa").innerHTML = baris.length ? jiwaSvg(baris) : `<p class="ir-p">Data jiwa terpapar wilayah ini belum tersedia.</p>`;
       lebarkan($("#dtJiwa"));
     }).catch(() => { $("#dtPend").textContent = "–"; $("#dtJiwa").innerHTML = `<p class="ir-p">Data jiwa terpapar belum ditarik.</p>`; });
+    Ir.muat("spab.json").then(sp => {
+      const v = sp.kab[pcode];
+      $("#dtSpab").innerHTML = v ? `<p class="ir-k-n">${H.persen1(v[4] * 100)}</p><p class="ir-k-k">capaian SPAB rerata ${H.angka0(v[0])} sekolah melapor; pilar 1 ${H.persen1(v[1] * 100)}, pilar 2 ${H.persen1(v[2] * 100)}, pilar 3 ${H.persen1(v[3] * 100)}; optimal ${H.angka0(v[5])}, belum optimal ${H.angka0(v[6])}, tidak ${H.angka0(v[7])}</p>`
+        : `<p class="ir-p">Belum ada data SPAB untuk wilayah ini.</p>`;
+    }).catch(() => { $("#dtSpab").innerHTML = `<p class="ir-p">Data SPAB belum ditarik.</p>`; });
     Ir.muat("ikd.json").then(ikd => {
       const a = analisaTerbaru(ikd, pcode);
       $("#dtIkdTh").textContent = a ? `IKD ${a.tahun}` : "";

@@ -16,6 +16,9 @@ dan `ilmu.mjs baca <agent>`. Subagent tidak commit dan tidak push.
 | MU-07 | F-5, F-9 | zona tsunami, cuaca, banjir, longsor; kelayakan terbang Python dengan kasus uji bersama rumus JS | `pipa-umum` + `layar-peta` (kasus uji bersama, tanpa ubah rumus JS) → `validasi-model` | MU-05 | Q7, Q8, Q16 | `node --test tests/agen/gerbang-misi-udara.test.mjs` membandingkan hasil Python dan JS pada kasus yang sama |
 | MU-08 | F-11 | pola kotak melebar dan lintasan sejajar | `pipa-umum` → `validasi-model` | MU-05 | Q13 | uji: panjang lintasan pola cocok hitungan tangan |
 | MU-09 | gerbang | `tests/agen/gerbang-misi-udara.test.mjs`, uji teks tanpa kata "aman" pada status rute, uji tanpa keluaran di `public/` | `penulis-gerbang` → verifier bersih | MU-05 | – | `npm run uji:agen` hijau |
+| MU-15 | F-5, K7, D10 | hasil probe InaRISK dicatat di sini; **belum ada kode**. Bila Q18 dijawab "ya": pencari kelas di `scripts/umum/zona_terbang.py` lewat ImageServer `identify` per titik darat dan simpul rute, hasil hanya tingkat `perhatian`, tiap baris mencatat URL layanan dan tanggal ambil, tembolok di luar `public/` | `pipa-umum` → `validasi-model`, `security-reviewer` | MU-05 | Q18 | probe ulang endpoint (vektor atau raster, jumlah fitur); bila kode dibuat: uji fixture di dalam berkas uji, baris tanpa sumber dan tanggal ditolak |
+
+Temuan probe 24 Nov 2026 untuk MU-15 (curl, `gis.bnpb.go.id/server/rest/services/inarisk`): vektor poligon KRB gunung api dan tsunami: **tidak ada** (0 fitur; semuanya raster atau butuh token). Rinciannya di KEPUTUSAN-MISI D10.
 
 ## Tahap 2: bot WA dan penyimpanan
 
