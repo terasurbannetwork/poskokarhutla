@@ -108,3 +108,19 @@ Berkas `data/banjir/subsiden/LLIVS_IGS14_Jakarta.csv.gz` (md5 cocok dengan figsh
 | Kotak sekitar Muara Baru (bujur 106,79-106,82, lintang -6,115 sampai -6,09) | 147 titik, median -1,88, paling turun -5,83 cm/tahun |
 
 Vonis sementara: data ini TIDAK lolos gerbang pola `subsiden.py` (Jakarta Utara harus lebih turun minimal 1 cm/tahun dari Jakarta Selatan); dengan potongan lintang kasar selisihnya nol. Angkanya juga jauh di bawah literatur dan pengukuran Dinas SDA (Muara Baru sekitar 10 cm/tahun, bagian 6.3). Dugaan yang belum diperiksa: kerangka IGS14 dan titik acuan membuat median kota bergeser ke nol atau positif, periode pengamatannya berbeda, atau berkas ini hanya sebagian kota. Langkah berikut sebelum dipakai: baca bagian metode makalah Shirzaei 2024 (periode, satelit, acuan), lalu hitung ulang per kecamatan dengan batas `public/geo/kecamatan/31.json` (berkas beku J4, hanya dibaca). Sebelum itu tidak ada angka dari data ini yang tayang.
+
+### 6.6 Hitung ulang per kecamatan data Shirzaei 2024 (24 Nov 2026)
+
+Titik unik dipetakan ke kisi 0,001 derajat (sekitar 110 m; median titik per sel, cm diubah ke mm, simpangan baku jadi `vstd`), lalu dijalankan lewat `agregasi()` dan `gerbang_pola()` di `scripts/banjir/subsiden.py` dengan batas `public/geo/kecamatan/31.json` (hanya dibaca). 42 dari 44 kecamatan punya cukup titik.
+
+| Kota administrasi | Kecamatan | Median laju kecamatan (cm/tahun) |
+| --- | --- | --- |
+| Jakarta Utara | 6 | +0,55 |
+| Jakarta Pusat | 8 | +0,75 |
+| Jakarta Timur | 10 | +0,35 |
+| Jakarta Barat | 8 | +0,2 |
+| Jakarta Selatan | 10 | +0,1 |
+
+Paling turun: Kembangan -1,2 dan Penjaringan -1,1 (p90 -2,5). Kelapa Gading +1,0 dan Sawah Besar +1,2, padahal Kelapa Gading tercatat turun cepat di literatur (bagian 6.3).
+
+Vonis: TIDAK LOLOS gerbang pola (Jakarta Utara +0,55 lawan Selatan +0,1). Pergeseran titik nol saja tidak menjelaskannya, karena urutan antarwilayah juga terbalik dari semua sumber lain. Halaman dataset tidak menautkan makalah dan pencarian belum menemukan makalah induknya, jadi periode dan titik acuannya tetap belum diketahui. Data ini tidak dipakai untuk layar maupun proyeksi; hanya disimpan sebagai pembanding. Jalur utama tetap LiCSBAS sendiri (Q1) dengan validasi Dinas SDA (Q11).
