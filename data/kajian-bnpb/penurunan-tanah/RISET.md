@@ -124,3 +124,31 @@ Titik unik dipetakan ke kisi 0,001 derajat (sekitar 110 m; median titik per sel,
 Paling turun: Kembangan -1,2 dan Penjaringan -1,1 (p90 -2,5). Kelapa Gading +1,0 dan Sawah Besar +1,2, padahal Kelapa Gading tercatat turun cepat di literatur (bagian 6.3).
 
 Vonis: TIDAK LOLOS gerbang pola (Jakarta Utara +0,55 lawan Selatan +0,1). Pergeseran titik nol saja tidak menjelaskannya, karena urutan antarwilayah juga terbalik dari semua sumber lain. Halaman dataset tidak menautkan makalah dan pencarian belum menemukan makalah induknya, jadi periode dan titik acuannya tetap belum diketahui. Data ini tidak dipakai untuk layar maupun proyeksi; hanya disimpan sebagai pembanding. Jalur utama tetap LiCSBAS sendiri (Q1) dengan validasi Dinas SDA (Q11).
+
+### 6.7 Putaran LiCSBAS pertama Jakarta (24 Nov 2026, Q1 diizinkan pemilik di percakapan)
+
+Pengunduh `~/licsbas/ambil.py` (pengganti LiCSBAS01) memotong interferogram CEDA ke jendela bujur 106,55 sampai 107,20, lintang -6,65 sampai -5,95. Server CEDA memberi sekitar 16 KB/detik per sambungan; dengan 20 sambungan, 694 pasangan selesai dalam sekitar 2 jam. Pasangan sesudah pertengahan 2024 banyak yang 404 di CEDA.
+
+| Frame | Pasangan diminta | Lengkap | Citra dipakai | Rentang |
+| --- | --- | --- | --- | --- |
+| 047D_09652_111009 (turun, Dt maks 48 hari) | 334 | 244 | 75 | 10 Jan 2020 sampai 31 Mar 2023 |
+| 098A_09673_121312 (naik, Dt maks 24 hari) | 360 | 267 | 72 | 2 Jan 2020 sampai 21 Jun 2024 |
+
+LiCSBAS 1.6.3 perlu dua tambalan kecocokan matplotlib 3.11 di luar repo: `grid(b=` menjadi `grid(visible=` di klon, dan shim `~/licsbas/shim/sitecustomize.py` untuk `register_cmap`. Langkah: 02 (multilook 3, sekitar 330 m), 11, 12, 13, 14, 15 (ambang bawaan, 24,7% piksel dimasker), 16 dengan deramp derajat 1, tanpa GACOS.
+
+Laju LOS median (mm/tahun, negatif menjauhi satelit):
+
+| Lokasi | Turun `vel` | Turun `vel.filt.mskd` | Naik `vel` | Naik `vel.filt.mskd` |
+| --- | --- | --- | --- | --- |
+| Muara Baru | -13,2 | -4,4 | -20,7 | -30,0 |
+| Pluit | -17,2 | -7,5 | -23,3 | -32,5 |
+| Kelapa Gading | -11,7 | +1,2 | +1,7 | -2,2 |
+| Cengkareng | -3,9 | +3,3 | -19,2 | -23,7 |
+| Jakarta Selatan | -8,4 | -1,0 | -4,2 | +15,1 |
+| Bogor (acuan) | -3,8 | -0,4 | -76,9 | -3,9 |
+
+`subsiden.py hitung` dengan acuan lintang -6,55: gerbang pola GAGAL (Jakarta Utara 0,0 lawan Jakarta Selatan +0,95 cm/tahun), tidak ada berkas yang ditulis.
+
+Bacaan: arah pesisir barat laut (Muara Baru, Pluit) sudah terlihat turun di kedua frame, tapi kedua frame tidak sepakat di Kelapa Gading, Cengkareng, Jakarta Selatan, dan Bogor. Laju mentah frame naik di Bogor -77 mm/tahun tidak masuk akal secara fisik dan menandakan galat atmosfer atau unwrapping besar; filter langkah 16 dengan deramp mengubah laju sampai 30 mm/tahun dan membalik tanda di beberapa tempat. Muara Baru hanya 5 sampai 7 piksel sesudah masker karena koherensinya rendah (0,18 di frame turun). Putaran ini belum layak dipakai.
+
+Perbaikan yang perlu dicoba berurutan, tanpa mengubah gerbang: (1) koreksi atmosfer GACOS (unduh per tanggal citra) dan langkah 16 tanpa deramp; (2) jendela lebih kecil (Jakarta saja, acuan dataran stabil di dalam frame) supaya ramp tidak menelan sinyal; (3) ambang masker koherensi lebih ketat dan pemeriksaan `12bad_ifg.txt`; (4) bila CEDA tetap kosong sesudah 2024, ASF HyP3 (Q2) untuk 2024 sampai 2026.
