@@ -32,18 +32,19 @@ LABEL = "hipotesis: proyeksi bila laju bertahan, belum divalidasi"
 def proyeksi(k, e_ref=None):
     """k = baris kecamatan subsiden.json (cm/thn, negatif turun) -> dict laju + t10/t20 atau None bila tidak boleh.
     Konvensi: laju negatif = turun. p90 = kuantil 0,10 (paling dalam, paling negatif); p10 = kuantil 0,90 (paling dangkal/naik).
-    e_ref None = galat acuan belum dihitung: s hanya e_st, tayang_ditahan menyala."""
+    e_ref None = galat acuan belum dihitung: tayang_ditahan menyala. galat_jarak (K4) ikut s; tanpa itu tayang_ditahan juga menyala."""
     lama = tahun(k.get("tgl_awal"), k.get("tgl_akhir"))
     if k["cakupan"] < CAKUPAN_MIN or lama is None or lama < DERET_MIN or "p10" not in k or k.get("galat") is None:
         return None
-    s = math.hypot(k["galat"], e_ref or 0.0)
+    ej = k.get("galat_jarak")
+    s = math.sqrt(k["galat"] ** 2 + (e_ref or 0.0) ** 2 + (ej or 0.0) ** 2)
     r, rd, rl = k["med"], k["p90"], k["p10"]
     lj = dict(rendah=max(0.0, -rl - s), pusat=max(0.0, -r), tinggi=max(0.0, -rd + s))  # cm turun per tahun; kecamatan naik: pusat 0
     sempit = k.get("galat_sumber") != "vstd"
     h = dict(kec=k["kec"], kab=k["kab"], laju_cm_thn={a: round(v, 2) for a, v in lj.items()},
-             galat_cm_thn=dict(statistik=k["galat"], acuan=e_ref), galat_sumber=k.get("galat_sumber", "antarpiksel_saja"),
-             rentang_sempit=sempit, acuan_belum_dihitung=e_ref is None, tayang_ditahan=e_ref is None,
-             cakupan=k["cakupan"], hipotesis=True)
+             galat_cm_thn=dict(statistik=k["galat"], acuan=e_ref, jarak=ej), galat_sumber=k.get("galat_sumber", "antarpiksel_saja"),
+             rentang_sempit=sempit, acuan_belum_dihitung=e_ref is None, tayang_ditahan=e_ref is None or ej is None,
+             tak_beda_nol=bool(k.get("tak_beda_nol")), cakupan=k["cakupan"], hipotesis=True)
     for T in HORIZON:
         h[f"t{T}_cm"] = {a: round(v * T) for a, v in lj.items()}
     return h
@@ -63,8 +64,12 @@ def bangun(sub, hari_ini=None):
 
 
 def uji():
-    k = dict(kec="A", kab="X", n=50, cakupan=80, med=-2.0, p90=-3.0, p10=-1.0, galat=0.2, tgl_awal="2019-01-01", tgl_akhir="2025-01-01")
+    k = dict(kec="A", kab="X", n=50, cakupan=80, med=-2.0, p90=-3.0, p10=-1.0, galat=0.2, galat_jarak=0.0, tgl_awal="2019-01-01", tgl_akhir="2025-01-01")
     h = proyeksi(k, 0.0)
+    # galat jarak (K4): ikut s (rentang melebar); tanpa galat_jarak -> tayang_ditahan
+    hj = proyeksi({**k, "galat_jarak": 1.0}, 0.0)
+    assert abs(hj["laju_cm_thn"]["tinggi"] - (3.0 + (0.2 ** 2 + 1.0) ** .5)) < 0.01 and not hj["tayang_ditahan"], hj
+    assert proyeksi({kk: v for kk, v in k.items() if kk != "galat_jarak"}, 0.0)["tayang_ditahan"]
     assert not h["tayang_ditahan"] and not h["acuan_belum_dihitung"] and h["rentang_sempit"], h  # antarpiksel_saja
     assert not proyeksi({**k, "galat_sumber": "vstd"}, 0.0)["rentang_sempit"]
     assert proyeksi(k)["tayang_ditahan"] and proyeksi(k)["acuan_belum_dihitung"]  # e_ref None

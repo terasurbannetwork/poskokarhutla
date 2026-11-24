@@ -15,6 +15,7 @@ Benchmark: Copernicus European Ground Motion Service (EGMS, Sentinel-1 InSAR, ke
 | K1 | 15 Nov 2026, pemilik: "Ini yang dua atas oke" (menyetujui butir 2 sampai 4 daftar kedua, termasuk penurunan tanah dari radar satelit InSAR untuk proyeksi genangan rob 10 sampai 20 tahun). |
 | K2 | Paket dokumen dulu, baru kode (AGENTS.md 3.7). |
 | K3 | 24 Nov 2026, pemilik memilih "Bootstrap blok (b)" untuk n_efektif galat (ALGORITMA 4): galat median kecamatan dan galat acuan dihitung dengan bootstrap blok spasial, bukan rumus piksel bebas. |
+| K4 | 24 Nov 2026, pemilik: "Ya, tambah" untuk suku galat jarak dari variogram (RISET 6.11): s per kecamatan ditambah e_jarak = akar(2γ(h)), h = jarak pusat kecamatan ke pusat area acuan. |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 

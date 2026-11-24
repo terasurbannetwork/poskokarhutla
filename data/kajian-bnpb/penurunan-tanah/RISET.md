@@ -240,3 +240,23 @@ Bacaan:
 3. Catatan batas: area acuan (Jagakarsa sampai Depok utara) mungkin tidak benar-benar diam, jadi variogram acuan bisa memuat sinyal asli dan menjadi batas atas derau. Medan selisih lebih bersih tetapi hanya mengukur derau yang berubah antarseparuh, bukan kemiringan tetap yang sama di kedua separuh, jadi medan itu batas bawah. Derau sesungguhnya ada di antara keduanya. Frame naik jauh lebih berderau daripada frame turun di kedua ukuran.
 
 Akibat: D9 (blok 0,01 derajat) tidak bisa diganti dengan angka dari variogram, karena variogram tidak punya plafon di dalam jendela. Yang dibutuhkan bukan blok lebih besar, melainkan suku galat jarak: galat beda laju antara kecamatan dan area acuan = akar(2γ(h)) pada jarak h, ditambahkan ke s. Itu perubahan rumus yang perlu keputusan pemilik. Sebelum itu angka Jakarta tetap tidak tayang.
+
+### 6.12 Galat jarak dari variogram (K4), Jakarta (24 Nov 2026)
+
+`subsiden.py` versi 4: variogram empiris laju vertikal piksel area acuan (sesudah dikurangi median, selang 1 km sampai 40 km, 1.500 piksel acak, benih tetap) dihitung di dalam `hitung` dan ditulis di berkas (`variogram_acuan`). Tiap kecamatan mendapat `galat_jarak` = akar(2γ(h)), h = jarak pusat piksel kecamatan ke pusat piksel acuan, dan `tak_beda_nol` bila |laju| < 2 s dengan s = akar(galat² + galat acuan² + galat jarak²). `proyeksi_tanah.py` memakai s tiga suku, dan menahan tayang bila `galat_jarak` tidak ada. Swa-uji: medan tetap memberi γ 0, medan v = x memberi γ(h) mendekati h²/4, interpolasi dan ekstrapolasi γ benar.
+
+Variogram vertikal acuan (cm/tahun)²: 0,09 di 0,5 km; 0,37 di 4,5 km; 0,59 di 9,5 km; 0,74 di 14,5 km; 0,95 di 19,5 km; 1,16 di 24,5 km; 1,06 di 29,5 km. Tidak ada kecamatan di luar selang terjauh (tanpa ekstrapolasi).
+
+Hasil putaran 6.8 dengan galat baru (gerbang pola tetap lolos, -1,3 lawan +0,1; galat acuan 0,58):
+
+| Kecamatan | Laju median | Galat jarak | s | Status |
+| --- | --- | --- | --- | --- |
+| Koja | -1,9 | 1,45 | 1,58 | belum beda dari nol |
+| Penjaringan | -1,7 | 1,47 | 1,61 | belum beda dari nol |
+| Tanjung Priok | -1,3 | 1,53 | 1,65 | belum beda dari nol |
+| Cilincing | -1,3 | 1,44 | 1,56 | belum beda dari nol |
+| Pademangan | -0,7 | 1,53 | 1,64 | belum beda dari nol |
+
+**42 dari 42 kecamatan belum beda dari nol** pada 2 s. Median galat jarak Jakarta Utara 1,5 dan Jakarta Selatan 1,2 cm/tahun. Galat jarak sekarang suku terbesar s.
+
+Batas yang tetap berlaku: variogram acuan mungkin memuat sinyal asli (6.11), jadi s ini konservatif, dan derau sebenarnya bisa lebih kecil. Yang paling mungkin mengecilkan galat adalah deret yang lebih panjang: derau atmosfer yang tak berkorelasi antartanggal mengecil kira-kira sebanding 1/T^1,5 terhadap lama deret T, dan deret sekarang hanya sekitar 3 tahun (frame naik 2,7 tahun). LiCSAR punya interferogram kedua frame sejak sekitar 2016 (belum diunduh, putaran 6.7 dibatasi sejak 2020). Kesimpulan saat ini: data putaran 2 cukup untuk pola (pesisir barat laut paling dalam), tetapi belum cukup untuk angka per kecamatan yang bermakna. Tidak tayang.
