@@ -1,0 +1,5 @@
+status,kec,ambang
+Awas,0,Hujan 3 hari 120 mm atau lebih
+Siaga,0,Hujan 3 hari 80 mm atau lebih
+Waspada,6,Hujan 3 hari 40 mm atau lebih
+Normal,4,Di bawah ambang Waspada

@@ -1,0 +1,487 @@
+{
+  "_catatan": "Paparan Kabupaten Solok, fokus banjir. Dibangun dari spek/bangun_spek_solok.py.",
+  "pesan_kunci": "Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan masih berstatus Transisi Darurat sampai April 2027.",
+  "judul_dokumen": "Paparan Kebencanaan Kabupaten Solok",
+  "subjek_dokumen": "Fokus Banjir",
+  "kajian": "banjir-solok",
+  "format": "kajian",
+  "tanpa_alur": "pola Paparan Sumatera Barat tanpa halaman ringkasan (pemilik 9 Nov 2026)",
+  "judul_sampul_maks_baris": 2,
+  "bagian": [
+    {
+      "judul": "Riwayat Banjir",
+      "label": "Riwayat banjir"
+    },
+    {
+      "judul": "Situasi Terkini",
+      "label": "Situasi terkini"
+    },
+    {
+      "judul": "Bencana Lain",
+      "label": "Bencana lain"
+    }
+  ],
+  "tanggal": "2026-11-23",
+  "cut_off": "23 Nov 2026",
+  "slide": [
+    {
+      "jenis": "sampul",
+      "tanpa_tanggal": "pemilik 22 Nov 2026: \"pill jakarta 22nov hapus\"",
+      "layout": "putih",
+      "judul_penuh": true,
+      "skala_subjudul": 0.9,
+      "foto": "foto/bencana-rob.jpg",
+      "kota": "Jakarta",
+      "tanpa_kepada": true,
+      "tanpa_subjudul": true,
+      "judul_turun": 28,
+      "subjudul": "Fokus Banjir",
+      "penyaji": {
+        "nama": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+        "jabatan": "Kepala Badan Nasional Penanggulangan Bencana"
+      }
+    },
+    {
+      "jenis": "daftar-isi"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 1
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "banjir",
+      "rasio": 0.58,
+      "cut_off": false,
+      "pesan": "Riwayat banjir dan longsor",
+      "sumber": "DIBI BNPB, 23 Nov 2026",
+      "judul": "Banjir dan Longsor: {{angka:sl.h.n|satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m|satuan}}",
+      "grafik": {
+        "judul_panel": "Kejadian banjir dan longsor per tahun",
+        "ikon": "banjir",
+        "judul": "**Kejadian**, per tahun, 2008 sampai 2026",
+        "keluarga": "netral",
+        "sorot": "tertinggi",
+        "ubah": false,
+        "persen_batang": false,
+        "data": {
+          "csv": "data/sumut-aceh/sl/kejadian_tahun.csv",
+          "kolom": [
+            {
+              "nama": "tahun",
+              "kepala": "Tahun"
+            },
+            {
+              "nama": "kejadian",
+              "kepala": "Kejadian",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, 23 Nov 2026"
+        }
+      },
+      "panel": {
+        "judul": "Dampak per jenis sejak 2008",
+        "ikon": "data",
+        "peringkat": false,
+        "total": true,
+        "baris_maks_pt": 90,
+        "data": {
+          "csv": "data/sumut-aceh/sl/jenis_basah.csv",
+          "kolom": [
+            {
+              "nama": "jenis",
+              "kepala": "Jenis"
+            },
+            {
+              "nama": "kejadian",
+              "kepala": "Kejadian",
+              "fmt": "0"
+            },
+            {
+              "nama": "korban",
+              "kepala": "Meninggal dan hilang",
+              "fmt": "0"
+            },
+            {
+              "nama": "rumah",
+              "kepala": "Rumah rusak",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, 23 Nov 2026"
+        }
+      }
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "banjir",
+      "rasio": 0.58,
+      "cut_off": false,
+      "pesan": "Dua banjir terakhir",
+      "sumber": "DIBI BNPB, 23 Nov 2026; Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
+      "judul": "Banjir Bandang 22 September 2026: {{angka:sl.26.m|satuan}}, {{angka:sl.26.u|satuan}}, dan {{angka:sl.26.r|satuan}} di Kabupaten Solok",
+      "tabel": {
+        "judul_panel": "Dampak dua banjir terakhir",
+        "ikon": "banjir",
+        "baris_maks_pt": 30,
+        "total": false,
+        "peringkat": false,
+        "data": {
+          "csv": "data/sumut-aceh/sl/dampak.csv",
+          "kolom": [
+            {
+              "nama": "dampak",
+              "kepala": "Dampak",
+              "bobot": 1.6
+            },
+            {
+              "nama": "b25",
+              "kepala": "Banjir 27 Nov 2025",
+              "fmt": "0"
+            },
+            {
+              "nama": "b26",
+              "kepala": "Banjir bandang 22 Sep 2026",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, 23 Nov 2026"
+        }
+      },
+      "panel": {
+        "judul": "Kerusakan lain banjir bandang 2026",
+        "ikon": "rumah",
+        "daftar_ikon": {
+          "mode": "baris",
+          "baris": [
+            {
+              "ikon": "infrastruktur",
+              "judul": "Mobil",
+              "isi": "Terdampak",
+              "angka": "{{angka:sl.26.mobil}}",
+              "satuan": "unit"
+            },
+            {
+              "ikon": "infrastruktur",
+              "judul": "Sepeda motor",
+              "isi": "Terdampak",
+              "angka": "{{angka:sl.26.motor}}",
+              "satuan": "unit"
+            },
+            {
+              "ikon": "wilayah",
+              "judul": "Ruas jalan",
+              "isi": "Rusak",
+              "angka": "{{angka:sl.26.jalan}}",
+              "satuan": "ruas"
+            },
+            {
+              "ikon": "air-baku",
+              "judul": "Jaringan air bersih",
+              "isi": "Terdampak",
+              "angka": "{{angka:sl.26.air}}",
+              "satuan": "unit"
+            },
+            {
+              "ikon": "prabencana",
+              "judul": "Sawah",
+              "isi": "Rusak berat dan ringan",
+              "angka": "{{angka:sl.26.sawah}}",
+              "satuan": "ha"
+            },
+            {
+              "ikon": "infrastruktur",
+              "judul": "Kantor",
+              "isi": "Rusak berat sampai ringan",
+              "angka": "{{angka:sl.26.kantor}}",
+              "satuan": "unit"
+            },
+            {
+              "ikon": "rumah",
+              "judul": "Rumah terancam",
+              "isi": "Tercatat terancam per 4 Nov 2026",
+              "angka": "{{angka:sl.26.ancam}}",
+              "satuan": "unit"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 2
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "matriks",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "tanggap-darurat",
+      "rasio": 0.6,
+      "cut_off": false,
+      "pesan": "Status darurat",
+      "sumber": "DIBI BNPB, 23 Nov 2026; Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026",
+      "judul": "Kabupaten Solok {{angka:sl.st.n|satuan}} Menetapkan Status Darurat Banjir sejak November 2025; Transisi Darurat Berlaku sampai April 2027",
+      "tabel": {
+        "judul_panel": "Status darurat Kabupaten Solok sejak 2025",
+        "ikon": "tanggap-darurat",
+        "baris_maks_pt": 40,
+        "total": false,
+        "peringkat": false,
+        "data": {
+          "csv": "data/sumut-aceh/sl/status.csv",
+          "kolom": [
+            {
+              "nama": "status",
+              "kepala": "Status",
+              "bobot": 1.2
+            },
+            {
+              "nama": "jenis",
+              "kepala": "Jenis bencana",
+              "bobot": 1.9
+            },
+            {
+              "nama": "mulai",
+              "kepala": "Mulai",
+              "bobot": 0.9
+            },
+            {
+              "nama": "berakhir",
+              "kepala": "Berakhir",
+              "bobot": 0.9
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, 23 Nov 2026"
+        }
+      },
+      "panel": {
+        "judul": "Penanganan terkini",
+        "ikon": "ringkasan",
+        "daftar_ikon": {
+          "mode": "baris",
+          "baris": [
+            {
+              "ikon": "tanggap-darurat",
+              "judul": "Transisi Darurat",
+              "isi": "Berlaku 13 Okt 2026 sampai 13 Apr 2027"
+            },
+            {
+              "ikon": "banjir",
+              "judul": "Pembersihan sungai",
+              "isi": "Masih berjalan per 8 Nov 2026"
+            },
+            {
+              "ikon": "data",
+              "judul": "Rencana induk pemulihan",
+              "isi": "Dibahas bersama Bappenas dan K/L, termasuk Satgas PRRP"
+            },
+            {
+              "ikon": "tanggap-darurat",
+              "judul": "Pendampingan BNPB",
+              "isi": "Tim BNPB mendampingi administrasi bantuan logistik di BPBD"
+            },
+            {
+              "ikon": "wilayah",
+              "judul": "Siaga Darurat provinsi",
+              "isi": "Sumatera Barat, 16 Nov 2026 sampai 18 Jan 2027"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "peringatan",
+      "rasio": 0.62,
+      "cut_off": false,
+      "pesan": "Prakiraan banjir",
+      "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+      "judul": "Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w|satuan}} dari {{angka:sl.p.n|satuan}} di Kabupaten Solok",
+      "utama": {
+        "judul": "Status banjir per kecamatan, empat hari ke depan",
+        "ikon": "peringatan",
+        "heatmap": {
+          "mode": "kategori",
+          "kelas": [
+            {
+              "kunci": "Normal",
+              "label": "Normal",
+              "token": "tint.netral.pita"
+            },
+            {
+              "kunci": "Waspada",
+              "label": "Waspada",
+              "token": "skala.emas.3"
+            },
+            {
+              "kunci": "Siaga",
+              "label": "Siaga",
+              "token": "oranye"
+            },
+            {
+              "kunci": "Awas",
+              "label": "Awas",
+              "token": "merah"
+            }
+          ],
+          "data": {
+            "csv": "data/sumut-aceh/sl/prakiraan.csv",
+            "kolom": [
+              {
+                "nama": "kec",
+                "kepala": "Kecamatan"
+              },
+              {
+                "nama": "h0",
+                "kepala": "24 Nov"
+              },
+              {
+                "nama": "h1",
+                "kepala": "25 Nov"
+              },
+              {
+                "nama": "h2",
+                "kepala": "26 Nov"
+              },
+              {
+                "nama": "h3",
+                "kepala": "27 Nov"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+          }
+        }
+      },
+      "panel": {
+        "judul": "Jumlah kecamatan per status",
+        "ikon": "peringatan",
+        "peringkat": false,
+        "baris_maks_pt": 90,
+        "data": {
+          "csv": "data/sumut-aceh/sl/prakiraan_jumlah.csv",
+          "kolom": [
+            {
+              "nama": "status",
+              "kepala": "Status"
+            },
+            {
+              "nama": "kec",
+              "kepala": "Kecamatan",
+              "fmt": "0"
+            },
+            {
+              "nama": "ambang",
+              "kepala": "Ambang utama"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+        }
+      }
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 3
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "karhutla",
+      "rasio": 0.58,
+      "cut_off": false,
+      "pesan": "Bencana lain",
+      "sumber": "DIBI BNPB, 23 Nov 2026; NASA FIRMS, diolah BNPB, 23 Nov 2026; MAGMA Indonesia, PVMBG, 21 Nov 2026",
+      "judul": "Bencana Lain: {{angka:sl.c.n|satuan}} Cuaca Ekstrem sejak 2008; {{angka:sl.k.hot|satuan}} Terpantau di Kabupaten Solok Sepanjang 2026",
+      "grafik": {
+        "judul_panel": "Kejadian selain banjir dan longsor sejak 2008",
+        "ikon": "data",
+        "judul": "**Kejadian**, 2008 sampai 2026",
+        "keluarga": "netral",
+        "arah": "horizontal",
+        "sorot": "tertinggi",
+        "ubah": false,
+        "persen_batang": false,
+        "data": {
+          "csv": "data/sumut-aceh/sl/lain.csv",
+          "kolom": [
+            {
+              "nama": "jenis",
+              "kepala": "Jenis"
+            },
+            {
+              "nama": "kejadian",
+              "kepala": "Kejadian",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, 23 Nov 2026"
+        }
+      },
+      "panel": {
+        "judul": "Dampak dan pantauan terkini",
+        "ikon": "ringkasan",
+        "daftar_ikon": {
+          "mode": "baris",
+          "baris": [
+            {
+              "ikon": "cuaca-ekstrem",
+              "judul": "Cuaca ekstrem",
+              "isi": "Rumah rusak sejak 2008",
+              "angka": "{{angka:sl.c.r}}",
+              "satuan": "rumah"
+            },
+            {
+              "ikon": "gempa",
+              "judul": "Gempa 2009 dan 2018",
+              "isi": "Rumah rusak",
+              "angka": "{{angka:sl.g.r}}",
+              "satuan": "rumah"
+            },
+            {
+              "ikon": "karhutla",
+              "judul": "Perkiraan luas terbakar",
+              "isi": "Citra satelit, sepanjang 2026",
+              "angka": "{{angka:sl.k.luas}}",
+              "satuan": "ha"
+            },
+            {
+              "ikon": "tanggap-darurat",
+              "judul": "Siaga Darurat karhutla",
+              "isi": "Terakhir 21 Jul sampai 3 Agu 2025"
+            },
+            {
+              "ikon": "gunungapi",
+              "judul": "Gunung Talang",
+              "isi": "Level I, Normal"
+            },
+            {
+              "ikon": "kekeringan",
+              "judul": "Kekeringan",
+              "isi": "Tercatat 2009 dan 2013, tanpa korban"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/bencana-rob.jpg",
+      "teks": "Terima Kasih",
+      "laporan": "Fokus Banjir"
+    }
+  ]
+}
