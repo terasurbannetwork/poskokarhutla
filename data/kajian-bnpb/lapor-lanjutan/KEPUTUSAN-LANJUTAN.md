@@ -20,6 +20,7 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | K8 | 20 Nov 2026 | Tidak ada pencocokan orang antarkab/kota (pengungsi dengan korban hilang). |
 | K9 | 20 Nov 2026 | Data pribadi pengungsi dan korban dihapus 5 tahun sesudah kejadian selesai (menjawab Q4). |
 | K10 | 20 Nov 2026 | Kriteria RB, RS, RR rumah dan prasarana memakai angka modul Siklus: RB lebih dari 70% rusak, RS 30 sampai 70%, RR kurang dari 30% (menjawab Q1). |
+| K11 | 24 Nov 2026 | Penutupan lewat WA cukup satu pesan *tutup* dari ketua, tanpa konfirmasi kedua. Salah ketik dibetulkan dengan staf Pusdalops membuka lagi berkasnya (LJ-13). |
 
 ## Keputusan rancangan (D, agent, bisa dibatalkan pemilik)
 
