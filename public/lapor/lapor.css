@@ -2346,3 +2346,39 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-sekali-tel small{display:block;opacity:.85}
 .lp-sekali .lp-utama{width:100%;margin-bottom:10px}
 .lp-sekali form{display:flex;justify-content:flex-end}
+
+/* tombol tema terang/gelap (pemilik 24 Nov 2026: "tambahin toggle theme"): bulan di terang, matahari di gelap */
+.lp-tema .lp-tema-matahari{display:none}
+:root[data-theme="dark"] .lp-tema .lp-tema-bulan{display:none}
+:root[data-theme="dark"] .lp-tema .lp-tema-matahari{display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lp-tema .lp-tema-bulan{display:none}:root:not([data-theme="light"]) .lp-tema .lp-tema-matahari{display:block}}
+.lp-tema-hp{position:absolute;top:12px;right:12px;z-index:2;display:none;place-items:center;width:40px;height:40px;padding:0;border:1px solid color-mix(in oklab,var(--on-head) 30%,transparent);border-radius:50%;background:color-mix(in oklab,var(--on-head) 12%,transparent);color:var(--on-head);cursor:pointer}
+.lp-tema-hp svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+@media (max-width:899px){.lp-tema-hp{display:grid}}
+/* QA 24 Nov 2026: kartu "Laporan terbaru" kosong tampil karena display:grid!important menimpa [hidden] */
+.lp-terbaru[hidden]{display:none!important}
+/* QA 24 Nov 2026: di HP .lp-hero-kanan display:contents jadi container query 3 + 2 tidak pernah aktif dan lima akun saling tumpuk; kartu kontak jadi containernya sendiri */
+.lp-cc2{container-type:inline-size}
+.lp-cc2-sosial{row-gap:10px}
+@container (width < 400px){
+  .lp-cc2-sosial{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .lp-cc2-sosial li,.lp-cc2-sosial li:nth-child(4){grid-column:span 2;border-left:0!important}
+  .lp-cc2-sosial li:nth-child(5){grid-column:2 / span 2}
+}
+
+/* QA 24 Nov 2026: kartu kosong Alun-alun di panel sempit (±400 px) memakai dua kolom 200 px + teks, judul terpotong dan tombol patah; di panel ini ditumpuk */
+.lp-alun .lp-kosong-besar{grid-template-columns:minmax(0,1fr)!important;justify-items:center;gap:12px!important;padding:24px 24px 28px!important;text-align:center!important}
+.lp-alun .lp-kosong-besar > :first-child{width:120px;max-width:120px}
+.lp-alun .lp-kosong-teks{justify-items:center}
+/* QA 24 Nov 2026: di mode gelap tombol utama navy di atas kartu navy hampir hilang (Lanjut, Lapor kejadian di kartu kosong); pakai brand terang + teks gelap */
+:root[data-theme="dark"] .lp-utama{background:var(--brand);color:var(--on-brand)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lp-utama{background:var(--brand);color:var(--on-brand)}}
+/* QA 24 Nov 2026: tombol zoom peta Alun-alun bertumpuk dengan deretan pil saring di pojok kanan atas; turun ke bawah deretan pil */
+#lAlun .maplibregl-ctrl-top-right{top:84px}
+
+/* deretan geser samping: panah bulat di tepi, hanya di sisi yang masih ada isi (pemilik 24 Nov 2026) */
+.lp-geser-panah{position:absolute;z-index:3;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);box-shadow:var(--bayang);cursor:pointer;transform:translateY(-50%)}
+.lp-geser-panah[hidden]{display:none!important}
+.lp-geser-kanan{transform:translate(-100%,-50%)}
+.lp-geser-panah:hover{color:var(--brand2);border-color:var(--brand2)}
+.lp-geser-panah svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}

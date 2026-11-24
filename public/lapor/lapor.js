@@ -15,7 +15,7 @@ const $ = id => document.getElementById(id);
 const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
 const ikon = (id, kelas) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("aria-hidden", "true"); if (kelas) s.setAttribute("class", kelas);
   const u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", `#${id}`); s.append(u); return s; };
-const AVATAR = "/img/lembaga/sumber-bnpb.png";
+const AVATAR = "/lapor/lambang-bnpb.png";   // lambang bulat transparan; sumber-bnpb.png berlatar putih jadi kotak di mode gelap
 const IKON_JENIS = {banjir: "b-banjir", longsor: "b-longsor", abrasi: "b-gelombang", cuaca: "b-angin", kekeringan: "b-matahari", karhutla: "b-api", gempa: "b-gempa", tsunami: "b-gelombang", erupsi: "b-gunung", kebakaran_gedung: "b-gedung"};
 const ILUS_JENIS = {}; // jenis tanpa foto memakai ilustrasi
 const KREDIT = {kekeringan: "Foto: Crisco 1492, CC BY-SA 4.0", kebakaran_gedung: "Foto: CEphoto, Uwe Aranas, CC BY-SA 3.0"}; // foto berlisensi atribusi
@@ -1660,6 +1660,51 @@ const TUR = [
 const turTampak = sel => [...document.querySelectorAll(sel)].find(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; });
 try { if (!localStorage.getItem("lapor-tur")) document.body.classList.add("lp-tur-nanti"); } catch {}   // kunjungan pertama: gelembung Sigap menunggu tur selesai
 function turPertama() { let sudah = true; try { sudah = !!localStorage.getItem("lapor-tur"); } catch {} if (!sudah && !$("lBeranda").hidden) mulaiTur(); else document.body.classList.remove("lp-tur-nanti"); }
+/* deretan geser samping: panah kiri/kanan muncul hanya bila masih ada isi di arah itu, roda mouse menggeser ke samping
+   (pemilik 24 Nov 2026: "orang biasa mungkin gaakan tau ada tombol lagi atau gabakal tau itu harus digeser").
+   Panah jadi saudara deretan (bukan anak) karena deretan diisi ulang dengan replaceChildren. */
+function pasangGeser(d) {
+  if (!d || d.dataset.geser) return; d.dataset.geser = "1";
+  const induk = d.parentElement; if (getComputedStyle(induk).position === "static") induk.style.position = "relative";
+  const buat = (arah, ik, label) => { const b = el("button", `lp-geser-panah lp-geser-${arah}`); b.type = "button"; b.hidden = true; b.setAttribute("aria-label", label); b.append(ikon(ik));
+    b.addEventListener("click", () => {
+      const tuju = Math.max(0, Math.min(d.scrollWidth - d.clientWidth, d.scrollLeft + (arah === "kiri" ? -1 : 1) * Math.max(120, d.clientWidth * .7)));
+      d.scrollTo({ left: tuju, behavior: "smooth" });
+      setTimeout(() => { if (Math.abs(d.scrollLeft - tuju) > 2) d.scrollLeft = tuju; }, 450);   // gulir halus kadang tertahan; pastikan sampai
+    }); d.after(b); return b; };
+  const kiri = buat("kiri", "i-kembali", "Geser ke kiri"), kanan = buat("kanan", "i-panah", "Geser ke kanan");
+  let antre = 0;
+  const atur = () => { antre = 0;
+    const sisaKiri = d.scrollLeft > 2, sisaKanan = d.scrollLeft + d.clientWidth < d.scrollWidth - 2, tampak = d.offsetParent !== null;
+    kiri.hidden = !(tampak && sisaKiri); kanan.hidden = !(tampak && sisaKanan);
+    d.classList.toggle("lp-geser-ada-kiri", sisaKiri); d.classList.toggle("lp-geser-ada-kanan", sisaKanan);
+    if (!tampak) return;
+    const t = d.offsetTop + d.offsetHeight / 2;
+    kiri.style.top = kanan.style.top = `${t}px`;
+    kiri.style.left = `${d.offsetLeft + 6}px`; kanan.style.left = `${d.offsetLeft + d.offsetWidth - 6}px`;
+  };
+  const jadwal = () => { if (!antre) antre = requestAnimationFrame(atur); };
+  d.addEventListener("scroll", jadwal, { passive: true });
+  d.addEventListener("wheel", e => { if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; const maks = d.scrollWidth - d.clientWidth;
+    if (maks <= 2 || (e.deltaY < 0 && d.scrollLeft <= 0) || (e.deltaY > 0 && d.scrollLeft >= maks - 1)) return;
+    e.preventDefault(); d.scrollLeft += e.deltaY; }, { passive: false });
+  new ResizeObserver(jadwal).observe(d);
+  new MutationObserver(jadwal).observe(d, { childList: true, subtree: true });
+  addEventListener("resize", jadwal);
+  jadwal();
+}
+for (const d of document.querySelectorAll(".lp-saring, #saringBantu, #saringRingkas")) pasangGeser(d);
+
+/* tombol tema terang/gelap: kunci "pk-tema" bersama /prediksi dan /lapor/meja, dibaca anti kedip oleh /halaman_awal.js di <head> */
+function gelapSekarang() { const a = document.documentElement; return a.dataset.theme ? a.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; }
+function labelTema() { const g = gelapSekarang(); for (const b of document.querySelectorAll(".lp-tema")) { const s = b.querySelector("span"); if (s) s.textContent = g ? "Mode terang" : "Mode gelap"; } }
+for (const b of document.querySelectorAll(".lp-tema")) b.addEventListener("click", () => {
+  const t = gelapSekarang() ? "light" : "dark"; document.documentElement.dataset.theme = t;
+  try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {}
+  labelTema();
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", labelTema);
+labelTema();
 $("bMulaiTur")?.addEventListener("click", () => { if ($("lBeranda").hidden) ke("beranda"); setTimeout(mulaiTur, 150); });   // tur menunjuk elemen beranda
 function mulaiTur() {
   if (document.querySelector(".lp-tur")) return;
@@ -1676,7 +1721,7 @@ function mulaiTur() {
   // maskot setinggi kartu di kiri, isi di kanan (pemilik 21 Nov 2026: "agar setinggi ini full dia")
   const kanan2 = el("div", "lp-tur-kanan"); kanan2.append(ke, h, p, titik, aksi);
   k.append(m, kanan2); w.append(...gelap, lubang, k); document.body.append(w);
-  const asal = document.activeElement; let i = 0, sasaran = null;
+  const asal = document.activeElement; let i = 0, sasaran = null, digulir = false;
   const tata = () => {   // lubang dan kartu mengikuti elemen; tanpa elemen = kartu di tengah dan seluruh layar gelap
     const vw = innerWidth, vh = innerHeight, pad = 8;
     const r = sasaran?.getBoundingClientRect(), x = r ? Math.max(0, r.left - pad) : vw / 2, y = r ? Math.max(0, r.top - pad) : vh / 2, rw = r ? r.width + pad * 2 : 0, rh = r ? r.height + pad * 2 : 0;
@@ -1687,18 +1732,33 @@ function mulaiTur() {
     lubang.hidden = !r; if (r) Object.assign(lubang.style, {left: `${x}px`, top: `${y}px`, width: `${rw}px`, height: `${rh}px`});
     k.classList.toggle("tengah", !r);
     if (!r) { k.style.left = k.style.top = ""; return; }
-    const kw = k.offsetWidth, kh = k.offsetHeight, jarak = 14;
-    const top = y + rh + jarak + kh <= vh - 8 ? y + rh + jarak : y - jarak - kh >= 8 ? y - jarak - kh : Math.max(8, vh - kh - 8);
-    k.style.left = `${Math.min(vw - kw - 8, Math.max(8, x + rw / 2 - kw / 2))}px`; k.style.top = `${top}px`;
+    // kartu tidak boleh menutupi sasaran (pemilik 24 Nov 2026: "bahkan ini nutup yang dihighlight"): coba bawah, atas, kanan, kiri;
+    // bila tidak ada yang muat utuh, ambil posisi yang paling sedikit menimpa sasaran
+    const kw = k.offsetWidth, kh = k.offsetHeight, jarak = 14, tepi = 8;
+    const jepit = (v, lo, hi) => Math.min(Math.max(v, lo), Math.max(lo, hi));
+    const tengahX = jepit(x + rw / 2 - kw / 2, tepi, vw - kw - tepi), tengahY = jepit(y + rh / 2 - kh / 2, tepi, vh - kh - tepi);
+    const calon = [
+      [tengahX, y + rh + jarak], [tengahX, y - jarak - kh],
+      [x + rw + jarak, tengahY], [x - jarak - kw, tengahY],
+    ];
+    const muat = ([l, t]) => l >= tepi && t >= tepi && l + kw <= vw - tepi && t + kh <= vh - tepi;
+    const timpa = ([l, t]) => Math.max(0, Math.min(l + kw, x + rw) - Math.max(l, x)) * Math.max(0, Math.min(t + kh, y + rh) - Math.max(t, y));
+    const pas = calon.find(muat);
+    if (!pas && !digulir) { digulir = true; sasaran.scrollIntoView({block: "start", behavior: "instant"}); return tata(); }   // beri ruang: sasaran naik ke atas, kartu di bawahnya
+    let [left, top] = pas || calon.map(([l, t]) => [jepit(l, tepi, vw - kw - tepi), jepit(t, tepi, vh - kh - tepi)]).sort((a, b) => timpa(a) - timpa(b))[0];
+    k.style.left = `${left}px`; k.style.top = `${top}px`;
   };
   const tampil = n => {
-    i = n; const [sel, judul, isi] = langkah[i]; sasaran = sel ? turTampak(sel) : null;
+    i = n; digulir = false; const [sel, judul, isi] = langkah[i]; sasaran = sel ? turTampak(sel) : null;
     ke.textContent = `${i + 1} dari ${N}`; h.textContent = judul; p.textContent = isi;
     [...titik.children].forEach((t, j) => t.classList.toggle("aktif", j === i));
     mundur.hidden = i === 0; maju.textContent = i === 0 ? "Mulai" : i === N - 1 ? "Selesai" : "Lanjut";
     if (sasaran) sasaran.style.scrollMarginTop = "16px";   // HP: sasaran di atas agar kartu muat di bawahnya, tidak menutupinya
-    sasaran?.scrollIntoView({block: innerWidth <= 560 ? "start" : "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
+    const blok = innerWidth <= 560 ? "start" : "center";
+    sasaran?.scrollIntoView({block: blok, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
     tata(); requestAnimationFrame(tata); setTimeout(tata, 400); maju.focus();
+    // gulir halus kadang tertahan dan sasaran tetap di luar layar; pastikan sampai lalu tata ulang
+    const s0 = sasaran; setTimeout(() => { if (s0 !== sasaran || !s0) return; const r = s0.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) { s0.scrollIntoView({block: blok, behavior: "instant"}); tata(); } }, 500);
   };
   const selesai = () => { document.body.classList.remove("lp-tur-nanti"); removeEventListener("resize", tata); removeEventListener("scroll", tata, true); removeEventListener("keydown", tombol, true); w.remove(); asal?.focus?.(); };
   const tombol = e => { if (e.key === "Escape") { e.preventDefault(); selesai(); } else if (e.key === "ArrowRight") { e.preventDefault(); i < N - 1 ? tampil(i + 1) : selesai(); } else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); tampil(i - 1); }
