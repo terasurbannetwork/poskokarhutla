@@ -260,3 +260,46 @@ Hasil putaran 6.8 dengan galat baru (gerbang pola tetap lolos, -1,3 lawan +0,1; 
 **42 dari 42 kecamatan belum beda dari nol** pada 2 s. Median galat jarak Jakarta Utara 1,5 dan Jakarta Selatan 1,2 cm/tahun. Galat jarak sekarang suku terbesar s.
 
 Batas yang tetap berlaku: variogram acuan mungkin memuat sinyal asli (6.11), jadi s ini konservatif, dan derau sebenarnya bisa lebih kecil. Yang paling mungkin mengecilkan galat adalah deret yang lebih panjang: derau atmosfer yang tak berkorelasi antartanggal mengecil kira-kira sebanding 1/T^1,5 terhadap lama deret T, dan deret sekarang hanya sekitar 3 tahun (frame naik 2,7 tahun). LiCSAR punya interferogram kedua frame sejak sekitar 2016 (belum diunduh, putaran 6.7 dibatasi sejak 2020). Kesimpulan saat ini: data putaran 2 cukup untuk pola (pesisir barat laut paling dalam), tetapi belum cukup untuk angka per kecamatan yang bermakna. Tidak tayang.
+
+### 6.13 Putaran LiCSBAS ketiga Jakarta: deret 2016 sampai 2023 dan uji tahan-waktu independen (24 Nov 2026)
+
+Pemilik meminta deret diperpanjang ke 2016 supaya galat mengecil. Pasangan baru diunduh dengan `~/licsbas/ambil.py` (pasangan sejak 1 Januari 2016, Dt paling lama 48 hari untuk frame turun dan 24 hari untuk frame naik): frame turun menjadi 608 pasangan, frame naik 471. GACOS LiCSAR ditambahkan per tanggal, lalu dijalankan langkah 02, 03, 05 (jendela Jakarta yang sama), 11 sampai 16 tanpa deramp (`~/licsbas/jalan3.sh`). LiCSBAS lama perlu satu tambalan lagi untuk matplotlib baru: `set_major_locator` tidak lagi mengembalikan locator (`LiCSBAS_plot_lib.py`, di luar repo).
+
+| | Frame turun 047D | Frame naik 098A |
+| --- | --- | --- |
+| Citra | 167 (12 Apr 2016 sampai 31 Mar 2023) | 159 (23 Jan 2016 sampai 31 Agu 2022) |
+| Interferogram buruk | 43 | 70 |
+| Piksel dipertahankan | 96,1% | 86,9% |
+| Celah jaringan | 6, terpanjang Des 2016 sampai Okt 2019 tersambung | 11 |
+
+**Hasil deret penuh** (`subsiden.py` v4, acuan -6,30):
+- **Gerbang pola GAGAL**: Jakarta Utara -0,95 lawan Jakarta Selatan -0,25 cm/tahun, selisih 0,7, di bawah syarat 1,0.
+- Galat mengecil: galat acuan 0,10 (putaran 2: 0,58), galat jarak sekitar 0,9 (putaran 2: sekitar 1,5). Variogram vertikal acuan 0,14 (cm/tahun)² di 4,5 km dan 0,33 di 19,5 km, kira-kira separuh putaran 2.
+- 2 dari 42 kecamatan beda dari nol pada 2 s: Penjaringan -2,2 (p90 -3,5) dan Kembangan -2,1 (p90 -3,0). Sesudahnya Kalideres -1,6, Cengkareng -1,3, Kebon Jeruk -1,2, Koja -1,2, Pesanggrahan -1,1, Cilincing -1,0; semuanya belum beda dari nol.
+- 6.1: p90 terdalam 3,5 masih di dalam 2,5 sampai 28, tetapi gerbang pola sudah gagal.
+
+**Uji tahan-waktu versi 6.9 tidak berlaku untuk deret ini**: belah dari satu inversi menghasilkan selisih median 0,0, karena inversi dengan celah jaringan memaksa laju lurus melewati celah. Ini kebocoran yang disebut tinjauan 6.10.
+
+**Uji tahan-waktu independen** (`~/licsbas/belah.sh`): interferogram dibelah di 1 Juli 2019 (separuh awal hanya pasangan yang berakhir sebelum tanggal itu, separuh akhir hanya yang mulai sesudahnya), lalu langkah 11 sampai 16 dijalankan terpisah untuk tiap separuh. Frame turun 285 dan 294 interferogram, frame naik 133 dan 191.
+- Gerbang pola: separuh awal gagal (-0,9 lawan -0,15), separuh akhir lolos (-1,5 lawan +0,4).
+- Laju kecamatan kedua separuh hanya berkorelasi 0,44.
+- Median selisih 0,4 cm/tahun di bawah ambang 2·akar(s_awal² + s_akhir²) yang mediannya 3,4. Semua 42 kecamatan di bawah ambang, tetapi ambang selebar itu tidak diskriminatif.
+
+| Kecamatan | Separuh awal 2016-2019 | Separuh akhir 2019-2023 | Deret penuh |
+| --- | --- | --- | --- |
+| Penjaringan | -2,0 | -2,2 | -2,2 |
+| Kembangan | -2,1 | -0,7 | -2,1 |
+| Kalideres | -1,6 | -0,6 | -1,6 |
+| Cengkareng | -1,3 | -0,5 | -1,3 |
+| Koja | -1,0 | -2,1 | -1,2 |
+| Cilincing | -0,9 | -1,5 | -1,0 |
+| Tanjung Priok | -0,7 | -1,5 | -0,8 |
+| Pesanggrahan | -1,3 | +0,6 | -1,1 |
+| Jagakarsa | +0,3 | +0,4 | +0,3 |
+
+Bacaan:
+1. Satu-satunya sinyal yang tahan di semua ukuran adalah **Penjaringan sekitar -2 cm/tahun**: sama di kedua separuh independen, beda dari nol di deret penuh, dan cocok dengan literatur yang menunjuk pesisir barat laut (Muara Baru, Pluit).
+2. Barat (Kembangan, Kalideres, Cengkareng) dalam di separuh awal tetapi dangkal di separuh akhir; timur laut (Koja, Cilincing, Tanjung Priok) sebaliknya. Ini bisa perubahan laju sungguhan atau derau, dan data ini belum bisa membedakannya.
+3. Deret penuh mengikuti separuh awal untuk kecamatan barat, padahal separuh akhir berisi lebih banyak citra. Dugaan: celah jaringan frame naik 2017 sampai 2019 dan batasan laju lurus inversi. Belum diperiksa.
+
+Status: gerbang pola gagal di deret terpanjang, jadi menurut ALGORITMA 5 `subsiden.py` tidak menulis berkas. Angka Jakarta **tidak tayang**. Keluaran lab disimpan di luar repo: `~/licsbas/keluaran/subsiden_16.json`. Data mentah putaran ini memakan sekitar 7 GB di `~/licsbas`.
