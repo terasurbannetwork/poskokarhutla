@@ -302,4 +302,4 @@ Bacaan:
 2. Barat (Kembangan, Kalideres, Cengkareng) dalam di separuh awal tetapi dangkal di separuh akhir; timur laut (Koja, Cilincing, Tanjung Priok) sebaliknya. Ini bisa perubahan laju sungguhan atau derau, dan data ini belum bisa membedakannya.
 3. Deret penuh mengikuti separuh awal untuk kecamatan barat, padahal separuh akhir berisi lebih banyak citra. Dugaan: celah jaringan frame naik 2017 sampai 2019 dan batasan laju lurus inversi. Belum diperiksa.
 
-Status: gerbang pola gagal di deret terpanjang, jadi menurut ALGORITMA 5 `subsiden.py` tidak menulis berkas. Angka Jakarta **tidak tayang**. Keluaran lab disimpan di luar repo: `~/licsbas/keluaran/subsiden_16.json`. Data mentah putaran ini memakan sekitar 7 GB di `~/licsbas`.
+Status: gerbang pola gagal di deret terpanjang, jadi menurut ALGORITMA 5 `subsiden.py` tidak menulis berkas. Angka Jakarta **tidak tayang**. Keluaran lab disimpan di luar repo: `~/licsbas/keluaran/subsiden_16.json`. Data mentah kedua frame memakan sekitar 4,7 GB di `~/licsbas` (frame turun 2,7 GB, frame naik 2,0 GB).
