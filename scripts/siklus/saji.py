@@ -13,6 +13,7 @@ KB, MB = 1000, 1000 * 1000
 BATAS = [(re.compile(p), b) for p, b in (
     (r"^siklus/saji/kejadian/arsip/", 4 * MB), (r"^siklus/saji/paparan/rinci/", 1 * MB), (r"^siklus/saji/paparan/kab/", 1 * MB),
     (r"^siklus/saji/paparan/[^/]+\.json$", 6 * MB), (r"^siklus/saji/fasilitas/", 500 * KB), (r"^siklus/saji/kaji/", 100 * KB),
+    (r"^siklus/saji/kaji_berkas/.+\.geojson$", 300 * KB), (r"^siklus/saji/kaji_berkas/.+\.png$", 120 * KB),
     (r"^siklus/saji/masa_depan/", 2 * MB))]
 TERLARANG = {"total", "jumlah_gabungan", "rata"}
 
