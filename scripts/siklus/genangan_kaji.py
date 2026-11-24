@@ -44,13 +44,13 @@ def jalankan_langkah(kj, mulai, kab, ulang=False, kering=False):
 
 
 def sel_geojson(titik):
-    """titik_baru [(lon, lat, ha)] -> (bytes, sel_m). Pusat sel halus 110 m dan ha, tanpa bangunan; lebih dari 300 KB digabung ke 330 m (DESAIN-TEKNIS 4)."""
+    """titik_baru [(lon, lat, ha)] -> (bytes, sel_m). Pusat sel halus 110 m dan ha, tanpa bangunan; lebih dari 300 KB digabung bertingkat 110, 330, 550, 1100 m (DESAIN-TEKNIS 4); bila tingkat terkasar masih di atas batas, `catatan` di berkas memuat alasannya."""
     P = _P()
     ha = {}
     for lon, lat, h in titik:
         c = P._sel_halus(lon, lat)
         ha[c] = ha.get(c, 0.0) + h
-    for b in (1, 3):
+    for b in (1, 3, 5, 10):
         g = {}
         for (i, j), h in ha.items():
             g[(i // b, j // b)] = g.get((i // b, j // b), 0.0) + h
@@ -59,6 +59,8 @@ def sel_geojson(titik):
         data = json.dumps({"type": "FeatureCollection", "sel_m": 110 * b, "features": fit}, separators=(",", ":")).encode()
         if len(data) <= MAKS_GEOJSON:
             break
+    else:
+        data = json.dumps({"type": "FeatureCollection", "sel_m": 110 * b, "catatan": f"melebihi batas {MAKS_GEOJSON} B walau digabung ke {110 * b} m ({len(data)} B)", "features": fit}, separators=(",", ":")).encode()
     jml, tot = sum(f["properties"]["ha"] for f in fit), sum(ha.values())
     assert abs(jml - tot) <= 0.0005 * tot, f"total ha geojson {jml} menyimpang dari jumlah titik {tot}"
     return data, 110 * b
@@ -92,12 +94,15 @@ def paparan_kab(g, desa_fn=None):
     return P.hitung_kab(sel, [z["bawah"], z["atas"]], desa, wp), None
 
 
+SEL_TINGKAT = "110-330-550-1100"  # naik bila aturan penggabungan sel berubah, supaya versi hasil ikut naik
+
+
 def sidik_masukan(hasil, kriteria_sidik):
     """sha256 atas lintasan per kab, rentang penduduk per kab (None atau [bawah, atas]), dan sidik kriteria."""
     def rg(k):
         p = (k.get("penduduk") or {}).get("worldpop")
         return [p["bawah"], p["atas"]] if p and p["tersedia"] else None
-    isi = {"kab": {k["kab4"]: [k.get("lintasan"), rg(k)] for k in hasil["kab"]}, "kriteria": kriteria_sidik}
+    isi = {"kab": {k["kab4"]: [k.get("lintasan"), rg(k)] for k in hasil["kab"]}, "kriteria": kriteria_sidik, "sel": SEL_TINGKAT}
     return hashlib.sha256(json.dumps(isi, sort_keys=True).encode()).hexdigest()
 
 
@@ -154,6 +159,8 @@ def rakit(kj, kab, keluar=KELUAR, kej=KEJ, paparan_fn=None, sidik=None):
             taruh(f"{g['kab4']}_sel.geojson", d)
             if sm != 110:
                 print(f"  {g['kab4']}: sel digabung ke {sm} m (lebih dari 300 KB)")
+            if len(d) > MAKS_GEOJSON:
+                masalah.append(f"{g['kab4']}_sel.geojson {len(d)} B melebihi {MAKS_GEOJSON} B di tingkat terkasar {sm} m")
         for nama, c in ((k, v) for k, v in ((ci_.get(g["kab4"]) or {}).get("citra") or {}).items() if isinstance(v, dict) and v.get("berkas")):
             taruh(c["berkas"], open(os.path.join(kej, kj + "_citra", c["berkas"]), "rb").read())
     return n, True, {**isi, "kunci": kunci}, masalah, berkas
@@ -205,6 +212,14 @@ def _uji():
     besar = [(94.0 + (j + .5) / 1000, -12.0 + (i + .5) / 1000, 0.3) for i in range(0, 70) for j in range(0, 70)]
     d, sm = sel_geojson(besar)
     assert sm == 330 and len(d) <= MAKS_GEOJSON, (sm, len(d))
+    # tingkat ketiga: sel jarang 330 m (>300 KB) tapi muat di 550 m; total ha terjaga
+    lebar = [(94.0 + (j * 3 + .5) / 1000, -12.0 + (i * 3 + .5) / 1000, 0.3) for i in range(0, 60) for j in range(0, 60)]
+    d, sm = sel_geojson(lebar)
+    assert sm in (550, 1100) and len(d) <= MAKS_GEOJSON, (sm, len(d))
+    assert abs(sum(f["properties"]["ha"] for f in json.loads(d)["features"]) - 0.3 * len(lebar)) <= 0.0005 * 0.3 * len(lebar)
+    # tak muat di tingkat terkasar: alasan tertulis, bukan diam
+    d, sm = sel_geojson([(94.0 + k * 0.011, -12.0, 0.1) for k in range(8000)])
+    assert sm == 1100 and len(d) > MAKS_GEOJSON and "catatan" in json.loads(d)
     # kasus ALGORITMA 4 lewat hitung_kab asli: WorldPop bawah 100, atas 400, GHSL tidak tersedia
     hs = P._ha_sel(P.BG.LAT0 + 500.5 / P.BG.HALUS)
     ctr = lambda i, j: (P.BG.LON0 + (j + .5) / P.BG.HALUS, P.BG.LAT0 + (i + .5) / P.BG.HALUS)
