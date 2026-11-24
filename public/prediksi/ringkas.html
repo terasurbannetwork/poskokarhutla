@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/prediksi/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Siaga 3 hari, Centurisk97</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Untuk staf Pusdalops dan BPBD: kab/kota yang perlu siaga besok sampai 3 hari ke depan, dan untuk bencana apa.">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<script src="/halaman_awal.js" data-tema></script>
+<script src="../i18n.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../inti/kepala.css">
+<link rel="stylesheet" href="../inti/tema.css">
+<link rel="stylesheet" href="../inti/gaya.css">
+<link rel="stylesheet" href="../inti/tabel.css">
+<link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="prediksi.css?v=9">
+<link href="/inti/dasbor.css?v=27" rel="stylesheet">
+<link rel="stylesheet" href="ringkas.css?v=3">
+</head>
+<body class="rk">
+<div id="tip" role="tooltip"></div>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="../" title="Centurisk97"><img src="../img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a>
+    <b>Prediksi</b>
+  </div>
+  <div class="stat">
+    <span class="upd pr-upd" id="upd">Memuat data…</span>
+    <button class="iconbtn pr-tema" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema terang/gelap"><svg class="pr-bulan" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="pr-matahari" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="page scroll on" aria-label="Siaga 3 hari">
+    <div class="wrap rk-wrap">
+      <div class="rk-judul">
+        <h1>Siaga 3 hari ke depan</h1>
+        <p>Kab/kota yang perlu bersiap, dan untuk bencana apa. Alat bantu staf Pusdalops dan BPBD, bukan peringatan untuk masyarakat.</p>
+      </div>
+
+      <div class="pr-kendali rk-kendali">
+        <div class="seg penuh" id="hariSeg" role="group" aria-label="Hari"></div>
+        <select id="prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
+        <input id="cari" type="search" placeholder="Cari kab/kota" autocomplete="off" aria-label="Cari kab/kota">
+      </div>
+
+      <section class="ex ex-std" aria-labelledby="rkRingH">
+        <header class="ex-hd"><div class="ex-jd"><h3 class="pr-h" id="rkRingH"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7v7H4z"/><path d="M13 4h7v7h-7z"/><path d="M4 13h7v7H4z"/><path d="M13 13h7v7h-7z"/></svg>Jumlah kab/kota Siaga atau Awas</h3></div></header>
+        <div class="ex-bd"><div class="rk-ring" id="ring"></div>
+          <p class="rk-ket"><span class="rk-tanda rk-tanda-uji">uji coba</span> artinya prakiraan bencana itu belum terbukti tepat. Pakai sebagai bahan pertimbangan, jangan jadi dasar tunggal.</p></div>
+      </section>
+
+      <div id="waspada"></div>
+
+      <section class="ex ex-std" aria-labelledby="rkDafH">
+        <header class="ex-hd"><div class="ex-jd"><h3 class="pr-h" id="rkDafH"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><path d="M12 7v4"/><path d="M12 14v.5"/></svg>Kab/kota tingkat Waspada ke atas</h3><span class="pr-jml" id="jml"></span></div></header>
+        <div class="ex-bd" id="daftar"><p class="kosong">Memuat…</p></div>
+      </section>
+      <div class="pr-lagi"><button type="button" id="lagi" hidden>Tampilkan lagi</button></div>
+
+      <section class="ex ex-std rk-teknis" aria-labelledby="rkTekH">
+        <header class="ex-hd"><div class="ex-jd"><h3 class="pr-h" id="rkTekH"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>Untuk tim teknis</h3></div></header>
+        <div class="ex-bd"><nav class="rk-tautan" aria-label="Halaman teknis">
+          <a href="/prediksi#rapor"><b>Ketepatan prakiraan</b><span>Rapor seberapa sering prakiraan benar</span></a>
+          <a href="/prediksi#tangga"><b>Tangga peringatan</b><span>Pernyataan BMKG dan prakiraan kita per skala waktu</span></a>
+          <a href="/prediksi#konfirmasi"><b>Konfirmasi lapangan</b><span>Formulir regu: kejadian benar terjadi atau tidak</span></a>
+          <a href="/prediksi"><b>Halaman lengkap</b><span>Semua tabel, peta, dan angka</span></a>
+        </nav></div>
+      </section>
+    </div>
+  </section>
+  <dialog id="rincian" class="pr-dlg" aria-label="Rincian kab/kota"></dialog>
+</main>
+
+<script src="../inti/format.js"></script>
+<script src="../inti/tip.js"></script>
+<script src="../inti/pilih.js"></script>
+<script src="besok_inti.js?v=1"></script>
+<script src="ringkas.js?v=3"></script>
+<script src="../inti/nanti.js"></script>
+</body>
+</html>

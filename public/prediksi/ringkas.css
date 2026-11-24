@@ -1,0 +1,96 @@
+/* /prediksi/ringkas (KEPUTUSAN-BESOK K18): halaman tanpa tab. Hanya token tema.css dan currentColor, tanpa literal warna. */
+/* prediksi.css menggeser main untuk panel kiri /prediksi; halaman ini tanpa panel */
+@media (min-width:901px){body.rk main{left:0;right:0}body.rk main>.page{top:0}}
+body.rk main>.page.scroll{overflow-y:auto}
+.rk-wrap{display:flex;flex-direction:column;gap:20px;padding:24px 16px 64px;max-width:1100px}
+.rk-wrap>.ex.ex-std{margin:0}
+.rk-wrap #waspada:empty{display:none}
+.rk-wrap #waspada>.ex{margin:0}
+.rk-wrap .pr-lagi{margin:-8px 0 0}
+
+/* judul halaman */
+.rk-judul h1{margin:0;font:800 1.5rem/1.25 var(--display);color:var(--ink)}
+.rk-judul p{margin:6px 0 0;max-width:62ch;font-size:.875rem;color:var(--ink2)}
+
+/* kendali: hari selebar mungkin, provinsi dan cari di sampingnya */
+.rk-kendali{margin:0}
+.rk-kendali .seg.penuh{flex:2 1 360px}
+.rk-kendali .pc,.rk-kendali select{flex:1 1 200px}
+
+/* ringkasan per bencana: tombol saring */
+.rk-ring{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.rk-ring button{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink2);font:600 .78125rem var(--font);cursor:pointer}
+.rk-ring button svg{width:20px;height:20px}
+.rk-ring button b{font:800 1.25rem/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.rk-ring button:hover,.rk-ring button:focus-visible{background:var(--surface)}
+.rk-ring button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.rk-ring button[aria-pressed="true"] b{color:var(--on-brand)}
+.rk-ring button.rk-uji b{color:var(--ink2)}
+.rk-ring button.rk-uji[aria-pressed="true"] b{color:var(--on-brand)}
+.rk-ring .rk-tanda{position:static;margin-top:2px}
+.rk-ket{margin:12px 0 0;font-size:.8125rem;color:var(--ink2)}
+
+/* tanda uji coba: garis putus-putus, tanpa isi, supaya terbaca lebih lemah dari tingkat yang teruji */
+.rk-tanda{display:inline-block;padding:0 7px;border-radius:var(--r-pill);font:700 .65625rem/1.6 var(--font);font-style:normal;white-space:nowrap}
+.rk-tanda-uji{border:1px dashed currentColor;color:var(--ink2);opacity:.9}
+.rk-ring button[aria-pressed="true"] .rk-tanda-uji{color:var(--on-brand)}
+
+/* chip bencana per kab: warna tingkat penuh hanya untuk yang teruji; uji coba pucat bergaris putus-putus */
+.rk-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rk-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;border-radius:var(--r-pill);border:1px solid transparent;font-size:.78125rem;font-weight:600;color:var(--ink);white-space:nowrap}
+.rk-chip svg{width:14px;height:14px;flex:none}
+.rk-chip b{font-weight:800}
+.rk-chip.rk-l0{background:var(--surface);color:var(--ink2)}
+.rk-chip.rk-l1{background:color-mix(in srgb,var(--f1) 45%,var(--card))}
+.rk-chip.rk-l2{background:color-mix(in srgb,var(--f2) 45%,var(--card))}
+.rk-chip.rk-l3{background:color-mix(in srgb,var(--f3) 45%,var(--card))}
+.rk-chip.rk-uji{background:transparent;border:1px dashed var(--line);color:var(--ink2)}
+.rk-chip.rk-uji.rk-l1{border-color:color-mix(in srgb,var(--f1) 70%,var(--line))}
+.rk-chip.rk-uji.rk-l2{border-color:color-mix(in srgb,var(--f2) 70%,var(--line))}
+.rk-chip.rk-uji.rk-l3{border-color:color-mix(in srgb,var(--f3) 70%,var(--line))}
+
+/* tabel kab/kota */
+.rk-tb td{vertical-align:middle;font-variant-numeric:tabular-nums}
+.rk-tb th:nth-child(2),.rk-tb td:nth-child(2){width:110px}
+.rk-tb tbody tr{cursor:pointer}
+.rk-tb tbody tr:hover{background:var(--surface)}
+.rk-tb tbody tr:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+.rk-nm{min-width:170px}
+.rk-nm b{display:block}
+.rk-nm small,.rk-w td small{display:block;color:var(--ink2);font-size:.6875rem}
+#daftar[aria-busy="true"]{opacity:.6}
+
+/* Perlu tindakan */
+.rk-w summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:12px 22px;cursor:pointer}
+.rk-w summary span{font-size:.8125rem;color:var(--ink2)}
+.rk-sisa{padding:0 22px}
+
+/* untuk tim teknis */
+.rk-tautan{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}
+.rk-tautan a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);color:var(--ink);text-decoration:none}
+.rk-tautan a span{font-size:.75rem;color:var(--ink2)}
+.rk-tautan a:hover,.rk-tautan a:focus-visible{background:var(--surface)}
+
+/* rincian kab */
+.rk-rinci h4{margin:16px 0 6px;font-size:.875rem}
+.rk-rl{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.rk-rb{display:grid;grid-template-columns:200px minmax(0,1fr);gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:.8125rem}
+.rk-rb:first-child{border-top:0}
+.rk-rb .rk-chip{justify-self:start}
+.rk-rb0 span:last-child{color:var(--ink2)}
+.rk-tl{margin:0;padding-left:18px;font-size:.8125rem}
+.rk-lanjut{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.rk-lanjut a{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-pill);color:var(--ink);font-size:.8125rem;font-weight:600;text-decoration:none}
+.rk-lanjut a svg{width:16px;height:16px}
+.rk-lanjut a:hover,.rk-lanjut a:focus-visible{background:var(--surface)}
+@media (max-width:640px){.rk-wrap{padding:16px 12px 48px}.rk-rb{grid-template-columns:1fr}.rk-tb th:nth-child(2),.rk-tb td:nth-child(2){display:none}}
+/* HP: baris tabel jadi kartu bertumpuk, chip bencana membungkus tanpa geser ke samping */
+@media (max-width:640px){
+  .rk-tb thead{display:none}
+  .rk-tb,.rk-tb tbody,.rk-tb tr,.rk-tb td{display:block;width:auto}
+  .rk-tb tr{padding:10px 14px;border-top:1px solid var(--line)}
+  .rk-tb tr:first-child{border-top:0}
+  .rk-tb td{padding:0;border:0;white-space:normal}
+  .rk-tb td:nth-child(3){margin-top:6px}
+  .rk-chip{white-space:normal}
+}

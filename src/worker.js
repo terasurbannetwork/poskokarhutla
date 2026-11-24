@@ -746,6 +746,7 @@ export const HTML_RUTE = [
   [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
   [/^\/ai\/?$/, "/ai/index.html", "/ai"],   // Asisten AI internal staf (public/ai/, src/ai.js); tertutup di centurisk97.id, tiap API /api/ai/* menjaga sesi staf
   [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); login hanya di hostTerkunci (seperti /monitor), TIDAK di PUBLIK_TANPA_SESI; data JSON statis publik
+  [/^\/prediksi\/ringkas\/?$/, "/prediksi/ringkas.html", "/prediksi/ringkas"],   // Siaga 3 hari: halaman ringkas tanpa tab untuk staf (KEPUTUSAN-BESOK K18); terkunci seperti /prediksi
   [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
   [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
