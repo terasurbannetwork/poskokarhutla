@@ -281,3 +281,5 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | anomali termal satelit (VRP) | satellite thermal anomaly (VRP) | VRP = volcanic radiative power, MW; MIROVA tetap |
 | naik di atas latar sendiri | above its own baseline | "riwayat belum cukup" = not enough history |
 | ilustrasi | illustration | api dan asap 3D, cahaya matahari: gambaran visual, bukan jangkauan asap sebenarnya |
+| poligon / kotak / buffer | polygon / box / buffer | alat gambar wilayah di peta utama; "luas wilayah digambar" = area drawn, tidak pernah luas terbakar |
+| sel berdeteksi / jejak sel | detected cells / cell footprint | petak 375 m; bukan luas bakar |

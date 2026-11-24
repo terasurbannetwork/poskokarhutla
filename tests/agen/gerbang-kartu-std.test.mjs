@@ -23,6 +23,7 @@ const LAYAR = [
   {skrip: 'public/bnpb/kebutuhan_pasar.js', html: 'public/bnpb/kebutuhan.html', lama: []},
   {skrip: 'public/bnpb/saham.js', html: 'public/bnpb/saham.html', lama: [/class:\s*"bn-blok",\s*"data-panel"/]},
   {skrip: 'public/operasi_laporan.js', html: 'public/index.html', lama: []},
+  {skrip: 'public/alat_gambar.js', html: 'public/index.html', lama: []},
   {skrip: 'public/banjir/sungai_induk.js', html: 'public/banjir/index.html', lama: []},
   {skrip: 'public/prediksi/laporan_layar.js', html: 'public/prediksi/index.html', lama: []},
   {skrip: 'public/siklus/inti.js', html: 'public/siklus/index.html', lama: []},

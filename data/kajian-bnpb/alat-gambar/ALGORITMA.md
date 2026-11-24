@@ -9,8 +9,8 @@ Semua fungsi geometri murni dan terpisah dari DOM, di `public/alat_gambar_geo.js
 | `BUFFER_MIN_KM`, `BUFFER_MAX_KM` | 1, 50 | langkah 1 |
 | `MAKS_SIMPUL` | 200 | D12 |
 | `MAKS_KAB` | 12 | D12 |
-| `PETAK` | 0,0034 | derajat, sama dengan `riwayat_petak.PETAK` |
-| `PIKSEL_HA` | 14,0625 | `gambut_bara.PIKSEL_HA` |
+| sel | 0,003375 derajat, bujur diskalakan cos lintang | sama dengan `AngkaKawasan.selUnik` (revisi 24 Nov 2026, supaya sel sebanding dengan titik unik) |
+| luas sel | sekitar 14,08 ha, dihitung dari ukuran sel | tampil ha bulat |
 | `MALAM_WIB` | 18 sampai 06 | D5 |
 | `R_BUMI_KM` | 6371,0088 | jari-jari rata-rata |
 
