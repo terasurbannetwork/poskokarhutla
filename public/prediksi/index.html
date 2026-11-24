@@ -9,6 +9,7 @@
 <meta name="description" content="Prakiraan per kab/kota besok sampai 3 hari: hujan kapan dan berapa lama, titik panas, banjir, longsor, asap, rob, beserta rapor ketepatannya.">
 <meta name="theme-color" content="#0b2545">
 <link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<script src="/halaman_awal.js" data-tema></script>
 <script src="../i18n.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +19,9 @@
 <link rel="stylesheet" href="../inti/gaya.css">
 <link rel="stylesheet" href="../inti/tabel.css">
 <link rel="stylesheet" href="../inti/kartu.css">
-<link rel="stylesheet" href="prediksi.css?v=6">
+<link rel="stylesheet" href="prediksi.css?v=8">
 <link rel="stylesheet" href="tangga.css">
-<link href="/inti/dasbor.css?v=26" rel="stylesheet">
+<link href="/inti/dasbor.css?v=27" rel="stylesheet">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
@@ -38,7 +39,10 @@
     <button type="button" data-tab="laporan">Laporan provinsi</button>
     <button type="button" data-tab="konfirmasi">Konfirmasi lapangan</button>
   </nav>
-  <div class="stat"><span class="upd" id="upd">Memuat data…</span></div>
+  <div class="stat">
+    <span class="upd pr-upd" id="upd">Memuat data…</span>
+    <button class="iconbtn pr-tema" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema terang/gelap"><svg class="pr-bulan" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="pr-matahari" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  </div>
 </header>
 
 <main>
@@ -164,7 +168,7 @@
 <script src="../inti/pilih.js"></script>
 <script src="besok_inti.js?v=1"></script>
 <script src="laporan_prov.js"></script>
-<script src="prediksi.js?v=6"></script>
+<script src="prediksi.js?v=7"></script>
 <script src="laporan_layar.js"></script>
 <script src="../inti/nanti.js"></script>
 <script src="tangga_inti.js"></script>

@@ -530,7 +530,10 @@ const svgD = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d.split("|").ma
 function panelKiri() {
   if ($(".db-nav")) return;
   const tabs = [...document.querySelectorAll("#tabs button[data-tab]")];
-  const kaki = Object.entries(PR.d.kode).map(([kd, k]) => `<div class="db-nav-pb"><i class="db-nav-dot"></i><span>${esc(KODE_NAMA[kd] || kd)}</span><b>${esc(tgl(k.terbit).replace(/^\w+, /, "").replace(/ (\w{3})\w*$/, " $1"))}</b></div>`).join("");
+  /* umur terbit per sumber (hari kalender WIB): titik hijau 0-1 hari, kuning 2-3 hari, merah lebih lama */
+  const kini = Date.parse(new Date().toLocaleDateString("en-CA", WIB) + "T12:00:00+07:00");
+  const kaki = Object.entries(PR.d.kode).map(([kd, k]) => { const u = Math.round((kini - Date.parse(k.terbit + "T12:00:00+07:00")) / 864e5), st = !(u >= 0) ? "" : u <= 1 ? "ok" : u <= 3 ? "lama" : "basi";
+    return `<div class="db-nav-pb" data-umur="${st}" title="${esc(KODE_NAMA[kd] || kd)}: terbit ${esc(tgl(k.terbit))}"><i class="db-nav-dot"></i><span>${esc(KODE_NAMA[kd] || kd)}</span><b>${esc(tglSingkat(k.terbit))}</b></div>`; }).join("");
   document.body.insertAdjacentHTML("beforeend", `<aside class="db-nav pr-nav" aria-label="Seksi prediksi"><div class="db-nav-id"><b>Prediksi</b><small>Prakiraan per kab/kota sampai 3 hari</small></div>
     <p class="db-nav-g"><i>${svgD("M4 6h16|M4 12h16|M4 18h10")}</i><span>Isi halaman</span></p>
     <nav class="db-nav-isi">${tabs.map(b => `<button type="button" class="db-nav-b" data-tab="${b.dataset.tab}" aria-current="${b.hasAttribute("aria-current")}"><i class="db-nav-ik">${svgD(IK_TAB[b.dataset.tab] || IK_TAB.besok)}</i><span class="db-nav-t">${esc(b.textContent.trim())}</span></button>`).join("")}</nav>
@@ -539,12 +542,25 @@ function panelKiri() {
   document.querySelector("main").insertAdjacentHTML("afterbegin", `<h1 class="db-l1" id="prJudul">${esc(document.querySelector("#tabs button[aria-current]")?.textContent || "Prakiraan 3 hari")}</h1>`);
 }
 
+/* chip jam data di kepala: "Data | Sen, 23 Nov | 16.51 WIB"; bila tanggal tak terbaca kembali ke jamData bersama */
+function jamCantik(d) {
+  const t = new Date(d); if (isNaN(t)) return jamData(d);
+  const hari = t.toLocaleDateString("id-ID", {...WIB, weekday: "short"}), tg = t.toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "short"}), jam = t.toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"});
+  return `<span class="pr-upd-l">Data</span><b>${esc(hari)}, ${esc(tg)}</b><span class="pr-upd-j">${esc(jam)} WIB</span>`;
+}
+/* tombol tema: simpan di "pk-tema" (kunci bersama halaman lain), dibaca anti kedip oleh /halaman_awal.js di <head> */
+$("#tema")?.addEventListener("click", () => {
+  const akar = document.documentElement, gelap = akar.dataset.theme ? akar.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches, t = gelap ? "light" : "dark";
+  akar.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {}
+});
+
 async function ambil(f) { try { const r = await fetch("data/" + f, {cache: "no-cache"}); return r.ok ? r.json() : null; } catch { return null; } }
 
 async function mulai() {
   [PR.d, PR.skor, PR.uji, PR.kal, PR.lalu, PR.kalender, PR.aktif] = await Promise.all(["prediksi.json", "skor.json", "ujibalik.json", "kalibrasi.json", "lalu.json", "kalender_risiko.json", "kalibrasi_aktif.json"].map(ambil));
   if (!PR.d) { $("#tabelBesok").innerHTML = '<p class="kosong">Data prediksi belum tersedia.</p>'; $("#upd").textContent = "Data belum ada"; return; }
-  $("#upd").innerHTML = jamData(PR.d.dibuat);
+  $("#upd").innerHTML = jamCantik(PR.d.dibuat);
+  $("#upd").title = "Prakiraan dibuat " + tgl(new Date(PR.d.dibuat).toLocaleDateString("en-CA", WIB)) + ", pukul " + new Date(PR.d.dibuat).toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"}) + " WIB";
   PR.KOL = Object.fromEntries(Object.entries(PR.d.kode).map(([kd, v]) => [kd, v.kol]));
   const prov = [...new Map(PR.d.kab.map(k => [k.prov, k.pn])).entries()].sort((a, b) => a[1].localeCompare(b[1], "id"));
   $("#prov").insertAdjacentHTML("beforeend", prov.map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join(""));
