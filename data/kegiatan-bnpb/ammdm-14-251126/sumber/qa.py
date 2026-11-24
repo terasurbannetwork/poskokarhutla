@@ -8,7 +8,7 @@ SOFFICE = r"C:\Program Files\LibreOffice\program\soffice.exe"
 for d in (UJI, CEK): shutil.rmtree(d, ignore_errors=True)
 subprocess.run([sys.executable, "-W", "ignore", str(SP / "bangun_desain.py"), str(UJI)], check=True, capture_output=True)
 docs = [UJI / "Naskah Lengkap Kepala BNPB AMMDM ke-14.docx"] + sorted((UJI / "Per acara").glob("*.docx"))
-subprocess.run([SOFFICE, "-env:UserInstallation=file:///C:/Users/USER/AppData/Local/Temp/lo_ammdm", "--headless",
+subprocess.run([SOFFICE, "-env:UserInstallation=" + (Path(tempfile.gettempdir()) / "lo_ammdm").as_uri(), "--headless",
                 "--convert-to", "pdf", "--outdir", str(CEK)] + [str(d) for d in docs], check=True, capture_output=True, timeout=600)
 masalah = []
 for pdf in sorted(CEK.glob("*.pdf")):
