@@ -4,6 +4,6 @@
  "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
  "ditulis": "2026-11-24",
  "versi": 1,
- "jangkar_commit": "",
+ "jangkar_commit": "408f10b5a1dd649932c01c273dced546d8f08f10",
  "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. prasyarat menolak selama kosong."
 }
