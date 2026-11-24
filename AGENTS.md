@@ -110,6 +110,8 @@ ulang yang berubah.
 | Lapangan `/petugas` | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**`, `data/kajian-bnpb/lapangan/**` (lapangan); `src/lapangan*.js`, `migrations/0095-0098` (warga-api) | D1 `orang`, `lp_*`, `wa_antre`; R2 `lapangan/` | `lapangan` |
 | Siklus Bencana `/siklus` | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**`, `data/kajian-bnpb/siklus/**`; `src/siklus*.js`, migrasi `sk_*` (warga-api) | D1 `sk_*`, R2 `siklus/`; `siklus.yml` | `siklus` |
 | Inventori LogPal `/logpal` | `public/logpal/**`, `public/data/logpal/**`, `scripts/logpal/**`, `data/kajian-bnpb/logpal/**`; `src/logpal.js`, `migrations/0112` (warga-api) | D1 `logpal_*`; rute `/api/instansi/logpal/*` | `warga-api` |
+| Lab InSAR gambut | `scripts/data/insar_gambut.py`, `tests/insar-gambut/**`, `data/kajian-bnpb/insar-gambut/**` | lab lokal, tanpa keluaran publik sebelum vonis | `pipa-data` |
+| Alat gambar wilayah | `public/alat_gambar*.js`, `tests/gambar/**`, `data/kajian-bnpb/alat-gambar/**` | hitung di peramban dari JSON publik | `layar-peta` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
 
@@ -616,6 +618,28 @@ Sebelum menyentuh genangan Copernicus GFM per kejadian Buku Besar, zona sel di p
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`GS-*`), `GLOSARIUM.md`.
 
 Aturan berhentinya sama dengan §2.1. Sumber genangan satu (GFM lewat `genangan_nasional.py`): tanpa ambang radar sendiri, tanpa penggeser ambang, tanpa hitung ulang di peramban; bangunan terendam tidak tampil (milik paket `kerusakan-satelit`); kab tanpa lintasan atau tanpa cakupan sah tidak pernah 0; angka radar berlabel `estimasi-model` dan berdampingan dengan DIBI dan petugas, tidak dijumlah; "penduduk di area genangan", tidak pernah "terdampak", "aman", atau "surut"; `banjir_jam1` tidak berubah; tanpa versi publik sebelum Q1; tinjau di `http://localhost:8800/siklus/kaji`.
+
+### 2.45 Kedalaman gambut hilang dari InSAR (lab, mengganti D literatur di `gambut_bara.py`): baca dulu, baru bangun
+
+Sebelum menyentuh perbandingan penurunan permukaan gambut dari InSAR dengan kedalaman bakar literatur, skrip lab `scripts/data/insar_gambut.py`, atau jalur kalibrasi `D_BAWAH`, `D_ATAS` di `scripts/data/gambut_bara.py`, baca dokumen di
+`data/kajian-bnpb/insar-gambut/` dengan urutan otoritas ini (kode di `scripts/data/insar_gambut.py` milik `pipa-data`, `tests/insar-gambut/**` milik `penulis-gerbang`; mesin LiCSBAS `scripts/banjir/subsiden.py` milik `banjir`, tidak diubah; pemeriksa `validasi-model`):
+
+1. `KEPUTUSAN-INSAR.md`: keputusan pemilik K1, rancangan D1–D10, pertanyaan terbuka Q1–Q6 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md` (kriteria vonis dikunci sebelum lab), 10. `TIKET.md` (`IG-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Lab dulu, hipotesis sampai lulus; satu mesin InSAR (LiCSBAS lewat paket `penurunan-tanah`); L-band diproses di luar repo; unduh data hanya sesudah izin pemilik (Q1); tak terukur bukan nol; tidak ada angka InSAR di produk tanpa vonis `selaras` dan jawaban Q2.
+
+### 2.46 Alat gambar wilayah di peta utama (poligon, kotak, buffer 1–50 km): baca dulu, baru bangun
+
+Sebelum menyentuh alat gambar di peta utama (mode gambar, hitungan titik panas, FRP, siang lawan malam, sel berdeteksi, luas dNBR insiden, desa dan penduduk dalam gambar), baca dokumen di
+`data/kajian-bnpb/alat-gambar/` dengan urutan otoritas ini (kode di `public/alat_gambar*.js` dan satu tombol di `public/index.html` milik `layar-peta`; `tests/gambar/**` milik `penulis-gerbang`; pemeriksa `inp-reviewer` dan `selera-angka`):
+
+1. `KEPUTUSAN-GAMBAR.md`: keputusan pemilik K1, rancangan D1–D15, pertanyaan terbuka Q1–Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`AG-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Luas gambar bernama "luas wilayah digambar", tidak pernah luas terbakar; titik panas memakai definisi angka utama; tanpa tafsir "malam berarti gambut"; tanpa "aman" atau "bebas api"; hitung di peramban, gambar tidak disimpan atau masuk URL; penduduk hanya kecamatan beririsan berpil perkiraan kasar.
 
 ## 3. Bentuk kerja
 

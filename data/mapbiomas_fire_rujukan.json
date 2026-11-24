@@ -1,0 +1,13 @@
+{
+  "sumber": "MapBiomas Fire Indonesia (Auriga Nusantara dkk.), Koleksi 1 kebakaran; angka 2026 dikutip dari pemberitaan Landscape 360 dan AYANA (RISET.md pembanding-pantaukarhutla, Putaran tambahan 24 Nov 2026). BUKAN unduhan primer: bucket publik mapbiomas-public menolak akses anonim sejak 24 Nov 2026 (403, termasuk berkas yang dulu terbaca).",
+  "periode": {"awal": "2026-01-01", "akhir": "2026-09-30"},
+  "satelit": "Landsat/Sentinel 30 m (klasifikasi MapBiomas), bulanan",
+  "nasional_ha": 1103132,
+  "prov_ha": {"91": 313777, "93": 253274},
+  "kab_ha": {"Merauke": 192479},
+  "catatan": "Kutipan memberi 'Papua' 313.777 ha (28%) dan 'Papua Selatan' 253.274 ha terpisah; tidak jelas apakah Papua 313.777 sudah memuat Papua Selatan (pemekaran 2022). Merauke 192.479 ha, 97% di savana dan rawa rumput non-hutan.",
+  "pangsa_kutipan": {
+    "kalimantan": {"titik_panas": 0.51, "tapak_sel_375m": 0.43, "bekas_bakar": 0.23},
+    "papua": {"titik_panas": 0.16, "tapak_sel_375m": 0.20, "bekas_bakar": 0.28}
+  }
+}

@@ -1,6 +1,6 @@
 /* aktor.js — perusahaan di balik titik panas karhutla 2026 (kajian WALHI "Siapa di Balik Api?"), dicek silang ke peta konsesi.
    Data: data/aktor_karhutla.json (scripts/data/aktor_walhi.py). Nama & grup pemegang konsesi tampil lagi (pemilik, 17 Okt 2026).
-   Menambah: lima kartu Insight (daftar perusahaan, modal asing per negara, grup usaha, PSN Merauke, tokoh politik);
+   Menambah: empat kartu Insight (daftar perusahaan, modal asing per negara, grup usaha, PSN Merauke);
    di peta: garis tebal di poligon perusahaan WALHI, pil bendera negara afiliasi saat poligon diklik, tooltip poligon konsesi bernama.
    Skrip klasik dimuat SETELAH konsesi.js. Memakai global halaman: Insight, Lapis, Peta, peta, $, esc, fmt, muatJSON, bukaTab,
    kiriPad, paginasi, pengurutKepala, tampilTip, kartuTip, ikon, maplibregl, nanti. */
@@ -48,10 +48,10 @@
       + (p.catatan ? `<p class="ak-tcn">${esc(p.catatan)}</p>` : ""); };
 
   Object.assign(Insight.st, {akJenis: "", akHal: 0, akUrut: "luas", akTurun: true});
-  Object.assign(Insight.LABEL, {aktor: "Perusahaan", aktorNegara: "Modal asing", aktorGrup: "Grup usaha", aktorPsn: "PSN Merauke", aktorTokoh: "Tokoh politik"});
+  Object.assign(Insight.LABEL, {aktor: "Perusahaan", aktorNegara: "Modal asing", aktorGrup: "Grup usaha", aktorPsn: "PSN Merauke"});
   ["aktor", "aktorNegara"].forEach(k => Insight.PENUH.add(k));
   const i0 = Insight.EX.indexOf("paparan");   /* sesudah paparan = posisi lama sesudah kartu bnpb (disembunyikan 17 Okt 2026) */
-  Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0 + 1, 0, "aktor", "aktorNegara", "aktorGrup");   /* aktorPsn dan aktorTokoh disembunyikan (pemilik, 17 Okt 2026); fungsinya tetap ada */
+  Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0 + 1, 0, "aktor", "aktorNegara", "aktorGrup");   /* aktorPsn disembunyikan (pemilik, 17 Okt 2026); fungsinya tetap ada */
 
   /* ---------- 1. daftar perusahaan ---------- */
   const PER = 10;
@@ -89,7 +89,7 @@
     const kol = sawit ? 8 : 10;
     const tabel = `<div class="tw ak-tw"><table><thead><tr><th class="n">No</th>${kepala}${kolAngka}</tr></thead>
       <tbody>${hal.map((p, i) => `<tr data-ak="${esc(p.nama)}" tabindex="0" data-tip="${esc(A.tip(p))}"><td class="n">${st.akHal * PER + i + 1}</td>${sel(p)}${selAngka(p)}</tr>`).join("")
-        || `<tr><td colspan="${kol}" class="kosong">Tidak ada perusahaan.</td></tr>`}</tbody></table></div>${paginasi(st.akHal, r.length, PER, "perusahaan")}`;
+        || `<tr><td colspan="${kol}" class="kosong">Tidak ada perusahaan.</td></tr>`}</tbody></table></div>${paginasi(st.akHal, r.length, PER, "perusahaan")}<p class="ak-kpk">Titik di dalam konsesi bukan bukti penyebab kebakaran.</p>`;
     const kini = semua.filter(p => kini_(p) && p.cek.lokasi !== "beda").length, ha = semua.reduce((a, p) => a + (s26(p)?.luas_bakar_ha || 0), 0);
     const judul = sawit ? `${this.hl(fmt(semua.length) + " perusahaan sawit")} terindikasi karhutla 2026 dengan indikasi luas terbakar ${this.hl(fmt(ha) + " ha")}; ${this.hl(fmt(kini))} masih ada titik panas di konsesinya ${esc(lbKini)}`
       : `${this.hl(fmt(semua.length) + " perusahaan")} terindikasi karhutla 2026, ${this.hl(fmt(asing))} terafiliasi luar negeri; ${this.hl(fmt(kini))} masih ada titik panas di konsesinya ${esc(lbKini)}`;
@@ -110,7 +110,7 @@
       <ul>${rs.map(([p, x]) => `<li data-ak="${esc(p.nama)}" data-tip="${esc(A.tip(p))}">${A.logo(x.nama, 28)}<span class="ak-li"><span class="ak-lb"><b>${esc(p.nama)}</b><span class="ak-ph">← ${esc(x.nama)}</span></span><span class="ak-lf">${indPil(p.industri)}${titikPil(p)}</span></span></li>`).join("")}</ul></section>`;
     const [besar, ...lain] = urut, lebar = besar && besar[1].length >= 4;
     const isi = `<div class="ak-ngr">${lebar ? kotak(besar, 1) : ""}<div class="ak-ngr-lain" style="--n:${Math.max(1, Math.min(5, (lebar ? lain : urut).length))}">${(lebar ? lain : urut).map(r => kotak(r)).join("")}</div></div>`;
-    return this.ex(`${this.hl(nP + " perusahaan")} dengan titik panas terbanyak dimiliki pemegang saham di ${this.hl(urut.length + " negara")}, termasuk yurisdiksi rahasia BVI dan Samoa`, "", "", isi,
+    return this.ex(`Modal asing`, "", "", isi,
       ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
   /* ---------- 3. grup usaha & negara (Tabel 4) ---------- */
@@ -124,7 +124,7 @@
     const tipG = (x, ps) => { const ok = ps.filter(p => p.cek?.poligon && p.cek.lokasi !== "beda"), t = ok.reduce((a, p) => a + (p.cek.titik_viirs || 0), 0);
       return `<div class="tp2-h ak-tch">${A.logo(x.grup, 26)}<span><b>${esc(x.grup)}</b><small>${bendera(x.negara, 10)}${esc(NEG()[x.negara] || x.negara)}</small></span></div>`
         + `<div class="ak-tcs"><span><b>${fmt(x.jumlah)}</b>perusahaan terindikasi</span>${ok.length ? `<span><b>${fmt(t)}</b>titik panas Jan–Agu</span>` : ""}</div><div class="ak-tcm">Klik untuk rincian perusahaan</div>`; };
-    const isi = `<div class="ak-bar">${G.map(x => { const ps = anak(x.grup).sort((a, b) => (b.cek?.titik_viirs || 0) - (a.cek?.titik_viirs || 0)), sisa = x.jumlah - ps.length;
+    const isi = `<div class="ak-bar">${G.map(x => { const ps = anak(x.grup).sort((a, b) => (b.sawit26?.luas_bakar_ha || 0) - (a.sawit26?.luas_bakar_ha || 0) || (b.cek?.titik_viirs || 0) - (a.cek?.titik_viirs || 0)), sisa = x.jumlah - ps.length;
       return `<details class="ak-gd"><summary class="ak-br" data-tip="${esc(tipG(x, ps))}">
       <span class="ak-bl">${A.logo(x.grup, 18)}${bendera(x.negara, 12)}${esc(x.grup)}</span><i><b style="width:${x.jumlah / mx * 100}%;background:${x.negara === "MY" ? "#2f6f8f" : "#c9503a"}"></b></i><span class="ak-pl">${x.jumlah}</span></summary>
       <ul>${ps.map(p => `<li data-ak="${esc(p.nama)}" tabindex="0" data-tip="${esc(A.tip(p))}"><b>${esc(p.nama)}</b><span class="ak-mt">${esc([p.kab, p.prov].filter(Boolean).join(", "))}</span>${indPil(p.industri)}${titikPil(p) || `<span class="ak-mt">tidak di peta</span>`}</li>`).join("")}</ul>
@@ -142,16 +142,6 @@
     const isi = `<div class="ak-psn"><div><div class="ak-sb">Energy estate, ${fmt(en)} titik</div><div class="ak-bar">${P.energi.map(x => baris(x.nama, x.grup, x.titik, "#c98a3c", bendera(x.negara, 12))).join("")}</div></div>
       <div><div class="ak-sb">Food estate, ${fmt(pg)} titik</div><div class="ak-bar">${P.pangan.map(x => baris(x.nama, x.pengampu, x.titik, "#7a4bb0", "")).join("")}</div></div></div>`;
     return this.ex(`${this.hl(fmt(pg) + " dari " + fmt(P.total))} titik panas PSN Pangan dan Energi Merauke ada di klaster food estate yang diampu pemerintah`, "", "", isi,
-      ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
-
-  /* ---------- 5. tokoh politik (bab 2) ---------- */
-  Insight.exAktorTokoh = function () {
-    if (!A.d) return tunggu(); if (A.d.gagal) return "";
-    const T = A.d.tokoh, nP = new Set(T.map(t => t.perusahaan)).size;
-    const isi = `<div class="tw ak-tw"><table><thead><tr><th>Tokoh</th><th>Jabatan politik</th><th>Kaitan</th><th>Perusahaan</th><th class="n">Titik panas</th></tr></thead><tbody>
-      ${T.map(t => { const p = A.per[t.perusahaan] || {}; return `<tr data-ak="${esc(t.perusahaan)}" tabindex="0"><td class="ak-nm">${esc(t.nama)}</td><td class="ak-gr" data-tip="${esc(t.peran)}">${esc(t.peran)}</td><td class="ak-gr" data-tip="${esc(t.kaitan)}">${esc(t.kaitan)}</td><td>${esc(t.perusahaan)}</td>
-        <td class="n">${titik(p) != null ? `<span class="ak-pl">${fmt(titik(p))}</span>` : `<span class="ak-mt" data-tip="Kebakaran ditemukan lewat pemantauan lapangan">–</span>`}</td></tr>`; }).join("")}</tbody></table></div>`;
-    return this.ex(`${this.hl(T.length + " tokoh politik")} duduk di jajaran pemilik atau pengurus ${this.hl(nP + " perusahaan")} terindikasi karhutla`, "", "", isi,
       ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
   /* klik di kartu: urut, halaman, baris -> peta */
@@ -300,9 +290,9 @@
     if (S.pilihK !== id || $("#laci .ak-laci")) return;
     const sek = [...document.querySelectorAll("#laci details.lipat")].find(d => (d.querySelector("summary")?.textContent || "").startsWith("Lahan & penanggung jawab"));
     if (!sek) return;
-    const urut = ps.map(p => [p, d26[p.id]]).sort((a, b) => (b[1]?.titik || 0) - (a[1]?.titik || 0));
+    const urut = ps.map(p => [p, d26[p.id]]).sort((a, b) => (b[1]?.luas_bakar_ha || 0) - (a[1]?.luas_bakar_ha || 0) || (b[1]?.titik || 0) - (a[1]?.titik || 0));
     sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ak-laci"><div class="lbl">Perusahaan pemegang konsesi di cluster ini</div>${urut.length ? urut.map(([p, r]) => barisPer(p, r)).join("") : `<p style="margin:0;font-size:12.5px">Tidak ada areal konsesi bernama di cluster ini.</p>`}
-      <p class="ak-kpk">Sumber: NASA FIRMS VIIRS 375 m di poligon konsesi GFW/Trase, 1 Jan 2026 s.d. hari ini; terbakar = indikasi dari piksel VIIRS.</p></div>`);
+      <p class="ak-kpk">Titik di dalam konsesi bukan bukti penyebab kebakaran.</p></div>`);
     sek.querySelector(".ak-laci").onclick = e => { const b = e.target.closest("[data-ak-buka]"); if (b && !e.target.closest("[data-tip]")) A.buka(b.dataset.akBuka); }; }); };
   /* tooltip kompleks (konsesi.js): nama perusahaan, paling banyak 3 */
   A.tipKompleks = id => A.perKompleks(id).then(ps => ps.length ? `<div class="ak-tkp"><small>Perusahaan</small>${ps.slice(0, 3).map(p => `<span>${benderaDaf(A.per?.[p.nama]?.negara, 11)}${esc(p.nama)}</span>`).join("")}${ps.length > 3 ? `<span class="ak-mt">+${ps.length - 3} lainnya</span>` : ""}</div>` : "");

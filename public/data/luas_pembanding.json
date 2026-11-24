@@ -1,0 +1,88 @@
+{
+ "dibuat": "2026-11-24T06:59+00:00",
+ "sumber": "MapBiomas Fire Indonesia (kutipan terbit, lihat catatan) lawan regresi keputusan.py (log-log titik VIIRS; a per provinsi dari SiPongi 2018-2023)",
+ "satelit": {
+  "mapbiomas": "Landsat/Sentinel 30 m (klasifikasi MapBiomas), bulanan",
+  "regresi": "titik panas VIIRS S-NPP (375 m), keyakinan sedang/tinggi"
+ },
+ "periode": {
+  "awal": "2026-01-01",
+  "akhir": "2026-09-30"
+ },
+ "metode": "rasio = luas regresi pada titik periode yang sama / luas MapBiomas; tanda bila |ln rasio| > sigma_log provinsi",
+ "definisi": {
+  "mapbiomas_ha": "luas bekas bakar terklasifikasi dari citra 30 m, bulanan, dijumlah",
+  "regresi_ha": "perkiraan dari jumlah titik VIIRS periode itu; rumus tahunan dipakai pada periode sebagian, jadi kasar",
+  "rasio": "regresi dibagi MapBiomas; < 1 berarti regresi melapor lebih kecil",
+  "pangsa": "porsi wilayah terhadap total nasional pada periode yang sama",
+  "tanda": "hipotesis: selisih lawan kutipan MapBiomas, bukan bias terbukti; regresi tahunan dipakai pada periode sebagian (Jan-Sep) dan kutipan Papua mungkin sudah memuat Papua Selatan"
+ },
+ "bias_provinsi": [
+  {
+   "prov": "91",
+   "nama": "Papua",
+   "titik_viirs": 544,
+   "mapbiomas_ha": 313777,
+   "regresi_ha": 37958,
+   "sigma_log": 2.3,
+   "rasio": 0.12,
+   "tanda": "tak dapat dinilai (sigma lebar)"
+  },
+  {
+   "prov": "93",
+   "nama": "Papua Selatan",
+   "titik_viirs": 40028,
+   "mapbiomas_ha": 253274,
+   "regresi_ha": 116599,
+   "sigma_log": 0.7,
+   "rasio": 0.46,
+   "tanda": "regresi lebih kecil dari kutipan"
+  }
+ ],
+ "bias_nasional": {
+  "mapbiomas_ha": 1103132,
+  "regresi_ha": 825268,
+  "jumlah_prov_terkalibrasi": 37,
+  "rasio": 0.75,
+  "tanda": "dalam kisaran",
+  "catatan": "jumlah regresi seluruh provinsi terkalibrasi; ambang tanda memakai sigma 0,5 (kasar)"
+ },
+ "tahun_tumpang_tindih": {
+  "status": "belum terhitung",
+  "alasan": "MapBiomas Fire per provinsi 2013-2023 hanya raster di bucket yang kini 403; belum ada tabel provinsi terbit yang terverifikasi"
+ },
+ "mapbiomas_2024_2026_bulanan": {
+  "status": "belum terbit/tidak terjangkau",
+  "alasan": "tidak ada rilis bulanan per provinsi/kab yang bisa diunduh anonim; hanya angka Jan-Sep 2026 dari pemberitaan"
+ },
+ "pangsa_wilayah": {
+  "titik_panas_viirs": {
+   "nilai_kita": {
+    "kalimantan": 0.558,
+    "papua": 0.143
+   },
+   "kutipan_mapbiomas": {
+    "kalimantan": 0.51,
+    "papua": 0.16
+   }
+  },
+  "tapak_sel_375m": {
+   "nilai_kita": null,
+   "status": "belum tersedia per provinsi (arsip kita tidak menyimpan tapak sel tahunan)",
+   "kutipan_mapbiomas": {
+    "kalimantan": 0.43,
+    "papua": 0.2
+   }
+  },
+  "bekas_bakar": {
+   "nilai_kita": null,
+   "status": "bukan hasil kita",
+   "kutipan_mapbiomas": {
+    "kalimantan": 0.23,
+    "papua": 0.28
+   }
+  }
+ },
+ "atribusi": "MapBiomas Indonesia (mapbiomas.org), Auriga Nusantara dkk.; CC BY-SA 4.0",
+ "catatan": "Kutipan memberi 'Papua' 313.777 ha (28%) dan 'Papua Selatan' 253.274 ha terpisah; tidak jelas apakah Papua 313.777 sudah memuat Papua Selatan (pemekaran 2022). Merauke 192.479 ha, 97% di savana dan rawa rumput non-hutan."
+}

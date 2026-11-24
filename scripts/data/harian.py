@@ -596,6 +596,9 @@ def rakit_kluster(titik, kini, grid, hari_fwi, w, lahan, garis=True):
                 "gambut": di_gambut, "tanggung": penanggung(lahan, lon0, lat0),
                 "skor": A.skor_dengan_riwayat(A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
                                                      (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd), RISIKO.get("|".join(adm), 0)),
+                # PKH-36: uraian skor di atas per komponen (hipotesis; bobot tidak diubah). Dihitung dengan masukan yang sama persis dengan "skor".
+                "alasan": A.alasan_skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
+                                        (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd, RISIKO.get("|".join(adm), 0), di_gambut),
                 "level": lv, "status": STATUS[lv], "firespot": fs, "pola": pola,
                 **({"fs_ini": fs_ini} if fs_ini else {}),
                 **penanda_proksi(pts),
@@ -1242,6 +1245,7 @@ def uji():
         fit, tulis = arsip_kemarin(T, D + dt.timedelta(days=1), grid, Kosong(), lahan, d)
         a = json.load(open(os.path.join(d, f"{D}.json")))
         assert tulis and os.listdir(d) == [f"{D}.json"] and a["hari"] == D.isoformat() and a["penuh"] is True, a.keys()
+        assert all(f["properties"]["alasan"]["status_nilai"] == "hipotesis" and f["properties"]["alasan"]["penduduk_searah_angin"]["x"] is None for f in fit), "PKH-36: alasan tiap kluster"
         n = {f["properties"]["prov"]: f["properties"]["n"] for f in fit}
         assert n == {"93": AMBANG_MEDIUM_PX + 1, "81": 4, "61": 5}, f"titik 23.59 ikut, 00.30 D+1 dan 23.59 D-7 tidak: {n}"
         assert dt.datetime.fromisoformat(next(f for f in fit if f["properties"]["prov"] == "61")["properties"]["awal"]) == wib(6, 0, 0), "jendela 7 hari diukur dari jam beku"

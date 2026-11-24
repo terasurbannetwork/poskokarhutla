@@ -279,6 +279,7 @@ jobs:
           python3 scripts/data/ansambel.py
           python3 scripts/data/peluang_karhutla.py || echo "::warning title=peluang karhutla::gagal; berkas lama dibiarkan"
           python3 scripts/data/tanah.py
+          python3 scripts/data/tanah_gambut.py || echo "::warning title=tanah gambut::tarikan ERA5-Land gagal; berkas lama dibiarkan"
 
       - name: Simpan iklim tanah
         if: always()
@@ -778,6 +779,9 @@ jobs:
           python3 scripts/data/ansambel.py uji
           for s in titik_palsu peluang_karhutla kumulatif; do python3 scripts/data/$s.py uji; done
           python3 scripts/data/tanah.py uji
+          python3 scripts/data/tanah_gambut.py uji
+          python3 -I scripts/data/bias_luas.py uji
+          python3 scripts/data/lab_front.py uji
           python3 scripts/data/penduduk.py paparan > /dev/null
           python3 scripts/scrape/akses.py uji
           python3 scripts/data/cuaca_jam.py uji

@@ -112,6 +112,28 @@ def skor(px24, frp24, hari_aktif, isi, dc, jarak_daops_km):
     return round(bahaya * (1 + celah), 2)
 
 
+def alasan_skor(px24, frp24, hari_aktif, isi, dc, jarak_daops_km, risiko, gambut, penduduk=None):
+    """PKH-36: uraian skor() x skor_dengan_riwayat() per komponen, TANPA mengubah bobot atau rumus. Skor = hasil kali faktor, jadi tiap komponen
+    mendapat porsi = ln(faktor) / jumlah ln(faktor) (bagian dari log skor, jumlah 1; faktor 1 = 0). `x` = faktor pengali nyata.
+    Kunci: front (px24), frp, persistensi (hari aktif), laju (ISI), kekeringan (DC > 350, hanya dihitung bila di gambut atau peta gambut tak ada: pemanggil
+    mengirim dc 0 selain itu), celah (jarak Daops), riwayat. `gambut` bukan faktor skor (hanya gerbang DC): tak diberi porsi, ditulis sebagai penanda.
+    `penduduk` (searah angin, lintasan.py) = null + status 'menunggu uji' sampai PKH-02 punya vonis. Seluruh blok berlabel hipotesis: bobot belum diuji
+    terhadap label eskalasi dan lab_padam."""
+    f = {"front": max(px24, 1),
+         "frp": 1 + math.log1p(max(frp24, 0)) / 5,
+         "persistensi": 1 + min(hari_aktif, 5) / 5,
+         "laju": 1 + min(max(isi or 0, 0), 20) / 20,
+         "kekeringan": 1 + (0.5 if (dc or 0) > 350 else 0) / (1 + min(max(isi or 0, 0), 20) / 20),  # ISI dan DC dijumlah dalam satu faktor di skor()
+         "celah": 1 + min((jarak_daops_km or 0) / 150, 1),
+         "riwayat": 1 + max(0, min(risiko, 100)) / 100}
+    # skor(): bahaya *= 1 + isi/20 + 0,5[DC>350]. Pisah ISI dan DC: faktor gabungan = laju x kekeringan, jadi kekeringan = (1 + isi/20 + 0,5) / (1 + isi/20).
+    ln = {k: math.log(v) for k, v in f.items()}
+    tot = sum(ln.values())
+    return {"komponen": {k: {"x": round(f[k], 3), "porsi": round(ln[k] / tot, 3) if tot > 0 else None} for k in f},
+            "gambut": bool(gambut), "penduduk_searah_angin": {"x": None, "porsi": None, "status": "menunggu uji (PKH-02)"} if penduduk is None else penduduk,
+            "status_nilai": "hipotesis", "catatan": "uraian skor yang ada, bukan bobot baru; belum diuji terhadap label eskalasi dan lab_padam"}
+
+
 def risiko_riwayat(per_tahun, tahun, maks_total, mulai_baru="2023"):
     """Indeks risiko historis wilayah 0-100 (sama dengan peringkat di halaman Tren):
     50% kekerapan (tahun dengan >= 10 titik), 30% besaran (log total / log total terbesar),
@@ -152,6 +174,11 @@ if __name__ == "__main__":
     assert status(0, 3) == 2 and status(1, 3) == 2 and status(None, 3) == 2
     assert status(0, 1) == 0 and status(2, 2) == 2 and status(3, 1) == 1 and status(None, 1) == 1
     assert all(status(f, s) <= 2 for f in (None, 0, 1, 2, 3) for s in (1, 2, 3))  # level 3 hanya lewat peringkat
+    a = alasan_skor(20, 500, 3, 8, 400, 120, 40, True)   # hasil kali faktor = skor(): uraian tidak mengubah angkanya
+    assert abs(math.prod(c["x"] for c in a["komponen"].values()) - skor_dengan_riwayat(skor(20, 500, 3, 8, 400, 120), 40)) < 0.02 * skor_dengan_riwayat(skor(20, 500, 3, 8, 400, 120), 40)
+    assert abs(sum(c["porsi"] for c in a["komponen"].values()) - 1) < 0.01 and a["komponen"]["kekeringan"]["x"] > 1
+    assert a["penduduk_searah_angin"]["x"] is None and a["status_nilai"] == "hipotesis"
+    assert alasan_skor(1, 0, 0, None, 0, None, 0, False)["komponen"]["front"]["porsi"] is None   # semua faktor 1: skor 1, tak ada porsi (bukan 0)
     assert skor(20, 500, 3, 8, 400, 120) > skor(20, 500, 3, 8, 400, 10) > skor(5, 500, 3, 8, 400, 10)
     assert gunung_api(-8.108, 112.922) == "Semeru" and gunung_api(-8.108, 112.922 + 0.02) == "Semeru"  # ~2,2 km
     assert gunung_api(-8.108, 112.922 + 0.05) is None and gunung_api(-2.2, 113.9) is None          # ~5,5 km; Palangka Raya

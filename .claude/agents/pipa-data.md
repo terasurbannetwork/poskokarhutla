@@ -67,6 +67,9 @@ Berkas milikmu (glob paling spesifik menang):
 - `tests/insiden/**`
 - `public/data/progresi/**`
 - `public/data/feeds/**`
+- `public/data/luas_pembanding.json`
+- `public/data/tanah_gambut_bulanan.json`
+- `tests/insar-gambut/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

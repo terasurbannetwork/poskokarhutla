@@ -88,17 +88,7 @@ CATATAN = {
     "PT Arara Abadi": "Kebakaran sekitar penghujung Maret 2026; hamparan terbakar di dalam dan sekitar izin +- 616,3 ha (WALHI Riau).",
     "PT Sekato Pratama Makmur": "Kebakaran pertengahan-akhir Maret 2026, +- 115,3 ha di hutan alam sekunder (WALHI Riau).",
 }
-# Bab 2: tokoh politik di jajaran pemilik/pengurus (peran sebagaimana ditulis WALHI)
-TOKOH = [{"nama": "Iwan Bomba (Setiawan Ichlas)", "peran": "Utusan Khusus Presiden Bidang Ekonomi dan Perbankan; eks TKN Prabowo-Gibran",
-          "kaitan": "Pemilik Bomba Group", "perusahaan": "PT Golden Blossom Sumatra"},
-         {"nama": "Aburizal Bakrie", "peran": "Dewan Pembina TKN Prabowo-Gibran", "kaitan": "Grup Bakrie (induk melalui PT Bakrie Sumatera Plantations Tbk)",
-          "perusahaan": "PT Monrad Intan Barakat"},
-         {"nama": "Edhy Prabowo", "peran": "Elite Partai Gerindra; mantan Menteri Kelautan dan Perikanan",
-          "kaitan": "Direktur Utama PT Kiani Lestari; pemegang saham PT Nusantara Agro Forestry", "perusahaan": "PT Kiani Lestari"},
-         {"nama": "Widjono Hardjanto", "peran": "Wakil Ketua Harian Partai Gerindra; Dewan Penasihat TKN Prabowo-Gibran",
-          "kaitan": "Komisaris Utama PT Bali Pasific Investama; Komisaris PT Nusantara Agro Forestry", "perusahaan": "PT Kiani Lestari"},
-         {"nama": "Benny Pangbin", "peran": "Ketua Bidang Analisa dan Pengembangan Potensi Kader DPP Partai Gerindra",
-          "kaitan": "Direksi PT Kiani Lestari", "perusahaan": "PT Kiani Lestari"}]
+# Bab 2 WALHI (tokoh politik) SENGAJA tidak dimuat: keluaran publik tidak menautkan tokoh ke perusahaan (PKH-45, aturan 3)
 LAPANGAN = [("PT Golden Blossom Sumatra", "Sumatera Selatan", "sawit"), ("PT Monrad Intan Barakat", "Kalimantan Selatan", "sawit")]
 # Lampiran 1-2: (titik panas Jan-Sep 2026, grup, nama, provinsi); negara dari judul lampiran
 LAMPIRAN_MY = [(121, "Jcorp", "PT Sumber Mardhika Graha", "Kalimantan Tengah"), (13, "Genting Group", "PT Sepanjang Inti Surya Utama 1", "Kalimantan Barat"),
@@ -185,7 +175,7 @@ def gabung():
     def ambil(nama, **kw):
         k = kunci(nama)
         p = P.setdefault(k, {"nama": re.sub(r"\s+\d+$", "", nama), "jenis": "", "prov": "", "kab": "", "grup": [], "negara": [],
-                             "pemegang": [], "titik_agu": None, "titik_sep": None, "tabel": [], "tokoh": [], "catatan": ""})
+                             "pemegang": [], "titik_agu": None, "titik_sep": None, "tabel": [], "catatan": ""})
         for a, b in kw.items():
             if b and not p.get(a):
                 p[a] = b
@@ -216,8 +206,6 @@ def gabung():
         p["tabel"].append("Tabel 3")
     for nm, prov, jenis in LAPANGAN:
         ambil(nm, prov=prov, jenis=jenis)["tabel"].append("Pemantauan lapangan")
-    for t in TOKOH:
-        ambil(t["perusahaan"])["tokoh"].append({k: t[k] for k in ("nama", "peran", "kaitan")})
     for nm, c in CATATAN.items():
         ambil(nm)["catatan"] = c
     for nm, g in (("PT Bumi Mekar Hijau", "Sinar Mas"), ("PT Wahana Samudera Sentosa", "Wilmar"), ("PT Kiani Lestari", "Nusantara Group"),
@@ -470,7 +458,7 @@ def tulis(P, fitur, viirs_baru, acuan=None):
            "negara": NEGARA, "grup_negara": {**GRUP_NEGARA, **GRUP_PETA}, "grup": [{"grup": g, "negara": n, "jumlah": j} for g, n, j in TABEL4],
            "psn": {"energi": [{"nama": a, "grup": b, "negara": GRUP_NEGARA.get(b, ""), "titik": c} for a, b, c in PSN["energi"]],
                    "pangan": [{"nama": a, "pengampu": b, "titik": c} for a, b, c in PSN["pangan"]], "total": PSN["total"], "catatan": PSN["catatan"]},
-           "tokoh": TOKOH, "perusahaan": daf, "poligon": poli}
+           "perusahaan": daf, "poligon": poli}
     with open(KELUAR, "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     cocok = sum(1 for q in daf if q["cek"]["poligon"])
@@ -490,7 +478,7 @@ def uji():
     assert q["PT Mayawana Persada"]["negara"][:2] == ["VG", "WS"] and "KR" in q["PT Hutan Ketapang Industri"]["negara"]
     assert q["PT Bumi Mekar Hijau"]["titik_agu"] == 552 and q["PT Bumi Mekar Hijau"]["titik_sep"] == 601
     assert q["PT Sepanjang Inti Surya Utama"]["titik_sep"] == 13 + 7 + 10, "blok lampiran tidak dijumlah"
-    assert len(q["PT Kiani Lestari"]["tokoh"]) == 3
+    assert not any("tokoh" in x for x in d["perusahaan"]) and "tokoh" not in d
     assert q["PT Mayawana Persada"]["industri"] == "Hutan tanaman (pulp)" and q["PT Kayung Agro Lestari"]["industri"] == "Kelapa sawit"
     assert q["PT Grace Putri Perdana"]["cek"].get("lokasi") == "beda" and q["PT Grace Putri Perdana"]["cek"].get("prov_peta") == "Kalimantan Tengah" and q["PT Mayawana Persada"]["cek"].get("lokasi") == "cocok", "cek lokasi"
     assert q["PT Grace Putri Perdana"]["harian"], "lokasi beda tetap punya titik harian"

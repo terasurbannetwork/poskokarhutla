@@ -41,7 +41,10 @@
         "public/data/opera_dist_2023.json",
         "tests/insiden/**",
         "public/data/progresi/**",
-        "public/data/feeds/**"
+        "public/data/feeds/**",
+        "public/data/luas_pembanding.json",
+        "public/data/tanah_gambut_bulanan.json",
+        "tests/insar-gambut/**"
       ]
     },
     {
@@ -214,6 +217,7 @@
         "public/*.html",
         "public/*.js",
         "tests/layar/**",
+        "tests/gambar/**",
         "tests/prioritas.test.mjs",
         "public/*.css",
         "public/design-system-*.json",

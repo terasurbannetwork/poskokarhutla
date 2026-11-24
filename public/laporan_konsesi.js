@@ -87,7 +87,7 @@
   const SNK = {perdata: "Gugatan perdata", pidana: "Pidana korporasi", administratif: "Sanksi administratif", penyegelan: "Penyegelan"};
   const jenisPil = j => `<span class="kn-j" style="--w:${JN[j]?.[1] || "#888"}">${JN[j]?.[0] || j}</span>`;
 
-  const S = {prov: new Set(BNPB), jenis: new Set(Object.keys(JN)), cari: "", profil: 20, dasar: "google", urut: "titik"};
+  const S = {prov: new Set(BNPB), jenis: new Set(Object.keys(JN)), cari: "", profil: 20, dasar: "google", urut: "luas_bakar_ha"};
   let IDX = null; const DATA = {}; let daftar = [];
   const gambar = new Map();   // id + dasar -> [citra, viirs]
 
@@ -174,11 +174,11 @@
       if (!rs.length) continue;
       rs.forEach((r, j) => { r._top = j + 1; });
       const kab = {}; rs.forEach(r => (kab[r.kabU] ||= []).push(r));
-      const kb = Object.entries(kab).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t);
+      const kb = Object.entries(kab).sort((a, b) => jumlah(b[1]).l - jumlah(a[1]).l || jumlah(b[1]).t - jumlah(a[1]).t);
             let no = 0; kb.forEach(([, xs]) => xs.forEach(r => { r._rp = ++no; }));   /* nomor urut tampil: 1, 2, 3 … mengikuti urutan kab/kota */
       SUSUN.push({k, rs, kab: kb});
     }
-    SUSUN.sort((a, b) => jumlah(b.rs).t - jumlah(a.rs).t);
+    SUSUN.sort((a, b) => jumlah(b.rs).l - jumlah(a.rs).l || jumlah(b.rs).t - jumlah(a.rs).t);
     const out = [];
     SUSUN.forEach(p => p.kab.forEach(([, rs]) => rs.forEach(r => { r._i = out.length; out.push(r); })));
     return out;
@@ -209,7 +209,7 @@
   function tabelDaftar(rs) {
     const grup = new Map();
     for (const r of rs.slice().sort((a, b) => a._rp - b._rp)) { const k = r.kabU || kabUtama(r); if (!grup.has(k)) grup.set(k, []); grup.get(k).push(r); }
-    const kel = [...grup].sort((a, b) => jml(b[1], r => r.titik) - jml(a[1], r => r.titik));
+    const kel = [...grup].sort((a, b) => jml(b[1], r => r.luas_bakar_ha) - jml(a[1], r => r.luas_bakar_ha) || jml(b[1], r => r.titik) - jml(a[1], r => r.titik));
     return `<div class="tw"><table class="kn-tb kn-dft">${KEPALA}
       ${kel.map(([k, g]) => { const buka = KAB_BUKA.has(k);
         /* di layar jumlahnya di baris kab; di PDF baris kab jadi judul dan jumlahnya turun ke baris subtotal di bawah PT-nya */
@@ -310,7 +310,7 @@
 
   function tabelGrup(rs) {
     const grup = {}; rs.forEach(r => { if (r.grup) (grup[r.grup] ||= []).push(r); });
-    const u = Object.entries(grup).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t);
+    const u = Object.entries(grup).sort((a, b) => jumlah(b[1]).l - jumlah(a[1]).l || jumlah(b[1]).t - jumlah(a[1]).t);
     return u.length ? `<h3>Grup perusahaan</h3><div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>Grup</th><th>Perusahaan</th><th>Jenis konsesi</th><th class="kn-c">RSPO</th><th>Kabupaten/kota</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r">Indikasi terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead><tbody>
       ${u.map(([g, xs]) => { const x = jumlah(xs), n = xs.length + (xs.length > 1 ? 1 : 0), neg = xs[0].negara || [];
         return xs.map((r, m) => `<tr>${m ? "" : `<td rowspan="${n}" class="kn-rs"><span class="kn-gr">${logo(g, 22)}<b>${esc(g)}</b></span><span class="kn-gr-n">${neg.map(k => `${bendera(k, 12)}${NEG[k] || k}`).join(", ") || "Negara belum diketahui"}</span>${xs[0].induk ? `<span class="kn-gr-n" title="${esc(xs[0].induk_nm)}">Induk usaha: ${bendera(xs[0].induk, 12)}${NEG[xs[0].induk]}</span>` : ""}</td>`}
@@ -632,7 +632,6 @@
             ["Grup usaha", r.grup ? `<span class="kn-isi"><span class="kn-gr">${logo(r.grup, 20)}<b>${esc(r.grup)}</b></span>${(r.negara || []).map(k => `<span class="kn-ngp">${bendera(k, 12)}${NEG[k] || k}</span>`).join("")}${r.induk ? `<span class="kn-ngp" title="Induk usaha (${esc(r.induk_nm)}) berkantor pusat di ${NEG[r.induk]}">${bendera(r.induk, 12)}induk di ${NEG[r.induk]}</span>` : ""}${r.grup_asal === "greenpeace" ? `<small title="Grup berasal dari laporan Greenpeace dan Pantau Gambut 2026">grup menurut Greenpeace</small>` : ""}</span>` : `<span class="kn-mt">Belum teridentifikasi</span>`],
             ...(r.unit ? [["Unit usaha", `<span class="kn-isi"><span class="kn-gr">${logo(r.unit, 20)}<b>${esc(r.unit)}</b></span><span class="kn-ngp kn-ngp-j">${JN[r.jenis][0]}</span></span>`]] : []),
             ...(ps.length ? [["Pemegang saham", ps.map(x => `<span class="kn-ps">${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")]] : []),
-            ...((r.tokoh || []).length ? [["Tokoh terkait", r.tokoh.map(t => `<span class="kn-ps"><b>${esc(t.nama)}</b>, ${esc(t.peran)}<small>${esc(t.kaitan)}</small></span>`).join("")]] : []),
             ...(r.rspo ? [["RSPO", `<b>Anggota</b> lewat ${esc(r.rspo.grup)}${r.rspo.sejak ? ` sejak ${esc(r.rspo.sejak)}` : ""}; unit ${r.rspo.sertifikat ? "<b>bersertifikat</b>" : "belum bersertifikat"} <small>data RSPO 2020 via GFW</small>`]]
               : r.jenis === "sawit" ? [["RSPO", `<span class="kn-mt">Tidak tercatat sebagai anggota (data RSPO 2020)</span>`]] : []),
             ...((r.sanksi || []).length ? [["Sanksi karhutla", r.sanksi.map(x => `<span class="kn-ps"><b>${esc(SNK[x.jenis] || x.jenis)}</b>${x.tahun ? ` ${x.tahun}` : ""}${x.nilai ? `, Rp${fmt(Math.round(x.nilai / 1e9))} miliar` : ""}${x.perkara ? `, ${esc(x.perkara)}` : ""}<small>${esc(x.status)}, <a class="kn-ln" href="${esc(x.url)}" target="_blank" rel="noopener">sumber</a></small></span>`).join("")]] : []),

@@ -74,7 +74,7 @@
   const insidenHtml = (id, r, d, uji, lin) => r ? insidenIsi(id, r, d, uji, lin) : `<p class="fnd">${TIDAK} insiden untuk cluster ini (hanya cluster tingkat 2 ke atas didaftar sebagai insiden).</p>`;
   nanti(() => mulai("data/insiden.json"));   /* unduh senyap sesudah halaman tenang, supaya klik cluster pertama tidak menunggu */
   const _buka = Laci.buka.bind(Laci);
-  Laci.buka = function (id) { _buka(id); tambahLaci(id); };
+  Laci.buka = function (id) { _buka(id); tambahLaci(id); nanti(() => tambahAlasan(id)); };
   async function tambahLaci(id) {
     const d = await mulai("data/insiden.json"), r = petaInsiden(d).get(id);
     const [uji, lin] = r ? await Promise.all([mulai("/udara/data/uji_lintasan.json"), mulai("/udara/data/lintasan.json")]) : [];
@@ -85,6 +85,21 @@
       const api = [...document.querySelectorAll("#laci details.lipat")].find(x => x.querySelector("summary")?.textContent.startsWith("Api saat ini"));
       api ? api.insertAdjacentHTML("afterend", html) : $("#laci .bd")?.insertAdjacentHTML("afterbegin", html);
     });
+  }
+
+  /* PKH-36: batang alasan peringkat dari properties.alasan.komponen (porsi 0..1 dari log skor, dihitung pipeline); hanya cluster yang punya `alasan` */
+  const KOMP = [["front", "Piksel aktif 24 jam"], ["frp", "Daya api (FRP)"], ["persistensi", "Hari menyala"], ["laju", "Laju rambat (ISI)"], ["kekeringan", "Kekeringan gambut (DC)"], ["celah", "Jarak ke Daops"], ["riwayat", "Riwayat kecamatan"]];
+  function tambahAlasan(id) {
+    if (S.pilihK !== id || $("#laci .pk-alasan")) return;
+    const al = S.kluster?.features.find(f => f.properties.id === id)?.properties.alasan; if (!al?.komponen) return;
+    const baris = KOMP.map(([k, n]) => { const c = al.komponen[k]; if (!c) return "";
+      const tp = `<b>${n}</b><br>pengali skor ${c.x == null ? TIDAK.toLowerCase() : dec(c.x, 2)}<br>porsi ${c.porsi == null ? "tidak dihitung (semua faktor 1)" : pct(c.porsi)}`;
+      return `<div class="pk-al" data-tip="${esc(tp)}" tabindex="0"><span>${n}</span><span class="pk-bar"><i style="width:${c.porsi == null ? 0 : Math.max(0, Math.min(1, c.porsi)) * 100}%"></i></span><b class="num">${c.porsi == null ? "–" : pct(c.porsi)}</b></div>`; }).join("");
+    const pd = al.penduduk_searah_angin, pdTeks = pd?.porsi != null ? pct(pd.porsi) : esc(pd?.status || "menunggu uji");
+    const html = `<details class="lipat pk-alasan" open><summary>Alasan peringkat <span class="pk-lemah" title="${esc(al.catatan || "Bobot belum diuji terhadap label eskalasi dan padam")}">hipotesis</span></summary><div class="isi">${baris}
+      <div class="pk-al" data-tip="Penduduk searah angin dari lintasan asap belum dipakai sebagai komponen skor"><span>Penduduk searah angin</span><span class="pk-bar"></span><b>${pdTeks}</b></div></div></details>`;
+    const sisip = [...document.querySelectorAll("#laci details.lipat")].find(x => x.querySelector("summary")?.textContent.startsWith("Api saat ini"));
+    if (sisip) sisip.insertAdjacentHTML("afterend", html); else $("#laci .bd")?.insertAdjacentHTML("afterbegin", html);
   }
 
   /* ============================================================ 2. PKH-24: titik panas 24 jam setara (kartu "Titik panas 24 jam" di Ringkasan; ringkasan.js memanggil PKH.setara()) */
@@ -108,16 +123,19 @@
   const IK = {
     asean: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',
     petak: '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+    luas: '<path d="M3 20h18M6 20V9M12 20V4M18 20v-7"/>',
+    frp: '<path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/>',
+    gambut: '<path d="M3 17c3-4 6-4 9 0s6 4 9 0M3 11c3-4 6-4 9 0s6 4 9 0"/>',
     musim: '<path d="M7 18a4 4 0 1 1 .9-7.9A5.5 5.5 0 0 1 18.5 11 3.5 3.5 0 0 1 18 18H7Z"/>',
   };
-  const kartu = (nama, ikon, isi, tip = "") => `<article class="ex ex-std pk-kartu"><header class="ex-hd"><span class="ex-ey"></span><div class="ex-jd"><h3${tip ? ` title="${esc(tip)}"` : ""}><svg class="pk-ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ikon}</svg>${nama}</h3></div></header><div class="ex-bd">${isi}</div></article>`;
+  const kartu = (nama, ikon, isi, tip = "", kanan = "") => `<article class="ex ex-std pk-kartu"><header class="ex-hd"><span class="ex-ey"></span><div class="ex-jd"><h3${tip ? ` title="${esc(tip)}"` : ""}><svg class="pk-ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ikon}</svg>${nama}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
   const kosong = (nama, ikon) => kartu(nama, ikon, `<p class="fnd">${TIDAK}.</p>`);
   const memuat = (nama, ikon) => kartu(nama, ikon, `<p class="fnd">Memuat data…</p>`);
   const th = (t, tip = "") => `<th${tip ? ` title="${esc(tip)}"` : ""}>${t}</th>`;
-  Object.assign(Insight.st, {pkhA: "tahun", pkhATh: "", pkhP: "", pkhM: ""});
-  Object.assign(Insight.LABEL, {pkhAsean: "Asia Tenggara", pkhPetak: "Petak api", pkhMusim: "Prospek musim"});
+  Object.assign(Insight.st, {pkhA: "tahun", pkhATh: "", pkhP: "", pkhM: "", pkhG: "14", pkhGD: "7-28 cm"});
+  Object.assign(Insight.LABEL, {pkhAsean: "Asia Tenggara", pkhPetak: "Petak api", pkhMusim: "Prospek musim", pkhLuas: "Pembanding luas", pkhFrp: "Kelas FRP", pkhGambut: "Tanah gambut"});
   const i0 = Insight.EX.indexOf("paparan");
-  Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0, 0, "pkhAsean", "pkhPetak", "pkhMusim");
+  Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0, 0, "pkhAsean", "pkhPetak", "pkhMusim", "pkhLuas", "pkhFrp", "pkhGambut");
 
   /* ---- PKH-28: Indonesia dan Asia Tenggara ---- */
   Insight.exPkhAsean = function () {
@@ -175,5 +193,93 @@
     const tr = m.titik.map(t => { const u = t.uji;
       return `<tr><td translate="no">${esc(t.provinsi)}</td><td class="n">${pct(t.kering30)}</td><td class="n">${pct(t.kering60)}</td><td class="n" title="Peluang jendela besar saat kering lawan peluang dasarnya, uji ${esc(String(m.uji?.periode?.[0]))} sampai ${esc(String(m.uji?.periode?.[1]))}">${u ? `${pct(u.peluang_besar_saat_kering)} lawan ${pct(u.peluang_besar_dasar)}` : TIDAK.toLowerCase()}</td><td class="n">${t.aturan_lemah ? `<span class="pk-lemah" title="${esc(lemah)}${u ? ` Lift ${dec(u.lift, 2)}.` : ""}">aturan lemah di sini</span>` : ""}</td></tr>`; }).join("");
     return kartu(NAMA, IK.musim, `${kvs}<div class="tw ex-tabel pk-tabel"><table><thead><tr>${th("Titik")}${th("Kering 30 hari", `Peluang hujan rata-rata di bawah ${fmt(m.ambang_mm_hari)} mm per hari selama 30 hari`)}${th("Kering 60 hari", `Peluang hujan rata-rata di bawah ${fmt(m.ambang_mm_hari)} mm per hari selama 60 hari`)}${th("Uji aturan", "Peluang jendela deteksi besar (10 persen teratas) saat kering, lawan peluang dasarnya")}${th("")}</tr></thead><tbody>${tr}</tbody></table></div><p class="pk-cat">${esc(m.catatan || "")}</p>`, tip);
+  };
+
+  /* ---- PKH-40: pembanding luas antar sumber (public/data/luas_pembanding.json, dihitung pipeline; tanda dipakai apa adanya) ---- */
+  Insight.exPkhLuas = function () {
+    const U = "data/luas_pembanding.json", NAMA = "Pembanding luas";
+    if (!siap("pkhLuas", [U])) return memuat(NAMA, IK.luas);
+    const L = V[U]; if (!L?.bias_provinsi) return kosong(NAMA, IK.luas);
+    const per = L.periode ? `${tgl(L.periode.awal)} sampai ${tgl(L.periode.akhir)}` : TIDAK.toLowerCase(), d = L.definisi || {};
+    const sat = L.satelit || {}, MB = "MapBiomas, kutipan terbit", RG = "Regresi titik VIIRS";
+    const baris = (sumber, wil, satelit, metode, ha, rasio, tanda, tip = "", kira = false) => `<tr${tip ? ` title="${esc(tip)}"` : ""}><td>${sumber}</td><td translate="no">${esc(wil)}</td><td>${esc(satelit || TIDAK.toLowerCase())}</td><td>${esc(metode)}</td><td>${per}</td><td class="n">${ha == null ? TIDAK.toLowerCase() : kira ? "sekitar " + fmt(Math.round(ha / 1000) * 1000) : fmt(Math.round(ha))}</td><td class="n">${rasio == null ? "–" : dec(rasio, 2)}</td><td>${tanda ? esc(tanda) : "–"}</td></tr>`;
+    const mbM = "klasifikasi citra 30 m, bulanan dijumlah", rgM = "regresi log-log dari titik VIIRS, rumus tahunan pada periode sebagian";
+    const isi = [];
+    for (const p of L.bias_provinsi) {
+      isi.push(baris(MB, p.prov === "91" ? p.nama + " (mungkin memuat Papua Selatan)" : p.nama, sat.mapbiomas, mbM, p.mapbiomas_ha, null, ""));
+      isi.push(baris(RG, p.nama, sat.regresi, rgM, p.regresi_ha, p.rasio, p.tanda, `${fmt(p.titik_viirs)} titik VIIRS, sigma log ${dec(p.sigma_log, 1)}`, true));
+    }
+    const n = L.bias_nasional;
+    if (n) { isi.push(baris(MB, "Indonesia", sat.mapbiomas, mbM, n.mapbiomas_ha, null, ""));
+      isi.push(baris(RG, "Indonesia", sat.regresi, rgM, n.regresi_ha, n.rasio, n.tanda, `${n.catatan || ""} ${fmt(n.jumlah_prov_terkalibrasi)} provinsi terkalibrasi`, true)); }
+    const stat = (nama, o) => o ? `<tr title="${esc(o.alasan || "")}"><td>${MB}</td><td>Per provinsi</td><td>${esc(sat.mapbiomas || "")}</td><td>${nama}</td><td>–</td><td colspan="3">${esc(o.status || TIDAK.toLowerCase())}</td></tr>` : "";
+    isi.push(stat("tahun tumpang tindih", L.tahun_tumpang_tindih), stat("bulanan 2024 sampai 2026", L.mapbiomas_2024_2026_bulanan));
+    const tip = [L.sumber, L.metode, L.catatan, L.atribusi].filter(Boolean).join(" ");
+    return kartu(NAMA, IK.luas, `<div class="tw ex-tabel pk-tabel"><table><thead><tr>${th("Sumber", L.atribusi || "")}${th("Wilayah")}${th("Satelit")}${th("Metode", L.metode || "")}${th("Periode")}${th("Luas (ha)", d.mapbiomas_ha || "")}${th("Rasio", d.rasio || "")}${th("Tanda (hipotesis)", d.tanda || "")}</tr></thead><tbody>${isi.join("")}</tbody></table></div>`, tip);
+  };
+
+  /* ---- PKH-44: kelas FRP dan siang lawan malam per provinsi, dari titik yang sudah dimuat layar (S.titik, hitungan yang sama dengan angka utama) ---- */
+  const KFRP = [["< 10 MW", 0, 10], ["10 sampai < 50 MW", 10, 50], ["50 sampai < 100 MW", 50, 100], ["100 MW ke atas", 100, Infinity]];
+  let FRP_KUNCI = null, FRP_HASIL = null;
+  const frpSegar = () => FRP_HASIL && FRP_KUNCI?.[0] === S.titik && FRP_KUNCI[1] === S.titik?.length && FRP_KUNCI[2] === S.acuan;
+  const hitungFrp = () => {
+    const kunci = S.titik, n = S.titik?.length;
+    if (frpSegar()) return FRP_HASIL;
+    const dasar = +S.acuan + 7 * 36e5, pvs = S.wilKunci.map(w => w[0]);
+    const per = {}, tot = {n: 0, kls: [0, 0, 0, 0, 0], sia: 0, mal: 0}; let a = Infinity, z = -Infinity;
+    for (const b of S.titik || []) {
+      if (!S.dihitung(b)) continue;
+      const ms = +S.acuan + b[2] * 36e5, jamWib = Math.floor(((dasar + b[2] * 36e5) / 36e5) % 24), siang = jamWib >= 6 && jamWib < 18;
+      const f = b[4], k = f == null || f !== f || f < 0 ? 4 : f < 10 ? 0 : f < 50 ? 1 : f < 100 ? 2 : 3;
+      const pv = pvs[b[6]] || "?", o = per[pv] ||= {n: 0, kls: [0, 0, 0, 0, 0], sia: 0, mal: 0};
+      for (const x of [o, tot]) { x.n++; x.kls[k]++; siang ? x.sia++ : x.mal++; }
+      if (ms < a) a = ms; if (ms > z) z = ms;
+    }
+    FRP_KUNCI = [kunci, n, S.acuan]; return FRP_HASIL = {per, tot, a, z};
+  };
+  Insight.exPkhFrp = function () {
+    const NAMA = "Kelas FRP dan siang lawan malam";
+    if (!S.titik?.length) return kosong(NAMA, IK.frp);
+    if (!frpSegar()) {   /* hitungan 200 ribu baris ditunda satu giliran supaya klik tab tidak membeku */
+      if (!MENUNGGU.has("pkhFrp")) { MENUNGGU.add("pkhFrp"); nanti(() => { hitungFrp(); MENUNGGU.delete("pkhFrp"); document.querySelectorAll('[data-ex="pkhFrp"]').forEach(b => { b.innerHTML = Insight.gambar("pkhFrp"); }); }); }
+      return memuat(NAMA, IK.frp);
+    }
+    const H = hitungFrp(); if (!H.tot.n) return kosong(NAMA, IK.frp);
+    const tgW = ms => tgl(new Date(ms + 7 * 36e5).toISOString());
+    const urut = Object.entries(H.per).sort((x, y) => y[1].n - x[1].n), atas = urut.slice(0, 10), sisa = urut.slice(10);
+    const lain = sisa.reduce((o, [, x]) => { o.n += x.n; x.kls.forEach((v, i) => o.kls[i] += v); o.sia += x.sia; o.mal += x.mal; return o; }, {n: 0, kls: [0, 0, 0, 0, 0], sia: 0, mal: 0});
+    const sel = (x, nm, kls = "") => `<tr${kls}><td translate="no">${nm}</td><td class="n">${fmt(x.n)}</td>${x.kls.map(v => `<td class="n">${fmt(v)}</td>`).join("")}<td class="n">${fmt(x.sia)}</td><td class="n">${fmt(x.mal)}</td></tr>`;
+    const dfn = "Radiasi daya api (FRP) per titik, dalam megawatt. Siang = terdeteksi pukul 06.00 sampai 17.59 WIB, malam = di luar itu. Ini hanya pembagian waktu lintasan satelit.";
+    const kep = `${th("Provinsi")}${th("Titik", "Titik panas terhitung (lokasi unik 375 m per hari) pada data yang sedang dimuat")}${KFRP.map(([t]) => th(t, dfn)).join("")}${th("Tanpa nilai FRP", "Titik tanpa nilai FRP, tidak dianggap nol")}${th("Siang", dfn)}${th("Malam", dfn)}`;
+    const tb = atas.map(([k, x]) => sel(x, esc(namaProv(k)))).join("") + (sisa.length ? sel(lain, `Wilayah lain (${fmt(sisa.length)})`) : "") + sel(H.tot, "Jumlah", ' class="pk-idn"');
+    const rentang = `${tgW(H.a)} sampai ${tgW(H.z)}`;
+    return kartu(NAMA, IK.frp, `<div class="tw ex-tabel pk-tabel"><table><thead><tr>${kep}</tr></thead><tbody>${tb}</tbody></table></div>`, `Data titik yang sedang dimuat layar, ${rentang} WIB. ${dfn}`);
+  };
+
+  /* ---- PKH-43: kurva kelembapan tanah bulanan per provinsi gambut (ERA5-Land; model tanah mineral, bukan muka air gambut) ---- */
+  Insight.exPkhGambut = function () {
+    const U = "data/tanah_gambut_bulanan.json", NAMA = "Kelembapan tanah di kawasan gambut";
+    if (!siap("pkhGambut", [U])) return memuat(NAMA, IK.gambut);
+    const G = V[U]; if (!G?.prov) return kosong(NAMA, IK.gambut);
+    const ks = Object.keys(G.prov).sort((a, b) => G.prov[a].nama.localeCompare(G.prov[b].nama, "id")), k = G.prov[this.st.pkhG] ? this.st.pkhG : ks[0], P = G.prov[k];
+    const dalam = P.kurva[this.st.pkhGD] ? this.st.pkhGD : Object.keys(P.kurva)[0], seri = P.kurva[dalam] || [];
+    const kanan = `<select data-set="pkhG" aria-label="Provinsi">${ks.map(x => `<option value="${x}"${x === k ? " selected" : ""}>${esc(G.prov[x].nama)}</option>`).join("")}</select>`;
+    const SR = [["tahun_ini", `${G.tahun_ini}`, "pk-s0"], ["2015", "2015", "pk-s1"], ["2019", "2019", "pk-s2"], ["2023", "2023", "pk-s3"], ["normal", "normal 2015 sampai 2025", "pk-sn"]];
+    const nil = SR.flatMap(([f]) => seri.map(m => m[f])).filter(v => v != null), lo = Math.min(...nil), hi = Math.max(...nil);
+    if (!nil.length) return kartu(NAMA, IK.gambut, `<p class="fnd">${TIDAK}.</p>`, G.sumber, kanan);
+    const W = 940, H = 260, Lx = 44, R = 12, T = 14, B = 28, X = i => Lx + (W - Lx - R) * i / 11, rg = Math.max(.02, hi - lo), Y = v => T + (H - T - B) * (1 - (v - (lo - rg * .05)) / (rg * 1.1));
+    const BL = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+    const jalur = f => { let d = "", buka = false; seri.forEach((m, i) => { const v = m[f]; if (v == null) { buka = false; return; } d += `${buka ? "L" : "M"}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`; buka = true; }); return d; };   /* null = celah, bukan 0 */
+    const grid = [0, 1, 2, 3].map(j => { const v = lo + rg * j / 3; return `<line x1="${Lx}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="pk-gr"/><text class="pk-t" x="${Lx - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${dec(v, 2)}</text>`; }).join("");
+    const kol = seri.map((m, i) => { const tp = `<b>${BL[m.bulan - 1]}${m.hari && m.hari < 28 ? ` (${m.hari} hari berjalan)` : ""}</b>` + SR.map(([f, n]) => `<br>${n}: ${m[f] == null ? TIDAK.toLowerCase() : dec(m[f], 3)}`).join("");
+      return `<rect class="pk-hit" x="${(X(i) - (W - Lx - R) / 22).toFixed(1)}" y="0" width="${((W - Lx - R) / 11).toFixed(1)}" height="${H - B}" data-tip="${esc(tp)}"/><text class="pk-t" x="${X(i).toFixed(1)}" y="${H - 8}" text-anchor="middle">${BL[i]}</text>`; }).join("");
+    const garis = SR.map(([f, , c]) => `<path class="pk-ln ${c}" d="${jalur(f)}"/>`).join("");
+    const jb = seri.findIndex(m => m.hari != null && m.hari < new Date(G.tahun_ini, m.bulan, 0).getDate() && m.tahun_ini != null);   /* bulan berjalan belum penuh */
+    const sebagian = jb < 0 ? "" : (jb > 0 && seri[jb - 1].tahun_ini != null ? `<path class="pk-ln pk-s0 pk-sb" d="M${X(jb - 1).toFixed(1)} ${Y(seri[jb - 1].tahun_ini).toFixed(1)}L${X(jb).toFixed(1)} ${Y(seri[jb].tahun_ini).toFixed(1)}"/>` : "") + `<circle class="pk-tj" cx="${X(jb).toFixed(1)}" cy="${Y(seri[jb].tahun_ini).toFixed(1)}" r="5"/>`;
+    const berjalan = jb < 0 ? null : seri[jb];
+    const leg = `<div class="pk-leg">${SR.map(([, n, c]) => `<span><i class="pk-ln-leg ${c}"></i>${esc(n)}</span>`).join("")}</div>`;
+    const ctl = Object.keys(P.kurva).length > 1 ? `<div class="pk-ctl">${this.seg("pkhGD", Object.keys(P.kurva).map(x => [x, x]))}</div>` : "";
+    const ket = `<p class="pk-cat">Model tanah mineral, bukan muka air gambut. Satuan ${esc((G.satuan || "").replace("m3/m3", "m³/m³"))}, kedalaman ${esc(dalam)}.${berjalan ? ` Bulan ${BL[berjalan.bulan - 1]} ${G.tahun_ini} baru ${fmt(berjalan.hari)} hari, data terakhir ${tgl(G.data_terakhir)}.` : ""}</p>`;
+    return kartu(NAMA, IK.gambut, `${ctl}${leg}<svg class="pk-grafik" viewBox="0 0 ${W} ${H}" role="img" aria-label="Kelembapan tanah bulanan ${esc(P.nama)}, ${esc(dalam)}">${grid}${garis}${sebagian}${kol}</svg>${ket}`, `${G.sumber}. Titik: ${P.titik.length} pusat KHG terluas.`, kanan);
   };
 })();

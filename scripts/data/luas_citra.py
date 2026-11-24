@@ -14,10 +14,17 @@ Ring kurang valid (< LATAR_CAKUPAN_MIN %): latar_ha null, luas tetap dilaporkan 
 dNBR 0,27 mengukur bekas bakar permukaan; bara gambut di bawah tanah tak selalu mengubah NBR. PERKIRAAN CITRA, bukan hasil ukur dan bukan verifikasi lapangan; kata "terukur" baru boleh dipakai
 setelah dibandingkan dengan luas_lapangan_ha pada >= 20 insiden (aturan ini juga ditulis di `_catatan` berkas keluaran).
 
+KELAS KEPARAHAN (PKH-35): `keparahan` = jumlah piksel valid dan ha per lima kelas dNBR Key & Benson (2006) pada adegan pasca yang dipakai (lihat KELAS_DNBR). Piksel valid = topeng, NBR pra dan pasca ada;
+jumlah piksel semua kelas = piksel valid (assert). Kelas ini murni dNBR, TANPA syarat NBR_pasca < 0,2 yang dipakai luas_ha, jadi tidak harus berjumlah sama dengan luas_ha.
+CADANGAN RADAR (PKH-33): saat luas_ha null karena awan/asap (bukan karena latar), `radar` = perkiraan Sentinel-1 VH (RBR = VH pasca / VH pra, dalam dB), pasangan orbit relatif sama, kontrol latar cincin 2-4 km sama.
+Ambang RBR_AMBANG_DB BELUM DISETEL: `metode: "s1_rbr_hipotesis"`, `status_nilai: "hipotesis"`. Butuh numpy, rasterio, pystac_client, planetary_computer (tidak ada di CI): tanpa itu `radar` tak ditulis.
+`python3 luas_citra.py banding` membandingkan RBR lawan dNBR (>= 20 insiden berpasangan) sebelum ambang boleh disebut tersetel.
+
 Keluaran per id insiden: {luas_ha, rentang_ha, latar_ha, dnbr_ambang, adegan_pra, adegan_pasca, tgl_pra, tgl_pasca, awan_pct (adegan pasca), cakupan_pct, piksel_ha, dihitung, status_nilai}. Kunci "_catatan" bukan insiden.
 Anggaran: MAKS_INSIDEN per jalan dan MAKS_DETIK; insiden yang terpotong anggaran/galat jaringan TIDAK disimpan (dicoba lagi jalan berikut). Insiden tanpa adegan pasca bersih dicoba lagi
 sampai UMUR_MAKS hari sejak tak terdeteksi; tanpa adegan pra bersih (pencarian lengkap) disimpan tetap.
 Pakai:  python3 scripts/data/luas_citra.py         # sesudah insiden.py
+        python3 scripts/data/luas_citra.py banding  # RBR lawan dNBR
         python3 scripts/data/luas_citra.py uji     # self-check (tanpa jaringan)
 """
 import datetime as dt, json, math, os, sys, time
@@ -39,6 +46,14 @@ RING_KM = (2.0, 4.0)              # cincin kontrol latar: jarak dari titik/simpu
 KOTAK_LATAR_MAKS = 30.0
 LATAR_CAKUPAN_MIN = 30            # % piksel cincin valid agar latar dipakai
 LATAR_RASIO = 2.0                 # luas_ha harus >= sekian x latar_ha
+# Kelas keparahan Key & Benson (2006) "Landscape Assessment: Ground measure of severity, the Composite Burn Index; and Remote sensing of severity, the Normalized Burn Ratio",
+# USGS FIREMON, tabel dNBR: tak terbakar < 0,1 (dNBR negatif/regrowth dilipat ke sini); rendah 0,1-0,27; sedang-rendah 0,27-0,44; sedang-tinggi 0,44-0,66; tinggi >= 0,66. Batas bawah inklusif.
+KELAS_DNBR = (("tak_terbakar", None), ("rendah", 0.1), ("sedang_rendah", 0.27), ("sedang_tinggi", 0.44), ("tinggi", 0.66))
+# Cadangan radar: RBR = VH pasca / VH pra (rasio linear; dalam dB = selisih dB), mengikuti keluarga RBR/RBD indeks bekas bakar radar (Tanase dkk.; inSIGht memakai RBD = pasca - pra).
+# RBR_AMBANG_DB TEBAKAN AWAL (penurunan VH >= 1,5 dB), BUKAN dari literatur terkutip dan BELUM disetel pada insiden dNBR-bersih: seluruh keluaran radar berlabel hipotesis.
+RBR_AMBANG_DB = -1.5
+RBR_METODE = "s1_rbr_hipotesis"
+S1_PRA_HARI, S1_PASCA_HARI = 30, 25
 UJI_MIN_BANDING = 20              # insiden pembanding luas_lapangan_ha sebelum kata "terukur"
 CATATAN = ("Semua luas_ha di berkas ini PERKIRAAN CITRA (dNBR Sentinel-2), bukan hasil ukur. Kata 'terukur' baru boleh dipakai setelah dibandingkan dengan luas_lapangan_ha pada >= %d insiden "
            "(selisih median dan sebaran dilaporkan). luas_ha null bila < %.0f x latar_ha (cincin kontrol 2-4 km) atau cakupan piksel < %d%%. rentang_ha = ketidakpastian cacah piksel saja."
@@ -148,6 +163,63 @@ def kandidat(ins, kini):
     return sorted(out, key=lambda i: ins[i]["tak_terdeteksi"])
 
 
+def kelas_dnbr(nbr_pra, nbr_pasca, mask, ha_px, n=N):
+    """-> {kelas, piksel, ha, piksel_valid}: cacah piksel valid per kelas dNBR Key & Benson. Jumlah piksel = piksel_valid."""
+    cacah = [0] * len(KELAS_DNBR)
+    sah = 0
+    for i, m in enumerate(mask):
+        if not m or nbr_pra[i] is None or nbr_pasca[i] is None:
+            continue
+        sah += 1
+        d = nbr_pra[i] - nbr_pasca[i]
+        cacah[max(k for k, (_, b) in enumerate(KELAS_DNBR) if b is None or d >= b)] += 1
+    assert sum(cacah) == sah, (cacah, sah)
+    return {"kelas": [k for k, _ in KELAS_DNBR], "piksel": cacah, "ha": [round(c * ha_px, 1) for c in cacah], "piksel_valid": sah}
+
+
+def rbr_db(vh_pra, vh_pasca):
+    """VH linear (None = tak ada data) -> RBR dalam dB per piksel (10 log10 pasca/pra), None bila salah satu tak sah."""
+    return [None if a is None or b is None or a <= 0 or b <= 0 else 10 * math.log10(b / a) for a, b in zip(vh_pra, vh_pasca)]
+
+
+def luas_rbr(rbr, mask, ring, ha_px, luas_topeng_ha):
+    """-> dict radar: luas_ha (topeng, rbr <= RBR_AMBANG_DB), cakupan_pct, latar_ha (cincin dinormalkan ke luas topeng). Aturan cakupan dan latar sama dengan dNBR; luas null bila < LATAR_RASIO x latar."""
+    ada = [i for i, m in enumerate(mask) if m]
+    sah = [i for i in ada if rbr[i] is not None]
+    cak = 100 * len(sah) / len(ada) if ada else 0
+    nb = sum(1 for i in sah if rbr[i] <= RBR_AMBANG_DB)
+    ha = round(nb * ha_px, 1) if cak >= CAKUPAN_MIN else None
+    rs = [i for i, m in enumerate(ring) if m and rbr[i] is not None]
+    lat = None if not sum(ring) or not rs or 100 * len(rs) / sum(ring) < LATAR_CAKUPAN_MIN else round(sum(1 for i in rs if rbr[i] <= RBR_AMBANG_DB) / len(rs) * luas_topeng_ha, 1)
+    out = {"metode": RBR_METODE, "status_nilai": "hipotesis", "rbr_ambang_db": RBR_AMBANG_DB, "cakupan_pct": round(cak), "latar_ha": lat}
+    luas_f, lemah = timbang(ha, lat)
+    out["luas_ha"] = luas_f
+    if ha is None:
+        out["alasan"] = "cakupan radar %d%% < %d%%" % (round(cak), CAKUPAN_MIN)
+    elif lemah:
+        out.update({"luas_mentah_ha": ha, "alasan": "luas radar %.1f ha < %.0f x latar %.1f ha: tak dibedakan dari latar" % (ha, LATAR_RASIO, lat)})
+    elif lat is None:
+        out["tanpa_kontrol"] = True
+    return out
+
+
+def banding(hasil):
+    """RBR lawan dNBR pada insiden yang keduanya punya luas_ha. -> dict {n, cukup, median_rasio, spearman} (cukup = n >= UJI_MIN_BANDING). Tanpa data: n 0, angka None."""
+    p = [(v["luas_ha"], v["radar"]["luas_ha"]) for v in hasil.values()
+         if isinstance(v, dict) and v.get("luas_ha") and isinstance(v.get("radar"), dict) and v["radar"].get("luas_ha")]
+    out = {"n": len(p), "cukup": len(p) >= UJI_MIN_BANDING, "median_rasio": None, "spearman": None}
+    if len(p) < 2:
+        return out
+    rs = sorted(b / a for a, b in p)
+    out["median_rasio"] = round(rs[len(rs) // 2] if len(rs) % 2 else (rs[len(rs) // 2 - 1] + rs[len(rs) // 2]) / 2, 2)
+    rank = lambda xs: [sorted(xs).index(x) + (xs.count(x) - 1) / 2 for x in xs]     # peringkat rata-rata untuk seri
+    ra, rb = rank([a for a, _ in p]), rank([b for _, b in p])
+    ma, mb = sum(ra) / len(p), sum(rb) / len(p)
+    da, db = math.sqrt(sum((x - ma) ** 2 for x in ra)), math.sqrt(sum((y - mb) ** 2 for y in rb))
+    out["spearman"] = round(sum((x - ma) * (y - mb) for x, y in zip(ra, rb)) / (da * db), 2) if da and db else None
+    return out
+
+
 # ---- jaringan ----
 def adegan_antara(C, lat, lon, km, dari, sampai):
     q = {"collections": ["sentinel-2-l2a"], "bbox": C.kotak(lat, lon, km), "limit": 60, "datetime": f"{dari}T00:00:00Z/{sampai}T23:59:59Z",
@@ -167,7 +239,72 @@ def baca_nbr(J, it, lat, lon, km, awan_maks):
     return (v[0], v[2]) if v and v[2] <= awan_maks else None
 
 
-def nilai(J, C, r, kini, anggaran=None):
+def radar_s1(r, kini):
+    """Cadangan radar untuk satu insiden -> dict luas_rbr(...) + adegan, atau None (paket tak ada / tak ada pasangan orbit / galat). Pembaca VH = s1_genangan.baca_vv (impor, bukan salinan)."""
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "banjir"))
+        import planetary_computer as pc
+        import s1_genangan as S
+        from pystac_client import Client
+        from rasterio.transform import from_origin
+    except Exception:           # numpy/rasterio/dll tak terpasang (CI): cadangan radar mati, bukan galat
+        return None
+    try:
+        lat, lon = r["pusat"]
+        garis = [[(p[0], p[1]) for p in g] for g in r.get("garis") or []]
+        api = [(a[0], a[1]) for a in r.get("api") or []]
+        km = kotak_km(r.get("garis"), r.get("api"), r["pusat"])
+        kb = round(min(KOTAK_LATAR_MAKS, km + 2 * RING_KM[1]), 2)
+        awal = dt.datetime.fromisoformat(r["awal"].replace("Z", "+00:00")).date()
+        akhir = dt.datetime.fromisoformat(r["terakhir"].replace("Z", "+00:00")).date()
+        kx, ky = 111.32 * math.cos(math.radians(lat)), 110.574
+        bb = (lon - kb / 2 / kx, lat - kb / 2 / ky, lon + kb / 2 / kx, lat + kb / 2 / ky)
+        d1, d2 = (awal - dt.timedelta(days=S1_PRA_HARI)).isoformat(), min(kini.date(), akhir + dt.timedelta(days=S1_PASCA_HARI)).isoformat()
+        its = list(Client.open(S.STAC, modifier=pc.sign_inplace).search(collections=["sentinel-1-rtc"], bbox=list(bb), datetime=f"{d1}/{d2}", max_items=200).items())
+        its = [i for i in its if "vh" in i.assets]
+        pra = {}
+        pasca = {}
+        for i in its:                       # per orbit relatif: pra terbaru sebelum awal, pasca terdahulu sesudah terakhir
+            o, t = i.properties.get("sat:relative_orbit"), i.datetime.date()
+            if t < awal and (o not in pra or t > pra[o].datetime.date()):
+                pra[o] = i
+            if t > akhir and (o not in pasca or t < pasca[o].datetime.date()):
+                pasca[o] = i
+        ks = sorted((o for o in pra if o in pasca), key=lambda o: pasca[o].datetime)
+        o = ks[0] if ks else None
+        if o is None:
+            return {"metode": RBR_METODE, "status_nilai": "hipotesis", "luas_ha": None, "alasan": "tidak ada pasangan pra/pasca satu orbit relatif Sentinel-1"}
+        n_ = N
+
+        def vh(it, kk):
+            dl, dp = kk / 2 / kx, kk / 2 / ky
+            b = (lon - dl, lat - dp, lon + dl, lat + dp)
+            a = S.baca_vv(it.assets["vh"].href, b, (n_, n_), from_origin(b[0], b[3], 2 * dl / n_, 2 * dp / n_))
+            return None if a is None else [None if not v > 0 else float(v) for v in a.ravel().tolist()]
+        vp, vs = vh(pra[o], kb), vh(pasca[o], kb)
+        if vp is None or vs is None:
+            return None
+        rbr = rbr_db(vp, vs)                # satu kotak latar kb dipakai untuk topeng dan cincin (geometri sama dengan dNBR)
+        px = (kb * 1000 / n_) ** 2 / 1e4
+        m, rg = topeng(lat, lon, kb, garis, api, r["pusat"]), cincin(lat, lon, kb, garis, api, r["pusat"])
+        out = luas_rbr(rbr, m, rg, px, sum(m) * px)
+        out.update({"adegan_pra": pra[o].id, "adegan_pasca": pasca[o].id, "tgl_pra": pra[o].datetime.date().isoformat(), "tgl_pasca": pasca[o].datetime.date().isoformat(), "orbit": o, "piksel_ha": round(px, 2)})
+        return out
+    except Exception:
+        return None
+
+
+def nilai(J, C, r, kini, anggaran=None, radar=None):
+    """nilai_citra + cadangan radar bila luas_ha null karena awan/asap/cakupan (BUKAN karena latar). radar: callable (r, kini) -> dict|None."""
+    o = nilai_citra(J, C, r, kini, anggaran)
+    if o and radar and o.get("luas_ha") is None and "latar" not in str(o.get("alasan", "")) and not (anggaran and anggaran()):
+        rd = radar(r, kini)
+        if rd:
+            o["radar"] = rd
+    return o
+
+
+def nilai_citra(J, C, r, kini, anggaran=None):
     """Satu insiden -> dict hasil, atau None bila terpotong anggaran/galat jaringan (JANGAN disimpan: dicoba lagi).
     {luas_ha: None, alasan} bila adegan bersih tak ada atau sinyal tak melewati latar."""
     lat, lon = r["pusat"]
@@ -209,6 +346,8 @@ def nilai(J, C, r, kini, anggaran=None):
         px = (km * 1000 / N) ** 2 / 1e4
         out = {"adegan_pra": pra[1]["id"], "adegan_pasca": it["id"], "tgl_pra": pra[0], "tgl_pasca": tgl, "dnbr_ambang": DNBR, "awan_pct": awan, "cakupan_pct": cak, "piksel_ha": round(px, 2),
                "dihitung": kini.strftime("%Y-%m-%dT%H:%MZ"), "status_nilai": "perkiraan_citra"}
+        if ha is not None:
+            out["keparahan"] = kelas_dnbr(pra[2], nbr_pasca, m, px)
         if ha is None:
             return {"luas_ha": None, **out, "alasan": "cakupan piksel bersih %d%% < %d%% pada adegan pasca terbaik" % (cak, CAKUPAN_MIN)}
         # kontrol latar: aturan sama pada cincin 2-4 km (kotak lebih besar, piksel kasar), dinormalkan ke luas topeng
@@ -264,7 +403,7 @@ def main():
             break
         dicoba += 1
         try:
-            h = nilai(J, C, ins[i], kini, habis)
+            h = nilai(J, C, ins[i], kini, habis, radar_s1)
             if h is None:
                 print("luas_citra: %s terpotong anggaran/waktu habis, dicoba lagi jalan berikut" % i)
                 continue
@@ -368,8 +507,38 @@ def uji():
     o3 = nilai(FJ2, FC, r, kini)
     assert o3["luas_ha"] is None and o3["luas_mentah_ha"] > 0 and "latar" in o3["alasan"], o3
     assert "perkiraan" in CATATAN.lower() and "20" in CATATAN and "terukur" in CATATAN
+    # PKH-35: kelas keparahan; batas inklusif di bawah, negatif masuk tak_terbakar, jumlah = piksel valid
+    bt = [-0.2, 0.0, 0.1, 0.27, 0.44, 0.66, 0.9]          # pra 0, pasca = -d: d tepat di batas (inklusif di bawah) dan negatif
+    k = kelas_dnbr([0.0] * 8, [-d for d in bt] + [None], [True] * 8, 16.0, 8)
+    assert k["piksel"] == [2, 1, 1, 1, 2] and k["piksel_valid"] == 7 and k["ha"][4] == 32.0, k       # piksel ke-8 tak valid
+    assert kelas_dnbr([0.0] * 3, [0.0] * 3, [False] * 3, 1.0, 3)["piksel_valid"] == 0
+    k2 = kelas_dnbr([0.9, 0.9, 0.9, 0.9, 0.9], [0.9 - 0.05, 0.9 - 0.2, 0.9 - 0.3, 0.9 - 0.5, 0.9 - 0.8], [True] * 5, 1.0, 5)
+    assert k2["piksel"] == [1, 1, 1, 1, 1], k2
+    # PKH-33: RBR dB; cakupan, latar, nol-bukan-null, hipotesis
+    assert rbr_db([1.0, None, 0.0, 1.0], [0.5, 1.0, 1.0, 2.0])[1:3] == [None, None] and round(rbr_db([1.0], [0.5])[0], 2) == -3.01
+    nn_ = 20
+    mk_ = [i < 40 for i in range(nn_ * nn_)]
+    rg_ = [40 <= i < 240 for i in range(nn_ * nn_)]
+    rb = [-3.0 if i < 10 else 0.0 for i in range(nn_ * nn_)]      # 10 piksel terbakar di topeng, latar bersih
+    o = luas_rbr(rb, mk_, rg_, 16.0, 640.0)
+    assert o["luas_ha"] == 160.0 and o["latar_ha"] == 0.0 and o["metode"] == "s1_rbr_hipotesis" and o["status_nilai"] == "hipotesis", o
+    o = luas_rbr([-3.0] * (nn_ * nn_), mk_, rg_, 16.0, 640.0)      # latar sama 'terbakar': luas null
+    assert o["luas_ha"] is None and o["luas_mentah_ha"] == 640.0 and "latar" in o["alasan"], o
+    o = luas_rbr([None] * (nn_ * nn_), mk_, rg_, 16.0, 640.0)
+    assert o["luas_ha"] is None and o["latar_ha"] is None and "cakupan" in o["alasan"], o
+    # nilai(): radar hanya saat luas null bukan karena latar
+    assert nilai(FJ, FC2, r, kini, radar=lambda r_, k_: {"luas_ha": 1.0})["radar"] == {"luas_ha": 1.0}
+    assert "radar" not in nilai(FJ2, FC, r, kini, radar=lambda r_, k_: {"luas_ha": 1.0})            # null karena latar
+    assert "radar" not in nilai(FJ, FC, r, kini, radar=lambda r_, k_: {"luas_ha": 1.0})            # luas sah
+    assert "keparahan" in nilai(FJ, FC, r, kini) and nilai(FJ, FC, r, kini)["keparahan"]["piksel_valid"] > 0
+    b = banding({"a": {"luas_ha": 10.0, "radar": {"luas_ha": 12.0}}, "b": {"luas_ha": 50.0, "radar": {"luas_ha": 40.0}}, "c": {"luas_ha": None, "radar": {"luas_ha": 5.0}}, "d": {"luas_ha": 5.0}})
+    assert b["n"] == 2 and not b["cukup"] and b["spearman"] == 1.0, b
+    assert banding({})["n"] == 0 and banding({})["spearman"] is None
     print("luas_citra uji: OK")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    if sys.argv[1:] == ["banding"]:
+        print(json.dumps(banding({i: v for i, v in json.load(open(os.path.join(DATA, "luas_citra.json"))).items() if i != "_catatan"})))
+    else:
+        uji() if sys.argv[1:] == ["uji"] else main()

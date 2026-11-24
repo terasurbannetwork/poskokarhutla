@@ -279,7 +279,7 @@ def bangun():
             "sanksi": [{"jenis": x["jenis"], "status": x["status"], "tahun": x.get("tahun_putusan") or x.get("tahun_kebakaran"),
                         "nilai": x.get("nilai_rp") or x.get("nilai_gugatan_rp"), "perkara": x.get("perkara"), "url": x["sumber"][0]["url"]}
                        for x in sanksi.get(kunci(nama), []) if x["prov"] == k[2]],
-            "pemegang": (wl or {}).get("pemegang") or [], "tokoh": (wl or {}).get("tokoh") or [],
+            "pemegang": (wl or {}).get("pemegang") or [],
             "walhi_titik": (wl or {}).get("titik_agu") or (wl or {}).get("titik_sep"), "walhi_tabel": (wl or {}).get("tabel") or [],
             "kab_titik": [a for a, _ in sorted(kab.items(), key=lambda x: -x[1])],
             # kompleks api 7 hari: [lat, lon, kecamatan, titik, mulai, akhir, hari bertitik, FRP maks]
@@ -325,7 +325,7 @@ def bangun():
            "sumber_konsesi": sumber, "ha_piksel": round(HA_PIKSEL, 2), "jeda_kejadian": JEDA,
            "celah": "Satelit S-NPP tanpa data: 10-12 Mar, 28-30 Apr, 1-2 Jun, 11-16 Jul, 3 Agu 2026", "prov": []}
     for kd, rs in sorted(prov.items()):
-        rs.sort(key=lambda r: -r["titik"])
+        rs.sort(key=lambda r: (-r["luas_bakar_ha"], -r["titik"]))  # peringkat = luas bakar citra, bukan jumlah titik (PKH-45, aturan 1)
         with open(os.path.join(KELUAR, f"{kd}.json"), "w") as f:
             json.dump({"prov": kd, "nama": nama_prov.get(kd, kd), "perusahaan": rs}, f, ensure_ascii=False, separators=(",", ":"))
         tulis_ringkas(kd, nama_prov.get(kd, kd), rs)
