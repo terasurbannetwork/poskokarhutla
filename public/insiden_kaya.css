@@ -12,7 +12,7 @@
 .ik-info{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-2);color:var(--ink2)}
 .ik-tbl{font-size:var(--fs-2)}
 .ik-tbl th{text-align:center;font-size:var(--fs-2)}
-.ik-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.ik-tbl td.n{text-align:center;font-variant-numeric:tabular-nums}
 .ik-tbl td small{display:block;color:var(--ink2);font-size:var(--fs-1)}
 .ik-tbl tr.ik-pilih td{background:color-mix(in oklch,var(--accent) 14%,transparent);font-weight:700}
 .ik-dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}
