@@ -207,7 +207,7 @@ HP = {'ulang_angka_boleh': 'batas kelas legenda peta sama dengan ambang status d
 H4 = {'jenis': 'temuan-visual', 'jenis_slide': 'tabel', 'judul_bentuk': 'temuan', 'judul_ikon': 'peringatan', 'rasio': .99, 'cut_off': False,
       'pesan': 'Prakiraan banjir', 'sumber': S_P,
       'judul': f'Hujan Tiga Hari Tertinggi {t("sl.p.hmax", "|satuan")} di {TOPK}; Status Banjir per Kecamatan Kabupaten Solok, {rentang}',
-      'utama': {'judul': 'Status banjir dan hujan tiga hari per kecamatan, empat hari ke depan', 'ikon': 'peringatan',
+      'utama': {'judul': 'Status banjir per tanggal; angka = hujan tiga hari, sehari sebelum sampai sehari sesudah tanggal itu', 'ikon': 'peringatan',
                 'heatmap': {'mode': 'kategori', 'kelas': [{'kunci': 'Normal', 'label': 'Normal', 'token': 'tint.netral.pita', 'teks': 'teks-3', 'ikon': 'prabencana'},
                                                           {'kunci': 'Waspada', 'label': 'Waspada', 'token': 'skala.emas.2', 'teks': 'teks', 'ikon': 'cuaca-ekstrem'},
                                                           {'kunci': 'Siaga', 'label': 'Siaga', 'token': 'oranye', 'teks': 'kertas', 'ikon': 'banjir'},
