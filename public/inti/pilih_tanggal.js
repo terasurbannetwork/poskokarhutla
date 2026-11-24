@@ -41,8 +41,11 @@ let A = null, IZIN = false, T = null, R = false, terakhir = "", WARNA = "";   //
 function html() {
   const kini = Date.now(), d = daftarTanggal(A.tanggal(), kini), b = bagi(d, kini);
   const tb = (iso, n) => `<button type="button" data-pt="${iso || ""}" aria-pressed="${!!iso && T === iso}"${iso ? "" : " disabled"}>${n}</button>`;
+  /* Hari ini tanpa data hari ini (laporan harian belum sampai hari ini): tombol tidak mati tetapi kembali ke tampilan bawaan halaman (keadaan terbaru),
+     supaya sesudah memilih tanggal lain selalu ada jalan pulang (pemilik 23 Nov 2026: "gabisa pilih yang hari ini"). Tidak menawarkan tanggal tanpa data (D16). */
+  const tbHi = iso => iso ? tb(iso, "Hari ini") : `<button type="button" data-pt="" data-pt-kini aria-pressed="${!T}" title="Keadaan terbaru">Hari ini</button>`;
   const sel = !!T && T !== b.hariIni && T !== b.kemarin, lbl = sel ? pendek(T) : "Tanggal lain";
-  const s1 = `<div class="seg penuh" role="group" aria-label="Pilih tanggal data" data-pt-baris>${tb(b.hariIni, "Hari ini")}${tb(b.kemarin, "Kemarin")}`
+  const s1 = `<div class="seg penuh" role="group" aria-label="Pilih tanggal data" data-pt-baris>${tbHi(b.hariIni)}${tb(b.kemarin, "Kemarin")}`
     + `<button type="button" data-pt-lain aria-haspopup="dialog" aria-pressed="${sel}">${esc(lbl)}</button></div>`;
   const s2 = A.riwayat ? `<div class="seg penuh" role="group" aria-label="Real Time atau Riwayat" data-pt-mode><button type="button" data-ptm="0" aria-pressed="${!R}">Real Time</button><button type="button" data-ptm="1" aria-pressed="${R}">Riwayat</button></div>` : "";
   return `<div style="display:flex;flex-direction:column;gap:5px;width:100%">${s1}${s2}</div>`;
@@ -67,7 +70,8 @@ function gambar() {
     h.addEventListener("click", e => { const m = e.target.closest("[data-ptm]"), b = e.target.closest("[data-pt]");
       if (m) { const baru = m.dataset.ptm === "1"; if (baru === R) return; R = baru; gambar(); return tunda(() => A.riwayat.ubah(R)); }
       const l = e.target.closest("[data-pt-lain]"); if (l) return bukaKalender(l);
-      if (b && !b.disabled) { T = T === b.dataset.pt ? null : b.dataset.pt; lepasRiwayat(); gambar(); const t = T; tunda(() => A.ubah(t)); } });
+      if (b && !b.disabled) { const v = b.dataset.pt || null; if (v === null && T === null) return;   /* Hari ini (keadaan terbaru) yang sudah aktif: tidak ada yang berubah */
+        T = v === null || T === v ? null : v; lepasRiwayat(); gambar(); const t = T; tunda(() => A.ubah(t)); } });
   }
 }
 /* tanggal terpilih yang datanya hilang (data hidup bergeser) dilepas, bukan dibiarkan menggantung */

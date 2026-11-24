@@ -199,6 +199,9 @@ def ganti_operasi(s, op):
     D = op.get('tanggal_laporan') or op['tanggal']
     K = op['tanggal']
     ARMADA = sorted(([n, p, w] for n, (p, w) in op['armada'].items()), key=lambda r: -(r[1] + r[2]))
+    # Pemilik 20 Nov 2026 ("Buang panelnya"): armada kosong = panel ARMADA UDARA dibuang (tanpa_panel_armada, sesudah tanpa_kartu_personel);
+    # dulu jatuh ke "max() iterable argument is empty" di armada(). Armada DAN OMC kosong = slide ini tidak dibangun (penanganan_otomatis).
+    if not any(p + w for _, p, w in ARMADA): ARMADA = []
     s = teks(s, '21', 'TGL#'); s = teks(s, ' Oktober ', f' {BULAN[D.month - 1]} ')   # penanda: hari 15 atau 36 bentrok dengan angka patroli/WB templat (15 Nov 2026)   # judul templat 211026: data per tanggal D
     # personel (per provinsi dan per instansi) tidak diganti: templat sudah memuat angka WA 21 s.d. 26 Okt; WA tak memuat rincian instansi
     pendek = {'Kalimantan Tengah': 'Kalteng', 'Riau': 'Riau', 'Kalimantan Barat': 'Kalbar', 'Sumatera Selatan': 'Sumsel', 'Kalimantan Selatan': 'Kalsel', 'Jambi': 'Jambi'}
@@ -275,6 +278,7 @@ def ganti_operasi(s, op):
         s = pasang_sp(s, 3561885, yn + 61722, pil['abu' if label == 'BELUM HUJAN' else 'biru'], label)
     jumlah = op.get('pemilik') or {}
     assert not jumlah or sum(jumlah.values()) == pat + wb, f'pemilik {jumlah} tidak berjumlah {pat + wb} unit armada'
+    if not ARMADA: return kepala_omc(tanpa_instansi(s))   # panel kanan dibuang utuh oleh tanpa_panel_armada
     return kepala_omc(pemilik(armada(tanpa_instansi(s), ARMADA, 5990000 if jumlah else 6300000), jumlah))
 
 
@@ -300,6 +304,63 @@ def tanpa_panel_omc(x):
         elif x0 >= BATANG and y > 2000000:   # kolom batang: diregangkan; label unit (cx 640080) hanya digeser
             x1 = round(BATANG + dx + (x0 - BATANG) * k); cx1 = cx if cx == 640080 else round(cx * k)
         else: x1, cx1 = x0 + dx, cx
+        return b.replace(o.group(0), f'<a:off x="{x1}" y="{y}"/><a:ext cx="{cx1}" cy="{cy}"/>', 1)
+    return re.sub(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', ubah, x, flags=re.S)
+
+
+def armada_ada(op):
+    """Ada unit armada udara di laporan (patroli atau WB)."""
+    return any(sum(v) for v in (op.get('armada') or {}).values())
+
+
+def omc_ada(op):
+    """Ada provinsi ber-OMC (sortie atau sasaran), ukuran yang sama dengan ganti_operasi."""
+    return any(o['sortie'] or o['sasaran'] for o in (op.get('omc') or {}).values())
+
+
+def tanpa_panel_armada(x):
+    """Pemilik 20 Nov 2026 ("Buang panelnya"): hari tanpa armada udara di laporan Satgas, panel ARMADA UDARA dibuang dan panel MODIFIKASI CUACA
+    direntang selebar slide. Bilah dan garis lebar tetap berjarak sama dari tepi panel. Di dalam tabel (dari baris kepala PROVINSI sampai garis
+    kepala bagian berikutnya) isi bergeser per kolom, sehingga pil, latarnya, dan keterangan di bawahnya tetap sejajar; label kepala tabel melebar
+    mengikuti kolomnya. Di baris kepala bagian (ikon, judul, pil tanggal) isi tetap, lencana di tepi kanan ikut ke tepi kanan baru.
+    Subjudul: "N armada udara dan OMC di" menjadi "OMC di". Dipanggil sesudah tanpa_kartu_personel."""
+    kiri = re.search(r'<a:off x="548640" y="(\d+)"/>\s*<a:ext cx="5478628" cy="(\d+)"/>', x)
+    kanan = re.search(r'<a:off x="6164428" y="(\d+)"/>\s*<a:ext cx="5478628" cy="(\d+)"/>', x)
+    assert kiri and kanan, 'dua panel slide Operasi tidak ditemukan'
+    atas, bawah = int(kiri.group(1)), int(kiri.group(1)) + int(kiri.group(2))
+    L0, W0 = 548640, 5478628; R0 = L0 + W0; geser = (11643068 - 548640) - W0
+    blok = []
+    for m in re.finditer(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', x, re.S):
+        o = re.search(r'<a:off x="(-?\d+)" y="(-?\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"/>', m.group(0))
+        if o: blok.append((tuple(map(int, o.groups())), m.group(0)))
+    lebar = lambda g: atas <= g[1] < bawah and g[0] < 6100000 and g[0] + g[2] <= R0 and g[2] >= 0.6 * W0 and not (g[0] == L0 and g[2] == W0)
+    garis = sorted(g[1] for g, b in blok if lebar(g) and g[3] == 0 and atas <= g[1] < bawah)
+    kepala = sorted({g[1] for g, b in blok if g[0] < 6100000 and 'txBox="1"' in b and '<a:t>PROVINSI</a:t>' in b})
+    assert kepala, 'kepala tabel PROVINSI panel MODIFIKASI CUACA tidak ditemukan'
+    tabel = []   # (y kepala, y akhir, [tepi kiri kolom])
+    for i, yh in enumerate(kepala):
+        akhir = max([L for L in garis if L < kepala[i + 1]] or [bawah]) if i + 1 < len(kepala) else bawah
+        kol = sorted(g[0] for g, b in blok if g[1] == yh and g[0] < 6100000 and 'txBox="1"' in b)
+        tabel.append((yh, akhir, kol))
+    B0 = min(kol[0] for _, _, kol in tabel); WB = max(g[0] + g[2] for g, b in blok if lebar(g)) - B0; kb = (WB + geser) / WB
+    def ubah(m):
+        b = m.group(0); o = re.search(r'<a:off x="(-?\d+)" y="(-?\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"/>', b)
+        if not o: return b
+        x0, y, cx, cy = map(int, o.groups())
+        if y == 905256:   # subjudul
+            return re.sub(r'<a:r>(?:(?!</a:r>).)*?<a:t>\d+</a:t></a:r>((?:(?!<a:r>).)*?<a:r>(?:(?!</a:r>).)*?<a:t>) armada udara dan OMC di </a:t>',
+                          lambda n: n.group(1) + 'OMC di </a:t>', b, count=1, flags=re.S)
+        if not atas <= y < bawah: return b
+        if x0 >= 6100000: return ''   # panel ARMADA UDARA dan semua isinya
+        t = next((t for t in tabel if t[0] <= y < t[1]), None)
+        if x0 == L0 and cx == W0: x1, cx1 = L0, W0 + geser   # bingkai panel
+        elif cx >= 0.6 * W0: x1, cx1 = x0, cx + geser   # bilah kepala tabel, garis pemisah
+        elif t is None: x1, cx1 = (x0 + geser if R0 - (x0 + cx) < 0.12 * W0 else x0), cx   # baris kepala bagian
+        else:
+            c = max([k for k in t[2] if k <= x0 + 50000] or [t[2][0]])
+            x1 = x0 + round((c - B0) * (kb - 1))
+            ctr = 'algn="ctr"' in b
+            cx1 = round(cx * kb) if 'txBox="1"' in b and (y == t[0] or not ctr) else cx   # label kepala dan teks rata kiri melebar; pil tetap
         return b.replace(o.group(0), f'<a:off x="{x1}" y="{y}"/><a:ext cx="{cx1}" cy="{cy}"/>', 1)
     return re.sub(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', ubah, x, flags=re.S)
 

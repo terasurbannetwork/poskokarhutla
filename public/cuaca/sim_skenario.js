@@ -288,9 +288,9 @@
       <li>Gelombang di bawah siklon adalah perkiraan atas: laut dianggap sudah berkembang penuh oleh angin total, tanpa batas jarak dan lama angin bertiup, lalu dipakai bila lebih tinggi dari prakiraan. Angin yang naik N persen menaikkan tinggi gelombang lebih dari N persen.</li>
       <li>Sistem lebih lambat: nilai pada jam tertentu diambil dari jam yang lebih awal di prakiraan, jadi ujung prakiraan tidak terpakai.</li>
       <li>Ambang berikut adalah hipotesis kami, belum disetel ke kejadian nyata, dan bukan kriteria resmi. Cara memetakannya ke Buka, Terganggu, dan Tutup juga asumsi kami.</li>
-      <li>Pelabuhan: Terganggu bila gelombang ≥ ${fmt(P.terganggu.hs)} m atau angin ≥ ${P.terganggu.kt} knot, Tutup bila gelombang ≥ ${fmt(P.tutup.hs)} m atau angin ≥ ${P.tutup.kt} knot.</li>
-      <li>Bandara: Terganggu bila embusan ≥ ${B.terganggu.g} km/jam atau hujan ≥ ${B.terganggu.r} mm/jam, Tutup bila embusan ≥ ${B.tutup.g} km/jam. Embusan dipakai utuh karena arah landasan tidak ada di berkas.</li>
-      <li>Nelayan: berisiko bila gelombang ≥ ${fmt(N.hs)} m atau angin ≥ ${N.kt} knot. Perlakuan menarik nelayan ke darat selama jam berisiko ditambah jam mulai lebih awal.</li>
+      <li>Pelabuhan: Terganggu bila gelombang paling sedikit ${fmt(P.terganggu.hs)} m atau angin paling sedikit ${P.terganggu.kt} knot, Tutup bila gelombang paling sedikit ${fmt(P.tutup.hs)} m atau angin paling sedikit ${P.tutup.kt} knot.</li>
+      <li>Bandara: Terganggu bila embusan paling sedikit ${B.terganggu.g} km/jam atau hujan paling sedikit ${B.terganggu.r} mm/jam, Tutup bila embusan paling sedikit ${B.tutup.g} km/jam. Embusan dipakai utuh karena arah landasan tidak ada di berkas.</li>
+      <li>Nelayan: berisiko bila gelombang paling sedikit ${fmt(N.hs)} m atau angin paling sedikit ${N.kt} knot. Perlakuan menarik nelayan ke darat selama jam berisiko ditambah jam mulai lebih awal.</li>
       <li>Embusan di bawah siklon: yang lebih besar antara embusan prakiraan dan angin tetap siklon, tanpa faktor embusan.</li>
       <li>Siklon skenario baru ada sejak titik pertama lintasan, jadi dampaknya muncul mendadak pada jam itu. Tinggi kolom sel badai di peta hanya skala tampilan.</li></ul></details>`;
   }

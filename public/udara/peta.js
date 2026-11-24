@@ -72,7 +72,7 @@ const Peta = {
   segarkan() { if (!peta?.getSource("pm")) return; const g = this.gambarPM(); peta.getSource("pm").updateImage({url: g.url, coordinates: g.kor}); peta.getSource("metar")?.setData(this.geoMetar()); peta.getSource("bmkg")?.setData(Stasiun.geo()); Prak.segarkan(); },
   kartuSel(la, lo) { const k = kotaTerdekat(la, lo); if (!k) return ""; const v = k.r24?.[S.hari], mk = S.mk[k.kode]?.[S.hari]; if (v == null) return "";
     const c = kat(v);
-    return PI.kartuTip({judul: `${KAT[c].n}`, sub: `<small translate="no">${esc(k.nama)}</small>`, stat: [["perisai", KAT[c].n, "kategori", KAT[c].w, c >= 2], ["debit", fmt(Math.round(v)) + " µg/m³", "rata-rata 24 jam", KAT[c].w], ...(mk == null ? [] : [["peringatan", fmt(Math.round(mk)) + " µg/m³", "puncak per jam", "#7d8ca3"]])]}); },
+    return PI.kartuTip({judul: `<span translate="no">${esc(k.nama)}</span>`, sub: `<small>PM2,5 terdekat, ${esc(labelHari(S.hari).replace(/^Hari ini$/, "hari ini"))}</small>`, stat: [["perisai", KAT[c].n, "kategori", KAT[c].w, c >= 2], ["debit", fmt(Math.round(v)) + " µg/m³", "rata-rata 24 jam", KAT[c].w], ...(mk == null ? [] : [["peringatan", fmt(Math.round(mk)) + " µg/m³", "puncak per jam", "#7d8ca3"]])]}); },
   kartuMetar(i) { const m = metarSegar()[i]; if (!m) return ""; const k = kelasJP(m.vis_m), w = wxNama(m.wx);
     return PI.kartuTip({judul: esc(m.nama), sub: `<small>${esc(m.icao)}</small>`, stat: [["mata", m.vis_m >= 9999 ? "10 km atau lebih" : fmt(m.vis_m / 1000) + " km", "jarak pandang", JP[k].w, k >= 2], ...(w ? [["peringatan", w, "cuaca", "#e8743b"]] : [])]}); },
   pilihProv(kode, terbang = true) {
@@ -86,12 +86,23 @@ const Peta = {
   /* laci rincian di kanan (sama dengan laci karhutla dan banjir): PM2,5 per hari, jiwa per kategori, kabupaten/kota paling terpapar. Semua angka perkiraan model. */
   laciProv(kode) { const H = S.uk.prov[kode]; if (!H) return $("#laci").classList.remove("on");
     const p = H[S.hari], kab = (S.uk.kab[S.hari] || []).filter(r => r[0] === kode && r[5] > 0).slice(0, 5), hr = hariTampil();
+    const hariIni = S.uk.hari[S.hari] === tglWIB(SEKARANG()) && S.hari === S.h0 ? "hari ini" : tglPendek(S.uk.hari[S.hari]);
+    const bar = kelasLaci(KAT.map((k, c) => ({label: k.n, nilai: p[c], teks: jiwa(p[c]), w: k.w, pil: true, terang: k.fg !== "#fff"})));
+    const sumber = `Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop. Perkiraan model, belum dikoreksi ke alat ukur. Data ${jamWIB(S.uk.dibuat)}.`;
+    /* ringkasan hari terpilih: puncak per jam (kolom maks_pm25), penduduk dihitung, jiwa tidak sehat (kategori 2 sampai 4), peringkat sama dengan urutan panel */
+    const tot = p.slice(0, 5).reduce((a, b) => a + b, 0), ts = p[2] + p[3] + p[4];
+    const urut = Object.entries(S.uk.prov).map(([k, h]) => [k, h[S.hari]?.[5] ?? -1]).sort((a, b) => b[1] - a[1]), rk = urut.findIndex(x => x[0] === kode) + 1;
+    const ring = [p[6] != null && barisLaci("peringatan", "Puncak per jam", angSat(fmt(Math.round(p[6])))),
+      tot > 0 && barisLaci("orang", "Penduduk dihitung", jiwa(tot)),
+      tot > 0 && barisLaci("perisai", "Menghirup udara tidak sehat", ts ? jiwa(ts) : "tidak ada"),
+      rk && barisLaci("peta", "Urutan PM2,5 tertinggi", `${fmt(rk)} dari ${fmt(urut.length)} provinsi`)].filter(Boolean).join("");
+    const bag = [ring && {judul: "Ringkasan " + hariIni, ikon: "debit", isi: `<div class="lc-lbs">${ring}</div>`},
+      bar && {judul: "Jiwa menurut kategori " + hariIni, ikon: "orang", isi: bar},
+      kab.length && {judul: "Kabupaten/kota paling terpapar", ikon: "kab", isi: `<table class="tb2 ud-kab"><tbody>${kab.map(r => `<tr><td><span translate="no">${esc(r[1])}</span><small class="lc-sub">${jiwa(r[5])} menghirup udara tidak sehat</small></td><td class="n">${angSat(fmt(Math.round(r[2])), KAT[kat(r[2])].w)}</td></tr>`).join("")}</tbody></table>`}].filter(Boolean);
+    if (bag.length) bag[bag.length - 1].sumber = sumber; else bag.push({judul: "Sumber data", ikon: "satelit", sumber});
     Laci.buka("Provinsi", `<span translate="no">${esc(namaProv(kode))}</span>`, PIL_MODEL,
-      `<div class="grid g4">${hr.slice(0, 4).map(i => kot(labelHari(i), `<span style="color:${KAT[kat(H[i][5])].w}">${fmt(Math.round(H[i][5]))} µg/m³</span>`, KAT[kat(H[i][5])].n)).join("")}</div>
-      <p class="fnd">Jiwa menurut kategori ${S.uk.hari[S.hari] === tglWIB(SEKARANG()) && S.hari === S.h0 ? "hari ini" : tglPendek(S.uk.hari[S.hari])}:</p>
-      <div class="legd">${KAT.map((k, c) => p[c] ? `<span class="kt" style="--c:${k.w};--f:${k.fg}">${k.n}, ${jiwa(p[c])}</span>` : "").join(" ")}</div>
-      ${kab.length ? `<p class="fnd">Kabupaten/kota paling terpapar:</p><div class="legd">${kab.map(r => `<span class="kt" style="--c:#3f4a5e;--f:#fff;text-transform:none" translate="no">${esc(r[1])}, ${fmt(Math.round(r[2]))} µg/m³</span>`).join(" ")}</div>` : ""}
-      <p class="fnd">Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop. Perkiraan model, belum dikoreksi ke alat ukur.</p><p class="fnd">Data ${jamWIB(S.uk.dibuat)}</p>`); },
+      `${kotakHari(hr.slice(0, 4).map(i => { const c = kat(H[i][5]); return kot(labelHari(i), angSat(fmt(Math.round(H[i][5])), KAT[c].w), pilLaci(KAT[c].n, KAT[c].w, KAT[c].fg !== "#fff"), "waktu"); }))}
+      ${bag.map(sekLaci).join("")}`); },
   interaksi() {
     if (this._ia) return; this._ia = true; let diTitik = false;
     peta.on("mousemove", "metar", e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; PI?.tampilTip(this.kartuMetar(e.features[0].properties.i), e.originalEvent); });
@@ -108,7 +119,20 @@ const Peta = {
 };
 
 /* ---------- panel ---------- */
-const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
+/* laci gaya seksi dari inti/peta/lapis.js (LaciInti, sama dengan laci gempa): kotak angka berikon, kartu bagian berikon, bilah per kelas, chip wilayah, baris berikon.
+   PI dimuat di Peta.init sebelum laci mana pun bisa dibuka; cadangan polos hanya bila modul gagal dimuat. */
+const LC = () => PI || window.LaciInti || null;
+const kot = (l, v, s, ik = "") => LC() ? LC().kotakAngka(l, v, s, ik) : `<div class="kpi"><span class="lbl">${esc(l)}</span><b>${v}</b><small>${s}</small></div>`;
+const sekLaci = o => LC() ? LC().seksiLaci(o) : `<section class="lc-sek"><h4 class="lc-h">${esc(o.judul || "")}</h4>${o.isi || ""}${o.sumber ? `<p class="fnd lc-src">${esc(o.sumber)}</p>` : ""}</section>`;
+const kelasLaci = b => LC() ? LC().kelasBar(b) : b.filter(x => x.nilai > 0).map(x => `<p class="fnd">${esc(x.label)}, ${x.teks}</p>`).join("");
+const chipLaci = (d, o) => LC() ? LC().chipWil(d, o) : `<p class="fnd" translate="no">${d.map(esc).join(", ")}</p>`;
+const barisLaci = (ik, l, v, o) => LC() ? LC().barisLaci(ik, l, v, o) : `<p class="fnd">${esc(l)}: ${v}</p>`;
+/* angka dengan satuan kecil menempel (satuan turun baris di kotak sempit, udara.css .ud-ang) */
+const angSat = (v, w = "", sat = "µg/m³") => `<span class="ud-ang"${w ? ` style="color:${w}"` : ""}>${v}<small>${sat}</small></span>`;
+/* pil kategori/status gaya laci (.lc-pil, inti/peta.css); terang = teks gelap di atas warna muda */
+const pilLaci = (teks, w, terang = false) => `<span class="lc-pil${terang ? " terang" : ""}" style="--w:${w}">${esc(teks)}</span>`;
+/* kotak per hari: satu baris berisi semua hari (2 sampai 4 kolom), tanpa kotak terakhir yang melebar */
+const kotakHari = kotak => `<div class="grid ud-hari" style="--n:${Math.max(1, kotak.length)}">${kotak.join("")}</div>`;
 const Laci = {
   buka(ey, judul, meta, isi) { const el = $("#laci"); Kejadian.bersih();   /* laci lain terbuka: lapisan dan tautan kejadian dilepas (Kejadian.laci menahan lewat _buka) */
     el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">${ey}</span><h2 id="dlgJudul" translate="no" title="${judul.replace(/<[^>]+>/g, "")}">${judul}</h2>${meta ? `<div class="hd-meta">${meta}</div>` : ""}</div>

@@ -1,0 +1,4151 @@
+
+===== PDF HAL 1 (0 kar) =====
+
+===== PDF HAL 2 (2098 kar) =====
+- 2 - 
+ 
+ 
+2. 
+tercapainya interoperabilitas data kejadian dan dampak bencana 
+antar 
+BNPB, 
+BPBD, 
+kementerian/lembaga, 
+dan 
+pemangku 
+kepentingan lainnya. 
+ 
+C. 
+RUANG LINGKUP 
+Ruang lingkup Petunjuk Pelaksanaan ini terdiri atas: 
+a. 
+pengelolaan data, standar data kejadian dan dampak bencana, dan 
+b. 
+jenis ancaman bencana, kode referensi bencana, ambang batas, 
+metode perhitungan dan daftar data. 
+ 
+D. 
+PENGERTIAN 
+1. 
+Data adalah catatan atas kumpulan fakta atau deskripsi berupa 
+angka, karakter, simbol, gambar, peta, tanda, isyarat, tulisan, 
+suara, 
+dan/atau 
+bunyi, 
+yang 
+merepresentasikan 
+keadaan 
+sebenarnya atau menunjukkan suatu ide, objek, kondisi, atau 
+situasi. 
+2. 
+Bencana 
+adalah 
+peristiwa 
+atau 
+rangkaian 
+peristiwa 
+yang 
+mengancam dan mengganggu kehidupan dan penghidupan 
+masyarakat yang disebabkan, baik oleh faktor alam dan/atau faktor 
+non alam maupun faktor manusia sehingga mengakibatkan 
+timbulnya korban jiwa manusia, kerusakan lingkungan, kerugian 
+harta benda, dan dampak psikologis. 
+3. 
+Data Bencana adalah Data mengenai Bencana yang sesuai kriteria 
+yang ditetapkan oleh walidata bencana. 
+4. 
+Standar Data adalah standar yang mendasari Data tertentu yarig 
+terdiri dari lima komponen yaitu konsep, definisi, klasifikasi, 
+ukuran dan satuan. 
+5. 
+Konsep adalah ide yang mendasari data dan tujuan data tersebut 
+diproduksi. 
+6. 
+Definisi adalah penjelasan tentang data yang memberi batas atau 
+membedakan secara jelas arti dan cakupan data tertentu dengan 
+data yang lain. 
+7. 
+Klasifikasi adalah penggolongan data secara sistematis ke dalam 
+kelompok atau kategori berdasarkan kriteria yang telah ditetapkan 
+oleh pembina data atau dibakukan secara luas. 
+8. 
+Ukuran adalah unit yang digunakan dalam pengukuran jumlah, 
+kadar, atau cakupan. 
+9. 
+Satuan adalah besaran tertentu dalam data yang digunakan sebagai 
+standar 
+untuk 
+mengukur 
+atau 
+menakar 
+sebagai 
+sebuah 
+keseluruhan. 
+10. Kode Referensi adalah tanda berisi karakter yang mengandung atau 
+menggambarkan makna, maksud atau norma tertentu sebagai 
+rujukan identitas Data yang bersifat unik. 
+ 
+ 
+ 
+
+===== PDF HAL 3 (1902 kar) =====
+- 3 - 
+ 
+ 
+BAB II 
+PELAKSANAAN STANDARISASI  
+DATA KEJADIAN DAN DAMPAK BENCANA 
+ 
+A. 
+PENGELOLAAN DATA 
+Informasi yang cepat, tepat dan akurat tergantung dari adanya data 
+pendukung yang terstruktur dan mudah dipahami. Penyebarluasan 
+informasi dalam penanggulangan bencana dimulai sejak pengumpulan, 
+pengolahan, 
+dan 
+analisis 
+data. 
+Data 
+dan 
+informasi 
+bencana 
+dikumpulkan dari berbagai sumber, antara lain dari pemerintahan, 
+organisasi relawan/lembaga swadaya masyarakat/masyarakat dan 
+berbagai sumber media. Data dikumpulkan baik secara langsung 
+melalui wawancara ataupun secara tidak langsung seperti dari internet, 
+televisi, media cetak dan sebagainya. Ada dua jenis data, yaitu data 
+dinamis dan data statis. Data dinamis merupakan data tentang kejadian 
+bencana yang bersifat sementara. Artinya data tersebut masih 
+mengalami perubahan sesuai dengan laporan perkembangan selama 
+keadaan darurat bencana. Data statis merupakan data kejadian bencana 
+yang bersifat tetap atau tidak mengalami perubahan. 
+Dalam pengelolaan data  terbagi dua alur pengelolaan data dan informasi 
+dapat dilihat pada Gambar 1. 
+ 
+ 
+Gambar 1. Alur Pengelolaan Data dan Informasi 
+ 
+Alur manajemen data dan informasi terbagi menjadi dua, yaitu alur 
+manajemen data statis dan alur manajemen data dinamis. Alur 
+manajemen data dinamis digunakan pada saat tanggap darurat bencana 
+dan alur manajemen data statis digunakan dalam proses verifikasi data 
+bencana bulanan/triwulan/semester/tahunan. 
+Data dan Informasi bencana harus disimpan secara rapi dan baik secara 
+elektronik maupun dalam bentuk dokumen tertulis. Dalam melakukan 
+analisis data diperlukan prinsip kehati-hatian, teliti dan objektif agar 
+menghasilkan informasi yang tepat, ringkas dan akurat. Sebagai acuan 
+dalam analisis dilakukan dengan memperhatikan apa, di mana, kapan, 
+siapa, mengapa dan bagaimana. Apabila tidak dapat dilakukan, paling 
+
+===== PDF HAL 4 (2516 kar) =====
+- 4 - 
+ 
+ 
+sedikit mencakup informasi apa, dimana, kapan dan bagaimana. Data 
+yang telah dianalisis menghasilkan informasi disebarkan secara tepat 
+waktu dan dengan cara yang terstruktur, dengan ketentuan sebagai 
+berikut: 
+a. 
+saat keadaan darurat bencana data dinamis disampaikan minimal 
+1 hari sekali atau sesuai dengan kesepakatan dalam pos komando 
+penanganan darurat bencana; 
+b. 
+data statis disampaikan kepada walidata bencana sesuai dengan 
+periode waktu yang telah ditentukan. 
+ 
+1. 
+Pengumpulan 
+Terdapat dua jenis data bencana yang dikumpulkan, yaitu data 
+dinamis dan data statis. Pengumpulan data bencana ini dilakukan 
+oleh BPBD kabupaten/kota selaku Produsen Data bencana di 
+daerah dan unit kerja BNPB selaku Produsen Data bencana di 
+BNPB. 
+Data statis dan data dinamis dikumpulkan sesuai dengan format 
+data bencana yang tercantum dalam lampiran I. 
+ 
+2. 
+Pengolahan 
+Data yang telah dikumpulkan kemudian disimpan dan diolah oleh 
+Produsen Data bencana, dengan format worksheet/tabular. 
+Pengolahan 
+data 
+dilaksanakan 
+melalui 
+kompilasi 
+data, 
+pembersihan data dan verifikasi data. Proses verifikasi data di 
+daerah 
+dilakukan 
+oleh 
+BPBD 
+provinsi, 
+kabupaten/kota 
+berkoordinasi dengan perangkat daerah terkait. Proses verifikasi 
+dapat dilakukan melalui pertemuan dalam rangka pemutakhiran 
+data. 
+ 
+3. 
+Pelaksanaan Analisa Data 
+Jenis analisis yang dilakukan oleh Produsen Data bencana dapat 
+dihasilkan dari pengolahan data, adalah : 
+a. 
+Analisis komposisi yaitu analisis yang membandingkan nilai 
+kejadian atau lokasi bencana dengan dampak yang dipilih. 
+Analisa komposisi berguna untuk menunjukkan topologi 
+bencana, dampak pada manusia (strategi kesiapsiagaan), 
+dampak pada perumahan (strategi pembangunan), dampak 
+pada perekonomian dan dampak pada infrastruktur. 
+b. 
+Analisis temporal yaitu analisis yang menunjukkan aktivitas 
+variabel dampak yang berbeda dari waktu ke waktu. Analisa 
+temporal berguna untuk menunjukkan pola dan korelasi. 
+c. 
+Analisis statistik yaitu analisis yang ditampilkan dalam bentuk 
+statistik. Analisa statistik berguna untuk menunjukkan 
+keterkaitan antar variabel dampak bencana serta hubungan 
+sebab-akibat. 
+d. 
+Analisis spasial yaitu analisis yang ditampilkan dalam bentuk 
+peta. Analisa spasial berguna untuk menunjukkan sebaran 
+kejadian maupun dampak bencana. 
+e. 
+Hasil analisis dapat disajikan dalam bentuk cetak atau digital 
+yang 
+kemudian 
+disampaikan 
+ke 
+Badan 
+Nasional 
+Penanggulangan Bencana selaku walidata bencana di tingkat 
+pusat. 
+ 
+
+===== PDF HAL 5 (1476 kar) =====
+- 5 - 
+ 
+ 
+ 
+4. 
+Penyajian dan Penyebarluasan 
+Penyajian data bencana dapat berupa tabel, diagram dan peta. 
+Informasi yang disajikan antara lain pola sebaran kejadian bencana, 
+korban bencana dan kerusakan yang ditimbulkan akibat bencana, 
+serta data rinci tentang kejadian bencana di suatu wilayah tertentu. 
+Penyebarluasan informasi dapat dilakukan secara ‘online’ melalui 
+Portal Satu Data Bencana atau dashboard dan media lainnya sesuai 
+dengan ketentuan peraturan perundang-undangan. 
+ 
+ 
+B. 
+STANDAR DATA KEJADIAN DAN DAMPAK BENCANA 
+1. 
+Jenis Ancaman 
+Secara garis besar Indonesia memiliki 13 jenis ancaman bencana 
+yang  dibagi menjadi 3 klasifikasi bencana yaitu bencana alam, 
+bencana non alam dan bencana sosial yang  dikelompokan sesuai 
+dengan tabel berikut : 
+ 
+KLASIFIKASI 
+BENCANA 
+JENIS 
+BENCANA 
+NAMA KEJADIAN 
+KODE 
+BENCANA 
+Bencana 
+alam 
+Banjir 
+1. Banjir rob 
+2. Banjir bandang 
+3. Banjir dan tanah 
+longsor 
+4. Banjir drainase & 
+selokan 
+5. Banjir waduk 
+6. Banjir genangan 
+7. Tanggul jebol 
+101 
+Tanah 
+longsor 
+1. Longsor 
+2. Gerakan tanah 
+102 
+Gelombang 
+pasang dan 
+abrasi 
+1. Gelombang pasang 
+2. Abrasi pantai 
+103 
+Cuaca 
+ekstrem  
+1. Puting beliung 
+2. Angin kencang 
+3. Angin topan 
+4. Hujan es 
+5. Siklon tropis 
+6. Suhu udara ekstrem 
+104 
+Kekeringan 
+1. Kekeringan 
+meteorologis 
+2. Kekeringan 
+hidrologis 
+3. Kekeringan pertanian 
+105 
+Kebakaran 
+hutan dan 
+lahan 
+1. Kebakaran hutan 
+2. Kebakaran lahan 
+3. Kebakaran lahan 
+gambut 
+106 
+
+===== PDF HAL 6 (1047 kar) =====
+- 6 - 
+ 
+ 
+KLASIFIKASI 
+BENCANA 
+JENIS 
+BENCANA 
+NAMA KEJADIAN 
+KODE 
+BENCANA 
+Gempabumi 1. Gempa tektonik 
+2. Gempa vulkanik 
+3. Gempabumi 
+runtuhan  
+107 
+Tsunami 
+1. Tsunami seismogenik 
+2. Tsunami nonseismik 
+3. Tsunami lokal 
+4. Tsunami regional 
+5. Tsunami jarak 
+6. Tsunami meteorologi 
+7. Mikrotsunami 
+108 
+Erupsi 
+gunung api 
+1. Awan panas guguran 
+(aliran piroklastik 
+guguran) 
+2. Awan panas (aliran 
+piroklastik) 
+3. Banjir lahar (lahar) 
+4. Hujan abu vulkanik 
+5. Gas vulkanik 
+beracun 
+109 
+Bencana 
+nonalam 
+Epidemi 
+dan wabah 
+penyakit 
+1. Wabah penyakit 
+2. Epidemi 
+201 
+Kebakaran 
+gedung dan 
+pemukiman 
+1. Kebakaran gedung 
+dan pemukiman 
+202 
+Gagal 
+teknologi 
+1. Kegagalan industri 
+2. Kecelakaan industri 
+203 
+Bencana 
+sosial 
+Konflik 
+sosial 
+1. Konflik sosial 
+2. Teror 
+3. Kerusuhan sosial 
+301 
+ 
+ 
+ 
+2. 
+Kode Referensi Bencana 
+Untuk integrasi dan interoperabilitas data bencana diperlukan Kode 
+Referensi Bencana. Kode Referensi Bencana dituangkan pada Kode 
+Identitas Bencana (KIB) yang merupakan kode unik kejadian 
+
+===== PDF HAL 7 (1854 kar) =====
+- 7 - 
+ 
+ 
+bencana yang  terdiri dari 16 digit, dengan komposisi sebagai 
+berikut: 
+a. 
+2 angka menunjukan kode provinsi; 
+b. 
+2 angka menunjukan kode kabupaten/kota; 
+c. 
+3 angka menunjukan kode bencana; 
+d. 
+8 angka menunjukan waktu kejadian dengan format tahun 
+bulan tanggal; dan 
+e. 
+1 angka terakhir menunjukan index 
+  
+Catatan :  
+a. 
+Jika kejadian bencana menyebabkan beberapa wilayah 
+terdampak, maka kode wilayah dalam Kode Referensi Bencana 
+mengikuti lokasi episentrum. 
+b. 
+Jika episentrum bencana berada di wilayah lautan maka kode 
+wilayah berdasarkan pada jarak terdekat wilayah terdampak. 
+c. 
+Kode referensi bencana sebagaimana kasus a dan b ditentukan 
+oleh Pusat Data Informasi, dan Komunikasi Bencana melalui 
+proses verifikasi. 
+ 
+3. 
+Ambang batas kejadian bencana 
+Dalam penentuan kejadian bencana dengan penyebabnya adalah 
+salah satu dari Jenis Bencana dan setidaknya memenuhi satu dari 
+kriteria berikut: 
+a. 
+1 orang meninggal dunia; 
+b. 
+50 orang yang terkena dampak/luka/mengungsi; 
+c. 
+5 unit rumah dan/atau bangunan fasilitas publik rusak; 
+d. 
+1 Hektar lahan; 
+e. 
+permintaan Pemerintah Daerah untuk diberikan bantuan 
+nasional; atau 
+f. 
+penentuan status keadaan darurat bencana. 
+ 
+4. 
+Metode Perhitungan 
+a. 
+Jika satu kejadian melibatkan lebih dari satu tipe kejadian 
+bencana, ditentukan satu tipe kejadian utama. 
+b. 
+Jika suatu kejadian bencana berdampak lebih dari satu 
+provinsi/ kabupaten/kota maka jumlah kejadian secara 
+nasional dihitung sebagai satu kejadian, pada level provinsi 
+jumlah kejadian dihitung berdasarkan provinsi terdampak, 
+pada 
+level 
+kabupaten/kota 
+jumlah 
+kejadian 
+dihitung 
+berdasarkan kabupaten/kota terdampak.  
+c. 
+Jika bencana terjadi di dua wilayah berbeda pada hari yang 
+sama 
+namun 
+berbeda 
+jam 
+kejadian 
+dalam 
+satu 
+kabupaten/kota,  dihitung satu kejadian bencana dan dalam 
+
+===== PDF HAL 8 (1227 kar) =====
+- 8 - 
+ 
+ 
+Kode Referensi Bencana angka index yang menentukan 
+kejadian tersebut.  
+ 
+5. 
+Daftar Data 
+a. 
+Data kejadian bencana 
+1) 
+Jenis bencana  
+2) 
+Nama kejadian  
+3) 
+Tarikh (tanggal,bulan,tahun)  
+4) 
+Waktu kejadian  
+5) 
+Lokasi 
+(provinsi/kabupaten/kota/kecamatan/kelurahan/desa)  
+6) 
+Letak Geografis (Longitude Latitude)  
+7) 
+Penyebab bencana 
+8) 
+Kronologis bencana  
+9) 
+Deskripsi 
+10) Sumber 
+11) Kondisi mutakhir  
+12) Status keadaan darurat bencana 
+13) Upaya penanganan 
+14) Dokumentasi 
+15) Sebaran dampak 
+16) Kode Identitas Bencana 
+ 
+b. 
+Data kebutuhan 
+1) 
+Dana 
+2) 
+Sumber daya manusia 
+3) 
+Sarana prasarana 
+4) 
+Logistik 
+5) 
+Peralatan 
+ 
+c. 
+Data akibat terhadap manusia 
+1) 
+Meninggal 
+2) 
+Hilang 
+3) 
+Luka/ Sakit 
+4) 
+Mengungsi  
+5) 
+Menderita/Terdampak 
+ 
+d. 
+Data kerusakan dan kerugian sosial ekonomi 
+1) 
+Sawah 
+2) 
+Lahan 
+3) 
+Kebun 
+4) 
+Hutan 
+5) 
+Kolam 
+6) 
+Kios/toko 
+7) 
+Pabrik 
+8) 
+Taksiran kerugian 
+ 
+e. 
+Data kerusakan dan kerugian prasarana dan sarana vital 
+1) 
+Jaringan air bersih/minum 
+2) 
+Jaringan listrik dan lampu penerangan 
+3) 
+Jaringan telekomunikasi 
+4) 
+Jaringan irigasi 
+5) 
+Jaringan jalan dan jembatan 
+6) 
+Jaringan transportasi (pelabuhan, bandara, terminal dan 
+stasiun) 
+
+===== PDF HAL 9 (1485 kar) =====
+- 9 - 
+ 
+ 
+7) 
+Sarana pengisian bahan bakar umum 
+8) 
+Taksiran kerugian 
+ 
+f. 
+Data kerusakan dan kerugian rumah 
+1) 
+Rumah 
+2) 
+Taksiran kerugian 
+ 
+g. 
+Data kerusakan dan kerugian pelayanan dasar. 
+1) 
+Satuan pendidikan 
+2) 
+Rumah ibadat 
+3) 
+Fasilitas pelayanan kesehatan 
+4) 
+Kantor 
+5) 
+Pasar 
+6) 
+Taksiran kerugian 
+ 
+h. 
+Data aset dan layanan penanganan kedaruratan. 
+1) 
+Barang yang digunakan untuk melayani penanganan 
+darurat bencana. 
+ 
+Daftar data di atas mengacu pada tabel Standar Data Kejadian dan 
+Dampak Bencana sebagaimana tercantum dalam lampiran II. 
+ 
+C. 
+PENGORGANISASIAN 
+1. 
+Penyelenggara standar data kejadian dan dampak bencana terdiri 
+atas:  
+a. 
+Tingkat pusat, meliputi :  
+1) 
+Produsen Data Bencana; dan 
+2) 
+Walidata Bencana. 
+b. 
+Tingkat daerah provinsi/kabupaten/kota, meliputi :  
+1) 
+Produsen Data Bencana daerah; dan 
+2) 
+Walidata Bencana daerah. 
+2. 
+Produsen Data Bencana di pusat dilaksanakan oleh unit kerja di 
+lingkungan Badan Nasional Penanggulangan Bencana yang 
+menghasilkan Data Bencana berdasarkan tugas dan fungsi sesuai 
+dengan ketentuan peraturan perundang-undangan. 
+3. 
+Walidata Bencana di pusat dilaksanakan oleh Pusat Data Informasi 
+dan Komunikasi kebencanaan. 
+4. 
+Produsen Data Bencana daerah dan Walidata Bencana daerah 
+dilaksanakan sesuai dengan ketentuan peraturan perundang-
+undangan yang mengatur mengenai penyelenggaraan satu data di 
+daerah dan peraturan perundang-undangan yang mengatur 
+mengenai kelembagaan di daerah. 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 10 (0 kar) =====
+
+===== PDF HAL 11 (1708 kar) =====
+- 11 - 
+ 
+ 
+LAMPIRAN I 
+PETUNJUK PELAKSANAAN 
+STANDAR DATA KEJADIAN DAN 
+DAMPAK BENCANA 
+NOMOR       TAHUN 2023 
+ 
+ 
+FORMAT DATA KEJADIAN DAN DAMPAK BENCANA 
+ 
+A. 
+Formulir Data Kejadian dan Dampak Bencana 
+ 
+DATA KEJADIAN DAN DAMPAK BENCANA 
+ 
+1. Data kejadian bencana 
+Jenis bencana 
+ 
+: ……………………………………………………….. 
+Nama kejadian   
+: ……………………………………………………….. 
+Tarikh (tgl/bln/tahun) : ……………………………………………………….. 
+Waktu kejadian   
+: ……………………………………………………….. 
+Lokasi 
+1) Provinsi 
+ 
+: ……………………………………………………….. 
+2) Kabupaten/kota : ……………………………………………………….. 
+3) Kecamatan  
+: ……………………………………………………….. 
+4) Kelurahan/desa  : ……………………………………………………….. 
+Letak geografis  
+1) Longitude 
+ 
+: ……………………………………………………….. 
+2) Latitude  
+ 
+: ……………………………………………………….. 
+Penyebab bencana 
+: ……………………………………………………….. 
+Kronologis bencana  
+: ……………………………………………………….. 
+Deskripsi  
+ 
+: ……………………………………………………….. 
+Sumber 
+ 
+ 
+: ……………………………………………………….. 
+Kondisi mutakhir  
+: ……………………………………………………….. 
+Status keadaan darurat bencana 
+ 
+: ……………………………….. 
+Upaya penanganan 
+: ……………………………………………………….. 
+Dokumentasi 
+ 
+: ……………………………………………………….. 
+Sebaran dampak  
+: ……………………………………………………….. 
+Kode Identitas Bencana: ……………………………………………………….. 
+ 
+2. Data kebutuhan 
+Dana 
+ 
+ 
+: ……………………………………………………….. 
+Sumber daya manusia : ……………………………………………………….. 
+Sarana dan prasarana : ……………………………………………………….. 
+Logistik 
+ 
+ 
+: ……………………………………………………….. 
+Peralatan  
+ 
+: ……………………………………………………….. 
+ 
+3. Data akibat terhadap manusia 
+No 
+Korban 
+Anak-anak 
+(0-17 
+tahun) 
+Dewasa 
+(18-59 
+tahun) 
+Lansia 
+(60 ke 
+atas) 
+Total 
+L 
+P 
+L 
+P 
+L 
+P 
+L 
+P 
+1 
+Meninggal 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+Hilang 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+Luka/Sakit 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4 
+Terdampak 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5 
+Mengungsi 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 12 (2394 kar) =====
+- 12 - 
+ 
+ 
+ 
+  
+Data perlindungan dan prioritas kelompok rentan di pengungsian 
+menyesuaikan dengan Petunjuk Pelaksanaan Pengelolaan data 
+pengungsi. 
+ 
+ 
+4. Data kerusakan dan kerugian sosial ekonomi 
+Sawah 
+: ......... Ha  
+ 
+           Taksiran Kerugian: ....Juta 
+Lahan 
+: ......... Ha  
+ 
+           Taksiran kerugian: ....Juta 
+Kebun 
+: ……… Ha  
+ 
+           Taksiran kerugian: ....Juta 
+Hutan 
+: ……… Ha  
+ 
+           Taksiran kerugian: ....Juta 
+Kolam 
+: ……… Ha  
+ 
+           Taksiran kerugian: ....Juta 
+Kios/Toko :....RB.....RS....RR....Terendam  Taksiran kerugian: ....Juta 
+Pabrik 
+:....RB.....RS....RR....Terendam  Taksiran kerugian: ....Juta 
+ 
+5. Data kerusakan dan kerugian prasarana dan sarana vital 
+Jaringan air bersih/minum 
+ 
+ 
+: ......................................... 
+Taksiran kerugian 
+ 
+ 
+ 
+: ……..Juta  
+Jaringan listrik dan lampu penerangan 
+: ………………………………… 
+Taksiran kerugian 
+ 
+ 
+ 
+: ……..Juta 
+Jaringan telekomunikasi 
+ 
+ 
+: ......................................... 
+Taksiran kerugian 
+ 
+ 
+ 
+: ……..Juta  
+Jaringan irigasi  
+ 
+ 
+ 
+: ......................................... 
+Taksiran kerugian 
+ 
+ 
+ 
+: ……..Juta  
+Jaringan jalan dan jembatan  
+ 
+ 
+a. Jalan  
+: ……….km  
+ 
+Taksiran kerugian : …..Juta 
+b. Jembatan 
+: ......RB.......RS........RR Taksiran kerugian : …..Juta 
+Jaringan transportasi (pelabuhan, bandara, terminal dan stasiun) :  
+Taksiran kerugian 
+: ……..Juta 
+Saranan pengisian bahan bakar umum 
+: ......................................... 
+Taksiran kerugian 
+: ……..Juta 
+ 
+6. Data kerusakan dan kerugian rumah 
+Rumah/Pemukiman 
+: .......RB.........RS .........RR..........Terendam 
+Taksiran kerugian 
+: ……..Juta 
+ 
+7. Data kerusakan dan kerugian pelayanan dasar. 
+Rumah ibadat 
+ 
+ 
+ 
+:.....RB......RS.....RR......Terendam 
+Taksiran kerugian 
+ 
+ 
+: ……..Juta 
+Fasilitas pelayanan kesehatan 
+:.....RB......RS.....RR......Terendam 
+Taksiran kerugian 
+ 
+ 
+: ……..Juta 
+Satuan pendidikan 
+ 
+ 
+:.....RB......RS.....RR......Terendam 
+Taksiran kerugian 
+ 
+ 
+: ……..Juta 
+Kantor 
+ 
+ 
+ 
+ 
+:.....RB......RS.....RR......Terendam 
+Taksiran kerugian 
+ 
+ 
+: ……..Juta 
+Pasar 
+ 
+ 
+ 
+ 
+:.....RB......RS.....RR......Terendam 
+Taksiran kerugian 
+ 
+ 
+: ……..Juta 
+8. Data aset dan layanan penanganan kedaruratan. 
+Barang yang digunakan untuk melayani penanganan darurat 
+bencana: ............................................................................................ 
+ 
+ 
+ 
+
+===== PDF HAL 13 (596 kar) =====
+- 13 - 
+ 
+ 
+B. 
+Format Data 
+1. Data kejadian bencana 
+No 
+Tarikh 
+Pro-
+vinsi 
+Kab/ 
+kota 
+Keca-
+matan, 
+desa 
+Letak 
+Geo-
+grafis 
+Jenis 
+Ben-
+cana 
+Nama 
+Keja-
+dian 
+Waktu 
+keja-
+dian 
+Penye-
+bab 
+Krono-
+logis 
+Des-
+kripsi 
+Sum-
+ber 
+Kon-
+disi 
+Mu-
+takhir 
+Status 
+keadaan 
+darurat 
+bencana 
+Upaya 
+Pena-
+nganan 
+KIB 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2. Data kebutuhan 
+No 
+Dana 
+Sumber Daya Manusia Sarana dan Prasarana Logistik 
+Peralatan 
+1 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 14 (797 kar) =====
+- 14 - 
+ 
+ 
+3. Data akibat terhadap manusia 
+No 
+Meninggal 
+Hilang 
+Luka/Sakit 
+Anak 
+Dewasa 
+Lansia 
+Total 
+Anak 
+Dewasa 
+Lansia 
+Total 
+Anak 
+Dewasa 
+Lansia 
+Total 
+L 
+P Tot 
+L P Tot 
+L 
+P Tot 
+L 
+P Tot 
+L P Tot 
+L 
+P Tot 
+L 
+P 
+Tot 
+L 
+P 
+Tot 
+L 
+P 
+Tot 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+No 
+Menderita/Terdampak 
+Mengungsi 
+Anak 
+Dewasa 
+Lansia 
+Total 
+Anak 
+Dewasa 
+Lansia 
+Total 
+L 
+P Tot 
+L P Tot 
+L 
+P Tot 
+L P Tot 
+L P Tot 
+L 
+P Tot 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 15 (503 kar) =====
+- 15 - 
+ 
+ 
+4. Data kerusakan dan kerugian sosial ekonomi 
+No 
+Sawah 
+(Ha) 
+Taksiran 
+kerugian 
+Lahan 
+(Ha) 
+Taksiran 
+kerugian 
+Kebun 
+(Ha) 
+Taksiran 
+kerugian 
+Hutan 
+(Ha) 
+Taksiran 
+kerugian 
+Kolam 
+(Ha) 
+Taksiran 
+kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+No 
+Kios/Toko 
+Pabrik 
+RB 
+RS 
+RR 
+Terendam 
+Taksiran 
+kerugian 
+RB 
+RS 
+RR 
+Terendam 
+Taksiran 
+kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 16 (615 kar) =====
+- 16 - 
+ 
+ 
+5. Data kerusakan dan kerugian prasarana dan sarana vital 
+No 
+Jaringan air 
+bersih/minum 
+Taksiran 
+kerugian 
+Jaringan lampu dan 
+lampu penerangan 
+Taksiran 
+kerugian 
+Jaringan 
+telekomunikasi 
+Taksiran 
+kerugian 
+Jaringan 
+irigasi 
+Taksiran 
+kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+No 
+Jalan 
+(Km) 
+Taksiran 
+kerugian 
+Jembatan 
+Jaringan 
+Transportasi 
+Taksiran 
+kerugian 
+Jaringan pengisian 
+bahan bakar umum 
+Taksiran 
+kerugian 
+RB 
+RS 
+RR 
+Terendam 
+Taksiran 
+kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 17 (522 kar) =====
+- 17 - 
+ 
+ 
+6. Data kerusakan dan kerugian rumah 
+No 
+Kerusakan dan kerugian rumah 
+RB 
+RS 
+RR 
+Terendam 
+Taksiran kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+dst 
+ 
+ 
+ 
+ 
+ 
+ 
+7. Data kerusakan dan kerugian pelayanan dasar 
+ 
+No 
+Satuan Pendidikan 
+Rumah Ibadat 
+Fasilitas pelayanan kesehatan 
+RB 
+RS RR Terendam 
+Taksiran 
+kerugian 
+RB 
+RS 
+RR 
+Terendam 
+Taksiran 
+kerugian 
+RB RS RR Terendam 
+Taksiran 
+kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 18 (320 kar) =====
+- 18 - 
+ 
+ 
+No 
+Kantor 
+Pasar 
+RB 
+RS RR Terendam 
+Taksiran 
+kerugian 
+RB 
+RS 
+RR 
+Terendam 
+Taksiran 
+kerugian 
+1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+dst  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8. Data aset dan layanan penanganan kedaruratan 
+No 
+Aset dan layanan penanganan kedaruratan 
+1 
+ 
+2 
+ 
+3 
+ 
+dst 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 19 (1398 kar) =====
+- 19 - 
+ 
+ 
+C. 
+Petunjuk Pengisian Format Data 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+1.  
+Data kejadian bencana 
+  
+Jenis bencana  1. Bencana Alam 
+101. Banjir 
+102. Tanah longsor 
+103. Gelombang pasang dan abrasi 
+104. Cuaca ekstrem 
+105. Kekeringan 
+106. Kebakaran hutan dan lahan 
+107. Gempabumi 
+108. Tsunami 
+109. Erupsi gunung api 
+2. Bencana NonAlam 
+201. Epidemi dan wabah penyakit 
+202. Kebakaran gedung dan pemukiman 
+202. Gagal teknologi 
+3. Bencana Sosial 
+   301. Konflik sosial 
+ 
+Nama 
+kejadian 
+Nama kejadian dari jenis bencana.  
+Jika satu kejadian melibatkan lebih dari satu tipe 
+kejadian bencana, ditentukan satu tipe kejadian 
+utama. Misalnya, banjir dapat menyebabkan tanah 
+longsor, jenis kejadiannya adalah banjir sedangkan 
+nama kejadiannya adalah banjir dan tanah longsor. 
+ 
+Tarikh  
+Awal kejadian bencana tanggal – bulan - tahun  
+ 
+Waktu 
+kejadian 
+Waktu kejadian bencana (Jam) 
+  
+Lokasi  
+Lokasi kejadian bencana sesuai Provinsi, 
+Kabupaten/kota,  Kecamatan, Desa (Nomenklatur 
+wilayah dan kode wilayah mengikuti Peraturan 
+Kemendagri) 
+ 
+Letak 
+geografis 
+Latitude/Lintang dan Longitude/Bujur (Penulisan 
+desimal derajat minimal hingga 6 angka signifikan 
+dibelakang koma, contoh: -6,597998; 106,797429) 
+ 
+Penyebab 
+bencana 
+Tuliskan pemicu terjadinya bencana 
+ 
+Kronologis 
+bencana 
+Tuliskan kronologis terjadinya bencana 
+
+===== PDF HAL 20 (1734 kar) =====
+- 20 - 
+ 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+ 
+Deskripsi 
+Deskripsi bencana dalam hal ini adalah cara 
+penyampaian 
+data/informasi 
+kejadian 
+bencana 
+dengan terperinci melalui kata-kata atau tulisan, 
+yang bertujuan agar data/informasi tersebut dapat 
+dimengerti oleh orang lain yang tidak mengalami 
+kejadian tersebut secara langsung. 
+Misalnya :  
+- Bencana banjir mencantumkan tinggi muka air.   
+- Bencana 
+gempabumi 
+mencantumkan 
+titik 
+episentrum, magnitude, kedalaman. 
+- Bencana erupsi gunung api mencantumkan 
+nama gunung api yang mengalami erupsi. 
+- dll 
+ 
+Sumber 
+Tuliskan Sumber informasi kejadian bencana 
+ 
+Kondisi 
+mutakhir 
+Tuliskan kondisi terakhir di lokasi bencana 
+ 
+Status keadaan 
+darurat 
+bencana 
+Tuliskan status bencana yang ditetapkan oleh 
+pemerintah sesuai dengan pedoman penetapan 
+status keadaan darurat bencana. 
+ 
+Upaya 
+penanganan 
+Tuliskan upaya 
+yang 
+sudah 
+dilakukan 
+dalam 
+menangani 
+bencana 
+Rekap 
+upaya 
+penanganan
+yang telah 
+dilakukan 
+Rekap 
+upaya 
+penanganan 
+yang telah 
+dilakukan 
+ 
+ 
+Dokumentasi 
+Foto, video dan dokumen lainnya 
+ 
+Sebaran 
+dampak 
+Sebaran dampak bencana dalam bentuk peta 
+ 
+Kode Identitas 
+Bencana (KIB) 
+Contohnya Banjir di Kabupaten Bogor 19 September 
+2023 maka KIB-nya sebagai berikut :  
+32 01 101 20230919 1, 
+15 digit awal dihitung sebagai satu kejadian bencana 
+Catatan:  
+- Jika kejadian gempabumi yang berdampak empat 
+kabupaten, kejadian nasional dihitung sebagai 
+satu kejadian gempabumi, namun di level 
+kabupaten dihitung satu kejadian tiap kabupaten. 
+- Jika kejadian bencana berdampak beberapa 
+kecamatan berbeda dengan waktu yang berbeda 
+maka tetap dihitung satu kejadian bencana. 
+2. 
+Data Kebutuhan 
+
+===== PDF HAL 21 (1322 kar) =====
+- 21 - 
+ 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+ 
+Sumber daya 
+manusia 
+Tuliskan 
+kebutuhan 
+sumber 
+daya 
+manusia sesuai 
+dengan kondisi 
+di 
+lapangan. 
+Misalnya: 
+Relawan, tenaga 
+kesehatan 
+(dokter, 
+perawat, bidan, 
+sanitarian, 
+apoteker, 
+ahli 
+gizi 
+dan lain-lain ), 
+TNI/Polri, 
+tenaga 
+SAR, 
+desa siaga, dll. 
+Rekap 
+kebutuhan 
+sumber 
+daya 
+manusia  
+Rekap 
+kebutuhan 
+sumber 
+daya 
+manusia  
+ 
+ 
+Dana 
+Tuliskan 
+kebutuhan 
+dana 
+sesuai 
+dengan kondisi 
+di lapangan 
+Rekap 
+kebutuhan 
+dana 
+Rekap 
+kebutuhan 
+dana 
+Rp 
+(juta) 
+ 
+Sarana dan 
+prasarana 
+Tuliskan 
+kebutuhan 
+sarana 
+dan 
+prasarana 
+sesuai 
+dengan 
+kondisi 
+di 
+lapangan 
+Rekap 
+kebutuhan 
+sarana dan 
+prasarana 
+Rekap 
+kebutuhan 
+sarana dan 
+prasarana 
+ 
+ 
+Logistik 
+Tuliskan 
+kebutuhan 
+logistik 
+sesuai 
+dengan kondisi 
+di lapangan 
+Rekap 
+kebutuhan 
+logistik 
+Rekap 
+kebutuhan 
+logistik 
+ 
+ 
+Peralatan 
+Tuliskan 
+kebutuhan 
+peralatan sesuai 
+dengan kondisi 
+di lapangan 
+Rekap 
+kebutuhan 
+peralatan 
+Rekap 
+kebutuhan 
+peralatan 
+ 
+3 
+Data akibat 
+terhadap 
+manusia 
+Anak : 0 – 17 Tahun , Dewasa : 17-59 tahun,  
+Lansia : 60 tahun keatas. 
+Jenis kelamin L/P 
+(korban mengungsi sesuai dengan juklak terkait 
+pengungsi) 
+ 
+Meninggal  
+Jumlah korban 
+meninggal 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+orang 
+
+===== PDF HAL 22 (1267 kar) =====
+- 22 - 
+ 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+akibat bencana 
+ 
+Hilang  
+Jumlah korban 
+hilang akibat 
+bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+orang 
+ 
+Luka/sakit 
+Jumlah korban 
+luka/sakit 
+akibat bencana 
+Nominal 
+terakhir  
+Nominal 
+terbesar 
+orang 
+ 
+Menderita/ 
+terdampak  
+Jumlah korban 
+menderita/terd
+ampak akibat 
+bencana 
+Nominal 
+terakhir  
+Nominal 
+terbesar 
+selama 
+masa 
+tanggap  
+darurat 
+orang 
+ 
+ Mengungsi  
+Jumlah korban 
+mengungsi 
+akibat bencana 
+Nominal 
+terakhir  
+Nominal 
+terbesar 
+selama 
+masa 
+tanggap  
+darurat 
+orang 
+4. 
+Data kerusakan dan kerugian sosial ekonomi 
+ 
+sawah  
+Tuliskan luas 
+sawah yang 
+rusak akibat 
+bencana  
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Ha 
+ 
+Lahan  
+Tuliskan luas 
+lahan yang 
+rusak akibat 
+bencana   
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Ha 
+ 
+Kebun  
+Tuliskan luas 
+kebun yang 
+rusak akibat 
+bencana   
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Ha 
+ 
+Hutan 
+Tuliskan luas 
+hutan yang 
+rusak akibat 
+bencana   
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Ha 
+ 
+Kios/toko  
+Tuliskan jumlah 
+kios/toko rusak 
+akibat bencana   
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Kolam 
+Tuliskan luas 
+tempat 
+melakukan 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Ha 
+
+===== PDF HAL 23 (1164 kar) =====
+- 23 - 
+ 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+kegiatan 
+pembudidayaan 
+perikanan yang 
+rusak akibat 
+bencana baik 
+kolam air tawar 
+maupun air 
+payau seperti 
+tambak, kolam 
+budidaya 
+perikanan, dll 
+baik milik 
+perorangan 
+maupun 
+korporasi  
+ 
+Pabrik  
+Tuliskan jumlah 
+pabrik yang 
+rusak akibat 
+bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Taksiran 
+kerugian 
+Jumlah 
+taksiran 
+kerugian yang 
+dialami ketika 
+terjadi  bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Rp 
+(Juta) 
+5. 
+Data kerusakan dan kerugian prasarana dan sarana vital 
+ 
+Jaringan air 
+bersih/minum 
+Tuliskan jaringan jaringan air bersih/minum yang 
+rusak akibat bencana 
+ 
+Jaringan 
+lampu dan 
+lampu 
+penerangan 
+Tuliskan jaringan lampu dan lampu penerangan 
+yang rusak akibat bencana 
+ 
+Jaringan 
+telekomunikasi 
+Tuliskan jaringan telekomunikasi yang rusak akibat 
+bencana 
+ 
+Jaringan 
+irigasi 
+Tuliskan jaringan irigasi yang rusak akibat bencana 
+ 
+Jaringan jalan dan jembatan 
+ 
+● Jalan 
+Tuliskan 
+panjang jalan 
+rusak akibat 
+bencana seperti 
+jalan nasional, 
+provinsi, 
+kabupaten, kota 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+km 
+
+===== PDF HAL 24 (1291 kar) =====
+- 24 - 
+ 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+dan jalan desa. 
+ 
+● Jembatan 
+Tuliskan jumlah 
+jembatan rusak 
+akibat bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+unit 
+ 
+Jaringan 
+transportasi 
+Tuliskan jaringan transportasi yang rusak akibat 
+bencana 
+ 
+Jaringan 
+pengisian 
+bahan bakar 
+umum 
+Tuliskan jaringan pengisian bahan bakar umum 
+(SPBU) yang rusak akibat bencana 
+ 
+Taksiran 
+kerugian 
+Jumlah 
+kerugian yang 
+dialami ketika 
+terjadi  bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Rp 
+(Juta) 
+6. 
+Data kerusakan dan kerugian rumah 
+ 
+Rumah  
+Tuliskan jumlah 
+rumah rusak 
+akibat bencana 
+berdasarkan 
+jenis kerusakan 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Taksiran 
+kerugian 
+Jumlah 
+kerugian yang 
+dialami ketika 
+terjadi  bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Rp 
+(Juta) 
+7  Data kerusakan dan kerugian pelayanan dasar. 
+ 
+Rumah ibadat 
+Tuliskan jumlah 
+rumah ibadat 
+yang rusak 
+akibat bencana 
+seperti masjid, 
+gereja, pura, 
+vihara dan 
+klenteng/litang 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Fasilitas 
+pelayanan 
+kesehatan 
+Tuliskan jumlah 
+fasilitas 
+pelayanan 
+kesehatan yang 
+rusak akibat 
+bencana seperti 
+puskesmas, 
+rumah sakit, 
+klinik, dll 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+
+===== PDF HAL 25 (1357 kar) =====
+- 25 - 
+ 
+ 
+NO 
+KLASIFIKASI 
+PENDATAAN 
+KETERANGAN 
+DATA 
+DINAMIS 
+DATA 
+STATIS 
+SATUA
+N 
+ 
+Satuan 
+pendidikan 
+Tuliskan jumlah 
+satuan 
+pendidikan yang 
+rusak akibat 
+bencana seperti 
+PAUD/TK, SD, 
+SMP, SMA, 
+Perguruan 
+Tinggi, dll 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Kantor 
+Tuliskan jumlah 
+kantor yang 
+rusak akibat 
+bencana baik 
+kantor 
+pemerintah , 
+swasta maupun 
+gedung/bangun
+an yang 
+dijadikan 
+kegiatan 
+perkantoran 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Pasar 
+Tuliskan jumlah 
+pasar yang 
+rusak akibat 
+bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Unit 
+ 
+Taksiran 
+kerugian  
+Jumlah 
+kerugian yang 
+dialami ketika 
+terjadi  bencana 
+Nominal 
+terakhir  
+Nominal 
+terakhir  
+Rp 
+(Juta) 
+8  Data aset dan layanan penanganan kedaruratan. 
+ 
+Barang 
+yang 
+digunakan 
+untuk 
+melayani 
+penanganan 
+darurat 
+bencana  
+Tuliskan barang yang digunakan untuk melayani 
+penanganan darurat bencana seperti tenda, genset, 
+dll 
+ 
+Catatan: 
+1. 
+Untuk kebakaran gedung dan permukiman dicatat apabila BPBD 
+bergabung dengan Damkar 
+2. 
+Pembagian jenis kerusakan terdiri atas:  
+a. 
+Rusak berat, merupakan kriteria kerusakan yang mengakibatkan 
+bangunan roboh atau sebagian besar komponen struktur rusak, 
+sebagai contoh : (1) bangunan roboh total / sebagian besar struktur 
+utama bangunan rusak; (2) sebagian besar dinding dan lantai 
+
+===== PDF HAL 26 (0 kar) =====
+
+===== PDF HAL 27 (1517 kar) =====
+- 27 - 
+ 
+ 
+LAMPIRAN II 
+PETUNJUK PELAKSANAAN 
+STANDAR DATA KEJADIAN DAN DAMPAK BENCANA 
+NOMOR       TAHUN 2023 
+ 
+DEFINISI DAN STANDAR DATA KEJADIAN DAN DAMPAK BENCANA 
+ 
+A. 
+KONSEP DAN DEFINISI KEJADIAN DAN DAMPAK BENCANA 
+ 
+NO 
+KONSEP 
+DEFINISI 
+1 
+Bencana  
+Peristiwa atau rangkaian peristiwa yang mengancam dan mengganggu kehidupan dan 
+penghidupan masyarakat yang disebabkan, baik oleh faktor alam dan/atau faktor non-
+alam maupun faktor manusia sehingga mengakibatkan timbulnya korban jiwa manusia, 
+kerusakan lingkungan, kerugian harta benda, dan dampak psikologis. 
+2 
+Bencana alam 
+Bencana yang diakibatkan oleh peristiwa atau  serangkaian peristiwa yang disebabkan 
+oleh alam antara lain berupa gempabumi, tsunami, gunung meletus, banjir, kekeringan, 
+angin topan, dan tanah longsor.  
+3 
+Bencana non alam 
+Bencana yang diakibatkan oleh peristiwa atau rangkaian peristiwa nonalam yang antara 
+lain berupa gagal teknologi, gagal modernisasi, epidemi, dan wabah penyakit.  
+4 
+Bencana sosial 
+Bencana yang diakibatkan oleh peristiwa atau serangkaian peristiwa yang diakibatkan 
+oleh manusia yang meliputi konflik sosial antarkelompok atau antarkomunitas 
+masyarakat, dan teror.  
+5 
+Wilayah Provinsi 
+Wilayah administratif yang menjadi wilayah kerja bagi gubernur sebagai wakil 
+Pemerintah Pusat dan wilayah kerja bagi gubernur dalam menyelenggarakan urusan 
+pemerintahan umum di wilayah Daerah provinsi. 
+6 
+Wilayah Kabupaten/kota 
+Wilayah Administratif yang menjadi wilayah kerja bagi bupati/walikota dalam 
+
+===== PDF HAL 28 (1600 kar) =====
+- 28 - 
+ 
+ 
+NO 
+KONSEP 
+DEFINISI 
+menyelenggarakan urusan pemerintahan umum di wilayah Daerah kabupaten/kota 
+7 
+Tarikh 
+Tanggal yang memuat informasi hari, bulan, dan tahun (ddmmyyyy). 
+8 
+Korban Meninggal 
+Orang yang dilaporkan tewas atau meninggal dunia akibat bencana.  
+9 
+Korban Hilang 
+Orang yang dilaporkan hilang atau tidak ditemukan atau tidak diketahui keberadaannya 
+setelah terjadi bencana.  
+10 
+Korban Luka/Sakit 
+Orang yang mengalami luka-luka atau sakit, dalam keadaan luka ringan, maupun luka 
+parah/berat, baik yang berobat jalan maupun rawat inap.  
+11 
+Terdampak/Penderita 
+Orang atau sekelompok orang yang menderita akibat dampak buruk bencana, seperti 
+kerusakan dan atau kerugian harta benda, namun masih dapat menempati tempat 
+tinggalnya.  
+12 
+Pengungsi 
+Orang atau kelompok orang yang terpaksa atau dipaksa keluar dari tempat tinggalnya 
+untuk jangka waktu yang belum pasti sebagai akibat dampak buruk bencana.  
+13 
+Rumah 
+Bangunan yang dihuni sebagai tempat tinggal  
+14 
+Kerusakan bangunan 
+Tidak berfungsinya bangunan atau komponen bangunan akibat 
+penyusutan/berakhirnya umur bangunan, atau akibat ulah manusia atau perilaku alam 
+seperti beban fungsi yang berlebih, kebakaran, gempa bumi, atau sebab lain yang 
+sejenis. 
+15 
+Jalan  
+Prasarana transportasi darat yang meliputi segala bagian jalan, termasuk bangunan 
+pelengkap dan perlengkapannya yang diperuntukkan bagi lalu lintas, yang berada pada 
+permukaan tanah, di atas permukaan tanah, di bawah permukaan tanah dan/atau air, 
+serta di atas permukaan air, kecuali jalan kereta api, jalan lori, dan jalan kabel.  
+
+===== PDF HAL 29 (1587 kar) =====
+- 29 - 
+ 
+ 
+NO 
+KONSEP 
+DEFINISI 
+16 
+Jembatan 
+Jalan yang terletak di atas permukaan air dan/atau di atas permukaan tanah 
+17 
+Satuan pendidikan 
+Satuan pendidikan adalah kelompok layanan pendidikan yang menyelenggarakan 
+pendidikan pada jalur formal, nonformal, dan informal pada setiap jenjang dan jenis 
+pendidikan. 
+18 
+Rumah ibadat 
+Bangunan yang memiliki ciri-ciri tertentu yang khusus dipergunakan untuk beribadat 
+bagi pemeluk masing-masing agama secara permanen, tidak termasuk tempat ibadat 
+keluarga. 
+19 
+Fasilitas pelayanan kesehatan 
+Tempat dan/ atau alat yang digunakan untuk menyelenggarakan Pelayanan 
+Kesehatan kepada perseorangan ataupun masyarakat dengan pendekatan promotif, 
+preventif, kuratif, rehabilitatif, dan/ atau paliatif yang dilakukan oleh 
+Pemerintah Pusat, Pemerintah Daerah, dan/atau masyarakat. 
+20 
+Kantor  
+Tempat yang digunakan untuk perniagaan atau perusahaan yang dijalankan secara 
+rutin. Kantor bisa hanya berupa suatu kamar atau ruangan kecil maupun bangunan 
+bertingkat tinggi. 
+21 
+Sawah 
+Tanah yang digarap dan diairi untuk tempat menanam padi yang rusak akibat kejadian 
+bencana seperti gagal panen karena banjir atau kekeringan. 
+22 
+Lahan 
+Bagian daratan dari permukaan bumi sebagai suatu lingkungan baik yang meliputi 
+tanah beserta segenap faktor yang mempengaruhi penggunaannya seperti iklim relief, 
+aspek geologi, dan hidrologi yang terbentuk secara alami maupun akibat pengaruh 
+manusia. 
+23 
+Kebun 
+Sebidang lahan, biasanya di tempat terbuka, yang mendapat perlakuan tertentu oleh 
+manusia, khususnya sebagai tempat tumbuh tanaman 
+
+===== PDF HAL 30 (1577 kar) =====
+- 30 - 
+ 
+ 
+NO 
+KONSEP 
+DEFINISI 
+24 
+Hutan 
+Suatu kesatuan ekosistem berupa hamparan lahan berisi sumber daya alam hayati yang 
+didominasi pepohonan dalam persekutuan alam lingkungannya, yang satu dengan 
+lainnya tidak dapat dipisahkan. 
+25 
+Kolam 
+Tempat melakukan kegiatan pembudidayaan perikanan.  
+26 
+Pabrik 
+Suatu bangunan industri besar di mana para pekerja mengolah benda atau mengawasi 
+pemrosesan mesin dari satu produk menjadi produk lain, sehingga mendapatkan nilai 
+tambah 
+27 
+Kios/Toko 
+Tempat berjualan yang diizinkan dan terpisah antara satu tempat dengan yang lain 
+mulai dari lantai, dinding, plafond dan atap yang sifatnya tetap atau permanen sebagai 
+tempat berjualan barang atau jasa. 
+28 
+Pasar 
+Area tempat jual beli barang dengan jumlah penjual lebih dari satu baik yang disebut 
+sebagai pusat perbelanjaan, pasar tradisional, pertokoan, mall, plasa, pusat perdagangan 
+maupun sebutan lainnya. 
+29 
+Banjir 
+Peristiwa atau keadaan dimana terendamnya suatu daerah atau daratan karena volume 
+air yang meningkat.  
+30 
+Tanah longsor 
+Salah satu jenis gerakan massa tanah atau batuan, ataupun percampuran keduanya, 
+menuruni atau keluar lereng akibat terganggunya kestabilan tanah atau batuan 
+penyusun lereng. 
+31 
+Gelombang pasang 
+Gelombang tinggi yang ditimbulkan karena efek terjadinya siklon tropis di sekitar 
+wilayah Indonesia dan berpotensi kuat menimbulkan bencana alam. Indonesia bukan 
+daerah lintasan siklon tropis tetapi keberadaan siklon tropis akan memberikan pengaruh 
+kuat terjadinya angin kencang, gelombang tinggi disertai hujan deras. 
+
+===== PDF HAL 31 (1870 kar) =====
+- 31 - 
+ 
+ 
+NO 
+KONSEP 
+DEFINISI 
+32 
+Abrasi 
+Proses pengikisan pantai oleh tenaga gelombang laut dan arus laut yang bersifat 
+merusak. Abrasi biasanya disebut juga erosi pantai. Kerusakan garis pantai akibat 
+abrasi ini dipicu oleh terganggunya keseimbangan alam daerah pantai tersebut. 
+Walaupun abrasi bisa disebabkan oleh gejala alami, namun manusia sering disebut 
+sebagai penyebab utama abrasi. 
+33 
+Cuaca ekstrem 
+Kejadian fenomena alam yang tidak normal dan tidak lazim dan ditandai oleh kondisi 
+curah hujan, arah dan kecepatan angin, suhu udara, kelembaban udara, dan jarak 
+pandang yang dapat mengakibatkan kerugian terutama keselamatan jiwa dan harta. 
+34 
+Kekeringan 
+Ketersediaan air yang jauh di bawah kebutuhan air untuk kebutuhan hidup,  pertanian, 
+kegiatan ekonomi dan lingkungan. Adapun yang dimaksud kekeringan di bidang 
+pertanian adalah kekeringan yang terjadi di lahan pertanian yang ada tanaman (padi, 
+jagung, kedelai dan lain-lain) yang sedang dibudidayakan 
+35 
+Kebakaran hutan dan lahan 
+Jumlah keadaan di mana hutan dan lahan dilanda api, sehingga mengakibatkan 
+kerusakan hutan dan lahan yang menimbulkan kerugian ekonomis dan atau nilai 
+lingkungan. Kebakaran hutan dan lahan seringkali menyebabkan bencana asap yang 
+dapat mengganggu aktivitas dan kesehatan masyarakat sekitar 
+36 
+Gempabumi 
+Kejadian getaran atau guncangan yang terjadi di permukaan bumi yang disebabkan oleh 
+tumbukan antar lempeng bumi, patahan aktif, aktivitas gunung api atau runtuhan 
+batuan 
+37 
+Tsunami 
+Jumlah peristiwa serangkaian gelombang ombak laut raksasa yang timbul karena 
+adanya pergeseran di dasar laut akibat gempabumi 
+38 
+Erupsi gunung api 
+Bagian dari aktivitas vulkanik yang dikenal dengan istilah “erupsi”. Bahaya letusan 
+gunung api dapat berupa awan panas, lontaran material (pijar), hujan abu lebat, lava, 
+gas racun, tsunami dan banjir lahar 
+
+===== PDF HAL 32 (1381 kar) =====
+- 32 - 
+ 
+ 
+NO 
+KONSEP 
+DEFINISI 
+39 
+Epidemi 
+Penyakit menular yang berjangkit dengan cepat di daerah yang luas dan menimbulkan 
+banyak korban. Peningkatan angka penyakit di atas normal yang biasanya terjadi secara 
+tiba-tiba pada populasi suatu di area geografis tertentu. 
+40 
+Wabah penyakit 
+Meningkatnya Kejadian Luar Biasa penyakit menular yang ditandai dengan jumlah 
+kasus dan/atau kematian meningkat dan menyebar secara cepat dalam skala luas.  
+41 
+Kebakaran gedung dan 
+pemukiman 
+Situasi dimana bangunan pada suatu tempat seperti rumah/pemukiman, pabrik, pasar, 
+gedung dan lain-lain dilanda api yang menimbulkan korban dan/atau kerugian 
+42 
+Gagal teknologi 
+kejadian bencana  yang diakibatkan  oleh  kesalahan  desain, pengoperasian,  kelalaian  
+dan kesengajaan  manusia  dalam  penggunaan  teknologi  dan/atau industri 
+43 
+Konflik sosial 
+Kerusuhan sosial atau huru hara adalah suatu gerakan massal yang bersifat merusak 
+tatanan dan tata tertib sosial yang ada, yang dipicu oleh kecemburuan sosial, budaya 
+dan ekonomi yang biasanya dikemas sebagai pertentangan antar suku, agama, ras 
+(SARA) 
+44 
+Status keadaan darurat bencana Suatu keadaan yang ditetapkan oleh Pemerintah untuk jangka waktu tertentu atas dasar 
+rekomendasi Badan yang diberi tugas untuk menanggulangi bencana 
+45 
+Taksiran kerugian akibat 
+bencana 
+kerugian yang dialami ketika terjadi bencana 
+ 
+ 
+ 
+ 
+
+===== PDF HAL 33 (985 kar) =====
+- 33 - 
+ 
+ 
+B. 
+STANDAR DATA KEJADIAN DAN DAMPAK BENCANA 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+1 
+Jumlah 
+Bencana 
+Bencana 
+Jumlah peristiwa atau 
+rangkaian peristiwa yang 
+mengancam dan mengganggu 
+kehidupan dan penghidupan 
+masyarakat yang disebabkan, 
+baik oleh faktor alam 
+dan/atau faktor non-alam 
+maupun faktor manusia 
+sehingga mengakibatkan 
+timbulnya korban jiwa 
+manusia, kerusakan 
+lingkungan, kerugian harta 
+benda, dan dampak psikologis 
+sesuai dengan ambang batas 
+bencana yang telah 
+ditentukan.  
+Wilayah; 
+Jenis Bencana; 
+- 
+Total 
+kejadian 
+2 
+Jenis 
+Bencana 
+Bencana 
+Jenis peristiwa atau 
+rangkaian peristiwa yang 
+mengancam dan mengganggu 
+kehidupan dan penghidupan 
+masyarakat yang disebabkan, 
+baik oleh faktor alam 
+dan/atau faktor non-alam 
+maupun faktor manusia 
+sehingga mengakibatkan 
+- 
+1. Bencana alam 
+101. Banjir 
+102. Tanah 
+longsor 
+103. Gelombang 
+pasang dan 
+abrasi 
+104. Cuaca 
+ekstrem 
+- 
+- 
+
+===== PDF HAL 34 (953 kar) =====
+- 34 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+timbulnya korban jiwa 
+manusia, kerusakan 
+lingkungan, kerugian harta 
+benda, dan dampak psikologis 
+sesuai dengan ambang batas 
+bencana yang telah 
+ditentukan.  
+105. Kekeringan 
+106. Kebakaran 
+hutan dan lahan 
+107. Gempabumi 
+108. Tsunami 
+109. Letusan 
+gunung api 
+2. Bencana 
+NonAlam 
+201. Epidemi dan 
+wabah penyakit 
+202. Epidemi 
+3. Bencana sosial 
+301. Konflik 
+sosial 
+3 
+Jumlah 
+Bencana 
+Alam 
+Bencana 
+Alam 
+Jumlah bencana yang 
+diakibatkan oleh peristiwa 
+atau  serangkaian peristiwa 
+yang disebabkan oleh alam 
+antara lain berupa 
+gempabumi, tsunami, gunung 
+meletus, banjir, kekeringan, 
+angin topan, dan tanah 
+longsor. 
+Wilayah; 
+Jenis Bencana; 
+- 
+Total 
+kejadian 
+4 
+Jumlah 
+Bencana Non 
+Alam 
+Bencana 
+NonAlam 
+Jumlah bencana yang 
+diakibatkan oleh peristiwa 
+atau rangkaian peristiwa 
+Wilayah; 
+Jenis Bencana; 
+- 
+Total 
+kejadian 
+
+===== PDF HAL 35 (1105 kar) =====
+- 35 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+nonalam yang antara lain 
+berupa gagal teknologi, gagal 
+modernisasi, epidemi, dan 
+wabah penyakit.  
+5 
+Jumlah 
+Bencana 
+Sosial 
+Bencana 
+Sosial 
+Jumlah bencana yang 
+diakibatkan oleh peristiwa 
+atau serangkaian peristiwa 
+yang diakibatkan oleh 
+manusia yang meliputi konflik 
+sosial antarkelompok atau 
+antarkomunitas masyarakat, 
+dan teror.  
+Wilayah; 
+Jenis Bencana; 
+- 
+Total 
+kejadian 
+6 
+Provinsi 
+Wilayah; 
+Provinsi; 
+Nama wilayah administratif 
+yang menjadi wilayah kerja 
+bagi gubernur sebagai wakil 
+Pemerintah Pusat dan wilayah 
+kerja bagi gubernur dalam 
+menyelenggarakan urusan 
+pemerintahan umum di 
+wilayah daerah provinsi. 
+- 
+Disesuaikan dengan 
+peraturan 
+Kemendagri tentang 
+wilayah administrasi 
+ 
+- 
+- 
+7 
+Kabupaten/ 
+kota 
+Wilayah; 
+Kabupaten/ 
+kota; 
+Nama Wilayah Administratif 
+yang menjadi wilayah kerja 
+bagi bupati/walikota dalam 
+menyelenggarakan urusan 
+pemerintahan umum di 
+wilayah Daerah 
+- 
+Disesuaikan dengan 
+peraturan 
+Kemendagri tentang 
+wilayah administrasi 
+- 
+- 
+
+===== PDF HAL 36 (980 kar) =====
+- 36 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+kabupaten/kota 
+8 
+Tarikh 
+Tarikh 
+Tanggal yang memuat 
+informasi hari, bulan, dan 
+tahun (dd/mm/yyyy) 
+Wilayah 
+- 
+- 
+- 
+9 
+Jumlah 
+korban 
+meninggal 
+akibat 
+bencana  
+Korban 
+Meninggal 
+Jumlah orang yang dilaporkan 
+tewas atau meninggal dunia 
+akibat bencana.  
+ 
+Wilayah; 
+Jenis Kelamin; 
+Kelompok 
+Umur; 
+- 
+Total 
+orang 
+10 
+Jumlah 
+korban hilang 
+akibat 
+bencana 
+Korban 
+Hilang 
+Jumlah orang yang dilaporkan 
+hilang atau tidak ditemukan 
+atau tidak diketahui 
+keberadaannya setelah terjadi 
+bencana.  
+Wilayah; 
+Jenis Kelamin; 
+Kelompok 
+Umur; 
+- 
+Total 
+orang 
+11 
+Jumlah 
+korban 
+luka/sakit 
+akibat 
+bencana 
+Korban 
+Luka/Sakit 
+Jumlah orang yang 
+mengalami luka-luka atau 
+sakit, dalam keadaan luka 
+ringan, maupun luka 
+parah/berat, baik yang 
+berobat jalan maupun rawat 
+inap akibat terjadinya 
+bencana.  
+Wilayah; 
+Jenis Kelamin; 
+Kelompok 
+Umur; 
+- 
+Total 
+orang 
+
+===== PDF HAL 37 (1142 kar) =====
+- 37 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+12 
+Jumlah 
+terdampak/p
+enderita 
+akibat 
+bencana 
+Terdampak/P
+enderita 
+Jumlah orang atau 
+sekelompok orang yang 
+menderita akibat dampak 
+buruk bencana, seperti 
+kerusakan dan atau kerugian 
+harta benda, namun masih 
+dapat menempati tempat 
+tinggalnya.  
+Wilayah; 
+Jenis Kelamin; 
+Kelompok 
+Umur; 
+- 
+Total 
+orang 
+13 
+Jumlah 
+pengungsi 
+akibat 
+bencana 
+Pengungsi 
+Jumlah orang atau kelompok 
+orang yang terpaksa atau 
+dipaksa keluar dari tempat 
+tinggalnya untuk jangka 
+waktu yang belum pasti 
+sebagai akibat dampak buruk 
+bencana. 
+Wilayah; 
+Jenis Kelamin;  
+Kelompok 
+Umur; 
+- 
+Total 
+orang 
+14 
+Jenis 
+kerusakan 
+Bangunan 
+akibat 
+bencana 
+Kerusakan 
+Bangunan 
+Jenis bangunan atau 
+komponen bangunan yang 
+mengakibatkan tidak 
+berfungsinya akibat 
+penyusutan/ berakhirnya 
+umur bangunan, atau akibat 
+ulah manusia atau perilaku 
+alam seperti beban fungsi 
+yang berlebih, kebakaran, 
+gempabumi, atau sebab lain 
+yang sejenis akibat terjadinya 
+bencana. 
+- 
+1. Rusak berat 
+2. Rusak sedang 
+3. Rusak ringan  
+4. terendam 
+Total 
+unit 
+
+===== PDF HAL 38 (1042 kar) =====
+- 38 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+15 
+Jumlah 
+rumah rusak 
+akibat 
+bencana 
+Rumah 
+Jumlah bangunan yang 
+dihuni sebagai tempat tinggal 
+yang mengalami keruskan 
+akibat bencana  
+WIlayah; 
+Jenis bencana; 
+Jenis 
+kerusakan 
+bangunan; 
+- 
+Total 
+unit 
+16 
+Panjang 
+Jalan rusak 
+akibat 
+bencana 
+Jalan  
+Panjang Prasarana 
+transportasi darat yang 
+meliputi segala bagian jalan, 
+termasuk bangunan 
+pelengkap dan 
+perlengkapannya yang 
+peruntukkan bagi lalu lintas, 
+yang berada pada permukaan 
+tanah, di atas permukaan 
+tanah, di bawah permukaan 
+tanah dan/atau air, serta di 
+atas permukaan air, kecuali 
+jalan kereta api, jalan lori, dan 
+jalan kabel akibat dampak 
+bencana.  
+Wilayah; 
+Jenis Bencana; 
+- 
+Panjang 
+km 
+17 
+Jumlah 
+jembatan 
+rusak akibat 
+bencana 
+Jembatan  
+Jumlah jalan yang terletak di 
+atas permukaan air dan/atau 
+di atas permukaan tanah yang 
+mengalami kerusakan akibat 
+bencana.  
+WIlayah; 
+Jenis bencana; 
+Jenis 
+kerusakan 
+bangunan; 
+ 
+- 
+Total 
+unit 
+
+===== PDF HAL 39 (1216 kar) =====
+- 39 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+18 
+Jumlah 
+satuan 
+pendidikan 
+rusak akibat 
+bencana 
+Satuan 
+pendidikan 
+Jumlah kelompok layanan 
+pendidikan yang 
+menyelenggarakan pendidikan 
+pada jalur formal, nonformal, 
+dan informal pada setiap 
+jenjang dan jenis pendidikan 
+yang mengalami kerusakan 
+akibat bencana. 
+WIlayah; 
+Jenis bencana; 
+Jenis 
+kerusakan 
+bangunan; 
+- 
+Total 
+unit 
+19 
+Jumlah 
+rumah ibadat 
+rusak akibat 
+bencana 
+Rumah 
+ibadat  
+Jumlah bangunan yang 
+memiliki ciri-ciri tertentu yang 
+khusus dipergunakan untuk 
+beribadat bagi pemeluk 
+masing-masing agama secara 
+permanen, tidak termasuk 
+tempat ibadat keluarga yang 
+mengalami kerusakan akibat 
+bencana. 
+WIlayah; 
+Jenis bencana; 
+Jenis 
+kerusakan 
+bangunan; 
+- 
+Total 
+unit 
+20 
+Jumlah 
+fasilitas 
+pelayanan 
+kesehatan 
+rusak akibat 
+bencana 
+Fasilitas 
+pelayanan 
+kesehatan  
+Tempat dan/ atau alat yang 
+digunakan untuk 
+menyelenggarakan Pelayanan 
+Kesehatan kepada 
+perseorangan ataupun 
+masyarakat dengan 
+pendekatan promotif, 
+preventif, kuratif, rehabilitatif, 
+dan/ atau paliatif yang 
+dilakukan oleh 
+WIlayah; 
+Jenis bencana; 
+Jenis 
+kerusakan 
+bangunan; 
+- 
+Total 
+unit 
+
+===== PDF HAL 40 (1029 kar) =====
+- 40 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+Pemerintah Pusat, Pemerintah 
+Daerah, dan/atau masyarakat 
+yang mengalami kerusakan 
+akibat bencana.  
+21 
+Jumlah 
+kantor rusak 
+akibat 
+bencana 
+Kantor  
+Jumlah tempat yang 
+digunakan untuk perniagaan 
+atau perusahaan yang 
+dijalankan secara rutin. 
+Kantor bisa hanya berupa 
+suatu kamar atau ruangan 
+kecil maupun bangunan 
+bertingkat tinggi yang 
+mengalami kerusakan akibat 
+bencana 
+WIlayah; 
+Jenis bencana; 
+Jenis 
+kerusakan 
+bangunan; 
+- 
+Total 
+unit 
+22 
+Luas sawah 
+rusak akibat 
+bencana 
+Sawah 
+Luas tanah yang digarap dan 
+diairi untuk tempat menanam 
+padi yang rusak akibat 
+kejadian bencana seperti 
+gagal panen karena banjir 
+atau kekeringan 
+WIlayah; 
+Jenis bencana; 
+- 
+Luas 
+hektar 
+23 
+Luas lahan 
+rusak akibat 
+bencana 
+ 
+Lahan  
+Luas bagian daratan dari 
+permukaan bumi sebagai 
+suatu lingkungan baik yang 
+meliputi tanah beserta 
+segenap faktor yang 
+mempengaruhi 
+WIlayah; 
+Jenis bencana; 
+- 
+Luas 
+hektar 
+
+===== PDF HAL 41 (956 kar) =====
+- 41 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+penggunaannya seperti iklim, 
+relief, aspek geologi, dan 
+hidrologi yang terbentuk 
+secara alami maupun akibat 
+pengaruh manusia yang 
+mengalami kerusakan akibat 
+bencana. 
+24 
+Luas kebun 
+rusak akibat 
+bencana 
+Kebun 
+Luas sebidang lahan, 
+biasanya di tempat terbuka, 
+yang mendapat perlakuan 
+tertentu oleh manusia, 
+khususnya sebagai tempat 
+tumbuh tanaman yang 
+mengalami kerusakan akibat 
+bencana 
+WIlayah; 
+Jenis bencana; 
+- 
+Luas 
+hektar 
+25 
+Luas hutan 
+rusak akibat 
+bencana 
+Hutan  
+Luas suatu kesatuan 
+ekosistem berupa hamparan 
+lahan berisi sumber daya 
+alam hayati yang didominasi 
+pepohonan dalam 
+persekutuan alam 
+lingkungannya, yang satu 
+dengan lainnya tidak dapat 
+dipisahkan yang mengalami 
+kerusakan akibat bencana. 
+WIlayah; 
+Jenis bencana; 
+- 
+Luas 
+hektar 
+26 
+Luas kolam 
+Kolam 
+Luas tempat melakukan 
+Wilayah 
+- 
+Total 
+hektar 
+
+===== PDF HAL 42 (1069 kar) =====
+- 42 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+yang rusak 
+akibat 
+bencana 
+kegiatan pembudidayaan 
+perikanan yang rusak akibat 
+bencana.  
+27 
+Jumlah 
+pabrik rusak 
+akibat 
+bencana 
+Pabrik 
+Jumlah suatu bangunan 
+industri besar di mana para 
+pekerja mengolah benda atau 
+mengawasi pemrosesan mesin 
+dari satu produk menjadi 
+produk lain, sehingga 
+mendapatkan nilai tambah 
+yang mengalami kerusakan 
+akibat bencana 
+Wilayah; 
+Jenis 
+kerusakan 
+bangunan; 
+- 
+Total 
+unit 
+28 
+Jumlah 
+kios/toko 
+yang rusak 
+akibat 
+bencana 
+Kios/toko  
+Tempat berjualan yang 
+diizinkan dan terpisah antara 
+satu tempat dengan yang lain 
+mulai dari lantai, dinding, 
+plafond dan atap yang 
+sifatnya tetap atau permanen 
+sebagai tempat berjualan 
+barang atau jasa yang 
+mengalami kerusakan akibat 
+bencana 
+Wilayah; 
+ 
+- 
+Total 
+unit 
+29 
+Jumlah pasar 
+yang rusak 
+akibat 
+bencana 
+Pasar 
+Area tempat jual beli barang 
+dengan jumlah penjual lebih 
+dari satu baik yang disebut 
+sebagai pusat perbelanjaan, 
+Wilayah; 
+ 
+- 
+Total 
+unit 
+
+===== PDF HAL 43 (898 kar) =====
+- 43 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+pasar tradisional, pertokoan, 
+mall, plasa, pusat 
+perdagangan maupun sebutan 
+lainnya 
+30 
+Jumlah 
+bencana 
+banjir 
+Banjir; 
+Bencana; 
+Jumlah peristiwa atau 
+keadaan dimana terendamnya 
+suatu daerah atau daratan 
+karena volume air yang 
+meningkat dan 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+Wilayah; 
+- 
+Total  
+kejadian 
+31 
+Jumlah 
+bencana 
+tanah longsor 
+Tanah 
+Longsor; 
+Bencana; 
+Jumlah peristiwa gerakan 
+massa tanah atau batuan, 
+ataupun percampuran 
+keduanya, menuruni atau 
+keluar lereng akibat 
+terganggunya kestabilan 
+tanah atau batuan penyusun 
+lereng dan mengakibatkan 
+timbulnya korban jiwa 
+manusia, kerusakan 
+Wilayah; 
+- 
+Total  
+kejadian 
+
+===== PDF HAL 44 (920 kar) =====
+- 44 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+lingkungan, kerugian harta 
+benda, dan dampak psikologis 
+sesuai dengan ambang batas 
+bencana yang telah 
+ditentukan.  
+32 
+Jumlah 
+bencana 
+gelombang 
+pasang 
+Gelombang 
+Pasang; 
+Bencana; 
+Jumlah  gelombang tinggi 
+yang ditimbulkan karena efek 
+terjadinya siklon tropis di 
+sekitar wilayah Indonesia dan 
+berpotensi kuat menimbulkan 
+bencana alam. Indonesia 
+bukan daerah lintasan siklon 
+tropis tetapi keberadaan 
+siklon tropis akan 
+memberikan pengaruh kuat 
+terjadinya angin kencang, 
+gelombang tinggi disertai 
+hujan deras dan 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+Wilayah; 
+- 
+Total  
+kejadian 
+33 
+Jumlah 
+Abrasi; 
+Jumlah proses pengikisan 
+Wilayah; 
+- 
+Total  
+kejadian 
+
+===== PDF HAL 45 (922 kar) =====
+- 45 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+bencana 
+abrasi 
+Bencana; 
+pantai oleh tenaga gelombang 
+laut dan arus laut yang 
+bersifat merusak. Abrasi 
+biasanya disebut juga erosi 
+pantai. Kerusakan garis 
+pantai akibat abrasi ini dipicu 
+oleh terganggunya 
+keseimbangan alam daerah 
+pantai tersebut. Walaupun 
+abrasi bisa disebabkan oleh 
+gejala alami, namun manusia 
+sering disebut sebagai 
+penyebab utama abrasi dan 
+dan mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+34 
+Jumlah 
+bencana 
+cuaca 
+ekstrem 
+Cuaca 
+ekstrem; 
+Bencana; 
+Cuaca 
+ekstrem 
+adalah 
+kejadian fenomena alam yang 
+tidak normal dan tidak lazim 
+dan 
+ditandai 
+oleh 
+kondisi 
+curah 
+hujan, 
+arah 
+dan 
+kecepatan angin, suhu udara, 
+Wilayah; 
+- 
+Total  
+kejadian 
+
+===== PDF HAL 46 (862 kar) =====
+- 46 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+kelembaban udara, dan jarak 
+pandang 
+yang 
+dapat 
+mengakibatkan 
+kerugian 
+terutama keselamatan jiwa, 
+harta dan dampak psikologis 
+sesuai dengan ambang batas 
+bencana 
+yang 
+telah 
+ditentukan. 
+35 
+Jumlah 
+bencana 
+kekeringan 
+Kekeringan; 
+Bencana; 
+Jumlah kejadian ketersediaan 
+air yang jauh di bawah 
+kebutuhan air untuk 
+kebutuhan hidup,  pertanian, 
+kegiatan ekonomi dan 
+lingkungan. Adapun yang 
+dimaksud kekeringan di 
+bidang pertanian adalah 
+kekeringan yang terjadi di 
+lahan pertanian yang ada 
+tanaman (padi, jagung, 
+kedelai dan lain-lain) yang 
+sedang dibudidayakan dan 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+Wilayah; 
+- 
+Total  
+kejadian 
+
+===== PDF HAL 47 (956 kar) =====
+- 47 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+bencana yang telah 
+ditentukan. 
+36 
+Jumlah 
+bencana 
+kebakaran 
+hutan dan 
+lahan 
+Kebakaran 
+Hutan dan 
+Lahan; 
+Bencana; 
+Jumlah keadaan di mana 
+hutan dan lahan dilanda api, 
+sehingga mengakibatkan 
+kerusakan hutan dan lahan 
+yang menimbulkan kerugian 
+ekonomis dan atau nilai 
+lingkungan. Kebakaran hutan 
+dan lahan seringkali 
+menyebabkan bencana asap 
+yang dapat mengganggu 
+aktivitas dan kesehatan 
+masyarakat sekitar yang 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+Wilayah 
+- 
+Total  
+kejadian 
+37 
+Jumlah 
+bencana 
+gempa bumi 
+Gempabumi; 
+Bencana; 
+Jumlah kejadian getaran atau 
+guncangan yang terjadi di 
+permukaan bumi yang 
+disebabkan oleh tumbukan 
+antar lempeng bumi, patahan 
+Wilayah 
+- 
+Total  
+kejadian 
+
+===== PDF HAL 48 (924 kar) =====
+- 48 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+aktif, aktivitas gunung api 
+atau runtuhan batuan yang 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+38 
+Jumlah 
+bencana 
+tsunami 
+Tsunami; 
+Bencana; 
+Jumlah peristiwa serangkaian 
+gelombang ombak laut 
+raksasa yang timbul karena 
+adanya pergeseran di dasar 
+laut akibat gempa bumi yang 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan.  
+Wilayah 
+- 
+Total  
+kejadian 
+39 
+Jumlah 
+bencana 
+letusan 
+gunung api 
+Letusan 
+Gunungapi; 
+Bencana; 
+Letusan gunung api 
+merupakan bagian dari 
+aktivitas vulkanik yang 
+dikenal dengan istilah 
+Wilayah 
+- 
+Total  
+kejadian 
+
+===== PDF HAL 49 (903 kar) =====
+- 49 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+“erupsi”. Bahaya letusan 
+gunung api dapat berupa 
+awan panas, lontaran material 
+(pijar), hujan abu lebat, lava, 
+gas racun, tsunami dan banjir 
+lahar yang mengakibatkan 
+timbulnya korban jiwa 
+manusia, kerusakan 
+lingkungan, kerugian harta 
+benda, dan dampak psikologis 
+sesuai dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+40 
+Jumlah 
+bencana 
+konflik sosial 
+Konflik 
+Sosial; 
+Bencana; 
+Jumlah kerusuhan sosial atau 
+huru hara adalah suatu 
+gerakan massal yang bersifat 
+merusak tatanan dan tata 
+tertib sosial yang ada, yang 
+dipicu oleh kecemburuan 
+sosial, budaya dan ekonomi 
+yang biasanya dikemas 
+sebagai pertentangan antar 
+suku, agama, ras (SARA) yang 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+wilayah 
+- 
+ 
+Total  
+kejadian 
+
+===== PDF HAL 50 (918 kar) =====
+- 50 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+41 
+Jumlah 
+bencana 
+epidemi 
+Epidemi 
+Jumlah Penyakit menular 
+yang berjangkit dengan cepat 
+di daerah yang luas dan 
+menimbulkan banyak korban. 
+Peningkatan angka penyakit 
+di atas normal yang biasanya 
+terjadi secara tiba-tiba pada 
+populasi suatu di area 
+geografis tertentu dan 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+wilayah 
+- 
+ 
+Total  
+kejadian 
+42 
+Jumlah 
+bencana 
+wabah 
+penyakit 
+Wabah 
+penyakit 
+Jumlah meningkatnya 
+Kejadian Luar Biasa penyakit 
+menular yang ditandai dengan 
+jumlah kasus dan/atau 
+kematian meningkat dan 
+menyebar secara cepat dalam 
+wilayah 
+- 
+ 
+Total  
+kejadian 
+
+===== PDF HAL 51 (974 kar) =====
+- 51 - 
+ 
+ 
+NO 
+NAMA DATA 
+KONSEP 
+DEFINISI 
+KLASIFIKASI 
+PENYAJIAN 
+KLASIFIKASI ISIAN 
+UKURAN SATUAN 
+skala luas yang 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+dampak psikologis sesuai 
+dengan ambang batas 
+bencana yang telah 
+ditentukan. 
+43 
+Jumlah 
+bencana 
+kebakaran 
+gedung dan 
+pemukiman 
+Kebakaran 
+gedung dan 
+Pemukiman; 
+Bencana 
+Jumlah situasi dimana 
+bangunan pada suatu tempat 
+seperti rumah/pemukiman, 
+pabrik, pasar, gedung dan 
+lain-lain dilanda api yang 
+menimbulkan korban 
+dan/atau kerugian 
+wilayah 
+- 
+ 
+Total  
+kejadian 
+44 
+Jumlah 
+bencana 
+gagal 
+teknologi 
+Gagal 
+Teknologi; 
+Bencana 
+Jumlah kejadian bencana  
+yang diakibatkan  oleh  
+kesalahan  desain, 
+pengoperasian,  kelalaian  dan 
+kesengajaan  manusia  dalam  
+penggunaan  teknologi  
+dan/atau industri yang 
+mengakibatkan timbulnya 
+korban jiwa manusia, 
+kerusakan lingkungan, 
+kerugian harta benda, dan 
+wilayah 
+- 
+ 
+Total  
+kejadian 
+
+===== PDF HAL 52 (0 kar) =====

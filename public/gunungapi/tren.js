@@ -4,6 +4,10 @@
 const M_AKHIR = (a = 190) => innerWidth < 640 ? Math.min(a, 130) + 60 : a;   /* ruang kanan batang untuk deretan pil */
 const Tren = {
   D: undefined,
+  /* kepala kartu = nama seksi berikon (AGENTS.md 3.5); kalimat temuan lama tetap ada sebagai title kepala, sumber dilipat di isi (Insight.rapiKartu) */
+  KEPALA: {kTahun: ["Per tahun", "Kejadian erupsi per tahun", "batang"], kTrenJangka: ["Tren jangka panjang", "Uji tren tahunan", "naik"], kKasus: ["Letusan merusak", "Letusan paling merusak", "api"],
+    kRisiko: ["Indeks risiko riwayat", "Indeks risiko riwayat letusan", "perisai"], kLevel: ["Status harian", "Gunung berstatus Waspada ke atas per hari", "gunung"], kNaik: ["Naik turun level", "Perubahan level per hari", "naik"],
+    kErupsi: ["Erupsi harian", "Erupsi per hari", "api"], kRiwayat: ["Riwayat level", "Riwayat level dari surat resmi PVMBG", "daftar"], kKegempaan: ["Kegempaan", "Kegempaan harian per jenis", "gelombang"]},
   kartu(ey, judul, isi, sumber, leg) { Kartu.leg(leg); return Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
   /* batang berangka: v = [{n, t, tip}], bila n2 ada = batang kedua lebih sempit di depan */
   batang(v, {W = 940, H = 280, warna = "#e58a45", warna2 = "#c9503a", w2 = false, puncak = true} = {}) {
@@ -127,7 +131,8 @@ const Tren = {
   /* 9. kegempaan harian per jenis (data/kegempaan.json, append-only oleh magma.py): TREN saja, tanpa ambang atau alarm. Dibuang bila belum ada data >= 2 hari. */
   JENIS_W: {letusan: "#c9503a", hembusan: "#e58a45", harmonik: "#e0b400", tremor_menerus: "#8a6d3b", tremor_non_harmonik: "#b08968", low_frequency: "#4f8fc0", hybrid: "#6aa84f", vulkanik_dangkal: "#8e6bbf", vulkanik_dalam: "#5b3f8c", tektonik_lokal: "#3d8b8b", tektonik_jauh: "#9aa4b2"},
   kKegempaanBox() { const h = this.kKegempaan(); return h ? `<div data-kgbox>${h}</div>` : ""; },
-  kKegempaan() {
+  kKegempaan() { return Insight.rapiKartu(this.kKegempaanMentah(), this.KEPALA.kKegempaan); },
+  kKegempaanMentah() {
     const K = this.Kg?.gunung, JN = this.Kg?.jenis || []; if (!K || !JN.length) return "";
     const lv = n => S.st.gunung.find(g => g.nama === n)?.level || 0, jum = n => Object.values(K[n].hari).reduce((a, r) => a + r.reduce((x, y) => x + y, 0), 0);
     const nama = Object.keys(K).filter(n => Object.keys(K[n].hari).length >= 2).sort((a, b) => lv(b) - lv(a) || jum(b) - jum(a)); if (!nama.length) return "";
@@ -144,7 +149,7 @@ const Tren = {
     const sel = `<select data-keg aria-label="Gunung">${nama.map(n => `<option value="${esc(n)}"${n === nm ? " selected" : ""}>${esc(n)}</option>`).join("")}</select>`;
     Kartu.leg(ada.map(([j]) => [this.JENIS_W[j.k] || "#999", j.n]));
     return Kartu.ex(semua ? `${Kartu.hl(fmt(semua) + " gempa")} tercatat di <span title="Sumber: MAGMA Indonesia (PVMBG)">${esc(nm)}</span> pada ${rentang} (${Kartu.hl(fmt(tg.length) + " hari")}), terbanyak ${esc(atas[0].n)} (${fmt(atas[1])}); tren ini bukan peringatan` : `${Kartu.hl("Tidak ada gempa")} tercatat di <span title="Sumber: MAGMA Indonesia (PVMBG)">${esc(nm)}</span> pada ${rentang} (${Kartu.hl(fmt(tg.length) + " hari")}); tren ini bukan peringatan`, "", "",
-      `<div class="tw sk"><svg viewBox="0 0 ${Wd} ${H}" style="min-width:${M ? 700 : 0}px" role="img" aria-label="Kegempaan harian ${esc(nm)}">${g}</svg></div>`, "", sel).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Kegempaan</span>'); },
+      `<div class="tw sk"><svg viewBox="0 0 ${Wd} ${H}" style="min-width:${M ? 700 : 0}px" role="img" aria-label="Kegempaan harian ${esc(nm)}">${g}</svg></div>`, "Tren ini bukan peringatan dan tidak memakai ambang. Sumber: MAGMA Indonesia (PVMBG)", sel).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Kegempaan</span>'); },
 
   async render() {
     const el = $("#tren"); if (!el) return;
@@ -152,5 +157,5 @@ const Tren = {
     this.abu = await Data.abu(); this.Rw = await sekali("rw", "data/riwayat_level.json"); this.Kg = await Data.keg();
     if (!el._kg) { el._kg = 1; el.addEventListener("change", e => { const s = e.target.closest("select[data-keg]"); if (!s) return; this.kgPilih = s.value; nanti(() => { const b = el.querySelector("[data-kgbox]"); if (b) { b.innerHTML = this.kKegempaan(); nanti(() => (b.querySelector(".pc-btn") || b.querySelector("select[data-keg]"))?.focus()); } }); }); }
     if (!el._klik) { el._klik = 1; el.addEventListener("click", e => { const gn = e.target.closest("[data-gn]"); if (!gn) return; const g = S.st.gunung.find(x => x.nama === gn.dataset.gn); if (g) { bukaTab("peta"); nanti(() => { Peta.terbang(g); Detail.buka(g); }); } }); }
-    el.innerHTML = [this.kTahun, this.kTrenJangka, this.kKasus, this.kRisiko, this.kLevel, this.kNaik, this.kErupsi, this.kRiwayat, this.kKegempaanBox].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
+    el.innerHTML = [this.kTahun, this.kTrenJangka, this.kKasus, this.kRisiko, this.kLevel, this.kNaik, this.kErupsi, this.kRiwayat, this.kKegempaanBox].map(f => { try { return f === this.kKegempaanBox ? f.call(this) : Insight.rapiKartu(f.call(this), this.KEPALA[f.name]); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

@@ -1,4 +1,4 @@
-// Perintah tetap lewat WhatsApp dari nomor PEMILIK. Deterministik, tanpa LLM. Balasan HANYA ke pengirim perintah, tidak pernah ke PENERIMA.
+// Perintah tetap lewat WhatsApp dari nomor PEMILIK. Deterministik, tanpa LLM (perintah mesin proyek diteruskan ke proyek.mjs, Q14). Balasan HANYA ke pengirim perintah, tidak pernah ke PENERIMA.
 //   buat harian|penanganan [tanggal] | kirim ulang harian|penanganan [tanggal] | status [tanggal] | bantuan
 // parse() murni; tangani() memakai fungsi otomatis.mjs (bukan salinan logika generator) dan semua dunia luar disuntik lewat ctx.
 import fs from 'node:fs'
@@ -13,16 +13,26 @@ const BULAN = { jan: 1, januari: 1, feb: 2, februari: 2, mar: 3, maret: 3, apr: 
   agu: 8, agt: 8, agustus: 8, sep: 9, sept: 9, september: 9, okt: 10, oktober: 10, nov: 11, november: 11, des: 12, desember: 12 }
 const SINGKAT = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 export const labelTanggal = (d) => `${Number(d.slice(8, 10))} ${SINGKAT[Number(d.slice(5, 7)) - 1]}`
+// Gaya pesan: data/kajian-bnpb/bot-laporan/DESIGN-SYSTEM.md (judul tebal, baris pendek, tanpa titik tengah, em dash, emoji).
 export const BANTUAN = [
-  'Perintah bot:',
-  'buat harian [tanggal]',
-  'buat penanganan [tanggal]',
-  'kirim ulang harian [tanggal]',
-  'kirim ulang penanganan [tanggal]',
-  'status [tanggal]',
-  'bantuan',
-  'Tanggal: hari ini (bawaan), kemarin, 26 okt, 26 oktober, 26/10, 2026-10-26.',
+  '*Perintah bot*',
+  '',
+  '*Membuat laporan*',
+  '- *buat harian*: laporan kejadian bencana',
+  '- *buat penanganan*: laporan penanganan karhutla',
+  '',
+  '*Kirim ulang*',
+  '- *kirim ulang harian*: kirim berkas lagi',
+  '- *kirim ulang penanganan*: kirim berkas lagi',
+  '',
+  '*Lainnya*',
+  '- *status 26 okt*: rekap bahan per tanggal',
+  '- *bantuan*: tampilkan pesan ini',
+  '',
+  'Contoh: *buat harian kemarin*',
+  'Tanggal bisa: kemarin, 26 okt, 26 oktober, 26/10, 2026-10-26.',
 ].join('\n')
+const SIBUK = '*Sedang membuat laporan*\n\nTunggu sebentar, berkas dikirim begitu siap.'
 
 const geser = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 86400e3).toISOString().slice(0, 10)
 
@@ -64,11 +74,20 @@ export function parse(teks, now = new Date()) {
   return { aksi: kata === 'buat' ? 'buat' : 'kirim_ulang', laporan: n[1], tanggal }
 }
 
+// Q14 (bot laporan, BL-08): `buat ...`, `status` tanpa tanggal, dan `bantuan` milik mesin proyek (proyek.mjs) bila BL_PROYEK=1.
+// `kirim ulang ...` dan `status <tanggal>` tetap di sini. Tanpa BL_PROYEK perilaku lama utuh (kunci Claude API belum dipasang, BL-13).
+export function untukProyek(teks) {
+  const t = String(teks ?? '').trim().toLowerCase().replace(/[.!]+$/, '').replace(/\s+/g, ' ')
+  return t === 'bantuan' || t === 'status' || /^buat\b/.test(t)
+}
+
 // Pintu masuk gateway: perintah hanya bila pengirim ada di PEMILIK (dinormalkan seperti WA_IZIN) dan pesan tanpa lampiran.
-export function cegat({ dari, teks, pemilik, now }) {
+export function cegat({ dari, teks, pemilik, now, proyek = process.env.BL_PROYEK === '1' }) {
   const sah = new Set(daftar(pemilik).map(normalWa).filter(Boolean))
   const d = normalWa(dari)
-  return d && sah.has(d) ? parse(teks, now) : null
+  if (!d || !sah.has(d)) return null
+  const cmd = parse(teks, now)
+  return cmd && proyek && untukProyek(teks) ? { aksi: 'proyek', dari: d, teks: String(teks).trim() } : cmd
 }
 
 let sibuk = false
@@ -76,15 +95,19 @@ let sibuk = false
 // ctx: { env, dep, now, dasar, balas(teks), balasFile(path, nama, caption, mime), log, ada, kenali, tanggalIsi }
 export async function tangani(cmd, ctx) {
   const { balas } = ctx
+  if (cmd.aksi === 'proyek') {
+    const proyek = ctx.tanganiProyek || (await import('./proyek.mjs')).tangani
+    return proyek({ dari: cmd.dari, teks: cmd.teks }, ctx)
+  }
   if (cmd.aksi === 'bantuan') return balas(BANTUAN)
-  if (sibuk) return balas('Sedang membuat laporan, tunggu sebentar.')
+  if (sibuk) return balas(SIBUK)
   sibuk = true
   try {
     if (cmd.aksi === 'buat') await buat(cmd, ctx)
     else if (cmd.aksi === 'kirim_ulang') await kirimUlang(cmd, ctx)
     else if (cmd.aksi === 'status') await status(cmd, ctx)
   } catch (e) {
-    await balas(`Perintah gagal: ${String(e.message || e).slice(0, 300)}`)
+    await balas(`*Perintah gagal*\n\n${String(e.message || e).slice(0, 300)}\nPeriksa bahan, lalu coba lagi.`)
   } finally { sibuk = false }
 }
 
@@ -100,38 +123,38 @@ async function buat({ laporan, tanggal }, ctx) {
   const now = ctx.now || new Date(), dasar = dasarDari(ctx), ada = ctx.ada || fs.existsSync
   const lap = LAPORAN.find((l) => l.id === laporan)
   const lepas = kunciProses(path.join(dasar, 'otomatis.lock'))
-  if (!lepas) return balas('Sedang membuat laporan, tunggu sebentar.')
+  if (!lepas) return balas(SIBUK)
   try {
-    const bahan = await ambilBahan({ env, dep, tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+    const bahan = await ambilBahan({ env, dep, tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log, hanyaIzin: true }) // deck jalur lama: bahan WA_IZIN saja
     const { terpilih, teks } = await bahan.pilihSesuai(lap)
     const kurang = lap.butuh.filter((k) => !terpilih[k])
     if (kurang.length) {
       const baris = []
       for (const k of lap.butuh) {
         const label = JENIS_LAPORAN.find((j) => j.kunci === k)?.label || k
-        if (terpilih[k]) { baris.push(`${label}: ada, bertanggal ${labelTanggal(tanggal)}`); continue }
+        if (terpilih[k]) { baris.push(`- ${label}: ada, bertanggal ${labelTanggal(tanggal)}`); continue }
         const tgl = await bahan.tanggalAda(k)
-        baris.push(`${label}: ` + (tgl.length ? `belum untuk ${labelTanggal(tanggal)}, yang ada bertanggal ${tgl.map((x) => (/^\d{4}-/.test(x) ? labelTanggal(x) : x)).join(', ')}` : 'belum ada'))
+        baris.push(`- ${label}: ` + (tgl.length ? `belum untuk ${labelTanggal(tanggal)}, yang ada bertanggal ${tgl.map((x) => (/^\d{4}-/.test(x) ? labelTanggal(x) : x)).join(', ')}` : 'belum ada'))
       }
-      return balas(`Bahan ${lap.judul} ${labelTanggal(tanggal)} belum lengkap.\n` + baris.join('\n'))
+      return balas(`*Bahan belum lengkap*\n\n${lap.judul} ${labelTanggal(tanggal)}:\n` + baris.join('\n') + '\n\nKirim bahan yang kurang, lalu ketik perintah yang sama lagi.')
     }
     // Cut-off dilewati hanya untuk hari lampau (cekSiap); hari ini tetap 12.00 / 18.00 WIB.
     const c = cekSiap(lap, terpilih, now, tanggal)
-    if (!c.siap) return balas(`${lap.judul} ${labelTanggal(tanggal)} menunggu: ${c.alasan}.`)
+    if (!c.siap) return balas(`*Belum waktunya*\n\n${lap.judul} ${labelTanggal(tanggal)} menunggu: ${c.alasan}.\nKetik perintah yang sama lagi sesudah itu.`)
     const { kerja, out, f, berkas } = siapkanKeluaran(lap, tanggal, teks, dasar)
-    await balas(`Membuat ${lap.judul} ${labelTanggal(tanggal)}, mohon tunggu.`)
-    await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env)
+    await balas(`*Membuat laporan*\n\n${lap.judul} ${labelTanggal(tanggal)}\nMohon tunggu, berkas menyusul.`)
+    await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env, { kunci: path.join(dasar, 'generator.lock') })
     for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
     // Sengaja TIDAK menulis state, TIDAK mengunggah ke /api/wa/hasil, TIDAK mengirim ke PENERIMA: itu tugas jalur otomatis.
-    await kirimBerkas(lap, tanggal, berkas, `${lap.judul} ${tanggal} (permintaan, belum dikirim ke penerima)`, ctx)
+    await kirimBerkas(lap, tanggal, berkas, `*Laporan atas permintaan*\n\n${lap.judul} ${labelTanggal(tanggal)}\nBelum dikirim ke penerima.`, ctx)
   } finally { lepas() }
 }
 
 async function kirimUlang({ laporan, tanggal }, ctx) {
   const lap = LAPORAN.find((l) => l.id === laporan), ada = ctx.ada || fs.existsSync
   const berkas = berkasDari(lap, tanggal, dasarDari(ctx))
-  if (!berkas.every((b) => ada(b.p))) return ctx.balas(`Belum ada keluaran ${lap.judul} ${labelTanggal(tanggal)}. Pakai: buat ${laporan} ${tanggal}`)
-  await kirimBerkas(lap, tanggal, berkas, `${lap.judul} ${tanggal} (permintaan, kirim ulang)`, ctx)
+  if (!berkas.every((b) => ada(b.p))) return ctx.balas(`*Belum ada keluaran*\n\n${lap.judul} ${labelTanggal(tanggal)} belum pernah dibuat.\nKetik *buat ${laporan} ${tanggal}* dulu.`)
+  await kirimBerkas(lap, tanggal, berkas, `*Kirim ulang laporan*\n\n${lap.judul} ${labelTanggal(tanggal)}\nAtas permintaan, hanya ke nomor ini.`, ctx)
 }
 
 async function status({ tanggal }, ctx) {
@@ -146,7 +169,7 @@ async function status({ tanggal }, ctx) {
   const state = ambilKunci(path.join(dasarDari(ctx), 'state.json')).baca()
   const hari = tanggalWib(now)
   const kirim = (id) => (state.laporan?.[`${id}:${hari}`]?.selesai ? 'sudah' : 'belum')
-  await balas(`${wajib.length - belum.length} dari ${wajib.length} laporan wajib masuk untuk ${labelTanggal(tanggal)}.` +
-    (belum.length ? ` Belum: ${belum.map((x) => x.label).join(', ')}.` : '') +
-    `\nHari ini (${labelTanggal(hari)}) laporan harian ${kirim('harian')} dikirim ke penerima, penanganan ${kirim('penanganan')}.`)
+  await balas(`*Bahan ${labelTanggal(tanggal)}*\n\n${wajib.length - belum.length} dari ${wajib.length} laporan wajib sudah masuk.` +
+    (belum.length ? `\nBelum: ${belum.map((x) => x.label).join(', ')}.` : '') +
+    `\n\n*Kiriman hari ini (${labelTanggal(hari)})*\n- Harian: ${kirim('harian')} dikirim\n- Penanganan: ${kirim('penanganan')} dikirim`)
 }

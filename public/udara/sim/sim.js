@@ -89,12 +89,12 @@ function kerangka(S) {
     <div class="su-seg baris" id="suSkn" role="group" aria-label="Skenario">${M.SKENARIO.map(k => `<button type="button" data-s="${k.id}" aria-pressed="${k.id === "dasar"}">${k.nama}</button>`).join("")}</div>
     <div class="su-kontrol" id="suKompBar" hidden><select class="su-pilih" id="suKomp" aria-label="Cluster"></select></div>
     <p class="su-kal" id="suRingkas" style="margin-top:12px"></p><div id="suTabel"></div></section>
-  <section class="su-kartu"><div class="su-hd"><h3>Perlakuan paling berdampak</h3><span class="su-pil">Hasil model, belum divalidasi</span></div><p class="su-kal" id="suPerlKal"></p><ul class="su-lis" id="suPerl"></ul></section>
-  <section class="su-kartu"><div class="su-hd"><h3>Pita ketidakpastian PM2,5</h3><span class="su-pil" id="suEnsPil">Ensemble</span></div>
+  <section class="su-kartu"><div class="su-hd"><h3>Perlakuan paling berdampak</h3><span class="su-pil" title="Hasil model, belum divalidasi terhadap alat ukur">Hipotesis</span></div><p class="su-kal" id="suPerlKal"></p><ul class="su-lis" id="suPerl"></ul></section>
+  <section class="su-kartu"><div class="su-hd"><h3>Pita ketidakpastian PM2,5</h3><span class="su-pil" id="suEnsPil">Ensambel</span></div>
     <div class="su-kontrol"><select class="su-pilih" id="suEnsKota" aria-label="Kota" hidden></select></div><div id="suEns"><p class="su-kal">Menunggu simulasi dasar...</p></div></section>
   <section class="su-kartu"><div class="su-hd"><h3>Beban fasilitas kesehatan</h3></div><div id="suRS"></div></section>
   <section class="su-kartu"><div class="su-hd"><h3>Kecocokan skala dengan CAMS</h3></div><div id="suVal"></div></section>
-  <section class="su-kartu"><div class="su-hd"><h3>Batas model</h3></div><ul class="su-batas">${M.BATAS.map(t => `<li>${esc(t)}</li>`).join("")}</ul></section>`;
+  <section class="su-kartu"><div class="su-hd"><h3>Batas model</h3></div><details class="lipat ud-lipat"><summary>Tampilkan ${M.BATAS.length} batas model</summary><div class="isi"><ul class="su-batas">${M.BATAS.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div></details></section>`;
   const q = s => S.el.querySelector(s);
   /* handler hanya mengubah keadaan; kerja berat dijadwalkan */
   q("#suTampil").addEventListener("click", ev => { const b = ev.target.closest("button"); if (b) requestAnimationFrame(() => aturTampil(S, b.dataset.t)); });
@@ -166,7 +166,7 @@ function perlakuan(S) {
     : st?.stabil === false ? `Urutan tidak stabil di ensemble (korelasi ${fmt1(st.rho)}): daftar ini kandidat dengan perkiraan dampaknya, bukan peringkat; satuan biaya memakai asumsi.`
     : "Kandidat dengan orang-hari Tidak sehat yang terhindar dalam 72 jam; urutan baru ditampilkan setelah kestabilannya diuji di ensemble.";
   S.el.querySelector("#suPerlKal").textContent = ket;
-  S.el.querySelector("#suPerl").innerHTML = S.urut.length ? S.urut.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="no">${st?.stabil === true ? i + 1 : "·"}</span><span>${IKJ[x.jenis]}${esc(x.nama)}</span><span class="n">sekitar ${jj(x.oh)} orang-hari${x.hi != null && x.hi > x.lo ? ` (${jj(x.lo)} sampai ${jj(x.hi)})` : ""}<small>${T.rupiah(x.biaya)}${x.perOh ? `, ${T.rupiah(x.perOh)} per orang-hari` : ""}${x.ispa >= 1 ? `, ISPA ${jj(x.ispa)} kasus terhindar` : ""}</small></span></button></li>`).join("")
+  S.el.querySelector("#suPerl").innerHTML = S.urut.length ? S.urut.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="no">${st?.stabil === true ? i + 1 : "–"}</span><span>${IKJ[x.jenis]}${esc(x.nama)}</span><span class="n">sekitar ${jj(x.oh)} orang-hari${x.hi != null && x.hi > x.lo ? ` (${jj(x.lo)} sampai ${jj(x.hi)})` : ""}<small>${T.rupiah(x.biaya)}${x.perOh ? `, ${T.rupiah(x.perOh)} per orang-hari` : ""}${x.ispa >= 1 ? `, ISPA ${jj(x.ispa)} kasus terhindar` : ""}</small></span></button></li>`).join("")
     : `<li class="su-kosong">Tidak ada perlakuan yang menghindari paparan di atas ambang.</li>`;
 }
 function tandaiPerl(S) { S.el.querySelectorAll("#suPerl button").forEach(b => { const it = S.urut[+b.dataset.i]; b.setAttribute("aria-pressed", String(it === S.perlSek || (!S.perlSek && ((S.sk === "kompleks" && it.jenis === "kompleks" && it.id === S.komp) || (S.sk === "pltu" && it.jenis === "pltu"))))); }); }
@@ -197,13 +197,13 @@ function bebanRS(S) {
 /* ensemble di Worker: simulasi penuh tiap anggota + peringkat perlakuan dihitung ulang di anggota itu (kestabilan urutan) */
 function jalankanEns(S) {
   if (S.ensJalan || !S.selesai) return; S.ensJalan = true; const pil = S.el.querySelector("#suEnsPil"), kunci = S.urut.map(x => x.jenis + "|" + x.id);
-  const gagal = () => { pil.textContent = "Ensemble tidak tersedia"; S.el.querySelector("#suEns").innerHTML = `<p class="su-kal">Ensemble belum bisa dijalankan di peramban ini.</p>`; };
+  const gagal = () => { pil.textContent = "Ensambel tidak tersedia"; S.el.querySelector("#suEns").innerHTML = `<p class="su-kal">Ensambel belum bisa dijalankan di peramban ini.</p>`; };
   let w; try { w = new Worker(new URL("ensemble.worker.js", import.meta.url), {type: "module"}); } catch { return gagal(); }
   S.ensW = w; w.onerror = () => { w.terminate(); gagal(); };
   w.onmessage = e => { const d = e.data;
     if (d.t === "progres") pil.textContent = `Anggota ${d.m} dari ${d.n}`;
     else if (d.t === "galat") { console.warn("SimUdara ensemble:", d.pesan); w.terminate(); gagal(); }
-    else if (d.t === "selesai") { w.terminate(); S.pita = d.seri.map(M.pitaDariSeri); S.stab = T.stabilitas(S.urut.map(x => x.oh), d.ohAng); pil.textContent = `Ensemble ${S.pita[0].n} anggota`; renderEns(S); perlakuan(S); tandaiPerl(S); } };
+    else if (d.t === "selesai") { w.terminate(); S.pita = d.seri.map(M.pitaDariSeri); S.stab = T.stabilitas(S.urut.map(x => x.oh), d.ohAng); pil.textContent = `Ensambel ${S.pita[0].n} anggota`; renderEns(S); perlakuan(S); tandaiPerl(S); } };
   w.postMessage({n: M.ENS.n, sdApi: M.sdApiDariGalat(S.kec?.ok ? S.kec.galat : 1.4), A: S.A, src: S.src, kota: S.kota, prak: S.prak, dasar: S.dasar, K: S.K, jiwa: S.jiwa, pmDasar: S.pmDasar, fk: S.fk, kunci});
 }
 function renderEns(S) {

@@ -10,7 +10,7 @@
   --fs-1:11px; --fs-2:12px; --fs-3:13px; --fs-4:14.5px; --fs-5:16px; --fs-6:18px; --fs-7:21px; --fs-8:28px;
   --jr-1:4px; --jr-2:8px; --jr-3:12px; --jr-4:16px; --jr-5:20px; --jr-6:24px; --jr-7:32px; /* awalan jr: --sp-* sudah dipakai lokal di pipa.css dengan nilai lain */
   --r-xs:6px; --r-pill:999px; --dur-1:.12s; --dur-2:.2s; --ease:cubic-bezier(.2,.7,.2,1); --h-ctl:40px;
-  --brand-accent:oklch(71.7% .139 55.3); --head-bg:oklch(25.5% .075 256); --on-head:#fff; --on-head-2:oklch(91.4% .028 253.2); --head-hl:oklch(81.3% .118 50.7); --on-brand:#fff; --on-pekat:#fff; /* teks di atas warna status pekat (--bad, --ok), tetap putih di kedua mode */
+  --brand-accent:oklch(71.7% .139 55.3); --head-bg:oklch(25.5% .075 256); --on-head:#fff; --on-head-2:oklch(91.4% .028 253.2); --head-hl:oklch(81.3% .118 50.7); --tk-bg:#f6d2ad; --tk-tx:#7a3d0c; /* pil tingkat ambang Peluang (.ex-tk), nada lama karhutla/banjir */ --on-brand:#fff; --on-pekat:#fff; /* teks di atas warna status pekat (--bad, --ok), tetap putih di kedua mode */
   /* teks status, lolos AA 4,5:1 di atas --card (hue token asal, lightness disesuaikan) */
   --ok-tx:oklch(54.5% .16 150); --warn-tx:oklch(57% .16 75); --bad-tx:oklch(57% .21 27); --info-tx:oklch(55.5% .13 235); --f2-tx:oklch(57.5% .17 58); --accent-tx:oklch(56.5% .09 252);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);

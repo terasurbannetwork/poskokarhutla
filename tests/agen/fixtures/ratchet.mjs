@@ -2,15 +2,17 @@
    Plafon hanya boleh sama atau turun: kunci baru atau hitungan naik = merah; kunci yang sudah bersih = merah "hapus entri ini". */
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-export const AKAR = new URL('../../..', import.meta.url).pathname
+/* fileURLToPath, bukan .pathname: di Windows .pathname menjadi '/D:/...' lalu path.join membuat 'D:\D:\...' */
+export const AKAR = fileURLToPath(new URL('../../..', import.meta.url))
 
 /** Semua berkas di bawah `dir` (relatif akar) yang cocok `ext`, tanpa vendor/node_modules dan salinan "* 2.*". */
 export function berkas(dir, ext) {
   const abs = path.join(AKAR, dir)
   if (!fs.existsSync(abs)) return []
   return fs.readdirSync(abs, { withFileTypes: true }).flatMap((e) => {
-    const rel = path.join(dir, e.name)
+    const rel = path.posix.join(dir.split(path.sep).join('/'), e.name)   /* kunci daftar selalu bergaris miring maju, juga di Windows */
     if (e.isDirectory()) return /^(vendor|node_modules)$/.test(e.name) ? [] : berkas(rel, ext)
     return ext.test(e.name) && !/ 2\./.test(e.name) ? [rel] : []
   })

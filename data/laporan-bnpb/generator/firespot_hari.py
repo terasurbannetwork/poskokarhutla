@@ -16,14 +16,17 @@ supaya hari lampau bisa dihitung ulang tanpa menyentuh keadaan live:
   1. jam "sekarang" dibekukan pada cut-off (hari D, jam WIB) -- jendela 7 hari dan umur cluster diukur dari situ;
   2. titik FIRMS dari cache CSV generator (satelit.csv_hari) per hari UTC, bukan jendela 5-hari pipeline;
   3. FWI dari cuaca_riwayat (pemanasan 92 hari), bukan public/data/fwi_state.json yang hanya menyimpan satu titik waktu.
-Gerbangnya arsip public/data/kluster_hari/<hari>.json: uji() menagih angka yang sama pada 23.59 WIB.
+Gerbangnya arsip HARI PENUH public/data/kluster_hari/<hari>.json (bertanda "penuh": true, ditulis harian.arsip_kemarin pada jalan
+dini hari berikutnya): uji() menagih angka yang sama pada 23.59 WIB. Arsip tanpa tanda itu (semua yang ditulis sebelum 18 Nov 2026)
+BUKAN keadaan akhir hari: ia ditulis jalan terakhir sebelum 00.00 WIB (± 23.15-23.40), sebelum lintasan VIIRS malam Indonesia timur
+tayang di FIRMS, jadi firespot-nya terpotong (16 Nov 2026: 139 lawan 240 nasional, Papua Selatan 23 lawan 120).
 
 API:
     hitung(hari, jam='17:00', cuaca=None, kunci=None) -> {kode_prov: jumlah firespot}
     seri(hari_akhir, n, jam='17:00') -> ({kode_prov: [n angka]}, [hari])
 CLI:
     python3 firespot_hari.py --tanggal 2026-10-25 [--jam 17:00] [--hari 3] [--keluar fs.json]
-    python3 firespot_hari.py --uji      # banding dengan arsip kluster_hari pada 23.59 WIB
+    python3 firespot_hari.py --uji      # banding dengan arsip kluster_hari hari penuh pada 23.59 WIB (ARSIP_KLUSTER=<folder> untuk folder lain)
 """
 import csv, datetime as dt, io, json, os, sys
 
@@ -45,7 +48,7 @@ SUMBER = ('MODIS_NRT', 'VIIRS_SNPP_NRT', 'VIIRS_NOAA20_NRT', 'VIIRS_NOAA21_NRT')
 KODE = {'MODIS_NRT': 'M', 'VIIRS_SNPP_NRT': 'N', 'VIIRS_NOAA20_NRT': 'N20', 'VIIRS_NOAA21_NRT': 'N21'}
 LAT0, LON0, SEL = -11.25, 94.75, 0.5   # kisi grid_darat
 KOL_FS = 4           # indeks "titik firespot hari itu" di baris harian.ringkas_kluster
-KOL_PERSIS = (2, 3, 5, 6)   # kolom yang harus sama persis dengan arsip: level maks, bertitik hari itu, < 24 jam, 24-72 jam
+KOL_PERSIS = (2, 3, 4, 5, 6)   # kolom yang harus sama persis dengan arsip hari penuh: level maks, bertitik hari itu, titik firespot, < 24 jam, 24-72 jam
 KOL_LONGGAR = (0, 1)        # cluster aktif dan firespot aktif: memuat cluster s.d. 7 hari, peka revisi FIRMS (lihat uji())
 
 
@@ -172,15 +175,27 @@ def seri(hari_akhir, n, jam='17:00', kunci=None):
     hari_akhir = dt.date.fromisoformat(str(hari_akhir))
     hari = [hari_akhir - dt.timedelta(days=n - 1 - i) for i in range(n)]
     jalur = os.path.join(SINI, 'cache', f'firespot-{jam.replace(":", ".")}.json')
-    simpan = json.load(open(jalur)) if os.path.exists(jalur) else {}
-    perlu = [d for d in hari if d.isoformat() not in simpan]
+    try:
+        with open(jalur, encoding='utf-8') as f: simpan = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        simpan = {}   # cache rusak (jalan bersamaan terputus) = hitung ulang, bukan galat
+    # K18 (18 Nov 2026): hari yang dihitung SEBELUM jam cut-off-nya (bot membangun sebelum 18.00) dihitung ulang di jalan berikutnya;
+    # _dibuat = jam hitung per hari. Entri lama tanpa cap tetap dipercaya, kecuali hari ini dan kemarin (bisa dari jalan sebelum cut-off).
+    dibuat = simpan.setdefault('_dibuat', {})
+    kini = dt.datetime.now(WIB)
+    batas = lambda d: dt.datetime.combine(d, dt.time.fromisoformat(jam), WIB)
+    basi = lambda d: (dt.datetime.fromisoformat(dibuat[d.isoformat()]) < batas(d) if d.isoformat() in dibuat
+                      else d >= kini.date() - dt.timedelta(days=1))
+    perlu = [d for d in hari if d.isoformat() not in simpan or basi(d)]
     if perlu:
         cuaca = CR.hitung(min(perlu), max(perlu))
         w, gambut = Wilayah(), Poligon(os.path.join(AKAR, 'public/data/lahan/gambut.geojson'))
         for d in perlu:
             simpan[d.isoformat()] = hitung(d, jam, cuaca, kunci, gambut, w)
+            dibuat[d.isoformat()] = dt.datetime.now(WIB).isoformat(timespec='seconds')
             os.makedirs(os.path.dirname(jalur), exist_ok=True)
-            json.dump(simpan, open(jalur, 'w'))
+            with open(jalur + '.tmp', 'w', encoding='utf-8') as f: json.dump(simpan, f)
+            os.replace(jalur + '.tmp', jalur)   # atomik: dua jalan bersamaan tidak memotong berkas
             print('firespot', d, 'titik nasional', sum(v[KOL_FS] for v in simpan[d.isoformat()].values()), flush=True)
     kolom = [simpan[d.isoformat()] for d in hari]
     kunci_semua = sorted({k for c in kolom for k in c})
@@ -215,17 +230,18 @@ def uji():
        cluster kecil (Papua Selatan +6 sampai +7 persen pada 22 dan 23 Okt); cluster kecil (< 3 titik, level 0)
        dibuang atau tidak tergantung kelas FWI-nya.
 
-    KOLOM 4 TIDAK IKUT DIBANDINGKAN. Arsip yang ter-commit 25 Okt 2026 masih memuat definisi lama di kolom itu
-    (jumlah CLUSTER firespot yang bertitik hari itu), sementara harian.ringkas_kluster sudah menghitung TITIK (fs_ini);
-    arsipnya belum dibangun ulang. Diperiksa pada 24 Okt, Kalteng: kolom 0-3, 5, 6 kita = arsip (2503, 860, 3, 586,
-    586, 1270) sementara kolom 4 arsip 402 = jumlah cluster firespot bertitik, dan titiknya 5.922. Karena angka kolom 4
-    di sini DIHASILKAN oleh harian.ringkas_kluster sendiri dari cluster yang keenam kolom lainnya sudah membuktikan
-    sama, ia ikut benar begitu arsipnya dibangun ulang; sementara itu penanganan.py menjaga invarian firespot <= hotspot.
-    Begitu arsip baru masuk, cukup ganti KOL_BANDING jadi semua kolom.
+    ARSIP HARI PENUH SAJA. Hanya arsip bertanda "penuh": true (harian.arsip_kemarin, hari kalender penuh, jam_sejak tanpa
+    pembulatan) yang dibandingkan, dan kelima kolom KOL_PERSIS (termasuk kolom 4, titik firespot) harus sama persis. Arsip tanpa
+    tanda itu ditulis sebelum 00.00 WIB dan terpotong, jadi tidak dipakai. Selisih sah yang tersisa hanya titik yang tepat 23.59 WIB
+    (arsip memuatnya, hitung(hari, '23:59') tidak). Arsip lokal biasanya tua: tarik dari situs live
+    (https://centurisk97.id/data/kluster_hari/<hari>.json) ke folder sementara lalu ARSIP_KLUSTER=<folder>.
 
     Jam 23.59 dipakai, bukan 17.00, karena hanya pada jam itu ada arsip untuk dibandingkan."""
-    folder = os.path.join(AKAR, 'public/data/kluster_hari')
-    arsip_ada = sorted(n[:10] for n in os.listdir(folder) if n.endswith('.json'))
+    folder = os.environ.get('ARSIP_KLUSTER') or os.path.join(AKAR, 'public/data/kluster_hari')
+    semua = sorted(n[:10] for n in os.listdir(folder) if n.endswith('.json'))
+    arsip_ada = [h for h in semua if json.load(open(os.path.join(folder, f'{h}.json'))).get('penuh') is True]
+    assert arsip_ada, (f'tidak ada arsip hari penuh ("penuh": true) di {folder} ({semua[0] if semua else "-"}..{semua[-1] if semua else "-"}): '
+                       'arsip sebelum 18 Nov 2026 terpotong; tarik arsip live ke folder sementara dan pakai ARSIP_KLUSTER')
     jalur = sorted((os.path.join(SINI, 'cache', 'cuaca', n) for n in os.listdir(os.path.join(SINI, 'cache', 'cuaca'))
                     if n.startswith('fwi-live-')), reverse=True)
     jalur = jalur[0] if jalur else os.path.join(AKAR, 'public/data/fwi.json')
@@ -236,8 +252,6 @@ def uji():
                   f'{min(punya)}..{max(punya)}; tarik fwi.json situs live dulu (cuaca_riwayat.uji)')
     hari = sama[-1]
     w = json.load(open(os.path.join(folder, f'{hari}.json')))['w']
-    lebar = len(next(iter(w.values())))
-    assert lebar >= 5, f'arsip {hari} cuma {lebar} kolom: belum memuat titik firespot (indeks 4); bangun ulang arsipnya'
     a = {k: v for k, v in w.items() if '|' not in k}
     kita = hitung(hari, '23:59', cuaca_dari_fwi(jalur, hari))
     assert sum(r[0] for r in a.values()) > 100, f'arsip {hari} cuma {sum(r[0] for r in a.values())} cluster: arsipnya yang salah?'
@@ -258,7 +272,7 @@ def uji():
     nas_fs = sum(r[KOL_FS] for r in kita.values())
     print(f'uji lolos: {hari} 23.59 WIB, FWI dikunci ke {os.path.basename(jalur)}; {len(a)} provinsi x kolom '
           f'{KOL_PERSIS} sama persis dengan arsip kluster_hari; ' + ', '.join(longgar) +
-          f'. Titik firespot nasional {nas_fs} (kolom 4 arsip masih definisi lama, lihat docstring)')
+          f'. Titik firespot nasional {nas_fs}')
 
 
 if __name__ == '__main__':

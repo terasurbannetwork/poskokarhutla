@@ -28,14 +28,16 @@ function barisHari(L, iso, prov) {
 }
 
 /* ---------- tampilan ---------- */
+/* kotak angka berikon dari mesin bersama lewat kot() di peta.js (window.LaciInti); tanpa peta.js (uji) markup sama tanpa ikon */
+const ka = (l, v, s, ik) => typeof kot === "function" ? kot(l, v, s, ik) : `<div class="kpi kpi-t"><span class="lbl">${esc(l)}</span><b>${v}</b><small>${s}</small></div>`;
 const bar = () => { const u = window.UnduhTabel?.tombol() || ""; return u ? `<div class="kk-bar">${u}</div>` : ""; };
 function html() {
   const iso = S.tanggal; if (!iso || !lap) return null;
   const i = lap.hari.indexOf(iso), j = S.jalur, N = lap.nasional, g = "grid-template-columns:20px minmax(0,1fr) 54px 60px 58px";
-  const ringkas = `<div class="ringkas"><div class="lbl">Hari tanpa hujan, ${esc(panjang(iso))}</div><div class="kv">`
-    + `<div><b>${N.hth_maks?.[i] != null ? fmt(N.hth_maks[i]) : "–"}</b><span>HTH terpanjang (hari)</span></div>`
-    + `<div><b>${N.jiwa31?.[i] != null ? rb(N.jiwa31[i]) : "–"}</b><span>Jiwa HTH 31 hari atau lebih</span></div>`
-    + `<div><b>${N.hujan?.[i] != null ? F1(N.hujan[i]) : "–"}</b><span>Hujan rerata (mm/hari)</span></div></div>`
+  const ringkas = `<div class="ringkas"><div class="lbl">Hari tanpa hujan, ${esc(panjang(iso))}</div><div class="kk-ka">`
+    + ka("Tanpa hujan terpanjang", N.hth_maks?.[i] != null ? fmt(N.hth_maks[i]) : "–", "hari tanpa hujan", "waktu")
+    + ka("Jiwa tanpa hujan 31 hari atau lebih", N.jiwa31?.[i] != null ? rb(N.jiwa31[i]) : "–", "jiwa", "orang")
+    + ka("Hujan rerata", N.hujan?.[i] != null ? F1(N.hujan[i]) : "–", "mm per hari", "hujan") + `</div>`
     + `<p class="kk-cat">Peta dan status wilayah tetap keadaan terbaru: status per tanggal tidak tersedia. Angka tanggal ini dari laporan harian.</p></div>`;
   const B = barisHari(lap, iso, j[0] || null);
   const kepala = `<div class="tb kepala" style="${g}"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n" title="Hari tanpa hujan terpanjang (hari)">HTH</span><span class="n" title="Jiwa di wilayah dengan hari tanpa hujan 31 hari atau lebih">Jiwa</span><span class="n" title="Hujan rerata (mm per hari)">Hujan</span></div>`;

@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Gambar kajian penentuan kejadian bencana</title>
+<style>
+@font-face{font-family:Roboto;src:url({FR});font-weight:400}
+@font-face{font-family:Roboto;src:url({FM});font-weight:500}
+@font-face{font-family:Roboto;src:url({FB});font-weight:700}
+:root{
+  --navy:#051C2C; --navy2:#16324A; --oranye:#D9600B; --oranye-muda:#FBE7D6; --biru:#2F86D1; --biru-muda:#DCEBF8;
+  --emas:#A87400; --emas-muda:#F6ECD2; --hijau:#2E7D5B; --hijau-muda:#DDEFE6; --merah:#C8102E; --merah-muda:#F8DDE1;
+  --teks:#1A1A1A; --teks2:#2E3440; --teks3:#6B7280; --garis:#C9CED4; --tint:#F1F3F6; --putih:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--putih);font-family:Roboto,sans-serif;color:var(--teks);font-size:16px;line-height:1.38}
+.fig{width:1000px;padding:22px 24px;background:var(--putih);margin-bottom:40px}
+svg.ik{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+b{font-weight:700}
+.kecil{font-size:14px;color:var(--teks2)}
+.lbl{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teks3)}
+
+/* konsep */
+.konsep{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr 54px 1.15fr;align-items:stretch}
+.kk{border:1.5px solid var(--garis);border-radius:14px;padding:16px;text-align:center;background:var(--putih)}
+.kk svg{font-size:40px;color:var(--biru);margin:2px auto 8px;display:block}
+.kk b{display:block;font-size:19px;color:var(--navy)}
+.kk span{font-size:14.5px;color:var(--teks2)}
+.kk.has{background:var(--oranye-muda);border-color:var(--oranye)}.kk.has svg{color:var(--oranye)}
+.op{display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:var(--teks3)}
+.contoh{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.contoh div{border-radius:12px;padding:14px 16px;font-size:15px}
+.contoh .a{background:var(--biru-muda)}.contoh .b{background:var(--oranye-muda)}
+.contoh i{font-style:normal;display:block;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.contoh .a i{color:var(--biru)}.contoh .b i{color:var(--oranye)}
+
+/* onset */
+.onset{position:relative}
+.onset .baris{display:grid;grid-template-columns:200px 1fr;align-items:center;height:36px}
+.onset .nm{font-weight:500;color:var(--navy);display:flex;gap:8px;align-items:center;font-size:15.5px}
+.onset .nm svg{font-size:20px;color:var(--oranye)}
+.onset .trek{position:relative;height:100%;border-left:1px solid var(--garis)}
+.onset .bar{position:absolute;top:8px;height:20px;border-radius:10px}
+.onset .bar.m{background:var(--oranye)}.onset .bar.l{background:var(--biru)}
+.onset .sumbu{display:grid;grid-template-columns:200px 1fr;margin-top:6px}
+.onset .tk{position:relative;height:34px;border-top:1.5px solid var(--navy)}
+.onset .tk span{position:absolute;top:6px;transform:translateX(-50%);font-size:14px;color:var(--teks2);white-space:nowrap}
+.onset .grid{position:absolute;top:0;bottom:40px;left:200px;right:0;pointer-events:none}
+.onset .grid i{position:absolute;top:0;bottom:0;border-left:1px dashed #E1E5EA}
+.leg{display:flex;gap:22px;margin-top:10px;font-size:14px;color:var(--teks2)}
+.leg span{display:flex;align-items:center;gap:7px}.leg i{width:22px;height:12px;border-radius:6px;display:inline-block}
+
+/* alur */
+.alur{display:grid;grid-template-columns:430px 90px 1fr;row-gap:0}
+.alur .q{border:2px solid var(--navy);border-radius:14px;padding:13px 16px;background:var(--putih);display:flex;gap:12px;align-items:center}
+.alur .q .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:16px}
+.alur .q b{color:var(--navy);font-size:16.5px}
+.alur .q.mulai{border-style:dashed;border-color:var(--teks3)}.alur .q.mulai .n{background:var(--teks3)}
+.alur .ke{display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--teks3);font-size:13px;font-weight:700}
+.alur .ke::after{content:"";width:100%;height:0;border-top:2px solid var(--garis);margin-top:3px}
+.alur .h{border-radius:12px;padding:11px 14px;font-size:15px;display:flex;align-items:center}
+.alur .h.abu{background:var(--tint);color:var(--teks2)}
+.alur .h.biru{background:var(--biru-muda);color:var(--navy)}
+.alur .h.emas{background:var(--emas-muda);color:var(--navy)}
+.alur .turun{grid-column:1;height:40px;display:flex;align-items:center;justify-content:center;position:relative;color:var(--hijau);font-weight:700;font-size:13px}
+.alur .turun::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:2px solid var(--garis)}
+.alur .turun span{background:var(--putih);padding:0 8px;position:relative}
+.akhir{display:grid;grid-template-columns:1fr 1fr;gap:14px;grid-column:1/4}
+.akhir div{border-radius:14px;padding:14px 18px;font-size:15px}
+.akhir b{display:block;font-size:19px}
+.akhir .my{background:var(--oranye);color:#fff}.akhir .mn{background:var(--navy2);color:#fff}
+
+/* batas */
+.batas{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bk{border:1.5px solid var(--garis);border-radius:14px;padding:14px 16px}
+.bk h4{margin:0 0 8px;font-size:16.5px;color:var(--navy);display:flex;gap:8px;align-items:center}
+.bk h4 svg{font-size:22px;color:var(--oranye)}
+.bk .hasil{margin-top:8px;font-size:14.5px;color:var(--teks2)}
+.bk .hasil b{color:var(--oranye)}
+.tl{position:relative;height:74px;margin-top:4px}
+.tl .ax{position:absolute;left:0;right:0;top:46px;border-top:1.5px solid var(--navy)}
+.tl .seg{position:absolute;top:20px;height:22px;border-radius:6px;color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tl .tk{position:absolute;top:50px;font-size:12px;color:var(--teks3);transform:translateX(-50%)}
+.tl .pin{position:absolute;top:10px;width:2px;height:36px;background:var(--navy)}
+.tl .pin span{position:absolute;top:-14px;left:-30px;width:60px;text-align:center;font-size:11.5px;font-weight:700;color:var(--navy)}
+.pohon{display:flex;flex-direction:column;align-items:center;gap:0}
+.pohon .ind{background:var(--navy);color:#fff;border-radius:10px;padding:8px 18px;font-weight:700;font-size:15px}
+.pohon .cab{width:78%;height:22px;border:2px solid var(--garis);border-bottom:none;border-radius:8px 8px 0 0;margin-top:10px;position:relative}
+.pohon .cab::before{content:"";position:absolute;left:50%;top:-12px;height:12px;border-left:2px solid var(--garis)}
+.pohon .anak{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:96%}
+.pohon .anak div{background:var(--oranye-muda);border-radius:10px;padding:7px 8px;text-align:center;font-size:14px;font-weight:500;color:var(--navy)}
+.peta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.peta .kab{border:1.5px dashed var(--teks3);border-radius:12px;padding:10px;position:relative;min-height:92px}
+.peta .kab i{font-style:normal;font-size:12.5px;font-weight:700;color:var(--teks3)}
+.peta .kab .t{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--oranye);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--oranye)}
+
+/* tangga */
+.tg{position:relative;padding-left:230px}
+.tg .row{display:grid;grid-template-columns:230px 1fr;margin-left:-230px;height:40px;align-items:center}
+.tg .nm{font-size:15px;color:var(--navy);font-weight:500}
+.tg .tr{position:relative;height:100%}
+.tg .tr::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px dashed #E1E5EA}
+.tg .dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);background:var(--navy2)}
+.tg .dot.u{background:var(--oranye);width:22px;height:22px;box-shadow:0 0 0 5px var(--oranye-muda)}
+.tg .dot.u span{left:30px;color:var(--oranye)}
+.tg .dot.j{background:var(--biru)}
+.tg .dot span{position:absolute;left:26px;top:-2px;white-space:nowrap;font-size:14px;font-weight:700;color:var(--teks2)}
+.tg .ax{display:grid;grid-template-columns:230px 1fr;margin-left:-230px;margin-top:4px}
+.tg .ax .s{position:relative;height:30px;border-top:1.5px solid var(--navy)}
+.tg .ax .s span{position:absolute;top:6px;transform:translateX(-50%);font-size:14px;color:var(--teks2)}
+.tg .vl{position:absolute;top:0;bottom:34px;border-left:1px solid #E1E5EA}
+
+/* kelas */
+.kls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.kc{border:1.5px solid var(--garis);border-left:5px solid var(--oranye);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:center}
+.kc .bn{font-size:28px;font-weight:700;color:var(--oranye);line-height:1;min-width:92px}
+.kc .bn small{display:block;font-size:12.5px;color:var(--teks2);font-weight:500;margin-top:3px}
+.kc b{display:block;color:var(--navy);font-size:15.5px}
+.kc span{font-size:13.5px;color:var(--teks2)}
+.atau{grid-column:1/4;text-align:center;font-size:13px;font-weight:700;color:var(--teks3);letter-spacing:.1em;margin:-4px 0}
+.hasilkls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.hasilkls div{border-radius:14px;padding:14px 18px;font-size:15px;color:#fff}
+.hasilkls b{display:block;font-size:19px}
+
+/* status */
+.mat{display:grid;grid-template-columns:150px 1fr 1fr;gap:10px}
+.mat .h{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;color:var(--navy);font-size:16px;padding:8px}
+.mat .h.k{background:var(--navy);color:#fff;border-radius:10px}
+.mat .c{border-radius:12px;padding:14px 16px;font-size:15px;color:var(--teks2)}
+.mat .c b{display:block;font-size:17px;color:var(--navy);margin-bottom:3px}
+
+/* formulir */
+.frm{display:grid;grid-template-columns:1fr 70px 1fr;align-items:start}
+.blok{border:2px solid var(--navy);border-radius:16px;overflow:hidden}
+.blok .kp{background:var(--navy);color:#fff;padding:10px 16px;font-weight:700;font-size:17px}
+.blok .kp span{display:block;font-size:13.5px;font-weight:400;opacity:.85}
+.blok .isi{padding:12px;display:grid;gap:7px}
+.chip{display:flex;gap:10px;align-items:center;border-radius:9px;padding:7px 11px;font-size:15px;background:var(--tint)}
+.chip .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--biru);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13.5px}
+.chip.w{background:var(--oranye-muda)}.chip.w .n{background:var(--oranye)}
+.chip svg{font-size:22px;color:var(--oranye)}
+.plus{display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:var(--teks3);height:100%}
+
+/* tahap */
+.th{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
+.th::before{content:"";position:absolute;left:10%;right:10%;top:23px;border-top:2.5px solid var(--garis)}
+.th .t{padding:0 7px;position:relative;text-align:center}
+.th .dot{width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:19px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;position:relative}
+.th .t.nol .dot{background:var(--biru)}
+.th .wkt{display:inline-block;white-space:nowrap;background:var(--oranye-muda);color:var(--oranye);font-weight:700;font-size:13.5px;border-radius:99px;padding:3px 10px;margin-bottom:8px}
+.th .kt{border:1.5px solid var(--garis);border-radius:12px;padding:11px 10px;text-align:left;font-size:14px;color:var(--teks2);min-height:205px}
+.th .kt b.j{display:block;text-align:center;color:var(--navy);font-size:16.5px;margin-bottom:6px}
+.th .kt .r{margin-top:8px;padding-top:7px;border-top:1px dashed var(--garis)}
+.th .kt .r i{font-style:normal;display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teks3)}
+
+/* penerapan */
+.rm{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.cv{position:relative;padding:16px 34px 16px 30px;color:#fff;min-height:96px;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 50%,calc(100% - 26px) 100%,0 100%,24px 50%)}
+.cv:first-child{clip-path:polygon(0 0,calc(100% - 26px) 0,100% 50%,calc(100% - 26px) 100%,0 100%);padding-left:20px}
+.cv b{display:block;font-size:20px}
+.cv span{font-size:14px;opacity:.9}
+.rmi{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.rmi div{border:1.5px solid var(--garis);border-radius:12px;padding:12px 14px;font-size:14.5px;color:var(--teks2)}
+.rmi i{font-style:normal;display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teks3);margin:6px 0 2px}
+.rmi i:first-child{margin-top:0}
+.rmi ul{margin:2px 0 0;padding-left:18px}
+
+/* lajur SOP */
+.ln{display:grid;grid-template-columns:170px repeat(5,1fr);gap:6px}
+.ln .hd{background:var(--navy);color:#fff;border-radius:9px;padding:8px 6px;text-align:center;font-weight:700;font-size:14px;line-height:1.25}
+.ln .hd span{display:block;font-weight:400;font-size:12px;opacity:.85}
+.ln .pk{background:var(--biru-muda);border-radius:9px;padding:9px 10px;font-weight:700;color:var(--navy);font-size:14px;display:flex;align-items:center}
+.ln .cl{border-radius:9px;background:#F7F8FA;min-height:58px;padding:5px}
+.ln .ak{background:var(--putih);border:1.5px solid var(--oranye);border-radius:8px;padding:6px 8px;font-size:12.8px;color:var(--teks2);line-height:1.3}
+.ln .ak+.ak{margin-top:5px}
+.ln .ak.n{border-color:var(--biru)}
+
+/* indikator dampak */
+.dmp{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.dk{border:1.5px solid var(--garis);border-radius:14px;padding:14px 12px 12px;display:flex;flex-direction:column}
+.dk .kp{display:flex;align-items:center;gap:8px;color:var(--navy);font-size:17px;font-weight:700}
+.dk .kp svg{font-size:30px;color:var(--oranye)}
+.dk .ab{margin:10px 0 10px;background:var(--navy);color:var(--putih);border-radius:999px;padding:4px 10px;font-size:13.5px;font-weight:700;text-align:center}
+.dk ul{margin:0;padding:0;list-style:none;font-size:14px;color:var(--teks2)}
+.dk li{padding:4px 0;border-top:1px dashed var(--garis)}
+.dk li:first-child{border-top:0}
+.jwb{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.jb{border-radius:12px;padding:10px 12px;font-size:14px;color:var(--teks2)}
+.jb b{display:block;font-size:15.5px;color:var(--navy);margin-bottom:2px}
+
+/* kriteria kejadian */
+.krt{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kt{border:1.5px solid var(--garis);border-left:6px solid var(--biru);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start;align-content:start}
+.kt .hr{grid-row:span 3;width:34px;height:34px;border-radius:50%;background:var(--biru);color:var(--putih);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center}
+.kt .bn{font-size:27px;font-weight:700;color:var(--navy);line-height:1.1}
+.kt .bn small{font-size:15px;font-weight:500;color:var(--teks2);margin-left:4px}
+.kt b{font-size:15.5px;color:var(--navy)}
+.kt span{font-size:13.5px;color:var(--teks2)}
+.krt-kaki{margin-top:12px;background:var(--biru-muda);border-radius:12px;padding:10px 14px;font-size:15px;color:var(--navy)}
+
+/* ketentuan tambahan kriteria */
+.tmb{display:grid;grid-template-columns:1.55fr 1fr;gap:14px}
+.tp{border:1.5px solid var(--garis);border-radius:14px;padding:14px 16px}
+.tp h4{margin:0 0 4px;font-size:17px;color:var(--navy)}
+.tp .ket{font-size:14px;color:var(--teks2);margin-bottom:12px}
+.kabs{display:grid;grid-template-columns:repeat(3,1fr) 34px 1.2fr;gap:8px;align-items:stretch}
+.kb{border:1.5px dashed var(--garis);border-radius:10px;padding:8px;text-align:center;font-size:13.5px;color:var(--teks2)}
+.kb b{display:block;font-size:24px;color:var(--navy)}
+.kb .tdk{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;color:var(--teks3)}
+.eq{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--teks3)}
+.jm{border-radius:10px;padding:8px 10px;background:var(--oranye-muda);border:1.5px solid var(--oranye);text-align:center;font-size:13.5px;color:var(--navy)}
+.jm b{display:block;font-size:24px;color:var(--oranye)}
+.tp .ctt{margin-top:10px;font-size:13.5px;color:var(--teks2)}
+.blm{display:flex;flex-direction:column;gap:10px}
+.blm .ex{background:var(--tint);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--teks2)}
+.blm .ex b{color:var(--navy)}
+.tag{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700}
+/* aturan batas satu kejadian */
+.atb{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.ab5{border:1.5px solid var(--garis);border-top:5px solid var(--navy2);border-radius:12px;padding:12px}
+.ab5 .no{width:28px;height:28px;border-radius:50%;background:var(--navy2);color:var(--putih);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:8px}
+.ab5 svg{font-size:26px;color:var(--oranye);float:right}
+.ab5 b{display:block;font-size:15.5px;color:var(--navy);margin-bottom:6px;line-height:1.25}
+.ab5 span{font-size:13.5px;color:var(--teks2)}
+
+/* komponen v2 buku praktis */
+.gv{display:grid;gap:10px}.gv.c2{grid-template-columns:repeat(2,1fr)}.gv.c3{grid-template-columns:repeat(3,1fr)}.gv.c4{grid-template-columns:repeat(4,1fr)}.gv.c5{grid-template-columns:repeat(5,1fr)}
+.kv{border:1.5px solid var(--garis);border-radius:12px;padding:10px 12px;font-size:13.5px;color:var(--teks2)}
+.kv h4{margin:0 0 6px;font-size:15.5px;color:var(--navy);display:flex;align-items:center;gap:7px}
+.kv h4 svg{font-size:22px;color:var(--oranye)}
+.kv h4 .kd{margin-left:auto;font-size:12px;color:var(--teks3);font-weight:500}
+.kv .rw{display:grid;grid-template-columns:78px 1fr;gap:6px;padding:4px 0;border-top:1px dashed var(--garis)}
+.kv .rw>i{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--teks3)}
+.kv ul{margin:0;padding:0;list-style:none}.kv li{padding:3px 0;border-top:1px dashed var(--garis)}.kv li:first-child{border-top:0}
+.kv .ik2{color:var(--oranye);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:5px}.chips span{background:var(--tint);border-radius:999px;padding:3px 9px;font-size:12.5px;color:var(--teks2)}
+.nb{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--navy2);color:var(--putih);align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none}
+.bar{display:flex;border-radius:10px;overflow:hidden;border:1.5px solid var(--navy2)}
+.bar div{padding:8px 6px;text-align:center;font-size:13px;color:var(--teks2);border-right:1.5px solid var(--navy2)}
+.bar div:last-child{border-right:0}
+.bar div b{display:block;font-size:20px;color:var(--navy);letter-spacing:.06em}
+.rumus{background:var(--navy);color:var(--putih);border-radius:12px;padding:12px 16px;font-size:17px;text-align:center;margin-bottom:10px}
+.rumus b{color:#FFC48A}
+.bobot{font-size:28px;font-weight:700;color:var(--oranye);line-height:1}
+.tlv{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding-top:30px}
+.tlv:before{content:"";position:absolute;left:4%;right:4%;top:12px;height:4px;background:var(--garis);border-radius:2px}
+.tlv .ttv{position:relative;text-align:center;font-size:13px;color:var(--teks2)}
+.tlv .ttv:before{content:"";position:absolute;top:-24px;left:50%;margin-left:-9px;width:18px;height:18px;border-radius:50%;background:var(--oranye);border:3px solid var(--putih);box-shadow:0 0 0 2px var(--oranye)}
+.tlv .ttv b{display:block;font-size:19px;color:var(--navy)}
+.tlv .ttv span{display:block;font-weight:700;color:var(--navy);font-size:13.5px;margin-bottom:3px}
+.cek li{display:grid;grid-template-columns:20px 1fr;gap:6px;align-items:start}
+.cek li:before{content:"";width:13px;height:13px;border:2px solid var(--navy2);border-radius:3px;margin-top:3px}
+.cek em{display:block;font-style:normal;font-size:11.5px;color:var(--teks3)}
+.hasil-i{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700;background:var(--oranye);color:var(--putih)}
+.hasil-e{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700;background:var(--navy2);color:var(--putih)}
+
+/* gaya D buku praktis v2 */
+.d{font-size:14.5px;color:var(--teks2)}
+.d-sec{border-top:2px solid var(--navy);padding:10px 0 14px}
+.d-sec+.d-sec{margin-top:10px}
+.d-lbl{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teks3);margin-bottom:8px}
+.d-cols{display:grid;gap:0}
+.d-cols>div{padding:2px 14px 2px 0;margin-right:14px;border-right:1px solid #E4E7EB}
+.d-cols>div:last-child{border-right:0;margin-right:0}
+.d-big{display:block;font-size:30px;font-weight:700;color:var(--navy);line-height:1.08;font-variant-numeric:tabular-nums}
+.d-mid{display:block;font-size:20px;font-weight:700;color:var(--navy);line-height:1.15}
+.d-t{display:block;font-weight:700;color:var(--navy);font-size:15px;margin-bottom:2px}
+.d-cap{font-size:13.5px;color:var(--teks2)}
+.d-mut{color:var(--teks3)}
+.d-wrap{display:grid;grid-template-columns:1fr 60px 230px;align-items:center}
+.d-arah svg{width:60px;height:100%;display:block}
+.d-hasil{background:var(--navy);color:var(--putih);padding:16px 18px}
+.d-hasil b{display:block;font-size:20px;margin-bottom:6px}
+.d-hasil span{font-size:13.5px;color:#C9D6E2}
+.d-tab{width:100%;border-collapse:collapse}
+.d-tab th{text-align:left;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teks3);padding:0 12px 7px 0;border-bottom:2px solid var(--navy);vertical-align:bottom}
+.d-tab td{padding:8px 12px 8px 0;border-bottom:1px solid #E4E7EB;vertical-align:top;font-size:13.5px;color:var(--teks2)}
+.d-tab td:first-child b{color:var(--navy);font-size:14.5px}
+.d-tab .kd{display:block;font-size:12px;color:var(--teks3)}
+.d-or{color:var(--oranye);font-weight:700}
+.d-seg{display:flex;border-top:2px solid var(--navy);border-bottom:1px solid #E4E7EB}
+.d-seg>div{padding:8px 10px 10px 0;margin-right:10px;border-right:1px solid #E4E7EB}
+.d-seg>div:last-child{border-right:0}
+.d-catat{margin-top:8px;font-size:13.5px;color:var(--teks2)}
+.d-catat b{color:var(--navy)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-api" viewBox="0 0 24 24"><path d="M12 2.5c.6 3.6 5.5 5.6 5.5 11a5.5 5.5 0 0 1-11 0c0-3 1.7-4.6 2.4-6.3.8 1.2 1.6 2.2 1.6 3.4.6-2.6.6-5.4 1.5-8.1z"/></symbol>
+  <symbol id="i-gempa" viewBox="0 0 24 24"><path d="M2 12h3.5l2-5.5 3 11 3-14 3 13 1.5-4.5H22"/></symbol>
+  <symbol id="i-tsunami" viewBox="0 0 24 24"><path d="M2 19c2.5 0 2.5-1.6 5-1.6s2.5 1.6 5 1.6 2.5-1.6 5-1.6 2.5 1.6 5 1.6"/><path d="M3 15c0-6 5-10.5 11-10 2.5.2 4.5 1.4 5.5 3-3.2-.8-6 .8-6 3.6 0 2 1.6 3.4 3.5 3.4"/></symbol>
+  <symbol id="i-banjir" viewBox="0 0 24 24"><path d="M4 12.5 12 6l8 6.5"/><path d="M6.5 11v3.5M17.5 11v3.5"/><path d="M2 17.5c2.5 0 2.5-1.5 5-1.5s2.5 1.5 5 1.5 2.5-1.5 5-1.5 2.5 1.5 5 1.5"/><path d="M2 21c2.5 0 2.5-1.5 5-1.5s2.5 1.5 5 1.5 2.5-1.5 5-1.5 2.5 1.5 5 1.5"/></symbol>
+  <symbol id="i-longsor" viewBox="0 0 24 24"><path d="M2.5 20.5h19L9 5.5 2.5 12z"/><circle cx="16.5" cy="17" r="1.4"/><circle cx="19.5" cy="18.8" r="1"/><path d="M8 9.5l2 2.5M6 12l2.4 2.6"/></symbol>
+  <symbol id="i-angin" viewBox="0 0 24 24"><path d="M3 5h18M5.5 9h13M8 13h8M10 17h5M11.5 21h2"/></symbol>
+  <symbol id="i-pantai" viewBox="0 0 24 24"><path d="M2 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/><path d="M4 16c.5-5.5 5-9.5 10.5-9 2.4.2 4.3 1.3 5.5 3"/><path d="M14 16c-1.4-1.2-2-3-1.4-4.6"/></symbol>
+  <symbol id="i-gunung" viewBox="0 0 24 24"><path d="M2.5 21 9 10.5l2 1.8 2-1.8L21.5 21z"/><path d="M12 2.5v3.5M8.6 4.2l1.6 2.6M15.4 4.2l-1.6 2.6"/></symbol>
+  <symbol id="i-kering" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M12 1.8v1.4M18.6 8.5h-1.4M6.8 8.5H5.4M16.7 3.8l-1 1M7.3 3.8l1 1"/><path d="M2.5 20.5 7 18l2.5 2.5L14 18l2.5 2.5 5-2.5"/><path d="M2.5 15.5h19"/></symbol>
+  <symbol id="i-orang" viewBox="0 0 24 24"><circle cx="12" cy="6.5" r="3.2"/><path d="M5 21v-2.5A5.5 5.5 0 0 1 10.5 13h3a5.5 5.5 0 0 1 5.5 5.5V21"/></symbol>
+  <symbol id="i-rumah" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-gedung" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01"/></symbol>
+  <symbol id="i-listrik" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H12L11 22l8.5-11.5H12z"/></symbol>
+  <symbol id="i-sawah" viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M12 13c-3.5 0-6-2.5-6-6 3.5 0 6 2.5 6 6zM12 11c0-3.5 2.5-6 6-6 0 3.5-2.5 6-6 6z"/><path d="M3 21h18"/></symbol>
+  <symbol id="i-perisai" viewBox="0 0 24 24"><path d="M12 2.5 4 5.5v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10v-6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+</svg>
+
+<!-- 1. konsep -->
+<div class="fig" id="pk-konsep">
+  <div class="konsep">
+    <div class="kk"><svg class="ik"><use href="#i-gempa"/></svg><b>Ancaman</b><span>peristiwa alam, misalnya gempa, hujan lebat, atau letusan</span></div>
+    <div class="op">+</div>
+    <div class="kk"><svg class="ik"><use href="#i-orang"/></svg><b>Keterpaparan</b><span>orang, rumah, dan sarana yang berada di wilayah ancaman</span></div>
+    <div class="op">+</div>
+    <div class="kk"><svg class="ik"><use href="#i-rumah"/></svg><b>Kerentanan</b><span>keadaan yang membuat orang dan sarana mudah dirugikan</span></div>
+    <div class="op">=</div>
+    <div class="kk has"><svg class="ik"><use href="#i-perisai"/></svg><b>Bencana</b><span>korban, kerusakan, dan gangguan fungsi masyarakat yang terukur</span></div>
+  </div>
+  <div class="contoh">
+    <div class="a"><i>Peristiwa ancaman</i>Gempa bermagnitudo 7 di laut lepas, jauh dari permukiman, tanpa korban dan kerusakan. Tidak ada keterpaparan, sehingga tidak ada bencana.</div>
+    <div class="b"><i>Kejadian bencana</i>Gempa bermagnitudo 5 yang dangkal di dekat permukiman dengan bangunan yang tidak tahan gempa, sehingga rumah roboh dan warga mengungsi.</div>
+  </div>
+</div>
+
+<!-- 2. onset: posisi % pada sumbu logaritmik menit(0) jam(16.7) hari(33.3) minggu(50) bulan(66.7) tahun(83.3) -->
+<div class="fig" id="pk-onset">
+  <div class="onset">
+    <div class="grid"><i style="left:0%"></i><i style="left:16.7%"></i><i style="left:33.3%"></i><i style="left:50%"></i><i style="left:66.7%"></i><i style="left:83.3%"></i></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-gempa"/></svg>Gempa bumi</div><div class="trek"><div class="bar m" style="left:0%;width:9%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami</div><div class="trek"><div class="bar m" style="left:3%;width:20%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-longsor"/></svg>Tanah longsor</div><div class="trek"><div class="bar m" style="left:1%;width:22%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-angin"/></svg>Cuaca ekstrem</div><div class="trek"><div class="bar m" style="left:2%;width:30%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-banjir"/></svg>Banjir</div><div class="trek"><div class="bar m" style="left:12%;width:40%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-pantai"/></svg>Gelombang pasang</div><div class="trek"><div class="bar m" style="left:16%;width:26%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-gunung"/></svg>Erupsi gunung api</div><div class="trek"><div class="bar m" style="left:12%;width:60%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-api"/></svg>Karhutla</div><div class="trek"><div class="bar l" style="left:30%;width:42%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-kering"/></svg>Kekeringan</div><div class="trek"><div class="bar l" style="left:48%;width:32%"></div></div></div>
+    <div class="baris"><div class="nm"><svg class="ik"><use href="#i-pantai"/></svg>Abrasi</div><div class="trek"><div class="bar l" style="left:64%;width:34%"></div></div></div>
+    <div class="sumbu"><div></div><div class="tk"><span style="left:0%">menit</span><span style="left:16.7%">jam</span><span style="left:33.3%">hari</span><span style="left:50%">minggu</span><span style="left:66.7%">bulan</span><span style="left:83.3%">tahun</span></div></div>
+  </div>
+  <div class="leg"><span><i style="background:var(--oranye)"></i>Bencana mendadak: waktu munculnya jelas, satu kejadian dibatasi oleh peristiwanya</span><span><i style="background:var(--biru)"></i>Bencana lambat: satu kejadian dibatasi oleh periode</span></div>
+</div>
+
+<!-- 3. alur -->
+<div class="fig" id="pk-alur">
+  <div class="alur">
+    <div class="q mulai"><span class="n">▶</span><div><b>Informasi atau laporan masuk</b><div class="kecil">dari BMKG, PVMBG, pemantauan <i>hotspot</i>, aparat desa, atau warga</div></div></div><div></div><div></div>
+    <div class="turun"><span></span></div><div></div><div></div>
+    <div class="q"><span class="n">1</span><b>Apakah ada peristiwa ancaman yang termasuk salah satu dari sembilan jenis bencana?</b></div><div class="ke">Tidak</div><div class="h abu">Bukan kejadian bencana alam</div>
+    <div class="turun"><span>Ya</span></div><div></div><div></div>
+    <div class="q"><span class="n">2</span><b>Apakah ada dampak pada manusia, rumah, fasilitas, layanan vital, atau lahan?</b></div><div class="ke">Tidak</div><div class="h biru">Dicatat sebagai peristiwa ancaman dan terus dipantau</div>
+    <div class="turun"><span>Ya</span></div><div></div><div></div>
+    <div class="q"><span class="n">3</span><b>Apakah dampaknya memenuhi paling sedikit satu kriteria kejadian bencana?</b></div><div class="ke">Tidak</div><div class="h abu">Dicatat sebagai kejadian yang belum memenuhi kriteria; disimpan, tidak dihitung</div>
+    <div class="turun"><span>Ya</span></div><div></div><div></div>
+    <div class="q"><span class="n">4</span><b>Apakah laporan ini bagian dari kejadian yang sedang berlangsung menurut aturan batas satu kejadian?</b></div><div class="ke">Ya</div><div class="h emas">Digabungkan ke kejadian tersebut dengan nomor yang sama, lalu angka dampaknya diperbarui</div>
+    <div class="turun"><span style="color:var(--navy)">Tidak: buka kejadian baru</span></div><div></div><div></div>
+    <div class="q"><span class="n">5</span><b>Apakah dampaknya mencapai paling sedikit satu batas kelas intensif?</b></div><div></div><div class="h abu">Kelas dihitung ulang setiap kali angka dampak diperbarui, termasuk untuk laporan yang digabungkan</div>
+    <div class="turun"><span></span></div><div></div><div></div>
+    <div class="akhir"><div class="my"><b>Ya: bencana intensif</b>Indikator penentunya ditulis di samping kelas</div><div class="mn"><b>Tidak: bencana ekstensif</b>Tetap dihitung sebagai kejadian bencana</div></div>
+  </div>
+</div>
+
+<!-- 4. batas satu kejadian -->
+<div class="fig" id="pk-batas">
+  <div class="batas">
+    <div class="bk"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir yang menggenang lagi</h4>
+      <div class="tl"><div class="ax"></div>
+        <div class="seg" style="left:2%;width:34%;background:var(--biru)">Genangan 1</div>
+        <div class="pin" style="left:37%"><span>surut</span></div>
+        <div class="seg" style="left:58%;width:30%;background:var(--oranye)">Genangan 2</div>
+        <div class="pin" style="left:57%"><span>hujan baru</span></div>
+        <span class="tk" style="left:2%">hari 1</span><span class="tk" style="left:36%">hari 4</span><span class="tk" style="left:58%">hari 9</span><span class="tk" style="left:88%">hari 12</span></div>
+      <div class="hasil">Genangan sudah dinyatakan surut, lalu hujan baru menimbulkan genangan lagi: <b>dua kejadian</b>.</div></div>
+    <div class="bk"><h4><svg class="ik"><use href="#i-gempa"/></svg>Gempa utama dan gempa susulan</h4>
+      <div class="tl"><div class="ax"></div>
+        <div class="seg" style="left:2%;width:70%;top:34px;height:10px;background:var(--biru-muda)"></div>
+        <div class="pin" style="left:4%"><span>utama</span></div><div class="pin" style="left:30%"><span>susulan</span></div><div class="pin" style="left:55%"><span>susulan</span></div>
+        <div class="pin" style="left:86%;background:var(--oranye)"><span style="color:var(--oranye)">lebih besar</span></div>
+        <span class="tk" style="left:4%">hari 1</span><span class="tk" style="left:37%">masa tanggap darurat gempa utama</span><span class="tk" style="left:72%">akhir status</span></div>
+      <div class="hasil">Susulan yang merusak selama masa tanggap darurat termasuk <b>satu kejadian</b>. Gempa yang sama besar atau lebih besar daripada gempa utama dicatat sebagai <b>kejadian baru</b>.</div></div>
+    <div class="bk"><h4><svg class="ik"><use href="#i-tsunami"/></svg>Kejadian berantai</h4>
+      <div class="pohon"><div class="ind">Kejadian pemicu: gempa bumi</div><div class="cab"></div>
+        <div class="anak"><div>Ikutan: tsunami</div><div>Ikutan: likuefaksi</div><div>Ikutan: longsor</div></div></div>
+      <div class="hasil">Korban dicatat satu kali pada kejadian yang secara langsung menyebabkannya, lalu dijumlahkan satu kali pada kejadian pemicu.</div></div>
+    <div class="bk"><h4><svg class="ik"><use href="#i-longsor"/></svg>Satu hari dan lintas wilayah</h4>
+      <div class="peta">
+        <div class="kab"><i>Kabupaten A, hari yang sama</i><span class="t" style="left:22%;top:44%"></span><span class="t" style="left:52%;top:62%"></span><span class="t" style="left:76%;top:38%"></span></div>
+        <div class="kab"><i>Kabupaten B, hari yang sama</i><span class="t" style="left:40%;top:52%"></span></div>
+      </div>
+      <div class="hasil">Tiga titik di Kabupaten A menjadi <b>satu kejadian kabupaten</b>. Apabila hujan pemicunya sama, Kabupaten A dan B menjadi <b>satu kejadian nasional</b> dengan dua catatan kabupaten.</div></div>
+  </div>
+</div>
+
+<!-- indikator ada dampak -->
+<div class="fig" id="pk-dampak">
+  <div class="dmp">
+    <div class="dk"><div class="kp"><svg class="ik"><use href="#i-orang"/></svg>Manusia</div><div class="ab">1 orang atau lebih</div>
+      <ul><li>Meninggal</li><li>Hilang</li><li>Luka berat atau ringan</li><li>Mengungsi, termasuk evakuasi sebelum dampak</li><li>Terdampak</li></ul></div>
+    <div class="dk"><div class="kp"><svg class="ik"><use href="#i-rumah"/></svg>Rumah</div><div class="ab">1 unit atau lebih</div>
+      <ul><li>Rusak berat</li><li>Rusak sedang</li><li>Rusak ringan</li><li>Tidak dapat dihuni sementara</li><li>Terendam</li></ul></div>
+    <div class="dk"><div class="kp"><svg class="ik"><use href="#i-gedung"/></svg>Fasilitas</div><div class="ab">1 unit atau lebih</div>
+      <ul><li>Fasilitas publik rusak</li><li>Jalan rusak</li><li>Jembatan rusak</li></ul></div>
+    <div class="dk"><div class="kp"><svg class="ik"><use href="#i-listrik"/></svg>Layanan vital</div><div class="ab">1 layanan terganggu</div>
+      <ul><li>Listrik, air bersih</li><li>Telekomunikasi, bahan bakar</li><li>Transportasi umum</li><li>Rumah sakit rujukan</li><li>Jalan dan jembatan utama</li></ul></div>
+    <div class="dk"><div class="kp"><svg class="ik"><use href="#i-sawah"/></svg>Lahan</div><div class="ab">lebih dari nol</div>
+      <ul><li>Luas terbakar</li><li>Sawah atau kebun terendam atau puso</li><li>Tambak rusak</li><li>Ternak mati</li></ul></div>
+  </div>
+  <div class="jwb">
+    <div class="jb" style="background:var(--oranye-muda)"><b>1. Ya, ada dampak</b>Satu isian saja lebih dari nol sudah cukup, walaupun isian lain belum didata. Lanjut periksa kriteria.</div>
+    <div class="jb" style="background:var(--emas-muda)"><b>2. Menunggu data</b>Belum ada isian yang lebih dari nol, tetapi sebagian isian belum didata. Belum boleh dijawab tidak.</div>
+    <div class="jb" style="background:var(--biru-muda)"><b>3. Tidak ada dampak</b>Semua isian sudah didata dan nihil. Dicatat sebagai peristiwa ancaman dan terus dipantau.</div>
+    <div class="jb" style="background:var(--tint)"><b>Catatan: orang terancam</b>Tidak dihitung sebagai dampak, jadi tidak membuat jawaban menjadi ya.</div>
+  </div>
+</div>
+
+<!-- kriteria kejadian bencana -->
+<div class="fig d" id="pk-kriteria"><div class="d-wrap"><div>
+<div class="d-sec"><div class="d-lbl">Jalur 1. Angka dampak mencapai batas</div><div class="d-cols" style="grid-template-columns:repeat(4,1fr)">
+<div><span class="d-big">1</span><span class="d-cap">orang meninggal atau hilang, dijumlahkan</span></div>
+<div><span class="d-big">50</span><span class="d-cap">orang terdampak, luka, atau mengungsi; satu orang dihitung sekali</span></div>
+<div><span class="d-big">5</span><span class="d-cap">rumah atau fasilitas publik rusak berat, sedang, atau ringan</span></div>
+<div><span class="d-big">1 ha</span><span class="d-cap">terbakar terverifikasi (bukan <i>hotspot</i>), atau sawah dan kebun puso</span></div></div></div>
+<div class="d-sec"><div class="d-lbl">Jalur 2. Ada keputusan pemerintah</div><div class="d-cols" style="grid-template-columns:repeat(2,1fr)">
+<div><span class="d-t">Surat permintaan bantuan nasional</span><span class="d-cap">bernomor, bertanggal, menyebut kejadian ini</span></div>
+<div><span class="d-t">SK status keadaan darurat</span><span class="d-cap">atau keadaan tertentu, dan kejadian itu berdampak</span></div></div></div>
+</div>
+<div class="d-arah"><svg viewBox="0 0 60 260" preserveAspectRatio="none"><path d="M0 70 C35 70 25 130 60 130 M0 200 C35 200 25 130 60 130" fill="none" stroke="#16324A" stroke-width="2"/><path d="M52 124 L60 130 L52 136" fill="none" stroke="#16324A" stroke-width="2"/></svg></div>
+<div class="d-hasil"><b>Kejadian bencana</b><span>Cukup satu angka atau satu dokumen. Bila tidak ada, catatan disimpan sebagai belum memenuhi kriteria.</span></div></div></div>
+
+<!-- ketentuan tambahan kriteria -->
+<div class="fig" id="pk-tambahan">
+  <div class="tmb">
+    <div class="tp"><h4>Lintas wilayah: dampak dijumlahkan di tingkat nasional</h4>
+      <div class="ket">Contoh: satu hujan lebat menyebabkan banjir di tiga kabupaten. Kriteria b adalah 50 orang.</div>
+      <div class="kabs">
+        <div class="kb">Kabupaten A<b>20</b>pengungsi<br><span class="tdk">belum 50</span></div>
+        <div class="kb">Kabupaten B<b>20</b>pengungsi<br><span class="tdk">belum 50</span></div>
+        <div class="kb">Kabupaten C<b>20</b>pengungsi<br><span class="tdk">belum 50</span></div>
+        <div class="eq">=</div>
+        <div class="jm">Jumlah<b>60</b>kejadian bencana nasional</div>
+      </div>
+      <div class="ctt">Catatan ketiga kabupaten tetap disimpan sebagai bagian kejadian nasional, tetapi tidak menambah jumlah kejadian bencana kabupaten.</div>
+    </div>
+    <div class="tp blm"><h4>Belum memenuhi kriteria</h4>
+      <div class="ket" style="margin:0">Ada dampak, tetapi tidak satu pun kriteria tercapai.</div>
+      <div class="ex"><b>Contoh:</b> angin kencang merusak 2 rumah, tanpa korban.</div>
+      <div><span class="tag" style="background:var(--emas-muda);color:var(--emas)">Disimpan</span> <span class="tag" style="background:var(--tint);color:var(--teks3)">Tidak dihitung sebagai bencana</span></div>
+      <div class="ctt" style="margin:0">Catatan ini bisa naik menjadi kejadian bencana bila angka dampaknya bertambah.</div>
+    </div>
+  </div>
+</div>
+
+<!-- aturan batas satu kejadian -->
+<div class="fig" id="pk-aturan">
+  <div class="atb">
+    <div class="ab5"><svg class="ik"><use href="#i-banjir"/></svg><div class="no">1</div><b>Lintas wilayah</b><span>Satu kejadian nasional, ditambah satu kejadian di setiap kabupaten/kota yang memenuhi kriteria.</span></div>
+    <div class="ab5"><svg class="ik"><use href="#i-longsor"/></svg><div class="no">2</div><b>Satu hari, satu kabupaten/kota</b><span>Kejadian sejenis di beberapa lokasi pada hari yang sama dihitung satu kejadian.</span></div>
+    <div class="ab5"><svg class="ik"><use href="#i-api"/></svg><div class="no">3</div><b>Selesai saat dampak berhenti</b><span>Misalnya genangan surut atau api padam. Dampak baru sesudahnya adalah kejadian baru.</span></div>
+    <div class="ab5"><svg class="ik"><use href="#i-tsunami"/></svg><div class="no">4</div><b>Kejadian berantai</b><span>Kejadian ikutan dicatat terpisah dan ditautkan ke pemicunya. Korban dicatat sekali pada penyebab langsungnya.</span></div>
+    <div class="ab5"><svg class="ik"><use href="#i-perisai"/></svg><div class="no">5</div><b>Satu kejadian, satu KIB</b><span>Laporan perkembangan memakai KIB yang sama dengan laporan pertama.</span></div>
+  </div>
+</div>
+
+<!-- grafik buku praktis v2 -->
+<div class="fig" id="pk-jenis"><div class="gv c3"><div class="kv"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir<span class="kd">101</span></h4><div class="rw"><i>Ancaman</i><div>Hujan sangat lebat 100–150 mm/hari atau ekstrem di atas 150 mm/hari; pos duga air siaga</div></div><div class="rw"><i>Bencana bila</i><div>Genangan memenuhi kriteria</div></div><div class="rw"><i>Satu kejadian</i><div>Satu kab/kota per episode hujan atau pasang yang sama</div></div><div class="rw"><i>Selesai</i><div>Surut di semua desa terdampak</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-longsor"/></svg>Tanah longsor<span class="kd">102</span></h4><div class="rw"><i>Ancaman</i><div>Peringatan gerakan tanah PVMBG; hujan lebat di zona rawan</div></div><div class="rw"><i>Bencana bila</i><div>Gerakan massa memenuhi kriteria</div></div><div class="rw"><i>Satu kejadian</i><div>Semua titik di satu kab/kota pada hari yang sama</div></div><div class="rw"><i>Selesai</i><div>Pencarian dihentikan dan akses utama dibuka</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-pantai"/></svg>Gelombang pasang dan abrasi<span class="kd">103</span></h4><div class="rw"><i>Ancaman</i><div>Peringatan gelombang tinggi BMKG</div></div><div class="rw"><i>Bencana bila</i><div>Gelombang tinggi atau abrasi memenuhi kriteria</div></div><div class="rw"><i>Satu kejadian</i><div>Gelombang per episode; abrasi per kab/kota per tahun</div></div><div class="rw"><i>Selesai</i><div>Laut tenang; abrasi ditutup akhir tahun</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-angin"/></svg>Cuaca ekstrem<span class="kd">104</span></h4><div class="rw"><i>Ancaman</i><div>Peringatan dini cuaca BMKG</div></div><div class="rw"><i>Bencana bila</i><div>Kerusakan atau korban memenuhi kriteria</div></div><div class="rw"><i>Satu kejadian</i><div>Satu lintasan puting beliung, atau satu kab/kota per hari</div></div><div class="rw"><i>Selesai</i><div>Cuaca normal pada hari yang sama</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-kering"/></svg>Kekeringan<span class="kd">105</span></h4><div class="rw"><i>Ancaman</i><div>Hari tanpa hujan 21 hari atau lebih; SPI −1,5 atau kurang</div></div><div class="rw"><i>Bencana bila</i><div>Krisis air bersih atau puso memenuhi kriteria</div></div><div class="rw"><i>Satu kejadian</i><div>Satu kab/kota per musim kemarau</div></div><div class="rw"><i>Selesai</i><div>Musim hujan mulai atau bantuan air berhenti</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-api"/></svg>Karhutla<span class="kd">106</span></h4><div class="rw"><i>Ancaman</i><div>Kelompok <i>hotspot</i> <i>confidence</i> sedang atau tinggi, atau laporan api</div></div><div class="rw"><i>Bencana bila</i><div>Luas terbakar terverifikasi 1 hektare atau kriteria lain</div></div><div class="rw"><i>Satu kejadian</i><div>Area terbakar bersinggungan, selisih paling lama 5 hari</div></div><div class="rw"><i>Selesai</i><div>Api padam dan 5 hari tanpa <i>hotspot</i> baru</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-gempa"/></svg>Gempa bumi<span class="kd">107</span></h4><div class="rw"><i>Ancaman</i><div>Informasi gempa BMKG: magnitudo 5 atau lebih, atau dirasakan</div></div><div class="rw"><i>Bencana bila</i><div>Kriteria terpenuhi di kab/kota tersebut</div></div><div class="rw"><i>Satu kejadian</i><div>Satu gempa utama, termasuk susulan selama tanggap darurat</div></div><div class="rw"><i>Selesai</i><div>Dampak berhenti atau tanggap darurat berakhir</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami<span class="kd">108</span></h4><div class="rw"><i>Ancaman</i><div>Peringatan InaTEWS</div></div><div class="rw"><i>Bencana bila</i><div>Air laut menggenangi daratan dan berdampak</div></div><div class="rw"><i>Satu kejadian</i><div>Satu rangkaian gelombang dari satu sumber</div></div><div class="rw"><i>Selesai</i><div>Peringatan diakhiri dan pencarian dihentikan</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-gunung"/></svg>Erupsi gunung api<span class="kd">109</span></h4><div class="rw"><i>Ancaman</i><div>Kenaikan level PVMBG; VONA</div></div><div class="rw"><i>Bencana bila</i><div>Erupsi, abu, awan panas, atau lahar berdampak</div></div><div class="rw"><i>Satu kejadian</i><div>Satu episode erupsi</div></div><div class="rw"><i>Selesai</i><div>Level turun ke Waspada atau lebih rendah</div></div></div></div></div>
+
+<div class="fig" id="pk-catatan"><div class="gv c3"><div class="kv"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir</h4><div>Menggenang lagi setelah surut karena hujan baru adalah kejadian baru. Genangan karena pasang laut dicatat sebagai banjir rob.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Longsor yang dipicu banjir</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-longsor"/></svg>Tanah longsor</h4><div>Catat jumlah titik. Lereng yang masih bergerak dicatat sebagai ancaman lanjutan.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Longsor akibat banjir atau gempa</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-pantai"/></svg>Gelombang pasang dan abrasi</h4><div>Abrasi mendadak yang merusak rumah dalam satu peristiwa gelombang dicatat sebagai gelombang pasang.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Tidak ada</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-angin"/></svg>Cuaca ekstrem</h4><div>Hujan lebat yang menimbulkan genangan dicatat sebagai banjir.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Tidak ada</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-kering"/></svg>Kekeringan</h4><div>Terdampak hanya penduduk yang butuh bantuan air bersih, bukan seluruh penduduk wilayah kering.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Tidak ada</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-api"/></svg>Karhutla</h4><div>Jumlah <i>hotspot</i> tidak dipakai untuk luas terbakar; satu piksel VIIRS sekitar 14 hektare.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Kabut asap</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-gempa"/></svg>Gempa bumi</h4><div>Kejadian baru bila magnitudo sama atau lebih besar dari gempa utama, atau pusatnya di luar sebaran susulan.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Likuefaksi, longsor, tsunami; korban tertimpa bangunan dicatat pada gempa</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami</h4><div>Peringatan tanpa gelombang berdampak tidak dihitung, tetapi pengungsiannya tetap dicatat.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Korban terseret gelombang dicatat pada tsunami</div></div></div><div class="kv"><h4><svg class="ik"><use href="#i-gunung"/></svg>Erupsi gunung api</h4><div>Pengungsian sebelum erupsi tetap dicatat dan memenuhi kriteria b bila 50 orang atau lebih.</div><div class="rw" style="margin-top:6px"><i>Ikutan</i><div>Lahar sesudah episode menjadi banjir lahar baru yang ditautkan</div></div></div></div></div>
+
+<div class="fig" id="pk-identitas">
+  <div class="kv" style="margin-bottom:10px"><h4>Kode Identitas Bencana (KIB), 16 digit<span class="kd">diberikan Pusdalops BPBD kabupaten/kota sejak laporan awal</span></h4>
+    <div class="bar"><div style="flex:2"><b>32</b>provinsi</div><div style="flex:2"><b>04</b>kab/kota</div><div style="flex:3"><b>101</b>jenis bencana</div><div style="flex:8"><b>20261119</b>tanggal mulai di kab/kota ini</div><div style="flex:1.4"><b>1</b>indeks</div></div>
+    <div style="margin-top:6px">Setiap kabupaten/kota terdampak memakai kode wilayahnya sendiri. Laporan perkembangan memakai KIB yang sama.</div></div>
+  <div class="gv c2">
+    <div class="kv"><h4>Nomor induk kejadian<span class="kd">walidata bencana</span></h4>
+      <div class="bar"><div style="flex:3"><b>107</b>jenis</div><div style="flex:4"><b>2026</b>tahun</div><div style="flex:6"><b>000015</b>nomor urut</div></div>
+      <div style="margin-top:6px">Terbit paling lambat pada akhir <i>rapid assessment</i> dan menautkan semua KIB dari satu kejadian.</div></div>
+    <div class="kv"><h4>Nomor GLIDE<span class="kd">walidata bencana</span></h4><div>Nomor pengenal internasional yang dapat diajukan untuk kejadian intensif.</div>
+      <div class="rw" style="margin-top:8px"><i>Menghitung</i><div>Nasional dari nomor induk; provinsi dari provinsi terdampak; kab/kota dari KIB yang memenuhi kriteria.</div></div></div>
+  </div></div>
+
+<div class="fig" id="pk-hitung">
+  <div class="kv" style="margin-bottom:10px"><h4>Satu orang, satu kategori: ambil yang paling kiri</h4>
+    <div class="bar"><div style="flex:1"><b>1</b>Meninggal</div><div style="flex:1"><b>2</b>Hilang</div><div style="flex:1"><b>3</b>Luka berat</div><div style="flex:1"><b>4</b>Luka ringan</div><div style="flex:1"><b>5</b>Mengungsi</div><div style="flex:1"><b>6</b>Terdampak</div></div></div>
+  <div class="gv c3">
+    <div class="kv"><h4>Angka terakhir</h4><div class="chips"><span>Meninggal</span><span>Hilang</span><span>Kerusakan</span></div></div>
+    <div class="kv"><h4>Angka terbanyak selama kejadian</h4><div class="chips"><span>Luka</span><span>Terdampak</span><span>Pengungsi</span></div></div>
+    <div class="kv"><h4>Jangan dijumlahkan antarhari</h4><div>Hari 1: 120 pengungsi, hari 2: 90 pengungsi. Dicatat <span class="ik2">120</span>, bukan 210.</div></div>
+    <div class="kv"><h4>Korban hilang ditemukan</h4><div>Ditemukan meninggal: pindah ke meninggal. Ditemukan selamat: keluar dari hilang, alasannya dicatat.</div></div>
+    <div class="kv"><h4>Kematian tidak langsung</h4><div>Dicatat terpisah. Tidak dihitung untuk kriteria maupun kelas.</div></div>
+    <div class="kv"><h4>Kejadian lintas tahun</h4><div>Dicatat pada tahun tanggal mulai kejadian.</div></div>
+  </div></div>
+
+<div class="fig" id="pk-rumah">
+  <div class="rumus">Rumah rusak berat terbobot = <b>rusak berat</b> + <b>½ rusak sedang</b> + <b>⅓ tidak dapat dihuni sementara</b></div>
+  <div class="gv c5">
+    <div class="kv" style="border-color:var(--oranye)"><h4>Rusak berat</h4><div class="bobot">1</div><ul style="margin-top:6px"><li>Roboh, hanyut, terbakar habis</li><li>Tertimbun 1 m atau lebih di atas lantai</li><li>Kerusakan fisik lebih dari 70%</li></ul></div>
+    <div class="kv" style="border-color:var(--oranye)"><h4>Rusak sedang</h4><div class="bobot">½</div><ul style="margin-top:6px"><li>Kerusakan fisik 30–70%</li><li>Bangunan masih berdiri</li></ul></div>
+    <div class="kv" style="border-color:var(--oranye)"><h4>Tidak dapat dihuni sementara</h4><div class="bobot">⅓</div><ul style="margin-top:6px"><li>Air 10 cm atau lebih di atas lantai</li><li>Atau tertutup lumpur dan material</li></ul></div>
+    <div class="kv"><h4>Rusak ringan</h4><div class="bobot" style="color:var(--teks3)">0</div><ul style="margin-top:6px"><li>Kerusakan fisik kurang dari 30%</li></ul></div>
+    <div class="kv"><h4>Terendam</h4><div class="bobot" style="color:var(--teks3)">0</div><ul style="margin-top:6px"><li>Tergenang tanpa kerusakan struktur</li><li>Masih dapat dihuni</li></ul></div>
+  </div>
+  <div class="kv" style="margin-top:10px"><h4>Cara menghitung kerusakan fisik</h4>Persen rusak setiap komponen dikali bobotnya, lalu dijumlahkan. Contoh bobot: kolom, balok, dan ring balok <b>25%</b>; penutup lantai <b>12%</b>; rangka atap <b>10%</b>; fondasi <b>7%</b>; dinding <b>7%</b>. Daftar lengkap ada di Rancangan Juklak Lampiran I Tabel I.6.</div>
+</div>
+
+<div class="fig" id="pk-aturan-kelas"><div class="gv c4">
+  <div class="kv"><h4><span class="nb">1</span>Dua tingkat</h4>Kelas ditetapkan untuk setiap catatan kab/kota dan untuk kejadian nasional.</div>
+  <div class="kv"><h4><span class="nb">2</span>Kelas nasional</h4>Intensif bila jumlah semua kab/kota mencapai batas 1, 2, 3, 6, atau 7, atau salah satu kab/kota intensif. Batas 4 dan 5 hanya kab/kota.</div>
+  <div class="kv"><h4><span class="nb">3</span>Tulis penentunya</h4>Contoh: intensif (rumah rusak berat terbobot 690 unit).</div>
+  <div class="kv"><h4><span class="nb">4</span>Hitung ulang</h4>Setiap angka diperbarui. Kelas akhir ditetapkan walidata bencana setelah verifikasi.</div>
+  <div class="kv"><h4><span class="nb">5</span>Bukan rupiah</h4>Kerugian dalam rupiah tidak dipakai untuk menentukan kelas.</div>
+  <div class="kv"><h4><span class="nb">6</span>Bukan status</h4>Status keadaan darurat dicatat sebagai keterangan, bukan penentu kelas.</div>
+  <div class="kv"><h4><span class="nb">7</span>Asap karhutla</h4>Jumlah hari ISPU berbahaya (301 atau lebih) dicatat sebagai keterangan.</div>
+  <div class="kv" style="background:var(--tint)"><h4>Ditinjau</h4>Batas ditinjau paling lambat satu tahun setelah juklak berlaku.</div>
+</div></div>
+
+<div class="fig" id="pk-contoh-kelas"><div class="gv c4"><div class="kv"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir, kab 600.000 jiwa</h4><div>4.500 rumah terendam di bawah lantai, 300 mengungsi</div><div style="margin:8px 0 4px"><span class="hasil-e">Ekstensif</span></div><div class="ik2">Terendam berbobot 0</div></div><div class="kv"><h4><svg class="ik"><use href="#i-angin"/></svg>Puting beliung</h4><div>1 meninggal, 64 rusak ringan, 3 rusak berat</div><div style="margin:8px 0 4px"><span class="hasil-e">Ekstensif</span></div><div class="ik2">Di bawah semua batas</div></div><div class="kv"><h4><svg class="ik"><use href="#i-gempa"/></svg>Gempa bumi</h4><div>4 meninggal, 240 rusak berat, 900 rusak sedang</div><div style="margin:8px 0 4px"><span class="hasil-i">Intensif</span></div><div class="ik2">240 + 450 = 690 unit</div></div><div class="kv"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir bandang</h4><div>12 meninggal, 350 rusak berat, 200 rusak sedang, 450 tertutup lumpur</div><div style="margin:8px 0 4px"><span class="hasil-i">Intensif</span></div><div class="ik2">350 + 100 + 150 = 600 unit</div></div><div class="kv"><h4><svg class="ik"><use href="#i-kering"/></svg>Kekeringan, kab 110.000 jiwa</h4><div>25.000 jiwa kurang dari 20 liter per hari selama 40 hari</div><div style="margin:8px 0 4px"><span class="hasil-i">Intensif</span></div><div class="ik2">23% penduduk</div></div><div class="kv"><h4><svg class="ik"><use href="#i-api"/></svg>Karhutla</h4><div>1.400 hektare gambut berhutan terbakar, tanpa korban</div><div style="margin:8px 0 4px"><span class="hasil-i">Intensif</span></div><div class="ik2">Luas 1.400 hektare</div></div><div class="kv"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir di tiga kabupaten</h4><div>15 meninggal di setiap kabupaten</div><div style="margin:8px 0 4px"><span class="hasil-e">Ekstensif per kab</span> <span class="hasil-i">Intensif nasional</span></div><div class="ik2">Kab: ekstensif; nasional: 45 meninggal</div></div></div></div>
+
+<div class="fig" id="pk-isian"><div class="gv c4">
+  <div class="kv"><h4><span class="nb">1</span>Satu formulir umum</h4>Sama untuk semua bencana, ditambah satu lembar khusus per jenis bencana.</div>
+  <div class="kv"><h4><span class="nb">2</span>Tiga keadaan isian</h4><div class="chips"><span>Ada nilai</span><span>Nihil (nol pasti)</span><span>Belum didata</span></div><div style="margin-top:6px">Isian kosong bukan nol.</div></div>
+  <div class="kv"><h4><span class="nb">3</span>Data terpilah</h4><div class="chips"><span>Jenis kelamin</span><span>0–17 tahun</span><span>18–59 tahun</span><span>60 tahun ke atas</span><span>Disabilitas (Washington Group)</span></div></div>
+  <div class="kv"><h4><span class="nb">4</span>Sumber dan waktu</h4>Setiap angka mencantumkan sumber, waktu pendataan, dan status verifikasi.</div>
+</div></div>
+
+<div class="fig" id="pk-umum"><div class="gv c5"><div class="kv"><h4><span class="nb">1</span>Identitas kejadian</h4><div class="chips"><span>KIB</span><span>Nomor induk kejadian</span><span>Jenis dan subjenis</span><span>Nama kejadian</span><span>Kejadian pemicu</span></div></div><div class="kv"><h4><span class="nb">2</span>Waktu</h4><div class="chips"><span>Waktu kejadian</span><span>Waktu diketahui</span><span>Waktu laporan</span><span>Waktu selesai</span><span>Zona waktu</span></div></div><div class="kv"><h4><span class="nb">3</span>Lokasi</h4><div class="chips"><span>Provinsi sampai desa (kode Kemendagri)</span><span>Koordinat</span><span>Ketelitian lokasi</span></div></div><div class="kv"><h4><span class="nb">4</span>Korban</h4><div class="chips"><span>Meninggal</span><span>Hilang</span><span>Luka berat</span><span>Luka ringan</span><span>Terdampak</span><span>Terancam</span></div></div><div class="kv"><h4><span class="nb">5</span>Pengungsian</h4><div class="chips"><span>Jumlah pengungsi</span><span>Titik dan jenis tempat</span><span>Kelompok rentan</span></div></div><div class="kv"><h4><span class="nb">6</span>Kerusakan</h4><div class="chips"><span>Rumah rusak berat</span><span>Rusak sedang</span><span>Rusak ringan</span><span>Tidak dapat dihuni sementara</span><span>Terendam</span><span>Pendidikan</span><span>Kesehatan</span><span>Ibadah</span><span>Kantor</span><span>Pasar</span><span>Jalan dan jembatan</span></div></div><div class="kv"><h4><span class="nb">7</span>Layanan dasar</h4><div class="chips"><span>Listrik</span><span>Air bersih</span><span>Telekomunikasi</span><span>Akses jalan</span><span>Bahan bakar</span><span>Fasilitas kesehatan</span></div></div><div class="kv"><h4><span class="nb">8</span>Lahan dan ekonomi</h4><div class="chips"><span>Sawah terendam dan puso</span><span>Kebun</span><span>Tambak</span><span>Ternak</span><span>Usaha kecil</span><span>Taksiran kerugian</span></div></div><div class="kv"><h4><span class="nb">9</span>Kebutuhan dan penanganan</h4><div class="chips"><span>Kebutuhan mendesak</span><span>Status darurat dan nomor SK</span><span>Pos komando</span><span>Sumber daya</span><span>Bantuan</span></div></div><div class="kv"><h4><span class="nb">10</span>Mutu data</h4><div class="chips"><span>Sumber</span><span>Jabatan pelapor</span><span>Status verifikasi</span><span>Keadaan isian</span><span>Foto bergeotag</span></div></div></div></div>
+
+<div class="fig" id="pk-khusus"><div class="gv c3"><div class="kv"><h4><svg class="ik"><use href="#i-banjir"/></svg>Banjir</h4><div class="chips"><span>Jenis banjir</span><span>Sungai dan DAS</span><span>Hujan atau pasang pemicu</span><span>Status pos duga air</span><span>Kedalaman dan lama genangan</span><span>Luas genangan</span><span>Tanggul jebol</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-longsor"/></svg>Tanah longsor</h4><div class="chips"><span>Jenis gerakan dan material</span><span>Koordinat atas dan bawah</span><span>Ukuran dan volume</span><span>Kemiringan lereng</span><span>Pemicu</span><span>Keadaan lereng</span><span>Bendungan alami</span><span>Jiwa direlokasi</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-pantai"/></svg>Gelombang pasang dan abrasi</h4><div class="chips"><span>Tinggi gelombang</span><span>Jarak hempasan</span><span>Panjang pantai tergerus</span><span>Mundurnya garis pantai</span><span>Pelindung pantai rusak</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-angin"/></svg>Cuaca ekstrem</h4><div class="chips"><span>Jenis cuaca</span><span>Peringatan BMKG</span><span>Waktu mulai dan selesai</span><span>Panjang dan lebar lintasan</span><span>Kecepatan angin</span><span>Curah hujan</span><span>Pohon dan tiang tumbang</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-kering"/></svg>Kekeringan</h4><div class="chips"><span>Hari tanpa hujan</span><span>SPI</span><span>Status peringatan</span><span>Krisis air bersih</span><span>Kesulitan air minum dan lamanya</span><span>Sumber air kering</span><span>Volume bantuan air</span><span>Sawah puso dan luas tanam</span><span>Ternak</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-api"/></svg>Karhutla</h4><div class="chips"><span><i>Hotspot</i> dan <i>confidence</i></span><span>Titik api terverifikasi</span><span>Luas terbakar dan sumbernya</span><span>Gambut atau mineral</span><span>Luas per tutupan lahan</span><span>Status kawasan</span><span>ISPU dan PM2,5</span><span>Jarak pandang</span><span>Status pemadaman</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-gempa"/></svg>Gempa bumi</h4><div class="chips"><span>Waktu asal</span><span>Pusat gempa</span><span>Kedalaman</span><span>Magnitudo</span><span>MMI per desa</span><span>Gempa susulan</span><span>Kerusakan per struktur</span><span>Likuefaksi</span><span>Retakan tanah</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami</h4><div class="chips"><span>Peristiwa pemicu</span><span>Tingkat dan waktu peringatan</span><span>Waktu tiba gelombang</span><span>Tinggi <i>run-up</i></span><span>Jarak genangan</span><span>Perahu rusak</span></div></div><div class="kv"><h4><svg class="ik"><use href="#i-gunung"/></svg>Erupsi gunung api</h4><div class="chips"><span>Level aktivitas</span><span>Radius bahaya</span><span>Jenis erupsi</span><span>Tinggi kolom abu</span><span>Tebal abu per desa</span><span>Jarak luncur awan panas</span><span>Lahar</span><span>Kode VONA</span></div></div></div></div>
+
+<div class="fig" id="pk-tenggat"><div class="tlv">
+  <div class="ttv"><span>Laporan awal</span><b>24 jam</b>sejak kejadian diketahui</div>
+  <div class="ttv"><span>Mulai <i>rapid assessment</i></span><b>24 jam</b>sejak informasi diterima</div>
+  <div class="ttv"><span>Hasil awal <i>rapid assessment</i></span><b>72 jam</b>sejak kejadian diketahui</div>
+  <div class="ttv"><span>Nomor induk kejadian</span><b>akhir</b><i>rapid assessment</i></div>
+  <div class="ttv"><span>Pemutakhiran</span><b>harian</b>selama kejadian berlangsung</div>
+  <div class="ttv"><span>Verifikasi, pembekuan, rilis</span><b>bulan, triwulan, tahun</b>sesudah kejadian</div>
+</div></div>
+
+<div class="fig" id="pk-periksa"><div class="gv c4"><div class="kv"><h4>Laporan pertama</h4><ul class="cek"><li><div>Tentukan jenis dan subjenis<em>Gambar 2.1</em></div></li><li><div>Berikan KIB dengan kode wilayah sendiri<em>Gambar 3.1</em></div></li><li><div>Isi identitas, waktu, lokasi, angka sementara<em>Gambar 5.3</em></div></li><li><div>Kirim paling lambat 24 jam<em>Gambar 5.5</em></div></li></ul></div><div class="kv"><h4>Pemeriksaan dampak</h4><ul class="cek"><li><div>Periksa enam kriteria; satu saja cukup<em>Gambar 1.3</em></div></li><li><div>Belum memenuhi: tetap simpan<em>Gambar 1.4</em></div></li><li><div>Beberapa kab/kota: periksa jumlah nasional<em>Gambar 1.4</em></div></li><li><div>Setiap orang dihitung sekali<em>Gambar 3.2</em></div></li></ul></div><div class="kv"><h4>Pemutakhiran harian</h4><ul class="cek"><li><div>Pakai KIB yang sama<em>Gambar 1.5 nomor 5</em></div></li><li><div>Angka terakhir atau terbanyak; jangan dijumlahkan<em>Gambar 3.2</em></div></li><li><div>Bedakan nilai, nihil, belum didata<em>Gambar 5.1</em></div></li><li><div>Isi lembar data khusus<em>Gambar 5.4</em></div></li><li><div>Periksa kelas dan tulis penentunya<em>Gambar 4.1 sampai 4.3</em></div></li></ul></div><div class="kv"><h4>Penutupan</h4><ul class="cek"><li><div>Nyatakan selesai sesuai jenis bencana<em>Gambar 2.1</em></div></li><li><div>Serahkan ke walidata untuk verifikasi dan kelas akhir<em>Gambar 4.3 nomor 4</em></div></li></ul></div></div></div>
+
+<!-- 5. tangga batas korban jiwa: log 1 (0%) 10 (33.3%) 100 (66.7%) 1000 (100%) dengan ruang tepi -->
+<div class="fig" id="pk-tangga">
+  <div class="tg" id="tgw">
+    <div class="row"><div class="nm">Kriteria kejadian bencana</div><div class="tr"><span class="dot j" style="left:4%"><span>1 orang</span></span></div></div>
+    <div class="row"><div class="nm">EM-DAT: masuk basis data</div><div class="tr"><span class="dot" style="left:34%"><span>10 orang</span></span></div></div>
+    <div class="row"><div class="nm"><b>Kajian ini: intensif, sama dengan GAR 2015</b></div><div class="tr"><span class="dot u" style="left:49.3%"><span>30 orang</span></span></div></div>
+    <div class="row"><div class="nm">Tiongkok: bencana geologi dan kebakaran hutan sangat besar</div><div class="tr"><span class="dot" style="left:49.3%"><span>30 orang</span></span></div></div>
+    <div class="row"><div class="nm">PAGER oranye: respons nasional</div><div class="tr"><span class="dot" style="left:64%"><span>100 orang</span></span></div></div>
+    <div class="row"><div class="nm">GDACS banjir oranye</div><div class="tr"><span class="dot" style="left:64%"><span>lebih dari 100 orang</span></span></div></div>
+    <div class="row"><div class="nm">PAGER merah: respons internasional</div><div class="tr"><span class="dot" style="left:94%"><span style="left:auto;right:18px">1.000 orang</span></span></div></div>
+    <div class="ax"><div></div><div class="s"><span style="left:4%">1</span><span style="left:34%">10</span><span style="left:64%">100</span><span style="left:94%">1.000</span></div></div>
+  </div>
+  <div class="leg"><span><i style="background:var(--biru)"></i>Kriteria kejadian yang berlaku</span><span><i style="background:var(--navy2)"></i>Batas lembaga lain</span><span><i style="background:var(--oranye)"></i>Batas intensif kajian ini</span><span>Sumbu: orang meninggal, skala logaritmik</span></div>
+</div>
+
+<!-- 6. kelas -->
+<div class="fig" id="pk-kelas">
+  <div class="kls">
+    <div class="kc"><div class="bn">30<small>orang</small></div><div><b>Korban meninggal</b><span>Indikator umum untuk semua jenis bencana (GAR 2015)</span></div></div>
+    <div class="kc"><div class="bn">600<small>unit</small></div><div><b>Rumah rusak berat terbobot</b><span>Rusak berat + setengah rusak sedang + sepertiga rumah tidak dapat dihuni sementara</span></div></div>
+    <div class="kc"><div class="bn">1.000<small>orang</small></div><div><b>Pengungsi karena longsor</b><span>Khusus tanah longsor; termasuk evakuasi sebelum longsor dan relokasi</span></div></div>
+    <div class="atau">ATAU</div>
+    <div class="kc"><div class="bn">15%<small>penduduk</small></div><div><b>Kesulitan air minum</b><span>Khusus kekeringan; lebih dari 15 hari</span></div></div>
+    <div class="kc"><div class="bn">50%<small>luas tanam</small></div><div><b>Tanaman pangan puso atau rusak berat</b><span>Khusus kekeringan; lebih dari 50 persen</span></div></div>
+    <div class="kc"><div class="bn">1.000<small>hektare</small></div><div><b>Hutan dan lahan terbakar</b><span>Khusus karhutla, satu kejadian; savana, semak, dan padang rumput 8.000 hektare</span></div></div>
+  </div>
+  <div class="hasilkls"><div style="background:var(--oranye)"><b>Satu batas tercapai: intensif</b>Contoh penulisan: intensif (rumah rusak berat terbobot 690 unit)</div><div style="background:var(--navy2)"><b>Tidak satu pun tercapai: ekstensif</b>Kejadian tetap dihitung karena sudah memenuhi kriteria Juklak</div></div>
+</div>
+
+<!-- 7. status -->
+<div class="fig" id="pk-status">
+  <div class="mat">
+    <div></div><div class="h k">Ada status keadaan darurat</div><div class="h k">Tanpa status keadaan darurat</div>
+    <div class="h k">Intensif</div>
+    <div class="c" style="background:var(--hijau-muda)"><b>Sejalan</b>Respons pemerintah sebanding dengan besarnya dampak.</div>
+    <div class="c" style="background:var(--oranye-muda)"><b>Perlu ditelusuri</b>Daerah mungkin memerlukan pendampingan atau belum sempat menetapkan status.</div>
+    <div class="h k">Ekstensif</div>
+    <div class="c" style="background:var(--emas-muda)"><b>Periksa cakupan status</b>Status yang berlaku untuk wilayah luas atau satu musim dapat mencakup kejadian kecil.</div>
+    <div class="c" style="background:var(--hijau-muda)"><b>Sejalan</b>Kejadian ditangani dengan sumber daya daerah.</div>
+  </div>
+</div>
+
+<!-- 8. formulir -->
+<div class="fig" id="pk-formulir">
+  <div class="frm">
+    <div class="blok"><div class="kp">Formulir umum<span>sama untuk semua jenis bencana; oranye wajib pada laporan awal</span></div><div class="isi">
+      <div class="chip w"><span class="n">1</span>Identitas kejadian</div><div class="chip w"><span class="n">2</span>Waktu</div><div class="chip w"><span class="n">3</span>Lokasi</div>
+      <div class="chip"><span class="n">4</span>Korban, dipilah menurut jenis kelamin, umur, dan disabilitas</div><div class="chip"><span class="n">5</span>Pengungsian</div>
+      <div class="chip"><span class="n">6</span>Kerusakan rumah, fasilitas, jalan, dan jembatan</div><div class="chip"><span class="n">7</span>Layanan dasar</div>
+      <div class="chip"><span class="n">8</span>Lahan dan ekonomi</div><div class="chip"><span class="n">9</span>Kebutuhan dan penanganan</div><div class="chip"><span class="n">10</span>Mutu data</div></div></div>
+    <div class="plus">+</div>
+    <div class="blok"><div class="kp">Lembar khusus<span>satu lembar sesuai dengan jenis bencananya</span></div><div class="isi">
+      <div class="chip"><svg class="ik"><use href="#i-api"/></svg>Karhutla: luas terbakar, gambut, kualitas udara</div>
+      <div class="chip"><svg class="ik"><use href="#i-gempa"/></svg>Gempa bumi: intensitas per desa, struktur bangunan</div>
+      <div class="chip"><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami: tinggi <i>run-up</i>, jarak genangan</div>
+      <div class="chip"><svg class="ik"><use href="#i-banjir"/></svg>Banjir: kedalaman dan lama genangan</div>
+      <div class="chip"><svg class="ik"><use href="#i-longsor"/></svg>Tanah longsor: jenis gerakan, volume, lereng</div>
+      <div class="chip"><svg class="ik"><use href="#i-angin"/></svg>Cuaca ekstrem: lintasan, kecepatan angin</div>
+      <div class="chip"><svg class="ik"><use href="#i-pantai"/></svg>Gelombang dan abrasi: tinggi gelombang, garis pantai</div>
+      <div class="chip"><svg class="ik"><use href="#i-gunung"/></svg>Erupsi: level, tebal abu, awan panas, lahar</div>
+      <div class="chip"><svg class="ik"><use href="#i-kering"/></svg>Kekeringan: krisis air bersih, puso</div></div></div>
+  </div>
+</div>
+
+<!-- 9. tahap -->
+<div class="fig" id="pk-tahap">
+  <div class="th">
+    <div class="t nol"><div class="dot">0</div><span class="wkt">terus-menerus</span><div class="kt"><b class="j">Pemantauan</b>Informasi BMKG, PVMBG, dan <i>hotspot</i> dicatat sebagai peristiwa ancaman, lalu dampaknya dipastikan.<div class="r"><i>Pelaksana</i>Pusdalops BNPB dan BPBD</div></div></div>
+    <div class="t"><div class="dot">1</div><span class="wkt">paling lambat 24 jam</span><div class="kt"><b class="j">Laporan awal</b>Nomor kejadian, jenis, waktu, lokasi, dampak sementara, dan sumbernya.<div class="r"><i>Pelaksana</i>Pusdalops BPBD kabupaten/kota</div></div></div>
+    <div class="t"><div class="dot">2</div><span class="wkt">24–72 jam</span><div class="kt"><b class="j"><i>Rapid assessment</i></b>Formulir umum, lembar khusus, foto bergeotag, kriteria, kelas sementara, dan nomor induk kejadian.<div class="r"><i>Pelaksana</i>Tim Reaksi Cepat BPBD</div></div></div>
+    <div class="t"><div class="dot">3</div><span class="wkt">sekali sehari</span><div class="kt"><b class="j">Pemutakhiran</b>Angka kumulatif terbaru, alasan apabila angka turun, dan kelas yang dihitung ulang.<div class="r"><i>Pelaksana</i>Pos komando atau Pusdalops BPBD</div></div></div>
+    <div class="t"><div class="dot">4</div><span class="wkt">verifikasi bulanan</span><div class="kt"><b class="j">Penutupan</b>Isian dilengkapi, verifikasi berjenjang, dan kelas akhir disahkan.<div class="r"><i>Pelaksana</i>BPBD, BPBD provinsi, dan Pusdatinkom</div></div></div>
+  </div>
+</div>
+
+<!-- 10. penerapan -->
+<div class="fig" id="pk-penerapan">
+  <div class="rm">
+    <div class="cv" style="background:var(--biru)"><b>1. Uji coba</b><span>tiga provinsi, satu musim</span></div>
+    <div class="cv" style="background:var(--navy2)"><b>2. Penyesuaian batas</b><span>berdasarkan hasil uji coba</span></div>
+    <div class="cv" style="background:var(--oranye)"><b>3. Penetapan</b><span>berlaku secara nasional</span></div>
+  </div>
+  <div class="rmi">
+    <div><i>Kegiatan</i>Standar diterapkan di provinsi rawan karhutla, provinsi rawan banjir dan longsor, serta provinsi rawan gempa dan erupsi.<i>Yang diukur</i><ul><li>waktu pengisian formulir</li><li>isian yang sering kosong</li><li>porsi kejadian intensif</li><li>perbedaan penilaian antarpetugas</li></ul></div>
+    <div><i>Kegiatan</i>Batas kelas dan batas waktu yang masih berupa usulan disesuaikan.<i>Bahan</i><ul><li>hasil uji coba</li><li>data penetapan status keadaan darurat</li><li>data penggunaan dana siap pakai</li></ul></div>
+    <div><i>Kegiatan</i>Hasil penyesuaian dituangkan dalam peraturan dan perangkat kerja.<i>Keluaran</i><ul><li>penetapan Rancangan Juklak</li><li>formulir daring BPBD</li><li>modul pelatihan petugas</li></ul></div>
+  </div>
+</div>
+
+<!-- 11. lajur SOP -->
+<div class="fig" id="pk-sop-lajur">
+  <div class="ln">
+    <div></div>
+    <div class="hd">0. Pemantauan<span>terus-menerus</span></div><div class="hd">1. Laporan awal<span>paling lambat 24 jam</span></div><div class="hd">2. <i>Rapid assessment</i><span>24–72 jam</span></div><div class="hd">3. Pemutakhiran<span>sekali sehari</span></div><div class="hd">4. Penutupan<span>verifikasi bulanan</span></div>
+
+    <div class="pk">Pusdalops BNPB</div>
+    <div class="cl"><div class="ak n">Memantau informasi BMKG, PVMBG, dan <i>hotspot</i></div></div>
+    <div class="cl"><div class="ak n">Menerima laporan awal</div></div>
+    <div class="cl"></div>
+    <div class="cl"><div class="ak n">Menyusun laporan harian nasional; menerima kabar kejadian intensif</div></div>
+    <div class="cl"></div>
+
+    <div class="pk">Pusdalops BPBD kabupaten/kota</div>
+    <div class="cl"><div class="ak">Memastikan dampak ke kecamatan, desa, atau relawan</div></div>
+    <div class="cl"><div class="ak">Memeriksa kejadian yang sedang berlangsung</div><div class="ak">Memberi nomor dan mengisi isian wajib</div></div>
+    <div class="cl"><div class="ak">Menentukan kriteria dan kelas sementara</div></div>
+    <div class="cl"><div class="ak">Memperbarui angka kumulatif dan kelas</div></div>
+    <div class="cl"><div class="ak">Menyatakan kejadian selesai; melengkapi isian</div></div>
+
+    <div class="pk">Tim Reaksi Cepat BPBD</div>
+    <div class="cl"></div>
+    <div class="cl"></div>
+    <div class="cl"><div class="ak">Mengisi formulir umum dan lembar khusus</div><div class="ak">Mengambil foto bergeotag</div></div>
+    <div class="cl"></div>
+    <div class="cl"></div>
+
+    <div class="pk">BPBD provinsi</div>
+    <div class="cl"></div>
+    <div class="cl"><div class="ak n">Menerima laporan awal</div></div>
+    <div class="cl"></div>
+    <div class="cl"><div class="ak n">Menyatukan kejadian lintas kabupaten/kota</div></div>
+    <div class="cl"><div class="ak">Memeriksa kelengkapan dan penghitungan ganda</div></div>
+
+    <div class="pk">Pusdatinkom BNPB</div>
+    <div class="cl"></div>
+    <div class="cl"></div>
+    <div class="cl"><div class="ak">Menerbitkan nomor induk kejadian</div></div>
+    <div class="cl"></div>
+    <div class="cl"><div class="ak">Mengesahkan kelas akhir</div><div class="ak">Merilis data statis bernomor versi</div></div>
+  </div>
+  <div class="leg"><span><i style="background:var(--oranye)"></i>Kegiatan utama</span><span><i style="background:var(--biru)"></i>Menerima atau memantau</span></div>
+</div>
+
+<!-- 12. alur laporan baru -->
+<div class="fig" id="pk-sop-laporan">
+  <div class="alur">
+    <div class="q mulai"><span class="n">▶</span><div><b>Laporan baru diterima</b><div class="kecil">catat sumber, jabatan pelapor, dan waktu laporan</div></div></div><div></div><div></div>
+    <div class="turun"><span></span></div><div></div><div></div>
+    <div class="q"><span class="n">1</span><b>Ada kejadian sejenis yang sedang berlangsung di kabupaten/kota yang sama?</b></div><div class="ke">Tidak</div><div class="h biru">Buka kejadian baru dan berikan nomor kejadian baru</div>
+    <div class="turun"><span>Ya</span></div><div></div><div></div>
+    <div class="q"><span class="n">2</span><b>Apakah laporan memenuhi aturan batas satu kejadian untuk jenis bencananya?</b></div><div class="ke">Tidak</div><div class="h biru">Buka kejadian baru; apabila dipicu kejadian lain, tautkan sebagai kejadian ikutan</div>
+    <div class="turun"><span>Ya</span></div><div></div><div></div>
+    <div class="q"><span class="n">3</span><b>Gabungkan ke kejadian tersebut dan pakai nomor yang sama</b></div><div></div><div></div>
+    <div class="turun"><span></span></div><div></div><div></div>
+    <div class="q"><span class="n">4</span><b>Isi isian wajib kelompok 1–3 dan angka dampak sementara</b></div><div class="ke">Belum tahu</div><div class="h emas">Tandai "belum didata"; jangan diisi nol</div>
+    <div class="turun"><span></span></div><div></div><div></div>
+    <div class="akhir"><div class="mn" style="grid-column:1/3"><b>Kirim ke Pusdalops BPBD provinsi dan Pusdalops BNPB</b>Paling lambat 24 jam setelah kejadian diketahui; lalu Tim Reaksi Cepat memulai <i>rapid assessment</i></div></div>
+  </div>
+</div>
+</body>
+</html>

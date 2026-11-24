@@ -21,6 +21,17 @@ const pilKat = c => `<span class="kt" style="--c:${KAT[c].w};--f:${KAT[c].fg}">$
 const kr = v => v >= 1e7 ? fmt(Math.round(v / 1e6)) + " jt" : v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " jt" : v >= 1e3 ? fmt(Math.round(v / 1e3)) + " rb" : fmt(Math.round(v));
 const jiwa = v => (v < 1e3 ? "" : "sekitar ") + (v >= 1e7 ? fmt(Math.round(v / 1e6)) + " juta" : v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " juta" : v >= 1e3 ? fmt(Math.round(v / 1e3)) + " ribu" : fmt(Math.round(v))) + " jiwa";
 const PIL_MODEL = '<span class="kt" style="--c:#6b7280;--f:#fff;text-transform:none;letter-spacing:0">perkiraan model CAMS, belum dikoreksi</span>';
+/* pil kepala kartu dari token tema: label sumber/jenis data, dan Hipotesis untuk model tanpa uji balik */
+const pilTk = (teks, tip = "") => `<span class="kt kt-tk"${tip ? ` title="${esc(tip)}"` : ""}>${teks}</span>`;
+const PIL_HIPO = (tip = "Model belum diuji balik terhadap pengamatan") => `<span class="kt kt-hipo" title="${esc(tip)}">Hipotesis</span>`;
+/* rupa kartu bersama layar ini: angka kunci jadi kotak angka (.kv dari inti/peta.css), penjelasan metode dilipat (details.lipat dari inti/tabel.css) */
+const kotakAngka = r => r.length ? `<div class="kv ud-kv">${r.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("")}</div>` : "";
+const lipatCatatan = (isi, judul = "Cara membaca angka") => isi ? `<details class="lipat ud-lipat"><summary>${judul}</summary><div class="isi">${isi}</div></details>` : "";
+/* pil yang tertulis di baris pertama isi kartu pindah ke kepala, sebaris di atas nama seksi */
+const pilKeKepala = h => { if (!h) return h; let p = "";
+  h = h.replace(/(<div class="ex-bd">)\s*<div style="margin:0 0 6px">([\s\S]*?)<\/div>/, (m, a, x) => { p = x.trim(); return a; });
+  h = h.replace(/((?:<span class="kt[^"]*"[^>]*>[^<]*<\/span>\s*)+)(<div class="ex-jd">)/, (m, k, j) => { p = (k.trim() + " " + p).trim(); return j; });
+  return p ? h.replace('<div class="ex-jd">', () => `<div class="ud-pil">${p}</div><div class="ex-jd">`) : h; };
 /* gradasi warna peta PM2,5 (µg/m³ -> rgba): hijau samar sampai ungu pekat, titik beloknya batas kategori */
 const ST_PM = [[0, [90, 158, 116, 0]], [15.5, [90, 158, 116, 85]], [35, [227, 185, 78, 150]], [55.4, [232, 116, 59, 185]], [150, [214, 69, 69, 210]], [250, [138, 43, 226, 225]], [500, [80, 15, 140, 235]]];
 /* jarak pandang METAR (m): ICAO kabut < 1000 m, kabut tipis/asap tipis < 5000 m */

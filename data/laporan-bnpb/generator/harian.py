@@ -39,10 +39,29 @@ KAWASAN = {'Gunung Argopuro': ['35|Probolinggo|Krucil', '35|Probolinggo|Tiris', 
            'TN Way Kambas': ['18|Lampung Timur|Labuhan Ratu', '18|Lampung Timur|Way Bungur', '18|Lampung Timur|Purbolinggo', '18|Lampung Timur|Sukadana'],   # = deck Lampung 241026
            'Gunung Arjuno': ['35|Pasuruan|Prigen', '35|Pasuruan|Purwosari', '35|Malang|Singosari', '35|Malang|Lawang', '35|Malang|Karangploso',
                              '35|Kota Batu|Bumiaji', '35|Mojokerto|Gondang', '35|Mojokerto|Pacet', '35|Mojokerto|Trawas', '35|Mojokerto|Jatirejo']}
-JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', SLATE, T_SLATE), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F6FB5', 'DCE7F5'), 'angin': ('Angin kencang', 'angin', '0E7490', 'D5EEF2'),
-             'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2'), 'longsor': ('Tanah longsor', 'longsor', '7A5230', 'EFE4D8'),
+# 20 Nov 2026 pemilik ("banjir, cuaca, dan gempa warnanya mirip2 jadi susah bedain", lalu "ya" jadikan standar): rona berbeda dari palet tema BNPB
+# (proyek-bnpb/tema.json; warna di luar palet digeser mesin deck ke warna terdekat): banjir biru #2F86D1, cuaca ekstrem hijau tua #3D6B5A,
+# tanah longsor emas #A07A32, gempa bumi abu gelap #4B4F58
+JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', '4B4F58', 'E6EAF0'), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F86D1', 'DCEBF8'), 'angin': ('Angin kencang', 'angin', '3D6B5A', 'E3EDE8'),
+             'cuaca': ('Cuaca ekstrem', 'angin', '3D6B5A', 'E3EDE8'), 'longsor': ('Tanah longsor', 'longsor', 'A07A32', 'F4ECDC'),
              'erupsi': ('Erupsi', 'gunung', 'C8102E', 'F8DDE0'), 'gelombang_pasang': ('Gelombang pasang', 'banjir', '2F6FB5', 'DCE7F5'),
              'kebakaran_permukiman': ('Kebakaran permukiman', 'api', 'A23B2A', 'F5E1DD')}   # 11 Nov: dua jenis baru dari wa_harian, tanpa entri ini deck KeyError   # 7 Nov atasan: erupsi Bromo 5 Nov 17.11 WIB masuk Informasi bencana slide 1   # 1 Nov: longsor Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
+GABUNG_BARIS = 14   # baris tabel Informasi Bencana slide 1 yang masih terbaca (7 pt); lebih dari ini baris digabung per provinsi (20 Nov 2026)
+
+
+def gabung_baris(kej):
+    """Baris tabel Informasi Bencana per (jenis, provinsi, kejadian baru/masih berlangsung, tanggal mulai): lokasi tunggal tetap, lebih dari satu jadi
+    lok_teks "N kab/kota" dengan jumlah KK dan MD. Kejadian baru dan masih berlangsung tidak pernah satu baris (tanggal mulainya beda)."""
+    grup = {}
+    for x in kej: grup.setdefault((x['jenis'], x['prov'], bool(x.get('baru')), x.get('mulai')), []).append(x)   # tanggal mulai beda = baris sendiri
+    out = []
+    for xs in grup.values():
+        if len(xs) == 1: out.append(xs[0]); continue
+        kk = sum(x['angka'].get('kk') or 0 for x in xs); md = sum(x['angka'].get('meninggal') or 0 for x in xs)
+        out.append({**xs[0], 'lok_teks': f'{len(xs)} kab/kota', 'angka': {'kk': kk, 'meninggal': md}, 'dampak_pil': None})
+    return out
+
+
 WEB = ('peta_karhutla.json', 'peta_karhutla_kab.json', 'peta_karhutla_wil.json', 'harian30.json', 'kluster_awal.json')
 
 
@@ -732,6 +751,12 @@ class Deck:
         """Versi 3 (6 Nov pemilik): panel kanan slide ringkasan = INFORMASI BENCANA, satu baris per kejadian menonjol: bencana, provinsi,
         kab/kota, dampak KK ("kalau gaada infonya strip aja"). Urut karhutla (sisa terbesar), kekeringan, lalu bencana lainnya; nama jenis
         hanya di baris pertama kelompoknya."""
+        # 20 Nov 2026 pemilik (laporan 31 kejadian, tabel bertumpuk): bila baris lebih dari INFO_GABUNG, kab/kota satu jenis, satu provinsi, dan satu
+        # status (kejadian baru atau masih berlangsung, tanggal mulai beda) digabung jadi satu baris "N kab/kota" dengan jumlah KK; lokasi tunggal tetap
+        if getattr(s, 'INFO_GABUNG', 0) and len(s.LN) > s.INFO_GABUNG and not getattr(s, '_gabung', False):
+            asli = s.LN; s.LN = gabung_baris(asli); s._gabung = True
+            try: return s.info_bencana(X, W)
+            finally: s.LN = asli; s._gabung = False
         Y, H = getattr(s, 'INFO_Y', None) or (2331720, 3017520)   # 10 Nov pemilik: panel bisa dinaikkan sejajar atas kartu
         PIL_ = getattr(s, 'INFO_PIL', False)
         o = s.kotak(X, Y, W, H, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.tx(X + 164592, Y + 109728, W - 329184, 182880, ['INFORMASI BENCANA'], sz=750, b=True, c=NAVY, spc=100)
@@ -785,6 +810,7 @@ class Deck:
             while m < len(baris) and sama(baris[m]): m += 1
             return m - n
         def lok(x):
+            if x.get('lok_teks'): return x['lok_teks']   # 20 Nov: baris gabungan per provinsi ("4 kab/kota") bila kejadian terlalu banyak untuk satu baris per lokasi
             if x['lokasi']: return x['lokasi'] if x['lokasi'].startswith(('Kota ', 'TN ', 'Gunung ')) else f"Kab. {x['lokasi']}"
             ks = x.get('kab_api') or []
             for m in range(len(ks), 0, -1):

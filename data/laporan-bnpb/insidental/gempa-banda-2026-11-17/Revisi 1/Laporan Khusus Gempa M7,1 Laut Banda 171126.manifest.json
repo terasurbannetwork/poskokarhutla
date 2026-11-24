@@ -135,7 +135,6 @@
     "ikon",
     "ikon",
     "ikon",
-    "ikon",
     "ikon"
    ],
    "panel": [],
@@ -300,7 +299,7 @@
   },
   {
    "kunci": "turunan:spek#1#impor9.34",
-   "tampil": "16.39",
+   "tampil": "17.58",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -407,7 +406,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor54.23",
+   "kunci": "turunan:spek#1#impor55.23",
    "tampil": "10",
    "nilai": null,
    "naskah": "spek#1",
@@ -416,7 +415,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor56.0",
+   "kunci": "turunan:spek#1#impor57.0",
    "tampil": "133",
    "nilai": null,
    "naskah": "spek#1",
@@ -425,7 +424,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor59.10",
+   "kunci": "turunan:spek#1#impor61.10",
    "tampil": "3",
    "nilai": null,
    "naskah": "spek#1",
@@ -434,7 +433,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor59.19",
+   "kunci": "turunan:spek#1#impor61.19",
    "tampil": "5",
    "nilai": null,
    "naskah": "spek#1",
@@ -443,7 +442,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor61.0",
+   "kunci": "turunan:spek#1#impor63.0",
    "tampil": "218",
    "nilai": null,
    "naskah": "spek#1",
@@ -452,7 +451,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor64.23",
+   "kunci": "turunan:spek#1#impor67.23",
    "tampil": "10",
    "nilai": null,
    "naskah": "spek#1",
@@ -461,8 +460,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor76.0",
-   "tampil": "21.562",
+   "kunci": "turunan:spek#1#impor69.0",
+   "tampil": "258",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -470,8 +469,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor77.0",
-   "tampil": "38.161",
+   "kunci": "turunan:spek#1#impor75.0",
+   "tampil": "293",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -479,8 +478,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor78.0",
-   "tampil": "70.737",
+   "kunci": "turunan:spek#1#impor90.8",
+   "tampil": "179",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -488,106 +487,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor81.0",
-   "tampil": "101.259",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor82.0",
-   "tampil": "34.374",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor86.0",
-   "tampil": "56.312",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor87.0",
-   "tampil": "30.418",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor89.0",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor92.0",
-   "tampil": "8.175",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor93.0",
-   "tampil": "187.581",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor94.6",
-   "tampil": "7",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor95.0",
-   "tampil": "179.133",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor96.0",
-   "tampil": "111.128",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor97.0",
-   "tampil": "258.318",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari BMKG 17 Nov 2026; Pengolahan data sistem BNPB dari BPBD lewat Pusdalops BNPB; Pengolahan data sistem BNPB dari MMI model Zhao 2006 intraslab; Pengolahan data sistem BNPB dari penduduk WorldPop 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor115.2",
+   "kunci": "turunan:spek#1#impor104.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "spek#1",
@@ -596,7 +496,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor116.0",
+   "kunci": "turunan:spek#1#impor105.0",
    "tampil": "1",
    "nilai": null,
    "naskah": "spek#1",
@@ -1209,7 +1109,7 @@
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e01beb88bdb9217a75fcde1568ad206fcd48c6e18589e5a06fa067b73e706255",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
-  "isi.pptx": "71730cdedba9cd3099f9a8676eab75c6eb017e70e61ee49b89e52ee441175e0e",
-  "spek.json": "b672330a48f5ce57de49adcf197290921bf772a77b82efeae9420f8c97fe0685"
+  "isi.pptx": "c1b28cdcb84ce1321b48a575044e6559923dc1316fd9f15bc9d49674b738e39c",
+  "spek.json": "8daae3400778a2bad617a044da252b0bd7fe3db086a54f042bbc61fecc7d056d"
  }
 }

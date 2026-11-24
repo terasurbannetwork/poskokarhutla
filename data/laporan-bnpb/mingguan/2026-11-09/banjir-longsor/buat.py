@@ -145,8 +145,9 @@ def lama(mulai, selesai):
     Mulai tidak diketahui (kejadian hanya muncul sebagai pengkinian) = None, tampil '–'."""
     if not mulai:
         return None
-    bl = {'Okt': 10, 'Nov': 11, 'Des': 12}
-    d = lambda s: date(2026, bl[s.split()[1]], int(s.split()[0]))
+    bl = {BLN[m][:3]: m for m in range(1, 13)}   # 19 Nov: periode bebas (bot, banjir_sepekan.py), bulan apa pun; lewat Desember = tahun sebelumnya
+    ak = MINGGU['akhir']
+    d = lambda s: date(ak.year - (bl[s.split()[1]] > ak.month), bl[s.split()[1]], int(s.split()[0]))
     return ((d(selesai) if selesai else MINGGU['akhir']) - d(mulai)).days + 1
 
 
@@ -422,9 +423,10 @@ def tata_label(titik, sisi, status, masker=None):
             return True
         kot = (int(max(0, x - 43.2 - 2)), int(max(0, y - 102 - 2)), int(min(418, x - 43.2 + w + 2)), int(min(338, y - 102 + 18)))
         return kot[2] <= kot[0] or kot[3] <= kot[1] or masker.crop(kot).getbbox() is None
-    out = {}
+    out, luap = {}, []
     for s_, bawah in (('k', 355), ('n', 430)):
-        xs = sorted(((y, kab) for kab, (x, y) in titik.items() if sisi[kab] == s_), key=lambda t: t[0])
+        # 19 Nov (bot, periode bebas): label kiri yang tidak dapat celah pindah ke kolom kanan, bukan ditumpuk di tepi bawah (QA T-7)
+        xs = sorted([(y, kab) for kab, (x, y) in titik.items() if sisi[kab] == s_] + (luap if s_ == 'n' else []), key=lambda t: t[0])
         taruh = []
         for y0, kab in xs:
             w = lebar_label(kab, status[kab])
@@ -439,6 +441,8 @@ def tata_label(titik, sisi, status, masker=None):
                         hasil = (x, y); break
                 if hasil:
                     break
+            if not hasil and s_ == 'k':
+                luap.append((y0, kab)); continue
             if not hasil:   # tidak ada celah: tetap rapat ke tepi, urut di bawah label sebelumnya
                 y = max([ingin] + [t + 21 for t in taruh if t >= ingin - 21])
                 hasil = (pilihan[-1], min(y, bawah))

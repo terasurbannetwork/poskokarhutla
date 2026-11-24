@@ -3,6 +3,11 @@
 //     (POST multipart ke /api/wa/gateway?k=), lewat outbox berkas supaya tak hilang bila worker mati.
 //     Sesudah tersimpan, pengatur otomatis (../otomatis.mjs) dipicu dengan debounce 2 menit.
 //  2. KELUAR: API lokal 127.0.0.1 /send dan /send-file, lewat limiter anti-blokir (limiter.js).
+//  3. DAFTAR (BL-03, ../daftar.cjs): nomor bl_daftar setuju (salinan /api/wa/terdaftar, 5 menit) diteruskan seperti WA_IZIN dengan medan wa_sha;
+//     nomor asing pribadi dibalas "Nomor belum terdaftar" sekali sehari dan TIDAK diteruskan (K19: tanpa pendaftaran mandiri); `setuju <nomor> [nama]` / `tolak <nomor>` hanya dari PEMILIK.
+//  4. PROYEK (BL-09, ../arah.cjs, hanya bila BL_PROYEK=1): pesan pribadi nomor terdaftar ke ../proyek.mjs tangani(), satu per pengirim.
+//     Perintah proyek tidak diteruskan ke Worker; bahan diteruskan dulu lalu ke proyek dengan wa_id. Susulan tidak pernah ke proyek (K11),
+//     tiap nomor terdaftar yang sempat menulis saat mati dapat satu T-TERLEWAT. Balasan ke orang yang baru menulis: batas percakapan (Q1).
 // Tidak ada LLM. Ini WhatsApp Web TIDAK RESMI: baca ../../../../pangantara/wa-gateway/ANTI-BAN.md.
 const fs = require('fs')
 const path = require('path')
@@ -20,6 +25,9 @@ const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) //
 const OCR = require('../ocr.cjs')
 const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, putusanSusulan } = require('../aman.cjs')
 const RW = require('../riwayat.cjs')
+const DAFTAR = require('../daftar.cjs')
+const ARAH = require('../arah.cjs')
+const HIAS = require('../hias.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
 const TOKEN = process.env.GATEWAY_TOKEN || ''
@@ -30,6 +38,7 @@ const IZIN = new Set(daftar(process.env.WA_IZIN).map(normalWa).filter(Boolean))
 // Worker hanya menyimpan pesan yang dikenali (pengurai operasi / jenis laporan) dan mengganti pengirim dengan id grup; tanpa salinan Drive.
 const GRUP_OPS = new Set(daftar(process.env.OPERASI_GRUP).filter((j) => /@g\.us$/.test(j)))
 const PEMILIK = normalWa(daftar(process.env.PEMILIK)[0])
+const BL = process.env.BL_PROYEK === '1' // bot laporan (BL-09); kosong = perilaku lama utuh
 const AUTH_DIR = rumah(process.env.WA_AUTH_DIR) || path.join(RUMAH, 'auth')
 const OUTBOX = path.join(RUMAH, 'outbox')
 const TERKIRIM = path.join(RUMAH, 'terkirim') // salinan pesan keluar untuk getMessage (kirim ulang bila penerima gagal dekripsi)
@@ -63,15 +72,17 @@ let connected = false
 let restarting = false
 
 // ── KELUAR ──────────────────────────────────────────────────────────────
-async function sendPaced(jid, isi, isGroup) {
-  const gate = limiter.check(jid)
+// opsi.balasan: balasan ke pengirim; limiter memakai batas percakapan bila ia menulis dalam 10 menit terakhir (Q1).
+async function sendPaced(jid, isi, isGroup, opsi) {
+  if (!connected || !sock) return { ok: false, code: 503, error: 'wa belum terhubung' }
+  const gate = limiter.check(jid, opsi)
   if (!gate.ok) return { ok: false, code: gate.code, error: gate.error }
-  const s = await limiter.slot()
+  const s = await limiter.slot({ percakapan: gate.percakapan })
   if (!s.ok) return { ok: false, code: s.code, error: s.error }
   const sent = await sock.sendMessage(jid, isi)
-  limiter.commit(jid)
+  limiter.commit(jid, gate.percakapan)
   simpanTerkirim(sent)
-  return { ok: true, kind: isGroup ? 'group' : 'personal', id: (sent && sent.key && sent.key.id) || null }
+  return { ok: true, kind: isGroup ? 'group' : 'personal', id: (sent && sent.key && sent.key.id) || null, key: (sent && sent.key) || null }
 }
 
 // Tanpa getMessage, permintaan kirim ulang dari penerima yang gagal dekripsi tak terjawab dan pesan
@@ -102,6 +113,17 @@ function sapuTerkirim() {
     try { if (fs.statSync(f).mtimeMs < batas) fs.unlinkSync(f) } catch {}
   }
 }
+
+// BL-03: salinan nomor terdaftar + putusan PEMILIK. Balasan lewat sendPaced yang sama (limiter tidak dilewati); WA putus = balasan tidak dikirim.
+const DF = DAFTAR.buat({
+  env: process.env, rumah: RUMAH, log,
+  kirim: async (jid, teks) => {
+    if (!connected || !sock) { log('[daftar] balasan dilewati: wa belum terhubung'); return }
+    const x = await sendPaced(jid, { text: teks }, false).catch((e) => ({ ok: false, error: String(e?.message || e) }))
+    if (!x.ok) log('[daftar] balasan ditahan', x.error)
+  },
+})
+DF.mulai()
 
 async function jidDari(target) {
   const mentah = String(target ?? '').trim()
@@ -232,7 +254,7 @@ function isiPesan(m) {
   const c = normalizeMessageContent(m.message) || {}
   const teks = c.conversation || c.extendedTextMessage?.text || c.documentMessage?.caption || c.imageMessage?.caption || c.videoMessage?.caption || ''
   const media = c.documentMessage || c.imageMessage || null
-  return { c, teks, media, adaDok: !!c.documentMessage }
+  return { c, teks, media, adaDok: !!c.documentMessage, diteruskan: ARAH.diteruskan(c) }
 }
 
 // Nomor pengirim: di grup ambil peserta; Baileys baru memberi nomor asli di senderPn bila JID-nya @lid.
@@ -285,26 +307,40 @@ async function frameDariVideo(m, video, id) {
 // lama:true (susulan append / riwayat): hanya simpan ke outbox; perintah PEMILIK dan 'cari' lama tidak dieksekusi/dibalas ulang.
 async function simpanKeOutbox(m, { lama = false } = {}) {
   const k = m.key
-  const { c, teks, media: mediaAda, adaDok } = isiPesan(m)
+  const { c, teks, media: mediaAda, adaDok, diteruskan } = isiPesan(m)
   const video = c.videoMessage && GRUP_OPS.has(k.remoteJid) && !IZIN.has(pengirim(k)) ? c.videoMessage : null // video grup operasi: satu frame dikirim sebagai foto
   const media = mediaAda && (!GRUP_OPS.has(k.remoteJid) || IZIN.has(pengirim(k)) || c.imageMessage) ? mediaAda : null // grup operasi: hanya foto (dokumen grup tetap dibuang)
   const dari = pengirim(k)
   const grupOps = !!dari && !IZIN.has(dari) && GRUP_OPS.has(k.remoteJid)
-  if (!dari || (!IZIN.has(dari) && !grupOps)) return
+  const blSha = !!dari && !IZIN.has(dari) && !String(k.remoteJid).endsWith('@g.us') ? DF.shaTerdaftar(dari) : null // nomor bl_daftar setuju (BL-03)
+  if (!dari || (!IZIN.has(dari) && !grupOps && !blSha)) return
   if (!teks.trim() && !media && !video) return // foto grup tanpa caption tetap diteruskan
+  const pribadi = !String(k.remoteJid).endsWith('@g.us')
+  let P = null, cmd = null
   if (!media && !grupOps && !lama) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
-    const P = await import('../perintah.mjs')
-    const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
-    if (cmd) { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
+    P = await import('../perintah.mjs')
+    cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK, proyek: BL && pribadi }) // grup: perilaku lama
   }
-  if (!grupOps && !lama && /^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
+  const arah = ARAH.arah({ proyek: BL, pribadi, terdaftar: true, grupOps, lama, adaMedia: !!(media || video), teks, cmd, diteruskan })
+  // Perintah pemilik di perintah.mjs (kirim ulang, status <tanggal>) juga menghapus tanya batal menu milik pengirim itu.
+  if (arah === 'perintah' && BL && pribadi) import('../proyek.mjs').then((Pr) => Pr.hapusKonfirmasi({ dari, env: process.env, dasar: RUMAH })).catch(() => {})
+  if (arah === 'perintah') { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
+  const masuk = Date.now() // Q1: jendela percakapan dihitung dari pesan masuk ini, bukan dari jam balasan (pembangunan bisa lama)
+  if (arah === 'proyek') {
+    // `lanjut`, `ulangi`, `buat saja` saat pembangunan pengirim ini masih jalan: dijawab langsung (sekali "Masih dibangun"), tidak antre di belakangnya.
+    const Pr = BL ? await import('../proyek.mjs') : null
+    if (Pr && typeof Pr.jawabSibukLangsung === 'function' &&
+      await Pr.jawabSibukLangsung({ dari, teks, diteruskan }, { env: process.env, dasar: RUMAH, log, ...balasanKe(dari, '[proyek]', masuk) }).catch(() => false)) return
+    keProyek(dari, masuk, async () => ({ dari, teks: teks.trim(), diteruskan })); return // perintah proyek: tidak jadi bahan di Worker
+  }
+  if (!grupOps && !lama && /^cari\s/i.test(teks) && !blSha) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
     return
   }
   kabarPenuh = false
   const id = `${Date.now()}-${idAman(k.id)}`
-  const e = { id, dari, nama: grupOps ? '' : (m.pushName || ''), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now(), ...(grupOps ? { grup: k.remoteJid } : {}) }
+  const e = { id, dari, nama: grupOps ? '' : (m.pushName || ''), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now(), ...(grupOps ? { grup: k.remoteJid } : {}), ...(blSha ? { wa_sha: blSha } : {}) }
   let lampiran = null
   if (media) {
     const tipe = media.mimetype || 'application/octet-stream'
@@ -329,29 +365,136 @@ async function simpanKeOutbox(m, { lama = false } = {}) {
       if (fv.stempel) e.stempel = fv.stempel
     }
   }
-  tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e))
-  if (!grupOps) drive.salin(e, lampiran)
+  const simpan = () => { tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e)); if (!grupOps) drive.salin(e, lampiran) }
+  const denganWaId = (h) => ({ dari, teks, wa_id: h.disimpan === false ? undefined : h.id, nama_berkas: e.berkas ? e.berkas.nama : undefined, ada_berkas: !!e.berkas, diteruskan })
+  if (arah === 'bahan+proyek' && !e.berkas && !media && !video) { // teks saja: proyek.klasifikasi memutuskan di antrean (urutan per pengirim terjaga)
+    keProyek(dari, masuk, async (Pr, ctx) => {
+      const pesan = { dari, teks, ada_berkas: false, diteruskan }
+      if (await ARAH.pilihJalur(Pr, pesan, ctx) === 'langsung') return pesan // revisi atau perintah: tidak diteruskan ke Worker, tanpa wa_id
+      const tunggu = PENUNGGU.tunggu(id)
+      simpan(); flushOutbox().catch(() => {})
+      const h = await tunggu
+      if (!h) { log('[proyek] bahan tidak sampai ke Worker, dilewati'); return null }
+      return denganWaId(h)
+    })
+    return
+  }
+  if (arah === 'bahan+proyek') { // berkas selalu bahan: proyek menunggu POST /api/wa/gateway selesai supaya wa_id diketahui
+    const tunggu = PENUNGGU.tunggu(id)
+    keProyek(dari, masuk, async () => {
+      const h = await tunggu
+      if (!h) { log('[proyek] bahan tidak sampai ke Worker, dilewati'); return null }
+      return denganWaId(h)
+    })
+  }
+  simpan()
+}
+
+// ── PROYEK (BL-09) ──────────────────────────────────────────────────────
+const ANTRE = ARAH.buatAntre({ log }) // satu tangani per pengirim; pengirim lain jalan bersamaan
+const PENUNGGU = ARAH.buatPenunggu({ batasMs: 30 * 60e3 }) // Worker mati lebih lama = bahan tidak ke proyek
+const TERLEWAT = BL ? ARAH.buatTerlewat({
+  berkas: path.join(RUMAH, 'terlewat.json'), log,
+  kirim: (nomor, teks) => sendPaced(nomor + '@s.whatsapp.net', { text: teks }, false).catch((x) => ({ ok: false, error: String((x && x.message) || x) })),
+}) : null
+if (TERLEWAT) setInterval(() => { if (connected) TERLEWAT.detak() }, 60e3).unref()
+// BL-12 (T10): proyek final yang unggah Drive, /api/wa/hasil, atau ditutup-nya gagal diulang tiap 10 menit dan 1 menit sesudah tersambung.
+const kirimKe = async (target, teks) => {
+  const x = await sendPaced(normalWa(target) + '@s.whatsapp.net', { text: teks }, false)
+  if (!x.ok) throw new Error(x.error || 'kirim gagal')
+}
+const ULANG_FINAL = BL ? ARAH.buatUlangFinal({
+  terhubung: () => connected, log,
+  jalankan: async () => {
+    const [Pr, O] = await Promise.all([import('../proyek.mjs'), muatOtomatis()])
+    const h = await Pr.ulangFinal({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe })
+    if (typeof Pr.kirimBiaya === 'function') await Pr.kirimBiaya({ env: process.env, dep: O.depBawaan(process.env), dasar: RUMAH, log })   // pemantau /admin/biaya-bot
+    // K18: proyek penanganan yang memilih *tunggu* dibangun begitu situs memuat lintasan siang (detak 10 menit yang sama).
+    if (typeof Pr.ulangSatelit === 'function') {
+      try { await Pr.ulangSatelit({ env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log, kabariPemilik: kabarPemilik, kirimKe, balasKe: (d, masuk) => balasanKe(d, '[satelit]', Number(masuk) || Date.now()) }) } catch (e) { log('[satelit] ulang gagal', String((e && e.message) || e)) }
+    }
+    return h
+  },
+}) : null
+if (ULANG_FINAL) ULANG_FINAL.mulai()
+
+// Kemajuan pembangunan (pemilik 18 Nov 2026): "sedang mengetik" (presence, di luar limiter, berhenti bila soket tertutup) dan satu pesan
+// kemajuan yang disunting per tahap. Pesan kemajuan = 1 kiriman balasan; suntingan juga kiriman balasan dan hanya bila limiter longgar
+// (menyisakan jatah untuk pratinjau dan PDF), selain itu dilewati. Galat apa pun = tanpa kemajuan, pembangunan jalan terus.
+function kemajuanKe(dari, masuk) {
+  const jid = dari + '@s.whatsapp.net'
+  let detak = null
+  const hadir = (keadaan) => { if (connected && sock) sock.sendPresenceUpdate(keadaan, jid).catch(() => {}) }
+  return {
+    mengetik: (nyala) => {
+      if (detak) { clearInterval(detak); detak = null }
+      if (!nyala) return hadir('paused')
+      hadir('composing')
+      detak = setInterval(() => { if (!connected || !sock) { clearInterval(detak); detak = null; return } hadir('composing') }, 10e3)
+      if (detak.unref) detak.unref()
+    },
+    kirimProgres: async (teks) => {
+      // hanya bila ada ruang untuk pesan kemajuan ditambah pratinjau dan PDF; selain itu tanpa kemajuan (mengetik tetap jalan)
+      if (!limiter.longgar(3, jid, { balasan: true, masuk })) { log('[kemajuan] dilewati, limiter sibuk'); return null }
+      const x = await sendPaced(jid, { text: teks }, false, { balasan: true, masuk })
+      if (!x.ok) { log('[kemajuan] ditahan', x.error); return null }
+      return x.key
+    },
+    ubahProgres: async (key, teks) => {
+      if (!key || !connected || !sock) return false
+      if (!limiter.longgar(2, jid, { balasan: true, masuk })) { log('[kemajuan] suntingan dilewati, limiter sibuk'); return true }
+      const x = await sendPaced(jid, { text: teks, edit: key }, false, { balasan: true, masuk })
+      if (!x.ok) log('[kemajuan] suntingan ditahan', x.error)
+      return !!x.ok
+    },
+  }
+}
+
+function balasanKe(dari, tag, masuk) {
+  const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
+  const kirim = async (isi) => { const x = await sendPaced(jid, isi, false, { balasan: true, masuk }); if (!x.ok) log(tag, 'balasan ditahan', x.error) }
+  // berkas (pratinjau, PDF, PPTX): ditolak batas per menit atau antrean = diulang sesudah jendela menit, paling banyak 3 kali
+  const kirimBerkas = async (isi) => {
+    const x = await ARAH.kirimUlangMenit(() => sendPaced(jid, isi, false, { balasan: true, masuk }), { log: (...a) => log(tag, ...a) })
+    if (!x.ok) log(tag, 'berkas ditahan', x.error)
+  }
+  // satu ikon di depan judul pesan dan keterangan berkas (hias.cjs, pemilik 19 Nov 2026)
+  return {
+    balas: (teks) => kirim({ text: HIAS.hias(teks) }),
+    balasFile: async (p, nama, keterangan, mimetype, opsi) => {
+      const aman = jalurKeluaran(p, KELUARAN)
+      if (!aman) throw new Error('berkas di luar keluaran')
+      const caption = keterangan == null ? keterangan : HIAS.hias(keterangan)
+      await kirimBerkas(ARAH.isiBerkas(aman, nama, caption, mimetype, opsi))
+    },
+  }
+}
+
+// ambilPesan(Pr, ctx) -> pesan untuk proyek.tangani, atau null (lewati). masuk = jam pesan masuk (jendela percakapan Q1).
+function keProyek(dari, masuk, ambilPesan) {
+  ANTRE.tambah(dari, async () => {
+    const [Pr, O] = await Promise.all([import('../proyek.mjs'), muatOtomatis()])
+    const ctx = {
+      env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log,
+      ...balasanKe(dari, '[proyek]', masuk), ...kemajuanKe(dari, masuk), kabariPemilik: kabarPemilik,
+      kirimKe, masuk,
+    }
+    const pesan = await ambilPesan(Pr, ctx)
+    if (!pesan) return
+    const r = await Pr.tangani(pesan, { ...ctx, now: new Date() })
+    log('[proyek]', (r && r.status) || '-')
+  })
 }
 
 async function jalankanPerintah(P, cmd, dari) {
-  const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
-  const kirim = async (isi) => { const x = await sendPaced(jid, isi, false); if (!x.ok) log('[perintah] balasan ditahan', x.error) }
-  await P.tangani(cmd, {
-    env: process.env, dep: (await muatOtomatis()).depBawaan(process.env), log,
-    balas: (teks) => kirim({ text: teks }),
-    balasFile: async (p, nama, caption, mimetype) => {
-      const aman = jalurKeluaran(p, KELUARAN)
-      if (!aman) throw new Error('berkas di luar keluaran')
-      await kirim({ document: { url: aman }, fileName: nama, mimetype, caption })
-    },
-  })
+  await P.tangani(cmd, { env: process.env, dep: (await muatOtomatis()).depBawaan(process.env), log, ...balasanKe(dari, '[perintah]', Date.now()) })
 }
 
 async function balasCari(m, teks) {
   const r = await drive.perintahCari(teks)
   // Selalu ke chat pribadi pengirim: link Drive tidak boleh tersebar ke anggota grup di luar WA_IZIN.
   const jid = pengirim(m.key) + '@s.whatsapp.net'
-  try { const x = await sendPaced(jid, { text: r }, false); if (!x.ok) log('[cari] balasan ditahan', x.error) } catch (err) { log('[cari] balasan gagal', String(err.message || err)) }
+  try { const x = await sendPaced(jid, { text: r }, false, { balasan: true }); if (!x.ok) log('[cari] balasan ditahan', x.error) } catch (err) { log('[cari] balasan gagal', String(err.message || err)) }
 }
 
 // Berkas dari Drive/Masuk masuk ke outbox yang sama dengan pesan WA (dari = PEMILIK); id turunan id Drive jadi idempoten.
@@ -372,6 +515,7 @@ async function kirimSatu(e) {
   const f = new FormData()
   f.set('dari', e.dari); f.set('nama', e.nama); f.set('teks', e.teks); f.set('waktu', String(e.waktu))
   if (e.grup) f.set('grup', e.grup)
+  if (e.wa_sha) f.set('wa_sha', e.wa_sha) // Worker mencocokkan ke bl_daftar setuju (src/wa.js)
   if (e.stempel) f.set('stempel', String(e.stempel).slice(0, 4000))
   if (e.berkas) {
     const buf = fs.readFileSync(path.join(OUTBOX, e.id + '.bin'))
@@ -382,8 +526,9 @@ async function kirimSatu(e) {
 }
 
 let sedangFlush = false
+let flushLagi = false
 async function flushOutbox() {
-  if (sedangFlush) return
+  if (sedangFlush) { flushLagi = true; return } // pesan yang tiba saat flush berjalan ikut putaran berikut, bukan 5 menit lagi
   sedangFlush = true
   try {
     const berkas = fs.readdirSync(OUTBOX).filter((f) => f.endsWith('.json')).sort()
@@ -399,9 +544,9 @@ async function flushOutbox() {
       for (let i = 0; i < 5 && !selesai; i++) {
         try {
           const r = await kirimSatu(e)
-          if (r.status < 300 && r.json.ok !== false) { selesai = true; log('[masuk] tersimpan', e.id, r.json.jenis || '', r.json.tanggal || ''); break }
+          if (r.status < 300 && r.json.ok !== false) { selesai = true; PENUNGGU.selesai(e.id, r.json); log('[masuk] tersimpan', e.id, r.json.jenis || '', r.json.tanggal || ''); break }
           if (r.status < 500 && r.status !== 408 && r.status !== 429) { // ditolak permanen: simpan, kabari pemilik
-            ke_rusak(e.id)
+            ke_rusak(e.id); PENUNGGU.selesai(e.id, null)
             await kabarPemilik(`Worker menolak kiriman WA dari ${e.dari} (HTTP ${r.status}). Disimpan di ${RUSAK}.`)
             selesai = 'rusak'; break
           }
@@ -413,7 +558,10 @@ async function flushOutbox() {
         picuOtomatis()
       } else if (!selesai) break // worker masih mati: sisanya dicoba pada putaran berikut
     }
-  } finally { sedangFlush = false }
+  } finally {
+    sedangFlush = false
+    if (flushLagi) { flushLagi = false; setTimeout(() => flushOutbox().catch(() => {}), 1000) }
+  }
 }
 setInterval(() => flushOutbox().catch(() => {}), 5 * 60 * 1000)
 
@@ -442,9 +590,15 @@ function picuOtomatis() {
   }, DEBOUNCE_MS)
 }
 
+// -> true bila terkirim; false bila tidak (belum terhubung, ditahan limiter, galat): pemanggil (kabarSekali) tidak menandai
+// "sudah dikabari" supaya kabar dicoba lagi pada galat berikutnya (pemilik 19 Nov 2026: kabar tidak pernah sampai).
 async function kabarPemilik(teks) {
-  if (!PEMILIK || !connected || !sock) return
-  try { await sendPaced(PEMILIK + '@s.whatsapp.net', { text: teks }, false) } catch {}
+  if (!PEMILIK || !connected || !sock) { log('[kabar] pemilik tidak dikabari: PEMILIK kosong atau WA belum terhubung'); return false }
+  try {
+    const x = await sendPaced(PEMILIK + '@s.whatsapp.net', { text: teks }, false)
+    if (!x || !x.ok) { log('[kabar] kabar pemilik ditahan', x && x.error); return false }
+    return true
+  } catch (e) { log('[kabar] kabar pemilik gagal', String((e && e.message) || e)); return false }
 }
 
 // ── SAMBUNGAN ───────────────────────────────────────────────────────────
@@ -462,16 +616,26 @@ async function startSock() {
       if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue
       const susulan = ev.type === 'append'
       if (!susulan && await logbookCegat(m)) continue
-      const izin = IZIN.has(pengirim(m.key))
+      const dari = pengirim(m.key), pribadi = !m.key.remoteJid.endsWith('@g.us')
       const id = m.key.id
-      const diterima = izin || (GRUP_OPS.has(m.key.remoteJid) && !!pengirim(m.key))
+      const putusan = !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju <nomor> [nama] | tolak <nomor>, hanya PEMILIK
+      if (putusan) { if (id) terlihat.catat(id); DF.putuskan(putusan).then((x) => log('[daftar] putusan', x)).catch((e) => log('[daftar] galat', String(e?.message || e))); continue }
+      const izin = IZIN.has(dari)
+      const bl = !izin && pribadi && !!DF.shaTerdaftar(dari)
+      if (pribadi && !izin && !bl) { // nomor asing: tidak pernah diteruskan ke Worker (D10); susulan tidak dibalas
+        if (!susulan && dari) DF.asing({ dari, jid: m.key.remoteJid, teks: isiPesan(m).teks }).then((x) => log('[daftar] asing', x)).catch((e) => log('[daftar] galat', String(e?.message || e)))
+        continue
+      }
+      const diterima = izin || bl || (GRUP_OPS.has(m.key.remoteJid) && !!dari)
+      if (susulan && TERLEWAT && pribadi && (izin || bl) && !terlihat.ada(id)) TERLEWAT.susulan(dari, ARAH.tsMs(m.messageTimestamp)) // K11: satu T-TERLEWAT per nomor
+      if (!susulan && BL && pribadi && (izin || bl)) limiter.noteMasuk(dari + '@s.whatsapp.net') // Q1: jendela percakapan 10 menit
       if (susulan) { // aturan sama dengan pesan langsung, termasuk grup operasi; yang dibuang selalu dicatat beserta alasannya
         const p = putusanSusulan({ diterima, ts: m.messageTimestamp, terlihat: terlihat.ada(id) })
         if (!p.ok) { log('[susulan] dibuang:', p.alasan, m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', id); continue }
       }
       const { c, teks, media } = isiPesan(m)
       const jenis = c.documentMessage ? 'dokumen' : c.imageMessage ? 'gambar' : teks ? 'teks' : 'lain:' + (Object.keys(c)[0] || 'kosong')
-      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : GRUP_OPS.has(m.key.remoteJid) ? 'grup-ops' : 'asing', m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
+      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : bl ? 'terdaftar' : GRUP_OPS.has(m.key.remoteJid) ? 'grup-ops' : 'asing', m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
       try { await simpanKeOutbox(m, { lama: susulan }); if (diterima && id) terlihat.catat(id) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
     }
     flushOutbox().catch(() => {})
@@ -489,7 +653,7 @@ async function startSock() {
       if (process.stdout.isTTY) { console.log('\n=== Scan QR ini di WhatsApp > Perangkat Tertaut ===\n'); qrcode.generate(qr, { small: true }) }
       else log('Butuh scan QR: hentikan layanan dan jalankan node gateway/index.js di terminal.')
     }
-    if (connection === 'open') { connected = true; log('WA terhubung'); flushOutbox().catch(() => {}); mulaiLapangan() }
+    if (connection === 'open') { connected = true; log('WA terhubung'); if (TERLEWAT) TERLEWAT.buka(); if (ULANG_FINAL) ULANG_FINAL.buka(); flushOutbox().catch(() => {}); mulaiLapangan() }
     if (connection === 'close') {
       connected = false
       const code = lastDisconnect?.error?.output?.statusCode

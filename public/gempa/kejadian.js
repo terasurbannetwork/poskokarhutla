@@ -4,35 +4,24 @@
    Klik baris = peta + laci gempa utama + titik susulan + lapisan isoseismal MMI (model guncangan, perkiraan). Tautan bersih: /gempa/k/G0016. */
 const Kejadian = {
   st: {urut: "mulai", turun: true, hal: 0, rentang: "30", tgl: null},   /* tgl = satu tanggal WIB dari kalender; null = rentang */
-  RENTANG: [["7", "7 hari"], ["14", "14 hari"], ["30", "30 hari"]],   /* pemilih waktu (pemilik, 16 Nov 2026); data API paling jauh 30 hari */ PER: 10, aktif: null, _ia: false,
-  KOL: [["kode", "Kode"], ["nama", "Gempa utama"], ["m", "Kekuatan", 1], ["sus", "Susulan", 1, "Gempa lebih kecil (di bawah M 5) yang jatuh di jendela jarak dan waktu gempa utama (Uhrhammer 1986, paling lama 35 hari). Batas bawah: hanya gempa kecil yang tercatat di sumber katalog kami yang dihitung."], ["mulai", "Mulai"], ["aktif", "Status"]],
+  PER: 10,   /* pemilih waktu 7/14/30 hari dari RentangKj; data API paling jauh 30 hari */ aktif: null, _ia: false,
+  KOL: [["kode", "Kode", 0, "Nomor kejadian gempa: satu gempa utama M 5 ke atas beserta susulannya."], ["nama", "Gempa utama", 0, "Wilayah gempa utama menurut BMKG atau USGS."], ["m", "Kekuatan", 1, "Magnitudo gempa utama menurut BMKG atau USGS."], ["sus", "Susulan", 1, "Gempa lebih kecil (di bawah M 5) yang jatuh di jendela jarak dan waktu gempa utama (Uhrhammer 1986, paling lama 35 hari). Batas bawah: hanya gempa kecil yang tercatat di sumber katalog kami yang dihitung."], ["mulai", "Mulai", 0, "Waktu gempa utama (WIB)."], ["aktif", "Status", 0, "Aktif selama masa aktif kejadian belum berakhir: 3 hari sesudah gempa terakhir yang tergabung, 7 hari bila gempa utama M 6,5 ke atas."]],
   nilai: (k, c) => c === "sus" ? Math.max(0, k.jumlah - 1) : c === "aktif" ? +k.aktif : c === "mulai" ? Date.parse(k.mulai) : c === "nama" ? wilayahPendek(k.nama) : k[c],
   sel: (k, c) => c === "kode" ? `<b translate="no">${esc(k.kode)}</b>` : c === "nama" ? `<span translate="no">${esc(wilayahPendek(k.nama))}</span>` : c === "m" ? pilM(k.m) : c === "sus" ? fmt(Math.max(0, k.jumlah - 1))
     : c === "mulai" ? `<span translate="no">${esc(waktuGempa(k.mulai))}</span>` : `<span class="pill pm" style="--w:${k.aktif ? "#d4572f" : "#7d8794"}">${k.aktif ? "Aktif" : "Selesai"}</span>`,
+  /* tabel polos + pemilih Rentang waktu bersama (RentangKj, inti/tabel.js): rupa sama dengan tab Kejadian cuaca, udara, dan gunung api (pemilik 23 Nov 2026: "samain, kita lagi bikin standar") */
   tabel() {
-    const st = this.st, s = st.turun ? -1 : 1, batas = Date.now() - +st.rentang * 864e5, R = this.K.filter(k => st.tgl ? this.wib(k.mulai) === st.tgl : Date.parse(k.mulai) >= batas).sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
+    const st = this.st, s = st.turun ? -1 : 1, R = RentangKj.saring(this.K, st, k => k.mulai).sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / this.PER) - 1));
-    const IKAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
-    const seg = Kartu.seg("rentang", this.RENTANG, st.tgl ? {} : st), tb = `<button type="button" class="kj-tgl" data-kj-tgl aria-haspopup="dialog" aria-pressed="${!!st.tgl}">${IKAL}${st.tgl ? esc(this.pendek(st.tgl)) : "Pilih tanggal"}</button>`;
-    const alat = `<div class="kj-alat"><span class="kj-alat-l">Rentang waktu</span>${seg}${tb}</div>`, ket = st.tgl ? "tanggal " + this.pendek(st.tgl) : st.rentang + " hari terakhir";
-    if (!R.length) return alat + `<div class="kosong">Tidak ada kejadian gempa ${ket}.</div>`;
-    return alat + `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num, tt]) => `<th class="${num ? "n" : ""}"${tt ? ` title="${esc(tt)}"` : ""} aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
-      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}<p class="fnd">Sumber: BMKG, USGS. ${st.tgl ? "Kejadian yang mulai " + this.pendek(st.tgl) : st.rentang + " hari terakhir"}, per ${esc(jamWIB(new Date(Sus._daftar?.t || Date.now()).toISOString()))}</p>`; },
-  wib: t => new Date(Date.parse(t) + 7 * 36e5).toISOString().slice(0, 10),
-  pendek: iso => new Date(iso + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}),
-  /* kalender inti (sama dengan "Tanggal lain" di peta): angka = jumlah kejadian G yang mulai hari itu; hanya tanggal berkejadian yang bisa dipilih */
-  kalender(tombol) { if (typeof Kalender === "undefined" || !this.K) return; const j = {}; for (const k of this.K) { const t = this.wib(k.mulai); j[t] = (j[t] || 0) + 1; }
-    const hi = this.wib(new Date().toISOString());
-    Kalender.buka({tombol, hariIni: hi, terpilih: this.st.tgl || hi, judul: "Pilih tanggal kejadian", satuan: "kejadian", ket: "Angka = jumlah kejadian gempa utama M 5+ yang mulai hari itu (30 hari terakhir).",
-      terbanyak: {judul: "Terbanyak", n: 6}, muat: async () => ({jumlah: j}), bisa: t => t in j, pilih: t => { this.st.tgl = t; this.st.hal = 0; nanti(() => this.gambarTabel()); }}); },
+    if (!R.length) return RentangKj.kartu(st, {nama: "Kejadian gempa", sumber: `Sumber: BMKG, USGS. Gempa utama M 5 atau lebih beserta susulannya, paling jauh 30 hari terakhir.`, pil: null, isi: `<div class="kosong">Tidak ada kejadian gempa ${RentangKj.ket(st)}.</div>`});
+    return RentangKj.kartu(st, {nama: "Kejadian gempa", sumber: `Sumber: BMKG, USGS. Gempa utama M 5 atau lebih beserta susulannya, paling jauh 30 hari terakhir.`, pil: null, isi: `<div class="tw ex-tabel"><table><thead><tr>${this.KOL.map(([c, n, num, tt]) => `<th class="${num ? "n" : ""}"${tt ? ` title="${esc(tt)}"` : ""} aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}`}); },
   gambarTabel() { const el = $("#kejadian"); el.innerHTML = this.tabel(); const th = el.querySelector("thead"); if (th) pengurutKepala(this.st, th, () => nanti(() => this.gambarTabel())); },
   async render() {
     const el = $("#kejadian"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
       /* paginasi hanya untuk klik (Tab/panah tidak mengganti halaman); baris untuk klik, Enter, atau Spasi */
-      const buka = e => { const rg = e.type === "click" && e.target.closest('button[data-set="rentang"]');
-        if (rg) { if (rg.dataset.v === this.st.rentang && !this.st.tgl) return; this.st.rentang = rg.dataset.v; this.st.tgl = null; this.st.hal = 0; return nanti(() => this.gambarTabel()); }
-        const kt = e.type === "click" && e.target.closest("[data-kj-tgl]"); if (kt) return this.kalender(kt);
+      const buka = e => { if (RentangKj.klik(e, this.st, {K: () => this.K, mulai: k => k.mulai, gambar: () => this.gambarTabel(), ket: "Angka = jumlah kejadian gempa utama M 5 atau lebih yang mulai hari itu (30 hari terakhir)."})) return;
         const h = e.type === "click" && e.target.closest("[data-h]");
         if (h) { if (h.disabled) return; const a = +h.dataset.h; this.st.hal = a; el.querySelectorAll(".pgn-b").forEach(b => { b.classList.toggle("on", b === h && !b.disabled); if (b !== h) b.removeAttribute("aria-current"); }); h.setAttribute("aria-current", "page");
           return nanti(() => { this.gambarTabel(); el.querySelector(`.pgn-b[data-h="${a}"]`)?.focus(); }); }

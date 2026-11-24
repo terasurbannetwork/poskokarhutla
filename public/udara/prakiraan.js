@@ -16,6 +16,8 @@ const atrKota = k => S.atr?.kota?.find(x => x.kode === k);
 /* nama bagian atribusi tanpa nama orang: hanya badan usaha dan kompleks */
 const namaBag = b => b.jenis === "api" ? (b.konsesi?.[0] || b.nama) : b.nama;
 
+/* label lapis angin lintasan: satuan dipisah spasi, arti hPa di title */
+const LAPIS_KET = {"10m": ["10 m", "Angin 10 meter di atas permukaan"], "925hPa": ["925 hPa", "Angin pada tekanan udara 925 hektopascal, lapisan dekat permukaan"], "850hPa": ["850 hPa", "Angin pada tekanan udara 850 hektopascal, lapisan di atas 925 hPa"]};
 const Prak = {
   st: {jam: null, lapis: "850hPa"},
   ada: () => !!S.prak,
@@ -47,13 +49,13 @@ const Prak = {
   kartuKota(i) { const k = S.prak.kota[i]; if (!k) return ""; const v = this.nilai(k); if (v == null) return ""; const s = M.statusDari(v), w = M.ST_WARNA[s];
     return PI.kartuTip({judul: esc(k.nama), stat: [["perisai", M.labelStatus(s), "status", w, s !== "normal"], ["debit", fmt(Math.round(v)) + " µg/m³", this.st.jam != null ? "rata-rata 24 jam sampai jam ini" : "rata-rata 24 jam", w]]}); },
   kartuKomp(i) { const k = S.lin.kompleks[i]; if (!k) return "";
-    return PI.kartuTip({judul: "Cluster " + esc(k.id), sub: k.konsesi?.length ? `<small>${k.konsesi.map(esc).join(", ")}</small>` : "", stat: [["peringatan", fmt(Math.round(k.frp)) + " MW", "daya radiasi api", "#c0392b"], ...(k.kota?.length ? [["peta", fmt(k.kota.length) + " kota", "dilalui asap", "#e8743b"]] : [])]}); },
+    return PI.kartuTip({judul: "Kluster titik api " + esc(k.id), sub: k.konsesi?.length ? `<small>${k.konsesi.map(esc).join(", ")}</small>` : "", stat: [["peringatan", fmt(Math.round(k.frp)) + " MW", "daya radiasi api", "#c0392b"], ...(k.kota?.length ? [["peta", fmt(k.kota.length) + " kota", "dilalui asap", "#e8743b"]] : [])]}); },
 
   /* kontrol di kartu kanan: geser jam + pilih lapis; muncul hanya bila lapisan kota atau lintasan menyala */
   kontrol() { const el = $("#jamKota"); if (!el) return; if (!S.prak) { el.hidden = true; return; }
     const n = S.prak.jam.length, j0 = this.st.jam ?? Math.min(n - 1, M.indeksJam(S.prak.jam, SEKARANG())), lp = this.lapisList();
     el.innerHTML = `<span class="lbl">Jam</span><input type="range" id="jamGeser" min="0" max="${n - 1}" step="1" value="${j0}" aria-label="Jam prakiraan"><b id="jamTeks"></b>`
-      + (lp.length ? `<div class="seg penuh" id="lapisLin" aria-label="Lapis angin lintasan asap">${lp.map(l => `<button data-l="${l}" aria-pressed="${l === this.st.lapis}">${l}</button>`).join("")}</div>` : "");
+      + (lp.length ? `<div class="seg penuh" id="lapisLin" aria-label="Lapis angin lintasan asap">${lp.map(l => `<button data-l="${l}" aria-pressed="${l === this.st.lapis}" title="${LAPIS_KET[l]?.[1] || ""}">${LAPIS_KET[l]?.[0] || l}</button>`).join("")}</div>` : "");
     this.hiasKontrol(); this.hiasJam(); },
   hiasKontrol() { const el = $("#jamKota"); if (!el || !S.prak) return; const on = Peta.lihat("kota") || Peta.lihat("lintasan"); el.hidden = !on;
     el.querySelectorAll("#lapisLin button").forEach(b => b.setAttribute("aria-pressed", b.dataset.l === this.st.lapis)); const l = $("#lapisLin"); if (l) l.hidden = !Peta.lihat("lintasan"); },
@@ -63,10 +65,10 @@ const Prak = {
     t.textContent = this.st.jam == null ? "rata-rata hari" : M.kataJam(J[this.st.jam]); },
   ikutHari() { this.st.jam = null; this.segarkan(); },
 
-  /* grafik garis PM2,5 per jam dengan pita kategori; mentah putus-putus bila beda; angka puncak tertulis */
+  /* grafik garis PM2,5 per jam dengan pita kategori; mentah putus-putus bila beda; angka puncak tertulis. sempit = laci 390 px: kanvas 380 supaya huruf sumbu tidak mengecil */
   garis72(k, sempit = false) {
     k = {...k, mentah: k.mentah?.some((v, i) => v !== k.pm[i]) ? k.mentah : null};   /* mentah = terkoreksi (belum ada koreksi): satu garis saja */
-    const mobil = sempit || innerWidth < 640, W = mobil ? 520 : 940, H = mobil ? 200 : 210, L = 44, R = 14, T = 16, B = H - 26, n = k.pm.length, ser = [k.pm, k.mentah || []];
+    const mobil = sempit || innerWidth < 640, W = sempit ? 380 : mobil ? 520 : 940, H = sempit ? 180 : mobil ? 200 : 210, L = sempit ? 36 : 44, R = 14, T = 16, B = H - 26, n = k.pm.length, ser = [k.pm, k.mentah || []];
     const mx = Math.max(60, ...ser.flat()) * 1.12, X = i => L + i / (n - 1) * (W - L - R), Y = v => B - Math.sqrt(Math.min(Math.max(v, 0), mx) / mx) * (B - T);   /* akar: pita kategori tetap terbaca walau puncak asap ribuan µg/m³ */
     const pita = [[0, 55.4, "normal"], [55.4, 150.4, "waspada"], [150.4, 250.4, "siaga"], [250.4, Infinity, "awas"]].filter(b => b[0] < mx).map(([a, z, s]) =>
       `<rect x="${L}" width="${W - L - R}" y="${Y(Math.min(z, mx))}" height="${Y(a) - Y(Math.min(z, mx))}" fill="${M.ST_WARNA[s]}" opacity=".13"/>`).join("");
@@ -84,18 +86,26 @@ const Prak = {
       const r = `<rect x="${x}" y="0" width="${Math.max(1, w - 1)}" height="${tinggi}" fill="${warnaBag(s, i)}" data-tip="${tip}"/>${w > 34 ? `<text x="${x + w / 2}" y="${tinggi / 2 + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${fmt(s.persen)}%</text>` : ""}`; x += w; return r; }).join(""); },
 
   /* atribusi di laci: CAMS dan model berdampingan; kota tak terpercaya tanpa persen */
-  bagianAtribusi(a, kom) { const cm = `<p class="fnd">PM2,5 CAMS besok <b>${fmt(a.pm)} µg/m³</b>${a.model != null ? `, model sumber <b>${fmt(a.model)} µg/m³</b>` : ""}</p>`;
-    if (a.terpercaya === false) return `<p class="fnd">Asal asap besok:</p>${cm}<p class="fnd">Model jauh di atas CAMS, porsi tak dihitung.${a.alasan ? " " + esc(a.alasan) : ""}</p>`;
-    return `<p class="fnd">Asal asap besok:</p>${cm}<svg viewBox="0 0 420 22" width="100%" role="img" aria-label="Asal PM2,5">${this.batangAtribusi(a)}</svg>
-      <div class="legd">${M.normBagian(a.bagian || []).map((b, j) => `<span class="kt" style="--c:${warnaBag(b, j)};--f:#fff;text-transform:none" translate="no">${esc(namaBag(b))}, ${fmt(b.persen)}%</span>`).join(" ")}</div>
-      ${kom.length ? `<p class="fnd">Cluster di karhutla: ${kom.map(b => `<a href="/?k=${encodeURIComponent(b.id)}" translate="no">${esc(b.id)}</a>`).join(", ")}</p>` : ""}`; },
+  bagianAtribusi(a, kom) { const cm = `<div class="lc-lbs">${barisLaci("debit", "PM2,5 CAMS besok", angSat(fmt(a.pm)))}${a.model != null ? barisLaci("rasio", "Total model sumber", angSat(fmt(a.model))) : ""}</div>`;
+    if (a.terpercaya === false) return `${cm}<p class="fnd">Porsi tiap sumber tidak dihitung karena total model sumber jauh di atas angka CAMS.${a.alasan ? " " + esc(a.alasan) : ""}</p>`;
+    /* daftar sumber: titik warna (sama dengan batang), nama boleh turun baris, persen rata kanan dengan rentang kecil di bawahnya */
+    return `${cm}<svg viewBox="0 0 420 22" width="100%" role="img" aria-label="Asal PM2,5">${this.batangAtribusi(a)}</svg>
+      <table class="tb2 ud-asal"><tbody>${M.normBagian(a.bagian || []).map((b, j) => `<tr><td><span class="ud-nm"><span class="ud-dot" style="--w:${warnaBag(b, j)}"></span><span translate="no">${esc(namaBag(b))}</span></span></td><td class="n"><b>${fmt(b.persen)}%</b>${b.rendah != null && b.tinggi != null ? `<small class="lc-sub">rentang ${fmt(b.rendah)} sampai ${fmt(b.tinggi)}%</small>` : ""}</td></tr>`).join("")}</tbody></table>
+      ${kom.length ? `<div class="ud-tautan"><span class="fnd">Kluster titik api di halaman Karhutla</span><div class="chip-wil">${kom.map(b => `<a class="lc-luar" href="/?k=${encodeURIComponent(b.id)}" translate="no">${LC() ? LC().ikonSvg("api") : ""}${esc(b.id)}</a>`).join("")}</div></div>` : ""}`; },
   laciKota(i) { const k = S.prak.kota[i]; if (!k) return; const a = atrKota(k.kode), hr = S.prak.hari;
     const kom = a && a.terpercaya !== false ? M.normBagian(a.bagian || []).filter(b => b.jenis === "api" && b.id) : [];
+    /* kartu bagian berikon (inti/peta/lapis.js lewat sekLaci di peta.js); sumber di kaki kecil kartu terakhir */
+    const lblHari = t => t === tglWIB(SEKARANG()) ? "Hari ini" : tglSing(t);
+    /* ringkasan: provinsi, penduduk, dan porsi asap kebakaran per hari (dulu "api N%" di bawah kotak hari, kini berlabel lengkap) */
+    const asap = hr.map((t, h) => barisLaci("api", "Porsi asap kebakaran, " + lblHari(t).replace(/^Hari ini$/, "hari ini"), k.asap?.[h] == null ? '<span class="lc-sub">belum ada data</span>' : fmt(Math.round(k.asap[h] * 100)) + "%")).join("");
+    const ring = (k.prov ? barisLaci("peta", "Provinsi", esc(namaProv(k.prov)), {tr: true}) : "") + (k.jiwa ? barisLaci("orang", "Penduduk", jiwa(k.jiwa)) : "") + asap;
+    const bag = [ring && {judul: "Ringkasan", ikon: "kab", isi: `<div class="lc-lbs">${ring}</div>`},
+      {judul: "PM2,5 per jam, 72 jam ke depan", ikon: "debit", isi: (k.mentah?.some((v, j) => v !== k.pm[j]) ? `<p class="fnd">Garis tebal terkoreksi, garis putus-putus mentah.</p>` : "") + this.garis72(k, true)},
+      a && {judul: "Asal asap besok", ikon: "api", isi: this.bagianAtribusi(a, kom)}].filter(Boolean);
+    bag[bag.length - 1].sumber = `Sumber: Copernicus CAMS lewat Open-Meteo${terkoreksi() ? ", stasiun pemantau" : ""}. ${terkoreksi() ? "" : "Perkiraan model, belum dikoreksi ke alat ukur. "}Data ${jamWIB(S.prak.dibuat)}.`;
     Laci.buka("Kota", `<span translate="no">${esc(k.nama)}</span>`, pilKor(),
-      `<div class="grid g4">${hr.map((t, h) => { const s = M.statusHari(k, h), w = M.ST_WARNA[s || "normal"]; return kot(tglSing(t), `<span style="color:${w}">${fmt(k.r24[h])} µg/m³</span>`, M.labelStatus(s) + `, api ${k.asap?.[h] == null ? "–" : fmt(Math.round(k.asap[h] * 100)) + "%"}`); }).join("")}</div>
-      <p class="fnd">PM2,5 per jam, 72 jam ke depan${k.mentah?.some((v, j) => v !== k.pm[j]) ? " (garis tebal terkoreksi, putus-putus mentah)" : ""}:</p>${this.garis72(k, true)}
-      ${a ? this.bagianAtribusi(a, kom) : ""}
-      <p class="fnd">Sumber: Copernicus CAMS lewat Open-Meteo${terkoreksi() ? ", stasiun pemantau" : ""}. ${terkoreksi() ? "" : "Perkiraan model, belum dikoreksi ke alat ukur. "}Data ${jamWIB(S.prak.dibuat)}</p>`);
+      `${kotakHari(hr.map((t, h) => { const s = M.statusHari(k, h), w = M.ST_WARNA[s || "normal"]; return kot(lblHari(t), k.r24?.[h] == null ? "–" : angSat(fmt(k.r24[h]), w), pilLaci(M.labelStatus(s), w), "waktu"); }))}
+      ${bag.map(sekLaci).join("")}`);
   },
 
   /* ---------- kartu Insight ---------- */

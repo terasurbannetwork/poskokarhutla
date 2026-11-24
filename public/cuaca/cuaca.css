@@ -6,12 +6,12 @@
 .rw:hover{background:var(--surface)}
 .rw:hover+.rw::after,.rw:hover::after{border-color:transparent}
 .rw-hd{display:flex;align-items:baseline;gap:10px;min-width:0}
-.rw-hd b{flex:1;min-width:0;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rw-kn{flex:none;font-size:12px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
-.rw-ket{font-size:12.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw-hd b{flex:1;min-width:0;font-size:0.875rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw-kn{flex:none;font-size:0.75rem;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rw-ket{font-size:0.7812rem;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rw-ket em{font-style:normal;font-weight:700;color:color-mix(in oklch,var(--w) 75%,#000);margin-right:6px}
-.rw-wil{font-size:12px;color:var(--ink2);opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rows .kosong{padding:20px 12px;text-align:center;color:var(--ink2);font-size:13px}
+.rw-wil{font-size:0.75rem;color:var(--ink2);opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rows .kosong{padding:20px 12px;text-align:center;color:var(--ink2);font-size:0.8125rem}
 .panel .top{padding:12px 14px}
 /* kartu Insight: label pil berikon di kepala; tombol bagikan dipasang mesin Bagikan dan ditata inti/insight.css (sama dengan karhutla dan banjir) */
 #insight .ex-ey,#tren .ex-ey{display:inline-flex;align-items:center;gap:5px}
@@ -20,7 +20,7 @@
 #insight .ex-bd:empty + .ex-ft{border-top:0}
 #metode .ex{margin-bottom:16px;border-radius:18px;overflow:hidden}
 #metode .ex-bd{padding:16px 22px 12px}
-#metode .ex-ft{padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#metode .ex-ft{padding:10px 22px 14px;border-top:1px solid var(--line);font-size:0.7188rem;color:var(--ink2)}
 #metode .ex-ft:empty{display:none}
 .mt{margin:0;padding-left:18px;display:grid;gap:6px}
 /* hari di luar jangkauan 72 jam dimatikan saat mode Status */
@@ -28,15 +28,104 @@
 /* pil siklon di atas peta */
 .pil-sik{position:absolute;z-index:6;top:12px;left:calc(var(--lp,440px) + 30px);display:flex;gap:6px;flex-wrap:wrap}
 .pil-sik:empty{display:none}
-.pil-sik button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px;background:#7a1f2b;color:#fff;font:600 12.5px var(--sans,inherit);box-shadow:var(--shadow);cursor:pointer}
+.pil-sik button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px;background:var(--bad);color:var(--on-pekat);font:600 0.7812rem var(--sans,inherit);box-shadow:var(--shadow);cursor:pointer}
 @media(max-width:900px){.pil-sik{left:12px;top:64px}}
 /* A24: kontak BPBD dibuat tetapi disembunyikan, sama seperti gempa dan "Respons terdekat" karhutla (data kantor lama, nomor perlu dicek) */
 #laci [data-j="Kontak BPBD"]{display:none}
+#laci .lc-sek:has(> [data-j="Kontak BPBD"]),#kejKontak:empty{display:none}
+/* laci: kotak angka berderet rapat; satu kelas gelombang = pil lalu chip perairannya */
+#laci .lc-kot{gap:8px}
+/* kotak dalam satu baris segaris: kepala, angka, dan keterangan berbagi baris kisi (subgrid), jadi label dua baris tidak menggeser angka di sebelahnya */
+#laci .lc-kot>.kpi{display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:0;align-content:start}
+#laci .lc-kot>.kpi>b{align-self:start}
+/* potongan waktu (tanggal dan jam) tidak dipatah di tengah; di HP baris lc-lb boleh turun ke bawah label */
+.nw{white-space:nowrap}
+@media(max-width:600px){#laci .lc-lb{flex-wrap:wrap}#laci .lc-lb>b{margin-left:auto}}
+/* kolom daftar berita (inti 340px) tidak melebihi lebar layar sempit; kartu berita bertombol tidak melebar melewati layar sempit */
+#berita .br-list{grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr))}
+#berita .br-item{min-width:0;max-width:100%}
+.lc-gel{display:grid;gap:6px;justify-items:start}
+.lc-sek img{margin-top:2px}
+/* ringkasan tabel Status di panel kiri: satu kotak angka berikon */
+.st-ringkas{margin:2px 8px 8px}
 /* overlay rawan longsor dan peringatan dini: pil jenis di legenda dock (rawan.js) */
 .rw-pil{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 4px}
-.rw-chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--w);border-radius:999px;padding:3px 9px;background:transparent;color:var(--w);font-family:inherit;font-size:11px;font-weight:600;line-height:1.3;cursor:pointer}
-.rw-chip[aria-pressed="true"]{background:var(--w);color:#fff}
+.rw-chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--w);border-radius:999px;padding:3px 9px;background:transparent;color:var(--w);font-family:inherit;font-size:0.6875rem;font-weight:600;line-height:1.3;cursor:pointer}
+.rw-chip[aria-pressed="true"]{background:var(--w);color:var(--on-pekat)}
 .rw-chip b{font-variant-numeric:tabular-nums}
 /* tabel Status bertingkat di panel kiri: judul kolom boleh dua baris (satuan di baris kedua), rata tengah */
 #rows .tb.kepala span{line-height:1.2;text-align:center;letter-spacing:.03em}
-#rows .tb.kepala span:nth-child(2){text-align:left}
+#rows .tb.kepala span:nth-child(2){text-align:center}
+/* QA rupa 23 Nov 2026: tabel kartu cuaca. Kepala rata tengah, angka rata kanan tabular, pil di sel selalu di tengah (aturan tabel pemilik) */
+:is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw th{text-align:center}
+:is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw th button{justify-content:center}
+:is(#insight,#dampak,#berita,#metode,#posko) .tw td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+:is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw td:has(> .pl:only-child),:is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw td:has(> .pill:only-child){text-align:center}
+/* kaki kosong (tanpa legenda) tidak menyisakan garis dan jarak */
+:is(#insight,#tren,#dampak,#berita) .ex-ft:empty{display:none}
+:is(#tren,#dampak,#berita) .ex-ey:empty{display:none}
+/* subjudul di dalam kartu, di antara dua tabel atau grafik; bukan paragraf lepas */
+.ex-sub{margin:14px 2px 8px;font-size:0.75rem;font-weight:700;color:var(--ink2);letter-spacing:.01em}
+.ex-bd>.ex-sub:first-child{margin-top:0}
+/* penjelasan metode dan catatan data dilipat di akhir kartu */
+.ex-bd>details.mt-tek{margin:12px 2px 2px}
+.ex-bd>details.mt-tek .mt-tekisi p{color:var(--ink2);font-size:0.7812rem;line-height:1.55}
+.ex-bd>details.mt-tek .mt-tekisi .mt{font-size:0.7812rem;color:var(--ink2)}
+/* legenda tumpuk Iklim BMKG rata tengah seperti legenda kartu lain */
+.ik-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin:8px 0 14px;font-size:0.7188rem;color:var(--ink2)}
+.ik-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+/* pil keterangan sumber di kartu Iklim dan Kantor BMKG */
+.ik-pil{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--head-bg);color:var(--on-head);font-size:0.6875rem;font-weight:700}
+/* tabel kantor BMKG: teks panjang dibungkus, tanpa gulir menyamping */
+#insight .tw.ik-kantor td{white-space:normal}
+/* tabel Metode: teks panjang dibungkus supaya kolom ketiga tidak terpotong */
+#metode .tw td{white-space:normal;vertical-align:top}
+/* tabel di laci (prakiraan BMKG 10 hari, bandara): teks dibungkus, tanpa gulir menyamping */
+#laci .tw td{white-space:normal}
+#laci .tw th{text-align:center}
+#laci .tw td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* ---------- laci rapi cuaca (23 Nov 2026): tabel ringan berkepala navy, matriks hari, lipatan, butir bernomor; warna hanya token tema.css ---------- */
+#laci .cu-tb{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+#laci .cu-tb table{width:100%;border-collapse:collapse;font-size:0.75rem}
+#laci .cu-tb thead th{background:var(--head-bg);color:var(--on-head);font-size:0.6562rem;font-weight:700;letter-spacing:.03em;padding:6px 8px;text-align:left;line-height:1.25;vertical-align:bottom;white-space:normal}
+#laci .cu-tb thead th.n{text-align:right}
+#laci .cu-tb td{padding:6px 8px;border-top:1px solid var(--line);color:var(--ink);vertical-align:middle;line-height:1.35;white-space:normal}
+#laci .cu-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+#laci .cu-mx td.n{white-space:nowrap;padding:6px 5px}
+#laci .cu-mx .pl{height:18px;padding:0 7px;font-size:0.6562rem}
+#laci .cu-mx thead th.n{padding:6px;text-transform:none;letter-spacing:0;font-size:0.6875rem}
+#laci .cu-mx tbody th{padding:6px 6px 6px 8px;border-top:1px solid var(--line);text-align:left;font-size:0.7188rem;font-weight:600;color:var(--ink2);line-height:1.3;min-width:84px}
+#laci .cu-mx tbody th small{display:block;margin-top:1px;font-size:0.6562rem;font-weight:500;color:var(--ink2);white-space:nowrap}
+#laci .cu-mx thead th.on{background:var(--brand2);color:var(--on-brand)}
+#laci .cu-mx td.on{background:color-mix(in oklch,var(--brand2) 9%,transparent);font-weight:700}
+#laci .cu-tb + .cu-lipat,#laci .lc-lbs + .cu-lipat,#laci .cu-ol + .cu-lipat{margin-top:2px}
+#laci .cu-lipat{border-top:1px solid var(--line);padding-top:7px}
+#laci .cu-lipat > summary{display:flex;align-items:center;gap:6px;cursor:pointer;list-style:none;font-size:0.75rem;font-weight:600;color:var(--brand2)}
+#laci .cu-lipat > summary::-webkit-details-marker{display:none}
+#laci .cu-lipat > summary::before{content:"";flex:none;width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform var(--dur-1,.15s) var(--ease,ease)}
+#laci .cu-lipat[open] > summary::before{transform:rotate(45deg)}
+#laci .cu-lipat > summary:focus-visible{outline:2px solid var(--brand2);outline-offset:2px;border-radius:4px}
+#laci .cu-lipat-isi{display:grid;gap:8px;padding-top:8px}
+#laci .cu-ol{margin:0;padding-left:20px;display:grid;gap:5px;font-size:0.75rem;line-height:1.5;color:var(--ink)}
+#laci .cu-ol li::marker{color:var(--ink2);font-weight:700;font-variant-numeric:tabular-nums}
+#laci .cu-ol-j li b{display:block;font-size:0.6562rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
+#laci .cu-tautan{display:flex;flex-wrap:wrap;gap:6px}
+#laci .cu-kode{display:block;padding:8px 10px;border-radius:6px;background:var(--surface);font-size:0.6875rem;line-height:1.5;white-space:normal;word-break:break-all;color:var(--ink)}
+#laci .cu-bulan{display:block;width:100%;height:auto}
+#laci .cu-bulan-l{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));margin-top:-2px;font-size:0.5938rem;color:var(--ink2);text-align:center}
+#laci .cu-bulan-l .on{color:var(--ink);font-weight:800}
+#laci .lc-sek img{border-radius:8px}
+#laci .hd-meta{flex-wrap:wrap;row-gap:4px}
+#laci .hd-meta > span{display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
+#laci .cu-deret{display:grid}
+#laci .cu-dr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:0.7812rem}
+#laci .cu-dr:last-child{border-bottom:0}
+#laci .cu-dr > span{display:grid;gap:1px;min-width:0}
+#laci .cu-dr > span.n{text-align:right;justify-items:end;flex:none;font-variant-numeric:tabular-nums}
+#laci .cu-dr b{font-weight:700;color:var(--ink);white-space:nowrap}
+#laci .cu-dr small{font-size:0.6875rem;color:var(--ink2);line-height:1.35}
+#laci .lc-kot>.kpi{min-width:0}
+#laci .lc-kot>.kpi>b{overflow-wrap:anywhere}
+@media(max-width:480px){#laci .lc-kot>.kpi>b{font-size:0.9375rem}}
+/* kepala laci: nama panjang boleh dua baris (sama dengan laci gempa), tidak dipotong di tengah kata */
+#laci .hd h2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-wrap:balance}

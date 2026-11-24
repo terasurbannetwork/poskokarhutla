@@ -9,25 +9,25 @@ button,input,select{font:inherit;color:inherit}
 /* ---------- top bar ---------- */
 .mark{display:flex;align-items:center;gap:10px;min-width:0}
 .mark svg{flex:none}
-.mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
-.mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
+.mark b{font-family:var(--display);font-weight:800;font-size:0.9688rem;white-space:nowrap}
+.mark small{display:block;font-size:0.6875rem;opacity:.75;white-space:nowrap}
 /* tab rata tengah di ruang antara logo dan status (pemilik, 20 Okt 2026); "safe" supaya tab yang tidak muat tidak terpotong di kiri */
 nav.tabs{display:flex;justify-content:center;justify-content:safe center;gap:6px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
 @media (min-width:1500px){nav.tabs{margin:0 auto}}
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
-nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:0.9062rem!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:0.8438rem;white-space:nowrap;cursor:pointer}
 /* dipadatkan di bawah 1500px; ikon tetap tampil (pemilik, 20 Okt 2026) dan baru disembunyikan bila ruang benar-benar sempit.
    Harus SESUDAH aturan dasar tombol supaya padding & ukuran huruf menang */
-@media (max-width:1500px){nav.tabs button,nav.tabs a.tab-ln{padding:8px 12px;gap:6px;font-size:13.5px!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:15px;height:15px}}
+@media (max-width:1500px){nav.tabs button,nav.tabs a.tab-ln{padding:8px 12px;gap:6px;font-size:0.8438rem!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:15px;height:15px}}
 /* 9 tab (gempa, gunung api) baru muat berikon mulai 1500px; 7-8 tab muat berikon mulai ~1340px (diukur 20 Okt 2026) */
 @media (min-width:1501px){nav.tabs:has(> button:nth-of-type(9)) button{padding:8px 12px;gap:6px}}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya{flex:none;display:flex;align-items:center}
-.lainnya summary{list-style:none;display:flex;align-items:center;gap:7px;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:14.5px;line-height:inherit;white-space:nowrap;cursor:pointer}
-@media (max-width:1500px){.lainnya summary{padding:8px 12px;gap:6px;font-size:13.5px}}
+.lainnya summary{list-style:none;display:flex;align-items:center;gap:7px;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:0.9062rem;line-height:inherit;white-space:nowrap;cursor:pointer}
+@media (max-width:1500px){.lainnya summary{padding:8px 12px;gap:6px;font-size:0.8438rem}}
 @media (min-width:1501px){nav.tabs:has(> button:nth-of-type(9)) .lainnya summary{padding:8px 12px;gap:6px}}
 .lainnya summary::-webkit-details-marker{display:none}
 .lainnya summary svg{width:16px;height:16px;flex:none;opacity:.9}
@@ -38,12 +38,16 @@ nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
 nav.tabs .lainnya .menu button{color:var(--ink);opacity:1;text-align:left;border-radius:10px;padding:8px 12px}
 nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current="page"]{background:var(--surface)}
-.stat{display:flex;align-items:center;gap:10px;font-size:12px;white-space:nowrap}
-.stat .jam{font-family:var(--display);font-weight:700;font-size:14px}
+.stat{display:flex;align-items:center;gap:10px;font-size:0.75rem;white-space:nowrap}
+.stat .jam{font-family:var(--display);font-weight:700;font-size:0.875rem}
+/* pil jam data di kepala, sama dengan karhutla (lapisan5.css): ikon jam + latar kaca dari warna teks kepala; hanya laman bencana baru (data-kartu="seksi" dari inti/kartu.js), banjir tetap rupa lama */
+:root[data-kartu="seksi"] .stat .upd{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:0.7188rem;font-weight:600;white-space:nowrap;background:color-mix(in oklch, currentColor 14%, transparent);color:inherit;opacity:1}
+:root[data-kartu="seksi"] .stat .upd::before{content:"";width:12px;height:12px;flex:none;background:currentColor;opacity:.8;-webkit-mask:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>') center/contain no-repeat;mask:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>') center/contain no-repeat}
+:root[data-kartu="seksi"] .stat .upd:empty{display:none}
 @media (max-width:900px){.stat .upd,.mark small{display:none}}
 @media (max-width:1500px){.mark small,.stat .pjg{display:none}}
 @media (max-width:1100px){.mark > div{display:none}}
-@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
+@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:0.8125rem}}
 /* mobile: pilihan bencana & tema disembunyikan (pemilik, 15 Okt 2026) */
 #burger{display:none}
 @media (max-width:640px){.bencana,#tema{display:none!important}}
@@ -52,7 +56,7 @@ nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current
   nav.tabs{display:none;position:fixed;top:var(--top);left:8px;right:auto;z-index:60;flex-direction:column;align-items:stretch;gap:2px;margin:6px 0 0;padding:6px;min-width:220px;max-height:calc(100dvh - var(--top) - 20px);overflow-y:auto;
     background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg)}
   header.top.buka nav.tabs{display:flex}
-  nav.tabs button{color:var(--ink);opacity:1;justify-content:flex-start;border-radius:10px;padding:11px 14px!important;font-size:15px!important}
+  nav.tabs button{color:var(--ink);opacity:1;justify-content:flex-start;border-radius:10px;padding:11px 14px!important;font-size:0.9375rem!important}
   nav.tabs button svg{display:block!important}
   nav.tabs button:hover{background:var(--surface)}
   nav.tabs button[aria-current="page"]{background:var(--surface);color:var(--accent,var(--ink))}}
@@ -71,3 +75,22 @@ main{position:fixed;inset:var(--top) 0 0 0}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 14px}
 .head>*{min-width:0;max-width:100%}
 .head p{margin:4px 0 0;color:var(--ink2);max-width:70ch}
+
+/* tab Kejadian semua bencana: pemilih rentang waktu di atas tabel (dari gempa.css, RentangKj di inti/tabel.js) */
+#kejadian .kj-alat{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 0 12px}
+#kejadian .kj-alat-l{font-size:0.7812rem;font-weight:600;color:var(--ink2)}
+#kejadian .kj-alat .seg{flex:none}
+#kejadian .kj-tgl{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:0.7812rem;font-weight:700;cursor:pointer}
+#kejadian .kj-tgl svg{width:15px;height:15px;flex:none}
+#kejadian .kj-tgl:hover{border-color:var(--brand2)}
+#kejadian .kj-tgl[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--card)}
+@media (max-width:600px){#kejadian .kj-alat{flex-wrap:wrap;justify-content:flex-start}#kejadian .kj-alat-l{width:100%}}
+/* kartu tab Kejadian standar (RentangKj.kartu): pemilih rentang di kepala navy rata kiri berlabel terang, segmen penuh terbagi rata, tabel menempel */
+#kejadian .kj-kartu .ex-hd .kj-alat{justify-content:flex-start;flex-wrap:wrap;margin:12px 0 0;width:100%}
+#kejadian .kj-kartu .ex-hd .kj-alat-l{color:var(--on-head-2)}
+#kejadian .kj-kartu .ex-hd .kj-alat .seg{flex:1 1 auto;display:flex;min-width:0}
+#kejadian .kj-kartu .ex-hd .kj-alat .seg button{flex:1 1 0;min-width:0;text-align:center}
+#kejadian .kj-kartu>.ex-bd{padding:0;gap:0}
+#kejadian .kj-kartu>.ex-bd>.pgn{padding:10px 22px 14px}
+#kejadian .kj-kartu>.ex-bd>.kosong{padding:28px 22px}
+#kejadian .kj-kartu>.ex-bd>.tw{margin:0;border-radius:0}

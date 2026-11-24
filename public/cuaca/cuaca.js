@@ -57,9 +57,11 @@ const AMB = () => S.meta.ambang;
 const UJI_GAGAL = () => S.uji?.jenis?.cuaca?.selisih_auc_hujan_klimatologi?.selang95?.[1] < 0;
 const AMBANG_PIL = () => S.ver?.kita?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis" + (UJI_GAGAL() ? ", belum lolos uji logbook" : "");
 const AMBANG_KAKI = () => { const K = S.ver?.kita; if (K?.vonis?.layak) return ""; const l = K?.lead?.["1"], n = l ? l.a + l.c : 0;
-  return `Ambang belum lolos uji balik${K && n >= (K.n_min ?? 30) ? `: dari ${fmt(n)} provinsi-hari ber-kejadian DIBI, prakiraan 1 hari sebelumnya menangkap ${fmt(l.a)} (sekitar ${fmt(Math.round(l.a / n * 100))}%)` : ""}.${UJI_GAGAL() ? " Uji terhadap logbook Pusdalops juga belum lolos: kebiasaan kab dan bulan menebak kejadian lebih baik daripada hujan." : ""}`; };
+  return `Ambang belum lolos uji balik${K && n >= (K.n_min ?? 30) ? `: dari ${fmt(n)} provinsi-hari dengan kejadian tercatat di DIBI, prakiraan 1 hari sebelumnya menangkap ${fmt(l.a)} (sekitar ${fmt(Math.round(l.a / n * 100))}%)` : ""}.${UJI_GAGAL() ? " Uji terhadap logbook Pusdalops juga belum lolos: kebiasaan kabupaten dan bulan menebak kejadian lebih baik daripada hujan." : ""}`; };
+/* pil "Hipotesis" pendek di kepala (kalimat lengkapnya di title), alasan uji dilipat di akhir isi kartu, bukan paragraf lepas di bawah kaki */
 const beriAmbang = h => { if (!h || S.ver?.kita?.vonis?.layak) return h; const k = AMBANG_KAKI();
-  return h.replace(/(<span class="ex-ey">.*?<\/span>)/s, `$1<span class="pl" style="--w:var(--warn);margin-left:6px">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p class="fnd" style="padding:2px 22px 14px">${k}</p></article>`); };
+  return h.replace(/(<span class="ex-ey">.*?<\/span>)/s, `$1<span class="pl" style="--w:var(--warn);margin-left:6px" title="${esc(AMBANG_PIL())}">Hipotesis</span>`)
+    .replace(/(<div class="ex-bd">[\s\S]*?)(<\/div><footer class=.ex-ft.>)/, (m, a, b) => `${a}<details class="mt-tek"><summary>Mengapa masih hipotesis</summary><div class="mt-tekisi"><p>${k}</p></div></details>${b}`); };
 
 /* ================================================================ tab */
 const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["posko", "Posko"], ["informasi", "Informasi"], ["metode", "Metode"]];

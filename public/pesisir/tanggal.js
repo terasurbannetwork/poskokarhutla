@@ -8,7 +8,7 @@ if (typeof PilihTanggal === "undefined" || typeof S === "undefined") return;
 const HARI = 864e5, awal = iso => Date.parse(iso + "T12:00:00+07:00");
 let host = document.getElementById("pilihTanggal");
 const panel = document.querySelector("#panelMode");
-if (!host && panel) { host = document.createElement("div"); host.id = "pilihTanggal"; host.style.cssText = "width:100%;margin-bottom:8px"; panel.after(host); }
+if (!host && panel) { host = document.createElement("div"); host.id = "pilihTanggal"; host.style.cssText = "width:100%;margin-bottom:8px"; (panel.closest(".gp-bar") || panel).after(host); }
 
 /* semua tanggal berdata: hari model rob dan hari prediksi pasang surut */
 function tanggalBerdata() {

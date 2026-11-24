@@ -1,0 +1,1057 @@
+[
+ {
+  "id": "penanganan-01",
+  "sumber": "tests/wa/bahan/satgas_271026.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/satgas_271026.txt",
+    "teks": "*LAPORAN UPAYA PEMADAMAN KARHUTLA OLEH SATGAS DI ENAM PROVINSI PRIORITAS*\n_27 Oktober 2026_\n\n**1. Operasi Darat**\n\n*a. Kekuatan personel*\nKekuatan personel yang terdata pada enam provinsi mencapai sekitar *±71.878 personel*, dengan rincian:\n\n> Kalimantan Barat *14.458*  personel.\n> Kalimantan Tengah *16.387*  personel.\n> Kalimantan Selatan *7.927*  personel.\n> Sumatera Selatan *12.285* personel.\n> Riau *14.837*  personel.\n> Jambi *5.984* personel."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "personel_darat",
+    "nilai": "71.878",
+    "kutipan": "mencapai sekitar ±71.878 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "enam provinsi"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "14.458",
+    "kutipan": "Kalimantan Barat 14.458 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "16.387",
+    "kutipan": "Kalimantan Tengah 16.387 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "7.927",
+    "kutipan": "Kalimantan Selatan 7.927 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "12.285",
+    "kutipan": "Sumatera Selatan 12.285 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "14.837",
+    "kutipan": "Riau 14.837 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "5.984",
+    "kutipan": "Jambi 5.984 personel",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": ""
+ },
+ {
+  "id": "penanganan-02",
+  "sumber": "tests/wa/bahan/satgas_271026.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/satgas_271026.txt",
+    "teks": "**2. Operasi Udara**\n\n*a. Kekuatan Armada*\n\n*Patroli Udara/Casa/OMC*\n* Kalimantan Barat: *2 unit* tergelar\n> *1 unit* tergelar di Jawa Timur\n* Kalimantan Tengah: *2 unit* tergelar\n* Kalimantan Selatan: *9 unit* tergelar\n* Sumatera Selatan: *5 unit* tergelar  \n* Lampung: *1 unit* tergelar (Reposisi dari Sumsel)\n* Riau: *1 unit* tergelar \n* Jambi:  *1 unit* tergelar\n* Jawa Barat: *1 unit* tergelar (Reposisi dari Jambi)\n* Papua Selatan : *1 unit* tergelar \n\n*Helikopter _Water Bombing_*\n* Kalimantan Barat: *7 unit* tergelar \n* Kalimantan Tengah: *8 unit* tergelar (3 di Palangka Raya, 1 di Sampit, 4 di Kab. Seruyan)\n* Kalimantan Selatan: *5 unit* tergelar\n* Kalimantan Timur: *1 unit* tergelar di IKN (Reposisi dari Kalsel)\n* Jawa Timur: *1 unit* (Reposisi dari Kalsel)\n* Sumatera Selatan: *5 unit* tergelar \n* Lampung: *1 unit* tergelar (Reposisi dari Sumsel)\n* Riau: *4 unit* tergelar\n* Jambi: *3 unit* tergelar\n* Jawa Tengah *2 unit* tergelar"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "7",
+    "kutipan": "Kalimantan Barat: *7 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "8",
+    "kutipan": "Kalimantan Tengah: *8 unit* tergelar (3 di Palangka Raya, 1 di Sampit, 4 di Kab. Seruyan)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "base_operasi",
+    "nilai": "3 di Palangka Raya, 1 di Sampit, 4 di Kab. Seruyan",
+    "kutipan": "(3 di Palangka Raya, 1 di Sampit, 4 di Kab. Seruyan)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "5",
+    "kutipan": "Kalimantan Selatan: *5 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Kalimantan Timur: *1 unit* tergelar di IKN (Reposisi dari Kalsel)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Timur"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Jawa Timur: *1 unit* (Reposisi dari Kalsel)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jawa Timur"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "5",
+    "kutipan": "Jawa Timur: *1 unit* (Reposisi dari Kalsel)\n* Sumatera Selatan: *5 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Lampung: *1 unit* tergelar (Reposisi dari Sumsel)\n* Riau: *4 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Lampung"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "4",
+    "kutipan": "Riau: *4 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "3",
+    "kutipan": "Jambi: *3 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "2",
+    "kutipan": "Jawa Tengah *2 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jawa Tengah"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Bagian Patroli Udara/Casa/OMC menggabungkan pesawat patroli dan pesawat OMC tanpa rincian jenis per unit, jadi armada_patroli dan armada_omc tidak diisi dari bagian itu. Kutipan Sumatera Selatan dan Lampung memuat baris sekitarnya karena baris yang sama juga ada di bagian patroli."
+ },
+ {
+  "id": "penanganan-03",
+  "sumber": "tests/wa/bahan/satgas_271026.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/satgas_271026.txt",
+    "teks": "*b. Pelaksanaan Patroli Udara*\n* Kalimantan Barat:* PK-FPA melaksanakan *1 sortie/3 jam 13 menit* di Landak, Mempawah, Bengkayang, Sambas, dan Kubu Raya, tanpa temuan HS. *PK-ALE* batal terbang karena visibilitas rendah.\n* Kalimantan Tengah:* PK-KIA siaga. \n* Kalimantan Selatan:* Patroli *tidak dilaksanakan karena cuaca*. *PK-RTQ dan PK-SNK* tidak terbang.\n* Sumatera Selatan:* PK-RTY tidak terbang karena visibilitas rendah.\n* Riau:* PK-WSD melaksanakan patroli selama *3 jam 13 menit*, meliputi wilayah *Kuantan Singingi, Indragiri Hulu, dan Pelalawan*, tanpa temuan titik api.\n* Jambi:* PK-WSA siaga."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "nama_pesawat",
+    "nilai": "PK-FPA",
+    "kutipan": "PK-FPA melaksanakan 1 sortie/3 jam 13 menit",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "sorti_patroli",
+    "nilai": "1",
+    "kutipan": "PK-FPA melaksanakan 1 sortie/3 jam 13 menit",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "jam_terbang",
+    "nilai": "3 jam 13 menit",
+    "kutipan": "PK-FPA melaksanakan 1 sortie/3 jam 13 menit",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "PK-ALE batal terbang karena visibilitas rendah",
+    "kutipan": "PK-ALE batal terbang karena visibilitas rendah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "Patroli tidak dilaksanakan karena cuaca",
+    "kutipan": "Patroli tidak dilaksanakan karena cuaca",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "PK-RTY tidak terbang karena visibilitas rendah",
+    "kutipan": "PK-RTY tidak terbang karena visibilitas rendah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "nama_pesawat",
+    "nilai": "PK-WSD",
+    "kutipan": "PK-WSD melaksanakan patroli selama 3 jam 13 menit",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "jam_terbang",
+    "nilai": "3 jam 13 menit",
+    "kutipan": "PK-WSD melaksanakan patroli selama 3 jam 13 menit",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "status_siaga",
+    "nilai": "PK-KIA siaga",
+    "kutipan": "PK-KIA siaga",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "status_siaga",
+    "nilai": "PK-WSA siaga",
+    "kutipan": "PK-WSA siaga",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Patroli Riau tidak menyebut jumlah sortie, jadi sorti_patroli Riau tidak diisi."
+ },
+ {
+  "id": "penanganan-04",
+  "sumber": "tests/wa/bahan/satgas_271026.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/satgas_271026.txt",
+    "teks": "*c. Pelaksanaan Water Bombing*\nPelaksanaan water bombing pada 26 Oktober 2026 diarahkan pada lokasi prioritas sebagai berikut:\n\n*1. Kalimantan Barat*\n * WB *tidak dilaksanakan*. *N61AA dan VN-8416* batal terbang karena asap/visibilitas rendah. Hasil padam udara *0 ha*.\n\n*2. Kalimantan Tengah*\n* WB *tidak dilaksanakan*. *HA-5235 dan HA-5172* batal terbang karena cuaca. Hasil padam udara *0 ha*, termasuk di TNTP.\n\n*3. Kalimantan Selatan*\n* WB *tidak dilaksanakan karena cuaca dan visibilitas rendah*. Hasil padam udara *0 ha*.\n\n*4. Sumatera Selatan*\n* WB *tidak dilaksanakan karena visibilitas rendah*. *RA-22279* tercatat tidak siap operasi karena gangguan teknis. Hasil padam udara *0 ha*.\n\n*5. Riau*\n* WB *tidak dilaksanakan*. Keempat helikopter tercatat siap operasi. Hasil padam udara *0 ha*.\n\n*6. Jambi*\n> *N274TH* melaksanakan *1 sortie, 20 kali WB*, dengan hasil padam *±1,50 ha* pada sasaran *Jebus, Kecamatan Kumpeh, Muaro Jambi*. *RA-22840* menjalani pemeliharaan dan *VN-8414* tidak terbang."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "kendala",
+    "nilai": "N61AA dan VN-8416 batal terbang karena asap/visibilitas rendah",
+    "kutipan": "N61AA dan VN-8416 batal terbang karena asap/visibilitas rendah",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "HA-5235 dan HA-5172 batal terbang karena cuaca",
+    "kutipan": "HA-5235 dan HA-5172 batal terbang karena cuaca",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "RA-22279 tercatat tidak siap operasi karena gangguan teknis",
+    "kutipan": "RA-22279 tercatat tidak siap operasi karena gangguan teknis",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "nama_pesawat",
+    "nilai": "N274TH",
+    "kutipan": "N274TH melaksanakan 1 sortie, 20 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "1",
+    "kutipan": "N274TH melaksanakan 1 sortie, 20 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "20 kali WB",
+    "kutipan": "1 sortie, 20 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Muaro Jambi",
+    "kutipan": "Jebus, Kecamatan Kumpeh, Muaro Jambi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Hasil padam udara (ha) adalah angka sistem, tidak diambil. Provinsi tanpa WB tidak diberi sorti 0."
+ },
+ {
+  "id": "penanganan-05",
+  "sumber": "tests/wa/bahan/satgas_271026.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "tests/wa/bahan/satgas_271026.txt",
+    "teks": "*d. Pelaksanaan Operasi Modifikasi Cuaca*\n*1. Kalimantan Barat*\n> OMC *tidak dilaksanakan*. Pesawat *PK-SCH direposisi ke Jawa Timur pada 24 Oktober 2026*.\n> Hujan dilaporkan di *Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang, dan Landak*. Tambahan informasi: *Kubu Raya ringan, Ketapang sedang, dan Landak deras*.\n\n*2. Kalimantan Tengah*\n> *9 sortie/14.400 kg NaCl*, termasuk penerbangan Hercules dengan sasaran Kalteng dan sebagian Kalsel, dengan rincian:\n> *PK-FPU: 3 sortie/3.000 kg NaCl*, menyasar *Gunung Mas, Katingan, Kotawaringin Timur, Seruyan, Pulang Pisau, Kapuas, dan Barito Selatan*.\n> *PK-SNL: 1 sortie/1.000 kg NaCl*, menyasar *Pulang Pisau, Katingan, dan sekitar Palangka Raya*.\n> *A-2105: 2 sortie/1.600 kg NaCl*, menyasar *Pulang Pisau dan Katingan*.\n> *A-2904: 2 sortie/4.000 kg NaCl*, menyasar *Kotawaringin Timur, Seruyan, Kotawaringin Barat, Sukamara, Lamandau, Katingan, Palangka Raya, Kapuas, Barito Selatan, dan Barito Timur*.\n> *Hercules A-1328: 1 sortie/4.800 kg NaCl*, dengan sasaran gabungan *Kotabaru dan Hulu Sungai Selatan, Kalsel; serta Pulang Pisau, Palangka Raya, Katingan, dan Kotawaringin Barat, Kalteng*.\n> Hujan dilaporkan di *Palangka Raya, Kotawaringin Barat, Kotawaringin Timur, Barito Utara, dan Pulang Pisau*."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "kendala",
+    "nilai": "OMC tidak dilaksanakan. Pesawat PK-SCH direposisi ke Jawa Timur pada 24 Oktober 2026",
+    "kutipan": "OMC tidak dilaksanakan. Pesawat PK-SCH direposisi ke Jawa Timur pada 24 Oktober 2026",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "9",
+    "kutipan": "9 sortie/14.400 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "14.400",
+    "kutipan": "9 sortie/14.400 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "cuaca_operasi",
+    "nilai": "Hujan dilaporkan di Palangka Raya, Kotawaringin Barat, Kotawaringin Timur, Barito Utara, dan Pulang Pisau",
+    "kutipan": "Hujan dilaporkan di Palangka Raya, Kotawaringin Barat, Kotawaringin Timur, Barito Utara, dan Pulang Pisau",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Sortie dan bahan semai diisi sebagai total provinsi; rincian per pesawat tidak diisi lagi supaya tidak terhitung dua kali. Bahan semai dalam kg seperti tertulis, tidak dikonversi."
+ },
+ {
+  "id": "penanganan-06",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-28/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-28/wa-satgas.txt",
+    "teks": "*c. Pelaksanaan Water Bombing*\nPelaksanaan water bombing pada 27 Oktober 2026 diarahkan pada lokasi prioritas sebagai berikut:\n\n*1. Kalimantan Barat*\n * WB dilaksanakan oleh *4 helikopter, 5 sortie, 135 kali WB/540.000 liter air*, dengan hasil padam *±9,00 ha*.\n\n*2. Kalimantan Tengah*\n* WB dilaksanakan oleh *2 helikopter, 3 sortie, dan 81 kali pengeboman*, dengan hasil padam *±9,00 ha pada 3 FS*, seluruhnya di luar kawasan TNTP.\n\n*3. Kalimantan Selatan*\n* WB dilaksanakan oleh *5 helikopter, 6 sortie, 144 kali WB/568.500 liter air*. Hasil padam *±11,00 ha, mencakup hasil WB dan sebagian padam alami*.\n\n*4. Sumatera Selatan*\n* WB dilaksanakan oleh *5 helikopter, 5 sortie, 88 kali WB*, dengan hasil padam *±21,00 ha pada 6 sasaran*.\n\n*5. Riau*\n* WB *tidak dilaksanakan*. Semua helikopter tercatat siap operasi. Hasil padam udara *0 ha*.\n\n*6. Jambi*\n* WB dilaksanakan oleh *2 helikopter, 2 sortie, 42 kali WB*, dengan hasil padam *±4,50 ha*."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "4",
+    "kutipan": "WB dilaksanakan oleh 4 helikopter, 5 sortie, 135 kali WB/540.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "5",
+    "kutipan": "4 helikopter, 5 sortie, 135 kali WB/540.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "air_water_bombing_liter",
+    "nilai": "540.000",
+    "kutipan": "135 kali WB/540.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "2",
+    "kutipan": "WB dilaksanakan oleh 2 helikopter, 3 sortie, dan 81 kali pengeboman",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "3",
+    "kutipan": "2 helikopter, 3 sortie, dan 81 kali pengeboman",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "5",
+    "kutipan": "WB dilaksanakan oleh 5 helikopter, 6 sortie, 144 kali WB/568.500 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "6",
+    "kutipan": "5 helikopter, 6 sortie, 144 kali WB/568.500 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "air_water_bombing_liter",
+    "nilai": "568.500",
+    "kutipan": "144 kali WB/568.500 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "5",
+    "kutipan": "WB dilaksanakan oleh 5 helikopter, 5 sortie, 88 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "5",
+    "kutipan": "WB dilaksanakan oleh 5 helikopter, 5 sortie, 88 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "WB tidak dilaksanakan. Semua helikopter tercatat siap operasi.",
+    "kutipan": "WB tidak dilaksanakan. Semua helikopter tercatat siap operasi.",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "2",
+    "kutipan": "WB dilaksanakan oleh 2 helikopter, 2 sortie, 42 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "2",
+    "kutipan": "WB dilaksanakan oleh 2 helikopter, 2 sortie, 42 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Hasil padam (ha), jumlah FS, dan sasaran ha adalah angka sistem, tidak diambil. Liter air hanya diisi bila tertulis. Riau tidak menyebut jumlah helikopter."
+ },
+ {
+  "id": "penanganan-13",
+  "sumber": "data/laporan-bnpb/bulanan/2026-10/masukan/omc_rekap.csv",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "tabel",
+    "sumber": "data/laporan-bnpb/bulanan/2026-10/masukan/omc_rekap.csv",
+    "teks": "tanggal,provinsi,pesawat,sortie,nacl_kg,dry_ice_kg,cao_kg,sasaran,hujan_hasil,sumber,catatan,jam_mulai,jam_selesai,wilayah_bnpb\n\n2026-10-26,Sumatera Selatan,Hercules A-1319,1,4800,0,,OKI;OKU;OKU Timur,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),data/laporan-bnpb/omc/omc_dari_wa_16-26okt.csv; WA Laporan Karhutla 27 Okt,dry ice nihil 26 Okt,,,Wilayah II\n2026-10-26,Sumatera Selatan,CASA A-2104,2,1600,0,,OKI;Banyuasin,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),data/laporan-bnpb/omc/omc_dari_wa_16-26okt.csv; WA Laporan Karhutla 27 Okt,,,,Wilayah II\n2026-10-26,Sumatera Selatan,PK-IKC,2,2000,0,,Banyuasin;OKI,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),data/laporan-bnpb/omc/omc_dari_wa_16-26okt.csv; WA Laporan Karhutla 27 Okt,,,,Wilayah II"
+   }
+  ],
+  "isian": [
+   {
+    "medan": "provinsi",
+    "nilai": "Sumatera Selatan",
+    "kutipan": "2026-10-26,Sumatera Selatan,Hercules A-1319",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "1",
+    "kutipan": "Sumatera Selatan,Hercules A-1319,1,4800",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan Hercules A-1319"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "4800",
+    "kutipan": "Sumatera Selatan,Hercules A-1319,1,4800",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan Hercules A-1319"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "2",
+    "kutipan": "Sumatera Selatan,CASA A-2104,2,1600",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan CASA A-2104"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "1600",
+    "kutipan": "Sumatera Selatan,CASA A-2104,2,1600",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan CASA A-2104"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "2",
+    "kutipan": "Sumatera Selatan,PK-IKC,2,2000",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan PK-IKC"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "2000",
+    "kutipan": "Sumatera Selatan,PK-IKC,2,2000",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan PK-IKC"
+   },
+   {
+    "medan": "cuaca_operasi",
+    "nilai": "Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras)",
+    "kutipan": "Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Bahan tabel ekspor lembar kerja (CSV): koma memisah kolom, jadi \"1,4800\" adalah sortie 1 dan NaCl 4800 kg. Tabel hanya memuat baris per pesawat, jadi isian per pesawat dan tanpa total provinsi. Kolom dry_ice_kg bernilai 0 tidak diisi."
+ },
+ {
+  "id": "penanganan-07",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-10/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-10/wa-satgas.txt",
+    "teks": "[10/11/26] Satgas: *LAPORAN UPAYA PEMADAMAN KARHUTLA OLEH SATGAS DI ENAM PROVINSI PRIORITAS*\n_10 November 2026_\n\n**1. Operasi Darat**\n\n*a. Kekuatan personel*\nKekuatan personel yang terdata pada enam provinsi mencapai sekitar *±71.878 personel*, dengan rincian:\n\n> Kalimantan Barat *14.458*  personel.\n> Kalimantan Tengah *16.387*  personel.\n> Kalimantan Selatan *7.927*  personel.\n> Sumatera Selatan *12.285* personel.\n> Riau *14.837*  personel.\n> Jambi *5.984* personel."
+   },
+   {
+    "id": "b2",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-11/wa-satgas.txt",
+    "teks": "[11/11/26] Satgas: *LAPORAN UPAYA PEMADAMAN KARHUTLA OLEH SATGAS DI ENAM PROVINSI PRIORITAS*\n_11 November 2026_\n\n**1. Operasi Darat**\n\n*a. Kekuatan personel*\nKekuatan personel yang terdata pada enam provinsi mencapai sekitar *±66.960 personel*, dengan rincian:\n\n> Kalimantan Barat *14.458*  personel.\n> Kalimantan Tengah *16.387*  personel.\n> Kalimantan Selatan *3.009*  personel.\n> Sumatera Selatan *12.285* personel.\n> Riau *14.837*  personel.\n> Jambi *5.984* personel."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "personel_darat",
+    "nilai": "14.458",
+    "kutipan": "Kalimantan Barat 14.458 personel",
+    "sumber_bahan_id": "b2",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "16.387",
+    "kutipan": "Kalimantan Tengah 16.387 personel",
+    "sumber_bahan_id": "b2",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "12.285",
+    "kutipan": "Sumatera Selatan 12.285 personel",
+    "sumber_bahan_id": "b2",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "14.837",
+    "kutipan": "Riau 14.837 personel",
+    "sumber_bahan_id": "b2",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "personel_darat",
+    "nilai": "5.984",
+    "kutipan": "Jambi 5.984 personel",
+    "sumber_bahan_id": "b2",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [
+   {
+    "medan": "personel_darat",
+    "kelompok": "Kalimantan Selatan",
+    "a": {
+     "nilai": "7.927",
+     "kutipan": "Kalimantan Selatan 7.927 personel",
+     "sumber_bahan_id": "b1"
+    },
+    "b": {
+     "nilai": "3.009",
+     "kutipan": "Kalimantan Selatan 3.009 personel",
+     "sumber_bahan_id": "b2"
+    }
+   },
+   {
+    "medan": "personel_darat",
+    "kelompok": "enam provinsi",
+    "a": {
+     "nilai": "71.878",
+     "kutipan": "mencapai sekitar ±71.878 personel",
+     "sumber_bahan_id": "b1"
+    },
+    "b": {
+     "nilai": "66.960",
+     "kutipan": "mencapai sekitar ±66.960 personel",
+     "sumber_bahan_id": "b2"
+    }
+   }
+  ],
+  "catatan": "Dua laporan Satgas (10 dan 11 November) berbeda untuk personel Kalimantan Selatan dan totalnya; dicatat sebagai pertentangan."
+ },
+ {
+  "id": "penanganan-08",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-10/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-10/wa-satgas.txt",
+    "teks": "**2. Operasi Udara**\n\n*a. Kekuatan Armada*\n*Patroli Udara/Casa/OMC*\n* Kalimantan Barat: *2 unit* tergelar\n* Kalimantan Tengah: *3 unit* tergelar (3 di Palangkaraya)\n* Kalimantan Selatan: *3 unit* tergelar\n* Sumatera Selatan: *4 unit* tergelar\n* Riau: *1 unit* tergelar\n* Jambi:  *1 unit* tergelar\n* Papua Selatan : *2 unit* tergelar\n* Sulawesi Tenggara:  *1 unit* tergelar\n* Maluku Utara: *1 unit* tergelar\n\n*Helikopter _Water Bombing_*\n* Kalimantan Barat: *4 unit* tergelar\n* Kalimantan Tengah: *7 unit* tergelar (3 di Palangka Raya, 1 di Sampit, 3 di Kab. Seruyan)\n* Kalimantan Selatan: *4 unit* tergelar\n* Sumatera Selatan: *4 unit* tergelar\n* Riau: *1 unit* tergelar\n* Jambi: *3 unit* tergelar\n* Papua Barat Daya: *1 unit* tergelar\n\n*b. Pelaksanaan Patroli Udara*\n\n*c. Pelaksanaan Water Bombing*\nPelaksanaan water bombing pada 9 November 2026 diarahkan pada lokasi prioritas sebagai berikut:\n\n*d. Pelaksanaan Operasi Modifikasi Cuaca*\n*1. Kalimantan Barat*\n> OMC *tidak dilaksanakan*.\n> Hujan *ringan hingga lebat* dilaporkan di *Ketapang, Kubu Raya, Sambas, Bengkayang, Landak, Singkawang, dan Pontianak*.\n\n*2. Kalimantan Tengah*\n> OMC dilaksanakan menggunakan PK-FPU dan PK-SNL sebanyak *2 sortie/2.000 kg NaCl*, menyasar *Kapuas, Pulang Pisau, Seruyan, Kotawaringin Barat, dan Kotawaringin Timur*\n> Hujan dilaporkan di *Sukamara, Lamandau, Kotawaringin Barat, Seruyan, Kotawaringin Timur, Katingan, Pulang Pisau, Palangka Raya, Gunung Mas, Kapuas, Murung Raya, Barito Utara, Barito Selatan, dan Barito Timur*. Di *TNTP*, hujan memadamkan *±15,00 ha pada 3 FS*.\n\n*3. Kalimantan Selatan*\n> OMC untuk wilayah *Kalimantan Selatan tidak dilaksanakan*. *PK-SNL* mendukung penyemaian awan untuk wilayah *Kalimantan Tengah*.\n> Hujan dilaporkan di *Banjarbaru, Banjarmasin, Barito Kuala, Banjar, Tapin, Tabalong, dan Balangan*.\n\n*4. Sumatera Selatan*\n> OMC *tidak dilaksanakan*, baik penyemaian *NaCl maupun dry ice*, karena pertimbangan keselamatan penerbangan, kondisi cuaca, dan potensi hujan alami.\n> Hujan *sedang* dilaporkan tanggal 8 November 2026 di *Palembang*.\n\n*5. Riau*\n> Operasi OMC telah berakhir pada 25 September 2026 setelah BMKG menginformasikan mulai masuknya musim hujan.\n\n*6. Jambi*\n> OMC *tidak dilaksanakan*; *PK-ALA* standby.\n> Hujan *ringan hingga lebat* terjadi di *Tanjung Jabung Timur, Tanjung Jabung Barat, Batang Hari, Muaro Jambi, dan Kota Jambi*."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "4",
+    "kutipan": "Kalimantan Barat: *4 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "7",
+    "kutipan": "Kalimantan Tengah: *7 unit* tergelar (3 di Palangka Raya, 1 di Sampit, 3 di Kab. Seruyan)",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "4",
+    "kutipan": "Kalimantan Selatan: *4 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "4",
+    "kutipan": "Kalimantan Selatan: *4 unit* tergelar\n* Sumatera Selatan: *4 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Riau: *1 unit* tergelar\n* Jambi: *3 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "3",
+    "kutipan": "Jambi: *3 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Papua Barat Daya: *1 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Papua Barat Daya"
+   },
+   {
+    "medan": "nama_pesawat",
+    "nilai": "PK-FPU dan PK-SNL",
+    "kutipan": "OMC dilaksanakan menggunakan PK-FPU dan PK-SNL",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "2",
+    "kutipan": "OMC dilaksanakan menggunakan PK-FPU dan PK-SNL sebanyak 2 sortie/2.000 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "2.000",
+    "kutipan": "sebanyak 2 sortie/2.000 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "OMC tidak dilaksanakan, baik penyemaian NaCl maupun dry ice, karena pertimbangan keselamatan penerbangan, kondisi cuaca, dan potensi hujan alami",
+    "kutipan": "OMC tidak dilaksanakan, baik penyemaian NaCl maupun dry ice, karena pertimbangan keselamatan penerbangan, kondisi cuaca, dan potensi hujan alami",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "status_siaga",
+    "nilai": "PK-ALA standby",
+    "kutipan": "PK-ALA standby",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "cuaca_operasi",
+    "nilai": "Hujan ringan hingga lebat dilaporkan di Ketapang, Kubu Raya, Sambas, Bengkayang, Landak, Singkawang, dan Pontianak",
+    "kutipan": "Hujan ringan hingga lebat dilaporkan di Ketapang, Kubu Raya, Sambas, Bengkayang, Landak, Singkawang, dan Pontianak",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Bagian Patroli Udara/Casa/OMC menggabungkan jenis armada, jadi armada_patroli dan armada_omc tidak diisi. Bagian patroli udara dan water bombing harian kosong di bahan. Luas yang padam karena hujan di TNTP adalah angka sistem, tidak diambil."
+ },
+ {
+  "id": "penanganan-09",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-17/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-17/wa-satgas.txt",
+    "teks": "[17/11/26] Satgas: *LAPORAN UPAYA PEMADAMAN KARHUTLA OLEH SATGAS DI ENAM PROVINSI PRIORITAS*\n_17 November 2026_\n\n*c. Kegiatan dan Hasil Pemadaman Darat*\n* Kalimantan Barat: *Satgas Udara telah berakhir* pada 10 November. *Satgas Darat tetap melaksanakan groundcheck* di wilayah masing-masing.\n* Kalimantan Tengah: Padam darat *±2,70 ha pada 4 FS* di luar TNTP, meliputi *Lembeng, Dusun Selatan, Barito Selatan ±1,00 ha*; *Tumpung Laung II, Montallat, Barito Utara ±0,50 ha*; *Jalan Mahang, Kuala Pembuang I, Seruyan Hilir ±1,00 ha*; serta *Sungai Cabang Barat, Pantai Lunci, Sukamara ±0,20 ha*. Sisa di luar TNTP *±4,00 ha pada 4 FS*. Di *TNTP*, *0 ha pada 0 FS padam karena hujan*, operasi WB *0 ha pada 0 FS*, dan sisa *±6,79 ha pada 2 FS*. Sisa gabungan provinsi *±10,79 ha pada 6 FS*.\n* Kalimantan Selatan: Tidak ditemukan FS pada *16 November 2026*. Tidak ada pemadaman darat maupun udara, dengan sisa *0 ha/0 FS*.\n* Sumatera Selatan: Padam darat *±9,00 ha pada 5 FS*. Rincian Makorem mencatat *Gunung Raja, Lubai, Muara Enim ±2,00 ha* dan *Tulung Selapan Ilir, Tulung Selapan, OKI ±1,00 ha*, total *±3,00 ha pada 2 FS*. Rincian Kodim mencatat *Gunung Raja ±2,00 ha* serta *Tulung Selapan Ilir ±3,00 ha*, total *±5,00 ha pada 2 FS*. Polda/Polres mencatat *±1,00 ha pada 1 FS di Tulung Selapan, OKI*. Sisa target gabungan setelah operasi darat dan WB *±6,00 ha pada 1 FS di Tanah Pilih, Banyuasin*.\n* Riau: Groundcheck tidak menemukan FS. *Tidak ada kegiatan pemadaman darat*, dengan target, hasil padam, dan sisa penanganan *0 ha/0 FS*.\n* Jambi: Padam darat *±1,00 ha pada 1 FS di Tahura, Seponjen–batas Sogo, Kumpe, Muaro Jambi*. Seluruh target padam; sisa *0 ha/0 FS*.\n\n*Total hasil operasi darat: ±12,70 ha*."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "upaya_darat",
+    "nilai": "Satgas Darat tetap melaksanakan groundcheck di wilayah masing-masing",
+    "kutipan": "Satgas Darat tetap melaksanakan groundcheck di wilayah masing-masing",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "Satgas Udara telah berakhir pada 10 November",
+    "kutipan": "Satgas Udara telah berakhir pada 10 November",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "upaya_darat",
+    "nilai": "Tidak ada pemadaman darat maupun udara",
+    "kutipan": "Tidak ada pemadaman darat maupun udara",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "upaya_darat",
+    "nilai": "Groundcheck tidak menemukan FS. Tidak ada kegiatan pemadaman darat",
+    "kutipan": "Groundcheck tidak menemukan FS. Tidak ada kegiatan pemadaman darat",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Riau"
+   },
+   {
+    "medan": "kabupaten",
+    "nilai": "Muaro Jambi",
+    "kutipan": "Tahura, Seponjen–batas Sogo, Kumpe, Muaro Jambi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Semua luas padam, sisa luas, dan jumlah FS (firespot) di bagian ini adalah angka sistem; tidak diambil walaupun tertulis."
+ },
+ {
+  "id": "penanganan-10",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-17/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-17/wa-satgas.txt",
+    "teks": "**2. Operasi Udara**\n\n*a. Kekuatan Armada*\n*Patroli Udara/Casa/OMC*\n* Kalimantan Tengah: *1 unit* tergelar\n* Sumatera Selatan: *1 unit* tergelar\n* Jambi:  *1 unit* tergelar\n\n*Helikopter _Water Bombing_*\n* Kalimantan Barat: *1 unit* tergelar\n* Sumatera Selatan: *1 unit* tergelar\n* Jambi: *1 unit* tergelar\n* Papua Barat Daya: *1 unit* tergelar\n\n*b. Pelaksanaan Patroli Udara*\n* Kalimantan Barat: *Tidak ada patroli udara karena dukungan Satgas Udara telah berakhir 10 November 2026*.\n* Kalimantan Tengah: *Patroli tidak dilaksanakan*. *PK-KIA* berhenti beroperasi dan *PK-DAP serviceable/no flight*.\n* Kalimantan Selatan: *Patroli telah ditutup*; armada telah kembali ke pangkalan (return to base).\n* Sumatera Selatan: *PK-IKC dan PK-RTY tidak terbang*. Kedua armada menyelesaikan demobilisasi pada *16 November*.\n* Riau: *Patroli udara PK-WSD telah ditutup (closed)*\n* Jambi: *PK-WSA demobilisasi tanggal 16 November*, sedangkan *PK-ALA dijadwalkan demobilisasi tanggal 17 November*.\n\n\n*c. Pelaksanaan Water Bombing*\nPelaksanaan water bombing pada 16 November 2026 diarahkan pada lokasi prioritas sebagai berikut:\n\n*1. Kalimantan Barat*\n* WB tidak dilaksanakan karena Satgas Udara telah *berakhir sejak 10 November 2026*.\n\n*2. Kalimantan Tengah*\n* WB *tidak dilaksanakan*, sebagian armada unserviceable, berhenti beroperasi, atau telah demobilisasi.\n\n*3. Kalimantan Selatan*\n* WB *tidak dilaksanakan*. Satgas Udara dilaporkan berakhir pada *11 November 2026*. PK-DBM, RA-22834, N261BE dan PK-RTQ kembali ke pangkalan pada 14 November 2026; HA-5234 kembali pada 13 November 2026.\n\n*4. Sumatera Selatan*\n* WB dilaksanakan oleh *RA-22747 sebanyak 1 sortie/12 kali WB* di *Tanah Pilih, Banyuasin*. Sasaran *±10,00 ha pada 1 FS*; hasil padam *±4,00 ha*, dengan sisa *±6,00 ha pada 1 FS yang masih berasap*.\n* FS sasaran *belum padam seluruhnya*, sehingga jumlah FS yang dituntaskan melalui WB tetap *0 FS*.\n* *UR-CBH dan RA-22279* tidak terbang karena persiapan demobilisasi, sedangkan *UR-VBC* mengalami gangguan mesin.\n\n*5. Riau*\n*WB tidak *dilaksanakan*. *RA-22729* dalam persiapan demobilisasi, sedangkan hasil verifikasi Satgas Darat tidak menemukan FS.\n\n*6. Jambi*\n* WB *tidak dilaksanakan*. *RA-22840* menjalani perawatan, *N-274TH* tidak terbang, dan *VN-8414* dijadwalkan demobilisasi pada 17 November 2026."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Kalimantan Barat: *1 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Kalimantan Barat: *1 unit* tergelar\n* Sumatera Selatan: *1 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Jambi:  *1 unit* tergelar\n* Papua Barat Daya",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "Papua Barat Daya: *1 unit* tergelar",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Papua Barat Daya"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "PK-KIA berhenti beroperasi dan PK-DAP serviceable/no flight",
+    "kutipan": "PK-KIA berhenti beroperasi dan PK-DAP serviceable/no flight",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "Kedua armada menyelesaikan demobilisasi pada 16 November",
+    "kutipan": "PK-IKC dan PK-RTY tidak terbang. Kedua armada menyelesaikan demobilisasi pada 16 November",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "nama_pesawat",
+    "nilai": "RA-22747",
+    "kutipan": "WB dilaksanakan oleh RA-22747 sebanyak 1 sortie/12 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "1",
+    "kutipan": "RA-22747 sebanyak 1 sortie/12 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "UR-CBH dan RA-22279 tidak terbang karena persiapan demobilisasi, sedangkan UR-VBC mengalami gangguan mesin",
+    "kutipan": "UR-CBH dan RA-22279 tidak terbang karena persiapan demobilisasi, sedangkan UR-VBC mengalami gangguan mesin",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "RA-22840 menjalani perawatan, N-274TH tidak terbang",
+    "kutipan": "RA-22840 menjalani perawatan, N-274TH tidak terbang",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Bagian Patroli Udara/Casa/OMC menggabungkan jenis armada, jadi armada_patroli dan armada_omc tidak diisi. Sasaran, hasil padam, dan sisa luas water bombing Sumatera Selatan adalah angka sistem, tidak diambil."
+ },
+ {
+  "id": "penanganan-11",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-30/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-30/wa-satgas.txt",
+    "teks": "*c. Pelaksanaan Water Bombing*\nPelaksanaan water bombing pada 29 Oktober 2026 diarahkan pada lokasi prioritas sebagai berikut:\n\n*1. Kalimantan Barat*\n* WB dilaksanakan oleh *3 helikopter, 5 sortie, 139 kali WB/556.000 liter air*, dengan hasil padam *±12,00 ha*. Sasaran di wilayah Pasak, Sungai Ambawang, Kab. Kubu Raya; Batu Barat, Simpang Hilir Kab. Kayong Utara; Pagar Mentimun, Matan Hilir Selatan, Ketapang; Air Hitam Besar, Kendawangan, Ketapang.\n\n*2. Kalimantan Tengah*\n* WB dilaksanakan oleh *7 helikopter, 10 sortie, 160 kali WB*, dengan hasil padam *±16,50 ha*, terdiri dari *±12 ha di luar TNTP* dan *±4,50 ha di TNTP*. Sasaran di wilayah Seranau, Kabupaten Kotawaringin Timur; Katunjung dan Mantangai, Kabupaten Kapuas; Jabiren, Kabupaten Pulang Pisau; Teluk Pulai dan Jahitan, kawasan TNTP; serta Telaga Pulang, Kabupaten Seruyan.\n\n*3. Kalimantan Selatan*\n* WB dilaksanakan oleh *2 helikopter, 2 sortie, 53 kali WB/212.000 liter air*; total hasil padam *±7,50 ha* (termasuk sebagian padam alami). Sasaran di wilayah PD Butun–Batulicin, Kabupaten Tanah Bumbu; serta Syamsudin Noor–Landasan Ulin, Kota Banjarbaru.\n\n*4. Sumatera Selatan*\n* WB dilaksanakan oleh *3 helikopter, 3 sortie, 41 kali WB*, dengan hasil padam *±9,00 ha*. Sasaran di wilayah Cengal, OKI; Pedamaran, OKI; dan Sungai Menang, OKI.\n\n*5. Riau*\n* WB *tidak dilaksanakan*. Semua helikopter tercatat siap operasi, tidak ada FS yang membutuhkan pemadaman. Hasil padam udara *0 ha*.\n\n*6. Jambi*\n* WB dilaksanakan oleh *1 helikopter, 28 kali WB*, dengan hasil padam *±1,50 ha*. Sasaran di wilayah Jebus, Kumpeh. N274TH melaksanakan WB; RA-22840 dalam pemeliharaan dan VN-8414 belum siap operasi."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "3",
+    "kutipan": "WB dilaksanakan oleh 3 helikopter, 5 sortie, 139 kali WB/556.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "5",
+    "kutipan": "3 helikopter, 5 sortie, 139 kali WB/556.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "air_water_bombing_liter",
+    "nilai": "556.000",
+    "kutipan": "139 kali WB/556.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Barat"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "10",
+    "kutipan": "WB dilaksanakan oleh 7 helikopter, 10 sortie, 160 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "7",
+    "kutipan": "WB dilaksanakan oleh 7 helikopter, 10 sortie, 160 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "2",
+    "kutipan": "WB dilaksanakan oleh 2 helikopter, 2 sortie, 53 kali WB/212.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "2",
+    "kutipan": "2 helikopter, 2 sortie, 53 kali WB/212.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "air_water_bombing_liter",
+    "nilai": "212.000",
+    "kutipan": "53 kali WB/212.000 liter air",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "3",
+    "kutipan": "WB dilaksanakan oleh 3 helikopter, 3 sortie, 41 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "sorti_water_bombing",
+    "nilai": "3",
+    "kutipan": "3 helikopter, 3 sortie, 41 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "armada_water_bombing",
+    "nilai": "1",
+    "kutipan": "WB dilaksanakan oleh 1 helikopter, 28 kali WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "nama_pesawat",
+    "nilai": "N274TH",
+    "kutipan": "N274TH melaksanakan WB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   },
+   {
+    "medan": "kendala",
+    "nilai": "RA-22840 dalam pemeliharaan dan VN-8414 belum siap operasi",
+    "kutipan": "RA-22840 dalam pemeliharaan dan VN-8414 belum siap operasi",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Jambi"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Kalimantan Tengah, Sumatera Selatan, dan Jambi tidak menyebut liter air, jadi air_water_bombing_liter tidak diisi untuk provinsi itu. Jambi tidak menyebut jumlah sortie. Hasil padam (ha) tidak diambil."
+ },
+ {
+  "id": "penanganan-12",
+  "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-02/wa-satgas.txt",
+  "bahan": [
+   {
+    "id": "b1",
+    "jenis": "teks",
+    "sumber": "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-02/wa-satgas.txt",
+    "teks": "\n*2. Kalimantan Tengah*\n> OMC dilaksanakan *6 sortie*, terdiri atas *3 sortie/6.800 kg NaCl* dan *3 sortie/2.500 kg dry ice*, dengan dukungan armada dari Kalimantan Tengah dan pangkalan Kalimantan Selatan:\n> PK-FPU: *1 sortie/1.000 kg NaCl*, menyasar *Katingan, Kotawaringin Timur, dan Kapuas*.\n> PK-SNL: *1 sortie/1.000 kg NaCl*, menyasar *Kotawaringin Barat, Seruyan, Sukamara, dan Lamandau*.\n> A-2119: *1 sortie/800 kg dry ice*, menyasar *Tanjung Puting*.\n> A-2107: *1 sortie/800 kg dry ice*, menyasar *Palangka Raya*.\n> A-2105: *1 sortie/900 kg dry ice*, menyasar *Palangka Raya*.\n> Hercules A-1328: *1 sortie/4.800 kg NaCl*, menyasar *Palangka Raya, Katingan, Kotawaringin Barat, dan Lamandau*.\n> Realisasi OMC tanggal 19 Oktober - 1 November 2026 dilaporkan total jam terbang 305 Jam 50 Menit sebanyak 52 sorti 40.000 kg Dry Ice dan 83 sorti 115.800 kg NaCl.\n> Hujan dilaporkan di *Kotawaringin Barat, Sukamara, dan Murung Raya*.\n\n*3. Kalimantan Selatan*\n> OMC untuk sasaran Kalimantan Selatan dilaksanakan *2 sortie/3.000 kg NaCl*:\n> CN-295 A-2904: *1 sortie/2.000 kg NaCl*, menyasar wilayah *Kalimantan Selatan*.\n> PK-SNK: *1 sortie/1.000 kg NaCl*, menyasar *Tanah Bumbu dan Banjar*.\n> Hujan dilaporkan di *Banjarbaru, Banjar, dan Tanah Laut*.\n\n*4. Sumatera Selatan*\n> OMC dilaksanakan *4 sortie/7.200 kg NaCl*; *tidak ada penyemaian dry ice harian*.\n> Hercules A-1319: *1 sortie/4.800 kg NaCl*, menyasar *OKI, Ogan Ilir, dan Banyuasin*.\n> A-2104: *1 sortie/800 kg NaCl*, menyasar *OKI dan Banyuasin*.\n> A-2117: *2 sortie/1.600 kg NaCl*, menyasar *Musi Banyuasin dan Musi Rawas Utara* pada sortie pertama, serta *Banyuasin dan OKI* pada sortie kedua.\n> Realisasi OMC tanggal 19 Oktober - 1 November 2026 dilaporkan total jam terbang 146 Jam 40 Menit sebanyak 39 sorti 31.900 kg Dry Ice dan 44 sorti 76.800 kg NaCl.\n> Hujan *ringan hingga sedang* dilaporkan merata di *OKI, Ogan Ilir, dan Banyuasin* hingga pukul 21.00 WIB. Hujan ringan juga terjadi di sekitar *Bandara SMB II, Palembang*, sekitar pukul 14.00 WIB."
+   }
+  ],
+  "isian": [
+   {
+    "medan": "sorti_omc",
+    "nilai": "6",
+    "kutipan": "OMC dilaksanakan 6 sortie, terdiri atas 3 sortie/6.800 kg NaCl dan 3 sortie/2.500 kg dry ice",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "6.800",
+    "kutipan": "3 sortie/6.800 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah NaCl"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "2.500",
+    "kutipan": "3 sortie/2.500 kg dry ice",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah dry ice"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "Realisasi OMC tanggal 19 Oktober - 1 November 2026 dilaporkan total jam terbang 305 Jam 50 Menit sebanyak 52 sorti 40.000 kg Dry Ice dan 83 sorti 115.800 kg NaCl.",
+    "kutipan": "Realisasi OMC tanggal 19 Oktober - 1 November 2026 dilaporkan total jam terbang 305 Jam 50 Menit sebanyak 52 sorti 40.000 kg Dry Ice dan 83 sorti 115.800 kg NaCl.",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Tengah"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "2",
+    "kutipan": "OMC untuk sasaran Kalimantan Selatan dilaksanakan 2 sortie/3.000 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "3.000",
+    "kutipan": "2 sortie/3.000 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Kalimantan Selatan"
+   },
+   {
+    "medan": "sorti_omc",
+    "nilai": "4",
+    "kutipan": "OMC dilaksanakan 4 sortie/7.200 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "bahan_semai_kg",
+    "nilai": "7.200",
+    "kutipan": "4 sortie/7.200 kg NaCl",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "catatan_lain",
+    "nilai": "tidak ada penyemaian dry ice harian",
+    "kutipan": "tidak ada penyemaian dry ice harian",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   },
+   {
+    "medan": "cuaca_operasi",
+    "nilai": "Hujan ringan hingga sedang dilaporkan merata di OKI, Ogan Ilir, dan Banyuasin hingga pukul 21.00 WIB",
+    "kutipan": "Hujan ringan hingga sedang dilaporkan merata di OKI, Ogan Ilir, dan Banyuasin hingga pukul 21.00 WIB",
+    "sumber_bahan_id": "b1",
+    "kelompok": "Sumatera Selatan"
+   }
+  ],
+  "pertentangan": [],
+  "catatan": "Jam terbang 305 jam 50 menit adalah realisasi kumulatif 19 Oktober sampai 1 November, bukan jam terbang harian; dicatat di catatan_lain, tidak di jam_terbang. Sortie dan bahan semai diisi sebagai total provinsi, tanpa rincian per pesawat; NaCl dan dry ice dipisah per kelompok, tidak dijumlah."
+ }
+]

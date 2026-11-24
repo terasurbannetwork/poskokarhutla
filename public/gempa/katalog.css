@@ -1,10 +1,10 @@
 /* Katalog BMKG / InaTEWS (inatews.js): pilihan ujung ke ujung berikon, tabel menempel di kartu standar, laci detail, peringatan tsunami aktif. */
 #katalog{display:grid;gap:14px}
 .ina-seg{margin:2px 0 0}
-.ina-seg button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.ina-seg button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:1 1 0;min-width:0}
 .ina-seg svg{width:14px;height:14px;flex:none}
 /* bilah sumber di atas tabel */
-.ina-st{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;margin:0;padding:9px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:12.5px;color:var(--ink2)}
+.ina-st{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;margin:0;padding:9px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:0.7812rem;color:var(--ink2)}
 .ina-st-s{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ink)}
 .ina-st-s i{width:8px;height:8px;border-radius:50%;background:var(--ink2);flex:none}
 .ina-st-hidup .ina-st-s i{background:var(--ok);box-shadow:0 0 0 3px color-mix(in oklch,var(--ok) 25%,transparent)}
@@ -47,8 +47,8 @@
 .ina-seg{margin-top:12px}
 /* Riwayat: pilihan katalog dan cari dalam satu baris, tinggi sama */
 .ina-rw{display:flex;flex-wrap:wrap;gap:10px;padding:0;align-items:center}
-.ina-rw label{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:700;color:var(--ink2);white-space:nowrap}
-.ina-rw select,.ina-rw input{box-sizing:border-box;height:40px;font:inherit;font-size:13px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink)}
+.ina-rw label{display:flex;align-items:center;gap:10px;font-size:0.7812rem;font-weight:700;color:var(--ink2);white-space:nowrap}
+.ina-rw select,.ina-rw input{box-sizing:border-box;height:40px;font:inherit;font-size:0.8125rem;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink)}
 .ina-rw label{flex:none}
 .ina-rw .pc{min-width:220px}
 .ina-rw .pc-btn{height:40px;border-radius:999px;font-weight:700}
@@ -75,10 +75,10 @@
 .ina-pr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
 .ina-pr:last-child{border-bottom:0}
 .ina-pr-k,.ina-pr-v{display:grid;gap:1px;min-width:0}
-.ina-pr-k b{font-size:13px;font-weight:600;color:var(--ink)}
+.ina-pr-k b{font-size:0.8125rem;font-weight:600;color:var(--ink)}
 .ina-pr-v{text-align:right;flex:none}
-.ina-pr-v b{font-family:var(--display);font-size:14px;font-weight:700;color:var(--ink)}
-.ina-pr small{font-size:11px;color:var(--ink2);overflow-wrap:anywhere}
+.ina-pr-v b{font-family:var(--display);font-size:0.875rem;font-weight:700;color:var(--ink)}
+.ina-pr small{font-size:0.6875rem;color:var(--ink2);overflow-wrap:anywhere}
 .ina-pr-kat{margin-top:2px;padding-top:10px;border-top:1px dashed var(--line);border-bottom:0}
 .ina-tsb{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ina-tsb .fnd{margin:0}
@@ -91,17 +91,17 @@
 /* kolom Dirasakan: chip wilayah yang membungkus, bukan satu baris panjang */
 .ina-tb td:has(> .ina-mm){white-space:normal;min-width:320px;max-width:520px}
 .ina-mm{display:flex;flex-wrap:wrap;gap:6px}
-.ina-mi{display:inline-flex;align-items:center;gap:6px;padding:2px 10px 2px 2px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:12px;white-space:nowrap}
+.ina-mi{display:inline-flex;align-items:center;gap:6px;padding:2px 10px 2px 2px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:0.75rem;white-space:nowrap}
 .ina-mi .lc-mmi,.ina-tb .ina-mi .pill.pm{margin:0}
 .ina-mi-lagi{padding:3px 10px;color:var(--ink2);font-weight:600;background:var(--surface);cursor:help}
 
-/* laci detail: tabel berkepala (stasiun, tinggi muka laut, urutan buletin) dengan sel berjarak, angka di tengah */
+/* laci detail: tabel berkepala (stasiun, tinggi muka laut, urutan buletin) dengan sel berjarak, angka rata kanan tabular */
 #inaDetail .tw{border-radius:12px}
 #inaDetail .tw table.tb2 th{padding:9px 12px}
 #inaDetail .tw table.tb2 td{padding:10px 12px;vertical-align:middle;color:var(--ink);line-height:1.35}
-#inaDetail .tw table.tb2 th.n,#inaDetail .tw table.tb2 td.n{text-align:center;white-space:nowrap}
+#inaDetail .tw table.tb2 th.n,#inaDetail .tw table.tb2 td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 #inaDetail .tw table.tb2 tbody tr:nth-child(even){background:color-mix(in oklch,var(--surface) 60%,transparent)}
-#inaDetail .tw table.tb2 td small{display:block;margin-top:3px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--ink2)}
+#inaDetail .tw table.tb2 td small{display:block;margin-top:3px;font-size:0.6875rem;font-weight:600;letter-spacing:.04em;color:var(--ink2)}
 #inaStasiun{display:grid;gap:10px}
 #inaDetail .ina-semua{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:0}
 #inaDetail .ina-semua svg{width:16px;height:16px}
@@ -110,11 +110,28 @@
 .ina-tb td:has(> .ina-rk){white-space:normal;min-width:220px;max-width:340px}
 .ina-rk{display:flex;align-items:center;gap:8px;cursor:help}
 .ina-rk .lc-mmi{flex:none;margin:0}
-.ina-rk-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;line-height:1.35}
+.ina-rk-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:0.7812rem;line-height:1.35}
 .ina-kcs{display:flex;flex-wrap:wrap;gap:6px}
-.ina-kc{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;white-space:nowrap;color:var(--w);background:color-mix(in oklch,var(--w) 12%,transparent)}
+.ina-kc{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:0.75rem;white-space:nowrap;color:var(--w);background:color-mix(in oklch,var(--w) 12%,transparent)}
 .ina-kc b{font-weight:800}
 .ina-kc svg{width:13px;height:13px;flex:none}
 
 /* isi kartu katalog: bilah sumber, pilihan riwayat, dan tabel berjarak sama */
 .ina-isi{display:grid;gap:12px;min-width:0}
+
+/* laci detail BMKG (23 Nov 2026): kartu berkepala ikon, gambar mekanisme sumber berukuran wajar, laporan dirasakan dua kolom, siaran pers dilipat */
+.ina-laci .bd{gap:10px}
+.ina-bola .ina-f{justify-items:center}
+.ina-bola .ina-f img{width:min(180px,60%);background:none}
+@media (min-width:520px){.ina-fg2{grid-template-columns:1fr 1fr}}
+.ina-narasi-j p{margin:0;font-family:var(--display);font-size:var(--fs-3);font-weight:700;line-height:1.4;color:var(--ink)}
+.ina-lipat .ina-narasi{margin-top:4px}
+#inaDetail sup,#inaDetail sub{font-size:.7em;line-height:0}
+#inaDetail .lc-sek > p:not(.fnd){margin:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ina-atr{margin:0}
+/* tabel stasiun: tiga kolom (stasiun, jarak dan MMI, PGA per komponen bertumpuk) supaya muat di layar 375px */
+#inaDetail .ina-stb td:first-child{min-width:6.5rem}
+.ina-pga{display:inline-grid;grid-template-columns:auto auto;gap:1px 6px;justify-items:end;align-items:baseline}
+.ina-pga > span{font-size:var(--fs-1);font-weight:700;color:var(--ink2)}
+.ina-pga > b{font-weight:600;color:var(--ink)}
+@media (max-width:520px){#inaDetail .tw table.tb2 th,#inaDetail .tw table.tb2 td{padding:8px 8px}}

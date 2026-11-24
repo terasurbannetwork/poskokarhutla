@@ -1,0 +1,35 @@
+{
+ "format": "penanganan",
+ "pesan_kunci": "Laporan Penanganan Gempa Bumi, 15-11-2026.",
+ "judul_dokumen": "Laporan Penanganan Gempa Bumi",
+ "kajian": "rehab",
+ "tanggal": "2026-11-15",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-gempa\\2026-11\\2026-11-15\\Laporan Penanganan Gempa Bumi 151126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Katalog gempa BMKG dan USGS, laporan harian gempa Centurisk97 15 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "data\\laporan-bnpb\\penanganan-gempa\\2026-11\\2026-11-15\\Laporan Penanganan Gempa Bumi 151126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Katalog gempa BMKG dan USGS, laporan harian gempa Centurisk97 15 Nov 2026"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi Gempa Bumi",
+   "label": "Situasi",
+   "halaman_tetap": [
+    1,
+    2
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "skala_logo_bnpb": 1.0
+}

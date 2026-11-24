@@ -3,7 +3,7 @@
    Kode V0001 tetap selama gunungnya tetap Level II ke atas (masa aktif 3 hari sesudah turun); tidak dipakai ulang. Klik baris = peta terbang + laci gunung;
    tautan bersih /gunungapi/k/V0001. Tabel standar: kepala gelap, urut, paginasi (A10). Tanpa berkasnya tab menampilkan "belum tersedia", bukan daftar kosong. */
 const Kejadian = {
-  st: {urut: "lv", turun: true, hal: 0}, PER: 10, K: undefined, _p: null,
+  st: {urut: "lv", turun: true, hal: 0, rentang: "30", tgl: null}, PER: 10, K: undefined, _p: null,
   KOL: [["kode", "Kode"], ["nama", "Gunung"], ["prov", "Provinsi"], ["lv", "Level", 0], ["mulai", "Dipantau sejak"], ["aktif", "Status"]],
   /* kejadian + gunungnya (dicocokkan lewat nama "G. Semeru" -> "Semeru"); yang tak cocok dibuang */
   muat() { return this._p ||= muatJSON("../banjir/data/kejadian_gunungapi_awal.json").then(d => { const G = S.st.gunung;
@@ -13,15 +13,17 @@ const Kejadian = {
   sel: (k, c) => c === "kode" ? `<b translate="no">${esc(k.kode)}</b>` : c === "nama" ? `<span translate="no">${esc(k.g.nama)}</span>` : c === "prov" ? esc(k.g.prov) : c === "lv" ? pilLv(k.g.level, true)
     : c === "mulai" ? esc(tglPendek(k.mulai)) : `<span class="pl" style="--w:${k.aktif ? "#d4572f" : "#7d8794"}">${k.aktif ? "Aktif" : "Selesai"}</span>`,
   tabel() {
-    const st = this.st, s = st.turun ? -1 : 1, R = [...this.K].sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || a.kode.localeCompare(b.kode); });
+    const st = this.st, s = st.turun ? -1 : 1, R = RentangKj.saring(this.K, st, k => k.mulai, k => k.aktif ? null : (k.terakhir || k.selesai || k.mulai)).sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || a.kode.localeCompare(b.kode); });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / this.PER) - 1));
-    return `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n]) => `<th aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
-      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c]) => `<td>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}`; },
+    if (!R.length) return RentangKj.kartu(st, {nama: "Kejadian gunung api", sumber: `Sumber: PVMBG (MAGMA Indonesia). Gunung berstatus Waspada atau lebih tinggi.`, pil: null, isi: `<div class="kosong">Tidak ada gunung api ${RentangKj.ket(st)}.</div>`});
+    return RentangKj.kartu(st, {nama: "Kejadian gunung api", sumber: `Sumber: PVMBG (MAGMA Indonesia). Gunung berstatus Waspada atau lebih tinggi.`, pil: null, isi: `<div class="tw ex-tabel"><table><thead><tr>${this.KOL.map(([c, n]) => `<th aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c]) => `<td>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}`}); },
   gambarTabel() { const el = $("#kejadian"); el.innerHTML = this.tabel(); pengurutKepala(this.st, el.querySelector("thead"), () => nanti(() => this.gambarTabel())); },
   async render() {
     const el = $("#kejadian"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
-      const buka = e => { const h = e.type === "click" && e.target.closest("[data-h]");
+      const buka = e => { if (RentangKj.klik(e, this.st, {K: () => this.K, mulai: k => k.mulai, akhir: k => k.aktif ? null : (k.terakhir || k.selesai || k.mulai), gambar: () => this.gambarTabel(), ket: "Angka = jumlah gunung berstatus Waspada atau lebih tinggi hari itu."})) return;
+        const h = e.type === "click" && e.target.closest("[data-h]");
         if (h) { if (h.disabled) return; this.st.hal = +h.dataset.h; return nanti(() => { this.gambarTabel(); el.querySelector(`.pgn-b[data-h="${this.st.hal}"]`)?.focus(); }); }
         const r = e.target.closest("tr[data-kode]"); if (r && (e.type === "click" || e.key === "Enter" || e.key === " ")) { e.preventDefault(); this.buka(r.dataset.kode); } };
       el.addEventListener("click", buka); el.addEventListener("keydown", buka); }

@@ -546,7 +546,24 @@ def gpx(r, nama):
 CSS_TAMBAH = ".kartu h3{text-transform:none}th{text-align:center}.kartu ul,.kartu ol{margin-right:3mm}.kartu{margin-bottom:3mm}"
 
 
-def halaman(r, P, W, H, mpp, gambar, tanggal, templat, batas):
+def kelompok_dekat(P, titik, px=60):
+    """Titik tujuan yang di peta utama berjarak kurang dari px piksel dari titik lain: label dan nomornya bertumpuk, perlu peta perbesaran."""
+    return [t for t in titik if any(u is not t and math.dist(P(t["lat"], t["lon"]), P(u["lat"], u["lon"])) < px for u in titik)]
+
+
+def kartu_besar(rp, b, rute):
+    """Kartu peta perbesaran untuk titik berdempetan: rute yang lewat, penanda bernomor, label penuh, skala."""
+    P, W, H = b["P"], b["W"], b["H"]
+    s = rp.svg_rute(P, rute, W, H)
+    for t in b["titik"]:
+        s += rp.penanda(P, t, 15, label=nama_titik(t), ukuran=22)
+    s += rp.skala(W, H, b["mpp"], next(k for k in (0.5, 1, 2, 5, 10, 20, 50) if k * 1000 / b["mpp"] >= W * .15)) + rp.utara(W) + ["</svg>"]
+    nama = " dan ".join(nama_titik(t) for t in b["titik"])
+    return ('<div class="kartu"><h3>Perbesaran: %s</h3><div class="peta" style="height:%.0fmm">%s%s</div></div>'
+            % (html.escape(nama), b["tinggi_mm"], ('<img src="%s">' % html.escape(b["gambar"])) if b["gambar"] else "", "".join(s)))
+
+
+def halaman(r, P, W, H, mpp, gambar, tanggal, templat, batas, besar=None):
     """HTML tiga halaman: (1) peta, urutan titik, empat angka; (2) tabel leg; (3) pemeriksaan, daftar periksa, yang diputuskan, kaki."""
     rp = RP()
     e = html.escape
@@ -560,7 +577,12 @@ def halaman(r, P, W, H, mpp, gambar, tanggal, templat, batas):
     s += rp.penanda(P, rute[0], 15, base=True, label=base["nama"])
     if (akhir["lat"], akhir["lon"]) != (base["lat"], base["lon"]):
         s += rp.penanda(P, rute[-1], 15, base=True, label=akhir["nama"])
+    dekat = {t["urut"] for t in (besar or {}).get("titik", [])}
     for t in r["titik"]:
+        if t["urut"] in dekat:   # titik berdempetan: satu label gabungan, rinciannya di peta perbesaran
+            lbl = " dan ".join(nama_titik(x).split(",")[0] for x in besar["titik"]) if t["urut"] == min(dekat) else None
+            s += rp.penanda(P, t, 13, label=lbl, ukuran=18)
+            continue
         s += rp.penanda(P, t, 13, label=nama_titik(t).split(",")[0], ukuran=18)   # label peta pendek supaya tidak terpotong tepi; nama lengkap ada di tabel
     s += rp.skala(W, H, mpp, next(k for k in (5, 10, 20, 25, 50, 100, 200) if k * 1000 / mpp >= W * .12)) + rp.utara(W) + ["</svg>"]
     pil = ' <span class="pil abu">titik menyusul</span>'
@@ -584,10 +606,11 @@ def halaman(r, P, W, H, mpp, gambar, tanggal, templat, batas):
     h1 = ('<section class="hal">%s%s<div class="dua"><div><div class="peta" style="height:118mm">%s%s</div>'
           '<div class="leg"><span><i style="background:#e8590c"></i>Titik tujuan</span><span><i style="background:#0b2545"></i>Base</span>'
           '<span style="color:#0284c7">Rute dan arah terbang</span></div></div>'
-          '<div class="kartu"><h3>Urutan titik, klik koordinat untuk Google Maps</h3><table><thead><tr><th></th><th>Titik</th><th>Koordinat</th><th>Di titik</th>'
+          '<div><div class="kartu"><h3>Urutan titik, klik koordinat untuk Google Maps</h3><table><thead><tr><th></th><th>Titik</th><th>Koordinat</th><th>Di titik</th>'
           '<th>Jarak tempuh</th><th>Waktu terbang</th></tr></thead><tbody>%s</tbody></table>'
-          '<p class="fnd">Jarak dan waktu kumulatif sejak lepas landas, waktu di titik tidak termasuk.</p></div></div>%s</section>') % (
-        rp.kepala(ey, judul(r), meta, kanan), kpi, ('<img src="%s">' % e(gambar)) if gambar else "", "".join(s), baris, kaki)
+          '<p class="fnd">Jarak dan waktu kumulatif sejak lepas landas, waktu di titik tidak termasuk.</p></div>%s</div></div>%s</section>') % (
+        rp.kepala(ey, judul(r), meta, kanan), kpi, ('<img src="%s">' % e(gambar)) if gambar else "", "".join(s), baris,
+        kartu_besar(rp, besar, rute) if besar else "", kaki)
     lb = "".join('<tr><td>%d</td><td style="white-space:nowrap"><b>%s</b> ke <b>%s</b></td><td class="mono">%s</td><td class="n"><a href="%s">%.4f, %.4f</a></td>'
                  '<td class="n"><b>%s%s</b></td><td class="n">%s km</td><td class="n">%s NM</td><td class="n">%s mnt</td></tr>' % (
         x["no"], e(x["dari"]), e(x["ke"]), rp.R.dms(x["lat"], x["lon"]), rp.gmaps(x["lat"], x["lon"]), x["lat"], x["lon"],
@@ -684,8 +707,21 @@ def buat(a):
     clat, clon = (min(la) + max(la)) / 2, (min(lo) + max(lo)) / 2
     # kunjungan: area tidak dikirim ke server ubin kecuali --citra
     P, ada = peta(rp, clat, clon, z, W, H, cache, kerja / "rute.jpg", pakai_citra(a.misi, a.citra, a.tanpa_citra))
+    besar = None
+    dekat = kelompok_dekat(P, r["titik"])
+    if dekat:   # titik berdempetan di peta utama: tambah peta perbesaran di halaman 1
+        W2, H2, la2, lo2 = 1100, 520, [t["lat"] for t in dekat], [t["lon"] for t in dekat]
+        z2 = 16
+        while z2 > z:
+            (ax, ay), (bx, by) = rp.gpx(max(la2), min(lo2), z2), rp.gpx(min(la2), max(lo2), z2)
+            if (bx - ax) * 2.5 <= W2 and (by - ay) * 2.5 <= H2:
+                break
+            z2 -= 1
+        c2 = ((min(la2) + max(la2)) / 2, (min(lo2) + max(lo2)) / 2)
+        P2, ada2 = peta(rp, c2[0], c2[1], z2, W2, H2, cache, kerja / "perbesaran.jpg", pakai_citra(a.misi, a.citra, a.tanpa_citra))
+        besar = {"P": P2, "W": W2, "H": H2, "mpp": rp.m_per_px(c2[0], z2), "gambar": "perbesaran.jpg" if ada2 else "", "titik": dekat, "tinggi_mm": 150 * H2 / W2}
     nama = "Flight Plan %s %s" % (aman_nama(judul(r)), date.fromisoformat(tanggal).strftime("%d%m%y"))
-    isi = halaman(r, P, W, H, rp.m_per_px(clat, z), "rute.jpg" if ada else "", tanggal, T, B)
+    isi = halaman(r, P, W, H, rp.m_per_px(clat, z), "rute.jpg" if ada else "", tanggal, T, B, besar)
     hf = kerja / "flight_plan.html"
     hf.write_text(k.dokumen(html.escape("Flight plan"), isi, rp.CSS + CSS_TAMBAH), encoding="utf-8")
     pdf = keluar / (nama + ".pdf")

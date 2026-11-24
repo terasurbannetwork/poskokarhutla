@@ -8,7 +8,7 @@
 #metode .ex-bd{padding:8px 22px 10px}
 #metode .ex-ft{display:flex;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 #metode .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
-#metode .ex h3{font-size:21px;line-height:1.3;max-width:none}
+#metode .ex h3{font-size:var(--fs-7);line-height:1.3;max-width:none}
 ul.mt{list-style:none;margin:0;padding:0}
 ul.mt li{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:6px 18px;padding:12px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5;align-items:start}
 ul.mt li:first-child{border-top:0}
@@ -18,23 +18,78 @@ ul.mt li b{font-weight:700}
 .bg-ex:hover{color:var(--ink);background:var(--surface)}
 .bg-ex svg{width:16px!important;height:16px}
 .dlg .dh p{margin:2px 0 0}
-.gn-kv{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
-.rek-teks{margin:0;font-size:13.5px;line-height:1.55;white-space:pre-line}
-.rek-sumber{margin:8px 0 0;font-size:11.5px;color:var(--ink2);font-style:italic}
-ul.ev{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:13px;line-height:1.45}
-.dk{display:flex;gap:8px;align-items:center}
-.dk .btn{text-decoration:none}
+/* laci gunung (setara laci gempa): kotak angka 2 kolom sama tinggi, kotak ganjil terakhir selebar laci; kartu .lc-sek berjarak 10px */
+.grid.gn-kv{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.gn-kv > .kpi{display:grid;grid-template-rows:auto 1fr auto}
+.grid.gn-kv > .kpi:last-child:nth-child(odd){grid-column:1/-1}
+.laci .bd > .lc-src{margin:-4px 0 0}
+.gn-luar{display:flex;flex-wrap:wrap;gap:6px}
+.rek-teks{margin:0;font-size:var(--fs-3);line-height:1.55;white-space:pre-line}
+ol.gn-rek{margin:0;padding:0 0 0 20px;display:grid;gap:6px;font-size:var(--fs-3);line-height:1.5;color:var(--ink)}
+ol.gn-rek li::marker{font-weight:800;color:var(--brand2);font-variant-numeric:tabular-nums}
+details.gn-cat>ol.gn-rek{margin-top:8px}
+ul.ev{list-style:none;margin:0;padding:0;display:grid;gap:0;font-size:var(--fs-3);line-height:1.45}
+ul.ev>li.gn-ev{display:grid;gap:6px;padding:8px 0;border-bottom:1px solid var(--line)}
+ul.ev>li.gn-ev:first-child{padding-top:0}
+ul.ev>li.gn-ev:last-child{border-bottom:0}
+.gn-ev-k{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.gn-ev-k b{font-variant-numeric:tabular-nums}
+ul.ev details.gn-cat{border-top:0;padding-top:0}
+/* kepala laci: provinsi berikon, boleh membungkus ke baris kedua (tidak dipotong), level dan kode kejadian di baris tetap di bawahnya; tombol Bagikan di sebelah Tutup */
+.laci .hd-meta.gn-prov{flex-wrap:nowrap;min-width:0;white-space:normal}
+.laci .gn-prov > span{display:inline-flex;align-items:flex-start;gap:5px;min-width:0;white-space:normal;line-height:1.35}
+.laci .gn-prov svg{flex:none;width:13px;height:13px;margin-top:2px;color:var(--brand2)}
+.laci .gn-status{margin-top:6px}
+.laci .hd-aksi{display:flex;gap:6px;flex:none;margin-left:auto}
+.laci .hd-aksi .ik-btn svg{flex:none}
+/* kepala bagian berikon; pil skenario tidak ikut huruf kapital */
+.laci details.lipat>summary>svg{flex:none;width:14px;height:14px;color:var(--brand2)}
+.laci details.lipat>summary>.pl{text-transform:none;letter-spacing:0}
 details.lipat>.isi{padding:2px 14px 12px}
-/* laci gunung: kalimat skenario, citra sebelum/sesudah, ubin legenda dok */
-.dl-kal{margin:0;font-size:13.5px;line-height:1.55}
-.dl-kal .hl{color:var(--bad);font-weight:700}
-.dlg .isi>p{margin:0 0 8px}
-.dlg .isi>p:last-child{margin-bottom:0}
+.laci details.lipat>.isi.lc-sek{gap:10px}
+/* tombol simulasi di ujung laci, tidak meregang; ruang bawah supaya tidak tertutup tombol melayang di layar sempit */
+.laci .lc-sim{justify-self:start;align-self:start;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.laci .lc-sim svg{flex:none;width:16px;height:16px}
+@media (max-width:900px){.laci .bd{padding-bottom:72px}}
+/* kontak: nomor sebagai tombol telepon bertumpuk rata kanan, nama pos dan lokasinya di kiri */
+.gn-lb-n{display:grid;min-width:0}
+.gn-tels{display:grid;gap:4px;justify-items:end}
+a.gn-tel{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;padding:3px 9px;border:1px solid var(--line);border-radius:999px;font-size:var(--fs-2);font-weight:700;color:var(--brand2);text-decoration:none;font-variant-numeric:tabular-nums;background:var(--card)}
+a.gn-tel:hover{border-color:var(--brand2);background:var(--surface)}
+a.gn-tel svg{flex:none;width:12px;height:12px}
+.laci .lc-lb:has(.gn-tels),.laci .lc-lb:has(.lc-sub){align-items:flex-start}
+.lc-lb b .lc-sub{text-align:right}
+/* laporan pengamatan: label berikon di atas, teks di bawah */
+.gn-amat{display:grid}
+.gn-amat-b{display:grid;gap:3px;padding:8px 0;border-bottom:1px solid var(--line)}
+.gn-amat-b:first-child{padding-top:0}
+.gn-amat-b:last-child{border-bottom:0;padding-bottom:0}
+.gn-amat-b .lc-lb-k{font-weight:700}
+.gn-amat-b p{margin:0;font-size:var(--fs-3);line-height:1.5;color:var(--ink)}
+.lc-sek table.tb2 td .lc-sub{margin-top:2px;line-height:1.4}
+.lc-sek table.tb2 td.n{white-space:nowrap}
+.lc-sek table.tb2 td > span:first-child{color:var(--ink);font-weight:600}
+.laci .lc-sek table.tb2 td:not(.n){white-space:normal;overflow-wrap:anywhere}
+/* arahan per zona: kalimat arahan sebagai isi utama */
+.gn-arah{margin:0;font-size:var(--fs-3);line-height:1.55;color:var(--ink);text-align:justify;hyphens:auto}
+.lc-h > .pl{text-transform:none;letter-spacing:0}
+/* paparan: tabel fasilitas berkolom zona */
+.gn-pap{width:100%;table-layout:auto}
+.gn-pap th{text-align:right;padding:0 0 4px 6px;font-weight:400;white-space:nowrap;width:1%}
+.gn-pap td.n{white-space:nowrap;padding-left:6px}
+.gn-pap th:first-child{width:auto;padding-left:0}
+.gn-pap td.nol{color:var(--ink2);font-weight:400}
+/* grafik panas MIROVA: garis dan titik berwarna token, titik membesar saat diarahkan */
+.gn-spark{color:var(--bad);display:block;overflow:visible}
+.gn-spark .gn-tt{cursor:crosshair}
+.gn-spark .gn-tt:hover{stroke-width:9}
+.lc-big small{line-height:1.4}
+.gn-cit-lain{margin-top:8px}
 .cit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .cit figure{margin:0;display:grid;gap:6px}
 .cit img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--surface)}
-.cit.sat{grid-template-columns:minmax(0,1fr);margin-bottom:8px}.cit.sat img{aspect-ratio:auto;object-fit:contain;max-height:320px}
-.cit figcaption{font-size:12px;color:var(--ink2)}
+.cit.sat{grid-template-columns:minmax(0,1fr)}.cit.sat img{aspect-ratio:auto;object-fit:contain;max-height:320px}
+.cit figcaption{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:var(--fs-2);color:var(--ink2);font-variant-numeric:tabular-nums}
 #legenda .seg.penuh{display:flex;width:100%}
 #legenda .seg.penuh button{flex:1;text-align:center}
 
@@ -48,4 +103,26 @@ details.lipat>.isi{padding:2px 14px 12px}
 .gn-ukuran{display:flex;align-items:center;gap:8px;padding:0 2px 6px}
 .gn-ukuran-seg{flex:1;min-width:0}
 .gn-ukuran-ud{margin-left:auto}
-.gn-tglket{margin:0 2px 8px;font-size:12px;color:var(--ink2)}
+.gn-tglket{margin:0 2px 8px;font-size:var(--fs-2);color:var(--ink2)}
+
+/* QA rupa 23 Nov 2026: ikon di dalam pil (VONA, level) berukuran tetap, tidak ikut aturan grafik .ex svg{width:100%} */
+.ex .pl>svg,.pl>svg{width:12px!important;height:12px!important;flex:none;display:inline-block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pl:has(>svg){display:inline-flex;align-items:center;gap:5px}
+/* tabel gunung api: kepala rata tengah, angka rata kanan tabular, pil di tengah sel */
+.tw thead th{text-align:center}.tw thead th button{justify-content:center;width:100%}
+.tw td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw td.c{text-align:center}
+/* keterangan, metode, dan sumber data dilipat di dalam isi kartu (AGENTS.md 3.5: tanpa kaki Sumber) */
+details.gn-cat{border-top:1px solid var(--line);padding-top:8px;font-size:12.5px;color:var(--ink2)}
+details.gn-cat>summary{cursor:pointer;font-weight:700;font-size:var(--fs-2);list-style:none;display:inline-flex;align-items:center;gap:6px;color:var(--ink2)}
+details.gn-cat>summary::-webkit-details-marker{display:none}
+details.gn-cat>summary::before{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
+details.gn-cat[open]>summary::before{transform:rotate(45deg)}
+details.gn-cat>p{margin:8px 0 0;line-height:1.55;text-align:justify}
+.ex-std>.ex-bd>.gn-leg{justify-content:center;font-size:11.5px;color:var(--ink2)}
+/* laci gunung api: bagian yang dimuat menyusul (#dlgLanjut) berjarak sama dengan bagian lain di laci, tidak menempel */
+.laci #dlgLanjut{display:grid;gap:10px}
+.laci #dlgLanjut:empty{display:none}
+/* laci gunung api dalam tampilan pop-up (Detail.pop): #laci dipindah ke #dlg, lepas dari posisi samping */
+#dlg.gn-pop-dlg{padding:0;width:min(640px,calc(100vw - 24px));max-height:min(88vh,960px);overflow:hidden}
+#dlg.gn-pop-dlg > #laci{position:static;inset:auto;width:auto;height:auto;max-height:min(88vh,960px);display:flex;border:0;border-radius:0;box-shadow:none}

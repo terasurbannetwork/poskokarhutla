@@ -1,7 +1,7 @@
 "use strict";
 /* Tab Tren: tiap blok = Kartu.ex (inti/kartu.js). Kartu tanpa data dibuang (A18): riwayat dasarian baru muncul setelah dua dasarian terkumpul. */
 const Tren = {
-  kartu(ey, judul, isi, sumber, leg) { Kartu.leg(leg); return Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
+  kartu(ey, judul, isi, sumber, leg) { Kartu.leg(leg); return kepalaSeksi(Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`)); },
   /* batang berangka: v = [{n, t, tip}], tinggi mengikuti nilai; kedua = batang kedua lebih sempit di depan (mis. ekstrem di dalam kering) */
   batang(v, {W = 940, H = 280, fmtN = fmt, w2 = null, warna = JINGGA, warna2 = MERAH} = {}) {
     const M = innerWidth < 640, Wd = M ? 700 : W, L = 34, B = H - 26, T = 22, gap = (Wd - L - 10) / v.length, bw = gap * .7, mx = Math.max(1, ...v.map(x => x.n)), Y = x => B - x / mx * (B - T);
@@ -17,9 +17,9 @@ const Tren = {
   kSpi() {
     const s = S.tren?.spi_bulanan; if (!s || s.length < 3) return "";
     const v = s.map(x => ({n: x.kering, n2: x.ekstrem, t: BLN[+x.bln.slice(5) - 1] + (x.bln.endsWith("-01") || x === s[0] ? " " + x.bln.slice(2, 4) : ""),
-      tip: `<b>${bulanPanjang(x.bln)}</b><br>Kering (SPI-3 ≤ −1): ${fmt(x.kering)}% wilayah<br>Kering ekstrem (curah hujan, ≤ −2): ${fmt(x.ekstrem)}% wilayah`})), a = s.at(-1), mx = Math.max(...s.map(x => x.kering)), tertinggi = a.kering >= mx;
-    return this.kartu("Hujan", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem (curah hujan)${tertinggi ? `, tertinggi dalam ${s.length} bulan` : ""}`,
-      this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Centurisk97 (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "agak kering atau lebih (SPI-3 ≤ −1)"], [MERAH, "kering ekstrem (curah hujan, ≤ −2)"]]); },
+      tip: `<b>${bulanPanjang(x.bln)}</b><br>Kering (SPI-3 −1 atau kurang): ${fmt(x.kering)}% wilayah<br>Kering ekstrem (curah hujan, −2 atau kurang): ${fmt(x.ekstrem)}% wilayah`})), a = s.at(-1), mx = Math.max(...s.map(x => x.kering)), tertinggi = a.kering >= mx;
+    return this.kartu("Persentase wilayah kering", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem (curah hujan)${tertinggi ? `, tertinggi dalam ${s.length} bulan` : ""}`,
+      this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Centurisk97 (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "agak kering atau lebih (SPI-3 −1 atau kurang)"], [MERAH, "kering ekstrem (curah hujan, −2 atau kurang)"]]); },
 
   /* 2. kode kekeringan (DC) harian: median dan persentil ke-90 seluruh sel */
   kDc() {
@@ -56,7 +56,7 @@ const Tren = {
       .sort((a, b) => b.kering.filter(Boolean).length - a.kering.filter(Boolean).length || a.mn - b.mn).slice(0, 12);
     const tb = baris.length ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Provinsi (musim kering = rata-rata di bawah ${fmt(R.bulan_kering_mm)} mm)</th><th>Bulan kering</th><th class="n">Bulan terkering</th><th class="n">Saat El Niño</th></tr></thead><tbody>${baris.map(b => `<tr><td><b translate="no">${esc(namaProv(b.g))}</b></td><td>${rentang(b.kering)}</td><td class="n num">${BLN[b.i]} ${fmt(b.mn)} mm</td><td class="n num">${b.o.mm_elnino[b.i] != null ? fmt(b.o.mm_elnino[b.i]) + " mm" : "–"}</td></tr>`).join("")}</tbody></table></div>` : "";
     return this.kartu("Kalender musim", `${Kartu.hl(BLN_PENUH[k])} bulan terkering rata-rata nasional (${Kartu.hl(fmt(N.mm[k]) + " mm")}), ${N.mm_elnino[k] != null && N.mm_elnino[k] > N.mm[k] ? "naik" : "turun"} ke ${Kartu.hl(N.mm_elnino[k] != null ? fmt(N.mm_elnino[k]) + " mm" : "–")} pada tahun El Niño`,
-      this.batang(v, {warna: BIRU, warna2: MERAH, w2: true, fmtN: x => fmt(Math.round(x))}) + tb, "NASA POWER 1991–2025, ONI NOAA CPC; bulan kering menurut Schmidt-Ferguson", [[BIRU, `curah hujan bulanan rata-rata ${R.tahun[0]}–${R.tahun[1]} (mm)`], [MERAH, "rata-rata pada tahun El Niño (ONI Jul–Sep ≥ +0,5)"]]); },
+      this.batang(v, {warna: BIRU, warna2: MERAH, w2: true, fmtN: x => fmt(Math.round(x))}) + tb, "NASA POWER 1991–2025, ONI NOAA CPC; bulan kering menurut Schmidt-Ferguson", [[BIRU, `curah hujan bulanan rata-rata ${R.tahun[0]}–${R.tahun[1]} (mm)`], [MERAH, "rata-rata pada tahun El Niño (ONI Jul–Sep +0,5 atau lebih)"]]); },
 
   /* 7. indeks risiko riwayat 0-100 per kabupaten: 50% kekerapan, 30% besaran, 20% tren (pola risiko_riwayat karhutla) */
   kRisiko() {

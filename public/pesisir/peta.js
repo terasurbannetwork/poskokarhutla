@@ -102,16 +102,17 @@ const Peta = {
     for (const [k, ids] of Object.entries(m)) ids.forEach(id => peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", this.lihat(k) ? "visible" : "none")); nanti(renderLegenda); }
 };
 
-/* ================================================================ legenda dok: hanya yang tergambar */
+/* ================================================================ legenda dok: hanya yang tergambar
+   judul kelompok pendek (dok sempit di antara panel dan laci memotong judul panjang); kelompok yang berganti per hari memakai tanggal pendek ("Status rob, 23 Nov") */
 function renderLegenda() {
   const T = k => Peta.lihat(k), sw = (w, n, dot = 1) => `<span><i class="sw${dot ? " dot" : ""}" style="background:${w}"></i>${n}</span>`, tg = tglSgk(S.hari), gbl = (j, h) => `<div class="lbl">${j}</div><div class="leg" style="margin:4px 0 8px">${h}</div>`;
   const psAda = new Set((S.pas?.stasiun || []).flatMap(s => { const h = s.hari?.find(x => x[0] === S.hari); return h ? [kelasPasut(s, h[1])] : []; })), rob = S.rob && Pesisir.robHari(S.rob, S.hari), kl = S.gel ? Pesisir.gelHari(S.gel, S.hari) : [];
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
-    ${T("abrasi") && S.abr ? gbl("Laju garis pantai (transek tiap 1 km)", Object.values(ABR).map(([n, w]) => sw(w, n)).join("") + `<span><i class="sw" style="background:#1f4e79;height:3px;vertical-align:3px"></i>Transek: garis dasar ke garis pantai terakhir</span>`) + `<div class="leg"><span>Titik = garis pantai terakhir; pudar = keyakinan rendah</span></div>` : ""}
-    ${T("rob") && rob ? gbl(`Status rob ${tg}`, TINGKAT.map(([n, w], k) => rob.cacah[k] ? sw(w, n) : "").join("") + (rob.L.length > rob.ada.length ? sw("#cfd4da", "Tanpa ambang") : "")) : T("rob") ? gbl("Status rob", `<span>Data tidak mencakup ${tg}</span>`) : ""}
-    ${T("pasut") && psAda.size ? gbl(`Pasang tertinggi ${tg}`, PASUT.map(([n, w], k) => psAda.has(k) ? sw(w, n) : "").join("")) : ""}
-    ${T("ombak") && kl.length ? gbl(`Gelombang model ${tg}`, Pesisir.KELAS_GEL.filter(c => kl.some(x => Pesisir.kelasGel(x.hs) === c)).map(c => sw(c[2], c[1] + (c[0] ? ` (${String(c[0]).replace(".", ",")} m atau lebih)` : ""))).join("")) : ""}
-    ${T("bmkg") && S.glb.length ? gbl("Peringatan gelombang BMKG", [["Tinggi", "#3f7fb8", 1], ["Sangat tinggi", "#5b4fb0", 2], ["Ekstrem", "#2a1f6b", 3]].filter(c => S.glb.some(o => o.lv === c[2])).map(c => sw(c[1], c[0], 0)).join("")) : ""}
+    ${T("abrasi") && S.abr ? gbl("Garis pantai", Object.values(ABR).map(([n, w]) => sw(w, n)).join("") + `<span><i class="sw" style="background:#1f4e79;height:3px;vertical-align:3px"></i>Transek tiap 1 km, dari garis dasar ke garis pantai terakhir</span>`) + `<div class="leg"><span>Titik adalah garis pantai terakhir; titik pudar berarti keyakinan rendah.</span></div>` : ""}
+    ${T("rob") && rob ? gbl(`Status rob, ${tg}`, TINGKAT.map(([n, w], k) => rob.cacah[k] ? sw(w, n) : "").join("") + (rob.L.length > rob.ada.length ? sw("#cfd4da", "Tanpa ambang") : "")) : T("rob") ? gbl("Status rob", `<span>Data tidak mencakup ${tg}</span>`) : ""}
+    ${T("pasut") && psAda.size ? gbl(`Puncak pasang, ${tg}`, PASUT.map(([n, w], k) => psAda.has(k) ? sw(w, n) : "").join("")) : ""}
+    ${T("ombak") && kl.length ? gbl("Gelombang model", Pesisir.KELAS_GEL.filter(c => kl.some(x => Pesisir.kelasGel(x.hs) === c)).map(c => sw(c[2], c[1] + (c[0] ? ` (${String(c[0]).replace(".", ",")} m atau lebih)` : ""))).join("")) : ""}
+    ${T("bmkg") && S.glb.length ? gbl("Peringatan BMKG", [["Tinggi", "#3f7fb8", 1], ["Sangat tinggi", "#5b4fb0", 2], ["Ekstrem", "#2a1f6b", 3]].filter(c => S.glb.some(o => o.lv === c[2])).map(c => sw(c[1], c[0], 0)).join("")) : ""}
     </div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
 $("#lapis").addEventListener("change", e => { if (e.target.closest("input[data-l]") && peta) Peta.terapkan(); });

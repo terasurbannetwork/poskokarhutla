@@ -1,0 +1,32 @@
+{
+    "judul": "Kepemimpinan dalam Penanggulangan Bencana dan Penanganan Krisis",
+    "anak_judul": "Bahan bacaan peserta Pendidikan Sespimti Polri: prinsip KRIS, risiko dan eskalasi, banjir Jawa Barat, komando, peran Polri, dan latihan kasus",
+    "label": "HANDOUT MATERI SESPIMTI POLRI",
+    "oleh_label": "Disampaikan oleh",
+    "oleh": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han), Kepala Badan Nasional Penanggulangan Bencana",
+    "foto": "../../../laporan-bnpb/paparan/sespimti-polri-181126/foto/sampul-waykambas.jpg",
+    "foto_kredit": "Foto: BNPB, Kepala BNPB memantau karhutla Taman Nasional Way Kambas dari helikopter, 24 Oktober 2026",
+    "folder": "../../../laporan-bnpb/paparan/sespimti-polri-181126/naskah",
+    "gbr": "../../../laporan-bnpb/paparan/sespimti-polri-181126/gambar",
+    "keluaran": "../../../laporan-bnpb/paparan/sespimti-polri-181126/keluaran",
+    "nama_keluaran": "Handout Kepemimpinan Penanggulangan Bencana Sespimti Polri",
+    "berkas": [
+        "00-ringkasan.md",
+        "01-kris.md",
+        "02-risiko.md",
+        "03-jabar.md",
+        "04-kesiapsiagaan.md",
+        "05-komando.md",
+        "06-keputusan.md",
+        "07-polri.md",
+        "08-kolaborasi.md",
+        "09-centurisk.md",
+        "10-latihan.md",
+        "11-glosarium.md"
+    ],
+    "tata": {
+        "toc_tingkat": 2,
+        "bab_baru": true,
+        "tinggi_gambar_cm": 11
+    }
+}

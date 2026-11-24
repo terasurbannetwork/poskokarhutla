@@ -8,13 +8,15 @@ const Dampak = (() => {
   const W = {pasir: "#c9a24b", oranye: "#e58a45"};
   const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8", hist: "M12 3 2 20h20zM12 10v4M12 17v.5", sawah: "M3 20c3-6 6-9 9-9s6 3 9 9M12 11V4M9 7l3-3 3 3", sk: "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5", fas: "M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"};
   const BAG = {pend: ["Penduduk terdampak", W.pasir], hist: ["Korban dan kerugian", W.oranye], sawah: ["Sawah rusak", "#7a9a4a"], sk: ["Status darurat resmi", "#1d4e89"], fas: ["Sekolah dan fasilitas", "#3f7fb8"]};
+  /* kepala kartu di bawah pita bagian: nama isi kartu (pita sudah memuat nama bagian), bukan kalimat temuan (AGENTS.md 3.5) */
+  const SUB = {pend: "Jiwa per provinsi", hist: "Riwayat per tahun", sawah: "Luas sawah rusak per tahun", sk: "Surat keputusan status darurat", fas: "Sekolah, puskesmas, dan rumah sakit"};
   const KUNCI = {kejadian: ["Kejadian", "kejadian"], terdampak: ["Terdampak", "jiwa"]};   /* mengungsi dan rumah rusak hampir selalu 0 pada kekeringan: tidak bermakna */
   let D = null; const st = {k: "terdampak", tingkat: "awas"};
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
   const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">BNPB</a>"};
   /* kartu: pita bagian + kartu Insight dengan pil = nama bagian */
   const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id];
-    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>`)}</section>`; };
+    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${kepalaSeksi(Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>`), SUB[id])}</section>`; };
   /* batang horizontal berlabel pil: rows [{n, v, txt, w, tip}] */
   function hbar(rows) {
     const Wd = Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44 - (($("#dampak")?.clientWidth || 0) >= 1100 ? 224 : 0))), L = Wd < 500 ? 100 : 160, rh = 26, R = 80, m = Math.max(1, ...rows.map(r => r.v)), X = v => L + v / m * (Wd - L - R);

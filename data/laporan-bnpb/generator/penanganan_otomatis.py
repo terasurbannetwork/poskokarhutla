@@ -11,7 +11,15 @@
   (13 Nov pemilik), tanpa Excel dari teks Satgas. Tanpa kartu PENANGANAN dan PERSONEL (10 Nov).
 - Dibingkai mesin ppt-konsultan (lewat_deck.bingkai, format 'penanganan'), dua bagian Situasi dan Operasi.
 
-    python penanganan_otomatis.py --tanggal 2026-11-13 [--jam 18:00] [--operasi wa_satgas.txt] [--gelar gelar.xlsx] [--bmkg b.txt] --out DIR
+    python penanganan_otomatis.py --tanggal 2026-11-13 [--jam 18:00] [--operasi wa_satgas.txt] [--gelar gelar.xlsx] [--bmkg b.txt] --out DIR [--isian isian.json]
+
+Bot laporan (BL-06): nama shape stabil s<n>_<peran> di deck akhir, <deck>.kunci.json selalu ditulis (angka hotspot, firespot, luas terbakar,
+belum padam), --isian opsional (ISIAN_PENANGANAN; mesin penamaan dan saring isian di harian_ringkas.py).
+
+--firespot situs|firms (K18 bot laporan, 18 Nov 2026). situs (bawaan) = perilaku di atas. firms = firespot semua kolom dari firespot_hari.seri
+(mesin situs scripts/data/harian.py atas FIRMS langsung s.d. cut-off), tanpa menunggu situs refresh; keterangannya masuk baris sumber
+halaman 1 bila muat, kalau tidak 'PERINGATAN isian: firespot dihitung langsung dari FIRMS' di stderr (bot menaruhnya di catatan draf).
+Label cut-off dan kunci angka tidak berubah.
 """
 import argparse, csv, datetime as dt, io, json, os, re, shutil, sys, types, urllib.request, zipfile
 from collections import Counter
@@ -56,6 +64,51 @@ def gelar_udara(f):
     return armada, pemilik
 
 
+# BL-06: medan bahan yang dibaca generator ini (wa_operasi.operasi dari teks Satgas, gelar_udara dari Excel). Angka sistem (hotspot,
+# firespot, luas terbakar, belum padam) tidak ada di skema dan ditolak saring_isian (K4).
+OMC_ISIAN = {'sortie': int, 'nacl': float, 'dryice': float, 'sasaran': str, 'jarak_pandang': bool,
+             'hujan': ('atau_kosong', {'intensitas': str, 'lokasi': str, 'tanggal': 'tanggal'})}
+ISIAN_PENANGANAN = {'tanggal': 'tanggal', 'tanggal_laporan': 'tanggal', 'tanggal_armada': 'tanggal', 'personel': ('peta', int),
+                    'armada': ('peta', ('pasang', int)), 'pemilik': ('peta', int), 'omc': ('peta', OMC_ISIAN)}
+
+
+def terap_isian_operasi(op, isian):
+    """Isian menimpa medan yang sama hasil urai teks Satgas dan Excel gelar; per provinsi/instansi/unsur untuk peta, per medan untuk OMC.
+    Yang tidak diisi tetap dari bahan. Mengembalikan op baru."""
+    op = dict(op)
+    for k in ('tanggal', 'tanggal_laporan', 'tanggal_armada'):
+        if k in isian: op[k] = isian[k]
+    for k in ('personel', 'armada', 'pemilik'):
+        if k in isian: op[k] = {**op.get(k, {}), **isian[k]}
+    if 'omc' in isian:
+        omc = {p: dict(v) for p, v in op.get('omc', {}).items()}
+        for p, v in isian['omc'].items():
+            omc.setdefault(p, {'sortie': 0, 'nacl': 0, 'dryice': 0, 'sasaran': '', 'hujan': None, 'jarak_pandang': False}).update(v)
+        op['omc'] = omc
+    return op
+
+
+KET_FIRMS = 'firespot dihitung langsung dari FIRMS'
+MAKS_SUMBER = 140   # huruf isi baris sumber satu baris kaki (diukur 18 Nov dengan Roboto 7,5 pt: lebar 588 pt, 130 huruf = 504 pt, 153 huruf = 600 pt)
+
+
+def sumber_firespot(susun, firespot):
+    """K18: mode firms menambah KET_FIRMS ke baris sumber halaman 1 (tabel hotspot dan firespot) hanya bila masih satu baris;
+    kalau tidak, peringatan ke stderr. Mode situs tidak mengubah apa pun. Mengembalikan True bila keterangan masuk deck."""
+    if firespot != 'firms': return False
+    h1 = next(b for b in susun if b.get('halaman') == 1)
+    baru = f"{h1['sumber']}; {KET_FIRMS}"
+    if len(baru) <= MAKS_SUMBER:
+        h1['sumber'] = baru; return True
+    print(f'PERINGATAN isian: {KET_FIRMS}', file=sys.stderr); return False
+
+
+def pasang_firespot(penanganan, firespot, firespot_web):
+    """situs: firespot dari kluster.json/kluster_hari website (firespot_web). firms: firespot_hari.seri apa adanya (mesin situs atas FIRMS)."""
+    if firespot == 'situs': penanganan.firespot_hari.seri = firespot_web
+    else: print('firespot: dihitung langsung dari FIRMS (firespot_hari.seri, mesin situs), bukan kluster.json website')
+
+
 def tanpa_kartu_personel(x):
     """Pemilik 10 Nov 2026: slide 3 tanpa kartu PENANGANAN dan PERSONEL PER PROVINSI (salinan bingkai.py 13 Nov)."""
     ATAS, PANEL, TINGGI, BAKU = 1325880, 2212848, 4142232, 6446520
@@ -83,13 +136,22 @@ def tanpa_kartu_personel(x):
     return re.sub(r'<p:(sp|pic|cxnSp)>.*?</p:\1>', ubah, x, flags=re.S)
 
 
-def utama():
+def parser():
     ap = argparse.ArgumentParser()
     ap.add_argument('--tanggal', required=True); ap.add_argument('--jam', default='18:00'); ap.add_argument('--operasi'); ap.add_argument('--gelar')
     ap.add_argument('--bmkg', help='diterima supaya pemanggil sama; pil cuaca dan PM2,5 dari data sistem (format 13 Nov)'); ap.add_argument('--out', default='.')
-    g = ap.parse_args()
+    ap.add_argument('--isian', help='JSON medan bahan hasil urai bot (BL-06); menimpa medan operasi yang sama, angka sistem dikunci')
+    ap.add_argument('--firespot', choices=('situs', 'firms'), default='situs', help='K18: situs = kluster.json website (bawaan); firms = firespot_hari dari FIRMS langsung')
+    return ap
+
+
+def utama():
+    g = parser().parse_args()
     os.chdir(G)
     import satelit, penanganan, cuaca_riwayat, pil_sendiri, lewat_deck, pdf, segar_situs
+    from harian_ringkas import baca_isian, namai_deck
+    isian = baca_isian(g.isian, ISIAN_PENANGANAN) if g.isian else {}
+    if isian and not g.operasi: print('PERINGATAN isian: tanpa --operasi tidak ada slide Operasi; isian diabaikan', file=sys.stderr)
     D, JAM = dt.date.fromisoformat(g.tanggal), g.jam
     KEMARIN, LUSA = D - dt.timedelta(days=1), D - dt.timedelta(days=2)
     md = lambda d: d.strftime('%m-%d')
@@ -115,7 +177,7 @@ def utama():
     print('SEGAR', D, 's.d.', JAM, {m: round(sum(o[m][iS] for o in SEGAR['prov'].values())) for m in ('hot', 'luas', 'belum', 'padam')})
     try:   # situs tertinggal dari FIRMS = firespot D lebih lama dari hotspot D; dicatat, tidak menahan laporan
         baru, total, porsi = segar_situs.porsi_tertinggal(segar_situs.waktu_titik(D, JAM), segar_situs.acuan_sensor(HS))
-        print(f'situs tertinggal: {baru} dari {total} titik ({porsi:.0%})' + (' PERINGATAN: firespot hari ini dari data situs yang lebih lama' if porsi > segar_situs.AMBANG else ''))
+        print(f'situs tertinggal: {baru} dari {total} titik ({porsi:.0%})' + (' PERINGATAN: firespot hari ini dari data situs yang lebih lama' if porsi > segar_situs.AMBANG and g.firespot == 'situs' else ''))
     except Exception as e: print('cek situs tertinggal gagal:', e)
 
     def hitung_web(t, jam, n, kunci=None):
@@ -164,11 +226,22 @@ def utama():
     def operasi(teks):   # pil ARMADA UDARA bertanggal laporan WA (deck 281026)
         op = asli_op(teks); op = {**op, 'tanggal_armada': op['tanggal_laporan']}
         if ar_pm: op.update(armada=ar_pm[0], pemilik={k: ar_pm[1][k] for k in URUT + sorted(ar_pm[1]) if k in ar_pm[1]})
-        return op
+        return terap_isian_operasi(op, isian) if isian else op
     penanganan.wa_operasi.operasi = operasi
     satelit.hitung = hitung_web
     penanganan.satelit = satelit
-    penanganan.firespot_hari.seri = firespot_web
+    pasang_firespot(penanganan, g.firespot, firespot_web)
+    # Pemilik 20 Nov 2026 ("kalau omc dan armada gaada 22nya, hapus aja slide itu"): tanpa armada udara dan tanpa OMC = deck tanpa slide Operasi
+    # (jalur yang sama dengan deck tanpa --operasi). Armada saja kosong = panel ARMADA UDARA dibuang (tanpa_panel_armada di bingkai).
+    tanpa_armada = False
+    if g.operasi:
+        op0 = operasi(open(g.operasi, encoding='utf-8').read())
+        tanpa_armada = not penanganan.bnpb.armada_ada(op0)
+        if tanpa_armada and not penanganan.bnpb.omc_ada(op0):
+            print('PERINGATAN isian: bahan Satgas tidak memuat armada udara maupun OMC; slide Operasi tidak dibuat', file=sys.stderr)
+            g.operasi = None
+        elif tanpa_armada:
+            print('PERINGATAN isian: bahan Satgas tidak memuat armada udara; panel ARMADA UDARA dibuang', file=sys.stderr)
     penanganan.bangun(D, JAM, None, S, g.operasi, ha_utuh=True, belum_kini=True, luas_00=False)
 
     # ---- bingkai (bingkai.py 13 Nov)
@@ -184,6 +257,7 @@ def utama():
                             for s in re.split(r'(<p:sp>.*?</p:sp>)', x, flags=re.S))
                 x = re.sub(r'<a:t>(HOTSPOT|FIRESPOT|LUAS TERBAKAR|BELUM PADAM)\*</a:t>', r'<a:t>\1</a:t>', x)
                 if it.filename == 'ppt/slides/slide3.xml' and g.operasi: x = tanpa_kartu_personel(x)
+                if it.filename == 'ppt/slides/slide3.xml' and g.operasi and tanpa_armada: x = penanganan.bnpb.tanpa_panel_armada(x)
                 b = x.encode('utf-8')
             zo.writestr(it, b)
     BL = penanganan.bnpb.BULAN
@@ -192,6 +266,7 @@ def utama():
     bagian = [{'judul': 'Situasi Hotspot dan Firespot', 'label': 'Situasi', 'halaman_tetap': [1, 2]}]
     susun = [{'halaman': 1, 'bagian': 1, 'sumber': f'Satelit NASA FIRMS (VIIRS dan MODIS), {tg(D)} {jm} WIB; luas terbakar hari utuh {tg(KEMARIN, False)}'},
              {'halaman': 2, 'bagian': 1, 'sumber': f'NASA FIRMS {tg(D, False)} {jm} WIB; luas terbakar hari utuh {tg(KEMARIN, False)}; PM2,5 CAMS {tg(KEMARIN, False)}; hujan model Open-Meteo, kelas BMKG'}]
+    sumber_firespot(susun, g.firespot)
     if g.operasi:
         op = operasi(open(g.operasi, encoding='utf-8').read())
         bagian.append({'judul': 'Operasi Penanganan', 'label': 'Operasi', 'halaman_tetap': [3]})
@@ -202,6 +277,7 @@ def utama():
                        bagian=bagian, spek_tambah={'panel_sisi': 'gelap', 'skala_logo_bnpb': 1.0}, susun=susun)
     for f in os.listdir(out):   # penanganan.bangun menyalin PDF generator mentah ke out; diganti PDF deck berbingkai
         if f.startswith(nama_d[:-5]) and f.endswith('.pdf'): os.remove(os.path.join(out, f))
+    print('kunci', len(namai_deck(nama)), 'shape angka sistem ->', nama[:-5] + '.kunci.json')   # BL-06: nama shape stabil + kunci (D3)
     print('ok', nama, '| pdf', pdf.ke_pdf(nama))
 
 

@@ -1,0 +1,256 @@
+{
+ "type": "object",
+ "properties": {
+  "operasi": {
+   "type": "array",
+   "items": {
+    "anyOf": [
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "ganti_teks"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       },
+       "shape": {
+        "type": "string",
+        "description": "nama shape persis dari inventaris"
+       },
+       "teks_lama": {
+        "type": "string",
+        "description": "teks lama persis"
+       },
+       "teks_baru": {
+        "type": "string",
+        "description": "teks baru"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide",
+       "shape",
+       "teks_lama",
+       "teks_baru"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "ganti_sel"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       },
+       "shape": {
+        "type": "string",
+        "description": "nama shape persis dari inventaris"
+       },
+       "baris": {
+        "type": "integer",
+        "description": "nomor baris tabel atau daftar, dihitung sama dengan sel di kunci: baris judul (header) = 0, baris data pertama = 1"
+       },
+       "kolom": {
+        "type": "integer",
+        "description": "nomor kolom, mulai 0 dari kolom paling kiri"
+       },
+       "teks_lama": {
+        "type": "string",
+        "description": "teks sel lama persis"
+       },
+       "teks_baru": {
+        "type": "string",
+        "description": "teks sel baru"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide",
+       "shape",
+       "baris",
+       "kolom",
+       "teks_lama",
+       "teks_baru"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "tambah_baris"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       },
+       "shape": {
+        "type": "string",
+        "description": "nama shape persis dari inventaris"
+       },
+       "setelah_baris": {
+        "type": "integer",
+        "description": "baris baru disisipkan sesudah nomor baris ini; penomoran sama dengan baris (header = 0, data pertama = 1), jadi 0 berarti tepat di bawah header"
+       },
+       "teks": {
+        "type": "string",
+        "description": "teks baris baru"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide",
+       "shape",
+       "setelah_baris",
+       "teks"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "hapus_baris"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       },
+       "shape": {
+        "type": "string",
+        "description": "nama shape persis dari inventaris"
+       },
+       "baris": {
+        "type": "integer",
+        "description": "nomor baris tabel atau daftar, dihitung sama dengan sel di kunci: baris judul (header) = 0, baris data pertama = 1"
+       },
+       "teks_lama": {
+        "type": "string",
+        "description": "teks baris lama persis"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide",
+       "shape",
+       "baris",
+       "teks_lama"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "catatan"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       },
+       "teks": {
+        "type": "string",
+        "description": "teks catatan di kaki slide"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide",
+       "teks"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "sembunyikan_slide"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "tampilkan_slide"
+        ]
+       },
+       "slide": {
+        "type": "integer",
+        "description": "nomor slide, mulai 1"
+       }
+      },
+      "required": [
+       "jenis",
+       "slide"
+      ],
+      "additionalProperties": false
+     },
+     {
+      "type": "object",
+      "properties": {
+       "jenis": {
+        "type": "string",
+        "enum": [
+         "tanya"
+        ]
+       },
+       "pertanyaan": {
+        "type": "string",
+        "description": "satu pertanyaan singkat ke pemakai"
+       }
+      },
+      "required": [
+       "jenis",
+       "pertanyaan"
+      ],
+      "additionalProperties": false
+     }
+    ]
+   }
+  },
+  "ringkasan": {
+   "type": "string",
+   "description": "ringkasan ubahan, paling banyak delapan kata"
+  }
+ },
+ "required": [
+  "operasi",
+  "ringkasan"
+ ],
+ "additionalProperties": false
+}

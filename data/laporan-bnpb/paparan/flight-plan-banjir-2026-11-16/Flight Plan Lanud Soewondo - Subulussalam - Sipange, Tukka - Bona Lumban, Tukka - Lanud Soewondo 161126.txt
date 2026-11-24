@@ -1,0 +1,8 @@
+*Flight plan 2026-11-16, dropping banjir: Lanud Soewondo - Subulussalam - Sipange, Tukka - Bona Lumban, Tukka - Lanud Soewondo* (usulan, bukan perintah terbang)
+Leg 1 WIMK ke T1 Subulussalam: haluan 225°, 121 km (65 NM), 36 mnt, 2.7949, 97.8966 https://www.google.com/maps/search/?api=1&query=2.79490,97.89660
+Leg 2 T1 ke T2 Sipange, Tukka: haluan 139°, 165 km (89 NM), 50 mnt, 1.6682, 98.8676 https://www.google.com/maps/search/?api=1&query=1.66822,98.86761
+Leg 3 T2 ke T3 Bona Lumban, Tukka: haluan 348°, 3 km (2 NM), 1 mnt, 1.6954, 98.8619 https://www.google.com/maps/search/?api=1&query=1.69538,98.86188
+Leg 4 T3 ke WIMK Lanud Soewondo: haluan 354°, 208 km (112 NM), 62 mnt, 3.5589, 98.6719 https://www.google.com/maps/search/?api=1&query=3.55890,98.67190
+Total 498 km (269 NM), 149 mnt terbang pada 200 km/jam; waktu di titik 0 mnt.
+Status: zona belum diperiksa. pemeriksaan zona belum dibangun (MU-05, MU-07); NOTAM tidak diperiksa.
+Angka sementara: kecepatan jelajah bawaan 200 km/jam (Q2)

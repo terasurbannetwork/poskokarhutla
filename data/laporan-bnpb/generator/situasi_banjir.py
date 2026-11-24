@@ -95,13 +95,14 @@ def status_n_hari(n):
     return st, dibuat
 
 
-def sudah_banjir(kode, tanggal, wa_tambahan=()):
-    """Kab/kota provinsi `kode` yang dilaporkan banjir di WA Koordalops 14 hari terakhir -> (baris, tanggal laporan pertama, terakhir)."""
+def sudah_banjir(kode, tanggal, wa_tambahan=(), awal=None):
+    """Kab/kota provinsi `kode` yang dilaporkan banjir di WA Koordalops 14 hari terakhir -> (baris, tanggal laporan pertama, terakhir).
+    kode None = semua provinsi (baris membawa 'prov'); awal = tanggal berkas WA paling awal (bawaan 14 hari sebelum `tanggal`, banjir_sepekan.py)."""
     import wa_harian
     from importlib import util
     s = util.spec_from_file_location('dalops_banjir', os.path.join(AKAR, 'scripts', 'data', 'dalops_banjir.py'))
     dl = util.module_from_spec(s); s.loader.exec_module(dl)
-    awal = (dt.date.fromisoformat(tanggal) - dt.timedelta(days=14)).isoformat()
+    awal = awal or (dt.date.fromisoformat(tanggal) - dt.timedelta(days=14)).isoformat()
     berkas = {}
     import jalur
     for f in jalur.berkas_hari('harian', 'wa-koordalops.txt'):
@@ -113,10 +114,10 @@ def sudah_banjir(kode, tanggal, wa_tambahan=()):
     J = {}
     for h in sorted(berkas):
         for x in wa_harian.koordalops(berkas[h], pagi=False, terima_kurang=True)['kejadian']:
-            if x['prov'] != kode or not x['lokasi'] or (x['jenis'] != 'banjir' and 'banjir' not in (x.get('label') or '').lower()):
+            if (kode and x['prov'] != kode) or not x['lokasi'] or (x['jenis'] != 'banjir' and 'banjir' not in (x.get('label') or '').lower()):
                 continue
             kab = kab_bersih(x['lokasi']); t, a = x.get('teks', {}), x.get('angka', {})
-            o = J.setdefault(kab, dict(kab=kab, pertama=h, akhir=h, kk=None, ungsi=None, kondisi='', surut_tgl=None))
+            o = J.setdefault((x['prov'], kab), dict(prov=x['prov'], kab=kab, pertama=h, akhir=h, kk=None, ungsi=None, kondisi='', surut_tgl=None))
             o['akhir'] = h; o['kondisi'] = t.get('kondisi') or o['kondisi']
             o['butir'] = butir_wa(berkas[h], kab) or o.get('butir') or {}
             jw = _cari(t.get('dampak') or o['butir'].get('Dampak'), r'KK\s*/\s*([\d.,]+)\s*jiwa')   # "x KK / y jiwa", bukan "1 jiwa hilang"
@@ -143,7 +144,7 @@ def sudah_banjir(kode, tanggal, wa_tambahan=()):
     kej = json.load(open(lb))['kejadian'] if os.path.exists(lb) else []
     for o in J.values():
         batas = (dt.date.fromisoformat(awal) - dt.timedelta(days=30)).isoformat()   # kejadian yang lanjut dilaporkan WA sesudah logbook diam
-        cocok = [e for e in kej if f'{kode}|{o["kab"]}' in e.get('kab_kode', []) and (e.get('mulai') or '') >= batas]
+        cocok = [e for e in kej if f'{o["prov"]}|{o["kab"]}' in e.get('kab_kode', []) and (e.get('mulai') or '') >= batas]
         kec = {k.strip() for e in cocok for k in e.get('kec') or []}
         o['kec'] = max(len(kec), o.get('kec_wa') or 0, *[e.get('n_kec') or 0 for e in cocok]) or None
         o['mulai'] = min([e['mulai'] for e in cocok if e.get('mulai')] + [o['pertama']])

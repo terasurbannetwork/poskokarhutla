@@ -18,7 +18,7 @@ const Berita = {
       : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""; },
   pl: (t, w) => `<em class="br-lb" style="--w:${w}">${t}</em>`,
   /* kartu Insight: pil kategori di kepala, judul, kontrol; legenda/sumber di kaki */
-  kartu(ey, judul, isi, catatan, ctl = "") { return Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
+  kartu(ey, judul, isi, catatan, ctl = "") { return kepalaSeksi(Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`)); },
   hari7() { return Object.keys(this.d.harian).sort().slice(-7); },
 
   async render() {
@@ -162,7 +162,7 @@ const Berita = {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     const ctl = `<details class="pmulti"><summary>Semua provinsi</summary><div class="pm-menu"><label><input type="checkbox" data-fm="prov" value="" checked><span>Semua provinsi (${pv.length})</span></label>${pv.map(k => `<label><input type="checkbox" data-fm="prov" value="${k}"><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`
       + `<div class="br-saring"><input data-f="q" type="search" placeholder="Cari judul, kabupaten, media" aria-label="Cari berita" class="br-cari"><select data-f="topik" aria-label="Topik"><option value="">Semua topik</option>${Object.entries(TOPIK_B).map(([k, n]) => `<option value="${k}">${n}</option>`).join("")}</select></div>`;
-    return this.kartu("Daftar berita", `${Kartu.hl(fmt(this.d.artikel.length) + " berita")} kekeringan dari ${fmt(this.d.media.length)} media terbanyak`, `<div id="brList"></div>`, "Sumber: Google News RSS", ctl).replace("<article class=\"ex\"", "<article class=\"ex\" id=\"brDaftar\""); },
+    return this.kartu("Daftar berita", `${Kartu.hl(fmt(this.d.artikel.length) + " berita")} kekeringan dari ${fmt(this.d.media.length)} media terbanyak`, `<div id="brList"></div>`, "Sumber: Google News RSS", ctl).replace("<article class=", "<article id=\"brDaftar\" class="); },
   ulangDaftar() {
     const R = this.saring(), per = 30, hal = R.slice(this.f.hal * per, (this.f.hal + 1) * per);
     $("#brDaftar").querySelectorAll("[data-f]").forEach(x => { if (x.value !== this.f[x.dataset.f]) x.value = this.f[x.dataset.f]; });

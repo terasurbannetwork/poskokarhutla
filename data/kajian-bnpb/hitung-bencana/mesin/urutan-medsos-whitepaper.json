@@ -1,0 +1,11 @@
+{
+    "folder": "../../pemantauan-medsos/naskah-whitepaper",
+    "gbr": "../../pemantauan-medsos/gbr",
+    "keluaran": "../../pemantauan-medsos/keluaran/Whitepaper",
+    "judul": "Whitepaper Pemantauan Kabar Kebencanaan di Media Sosial dan Portal Berita",
+    "anak_judul": "Menangkap kabar publik lebih awal, mengubahnya menjadi sinyal kejadian, dan menyerahkan keputusan kepada piket Pusdalops",
+    "label": "WHITEPAPER BNPB",
+    "nama_keluaran": "Whitepaper Pemantauan Kabar Kebencanaan",
+    "berkas": ["00-ringkasan.md", "01-isi.md", "pustaka.md", "lampiran-a.md"],
+    "tata": {"toc_tingkat": 2, "tinggi_gambar_cm": 23}
+}

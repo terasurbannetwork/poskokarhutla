@@ -7,10 +7,14 @@ const Metode = {
     2: "Hasil pengamatan visual dan instrumental mulai memperlihatkan peningkatan aktivitas. Pada beberapa gunung api dapat terjadi erupsi",
     1: "Hasil pengamatan visual dan instrumental fluktuatif, tetapi tidak memperlihatkan peningkatan aktivitas yang signifikan"},
   /* kartu standar .ex-std tanpa kaki: sumber masuk isi sebagai baris terakhir */
-  daftar: (judul, baris, sumber, ey) => Insight.std(ey, judul, `<ul class="mt">${baris.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ul>${sumber ? Insight.ket(sumber) : ""}`),
+  /* kepala = nama seksi berikon (AGENTS.md 3.5); kalimat lama jadi title kepala lewat Insight.rapiKartu */
+  NAMA: {Level: ["Level aktivitas gunung api", "gunung"], "Sumber data": ["Data dari MAGMA Indonesia", "daftar"], "Model abu": ["Jejak abu skenario", "awan"], Simulasi: ["Lahar dan awan panas di Simulasi", "api"],
+    Paparan: ["Cara menghitung paparan", "orang"], Arsip: ["Arsip MAGMA 2018 sampai 2026", "buku"], Batas: ["Batasan Centurisk97", "perisai"], Istilah: ["Cari istilah gunung api", "buku"]},
+  kepala(h, ey) { const [n, ik] = this.NAMA[ey] || [ey, ""]; return Insight.rapiKartu(h, [ey, n, ik]); },
+  daftar(judul, baris, sumber, ey) { return this.kepala(Insight.std(ey, judul, `<ul class="mt">${baris.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ul>${sumber ? Insight.ket(sumber) : ""}`), ey); },
   /* cari istilah (glossary MAGMA, 438 istilah): berkasnya dimuat hanya saat bagian dibuka; ketik hanya menyaring dan menggambar 30 hasil */
   glosari() {
-    return Insight.std("Istilah", "Istilah gunung api dari glossary MAGMA bisa dicari di sini, dimuat saat dibuka", `<details class="gl" data-gl><summary>Buka pencarian istilah</summary><input class="gl-cari" type="search" placeholder="Ketik istilah, mis. lahar" aria-label="Cari istilah" disabled><div class="gl-has" aria-live="polite"></div></details>${Insight.ket("Sumber: MAGMA Indonesia, PVMBG (glossary)")}`); },
+    return this.kepala(Insight.std("Istilah", "Istilah gunung api dari glossary MAGMA bisa dicari di sini, dimuat saat dibuka", `<details class="gl" data-gl><summary>Buka pencarian istilah</summary><input class="gl-cari" type="search" placeholder="Ketik istilah, misalnya lahar" aria-label="Cari istilah" disabled><div class="gl-has" aria-live="polite"></div></details>${Insight.ket("Sumber: MAGMA Indonesia, PVMBG (glossary)")}`), "Istilah"); },
   pasangGlosari(el) {
     const d = el.querySelector("[data-gl]"); if (!d || d._siap) return; d._siap = 1;
     const isi = d.querySelector(".gl-has"), q = d.querySelector(".gl-cari"); let L = null;
@@ -40,7 +44,7 @@ const Metode = {
         ["Erupsi terbaru", "Halaman Informasi Letusan MAGMA: waktu, gunung, dan tinggi kolom abu bila disebut."],
         ["Perubahan level", PLK],
         ["Jiwa dalam radius", "Perkiraan WorldPop 1 km (R2025A 2026): jumlah piksel yang pusatnya masuk lingkaran radius. Galat tepi sekitar 1 km, jadi angkanya perkiraan, bukan hitungan per desa."]], "Sumber: MAGMA Indonesia, WorldPop", "Sumber data"),
-      this.daftar("Jejak abu adalah skenario Centurisk97, bukan advisory VAAC", [
+      this.daftar("Jejak abu adalah skenario Centurisk97, bukan peringatan resmi Volcanic Ash Advisory Centre (VAAC)", [
         ["Skenario", "Gunung Level II ke atas diandaikan meletus sekarang. Tinggi kolom dari letusan MAGMA atau VONA yang terbit dalam 48 jam sebelum awal skenario, mana yang lebih baru, bila ada; bila tidak, asumsi per level: Level II 1 km, Level III 2 km, Level IV 5 km di atas puncak."],
         ["Model Lagrangian", `${fmt(nP)} partikel dilepas sepanjang kolom (profil Suzuki A = 4, k = 5) selama ${fmt(lepas)} jam, digeser angin per jam ECMWF IFS 0,25° di lapisan 1000 sampai 200 hPa dari Open-Meteo, langkah 15 menit, ditambah gerak acak horizontal dengan K_h = ${fmt(kh)} m²/dtk. Bilangan acak tetap (seed) supaya hasilnya bisa diulang.`],
         ["Massa abu", `MER = 2.500 × (H / 2)^(1 / 0,241) kg/dtk dengan H tinggi kolom di atas puncak dalam km (Mastin dkk. 2009). Massa total = MER × lama pelepasan; seluruhnya dianggap abu halus yang terbawa, tanpa penggumpalan. Empat kelas butir: ${butir}.`],
@@ -57,7 +61,7 @@ const Metode = {
         ["Penduduk", "WorldPop R2025A 2026 constrained, kisi 1 km: jumlah piksel yang pusatnya jatuh di zona atau cincin. Galat tepi sekitar 1 km, jadi orde besar. Per desa: tiap piksel dialokasikan ke desa OpenStreetMap terdekat (paling jauh 3 km), perkiraan kasar, bukan penduduk administratif."],
         ["Desa, sekolah, faskes", "OpenStreetMap lewat Overpass dalam 20 km dari kawah (lisensi ODbL). Yang belum terpetakan di OSM tidak terhitung."],
         ["Izin tambang", "Wilayah Izin Usaha Pertambangan (WIUP) dari geoportal ESDM, hanya badan usaha. Zonanya yang tertinggi dari titik pusat dan simpul poligon."],
-        ["Evakuasi", "Dijkstra berganda di jaringan jalan OSM (motorway sampai residential) dari titik aman: jalan tersier ke atas di luar KRB III dan II dan di luar radius rekomendasi ditambah 2 km. Kecepatan per kelas jalan: 50, 40, 35, 30, 25, 18, dan 15 km/jam. Hasilnya waktu tempuh arus bebas, tanpa antrean evakuasi massal, dan di tampilan hanya desa KRB III dan II yang dihitung. Titik kumpul bertanda OSM (assembly point atau shelter) diutamakan bila selisihnya tak lebih dari 10 menit. Bila tak ada desa KRB III atau II yang tersambung ke jalan, rute cadangan dihitung dari desa KRB I terdekat dan ditandai di peta."],
+        ["Evakuasi", "Dijkstra berganda di jaringan jalan OSM (motorway sampai residential) dari titik tujuan di luar zona bahaya: jalan tersier ke atas di luar KRB III dan II dan di luar radius rekomendasi ditambah 2 km. Kecepatan per kelas jalan: 50, 40, 35, 30, 25, 18, dan 15 km/jam. Hasilnya waktu tempuh arus bebas, tanpa antrean evakuasi massal, dan di tampilan hanya desa KRB III dan II yang dihitung. Titik kumpul bertanda OSM (assembly point atau shelter) diutamakan bila selisihnya tak lebih dari 10 menit. Bila tak ada desa KRB III atau II yang tersambung ke jalan, rute cadangan dihitung dari desa KRB I terdekat dan ditandai di peta."],
         ["Citra", "Sentinel-2 (Copernicus/ESA) bebas awan terbaik sebelum dan sesudah kejadian besar yang tercatat."]], "Sumber: ESDM, WorldPop, OpenStreetMap, Copernicus", "Paparan"),
       this.daftar("Arsip MAGMA 2018 sampai 2026 diringkas per gunung sejak 2024 dan tidak diperbarui otomatis", [
         ["Letusan", "Daftar informasi letusan MAGMA 2018 sampai 2026 (sekitar 21 ribu letusan), diringkas per gunung sejak 1 Jan 2024 di kartu Rezim letusan, Arah abu per musim, Cakupan VONA, dan Paparan lawan aktivitas. Berkasnya snapshot dari arsip lokal dan tidak ikut diperbarui otomatis; tanggal datanya tertulis di judul kartu."],
