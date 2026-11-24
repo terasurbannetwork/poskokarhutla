@@ -21,7 +21,7 @@ Memperkaya pop-up insiden api dengan dua hal: bagaimana api berjalan (PKH-06) da
 
 | ID | Fitur | Isi | Tiket |
 | -- | ----- | --- | ----- |
-| F-1 | Arsip deteksi per insiden | deteksi VIIRS nominal/tinggi per insiden diarsipkan bergulir, jadi riwayat melebihi 48 jam | IK-01 |
+| F-1 | Arsip deteksi per insiden | petak unik per insiden aktif ditarik mundur dari `titik_hari` sejak 1 Jul 2026 dan ditambah tiap putaran (kode `arsip_insiden.py` sudah ada); sisa: pemangkasan, tutup ukuran, tidak terbit | IK-01 |
 | F-2 | Waktu tiba per sel | `t_tiba` 375 m dari deteksi pertama dikurangi setengah jeda, diisi median 5 sel | IK-02 |
 | F-3 | Garis depan harian | isokron 14.00 WIB, luas dijangkau dan baru per hari | IK-02 |
 | F-4 | Laju p90 | km per hari per langkah, `resolved:false` bila di bawah satu sel | IK-04 |
@@ -32,13 +32,13 @@ Memperkaya pop-up insiden api dengan dua hal: bagaimana api berjalan (PKH-06) da
 | F-9 | Keterliputan | provinsi tanpa grid tampil "belum tercakup", bukan 0 | IK-07 |
 | F-10 | Kartu "Perkembangan api" di pop-up insiden | slider hari, isokron di peta, tabel per hari | IK-09 |
 | F-11 | Kartu "Bangunan dekat api" di pop-up insiden | dua angka, lingkaran 500 m di peta (petak aktif), keterbatasan di `title` | IK-10 |
-| F-12 | Perluasan grid bangunan | provinsi gambut besar | IK-08, menunggu Q5 |
+| F-12 | Perluasan grid bangunan | semua provinsi (Q5 dijawab: unduh semua), grid halus tersedia di job harian | IK-08 |
 | F-13 | Gerbang | uji yang menolak koordinat bangunan di keluaran publik, ambang tak seragam, 0 palsu | IK-11 |
 
 ## 4. Di luar cakupan
 
 - Panah arah sebar, profil elevasi, prakiraan garis depan, cuaca di garis depan (D17).
-- Nama desa insiden (PKH-08), tingkat bukti insiden (PKH-10), riwayat petak (PKH-09).
+- Nama desa insiden (PKH-08), tingkat bukti insiden (PKH-10), riwayat petak (PKH-09): kuncinya sudah ada di `insiden.py`, tidak diubah dan tidak wajib tampil di kartu baru.
 - Jumlah jiwa terpapar (bangunan bukan jiwa; paparan jiwa ada di `siklus/paparan.py`, tidak dicampur).
 - Peringatan dan notifikasi dari angka bangunan.
 - Bangunan OSM, atau penjumlahan dua sumber bangunan.

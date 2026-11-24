@@ -115,3 +115,7 @@ data/laporan-bnpb/penanganan-karhutla/**/jalan*.log
 
 # berkas antara mesin hitung-bencana (konst.py: tidak di-commit)
 data/kajian-bnpb/hitung-bencana/mesin/_kerja/
+
+# insiden-kaya (24 Nov 2026): arsip deteksi per insiden lewat cache data- saja; data DOE Malaysia belum berizin terbit
+public/data/progresi/arsip/
+public/udara/data/stasiun_asing.json

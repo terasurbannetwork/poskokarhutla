@@ -5,3 +5,7 @@ data/citra/cache.json
 # data bernama perusahaan tidak pernah diterbitkan (bila tertinggal dari cache Actions lama)
 data/lahan/sanksi_karhutla.json
 data/grup_perusahaan.json
+
+# progresi arsip (cache CI, tidak terbit) dan data DOE tanpa izin, 24 Nov 2026
+data/progresi/arsip/
+udara/data/stasiun_asing.json

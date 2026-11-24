@@ -7,7 +7,9 @@ Metode bagian A diambil dari `progression.py` pembanding (MIT) dan ditulis ulang
 
 | Nama | Nilai | Asal |
 | ---- | ----- | ---- |
-| `SEL_DEG` | 0,0034 derajat | `SEL_PIKSEL` di `insiden.py` (satu piksel VIIRS) |
+| `SEL_DEG` | 0,0034 derajat | `SEL_PIKSEL` di `insiden.py` dan `SEL` di `arsip_insiden.py` (satu piksel VIIRS) |
+| `ARSIP_DARI` | 1 Jul 2026 00.00 UTC | `arsip_insiden.py`; semua waktu arsip dalam menit sejak ini |
+| `MAKS_PETAK` | 20.000 | `arsip_insiden.py` (yang paling awal dipertahankan) |
 | `KM_SEL` | 0,0034 × 111,32 = 0,378 km | pembanding `KM_PER_CELL` |
 | `HA_SEL` | 14,0625 ha | `PIKSEL_HA` |
 | `JEDA_GABUNG_JAM` | 1,5 | pembanding `merge_h` |
@@ -25,18 +27,19 @@ Metode bagian A diambil dari `progression.py` pembanding (MIT) dan ditulis ulang
 
 ### A1. Masukan
 
-Untuk insiden `id`, himpunan deteksi `D` = deteksi VIIRS (sensor `N`, `N20`, `N21`) keyakinan nominal atau tinggi, bukan sumber panas tetap (mask statis yang sama dengan `insiden.py`), dengan waktu `t` (jam sejak epoch UTC), lat, lon, FRP. Deteksi keyakinan rendah tidak masuk `D` tetapi ikut A2 sebagai epoch.
-Sumber: arsip per insiden (F-1), bukan `hotspot24.json` langsung. Insiden dengan piksel unik < `MIN_PIKSEL` berhenti di sini: `tersedia:false`, alasan "terlalu kecil untuk dilacak".
+Untuk insiden `id`, himpunan petak `D` = petak di `public/data/progresi/arsip/<id>.json` (kunci `petak: [iy, ix, t_menit, frp, sensor]`) dengan `sensor` ∈ {`N`, `N20`, `N21`}; arsip sudah hanya berisi keyakinan nominal atau tinggi dan tanpa sumber panas tetap (keyakinan rendah tidak ada di arsip dan tidak ikut epoch). `t` = menit sejak `ARSIP_DARI`, diubah ke jam UTC bila perlu. Petak bersensor `M` tidak masuk `D` (pikselnya 1 km); catatan kode: arsip menyimpan satu sensor per sel dengan waktu terawal, jadi sel yang pertama terlihat oleh MODIS memakai waktu MODIS, dan IK-01 memutuskan apakah arsip dipisah per jenis sensor.
+Sumber: arsip per insiden (F-1), bukan `hotspot24.json` langsung. Insiden dengan piksel unik < `MIN_PIKSEL` berhenti di sini: `tersedia:false`, alasan "terlalu kecil untuk dilacak". `hitung_sejak` = waktu terawal arsip insiden, tidak lebih awal dari `ARSIP_DARI`.
 
-Petak = kunci sel `(iy, ix) = (floor(lat / SEL_DEG), floor(lon / SEL_DEG))`. Satu petak = satu piksel unik. Per petak simpan `t_pertama = min t` dan `frp = max FRP`.
+Petak = kunci sel `(iy, ix) = (floor(lat / SEL_DEG), floor(lon / SEL_DEG))` (sudah menjadi kunci arsip). Satu petak = satu piksel unik. Per petak simpan `t_pertama = min t` dan `frp` (arsip menyimpan FRP dari deteksi terawal, bukan maksimum).
 
 ### A2. Epoch pengamatan
 
 ```
-E0 = { round(t * 2) / 2 : deteksi VIIRS atau MODIS sensor apa pun, dalam bbox(D) +- 1 derajat, t di [min(D) - 48, max(D) + 1] }   // dibulatkan 30 menit, unik
+E0 = { e dari arsip.epoch : jam(e) di [min(D) - 48, max(D) + 1] }    // arsip: waktu deteksi VIIRS/MODIS, dibulatkan KE BAWAH 30 menit, sel 1 derajat yang menyentuh kotak insiden ±1 derajat, tanpa jendela waktu
 E  = E0 diurut, dengan elemen yang selisihnya <= JEDA_GABUNG_JAM dari elemen sebelumnya dibuang   // lintasan N20 dan N21 menyatu
 ```
 Himawari tidak dihitung epoch (geostasioner, resolusi 2 km, bukan pengamatan 375 m).
+**Keterbatasan masukan:** `titik_hari` hanya menyimpan waktu deteksi pertama tiap lokasi unik per hari WIB, jadi epoch hanya lintasan yang menemukan lokasi baru hari itu; lintasan yang cuma mengulang lokasi lama tidak tampak, jeda membesar, dan `galat = jeda / 2` ikut membesar (KEPUTUSAN D18 butir a, Q11). Sel 1 derajat yang menyentuh kotak lebih longgar daripada kotak ±1 derajat persis (kelebihan epoch hanya membuat jeda lebih kecil, bukan lebih besar).
 
 ### A3. Waktu tiba per petak
 
@@ -139,7 +142,7 @@ Petak insiden = petak unik dari A1 (semua waktu sejak awal arsip) dengan pusat `
 
 ### B2. Sel halus dalam radius
 
-Sel halus 110 m dari `halus_<prov>.json` (`"i,j": [n, luas]`, pusat sel `(LAT0 + (i + 0,5) / HALUS, LON0 + (j + 0,5) / HALUS)` seperti di `bangunan.py`):
+Sel halus 110 m dari `halus_<prov>.json` (`cells: [[i, j, n, luas_m2]]`, header `lat0 = -12,0`, `lon0 = 94,0`, `step = 0,001`; pusat sel `(lat0 + (i + 0,5) * step, lon0 + (j + 0,5) * step)`), dibaca lewat `bangunan.bangunan_di(prov, titik=...)` dengan titik = pusat sel yang lolos jarak:
 
 ```
 S(petak) = { sel halus s : jarak_km(pusat s, pusat petak) <= 0,500 }       // ekuirektangular lokal; galat sel +- GALAT_HALUS_KM
@@ -171,6 +174,6 @@ Angka B tidak dijumlah dengan `paparan_bangunan.karhutla` (1/3/5 km dari poligon
 
 ## C. Status dan gabungan
 
-- Insiden `gabung` memindahkan arsipnya ke pemenang; berkas `progresi/<id lama>.json` dihapus dan `indeks.json` mencatat `gabung_ke`.
+- Insiden `gabung`: arsip pemenang dibangun ulang tiap putaran dari `titik_hari` terhadap geometri pemenang (yang sudah memuat kompleks gabungan), jadi tidak ada langkah "memindahkan arsip"; arsip `<id lama>.json` dan berkas `progresi/<id lama>.json` dihapus, dan `indeks.json` mencatat `gabung_ke`. Pemangkasan arsip insiden `gabung` dan `tak_terdeteksi` lewat `SIMPAN_HARI` belum ada di kode (IK-01).
 - Insiden `tak_terdeteksi`: isokron dan angka terakhir dipertahankan sampai `SIMPAN_HARI`; tidak ada langkah baru ditambahkan; tidak ada kata padam.
 - Insiden dibuka kembali (`BUKA_HARI`, `BUKA_GAMBUT_HARI`) melanjutkan arsip yang sama; langkah hari-hari tak terlihat tidak mengisi isokron.

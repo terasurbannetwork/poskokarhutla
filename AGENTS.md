@@ -584,6 +584,17 @@ Sebelum menyentuh hitungan lereng per piksel, ekstraksi bangunan Overture, atura
 
 Aturan berhentinya sama dengan §2.1. Satu mesin paparan (tanpa mesin kedua di samping F2 siklus); Overture dan Open Buildings tidak dijumlahkan; bangunan hilang tidak pernah 0; tanpa koordinat bangunan di keluaran publik; tidak pernah "aman" atau "rawan" sebagai vonis; angka video rujukan pembanding, bukan sasaran setel.
 
+### 2.42 Insiden Kaya (pop-up insiden: perkembangan api per hari dan bangunan dalam 500 m dari petak api): baca dulu, baru bangun
+
+Sebelum menyentuh arsip deteksi per insiden, waktu tiba dan garis depan harian, laju dan lompatan api, perkiraan titik awal, atau angka bangunan dekat api per insiden (PKH-06 dan PKH-07 pembanding pantaukarhutla), baca dokumen di
+`data/kajian-bnpb/insiden-kaya/` dengan urutan otoritas ini (kode di `scripts/data/insiden.py`, `scripts/data/arsip_insiden.py`, `scripts/data/progresi.py` milik `pipa-data`; `scripts/umum/paparan_insiden.py` dan perluasan grid di `scripts/umum/bangunan.py` milik `pipa-umum`; langkah di `titik.yml` dan `bangunan.yml` milik `mekanik-mesin`; kartu di pop-up insiden milik `layar-peta`; `tests/insiden/**` dan `public/data/progresi/**` didaftarkan di IK-00):
+
+1. `KEPUTUSAN-INSIDEN.md`: keputusan pemilik K1-K7 (K6: tarik mundur deteksi dari `titik_hari` sejak 1 Jul 2026; K7: unduh Open Buildings semua provinsi), rancangan D1-D19, pertanyaan terbuka Q2-Q4 dan Q6-Q11 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-13), 4. `ALUR.md`, 5. `ALGORITMA.md` (waktu tiba, garis depan 14.00 WIB, laju p90, lompatan, titik awal, bangunan 500 m), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`IK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Metode progresi diambil dari repo pembanding berlisensi MIT dan ditulis ulang di stdlib dengan pemberitahuan lisensi di kepala berkas; angka perkembangan berpil hipotesis sampai uji tahan punya vonis; "belum terukur" dan "belum tercakup" tidak pernah 0; luas dijangkau bukan luas terbakar; titik awal hanya lingkaran galat tanpa sebab atau pelaku; bangunan hanya angka dibulatkan per insiden (Open Buildings, tanpa penjumlahan dengan sumber lain), tanpa koordinat sel atau bangunan di `public/` maupun lewat Worker; arsip deteksi tidak boleh terbit; tidak pernah menulis "padam" atau "aman"; tinjau di `http://localhost:8800/`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

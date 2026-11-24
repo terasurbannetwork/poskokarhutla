@@ -30,6 +30,8 @@
 | Kumulatif, kini | Bangunan dekat semua petak sejak arsip; bangunan dekat petak segar |
 | Terliput | Provinsi insiden punya grid bangunan; tanpa grid = "belum tercakup", bukan 0 |
 | Pembulatan | "kurang dari 5" untuk di bawah 5, kelipatan 5 selebihnya, luas atap ke 100 m² |
-| Arsip deteksi | Daftar petak dan epoch per insiden, bergulir di cache, tidak terbit |
+| Arsip deteksi | Daftar petak dan epoch per insiden (`public/data/progresi/arsip/<id>.json`, sejak 1 Jul 2026, menit sejak `ARSIP_DARI`), bergulir di cache, tidak terbit |
+| `titik_hari` | `public/data/titik_hari/<hari>.json`: lokasi unik 375 m per hari WIB dengan waktu deteksi pertama, sumber arsip (K6) |
+| `ARSIP_DARI` | 1 Jul 2026 00.00 UTC, awal semua waktu arsip |
 | Hipotesis | Pil untuk angka yang uji balik belum lulus |
 | Kartu standar | `.ex.ex-std` dari `public/inti/kartu.css` (AGENTS §3.5) |

@@ -4,22 +4,24 @@
 
 | Berkas | Isi | Pengerja |
 | ------ | --- | -------- |
-| `scripts/data/progresi.py` (baru) | arsip deteksi per insiden, waktu tiba, isokron, laju, lompatan, titik awal; `--uji` self-check; kepala memuat pemberitahuan lisensi MIT pembanding | `pipa-data` |
+| `scripts/data/arsip_insiden.py` (SUDAH ADA, `--uji` hijau) | arsip deteksi per insiden ke `public/data/progresi/arsip/<id>.json` (ADR-2); sisa kerja di IK-01 | `pipa-data` |
+| `scripts/data/progresi.py` (baru) | membaca arsip, lalu waktu tiba, isokron, laju, lompatan, titik awal; `--uji` self-check; kepala memuat pemberitahuan lisensi MIT pembanding | `pipa-data` |
 | `scripts/data/insiden.py` | tidak diubah perilakunya; hanya memberi daftar insiden (`insiden.json`) | `pipa-data` |
-| `scripts/umum/paparan_insiden.py` (baru) | bangunan dalam 500 m dari petak, memakai ulang `Grid`, `jarak_km` dari `paparan_bangunan.py` dan konstanta dari `bangunan.py`; `--uji` | `pipa-umum` |
-| `scripts/umum/bangunan.py`, `paparan_bangunan.py` | dipakai ulang; tidak diubah kecuali IK-08 (grid provinsi) | `pipa-umum` |
+| `scripts/umum/paparan_insiden.py` (baru) | bangunan dalam 500 m dari petak, memakai `bangunan.bangunan_di` dan `bangunan.AMBANG_KEYAKINAN`, jarak titik ke titik ditulis sendiri (D19); `--uji` | `pipa-umum` |
+| `scripts/umum/bangunan.py`, `paparan_bangunan.py` | `bangunan.py` dipakai ulang; `paparan_bangunan.py` TIDAK dipakai (Grid kasar, `jarak_km` ke poligon); tidak diubah kecuali IK-08 (grid provinsi) | `pipa-umum` |
 | `public/data/progresi/<id>.json`, `public/data/progresi/indeks.json` | keluaran publik progresi | `pipa-data` |
 | `public/data/insiden_bangunan.json` | angka bangunan per insiden, publik, dibulatkan | `pipa-data` (terbit), `pipa-umum` (hitung) |
-| `data/terkunci/insiden/bangunan_<id>.json` | rincian sel halus per insiden, tidak terbit, ke R2 awalan `bangunan/` bila perlu staf | `pipa-umum` |
+| `data/terkunci/insiden/bangunan_<id>.json` | rincian sel halus per insiden, tidak terbit; hanya di Actions, tidak diunggah ke R2 (unggah `bangunan.yml` memakai `data/terkunci/bangunan/*.json`, folder `insiden/` di luar glob itu dan harus tetap begitu) | `pipa-umum` |
+| `public/.assetsignore` | tambah `data/progresi/arsip/` (komentar `titik.yml` sudah menyebutnya, berkasnya belum) | `mekanik-mesin` |
 | `.github/workflows/titik.yml`, `bangunan.yml` | langkah baru dan cache arsip | `mekanik-mesin` |
 | `public/index.html`, `public/riwayat_sel.js` atau berkas pop-up insiden hasil IK-00 | dua kartu baru | `layar-peta` |
 | berkas JS dan CSS kartu baru (nama ditetapkan IK-09, di `public/`, bukan folder baru) | lihat IK-09 | `layar-peta` |
-| `tests/insiden/*.test.mjs` dan `scripts/data/progresi.py --uji`, `scripts/umum/paparan_insiden.py --uji` | uji (RENCANA-UJI) | `pipa-data` (folder uji dipasang di roster oleh IK-00) |
+| `tests/insiden/*.test.mjs` dan `scripts/data/progresi.py --uji`, `scripts/umum/paparan_insiden.py --uji` | uji (RENCANA-UJI) | belum ada pemilik: `ilmu.mjs pemilik` untuk `tests/insiden/**` dan `public/data/progresi/**` menjawab "tanpa pemilik"; IK-00 mendaftarkannya (`scripts/data/progresi.py` otomatis `pipa-data`, `scripts/umum/paparan_insiden.py` otomatis `pipa-umum`) |
 | `tests/agen/gerbang-insiden-kaya.test.mjs` | gerbang | `penulis-gerbang` |
 
-Folder baru yang dibuat: `public/data/progresi/`, `data/terkunci/insiden/`, `tests/insiden/`. Tidak ada folder baru di `scripts/`. IK-00 mendaftarkan pemilik tiap jalur di `scripts/agents/roster.json`, lalu `npm run agents:build` (gerbang `gerbang-ilmu-agent`: tiap berkas kode tepat satu pemilik).
+Folder baru yang dibuat: `public/data/progresi/` (sudah ada isinya di `arsip/`), `data/terkunci/insiden/`, `tests/insiden/`. Tidak ada folder baru di `scripts/`. IK-00 mendaftarkan pemilik tiap jalur di `scripts/agents/roster.json`, lalu `npm run agents:build` (gerbang `gerbang-ilmu-agent`: tiap berkas kode tepat satu pemilik).
 
-Titik pasang pop-up pasti (insiden di `public/index.html` vs laci cluster `public/riwayat_sel.js`) ditetapkan di IK-00 lewat `node scripts/agents/ilmu.mjs pemilik <berkas>`; dokumen ini tidak menebaknya.
+Titik pasang pop-up pasti belum ditemukan: tidak ada berkas klien di `public/` yang membaca kunci insiden untuk pop-up (RISET §1 baris Layar). IK-00 menetapkannya lewat `node scripts/agents/ilmu.mjs pemilik <berkas>` setelah menelusuri pop-up cluster di `public/index.html`; dokumen ini tidak menebaknya.
 
 ## 2. ADR
 
@@ -34,24 +36,32 @@ Pembanding memakai numpy, scipy, pandas, duckdb. Pipeline kita stdlib; `titik.ym
 
 Tolok ukur dimasukkan ke `--uji`: insiden sintetis 20.000 petak harus selesai < 60 detik di runner.
 
-### ADR-2: arsip deteksi per insiden (F-1, Q1)
+### ADR-2: arsip deteksi per insiden (F-1, Q1 dijawab, K6)
 
-`hotspot24.json` hanya 48 jam; progresi butuh seluruh riwayat sejak awal api. Arsip: berkas JSON per insiden berisi petak unik `[iy, ix, t_pertama_menit, frp, sensor]` dan daftar epoch (jam dibulatkan 30 menit) di sekitarnya. Hidup di cache `data-` yang sama dengan `insiden.json` (tidak di-commit, tidak terbit); hilang atau rusak = mulai ulang tanpa crash dan insiden tampil "dihitung sejak <tanggal>". Dipangkas bersama insiden (`SIMPAN_HARI`).
+`hotspot24.json` hanya 48 jam; progresi butuh riwayat sejak awal api. **Sudah dibangun** di `scripts/data/arsip_insiden.py`, langkah `titik.yml` "Arsip deteksi per insiden (boleh gagal)" sesudah `insiden.py`. Bentuk berkas `public/data/progresi/arsip/<id>.json`:
 
-Ukuran: 20.000 petak × ±30 B = ±600 KB per insiden terbesar; total ditutup 40 MB (kelebihan: arsip insiden `tak_terdeteksi` dipangkas dulu).
+`{"id", "dari": "2026-07-01", "dibuat", "sumber", "petak": [[iy, ix, t_menit, frp, sensor]], "epoch": [menit]}`; `iy, ix = floor(lat / 0,0034), floor(lon / 0,0034)`; menit sejak 1 Jul 2026 00.00 UTC; `petak` urut waktu, maksimum 20.000 (yang paling awal); `epoch` dibulatkan ke bawah 30 menit. Idempoten: berkas ada digabung (waktu terawal per petak, gabungan epoch); rusak atau hilang = mulai ulang dari `titik_hari` tanpa crash. Hidup di cache `data-`, di `.gitignore`, tidak di-commit.
 
-Epoch: tidak semua deteksi di sekitar insiden diarsipkan; hanya waktu unik dibulatkan 30 menit dari deteksi VIIRS dan MODIS dalam ±1° kotak insiden pada tiap putaran.
+Sumber `titik_hari/*.json` memuat lokasi unik 375 m per hari WIB dengan waktu deteksi pertama saja (D18 butir a); kedekatan ke insiden memakai aturan `insiden.tetapkan` pada geometri insiden saat ini (D18 butir b).
+
+Sisa kerja, semuanya di IK-01, bukan di dokumen ini:
+1. Pemangkasan arsip insiden `tak_terdeteksi` dan `gabung` mengikuti `SIMPAN_HARI` (kode belum memangkas) dan tutup total 40 MB (insiden `tak_terdeteksi` dipangkas dulu).
+2. `public/.assetsignore` memuat `data/progresi/arsip/` (sekarang tidak; arsip ikut ter-deploy oleh `titik.yml`).
+3. Perilaku saat petak melebihi 20.000: sekarang yang terbaru dibuang diam-diam sehingga garis depan berhenti tumbuh; usul pipa-data: tandai `terpotong:true` di arsip dan progresi menulis `tersedia:false`, alasan "terlalu besar untuk arsip", bukan angka diam-diam menyesatkan.
+4. Memisahkan petak VIIRS dari MODIS di arsip (A1).
+
+Ukuran: 20.000 petak × ±30 B = ±600 KB per insiden terbesar.
 
 ### ADR-3: tempat hitung bangunan (Q7)
 
 | Opsi | Kelebihan | Kekurangan |
 | ---- | --------- | ---------- |
-| `bangunan.yml` harian membaca daftar petak dari data terbit | grid sudah ada di sana, tidak menahan `titik.yml` | angka bangunan berumur ≤ 1 hari |
+| `bangunan.yml` harian membaca daftar petak dari data terbit | tidak menahan `titik.yml`; hanya `grid_*.json` dan `kec.json` yang kini di cache job harian, jadi `halus_*.json` harus ditambahkan ke cache itu (atau diambil dari R2 dengan token) | angka bangunan berumur ≤ 1 hari; cache membengkak sebesar semua `halus_*` (R2 diperkirakan 150 sampai 300 MB untuk semua provinsi, ukur dulu) |
 | `titik.yml` tiap 3 jam | angka segar | harus menarik `halus_<prov>.json` (3,6 sampai 19,7 MB per provinsi, 12,7 GB sumber) dari R2 tiap putaran |
 
-Bawaan [SEMENTARA]: opsi pertama. `progresi.py` menulis `public/data/progresi/petak/<id>.json` ringkas (petak segar dan petak keseluruhan dalam format larik sel), `paparan_insiden.py` membacanya di `bangunan.yml` lalu menulis `insiden_bangunan.json`. Karena `bangunan.yml` tidak commit dan tidak terbit (grup concurrency sendiri), IK-07 menentukan jalur terbit: menyerahkan `insiden_bangunan.json` ke langkah terbit yang sudah ada (`data.yml` atau `terbit.yml`), tanpa membuat workflow commit baru.
+Bawaan [SEMENTARA]: opsi pertama. `progresi.py` menulis `public/data/progresi/petak/<id>.json` ringkas (petak segar dan petak keseluruhan dalam format larik sel), `paparan_insiden.py` membacanya di `bangunan.yml` lalu menulis `insiden_bangunan.json`. Karena `bangunan.yml` tidak commit dan tidak terbit (grup concurrency sendiri), IK-07 menentukan jalur terbit: menyerahkan `insiden_bangunan.json` ke langkah deploy yang sudah ada (`titik.yml` men-deploy `public/` dari cache tanpa commit), tanpa membuat workflow commit baru.
 
-Catatan: berkas `petak/<id>.json` memuat koordinat sel api (titik panas yang sudah publik), bukan bangunan; boleh terbit atau tetap di cache sesuai jalur IK-07.
+Catatan: berkas `petak/<id>.json` memuat koordinat sel api (titik panas yang sudah publik), bukan bangunan; boleh terbit atau tetap di cache sesuai jalur IK-07. `progresi/arsip/` dan `progresi/petak/` tidak dihitung ke batas 150 KB dan tidak dibaca layar.
 
 ### ADR-4: modul lisensi MIT
 
@@ -115,8 +125,8 @@ Untuk daftar dan ringkasan di peta tanpa memuat tiap berkas.
 
 ## 4. Alur kerja (workflow)
 
-- `titik.yml`: tambahkan langkah `python3 -I scripts/data/progresi.py` sesudah `insiden.py` dengan pola yang sama (`|| echo "::warning title=progresi::..."`), cache arsip ikut kunci `data-`. Terbit lewat jalur `public/data/progresi/` seperti `insiden`-turunan (IK-05 menetapkan apakah ikut commit `terbit.yml` atau hanya cache + layar membaca langsung; berkas besar ≤ 150 KB × 120 insiden ≈ 18 MB tidak boleh ikut commit tiap 3 jam, jadi default: hanya insiden aktif 14 hari terakhir dan di bawah 8 MB total).
-- `bangunan.yml` (harian): langkah `python3 -I scripts/umum/paparan_insiden.py` sesudah `paparan_bangunan.py`.
+- `titik.yml`: tambahkan langkah `python3 -I scripts/data/progresi.py` sesudah langkah `arsip_insiden.py` (yang sudah ada) dengan pola yang sama (`|| echo "::warning title=progresi::..."`), cache arsip ikut kunci `data-`. Terbit lewat deploy `public/` yang sudah dilakukan `titik.yml` (tanpa commit); yang perlu diputuskan IK-05 hanya batas ukuran deploy: berkas ≤ 150 KB × 120 insiden ≈ 18 MB terlalu besar, jadi default: hanya insiden aktif 14 hari terakhir dan di bawah 8 MB total.
+- `bangunan.yml` (harian): tambahkan `data/terkunci/bangunan/halus_*.json` ke cache grid, lalu langkah `python3 -I scripts/umum/paparan_insiden.py` sesudah `paparan_bangunan.py`; pulihkan juga `public/data/progresi/petak/` dari cache `data-`.
 - Ambang peringatan Actions: bila jumlah insiden > 120 yang punya progresi, tulis `::notice` dan batasi 120 insiden terbesar (pembanding `top = 120`).
 
 ## 5. Rute Worker

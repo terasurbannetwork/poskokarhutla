@@ -5,7 +5,8 @@ Sumber (semua domain publik pemerintah AS, tanpa kunci):
   ONI & RONI   NOAA CPC  https://www.cpc.ncep.noaa.gov/data/indices/{oni,RONI}.ascii.txt (bulanan, rata 3 bulan)
   Status ENSO  NOAA CPC ENSO Diagnostic Discussion (teks "ENSO Alert System Status" + sinopsis peluang)
   DMI/IOD      NOAA OSMC State of the Ocean, DMI mingguan dari OISST (netCDF3 klasik, dibaca tanpa pustaka)
-BoM (iod_1.txt) sengaja tidak dipakai: situsnya memblokir akses otomatis dan menyatakan tidak mendukung scraping.
+BoM www.bom.gov.au (iod_1.txt) sengaja tidak dipakai di iklim.json: situsnya memblokir akses otomatis (403). Host reg.bom.gov.au menjawab 200 dan dipakai
+HANYA oleh prospek_musim.json (PKH-30, di bawah).
 
 Aturan bobot musim (dipakai UI untuk kalender musim di musim.json):
   w = 1,0 bila CPC berstatus El Niño Advisory; 0,5 bila El Niño Watch; 0 untuk lainnya (netral / La Niña).
@@ -13,7 +14,7 @@ Aturan bobot musim (dipakai UI untuk kalender musim di musim.json):
   (indeks 18-35): IOD positif mengeringkan Sumatra & Kalimantan Agustus-November (2019: El Niño lemah + IOD kuat).
   peluang[d] = w_d * p_el_nino[d] + (1 - w_d) * p_biasa[d].
 """
-import datetime as dt, html, json, os, re, struct, sys, urllib.request
+import csv, datetime as dt, html, json, os, re, statistics, struct, sys, urllib.request
 
 AKAR = os.path.join(os.path.dirname(__file__), "../..")
 KELUAR = os.path.join(AKAR, "public/data/iklim.json")
@@ -169,6 +170,180 @@ def uji():
     assert netcdf3(blok + data) == {"TIME": [100.0, 107.0], "DMI": [0.5, -0.25]}
 
 
+# ---------------------------------------------------------------- PKH-30: prospek musim -> public/data/prospek_musim.json
+# Peluang rata-rata hujan 30/60 hari ke depan < 4 mm/hari (Field dkk. 2016, PNAS, doi:10.1073/pnas.1524888113) dari ansambel musiman ECMWF
+# (Open-Meteo seasonal, ~50 anggota) di satu titik sabuk kebakaran per provinsi. Aturan diuji 2012-2025 per titik sebelum tampil.
+# Rujukan pembanding (MIT, Pantau Karhutla 2026): pipeline/src/haze/outlook.py, pipeline/scripts/backtest_outlook_rule.py.
+# Pakai:  python3 scripts/data/iklim.py prospek        (tarik ONI/Nino3.4/IOD + ansambel; kunci "uji" dibawa dari berkas lama)
+#         python3 scripts/data/iklim.py prospek uji    (hitung ulang uji 2012-2025; lokal: butuh data/raw/asean/viirs-snpp_<tahun>_Indonesia.csv dari asean_titik.py bangun)
+PROSPEK = os.path.join(AKAR, "public/data/prospek_musim.json")
+NINO_MINGGUAN = "https://www.cpc.ncep.noaa.gov/data/indices/wksst9120.for"
+IOD_BOM = "https://reg.bom.gov.au/clim_data/IDCK000072/iod_1.txt"
+MUSIMAN = "https://seasonal-api.open-meteo.com/v1/seasonal"
+POWER = "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&latitude={la}&longitude={lo}&start=20120101&end=20251231&format=JSON"
+KERING_MM = 4.0
+TITIK = [("Kalimantan Tengah", -2.21, 113.92), ("Kalimantan Barat", -0.03, 109.34), ("Kalimantan Selatan", -3.32, 114.59),
+         ("Kalimantan Timur", -0.50, 117.15), ("Riau", 0.51, 101.45), ("Jambi", -1.61, 103.61),
+         ("Sumatera Selatan", -2.98, 104.78), ("Papua Selatan (Merauke)", -8.49, 140.40)]   # satu titik per provinsi (sabuk kebakaran, bukan ibu kota)
+TAHUN_UJI, KOTAK, JENDELA = range(2012, 2026), 1.0, 30
+MULAI_UJI = [(m, d) for m in (7, 8, 9, 10) for d in (1, 16)]
+UJI_LIFT_MIN, UJI_KERING_MIN = 1.5, 8   # tanda "aturan lemah": jendela kering terlalu sedikit, atau jendela besar hanya <= 1,5x lebih sering di jendela kering
+
+
+def nino34_mingguan(teks, n=12):
+    """CPC wksst9120.for: tanggal lalu SST+anomali Nino 1+2, 3, 3.4, 4. Anomali negatif menempel pada SST ("23.4-0.4"), jadi dibaca dengan pola."""
+    out = []
+    for b in teks.splitlines():
+        p = b.split(maxsplit=1)
+        if len(p) == 2 and p[0][:2].isdigit():
+            v = re.findall(r"-?\d+\.\d+", p[1])
+            if len(v) == 8:
+                out.append({"minggu": dt.datetime.strptime(p[0], "%d%b%Y").date().isoformat(), "nino34": float(v[5])})
+    return out[-n:]
+
+
+def iod_mingguan(teks, n=12):
+    out = []
+    for b in teks.splitlines():
+        p = b.strip().split(",")
+        if len(p) == 3 and p[0].isdigit() and p[1].isdigit():
+            out.append({"akhir_minggu": f"{p[1][:4]}-{p[1][4:6]}-{p[1][6:]}", "iod": float(p[2])})
+    return out[-n:]
+
+
+def fase_oni(v):
+    return ("El Niño sangat kuat" if v >= 2.0 else "El Niño kuat" if v >= 1.5 else "El Niño" if v >= 0.5 else "La Niña" if v <= -0.5 else "Netral")
+
+
+def peluang_kering(anggota, hari):
+    """Bagian anggota ansambel yang rata-rata hujan `hari` hari pertamanya < KERING_MM; anggota tanpa data dibuang; None bila tak ada anggota."""
+    rata = []
+    for a in anggota:
+        v = [x for x in a[:hari] if x is not None]
+        if len(v) >= hari * 0.9:
+            rata.append(sum(v) / len(v))
+    return (round(sum(r < KERING_MM for r in rata) / len(rata), 2), len(rata)) if rata else (None, 0)
+
+
+def ansambel(la, lo):
+    """-> daftar deret harian per anggota (precipitation_sum_memberNN; deret tanpa akhiran = rata-rata ansambel, tidak dipakai)."""
+    d = json.loads(ambil(f"{MUSIMAN}?latitude={la}&longitude={lo}&daily=precipitation_sum&forecast_days=60"))["daily"]
+    return [v for k, v in d.items() if re.fullmatch(r"precipitation_sum_member\d+", k)]
+
+
+def hujan_power(la, lo):
+    """{tanggal date: mm/hari} NASA POWER PRECTOTCORR 2012-2025 (fill -999 dibuang)."""
+    p = json.loads(ambil(POWER.format(la=la, lo=lo)))["properties"]["parameter"]["PRECTOTCORR"]
+    return {dt.date(int(k[:4]), int(k[4:6]), int(k[6:])): v for k, v in p.items() if v >= 0}
+
+
+def deteksi_harian(berkas, la, lo):
+    """{date: jumlah} deteksi S-NPP type 0 keyakinan n/h dalam +-KOTAK derajat titik, dari arsip negara FIRMS."""
+    out = {}
+    with open(berkas, newline="") as f:
+        for r in csv.DictReader(f):
+            if r["type"] == "0" and r["confidence"].strip().lower() in ("n", "h") and abs(float(r["latitude"]) - la) <= KOTAK and abs(float(r["longitude"]) - lo) <= KOTAK:
+                d = dt.date.fromisoformat(r["acq_date"])
+                out[d] = out.get(d, 0) + 1
+    return out
+
+
+def ringkas_uji(baris):
+    """baris [(hujan_rata, deteksi)] -> ringkasan uji aturan; aturan_lemah None bila jendela kering < UJI_KERING_MIN (tak cukup bukti)."""
+    n = len(baris)
+    kering = [d for h, d in baris if h < KERING_MM]
+    basah = [d for h, d in baris if h >= KERING_MM]
+    ambang = sorted(d for _, d in baris)[int(n * 0.9)] if n else None     # jendela "besar" = 10% teratas deteksi di titik itu
+    besar = [d >= ambang and d > 0 for _, d in baris]
+    dasar = sum(besar) / n if n else None
+    pb = sum(b for (h, _), b in zip(baris, besar) if h < KERING_MM) / len(kering) if kering else None
+    lift = round(pb / dasar, 2) if pb is not None and dasar else None
+    lemah = None if len(kering) < UJI_KERING_MIN or lift is None else lift < UJI_LIFT_MIN
+    return {"jendela": n, "jendela_kering": len(kering), "median_deteksi_kering": statistics.median(kering) if kering else None,
+            "median_deteksi_basah": statistics.median(basah) if basah else None,
+            "peluang_besar_saat_kering": round(pb, 2) if pb is not None else None, "peluang_besar_dasar": round(dasar, 2) if dasar is not None else None,
+            "lift": lift, "aturan_lemah": lemah}
+
+
+def uji_aturan(folder):
+    """Uji 30 hari rata-rata hujan < 4 mm/hari lawan deteksi S-NPP +-1 derajat, 2012-2025, jendela mulai tgl 1 dan 16 Jul-Okt. -> {titik: ringkasan | None}"""
+    arsip = {y: os.path.join(folder, f"viirs-snpp_{y}_Indonesia.csv") for y in TAHUN_UJI}
+    hilang = [y for y, f in arsip.items() if not os.path.exists(f)]
+    if hilang:
+        raise SystemExit(f"arsip Indonesia {hilang} belum ada di {folder} (python3 scripts/data/asean_titik.py bangun)")
+    out = {}
+    for nama, la, lo in TITIK:
+        try:
+            hujan = hujan_power(la, lo)
+        except Exception as e:
+            print("uji", nama, "hujan gagal", e, file=sys.stderr); out[nama] = None; continue
+        det = {}
+        for y, f in arsip.items():
+            det.update(deteksi_harian(f, la, lo))
+        baris = []
+        for y in TAHUN_UJI:
+            for m, d in MULAI_UJI:
+                hari = [dt.date(y, m, d) + dt.timedelta(days=i) for i in range(JENDELA)]
+                v = [hujan[x] for x in hari if x in hujan]
+                if len(v) >= JENDELA * 0.9:
+                    baris.append((sum(v) / len(v), sum(det.get(x, 0) for x in hari)))
+        out[nama] = ringkas_uji(baris)
+        print("uji", nama, out[nama], file=sys.stderr, flush=True)
+    return out
+
+
+def prospek(hitung_uji=False, folder=os.path.join(AKAR, "data/raw/asean")):
+    lama = json.load(open(PROSPEK)) if os.path.exists(PROSPEK) else {}
+    uji_lama = lama.get("uji")
+    def coba(f, *a):
+        try:
+            return f(*a)
+        except Exception as e:   # satu sumber mati: bagian itu null, kartu tetap terbit
+            print("prospek:", f.__name__, "gagal:", e, file=sys.stderr); return None
+    o = coba(lambda: [x for x in oni(ambil(ONI).decode()) if x["tahun"] >= dt.date.today().year - 1][-6:])
+    uji_titik = uji_aturan(folder) if hitung_uji else (uji_lama or {}).get("titik")
+    titik = []
+    for nama, la, lo in TITIK:
+        a = coba(ansambel, la, lo)
+        k30, n = peluang_kering(a, 30) if a else (None, 0)
+        k60 = peluang_kering(a, 60)[0] if a else None
+        med = round(statistics.median(sum(x for x in m[:30] if x is not None) for m in a)) if a else None
+        u = (uji_titik or {}).get(nama)
+        titik.append({"provinsi": nama, "lat": la, "lon": lo, "anggota": n or None, "kering30": k30, "kering60": k60, "hujan30_median_mm": med,
+                      "aturan_lemah": u["aturan_lemah"] if u else None, "uji": u})
+    out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
+           "ambang_mm_hari": KERING_MM,
+           "enso": {"oni": o, "fase_oni": fase_oni(o[-1]["nilai"]) if o else None, "nino34_mingguan": coba(lambda: nino34_mingguan(ambil(NINO_MINGGUAN).decode())),
+                    "iod_mingguan": coba(lambda: iod_mingguan(ambil(IOD_BOM).decode()))},
+           "titik": titik,
+           "uji": {"periode": [TAHUN_UJI[0], TAHUN_UJI[-1]], "diuji": dt.date.today().isoformat() if hitung_uji else (uji_lama or {}).get("diuji"), "titik": uji_titik,
+                   "metode": f"rata-rata hujan {JENDELA} hari < {KERING_MM:g} mm/hari (NASA POWER PRECTOTCORR) di titik, jendela mulai tgl 1 dan 16 Juli-Oktober tiap tahun; lawan jumlah deteksi VIIRS S-NPP (type 0, keyakinan n/h) dalam +-{KOTAK:g} derajat. Jendela besar = 10% teratas deteksi di titik itu; lift = peluang jendela besar saat kering dibagi peluang dasarnya.",
+                   "aturan_lemah": f"lift < {UJI_LIFT_MIN} (jendela besar tak jauh lebih sering saat kering); null bila jendela kering < {UJI_KERING_MIN}. Jendela berimpit 15 hari, jadi bukan sampel bebas.",
+                   "batas": "hujan titik NASA POWER (reanalisis MERRA-2), bukan hujan ansambel ECMWF; uji menilai aturan 4 mm, bukan keterampilan ramalan musiman."},
+           "sumber": {"oni": ONI, "nino34": NINO_MINGGUAN, "iod": IOD_BOM, "ansambel": MUSIMAN + " (ECMWF SEAS5 via Open-Meteo, CC BY 4.0)", "hujan_uji": "NASA POWER", "deteksi_uji": "NASA FIRMS arsip VIIRS S-NPP Indonesia"},
+           "catatan": "Informasi pendukung, bukan peringatan resmi; ikuti arahan BMKG dan BPBD setempat."}
+    json.dump(out, open(PROSPEK, "w"), ensure_ascii=False, separators=(",", ":"))
+    print("prospek_musim.json", [(t["provinsi"], t["kering30"], t["kering60"], t["aturan_lemah"]) for t in titik])
+
+
+def uji_prospek():
+    assert nino34_mingguan("04NOV2026     27.0 5.6     29.5 4.3     30.1-0.4     30.1 1.5\n")[0] == {"minggu": "2026-11-04", "nino34": -0.4}
+    assert iod_mingguan("20261102,20261108,0.75\nx,y,z\n") == [{"akhir_minggu": "2026-11-08", "iod": 0.75}]
+    assert fase_oni(2.2) == "El Niño sangat kuat" and fase_oni(-0.6) == "La Niña" and fase_oni(0.1) == "Netral"
+    a = [[1.0] * 60, [5.0] * 60, [3.0] * 30 + [9.0] * 30, [None] * 60]   # anggota 4 tanpa data: dibuang
+    assert peluang_kering(a, 30) == (0.67, 3) and peluang_kering(a, 60) == (0.33, 3) and peluang_kering([[None] * 60], 30) == (None, 0)
+    # titik: jendela kering (hujan < 4) selalu besar -> lift tinggi, kuat; semua jendela sama -> lift 1, lemah
+    kuat = [(1.0, 100)] * 9 + [(8.0, 1)] * 90 + [(1.0, 100)]
+    assert ringkas_uji(kuat)["aturan_lemah"] is False
+    assert ringkas_uji([(1.0, 5)] * 5 + [(8.0, 5)] * 50)["aturan_lemah"] is None   # kering < 8 jendela: tak cukup bukti
+    datar = [(1.0, 5)] * 10 + [(8.0, 5)] * 90
+    assert ringkas_uji(datar)["lift"] in (None, 1.0) and ringkas_uji(datar)["aturan_lemah"] in (None, True)
+
+
 if __name__ == "__main__":
     uji()
-    bangun()
+    if sys.argv[1:2] == ["prospek"]:
+        uji_prospek()
+        prospek(sys.argv[2:3] == ["uji"])
+    else:
+        bangun()

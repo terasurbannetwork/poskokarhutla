@@ -25,6 +25,8 @@ jobs:
         env:
           PTREE_USER: ${{ secrets.PTREE_USER }}
           PTREE_PASS: ${{ secrets.PTREE_PASS }}
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}   # opsional: kosong = himawari.py jatuh ke hotspot72.json
+          HIMAWARI_JAM_PENANDA: "13"
         run: python3 scripts/data/himawari.py
 
       - name: Unggah ke R2

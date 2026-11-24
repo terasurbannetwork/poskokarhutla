@@ -5,19 +5,21 @@
 ```
 titik.yml (tiap 3 jam)
   insiden.py        -> insiden.json (status bergulir, cache data-), daftar insiden + anggota
+  arsip_insiden.py (SUDAH ADA)
+     1. baca insiden aktif; petak unik per insiden dari titik_hari (sejak 1 Jul 2026) + hotspot24.json
+     2. gabung ke public/data/progresi/arsip/<id>.json (cache data-, tidak di-commit, tidak boleh terbit)
   progresi.py (baru)
-     1. baca insiden aktif dan tak_terdeteksi (SIMPAN_HARI)
-     2. tambahkan deteksi VIIRS nominal/tinggi baru dari hotspot24.json ke arsip per insiden
-        (bergulir, cache data-, tidak di-commit, tidak terbit)
+     1. baca insiden aktif dan tak_terdeteksi (SIMPAN_HARI) dan arsipnya
+     2. petak = petak arsip bersensor VIIRS; epoch dari arsip (MODIS ikut sebagai epoch)
      3. untuk tiap insiden dengan >= 20 piksel unik dan arsip berubah atau > 12 jam:
         epoch -> waktu tiba -> permukaan -> isokron 14.00 WIB -> laju, lompatan, titik awal
      4. tulis public/data/progresi/<id>.json dan indeks.json
      5. tulis daftar petak unik per insiden untuk langkah bangunan (D15, Q7)
 
-bangunan.yml (harian, grid dari cache / R2)
+bangunan.yml (harian; halus_*.json harus ikut cache grid, lihat Q7 dan IK-07)
   paparan_insiden.py (baru, pipa-umum)
      1. baca daftar petak per insiden
-     2. muat halus_<prov>.json untuk provinsi insiden
+     2. muat halus_<prov>.json untuk provinsi insiden (lewat bangunan.bangunan_di)
      3. sel halus dalam 500 m dari pusat petak mana pun, gabungan, tiap sel sekali
      4. tulis public/data/insiden_bangunan.json (angka per insiden)
         dan data/terkunci/insiden/ (rincian sel, tidak terbit)

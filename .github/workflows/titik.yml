@@ -85,6 +85,11 @@ jobs:
           FWI: "0"
         run: python3 scripts/data/harian.py
 
+      # PKH-24: titik panas 24 jam (kita, setara SiPongi, tinggi saja, angka resmi SiPongi atau null) -> public/data/titik_setara.json. Sesudah harian.py (hotspot24).
+      - name: Titik setara SiPongi 24 jam (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/titik_unik.py && python3 scripts/data/titik_unik.py 24j || echo "::warning title=titik_unik::gagal; titik_setara.json lamanya dibiarkan"
+
       - name: Turunan kompleks (boleh gagal)
         continue-on-error: true
         run: |
@@ -155,6 +160,12 @@ jobs:
           python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
           python3 scripts/data/watak_kluster.py uji && python3 scripts/data/watak_kluster.py || echo "::warning title=watak::watak_kluster.py gagal; cluster tanpa pola lokasi"
           python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
+
+      # Arsip deteksi per insiden sejak 1 Jul 2026 -> public/data/progresi/arsip/<id>.json. Membaca insiden.json + titik_hari (cache data-);
+      # menumpuk lewat cache data-, TIDAK di-commit (.gitignore) dan TIDAK terbit (public/.assetsignore).
+      - name: Arsip deteksi per insiden (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/arsip_insiden.py --uji && python3 scripts/data/arsip_insiden.py || echo "::warning title=arsip_insiden::gagal; arsip lamanya dibiarkan"
 
       # saran status darurat dihitung ulang tiap 3 jam supaya sinyal kluster.json segar (titik.yml selalu deploy; tak commit, jadi tak bentrok push)
       - name: Saran status darurat (boleh gagal)

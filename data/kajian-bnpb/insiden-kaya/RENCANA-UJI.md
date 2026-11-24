@@ -6,6 +6,7 @@ Aturan AGENTS global butir 3: perilaku yang tinggal di luar TypeScript wajib pun
 
 | Perintah | Membuktikan |
 | -------- | ----------- |
+| `python3 -I scripts/data/arsip_insiden.py --uji` | self-check arsip (sudah ada dan hijau; IK-01 menambah kasus pemangkasan, tutup ukuran, petak melebihi 20.000) |
 | `python3 -I scripts/data/progresi.py --uji` | self-check fungsi murni A1 sampai A9 |
 | `python3 -I scripts/umum/paparan_insiden.py --uji` | self-check fungsi murni B1 sampai B4 |
 | `python3 -I scripts/data/progresi.py uji-tahan` | uji tahan A10 pada insiden arsip (butuh `data/raw/firms` lokal, tidak di CI) |
@@ -31,6 +32,7 @@ Prosedur:
 3. Catat komposisi sensor tiap insiden (S-NPP, NOAA-20, NOAA-21).
 4. Catat MAE, median galat, dalam12, dalam24, bias, per insiden dan gabungan; kegagalan ditulis jujur (hasil gagal tidak disembunyikan).
 5. Vonis `lulus|gagal` ditulis ke `metode.uji.vonis` pada keluaran. `belum` selama uji belum jalan. Layar: lulus = tanpa pil hipotesis; gagal = pil hipotesis (Q10).
+6. [SEMENTARA, Q11] Ulangi A10 pada 3 insiden musim ini dari arsip `titik_hari` (masukan produksi, D18 butir a) dan catat hasilnya berdampingan dengan 10 insiden FIRMS lengkap; pil hipotesis dilepas hanya bila kedua kelompok melewati ambang di atas. Tanpa langkah ini vonis historis tidak boleh dipakai untuk angka produksi.
 
 Peringatan baca: uji ini mengukur seberapa baik sel yang ditahan ditebak dari tetangga, bukan akurasi terhadap perimeter independen (dokumen pembanding mengakui hal yang sama). Hasil ditulis dengan keterangan itu.
 
@@ -48,6 +50,8 @@ Peringatan baca: uji ini mengukur seberapa baik sel yang ditahan ditebak dari te
 | `n = 3` | `tampil = "kurang dari 5"`; `n = 87` | `"sekitar 85"`; luas 12.449 | `12400` |
 | ambang bangunan | `AMBANG_BANGUNAN == bangunan.AMBANG_KEYAKINAN == 0.70` |
 | tidak ada kunci `sel`, `lat`, `lon` di keluaran publik | benar |
+| `halus_<prov>.json` bentuk nyata (`cells: [[i, j, n, luas_m2]]`, `lat0 = -12`, `lon0 = 94`) | fixture uji memakai bentuk ini, bukan `"i,j": [n, luas]` |
+| titik di sel yang sama dari dua petak | `bangunan_di` menghitung sel sekali (cocok D11) |
 
 ### 3.2 Periksa manual pada citra (kriteria terima PKH-07)
 
@@ -90,8 +94,10 @@ Menjalankan dengan berkas contoh nyata hasil pipeline (atau fixture dari keluara
 3. `bangunan` atau `kumulatif` bernilai 0 di insiden `terliput:false` (harus `null`).
 4. `p90_km: 0` atau `laju` 0 pada `terukur:false` (harus `null`).
 5. Kata "padam", "aman", "penyebab", "pelaku", "sumber api" di teks kartu (`public/**` berkas kartu) di luar daftar pengecualian.
-6. Berkas `progresi/<id>.json` > 150 KB atau isokron > 30.
+6. Berkas `progresi/<id>.json` > 150 KB atau isokron > 30 (hanya berkas langsung di `public/data/progresi/`, bukan subfolder `arsip/` dan `petak/`).
+6a. `public/.assetsignore` memuat `data/progresi/arsip/` (sekarang gagal; baris ini yang membuktikan IK-01 sisa nomor 2 selesai).
 7. `data/terkunci/` menyusup ke `public/` (grep `sel_halus`).
+7a. `data/terkunci/insiden/` berada di luar glob unggah R2 `data/terkunci/bangunan/*.json` di `bangunan.yml`.
 8. Ambang bangunan dua nilai berbeda di repo (grep `0.70` dan `AMBANG_BANGUNAN` konsisten).
 
 Gerbang harus merah pada contoh pelanggaran (uji gerbang menyuntik pelanggaran sendiri).
