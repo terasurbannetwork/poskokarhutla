@@ -1,29 +1,29 @@
 /* pembanding.css — laci insiden, kotak titik panas 24 jam, dan tiga kartu Insight (pembanding.js). Hanya token tema.css. */
 .pk-kepala{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:space-between;margin-bottom:6px}
-.pk-bukti{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);background:var(--surface);color:var(--ink2);cursor:help}
+.pk-bukti{display:inline-block;font-size:var(--fs-1);font-weight:700;padding:3px 10px;border-radius:var(--r-pill);background:var(--surface);color:var(--ink2);cursor:help}
 .pk-bukti.pk-kuat{background:color-mix(in oklch,var(--ok) 16%,transparent);color:var(--ok-tx)}
 .pk-bukti.pk-tunggal{background:color-mix(in oklch,var(--warn) 18%,transparent);color:var(--warn-tx)}
-.pk-lagi,.pk-galat,.pk-cat{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--ink)}
-.pk-galat,.pk-cat{color:var(--ink2);font-size:12px}
+.pk-lagi,.pk-galat,.pk-cat{margin:8px 0 0;font-size:var(--fs-3);line-height:1.5;color:var(--ink)}
+.pk-galat,.pk-cat{color:var(--ink2);font-size:var(--fs-2)}
 .pk-setara{display:grid;gap:6px}
 .pk-tiga{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pk-tiga div{display:grid;gap:2px}
-.pk-tiga b{font-size:20px;font-variant-numeric:tabular-nums}
-.pk-tiga small{font-size:11.5px;color:var(--ink2)}
+.pk-tiga b{font-size:var(--fs-7);font-variant-numeric:tabular-nums}
+.pk-tiga small{font-size:var(--fs-1);color:var(--ink2)}
 .pk-ik{width:18px;height:18px;margin-right:8px;vertical-align:-3px;color:var(--brand2)}
 .pk-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.pk-tabel thead th{text-transform:none;letter-spacing:0;font-size:12px}
+.pk-tabel thead th{text-transform:none;letter-spacing:0;font-size:var(--fs-2)}
 .pk-tabel td small{color:var(--ink2)}
 .pk-idn td{background:color-mix(in oklch,var(--accent) 14%,transparent);font-weight:700}
 .pk-bar{display:block;min-width:120px;height:10px;border-radius:var(--r-pill);background:var(--surface);overflow:hidden}
 .pk-bar i{display:block;height:100%;background:var(--brand2);border-radius:var(--r-pill)}
 .pk-idn .pk-bar i{background:var(--bad)}
-.pk-lemah{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:var(--r-pill);background:color-mix(in oklch,var(--warn) 18%,transparent);color:var(--warn-tx);cursor:help}
+.pk-lemah{display:inline-block;font-size:var(--fs-1);font-weight:700;padding:2px 9px;border-radius:var(--r-pill);background:color-mix(in oklch,var(--warn) 18%,transparent);color:var(--warn-tx);cursor:help}
 .pk-grafik{display:block;width:100%;height:auto}
 .pk-hit{fill:transparent}
 .pk-b{fill:var(--brand2)}
 .pk-b.ini{fill:var(--bad)}
-.pk-v,.pk-t{font-size:11px;fill:var(--ink2)}
+.pk-v,.pk-t{font-size:var(--fs-1);fill:var(--ink2)}
 .pk-t.ini{fill:var(--bad-tx);font-weight:800}
 .pk-v{font-weight:700;fill:var(--ink)}
 g:hover>.pk-b{opacity:.8}

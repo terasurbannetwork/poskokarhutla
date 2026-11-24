@@ -44,6 +44,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # angka bangunan per insiden dihitung bangunan.yml harian (grup concurrency lain, tanpa commit/terbit); cache kecil ini menyerahkannya ke deploy di sini
       - name: Pulihkan angka bangunan per insiden (boleh gagal)
         continue-on-error: true
@@ -52,10 +56,6 @@ jobs:
           path: public/data/insiden_bangunan.json
           key: insiden-bangunan-${{ github.run_id }}
           restore-keys: insiden-bangunan-
-
-      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
-      - name: Data tidak lebih tua dari yang tayang
-        run: python3 scripts/terbit/isi_data.py perlu
 
       # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
