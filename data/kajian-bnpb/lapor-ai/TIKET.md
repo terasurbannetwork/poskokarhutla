@@ -171,7 +171,7 @@ Permintaan pemilik: per kab/kota per bulan, tampilkan kejadian yang ada di satu 
 
 Batas: Lapor Bencana adalah data warga di D1, tidak pernah tampil publik dan tidak masuk `public/data` (D7, KEAMANAN-PRIVASI). Hanya laporan terverifikasi BPBD yang dihitung, dengan arti `terverifikasiBpbd` di `data/kajian-bnpb/lapor-kejadian/ALGORITMA.md` A3 (`src/lapor_kejadian.js`, LK-02 selesai 23 Nov 2026).
 
-Status 23 Nov 2026: LA-76 dan LA-77 selesai di kode, sudah di-commit. Rute menjawab 403 (bukan 401) untuk tanpa sesi dan akun BPBD, sama dengan rute meja lain. Sebelum pemilik menerapkan migrasi 0169, semua pengecekan dihitung belum terverifikasi, jadi kolom Lapor kosong. Syarat 5 (tarikan `lk_tarik`) menunggu LK-03.
+Status 23 Nov 2026: LA-76 dan LA-77 selesai di kode, sudah di-commit. Rute menjawab 403 (bukan 401) untuk tanpa sesi dan akun BPBD, sama dengan rute meja lain. Sebelum pemilik menerapkan migrasi 0169, semua pengecekan dihitung belum terverifikasi, jadi kolom Lapor kosong. Syarat 5 (tarikan `lk_tarik`): tabelnya sudah ada (LK-03, migrasi 0170), tetapi belum ada rute yang menulisnya; rute rekon membacanya bersama LK-07 (rute tarik) dan LK-05 (kode gugus `GL-`). Diperiksa ulang 24 Nov 2026: `tests/bnpb/rekon_tiga.test.mjs` 5/0, `tests/lapor/rute.test.mjs` 47/0.
 
 | Tiket | Isi | Pengerja | Pemeriksa | Q |
 | --- | --- | --- | --- | --- |

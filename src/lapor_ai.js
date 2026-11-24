@@ -1020,7 +1020,7 @@ async function picPost(env, req, url, kini, nomor) {
   return kirim(200, {profil_id: p.id, nama: p.nama, jabatan: p.jabatan, wa: p.wa});
 }
 /* rekonsiliasi tiga sumber (lapor-ai LA-76): laporan terverifikasi BPBD (LK-02, A3) per kab/kota, jenis, bulan WIB; tanpa nomor, nama, teks, atau foto.
-   Staf BNPB saja sampai pemilik menjawab Q-R1. ponytail: tarikan lk_tarik belum ada (LK-03), jadi syarat 5 selalu lolos; rentang paling lama 400 hari */
+   Staf BNPB saja sampai pemilik menjawab Q-R1. ponytail: tabel lk_tarik ada (LK-03) tetapi belum ada rute yang menulisnya (LK-07) dan kode GL- butuh gugus (LK-05), jadi syarat 5 belum dibaca; sambungkan bersama LK-07; rentang paling lama 400 hari */
 const tglWibIso = ms => new Date(ms + 7 * JAM).toISOString().slice(0, 10);
 async function rekonGet(env, c, url) {
   if (c.jenis !== "bnpb") return galat(403, "Rekonsiliasi hanya untuk staf BNPB.");
