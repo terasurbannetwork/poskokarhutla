@@ -21,6 +21,7 @@ import datetime as dt, json, math, os, sys
 AKAR = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
 PUSAT = os.path.join(AKAR, "public/banjir/data/pusat_kec.json")  # {"prov|kab|kec": [lat, lon]}, 7.274 titik; tidak disalin
 KELUAR = os.path.join(AKAR, "public/gempa/data/model_guncangan.json")
+MAGMA = os.path.join(AKAR, "public/gempa/data/kajian_magma.json")  # dibaca sebagai JSON (kajian_magma.py mengimpor modul ini: jangan balik)
 G = 980.665  # cm/s^2
 R_BUMI = 6371.0088
 VS30_BAKU = 400.0
@@ -160,6 +161,34 @@ def mmi_kecamatan(g, pusat, vs30=VS30_BAKU, P=PARAM):
     return out
 
 
+def pembanding_magma(jalur=MAGMA):
+    """Banding MMI model vs MMI laporan MAGMA dari kajian_magma.json; None bila berkas/isi tak ada (fail-closed)."""
+    try:
+        r = json.load(open(jalur))["ringkas"]["banding_mmi"]
+        b, j, k = r["semua"], r["per_jarak"], r["per_kelas_dalam"]
+        dalam = next(v for n, v in k.items() if n.startswith("dalam"))
+        # bias gabungan TIDAK diterbitkan: arahnya berbalik menurut jarak (kajian_magma.py), jadi bukan ciri model
+        return {"n_pasangan": b["n"], "n_kajian": b["kajian"], "mae": b["mae"],
+                "dalam_1_persen": round(b["benar_1"] * 100, 1),
+                "bias_dekat": j["kurang dari 25 km"]["bias"], "bias_jauh": j["lebih dari 200 km"]["bias"], "bias_dalam": dalam["bias"],
+                "catatan": "pembanding, bukan kalibrasi; bias seleksi: kajian MAGMA dibuat untuk gempa merusak; pasangan tempat dari kajian yang sama tidak saling bebas",
+                "sumber_berkas": "kajian_magma.json"}
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def kinerja_uji_baku(pm):
+    ku = {"status": "belum_diuji", "n_laporan": 0, "metrik": None,
+          "alasan": "Belum ada arsip laporan Dirasakan BMKG yang bisa dibaca: tabel D1 `gempa` (kolom mmi_maks) diisi cron Worker milik warga-api dan belum "
+                    "terkumpul/diekspor ke repo; BMKG hanya menyimpan 15 butir terakhir. Tidak ada angka kinerja yang dikarang.",
+          "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, "
+                     "lawan pembanding. Uji dibuka sekali.",
+          "pembanding_magma": pm}
+    if pm:  # tanpa aturan lulus: bukan vonis, hanya pembanding
+        ku["status"] = "dibanding_magma"
+    return ku
+
+
 def ekspor():
     kini = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     model = {
@@ -169,11 +198,7 @@ def ekspor():
                    "antarmuka": "Zhao et al. 2006, BSSA 96(3):898-913", "intraslab": "Zhao et al. 2006, BSSA 96(3):898-913",
                    "gmice": "Worden, Gerstenberger, Rhoades, Wald 2012, BSSA 102(1):204-221",
                    "panjang_rupture": "Wells & Coppersmith 1994, BSSA 84(4):974-1002"},
-        "kinerja_uji": {"status": "belum_diuji", "n_laporan": 0, "metrik": None,
-                        "alasan": "Belum ada arsip laporan Dirasakan BMKG yang bisa dibaca: tabel D1 `gempa` (kolom mmi_maks) diisi cron Worker milik warga-api dan belum "
-                                  "terkumpul/diekspor ke repo; BMKG hanya menyimpan 15 butir terakhir. Tidak ada angka kinerja yang dikarang.",
-                        "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, "
-                                   "lawan pembanding. Uji dibuka sekali."},
+        "kinerja_uji": kinerja_uji_baku(pembanding_magma()),
         "pembanding": {"nama": "satu GMPE tanpa kelas tektonik (BSSA14 untuk semua jenis)", "status": "belum_diuji"},
         "catatan": ["BSSA14 dan Zhao dicocokkan ke OpenQuake 16 Okt 2026; Worden 2012 dicocokkan manual.",
                     "Hanya nilai rata-rata, tanpa sigma; Vs30 seragam 400 m/s karena belum ada peta Vs30 di repo (efek tapak diabaikan).",
@@ -221,7 +246,14 @@ def uji():
     if os.path.exists(KELUAR):  # berkas ekspor harus selaras dengan PARAM (JS membaca berkas ini)
         mdl = json.load(open(KELUAR))
         assert mdl["param"] == PARAM, "model_guncangan.json basi: jalankan `guncangan.py ekspor`"
-        assert mdl["kinerja_uji"]["status"] in ("belum_diuji", "diuji") and mdl["dibuat"] and mdl["catatan"]
+        assert mdl["kinerja_uji"]["status"] in ("belum_diuji", "diuji", "dibanding_magma") and mdl["dibuat"] and mdl["catatan"]
+        assert (mdl["kinerja_uji"]["status"] == "dibanding_magma") == bool(mdl["kinerja_uji"].get("pembanding_magma")), "status vs pembanding_magma tak selaras"
+    k0 = kinerja_uji_baku(None)  # berkas MAGMA hilang: fail-closed, status lama, tidak pernah "lulus"
+    assert k0["status"] == "belum_diuji" and k0["pembanding_magma"] is None and pembanding_magma("/tidak/ada.json") is None
+    pm = pembanding_magma()
+    if pm:
+        k1 = kinerja_uji_baku(pm)
+        assert k1["status"] == "dibanding_magma" and pm["n_pasangan"] > 0 and 0 <= pm["dalam_1_persen"] <= 100 and pm["mae"] >= 0
     if os.path.exists(PUSAT):
         pusat = json.load(open(PUSAT))
         assert len(pusat) == 7274

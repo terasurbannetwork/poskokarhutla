@@ -1,0 +1,9 @@
+{
+  "kandidat_q": [90, 95, 97, 99],
+  "latih_akhir": "2023-12-31",
+  "uji_awal": "2024-01-01",
+  "uji_akhir": "2025-12-31",
+  "vonis": "LULUS bila lo CI95 selisih ETS > 0; TIDAK LULUS bila est <= 0; selain itu TIDAK MEYAKINKAN",
+  "blok": "kab x bulan",
+  "bootstrap": {"B": 300, "seed": 7}
+}

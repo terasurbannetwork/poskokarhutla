@@ -5,9 +5,14 @@ Tiap hari, untuk tiap gunung Level II ke atas di abu_gunungapi.json, dicatat SAT
                      jam ke-6 = potret terdekat dengan jam penilaian uji balik (3 jam), ditetapkan sekarang dan tidak diubah.
   jendela            [angin.mulai, angin.mulai + 12 jam]: VONA yang diterbitkan di sini dan menulis arah awan ("moving to northeast") menilai entri.
 Penilaian (sekali, entri tidak diubah lagi): VONA PERTAMA bergerah di jendela itu; selisih sudut <= 45 derajat = cocok (8 mata angin, resolusi 45 derajat;
-pembanding acak 25%). Bila tak ada VONA beraraah (awan tak teramati atau tak ada erupsi) entri ditutup `n_vona: 0` dan TIDAK dihitung dalam metrik.
+pembanding acak 25%; pembanding lain di `ringkasan.pembanding`, lihat bawah). Bila tak ada VONA beraraah (awan tak teramati atau tak ada erupsi) entri ditutup `n_vona: 0` dan TIDAK dihitung dalam metrik.
 Bila VONA tak terjangkau atau daftar yang dibaca tak mencapai awal jendela, `dinilai` tetap null (slot kosong) dan `vona_terjangkau` false pada
 catatan lari terakhir; ini bukan kegagalan model.
+Pembanding (KI-41, hanya cara menghitung ringkasan; entri tak diubah): pada baris yang sama dinilai (a) persistensi = arah VONA gunung itu yang TERBIT sebelum
+awal jendela dan sebelum entri dicatat, paling lama PERSIS_MAKS_HARI hari sebelumnya (ditetapkan di muka; sumber: cache VONA uji_abu + VONA yang sudah ternilai di arsip ini);
+(b) klimatologi = arah VONA terbanyak gunung itu dari semua VONA lain pada tanggal berbeda (leave-one-out, fungsi `uji_abu.klimatologi`); (c) acak 25%.
+Tiap metode dihitung pada baris yang punya pembandingnya, dengan n sendiri dan CI95 Wilson; selisih model dikurangi pembanding (poin persen) memakai bootstrap berblok
+per gunung (`scripts/umum/pembanding.py`), kosong bila kurang dari 2 gunung.
 Batas: satu entri = satu gunung satu hari, jadi hari-hari berurutan di gunung yang sama berbagi angin dan musim (p binomial optimistis); skenario
 mengandaikan erupsi pada awal jendela sedangkan VONA terbit pada jam erupsi sebenarnya, hingga 12 jam kemudian.
 Pakai:  python3 scripts/gunungapi/prospektif.py        catat + nilai (jaringan MAGMA untuk penilaian)
@@ -17,7 +22,9 @@ import datetime as dt, json, os, re, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import abu
-from uji_abu import MATA, p_binomial, selisih
+from uji_abu import MATA, p_binomial, selisih, klimatologi as klim_arah, CACHE
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../umum"))
+from pembanding import bootstrap_blok
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 ABU = os.path.join(AKAR, "public/banjir/data/abu_gunungapi.json")
@@ -28,6 +35,7 @@ JENDELA_JAM = 12    # lebar jendela penilaian
 HAL_MAKS = 12       # halaman daftar VONA (15 per halaman, terbaru dulu) paling banyak yang dibaca
 MAKS_BYTE = 5_000_000
 TIPS = 45
+PERSIS_MAKS_HARI = 30   # persistensi hanya memakai VONA sebelumnya yang tak lebih lama dari ini (ditetapkan sebelum melihat hasil)
 TELAT_JAM = 2       # entri yang dicatat lebih dari ini sesudah awal jendela ditolak: sebagian jendela sudah lewat dan hasilnya bisa diketahui
 
 
@@ -97,7 +105,71 @@ def _ringkas_satu(s):
     return {"n": len(s), "cocok": k, "persen": round(100 * k / len(s)) if s else None, "acak_persen": 25, "p_binomial": float(f"{p_binomial(k, len(s)):.3g}") if s else None}
 
 
-def ringkas(entri):
+def wilson(k, n, z=1.96):
+    """CI95 Wilson untuk proporsi k/n, dalam persen (1 desimal)."""
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** .5) / d
+    return [round(100 * (c - h), 1), round(100 * (c + h), 1)]
+
+
+def riwayat_vona(entri, cache=None):
+    """{gunung_id: [{waktu, arah_vona}]} dari cache VONA uji_abu ditambah VONA yang sudah ternilai di arsip; tanpa duplikat waktu."""
+    r = {}
+    for nama, ev in (abu.baca(CACHE, {}) if cache is None else cache).items():
+        for e in ev:
+            r.setdefault(abu.id_gunung(nama), {})[e["waktu"]] = e["arah_vona"]
+    for x in entri:
+        d = x.get("dinilai") or {}
+        if d.get("arah_vona"):
+            r.setdefault(x["gunung_id"], {})[d["vona_waktu"]] = d["arah_vona"]
+    return {g: [{"waktu": w, "arah_vona": a} for w, a in sorted(v.items())] for g, v in r.items()}
+
+
+def _satu(h, kunci):
+    k = sum(b[kunci] for b in h if b[kunci] is not None)
+    s = [b for b in h if b[kunci] is not None]
+    return {"n": len(s), "cocok": sum(b[kunci] for b in s), "persen": round(100 * sum(b[kunci] for b in s) / len(s)) if s else None,
+            "ci95": wilson(sum(b[kunci] for b in s), len(s)) if s else None}
+
+
+def _selisih(h, kunci):
+    s = [b for b in h if b[kunci] is not None]
+    if len({b["gunung"] for b in s}) < 2:
+        return None
+    f = lambda rs: 100 * (sum(b["m"] for b in rs) - sum(b[kunci] for b in rs)) / len(rs)
+    r = bootstrap_blok(f, s, "gunung")
+    return {"n": len(s), "est": round(r["est"], 1), "lo": round(r["lo"], 1), "hi": round(r["hi"], 1), "n_blok": r["n_blok"]}
+
+
+def pembanding(entri, riwayat):
+    """Model vs persistensi, klimatologi (leave-one-out), acak pada entri ternilai yang dihitung (n_vona > 0, tidak terlambat). Lihat docstring modul."""
+    h = []
+    for x in entri:
+        d = x["dinilai"]
+        if not (d and d.get("n_vona") and not x.get("terlambat")):
+            continue
+        tgt, awal, cat = d["arah_vona_deg"], _t(x["jendela"][0]), _t(x["dicatat"])
+        batas = min(awal, cat)
+        prev = [e for e in riwayat.get(x["gunung_id"], []) if batas - dt.timedelta(days=PERSIS_MAKS_HARI) <= _t(e["waktu"]) < batas and e["waktu"] != d["vona_waktu"]]
+        kl = klim_arah(x["gunung_id"], d["vona_waktu"], riwayat)
+        h.append({"gunung": x["gunung_id"], "m": int(d["cocok"]),
+                  "p": int(selisih(MATA[prev[-1]["arah_vona"]], tgt) <= TIPS) if prev else None,
+                  "k": int(selisih(kl, tgt) <= TIPS) if kl is not None else None})
+    if not h:
+        return None
+    def aman(f):
+        try:
+            return f()
+        except ValueError:
+            return None
+    return {"n_ternilai": len(h), "model": _satu(h, "m"), "persistensi": _satu(h, "p"), "klimatologi": _satu(h, "k"), "acak": {"persen": 25},
+            "selisih_model_persistensi": aman(lambda: _selisih(h, "p")), "selisih_model_klimatologi": aman(lambda: _selisih(h, "k")),
+            "persistensi_maks_hari": PERSIS_MAKS_HARI}
+
+
+def ringkas(entri, riwayat=None):
     """Ringkasan DIPECAH menurut asal tinggi kolom skenario (kolom_sumber.split()[0] huruf kecil: asumsi, letusan, vona): kolom dari VONA yang
     dinilai terhadap VONA lain tidak boleh bercampur dengan asumsi level. Entri lama (append-only) tetap, hanya cara menghitung ringkasan yang berubah."""
     grup = {}
@@ -106,7 +178,10 @@ def ringkas(entri):
         if d and d.get("n_vona") and not x.get("terlambat"):
             ks = ((x.get("skenario") or {}).get("kolom_sumber") or "").split()
             grup.setdefault(ks[0].lower() if ks else "tak_diketahui", []).append(d)
-    return {"per_sumber": {k: _ringkas_satu(v) for k, v in sorted(grup.items())}}
+    out = {"per_sumber": {k: _ringkas_satu(v) for k, v in sorted(grup.items())}}
+    if riwayat is not None and (pb := pembanding(entri, riwayat)):
+        out["pembanding"] = pb
+    return out
 
 
 def gabung(lama, baru):
@@ -139,7 +214,7 @@ def jalan(kini=None, ambil=None, abu_o=None):
         for x in tunda:
             x["dinilai"] = nilai(x, vona, mencapai, kini)
     baru = {"diperbarui": kini.strftime("%Y-%m-%dT%H:%MZ"), "vona_terjangkau": terjangkau, "dicatat": len(entri), "dinilai": sum(1 for x in entri if x["dinilai"]),
-            "ringkasan": ringkas(entri), "jam_skenario": JAM_SKEN, "jendela_jam": JENDELA_JAM, "ambang_deg": TIPS,
+            "ringkasan": ringkas(entri, riwayat_vona(entri)), "jam_skenario": JAM_SKEN, "jendela_jam": JENDELA_JAM, "ambang_deg": TIPS,
             "catatan": "Append-only. Tiap hari tiap gunung Level II ke atas dicatat arah awan abu skenario (jam ke-6) sebelum hasilnya diketahui; dinilai sekali terhadap VONA PVMBG "
                        "pertama yang menulis arah awan dalam 12 jam sejak awal skenario. Entri tanpa VONA beraraah ditutup n_vona 0 dan tidak dihitung. Entri lama tidak pernah diubah atau dihapus.",
             "entri": entri}
@@ -188,6 +263,21 @@ def uji():
     ev3, ok = baca_vona(dt.datetime(2020, 1, 1, tzinfo=dt.timezone.utc), lambda p: h)
     assert not ok and len(ev3) == 2 * HAL_MAKS
     assert baca_vona(kini, lambda p: 1 / 0) == ([], False)
+    # pembanding: persistensi harus menang atas model yang salah arah; klimatologi leave-one-out; < 2 gunung tanpa CI selisih
+    def ent(gid, hari, arah="east", cocok=False):
+        w = f"2026-10-{hari:02d}T20:00:00Z"
+        return {"gunung_id": gid, "dicatat": f"2026-10-{hari:02d}T19:30Z", "jendela": [f"2026-10-{hari:02d}T19:00:00Z", f"2026-10-{hari + 1:02d}T07:00:00Z"],
+                "dinilai": {"n_vona": 1, "vona_waktu": w, "arah_vona": arah, "arah_vona_deg": MATA[arah], "cocok": cocok}}
+    es = [ent(g, d) for g in ("a", "b", "c") for d in (2, 6, 10, 14)]
+    pb = pembanding(es, riwayat_vona(es, {}))
+    assert pb["n_ternilai"] == 12 and pb["model"]["cocok"] == 0 and pb["persistensi"] == {"n": 9, "cocok": 9, "persen": 100, "ci95": pb["persistensi"]["ci95"]}, pb
+    assert pb["persistensi"]["ci95"][0] > 60 and pb["klimatologi"]["n"] == 12 and pb["selisih_model_persistensi"]["est"] == -100.0 and pb["selisih_model_persistensi"]["hi"] < 0, pb
+    # VONA sebelumnya lebih lama dari PERSIS_MAKS_HARI tak dipakai; hanya satu gunung -> selisih None
+    es2 = [ent("a", 2), {**ent("a", 6), "jendela": ["2026-12-30T19:00:00Z", "2026-12-31T07:00:00Z"], "dicatat": "2026-12-30T19:30Z"}]
+    p2 = pembanding(es2, riwayat_vona(es2, {}))
+    assert p2["persistensi"]["n"] == 0 and p2["selisih_model_persistensi"] is None and p2["persistensi"]["persen"] is None, p2
+    assert ringkas(es, {}).get("pembanding") is not None and "pembanding" not in ringkas(es)
+    assert wilson(5, 10) == [23.7, 76.3], wilson(5, 10)
     print("prospektif abu: ok")
 
 

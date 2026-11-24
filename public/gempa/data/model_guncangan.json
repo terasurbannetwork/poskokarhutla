@@ -1,6 +1,6 @@
 {
  "versi": 1,
- "dibuat": "2026-10-18T11:55Z",
+ "dibuat": "2026-11-24T18:03Z",
  "jenis": "guncangan_gmpe_gmice",
  "param": {
   "bssa14_pga": {
@@ -889,11 +889,22 @@
   "panjang_rupture": "Wells & Coppersmith 1994, BSSA 84(4):974-1002"
  },
  "kinerja_uji": {
-  "status": "belum_diuji",
+  "status": "dibanding_magma",
   "n_laporan": 0,
   "metrik": null,
   "alasan": "Belum ada arsip laporan Dirasakan BMKG yang bisa dibaca: tabel D1 `gempa` (kolom mmi_maks) diisi cron Worker milik warga-api dan belum terkumpul/diekspor ke repo; BMKG hanya menyimpan 15 butir terakhir. Tidak ada angka kinerja yang dikarang.",
-  "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, lawan pembanding. Uji dibuka sekali."
+  "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, lawan pembanding. Uji dibuka sekali.",
+  "pembanding_magma": {
+   "n_pasangan": 1474,
+   "n_kajian": 496,
+   "mae": 0.73,
+   "dalam_1_persen": 75.4,
+   "bias_dekat": 1.28,
+   "bias_jauh": -0.4,
+   "bias_dalam": -1.61,
+   "catatan": "pembanding, bukan kalibrasi; bias seleksi: kajian MAGMA dibuat untuk gempa merusak; pasangan tempat dari kajian yang sama tidak saling bebas",
+   "sumber_berkas": "kajian_magma.json"
+  }
  },
  "pembanding": {
   "nama": "satu GMPE tanpa kelas tektonik (BSSA14 untuk semua jenis)",
