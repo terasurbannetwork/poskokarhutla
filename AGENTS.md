@@ -613,7 +613,7 @@ Aturan berhentinya sama dengan §2.1. Satu mesin desa: tidak mengubah `preventif
 Sebelum menyentuh genangan Copernicus GFM per kejadian Buku Besar, zona sel di paparan, lahan tergenang WorldCover, citra radar dan optik sebelum dan sesudah per kejadian, atau model kaji `banjir_gfm`, baca dokumen di
 `data/kajian-bnpb/genangan-satelit/` dengan urutan otoritas ini (kode di `scripts/banjir/genangan_nasional.py`, `scripts/banjir/genangan_lahan.py`, `scripts/banjir/citra_banjir.py`, `public/banjir/bukti.*` milik `banjir`; `scripts/siklus/paparan.py`, `scripts/siklus/kaji_banjir.py`, `scripts/siklus/genangan_kaji.py`, `public/siklus/kaji.js` milik `siklus`; `src/siklus_kaji.js` dan migrasi `sk_kaji` milik `warga-api`; `public/inti/geser.*` milik `inti-layar`; langkah `siklus.yml` milik `mekanik-mesin`):
 
-1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K3, rancangan D1-D12, pertanyaan terbuka Q1-Q9 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-GENANGAN.md`: keputusan pemilik K1-K3, rancangan D1-D13, pertanyaan terbuka Q1-Q11 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-10), 4. `ALUR.md`, 5. `ALGORITMA.md` (pasangan, cakupan sah, zona sel, lahan, uji balik peringkat), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`GS-*`), `GLOSARIUM.md`.
 
