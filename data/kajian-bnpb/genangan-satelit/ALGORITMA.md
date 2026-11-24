@@ -95,15 +95,17 @@ x_i       = WorldPop tengah = (bawah + atas) / 2
 y_i       = DIBI terdampak kab-hari itu
 rho       = Spearman(x, y)
 naif_1    = luas kab;  naif_2 = penduduk WorldPop seluruh kab;  naif_3 = luas tergenang baru (ha)
-selisih_k = rho - rho(naif_k), CI 90 persen bootstrap berpasangan (resample pasangan yang sama untuk keduanya, 2.000 kali)
+selisih_k = rho - rho(naif_k), CI 90 persen bootstrap blok berpasangan (blok = provinsi x minggu ISO tanggal DIBI; blok yang sama untuk model dan naif, 2.000 kali)
 ```
 
-Lulus (HIPOTESIS, dikunci GS-02): n uji >= 20, rho >= 0,4, dan batas bawah CI selisih terhadap ketiga naif > 0. n < 20: "tak dapat dinilai", pil hipotesis tetap. (Naif `banjir_jam1` tidak dipakai: status Siaga/Awas harian tidak ada untuk kejadian arsip.)
+Lulus (HIPOTESIS, dikunci GS-02): blok uji sah >= 20, rho >= 0,4, dan batas bawah CI selisih terhadap ketiga naif > 0. Blok sah < 20 atau sah/dipilih < 0,30: "tak dapat dinilai", pil hipotesis tetap.
+
+Sampel uji (dikunci GS-02, `scripts/siklus/genangan_kriteria.json` `sampel_uji`): 300 pasangan pertama populasi uji menurut sha256 "prov|kab|tanggal" naik (N HIPOTESIS sampai GS-03 mengukur anggaran). GS-13 membaca persis daftar itu: tanpa menambah, mengganti, atau berhenti lebih awal; gagal baca tetap di penyebut; laporan memuat dipilih, sah, tak sah, gagal baca. (Naif `banjir_jam1` tidak dipakai: status Siaga/Awas harian tidak ada untuk kejadian arsip.)
 
 Pemisahan dan larangan bocor:
 - GS-02 menghitung jumlah pasangan layak dari metadata katalog dan DIBI saja (tanpa membaca raster) lalu membagi kalibrasi dan uji menurut waktu: kejadian sebelum 2024 kalibrasi, 2024 dan sesudahnya uji. Riwayat saat ini hanya 21 pasangan dengan 10 sah; bila pasangan layak uji kurang dari 20, GS-02 menulis "tak dapat dinilai" sebagai hasil yang diharapkan dan pemilik diberi tahu sebelum ada hitungan.
-- Pasangan yang sudah pernah terlihat dikeluarkan dari bagian uji: Demak 2024-03-14, Aceh Tenggara Okt 2026, kejadian Sumatera 26 Nov 2025 (dihitung di GS-03 sebagai uji ujung ke ujung), dan pasangan kalibrasi kerusakan-satelit 205, 209, 212, 218.
-- Yang boleh disetel di kalibrasi hanya ambang cakupan (Q4) dan ambang bagian zona bawah (0,5). Lainnya tetap.
+- Pasangan yang sudah pernah terlihat dipindah ke kalibrasi per episode, bukan per kab-hari: pasangan yang rentang [tanggal DIBI, +6 hari]-nya berjarak <= 30 hari dari episode terlihat di provinsi yang sama. Episode: Sumatera prov 11-13 2025-11-01 s.d. 2026-02-28 (dihitung di GS-03), Aceh prov 11 2026-09-01 s.d. 2026-10-31, Demak prov 33 2024-01-25 s.d. 2024-04-15, kerusakan-satelit 205, 209, 212, 218 (prov 33 2025-12-15 s.d. 2026-02-05 dan jendela tiap pasangan +- 14 hari).
+- Ambang cakupan (Q4, 10 persen) dan ambang zona bawah (0,5) dibekukan pada nilai bawaan saat GS-02 mengunci kriteria, sebelum kalibrasi dijalankan; tidak disetel lagi.
 - Batas klaim: hanya di antara kab yang DIBI catat banjir (y > 0 karena definisi satuan); vonis lulus berarti "peringkat kab menurut penduduk di area genangan sejalan dengan DIBI", bukan angka mutlak dan bukan kemampuan membedakan banjir dari tidak banjir.
 
 ## 8. Yang tidak dihitung

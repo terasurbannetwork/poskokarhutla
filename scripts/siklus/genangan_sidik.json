@@ -1,0 +1,9 @@
+{
+ "berkas": "scripts/siklus/genangan_kriteria.json",
+ "sidik": "1d8e07a5c2765ebc6d6778f5b90ef01c15fca29c04325278e0a0dbf848eddea1",
+ "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
+ "ditulis": "2026-11-24",
+ "versi": 1,
+ "jangkar_commit": "",
+ "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. prasyarat menolak selama kosong."
+}
