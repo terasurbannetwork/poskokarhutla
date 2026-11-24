@@ -1712,7 +1712,7 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-pb-riak i{position:absolute;left:-180px;top:-180px;width:360px;height:360px;border-radius:50%;border:1.5px solid color-mix(in oklab,var(--on-head) 22%,transparent)}
 .lp-pembuka-maskot{position:relative;width:min(240px,54vw)!important;margin-bottom:18px!important}
 .lp-pembuka-sapa{font:600 clamp(1rem,2vw,1.25rem) var(--font)!important;color:var(--on-head-2);letter-spacing:.02em}
-.lp-pembuka-judul{font:800 clamp(3.25rem,10vw,6.5rem)/.95 var(--display)!important;letter-spacing:-.045em;margin-top:6px!important}
+.lp-pembuka-judul{font:800 clamp(2.25rem,6vw,4rem)/1 var(--display)!important;letter-spacing:-.045em;margin-top:6px!important}
 .lp-pembuka-judul em{font-style:normal;color:var(--head-hl)}
 .lp-pembuka-bnpb{margin-top:18px!important;font:600 clamp(.875rem,1.6vw,1.0625rem) var(--font)!important;color:var(--on-head-2)}
 .lp-pb-muat{position:absolute;bottom:clamp(28px,7vh,60px);left:50%;translate:-50% 0;width:min(220px,50vw);height:4px;border-radius:99px;background:color-mix(in oklab,var(--on-head) 18%,transparent);overflow:hidden}
@@ -2318,7 +2318,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-hero-kanan{container-type:inline-size}
 .lp-cc2-sosial{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))}
 .lp-cc2-sosial li{min-width:0!important}
-@container (width < 540px){
+@container (width < 640px){
   .lp-cc2-sosial{grid-template-columns:repeat(6,minmax(0,1fr))}
   .lp-cc2-sosial li{grid-column:span 2}
   .lp-cc2-sosial li:nth-child(4){grid-column:2 / span 2;border-left:0}
@@ -2382,3 +2382,63 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-geser-kanan{transform:translate(-100%,-50%)}
 .lp-geser-panah:hover{color:var(--brand2);border-color:var(--brand2)}
 .lp-geser-panah svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* 24 Nov 2026 (pemilik: "terlalu rapat berdua ini"): gelembung SIGAP tidak boleh melebar keluar kolom maskot dan menempel kartu kontak */
+@media (min-width:900px){.lp-hero{column-gap:28px!important}.lp-hero-gelembung{max-width:100%!important;box-sizing:border-box}}
+
+/* 24 Nov 2026 (pemilik: "diganti jadi gini", "bagusin lagi"): kartu pasang berbaris per perangkat + QR, dua kartu sama tinggi, jenis ancaman jadi pil */
+.lp-pw-kisi{align-items:stretch!important}
+.lp-pw-pbadan{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:center}
+@container (width > 560px){.lp-pw-pbadan:has(.lp-pw-qr){grid-template-columns:minmax(0,1fr) 180px}}
+.lp-pw-pasang{container-type:inline-size}
+.lp-pw-daftar{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.lp-pw-baris{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.lp-pw-baris>span{display:grid;gap:1px}
+.lp-pw-baris b{font:700 .9375rem var(--font);color:var(--ink)}
+.lp-pw-baris small{font-size:.75rem;color:var(--ink2)}
+.lp-pw-tbl{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:700 .8125rem var(--font);cursor:pointer;list-style:none}
+.lp-pw-tbl::-webkit-details-marker{display:none}
+.lp-pw-tbl:hover{border-color:var(--brand2);color:var(--brand2)}
+.lp-pw-tbl svg{width:16px;height:16px}
+.lp-pw-lipat{display:contents}
+.lp-pw-lipat[open]>.lp-pw-tbl{border-color:var(--brand2);color:var(--brand2)}
+.lp-pw-lipat>.lp-pw-langkah{flex-basis:100%;margin-top:4px;padding:10px 12px 10px 30px;border-radius:12px;background:var(--surface);font-size:.8125rem}
+.lp-pw-qr{display:grid;justify-items:center;gap:10px;margin:0;padding:16px;border:1px solid var(--line);border-radius:14px;text-align:center}
+.lp-pw-qr canvas{width:132px;height:132px;image-rendering:pixelated}
+.lp-pw-qr figcaption{display:grid;gap:2px}
+.lp-pw-qr b{font:700 .875rem var(--font);color:var(--ink)}
+.lp-pw-qr small{font-size:.75rem;color:var(--ink2);overflow-wrap:anywhere}
+.lp-pw-kartu{display:flex!important;flex-direction:column}
+.lp-pw-isi{flex:1;display:flex;flex-direction:column}
+.lp-pw-form{flex:1;display:flex!important;flex-direction:column;gap:12px}
+.lp-pw-catatan{margin-top:auto!important;padding-top:12px;border-top:1px solid var(--line)}
+.lp-pw-pil label{min-height:36px;padding:0 14px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer;font-weight:600}
+.lp-pw-pil label:has(input:checked){border-color:var(--brand2);background:color-mix(in oklab,var(--brand2) 10%,var(--card));color:var(--brand2)}
+.lp-pw-pil label:has(input:focus-visible){outline:2px solid var(--brand2);outline-offset:2px}
+.lp-pw-pil input{width:16px!important;height:16px!important}
+.lp-pw-baris .lp-pw-tbl{margin-left:auto}
+.lp-pw-baris{column-gap:0!important}.lp-pw-baris>span{margin-right:12px}
+/* 24 Nov 2026 (pemilik: pembuka "bagusin"): riak berpusat di maskot (dulu di 38% layar, lepas dari maskot), subjudul tidak menempel judul */
+.lp-pb-riak{display:none!important}
+.lp-pembuka-maskot{isolation:isolate}
+.lp-pembuka-maskot::before{content:"";position:absolute;inset:-14%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklab,var(--on-head) 16%,transparent),transparent)}
+.lp-pembuka-maskot::after{content:"";position:absolute;inset:-14%;z-index:-1;border-radius:50%;border:1.5px solid color-mix(in oklab,var(--on-head) 22%,transparent)}
+@media (prefers-reduced-motion:no-preference){.lp-pembuka-maskot::after{animation:lp-riak 3s var(--ease) infinite both}}
+.lp-pembuka-sapa{margin-top:clamp(8px,2vh,20px)!important}
+.lp-pembuka-judul{margin:4px 0 0!important;padding-bottom:.08em}
+.lp-pembuka-nama{margin-top:clamp(12px,2vh,18px)!important;padding:6px 16px;border-radius:999px;background:color-mix(in oklab,var(--on-head) 12%,transparent);font-weight:600!important;font-size:clamp(.875rem,1.5vw,1.0625rem)!important}
+.lp-pembuka-bnpb{margin-top:10px!important;font-weight:500!important;color:color-mix(in oklab,var(--on-head) 72%,transparent)!important}
+/* 24 Nov 2026 (pemilik: "rapiin"): dua kartu ditumpuk penuh lebar, tidak ada kolom pendek yang menyisakan ruang kosong */
+.lp-pw-kisi{grid-template-columns:minmax(0,1fr)!important;gap:20px!important}
+.lp-pw-kartu{container-type:inline-size}
+@container (width > 640px){
+  .lp-pw-pbadan:has(.lp-pw-qr){grid-template-columns:minmax(0,1fr) 220px!important;gap:32px}
+  .lp-pw-form{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;row-gap:12px;align-items:end}
+  .lp-pw-form>*{grid-column:1 / -1}
+  .lp-pw-form>.lp-pw-jenis{grid-column:1}
+  .lp-pw-form>.lp-pw-label:has(select){grid-column:2}
+  .lp-pw-form>.lp-utama{justify-self:start;width:auto;min-width:280px;padding:0 28px}
+}
+.lp-pw-qr{align-self:stretch;align-content:center}
+/* 24 Nov 2026 (pemilik): di obrolan lapor kejadian tombol "Lapor kejadian" di menu samping tidak perlu lagi */
+.lp-app.di-lapor .lp-tab .lp-tab-lapor{display:none!important}

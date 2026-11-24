@@ -15,6 +15,7 @@ import {CSP_ADMIN} from "./admin_halaman.js";
 import {modOK} from "./posko.js";
 import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
+import {cobaMasukInstansi} from "./instansi.js";
 import {pelakuSistem, hitungLaju, stmtLaju} from "./hak.js";
 import {halStatistik} from "./bencana.js";
 import {kirimEmail} from "./keluar.js";
@@ -291,6 +292,14 @@ export async function masuk(env, req, kini, halamanMasuk) {
         const arah = m.staf.wajib_ganti ? "/admin/pantau" : keSah || (d ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
         const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
+      /* akun instansi (BPBD, Polri, TNI; src/instansi.js) lewat pintu yang sama: tidak ada lagi layar masuk /instansi sendiri (pemilik 24 Nov 2026).
+         Penguncian instansi ikut aturan instansi; sesudah masuk, pilih profil dan PIN tetap di /instansi. */
+      const mi = email && sandi && m.hasil !== "kunci" ? await cobaMasukInstansi(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) || d1Habis(e) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
+      if (mi.hasil === "ok") {
+        const r = alihkan(/^\/instansi([/?#]|$)/.test(ke) ? ke : "/instansi"); for (const c of mi.cookie) r.headers.append("set-cookie", c);
+        r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
+      }
+      if (mi.hasil === "kunci") return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
       const penuh = kunciEmail && await lunak(gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini), false);
       if (kunciEmail) await lunak(catatGagal(env, kunciEmail, "admin_gagal", kini), null);
       if (penuh) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});

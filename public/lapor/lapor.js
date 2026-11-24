@@ -41,6 +41,7 @@ function ke(tab) {
   if (tab !== "privasi") kembaliKe = tab;
   $("lChat").hidden = tab !== "chat"; $("lMasuk").hidden = tab !== "masuk"; $("lPrivasi").hidden = tab !== "privasi"; $("lInfo").hidden = tab !== "info";
   app.classList.toggle("di-chat", ["chat", "masuk", "info", "privasi"].includes(tab));
+  app.classList.toggle("di-lapor", tab === "chat");   // obrolan lapor: tombol Lapor kejadian di menu samping disembunyikan (pemilik 24 Nov 2026)
   for (const b of document.querySelectorAll("#tab button")) b.toggleAttribute("aria-current", b.dataset.ke === tab) || b.removeAttribute("aria-current");
   for (const b of document.querySelectorAll("#tab button")) { if (b.dataset.ke === tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }
   if (tab === "laporan") { $("titikBaru").hidden = true; tampilDaftarLaporan(); }

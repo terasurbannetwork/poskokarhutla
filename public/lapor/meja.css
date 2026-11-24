@@ -1095,3 +1095,5 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-pub-kecil{color:var(--ink-soft,var(--ink));font-size:.75rem}
 .mj-isi-kartu input[type=text]{width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
 .mj-isi-kartu input[type=text]:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+/* LK-08: jumlah pelapor dan chip "satu desa" di kepala kejadian; komposisi .mj-gugus, tanpa warna baru */
+.mj-pelapor,.mj-satu-desa{background:var(--card);color:var(--ink);border:1px solid var(--line)}

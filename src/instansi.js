@@ -148,22 +148,30 @@ const catatLaju = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_b
 const LAJU_LOGIN = {userIp: 8, user: 200, ip: 30};
 async function masuk(env, req, kini) {
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
-  const user = typeof b.o.username === "string" ? b.o.username.trim().toLowerCase().slice(0, 60) : "", sandi = typeof b.o.sandi === "string" ? b.o.sandi.slice(0, 100) : "";
+  const user = typeof b.o.username === "string" ? b.o.username : "", sandi = typeof b.o.sandi === "string" ? b.o.sandi : "";
+  const m = await cobaMasukInstansi(env, req, user, sandi, kini);
+  if (m.hasil === "kunci") return gagal(429, "terlalu banyak percobaan masuk yang salah; coba lagi sejam lagi", {"retry-after": "3600"});
+  if (m.hasil !== "ok") return gagal(401, "username atau sandi salah");   // satu pesan untuk semua sebab
+  return denganCookie(json({akun: ringkas(m.akun), profil_mode: adaPemda(m.akun.jenis)}), m.cookie);
+}
+/* inti masuk instansi, dipakai POST /api/instansi/masuk (JSON) dan form /admin/masuk (satu pintu untuk semua akun, pemilik 24 Nov 2026):
+   {hasil: "ok", cookie: [set-cookie...], akun} | {hasil: "salah"} | {hasil: "kunci"} */
+export async function cobaMasukInstansi(env, req, username, sandiMentah, kini) {
+  const user = String(username || "").trim().toLowerCase().slice(0, 60), sandi = String(sandiMentah || "").slice(0, 100);
   const ip = await ipHash(env, req), kUserIp = "ui:" + (await sha(user + "|" + ip)).slice(0, 40), kUser = "u:" + (await sha(user)).slice(0, 40);
   const a = /^[a-z0-9]{5,60}$/.test(user) ? await env.DB.prepare("SELECT id, garam, sandi_sha, status FROM instansi_akun WHERE username = ?").bind(user).first() : null;
   const cek = await hashSandi(a?.garam ?? "0".repeat(32), sandi);   // hash tetap dihitung untuk username tak dikenal
   if (!a || a.status === "dicabut" || cek !== a.sandi_sha) {
     const kunci = await gagalBanyak(env, kUserIp, "instansi.gagal_ui", LAJU_LOGIN.userIp, kini) || await gagalBanyak(env, kUser, "instansi.gagal_u", LAJU_LOGIN.user, kini) || await gagalBanyak(env, ip, "instansi.gagal_ip", LAJU_LOGIN.ip, kini);
     if (!kunci) await env.DB.batch([catatLaju(env, kUserIp, "instansi.gagal_ui", kini), catatLaju(env, kUser, "instansi.gagal_u", kini), catatLaju(env, ip, "instansi.gagal_ip", kini)]);   // sudah terkunci: tidak menulis baris lagi
-    return kunci ? gagal(429, "terlalu banyak percobaan masuk yang salah; coba lagi sejam lagi", {"retry-after": "3600"}) : gagal(401, "username atau sandi salah");   // satu pesan untuk semua sebab
+    return {hasil: kunci ? "kunci" : "salah"};
   }
   const token = acak(32);
   await env.DB.batch([env.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(await sha(token), a.id, kini, kini + SESI_UMUR),
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND kedaluwarsa <= ?").bind(a.id, kini)]);
   const akun = await env.DB.prepare(`SELECT ${KOLOM_AKUN} FROM instansi_akun WHERE id = ?`).bind(a.id).first();
-  const pm = adaPemda(akun.jenis);
-  if (pm) await pfLog(env, {akun: a.id, jenis: "masuk", ip: ip.slice(0, 12)}, kini).catch(e => { if (!profilTanpaTabel(e)) throw e; });
-  return denganCookie(json({akun: ringkas(akun), profil_mode: pm}), cookieSet(token, SESI_UMUR / 1000));
+  if (adaPemda(akun.jenis)) await pfLog(env, {akun: a.id, jenis: "masuk", ip: ip.slice(0, 12)}, kini).catch(e => { if (!profilTanpaTabel(e)) throw e; });
+  return {hasil: "ok", cookie: cookieSet(token, SESI_UMUR / 1000), akun};
 }
 /* jejak audit: satu pernyataan, bisa dipasang dalam batch yang sama dengan aksinya; syarat (mis. "changes() > 0") menjaga jejak tak ditulis bila aksinya kalah balapan */
 const stmtJejak = (env, oleh, akunId, aksi, alasan, kini, syarat = "1") => env.DB.prepare("INSERT INTO instansi_jejak (waktu, oleh, akun_id, aksi, alasan) SELECT ?, ?, ?, ?, ? WHERE " + syarat).bind(kini, oleh, akunId, aksi, alasan ?? null);

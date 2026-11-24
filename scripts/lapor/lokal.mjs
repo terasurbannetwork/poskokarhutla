@@ -616,7 +616,7 @@ function meja(c) {
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
       lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tempat: tempatRusak(s), tanggap: tanggap(s), darurat: s.darurat ? {korban: s.darurat.korban || null, ...(s.darurat.cara ? {cara: s.darurat.cara} : {}), ...(s.darurat.tertunda ? {tertunda: true} : {})} : null, dikenal: !!p.nama, periksa: s.periksa?.at(-1)?.hasil || null,
-      gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null, kejadian: kejadianTampil(d, s)};
+      gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor, satu_desa: gk[G.per[s.nomor]].satu_desa} : null, kejadian: kejadianTampil(d, s)};
   })}];
 }
 function mejaRinci(c, nomor, lihat = false) {

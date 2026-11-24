@@ -21,6 +21,12 @@ ditulis dengan bawaan sementara bertanda **[bawaan]**, tidak dikarang.
   dana DSP dan PFB tetap tertahan Q1 Pembiayaan Risiko (saldo hanya dari pemberi data resmi). Q6 dijawab: kejadian logbook
   diberi titik dari nama desa.
 
+- **K7 (24 Nov 2026):** jawaban pemilik atas lima tindak lanjut K6, berurutan "Sebagai catatan", "Gas bagus", "Gausah", "Gas",
+  "Gausah dulu": (1) raster InaRISK di Misi Udara dipakai sebagai catatan perhatian saja, tidak pernah larangan atau pembelok rute
+  (Q18 paket `misi-udara/`, tiket MU-15); (2) lapisan InaRISK tampil di Peta Paparan `/siklus` (U22, tiket SK-114); (3) pencocokan
+  pakar ulang `cocok_pakar --r2` untuk butir IKD tidak dijalankan sekarang; (4) titik pusat desa Dalops diunggah ke R2
+  (`dalops_banjir --unggah`); (5) IRBI lawan dana DSP dan PFB tetap tertahan.
+
 ## Temuan yang mengubah arti "tiru semuanya"
 
 Pembongkaran kode InaRISK (`IrbiPage-*.js`, 23 Nov 2026) menunjukkan tiga angka di layar IRBI

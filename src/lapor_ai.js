@@ -804,7 +804,11 @@ async function mejaDaftar(env, req, url, kini) {
   const kj = new Map((await bacaTabel(() => H.lpKejadianSemuaNomor(env, STAF), [])).map(x => [x.nomor, x.kode])), hit = new Map();
   for (const b of lihat) { const k = kj.get(b.nomor); if (k) { const x = hit.get(k) || {n: 0, wa: new Set()}; x.n++; x.wa.add(b.wa); hit.set(k, x); } }
   const cek = new Map((await bacaTabel(() => H.lpPeriksaTerakhirSemua(env, STAF), [])).map(x => [x.nomor, x.hasil]));   // hasil pengecekan terakhir (K69, D108)
-  const baris = lihat.map(b => { const k = kj.get(b.nomor), x = k && hit.get(k); return {...b, periksa: cek.get(b.nomor) || null, kejadian: x && x.n >= 2 ? {kode: k, n_laporan: x.n, n_pelapor: x.wa.size} : null}; })
+  /* gugus (A9, A1) seperti meja lokal: kode, label, jumlah, dan penanda satu_desa untuk chip "satu desa" (lapor-kejadian LK-08). ponytail: membaca laporan 30 hari
+     per muat daftar (sama dengan Alun-alun, lihat catatan kuota LK-05); pindah ke tabel hasil cron bila laporan 30 hari mendekati ribuan */
+  const {G: GG, gk: GK} = await bacaTabel(() => gugusDasar(env, kini), {G: {per: {}}, gk: new Map()});
+  const gugusDari = n => { const g = GK.get(GG.per[n]); return g ? {kode: g.kode, label: g.label, n_laporan: g.n_laporan, n_pelapor: g.n_pelapor, satu_desa: g.satu_desa} : null; };
+  const baris = lihat.map(b => { const k = kj.get(b.nomor), x = k && hit.get(k); return {...b, periksa: cek.get(b.nomor) || null, gugus: gugusDari(b.nomor), kejadian: x && x.n >= 2 ? {kode: k, n_laporan: x.n, n_pelapor: x.wa.size} : null}; })
     .map(b => ({...b, dikenal: !!b.nama})).map(b => c.jenis === "bnpb" ? b : {...b, wa: null, nama: null});   // dikenal: chip "Pelapor belum dikenal" (K90)   // BPBD: identitas pelapor hanya lewat POST lihat yang tercatat (D95)
   const ambil = new Map((await bacaTabel(() => H.lpAmbilDaftar(env, baris.map(b => b.nomor)), [])).map(x => [x.nomor, x.label]));   // PF-08: penangan; sebelum migrasi 0167 kosong
   for (const b of baris) b.ditangani = ambil.get(b.nomor) ?? null;

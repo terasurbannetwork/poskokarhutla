@@ -320,7 +320,7 @@ Sebelum menyentuh cara orang masuk (halaman `/masuk`, kode sekali pakai, akun um
 2. `RISET.md`, 3. `PRD.md` (F-1..F-14), 4. `ALUR.md`, 5. `ALGORITMA.md` (kode, batas laju, pencocokan nomor, anggota aktif otomatis), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PM-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Sesi peran tetap diterbitkan modulnya sendiri; pintu lama tidak ditutup; staf selalu wajib sandi dan akun rahasia tidak pernah lewat kode; paket ini tidak membuat baris `staf` atau `instansi_akun`; tidak pernah membaca WA masuk; kode tidak pernah tersimpan atau tercatat dalam bentuk terbaca.
+Aturan berhentinya sama dengan §2.1. Sesi peran tetap diterbitkan modulnya sendiri; layar masuk sandi hanya satu, `/admin/masuk`, untuk staf, admin, pemirsa, dan instansi (K16, 24 Nov 2026); staf selalu wajib sandi dan akun rahasia tidak pernah lewat kode; paket ini tidak membuat baris `staf` atau `instansi_akun`; tidak pernah membaca WA masuk; kode tidak pernah tersimpan atau tercatat dalam bentuk terbaca.
 
 ### 2.18 Misi Udara (renlap flight semua bencana: dropping, pantau, evakuasi, angkut, pencarian, kunjungan): baca dulu, baru bangun
 

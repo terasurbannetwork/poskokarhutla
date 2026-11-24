@@ -149,7 +149,7 @@ Status per tiket ada di kolom Status dan di baris `Status:` akhir tiap tiket (`s
 | SK-111 | Penutupan program [induk] | selesai |
 | SK-112 | Tampilan tahap Rantai di halaman Buku Besar | selesai |
 | SK-113 | Titik perkiraan pusat desa untuk kejadian Logbook | selesai (sisi siklus); penyambungan Worker dan Dalops menunggu |
-| SK-114 | Lapisan InaRISK di Peta Paparan F2 | terbuka, menunggu pemilik (U22) |
+| SK-114 | Lapisan InaRISK di Peta Paparan F2 | selesai 24 Nov 2026 (U22 dijawab pemilik) |
 
 ## 3. Gelombang G1: lapis gudang data, Buku Besar, Peta Paparan
 
@@ -915,9 +915,10 @@ Berkas: `scripts/siklus/titik_desa.py`, `scripts/siklus/bersih_logbook.py`, `pub
 Langkah: ALGORITMA F1.6b. Pencari ketat nama desa lawan kab4 (dan kecamatan) lewat `desa_cari.json` dan poligon desa; titik berlabel `pusat_desa` (perkiraan); koordinat nyata tidak ditimpa. Kartu "Sekitar pusat desa (perkiraan)" bila `pusat_dasar` bernilai `pusat_desa`.
 Bukti: 56.685 kejadian Logbook, 19.248 cocok_desa (34,0 persen). Status: selesai di sisi siklus. Sisa milik lain: (a) warga-api: kolom `pusat_dasar` di `sk_kejadian` (atau berkas sisi) dan `titik` bersih ikut promosi arsip; (b) pipa-data: `dalops_banjir.py` memanggil `titik_desa.Pencari`/`titik_kejadian` pada `desa_teks` baris Dalops; (c) ruang-bnpb: kartu dampak radius Dalops memakai titik itu dengan label perkiraan pusat desa.
 
-#### SK-114 Lapisan InaRISK di Peta Paparan F2 (terbuka)
+#### SK-114 Lapisan InaRISK di Peta Paparan F2 (selesai)
 Pengerja: siklus (setelah U22). Bergantung: SK-113 tidak; cermin InaRISK IR-* (`data/kajian-bnpb/inarisk/`).
 Keadaan: F2.3 sudah memakai InaRISK hanya sebagai DATA (H diambil per sel halus, diubah ke kelas 0,33/0,66 oleh `bahaya_kelas.py`); paket ini belum memutuskan menampilkan lapisan `layer_bahaya_*` / `layer_risiko_*` (ArcGIS gis.bnpb.go.id, ImageServer exportImage PNG, kadang "Wait timeout") sebagai lapisan peta di `/siklus/paparan`. Tidak dibangun.
+Jawaban U22 (pemilik, 24 Nov 2026): "Gas bagus", bawaan sementara di bawah berlaku. Dibangun di `public/siklus/paparan.js` (`LAPISAN_INARISK`, kotak centang mati secara bawaan, proksi `/api/inarisk/ubin`), uji di `tests/siklus/layar_paparan.test.mjs`.
 Pertanyaan U22 [pemilik]: tampilkan lapisan InaRISK sebagai gambar peta di F2? Bawaan sementara: ya sebagai pilihan lapisan opsional per bahaya, berlabel "InaRISK BNPB, kelas bahaya" lewat proksi daftar izin (bukan langsung dari peramban), gagal = pesan, bukan layar kosong, dan tidak pernah dihitung ulang atau dicampur dengan kelas sel kita. Syarat tertulis: izin pemakaian gambar ditegaskan di IR, kuota proksi, dan tidak menambah berkas `public/`.
 
 ## 7. Jalur kritis dan paralel

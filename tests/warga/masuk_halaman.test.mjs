@@ -84,8 +84,10 @@ uji("halaman U-21: pintu lama tetap ada dan menautkan ke /masuk dengan ?ke= hala
   assert.match(lama.t, /type="password"/); assert.match(lama.t, /action="\/admin\/masuk"/, "form sandi lama utuh"); assert.match(lama.t, /href="\/masuk">Masuk dengan nomor WhatsApp</);
   const dgnKe = await api("GET", "/admin/masuk?ke=%2Fkemitraan"); assert.match(dgnKe.t, /href="\/masuk\?ke=%2Fkemitraan">Masuk dengan nomor WhatsApp</);
   const bukanSitus = await api("GET", "/admin/masuk?ke=%2F%2Fevil.lokal"); assert.doesNotMatch(bukanSitus.t, /evil\.lokal/, "?ke= asing dibuang oleh tujuan()");
-  const ins = baca("public/instansi.html");
-  assert.match(ins, /<a href="\/masuk\?ke=%2Finstansi">Masuk dengan nomor WhatsApp<\/a>/); assert.match(ins, /id="fMasuk"/); assert.match(ins, /id="mSandi"[^>]*type="password"|type="password"[^>]*id="mSandi"/, "form sandi instansi utuh");
+  /* satu pintu (KEPUTUSAN-MASUK K16, 24 Nov 2026): /instansi tidak punya layar masuk sendiri; tamu dialihkan ke /admin/masuk?ke=/instansi */
+  const ins = baca("public/instansi.html"), insJs = baca("public/instansi.js");
+  assert.doesNotMatch(ins, /id="fMasuk"|type="password"/, "tanpa form sandi kedua di /instansi");
+  assert.match(insJs, /location\.replace\("\/admin\/masuk\?ke=" \+ encodeURIComponent\(location\.pathname/, "tamu ke pintu tunggal");
 });
 
 uji("halaman L-1b: penyaring ?ke= menolak jalur di luar situs; pintu sandi mengikuti tujuan; nomor tersamar", () => {

@@ -96,7 +96,7 @@ export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala
   <div class="ad-kepala-masuk">
     <img src="/img/logo.svg?v=2" alt="${esc(merek)}" width="44" height="44">
     <h1>Pemantauan kondisi bencana di Indonesia secara <em>real time</em></h1>
-    <p>Masuk staf dan admin</p>
+    <p>Staf BNPB, BPBD, dan instansi masuk di sini</p>
   </div>
   <div class="ad-isi-masuk">
     <form method="post" action="/admin/masuk${ke ? "?ke=" + encodeURIComponent(ke) : ""}">

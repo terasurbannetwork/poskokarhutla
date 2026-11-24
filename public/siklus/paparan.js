@@ -6,6 +6,8 @@ import {muatMapLibre} from "../inti/maplibre.js";
 
 const G = globalThis, LEBAR_MIN = 320, LEBAR_MAKS = 640, KUNCI_LEBAR = "sk-panel-lebar";
 const BAHAYA = [["banjir", "Banjir", "banjir"], ["gempa", "Gempa", "gempa"], ["gunungapi", "Gunung api", "gunung"], ["karhutla", "Karhutla", "api"], ["pesisir", "Pesisir", "cuaca"]];
+/* lapisan InaRISK per bahaya (nama sama dengan LAPISAN di src/inarisk.js, dijaga tests/siklus/layar_paparan.test.mjs); U22: opsional, mati secara bawaan, lewat proksi /api/inarisk/ubin */
+export const LAPISAN_INARISK = {banjir: "layer_bahaya_banjir", gempa: "layer_bahaya_gempabumi", gunungapi: "layer_bahaya_letusan_gunungapi", karhutla: "layer_bahaya_kebakaran_hutan_dan_lahan", pesisir: "layer_bahaya_gelombang_ekstrim_dan_abrasi"};
 const KELAS = [["semua", "Semua kelas", "semua"], ["sedang", "Sedang", "segitiga"], ["tinggi", "Tinggi", "api"]];
 const SUMBER_JIWA = [["worldpop", "WorldPop"], ["dukcapil", "Dukcapil"], ["ghsl", "GHSL"]];
 const FASILITAS = {sekolah: "Sekolah", madrasah: "Madrasah", kesehatan: "Fasilitas kesehatan", ibadah: "Tempat ibadah", kantor_pemerintah: "Kantor pemerintah", kantor_pemerintah_sipil: "Kantor pemerintah sipil", obvitnas: "Objek vital nasional", bandara: "Bandara", pelabuhan: "Pelabuhan"};
@@ -32,15 +34,27 @@ export async function buka(isi, sk) {
   const main = isi.closest("main"); main.classList.add("peta"); isi.className = "sk-petabg"; isi.replaceChildren();
   if (!document.querySelector('link[href="/inti/peta.css"]')) document.head.append(h("link", {rel: "stylesheet", href: "/inti/peta.css"}));
   const q = new URLSearchParams(location.search), awal = /^\d{4}$/.test(q.get("kab4") ?? "") ? q.get("kab4") : "";
-  const S = {prov: awal.slice(0, 2), kab4: awal, bahaya: "banjir", kelas: "semua"}, pj = penjaga(), cache = {ringkas: new Map(), kab: new Map()};
+  const S = {prov: awal.slice(0, 2), kab4: awal, bahaya: "banjir", kelas: "semua", inarisk: false}, pj = penjaga(), cache = {ringkas: new Map(), kab: new Map()};
   const P = await peran();
   sk.periode = () => ({kab4: S.kab4 || null, prov: S.prov || null, bahaya: S.bahaya});
 
   const peta = h("div", {id: "peta", class: "sk-petabg"}), isiPanel = h("div", {class: "panel-isi"}), tarik = h("div", {class: "tarik", role: "separator", "aria-orientation": "vertical", "aria-label": "Tarik untuk mengubah lebar panel", tabindex: 0}), tarikV = h("div", {class: "tarik-v", role: "separator", "aria-orientation": "horizontal", "aria-label": "Tarik atau ketuk untuk mengubah tinggi panel"});
   const panel = h("div", {class: "panel"}, isiPanel, tarik, tarikV);
   isi.append(peta, panel); pasangTarik(main, panel, tarik, tarikV);
-  let mapa = null; nantiPeta(peta).then(m => { mapa = m; }).catch(() => { peta.append(h("div", {class: "sk-kead", "data-k": "galat"}, h("p", {}, "Peta dasar belum bisa dimuat. Angka di panel tetap tersedia."))); });
+  let mapa = null; nantiPeta(peta).then(m => { mapa = m; terapIR(); m.on("error", e => { if (/\/api\/inarisk\/ubin\//.test(e?.error?.url || e?.error?.message || "") && Date.now() - galatIR > 8000) { galatIR = Date.now(); infoIR.textContent = "Sebagian ubin InaRISK belum bisa dimuat dari server BNPB. Geser atau perbesar peta untuk mencoba lagi; angka di panel tidak terpengaruh."; } }); }).catch(() => { peta.append(h("div", {class: "sk-kead", "data-k": "galat"}, h("p", {}, "Peta dasar belum bisa dimuat. Angka di panel tetap tersedia."))); });
 
+  /* lapisan InaRISK: gambar dari BNPB apa adanya, tidak dihitung ulang dan tidak dicampur kelas sel kita; ubin gagal = pesan, peta tetap jalan */
+  const infoIR = h("p", {class: "sk-sel", role: "status"}); let galatIR = 0;
+  function terapIR() {
+    if (!mapa) return;
+    if (!mapa.isStyleLoaded()) return void mapa.once("load", terapIR);
+    if (mapa.getLayer("inarisk")) mapa.removeLayer("inarisk");
+    if (mapa.getSource("inarisk")) mapa.removeSource("inarisk");
+    infoIR.textContent = "";
+    if (!S.inarisk) return;
+    mapa.addSource("inarisk", {type: "raster", tiles: [`${location.origin}/api/inarisk/ubin/${LAPISAN_INARISK[S.bahaya]}?bbox={bbox-epsg-3857}`], tileSize: 256, attribution: "InaRISK BNPB"});
+    mapa.addLayer({id: "inarisk", type: "raster", source: "inarisk", paint: {"raster-opacity": 0.7, "raster-fade-duration": 0}});
+  }
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"});
   const utama = kartu({ey: [ik("bangunan", 12), "Paparan"], id: "p-utama", judul: ["Paparan ", hl("menunggu"), " pilihan wilayah"], isi: [ctl, hasil]}), judul = utama.querySelector("h3");
   isiPanel.append(utama);
@@ -57,8 +71,14 @@ export async function buka(isi, sk) {
     const optProv = [["", "Pilih provinsi"], ...Object.keys(K.provinsi || {}).map(k => [k, namaProv(k)])];
     const optKab = [["", S.prov ? "Seluruh provinsi" : "Pilih provinsi dulu"], ...kabList.map(k => [k, namaKab(k)])];
     ctl.replaceChildren(h("div", {class: "sk-baris"}, pilihan(optProv, S.prov, v => { S.prov = v; S.kab4 = ""; muat(); }, "Provinsi"), pilihan(optKab, S.kab4, v => { S.kab4 = v; muat(); }, "Kabupaten atau kota")),
-      seg(BAHAYA, S.bahaya, v => { S.bahaya = v; muat(); }, "Jenis bahaya"), seg(KELAS, S.kelas, v => { S.kelas = v; muat(); }, "Kelas bahaya"));
+      seg(BAHAYA, S.bahaya, v => { S.bahaya = v; muat(); G.nanti(terapIR); }, "Jenis bahaya"), seg(KELAS, S.kelas, v => { S.kelas = v; muat(); }, "Kelas bahaya"), lapisIR());
   };
+
+  function lapisIR() {
+    const cb = h("input", {type: "checkbox", id: "sk-inarisk"}); cb.checked = S.inarisk;
+    cb.addEventListener("change", () => { S.inarisk = cb.checked; G.nanti(terapIR); });
+    return h("div", {}, h("label", {title: "Gambar kelas bahaya dari InaRISK BNPB lewat proksi; tidak dihitung ulang dan tidak sama dengan kelas sel kita"}, cb, " InaRISK BNPB, kelas bahaya"), infoIR);
+  }
 
   async function muat() {
     const n = pj.baru(); kosongkan(hasil).append(kead("memuat"));
