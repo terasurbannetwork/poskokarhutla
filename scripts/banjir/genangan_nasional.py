@@ -462,7 +462,7 @@ def hitung(pt, nama_ubin, lin, r, pra=None, bgn=None, hasil_b=None, jejak=None):
             if baru:
                 a[6] += ha
                 if jejak is not None:
-                    jejak.append((round(pt.p[i][1], 5), round(pt.p[i][2], 5), round(ha, 2)))
+                    jejak.append((round(pt.p[i][1], 5), round(pt.p[i][2], 5), round(ha, 5)))
             if bgn is not None:
                 _, lo, la, _ = pt.p[i]
                 c = (math.floor((la - BG.LAT0) * BG.HALUS), math.floor((lo - BG.LON0) * BG.HALUS))
