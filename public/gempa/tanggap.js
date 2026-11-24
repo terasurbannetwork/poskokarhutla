@@ -45,7 +45,7 @@
     var par = PK.front(baris, dasar); par.forEach(function (x) { x.per_juta = x.biaya > 0 ? x.selamat / (x.biaya / 1e6) : null; });
     var stab = PK.kestabilan(ops, function (o, u) { return hitung(K, P, o, u); }, { biji: b.biji || 1, n: b.n || 200, dim: 2 });
     var t = hitung(K, P, { tim: 0, cover: 1 }, tengah);
-    var kebutuhan = { mengungsi: t.ungsi, air_l_hari: t.ungsi * SPHERE.air_l, hunian_m2: t.ungsi * SPHERE.hunian_m2, jamban: Math.ceil(t.ungsi / SPHERE.jamban_per), terjebak: t.terjebak };
+    var kebutuhan = { mengungsi: t.ungsi, air_l_hari: t.ungsi * SPHERE.air_l, hunian_m2: t.ungsi * SPHERE.hunian_m2, jamban: Math.ceil(t.ungsi / SPHERE.jamban_per), kkal_hari: t.ungsi * SPHERE.kkal, terjebak: t.terjebak };
     return { dasar: dasar, pareto: par, semua: baris.length, stabilitas: stab, kebutuhan: kebutuhan, param: P };
   }
   g.GempaTanggap = { ASUMSI: ASUMSI, SPHERE: SPHERE, TIM: TIM, COVER: COVER, opsiDaftar: opsiDaftar, hitung: hitung, analisis: analisis, nilaiAsumsi: nilaiAsumsi };

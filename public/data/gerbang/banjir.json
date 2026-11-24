@@ -1,0 +1,47 @@
+{
+ "dibuat": "2026-11-25",
+ "versi": 1,
+ "keluaran": {
+  "kerusakan": {
+   "metrik": "galat LOO ln(rumah rusak model / DIBI), median",
+   "arah": "rendah",
+   "pembanding": "rumah rusak = rho x penduduk terpapar (satu rasio)",
+   "n": 4,
+   "skor_model": 5.5468,
+   "skor_pembanding": 5.9859,
+   "selisih": 0.4391,
+   "selang95": [
+    -0.6938,
+    1.5721
+   ],
+   "boleh_tampil": false,
+   "alasan": "batas bawah selang 95% -0.6938 <= 0: belum terbukti mengalahkan pembanding; vonis prospektif = 'tak dapat dinilai', wajib 'lolos'; n_miss 1 (model 0 bangunan, DIBI > 0)",
+   "vonis_prospektif": "tak dapat dinilai",
+   "sumber_berkas": [
+    "public/banjir/data/kerusakan.json",
+    "scripts/banjir/kerusakan.kriteria.json"
+   ],
+   "catatan": "4 peristiwa sah dari 15 ber-bangunan; n_miss 1 (model 0 bangunan, DIBI > 0); minimal 8 agar dinilai; kedalaman ASUMSI 1.0 m"
+  },
+  "eskalasi": {
+   "metrik": "Brier eskalasi kejadian banjir 48 jam",
+   "arah": "rendah",
+   "pembanding": "klimatologi_prov_bulan",
+   "n": 398,
+   "skor_model": 0.2255,
+   "skor_pembanding": 0.23,
+   "selisih": 0.0045,
+   "selang95": [
+    -0.009,
+    0.0186
+   ],
+   "boleh_tampil": false,
+   "alasan": "batas bawah selang 95% -0.009 <= 0: belum terbukti mengalahkan pembanding; vonis prospektif = 'tidak lolos', wajib 'lolos'",
+   "vonis_prospektif": "tidak lolos",
+   "sumber_berkas": [
+    "public/banjir/data/eskalasi_uji.json"
+   ],
+   "catatan": "uji 2024-2025 dibuka sekali; vonis uji, bukan prospektif: tidak pernah boleh_tampil"
+  }
+ }
+}

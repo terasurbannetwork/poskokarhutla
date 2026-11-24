@@ -1,0 +1,250 @@
+{
+ "dibuat": "2026-11-25",
+ "label": "perkiraan, kurva Asia JRC, belum kurva Indonesia",
+ "ticket": "KI-60",
+ "tampil": false,
+ "vonis": "tak dapat dinilai",
+ "n_peristiwa_sah": 4,
+ "n_min": 8,
+ "n_miss": 1,
+ "miss": [
+  {
+   "prov": "13",
+   "kab": "Agam",
+   "acuan": "2024-05-12",
+   "rr_dibi": 351
+  }
+ ],
+ "n_peristiwa_bangunan": 15,
+ "c": 1.98549,
+ "galat_loo_faktor": 256.41,
+ "galat_loo_pembanding_faktor": 397.79,
+ "pita": {
+  "nama": "P10-P90",
+  "alfa": 0.2,
+  "q_ln": null,
+  "rentang_N_kalibrasi": null
+ },
+ "kedalaman_asumsi_m": 1.0,
+ "faktor_jrc": 0.49,
+ "kurva": "scripts/banjir/data/kurva_jrc_asia.json (Huizinga dkk. 2017, EUR 28552 EN, Table 3-2)",
+ "keterbatasan": [
+  "Peristiwa sah dipilih dengan syarat rumah rusak DIBI > 0 (memilih menurut hasil): ini condong menaikkan c dan pita. Peristiwa model luput (0 bangunan tergenang, DIBI > 0) dihitung terpisah sebagai n_miss, tidak masuk kalibrasi.",
+  "Kedalaman per sel (FwDET) belum tersedia: satu kedalaman asumsi untuk semua bangunan, jadi kurva JRC belum membedakan sel dalam dan dangkal.",
+  "Radar GFM buta di permukiman: jumlah bangunan tergenang cenderung di bawah kenyataan; c menyerap sebagian.",
+  "Rumah rusak DIBI bernilai 0 tidak dibedakan dari tak tercatat; peristiwa berangka 0 dibuang, bukan dihitung sebagai nol.",
+  "Satu pengali c dari sedikit peristiwa; galat LOO dan pita adalah angka yang jujur untuk n itu, bukan jaminan."
+ ],
+ "peristiwa": [
+  {
+   "prov": "33",
+   "kab": "Demak",
+   "acuan": "2024-03-14",
+   "bangunan_tergenang": [
+    2730,
+    5988
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "33",
+   "kab": "Kudus",
+   "acuan": "2024-03-14",
+   "bangunan_tergenang": [
+    1202,
+    2531
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "63",
+   "kab": "Barito Kuala",
+   "acuan": "2021-01-14",
+   "bangunan_tergenang": [
+    513,
+    978
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "33",
+   "kab": "Grobogan",
+   "acuan": "2024-03-14",
+   "bangunan_tergenang": [
+    505,
+    1026
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": 9,
+   "dibi_tercatat": true
+  },
+  {
+   "prov": "63",
+   "kab": "Hulu Sungai Utara",
+   "acuan": "2021-01-16",
+   "bangunan_tergenang": [
+    102,
+    226
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "33",
+   "kab": "Jepara",
+   "acuan": "2024-03-14",
+   "bangunan_tergenang": [
+    130,
+    260
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "63",
+   "kab": "Hulu Sungai Tengah",
+   "acuan": "2021-01-14",
+   "bangunan_tergenang": [
+    31,
+    60
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": 1426,
+   "dibi_tercatat": true
+  },
+  {
+   "prov": "63",
+   "kab": "Kota Banjarmasin",
+   "acuan": "2021-01-17",
+   "bangunan_tergenang": [
+    11,
+    23
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "63",
+   "kab": "Tanah Laut",
+   "acuan": "2021-01-14",
+   "bangunan_tergenang": [
+    41,
+    61
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": 1,
+   "dibi_tercatat": true
+  },
+  {
+   "prov": "63",
+   "kab": "Hulu Sungai Selatan",
+   "acuan": "2021-01-17",
+   "bangunan_tergenang": [
+    21,
+    51
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "63",
+   "kab": "Balangan",
+   "acuan": "2021-01-14",
+   "bangunan_tergenang": [
+    4,
+    5
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "13",
+   "kab": "Lima Puluh Kota",
+   "acuan": "2024-05-13",
+   "bangunan_tergenang": [
+    4,
+    9
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": 806,
+   "dibi_tercatat": true
+  },
+  {
+   "prov": "13",
+   "kab": "Padang Pariaman",
+   "acuan": "2024-05-12",
+   "bangunan_tergenang": [
+    0,
+    0
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  },
+  {
+   "prov": "13",
+   "kab": "Agam",
+   "acuan": "2024-05-12",
+   "bangunan_tergenang": [
+    0,
+    0
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": 351,
+   "dibi_tercatat": true
+  },
+  {
+   "prov": "33",
+   "kab": "Kota Semarang",
+   "acuan": "2024-03-13",
+   "bangunan_tergenang": [
+    0,
+    0
+   ],
+   "perkiraan": null,
+   "p10": null,
+   "p90": null,
+   "dibi_rumah_rusak": null,
+   "dibi_tercatat": false
+  }
+ ]
+}

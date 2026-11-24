@@ -27,6 +27,13 @@ test("kontrak berkas nyata: medan, ansambel, param punya bentuk yang dipakai mod
   const par = baca("param_banjir.json").param; for (const k of ["stimulan_rumah_rr", "nilai_nyawa_statistik", "biaya_pengungsi_hari"]) assert.ok(par[k][0] > 0, k);
 });
 
+test("KI-66: salinan Sphere di sim_dampak.js sama dengan scripts/prediksi/aturan.json; kebutuhan = jiwa x koefisien", () => {
+  const aturan = JSON.parse(fs.readFileSync(new URL("../../scripts/prediksi/aturan.json", import.meta.url), "utf8"));
+  for (const k of ["air_l", "hunian_m2", "jamban_per", "kkal"]) assert.equal(D.SPHERE[k], aturan.sphere[k], `${k}: ${D.SPHERE[k]} vs aturan.json ${aturan.sphere[k]}`);
+  const b = D.kebutuhanSphere(1000);
+  assert.equal(b.air_l, 1000 * aturan.sphere.air_l); assert.equal(b.hunian_m2, 1000 * aturan.sphere.hunian_m2); assert.equal(b.jamban, Math.ceil(1000 / aturan.sphere.jamban_per)); assert.equal(b.kkal, 1000 * aturan.sphere.kkal);
+});
+
 test("embusan dan hujan nyata lewat langkah(): nilai berhingga dan tak negatif", () => {
   const m = baca("cuaca_medan.json"), pts = [{lat: -6.2, lon: 106.8}, {lat: 0.5, lon: 101.4}, {lat: -8.6, lon: 115.2}], F = [];
   for (let h = 0; h < m.n; h++) F.push(SC.bingkai(m, h));

@@ -1,0 +1,13 @@
+{
+ "nama": "Kurva kedalaman-kerusakan rumah tinggal, rerata benua Asia (JRC)",
+ "label": "perkiraan, kurva Asia JRC, belum kurva Indonesia",
+ "sitasi": "Huizinga, J., de Moel, H., Szewczyk, W. (2017). Global flood depth-damage functions. Methodology and the database with guidelines. EUR 28552 EN, Publications Office of the European Union, Luxembourg. doi:10.2760/16510 (JRC105688)",
+ "tabel": "Table 3-2, 'Average continental damage function for Asia - residential buildings' (hlm. 14 dari PDF 114 halaman)",
+ "url": "https://publications.jrc.ec.europa.eu/repository/bitstream/JRC105688/global_flood_depth-damage_functions__10042017.pdf",
+ "lisensi": "Laporan menyatakan: 'The reuse of the document is authorised, provided the source is acknowledged' (c) European Union 2017. Pemilik menyebut CC BY 4.0 (kebijakan penggunaan ulang Komisi Eropa); teks laporan sendiri tidak menyebut nomor lisensi.",
+ "diverifikasi": "2026-11-25, titik dibaca langsung dari teks PDF di atas (pdftotext), bukan dari ingatan",
+ "negara_sumber": "Bangladesh, Kamboja, Taiwan, Tiongkok, Indonesia, Thailand, Vietnam, Laos, Jepang; fungsi Shanghai dan Beijing dikeluarkan penyusun. Bukan kurva khusus Indonesia.",
+ "titik": [[0, 0.0], [0.5, 0.33], [1, 0.49], [1.5, 0.62], [2, 0.72], [3, 0.87], [4, 0.93], [5, 0.98], [6, 1.0]],
+ "satuan": "[kedalaman air m, faktor kerusakan 0-1 dari nilai maksimum kerusakan bangunan]",
+ "catatan": "Faktor ini adalah bagian NILAI bangunan yang rusak, bukan peluang sebuah rumah masuk hitungan 'rumah rusak' DIBI. Pengali c dikalibrasi ke DIBI menyerap selisih definisi itu, juga tinggi lantai, bahan, dan kelengkapan pencatatan; c bukan parameter fisik."
+}

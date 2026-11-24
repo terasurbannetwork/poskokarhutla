@@ -19,6 +19,9 @@ const BAWAAN = {
   maks_rit: 50000,        /* batas rit armada per simulasi (penjaga waktu hitung); bila tercapai hasil memberi terpotong: true */
   masker_per_orang_hari: 2, masker_hari_ekstra: 2, biaya_masker: 3500,
 };
+/* kebutuhan minimum Sphere 2018 per hari = salinan scripts/prediksi/aturan.json "sphere" (satu sumber; sim.js menimpanya dari prediksi.json saat jalan, uji menjaga salinan = aturan.json) */
+const SPHERE = {air_l: 15, hunian_m2: 3.5, jamban_per: 20, kkal: 2100};
+const kebutuhanSphere = jiwa => ({jiwa, air_l: jiwa * SPHERE.air_l, hunian_m2: jiwa * SPHERE.hunian_m2, jamban: Math.ceil(jiwa / SPHERE.jamban_per), kkal: jiwa * SPHERE.kkal});
 /* mesin pareto bersama dimuat lebih dulu (script/importScripts inti/perlakuan.js); dicari saat dipakai supaya urutan muat tak menentukan */
 const PK = () => { if (!globalThis.Perlakuan) throw new Error("inti/perlakuan.js belum dimuat"); return globalThis.Perlakuan; };
 const R_BUMI = 6371;
@@ -159,5 +162,5 @@ function bandaraTutup(bandara, jejak) {
   return out.sort((a, b) => a.jam - b.jam);
 }
 
-return {BAWAAN, jarakKm, slug, gunungBawaan, bangunGraf, dijkstra, kecepatanRute, median, evakuasi, peringkat, dalamRadius, paparPiksel, paparanUnit, tujuanTerdekat, kunciTitik, jiwaDalamRadius, ruasBahaya, masker, dalamPoligon, bandaraTutup};
+return {BAWAAN, SPHERE, kebutuhanSphere, jarakKm, slug, gunungBawaan, bangunGraf, dijkstra, kecepatanRute, median, evakuasi, peringkat, dalamRadius, paparPiksel, paparanUnit, tujuanTerdekat, kunciTitik, jiwaDalamRadius, ruasBahaya, masker, dalamPoligon, bandaraTutup};
 });

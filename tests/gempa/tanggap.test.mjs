@@ -18,6 +18,7 @@ test("analisis: front punya manfaat dan biaya positif, kebutuhan = jiwa x koefis
   assert.ok(taksir.rb[1] > 0 && r.pareto.length >= 1, "kerusakan fixture harus menghasilkan front");
   assert.equal(r.semua, T.TIM.length * T.COVER.length, "dasar + semua kombinasi tim x cakupan");
   assert.ok(Math.abs(B.air_l_hari - B.mengungsi * aturan.sphere.air_l) < 1e-6 && Math.abs(B.hunian_m2 - B.mengungsi * aturan.sphere.hunian_m2) < 1e-6);
+  assert.ok(Math.abs(B.kkal_hari - B.mengungsi * aturan.sphere.kkal) < 1e-6 && B.jamban === Math.ceil(B.mengungsi / aturan.sphere.jamban_per), "kkal dan jamban = jiwa x koefisien aturan.json");
   for (const p of r.pareto) assert.ok(p.selamat > 0 && p.biaya > 0, `${p.nama}: manfaat ${p.selamat}, biaya ${p.biaya}`);
   for (const [k, a] of Object.entries(T.ASUMSI)) assert.ok(a.sumber && typeof a.bersumber === "boolean", `${k}: asumsi harus punya sumber atau pengakuan tanpa sumber`);
   assert.equal(JSON.stringify(T.analisis(taksir, null)), JSON.stringify(r), "biji sama = hasil sama");
