@@ -108,7 +108,7 @@ Bahan kajian, bukan tiket kode:
 - K5: Animasi api 3D (PKH-12) disetujui.
 - K6: Kelompok G (PKH-33 sampai 45) ikut "semua gas" dengan urutan bawaan Q8 (pemilik 24 Nov 2026: "Gas semua"). Paket PKH-34 dan PKH-37 tetap lewat paket dokumen dulu.
 - K7: Kolom "pemegang saham" (`pemegang`) di laporan konsesi tetap tampil (pemilik 24 Nov 2026: "Tetap tampil"). Larangan PKH-45 hanya untuk tokoh politik dan pemilik manfaat.
-- Bawaan sementara Q7 (belum dijawab): PKH-42 tampil angka hari saja, tanpa "setara rokok".
+- K8: PKH-42 boleh menampilkan "setara batang rokok" (pemilik 24 Nov 2026: "Gas semua"), berlabel perkiraan kasar, rumus Berkeley Earth (22 µg/m³ PM2,5 selama 24 jam setara 1 batang).
 
 ## Rincian kelompok F (disetujui pemilik 24 Nov 2026: "Gas")
 
@@ -158,5 +158,5 @@ Bahan kajian, bukan tiket kode:
 - Q4: Rincian kelompok F di atas sudah sesuai, atau ada yang diubah?
 - Q5: PKH-32: apakah istilah resmi "titik api" di laporan BNPB memang dibiarkan?
 - ~~Q6~~: terjawab K6.
-- Q7: PKH-42: hitungan "setara batang rokok" boleh tampil, atau angka hari saja?
+- ~~Q7~~: terjawab K8.
 - ~~Q8~~: terjawab K6. Urutan: PKH-41 dan PKH-40 dulu (bias luas Papua), lalu PKH-33, 35, 43, 44, 42, 38, lalu paket PKH-34 dan 37.
