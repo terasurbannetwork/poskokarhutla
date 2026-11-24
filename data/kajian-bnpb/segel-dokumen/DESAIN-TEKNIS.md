@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS segel_cabut (
 );
 ```
 
-Hanya `CREATE ... IF NOT EXISTS`, tanpa trigger, tanpa ALTER, tanpa kolom `dummy` (D13: baris dummy tidak disegel). Append-only dijaga `src/hak.js` yang tidak punya fungsi UPDATE atau DELETE untuk kedua tabel, dan gerbang `gerbang-d1`.
+Indeks `segel_terbit ON segel (terbit)` menyusul di `0172_segel_terbit.sql` untuk daftar staf (tanpa itu `ORDER BY terbit` memindai seluruh tabel, gerbang `gerbang-d1-pindai`). Hanya `CREATE ... IF NOT EXISTS`, tanpa trigger, tanpa ALTER, tanpa kolom `dummy` (D13: baris dummy tidak disegel). Append-only dijaga `src/hak.js` yang tidak punya fungsi UPDATE atau DELETE untuk kedua tabel, dan gerbang `gerbang-d1`.
 
 ## 3. Rute
 
@@ -61,5 +61,5 @@ Jalur halaman: `PUBLIK_TANPA_SESI` adalah Map jalur persis, jadi `/verifikasi/<k
 - `laporan_karhutla.js` baris 419 dan 462: tambah `stmtSegel(env, {jenis: "lk", rujukan: `${tanggal}#${n}`, ...})` ke `st` bila `hari.dummy === 0`.
 - `laporan_bencana.js` baris 222 dan 265: sama dengan jenis `lkb`.
 - `pb_dokumen.js` rute `bekukan`: sesudah `pbDokBeku` berhasil, satu INSERT segel dalam `batchTulis` yang sama dengan log terbit.
-- Bila tabel `segel` belum ada (migrasi belum diterapkan), pembeku tetap jalan tanpa segel: `adaTabelSegel(env)` di `src/hak.js` memeriksa `sqlite_master` sekali per isolate, lalu batch dirakit dengan atau tanpa `stmtSegel` (KEPUTUSAN D3). Jangan menaruh statement ke tabel yang belum ada di batch: seluruh batch gagal.
+- Bila tabel `segel` belum ada (migrasi belum diterapkan), pembeku tetap jalan tanpa segel: `adaTabelSegel(env)` di `src/hak.js` memeriksa lewat probe PK `SELECT 1 FROM segel WHERE kode = ''` (galat "no such table" = belum ada; `sqlite_master` memindai penuh), dan hanya hasil "ada" yang dicache per isolate, lalu batch dirakit dengan atau tanpa `stmtSegel` (KEPUTUSAN D3). Jangan menaruh statement ke tabel yang belum ada di batch: seluruh batch gagal.
 - `pb`: segel menyusul sesudah `pbDokBeku`; gagal di antara keduanya menyisakan dokumen beku tanpa segel (D3).
