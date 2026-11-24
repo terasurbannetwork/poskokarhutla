@@ -77,7 +77,7 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
 | M12 | Label bebas pelapor (satelit, sensor, katalog) | ✓ | ½ | ½ | ½ | ✓ | ½ | ✓ | ✓ | ✓ | ½ | ½ | LS-* (Lsr) |
 | M13 | Klimatologi kebiasaan lapor sebagai offset (banjir CAMPUR, kekeringan bayangan) | – | ½ | ✗ | ½ | – | ✗ | – | – | – | – | ✓ | - |
 | M14 | Model bayangan dinilai berdampingan (/prediksi, kekeringan) | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✗ | – | ✗ | ✓ | - |
-| M15 | Pembanding produk luar (banjir GloFAS/GEOGLOWS/FloodHub/AIFS, kekeringan GDO kappa, gempa MAGMA) | ½ | ✓ | ½ | ½ | ✗ | ½ | ½ | ✓ | ½ | ½ | ✓ | KI-26 (Lsr), KI-04 (Gmp) |
+| M15 | Pembanding produk luar (banjir GloFAS/GEOGLOWS/FloodHub/AIFS, kekeringan GDO kappa, gempa MAGMA) | ½ | ✓ | ½ | ½ | ✗ | ½ | ½ | ✓ | ½ | ½ | ✓ | KI-04 (Gmp) |
 | M16 | Hindcast atau replay kejadian historis (karhutla 123 kasus, gunung api Merapi 2010, banjir Maret 2025) | ✓ | ✓ | ✗ | ✗ | – | ✗ | ½ | ✓ | ✓ | ✓ | ✓ | - |
 | M17 | Koreksi bias/MOS ke pengamatan (udara MOS arsip, rob offset IOC) | – | ½ | ✓ | ✗ | – | ½ | ✓ | ½ | – | – | ✗ | KI-24 (Udr) |
 | M18 | Deteksi lonjakan berbasis data (gempa binomial negatif, udara CO MAD) | ½ | ✗ | – | ✗ | – | ✗ | ✓ | ✓ | – | ½ | – | KI-52 (Krh, Udr) |
