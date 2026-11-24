@@ -14,6 +14,8 @@ Peta fitur 21 Nov 2026 (`docs/peta-fitur/PETA-2026-11-21.md`) mencatat dua butir
 | --- | --- |
 | K1 | 23 Nov 2026: pemilik meminta paket ini disusun ("susun paket segel") sesudah ditawari segel hash dan QR verifikasi. |
 | K2 | Paket dokumen dulu, baru kode (AGENTS.md 3.7). Tiket pertama baru dikerjakan sesudah pemilik menjawab Q1 sampai Q3 atau menyetujui bawaannya. |
+| K3 | 24 Nov 2026: pemilik menyetujui bawaan Q1, Q2, Q3 ("Setuju, mulai SG-01"). |
+| K4 | 24 Nov 2026 malam: pemilik menyetujui bawaan Q5, Q6, Q10 ("Gw sepakat sama lu semua"): moderator dan staf pimpinan boleh mencabut, alasan hanya untuk staf; domain QR `centurisk97.id`; kalimat "Segel keaslian sistem, bukan tanda tangan elektronik." tanpa menyebut pasal. |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -39,15 +41,15 @@ Peta fitur 21 Nov 2026 (`docs/peta-fitur/PETA-2026-11-21.md`) mencatat dua butir
 
 | Q | Pertanyaan | Bawaan sementara | Menahan |
 | --- | --- | --- | --- |
-| Q1 | Dokumen apa yang disegel lebih dulu? | **[BAWAAN SEMENTARA]** fase 1: laporan harian karhutla dan laporan harian bencana yang dikunci (lk, lkb) serta dokumen PB beku (sitrep, renops, laporan KIB). Fase 2: versi beku data lanjutan BPBD (`lj_beku`) dan Laporan Berkala begitu dibangun. Laporan warga Lapor Bencana tidak disegel karena bukan terbitan resmi; QR ke halaman laporannya (Lapor AI D21) tetap. | SG-05 sampai SG-07 |
-| Q2 | Halaman verifikasi terbuka untuk siapa saja, atau hanya untuk penerima yang punya akun? | **[BAWAAN SEMENTARA]** siapa saja tanpa akun, hanya data sampul (D6). Ini mengikuti FITUR §7.4 "tanpa akun". | SG-08 |
-| Q3 | Apa saja yang boleh tampil di halaman verifikasi? Bolehkah nama wilayah kab/kota? | **[BAWAAN SEMENTARA]** jenis, wilayah (provinsi atau kab/kota), periode, versi, unit penerbit, waktu terbit, status, 12 huruf sidik. Tanpa angka dan tanpa nama orang. | SG-08 |
+| Q1 | Dokumen apa yang disegel lebih dulu? | **[DISETUJUI K3]** fase 1: laporan harian karhutla dan laporan harian bencana yang dikunci (lk, lkb) serta dokumen PB beku (sitrep, renops, laporan KIB). Fase 2: versi beku data lanjutan BPBD (`lj_beku`) dan Laporan Berkala begitu dibangun. Laporan warga Lapor Bencana tidak disegel karena bukan terbitan resmi; QR ke halaman laporannya (Lapor AI D21) tetap. | SG-05 sampai SG-07 |
+| Q2 | Halaman verifikasi terbuka untuk siapa saja, atau hanya untuk penerima yang punya akun? | **[DISETUJUI K3]** siapa saja tanpa akun, hanya data sampul (D6). Ini mengikuti FITUR §7.4 "tanpa akun". | SG-08 |
+| Q3 | Apa saja yang boleh tampil di halaman verifikasi? Bolehkah nama wilayah kab/kota? | **[DISETUJUI K3]** jenis, wilayah (provinsi atau kab/kota), periode, versi, unit penerbit, waktu terbit, status, 12 huruf sidik. Tanpa angka dan tanpa nama orang. | SG-08 |
 | Q4 | Deck PPTX dan PDF yang dibuat generator Python (laporan harian BNPB, penanganan karhutla) ikut diberi QR? | **[BAWAAN SEMENTARA]** belum di fase 1. Generator hidup di luar Worker dan PDF-nya tidak dihasilkan dari isi beku yang sama byte-nya. | SG-12 |
-| Q5 | Siapa boleh mencabut segel, dan apakah alasannya tampil publik? | **[BAWAAN SEMENTARA]** moderator dan staf berperan pimpinan; alasan wajib diisi; publik hanya melihat "Dicabut" dan tanggalnya, alasan hanya untuk staf. | SG-10 |
-| Q6 | Domain di QR? | **[BAWAAN SEMENTARA]** `centurisk97.id`. | SG-09 |
+| Q5 | Siapa boleh mencabut segel, dan apakah alasannya tampil publik? | **[DISETUJUI K4]** moderator dan staf berperan pimpinan; alasan wajib diisi; publik hanya melihat "Dicabut" dan tanggalnya, alasan hanya untuk staf. | SG-10 |
+| Q6 | Domain di QR? | **[DISETUJUI K4]** `centurisk97.id`. | SG-09 |
 | Q7 | Segel lama ditambahkan untuk snapshot yang sudah dibekukan sebelum fitur ini? | **[BAWAAN SEMENTARA]** tidak. Segel hanya untuk yang dibekukan sesudah migrasi diterapkan. Lembar lama tetap tanpa QR. | tidak menahan |
 | Q8 | Berapa lama baris segel disimpan? | **[BAWAAN SEMENTARA]** selamanya; isinya hanya data sampul tanpa data pribadi. | tidak menahan |
 | Q9 | Angka teknis: batas laju pencarian, panjang kode, ulang bentrok kode. | **[BAWAAN SEMENTARA]** 60 pencarian per 10 menit per hash IP, 10 huruf (50 bit), paling banyak 3 kali ulang. | tidak menahan |
-| Q10 | Kalimat batas klaim hukum di halaman dan lembar cetak perlu ditinjau bagian hukum BNPB? | **[BAWAAN SEMENTARA]** "Segel keaslian sistem, bukan tanda tangan elektronik." tanpa menyebut pasal. | SG-08, SG-09 |
+| Q10 | Kalimat batas klaim hukum di halaman dan lembar cetak perlu ditinjau bagian hukum BNPB? | **[DISETUJUI K4]** "Segel keaslian sistem, bukan tanda tangan elektronik." tanpa menyebut pasal. | SG-08, SG-09 |
 
 Migrasi segel harus diterapkan pemilik di D1 produksi. Sebelum itu rute verifikasi menjawab 503 dan pembeku tetap jalan tanpa segel (D3 memakai pemeriksa tabel seperti `tanpaTabelPb`).

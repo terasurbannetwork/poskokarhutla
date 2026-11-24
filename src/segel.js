@@ -1,7 +1,9 @@
 /* segel.js: fungsi murni segel dokumen (paket data/kajian-bnpb/segel-dokumen/, SG-03, ALGORITMA bagian 1 dan 3). Fungsi murni di atas; rute di bawah. SQL ada di src/hak.js bagian Segel. */
-import {json, gagal, sha, ipHash} from "./worker.js";
+import {json, gagal, sha, ipHash, bacaBody} from "./worker.js";
+import {modOK} from "./posko.js";
+import {stafPeran} from "./staf.js";
 import {laju} from "./bnpb.js";
-import {adaTabelSegel, segelCari, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
+import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
 import {kunciBeku} from "./pb_dokumen.js";
 
 export const ABJAD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford base32: tanpa I, L, O, U
@@ -83,4 +85,30 @@ async function verifikasi(env, req, url, kini) {
   try { return await periksa(env, req, url, kini); } catch (e) { console.error("verifikasi", e); return gagal(500, "galat server", PUBLIK); }
 }
 
-export const RUTE_SEGEL = {"GET /api/verifikasi/:kode": verifikasi};
+/* ---------- SG-10: daftar dan cabut untuk staf (KEPUTUSAN K4 = Q5: moderator dan staf pimpinan mencabut; pusdalops ikut membaca) ----------
+   Daftar tidak menghitung ulang sidik (100 baca D1 per buka); pemeriksaan penuh tetap lewat /api/verifikasi/<kode> (ALGORITMA 5).
+   ponytail: bila staf butuh status Tidak cocok di daftar, tambah tombol Periksa per baris, bukan hitung ulang massal. */
+const PERAN_BACA = ["pimpinan", "pusdalops"], PERAN_CABUT = ["pimpinan"];
+const pelaku = async (env, req, peran) => { const m = await modOK(env, req); return m ? "admin:" + m : stafPeran(env, req, peran); };
+
+async function daftar(env, req, url) {
+  if (!await pelaku(env, req, PERAN_BACA)) return gagal(403, "hanya moderator, staf pimpinan, atau pusdalops");
+  const status = url.searchParams.get("status") ?? "";
+  if (!["", "berlaku", "dicabut"].includes(status)) return gagal(400, "status: berlaku atau dicabut");
+  if (!await adaTabelSegel(env)) return json({tersedia: false, segel: []});
+  return json({tersedia: true, segel: await segelDaftar(env, status)});
+}
+
+async function cabut(env, req, url, kini) {
+  const oleh = await pelaku(env, req, PERAN_CABUT); if (!oleh) return gagal(403, "hanya moderator atau staf pimpinan yang mencabut segel");
+  const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
+  const kode = normalKode(b.o?.kode), alasan = typeof b.o?.alasan === "string" ? b.o.alasan.trim().replace(/\s+/g, " ") : "";
+  if (!kode) return gagal(400, "kode segel tidak sah");
+  if (alasan.length < 5 || alasan.length > 500) return gagal(400, "alasan wajib 5 sampai 500 huruf");
+  if (!await adaTabelSegel(env)) return gagal(503, "migrasi segel belum diterapkan");
+  try { if (!await segelCabut(env, kode, alasan, oleh, kini)) return gagal(404, "segel tidak ditemukan"); }
+  catch (e) { if (/UNIQUE|PRIMARY KEY/i.test(String(e?.message))) return gagal(409, "segel ini sudah dicabut"); throw e; }
+  return json({ok: true, kode, dicabut: kini}, 201);
+}
+
+export const RUTE_SEGEL = {"GET /api/verifikasi/:kode": verifikasi, "GET /api/segel": daftar, "POST /api/segel/cabut": cabut};

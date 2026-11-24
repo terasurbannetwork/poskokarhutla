@@ -6,7 +6,7 @@
 import assert from "node:assert/strict";
 import {DatabaseSync} from "node:sqlite";
 import "../../src/worker.js";   // dahulu: impor sirkular
-import {siapkan, berantai, sha256} from "./_bnpb.mjs";
+import {siapkan, berantai, sha256, MOD2, GERBANG} from "./_bnpb.mjs";
 import {migrasi} from "./_bantu.mjs";
 import {SEGEL_SQL} from "../../src/hak.js";
 
@@ -105,6 +105,35 @@ const d1Tiruan = db => {
   const stmt = (sql, ikat = []) => ({bind: (...v) => stmt(sql, v), first: async () => db.prepare(sql).get(...ikat) ?? null, run: async () => ({meta: {changes: Number(db.prepare(sql).run(...ikat).changes)}}), _jalan: () => ({meta: {changes: Number(db.prepare(sql).run(...ikat).changes)}})});
   return {prepare: sql => stmt(sql), batch: async st => { db.exec("BEGIN"); try { const r = st.map(x => x._jalan()); db.exec("COMMIT"); return r; } catch (e) { db.exec("ROLLBACK"); throw e; } }};
 };
+uji("T9 dan T10 cabut: moderator dan staf pimpinan boleh (201, lalu 409); pusdalops, tamu, akun gerbang 403; daftar staf memuat alasan, publik tidak", async () => {
+  const TOK = {pim: "7".repeat(64), pus: "8".repeat(64)}, PERAN = {pim: '["pimpinan"]', pus: '["pusdalops"]'};
+  let i = 0;
+  for (const k of Object.keys(TOK)) {
+    const id = String(++i).repeat(2) + ("sg" + k).padEnd(14, "0");
+    await DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy)
+      VALUES (?, ?, ?, ?, 'Pusdalops', ?, ?, ?, '[]', ?, ?, 0, 1, 'tes', 0)`).bind(id, "segeluji" + k, "Staf " + k, "94000" + i, `sg${k}@b.id`, "6281400000" + i, PERAN[k], "a".repeat(32), "a".repeat(64)).run();
+    await DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(TOK[k]), id, Date.now() + 3600e3).run();
+  }
+  const H = k => ({cookie: "sesi_staf=" + TOK[k], origin: "http://bnpb.lokal", "x-pb": "1"});   // x-pb: penjaga CSRF staf; tanpa ini 403 datang dari sesi, bukan dari peran
+  const cabut = (b, h) => api("POST", "/api/segel/cabut", b, h);
+  for (const h of [{}, GERBANG, H("pus")]) assert.equal((await cabut({kode: "AAAAAAAAA0", alasan: "isi salah ketik"}, h)).s, 403);
+  assert.equal((await cabut({kode: "bukan", alasan: "isi salah ketik"}, MOD2)).s, 400);
+  assert.equal((await cabut({kode: "AAAAAAAAA0", alasan: "x"}, MOD2)).s, 400, "alasan minimal 5 huruf");
+  assert.equal((await cabut({kode: "ZZZZZZZZZZ", alasan: "isi salah ketik"}, MOD2)).s, 404);
+  const r = await cabut({kode: "aaaaa-aaaa0", alasan: "isi salah ketik provinsi"}, MOD2);
+  assert.equal(r.s, 201, r.t); assert.equal(r.j.kode, "AAAAAAAAA0");
+  assert.equal((await cabut({kode: "AAAAAAAAA0", alasan: "cabut kedua kali"}, H("pim"))).s, 409);
+  assert.equal((await cabut({kode: "BBBBBBBBB1", alasan: "dokumen ditarik pimpinan"}, H("pim"))).s, 201, "staf pimpinan boleh");
+  const pub = await buka("AAAAAAAAA0"); assert.equal(pub.j.status, "dicabut"); assert.ok(!/salah ketik/.test(pub.t), "alasan tidak publik");
+  for (const h of [{}, GERBANG]) assert.equal((await api("GET", "/api/segel", undefined, h)).s, 403);
+  const d = await api("GET", "/api/segel?status=dicabut", undefined, H("pus"));
+  assert.equal(d.s, 200, d.t); assert.equal(d.h.get("cache-control"), "no-store");
+  assert.deepEqual(d.j.segel.map(x => x.kode).sort(), ["AAAAAAAAA0", "AAAAAAAAA1", "BBBBBBBBB1"]);
+  assert.equal(d.j.segel.find(x => x.kode === "AAAAAAAAA0").alasan, "isi salah ketik provinsi");
+  assert.equal((await api("GET", "/api/segel?status=x", undefined, MOD2)).s, 400);
+  assert.ok((await api("GET", "/api/segel", undefined, MOD2)).j.segel.length >= 3);
+});
+
 uji("T12 tabel segel belum ada: pembeku tetap menulis snapshot tanpa segel; sesudah 0171 diterapkan segel langsung tertulis; dummy tidak pernah", async () => {
   const {batchBersegel} = await import("../../src/segel.js?t12");   // isolate baru: cache adaTabelSegel kosong
   const db = new DatabaseSync(":memory:"), env = {DB: d1Tiruan(db)};
