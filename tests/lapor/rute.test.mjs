@@ -9,7 +9,7 @@ import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 
 const uji = berantai();
 const MESIN = {authorization: "Bearer mesin-rahasia"};
-const U = await siapkan("uji-lapor-rute", {r2: true, ikat: {WA_MESIN: "mesin-rahasia"}}), {api, DB, n, mf} = U;
+const U = await siapkan("uji-lapor-rute", {r2: true, ikat: {WA_MESIN: "mesin-rahasia", LAPOR_HARI_INI: "1"}}), {api, DB, n, mf} = U;
 const WA = "6281200000001", WA2 = "6281200000002", WA3 = "6281200000003", TAK = "6281200000099";
 const LOK = {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"};
 const pesan = (wa, b, h = MESIN) => api("POST", "/api/lapor/pesan", {wa, ...b}, h);
@@ -583,6 +583,37 @@ uji("rekon: hanya Valid oleh BPBD wilayah yang dihitung; sebagian, cek staf BNPB
   assert.equal((await api("GET", q, undefined, bogor.h)).s, 403, "akun BPBD belum boleh (Q-R1)");
   assert.equal((await api("GET", q)).s, 403, "tanpa sesi");
   assert.equal((await api("GET", "/api/lapor/meja/rekon?dari=2026-01-01", undefined, ADMIN)).s, 400);
+});
+
+uji("hari ini: hanya Valid oleh BPBD wilayah, kartu daftar putih tanpa identitas, versi baru menurunkan, saringan dan laju", async () => {
+  const kartuLongsor = async (h = {}) => { const r = await api("GET", "/api/lapor/hari-ini", undefined, h); assert.equal(r.s, 200, r.t.slice(0, 200)); return {r, k: r.j.baris.filter(x => x.jenis === "Tanah longsor")}; };
+  const awal = (await kartuLongsor()).k.length;
+  const baru = await laporanBaru("6281200000034"), lain = await laporanBaru("6281200000035");
+  assert.equal((await kartuLongsor()).k.length, awal, "belum dicek: tidak tayang (D4)");
+  assert.equal((await api("POST", `/api/lapor/meja/${lain}/periksa`, {hasil: "valid", catatan: "Cek staf"}, ADMIN)).s, 200);
+  assert.equal((await kartuLongsor()).k.length, awal, "cek staf BNPB tidak cukup (Q4)");
+  const c = await api("POST", `/api/lapor/meja/${baru}/periksa`, {hasil: "valid", catatan: "Dicek bersama kades Budi"}, bogor.h); assert.equal(c.s, 200, c.t.slice(0, 200));
+  const {r, k} = await kartuLongsor();
+  assert.equal(k.length, 1, "kejadian laporan terverifikasi tayang"); assert.equal(r.j.jendela_jam, 24); assert.equal(typeof r.j.dibuat, "number");
+  assert.match(r.h.get("cache-control") || "", /public, max-age=60/);
+  for (const x of k) assert.ok(Object.keys(x).every(c => ["dampak", "id", "jenis", "lokasi", "nWarga", "subjenis", "titik", "verifikasi", "waktu"].includes(c)), Object.keys(x).join());
+  assert.match(k[0].id, /^[0-9a-f]{10}$/); assert.equal(k[0].waktu % 3600e3, 0, "waktu dibulatkan ke jam");
+  assert.match(k[0].verifikasi.oleh, /^BPBD /);
+  for (const dilarang of [baru, lain, "6281200000034", "Budi", "Dicek", "LA-", "GL-", "KJ-"]) assert.ok(!r.t.includes(dilarang), `bocor: ${dilarang}`);
+  assert.ok(!k[0].titik || k[0].titik.lat !== LOK.lat || k[0].titik.lon !== LOK.lon, "titik pusat desa, bukan koordinat pelapor");
+  assert.equal((await api("GET", `/api/lapor/hari-ini?prov=${W.provKode}&jenis=longsor`)).j.baris.length >= 1, true);
+  assert.equal((await api("GET", "/api/lapor/hari-ini?prov=99")).j.baris.filter(x => x.jenis === "Tanah longsor").length, 0);
+  for (const q of ["?prov=3", "?jenis=apa", "?x=1", "?prov=32&prov=32", "?jenis=longsor&jenis=longsor"]) assert.equal((await api("GET", "/api/lapor/hari-ini" + q)).s, 400, q);
+  const tarik = aktif => DB.prepare("INSERT INTO lk_tarik (kode, aktif, oleh, waktu) VALUES (?, ?, 'Staf uji', ?)").bind(baru, aktif, Date.now() + aktif).run();
+  await tarik(1); assert.equal((await kartuLongsor()).k.length, awal, "tarikan aktif pada nomor anggota: turun (D8)");
+  await tarik(0); assert.equal((await kartuLongsor()).k.length, 1, "tarikan dicabut: tayang lagi");
+  await DB.prepare("DELETE FROM lk_tarik").run();
+  await DB.prepare("INSERT INTO lapor_versi (nomor, versi, isi, perubahan, waktu) VALUES (?, 2, '{}', '[]', ?)").bind(baru, Date.now() + 1000).run();
+  assert.equal((await kartuLongsor()).k.length, awal, "versi sesudah pengecekan: turun (Q20)");
+  const ip = {"cf-connecting-ip": "203.0.113.77"};
+  for (let i = 0; i < 120; i++) assert.equal((await api("GET", "/api/lapor/hari-ini?prov=99", undefined, ip)).s, 200, `ke-${i + 1}`);
+  assert.equal((await api("GET", "/api/lapor/hari-ini?prov=99", undefined, ip)).s, 429, "permintaan ke-121 dalam sejam");
+  assert.equal(await n("lk_tarik"), 0, "halaman publik tidak menulis D1 selain batas laju (D7)");
 });
 
 uji("video bersambung: tiga bagian, satu terpotong ditolak lalu dilanjutkan, status bagian, selesai masuk laporan sebagai video", async () => {

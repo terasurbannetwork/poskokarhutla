@@ -30,7 +30,7 @@ import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_per
 import * as H from "./hak.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
-import {penandaPemeriksa, waktuVerifikasi} from "./lapor_kejadian.js";
+import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir} from "./lapor_kejadian.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 60], [HARI, 120]], BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
@@ -58,7 +58,7 @@ async function identitasSah(env, req, kini, aksi) {
   return galat(401, "Masuk dulu dengan nomor WhatsApp Anda.");
 }
 const lajuPublik = (env, req, aksi, maks, kini) => req.headers.get("authorization") ? null : lajuIP(env, req, aksi, [[JAM, maks]], kini);   // mesin Mac mini tidak dibatasi per IP
-const P = H.pelakuLpPelapor, PUBLIK = H.pelakuLpPublik, STAF = H.pelakuLpStaf, MESIN = H.pelakuLpMesin;
+const P = H.pelakuLpPelapor, PUBLIK = H.pelakuLpPublik, HARI_INI = H.pelakuLpHari, STAF = H.pelakuLpStaf, MESIN = H.pelakuLpMesin;
 
 /* ---------------- penjaga ---------------- */
 async function mesinSah(env, req) {
@@ -1080,15 +1080,18 @@ const alun = (env, req, url, kini, ctx) => {   // kunci cache tepi hanya dari ku
   return cacheTepi(req, ctx, 60, () => alunBuat(env, req, url, kini));
 };
 const ringkasDari = r => { try { return r.ringkas ? JSON.parse(r.ringkas) : {}; } catch { return {}; } };
+/* gugus dari semua laporan terkirim 30 hari (A9, src/lapor_gugus.js), dipakai bersama Alun-alun dan halaman hari ini (lapor-kejadian LK-05) */
+async function gugusDasar(env, kini) {
+  const semua = await H.lpGugusBaris(env, PUBLIK, kini - 30 * HARI), per = new Map(semua.map(r => [r.nomor, r]));
+  const G = hitungGugus(semua.map(r => { const k = ringkasDari(r), w = k.wilayah || {};
+    return {nomor: r.nomor, jenis: r.jenis, lat: r.lat ?? null, lon: r.lon ?? null, kab: w.kab || null, desa: w.kode || null, t: k.waktuMs || r.terkirim, wa: r.wa, fotoSah: !!r.foto_sah, status: r.status}; }));
+  return {per, G, gk: new Map(G.gugus.map(g => [g.kode, g]))};
+}
 async function alunBuat(env, req, url, kini) {
   const batas = await lajuIP(env, req, "lapor.alun", [[JAM, 120]], kini); if (batas) return batas;
   const q = url.searchParams, prov = /^\d{2}$/.test(q.get("prov") || "") ? q.get("prov") : null, jenis = /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null;
-  const [tampil, semua, buktiPublik] = await Promise.all([H.lpAlunBaris(env, PUBLIK, prov, jenis), H.lpGugusBaris(env, PUBLIK, kini - 30 * HARI), bacaTabel(() => H.lpBuktiAlun(env, PUBLIK), [])]);
-  // gugus dari semua laporan terkirim 30 hari (A9, src/lapor_gugus.js); angka dampak laporan terbaru gugus, tidak dijumlah (D28, D85)
-  const per = new Map(semua.map(r => [r.nomor, r]));
-  const G = hitungGugus(semua.map(r => { const k = ringkasDari(r), w = k.wilayah || {};
-    return {nomor: r.nomor, jenis: r.jenis, lat: r.lat ?? null, lon: r.lon ?? null, kab: w.kab || null, desa: w.kode || null, t: k.waktuMs || r.terkirim, wa: r.wa, fotoSah: !!r.foto_sah, status: r.status}; }));
-  const gk = new Map(G.gugus.map(g => [g.kode, g])), terbaru = new Map();
+  const [tampil, {per, G, gk}, buktiPublik] = await Promise.all([H.lpAlunBaris(env, PUBLIK, prov, jenis), gugusDasar(env, kini), bacaTabel(() => H.lpBuktiAlun(env, PUBLIK), [])]);
+  const terbaru = new Map();   // angka dampak laporan terbaru gugus, tidak dijumlah (D28, D85)
   for (const r of tampil.filter(x => TAMPIL_ALUN.has(x.status))) {
     const b = barisAlun(r), kunci = G.per[r.nomor] || r.nomor, lama = terbaru.get(kunci);
     if (!lama || b.ms > lama.b.ms) terbaru.set(kunci, {r, b});
@@ -1103,6 +1106,54 @@ async function alunBuat(env, req, url, kini) {
   }));
   return kirim(200, {baris: hasil, jumlah: hasil.length});
 }
+
+/* ---------------- halaman publik kejadian hari ini (lapor-kejadian LK-05; A3, A4, A5; D5, D6, D7, D12; bawaan Q4, Q5, Q9, Q20) ----------------
+   Hanya kejadian laporan yang terverifikasi BPBD wilayah (terverifikasiBpbd) dengan verifikasi terakhir dalam 24 jam. Kartu dari kartuPublik (daftar putih).
+   Saklar LAPOR_HARI_INI=1; mati = 404. Tidak menulis D1 selain batas laju; cache tepi 60 detik. */
+const JENDELA_HARI_INI = 24 * JAM;   // HIPOTESIS Q9: 24 jam bergulir dari waktu verifikasi Valid terakhir
+const potong = (xs, n = 100) => Array.from({length: Math.ceil(xs.length / n)}, (_, i) => xs.slice(i * n, i * n + n));
+async function idPublik(env, id) {   // id kartu = HMAC berlabel domain dari id laporan paling awal, bukan sha polos (tinjauan keamanan LK-04); jaga() memastikan SESI_KUNCI ada
+  const enc = new TextEncoder(), hmac = k => crypto.subtle.importKey("raw", k, {name: "HMAC", hash: "SHA-256"}, false, ["sign"]);
+  const turunan = await crypto.subtle.sign("HMAC", await hmac(enc.encode(env.SESI_KUNCI)), enc.encode("lapor-hari-ini|"));
+  return hex(await crypto.subtle.sign("HMAC", await hmac(turunan), enc.encode(String(id)))).slice(0, 10);
+}
+async function hariIniBuat(env, req, url, kini) {
+  const batas = await lajuIP(env, req, "lapor.hari", [[JAM, 120]], kini); if (batas) return batas;
+  const q = url.searchParams, prov = q.get("prov") || null, jenis = q.get("jenis") || null;
+  const [calon, {per, G, gk}] = await Promise.all([H.lpPeriksaValidSejak(env, HARI_INI, kini - JENDELA_HARI_INI), gugusDasar(env, kini)]);
+  const kejadian = new Map();   // kode kejadian laporan (GL- gugus atau LA- tunggal) -> nomor anggota
+  for (const n of calon) { if (!per.has(n)) continue; const kode = G.per[n] || n; if (!kejadian.has(kode)) kejadian.set(kode, (gk.get(kode)?.anggota || [n]).filter(x => per.has(x))); }
+  const nomor = [...new Set([...kejadian.values()].flat())], semua = async (xs, f) => (await Promise.all(potong(xs).map(f))).flat();
+  /* tarikan dikunci ke nomor tiket anggota (LA-), bukan kode GL-: nomor urut GL- dihitung ulang tiap muat dan bisa bergeser ke gugus lain (tinjauan keamanan LK-05).
+     Kejadian laporan ditarik bila baris tarikan terakhir di antara semua anggotanya aktif; LK-07 menulis satu baris per anggota sekaligus. */
+  const [periksa, versi, tarik] = await Promise.all([semua(nomor, xs => H.lpPeriksaAkunNomor(env, HARI_INI, xs)), semua(nomor, xs => H.lpVersiTerakhir(env, HARI_INI, xs)),
+    semua(nomor, xs => H.lpTarikKode(env, HARI_INI, xs))]);
+  const P = new Map(), V = new Map(versi.map(v => [v.nomor, v.waktu])), T = new Map();
+  for (const r of periksa) (P.get(r.nomor) || P.set(r.nomor, []).get(r.nomor)).push({id: r.id, hasil: r.hasil, waktu: r.waktu, akun: r.jenis ? {jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, kab_nama: r.kab_nama} : null});
+  for (const r of tarik) (T.get(r.kode) || T.set(r.kode, []).get(r.kode)).push(r);
+  const pilih = [];
+  for (const [kode, anggota] of kejadian) {
+    const isi = anggota.map(n => { const r = per.get(n), k = ringkasDari(r); return {nomor: n, r, k, laporan: {status: r.status, wilayah: k.wilayah || null}, periksa: P.get(n) || [], versi: V.get(n) ? [{waktu: V.get(n)}] : []}; });
+    const kj = kejadianTerverifikasi(isi, anggota.flatMap(n => T.get(n) || []));   // Q20: Tidak valid, versi baru, atau tarikan aktif = turun pada muat berikut
+    if (!kj.terverifikasi || kj.waktu <= kini - JENDELA_HARI_INI) continue;
+    const sah = isi.filter(a => kj.anggota.includes(a.nomor)), akhir = sah.reduce((m, a) => (a.k.waktuMs || 0) > (m.k.waktuMs || 0) ? a : m);
+    if (prov && akhir.k.wilayah?.provKode !== prov || jenis && akhir.r.jenis !== jenis) continue;
+    pilih.push({sah, akhir, awal: isi[0], waktu: kj.waktu});
+  }
+  const baris = (await Promise.all(pilih.sort((a, z) => z.waktu - a.waktu).slice(0, 100).map(async x => {
+    const kd = x.akhir.k.wilayah?.kode, pusat = kd ? await wilayahDari(env).pusat(String(kd)).catch(() => null) : null;
+    return kartuPublik({id: await idPublik(env, x.awal.r.id), pusat, anggota: x.sah.map(a => { const p = terakhir(a.periksa);
+      return {r: a.r, verifikasi: {waktu: p.waktu, tingkat: p.akun?.tingkat, kab_nama: p.akun?.kab_nama || null}}; })});
+  }))).filter(Boolean);
+  return kirim(200, {baris, jumlah: baris.length, dibuat: kini, jendela_jam: JENDELA_HARI_INI / JAM});
+}
+const hariIni = (env, req, url, kini, ctx) => {   // saklar dibaca di rute, bukan di klien (D12); kunci cache hanya dari kueri yang sah, sama dengan Alun-alun
+  if (env.LAPOR_HARI_INI !== "1") return galat(404, "Halaman ini belum dibuka.");
+  if (!env.IP_SALT) return galat(503, "server belum dikonfigurasi (IP_SALT)");   // kunci batas laju per IP selalu bergaram (tinjauan guard-api LK-05)
+  const q = url.searchParams, j = q.get("jenis") || "", p = q.get("prov") || "", ks = [...q.keys()];
+  if (ks.some(k => k !== "jenis" && k !== "prov") || new Set(ks).size !== ks.length || j && !ID_JENIS.has(j) || p && !/^\d{2}$/.test(p)) return galat(400, "Saringan tidak dikenal.");   // parameter ganda ditolak: tiap varian kueri = kunci cache baru
+  return cacheTepi(req, ctx, 60, () => hariIniBuat(env, req, url, kini));
+};
 
 /* ---------------- data terbuka agregat (K62, D91-D93): akun kampus mitra aktif (sesi /kemitraan), staf, atau admin; tiap unduhan tercatat ---------------- */
 async function agregatGet(env, req, url, kini) {
@@ -1169,6 +1220,7 @@ const RUTE = {
   "GET /api/lapor/lacak": lacak,
   "GET /api/lapor/unduh/:x": unduh,
   "GET /api/lapor/alun": alun,
+  "GET /api/lapor/hari-ini": hariIni,
   "GET /api/lapor/bukti/:id": buktiGet,
   "GET /api/lapor/agregat": agregatGet,
   "GET /api/lapor/izin": izinGet,

@@ -18,7 +18,7 @@ const env = {DB: {prepare: sql => ({bind: (...a) => {
   const s = db.prepare(sql);
   return {run: async () => ({meta: {changes: s.run(...a).changes}}), all: async () => ({results: s.all(...a)}), first: async () => s.get(...a) ?? null};
 }})}};
-const STAF = H.pelakuLpStaf, PUBLIK = H.pelakuLpPublik, PELAPOR = H.pelakuLpPelapor;
+const STAF = H.pelakuLpStaf, PUBLIK = H.pelakuLpPublik, HARI = H.pelakuLpHari, PELAPOR = H.pelakuLpPelapor;
 
 uji("lk_tarik dan lk_usulan: 0170 idempoten, tanpa trigger, indeks ada", () => {
   db.exec(readFileSync(new URL("0170_lk_tarik_usulan.sql", DIR), "utf8"));
@@ -64,18 +64,19 @@ uji("lk_usulan: kode LU-, satu usulan per kejadian laporan dan putaran, anggota 
   assert.throws(() => ulang("LU-231126-15", 0));
 });
 
-uji("lk_tarik lewat hak.js: staf menulis, publik membaca, baris terakhir menentukan, cabut = baris baru", async () => {
+uji("lk_tarik lewat hak.js: staf menulis, rute hari ini membaca, baris terakhir menentukan, cabut = baris baru", async () => {
   const kode = "GL-241126-01";
   await H.lpStmtTarik(env, STAF, kode, true, "bocor nama", "Staf B", k + 1).run();
   await H.lpStmtTarik(env, STAF, kode, false, null, "Staf B", k + 2).run();
-  const r = await H.lpTarikKode(env, PUBLIK, [kode]);
+  const r = await H.lpTarikKode(env, HARI, [kode]);
   assert.deepEqual(r.map(x => x.aktif), [1, 0]);
   const lap = {status: "terkirim", wilayah: {provKode: "31", kabKode: "31.75", kab: "Jakarta Timur"}};
   const cek = [{id: 1, hasil: "valid", waktu: k, akun: {jenis: "bpbd", tingkat: "prov", prov: "31"}}];
   assert.equal(terverifikasiBpbd(lap, cek, [], r), true, "tarikan dicabut: tayang lagi");
   await H.lpStmtTarik(env, STAF, kode, true, null, "Staf B", k + 3).run();
-  assert.equal(terverifikasiBpbd(lap, cek, [], await H.lpTarikKode(env, PUBLIK, [kode])), false, "tarikan terakhir aktif: turun");
-  assert.deepEqual(await H.lpTarikKode(env, PUBLIK, []), []);
+  assert.equal(terverifikasiBpbd(lap, cek, [], await H.lpTarikKode(env, HARI, [kode])), false, "tarikan terakhir aktif: turun");
+  assert.deepEqual(await H.lpTarikKode(env, HARI, []), []);
+  await assert.rejects(H.lpTarikKode(env, PUBLIK, [kode]), /tidak berhak baca lk_tarik/, "pelaku publik umum tidak membaca tarikan");
 });
 
 uji("lk_usulan lewat hak.js: staf menulis dan membaca, usulan kedua gagal UNIQUE", async () => {
@@ -88,11 +89,19 @@ uji("lk_usulan lewat hak.js: staf menulis dan membaca, usulan kedua gagal UNIQUE
 });
 
 uji("lk_*: matriks hak menolak ubah, hapus, dan pelaku yang tidak berhak (append-only)", () => {
-  for (const t of ["lk_tarik", "lk_usulan"]) for (const a of ["ubah", "hapus"]) for (const p of [STAF, PUBLIK, PELAPOR, H.pelakuLpMesin, H.pelakuSistem, H.pelakuAdmin])
+  for (const t of ["lk_tarik", "lk_usulan"]) for (const a of ["ubah", "hapus"]) for (const p of [STAF, PUBLIK, HARI, PELAPOR, H.pelakuLpMesin, H.pelakuSistem, H.pelakuAdmin])
     assert.equal(H.boleh(p, t, a), false, `${p.peran} ${a} ${t}`);
   assert.equal(H.boleh(PUBLIK, "lk_tarik", "tambah"), false);
   assert.equal(H.boleh(PUBLIK, "lk_usulan", "baca"), false, "usulan tidak dibaca publik");
   assert.equal(H.boleh(PELAPOR, "lk_tarik", "baca"), false);
   assert.throws(() => H.lpStmtTarik(env, PUBLIK, "GL-241126-01", true, null, "x", k), /tidak berhak tambah lk_tarik/);
   assert.throws(() => H.lpStmtUsulan(env, PELAPOR, {}), /tidak berhak tambah lk_usulan/);
+});
+
+uji("lp_hari hanya membaca tabel halaman hari ini; pelaku publik umum tidak membaca pengecekan (tinjauan keamanan LK-05)", async () => {
+  for (const t of ["lapor_periksa", "lk_periksa_akun", "lk_tarik", "lapor_versi"]) assert.equal(H.boleh(HARI, t, "baca"), true, t);
+  for (const t of ["lapor_periksa", "lk_periksa_akun", "lk_tarik", "lapor_versi"]) for (const a of ["tambah", "ubah", "hapus"]) assert.equal(H.boleh(HARI, t, a), false, `${a} ${t}`);
+  for (const t of ["lapor_periksa", "lk_periksa_akun", "lk_tarik", "lk_usulan"]) assert.equal(H.boleh(PUBLIK, t, "baca"), false, t);
+  for (const t of ["lapor_tiket_riwayat", "lapor_pelapor", "lapor_balasan", "lapor_pesan", "lk_usulan"]) assert.equal(H.boleh(HARI, t, "baca"), false, t);
+  await assert.rejects(H.lpPeriksaDaftar(env, PUBLIK, "LA-231126-01"), /tidak berhak baca lapor_periksa/, "catatan dan oleh pengecekan tidak terbaca lewat pelaku publik");
 });

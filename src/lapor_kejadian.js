@@ -11,7 +11,7 @@ import {dasarPublik} from "./lapor_tampil.js";
 
 /* urutan "terakhir": waktu menurun, id menurun bila waktu sama (A3 butir 1) */
 const lebihBaru = (a, b) => a.waktu !== b.waktu ? a.waktu > b.waktu : a.id > b.id;
-const terakhir = xs => (xs || []).reduce((m, x) => !m || lebihBaru(x, m) ? x : m, null);
+export const terakhir = xs => (xs || []).reduce((m, x) => !m || lebihBaru(x, m) ? x : m, null);
 
 /* pemeriksa BPBD wilayah: akun pemda (cakupanMeja jenis "bpbd") yang wilayahnya mencakup wilayah laporan. Staf BNPB, admin, dan
    peran pelapor yang hanya mengaku (bpbd_klaim) tidak pernah cukup (Q4, D19). */

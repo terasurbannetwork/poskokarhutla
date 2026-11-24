@@ -1747,7 +1747,7 @@ Object.assign(MATRIKS, {
   lapor_balasan:       {lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
   lapor_kabar:         {lp_pelapor: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "tambah", "ubah"]},
   lapor_urut:          {lp_pelapor: ["tambah"]},
-  lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
+  lapor_versi:         {lp_pelapor: ["baca", "tambah"], lp_publik: ["baca"], lp_hari: ["baca"], lp_staf: ["baca", "tambah"], lp_mesin: ["baca"]},
   lapor_pdf:           {lp_pelapor: ["tambah"], lp_publik: ["baca"], lp_staf: ["tambah"], lp_mesin: ["baca", "ubah"]},
   lapor_bukti:         {lp_staf: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_mesin: ["baca"]},
   lapor_akses:         {lp_staf: ["tambah"]},
@@ -1773,10 +1773,10 @@ Object.assign(MATRIKS, {
   lj_akses:            {lj_tim: ["tambah"], lp_staf: ["baca", "tambah"]},
   titik_pengungsian:   {lj_tim: ["baca", "tambah", "ubah"]},   // LJ-06: register TP dibuat atau disinkronkan dari objek titik berkas (D6); tp* di atas tetap untuk rute meja
   lj_sesi:             {lj_tim: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["hapus"], lp_mesin: ["baca"], lp_cron: ["baca", "hapus"]},   // migrasi 0165: draf percakapan WA tahap 2 (D24), dibuang 24 jam
-  lapor_periksa:       {lp_staf: ["baca", "tambah"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108)
+  lapor_periksa:       {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0162: pengecekan lapangan, append-only (K69, D108); lp_hari = rute publik hari ini, hanya lewat lpPeriksaValidSejak dan lpPeriksaAkunNomor (LK-05)
   lapor_tindakan:      {lp_staf: ["baca", "tambah"]},   // migrasi 0162: jenis tindakan, append-only (K70, D112)
-  lk_periksa_akun:     {lp_staf: ["baca", "tambah"]},   // migrasi 0169: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
-  lk_tarik:            {lp_staf: ["baca", "tambah"], lp_publik: ["baca"]},   // migrasi 0170: tarikan dari halaman publik, append-only (LK-03, D8); publik membaca untuk menyaring kartu
+  lk_periksa_akun:     {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0169: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
+  lk_tarik:            {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0170: tarikan dari halaman publik, append-only (LK-03, D8); lp_hari membaca untuk menyaring kartu
   lk_usulan:           {lp_staf: ["baca", "tambah"]},   // migrasi 0170: usulan ke Buku Besar, append-only (LK-03, D9); status dari sk_kejadian_sumber (A7)
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
@@ -1823,6 +1823,8 @@ export const pwRingkasStaf = async (env, p, kini) => ({
   langganan: (await sedia(env, p, "pw_langganan", "baca", "SELECT kab_kode, count(*) n FROM pw_langganan GROUP BY kab_kode ORDER BY n DESC LIMIT 50").all()).results,
   peristiwa: (await sedia(env, p, "pw_peristiwa", "baca", "SELECT id, kab_kode, ringkas, dibuat, selesai, ok, gagal, mati FROM pw_peristiwa WHERE dibuat >= ?1 ORDER BY id DESC LIMIT 100").bind(kini - 7 * 864e5).all()).results});
 
+/* lp_hari = rute publik halaman hari ini (lapor-kejadian LK-05): pelaku sempit supaya pelebaran baca pengecekan tidak ikut ke rute publik lain (lp_publik) */
+export const pelakuLpHari = {peran: "lp_hari"};
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
 /* g = true: INSERT ... SELECT ... WHERE changes() > 0, hanya menulis bila pernyataan sebelumnya dalam batch (pembaruan sesi) benar-benar mengubah baris */
@@ -2072,6 +2074,13 @@ export const lpStmtPeriksaAkun = (env, p, t) => sedia(env, p, "lk_periksa_akun",
 export const lpPeriksaAkunNomor = async (env, p, nomor) => nomor.length ? (await sedia(env, p, "lk_periksa_akun", "baca",
   `SELECT r.id, r.nomor, r.hasil, r.waktu, a.jenis, a.tingkat, a.prov, a.kab, a.kab_nama FROM lapor_periksa r LEFT JOIN lk_periksa_akun a ON a.periksa_id = r.id
    WHERE r.nomor IN (${nomor.map((_, i) => "?" + (i + 1)).join(", ")}) ORDER BY r.nomor, r.waktu, r.id`).bind(...nomor).all()).results : [];
+/* halaman hari ini (lapor-kejadian LK-05, A4): nomor dengan pengecekan Valid sejak batas. ponytail: lapor_periksa hanya berindeks (nomor, waktu),
+   jadi ini memindai tabel penuh; tambah indeks (hasil, waktu) bila tabelnya melewati puluhan ribu baris (cache tepi 60 detik menahan bebannya) */
+export const lpPeriksaValidSejak = async (env, p, sejak) => (await sedia(env, p, "lapor_periksa", "baca",
+  "SELECT nomor FROM lapor_periksa WHERE hasil = 'valid' AND waktu > ?1 GROUP BY nomor ORDER BY max(waktu) DESC LIMIT 500").bind(sejak).all()).results.map(r => r.nomor);
+/* versi terakhir per nomor (A3 butir 4); ponytail: IN sampai 100 nomor per panggilan */
+export const lpVersiTerakhir = async (env, p, nomor) => nomor.length ? (await sedia(env, p, "lapor_versi", "baca",
+  `SELECT nomor, max(waktu) waktu FROM lapor_versi WHERE nomor IN (${nomor.map((_, i) => "?" + (i + 1)).join(", ")}) GROUP BY nomor`).bind(...nomor).all()).results : [];
 /* rekonsiliasi tiga sumber (lapor-ai LA-76): calon laporan terverifikasi dalam rentang terkirim, hanya yang punya paling sedikit satu
    pengecekan Valid; penentu akhirnya terverifikasiBpbd (LK-02). Tanpa wa, nama, teks: hanya kolom wilayah, jenis, waktu. */
 export async function lpRekonCalon(env, p, dari, sampai, prov) {
