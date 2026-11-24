@@ -1107,7 +1107,7 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-ld-pil.peringatan{background:color-mix(in oklab,var(--warn) 22%,var(--card))}
 .mj-ld-belum{color:var(--ink2);font-style:italic;margin:0}
 .mj-ld-ok{margin:0;font-weight:700;color:var(--ok-tx)}
-.mj-ld-tabel td:last-child{text-align:right}
+.mj-ld-tabel td:last-child{text-align:center}
 .mj-ld-tabel th{text-align:center}
 .mj-ld-tabel .mj-ld-grup td{background:var(--surface);font-weight:800;text-align:left}
 .mj-ld-klik{cursor:pointer}.mj-ld-klik:hover td{background:color-mix(in oklab,var(--brand2) 6%,var(--card))}

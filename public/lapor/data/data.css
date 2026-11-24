@@ -41,7 +41,7 @@ svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:
 .ld-tabel{width:100%;border-collapse:collapse;font-size:var(--fs-3)}
 .ld-tabel th{background:var(--head-bg);color:var(--on-head);text-align:center;padding:var(--jr-2) var(--jr-3);font-weight:600}
 .ld-tabel td{padding:var(--jr-2) var(--jr-3);border-bottom:1px solid var(--line)}
-.ld-tabel td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.ld-tabel td:last-child{text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
 .ld-tabel .ld-grup td{background:var(--surface);font-weight:700;text-align:left}
 .belum{color:var(--ink2);font-weight:400!important;font-style:italic}
 .ld-cacah,.ld-dl{display:grid;grid-template-columns:1fr auto;gap:var(--jr-1) var(--jr-3);margin:0}

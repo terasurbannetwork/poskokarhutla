@@ -18,8 +18,8 @@
 .ag-hapus:hover{background:var(--surface)}
 .ag-pesan{margin:0;font-size:var(--fs-3);color:var(--ink2);line-height:1.5}
 .ag-kartu .ex-tabel td:first-child{text-align:left}
-.ag-kartu .ex-tabel td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.ag-kartu .ex-tabel th:first-child{text-align:left}
+.ag-kartu .ex-tabel td:last-child{text-align:center;font-variant-numeric:tabular-nums}
+.ag-kartu .ex-tabel th:first-child{text-align:center}
 @media (max-width:1023px){.ag-kartu{position:fixed;z-index:30;left:12px;right:12px;bottom:12px;width:auto;max-height:45vh;overflow:auto;overscroll-behavior:contain}}
 .ag-kartu .ex-bd{grid-template-columns:minmax(0,1fr)}
 .ag-kartu .ex-tabel th,.ag-kartu .ex-tabel td{padding:8px 7px;font-size:var(--fs-2)}
