@@ -14,13 +14,20 @@
 <script src="/halaman_awal.js" data-tema></script>
 <link href="/inti/tema.css" rel="stylesheet">
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
-<link href="/lapor/meja.css?v=55" rel="stylesheet">
+<link href="/inti/kartu.css?v=2" rel="stylesheet">
+<link href="/inti/kalender.css" rel="stylesheet">
+<link href="/lapor/meja.css?v=76" rel="stylesheet">
 </head>
 <!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
      peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
      Nomor WA pelapor tampil di sini saja (D12). Di Worker rute /api/lapor/meja* wajib sesi staf (Q12); server tinjau lokal tanpa login. -->
 <body data-tanpa-keluar>
+<!-- tooltip langsung saat hover untuk tombol ikon (pemilik 24 Nov 2026), mesin bersama /inti/tip.js -->
+<div id="tip" role="tooltip"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="m-sirene" viewBox="0 0 24 24"><path d="M7 18v-5a5 5 0 0 1 10 0v5"/><path d="M5 18h14v3H5z"/><path d="M12 3v1.5M4.6 6.6l1 1M19.4 6.6l-1 1M2.5 13H4M20 13h1.5"/></symbol>
+  <symbol id="m-saring" viewBox="0 0 24 24"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8Z"/></symbol>
+  <symbol id="m-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="m-cari" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
   <symbol id="m-tutup" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
   <symbol id="m-orang" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
@@ -72,10 +79,16 @@
   <symbol id="b-gedung" viewBox="0 0 24 24"><path d="M4 21V10l8-6 8 6v11Z"/><path d="M10 21v-5h4v5"/><path d="M15 3c1 1.5 2.5 2 2.5 4a2 2 0 0 1-4 0"/></symbol>
 </svg>
 <main class="mj">
+  <!-- bilah atas khusus layar sempit (QA 24 Nov 2026: di HP menu samping tersembunyi, tidak ada jalan ke Daftar, antrean, tema): tombol buka laci menu + nama halaman -->
+  <div class="mj-hp-bar">
+    <button class="mj-hp-menu" id="bMenu" type="button" aria-label="Buka menu" aria-controls="menuSamping" aria-expanded="false"><svg aria-hidden="true"><use href="#m-menu"/></svg></button>
+    <img src="/lapor/lambang-bnpb.png" alt="" width="28" height="28"><b>Meja Laporan</b>
+  </div>
+  <div class="mj-laci-latar" id="laciLatar" hidden></div>
   <!-- menu samping ala dasbor (pemilik 19 Nov 2026 "kaya menu dashboard, di kiri sidebar"): tampilan, antrean kerja per status, pintu lain -->
   <!-- kepala navy dihapus (pemilik 19 Nov 2026 "header ini ga ada lagi"): merek di atas menu samping, segarkan di bawahnya -->
-  <aside class="mj-samping">
-    <div class="mj-merek-baris"><a class="mj-merek" href="/lapor/"><img src="/lapor/lambang-bnpb.png" alt="" width="36" height="36"><span>Meja Laporan<small>Pantau Bencana, khusus staf</small></span></a><button class="mj-tema" id="bTema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema terang/gelap"><svg class="mj-bulan" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="mj-matahari" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div>
+  <aside class="mj-samping" id="menuSamping">
+    <div class="mj-merek-baris"><a class="mj-merek" href="/lapor/"><img src="/lapor/lambang-bnpb.png" alt="" width="36" height="36"><span>Meja Laporan<small>Pantau Bencana, khusus staf</small></span></a><button class="mj-tema" id="bTema" type="button" aria-label="Ganti tema terang/gelap" data-tip="<b>Ganti tema terang/gelap</b>"><svg class="mj-bulan" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="mj-matahari" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div>
     <!-- label waktu data di menu samping (pemilik 19 Nov 2026 "agar di side bar"): titik hidup + jam; ketuk untuk memuat ulang -->
     <button class="mj-segar" id="bSegar" type="button" title="Muat ulang data"><i aria-hidden="true"></i><span id="waktuSegar">Memuat data...</span><svg aria-hidden="true"><use href="#m-segar"/></svg></button>
     <nav class="mj-nav" id="nav" aria-label="Menu meja laporan"></nav>
@@ -87,17 +100,17 @@
   <div class="mj-saring" id="saring" role="search" aria-label="Saring laporan">
     <!-- satu baris (pemilik 19 Nov 2026): cari, pil jenis berangka, waktu, saring cepat berangka; gaya chip /bnpb/dalops -->
     <label class="mj-cari"><svg aria-hidden="true"><use href="#m-cari"/></svg><input id="qCari" type="search" placeholder="Cari tiket, pelapor, nomor WA" aria-label="Cari laporan"></label>
-    <!-- pil jenis bergulir mendatar: panah kiri/kanan muncul hanya bila masih ada pil tersembunyi (pemilik 24 Nov 2026 "orang biasa gaakan tau ada tombol lagi") -->
+    <!-- HP: tombol ciut/buka pilihan saring (pemilik 24 Nov 2026 "di hp bisa toggle minimize/max panel2 yang menutupi peta"); angka = saringan aktif -->
+    <button class="mj-saring-lipat" id="bSaringLipat" type="button" aria-expanded="false" aria-controls="saring"><svg aria-hidden="true"><use href="#m-saring"/></svg><span>Saring</span><b id="nSaringAktif" hidden></b></button>
+    <!-- pil jenis bergulir mendatar: panah dipasang meja.js pasangGeser (pemilik 24 Nov 2026 "orang biasa gaakan tau ada tombol lagi") -->
     <div class="mj-jenis-wadah" id="wadahJenis">
-      <button class="mj-geser mj-geser-kiri" id="geserKiri" type="button" aria-label="Geser pilihan jenis ke kiri" title="Jenis lainnya" hidden><svg aria-hidden="true"><use href="#m-bawah"/></svg></button>
       <div class="mj-chip mj-chip-jenis" id="pilihJenis" role="group" aria-label="Saring jenis bencana"></div>
-      <button class="mj-geser mj-geser-kanan" id="geserKanan" type="button" aria-label="Geser pilihan jenis ke kanan" title="Jenis lainnya" hidden><svg aria-hidden="true"><use href="#m-bawah"/></svg></button>
     </div>
-    <div class="mj-chip" id="saringWaktu" role="group" aria-label="Periode laporan"></div>
+    <div class="mj-periode" id="saringWaktu" role="group" aria-label="Periode laporan"></div>
     <!-- saring cepat dan tombol ulang satu kelompok: bila baris tak muat, turun bersama, tombol ulang tidak tertinggal sendirian (pemilik 24 Nov 2026 "nanggung") -->
     <div class="mj-saring-ujung">
       <div class="mj-chip" id="saringCepat" role="group" aria-label="Saring cepat"></div>
-      <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" title="Hapus semua saringan"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
+      <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" data-tip="<b>Hapus semua saringan</b>"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
     </div>
   </div>
   <div class="mj-isi" id="isi">
@@ -126,6 +139,9 @@
 </main>
 <script src="/vendor/maplibre/maplibre-gl.js"></script>
 <script src="/bnpb/dampak_radius.js?v=2"></script>
-<script type="module" src="/lapor/meja.js?v=51"></script>
+<script src="/inti/format.js"></script>
+<script src="/inti/tip.js"></script>
+<script src="/inti/kalender.js"></script>
+<script type="module" src="/lapor/meja.js?v=69"></script>
 </body>
 </html>

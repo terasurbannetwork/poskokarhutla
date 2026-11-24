@@ -2,6 +2,8 @@
    Mesin TIDAK memuat data sendiri: adaptor memberi `muat`. Dialog dibuka dulu dengan teks memuat, isinya menyusul (INP).
    Kalender.buka({tombol, hariIni: "YYYY-MM-DD", terpilih, judul, muat: async () => ({jumlah: {tgl: n}}), bisa: t => bool, satuan: "gempa",
                   ket: "keterangan", terbanyak: {judul, n}, warna: "<warna bencana>", awal: "YYYY-MM-DD" (bulan paling awal, opsional), pilih: t => {}})
+   Mode rentang (opsional, /lapor/meja 24 Nov 2026): rentang: true, terpilih: ["dari", "sampai"], pilih: (dari, sampai) => {}.
+   Ketuk pertama = tanggal awal, ketuk kedua = tanggal akhir (urutan dibalik bila perlu; ketuk tanggal sama dua kali = satu hari). Tanpa `rentang` perilaku lama tidak berubah.
    Tingkat warna lv1..lv5 = campuran warna bencana (--kal-w) dengan --card; makin pekat makin banyak. Gaya di inti/kalender.css. */
 (() => {
 const BL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -29,7 +31,12 @@ function dialog() {
     if (e.target === D || e.target.closest(".kal-x")) return D.close();
     const g = e.target.closest("[data-geser]"); if (g && K) { K.bulan = bulanLain(K.bulan, Number(g.dataset.geser)); return gambar(); }
     const b = e.target.closest("[data-t]"); if (!b || b.disabled || !K) return;
-    const t = b.dataset.t, f = K.pilih; D.close(); if (f) tunda(() => f(t));
+    const t = b.dataset.t, f = K.pilih;
+    if (K.rentang) {
+      if (!K.mulai && !b.closest(".kal-top")) { K.mulai = t; return gambar(); }   // ketuk pertama: tandai awal, dialog tetap terbuka
+      const [a, z] = K.mulai && K.mulai <= t ? [K.mulai, t] : K.mulai ? [t, K.mulai] : [t, t]; D.close(); if (f) tunda(() => f(a, z)); return;
+    }
+    D.close(); if (f) tunda(() => f(t));
   });
   D.addEventListener("close", () => { const t = K?.tombol; K = null; t?.focus?.(); });
   document.body.appendChild(D); return D;
@@ -38,22 +45,25 @@ function gambar() {
   if (!K || !K.data) return;
   const d = dialog(), bulan = K.bulan, [y, m] = bulan.split("-").map(Number), {geser, hari} = grid(bulan), jm = K.data.jumlah || {}, hi = K.hariIni;
   const maks = Math.max(1, ...Object.values(jm).filter(Number.isFinite)), bisa = K.bisa || (t => t in jm), sat = K.satuan || "kejadian";
+  const [ra, rz] = K.rentang ? (K.mulai ? [K.mulai, K.mulai] : K.terpilih || []) : [];
+  const kelas = t => !K.rentang ? (t === K.terpilih ? " pilih" : "") : ra && t >= ra && t <= rz ? (t === ra || t === rz ? " pilih ujung" : " antara") : "";
   let sel = ""; for (let i = 0; i < geser; i++) sel += "<span></span>";
   for (let h = 1; h <= hari; h++) {
     const t = `${bulan}-${String(h).padStart(2, "0")}`, v = jm[t], ok = t <= hi && bisa(t), lv = tingkat(v, maks);
     sel += t > hi ? `<span class="kal-h nanti">${h}</span>`
-      : `<button type="button" class="kal-h lv${lv}${t === K.terpilih ? " pilih" : ""}" data-t="${t}"${ok ? "" : " disabled"} aria-label="${pendek(t)}${v != null ? ", " + angka(v) + " " + esc(sat) : ""}${ok ? "" : ", tidak tersedia"}"><b>${h}</b><i>${v != null ? rb(v) : ""}</i></button>`;
+      : `<button type="button" class="kal-h lv${lv}${kelas(t)}" data-t="${t}"${ok ? "" : " disabled"} aria-label="${pendek(t)}${v != null ? ", " + angka(v) + " " + esc(sat) : ""}${ok ? "" : ", tidak tersedia"}"><b>${h}</b><i>${v != null ? rb(v) : ""}</i></button>`;
   }
   const top = K.terbanyak ? teratas(jm, t => t <= hi && bisa(t), K.terbanyak.n || 6) : [];
   const awal = (K.awal || Object.keys(jm).sort()[0] || hi).slice(0, 7);
   d.innerHTML = `<div class="kal-kop"><b>${esc(K.judul)}</b><button type="button" class="kal-x" aria-label="Tutup">✕</button></div>
     <div class="kal-nav"><button type="button" data-geser="-1" aria-label="Bulan sebelumnya"${bulan <= awal ? " disabled" : ""}>‹</button><b>${BL[m - 1]} ${y}</b><button type="button" data-geser="1" aria-label="Bulan berikutnya"${bulan >= hi.slice(0, 7) ? " disabled" : ""}>›</button></div>
     <div class="kal-grid" role="grid"><span class="kal-hr">Sen</span><span class="kal-hr">Sel</span><span class="kal-hr">Rab</span><span class="kal-hr">Kam</span><span class="kal-hr">Jum</span><span class="kal-hr">Sab</span><span class="kal-hr">Min</span>${sel}</div>
+    ${K.rentang ? `<p class="kal-petunjuk">${K.mulai ? `Mulai ${pendek(K.mulai)}. Ketuk tanggal akhir, atau ketuk tanggal yang sama untuk satu hari.` : "Ketuk tanggal awal, lalu tanggal akhir."}</p>` : ""}
     ${K.ket ? `<p class="kal-ket">${esc(K.ket)}</p>` : ""}
     ${top.length ? `<div class="kal-top"><span>${esc(K.terbanyak.judul || "Terbanyak")}</span>${top.map(t => `<button type="button" data-t="${t}">${pendek(t)} <b>${rb(jm[t])}</b></button>`).join("")}</div>` : ""}`;
 }
 async function buka(o) {
-  const d = dialog(), n = K = {...o, judul: o.judul || "Pilih tanggal", data: null, bulan: (o.terpilih || o.hariIni).slice(0, 7)};
+  const d = dialog(), n = K = {...o, judul: o.judul || "Pilih tanggal", data: null, bulan: ((o.rentang ? o.terpilih?.[1] : o.terpilih) || o.hariIni).slice(0, 7), mulai: null};
   d.innerHTML = `<div class="kal-kop"><b>${esc(n.judul)}</b><button type="button" class="kal-x" aria-label="Tutup">✕</button></div><p class="kal-muat">Memuat jumlah ${esc(o.satuan || "kejadian")}…</p>`;
   if (o.warna) d.style.setProperty("--kal-w", o.warna); else d.style.removeProperty("--kal-w");
   if (!d.open) d.showModal();

@@ -1,7 +1,7 @@
 /* inti/kalender.css (PB-79): gaya dialog Kalender (inti/kalender.js), sama dengan .dlg-kal/.kal-* karhutla di index.html.
    Warna tingkat = campuran --kal-w (warna bencana dari registry, diisi mesin) dengan --card; tanpa literal warna. */
 .dlg-kal{--kal-w:var(--brand2);border:0;border-radius:18px;padding:14px;width:min(360px,calc(100vw - 24px));background:var(--card);color:var(--ink);box-shadow:var(--shadow-lg)}
-.dlg-kal::backdrop{background:color-mix(in oklch,var(--ink) 55%,transparent)}
+.dlg-kal::backdrop{background:color-mix(in oklch,var(--head-bg) 60%,transparent)}   /* --head-bg navy di kedua tema; --ink memutihkan latar di mode gelap */
 .kal-kop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .kal-kop b{font-size:0.9375rem}
 .kal-x{width:36px;height:36px;border:0;border-radius:10px;background:var(--surface);color:inherit;font-size:var(--fs-5);cursor:pointer}
@@ -29,3 +29,7 @@
 .kal-top span{font-size:var(--fs-1);font-weight:700;color:var(--ink2);width:100%}
 .kal-top button{border:1px solid var(--line);background:var(--card);color:inherit;border-radius:999px;padding:6px 10px;font:inherit;font-size:var(--fs-2);cursor:pointer}
 .kal-top b{color:var(--kal-w)}
+/* mode rentang (Kalender.buka({rentang: true})): ujung bercincin, hari di antaranya berlatar tipis brand */
+.kal-h.antara{background:color-mix(in oklch,var(--brand2) 26%,var(--card));box-shadow:inset 0 0 0 1.5px color-mix(in oklch,var(--brand2) 55%,transparent)}
+.kal-h.ujung{outline:2.5px solid var(--brand);outline-offset:1px;font-weight:800}
+.kal-petunjuk{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--surface);font-size:0.75rem;color:var(--ink);line-height:1.4}

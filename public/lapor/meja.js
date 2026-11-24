@@ -98,20 +98,39 @@ function gambarDarurat() {
     let n = 0; const asli = document.title.replace(/^\(\d+\) Darurat, /, ""), t = setInterval(() => { document.title = ++n % 2 ? `(${xs.length}) Darurat, ${asli}` : asli; if (n > 20 || !document.hidden && n > 6) { clearInterval(t); document.title = asli; } }, 900);
   }
   w.hidden = !xs.length; if (!xs.length) return w.replaceChildren();
-  const kepala = el("div", "mj-darurat-kepala"); kepala.append(el("i", null), el("b", null, `${xs.length} laporan darurat belum selesai`));
+  /* bisa dikecilkan (pemilik 24 Nov 2026 "agar bisa diminimize"); diingat di peramban, terbuka lagi sendiri bila ada darurat baru */
+  let kecil = false; try { const p = localStorage.getItem("meja-darurat-kecil"); kecil = p === null ? matchMedia("(max-width:900px)").matches : p === "1"; } catch {}   // HP: mulai ciut (masih satu baris merah)
+  if (baru.length) { kecil = false; try { localStorage.removeItem("meja-darurat-kecil"); } catch {} }
+  w.classList.toggle("kecil", kecil);
+  /* tampilan (pemilik 24 Nov 2026 "bagusin"): kepala = satu tombol buka/ciut (sirene berdenyut, jumlah, label aksi); kartu = ikon jenis, lokasi, pil korban/waktu/status */
+  const kepala = el("div", "mj-darurat-kepala"), lipat = el("button", "mj-darurat-buka"); lipat.type = "button";
+  lipat.setAttribute("aria-expanded", String(!kecil)); lipat.setAttribute("aria-controls", "daftarDarurat");
+  const sirene = el("span", "mj-darurat-sirene"); sirene.append(ikon("m-sirene"));
+  const judul = el("span", "mj-darurat-judul"); judul.append(el("b", null, `${xs.length} laporan darurat`), el("small", null, "belum selesai"));
+  const aksi = el("span", "mj-darurat-aksi"); aksi.append(kecil ? "Lihat" : "Ciutkan", ikon("m-bawah"));
+  lipat.append(sirene, judul, aksi);
+  lipat.addEventListener("click", () => { try { localStorage.setItem("meja-darurat-kecil", kecil ? "0" : "1"); } catch {} gambarDarurat(); });
+  kepala.append(lipat);
   if ("Notification" in window && Notification.permission === "default") { const izin = el("button", "mj-darurat-izin", "Nyalakan notifikasi"); izin.type = "button"; izin.addEventListener("click", () => Notification.requestPermission().then(() => gambarDarurat())); kepala.append(izin); }
-  const daftar = el("div", "mj-darurat-daftar");
-  for (const b of xs.slice(0, 8)) { const k = el("button", `mj-darurat-kartu${baru.includes(b) ? " baru" : ""}`); k.type = "button";
-    k.append(el("b", null, b.jenis || "Kejadian"), el("span", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.kec && `Kec. ${b.wilayah.kec}`, b.wilayah?.kab].filter(Boolean).join(", ") || "Lokasi belum terbaca"),
-      el("small", null, `${KORBAN_DARURAT[b.darurat.korban] || "Korban belum diisi"}, ${durasi(Math.round((Date.now() - b.terkirim) / 60000))} lalu, ${b.statusLabel}`));
-    k.addEventListener("click", () => bukaRinci(b.nomor)); daftar.append(k); }
+  const daftar = el("div", "mj-darurat-daftar"); daftar.id = "daftarDarurat";
+  const PIL_KORBAN = {ya: ["bahaya", "Ada korban atau terjebak"], tidak: ["netral", "Tanpa korban"], belum_tahu: ["waspada", "Korban belum diketahui"]};
+  for (const b of xs.slice(0, 8)) { const k = el("button", `mj-darurat-kartu${baru.includes(b) ? " baru" : ""}`); k.type = "button"; k.setAttribute("aria-label", `Buka ${b.nomor}, ${b.jenis || "kejadian"}`);
+    const ik = el("span", "mj-darurat-jenis"); ik.style.setProperty("--jn", warnaJenis(b.jenisId)); ik.append(ikon(ikonJenis(b.jenisId)));
+    const isi = el("span", "mj-darurat-isi"), w0 = b.wilayah || {};
+    const [kls, teks] = PIL_KORBAN[b.darurat.korban] || ["waspada", "Korban belum diisi"];
+    const pil = el("span", "mj-darurat-pil"), pk = el("i", kls, teks), pw = el("i", "netral"), ps = el("i", "status");
+    pw.append(ikon("m-log"), `${durasi(Math.round((Date.now() - b.terkirim) / 60000))} lalu`); ps.style.setProperty("--st", WARNA[b.status] || "var(--ink2)"); ps.append(b.statusLabel);
+    pil.append(pk, pw, ps);
+    isi.append(el("b", null, b.jenis || "Kejadian"), el("span", null, [w0.desa, w0.kec && `Kec. ${w0.kec}`, w0.kab].filter(Boolean).join(", ") || "Lokasi belum terbaca"), pil);
+    const ke = el("span", "mj-darurat-ke"); ke.append(ikon("m-bawah"));
+    k.append(ik, isi, ke); k.addEventListener("click", () => bukaRinci(b.nomor)); daftar.append(k); }
   w.replaceChildren(kepala, daftar);
 }
 
 /* saringan bertingkat: dasar (periode, cari, kab/kota, cepat) -> + status -> + jenis. Jumlah di tiap kontrol dihitung tanpa saringannya sendiri. */
 const dasar = () => {
-  const q = $("qCari").value.trim().toLowerCase(), hari = periode0(), batas = hari ? Date.now() - hari * 864e5 : 0;
-  return semua.filter(b => (!batas || b.terkirim >= batas) && (!saringKab || b.wilayah?.kab === saringKab) && (!cepat.has("korban") || adaKorban(b)) && (!cepat.has("gugus") || b.gugus) && (!cepat.has("foto") || b.foto > 0) &&
+  const q = $("qCari").value.trim().toLowerCase(), hari = periode0(), batas = typeof hari === "number" && hari ? Date.now() - hari * 864e5 : 0;
+  return semua.filter(b => (!batas || b.terkirim >= batas) && (!rentang || (wibIso(b.terkirim) >= rentang[0] && wibIso(b.terkirim) <= rentang[1])) && (!saringKab || b.wilayah?.kab === saringKab) && (!cepat.has("korban") || adaKorban(b)) && (!cepat.has("gugus") || b.gugus) && (!cepat.has("foto") || b.foto > 0) &&
     (!q || [b.nomor, b.nama, b.wa, b.wilayah?.kab, b.wilayah?.desa, b.wilayah?.prov, b.jenis, b.subjenis].filter(Boolean).join(" ").toLowerCase().includes(q)));
 };
 const cocokStatus = b => !saringStatus || saringStatus.includes(b.status), cocokJenis = b => !saringJenis.size || saringJenis.has(b.jenisId);
@@ -138,6 +157,21 @@ $("bTema")?.addEventListener("click", () => {
   const akar = document.documentElement, gelap = akar.dataset.theme ? akar.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches, t = gelap ? "light" : "dark";
   akar.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {}
 });
+/* laci menu di layar sempit (QA 24 Nov 2026): menu samping yang sama dibuka sebagai laci; tutup lewat latar, Escape, atau memilih menu */
+{ const bm = $("bMenu"), latar = $("laciLatar"), laci = $("menuSamping");
+  const atur = buka => { document.body.classList.toggle("mj-laci-buka", buka); latar.hidden = !buka; bm.setAttribute("aria-expanded", String(buka)); bm.setAttribute("aria-label", buka ? "Tutup menu" : "Buka menu");
+    if (buka) laci.querySelector("button, a")?.focus(); };
+  bm.addEventListener("click", () => atur(!document.body.classList.contains("mj-laci-buka")));
+  latar.addEventListener("click", () => atur(false));
+  addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("mj-laci-buka")) { atur(false); bm.focus(); } });
+  $("nav").addEventListener("click", e => { if (e.target.closest(".mj-nav-b") && matchMedia("(max-width:900px)").matches) atur(false); }); }
+/* tinggi baris saring di atas peta -> --tinggi-atas, supaya Ringkasan tidak tertutup saat saring bertumpuk (HP) */
+{ const atas = document.querySelector(".mj-peta-atas"), wadah = $("bagPeta");
+  if (atas && wadah && "ResizeObserver" in window) new ResizeObserver(() => wadah.style.setProperty("--tinggi-atas", `${Math.round(atas.getBoundingClientRect().height)}px`)).observe(atas); }
+/* HP: pilihan saring mulai ciut (cari tetap tampil); ketuk "Saring" untuk membuka */
+{ const sr = $("saring"), b = $("bSaringLipat"), atur = buka => { sr.classList.toggle("ciut", !buka); b.setAttribute("aria-expanded", String(buka)); b.setAttribute("aria-label", buka ? "Ciutkan pilihan saring" : "Tampilkan pilihan saring"); };
+  atur(!matchMedia("(max-width:900px)").matches); b.addEventListener("click", () => atur(sr.classList.contains("ciut"))); }
+window.pasangTip?.();   // tooltip [data-tip] sekali per halaman
 addEventListener("hashchange", () => pindahTampil(location.hash === "#daftar" ? "daftar" : "peta"));
 
 /* ---------- menu samping: tampilan, antrean kerja (= saring status), pintu lain ---------- */
@@ -187,39 +221,80 @@ function gambarAngka(daftar) {
 function gambarJenis(daftar) {
   const n = id => daftar.filter(b => b.jenisId === id).length, tb = (id, t, ik, k) => {
     const b = el("button"); b.type = "button"; if (id) b.style.setProperty("--jn", warnaJenis(id));
-    b.setAttribute("aria-pressed", String(id ? saringJenis.has(id) : !saringJenis.size)); b.setAttribute("aria-label", `${t}, ${F(k)} laporan`); b.title = `${t}: ${F(k)} laporan`;
-    b.disabled = !!id && !k && !saringJenis.has(id); b.append(ikon(ik), ...(k || !id || saringJenis.has(id) ? [el("span", null, t), el("b", null, F(k))] : []));
-    b.addEventListener("click", () => { if (!id) saringJenis.clear(); else saringJenis.has(id) ? saringJenis.delete(id) : saringJenis.add(id); gambar(); }); return b; };
+    b.setAttribute("aria-pressed", String(id ? saringJenis.has(id) : !saringJenis.size)); b.setAttribute("aria-label", `${t}, ${F(k)} laporan`); b.dataset.tip = `<b>${t}</b><br>${F(k)} laporan`;   // tooltip langsung (/inti/tip.js), bukan title yang tertunda
+    /* bukan disabled: tombol disabled tidak menerima hover, tooltip jadi tidak muncul */
+    const mati = !!id && !k && !saringJenis.has(id); if (mati) b.setAttribute("aria-disabled", "true");
+    b.append(ikon(ik), ...(k || !id || saringJenis.has(id) ? [el("span", null, t), el("b", null, F(k))] : []));
+    b.addEventListener("click", () => { if (mati) return; if (!id) saringJenis.clear(); else saringJenis.has(id) ? saringJenis.delete(id) : saringJenis.add(id); gambar(); }); return b; };
   $("pilihJenis").replaceChildren(tb(null, "Semua", "m-semua", daftar.length), ...Object.entries(JENIS).map(([id, [t, ik]]) => tb(id, t, ik, n(id))));
-  tandaGeserJenis();
 }
-/* panah geser pil jenis: tampil hanya bila masih ada pil tersembunyi di sisi itu; roda mouse menggeser mendatar */
-function tandaGeserJenis() {
-  const w = $("wadahJenis"), r = $("pilihJenis"); if (!w || !r) return;
-  const kiri = r.scrollLeft > 2, kanan = r.scrollLeft + r.clientWidth < r.scrollWidth - 2;
-  w.classList.toggle("ada-kiri", kiri); w.classList.toggle("ada-kanan", kanan); $("geserKiri").hidden = !kiri; $("geserKanan").hidden = !kanan;
+/* deretan geser samping (pemilik 24 Nov 2026 "orang biasa gaakan tau ada tombol lagi"): pola pasangGeser /lapor (public/lapor/lapor.js).
+   Panah kiri/kanan muncul hanya bila masih ada isi ke arah itu, tanpa pinggir memudar; roda mouse menggeser ke samping.
+   Panah jadi saudara deretan (deretan diisi ulang dengan replaceChildren). Menempel otomatis pada deretan baru (pop-up rincian, tabel). */
+const GESER = "#pilihJenis, #saringCepat, #legenda, .mj-tabel-gulung";
+function pasangGeser(d) {
+  if (!d || d.dataset.geser) return; d.dataset.geser = "1";
+  const induk = d.parentElement; if (getComputedStyle(induk).position === "static") induk.style.position = "relative";
+  const buat = (arah, label) => { const b = el("button", `mj-geser-panah mj-geser-${arah}`); b.type = "button"; b.hidden = true; b.setAttribute("aria-label", label); b.dataset.tip = "<b>Masih ada lagi</b><br>klik untuk menggeser"; b.append(ikon("m-panah"));
+    b.addEventListener("click", () => { const tuju = Math.max(0, Math.min(d.scrollWidth - d.clientWidth, d.scrollLeft + (arah === "kiri" ? -1 : 1) * Math.max(120, d.clientWidth * .7)));
+      d.scrollTo({left: tuju, behavior: "smooth"}); setTimeout(() => { if (Math.abs(d.scrollLeft - tuju) > 2) d.scrollLeft = tuju; }, 450); });
+    d.after(b); return b; };
+  const kiri = buat("kiri", "Geser ke kiri"), kanan = buat("kanan", "Geser ke kanan"); let antre = 0;
+  const atur = () => { antre = 0; const sisaKiri = d.scrollLeft > 2, sisaKanan = d.scrollLeft + d.clientWidth < d.scrollWidth - 2, tampak = d.offsetParent !== null;
+    kiri.hidden = !(tampak && sisaKiri); kanan.hidden = !(tampak && sisaKanan); if (!tampak) return;
+    const t = d.offsetTop + Math.min(d.offsetHeight / 2, 60); kiri.style.top = kanan.style.top = `${t}px`;
+    kiri.style.left = `${d.offsetLeft + 4}px`; kanan.style.left = `${d.offsetLeft + d.offsetWidth - 4}px`; };
+  const jadwal = () => { if (!antre) antre = requestAnimationFrame(atur); };
+  d.addEventListener("scroll", jadwal, {passive: true});
+  d.addEventListener("wheel", e => { if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; const maks = d.scrollWidth - d.clientWidth;
+    if (maks <= 2 || (e.deltaY < 0 && d.scrollLeft <= 0) || (e.deltaY > 0 && d.scrollLeft >= maks - 1)) return; e.preventDefault(); d.scrollLeft += e.deltaY; }, {passive: false});
+  new ResizeObserver(jadwal).observe(d); new MutationObserver(jadwal).observe(d, {childList: true, subtree: true}); addEventListener("resize", jadwal); jadwal();
 }
-{
-  const r = $("pilihJenis"), geser = arah => r.scrollBy({left: arah * Math.max(120, r.clientWidth * .7)});
-  $("geserKiri")?.addEventListener("click", () => geser(-1)); $("geserKanan")?.addEventListener("click", () => geser(1));
-  r?.addEventListener("scroll", tandaGeserJenis, {passive: true});
-  r?.addEventListener("wheel", e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && r.scrollWidth > r.clientWidth) { e.preventDefault(); r.scrollLeft += e.deltaY; } }, {passive: false});
-  if (r && "ResizeObserver" in window) new ResizeObserver(tandaGeserJenis).observe(r);
-}
+{ let antre = 0; const sapu = () => { antre = 0; document.querySelectorAll(GESER).forEach(pasangGeser); };
+  new MutationObserver(() => { if (!antre) antre = requestAnimationFrame(sapu); }).observe(document.body, {childList: true, subtree: true}); sapu(); }
 const CEPAT = [["korban", "m-korban", "Ada korban"], ["foto", "m-foto", "Ada foto"], ["gugus", "m-gugus", "Bergugus"]];
 /* waktu: tombol, semua pilihan tampil (pemilik 19 Nov 2026 "tampilin aja semua pilihan ini") */
-let periode = 0;
+let periode = 0, rentang = null;   // rentang = ["YYYY-MM-DD", "YYYY-MM-DD"] tanggal WIB dari kalender; menggantikan periode saat terisi
 const PERIODE = [[1, "24 jam"], [7, "7 hari"], [30, "30 hari"], [0, "Semua waktu"]];
-const periode0 = () => periode;
-function gambarPilihan() {
-  $("saringWaktu").replaceChildren(...PERIODE.map(([v, t]) => { const b = el("button", null, t); b.type = "button"; b.setAttribute("aria-pressed", String(periode === v));
-    b.addEventListener("click", () => { periode = v; gambar(); }); return b; }));
-  $("bUlang").disabled = !(saringJenis.size || saringStatus || saringKab || cepat.size || $("qCari").value || periode);
+const periode0 = () => rentang ? null : periode;
+const wibIso = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
+const BLN_P = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], tglP = iso => +iso.slice(8) + " " + BLN_P[+iso.slice(5, 7) - 1];
+const labelRentang = ([a, z]) => a === z ? tglP(a) : a.slice(0, 7) === z.slice(0, 7) ? `${+a.slice(8)}–${tglP(z)}` : `${tglP(a)} – ${tglP(z)}`;
+/* pilih tanggal (pemilik 24 Nov 2026 "date picker yang bagus"): kalender inti mode rentang; angka per hari = laporan sesuai saringan lain kecuali waktu */
+function bukaKalender(tombol) {
+  if (!window.Kalender) return;
+  const simpan = rentang; rentang = null; const pr = periode; periode = 0; const dasarTanpaWaktu = dasar(); rentang = simpan; periode = pr;
+  Kalender.buka({tombol, rentang: true, hariIni: wibIso(Date.now()), terpilih: rentang || undefined, judul: "Pilih rentang tanggal", satuan: "laporan",
+    awal: dasarTanpaWaktu.length ? wibIso(Math.min(...dasarTanpaWaktu.map(b => b.terkirim))) : undefined, bisa: () => true,
+    muat: async () => { const jumlah = {}; for (const b of dasarTanpaWaktu) { const t = wibIso(b.terkirim); jumlah[t] = (jumlah[t] || 0) + 1; } return {jumlah}; },
+    terbanyak: {judul: "Hari dengan laporan terbanyak", n: 5},
+    pilih: (a, z) => { rentang = [a, z]; periode = 0; gambar(); }});
 }
+/* waktu = satu tombol dropdown (pemilik 24 Nov 2026 "bikin dropdown aja biar hemat space"): label = pilihan aktif; menu berisi periode cepat dan Pilih tanggal (kalender inti) */
+let waktuBuka = false;
+function tutupWaktu() { if (waktuBuka) { waktuBuka = false; gambarPilihan(); } }
+function gambarPilihan() {
+  const label = rentang ? labelRentang(rentang) : PERIODE.find(([v]) => v === periode)?.[1] || "Semua waktu";
+  const tb = el("button", `mj-waktu-b${periode || rentang ? " aktif" : ""}`); tb.type = "button"; tb.id = "bWaktu";
+  tb.setAttribute("aria-haspopup", "menu"); tb.setAttribute("aria-expanded", String(waktuBuka)); tb.setAttribute("aria-label", `Periode laporan: ${label}`);
+  tb.append(ikon("m-kalender"), el("span", null, label), ikon("m-bawah"));
+  tb.addEventListener("click", () => { waktuBuka = !waktuBuka; gambarPilihan(); if (waktuBuka) $("menuWaktu").querySelector("[aria-checked=true], button")?.focus(); });
+  const menu = el("div", "mj-waktu-menu"); menu.id = "menuWaktu"; menu.setAttribute("role", "menu"); menu.hidden = !waktuBuka;
+  const item = (teks, pilih, aktif, ik) => { const m = el("button", "mj-waktu-i"); m.type = "button"; m.setAttribute("role", "menuitemradio"); m.setAttribute("aria-checked", String(aktif));
+    m.append(...(ik ? [ikon(ik)] : [el("i")]), el("span", null, teks)); if (aktif) m.append(ikon("m-centang")); m.addEventListener("click", pilih); return m; };
+  menu.append(...PERIODE.map(([v, t]) => item(t, () => { periode = v; rentang = null; waktuBuka = false; gambar(); $("bWaktu")?.focus(); }, !rentang && periode === v)),
+    el("hr"), item(rentang ? `Rentang ${labelRentang(rentang)}` : "Pilih tanggal...", () => { waktuBuka = false; gambarPilihan(); bukaKalender($("bWaktu")); }, !!rentang, "m-kalender"));
+  $("saringWaktu").replaceChildren(tb, menu);
+  $("bUlang").disabled = !(saringJenis.size || saringStatus || saringKab || cepat.size || $("qCari").value || periode || rentang);
+  const nAktif = saringJenis.size + cepat.size + (periode || rentang ? 1 : 0); $("nSaringAktif").hidden = !nAktif; $("nSaringAktif").textContent = nAktif;
+}
+document.addEventListener("click", e => { if (waktuBuka && !e.composedPath().some(n => n.id === "saringWaktu")) tutupWaktu(); });   // jalur asli: tombol digambar ulang saat diklik, target sudah lepas dari halaman
+document.addEventListener("keydown", e => { if (e.key === "Escape" && waktuBuka) { tutupWaktu(); $("bWaktu")?.focus(); } });
 function gambarCepat(daftar) {   // chip berangka ala dalops; angka = laporan tersaring yang cocok
   const uji = {korban: adaKorban, foto: b => b.foto > 0, gugus: b => !!b.gugus};
-  $("saringCepat").replaceChildren(...CEPAT.map(([k, ik, t]) => { const b = el("button"); b.type = "button"; b.setAttribute("aria-pressed", String(cepat.has(k)));
-    b.append(ikon(ik), el("span", null, t), el("b", null, F(daftar.filter(uji[k]).length)));
+  $("saringCepat").replaceChildren(...CEPAT.map(([k, ik, t]) => { const b = el("button"), n = daftar.filter(uji[k]).length; b.type = "button"; b.setAttribute("aria-pressed", String(cepat.has(k)));
+    b.dataset.tip = `<b>${t}</b><br>${F(n)} laporan`; b.setAttribute("aria-label", `${t}, ${F(n)} laporan`);   // nama tetap terbaca saat label disembunyikan di layar sedang
+    b.append(ikon(ik), el("span", null, t), el("b", null, F(n)));
     b.addEventListener("click", () => { cepat.has(k) ? cepat.delete(k) : cepat.add(k); gambar(); }); return b; }));
 }
 
@@ -254,7 +329,11 @@ function pasPeta(ada = tersaringSekarang().filter(b => b.lat != null), durasi = 
   const bb = new maplibregl.LngLatBounds(); for (const b of ada) bb.extend([b.lon, b.lat]);
   // ruang untuk panel: ringkasan kiri, status kanan, deret jenis atas, legenda bawah (panel yang tersembunyi di layar sempit tidak dihitung)
   const w = document.querySelector(".mj-kiri-peta")?.offsetWidth ? document.querySelector(".mj-kiri-peta").offsetWidth + 24 : 40;
-  peta.fitBounds(bb, {padding: {top: 100, bottom: 100, left: 60, right: w}, maxZoom: 11, duration: durasi});
+  /* layar sempit (QA 24 Nov 2026): Ringkasan ada di bawah baris saring, bukan di samping; padding samping ala desktop menyisakan ~40 px dan peta terlempar ke Pasifik */
+  const hp = matchMedia("(max-width:900px)").matches, atas = document.querySelector(".mj-peta-atas")?.offsetHeight || 64;
+  const tinggi = peta.getContainer().clientHeight, dr = $("pitaDarurat"), bawah = 70 + (hp && dr && !dr.hidden ? dr.offsetHeight + 12 : 0);   // panel darurat menutup bagian bawah peta di HP
+  const pad = hp ? {top: Math.min(atas + 70, tinggi * .4), bottom: Math.min(bawah, tinggi * .4), left: 24, right: 24} : {top: 100, bottom: 100, left: 60, right: w};
+  peta.fitBounds(bb, {padding: pad, maxZoom: 11, duration: durasi});
 }
 /* pop-up titik (pemilik 19 Nov 2026 "bagusin lagi"): foto lebar dengan nomor tiket di atasnya, dampak berlabel (angka tanpa label tidak terbaca),
    aksi: Buka rincian selebar kartu, Arah dan Bagikan sejajar di bawahnya */
@@ -389,11 +468,15 @@ function gambarRingkas(daftar) {
     ...(tanpa ? [el("p", "mj-rk-catat", `${F(tanpa)} laporan tanpa titik lokasi, tidak tampil di peta`)] : []),
     ...(atas.length ? [el("p", "mj-rk-label", "Kab/kota terbanyak"), ol] : []));
 }
+let legendaBuka = !matchMedia("(max-width:900px)").matches;   // HP: legenda mulai ciut jadi satu pil (tombolnya hanya tampil di layar sempit)
 function gambarLegenda(daftar) {
   const ids = [...new Set(daftar.map(b => b.jenisId).filter(Boolean))];
   const jn = ids.map(id => { const s = el("span"), i = el("i", "mj-lg-jn"); i.style.setProperty("--jn", warnaJenis(id)); i.append(ikon(ikonJenis(id))); s.append(i, JENIS[id]?.[0] || id); return s; });
   const st = Object.entries(LABEL).map(([k, v]) => { const s = el("span"), i = el("i", "mj-lg-st"); i.style.setProperty("--st", WARNA[k]); s.append(i, v); return s; });
-  $("legenda").replaceChildren(...(jn.length ? [el("b", null, "Jenis"), ...jn, el("hr")] : []), el("b", null, "Status"), ...st);
+  const lp = el("button", "mj-lg-lipat"); lp.type = "button"; lp.setAttribute("aria-expanded", String(legendaBuka)); lp.setAttribute("aria-label", legendaBuka ? "Ciutkan legenda" : "Tampilkan legenda");
+  lp.append(legendaBuka ? ikon("m-tutup") : "Legenda"); lp.addEventListener("click", () => { legendaBuka = !legendaBuka; gambarLegenda(daftar); });
+  $("legenda").classList.toggle("ciut", !legendaBuka);
+  $("legenda").replaceChildren(lp, ...(jn.length ? [el("b", null, "Jenis"), ...jn, el("hr")] : []), el("b", null, "Status"), ...st);
 }
 
 /* ---------- tabel ---------- */
@@ -835,7 +918,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
 }
 
 $("qCari").addEventListener("input", () => gambar());
-$("bUlang").addEventListener("click", () => { saringJenis.clear(); saringStatus = null; saringKab = ""; cepat.clear(); $("qCari").value = ""; periode = 0; gambar(); });
+$("bUlang").addEventListener("click", () => { saringJenis.clear(); saringStatus = null; saringKab = ""; cepat.clear(); $("qCari").value = ""; periode = 0; rentang = null; gambar(); });
 $("bPas").addEventListener("click", () => pasPeta());
 $("bSegar").addEventListener("click", () => muat());
 /* lebar menu samping bisa ditarik (memori sidebar-bisa-ditarik; pola pasangTarik di public/bnpb/operasi_lapangan.js); peta menyesuaikan lewat ResizeObserver */

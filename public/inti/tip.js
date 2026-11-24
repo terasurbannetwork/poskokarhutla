@@ -29,5 +29,5 @@ function rapikanTip(h, polaSatu = Tip.polaSatu) {
 function pasangTip() { if (pasangTip.sudah) return; pasangTip.sudah = true; const t = $("#tip");   // sekali per halaman: dipanggil tiap tab/panel
   document.addEventListener("pointerover", e => { const x = e.target.closest?.("[data-tip]"); if (!x) return t.classList.remove("on"); wadahTip(); t.innerHTML = rapikanTip(x.dataset.tip.replace(/<br>\s*klik untuk[^<]*/gi, "")); t.classList.remove("kartu"); t.classList.add("on"); });
   document.addEventListener("pointermove", e => { if (!t.classList.contains("on")) return; const w = t.offsetWidth, hh = t.offsetHeight;
-    t.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; t.style.top = Math.max(8, e.clientY - hh - 12) + "px"; });
+    t.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; t.style.top = (e.clientY - hh - 12 >= 8 ? e.clientY - hh - 12 : Math.min(innerHeight - hh - 8, e.clientY + 20)) + "px"; });   // ruang atas kurang (kontrol di tepi atas layar): pindah ke bawah kursor, jangan menutupi kontrolnya
   document.addEventListener("scroll", () => t.classList.remove("on"), true); }

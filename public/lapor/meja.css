@@ -907,20 +907,163 @@ body{display:flex;flex-direction:column;height:100dvh}
 :root[data-theme="dark"] .mj-tema .mj-bulan{display:none}
 :root[data-theme="dark"] .mj-tema .mj-matahari{display:block}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mj-tema .mj-bulan{display:none}:root:not([data-theme="light"]) .mj-tema .mj-matahari{display:block}}
-/* pil jenis kepotong (pemilik 24 Nov 2026): wadah dengan panah geser dan pinggir memudar; tetap satu baris */
+/* pil jenis dan deretan geser lain: panah dari meja.js pasangGeser (pola /lapor .lp-geser-panah), tanpa pinggir memudar (pemilik 24 Nov 2026) */
 .mj-jenis-wadah{position:relative;display:flex;flex:1 1 auto;min-width:0}
-.mj-jenis-wadah .mj-chip-jenis{flex:1 1 auto;scroll-behavior:smooth}
-.mj-jenis-wadah.ada-kanan .mj-chip-jenis{-webkit-mask-image:linear-gradient(to right,var(--card) calc(100% - 56px),transparent);mask-image:linear-gradient(to right,var(--card) calc(100% - 56px),transparent)}
-.mj-jenis-wadah.ada-kiri .mj-chip-jenis{-webkit-mask-image:linear-gradient(to left,var(--card) calc(100% - 56px),transparent);mask-image:linear-gradient(to left,var(--card) calc(100% - 56px),transparent)}
-.mj-jenis-wadah.ada-kiri.ada-kanan .mj-chip-jenis{-webkit-mask-image:linear-gradient(to right,transparent,var(--card) 56px,var(--card) calc(100% - 56px),transparent);mask-image:linear-gradient(to right,transparent,var(--card) 56px,var(--card) calc(100% - 56px),transparent)}
-.mj-geser{position:absolute;top:50%;z-index:1;display:grid;place-items:center;width:26px;height:26px;padding:0;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);box-shadow:var(--mj-bayang);cursor:pointer;transform:translateY(-50%)}
-.mj-geser[hidden]{display:none}
-.mj-geser:hover{color:var(--brand2);border-color:var(--brand2)}
-.mj-geser svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.mj-geser-kiri{left:2px}.mj-geser-kiri svg{transform:rotate(90deg)}
-.mj-geser-kanan{right:2px}.mj-geser-kanan svg{transform:rotate(-90deg)}
+.mj-jenis-wadah .mj-chip-jenis{flex:1 1 auto}
+.mj-geser-panah{position:absolute;z-index:4;display:grid;place-items:center;width:28px;height:28px;padding:0;border:1.5px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);box-shadow:var(--mj-bayang);cursor:pointer;transform:translateY(-50%)}
+.mj-geser-panah[hidden]{display:none!important}
+.mj-geser-kanan{transform:translate(-100%,-50%)}
+.mj-geser-kiri svg{transform:rotate(180deg)}
+.mj-geser-panah:hover{color:var(--brand2);border-color:var(--brand2)}
+.mj-geser-panah svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 /* baris saring tidak memotong: pil jenis minimal ~3 pil + panah; kelompok yang tak muat turun ke baris kedua, bukan terpotong di tepi */
 .mj-peta-atas .mj-saring,.mj-tabel-wadah .mj-saring{flex-wrap:wrap}
 .mj-jenis-wadah{flex:1 1 260px;min-width:220px}
 .mj-saring-ujung{display:flex;flex:none;align-items:center;gap:8px;margin-left:auto}
 .mj-jenis-wadah{flex-basis:180px;min-width:180px}
+/* tombol Pilih tanggal di chip waktu: pemisah tipis dari pilihan cepat, ikon kalender */
+.mj-chip .mj-kal-b{margin-left:2px;box-shadow:inset 1px 0 0 var(--line);border-radius:0 9px 9px 0}
+.mj-chip .mj-kal-b[aria-pressed="true"]{box-shadow:none;border-radius:9px}
+/* baris saring (pemilik 24 Nov 2026 "malah jadi jelek layoutnya"): satu baris selama wadah lebar, pil jenis yang menyusut (bergeser dengan panah).
+   Wadah < 1400px: dua baris penuh (lihat @container di bawah), bukan saring cepat yang tertinggal setengah baris. */
+.mj-peta-atas,.mj-tabel-wadah{container:mjbaris/inline-size}
+.mj-peta-atas .mj-saring,.mj-tabel-wadah .mj-saring{flex-wrap:nowrap}
+.mj-jenis-wadah{flex:1 1 150px;min-width:150px}
+.mj-saring-ujung{margin-left:0}
+/* satu baris (pemilik 24 Nov 2026 "jangan 2 baris, usahakan ttp 1 baris"): wadah < 1400px -> saring cepat ikon + angka (nama di title/aria),
+   kolom cari boleh menyempit, pil jenis mengambil sisa dan bergeser dengan panah. Hanya wadah < 760px (HP) yang bertumpuk.
+   Awalan :is(...) perlu: aturan lama ".mj-peta-atas .mj-saring{display:flex!important}" lebih spesifik dari ".mj-saring". */
+:is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring .mj-cari{flex:0 1 220px;min-width:120px;width:auto}
+:is(.mj-peta-atas,.mj-tabel-wadah) .mj-jenis-wadah{min-width:110px}
+@container mjbaris (max-width:1400px){
+  :is(.mj-peta-atas,.mj-tabel-wadah) #saringCepat button span{display:none}
+  :is(.mj-peta-atas,.mj-tabel-wadah) #saringCepat button{padding:0 8px;gap:5px}
+}
+@container mjbaris (max-width:760px){
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring{display:grid!important;grid-template-columns:minmax(0,1fr)!important;row-gap:6px}
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring :is(.mj-cari,#saringWaktu,.mj-jenis-wadah,.mj-saring-ujung){min-width:0;max-width:none}
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring :is(#saringWaktu,#saringCepat){overflow-x:auto;scrollbar-width:none}
+}
+/* tombol kalender: ikon saja (pemilik 24 Nov 2026 "gausah ada kata pilih tanggal, cukup icon aja"); label tanggal hanya saat rentang aktif */
+.mj-chip .mj-kal-b{padding:0 9px}
+.mj-chip .mj-kal-b[aria-pressed="true"]{padding:0 10px}
+/* pil jenis tanpa laporan: aria-disabled (bukan disabled) supaya tooltip /inti/tip.js tetap muncul saat hover */
+.mj-chip button[aria-disabled="true"]{opacity:.4;cursor:default}
+.mj-chip button[aria-disabled="true"]:hover{background:none}
+/* tooltip bersama (/inti/tip.js) di atas panel peta (Ringkasan, saring) */
+#tip{z-index:1000}
+/* legenda peta: pusat tanpa transform (panah geser dihitung dari offsetLeft) dan rata tengah "aman"
+   (justify-content:center pada deretan yang meluap membuat isi kiri tak terjangkau; QA 24 Nov 2026 "Banjir" terpotong jadi "ir") */
+.mj-legenda{left:0!important;right:0;margin-inline:auto;width:fit-content;transform:none!important;justify-content:safe center}
+/* legend di fieldset grid dirender di luar alur dan isi menimpanya (pemilik 24 Nov 2026 "ini nimpa2"): float membuatnya anak grid biasa */
+.mj-pilih>legend{float:left;width:100%;margin:0;padding:0}
+/* panel darurat bisa dikecilkan: tinggal kepala (titik berdenyut + jumlah) */
+.mj-darurat-lipat{margin-left:auto;display:grid;place-items:center;width:30px;height:30px;padding:0;border:1px solid color-mix(in oklab,var(--bad) 45%,var(--line));border-radius:50%;background:var(--card);color:var(--bad-tx);cursor:pointer;flex:none}
+.mj-darurat-lipat:hover{border-color:var(--bad)}
+.mj-darurat-lipat svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--dur-1)}
+.mj-darurat.kecil .mj-darurat-lipat svg{transform:rotate(180deg)}
+.mj-darurat.kecil .mj-darurat-daftar{display:none}
+.mj-darurat.kecil{gap:0}
+.mj-darurat-kepala{flex-wrap:wrap}
+.mj-darurat-izin{order:3}
+/* tabel penduduk dan sarana (DampakRadius) di kartu rincian: dibatasi lebar kartu supaya bisa digeser berpanah, bukan terpotong (pemilik 24 Nov 2026 "ini kepotong") */
+.mj-dr,.mj-dr .dr-wadah,.mj-dr .mj-tabel-gulung{min-width:0;max-width:100%}
+.mj-dr .dr-wadah{position:relative}
+/* label baris Ringkasan boleh dua baris, tidak dipotong "..." (QA 24 Nov 2026: "Jalan atau jembatan rus...") */
+.mj-pb-t,.mj-statpeta .mj-angka .mj-pb-t{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2}
+/* panel darurat: judul mengisi baris, tombol kecilkan tetap sebaris; di layar sempit naik di atas legenda (QA 24 Nov 2026: menutupi legenda dan panahnya) */
+.mj-darurat-kepala b{flex:1 1 0;min-width:0}
+@media (max-width:900px){.mj-isi:not([data-tampil="daftar"]) > .mj-darurat{bottom:58px;max-height:min(40%,300px)}}
+/* ---------- layar sempit (QA 24 Nov 2026): bilah atas + laci menu samping, Ringkasan di bawah saring ---------- */
+.mj-hp-bar,.mj-laci-latar{display:none}
+@media (max-width:900px){
+  .mj{grid-template-rows:auto minmax(0,1fr)!important;grid-template-areas:"hp" "isi"!important}
+  .mj-hp-bar{grid-area:hp;display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border-bottom:1px solid var(--line);color:var(--brand)}
+  .mj-hp-bar b{font:800 1rem var(--mj-display)}
+  .mj-hp-menu{display:grid;place-items:center;width:40px;height:40px;padding:0;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);cursor:pointer}
+  .mj-hp-menu svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+  .mj-samping{display:flex!important;position:fixed;inset:0 auto 0 0;z-index:70;width:min(300px,86vw);overflow-y:auto;transform:translateX(-100%);visibility:hidden;transition:transform var(--dur-2,.2s) ease,visibility 0s linear var(--dur-2,.2s);box-shadow:var(--mj-bayang)}
+  .mj-laci-buka .mj-samping{transform:none;visibility:visible;transition:transform var(--dur-2,.2s) ease}
+  .mj-samping .mj-nav{display:flex!important}
+  .mj-samping .mj-tarik{display:none}
+  .mj-laci-latar:not([hidden]){display:block;position:fixed;inset:0;z-index:69;background:color-mix(in oklch,var(--head-bg) 55%,transparent)}
+  .mj-kiri-peta{top:calc(var(--tinggi-atas,64px) + 20px)!important;bottom:auto!important;left:12px!important;right:auto!important;width:min(248px,calc(100% - 24px))!important;max-height:calc(100% - var(--tinggi-atas,64px) - 90px)!important}
+}
+@media (max-width:900px){.mj-peta-atas #bPas{align-self:flex-end}}   /* tombol tampilkan semua titik di kanan, bukan di tengah */
+@media (prefers-reduced-motion:reduce){.mj-samping{transition:none!important}}
+/* HP: panel di atas peta bisa diciut/dibesarkan (pemilik 24 Nov 2026 "kayaknya terlalu penuh"); tombol ciut hanya di layar sempit */
+.mj-saring-lipat,.mj-lg-lipat{display:none}
+@media (max-width:900px){
+  .mj-saring-lipat{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:.8125rem;font-weight:700;cursor:pointer;white-space:nowrap}
+  .mj-saring-lipat svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linejoin:round}
+  .mj-saring-lipat[aria-expanded="true"]{border-color:var(--brand2);color:var(--brand2)}
+  .mj-saring-lipat b{min-width:18px;padding:0 5px;border-radius:999px;background:var(--brand2);color:var(--on-brand);font-size:.6875rem;text-align:center}
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring{grid-template-columns:minmax(0,1fr) auto!important}
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring :is(.mj-jenis-wadah,#saringWaktu,.mj-saring-ujung){grid-column:1/-1}
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring .mj-cari{grid-column:1!important;grid-row:1}
+  :is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring .mj-saring-lipat{grid-column:2;grid-row:1}
+  .mj-peta-atas .mj-saring{align-self:stretch}
+  .mj-saring.ciut :is(.mj-jenis-wadah,#saringWaktu,.mj-saring-ujung){display:none!important}
+  .mj-lg-lipat{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:28px;height:28px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--brand);font-size:.75rem;font-weight:800;cursor:pointer;flex:none}
+  .mj-lg-lipat svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+  .mj-legenda.ciut{padding:4px!important}
+  .mj-legenda.ciut>:not(.mj-lg-lipat){display:none!important}
+}
+/* ---------- panel darurat, rombak (pemilik 24 Nov 2026 "bagusin"): kepala satu tombol, kartu berikon jenis dan berpil ---------- */
+.mj-darurat{gap:8px!important;padding:8px!important;border:1.5px solid color-mix(in oklab,var(--bad) 55%,var(--line))!important;border-radius:16px!important;background:var(--card)!important;box-shadow:var(--mj-bayang),0 0 0 4px color-mix(in oklab,var(--bad) 10%,transparent)}
+.mj-darurat.kecil{padding:4px!important;border-radius:999px!important}
+.mj-darurat-kepala{display:flex!important;flex-direction:column;align-items:stretch!important;gap:6px;color:inherit}
+.mj-darurat-buka{display:flex;align-items:center;gap:10px;width:100%;padding:6px 6px 6px 4px;border:0;border-radius:12px;background:none;color:var(--ink);text-align:left;cursor:pointer}
+.mj-darurat-buka:hover{background:color-mix(in oklab,var(--bad) 7%,transparent)}
+.mj-darurat-buka:focus-visible{outline:2px solid var(--bad);outline-offset:1px}
+.mj-darurat.kecil .mj-darurat-buka{border-radius:999px;padding:2px 4px 2px 2px}
+.mj-darurat-sirene{position:relative;display:grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;background:var(--bad);color:var(--on-pekat)}
+.mj-darurat-sirene::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 0 color-mix(in oklab,var(--bad) 55%,transparent);animation:mj-denyut 1.6s infinite}
+.mj-darurat-sirene svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-darurat-judul{display:grid;flex:1;min-width:0;line-height:1.2}
+.mj-darurat-judul b{font:800 .9375rem var(--mj-display);color:var(--bad-tx)}
+.mj-darurat-judul small{font-size:.75rem;color:var(--ink2)}
+.mj-darurat-aksi{display:inline-flex;align-items:center;gap:4px;flex:none;height:30px;padding:0 10px;border:1px solid color-mix(in oklab,var(--bad) 35%,var(--line));border-radius:999px;background:var(--card);color:var(--bad-tx);font-size:.75rem;font-weight:700}
+.mj-darurat-aksi svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transform:rotate(180deg);transition:transform var(--dur-1)}
+.mj-darurat.kecil .mj-darurat-aksi svg{transform:none}
+.mj-darurat-izin{align-self:flex-start;margin:0 0 0 48px!important}
+.mj-darurat-daftar{display:grid;gap:6px}
+.mj-darurat-kartu{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px!important;padding:10px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:color-mix(in oklab,var(--bad) 4%,var(--card))!important;text-align:left;cursor:pointer}
+.mj-darurat-kartu:hover{border-color:color-mix(in oklab,var(--bad) 50%,var(--line))!important}
+.mj-darurat-jenis{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in oklab,var(--jn) 16%,var(--card));color:var(--jn);align-self:start}
+.mj-darurat-jenis svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-darurat-isi{display:grid;gap:3px;min-width:0}
+.mj-darurat-isi>b{font:800 .875rem/1.25 var(--mj-display);color:var(--ink)}
+.mj-darurat-isi>span:not(.mj-darurat-pil){font-size:.75rem;line-height:1.35;color:var(--ink2)}
+.mj-darurat-pil{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.mj-darurat-pil i{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:999px;font-style:normal;font-size:.6875rem;font-weight:700;white-space:nowrap}
+.mj-darurat-pil svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.mj-darurat-pil .bahaya{background:var(--bad);color:var(--on-pekat)}
+.mj-darurat-pil .waspada{background:color-mix(in oklab,var(--warn) 18%,var(--card));color:var(--ink)}
+.mj-darurat-pil .netral{background:var(--surface);color:var(--ink2)}
+.mj-darurat-pil .status{background:color-mix(in oklab,var(--st) 14%,var(--card));color:var(--ink)}
+.mj-darurat-pil .status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--st)}
+.mj-darurat-ke{color:var(--ink2)}
+.mj-darurat-ke svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-90deg)}
+@media (prefers-reduced-motion:reduce){.mj-darurat-sirene::after{animation:none}}
+/* saring waktu: satu tombol dropdown (pemilik 24 Nov 2026 "bikin dropdown aja biar hemat space"); menu melayang, wadah tidak boleh memotongnya */
+#saringWaktu.mj-periode{position:relative;flex:none;overflow:visible!important;padding:0;border:0;background:none}
+.mj-waktu-b{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 10px 0 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:.75rem;font-weight:700;white-space:nowrap;cursor:pointer}
+.mj-waktu-b:hover,.mj-waktu-b[aria-expanded="true"]{border-color:var(--brand2)}
+.mj-waktu-b.aktif{border-color:var(--brand);background:var(--brand);color:var(--on-brand)}
+.mj-waktu-b svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mj-waktu-b>svg:first-child{color:var(--brand2)}
+.mj-waktu-b.aktif>svg:first-child{color:currentColor}
+.mj-waktu-b>svg:last-child{width:13px;height:13px;transition:transform var(--dur-1)}
+.mj-waktu-b[aria-expanded="true"]>svg:last-child{transform:rotate(180deg)}
+.mj-waktu-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:30;display:grid;gap:2px;min-width:200px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--mj-bayang)}
+.mj-waktu-menu[hidden]{display:none}
+.mj-waktu-menu hr{height:1px;margin:4px 6px;border:0;background:var(--line)}
+.mj-waktu-i{display:grid;grid-template-columns:18px minmax(0,1fr) 16px;align-items:center;gap:8px;min-height:36px;padding:0 10px;border:0;border-radius:9px;background:none;color:var(--ink);font-size:.8125rem;font-weight:600;text-align:left;cursor:pointer}
+.mj-waktu-i:hover,.mj-waktu-i:focus-visible{background:var(--surface);outline:none}
+.mj-waktu-i[aria-checked="true"]{color:var(--brand2);font-weight:800}
+.mj-waktu-i svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mj-waktu-i>svg:first-child{color:var(--brand2)}
+@media (max-width:900px){.mj-waktu-menu{right:auto;left:0}.mj-saring #saringWaktu.mj-periode{justify-self:start}}
+/* HP: tombol waktu rata kiri supaya menunya tidak lewat tepi layar (QA 24 Nov 2026: menu sampai 412 px di layar 375 px) */
+@media (max-width:900px){:is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring #saringWaktu.mj-periode{justify-self:start!important}.mj-waktu-menu{left:0!important;right:auto!important;max-width:calc(100vw - 32px)}}
