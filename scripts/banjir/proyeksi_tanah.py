@@ -34,7 +34,7 @@ def proyeksi(k, e_ref=None):
     Konvensi: laju negatif = turun. p90 = kuantil 0,10 (paling dalam, paling negatif); p10 = kuantil 0,90 (paling dangkal/naik).
     e_ref None = galat acuan belum dihitung: s hanya e_st, tayang_ditahan menyala."""
     lama = tahun(k.get("tgl_awal"), k.get("tgl_akhir"))
-    if k["cakupan"] < CAKUPAN_MIN or lama is None or lama < DERET_MIN or "p10" not in k or "galat" not in k:
+    if k["cakupan"] < CAKUPAN_MIN or lama is None or lama < DERET_MIN or "p10" not in k or k.get("galat") is None:
         return None
     s = math.hypot(k["galat"], e_ref or 0.0)
     r, rd, rl = k["med"], k["p90"], k["p10"]
@@ -82,6 +82,7 @@ def uji():
     assert proyeksi({**k, "tgl_awal": "2023-06-01"}) is None
     assert proyeksi({**k, "tgl_awal": None}) is None
     assert proyeksi({kk: v for kk, v in k.items() if kk != "galat"}) is None
+    assert proyeksi({**k, "galat": None}) is None  # kurang dari BLOK_MIN blok (subsiden K3)
     # tanpa kunci gabungan rob/muka laut
     assert not any(("rob" in a or "laut" in a or "gabung" in a) for a in h)
     b = bangun(dict(kota="T", dihitung="2025-01-01", kecamatan=[k, {**k, "cakupan": 10}], atribusi="a", label="x"), datetime.date(2025, 6, 1))

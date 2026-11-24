@@ -196,3 +196,23 @@ Catatan jujur:
 - Di pesisir utara separuh akhir sedikit lebih dalam dari separuh awal (Koja -1,6 lalu -1,9; Tanjung Priok -1,0 lalu -1,4; Pademangan -0,4 lalu -0,8). Itu masih di dalam 2 s, jadi belum bisa disebut percepatan.
 
 Status tayang: 6.1 dan 6.2 lolos, 6.3 (GNSS atau levelling) belum ada data (Q11), jadi semua angka tetap hipotesis (D4). Sebelum tayang masih ada dua hal: (1) pilihan n_efektif (a) variogram atau (b) bootstrap blok, yang menurut ALGORITMA 4 dipilih pemilik atau pemeriksa sebelum angka tayang; (2) tinjauan `validasi-model` untuk PT-06. Sampai itu `subsiden.json` tetap di luar `public/`.
+
+### 6.10 Galat bootstrap blok (K3) dan tinjauan validasi-model (24 Nov 2026)
+
+Pemilik memilih bootstrap blok spasial untuk n_efektif (KEPUTUSAN K3). `subsiden.py` versi 3: galat median kecamatan dan galat acuan dihitung dengan 200 ulangan bootstrap blok, blok 0,01 derajat (D9, bawaan sementara), kecamatan dengan kurang dari 4 blok tidak diberi galat dan tidak diproyeksikan. Ini mengoreksi angka di 6.8 dan 6.9: galat acuan 0,58 cm/tahun (bukan 0,55), galat median kecamatan 0,04 sampai 0,29 (median 0,08; pesisir Koja 0,25, Penjaringan 0,29, Tanjung Priok 0,24, Cilincing 0,14), dan butir "n_efektif belum dipilih" di 6.9 sudah tidak berlaku. Uji 6.2 diulang dengan galat baru: median selisih 0,2 lawan median 2 s 1,17, 42 dari 42 kecamatan di bawah 2 s.
+
+Kepekaan ukuran blok (hasil yang sama, hanya blok diubah):
+
+| Blok | Galat acuan | Kecamatan bergalat | Median galat kecamatan | Median s |
+| --- | --- | --- | --- | --- |
+| 0,01 derajat (~1,1 km) | 0,58 | 42 dari 42 | 0,08 | 0,59 |
+| 0,03 derajat (~3,3 km) | 0,66 | 33 dari 42 (Koja hilang) | 0,12 | 0,67 |
+| 0,05 derajat (~5,5 km) | 0,72 | 18 dari 42 (Koja, Tanjung Priok hilang) | 0,18 | 0,75 |
+
+Tinjauan `validasi-model` (konteks bersih), vonis **BELUM layak tayang**. Temuan yang diterima:
+1. Uji 6.2 hanya uji konsistensi di dalam satu pengolahan, bukan uji independen: `cum_filt.h5` berasal dari satu inversi SBAS seluruh deret (langkah 13) dan filter waktu seluruh deret (langkah 16), interferogram yang melintasi 1 Juni 2021 ikut kedua separuh, dan masker diambil dari deret penuh. Dayanya juga hampir nol: 38 dari 42 kecamatan lajunya lebih kecil dari 2 s, jadi laju yang berubah separuhnya pun tetap lolos. Ambang yang lebih tepat 2·akar(s_awal² + s_akhir²) (median sekitar 2,1) juga lolos 42 dari 42, dan sama tidak diskriminatifnya.
+2. Blok 0,01 derajat kemungkinan terlalu kecil: derau atmosfer sisa dan galat orbit berkorelasi 5 sampai 20 km, jadi galat kecamatan masih terlalu sempit. Blok yang lebih besar membuat banyak kecamatan pesisir kehilangan galat (tabel di atas). Belum ada variogram residu.
+3. Validasi 6.1 lolos tipis: p90 terdalam 3,9 di bawah "lebih dari 5" Sidiq 2021 dan sekitar 2,5 kali lebih dangkal dari titik ukur Muara Baru. Gerbang pola lolos dengan margin 0,4 dari ambang 1,0, dan baru lolos sesudah putaran 2 mengubah GACOS, jendela, deramp, dan acuan, jadi gerbang itu sempat dipakai sebagai umpan balik penyetelan dan bukan bukti independen.
+4. Periode dua geometri berbeda (naik berakhir 31 Agustus 2022, turun 31 Maret 2023); dekomposisi vertikal mencampur periode itu.
+
+Status: angka Jakarta tetap tidak tayang dan tetap hipotesis (D4); kata "terukur" tidak dipakai sampai validasi GNSS atau levelling (6.3, Q11). Swa-uji `~/licsbas/tahan.py` diperketat ke selisih di bawah 0,5 mm/tahun (nilai sebenarnya 0,0). Langkah yang tersisa: variogram residu untuk menentukan ukuran blok (mengganti bawaan D9), uji tahan-waktu independen dengan dua inversi LiCSBAS terpisah per separuh, dan menyamakan periode kedua geometri.
