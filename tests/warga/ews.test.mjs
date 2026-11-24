@@ -10,6 +10,7 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import * as E from "../../src/ews.js";   // ews.js diimpor PERTAMA dan sendirian: dulu melempar (siklus dengan worker.js)
+import {TINGKAT_CAP, bentukCap, JENIS_CAP} from "../../src/peringatan.js";
 import {emailPeringatan, emailKonfirmasi, emailGempa, kataPeluang} from "../../src/ews_email.js";
 
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM;
@@ -126,12 +127,15 @@ uji("nilaiTitik: ambang karhutla, titik panas, banjir/longsor, cuaca, rob", () =
   const bl = f({fwi: null, status}, -2.21, 113.92, "62|Kota|Pahandut").map(p => `${p.bencana}${p.tingkat}h${p.hari}`);
   assert.deepEqual(bl.sort(), ["banjir1h1", "banjir3h2", "longsor2h0"], "hari ke-3 (index 3) di luar jendela 0..2");
   assert.deepEqual(f({fwi: null, status}, -2.21, 113.92, "99|X|Y"), [], "kecamatan lain tidak ikut");
-  /* cuaca: poligon memuat titik; Severe = 3; di luar poligon / sudah selesai / mulai > 24 jam lagi = tidak */
+  /* cuaca: poligon memuat titik; Severe = 2 (KI-02); di luar poligon / sudah selesai / mulai > 24 jam lagi = tidak */
   const poli = [[[113.8, -2.3], [114.0, -2.3], [114.0, -2.1], [113.8, -2.1], [113.8, -2.3]]];
   const iso = t => new Date(t).toISOString();
   const w = (o = {}) => ({event: "Hujan Lebat", severity: "Severe", headline: "Hujan lebat Kalteng", polygon: poli, mulai: iso(kini - JAM), selesai: iso(kini + 2 * JAM), ...o});
-  assert.deepEqual(f({fwi: null, cuaca: [w()]}).map(p => [p.bencana, p.tingkat]), [["cuaca", 3]]);
-  assert.equal(f({fwi: null, cuaca: [w({severity: "Moderate"})]})[0].tingkat, 2);
+  assert.deepEqual(f({fwi: null, cuaca: [w()]}).map(p => [p.bencana, p.tingkat]), [["cuaca", 2]]);
+  assert.equal(f({fwi: null, cuaca: [w({severity: "Moderate"})]})[0].tingkat, 1);
+  /* kunci dedupe memakai pemetaan lama (KI-02): pelanggan yang sudah dikirimi tidak dikirimi ulang sesudah tingkat diselaraskan */
+  assert.ok(f({fwi: null, cuaca: [w()]})[0].kunci.endsWith("|3"), "kunci Severe tetap |3 seperti sebelum KI-02");
+  assert.ok(f({fwi: null, cuaca: [w({severity: "Moderate"})]})[0].kunci.endsWith("|2"), "kunci Moderate tetap |2");
   assert.equal(f({fwi: null, cuaca: [w({severity: "Minor"})]})[0].tingkat, 1);
   assert.equal(f({fwi: null, cuaca: [w()]}, -2.21, 115.0).length, 0, "di luar poligon");
   assert.equal(f({fwi: null, cuaca: [w({selesai: iso(kini - 60e3)})]}).length, 0, "sudah selesai");
@@ -415,7 +419,7 @@ uji("kirim ulang untuk alamat aktif: perubahan menunggu konfirmasi, langganan la
 uji("/api/ews/cek: peringatan lokasi dengan nilaiTitik yang sama, wilayah, 3 hari; tanpa data pribadi", async () => {
   const kini = Date.now(), hari0 = wib(kini), iso = t => new Date(t).toISOString();
   const poli = [[[113.8, -2.3], [114.0, -2.3], [114.0, -2.1], [113.8, -2.1], [113.8, -2.3]]];
-  muat(kini, {kecKunci, cuaca: [{event: "Hujan Lebat", severity: "Severe", headline: "Hujan lebat Kalteng", polygon: poli, mulai: iso(kini - JAM), selesai: iso(kini + JAM)}]});
+  muat(kini, {kecKunci, cuaca: [{event: "Hujan Lebat", severity: "Extreme", headline: "Hujan lebat Kalteng", polygon: poli, mulai: iso(kini - JAM), selesai: iso(kini + JAM)}]});
   const r = await panggil("GET", "/api/ews/cek?lat=-2.2149&lon=113.9151");
   assert.equal(r.s, 200, r.t);
   assert.equal(r.j.wilayah.prov, "62"); assert.deepEqual(r.j.hari, [hari0, tambah(hari0, 1), tambah(hari0, 2)]);
@@ -758,4 +762,32 @@ uji("penilai rusak tidak membatalkan jenis lain; stasiun udara tanpa lat/lon ang
   const pmx = pm(Array(30).fill(100)); pmx.stasiun.push({...pmx.stasiun[0], nama: "Rusak", lat: "x"});
   const h = E.peringatanJenisBaru({gelombang: {...GEL(), daftar: [{...GEL().daftar[0], tinggi: "string"}], dibuat: GEL().dibuat}, pm25: pmx}, KX);
   assert.deepEqual(h.map(n => n[1]), ["udara"], "pesisir rusak dibuang, udara tetap, stasiun lat non-angka dilewati");
+});
+
+/* ---- KI-01, KI-02, KI-07 (paket kemampuan-inti) ---- */
+const TNG = {Waspada: 1, Siaga: 2, Awas: 3};
+uji("KI-02: tingkat email cuaca = TINGKAT_CAP (Severe Siaga, Extreme Awas), Moderate Waspada", () => {
+  for (const [sev, nama] of Object.entries(TINGKAT_CAP)) assert.equal(E.CUACA_TINGKAT[sev], TNG[nama], `${sev} harus ${nama}`);
+  assert.equal(E.CUACA_TINGKAT.Moderate, 1);
+  assert.equal(E.CUACA_TINGKAT.Severe === 3, false, "Severe tidak boleh lagi Awas di email");
+});
+
+uji("KI-01: email longsor dan rob berlabel Hipotesis belum lolos uji balik; banjir dan gempa tidak", () => {
+  const bangun = bencana => emailPeringatan({asal: "https://contoh.id", lat: -2.21, lon: 113.92, wilayah: {kec: "A", kab: "B", prov_nama: "C"}, peringatan: [{bencana, tingkat: 2, hari: 0, judul: "j", rincian: "", sumber: "s"}], tautanBerhenti: "https://contoh.id/b"});
+  for (const b of ["longsor", "rob"]) {
+    const e = bangun(b);
+    for (const x of [e.subject, e.html, e.text]) assert.ok(x.includes("Hipotesis") && x.includes("belum lolos uji balik"), `${b}: ${x.slice(0, 120)}`);
+  }
+  for (const b of ["banjir", "karhutla", "cuaca"]) { const e = bangun(b); assert.ok(!/Hipotesis|belum lolos/.test(e.subject + e.html + e.text), b + " tidak boleh berlabel hipotesis"); }
+  const g = emailGempa({asal: "https://contoh.id", lat: -2.21, lon: 113.92, wilayah: {kec: "A", kab: "B", prov_nama: "C"}, g: {mag: 6, dalam: "10 km", wilayah: "X", potensi: "", dirasakan: "", waktu: "t", jarak: 20}, tingkat: 2, tsunami: false, tautanBerhenti: "https://contoh.id/b"});
+  assert.ok(!/Hipotesis|belum lolos/.test(g.subject + g.html + g.text), "gempa tanpa label");
+  const campur = emailPeringatan({asal: "https://contoh.id", lat: 0, lon: 0, wilayah: {kec: "A", kab: "B", prov_nama: "C"}, tautanBerhenti: "https://contoh.id/b", peringatan: [{bencana: "banjir", tingkat: 3, hari: 0, judul: "j", rincian: "", sumber: "s"}, {bencana: "longsor", tingkat: 1, hari: 1, judul: "j", rincian: "", sumber: "s"}]});
+  assert.ok(!campur.subject.includes("Hipotesis") && campur.html.includes("Hipotesis") && campur.text.includes("belum lolos uji balik"), "subjek banjir bersih, badan menandai longsor");
+});
+
+uji("KI-07: note CAP memuat tiap jenis yang diterbitkan (lama + peringatan_x), bukan lima jenis lama saja", () => {
+  const x = bentukCap([], Date.now()), note = x.match(/<note>(.*?)<\/note>/)[1];
+  for (const j of ["gempa bumi", "tsunami", "cuaca ekstrem", "kebakaran hutan dan lahan", "banjir", "aktivitas gunung api", "kualitas udara", "kekeringan", "gelombang tinggi", "tanah longsor", "banjir rob"]) assert.ok(note.toLowerCase().includes(j.toLowerCase()), `note memuat ${j}`);
+  for (const j of JENIS_CAP) assert.ok(note.includes(j), `note memuat tiap jenis yang diterbitkan: ${j}`);
+  assert.ok(note.includes("tanah longsor") && note.includes("kekeringan") && !note.includes("cuaca BMKG, karhutla, banjir)"), note);
 });

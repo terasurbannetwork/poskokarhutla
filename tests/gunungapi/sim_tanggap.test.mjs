@@ -3,6 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const muat = f => { const m = {exports: {}}; new Function("module", readFileSync(new URL("../../public/gunungapi/" + f, import.meta.url), "utf8"))(m); return m.exports; };
+globalThis.Perlakuan = muat("../inti/perlakuan.js");   /* mesin pareto bersama (KI-40) dimuat peramban lebih dulu */
 const T = muat("sim_tanggap.js"), L = muat("sim_lahar.js");
 const status = JSON.parse(readFileSync(new URL("../../public/banjir/data/gunungapi_status.json", import.meta.url), "utf8"));
 

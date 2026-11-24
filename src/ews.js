@@ -45,7 +45,9 @@ const SIM_JAM = [24, 48, 72];
 const SIM_GRID = 0.1;                             // derajat (>= 11 km di lintang Indonesia) > SIM_SIAGA_KM, jadi 3x3 sel cukup
 const SIM_SUMBER = "Simulasi penjalaran api Centurisk97 (model data, prakiraan, bukan kepastian)";
 export const CUACA_DEPAN = 24 * JAM;              // peringatan nowcast BMKG yang aktif sekarang atau mulai dalam 24 jam
-const CUACA_TINGKAT = {Moderate: 2, Severe: 3, Extreme: 3};   // CAP: lainnya (Minor dst.) = 1
+export const CUACA_TINGKAT = {Moderate: 1, Severe: 2, Extreme: 3};   // PB-42 (sama dengan TINGKAT_CAP di peringatan.js, KI-02): Severe = Siaga, Extreme = Awas; Moderate = Waspada; lainnya = 1
+/* KI-02: kunci dedupe ews_terkirim tetap memakai pemetaan lama supaya pelanggan tidak dikirimi ulang peringatan cuaca yang sama sesudah tingkatnya diselaraskan dengan CAP */
+export const KUNCI_CUACA_LAMA = {Moderate: 2, Severe: 3, Extreme: 3};
 /* gempa terasa (km) menurut magnitudo: [M minimal, radius]. Aproksimasi kasar jarak guncangan terasa (skala MMI >= III-IV) dari praktik BMKG/USGS. */
 export const RADIUS_GEMPA = [[7, 500], [6, 300], [5, 150], [4, 50]];
 export const GEMPA_AWAS_BAGI = 3, GEMPA_AWAS_MAG = 6;   // dalam radius/3 dan M >= 6: Awas
@@ -148,7 +150,7 @@ function titikTerdekat(titik, lat, lon) {
 /* data = hasil muatData(); hariIni = "YYYY-MM-DD" WIB. Mengembalikan [{bencana, tingkat 1-3, hari 0..2, judul, rincian, sumber, kunci}]. */
 export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
   const hari = [0, 1, 2].map(i => tambah(hariIni, i)), out = [];
-  const tambahkan = (bencana, tingkat, h, judul, rincian) => out.push({bencana, tingkat, hari: h, judul, rincian, sumber: BENCANA[bencana].sumber, kunci: `${bencana}|${hari[h]}|${tingkat}`});
+  const tambahkan = (bencana, tingkat, h, judul, rincian, tingkatKunci = tingkat) => out.push({bencana, tingkat, hari: h, judul, rincian, sumber: BENCANA[bencana].sumber, kunci: `${bencana}|${hari[h]}|${tingkatKunci}`});
 
   /* karhutla: FWI prakiraan sel terdekat */
   if (data.fwi?.grid) {
@@ -206,7 +208,7 @@ export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
     const cincin = typeof p.polygon[0][0] === "number" ? [p.polygon] : p.polygon;
     if (!dalam(lon, lat, cincin)) continue;
     const h = Math.max(0, hari.indexOf(wib(Math.max(mulai, data.kini))));
-    tambahkan("cuaca", CUACA_TINGKAT[p.severity] || 1, h, p.headline || p.event || "Peringatan cuaca", `${p.event || "Cuaca ekstrem"} (BMKG)${p.wilayah ? ": " + p.wilayah : ""}.`);
+    tambahkan("cuaca", CUACA_TINGKAT[p.severity] || 1, h, p.headline || p.event || "Peringatan cuaca", `${p.event || "Cuaca ekstrem"} (BMKG)${p.wilayah ? ": " + p.wilayah : ""}.`, KUNCI_CUACA_LAMA[p.severity] || 1);
   }
 
   /* rob: titik pesisir terdekat <= 10 km; lv sejajar rob.hari */

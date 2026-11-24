@@ -8,8 +8,8 @@ import {BENCANA, tindakanUntuk} from "../../public/ews_tindakan.js";
 const baca = p => fs.readFileSync(new URL("../../" + p, import.meta.url), "utf8");
 const REG = JSON.parse(baca("public/bencana.json")).bencana.find(b => b.id === "cuaca");
 
-test("email: tingkat cuaca dari CAP severity, Moderate = 2, Severe dan Extreme = 3, lainnya 1", () => {
-  assert.match(baca("src/ews.js"), /const CUACA_TINGKAT = \{Moderate: 2, Severe: 3, Extreme: 3\};/);
+test("email: tingkat cuaca ikut TINGKAT_CAP (KI-02), Moderate = 1, Severe = 2, Extreme = 3, lainnya 1", () => {
+  assert.match(baca("src/ews.js"), /const CUACA_TINGKAT = \{Moderate: 1, Severe: 2, Extreme: 3\};/);
   assert.match(baca("src/ews.js"), /CUACA_TINGKAT\[p\.severity\] \|\| 1/);
 });
 

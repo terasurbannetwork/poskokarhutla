@@ -7,7 +7,7 @@ import fs from "node:fs";
 const baca = p => fs.readFileSync(new URL("../../public/" + p, import.meta.url), "utf8");
 const ctx = vm.createContext({innerWidth: 1200, document: {querySelector: () => null, addEventListener() {}}, Insight: {eyIk: (id, n) => n}, namaProv: k => "P" + k, jamWIB: t => t,
   fetch: async u => ({ok: true, json: async () => JSON.parse(baca(String(u).replace(/^\//, "")))}), console});
-for (const f of ["inti/format.js", "inti/kartu.js", "udara/satelit.js"]) vm.runInContext(baca(f), ctx, {filename: f});
+for (const f of ["inti/format.js", "inti/kartu.js", "inti/gerbang.js", "udara/satelit.js"]) vm.runInContext(baca(f), ctx, {filename: f});
 const jalan = s => vm.runInContext(s, ctx);
 await jalan("Satelit.muatKartu()");
 

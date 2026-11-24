@@ -50,15 +50,17 @@ export function hitungPeristiwa(P, tercatat, kini) {
 }
 
 export const NAMA_HARI = t => new Date(`${t}T00:00:00Z`).toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", timeZone: "UTC"});
+const HIPOTESIS_PW = new Set(["LSR", "CEX", "ASP"]);   // KI-01: model belum lolos uji balik tetap dikirim, berlabel jujur (KEPUTUSAN-KEMAMPUAN Q1)
 export const label = c => JENIS_PW.find(j => j[0] === c)?.[2] || c;
 /* ALGORITMA 4: teks satu notifikasi per perangkat per kab. daftar = peristiwa yang cocok dengan langganan itu. */
 export function teksNotif(namaKab, daftar, kecNama) {
   const urut = [...daftar].sort((a, b) => b.lv - a.lv || JENIS_PW.findIndex(j => j[0] === a.jenis) - JENIS_PW.findIndex(j => j[0] === b.jenis));
   const top = urut[0], kab = String(namaKab || "").replace(/^Kota Administrasi /, "Kota ");
-  const judul = (urut.length === 1 ? `${label(top.jenis)} ${TINGKAT[top.lv]} di ${kab}` : `${TINGKAT[top.lv]} di ${kab}`).slice(0, 80);
+  const hip = urut.some(x => HIPOTESIS_PW.has(x.jenis));
+  const judul = ((HIPOTESIS_PW.has(top.jenis) ? "Hipotesis: " : "") + (urut.length === 1 ? `${label(top.jenis)} ${TINGKAT[top.lv]} di ${kab}` : `${TINGKAT[top.lv]} di ${kab}`)).slice(0, 80);
   const perHari = new Map(); for (const x of urut) perHari.set(x.tanggal, [...(perHari.get(x.tanggal) || []), x]);
   const bagian = [...perHari].map(([t, xs]) => `${NAMA_HARI(t)}: ${xs.map(x => `${label(x.jenis)} ${TINGKAT[x.lv]}${x.teruji ? "" : " (belum teruji)"}`).join(", ")}`);
-  const isi = `Prakiraan ${bagian.join(". ")}. ${kecNama ? `Kecamatan ${kecNama}. ` : ""}Buka Pantau Bencana untuk arahan dan titik berkumpul terdekat. Prakiraan Pantau Bencana, bukan peringatan resmi.`;
+  const isi = `Prakiraan ${bagian.join(". ")}. ${hip ? "Hipotesis: model belum lolos uji balik. " : ""}${kecNama ? `Kecamatan ${kecNama}. ` : ""}Buka Pantau Bencana untuk arahan dan titik berkumpul terdekat. Prakiraan Pantau Bencana, bukan peringatan resmi.`;
   return {judul, isi, tag: `pw-${top.tanggal}-${namaKab}`.slice(0, 64), url: "/lapor/?dari=peringatan"};
 }
 

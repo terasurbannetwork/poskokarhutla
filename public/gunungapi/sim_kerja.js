@@ -1,7 +1,7 @@
 /* Worker simulasi gunung api: abu (AbuModel: jalankan + jejak terjauh + endapan kisi/desa) dan lahar (Lahar.simulasi).
    Dua instans dari berkas ini dijalankan sim.js (satu per pekerjaan) supaya klik tidak menunggu hitungan. DEM dikirim SEKALI (tipe "dem", buffer dipindah);
    pesan lahar berikutnya hanya membawa V dan hl. Pesan balik selalu membawa seq yang sama supaya hasil basi dibuang di sisi halaman. */
-importScripts("abu_model.js", "sim_lahar.js", "sim_tanggap.js");
+importScripts("../inti/perlakuan.js", "abu_model.js", "sim_lahar.js", "sim_tanggap.js");
 let DEM = null;
 
 function abu(m) {

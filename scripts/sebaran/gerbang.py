@@ -23,7 +23,7 @@ tidak dipakai sebagai alasan menampilkan peta peluang; ia dilaporkan di rincian 
 Pakai:  python3 scripts/sebaran/gerbang.py  (tulis public/data/gerbang_model.json)  |  ... uji   Stdlib saja.
 Jalankan ulang setiap kali sebaran_kasus.json / model_sebaran.json / prospektif.json berubah (CI: sesudah prospektif.py di titik.yml, milik mekanik-mesin).
 """
-import json, math, os, random, sys, time
+import importlib.util, json, math, os, random, sys, time
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.abspath(os.path.join(DIR, "..", ".."))
@@ -34,6 +34,14 @@ KUNCI = ("model_sel", "mesin_fisika", "jejak_api", "lolos")
 HA_SEL = 375 * 375 / 1e4
 HORIZON = (24, 48, 72)
 BOOT_B, BOOT_BIJI = 2000, 7
+
+# Mesin inti KI-12 (scripts/umum/gerbang.py): putusan, bootstrap berpasangan, entri. Dimuat lewat jalur absolut dengan nama unik
+# (berkas ini sendiri juga bernama gerbang, dan di bawah python -I sys.path tak berisi folder skrip).
+_sp = importlib.util.spec_from_file_location("umum_gerbang", os.path.join(AKAR, "scripts", "umum", "gerbang.py"))
+G = importlib.util.module_from_spec(_sp)
+sys.modules["umum_gerbang"] = G
+_sp.loader.exec_module(G)
+selang_berpasangan, putusan, r4 = G.selang_berpasangan, G.putusan, G.r4
 
 
 # ---------------- pembaca gagal-tertutup (dipakai jejak.py; sisi JS: public/sebaran_model.js gerbangBoleh) ----------------
@@ -51,18 +59,6 @@ def boleh(kunci, jalur=JALUR):
 
 
 # ---------------- statistik ----------------
-def selang_berpasangan(selisih, b=BOOT_B, biji=BOOT_BIJI):
-    """(rata-rata, bawah95, atas95) bootstrap persentil atas daftar selisih per kasus. None bila kosong."""
-    s = [x for x in selisih if x is not None]
-    if not s:
-        return None
-    rnd, m, v = random.Random(biji), len(s), []
-    for _ in range(b):
-        v.append(sum(s[rnd.randrange(m)] for _ in range(m)) / m)
-    v.sort()
-    return sum(s) / m, v[int(.025 * b)], v[int(.975 * b)]
-
-
 def bss(p, y):
     n = len(y)
     r = sum(y) / n
@@ -81,35 +77,9 @@ def selang_bss(p, y, b=BOOT_B, biji=BOOT_BIJI):
     return bss(p, y), v[int(.025 * len(v))], v[int(.975 * len(v))]
 
 
-def putusan(selisih, selang):
-    """(boleh_tampil, alasan) menurut ATURAN di docstring."""
-    if selisih is None or selisih <= 0:
-        return False, f"selisih {selisih if selisih is None else round(selisih, 4)} <= 0: pembanding sederhana menang atau seri"
-    if selang is None:
-        return False, "belum ada selang"
-    if selang[0] <= 0:
-        return False, f"batas bawah selang 95% {round(selang[0], 4)} <= 0: belum terbukti mengalahkan pembanding"
-    return True, f"selisih {round(selisih, 4)} > 0 dan batas bawah selang 95% {round(selang[0], 4)} > 0"
-
-
-def r4(x):
-    return None if x is None else round(x, 4)
-
-
 def entri(metrik, arah, pembanding, model, pemb, sumber, catatan=None, rincian=None):
-    """model, pemb = daftar skor per kasus (sejajar). arah 'tinggi' atau 'rendah' (lebih baik). selisih positif = model lebih baik."""
-    n = len(model)
-    tanda = 1 if arah == "tinggi" else -1
-    d = [tanda * (a - c) for a, c in zip(model, pemb)]
-    sl = selang_berpasangan(d)
-    ok, alasan = putusan(sl[0] if sl else None, (sl[1], sl[2]) if sl else None)
-    e = {"metrik": metrik, "arah": f"{arah} lebih baik", "pembanding": pembanding, "n": n, "skor_model": r4(sum(model) / n), "skor_pembanding": r4(sum(pemb) / n),
-         "selisih": r4(sl[0]) if sl else None, "selang95": [r4(sl[1]), r4(sl[2])] if sl else None, "boleh_tampil": ok, "alasan": alasan, "sumber_berkas": sumber}
-    if catatan:
-        e["catatan"] = catatan
-    if rincian:
-        e["rincian"] = rincian
-    return e
+    """Format lama karhutla: arah ditulis 'tinggi lebih baik' / 'rendah lebih baik'. Sisanya dari mesin inti."""
+    return G.entri(metrik, arah, pembanding, model, pemb, sumber, catatan, rincian, arah_teks=f"{arah} lebih baik")
 
 
 # ---------------- pembanding persistensi dari kasus uji balik ----------------
@@ -175,9 +145,7 @@ def bangun(kasus_json, model_json, prosp_json, hist_json):
     yy = [1 if c["lepas"] else 0 for c in K if c.get("p_lolos") is not None]
     b123 = selang_bss(py, yy) if py and 0 < sum(yy) < len(yy) else None
     vonis = (PR or {}).get("vonis")
-    ok, alasan = putusan(bs, None)
-    if vonis != "lolos":
-        ok, alasan = False, f"{alasan}; vonis prospektif = {vonis!r}, wajib 'lolos'"
+    ok, alasan = putusan(bs, None, vonis, prospektif=True)
     out["lolos"] = {
         "metrik": "Brier skill terhadap laju dasar (uji balik historis tanpa bocoran, kelompok " + str(kel) + ")", "arah": "tinggi lebih baik",
         "pembanding": "laju dasar himpunan yang sama (klimatologi, skill 0)", "n": kal.get("n"), "skor_model": r4(bs), "skor_pembanding": 0.0, "selisih": r4(bs),

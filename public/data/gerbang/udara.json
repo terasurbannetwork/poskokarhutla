@@ -1,0 +1,160 @@
+{
+ "dibuat": "2026-11-25",
+ "versi": 1,
+ "keluaran": {
+  "mos_pm25_arsip_openaq": {
+   "metrik": "MAE uji MOS PM2,5 (µg/m³), arsip OpenAQ multi-tahun",
+   "arah": "rendah",
+   "pembanding": "persistensi_24j (pembanding sederhana terkuat di berkas)",
+   "n": 64659,
+   "skor_model": 17.32,
+   "skor_pembanding": 15.15,
+   "selisih": -2.17,
+   "selang95": null,
+   "boleh_tampil": false,
+   "alasan": "selisih -2.17 <= 0: pembanding sederhana menang atau seri",
+   "vonis_prospektif": null,
+   "sumber_berkas": [
+    "public/udara/data/uji_panen_pm25.json"
+   ],
+   "rincian": {
+    "mae_uji": {
+     "cams_mentah": 24.23,
+     "mos": 17.32,
+     "klimatologi_stasiun": 19.21,
+     "persistensi_24j": 15.15,
+     "klimatologi_stasiun_jam": 15.75
+    },
+    "selang_dihitung_untuk": "klimatologi_stasiun"
+   }
+  },
+  "mos_pm25_bmkg": {
+   "metrik": "MAE uji MOS PM2,5 (µg/m³), stasiun BMKG sebagai pengganti",
+   "arah": "rendah",
+   "pembanding": "klimatologi_stasiun (pembanding sederhana terkuat di berkas)",
+   "n": 1313,
+   "skor_model": 10.75,
+   "skor_pembanding": 9.75,
+   "selisih": -1.0,
+   "selang95": [
+    -1.957,
+    -0.053
+   ],
+   "boleh_tampil": false,
+   "alasan": "selisih -1.0 <= 0: pembanding sederhana menang atau seri",
+   "vonis_prospektif": null,
+   "sumber_berkas": [
+    "public/udara/data/openaq_mos.json"
+   ],
+   "rincian": {
+    "mae_uji": {
+     "cams_mentah": 14.22,
+     "mos": 10.75,
+     "klimatologi_stasiun": 9.75
+    },
+    "selang_dihitung_untuk": "klimatologi_stasiun"
+   }
+  },
+  "ensambel_cams_geoscf_arsip": {
+   "metrik": "MAE uji ensambel CAMS+GEOS-CF koreksi bias (µg/m³), arsip OpenAQ",
+   "arah": "rendah",
+   "pembanding": "persistensi_obs_kemarin (pembanding sederhana terkuat di berkas)",
+   "n": 4624,
+   "skor_model": 39.22,
+   "skor_pembanding": 15.51,
+   "selisih": -23.71,
+   "selang95": null,
+   "boleh_tampil": false,
+   "alasan": "selisih -23.71 <= 0: pembanding sederhana menang atau seri",
+   "vonis_prospektif": null,
+   "sumber_berkas": [
+    "public/udara/data/uji_panen_pm25.json"
+   ],
+   "rincian": {
+    "mae_uji": {
+     "cams": 22.46,
+     "geoscf": 24.49,
+     "ensambel": 22.41,
+     "ensambel_koreksi_bias": 39.22,
+     "persistensi_obs_kemarin": 15.51,
+     "klimatologi_stasiun_jam": 26.42
+    },
+    "selang_dihitung_untuk": "cams"
+   }
+  },
+  "ensambel_cams_geoscf_bmkg": {
+   "metrik": "MAE uji ensambel CAMS+GEOS-CF koreksi bias (µg/m³), stasiun BMKG",
+   "arah": "rendah",
+   "pembanding": "persistensi_obs_kemarin (pembanding sederhana terkuat di berkas)",
+   "n": 1313,
+   "skor_model": 13.87,
+   "skor_pembanding": 10.16,
+   "selisih": -3.71,
+   "selang95": null,
+   "boleh_tampil": false,
+   "alasan": "selisih -3.71 <= 0: pembanding sederhana menang atau seri",
+   "vonis_prospektif": null,
+   "sumber_berkas": [
+    "public/udara/data/geoscf.json"
+   ],
+   "rincian": {
+    "mae_uji": {
+     "cams": 14.22,
+     "geoscf": 16.68,
+     "ensambel": 13.97,
+     "ensambel_koreksi_bias": 13.87,
+     "persistensi_obs_kemarin": 10.16
+    },
+    "selang_dihitung_untuk": "cams"
+   }
+  },
+  "prakiraan_pm25_stasiun": {
+   "metrik": "galat prakiraan PM2,5 kota vs stasiun",
+   "arah": "rendah",
+   "pembanding": null,
+   "n": null,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum ada galat prakiraan terhadap stasiun",
+   "sumber_berkas": [
+    "public/udara/data/prakiraan.json"
+   ]
+  },
+  "prakiraan_metar_analisis": {
+   "metrik": "CSI kejadian asap METAR (analisis CAMS hari lampau) vs pembanding",
+   "arah": "tinggi",
+   "pembanding": null,
+   "n": null,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "pembanding persistensi/klimatologi METAR belum dihitung (jalan prakiraan.py berikutnya)",
+   "sumber_berkas": [
+    "public/udara/data/prakiraan.json"
+   ]
+  },
+  "prakiraan_metar_h1": {
+   "metrik": "CSI kejadian asap METAR (prakiraan hari+1) vs pembanding",
+   "arah": "tinggi",
+   "pembanding": null,
+   "n": null,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "pembanding persistensi/klimatologi METAR belum dihitung (jalan prakiraan.py berikutnya)",
+   "sumber_berkas": [
+    "public/udara/data/prakiraan.json"
+   ]
+  }
+ }
+}
