@@ -14,6 +14,8 @@ Yang diperiksa (bukan potret angka, kecuali konstanta fisika):
      - informasional: selisih tampilan (x0,85) - SWE dicetak; Bengkulu M8,4 = batas atas optimistis (<= 10,5 menit).
   8. Jalur evakuasi tidak pernah memotong laut.
 Juga mencetak waktu tiba contoh megathrust selatan Jawa M 8,5 ke Pacitan & Cilacap dan ms per langkah stepper.
+  9. Kesetaraan Python-JS (TS-04): tsunami_sumber.py ukuran, faktor_dalam, rupture, layak sama dengan tsunami.js pada himpunan gempa tetap
+     (uji_kesetaraan; layak dengan grid batimetri nyata).
 Pakai:  python3 scripts/gempa/uji_js_tsunami.py
 """
 import json, math, os, subprocess
@@ -83,6 +85,52 @@ console.log(JSON.stringify(o));
 """
 
 
+# himpunan gempa tetap untuk kesetaraan: titik di laut dan darat Indonesia, semua jenis, M 6,2-9,1, kedalaman bervariasi, strike ada/tidak
+def himpunan_tetap():
+    titik = [(-9.75, 110.6), (-6.83, 107.62), (0.5, 114.0), (3.3, 95.9), (-2.6, 99.5), (-8.9, 121.5), (2.5, 123.2), (-4.5, 101.5), (-7.5, 131.0), (-1.0, 135.0)]
+    out = []
+    for n, (la, lo) in enumerate(titik):
+        for m, jenis, dalam, strike, dip in ((6.2, "naik", 10, 90, None), (6.8, "geser", 10, None, None), (7.5, "naik", 15, 120, None), (7.5, "subduksi", 30, 276, None),
+                                              (8.5, "subduksi", 25, 276, None), (9.1, "antarmuka", 25, 335, 12), (7.5, "turun", 45, 40, None), (8.0, None, None, None, None), (8.0, "subduksi", 150, 10, None)):
+            e = {"lat": la, "lon": lo, "m": m, "jenis": jenis, "dalam": dalam, "strike": strike, "dip": dip}
+            out.append({k: v for k, v in e.items() if v is not None})
+    return out
+
+
+JS_KESETARAAN = r"""
+const fs = require("fs"), vm = require("vm");
+vm.runInThisContext(fs.readFileSync(process.argv[1], "utf8"));
+const T = globalThis.Tsunami, dasar = process.argv[2], E = JSON.parse(process.argv[3]);
+const meta = JSON.parse(fs.readFileSync(dasar + "batimetri.json")), b = fs.readFileSync(dasar + "batimetri.bin");
+const G = T.dariBuffer(meta, b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
+console.log(JSON.stringify(E.map(e => ({uk: T.ukuran(e.m, e.jenis), kd: T.faktorDalam(e.dalam, e.jenis), r: T.rupture(e), ly: T.layak(e, G), ly0: T.layak(e)}))));
+"""
+
+
+def uji_kesetaraan():
+    sys_path = os.path.dirname(os.path.abspath(__file__))
+    import sys
+    sys.path.insert(0, sys_path)
+    import tsunami_sumber as ts
+    E = himpunan_tetap()
+    out = subprocess.run(["node", "-e", JS_KESETARAAN, JS_BERKAS, DATA, json.dumps(E)], capture_output=True, text=True)
+    assert out.returncode == 0, out.stderr
+    js = json.loads(out.stdout)
+    G = ts.muat_grid(DATA)
+    n_layak = 0
+    for e, j in zip(E, js):
+        uk, kd, r = ts.ukuran(e["m"], e.get("jenis")), ts.faktor_dalam(e.get("dalam"), e.get("jenis")), ts.rupture(e)
+        assert abs(uk["L"] - j["uk"]["L"]) < 1e-9 * j["uk"]["L"] and abs(uk["W"] - j["uk"]["W"]) < 1e-9 * j["uk"]["W"], (e, uk, j["uk"])
+        assert abs(kd - j["kd"]) < 1e-12, (e, kd, j["kd"])
+        for k in ("L", "W", "Wh", "slip", "angkat", "dip", "strike", "kd", "M0"):
+            assert abs(r[k] - j["r"][k]) <= 1e-9 * max(1.0, abs(j["r"][k])), (e, k, r[k], j["r"][k])
+        assert r["jenis"] == j["r"]["jenis"], (e, r["jenis"], j["r"]["jenis"])
+        assert ts.layak(e, G) == j["ly"] and ts.layak(e) == j["ly0"], (e, ts.layak(e, G), j["ly"], ts.layak(e), j["ly0"])
+        n_layak += j["ly"]
+    assert 5 < n_layak < len(E) - 5, ("himpunan tetap harus memuat layak dan tidak layak", n_layak, len(E))
+    print(f"kesetaraan Python-JS OK: {len(E)} gempa, {n_layak} layak")
+
+
 def main():
     out = subprocess.run(["node", "-e", JS, JS_BERKAS, DATA], capture_output=True, text=True)
     assert out.returncode == 0, out.stderr
@@ -135,6 +183,7 @@ def main():
                       "darat_basah": o["darat_basah"], "ms_waktuTiba_grid_penuh": o["ms_waktuTiba"], "ms_per_langkah_swe": round(o["ms_langkah"], 3), "ms_patokan_loop_1e6": round(o["ms_patokan_1e6"], 1),
                       "swe_nyata": sn, "rupture_jawa_M8_5": {x: round(o["rupture"][x], 2) for x in ("L", "W", "Wh", "slip", "angkat")},
                       "pacitan": o["pacitan"], "cilacap": o["cilacap"], "parangtritis": o["parangtritis"], "evakuasi_jakarta": o["evakuasi_jakarta"], "swe_vs_dijkstra": o["swe_vs_dijkstra"], "luar_kalibrasi": o["luar_kalibrasi"], "tinggi_atas_d25_d40": [h25, h40], "jalur_evakuasi_diuji": o["evak_n"]}, ensure_ascii=False))
+    uji_kesetaraan()
     print("uji_js_tsunami OK")
 
 
