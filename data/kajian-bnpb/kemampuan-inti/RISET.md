@@ -28,7 +28,7 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
    - Prakiraan titik panas /prediksi `API`: BSS 0,255 lawan klimatologi.
    - Hujan /prediksi `HJN`: BSS 0,262.
    - Susulan gempa M5: BSS tipis 0,0021.
-   - Arah abu prospektif: 82% lawan acak 25%.
+   - Arah abu prospektif: model 78% lawan acak 25%, tetapi persistensi 93% dan klimatologi 81% (KI-41), jadi belum lolos.
    - Besaran KK dan rumah banjir: `model_dampak`.
    - Hujan AIFS.
    - MOS PM2,5 di arsip OpenAQ.
@@ -63,24 +63,24 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
 
 | Kode | Teknik (asal terbaik) | Krh | Bnj | Rob | Lsr | Pss | Cca | Udr | Gmp | Tsn | Gna | Kkr | Tiket |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| M1 | Pembanding wajib persistensi + klimatologi pada jumlah alarm sama (banjir, kekeringan, cuaca) | ✓ | ✓ | ½ | ✓ | ✗ | ✓ | ½ | ✓ | – | ✓ | ✓ | KI-05 (Udr), KI-06 (Rob), KI-25 (Pss) |
-| M2 | Pra-registrasi bersidik, buka sekali (banjir `.sidik/.buka`, gempa `sidik_param`) | ½ | ✓ | ✗ | ✓ | ✗ | ✗ | ½ | ✓ | – | ½ | ½ | KI-27 (Krh), KI-06 (Rob), KI-25 (Pss) |
-| M3 | Uji prospektif append-only (karhutla, banjir, gempa) | ✓ | ✓ | ½ | ½ | ✗ | ½ | ½ | ✓ | – | ✓ | ½ | KI-06 (Rob), KI-25 (Pss) |
-| M4 | Gerbang tampil gagal-tertutup per keluaran (karhutla `gerbang.py`) | ✓ | ½ | ½ | ½ | ✗ | ½ | ✗ | ✓ | – | ✓ | ½ | KI-12 (Udr), KI-25 (Pss) |
-| M5 | Keluaran hipotesis tidak dikirim tanpa label (`src/ews.js` penilai) | ✓ | ✓ | ✗ | ½ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-01 (Rob, Lsr) |
+| M1 | Pembanding wajib persistensi + klimatologi pada jumlah alarm sama (banjir, kekeringan, cuaca) | ✓ | ✓ | ½ | ✓ | ½ | ✓ | ½ | ✓ | – | ✓ | ✓ | KI-05 (Udr), KI-06 (Rob), KI-25 (Pss) |
+| M2 | Pra-registrasi bersidik, buka sekali (banjir `.sidik/.buka`, gempa `sidik_param`) | ✓ | ✓ | ½ | ✓ | ✓ | ✗ | ✓ | ✓ | – | ½ | ½ | KI-27 (Krh), KI-06 (Rob), KI-25 (Pss) |
+| M3 | Uji prospektif append-only (karhutla, banjir, gempa) | ✓ | ✓ | ½ | ½ | ✓ | ½ | ½ | ✓ | – | ✓ | ½ | KI-06 (Rob), KI-25 (Pss) |
+| M4 | Gerbang tampil gagal-tertutup per keluaran (karhutla `gerbang.py`) | ✓ | ½ | ½ | ½ | ½ | ½ | ✓ | ✓ | – | ✓ | ½ | KI-12 (Udr), KI-25 (Pss) |
+| M5 | Keluaran hipotesis tidak dikirim tanpa label (`src/ews.js` penilai) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-01 (Rob, Lsr) |
 | M6 | Kalibrasi berpenjaga, ganti hanya bila Brier holdout turun (/prediksi, karhutla Platt + ECE) | ✓ | ½ | ✗ | ½ | – | ½ | ✗ | – | – | ✗ | ✗ | - |
-| M7 | Per wilayah lawan nasional dipilih dengan log-likelihood + pooling (gempa susulan) | ½ | ½ | ✗ | ½ | – | ✗ | ½ | ✓ | – | – | ✗ | KI-24 (Udr) |
+| M7 | Per wilayah lawan nasional dipilih dengan log-likelihood + pooling (gempa susulan) | ½ | ½ | ✗ | ½ | – | ✗ | ✓ | ✓ | – | – | ✗ | KI-24 (Udr) |
 | M8 | Selang tervalidasi + gerbang lebar selang (karhutla CQR, gempa `rentang_maks_mu`) | ✓ | ½ | ✗ | ✗ | ✗ | ✗ | ½ | ✓ | – | ½ | ½ | KI-60 (Bnj, Udr) |
-| M9 | Kesetaraan Python-JS ber-seed + kontrol negatif (gempa, gunung api) | ½ | ½ | – | – | – | – | ✗ | ✓ | ✓ | ✓ | ✓ | KI-15 (Krh, Bnj, Udr) |
-| M10 | Uji invarian fisik simulasi (gempa massa kekal, gunung api LAHARZ) | ✗ | ½ | – | ✗ | – | ½ | ½ | ✓ | ✓ | ✓ | ✓ | KI-44 (Krh, Bnj, Lsr) |
-| M11 | Mutu label: cakupan sumber, tak teramati, buang laporan latihan, validasi silang logbook (kekeringan `ujilabel`, banjir label bersatu, karhutla logbook 94%) | ✓ | ✓ | ½ | ½ | ½ | ✗ | ½ | ½ | – | ½ | ✓ | KI-16 (Lsr, Cca) |
+| M9 | Kesetaraan Python-JS ber-seed + kontrol negatif (gempa, gunung api) | ✓ | ✓ | – | – | – | – | ✓ | ✓ | ✓ | ✓ | ✓ | KI-15 (Krh, Bnj, Udr) |
+| M10 | Uji invarian fisik simulasi (gempa massa kekal, gunung api LAHARZ) | ✓ | ✓ | – | ✓ | – | ½ | ½ | ✓ | ✓ | ✓ | ✓ | KI-44 (Krh, Bnj, Lsr) |
+| M11 | Mutu label: cakupan sumber, tak teramati, buang laporan latihan, validasi silang logbook (kekeringan `ujilabel`, banjir label bersatu, karhutla logbook 94%) | ✓ | ✓ | ½ | ✓ | ½ | ½ | ½ | ½ | – | ½ | ✓ | KI-16 (Lsr, Cca) |
 | M12 | Label bebas pelapor (satelit, sensor, katalog) | ✓ | ½ | ½ | ½ | ✓ | ½ | ✓ | ✓ | ✓ | ½ | ½ | LS-* (Lsr) |
 | M13 | Klimatologi kebiasaan lapor sebagai offset (banjir CAMPUR, kekeringan bayangan) | – | ½ | ✗ | ½ | – | ✗ | – | – | – | – | ✓ | - |
 | M14 | Model bayangan dinilai berdampingan (/prediksi, kekeringan) | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✗ | – | ✗ | ✓ | - |
 | M15 | Pembanding produk luar (banjir GloFAS/GEOGLOWS/FloodHub/AIFS, kekeringan GDO kappa, gempa MAGMA) | ½ | ✓ | ½ | ½ | ✗ | ½ | ½ | ✓ | ½ | ½ | ✓ | KI-04 (Gmp) |
 | M16 | Hindcast atau replay kejadian historis (karhutla 123 kasus, gunung api Merapi 2010, banjir Maret 2025) | ✓ | ✓ | ✗ | ✗ | – | ✗ | ½ | ✓ | ✓ | ✓ | ✓ | - |
 | M17 | Koreksi bias/MOS ke pengamatan (udara MOS arsip, rob offset IOC) | – | ½ | ✓ | ✗ | – | ½ | ✓ | ½ | – | – | ✗ | KI-24 (Udr) |
-| M18 | Deteksi lonjakan berbasis data (gempa binomial negatif, udara CO MAD) | ½ | ✗ | – | ✗ | – | ✗ | ✓ | ✓ | – | ½ | – | KI-52 (Krh, Udr) |
+| M18 | Deteksi lonjakan berbasis data (gempa binomial negatif, udara CO MAD) | ✓ | ✗ | – | ✗ | – | ✗ | ✓ | ✓ | – | ½ | – | KI-52 (Krh, Udr) |
 
 ## 3. Matriks PREDIKSI
 
@@ -88,7 +88,7 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | P1 | Ansambel 51 anggota, peluang melewati ambang | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | – | – | – | ✓ | ✓ | - |
 | P2 | Prakiraan +1..+3 per kab dibekukan dan dinilai di /prediksi | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | – | ✗ | ✗ | PB-51 (Gna, Kkr) |
-| P3 | Model eskalasi kejadian berjalan + ramal ulang sesudah pengamatan kedua (karhutla `lolos`) | ✓ | ✗ | – | – | – | – | ✗ | ✓ | – | ✗ | – | KI-30 (Bnj) |
+| P3 | Model eskalasi kejadian berjalan + ramal ulang sesudah pengamatan kedua (karhutla `lolos`) | ✓ | ½ | – | – | – | – | ✗ | ✓ | – | ✗ | – | KI-30 (Bnj) |
 | P4 | Peluang tahunan sesudah declustering + backtest selang Poisson (gempa) | ½ | ✗ | – | ✗ | – | ✗ | – | ✓ | – | ✗ | – | - |
 | P5 | Musiman: bulan rawan pra-registrasi + ENSO (cuaca LULUS) | ✓ | ½ | ½ | ½ | – | ✓ | ½ | – | – | – | ½ | PB-53 (Bnj, Rob, Lsr, Udr, Kkr) |
 | P6 | Risiko 7 hari GBDT sel (karhutla `risiko_mingguan` LULUS) | ✓ | ✗ | – | ✗ | – | – | – | – | – | – | – | - |
@@ -98,12 +98,12 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
 
 | Kode | Teknik (asal terbaik) | Krh | Bnj | Rob | Lsr | Pss | Cca | Udr | Gmp | Tsn | Gna | Kkr | Tiket |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| S1 | Mesin fisik ruang (longsor hanya SINMAP tanpa run-out, rob tanpa genangan rob) | ✓ | ✓ | ½ | ½ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-46 (Lsr) |
-| S2 | Peringkat perlakuan biaya-manfaat + bilangan acak bersama + front Pareto + kestabilan (gunung api, udara, karhutla) | ✓ | ✓ | ✗ | ✗ | ✗ | ✓ | ✓ | ✗ | ✗ | ✓ | ✓ | KI-40 (Gmp) |
+| S1 | Mesin fisik ruang (longsor hanya SINMAP tanpa run-out, rob tanpa genangan rob) | ✓ | ✓ | ½ | ✓ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-46 (Lsr) |
+| S2 | Peringkat perlakuan biaya-manfaat + bilangan acak bersama + front Pareto + kestabilan (gunung api, udara, karhutla) | ½ | ½ | ✗ | ✗ | ✗ | ½ | ½ | ✓ | ✗ | ✓ | ½ | KI-40 (Gmp) |
 | S3 | Evakuasi berkapasitas / waktu tempuh Dijkstra (gunung api, tsunami) | ½ | ✓ | ✗ | ✗ | ✗ | ✗ | – | ½ | ✓ | ✓ | – | - |
-| S4 | Faktor sisi aman terpisah dari faktor tampilan (tsunami 0,61 lawan 0,85) | – | ✗ | – | ✗ | – | – | – | – | ✓ | ✗ | – | KI-43 (Bnj, Gna) |
+| S4 | Faktor sisi aman terpisah dari faktor tampilan (tsunami 0,61 lawan 0,85) | – | ✗ | – | ✗ | – | – | – | – | ✓ | ✓ | – | KI-43 (Bnj, Gna) |
 | S5 | Kalibrasi satu pengali + galat leave-one-out ditampilkan (gempa kerusakan, kekeringan hindcast) | ½ | ½ | – | ✗ | – | ✗ | ½ | ✓ | – | ✗ | ✓ | - |
-| S6 | Persistensi sebagai pembanding simulasi ruang (karhutla IoU sel) | ✓ | ✗ | – | – | – | – | ✗ | – | – | ✗ | – | KI-41 (Gna) |
+| S6 | Persistensi sebagai pembanding simulasi ruang (karhutla IoU sel) | ✓ | ✗ | – | – | – | – | ✗ | – | – | ✓ | – | KI-41 (Gna) |
 
 ## 5. Matriks PERINGATAN DINI
 
@@ -112,28 +112,28 @@ Kanal per bencana diambil dari `riset/R4` bagian CAKUPAN EWS, dikoreksi pemeriks
 | Kode | Teknik (asal terbaik) | Krh | Bnj | Rob | Lsr | Pss | Cca | Udr | Gmp | Tsn | Gna | Kkr | Tiket |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | E1 | Layar alarm | ✓ | ✓ | ✗ | ½ | ½ | ✓ | ½ | ✓ | ✓ | ½ | ✗ | KI-50 (Rob, Kkr), PB-36a, PB-38a, PB-46a |
-| E2 | Tangga tindakan bersumber per butir (`rujukan`) | ½ | ½ | ½ | ½ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | KI-56 (Krh, Bnj, Rob, Lsr), PB-36a (Pss), PB-40 (Kkr) |
-| E3 | Email langganan | ✓ | ✓ | ✓ | ½ | ✗ | ✓ | ✗ | ✓ | ✓ | ✗ | ✗ | KI-50 (Pss, Udr, Gna, Kkr), KI-01 (Lsr) |
+| E2 | Tangga tindakan bersumber per butir (`rujukan`) | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | KI-56 (Krh, Bnj, Rob, Lsr), PB-36a (Pss), PB-40 (Kkr) |
+| E3 | Email langganan | ✓ | ✓ | ✓ | ½ | ✗ | ✓ | ✗ | ✓ | ✓ | ✓ | ✗ | KI-50 (Pss, Udr, Gna, Kkr), KI-01 (Lsr) |
 | E4 | Web push warga dari sumber resmi (push model `LSR`, `CEX`, `ASP` dihitung ½) | ✓ | ✓ | ✗ | ½ | ✗ | ½ | ½ | ✗ | ✗ | ✗ | ✗ | - |
-| E5 | CAP 1.2 | ✓ | ✓ | ✗ | ½ | ½ | ✓ | ½ | ✓ | ✓ | ½ | ✗ | KI-50 (Rob, Kkr), KI-07 (Krh) |
+| E5 | CAP 1.2 | ✓ | ✓ | ½ | ½ | ✓ | ✓ | ½ | ✓ | ✓ | ✓ | ½ | KI-50 (Rob, Kkr), KI-07 (Krh) |
 | E6 | Resmi dan deteksi kita dipisah, label lembaga utuh | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | - |
-| E7 | Peringatan berantai berbasis lift empiris berselang (banjir ke longsor) | ✗ | ✓ | ✗ | ✓ | – | ✗ | – | ✗ | – | ✗ | – | KI-51 (Gmp, Gna) |
-| E8 | Daerah senyap: sinyal kuat tanpa laporan (karhutla `senyap.py`) | ✓ | ✗ | ✗ | ✗ | – | ✗ | – | – | – | – | ✗ | KI-53 (Bnj, Lsr, Kkr) |
-| E9 | Pemetaan tingkat konsisten antar kanal | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-02 (Cca), KI-03 (Cca) |
-| E10 | Saran status darurat (bukan penetapan) | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ | ✓ | KI-55 (Rob, Pss, Udr) |
+| E7 | Peringatan berantai berbasis lift empiris berselang (banjir ke longsor) | ✗ | ✓ | ✗ | ✓ | – | ✗ | – | ½ | – | ✗ | – | KI-51 (Gmp, Gna) |
+| E8 | Daerah senyap: sinyal kuat tanpa laporan (karhutla `senyap.py`) | ✓ | ½ | ✗ | ½ | – | ✗ | – | – | – | – | ½ | KI-53 (Bnj, Lsr, Kkr) |
+| E9 | Pemetaan tingkat konsisten antar kanal | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-02 (Cca), KI-03 (Cca) |
+| E10 | Saran status darurat (bukan penetapan) | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✓ | ✓ | ✓ | ✓ | KI-55 (Rob, Pss, Udr) |
 
 ## 6. Matriks DAMPAK
 
 | Kode | Teknik (asal terbaik) | Krh | Bnj | Rob | Lsr | Pss | Cca | Udr | Gmp | Tsn | Gna | Kkr | Tiket |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | D1 | Paparan penduduk, sekolah, faskes di area bahaya (longsor di `scripts/prediksi/terbit.py`) | ✓ | ✓ | ✓ | ✓ | ½ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | - |
-| D2 | Rantai fisika: bahaya, kerapuhan, kerusakan, korban, dikalibrasi + LOO (gempa) | – | ✗ | ✗ | ✗ | – | ✗ | – | ✓ | ½ | ✗ | – | KI-60 (Bnj) |
-| D3 | Model empiris bertingkat hujan, kejadian, besaran KK/rumah (banjir `model_dampak` LULUS) | – | ✓ | ✗ | ✗ | – | ✗ | – | – | – | – | – | KI-62 (Lsr, Cca) |
-| D4 | Kesehatan dan kelompok rentan (RR ISPA balita/lansia) | ✓ | – | – | – | – | – | ✓ | – | – | ✗ | – | KI-63 (Gna) |
-| D5 | Jalan putus dan desa terisolir (graf jembatan Tarjan, `scripts/prediksi/jalan.py`) | ✗ | ✓ | ✗ | ✓ | – | ✗ | – | ✗ | ✗ | ✗ | – | KI-64 (Rob, Cca, Gmp, Gna) |
-| D6 | Paparan tanpa hitung ganda antar-bahaya (gunung api awan panas + lahar) | – | ✗ | ✗ | ✗ | – | – | – | – | – | ✓ | – | KI-65 (Bnj, Lsr) |
-| D7 | Kebutuhan logistik Sphere per jiwa (`scripts/prediksi/aturan.json`) | ½ | ✓ | ✗ | ✓ | – | ✗ | ½ | ✗ | ✗ | ½ | ✓ | KI-66 (Cca, Gmp) |
-| D8 | Sektor (bandara, pelabuhan) | ✓ | ✗ | ✗ | – | ✗ | ✓ | ✓ | ✓ | ✗ | ✓ | – | KI-67 (Rob, Pss, Tsn) |
+| D2 | Rantai fisika: bahaya, kerapuhan, kerusakan, korban, dikalibrasi + LOO (gempa) | – | ½ | ✗ | ✗ | – | ✗ | – | ✓ | ½ | ✗ | – | KI-60 (Bnj) |
+| D3 | Model empiris bertingkat hujan, kejadian, besaran KK/rumah (banjir `model_dampak` LULUS) | – | ✓ | ✗ | ½ | – | ✗ | – | – | – | – | – | KI-62 (Lsr, Cca) |
+| D4 | Kesehatan dan kelompok rentan (RR ISPA balita/lansia) | ✓ | – | – | – | – | – | ✓ | – | – | ½ | – | KI-63 (Gna) |
+| D5 | Jalan putus dan desa terisolir (graf jembatan Tarjan, `scripts/prediksi/jalan.py`) | ✗ | ✓ | ½ | ✓ | – | ½ | – | ½ | ✗ | ½ | – | KI-64 (Rob, Cca, Gmp, Gna) |
+| D6 | Paparan tanpa hitung ganda antar-bahaya (gunung api awan panas + lahar) | – | ✓ | ✗ | ✓ | – | – | – | – | – | ✓ | – | KI-65 (Bnj, Lsr) |
+| D7 | Kebutuhan logistik Sphere per jiwa (`scripts/prediksi/aturan.json`) | ½ | ✓ | ✗ | ✓ | – | ✓ | ½ | ✓ | ✗ | ✓ | ✓ | KI-66 (Cca, Gmp) |
+| D8 | Sektor (bandara, pelabuhan) | ✓ | ✗ | ✓ | – | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | – | KI-67 (Rob, Pss, Tsn) |
 | D9 | Ekonomi rupiah dengan parameter bersumber | ✓ | ½ | ✗ | ✗ | ✗ | ½ | ½ | ✗ | ✗ | ½ | ½ | PB-55 (Rob, Lsr, Pss, Gmp, Tsn) |
 
 ## 7. Sel ✗ tanpa tiket (alasan per sel)
@@ -159,15 +159,15 @@ Kanal per bencana diambil dari `riset/R4` bagian CAKUPAN EWS, dikoreksi pemeriks
 | S1 | Pss | Lihat bagian 8. |
 | S2 | Rob, Lsr, Pss, Tsn | Lsr: run-out dulu (KI-46). Rob dan Pss: tidak ada mesin genangan rob. Tsn: evakuasi sudah ada, tetapi biaya per perlakuan belum bersumber. |
 | S3 | Rob, Lsr, Pss, Cca | Tidak ada mesin jangkauan (rob, pesisir) atau waktu tiba (longsor mendadak, siklon) yang tervalidasi. |
-| S4 | Lsr | Longsor mendadak, tanpa waktu tiba yang bisa dihitung. |
+| S4 | Lsr, Bnj | Lsr: longsor mendadak, tanpa waktu tiba yang bisa dihitung. Bnj: `hulu_hilir.json` tidak memuat sebaran jeda per kejadian, jadi bagian banjir KI-43 ditutup. |
 | S5 | Lsr, Cca, Gna | Hanya satu atau dua kejadian berlabel besaran. Gunung api hanya Merapi 2010. |
 | S6 | Bnj, Udr | Bnj: J4 sudah dibanding heuristik elevasi, dan berkasnya beku. Udr: pengamatan sebaran asap harian tidak cukup (TROPOMI 93 pasangan). |
 | E4 | Rob, Pss, Gmp, Tsn, Gna, Kkr | Push sumber resmi menunggu keputusan pemilik di PWA Q13. |
-| E7 | Krh, Rob, Cca | Rantainya sudah ditangkap oleh status bencana tujuan sendiri: hujan ke banjir lewat status banjir, api ke asap lewat lintasan. |
+| E7 | Krh, Rob, Cca, Gna | Rantainya sudah ditangkap oleh status bencana tujuan sendiri: hujan ke banjir lewat status banjir, api ke asap lewat lintasan. Gna: hujan ke banjir lahar tidak bisa diukur (logbook tanpa subjenis lahar, DIBI hanya 1 baris; KI-51). |
 | E8 | Rob, Cca | Tidak ada sinyal kuat bebas pelapor. |
 | E10 | Cca | Sengaja dilewati (`scripts/umum/saran_status.py:16,44`). |
 | D2 | Rob, Lsr, Cca, Gna | Rob: kedalaman rob tidak dimodelkan. Lsr: volume dan jangkauan belum tervalidasi. Cca: kerapuhan angin terhadap atap rumah Indonesia tidak bersumber. Gna: hanya Merapi 2010 untuk kalibrasi. |
-| D3 | Rob | Label besaran rob di DIBI sedikit. |
+| D3 | Rob, Cca | Rob: label besaran rob di DIBI sedikit. Cca: KI-62 bagian cuaca DITUTUP karena label cuaca layak hanya 10 kab (KI-16). |
 | D5 | Krh, Tsn | Krh: api jarang memutus jalan, dan tidak ada label. Tsn: zona buletin per kab tidak cukup rinci untuk ruas jalan. |
 | D6 | Rob | Rob dan banjir jarang beririsan di satu kecamatan. Dicek ulang sesudah KI-65. |
 | D7 | Rob, Tsn | Jumlah pengungsi rob dan tsunami tidak diprakirakan. |
@@ -190,3 +190,23 @@ Kanal per bencana diambil dari `riset/R4` bagian CAKUPAN EWS, dikoreksi pemeriks
 | Koreksi Bonferroni lintas rancangan (kekeringan `ambang2.py`) | Dipakai bila ada penyetelan banyak rancangan. Tidak ada tiket paket ini yang menyetel lebih dari satu rancangan. |
 | GEV L-momen dan MOS stasiun untuk ambang banjir | Ambang persentil banjir sudah TIDAK MEYAKINKAN dan dikunci. Ditimbang lagi bersama hasil PRAREG-CAMPUR. |
 | Tangga multi-skala untuk gunung api dan udara | Wilayah paket Tangga (`data/kajian-bnpb/tangga/`). Ditambah lewat keputusan di sana, bukan di paket ini. |
+
+## 9. Hitung ulang sesudah eksekusi (KI-71, 25 Nov 2026)
+
+Pemeriksa bersih membaca ulang kode di HEAD dan memperbarui sel dengan bukti berkas:baris. Sel yang tiketnya hanya membangun mesin tanpa pemakai diberi ½.
+
+| Bidang | ✗ sebelum | ✗ sesudah |
+| --- | --- | --- |
+| Pemodelan (M1-M18) | 39 | 28 |
+| Prediksi (P1-P7) | 15 | 14 |
+| Simulasi (S1-S6) | 19 | 16 |
+| Peringatan dini (E1-E10) | 31 | 20 |
+| Dampak (D1-D9) | 31 | 17 |
+| **Jumlah** | **135** | **95** |
+
+Peringatan dini dihitung sesudah KI-50 masuk (email rob resmi BMKG dan kenaikan level gunung api; CAP pesisir dan gunung api). Masih menunggu dua hal:
+
+- Email pesisir dan kekeringan menunggu izin pemilik untuk uji daftar jenis.
+- CAP rob dan kekeringan menunggu migrasi 0137 diterapkan di D1 produksi.
+
+Banyak sel naik ke ✓ karena mekanismenya sekarang ada (pembanding, sidik, gerbang, setara, invarian), padahal vonis modelnya GAGAL atau TIDAK LULUS. Itu disengaja. Matriks mengukur kelengkapan kemampuan dan kejujuran ujinya, bukan apakah model lulus. Vonis per model ada di TIKET.md.
