@@ -549,7 +549,7 @@ def halaman_susulan(Dk, c, MAKS, kini):
     s, k = Dk.slide(judul(f'Peluang gempa susulan M5 ke atas dalam 7 hari sejak gempa utama [{kategori(p7).lower()}];', pt=20) + ['\n']
                     + judul(c['judul2'], pt=20))
     # ================================================================ kiri: prediksi gempa susulan
-    kepala_panel(k, 43.2, 101, 418, 'Prediksi gempa susulan (model)', 'gempa')
+    kepala_panel(k, 43.2, 101, 418, 'Prediksi gempa susulan (model, hipotesis)', 'gempa')
     k.teks(43.2, 137, 418, 12, [R('Peluang terjadi paling sedikit satu gempa susulan M5 ke atas, dihitung sejak gempa utama',
                                   7.5, TEKS3)], bungkus=False)
     w3 = (418 - 2 * 6) / 3
@@ -573,7 +573,14 @@ def halaman_susulan(Dk, c, MAKS, kini):
               f'{n_amat} gempa M4 ke atas dalam radius {rgk:.0f} km sejak gempa utama (USGS).' if n_amat else
               f'Belum ada gempa M4 ke atas dalam radius {rgk:.0f} km sejak gempa utama (USGS).'),
              ('Kategori', 'Sangat kecil di bawah 10%; kecil 10 sampai 33%; sedang 33 sampai 66%; besar di atas 66%. '
-                          'Diadaptasi dari skala peluang IPCC.')]
+                          'Diadaptasi dari skala peluang IPCC.'),
+             # audit keandalan 24 Nov 2026 (docs/audit-metode/2026-11-24): BSS uji kecil dan selangnya memuat nol, jadi peluang ini
+             # belum terbukti lebih baik dari peluang rata-rata menurut besar gempa; pembaca wajib tahu (label "hipotesis" di kepala panel)
+             ('Keandalan', f"Uji {M['kinerja_uji']['rentang'][0][:4]} sampai {th} pada {ku['n']} gempa utama: "
+                           + ('model lebih baik dari peluang rata-rata menurut besar gempa (selang bootstrap 95% di bawah nol). '
+                              if (M['kinerja_uji'].get('bootstrap_selisih_brier') or {}).get('ci95', [0, 0])[1] < 0 else
+                              'model belum terbukti lebih baik dari peluang rata-rata menurut besar gempa. ')
+                           + 'Hanya untuk 7 hari sejak gempa utama.')]
     if g['dalam'] >= 70:
         baris.append(('Gempa dalam', f"Kedalaman {g['dalam']:g} km. Gempa dalam umumnya memicu lebih sedikit susulan; "
                                      'model ini belum membedakan kedalaman.'))
@@ -685,7 +692,7 @@ def _tint(hexa, f):
     return ''.join(f'{round(255 - (255 - v) * f):02X}' for v in (r, g, b))
 
 
-def blok_susulan_hal1(k, c, y0, y1, X=471.3, W=445.5, H=30):
+def blok_susulan_hal1(k, c, y0, y1, X=471.3, W=445.5, H=7):   # H <= 7: model hanya diuji untuk 0,04 sampai 7 hari (audit 24 Nov 2026)
     """Kolom kanan halaman 1 dari y0 sampai y1 (pemilik 23 Nov 2026, Talaud 221126 Alternatif 1):
     - kiri, skala bertingkat (gaya B pilihan pemilik): tiap jendela 24 jam, 3 hari, 7 hari pertama satu skala 0-100% yang dibagi
       empat kategori selebar ambangnya, penanda navy di posisi peluang, label 10/33/66% di bawah;
@@ -700,11 +707,10 @@ def blok_susulan_hal1(k, c, y0, y1, X=471.3, W=445.5, H=30):
     kum = lambda d: SU.peluang(g['m'], SU.T0, d - SU.T0, 5.0, P)['p']
     t0 = datetime(*c['waktu_utama'], tzinfo=WIB)
     kepala_panel(k, X, y0, W, 'Peluang gempa susulan M5 ke atas (model)', 'gempa',
-                 kanan='Kategori diadaptasi dari skala peluang IPCC')
+                 kanan='Hipotesis; kategori diadaptasi dari skala IPCC')
     top, bawah = y0 + 38, y1 - 22
     # ------------------------------------------------ kesimpulan
     pH, akhir = kum(H), t0 + timedelta(days=H)
-    tetap = 'tetap ' if kategori(pH) == kategori(kum(7)) else ''
     abu = '8A93A3'
     k.bulat(X, y1 - 18, W, 14, 'EEF2F7', radius=3)
     k.kotak(X + 7, y1 - 14.75, 7.5, 7.5, None, abu, 0.6, bentuk=MSO_SHAPE.OVAL)   # ikon info bergaris, tanpa isi
@@ -713,7 +719,7 @@ def blok_susulan_hal1(k, c, y0, y1, X=471.3, W=445.5, H=30):
     k.kotak(cx - 0.45, cy - 0.75, 0.9, 3.1, abu)
     k.teks(X + 21, y1 - 18, W - 27, 14, [
         R('Peluang terus bertambah, tetapi semakin lambat. ', 7, TEKS3),
-        R(f'Hingga {akhir.day} {BULAN_PANJANG[akhir.month - 1]} {akhir.year}, peluangnya {tetap}{kategori(pH).lower()}, '
+        R(f'Hingga {akhir.day} {BULAN_PANJANG[akhir.month - 1]} {akhir.year} (hari ke-{H}), peluangnya {kategori(pH).lower()}, '
           f'yaitu sekitar {persen(pH)}.', 7, TEKS, True)], bungkus=False)
     # ------------------------------------------------ kiri: skala bertingkat
     wk = 150
@@ -810,7 +816,7 @@ def blok_susulan_langkah(k, c, MAKS, PEL, y):
             f"{PEL['n_amat']} susulan M4 ke atas tercatat dalam {PEL['rgk']:.0f} km (USGS)" if PEL['n_amat'] else
             f"belum ada susulan M4 ke atas dalam {PEL['rgk']:.0f} km (USGS)")
     skala = '' if gaya == 'tangga' else ' (sangat kecil <10%, kecil <33%)'   # gaya tangga sudah menulis ambang di kepalanya
-    k.teks(471.3, y, 445.5, 10, [R(f'Kategori diadaptasi dari skala peluang IPCC{skala}; {amat}.', 7, TEKS3)],
+    k.teks(471.3, y, 445.5, 10, [R(f'Hipotesis; kategori skala peluang IPCC{skala}; {amat}.', 7, TEKS3)],
            bungkus=False)
     y += 13
     kepala_panel(k, 471.3, y, 445.5, 'Langkah yang disarankan', 'ringkasan')

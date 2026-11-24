@@ -22,6 +22,7 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Untuk tab Tangga, `dat
 | K14 | (19 Nov, jawaban Q3) Warna titik panas dari peluang 20/50/80% dipakai, hanya untuk tampilan. |
 | K15 | (19 Nov, jawaban Q4) Formulir Konfirmasi tetap belum menerima gelombang dan angin. |
 | K16 | (19 Nov, jawaban Q5) Siklon BMKG tetap belum masuk Perlu tindakan. |
+| K17 | (24 Nov, audit keandalan `docs/audit-metode/2026-11-24/HASIL.md`) Pil kepala kolom punya tiga keadaan: "teruji" hanya bila sedikitnya 30 hari sasaran berbeda dinilai DAN batas bawah selang bootstrap 90% selisih Brier (diambil ulang per hari) di atas nol terhadap persistensi dan klimatologi; "belum unggul" bila syarat hari terpenuhi tetapi selang memuat nol atau model kalah; "belum teruji" bila hari kurang dari 30 atau belum ada pengamatan. Ambang 30 pasangan kab-hari yang lama dicabut. Dijaga `scripts/prediksi/nilai.py` (`HARI_MIN`, `selang_beda`, uji). |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 

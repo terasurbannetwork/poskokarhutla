@@ -10,8 +10,9 @@ Pengamatan (disimpan di public/prediksi/data/amatan/<KODE>.json, {tanggal: {"j":
   ROB  menunggu: pasut IOC hanya disimpan sebagai bacaan terakhir per titik, belum seri harian.
 Baseline wajib: persistensi = kejadian pada hari lengkap terakhir sebelum terbit (t-1), klimatologi = frekuensi kejadian
 pada bulan kalender yang sama di arsip pengamatan sebelum tanggal sasaran (kab bila >= 10 hari teramati, selain itu
-nasional). Skor dibandingkan pada pasangan yang ketiganya ada. Vonis: n < 30 "belum teruji"; Brier model lebih kecil dari
-kedua baseline "mengalahkan baseline"; selain itu "belum mengalahkan baseline".
+nasional). Skor dibandingkan pada pasangan yang ketiganya ada. Vonis (K17, 24 Nov 2026): kurang dari 30 hari sasaran "belum
+teruji"; batas bawah selang bootstrap 90% selisih Brier (per hari) di atas 0 terhadap kedua baseline "mengalahkan baseline";
+selain itu "belum mengalahkan baseline".
 
 Pakai:  python3 scripts/prediksi/nilai.py               (butuh jaringan untuk HJN)
         python3 scripts/prediksi/nilai.py ujibalik [n]  uji balik retrospektif n hari (bawaan 30) -> ujibalik.json
@@ -31,6 +32,11 @@ LAMPAU_API = "https://previous-runs-api.open-meteo.com/v1/forecast"
 FINAL_HARI = 6          # ERA5 terbit ~5 hari terlambat
 MARGIN_DIBI = 14
 N_MIN = 30
+# vonis "mengalahkan baseline" (pemilik 24 Nov 2026, audit keandalan): >= 30 HARI sasaran berbeda (kab-hari sehari saling
+# berkorelasi, jadi 30 kab-hari bukan sampel cukup) DAN batas bawah selang bootstrap 90% selisih Brier (baseline - model,
+# diambil ulang per hari sasaran) di atas 0 untuk persistensi dan klimatologi sekaligus.
+HARI_MIN = 30
+BOOT_N = 500
 KLIM_MIN = 10
 SIMPAN_HARI = 90        # pasangan.json: cukup untuk 46 fit + 14 uji kalibrasi
 JENIS = {"BNJ": {"Banjir", "Banjir Bandang", "Banjir Genangan", "Banjir dan Tanah Longsor"},
@@ -95,12 +101,22 @@ def perbarui_hujan(entri, daftar, kini, data=None, unduh=unduh_hujan):
     return am
 
 
-def amatan_api(akar, cari, tanggal, sensor=None):
-    """sensor "N" = hanya S-NPP (label KRH_B: >= 5 titik VIIRS S-NPP n/h per kab-hari); None = semua sensor (label API)."""
+def amatan_api(akar, cari, tanggal, sensor=None, data=None):
+    """sensor "N" = hanya S-NPP (label KRH_B: >= 5 titik VIIRS S-NPP n/h per kab-hari); None = semua sensor (label API).
+    Tiap hari lengkap dari hotspot.json (7 hari bergulir) disimpan ke amatan/API.json (KRH.json untuk S-NPP), termasuk hari
+    sepi: titik_hari/ hanya mengarsip hari >= 1.000 titik, jadi tanpa simpanan ini hari sepi hilang sesudah 7 hari dan
+    prakiraannya tidak pernah dinilai (audit 24 Nov 2026). Urutan sumber: hotspot.json, simpanan, titik_hari/."""
     hot = titik_hotspot(akar, cari, sensor=sensor)
+    jal = jalur_amatan("API" if sensor is None else "KRH", data)
+    simpan = D.baca(jal, {}) or {}
+    baru = {t: {"j": "final", "kab": c} for t, c in hot.items() if simpan.get(t, {}).get("kab") != c}
+    if baru:
+        simpan.update(baru)
+        D.simpan(jal, dict(sorted(simpan.items())))
     out = {}
-    for t in sorted(set(tanggal) | set(hot)):
-        if (c := titik_harian(akar, cari, t, hot, sensor)) is not None:
+    for t in sorted(set(tanggal) | set(hot) | set(simpan)):
+        c = hot[t] if t in hot else simpan[t]["kab"] if t in simpan else titik_harian(akar, cari, t, hot, sensor)
+        if c is not None:
             out[t] = {"j": "final", "kab": c}
     return out
 
@@ -260,6 +276,32 @@ def mae(xs):
     return (round(sum(v) / len(v), 2), len(v)) if v else (None, 0)
 
 
+def selang_beda(banding, n_boot=BOOT_N, seed=1):
+    """Selang bootstrap 90% selisih Brier (baseline - model) untuk persistensi dan klimatologi, diambil ulang per HARI
+    sasaran (blok), bukan per kab-hari. -> {"persistensi": [bawah, atas], "klimatologi": [...]} atau None (< 2 hari)."""
+    import random
+    hari = {}
+    for x in banding:
+        s = hari.setdefault(x[4], [0, 0.0, 0.0, 0.0])
+        s[0] += 1
+        s[1] += (x[6] - x[7]) ** 2
+        s[2] += (x[8] - x[7]) ** 2
+        s[3] += (x[9] - x[7]) ** 2
+    blok = list(hari.values())
+    if len(blok) < 2:
+        return None
+    acak, beda = random.Random(seed), {"persistensi": [], "klimatologi": []}
+    for _ in range(n_boot):
+        n = m = bp = bk = 0
+        for _ in blok:
+            b = blok[acak.randrange(len(blok))]
+            n += b[0]; m += b[1]; bp += b[2]; bk += b[3]
+        beda["persistensi"].append((bp - m) / n)
+        beda["klimatologi"].append((bk - m) / n)
+    q = lambda v: [round(sorted(v)[int(0.05 * (len(v) - 1))], 5), round(sorted(v)[int(0.95 * (len(v) - 1))], 5)]
+    return {k: q(v) for k, v in beda.items()}
+
+
 def skor_grup(ps):
     """ps = pasangan satu grup -> ringkasan skor."""
     p = [x[6] for x in ps]
@@ -269,15 +311,17 @@ def skor_grup(ps):
     bp = brier([x[8] for x in banding], [x[7] for x in banding])
     bk = brier([x[9] for x in banding], [x[7] for x in banding])
     ss = lambda b0: round(1 - bm / b0, 3) if bm is not None and b0 else None
-    if len(banding) < N_MIN:
+    hari_b = len({x[4] for x in banding})
+    ci = selang_beda(banding) if hari_b >= HARI_MIN else None
+    if len(banding) < N_MIN or hari_b < HARI_MIN:
         vonis = "belum teruji"
-    elif bm < bp and bm < bk:
+    elif ci and ci["persistensi"][0] > 0 and ci["klimatologi"][0] > 0:
         vonis = "mengalahkan baseline"
     else:
         vonis = "belum mengalahkan baseline"
-    out = {"n": len(ps), "n_banding": len(banding), "hari": len({x[4] for x in ps}), "frek": round(sum(o) / len(o), 3) if o else None,
+    out = {"n": len(ps), "n_banding": len(banding), "hari": len({x[4] for x in ps}), "hari_banding": hari_b, "frek": round(sum(o) / len(o), 3) if o else None,
            "brier": brier(p, o), "brier_banding": bm, "brier_persistensi": bp, "brier_klimatologi": bk,
-           "bss_persistensi": ss(bp), "bss_klimatologi": ss(bk), "andal": andal(p, o), **kontingensi(p, o), "vonis": vonis}
+           "bss_persistensi": ss(bp), "bss_klimatologi": ss(bk), "selang90_beda": ci, "andal": andal(p, o), **kontingensi(p, o), "vonis": vonis}
     ek = [x[10] for x in ps if x[10]]
     if ek:
         out["mae_mulai"], out["n_mulai"] = mae([(e[0], e[1]) for e in ek])
@@ -329,8 +373,8 @@ def ap(ps, os_):
 
 def bayangan(pas, n_prakiraan):
     """Model bayangan berdampingan: per kode dan tenggang, pasangan (sasaran, kab) yang sama dengan model lama (bila ada) lawan
-    persistensi dan klimatologi. Vonis = aturan lama (Brier lebih kecil dari KEDUA baseline, n >= 30); vonis_peringkat = AP lebih tinggi
-    dari kedua baseline (bayangan mentah, belum dikalibrasi, jadi Brier bisa kalah oleh pergeseran laju sementara peringkat menang)."""
+    persistensi dan klimatologi. Vonis = aturan model lama (K17: >= 30 hari, selang bootstrap); vonis_peringkat = AP lebih tinggi
+    dari kedua baseline (juga butuh >= 30 hari) (bayangan mentah, belum dikalibrasi, jadi Brier bisa kalah oleh pergeseran laju sementara peringkat menang)."""
     banding = []
     for kb in D.KODE_B:
         lama = B.INFO[kb]["lama"]
@@ -345,15 +389,15 @@ def bayangan(pas, n_prakiraan):
             bd = [x for x in rows if x[8] is not None and x[9] is not None]
             o = [x[7] for x in bd]
             ab, ak_, ap_ = ap([x[6] for x in bd], o), ap([x[9] for x in bd], o), ap([x[8] for x in bd], o)
-            r = {"kode": kb, "lama": lama, "tenggang": n, "n": g["n"], "n_banding": g["n_banding"], "hari": g["hari"], "frek": g["frek"],
+            r = {"kode": kb, "lama": lama, "tenggang": n, "n": g["n"], "n_banding": g["n_banding"], "hari": g["hari"], "hari_banding": g["hari_banding"], "frek": g["frek"],
                  "brier_bayangan": g["brier_banding"], "brier_persistensi": g["brier_persistensi"], "brier_klimatologi": g["brier_klimatologi"],
                  "ap_bayangan": ab, "ap_persistensi": ap_, "ap_klimatologi": ak_, "vonis": g["vonis"],
                  "pod": g["pod"], "far": g["far"]}
             if lama:
                 r["brier_lama"] = brier([pl[(n, x[4], x[5])] for x in bd], o)
                 r["ap_lama"] = ap([pl[(n, x[4], x[5])] for x in bd], o)
-                r["menang_lama"] = None if g["n_banding"] < N_MIN else bool(r["brier_bayangan"] < r["brier_lama"])
-            r["vonis_peringkat"] = "belum teruji" if g["n_banding"] < N_MIN or sum(o) < 5 else (
+                r["menang_lama"] = None if g["n_banding"] < N_MIN or g["hari_banding"] < HARI_MIN else bool(r["brier_bayangan"] < r["brier_lama"])
+            r["vonis_peringkat"] = "belum teruji" if g["n_banding"] < N_MIN or g["hari_banding"] < HARI_MIN or sum(o) < 5 else (
                 "peringkat lebih baik dari baseline" if ab > max(ak_, ap_) else "peringkat belum lebih baik")
             banding.append(r)
     return {"catatan": B.CATATAN, "model": {k: {**B.INFO[k], "prakiraan": n_prakiraan.get(k, 0)} for k in D.KODE_B}, "banding": banding}
@@ -397,7 +441,7 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
             folder_t = os.path.join(akar, "public", "data", "titik_hari")
             bulan = {t[:7] for t in tgl}
             semua = sorted(f[:10] for f in os.listdir(folder_t) if f[:7] in bulan) if os.path.isdir(folder_t) else []
-            am[kd] = amatan_api(akar, cari, sorted(set(semua) | set(tgl)), sensor)
+            am[kd] = amatan_api(akar, cari, sorted(set(semua) | set(tgl)), sensor, data)
     for k in ("BNJ", "LSR", "CEX"):
         if k in dasar:
             am[k], akhir = amatan_dibi(akar, cari, k)
@@ -492,11 +536,26 @@ def uji():
     assert (k["a"], k["b"], k["c"], k["pod"], k["far"], k["csi"]) == (1, 1, 1, 0.5, 0.5, 0.333)
     assert mae([(14, 16), (None, 3), (2, 2)]) == (1.0, 2)
     # sintetis: model sempurna mengalahkan baseline; model terbalik tidak; n < 30 belum teruji
-    def pas(p_fn, n=40):
-        return [["HJN", 1, 1, "final", f"2026-10-{1 + i % 28:02d}", "1101", p_fn(i % 2), i % 2, 1 - i % 2, 0.5, None] for i in range(n)]
-    assert skor_grup(pas(float))["vonis"] == "mengalahkan baseline"
+    def pas(p_fn, n=80, hari=40):
+        return [["HJN", 1, 1, "final", D.geser("2026-10-01", i % hari), str(1101 + i // hari), p_fn((i + i // hari) % 2), (i + i // hari) % 2,
+                 1 - (i + i // hari) % 2, 0.5, None] for i in range(n)]
+    s_ok = skor_grup(pas(float))
+    assert s_ok["vonis"] == "mengalahkan baseline" and s_ok["hari_banding"] == 40 and s_ok["selang90_beda"]["klimatologi"][0] > 0, s_ok
     assert skor_grup(pas(lambda o: 1.0 - o))["vonis"] == "belum mengalahkan baseline"
     assert skor_grup(pas(float, 10))["vonis"] == "belum teruji"
+    # banyak kab-hari dari sedikit hari (audit 24 Nov: titik panas 2.056 kab-hari dari 6 hari) = belum teruji
+    s6 = skor_grup(pas(float, 600, 6))
+    assert s6["n_banding"] == 600 and s6["vonis"] == "belum teruji" and s6["selang90_beda"] is None, s6
+    # model sedikit lebih baik tapi selangnya memuat 0 = belum mengalahkan (bukan teruji)
+    def campur(n=120, hari=40):
+        out = []
+        for i in range(n):
+            o, d = i % 2, i % hari
+            p = (0.6 if o else 0.4) if d % 2 == 0 else (0.42 if o else 0.58)    # hari genap bagus, ganjil buruk: rerata sedikit < 0,25
+            out.append(["HJN", 1, 1, "final", D.geser("2026-10-01", d), str(1101 + i // hari), p, o, 0.5, 0.5, None])
+        return out
+    sc = skor_grup(campur())
+    assert sc["brier_banding"] < sc["brier_klimatologi"] and sc["vonis"] == "belum mengalahkan baseline", sc
     # alur nilai dengan unduh tiruan, folder sementara
     daftar = D.kab()
     with tempfile.TemporaryDirectory() as tmp:
@@ -541,9 +600,16 @@ def uji():
                    "acuan": "2026-10-30T00:24:00+00:00", "wilayah": [k0["geo"] + "|X"],
                    "baris": [[0, 100, 0, "N", 1, 1, 0, "10-26", 1], [0, 100, 0, "N", 1, 1, 0, "10-28", 1]]},
                   open(os.path.join(tmp, "public", "data", "hotspot.json"), "w"))
-        a = amatan_api(tmp, D.pencari(daftar), ["2026-10-29", "2026-09-01"])
+        dt_ = os.path.join(tmp, "data")
+        a = amatan_api(tmp, D.pencari(daftar), ["2026-10-29", "2026-09-01"], data=dt_)
         assert a["2026-10-29"] == {"j": "final", "kab": {}} and nilai_amatan("API", a["2026-10-29"], k0["id"]) == 0, a
         assert a["2026-10-28"]["kab"] == {k0["id"]: 1} and "2026-09-01" not in a, a
+        # hari sepi tersimpan di amatan/API.json: sesudah hotspot.json bergulir (kosong) hari itu tetap teramati, bukan hilang
+        assert D.baca(jalur_amatan("API", dt_))["2026-10-27"] == {"j": "final", "kab": {}}
+        json.dump({"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"], "acuan": "2026-11-20T00:00:00+00:00",
+                   "wilayah": [], "baris": []}, open(os.path.join(tmp, "public", "data", "hotspot.json"), "w"))
+        a2 = amatan_api(tmp, D.pencari(daftar), ["2026-10-27", "2026-10-28"], data=dt_)
+        assert a2["2026-10-27"] == {"j": "final", "kab": {}} and a2["2026-10-28"]["kab"] == {k0["id"]: 1}, a2
     # retro: bentuk entri sah
     e = entri_retro({1: {"2026-09-10": {"1101": [3.0, 14, 2, 14]}}, 2: {}, 3: {}})
     assert e[0]["t"] == "2026-09-09" and D.periksa_entri(dict(e[0], dibuat="x", sumber="x")) is None

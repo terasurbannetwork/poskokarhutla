@@ -483,6 +483,26 @@ def _kunci(e):
     return f"{e['w']}|{e['lat']}|{e['lon']}"
 
 
+def _sama(e, x, derajat=0.2):
+    """Gempa sama dengan entri prospektif x: menit asal sama dan lokasi bergeser < 0,2 derajat. Revisi lokasi atau magnitudo USGS
+    mengubah _kunci (lat/lon di dalamnya), jadi tanpa ini satu gempa tercatat dua sampai tiga kali (audit 24 Nov 2026)."""
+    return e["w"] == x["waktu"] and abs(e["lat"] - x["lat"]) < derajat and abs(e["lon"] - x["lon"]) < derajat
+
+
+def tandai_ganda(entri):
+    """Entri sesudah entri pertama untuk gempa yang sama diberi 'ganda' = id pertama (field baru; ramalan, param, dinilai
+    tidak diubah, jadi tetap append-only). Entri ganda tidak dinilai dan tidak ikut metrik."""
+    for j, x in enumerate(entri):
+        if "ganda" in x:
+            continue
+        # cocok ke entri sebelumnya mana pun (termasuk yang sudah ganda) lalu ikut akarnya: lokasi yang bergeser bertahap
+        # (A -> B -> C, tiap langkah < 0,2 derajat) tetap satu gempa
+        asal = next((y for y in entri[:j] if _sama({"w": x["waktu"], "lat": x["lat"], "lon": x["lon"]}, y)), None)
+        if asal:
+            x["ganda"] = asal.get("ganda", asal["id"])
+    return entri
+
+
 def gabung_prospektif(lama, baru):
     """Tolak bila entri lama hilang atau ramalannya berubah (append-only)."""
     bk = {x["id"]: x for x in baru["entri"]}
@@ -507,15 +527,21 @@ def prospektif(ev=None, kini=None):
     idx = {_kunci(ev[i]): i for i in utama}
     for i in utama:  # gempa utama sesudah parameter dibekukan: ramalan hanya fungsi (M, param), tanpa bocoran hasil
         e = ev[i]
-        if e["t"] <= t_beku or _kunci(e) in ada:
+        if e["t"] <= t_beku or _kunci(e) in ada or any(_sama(e, x) for x in entri):
             continue
         P = mdl["param"]
         r = {k: (None if target_m(e["m"], k) < P["mc"] - 1e-9 else
                  {x: round(v, 5) for x, v in peluang(e["m"], T0, H - T0, target_m(e["m"], k), P).items()}) for k in TARGET}
         entri.append({"id": _kunci(e), "waktu": e["w"], "lat": e["lat"], "lon": e["lon"], "m": e["m"], "dalam": e["dalam"], "prov": e["kp"],
                       "dicatat": kini.strftime("%Y-%m-%dT%H:%MZ"), "param": P, "ramalan": r, "dinilai": None})
+    tandai_ganda(entri)
+    for e in (ev[i] for i in utama):   # entri akar yang _kunci-nya basi karena revisi lokasi USGS: dinilai lewat gempa yang sama
+        for x in entri:                 # (katalog cocok ke akar atau ke salah satu gandanya)
+            if _sama(e, x):
+                akar = x.get("ganda", x["id"])
+                idx.setdefault(akar, idx[_kunci(e)])
     for x in entri:
-        if x["dinilai"] is None and _hari(x["waktu"]) + H <= t_kini and x["id"] in idx:
+        if x["dinilai"] is None and "ganda" not in x and _hari(x["waktu"]) + H <= t_kini and x["id"] in idx:
             i = idx[x["id"]]
             x["dinilai"] = {"pada": kini.strftime("%Y-%m-%dT%H:%MZ"),
                             **{k: (lambda y: None if y is None else {"terjadi": y[0], "cacah": y[1]})(kejadian(x["m"], seq[i], k, x["param"]["mc"]))
@@ -523,10 +549,11 @@ def prospektif(ev=None, kini=None):
     ring = {}
     for k in TARGET:
         b = [(x["ramalan"][k]["p"], x["ramalan"][k]["p"], x["dinilai"][k]["terjadi"], x["dinilai"][k]["cacah"], x["ramalan"][k]["n"])
-             for x in entri if x["dinilai"] and x["ramalan"][k] and x["dinilai"][k]]
+             for x in entri if x["dinilai"] and "ganda" not in x and x["ramalan"][k] and x["dinilai"][k]]
         m = metrik(b)
         ring[k] = m and {y: m[y] for y in ("n", "n_terjadi", "brier", "ll", "n_test", "reliabilitas")}
-    baru = {"diperbarui": kini.strftime("%Y-%m-%dT%H:%MZ"), "dicatat": len(entri), "dinilai": sum(1 for x in entri if x["dinilai"]),
+    baru = {"diperbarui": kini.strftime("%Y-%m-%dT%H:%MZ"), "dicatat": sum(1 for x in entri if "ganda" not in x),
+            "dinilai": sum(1 for x in entri if x["dinilai"] and "ganda" not in x), "ganda": sum(1 for x in entri if "ganda" in x),
             "metrik": ring, "jendela_hari": [T0, H],
             "catatan": "Append-only. Tiap gempa utama M >= 5 di Indonesia sesudah parameter dibekukan dicatat dengan parameter saat itu; "
                        "dinilai sekali sesudah 7 hari terhadap katalog USGS. Entri lama tidak pernah diubah atau dihapus.",
@@ -631,6 +658,14 @@ def uji():
             raise SystemExit("prospektif yang tidak append-only diterima")
         except ValueError:
             pass
+    # revisi lokasi USGS: gempa yang sama (menit sama, geser < 0,2 derajat) ditandai ganda, bukan entri baru yang dinilai
+    en = [{"id": f"2026-10-27T14:44|{la}|{lo}", "waktu": "2026-10-27T14:44", "lat": la, "lon": lo} for la, lo in ((-9.116, 110.331), (-9.098, 110.386), (-9.5, 111))]
+    en.append({"id": "2026-10-27T14:45|-9.1|110.33", "waktu": "2026-10-27T14:45", "lat": -9.1, "lon": 110.33})
+    tandai_ganda(en)
+    assert [x.get("ganda") for x in en] == [None, en[0]["id"], None, None], en
+    rantai = [{"id": f"r{i}", "waktu": "2026-11-01T00:00", "lat": 0.15 * i, "lon": 120} for i in range(3)]   # A, B 0,15 dari A, C 0,3 dari A
+    assert [x.get("ganda") for x in tandai_ganda(rantai)] == [None, "r0", "r0"], rantai
+    assert _sama({"w": "2026-10-27T14:44", "lat": -9.095, "lon": 110.335}, en[0]) and not _sama({"w": "2026-10-27T14:44", "lat": -9.5, "lon": 111}, en[0])
     # berkas keluaran (bila ada) sesuai kontrak
     if os.path.exists(MODEL):
         mdl = json.load(open(MODEL))
@@ -644,7 +679,7 @@ def uji():
         assert os.path.exists(os.path.join(KELUAR, mdl["prospektif"]))
     if os.path.exists(PROSPEKTIF):
         pr = json.load(open(PROSPEKTIF))
-        assert pr["dicatat"] == len(pr["entri"]) and all(x["ramalan"] for x in pr["entri"])
+        assert pr["dicatat"] + pr.get("ganda", 0) == len(pr["entri"]) and all(x["ramalan"] for x in pr["entri"])
     print("susulan uji OK")
 
 

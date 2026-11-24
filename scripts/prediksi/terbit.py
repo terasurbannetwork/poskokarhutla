@@ -3,7 +3,7 @@
 Per kode diambil baris arsip TERAKHIR (tanggal terbitnya ikut tertulis; kode yang hari ini gagal dibekukan tampil dengan
 tanggal lamanya, bukan disamarkan). Peluang diganti versi kalibrasi HANYA untuk grup berstatus "dipakai" di kalibrasi.json;
 jumlah & lama hujan dikali rasio provinsi yang "dipakai". Tiap angka membawa vonis grupnya dari skor.json
-("belum teruji" bila belum ada / n < 30).
+("belum teruji" bila belum ada atau kurang dari 30 hari sasaran, aturan K17 di nilai.py).
 
 Dampak (aturan.json): jiwa terpapar banjir = paparan_kab.json (scripts/banjir/dampak_kab.py: penduduk x porsi luas zona
 bahaya tinggi), longsor = penduduk kecamatan berbahaya tinggi (public/data/penduduk.json x public/banjir/data/bahaya.json); sekolah & murid dari public/data/sekolah.json; faskes/RS dari public/data/fasilitas.json
@@ -45,6 +45,13 @@ def vonis(skor, kode, ambang, n):
     if not g:
         return ["belum teruji", 0, None]
     return [g[0]["vonis"], g[0]["n_banding"], g[0].get("bss_klimatologi")]
+
+
+def hari_vonis(skor, kode, ambang, n):
+    """Hari sasaran yang dinilai grup vonis (unsur ke-5 vonis di prediksi.json; aturan K17 dihitung per hari, bukan per kab-hari)."""
+    g = [x for x in (skor.get("kode", {}).get(kode, {}).get("grup") or []) if x["ambang"] == ambang and x["tenggang"] == n]
+    g.sort(key=lambda x: x["tahap"] != "final")
+    return g[0].get("hari_banding", 0) if g else 0
 
 
 def peta_kal(kal, aktif=None):
@@ -233,7 +240,7 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
             a = AMBANG_KOL.get((kd, c))
             if a is not None:
                 for n in (1, 2, 3):
-                    vn[f"{c}|{n}"] = vonis(skor, kd, a, n) + [bool(pk.get((kd, a, n)))]
+                    vn[f"{c}|{n}"] = vonis(skor, kd, a, n) + [bool(pk.get((kd, a, n))), hari_vonis(skor, kd, a, n)]
         kode[kd] = {"label": LABEL[kd], "terbit": e["t"], "hari": e["hari"], "sumber": e["sumber"], "dibuat": e["dibuat"],
                     "kol": TAMPIL[kd], "vonis": vn, "status": (skor.get("kode", {}).get(kd) or {}).get("status", "menunggu")}
     out = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "kode": kode, "kab": kabs,

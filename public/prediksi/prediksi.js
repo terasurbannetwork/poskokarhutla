@@ -24,10 +24,11 @@ const angka4 = v => v == null ? "–" : fmt(Math.round(v * 10000) / 10000);
 const kol = (kode, r, c) => r ? r[PR.d.kode[kode].kol.indexOf(c)] : null;
 
 function pil(v) {
-  /* v = [vonis, n, bss_klim, terkalibrasi] dari prediksi.json kode.vonis */
+  /* v = [vonis, n kab-hari, bss_klim, terkalibrasi, hari sasaran] dari prediksi.json kode.vonis (hari: aturan K17) */
   if (!v) return "";
   const kls = v[0] === "mengalahkan baseline" ? "ok" : v[0] === "belum teruji" ? "abu" : "buruk";
-  const t = v[0] === "belum teruji" ? `belum teruji${v[1] ? ` (n ${fmt(v[1])})` : ""}` : `${v[0]}, n ${fmt(v[1])}`;
+  const uk = v[1] ? `${v[4] != null ? `${fmt(v[4])} hari, ` : ""}n ${fmt(v[1])}` : "";
+  const t = v[0] === "belum teruji" ? `belum teruji${uk ? ` (${uk})` : ""}` : `${v[0]}, ${uk}`;
   return `<span class="pr-pil ${kls}" title="Rapor ketepatan prakiraan ini">${esc(t)}${v[3] ? ", terkalibrasi" : ""}</span>`;
 }
 
@@ -101,7 +102,7 @@ function ujiPil(kode, n) {
   if (!PR.d.kode[kode]) return '<span class="pr-pil abu" title="Belum ada data untuk bencana ini">belum ada data</span>';
   const v = VONIS_KOL[kode] && PR.d.kode[kode].vonis?.[`${VONIS_KOL[kode]}|${n}`];
   if (!v) return '<span class="pr-pil abu" title="Menunggu sumber pengamatan: tidak dinilai lawan model sendiri">belum teruji</span>';
-  const ket = `${esc(v[0])}, n ${fmt(v[1])}${v[3] ? ", terkalibrasi" : ""}`;
+  const ket = `${esc(v[0])}, ${v[4] != null ? `${fmt(v[4])} hari sasaran, ` : ""}n ${fmt(v[1])}${v[3] ? ", terkalibrasi" : ""}`;
   if (v[0] === "mengalahkan baseline") return `<span class="pr-pil ok" title="${ket}">teruji</span>`;
   if (v[0] === "belum teruji") return `<span class="pr-pil abu" title="${ket}">belum teruji</span>`;
   return `<span class="pr-pil buruk" title="${ket}">belum unggul</span>`;
@@ -323,7 +324,7 @@ function tabelSkor(kode, g) {
     <td class="n">${angka3(x.brier_banding)}</td><td class="n">${angka3(x.brier_persistensi)}</td><td class="n">${angka3(x.brier_klimatologi)}</td>
     <td class="n">${x.pod == null ? "–" : persen(x.pod)}</td><td class="n">${x.far == null ? "–" : persen(x.far)}</td>
     <td class="n">${x.mae_mulai == null ? "–" : `±${fmt(Math.round(x.mae_mulai))} jam`}</td><td class="n">${x.mae_lama == null ? "–" : `±${fmt(Math.round(x.mae_lama))} jam`}</td>
-    <td>${pil([x.vonis, x.n_banding])}</td></tr>`).join("");
+    <td>${pil([x.vonis, x.n_banding, null, false, x.hari_banding])}</td></tr>`).join("");
   return `<h3>${esc(KODE_NAMA[kode])}</h3><div class="tw"><table><thead><tr><th>Ambang</th><th class="n">Tenggang</th><th>Tahap</th><th class="n">n</th>
     <th class="n">Brier model</th><th class="n">Brier persistensi</th><th class="n">Brier klimatologi</th><th class="n">POD</th><th class="n">FAR</th>
     <th class="n">Galat jam mulai</th><th class="n">Galat lama</th><th>Vonis</th></tr></thead><tbody>${rows}</tbody></table></div>`;
@@ -337,16 +338,16 @@ function bayanganRapor(b) {
   const rows = b.banding.map(x => `<tr><td>${esc(nama(x.kode))}</td><td class="n">+${esc(x.tenggang)}</td><td class="n">${fmt(x.n_banding)}</td>
     <td class="n">${angka4(x.brier_bayangan)}</td><td class="n">${x.lama ? angka4(x.brier_lama) : "tidak ada"}</td><td class="n">${angka4(x.brier_persistensi)}</td><td class="n">${angka4(x.brier_klimatologi)}</td>
     <td class="n">${angka3(x.ap_bayangan)}</td><td class="n">${x.lama ? angka3(x.ap_lama) : "tidak ada"}</td><td class="n">${angka3(x.ap_persistensi)}</td><td class="n">${angka3(x.ap_klimatologi)}</td>
-    <td>${pil([x.vonis, x.n_banding])}</td><td>${pilAp(x.vonis_peringkat, x.n_banding)}</td></tr>`).join("");
+    <td>${pil([x.vonis, x.n_banding, null, false, x.hari_banding])}</td><td>${pilAp(x.vonis_peringkat, x.n_banding)}</td></tr>`).join("");
   const info = Object.entries(b.model).map(([kd, m]) => `<li><b>${esc(m.nama)}</b> (${fmt(m.prakiraan)} prakiraan tercatat): ${esc(m.metode)}. Di lab: ${esc(m.uji_lab)}.</li>`).join("");
-  return `<section class="card pad pr-sek"><h2>Model bayangan, diuji berdampingan</h2><p class="pr-kecil">${esc(b.catatan)} Brier lebih kecil dan AP (ketepatan peringkat) lebih besar = lebih baik. Vonis kiri memakai aturan yang sama dengan model lama (Brier lebih kecil dari persistensi dan klimatologi, n ≥ 30); vonis kanan memakai AP. Peluang bayangan belum dikalibrasi, jadi Brier dapat kalah oleh pergeseran laju kejadian sementara peringkatnya menang.</p>
+  return `<section class="card pad pr-sek"><h2>Model bayangan, diuji berdampingan</h2><p class="pr-kecil">${esc(b.catatan)} Brier lebih kecil dan AP (ketepatan peringkat) lebih besar = lebih baik. Vonis kiri memakai aturan yang sama dengan model lama (sedikitnya 30 hari sasaran dan selang 90% selisih Brier di atas nol terhadap persistensi dan klimatologi); vonis kanan memakai AP. Peluang bayangan belum dikalibrasi, jadi Brier dapat kalah oleh pergeseran laju kejadian sementara peringkatnya menang.</p>
     <ul class="pr-kecil">${info}</ul>${rows ? `<div class="tw"><table><thead><tr><th>Model</th><th class="n">Tenggang</th><th class="n">n pasangan</th><th class="n">Brier bayangan</th><th class="n">Brier model lama</th><th class="n">Brier persistensi</th><th class="n">Brier klimatologi</th>
     <th class="n">AP bayangan</th><th class="n">AP model lama</th><th class="n">AP persistensi</th><th class="n">AP klimatologi</th><th>Vonis (Brier)</th><th>Vonis (AP)</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="pr-kecil">Belum ada pasangan yang matang. Banjir dan longsor menunggu label DIBI 14 hari, karhutla dan cuaca ekstrem sesudah data harian terkumpul.</p>'}</section>`;
 }
 
 function gambarRapor() {
   const s = PR.skor, u = PR.uji, k = PR.kal;
-  let h = `<div class="head"><div><h2>Rapor ketepatan</h2><p class="pr-kecil">Brier lebih kecil = lebih baik. Prakiraan harus lebih baik dari persistensi (besok = hari terakhir lengkap) dan klimatologi (frekuensi bulan yang sama). Vonis butuh ≥30 pasangan.</p></div></div>`;
+  let h = `<div class="head"><div><h2>Rapor ketepatan</h2><p class="pr-kecil">Brier lebih kecil = lebih baik. Prakiraan harus lebih baik dari persistensi (besok = hari terakhir lengkap) dan klimatologi (frekuensi bulan yang sama). Vonis "mengalahkan" butuh sedikitnya 30 hari sasaran dan selang 90% selisih Brier (diambil ulang per hari) di atas nol terhadap kedua pembanding; kurang dari itu "belum teruji".</p></div></div>`;
   h += `<section class="card pad pr-sek"><h2>Prospektif</h2><p class="pr-kecil">${esc(s?.catatan || "skor.json belum ada")}</p>${s ? Object.entries(s.kode).filter(([kd]) => !kd.endsWith("_B")).map(([kd, g]) => tabelSkor(kd, g)).join("") : ""}</section>`;
   h += bayanganRapor(s?.bayangan);
   h += `<section class="card pad pr-sek"><h2>Uji balik retrospektif</h2>${u ? `<p class="pr-kecil">${esc(u.catatan)} Periode ${esc(u.periode.join(" s.d. "))}, ${fmt(u.n_terbit)} hari terbit.</p>${tabelSkor("HJN", u.kode.HJN)}` : '<p class="pr-kecil">Belum dijalankan.</p>'}</section>`;
