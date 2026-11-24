@@ -7,7 +7,7 @@
   const h = (tag, att, ...anak) => { const e = document.createElement(tag);
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
-  const tgl = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"}) + " WIB";
+  const tgl = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";   // = jamWIB di public/inti/format.js
   const tampil = k => `${k.slice(0, 5)}-${k.slice(5)}`;
   const JENIS = {lk: "Laporan harian karhutla", lkb: "Laporan harian bencana", pb: "Dokumen PB", lj: "Data lanjutan BPBD"};
   const bisaCabut = !Admin.staf || Admin.peran.includes("pimpinan");   // API tetap menjaga; tombol hanya disembunyikan untuk yang tak berhak
@@ -32,7 +32,7 @@
     app.replaceChildren(
       DB.ubinGrid(DB.ubin({ikon: "kunci", label: "Segel tampil", nilai: String(D.length), ket: "100 terbaru"}),
         DB.ubin({ikon: "cabut", label: "Dicabut", nilai: String(dicabut), ket: "dari yang tampil"})),
-      DB.kartu({ikon: "api", judul: "Segel dokumen", ey: "Daftar", kanan: pilih},
+      DB.kartu({ikon: "api", judul: "Segel dokumen", kanan: pilih},
         D.length ? DB.tabel(["Kode", "Dokumen", "Terbit", "Status", "Aksi"], baris) : h("p", {class: "ak-kosong", teks: "Belum ada segel untuk pilihan ini."})));
   }
 
