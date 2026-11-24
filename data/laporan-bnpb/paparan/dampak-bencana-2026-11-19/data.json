@@ -1,0 +1,1018 @@
+{
+ "dibi_sampai": "2026-11-18",
+ "jenis": {
+  "Gempa bumi": {
+   "kejadian": 62,
+   "meninggal": 160,
+   "hilang": 0,
+   "luka": 1987,
+   "terdampak": 125356,
+   "mengungsi": 174493,
+   "rr_berat": 29875,
+   "rr_sedang": 36064,
+   "rr_ringan": 76061,
+   "terendam": 156,
+   "f_pendidikan": 2332,
+   "f_kantor": 755,
+   "jembatan": 38,
+   "f_umum": 3425,
+   "rumah": 142000
+  },
+  "Cuaca ekstrem": {
+   "kejadian": 657,
+   "meninggal": 25,
+   "hilang": 3,
+   "luka": 119,
+   "terdampak": 85681,
+   "mengungsi": 801,
+   "rr_berat": 938,
+   "rr_sedang": 1570,
+   "rr_ringan": 8761,
+   "terendam": 3,
+   "f_pendidikan": 46,
+   "f_kantor": 11,
+   "jembatan": 0,
+   "f_umum": 83,
+   "rumah": 11269
+  },
+  "Banjir": {
+   "kejadian": 802,
+   "meninggal": 74,
+   "hilang": 9,
+   "luka": 55,
+   "terdampak": 2885527,
+   "mengungsi": 70198,
+   "rr_berat": 760,
+   "rr_sedang": 587,
+   "rr_ringan": 4066,
+   "terendam": 575558,
+   "f_pendidikan": 39,
+   "f_kantor": 19,
+   "jembatan": 86,
+   "f_umum": 90,
+   "rumah": 5413
+  },
+  "Tanah longsor": {
+   "kejadian": 330,
+   "meninggal": 169,
+   "hilang": 5,
+   "luka": 54,
+   "terdampak": 24232,
+   "mengungsi": 5429,
+   "rr_berat": 751,
+   "rr_sedang": 601,
+   "rr_ringan": 578,
+   "terendam": 23,
+   "f_pendidikan": 10,
+   "f_kantor": 0,
+   "jembatan": 9,
+   "f_umum": 20,
+   "rumah": 1930
+  },
+  "Kebakaran permukiman": {
+   "kejadian": 158,
+   "meninggal": 52,
+   "hilang": 0,
+   "luka": 78,
+   "terdampak": 7470,
+   "mengungsi": 1961,
+   "rr_berat": 1110,
+   "rr_sedang": 155,
+   "rr_ringan": 209,
+   "terendam": 5,
+   "f_pendidikan": 1,
+   "f_kantor": 2,
+   "jembatan": 0,
+   "f_umum": 3,
+   "rumah": 1474
+  },
+  "Karhutla": {
+   "kejadian": 1178,
+   "meninggal": 10,
+   "hilang": 6,
+   "luka": 7,
+   "terdampak": 30307,
+   "mengungsi": 749,
+   "rr_berat": 393,
+   "rr_sedang": 0,
+   "rr_ringan": 2,
+   "terendam": 0,
+   "f_pendidikan": 2,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 2,
+   "rumah": 395
+  },
+  "Kekeringan": {
+   "kejadian": 128,
+   "meninggal": 0,
+   "hilang": 0,
+   "luka": 0,
+   "terdampak": 2064094,
+   "mengungsi": 0,
+   "rr_berat": 0,
+   "rr_sedang": 0,
+   "rr_ringan": 0,
+   "terendam": 0,
+   "f_pendidikan": 0,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 0,
+   "rumah": 0
+  },
+  "Erupsi gunung api": {
+   "kejadian": 9,
+   "meninggal": 3,
+   "hilang": 0,
+   "luka": 1096,
+   "terdampak": 709280,
+   "mengungsi": 650,
+   "rr_berat": 0,
+   "rr_sedang": 0,
+   "rr_ringan": 0,
+   "terendam": 0,
+   "f_pendidikan": 0,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 0,
+   "rumah": 0
+  },
+  "Lainnya": {
+   "kejadian": 35,
+   "meninggal": 69,
+   "hilang": 0,
+   "luka": 180,
+   "terdampak": 5104,
+   "mengungsi": 4332,
+   "rr_berat": 793,
+   "rr_sedang": 9,
+   "rr_ringan": 233,
+   "terendam": 85,
+   "f_pendidikan": 1,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 1,
+   "rumah": 1035
+  }
+ },
+ "total": {
+  "kejadian": 3359,
+  "meninggal": 562,
+  "hilang": 23,
+  "luka": 3576,
+  "terdampak": 5937051,
+  "mengungsi": 258613,
+  "rr_berat": 34620,
+  "rr_sedang": 38986,
+  "rr_ringan": 89910,
+  "terendam": 575830,
+  "f_pendidikan": 2431,
+  "f_kantor": 787,
+  "jembatan": 133,
+  "f_umum": 3624,
+  "rumah": 163516
+ },
+ "ntt": {
+  "Kepulauan Selayar": {
+   "meninggal": 0,
+   "hilang": 0,
+   "luka": 0,
+   "terdampak": 1555,
+   "mengungsi": 1161,
+   "rr_berat": 0,
+   "rr_sedang": 4,
+   "rr_ringan": 9,
+   "terendam": 0,
+   "f_pendidikan": 0,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 0
+  },
+  "Manggarai Timur": {
+   "meninggal": 53,
+   "hilang": 0,
+   "luka": 511,
+   "terdampak": 41270,
+   "mengungsi": 10034,
+   "rr_berat": 7615,
+   "rr_sedang": 5631,
+   "rr_ringan": 9485,
+   "terendam": 0,
+   "f_pendidikan": 323,
+   "f_kantor": 94,
+   "jembatan": 0,
+   "f_umum": 469
+  },
+  "Nagekeo": {
+   "meninggal": 20,
+   "hilang": 0,
+   "luka": 170,
+   "terdampak": 28094,
+   "mengungsi": 50358,
+   "rr_berat": 5976,
+   "rr_sedang": 15212,
+   "rr_ringan": 30144,
+   "terendam": 0,
+   "f_pendidikan": 417,
+   "f_kantor": 140,
+   "jembatan": 13,
+   "f_umum": 595
+  },
+  "Manggarai Barat": {
+   "meninggal": 1,
+   "hilang": 0,
+   "luka": 206,
+   "terdampak": 8815,
+   "mengungsi": 27564,
+   "rr_berat": 3314,
+   "rr_sedang": 1598,
+   "rr_ringan": 4830,
+   "terendam": 0,
+   "f_pendidikan": 293,
+   "f_kantor": 77,
+   "jembatan": 2,
+   "f_umum": 369
+  },
+  "Manggarai": {
+   "meninggal": 62,
+   "hilang": 0,
+   "luka": 641,
+   "terdampak": 9919,
+   "mengungsi": 50556,
+   "rr_berat": 7718,
+   "rr_sedang": 6885,
+   "rr_ringan": 8431,
+   "terendam": 0,
+   "f_pendidikan": 381,
+   "f_kantor": 68,
+   "jembatan": 0,
+   "f_umum": 456
+  },
+  "Ngada": {
+   "meninggal": 6,
+   "hilang": 0,
+   "luka": 119,
+   "terdampak": 5895,
+   "mengungsi": 21552,
+   "rr_berat": 2406,
+   "rr_sedang": 2430,
+   "rr_ringan": 6267,
+   "terendam": 0,
+   "f_pendidikan": 273,
+   "f_kantor": 115,
+   "jembatan": 12,
+   "f_umum": 390
+  },
+  "Ende": {
+   "meninggal": 3,
+   "hilang": 0,
+   "luka": 88,
+   "terdampak": 605,
+   "mengungsi": 4317,
+   "rr_berat": 1333,
+   "rr_sedang": 1865,
+   "rr_ringan": 5902,
+   "terendam": 0,
+   "f_pendidikan": 201,
+   "f_kantor": 104,
+   "jembatan": 0,
+   "f_umum": 323
+  },
+  "Sikka": {
+   "meninggal": 6,
+   "hilang": 0,
+   "luka": 50,
+   "terdampak": 7700,
+   "mengungsi": 5658,
+   "rr_berat": 940,
+   "rr_sedang": 830,
+   "rr_ringan": 2494,
+   "terendam": 0,
+   "f_pendidikan": 167,
+   "f_kantor": 75,
+   "jembatan": 9,
+   "f_umum": 267
+  },
+  "Sumba Timur": {
+   "meninggal": 0,
+   "hilang": 0,
+   "luka": 0,
+   "terdampak": 25,
+   "mengungsi": 0,
+   "rr_berat": 0,
+   "rr_sedang": 0,
+   "rr_ringan": 0,
+   "terendam": 0,
+   "f_pendidikan": 0,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 0
+  },
+  "Kota Bima": {
+   "meninggal": 0,
+   "hilang": 0,
+   "luka": 1,
+   "terdampak": 6,
+   "mengungsi": 0,
+   "rr_berat": 0,
+   "rr_sedang": 1,
+   "rr_ringan": 2,
+   "terendam": 0,
+   "f_pendidikan": 0,
+   "f_kantor": 0,
+   "jembatan": 0,
+   "f_umum": 1
+  },
+  "Bima": {
+   "meninggal": 0,
+   "hilang": 0,
+   "luka": 1,
+   "terdampak": 50,
+   "mengungsi": 71,
+   "rr_berat": 1,
+   "rr_sedang": 4,
+   "rr_ringan": 4,
+   "terendam": 0,
+   "f_pendidikan": 0,
+   "f_kantor": 1,
+   "jembatan": 0,
+   "f_umum": 0
+  }
+ },
+ "gempa_lain": [
+  [
+   "2026-01-11",
+   "Sulawesi Utara",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 60,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-01-27",
+   "Daerah Istimewa Yogyakarta",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 10,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 2,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-01-27",
+   "Jawa Tengah",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 2,
+    "terdampak": 90,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 1,
+    "rr_ringan": 17,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-01-27",
+   "Jawa Timur",
+   {
+    "kab": 2,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 3,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 1,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-02-06",
+   "Daerah Istimewa Yogyakarta",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 40,
+    "terdampak": 65,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-02-06",
+   "Jawa Tengah",
+   {
+    "kab": 3,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 285,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 18,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-02-06",
+   "Jawa Timur",
+   {
+    "kab": 2,
+    "meninggal": 1,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 315,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 4,
+    "rr_ringan": 55,
+    "terendam": 0,
+    "f_pendidikan": 3,
+    "f_kantor": 2,
+    "jembatan": 0,
+    "f_umum": 5
+   }
+  ],
+  [
+   "2026-03-13",
+   "Kalimantan Barat",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 10,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 2,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-03-17",
+   "Papua",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-04-02",
+   "Maluku Utara",
+   {
+    "kab": 6,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 1,
+    "terdampak": 124,
+    "mengungsi": 1107,
+    "rr_berat": 81,
+    "rr_sedang": 90,
+    "rr_ringan": 185,
+    "terendam": 0,
+    "f_pendidikan": 2,
+    "f_kantor": 2,
+    "jembatan": 0,
+    "f_umum": 20
+   }
+  ],
+  [
+   "2026-04-02",
+   "Sulawesi Utara",
+   {
+    "kab": 5,
+    "meninggal": 2,
+    "hilang": 0,
+    "luka": 4,
+    "terdampak": 185,
+    "mengungsi": 955,
+    "rr_berat": 0,
+    "rr_sedang": 6,
+    "rr_ringan": 85,
+    "terendam": 0,
+    "f_pendidikan": 2,
+    "f_kantor": 7,
+    "jembatan": 0,
+    "f_umum": 45
+   }
+  ],
+  [
+   "2026-04-09",
+   "Nusa Tenggara Timur",
+   {
+    "kab": 2,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 18,
+    "terdampak": 3585,
+    "mengungsi": 0,
+    "rr_berat": 9,
+    "rr_sedang": 45,
+    "rr_ringan": 637,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-04-15",
+   "Nusa Tenggara Barat",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-04-24",
+   "Maluku",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-06-08",
+   "Sulawesi Utara",
+   {
+    "kab": 4,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 1245,
+    "mengungsi": 1160,
+    "rr_berat": 184,
+    "rr_sedang": 179,
+    "rr_ringan": 413,
+    "terendam": 0,
+    "f_pendidikan": 16,
+    "f_kantor": 9,
+    "jembatan": 0,
+    "f_umum": 49
+   }
+  ],
+  [
+   "2026-06-16",
+   "Sulawesi Tengah",
+   {
+    "kab": 5,
+    "meninggal": 3,
+    "hilang": 0,
+    "luka": 128,
+    "terdampak": 12096,
+    "mengungsi": 0,
+    "rr_berat": 270,
+    "rr_sedang": 1199,
+    "rr_ringan": 6083,
+    "terendam": 0,
+    "f_pendidikan": 224,
+    "f_kantor": 37,
+    "jembatan": 2,
+    "f_umum": 372
+   }
+  ],
+  [
+   "2026-06-17",
+   "Nusa Tenggara Timur",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 19,
+    "f_kantor": 8,
+    "jembatan": 0,
+    "f_umum": 25
+   }
+  ],
+  [
+   "2026-07-13",
+   "Sulawesi Tengah",
+   {
+    "kab": 1,
+    "meninggal": 2,
+    "hilang": 0,
+    "luka": 3,
+    "terdampak": 1375,
+    "mengungsi": 0,
+    "rr_berat": 6,
+    "rr_sedang": 17,
+    "rr_ringan": 253,
+    "terendam": 0,
+    "f_pendidikan": 1,
+    "f_kantor": 8,
+    "jembatan": 0,
+    "f_umum": 4
+   }
+  ],
+  [
+   "2026-07-25",
+   "Papua",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 40,
+    "mengungsi": 0,
+    "rr_berat": 6,
+    "rr_sedang": 0,
+    "rr_ringan": 2,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-08-16",
+   "Sulawesi Tengah",
+   {
+    "kab": 1,
+    "meninggal": 1,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 2,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-09-01",
+   "Maluku Utara",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 75,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 15,
+    "terendam": 0,
+    "f_pendidikan": 1,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 1
+   }
+  ],
+  [
+   "2026-10-04",
+   "Aceh",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-10-04",
+   "Nusa Tenggara Timur",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 1,
+    "terdampak": 1740,
+    "mengungsi": 0,
+    "rr_berat": 4,
+    "rr_sedang": 13,
+    "rr_ringan": 282,
+    "terendam": 0,
+    "f_pendidikan": 9,
+    "f_kantor": 5,
+    "jembatan": 0,
+    "f_umum": 24
+   }
+  ],
+  [
+   "2026-10-11",
+   "Jawa Barat",
+   {
+    "kab": 1,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ],
+  [
+   "2026-10-16",
+   "Jawa Barat",
+   {
+    "kab": 2,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 122,
+    "mengungsi": 0,
+    "rr_berat": 12,
+    "rr_sedang": 50,
+    "rr_ringan": 444,
+    "terendam": 156,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 10
+   }
+  ],
+  [
+   "2026-11-17",
+   "Maluku",
+   {
+    "kab": 4,
+    "meninggal": 0,
+    "hilang": 0,
+    "luka": 0,
+    "terdampak": 0,
+    "mengungsi": 0,
+    "rr_berat": 0,
+    "rr_sedang": 0,
+    "rr_ringan": 0,
+    "terendam": 0,
+    "f_pendidikan": 0,
+    "f_kantor": 0,
+    "jembatan": 0,
+    "f_umum": 0
+   }
+  ]
+ ],
+ "karhutla": {
+  "hari_akhir": "2026-11-17",
+  "luas": 2530341,
+  "hot": 1432581,
+  "bulan_hot": {
+   "2026-01": 12703,
+   "2026-02": 6976,
+   "2026-03": 16762,
+   "2026-04": 10149,
+   "2026-05": 9039,
+   "2026-06": 18539,
+   "2026-07": 63284,
+   "2026-08": 310755,
+   "2026-09": 470586,
+   "2026-10": 469010,
+   "2026-11": 44778
+  },
+  "bulan_luas": {
+   "2026-01": 19509,
+   "2026-02": 11504,
+   "2026-03": 28012,
+   "2026-04": 16653,
+   "2026-05": 13564,
+   "2026-06": 28235,
+   "2026-07": 101678,
+   "2026-08": 533567,
+   "2026-09": 835603,
+   "2026-10": 854069,
+   "2026-11": 87947
+  },
+  "prov": [
+   [
+    "Kalimantan Tengah",
+    704648,
+    343235
+   ],
+   [
+    "Kalimantan Barat",
+    327312,
+    180106
+   ],
+   [
+    "Papua Selatan",
+    320834,
+    192431
+   ],
+   [
+    "Sumatera Selatan",
+    216202,
+    108638
+   ],
+   [
+    "Kalimantan Timur",
+    137719,
+    85592
+   ],
+   [
+    "Kalimantan Selatan",
+    108124,
+    65987
+   ],
+   [
+    "Maluku",
+    80177,
+    49068
+   ],
+   [
+    "Nusa Tenggara Timur",
+    62352,
+    43626
+   ],
+   [
+    "Papua Barat",
+    55191,
+    32874
+   ],
+   [
+    "Sulawesi Tengah",
+    51384,
+    31523
+   ]
+  ],
+  "lahan": {
+   "konservasi": 152194,
+   "hutan_produksi": 286610,
+   "konsesi_sawit": 68637,
+   "apl": 401214,
+   "lindung": 50707,
+   "konsesi_hph": 70620
+  },
+  "gambut": {
+   "gambut": 682046,
+   "mineral": 347936
+  },
+  "lahan_tgl": "2026-10-14",
+  "tahunan": [
+   [
+    "1997–1998",
+    11700000,
+    "estimasi kumulatif dua tahun"
+   ],
+   [
+    "2015",
+    2611411
+   ],
+   [
+    "2016",
+    438363
+   ],
+   [
+    "2017",
+    165484
+   ],
+   [
+    "2018",
+    529267
+   ],
+   [
+    "2019",
+    1649258
+   ],
+   [
+    "2020",
+    296943
+   ],
+   [
+    "2021",
+    358864
+   ],
+   [
+    "2022",
+    205000,
+    "dibulatkan"
+   ],
+   [
+    "2023",
+    1161193
+   ],
+   [
+    "2024",
+    376806
+   ],
+   [
+    "2025",
+    343432,
+    "Kompas (Maret 2026) melaporkan sekitar 359.000 ha"
+   ],
+   [
+    "2026",
+    129899,
+    "sementara, hingga 15 Oktober (BNPB); SiPongi KLHK mencatat sekitar 202 ribu ha untuk Januari–Juli 2026"
+   ]
+  ]
+ }
+}

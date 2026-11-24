@@ -6,6 +6,22 @@
 #laporan #insight.lp{max-width:none;gap:12px}
 #laporan .kosong{padding:22px;text-align:center;color:var(--ink2)}
 
+/* gaya seksi (opt-in: #insight.lp-seksi, dinyalakan inti/laporan.js untuk gempa, kekeringan, gunung api, cuaca, udara, pesisir; banjir tetap gaya lama):
+   kartu berjarak 16px, kepala tabel navy tua bertulisan putih di kedua tema dan rata tengah, angka rata kanan tabular, kotak angka di awal Ringkasan */
+#laporan #insight.lp.lp-seksi{gap:16px}
+#laporan #insight.lp-seksi .lp-tb thead th{background:var(--head-bg);color:var(--on-head);text-align:center}
+#laporan #insight.lp-seksi .lp-tb thead th button,#laporan #insight.lp-seksi .lp-tb thead th.n button{justify-content:center;text-align:center}
+#laporan #insight.lp-seksi .lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+.lp-na{color:var(--ink2);font-weight:500;font-size:.92em;white-space:nowrap}
+.lp-ka{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px}
+.lp-ka-i{display:flex;flex-direction:column;gap:3px;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.lp-ka-i.utama{border-color:var(--brand2)}
+.lp-ka-i span{font-size:0.75rem;font-weight:700;line-height:1.3;color:var(--ink2);overflow-wrap:anywhere}
+.lp-ka-i b{font:800 1.5rem/1.15 var(--display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.lp-ka-i b .lp-na{font:600 0.875rem/1.4 var(--font)}
+.lp-ka-i small,.lp-ka-i em{font-size:0.7188rem;font-style:normal;color:var(--ink2)}
+.lp-ka-i em.naik{color:var(--bad-tx);font-weight:700}.lp-ka-i em.turun{color:var(--ok-tx);font-weight:700}
+
 /* pita kepala */
 .lp-jd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;min-width:0}
 .lp-jd h1{margin:0;font-size:clamp(1.25rem,3vw,var(--fs-8));line-height:1.15;color:#fff}
@@ -89,6 +105,9 @@
   #laporan #insight.lp{display:block}
   #laporan #insight .ex{margin:0 0 10px;border-radius:8px;break-inside:avoid;overflow:visible}
   #laporan #insight .ex-hd{break-after:avoid}
+  #laporan #insight.lp-seksi .ex{margin:16px 0 0}
+  #laporan #insight.lp-seksi .ex:first-child{margin-top:0}
+  .lp-ka{break-inside:avoid}
   .lp-kop{display:flex;align-items:center;gap:10px;margin-bottom:6px}
   .lp-kop img{width:40px;height:40px}
   .lp-kop div{display:flex;flex-direction:column;line-height:1.25}

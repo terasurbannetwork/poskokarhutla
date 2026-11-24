@@ -97,9 +97,12 @@ const periodeAktif = () => { const o = opsiPeriode(D); return o.find(x => x.k ==
 
 function bangunKontrol() {
   const host = A.host(); if (!host || el.grup) return;
-  /* sengaja bukan <details>: inti/peta/lapis.js mengubah semua label di dalam details menjadi ubin ikon */
-  const g = document.createElement("div"); g.className = "pk-grup";
-  g.innerHTML = `<div class="pk-hd">Per kab/kota</div><label class="pk-nyala"><input type="checkbox" id="pkNyala"> Laporan harian per kab/kota</label><div class="pk-kontrol" id="pkKontrol" hidden></div>`;
+  /* grup <details> + ubin seperti grup Overlay lain. Ubin sudah berada di dalam .ub-gr, jadi ubinLapis (inti/peta/lapis.js)
+     yang hanya mengubah <label> anak langsung <details> tidak menyentuhnya; input tanpa data-l agar penangan #lapis halaman tidak membacanya */
+  const g = document.createElement("details"); g.className = "pk-grup"; g.open = true;
+  g.innerHTML = `<summary>Per kab/kota</summary><div class="ub-gr"><label class="ubin" data-tip="<b>Laporan harian per kab/kota</b>"><input type="checkbox" id="pkNyala">`
+    + `<i class="ub-th" style="--a:#7a2e3a;--b:#e0866a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5l5-2 6 2 5-2v16l-5 2-6-2-5 2z"/><path d="M9 3v16M15 5v16"/></svg></i>`
+    + `<span>Laporan harian</span></label></div><div class="pk-kontrol" id="pkKontrol" hidden></div>`;
   host.appendChild(g); el.grup = g; el.nyala = g.querySelector("#pkNyala"); el.kontrol = g.querySelector("#pkKontrol");
   /* kontrol milik mesin: perubahan tidak boleh sampai ke penangan #lapis halaman (yang membaca data-l) */
   g.addEventListener("change", e => { e.stopPropagation(); const t = e.target;

@@ -33,7 +33,7 @@ export const LAPORAN = [
   { id: 'harian', judul: 'Laporan Kejadian Bencana Harian', butuh: ['rekap_koordalops_24', 'bmkg_pagi', 'pvmbg_pagi'], jam: 12,
     berkas: (d) => `Laporan Kejadian Bencana Harian ${ddmmyy(d)}`,
     // format laporan manual 16 Nov (kejadian baru + masih berlangsung, Peringatan Dini, Rencana Aksi); harian.py tetap dipakai pembangun manual
-    args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out, ...isianArg(f)] },
+    args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24 || (() => { throw new Error('Rekap Koordalops 24 jam belum terbaca; laporan harian tidak bisa dibangun tanpa rekap itu') })(), '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out, ...isianArg(f)] },
   // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada. pilihan: bahan tambahan yang dipakai bila ada, tidak ditunggu
   // (Excel 'Gelar Kekuatan Satgas Udara Karhutla' untuk panel Armada Udara, pemilik 16 Nov 2026). Format laporan manual 13 Nov, cut-off 18.00.
   // Wajib hanya laporan Satgas (18 Nov 2026: penanganan_otomatis.py tidak memakai --bmkg; cuaca dan PM2.5 dari data sistem). Laporan penanganan

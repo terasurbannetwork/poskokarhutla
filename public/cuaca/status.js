@@ -131,7 +131,8 @@ const Status = (() => {
     const R = barisData(J, j).filter(r => !q || r.nama.toLowerCase().includes(q));
     const kepala = `<div class="tb kepala" style="${GR}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][lv]}</span><span>Status</span><span title="Kecamatan di atas ambang Waspada">Kecamatan</span><span title="Hujan harian tertinggi">Hujan<br>mm</span><span title="Embusan tertinggi">Embusan<br>km/jam</span></div>`;
     const isi = R.map((r, i) => `<button class="tb" ${r.attr}="${esc(String(r.id))}" style="${GR}"><span class="rk">${i + 1}</span><span style="font-weight:600" translate="no">${esc(r.nama)}</span><span>${pilT(r.t)}</span><span>${r.n ? angka(r.n[0] + r.n[1] + r.n[2]) : "–"}</span><span>${angka(Math.round(r.mm))}</span><span>${angka(Math.round(r.g))}</span></button>`).join("");
-    const ringkas = R.length ? `<p class="fnd" style="margin:2px 8px 6px">${fmt(R.length)} ${["provinsi", "kabupaten atau kota", "kecamatan"][lv]} di atas ambang Waspada ${kapan3(j)}${q ? ", sesuai pencarian" : ""}. Deteksi Centurisk97, bukan peringatan resmi BMKG.</p>` : "";
+    /* ringkasan sebagai kotak angka berikon (sama dengan laci); keterangan "bukan peringatan resmi" pindah ke title */
+    const ringkas = R.length ? `<div class="st-ringkas" title="${fmt(R.length)} ${["provinsi", "kabupaten atau kota", "kecamatan"][lv]} di atas ambang Waspada ${kapan3(j)}${q ? ", sesuai pencarian" : ""}. Deteksi Centurisk97, bukan peringatan resmi BMKG.">${kot(["Provinsi", "Kabupaten atau kota", "Kecamatan"][lv] + " di atas ambang Waspada", fmt(R.length), kapan3(j) + (q ? ", sesuai pencarian" : ""), "peringatan")}</div>` : "";
     return ringkas + (isi ? kepala + isi : `<p class="kosong">${q ? "Tidak ada yang cocok." : `Tidak ada ${["provinsi", "kabupaten atau kota", "kecamatan"][lv]} di atas ambang Waspada ${kapan3(j)}, menurut deteksi Centurisk97 dari prakiraan model.`}</p>`); }
   /* klik baris: provinsi atau kab/kota turun satu tingkat (peta terbang ke wilayahnya), kecamatan terbang dan buka laci */
   function klikBaris(b) {   /* jalur dan crumb urgen; peta, laci, dan tabel ditunda (INP) */
@@ -146,57 +147,83 @@ const Status = (() => {
     renderCrumb(); nanti(() => { kerja(); renderPanel(); }); }
   function fokusProv(p) { const f = S.geo.features.find(x => x.properties.kode === p), o = S.kec.prov[p]; if (!f || !o) return;
     S.pilih = {jenis: "st", k: p}; renderCrumb(); peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); laciProv(p); }
+  /* sumber deteksi model, satu kalimat untuk laci provinsi, kecamatan, dan sarana */
+  const sbDeteksi = () => `Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.`;
   function laciProv(p) { const o = S.kec?.prov[p]; if (!o) return;
     Laci.buka("Status 72 jam", `<span translate="no">${esc(namaProv(p))}</span>`, `${pilT(Math.max(...o.t))} Deteksi Centurisk97`,
-      `${kvs(...o.t.map((t, j) => kot(lbl3(j), pilT(t), "")))}${o.t.map((t, j) => t ? `<p class="fnd"><b>${lbl3(j)}</b>: ${ringkasN(o.n[j])}</p>` : "").join("")}
-      <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
+      `${kvs(...o.t.map((t, j) => kot(kapAwal(lbl3(j)), pilT(t), "", "waktu")))}${seksiCu("Kecamatan di atas ambang", "peta",
+        o.t.some(Boolean) ? `<div class="lc-lbs">${o.t.map((t, j) => t ? LI().barisLaci("waktu", kapAwal(lbl3(j)), ringkasN(o.n[j])) : "").join("")}</div>` : `<p class="fnd">Tidak ada kecamatan di atas ambang Waspada dalam 72 jam.</p>`, sbDeteksi())}`); }
 
   /* ---------- rincian kecamatan, gelombang, sarana, siklon ---------- */
   const rowKec = i => { const r = S.kecBaris?.get(i); return r; };
   /* bahaya yang memicu tingkat pada hari d: ambang hujan, embusan, gelombang, dan peluang hujan lebat dari cuaca_kec.json */
   const pemicu = (r, d) => { const A = S.kec.ambang, o = [], h = tingkat(r[4][d] ?? 0, A.hujan_mm), g = tingkat(r[5][d] ?? 0, A.angin_kmj), w = r[6]?.[d] != null ? tingkat(r[6][d] / 10, A.hs_m) : 0;
     if (h) o.push("hujan " + KELAS_HUJAN[h]); if (g) o.push("embusan " + KELAS_ANGIN[g]); if (w) o.push("gelombang " + ["tinggi", "sangat tinggi", "ekstrem"][w - 1]); if (A.p_siaga != null && (r[2][d] ?? 0) >= A.p_siaga) o.push("peluang hujan lebat tinggi"); return o; };
-  function laciKec(i) { const r = rowKec(i), n = nmKec(i); if (!r) return; const j = k();
-    const hari = r[1].map((t, d) => `<p class="fnd">${pilT(t)} <b>${lbl3(d)}</b>: hujan ${fmt(r[4][d] ?? 0)} mm (peluang 50 mm atau lebih ${fmt(r[2][d] ?? 0)}%, 100 mm atau lebih ${fmt(r[3][d] ?? 0)}%), embusan ${fmt(r[5][d] ?? 0)} km/jam${r[6]?.[d] != null ? `, gelombang ${fmt(r[6][d] / 10)} m` : ""}</p>`).join("");
+  /* label hari di awal baris laci berhuruf awal kapital ("prakiraan 18 Okt" jadi "Prakiraan 18 Okt"); lbl3 tetap untuk pemakaian lain */
+  const kapAwal = t => String(t).charAt(0).toUpperCase() + String(t).slice(1);
+  /* laci kecamatan: kotak angka hari terpilih, pemicu sebagai chip, matriks 72 jam (baris ukuran x kolom hari), lalu prakiraan BMKG dan petir kabupatennya */
+  function laciKec(i) { const r = rowKec(i), n = nmKec(i); if (!r) return; const j = k(), pm = pemicu(r, j), D = r[1].map((_, d) => d), adaGel = D.some(d => r[6]?.[d] != null);
+    const mx = matriksLaci(D.map(d => kapAwal(lbl3(d).replace(/^prakiraan /, ""))), [
+      ["Status", D.map(d => pilT(r[1][d]))],
+      ["Hujan", D.map(d => fmt(r[4][d] ?? 0) + " mm")],
+      [`<span title="Peluang hujan 50 mm atau lebih dalam sehari">Peluang hujan</span><small>50 mm atau lebih</small>`, D.map(d => fmt(r[2][d] ?? 0) + "%")],
+      [`<span title="Peluang hujan 100 mm atau lebih dalam sehari">Peluang hujan</span><small>100 mm atau lebih</small>`, D.map(d => fmt(r[3][d] ?? 0) + "%")],
+      ["Embusan", D.map(d => fmt(r[5][d] ?? 0) + " km/jam")],
+      adaGel && ["Gelombang", D.map(d => r[6]?.[d] != null ? fmt(r[6][d] / 10) + " m" : "–")]], j);
     Laci.buka("Status 72 jam", `<span translate="no">${esc(n.kec)}</span>`, `${pilT(r[1][j])} <span translate="no">${esc(n.kab)}, ${esc(namaProv(n.p))}</span>`,
-      `${kvs(kot("Hujan", fmt(r[4][j] ?? 0), "mm"), kot("Embusan", fmt(r[5][j] ?? 0), "km/jam"), kot("Peluang 50 mm", fmt(r[2][j] ?? 0) + "%", "atau lebih"), r[6]?.[j] != null ? kot("Gelombang", fmt(r[6][j] / 10), "m") : kot("Peluang 100 mm", fmt(r[3][j] ?? 0) + "%", "atau lebih"))}${pemicu(r, j).length ? `<p class="fnd">Pemicu ${kapan3(j)}: ${pemicu(r, j).join(", ")}</p>` : ""}${hari}${typeof Resmi !== "undefined" ? Resmi.laci(n.p, n.kab) : ""}${typeof Bmkg2 !== "undefined" ? Bmkg2.laciPetir(n.p, n.kab) : ""}
-      <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
+      `${kvs(kot("Hujan", fmt(r[4][j] ?? 0), "mm"), kot("Embusan", fmt(r[5][j] ?? 0), "km/jam"), kot("Peluang hujan 50 mm atau lebih", fmt(r[2][j] ?? 0), "%"), r[6]?.[j] != null ? kot("Gelombang", fmt(r[6][j] / 10), "m") : kot("Peluang hujan 100 mm atau lebih", fmt(r[3][j] ?? 0), "%"))}
+      ${pm.length ? seksiCu(`Pemicu status ${kapan3(j)}`, "peringatan", LI().chipWil(pm.map(kapAwal), {maks: 6})) : ""}
+      ${seksiCu("Prakiraan 72 jam", "waktu", mx, sbDeteksi())}
+      ${typeof Resmi !== "undefined" ? Resmi.laci(n.p, n.kab) : ""}${typeof Bmkg2 !== "undefined" ? Bmkg2.laciPetir(n.p, n.kab) : ""}`); }
   function tipKec(i) { const r = rowKec(i), n = nmKec(i), j = k(); if (!r) return "";
     return PI.kartuTip({judul: `<span translate="no">${esc(n.kec)}</span>`, sub: `<small>${esc(namaT(r[1][j]))}</small>`, stat: [["hujan", fmt(r[4][j] ?? 0) + " mm", "hujan", "#3f7fb8", r[4][j] >= AMB().hujan[0]], ["angin", fmt(r[5][j] ?? 0) + " km/jam", "embusan", "#2b8c86", r[5][j] >= AMB().angin_kmj[0]], ...(r[6]?.[j] != null ? [["ombak", fmt(r[6][j] / 10) + " m", "gelombang", "#16405c", r[6][j] / 10 >= HS()[0]]] : [])]}); }
   const sarInfo = p => p.j === "pelabuhan" ? {nama: S.sar.pelabuhan[p.n][0], prov: S.sar.pelabuhan[p.n][3], ket: S.sar.pelabuhan[p.n][4], v: fmt(p.x / 10) + " m", lb: "gelombang"} : {nama: S.sar.bandara[p.n][1], prov: S.sar.bandara[p.n][4], ket: S.sar.bandara[p.n][0], v: fmt(p.x) + " mm", lb: "hujan"};
   function tipSar(p) { const s = sarInfo(p), j = k(); return PI.kartuTip({judul: `<span translate="no">${esc(s.nama)}</span>`, sub: `<small>${esc(namaT(p["t" + j]))}</small>`, stat: [[p.j === "pelabuhan" ? "ombak" : "hujan", s.v, s.lb, "#16405c", p["t" + j] >= 2], ["angin", fmt(p.g) + " km/jam", "embusan", "#2b8c86", p.g >= AMB().angin_kmj[0]]]}); }
+  /* laci pelabuhan atau bandara (lapisan Sarana): angka tertinggi 72 jam, status per hari, lalu cuaca penerbangan BMKG bila bandaranya cocok */
   function laciSar(p) { const s = sarInfo(p);
     Laci.buka(p.j === "pelabuhan" ? "Pelabuhan" : "Bandara", `<span translate="no">${esc(s.nama)}</span>`, `${pilT(p["t" + k()])} <span translate="no">${esc(namaProv(s.prov))}</span>`,
-      `${kvs(kot(s.lb === "hujan" ? "Hujan" : "Gelombang", s.v.split(" ")[0], s.v.split(" ")[1]), kot("Embusan", fmt(p.g), "km/jam"))}
-      ${[0, 1, 2].map(d => `<p class="fnd">${pilT(p["t" + d])} <b>${lbl3(d)}</b></p>`).join("")}<p class="fnd">Angka tertinggi dalam 72 jam. Sumber: Deteksi Centurisk97 dari prakiraan model; sarana dari data terbuka. Bukan peringatan resmi.</p>${p.j === "bandara" && typeof Bmkg2 !== "undefined" ? Bmkg2.laciBandara(S.sar.bandara[p.n]) : ""}`); }
+      `${kvs(kot(s.lb === "hujan" ? "Hujan tertinggi" : "Gelombang tertinggi", s.v.split(" ")[0], s.v.split(" ")[1]), kot("Embusan tertinggi", fmt(p.g), "km/jam"))}
+      ${seksiCu("Status 72 jam", "waktu", `<div class="lc-lbs">${[0, 1, 2].map(d => LI().barisLaci("waktu", kapAwal(lbl3(d)), pilT(p["t" + d]))).join("")}</div><p class="fnd">Angka di atas adalah nilai tertinggi selama 72 jam. Lokasi sarana dari data terbuka.</p>`, sbDeteksi())}
+      ${p.j === "bandara" && typeof Bmkg2 !== "undefined" ? Bmkg2.laciBandara(S.sar.bandara[p.n]) : ""}`); }
   /* BMKG Maritim: tip dan laci dari baris S.mar (tiga hari WIB); teks dari BMKG lewat esc */
   const marSub = (r, jenis) => `${jenis}${r[2] ? ", " + esc(namaProv(r[2])) : ""}`;
   function tipMar(p) { const r = S.mar[p.j][p.n], m = mIdx(), md = r[9][m], kl = r[6][m];
     return PI.kartuTip({judul: `<span translate="no">${esc(r[1])}</span>`, sub: `<small>${marSub(r, p.j === "pelabuhan" ? "Pelabuhan" : "Perairan")}</small>`,
       stat: [["ombak", fmt(r[5][m] / 10) + " m", `gelombang BMKG, ${esc(kl)}${md != null ? `, model Open-Meteo ${fmt(md / 10)} m` : ""}`, MAR_KELAS[marK(kl)]?.[1] || "#16405c", marK(kl) >= 3], ["angin", fmt(marKmj(r[7][m])) + " km/jam", "embusan", "#2b8c86", false]]}); }
-  function laciMar(p) { const r = S.mar[p.j][p.n], m = mIdx(), pel = p.j === "pelabuhan", md = r[9][m];
+  /* laci pelabuhan atau perairan BMKG Maritim: kotak angka hari terpilih, lalu matriks tiga hari (kolom hari terpilih disorot) */
+  function laciMar(p) { const r = S.mar[p.j][p.n], m = mIdx(), pel = p.j === "pelabuhan", md = r[9][m], D = S.mar.hari.map((_, d) => d).filter(d => r[5][d] != null);
+    const baris = (l, f, syarat = true) => syarat && D.some(d => f(d) != null) && [l, D.map(d => f(d) ?? "–")];
+    const mx = matriksLaci(D.map(d => tglSgk(S.mar.hari[d])), [
+      baris("Gelombang BMKG", d => fmt(r[5][d] / 10) + " m"),
+      baris("Kelas gelombang", d => r[6][d] ? `<span translate="no">${esc(r[6][d])}</span>` : null),
+      baris("Embusan", d => r[7][d] == null ? null : fmt(marKmj(r[7][d])) + " km/jam"),
+      baris("Arus", d => r[8][d] == null ? null : fmt(r[8][d]) + " knot"),
+      baris("Model Open-Meteo", d => r[9][d] == null ? null : fmt(r[9][d] / 10) + " m")], D.indexOf(m));
     Laci.buka(pel ? "Pelabuhan" : "Perairan", `<span translate="no">${esc(r[1])}</span>`, marSub(r, pel ? "Pelabuhan" : "Perairan"),
-      `${kvs(kot("Gelombang BMKG", fmt(r[5][m] / 10), "m"), kot("Embusan", fmt(marKmj(r[7][m])), "km/jam"), kot("Arus", fmt(r[8][m]), "knot"), md != null && kot("Model Open-Meteo", fmt(md / 10), "m"),
+      `${m < 0 ? "" : kvs(kot("Gelombang BMKG", fmt(r[5][m] / 10), "m"), kot("Embusan", fmt(marKmj(r[7][m])), "km/jam"), kot("Arus", fmt(r[8][m]), "knot"), md != null && kot("Model Open-Meteo", fmt(md / 10), "m"),
         pel && r[10][m] != null && kot("Pasang tertinggi", fmt(r[10][m]), "cm"), pel && r[11][m] != null && kot("Surut terendah", fmt(r[11][m]), "cm"), pel && r[12][m] != null && kot("Jarak pandang", fmt(r[12][m]), "km"))}
-      ${S.mar.hari.map((h, d) => r[5][d] == null ? "" : `<p class="fnd"><b>${tglSgk(h)}</b>: gelombang ${fmt(r[5][d] / 10)} m, ${esc(r[6][d])}, embusan ${fmt(marKmj(r[7][d]))} km/jam, arus ${fmt(r[8][d])} knot${r[9][d] != null ? `, model Open-Meteo ${fmt(r[9][d] / 10)} m` : ""}</p>`).join("")}
-      <p class="fnd">Sumber: BMKG Maritim, terbit ${jamWIB(S.mar.terbit)}</p>`); }
+      ${D.length ? seksiCu("Prakiraan tiga hari", "ombak", (m < 0 ? `<p class="fnd">Tanggal yang dipilih di atas peta berada di luar terbitan BMKG Maritim ini; tanggal yang tersedia tampil di bawah.</p>` : "") + mx, `Sumber: BMKG Maritim, terbit ${jamWIB(S.mar.terbit)}`) : ""}`); }
   function tipGel(p) { const r = S.gel.titik[p.n]; return PI.kartuTip({judul: `<span translate="no">${esc(r[3] || namaProv(r[2]))}</span>`, sub: `<small>${esc(namaT(p.t))}</small>`, stat: [["ombak", fmt(p.hs / 10) + " m", "gelombang tertinggi", "#16405c", p.t >= 2]]}); }
-  /* blok BMKG TCWC Jakarta bila nama sama dengan siklon di cuaca_siklon_bmkg.json (terpisah dari JMA/JTWC); teks luar lewat esc, tautan lewat escUrl */
+  /* blok BMKG TCWC Jakarta bila nama sama dengan siklon di cuaca_siklon_bmkg.json (terpisah dari JMA/JTWC); teks luar lewat esc, tautan sebagai tombol keluar */
   function blokBmkg(s) { const b = S.sikB?.aktif?.find(x => String(x.nama || "").toUpperCase() === String(s.nama || "").toUpperCase()); if (!b) return "";
-    const p = [...(b.titik || [])].reverse().find(t => !t.prakiraan), kmj = v => Math.round(v * 1.852), tx = (j, v) => v ? `<p class="fnd"><b>${j}</b>: <span translate="no">${esc(v)}</span></p>` : "";
-    const u = [...new Set([...(b.peta ? [].concat(b.peta) : []), ...(b.infografis ? [].concat(b.infografis) : [])])];
-    return `<div class="lbl">BMKG TCWC Jakarta</div>
-      ${p ? `<p class="fnd">${[p.tekanan_hpa != null && `tekanan ${fmt(p.tekanan_hpa)} hPa`, p.angin_kt != null && `angin ${fmt(kmj(p.angin_kt))} km/jam`, p.embusan_kt != null && `embusan ${fmt(kmj(p.embusan_kt))} km/jam`, b.kategori != null && `kategori ${esc(b.kategori)}`].filter(Boolean).join(", ")}</p>` : ""}
-      ${tx("Cuaca ekstrem", b.cuaca_ekstrem)}${tx("Gelombang tinggi", b.gelombang_tinggi)}${tx("Angin kencang", b.angin_kencang)}${tx("Dampak langsung", b.dampak_langsung)}${tx("Peringatan", b.peringatan)}
-      ${b.deskripsi ? `<p class="fnd" translate="no">${esc(b.deskripsi)}</p>` : ""}
-      ${u.length ? `<p class="fnd">${u.map((x, i) => `<a href="${escUrl(x)}" target="_blank" rel="noopener noreferrer">Peta dan infografis BMKG${u.length > 1 ? " " + (i + 1) : ""}</a>`).join(", ")}</p>` : ""}
-      <p class="fnd">Sumber: BMKG TCWC Jakarta, analisis ${jamWIB(b.analisis || S.sikB.dibuat)}</p>`; }
-  function laciSik(id) { const s = S.sik.aktif.find(x => x.id === id); if (!s) return;
-    Laci.buka("Siklon tropis", `<span translate="no">${esc(s.nama || s.id)}</span>`, `<span translate="no">${esc(s.kategori || "")}</span>`,
+    const L = LI(), p = [...(b.titik || [])].reverse().find(t => !t.prakiraan), kmj = v => Math.round(v * 1.852);
+    const u = [...new Set([...(b.peta ? [].concat(b.peta) : []), ...(b.infografis ? [].concat(b.infografis) : [])])].filter(x => /^https?:\/\//i.test(String(x)));
+    const ukur = [p?.tekanan_hpa != null && L.barisLaci("kuat", "Tekanan", fmt(p.tekanan_hpa) + " hPa"), p?.angin_kt != null && L.barisLaci("angin", "Angin", fmt(kmj(p.angin_kt)) + " km/jam"),
+      p?.embusan_kt != null && L.barisLaci("angin", "Embusan", fmt(kmj(p.embusan_kt)) + " km/jam"), b.kategori != null && L.barisLaci("peringatan", "Kategori BMKG", `<span translate="no">${esc(b.kategori)}</span>`)].filter(Boolean).join("");
+    const tx = [["Cuaca ekstrem", b.cuaca_ekstrem], ["Gelombang tinggi", b.gelombang_tinggi], ["Angin kencang", b.angin_kencang], ["Dampak langsung", b.dampak_langsung], ["Peringatan", b.peringatan]].filter(([, v]) => v);
+    const teks = tx.length ? `<ol class="cu-ol cu-ol-j">${tx.map(([j, v]) => `<li><b>${j}</b><span translate="no">${esc(v)}</span></li>`).join("")}</ol>` : "";
+    return seksiCu("BMKG TCWC Jakarta", "peringatan", `${ukur ? `<div class="lc-lbs">${ukur}</div>` : ""}${teks}${b.deskripsi ? teksResmi("Uraian lengkap BMKG", b.deskripsi) : ""}
+      ${u.length ? `<div class="cu-tautan">${u.map((x, i) => L.tautanLuar(x, "Peta dan infografis BMKG" + (u.length > 1 ? " " + (i + 1) : ""))).join("")}</div>` : ""}`,
+      `Sumber: BMKG TCWC Jakarta, analisis ${jamWIB(b.analisis || S.sikB.dibuat)}`); }
+  /* laci siklon: kotak angka JTWC, data lintasan, pembanding JMA, lalu BMKG TCWC Jakarta */
+  function laciSik(id) { const s = S.sik.aktif.find(x => x.id === id); if (!s) return; const L = LI(), J = s.jma;
+    const jma = J ? [J.tekanan_hpa != null && L.barisLaci("kuat", "Tekanan", fmt(J.tekanan_hpa) + " hPa"), J.angin_kt != null && L.barisLaci("angin", "Angin", fmt(kt(J.angin_kt)) + " km/jam"),
+      J.embusan_kt != null && L.barisLaci("angin", "Embusan", fmt(kt(J.embusan_kt)) + " km/jam")].filter(Boolean).join("") : "";
+    Laci.buka("Siklon tropis", `<span translate="no">${esc(s.nama || s.id)}</span>`, s.kategori ? `<span class="pl" style="--w:var(--bad)" translate="no">${esc(s.kategori)}</span>` : "",
       `${kvs(s.angin_kt != null && kot("Angin", fmt(kt(s.angin_kt)), "km/jam"), s.tekanan_hpa != null && kot("Tekanan", fmt(s.tekanan_hpa), "hPa"))}
-      ${s.jma ? `<p class="fnd">JMA: ${[s.jma.tekanan_hpa != null && `tekanan ${fmt(s.jma.tekanan_hpa)} hPa`, s.jma.angin_kt != null && `angin ${fmt(kt(s.jma.angin_kt))} km/jam`, s.jma.embusan_kt != null && `embusan ${fmt(kt(s.jma.embusan_kt))} km/jam`].filter(Boolean).join(", ")}. JTWC mengukur angin 1 menit, JMA 10 menit, jadi angkanya wajar berbeda.${s.jma.tautan ? ` <a href="${escUrl(s.jma.tautan)}" target="_blank" rel="noopener">Lihat JMA</a>` : ""}</p>` : ""}
-      ${blokBmkg(s)}
-      <p class="fnd">Sumber: <span translate="no">${esc(s.sumber || "")}</span>, dibuat ${jamWIB(S.sik.dibuat)}${s.tautan ? `. <a href="${escUrl(s.tautan)}" target="_blank" rel="noopener">Lihat sumber</a>` : ""}</p>`); }
+      ${seksiCu("Data lintasan", "pusat", `<div class="lc-lbs">${L.barisLaci("satelit", "Sumber data", `<span translate="no">${esc(s.sumber || "–")}</span>`)}${L.barisLaci("waktu", "Dibuat", jamWIB(S.sik.dibuat))}</div>${s.tautan && /^https?:\/\//i.test(s.tautan) ? L.tautanLuar(s.tautan, "Lihat sumber") : ""}`)}
+      ${J && (jma || J.tautan) ? seksiCu("Pembanding JMA", "angin", `${jma ? `<div class="lc-lbs">${jma}</div>` : ""}<p class="fnd">JTWC mengukur angin rata-rata 1 menit, JMA rata-rata 10 menit, jadi angkanya wajar berbeda.</p>${J.tautan && /^https?:\/\//i.test(J.tautan) ? L.tautanLuar(J.tautan, "Lihat JMA") : ""}`) : ""}
+      ${blokBmkg(s)}`); }
 
   /* ---------- interaksi peta ---------- */
   const lapisAktif = () => [ID.sikT, ID.sar, ID.mar, ID.gel, ID.kec].filter(id => peta.getLayer(id) && peta.getLayoutProperty(id, "visibility") === "visible");
@@ -210,7 +237,7 @@ const Status = (() => {
     const p = f.properties; S.pilih = null; renderCrumb();
     if (f.layer.id === ID.kec) laciKec(p.i); else if (f.layer.id === ID.sar) laciSar(p); else if (f.layer.id === ID.mar) laciMar(p); else if (f.layer.id === ID.sikT) laciSik(p.id);
     else { const r = S.gel.titik[p.n]; Laci.buka("Gelombang", `<span translate="no">${esc(r[3] || namaProv(r[2]))}</span>`, `${pilT(p.t)} <span translate="no">${esc(namaProv(r[2]))}</span>`,
-      `${kvs(kot("Tertinggi", fmt(p.hs / 10), "m"))}<p class="fnd">Tertinggi dalam sehari. Sumber: Open-Meteo Marine (model), bukan peringatan BMKG Maritim.</p>`); }
+      `${kvs(kot("Gelombang tertinggi", fmt(p.hs / 10), "m"))}${seksiCu("Gelombang model", "ombak", `<div class="lc-lbs">${LI().barisLaci("peringatan", "Status", pilT(p.t))}</div><p class="fnd">Tinggi gelombang tertinggi dalam sehari menurut model.</p>`, "Sumber: Open-Meteo Marine (model), bukan peringatan BMKG Maritim.")}`); }
     return true; }
 
   /* ---------- legenda ---------- */

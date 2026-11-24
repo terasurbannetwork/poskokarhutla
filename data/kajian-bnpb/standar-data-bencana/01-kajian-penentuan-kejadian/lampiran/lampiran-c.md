@@ -9,12 +9,13 @@ Tabel C.1. Lembar data khusus karhutla
 | Isian | Isi dan satuan | Sumber isian |
 | --- | --- | --- |
 | Subjenis | Kebakaran hutan, kebakaran lahan bukan gambut, atau kebakaran lahan gambut | Petugas lapangan |
-| Titik panas (*hotspot*) | Jumlah, satelit, tingkat keyakinan, tanggal | Sistem pemantauan (otomatis) |
+| *hotspot* | Jumlah, satelit, *confidence*, tanggal | Sistem pemantauan (otomatis) |
 | Titik api terverifikasi | Koordinat dan waktu pengecekan lapangan | Petugas lapangan |
 | Luas terbakar terverifikasi | Hektare, dengan sumber ukur lapangan atau citra satelit resolusi tinggi | Petugas lapangan atau analis citra |
-| Luas terbakar perkiraan | Hektare, dari analisis titik panas; tidak dipakai untuk kriteria dan kelas kejadian | Analis citra |
+| Luas terbakar perkiraan | Hektare, dari analisis *hotspot*; tidak dipakai untuk kriteria dan kelas kejadian | Analis citra |
 | Kedalaman gambut terbakar | Sentimeter, khusus kebakaran lahan gambut | Petugas lapangan, peta gambut |
 | Tutupan lahan | Hutan, semak belukar, kebun, hutan tanaman, pertanian | Petugas lapangan, peta tutupan lahan |
+| Luas terbakar menurut tutupan | Hektare terbakar terverifikasi pada savana, semak, dan padang rumput, serta pada hutan dan lahan lainnya; dipakai untuk kelas kejadian | Petugas lapangan atau analis citra |
 | Status kawasan | Kawasan hutan, areal penggunaan lain, areal berizin (nama pemegang izin apabila ada) | Peta kawasan hutan Kementerian Kehutanan |
 | Kualitas udara | Indeks Standar Pencemar Udara (ISPU) dan partikel halus berukuran 2,5 mikrometer (PM2,5) tertinggi harian (µg/m³) | Stasiun pemantau Kementerian Lingkungan Hidup atau BMKG (otomatis) |
 | Jarak pandang | Meter, terendah harian | Stasiun BMKG |
@@ -51,7 +52,7 @@ Tabel C.3. Lembar data khusus tsunami
 | Peringatan | Tingkat (Awas, Siaga, Waspada), waktu terbit, waktu diakhiri | BMKG (otomatis) |
 | Waktu tiba | Jam gelombang pertama tiba di pantai | Saksi, alat ukur pasang surut |
 | Tinggi gelombang | Meter, dari alat ukur pasang surut | Badan Informasi Geospasial (BIG) atau BMKG |
-| Tinggi rayapan (*run-up*) | Meter di atas permukaan laut pada titik tertinggi yang dicapai air | Survei lapangan |
+| Tinggi *run-up* | Meter di atas permukaan laut pada titik tertinggi yang dicapai air | Survei lapangan |
 | Jarak genangan | Meter dari garis pantai ke batas genangan terjauh | Survei lapangan atau citra |
 | Bekas tinggi air | Meter di dinding bangunan, dengan koordinat | Survei lapangan |
 | Kerusakan pesisir | Perahu, dermaga, tambak, hutan bakau | Petugas lapangan |
@@ -93,6 +94,7 @@ Tabel C.5. Lembar data khusus tanah longsor
 | Zona kerentanan gerakan tanah | Rendah, menengah, tinggi | Peta PVMBG |
 | Ancaman lanjutan | Retakan baru, lereng masih bergerak, bendungan alami di sungai | Petugas lapangan, PVMBG |
 | Jumlah titik | Jumlah titik longsor dalam kejadian ini | Petugas lapangan |
+| Relokasi | Jumlah kepala keluarga dan jiwa yang direlokasi karena lokasinya tidak aman lagi; dipakai untuk kelas kejadian bersama jumlah pengungsi | Pos komando, BPBD |
 
 Sumber: Varnes (1978); Cruden dan Varnes (1996); Hungr dkk. (2014); disusun dalam kajian ini.
 
@@ -161,9 +163,10 @@ Tabel C.9. Lembar data khusus kekeringan
 | Standardized Precipitation Index (SPI) | Nilai dan periode (1, 3, atau 6 bulan) | BMKG |
 | Peringatan dini kekeringan | Status yang berlaku | BMKG (otomatis) |
 | Krisis air bersih | Jumlah desa, kepala keluarga, dan jiwa yang membutuhkan bantuan air | Petugas lapangan |
+| Kesulitan air minum | Jumlah jiwa yang memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya, serta lamanya dalam hari; dipakai untuk kelas kejadian | Petugas lapangan, dinas kesehatan |
 | Sumber air | Jumlah sumur, mata air, dan embung yang kering | Petugas lapangan |
 | Bantuan air | Volume (liter) dan frekuensi distribusi | Pos komando |
-| Pertanian | Sawah terancam, terkena, dan puso (ha); kebun puso (ha) | Dinas pertanian |
+| Pertanian | Sawah terancam, terkena, dan puso (ha); kebun puso (ha); luas tanam pada musim tersebut (ha) | Dinas pertanian |
 | Ternak | Ekor mati atau sakit | Dinas peternakan |
 | Kesehatan | Kasus diare dan penyakit terkait air | Dinas kesehatan |
 

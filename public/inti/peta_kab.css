@@ -1,7 +1,4 @@
 /* inti/peta_kab.css (PB-81.3): grup kontrol di kotak Overlay, kartu legenda, dan tooltip lapisan per kab/kota. Hanya var(--...) dari tema.css. */
-.pk-grup{padding:6px 0 2px;border-top:1px solid var(--line)}
-.pk-hd{font-size:var(--fs-1);font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-.pk-nyala{display:flex;align-items:center;gap:6px;cursor:pointer}
 .pk-kontrol{display:flex;flex-direction:column;gap:6px;padding:4px 0 2px}
 .pk-kontrol[hidden]{display:none}
 .pk-baris{display:flex;flex-direction:column;gap:3px;font-size:var(--fs-1);font-weight:700;color:var(--ink2)}

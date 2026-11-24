@@ -14,3 +14,9 @@
 #dampak .ex .ctl .seg{display:flex;width:100%}
 #dampak .ex .ctl .seg button{flex:1;text-align:center}
 #dampak .ex .bg-ex{margin:14px 16px 0 0}
+/* body.pb-rapi: daftar bagian di luar mode sidebar (<1100px) penuh ujung ke ujung, terbagi rata; karhutla (public/dampak.css langsung) dan banjir tidak memakai kelas ini */
+@media (max-width:1099px){
+  .pb-rapi .dk-nav{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+  .pb-rapi .dk-nav button{width:100%;min-width:0;justify-content:flex-start;white-space:normal;text-align:left;line-height:1.25;min-height:38px;border-radius:12px}
+}
+@media (max-width:700px){.pb-rapi .dk-nav{grid-auto-flow:row;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}

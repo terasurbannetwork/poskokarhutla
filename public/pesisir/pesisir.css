@@ -1,13 +1,13 @@
 /* Tambahan khusus Gelombang Pasang & Abrasi; selebihnya dari inti/gaya.css, peta.css, tabel.css, insight.css, tren.css, kartu.css */
-.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:70;background:var(--brand);color:#fff;padding:9px 16px;border-radius:12px;font-size:13px;font-weight:600;transition:.25s}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:70;background:var(--brand);color:var(--on-brand);padding:9px 16px;border-radius:12px;font-size:0.8125rem;font-weight:600;transition:.25s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .rw{display:grid;gap:3px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:10px 10px;cursor:pointer;border-radius:10px;color:inherit;font:inherit}
 .rw:hover{background:var(--surface)}
 .rw-hd{display:flex;align-items:center;gap:8px;min-width:0}
-.rw-hd b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rw-wil{font-size:11.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rw-jam{font-size:11px;color:var(--ink2);font-variant-numeric:tabular-nums}
-.rows .kosong,.page .kosong{padding:20px 12px;text-align:center;color:var(--ink2);font-size:13px}
+.rw-hd b{font-size:0.8125rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw-wil{font-size:0.7188rem;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw-jam{font-size:0.6875rem;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rows .kosong,.page .kosong{padding:20px 12px;text-align:center;color:var(--ink2);font-size:0.8125rem}
 .panel .top{padding:12px 14px}
 .seg button:disabled{opacity:.35;cursor:default}
 .gp-sub{padding:10px 10px 2px}
@@ -18,28 +18,84 @@
 .gp-kartu .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
 .gp-kartu .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
 .gp-kartu .ex-bd{padding:16px 22px 10px;display:grid;gap:12px}
-.gp-kartu .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+.gp-kartu .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:0.7188rem;color:var(--ink2)}
 .gp-kartu .ex-ft .ex-leg{flex:1 1 100%;justify-content:center;display:flex;flex-wrap:wrap;gap:6px 14px}
 .gp-kartu .ex-ft .ex-leg span{display:inline-flex;align-items:center;gap:6px}
 .gp-kartu .ex-ft .ex-leg i{width:11px;height:11px;border-radius:3px;display:inline-block}
-#insight .gp-kartu .ex-ey,#tren .gp-kartu .ex-ey{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
-#insight .gp-kartu .ex-ey svg,#tren .gp-kartu .ex-ey svg{width:12px;height:12px;flex:none}
+#insight .gp-kartu .ex-ey,#tren .gp-kartu .ex-ey,#tentang .gp-kartu .ex-ey{display:inline-flex;align-items:center;gap:5px;font-size:0.625rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
+#insight .gp-kartu .ex-ey svg,#tren .gp-kartu .ex-ey svg,#tentang .gp-kartu .ex-ey svg{width:12px;height:12px;flex:none}
 .gp-kartu .tw td{white-space:normal;overflow-wrap:anywhere}.gp-kartu .tw th{white-space:nowrap}
 .gp-kartu h3{font-size:clamp(17px,2.4vw,21px);line-height:1.3;letter-spacing:-.01em;margin:8px 0 0}
 .gp-kartu .tw table{width:100%}
-.gp-kartu td.n{text-align:center;font-variant-numeric:tabular-nums}
+.gp-kartu td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gp-kartu .tw td.c{text-align:center;white-space:nowrap}
 .gp-kartu .tw th{text-align:center}
 .gp-svg{display:block;width:100%;height:auto;overflow:visible}
 .gp-svg text{fill:currentColor}
 .gp-svg [data-tip]{cursor:pointer}
-.gp-cat,.gp-par{margin:0;font-size:12.5px;line-height:1.6;color:var(--ink2);text-align:justify;hyphens:auto}
-.gp-par{font-size:13.5px;color:var(--ink)}
+.gp-cat,.gp-par{margin:0;font-size:0.7812rem;line-height:1.6;color:var(--ink2);text-align:justify;hyphens:auto}
+.dp-cat{margin-top:12px!important;font-size:0.75rem!important;text-align:left!important}
+/* angka kunci di bawah grafik (pengganti paragraf panjang) dan catatan metode yang bisa dilipat */
+.gp-ang{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0 0}
+.gp-ang>div{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.gp-ang small{font-size:0.6875rem;font-weight:600;color:var(--ink2);line-height:1.3}
+.gp-ang b{font:800 1.125rem/1.2 var(--display,inherit);color:var(--ink);font-variant-numeric:tabular-nums}
+.gp-ang em{font-style:normal;font-size:0.6875rem;color:var(--ink2)}
+.gp-lip{margin:10px 0 0;font-size:0.7812rem;color:var(--ink2)}
+.gp-lip>summary{cursor:pointer;font-weight:700;color:var(--ink);list-style-position:inside}
+.gp-lip ul{margin:6px 0 0;padding-left:18px;line-height:1.55}
+.gp-lip li+li{margin-top:3px}
+.gp-par{font-size:0.8438rem;color:var(--ink)}
 ul.mt{margin:0;padding-left:18px;display:grid;gap:6px}
 .gp-wr{overflow:hidden;border:0;box-shadow:none;background:none}
 .gp-pk table{width:100%}
 #laci .gp-rows{display:block;max-height:none}
-#laci .bd .lbl{margin-top:4px}
+#laci .lc-h{flex-wrap:nowrap;align-items:flex-start}
+#laci .lc-h>svg{margin-top:1px}
+#laci .lc-h>.lc-h-t{min-width:0}
 @media(max-width:640px){.page.scroll{padding:12px 10px 32px}.gp-kartu .ex-hd{padding:14px 14px 10px}.gp-kartu .ex-bd{padding:12px 14px 8px}.gp-kartu .ex-ft{padding:10px 14px 12px}}
 
 .dp-t td.c{text-align:center}
-.dp-t td.n{text-align:center;font-variant-numeric:tabular-nums}
+.dp-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* kartu Insight, Tren, Tentang: tabel di dalam isi kartu ikut kepala navy kartu standar, catatan lipat di bawah isi */
+.gp-ex .ex-tabel{border-radius:12px;overflow:auto}
+.gp-ex .ex-bd>.kosong{padding:14px 4px;text-align:left}
+.gp-sublbl{margin:4px 0 -6px}
+.gp-tt td{white-space:normal;vertical-align:top}
+/* deretan Isi panel berikon, terbagi rata */
+#panelMode button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:1 1 0;min-width:0}
+#panelMode button svg{width:14px;height:14px;flex:none}
+/* kepala tabel Dampak boleh dua baris supaya tabel tidak melebar keluar kartu */
+#dampak .dp-t th{white-space:normal;vertical-align:middle}
+
+/* baris pilihan panel + tombol unduh di ujung kanan (pola .tr-sw gempa dan karhutla) */
+.gp-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.gp-bar>#panelMode{flex:1 1 auto;min-width:0;margin:0}
+#gpUnduh:empty{display:none}
+#gpUnduh{flex:none;display:inline-flex}
+
+/* laci rincian (Abrasi, Rob, Pasang, Ombak): kepala dengan pil dan wilayah sebaris, daftar transek di dalam kartu, catatan terlipat bernomor */
+#laci .gp-hd-meta{flex-wrap:wrap;white-space:normal;row-gap:4px}
+#laci .gp-hd-meta>span{display:inline-flex;align-items:center;min-width:0}
+#laci .gp-bd>*{min-width:0}
+#laci .lc-lb b{min-width:0;overflow-wrap:anywhere}
+#laci .lc-lb-k{flex:none}
+#laci .gp-rows .rw{padding:8px 2px;border-radius:0}
+#laci .gp-rows .rw:last-child{border-bottom:0}
+#laci .gp-rows .rw:hover{background:var(--surface)}
+#laci .gp-ol{margin:0;padding-left:18px;display:grid;gap:5px;text-align:left}
+#laci .gp-lc-cat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--card)}
+#laci .gp-lc-cat summary{cursor:pointer;list-style:none}
+#laci .gp-lc-cat summary::-webkit-details-marker{display:none}
+#laci .gp-lc-cat summary::after{content:"";margin-left:auto;flex:none;width:6px;height:6px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(-45deg);transition:transform .15s}
+#laci .gp-lc-cat details[open]>summary::after{transform:rotate(45deg)}
+#laci .gp-lc-cat details[open]>summary{margin-bottom:8px}
+#laci .gp-lc-cat .lc-src{margin-top:8px}
+#laci .gp-perairan{margin:0;padding-left:20px;display:grid;gap:4px;font-size:.92em;line-height:1.4;color:var(--ink)}
+#laci .gp-perairan li::marker{color:var(--ink2);font-variant-numeric:tabular-nums}
+#laci .kpis .kpi b{font-variant-numeric:tabular-nums}
+/* tanda transek yang ditinjau atau terganggu bangunan pantai: lajunya tidak dibaca sebagai abrasi bersih */
+#laci .gp-tanda{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;justify-self:start;width:fit-content;max-width:100%;margin-top:4px;padding:2px 8px;border-radius:999px;font-size:0.6875rem;font-weight:700;line-height:1.3;background:color-mix(in oklch,var(--warn) 16%,var(--card));color:var(--warn-tx)}
+#laci .gp-tanda svg,#laci .gp-gg svg{flex:none;width:12px;height:12px}
+#laci .gp-gg{display:inline-flex;align-items:flex-start;gap:6px;color:var(--warn-tx);font-weight:600}
+#laci .gp-gg svg{margin-top:2px}

@@ -28,7 +28,7 @@ Kajian ini tidak menilai pelaksanaan Juklak di daerah dan tidak menilai mutu dat
 
 ## 1.5 Kaitan dengan kajian lain
 
-Kajian ini memakai hasil Kajian Penentuan Kejadian Bencana, Kelas Mayor dan Minor, dan Standar Data Lapangan yang disusun Tim Ahli dan Tim Sus IT BNPB pada November 2026. Kajian tersebut menyusun aturan penentuan kejadian, kelas mayor dan minor, serta standar data lapangan dari studi literatur. Kajian ini menilai ketentuan Juklak 7/2023 yang berlaku, lalu memakai hasil kajian tersebut sebagai salah satu bahan usulan perbaikan.
+Kajian ini memakai hasil Kajian Penentuan Kejadian Bencana, Kelas Bencana, dan Standar Data Lapangan yang disusun Tim Ahli dan Tim Sus IT BNPB pada November 2026. Kajian tersebut menyusun aturan penentuan kejadian, kelas intensif dan ekstensif, serta standar data lapangan dari studi literatur. Kajian ini menilai ketentuan Juklak 7/2023 yang berlaku, lalu memakai hasil kajian tersebut sebagai salah satu bahan usulan perbaikan.
 
 ## 1.6 Sistematika penulisan
 

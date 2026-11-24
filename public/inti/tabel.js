@@ -54,3 +54,42 @@ function segmenUkuran(izin, aktif) {
 function ukuranRegistri() {
   return ukuranRegistri.p ||= typeof fetch === "function" ? fetch("/bencana.json").then(r => r.ok ? r.json() : Promise.reject(new Error("registri " + r.status))).then(j => j.bencana || [], () => []) : Promise.resolve([]);
 }
+
+/* Rentang waktu tab Kejadian (pola gempa, pemilik 16 dan 23 Nov 2026): "Rentang waktu 7 | 14 | 30 hari" + tombol "Pilih tanggal" (kalender inti,
+   hanya tanggal yang punya kejadian, D16). st memakai kunci rentang ("7"/"14"/"30") dan tgl (ISO WIB atau null).
+   mulai = k => waktu mulai kejadian (string ISO atau ms). akhir (opsional) = k => waktu akhir (null = masih aktif): bila ada, kejadian
+   ikut bila masih berlangsung di rentang atau tanggal itu (cuaca, udara, gunung api); tanpa akhir, kejadian ikut bila MULAI di rentang (gempa). */
+const RentangKj = {
+  OPSI: [["7", "7 hari"], ["14", "14 hari"], ["30", "30 hari"]],
+  IKAL: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>',
+  wib: t => new Date((typeof t === "number" ? t : Date.parse(t)) + 7 * 36e5).toISOString().slice(0, 10),
+  pendek: iso => new Date(iso + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}),
+  ms: t => typeof t === "number" ? t : Date.parse(t),
+  /* tanggal WIB yang dilalui kejadian (paling banyak 90 hari ke belakang dari akhir) */
+  hari(k, mulai, akhir) { const m = mulai(k); if (!m) return []; const a0 = RentangKj.wib(m); if (!akhir) return [a0];
+    const z = RentangKj.wib(akhir(k) || Date.now()), out = []; let t = z; while (t >= a0 && out.length < 90) { out.push(t); t = new Date(Date.parse(t + "T00:00:00Z") - 864e5).toISOString().slice(0, 10); } return out; },
+  saring(K, st, mulai, akhir) { const batas = Date.now() - +(st.rentang || 30) * 864e5;
+    return (K || []).filter(k => { const m = mulai(k); if (!m) return !st.tgl;
+      if (st.tgl) return RentangKj.hari(k, mulai, akhir).includes(st.tgl);
+      return akhir ? RentangKj.ms(akhir(k) || Date.now()) >= batas : RentangKj.ms(m) >= batas; }); },
+  /* kartu tab Kejadian standar semua bencana (rupa gempa, pemilik 23 Nov 2026: "bagus kayak gini, bikin yang lain sebagus gempa"):
+     kepala nama seksi berikon, pemilih rentang di kontrol kepala, tabel menempel (.tw.ex-tabel), sumber di title judul tanpa kaki.
+     o = {nama, sumber, pil (opsional, HTML pil di sebelah judul), isi} */
+  kartu(st, o) { const ik = (typeof Kartu !== "undefined" && Kartu.ikonSeksi?.(o.nama)) || "";
+    return `<article class="ex ex-std kj-kartu" data-kp="1"><header class="ex-hd"><div class="ex-jd"><h3${o.sumber ? ` title="${esc(o.sumber)}"` : ""}>${ik}${esc(o.nama)}${o.pil ? " " + o.pil : ""}</h3></div><div class="ctl">${RentangKj.alat(st)}</div></header><div class="ex-bd">${o.isi}</div></article>`; },
+  ket: st => st.tgl ? "tanggal " + RentangKj.pendek(st.tgl) : (st.rentang || 30) + " hari terakhir",
+  alat(st) { const seg = `<div class="seg" role="group">${RentangKj.OPSI.map(([v, n]) => `<button data-set="rentang" data-v="${v}" aria-pressed="${!st.tgl && String(st.rentang || 30) === v}">${n}</button>`).join("")}</div>`;
+    return `<div class="kj-alat"><span class="kj-alat-l">Rentang waktu</span>${seg}<button type="button" class="kj-tgl" data-kj-tgl aria-haspopup="dialog" aria-pressed="${!!st.tgl}">${RentangKj.IKAL}${st.tgl ? esc(RentangKj.pendek(st.tgl)) : "Pilih tanggal"}</button></div>`; },
+  /* dipanggil dari penangan klik tab Kejadian; true = klik sudah ditangani. o = {K, mulai, gambar, satuan, ket} */
+  klik(e, st, o) {
+    if (e.type !== "click") return false;
+    const rg = e.target.closest('button[data-set="rentang"]');
+    if (rg) { if (rg.dataset.v !== String(st.rentang) || st.tgl) { st.rentang = rg.dataset.v; st.tgl = null; st.hal = 0; nanti(o.gambar); } return true; }
+    const kt = e.target.closest("[data-kj-tgl]"); if (!kt) return false;
+    if (typeof Kalender === "undefined") return true;
+    const j = {}; for (const k of o.K() || []) for (const t of RentangKj.hari(k, o.mulai, o.akhir)) j[t] = (j[t] || 0) + 1;
+    const hi = RentangKj.wib(Date.now());
+    Kalender.buka({tombol: kt, hariIni: hi, terpilih: st.tgl || hi, judul: "Pilih tanggal kejadian", satuan: o.satuan || "kejadian", ket: o.ket || "Angka = jumlah kejadian yang mulai hari itu.",
+      terbanyak: {judul: "Terbanyak", n: 6}, muat: async () => ({jumlah: j}), bisa: t => t in j, pilih: t => { st.tgl = t; st.hal = 0; nanti(o.gambar); }});
+    return true; }
+};

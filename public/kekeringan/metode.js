@@ -9,7 +9,7 @@ const Metode = {
       [["Hitungan", `hari kering berturut-turut terakhir sampai kemarin${(m => m ? `; data ${m[1]} hari ke belakang, jadi nilai terbesar ${+m[1] + 1}` : "")(/(\d+) hari ke belakang/.exec(H.catatan || ""))}`], ["Kelas BMKG", `${(H.kelas || []).map((k, i) => `${k} (${i === 0 ? "1–" + H.batas_kelas[0] : i < H.batas_kelas.length ? (H.batas_kelas[i - 1] + 1) + "–" + H.batas_kelas[i] : "> " + H.batas_kelas.at(-1)} hari)`).join(", ")}`],
        ["Sumber hujan", "Open-Meteo (model gabungan), bukan pos BMKG; hasil bisa beda dari peta HTH BMKG"], ["Wilayah", "kabupaten/kota dihitung dari penduduk di sel HTH 31 hari atau lebih, sama dengan jiwa di wilayah"]]), "Open-Meteo; kelas HTH BMKG"));
     if (P) o.push(kartu("Prakiraan", `Prakiraan 1–3 bulan dari ECMWF SEAS5: ${Kartu.hl(BELUM_UJI.toLowerCase())}, tanpa koreksi bias; arah bias tertulis di bawah`, tabel(["Bahan", "Keterangan"],
-      [["Model", `${esc(P.sumber || "ECMWF SEAS5, 51 anggota")}; titik 2 derajat, sel kisi memakai titik tempat ia berada`], ["Peluang", "porsi anggota ensemble dengan SPI-3 ≤ −1, ≤ −1,5, dan ≤ −2; HTH 31 dan 61 hari dihitung dari hujan harian anggota"],
+      [["Model", `${esc(P.sumber || "ECMWF SEAS5, 51 anggota")}; titik 2 derajat, sel kisi memakai titik tempat ia berada`], ["Peluang", "porsi anggota ensemble dengan SPI-3 −1, −1,5, dan −2 atau kurang; HTH 31 dan 61 hari dihitung dari hujan harian anggota"],
        ["Baseline", bs != null ? `peluang klimatologi ${fmt(Math.round(bs))}%; selisih dari baseline ditulis di tiap angka` : "belum tersedia di berkas data"], ["Arah bias", esc(BIAS_BULAN().join("; ") || BIAS_TXT())], ["Catatan bias", esc((P.bias?.catatan || "") + (P.catatan ? " " + P.catatan : ""))],
        ["Uji balik", "belum ada: hindcast SEAS5 tidak tersedia lewat Open-Meteo, jadi kamu membacanya sebagai arah, bukan angka pasti"]]), "ECMWF SEAS5 lewat Open-Meteo"));
     if (D) o.push(kartu("Padi", `Gagal panen padi tadah hujan: indikator cekaman air, ${Kartu.hl("bukan data puso")}`, tabel(["Bahan", "Keterangan"],
@@ -24,13 +24,13 @@ const Metode = {
     const T = J?.kejadian?.setel;
     if (T?.hasil?.terpilih) {
       const pc = x => x == null ? "belum ada data" : fmt(Math.round(x * 100)) + "%", ci = v => v ? ` (${pc(v[0])}–${pc(v[1])})` : "";
-      const nama = k => { const c = (T.kandidat || []).find(x => x.kode === k); return c ? esc((T.keluarga?.[c.keluarga] || k).replaceAll("<= t", "≤ " + String(c.t).replace(".", ",").replace("-", "−"))) : esc(k); };
+      const nama = k => { const c = (T.kandidat || []).find(x => x.kode === k); return c ? esc((T.keluarga?.[c.keluarga] || k).replaceAll("<= t", String(c.t).replace(".", ",").replace("-", "−") + " atau kurang").replaceAll("< ", "di bawah ")) : esc(k); };
       const bar = (lab, k, s, c) => [lab, nama(k), pc(s.pod) + ci(c?.pod), pc(s.far) + ci(c?.far), F3m(s.csi) + (c?.csi ? ` (${F3m(c.csi[0])}–${F3m(c.csi[1])})` : ""), F3m(s.csi_acak)];
       const H2 = T.hasil.terpilih, S0 = T.hasil.sekarang, L = T.latih.map(blnIso).join(" sampai "), U = T.uji.map(blnIso).join(" sampai ");
       o.push(kartu("Penyetelan", `Ambang baru dipilih dari ${fmt(T.kandidat_n)} kandidat dan diuji sekali: ${Kartu.hl(T.vonis?.layak ? "lolos" : "belum layak")}${T.vonis?.layak ? "" : ", status tetap memakai ambang sekarang"}`, tabel(["Aturan", "Isi", "Tertangkap (POD)", "Alarm palsu (FAR)", "CSI", "CSI alarm acak"],
         [bar(`Terpilih, latih ${L}`, H2.kode, H2.latih), bar(`Terpilih, uji ${U}`, H2.kode, H2.uji, H2.uji_selang95), bar(`Sekarang, latih ${L}`, S0.kode, S0.latih), bar(`Sekarang, uji ${U}`, S0.kode, S0.uji, S0.uji_selang95)], "n num") +
         tabel(["Bagian", "Keterangan"], [["Cara", `kandidat dipilih dari CSI tertinggi pada ${L}; skor uji ${U} hanya dihitung untuk aturan terpilih dan aturan sekarang; selang 95% dari ${fmt(T.bootstrap?.ulang)} cuplikan ulang bulan`],
-          ["Kandidat", esc(Object.values(T.keluarga || {}).map(x => x.replaceAll("<=", "≤")).join("; ") + `; t = ${(T.ambang_t || []).map(x => String(x).replace(".", ",").replace("-", "−")).join(", ")}; pemilihan tidak dikoreksi untuk banyaknya percobaan`)],
+          ["Kandidat", esc(Object.values(T.keluarga || {}).map(x => x.replaceAll("<= t", "t atau kurang").replaceAll("< ", "di bawah ")).join("; ") + `; t = ${(T.ambang_t || []).map(x => String(x).replace(".", ",").replace("-", "−")).join(", ")}; pemilihan tidak dikoreksi untuk banyaknya percobaan`)],
           ["Kriteria layak", "POD 50% atau lebih, alarm palsu 80% atau kurang, CSI 2 kali alarm acak atau lebih, dan batas bawah selang CSI di atas alarm acak, di periode uji; ditetapkan sebelum angka dilihat"],
           ["Vonis", esc(T.vonis?.alasan || "")]]), "Centurisk97; DIBI BNPB; NASA POWER"));
     }
@@ -58,16 +58,16 @@ const Metode = {
   render() {
     const M = S.meta, sp = M.spi, N = M.nasional;
     const tabel = (h, r, n = "") => `<div class="tw"><table class="kl-tb"><thead><tr>${h.map((x, i) => `<th class="${i ? n : ""}">${x}</th>`).join("")}</tr></thead><tbody>${r.map(c => `<tr>${c.map((x, i) => `<td class="${i ? n : ""}">${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-    const kartu = (ey, judul, isi, sumber) => Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`);
+    const kartu = (ey, judul, isi, sumber) => kepalaSeksi(Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`));
     $("#metode").innerHTML =
       kartu("Status", `Status wilayah dihitung sendiri: ${Kartu.hl("Deteksi Centurisk97")}`, tabel(["Tingkat", "SPI-3", "Kelembapan tanah (persentil)"],
-        [[pill(1), "≤ −1", "≤ 20"], [pill(2), "≤ −1,5", "≤ 10"], [pill(3), "≤ −2, dan butuh penguat: tanah ≤ 10 atau SPI-6 ≤ −1,5", "≤ 10 (penguat)"]], "n num"), `ambang Centurisk97, ${AMBANG_PIL().toLowerCase()} (lihat Uji balik); tanah menaikkan status paling banyak satu tingkat dari SPI-3, dan tanah saja paling tinggi Siaga`) +
+        [[pill(1), "−1 atau kurang", "20 atau kurang"], [pill(2), "−1,5 atau kurang", "10 atau kurang"], [pill(3), "−2 atau kurang, dan butuh penguat: tanah 10 atau kurang, atau SPI-6 −1,5 atau kurang", "10 atau kurang (penguat)"]], "n num"), `ambang Centurisk97, ${AMBANG_PIL().toLowerCase()} (lihat Uji balik); tanah menaikkan status paling banyak satu tingkat dari SPI-3, dan tanah saja paling tinggi Siaga`) +
       kartu("Hujan", `SPI-3 dari hujan bulanan 1991–2020${sp ? `, sampai ${bulanPanjang(sp.bulan)} di ${fmt(sp.sel)} sel` : ""}`, tabel(["Bahan", "Keterangan"],
         [["Hujan", "NASA POWER (MERRA-2), jumlah tiga bulan dibanding sebaran gamma 1991–2020"], ["Jeda data", `sekitar enam sampai delapan minggu; bulan terakhir yang terisi${sp ? " sekarang " + bulanPanjang(sp.bulan) : ""}, di hampir semua sel`], ["Dibuang", "sel yang rata-rata tiga bulannya di bawah 50 mm (SPI tak bermakna)"]]), "NASA POWER; McKee 1993; BMKG hanya menerbitkan peta gambar") +
       kartu("Tanah", `Kelembapan tanah 7–28 cm: ${Kartu.hl(fmt(M.tanah.sel))} sel sudah berpersentil`, tabel(["Bahan", "Keterangan"],
-        [["Persentil", "dibanding ERA5-Land 2015–2025 pada dasarian yang sama"], ["Aturan", "tanah boleh menaikkan satu tingkat dari SPI; tanah sendirian paling tinggi Siaga; Awas butuh tanah ≤ 10 atau SPI-6 ≤ −1,5, tanpa itu paling tinggi Siaga"], ["Sel baru", "klimatologi sel bertambah tiap hari, jadi lapisan ini makin penuh"]]), "ECMWF IFS (Open-Meteo), ERA5-Land") +
+        [["Persentil", "dibanding ERA5-Land 2015–2025 pada dasarian yang sama"], ["Aturan", "tanah boleh menaikkan satu tingkat dari SPI; tanah sendirian paling tinggi Siaga; Awas butuh tanah 10 atau kurang, atau SPI-6 −1,5 atau kurang; tanpa itu paling tinggi Siaga"], ["Sel baru", "klimatologi sel bertambah tiap hari, jadi lapisan ini makin penuh"]]), "ECMWF IFS (Open-Meteo), ERA5-Land") +
       kartu("Kode DC", "Kode kekeringan (DC) hanya lapisan peta, tidak ikut menentukan status", tabel(["Kelas DC", "Nilai"],
-        [["Rendah", "< 80"], ["Sedang", "80–189"], ["Tinggi", "190–299"], ["Sangat tinggi", "300–424"], ["Ekstrem", "≥ 425"]], "n num"), "Canadian Forest Fire Danger Rating System") +
+        [["Rendah", "di bawah 80"], ["Sedang", "80–189"], ["Tinggi", "190–299"], ["Sangat tinggi", "300–424"], ["Ekstrem", "425 atau lebih"]], "n num"), "Canadian Forest Fire Danger Rating System") +
       kartu("Wilayah", `Kabupaten/kota naik tingkat bila ${Kartu.hl("30%")} penduduknya di kecamatan bertingkat itu`, tabel(["Bahan", "Keterangan"],
         [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "status gabungan kami bukan status resmi; BMKG tidak menerbitkan data terstruktur. SK status darurat BNPB tampil terpisah di pop-up wilayah"]]), "WorldPop; BMKG") + this.baru(tabel, kartu) + this.jadwal(M, tabel, kartu);
     const pelu = typeof Peluang === "undefined" ? Promise.resolve(null) : Peluang.muat("../banjir/data/kering_peluang.json").catch(() => null);

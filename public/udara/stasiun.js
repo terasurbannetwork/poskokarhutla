@@ -6,7 +6,7 @@
 const dec1 = v => Number(v).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
 const FMT_JAM = new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}), FMT_JAM24 = new Intl.DateTimeFormat("en-GB", {timeZone: "Asia/Jakarta", hour: "2-digit", hour12: false}), FMT_HARI = new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short"});
 const SUMBER_BMKG = "Sumber: BMKG, pengukuran stasiun";
-const PIL_UKUR = '<span class="kt" style="--c:#0b2545;--f:#fff;text-transform:none;letter-spacing:0">pengukuran stasiun BMKG, bukan model</span>';
+const PIL_UKUR = '<span class="kt kt-tk">pengukuran stasiun BMKG, bukan model</span>';   /* gaya kt-tk di udara.css (token tema) */
 const Stasiun = {
   D: null,
   async muat() { this.D = await fetch("/udara/data/bmkg_pm25.json").then(r => r.ok ? r.json() : null).catch(() => null); },
@@ -28,12 +28,18 @@ const Stasiun = {
     const garis = [15.5, 55.4].filter(b => b < mx).map(b => `<line x1="${L}" x2="${W}" y1="${Y(b)}" y2="${Y(b)}" stroke="currentColor" opacity=".3" stroke-dasharray="3 3"/><text x="${L - 4}" y="${Y(b) + 4}" text-anchor="end" font-size="10" fill="currentColor" opacity=".7">${dec1(b).replace(",0", "")}</text>`).join("");
     const sb = hari.map(([j, l]) => `<line x1="${L + j * bw}" x2="${L + j * bw}" y1="${H - 22}" y2="${H - 17}" stroke="currentColor" opacity=".5"/><text x="${L + j * bw + 2}" y="${H - 6}" font-size="10" fill="currentColor" opacity=".75">${l}</text>`).join("");
     const nilai = s.deret.filter(v => v != null), rata = nilai.reduce((a, b) => a + b, 0) / nilai.length;
+    /* kotak angka: satuan kecil menempel (angSat, turun baris sendiri di kotak sempit lewat udara.css); kategori sebagai pil */
+    const pk = v => { const c = kat(v); return pilLaci(KAT[c].n, KAT[c].w, KAT[c].fg !== "#fff"); }, mx1 = Math.max(...nilai);
     Laci.buka("Stasiun BMKG", `<span translate="no">${esc(s.nama)}</span>`, PIL_UKUR,
-      `<div class="grid" style="grid-template-columns:repeat(3,1fr)">${kot("Terbaru", `<span style="color:${KAT[kat(s.v)].w}">${dec1(s.v)} µg/m³</span>`, KAT[kat(s.v)].n)}${kot(`Rata ${fmt(nilai.length)} jam terukur`, dec1(rata) + " µg/m³", KAT[kat(rata)].n)}${kot("Tertinggi", dec1(Math.max(...nilai)) + " µg/m³", "per jam")}</div>
-      <p class="fnd">PM2,5 per jam, ${fmt(nilai.length)} jam terukur (${esc(jamWIB(s.t0))} sampai ${esc(jamWIB(s.t))}). Jam tanpa data dikosongkan, bukan nol.</p>
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="PM2,5 per jam stasiun ${esc(s.nama)}" style="width:100%">${garis}${bar}${sb}</svg>
-      <p class="fnd">Warna memakai ambang kategori 24 jam (garis putus: 15,5 dan 55,4 µg/m³) sebagai acuan; nilai BMKG di sini per jam. Pengukuran stasiun, tidak dicampur dengan angka model CAMS di halaman ini.</p>
-      <p class="fnd">${SUMBER_BMKG}, terbit ${esc(jamWIB(this.D.terbit))}.</p>`); },
+      `${kotakHari([kot("Terbaru", angSat(dec1(s.v), KAT[kat(s.v)].w), pk(s.v), "debit"), kot("Rata-rata", angSat(dec1(rata)), pk(rata), "rasio"), kot("Tertinggi", angSat(dec1(mx1), KAT[kat(mx1)].w), "per jam", "peringatan")])}
+      ${sekLaci({judul: "Waktu pengukuran", ikon: "waktu", isi: `<div class="lc-lbs">${barisLaci("waktu", "Nilai terbaru", esc(jamWIB(s.t)))}${barisLaci("waktu", "Data mulai", esc(jamWIB(s.t0)))}${barisLaci("debit", "Jam terukur", `${fmt(nilai.length)} dari ${fmt(n)} jam`)}</div>`})}
+      ${sekLaci({judul: "PM2,5 per jam", ikon: "debit", isi: `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="PM2,5 per jam stasiun ${esc(s.nama)}" style="width:100%">${garis}${bar}${sb}</svg>
+      <details class="ud-lc-lipat"><summary>Cara membaca grafik</summary><ol class="ud-butir">
+        <li>Satu batang adalah satu jam pengukuran. Jam tanpa data dikosongkan, bukan nol.</li>
+        <li>Warna batang memakai ambang kategori 24 jam sebagai acuan, padahal nilai BMKG di sini per jam.</li>
+        <li>Garis putus-putus menandai 15,5 dan 55,4 µg/m³, batas atas kategori Baik dan Sedang.</li>
+        <li>Angka ini hasil alat ukur stasiun dan tidak dicampur dengan angka model CAMS di halaman ini.</li></ol></details>`,
+        sumber: `${SUMBER_BMKG}, terbit ${jamWIB(this.D.terbit)}.`})}`); },
   legenda() { const n = this.segar().length; if (!n) return "";
     return `<div class="lbl">Stasiun BMKG, PM2,5 terukur <span style="text-transform:none">(µg/m³, bingkai gelap)</span></div><div class="leg" style="margin:4px 0 4px">${KAT.map(k => `<span><i class="sw dot" style="background:${k.w};box-shadow:0 0 0 2px #0b2545"></i>${k.n}</span>`).join("")}</div>
       <div class="fnd" style="margin:0 0 8px">${fmt(n)} stasiun dengan nilai segar. Pengukuran, bukan model. ${SUMBER_BMKG}, terbit ${esc(jamWIB(this.D.terbit))}.</div>`; },
@@ -45,6 +51,6 @@ const Stasiun = {
     Kartu.leg(KAT.map(k => [k.w, k.n]));
     const lama = A.length < this.D.n_stasiun ? ` ${fmt(this.D.n_stasiun - A.length)} stasiun lain tidak melapor dalam ${fmt(this.D.segar_jam)} jam terakhir dan tidak ditampilkan.` : "";
     return Kartu.ex(`${Kartu.hl(dec1(top.v) + " µg/m³")} PM2,5 tertinggi terukur di stasiun BMKG ${esc(top.nama)}, ${Kartu.hl(fmt(baik) + " dari " + fmt(A.length))} stasiun berkategori Baik`, "", "",
-      `<div style="margin:0 0 6px">${PIL_UKUR}</div>${svg}<p class="fnd">Nilai terbaru per stasiun (per jam), diurutkan dari tertinggi.${lama} Warna memakai ambang kategori 24 jam sebagai acuan. Ini hasil alat ukur dan tidak dicampur dengan angka model CAMS di kartu lain. Data ${esc(jamWIB(this.D.terbit))}.</p>`,
+      `<div style="margin:0 0 6px">${PIL_UKUR}</div>${svg}<details class="lipat ud-lipat"><summary>Cara membaca angka</summary><div class="isi"><p class="fnd">Nilai terbaru per stasiun (per jam), diurutkan dari tertinggi.${lama} Warna memakai ambang kategori 24 jam sebagai acuan. Ini hasil alat ukur dan tidak dicampur dengan angka model CAMS di kartu lain. Data ${esc(jamWIB(this.D.terbit))}.</p></div></details>`,
       `${SUMBER_BMKG}, terbit ${jamWIB(this.D.terbit)}`).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk("stasiun", "Stasiun BMKG")}</span>`); },
 };

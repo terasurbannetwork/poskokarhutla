@@ -1,6 +1,6 @@
 # BAB 3 Hasil
 
-Bab ini menyajikan hasil kajian dalam empat bagian. Subbab 3.1 meletakkan dasar konsep, yaitu pengertian bencana dan perbedaannya dengan ancaman. Subbab 3.2 menjawab Pertanyaan 1 tentang cara menentukan kejadian bencana untuk setiap jenis bencana. Subbab 3.3 menjawab Pertanyaan 2 tentang kelas mayor dan minor. Subbab 3.4 menjawab Pertanyaan 3 tentang data yang dikumpulkan di lapangan.
+Bab ini menyajikan hasil kajian dalam empat bagian. Subbab 3.1 meletakkan dasar konsep, yaitu pengertian bencana dan perbedaannya dengan ancaman. Subbab 3.2 menjawab Pertanyaan 1 tentang cara menentukan kejadian bencana untuk setiap jenis bencana. Subbab 3.3 menjawab Pertanyaan 2 tentang kelas intensif dan ekstensif. Subbab 3.4 menjawab Pertanyaan 3 tentang data yang dikumpulkan di lapangan.
 
 ## 3.1 Konsep dasar: bencana, ancaman, dan kejadian
 
@@ -20,7 +20,7 @@ Tabel 3.1. Perbandingan definisi bencana
 
 Sumber: UU 24/2007; UNDRR (2017); Fritz (1961); dokumentasi EM-DAT; Perka BNPB 8/2011 (sudah tidak berlaku, dirujuk untuk definisinya).
 
-Tabel 3.1 menunjukkan bahwa definisi Indonesia sejalan dengan definisi internasional. Perbedaannya terletak pada unsur kapasitas. Definisi UNDRR dan EM-DAT menyebut bahwa bencana terjadi ketika dampak melampaui kemampuan masyarakat, sedangkan Undang-Undang Nomor 24 Tahun 2007 cukup mensyaratkan adanya gangguan dan akibat. Perbedaan ini penting untuk Pertanyaan 2, karena kelas mayor pada dasarnya menandai kejadian yang dampaknya mulai melampaui kemampuan daerah.
+Tabel 3.1 menunjukkan bahwa definisi Indonesia sejalan dengan definisi internasional. Perbedaannya terletak pada unsur kapasitas. Definisi UNDRR dan EM-DAT menyebut bahwa bencana terjadi ketika dampak melampaui kemampuan masyarakat, sedangkan Undang-Undang Nomor 24 Tahun 2007 cukup mensyaratkan adanya gangguan dan akibat. Perbedaan ini penting untuk Pertanyaan 2, karena kelas intensif menandai kejadian yang dampaknya berat, yang biasanya juga melampaui kemampuan daerah.
 
 ### 3.1.2 Ancaman berbeda dengan bencana
 
@@ -34,11 +34,27 @@ Undang-Undang Nomor 24 Tahun 2007 memakai istilah ancaman bencana, yaitu suatu k
 
 Berdasarkan hal tersebut, kajian ini membedakan dua tingkat pencatatan. **Peristiwa ancaman** adalah wujud ancaman bencana menurut UU 24/2007 di tempat dan waktu tertentu. Dalam kajian ini, yang dibatasi pada bencana alam (Subbab 1.4), peristiwa ini berupa peristiwa alam yang berpotensi menimbulkan bencana dan sudah terdeteksi atau dilaporkan, misalnya gempa bermagnitudo 6 yang dicatat BMKG, kenaikan level aktivitas gunung api yang ditetapkan PVMBG, atau sekelompok *hotspot* yang terdeteksi satelit. **Kejadian bencana** adalah peristiwa ancaman yang menimbulkan dampak dan memenuhi paling sedikit satu kriteria kejadian bencana dalam Rancangan Juklak.
 
+Rancangan Juklak juga menetapkan kapan suatu peristiwa ancaman dinyatakan menimbulkan dampak (Bab I huruf D angka 13 dan Bab II huruf C angka 5 sampai 7). Ketentuan ini diperlukan karena keputusan kedua dalam alur penentuan kejadian (Subbab 3.2.1) bergantung pada jawaban ada atau tidaknya dampak. Indikatornya mengikuti kelompok data dampak yang dipakai pedoman teknis Kerangka Sendai, yaitu manusia (indikator A dan B), kerusakan rumah dan fasilitas (indikator D), gangguan layanan dasar (indikator D), dan kerugian pertanian (indikator C).
+
+Tabel 3.2. Indikator ada atau tidaknya dampak
+
+| Dampak pada | Isian yang diperiksa | Ada dampak apabila |
+| --- | --- | --- |
+| Manusia | Korban meninggal, hilang, luka berat, luka ringan, pengungsi (termasuk yang dievakuasi sebelum dampak terjadi), dan terdampak | Paling sedikit satu orang |
+| Rumah | Rumah rusak berat, rusak sedang, rusak ringan, dan terendam | Paling sedikit satu unit |
+| Fasilitas | Fasilitas publik, jalan, dan jembatan yang rusak | Paling sedikit satu unit |
+| Layanan vital | Listrik, air bersih, telekomunikasi, bahan bakar, sarana transportasi umum, rumah sakit rujukan, serta jalan dan jembatan utama | Paling sedikit satu layanan terganggu |
+| Lahan | Luas terbakar, sawah atau kebun yang terendam atau puso, tambak yang rusak, dan ternak yang mati | Lebih dari nol |
+
+Sumber: Rancangan Juklak Bab II huruf C angka 5; UNDRR (2017).
+
+Orang terancam tidak dihitung sebagai dampak karena belum terkena akibat kejadian. Satu isian yang bernilai lebih dari nol sudah cukup untuk menyatakan adanya dampak, walaupun isian lain belum didata. Apabila belum ada isian yang bernilai lebih dari nol, tetapi masih ada isian yang belum didata, peristiwa tersebut berstatus menunggu data, karena isian yang belum didata tidak dibaca sebagai nol. Peristiwa ancaman baru dinyatakan tidak menimbulkan dampak apabila semua isian dampak berstatus nihil. Ada dampak belum berarti kejadian bencana, karena kejadian tersebut masih harus memenuhi paling sedikit satu kriteria dalam Tabel 3.4.
+
 ### 3.1.3 Klasifikasi jenis bencana
 
 Undang-Undang Nomor 24 Tahun 2007 membagi bencana menjadi bencana alam, bencana nonalam, dan bencana sosial. Rancangan Juklak mempertahankan 13 jenis bencana dan kodenya dari Juklak 7/2023, sembilan di antaranya merupakan bencana alam, lalu menambahkan subjenis yang saling lepas untuk setiap jenis (Rancangan Juklak Bab II huruf A). Di tingkat internasional, klasifikasi Integrated Research on Disaster Risk (IRDR, 2014) yang dipakai EM-DAT membagi ancaman alam menjadi enam kelompok besar, yaitu geofisika, hidrologi, meteorologi, klimatologi, biologi, dan luar angkasa.
 
-Tabel 3.2. Sembilan jenis bencana dalam kajian ini
+Tabel 3.3. Sembilan jenis bencana dalam kajian ini
 
 | Kode | Jenis bencana | Subjenis menurut Rancangan Juklak | Kelompok IRDR | Lembaga pemantau utama |
 | ---: | --- | --- | --- | --- |
@@ -66,7 +82,7 @@ Sumber: disusun dalam kajian ini dari literatur setiap jenis ancaman.
 
 ### 3.2.1 Tiga keputusan berurutan
 
-Penentuan kejadian bencana paling mudah dilakukan apabila dipecah menjadi tiga keputusan berurutan. Pada keputusan pertama, petugas memastikan apakah ada peristiwa ancaman yang termasuk salah satu jenis di antara sembilan jenis bencana. Pada keputusan kedua, petugas memeriksa apakah dampaknya memenuhi kriteria kejadian bencana dalam Rancangan Juklak. Pada keputusan ketiga, petugas menentukan apakah laporan tersebut merupakan bagian dari kejadian yang sedang berlangsung atau kejadian baru. Setelah ketiga keputusan diambil, kelas mayor atau minor ditentukan sebagaimana diuraikan dalam Subbab 3.3.
+Penentuan kejadian bencana paling mudah dilakukan apabila dipecah menjadi tiga keputusan berurutan. Pada keputusan pertama, petugas memastikan apakah ada peristiwa ancaman yang termasuk salah satu jenis di antara sembilan jenis bencana. Pada keputusan kedua, petugas memeriksa apakah peristiwa tersebut menimbulkan dampak menurut indikator dalam Tabel 3.2, lalu apakah dampaknya memenuhi kriteria kejadian bencana dalam Tabel 3.4. Pada keputusan ketiga, petugas menentukan apakah laporan tersebut merupakan bagian dari kejadian yang sedang berlangsung atau kejadian baru. Setelah ketiga keputusan diambil, kelas intensif atau ekstensif ditentukan sebagaimana diuraikan dalam Subbab 3.3.
 
 ![Gambar 3.3. Alur penentuan kejadian bencana dan kelasnya](gbr/pk-alur.png)
 
@@ -76,9 +92,9 @@ Urutan ini memisahkan pertanyaan tentang peristiwa alam dari pertanyaan tentang 
 
 ### 3.2.2 Kriteria kejadian bencana dan cara mengukurnya
 
-Rancangan Juklak Bab II huruf C mempertahankan enam angka kriteria Juklak 7/2023, karena angka tersebut sudah dipakai di seluruh daerah, dan ambang yang rendah memang dimaksudkan untuk menangkap risiko yang tersebar luas (Subbab 4.2). Perubahannya terletak pada bunyi dan cara mengukurnya. Tabel 3.3 membandingkan kedua petunjuk pelaksanaan tersebut dan menunjukkan dasar setiap perubahan.
+Rancangan Juklak Bab II huruf C mempertahankan enam angka kriteria Juklak 7/2023, karena angka tersebut sudah dipakai di seluruh daerah, dan ambang yang rendah memang dimaksudkan untuk menangkap risiko yang tersebar luas (Subbab 4.2). Perubahannya terletak pada bunyi dan cara mengukurnya. Tabel 3.4 membandingkan kedua petunjuk pelaksanaan tersebut dan menunjukkan dasar setiap perubahan.
 
-Tabel 3.3. Kriteria kejadian bencana menurut Rancangan Juklak dan cara mengukurnya
+Tabel 3.4. Kriteria kejadian bencana menurut Rancangan Juklak dan cara mengukurnya
 
 | Huruf | Kriteria Rancangan Juklak | Cara mengukur | Perubahan dari Juklak 7/2023 dan dasarnya |
 | --- | --- | --- | --- |
@@ -113,7 +129,7 @@ Sumber: disusun dalam kajian ini berdasarkan Rancangan Juklak Bab II huruf D dan
 
 Juklak 7/2023 Lampiran II mendefinisikan karhutla sebagai keadaan ketika hutan dan lahan dilanda api sehingga mengakibatkan kerusakan hutan dan lahan yang menimbulkan kerugian ekonomi dan/atau nilai lingkungan. Rancangan Juklak membedakan tiga subjenis, yaitu kebakaran hutan, kebakaran lahan bukan gambut, dan kebakaran lahan gambut. Ancaman karhutla dipantau melalui *hotspot*, yaitu piksel citra satelit yang suhunya jauh lebih tinggi daripada sekitarnya. Sensor VIIRS memiliki resolusi 375 meter, sehingga satu piksel mewakili sekitar 14 hektare (Schroeder dkk., 2014), sedangkan sensor MODIS memiliki resolusi 1 kilometer (Giglio dkk., 2016). *Hotspot* merupakan petunjuk adanya api, bukan bukti. *Hotspot* dapat berasal dari pembakaran terkendali, suar gas, atau permukaan yang panas, dan sebagian api tidak terdeteksi karena tertutup awan atau asap.
 
-Peristiwa ancaman karhutla dimulai ketika sekelompok *hotspot* dengan tingkat keyakinan sedang atau tinggi terdeteksi. Tingkat keyakinan (*confidence*) adalah nilai kepercayaan algoritma satelit bahwa titik tersebut berasal dari api. Peristiwa ancaman juga dimulai ketika ada laporan api dari lapangan. Peristiwa ini menjadi kejadian bencana apabila memenuhi kriteria kejadian bencana, terutama kriteria huruf d, yaitu luas terbakar terverifikasi paling sedikit 1 hektare. Rancangan Juklak mendefinisikan luas terbakar terverifikasi sebagai luas menurut pengukuran lapangan atau citra satelit resolusi tinggi, bukan menurut jumlah *hotspot*, karena satu piksel VIIRS saja sudah mewakili sekitar 14 hektare. Kriteria lain juga dapat terpenuhi oleh asap, misalnya apabila warga harus mengungsi. Area terbakar yang saling bersinggungan dihitung sebagai satu kejadian apabila selisih waktunya paling lama 5 hari (Rancangan Juklak Tabel 2), mengikuti aturan basis data global GlobFire (Artés dkk., 2019). Kejadian dinyatakan selesai apabila tim lapangan menyatakan api padam dan tidak ada *hotspot* baru di area tersebut selama 5 hari. Kabut asap dicatat sebagai kejadian ikutan dari karhutla sumbernya.
+Peristiwa ancaman karhutla dimulai ketika sekelompok *hotspot* dengan *confidence* sedang atau tinggi terdeteksi. *Confidence* adalah nilai kepercayaan algoritma satelit bahwa titik tersebut berasal dari api. Peristiwa ancaman juga dimulai ketika ada laporan api dari lapangan. Peristiwa ini menjadi kejadian bencana apabila memenuhi kriteria kejadian bencana, terutama kriteria huruf d, yaitu luas terbakar terverifikasi paling sedikit 1 hektare. Rancangan Juklak mendefinisikan luas terbakar terverifikasi sebagai luas menurut pengukuran lapangan atau citra satelit resolusi tinggi, bukan menurut jumlah *hotspot*, karena satu piksel VIIRS saja sudah mewakili sekitar 14 hektare. Kriteria lain juga dapat terpenuhi oleh asap, misalnya apabila warga harus mengungsi. Area terbakar yang saling bersinggungan dihitung sebagai satu kejadian apabila selisih waktunya paling lama 5 hari (Rancangan Juklak Tabel 2), mengikuti aturan basis data global GlobFire (Artés dkk., 2019). Kejadian dinyatakan selesai apabila tim lapangan menyatakan api padam dan tidak ada *hotspot* baru di area tersebut selama 5 hari. Kabut asap dicatat sebagai kejadian ikutan dari karhutla sumbernya.
 
 ### 3.2.5 Gempa bumi
 
@@ -167,7 +183,7 @@ Kekeringan merupakan bencana lambat, sehingga satuan kejadiannya adalah satu kab
 
 ### 3.2.13 Ringkasan penentuan kejadian
 
-Tabel 3.4. Ringkasan penentuan kejadian untuk setiap jenis bencana
+Tabel 3.5. Ringkasan penentuan kejadian untuk setiap jenis bencana
 
 | Jenis | Tanda peristiwa ancaman | Menjadi kejadian bencana apabila | Batas satu kejadian |
 | --- | --- | --- | --- |
@@ -185,15 +201,15 @@ Sumber: Subbab 3.2.4–3.2.12; Rancangan Juklak Tabel 2.
 
 ### 3.2.14 Identitas kejadian dan cara menghitung
 
-Kejadian yang sudah ditentukan perlu diberi identitas dan dihitung dengan cara yang sama di semua daerah. Rancangan Juklak Bab II huruf B dan huruf E mengatur hal tersebut sebagaimana dirangkum dalam Tabel 3.5.
+Kejadian yang sudah ditentukan perlu diberi identitas dan dihitung dengan cara yang sama di semua daerah. Rancangan Juklak Bab II huruf B dan huruf E mengatur hal tersebut sebagaimana dirangkum dalam Tabel 3.6.
 
-Tabel 3.5. Identitas kejadian dan cara menghitung menurut Rancangan Juklak
+Tabel 3.6. Identitas kejadian dan cara menghitung menurut Rancangan Juklak
 
 | Pokok | Ketentuan Rancangan Juklak | Dasar |
 | --- | --- | --- |
 | Kode Identitas Bencana (KIB) | Setiap catatan kabupaten/kota diberi KIB 16 digit sejak laporan awal, termasuk catatan yang belum diketahui memenuhi kriteria. Setiap kabupaten/kota terdampak memakai kode wilayahnya sendiri, dan indeks dimulai dari angka 1 | Juklak 7/2023 Bab II huruf B angka 2, diperjelas agar kabupaten/kota lain tidak memakai kode wilayah titik awal kejadian |
-| Nomor induk kejadian | Diterbitkan walidata bencana paling lambat pada akhir kaji cepat dengan susunan kode jenis, tahun, dan nomor urut, misalnya 107-2026-000015. Semua KIB dari satu kejadian ditautkan dengan nomor ini | Perban BNPB 1/2023 Pasal 8 huruf c; nomor kejadian EM-DAT yang mengikat catatan beberapa negara |
-| Nomor GLIDE | Dapat diajukan walidata bencana untuk kejadian bencana mayor | Praktik pertukaran data internasional (Asian Disaster Reduction Center) |
+| Nomor induk kejadian | Diterbitkan walidata bencana paling lambat pada akhir *rapid assessment* dengan susunan kode jenis, tahun, dan nomor urut, misalnya 107-2026-000015. Semua KIB dari satu kejadian ditautkan dengan nomor ini | Perban BNPB 1/2023 Pasal 8 huruf c; nomor kejadian EM-DAT yang mengikat catatan beberapa negara |
+| Nomor GLIDE | Dapat diajukan walidata bencana untuk kejadian bencana intensif | Praktik pertukaran data internasional (Asian Disaster Reduction Center) |
 | Jumlah kejadian | Tingkat nasional dihitung dari nomor induk kejadian, tingkat provinsi dari provinsi terdampak, dan tingkat kabupaten/kota dari KIB | Juklak 7/2023 Bab II huruf B angka 4 huruf b |
 | Satu orang, satu kategori | Urutan prioritas: meninggal, hilang, luka berat, luka ringan, mengungsi, lalu terdampak | Pedoman teknis Kerangka Sendai |
 | Angka harian | Meninggal, hilang, dan kerusakan memakai angka terakhir; luka, terdampak, dan pengungsi memakai angka terbanyak; angka antarlaporan tidak dijumlahkan | Petunjuk pengisian Juklak 7/2023, diperjelas |
@@ -203,76 +219,104 @@ Tabel 3.5. Identitas kejadian dan cara menghitung menurut Rancangan Juklak
 
 Sumber: Rancangan Juklak Bab II huruf B dan huruf E; dasar sebagaimana tercantum pada kolom terakhir.
 
-## 3.3 Kelas bencana mayor dan minor
+## 3.3 Kelas bencana intensif dan ekstensif
 
 ### 3.3.1 Praktik yang sudah ada
 
-Lembaga nasional dan internasional membedakan bencana besar dan bencana kecil dengan tiga cara, yaitu dengan angka dampak mutlak, dengan angka dampak yang dibandingkan terhadap jumlah penduduk atau ekonomi, dan dengan keputusan pemerintah. Tabel 3.6 merangkum praktik tersebut, dan Gambar 3.5 membandingkan batas korban jiwa yang dipakai setiap lembaga.
+Istilah bencana intensif dan bencana ekstensif berasal dari UNDRR. Risiko intensif adalah risiko kejadian yang berat dan jarang terjadi, sedangkan risiko ekstensif adalah risiko kejadian yang ringan sampai sedang dan sering terjadi (UNDRR, 2017). Laporan Penilaian Global (*Global Assessment Report*, GAR) tahun 2015 memberi batas angkanya, yaitu catatan kerugian tingkat lokal tergolong intensif apabila memuat 30 orang meninggal atau lebih, atau 600 rumah hancur atau lebih (UNISDR, 2015). Batas ini dikalibrasi pada basis data kerugian banyak negara, dan hasilnya 0,86 persen catatan yang tergolong intensif menanggung sekitar 87 persen kematian dan 84 persen rumah hancur. Lembaga dan negara lain memakai batas yang berbeda tujuan, sebagaimana dirangkum dalam Tabel 3.7.
 
-Tabel 3.6. Cara lembaga lain membedakan bencana besar dan bencana kecil
+Tabel 3.7. Batas bencana berat menurut lembaga dan negara lain
 
-| Lembaga | Batas | Dasar |
+| Lembaga atau negara | Batas | Jenis ukuran |
 | --- | --- | --- |
-| EM-DAT (CRED) | Dicatat apabila 10 orang meninggal atau hilang, 100 orang terdampak, atau ada seruan bantuan internasional atau deklarasi darurat | Angka mutlak dan keputusan pemerintah |
-| UNDRR, *Global Assessment Report* (GAR) 2015 | Bencana intensif apabila 30 orang meninggal atau 600 rumah hancur; di bawahnya disebut bencana ekstensif | Angka mutlak |
-| USGS PAGER (gempa) | Hijau untuk perkiraan 0 korban jiwa; kuning untuk 1–99; oranye untuk 100–999; merah untuk 1.000 atau lebih. Respons yang disarankan berturut-turut: tidak perlu, setempat atau regional, nasional, dan internasional | Angka mutlak berjenjang sepuluh kali lipat |
-| GDACS (banjir) | Oranye apabila lebih dari 100 orang meninggal atau 80.000 orang mengungsi; merah apabila lebih dari 1.000 orang meninggal atau 800.000 orang mengungsi | Angka mutlak |
-| FEMA, Amerika Serikat | Penetapan bencana mayor dipertimbangkan apabila kerusakan sarana publik melampaui indikator per jiwa di negara bagian, dengan batas paling rendah USD 1 juta | Dibandingkan dengan jumlah penduduk dan angka mutlak |
-| Jepang | Undang-Undang Bantuan Bencana berlaku apabila jumlah rumah hancur mencapai 30–150 rumah tangga, bergantung pada jumlah penduduk kota. Rumah setengah rusak dihitung setengah, dan rumah yang terendam sehingga tidak dapat dihuni dihitung sepertiga | Angka mutlak berjenjang menurut jumlah penduduk |
-| Filipina | Status bencana ditetapkan apabila paling sedikit dua kondisi berlangsung paling sedikit 4 hari, antara lain 20 persen penduduk terdampak atau 20 persen rumah hancur, jalan dan jembatan utama tidak dapat dilalui, atau jaringan listrik, air, dan komunikasi terganggu | Dibandingkan dengan jumlah penduduk |
-| Indonesia | Status keadaan darurat tingkat kabupaten/kota, provinsi, atau nasional; indikator UU 24/2007 Pasal 7 ayat (2) tanpa angka | Keputusan pemerintah |
+| UNDRR, GAR 2015 Lampiran 2 | Intensif apabila 30 orang meninggal atau 600 rumah hancur dalam satu catatan kerugian tingkat lokal; di bawahnya ekstensif | Dampak, berlaku per catatan lokal |
+| EM-DAT (CRED) | Dicatat apabila 10 orang meninggal atau hilang, 100 orang terdampak, ada deklarasi darurat, atau ada seruan bantuan internasional | Ambang masuk basis data |
+| USGS PAGER (gempa) | Kuning untuk perkiraan 1–99 korban jiwa, oranye 100–999, merah 1.000 atau lebih; respons yang disarankan berturut-turut regional, nasional, dan internasional | Perkiraan model |
+| GDACS (banjir) | Oranye apabila lebih dari 100 orang meninggal atau 80.000 orang mengungsi; merah apabila lebih dari 1.000 orang meninggal atau 800.000 orang mengungsi | Dampak, skala internasional |
+| Jepang, Peraturan Pelaksanaan Undang-Undang Bantuan Bencana Pasal 1 | Bantuan berlaku apabila rumah tangga yang rumahnya musnah mencapai 30–150 menurut jumlah penduduk kota; rumah setengah hancur dihitung setengah, dan rumah yang tergenang di atas lantai atau tertimbun tanah sehingga untuk sementara tidak dapat dihuni dihitung sepertiga | Dampak, pemicu bantuan |
+| Tiongkok, Peraturan Pencegahan Bencana Geologi 2003 Pasal 4 | Bencana geologi sangat besar apabila 30 orang meninggal atau lebih | Dampak, per kejadian |
+| Tiongkok, Peraturan Pencegahan Kebakaran Hutan 2008 Pasal 40 dan penggantinya tahun 2025 Pasal 45 | Kebakaran hutan sangat besar apabila 1.000 hektare hutan terbakar atau 30 orang meninggal; untuk padang rumput 8.000 hektare | Dampak, per kejadian |
+| Tiongkok, Rencana Darurat Bencana Geologi Nasional | Ancaman bencana geologi sangat besar apabila 1.000 orang atau lebih harus dipindahkan | Ancaman, per kejadian |
+| Tiongkok, standar tingkat kekeringan wilayah yang diturunkan dari GB/T 32135 | Kekeringan ekstrem di tingkat kabupaten apabila 15 persen penduduk atau lebih kesulitan air minum | Dampak, dibandingkan dengan penduduk |
+| India, Pedoman Penanggulangan Kekeringan 2016 | Kekeringan berat apabila kehilangan hasil tanaman lebih dari 50 persen | Dampak, dibandingkan dengan luas tanam |
+| Filipina, NDRRMC Memorandum Order Nomor 60 Tahun 2019 | Status bencana ditetapkan apabila 15 persen penduduk terdampak membutuhkan bantuan darurat, 30 persen mata pencaharian terdampak, atau infrastruktur vital rusak | Status, dibandingkan dengan penduduk |
+| Indonesia, UU 24/2007 Pasal 7 ayat (2) dan Putusan Mahkamah Konstitusi Nomor 261/PUU-XXIII/2025 | Status bencana nasional memenuhi paling sedikit tiga dari lima indikator dengan jumlah korban sebagai indikator utama, tanpa angka | Status, tanpa angka |
 
-Sumber: dokumentasi EM-DAT; UNISDR (2015); USGS PAGER; GDACS; 44 CFR 206.48; Perintah Kabinet Jepang Nomor 225 Tahun 1947; ADPC (2001); UU 24/2007; Perka BNPB 3/2016.
+Sumber: UNISDR (2015); dokumentasi EM-DAT; USGS PAGER; GDACS; Perintah Kabinet Jepang Nomor 225 Tahun 1947; Dewan Negara Tiongkok (2003, 2008, 2025); Liaoning DB21/T 3579-2022; Ministry of Agriculture and Farmers Welfare India (2016); NDRRMC (2019) melalui salinan dalam resolusi pemerintah daerah; UU 24/2007; Putusan MK 261/PUU-XXIII/2025.
 
 ![Gambar 3.5. Batas korban jiwa yang dipakai berbagai lembaga (skala logaritmik)](gbr/pk-tangga.png)
 
-Sumber: disusun dalam kajian ini dari Tabel 3.6.
+Sumber: disusun dalam kajian ini dari Tabel 3.7.
 
-Perbandingan ini memberikan tiga pelajaran. Pertama, hampir semua lembaga memakai korban jiwa, pengungsi, dan kerusakan rumah sebagai indikator utama, sama dengan indikator dalam UU 24/2007. Kedua, jenjang sepuluh kali lipat (10, 100, dan 1.000) dipakai secara luas karena dampak bencana sangat timpang, yaitu sedikit kejadian menanggung sebagian besar korban. Ketiga, negara yang membandingkan dampak dengan jumlah penduduk, seperti Jepang dan Filipina, melakukannya agar kabupaten berpenduduk sedikit tidak dirugikan.
+Perbandingan ini memberikan tiga pelajaran. Pertama, korban jiwa dan kerusakan rumah dipakai hampir semua lembaga, dan batas 30 orang meninggal muncul di GAR dan di dua peraturan Tiongkok. Kedua, batas korban jiwa dan rumah tidak menangkap bencana yang jarang menewaskan orang atau merobohkan rumah, seperti kekeringan dan karhutla, sehingga negara yang sering mengalaminya memakai ukuran lain, yaitu persentase penduduk yang kesulitan air, kehilangan hasil tanaman, dan luas hutan terbakar. Ketiga, banyak angka dalam Tabel 3.7 adalah batas respons atau status untuk tingkat provinsi dan negara, atau ukuran besarnya ancaman, sehingga tidak dapat dipindahkan begitu saja ke catatan kabupaten/kota. Kajian ini hanya memakai batas yang mengukur dampak dan dapat diterapkan pada catatan kabupaten/kota.
 
-### 3.3.2 Batas kelas mayor dalam Rancangan Juklak
+### 3.3.2 Batas kelas intensif dalam Rancangan Juklak
 
-Rancangan Juklak Bab II huruf F menggolongkan kejadian bencana ke dalam dua kelas. Kejadian tergolong **bencana mayor**, yaitu bencana yang besar menurut dampaknya, apabila mencapai paling sedikit satu dari enam batas dalam Tabel 3.7. Kejadian bencana lainnya tergolong **bencana minor**, yaitu bencana yang kecil menurut dampaknya. Kedua kelas ini merupakan klasifikasi data dan berbeda dengan tingkat bencana menurut UU 24/2007 Pasal 7.
+Rancangan Juklak Bab II huruf F menggolongkan kejadian bencana ke dalam dua kelas. Kejadian tergolong **bencana intensif**, yaitu bencana yang dampaknya berat dan jarang terjadi, apabila mencapai paling sedikit satu batas dalam Tabel 3.8. Batas tersebut terdiri atas indikator umum, yaitu indikator yang berlaku untuk semua jenis bencana, dan indikator khusus, yaitu indikator yang hanya berlaku untuk jenis bencana tertentu. Kejadian bencana lainnya tergolong **bencana ekstensif**, yaitu bencana yang dampaknya ringan sampai sedang dan sering terjadi. Kedua kelas ini merupakan klasifikasi data dan berbeda dengan tingkat bencana menurut UU 24/2007 Pasal 7.
 
-Tabel 3.7. Batas kelas mayor menurut Rancangan Juklak dan dasarnya
+Tabel 3.8. Batas kelas intensif menurut Rancangan Juklak dan dasarnya
 
-| No | Indikator | Batas mayor | Dasar |
-| ---: | --- | --- | --- |
-| 1 | Meninggal dan hilang, dijumlahkan | 10 orang atau lebih | Ambang masuk EM-DAT |
-| 2 | Rumah rusak berat | 100 unit atau lebih; 150 unit untuk kabupaten/kota berpenduduk 300.000 jiwa atau lebih. Rumah rusak sedang dihitung setengah | Batas Undang-Undang Bantuan Bencana Jepang untuk kota berpenduduk 100.000 jiwa atau lebih |
-| 3 | Pengungsi, jumlah terbanyak selama kejadian | 1.000 orang atau lebih | Jenjang sepuluh kali dari ambang terdampak EM-DAT (100 orang) |
-| 4 | Pengungsi dan terdampak dibandingkan dengan penduduk kabupaten/kota | 20 persen atau lebih | Kriteria Filipina; untuk kekeringan termasuk penduduk yang membutuhkan bantuan air bersih |
-| 5 | Gangguan layanan vital | Rumah sakit rujukan tidak berfungsi, jalan atau jembatan utama menuju ibu kota kabupaten/kota terputus, atau listrik, air bersih, atau telekomunikasi padam di paling sedikit separuh kecamatan, selama 4 hari atau lebih | Kriteria Filipina; indikator D Kerangka Sendai |
-| 6 | Luas karhutla yang terverifikasi | 500 hektare atau lebih | Di antara batas pemetaan kebakaran besar MTBS di Amerika Serikat (404 hektare) dan batas GDACS (5.000 hektare) |
+| No | Kelompok | Jenis bencana | Indikator | Batas intensif | Dasar |
+| ---: | --- | --- | --- | --- | --- |
+| 1 | Umum | Semua jenis | Korban meninggal | 30 orang atau lebih | UNISDR (2015), GAR 2015 Lampiran 2 |
+| 2 | Umum | Semua jenis | Rumah rusak berat terbobot (Tabel 3.9) | 600 unit atau lebih | Ambang dari GAR 2015; bobot dari Peraturan Pelaksanaan Undang-Undang Bantuan Bencana Jepang Pasal 1 ayat (2) |
+| 3 | Khusus | Tanah longsor | Pengungsi karena longsor, termasuk orang yang dievakuasi sebelum longsor dan orang yang direlokasi | 1.000 orang atau lebih | Kelas ancaman sangat besar dalam Rencana Darurat Bencana Geologi Nasional Tiongkok |
+| 4 | Khusus | Kekeringan | Penduduk yang kesulitan air minum, yaitu memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya selama lebih dari 15 hari, dibandingkan dengan penduduk kabupaten/kota | 15 persen atau lebih | Kekeringan ekstrem tingkat kabupaten dalam Liaoning DB21/T 3579-2022 yang memakai definisi GB/T 32135-2015 |
+| 5 | Khusus | Kekeringan | Luas tanaman pangan yang puso atau rusak berat dibandingkan dengan luas tanam | lebih dari 50 persen | Kekeringan berat dalam Pedoman Penanggulangan Kekeringan India 2016 butir 3.2 |
+| 6 | Khusus | Kebakaran hutan dan lahan | Luas terbakar terverifikasi pada hutan dan lahan selain savana, semak, dan padang rumput dalam satu kejadian | 1.000 hektare atau lebih | Kebakaran hutan sangat besar dalam peraturan Tiongkok 2008 Pasal 40 dan 2025 Pasal 45 |
+| 7 | Khusus | Kebakaran hutan dan lahan | Luas terbakar terverifikasi pada savana, semak, dan padang rumput dalam satu kejadian | 8.000 hektare atau lebih | Kebakaran padang rumput sangat besar dalam peraturan Tiongkok 2025 Pasal 45 |
 
-Sumber: Rancangan Juklak Tabel 3; dasar disusun dalam kajian ini dari sumber pada kolom Dasar. Batas ini belum diuji dengan data kejadian Indonesia, dan Rancangan Juklak Bab II huruf F angka 8 mewajibkan walidata bencana meninjaunya paling lambat satu tahun setelah petunjuk pelaksanaan berlaku.
+Sumber: Rancangan Juklak Tabel 3; dasar sebagaimana tercantum pada kolom terakhir. Batas ini belum diuji pada data kejadian Indonesia, dan Rancangan Juklak Bab II huruf F angka 9 mewajibkan walidata bencana meninjaunya paling lambat satu tahun setelah petunjuk pelaksanaan berlaku.
 
-![Gambar 3.6. Pohon keputusan kelas mayor dan minor](gbr/pk-kelas.png)
+Indikator nomor 2 memakai rumah rusak berat terbobot, yaitu jumlah rumah rusak berat ditambah setengah jumlah rumah rusak sedang dan sepertiga jumlah rumah yang untuk sementara tidak dapat dihuni. GAR hanya menghitung rumah hancur, sedangkan Jepang menghitung juga rumah setengah hancur dan rumah yang tidak dapat dihuni dengan bobot tertentu. Pembobotan ini membuat banjir, rob, dan tanah longsor yang menggenangi atau menimbun banyak rumah tetap tertangkap walaupun rumahnya tidak roboh. Tabel 3.9 memperlihatkan definisi setiap tingkat kerusakan dan bobotnya.
+
+Tabel 3.9. Tingkat kerusakan rumah dan bobotnya dalam rumah rusak berat terbobot
+
+| Tingkat | Definisi terukur | Padanan di Jepang | Bobot |
+| --- | --- | --- | ---: |
+| Rusak berat | Roboh, hanyut, terbakar habis, tertimbun material setinggi 1 meter atau lebih di atas lantai, atau tingkat kerusakan fisik lebih dari 70 persen | Musnah atau hancur total, yaitu kerugian 50 persen atau lebih | 1 |
+| Rusak sedang | Tingkat kerusakan fisik 30 sampai 70 persen dan bangunan masih berdiri | Setengah hancur (kerugian 20 sampai 50 persen) dan sebagian hancur total (50 sampai 70 persen) | 1/2 |
+| Tidak dapat dihuni sementara | Tidak rusak berat maupun rusak sedang, tetapi tergenang air paling sedikit 10 sentimeter di atas lantai atau tertutup lumpur dan material sehingga untuk sementara tidak dapat dihuni | Tergenang di atas lantai atau tertimbun tanah sehingga untuk sementara tidak dapat dihuni | 1/3 |
+| Rusak ringan | Tingkat kerusakan fisik kurang dari 30 persen | Kerusakan sebagian; bagian 20 sampai 30 persen di Jepang sudah tergolong setengah hancur | 0 |
+| Terendam | Tergenang tanpa kerusakan struktur dan masih dapat dihuni, termasuk air di bawah lantai | Tergenang di bawah lantai | 0 |
+
+Sumber: tingkat kerusakan fisik dari Perka BNPB 15/2011 Formulir 05; contoh bobot komponen bangunan dari Pergub NTB 32/2022 Lampiran IV; Kantor Kabinet Jepang, pedoman penilaian kerusakan rumah (2026); Peraturan Pelaksanaan Undang-Undang Bantuan Bencana Jepang Pasal 1 ayat (2).
+
+Batas persentase mengikuti Perka BNPB 15/2011, yang juga dipakai dalam pengkajian kebutuhan pascabencana, sehingga satu rumah tercatat dengan tingkat yang sama sejak laporan kejadian sampai pengkajian kebutuhan pascabencana. Perka tersebut tidak menjelaskan cara menghitung persentase kerusakan. Oleh karena itu, Rancangan Juklak Lampiran I memuat contoh bobot komponen bangunan yang dipakai Pemerintah Provinsi Nusa Tenggara Barat, yaitu persentase kerusakan setiap komponen dikalikan dengan bobotnya, lalu dijumlahkan. Skala yang dipakai provinsi tersebut, yaitu rusak berat 46 persen atau lebih, tidak diambil karena bukan ketentuan nasional. Permen PUPR 29/2018 yang disebut sebagai dasarnya hanya memuat kriteria kualitatif dan sudah dicabut oleh Permen PUPR 13/2023. Dibandingkan dengan Jepang, rumah rusak sedang dengan tingkat kerusakan 50 sampai 70 persen sudah tergolong hancur total, sehingga bobot setengah untuk rusak sedang cenderung memperkecil jumlah dan aman untuk batas intensif. Rumah yang hanya tergenang tidak diberi bobot, karena pada aturan Jepang bobot sepertiga hanya berlaku untuk rumah yang tidak dapat dihuni. Uji internal menunjukkan bahwa memberi bobot pada semua rumah terendam membuat banjir genangan yang luas tetapi ringan tergolong intensif.
+
+Indikator khusus dipilih dengan tiga syarat, yaitu mengukur dampak, bukan besarnya ancaman, dapat diterapkan pada catatan kabupaten/kota, dan tercantum dalam standar resmi suatu lembaga atau negara. Karena syarat tersebut, gempa bumi, tsunami, dan erupsi gunung api hanya memakai indikator umum. Angka khusus yang tersedia untuk ketiganya, seperti magnitudo, tinggi landaan tsunami 3 meter, atau level aktivitas gunung api, mengukur ancaman, sedangkan perkiraan korban USGS PAGER sudah tertangkap oleh indikator umum. Banjir, cuaca ekstrem, serta gelombang pasang dan abrasi juga hanya memakai indikator umum, tetapi tetap tertangkap melalui rumah rusak berat terbobot.
+
+Indikator khusus tanah longsor berasal dari kelas ancaman, sehingga dipakai sebagai jumlah pengungsi yang benar-benar terjadi, termasuk relokasi. Indikator kekeringan nomor 4 memerlukan isian baru tentang lamanya kesulitan air, dan indikator nomor 5 menerjemahkan kehilangan hasil tanaman menjadi luas tanaman yang puso atau rusak berat. Untuk karhutla, luas lahan gambut, kebun, dan hutan tanaman dihitung bersama hutan karena tidak termasuk savana, semak, atau padang rumput. Dampak asap belum memiliki batas dampak berstandar di negara mana pun yang diperiksa, sehingga jumlah hari dengan ISPU kategori berbahaya, yaitu ISPU 301 atau lebih atau PM2,5 rata-rata 24 jam di atas 250,4 µg/m³ (Permen LHK P.14/2020 Lampiran I dan II), dicatat sebagai keterangan. Batas jumlah harinya ditetapkan kemudian setelah diuji dengan data stasiun pemantau.
+
+![Gambar 3.6. Pohon keputusan kelas intensif dan ekstensif](gbr/pk-kelas.png)
 
 Sumber: disusun dalam kajian ini.
 
-Kelas ditetapkan untuk setiap catatan kabupaten/kota dan untuk kejadian di tingkat nasional. Kejadian di tingkat nasional tergolong mayor apabila jumlah dampak di semua kabupaten/kota yang terdampak mencapai batas nomor 1, 2, 3, atau 6, atau apabila salah satu catatan kabupaten/kotanya tergolong mayor. Batas nomor 4 dan 5 hanya diterapkan pada catatan kabupaten/kota, karena kedua batas tersebut dibandingkan dengan penduduk atau wilayah satu kabupaten/kota. Indikator penentu kelas selalu ditulis di samping kelas, misalnya "mayor (pengungsi 3.200 orang)". Kelas dihitung ulang setiap kali angka dampak diperbarui, dan kelas akhir ditetapkan oleh walidata bencana setelah data diverifikasi. Taksiran kerugian dalam rupiah tidak dipakai untuk menentukan kelas karena angka tersebut biasanya baru tersedia setelah pengkajian kebutuhan pascabencana dan nilainya bergantung pada harga setempat.
+Kelas ditetapkan untuk setiap catatan kabupaten/kota dan untuk kejadian di tingkat nasional. GAR menerapkan batasnya per catatan kerugian tingkat lokal, sedangkan aturan untuk tingkat nasional disusun dalam kajian ini. Kejadian di tingkat nasional tergolong intensif apabila jumlah dampak di semua kabupaten/kota yang terdampak mencapai batas nomor 1, 2, 3, 6, atau 7, atau apabila salah satu catatan kabupaten/kotanya tergolong intensif. Batas nomor 4 dan 5 hanya diterapkan pada catatan kabupaten/kota, karena keduanya dibandingkan dengan penduduk atau luas tanam satu kabupaten/kota. Indikator penentu kelas selalu ditulis di samping kelas, misalnya "intensif (rumah rusak berat terbobot 690 unit)". Kelas dihitung ulang setiap kali angka dampak diperbarui, dan kelas akhir ditetapkan oleh walidata bencana setelah data diverifikasi. Taksiran kerugian dalam rupiah tidak dipakai untuk menentukan kelas karena angka tersebut biasanya baru tersedia setelah pengkajian kebutuhan pascabencana.
+
+Dua pilihan dalam batas ini masih memerlukan keputusan pemilik kebijakan. Pertama, korban hilang tidak dijumlahkan dengan korban meninggal pada indikator nomor 1, sesuai dengan bunyi GAR yang hanya menghitung orang meninggal. Korban hilang yang kemudian ditemukan meninggal tetap masuk hitungan melalui aturan penghitungan dalam Rancangan Juklak Bab II huruf E. Kedua, indikator persentase penduduk yang mengungsi atau membutuhkan bantuan darurat menurut Filipina, yaitu 15 persen, belum dimasukkan karena naskah asli Memorandum Order Nomor 60 Tahun 2019 belum terbaca dan salinannya bertentangan tentang apakah satu kriteria sudah cukup.
 
 ### 3.3.3 Contoh penerapan
 
-Tabel 3.8 memperlihatkan cara batas tersebut diterapkan pada enam contoh rekaan. Contoh ini disusun untuk menjelaskan cara kerja aturan dan tidak menggambarkan kejadian nyata.
+Tabel 3.10 memperlihatkan cara batas tersebut diterapkan pada tujuh contoh rekaan. Contoh ini disusun untuk menjelaskan cara kerja aturan dan tidak menggambarkan kejadian nyata.
 
-Tabel 3.8. Contoh penerapan kelas pada kejadian rekaan
+Tabel 3.10. Contoh penerapan kelas pada kejadian rekaan
 
 | Contoh | Dampak | Kelas | Indikator penentu |
 | --- | --- | --- | --- |
-| Banjir di kabupaten berpenduduk 600.000 jiwa | 450 rumah terendam, 300 orang mengungsi selama 2 hari, tidak ada korban jiwa | Minor | Memenuhi kriteria huruf b, tetapi tidak mencapai batas mayor |
-| Puting beliung | 1 orang meninggal, 64 rumah rusak ringan, 3 rumah rusak berat | Minor | Memenuhi kriteria huruf a dan c |
-| Gempa bumi | 4 orang meninggal, 240 rumah rusak berat, 1.800 orang mengungsi | Mayor | Rumah rusak berat dan pengungsi |
-| Banjir bandang di kabupaten berpenduduk 90.000 jiwa | 7 orang meninggal, jembatan utama putus selama 6 hari | Mayor | Layanan vital terganggu 4 hari atau lebih |
-| Kekeringan | 25.000 jiwa membutuhkan bantuan air bersih di kabupaten berpenduduk 110.000 jiwa | Mayor | Terdampak 23 persen penduduk |
-| Banjir di tiga kabupaten dari hujan yang sama | Masing-masing 400 orang mengungsi | Minor di setiap kabupaten; mayor di tingkat nasional | Jumlah pengungsi 1.200 orang mencapai batas nomor 3 di tingkat nasional |
+| Banjir di kabupaten berpenduduk 600.000 jiwa | 4.500 rumah terendam dengan air di bawah lantai, 300 orang mengungsi selama 2 hari, tidak ada korban jiwa | Ekstensif | Memenuhi kriteria huruf b, tetapi rumah terendam tidak diberi bobot |
+| Puting beliung | 1 orang meninggal, 64 rumah rusak ringan, 3 rumah rusak berat | Ekstensif | Memenuhi kriteria huruf a dan c |
+| Gempa bumi | 4 orang meninggal, 240 rumah rusak berat, 900 rumah rusak sedang | Intensif | Rumah rusak berat terbobot 240 + 450 = 690 unit |
+| Banjir bandang | 12 orang meninggal, 350 rumah rusak berat, 200 rumah rusak sedang, 450 rumah tertutup lumpur dan tidak dapat dihuni | Intensif | Rumah rusak berat terbobot 350 + 100 + 150 = 600 unit |
+| Kekeringan di kabupaten berpenduduk 110.000 jiwa | 25.000 jiwa memakai air kurang dari 20 liter per orang per hari selama 40 hari | Intensif | Kesulitan air minum 23 persen penduduk |
+| Karhutla | 1.400 hektare lahan gambut berhutan terbakar, tanpa korban jiwa, ISPU berbahaya selama 12 hari | Intensif | Luas terbakar 1.400 hektare; hari ISPU berbahaya dicatat sebagai keterangan |
+| Banjir di tiga kabupaten dari hujan yang sama | Masing-masing 15 orang meninggal | Ekstensif di setiap kabupaten; intensif di tingkat nasional | Jumlah korban meninggal 45 orang mencapai batas nomor 1 di tingkat nasional |
 
 Sumber: contoh rekaan yang disusun dalam kajian ini.
 
 ### 3.3.4 Hubungan kelas dengan status keadaan darurat
 
-Kelas mayor tidak sama dengan status keadaan darurat. Rancangan Juklak Bab II huruf F angka 6 dan 7 menegaskan bahwa kelas merupakan klasifikasi data, tidak menggantikan penetapan status keadaan darurat maupun penetapan tingkat bencana, dan bahwa status dicatat sebagai keterangan yang tidak menentukan kelas. Status keadaan darurat adalah keputusan pemerintah yang membuka kemudahan akses terhadap sumber daya, seperti pengerahan personel, peralatan, dan logistik (UU 24/2007 Pasal 50). Tingkatnya ditetapkan menurut cakupan wilayah dan kemampuan daerah (Perka BNPB 3/2016). Sebaliknya, kelas mayor adalah klasifikasi data berdasarkan besarnya dampak.
+Kelas intensif tidak sama dengan status keadaan darurat. Rancangan Juklak Bab II huruf F angka 6 dan 7 menegaskan bahwa kelas merupakan klasifikasi data, tidak menggantikan penetapan status keadaan darurat maupun penetapan tingkat bencana, dan bahwa status dicatat sebagai keterangan yang tidak menentukan kelas. Status keadaan darurat adalah keputusan pemerintah yang membuka kemudahan akses terhadap sumber daya, seperti pengerahan personel, peralatan, dan logistik (UU 24/2007 Pasal 50). Tingkatnya ditetapkan menurut cakupan wilayah dan kemampuan daerah (Perka BNPB 3/2016). Sebaliknya, kelas intensif adalah klasifikasi data berdasarkan besarnya dampak.
 
 Oleh karena itu, status keadaan darurat dicatat di samping kelas sebagai keterangan. Ketidakcocokan antara kelas dan status tidak dikoreksi, tetapi dijadikan bahan evaluasi sebagaimana diperlihatkan dalam Gambar 3.7.
 
@@ -296,13 +340,13 @@ Tujuh prinsip berikut disarikan dari Perban BNPB 1/2023, pedoman teknis Kerangka
 
 ### 3.4.2 Data umum
 
-Data umum terdiri atas sepuluh kelompok yang berlaku untuk semua jenis bencana dalam Rancangan Juklak, termasuk sembilan jenis bencana alam yang dibahas dalam kajian ini. Isian utama kelompok 1–3 dan angka dampak sementara wajib diisi pada laporan awal. Isian lainnya diisi secara bertahap pada kaji cepat, pemutakhiran harian, dan penutupan. Lampiran B menandai tahap pengisian setiap isian. Gambar 3.8 memperlihatkan susunan formulir, dan rincian setiap isian tercantum dalam Lampiran B.
+Data umum terdiri atas sepuluh kelompok yang berlaku untuk semua jenis bencana dalam Rancangan Juklak, termasuk sembilan jenis bencana alam yang dibahas dalam kajian ini. Isian utama kelompok 1–3 dan angka dampak sementara wajib diisi pada laporan awal. Isian lainnya diisi secara bertahap pada *rapid assessment*, pemutakhiran harian, dan penutupan. Lampiran B menandai tahap pengisian setiap isian. Gambar 3.8 memperlihatkan susunan formulir, dan rincian setiap isian tercantum dalam Lampiran B.
 
 ![Gambar 3.8. Susunan formulir: sepuluh kelompok data umum dan sembilan lembar data khusus](gbr/pk-formulir.png)
 
 Sumber: disusun dalam kajian ini.
 
-Tabel 3.9. Sepuluh kelompok data umum
+Tabel 3.11. Sepuluh kelompok data umum
 
 | No | Kelompok | Isi pokok | Dasar |
 | ---: | --- | --- | --- |
@@ -311,7 +355,7 @@ Tabel 3.9. Sepuluh kelompok data umum
 | 3 | Lokasi | Provinsi sampai desa dengan kode wilayah Kementerian Dalam Negeri, koordinat, ketelitian lokasi | Rancangan Juklak Bab II huruf B angka 2; Lampiran I |
 | 4 | Korban | Meninggal, hilang, luka berat, luka ringan, terdampak, terancam; dipilah menurut jenis kelamin, umur, dan disabilitas | Rancangan Juklak Bab I huruf D; indikator A dan B Kerangka Sendai |
 | 5 | Pengungsian | Jumlah pengungsi, titik pengungsian, jenis tempat, kelompok rentan | Juklak 9/2023 |
-| 6 | Kerusakan | Rumah (rusak berat, rusak sedang, rusak ringan, terendam), fasilitas pendidikan, kesehatan, ibadah, kantor, pasar, jalan, dan jembatan | Rancangan Juklak Bab I huruf D; Perka BNPB 8/2011; indikator D Kerangka Sendai |
+| 6 | Kerusakan | Rumah (rusak berat, rusak sedang, rusak ringan, tidak dapat dihuni sementara, terendam), fasilitas pendidikan, kesehatan, ibadah, kantor, pasar, jalan, dan jembatan | Rancangan Juklak Bab I huruf D; Perka BNPB 8/2011; indikator D Kerangka Sendai |
 | 7 | Layanan dasar | Keadaan listrik, air bersih, telekomunikasi, akses jalan, bahan bakar, dan fasilitas kesehatan | PP 21/2008 Pasal 22 ayat (3) huruf d |
 | 8 | Lahan dan ekonomi | Sawah terendam dan puso, kebun, tambak, ternak, usaha kecil, serta taksiran kerusakan dan kerugian yang dicatat terpisah | Rancangan Juklak Bab II huruf G angka 6; Perka BNPB 15/2011 |
 | 9 | Kebutuhan dan penanganan | Kebutuhan mendesak, status keadaan darurat dan nomor surat keputusannya, pos komando, sumber daya yang dikerahkan, bantuan | UU 24/2007 Pasal 49; Juklak 3/2022 |
@@ -323,13 +367,13 @@ Sumber: disusun dalam kajian ini dari dasar yang disebut pada kolom terakhir.
 
 Data khusus memenuhi dua kebutuhan yang tidak dipenuhi oleh data umum. Pertama, data ini menjelaskan besarnya ancaman di lokasi dampak, misalnya intensitas guncangan atau kedalaman genangan, sehingga hubungan antara ancaman dan kerusakan dapat dipelajari untuk kajian risiko dan peta InaRISK, yaitu portal peta risiko bencana BNPB. Kedua, data ini menunjukkan ancaman lanjutan yang menentukan keselamatan petugas dan warga, misalnya lereng yang masih bergerak atau level aktivitas gunung api.
 
-Tabel 3.10. Pokok data khusus untuk setiap jenis bencana
+Tabel 3.12. Pokok data khusus untuk setiap jenis bencana
 
 | Jenis | Data khusus pokok |
 | --- | --- |
-| Karhutla | Jumlah dan tingkat keyakinan *hotspot*, titik api terverifikasi, luas terbakar beserta sumbernya, jenis tanah (gambut atau mineral), tutupan lahan, status kawasan, kualitas udara (ISPU dan PM2,5), jarak pandang, status pemadaman |
+| Karhutla | Jumlah dan *confidence* *hotspot*, titik api terverifikasi, luas terbakar beserta sumbernya, jenis tanah (gambut atau mineral), tutupan lahan, status kawasan, kualitas udara (ISPU dan PM2,5), jarak pandang, status pemadaman |
 | Gempa bumi | Waktu asal, pusat gempa, kedalaman, magnitudo dan sumbernya, intensitas MMI per desa, gempa susulan, kerusakan menurut jenis struktur bangunan, likuefaksi, retakan tanah |
-| Tsunami | Peristiwa pemicu, tingkat dan waktu peringatan, waktu tiba gelombang, tinggi rayapan (*run-up*), jarak genangan dari pantai, bekas tinggi air pada bangunan, perahu rusak |
+| Tsunami | Peristiwa pemicu, tingkat dan waktu peringatan, waktu tiba gelombang, tinggi *run-up*, jarak genangan dari pantai, bekas tinggi air pada bangunan, perahu rusak |
 | Banjir | Jenis banjir (termasuk banjir rob), sungai dan daerah aliran sungai, hujan pemicu atau tinggi pasang air laut, tinggi muka air dan status pos duga air, kedalaman genangan per desa, lama genangan, luas genangan, tanggul jebol |
 | Tanah longsor | Jenis gerakan dan material, koordinat bagian atas dan bawah longsor, panjang, lebar, kedalaman, perkiraan volume, kemiringan lereng, pemicu, keadaan lereng, bendungan alami |
 | Cuaca ekstrem | Jenis cuaca, peringatan BMKG yang berlaku, waktu mulai dan selesai, panjang dan lebar lintasan, kecepatan angin terukur, curah hujan, pohon dan tiang yang tumbang |
@@ -341,7 +385,7 @@ Sumber: disusun dalam kajian ini dari literatur pada Subbab 3.2. Lembar isian le
 
 ### 3.4.4 Tahapan pengumpulan data
 
-Rancangan Juklak Bab III huruf B menetapkan lima tahap pengumpulan data yang sejalan dengan tahapan asesmen IASC (2015). Laporan awal disampaikan paling lambat 24 jam setelah kejadian diketahui. Kaji cepat dimulai paling lambat 24 jam setelah informasi diterima, sesuai dengan Juklak BNPB 3/2022, dan hasil awalnya disampaikan paling lambat 72 jam setelah kejadian diketahui, sama dengan jendela gambaran awal IASC. Data dinamis diperbarui paling sedikit satu kali sehari selama kejadian berlangsung.
+Rancangan Juklak Bab III huruf B menetapkan lima tahap pengumpulan data yang sejalan dengan tahapan asesmen IASC (2015). Laporan awal disampaikan paling lambat 24 jam setelah kejadian diketahui. *Rapid assessment* dimulai paling lambat 24 jam setelah informasi diterima, sesuai dengan Juklak BNPB 3/2022, dan hasil awalnya disampaikan paling lambat 72 jam setelah kejadian diketahui, sama dengan jendela gambaran awal IASC. Data dinamis diperbarui paling sedikit satu kali sehari selama kejadian berlangsung.
 
 Setelah kejadian selesai, data dinamis berubah menjadi data statis, yaitu data yang sudah diverifikasi dan tidak berubah lagi kecuali melalui koreksi yang dicatat sebagai versi baru. Rancangan Juklak Bab III huruf D menetapkan verifikasi setiap bulan, pembekuan setiap triwulan, dan rilis setiap tahun dengan nomor versi dan tanggal rilis. Koreksi tidak menimpa versi sebelumnya, dan perubahan angka antarversi dicatat beserta alasannya. Pedoman teknis Kerangka Sendai juga meminta metadata yang konsisten apabila metodologi berubah, sehingga Rancangan Juklak Bab IV mencatat tahun mulai berlakunya sebagai titik perubahan metode.
 

@@ -13,7 +13,7 @@ const Kontak = {
     return K.filter(b => b.lat && b.lon).map(b => ({...b, km: jarak(b)})).sort((a, b) => a.km - b.km).slice(0, n); },
 };
 const Kejadian = {
-  st: {urut: "mulai", turun: true, hal: 0}, PER: 10, K: null, D: null, aktif: null, _ia: false, _buka: false, _p: null,
+  st: {urut: "mulai", turun: true, hal: 0, rentang: "30", tgl: null}, PER: 10, K: null, D: null, aktif: null, _ia: false, _buka: false, _p: null,
   KOL: [["kode", "Kode"], ["nama", "Kejadian"], ["sumber", "Sumber"], ["tingkat", "Tingkat"], ["kab", "Kabupaten/kota", 1], ["mulai", "Mulai"], ["aktif", "Status"]],
   cap: k => String(k.jenis || "").startsWith("cap:"),
   SEV: ["Minor", "Moderate", "Severe", "Extreme"],
@@ -32,17 +32,19 @@ const Kejadian = {
   sel: (k, c) => c === "kode" ? `<b translate="no">${esc(k.kode)}</b>` : c === "nama" ? `<span translate="no">${esc(k.nama)}</span>` : c === "sumber" ? esc(Kejadian.sumber(k))
     : c === "tingkat" ? Kejadian.pilTingkat(k) : c === "kab" ? fmt(k.n_kab) : c === "mulai" ? Kejadian.tgl(k.mulai) : Kejadian.status(k),
   tabel() {
-    const st = this.st, s = st.turun ? -1 : 1, R = [...this.K].sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
+    const st = this.st, s = st.turun ? -1 : 1, R = RentangKj.saring(this.K, st, k => k.mulai, k => k.aktif ? null : (k.terakhir || k.selesai || k.mulai)).sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / this.PER) - 1));
-    return `<div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num]) => `<th class="${num ? "n" : ""}" aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
-      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}
-      <p class="fnd">Sumber: BMKG (peringatan dini), Deteksi Centurisk97 dari prakiraan model (kecamatan Siaga dan Awas)${this.K.some(k => !this.cap(k)) ? ". " + AMBANG_PIL() : ""}. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`; },
+    const sb = `Sumber: BMKG (peringatan dini), Deteksi Centurisk97 dari prakiraan model (kecamatan Siaga dan Awas)${this.K.some(k => !this.cap(k)) ? ". " + AMBANG_PIL() : ""}. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.`;
+    if (!R.length) return RentangKj.kartu(st, {nama: "Kejadian cuaca", sumber: sb, pil: null, isi: `<div class="kosong">Tidak ada kejadian cuaca ${RentangKj.ket(st)}.</div>`});
+    return RentangKj.kartu(st, {nama: "Kejadian cuaca", sumber: sb, pil: null, isi: `<div class="tw ex-tabel"><table><thead><tr>${this.KOL.map(([c, n, num]) => `<th class="${num ? "n" : ""}" aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+      <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}`}); },
   gambarTabel() { const el = $("#kejadian"); el.innerHTML = this.tabel(); pengurutKepala(this.st, el.querySelector("thead"), () => nanti(() => this.gambarTabel())); },
   async render() {
     const el = $("#kejadian"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
       /* paginasi hanya untuk klik; baris untuk klik, Enter, atau Spasi */
-      const buka = e => { const h = e.type === "click" && e.target.closest("[data-h]");
+      const buka = e => { if (RentangKj.klik(e, this.st, {K: () => this.K, mulai: k => k.mulai, akhir: k => k.aktif ? null : (k.terakhir || k.selesai || k.mulai), gambar: () => this.gambarTabel(), ket: "Angka = jumlah kejadian cuaca yang berlangsung hari itu."})) return;
+        const h = e.type === "click" && e.target.closest("[data-h]");
         if (h) { if (h.disabled) return; const a = +h.dataset.h; this.st.hal = a; el.querySelectorAll(".pgn-b").forEach(b => { b.classList.toggle("on", /^\d+$/.test(b.textContent) && b === h); if (b !== h) b.removeAttribute("aria-current"); }); h.setAttribute("aria-current", "page");
           return nanti(() => { this.gambarTabel(); el.querySelector(`.pgn-b[data-h="${a}"]`)?.focus(); }); }
         const r = e.target.closest("tr[data-kode]"); if (r && (e.type === "click" || e.key === "Enter" || e.key === " ")) { e.preventDefault(); this.buka(r.dataset.kode); } };
@@ -70,12 +72,14 @@ const Kejadian = {
     const cap = this.cap(k), kab = (k.kab || []).map(x => x.split("|")[1] || x), lain = Math.max(0, k.n_kab - kab.length);
     const kot3 = kvs(kot("Tingkat", this.pilTingkat(k), cap ? "BMKG" : "deteksi Centurisk97"), kot("Wilayah", fmt(k.n_kab), "kabupaten/kota"),
       k.jiwa && kot("Penduduk", rb(k.jiwa) + " jiwa", cap ? "di kabupaten/kota terkait" : "di kecamatan yang terdeteksi"));
+    const L = LI(), chip = chipLengkap(kab, 6, "kabupaten/kota", lain);   /* enam chip pertama, sisanya dilipat lengkap; yang tidak tercantum ditulis "dan N lainnya" */
+    const dibuat = esc(jamWIB(this.D?.dibuat || Date.now()));
     const isi = `${kot3}
-      <p class="fnd" translate="no"><b>${esc(kab.join(", "))}${lain ? ` dan ${fmt(lain)} lainnya` : ""}</b></p>
-      <p class="fnd">Mulai ${this.tgl(k.mulai)}${k.aktif ? "" : `, terakhir terlihat ${this.tgl(k.terakhir)}`}</p>
-      <div id="kejKontak"></div>
-      <p class="fnd">${cap ? `Sumber: BMKG, peringatan dini diteruskan apa adanya. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.`
-        : `Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.`}</p>`;
+      ${kab.length ? L.seksiLaci({judul: "Kabupaten/kota terdampak", ikon: "kab", isi: chip}) : ""}
+      ${L.seksiLaci({judul: "Waktu", ikon: "waktu", isi: `<div class="lc-lbs">${L.barisLaci("bel", "Mulai", this.tgl(k.mulai))}${k.aktif ? "" : L.barisLaci("mata", "Terakhir terlihat", this.tgl(k.terakhir))}</div>`,
+        sumber: cap ? `Sumber: BMKG, peringatan dini diteruskan apa adanya. Diperbarui ${dibuat}.`
+          : `Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${dibuat}.`})}
+      <section class="lc-sek" id="kejKontak"></section>`;
     this._buka = true; Laci.buka("Peringatan dini cuaca", `<span translate="no">${esc(k.nama)}</span>`, `${this.status(k)} <span translate="no">${esc(k.kode)}</span>`, isi); this._buka = false;
     const el = $("#laci"); el.dataset.kej = k.kode;
     el.querySelector(".hd-aksi")?.insertAdjacentHTML("afterbegin", `<button class="bagikan ik-btn" aria-label="Bagikan" title="Bagikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>`);
@@ -83,7 +87,7 @@ const Kejadian = {
     /* kantor BPBD terdekat (bpbd.json BNPB). DISEMBUNYIKAN (A24) lewat cuaca.css [data-j="Kontak BPBD"]: data kantor lama, nomor perlu dicek */
     if (k.pusat) Kontak.dekat(k.pusat[0], k.pusat[1]).then(K => { const s = $("#kejKontak"); if (!K.length || !s?.isConnected || el.dataset.kej !== k.kode) return;
       s.innerHTML = `<h4 class="lc-h" data-j="Kontak BPBD">Kontak BPBD terdekat</h4><table class="tb2" data-j="Kontak BPBD"><tbody>${K.map(b => `<tr><td>${esc(b.nama)}</td><td class="n" translate="no">${fmt(Math.round(b.km))} km${b.pusdalops ? ", " + esc(b.pusdalops) : ""}</td></tr>`).join("")}</tbody></table>
-        <p class="fnd" data-j="Kontak BPBD">Sumber: BNPB (data kantor, perlu dicek ulang)</p>`; }).catch(() => {}); },
+        <p class="fnd lc-src" data-j="Kontak BPBD">Sumber: BNPB (data kantor, perlu dicek ulang)</p>`; }).catch(() => {}); },
   /* tombol bagikan (ikon, A19): tautan /cuaca/k/C0001 lewat lembar bagikan peramban, atau disalin */
   async bagikan(k) { const u = location.origin + "/cuaca/k/" + k.kode;
     try { if (navigator.share) return await navigator.share({title: k.nama, url: u}); await navigator.clipboard.writeText(u); toast("Tautan disalin"); } catch (e) { if (e?.name !== "AbortError") toast("Tautan belum bisa dibagikan"); } },

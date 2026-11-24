@@ -12,6 +12,16 @@
       "autoPort": false
     },
     {
+      "name": "statis-8814",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "-e",
+        "const h=require('http'),f=require('fs'),p=require('path'),R=p.resolve('public'),T={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png'};h.createServer((q,s)=>{let u=decodeURIComponent(q.url.split('?')[0]);if(u.endsWith('/'))u+='index.html';let x=p.join(R,u);if(!x.startsWith(R))return s.writeHead(403).end();if(!p.extname(x)&&f.existsSync(x+'.html'))x+='.html';f.readFile(x,(e,b)=>{if(e)return s.writeHead(404).end('404');s.writeHead(200,{'content-type':T[p.extname(x)]||'application/octet-stream'}).end(b)})}).listen(8814)"
+      ],
+      "port": 8814,
+      "autoPort": false
+    },
+    {
       "name": "lokal",
       "runtimeExecutable": "node",
       "runtimeArgs": [

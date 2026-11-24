@@ -19,52 +19,22 @@
 /* lingkaran contoh kekuatan: slot tetap supaya tulisan lurus */
 .leg .sw.dot.bulat{margin:0 6px 0 0;flex:none}
 .leg .bulat-slot{display:inline-flex;width:28px;justify-content:center;margin-right:2px}
-/* laci: bagian lanjutan (susulan, paparan, gelombang) */
-.lc-lanjut{display:grid;gap:10px}
-.lc-sek{display:grid;gap:6px}
-/* laci gempa: tiap bagian lanjutan satu kartu; label kiri, nilai rata kanan, tanpa belang baris (16 Nov 2026) */
-:is(#laci,#inaDetail) .lc-sek:has(> .lc-h){border:1px solid var(--line);border-radius:10px;padding:10px 12px;gap:8px;background:var(--card)}
-#laci .lc-sek:has(> [data-j="Kontak BPBD"]){display:none}
-:is(#laci,#inaDetail) table.tb2 tbody tr:nth-child(even){background:none}
-:is(#laci,#inaDetail) table.tb2 td{padding:7px 0;vertical-align:middle}
-:is(#laci,#inaDetail) table.tb2 td:first-child{color:var(--ink2)}
-:is(#laci,#inaDetail) table.tb2 td.n{text-align:center;padding-left:12px;color:var(--ink)}
-#laci .lc-v{font-family:var(--display);font-weight:700;font-size:0.875rem}
-#laci .lc-sub{display:block;font-size:var(--fs-1);font-weight:500;color:var(--ink2)}
-#laci .lc-skor{display:inline-flex;align-items:center;gap:8px}
-:is(#laci,#inaDetail) .lc-sek .fnd{margin:0;font-size:0.71875rem;line-height:1.45;color:var(--ink2)}
-#laci .lc-src{font-size:0.65625rem!important}
-:is(#laci,#inaDetail) .lc-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.lc-kls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;font-size:var(--fs-1);color:var(--ink2)}
-.lc-kls span{display:flex;align-items:center;justify-content:center;gap:5px;padding:4px 2px;border-radius:7px;border:1px solid transparent;background:color-mix(in oklch,var(--w) 10%,transparent);white-space:nowrap;font-variant-numeric:tabular-nums}
-.lc-kls span.on{border-color:var(--w);color:var(--ink);font-weight:700;background:color-mix(in oklch,var(--w) 18%,transparent)}
-.lc-kls i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--w)}
 /* daftar gempa satu provinsi: ringkasan, lokasi dua baris dengan rincian, riwayat provinsi */
 .gk-ring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}
-.gk-per{margin:0 2px 8px;font-size:var(--fs-2);font-weight:700;line-height:1.35;color:var(--ink)}
+.gk-per{margin:0 2px 8px;font-size:0.75rem;font-weight:700;line-height:1.35;color:var(--ink)}
 .gk-k{display:grid;gap:4px;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px 9px;background:var(--card)}
 .gk-kh{display:flex;align-items:center;gap:5px;min-width:0}
 .gk-ik{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:5px;color:var(--w,var(--brand2));background:color-mix(in oklch,var(--w,var(--brand2)) 14%,transparent)}
 .gk-ik svg{width:12px;height:12px}
-.gk-l{min-width:0;font-size:0.65625rem;font-weight:700;letter-spacing:.03em;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gk-k b{font-family:var(--display);font-size:var(--fs-6);line-height:1.1;color:var(--ink);white-space:nowrap}
+.gk-l{min-width:0;font-size:0.6562rem;font-weight:700;letter-spacing:.03em;color:var(--ink2);white-space:normal;line-height:1.2}
+.gk-k b{font-family:var(--display);font-size:1.125rem;line-height:1.1;color:var(--ink);white-space:nowrap}
 .tb.tb-g{align-items:start;padding-top:8px;padding-bottom:8px}
 .tb .kom.gk{flex-direction:column;align-items:flex-start;gap:2px}
 .gk-t{white-space:normal;line-height:1.3;font-weight:600}
-.gk-s{font-size:var(--fs-1);line-height:1.3;color:var(--ink2)}
-.gk-rw{margin-top:12px;padding:10px 4px 0;border-top:1px solid var(--line);display:grid;gap:4px;font-size:var(--fs-2);color:var(--ink2)}
+.gk-s{font-size:0.6875rem;line-height:1.3;color:var(--ink2)}
 .gk-rw p{margin:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .gk-rw p:empty{display:none}
 .gk-rw b{color:var(--ink)}
-.gk-rw-h{font-size:var(--fs-1);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-.lc-mmi{display:inline-block;padding:2px 9px;border-radius:999px;font-size:0.71875rem;font-weight:700;background:var(--w)}
-.lc-sim{align-self:start;justify-self:start}
-/* A24: kontak BPBD dibuat tetapi disembunyikan, sama seperti "Respons terdekat" karhutla (data kantor lama, nomor perlu dicek) */
-#laci [data-j="Kontak BPBD"]{display:none}
-.lc-citra{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.lc-citra figure{margin:0;display:grid;gap:4px}
-.lc-citra img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--bg2,#0001)}
-.lc-citra figcaption{font-size:0.71875rem}
 /* panel kiri setara karhutla (public/index.html): mode atas, pil + unduh, label hari, Grand total, kartu tahunan dan tren; aturan disalin, warna lewat token */
 #panelMode button{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}#panelMode button svg{width:14px;height:14px;flex:none}
 .tb.tb-total{position:sticky;top:30px;z-index:2;background:color-mix(in srgb,var(--info) 18%,var(--card));font-weight:800;color:var(--ink);cursor:default;border-bottom:1px solid var(--line)}
@@ -73,7 +43,7 @@
 .tm{padding:12px 12px 8px}.tm svg{display:block;margin:4px 0 2px;color:var(--ink)}
 .tm-b{cursor:pointer}.tm-b:hover rect + rect{filter:brightness(.88)}
 .tr-sw{display:flex;align-items:center;gap:8px;padding:4px 2px 6px;font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--ink2)}
-.tr-sw .seg{box-shadow:none;padding:2px;width:100%}.tr-sw .seg button{padding:3px 6px;font-size:var(--fs-1);text-transform:none;letter-spacing:0;display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:1 1 auto;white-space:nowrap;min-width:0}
+.tr-sw .seg{box-shadow:none;padding:2px;width:100%}.tr-sw .seg button{padding:3px 6px;font-size:var(--fs-1);text-transform:none;letter-spacing:0;display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:1 1 0;white-space:nowrap;min-width:0}
 .tr-sw .seg button svg{width:13px;height:13px;flex:none}.tr-sw .seg.penuh{width:auto;flex:1;min-width:0}
 .tr-hari{padding:2px 2px 5px;font-size:.625rem;font-weight:800;letter-spacing:.06em;color:var(--ink2)}.tr-hari b{color:var(--ink)}
 .tr-baris{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -89,56 +59,90 @@
 /* tooltip sumber di legenda: atribusi sebagai paragraf terbaca, bukan angka besar (16 Nov 2026) */
 #tip .tp2-atr{margin-top:6px;max-width:300px;font-size:var(--fs-2);line-height:1.5;color:var(--ink2);overflow-wrap:anywhere}
 #tip .tp2-atr b{font-weight:600;color:var(--ink)}
-/* laci gempa: kotak angka berkepala terang berikon (16 Nov 2026) */
+
+/* angka di tabel gempa rata kanan dan tabular (pil di sel tetap di tengah lewat aturan inti tbody td:has(> .pill)) */
+main :is(.tw,.ex-tabel) td.n:not(:has(.pill)){text-align:right;font-variant-numeric:tabular-nums}
+/* judul kartu berikon (kepala_kartu.js): ikon sebaris setinggi huruf, judul seksi dan pil status sebaris */
+:is(html,#_) .ex[data-kp]>.ex-hd .ex-jd>h3{display:flex;align-items:center;flex-wrap:wrap;gap:4px 0}
+:is(html,#_) .ex[data-kp]>.ex-hd .ex-jd>h3 .pl{margin-left:8px}
+/* kartu Gempa beruntun (#beruntun, wadah sendiri sesudah #insight) tidak menempel ke kartu terakhir Insight */
+#beruntun>.ex{margin-top:16px}
+/* segmen di kontrol kepala kartu gempa (Insight, Katalog, Tren, Dampak) selalu penuh dari ujung ke ujung, tombol terbagi rata */
+main .ex>.ex-hd>.ctl>.seg{display:flex;width:100%}
+main .ex>.ex-hd>.ctl>.seg>button{flex:1 1 0;min-width:0;text-align:center}
+/* layar sempit: segmen berbutir banyak turun baris (tiga per baris), teks tombol boleh dua baris, tidak melebarkan halaman */
+@media (max-width:640px){main .ex>.ex-hd>.ctl>.seg{flex-wrap:wrap;min-width:0;max-width:100%;height:auto;overflow:visible;border-radius:18px}main .ex>.ex-hd>.ctl>.seg>button{flex:1 1 30%;white-space:normal;line-height:1.2}}
+
+/* ---------- laci gempa (#laci) dan detail BMKG (#inaDetail), 23 Nov 2026 ----------
+   Komponen bersama dari inti/peta.css (.lc-sek kartu, .lc-h, .lc-lb, .lc-pil, .chip-wil, .lc-luar, .lc-big, .lc-kls, .lc-bar); di sini hanya yang khas gempa. */
+.lc-mmi{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7188rem;font-weight:700;background:var(--w)}
+/* kepala laci: nama wilayah boleh dua baris, tidak terpotong satu baris */
+:is(#laci,#inaDetail) .hd h2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-wrap:balance}
+:is(#laci,#inaDetail) .hd-meta{flex-wrap:wrap}
+#laci .lc-bd{display:grid;gap:10px;align-content:start}
+/* kepala bagian: ikon + nama, pil keterangan rata kanan sebaris */
+:is(#laci,#inaDetail) .lc-h{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+:is(#laci,#inaDetail) .lc-h > span:not(.lc-h-pil){min-width:0}
+.lc-h-pil{margin-left:auto;flex:none;text-transform:none;letter-spacing:0}
+.lc-h-pil .pill{font-size:var(--fs-1);padding:2px 8px}
+#laci [data-j="Kontak BPBD"],#laci .lc-sek:has(> [data-j="Kontak BPBD"]){display:none}
+/* kotak angka: kepala terang berikon, dua kolom juga di layar sempit */
+#laci .lc-kot{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 #laci .kpi{box-shadow:none;border-radius:12px}
-#laci .kpi .lbl{display:flex;align-items:center;justify-content:center;gap:6px;background:color-mix(in oklch,var(--brand) 8%,var(--card));color:var(--ink);font-size:0.65625rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
+#laci .kpi .lbl{display:flex;align-items:center;justify-content:center;gap:6px;background:color-mix(in oklch,var(--brand) 8%,var(--card));color:var(--ink);font-size:.6562rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #laci .kpi .lbl svg{flex:none;color:var(--brand2)}
-#laci .kpi b{padding-top:8px}
+#laci .kpi b{padding-top:8px;font-variant-numeric:tabular-nums}
+#laci .lc-tsu .kpi{border-left:4px solid var(--w)}
+#laci .lc-tsu-v{color:var(--w);font-size:var(--fs-5)}
+/* Lokasi: wilayah dirasakan sebagai chip berpil MMI */
+.lc-rasa-h,.lc-sub-h{font-size:var(--fs-1);font-weight:700;color:var(--ink2);margin-top:2px}
+.lc-chip > span{white-space:normal}
+.lc-sek .lc-lb b .lc-pil{vertical-align:middle}
+/* pil berwarna data (--w): teks putih tetap atau navy tetap di kedua tema; --on-brand/--ink terbalik di tema gelap */
+.lc-pil.netral{background:var(--surface);color:var(--ink2);box-shadow:inset 0 0 0 1px var(--line)}
+#laci abbr[title]{text-decoration:none;cursor:help}
+/* bilah per MMI dan angka utama */
+.lc-big b{font-variant-numeric:tabular-nums}
+.lc-mmi-bar{display:grid;gap:6px}
+.lc-mb{display:grid;grid-template-columns:4.5rem minmax(0,1fr) auto;align-items:center;gap:8px;font-size:var(--fs-2)}
+.lc-mb .lc-pil{text-align:center}
+.lc-mb-t{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.lc-mb-t i{display:block;height:100%;border-radius:999px;background:var(--w)}
+.lc-mb b{font-weight:700;color:var(--ink);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.lc-kls{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:row}
+.lc-kls span{padding:4px 2px;white-space:normal;text-align:center;line-height:1.2}
+/* indeks risiko provinsi: nama + pil kiri, skor kanan, bilah 0 sampai 100 */
+.lc-rsk{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.lc-rsk-k{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;font-size:var(--fs-2);color:var(--ink)}
+.lc-rsk-v{display:flex;align-items:baseline;gap:4px;flex:none}
+.lc-rsk-v b{font-family:var(--display);font-size:1.375rem;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.lc-rsk-v small{font-size:var(--fs-1);color:var(--ink2)}
+/* catatan terlipat: butir bernomor, sumber kecil di bawah */
+.lc-lipat{display:grid;gap:6px;font-size:var(--fs-2)}
+.lc-lipat > summary{cursor:pointer;font-weight:700;color:var(--brand2);list-style-position:inside}
+.lc-lipat[open] > summary{margin-bottom:4px}
+.lc-ol{margin:0;padding-left:1.2rem;display:grid;gap:4px;font-size:var(--fs-1);line-height:1.45;color:var(--ink2)}
+/* citra satelit sebelum dan sesudah */
+.lc-citra{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lc-citra figure{margin:0;display:grid;gap:4px}
+.lc-citra img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--surface)}
+.lc-citra figcaption{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:var(--fs-1)}
+/* tombol aksi di kaki laci: Detail BMKG dan Simulasikan sebaris, rata lebar */
+.lc-aksi{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:8px}
+.lc-aksi .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;text-decoration:none;white-space:nowrap}
+.lc-aksi .btn svg{flex:none;width:16px;height:16px}
+/* panel kiri, riwayat satu provinsi: satu kartu bersih berkepala ikon */
+.gk-rw{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);display:grid;gap:8px;font-size:var(--fs-2);color:var(--ink2)}
+.gk-rw-h{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-1);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.gk-rw-h svg{flex:none;width:14px;height:14px;color:var(--brand2)}
+.gk-rw .gk-ring{margin:0}
 /* kartu hover titik gempa di peta: isian dalam kisi dua kolom, tidak berdesakan satu baris */
 #tip .tp-gr.tp-satu{display:grid;grid-template-columns:repeat(2,minmax(0,auto));justify-content:center;gap:8px 18px}
 #tip .tp-st small{white-space:nowrap}
 #tip .tp-nm b{white-space:normal;text-align:center;max-width:260px}
 /* riwayat provinsi: kotak yang sama dengan ringkasan; baris tambahan kecil (satuan, pil kelas) */
-.gk-rw .gk-ring{margin:4px 0 0}
 .gk-k-wadah{min-width:0;display:grid}
 .gk-x{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
 .gk-x:empty{display:none}
-.gk-sub{font-size:0.65625rem;color:var(--ink2)}
-.gk-x .lc-mmi{font-size:0.625rem;padding:1px 7px}
-/* laci: indeks risiko provinsi sebagai pengukur (nama + pil kiri, skor kanan, bilah 0 sampai 100) */
-.lc-rsk{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
-.lc-rsk-k{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;font-size:0.78125rem;color:var(--ink)}
-.lc-rsk-v{display:flex;align-items:baseline;gap:4px;flex:none}
-.lc-rsk-v b{font-family:var(--display);font-size:1.375rem;line-height:1;color:var(--ink)}
-.lc-rsk-v small{font-size:var(--fs-1);color:var(--ink2)}
-.lc-bar{height:6px;border-radius:999px;background:color-mix(in oklch,var(--w) 15%,var(--line));overflow:hidden}
-.lc-bar i{display:block;height:100%;border-radius:999px;background:var(--w)}
-/* laci: angka utama bagian (korban jiwa, total terpapar) dan bilah per MMI (16 Nov 2026) */
-.lc-big{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.lc-big > div{display:grid;gap:2px;min-width:0}
-.lc-big b{font-family:var(--display);font-size:1.1875rem;line-height:1.15;color:var(--ink)}
-.lc-big small{font-size:0.71875rem;color:var(--ink2)}
-.lc-mmi-bar{display:grid;gap:6px}
-.lc-mb{display:grid;grid-template-columns:62px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:var(--fs-2)}
-.lc-mb .lc-mmi{text-align:center}
-.lc-mb-t{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
-.lc-mb-t i{display:block;height:100%;border-radius:999px;background:var(--w)}
-.lc-mb b{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
-/* laci: kartu Lokasi (baris berikon, tautan peta guncangan sebagai tombol) */
-.lc-lbs{display:grid}
-.lc-lb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:0.78125rem}
-.lc-lb:last-child{border-bottom:0}
-.lc-lb-k{display:inline-flex;align-items:center;gap:7px;color:var(--ink2)}
-.lc-lb-k svg{flex:none;color:var(--brand2)}
-.lc-lb b{font-weight:700;color:var(--ink);text-align:right}
-.lc-luar{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid var(--line);border-radius:999px;font-size:var(--fs-2);font-weight:600;color:var(--brand2);text-decoration:none}
-.lc-luar:hover{background:var(--surface)}
-
-/* tab Kejadian: pemilih rentang waktu di atas tabel */
-#kejadian .kj-alat{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 0 12px}
-#kejadian .kj-alat-l{font-size:0.78125rem;font-weight:600;color:var(--ink2)}
-#kejadian .kj-alat .seg{flex:none}
-#kejadian .kj-tgl{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:0.78125rem;font-weight:700;cursor:pointer}
-#kejadian .kj-tgl svg{width:15px;height:15px;flex:none}
-#kejadian .kj-tgl:hover{border-color:var(--brand2)}
-#kejadian .kj-tgl[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--card)}
+.gk-sub{font-size:var(--fs-1);color:var(--ink2)}
+.gk-x .lc-pil,.gk-x .lc-mmi{font-size:.625rem;padding:1px 7px}

@@ -4,10 +4,11 @@ Folder program untuk tiga dokumen yang saling berkait. Semua dokumen memakai ist
 
 | No | Dokumen | Isi | Naskah | Keluaran |
 | --- | --- | --- | --- | --- |
-| 01 | Kajian Penentuan Kejadian Bencana, Kelas Mayor dan Minor, dan Standar Data Lapangan | Studi literatur: definisi bencana, cara menentukan kejadian untuk sembilan jenis bencana alam, kelas mayor dan minor, data umum dan data khusus, SOP lapangan, infografis 5 halaman | `01-kajian-penentuan-kejadian/` | `keluaran/01 Kajian Penentuan Kejadian Bencana/` |
+| 01 | Kajian Penentuan Kejadian Bencana, Kelas Bencana, dan Standar Data Lapangan | Studi literatur: definisi bencana, cara menentukan kejadian untuk sembilan jenis bencana alam, kelas intensif dan ekstensif, data umum dan data khusus, SOP lapangan, infografis 5 halaman | `01-kajian-penentuan-kejadian/` | `keluaran/01 Kajian Penentuan Kejadian Bencana/` |
 | 02 | Kajian Telaah Juklak BNPB Nomor 7 Tahun 2023 | Penilaian 65 butir ketentuan Juklak 7/2023: dipertahankan, disesuaikan, diganti, atau ditambahkan | `02-kajian-telaah-juklak/` | `keluaran/02 Kajian Telaah Juklak 7-2023/` |
 | 03 | Rancangan Juklak Standar Data Kejadian dan Dampak Bencana | Rancangan petunjuk pelaksanaan pengganti Juklak 7/2023, dengan Lampiran I sampai III | `03-juklak-baru/` | `keluaran/03 Rancangan Juklak Standar Data/` |
 | 04 | Landasan Formulir Pelaporan Bencana (Excel) | Isian yang ditulis Pusdalops dalam laphar dan logbook 2026 per jenis bencana, struktur laporan menurut panduan Pusdalops 2025, dan usulan isian formulir baku | `04-landasan-formulir/` | `keluaran/04 Landasan Formulir Pelaporan/` |
+| 06 | Buku Praktis Penentuan Kejadian Bencana, Kelas Bencana, dan Pengumpulan Data Lapangan | Bab Hasil Kajian 01 dipadatkan menjadi buku kerja 12 halaman: alur, kriteria, tabel per jenis bencana, aturan menghitung, kelas intensif, data lapangan, daftar periksa petugas | `06-pedoman-penentuan-kejadian/` | `keluaran/06 Buku Praktis Penentuan Kejadian Bencana/` |
 
 Dokumen 04 sengaja membaca laphar dan logbook Pusdalops atas permintaan pemilik (17 November 2026), karena tujuannya memetakan isian yang selama ini ditulis petugas. Aturan "tidak dikaitkan dengan logbook" di bawah tetap berlaku untuk naskah kajian 01 sampai 03. Logbook bersifat internal: `isian.json` dan Excel hanya memuat hitungan per jenis, dan contoh tulisan diambil dari laphar saja.
 
@@ -25,6 +26,7 @@ cd data/kajian-bnpb/hitung-bencana/mesin
 py bangun.py --tanpa-gambar --urutan ../../standar-data-bencana/01-kajian-penentuan-kejadian/urutan-penentuan.json
 py bangun.py --tanpa-gambar --urutan ../../standar-data-bencana/01-kajian-penentuan-kejadian/urutan-penentuan-lampiran.json
 py bangun.py --tanpa-gambar --urutan ../../standar-data-bencana/02-kajian-telaah-juklak/urutan.json
+py bangun.py --tanpa-gambar --urutan ../../standar-data-bencana/06-pedoman-penentuan-kejadian/urutan-praktis.json
 cd -
 py data/kajian-bnpb/standar-data-bencana/03-juklak-baru/susun_lampiran.py
 py data/kajian-bnpb/standar-data-bencana/03-juklak-baru/bangun_juklak.py --pdf

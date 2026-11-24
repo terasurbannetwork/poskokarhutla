@@ -8,34 +8,42 @@ const Dampak = (() => {
   const IKON = {rent: "M12 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 22v-6a6 6 0 0 1 12 0v6", ispa: "M12 3v18M7 8c-3 2-3 8 0 10M17 8c3 2 3 8 0 10", skz: "M22 10 12 5 2 10l10 5 10-5ZM6 12v5c3 3 9 3 12 0v-5", bnd: "M2 16l9-3V6a1.5 1.5 0 0 1 3 0v7l8 3v2l-8-1.5V20l2 1.5V23l-3.5-1L10 23v-1.5l2-1.5v-4.5L2 18z"};
   const BAG = {rent: ["Balita dan lansia", W.merah], ispa: ["Kasus ISPA", W.teal], skz: ["Sekolah berisiko", W.ungu], bnd: ["Jarak pandang bandara", "#1f5f8b"]};
   const st = {};
+  const kvJiwa = v => jiwa(v).replace(/^sekitar /, "").replace(/ jiwa$/, " <small>jiwa</small>");   /* kotak angka: satuan kecil */
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
   const nmP = k => namaProv(k);
+  const nmB = s => String(s || "").replace(/\s+(Arpt|Intl)\.?$/i, "");   /* nama METAR: singkatan Arpt/Intl dibuang untuk tampilan, kolomnya sudah "Bandara" */
   const SM = "Sumber: Copernicus CAMS lewat Open-Meteo";
   /* kartu: pita bagian + kartu Insight dengan pil = nama bagian dan pil model */
-  const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id];
-    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>${PIL_MODEL}`)}</section>`; };
+  /* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5): angka kunci pindah ke kotak angka di awal isi, penjelasan metode dilipat, tanpa kaki "Sumber:" (sumber ada di Metode) */
+  const bag = (id, seksi, kv, isi, catatan, ctl = "", pil = "") => { const [nm, w] = BAG[id], ik = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg>`;
+    const kartu = pilKeKepala(kepalaKartu(Kartu.ex(seksi, "", "", kotakAngka(kv) + isi + lipatCatatan(catatan ? `<p class="fnd">${catatan}</p>` : ""), "", ctl)
+      .replace('<span class="ex-ey"></span>', () => `<span class="ex-ey">${ik}${seksi}</span>${PIL_MODEL}${pil}`)));
+    return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span>${ik}<h2>${nm}</h2></header>${kartu}</section>`; };
   const hbar = Kartu.hbar;   /* inti/kartu.js */
   /* ---- prakiraan rentan (rentan.json): balita, lansia, ISPA, sekolah, bandara. Angka perkiraan model; asumsi + sumber ada di Metode ---- */
   const R = () => S.ren, ri = () => Math.min(st.rh || 0, (R()?.hari.length || 1) - 1);
   const segR = () => R().hari.length > 1 ? `<div class="seg" role="group">${R().hari.map((t, h) => `<button data-dks="rh" data-v="${h}" aria-pressed="${ri() === h}">${tglPendek(t)}</button>`).join("")}</div>` : "";
   const barisR = (f) => Object.entries(R().prov || {}).map(([k, o]) => ({k, o, v: f(o)})).filter(x => x.v > 0).sort((a, b) => b.v - a.v).slice(0, 12);
   const dt = () => R()?.dibuat ? "; data " + jamWIB(R().dibuat) : "";
-  const ket = () => "Sumber: perkiraan model CAMS, belum dikoreksi ke alat ukur; WorldPop, BPS" + dt();
+  const ket = () => "Angka perkiraan model CAMS, belum dikoreksi ke alat ukur, dikalikan penduduk WorldPop dan BPS" + dt() + ".";
   function kartuRentan() { if (!R() || !R().nasional) return "";
     const h = ri(), n = R().nasional, tg = "pada " + tglPendek(R().hari[h]), out = [], ctl = segR(), ms = h2 => (n.ispa?.[h2]) ;
     if (n.balita?.[h] != null) { const rows = barisR(o => (o.balita?.[h] || 0) + (o.lansia?.[h] || 0)).map(x => ({n: nmP(x.k), v: x.v, txt: kr(x.v) + " jiwa", tip: `<b>${esc(nmP(x.k))}</b><br>Balita: ${jiwa(x.o.balita?.[h] || 0)}<br>Lansia: ${jiwa(x.o.lansia?.[h] || 0)}`}));
-      out.push(bag("rent", `${Kartu.hl(jiwa(n.balita[h]))} balita dan ${Kartu.hl(jiwa(n.lansia[h]))} lansia berada di wilayah berudara tidak sehat ${tg}`, hbar(rows, W.merah), ket(), ctl)); }
+      out.push(bag("rent", "Balita dan lansia per provinsi", [[kvJiwa(n.balita[h]), `perkiraan balita di wilayah berudara tidak sehat ${tg}`], [kvJiwa(n.lansia[h]), `perkiraan lansia di wilayah berudara tidak sehat ${tg}`]], hbar(rows, W.merah), ket(), ctl)); }
     if (ms(h)) { const rows = barisR(o => o.ispa?.[h]?.t || 0).map(x => ({n: nmP(x.k), v: x.v, txt: fmt(Math.round(x.v)), tip: `<b>${esc(nmP(x.k))}</b><br>Tambahan kasus ISPA per hari: ${fmt(Math.round(x.v))} (${fmt(Math.round(x.o.ispa[h].lo))} sampai ${fmt(Math.round(x.o.ispa[h].hi))})`}));
-      out.push(bag("ispa", `Tambahan sekitar ${Kartu.hl(fmt(Math.round(ms(h).t)) + " kasus ISPA")} per hari ${tg} (${fmt(Math.round(ms(h).lo))} sampai ${fmt(Math.round(ms(h).hi))})`, hbar(rows, W.teal), "Proksi: risiko rawat inap pernapasan (HRAPIE), hanya kota-hari Waspada ke atas, kenaikan dibatasi 100 µg/m³, belum diuji. " + ket(), ctl)); }
+      out.push(bag("ispa", "Tambahan kasus ISPA per provinsi", [[`${fmt(Math.round(ms(h).t))} <small>kasus per hari</small>`, "tambahan infeksi saluran pernapasan akut (ISPA), perkiraan"], [`${fmt(Math.round(ms(h).lo))} sampai ${fmt(Math.round(ms(h).hi))}`, "rentang perkiraan"]], hbar(rows, W.teal),
+        "Proksi: risiko rawat inap pernapasan dari pedoman WHO HRAPIE (Health Risks of Air Pollution in Europe), hanya kota-hari berstatus Waspada ke atas, kenaikan PM2,5 dibatasi 100 µg/m³, belum diuji terhadap data puskesmas. " + ket(), ctl, PIL_HIPO("Proksi ISPA belum diuji balik terhadap data kunjungan fasilitas kesehatan"))); }
     if (R().sekolah?.length) { const s = R().sekolah;
-      out.push(bag("skz", `${Kartu.hl("sekitar " + fmt(s.length) + " sekolah")} berada di zona tidak sehat besok`, `<div id="skzTab">${skzTabel()}</div><div id="skzPeta" class="dk-peta"></div>`, `Sumber: data sekolah Kemendikdasmen (Dapodik/EMIS)${dt()}; zona dari prakiraan model CAMS, belum dikoreksi ke alat ukur`)); }
+      out.push(bag("skz", "Sekolah di zona tidak sehat", [[`${fmt(s.length)} <small>sekolah</small>`, "berada di zona tidak sehat besok, perkiraan"]], `<div id="skzTab">${skzTabel()}</div><div id="skzPeta" class="dk-peta"></div>`, `Data sekolah Kemendikdasmen (Dapodik dan EMIS)${dt()}; zona dari prakiraan model CAMS, belum dikoreksi ke alat ukur.`)); }
     if (R().bandara?.length) { const b = [...R().bandara].sort((x, y) => x.vis_km - y.vis_km);
-      out.push(bag("bnd", `Jarak pandang ${Kartu.hl(esc(b[0].nama))} sekarang ${Kartu.hl(fmt(b[0].vis_km) + " km")}, terendah di antara ${fmt(b.length)} bandara`, `<div id="bndTab">${bndTabel()}</div>`, `Sumber: NOAA METAR; prakiraan jarak pandang dari model${R().bandara.some(x => x.prakiraan_teruji === true) ? "" : ", belum diuji terhadap METAR"}${dt()}`)); }
+      const teruji = R().bandara.some(x => x.prakiraan_teruji === true);
+      out.push(bag("bnd", "Jarak pandang per bandara", [[`${fmt(b[0].vis_km)} <small>km</small>`, `terendah sekarang di Bandara ${esc(nmB(b[0].nama))}`], [`${fmt(b.length)} <small>bandara</small>`, "melapor"]], `<div id="bndTab">${bndTabel()}</div>`,
+        `Jarak pandang sekarang dari laporan cuaca bandara METAR (NOAA); kolom per tanggal adalah prakiraan jarak pandang dari model${teruji ? "" : ", belum diuji terhadap METAR"}${dt()}.`, "", teruji ? "" : PIL_HIPO("Prakiraan jarak pandang belum diuji terhadap laporan METAR"))); }
     return out.join(""); }
   const kotaNama = k => (kotaByKode(k)?.nama) || k;
   function skzTabel() { const kol = [{k: "nama", n: "Sekolah", v: r => r.nama, h: r => `<b translate="no">${esc(r.nama)}</b>`}, {k: "kota", n: "Kota", v: r => kotaNama(r.kode_kota), h: r => `<span translate="no">${esc(kotaNama(r.kode_kota))}</span>`}, {k: "st", n: "Status", v: r => Murni.rank(r.st), h: r => pilSt(r.st)}];
     return Insight.tabel("skz", kol, R().sekolah, r => "", 10, "sekolah", r => Murni.rank(r.st)); }
-  function bndTabel() { const kol = [{k: "nama", n: "Bandara", v: r => r.nama, h: r => `<b translate="no">${esc(r.nama)}</b> <small>${esc(r.icao)}</small>`},
+  function bndTabel() { const kol = [{k: "nama", n: "Bandara", v: r => r.nama, h: r => `<b translate="no">${esc(nmB(r.nama))}</b> <small>${esc(r.icao)}</small>`},
       {k: "vis", n: "Sekarang", num: 1, v: r => r.vis_km, h: r => fmt(r.vis_km) + " km"},
       ...R().hari.map((t, h) => ({k: "p" + h, n: tglPendek(t), num: 1, v: r => r.prakiraan_km?.[h] ?? 99, h: r => r.prakiraan_km?.[h] != null ? fmt(r.prakiraan_km[h]) + " km" : "–"})),
       {k: "pm", n: "PM2,5 besok", num: 1, v: r => r.pm?.[1] ?? 0, h: r => r.pm?.[1] != null ? fmt(r.pm[1]) + " µg/m³" : "–"}];

@@ -12,7 +12,7 @@ from pathlib import Path
 DI = Path(__file__).resolve().parent
 SUMBER = DI.parent / '01-kajian-penentuan-kejadian' / 'lampiran'
 HURUF = 'ABCDEFGHIJ'
-TAHAP = {'1': 'Laporan awal', '2': 'Kaji cepat', '4': 'Penutupan'}
+TAHAP = {'1': 'Laporan awal', '2': '*Rapid assessment*', '4': 'Penutupan'}
 
 
 def bagian(teks):
@@ -58,10 +58,36 @@ def lampiran_1():
         '| Kerusakan rumah, fasilitas, prasarana, dan lahan | Angka terakhir |',
         '| Nilai kerusakan dan nilai kerugian | Hasil pengkajian kebutuhan pascabencana; tidak diisi selama kejadian berlangsung |', '',
         '## C. TINGKAT KERUSAKAN DAN KEADAAN TERENDAM BANGUNAN', '',
-        '1. Rusak berat adalah kerusakan yang mengakibatkan bangunan roboh atau sebagian besar komponen strukturnya rusak, misalnya bangunan roboh total, sebagian besar struktur utama rusak, atau sebagian besar dinding dan lantai rusak. Pada bangunan pengairan, contohnya bendung atau dam patah, sebagian besar tanggul jebol atau putus, atau saluran tidak dapat berfungsi.',
-        '2. Rusak sedang adalah kerusakan yang mengakibatkan sebagian kecil komponen struktur rusak dan komponen penunjang rusak, tetapi bangunan masih berdiri, misalnya sebagian kecil struktur utama rusak atau sebagian besar pintu air dan komponen penunjang lainnya rusak.',
-        '3. Rusak ringan adalah kerusakan yang mengakibatkan sebagian komponen struktur retak, tetapi struktur masih dapat digunakan dan bangunan masih berdiri, misalnya retak-retak pada dinding plesteran atau sebagian kecil pintu air rusak.',
-        '4. Terendam adalah keadaan bangunan yang tergenang air tanpa kerusakan pada komponen struktur.', '', '::: ttd', '']
+        '1. Rusak berat adalah kerusakan yang mengakibatkan bangunan roboh atau sebagian besar komponen strukturnya rusak, misalnya bangunan roboh total, sebagian besar struktur utama rusak, atau sebagian besar dinding dan lantai rusak. Untuk rumah, rusak berat adalah tingkat kerusakan fisik lebih dari 70 persen, atau rumah roboh, hanyut, terbakar habis, atau tertimbun material setinggi 1 meter atau lebih di atas lantai. Pada bangunan pengairan, contohnya bendung atau dam patah, sebagian besar tanggul jebol atau putus, atau saluran tidak dapat berfungsi.',
+        '2. Rusak sedang adalah kerusakan yang mengakibatkan sebagian kecil komponen struktur rusak dan komponen penunjang rusak, tetapi bangunan masih berdiri, misalnya sebagian kecil struktur utama rusak atau sebagian besar pintu air dan komponen penunjang lainnya rusak. Untuk rumah, rusak sedang adalah tingkat kerusakan fisik 30 sampai 70 persen.',
+        '3. Rusak ringan adalah kerusakan yang mengakibatkan sebagian komponen struktur retak, tetapi struktur masih dapat digunakan dan bangunan masih berdiri, misalnya retak-retak pada dinding plesteran atau sebagian kecil pintu air rusak. Untuk rumah, rusak ringan adalah tingkat kerusakan fisik kurang dari 30 persen.',
+        '4. Tidak dapat dihuni sementara adalah keadaan rumah yang tidak rusak berat maupun rusak sedang, tetapi tergenang air paling sedikit 10 sentimeter di atas lantai atau tertutup lumpur dan material sehingga untuk sementara tidak dapat dihuni.',
+        '5. Terendam adalah keadaan bangunan yang tergenang air tanpa kerusakan pada komponen struktur dan masih dapat dihuni, termasuk genangan di bawah lantai.',
+        '6. Setiap rumah hanya dicatat pada satu tingkat. Tingkat kerusakan fisik rumah dihitung dengan menjumlahkan persentase kerusakan setiap komponen bangunan yang dikalikan dengan bobot komponennya. Tabel I.6 memuat contoh bobot komponen yang dapat dipakai.', '',
+        'Tabel I.6. Contoh bobot komponen bangunan rumah', '',
+        '| Komponen | Bobot (persen) |',
+        '| --- | ---: |',
+        '| Fondasi | 7 |',
+        '| Kolom, balok, dan ring balok | 25 |',
+        '| Rangka atap | 10 |',
+        '| Penutup atap | 2 |',
+        '| Rangka langit-langit | 4 |',
+        '| Penutup langit-langit | 4 |',
+        '| Dinding bata atau partisi | 7 |',
+        '| Plesteran | 2 |',
+        '| Kaca | 1 |',
+        '| Pintu | 1 |',
+        '| Kusen | 2 |',
+        '| Penutup lantai | 12 |',
+        '| Instalasi listrik | 5 |',
+        '| Instalasi air | 1,5 |',
+        '| Drainase limbah | 1,5 |',
+        '| Penyelesaian struktur | 1 |',
+        '| Penyelesaian langit-langit | 4 |',
+        '| Penyelesaian dinding | 6 |',
+        '| Penyelesaian pintu dan kusen | 4 |',
+        '| Jumlah | 100 |', '',
+        '::: ttd', '']
     (DI / 'naskah' / '02-lampiran-1.md').write_text('\n'.join(keluar), encoding='utf-8')
 
 

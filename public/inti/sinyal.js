@@ -2,7 +2,8 @@
 /* inti/sinyal.js (PB-81.2, F-41, Lifeline D6, AGENTS.md 2.19): kartu "Sinyal komunikasi" bersama untuk tab Dampak bencana selain karhutla
    (karhutla tetap memakai public/sinyal.js sendiri sampai PB-80). Data public/data/menara.json (OpenCelliD) dan public/data/internet_padam.json (IODA), dibaca apa adanya.
    Hanya konteks PROVINSI: tidak pernah warna atau usulan per kab/kota. Padam internet = proksi akses komunikasi, bukan bukti seluler atau listrik mati.
-   Digerbangi kemampuan.layar.sinyal di /bencana.json. Pemakaian: SinyalInti.pasang(wadah, {id: "gempa", prov: () => kodeProvinsi|null}). */
+   Digerbangi kemampuan.layar.sinyal di /bencana.json. Pemakaian: SinyalInti.pasang(wadah, {id: "gempa", prov: () => kode|nama|[kode urut prioritas]|{kode: paparan}|null}).
+   Tanpa petunjuk, provinsi diambil dari paparan terbesar data dampak halaman (PAPARAN per id); baru bila itu pun kosong jatuh ke provinsi dengan padam terbaru. */
 (() => {
 const nf = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 0});
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
@@ -21,9 +22,29 @@ const bulat = v => !Number.isFinite(v) ? NaN : v >= 1000 ? Math.round(v / 100) *
 const izinReg = (daftar, id) => id !== "karhutla" && (daftar || []).find(b => b.id === id)?.kemampuan?.layar?.sinyal === true;
 /* daftar provinsi yang punya data menara atau padam, urut nama */
 const daftarProv = (m, p) => [...new Set([...Object.keys(m?.menara_per_provinsi || {}), ...(p?.peristiwa || []).map(e => e.prov)])].sort((a, b) => nama(a).localeCompare(nama(b), "id"));
+/* nama provinsi (juga nama panjang dari data bencana) -> kode */
+const SEBUT = {"nusa tenggara barat": "52", "nusa tenggara timur": "53", "kepulauan bangka belitung": "19", "bangka belitung": "19", "daerah istimewa yogyakarta": "34", "yogyakarta": "34", "jakarta": "31", "dki jakarta": "31", "riau kepulauan": "21"};
+const normal = t => String(t).toLowerCase().replace(/^provinsi\s+/, "").replace(/\s+/g, " ").trim();
+const keKode = x => { if (x == null || x === "") return null; const t = String(x).trim(); if (/^\d{2}$/.test(t)) return t;
+  const n = normal(t); if (SEBUT[n]) return SEBUT[n]; const k = Object.keys(PROV).find(c => normal(PROV[c]) === n); return k || null; };
+/* petunjuk halaman: kode atau nama provinsi, deret urut prioritas (yang pertama punya data menang), atau peta {kode/nama: paparan} (paparan terbesar menang) */
+const dariPetunjuk = (petunjuk, d) => { if (petunjuk == null) return null; const ada = k => k && d.includes(k);
+  if (Array.isArray(petunjuk)) return petunjuk.map(keKode).find(ada) || null;
+  if (typeof petunjuk === "object") { const jml = {}; for (const [k, v] of Object.entries(petunjuk)) { const c = keKode(k), n = typeof v === "object" && v ? +(v.jiwa ?? v.penduduk ?? v.nilai ?? 0) : +v; if (ada(c) && Number.isFinite(n)) jml[c] = (jml[c] || 0) + n; }
+    return Object.entries(jml).sort((a, b) => b[1] - a[1])[0]?.[0] || null; }
+  const c = keKode(petunjuk); return ada(c) ? c : null; };
 /* provinsi awal: petunjuk halaman bila ada datanya, jika tidak provinsi dengan padam terbaru, jika tidak yang pertama */
-const awal = (m, p, petunjuk) => { const d = daftarProv(m, p); if (petunjuk && d.includes(String(petunjuk))) return String(petunjuk);
+const awal = (m, p, petunjuk) => { const d = daftarProv(m, p), k = dariPetunjuk(petunjuk, d); if (k) return k;
   const e = [...(p?.peristiwa || [])].sort((a, b) => b.mulai - a.mulai)[0]; return e ? e.prov : d[0] || null; };
+/* adaptor bawaan: provinsi dengan paparan terbesar dari data dampak halaman, untuk halaman yang tidak memberi petunjuk sendiri.
+   Hasilnya peta {kode/nama provinsi: jiwa}; berkas sama dengan yang dibaca dampak.js halaman itu (muatJSON memakai cache). */
+const PAPARAN = {
+  gunungapi: {url: "../banjir/data/dampak_gunungapi.json", pilih: j => { const r = {}; for (const g of j?.terpapar?.daftar || []) if (g.prov) r[g.prov] = (r[g.prov] || 0) + (+g.jiwa || 0); return r; }},
+  cuaca: {url: "../banjir/data/cuaca_dampak.json", pilih: j => { const T = j?.terpapar || {}, kini = T[j?.hari_ini]?.prov; if (kini && Object.keys(kini).length) return kini;
+    const r = {}; for (const h of Object.values(T)) for (const [k, v] of Object.entries(h?.prov || {})) r[k] = (r[k] || 0) + (+v?.penduduk || 0); return r; }},
+};
+const paparan = async id => { const a = PAPARAN[id]; if (!a) return null;
+  try { const j = await (typeof muatJSON === "function" ? muatJSON(a.url) : fetch(a.url).then(r => r.ok ? r.json() : null)); return j ? a.pilih(j) : null; } catch (e) { return null; } };
 /* ringkasan satu provinsi: sel tercatat, peringkat di antara provinsi, peristiwa padam, total jam, peristiwa terbaru dulu */
 const ringkas = (m, p, k) => { const mp = m?.menara_per_provinsi || {}, sel = mp[k], urut = Object.values(mp).sort((a, b) => b - a);
   const ev = (p?.peristiwa || []).filter(e => e.prov === k).sort((a, b) => b.mulai - a.mulai);
@@ -54,12 +75,13 @@ async function pasang(wadah, o = {}) {
   try {
     if (!izinReg(await registri(), o.id)) return;
     const [m, p] = await ambil(); if (id !== gen || !wadah.isConnected) return;
-    let petunjuk = null; try { petunjuk = o.prov?.(); } catch (e) { /* petunjuk opsional */ }
+    let petunjuk = null; try { petunjuk = await o.prov?.(); } catch (e) { /* petunjuk opsional */ }
+    if (!dariPetunjuk(petunjuk, daftarProv(m, p))) { const pp = await paparan(o.id); if (id !== gen || !wadah.isConnected) return; if (pp) petunjuk = pp; }
     const k = awal(m, p, petunjuk); if (!k) return;
     wadah.querySelector("#dk-sinyal")?.remove(); wadah.insertAdjacentHTML("beforeend", bungkus(kartu(m, p, k)));
     const s = wadah.querySelector("#dk-sinyal"); s.addEventListener("change", e => { const sel = e.target.closest("[data-sy-prov]"); if (!sel) return;
       const t = () => { s.querySelector(".dk-kartu").innerHTML = kartu(m, p, sel.value); }; typeof nanti === "function" ? nanti(t) : t(); });
   } catch (e) { /* data belum ada: kartu tidak tampil */ }
 }
-window.SinyalInti = {pasang, model: {izinReg, daftarProv, awal, ringkas, bulat, nama, kartu, bungkus}};
+window.SinyalInti = {pasang, model: {izinReg, daftarProv, awal, dariPetunjuk, keKode, PAPARAN, ringkas, bulat, nama, kartu, bungkus}};
 })();

@@ -1,7 +1,7 @@
 /* Katalog BMKG / InaTEWS (inatews.js): pilihan ujung ke ujung berikon, tabel menempel di kartu standar, laci detail, peringatan tsunami aktif. */
 #katalog{display:grid;gap:14px}
 .ina-seg{margin:2px 0 0}
-.ina-seg button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.ina-seg button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:1 1 0;min-width:0}
 .ina-seg svg{width:14px;height:14px;flex:none}
 /* bilah sumber di atas tabel */
 .ina-st{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;margin:0;padding:9px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:0.78125rem;color:var(--ink2)}
@@ -95,11 +95,11 @@
 .ina-mi .lc-mmi,.ina-tb .ina-mi .pill.pm{margin:0}
 .ina-mi-lagi{padding:3px 10px;color:var(--ink2);font-weight:600;background:var(--surface);cursor:help}
 
-/* laci detail: tabel berkepala (stasiun, tinggi muka laut, urutan buletin) dengan sel berjarak, angka di tengah */
+/* laci detail: tabel berkepala (stasiun, tinggi muka laut, urutan buletin) dengan sel berjarak, angka rata kanan tabular */
 #inaDetail .tw{border-radius:12px}
 #inaDetail .tw table.tb2 th{padding:9px 12px}
 #inaDetail .tw table.tb2 td{padding:10px 12px;vertical-align:middle;color:var(--ink);line-height:1.35}
-#inaDetail .tw table.tb2 th.n,#inaDetail .tw table.tb2 td.n{text-align:center;white-space:nowrap}
+#inaDetail .tw table.tb2 th.n,#inaDetail .tw table.tb2 td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 #inaDetail .tw table.tb2 tbody tr:nth-child(even){background:color-mix(in oklch,var(--surface) 60%,transparent)}
 #inaDetail .tw table.tb2 td small{display:block;margin-top:3px;font-size:var(--fs-1);font-weight:600;letter-spacing:.04em;color:var(--ink2)}
 #inaStasiun{display:grid;gap:10px}
@@ -118,3 +118,20 @@
 
 /* isi kartu katalog: bilah sumber, pilihan riwayat, dan tabel berjarak sama */
 .ina-isi{display:grid;gap:12px;min-width:0}
+
+/* laci detail BMKG (23 Nov 2026): kartu berkepala ikon, gambar mekanisme sumber berukuran wajar, laporan dirasakan dua kolom, siaran pers dilipat */
+.ina-laci .bd{gap:10px}
+.ina-bola .ina-f{justify-items:center}
+.ina-bola .ina-f img{width:min(180px,60%);background:none}
+@media (min-width:520px){.ina-fg2{grid-template-columns:1fr 1fr}}
+.ina-narasi-j p{margin:0;font-family:var(--display);font-size:var(--fs-3);font-weight:700;line-height:1.4;color:var(--ink)}
+.ina-lipat .ina-narasi{margin-top:4px}
+#inaDetail sup,#inaDetail sub{font-size:.7em;line-height:0}
+#inaDetail .lc-sek > p:not(.fnd){margin:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ina-atr{margin:0}
+/* tabel stasiun: tiga kolom (stasiun, jarak dan MMI, PGA per komponen bertumpuk) supaya muat di layar 375px */
+#inaDetail .ina-stb td:first-child{min-width:6.5rem}
+.ina-pga{display:inline-grid;grid-template-columns:auto auto;gap:1px 6px;justify-items:end;align-items:baseline}
+.ina-pga > span{font-size:var(--fs-1);font-weight:700;color:var(--ink2)}
+.ina-pga > b{font-weight:600;color:var(--ink)}
+@media (max-width:520px){#inaDetail .tw table.tb2 th,#inaDetail .tw table.tb2 td{padding:8px 8px}}

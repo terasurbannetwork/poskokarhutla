@@ -41,7 +41,7 @@ const Tren = {
     const nama = i => Grafik.tgl(h[i], {weekday: "long", day: "numeric", month: "long"});
     return this.kartu("Hujan lebat", "Hujan lebat",
       Grafik.kolom({cat: h.map(t => Grafik.tgl(t, {day: "numeric", month: "short"})), seri: [["Lebat", "#c99a1e"], ["Sangat lebat", "#e58a45"], ["Ekstrem", "#c9503a"]], nilai, aria: "Area berhujan lebat per hari",
-        tip: i => `<b>${nama(i)}</b><br>Lebat 50 sampai 100 mm: ${fmt(nilai[i][0])} area<br>Sangat lebat 100 sampai 150 mm: ${fmt(nilai[i][1])} area<br>Ekstrem 150 mm atau lebih: ${fmt(nilai[i][2])} area<br>Terlebat: ${fmt(this.R.tgl[h[i]][6])} mm<br><small>1 area = kotak prakiraan 28 km</small>`}) + `<p class="fnd">Terbanyak ${fmt(tot[pk])} area pada ${Grafik.tgl(h[pk])}, rentang ${fmt(h.length)} hari.</p>`,
+        tip: i => `<b>${nama(i)}</b><br>Lebat 50 sampai 100 mm: ${fmt(nilai[i][0])} area<br>Sangat lebat 100 sampai 150 mm: ${fmt(nilai[i][1])} area<br>Ekstrem 150 mm atau lebih: ${fmt(nilai[i][2])} area<br>Terlebat: ${fmt(this.R.tgl[h[i]][6])} mm<br><small>1 area = kotak prakiraan 28 km</small>`}),
       "Open-Meteo, analisis dan prakiraan model", this.segRentang(), [["#c99a1e", "lebat"], ["#e58a45", "sangat lebat"], ["#c9503a", "ekstrem"]]); },
   /* embusan angin: ambang 54 / 72 / 90 km/jam */
   exAngin() {
@@ -50,7 +50,7 @@ const Tren = {
     const nama = i => Grafik.tgl(h[i], {weekday: "long", day: "numeric", month: "long"});
     return this.kartu("Angin", "Angin",
       Grafik.kolom({cat: h.map(t => Grafik.tgl(t, {day: "numeric", month: "short"})), seri: [["Waspada", "#c99a1e"], ["Siaga", "#e58a45"], ["Awas", "#c9503a"]], nilai, aria: "Area berembusan kencang per hari",
-        tip: i => `<b>${nama(i)}</b><br>Waspada 54 sampai 72 km/jam: ${fmt(nilai[i][0])} area<br>Siaga 72 sampai 90 km/jam: ${fmt(nilai[i][1])} area<br>Awas 90 km/jam atau lebih: ${fmt(nilai[i][2])} area<br>Terkuat: ${fmt(this.R.tgl[h[i]][7])} km/jam<br><small>1 area = kotak prakiraan 28 km</small>`}) + `<p class="fnd">Terbanyak ${fmt(tot[pk])} area pada ${Grafik.tgl(h[pk])}, rentang ${fmt(h.length)} hari.</p>`,
+        tip: i => `<b>${nama(i)}</b><br>Waspada 54 sampai 72 km/jam: ${fmt(nilai[i][0])} area<br>Siaga 72 sampai 90 km/jam: ${fmt(nilai[i][1])} area<br>Awas 90 km/jam atau lebih: ${fmt(nilai[i][2])} area<br>Terkuat: ${fmt(this.R.tgl[h[i]][7])} km/jam<br><small>1 area = kotak prakiraan 28 km</small>`}),
       "Open-Meteo, analisis dan prakiraan model", this.segRentang(), [["#c99a1e", "waspada"], ["#e58a45", "siaga"], ["#c9503a", "awas"]]); },
   /* provinsi: berapa hari melewati ambang dalam rentang */
   exProvinsi() {
@@ -64,9 +64,8 @@ const Tren = {
       {k: "mm", n: "Hujan terlebat", num: 1, v: r => r.mm, h: r => pl(fmt(r.mm) + " mm", warnaHujan(r.mm))},
       {k: "hariA", n: "Hari embusan kencang", num: 1, v: r => r.hariA, h: r => r.hariA ? pl(fmt(r.hariA) + " hari", warnaAngin(54)) : "–"},
       {k: "kmj", n: "Embusan terkuat", num: 1, v: r => r.kmj, h: r => pl(fmt(r.kmj) + " km/jam", warnaAngin(r.kmj))}];
-    const top = [...R].sort((a, b) => b.hari - a.hari || b.mm - a.mm)[0];
     return this.kartu("Provinsi", "Provinsi",
-      `<p class="fnd">${fmt(R.length)} provinsi punya hari hujan lebat atau embusan kencang dalam ${fmt(h.length)} hari terakhir${top.hari ? `. Terbanyak hujan lebat: ${esc(namaProv(top.k))}, ${fmt(top.hari)} hari` : ""}.</p>` + Insight.tabel("tren_prov", kol, R, 10, "provinsi"), "Open-Meteo, analisis dan prakiraan model"); },
+      Insight.tabel("tren_prov", kol, R, 10, "provinsi"), "Open-Meteo, analisis dan prakiraan model"); },
   /* kejadian cuaca ekstrem per tahun menurut BNPB (angin puting beliung dan sejenisnya) */
   exBnpb() {
     const N = this.D?.tahunan?.nasional, th = N && Object.keys(N).sort(); if (!th || th.length < 2) return "";
@@ -75,7 +74,7 @@ const Tren = {
     const k = this.st.bnpb, [nm, sat] = BNPB[k], v = t => N[t][k] ?? 0, akhir = th.at(-1), pk = th.reduce((a, t) => v(t) > v(a) ? t : a, th[0]), ber = akhir >= String(new Date().getFullYear());
     return this.kartu("Per tahun", "Per tahun",
       Grafik.kolom({cat: th.map(t => "'" + String(t).slice(2)), seri: [[nm, "#7d8ca3"]], nilai: th.map(t => [v(t)]), aria: nm + " per tahun",
-        tip: i => `<b>${th[i]}${ber && th[i] === akhir ? " (berjalan)" : ""}</b><br>${nm}: ${fmt(v(th[i]))} ${sat}`}) + `<p class="fnd">Tertinggi ${fmt(v(pk))} ${sat} pada ${pk}, rentang ${th[0]} sampai ${akhir}${ber ? ` (${akhir} belum penuh)` : ""}.</p>`,
+        tip: i => `<b>${th[i]}${ber && th[i] === akhir ? " (berjalan)" : ""}</b><br>${nm}: ${fmt(v(th[i]))} ${sat}`}) + (ber ? `<p class="fnd">Tahun ${akhir} masih berjalan, angkanya belum penuh.</p>` : ""),
       `${SUMBER_BNPB}, ${th[0]}–${akhir}; hanya angka yang tercatat`, Kartu.seg("bnpb", ada.map(x => [x, BNPB[x][0]]), this.st)); },
 
   /* Logbook Pusdalops BNPB (public/data/logbook_riwayat.json, kalender_risiko.json): kejadian cuaca ekstrem yang DILAPORKAN. Tahun dasar dibaca dari berkas (tahun_penuh), bukan ditulis tetap.
@@ -87,7 +86,7 @@ const Tren = {
     const penuh = new Set((L.tahun_penuh || []).map(String)), v = t => N[t].cuaca, pk = th.filter(t => penuh.has(t)).reduce((a, t) => v(t) > v(a) ? t : a), akhir = th.at(-1), hari = L.hari_tercatat || {};
     return this.kartu("Logbook", "Logbook",
       Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: [["Cuaca ekstrem", "#c99a1e"]], nilai: th.map(t => [v(t)]), aria: "Kejadian cuaca ekstrem dalam logbook per tahun", pudar: i => !penuh.has(th[i]),
-        tip: i => `<b>${th[i]}</b><br>${fmt(v(th[i]))} kejadian dilaporkan${penuh.has(th[i]) ? "" : `<br><small>tahun belum penuh: ${fmt(hari[th[i]] || 0)} hari tercatat</small>`}`}) + `<p class="fnd">Tertinggi ${fmt(v(pk))} kejadian pada ${pk}, rentang ${th[0]} sampai ${akhir}; tahun belum penuh dipudarkan.</p>`,
+        tip: i => `<b>${th[i]}</b><br>${fmt(v(th[i]))} kejadian dilaporkan${penuh.has(th[i]) ? "" : `<br><small>tahun belum penuh: ${fmt(hari[th[i]] || 0)} hari tercatat</small>`}`}) + `<p class="fnd">Batang pudar adalah tahun yang belum penuh.</p>`,
       `Logbook Pusdalops BNPB ${th[0]}–${akhir}; kejadian yang dilaporkan; batang pudar = tahun belum penuh`); },
   exLogMusim() {
     const L = this.LB, kab = L?.kab && Object.entries(L.kab), tp = (L?.tahun_penuh || []).length; if (!kab || !tp) return "";
@@ -98,8 +97,8 @@ const Tren = {
     const nm = k => { const [p, n] = k.split("|"); return `${n} (${namaProv(p)})`; };
     return this.kartu("Musim logbook", "Musim logbook",
       Grafik.kolom({cat: Grafik.BLN, seri: [["Cuaca ekstrem", "#c99a1e"]], nilai: bln.map(v => [v]), aria: "Kejadian cuaca ekstrem dalam logbook per bulan", pudar: i => i !== m,
-        tip: i => `<b>${BLN_PENUH[i]}</b><br>${fmt(bln[i])} kejadian dalam ${fmt(tp)} tahun dasar`}) + `<p class="fnd">Bulan terbanyak ${BLN_PENUH[pk]}: ${fmt(bln[pk])} kejadian dalam ${fmt(tp)} tahun dasar.</p>`
-      + (top.length ? `<p class="kecil" style="margin:10px 0 4px">${this.KAL ? Kartu.hl(fmt(sering) + " kabupaten/kota") + ` punya cuaca ekstrem tercatat di bulan ${BLN_PENUH[m]} pada separuh tahun dasar atau lebih. ` : ""}Paling langganan bulan ini:</p>`
+        tip: i => `<b>${BLN_PENUH[i]}</b><br>${fmt(bln[i])} kejadian dalam ${fmt(tp)} tahun dasar`})
+      + (top.length ? `<p class="ex-sub"${this.KAL ? ` title="${esc(`${fmt(sering)} kabupaten/kota punya cuaca ekstrem tercatat di bulan ${BLN_PENUH[m]} pada separuh tahun dasar atau lebih`)}"` : ""}>Paling langganan di bulan ${BLN_PENUH[m]} (tahun dengan kejadian dari ${fmt(tp)} tahun dasar)</p>`
         + `<div class="lb-baris" style="display:grid;gap:6px">${top.map(r => `<div data-tip="${esc(`${nm(r.k)}: ${fmt(r.ada)} dari ${fmt(tp)} tahun ada kejadian di ${BLN_PENUH[m]}, total ${fmt(r.n)} kejadian`)}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><b translate="no">${esc(nm(r.k))}</b><span style="white-space:nowrap">${fmt(r.ada)} dari ${fmt(tp)} tahun</span></div><div style="height:8px;border-radius:4px;background:rgba(125,140,163,.18)"><div style="height:8px;border-radius:4px;background:#c99a1e;width:${r.ada / top[0].ada * 100}%"></div></div></div>`).join("")}</div>` : ""),
       `Logbook Pusdalops BNPB, tahun dasar ${rng}; kalender risiko ${this.KAL ? "dari berkas yang sama" : "belum tersedia"}; kejadian yang dilaporkan, pelaporan tidak merata antar daerah`); },
 
@@ -123,8 +122,8 @@ const Tren = {
       ? (tot < 5 ? `${Kartu.hl(fmt(tot) + " kejadian")} dalam ${fmt(tp)} tahun dasar di ${esc(nm(this.st.kk))}, ${tot === 1 ? "di" : "terbanyak di"} bulan ${BLN_PENUH[pk]}` : `${Kartu.hl(fmt(cnt[pk]) + " kejadian")} dalam ${fmt(tp)} tahun dasar di ${BLN_PENUH[pk]}, bulan terbanyak di ${esc(nm(this.st.kk))}${bandingan}`)
       : `${Kartu.hl("0 kejadian")} dalam ${fmt(tp)} tahun dasar di ${esc(nm(this.st.kk))}`;
     const top = ada.map(([k, x]) => [k, x.bulan_penuh.cuaca[m]]).filter(r => r[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 10);
-    const lst = top.length ? `<p class="kecil" style="margin:12px 0 4px">Terbanyak dilaporkan di bulan ${BLN_PENUH[m]} (jumlah dalam ${fmt(tp)} tahun dasar), klik untuk membuka kalendernya:</p><div style="display:grid;gap:6px">${top.map(([k, n]) => `<button type="button" data-kab="${esc(k)}" data-tip="${esc(`${nm(k)} (${namaProv(k.split("|")[0])}): ${fmt(n)} kejadian di ${BLN_PENUH[m]}`)}" style="all:unset;cursor:pointer;display:block"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><b translate="no">${esc(nm(k))}, ${esc(namaProv(k.split("|")[0]))}</b><span>${fmt(n)}</span></div><div style="height:8px;border-radius:4px;background:rgba(125,140,163,.18)"><div style="height:8px;border-radius:4px;background:#c99a1e;width:${n / top[0][1] * 100}%"></div></div></button>`).join("")}</div>` : "";
-    return this.kartu("Kalender kabupaten", kalimat, `<p class="fnd">${tot > 0 ? `Total ${fmt(tot)} kejadian dalam ${fmt(tp)} tahun dasar di ${esc(nm(this.st.kk))}; bulan terbanyak ${BLN_PENUH[pk]}: ${fmt(cnt[pk])} kejadian.` : `0 kejadian dalam ${fmt(tp)} tahun dasar di ${esc(nm(this.st.kk))}.`}</p>` + sel2 + `<p class="kecil" style="margin:0 0 4px"><b>${esc(nm(this.st.kk))}</b></p>` + sel_(v, esc(nm(this.st.kk)), cnt) + `<p class="kecil" style="margin:8px 0 4px"><b>Rata-rata per tahun, ${fmt(jml)} kabupaten/kota se-Indonesia</b></p>` + sel_(nas, "Rata-rata se-Indonesia") + lst,
+    const lst = top.length ? `<p class="ex-sub">Terbanyak dilaporkan di bulan ${BLN_PENUH[m]} (jumlah dalam ${fmt(tp)} tahun dasar); klik untuk membuka kalendernya</p><div style="display:grid;gap:6px">${top.map(([k, n]) => `<button type="button" data-kab="${esc(k)}" data-tip="${esc(`${nm(k)} (${namaProv(k.split("|")[0])}): ${fmt(n)} kejadian di ${BLN_PENUH[m]}`)}" style="all:unset;cursor:pointer;display:block"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><b translate="no">${esc(nm(k))}, ${esc(namaProv(k.split("|")[0]))}</b><span>${fmt(n)}</span></div><div style="height:8px;border-radius:4px;background:rgba(125,140,163,.18)"><div style="height:8px;border-radius:4px;background:#c99a1e;width:${n / top[0][1] * 100}%"></div></div></button>`).join("")}</div>` : "";
+    return this.kartu("Kalender kabupaten", kalimat, sel2 + `<p class="ex-sub">${esc(nm(this.st.kk))}, jumlah kejadian dalam ${fmt(tp)} tahun dasar${tot > 0 ? "" : " (tidak ada kejadian tercatat)"}</p>` + sel_(v, esc(nm(this.st.kk)), cnt) + `<p class="ex-sub">Rata-rata per tahun, ${fmt(jml)} kabupaten/kota se-Indonesia</p>` + sel_(nas, "Rata-rata se-Indonesia") + lst,
       `Logbook Pusdalops BNPB, rata-rata per tahun dalam ${fmt(tp)} tahun dasar (${this.rentangTh(this.LB.tahun_penuh.map(Number).sort((a, b) => a - b))}); angin kencang, puting beliung, hujan es, dan cuaca ekstrem yang dilaporkan, pelaporan tidak merata antar daerah; kotak bergaris = bulan ini`); },
 
   /* kalender bulanan: kejadian cuaca dan gelombang ekstrem DIBI di satu tahun penuh (cuaca_musim.json, scripts/cuaca/musim.py). Tanpa klaim musim: satu tahun, dan DIBI telat lapor */
@@ -134,7 +133,7 @@ const Tren = {
     const pk = tot.indexOf(Math.max(...tot)), ur = tot.map((v, i) => i).sort((a, b) => tot[b] - tot[a]), nama = i => BLN_PENUH[i];
     return this.kartu("Kalender musim", "Kalender musim",
       Grafik.kolom({cat: Grafik.BLN, seri: [["Cuaca ekstrem", "#c99a1e"], ["Gelombang ekstrem", "#3f7fb8"]], nilai: c.map((v, i) => [v, g[i]]), aria: "Kejadian cuaca ekstrem per bulan",
-        tip: i => `<b>${nama(i)} ${th}</b><br>Cuaca ekstrem: ${fmt(c[i])} kejadian<br>Gelombang ekstrem: ${fmt(g[i])} kejadian`}) + `<p class="fnd">Bulan terbanyak ${nama(pk)} ${th}: ${fmt(tot[pk])} kejadian; berikutnya ${nama(ur[1])}: ${fmt(tot[ur[1]])}.</p>`,
+        tip: i => `<b>${nama(i)} ${th}</b><br>Cuaca ekstrem: ${fmt(c[i])} kejadian<br>Gelombang ekstrem: ${fmt(g[i])} kejadian`}),
       `${SUMBER_BNPB}, tahun ${th} saja (2024 tidak lengkap, 2026 belum lengkap); hanya yang dilaporkan, pelaporan sering terlambat`, "", [["#c99a1e", "cuaca ekstrem"], ["#3f7fb8", "gelombang ekstrem"]]); },
   /* ENSO: kejadian cuaca dan gelombang ekstrem per tahun, diwarnai fase ENSO tahun itu (rata-rata ONI setahun, NOAA CPC); hanya mempertemukan dua deret, tidak menilai sebab */
   exEnso() {
@@ -143,13 +142,16 @@ const Tren = {
     const f2 = v => (v > 0 ? "+" : "") + v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2}), nEl = th.filter(t => T[t].fase === "El Niño").length;
     return this.kartu("ENSO", "ENSO",
       Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: FASE, nilai: th.map(t => FASE.map(([f]) => T[t].fase === f ? T[t].n : 0)), aria: "Kejadian cuaca ekstrem per tahun menurut fase ENSO",
-        tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} kejadian<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}`}) + `<p class="fnd">Tertinggi ${fmt(T[pk].n)} kejadian pada ${pk} (fase ${T[pk].fase}), rentang sejak ${th[0]}.${K.status && o ? ` ENSO kini ${K.status}, ONI ${f2(o.nilai)} (${MUSIM_ONI[o.musim] || o.musim} ${o.tahun}).` : ""}</p>`,
+        tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} kejadian<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}`}) + (K.status && o ? `<p class="fnd">Status ENSO terkini: ${K.status}, ONI (Oceanic Niño Index, anomali suhu muka laut Pasifik tengah) ${f2(o.nilai)} pada ${MUSIM_ONI[o.musim] || o.musim} ${o.tahun}.</p>` : ""),
       `${SUMBER_BNPB} ${th[0]}–${th.at(-1)}; ONI NOAA CPC rata-rata setahun kalender (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang); jumlah tercatat juga naik karena pelaporan makin lengkap`,
       "", FASE.map(([f, w]) => [w, f])); },
 
   kabUlang(box) { const f = document.activeElement?.parentElement?.querySelector?.("select[data-kl]")?.dataset.kl; box.innerHTML = this.gambar(box.dataset.ex); box.querySelectorAll("select").forEach(x => PilihCantik.hias(x)); if (f) box.querySelector(`select[data-kl="${f}"]`)?.parentElement.querySelector(".pc-btn")?.focus({preventScroll: true}); },
   segRentang() { return this.tampilSeg() ? Kartu.seg("rentang", [["14", "14 hari"], ["30", "30 hari"], ["90", "90 hari"]], this.st) : ""; },
-  kartu(ey, judul, isi, sumber, ctl = "", leg = null) { return Kartu.kartu(`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[this.IKON[ey]] || ""}</svg>${ey}`, judul, isi, sumber, ctl, leg); },
+  kartu(ey, judul, isi, sumber, ctl = "", leg = null) { return Kartu.kartu(`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[this.IKON[ey]] || ""}</svg>${this.NAMA[ey] || ey}`, judul, isi, sumber, ctl, leg); },
+  /* nama seksi di kepala kartu: Judul (Satuan) */
+  NAMA: {"Hujan lebat": "Area hujan lebat per hari (kotak prakiraan 28 km)", Angin: "Area embusan angin kencang per hari (kotak prakiraan 28 km)", Provinsi: "Provinsi dengan hari hujan lebat atau embusan kencang", "Per tahun": "Dampak cuaca ekstrem per tahun (DIBI BNPB)",
+    Logbook: "Kejadian cuaca ekstrem per tahun (logbook Pusdalops)", "Musim logbook": "Kejadian cuaca ekstrem per bulan (logbook Pusdalops)", "Kalender kabupaten": "Kalender kejadian per kabupaten dan kota", "Kalender musim": "Kejadian cuaca dan gelombang ekstrem per bulan (DIBI BNPB)", ENSO: "Kejadian per tahun menurut fase ENSO (El Niño dan La Niña)"},
   IKON: {"Hujan lebat": "hujan", Angin: "angin", Provinsi: "provinsi", "Per tahun": "ansambel", "Kalender musim": "peluang", ENSO: "siklon", Logbook: "ansambel", "Musim logbook": "peluang", "Kalender kabupaten": "peluang"},
   EX: ["hujan", "angin", "provinsi", "bnpb", "logTahun", "logMusim", "logKab", "musim", "enso"],
   gambar(id) { Kartu._leg = null; try { return kepalaKartu(this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""); } catch (e) { console.error(e); return ""; } },

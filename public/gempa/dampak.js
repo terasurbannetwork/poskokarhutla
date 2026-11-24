@@ -8,13 +8,13 @@ const Dampak = (() => {
   const IKON = "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8";
   let D = null; const st = {kelas: "tinggi", ukuran: "jiwa"};
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
-  const bag = (judul, isi, sumber, ctl = "", leg = null) => Kartu.kartu("Penduduk terpapar", judul, isi, sumber, ctl, leg);
+  const bag = (ey, judul, isi, sumber, ctl = "", leg = null) => Kartu.kartu(ey, judul, isi, sumber, ctl, leg);   /* ey = nama seksi kartu (jadi kepala kartu, kepala.js) */
   const SUMBER = "InaRISK BNPB (indeks bahaya gempa), WorldPop 2026 (penduduk)";
   function nasional() {
     const N = D.nasional, tot = N.rendah + N.sedang + N.tinggi; if (!tot) return "";
     const rows = ["tinggi", "sedang", "rendah"].map(k => ({nama: `Bahaya ${NAMA_KELAS[k]}`, v: N[k], teks: rb(N[k]), warna: KELAS_W[k], pil: [[Math.round(N[k] / tot * 100) + "%", KELAS_W[k], k === "rendah" ? "#3b3320" : "#fff"]],
       tip: `<b>Bahaya ${NAMA_KELAS[k]}</b><br>Penduduk: ${fmt(N[k])} jiwa<br>Bagian: ${Math.round(N[k] / tot * 100)}%`}));
-    return bag(`${Kartu.hl(jt(N.tinggi) + " jiwa")} (${Kartu.hl(Math.round(N.tinggi / tot * 100) + "%")}) penduduk Indonesia tinggal di kecamatan berbahaya gempa tinggi`,
+    return bag("Penduduk nasional", `${Kartu.hl(jt(N.tinggi) + " jiwa")} (${Kartu.hl(Math.round(N.tinggi / tot * 100) + "%")}) penduduk Indonesia tinggal di kecamatan berbahaya gempa tinggi`,
       KG.mendatar(rows, {akhir: 130}), SUMBER); }
   function provinsi() {
     const gab = st.kelas === "sedang", jiwa = st.ukuran === "jiwa", pv = D.prov;
@@ -27,7 +27,7 @@ const Dampak = (() => {
       tip: `<b>${esc(namaProv(r.k))}</b><br>Penduduk di bahaya ${nm}: ${fmt(r.v)} jiwa<br>Bagian penduduk provinsi: ${fmt(Math.round(r.p * 100))}%<br>Kecamatan bahaya tinggi: ${fmt(r.o.kec_tinggi)}`}));
     const judul = `${Kartu.hl(esc(namaProv(R[0].k)))} ${jiwa ? "terbanyak" : "tertinggi"}: ${Kartu.hl(jiwa ? jt(R[0].v) + " jiwa" : fmt(Math.round(R[0].p * 100)) + "%")} penduduknya tinggal di kecamatan berbahaya gempa ${nm}`;
     const ctl = Kartu.seg("kelas", [["tinggi", "Bahaya tinggi"], ["sedang", "Sedang dan tinggi"]], st) + Kartu.seg("ukuran", [["jiwa", "Jumlah jiwa"], ["persen", "Persen penduduk"]], st);
-    return bag(judul, KG.mendatar(rows, {akhir: 130}), SUMBER, ctl); }
+    return bag("Penduduk per provinsi", judul, KG.mendatar(rows, {akhir: 130}), SUMBER, ctl); }
   const pendKartu = () => [nasional(), provinsi()].join("");
   const gambar = () => `<section class="dk-bag" id="dk-pend"><header class="dk-sh" style="--w:${W}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON}"/></svg><h2>Penduduk terpapar</h2></header><div class="dk-kartu">${pendKartu()}</div></section>`;
   /* bagian tambahan (async, dibuang bila datanya tidak ada): paparan guncangan gempa terbesar 7 hari (model, bukan pengukuran) dan fasilitas rawan */

@@ -26,8 +26,9 @@ const Resmi = {
     const D = this.D; if (!D || !(D.fs || D.sp || D.kb)) return ""; const sk = Kartu.hl, bagian = [], judul = [], hari = this.harian(), tw = (kep, b) => `<div class="tw ex-tabel"><table><thead><tr>${kep}</tr></thead><tbody>${b}</tbody></table></div>`;
     const f = D.fs, st = f?.hujan_stasiun?.[0];
     if (st) { const mm = this.modelProv(st.kode_prov, f.tanggal);
-      judul.push(`hujan terukur BMKG tertinggi ${sk(fmt(st.mm) + " mm")} di <span translate="no">${esc(st.nama)}</span>, ${esc(st.prov)}`);
-      bagian.push(this.baris("Hujan terukur BMKG tertinggi", `<span translate="no">${esc(st.nama)}</span>, ${esc(st.prov)}: ${fmt(st.mm)} mm (ikhtisar ${tglSgk(f.tanggal)}). `
+      const pv = st.prov ? ", " + esc(st.prov) : "";   /* provinsi kosong di ikhtisar: tanpa koma yatim */
+      judul.push(`hujan terukur BMKG tertinggi ${sk(fmt(st.mm) + " mm")} di <span translate="no">${esc(st.nama)}</span>${pv}`);
+      bagian.push(this.baris("Hujan terukur BMKG tertinggi", `<span translate="no">${esc(st.nama)}</span>${pv}: ${fmt(st.mm)} mm (ikhtisar ${tglSgk(f.tanggal)}). `
         + (mm == null ? `Model Open-Meteo tidak mencakup ${tglSgk(f.tanggal)}, jadi tidak dibandingkan.` : `Model Open-Meteo, hujan harian tertinggi di ${esc(namaProv(st.kode_prov))} pada tanggal itu: ${fmt(Math.round(mm))} mm.`))); }
     const kj = f?.kejadian_bencana?.filter(k => k.jenis?.length && k.lokasi?.length);
     if (kj?.length) bagian.push(this.baris("Kejadian dilaporkan BMKG", `${fmt(kj.length)} kejadian: ` + kj.slice(0, 3).map(k => `${esc(k.jenis.join(", "))} di ${esc(k.lokasi[0])}`).join("; ") + (kj.length > 3 ? `; dan ${fmt(kj.length - 3)} lainnya` : "") + "."));
@@ -42,13 +43,15 @@ const Resmi = {
     const tabHari = hari.length ? tw(kolom, hari.map(h => `<tr><td>${tglPendek(h.tgl)}</td>${adaLebat ? `<td class="n">${fmt(h.lebat)}</td>` : ""}<td class="n">${fmt(h.sedang)}</td><td class="n">${fmt(h.petir)}</td>${ada ? `<td class="n">${h.nModel ? fmt(h.model) : "–"}</td>` : ""}</tr>`).join("")) : "";
     const tab = bagian.length ? tw("<th>Perbandingan</th><th>Isi</th>", bagian.join("")) : "";
     const kaki = [f && `Ikhtisar Cuaca Harian ${f.diambil ? jamWIB(f.diambil) : tglSgk(f.tanggal)}`, sp && `Prakiraan Sepekan terbit ${tglSgk(sp.terbit.slice(0, 10))}`, D.kb && `prakiraan kabupaten ${jamWIB(D.kb.dibuat)}`].filter(Boolean).join(", ");
-    return Kartu.ex(`${judul.join("; ").replace(/^./, c => c.toUpperCase())}`, "", "", tab + (tabHari ? `<p class="fnd" style="padding:6px 22px 0">Kabupaten dan kota per tanggal menurut teks kondisi BMKG (perwakilan satu waktu per hari), dibandingkan dengan status model Centurisk97${ada ? "" : "; tanggal model tidak beririsan, kolom model dibuang"}.</p>` + tabHari : ""),
+    return Kartu.ex(`${judul.join("; ").replace(/^./, c => c.toUpperCase())}`, "", "", tab + (tabHari ? `<p class="ex-sub" title="Teks kondisi BMKG mewakili satu waktu per hari${ada ? "" : "; tanggal model tidak beririsan, jadi kolom model tidak ditampilkan"}">Jumlah kabupaten dan kota per tanggal menurut teks kondisi BMKG${ada ? ", dibandingkan dengan status model Centurisk97" : ""}</p>` + tabHari : ""),
       `Sumber: BMKG, ${kaki}; model Open-Meteo. Dibandingkan apa adanya, tidak berarti salah satunya benar`); },
-  /* baris laci satu kecamatan: prakiraan BMKG 10 hari kabupatennya, per tanggal apa adanya */
+  /* bagian laci satu kecamatan: prakiraan BMKG 10 hari kabupatennya, per tanggal apa adanya. Tiga tanggal pertama tampil, sisanya dilipat */
   laci(prov, kab) {
     const kb = this.D?.kb, k = kb && Object.values(kb.kab).find(v => v.prov === prov && this.nk(v.nama) === this.nk(kab)); if (!k?.hari?.length) return "";
-    const b = k.hari.map(h => `<tr><td>${tglPendek(h.tgl)}</td><td translate="no">${esc(h.kondisi)}</td><td class="n">${h.tmin != null ? fmt(h.tmin) + " sampai " + fmt(h.tmax) + " °C" : "–"}</td><td class="n">${h.humin != null ? fmt(h.humin) + " sampai " + fmt(h.humax) + "%" : "–"}</td></tr>`).join("");
-    return `<p class="fnd"><b>Prakiraan BMKG 10 hari</b>, <span translate="no">${esc(k.nama)}</span> (kabupaten atau kota, bukan kecamatan)</p><div class="tw"><table><thead><tr><th>Tanggal</th><th>Kondisi</th><th class="n">Suhu</th><th class="n">Kelembapan</th></tr></thead><tbody>${b}</tbody></table></div>
-      <p class="fnd">Sumber: BMKG, dianalisis ${tglSgk(String(k.dianalisis).slice(0, 10))} ${esc(k.zona || "")}, diambil ${jamWIB(k.diambil)}.</p>`; },
+    const br = H => deretLaci(H.map(h => [tglPendek(h.tgl), `<span translate="no">${esc(h.kondisi)}</span>`, h.tmin != null ? `${fmt(h.tmin)} sampai ${fmt(h.tmax)} °C` : "–", h.humin != null ? `kelembapan ${fmt(h.humin)} sampai ${fmt(h.humax)}%` : ""]));
+    const awal = k.hari.slice(0, 3), sisa = k.hari.slice(3);
+    return seksiCu("Prakiraan BMKG 10 hari", "hujan", `<p class="fnd">Untuk <b translate="no">${esc(k.nama)}</b>, tingkat kabupaten atau kota, bukan kecamatan.</p>${br(awal)}
+      ${sisa.length ? lipatLaci(`${fmt(sisa.length)} hari berikutnya`, br(sisa)) : ""}`,
+      `Sumber: BMKG, dianalisis ${tglSgk(String(k.dianalisis).slice(0, 10))} ${k.zona || ""}, diambil ${jamWIB(k.diambil)}.`); },
 };
 Resmi.muat();

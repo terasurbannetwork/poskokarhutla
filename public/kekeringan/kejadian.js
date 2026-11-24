@@ -49,12 +49,17 @@ const KekKejadian = {
   diKlik(e) { if (!this.lihat() || !peta.getLayer("kej-isi")) return false; return peta.queryRenderedFeatures(e.point, {layers: ["kej-isi"]}).length > 0; },
   laci(k) {
     const kab = (k.kab || []).map(x => x.split("|")[1] || x), lain = Math.max(0, k.n_kab - kab.length), lv = this.lv(k);
-    const kepala = `<div><h3 id="dlgJudul"><span translate="no">${esc(k.nama)}</span></h3><p><span translate="no">${esc(k.kode)}</span>, ${k.aktif ? "aktif" : "selesai"}</p></div>`;
-    const isi = `<div class="grid g4">${kot("Tingkat", `<span style="color:${WARNA_LV[lv]}">${LEVEL[lv]}</span>`, "tertinggi di gugus")}${kot("Wilayah", fmt(k.n_kab), "kabupaten/kota")}${k.jiwa ? kot("Penduduk", rb(k.jiwa) + " jiwa", "di kabupaten/kota terkait") : ""}${kot("Status", this.pil(k), "dari berkas kejadian")}</div>
-      <p class="fnd" translate="no"><b>${esc(kab.join(", "))}${lain ? ` dan ${fmt(lain)} lainnya` : ""}</b></p>
-      <p class="fnd">Mulai ${esc(this.tgl(k.mulai))}${k.aktif ? "" : `, terakhir terlihat ${esc(this.tgl(k.terakhir))}`}</p>
-      <p class="fnd"><em class="sp-p oranye">${BELUM_UJI}</em> Deteksi Centurisk97 dari model kekeringan, bukan status resmi BNPB. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`;
-    Analisa.buka(`<section class="bk">${isi}</section>`, kepala);
+    const kepala = `<div><h3 id="dlgJudul"><span translate="no">${esc(k.nama)}</span></h3><p><span translate="no">${esc(k.kode)}</span>, ${k.aktif ? "aktif" : "selesai"} <em class="sp-p oranye">${BELUM_UJI}</em></p></div>`;
+    /* rupa laci bersama (inti/peta.css, window.LaciInti): kotak angka berikon, kartu .lc-sek berkepala ikon, chip wilayah, baris berikon */
+    const L = window.LaciInti, ik = n => L ? L.ikonSvg(n) : "", sek = (j, n, x) => `<section class="lc-sek"><h4 class="lc-h">${ik(n)}${j}</h4>${x}</section>`;
+    const br = (n, l, v) => L ? L.barisLaci(n, l, v) : `<div class="lc-lb"><span class="lc-lb-k">${esc(l)}</span><b>${v}</b></div>`;
+    const chip = L ? L.chipWil(kab, {maks: 12}) + (lain ? `<p class="fnd">dan ${fmt(lain)} kabupaten/kota lainnya</p>` : "")
+      : `<p class="fnd" translate="no"><b>${esc(kab.join(", "))}${lain ? ` dan ${fmt(lain)} lainnya` : ""}</b></p>`;
+    const isi = `<div class="kk-kg">${kot("Tingkat", `<span style="color:${WARNA_LV[lv]}">${LEVEL[lv]}</span>`, "tertinggi di gugus", "perisai")}${kot("Wilayah", fmt(k.n_kab), "kabupaten/kota", "peta")}${k.jiwa ? kot("Penduduk", rb(k.jiwa) + " jiwa", "di kabupaten/kota terkait", "orang") : ""}${kot("Status", this.pil(k), "dari berkas kejadian", "bel")}</div>
+      <div class="lc-lanjut">${kab.length ? sek("Kabupaten/kota", "kab", chip) : ""}
+      ${sek("Waktu", "waktu", `<div class="lc-lbs">${br("waktu", "Mulai", esc(this.tgl(k.mulai)))}${k.aktif ? "" : br("waktu", "Terakhir terlihat", esc(this.tgl(k.terakhir)))}${br("waktu", "Diperbarui", esc(jamWIB(this.D?.dibuat || Date.now())))}</div>
+        <p class="fnd lc-src">Deteksi Centurisk97 dari model kekeringan, bukan status resmi BNPB.</p>`)}</div>`;
+    Analisa.buka(isi, kepala);
     const f = (this.G?.features || []).find(x => x.properties.kode === k.kode);
     if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); },
   legenda() { if (!this.lihat() || !this.K?.length) return "";

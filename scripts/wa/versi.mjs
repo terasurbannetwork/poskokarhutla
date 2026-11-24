@@ -8,9 +8,14 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.6'
+export const VERSI = '2.6.1'
 
 export const CHANGELOG = [
+  { versi: '2.6.1', tanggal: '2026-11-21', isi: [
+    'Bahan yang kalimat pembukanya berubah tetap dikenali: bila bot tidak mengenali kiriman dari bentuk teksnya, Claude membaca isinya dan menentukan jenis bahan (misalnya rekap Koordalops, BMKG, PVMBG) beserta tanggal laporannya. Tiap kiriman cukup dibaca sekali.',
+    'Rekap Koordalops dengan kalimat pembuka baru ("rekapitulasi kejadian bencana ... dihimpun oleh Direktorat Koordinasi Pengendalian Operasi Darurat BNPB") terbaca, termasuk jumlah kejadiannya.',
+    'Bila rekap Koordalops belum ada lalu diketik *lanjut*, bot menyebut rekap itu yang kurang, bukan galat berkas tidak ditemukan.',
+  ] },
   { versi: '2.6', tanggal: '2026-11-20', isi: [
     'Laporan khusus gempa: ketik *buat gempa nias* (atau tulis biasa, misalnya "buatkan laporan gempa nias"). Bot mencari gempa terbaru di tempat itu dari BMKG, lalu langsung membuat laporan dua halaman: peta guncangan per kab/kota, kondisi menurut BPBD dan BMKG, penduduk dalam jangkauan guncangan, peluang gempa susulan, penanganan, langkah yang disarankan, dan riwayat gempa di sekitarnya.',
     'Tanpa nama tempat (*buat gempa*), bot memakai gempa M5 ke atas terbaru. Tanggal boleh ditambah di ujung, misalnya *buat gempa nias 19 nov*.',

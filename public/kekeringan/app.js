@@ -47,10 +47,40 @@ const BELUM_UJI = "Belum diuji balik";
 /* ambang status SPI/tanah: label lepas dari "hipotesis" hanya bila uji balik terhadap kejadian DIBI lolos kriteria (ujibalik.py `kejadian.vonis`); alasan tertulis di berkas */
 const blnIso = ym => BLN[+ym.slice(5) - 1] + " " + ym.slice(0, 4);
 const AMBANG_KAKI = () => { const j = S.uji?.kejadian; if (!j || j.vonis?.layak) return ""; const f = Object.entries(j.aturan?.waspada || {}).filter(([k]) => k !== "semua").map(([, v]) => v.far).filter(x => x != null).map(x => Math.round(x * 100));
-  return `Ambang belum lolos uji kejadian DIBI${f.length ? ` (FAR ${Math.min(...f)}–${Math.max(...f)}%)` : ""}; angka ini ukuran skala, bukan jumlah penerima.`; };
+  return `Ambang belum lolos uji terhadap kejadian di Data dan Informasi Bencana Indonesia (DIBI) BNPB${f.length ? `, alarm palsu ${Math.min(...f)}–${Math.max(...f)}%` : ""}; angka ini ukuran skala, bukan jumlah penerima bantuan.`; };
 /* kartu yang angkanya bergantung pada status Waspada/Siaga/Awas: pil ambang di kepala + satu kalimat di kaki; lepas sendiri bila uji balik lolos */
 const beriAmbang = h => { const k = AMBANG_KAKI(); if (!k || !h) return h;
-  return h.replace(/(<span class="ex-ey">[^<]*<\/span>)/, `$1<span class="ex-ey" style="margin-left:6px;color:#8a4b00;background:#f6dcb5">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p style="margin:0;padding:2px 22px 14px;font-size:12px;opacity:.75;font-style:italic">${k}</p></article>`); };
+  /* pil hipotesis di kepala; catatan ambang masuk kaki kartu (bukan paragraf lepas di bawah kaki) */
+  h = h.replace(/(<header class="ex-hd">(?:<span class="ex-ey">[^<]*<\/span>)?)/, `$1<span class="ex-ey kk-hip" title="${esc(k)}">${AMBANG_PIL()}</span>`);
+  return h.includes('<footer class="ex-ft">') ? h.replace(/<\/footer>(\s*<\/article>)/, `<span class="kk-catatan">${k}</span></footer>$1`) : h.replace(/<\/article>/, `<footer class="ex-ft"><span class="kk-catatan">${k}</span></footer></article>`); };
+/* kartu laporan standar (AGENTS.md 3.5, pemilik 11 Nov 2026 "gausah ada kesimpulan ini"): kepala = NAMA SEKSI berikon, kalimat temuan dan sumber
+   pindah ke title kepala (tetap terbaca saat disorot dan oleh pembaca layar), kaki "Sumber:" dibuang, legenda tetap. Pil kategori yang sama dengan
+   nama seksi dibuang; pil lain (ambang hipotesis, belum diuji) tetap. Dipakai Insight, Tren, Berita, Metode, Posko. */
+const NAMA_SEKSI = {HTH: "Hari tanpa hujan", "HTH terpanjang": "Hari tanpa hujan terpanjang", "Kode DC": "Kode kekeringan (DC)", BNPB: "Data BNPB",
+  "Kabupaten/kota": "Status kabupaten/kota", Jiwa: "Penduduk di wilayah kering", Prakiraan: "Prakiraan 1 sampai 3 bulan", Padi: "Padi tadah hujan",
+  "Paling kering": "Wilayah paling kering", Kabupaten: "Kebutuhan air per kabupaten/kota", Dasarian: "Riwayat dasarian", Status: "Status wilayah", Tanah: "Kelembapan tanah", Wilayah: "Status kabupaten/kota", "Seberapa tepat": "Uji balik aturan status", Gambut: "Gambut di wilayah kering", Bukti: "Bukti gambut dan wilayah sering kering", "Penyetelan putaran 2": "Penyetelan ambang putaran 2", Penyetelan: "Penyetelan ambang"};
+const IK_SEKSI = [
+  [/hujan|dasarian|kalender|musim|persentase/i, "M7 15a4 4 0 0 1-.9-7.9A6 6 0 0 1 17.7 8 3.5 3.5 0 0 1 17.5 15M8 18l-1 3M12 18l-1 3M16 18l-1 3"],
+  [/penduduk|jiwa|kebutuhan/i, "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"],
+  [/padi/i, "M3 20c3-6 6-9 9-9s6 3 9 9M12 11V4M9 7l3-3 3 3"],
+  [/gambut|DC/i, "M12 3c2 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 2 4 3 4 0-3-1-6 0-9Z"],
+  [/El Ni/i, "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"],
+  [/uji|tepat|penyetelan|bukti/i, "M4 12.5l5 5L20 6.5"],
+  [/prakiraan|peluang|risiko|volume|topik/i, "M4 20V10M10 20V4M16 20v-7M22 20H2"],
+  [/peta berita|kabupaten|wilayah/i, "M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"],
+  [/berita|sorotan/i, "M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"],
+  [/posko|air/i, "M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"],
+  [/BMKG|BNPB|status/i, "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"]];
+const IK_KERING = "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19";
+const ikonSeksi = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${(IK_SEKSI.find(([r]) => r.test(n)) || [0, IK_KERING])[1]}"/></svg>`;
+const teksPolos = h => new DOMParser().parseFromString(String(h), "text/html").body.textContent.replace(/\s+/g, " ").trim();
+const kepalaSeksi = (h, namaPaksa) => {
+  if (!h || !h.includes("<article")) return h;
+  const m = h.match(/<span class="ex-ey">([^<]+)<\/span>/); if (!m) return h;
+  const nama = namaPaksa || NAMA_SEKSI[m[1]] || m[1]; let sumber = "";
+  h = h.replace(/<em>Sumber:\s*([\s\S]*?)<\/em>/, (_, s) => { sumber = teksPolos(s); return ""; }).replace(/<footer class="ex-ft"><\/footer>/, "");
+  h = h.replace(/<h3([^>]*)>([\s\S]*?)<\/h3>/, (_, a, j) => { const t = teksPolos(j); return `<h3${a} title="${esc(t + (sumber ? (/[.!?]$/.test(t) ? " " : ". ") + "Sumber: " + sumber : ""))}">${h.includes('class="ex-ik"') ? "" : ikonSeksi(nama)}${esc(nama)}</h3>`; });
+  return h.replace(m[0], "").replace(/<article class="ex"/, '<article class="ex ex-std"'); };
 const AMBANG_PIL = () => S.uji?.kejadian?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis";
 /* nama provinsi pada SK BNPB -> kode */
 const PROV_KODE = (() => { let m = null; return n => { if (!m) { m = {}; for (const [k, v] of Object.entries(S.meta.provinsi)) m[v.toLowerCase()] = k; m["daerah istimewa yogyakarta"] = "34"; m["dki jakarta"] = "31"; } return m[String(n).toLowerCase()]; }; })();
@@ -86,9 +116,9 @@ function bukaTab(id, dorong = true) {
   bg.onclick = e => { e.stopPropagation(); atur(!hd.classList.contains("buka")); };
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
   $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; bukaTab(b.dataset.t); atur(false); }); }
-const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
+const temaAwal = bacaLokal("pk-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
 const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-$("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
+$("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pk-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
 
 /* ---------- data */
 async function muatData() {

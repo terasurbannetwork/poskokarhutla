@@ -37,7 +37,8 @@ TIDAK_BAKU = {k: v for k, v in TIDAK_BAKU.items() if k != v}
 
 # istilah Inggris yang harus dicetak miring bila dipakai
 INGGRIS = ['hotspot', 'run-up', 'onset', 'sudden onset', 'slow onset', 'extensive risk', 'hazardous event',
-           'structured narrative review', 'associated types', 'Pressure and Release model', 'double counting']
+           'structured narrative review', 'associated types', 'Pressure and Release model', 'double counting',
+           'rapid assessment', 'confidence']
 
 # aturan pemilik dan pola bahasa: (pola, pesan, tingkat, berlaku di pustaka?)
 POLA = [
@@ -47,6 +48,8 @@ POLA = [
     (r'Kajian Penghitungan dan Klasifikasi', 'pemilik: jangan memakai kajian klasifikasi sebelumnya', 'GALAT', True),
     (r'Pantau Bencana', 'pemilik: jangan menulis "Pantau Bencana"', 'GALAT', True),
     (r'·', 'pemilik: jangan memisahkan teks dengan titik tengah', 'GALAT', True),
+    # pemilik 19 Nov 2026: istilah Inggris dipakai bila lebih mudah dipahami; judul resmi Juklak 3/2022 "Pengkajian Cepat" tetap
+    (r'\b[Kk]aji cepat\b|\b[Tt]inggi rayapan\b|\b[Tt]ingkat keyakinan\b', 'pemilik: pakai istilah yang lazim, yaitu rapid assessment, run-up, atau confidence', 'GALAT', False),
     (r'\b(akibat|karena|oleh)\s+(langsung\s+)?bahaya\b', '"bahaya" bukan pelaku; pakai "kejadian bencana" atau "ancaman"', 'GALAT', False),
     (r'\bjenis bahaya\b|\bsetiap bahaya\b|\bper bahaya\b', 'pakai "jenis bencana" atau "jenis ancaman"', 'GALAT', False),
     (r'\badalah merupakan\b|\bmerupakan adalah\b', 'pleonasme; pilih salah satu', 'GALAT', False),
@@ -141,8 +144,11 @@ def main():
     args = [Path(a) for a in sys.argv[1:]]
     if not args:
         akar = DI.parent      # folder standar-data-bencana
-        args = sorted(p for p in akar.rglob('*.md') if 'sumber' not in p.parts and p.name != 'README.md')
-        args += sorted(p for p in akar.rglob('*.html') if p.parent.name in ('gambar', 'infografis'))
+        # arsip = salinan beku revisi lama; tidak disunting, jadi tidak diperiksa
+        # research_notes dan reports = catatan kerja riset, bukan naskah
+        LEWAT = {'sumber', 'arsip', 'research_notes', 'reports'}
+        args = sorted(p for p in akar.rglob('*.md') if not LEWAT & set(p.parts) and p.name != 'README.md')
+        args += sorted(p for p in akar.rglob('*.html') if p.parent.name in ('gambar', 'infografis') and 'arsip' not in p.parts)
     galat = saran = 0
     for p in args:
         for tingkat, no, cuplik, pesan in periksa(p):

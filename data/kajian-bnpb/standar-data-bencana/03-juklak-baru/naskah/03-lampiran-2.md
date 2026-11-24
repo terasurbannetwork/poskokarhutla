@@ -13,7 +13,7 @@ Setiap data dalam lampiran ini memuat lima komponen standar data, yaitu konsep, 
 | 3 | Subjenis bencana | Rincian jenis bencana yang bersifat saling lepas | Isian: subjenis sesuai dengan Tabel 1; untuk tsunami ditambah atribut jarak sumber: lokal, regional, atau jarak jauh | – | – |
 | 4 | Status kejadian | Tingkat pencatatan suatu peristiwa | Isian: peristiwa ancaman; kejadian yang belum memenuhi kriteria; kejadian bencana | – | – |
 | 5 | Kriteria yang terpenuhi | Kriteria kejadian bencana yang menjadi dasar pencatatan | Isian: huruf a sampai f sesuai dengan Bab II huruf C | – | – |
-| 6 | Kelas kejadian | Penggolongan kejadian bencana menurut besarnya dampak | Isian: bencana mayor; bencana minor; disertai indikator penentu | – | – |
+| 6 | Kelas kejadian | Penggolongan kejadian bencana menurut besarnya dampak | Isian: bencana intensif; bencana ekstensif; disertai indikator penentu | – | – |
 | 7 | KIB | Kode unik 16 digit untuk setiap catatan kabupaten/kota | – | – | – |
 | 8 | Nomor induk kejadian | Nomor unik satu kejadian di tingkat nasional yang diterbitkan walidata bencana | – | – | – |
 | 9 | Kejadian pemicu | Nomor induk kejadian pemicu apabila kejadian ini merupakan kejadian ikutan | – | – | – |

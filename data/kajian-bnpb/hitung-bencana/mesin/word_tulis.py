@@ -405,7 +405,7 @@ class Dok:
         kp(K.ANAK, size=11.5, color=TEKS2, after=12)
         q = kp(after=14)
         p_border(q, 'bottom', GARIS, 8, 1)
-        kp('Disusun oleh', size=9.5, color=TEKS2, after=2)
+        kp(K.OLEH_LABEL, size=9.5, color=TEKS2, after=2)
         kp(K.OLEH, size=11, bold=True, color=NAVY, after=14)
         q = kp(after=0)
         r = set_font(q.add_run(f'  Jakarta, {self.tanggal}  '), 10, True, None, 'FFFFFF')

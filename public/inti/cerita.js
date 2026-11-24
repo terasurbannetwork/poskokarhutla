@@ -2,7 +2,8 @@
 /* Kartu Cerita bersama (gempa, gunung api, banjir, kekeringan, cuaca, udara): satu bingkai, isi dipasok adaptor yang didaftarkan tiap bencana dari berkasnya sendiri.
    Adaptor mengembalikan {judul, baris: [[warna, label pil, kalimat]], sumber, ey?} atau {judul, grafik, sumber, leg?} (kartu bergrafik); null/"" = kartu dibuang.
    Hanya data bersumber yang sudah ada di berkas bencana itu. Butuh format.js dan kartu.js. Gaya baris di cerita.css (dimuat halaman).
-   Pakai: Cerita.daftar("gempa", () => ({...})); sisip di render: Cerita.sisip(el, "gempa") (async, kartu ditambahkan di akhir); atau Cerita.kartu("gempa") untuk string/janji. */
+   Pakai: Cerita.daftar("gempa", () => ({...})); sisip di render: Cerita.sisip(el, "gempa") (async, kartu ditambahkan di akhir); atau Cerita.kartu("gempa") untuk string/janji,
+   Cerita.kartu("gempa", {seksi: true}) untuk kepala nama seksi. */
 const Cerita = {
   A: {},
   daftar(id, fn) { this.A[id] = fn; },
@@ -23,10 +24,13 @@ const Cerita = {
     return {judul: `${Kartu.hl(U[kunci][0](o[kunci]))} pada ${y}, tahun ${kunci === "rumah_rusak" ? kata + " dengan rumah rusak terbanyak" : kata + " terberat"} dalam catatan BNPB ${th[0]} sampai ${z}`,
       baris: [["#b5651d", "Pernah terjadi", `Tahun ${y} tercatat ${bag} akibat ${kata}.`],
         ["#6b7fa3", "Terbaru", `Tahun ${z} tercatat ${fmt(T[z].kejadian)} kejadian ${kata}, ${n ? `peringkat ${fmt(n)} dari ${fmt(urut.length)} tahun menurut ${U[kunci][1]}` : `${U[kunci][1]} tidak tercatat`}.`]]}; },
-  kartu(id) { const a = this.A[id]; if (!a) return "";
-    const h = c => c && (c.grafik || c.baris?.length) ? this.bingkai(c) : "", c = a();
+  /* o.seksi = true: kepala nama seksi (Kartu.seksi): ikon + nama ey di h3, kalimat temuan .hl dan "Sumber:" ke title h3, kaki hanya legenda.
+     Tanpa opsi, string mentah tetap dipakai pembungkus laman (kepalaKartu cuaca, kepalaSeksi kekeringan, rapiKartu gunung api) yang memberi nama sendiri. */
+  kartu(id, o = {}) { const a = this.A[id]; if (!a) return "";
+    const h = c => { const x = c && (c.grafik || c.baris?.length) ? this.bingkai(c) : ""; return o.seksi ? Kartu.seksi(x) : x; }, c = a();
     return c?.then ? c.then(h).catch(e => { console.error(e); return ""; }) : h(c); },
+  /* di laman bencana baru (Kartu.SEKSI) kartu yang disisipkan langsung berkepala nama seksi */
   async sisip(el, id) {
-    const h = await this.kartu(id); if (!h || !el.isConnected || el.querySelector(".ex-cerita")) return;
+    const h = await this.kartu(id, {seksi: Kartu.SEKSI}); if (!h || !el.isConnected || el.querySelector(".ex-cerita")) return;
     const t = document.createElement("div"); t.className = "ex-cerita"; t.innerHTML = h; el.append(t); },
 };

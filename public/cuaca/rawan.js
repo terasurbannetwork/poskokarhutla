@@ -87,9 +87,8 @@ const Rawan = (() => {
     const o = baris(f); S.pilih = null; renderCrumb();
     Laci.buka(o.ls ? "Infrastruktur rawan longsor" : "Jaringan peringatan dini", `<span translate="no">${esc(o.nama)}</span>`, `<span class="pl" style="--w:${KEL[o.g][1]}">${esc(o.jenis)}</span>`,
       `${kvs(o.ls ? kot("Prakiraan", esc(o.d.bulan_nama), "Badan Geologi") : kot("Pemilik", esc(o.d.jenis[o.r[2]].pemilik), "menurut sumber"))}
-      ${o.wil ? `<p class="fnd" translate="no"><b>${esc(o.wil)}</b></p>` : ""}
-      <p class="fnd">${o.ls ? `Berada di zona potensi gerakan tanah tinggi pada prakiraan ${esc(o.d.bulan_nama)}. Ini prakiraan zona, bukan kejadian longsor.` : "Lokasi alat menurut data BNPB; status operasi alat tidak tercatat di sumber."}</p>
-      <p class="fnd">${SUMBER[o.k]}, diambil ${esc(o.d.diambil)}</p>`);
+      ${seksiCu("Lokasi", "pusat", `<div class="lc-lbs">${o.wil ? LI().barisLaci("kab", o.ls ? "Kabupaten atau kota" : "Wilayah", `<span translate="no">${esc(o.wil)}</span>`) : ""}${LI().barisLaci("peringatan", "Jenis", esc(o.jenis))}</div>
+        <p class="fnd">${o.ls ? `Berada di zona potensi gerakan tanah tinggi pada prakiraan ${esc(o.d.bulan_nama)}. Ini prakiraan zona, bukan kejadian longsor.` : "Lokasi alat menurut data BNPB; status operasi alat tidak tercatat di sumber."}</p>`, `${SUMBER[o.k]}, diambil ${o.d.diambil}`)}`);
     peta.flyTo({center: [o.r[0], o.r[1]], zoom: Math.max(peta.getZoom(), 9), duration: 600}); return true; }
 
   return {pasang, kontrol, legenda, hover, klik};

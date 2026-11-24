@@ -31,3 +31,6 @@
 .tp-hd .tp-ik{width:18px;height:18px}
 .lapis label.ubin.memuat .ub-th{animation:ub-muat .9s ease-in-out infinite alternate}
 @keyframes ub-muat{to{opacity:.45}}
+/* body.pb-rapi: kartu hover dengan 3 isian atau lebih jadi kisi dua kolom; nama boleh turun baris. Kartu 1 sampai 2 isian tetap satu baris. */
+.pb-rapi .tp-gr.tp-satu:has(> :nth-child(3)){display:grid;grid-template-columns:repeat(2,minmax(0,auto));justify-content:center;gap:8px 18px}
+.pb-rapi .tp-nm b{white-space:normal;text-align:center;max-width:260px}

@@ -10,7 +10,7 @@
 .sm-fld{display:grid;gap:6px;justify-items:start}
 .sm-fld .seg,.sm-fld select,.sm-fld input{justify-self:stretch}
 .sm-fld .seg{display:flex;width:100%;box-shadow:none}
-.sm-fld .seg button{flex:1;text-align:center;padding:5px 4px}
+.sm-fld .seg button{flex:1 1 0;min-width:0;white-space:normal;line-height:1.2;text-align:center;padding:5px 4px}
 .sm-fld input[type=range]{width:100%;accent-color:var(--bad)}
 .sm-pil{display:inline-flex;align-items:center;gap:6px}
 .sm-pil svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -18,12 +18,22 @@
 .sm-hasil b{display:block;font-family:var(--display);font-size:17px;font-weight:800;color:var(--bad)}
 .sm-hasil span{color:var(--ink2)}
 .sm-kartu,.sm-fld,.sm-hasil>div{min-width:0}
-.sm-kartu .tw{overflow-x:auto}
+.sm-kartu .tw,.sm-ex .tw{overflow-x:auto}
 .sm-kartu{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);display:grid;gap:8px}
-.sm-kartu h3{font-size:14.5px;margin:0}
-.sm-kartu .tw{max-height:none}
-.sm-kartu table{font-size:12px}
-.sm-kartu .pgn{font-size:11.5px}
+.sm-kartu h3{font-size:var(--fs-4);margin:0}
+.sm-kartu .tw,.sm-ex .tw{max-height:none}
+.sm-kartu table,.sm-ex table{font-size:var(--fs-2)}
+.sm-kartu .pgn,.sm-ex .pgn{font-size:11.5px}
+/* kartu standar di panel sempit: jarak dari gap grid, kepala lebih kecil */
+.sm-bd{grid-auto-rows:max-content}   /* kartu overflow:hidden tidak boleh dipipihkan baris grid */
+.sm-bd .ex.ex-std{margin:0;min-width:0}
+.sm-bd .ex-std>.ex-hd{padding:12px 14px 10px}
+.sm-bd .ex-std>.ex-bd{padding:12px 14px;gap:10px}
+.sm-bd .ex-std .ex-jd>h3{font-size:var(--fs-5)}
+/* isi kartu tidak boleh melebarkan kartu: tabel menggulir sendiri, pgn membungkus */
+.sm-ex>.ex-bd{grid-template-columns:minmax(0,1fr)}
+.sm-ex>.ex-bd>*{min-width:0;max-width:100%}
+.sm-ex .pgn{flex-wrap:wrap}
 .sm-met{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:0}
 .sm-met summary{cursor:pointer;padding:10px 12px;font-weight:700;font-size:13px}
 .sm-met div{padding:0 12px 12px;font-size:12px;line-height:1.5;color:var(--ink2)}
@@ -51,3 +61,10 @@
 #smHasil .ex-jd h3{font-size:15.5px;line-height:1.4}
 #smHasil .ex-bd{padding:0 14px 6px}
 #smHasil .ex-ft{padding:6px 14px 10px;font-size:11px}
+/* hasil simulasi: butir per bahaya (abu, lahar, awan panas), angka disorot .hl */
+.sm-poin{margin:0;padding-left:18px;display:grid;gap:6px;font-size:13px;line-height:1.5}
+.sm-poin .hl{color:var(--bad);font-weight:700}
+#smHasil .ex-std>.ex-bd{padding:10px 14px 12px;gap:10px}
+/* pilihan kecepatan putar: penuh dari ujung ke ujung, terbagi rata */
+.sm-waktu .seg{flex:1 1 100%;display:flex;width:100%}
+.sm-waktu .seg button{flex:1;text-align:center}

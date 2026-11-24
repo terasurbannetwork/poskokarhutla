@@ -98,6 +98,8 @@
   .dk-lay{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;align-items:start}
   .dk-nav{position:sticky;top:70px;flex-direction:column;overflow:visible;margin:0;gap:4px}
   .dk-nav button{width:100%;justify-content:flex-start;border-radius:12px;white-space:nowrap}
+  /* laman bencana baru: nama bagian panjang (cuaca: "Penduduk di area hujan lebat") turun baris, tidak terpotong */
+  :root[data-kartu="seksi"] .dk-nav button{white-space:normal;text-align:left;line-height:1.25;min-height:38px;padding-top:5px;padding-bottom:5px}
 }
 /* bagian 9: bendera negara & berita internasional bergambar */
 .dk-thumb{display:block;width:72px;height:48px;border-radius:6px;object-fit:cover;background:var(--surface)}
@@ -107,7 +109,9 @@
 .dk-media small{display:block;color:var(--ink2);font-size:10.5px}
 @media (max-width:640px){.dk-thumb{width:56px;height:40px}}
 /* daftar bagian di kiri: putih, aksen warna bagian hanya di ikon + garis kiri; aktif = pita warna bagian seperti kepala bagian (pemilik, 14 Okt 2026) */
+/* garis kiri digambar sebagai bayangan dalam (lurus, ikut sudut tombol), bukan border-left tebal yang melengkung di sudut membulat */
 .dk-nav button{background:var(--card)!important;border-color:var(--line)!important;border-left:4px solid var(--w)!important}
+:root[data-kartu="seksi"] .dk-nav button{border-left:1px solid var(--line)!important;box-shadow:inset 4px 0 0 var(--w),var(--shadow)!important;overflow:hidden;padding-left:12px!important;gap:9px}
 .dk-nav button:hover{background:color-mix(in oklch, var(--w) 8%, var(--card))!important;border-color:color-mix(in oklch, var(--w) 40%, var(--line))!important}
 .dk-nav button.on{background:linear-gradient(120deg,var(--w),color-mix(in oklch, var(--w) 70%, #0b2545))!important;border-color:var(--w)!important;color:#fff!important}
 .dk-nav button.on svg{background:rgb(255 255 255 / .2)!important}

@@ -15,12 +15,12 @@ Berdasarkan telaah tersebut, Tim Ahli dan Tim Sus IT BNPB menyusun Rancangan Pet
 Kajian ini menjawab tiga pertanyaan penelitian.
 
 1. Bagaimana menentukan bahwa suatu peristiwa merupakan kejadian bencana dan bagaimana menetapkan batas satu kejadian untuk sembilan jenis bencana alam?
-2. Apa batas yang membedakan bencana mayor dan bencana minor, dan bagaimana hubungan batas tersebut dengan status keadaan darurat?
+2. Apa batas yang membedakan bencana intensif dan bencana ekstensif, dan bagaimana hubungan batas tersebut dengan status keadaan darurat?
 3. Data apa yang perlu dikumpulkan ketika bencana terjadi, baik data umum untuk semua jenis bencana maupun data khusus untuk setiap jenis bencana, dan bagaimana prosedur baku pengumpulannya di lapangan?
 
 ## 1.3 Tujuan dan manfaat
 
-Kajian ini bertujuan menjelaskan dasar akademik dan cara penerapan ketentuan Rancangan Juklak dalam tiga hal, yaitu penentuan kejadian bencana untuk setiap jenis bencana, batas kelas mayor dan minor, serta standar data dan prosedur operasional standar (SOP) pengumpulan data lapangan.
+Kajian ini bertujuan menjelaskan dasar akademik dan cara penerapan ketentuan Rancangan Juklak dalam tiga hal, yaitu penentuan kejadian bencana untuk setiap jenis bencana, batas kelas intensif dan ekstensif, serta standar data dan prosedur operasional standar (SOP) pengumpulan data lapangan.
 
 Kajian ini diharapkan bermanfaat bagi tiga pihak. Bagi BPBD, kajian ini menjelaskan alasan dan contoh penerapan setiap ketentuan, sehingga petugas tidak perlu menafsirkan aturan sendiri. Bagi Pusat Pengendalian Operasi (Pusdalops) dan Pusat Data, Informasi, dan Komunikasi Kebencanaan (Pusdatinkom), kajian ini menyediakan aturan yang dapat dijalankan oleh sistem dan dapat diperiksa ulang. Bagi pimpinan, kajian ini menyediakan dasar untuk menetapkan Rancangan Juklak serta ukuran besar kecilnya bencana yang tidak hanya bertumpu pada jumlah kejadian.
 
@@ -28,12 +28,12 @@ Kajian ini diharapkan bermanfaat bagi tiga pihak. Bagi BPBD, kajian ini menjelas
 
 Kajian ini mencakup sembilan jenis bencana alam dalam Rancangan Juklak Tabel 1, yaitu banjir (kode 101), tanah longsor (102), gelombang pasang dan abrasi (103), cuaca ekstrem (104), kekeringan (105), kebakaran hutan dan lahan (106), gempa bumi (107), tsunami (108), dan erupsi gunung api (109). Bencana nonalam dan bencana sosial berada di luar lingkup kajian ini. Untuk kedua kelompok tersebut, Rancangan Juklak Bab II huruf C angka 6 menambahkan jalur penetapan oleh otoritas sektor, misalnya penetapan kejadian luar biasa oleh otoritas kesehatan.
 
-Kajian ini membahas pencatatan data, bukan penetapan status keadaan darurat. Penetapan status tetap menjadi kewenangan bupati/wali kota, gubernur, atau Presiden sesuai dengan Undang-Undang Nomor 24 Tahun 2007 Pasal 51. Kelas mayor dan minor merupakan klasifikasi data statistik, bukan penetapan tingkat bencana.
+Kajian ini membahas pencatatan data, bukan penetapan status keadaan darurat. Penetapan status tetap menjadi kewenangan bupati/wali kota, gubernur, atau Presiden sesuai dengan Undang-Undang Nomor 24 Tahun 2007 Pasal 51. Kelas intensif dan ekstensif merupakan klasifikasi data statistik, bukan penetapan tingkat bencana.
 
 ## 1.5 Sistematika penulisan
 
 Kajian ini disusun dengan kerangka IMRaD, yaitu pendahuluan, metode, hasil, dan pembahasan. Bab 1 memuat latar belakang dan pertanyaan penelitian. Bab 2 menjelaskan metode kajian pustaka dan cara sintesisnya. Bab 3 menyajikan hasil untuk tiga pertanyaan penelitian secara berurutan, dengan merujuk ketentuan Rancangan Juklak yang bersangkutan. Bab 4 membahas makna hasil, kelebihan dan kekurangan setiap pilihan, dan keterbatasan kajian. Bab 5 memuat kesimpulan dan rekomendasi. Lampiran disajikan dalam dokumen terpisah, yaitu Lampiran A tentang SOP pengumpulan data lapangan, Lampiran B tentang kamus data umum, Lampiran C tentang lembar data khusus untuk setiap jenis bencana, dan Lampiran D tentang glosarium.
 
 :::tentang
-Kajian ini disusun oleh Tim Ahli dan Tim Sus IT BNPB sebagai pendamping Rancangan Petunjuk Pelaksanaan Standar Data Kejadian dan Dampak Bencana. Batas kelas mayor dalam Rancangan Juklak belum diuji dengan data kejadian Indonesia dan perlu diuji pada uji coba sebelum ditetapkan. Istilah teknis dijelaskan dalam Glosarium (Lampiran D).
+Kajian ini disusun oleh Tim Ahli dan Tim Sus IT BNPB sebagai pendamping Rancangan Petunjuk Pelaksanaan Standar Data Kejadian dan Dampak Bencana. Batas kelas intensif dalam Rancangan Juklak belum diuji dengan data kejadian Indonesia dan perlu diuji pada uji coba sebelum ditetapkan. Istilah teknis dijelaskan dalam Glosarium (Lampiran D).
 :::

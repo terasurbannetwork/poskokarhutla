@@ -244,7 +244,7 @@ async function koordalopsPeriode(ctx, dep, awal, akhir, ke) {
   fs.mkdirSync(ke, { recursive: true, mode: 0o700 })
   for (let h = geserHari(awal, 1); h <= geserHari(akhir, 1) && h <= kini; h = geserHari(h, 1)) {
     try {
-      const b = await ambilBahan({ env: ctx.env, dep, tanggal: h, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+      const b = await ambilBahan({ env: ctx.env, dep, tanggal: h, kenali: kenaliDari(ctx), tanggalIsi: tanggalIsiDari(ctx), log })
       const { teks } = await b.pilihSesuai(harian)
       const t = teks.rekap_koordalops_24
       if (!t || /^biner:/.test(t)) continue
@@ -659,6 +659,66 @@ async function rapikanBahan(ctx, p, mentah, pakai, galat) {
   }
 }
 
+// ---------- Pengenal cadangan lewat Claude (pemilik 21 Nov 2026) ----------
+// Pola wa_jenis.js tetap jalan lebih dulu (gratis). Bahan teks panjang yang lolos dari pola ditanyakan sekali ke Claude (Haiku):
+// jenis + tanggal yang ditulis bahan itu. Hasil (termasuk 'bukan') disimpan per sidik teks supaya tiap pesan hanya ditanya sekali.
+const kenaliP = (dasar) => path.join(dirProyek(dasar), 'kenali-claude.json')
+const sidikTeks = (t) => crypto.createHash('sha256').update(String(t ?? '').trim()).digest('hex').slice(0, 32)
+const KENALI_MIN = 300, KENALI_MAKS_SIMPAN = 3000, KENALI_MAKS_PANGGIL = 8
+const JENIS_TEKS = jenisWa.JENIS_LAPORAN.filter((j) => !['laphar_pdf', 'gelar_udara'].includes(j.kunci)) // dua ini dikenali dari nama berkas
+const polaKenali = (ctx) => ctx.kenali || jenisWa.kenali
+function catatanKenali(ctx) { return bacaJson(kenaliP(ctx.dasar || RUMAH), {}) }
+export function kenaliDari(ctx) {
+  const pola = polaKenali(ctx), cat = catatanKenali(ctx)
+  return (teks, nama) => pola(teks, nama) || (String(teks ?? '').trim().length >= KENALI_MIN ? (cat[sidikTeks(teks)]?.jenis || null) : null)
+}
+export function tanggalIsiDari(ctx) {
+  const pola = ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null), cat = catatanKenali(ctx)
+  return (teks, k) => pola(teks, k) || (cat[sidikTeks(teks)]?.jenis === k ? cat[sidikTeks(teks)].tanggal || null : null)
+}
+// pesan: [{teks, nama_berkas}]; hanya teks >= KENALI_MIN yang tidak dikenali pola dan belum pernah ditanyakan.
+export async function kenaliClaude(ctx, pesan) {
+  const env = ctx.env || {}, log = ctx.log || (() => {}), c = ctx.dep?.claude
+  if (String(env.BL_KENALI ?? '1') === '0' || (c ? typeof c.kenaliJenis !== 'function' : !env.ANTHROPIC_API_KEY)) return 0
+  const pola = polaKenali(ctx), f = kenaliP(ctx.dasar || RUMAH), cat = bacaJson(f, {})
+  const sah = new Set(JENIS_TEKS.map((j) => j.kunci))
+  let n = 0
+  for (const m of pesan || []) {
+    const teks = String(m?.teks ?? '')
+    if (n >= KENALI_MAKS_PANGGIL || teks.trim().length < KENALI_MIN || /^biner:/.test(teks) || pola(teks, m.nama_berkas || '')) continue
+    const s = sidikTeks(teks)
+    if (cat[s]) continue
+    try {
+      const r = await klien(ctx).kenaliJenis(teks, JENIS_TEKS.map(({ kunci, label }) => ({ kunci, label })))
+      n++
+      try { Biaya.catat(ctx.dasar || RUMAH, { usd: Number(r.biaya || 0) / 1e6, kini: ctx.now || new Date(), kegiatan: 'kenali' }) } catch {}
+      const jenis = sah.has(r.jenis) ? r.jenis : null
+      const tanggal = /^\d{4}-\d{2}-\d{2}$/.test(String(r.tanggal || '')) ? r.tanggal : null
+      cat[s] = { jenis, tanggal, alasan: String(r.alasan || '').slice(0, 200), t: (ctx.now || new Date()).getTime() }
+      log('[kenali] Claude:', jenis || 'bukan', tanggal || '-', cat[s].alasan)
+    } catch (e) { log('[kenali] gagal', e.message); break } // Claude bermasalah: berhenti, pola saja yang berlaku
+  }
+  if (n) {
+    const urut = Object.entries(cat).sort((a, b) => (b[1].t || 0) - (a[1].t || 0)).slice(0, KENALI_MAKS_SIMPAN)
+    tulisJson(f, Object.fromEntries(urut))
+  }
+  return n
+}
+// Cadangan saat `buat`/`lanjut`: kiriman hari itu (dan tetangga D-1, D+1) yang belum dikenali ditanyakan sebelum bahan dipilih.
+async function kenaliMasuk(ctx, dep, tanggal) {
+  const env = ctx.env || {}
+  if (String(env.BL_KENALI ?? '1') === '0') return
+  const geser = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 86400e3).toISOString().slice(0, 10)
+  const semua = []
+  for (const tgl of [tanggal, geser(tanggal, -1), geser(tanggal, 1)]) {
+    try {
+      const r = await dep.fetch(`${W(env)}/api/wa/masuk?tanggal=${encodeURIComponent(tgl)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` }, signal: AbortSignal.timeout(WAKTU_WORKER) })
+      if (r.ok) semua.push(...((await r.json()).pesan || []))
+    } catch {}
+  }
+  await kenaliClaude(ctx, semua)
+}
+
 // ---------- A2: jenis dari bahan ----------
 async function tebakJenis(bahan) {
   const skor = []
@@ -674,15 +734,16 @@ async function tebakJenis(bahan) {
 async function buat(cmd, dari, sha, ctx) {
   const { env, dep, balas } = ctx
   const now = ctx.now || new Date(), dasar = ctx.dasar || RUMAH, log = ctx.log || (() => {}), ada = ctx.ada || fs.existsSync
-  const kenali = ctx.kenali || jenisWa.kenali
   const lingkup = lingkupBahan(env, dari, sha)
   // batal = mulai dari awal: bahan sebelum `batal` proyek jenis dan tanggal yang sama tidak dipakai lagi (pemilik 19 Nov 2026)
   let depSaring = { ...dep, fetch: fetchLingkup(dep, cmd.jenis ? sesudahBatal(ctx, sha, cmd.jenis, cmd.tanggal, lingkup.boleh) : lingkup.boleh, bukanBahan(ctx)) }
-  let bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+  await kenaliMasuk(ctx, depSaring, cmd.tanggal) // format bahan berubah: Claude menebak jenisnya sebelum bahan dipilih
+  const kenali = kenaliDari(ctx)
+  let bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: kenaliDari(ctx), tanggalIsi: tanggalIsiDari(ctx), log })
   const jenis = cmd.jenis || await tebakJenis(bahan)
   if (!cmd.jenis && jenis && waktuBatal(ctx, sha, jenis, cmd.tanggal)) {
     depSaring = { ...dep, fetch: fetchLingkup(dep, sesudahBatal(ctx, sha, jenis, cmd.tanggal, lingkup.boleh), bukanBahan(ctx)) }
-    bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+    bahan = await ambilBahan({ env, dep: depSaring, tanggal: cmd.tanggal, kenali: kenaliDari(ctx), tanggalIsi: tanggalIsiDari(ctx), log })
   }
   if (!jenis) return balas(susun('Jenis laporan belum jelas', null, null, `Bahan ${labelTanggal(cmd.tanggal)} belum menunjukkan jenis laporannya.`, ['Ketik salah satu:', `- *buat harian ${cmd.tanggal}*`, `- *buat penanganan ${cmd.tanggal}*`]))
   const lap = lapDari(jenis)
@@ -1231,7 +1292,7 @@ async function revisi(pesan, dari, sha, p, ctx, opsi = {}) {
 
     // Bangun ulang dari bahan + isian versi terakhir (D1, D6), lalu operasi 1..n.
     const lingkup = lingkupBahan(env, dari, sha)
-    const bahan = await ambilBahan({ env, dep: { ...dep, fetch: fetchLingkup(dep, lingkup.boleh) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log })
+    const bahan = await ambilBahan({ env, dep: { ...dep, fetch: fetchLingkup(dep, lingkup.boleh) }, tanggal: p.tanggal, kenali: kenaliDari(ctx), tanggalIsi: tanggalIsiDari(ctx), log })
     const { teks } = await bahan.pilihSesuai(lap)
     const dasarV = path.join(dasar, 'keluaran', 'proyek', p.id, `v${n}`)
     const catatan = []
@@ -1932,7 +1993,7 @@ async function kirimTerima(ctx, sha, a) {
   const lap = lapDari(p.jenis)
   if (!lap) return null
   const lingkup = lingkupBahan(ctx.env, a.dari, sha)
-  const bahan = await ambilBahan({ env: ctx.env, dep: { ...ctx.dep, fetch: fetchLingkup(ctx.dep, sesudahBatal(ctx, sha, p.jenis, p.tanggal, lingkup.boleh)) }, tanggal: p.tanggal, kenali: ctx.kenali, tanggalIsi: ctx.tanggalIsi, log: ctx.log || (() => {}) })
+  const bahan = await ambilBahan({ env: ctx.env, dep: { ...ctx.dep, fetch: fetchLingkup(ctx.dep, sesudahBatal(ctx, sha, p.jenis, p.tanggal, lingkup.boleh)) }, tanggal: p.tanggal, kenali: kenaliDari(ctx), tanggalIsi: tanggalIsiDari(ctx), log: ctx.log || (() => {}) })
   const { terpilih } = await bahan.pilihSesuai(lap)
   const milik = new Set(jenisLap(lap))
   const kenal = a.k.filter((x) => x.k && milik.has(x.k))
@@ -2212,18 +2273,18 @@ async function status(dari, sha, ctx) {
 // ---------- bahan masuk (Q6) ----------
 const TANPA_BUKA = new Set(['bmkg_pagi'])
 async function tambahBahan(pesan, dari, sha, ctx) {
-  const kenali = ctx.kenali || jenisWa.kenali
-  const k = kenali(pesan.teks || '', pesan.nama_berkas || '')
+  await kenaliClaude(ctx, [pesan]) // pola gagal (format berubah): Claude menebak jenis sekali, hasilnya dipakai di bawah
+  const k = kenaliDari(ctx)(pesan.teks || '', pesan.nama_berkas || '')
   // K17: pemegang proyek yang dituntun mendapat tanda terima (digabung per jeda); status proyek diperiksa saat dikirim.
   const t = tuntunTerakhir(ctx, sha)
-  const tglBahan = k ? (ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null))(pesan.teks || '', k) || null : null // hanya tanggal yang tertulis di bahan
+  const tglBahan = k ? tanggalIsiDari(ctx)(pesan.teks || '', k) || null : null // hanya tanggal yang tertulis di bahan
   const terima = t ? { terima: jadwalTerima(ctx, sha, dari, t, k, tglBahan) } : {}
   if (!k) return { status: 'menunggu buat', ...terima } // jenis tak dikenali (foto, PDF lain): dipakai saat `buat` dari /api/wa/masuk
   // TANPA_BUKA (BMKG pagi): tidak pernah membuka proyek sendiri; tetap tersimpan sebagai bahan dan terhitung saat pengirim mengetik `buat`.
   // Bahan milik lebih dari satu laporan juga menunggu `buat` menentukan jenisnya.
   const calon = TANPA_BUKA.has(k) ? [] : LAPORAN.filter((l) => jenisLap(l).includes(k))
   if (calon.length !== 1) return { status: 'menunggu buat', ...terima }
-  const tanggal = (ctx.tanggalIsi || jenisWa.tanggalIsi || (() => null))(pesan.teks || '', k) || tanggalWib(ctx.now || new Date())
+  const tanggal = tanggalIsiDari(ctx)(pesan.teks || '', k) || tanggalWib(ctx.now || new Date())
   const { proyek: p } = await proyekBuka(ctx, { wa_sha: sha, jenis: calon[0].id, tanggal, bahan: [{ wa_id: String(pesan.wa_id), jenis_bahan: k }] })
   catatIndeks(ctx.dasar || RUMAH, p, sha, dari)
   // TODO(BL-10): bahan baru untuk proyek draf memicu tawaran bangun ulang.

@@ -18,3 +18,8 @@
 .tz-zona .fnd,.tz-zona .kosong{margin:0}
 .tz-zona .kosong{padding:14px;border:1px dashed var(--line);border-radius:12px}
 #tsunamiZona .ina-tb tr.on td{background:var(--hi,rgba(11,37,69,.06))}
+/* kepala bagian = nama seksi (tz-jd); catatan metode dan sumber dilipat (tz-cat) */
+.tz-jd{font-size:0.875rem;font-weight:800;color:var(--ink)}
+.tz-cat{font-size:0.75rem;color:var(--ink2)}
+.tz-cat>summary{cursor:pointer;font-weight:700;color:var(--brand2);width:fit-content}
+.tz-cat>.fnd{margin:6px 0 0}

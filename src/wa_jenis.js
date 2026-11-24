@@ -36,7 +36,8 @@ export function kenali(teks, namaBerkas) {
   const malam = () => /selamat malam|pukul 19\.00/.test(t);
   if (t.includes("laporan upaya pemadaman karhutla oleh satgas")) return "satgas";
   if (judulMensesneg(teks)) return "karhutla_mensesneg";
-  const kepala = t.match(/hasil pemantauan dit\.? koordalops bnpb tanggal[^:]{0,120}/);
+  /* 21 Nov 2026: kepala baru "rekapitulasi kejadian bencana ... dihimpun oleh Direktorat Koordinasi Pengendalian Operasi Darurat BNPB tanggal ..." */
+  const kepala = t.match(/hasil pemantauan dit\.? koordalops bnpb tanggal[^:]{0,120}/) || t.match(/dihimpun oleh (?:dit\.? koordalops|direktorat koordinasi pengendalian operasi darurat) bnpb tanggal[^:]{0,120}/);
   if (kepala) {
     // ujung rentang = jam terakhir di KALIMAT KEPALA saja; badan teks bisa memuat "pukul 17.00" (bahan asli 25 Okt 2026)
     const jam = [...kepala[0].matchAll(/(?:pkl|pukul)\.? ?(\d{1,2})[.:]00/g)].pop();

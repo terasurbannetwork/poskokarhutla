@@ -30,6 +30,8 @@ KONFIG = {
     'label': {'Kepulauan Aru': 'Kep. Aru', 'Kepulauan Tanimbar': 'Kep. Tanimbar'},
     'titik': {'Maluku Barat Daya': (129.72, -7.90)},   # Kep. Babar; pusat poligon terbesar (Wetar) di luar peta
     # BPBD lewat Pusdalops (Malra, Tual, Tanimbar) dan gempadirasakan BMKG (Tual, Saumlaki, Tiakur, Dobo)
+    # kab yang hanya dirasakan menurut BMKG: (kelas, nama tempat di daftar gempadirasakan)
+    'rasa_bmkg': {'Maluku Barat Daya': ('III', 'Tiakur'), 'Kepulauan Aru': ('III', 'Dobo')},
     'dilapor': {'Maluku Tenggara', 'Kota Tual', 'Kepulauan Tanimbar', 'Maluku Barat Daya', 'Kepulauan Aru'},
     # (kab di peta, nama di tabel, MMI BMKG dirasakan, kondisi menurut BPBD/Pusdalops, jarak menurut laporan)
     'lapor': [
