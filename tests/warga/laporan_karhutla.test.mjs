@@ -191,6 +191,7 @@ uji("putar ulang laporan 21 Okt: snapshot target 983,34 ha, padam 502,08 ha, bel
   assert.equal(await n("segel", "jenis = 'lk' AND dasar = '2026-10-21'"), 1);
   assert.equal(sg.sidik, (await DB.prepare("SELECT hash FROM lk_snapshot WHERE tanggal_laporan = '2026-10-21' AND ralat = 0").first()).hash);
   assert.equal((await api("GET", "/api/verifikasi/" + k.j.segel, undefined, ipBaru())).j.status, "berlaku");
+  const sn = (await snap("2026-10-21")).j; assert.deepEqual(sn.segel, {kode: k.j.segel, sidik12: k.j.hash.slice(0, 12)}, "K5: snapshot terkunci membawa kode segel untuk slide akhir");
   const r = await snap("2026-10-21"); assert.equal(r.s, 200, r.t); const s = r.j.snapshot;
   assert.equal(r.j.utuh, true); assert.equal(r.j.hash, k.j.hash); assert.equal(r.j.hash, sha256(JSON.stringify(s)));
   hampir(s.nasional.fs_ha.target_ha, 983.34); hampir(s.nasional.fs_ha.padam_ha, 502.08); hampir(s.nasional.fs_ha.sisa_ha, 481.26); assert.equal(s.nasional.fs_ha.fs, 261);

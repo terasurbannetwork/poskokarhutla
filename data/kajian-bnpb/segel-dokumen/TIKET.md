@@ -29,6 +29,5 @@ Catatan dari pemeriksaan SG-02 (24 Nov 2026), wajib dikerjakan di rutenya:
 
 ## Status 24 Nov 2026
 
-- Selesai di kode: SG-01 sampai SG-08, SG-10, SG-11; SG-09 untuk lembar cetak dokumen PB (`public/inti/segel.js`, dipasang di `public/inti/dokumen.js`).
-- SG-09 untuk slide laporan harian karhutla dan bencana (`public/laporan_karhutla_slide.js`, `public/laporan_bahaya_slide.js`) **menunggu pemilik (Q11 baru)**: slide 1 memakai lebar penuh sampai batas kaki (y 6,95) dan tata letaknya dihitung dari isi, jadi QR 22 mm tidak muat tanpa mengubah susunan deck. Pilihan: (a) QR di slide terakhir "Keterangan", (b) slide tambahan "Keaslian dokumen" di akhir, (c) QR kecil 15 mm di kaki slide 1 menggeser nomor halaman. Rute snapshot belum membawa kode segel; ditambahkan bersama pilihan ini.
-- SG-12 (deck Python) tetap di luar fase 1 (Q4). SG-13 menunggu LJ dan LB. SG-14 menunggu pemilik menerapkan migrasi 0171 dan 0172.
+- Selesai di kode: SG-01 sampai SG-11. SG-09 mencakup lembar cetak dokumen PB (`public/inti/segel.js` di `public/inti/dokumen.js`) dan slide akhir "Keaslian dokumen" di deck laporan harian karhutla dan bencana (`public/laporan_karhutla_deck.js` `tambahSegel`, KEPUTUSAN K5); rute snapshot lk dan lkb membawa `segel {kode, sidik12}`.
+- SG-12 (deck Python) tetap di luar fase 1 (Q4). SG-13 menunggu LJ dan LB. SG-14 menunggu pemilik menerapkan migrasi 0171 dan 0172 di D1 produksi.

@@ -2609,9 +2609,12 @@ export const SEGEL_SQL = {
     WHERE s.terbit > ?2 AND (?1 = '' OR (?1 = 'dicabut' AND c.kode IS NOT NULL) OR (?1 = 'berlaku' AND c.kode IS NULL)) ORDER BY s.terbit DESC LIMIT 100`,
   /* hanya segel yang ada; PK segel_cabut menolak cabut kedua (rute menjawab 409) */
   cabut: "INSERT INTO segel_cabut (kode, alasan, oleh, waktu) SELECT kode, ?2, ?3, ?4 FROM segel WHERE kode = ?1",
+  /* staf: kode segel satu dokumen beku untuk QR di slide (KEPUTUSAN K5); lewat UNIQUE (jenis, rujukan) */
+  untuk: "SELECT kode, substr(sidik, 1, 12) sidik12 FROM segel WHERE jenis = ?1 AND rujukan = ?2",
 };
 export const stmtSegel = (env, s) => env.DB.prepare(SEGEL_SQL.sisip).bind(s.kode, s.jenis, s.rujukan, s.dasar, s.versi, s.sidik, s.sidik_berkas ?? null,
   s.judul, s.wilayah ?? null, s.periode, s.penerbit, s.terbit);
+export const segelUntuk = (env, jenis, rujukan) => env.DB.prepare(SEGEL_SQL.untuk).bind(jenis, rujukan).first();
 export const segelCari = (env, kode) => env.DB.prepare(SEGEL_SQL.cari).bind(kode).first();
 export const segelDaftar = async (env, status = "", sejak = 0) => (await env.DB.prepare(SEGEL_SQL.daftar).bind(status, sejak).all()).results;
 /* kembalian = baris tertulis: 1 tercabut, 0 kode tidak ada; cabut kedua melempar galat UNIQUE/PK */

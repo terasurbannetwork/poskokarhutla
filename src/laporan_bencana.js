@@ -11,7 +11,7 @@ import {json, gagal, sha, bacaBody} from "./worker.js";
 import {wib} from "./posko.js";
 import * as K from "../public/laporan_karhutla_spek.js";
 import {spek, pilihPrioritas, dariLaporan} from "../public/laporan_bencana_spek.js";
-import {batchBersegel} from "./segel.js";
+import {batchBersegel, segelDokumen} from "./segel.js";
 import REGISTRY from "./bencana.generated.js";
 /* sampul segel laporan bencana (paket segel-dokumen SG-06): judul dari nama registri, penerbit = lembaga, tanpa nama orang */
 const NAMA_BENCANA = Object.fromEntries((Array.isArray(REGISTRY.bencana) ? REGISTRY.bencana : Object.values(REGISTRY.bencana)).map(x => [x.id, x.nama]));
@@ -286,7 +286,7 @@ export function buatRute(kit) {
     if (!r) return gagal(404, "nomor ralat tidak ada");
     const daftar = (await env.DB.prepare("SELECT ralat, hash, alasan, waktu, json_array_length(perubahan) berubah FROM lkb_snapshot WHERE bencana = ? AND tanggal_laporan = ? ORDER BY ralat").bind(b, tanggal).all()).results;
     const snap = JSON.parse(r.isi), utuh = (await sha(r.isi)) === r.hash;
-    return json({bencana: b, tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: spek(b).teksWA(snap)});
+    return json({bencana: b, tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, segel: await segelDokumen(env, "lkb", `${b}/${tanggal}#${r.ralat}`), dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: spek(b).teksWA(snap)});
   }
 
   /* ---------------- dummy: satu hari contoh per bahaya, berlabel DUMMY (Super Admin). Tanpa angka dampak karangan: hanya teks contoh. */

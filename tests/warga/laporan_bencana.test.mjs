@@ -265,6 +265,7 @@ uji("banjir: kunci dengan 'lanjut tanpa' beralasan menghasilkan snapshot beku, t
   assert.deepEqual([sg.jenis, sg.rujukan, sg.dasar, sg.versi, sg.judul, sg.penerbit], ["lkb", `banjir/${T}#0`, `banjir/${T}`, 0, "Laporan Harian Banjir & Longsor", "BNPB"]);
   assert.equal(sg.sidik, (await DB.prepare("SELECT hash FROM lkb_snapshot WHERE bencana = 'banjir' AND tanggal_laporan = ? AND ralat = 0").bind(T).first()).hash);
   assert.equal((await api("GET", "/api/verifikasi/" + r.j.segel, undefined, ipBaru())).j.status, "berlaku");
+  assert.equal((await snap("banjir", T)).j.segel?.kode, r.j.segel, "K5: snapshot banjir membawa kode segel");
   assert.equal((await draf(A72, "banjir", T, "prov:72", SULTENG, 3)).s, 409, "hari terkunci"); assert.equal((await kunci("banjir", T)).s, 409, "tidak dikunci dua kali");
   assert.equal(await n("lk_hari", "tanggal_laporan = ?", T), 0, "karhutla tidak tersentuh"); assert.equal(await n("lkb_snapshot", "bencana = 'banjir' AND tanggal_laporan = ?", T), 1);
   const s = await snap("banjir", T); assert.equal(s.s, 200, s.t); assert.equal(s.j.utuh, true); assert.equal(s.j.terbaru, true); const sn = s.j.snapshot;

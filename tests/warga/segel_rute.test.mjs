@@ -156,7 +156,7 @@ uji("T12 tabel segel belum ada: pembeku tetap menulis snapshot tanpa segel; sesu
 
 uji("kueri cari, daftar, cabut lewat indeks (SEARCH, bukan SCAN)", () => {
   const db = new DatabaseSync(":memory:"); db.exec(migrasi());
-  for (const k of ["ada", "cari", "daftar", "cabut"]) {
+  for (const k of ["ada", "cari", "daftar", "cabut", "untuk"]) {
     const rencana = db.prepare("EXPLAIN QUERY PLAN " + SEGEL_SQL[k]).all().map(r => r.detail);
     assert.ok(!rencana.some(d => /^SCAN (segel|segel_cabut)\b/.test(d)), `${k}: ${rencana.join(" | ")}`);
   }

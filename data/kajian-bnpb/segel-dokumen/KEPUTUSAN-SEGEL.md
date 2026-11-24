@@ -16,6 +16,7 @@ Peta fitur 21 Nov 2026 (`docs/peta-fitur/PETA-2026-11-21.md`) mencatat dua butir
 | K2 | Paket dokumen dulu, baru kode (AGENTS.md 3.7). Tiket pertama baru dikerjakan sesudah pemilik menjawab Q1 sampai Q3 atau menyetujui bawaannya. |
 | K3 | 24 Nov 2026: pemilik menyetujui bawaan Q1, Q2, Q3 ("Setuju, mulai SG-01"). |
 | K4 | 24 Nov 2026 malam: pemilik menyetujui bawaan Q5, Q6, Q10 ("Gw sepakat sama lu semua"): moderator dan staf pimpinan boleh mencabut, alasan hanya untuk staf; domain QR `centurisk97.id`; kalimat "Segel keaslian sistem, bukan tanda tangan elektronik." tanpa menyebut pasal. |
+| K5 | 24 Nov 2026 malam: QR segel di slide laporan harian karhutla dan bencana ditaruh di slide tambahan "Keaslian dokumen" di akhir deck (pemilik: "di akhir", jawaban Q11). |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -51,6 +52,6 @@ Peta fitur 21 Nov 2026 (`docs/peta-fitur/PETA-2026-11-21.md`) mencatat dua butir
 | Q8 | Berapa lama baris segel disimpan? | **[BAWAAN SEMENTARA]** selamanya; isinya hanya data sampul tanpa data pribadi. | tidak menahan |
 | Q9 | Angka teknis: batas laju pencarian, panjang kode, ulang bentrok kode. | **[BAWAAN SEMENTARA]** 60 pencarian per 10 menit per hash IP, 10 huruf (50 bit), paling banyak 3 kali ulang. | tidak menahan |
 | Q10 | Kalimat batas klaim hukum di halaman dan lembar cetak perlu ditinjau bagian hukum BNPB? | **[DISETUJUI K4]** "Segel keaslian sistem, bukan tanda tangan elektronik." tanpa menyebut pasal. | SG-08, SG-09 |
-| Q11 | Di mana QR segel ditaruh pada slide laporan harian karhutla dan bencana? Slide 1 penuh sampai batas kaki. | **[BAWAAN SEMENTARA]** belum dipasang; pilihan (a) slide Keterangan, (b) slide tambahan di akhir, (c) QR 15 mm di kaki slide 1. Lembar cetak dokumen PB sudah ber-QR. | SG-09 bagian slide |
+| Q11 | Di mana QR segel ditaruh pada slide laporan harian karhutla dan bencana? Slide 1 penuh sampai batas kaki. | **[DIJAWAB K5]** slide tambahan di akhir. Pilihan semula: pilihan (a) slide Keterangan, (b) slide tambahan di akhir, (c) QR 15 mm di kaki slide 1. Lembar cetak dokumen PB sudah ber-QR. | SG-09 bagian slide |
 
 Migrasi segel harus diterapkan pemilik di D1 produksi. Sebelum itu rute verifikasi menjawab 503 dan pembeku tetap jalan tanpa segel (D3 memakai pemeriksa tabel seperti `tanpaTabelPb`).

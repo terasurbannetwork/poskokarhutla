@@ -22,7 +22,7 @@ import {halamanAdmin} from "./statistik.js";
 import * as S from "../public/laporan_karhutla_spek.js";
 import {teksWA} from "../public/laporan_karhutla_wa.js";
 import {laju} from "./bnpb.js";
-import {batchBersegel} from "./segel.js";
+import {batchBersegel, segelDokumen} from "./segel.js";
 import {buatXlsx} from "./xlsx_mini.js";
 import {buatRute as buatRuteBencana, tanpa0048} from "./laporan_bencana.js";
 
@@ -484,7 +484,7 @@ async function bacaSnapshot(env, req, url, kini, ctx, tanggal) {
   if (!r) return gagal(404, "nomor ralat tidak ada");
   const daftar = (await env.DB.prepare("SELECT ralat, hash, alasan, waktu, json_array_length(perubahan) berubah FROM lk_snapshot WHERE tanggal_laporan = ? ORDER BY ralat").bind(tanggal).all()).results;
   const snap = JSON.parse(r.isi), utuh = (await sha(r.isi)) === r.hash;
-  return json({tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: teksWA(snap)});
+  return json({tanggal, ralat: r.ralat, terbaru: r.ralat === hari.ralat, hash: r.hash, utuh, segel: await segelDokumen(env, "lk", `${tanggal}#${r.ralat}`), dikunci_pada: snap.dikunci_pada, alasan_ralat: r.alasan, perubahan: JSON.parse(r.perubahan), ralat_tersedia: daftar, snapshot: snap, teks_wa: teksWA(snap)});
 }
 
 /* ================================================================ dummy: satu hari penuh dari laporan 21 Okt 2026 (data per provinsi 20 Okt, angka nyata; tanpa angka karangan) */

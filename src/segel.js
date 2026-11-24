@@ -5,7 +5,7 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanSegel} from "./admin_halaman.js";
 import {stafPeran} from "./staf.js";
 import {laju} from "./bnpb.js";
-import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
+import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelUntuk, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
 import {kunciBeku} from "./pb_dokumen.js";
 
 export const ABJAD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford base32: tanpa I, L, O, U
@@ -43,6 +43,9 @@ export async function batchBersegel(env, st, s, dummy = 0) {
     catch (e) { if (i < 2 && /segel\.kode/.test(String(e?.message))) continue; throw e; }
   }
 }
+
+/* kode segel satu dokumen untuk jawaban snapshot staf (QR slide akhir, KEPUTUSAN K5); null bila tabel belum ada atau dokumen tak bersegel */
+export const segelDokumen = async (env, jenis, rujukan) => await adaTabelSegel(env) ? await segelUntuk(env, jenis, rujukan) : null;
 
 /* ---------- SG-04: GET /api/verifikasi/<kode> (publik, DESAIN-TEKNIS 3, ALGORITMA 3-5, KEAMANAN-PRIVASI) ----------
    Batas laju dihitung sebelum kode dibaca, jadi kode salah format ikut terhitung. Kode tidak ada, salah format, dan tabel belum ada dijawab 404 yang sama (D12).
