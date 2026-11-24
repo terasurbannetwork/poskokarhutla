@@ -5,6 +5,8 @@
     "POST /api/lapor/data/objek": "objek rumah: tersimpan urut 1",
     "POST /api/lapor/data/batal": "batal: anggota hanya objek isiannya",
     "POST /api/lapor/data/foto": "foto: JPEG kamera tersimpan",
+    "POST /api/lapor/data/video/:x": "video lengkap: mulai, bagian, selesai menulis lj_media jenis video",
+    "PUT /api/lapor/data/video/:x": "video lengkap: mulai, bagian, selesai menulis lj_media jenis video",
     "POST /api/lapor/data/isian": "LJ-08 isian berkas: hanya ketua",
     "POST /api/lapor/data/nihil": "LJ-08 nihil: nama karangan 400",
     "POST /api/lapor/data/tim": "pindah ketua: ketua 403",

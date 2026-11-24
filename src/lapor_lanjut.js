@@ -6,6 +6,7 @@
    tersamar, provinsi hanya rekap (Q15). Tiap buka, tampil, dan unduh tercatat di lj_akses (D22). Jawaban privat: cache-control private no-store. */
 import {json, bacaBody, bacaBytes, sha, acak} from "./worker.js";
 import {bersihMedia} from "./media_bersih.js";
+import {jenisBerkas, durasiMP4, waktuMP4, lokasiMP4} from "./media_berkas.js";
 import {lajuIP, laju} from "./bnpb.js";
 import {hakMeja} from "./lapor_ai.js";
 import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
@@ -56,7 +57,8 @@ export async function bukaBerkas(env, nomor, kini, origin) {
   const r = await H.ljBatch(env, P, [H.ljStmtBerkasBaru(env, P, {id, induk, kab: w.kabKode, isian: JSON.stringify({kab_nama: w.kab ?? null})}, kini),
     H.ljStmtTimBaru(env, P, id, s.wa, "ketua", await sha(t), kini + UMUR_TOKEN, "sistem", kini, true),
     H.ljStmtKabar(env, P, s.wa, "pembuka", teks, kini, true)]);
-  return r[0].meta.changes ? {buka: true, berkas: id} : {buka: false, sebab: "sudah_ada"};   // balapan dua tiket: INSERT OR IGNORE kalah, ketua dan pesan tidak ditulis
+  if (r[0].meta.changes) { await isiTautan(env, TIM, id); return {buka: true, berkas: id}; }
+  return {buka: false, sebab: "sudah_ada"};   // balapan dua tiket: INSERT OR IGNORE kalah, ketua dan pesan tidak ditulis
 }
 
 /* hak staf dan lembaga (Q15, matriks KEAMANAN-PRIVASI): BNPB hanya admin dan staf Pusdalops; Koordalops dan staf lain tidak, walau meja Lapor menerimanya.
@@ -112,14 +114,16 @@ async function berkasGet(env, req, url, kini) {
   const tim = await timDari(env, req, kini);
   const id = url.searchParams.get("id");
   if (tim && (!id || id === tim.berkas)) {
-    const b = await H.ljBerkas(env, TIM, tim.berkas); if (!b) return galat(404, "Berkas tidak ditemukan.");
+    let b = await H.ljBerkas(env, TIM, tim.berkas); if (!b) return galat(404, "Berkas tidak ditemukan.");
+    if (!b.kejadian_id && await isiTautan(env, TIM, b.id)) b = await H.ljBerkas(env, TIM, b.id);
     await H.ljStmtAkses(env, TIM, b.id, null, "buka", `tim:${tim.wa}`, kini).run();
     return kirim(200, {...await bentukBerkas(env, b, "tim", kini), saya: {wa: tim.wa, peran: tim.peran}});
   }
   const h = await hakData(env, req, kini); if (h?.tolak) return h.tolak;
   if (!h) return galat(401, "Buka tautan dari WhatsApp, atau masuk sebagai staf atau akun lembaga.");
   if (!RE_ID.test(id || "")) return galat(400, "Berkas tidak sah.");
-  const b = await H.ljBerkas(env, STAF, id); if (!b) return galat(404, "Berkas tidak ditemukan.");
+  let b = await H.ljBerkas(env, STAF, id); if (!b) return galat(404, "Berkas tidak ditemukan.");
+  if (!b.kejadian_id && await isiTautan(env, STAF, b.id)) b = await H.ljBerkas(env, STAF, id);
   const lingkup = lingkupLembaga(h.c, b); if (!lingkup) return galat(404, "Berkas tidak ditemukan.");   // di luar wilayah: sama dengan tidak ada
   await H.ljStmtAkses(env, STAF, b.id, null, "buka", String(h.oleh).slice(0, 200), kini).run();
   return kirim(200, {...await bentukBerkas(env, b, lingkup === "rekap" ? "rekap" : "staf", kini), akun: {jenis: h.c.jenis, label: h.c.label}});
@@ -154,6 +158,8 @@ const MAKS_FOTO_OBJEK = 10, RE_KLIEN = /^[0-9A-Za-z_-]{8,64}$/, MENIT = 60e3;
 const angka = v => typeof v === "number" && Number.isFinite(v);
 const titikSah = (lat, lon) => angka(lat) && angka(lon) && lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;   // = CHECK lj_objek dan lj_media
 const kmDua = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return 6371 * Math.hypot(x, y); };
+/* LJ-14: kejadian_id dan kab4 dari tautan Buku Besar (sumber lapor_ai) bila masih kosong; galat tabel lama tidak menggagalkan pembaca. true = berkas berubah */
+const isiTautan = async (env, p, id) => { try { return (await H.ljIsiTautan(env, p, id)).meta.changes > 0; } catch (e) { if (tabelBelum(e)) return false; throw e; } };
 const timTulis = async (env, req, kini) => {   // tim yang boleh menulis: kuki sah, x-pb, berkas masih terbuka
   if (req.headers.get("x-pb") !== "1") return galat(403, "kiriman web wajib membawa header x-pb: 1");
   const tim = await timDari(env, req, kini); if (!tim) return galat(401, "Buka tautan dari WhatsApp dulu.");
@@ -374,6 +380,122 @@ async function simpanFoto(env, t, ob, bersih, meta, waktuAmbil, pintu, kini, jen
   return {kode: 201, isi: {objek: await objekLengkap(env, t.b, ob.id), foto: id}};
 }
 
+/* ---------- LJ-18: video bersambung untuk objek (D20, K61 paket induk). Jalur lapor_unggah (0158) dipakai ulang tanpa migrasi: konteks objek ada di kunci R2
+   lapor/data/<berkas>/<objek>/<id>.<eks> (eks dari tipe yang dinyatakan di "mulai", dicocokkan dengan byte di "selesai"), wa = nomor anggota tim.
+   POST video/mulai {objek, ukuran, tipe, durasi?, gps?} -> PUT video/<id>/<n> (bagian 5 MB) -> POST video/<id>/selesai. Tulis hanya tim berkas TERBUKA (timTulis) dan dijaga lagi
+   di SQL (ljStmtMediaBaru: EXISTS lj_berkas terbuka, batas jumlah atomik). Unggahan yang menggantung dibuang cron menit 17 (bersihkanLapor, 24 jam), sama dengan Lapor tahap 1.
+   ponytail: anggaran subrequest Free per permintaan: mulai 1 R2, bagian 1 R2, selesai paling banyak 5 R2 (complete, head, 2 baca rentang, hapus bila ditolak). Tanpa sampul video. */
+const BAGIAN = 5 * 1048576, VIDEO_MAKS = 30 * 1048576, VIDEO_DETIK = 60, SISI = 1048576, MAKS_VIDEO_OBJEK = 2, UNGGAH_BERJALAN = 5;
+const EKS_VIDEO = {"video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm"}, TIPE_VIDEO = {mp4: "video/mp4", mov: "video/quicktime", webm: "video/webm"};
+const bagianDari = u => { try { return Object.keys(JSON.parse(u.bagian || "{}")).map(Number).sort((a, b) => a - b); } catch { return []; } };
+const videoMilik = (u, t) => !!u && u.wa === t.tim.wa && u.kunci_r2.startsWith(`lapor/data/${t.b.id}/`);   // nomor sama di berkas lain atau unggahan tahap 1 = tidak ada
+async function objekVideo(env, t, objekId) {   // objek yang boleh dilampiri video: aktif, di berkas ini, milik anggota (ketua: semua), bukan jenis yang hanya menerima foto wajah atau tanpa foto
+  if (!RE_ID.test(String(objekId))) return galat(400, "Objek tidak sah.");
+  const ob = await H.ljObjekId(env, TIM, objekId);
+  if (!ob || ob.berkas !== t.b.id || ob.status !== "aktif") return galat(404, "Objek tidak ditemukan.");
+  if (t.tim.peran !== "ketua" && ob.oleh !== t.oleh) return galat(403, "Anggota hanya bisa menambah video ke data yang diisinya sendiri. Minta ketua tim untuk menambahkannya.");
+  if (JENIS_WAJAH.has(ob.jenis) || fotoWajib(ob.jenis).foto === 0) return galat(400, "Jenis data ini tidak dilampiri video.");
+  return ob;
+}
+async function videoMulai(env, req, url, kini) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  const lj = await lajuIP(env, req, "lapor.data.video", [[JAM, 60]], kini); if (lj) return lj;
+  const t = await timTulis(env, req, kini); if (t instanceof Response) return t;
+  const lp = await laju(env, await sha(t.oleh), "lapor.data.video", [[JAM, 30]], kini); if (lp) return lp;   // per orang, bukan hanya per IP (jaringan bersama BPBD)
+  const bb = await bacaBody(req, 2048); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  const o = bb.o || {}, eks = typeof o.tipe === "string" && Object.hasOwn(EKS_VIDEO, o.tipe) ? EKS_VIDEO[o.tipe] : null, ukuran = o.ukuran;
+  if (!eks) return galat(400, "Video harus MP4, MOV, atau WebM.");
+  if (!Number.isInteger(ukuran) || ukuran < 1000 || ukuran > VIDEO_MAKS) return galat(400, `Video paling besar ${VIDEO_MAKS / 1048576} MB.`);
+  const ob = await objekVideo(env, t, o.objek); if (ob instanceof Response) return ob;
+  if ((await H.ljMedia(env, TIM, ob.id)).filter(m => m.jenis === "video").length >= MAKS_VIDEO_OBJEK) return galat(400, `Paling banyak ${MAKS_VIDEO_OBJEK} video per data.`);
+  if (await H.lpUnggahHitung(env, P, t.tim.wa) >= UNGGAH_BERJALAN) return galat(429, "Terlalu banyak unggahan video yang belum selesai. Selesaikan dulu atau tunggu beberapa jam.");
+  const g = o.gps && typeof o.gps === "object" && titikSah(o.gps.lat, o.gps.lon) && angka(o.gps.akurasi) && o.gps.akurasi >= 0 && angka(o.gps.waktu) ? {lat: o.gps.lat, lon: o.gps.lon, akurasi: o.gps.akurasi, waktu: o.gps.waktu} : null;
+  const durasi = angka(o.durasi) && o.durasi >= 0 && o.durasi < 36000 ? Math.round(o.durasi) : null, jumlah = Math.ceil(ukuran / BAGIAN);
+  const uid = acak(8), kunci = `lapor/data/${t.b.id}/${ob.id}/${uid}.${eks}`, mp = await env.MEDIA.createMultipartUpload(kunci);
+  try { await H.lpUnggahBaru(env, P, {id: uid, wa: t.tim.wa, kunci, uploadId: mp.uploadId, ukuran, jumlah, gps: g ? JSON.stringify(g) : null, durasi, bahasa: "id", kini}); }
+  catch (e) { await mp.abort().catch(() => {}); throw e; }
+  return kirim(200, {id: uid, bagian: BAGIAN, jumlah, diterima: []});
+}
+async function videoBagian(env, req, url, kini, ctx, x) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  const m = /^([0-9a-f]{16})\/(\d{1,2})$/.exec(x || ""); if (!m) return galat(404, "tidak ada");
+  const lj = await lajuIP(env, req, "lapor.data.video.bagian", [[JAM, 600]], kini); if (lj) return lj;
+  const t = await timTulis(env, req, kini); if (t instanceof Response) return t;   // x-pb dan kuki tim sebelum badan 5 MB dibaca (tanpa kuki sah, badan tidak disentuh)
+  const bb = await bacaBytes(req, BAGIAN); if (bb.galat) return galat(bb.status || 400, "Bagian lebih besar dari seharusnya.");
+  const u = await H.lpUnggahBaca(env, P, m[1]), n = Number(m[2]);
+  if (!videoMilik(u, t) || n >= u.jumlah) return galat(404, "Unggahan tidak ditemukan atau sudah kedaluwarsa. Pilih video lagi.");
+  const harap = n === u.jumlah - 1 ? u.ukuran - n * BAGIAN : BAGIAN;   // R2: semua bagian kecuali yang terakhir persis sama besar
+  if (bb.b.length > harap) return galat(413, "Bagian lebih besar dari seharusnya.");
+  if (bb.b.length !== harap) return galat(400, `Bagian ${n + 1} terpotong (${bb.b.length} dari ${harap} byte). Dikirim ulang.`);
+  const p = await env.MEDIA.resumeMultipartUpload(u.kunci_r2, u.upload_id).uploadPart(n + 1, bb.b);
+  await H.lpUnggahBagian(env, P, u.id, n, p.etag, kini);
+  return kirim(200, {diterima: bagianDari(await H.lpUnggahBaca(env, P, u.id)), jumlah: u.jumlah});
+}
+async function videoSelesai(env, req, url, kini, uid) {
+  if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
+  const lj = await lajuIP(env, req, "lapor.data.video", [[JAM, 60]], kini); if (lj) return lj;
+  const t = await timTulis(env, req, kini); if (t instanceof Response) return t;
+  const lp = await laju(env, await sha(t.oleh), "lapor.data.video", [[JAM, 30]], kini); if (lp) return lp;
+  const u = await H.lpUnggahBaca(env, P, uid);
+  if (!u) {   // idempoten: jawaban selesai hilang di jaringan lalu klien mengulang; video yang sudah tersimpan atas id ini dijawab 200 yang sama
+    const m = await H.ljMediaSatu(env, TIM, uid), ob = m && m.jenis === "video" && m.berkas === t.b.id ? await H.ljObjekId(env, TIM, m.objek) : null;
+    if (ob && (t.tim.peran === "ketua" || ob.oleh === t.oleh)) return kirim(200, {objek: await objekLengkap(env, t.b, ob.id), video: uid, ulang: true});
+  }
+  if (!videoMilik(u, t)) return galat(404, "Unggahan tidak ditemukan atau sudah kedaluwarsa. Pilih video lagi.");
+  const diterima = bagianDari(u); if (diterima.length !== u.jumlah) return galat(409, `Baru ${diterima.length} dari ${u.jumlah} bagian.`);
+  const kunci = u.kunci_r2, objekId = kunci.split("/")[3]; let selesai = false;
+  const tolak = async (kode, pesan) => {   // ditolak = berkas R2 (atau multipart) dan baris dibuang
+    if (selesai) await env.MEDIA.delete(kunci).catch(() => {}); else await env.MEDIA.resumeMultipartUpload(kunci, u.upload_id).abort().catch(() => {});
+    await H.lpUnggahHapus(env, P, uid); return galat(kode, pesan);
+  };
+  const ob = await objekVideo(env, t, objekId); if (ob instanceof Response) return tolak(ob.status, (await ob.json()).galat);
+  try { await env.MEDIA.resumeMultipartUpload(kunci, u.upload_id).complete(diterima.map(n => ({partNumber: n + 1, etag: JSON.parse(u.bagian)[n]}))); selesai = true; }
+  catch { return tolak(400, "Unggahan tidak dapat diselesaikan. Kirim video lagi."); }
+  const ukuran = (await env.MEDIA.head(kunci))?.size ?? 0;
+  const baca = async (offset, length) => new Uint8Array(await (await env.MEDIA.get(kunci, {range: {offset, length}})).arrayBuffer());   // ponytail: hanya 1 MB awal dan akhir (kotak moov); rekaman 60 detik moov < 1 MB
+  const kepala = await baca(0, Math.min(ukuran, SISI)), ekor = ukuran > SISI ? await baca(Math.max(SISI, ukuran - SISI), Math.min(SISI, ukuran - SISI)) : null;
+  const eks = EKS_VIDEO[jenisBerkas(kepala)];   // dari byte, bukan nama atau tipe kiriman
+  if (!eks || ukuran !== u.ukuran || !kunci.endsWith("." + eks)) return tolak(400, "Berkas bukan video MP4, MOV, atau WebM, atau tidak sama dengan yang dinyatakan.");
+  const cari = f => f(kepala) ?? (ekor ? f(ekor) : null), durasiBaca = cari(durasiMP4), durasi = durasiBaca ?? u.durasi;
+  if (eks === "webm" ? u.durasi == null : durasiBaca == null) return tolak(400, "Durasi video tidak terbaca. Rekam ulang dengan kamera, lalu kirim lagi.");
+  if (durasi != null && durasi > VIDEO_DETIK + 1) return tolak(400, `Video paling lama ${VIDEO_DETIK} detik. Potong dulu, lalu kirim lagi.`);
+  let g = null; try { g = u.gps ? JSON.parse(u.gps) : null; } catch {}
+  const gpsSah = !!g && g.akurasi <= 1000 && Math.abs(kini - g.waktu) <= 10 * MENIT;
+  const lok0 = cari(lokasiMP4), mLok = lok0 && titikSah(lok0.lat, lok0.lon) ? lok0 : null, w0 = cari(waktuMP4), mWaktu = w0 && w0 <= kini + 5 * MENIT ? w0 : null;
+  if (mWaktu && kini - mWaktu > 48 * JAM) return tolak(400, "Video direkam lebih dari 48 jam lalu. Kirim rekaman terbaru dari lokasi.");
+  if (gpsSah && mLok && kmDua(g.lat, g.lon, mLok.lat, mLok.lon) > 5) return tolak(400, "Lokasi di video lebih dari 5 km dari posisi Anda sekarang.");
+  const meta = gpsSah ? {lencana: "gps", lat: g.lat, lon: g.lon, akurasi: g.akurasi} : mLok ? {lencana: "exif", lat: mLok.lat, lon: mLok.lon} : {lencana: "tanpa"};
+  const r = await H.ljBatch(env, TIM, [H.ljStmtMediaBaru(env, TIM, {id: uid, objek: ob.id, kunci_r2: kunci, jenis: "video", ...meta, waktu_ambil: mWaktu || kini, waktu_terima: kini, pintu: "web", oleh: t.oleh}, MAKS_VIDEO_OBJEK),
+    H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: ob.id, aksi: "video", sesudah: JSON.stringify({media: uid, jenis: "video", lencana: meta.lencana}), oleh: t.oleh}, kini, true)]);
+  if (!r[0].meta.changes) {   // penuh, objek batal, atau berkas ditutup di antara pemeriksaan awal dan tulis
+    const skrg = await H.ljObjekId(env, TIM, ob.id), tutup = (await H.ljBerkas(env, TIM, t.b.id))?.status !== "terbuka";
+    return tolak(tutup ? 409 : !skrg || skrg.status !== "aktif" ? 409 : 400, tutup ? "Berkas ini sudah ditutup. Video tidak disimpan." : !skrg || skrg.status !== "aktif" ? "Data ini sudah dibatalkan. Video tidak disimpan." : `Paling banyak ${MAKS_VIDEO_OBJEK} video per data.`);
+  }
+  await H.lpUnggahHapus(env, P, uid);
+  return kirim(201, {objek: await objekLengkap(env, t.b, ob.id), video: uid});
+}
+async function videoPost(env, req, url, kini, ctx, x) {
+  if (x === "mulai") return videoMulai(env, req, url, kini);
+  const m = /^([0-9a-f]{16})\/selesai$/.exec(x || ""); if (!m) return galat(404, "tidak ada");
+  return videoSelesai(env, req, url, kini, m[1]);
+}
+
+/* LJ-18: sajian video dengan Range (206) supaya bisa digeser. Pemutar mengirim banyak permintaan rentang: lj_akses (D22) dicatat sekali per 5 menit per orang dan video. */
+async function videoGet(env, req, m, oleh, kini) {
+  const tipe = TIPE_VIDEO[/\.(mp4|mov|webm)$/.exec(m.kunci_r2)?.[1]]; if (!tipe) return galat(404, "Media tidak ditemukan.");
+  const rentang = req.headers.get("range"), awal = /^bytes=(\d+)-/.exec(rentang || "")?.[1];
+  let o; try { o = await env.MEDIA.get(m.kunci_r2, rentang ? {range: req.headers} : undefined); } catch { return new Response(null, {status: 416, headers: HDR}); }
+  if (!o) return galat(404, "Media tidak ditemukan.");
+  const baku = {...HDR, "content-type": tipe, "accept-ranges": "bytes", "x-content-type-options": "nosniff", "content-disposition": "inline"};
+  if (!await laju(env, await sha(oleh + m.id), "lapor.data.video.akses", [[5 * MENIT, 1]], kini)) await H.ljStmtAkses(env, STAF, m.berkas, m.objek, "media", oleh, kini).run();   // permintaan pertama tiap 5 menit per orang dan video, apa pun Range-nya (bytes=1- atau sufiks tidak lolos catatan)
+  if (rentang && o.range && o.range.offset != null) {
+    const {offset, length} = o.range;
+    if (!(length > 0) || offset >= o.size || awal != null && Number(awal) >= o.size) { o.body?.cancel(); return new Response(null, {status: 416, headers: {...HDR, "content-range": `bytes */${o.size}`}}); }
+    return new Response(o.body, {status: 206, headers: {...baku, "content-range": `bytes ${offset}-${offset + length - 1}/${o.size}`, "content-length": String(length)}});
+  }
+  return new Response(o.body, {headers: {...baku, "content-length": String(o.size)}});
+}
+
 /* GET /api/lapor/data/media?id=: tim berkasnya; staf Pusdalops; akun lembaga kab hanya foto (bukan wajah); provinsi tidak. Tercatat. */
 async function mediaGet(env, req, url, kini) {
   const lj = await lajuIP(env, req, "lapor.data.baca", BACA, kini); if (lj) return lj;
@@ -389,6 +511,7 @@ async function mediaGet(env, req, url, kini) {
     if (lingkup === "staf" || (lingkup === "lembaga" && m.jenis === "foto")) oleh = String(h.oleh).slice(0, 200);
   }
   if (!oleh) return galat(404, "Media tidak ditemukan.");
+  if (m.jenis === "video") return videoGet(env, req, m, oleh, kini);
   const r2 = await env.MEDIA.get(m.kunci_r2); if (!r2) return galat(404, "Media tidak ditemukan.");
   await H.ljStmtAkses(env, STAF, m.berkas, m.objek, "media", oleh, kini).run();
   return new Response(r2.body, {headers: {...HDR, "content-type": "image/jpeg", "x-content-type-options": "nosniff", "content-disposition": "inline"}});
@@ -541,6 +664,7 @@ async function terimaTutup(env, b, oleh, kini) {
     ...(pel ? [H.ljStmtTiketSelesai(env, STAF, b.induk, tk.status, b.id, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, b.induk, tk.status, "selesai", "Penutupan data lanjutan diterima", oleh, kini),
       H.lpStmtKabarJikaBerubah(env, STAF, pel.wa, b.induk, "status", `Status laporan ${b.induk}: ${STATUS_TIKET.selesai}.`, kini)] : [])]);
   if (!r[0].meta.changes) return tolak(409, "Status berkas baru saja berubah. Muat ulang.");
+  if (!b.kejadian_id) await isiTautan(env, STAF, b.id);   // tautan Buku Besar yang terpasang sesudah berkas dibuka (LJ-14)
   return {kode: 200, isi: {status: st, ditutup: kini, tiket_selesai: !!pel && r[ketua ? 3 : 2].meta.changes > 0}};
 }
 async function bukaLagi(env, b, oleh, kini, o = {}) {
@@ -824,9 +948,58 @@ export async function bersihSesiLanjut(env, kini = Date.now()) {
   } catch (e) { if (tabelBelum(e)) return 0; throw e; }
 }
 
+/* LJ-19: foto draf yatim. Draf yang proses matinya terjadi di antara simpan R2 dan simpan D1 tidak punya baris lj_sesi; sesi yang mati ikut disapu bersihSesiLanjut.
+   Draf lebih tua dari 2 hari dibuang kecuali masih disebut sesi tim berkas itu (sesi aktif bisa berumur lebih dari umur foto: diubah ikut tiap pesan).
+   ponytail: anggaran subrequest Free (50 per invokasi): 1 list folder berkas + 10 list draf + paling banyak 10 baca sesi D1 + 10 hapus R2 = 31 terburuk, biasanya 11.
+   Jendela 10 berkas bergeser tiap jam (1000 berkas pertama): tiap berkas disapu paling lambat (berkas / 10) jam; upgrade ke kursor di D1 bila F1 melewati ~1000 berkas. */
+const DRAF_YATIM_MS = 2 * HARI, SAPU_BERKAS = 10;
+export async function sapuDrafYatim(env, kini = Date.now()) {
+  if (!env.MEDIA) return 0;
+  const semua = ((await env.MEDIA.list({prefix: "lapor/data/", delimiter: "/", limit: 1000})).delimitedPrefixes || []).map(x => x.split("/")[2]).filter(b => RE_ID.test(b)).sort();
+  if (!semua.length) return 0;
+  const awal = (Math.floor(kini / JAM) * SAPU_BERKAS) % semua.length;
+  let hapus = 0;
+  for (const b of Array.from({length: Math.min(SAPU_BERKAS, semua.length)}, (_, i) => semua[(awal + i) % semua.length])) {
+    const tua = (await env.MEDIA.list({prefix: `lapor/data/${b}/draf/`, limit: 1000})).objects.filter(o => kini - new Date(o.uploaded).getTime() > DRAF_YATIM_MS);
+    if (!tua.length) continue;
+    const dipakai = new Set();
+    for (const r of await H.ljSesiBerkas(env, H.pelakuLpCron, b)) { try { for (const f of JSON.parse(r.keadaan).foto || []) dipakai.add(kunciFotoDraf(b, f.i)); } catch {} }
+    const buang = tua.map(o => o.key).filter(k => !dipakai.has(k));
+    if (buang.length) { await env.MEDIA.delete(buang); hapus += buang.length; }
+  }
+  return hapus;
+}
+
+/* LJ-17 (D23, K9): 5 tahun sesudah penutupan diterima, kolom pribadi semua objek dikosongkan dan foto wajah (pengungsi dewasa, korban hilang) dibuang dari R2 dan lj_media.
+   Foto rumah, prasarana, usaha, isian data, rekap, dan lj_beku tetap. Berkas yang dibuka lagi punya ditutup NULL: tidak pernah jatuh tempo; syaratnya diulang di tiap pernyataan SQL.
+   Urutan: satu batch D1 (media dengan RETURNING, pribadi, sidik jejak, penanda), lalu R2; gagal di tengah = berkas yang sama dicoba lagi putaran berikut (tanpa penanda = belum selesai).
+   ponytail: anggaran subrequest Free: 1 daftar + per berkas 1 baca D1 + 1 batch D1 + 1 hapus R2 + (sekali per berkas, saat selesai) 1 list dan 1 hapus R2 yatim = paling banyak 26 untuk 5 berkas; 500 foto wajah per berkas per putaran
+   (sisanya putaran berikut, jejak ditulis hanya saat habis). Daftar jatuh tempo membaca semua berkas selesai lewat indeks status; naik pagar bila berkas selesai melewati puluhan ribu. */
+export const LIMA_TAHUN_MS = 5 * 365.25 * HARI;
+const PURGE_BERKAS = 5, PURGE_WAJAH = 500;
+export async function hapusPribadiLama(env, kini = Date.now()) {
+  try {
+    const batas = Math.round(kini - LIMA_TAHUN_MS), hasil = {berkas: 0, objek: 0, wajah: 0};
+    for (const b of await H.ljPribadiJatuhTempo(env, H.pelakuLpCron, batas, PURGE_BERKAS)) {
+      const wajah = await H.ljWajahBerkas(env, H.pelakuLpCron, b, batas, PURGE_WAJAH), ids = wajah.map(w => w.id), habis = wajah.length < PURGE_WAJAH;
+      /* D1 dulu, dijaga syarat tutup lewat batas (RETURNING = baris yang benar-benar terhapus), baru R2 dari kunci itu: berkas yang dibuka lagi di antara baca dan hapus kehilangan nol foto.
+         R2 gagal sesudahnya = foto yatim tanpa baris, disapu di bawah pada berkas yang sama (jejak hanya ditulis sekali, jadi sapu yatim hanya sekali per berkas). */
+      const r = await H.ljBatch(env, H.pelakuLpCron, [H.ljStmtMediaLepas(env, H.pelakuLpCron, b, batas, ids),
+        ...(habis ? [H.ljStmtPribadiKosong(env, H.pelakuLpCron, b, batas), H.ljStmtJejakSidikKosong(env, H.pelakuLpCron, b, batas), H.ljStmtPribadiJejak(env, H.pelakuLpCron, b, batas, JSON.stringify({wajah: ids.length}), kini)] : [])]);
+      const lepas = (r[0].results || []).map(x => x.kunci_r2); hasil.wajah += lepas.length;
+      if (lepas.length && env.MEDIA) await env.MEDIA.delete(lepas);
+      if (habis && r[3].meta.changes) {
+        hasil.objek += r[1].meta.changes; hasil.berkas++;
+        if (env.MEDIA) { const sisa = (await env.MEDIA.list({prefix: `lapor/data/${b}/wajah/`, limit: 1000})).objects.map(o => o.key); if (sisa.length) await env.MEDIA.delete(sisa); }   // yatim dari batal atau hapus wajah yang R2-nya gagal
+      }
+    }
+    return hasil;
+  } catch (e) { if (tabelBelum(e)) return null; throw e; }
+}
+
 /* migrasi 0161 belum diterapkan: 503 jelas, bukan 500 */
-const jaga = f => async (env, req, url, kini = Date.now()) => {
-  try { return await f(env, req, url, kini); } catch (e) { if (tabelBelum(e)) return galat(503, "Data lanjutan belum aktif (migrasi 0161 belum diterapkan)."); throw e; }
+const jaga = f => async (env, req, url, kini = Date.now(), ctx, x) => {
+  try { return await f(env, req, url, kini, ctx, x); } catch (e) { if (tabelBelum(e)) return galat(503, "Data lanjutan belum aktif (migrasi 0161 belum diterapkan)."); throw e; }
 };
 export const RUTE_LAPOR_DATA = Object.fromEntries(Object.entries({
   "POST /api/lapor/data/masuk": masuk,
@@ -841,6 +1014,8 @@ export const RUTE_LAPOR_DATA = Object.fromEntries(Object.entries({
   "POST /api/lapor/data/tim": timPost,
   "POST /api/lapor/data/tutup": tutupPost,
   "POST /api/lapor/data/foto": fotoPost,
+  "POST /api/lapor/data/video/:x": videoPost,   // mulai, <id>/selesai (LJ-18)
+  "PUT /api/lapor/data/video/:x": videoBagian,   // <id>/<n>
   "GET /api/lapor/data/media": mediaGet,
 }).map(([k, f]) => [k, jaga(f)]));
 

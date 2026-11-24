@@ -331,3 +331,16 @@ export function bahanJitupasna(semua) {
 const KODE_SEKTOR = ["perumahan", ...new Set(Object.values(SEKTOR_PRASARANA))];
 export const awalanBaris = berkas => "lj" + berkas;
 export const klienBaris = (berkas, sektor, tingkat) => `${awalanBaris(berkas)}${KODE_SEKTOR.indexOf(sektor).toString(36)}${tingkat}`;
+
+/* LJ-14: usulan fase dari penutupan berkas yang SUDAH diterima staf (= usulan_fase_tutup di scripts/siklus/pasang.py). Hanya usulan "transisi"; fase tidak pernah berubah dari sini.
+   b {status, ditutup, beku: isi lj_beku (JSON teks) | null}. -> null | {ke, tanggap_akhir, dengan_catatan, kondisi, yakin, status}. selesai_catatan tanpa kondisi bernilai = "menunggu" (kosong bukan nol). */
+export function usulanFaseTutup(b) {
+  let isi = null; try { isi = b.beku ? JSON.parse(b.beku) : null; } catch {}
+  const tgl = isi?.penutupan?.tgl_selesai;
+  if (!["selesai", "selesai_catatan"].includes(b.status) || b.ditutup == null || !tgl) return null;
+  const u = {ke: "transisi", tanggap_akhir: tgl, dengan_catatan: b.status === "selesai_catatan", yakin: "terverifikasi", status: "usulan"};
+  if (!u.dengan_catatan) return u;
+  const alasan = isi.kondisi_akhir?.alasan || [], nilai = m => { const x = alasan.find(a => a.metrik === m); return x ? x.nilai : 0; };   // metrik tak ada di alasan = 0 dari daftar (kondisiAkhir)
+  const kondisi = Object.fromEntries(Object.entries({hilang: nilai("hilang"), jiwa_pengungsian: nilai("mengungsi"), prasarana_putus: nilai("prasarana_putus")}).filter(([, v]) => v != null));
+  return Object.values(kondisi).some(v => v > 0) ? {...u, kondisi} : {...u, status: "menunggu", kondisi: null};
+}

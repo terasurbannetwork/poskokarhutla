@@ -4,6 +4,7 @@
    INP (aturan pemilik 2): tombol saring berganti keadaan seketika, peta dan tabel digambar ulang sesudah cat berikutnya.
    Angka dampak antarlaporan tidak dijumlah (laporan warga bisa ganda untuk satu kejadian): ringkasan menghitung LAPORAN, bukan korban. */
 import {labelKode} from "./kode.js";
+import {pasangDataLanjutan, bukaDaftarData} from "./meja_data.js";   // LJ-16: data lanjutan BPBD (rincian tiket dan daftar lintas kab)
 const $ = id => document.getElementById(id);
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
 const ikon = id => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"), u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", `#${id}`); s.setAttribute("aria-hidden", "true"); s.append(u); return s; };
@@ -193,7 +194,7 @@ function gambarNav(daftar) {
     grup("Tampilan"), item("m-lokasi", "Peta laporan", ke("peta"), {aktif: tampil === "peta"}), item("m-daftar", "Daftar laporan", ke("daftar"), {aktif: tampil === "daftar", n: daftar.filter(cocokJenis).filter(cocokStatus).length}),
     grup("Antrean kerja"), ...ANTREAN.map(([t, st, ik]) => item(ik, t, () => { saringStatus = st; gambar(); },
       {n: st ? daftar.filter(b => st.includes(b.status)).length : daftar.length, aktif: String(saringStatus) === String(st), st: st ? WARNA[st[0]] : null})),
-    grup("Pintu lain"), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
+    grup("Pintu lain"), item("m-tiket", "Data lanjutan BPBD", () => { bukaDaftarData(new Map(semua.map(b => [b.nomor, b.wilayah?.kab]))); }), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
     // Pantau Dalops halaman internal BNPB: tidak untuk akun BPBD (pemilik 20 Nov 2026 "ya sembunyikan")
     ...(akunBpbd() ? [] : [item("m-ringkas", "Pantau Dalops", null, {href: "/bnpb/dalops"})]));
 }
@@ -880,6 +881,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
     const a2 = Object.assign(el("a", "mj-tombol"), {href: `tel:+${p.wa}`}); a2.append(ikon("m-telepon"), "Telepon"); kontak.append(a1, a2); }
   siapa.append(kontak); wp.append(siapa);
   const kPelapor = kartu("Pelapor", "m-orang", wp);
+  const wLanjut = wadah();   // diisi sesudah rincian tercat (deferred): satu GET daftar berkas, lalu rincian berkas bila ada
 
   // log aktivitas: pindah status, catatan, dan balasan petugas dalam satu linimasa (pemilik 19 Nov 2026: "agar ada log-nya")
   const log = [...j.riwayat.map(x => ({w: x.waktu, ke: x.ke, judul: x.label || LABEL[x.ke], oleh: x.pelaku, ket: x.catatan})),
@@ -925,6 +927,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
     ["kejadian", "Kejadian dan lokasi", "m-kejadian", [...ambil("Kejadian"), (() => { const lf = el("div", "mj-isian-kisi"); lf.append(kLokasi, ...(kFoto ? [kFoto] : [])); return kFoto ? lf : kLokasi; })()]],
     ["dampak", "Dampak", "m-korban", ambil("Korban", "Warga terdampak", "Pengungsian", "Kerusakan rumah", "Fasilitas dan jalan", "Data khusus")],
     ["kebutuhan", "Kebutuhan dan layanan", "m-tenda", ambil("Kelompok rentan", "Layanan dasar", "Kebutuhan")],
+    ["lanjut", "Data lanjutan", "m-daftar", [kartu("Data lanjutan BPBD", "m-daftar", wLanjut)]],   // LJ-16: muncul hanya bila tiket ini induk sebuah berkas
     ["lain", "Gugus dan percakapan", "m-pesan", [...(j.kejadian ? [kartuKejadianRinci(j.kejadian, kartu, kirim)] : []), ...(j.gugus ? [kartuGugusRinci(j.gugus, kartu)] : []), kTr]]];
   /* penduduk dan sarana dalam 1, 5, 10 km dari titik laporan (data/kajian-bnpb/inarisk KEPUTUSAN D15), lewat proksi InaRISK; diisi saat terlihat */
   if (j.lat != null && globalThis.DampakRadius) { const wr = wadah("mj-isi-kartu mj-dr"); wr.append(DampakRadius.tabel(j.lat, j.lon, [1, 5, 10], {judul: false, kaki: false, kelasTabel: "mj-tabel", kelasWadah: "mj-tabel-gulung"}));
@@ -932,18 +935,21 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
   const terpakai = new Set(BAGIAN.flatMap(x => x[3]));   // kelompok baru yang belum dipetakan tetap tampil di Dampak
   for (const k of kartuKelompok.values()) if (!terpakai.has(k)) BAGIAN[1][3].push(k);
   const deret = el("nav", "mj-bagian-nav"); deret.setAttribute("aria-label", "Bagian laporan");
+  const hidupkanLanjut = [];
   for (const [id, judul, ik, isi] of BAGIAN) {
     if (!isi.length) continue;
     const sec = el("section", "mj-bagian"); sec.id = `bag-${id}`;
     const pilJ = el("p", "mj-bagian-pil"); pilJ.append(ikon(ik), judul); sec.append(pilJ);
     const kisiB = el("div", id === "kejadian" || id === "lain" ? "mj-bagian-isi tunggal" : "mj-bagian-isi"); kisiB.append(...isi); sec.append(kisiB); kanan.append(sec);
     const bt = el("button", null); bt.type = "button"; bt.append(ikon(ik), judul); bt.addEventListener("click", () => sec.scrollIntoView({behavior: "smooth", block: "start"})); deret.append(bt);
+    if (id === "lanjut") { sec.hidden = bt.hidden = true; hidupkanLanjut.push(() => { sec.hidden = bt.hidden = false; }); }
   }
   kanan.prepend(deret);
   const badan = el("div", "mj-rinci-badan"), gulung = el("div", "mj-rinci-gulung"); badan.append(kiri, kanan); gulung.append(angka, badan);
   const posisi = dlg.querySelector(".mj-rinci-gulung")?.scrollTop || 0;
   petaMini?.remove(); petaMini = null;
   dlg.replaceChildren(kep, gulung); if (!lihat) gulung.scrollTop = posisi;
+  requestAnimationFrame(() => pasangDataLanjutan(nomor, wLanjut, () => hidupkanLanjut.forEach(f => f())));   // LJ-16: sesudah rincian tercat; daftar berkas disimpan 20 detik
   if (fokus === "periksa") { const k = dlg.querySelector(".mj-periksa"); if (k) { k.closest(".mj-kartu").scrollIntoView({block: "start"}); k.querySelector("input")?.focus({preventScroll: true}); } }
   if (j.lat != null && window.maplibregl) try {
     petaMini = new maplibregl.Map({container: wPeta, style: "https://tiles.openfreemap.org/styles/positron", center: [j.lon, j.lat], zoom: 13, interactive: false, attributionControl: false});

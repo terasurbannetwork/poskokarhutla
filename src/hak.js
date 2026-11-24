@@ -493,6 +493,8 @@ const KT = {
   // gempa_kejadian tidak punya kolom dummy (0009), jadi tidak disaring
   gempa_d1: ["SELECT kode, kode cid, mulai w, utama_id, lat, lon FROM gempa_kejadian WHERE mulai >= ?1 AND mulai < ?2 AND (mulai > ?3 OR kode > ?4) ORDER BY mulai, kode LIMIT ?5"],   // gempa_kejadian_mulai
   lapsus: ["SELECT l.operasi_id || ':' || l.kejadian_id kode, l.operasi_id || ':' || l.kejadian_id cid, l.dibuat w, k.jenis, k.prov, k.kab, k.mulai FROM lapsus_kejadian l JOIN logbook_kejadian k ON k.id = l.kejadian_id JOIN lapsus_operasi o ON o.id = l.operasi_id AND o.dummy = 0 WHERE k.dummy = 0 AND l.dibuat >= ?1 AND l.dibuat < ?2 AND (l.dibuat > ?3 OR l.operasi_id || ':' || l.kejadian_id > ?4) ORDER BY l.dibuat, l.operasi_id, l.kejadian_id LIMIT ?5"],   // lapsus_kejadian_dibuat
+  /* LJ-14 (lapor-lanjutan): hanya tiket induk laporan tingkat bpbd yang punya berkas data lanjutan; tanpa WA, nama, atau isi. kab berkode "32.71" diterjemahkan item() di kejadian_tautan.js. */
+  lapor_ai: ["SELECT s.nomor kode, s.nomor cid, s.terkirim w, s.kab, s.jenis FROM lapor_sesi s WHERE s.terkirim >= ?1 AND s.terkirim < ?2 AND (s.terkirim > ?3 OR s.nomor > ?4) AND s.tingkat = 'bpbd' AND EXISTS (SELECT 1 FROM lj_berkas b WHERE b.induk = s.nomor) ORDER BY s.terkirim, s.nomor LIMIT ?5"],   // lapor_sesi_terkirim; lj_berkas UNIQUE (induk, kab)
 };
 export const KT_SQL = KT, KT_SUMBER = Object.keys(KT);
 /* KP-06 baca tautan per pasangan (sumber, kode): satu kueri per pasangan lewat UNIQUE (sumber, kode, dummy), dibatch; dummy = 0 didahulukan. Tanpa nama/WA/isi. */
@@ -501,7 +503,10 @@ export const ktTautan = async (env, p, pairs, dummyOk) => {
   return (await env.DB.batch(pairs.map(([s, k]) => sql.bind(s, k, dummyOk ? 1 : 0)))).map(r => r.results[0] ?? null);
 };
 export const ktKab = async (env, p, ids) => ids.length ? (await sedia(env, p, "sk_kejadian_kab", "baca", "SELECT kejadian_id, kab4 FROM sk_kejadian_kab WHERE kejadian_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results : [];
-export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results;
+export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => {
+  try { return (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results; }
+  catch (e) { if (sumber === "lapor_ai" && /no such table/i.test(String(e?.message))) return []; throw e; }   // migrasi 0161 belum diterapkan
+};
 
 /* KP-19 titik pengungsian (migrasi 0134_titik_pengungsian, 0135_meja_pengungsi_titik; src/pengungsian_titik.js). Hak dicek di rute; tidak ada rute publik. */
 export const tpDaftar = async (env, kab4) => (await env.DB.prepare("SELECT t.id, t.prov, t.kab4, t.kec, t.desa, t.nama, t.jenis_tempat, t.lat, t.lon, t.kejadian_id, t.buka, t.tutup, (SELECT max(json_extract(c.data, '$.tgl_data')) FROM meja_catatan c WHERE c.meja = 'pengungsi' AND json_extract(c.data, '$.titik_id') = t.id) putaran_terakhir FROM titik_pengungsian t WHERE t.kab4 = ? ORDER BY t.tutup IS NOT NULL, t.nama LIMIT 300").bind(kab4).all()).results;
@@ -1765,7 +1770,7 @@ Object.assign(MATRIKS, {
   lj_berkas:           {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "ubah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca"]},
   lj_tim:              {lp_pelapor: ["baca", "tambah"], lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca", "ubah"], lp_cron: ["baca"], lp_mesin: ["baca"]},
   lj_objek:            {lj_tim: ["baca", "tambah", "ubah"], lp_staf: ["baca"], lp_cron: ["baca", "ubah"]},
-  lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah"]},
+  lj_jejak:            {lj_tim: ["baca", "tambah"], lp_staf: ["baca", "tambah"], lp_cron: ["tambah", "ubah"]},   // lp_cron ubah: hanya mengosongkan pribadi_sidik saat masa simpan 5 tahun habis (LJ-17, K9)
   lj_media:            {lj_tim: ["baca", "tambah", "hapus"], lp_staf: ["baca"], lp_cron: ["baca", "hapus"]},
   lj_tanya:            {lj_tim: ["baca", "ubah"], lp_cron: ["baca", "tambah"]},
   lj_kabar:            {lp_pelapor: ["tambah"], lj_tim: ["tambah"], lp_staf: ["tambah"], lp_cron: ["tambah", "hapus"], lp_mesin: ["baca", "ubah"]},   // LJ-11: lp_cron hapus pembuka basi dan baris terkirim lama
@@ -2224,6 +2229,17 @@ export const ljBekuTerakhir = (env, p, berkas) => sedia(env, p, "lj_beku", "baca
 export const ljStmtTutupTerima = (env, p, berkas, kini) => sedia(env, p, "lj_berkas", "ubah",
   `UPDATE lj_berkas SET status = json_extract(isian, '$.penutupan.status'), ditutup = ?2, diubah = ?2
    WHERE id = ?1 AND status = 'usul_tutup' AND json_extract(isian, '$.penutupan.status') IN ('selesai', 'selesai_catatan')`).bind(berkas, kini);
+/* LJ-14: kejadian_id dan kab4 berkas diisi dari tautan sk_kejadian_sumber (sumber lapor_ai, kode = tiket induk) hanya bila masih NULL. Tidak menyentuh diubah (penjaga usul tutup memakainya).
+   Satu UPDATE: PK lj_berkas, UNIQUE (sumber, kode, dummy). kab4 dari tautan, kalau kosong dari kode kab berkas ("32.71"). */
+export const ljIsiTautan = (env, p, berkas) => sedia(env, p, "lj_berkas", "ubah",
+  `UPDATE lj_berkas SET kejadian_id = (SELECT s.kejadian_id FROM sk_kejadian_sumber s WHERE s.sumber = 'lapor_ai' AND s.kode = lj_berkas.induk AND s.dummy = 0 AND s.status = 'terpasang'),
+     kab4 = coalesce(kab4, (SELECT s.kab4 FROM sk_kejadian_sumber s WHERE s.sumber = 'lapor_ai' AND s.kode = lj_berkas.induk AND s.dummy = 0 AND s.status = 'terpasang'),
+       CASE WHEN kab GLOB '[0-9][0-9].[0-9][0-9]' THEN substr(kab, 1, 2) || substr(kab, 4, 2) END)
+   WHERE id = ?1 AND kejadian_id IS NULL AND EXISTS (SELECT 1 FROM sk_kejadian_sumber s WHERE s.sumber = 'lapor_ai' AND s.kode = lj_berkas.induk AND s.dummy = 0 AND s.status = 'terpasang')`).bind(berkas).run();
+/* LJ-14: berkas tertaut ke satu kejadian yang penutupannya SUDAH diterima staf, dengan versi beku terakhir (tanpa data pribadi). Indeks lj_berkas_kejadian, PK/indeks lj_beku (berkas, versi). */
+export const ljBerkasUsulan = async (env, p, kejadian) => (await sedia(env, p, "lj_berkas", "baca",
+  `SELECT b.induk, b.kab, b.status, b.ditutup, (SELECT x.isi FROM lj_beku x WHERE x.berkas = b.id ORDER BY x.versi DESC LIMIT 1) beku FROM lj_berkas b
+   WHERE b.kejadian_id = ?1 AND b.status IN ('selesai', 'selesai_catatan') AND b.ditutup IS NOT NULL ORDER BY b.ditutup LIMIT 20`).bind(kejadian).all()).results;
 /* buka lagi (usul ditolak, atau perubahan sesudah ditutup): ditutup dikosongkan, jadi hitungan 5 tahun mulai lagi dari penutupan berikutnya (D23); versi lama tetap */
 export const ljStmtBukaLagi = (env, p, berkas, kini) => sedia(env, p, "lj_berkas", "ubah",
   `UPDATE lj_berkas SET status = 'terbuka', ditutup = NULL, isian = json_remove(isian, '$.penutupan'), diubah = ?2
@@ -2278,6 +2294,27 @@ export const ljSesiUbah = async (env, p, wa, keadaan, diubahLama, kini) => (awai
 export const ljSesiHapus = (env, p, wa, sebelum = null) => sedia(env, p, "lj_sesi", "hapus", "DELETE FROM lj_sesi WHERE wa = ?1 AND (?2 IS NULL OR diubah < ?2)").bind(wa, sebelum).run();
 export const ljSesiBasi = async (env, p, sebelum) => (await sedia(env, p, "lj_sesi", "baca",
   "SELECT wa, berkas, keadaan FROM lj_sesi WHERE diubah < ?1 ORDER BY diubah LIMIT 100").bind(sebelum).all()).results;
+/* LJ-19: draf milik berkas ini yang masih dipakai sesi tim. Pencarian lewat PK lj_tim (berkas, wa) lalu PK lj_sesi (wa), tanpa pindai. */
+export const ljSesiBerkas = async (env, p, berkas) => (await sedia(env, p, "lj_sesi", "baca",
+  "SELECT keadaan FROM lj_sesi WHERE wa IN (SELECT wa FROM lj_tim WHERE berkas = ?1) AND berkas = ?1").bind(berkas).all()).results;
+
+/* LJ-17 (D23, K9): hapus data pribadi 5 tahun sesudah penutupan diterima. Syarat "berkas tutup lewat batas" diulang di tiap pernyataan tulis (berkas yang dibuka lagi
+   punya ditutup NULL dan lolos tak pernah). Penanda selesai = baris lj_jejak 'hapus_pribadi' bertanggal sesudah ditutup (PK/indeks lj_jejak (berkas, id)). */
+const LJ_LEWAT = "EXISTS (SELECT 1 FROM lj_berkas b WHERE b.id = ?1 AND b.status IN ('selesai', 'selesai_catatan') AND b.ditutup < ?2)";
+export const ljPribadiJatuhTempo = async (env, p, batas, maks) => (await sedia(env, p, "lj_berkas", "baca",
+  `SELECT id FROM lj_berkas b WHERE b.status IN ('selesai', 'selesai_catatan') AND b.ditutup < ?1
+   AND NOT EXISTS (SELECT 1 FROM lj_jejak j WHERE j.berkas = b.id AND j.aksi = 'hapus_pribadi' AND j.waktu >= b.ditutup) ORDER BY b.ditutup LIMIT ?2`).bind(batas, maks).all()).results.map(r => r.id);
+export const ljWajahBerkas = async (env, p, berkas, batas, maks) => (await sedia(env, p, "lj_media", "baca",
+  `SELECT m.id, m.kunci_r2 FROM lj_media m JOIN lj_objek o ON o.id = m.objek WHERE o.berkas = ?1 AND m.jenis = 'wajah' AND ${LJ_LEWAT} LIMIT ?3`).bind(berkas, batas, maks).all()).results;
+export const ljStmtMediaLepas = (env, p, berkas, batas, ids) => sedia(env, p, "lj_media", "hapus",
+  `DELETE FROM lj_media WHERE jenis = 'wajah' AND id IN (SELECT value FROM json_each(?3)) AND objek IN (SELECT id FROM lj_objek WHERE berkas = ?1) AND ${LJ_LEWAT} RETURNING kunci_r2`).bind(berkas, batas, JSON.stringify(ids));
+export const ljStmtPribadiKosong = (env, p, berkas, batas) => sedia(env, p, "lj_objek", "ubah",
+  `UPDATE lj_objek SET pribadi = NULL WHERE berkas = ?1 AND pribadi IS NOT NULL AND ${LJ_LEWAT}`).bind(berkas, batas);
+/* K9 dibaca ketat: sidik HMAC isian pribadi di lj_jejak ikut dikosongkan (baris jejak tetap; lj_tim tidak disentuh) */
+export const ljStmtJejakSidikKosong = (env, p, berkas, batas) => sedia(env, p, "lj_jejak", "ubah",
+  `UPDATE lj_jejak SET pribadi_sidik = NULL WHERE berkas = ?1 AND pribadi_sidik IS NOT NULL AND ${LJ_LEWAT}`).bind(berkas, batas);
+export const ljStmtPribadiJejak = (env, p, berkas, batas, sesudah, kini) => sedia(env, p, "lj_jejak", "tambah",
+  `INSERT INTO lj_jejak (berkas, aksi, sesudah, oleh, waktu) SELECT ?1, 'hapus_pribadi', ?3, 'cron', ?4 WHERE ${LJ_LEWAT}`).bind(berkas, batas, sesudah, kini);
 
 /* LJ-10: pertanyaan harian (D12). Berkas terbuka tanpa baris lj_tanya tanggal itu, ketuanya aktif DAN nomornya di lapor_izin (gerbang fase F0: nomor uji dan PEMILIK).
    Indeks: lj_berkas_status (status), PK lj_tanya (berkas, tgl), PK lj_tim (berkas, wa). */

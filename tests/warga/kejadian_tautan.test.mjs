@@ -141,10 +141,10 @@ uji("lanjut: tiap sumber memuat 501 baris semilidetik (cid terpanjang) dan halam
 });
 
 uji("rencana kueri: tiap sumber dilayani indeks kursornya, tanpa SCAN tabel utama", async () => {
-  const INDEKS = {tugas_api: "tugas_api_dibuat", logbook_d1: "logbook_kejadian_dibuat", sippa: "sippa_tugas_mulai", lapangan: "lp_tugas_mulai", gempa_d1: "gempa_kejadian_mulai", lapsus: "lapsus_kejadian_dibuat"};
+  const INDEKS = {tugas_api: "tugas_api_dibuat", logbook_d1: "logbook_kejadian_dibuat", sippa: "sippa_tugas_mulai", lapangan: "lp_tugas_mulai", gempa_d1: "gempa_kejadian_mulai", lapsus: "lapsus_kejadian_dibuat", lapor_ai: "lapor_sesi_terkirim"};
   for (const [s, [sql]] of Object.entries(KT_SQL)) {
     const rencana = (await DB.prepare("EXPLAIN QUERY PLAN " + sql).bind(0, 9e12, 0, "", 501).all()).results.map(r => r.detail).join("\n");
     assert.match(rencana, new RegExp(`SEARCH \\w+ USING (COVERING )?INDEX ${INDEKS[s]}`), `${s}:\n${rencana}`);
-    assert.doesNotMatch(rencana, /SCAN (t|l|k|logbook_kejadian|tugas_api|sippa_tugas|lp_tugas|gempa_kejadian|lapsus_kejadian)\b(?! USING)/, `${s} memindai penuh:\n${rencana}`);
+    assert.doesNotMatch(rencana, /SCAN (t|l|k|logbook_kejadian|tugas_api|sippa_tugas|lp_tugas|gempa_kejadian|lapsus_kejadian|lapor_sesi)\b(?! USING)/, `${s} memindai penuh:\n${rencana}`);
   }
 });

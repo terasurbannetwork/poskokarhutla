@@ -14,7 +14,8 @@ AKAR = os.path.normpath(os.path.join(AB, "../.."))
 BERSIH_BAWAAN = os.path.join(AKAR, "data/raw/siklus/siklus/bersih")
 ALFABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 PRIORITAS = ("dibi", "logbook", "lintas", "gempa", "karhutla", "rob")
-PRIORITAS_MASUK = PRIORITAS + ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus")   # hanya bertahap; lapsus terakhir: kembar logbook_d1, harus menempel bukan mendirikan
+PRIORITAS_MASUK = PRIORITAS + ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus", "lapor_ai")   # hanya bertahap; lapsus terakhir: kembar logbook_d1, harus menempel bukan mendirikan
+TAUTAN_SAJA = ("lapor_ai",)   # LJ-14: laporan BPBD hanya menempel ke KJ- yang ada; mesin tidak pernah mendirikan atau mengantre kejadian dari sumber ini (Lanjutan D2)
 MATI = ("digabung", "dibatalkan")
 JENDELA = 3        # semua jenis 3 hari (F1.4; kekeringan/karhutla/gunungapi menunggu UA-1)
 YAKIN = {"dibi": "resmi", "logbook": "terverifikasi"}
@@ -276,12 +277,20 @@ def bertahap(rekaman, kj, sumber, diambil, jendela=JENDELA):
         ada.add((r["sumber"], r["kode"]))
         dasar = {"sumber": r["sumber"], "kode": r["kode"], "jenis": "+".join(sorted(r["jenis"])), "mulai": r["tgl"],
                  "dampak": dampak({r["sumber"]: r}).get(r["sumber"]) or None, "diambil": diambil}
+        if not r["kab"] and r["sumber"] in TAUTAN_SAJA:
+            ada.discard((r["sumber"], r["kode"]))
+            h["menunggu_kejadian"] += 1
+            continue
         if not r["kab"]:
             kep.append(dict(dasar, aksi="tanpa_wilayah"))
             h["tanpa_wilayah"] += 1
             continue
         cand = [x for x in indeks if set(x["jenis"].split("+")) & set(r["jenis"]) and x["kab4"] in r["kab"] and _hari(x["mulai"], r["tgl"]) <= jendela
                 and r["sumber"] not in punya[x["id"]]]
+        if r["sumber"] in TAUTAN_SAJA and len(cand) != 1:   # 0 = belum ada kejadian, >1 = ambigu: tunggu tanpa keputusan (dicoba lagi putaran berikut)
+            ada.discard((r["sumber"], r["kode"]))
+            h["menunggu_kejadian"] += 1
+            continue
         if len(cand) == 1 and not cand[0]["lokal"]:
             c = cand[0]
             punya[c["id"]].add(r["sumber"])
@@ -303,6 +312,22 @@ def bertahap(rekaman, kj, sumber, diambil, jendela=JENDELA):
             kep.append(dict(dasar, aksi="ambigu", kab4=r["kab"][0], kandidat=sorted(c["id"] for c in cand)[:30]))
             h["ambigu"] += 1
     return kep, tunda, dict(h)
+
+
+def usulan_fase_tutup(b):
+    """LJ-14 (Lanjutan D14, Q2): penutupan lj_berkas yang SUDAH DITERIMA staf -> usulan fase, bukan perubahan fase (fase hanya lewat POST .../fase oleh staf).
+    b {status, ditutup (ms|None), tgl_selesai, kondisi {hilang, jiwa_pengungsian, prasarana_putus}: bilangan atau None}.
+    -> None (belum diterima) | {ke, tanggap_akhir, dengan_catatan, kondisi, yakin, status}. selesai_catatan tanpa kondisi akhir tidak diusulkan tuntas:
+    status 'menunggu' (kosong bukan nol). Usulan hanya transisi: pemulihan dan selesai tetap keputusan staf (syarat R3P)."""
+    if b.get("status") not in ("selesai", "selesai_catatan") or b.get("ditutup") is None or not b.get("tgl_selesai"):
+        return None
+    u = {"ke": "transisi", "tanggap_akhir": b["tgl_selesai"], "dengan_catatan": b["status"] == "selesai_catatan", "yakin": "terverifikasi", "status": "usulan"}
+    if u["dengan_catatan"]:
+        k = {n: v for n, v in (b.get("kondisi") or {}).items() if v is not None}
+        if not any(k.values()):
+            return dict(u, status="menunggu", kondisi=None)   # catatan harus menyertai usulan
+        u["kondisi"] = k
+    return u
 
 
 def siap_verifikasi(entri_nama):
@@ -342,7 +367,7 @@ def _tarik(http, basis, jalur, dari, sampai, ekstra=None):
     return hasil
 
 
-SUMBER_MODUL = ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus")   # urutan = PRIORITAS: lapsus sesudah logbook_d1
+SUMBER_MODUL = ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus", "lapor_ai")   # urutan = PRIORITAS: lapsus sesudah logbook_d1
 
 
 def tarik_modul(http, basis, dari, sampai, cari=None):
@@ -564,6 +589,21 @@ def _uji():
     # kab4 Kemendagri: nama + provinsi, bukan kode BPS (Aceh Besar BPS 1108)
     r = dari_baris("dibi", {"kunci_jenis": ["banjir"], "kab4": KN.kab4("Aceh Besar", "11"), "tgl": "2020-01-01"})
     assert r["kab"] == ["1106"]
+    # LJ-14: lapor_ai hanya menempel; penutupan diterima -> usulan transisi, catatan wajib
+    LA = lambda t, kab=("3201",): R("lapor_ai", ("banjir",), kab, t)
+    kep, _, h = bertahap([LA("2026-03-03")], [kjA], [], 1)
+    assert [(k["aksi"], k["kejadian_id"]) for k in kep] == [("tambah", kjA["id"])]
+    for kj_, kb in (([], ("3201",)), ([kjA, kjB], ("3201",)), ([kjA], ())):
+        kep, tunda, h = bertahap([LA("2026-03-03", kb)], kj_, [], 1)
+        assert kep == [] and tunda == [] and h == {"menunggu_kejadian": 1}, "lapor_ai tidak mendirikan, mengantre, atau tanpa_wilayah"
+    assert usulan_fase_tutup({"status": "terbuka", "ditutup": None, "tgl_selesai": "2026-03-10"}) is None
+    assert usulan_fase_tutup({"status": "usul_tutup", "ditutup": None, "tgl_selesai": "2026-03-10"}) is None
+    u = usulan_fase_tutup({"status": "selesai", "ditutup": 1, "tgl_selesai": "2026-03-10"})
+    assert u["ke"] == "transisi" and u["tanggap_akhir"] == "2026-03-10" and u["status"] == "usulan" and not u["dengan_catatan"]
+    c = {"status": "selesai_catatan", "ditutup": 1, "tgl_selesai": "2026-03-10"}
+    assert usulan_fase_tutup(c)["status"] == "menunggu" and usulan_fase_tutup(dict(c, kondisi={"hilang": None}))["status"] == "menunggu"
+    u = usulan_fase_tutup(dict(c, kondisi={"hilang": 2, "jiwa_pengungsian": None}))
+    assert u["status"] == "usulan" and u["dengan_catatan"] and u["kondisi"] == {"hilang": 2}
     print("pasang: uji hijau")
 
 

@@ -58,9 +58,6 @@ until mkdir "$kunci" 2>/dev/null; do
   sleep 5
 done
 echo $$ > "$kunci/pid"
-# Uji yang dibunuh paksa (SIGKILL, timeout sesi) tidak sempat menjalankan trap/finally; salinan repo 1,5-5 GB per uji
-# menumpuk sampai disk penuh (24 Nov 2026: 27 GB, uji _headers gagal ENOSPC). Sapu sisa >2 jam; uji yang sedang jalan jauh lebih muda.
-find "${TMPDIR:-/tmp}" -maxdepth 1 -type d \( -name 'uji-push.*' -o -name 'uji-push-log.*' -o -name 'headers-*' -o -name 'uji-layar-*' \) -mmin +120 -exec rm -rf {} + 2>/dev/null
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
 rmdir "$tmp"
 log=$(mktemp -d "${TMPDIR:-/tmp}/uji-push-log.XXXXXX") || exit 1

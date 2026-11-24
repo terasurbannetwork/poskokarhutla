@@ -28,7 +28,7 @@ import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, 
 import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
-import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut} from "./lapor_lanjut.js";
+import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "./lapor_kejadian.js";
 
@@ -589,7 +589,7 @@ const BAGIAN = 5 * 1048576, VIDEO_MAKS = 30 * 1048576, VIDEO_DETIK = 60, VIDEO_P
 const EKS_VIDEO = {"video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm"};
 const bagianDari = u => { try { return Object.keys(JSON.parse(u.bagian || "{}")).map(Number).sort((a, b) => a - b); } catch { return []; } };
 const gagalUnggah = {galat: "Unggahan tidak ditemukan atau sudah kedaluwarsa. Pilih video lagi."};
-const miliknya = async (env, u, id) => !!u && u.wa === id.wa && (!id.perangkat || await H.lpMilikAda(env, P, "unggah", u.id, id.perangkat));
+const miliknya = async (env, u, id) => !!u && !u.kunci_r2.startsWith("lapor/data/") && u.wa === id.wa && (!id.perangkat || await H.lpMilikAda(env, P, "unggah", u.id, id.perangkat));
 async function unggahMulai(env, req, url, kini) {
   if (!env.MEDIA) return galat(503, "Penyimpanan foto belum aktif.");
   const b = await bacaBody(req, 4096); if (b.galat) return galat(b.status || 400, b.galat);
@@ -698,6 +698,8 @@ async function unggahSelesai(env, req, url, kini, uid) {
 export async function bersihkanLapor(env, kini = Date.now()) {
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)
+  await sapuDrafYatim(env, kini).catch(e => console.error("lj_draf", e?.message));   // foto draf R2 yatim lebih dari 2 hari (LJ-19)
+  await hapusPribadiLama(env, kini).then(h => h && h.berkas && console.log("lj_pribadi", JSON.stringify(h))).catch(e => console.error("lj_pribadi", e?.message));   // data pribadi 5 tahun sesudah penutupan (LJ-17, D23)
   if (!env.MEDIA) return {lewat: "tanpa R2 MEDIA"};
   let basi; try { basi = await H.lpUnggahBasi(env, H.pelakuLpCron, kini - UNGGAH_BASI); } catch (e) { if (tabelBelum(e)) return {lewat: "migrasi 0158 belum diterapkan"}; throw e; }
   for (const u of basi) { await env.MEDIA.resumeMultipartUpload(u.kunci_r2, u.upload_id).abort().catch(() => {}); await H.lpUnggahHapus(env, H.pelakuLpCron, u.id); }
