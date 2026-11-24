@@ -1,0 +1,76 @@
+185    JABAR_ 13     laut, sebagian kecil Indramayu bagian barat     NOV II      MUNDUR 2       N       FEB        SAMA            17       LEBIH PENDEK ≥ 3
+                     daya, Subang bagian selatan, sebagian besar
+                     Sumedang
+                     Cirebon bagian tengah, sebagian kecil
+                     Indramayu bagian selatan, Kota Cirebon
+186    JABAR_ 14                                                      DES I      MUNDUR 3       N       FEB      MUNDUR 1          15       LEBIH PENDEK ≥ 3
+                     bagian tengah, Majalengka bagian utara,
+                     sebagian kecil Sumedang bagian timur laut
+
+
+
+
+                                                                                PMH 202 6/202 7 |63
+                                                                                                                                                                        ZONA HANYA 1 MUSIM
+                                                                                    Perbandingan                   Perbandingan                                                        Perbandingan
+                                                                                                                                                Perbandingan
+                                                                                       Awal                          Puncak        Panjang                        Sifat     Hujan          Hujan
+ No.   No. ZOM Per                                                                                  Sifat Puncak                                Panjang Musim
+                                 Daerah/Kabupaten                     Awal Musim     Terhadap                       Terhadap        Musim                         Musim    Tertinggi    Tertinggi
+ZOM     Provinsi                                                                                   Musim Musim                                 Terhadap Normal
+                                                                                       Normal                        Normal       (dasarian)                      (Sep-     (Sep-       Terhadap
+                                                                                                                                                 (dasarian)
+                                                                                     (Dasarian)                      (Bulan)                                      Feb)       Feb)        Normal
+                                                                                                                                                                                         (Bulan)
+187    JABAR_ 15     Sebagian kecil Bogor bagian barat                  NOV I       MUNDUR > 3       N     JAN      MUNDUR > 1        19       LEBIH PENDEK ≥ 3
+                     Bogor bagian barat daya dan tengah,
+188    JABAR_ 16     sebagian besar Kota Bogor, sebagian kecil                                                                                                     BN        FEB        MUNDUR > 1
+                     Sukabumi bagian utara
+                     Sebagian kecil Bogor bagian selatan,
+189    JABAR_ 17     sebagian kecil Cianjur bagian barat laut,          OKT III      MUNDUR 3        N     FEB        SAMA           20        LEBIH PENDEK ≥ 3
+                     Sukabumi bagian timur laut
+                     Cianjur bagian tengah,       sebagian    kecil
+190    JABAR_ 18                                                        NOV II      MUNDUR > 3      AN     FEB      MUNDUR > 1        18       LEBIH PENDEK ≥ 3
+                     Sukabumi bagian tengah
+                     Sebagian kecil Bandung bagian barat,
+191    JABAR_ 19     Bandung Barat bagian selatan, sebagian kecil       NOV II      MUNDUR > 3       N     FEB       MAJU > 1         17       LEBIH PENDEK ≥ 3
+                     Cianjur bagian tengah
+                     Bandung, Bandung Barat bagian timur, Kota
+192    JABAR_ 20     Bandung, Kota Cimahi, sebagian kecil               NOV III      MUNDUR 3       AN     FEB        MAJU 1          16       LEBIH PENDEK ≥ 3
+                     Sumedang bagian barat daya
+                     Sebagian kecil Bandung bagian tengah dan
+193    JABAR_ 21     timur, Garut bagian barat laut, sebagian kecil     NOV II       MUNDUR 2        N     JAN       MAJU > 1         17       LEBIH PENDEK ≥ 3
+                     Sumedang bagian selatan
+                     Ciamis bagian utara, sebagian kecil Cirebon
+                     bagian tenggara, Garut bagian timur laut,
+194    JABAR_ 22     sebagian besar Kuningan, Majalengka bagian         NOV III      MUNDUR 3        N     MAR      MUNDUR > 1        16       LEBIH PENDEK ≥ 3
+                     selatan,  Sumedang      bagian   tenggara,
+                     Tasikmalaya bagian utara
+                     Cirebon bagian selatan, Kuningan bagian
+195    JABAR_ 23     barat, Majalengka bagian tengah, sebagian           DES I      MUNDUR > 3       N     MAR      MUNDUR 1          15       LEBIH PENDEK ≥ 3
+                     kecil Sumedang bagian timur
+196    JABAR_ 24     Cirebon bagian timur                                DES I       MUNDUR 2        N     MAR      MUNDUR > 1        15        LEBIH PENDEK 2
+197    JABAR_ 25     Sukabumi bagian barat laut                         NOV I       MUNDUR > 3       N     MAR      MUNDUR > 1        19       LEBIH PENDEK ≥ 3
+198    JABAR_ 26     Kota Sukabumi, Sukabumi bagian utara               NOV II       MUNDUR 3        N     FEB      MUNDUR > 1        17       LEBIH PENDEK ≥ 3
+
+
+
+                                                                                  PMH 202 6/202 7 |64
+                                                                                                                                                                     ZONA HANYA 1 MUSIM
+                                                                                  Perbandingan                    Perbandingan                                                        Perbandingan
+                                                                                                                                               Perbandingan
+                                                                                      Awal                           Puncak       Panjang                         Sifat    Hujan         Hujan
+ No.   No. ZOM Per                                                                               Sifat   Puncak                               Panjang Musim
+                                 Daerah/Kabupaten                    Awal Musim    Terhadap                        Terhadap        Musim                         Musim    Tertinggi     Tertinggi
+ZOM     Provinsi                                                                                 Musim Musim                                  Terhadap Normal
+                                                                                    Normal                          Normal       (dasarian)                      (Sep-     (Sep-       Terhadap
+                                                                                                                                                 (dasarian)
+                                                                                   (Dasarian)                       (Bulan)                                       Feb)      Feb)        Normal
+                                                                                                                                                                                        (Bulan)
+199    JABAR_ 27     Sukabumi bagian tengah                            NOV II      MUNDUR 3       N       FEB      MUNDUR > 1        18       LEBIH PENDEK ≥ 3
+                     Bandung bagian barat daya, sebagian kecil
+200    JABAR_ 28     Bandung Barat bagian barat daya, Cianjur          OKT III     MUNDUR 2       N       FEB      MUNDUR > 1        19       LEBIH PENDEK ≥ 3
+                     bagian tengah
+                     Bandung bagian tenggara, sebagian kecil
+201    JABAR_ 29                                                       NOV I       MUNDUR 2       AN      MAR      MUNDUR 1          18       LEBIH PENDEK ≥ 3
+                     Garut bagian barat

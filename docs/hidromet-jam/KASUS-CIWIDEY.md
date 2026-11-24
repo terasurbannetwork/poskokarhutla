@@ -48,10 +48,10 @@ Embusan yang menghasilkan persis target (interpolasi fungsi kerapuhan, km/jam):
 
 - 363 rumah: lajur 10% dengan embusan sekitar 66 km/jam, atau lajur 25% dengan sekitar 59 km/jam (tepat di atas ambang model).
 - 1.397 bangunan: lajur 10% dengan sekitar 82 km/jam, lajur 25% dengan sekitar 70 km/jam, atau lajur 50% dengan sekitar 64 km/jam.
-- Kisaran gabungan dua angka, lajur 10-50%: sekitar 59 sampai 82 km/jam. Batas bawah itu setara ambang puting beliung (>= 64 km/jam, RISET.md). Embusan 100 km/jam ke atas hanya cocok
+- Untuk lajur 10-50% saja, angkanya jatuh sekitar 59 sampai 82 km/jam. Ini BUKAN kisaran yang terkunci: batas bawah 59 adalah artefak ambang peluang model (`ambang_p` 0,02, tidak ada kerusakan di bawah ±57 km/jam), dan lebar lajur tidak diketahui. Embusan 100 km/jam ke atas hanya cocok
   bila lajur lebih sempit dari 10% (belum diuji; di bawah 10%, 100 km/jam memberi sekitar 288 rumah per 1% lajur sehingga bisa saja cocok dengan lajur sekitar 1-5%).
-- Cek silang H12: Tb_min 204,1 K pada 07.30 UTC dan penurunan 27,7 K per 30 menit menunjukkan inti konvektif sangat kuat di atas Kab. Bandung,
-  jam yang sama dengan laporan kerusakan 14.30 WIB. Itu mendukung adanya mekanisme angin konvektif (downburst atau puting beliung) tetapi tidak
+- Cek silang H12: Tb_min 204,1 K pada 07.30 UTC dan penurunan 27,7 K per 30 menit bisa berarti inti konvektif kuat di atas Kab. Bandung,
+  jam yang sama dengan laporan kerusakan 14.30 WIB, tetapi bisa juga awan dingin yang bergeser masuk (advection, temuan validasi-model F6). Itu tidak bertentangan dengan mekanisme angin konvektif (downburst atau puting beliung) tetapi tidak
   mengukur kecepatannya dan tidak membedakan kedua mekanisme. Titik contoh 0,1 derajat (16 titik untuk seluruh Kab. Bandung) bukan sel di atas Ciwidey.
 
 ## Keterbatasan
