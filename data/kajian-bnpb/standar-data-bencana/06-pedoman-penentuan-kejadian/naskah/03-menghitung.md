@@ -18,7 +18,7 @@ Tabel 3.2. Aturan menghitung kejadian, korban, dan kerusakan
 
 | Pokok | Aturan |
 | --- | --- |
-| Jumlah kejadian | Nasional dari nomor induk kejadian; provinsi dari provinsi terdampak; kabupaten/kota dari KIB yang memenuhi kriteria pada Tabel 1.3 |
+| Jumlah kejadian | Nasional dari nomor induk kejadian; provinsi dari provinsi yang punya catatan kabupaten/kota memenuhi kriteria; kabupaten/kota dari KIB yang memenuhi kriteria pada Tabel 1.3. Ketiganya ukuran berbeda, jangan dijumlahkan atau dibandingkan |
 | Satu orang, satu kategori | Urutan prioritas: meninggal, hilang, luka berat, luka ringan, mengungsi, terdampak |
 | Angka terakhir | Meninggal, hilang, dan kerusakan |
 | Angka terbanyak selama kejadian | Luka, terdampak, dan pengungsi |

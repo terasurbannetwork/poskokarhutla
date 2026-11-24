@@ -76,6 +76,8 @@ Tabel 1.5. Aturan batas satu kejadian
 
 Sumber: Rancangan Juklak Bab II huruf B dan huruf D.
 
+Ketentuan per jenis bencana pada Tabel 2.1 dan Tabel 2.2 berlaku lebih dulu daripada aturan umum dalam Tabel 1.5. Contohnya, banjir baru menjadi kejadian baru apabila genangan sudah surut di semua desa terdampak, bukan ketika satu desa surut.
+
 ![Gambar 1.2. Contoh penerapan aturan batas satu kejadian pada Tabel 1.5](gbr/pk-batas.png)
 
 Sumber: Rancangan Juklak Bab II huruf D.

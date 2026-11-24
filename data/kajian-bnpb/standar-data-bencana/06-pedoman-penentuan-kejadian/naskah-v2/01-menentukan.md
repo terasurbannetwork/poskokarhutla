@@ -30,6 +30,8 @@ Sumber: Rancangan Juklak Bab II huruf C angka 3 dan 4.
 
 Sumber: Rancangan Juklak Bab II huruf B dan huruf D.
 
+Ketentuan per jenis bencana pada Gambar 2.1 dan Gambar 2.2 berlaku lebih dulu daripada aturan umum dalam Gambar 1.5. Contohnya, banjir baru menjadi kejadian baru apabila genangan sudah surut di semua desa terdampak, bukan ketika satu desa surut.
+
 ![Gambar 1.6. Contoh penerapan aturan batas satu kejadian pada Gambar 1.5](gbr/pk-batas.png)
 
 Sumber: Rancangan Juklak Bab II huruf D.

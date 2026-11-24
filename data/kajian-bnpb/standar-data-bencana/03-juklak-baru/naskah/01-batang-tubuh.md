@@ -4,7 +4,7 @@
 
 Data kejadian dan dampak bencana merupakan dasar bagi pengambilan keputusan pada saat keadaan darurat, perencanaan pengurangan risiko bencana, penyusunan anggaran, rehabilitasi dan rekonstruksi pascabencana, serta pelaporan capaian Kerangka Sendai untuk Pengurangan Risiko Bencana 2015–2030. Data tersebut hanya dapat dipakai untuk keperluan itu apabila dikumpulkan dengan konsep, definisi, klasifikasi, ukuran, dan satuan yang sama di seluruh wilayah Indonesia.
 
-Peraturan BNPB Nomor 1 Tahun 2023 tentang Satu Data Bencana menugaskan walidata bencana untuk menyiapkan kriteria kejadian bencana, jangka waktu pengumpulan data kejadian bencana, nomor induk setiap kejadian bencana, dan standar prosedur operasional Satu Data Bencana. Ketentuan tersebut telah dijabarkan dalam Petunjuk Pelaksanaan Standar Data Kejadian dan Dampak Bencana Nomor 7 Tahun 2023.
+Peraturan BNPB Nomor 1 Tahun 2023 tentang Satu Data Bencana menugaskan walidata bencana untuk menyiapkan kriteria kejadian bencana, jangka waktu pengumpulan data kejadian bencana, nomor induk setiap kejadian bencana, dan standar prosedur operasional Satu Data Bencana. Ketentuan tersebut, yang tercantum dalam Pasal 8 huruf c peraturan tersebut, telah dijabarkan dalam Petunjuk Pelaksanaan Standar Data Kejadian dan Dampak Bencana Nomor 7 Tahun 2023. Petunjuk pelaksanaan ini disusun sebagai pelaksanaan ketentuan yang sama.
 
 Telaah terhadap Petunjuk Pelaksanaan Nomor 7 Tahun 2023 menunjukkan bahwa kerangkanya sudah sesuai dengan prinsip Satu Data Indonesia dan praktik internasional. Namun, sebagian ketentuan yang menentukan angka kejadian dan dampak perlu diperjelas, sebagian perlu dirumuskan ulang, dan beberapa hal penting belum diatur, antara lain batas waktu satu kejadian, identitas kejadian lintas wilayah, kelas kejadian menurut besarnya dampak, data khusus untuk setiap jenis bencana, dan pelindungan data pribadi.
 
@@ -170,7 +170,7 @@ Tabel 1. Jenis bencana, kode, dan subjenis
    d. peristiwa ancaman baru yang menimbulkan dampak setelah kejadian dinyatakan selesai dicatat sebagai kejadian baru; dan
    e. kejadian terpicu dicatat terpisah dan ditautkan dengan kejadian pemicunya.
 2. Ketentuan khusus untuk setiap jenis bencana alam tercantum dalam Tabel 2. Satuan dalam Tabel 2 adalah catatan kabupaten/kota, kecuali disebut lain.
-3. Peringatan tsunami yang tidak diikuti genangan air laut di daratan tidak dicatat sebagai kejadian bencana tsunami. Orang yang mengungsi karena peringatan tersebut dicatat sebagai pengungsi pada kejadian pemicunya di kabupaten/kota tersebut. Apabila kejadian pemicu tidak tercatat di kabupaten/kota tersebut, pengungsian dicatat dalam catatan pemantauan peristiwa ancaman tsunami.
+3. Peringatan tsunami yang tidak diikuti genangan air laut di daratan tidak dicatat sebagai kejadian bencana tsunami. Orang yang mengungsi karena peringatan tersebut dicatat sebagai pengungsi pada kejadian pemicunya di kabupaten/kota tersebut. Apabila kejadian pemicu tidak mempunyai catatan kabupaten/kota di kabupaten/kota tersebut karena dampak lainnya, pengungsian dicatat dalam catatan pemantauan peristiwa ancaman tsunami dan tidak membuka catatan kejadian pemicu yang baru.
 
 Tabel 2. Batas satu kejadian untuk setiap jenis bencana alam
 
@@ -188,7 +188,7 @@ Tabel 2. Batas satu kejadian untuk setiap jenis bencana alam
 
 ## E. METODE PENGHITUNGAN
 
-1. Jumlah kejadian bencana di tingkat nasional dihitung berdasarkan nomor induk kejadian. Jumlah kejadian di tingkat provinsi dihitung satu kali untuk setiap kejadian bencana yang mempunyai paling sedikit satu catatan kabupaten/kota di provinsi tersebut, dan jumlah kejadian di tingkat kabupaten/kota dihitung berdasarkan KIB yang memenuhi kriteria.
+1. Jumlah kejadian bencana di tingkat nasional dihitung berdasarkan nomor induk kejadian. Jumlah kejadian di tingkat provinsi dihitung satu kali untuk setiap kejadian bencana yang mempunyai paling sedikit satu catatan kabupaten/kota yang memenuhi kriteria di provinsi tersebut, dan jumlah kejadian di tingkat kabupaten/kota dihitung berdasarkan KIB yang memenuhi kriteria. Ketiga jumlah tersebut merupakan ukuran yang berbeda dan tidak dijumlahkan atau dibandingkan satu sama lain dalam satu penyajian.
 2. Korban dan kerusakan dicatat satu kali pada kejadian yang secara langsung menyebabkannya. Jumlah dampak suatu rangkaian kejadian dihitung dengan menjumlahkan kejadian pemicu dan kejadian terpicunya untuk keperluan penyajian, dan tidak menentukan kriteria maupun kelas setiap kejadian.
 3. Setiap orang dicatat pada satu kategori saja dengan urutan prioritas meninggal, hilang, luka berat, luka ringan, mengungsi, lalu terdampak.
 4. Selama kejadian berlangsung, angka korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan angka korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian. Untuk kriteria sebagaimana dimaksud dalam huruf C angka 1 huruf b, angka korban luka, terdampak, dan pengungsi yang dijumlahkan diambil dari laporan yang sama, yaitu laporan dengan jumlah ketiganya terbanyak, agar setiap orang hanya dihitung satu kali.

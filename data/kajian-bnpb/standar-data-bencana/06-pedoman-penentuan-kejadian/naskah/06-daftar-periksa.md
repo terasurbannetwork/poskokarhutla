@@ -6,7 +6,7 @@ Tabel 6.1. Daftar periksa petugas
 | --- | ---: | --- | --- |
 | Laporan pertama | 1 | Tentukan jenis bencana dan subjenisnya | Tabel 2.1; Rancangan Juklak Tabel 1 |
 | Laporan pertama | 2 | Periksa ada atau tidaknya dampak; tulis menunggu data apabila belum pasti | Tabel 1.1 dan Tabel 1.2 |
-| Laporan pertama | 3 | Tentukan apakah laporan ini bagian dari kejadian yang sedang berlangsung atau kejadian baru | Tabel 1.5 dan Tabel 2.1 |
+| Laporan pertama | 3 | Tentukan apakah laporan ini bagian dari kejadian yang sedang berlangsung atau kejadian baru | Tabel 1.5, Tabel 2.1, dan Tabel 2.2 |
 | Laporan pertama | 4 | Kejadian baru: berikan KIB dengan kode wilayah sendiri. Kejadian berlangsung: pakai KIB yang ada | Tabel 3.1 |
 | Laporan pertama | 5 | Isi identitas, waktu, lokasi, dan angka dampak sementara | Tabel 5.2 |
 | Laporan pertama | 6 | Kirim paling lambat 24 jam setelah kejadian diketahui | Tabel 5.4 |
