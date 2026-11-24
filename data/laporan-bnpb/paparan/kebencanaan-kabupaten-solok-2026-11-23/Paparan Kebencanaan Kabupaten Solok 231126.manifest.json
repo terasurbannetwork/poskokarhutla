@@ -87,9 +87,9 @@
     "01",
     "4–6",
     "02",
-    "7–9",
+    "7–10",
     "03",
-    "10–11",
+    "11–12",
     "2"
    ],
    "warna": [
@@ -234,9 +234,9 @@
     "01",
     "4–6",
     "02",
-    "7–9",
+    "7–10",
     "03",
-    "10–11",
+    "11–12",
     "4"
    ],
    "warna": [
@@ -365,7 +365,7 @@
      "inti"
     ]
    ],
-   "judul_spek": "Banjir dan Longsor: {{angka:sl.h.n|satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m|satuan}}",
+   "judul_spek": "Banjir dan Longsor: {{angka:sl.h.n|satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m|satuan}}, {{angka:sl.h.r|satuan}}",
    "pesan": "Riwayat banjir dan longsor",
    "pembatas": false,
    "kontras": null,
@@ -415,7 +415,9 @@
    "nomor": 6,
    "jenis": "tabel-peringkat",
    "asal": "solok#6",
-   "keluarga": [],
+   "keluarga": [
+    "api"
+   ],
    "judul": [
     81.2,
     21.6,
@@ -432,6 +434,10 @@
     "DIBI BNPB, 23 Nov 2026; Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026"
    ],
    "warna": [
+    [
+     "051C2C",
+     "angka-judul"
+    ],
     [
      "051C2C",
      "inti"
@@ -462,10 +468,6 @@
     ],
     [
      "D9600B",
-     "angka-judul"
-    ],
-    [
-     "D9600B",
      "pil"
     ],
     [
@@ -475,6 +477,10 @@
     [
      "EEF5FC",
      "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "skala.api"
     ],
     [
      "FFFFFF",
@@ -495,7 +501,6 @@
     "ikon",
     "logo",
     "logo",
-    "ikon",
     "ikon",
     "ikon",
     "ikon",
@@ -537,9 +542,9 @@
     "01",
     "4–6",
     "02",
-    "7–9",
+    "7–10",
     "03",
-    "10–11",
+    "11–12",
     "7"
    ],
    "warna": [
@@ -716,7 +721,7 @@
   },
   {
    "nomor": 9,
-   "jenis": "temuan-visual",
+   "jenis": "temuan-peta",
    "asal": "solok#9",
    "keluarga": [
     "kering"
@@ -728,12 +733,29 @@
     65,
     2
    ],
-   "peta": null,
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "Batas administrasi kecamatan dan kabupaten, data geo sistem BNPB",
+     "sistem_referensi": "WGS84",
+     "proyeksi": "Ekuirektangular"
+    },
+    "resmi": true,
+    "batas": [
+     43.2,
+     104.26599999999999,
+     608.9760000000001,
+     465.73400000000004
+    ],
+    "label": [],
+    "ukuran_label_pt": 9.2
+   },
    "struktur": [
     "9",
     "01  ",
     "02  ",
     "03  ",
+    "Sumber batas: Batas administrasi kecamatan dan kabupaten, data geo sistem BNPB; WGS84; Ekuirektangular",
     "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
    ],
    "warna": [
@@ -794,7 +816,114 @@
      "inti"
     ]
    ],
-   "judul_spek": "Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w|satuan}} dari {{angka:sl.p.n|satuan}} di Kabupaten Solok",
+   "judul_spek": "Peta Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w|satuan}} dari {{angka:sl.p.n|satuan}} di Kabupaten Solok",
+   "pesan": "Peta prakiraan banjir",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "ikon",
+    "logo",
+    "logo",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     619.8,
+     137,
+     297.0,
+     363,
+     "Jumlah kecamatan per status"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 10,
+   "jenis": "temuan-visual",
+   "asal": "solok#10",
+   "keluarga": [
+    "kering"
+   ],
+   "judul": [
+    81.2,
+    21.6,
+    668.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "10",
+    "01  ",
+    "02  ",
+    "03  ",
+    "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C4A262",
+     "skala.emas"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Hujan Tiga Hari Tertinggi {{angka:sl.p.hmax|satuan}} di Danau Kembar; Status Banjir per Kecamatan Kabupaten Solok, 24–27 Nov",
    "pesan": "Prakiraan banjir",
    "pembatas": false,
    "kontras": null,
@@ -808,23 +937,15 @@
     "ikon",
     "logo",
     "logo",
-    "ikon",
     "ikon"
    ],
    "panel": [
     [
      43.2,
      137,
-     541.6,
+     873.6,
      363,
-     "Status banjir per kecamatan, empat hari ke depan"
-    ],
-    [
-     595.6,
-     137,
-     321.2,
-     363,
-     "Jumlah kecamatan per status"
+     "Status banjir dan hujan tiga hari per kecamatan, empat hari "
     ]
    ],
    "terisi": [],
@@ -832,9 +953,9 @@
    "subjudul": null
   },
   {
-   "nomor": 10,
+   "nomor": 11,
    "jenis": "pembatas-seksi",
-   "asal": "solok#10",
+   "asal": "solok#11",
    "keluarga": [],
    "judul": null,
    "peta": null,
@@ -843,10 +964,10 @@
     "01",
     "4–6",
     "02",
-    "7–9",
+    "7–10",
     "03",
-    "10–11",
-    "10"
+    "11–12",
+    "11"
    ],
    "warna": [
     [
@@ -909,9 +1030,9 @@
    "subjudul": null
   },
   {
-   "nomor": 11,
+   "nomor": 12,
    "jenis": "temuan-grafik",
-   "asal": "solok#11",
+   "asal": "solok#12",
    "keluarga": [],
    "judul": [
     81.2,
@@ -922,7 +1043,7 @@
    ],
    "peta": null,
    "struktur": [
-    "11",
+    "12",
     "01  ",
     "02  ",
     "03  ",
@@ -978,7 +1099,7 @@
      "inti"
     ]
    ],
-   "judul_spek": "Bencana Lain: {{angka:sl.c.n|satuan}} Cuaca Ekstrem sejak 2008; {{angka:sl.k.hot|satuan}} Terpantau di Kabupaten Solok Sepanjang 2026",
+   "judul_spek": "Bencana Lain: Terdapat {{angka:sl.l.n|satuan}} Terpantau di Kabupaten Solok sejak 2008 sampai November 2026",
    "pesan": "Bencana lain",
    "pembatas": false,
    "kontras": null,
@@ -993,6 +1114,10 @@
     "ikon",
     "logo",
     "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon",
     "ikon",
     "ikon",
@@ -1031,9 +1156,9 @@
    "subjudul": null
   },
   {
-   "nomor": 12,
+   "nomor": 13,
    "jenis": "penutup",
-   "asal": "solok#12",
+   "asal": "solok#13",
    "keluarga": [],
    "judul": [
     43.2,
@@ -1194,6 +1319,17 @@
    "opsi": "|satuan",
    "tampil": "35 jiwa meninggal dan hilang",
    "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, 23 Nov 2026",
+   "naskah": "solok#5"
+  },
+  {
+   "kunci": "sl.h.r",
+   "opsi": "|satuan",
+   "tampil": "671 rumah rusak",
+   "nilai": 671,
    "rendah": null,
    "tinggi": null,
    "keyakinan": "resmi",
@@ -1805,10 +1941,10 @@
    "sumber": "DIBI BNPB, 23 Nov 2026"
   },
   {
-   "kunci": "sl.26.mobil",
+   "kunci": "sl.26.kend",
    "opsi": "|",
-   "tampil": "7",
-   "nilai": 7,
+   "tampil": "14",
+   "nilai": 14,
    "rendah": null,
    "tinggi": null,
    "keyakinan": "resmi",
@@ -1816,10 +1952,65 @@
    "naskah": "solok#6"
   },
   {
-   "kunci": "sl.26.motor",
+   "kunci": "sl.26.jalan",
    "opsi": "|",
-   "tampil": "7",
-   "nilai": 7,
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
+   "naskah": "solok#6"
+  },
+  {
+   "kunci": "sl.26.air",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
+   "naskah": "solok#6"
+  },
+  {
+   "kunci": "sl.26.sawah",
+   "opsi": "|",
+   "tampil": "18",
+   "nilai": 18,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
+   "naskah": "solok#6"
+  },
+  {
+   "kunci": "sl.26.kantor",
+   "opsi": "|",
+   "tampil": "15",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
+   "naskah": "solok#6"
+  },
+  {
+   "kunci": "sl.26.ancam",
+   "opsi": "|",
+   "tampil": "10",
+   "nilai": 10,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
+   "naskah": "solok#6"
+  },
+  {
+   "kunci": "sl.26.kend",
+   "opsi": "|",
+   "tampil": "14",
+   "nilai": 14,
    "rendah": null,
    "tinggi": null,
    "keyakinan": "resmi",
@@ -1883,8 +2074,8 @@
   },
   {
    "kunci": "sl.26.mobil",
-   "opsi": "|",
-   "tampil": "7",
+   "opsi": "|satuan",
+   "tampil": "7 mobil",
    "nilai": 7,
    "rendah": null,
    "tinggi": null,
@@ -1894,8 +2085,8 @@
   },
   {
    "kunci": "sl.26.motor",
-   "opsi": "|",
-   "tampil": "7",
+   "opsi": "|satuan",
+   "tampil": "7 sepeda motor",
    "nilai": 7,
    "rendah": null,
    "tinggi": null,
@@ -1904,76 +2095,10 @@
    "naskah": "solok#6"
   },
   {
-   "kunci": "sl.26.jalan",
+   "kunci": "sl.26.kend",
    "opsi": "|",
-   "tampil": "5",
-   "nilai": 5,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
-   "naskah": "solok#6"
-  },
-  {
-   "kunci": "sl.26.air",
-   "opsi": "|",
-   "tampil": "5",
-   "nilai": 5,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
-   "naskah": "solok#6"
-  },
-  {
-   "kunci": "sl.26.sawah",
-   "opsi": "|",
-   "tampil": "18",
-   "nilai": 18,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
-   "naskah": "solok#6"
-  },
-  {
-   "kunci": "sl.26.kantor",
-   "opsi": "|",
-   "tampil": "15",
-   "nilai": 15,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
-   "naskah": "solok#6"
-  },
-  {
-   "kunci": "sl.26.ancam",
-   "opsi": "|",
-   "tampil": "10",
-   "nilai": 10,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
-   "naskah": "solok#6"
-  },
-  {
-   "kunci": "sl.26.mobil",
-   "opsi": "|",
-   "tampil": "7",
-   "nilai": 7,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Laporan Dit. Koordalops BNPB, 4 Nov s.d. 23 Nov 2026",
-   "naskah": "solok#6"
-  },
-  {
-   "kunci": "sl.26.motor",
-   "opsi": "|",
-   "tampil": "7",
-   "nilai": 7,
+   "tampil": "14",
+   "nilai": 14,
    "rendah": null,
    "tinggi": null,
    "keyakinan": "resmi",
@@ -2269,32 +2394,352 @@
    "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
   },
   {
-   "kunci": "sl.c.n",
+   "kunci": "sl.p.hmax",
    "opsi": "|satuan",
-   "tampil": "18 kejadian",
-   "nilai": 18,
+   "tampil": "91 mm",
+   "nilai": 91,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#10"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "91 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "64 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "53 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "44 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "42 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "36 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "49 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "66 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "42 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "36 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "49 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "66 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "40 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "34 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "32 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "10 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "40 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "34 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "32 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "10 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "40 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "34 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "32 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "10 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "35 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "39 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "37 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "29 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "32 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "29 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "18 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "13 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "32 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "29 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "18 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "13 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h0",
+   "tampil": "32 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h1",
+   "tampil": "29 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h2",
+   "tampil": "18 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan.csv#h3",
+   "tampil": "13 mm",
+   "nilai": null,
+   "naskah": "solok#10",
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+  },
+  {
+   "kunci": "sl.l.n",
+   "opsi": "|satuan",
+   "tampil": "40 kejadian bencana",
+   "nilai": 40,
    "rendah": null,
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
-  },
-  {
-   "kunci": "sl.k.hot",
-   "opsi": "|satuan",
-   "tampil": "90 hotspot",
-   "nilai": 90,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "NASA FIRMS, diolah BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "csv:data/sumut-aceh/sl/lain.csv#kejadian",
    "tampil": "18",
    "nilai": 18.0,
-   "naskah": "solok#11",
+   "naskah": "solok#12",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026"
   },
@@ -2302,7 +2747,7 @@
    "kunci": "csv:data/sumut-aceh/sl/lain.csv#kejadian",
    "tampil": "18",
    "nilai": 18.0,
-   "naskah": "solok#11",
+   "naskah": "solok#12",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026"
   },
@@ -2310,7 +2755,7 @@
    "kunci": "csv:data/sumut-aceh/sl/lain.csv#kejadian",
    "tampil": "2",
    "nilai": 2.0,
-   "naskah": "solok#11",
+   "naskah": "solok#12",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026"
   },
@@ -2318,7 +2763,7 @@
    "kunci": "csv:data/sumut-aceh/sl/lain.csv#kejadian",
    "tampil": "2",
    "nilai": 2.0,
-   "naskah": "solok#11",
+   "naskah": "solok#12",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026"
   },
@@ -2331,7 +2776,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.g.r",
@@ -2342,7 +2787,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.k.luas",
@@ -2353,7 +2798,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "NASA FIRMS, diolah BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.c.r",
@@ -2364,7 +2809,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.g.r",
@@ -2375,7 +2820,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.k.luas",
@@ -2386,7 +2831,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "NASA FIRMS, diolah BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.c.r",
@@ -2397,7 +2842,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.g.r",
@@ -2408,7 +2853,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
    "kunci": "sl.k.luas",
@@ -2419,22 +2864,22 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "NASA FIRMS, diolah BNPB, 23 Nov 2026",
-   "naskah": "solok#11"
+   "naskah": "solok#12"
   },
   {
-   "kunci": "turunan:solok#12#kontak:call-center",
+   "kunci": "turunan:solok#13#kontak:call-center",
    "tampil": "117",
    "nilai": null,
-   "naskah": "solok#12",
+   "naskah": "solok#13",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
    "dari": []
   },
   {
-   "kunci": "turunan:solok#12#kontak:telepon",
+   "kunci": "turunan:solok#13#kontak:telepon",
    "tampil": "021 2982 7793",
    "nilai": null,
-   "naskah": "solok#12",
+   "naskah": "solok#13",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
    "dari": []
@@ -2467,7 +2912,12 @@
    2
   ],
   [
-   "solok#11",
+   "solok#10",
+   "judul_baris",
+   2
+  ],
+  [
+   "solok#12",
    "judul_baris",
    2
   ]
@@ -2479,16 +2929,18 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/logo-bersama/kris-rope.pptx": "73406bfb95cd58d7879f44e969c0f7f5ea8e5a8896fa052d8a6c2045ed92071c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-australia/foto/bencana-rob.jpg": "3635f50f1523ac94bf6be84f50ab167587cdc12f482a04bb28dbfe6196573635",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "4f6b4c21e4fa716fe2f19fb65c3dc8c5b4b576aa67d8f17e5936403827ab9413",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/dampak.csv": "cc56f954c8e93564d8751cdc006431dd763a2d77d8d99f5b01a1eceddb53d3cf",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "30673e49ff44f5a97e26da231f6b69cc319fd0b7628f35f51b89235677b61a58",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/dampak.csv": "f5a1b0b9020c4e59660ad65ae84a3cfd4d667bc4a2ea555d1ca88d4bb478e0b1",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/jenis_basah.csv": "9b0e9ac9c57647fbee252a905dd0831f874739aa9c77add4deec15cf0c4b922c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/kejadian_tahun.csv": "e6623ae61e6fcb6e2d4cecad9a333c79dd652d6f46574914855f87a92f8a3c1b",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/lain.csv": "214f0a7acb23db62e7bd8955b08d9eda39031b57bd5169e02abebb5b7ac1fe24",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan.csv": "90ad68b56fbd466c693434e88ce7c9aef04fdc52bfed7432cbe4b078b56c1129",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_kec.json": "8c9d0f3cde73a72081fc3660571a7b826513fbe4ebd5c7500f0ef9c99fbf1460",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_kec.png": "bed2f10dd71d29c38e794b6a822505867b70de32274db59505f5ab364be18398",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan.csv": "c65c6ae4289a90e1fbdad19837ad44ca8ac3cb2637c401e52b5620a023b7b6e0",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan_jumlah.csv": "75158405dd7f665cf211cf4e427441764e8cee8b8a8eee55ce3b78b9ca34ae0b",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/status.csv": "837fe46429e9c903c3ca156e2495f73231e90ffc711f3ce0e0d4790d94e735bc",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "8193ac5409fc7a04171f159ffbf15a9a4eecacee27d29e95f716845f8b4da7a4",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "6c10ef85746bd91f8619fededc39aacc25750ef48adda670f9d34663f285affe",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "dedff3015f6ad41444aec39add5dabe810798ae2e77e79876b974751df43fdeb",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "c5b788ed86843a4ed57fe347a9f7e3c4b8eb0b91898594eb2abee00b814c578c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }
 }

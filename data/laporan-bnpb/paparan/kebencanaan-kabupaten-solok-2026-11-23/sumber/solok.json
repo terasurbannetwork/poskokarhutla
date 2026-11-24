@@ -57,7 +57,7 @@
       "cut_off": false,
       "pesan": "Riwayat banjir dan longsor",
       "sumber": "DIBI BNPB, 23 Nov 2026",
-      "judul": "Banjir dan Longsor: {{angka:sl.h.n|satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m|satuan}}",
+      "judul": "Banjir dan Longsor: {{angka:sl.h.n|satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m|satuan}}, {{angka:sl.h.r|satuan}}",
       "grafik": {
         "judul_panel": "Kejadian banjir dan longsor per tahun",
         "ikon": "banjir",
@@ -153,7 +153,12 @@
             }
           ],
           "keyakinan": "resmi",
-          "sumber": "DIBI BNPB, 23 Nov 2026"
+          "sumber": "DIBI BNPB, 23 Nov 2026",
+          "kelompok": [
+            "Korban",
+            "Rumah",
+            "Fasilitas umum dan lahan"
+          ]
         }
       },
       "panel": {
@@ -163,21 +168,14 @@
           "mode": "baris",
           "baris": [
             {
-              "ikon": "infrastruktur",
-              "judul": "Mobil",
-              "isi": "Terdampak",
-              "angka": "{{angka:sl.26.mobil}}",
+              "ikon": "kendaraan",
+              "judul": "Kendaraan",
+              "isi": "Terdampak: {{angka:sl.26.mobil|satuan}} dan {{angka:sl.26.motor|satuan}}",
+              "angka": "{{angka:sl.26.kend}}",
               "satuan": "unit"
             },
             {
-              "ikon": "infrastruktur",
-              "judul": "Sepeda motor",
-              "isi": "Terdampak",
-              "angka": "{{angka:sl.26.motor}}",
-              "satuan": "unit"
-            },
-            {
-              "ikon": "wilayah",
+              "ikon": "jalan",
               "judul": "Ruas jalan",
               "isi": "Rusak",
               "angka": "{{angka:sl.26.jalan}}",
@@ -191,14 +189,14 @@
               "satuan": "unit"
             },
             {
-              "ikon": "prabencana",
+              "ikon": "sawah",
               "judul": "Sawah",
               "isi": "Rusak berat dan ringan",
               "angka": "{{angka:sl.26.sawah}}",
               "satuan": "ha"
             },
             {
-              "ikon": "infrastruktur",
+              "ikon": "kantor",
               "judul": "Kantor",
               "isi": "Rusak berat sampai ringan",
               "angka": "{{angka:sl.26.kantor}}",
@@ -282,7 +280,7 @@
             {
               "ikon": "data",
               "judul": "Rencana induk pemulihan",
-              "isi": "Dibahas bersama Bappenas dan K/L, termasuk Satgas PRRP"
+              "isi": "Rapat internalisasi bersama Bappenas dan K/L serta Satgas PRRP, 3 Nov 2026"
             },
             {
               "ikon": "tanggap-darurat",
@@ -299,17 +297,81 @@
       }
     },
     {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "judul_ikon": "wilayah",
+      "rasio": 0.66,
+      "cut_off": false,
+      "pesan": "Peta prakiraan banjir",
+      "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+      "judul": "Peta Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w|satuan}} dari {{angka:sl.p.n|satuan}} di Kabupaten Solok",
+      "peta": {
+        "png": "data/sumut-aceh/sl/peta_kec.png",
+        "unsur_tampil": false,
+        "keyakinan": "resmi",
+        "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+        "penanda": [],
+        "legenda": {
+          "item": [
+            {
+              "warna": "tint.netral.pita",
+              "label": "Normal"
+            },
+            {
+              "warna": "skala.emas.3",
+              "label": "Waspada"
+            },
+            {
+              "warna": "oranye",
+              "label": "Siaga"
+            },
+            {
+              "warna": "merah",
+              "label": "Awas"
+            }
+          ]
+        }
+      },
+      "panel": {
+        "judul": "Jumlah kecamatan per status",
+        "ikon": "peringatan",
+        "peringkat": false,
+        "baris_maks_pt": 90,
+        "data": {
+          "csv": "data/sumut-aceh/sl/prakiraan_jumlah.csv",
+          "kolom": [
+            {
+              "nama": "status",
+              "kepala": "Status"
+            },
+            {
+              "nama": "kec",
+              "kepala": "Kecamatan",
+              "fmt": "0"
+            },
+            {
+              "nama": "ambang",
+              "kepala": "Ambang utama"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+        }
+      }
+    },
+    {
       "jenis": "temuan-visual",
       "jenis_slide": "tabel",
       "judul_bentuk": "temuan",
       "judul_ikon": "peringatan",
-      "rasio": 0.62,
+      "rasio": 0.99,
       "cut_off": false,
       "pesan": "Prakiraan banjir",
       "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-      "judul": "Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w|satuan}} dari {{angka:sl.p.n|satuan}} di Kabupaten Solok",
+      "judul": "Hujan Tiga Hari Tertinggi {{angka:sl.p.hmax|satuan}} di Danau Kembar; Status Banjir per Kecamatan Kabupaten Solok, 24–27 Nov",
       "utama": {
-        "judul": "Status banjir per kecamatan, empat hari ke depan",
+        "judul": "Status banjir dan hujan tiga hari per kecamatan, empat hari ke depan",
         "ikon": "peringatan",
         "heatmap": {
           "mode": "kategori",
@@ -363,32 +425,6 @@
             "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
           }
         }
-      },
-      "panel": {
-        "judul": "Jumlah kecamatan per status",
-        "ikon": "peringatan",
-        "peringkat": false,
-        "baris_maks_pt": 90,
-        "data": {
-          "csv": "data/sumut-aceh/sl/prakiraan_jumlah.csv",
-          "kolom": [
-            {
-              "nama": "status",
-              "kepala": "Status"
-            },
-            {
-              "nama": "kec",
-              "kepala": "Kecamatan",
-              "fmt": "0"
-            },
-            {
-              "nama": "ambang",
-              "kepala": "Ambang utama"
-            }
-          ],
-          "keyakinan": "resmi",
-          "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
-        }
       }
     },
     {
@@ -404,16 +440,21 @@
       "cut_off": false,
       "pesan": "Bencana lain",
       "sumber": "DIBI BNPB, 23 Nov 2026; NASA FIRMS, diolah BNPB, 23 Nov 2026; MAGMA Indonesia, PVMBG, 21 Nov 2026",
-      "judul": "Bencana Lain: {{angka:sl.c.n|satuan}} Cuaca Ekstrem sejak 2008; {{angka:sl.k.hot|satuan}} Terpantau di Kabupaten Solok Sepanjang 2026",
+      "judul": "Bencana Lain: Terdapat {{angka:sl.l.n|satuan}} Terpantau di Kabupaten Solok sejak 2008 sampai November 2026",
       "grafik": {
         "judul_panel": "Kejadian selain banjir dan longsor sejak 2008",
         "ikon": "data",
         "judul": "**Kejadian**, 2008 sampai 2026",
         "keluarga": "netral",
-        "arah": "horizontal",
         "sorot": "tertinggi",
         "ubah": false,
         "persen_batang": false,
+        "ikon_label": {
+          "Cuaca ekstrem": "cuaca-ekstrem",
+          "Karhutla": "karhutla",
+          "Kekeringan": "kekeringan",
+          "Gempa": "gempa"
+        },
         "data": {
           "csv": "data/sumut-aceh/sl/lain.csv",
           "kolom": [

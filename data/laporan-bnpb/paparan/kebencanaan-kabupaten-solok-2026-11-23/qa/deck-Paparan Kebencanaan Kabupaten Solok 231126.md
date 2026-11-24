@@ -1,6 +1,6 @@
 # Laporan QA deck Paparan Kebencanaan Kabupaten Solok 231126
 
-Berkas `Paparan Kebencanaan Kabupaten Solok 231126.pptx` dan `Paparan Kebencanaan Kabupaten Solok 231126.pdf`, spek `solok`, diperiksa 24-11-2026 08.15 WIB.
+Berkas `Paparan Kebencanaan Kabupaten Solok 231126.pptx` dan `Paparan Kebencanaan Kabupaten Solok 231126.pdf`, spek `solok`, diperiksa 24-11-2026 08.44 WIB.
 Vonis: **LOLOS**. Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan masih berstatus Transisi Darurat sampai April 2027.
@@ -12,8 +12,8 @@ Pesan kunci: Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan mas
 | Font | qa/periksa.py D-5 Huruf terkecil | LOLOS | – |
 | Font | qa/periksa.py D-23 Glif di luar Roboto nol | LOLOS | – |
 | Ikon | Gambar raster hanya logo, foto Commons, peta dasar, dan ikon (S37) | LOLOS | – |
-| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 51 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
-| Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 12 slide, huruf terkecil 6.5 pt, 158 angka, judul PDF [3, 2, 2, 2, 2, 2, 1] baris |
+| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 55 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
+| Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 13 slide, huruf terkecil 6.5 pt, 203 angka, judul PDF [3, 2, 2, 2, 2, 2, 2, 1] baris |
 | Tata letak | qa/periksa.py T-2 Jumlah halaman PDF = dokumen asal | LOLOS | – |
 | Tata letak | qa/periksa.py D-17 Judul paling banyak 2 baris, tanpa teks terpotong | LOLOS | – |
 | Tata letak | qa/periksa.py T-6 Kerangka slide (Buku Pegangan: garis y95 dan y507,6, nomor halaman, pil CUT OFF di slide data) | LOLOS | – |
@@ -26,7 +26,7 @@ Pesan kunci: Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan mas
 | Tata letak | qa/periksa.py D-52 Teks isi dua baris atau lebih rata kanan-kiri | LOLOS | – |
 | Tata letak | Garis besar: pesan_kunci, lalu pesan, jenis_slide S35, judul_bentuk S7 tiap slide isi (S34) | LOLOS | – |
 | Tata letak | Tiap slide isi selain navigasi memuat grafik native, tabel native, atau peta (S36) | LOLOS | – |
-| Tata letak | Dua slide isi berurutan tidak berjenis sama, kecuali seri dan lampiran (S35) | LOLOS | grafik > tabel > matriks > tabel > grafik |
+| Tata letak | Dua slide isi berurutan tidak berjenis sama, kecuali seri dan lampiran (S35) | LOLOS | grafik > tabel > matriks > peta > tabel > grafik |
 | Tata letak | Judul slide isi tidak kembar setelah angka dibuang (S6) | LOLOS | – |
 | Tata letak | Paling banyak 6 butir per kotak teks (S38) | LOLOS | – |
 | Anti-AI | qa/periksa.py D-1 Em dash nol | LOLOS | – |
@@ -46,11 +46,12 @@ Judul dibaca berurutan sebagai ringkasan sebelum dikirim.
 | 2 | daftar-isi | – | – |
 | 3 | impor | – | – |
 | 4 | pembatas-seksi | – | – |
-| 5 | grafik; temuan | Banjir dan Longsor: {{angka:sl.h.n/satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m/satuan}} | Riwayat banjir dan longsor |
+| 5 | grafik; temuan | Banjir dan Longsor: {{angka:sl.h.n/satuan}} di Kabupaten Solok sejak 2008, {{angka:sl.h.m/satuan}}, {{angka:sl.h.r/satuan}} | Riwayat banjir dan longsor |
 | 6 | tabel; temuan | Banjir Bandang 22 September 2026: {{angka:sl.26.m/satuan}}, {{angka:sl.26.u/satuan}}, dan {{angka:sl.26.r/satuan}} di Kabupaten Solok | Dua banjir terakhir |
 | 7 | pembatas-seksi | – | – |
 | 8 | matriks; temuan | Kabupaten Solok {{angka:sl.st.n/satuan}} Menetapkan Status Darurat Banjir sejak November 2025; Transisi Darurat Berlaku sampai April 2027 | Status darurat |
-| 9 | tabel; temuan | Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w/satuan}} dari {{angka:sl.p.n/satuan}} di Kabupaten Solok | Prakiraan banjir |
-| 10 | pembatas-seksi | – | – |
-| 11 | grafik; temuan | Bencana Lain: {{angka:sl.c.n/satuan}} Cuaca Ekstrem sejak 2008; {{angka:sl.k.hot/satuan}} Terpantau di Kabupaten Solok Sepanjang 2026 | Bencana lain |
-| 12 | penutup | – | – |
+| 9 | peta; temuan | Peta Prakiraan Banjir 24–27 Nov: {{angka:sl.p.w/satuan}} dari {{angka:sl.p.n/satuan}} di Kabupaten Solok | Peta prakiraan banjir |
+| 10 | tabel; temuan | Hujan Tiga Hari Tertinggi {{angka:sl.p.hmax/satuan}} di Danau Kembar; Status Banjir per Kecamatan Kabupaten Solok, 24–27 Nov | Prakiraan banjir |
+| 11 | pembatas-seksi | – | – |
+| 12 | grafik; temuan | Bencana Lain: Terdapat {{angka:sl.l.n/satuan}} Terpantau di Kabupaten Solok sejak 2008 sampai November 2026 | Bencana lain |
+| 13 | penutup | – | – |
