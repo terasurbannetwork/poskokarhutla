@@ -761,7 +761,7 @@ export async function tanganiLapor(req, res, url) {
     if (req.method === "POST" && j === "/api/lapor/pesan") return kirim(await pesan(await badan(req)));
     if (req.method === "POST" && j === "/api/lapor/foto") return kirim(await foto(await badan(req)));
     if (j === "/api/lapor/sesi") return kirim(sesiAktif(url.searchParams.get("wa")));
-    if (j === "/api/lapor/cari") return kirim([200, {hasil: await wilayah.cariNama(url.searchParams.get("q"), /^\d{2}\.\d{2}(\.\d{2})?$/.test(url.searchParams.get("dalam") || "") ? url.searchParams.get("dalam") : "")}]);
+    if (j === "/api/lapor/cari" && req.method !== "POST") return kirim([200, {hasil: await wilayah.cariNama(url.searchParams.get("q"), /^\d{2}\.\d{2}(\.\d{2})?$/.test(url.searchParams.get("dalam") || "") ? url.searchParams.get("dalam") : "")}]);
     if (j === "/api/lapor/lacak") return kirim(lacak(url.searchParams.get("t")));
     if (j === "/api/lapor/kotak") { const d = baca(), sejak = Number(url.searchParams.get("sejak") || 0); return kirim([200, {pesan: (d.kotak[nomorWa(url.searchParams.get("wa"))] || []).filter(k => k.waktu > sejak)}]); }
     if (j.startsWith("/api/lapor/unduh/")) { unduh(res, decodeURIComponent(j.slice(17)), url.searchParams.get("t")); return true; }
@@ -806,9 +806,43 @@ export async function tanganiLapor(req, res, url) {
       return kirim([200, {dibuat: new Date().toLocaleString("id-ID", {dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta"}), batas: BATAS_SEL, kolom: KOLOM_AGREGAT, baris}]);
     }
     if (j.startsWith("/api/lapor/peringatan/")) return kirim(await peringatanLokal(j.slice("/api/lapor/peringatan/".length), req, url));
+    /* kabar selamat dan orang dicari (LA-80): rute yang sama dengan Worker (src/lapor_selamat.js). Lokal tanpa kode sekali pakai: nomor dari badan atau ?wa= (loopback). */
+    if (j === "/api/lapor/selamat" || j === "/api/lapor/selamat/saya" || j === "/api/lapor/cari" && req.method === "POST" || j.startsWith("/api/lapor/s/")) {
+      const d = baca(), kini = Date.now(), b = req.method === "POST" ? await badan(req) : {}, wa = nomorWa(b.wa || url.searchParams.get("wa")), aktif = t => !t.dicabut && t.kedaluwarsa > kini;
+      d.selamat ||= []; d.cari ||= [];
+      const tampil = async t => ({nama_panggil: t.nama_panggil, status: t.status, label: t.status === "selamat" ? "Selamat" : "Selamat, butuh bantuan", kab: t.kab, kab_nama: await wilayah.kabNama(t.kab), waktu: t.dibuat});
+      if (j.startsWith("/api/lapor/s/")) { const h = crypto.createHash("sha256").update(j.slice(13)).digest("hex"), t = d.selamat.find(x => x.token_sha === h && aktif(x));
+        return kirim(t ? [200, await tampil(t)] : [404, {galat: "Tautan ini tidak ditemukan atau sudah tidak berlaku."}]); }
+      if (!wa) return kirim([401, {galat: "Minta kode dulu: masuk dengan nomor WhatsApp Anda."}]);
+      if (j === "/api/lapor/selamat/saya") { const t = d.selamat.find(x => x.nomor === wa && aktif(x)); return kirim([200, {tanda: t ? {...await tampil(t), kedaluwarsa: t.kedaluwarsa} : null}]); }
+      if (req.method === "DELETE") { let n = 0; for (const t of d.selamat) if (t.nomor === wa && !t.dicabut) { t.dicabut = kini; n++; } simpan(d); return kirim([200, {dicabut: n > 0}]); }
+      if (j === "/api/lapor/cari") {
+        const nomorDicari = b.nomor_dicari ? nomorWa(b.nomor_dicari) : null;
+        if (String(b.nama_dicari || "").trim().length < 2 || !await wilayah.kabNama(b.kab) || b.nomor_dicari && !nomorDicari) return kirim([400, {galat: "Isian belum sah."}]);
+        const id = crypto.randomBytes(8).toString("hex"); d.cari.push({id, nomor_pencari: wa, nama_dicari: String(b.nama_dicari).trim().slice(0, 80), ciri: b.ciri || null, lokasi_terakhir: b.lokasi_terakhir || null,
+          waktu_terakhir: b.waktu_terakhir || null, nomor_dicari: nomorDicari, hubungan: b.hubungan || null, kab: b.kab, status: "buka", dibuat: kini, riwayat: []}); simpan(d);
+        return kirim([200, {id, status: "buka", pesan: "Laporan diterima petugas. Laporan ini tidak tampil di publik."}]); }
+      const nama = String(b.nama_panggil || "").trim().slice(0, 40);
+      if (!nama || !["selamat", "butuh_bantuan"].includes(b.status) || !await wilayah.kabNama(b.kab)) return kirim([400, {galat: "Isian belum sah."}]);
+      for (const t of d.selamat) if (t.nomor === wa && !t.dicabut) t.dicabut = kini;
+      const token = crypto.randomBytes(32).toString("hex"), kedaluwarsa = kini + 7 * 864e5;
+      d.selamat.push({nomor: wa, nama_panggil: nama, status: b.status, kab: b.kab, token_sha: crypto.createHash("sha256").update(token).digest("hex"), dibuat: kini, kedaluwarsa}); simpan(d);
+      return kirim([200, {tautan: `/lapor/s/${token}`, kedaluwarsa, status: b.status, nama_panggil: nama, kab: b.kab, kab_nama: await wilayah.kabNama(b.kab)}]);
+    }
     if (j.startsWith("/api/lapor/meja")) {
       const c = await akunMeja(req);
       if (!c) return kirim([403, {galat: "Akun ini tidak berhak membuka meja laporan."}]);
+      if (j === "/api/lapor/meja/cari") { const d = baca(); d.selamat ||= []; d.cari ||= [];   // orang dicari; cocok hanya nomor sama persis dengan tanda aktif (D130)
+        const baris = []; for (const r of d.cari) { const kn = await wilayah.kabNama(r.kab); if (!dalamWilayah(c, {provKode: r.kab.slice(0, 2), kabKode: r.kab, kab: kn})) continue;
+          const t = r.nomor_dicari && d.selamat.find(x => x.nomor === r.nomor_dicari && !x.dicabut && x.kedaluwarsa > Date.now());
+          baris.push({...r, kab_nama: kn, cocok: !!t, tanda: t ? {status: t.status, waktu: t.dibuat} : null}); }
+        return kirim([200, {akun: {jenis: c.jenis, label: c.label}, baris}]); }
+      const cs = /^\/api\/lapor\/meja\/cari\/([0-9a-f]{16})\/status$/.exec(j);
+      if (cs && req.method === "POST") { const d = baca(), r = (d.cari || []).find(x => x.id === cs[1]), b = await badan(req);
+        if (!r || !dalamWilayah(c, {provKode: r.kab.slice(0, 2), kabKode: r.kab, kab: await wilayah.kabNama(r.kab)})) return kirim([404, {galat: "Laporan tidak ditemukan."}]);
+        if (!["buka", "ditemukan_selamat", "ditemukan_meninggal", "ke_sar", "tutup"].includes(b.status)) return kirim([400, {galat: "Status tidak sah."}]);
+        r.status = b.status; r.ditutup = b.status === "buka" ? null : Date.now(); r.ditutup_oleh = b.status === "buka" ? null : c.pelaku; r.riwayat.push({status: b.status, catatan: String(b.catatan || "").slice(0, 300) || null, oleh: c.pelaku, waktu: Date.now()}); simpan(d);
+        return kirim([200, {id: r.id, status: r.status}]); }
       if (j === "/api/lapor/meja") return kirim(meja(c));
       const mj = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})\/jalan$/.exec(j);   // ruas jalan rusak untuk peta meja (K83), sama dengan Worker
       if (mj) { const s = Object.values(baca().sesi).find(x => x.nomor === mj[1]), w = s?.isian.lokasi?.nilai;

@@ -96,7 +96,7 @@ const tambah = (a, b) => ({tp: a.tp + b.tp, fp: a.fp + b.fp, fn: a.fn + b.fn});
 const nol = () => ({tp: 0, fp: 0, fn: 0});
 
 /* ---------- mesin layar lewat vm, dengan peramban tiruan secukupnya untuk ambilDEM ---------- */
-function mesin() {
+export function mesin() {
   const ctx = vm.createContext({
     createImageBitmap: async blob => bukaPNG(Buffer.from(await blob.arrayBuffer())),
     OffscreenCanvas: class { getContext() { let d; return {drawImage: bm => { d = bm.data; }, getImageData: () => ({data: d})}; } },
@@ -105,13 +105,13 @@ function mesin() {
   return {SG: ctx.SimGenangan, SH: ctx.SimHand, SL: ctx.SimLahan};
 }
 /* ubin DEM disimpan di data/raw (tidak di-commit), jadi uji ulang tidak mengunduh lagi */
-async function ambil(url) {
+export async function ambil(url) {
   const nama = path.join(DIR_DEM, url.split("/terrarium/")[1].replaceAll("/", "_"));
   if (!fs.existsSync(nama)) { const r = await fetch(url); if (!r.ok) return r; fs.mkdirSync(DIR_DEM, {recursive: true}); fs.writeFileSync(nama, Buffer.from(await r.arrayBuffer())); }
   const b = fs.readFileSync(nama); return {ok: true, status: 200, blob: async () => new Blob([b])};
 }
 /* ubin WorldCover (PNG Planetary Computer) untuk SimLahan.kisiLahan; 404 disimpan sebagai berkas kosong */
-async function ubinWC(url) {
+export async function ubinWC(url) {
   const nama = path.join(DIR_WC, crypto.createHash("sha1").update(url).digest("hex") + ".png");
   if (!fs.existsSync(nama)) {
     let r; for (let coba = 0; ; coba++) { try { r = await fetch(url, {signal: AbortSignal.timeout(30000)}); if (r.ok || r.status === 404 || coba >= 3) break; } catch (e) { if (coba >= 3) throw e; }

@@ -1,0 +1,16 @@
+/* Halaman tautan kabar selamat (LA-81). Warna hanya token public/inti/tema.css. */
+body{margin:0;background:var(--surface);color:var(--ink);font:400 1rem/1.5 var(--font)}
+.ks-kepala{padding:14px 20px;background:var(--head-bg);color:var(--on-head)}
+.ks-merek{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;font:800 1rem var(--display)}
+.ks-merek small{display:block;font:600 .75rem var(--font);color:var(--on-head-2)}
+.ks-isi{display:grid;gap:16px;max-width:520px;margin:0 auto;padding:28px 16px 40px}
+.ks-kartu{display:grid;gap:8px;padding:24px 22px;border:1.5px solid var(--ok);border-radius:20px;background:var(--card)}
+.ks-kartu.tidak{border-color:var(--line)}
+.ks-alis{margin:0;color:var(--ink2);font:700 .8125rem var(--font)}
+.ks-kartu h1{margin:0;font:800 1.75rem/1.25 var(--display);overflow-wrap:anywhere}
+.ks-status{justify-self:start;margin:0;padding:4px 14px;border-radius:999px;background:var(--ok);color:var(--on-pekat);font:700 .9375rem var(--font)}
+.ks-status.bantuan{background:var(--warn);color:var(--ink)}
+.ks-meta{margin:0;color:var(--ink2)}
+.ks-catat{margin:0;color:var(--ink2);font-size:.875rem;line-height:1.55}
+.ks-tautan{justify-self:start;display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:12px;background:var(--brand-accent);color:var(--on-pekat);font:700 .9375rem var(--font);text-decoration:none}
+.ks-tautan:focus-visible{outline:3px solid var(--brand-accent);outline-offset:2px}

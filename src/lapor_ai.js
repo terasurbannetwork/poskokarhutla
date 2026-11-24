@@ -28,6 +28,7 @@ import {HALAMAN_TUNGGU_DOK, urlMedia, isianTampil, KUNCI_SUSULAN, bolehSusulan, 
 import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
+import {buatSelamat} from "./lapor_selamat.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "./lapor_kejadian.js";
@@ -176,6 +177,7 @@ async function tokenLacak(env, nomor) {   // kunci turunan berlabel domain "lapo
 let WIL, INFO, REG;
 const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); throw new Error(`aset ${jalur} ${r.status}`); } return r.json(); };
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
+const SEL = buatSelamat(wilayahDari);   // kabar selamat dan orang dicari (LA-80)
 const registriDari = env => REG ||= muatAset(env)("/bencana.json").catch(e => { REG = null; throw e; });   // katalog tindakan (AGENTS 2.28, D112)
 // nomor BPBD dari panen situs resmi (K88); gagal muat = 117, laporan tetap tersimpan
 let KONTAK;
@@ -696,6 +698,7 @@ async function unggahSelesai(env, req, url, kini, uid) {
 }
 /* D90: dipanggil cron bersih-bersih menit 17. Unggahan 24 jam tanpa bagian baru: multipart di-abort, baris dibuang; paling banyak 20 per putaran. */
 export async function bersihkanLapor(env, kini = Date.now()) {
+  await H.slBersih(env, H.pelakuLpCron, kini - 30 * HARI).catch(e => tabelBelum(e) || console.error("lapor_selamat", e?.message));   // tanda selamat 30 hari (Q67)
   await H.ljKabarBersih(env, H.pelakuLpCron, kini - 864e5, kini - 30 * 864e5, kini - 7 * 864e5).catch(e => tabelBelum(e) || console.error("lj_kabar", e?.message));   // LJ-11: pembuka dan tim belum terkirim >1 hari (token mentah), lain belum terkirim >7 hari, terkirim >30 hari
   await bersihSesiLanjut(env, kini).catch(e => console.error("lj_sesi", e?.message));   // draf WA tahap 2 lebih dari 24 jam (LJ-05)
   await sapuDrafYatim(env, kini).catch(e => console.error("lj_draf", e?.message));   // foto draf R2 yatim lebih dari 2 hari (LJ-19)
@@ -1080,6 +1083,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak;
   const lj = await laju(env, h.kunci, "lapor.mejaget", [[JAM, 600]], kini); if (lj) return lj;   // G4: setara mejaDaftar
   if (x === "rekon") return rekonGet(env, h.c, url);
+  if (x === "cari") return SEL.cariMeja(env, h, url, kini);   // orang dicari (LA-80)
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picGet(env, req, url, kini, pc[1]);
   const mj = /^(LA-\d{6}-\d{2,3})\/jalan$/.exec(x);   // ruas jalan rusak untuk peta meja (K83); nama diambil dari laporan, bukan dari peminta
   if (mj) { const baris = await H.lpSesiNomor(env, STAF, mj[1]); if (!baris || !dalamWilayah(h.c, wilayahBaris(baris))) return galat(404, "Laporan tidak ditemukan.");
@@ -1088,6 +1092,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
   return mejaRinci(env, h.c, x);
 }
 async function mejaPost(env, req, url, kini, ctx, x) {
+  if (x.startsWith("cari/")) { const h = await hakMeja(env, req, kini); if (!h) return tolakStaf(); if (h.tolak) return h.tolak; return SEL.cariStatus(env, req, h, x, kini); }
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picPost(env, req, url, kini, pc[1]);
   const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|ambil|tarik)$/.exec(x);
   return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
@@ -1251,6 +1256,7 @@ const RUTE = {
   "POST /api/lapor/nilai": nilaiPost,
   "POST /api/lapor/susulan": susulanPost,
   "POST /api/lapor/darurat/cepat": daruratCepat,
+  ...SEL.rute,   // kabar selamat dan orang dicari (src/lapor_selamat.js, migrasi 0173)
   "GET /api/lapor/lacak": lacak,
   "GET /api/lapor/unduh/:x": unduh,
   "GET /api/lapor/alun": alun,

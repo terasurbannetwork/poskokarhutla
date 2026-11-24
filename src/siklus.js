@@ -23,7 +23,7 @@ import {RUTE_KAJI_ULANG} from "./kaji_ulang.js";
 const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_TAUTAN, ...RUTE_LIFELINE, ...RUTE_TIGAW, ...RUTE_KAJI_ULANG};
 
 const JENIS_BPBD = ["pemprov", "pemkab", "pemkot"], PERAN_STAF = ["pusdalops", "koordalops", "pimpinan"];
-const ID_KJ = "KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}", ID16 = "[0-9a-f]{16}", POLA = {id: ID_KJ, sid: ID16};
+const ID_KJ = "KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}", ID16 = "[0-9a-f]{16}", POLA = {id: ID_KJ, sid: ID16, nama: "\\d{4}_(?:sel\\.geojson|(?:radar|asli|swir)_(?:pra|pasca)\\.png)"};
 /* kunci `METODE /jalur`; :id = KJ-..., :sid = 16 heks. Jalur lain = 404, jalur ada tetapi metode lain = 405. */
 const TABEL = Object.entries(RUTE_SIKLUS).map(([k, def]) => {
   const [metode, jalur] = k.split(" "), nama = [];
@@ -54,7 +54,7 @@ const LOLOS = {STAF: h => h.tipe === "staf", BP: h => h.tipe === "bp", PDKO: h =
 
 /* jawaban staf tidak boleh disimpan bersama: private, no-store, bervariasi menurut cookie */
 function pribadi(r) {
-  const h = new Headers(r.headers); h.set("cache-control", "private, no-store"); h.append("vary", "cookie");
+  const h = new Headers(r.headers); if (!/^private, max-age=/.test(h.get("cache-control") || "")) h.set("cache-control", "private, no-store");   // berkas kaji (bagian 5 genangan-satelit) boleh private, max-age=3600 h.append("vary", "cookie");
   return new Response(r.body, {status: r.status, statusText: r.statusText, headers: h});
 }
 const galatKe = (e, url) => {

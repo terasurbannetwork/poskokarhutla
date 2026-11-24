@@ -18,6 +18,7 @@
 <script src="/halaman_awal.js" data-tema></script>
 <link href="/bnpb/bnpb.css" rel="stylesheet">
 <link href="/lapor/lapor.css?v=166" rel="stylesheet">
+<link href="/lapor/selamat.css?v=1" rel="stylesheet">
 </head>
 <body data-tanpa-keluar>
 <svg width="0" height="0" class="lp-sr" aria-hidden="true">
@@ -161,6 +162,12 @@
         <button class="lp-layanan-kartu darurat" type="button" data-aksi="penting" style="--foto:url(/img/foto-pemadam.jpg)">
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span>
           <b>Nomor penting</b><small>BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat.</small></button>
+      </div>
+      <!-- Kabar selamat (K91, D126; LA-81): bisa dibuka kapan saja; kartu ajakan menunggu sinyal kejadian aktif di kab/kota (Q68) -->
+      <div class="lp-kompartemen-isi">
+        <button class="sl-pita" type="button" data-buka-selamat>
+          <svg aria-hidden="true"><use href="#i-centang"/></svg>
+          <span><b>Kabar selamat</b><small>Kabari keluarga bahwa Anda selamat, atau laporkan orang yang belum ditemukan.</small></span></button>
       </div>
 
       </section>
@@ -388,5 +395,7 @@
 <script type="module" src="/lapor/lapor.js?v=137"></script>
 <script type="module" src="/lapor/peringatan.js?v=2"></script>
 <script type="module" src="/lapor/luring.js?v=1"></script>
+<script src="/bnpb/turnstile.js" defer></script>
+<script type="module" src="/lapor/selamat.js?v=1"></script>
 </body>
 </html>

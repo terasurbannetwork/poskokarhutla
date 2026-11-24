@@ -1130,3 +1130,8 @@ dialog.mj-ld-dlg h3{margin:0 0 6px}
 .mj-ld-daftar .mj-rinci-gulung{padding:0}
 .mj-ld>dl{display:grid;grid-template-columns:minmax(110px,auto) minmax(0,1fr);gap:7px 16px;margin:0}
 .mj-ld>dl dt{color:var(--ink2);font-size:.75rem}.mj-ld>dl dd{margin:0;font-weight:600;font-size:.8125rem;overflow-wrap:anywhere}.mj-ld>dl dd.kosong{color:var(--ink2);font-weight:400;font-style:italic}
+/* Orang dicari (LA-82) */
+.mj-cari-ciri{display:block;margin-top:2px;color:var(--ink2);font-weight:400}
+.mj-cari-cocok{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--ok);color:var(--on-pekat);font:700 .75rem var(--font)}
+.mj-cari-cocok svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.mj-cari-aksi{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}

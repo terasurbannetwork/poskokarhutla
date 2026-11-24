@@ -1783,6 +1783,9 @@ Object.assign(MATRIKS, {
   lk_periksa_akun:     {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0169: penanda jenis dan wilayah pemeriksa, append-only (lapor-kejadian LK-02, A3)
   lk_tarik:            {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0170: tarikan dari halaman publik, append-only (LK-03, D8); lp_hari membaca untuk menyaring kartu
   lk_usulan:           {lp_staf: ["baca", "tambah"]},   // migrasi 0170: usulan ke Buku Besar, append-only (LK-03, D9); status dari sk_kejadian_sumber (A7)
+  lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
+  lapor_cari:          {lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129)
+  lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -1831,6 +1834,33 @@ export const pwRingkasStaf = async (env, p, kini) => ({
 /* lp_hari = rute publik halaman hari ini (lapor-kejadian LK-05): pelaku sempit supaya pelebaran baca pengecekan tidak ikut ke rute publik lain (lp_publik) */
 export const pelakuLpHari = {peran: "lp_hari"};
 export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pelapor"}, pelakuLpPublik = {peran: "lp_publik"}, pelakuLpStaf = {peran: "lp_staf"}, pelakuLpMesin = {peran: "lp_mesin"};
+
+/* kabar selamat dan orang dicari (LA-80, migrasi 0173). Satu tanda aktif per nomor: yang lama dicabut (slCabut mengembalikan token_id-nya) sebelum yang baru ditambah.
+   Token tautan di tautan_token lewat src/token.js; di sini hanya token_id. */
+export const slTambah = (env, p, b, kini) => sedia(env, p, "lapor_selamat", "tambah",
+  "INSERT INTO lapor_selamat (id, nomor, nama_panggil, status, kab, token_id, dibuat, kedaluwarsa) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+  .bind(b.id, b.nomor, b.nama_panggil, b.status, b.kab, b.token_id, kini, b.kedaluwarsa).run();
+export const slCabut = async (env, p, nomor, kini) => (await sedia(env, p, "lapor_selamat", "ubah",
+  "UPDATE lapor_selamat SET dicabut = ?2 WHERE nomor = ?1 AND dicabut IS NULL RETURNING token_id").bind(nomor, kini).all()).results.map(r => r.token_id);
+export const slAktif = (env, p, nomor, kini) => sedia(env, p, "lapor_selamat", "baca",
+  "SELECT nama_panggil, status, kab, dibuat, kedaluwarsa FROM lapor_selamat WHERE nomor = ?1 AND dicabut IS NULL AND kedaluwarsa > ?2 ORDER BY dibuat DESC LIMIT 1").bind(nomor, kini).first();
+export const slById = (env, p, id, kini) => sedia(env, p, "lapor_selamat", "baca",
+  "SELECT nama_panggil, status, kab, dibuat FROM lapor_selamat WHERE id = ?1 AND dicabut IS NULL AND kedaluwarsa > ?2").bind(id, kini).first();
+/* tanda aktif untuk sekumpulan nomor (pencocokan D130: nomor sama persis, tidak pernah nama) */
+export const slAktifNomor = async (env, p, daftar, kini) => daftar.length ? (await sedia(env, p, "lapor_selamat", "baca",
+  "SELECT nomor, status, dibuat FROM lapor_selamat WHERE nomor IN (SELECT value FROM json_each(?1)) AND dicabut IS NULL AND kedaluwarsa > ?2").bind(JSON.stringify(daftar), kini).all()).results : [];
+export const slBersih = (env, p, batas) => sedia(env, p, "lapor_selamat", "hapus", "DELETE FROM lapor_selamat WHERE dibuat < ?1").bind(batas).run();
+export const crTambah = (env, p, b, kini) => sedia(env, p, "lapor_cari", "tambah",
+  "INSERT INTO lapor_cari (id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)")
+  .bind(b.id, b.nomor_pencari, b.nama_dicari, b.ciri, b.lokasi_terakhir, b.waktu_terakhir, b.nomor_dicari, b.hubungan, b.kab, kini).run();
+export const crDaftar = async (env, p) => (await sedia(env, p, "lapor_cari", "baca",
+  "SELECT id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup_oleh, ditutup FROM lapor_cari ORDER BY dibuat DESC LIMIT 500").all()).results;
+export const crById = (env, p, id) => sedia(env, p, "lapor_cari", "baca", "SELECT id, kab, status FROM lapor_cari WHERE id = ?1").bind(id).first();
+/* status baru + baris riwayat dalam satu batch; status selain buka mengisi ditutup dan ditutup_oleh */
+export const crStatus = (env, p, id, status, catatan, oleh, kini) => { izin(p, "lapor_cari", "ubah"); izin(p, "lapor_cari_riwayat", "tambah");
+  return env.DB.batch([env.DB.prepare("UPDATE lapor_cari SET status = ?2, ditutup = ?3, ditutup_oleh = ?4 WHERE id = ?1")
+      .bind(id, status, status === "buka" ? null : kini, status === "buka" ? null : oleh),
+    env.DB.prepare("INSERT INTO lapor_cari_riwayat (cari_id, status, catatan, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5)").bind(id, status, catatan, oleh, kini)]); };
 const LP_SESI = "id, wa, kerja, rev, nomor, terkirim, token_sha, diubah";
 /* g = true: INSERT ... SELECT ... WHERE changes() > 0, hanya menulis bila pernyataan sebelumnya dalam batch (pembaruan sesi) benar-benar mengubah baris */
 const lpIns = (g, atau, tabel, kolom) => { const n = kolom.split(",").length, ph = Array.from({length: n}, (_, i) => "?" + (i + 1)).join(", ");

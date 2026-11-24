@@ -93,5 +93,6 @@ export function buatWilayah(muat) {
     const isi = k => { const [n, kec] = N.desa.get(k) || [k, ""]; const kab = k.slice(0, 5); return {kode: k, desa: n, kec, kab: N.kab[kab] || kab, kabKode: kab, prov: PROV[k.slice(0, 2)] || k.slice(0, 2), provKode: k.slice(0, 2)}; };
     return {...isi(kd), tepat: !!hit, sekitar: calon.filter(c => c.kd !== kd).slice(0, 5).map(c => ({...isi(c.kd), jarakKm: Math.round(c.j * 10) / 10}))};
   }
-  return Object.assign(cari, {cariNama, pusat});
+  const kabNama = async kode => (await nama()).kab[kode] ?? null;   // nama kab/kota dari kode "31.75"; null bila bukan kode kab
+  return Object.assign(cari, {cariNama, pusat, kabNama});
 }
