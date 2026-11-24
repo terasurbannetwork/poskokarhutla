@@ -1,6 +1,6 @@
 # Lampiran C. Lembar Data Khusus per Jenis Bencana
 
-Setiap lembar diisi bersama formulir umum dalam Lampiran B. Kolom "Sumber isian" menunjukkan apakah isian ditarik dari lembaga resmi atau diukur oleh petugas di lapangan. Isian yang ditarik dari lembaga resmi tetap diperiksa oleh petugas.
+Setiap lembar diisi bersama formulir umum dalam Lampiran B. Kolom "Sumber isian" menunjukkan apakah isian ditarik dari lembaga resmi atau diukur oleh petugas di lapangan. Isian yang ditarik dari lembaga resmi tetap diperiksa oleh petugas. Lembar khusus diisi pada tahap *rapid assessment* dan dilengkapi pada pemutakhiran harian; isian yang dipakai untuk kelas kejadian diisi paling lambat pada akhir *rapid assessment*.
 
 ## C.1 Kebakaran hutan dan lahan
 
@@ -9,17 +9,19 @@ Tabel C.1. Lembar data khusus karhutla
 | Isian | Isi dan satuan | Sumber isian |
 | --- | --- | --- |
 | Subjenis | Kebakaran hutan, kebakaran lahan bukan gambut, atau kebakaran lahan gambut | Petugas lapangan |
-| *hotspot* | Jumlah, satelit, *confidence*, tanggal | Sistem pemantauan (otomatis) |
+| *Hotspot* | Jumlah, satelit, *confidence*, tanggal | Sistem pemantauan (otomatis) |
 | Titik api terverifikasi | Koordinat dan waktu pengecekan lapangan | Petugas lapangan |
 | Luas terbakar terverifikasi | Hektare, dengan sumber ukur lapangan atau citra satelit resolusi tinggi | Petugas lapangan atau analis citra |
 | Luas terbakar perkiraan | Hektare, dari analisis *hotspot*; tidak dipakai untuk kriteria dan kelas kejadian | Analis citra |
 | Kedalaman gambut terbakar | Sentimeter, khusus kebakaran lahan gambut | Petugas lapangan, peta gambut |
-| Tutupan lahan | Hutan, semak belukar, kebun, hutan tanaman, pertanian | Petugas lapangan, peta tutupan lahan |
-| Luas terbakar menurut tutupan | Hektare terbakar terverifikasi pada savana, semak, dan padang rumput, serta pada hutan dan lahan lainnya; dipakai untuk kelas kejadian | Petugas lapangan atau analis citra |
+| Tutupan lahan | Hutan dan lahan selain savana, semak, dan padang rumput (hutan alam, hutan tanaman, kebun, lahan gambut, pertanian), atau savana, semak, dan padang rumput | Petugas lapangan, peta tutupan lahan |
+| Luas terbakar menurut tutupan | Hektare terbakar terverifikasi pada savana, semak, dan padang rumput, serta pada hutan dan lahan lainnya; dipakai untuk kelas kejadian; kedua kelompok dinilai terpisah | Petugas lapangan atau analis citra |
+| Tanggal api terakhir | Tanggal api terakhir terlihat di lapangan dan tanggal *hotspot* terakhir di area tersebut; dipakai untuk batas satu kejadian dan tanda selesai | Petugas lapangan, sistem pemantauan |
 | Status kawasan | Kawasan hutan, areal penggunaan lain, areal berizin (nama pemegang izin apabila ada) | Peta kawasan hutan Kementerian Kehutanan |
 | Kualitas udara | Indeks Standar Pencemar Udara (ISPU) dan partikel halus berukuran 2,5 mikrometer (PM2,5) tertinggi harian (µg/m³) | Stasiun pemantau Kementerian Lingkungan Hidup atau BMKG (otomatis) |
 | Jarak pandang | Meter, terendah harian | Stasiun BMKG |
-| Dampak asap | Sekolah diliburkan, penerbangan terganggu, kasus infeksi saluran pernapasan akut (ISPA) | Dinas pendidikan, bandara, dinas kesehatan |
+| Hari ISPU berbahaya | Jumlah hari dengan ISPU kategori berbahaya (301 atau lebih); dicatat sebagai keterangan kelas | Stasiun pemantau (otomatis) |
+| Dampak asap | Jumlah sekolah diliburkan dan lamanya (hari), jumlah penerbangan dibatalkan, kasus infeksi saluran pernapasan akut (ISPA) per minggu | Dinas pendidikan, bandara, dinas kesehatan |
 | Pemadaman | Status api (aktif, terkendali, atau padam), tim dan sarana yang bekerja, serta jumlah penerbangan bom air | Pos komando |
 
 Sumber: Permen LHK P.32/2016; Schroeder dkk. (2014); Giglio dkk. (2016); disusun dalam kajian ini.
@@ -33,10 +35,10 @@ Tabel C.2. Lembar data khusus gempa bumi
 | Parameter gempa | Waktu asal, lintang, bujur, kedalaman (km), magnitudo dan jenisnya | BMKG (otomatis) |
 | Subjenis | Gempa tektonik, gempa vulkanik, atau gempa runtuhan | BMKG |
 | Intensitas | Skala Modified Mercalli Intensity (MMI) atau Skala Intensitas Gempabumi BMKG (SIG-BMKG) per desa terdampak | BMKG (peta guncangan) dan pengamatan lapangan |
-| Gempa susulan | Jumlah dan magnitudo terbesar | BMKG |
+| Gempa susulan | Jumlah, magnitudo terbesar, dan tanggalnya; gempa yang sama besar atau lebih besar daripada gempa utama, atau di luar daerah sebaran gempa susulan, dicatat sebagai kejadian baru | BMKG |
 | Kerusakan menurut struktur | Unit rusak per jenis: bata tanpa tulangan, bata berkerangka beton, beton bertulang, kayu, lainnya | Petugas lapangan |
 | Ancaman lanjutan | Likuefaksi, longsor, retakan tanah, atau tsunami: ya atau tidak, dan lokasinya | Petugas lapangan, Pusat Vulkanologi dan Mitigasi Bencana Geologi (PVMBG) |
-| Kelayakan fasilitas publik | Rumah sakit, satuan pendidikan, dan kantor pemerintah: layak pakai, perlu diperiksa, atau tidak layak | Dinas pekerjaan umum |
+| Kelayakan fasilitas publik | Satuan pendidikan, fasilitas pelayanan kesehatan, rumah ibadat, kantor pemerintah, dan pasar: layak pakai, perlu diperiksa, atau tidak layak | Dinas pekerjaan umum |
 
 Sumber: BMKG; Wald dkk. (1999); disusun dalam kajian ini.
 
@@ -94,7 +96,7 @@ Tabel C.5. Lembar data khusus tanah longsor
 | Zona kerentanan gerakan tanah | Rendah, menengah, tinggi | Peta PVMBG |
 | Ancaman lanjutan | Retakan baru, lereng masih bergerak, bendungan alami di sungai | Petugas lapangan, PVMBG |
 | Jumlah titik | Jumlah titik longsor dalam kejadian ini | Petugas lapangan |
-| Relokasi | Jumlah kepala keluarga dan jiwa yang direlokasi karena lokasinya tidak aman lagi; dipakai untuk kelas kejadian bersama jumlah pengungsi | Pos komando, BPBD |
+| Relokasi | Jumlah kepala keluarga dan jiwa yang direlokasi; dipakai untuk kelas kejadian bersama jumlah pengungsi, dan orang yang mengungsi lalu direlokasi hanya dihitung satu kali | Pos komando, BPBD |
 
 Sumber: Varnes (1978); Cruden dan Varnes (1996); Hungr dkk. (2014); disusun dalam kajian ini.
 
@@ -108,10 +110,12 @@ Tabel C.6. Lembar data khusus cuaca ekstrem
 | Peringatan dini | Ada atau tidak peringatan BMKG yang berlaku; waktu terbit | BMKG (otomatis) |
 | Waktu | Jam mulai dan selesai | Saksi |
 | Lintasan | Panjang (m atau km), lebar (m), dan arah lintasan puting beliung | Petugas lapangan |
-| Angin | Kecepatan terukur di stasiun terdekat (km/jam atau knot) | BMKG |
+| Angin | Kecepatan terukur di stasiun terdekat (knot) | BMKG |
 | Hujan | Milimeter per hari di stasiun terdekat | BMKG |
 | Kerusakan khas | Atap rusak (unit), pohon tumbang, tiang listrik atau telekomunikasi roboh | Petugas lapangan |
-| Sambaran petir | Jumlah korban tersambar | Petugas lapangan |
+| Siklon tropis | Nama dan kategori menurut BMKG | BMKG |
+| Hujan es | Ukuran butir terbesar (cm) | Petugas lapangan |
+| Suhu udara ekstrem | Suhu maksimum harian (°C) dan selisihnya dari normal | BMKG |
 
 Sumber: BMKG; disusun dalam kajian ini.
 
@@ -159,15 +163,17 @@ Tabel C.9. Lembar data khusus kekeringan
 | Isian | Isi dan satuan | Sumber isian |
 | --- | --- | --- |
 | Subjenis | Kekeringan meteorologis, kekeringan pertanian, atau kekeringan hidrologis | Petugas lapangan |
-| Hari tanpa hujan | Jumlah hari berturut-turut dan kategori BMKG | BMKG (otomatis) |
+| Hari tanpa hujan | Jumlah hari berturut-turut dan tingkat peringatan dini BMKG (Waspada, Siaga, Awas) | BMKG (otomatis) |
 | Standardized Precipitation Index (SPI) | Nilai dan periode (1, 3, atau 6 bulan) | BMKG |
 | Peringatan dini kekeringan | Status yang berlaku | BMKG (otomatis) |
 | Krisis air bersih | Jumlah desa, kepala keluarga, dan jiwa yang membutuhkan bantuan air | Petugas lapangan |
-| Kesulitan air minum | Jumlah jiwa yang memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya, serta lamanya dalam hari; dipakai untuk kelas kejadian | Petugas lapangan, dinas kesehatan |
+| Kesulitan air minum | Jumlah jiwa per desa yang memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya, tanggal mulai, dan lamanya dalam hari; yang dipakai untuk kelas kejadian hanya jiwa yang lamanya lebih dari 15 hari | Petugas lapangan, dinas kesehatan |
+| Penduduk kabupaten/kota | Jumlah penduduk menurut data kependudukan terbaru; penyebut untuk kelas kejadian | Dinas kependudukan dan pencatatan sipil |
 | Sumber air | Jumlah sumur, mata air, dan embung yang kering | Petugas lapangan |
 | Bantuan air | Volume (liter) dan frekuensi distribusi | Pos komando |
-| Pertanian | Sawah terancam, terkena, dan puso (ha); kebun puso (ha); luas tanam pada musim tersebut (ha) | Dinas pertanian |
-| Ternak | Ekor mati atau sakit | Dinas peternakan |
-| Kesehatan | Kasus diare dan penyakit terkait air | Dinas kesehatan |
+| Pertanian | Tanaman pangan terkena, rusak berat, dan puso (ha); luas tanam tanaman pangan pada musim tersebut (ha); kebun puso (ha) | Dinas pertanian |
+| Selesai | Tanggal awal musim hujan menurut BMKG atau tanggal bantuan air dihentikan | BMKG, pos komando |
+| Ternak | Ekor mati atau sakit selama kejadian | Dinas peternakan |
+| Kesehatan | Kasus diare dan penyakit terkait air per minggu | Dinas kesehatan |
 
 Sumber: Wilhite dan Glantz (1985); McKee dkk. (1993); WMO (2012); BMKG; disusun dalam kajian ini.

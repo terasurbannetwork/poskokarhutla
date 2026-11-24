@@ -43,7 +43,7 @@ Tabel 1.3. Kriteria kejadian bencana
 | Huruf | Kriteria | Cara mengukur |
 | --- | --- | --- |
 | a | 1 orang meninggal atau hilang | Meninggal dan hilang dijumlahkan; cara yang sama dipakai pada batas kelas intensif nomor 1 (Tabel 4.1) |
-| b | 50 orang terdampak, luka, atau mengungsi | Ketiganya dijumlahkan, setiap orang dihitung satu kali; pengungsi yang dievakuasi sebelum dampak terjadi ikut dihitung |
+| b | 50 orang terdampak, luka, atau mengungsi | Ketiganya dijumlahkan dari laporan yang sama, setiap orang dihitung satu kali; pengungsi yang dievakuasi sebelum dampak terjadi ikut dihitung |
 | c | 5 unit rumah, fasilitas publik, dan/atau jembatan rusak | • Rumah, fasilitas publik, dan jembatan dijumlahkan<br>• Dihitung: rusak berat, rusak sedang, tidak dapat dihuni sementara, dan rusak ringan, setiap tingkat dicatat terpisah<br>• Tidak dihitung: rumah terendam dan jalan, karena jalan diukur dalam kilometer<br>• Fasilitas publik: satuan pendidikan, fasilitas pelayanan kesehatan, rumah ibadat, kantor pemerintah, dan pasar |
 | d | 1 hektare luas terbakar terverifikasi (karhutla), atau 1 hektare sawah atau kebun puso (jenis lain) | Luas terbakar dari pengukuran lapangan atau citra resolusi tinggi, bukan dari jumlah *hotspot*; luas puso dari dinas pertanian |
 | e | Permintaan bantuan nasional oleh pemerintah daerah | Surat bernomor dan bertanggal yang menyebut kejadian tersebut |
