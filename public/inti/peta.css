@@ -35,7 +35,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
 .tb{display:grid;grid-template-columns:20px minmax(0,2.6fr) minmax(50px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr);gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:0;cursor:pointer;font-size:0.7812rem;line-height:1.25;border-bottom:1px solid var(--line)}
 .tb:hover{background:var(--surface)}
-.tb.kepala{position:sticky;top:0;z-index:3;background:oklch(25.5% .075 256);cursor:default;font-size:0.5938rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:7px 8px;border-radius:8px 8px 0 0;border-bottom:0;box-shadow:0 -6px 0 var(--card)}
+.tb.kepala{position:sticky;top:0;z-index:3;background:oklch(25.5% .075 256);cursor:default;font-size:0.5938rem;font-weight:800;letter-spacing:.01em;color:#fff;padding:7px 8px;border-radius:8px 8px 0 0;border-bottom:0;box-shadow:0 -6px 0 var(--card)}
 .tb.kepala:hover{background:oklch(25.5% .075 256)}
 .tb.kepala span[data-s]{cursor:pointer;user-select:none}
 .tb.kepala span[data-s]:hover{color:oklch(85% .08 70)}
@@ -58,7 +58,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .kartu .kp>div{min-width:0}
 .lambang{flex:none;width:30px;height:36px;object-fit:contain;filter:drop-shadow(0 1px 2px rgb(0 0 0 / .35))}
 .dlg .dh .lambang{width:40px;height:48px}
-.kartu .kp small{display:block;font-size:0.5938rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.8}
+.kartu .kp small{display:block;font-size:0.5938rem;font-weight:800;letter-spacing:.01em;opacity:.8}
 .kartu .kp b{display:block;font-family:var(--display);font-size:0.875rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kartu .kg{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;padding:4px 12px 2px}
 .kartu .kb{display:flex;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px solid var(--line);font-size:0.7188rem;line-height:1.3;min-width:0}
@@ -95,7 +95,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .lapis summary::after{content:"";width:6px;height:6px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;margin-right:4px}
 .lapis details:not([open]) > summary::after{transform:rotate(-45deg)}
 .lapis details>label{padding-left:8px}
-.lapis-hd{margin:-10px -12px 6px;padding:8px 12px;border-radius:13px 13px 0 0;background:oklch(25.5% .075 256);color:#fff;font-size:0.6562rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.lapis-hd{margin:-10px -12px 6px;padding:8px 12px;border-radius:13px 13px 0 0;background:oklch(25.5% .075 256);color:#fff;font-size:0.6562rem;font-weight:800;letter-spacing:.01em;}
 .lapis-hd+details{border-top:0;margin-top:0}
 .lapis-hd{text-align:center;position:relative}
 .lapis-hd button{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:0;border-radius:7px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer}
@@ -127,7 +127,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .laci .hd-aksi .ik-btn:hover{background:var(--brand);color:#fff}
 .laci .hd-aksi .ik-btn.tutup{background:var(--surface);color:var(--ink)}
 .laci .hd-aksi .ik-btn svg{width:15px;height:15px}
-.laci .hd-ey{display:inline-block;font-size:0.625rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
+.laci .hd-ey{display:inline-block;font-size:0.625rem;font-weight:800;letter-spacing:.01em;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
 .laci .hd-meta{display:flex;flex-wrap:wrap;white-space:nowrap;align-items:center;gap:6px 8px;font-size:0.75rem;color:var(--ink2)}
 .laci .hd-ko{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:0.7188rem}
 .laci .hd-ko svg{width:12px;height:12px}
@@ -200,7 +200,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .hg .hg-k:hover .hg-t{r:6}
 @media (prefers-reduced-motion:reduce){.hg .hg-p,.hg .hg-t{transition:none}}
 /* judul kecil di laci (dulu disalin di cuaca.css dan gempa.css) */
-.lc-h{margin:0;font-size:0.7188rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+.lc-h{margin:0;font-size:0.7188rem;font-weight:800;letter-spacing:.01em;color:var(--ink2)}
 .lc-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .lc-h > svg{flex:none;width:14px;height:14px;color:var(--brand2)}
 
@@ -264,7 +264,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .lc-luar:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 /* kotak angka berkepala terang berikon (latar gelap hanya kepala halaman, AGENTS.md 3.5): .kpi.kpi-t, atau semua .kpi di bawah body.pb-rapi */
 :root .kpi.kpi-t,:root .pb-rapi .kpi{box-shadow:none;border-radius:12px}
-:root .kpi.kpi-t .lbl,:root .pb-rapi .kpi .lbl{display:flex;align-items:center;justify-content:center;gap:6px;background:color-mix(in oklch,var(--brand) 8%,var(--card));color:var(--ink);font-size:0.6562rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
+:root .kpi.kpi-t .lbl,:root .pb-rapi .kpi .lbl{display:flex;align-items:center;justify-content:center;gap:6px;background:color-mix(in oklch,var(--brand) 8%,var(--card));color:var(--ink);font-size:0.6562rem;font-weight:800;letter-spacing:.01em;padding:6px 8px;border-bottom:1px solid var(--line)}
 :root .kpi.kpi-t .lbl svg,:root .pb-rapi .kpi .lbl svg{flex:none;width:13px;height:13px;color:var(--brand2)}
 :root .kpi.kpi-t b,:root .pb-rapi .kpi b{padding-top:8px}
 /* body.pb-rapi: layar teraturan baru (gempa, kekeringan, gunung api, cuaca, udara, pesisir) */

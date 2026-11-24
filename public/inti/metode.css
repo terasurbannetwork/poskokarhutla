@@ -1,7 +1,7 @@
 /* metode versi awam */
 #metode{--mt-merah:#c9503a;--mt-oranye:#e58a45;--mt-kuning:#e3b94e;--mt-hijau:#5a9e74;--mt-biru:#4f8fc4;--mt-nila:#5f6fb0}
 .mt-ikon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.mt-lbl{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
+.mt-lbl{display:block;font-size:10.5px;font-weight:800;letter-spacing:.01em;color:var(--ink2)}
 
 /* gambaran besar */
 .mt-peta{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1.1fr) 28px minmax(0,1.2fr);gap:8px;margin:0 0 20px}

@@ -5,7 +5,7 @@
 #berita .ex-bd{padding:16px 22px 10px}
 #berita .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 #berita .ex-ft em{font-style:italic;opacity:.9}
-#berita .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#berita .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.01em;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
 #berita .ex-ey:empty{display:none}
 #berita .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
 #berita .ex .sub{margin:6px 0 0;font-weight:600;font-size:13px;color:var(--ink2)}
@@ -104,7 +104,7 @@
 @media (max-width:700px){.sn-ctl > *{grid-column:1/-1!important}}
 /* bagian di dalam dialog rincian: kepala pita kecil */
 .dl-sek{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
-.dl-sek > h4{margin:0;padding:8px 12px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+.dl-sek > h4{margin:0;padding:8px 12px;font-size:10.5px;font-weight:800;letter-spacing:.01em;color:var(--ink2);background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
 .dl-sek > div{padding:10px 12px}
 .dl-sek .br-grp:last-child{margin-bottom:0}
 /* dialog daftar berita dikelompokkan per bulan, tiap kelompok bisa dilipat */
@@ -132,7 +132,7 @@
 .bp-ls button.on{background:color-mix(in oklch, var(--brand2) 12%, var(--card));box-shadow:inset 3px 0 0 var(--brand2)}
 .bp-wrap #brPeta{border-radius:12px;overflow:hidden;border:1px solid var(--line);min-height:0}
 .bp-side{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;min-height:0}
-.bp-side h4{margin:0;padding:10px 12px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:oklch(25.5% .075 256);text-align:center}
+.bp-side h4{margin:0;padding:10px 12px;font-size:10.5px;font-weight:800;letter-spacing:.01em;color:#fff;background:oklch(25.5% .075 256);text-align:center}
 .bp-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:8px;padding:3px;border:1px solid var(--line);border-radius:999px}
 .bp-seg button{border:0;background:none;border-radius:999px;font:700 10.5px var(--font);padding:5px 2px;color:var(--ink2);cursor:pointer}
 .bp-seg button[aria-pressed="true"]{background:oklch(25.5% .075 256);color:#fff}
