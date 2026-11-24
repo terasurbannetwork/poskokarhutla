@@ -181,7 +181,7 @@ def terbit(hari=None):
             l.sort(key=lambda x: (-x[1], x[0]))
     hari = hari or dt.datetime.now(WIB).date().isoformat()
     out = {"versi": 1, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "hari": hari, "tahun_pola": [AWAL, AKHIR_FINAL], "uji_tahun": [TAHUN_UJI[0], TAHUN_UJI[-1]], "N": AKHIR_FINAL - AWAL + 1,
-           "sumber": "DIBI BNPB is_bencana (kejadian per kab/kota per bulan)",
+           "sumber": "DIBI BNPB, kejadian yang memenuhi ambang bencana (per kabupaten/kota per bulan)",
            "aturan": {"satuan_layak_A": MIN_A, "tahun_min_per_bulan": MIN_TAHUN, "bagian_min": round(MIN_BAGIAN, 4),
                       "lulus": {"L1": "Brier model < klimatologi dan persistensi", "L2": f"angkat >= {L2_ANGKAT}", "L3": f"menang di >= {L3_TAHUN} dari {len(TAHUN_UJI)} tahun T", "L4": f"n bulan puncak >= {L4_N}"}},
            "uji": {j: {k: (round(v, 4) if isinstance(v, float) else v) for k, v in u.items() if k != "per_tahun"} for j, u in uji.items()},

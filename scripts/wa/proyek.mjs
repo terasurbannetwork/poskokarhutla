@@ -25,6 +25,7 @@ import * as Maksud from './maksud.mjs'
 import * as Durasi from './durasi.mjs'
 import { NAMA_BOT, VERSI, tChangelog, CHANGELOG } from './versi.mjs'
 import { periksa as periksaPagar } from './agen_pagar.mjs'
+import { periodeInfografis, infografis } from './infografis.mjs'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
 const req = createRequire(import.meta.url)
@@ -101,6 +102,8 @@ export function parsePerintah(teks, now = new Date()) {
   if (t === 'changelog' || t === 'versi bot' || t === 'tentang') return { aksi: 'changelog', semua: false } // nama, versi, changelog (pemilik 19 Nov)
   if (t === 'changelog semua') return { aksi: 'changelog', semua: true }
   if (t === 'biaya') return { aksi: 'biaya' } // pemakaian Claude bulan ini dan hari ini, biaya laporan terakhir (khusus PEMILIK)
+  const ig = t.match(/^infografis\b ?(.*)$/) // laporan periode DIBI (tahun, bulan, triwulan); hanya atas perintah, tanpa jadwal
+  if (ig) return { aksi: 'infografis', periode: periodeInfografis(ig[1]) }
   if (t === 'panduan') return { aksi: 'panduan' } // infografis panduan bot, dikirim sebagai PDF (pemilik 18 Nov 2026: PDF, bukan gambar)
   if (t === 'status') return { aksi: 'status' }
   if (t === 'selesai') return { aksi: 'selesai' } // menutup kumpul revisi (sama dengan lanjut saat kumpul terbuka)
@@ -169,6 +172,7 @@ export const BANTUAN = [
   '- *ulangi*: coba lagi langkah yang gagal',
   '- *batal*: batalkan proyek kapan saja',
   '- *bantuan*: tampilkan pesan ini',
+  '- *infografis 2025*: infografis bencana per tahun, bulan (*2026-10*), atau triwulan (*2026-T3*), dikirim ke Anda saja',
   '- *panduan*: kirim panduan lengkap (PDF)',
   '- *changelog*: perubahan versi terbaru',
   '',
@@ -2542,6 +2546,11 @@ export async function tangani(pesan, ctxAsli) {
       await ctx.balas(susun('Panduan belum tersedia', null, null, ['Ketik *bantuan* untuk daftar perintah.']))
     }
     return { status: 'panduan' }
+  }
+  if (cmd?.aksi === 'infografis') {
+    // daftar bot yang sudah ada: gateway menyuntik ctx.terdaftar (WA_IZIN + bl_daftar); tanpa itu hanya WA_IZIN dan PEMILIK
+    const boleh = ctx.terdaftar ? !!ctx.terdaftar(dari) : [ctx.env.WA_IZIN, ctx.env.PEMILIK].some((x) => new Set(daftar(x).map(normalWa)).has(dari))
+    return infografis({ periode: cmd.periode, boleh }, { ...ctx, dasar: ctx.dasar || RUMAH }, pyBin(ctx.env))
   }
   if (cmd?.aksi === 'changelog') { await ctx.balas(tChangelog(cmd.semua ? CHANGELOG.length : 3)); return { status: 'changelog' } }
   if (cmd?.aksi === 'biaya') {

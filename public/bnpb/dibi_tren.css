@@ -340,8 +340,9 @@ button.dt-hb-baris{cursor:pointer}
   html.dt-cetak-profil .db-pf-angka b{font-size:var(--fs-5)}
   html.dt-cetak-profil .dt-kartu{padding:8px 10px;gap:6px}
   html.dt-cetak-profil .db-profil-grafik{min-block-size:0}
-  html.dt-cetak-profil .db-profil .dt-svg{max-block-size:170px}
+  html.dt-cetak-profil .db-profil .dt-svg{max-block-size:140px}
   html.dt-cetak-profil .dt-kal-sel{block-size:18px}
-  html.dt-cetak-profil .db-pf-daftar li{padding:3px 6px}
+  html.dt-cetak-profil .db-pf-daftar{gap:3px}
+  html.dt-cetak-profil .db-pf-daftar li{padding:2px 6px}
   html.dt-cetak-profil .dt-dua{grid-template-columns:1fr 1fr}
 }

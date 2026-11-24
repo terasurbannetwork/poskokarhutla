@@ -8,9 +8,13 @@
 // kodenya di gateway ditandai `// >>> lapor-ai` ... `// <<< lapor-ai` supaya tidak ikut sidik versi bot.
 
 export const NAMA_BOT = 'Bot Laporan BNPB'
-export const VERSI = '2.6'
+export const VERSI = '2.7'
 
 export const CHANGELOG = [
+  { versi: '2.7', tanggal: '2026-11-24', isi: [
+    'Infografis bencana: ketik *infografis 2025* (tahun), *infografis 2026-10* (bulan), atau *infografis 2026-T3* (triwulan). Bot membuatnya dari data DIBI dan mengirim PPTX dan PDF hanya ke Anda.',
+    'Periode yang belum genap (bulan atau triwulan berjalan) ditolak dengan penjelasan. Tidak ada jadwal otomatis dan tidak ada kiriman ke grup atau nomor lain.',
+  ] },
   { versi: '2.6', tanggal: '2026-11-20', isi: [
     'Laporan khusus gempa: ketik *buat gempa nias* (atau tulis biasa, misalnya "buatkan laporan gempa nias"). Bot mencari gempa terbaru di tempat itu dari BMKG, lalu langsung membuat laporan dua halaman: peta guncangan per kab/kota, kondisi menurut BPBD dan BMKG, penduduk dalam jangkauan guncangan, peluang gempa susulan, penanganan, langkah yang disarankan, dan riwayat gempa di sekitarnya.',
     'Tanpa nama tempat (*buat gempa*), bot memakai gempa M5 ke atas terbaru. Tanggal boleh ditambah di ujung, misalnya *buat gempa nias 19 nov*.',

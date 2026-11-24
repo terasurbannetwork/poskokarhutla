@@ -470,7 +470,7 @@ def muat_musim_rawan(H, m, kini):
     depan = kini.month % 12 + 1
     th = kini.year + (1 if kini.month == 12 else 0)
     th0, th1 = mr["tahun_pola"]
-    H.src("kita_musim", lembaga="Centurisk97", nama="Bulan rawan menurut pola kejadian DIBI (hipotesis)", terbit=mr.get("dibuat"), diambil=mr.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+    H.src("kita_musim", lembaga="Centurisk97", nama="Bulan rawan menurut pola kejadian DIBI (pola berulang atau hipotesis per jenis)", terbit=mr.get("dibuat"), diambil=mr.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
     ada = {k["id"] for k in m["kab_daftar"]}
     for j, daftar in (mr["bulan"].get(str(depan)) or {}).items():
         a, u = MR_ANCAMAN.get(j), (mr.get("uji") or {}).get(j) or {}
@@ -478,15 +478,15 @@ def muat_musim_rawan(H, m, kini):
             continue
         lulus = u.get("vonis") == "lulus"
         if lulus:
-            uji = (f"Bukan peluang: pada uji balik {mr['uji_tahun'][0]} sampai {mr['uji_tahun'][1]} ketepatannya hanya sekitar {round(u['bss_klim'] * 100)}% lebih baik dari rata-rata bulanan, "
+            uji = (f"Bukan peluang: pada uji balik {mr['uji_tahun'][0]} sampai {mr['uji_tahun'][1]} skor Brier-nya hanya sekitar {round(u['bss_klim'] * 100)}% lebih baik dari rata-rata bulanan, "
                    f"dan bulan puncak melewatkan sekitar {round((1 - u['recall']) * 100)}% kejadian. Dihitung dari data DIBI versi hari ini, jadi uji ini cenderung terlalu menguntungkan.")
         else:
-            uji = f"Belum lulus uji balik ({u.get('vonis', 'belum teruji')}), jadi hanya acuan" + ("; tidak lebih baik dari rata-rata bulanan." if (u.get("bss_klim") or 0) <= 0 else ".")
+            uji = ("Tidak lulus uji balik" if u.get("vonis") == "tidak lulus" else "Belum teruji") + ", jadi hanya acuan" + ("; tidak lebih baik dari rata-rata bulanan." if (u.get("bss_klim") or 0) <= 0 else ".")
         for i, n_th in daftar:
             if i not in ada:
                 H.tc("kita_musim")
                 continue
-            H.taruh("kab", i, "bulan", item(a, j, None, f"Bulan rawan: {MR_NAMA[j]}", f"Pola kejadian DIBI {th0} sampai {th1}{'' if lulus else ' (hipotesis)'}: {MR_NAMA[j]} tercatat pada bulan {BLN_PENUH_ID[depan - 1]} di {n_th} dari {mr['N']} tahun di kabupaten ini, bulan puncaknya. Pengingat sebulan sebelumnya. {uji} Bukan peringatan.",
+            H.taruh("kab", i, "bulan", item(a, j, None, f"Bulan rawan: {MR_NAMA[j]}", f"Pola kejadian DIBI {th0} sampai {th1}{'' if lulus else ' (hipotesis)'}: {BLN_PENUH_ID[depan - 1]} adalah bulan puncak {MR_NAMA[j]} di {n_th} dari {mr['N']} tahun di kabupaten ini. Pengingat sebulan sebelumnya. {uji} Bukan peringatan.",
                                           "kita_musim", "kab", p=f"{BLN_PENUH_ID[depan - 1]} {th}", u="pola berulang" if lulus else "hipotesis"))
 
 
@@ -870,7 +870,7 @@ def uji():
     mb = [e for e in t6["kab"]["1101"]["bulan"] if e["s"] == "kita_musim"]
     assert {e["j"] for e in mb} == {"banjir", "karhutla"} and all(e["tk"] is None and e["c"] == "kab" and e["p"] == "Desember 2026" for e in mb), mb
     bj, kh = (next(e for e in mb if e["j"] == j) for j in ("banjir", "karhutla"))
-    assert bj["a"] == "b" and kh["a"] == "k" and bj["u"] == "pola berulang" and kh["u"] == "hipotesis" and "9 dari 18 tahun" in bj["x"] and "sekitar 6%" in bj["x"] and "77%" in bj["x"] and "Bukan peluang" in bj["x"] and "Belum lulus" in kh["x"] and "rata-rata bulanan" in kh["x"] and "angkat" not in bj["x"].lower(), (bj, kh)
+    assert bj["a"] == "b" and kh["a"] == "k" and bj["u"] == "pola berulang" and kh["u"] == "hipotesis" and "9 dari 18 tahun" in bj["x"] and "sekitar 6%" in bj["x"] and "77%" in bj["x"] and "Bukan peluang" in bj["x"] and "Tidak lulus uji balik" in kh["x"] and "rata-rata bulanan" in kh["x"] and "angkat" not in bj["x"].lower(), (bj, kh)
     assert t6["ringkas"]["tak_cocok"].get("kita_musim") == 1 and t6["sumber"]["kita_musim"]["jenis"] == "kita"
     assert t6["kab"]["1101"]["sg"] == t["kab"]["1101"]["sg"] and t6["kab"]["1101"]["kita"] == t["kab"]["1101"]["kita"], "bulan rawan tidak mengubah sinyal maupun peringkat kita"
     assert not [e for e in susun(dict(m, musim_rawan=dict(mr, dibuat="2024-01-01T00:00+07:00")), kini)["kab"]["1101"].get("bulan", []) if e["s"] == "kita_musim"], "pola basi dilewati"

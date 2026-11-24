@@ -123,7 +123,7 @@ def hitung_periode(per, d):
         L = {'kejadian': S(lalu, 'kejadian'), 'mdh': S(lalu, 'mdh'), 'terdampak': S(lalu, 'terdampak'), 'rumah': S(lalu, 'rumah')}
         L = {k: int(round(x)) for k, x in L.items()}
         now = {'kejadian': v['total'], 'mdh': v['d']['mdh'], 'terdampak': v['d']['terdampak'], 'rumah': v['r']['rumah']}
-        v['l'] = L
+        v['l'], v['n'] = L, now
         v['b'] = {k: int(round((now[k] - L[k]) / L[k] * 100)) for k in L if L[k]}   # tanpa pembanding bila periode lalu 0
     return v
 
@@ -340,7 +340,7 @@ def kanan_periode(v, per, catatan, X, RW):
     kini = {'kejadian': 'total', 'mdh': 'd.mdh', 'terdampak': 'd.terdampak', 'rumah': 'r.rumah'}
     for i, (s, lab) in enumerate([('kejadian', 'Kejadian'), ('mdh', 'Meninggal dan hilang'), ('terdampak', 'Menderita dan mengungsi'), ('rumah', 'Rumah rusak')]):
         yy = hy + 13 + i * 18
-        ub = ('{{angka:ig.b.%s|arah|persen}}' % s) if s in v['b'] else ('tetap' if v['l'][s] == 0 else 'tidak ada')   # periode lalu 0: tanpa persen
+        ub = ('{{angka:ig.b.%s|arah|persen}}' % s) if s in v['b'] else ('tetap' if v['n'][s] == 0 else 'tanpa pembanding')   # periode lalu 0: tanpa persen
         el.append(T(lab, X, yy, 106, 16, 8, False, 'teks'))
         for (cxx, cw), isi, tebal, warna in zip(cx, ('{{angka:ig.%s}}' % kini[s], '{{angka:ig.l.%s}}' % s, ub), (True, False, True), ('navy', 'teks-2', 'navy')):
             el.append(T(isi, cxx, yy, cw, 16, 9, tebal, warna, 'r'))

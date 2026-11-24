@@ -506,7 +506,7 @@ function keProyek(dari, masuk, ambilPesan) {
     const ctx = {
       env: process.env, dep: O.depBawaan(process.env), now: new Date(), dasar: RUMAH, log,
       ...balasanKe(dari, '[proyek]', masuk), ...kemajuanKe(dari, masuk), kabariPemilik: kabarPemilik,
-      kirimKe, masuk,
+      kirimKe, masuk, terdaftar: (n) => DF.terdaftar(n),
     }
     const pesan = await ambilPesan(Pr, ctx)
     if (!pesan) return
