@@ -51,7 +51,7 @@ Object.assign(Insight, {
   exTumbuh() { const A = Badai.D.tt; if (!A) return "";
     const R = A.baris, basi = SEKARANG() - A.t > 6 * 36e5, src = `<p class="fnd">Sumber data:  Himawari-9 pita 13 (inframerah 10,4 mikron), NOAA open data; analisis Centurisk97, citra ${Badai.tgl(A.t)}.</p>`;
     const tg = `<span title="Citra satelit, bukan pengukuran di lokasi">${Badai.tgl(A.t)}</span>`;
-    const ket = `<p class="fnd">${Badai.pil("Pengamatan · uji", "#7a4fc4")} Tanda awal, bukan peringatan resmi BMKG. Suhu puncak awan dibandingkan dua pindaian citra berjarak 30 menit di titik contoh sekitar 11 km, jadi sel kecil bisa terlewat. Belum terbukti berkaitan dengan hujan lebat atau angin kencang.</p>`
+    const ket = `<p class="fnd">${Badai.pil("Pengamatan, uji", "#7a4fc4")} Tanda awal, bukan peringatan resmi BMKG. Suhu puncak awan dibandingkan dua pindaian citra berjarak 30 menit di titik contoh sekitar 11 km, jadi sel kecil bisa terlewat. Belum terbukti berkaitan dengan hujan lebat atau angin kencang.</p>`
       + (basi ? `<p class="fnd">Citra terakhir ini dari ${tg}, bukan kondisi terkini.</p>` : "");
     if (!R.length) return this.ex("Awan tumbuh cepat", "", "", ket + `<p class="fnd">Tidak ada awan yang tumbuh cepat pada citra ${Badai.tgl(A.t)}.</p>` + src, "");
     const top = [...R].sort((a, b) => b.dT - a.dT)[0], nT = R.filter(r => r.tumbuh).length;
