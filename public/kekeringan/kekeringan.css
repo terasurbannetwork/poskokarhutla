@@ -16,13 +16,6 @@
 #metode .ex .bg-ex,#posko .ex .bg-ex{margin:14px 16px 0 0}
 #metode .ex,#posko .ex{margin-bottom:18px}
 /* lencana ENSO di kepala: rupa sama dengan karhutla (lapisan5.css), datanya dari S.meta.enso */
-/* blok tambahan di pop-up wilayah: HTH, prakiraan, padi, IRBI, SK resmi */
-.bk{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
-.bk>h4{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:0.71875rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:0 0 8px}
-.bk .sp-p{text-transform:none;letter-spacing:0;background:color-mix(in oklch,#e8743b 14%,var(--card));color:#b8521f}
-.bk-t{display:grid;gap:6px}.bk-t>div{display:grid;grid-template-columns:110px 1.4fr 1.2fr 1fr;gap:10px;align-items:baseline;font-size:var(--fs-3)}.bk-t small{color:var(--ink2)}
-.sk{margin:0 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
-.sk-r{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:var(--fs-3)}.sk-r:first-of-type{border-top:0}.sk-r small{color:var(--ink2)}
 .l5-iklim{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:0.7188rem;font-weight:700;white-space:nowrap;background:color-mix(in srgb,var(--on-head) 14%,transparent);color:inherit}
 .l5-iklim::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
 .l5-iklim.kering::before{background:var(--f2);box-shadow:0 0 0 3px color-mix(in srgb,var(--f2) 30%,transparent)}

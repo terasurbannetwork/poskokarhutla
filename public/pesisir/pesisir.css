@@ -22,8 +22,6 @@
 .gp-kartu .ex-ft .ex-leg{flex:1 1 100%;justify-content:center;display:flex;flex-wrap:wrap;gap:6px 14px}
 .gp-kartu .ex-ft .ex-leg span{display:inline-flex;align-items:center;gap:6px}
 .gp-kartu .ex-ft .ex-leg i{width:11px;height:11px;border-radius:3px;display:inline-block}
-#insight .gp-kartu .ex-ey,#tren .gp-kartu .ex-ey{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
-#insight .gp-kartu .ex-ey svg,#tren .gp-kartu .ex-ey svg{width:12px;height:12px;flex:none}
 #insight .gp-kartu .ex-ey,#tren .gp-kartu .ex-ey,#tentang .gp-kartu .ex-ey{display:inline-flex;align-items:center;gap:5px;font-size:0.625rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
 #insight .gp-kartu .ex-ey svg,#tren .gp-kartu .ex-ey svg,#tentang .gp-kartu .ex-ey svg{width:12px;height:12px;flex:none}
 .gp-kartu .tw td{white-space:normal;overflow-wrap:anywhere}.gp-kartu .tw th{white-space:nowrap}
