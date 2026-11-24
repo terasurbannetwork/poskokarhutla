@@ -31,6 +31,7 @@ const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
+import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir} from "../../src/lapor_kejadian.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "../../src/lapor_periksa.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
@@ -561,6 +562,34 @@ async function alun(q) {
   return [200, {baris, jumlah: baris.length}];
 }
 
+/* ---------- kejadian hari ini (lapor-kejadian LK-05, LK-06): mesin yang sama dengan Worker (kejadianTerverifikasi, kartuPublik), data dari ~/.lapor-lokal ----------
+   Hanya kejadian laporan dengan pengecekan Valid terakhir oleh BPBD wilayahnya dalam 24 jam; tarikan belum ada di lokal (LK-07). Saklar LAPOR_HARI_INI tidak dibaca di lokal. */
+const JENDELA_HARI = 24 * 3600e3;
+async function hariIni(q, kini = Date.now()) {
+  const d = baca(), G = gugusSemua(d), gk = new Map(G.gugus.map(g => [g.kode, g])), sesi = new Map(Object.values(d.sesi).filter(s => s.nomor).map(s => [s.nomor, s]));
+  const kejadian = new Map();
+  for (const [n, s] of sesi) if ((s.periksa || []).some(p => p.hasil === "valid" && p.waktu > kini - JENDELA_HARI)) { const k = G.per[n] || n; if (!kejadian.has(k)) kejadian.set(k, (gk.get(k)?.anggota || [n]).filter(x => sesi.has(x))); }
+  const pilih = [];
+  for (const anggota of kejadian.values()) {
+    const isi = anggota.map(n => { const s = sesi.get(n), w = s.isian.lokasi?.nilai?.wilayah || null;
+      const r = {id: s.id, jenis: s.isian.jenis?.nilai || null, wa: s.wa, terkirim: s.terkirim,
+        ringkas: JSON.stringify({waktuMs: s.isian.waktu?.ms ?? null, subjenis: s.isian.subjenis?.nilai || null, wilayah: w, dampakMeja: dampakRingkas(s)})};
+      return {nomor: n, r, w, laporan: {status: s.tiket.status, wilayah: w}, periksa: (s.periksa || []).map((p, i) => ({id: i + 1, hasil: p.hasil, waktu: p.waktu, akun: p.akun || null})),
+        versi: (s.versi || []).map(v => ({waktu: v.waktu}))}; });
+    const kj = kejadianTerverifikasi(isi);
+    if (!kj.terverifikasi || kj.waktu <= kini - JENDELA_HARI) continue;
+    const sah = isi.filter(a => kj.anggota.includes(a.nomor)), akhir = sah.reduce((m, a) => (JSON.parse(a.r.ringkas).waktuMs || 0) > (JSON.parse(m.r.ringkas).waktuMs || 0) ? a : m);
+    if (q.prov && akhir.w?.provKode !== q.prov || q.jenis && akhir.r.jenis !== q.jenis) continue;
+    pilih.push({sah, akhir, awal: isi[0], waktu: kj.waktu});
+  }
+  const baris = (await Promise.all(pilih.sort((a, z) => z.waktu - a.waktu).slice(0, 100).map(async x => {
+    const pusat = x.akhir.w?.kode ? await wilayah.pusat(String(x.akhir.w.kode)).catch(() => null) : null;
+    return kartuPublik({id: crypto.createHash("sha256").update(`lapor-hari-ini|${x.awal.r.id}`).digest("hex").slice(0, 10), pusat,
+      anggota: x.sah.map(a => { const p = terakhir(a.periksa); return {r: a.r, verifikasi: {waktu: p.waktu, tingkat: p.akun?.tingkat, kab_nama: p.akun?.kab_nama || null}}; })});
+  }))).filter(Boolean);
+  return [200, {baris, jumlah: baris.length, dibuat: kini, jendela_jam: 24}];
+}
+
 /* ---------- monitoring petugas (K7, D20, D22) ---------- */
 // angka dampak ringkas untuk peta dan kepala rincian; null = belum didata (kosong tidak pernah jadi nol)
 const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : Number(x.nilai) || 0; };
@@ -666,7 +695,7 @@ function mejaUbah(c, nomor, aksi, body) {
       for (const x of ["pdf", "docx"]) fs.rmSync(path.join(DOK, `${nomor}.${x}`), {force: true});
       buatDokumen(s, d.pelapor[s.wa]);
     }
-    (s.periksa ||= []).push({hasil: v.hasil, catatan: v.catatan, oleh: c.pelaku, waktu: kini, perubahan: r.perubahan});
+    (s.periksa ||= []).push({hasil: v.hasil, catatan: v.catatan, oleh: c.pelaku, waktu: kini, perubahan: r.perubahan, akun: penandaPemeriksa(c)});   // akun = penanda wilayah pemeriksa (LK-02), sama dengan lk_periksa_akun di Worker
     const ket = `Pengecekan lapangan: ${HASIL_PERIKSA[v.hasil]}. ${v.catatan}${r.perubahan.length ? `. Revisi versi ${s.versi.length}: ${r.perubahan.map(x => `${x.nama.replace(/_/g, " ")} ${x.dari ?? "belum didata"} menjadi ${x.ke}`).join(", ")}` : ""}`;
     s.tiket.riwayat.push({dari: st, ke: ke || st, pelaku: c.pelaku, catatan: ket.slice(0, 1000), waktu: kini});
     if (ke) { s.tiket.status = ke; delete s.susulanBaru; (d.kotak[s.wa] ||= []).push({nomor, teks: `Status laporan ${nomor}: ${STATUS[ke]}. ${v.catatan}`, waktu: kini, status: true}); }
@@ -750,6 +779,9 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/rapor") return kirim(await info.rapor(Object.fromEntries(url.searchParams)));   // satu mesin dengan Worker (src/lapor_info.js)
     if (j === "/api/lapor/alun") return kirim(await alun(Object.fromEntries(url.searchParams)));
+    if (j === "/api/lapor/hari-ini") { const q = url.searchParams, ks = [...q.keys()], jn = q.get("jenis") || "", pv = q.get("prov") || "";   // saringan sama dengan Worker
+      if (ks.some(k => k !== "jenis" && k !== "prov") || new Set(ks).size !== ks.length || jn && !JENIS.some(x => x.id === jn) || pv && !/^\d{2}$/.test(pv)) return kirim([400, {galat: "Saringan tidak dikenal."}]);
+      return kirim(await hariIni({jenis: jn, prov: pv})); }
     if (j === "/api/lapor/susulan" && req.method === "POST") return kirim(await susulan(await badan(req)));
     if (j === "/api/lapor/darurat/cepat" && req.method === "POST") return kirim(await daruratCepat(await badan(req)));
     if (j === "/api/lapor/agregat") { // K62, D91-D93: lokal tanpa login (loopback); Worker: hanya sesi kampus mitra /kemitraan, unduhan dicatat

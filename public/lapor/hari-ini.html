@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>Kejadian hari ini, Centurisk97</title>
+<meta name="description" content="Laporan warga yang sudah diverifikasi BPBD dalam 24 jam terakhir. Bukan data resmi korban.">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="/halaman_awal.js" data-tema></script>
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/lapor/hari-ini.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="semua" data-tanpa-segera><summary><span>Semua bencana</span></summary><div class="menu"></div></details>
+  </div>
+</header>
+<main class="hi">
+  <div class="hi-judul">
+    <h1>Kejadian hari ini</h1>
+    <p>Laporan warga yang sudah diverifikasi BPBD dalam 24 jam terakhir. Bukan data resmi korban.</p>
+    <p class="hi-stempel" id="stempel" aria-live="polite"></p>
+  </div>
+  <div class="hi-saring" id="saring" role="group" aria-label="Saring menurut jenis kejadian" hidden></div>
+  <div class="hi-grid">
+    <section class="hi-daftar" id="daftar" aria-label="Daftar kejadian" aria-busy="true"></section>
+    <section class="hi-peta" aria-label="Peta lokasi kejadian. Padanannya daftar kartu di samping" id="kolomPeta">
+      <div class="hi-peta-isi" id="peta"></div>
+    </section>
+  </div>
+  <details class="hi-metode">
+    <summary>Cara membaca halaman ini</summary>
+    <p>Kejadian di sini berasal dari laporan warga yang sudah dicek dan diverifikasi oleh BPBD setempat, lalu ditampilkan selama 24 jam. Angka dampak berupa rentang dari laporan warga yang berbeda untuk kejadian yang sama, tidak dijumlahkan, dan bukan data resmi korban. Isian yang tidak diisi pelapor tidak ditampilkan, bukan berarti nol. Titik di peta menunjuk pusat desa, bukan lokasi persis. Nama, nomor, dan foto pelapor tidak pernah ditampilkan.</p>
+  </details>
+</main>
+<script type="module" src="/inti/kepala.js"></script>
+<script type="module" src="/lapor/hari-ini.js"></script>
+</body>
+</html>

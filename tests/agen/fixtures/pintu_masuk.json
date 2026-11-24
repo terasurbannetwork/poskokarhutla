@@ -14,7 +14,8 @@
     "/bnpb/katalog-dokumen",
     "/pendataan",
     "/lapor",
-    "/lapor/lacak"
+    "/lapor/lacak",
+    "/lapor/hari-ini"
   ],
   "boleh_tambah_k8": [
     "/masuk",

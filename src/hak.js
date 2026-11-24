@@ -2515,3 +2515,37 @@ export const pfPicAkunProv = async (env, prov) => (await env.DB.batch([
 export const pfPicDaftar = async (env, akunIds) => akunIds.length ? (await env.DB.prepare(
   `SELECT p.id, p.akun_id, p.nama, p.jabatan, p.wa, p.terakhir_masuk, (SELECT max(l.waktu) FROM instansi_profil_log l WHERE l.profil_id = p.id AND l.jenis = 'meja') terakhir_meja
    FROM instansi_profil p WHERE p.akun_id IN (SELECT value FROM json_each(?1)) AND p.status = 'aktif'`).bind(JSON.stringify(akunIds)).all()).results : [];
+
+/* ---------- Segel dokumen (paket data/kajian-bnpb/segel-dokumen/, SG-02, migrasi 0171) ----------
+   Segel menempel pada titik beku yang ada (lk_snapshot.hash, lkb_snapshot.hash, pb_dokumen.sha, lj_beku.sidik); tidak membekukan sendiri.
+   Append-only (D14): tidak ada UPDATE atau DELETE untuk segel dan segel_cabut; mencabut = satu baris baru. Hak dicek di rute
+   (publik untuk segelCari; moderator atau staf pimpinan untuk cabut, Q5), di sini hanya SQL. stmtSegel belum dijalankan: dirangkai ke batch pembeku. */
+let ADA_SEGEL = false;
+/* tabel segel sudah ada? Hanya hasil "ada" yang dicache per isolate; yang belum dicek ulang tiap panggilan (migrasi bisa diterapkan sesudah isolate hidup).
+   Pembeku WAJIB memanggil ini sebelum menaruh stmtSegel di batch: statement ke tabel yang belum ada menggagalkan seluruh batch (D3).
+   Probe lewat PK (SEARCH, satu baca), bukan sqlite_master (SCAN, gerbang d1-pindai); galat "no such table" = belum ada. */
+export const adaTabelSegel = async env => {
+  if (ADA_SEGEL) return true;
+  try { await env.DB.prepare(SEGEL_SQL.ada).first(); return ADA_SEGEL = true; } catch (e) { if (/no such table/i.test(String(e?.message))) return false; throw e; }
+};
+export const SEGEL_SQL = {
+  ada: "SELECT 1 FROM segel WHERE kode = ''",
+  sisip: `INSERT INTO segel (kode, jenis, rujukan, dasar, versi, sidik, sidik_berkas, judul, wilayah, periode, penerbit, terbit)
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`,
+  /* satu baca: segel + cabut + kode versi lebih tinggi dengan dasar sama (indeks segel_dasar). Kolom alasan dan oleh tidak ikut (publik) */
+  cari: `SELECT s.kode, s.jenis, s.rujukan, s.dasar, s.versi, s.sidik, s.sidik_berkas, s.judul, s.wilayah, s.periode, s.penerbit, s.terbit, c.waktu dicabut,
+    (SELECT t.kode FROM segel t WHERE t.jenis = s.jenis AND t.dasar = s.dasar AND t.versi > s.versi ORDER BY t.versi DESC LIMIT 1) terbaru
+    FROM segel s LEFT JOIN segel_cabut c ON c.kode = s.kode WHERE s.kode = ?1`,
+  /* staf: 100 terbaru sejak ?2 (indeks segel_terbit, 0172); status '' semua, 'berlaku' belum dicabut, 'dicabut' sudah. Alasan dan oleh hanya untuk staf */
+  daftar: `SELECT s.kode, s.jenis, s.rujukan, s.dasar, s.versi, s.sidik, s.judul, s.wilayah, s.periode, s.penerbit, s.terbit, c.waktu dicabut, c.alasan, c.oleh
+    FROM segel s LEFT JOIN segel_cabut c ON c.kode = s.kode
+    WHERE s.terbit > ?2 AND (?1 = '' OR (?1 = 'dicabut' AND c.kode IS NOT NULL) OR (?1 = 'berlaku' AND c.kode IS NULL)) ORDER BY s.terbit DESC LIMIT 100`,
+  /* hanya segel yang ada; PK segel_cabut menolak cabut kedua (rute menjawab 409) */
+  cabut: "INSERT INTO segel_cabut (kode, alasan, oleh, waktu) SELECT kode, ?2, ?3, ?4 FROM segel WHERE kode = ?1",
+};
+export const stmtSegel = (env, s) => env.DB.prepare(SEGEL_SQL.sisip).bind(s.kode, s.jenis, s.rujukan, s.dasar, s.versi, s.sidik, s.sidik_berkas ?? null,
+  s.judul, s.wilayah ?? null, s.periode, s.penerbit, s.terbit);
+export const segelCari = (env, kode) => env.DB.prepare(SEGEL_SQL.cari).bind(kode).first();
+export const segelDaftar = async (env, status = "", sejak = 0) => (await env.DB.prepare(SEGEL_SQL.daftar).bind(status, sejak).all()).results;
+/* kembalian = baris tertulis: 1 tercabut, 0 kode tidak ada; cabut kedua melempar galat UNIQUE/PK */
+export const segelCabut = async (env, kode, alasan, oleh, kini) => (await env.DB.prepare(SEGEL_SQL.cabut).bind(kode, alasan, String(oleh).slice(0, 80), kini).run()).meta.changes;

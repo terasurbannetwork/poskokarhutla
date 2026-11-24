@@ -66,6 +66,7 @@ Penyebabnya ada di pintu, bukan di fitur (rinci di `RISET.md`):
 | K12 (Q7) | Pemirsa ikut bisa masuk lewat kode? | **"Gas"**. Pemirsa ikut. |
 | K13 | Halaman `/bantu` (organisasi menulis 3W dan tawaran bantuan lewat tautan bertoken, paket Tiga W) boleh dibuka tanpa login? | **"Ya, izinkan /bantu"** (15 Nov 2026). Halaman tidak memuat data tanpa token; token dicek di tiap panggilan `/api/bantu`. Entrinya ada di `tests/agen/fixtures/pintu_masuk.json` (daftar beku). |
 | K14 | Halaman `/lapor` (warga melapor kejadian, paket Lapor Bencana) dan `/lapor/lacak` (pelapor melihat status lewat tautan bertoken) boleh dibuka tanpa login? | **"Ya boleh buka langsung tanpa login"** (19 Nov 2026). Halaman tidak memuat data: pelapor masuk lewat `/masuk` dan nomor dari sesi dicek di tiap `/api/lapor/*`; selama uji hanya nomor di `lapor_izin`. Lacak tanpa token kosong. `/lapor/meja` tetap tertutup (staf). Entrinya ada di `tests/agen/fixtures/pintu_masuk.json`. |
+| K15 | Halaman `/lapor/hari-ini` (kejadian hari ini dari laporan warga terverifikasi BPBD, paket `data/kajian-bnpb/lapor-kejadian/`) boleh dibuka tanpa login? | Pemilik K86 paket itu: **"Halaman publik kejadian hari ini berisi laporan terverifikasi tanpa data pribadi, untuk wartawan dan warga."** Halaman tidak memuat data; kartu dari `/api/lapor/hari-ini` berdaftar putih kolom, di balik saklar `LAPOR_HARI_INI` yang dinyalakan pemilik. Entrinya ada di `tests/agen/fixtures/pintu_masuk.json` (daftar beku). |
 
 Turunan rancangan dari K12 dan dari pemeriksaan PM-03 (agent, bisa dibatalkan pemilik):
 
