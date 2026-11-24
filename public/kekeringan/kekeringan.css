@@ -54,7 +54,7 @@
 :is(html,#_) .ex>.ex-hd>.ex-ey.kk-hip:first-child{margin-left:0}
 .ex-ft .kk-catatan{flex:1 1 100%;font-size:0.75rem;font-style:italic;color:var(--ink2)}
 /* angka di tabel Insight rata kanan, kepala tetap di tengah */
-#insight .kl-tb td.n{text-align:right}
+#insight .kl-tb td.n{text-align:center}
 #insight .pill.kk-pil-uji{background:color-mix(in oklch,var(--warn) 22%,var(--card));color:var(--warn-tx)}
 #insight .pill.kk-pil-resmi{background:color-mix(in oklch,var(--info) 18%,var(--card));color:var(--info-tx)}
 /* kotak angka kunci dan penjelasan metode terlipat di kartu Insight */
@@ -103,10 +103,10 @@
 /* tabel prakiraan: bulan kiri, peluang rata kanan tabular; selisih baseline kecil di bawah angkanya */
 .laci .kk-tp{width:100%;border-collapse:collapse;font-size:0.7812rem}
 .laci .kk-tp th,.laci .kk-tp td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-.laci .kk-tp thead th{position:static;font-size:0.6562rem;font-weight:800;text-align:right;cursor:help;border-bottom:0}
-.laci .kk-tp thead th:first-child{text-align:left}
-.laci .kk-tp tbody th{text-align:left;font-weight:700;color:var(--ink);white-space:nowrap}
-.laci .kk-tp td.n{text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.laci .kk-tp thead th{position:static;font-size:0.6562rem;font-weight:800;text-align:center;cursor:help;border-bottom:0}
+.laci .kk-tp thead th:first-child{text-align:center}
+.laci .kk-tp tbody th{text-align:center;font-weight:700;color:var(--ink);white-space:nowrap}
+.laci .kk-tp td.n{text-align:center;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .laci .kk-tp td.n .lc-sub{white-space:nowrap}
 .laci .kk-tp tbody tr:last-child :is(th,td){border-bottom:0}
 /* SK status darurat: satu blok per SK */

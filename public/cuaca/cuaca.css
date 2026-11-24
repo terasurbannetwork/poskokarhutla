@@ -59,7 +59,7 @@
 /* QA rupa 23 Nov 2026: tabel kartu cuaca. Kepala rata tengah, angka rata kanan tabular, pil di sel selalu di tengah (aturan tabel pemilik) */
 :is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw th{text-align:center}
 :is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw th button{justify-content:center}
-:is(#insight,#dampak,#berita,#metode,#posko) .tw td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+:is(#insight,#dampak,#berita,#metode,#posko) .tw td.n{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
 :is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw td:has(> .pl:only-child),:is(#insight,#tren,#dampak,#berita,#metode,#posko) .tw td:has(> .pill:only-child){text-align:center}
 /* kaki kosong (tanpa legenda) tidak menyisakan garis dan jarak */
 :is(#insight,#tren,#dampak,#berita) .ex-ft:empty{display:none}
@@ -83,18 +83,18 @@
 /* tabel di laci (prakiraan BMKG 10 hari, bandara): teks dibungkus, tanpa gulir menyamping */
 #laci .tw td{white-space:normal}
 #laci .tw th{text-align:center}
-#laci .tw td.n{text-align:right;font-variant-numeric:tabular-nums}
+#laci .tw td.n{text-align:center;font-variant-numeric:tabular-nums}
 /* ---------- laci rapi cuaca (23 Nov 2026): tabel ringan berkepala navy, matriks hari, lipatan, butir bernomor; warna hanya token tema.css ---------- */
 #laci .cu-tb{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
 #laci .cu-tb table{width:100%;border-collapse:collapse;font-size:0.75rem}
-#laci .cu-tb thead th{background:var(--head-bg);color:var(--on-head);font-size:0.6562rem;font-weight:700;letter-spacing:.03em;padding:6px 8px;text-align:left;line-height:1.25;vertical-align:bottom;white-space:normal}
-#laci .cu-tb thead th.n{text-align:right}
+#laci .cu-tb thead th{background:var(--head-bg);color:var(--on-head);font-size:0.6562rem;font-weight:700;letter-spacing:.03em;padding:6px 8px;text-align:center;line-height:1.25;vertical-align:bottom;white-space:normal}
+#laci .cu-tb thead th.n{text-align:center}
 #laci .cu-tb td{padding:6px 8px;border-top:1px solid var(--line);color:var(--ink);vertical-align:middle;line-height:1.35;white-space:normal}
-#laci .cu-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+#laci .cu-tb td.n{text-align:center;font-variant-numeric:tabular-nums}
 #laci .cu-mx td.n{white-space:nowrap;padding:6px 5px}
 #laci .cu-mx .pl{height:18px;padding:0 7px;font-size:0.6562rem}
 #laci .cu-mx thead th.n{padding:6px;text-transform:none;letter-spacing:0;font-size:0.6875rem}
-#laci .cu-mx tbody th{padding:6px 6px 6px 8px;border-top:1px solid var(--line);text-align:left;font-size:0.7188rem;font-weight:600;color:var(--ink2);line-height:1.3;min-width:84px}
+#laci .cu-mx tbody th{padding:6px 6px 6px 8px;border-top:1px solid var(--line);text-align:center;font-size:0.7188rem;font-weight:600;color:var(--ink2);line-height:1.3;min-width:84px}
 #laci .cu-mx tbody th small{display:block;margin-top:1px;font-size:0.6562rem;font-weight:500;color:var(--ink2);white-space:nowrap}
 #laci .cu-mx thead th.on{background:var(--brand2);color:var(--on-brand)}
 #laci .cu-mx td.on{background:color-mix(in oklch,var(--brand2) 9%,transparent);font-weight:700}

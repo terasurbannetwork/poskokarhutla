@@ -75,7 +75,7 @@ a.gn-tel svg{flex:none;width:12px;height:12px}
 .lc-h > .pl{text-transform:none;letter-spacing:0}
 /* paparan: tabel fasilitas berkolom zona */
 .gn-pap{width:100%;table-layout:auto}
-.gn-pap th{text-align:right;padding:0 0 4px 6px;font-weight:400;white-space:nowrap;width:1%}
+.gn-pap th{text-align:center;padding:0 0 4px 6px;font-weight:400;white-space:nowrap;width:1%}
 .gn-pap td.n{white-space:nowrap;padding-left:6px}
 .gn-pap th:first-child{width:auto;padding-left:0}
 .gn-pap td.nol{color:var(--ink2);font-weight:400}
@@ -110,7 +110,7 @@ a.gn-tel svg{flex:none;width:12px;height:12px}
 .pl:has(>svg){display:inline-flex;align-items:center;gap:5px}
 /* tabel gunung api: kepala rata tengah, angka rata kanan tabular, pil di tengah sel */
 .tw thead th{text-align:center}.tw thead th button{justify-content:center;width:100%}
-.tw td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw td.n{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tw td.c{text-align:center}
 /* keterangan, metode, dan sumber data dilipat di dalam isi kartu (AGENTS.md 3.5: tanpa kaki Sumber) */
 details.gn-cat{border-top:1px solid var(--line);padding-top:8px;font-size:0.78125rem;color:var(--ink2)}

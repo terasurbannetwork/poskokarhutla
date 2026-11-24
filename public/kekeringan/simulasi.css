@@ -81,7 +81,7 @@
 .sm-tb th{text-align:center;font-weight:700;color:var(--on-head);background:var(--head-bg);padding:6px;border-bottom:0}
 .sm-tb td:first-child{text-align:left}
 .sm-tb th:first-child{text-align:center}
-.sm-tb td{text-align:right;padding:5px 4px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.sm-tb td{text-align:center;padding:5px 4px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
 .sm-tb td small{display:block;font-size:10px;color:var(--ink2)}
 @media (max-width:1180px){
   #sim{overflow:auto;display:flex;flex-direction:column;gap:10px;padding:0 0 18px}

@@ -11,7 +11,7 @@
 #laporan #insight.lp.lp-seksi{gap:16px}
 #laporan #insight.lp-seksi .lp-tb thead th{background:var(--head-bg);color:var(--on-head);text-align:center}
 #laporan #insight.lp-seksi .lp-tb thead th button,#laporan #insight.lp-seksi .lp-tb thead th.n button{justify-content:center;text-align:center}
-#laporan #insight.lp-seksi .lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+#laporan #insight.lp-seksi .lp-tb td.n{text-align:center;font-variant-numeric:tabular-nums}
 .lp-na{color:var(--ink2);font-weight:500;font-size:.92em;white-space:nowrap}
 .lp-ka{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px}
 .lp-ka-i{display:flex;flex-direction:column;gap:3px;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}

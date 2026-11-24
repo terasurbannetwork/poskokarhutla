@@ -13,7 +13,7 @@ tbody td:has(> .pill:only-child),tbody td:has(> span:only-child > .pill:only-chi
    angka rata kanan tabular (sel berpil tetap di tengah). Karhutla dan /banjir tidak memuat atribut ini. */
 :root[data-kartu="seksi"] thead th{background:var(--head-bg);color:var(--on-head)}
 :root[data-kartu="seksi"] thead th button{color:inherit}
-:root[data-kartu="seksi"] tbody td.n:not(:has(.pill)){text-align:right;font-variant-numeric:tabular-nums}
+:root[data-kartu="seksi"] tbody td.n:not(:has(.pill)){text-align:center;font-variant-numeric:tabular-nums}
 tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
 tbody tr:hover{background:oklch(42% .11 255 / .06)}
 tfoot td{padding:9px 10px;background:var(--brand);color:var(--on-brand);font-weight:800}

@@ -49,7 +49,7 @@ const Prak = {
   kartuKota(i) { const k = S.prak.kota[i]; if (!k) return ""; const v = this.nilai(k); if (v == null) return ""; const s = M.statusDari(v), w = M.ST_WARNA[s];
     return PI.kartuTip({judul: esc(k.nama), stat: [["perisai", M.labelStatus(s), "status", w, s !== "normal"], ["debit", fmt(Math.round(v)) + " µg/m³", this.st.jam != null ? "rata-rata 24 jam sampai jam ini" : "rata-rata 24 jam", w]]}); },
   kartuKomp(i) { const k = S.lin.kompleks[i]; if (!k) return "";
-    return PI.kartuTip({judul: "Kluster titik api " + esc(k.id), sub: k.konsesi?.length ? `<small>${k.konsesi.map(esc).join(", ")}</small>` : "", stat: [["peringatan", fmt(Math.round(k.frp)) + " MW", "daya radiasi api", "#c0392b"], ...(k.kota?.length ? [["peta", fmt(k.kota.length) + " kota", "dilalui asap", "#e8743b"]] : [])]}); },
+    return PI.kartuTip({judul: "Kluster titik panas " + esc(k.id), sub: k.konsesi?.length ? `<small>${k.konsesi.map(esc).join(", ")}</small>` : "", stat: [["peringatan", fmt(Math.round(k.frp)) + " MW", "daya radiasi api", "#c0392b"], ...(k.kota?.length ? [["peta", fmt(k.kota.length) + " kota", "dilalui asap", "#e8743b"]] : [])]}); },
 
   /* kontrol di kartu kanan: geser jam + pilih lapis; muncul hanya bila lapisan kota atau lintasan menyala */
   kontrol() { const el = $("#jamKota"); if (!el) return; if (!S.prak) { el.hidden = true; return; }
@@ -91,7 +91,7 @@ const Prak = {
     /* daftar sumber: titik warna (sama dengan batang), nama boleh turun baris, persen rata kanan dengan rentang kecil di bawahnya */
     return `${cm}<svg viewBox="0 0 420 22" width="100%" role="img" aria-label="Asal PM2,5">${this.batangAtribusi(a)}</svg>
       <table class="tb2 ud-asal"><tbody>${M.normBagian(a.bagian || []).map((b, j) => `<tr><td><span class="ud-nm"><span class="ud-dot" style="--w:${warnaBag(b, j)}"></span><span translate="no">${esc(namaBag(b))}</span></span></td><td class="n"><b>${fmt(b.persen)}%</b>${b.rendah != null && b.tinggi != null ? `<small class="lc-sub">rentang ${fmt(b.rendah)} sampai ${fmt(b.tinggi)}%</small>` : ""}</td></tr>`).join("")}</tbody></table>
-      ${kom.length ? `<div class="ud-tautan"><span class="fnd">Kluster titik api di halaman Karhutla</span><div class="chip-wil">${kom.map(b => `<a class="lc-luar" href="/?k=${encodeURIComponent(b.id)}" translate="no">${LC() ? LC().ikonSvg("api") : ""}${esc(b.id)}</a>`).join("")}</div></div>` : ""}`; },
+      ${kom.length ? `<div class="ud-tautan"><span class="fnd">Kluster titik panas di halaman Karhutla</span><div class="chip-wil">${kom.map(b => `<a class="lc-luar" href="/?k=${encodeURIComponent(b.id)}" translate="no">${LC() ? LC().ikonSvg("api") : ""}${esc(b.id)}</a>`).join("")}</div></div>` : ""}`; },
   laciKota(i) { const k = S.prak.kota[i]; if (!k) return; const a = atrKota(k.kode), hr = S.prak.hari;
     const kom = a && a.terpercaya !== false ? M.normBagian(a.bagian || []).filter(b => b.jenis === "api" && b.id) : [];
     /* kartu bagian berikon (inti/peta/lapis.js lewat sekLaci di peta.js); sumber di kaki kecil kartu terakhir */

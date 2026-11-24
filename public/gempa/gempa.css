@@ -61,7 +61,7 @@
 #tip .tp2-atr b{font-weight:600;color:var(--ink)}
 
 /* angka di tabel gempa rata kanan dan tabular (pil di sel tetap di tengah lewat aturan inti tbody td:has(> .pill)) */
-main :is(.tw,.ex-tabel) td.n:not(:has(.pill)){text-align:right;font-variant-numeric:tabular-nums}
+main :is(.tw,.ex-tabel) td.n:not(:has(.pill)){text-align:center;font-variant-numeric:tabular-nums}
 /* judul kartu berikon (kepala_kartu.js): ikon sebaris setinggi huruf, judul seksi dan pil status sebaris */
 :is(html,#_) .ex[data-kp]>.ex-hd .ex-jd>h3{display:flex;align-items:center;flex-wrap:wrap;gap:4px 0}
 :is(html,#_) .ex[data-kp]>.ex-hd .ex-jd>h3 .pl{margin-left:8px}

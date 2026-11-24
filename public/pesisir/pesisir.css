@@ -27,7 +27,7 @@
 .gp-kartu .tw td{white-space:normal;overflow-wrap:anywhere}.gp-kartu .tw th{white-space:nowrap}
 .gp-kartu h3{font-size:clamp(17px,2.4vw,21px);line-height:1.3;letter-spacing:-.01em;margin:8px 0 0}
 .gp-kartu .tw table{width:100%}
-.gp-kartu td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gp-kartu td.n{text-align:center;font-variant-numeric:tabular-nums}
 .gp-kartu .tw td.c{text-align:center;white-space:nowrap}
 .gp-kartu .tw th{text-align:center}
 .gp-svg{display:block;width:100%;height:auto;overflow:visible}
@@ -56,7 +56,7 @@ ul.mt{margin:0;padding-left:18px;display:grid;gap:6px}
 @media(max-width:640px){.page.scroll{padding:12px 10px 32px}.gp-kartu .ex-hd{padding:14px 14px 10px}.gp-kartu .ex-bd{padding:12px 14px 8px}.gp-kartu .ex-ft{padding:10px 14px 12px}}
 
 .dp-t td.c{text-align:center}
-.dp-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+.dp-t td.n{text-align:center;font-variant-numeric:tabular-nums}
 /* kartu Insight, Tren, Tentang: tabel di dalam isi kartu ikut kepala navy kartu standar, catatan lipat di bawah isi */
 .gp-ex .ex-tabel{border-radius:12px;overflow:auto}
 .gp-ex .ex-bd>.kosong{padding:14px 4px;text-align:left}

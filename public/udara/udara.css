@@ -21,7 +21,7 @@
 .kt-tk{--c:var(--brand2);--f:var(--on-brand);text-transform:none;letter-spacing:0}
 .kt-hipo{--c:var(--warn);--f:var(--head-bg);text-transform:none;letter-spacing:0;cursor:help}
 /* angka di tabel layar ini rata kanan dan tabular; sel berpil tetap di tengah; kepala tabel tetap rata tengah */
-:is(#insight,#tren,#dampak,#metode) .tw td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+:is(#insight,#tren,#dampak,#metode) .tw td.n{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
 :is(#insight,#tren,#dampak,#metode) .tw td.n:has(> .kt){text-align:center}
 :is(#insight,#tren,#dampak,#metode) .tw th{text-align:center}
 :is(#insight,#tren,#dampak,#metode) .tw th > button{justify-content:center}

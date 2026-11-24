@@ -65,6 +65,10 @@
   "public/banjir/data/jeda_hulu.json": {
    "alasan": "Tabel statis waktu tempuh Kirpich per sub-DAS (docs/hidromet-jam H32), keterangan operasional. Masuk model hanya lewat amandemen PRAREG-HULU yang belum ada; dijalankan manual bila jaringan hulu.py berubah.",
    "tanggal": "2026-11-24"
+  },
+  "public/data/kemitraan/masalah_ikd.json": {
+   "alasan": "Bahan antara pipeline Kemitraan Kampus: dibaca scripts/kemitraan/cocok_pakar.py (ikd.muat) lalu butirnya masuk keluaran pencocokan bulanan di R2 (KM-I01). Tidak dibaca layar langsung; dijadwalkan lewat kemitraan-pakar.yml bulanan.",
+   "tanggal": "2026-11-24"
   }
  }
 }

@@ -214,7 +214,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .lc-sek table.tb2 tbody tr:nth-child(even){background:none}
 .lc-sek table.tb2 td{padding:7px 0;vertical-align:middle}
 .lc-sek table.tb2 td:first-child{color:var(--ink2)}
-.lc-sek table.tb2 td.n{text-align:right;padding-left:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.lc-sek table.tb2 td.n{text-align:center;padding-left:12px;color:var(--ink);font-variant-numeric:tabular-nums}
 .lc-sek .fnd{margin:0;font-size:0.7188rem;line-height:1.45;color:var(--ink2)}
 .lc-src{font-size:0.6562rem!important;color:var(--ink2)}
 .lc-v{font-family:var(--display);font-weight:700;font-size:0.875rem}

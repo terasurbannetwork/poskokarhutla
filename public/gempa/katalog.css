@@ -99,7 +99,7 @@
 #inaDetail .tw{border-radius:12px}
 #inaDetail .tw table.tb2 th{padding:9px 12px}
 #inaDetail .tw table.tb2 td{padding:10px 12px;vertical-align:middle;color:var(--ink);line-height:1.35}
-#inaDetail .tw table.tb2 th.n,#inaDetail .tw table.tb2 td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+#inaDetail .tw table.tb2 th.n,#inaDetail .tw table.tb2 td.n{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
 #inaDetail .tw table.tb2 tbody tr:nth-child(even){background:color-mix(in oklch,var(--surface) 60%,transparent)}
 #inaDetail .tw table.tb2 td small{display:block;margin-top:3px;font-size:var(--fs-1);font-weight:600;letter-spacing:.04em;color:var(--ink2)}
 #inaStasiun{display:grid;gap:10px}
