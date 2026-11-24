@@ -1,0 +1,400 @@
+{
+ "dibuat": "2026-11-24",
+ "wilayah": "Palangka Raya (frame 003D_09241_131313)",
+ "musim": "2023-08-07..2023-11-11 (api); 2023-11-11..2024-01-22 (pasca)",
+ "versi_kriteria": "RENCANA-UJI §2",
+ "piksel_km": [
+  0.334,
+  0.332
+ ],
+ "jendela": [
+  {
+   "piksel_terbakar": 1,
+   "piksel_kontrol": 178,
+   "koheren_pct": 0.1,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis": "tak_terukur",
+   "nama": "pra",
+   "hari": 12,
+   "metode_piksel": {
+    "satu": 9728
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 1.4,
+   "sebab": {
+    "porsi_berisiko_bungkus_terbakar": 0.0,
+    "porsi_berisiko_bungkus_kontrol": 0.0,
+    "dh_tanpa_berisiko_cm": null,
+    "piksel_terbakar_tanpa_berisiko": 1,
+    "sebaran_terbakar_p10_p50_p90": [
+     0.89,
+     0.89,
+     0.89
+    ],
+    "sebaran_kontrol_p10_p50_p90": [
+     0.56,
+     0.95,
+     1.17
+    ]
+   }
+  },
+  {
+   "piksel_terbakar": 1,
+   "piksel_kontrol": 178,
+   "koheren_pct": 0.1,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis": "tak_terukur",
+   "nama": "api",
+   "hari": 96,
+   "metode_piksel": {
+    "satu": 9760
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 1.4,
+   "sebab": {
+    "porsi_berisiko_bungkus_terbakar": 0.0,
+    "porsi_berisiko_bungkus_kontrol": 0.0,
+    "dh_tanpa_berisiko_cm": null,
+    "piksel_terbakar_tanpa_berisiko": 1,
+    "sebaran_terbakar_p10_p50_p90": [
+     0.58,
+     0.58,
+     0.58
+    ],
+    "sebaran_kontrol_p10_p50_p90": [
+     -0.49,
+     0.17,
+     0.95
+    ]
+   }
+  },
+  {
+   "piksel_terbakar": 1,
+   "piksel_kontrol": 175,
+   "koheren_pct": 0.1,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis": "tak_terukur",
+   "nama": "pasca30",
+   "hari": 36,
+   "metode_piksel": {
+    "satu": 9653
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 1.4,
+   "sebab": {
+    "porsi_berisiko_bungkus_terbakar": 0.0,
+    "porsi_berisiko_bungkus_kontrol": 0.0505,
+    "dh_tanpa_berisiko_cm": null,
+    "piksel_terbakar_tanpa_berisiko": 1,
+    "sebaran_terbakar_p10_p50_p90": [
+     -0.62,
+     -0.62,
+     -0.62
+    ],
+    "sebaran_kontrol_p10_p50_p90": [
+     -3.72,
+     -0.85,
+     0.73
+    ]
+   }
+  },
+  {
+   "piksel_terbakar": 0,
+   "piksel_kontrol": 175,
+   "koheren_pct": 0.0,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis": "tak_terukur",
+   "nama": "pasca90",
+   "hari": 72,
+   "metode_piksel": {
+    "satu": 9474
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 1.4
+  },
+  {
+   "piksel_terbakar": 1,
+   "piksel_kontrol": 475,
+   "koheren_pct": 0.1,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis_eksploratif": "tak_terukur",
+   "nama": "api_tm",
+   "hari": 96,
+   "metode_piksel": {
+    "satu": 19957
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 3.7,
+   "sebab": {
+    "porsi_berisiko_bungkus_terbakar": 0.0,
+    "porsi_berisiko_bungkus_kontrol": 0.0,
+    "dh_tanpa_berisiko_cm": null,
+    "piksel_terbakar_tanpa_berisiko": 1,
+    "sebaran_terbakar_p10_p50_p90": [
+     0.58,
+     0.58,
+     0.58
+    ],
+    "sebaran_kontrol_p10_p50_p90": [
+     -0.53,
+     0.42,
+     1.3
+    ]
+   }
+  },
+  {
+   "piksel_terbakar": 1,
+   "piksel_kontrol": 440,
+   "koheren_pct": 0.1,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis_eksploratif": "tak_terukur",
+   "nama": "pasca30_tm",
+   "hari": 36,
+   "metode_piksel": {
+    "satu": 18738
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 3.5,
+   "sebab": {
+    "porsi_berisiko_bungkus_terbakar": 0.0,
+    "porsi_berisiko_bungkus_kontrol": 0.0675,
+    "dh_tanpa_berisiko_cm": null,
+    "piksel_terbakar_tanpa_berisiko": 1,
+    "sebaran_terbakar_p10_p50_p90": [
+     -0.62,
+     -0.62,
+     -0.62
+    ],
+    "sebaran_kontrol_p10_p50_p90": [
+     -4.1,
+     -1.23,
+     0.75
+    ]
+   }
+  },
+  {
+   "piksel_terbakar": 0,
+   "piksel_kontrol": 438,
+   "koheren_pct": 0.0,
+   "dh_cm": null,
+   "dh_p10": null,
+   "dh_p90": null,
+   "d_insar_cm": null,
+   "d_insar_p10": null,
+   "d_insar_p90": null,
+   "vonis_eksploratif": "tak_terukur",
+   "nama": "pasca90_tm",
+   "hari": 72,
+   "metode_piksel": {
+    "satu": 16763
+   },
+   "n_kontrol_total": 12709,
+   "koheren_kontrol_pct": 3.4
+  }
+ ],
+ "uji_sebab": {
+  "dekorelasi_coh_avg": {
+   "terbakar": {
+    "n": 1,
+    "p10_p50_p90": [
+     0.061,
+     0.061,
+     0.061
+    ],
+    "pct_positif": 100.0
+   },
+   "kontrol_cincin": {
+    "n": 571,
+    "p10_p50_p90": [
+     0.041,
+     0.06,
+     0.104
+    ],
+    "pct_positif": 100.0
+   },
+   "gambut_tak_terbakar_semua": {
+    "n": 635,
+    "p10_p50_p90": [
+     0.041,
+     0.06,
+     0.101
+    ],
+    "pct_positif": 100.0
+   },
+   "lain": {
+    "n": 30255,
+    "p10_p50_p90": [
+     0.038,
+     0.049,
+     0.13
+    ],
+    "pct_positif": 100.0
+   }
+  },
+  "dekorelasi_n_unw": {
+   "terbakar": {
+    "n": 754,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 0.13
+   },
+   "kontrol_cincin": {
+    "n": 12709,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 4.52
+   },
+   "gambut_tak_terbakar_semua": {
+    "n": 17191,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 3.72
+   },
+   "lain": {
+    "n": 80044,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     36.0
+    ],
+    "pct_positif": 37.9
+   }
+  },
+  "dekorelasi_resid_rms": {
+   "terbakar": {
+    "n": 1,
+    "p10_p50_p90": [
+     1.741,
+     1.741,
+     1.741
+    ],
+    "pct_positif": 100.0
+   },
+   "kontrol_cincin": {
+    "n": 505,
+    "p10_p50_p90": [
+     0.986,
+     1.553,
+     3.764
+    ],
+    "pct_positif": 100.0
+   },
+   "gambut_tak_terbakar_semua": {
+    "n": 569,
+    "p10_p50_p90": [
+     0.962,
+     1.552,
+     3.711
+    ],
+    "pct_positif": 100.0
+   },
+   "lain": {
+    "n": 20359,
+    "p10_p50_p90": [
+     0.842,
+     1.333,
+     4.067
+    ],
+    "pct_positif": 100.0
+   }
+  },
+  "dekorelasi_n_loop_err": {
+   "terbakar": {
+    "n": 754,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 0.0
+   },
+   "kontrol_cincin": {
+    "n": 12709,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 1.26
+   },
+   "gambut_tak_terbakar_semua": {
+    "n": 17191,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 0.99
+   },
+   "lain": {
+    "n": 80044,
+    "p10_p50_p90": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pct_positif": 7.92
+   }
+  }
+ },
+ "kepekaan": {
+  "alpha_0.5": null,
+  "alpha_1.0": null,
+  "alpha_2.0": null,
+  "kontrol_2_10_km": null,
+  "kontrol_2_20_km": null
+ },
+ "pembanding": {
+  "d_lit": [
+   15.0,
+   33.0,
+   51.0
+  ],
+  "sd_lit": 18.0
+ },
+ "catatan": [
+  "Wilayah/musim menyimpang dari D3: bingkai LiCSAR 003D_09241_131313 berakhir 2026-01-23 (tidak ada Jul-Sep 2026); dipakai musim api 2023 (hotspot VIIRS n/h di kotak 113,55-114,35 BT, 3,0-1,9 LS: 75 pada 1-15 Agu, 2.597 pada 1-15 Okt, 186 pada 1-15 Nov).",
+  "Hanya geometri turun (003D) di kotak; vertikal = LOS/U (asumsi gerak murni vertikal).",
+  "Tanpa koreksi GACOS (bingkai tidak ada di CEDA); LiCSBAS 02(-n 3)/11/12/13/14/15/16 -r 1 lewat ~/licsbas/jalan.sh; 59 pasangan (dt<=48 hari), 53 lolos 11, 39 lolos 12.",
+  "Topeng terbakar: komposit Sentinel-2 L2A (Earth Search) pra 2023-06-01..07-31, pasca 2023-11-01..2024-01-31, NBR=(B08-B12)/(B08+B12), dNBR>0,27 dan NBR pasca<0,2 (ambang luas_citra.py), SCL 2/4/5, 10x10 sub-piksel per piksel LiCSBAS; terbakar bila >=50% sub-piksel valid terbakar, kontrol bila <=2%; keduanya hanya di poligon gambut.geojson dan >=50% valid. Valid pasca hanya 28,7%."
+ ]
+}

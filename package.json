@@ -21,6 +21,8 @@
     "agents:check": "node scripts/agents/build.mjs --cek",
     "uji:paritas": "node scripts/agents/paritas.mjs --uji && node scripts/agents/paritas.mjs --cek",
     "uji:agen": "node --test tests/agen/*.test.mjs tests/inti/*.test.mjs",
+    "uji:insar": "node --test tests/insar-gambut/*.test.mjs",
+    "uji:gambar": "node --test tests/gambar/*.test.mjs",
     "uji:layar": "node --test --test-concurrency=1 tests/bnpb/*.test.mjs",
     "bencana:js": "python3 scripts/umum/bencana.py js",
     "bencana:cek": "python3 scripts/umum/bencana.py cek",
