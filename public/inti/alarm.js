@@ -30,6 +30,9 @@
     for (const a of daftar) { if (!g.has(a.jenis)) g.set(a.jenis, []); g.get(a.jenis).push(a); }
     return [...g].map(([jenis, items]) => {
       items = items.slice().sort(urutAlarm);
+      /* laporan masuk yang dikecilkan (pemilik 24 Nov 2026): satu pil "Laporan masuk: 1 darurat, 2 biasa"; darurat berwarna Awas */
+      if (jenis === "lapor") { const d = items.filter(a => a._b?.darurat).length, b = items.length - d;
+        return {jenis, nama: "Laporan masuk", items, jumlah: items.length, tertinggi: d ? "Awas" : "Waspada", label: `Laporan masuk: ${[d && `${d} darurat`, b && `${b} biasa`].filter(Boolean).join(", ")}`}; }
       const n = JENIS_NAMA[jenis] || jenis, cacah = {};
       for (const a of items) { const t = PRIORITAS[a.tingkat] ? a.tingkat : "Waspada"; cacah[t] = (cacah[t] || 0) + 1; }
       const rinci = TINGKAT.filter(t => cacah[t]).map(t => `${cacah[t]} ${t}`).join(", ");
@@ -125,13 +128,14 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
   const LAPOR_JEDA = 180e3, LAPOR_JENDELA = 2 * 36e5, LAPOR_MAKS = 3;
   const KORBAN_DARURAT = {ya: "Ada korban atau orang terjebak", tidak: "Tidak ada korban", belum_tahu: "Korban belum diketahui"};
   let laporOk = null;   // null belum tahu | true staf | false publik
+  const MIN = '<button class="al-min" type="button" data-kecil aria-label="Kecilkan jadi pil" title="Kecilkan jadi pil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>';
   function kartuLapor(b) {
     const w = b.wilayah || {}, tempat = [w.desa && `Desa/Kel. ${w.desa}`, w.kab].filter(Boolean).join(", "), d = b.dampak || {};
     const angka = [[d.meninggal, "meninggal"], [d.hilang, "hilang"], [d.luka, "luka"], [d.mengungsi, "mengungsi"], [d.rumah, "rumah rusak"]].filter(([n]) => n > 0).map(([n, l]) => `${Number(n).toLocaleString("id-ID")} ${l}`);
     const teks = [b.darurat ? `${KORBAN_DARURAT[b.darurat.korban] || "Korban belum diisi"}.` : "", angka.length ? `Dampak dilaporkan: ${angka.join(", ")}.` : "Dampak belum dilaporkan.",
       `${b.instansi ? "Laporan petugas" : "Laporan warga"}, belum terverifikasi; periksa di meja laporan.`].filter(Boolean).join(" ");
     return `<div class="al" role="alertdialog" aria-live="assertive" aria-label="Laporan masuk">
-  <div class="al-hd"><div><span class="al-ey${b.darurat ? " al-ey-d" : ""}">${b.darurat ? "Laporan darurat" : b.instansi ? "Laporan BPBD" : "Laporan warga"}</span><h3>${esc(b.jenis || "Kejadian")}${w.kab ? ` di ${esc(w.desa || w.kab)}${w.desa ? `, ${esc(w.kab)}` : ""}` : ""}</h3></div><button class="al-x" type="button" data-tutup aria-label="Tutup">×</button></div>
+  <div class="al-hd"><div><span class="al-ey${b.darurat ? " al-ey-d" : ""}">${b.darurat ? "Laporan darurat" : b.instansi ? "Laporan BPBD" : "Laporan warga"}</span><h3>${esc(b.jenis || "Kejadian")}${w.kab ? ` di ${esc(w.desa || w.kab)}${w.desa ? `, ${esc(w.kab)}` : ""}` : ""}</h3></div>${MIN}<button class="al-x" type="button" data-tutup aria-label="Tutup">×</button></div>
   <div class="al-isi"><div class="al-pil">${b.darurat ? `<em class="al-p" style="--w:${WARNA.Awas}">Darurat</em>` : ""}<em class="al-p" style="--w:#1d4e89">${esc(b.statusLabel || "Baru")}</em>${b.subjenis && b.subjenis !== "Belum diketahui" ? `<em class="al-p" style="--w:#6b7489">${esc(b.subjenis)}</em>` : ""}${tempat ? `<em class="al-p" style="--w:#6b7489" translate="no">${esc(w.kab || tempat)}</em>` : ""}<em class="al-p" style="--w:#6b7489">${esc(jam(b.terkirim))}</em></div>
   <p>${esc(teks)}</p></div>
   <div class="al-aksi"><a class="al-pri" href="/lapor/meja#daftar">Buka laporan</a><a class="al-sek" href="/lapor/meja#peta">Lihat di peta</a></div>
@@ -147,10 +151,13 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
       if (r.status === 401 || r.status === 403) { laporOk = false; return; }
       if (!r.ok) return;
       const j = await r.json(); if (!Array.isArray(j?.baris)) return; laporOk = true;
-      const sudah = new Set(baca()), ada = new Set(antre.map(x => x.kunci)), batas = Date.now() - LAPOR_JENDELA;
+      const sudah = new Set(baca()), ada = new Set([...antre, ...ringkas].map(x => x.kunci)), batas = Date.now() - LAPOR_JENDELA;
+      /* pil laporan yang sudah selesai atau tidak valid di meja hilang dari deretan pil */
+      const tutup = new Set(j.baris.filter(b => b?.nomor && ["selesai", "tidak_valid"].includes(b.status)).map(b => "lapor:" + b.nomor));
+      if (ringkas.some(x => tutup.has(x.kunci))) { ringkas = ringkas.filter(x => !tutup.has(x.kunci)); gambarPil(); }
       const baru = j.baris.filter(b => b?.nomor && b.terkirim >= batas && !["selesai", "tidak_valid"].includes(b.status) && !sudah.has("lapor:" + b.nomor) && !ada.has("lapor:" + b.nomor) && !lihat.has("lapor:" + b.nomor))
         .sort((x, y) => y.terkirim - x.terkirim).slice(0, LAPOR_MAKS);
-      for (const b of baru) antre.push({kunci: "lapor:" + b.nomor, jenis: "lapor", dibuat: new Date(b.terkirim).toISOString(), _p: b.darurat ? 4 : 1.5, _b: b});
+      for (const b of baru) antre.push({kunci: "lapor:" + b.nomor, jenis: "lapor", tingkat: b.darurat ? "Awas" : "Waspada", dibuat: new Date(b.terkirim).toISOString(), _p: b.darurat ? 4 : 1.5, _b: b});
       urut(); (window.requestIdleCallback || setTimeout)(berikut);
     } catch (e) {}
   }
@@ -164,7 +171,7 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
       bar.addEventListener("click", e => { const b = e.target.closest("[data-pl]"); if (b) bukaPil(b.dataset.pl); }); document.body.append(bar); }
     taruh();
     bar.innerHTML = kelompokPil(ringkas).map(k =>
-      `<button type="button" class="al-pl al-pl-${esc(k.tertinggi)}" data-pl="${esc(k.jenis)}" aria-label="${esc(`Peringatan ${k.label}: buka`)}">${LONCENG}${esc(k.label)}</button>`).join("");
+      `<button type="button" class="al-pl al-pl-${esc(k.tertinggi)}" data-pl="${esc(k.jenis)}" aria-label="${esc(`${k.jenis === "lapor" ? "" : "Peringatan "}${k.label}: buka`)}">${LONCENG}${esc(k.label)}</button>`).join("");
   }
   /* strip pil memakai jangkar kartu (kanan bawah); bila kartu terbuka, strip naik di atasnya. Tinggi kartu berubah (bagian operator datang belakangan), jadi diikuti ResizeObserver. */
   /* laci rincian (#laci.on, kanan layar) terbuka: pil bergeser ke kiri laci supaya tidak menutup isinya; di layar sempit laci menutupi lebar penuh, pil tetap */
@@ -178,7 +185,7 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
   function bukaPil(jenis) {
     const k = kelompokPil(ringkas.filter(a => a.jenis === jenis))[0]; if (!k) return;
     const a = k.items[0]; ringkas = ringkas.filter(x => x.kunci !== a.kunci);
-    if (kecil) { setKecil(false); const balik = ringkas.filter(x => modeTampil(x.jenis, location.pathname) !== "pil"); ringkas = ringkas.filter(x => !balik.includes(x)); antre.push(...balik); }
+    if (kecil) { setKecil(false); const balik = ringkas.filter(x => x.jenis === "lapor" || modeTampil(x.jenis, location.pathname) !== "pil"); ringkas = ringkas.filter(x => !balik.includes(x)); antre.push(...balik); }
     gambarPil();
     antre.unshift({...a, _bunyi: false});
     if (tampil && el) { el.remove(); el = null; tampil = false; amati?.disconnect(); }   // satu kartu pada satu waktu: kartu yang sedang terbuka ditutup seperti tombol x
@@ -189,7 +196,7 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
     if (a.jenis === "lapor") return kartuLapor(a._b);
     const w = WARNA[a.tingkat] || WARNA.Waspada, wil = [a.kab, a.prov && window.namaProv ? namaProv(a.prov) : ""].filter(Boolean).join(", ");
     return `<div class="al" role="alertdialog" aria-live="assertive" aria-label="Peringatan dini">
-  <div class="al-hd"><div><span class="al-ey">Peringatan ${esc(a.tingkat)}</span><h3>${esc(a.judul)}</h3></div><button class="al-min" type="button" data-kecil aria-label="Kecilkan jadi pil" title="Kecilkan jadi pil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><button class="al-x" type="button" data-tutup aria-label="Tutup">×</button></div>
+  <div class="al-hd"><div><span class="al-ey">Peringatan ${esc(a.tingkat)}</span><h3>${esc(a.judul)}</h3></div>${MIN}<button class="al-x" type="button" data-tutup aria-label="Tutup">×</button></div>
   <div class="al-isi"><div class="al-pil"><em class="al-p" style="--w:${w}">${esc(a.tingkat)}</em><em class="al-p" style="--w:#1d4e89">${esc(a.sumber)}</em>${wil ? `<em class="al-p" style="--w:#6b7489" translate="no">${esc(wil)}</em>` : ""}<em class="al-p" style="--w:#6b7489">${esc(jam(a.dibuat))}</em></div>
   ${a.teks ? `<p>${esc(a.teks)}</p>` : ""}</div>
   <div class="al-aksi"><a class="al-pri" href="${esc(RUTE[a.jenis] || "/")}">Lihat di peta</a><a class="al-sek" href="/peringatan">Dapatkan lewat email</a><a class="al-wa" href="https://wa.me/?text=${encodeURIComponent([a.judul, a.teks, location.origin + (RUTE[a.jenis] || "/")].filter(Boolean).join("\n\n"))}" target="_blank" rel="noopener" aria-label="Bagikan lewat WhatsApp">${WA}</a></div>
@@ -253,10 +260,10 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
 
   function berikut() {
     if (tampil || !antre.length) return;
-    if (kecil && antre.some(x => x.jenis !== "lapor")) { for (const x of antre.filter(x => x.jenis !== "lapor")) if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false});
-      antre = antre.filter(x => x.jenis === "lapor"); ringkas.sort(urutAlarm); gambarPil(); if (!antre.length) return; }
+    if (kecil) { for (const x of antre) if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false});
+      antre = []; ringkas.sort(urutAlarm); gambarPil(); return; }
     const [a] = antre.splice(0, 1); tampil = true; lihat.add(a.kunci);
-    if ((a.jenis !== "karhutla" || opr === false) && !(kecil && a.jenis !== "lapor")) tandai(a.kunci);   // karhutla: operatorCc yang menentukan (operator belum final tidak ditandai)
+    if (a.jenis !== "karhutla" || opr === false) tandai(a.kunci);   // karhutla: operatorCc yang menentukan (operator belum final tidak ditandai)
     if (BERBUNYI.has(a.jenis) && a._bunyi) bunyi();
     const t = document.createElement("div"); t.innerHTML = kartu(a); el = t.firstElementChild; document.body.append(el);
     const k = el; taruh();
@@ -266,8 +273,8 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
       /* kecilkan: kartu yang sama pindah ke deretan pil kanan bawah; klik pilnya membuka kartu ini lagi (bukaPil). Peringatan berikutnya di antrean tetap muncul. */
       if (e.target.closest("[data-kecil]")) { el.remove(); el = null; tampil = false; amati?.disconnect(); setKecil(true); lupakan(a.kunci);
         if (!ringkas.some(x => x.kunci === a.kunci)) ringkas.push({...a, _bunyi: false});
-        for (const x of antre.filter(x => x.jenis !== "lapor")) { lupakan(x.kunci); if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false}); }
-        antre = antre.filter(x => x.jenis === "lapor"); ringkas.sort(urutAlarm); gambarPil(); taruh(); setTimeout(berikut, 400); return; }
+        for (const x of antre) { lupakan(x.kunci); if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false}); }
+        antre = []; ringkas.sort(urutAlarm); gambarPil(); taruh(); setTimeout(berikut, 400); return; }
       const b = e.target.closest("[data-ke]"); if (b && !b.disabled) aksiCc(k, b.dataset.ke);
     });
     k.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches?.("[data-cat]")) k.querySelector("[data-ke]:not(:disabled)")?.click(); });
@@ -297,11 +304,11 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
       const j = await r.json(), sudah = new Set(baca()), ada = new Set([...antre, ...ringkas].map(x => x.kunci)), daftar = j.peringatan || [];
       for (const a of daftar) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci) && !lihat.has(a.kunci)) {
         const b = {...a, _bunyi: !pertama && !dikenal.has(a.kunci)};
-        if (modeTampil(a.jenis, location.pathname) === "pil" || (kecil && a.jenis !== "lapor")) { ringkas.push(b); if (BERBUNYI.has(a.jenis) && b._bunyi) bunyi(); } else antre.push(b);
+        if (modeTampil(a.jenis, location.pathname) === "pil" || kecil) { ringkas.push(b); if (BERBUNYI.has(a.jenis) && b._bunyi) bunyi(); } else antre.push(b);
         ada.add(a.kunci);
       }
-      ringkas = ringkas.filter(a => daftar.some(x => x?.kunci === a.kunci));   // alarm yang sudah kedaluwarsa di server hilang dari kepala halaman
-      ringkas.sort((x, y) => (PRIORITAS[y.tingkat] || 0) - (PRIORITAS[x.tingkat] || 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
+      ringkas = ringkas.filter(a => a.jenis === "lapor" || daftar.some(x => x?.kunci === a.kunci));   // alarm yang sudah kedaluwarsa di server hilang dari kepala halaman (pil laporan diurus jajakLapor)
+      ringkas.sort(urutAlarm);
       gambarPil();
       await ulangOperator(daftar, sudah, ada);
       for (const a of daftar) if (a?.kunci) dikenal.add(a.kunci);
