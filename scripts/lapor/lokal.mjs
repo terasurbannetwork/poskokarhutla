@@ -661,7 +661,8 @@ function mejaUbah(c, nomor, aksi, body) {
     if (typeof body.aktif !== "boolean") return [400, {galat: "aktif harus true (tarik) atau false (tampilkan lagi)."}];
     if (!!terakhir(tarikNomor(d, nomor))?.aktif === body.aktif) return [409, {galat: body.aktif ? "Laporan ini sudah ditarik dari halaman publik." : "Laporan ini tidak sedang ditarik."}];
     const alasan = String(body.alasan ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300) || null;
-    const G = gugusSemua(d), anggota = G.gugus.find(x => x.kode === G.per[nomor])?.anggota || [nomor];
+    const G = gugusSemua(d), sesi = Object.values(d.sesi), wil = n => sesi.find(x => x.nomor === n)?.isian.lokasi?.nilai?.wilayah || null;   // BPBD hanya anggota di wilayahnya (sama dengan Worker)
+    const anggota = [nomor, ...(G.gugus.find(x => x.kode === G.per[nomor])?.anggota || []).filter(n => n !== nomor && dalamWilayah(c, wil(n)))];
     for (const n of anggota) (d.tarik ||= []).push({id: (d.tarik || []).length + 1, kode: n, aktif: body.aktif ? 1 : 0, alasan, oleh: c.pelaku, waktu: kini});
     simpan(d); return [200, {ok: true, ditarik: body.aktif, anggota: anggota.length}];
   }

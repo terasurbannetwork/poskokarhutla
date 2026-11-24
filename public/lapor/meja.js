@@ -666,6 +666,33 @@ function kartuTeruskan(j, b, kirim) {
   return k;
 }
 
+/* kartu Halaman publik (LK-07, D8): status tayang, lima syarat, tarik atau tampilkan lagi; backend menjaga hak wilayah */
+function kartuPublik(j, nomor, kartu) {
+  const p = j.publik; if (!p) return null;
+  const w = el("div", "mj-isi-kartu"), st = el("p", "mj-pub-status", p.tayang ? "Tayang di halaman kejadian hari ini" : p.ditarik ? "Ditarik dari halaman publik" : "Belum tayang");
+  w.append(st);
+  if (!p.tayang) { const ul = el("ul", "mj-pub-syarat");
+    for (const s of p.syarat || []) { const li = el("li", s.ok ? "ok" : "belum"); li.append(ikon(s.ok ? "m-centang" : "m-tutup"), el("span", null, s.label)); ul.append(li); }
+    w.append(ul);
+    if (!p.ditarik && (p.syarat || []).every(s => s.ok) && !p.dalam24jam) w.append(el("p", "mj-label", "Pengecekan Valid lebih dari 24 jam lalu"));
+  }
+  if (!p.halamanBuka) w.append(el("small", "mj-pub-kecil", "Halaman publik belum dibuka pemilik."));
+  const alasan = el("input"); alasan.type = "text"; alasan.maxLength = 300; alasan.placeholder = "Alasan (boleh kosong)"; alasan.setAttribute("aria-label", "Alasan menarik dari halaman publik"); alasan.hidden = p.ditarik;
+  const galat = el("p", "mj-pesan-galat"); galat.setAttribute("role", "alert");
+  const t = el("button", "mj-tombol"); t.type = "button";
+  const isi = () => { t.replaceChildren(ikon(p.ditarik ? "m-centang" : "m-larang"), p.ditarik ? "Tampilkan lagi" : "Tarik dari halaman publik"); }; isi();
+  t.addEventListener("click", async () => {
+    galat.textContent = ""; t.disabled = true; t.replaceChildren("Menyimpan...");   // chrome urgent, kerja jaringan sesudahnya
+    try {
+      const badan = {aktif: !p.ditarik}; if (!p.ditarik && alasan.value.trim()) badan.alasan = alasan.value.trim();
+      const r = await fetch(`/api/lapor/meja/${nomor}/tarik`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(badan)});
+      const h = await r.json().catch(() => ({})); if (!r.ok) { galat.textContent = h.galat || "Gagal menyimpan."; t.disabled = false; isi(); return; }
+      fotoCache.delete(nomor); await muat();   // muat() membuka ulang rincian bila dialog terbuka; panggilan kedua membuat POST lihat ganda (inp-reviewer LK-07)
+    } catch { galat.textContent = "Gagal menyimpan, periksa sambungan."; t.disabled = false; isi(); }
+  });
+  w.append(alasan, t, galat);
+  return kartu("Halaman publik", "m-buka", w);
+}
 /* ---------- pop-up rincian: membuka = tiket "Dilihat" (pelapor melihat tahapnya di halaman lacak) ---------- */
 // light dismiss: closedby="any"; peramban tanpa dukungan (Safari) memakai klik di luar kotak dialog
 if (!("closedBy" in HTMLDialogElement.prototype)) dlg.addEventListener("click", e => { if (e.target !== dlg) return; const r = dlg.getBoundingClientRect();
@@ -839,6 +866,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
       bt.type = "button"; bt.append(ikon("m-tangan"), "Catat tindakan"); bt.addEventListener("click", () => kirim("tindakan", pm.nilai(), bt, gt)); wt.append(pm.el, gt, bt); }
     return wt; })()) : null;
   const kBukti = kartuBukti(j, nomor, kirim);
+  const kPublik = kartuPublik(j, nomor, kartu);
 
   // pelapor
   const p = j.pelapor, bpbd = /bpbd/i.test(p.peran || ""), wp = wadah(), siapa = el("div", "mj-siapa");
@@ -885,7 +913,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
     return wt; })());
 
   // dua kolom: kiri tindakan (menempel saat digulir), kanan isi laporan
-  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, ...(kPic ? [kPic] : []), kPeriksa, ...(kTindakan ? [kTindakan] : []), kBukti, ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
+  const kiri = el("div", "mj-kolom kiri"), kanan = el("div", "mj-kolom"); const pilKiri = el("p", "mj-bagian-pil"); pilKiri.append(ikon("m-tiket"), "Penanganan"); kiri.append(pilKiri, kTiket, ...(kPic ? [kPic] : []), kPeriksa, ...(kTindakan ? [kTindakan] : []), kBukti, ...(kPublik ? [kPublik] : []), ...(akunBpbd() ? [] : [kartuTeruskan(j, b, kirim)]), kPelapor, kLog); // BPBD sudah penerima terusan
   /* isi laporan dikategorikan (pemilik 19 Nov 2026 "harus dikategoriin, ada bagian dengan pill"): tiap bagian berpil berikon,
      deret pil di atas untuk lompat ke bagian; kartu tiap kelompok isian masuk bagiannya */
   const kartuKelompok = new Map([...per].map(([kel, xs]) => [kel, kartuKel([kel, xs])]));

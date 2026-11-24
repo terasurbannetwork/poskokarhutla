@@ -846,7 +846,11 @@ async function tarikPublik(env, h, nomor, o, kini) {
   const alasan = String(o.alasan ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300) || null;
   const kini0 = terakhir(await H.lpTarikKode(env, STAF, [nomor]));
   if (!!kini0?.aktif === o.aktif) return galat(409, o.aktif ? "Laporan ini sudah ditarik dari halaman publik." : "Laporan ini tidak sedang ditarik.");
-  const {G, gk} = await gugusDasar(env, kini), anggota = gk.get(G.per[nomor])?.anggota || [nomor];
+  /* gugus dikelompokkan menurut jarak dan bisa melintasi batas kab (lapor_gugus.js dekat): akun BPBD hanya menarik anggota di wilayahnya, BNPB semua
+     (tinjauan guard-api LK-07; D95 "di luar wilayah = tidak ada"; bawaan sementara, dicatat di TIKET untuk pemilik). Jumlah anggota yang dijawab hanya yang ditarik. */
+  const {per, G, gk} = await gugusDasar(env, kini), c = h.c;
+  const anggota = [nomor, ...(gk.get(G.per[nomor])?.anggota || []).filter(n => n !== nomor && dalamWilayah(c, ringkasDari(per.get(n) || {}).wilayah || null))];
+  /* ponytail: baca keadaan lalu tulis tidak atomik; dua klik bersamaan bisa menulis dua baris aktif yang sama. Tabel append-only dan baris terakhir yang menentukan, jadi hasil akhirnya sama */
   await H.lpBatch(env, STAF, anggota.map(n => H.lpStmtTarik(env, STAF, n, o.aktif, alasan, h.oleh, kini)));
   return kirim(200, {ok: true, ditarik: o.aktif, anggota: anggota.length});
 }

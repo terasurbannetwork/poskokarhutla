@@ -1084,3 +1084,14 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-darurat.kecil .mj-darurat-judul small{display:none}
 .mj-darurat.kecil .mj-darurat-sirene{width:30px;height:30px}
 .mj-darurat.kecil .mj-darurat-buka{gap:8px}
+
+/* kartu Halaman publik (LK-07) */
+.mj-pub-status{margin:0;font-weight:700;color:var(--ink)}
+.mj-pub-syarat{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mj-pub-syarat li{display:flex;align-items:center;gap:8px;font-size:.8125rem}
+.mj-pub-syarat svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mj-pub-syarat li.ok{color:var(--ok-tx,var(--ok))}
+.mj-pub-syarat li.belum{color:var(--warn-tx)}
+.mj-pub-kecil{color:var(--ink-soft,var(--ink));font-size:.75rem}
+.mj-isi-kartu input[type=text]{width:100%;min-height:40px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.mj-isi-kartu input[type=text]:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
