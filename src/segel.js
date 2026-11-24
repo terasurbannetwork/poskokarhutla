@@ -76,7 +76,7 @@ async function periksa(env, req, url, kini) {
   const isi = await isiSumber(env, s), cocok = isi != null && await sha(isi) === s.sidik;
   if (!cocok) console.warn(JSON.stringify({segel: "tidak_cocok", kode, jenis: s.jenis}));   // tercatat di log Worker (T8); tanpa isi
   const status = statusSegel({dicabut: s.dicabut, cocok, terbaru: s.terbaru});
-  return json({kode, status, label: STATUS[status], judul: s.judul, wilayah: s.wilayah, periode: s.periode, versi: s.versi, penerbit: s.penerbit, terbit: s.terbit,
+  return json({kode, jenis: s.jenis, status, label: STATUS[status], judul: s.judul, wilayah: s.wilayah, periode: s.periode, versi: s.versi, penerbit: s.penerbit, terbit: s.terbit,
     sidik12: s.sidik.slice(0, 12), sidik_berkas: s.sidik_berkas, ...(s.dicabut != null ? {dicabut: s.dicabut} : {}), ...(s.terbaru ? {terbaru: s.terbaru} : {})}, 200, PUBLIK);
 }
 
