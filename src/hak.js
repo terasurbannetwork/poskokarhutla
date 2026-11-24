@@ -2549,3 +2549,6 @@ export const segelCari = (env, kode) => env.DB.prepare(SEGEL_SQL.cari).bind(kode
 export const segelDaftar = async (env, status = "", sejak = 0) => (await env.DB.prepare(SEGEL_SQL.daftar).bind(status, sejak).all()).results;
 /* kembalian = baris tertulis: 1 tercabut, 0 kode tidak ada; cabut kedua melempar galat UNIQUE/PK */
 export const segelCabut = async (env, kode, alasan, oleh, kini) => (await env.DB.prepare(SEGEL_SQL.cabut).bind(kode, alasan, String(oleh).slice(0, 80), kini).run()).meta.changes;
+/* SG-04: teks sumber yang dibekukan untuk hitung ulang sidik saat kode dibuka (lewat PK, satu baca). Baris dummy tidak pernah disegel, jadi tidak dibaca. */
+export const segelIsiLk = (env, tanggal, ralat) => env.DB.prepare("SELECT isi FROM lk_snapshot WHERE tanggal_laporan = ?1 AND ralat = ?2 AND dummy = 0").bind(tanggal, ralat).first();
+export const segelIsiLkb = (env, bencana, tanggal, ralat) => env.DB.prepare("SELECT isi FROM lkb_snapshot WHERE bencana = ?1 AND tanggal_laporan = ?2 AND ralat = ?3 AND dummy = 0").bind(bencana, tanggal, ralat).first();

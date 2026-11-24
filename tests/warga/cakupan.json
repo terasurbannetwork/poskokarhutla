@@ -1395,6 +1395,9 @@
     "POST /api/pb/dokumen/rakit": "rakit: draf berversi, angka dari sumber",
     "POST /api/pb/dokumen/bekukan": "bekukan: R2 tulis sekali",
     "GET /api/pb/dokumen": "daftar: metadata tanpa oleh",
+    "GET /api/verifikasi/:kode": "T6 kode sah: 200, data sampul saja",
+    "table segel": "T6 kode sah: 200, data sampul saja",
+    "table segel_cabut": "T13 dicabut lalu dibuka segera",
     "GET /api/pb/dokumen/berkas": "berkas: fmt hanya json dan pdf",
     "GET /api/pb/papan-sk": "sisa_hari, sinyal, SK provinsi mengalahkan kabupaten",
     "GET /api/pb/ringkas": "hitungan operasi: renlap terbit, versi lama tersingkir",
@@ -1532,8 +1535,6 @@
     "table lapor_tindakan": "pengecekan lapangan dan tindakan"
   },
   "dikecualikan": {
-    "table segel": "kode menyusul di SG-02 dst. (paket segel-dokumen); migrasi 0171 idempoten, skema diuji gerbang migrasi; pindah ke diuji saat T1-T13 ada",
-    "table segel_cabut": "kode menyusul di SG-02 dst. (paket segel-dokumen); migrasi 0171 idempoten, skema diuji gerbang migrasi; pindah ke diuji saat T9 ada",
     "table lj_tanya": "16.00 WIB: satu pesan bernomor per ketua",
     "table alun_wilayah": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",
     "table alun_lembaga": "kode menyusul di AT-03 dst. (paket alun-terpadu); migrasi 0150 idempoten dan skema diuji gerbang migrasi",

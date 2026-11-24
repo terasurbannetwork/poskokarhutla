@@ -23,4 +23,6 @@ Catatan dari pemeriksaan SG-02 (24 Nov 2026), wajib dikerjakan di rutenya:
 
 - SG-04: `segelCari` mengembalikan sidik penuh, `rujukan`, dan `dasar` untuk hitung ulang di Worker. Jawaban publik WAJIB diproyeksikan ulang: `sidik12` = 12 huruf pertama, `rujukan` dan `dasar` dibuang (KEAMANAN-PRIVASI). T6-T8 memeriksanya.
 - SG-10: `segelCabut` tidak memvalidasi. Rute menormalkan kode (`normalKode`), menolak alasan di luar 5-500 huruf dengan 400, dan memetakan galat PK cabut kedua ke 409; galat D1 mentah tidak pernah sampai ke klien.
+- SG-05 sampai SG-07 (pembeku): `penerbit` diisi nama lembaga (mis. "Pusdalops BNPB"), tidak pernah nama staf; satu uji memastikan kolom `penerbit`, `judul`, `wilayah` tanpa nama orang. Halaman `public/verifikasi.*` menulis ketiganya lewat `textContent`.
+- SG-13: rute verifikasi belum punya pembaca sumber `lj`, jadi segel `lj` tampil Tidak cocok. Pembaca `lj_beku` di `src/segel.js` `isiSumber` wajib ada sebelum segel `lj` pertama disisipkan.
 - SG-11: `gerbang-segel` ikut memeriksa tidak ada `UPDATE` atau `DELETE` ke `segel` dan `segel_cabut` di `src/**` (append-only hanya dijaga kode, tanpa trigger).

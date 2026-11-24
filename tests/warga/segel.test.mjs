@@ -1,6 +1,7 @@
 /* U1-U3 segel dokumen (data/kajian-bnpb/segel-dokumen/RENCANA-UJI.md). Fungsi murni src/segel.js; uji rute dan D1 menyusul di SG-04 dst. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import "../../src/worker.js";   // dahulu: impor sirkular (segel.js -> worker.js -> RUTE_SEGEL)
 import { ABJAD, buatKode, normalKode, tampilKode, dasarRujukan, statusSegel, STATUS } from "../../src/segel.js";
 
 test("U1 buatKode 1.000 kali: 10 huruf Crockford, tanpa duplikat", () => {

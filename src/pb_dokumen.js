@@ -17,7 +17,7 @@ const RE_PERIODE = /^\d{4}(?:-\d{2}(?:-\d{2})?|-W\d{2})?$/, RE_HARI = /^\d{4}-\d
 const TOLAK = "dokumen hanya untuk staf Pusdalops, koordalops, pimpinan, atau moderator";
 const MIGRASI = "fitur dokumen belum diaktifkan (migrasi 0131_paritas_dokumen belum diterapkan)";
 const kunciDraf = id => `dokumen/draf/${id}.json`;
-const kunciBeku = (d, fmt) => `dokumen/${d.jenis}/${d.bencana}/${d.periode}/${d.prov}${d.kab ? "-" + d.kab : ""}/v${d.versi}.${fmt}`;
+export const kunciBeku = (d, fmt) => `dokumen/${d.jenis}/${d.bencana}/${d.periode}/${d.prov}${d.kab ? "-" + d.kab : ""}/v${d.versi}.${fmt}`;
 const str = (v, n = 300) => typeof v === "string" ? v.slice(0, n) : null;
 const pilih = (v, daftar, nama) => typeof v === "string" && daftar.includes(v) ? v : tolak(`${nama} harus salah satu dari: ${daftar.join(", ")}`);
 
