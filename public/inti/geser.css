@@ -1,5 +1,5 @@
 /* Penggeser sebelum/sesudah bersama (public/inti/geser.js). Warna hanya dari token tema.css. */
-.geser{position:relative;max-width:640px;margin:10px auto 0;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface);touch-action:pan-y}
+.geser{position:relative;width:100%;max-width:640px;margin:10px auto 0;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface);touch-action:pan-y}
 .geser:focus-within{outline:2px solid var(--brand);outline-offset:2px}
 .geser img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .geser-garis{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--card);box-shadow:var(--shadow);pointer-events:none}
