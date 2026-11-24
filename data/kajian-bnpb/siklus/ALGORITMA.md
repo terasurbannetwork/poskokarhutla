@@ -281,7 +281,7 @@ batas_atas_jam1   = jumlah_{K berlevel Siaga atau Awas} P_K                    (
 sekolah, faskes   = hitungan titik dalam poligon (F2.4); jalan berisiko = batas atas
 ```
 
-Rentang `[jiwa_terpapar, batas_atas_jam1]`. Poligon bukan genangan terukur (Sentinel-1 tanpa pembaca, GFM hanya DKI): ini paparan, bukan dampak. Tanpa kedalaman, JRC tidak dijalankan ("kedalaman belum tersedia").
+Rentang `[jiwa_terpapar, batas_atas_jam1]`. Poligon bukan genangan terukur: ini paparan, bukan dampak. Genangan terukur dari satelit (Copernicus GFM nasional lewat `scripts/banjir/genangan_nasional.py`) menjadi model kaji kedua `banjir_gfm`, dirancang di `data/kajian-bnpb/genangan-satelit/`; `banjir_jam1` tidak berubah. Tanpa kedalaman, JRC tidak dijalankan ("kedalaman belum tersedia").
 
 Bila kedalaman d (m) ada: kurva Asia JRC (Huizinga dkk 2017), hunian `(d; f)` = (0;0), (0,5;0,33), (1;0,49), (1,5;0,62), (2;0,72), (3;0,87), (4;0,93), (5;0,98), (6;1); niaga dan industri dari R3 3.2. Interpolasi linear (`asumsi-kebijakan`), f = 0 untuk d <= 0 dan 1 untuk d >= 6.
 
