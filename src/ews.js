@@ -10,6 +10,7 @@
    membuka GET): hanya mengalihkan ke /peringatan, yang lalu memanggil POST. Semua tautan di email memakai ASAL_PUBLIK, bukan origin permintaan. */
 import {json, gagal, sha, acak, hex, ipHash, turnstileOK, bacaBody, cacheTepi} from "./worker.js";
 import {kirimEmail} from "./keluar.js";
+import {ewsAwalAda, ewsAwalTandai, ewsCatatSenyap} from "./hak.js";
 import {wilayah, cariWilayah, km, dalam} from "./titik.js";
 import {BENCANA, TINGKAT} from "../public/ews_tindakan.js";
 import {muatHimawari, tandaiBaru, saringIndonesia} from "./himawari.js";
@@ -424,7 +425,7 @@ export async function kirimEws(env, kini = Date.now()) {
   if (!rahasiaAda(env)) return {lewat: "IP_SALT belum diset"};
   const data = await muatData(env, kini), hariIni = wib(kini), maks = maksEmail(env), pn = await namaProv(env), chunk = Number(env.EWS_CHUNK) || CHUNK;   // EWS_CHUNK hanya untuk uji
   const hasil = {diperiksa: 0, dikirim: 0, tertunda: 0, gagal: 0};
-  const pertama = !(await env.DB.prepare("SELECT 1 FROM ews_terkirim WHERE kunci LIKE 'x|%' LIMIT 1").first());   // Q8: sekali per putaran, bukan per chunk
+  const pertama = !(await ewsAwalAda(env));   // Q8: sekali per putaran, bukan per chunk
   for (let penuh = false; !penuh;) {
     const kel = (await env.DB.prepare("SELECT id, email, lat, lon, prov, kab, kec, kec_kunci, bencana, waspada, kirim_terakhir FROM ews_langganan WHERE status = 'aktif' AND diperiksa < ? ORDER BY diperiksa, id LIMIT ?").bind(kini, chunk).all()).results;
     if (!kel.length) break;
@@ -437,7 +438,7 @@ export async function kirimEws(env, kini = Date.now()) {
         const pilih = JSON.parse(s.bencana), min = s.waspada ? 1 : 2;
         const semua = [...nilaiTitik(data, s.lat, s.lon, s.kec_kunci, hariIni), ...resmiUntuk(data, s, pilih)].filter(p => pilih.includes(p.bencana) && p.tingkat >= min);
         const ps = semua.filter(p => !(pertama && p.resmi)), senyap = semua.filter(p => pertama && p.resmi && !lalu.get(s.id)?.has(p.kunci));
-        if (senyap.length) await env.DB.batch(senyap.map(p => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?, ?, ?)").bind(s.id, k80(p.kunci), kini)));   // Q8: dicatat, tidak dikirim
+        if (senyap.length) await ewsCatatSenyap(env, s.id, senyap.map(p => k80(p.kunci)), kini);   // Q8: dicatat, tidak dikirim
         const baru = ps.filter(p => !lalu.get(s.id)?.has(p.kunci)).map(p => k80(p.kunci));
         if (baru.length && kini - s.kirim_terakhir >= JEDA_PRAKIRAAN) {
           if (hasil.dikirim >= maks) { hasil.tertunda++; penuh = true; continue; }   // tidak ditandai diperiksa
@@ -457,6 +458,7 @@ export async function kirimEws(env, kini = Date.now()) {
     if (selesai.length) await env.DB.prepare("UPDATE ews_langganan SET diperiksa = ? WHERE id IN (SELECT value FROM json_each(?))").bind(kini, JSON.stringify(selesai)).run();
   }
   if (hasil.tertunda) console.log("ews: tertunda ke putaran berikutnya", hasil.tertunda);
+  else if (pertama) await ewsAwalTandai(env, kini);   // putaran resmi pertama tuntas (tak ada yang tertunda): sesudah ini kanal resmi mengirim biasa
   return hasil;
 }
 
@@ -497,7 +499,7 @@ export async function bersihkanEws(env, kini = Date.now()) {
   const r = await env.DB.batch([
     env.DB.prepare("DELETE FROM ews_langganan WHERE status = 'menunggu' AND dibuat <= ?").bind(kini - KONFIRMASI_UMUR),
     env.DB.prepare("DELETE FROM ews_langganan WHERE status = 'berhenti' AND coalesce(berhenti_pada, dibuat) <= ?").bind(kini - BERHENTI_SIMPAN),
-    env.DB.prepare("DELETE FROM ews_terkirim WHERE waktu <= ? OR langganan_id NOT IN (SELECT id FROM ews_langganan)").bind(kini - TERKIRIM_SIMPAN),
+    env.DB.prepare("DELETE FROM ews_terkirim WHERE langganan_id != '0000000000000000' AND (waktu <= ? OR langganan_id NOT IN (SELECT id FROM ews_langganan))").bind(kini - TERKIRIM_SIMPAN),   // literal = EWS_AWAL_ID di hak.js: penanda putaran resmi pertama tidak ikut terhapus
     env.DB.prepare("DELETE FROM ews_laju WHERE waktu <= ?").bind(kini - 2 * HARI),
     env.DB.prepare("UPDATE ews_langganan SET konfirmasi_hash = NULL, konfirmasi_exp = NULL, calon = NULL WHERE konfirmasi_exp IS NOT NULL AND konfirmasi_exp <= ?").bind(kini),
   ]);

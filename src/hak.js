@@ -2549,3 +2549,11 @@ export const segelCari = (env, kode) => env.DB.prepare(SEGEL_SQL.cari).bind(kode
 export const segelDaftar = async (env, status = "", sejak = 0) => (await env.DB.prepare(SEGEL_SQL.daftar).bind(status, sejak).all()).results;
 /* kembalian = baris tertulis: 1 tercabut, 0 kode tidak ada; cabut kedua melempar galat UNIQUE/PK */
 export const segelCabut = async (env, kode, alasan, oleh, kini) => (await env.DB.prepare(SEGEL_SQL.cabut).bind(kode, alasan, String(oleh).slice(0, 80), kini).run()).meta.changes;
+
+/* ---------- ews: kanal resmi (KI-50, Q8) ---------- */
+/* Penanda "putaran resmi pertama sudah lewat": satu baris ews_terkirim dengan langganan_id tetap (bukan id pelanggan; id asli 16 hex dari acak, tak pernah semua nol) dan kunci 'x|awal'.
+   Dibaca lewat kunci utama (SEARCH, bukan LIKE). bersihkanEws mengecualikan langganan_id ini. */
+export const EWS_AWAL_ID = "0000000000000000";
+export const ewsAwalAda = async env => !!(await env.DB.prepare("SELECT 1 FROM ews_terkirim WHERE langganan_id = ?1 AND kunci = 'x|awal'").bind(EWS_AWAL_ID).first());
+export const ewsAwalTandai = (env, kini) => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?1, 'x|awal', ?2)").bind(EWS_AWAL_ID, kini).run();
+export const ewsCatatSenyap = (env, id, kunci, kini) => env.DB.batch(kunci.map(k => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?1, ?2, ?3)").bind(id, k, kini)));
