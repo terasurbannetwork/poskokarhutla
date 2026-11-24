@@ -41,7 +41,7 @@ Tabel I.2. Isian kelompok korban dan pengungsian
 | 5.2 | Pengungsian sebelum dampak | Ya atau tidak; jumlah orang yang dievakuasi sebelum dampak terjadi | Laporan awal |
 | 5.3 | Titik pengungsian | Nama, koordinat, jenis tempat (tenda, gedung publik, rumah kerabat), jumlah jiwa | *Rapid assessment* |
 | 5.4 | Kelompok rentan di pengungsian | Bayi dan balita, ibu hamil dan menyusui, lansia, penyandang disabilitas | *Rapid assessment* |
-Tabel I.3. Isian kelompok kerusakan, layanan dasar, dan ekonomi
+Tabel I.3. Isian kelompok kerusakan, layanan vital, dan ekonomi
 
 | No | Isian | Isi dan format | Tahap |
 | ---: | --- | --- | --- |

@@ -56,7 +56,7 @@ Setiap data dalam lampiran ini memuat lima komponen standar data, yaitu konsep, 
 | 36 | Jembatan rusak | Jembatan yang rusak karena kejadian bencana | Tingkat kerusakan; dapat dilalui atau tidak | Total | unit |
 | 37 | Jaringan irigasi rusak | Saluran dan bangunan irigasi yang rusak karena kejadian bencana | Tingkat kerusakan | Total | kilometer |
 
-## D. DATA LAYANAN DASAR
+## D. DATA LAYANAN VITAL
 
 | No | Nama data | Definisi | Klasifikasi | Ukuran | Satuan |
 | ---: | --- | --- | --- | --- | --- |

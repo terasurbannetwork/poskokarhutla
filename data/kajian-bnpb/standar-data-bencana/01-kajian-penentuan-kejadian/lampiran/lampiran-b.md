@@ -47,9 +47,9 @@ Tabel B.2. Isian kelompok korban dan pengungsian
 
 Sumber: Rancangan Juklak Bab I huruf D; Juklak 9/2023; UNDRR (2017b); Washington Group on Disability Statistics; disusun dalam kajian ini. Setiap orang dicatat pada satu kategori saja dengan urutan isian 4.1, 4.2, 4.3, 4.4, 5.1, lalu 4.5.
 
-## B.3 Kerusakan, layanan dasar, dan ekonomi
+## B.3 Kerusakan, layanan vital, dan ekonomi
 
-Tabel B.3. Isian kelompok kerusakan, layanan dasar, dan ekonomi
+Tabel B.3. Isian kelompok kerusakan, layanan vital, dan ekonomi
 
 | No | Isian | Isi dan format | Tahap |
 | ---: | --- | --- | ---: |

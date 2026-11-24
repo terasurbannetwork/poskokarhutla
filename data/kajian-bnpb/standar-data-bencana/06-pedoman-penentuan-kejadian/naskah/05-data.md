@@ -31,7 +31,7 @@ Tabel 5.2. Sepuluh kelompok data umum
 | 4 | Korban | • Meninggal<br>• Hilang<br>• Luka berat<br>• Luka ringan<br>• Terdampak<br>• Terancam |
 | 5 | Pengungsian | • Jumlah pengungsi<br>• Titik dan jenis tempat pengungsian<br>• Kelompok rentan |
 | 6 | Kerusakan | • Rumah rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, dan terendam<br>• Satuan pendidikan<br>• Fasilitas pelayanan kesehatan<br>• Rumah ibadat, kantor pemerintah, dan pasar<br>• Jalan<br>• Jembatan<br>• Jaringan irigasi |
-| 7 | Layanan dasar | • Listrik<br>• Air bersih<br>• Telekomunikasi<br>• Bahan bakar<br>• Transportasi<br>• Rumah sakit rujukan |
+| 7 | Layanan vital | • Listrik<br>• Air bersih<br>• Telekomunikasi<br>• Bahan bakar<br>• Transportasi<br>• Rumah sakit rujukan |
 | 8 | Lahan dan ekonomi | • Sawah terendam dan puso<br>• Kebun, hutan, tambak, dan kolam<br>• Ternak<br>• Usaha, yaitu kios, pabrik, kantor swasta, dan usaha kecil<br>• Nilai kerusakan dan nilai kerugian<br>• Luas terbakar terverifikasi (karhutla) |
 | 9 | Kebutuhan dan penanganan | • Kebutuhan mendesak<br>• Status keadaan darurat dan nomor surat keputusannya<br>• Pos komando<br>• Sumber daya<br>• Bantuan |
 | 10 | Mutu data | • Sumber<br>• Jabatan pelapor<br>• Status verifikasi<br>• Keadaan isian<br>• Foto bergeotag |

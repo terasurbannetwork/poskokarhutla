@@ -232,7 +232,7 @@ Tabel 3. Batas kelas bencana intensif
    d. korban;
    e. pengungsian;
    f. kerusakan;
-   g. layanan dasar;
+   g. layanan vital;
    h. lahan dan ekonomi;
    i. kebutuhan dan penanganan; dan
    j. mutu data.

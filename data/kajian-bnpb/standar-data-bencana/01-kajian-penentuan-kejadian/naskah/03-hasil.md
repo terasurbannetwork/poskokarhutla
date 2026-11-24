@@ -369,7 +369,7 @@ Tabel 3.11. Sepuluh kelompok data umum
 | 4 | Korban | Meninggal, hilang, luka berat, luka ringan, terdampak, terancam; dipilah menurut jenis kelamin, umur, dan disabilitas | Rancangan Juklak Bab I huruf D; indikator A dan B Kerangka Sendai |
 | 5 | Pengungsian | Jumlah pengungsi, titik pengungsian, jenis tempat, kelompok rentan | Juklak 9/2023 |
 | 6 | Kerusakan | Rumah (rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, terendam), satuan pendidikan, fasilitas pelayanan kesehatan, rumah ibadat, kantor pemerintah, pasar, jalan, jembatan, dan jaringan irigasi | Rancangan Juklak Bab I huruf D; Perka BNPB 8/2011; indikator D Kerangka Sendai |
-| 7 | Layanan dasar | Keadaan listrik, air bersih, telekomunikasi, bahan bakar, transportasi, dan rumah sakit rujukan | PP 21/2008 Pasal 22 ayat (3) huruf d |
+| 7 | Layanan vital | Keadaan listrik, air bersih, telekomunikasi, bahan bakar, transportasi, dan rumah sakit rujukan | PP 21/2008 Pasal 22 ayat (3) huruf d |
 | 8 | Lahan dan ekonomi | Sawah terendam dan puso, kebun, tambak, ternak, usaha (kios, pabrik, kantor swasta, dan usaha kecil), nilai kerusakan dan kerugian yang dicatat terpisah, serta luas terbakar terverifikasi | Rancangan Juklak Bab II huruf G angka 6; Perka BNPB 15/2011 |
 | 9 | Kebutuhan dan penanganan | Kebutuhan mendesak, status keadaan darurat dan nomor surat keputusannya, pos komando, sumber daya yang dikerahkan, bantuan | UU 24/2007 Pasal 49; Juklak 3/2022 |
 | 10 | Mutu data | Sumber, jabatan pelapor, status verifikasi, keadaan isian, foto bergeotag | Perban 1/2023 Pasal 24 |

@@ -302,7 +302,7 @@ UMUM = [
     ('Fasilitas', 'Satuan pendidikan, rumah ibadah, fasilitas kesehatan, kantor, pasar', 'Angka', 'unit per tingkat kerusakan', 2, 'Satuan pendidikan (sekolah)', 'Juklak 7/2023 Lampiran II'),
     ('Prasarana', 'Jalan', 'Angka dan pilihan', 'kilometer; status terputus, terbatas, normal', 2, 'Jalan', 'Rekap Harian 2026; Rancangan Juklak Lampiran I'),
     ('Prasarana', 'Jembatan', 'Angka dan pilihan', 'unit per tingkat kerusakan; dapat dilalui atau tidak; dihitung dalam kriteria c', 1, 'Jembatan', 'Rekap Harian 2026; Rancangan Juklak Bab II huruf C'),
-    ('Layanan dasar', 'Listrik, air bersih, telekomunikasi', 'Pilihan', 'terputus; sebagian; normal', 2, 'Listrik', 'PP 21/2008 Pasal 22'),
+    ('Layanan vital', 'Listrik, air bersih, telekomunikasi', 'Pilihan', 'terputus; sebagian; normal', 2, 'Listrik', 'PP 21/2008 Pasal 22'),
     ('Lahan dan ekonomi', 'Sawah terendam dan puso, kebun, tambak, ternak', 'Angka', 'ha; ekor', 2, 'Sawah', 'Juklak 7/2023; Rekap Harian 2026'),
     ('Lahan dan ekonomi', 'Taksiran kerusakan dan kerugian', 'Angka', 'Rp, dua angka terpisah', 4, 'Taksiran kerugian (rupiah)', 'Perka BNPB 15/2011'),
     ('Penanganan', 'Status keadaan darurat', 'Pilihan dan teks', 'siaga; tanggap; transisi; nomor SK dan TMT', 1, 'Status keadaan darurat (SK)', 'Panduan Logbook 2025 G.4'),
