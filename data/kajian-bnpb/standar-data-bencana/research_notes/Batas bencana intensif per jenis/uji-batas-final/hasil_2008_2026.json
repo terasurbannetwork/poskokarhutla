@@ -12,6 +12,8 @@
   "versi_gar_persen_rusak_berat": 78.83
  },
  "penentu": {
+  "semua_baris": 63255,
+  "baris_berdampak": 44470,
   "b2": 136,
   "b2_karena_bobot": 21,
   "b4": 71,

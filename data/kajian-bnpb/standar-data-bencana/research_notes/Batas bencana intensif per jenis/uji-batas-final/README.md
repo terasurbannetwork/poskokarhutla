@@ -56,3 +56,18 @@ Bacaan:
   tetap jauh di atas jenis lain, batas 15 persen perlu dinaikkan pada tinjauan satu tahun.
 - Porsi korban jiwa 64% lebih rendah daripada 87% GAR, karena data dasbor tidak memuat tsunami 2004 dan bencana
   katastrofik sebelum 2008.
+
+## Koreksi penyebut (24 Nov 2026, kritik ahli statistik)
+
+GAR 2015 menghitung 0,86 persen terhadap semua catatan kerugian DesInventar, yaitu catatan yang punya efek apa pun.
+Penyebut di atas hanya baris yang memenuhi kriteria a, b, atau c, sehingga porsinya terlalu tinggi.
+
+| Penyebut | Baris | Intensif aturan final (290) | Versi GAR (138) |
+| --- | ---: | ---: | ---: |
+| Semua baris dasbor | 63.255 | 0,46% | 0,22% |
+| Baris dengan dampak apa pun (padanan GAR) | 44.470 | 0,65% | 0,31% |
+| Baris memenuhi kriteria a, b, c | 26.503 | 1,09% | 0,52% |
+
+Bacaan yang benar: dengan penyebut yang setara GAR, porsi intensif aturan final 0,65 persen, satu orde dengan 0,86
+persen GAR, dan lebih rendah, bukan "hampir sama". Satuan uji tetap baris kabupaten per tanggal, bukan KIB atau
+kejadian nasional, sehingga aturan kelas nasional belum teruji.

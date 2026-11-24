@@ -56,6 +56,8 @@ def batas(r):
 
 T = collections.Counter(); J = collections.defaultdict(collections.Counter); P = collections.Counter()
 for r in rows:
+    P["semua_baris"] += 1
+    if any(v(r, c) > 0 for c in NUM): P["baris_berdampak"] += 1
     if not kriteria(r):
         continue
     j = r["jenis_bencana"] or "?"
