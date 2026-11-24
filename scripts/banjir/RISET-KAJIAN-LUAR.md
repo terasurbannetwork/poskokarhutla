@@ -3,7 +3,7 @@
 Tanggal: 24 November 2026. Bahan: unggahan media sosial yang dikirim pemilik (Geodemy, Pusat Riset Ekologi BRIN,
 Spasia Geosolutions, Landscape 360, ITB Teknik Sipil, Prodi Meteorologi ITB, Leuser Geostory Challenge, webinar
 mitigasi berbasis GIS, NgopiBencana, STMKG, Kementerian PU). Catatan ini menilai metodenya terhadap hasil uji kita
-sendiri, lalu mencatat bahan yang layak diambil. Belum ada kode atau layar yang berubah.
+sendiri, lalu mencatat bahan yang layak diambil. Tidak ada layar yang berubah; dua uji lab yang dijalankan dari bahan ini ada di §4.
 
 Angka di bawah dikutip dari unggahannya, belum diperiksa ke makalah asli kecuali disebut lain.
 
@@ -246,7 +246,55 @@ Angka di bawah dikutip dari unggahannya, belum diperiksa ke makalah asli kecuali
 Bahan longsor dari kiriman yang sama (RUSLE Cisarua, MaxEnt Karangkobar, DAS Kuranji) dinilai di
 `scripts/longsor/RISET-KAJIAN-LUAR.md`.
 
-## 4. Aturan yang ditegaskan ulang oleh bahan ini
+## 4. Hasil uji yang sudah dijalankan (24 November 2026)
+
+### 4.1 Replay Maret 2025 lawan poligon DSDA dan BPBD DKI
+
+Skrip `scripts/banjir/uji_dsda.py`, keluaran `public/banjir/data/lab/uji_dsda.json` dan `uji_dsda_ringkas.md`.
+
+- Data Zenodo berlisensi CC BY 4.0, tetapi zipnya 3,25 GB. Skrip hanya mengambil berkas yang perlu lewat HTTP Range:
+  19 poligon "Banjir*" (genangan resmi DSDA dan BPBD DKI 3–4 Maret 2025, kedalaman 30–150 cm, 157 ha, koridor
+  Ciliwung Tanjung Barat sampai Kampung Melayu) dan garis tebing Ciliwung.
+- Hasil peta kedalaman maksimum HEC-RAS ITB tidak ada di dataset (hanya masukan model), jadi model ITB tidak bisa
+  dinilai dengan ukuran yang sama.
+- Domain: kotak poligon ditambah 1 km (20.114 sel 60 m). Replay kita membasahi 967 ha, enam kali luas resmi.
+
+| Skor | Bagian genangan resmi yang kena | CSI |
+| --- | --- | --- |
+| Replay (kedalaman maksimum 96 jam, ambang 10 cm) | 0,713 | 0,110 |
+| Pembanding sel terendah, jumlah sel sama | 0,356 | 0,052 |
+| Pembanding sel terdekat ke tebing Ciliwung, jumlah sel sama | 0,834 | 0,132 |
+
+Vonis: replay mengalahkan sel terendah tetapi kalah dari tebakan paling sederhana, "basahi sel terdekat ke
+sungai". Sebagian keunggulan pembanding itu berasal dari cara DSDA memetakan (hanya di sepanjang sungai), jadi
+selisihnya mungkin dilebihkan. Meski begitu, replay belum terbukti lebih tahu dari jarak ke sungai di koridor ini.
+Label "hipotesis" pada replay tetap. Replay tidak disetel ke poligon ini; uji berlaku sebagai data yang belum
+pernah dipakai.
+
+### 4.2 HAND lawan genangan UNOSAT 28 November 2025
+
+Skrip `scripts/banjir/uji_hand_unosat.mjs`, keluaran `public/banjir/data/lab/uji_hand_unosat.json` dan
+`uji_hand_unosat_ringkas.md`. Data UNOSAT FL20251126IDN (CC BY-SA) disimpan di `data/raw/banjir/unosat/`, tidak
+di-commit.
+
+- 23 situs kotak 6 km di Aceh Tamiang, Aceh Timur, Aceh Utara, Langsa, Subulussalam, dan pesisir timur Sumatera
+  Utara. Genangan 5% sampai 63% sel per situs.
+- Jalur layar varian TA. Setelan "terpilih" dikunci dari uji GLAD sebelum data ini dibuka (alur 0,25 km², muka 10 m).
+- Ranjau yang ditemukan: berkas WaterExtent UNOSAT berisi semua air terdeteksi, termasuk banjir. Jalan pertama memakainya
+  sebagai air permanen sehingga sebagian besar sel banjir terbuang. Jalan itu dibuang. Sekarang air permanen dihitung
+  sebagai WaterExtent dikurangi FloodExtent.
+
+| Setelan | Muka air | CSI HAND | CSI sel terendah | Situs HAND menang |
+| --- | --- | --- | --- | --- |
+| Terpilih dari uji GLAD (dikunci) | 10 m | 0,245 | 0,268 | 1 dari 23 |
+| Terbaik sesudah melihat data (batas atas) | 1,5 m | 0,304 | 0,329 | 7 dari 23 |
+
+Vonis: gagal. HAND kalah dari pembanding sel terendah di semua tingkat muka air 0,5 sampai 10 m. Ini sejalan dengan uji
+GLAD: di dataran pesisir timur Sumatra, tinggi mutlak menebak genangan sama baiknya atau lebih baik dari tinggi di atas
+alur. Label "hipotesis" pada skenario HAND di layar tetap. Skenario debit tidak diuji karena Q2 GloFAS belum ada untuk
+titik di Sumatra.
+
+## 5. Aturan yang ditegaskan ulang oleh bahan ini
 
 - Peta kerawanan apa pun, dari pihak mana pun, diuji lawan kejadian yang tidak dipakai menyusunnya, dan harus
   mengalahkan pembanding kepadatan penduduk dan riwayat kejadian. AUC latih, akurasi tanpa laju dasar, dan

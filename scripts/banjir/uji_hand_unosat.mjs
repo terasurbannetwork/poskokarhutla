@@ -7,7 +7,8 @@ Kebenaran: UNOSAT FL20251126IDN, S1_20251128_FloodExtent_AcehProvince_SumateraPr
 CC BY-SA (HDX). Unduh sekali ke data/raw/banjir/unosat/ (tidak di-commit):
   curl -L -o data/raw/banjir/unosat/FL20251126IDN_SHP.zip https://unosat.org/static/unosat_filesystem/4226/FL20251126IDN_SHP.zip
   unzip -o data/raw/banjir/unosat/FL20251126IDN_SHP.zip -d data/raw/banjir/unosat
-Air permanen (WaterExtent pada berkas yang sama) dan laut dikeluarkan dari sel yang dinilai.
+Laut dan air permanen dikeluarkan dari sel yang dinilai. WaterExtent UNOSAT berisi SEMUA air terdeteksi (semua titik
+banjir juga ada di dalamnya, diperiksa 25 Nov 2026), jadi air permanen = WaterExtent dikurangi FloodExtent.
 
 Prakiraan: persis jalur layar varian TA (Terrarium + air WorldCover), mesin dan cache dipakai ulang dari uji_hand.mjs.
 - "terpilih": setelan yang dipilih uji GLAD (public/banjir/data/lab/uji_hand.json, terpilih), dikunci sebelum data ini dibuka;
@@ -78,7 +79,8 @@ async function jalankan() {
       const dem = await SG.ambilDEM(ll[0], ll[1], CFG.sisi, CFG.n, ambil), N = dem.nx * dem.ny, prep = SG.siapkanArea(dem);
       const titik = Array.from({length: N}, (_, i) => SG.dariSel(dem, i % dem.nx, (i / dem.nx) | 0));
       const benar = Uint8Array.from(titik, ([x, y]) => diBanjir(x, y) ? 1 : 0);
-      const sah = Uint8Array.from(titik, ([x, y], i) => prep.laut[i] || diAir(x, y) ? 0 : 1);
+      /* WaterExtent UNOSAT = semua air terdeteksi (banjir ikut di dalamnya), jadi air permanen = air yang bukan banjir */
+      const sah = Uint8Array.from(titik, ([x, y], i) => prep.laut[i] || (!benar[i] && diAir(x, y)) ? 0 : 1);
       const L = await SL.kisiLahan(dem, ubinWC), air = L?.dom ? Uint8Array.from(L.dom, v => v === 80 ? 1 : 0) : null;
       const H = SH.hitung(prep, dem, SG, CFG.alur, air), per = {};
       for (const m of CFG.muka) {
@@ -129,4 +131,4 @@ function uji() {
 }
 
 if (process.argv[2] === "uji") uji();
-else { const R = rangkum(await jalankan()); fs.writeFileSync(KELUAR, JSON.stringify(R)); fs.writeFileSync(RINGKAS, ringkas(R)); console.log(ringkas(R)); }
+else if (import.meta.url === `file://${process.argv[1]}`) { const R = rangkum(await jalankan()); fs.writeFileSync(KELUAR, JSON.stringify(R)); fs.writeFileSync(RINGKAS, ringkas(R)); console.log(ringkas(R)); }

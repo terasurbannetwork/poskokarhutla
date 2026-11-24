@@ -40,12 +40,23 @@ Lapisan sesar kita (`scripts/gempa/sesar.py`, GEM Global Active Faults, katalog 
 - nama sesar yang dikenal warga (Lembang, Cimandiri, Baribis) tidak bisa ditampilkan di layar gempa kita;
 - kemungkinan sebagian sesar Jawa Barat tidak tercakup atau jenisnya berbeda di GEM.
 
+Diperiksa 24 November 2026 di berkas GEM mentah (`gem_active_faults_harmonized.geojson`, semua katalog, bukan hanya yang
+disaring `sesar.py`): di kotak yang sama hanya ada tiga segmen, semuanya katalog EOS_SE_Asia dan tanpa nama: satu geser
+kanan, satu naik, satu subduksi. Jadi kekurangannya ada di sumber, bukan di saringan kita. Sebagian besar sesar
+Jawa Barat (Lembang, Cimandiri, Baribis, dan seterusnya) tidak ada di GEM.
+
+Pencarian sumber pengganti berlisensi terbuka tidak menemukan apa-apa. Catatan Geoscience Australia menyebut hanya
+Sumatra yang dipetakan cukup rinci, sedangkan sesar aktif di Jawa dan Bali banyak yang belum dipetakan. Makalah
+geologi Sesar Lembang (ANU) masih tertutup sampai 2037.
+
 ## 4. Untuk kita
 
 1. Jangan memakai unggahan CSL sebagai sumber geometri, jenis, atau dampak sesar.
-2. Yang layak dikerjakan: cocokkan lapisan GEM dengan daftar sesar PuSGeN 2017 untuk Jawa Barat, lalu catat segmen
-   yang hilang atau jenisnya berbeda. Keputusan pemilik tetap: PuSGeN dipakai begitu ada salinan berlisensi
-   (`sesar.py`); sampai itu ada, nama sesar hanya boleh ditambahkan dari sumber berlisensi, bukan diketik dari
-   infografis.
-3. Kalimat edukasi yang benar dari unggahan ini (jenis sesar, kenali sesar di sekitar rumah, bangun tahan gempa)
+2. Sesar Jawa Barat tidak bisa dilengkapi dari sumber terbuka yang ada. Jalan keluarnya hanya salinan PuSGeN 2017
+   berlisensi, yang perlu diminta resmi ke PuSGeN atau Kementerian PUPR. Keputusan pemilik tetap: PuSGeN dipakai begitu
+   salinan berlisensi ada (`sesar.py`). Sampai itu ada, nama dan garis sesar tidak diketik dari infografis atau digambar
+   ulang dari gambar makalah.
+3. Sampai lapisan lengkap, layar gempa sebaiknya tidak memberi kesan bahwa Jawa Barat "tidak punya sesar". Itu
+   keputusan tampilan di modul `gempa`, belum dikerjakan.
+4. Kalimat edukasi yang benar dari unggahan ini (jenis sesar, kenali sesar di sekitar rumah, bangun tahan gempa)
    sudah umum; tidak ada angka baru yang perlu masuk layar.

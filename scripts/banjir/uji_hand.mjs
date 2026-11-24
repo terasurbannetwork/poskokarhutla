@@ -107,7 +107,14 @@ export function mesin() {
 /* ubin DEM disimpan di data/raw (tidak di-commit), jadi uji ulang tidak mengunduh lagi */
 export async function ambil(url) {
   const nama = path.join(DIR_DEM, url.split("/terrarium/")[1].replaceAll("/", "_"));
-  if (!fs.existsSync(nama)) { const r = await fetch(url); if (!r.ok) return r; fs.mkdirSync(DIR_DEM, {recursive: true}); fs.writeFileSync(nama, Buffer.from(await r.arrayBuffer())); }
+  if (!fs.existsSync(nama)) {
+    /* batas waktu + coba ulang: fetch tanpa batas pernah menggantung satu uji 15 menit (24 Nov 2026) */
+    let buf, r;
+    for (let coba = 0; ; coba++) {
+      try { r = await fetch(url, {signal: AbortSignal.timeout(60000)}); if (!r.ok) return r; buf = Buffer.from(await r.arrayBuffer()); break; }
+      catch (e) { if (coba >= 3) throw e; await new Promise(s => setTimeout(s, 2000 * (coba + 1))); }
+    }
+    fs.mkdirSync(DIR_DEM, {recursive: true}); fs.writeFileSync(nama, buf); }
   const b = fs.readFileSync(nama); return {ok: true, status: 200, blob: async () => new Blob([b])};
 }
 /* ubin WorldCover (PNG Planetary Computer) untuk SimLahan.kisiLahan; 404 disimpan sebagai berkas kosong */
