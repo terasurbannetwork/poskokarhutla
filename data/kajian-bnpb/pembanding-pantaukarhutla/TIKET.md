@@ -69,6 +69,28 @@ Disusun 24 Nov 2026 dari `RISET.md` di folder ini. Status semua tiket: **usulan*
 | PKH-31 **[paket]** | Video vertikal otomatis untuk media sosial (angka besar, peta citra, sumber di kaki) dari data yang sama. | layar-peta / mekanik-mesin | skrip baru | 1 video contoh ditinjau pemilik |
 | PKH-32 | Istilah dirapikan: "titik api" jadi "titik panas" di berkas yang masih memakainya; NOAA-20/21 disebut satelit NOAA; FRP = daya (MW). | pemilik berkas masing-masing → selera-angka | sekitar 99 berkas, dicek dulu | grep bersih atau tercatat |
 
+## G. Putaran media sosial dan web lain (24 Nov 2026, lihat RISET bagian akhir)
+
+| ID | Rekomendasi | Pengerja → pemeriksa | Berkas | Bukti siap |
+| --- | --- | --- | --- | --- |
+| PKH-33 | Luas terbakar radar Sentinel-1 (RBR = VH pasca / VH pra) sebagai cadangan saat `luas_citra.py` memberi `luas_ha: null` karena awan atau asap. Kontrol latar cincin 2–4 km sama. Ambang RBR disetel pada insiden yang dNBR-nya bersih. | pipa-data → validasi-model | `scripts/data/luas_citra.py`, pembaca dari `scripts/banjir/s1_genangan.py` | kesepakatan RBR lawan dNBR pada ≥ 20 insiden tercatat |
+| PKH-34 **[paket]** | Kedalaman gambut hilang dari InSAR untuk mengganti D literatur di `gambut_bara.py`. Lab dulu: bandingkan dengan kedalaman bakar literatur (Ballhorn 33 ± 18 cm), coba L-band ALOS-2. Pakai mesin LiCSBAS yang ada, tanpa mesin kedua. Hipotesis sampai uji lulus. | pipa-data (mesin `subsiden.py` milik banjir) → validasi-model | `scripts/data/gambut_bara.py`, skrip lab baru | selisih InSAR lawan literatur dan penjelasannya tertulis |
+| PKH-35 | Kelas keparahan dNBR Key & Benson (lima kelas, batas tetap) di keluaran `luas_citra.json`. | pipa-data → selera-angka | `scripts/data/luas_citra.py` | jumlah piksel per kelas = piksel valid |
+| PKH-36 | Batang alasan peringkat per kluster (gambut, kekeringan, persistensi, FRP, penduduk searah angin dari `lintasan.py`). Komponen penduduk baru tampil sesudah PKH-02; bobot diuji terhadap label eskalasi dan `lab_padam`. | pipa-data, layar-peta → validasi-model, inp-reviewer | `scripts/data/harian.py`, pop-up kluster | hipotesis tertulis sampai uji punya vonis |
+| PKH-37 **[paket]** | Alat gambar wilayah (poligon, kotak, buffer 1–50 km) yang menjawab dari data kita: titik dan FRP, siang lawan malam, sel terbakar, luas dNBR bila ada, desa dan penduduk. Luas gambar disebut "luas wilayah digambar", tidak pernah "luas terbakar". | layar-peta → inp-reviewer, selera-angka | `public/index.html`, berkas JS baru | tinjau `localhost:8800/`, INP < 200 ms |
+| PKH-38 | Kab/kota tertutup asap (≥ 50% wilayah, kelas 50–70 / 70–90 / > 90%) dari CAMS, tren per kawasan termasuk negara tetangga, batang per hari dengan hari prakiraan. Sejalan dengan PKH-23. | cuaca-udara → validasi-model, selera-angka | `scripts/udara/`, layar udara | persen wilayah per kab cocok pada 3 kab cek manual |
+| PKH-39 | Lab garis depan api AFD-S2 (Hu dkk. 2021) per insiden untuk panjang front di `taktik.py`. Penney dkk. 2019 hanya pembanding berlabel hipotesis untuk `air_front_l_per_m`, dikali zona nyala (panjang front × kedalaman nyala dari FBP), bukan luas. | pipa-data → validasi-model | `scripts/data/taktik.py`, skrip lab baru | panjang front 5 insiden dicek pada citra |
+| PKH-40 | Kartu pembanding luas antar sumber (SiPongi, GWIS MCD64, MapBiomas, Olofsson, dNBR, regresi `keputusan.py`) dengan kolom satelit, metode, waktu, definisi. Tanpa kalimat kesimpulan. | layar-peta → selera-angka | layar Insight | tiap angka bertanggal dan bersumber |
+| PKH-41 | MapBiomas Fire Indonesia 2026 bulanan per provinsi dan kab sebagai sumber luas kelima, plus kartu pangsa wilayah (titik panas, tapak sel 375 m, bekas bakar). Periksa bias regresi `keputusan.py` per wilayah (sabana Papua dan Nusa Tenggara). | pipa-data → validasi-model | `scripts/data/panen/lab_mapbiomas.py`, skrip baru | lisensi data dicek; angka Papua 2026 cocok dengan sumbernya |
+| PKH-42 | Hari PM2,5 harian > 55 µg/m³ per kota per tahun, dibanding dua tahun sebelumnya, termasuk kota tetangga. Setara rokok hanya bila pemilik setuju (Q7), berlabel perkiraan kasar. | cuaca-udara → selera-angka | `scripts/udara/riwayat.py` | hitungan 3 kota cocok dengan arsip ISPU |
+| PKH-43 | Kurva kelembapan tanah gambut bulanan per provinsi gambut, dibanding 2015, 2019, 2023 dan rata-rata normal, dari ERA5-Land yang sudah ada. | pipa-data, layar-peta → selera-angka | `scripts/data/tanah.py` | angka 2015 cocok dengan arsip ERA5-Land |
+| PKH-44 | Pembagian kelas FRP dan siang lawan malam per wilayah. Tanpa tafsir "malam berarti gambut". | layar-peta → selera-angka | layar Insight | jumlah kelas = total titik |
+| PKH-45 | Periksa layar dan keluaran konsesi terhadap aturan: peringkat perusahaan pakai luas citra, bukan jumlah titik; selalu "titik di dalam konsesi bukan bukti penyebab"; tidak pernah menautkan pemilik manfaat atau tokoh politik. Bila bisa diperiksa mesin, jadikan gerbang. | pipa-data, layar-peta → security-reviewer, penulis-gerbang | `scripts/data/konsesi_citra.py`, `grup_perusahaan.py`, layar konsesi | daftar pelanggaran kosong atau tercatat |
+
+Bahan kajian, bukan tiket kode:
+- Rantai api tujuh langkah AYANA untuk sisi pencegahan (langkah 1–4: motif, klaim lahan, bahan bakar, keputusan). Bila digarap, lewat paket dokumen di `/siklus` atau Kemitraan Kampus.
+- BTT APBD per provinsi dari SIKD DJPK sebagai sumber modul pembiayaan-risiko, menunggu keputusan pemilik soal Q1 modul itu.
+
 ## Urutan usulan
 
 1. **A** (PKH-01 sampai 05): murah, membuat angka kita bisa dipertanggungjawabkan.
@@ -132,3 +154,6 @@ Disusun 24 Nov 2026 dari `RISET.md` di folder ini. Status semua tiket: **usulan*
 
 - Q4: Rincian kelompok F di atas sudah sesuai, atau ada yang diubah?
 - Q5: PKH-32: apakah istilah resmi "titik api" di laporan BNPB memang dibiarkan?
+- Q6: Kelompok G (PKH-33 sampai 45) ikut "semua gas", atau dipilih dulu?
+- Q7: PKH-42: hitungan "setara batang rokok" boleh tampil, atau angka hari saja?
+- Q8: Urutan kelompok G. Bawaan sementara: PKH-41 dan PKH-40 dulu (bias luas Papua), lalu PKH-33, 35, 43, 44, 42, 38, lalu paket PKH-34 dan 37.

@@ -126,3 +126,79 @@ Bahan riset, bukan keputusan. Tiap butir yang mau dibangun tetap lewat paket dok
   - [mscross/pysplit](https://github.com/mscross/pysplit): lintasan HYSPLIT.
 
 Pencarian GitHub berhenti karena kena batas laju API. Kata kunci yang belum dicari: `sipongi`, `bmkg api`, `himawari fire`, `fire danger forecast`.
+
+## Putaran tambahan: unggahan media sosial dan web lain (24 Nov 2026)
+
+Bahan dikirim pemilik sebagai tangkapan layar dan video. Situs tidak dibuka; isi dibaca dari gambar. Kontak pribadi di gambar (surel, nomor WA) sengaja tidak dicatat.
+
+### Yang sudah kita punya
+
+- dNBR Sentinel-2 dan masker air: `scripts/data/luas_citra.py` (dNBR > 0,27 dan NBR pasca < 0,2, plus kontrol latar cincin 2–4 km). Lebih ketat dari Otsu.
+- Luas independen: `sampling_luas.py` (Olofsson), `luas_satelit.py` (GWIS MCD64), SiPongi (`luas_resmi.json`).
+- Emisi gambut E = A × D × BD × C × 44/12: `gambut_bara.py` dan `dampak.py` (IPCC 2013 Wetlands Supplement).
+- Mesin InSAR: `scripts/banjir/subsiden.py` (LiCSBAS, milik `banjir`).
+- Timelapse citra GIBS (`public/timelapse.js`), ukur jarak di peta utama, lapisan AOD (`lapisan5.js`), CAP 1.2 (`src/peringatan.js`).
+- Air per hari untuk front dan bara: `scripts/data/taktik.py` (`air_front_l_per_m` masih ASUMSI 80 L/m).
+- Titik dalam konsesi dan grup perusahaan: `konsesi_citra.py`, `grup_perusahaan.py`, `aktor_greenpeace.py`.
+- Kelembapan tanah dan persentil per dasarian 2015–2025: `scripts/data/tanah.py`.
+- Jarak pandang bandara: `penerbangan.py`. Rekap operasi harian: `operasi.py`.
+- Ambang DC > 350 di aturan status sama dengan kelas merah SPARTAN BMKG (FFMC 73/78/82, DMC 5/15/29, DC 141/261/350).
+- MapBiomas baru di lab (`scripts/data/panen/lab_mapbiomas.py`, koleksi 2, kebakaran 2013–2023). Data 2026 bulanan belum masuk.
+
+### Temuan per sumber
+
+**Geoaccess (SBAS InSAR untuk emisi gambut, Palangka Raya 1 Jul–30 Sep 2026).**
+- Rumus: gambut hilang (t/ha) = α × Δh × BD × 10.000; karbon = gambut hilang × C-organik; CO2 = karbon × 44/12. Kontrol: selisih turun area terbakar dan tidak terbakar di sekitarnya.
+- Angka mereka: terbakar turun 3,31 cm, tidak terbakar 2,06 cm, tambahan api 1,26 cm, ±24,7 t CO2/ha. Hitung balik konsisten (0,0126 m × 0,1 t/m³ × 10.000 × 0,55 × 3,67 ≈ 25).
+- Masalah: kedalaman bakar dari LiDAR 33 ± 18 cm (Ballhorn dkk. 2009), IPCC setara ±600 t CO2/ha. Selisih ±25 kali. Dugaan: C-band 5,6 cm salah bungkus fase bila turun > ±1,4 cm per 12 hari, dan piksel terbakar kehilangan koherensi; yang terukur kemungkinan oksidasi pasca-api, bukan kedalaman bakar.
+- Nilai untuk kita: menggantikan D literatur (15–51 cm) di `gambut_bara.py` hanya sesudah uji. Kandidat L-band ALOS-2.
+
+**inSIGht (Sentinel-2 dNBR, NBR2, MIRBI; Sentinel-1 RBR, RBD, RVI, RFDI; Kayong Utara).**
+- Alur S1: masker air ESRI LULC 2025, filter speckle, RBD = VH pasca − VH pra, Otsu, pasca-klasifikasi.
+- Nilai untuk kita: jalur radar saat `luas_citra.py` memberi `luas_ha: null` karena awan atau asap. Pembaca S1 sudah ada di `scripts/banjir/s1_genangan.py`.
+- Kelas keparahan dNBR Key & Benson (< 0,1; 0,1–0,27; 0,27–0,44; 0,44–0,66; > 0,66) murah ditambahkan.
+- Otsu tidak diambil: ambang berubah per adegan, susah dibandingkan antarinsiden.
+
+**Mata Dewa (video "Bantuin karhutla").** Prioritas P1–P3 per kluster dari keyakinan, FRP, persistensi, gambut, kekeringan, penduduk searah angin, prakiraan udara; batang "alasan peringkat" per kluster. Bobot tampak dikarang tanpa uji balik. Yang layak: batang alasan per kluster dan komponen penduduk terpapar asap, sesudah uji.
+
+**SIPARHUTLA Kotim (WebGIS satu kabupaten).**
+- Layak: alat gambar poligon, kotak, buffer 1–50 km, ukur jarak; komparasi periode (bulan ini lawan lalu, YoY); kelas FRP; siang lawan malam.
+- Jangan ditiru:
+  - Semua kecamatan skor 100 dan "Awas" (ambang ≥ 100 titik kumulatif 38 hari): peringkat jenuh.
+  - Label "Baik (Aman)" di AQI.
+  - Tujuh "stasiun" berisi nilai model Open-Meteo, bukan alat ISPU.
+  - Map key FIRMS disimpan di localStorage.
+  - "Luas area terbakar" yang sebenarnya luas gambar pengguna (kotak 542 ribu ha, 0 titik).
+  - "Malam 65% berarti gambut": tafsiran yang belum diuji.
+
+**Geo-AIT UGM (geoaipeduli).**
+- Kab/kota terpapar asap = ≥ 50% wilayah tertutup asap CAMS, kelas sedang 50–70%, pekat 70–90%, sangat pekat > 90%.
+- Naik-turun asap pekat per kawasan (Riau–Jambi–Sumsel, Kalbar–Kalteng–Kalsel, Sarawak, Semenanjung Malaysia, Singapura) dan batang wilayah di atas ambang per hari termasuk hari prakiraan.
+- Lapisan GIBS: VIIRS true color, Himawari 10 menit dan IR malam, AOD VIIRS, indeks aerosol OMPS, CO AIRS.
+
+**Syam'ani (AFD-S2 dan air pemadaman).**
+- AFD-S2 (Hu dkk. 2021): Red ≤ 0,677·SWIR2 − 0,052 dan SWIR2/SWIR1 ≥ 1, 20 m. Layak untuk panjang garis depan per insiden; citra tiap 5 hari ±10.30, sering berawan.
+- Penney dkk. 2019 (CF = a·I^b, L/m²/detik). Hitungan di slide salah satuan: CF × luas = L/detik, bukan liter; yang dikali seharusnya zona nyala (panjang front × kedalaman nyala), bukan seluruh 52 ha; api 500 kW/m berkedalaman nyala < ±1 m, bukan 200 m. Rumusnya untuk tanah mineral Australia.
+
+**NgopiBencana (kenapa angka luas berbeda).** Empat sebab: resolusi satelit, metode dan ambang, waktu pengamatan, definisi (ukuran minimum, api kecil, kejadian berulang). Cocok jadi kerangka kartu pembanding luas.
+
+**MapBiomas Fire Indonesia (Auriga) lewat Landscape 360 dan AYANA.**
+- 2026 Jan–Sep: 1.103.132 ha nasional; Papua 313.777 ha (28%), Papua Selatan 253.274 ha, Merauke 192.479 ha (97% pada savana dan rawa rumput non-hutan).
+- Pangsa Kalimantan lawan Papua: titik panas 51% lawan 16%, tapak sel 375 m 43% lawan 20%, bekas bakar 23% lawan 28%. Gambut menyala lama dan terdeteksi berulang; sabana terbakar luas dan cepat dengan sedikit titik per hektare.
+- Akibat untuk kita: `keputusan.py` menghitung luas dari jumlah titik (regresi log-log per provinsi). Wilayah sabana bisa terhitung terlalu kecil secara sistematis.
+
+**Angka luas 2026 yang beredar (bahan kartu pembanding).** SiPongi ±202.011 ha (sampai Agu); MapBiomas 1,10 juta ha (Jan–Sep); AYANA mengutip 637.011 ha (MapBiomas Jan–Agu) dan Nusantara Atlas 895.657 ha; angka BNPB 72.798 ha (Agu); DataIndonesia 435.732 ha (sampai Okt). Tiap angka beda periode dan definisi.
+
+**INDEF.**
+- Kelembapan tanah gambut Kalteng Jun–Okt: rata-rata normal lawan 2015 lawan 2026 (Agu 2026 0,164 m³/m³, lebih kering dari 2015).
+- Hari PM2,5 harian > 55 µg/m³ per kota, 1 Agu–18 Okt, 2024/2025/2026 (Palangka Raya 0/0/58), plus Kuching, Kuala Lumpur, Singapura; setara rokok (Berkeley Earth, 22 µg/m³ ≈ 1 batang).
+- Anggaran: BTT APBD tujuh provinsi karhutla 2025 lawan 2026 dari SIKD DJPK; kandidat sumber untuk modul pembiayaan-risiko.
+
+**AYANA dan CPPM SBM ITB.** Rantai api tujuh langkah: motif, klaim lahan, bahan bakar (gambut dikeringkan), keputusan, penyulutan, penjalaran, pemadaman. Modul kita hampir semua di langkah 5–7; langkah 1–4 kosong. Bahan kerangka kajian pencegahan, bukan kode.
+
+**Silva Agro, spatialsharing, Spatial Highlights, RGB, Telkom/BPS, DataIndonesia, FPCI, GEMA, Save Our Borneo, Warta Ekonomi, Kompas.** Materi edukasi dan rekap; isinya sudah kita punya. Catatan:
+- Tabel keyakinan 0–30/30–80/80–100% adalah skala MODIS; VIIRS hanya rendah, nominal, tinggi.
+- Angka "dibaca dari grafik" (Telkom/BPS) bukan pembanding.
+- Ranking perusahaan dari jumlah titik di konsesi: satu kebakaran gambut menghasilkan ratusan titik, jadi luas citra lebih adil. Titik di dalam konsesi bukan bukti penyebab. Pemilik manfaat dan nama tokoh politik tidak pernah ditautkan di sistem BNPB.
+
+**Video tol Kuningan.** Bukan karhutla. Gaya penyajian (peta 3D DEMNAS, profil muka tanah memanjang, desa yang dilintasi) cocok untuk rute patroli atau renlap darat.
