@@ -578,7 +578,7 @@ Aturan berhentinya sama dengan §2.1. Simulasi, bukan peringatan: status tsunami
 Sebelum menyentuh hitungan lereng per piksel, ekstraksi bangunan Overture, aturan "dua peta sepakat", agregat bangunan di lereng per kecamatan atau desa, atau pencocokannya dengan desa longsor, baca dokumen di
 `data/kajian-bnpb/lereng-bangunan/` dengan urutan otoritas ini (kode di `scripts/longsor/**`, `public/longsor/**`, `tests/longsor/**` milik `longsor`; sambungan ke Peta Paparan F2 milik `siklus`):
 
-1. `KEPUTUSAN-LERENG.md`: keputusan pemilik K1-K3, rancangan D1-D16, pertanyaan terbuka Q1-Q18 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-LERENG.md`: keputusan pemilik K1-K4 (K4: semua bawaan Q1-Q18 diterima), rancangan D1-D16; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (ambang persen, kelas sepakat, mitigasi DSM, uji desa), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LT-*`), `GLOSARIUM.md`.
 
