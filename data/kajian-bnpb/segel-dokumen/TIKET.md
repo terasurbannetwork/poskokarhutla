@@ -26,3 +26,9 @@ Catatan dari pemeriksaan SG-02 (24 Nov 2026), wajib dikerjakan di rutenya:
 - SG-05 sampai SG-07 (pembeku): `penerbit` diisi nama lembaga (mis. "Pusdalops BNPB"), tidak pernah nama staf; satu uji memastikan kolom `penerbit`, `judul`, `wilayah` tanpa nama orang. Halaman `public/verifikasi.*` menulis ketiganya lewat `textContent`.
 - SG-13: rute verifikasi belum punya pembaca sumber `lj`, jadi segel `lj` tampil Tidak cocok. Pembaca `lj_beku` di `src/segel.js` `isiSumber` wajib ada sebelum segel `lj` pertama disisipkan.
 - SG-11: `gerbang-segel` ikut memeriksa tidak ada `UPDATE` atau `DELETE` ke `segel` dan `segel_cabut` di `src/**` (append-only hanya dijaga kode, tanpa trigger).
+
+## Status 24 Nov 2026
+
+- Selesai di kode: SG-01 sampai SG-08, SG-10, SG-11; SG-09 untuk lembar cetak dokumen PB (`public/inti/segel.js`, dipasang di `public/inti/dokumen.js`).
+- SG-09 untuk slide laporan harian karhutla dan bencana (`public/laporan_karhutla_slide.js`, `public/laporan_bahaya_slide.js`) **menunggu pemilik (Q11 baru)**: slide 1 memakai lebar penuh sampai batas kaki (y 6,95) dan tata letaknya dihitung dari isi, jadi QR 22 mm tidak muat tanpa mengubah susunan deck. Pilihan: (a) QR di slide terakhir "Keterangan", (b) slide tambahan "Keaslian dokumen" di akhir, (c) QR kecil 15 mm di kaki slide 1 menggeser nomor halaman. Rute snapshot belum membawa kode segel; ditambahkan bersama pilihan ini.
+- SG-12 (deck Python) tetap di luar fase 1 (Q4). SG-13 menunggu LJ dan LB. SG-14 menunggu pemilik menerapkan migrasi 0171 dan 0172.

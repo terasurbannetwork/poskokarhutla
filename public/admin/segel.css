@@ -1,0 +1,8 @@
+/* Segel dokumen (/admin/segel, segel-dokumen SG-10): dialog cabut. Token dari tema admin, tanpa literal warna */
+.ak-dialog{max-width:min(520px,calc(100vw - 32px));border:1px solid var(--line);border-radius:16px;padding:20px 22px;background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.ak-dialog::backdrop{background:color-mix(in oklch,var(--ink) 45%,transparent)}
+.ak-dialog h2{margin:0 0 12px;font-size:1.125rem}
+.ak-dialog textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:10px}
+.ak-dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;margin:0 0 12px}
+.ak-dl dt{color:var(--ink2);font-size:.875rem}
+.ak-dl dd{margin:0;overflow-wrap:anywhere}

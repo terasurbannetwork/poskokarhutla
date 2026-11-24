@@ -1,6 +1,8 @@
 /* segel.js: fungsi murni segel dokumen (paket data/kajian-bnpb/segel-dokumen/, SG-03, ALGORITMA bagian 1 dan 3). Fungsi murni di atas; rute di bawah. SQL ada di src/hak.js bagian Segel. */
 import {json, gagal, sha, ipHash, bacaBody} from "./worker.js";
 import {modOK} from "./posko.js";
+import {halamanAdmin} from "./statistik.js";
+import {halamanSegel} from "./admin_halaman.js";
 import {stafPeran} from "./staf.js";
 import {laju} from "./bnpb.js";
 import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
@@ -111,4 +113,5 @@ async function cabut(env, req, url, kini) {
   return json({ok: true, kode, dicabut: kini}, 201);
 }
 
-export const RUTE_SEGEL = {"GET /api/verifikasi/:kode": verifikasi, "GET /api/segel": daftar, "POST /api/segel/cabut": cabut};
+export const RUTE_SEGEL = {"GET /api/verifikasi/:kode": verifikasi, "GET /api/segel": daftar, "POST /api/segel/cabut": cabut,
+  "GET /admin/segel": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanSegel, PERAN_BACA)};

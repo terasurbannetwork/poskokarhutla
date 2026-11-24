@@ -132,6 +132,9 @@ uji("T9 dan T10 cabut: moderator dan staf pimpinan boleh (201, lalu 409); pusdal
   assert.equal(d.j.segel.find(x => x.kode === "AAAAAAAAA0").alasan, "isi salah ketik provinsi");
   assert.equal((await api("GET", "/api/segel?status=x", undefined, MOD2)).s, 400);
   assert.ok((await api("GET", "/api/segel", undefined, MOD2)).j.segel.length >= 3);
+  /* halaman /admin/segel: moderator dan staf pimpinan/pusdalops dapat halaman, tamu dapat halaman masuk (sama dengan /admin/kunci-api) */
+  for (const h of [MOD2, H("pus")]) { const pg = await api("GET", "/admin/segel", undefined, h); assert.equal(pg.s, 200, pg.t.slice(0, 120)); assert.match(pg.t, /\/admin\/segel\.js/); }
+  const tamu = await api("GET", "/admin/segel"); assert.match(tamu.t, /<title>Masuk/); assert.doesNotMatch(tamu.t, /\/admin\/segel\.js/, "tamu dapat halaman masuk, bukan daftar segel");
 });
 
 uji("T12 tabel segel belum ada: pembeku tetap menulis snapshot tanpa segel; sesudah 0171 diterapkan segel langsung tertulis; dummy tidak pernah", async () => {
