@@ -1,6 +1,6 @@
 # Laporan QA deck Paparan Kebencanaan Kabupaten Solok 231126
 
-Berkas `Paparan Kebencanaan Kabupaten Solok 231126.pptx` dan `Paparan Kebencanaan Kabupaten Solok 231126.pdf`, spek `solok`, diperiksa 24-11-2026 10.49 WIB.
+Berkas `Paparan Kebencanaan Kabupaten Solok 231126.pptx` dan `Paparan Kebencanaan Kabupaten Solok 231126.pdf`, spek `solok`, diperiksa 24-11-2026 10.50 WIB.
 Vonis: **LOLOS**. Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan masih berstatus Transisi Darurat sampai April 2027.

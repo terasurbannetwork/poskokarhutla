@@ -127,7 +127,7 @@ def peta_solok(png, w_in=7.2, h_in=4.6):
         ensure_ascii=False, indent=1), encoding='utf-8')
 
 a('sl.p.w', w_, 'kecamatan Waspada', P_P, S_P); a('sl.p.hmax', round(max(max(v['h3d']) for _, v in kec)), 'mm', P_P, S_P); TOPK = kec[0][0];
-tulis('peta_hujan.csv', ['kec', 'hujan'], [[re.sub(r'^IX\b', 'Ix', n), round(max(v['h3d']))] for n, v in kec])
+tulis('peta_hujan.csv', ['kec', 'hujan'], [[n, round(max(v['h3d']))] for n, v in kec])
 
 for l_ in (0, 1, 2, 3): a(f'sl.p.n{l_}', sum(1 for _, v in kec if max(v['b']) == l_), 'kecamatan', P_P, S_P)
 for l_, mm_ in ((1, 40), (2, 80), (3, 120)): a(f'sl.amb.{l_}', mm_, 'mm', P_P, S_P)
@@ -195,7 +195,7 @@ HP = {'ulang_angka_boleh': 'batas kelas legenda peta sama dengan ambang status d
       'utama': {'judul': 'Hujan tiga hari tertinggi per kecamatan, empat hari ke depan', 'ikon': 'banjir',   # modul peta standar (pemilik 24 Nov 2026: "standar map kita kan ga gini")
                 'peta': {'mode': 'koroplet', 'tingkat': 'kecamatan', 'wilayah': ['13'], 'kab': 'Solok', 'ambang': [20, 40, 80, 120], 'skala': 'air',
                          'satuan': 'Hujan tiga hari tertinggi, mm', 'label': 10, 'label_gaya': 'samping', 'label_ikon': 'banjir',
-                         'label_status': {re.sub(r'^IX\b', 'Ix', n): {'teks': LV[max(v['b'])], 'warna': GAYA_ST[LV[max(v['b'])]][0], 'teks_warna': GAYA_ST[LV[max(v['b'])]][2],
+                         'label_status': {n: {'teks': LV[max(v['b'])], 'warna': GAYA_ST[LV[max(v['b'])]][0], 'teks_warna': GAYA_ST[LV[max(v['b'])]][2],
                                                                      'ikon': {3: 'peringatan', 2: 'banjir', 1: 'cuaca-ekstrem', 0: 'prabencana'}[max(v['b'])]} for n, v in kec},
                          'unsur_tampil': False, 'data': c('peta_hujan.csv', [{'nama': 'kec'}, F('hujan', 'Hujan')], S_P)}},
       'panel': {'judul': 'Kecamatan per status', 'ikon': 'peringatan',   # baris berikon (pemilik 24 Nov 2026: "ini rapihin, bagusin juga")

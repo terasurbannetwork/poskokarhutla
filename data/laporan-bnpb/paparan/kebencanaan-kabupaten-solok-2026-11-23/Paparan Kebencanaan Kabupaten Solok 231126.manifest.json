@@ -853,7 +853,7 @@
     },
     "resmi": false,
     "batas": [
-     254.89049990625,
+     256.05397646875,
      145.0,
      451.79825009374997,
      435.87
@@ -3541,14 +3541,14 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/jenis_basah.csv": "9b0e9ac9c57647fbee252a905dd0831f874739aa9c77add4deec15cf0c4b922c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/kejadian_tahun.csv": "e6623ae61e6fcb6e2d4cecad9a333c79dd652d6f46574914855f87a92f8a3c1b",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/lain.csv": "214f0a7acb23db62e7bd8955b08d9eda39031b57bd5169e02abebb5b7ac1fe24",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_hujan.csv": "058979724979335abb0b231248b6d12efe741e21b6ed9189cef94d590bbf6878",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_hujan.csv": "6c70b884411df0ed4d66964ad1165ecf5ff554676da96001d7b5c0a87033dc1d",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan.csv": "c65c6ae4289a90e1fbdad19837ad44ca8ac3cb2637c401e52b5620a023b7b6e0",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/status.csv": "cdc2cff1cc61b55a1e737059bedc7777292c13444e9a31d06eeb8ced1e51fd30",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kabupaten/13.json": "de5012a3e1aa157176ba1b587baa47b0842b14f3fca80a47027ce209d2537d73",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kecamatan/13.json": "5f982ceb9c8c97c06312c66c8376e4b9852403ffbf4915f74e106104c37ee3af",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-b8af4ded5baf.png": "8157783ec248d93574354d4993e6758b2fa874371a95d67a32ccc005c2aa006e",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "5e8841009e6055478e6e9e983c6148c7d6e540afa04f89c927fcc59843e0551d",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-1a67ddb71c73.png": "903f9c00b16f25cffe622d374fb6335130ad39b5feda877276ea46dcd25b04b3",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "dd140fa3cf69fb0b795d4704fcd3c0c07c2f5d44395b7480634f34b75cbecaff",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "c5b788ed86843a4ed57fe347a9f7e3c4b8eb0b91898594eb2abee00b814c578c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }
