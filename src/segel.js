@@ -1,7 +1,7 @@
 /* segel.js: fungsi murni segel dokumen (paket data/kajian-bnpb/segel-dokumen/, SG-03, ALGORITMA bagian 1 dan 3). Fungsi murni di atas; rute di bawah. SQL ada di src/hak.js bagian Segel. */
 import {json, gagal, sha, ipHash} from "./worker.js";
 import {laju} from "./bnpb.js";
-import {adaTabelSegel, segelCari, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca} from "./hak.js";
+import {adaTabelSegel, segelCari, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
 import {kunciBeku} from "./pb_dokumen.js";
 
 export const ABJAD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford base32: tanpa I, L, O, U
@@ -26,6 +26,19 @@ export const dasarRujukan = r => String(r).split("#")[0];
 export const STATUS = {dicabut: "Dicabut", tidak_cocok: "Tidak cocok", lebih_baru: "Ada versi lebih baru", berlaku: "Berlaku"};
 export const statusSegel = ({dicabut, cocok, terbaru}) =>
   dicabut != null ? "dicabut" : !cocok ? "tidak_cocok" : terbaru ? "lebih_baru" : "berlaku";
+
+/* ---------- SG-05 sampai SG-07: segel ikut batch pembeku (ALUR A1, KEPUTUSAN D3, D13) ----------
+   st = pernyataan pembeku; s = sampul {jenis, rujukan, versi, sidik, judul, wilayah, periode, penerbit} (penerbit = nama lembaga, tidak pernah nama staf).
+   Baris dummy dan tabel segel yang belum ada: batch berjalan tanpa segel. Segel selalu pernyataan TERAKHIR, jadi indeks hasil pembeku tidak bergeser.
+   Bentrok kode (peluang sangat kecil) = batch gagal utuh; diulang dengan kode baru paling banyak 3 kali (Q9). Kembalian {r: hasil batch, kode | null}. */
+export async function batchBersegel(env, st, s, dummy = 0) {
+  if (dummy || !await adaTabelSegel(env)) return {r: await batchTulis(env, st), kode: null};
+  for (let i = 0; ; i++) {
+    const kode = buatKode();
+    try { return {r: await batchTulis(env, [...st, stmtSegel(env, {...s, kode, dasar: dasarRujukan(s.rujukan)})]), kode}; }
+    catch (e) { if (i < 2 && /segel\.kode/.test(String(e?.message))) continue; throw e; }
+  }
+}
 
 /* ---------- SG-04: GET /api/verifikasi/<kode> (publik, DESAIN-TEKNIS 3, ALGORITMA 3-5, KEAMANAN-PRIVASI) ----------
    Batas laju dihitung sebelum kode dibaca, jadi kode salah format ikut terhitung. Kode tidak ada, salah format, dan tabel belum ada dijawab 404 yang sama (D12).

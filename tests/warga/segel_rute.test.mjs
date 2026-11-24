@@ -100,6 +100,28 @@ uji("metode lain 405 allow GET dan noindex; tanpa IP_SALT 503 noindex", async ()
   assert.equal(r.s, 503); assert.match(r.h.get("x-robots-tag"), /noindex/);
 });
 
+/* T12: pembeku jalan sebelum migrasi 0171 diterapkan. D1 tiruan di atas node:sqlite (prepare/bind/first/run/batch atomik), supaya urutan migrasi bisa diatur. */
+const d1Tiruan = db => {
+  const stmt = (sql, ikat = []) => ({bind: (...v) => stmt(sql, v), first: async () => db.prepare(sql).get(...ikat) ?? null, run: async () => ({meta: {changes: Number(db.prepare(sql).run(...ikat).changes)}}), _jalan: () => ({meta: {changes: Number(db.prepare(sql).run(...ikat).changes)}})});
+  return {prepare: sql => stmt(sql), batch: async st => { db.exec("BEGIN"); try { const r = st.map(x => x._jalan()); db.exec("COMMIT"); return r; } catch (e) { db.exec("ROLLBACK"); throw e; } }};
+};
+uji("T12 tabel segel belum ada: pembeku tetap menulis snapshot tanpa segel; sesudah 0171 diterapkan segel langsung tertulis; dummy tidak pernah", async () => {
+  const {batchBersegel} = await import("../../src/segel.js?t12");   // isolate baru: cache adaTabelSegel kosong
+  const db = new DatabaseSync(":memory:"), env = {DB: d1Tiruan(db)};
+  const semua = migrasi(), potong = semua.indexOf("CREATE TABLE IF NOT EXISTS segel ");
+  db.exec(semua.slice(0, potong));
+  const snap = (r, isi) => env.DB.prepare("INSERT INTO lk_snapshot (tanggal_laporan, ralat, hash, isi, alasan, oleh, waktu, dummy) VALUES ('2026-11-21', ?1, ?2, ?3, ?4, 'uji', 1, 0)").bind(r, sha256(isi), isi, r ? "ralat angka" : null);
+  const sampul = (r, isi) => ({jenis: "lk", rujukan: `2026-11-21#${r}`, versi: r, sidik: sha256(isi), judul: "Laporan Harian Karhutla", wilayah: "Nasional", periode: "2026-11-21", penerbit: "BNPB", terbit: 5});
+  const a = await batchBersegel(env, [snap(0, "{}")], sampul(0, "{}"));
+  assert.equal(a.kode, null); assert.equal(db.prepare("SELECT count(*) n FROM lk_snapshot WHERE tanggal_laporan = '2026-11-21'").get().n, 1);
+  db.exec(semua.slice(potong));   // pemilik menerapkan 0171 dan 0172 sesudah isolate hidup
+  const b = await batchBersegel(env, [snap(1, '{"a":1}')], sampul(1, '{"a":1}'));
+  assert.match(b.kode, /^[0-9A-HJKMNP-TV-Z]{10}$/);
+  assert.equal(db.prepare("SELECT dasar FROM segel WHERE kode = ?").get(b.kode).dasar, "2026-11-21");
+  const c = await batchBersegel(env, [snap(2, '{"a":2}')], sampul(2, '{"a":2}'), 1);
+  assert.equal(c.kode, null); assert.equal(db.prepare("SELECT count(*) n FROM segel").get().n, 1);
+});
+
 uji("kueri cari, daftar, cabut lewat indeks (SEARCH, bukan SCAN)", () => {
   const db = new DatabaseSync(":memory:"); db.exec(migrasi());
   for (const k of ["ada", "cari", "daftar", "cabut"]) {
