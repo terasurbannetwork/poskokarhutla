@@ -13,8 +13,8 @@ const IZIN = [/encodeURIComponent\(kec\.kode\)/];   // peringatan.js: kode kecam
 test("labelKode: tiap keluarga berlabel sendiri, kode lain tidak diubah", () => {
   assert.equal(labelKode("KJ-241126-03"), "Kejadian laporan KJ-241126-03");
   assert.equal(labelKode("KJ-2411-AB12CD34"), "Kejadian resmi KJ-2411-AB12CD34");
-  assert.equal(labelKode("GL-241126-01"), "Gugus GL-241126-01");
-  assert.equal(labelKode("GL-241126-100"), "Gugus GL-241126-100");
+  assert.equal(labelKode("GL-241126-01"), "Kejadian laporan GL-241126-01", "gugus = kejadian laporan (D1)");
+  assert.equal(labelKode("GL-241126-100"), "Kejadian laporan GL-241126-100");
   for (const x of ["LA-241126-01", "", null, undefined, "KJ-24-1"]) assert.equal(labelKode(x), String(x ?? ""), String(x));
   assert.notEqual(labelKode("KJ-241126-03").split(" ").slice(0, 2).join(" "), labelKode("KJ-2411-AB12CD34").split(" ").slice(0, 2).join(" "), "dua keluarga KJ tidak pernah satu label");
 });
