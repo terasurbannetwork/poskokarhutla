@@ -8,6 +8,8 @@ terisi di posisi terakhir (dari severity GDACS, km/jam -> knot) dan kategori per
 cuaca_siklon_bmkg.json; sengaja tidak dicampur ke berkas ini.
 Tidak ada siklon aktif = "aktif": [] (sah). Kerucut ketidakpastian tidak diterbitkan JTWC dalam teks: kerucut_km = null (bila diisi,
 satu radius km per titik lintasan, urutan sama). BoM tidak dipakai: teks peringatannya tak punya format stabil; JTWC mencakup belahan selatan.
+Bibit (H22, ALGORITMA A6): JTWC ABIO10/ABPW10 (abioweb.txt, abpwweb.txt; URL ABIO10.txt tanpa "web" menjawab 403) -> "bibit" [{id, nama, lat, lon, angin_kt, tekanan_hpa, peluang}] dan
+"pasangan_pusaran" (daftar pasangan utara/selatan 0-15 derajat pada bujur 70-110 BT, [] bila tak ada). Kosong sah: "bibit": []. Salah satu teks gagal ditarik = kedua kunci TIDAK ditulis dan galat masuk "gagal".
 Pakai: python3 scripts/cuaca/siklon.py   |   python3 scripts/cuaca/siklon.py uji
 """
 import datetime as dt, json, os, re, sys, urllib.request
@@ -72,6 +74,34 @@ def unduh(url):
         raise ValueError(f"URL ditolak (bukan {HOST_BOLEH}): {url[:80]}")
     with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=60) as r:
         return r.read().decode("utf-8", "replace")
+
+
+ABIO, ABPW = "https://www.metoc.navy.mil/jtwc/products/abioweb.txt", "https://www.metoc.navy.mil/jtwc/products/abpwweb.txt"
+
+
+def bibit_dari(teks):
+    """Teks ABIO10/ABPW10 -> daftar bibit dari butir 'TROPICAL DISTURBANCE SUMMARY' (angin = batas atas rentang taksiran, tekanan = taksiran JTWC, tanpa taksiran = None)."""
+    t = re.sub(r"\s+", " ", teks)
+    out = []
+    for m in re.finditer(r"\((\d)\) THE AREA OF CONVECTION \(INVEST (\d{2}[A-Z])\)(.*?)(?=\(\d\) |\bC\. SUBTROPICAL|\b3\. |$)", t):
+        i, b = m.group(2), m.group(3)
+        pos = re.findall(r"(?:NOW )?LOCATED NEAR (\d+(?:\.\d+)?)([NS]) (\d+(?:\.\d+)?)([EW])", b)
+        if not pos:
+            continue
+        la, ns, lo, ew = pos[-1]
+        ang = re.search(r"WINDS ARE ESTIMATED AT (?:\d+ TO )?(\d+) KNOTS", b)
+        tek = re.search(r"PRESSURE IS ESTIMATED TO BE NEAR (\d+) MB", b)
+        pel = re.search(r"NEXT 24 HOURS (?:[A-Z]+ ){0,4}?(LOW|MEDIUM|HIGH)\b", b)
+        out.append({"id": i, "nama": i, "lat": round(float(la) * (1 if ns == "N" else -1), 1), "lon": round(float(lo) * (1 if ew == "E" else -1), 1),
+                    "angin_kt": int(ang.group(1)) if ang else None, "tekanan_hpa": int(tek.group(1)) if tek else None, "peluang": pel.group(1) if pel else None})
+    return out
+
+
+def pasangan_pusaran(titik):
+    """titik [(id, lat, lon)] -> pasangan (satu di 0-15 LU, satu di 0-15 LS) yang keduanya di bujur 70-110 BT. Catatan untuk A4, bukan peringatan."""
+    u = [x for x in titik if 0 < x[1] <= 15 and 70 <= x[2] <= 110]
+    sl = [x for x in titik if -15 <= x[1] < 0 and 70 <= x[2] <= 110]
+    return [{"utara": a[0], "selatan": b[0]} for a in u for b in sl]
 
 
 GDACS = "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventlist=TC&fromDate={a}&toDate={b}&alertlevel=Green;Orange;Red"
@@ -235,10 +265,18 @@ def main():
         gagal += gl
     except Exception as e:
         gagal.append(f"JMA: {e}")
+    bb = {}
+    try:   # bibit: dua teks wajib lengkap, kalau tidak kunci tidak ditulis (gagal tarik bukan nol)
+        bibit = bibit_dari(unduh(ABIO)) + bibit_dari(unduh(ABPW))
+        sumber.append("JTWC ABIO10/ABPW10")
+        titik = [(b["id"], b["lat"], b["lon"]) for b in bibit] + [(x["id"], x["lintasan"][0][1], x["lintasan"][0][2]) for x in aktif if x.get("lintasan")]
+        bb = {"bibit": bibit, "pasangan_pusaran": pasangan_pusaran(titik)}
+    except Exception as e:
+        gagal.append(f"bibit ABIO10/ABPW10: {e}")
     if not sumber:
         # semua sumber tak terjangkau: berkas lama dibiarkan (bukan "tidak ada siklon")
         raise RuntimeError("; ".join(gagal))
-    simpan(os.path.join(KELUAR, "cuaca_siklon.json"), {"dibuat": sekarang(), "sumber": sumber, "gagal": gagal, "aktif": aktif})
+    simpan(os.path.join(KELUAR, "cuaca_siklon.json"), {"dibuat": sekarang(), "sumber": sumber, "gagal": gagal, "aktif": aktif, **bb})
     print(f"cuaca siklon: {dilihat} peringatan JTWC, {len(aktif)} aktif di kotak; gagal {len(gagal)}; berblok JMA {sum(1 for s in aktif if 'jma' in s)}", file=sys.stderr)
 
 
@@ -324,6 +362,14 @@ def uji():
     b = [mk("In-fa", 0, 0)]
     n, g = tambah_jma(b, rusak)
     assert n == 1 and len(g) == 1 and "jma" in b[0]       # satu topan gagal, yang lain tetap
+    # bibit: teks ABIO10/ABPW10 nyata 24 Nov 2026 (97S MEDIUM, 98S HIGH; ABPW10 kosong)
+    ab = open(os.path.join(F, "abio10_20261124.txt")).read()
+    bs = bibit_dari(ab)
+    assert bs == [{"id": "97S", "nama": "97S", "lat": -7.1, "lon": 68.9, "angin_kt": 28, "tekanan_hpa": 1008, "peluang": "MEDIUM"},
+                  {"id": "98S", "nama": "98S", "lat": -8.9, "lon": 78.6, "angin_kt": 28, "tekanan_hpa": 1006, "peluang": "HIGH"}], bs
+    assert bibit_dari(open(os.path.join(F, "abpw10_20261124.txt")).read()) == []                 # NONE = nol tercatat, bukan gagal
+    assert pasangan_pusaran([("97S", -7.1, 68.9), ("98S", -8.9, 78.6)]) == []                   # tak ada yang di utara
+    assert pasangan_pusaran([("97S", -7.1, 68.9), ("98S", -8.9, 78.6), ("U1", 5.0, 90.0)]) == [{"utara": "U1", "selatan": "98S"}]
     print("ok siklon")
 
 
