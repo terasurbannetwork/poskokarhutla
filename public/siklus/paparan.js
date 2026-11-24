@@ -2,7 +2,7 @@
    Peta penuh, panel kiri bisa ditarik (pola index.html). Keterbatasan ditulis: ambang bangunan, galat posisi, kelas InaRISK tidak resmi. Provinsi tanpa grid = "tidak terliput", bukan 0.
    Ganti provinsi, kabupaten, bahaya, atau kelas: chrome urgent (inti.js seg dan pilihan), isi lewat nanti(); respons lambat dari pilihan lama dibuang (penjaga). */
 import {h, ik, K, api, kartu, hl, wadah, para, kead, kead_dari, kosongkan, seg, pilihan, tombol, toast, pil, nilai, tip, namaKab, namaProv, angka, peran, penjaga, selisihAntarsumber} from "./inti.js";
-import {muatMapLibre} from "../inti/maplibre.js";
+import {muatMapLibre, warnaToken} from "../inti/maplibre.js";
 
 const G = globalThis, LEBAR_MIN = 320, LEBAR_MAKS = 640, KUNCI_LEBAR = "sk-panel-lebar";
 const BAHAYA = [["banjir", "Banjir", "banjir"], ["gempa", "Gempa", "gempa"], ["gunungapi", "Gunung api", "gunung"], ["karhutla", "Karhutla", "api"], ["pesisir", "Pesisir", "cuaca"]];
@@ -22,12 +22,6 @@ export function agregat(bahaya, kelas) {
   const ada = kelasDipilih(kelas).map(k => bahaya?.kelas?.[k]).filter(Boolean);
   if (!ada.length) return null;
   return {bangunan: jumlahAda(ada.map(k => nilaiN(k.bangunan))), luas: jumlahAda(ada.map(k => nilaiN(k.luas_m2))), jiwa: Object.fromEntries(SUMBER_JIWA.map(([s]) => [s, jumlahAda(ada.map(k => nilaiN(k.jiwa?.[s])))]))};
-}
-/* token warna -> "rgb(r, g, b)" untuk MapLibre (tidak membaca oklch); tanpa hex literal */
-function warnaToken(nama) {
-  const c = document.createElement("canvas"); c.width = c.height = 1; const x = c.getContext("2d");
-  x.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(nama).trim() || "gray"; x.fillRect(0, 0, 1, 1);
-  const [r, g, b] = x.getImageData(0, 0, 1, 1).data; return `rgb(${r}, ${g}, ${b})`;
 }
 
 export async function buka(isi, sk) {

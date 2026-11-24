@@ -1,5 +1,4 @@
 /* /lapor/hari-ini: komposisi token tema.css, tanpa literal warna baru */
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);padding-top:var(--top)}
 .hi{max-width:1180px;margin:0 auto;padding:24px 16px 48px}
 .hi-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .hi-ik{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}

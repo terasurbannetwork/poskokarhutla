@@ -3,7 +3,7 @@
    Gagal ambil grid = "menunggu data", bukan nol. Isian petugas meja berdampingan dengan model, tidak dijumlah. Chrome urgent, isi berat lewat nanti() (inti.js). */
 import {h, ik, K, api, kartu, hl, wadah, para, kead, kead_dari, kosongkan, seg, tombol, tanya, toast, pil, pilihan, tip, namaJenis, wilayah, angka, tgl, wib, tglWib, geser, peran, penjaga} from "./inti.js";
 import {RE_KJ} from "./hitung.js";
-import {muatMapLibre} from "../inti/maplibre.js";
+import {muatMapLibre, warnaToken} from "../inti/maplibre.js";
 import {urutKab, lahanGabung, ringkasKartu, citraKab, JENIS_CITRA, kabAwal, polaSel, fmtAngka, fmtPersenKelas, rentangTulis, rentangDari, alasanKab, alasanRentang, tglUtc} from "./genangan.js";
 
 const G = globalThis, MAKS_KEJADIAN = 20;
@@ -172,12 +172,6 @@ function blokBanjir(hasil) {
 const kth = (a, d) => h("th", {title: d}, a);
 const pilRadar = () => h("span", {class: "sk-pil", "data-y": "radar", title: "Perkiraan dari radar Sentinel-1 lewat Copernicus GFM; bukan angka resmi dan bukan hitungan korban"}, ik("gelombang", 12), "perkiraan radar");
 const VONIS = {menunggu: "belum dijalankan", lulus: "lulus", gagal: "tidak lulus", tak_dapat_dinilai: "tidak dapat dinilai"};
-/* token warna -> "rgb(r, g, b)" untuk MapLibre (tidak membaca oklch) */
-function warnaToken(nama) {
-  const c = document.createElement("canvas"); c.width = c.height = 1; const x = c.getContext("2d");
-  x.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(nama).trim() || "gray"; x.fillRect(0, 0, 1, 1);
-  const [r, g, b] = x.getImageData(0, 0, 1, 1).data; return `rgb(${r}, ${g}, ${b})`;
-}
 
 function kartuGenangan(d, rs, lama) {
   const hasil = d.hasil, k = d.kaji, jk = hasil?.jiwa_kab_sah, ambangBawah = Number.isFinite(hasil?.ambang?.zona_bawah) ? Math.round(hasil.ambang.zona_bawah * 100) : "yang ditetapkan model";

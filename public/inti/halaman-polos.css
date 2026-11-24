@@ -1,0 +1,2 @@
+/* Dasar halaman tamu ringan (/verifikasi, /lapor/hari-ini): satu sumber aturan body, dimuat sesudah tema.css dan kepala.css */
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);padding-top:var(--top)}

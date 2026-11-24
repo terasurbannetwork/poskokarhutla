@@ -1,5 +1,4 @@
 /* /verifikasi (segel-dokumen SG-08, DESIGN-SYSTEM 1-2): komposisi token tema.css dan kartu .ex-std, tanpa literal warna baru */
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);padding-top:var(--top)}
 header.top .mark{display:flex;align-items:center;gap:12px;min-width:0}
 .top .logo img{width:30px;height:30px}
 .bencana .menu{display:none}.bencana[open] .menu{display:block}
