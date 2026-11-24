@@ -3,7 +3,7 @@
 Pakai:  python3 scripts/banjir/bukti_das.py            # bangun semua daerah -> public/banjir/data/bukti/{index,<slug>}.json
         python3 scripts/banjir/bukti_das.py bangun "32|Bogor,11|Aceh Selatan"   # hanya kabupaten itu (kunci "prov|kab", dipisah koma)
         python3 scripts/banjir/bukti_das.py lengkapi    # hitung ulang bidang turunan (korelasi, tumpuk, % kabupaten, sumber) tanpa jaringan
-        python3 scripts/banjir/bukti_das.py subdas ["prov|kab,..."]   # sub-DAS penyusun + irisan sel hujan 0,25 derajat (bobot scripts/banjir/hulu.py)
+        python3 scripts/banjir/bukti_das.py subdas      # sub-DAS penyusun + irisan sel hujan 0,25 derajat (bobot scripts/banjir/hulu.py)
         python3 scripts/banjir/bukti_das.py uji         # invarian berkas hasil + uji fungsi murni (luring)
 Lalu  python3 scripts/banjir/citra_banjir.py            # menambah citra sebelum-sesudah ke berkas yang sama
 
@@ -501,7 +501,7 @@ def slug(kunci):
     return re.sub(r"[^a-z0-9]+", "-", kunci.lower()).strip("-")
 
 
-def pilih_daerah(titik, attr, milik, tambahan=()):
+def pilih_daerah(titik, attr, milik, paksa=()):
     """Kandidat urut menurut jumlah kejadian banjir DIBI 2010-2023 (maks MAKS_PER_PROV per provinsi) + wilayah Siaga/Awas hari ini.
     -> [(kunci kabupaten, id sub-DAS keluaran, kunci kecamatan keluaran, alasan)]"""
     kej = baca_json("public/banjir/data/kejadian.json")["kab"]
@@ -534,17 +534,17 @@ def pilih_daerah(titik, attr, milik, tambahan=()):
         prov[kab[:2]] += 1
         if len(hasil) >= N_DAERAH:
             break
+    for kab in paksa:  # `bangun "<prov|kab>"`: kabupaten pilihan tetap dibangun walau di luar kuota daftar otomatis
+        k = keluaran(kab)
+        if k and kab not in [h[0] for h in hasil]:
+            n = next((x for x, kk in skor if kk == kab), 0)
+            hasil.append((kab, k[2], k[1], f"{n} kejadian banjir DIBI 2010-2023"))
+            pakai.add(k[2])
     for kab in siaga:
         k = keluaran(kab)
         if k and k[2] not in pakai and kab not in [h[0] for h in hasil]:
             hasil.append((kab, k[2], k[1], f"status Siaga/Awas {rentang_hari(baca_json('public/banjir/data/status.json')['hari'])}"))
             pakai.add(k[2])
-    for kab in tambahan:  # kabupaten yang diminta eksplisit lewat `bangun "prov|kab"`, di luar peringkat DIBI/Siaga; aturan titik keluaran sama
-        k = keluaran(kab)
-        if k and kab not in [h[0] for h in hasil]:
-            hasil.append((kab, k[2], k[1], "banjir dan longsor Sumatera akhir November 2025 (dipilih manual)"))
-        elif not k:
-            print(f"   {kab}: dilewati, tidak ada sub-DAS {MIN_KM2}-{PLAFON_KM2} km2 yang memuat pusat kecamatannya", file=sys.stderr)
     return hasil
 
 
@@ -705,7 +705,7 @@ def luas_irisan(a, bs, dy=DY_SUB):
     return tot
 
 
-def subdas(pilihan=None):
+def subdas():
     """Isi `subdas` di tiap <slug>.json: sub-DAS HydroBASINS penyusun DAS hulu, luas irisannya dengan sel hujan 0,25 derajat
     (bobot untuk scripts/banjir/hulu.py), konsesi per sub-DAS, kecamatan terdekat sebagai nama, dan penanda sel hutan hilang terbanyak.
     Butuh zip HydroBASINS di data/raw/banjir/das (lihat RISET-BUKTI.md); tanpa Hansen/jaringan lain."""
@@ -714,8 +714,6 @@ def subdas(pilihan=None):
     attr, _ = indeks_basin({})
     assert attr, "zip HydroBASINS tidak ada di data/raw/banjir/das"
     for e in idx["daerah"]:
-        if pilihan and e["kunci"] not in pilihan:
-            continue
         jalur = os.path.join(KELUAR, e["slug"] + ".json")
         d = json.load(open(jalur))
         ids = hulu(attr, d["keluaran"]["id"])
@@ -909,7 +907,7 @@ if __name__ == "__main__":
         lengkapi()
         uji()
     elif a[:1] == ["subdas"]:
-        subdas(set(a[1].split(",")) if len(a) > 1 else None)
+        subdas()
         uji()
     else:
         bangun(set(a[1].split(",")) if a[:1] == ["bangun"] and len(a) > 1 else None)
