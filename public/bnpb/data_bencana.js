@@ -224,12 +224,18 @@
       const sorot = id => { if (idSorot != null) M.setFeatureState({source: "w", id: idSorot}, {sorot: false}); idSorot = id; if (id != null) M.setFeatureState({source: "w", id}, {sorot: true}); };
       M.on("mousemove", "w-isi", e => { const f = e.features[0]; if (!f || e.originalEvent.bdPosko || M.queryRenderedFeatures(e.point, {layers: ["posko-titik"]}).length) return; sorot(f.id); M.getCanvas().style.cursor = "pointer";
         const p = f.properties, top = JSON.parse(p.top || "[]"), akt = JSON.parse(p.akt || "[]");
-        tip.replaceChildren(h("b", {teks: p.nama}), h("span", {teks: F(p.n) + " kejadian"}),
-          ...(st.ukur === "per100" ? [h("span", {teks: p.laju != null ? `${F1(p.laju)} per 100 ribu jiwa` : "Tanpa data penduduk"})] : []),
-          ...top.map(([k, n]) => h("small", {teks: `${namaKel(k)}: ${F(n)}`})),
+        const per100 = st.ukur === "per100", lain = top.find(([k]) => k === "lainnya")?.[1] || 0, utama = top.filter(([k]) => k !== "lainnya");
+        const sisa = lain + utama.slice(4).reduce((t, [, n]) => t + n, 0), daftar = [...utama.slice(0, 4), ...(sisa ? [["lainnya", sisa]] : [])];
+        const baris = ([k, n]) => { const w = KEL.find(x => x[0] === k)?.[3] || "--kat-lain", b = h("span", {class: "bd-tip-k"}, h("i"), h("span", {teks: namaKel(k)}), h("strong", {teks: F(n)}), h("em"));
+          b.querySelector("i").style.background = `var(${w})`; b.querySelector("em").style.setProperty("--p", (p.n ? n / p.n * 100 : 0).toFixed(1) + "%"); b.querySelector("em").style.setProperty("--w", `var(${w})`); return b; };
+        tip.replaceChildren(h("span", {class: "bd-tip-kepala"}, h("b", {teks: p.nama}), ...(p.urut ? [h("small", {class: "bd-tip-urut", teks: `Ke-${F(p.urut)} dari ${F(p.dari)}`})] : [])),
+          h("span", {class: "bd-tip-angka"}, h("strong", {teks: per100 ? (p.laju != null ? F1(p.laju) : "–") : F(p.n)}),
+            h("span", {teks: per100 ? (p.laju != null ? `kejadian per 100 ribu jiwa, ${F(p.n)} kejadian` : `${F(p.n)} kejadian, tanpa data penduduk`) : (p.n ? "kejadian" : "Tidak ada kejadian tercatat")})),
+          ...(daftar.length ? [h("span", {class: daftar.length > 1 ? "bd-tip-rinci" : "bd-tip-satu"}, ...daftar.map(baris))] : []),
           ...(p.rambuTeks ? [h("small", {class: "bd-tip-rambu", teks: p.rambuTeks})] : []),
-          ...(akt.length ? [h("span", {class: "bd-tip-akt", teks: "Masih berlangsung: " + akt.join(", ")})] : []));
-        tip.hidden = false; tip.style.left = Math.min(e.point.x + 14, peta.clientWidth - 230) + "px"; tip.style.top = (e.point.y + 14) + "px"; });
+          ...(akt.length ? [h("span", {class: "bd-tip-akt", teks: "Masih berlangsung: " + akt.join(", ")})] : []),
+          h("small", {class: "bd-tip-klik", teks: st.prov ? (st.kab === p.kode ? "Klik untuk melepas pilihan" : "Klik untuk melihat kab/kota ini") : "Klik untuk melihat kab/kota"}));
+        tip.hidden = false; const lb = tip.offsetWidth, tg = tip.offsetHeight; tip.style.left = Math.max(8, Math.min(e.point.x + 16, peta.clientWidth - lb - 8)) + "px"; tip.style.top = (e.point.y + 16 + tg > peta.clientHeight ? Math.max(8, e.point.y - tg - 12) : e.point.y + 16) + "px"; });
       M.on("mouseleave", "w-isi", () => { sorot(null); tip.hidden = true; M.getCanvas().style.cursor = ""; });
       M.on("mousemove", "posko-titik", e => { const p = e.features[0]?.properties; if (!p) return; e.originalEvent.bdPosko = true;
         tip.replaceChildren(h("b", {teks: p.lokasi || "Posko pengungsian"}), h("span", {teks: `${F(p.jiwa)} jiwa mengungsi`}), h("small", {teks: [p.desa, p.kec, p.kab].filter(Boolean).join(", ")}),
@@ -257,7 +263,7 @@
       if (!M) return; await siapPeta;
       const fitur = [], titik = [], tingkat = st.prov ? "kab" : "prov";
       const kel = (kunci, xs) => { const m = new Map(); for (const x of xs) { const k = kunci(x); m.set(k, [...(m.get(k) || []), x]); } return m; };
-      const top = a => JSON.stringify(Object.entries(a.kel).sort((x, y) => y[1] - x[1]).slice(0, 3));
+      const top = a => JSON.stringify(Object.entries(a.kel).filter(([, n]) => n > 0).sort((x, y) => y[1] - x[1]));
       const hitung = kunci => { const per = new Map(); for (const x of rows) { if (x.bencana === 0) continue; const k = kunci(x), a = per.get(k) || {n: 0, kel: {}}; a.n += x.kejadian; a.kel[x.kel] = (a.kel[x.kel] || 0) + x.kejadian; per.set(k, a); } return per; };
       const pusat = g => { const [[x0, y0], [x1, y1]] = tengah(g); return [(x0 + x1) / 2, (y0 + y1) / 2]; };
       if (!st.prov) {
@@ -276,6 +282,10 @@
             rambu: st.lapis.has("rambu") && RAMBU?.has(rk) ? 1 : 0, rambuTeks: teksRambu(rk, f.properties.kab), top: top(a), akt: JSON.stringify(ringkasAkt(xa, true))}, geometry: f.geometry});
           if (xa.length) titik.push({type: "Feature", properties: {n: 1}, geometry: {type: "Point", coordinates: pusat(f.geometry)}}); });
       }
+      /* peringkat wilayah menurut jumlah kejadian (atau laju per 100 ribu jiwa), hanya wilayah berkejadian */
+      const nilaiUrut = f => perLaju() ? f.properties.laju : f.properties.n;
+      const urut = fitur.filter(f => nilaiUrut(f) > 0).sort((a, b) => nilaiUrut(b) - nilaiUrut(a));
+      urut.forEach((f, i) => { f.properties.urut = i + 1; f.properties.dari = urut.length; });
       M.getSource("w").setData({type: "FeatureCollection", features: fitur});
       M.getSource("akt").setData({type: "FeatureCollection", features: titik});
       const pos = st.lapis.has("posko") && Array.isArray(POSKO) ? POSKO.filter(x => !st.prov || x.prov === st.prov) : [];
