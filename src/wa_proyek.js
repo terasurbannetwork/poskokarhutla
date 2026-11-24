@@ -4,13 +4,13 @@
    Nomor tidak pernah masuk ke sini: pemakai dikenali dari wa_sha (sha256 nomor ternormal + garam WA_GARAM di mesin).
    R2 (binding MEDIA): bot-laporan/<proyek>/v<n>-<acak>/{isian.json, ubah.json, <nama deck>.pptx, <nama deck>.pdf, pratinjau-<slide>.png}; log kejadian pola di
    bot-laporan/pola/<id>.json. Versi append-only: rute menolak n yang sudah ada; berkas tiap percobaan di awalan unik v<n>-<acak>/ yang kuncinya dicatat baris bl_versi. */
-import {json, gagal, sha, acak, bacaBody} from "./worker.js";
+import {json, gagal, sha, acak, bacaBody, adminOK} from "./worker.js";
 import {tglSah} from "./posko.js";
 import {hariWib} from "./wa.js";
 import {modAtauStaf, stafSesiSemua} from "./staf.js";
 import {Galat, pelakuBlMesin as M, pelakuBlStaf, BL_STATUS, BL_POLA, blProyekBuka, blProyekById, blProyekPindah, blProyekStaf, blBahanTambah, blBahanDaftar,
   blVersiTambah, blVersiBaca, blVersiDaftar, blPolaById, blPolaJenis, blPolaNilai, blPolaSimpan, blPolaPutus, blDaftarTulis, BL_TOLAK_HARI, blMenungguHitung, blTerdaftar,
-  blBiayaBaca, blBiayaTambah, blDetakBaca, blDetakTulis, blDetakSemua} from "./hak.js";
+  blBiayaBaca, blBiayaTambah, blBiayaRentang, blDetakBaca, blDetakTulis, blDetakSemua} from "./hak.js";
 
 export const BL_JENIS = ["harian", "penanganan", "banjir_sepekan", "gempa"];   // tahap 1 (Q3 BAWAAN SEMENTARA); banjir_sepekan K42 (19 Nov 2026). CHECK 0154 sengaja tidak mengunci daftar ini.
 const RE_SHA = /^[0-9a-f]{64}$/, RE_ID = /^P-\d{6}-\d{2}$/, RE_WA_ID = /^[\w.:@-]{1,128}$/, RE_JB = /^[a-z0-9_]{2,40}$/, RE_MESIN = /^[a-z0-9_-]{2,40}$/,
@@ -239,6 +239,31 @@ async function biayaTambah(env, req, url, kini) {
   return json({ok: true, tanggal: t, usd_mikro: await blBiayaTambah(env, M, t, u)});
 }
 
+/* Pemantau biaya Claude Bot Laporan BNPB (/admin/biaya-bot, K25, K31, K38). Rincian per kegiatan dan per laporan hanya ada di mesin bot
+   (~/.wa-bot/biaya-lokal.json); mesin mengirim ringkasannya tiap 10 menit ke R2 bot-laporan/biaya.json (timpa, bukan riwayat). Tanpa nomor, tanpa wa_sha.
+   Sisa saldo sengaja tidak ada (K31: kredit tidak realtime dan dipakai hal lain). */
+const BIAYA_R2 = "bot-laporan/biaya.json", RE_BULAN = /^\d{4}-(0[1-9]|1[0-2])$/, RE_KEG = /^[a-z_]{2,20}$/, MAKS_BIAYA_JSON = 65536;
+const usd = (v, nama) => typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= 1e6 ? Math.round(v * 1e6) / 1e6 : tolak(`${nama} harus angka USD 0 sampai 1000000`);
+const peta = (v, nama, maks) => v && typeof v === "object" && !Array.isArray(v) && Object.keys(v).length <= maks ? Object.entries(v) : tolak(`${nama} harus objek paling banyak ${maks} kunci`);
+/* POST /api/wa/biaya/rinci {bulan: {YYYY-MM: usd}, kegiatan: {YYYY-MM: {kegiatan: usd}}, proyek: {P-ddmmyy-NN: {usd, waktu}}} */
+async function biayaRinci(env, req, url, kini) {
+  const b = await bacaBody(req, MAKS_BIAYA_JSON); if (b.galat) throw new Galat(b.status || 400, b.galat); const o = b.o || {};
+  const bulan = Object.fromEntries(peta(o.bulan, "bulan", 24).map(([k, v]) => [pola(k, RE_BULAN, "bulan"), usd(v, "bulan")]));
+  const kegiatan = Object.fromEntries(peta(o.kegiatan, "kegiatan", 24).map(([k, v]) => [pola(k, RE_BULAN, "bulan kegiatan"),
+    Object.fromEntries(peta(v, "kegiatan " + k, 20).map(([g, x]) => [pola(g, RE_KEG, "nama kegiatan"), usd(x, "kegiatan")]))]));
+  const proyek = Object.fromEntries(peta(o.proyek, "proyek", 200).map(([k, v]) => [pola(k, RE_ID, "proyek"),
+    {usd: usd(v?.usd, "proyek usd"), waktu: Number.isInteger(v?.waktu) && v.waktu > 0 && v.waktu <= kini + HARI ? v.waktu : tolak("proyek waktu tidak sah")}]));
+  await env.MEDIA.put(BIAYA_R2, JSON.stringify({bulan, kegiatan, proyek, diperbarui: kini}), {httpMetadata: {contentType: TIPE.json}});
+  return json({ok: true, diperbarui: kini});
+}
+/* GET /api/wa/biaya/ringkas: admin saja. Harian 90 hari dari D1 bl_biaya (sumber lengkap sejak 18 Nov) + rincian kiriman mesin (null bila belum ada). */
+async function biayaRingkas(env, req, url, kini) {
+  if (!await adminOK(env, req, kini)) return gagal(401, "hanya admin; masuk lagi");
+  const dari = hariWib(kini - 89 * HARI), obj = await env.MEDIA.get(BIAYA_R2);
+  let rinci = null; try { rinci = obj ? JSON.parse(await obj.text()) : null; } catch { rinci = null; }
+  return json({hari_ini: hariWib(kini), dari, harian: await blBiayaRentang(env, pelakuBlStaf, dari), rinci});
+}
+
 /* GET /api/wa/proyek/daftar: tab /pelaporan, sesi staf Pusdalops/Koordalops/Pimpinan atau admin. Tanpa isian, bahan, wa_sha. 14 hari terakhir + detak mesin. */
 async function stafDaftar(env, req, url, kini) {
   if (!await modAtauStaf(env, req, STAF_PERAN)) return (await stafSesiSemua(env, req)) ? gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan") : gagal(401, "belum masuk sebagai staf atau sesi berakhir; masuk lagi");
@@ -259,4 +284,6 @@ export const RUTE_WA_PROYEK = {
   "POST /api/wa/detak": jaga(detak),
   "GET /api/wa/biaya": jaga(biayaBaca),
   "POST /api/wa/biaya": jaga(biayaTambah),
+  "POST /api/wa/biaya/rinci": jaga(biayaRinci),
+  "GET /api/wa/biaya/ringkas": jaga(biayaRingkas, {mesinSaja: false}),
 };

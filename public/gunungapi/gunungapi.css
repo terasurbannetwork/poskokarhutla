@@ -6,11 +6,11 @@
 #metode{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
 #metode .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
 #metode .ex-bd{padding:8px 22px 10px}
-#metode .ex-ft{display:flex;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
-#metode .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#metode .ex-ft{display:flex;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:0.71875rem;color:var(--ink2)}
+#metode .ex-ey{display:inline-block;font-size:0.625rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
 #metode .ex h3{font-size:var(--fs-7);line-height:1.3;max-width:none}
 ul.mt{list-style:none;margin:0;padding:0}
-ul.mt li{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:6px 18px;padding:12px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5;align-items:start}
+ul.mt li{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:6px 18px;padding:12px 0;border-top:1px solid var(--line);font-size:0.84375rem;line-height:1.5;align-items:start}
 ul.mt li:first-child{border-top:0}
 ul.mt li b{font-weight:700}
 @media (max-width:700px){ul.mt li{grid-template-columns:1fr}}
@@ -18,6 +18,15 @@ ul.mt li b{font-weight:700}
 .bg-ex:hover{color:var(--ink);background:var(--surface)}
 .bg-ex svg{width:16px!important;height:16px}
 .dlg .dh p{margin:2px 0 0}
+.gn-kv{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+.rek-sumber{margin:8px 0 0;font-size:0.71875rem;color:var(--ink2);font-style:italic}
+.dk{display:flex;gap:8px;align-items:center}
+.dk .btn{text-decoration:none}
+/* laci gunung: kalimat skenario, citra sebelum/sesudah, ubin legenda dok */
+.dl-kal{margin:0;font-size:0.84375rem;line-height:1.55}
+.dl-kal .hl{color:var(--bad);font-weight:700}
+.dlg .isi>p{margin:0 0 8px}
+.dlg .isi>p:last-child{margin-bottom:0}
 /* laci gunung (setara laci gempa): kotak angka 2 kolom sama tinggi, kotak ganjil terakhir selebar laci; kartu .lc-sek berjarak 10px */
 .grid.gn-kv{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid.gn-kv > .kpi{display:grid;grid-template-rows:auto 1fr auto}

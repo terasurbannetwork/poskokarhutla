@@ -8,7 +8,7 @@ import {createHash} from "node:crypto";
 import {berantai, siapkan, ADMIN} from "./_bnpb.mjs";
 import {badanPanjang} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: modul rute saling impor dengannya
-import {cekUkuranVersi} from "../../src/wa_proyek.js";
+import {cekUkuranVersi, BL_JENIS} from "../../src/wa_proyek.js";
 
 const uji = berantai();
 const U = await siapkan("uji-wa-proyek", {r2: true, ikat: {WA_MESIN: "mesin-rahasia"}}), {api, mf, DB} = U;
@@ -37,7 +37,7 @@ const pasang = (id, status, v = 1, wa = A) => DB.prepare("INSERT INTO bl_proyek 
 
 uji("bl rute: tanpa kunci mesin 403, staf tanpa sesi 401", async () => {
   const rute = [["POST", "/api/wa/proyek"], ["POST", "/api/wa/proyek/status"], ["POST", "/api/wa/proyek/versi"], ["GET", "/api/wa/proyek/versi?id=P-010126-01"], ["POST", "/api/wa/proyek/pola"],
-    ["GET", "/api/wa/proyek/pola?jenis=harian"], ["GET", "/api/wa/terdaftar"], ["POST", "/api/wa/daftar"], ["POST", "/api/wa/detak"], ["GET", "/api/wa/biaya"], ["POST", "/api/wa/biaya"]];
+    ["GET", "/api/wa/proyek/pola?jenis=harian"], ["GET", "/api/wa/terdaftar"], ["POST", "/api/wa/daftar"], ["POST", "/api/wa/detak"], ["GET", "/api/wa/biaya"], ["POST", "/api/wa/biaya"], ["POST", "/api/wa/biaya/rinci"]];
   for (const [mt, j] of rute) for (const h of [{}, ADMIN, {authorization: "Bearer salah"}, {authorization: "mesin-rahasia"}]) {
     const r = await api(mt, j, mt === "POST" ? {wa_sha: A} : undefined, h); assert.equal(r.s, 403, `${mt} ${j} ${JSON.stringify(h)}`);
   }
@@ -55,7 +55,7 @@ uji("bl proyek: buka atau ambil per nomor, jenis, tanggal; kode P-DDMMYY-NN; bah
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "penanganan", tanggal: HARI})).j.proyek.id, AWAL + "02", "jenis lain = proyek lain");
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: B, jenis: "harian", tanggal: HARI})).j.proyek.id, AWAL + "03", "nomor lain = proyek lain (Q6)");
   assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "banjir_sepekan", tanggal: HARI})).j.proyek.id, AWAL + "04", "paparan banjir sepekan (K42) = jenis sah");
-  for (const salah of [{wa_sha: "6281200000001"}, {wa_sha: A.toUpperCase()}, {jenis: "gempa"}, {jenis: "../x"}, {tanggal: "2026-02-31"}, {tanggal: "2020-01-01"}, {bahan: [{wa_id: "a b"}]}, {bahan: [{wa_id: "1", jenis_bahan: "BMKG"}]}, {bahan: Array(51).fill({wa_id: "1"})}])
+  for (const salah of [{wa_sha: "6281200000001"}, {wa_sha: A.toUpperCase()}, {jenis: "kekeringan"}, {jenis: "../x"}, {tanggal: "2026-02-31"}, {tanggal: "2020-01-01"}, {bahan: [{wa_id: "a b"}]}, {bahan: [{wa_id: "1", jenis_bahan: "BMKG"}]}, {bahan: Array(51).fill({wa_id: "1"})}])
     assert.equal((await m("POST", "/api/wa/proyek", {wa_sha: A, jenis: "harian", tanggal: HARI, ...salah})).s, 400, JSON.stringify(salah).slice(0, 60));
   const g = await m("POST", "/api/wa/proyek", {id: AWAL + "01", wa_sha: A}); assert.equal(g.s, 200); assert.equal(g.j.bahan.length, 3);
   assert.equal((await m("POST", "/api/wa/proyek", {id: AWAL + "01", wa_sha: B})).s, 404, "proyek orang lain = 404");
@@ -64,7 +64,7 @@ uji("bl proyek: buka atau ambil per nomor, jenis, tanggal; kode P-DDMMYY-NN; bah
   /* proyek final tidak dibuka lagi: buka ulang membuat proyek baru */
   await DB.prepare("UPDATE bl_proyek SET status = 'final', versi = 1 WHERE id = ?").bind(AWAL + "03").run();
   const baru = await m("POST", "/api/wa/proyek", {wa_sha: B, jenis: "harian", tanggal: HARI});
-  assert.equal(baru.j.proyek.id, AWAL + "04"); assert.equal(baru.j.baru, true);
+  assert.equal(baru.j.proyek.id, AWAL + "05", "nomor 04 sudah dipakai proyek banjir_sepekan di atas"); assert.equal(baru.j.baru, true);
 });
 
 /* ALUR "Status proyek", ditulis ulang di sini dari dokumen (bukan diimpor dari src) supaya uji tidak menyalin galat kode */
@@ -248,6 +248,26 @@ uji("detak dan biaya: sebelumnya dikembalikan, biaya ditambah bukan ditimpa", as
   assert.equal((await m("GET", "/api/wa/biaya?tanggal=x")).s, 400);
 });
 
+uji("pemantau biaya /admin/biaya-bot: rinci mesin ke R2, ringkas admin saja dengan harian D1", async () => {
+  assert.equal((await api("GET", "/api/wa/biaya/ringkas")).s, 401, "tanpa sesi admin");
+  assert.equal((await m("GET", "/api/wa/biaya/ringkas")).s, 401, "kunci mesin bukan admin");
+  const kosong = await api("GET", "/api/wa/biaya/ringkas", undefined, ADMIN); assert.equal(kosong.s, 200, kosong.t); assert.equal(kosong.j.rinci, null, "mesin belum mengirim");
+  await m("POST", "/api/wa/biaya", {usd_mikro: 2500000});
+  const sah = {bulan: {"2026-11": 42.77}, kegiatan: {"2026-11": {laporan: 37.29, rapikan: 0.06}}, proyek: {"P-191126-06": {usd: 27.2, waktu: Date.now() - 1000}}};
+  const k = await m("POST", "/api/wa/biaya/rinci", sah); assert.equal(k.s, 200, k.t);
+  for (const salah of [{...sah, bulan: {"2026-13": 1}}, {...sah, bulan: {"2026-11": -1}}, {...sah, bulan: {"2026-11": "1"}}, {...sah, kegiatan: {"2026-11": {"Laporan!": 1}}},
+    {...sah, proyek: {"6281200000001": {usd: 1, waktu: 1}}}, {...sah, proyek: {"P-191126-06": {usd: 1, waktu: 1.5}}}, {...sah, bulan: []}, {...sah, proyek: Object.fromEntries(Array.from({length: 201}, (_, i) => [`P-191126-${String(i % 100).padStart(2, "0")}${i >= 100 ? "x" : ""}`, {usd: 1, waktu: 1}]))}])
+    assert.equal((await m("POST", "/api/wa/biaya/rinci", salah)).s, 400, JSON.stringify(salah).slice(0, 80));
+  for (const salah of [{...sah, kegiatan: {"2026-11": {laporan: "1"}}}, {...sah, bulan: {"2026-11": 1e6 + 1}}])
+    assert.equal((await m("POST", "/api/wa/biaya/rinci", salah)).s, 400, JSON.stringify(salah).slice(0, 80));
+  assert.equal((await m("POST", "/api/wa/biaya/rinci", {...sah, isi: "x".repeat(70000)})).s, 413, "badan lewat 64 KB ditolak");
+  const r = await api("GET", "/api/wa/biaya/ringkas", undefined, ADMIN); assert.equal(r.s, 200, r.t);
+  assert.deepEqual(r.j.rinci.kegiatan, sah.kegiatan); assert.equal(r.j.rinci.proyek["P-191126-06"].usd, 27.2); assert.ok(r.j.rinci.diperbarui > 0);
+  assert.equal(r.j.hari_ini, HARI); assert.ok(r.j.harian.some(x => x.tanggal === HARI && x.usd_mikro >= 2500000), "harian dari D1 bl_biaya");
+  assert.ok(r.j.harian.every(x => x.tanggal >= r.j.dari), "hanya 90 hari terakhir");
+  assert.ok(!JSON.stringify(r.j).includes("wa_sha"));
+});
+
 uji("daftar staf /pelaporan: sesi staf saja, tanpa isian, bahan, wa_sha; nama pemegang dari daftar setuju", async () => {
   const TOK = "e".repeat(64), TOK_LUAR = "f".repeat(64);
   for (const [id, un, tok, peran] of [["f1f1f1f1f1f1f1f1", "pusdalopsb", TOK, '["pusdalops"]'], ["f2f2f2f2f2f2f2f2", "kampusb", TOK_LUAR, '["kemitraan"]']])
@@ -264,4 +284,9 @@ uji("daftar staf /pelaporan: sesi staf saja, tanpa isian, bahan, wa_sha; nama pe
   assert.equal(r.j.proyek.find(p => p.id === AWAL + "03").pemegang, "Pemakai terdaftar", "nomor tanpa daftar setuju");
   assert.deepEqual(r.j.detak.map(d => d.mesin), ["gateway"]);
   assert.equal(r.h.get("cache-control"), "no-store");
+});
+
+test("jenis proyek bot: laporan khusus gempa sah (K46)", () => {
+  assert.ok(BL_JENIS.includes("gempa"), "gempa ada di BL_JENIS");
+  assert.ok(!BL_JENIS.includes("kekeringan"), "kekeringan belum punya generator bot");
 });

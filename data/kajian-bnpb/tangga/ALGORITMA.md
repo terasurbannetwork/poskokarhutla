@@ -18,7 +18,7 @@ Hari acuan = tanggal WIB saat skrip jalan. Untuk bulan dan dasarian: ambil perny
 | --- | --- | --- | --- |
 | Sifat dan curah hujan bulan/dasarian (BMKG, kabupaten) | kering, basah | Bawah/Atas Normal, Normal, kategori curah: selisih dari normal atau kelas curah, BUKAN peringatan; produk yang sama, curah tidak menambah peringkat; tidak disejajarkan dengan Siaga atau Awas | null |
 | Peringatan kekeringan BMKG (kecamatan, dirangkum per kabupaten dengan tingkat tertinggi) | kering | Waspada / Siaga / Awas (kode 1/2/3) | 1 / 2 / 3; null bila periodenya berakhir hari ini (tampil dengan catatan, tidak ikut sinyal) |
-| Prakiraan 10 hari BMKG (kabupaten) | basah | kosakata nyata BMKG (Berawan, Hujan Ringan, Hujan Sedang, Hujan Petir, dan seterusnya) tidak punya kelas lebat; kondisi terberat ditampilkan apa adanya | null (Q10) |
+| Prakiraan 10 hari BMKG (kabupaten) | basah | kondisi terberat ditampilkan apa adanya; kelas lebat berperingkat sama dengan sepekan BMKG (pemilik 19 Nov 2026, Q10): Hujan Sangat Lebat atau Ekstrem / Hujan Lebat / kondisi lain | 3 / 2 / null |
 | Prakiraan 10 hari BMKG | kering | jumlah hari tanpa hujan | null (informasi) |
 | Sepekan BMKG (provinsi) | basah | masuk Awas (hujan sangat lebat) / Siaga (hujan lebat) / daftar hujan sedang | 3 / 2 / null |
 | Factsheet karhutla BMKG (provinsi) | kering | perhatian khusus karhutla / FWI risiko tertinggi (relatif per pulau, label "Tertinggi di pulau ini") / provinsi berasap (pengamatan) | 2 / null / null |

@@ -16,7 +16,6 @@ const DARI = '6281234567890'
 const kenali = (teks) => (String(teks).match(/^\[(\w+)\]/) || [])[1] || null
 const tanggalIsi = (t) => String(t).split('] ')[1]
 const P = (id, kunci, dari = DARI) => ({ id, diterima: Number(id), dari, teks: `[${kunci}] ${TGL}`, nama_berkas: '', ada_berkas: 0 })
-
 const LENGKAP = () => [P('1', 'rekap_koordalops_24'), P('2', 'bmkg_pagi'), P('3', 'pvmbg_pagi')]
 const SISTEM_HURUF = /[·—–]|\p{Extended_Pictographic}/u
 // Gaya pesan WA (DESIGN-SYSTEM bot laporan): baris 1 tebal, baris 2 kode miring bila ada, tanpa titik tengah, em dash, emoji, judul Markdown, pagar kode.

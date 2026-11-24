@@ -908,5 +908,5 @@
   "Jendela hitung dibatasi 400 km dari pusat gempa.",
   "Bukan prakiraan gempa utama dan tidak memuat status tsunami (kosakata terpisah, sumber BMKG/PTWC)."
  ],
- "prospektif": "prospektif_guncangan.json"
+ "prospektif": "prospektif_gempa.json"
 }

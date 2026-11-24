@@ -4,7 +4,7 @@
 (() => {
   const LAP = {warna: ["VIIRS_NOAA20_CorrectedReflectance_TrueColor", "NASA GIBS / VIIRS NOAA-20"], swir: ["VIIRS_NOAA21_CorrectedReflectance_BandsM11-I2-I1", "NASA GIBS / VIIRS NOAA-21 (SWIR M11-I2-I1)"]};
   const MAXF = 30, bulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-  let el = null, area = null, mode = "warna", n = 14, gen = 0, url = null, aktif = null, pustaka = null;
+  let el = null, area = null, mode = "warna", n = 14, gen = 0, url = null, aktif = null;
 
   const mx = (lon, z) => (lon + 180) / 360 * 256 * 2 ** z;
   const my = (lat, z) => (1 - Math.asinh(Math.tan(lat * Math.PI / 180)) / Math.PI) / 2 * 256 * 2 ** z;
@@ -34,10 +34,7 @@
     return c;
   }
 
-  async function siapkanGif() {
-    pustaka ||= new Promise((ok, gagal) => { const s = document.createElement("script"); s.src = "/vendor/gif/gif.js"; s.onload = ok; s.onerror = () => { pustaka = null; s.remove(); gagal(new Error("gif.js")); }; document.head.appendChild(s); });
-    await pustaka;
-  }
+  const siapkanGif = () => CitraAlat.siapkanGif();
 
   const set = (p, teks) => { el.querySelector(".tl-bar i").style.width = Math.round(p * 100) + "%"; if (teks != null) el.querySelector(".tl-s").textContent = teks; };
   /* satu proses = satu id; tutup() menaikkan gen sehingga proses lama berhenti diam-diam dan tak menyentuh tampilan proses baru */

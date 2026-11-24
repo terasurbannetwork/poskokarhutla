@@ -7,6 +7,8 @@ import {json, gagal, acak, sha, adminOK, bacaBody, turnstileOK} from "./worker.j
 import {normalWA} from "./nomor.js";
 import {PROV} from "./relawan.js";
 import {laju, lajuIP, halamanBnpbPublik} from "./bnpb.js";
+import {pfPicAkunProv, pfPicDaftar} from "./hak.js";
+import {bakuKab} from "./lapor_meja_hak.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 
@@ -103,6 +105,18 @@ export const RUTE_KONTAK = {
     const mod = await adminOK(env, req); if (!mod) return tolak();
     const r = await env.DB.prepare("UPDATE kontak_pemangku SET status = 'aktif', diubah = ?, oleh = ? WHERE id = ? AND status = 'menunggu'").bind(kini, mod, id).run();
     return r.meta.changes ? json({id, status: "aktif"}) : gagal(404, "kontak menunggu tidak ditemukan");
+  },
+  /* PF-09 (profil-bpbd K13, N13): PIC aktif satu BPBD untuk buku kontak; nomor tersamar saja. Nomor penuh hanya lewat meja BNPB yang tercatat di lapor_akses. */
+  "GET /api/kontak/admin/pic": async (env, req, url) => {
+    if (!await adminOK(env, req)) return tolak();
+    const prov = url.searchParams.get("prov") || "", kab = url.searchParams.get("kab") || "";
+    if (!/^\d{2}$/.test(prov) || kab.length > 60) return gagal(400, "prov dua angka wajib; kab maksimal 60 karakter");
+    try {
+      const akun = (await pfPicAkunProv(env, prov)).filter(a => kab ? a.tingkat === "kab" && bakuKab(a.kab) === bakuKab(kab) : a.tingkat === "prov"), per = new Map(akun.map(a => [a.id, a]));
+      const pic = (await pfPicDaftar(env, akun.map(a => a.id))).map(p => ({profil_id: p.id, nama: p.nama, jabatan: p.jabatan, bpbd: per.get(p.akun_id).wilayah, wa_samar: "x".repeat(Math.max(0, p.wa.length - 4)) + p.wa.slice(-4), terakhir_aktif: Math.max(p.terakhir_meja ?? 0, p.terakhir_masuk ?? 0) || null}))
+        .sort((x, z) => (z.terakhir_aktif ?? 0) - (x.terakhir_aktif ?? 0));
+      return json({pic});
+    } catch (e) { return tanpaTabel(e) || Promise.reject(e); }
   },
   "GET /api/kontak/admin": async (env, req) => {
     if (!await adminOK(env, req)) return tolak();

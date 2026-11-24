@@ -1,7 +1,7 @@
 """Membangkitkan public/bnpb/templat/data-dampak.xlsx dari kolom meja `dampak` di src/meja_spek.js (JK-20).
 
 Kolom diambil dari spek yang sama dengan Worker (node mencetak spekPublik), supaya templat tidak pernah beda dengan formulir.
-Lembar "Data": baris 1 label Indonesia, baris 2 kunci kolom (dibaca public/bnpb/meja_impor.js, jangan diubah), baris 3 dst satu baris per kejadian.
+Lembar "Data": baris 1 label Indonesia, baris 2 kunci kolom (dibaca public/inti/impor.js, jangan diubah), baris 3 dst satu baris per kejadian.
 Lembar "Petunjuk": 0 berarti nihil, kosong berarti belum didata. Tanpa data contoh di lembar Data supaya tidak ikut terimpor.
 Jalankan: python3 scripts/bnpb/templat_dampak.py   (butuh openpyxl dan node)
 """

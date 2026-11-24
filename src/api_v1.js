@@ -11,6 +11,8 @@ import {bacaDaftar, bacaRekap, KOLOM_V1} from "./rumah_rusak.js";
 import {kirim, PROV} from "./bangunan.js";
 import {bacaLaporan} from "./laporan_bnpb.js";
 
+/* kunci mitra berlaku 365 hari sejak dibuat (bawaan sementara, docs/peta-fitur/PETA-2026-11-21.md); lewat itu 401 seperti dicabut, terbitkan kunci baru */
+export const MASA_KUNCI = 365 * 24 * 3600e3;
 const JAM = 3600e3, BATAS_KUNCI = [[JAM, 1000]], MAKS_GAGAL = 300, RE_KUNCI = /^pb_[0-9a-f]{64}$/;
 export const CAKUPAN = ["rumah_rusak", "bangunan", "laporan_bnpb", "konsesi"];
 /* nama stabil -> berkas aset. Daftar putih: path bebas tidak pernah dipakai. */
@@ -61,10 +63,10 @@ export async function kunciSah(env, req, ctx, kini) {
   try {
     const n = (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(ip, aksi, kini - JAM).first()).n;
     if (n >= MAKS_GAGAL) return gagal(429, "terlalu banyak kunci salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
-    const r = RE_KUNCI.test(kunci) ? await env.DB.prepare("SELECT id, cakupan, dicabut, terakhir FROM kunci_api WHERE kunci_sha = ?").bind(await sha(kunci)).first() : null;
-    if (!r || r.dicabut) {
+    const r = RE_KUNCI.test(kunci) ? await env.DB.prepare("SELECT id, cakupan, dibuat, dicabut, terakhir FROM kunci_api WHERE kunci_sha = ?").bind(await sha(kunci)).first() : null;
+    if (!r || r.dicabut || kini - r.dibuat > MASA_KUNCI) {
       await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(ip, aksi, kini).run();
-      return gagal(401, "kunci API tidak berlaku (salah atau sudah dicabut)");
+      return gagal(401, "kunci API tidak berlaku (salah, dicabut, atau kedaluwarsa)");
     }
     const g = await laju(env, "api:" + r.id, "api.v1", BATAS_KUNCI, kini); if (g) return g;
     if (r.terakhir == null || kini - r.terakhir > JAM)   // paling sering sekali per jam
@@ -167,7 +169,7 @@ export async function layaniApiV1(req, env, ctx, url) {
 
 /* ================================================================ penerbitan oleh admin */
 const KOLOM = "id, nama, cakupan, dibuat, oleh, dicabut, dicabut_oleh, terakhir";
-const bentuk = r => r && {...r, cakupan: JSON.parse(r.cakupan)};
+const bentuk = r => r && {...r, cakupan: JSON.parse(r.cakupan), kedaluwarsa: r.dibuat + MASA_KUNCI};
 const cekCakupan = v => Array.isArray(v) && v.length >= 1 && v.every(x => CAKUPAN.includes(x)) && new Set(v).size === v.length ? v : null;
 async function buat(env, req, kini) {
   const mod = await superOK(env, req); if (!mod) return gagal(403, "menerbitkan kunci API hanya untuk Super Admin (secret SUPER_ADMIN harus berisi akun Anda)");
@@ -177,7 +179,7 @@ async function buat(env, req, kini) {
   if (!cakupan) return gagal(400, `cakupan harus larik tak kosong dari: ${CAKUPAN.join(", ")}`);
   const kunci = "pb_" + acak(32), id = acak(8);
   await env.DB.prepare("INSERT INTO kunci_api (id, nama, kunci_sha, cakupan, dibuat, oleh) VALUES (?, ?, ?, ?, ?, ?)").bind(id, nama, await sha(kunci), JSON.stringify(cakupan), kini, mod).run();
-  return json({id, nama, cakupan, dibuat: kini, oleh: mod, kunci}, 201);   // kunci tampil SEKALI; yang tersimpan hanya hash-nya
+  return json({id, nama, cakupan, dibuat: kini, kedaluwarsa: kini + MASA_KUNCI, oleh: mod, kunci}, 201);   // kunci tampil SEKALI; yang tersimpan hanya hash-nya
 }
 async function daftar(env, req) {
   if (!await modOK(env, req)) return gagal(403, "daftar kunci API hanya untuk moderator ke atas (bukan akun gerbang situs)");

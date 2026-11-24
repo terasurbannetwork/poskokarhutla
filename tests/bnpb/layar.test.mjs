@@ -7,6 +7,8 @@ import assert from "node:assert/strict";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
 import {buatDunia} from "./_dunia.mjs";
 import {sha256} from "../warga/_bnpb.mjs";
+import {profilAktif} from "../warga/_profil.mjs";
+import {JPEG_SAH} from "../warga/_bantu.mjs";
 
 const CHROME = cariChrome();
 const UKURAN = [[1440, 900], [390, 844]];
@@ -184,6 +186,10 @@ if (!CHROME) {
     assert.deepEqual(Object.keys(dunia.galatIsi).filter(k => /^(instansi|ops)$/.test(k)).map(k => dunia.galatIsi[k]), [], "dummy instansi/operasi gagal diisi");
     const [nm, nilai] = await masukInstansi();
     await tab.ukuran(w, ht); await tab.cookie(dunia.base, nm, nilai);
+    /* akun BPBD (pemprov) bekerja lewat sesi profil: profil aktif + sesi disisipkan langsung (paket profil-bpbd); layar pilih profil dan PIN diuji di tests/warga/profil*.test.mjs */
+    const idAkun = (await dunia.DB.prepare("SELECT id FROM instansi_akun WHERE username LIKE 'dummypemprov%' AND dummy = 1 LIMIT 1").first()).id;
+    const pf = await profilAktif(dunia.DB, idAkun); await tab.cookie(dunia.base, "sesi_profil", pf.token);
+    await (await dunia.mf.getR2Bucket("MEDIA")).put(`instansi/profil/${idAkun}/${pf.id}`, JPEG_SAH, {httpMetadata: {contentType: "image/jpeg"}});   // foto profil nyata supaya kepala kerja tidak memuat gambar 404
     /* pop-up peta wilayah (popupMasuk) memanggil /api/titik yang kosong di dunia uji (404); tandai sudah tampil supaya galat itu bukan bagian dari uji operasi */
     const akunId = (await dunia.DB.prepare("SELECT id FROM instansi_akun WHERE username LIKE 'dummypemprov%' AND dummy = 1 LIMIT 1").first()).id;
     await tab.buka(dunia.base + "/instansi.css"); await tab.eval(`sessionStorage.setItem("pb_peta_masuk:${akunId}", "1")`);

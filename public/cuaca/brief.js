@@ -34,7 +34,7 @@
         baris: [...nc].sort((a, b) => rs(b.severity) - rs(a.severity) || b.n - a.n).slice(0, 10).map(a => [jamRentang(a.mulai, a.selesai), hurufJudul(wilNc(a)), a.event, labelSev(a.severity)]), kosong: "belum tersedia"},
       daftar: {judul: "IV. Kejadian cuaca aktif", satuan: "kejadian", kosong: "belum tersedia", item: aktif
         ? [...aktif].sort((a, b) => rankKej(b) - rankKej(a)).slice(0, 8).map(k => `${k.kode}: ${k.nama}, ${fmt(k.n_kab || 0)} kabupaten atau kota, ${String(k.jenis || "").startsWith("cap:") ? "peringatan BMKG" : "hipotesis, deteksi Centurisk97 dari prakiraan model"}`) : []},
-      sumber: "Sumber: BMKG (nowcast peringatan dini cuaca dan peringatan gelombang tinggi); kejadian aktif dari tab Kejadian.",
+      sumber: "BMKG (nowcast peringatan dini cuaca dan peringatan gelombang tinggi); kejadian aktif dari tab Kejadian.",
       catatan: "Hanya pernyataan BMKG yang dihitung pada KPI dan tabel; prakiraan model Centurisk97 tidak dimasukkan. Wilayah tanpa peringatan berarti BMKG belum menerbitkan peringatan untuk wilayah itu, bukan jaminan keadaan lapangan. Kejadian berlabel hipotesis bukan pernyataan resmi."};
   }
 

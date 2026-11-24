@@ -50,12 +50,12 @@ const mkId = async i => (await DB.prepare("SELECT id FROM mk_akun WHERE wa = ?")
 const PUSAT = JSON.parse(readFileSync(path.join(AKAR, "public/banjir/data/pusat_kec.json"), "utf8"));
 const KAB_62 = [...new Set(Object.keys(PUSAT).filter(k => k.startsWith("62|")).map(k => k.split("|")[1]))].sort();
 let seq = 0;
-const instansi = (o = {}) => { const id = id16(); seq++; return sisip("instansi_akun", {id, username: "akun" + id.slice(0, 8), jenis: "pemkab", tingkat: "kab", wilayah: "Pemerintah Kabupaten " + (o.kab ?? "Contoh"), kunci_wilayah: "k" + id,
+const instansi = (o = {}) => { const id = id16(); seq++; return sisip("instansi_akun", {id, username: "akun" + id.slice(0, 8), jenis: "polres", tingkat: "kab", wilayah: "Pemerintah Kabupaten " + (o.kab ?? "Contoh"), kunci_wilayah: "k" + id,
   cakupan: '["62"]', prov: "62", kab: "Contoh", garam: "a".repeat(32), sandi_sha: "0".repeat(64), status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD",
   email: `b${id.slice(0, 6)}@contoh.go.id`, wa: nomor(9000 + seq), surat: 1, kartu: 1, wajib_ganti: 0, dibuat: T0, ...o}).then(() => id); };
 const pendataan = (o = {}) => { const id = id16(); return sisip("pdt_akun", {id, username: "pdt" + id.slice(0, 8), nama: "Sari", jabatan: "Analis", unit: "pusdatin", email: `p${id.slice(0, 6)}@bnpb.go.id`, wa: nomor(0),
   garam: "a".repeat(32), sandi_hash: "0".repeat(64), status: "menunggu", dibuat: T0, ...o}).then(() => id); };
-const kontak = (o = {}) => { const id = id16(); return sisip("kontak_pemangku", {id, nama: "Pemangku Uji", jabatan: "Kepala", kategori: "bpbd", prov: "62", kab: "Contoh", wa: nomor(0), status: "aktif", dibuat: T0, diubah: T0, ...o}).then(() => id); };
+const kontak = (o = {}) => { const id = id16(); return sisip("kontak_pemangku", {id, nama: "Pemangku Uji", jabatan: "Kepala", kategori: "polri", prov: "62", kab: "Contoh", wa: nomor(0), status: "aktif", dibuat: T0, diubah: T0, ...o}).then(() => id); };
 const snapInstansi = async () => JSON.stringify((await DB.prepare("SELECT * FROM instansi_akun ORDER BY id").all()).results);
 const anggota = (i, akun) => DB.prepare("SELECT status, jalur, rujukan, oleh FROM mk_anggota WHERE mk_id = (SELECT id FROM mk_akun WHERE wa = ?) AND akun_id = ?").bind(nomor(i), akun).first();
 const mohon = (j, akun, jenis = "instansi") => api("POST", "/api/masuk/mohon", {jenis, akun_id: akun}, dari(j));
@@ -64,7 +64,7 @@ const sesiInstansi = r => r.h.getSetCookie().filter(l => l.startsWith("sesi_inst
 /* ---------------- U-22 ---------------- */
 uji("anggota U-22: nomor di kontak pemangku aktif (kategori dan wilayah cocok), akun aktif: anggota aktif jalur kontak, sesi instansi terbit, idempoten", async () => {
   const akun = await instansi({wa: nomor(1)}), kid = await kontak({wa: nomor(20)});
-  await kontak({wa: nomor(21), kategori: "polri"});   // kategori polri tidak membuka akun pemkab
+  await kontak({wa: nomor(21), kategori: "bpbd"});   // kategori polri tidak membuka akun pemkab
   const j = await login(20), awal = await snapInstansi();
   const r = await mohon(j, akun);
   assert.equal(r.s, 200, r.t); assert.equal(r.j.status, "aktif"); assert.equal(r.j.jalur, "kontak"); assert.equal(r.j.ke, "/instansi");
@@ -279,7 +279,8 @@ uji("anggota U-27b: staf berperan hanya mengundang ke akun di wilayah hak stafny
 /* ---------------- U-29 ---------------- */
 uji("anggota U-29: papan aktivasi: angka per kabupaten cocok dengan isi tabel uji; tamu dan anggota instansi ditolak; rincian kontak belum anggota", async () => {
   const [k1, k2, k3] = KAB_62;
-  const a1 = await instansi({wa: nomor(100), kab: k1}), a1b = await instansi({wa: nomor(101), kab: k1, jenis: "polres", kunci_wilayah: "polres" + id16()}), a2 = await instansi({wa: nomor(102), kab: k2});
+  const a1 = await instansi({wa: nomor(100), kab: k1}), a1b = await instansi({wa: nomor(101), kab: k1, jenis: "pemkab", kunci_wilayah: "polres" + id16()}), a2 = await instansi({wa: nomor(102), kab: k2});
+  for (let i = 0; i < 3; i++) await DB.prepare("INSERT INTO instansi_profil (id, akun_id, nama, jabatan, nip, email, wa, foto, pin_garam, pin_sha, status, terakhir_masuk, dibuat, diubah) VALUES (?, ?, ?, 'Analis', ?, ?, ?, 1, ?, ?, 'aktif', ?, 1, 1)").bind(id16(), a1b, `PIC ${i}`, `19800101${i}0000`, `pic${i}@b.go.id`, `62800000000${i}`, "a".repeat(16), "b".repeat(64), Date.now() - 5 * 864e5).run();   // akun BPBD (pemda): status papan dari profil PIC (profil-bpbd PF-07); tiga PIC aktif = aktif
   const mati = await instansi({wa: null, kab: k3, status: "belum_klaim", nama: null, nip: null, jabatan: null, unit: null, email: null, surat: 0, kartu: 0});
   const jA = await login(110), jB = await login(111);   // 110 anggota aktif a1; 111 anggota aktif a2 (sesi instansi tidak ikut dipakai)
   const ang = (i, akun, status = "aktif") => sisip("mk_anggota", {id: id16(), mk_id: awaitMk[i], tabel: "instansi_akun", akun_id: akun, status, jalur: "tinjau", rujukan: "uji", dibuat: T0, diubah: T0});
@@ -291,15 +292,15 @@ uji("anggota U-29: papan aktivasi: angka per kabupaten cocok dengan isi tabel uj
   await sisip("mk_masuk_log", {id: id16(), mk_id: awaitMk[111], tabel: "instansi_akun", akun_id: a2, waktu: kini - 130 * HARI});
   const und = (k, status, akun, habis = kini + 5 * HARI) => sisip("mk_undang", {id: id16(), wa: nomor(7500 + k), tabel: "instansi_akun", akun_id: akun, oleh_tabel: "admin", oleh_id: "x", status, dibuat: kini - HARI, habis});
   await und(1, "terkirim", a1); await und(2, "diterima", a1); await und(3, "dicabut", a1); await und(4, "terkirim", a1, kini - 1000);
-  const kA = await kontak({wa: nomor(120), kab: k1, nama: "Kontak A"}), kB = await kontak({wa: nomor(110), kab: k1, nama: "Kontak B anggota"}), kC = await kontak({wa: nomor(121), kab: k1, kategori: "polri", nama: "Kontak C"});
+  const kA = await kontak({wa: nomor(120), kab: k1, nama: "Kontak A"}), kB = await kontak({wa: nomor(110), kab: k1, nama: "Kontak B anggota"}), kC = await kontak({wa: nomor(121), kab: k1, kategori: "bpbd", nama: "Kontak C"});
   await kontak({wa: nomor(122), kab: k1, kategori: "swasta", nama: "Kontak swasta"}); await kontak({wa: nomor(123), kab: k1, status: "menunggu", setuju_pdp: T0, nama: "Kontak menunggu"});
   await kontak({wa: nomor(101), kab: k1, nama: "Kontak pemilik akun"});   // pemilik akun aktif: bukan "belum anggota"
   const papan = await api("GET", "/api/masuk/aktivasi", undefined, ADMIN); assert.equal(papan.s, 200, papan.t);
   const semua = new Set(Object.keys(PUSAT).map(k => k.split("|").slice(0, 2).join("|")).filter(k => { const [p, a] = k.split("|"); return a && a.length >= 2 && a !== "None" && Object.hasOwn(PROV, p); }));
-  assert.equal(papan.j.daftar.length, semua.size, "satu baris per kabupaten atau kota dari daftar wilayah repo"); assert.ok(semua.size >= 500);
+  assert.equal(papan.j.daftar.filter(x => x.tingkat === "kab").length, semua.size, "satu baris per kabupaten atau kota dari daftar wilayah repo"); assert.equal(papan.j.daftar.filter(x => x.tingkat === "prov").length, 38, "ditambah 38 baris provinsi (profil-bpbd N9)"); assert.ok(semua.size >= 500);
   assert.ok(!papan.h.get("cache-control")?.includes("public"), "tidak pernah di-cache publik");
   const baris = k => papan.j.daftar.find(x => x.prov === "62" && x.kab === k);
-  assert.deepEqual({...baris(k1), terakhir_masuk: undefined, prov_nama: undefined}, {prov: "62", kab: k1, akun_aktif: 2, anggota: 1, terakhir_masuk: undefined, undangan_terkirim: 1, undangan_diterima: 1, kontak_belum: 2, status: "aktif", prov_nama: undefined});
+  assert.deepEqual((({akun_id, pic, pic_aktif, status_akun, menunggu, tingkat, ...o}) => o)({...baris(k1), terakhir_masuk: undefined, prov_nama: undefined}), {prov: "62", kab: k1, akun_aktif: 2, anggota: 1, terakhir_masuk: undefined, undangan_terkirim: 1, undangan_diterima: 1, kontak_belum: 2, status: "aktif", prov_nama: undefined});
   assert.ok(Math.abs(baris(k1).terakhir_masuk - (kini - 2 * HARI)) < 1000);
   assert.equal(baris(k2).akun_aktif, 1); assert.equal(baris(k2).anggota, 1); assert.equal(baris(k2).terakhir_masuk, null, "log lebih tua dari jendela tidak dibaca"); assert.equal(baris(k2).status, "lama");
   assert.equal(baris(k3).akun_aktif, 0); assert.equal(baris(k3).status, "belum_ada");
@@ -377,17 +378,17 @@ uji("anggota tinjau: antrean instansi, pendataan, dan kampus membawa cocok_konta
 /* ---------------- daftar akun untuk dipilih pemohon ---------------- */
 uji("anggota akun: daftar akun aktif per provinsi dan kabupaten untuk pemohon, tanpa data pribadi; tamu ditolak", async () => {
   const [k1, k2] = KAB_62.slice(3);
-  const a = await instansi({wa: nomor(140), kab: k1}), p = await instansi({wa: nomor(141), kab: k2, jenis: "polres", kunci_wilayah: "polres" + id16()});
-  const prov = await instansi({wa: nomor(142), jenis: "pemprov", tingkat: "prov", prov: null, kab: null, wilayah: "Provinsi Kalimantan Tengah", kunci_wilayah: "62" + id16().slice(0, 4), cakupan: '["62"]'});
+  const a = await instansi({wa: nomor(140), kab: k1}), p = await instansi({wa: nomor(141), kab: k2, jenis: "pemkab", kunci_wilayah: "polres" + id16()});
+  const prov = await instansi({wa: nomor(142), jenis: "polda", tingkat: "prov", prov: null, kab: null, wilayah: "Provinsi Kalimantan Tengah", kunci_wilayah: "62" + id16().slice(0, 4), cakupan: '["62"]'});
   const j = await login(143), g = (q, h = bacaDari(j)) => api("GET", "/api/masuk/akun?" + q, undefined, h);
-  const r = await g("prov=62&rumpun=pemda"); assert.equal(r.s, 200, r.t); assert.ok(r.j.kab.includes(k1) && r.j.kab.includes(k2)); assert.deepEqual(r.j.akun.map(x => x.id), [prov], "tanpa kab: hanya akun tingkat provinsi");
-  const s = await g(`prov=62&rumpun=pemda&kab=${encodeURIComponent(k1)}`); assert.deepEqual(s.j.akun.map(x => x.id).sort(), [a, prov].sort()); assert.equal(s.j.kab_ada_akun, true);
-  const t = await g(`prov=62&rumpun=aparat&kab=${encodeURIComponent(k1)}`); assert.equal(t.j.akun.length, 0); assert.equal(t.j.kab_ada_akun, false, "belum ada akun aktif: layar mengarah ke verifikasi");
-  assert.deepEqual((await g(`prov=62&rumpun=aparat&kab=${encodeURIComponent(k2)}`)).j.akun.map(x => x.id), [p]);
+  const r = await g("prov=62&rumpun=aparat"); assert.equal(r.s, 200, r.t); assert.ok(r.j.kab.includes(k1) && r.j.kab.includes(k2)); assert.deepEqual(r.j.akun.map(x => x.id), [prov], "tanpa kab: hanya akun tingkat provinsi");
+  const s = await g(`prov=62&rumpun=aparat&kab=${encodeURIComponent(k1)}`); assert.deepEqual(s.j.akun.map(x => x.id).sort(), [a, prov].sort()); assert.equal(s.j.kab_ada_akun, true);
+  const t = await g(`prov=62&rumpun=pemda&kab=${encodeURIComponent(k1)}`); assert.equal(t.j.akun.length, 0); assert.equal(t.j.kab_ada_akun, false, "belum ada akun aktif: layar mengarah ke verifikasi");
+  assert.deepEqual((await g(`prov=62&rumpun=pemda&kab=${encodeURIComponent(k2)}`)).j.akun.map(x => x.id), [p]);
   for (const x of r.j.akun) assert.deepEqual(Object.keys(x).sort(), ["id", "jenis", "lembaga", "tingkat"]);
   for (const x of s.j.akun) assert.deepEqual(Object.keys(x).sort(), ["id", "jenis", "lembaga", "tingkat"], "tanpa nip, email, nomor, username");
-  assert.equal((await g("prov=99&rumpun=pemda")).s, 400); assert.equal((await g("prov=62&rumpun=lain")).s, 400); assert.equal((await g("prov=62&rumpun=pemda&kab=Fiktif")).s, 400);
-  assert.equal((await g("prov=62&rumpun=pemda", {"cf-connecting-ip": "10.9.9.9"})).s, 401);
+  assert.equal((await g("prov=99&rumpun=aparat")).s, 400); assert.equal((await g("prov=62&rumpun=lain")).s, 400); assert.equal((await g("prov=62&rumpun=aparat&kab=Fiktif")).s, 400);
+  assert.equal((await g("prov=62&rumpun=aparat", {"cf-connecting-ip": "10.9.9.9"})).s, 401);
 });
 
 /* ---------------- perbaikan pemeriksa: undangan sisa, antrean berhak, batas per nomor ---------------- */

@@ -9,25 +9,25 @@ button,input,select{font:inherit;color:inherit}
 /* ---------- top bar ---------- */
 .mark{display:flex;align-items:center;gap:10px;min-width:0}
 .mark svg{flex:none}
-.mark b{font-family:var(--display);font-weight:800;font-size:0.9688rem;white-space:nowrap}
-.mark small{display:block;font-size:0.6875rem;opacity:.75;white-space:nowrap}
+.mark b{font-family:var(--display);font-weight:800;font-size:0.96875rem;white-space:nowrap}
+.mark small{display:block;font-size:var(--fs-1);opacity:.75;white-space:nowrap}
 /* tab rata tengah di ruang antara logo dan status (pemilik, 20 Okt 2026); "safe" supaya tab yang tidak muat tidak terpotong di kiri */
 nav.tabs{display:flex;justify-content:center;justify-content:safe center;gap:6px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
 @media (min-width:1500px){nav.tabs{margin:0 auto}}
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
-nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:0.9062rem!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:0.8438rem;white-space:nowrap;cursor:pointer}
+nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:var(--fs-4)!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:0.84375rem;white-space:nowrap;cursor:pointer}
 /* dipadatkan di bawah 1500px; ikon tetap tampil (pemilik, 20 Okt 2026) dan baru disembunyikan bila ruang benar-benar sempit.
    Harus SESUDAH aturan dasar tombol supaya padding & ukuran huruf menang */
-@media (max-width:1500px){nav.tabs button,nav.tabs a.tab-ln{padding:8px 12px;gap:6px;font-size:0.8438rem!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:15px;height:15px}}
+@media (max-width:1500px){nav.tabs button,nav.tabs a.tab-ln{padding:8px 12px;gap:6px;font-size:0.84375rem!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:15px;height:15px}}
 /* 9 tab (gempa, gunung api) baru muat berikon mulai 1500px; 7-8 tab muat berikon mulai ~1340px (diukur 20 Okt 2026) */
 @media (min-width:1501px){nav.tabs:has(> button:nth-of-type(9)) button{padding:8px 12px;gap:6px}}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya{flex:none;display:flex;align-items:center}
-.lainnya summary{list-style:none;display:flex;align-items:center;gap:7px;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:0.9062rem;line-height:inherit;white-space:nowrap;cursor:pointer}
-@media (max-width:1500px){.lainnya summary{padding:8px 12px;gap:6px;font-size:0.8438rem}}
+.lainnya summary{list-style:none;display:flex;align-items:center;gap:7px;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:var(--fs-4);line-height:inherit;white-space:nowrap;cursor:pointer}
+@media (max-width:1500px){.lainnya summary{padding:8px 12px;gap:6px;font-size:0.84375rem}}
 @media (min-width:1501px){nav.tabs:has(> button:nth-of-type(9)) .lainnya summary{padding:8px 12px;gap:6px}}
 .lainnya summary::-webkit-details-marker{display:none}
 .lainnya summary svg{width:16px;height:16px;flex:none;opacity:.9}

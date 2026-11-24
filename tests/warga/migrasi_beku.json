@@ -155,5 +155,21 @@
   "0151_staf_aktif_indeks.sql": "c0f23a53aeedaf0c96391a17f513b3813dfa2b7d163a677fccf6a0514ec470ae",
   "0152_staf_peran_tanpa_batas.sql": "64686d937ac0b6430aa894851ce22e3f239c75dafd8a71144e2d5e6f44f36118",
   "0153_pb_renlap_tindakan.sql": "e7df4db449034192f8bcd8914da3cdd3c68f65e77f9726805fa95bbdca1e55de",
-  "0154_bl_proyek.sql": "b3ee96fb0fbee28aa81e0899b465da97e1ebe4989e8746fb8618eee4ae4c38f8"
+  "0154_bl_proyek.sql": "b3ee96fb0fbee28aa81e0899b465da97e1ebe4989e8746fb8618eee4ae4c38f8",
+  "0155_lapor_ai.sql": "6b63603b4ff73efb6c14a5911cd4786244bd371fa3437c4202dcbd8284398590",
+  "0156_lapor_versi.sql": "fdfd9fbe199ba9fd592af5a3aa15bb5cc4de84c8db3f4498d041acff180580a2",
+  "0157_lapor_lanjut.sql": "e712ca824661247ccede2c8b314101b8b9c06d3e46b0b27d61785e00aa66928d",
+  "0158_lapor_unggah.sql": "6468f3c2e3a4058d24af108ae6fb4d31f70b069f7c79ad11998d5fe5191b8ca2",
+  "0159_lapor_perangkat.sql": "52afcff47b42dc8366039f70db0e3381b6463e2382bbefe4691376904e81de09",
+  "0160_lapor_kelompok.sql": "606f6d4f5f1109fd89b182d7a45edccebe7009c5df518d499bce0909c8dc8569",
+  "0161_lapor_data.sql": "e9bb0501745e53cafa3b860cba1f5b10be13f8f3b0b7f1c8d60a06737ce220b0",
+  "0162_lapor_periksa.sql": "42e0ff3b0fd8997b699664f644fb051659b97083197cf870ea666522dfa8a585",
+  "0163_pw_peringatan.sql": "f8acae3d40d925331d91edd90e80653eb84df03ba815534a31e90e05a165ee79",
+  "0164_tautan_token.sql": "62a633be0bf9618a7524eda11a8bd2243b69e70fc1c240fc03a43686be3136dc",
+  "0165_lj_sesi.sql": "d6cd545b87031dd0b6752ed15981e1feb1c1ba49c3959072ed78af28ac381d39",
+  "0166_profil_bpbd.sql": "c9325ae36ba057a832fdd6b0e883ce1532d27cd08907747ba73e7355ca552ef2",
+  "0167_lapor_ambil.sql": "4d81507f77246995fc7e6eef1a34d21f39eb0dfd3f0598af5ed529b632c246e7",
+  "0168_staf_peran_unit.sql": "367d356bf0f8119849320132c259c0b0fdbd10ec6ebe788376db32775c077640",
+  "0169_lk_periksa_akun.sql": "de168a909c69e845f88cd5f568a449c4907dba1c6abaf2e19b45be35b6c1918a",
+  "0170_lk_tarik_usulan.sql": "63e99fb6e70603eb4fa6493d4c33a984c4cf64b7e6cfcbf6126ba877ece2f567"
 }

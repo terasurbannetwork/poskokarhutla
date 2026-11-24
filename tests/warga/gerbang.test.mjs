@@ -19,7 +19,7 @@ function temukan() {
   const f = readFileSync(path.join(AKAR, "src/foto.js"), "utf8");   // RUTE_FOTO digabung ke RUTE
   const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8") + readFileSync(path.join(AKAR, "src/sosmed.js"), "utf8") + readFileSync(path.join(AKAR, "src/posko.js"), "utf8");   // RUTE_EWS + RUTE_SOSMED + RUTE_POSKO digabung ke RUTE
   /* Ruang Koordinasi BNPB: RUTE_BNPB, RUTE_RELAWAN, RUTE_ALUN, RUTE_RISET, RUTE_MEJA digabung ke RUTE */
-  const bn = ["bnpb", "wa_form", "wa_proyek", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "operasi_udara", "operasi_isian", "jarak_pandang", "push", "sla", "pipa", "kontak", "uji_lapangan", "uji_banjir", "monitor", "sippa", "wa", "kemitraan", "logbook", "sensor", "pemulihan", "lapsus", "rollcall", "lapangan", "lapangan_panel", "lapangan_wa", "berantai", "medsos_antre", "command_center", "ai", "logpal", "siklus_kejadian", "siklus_paparan", "siklus_kaji", "siklus_pulih", "siklus_renkon", "siklus_pintu", "siklus_dummy", "tiga_w", "masuk", "masuk_undang", "pengungsian_titik"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
+  const bn = ["bnpb", "wa_form", "wa_proyek", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "profil", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "operasi_udara", "operasi_isian", "jarak_pandang", "push", "sla", "pipa", "kontak", "uji_lapangan", "uji_banjir", "monitor", "sippa", "wa", "kemitraan", "logbook", "sensor", "pemulihan", "lapsus", "rollcall", "lapangan", "lapangan_panel", "lapangan_wa", "berantai", "medsos_antre", "command_center", "ai", "logpal", "siklus_kejadian", "siklus_paparan", "siklus_kaji", "siklus_pulih", "siklus_renkon", "siklus_pintu", "siklus_dummy", "tiga_w", "masuk", "masuk_undang", "pengungsian_titik", "lapor_ai"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
   if (/bersihkanBnpb\(env/.test(w)) out.add("cron bersihkanBnpb");
   if (/arsipkanSitrep\(env/.test(w)) out.add("cron arsipkanSitrep");
   if (/buatTugas\(env/.test(w)) out.add("cron buatTugas");
@@ -38,7 +38,7 @@ function temukan() {
   if (/buatPengingat\(env/.test(w)) out.add("cron buatPengingat");
   if (/buatPengingat\(env/.test(w)) out.add("cron buatPengingat");
   if (/buatDrafLaporanKarhutla\(env/.test(w)) out.add("cron buatDrafLaporanKarhutla");
-  for (const [, x] of (w + "\n" + f + "\n" + e + "\n" + bn).matchAll(/^\s*"((?:GET|POST) \/[\w\/:]+)":/gm)) out.add(x);   // tabel RUTE (statistik, admin, pesan, foto)
+  for (const [, x] of (w + "\n" + f + "\n" + e + "\n" + bn).matchAll(/^\s*"((?:GET|POST|PUT) \/[\w\/:]+)":/gm)) out.add(x);   // tabel RUTE (statistik, admin, pesan, foto)
   const gm = readFileSync(path.join(AKAR, "src/gempa.js"), "utf8");   // katalog gempa: rute baca + cron
   for (const [, x] of gm.matchAll(/j === "(\/api\/gempa\/\w+)"/g)) out.add("GET " + x);
   if (/perbaruiGempa\(env/.test(w)) out.add("cron gempa");
@@ -67,8 +67,8 @@ test("tiap rute, tabel, dan trigger tercatat di cakupan.json", () => {
 });
 
 test("tiap entri 'diuji' menunjuk nama uji yang benar-benar ada", () => {
-  const teks = readdirSync(path.join(AKAR, "tests/warga")).filter(f => f.endsWith(".test.mjs") && f !== "gerbang.test.mjs")
-    .map(f => readFileSync(path.join(AKAR, "tests/warga", f), "utf8")).join("\n");
+  const teks = ["tests/warga", "tests/lapor"].flatMap(d => readdirSync(path.join(AKAR, d)).filter(f => f.endsWith(".test.mjs") && f !== "gerbang.test.mjs")   // tests/lapor: uji rute Lapor Bencana (src/lapor_ai.js)
+    .map(f => readFileSync(path.join(AKAR, d, f), "utf8"))).join("\n");
   const yatim = Object.entries(C.diuji).filter(([, nama]) => !teks.includes(`uji("${nama}`)).map(([k, n]) => `${k} -> "${n}"`);
   assert.deepEqual(yatim, [], `${yatim.length} entri diuji tanpa uji yang cocok: ${yatim.join("; ")}`);
 });

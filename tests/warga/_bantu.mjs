@@ -2,6 +2,14 @@
 import {readFileSync, readdirSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {FormData as FormDataMf} from "miniflare";
+
+/* Miniflare 4 membawa undici sendiri; FormData global Node berasal dari salinan undici lain, sehingga cek merek (instanceof) di dispatchFetch
+   gagal dan badan form terkirim sebagai teks "[object FormData]" (Worker menjawab 400 "kirim sebagai multipart/form-data"). Semua uji yang
+   mengirim form mengimpor berkas ini: prototype FormData Node disambung ke FormData miniflare, jadi keduanya mengenalinya; metode tetap
+   milik Node dan undici miniflare membacanya lewat iterasi. Naik ke miniflare 4 (20 Nov 2026): workerd 3.20250718 crash "HashIndex detected
+   hash table inconsistency" di uji logpal statis besar sesudah migrasi 0161, dan terbit.yml lewat batas waktu. */
+if (FormDataMf !== globalThis.FormData && !(new globalThis.FormData() instanceof FormDataMf)) Object.setPrototypeOf(globalThis.FormData.prototype, FormDataMf.prototype);
 
 export const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 export const migrasi = () => readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql")).sort()

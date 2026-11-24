@@ -2509,11 +2509,10 @@ async function tanyaFinal(sha, ctx) {
 
 // "mau lapor bencana" dari nomor yang belum berizin Lapor Bencana jatuh ke sini dan Claude membacanya sebagai `buat harian` (pemilik 20 Nov 2026):
 // kata kerja "lapor" tanpa jenis laporan ditanya balik dulu, tidak langsung membuka proyek. "laporan harian", "buat penanganan" tetap jalan.
-export const LAPOR_KEJADIAN = (t) => /\blapor\b/i.test(String(t ?? '')) && !/\b(harian|laphar|penanganan|karhutla|buat|bikin\w*)\b/i.test(String(t ?? ''))
+export const LAPOR_KEJADIAN = (t) => /\blapor\b/i.test(String(t ?? '')) && !/\b(harian|laphar|penanganan|karhutla|gempa|buat|bikin\w*)\b/i.test(String(t ?? ''))
 const T_LAPOR_KEJADIAN = susun('Maksudnya yang mana?', null, null,
   ['1. Membuat *Laporan Kejadian Bencana Harian* (deck): ketik *buat harian*.',
     '2. Melaporkan kejadian bencana di lapangan: nomor ini belum terdaftar di Lapor Bencana. Minta admin mendaftarkan nomor Anda.'])
-
 // -> {cmd} untuk diteruskan ke jalur perintah, {status} bila sudah dijawab, atau null (perilaku lama: revisi pemegang draf, bahan, sapaan)
 async function alurMaksud(pesan, dari, sha, ctx) {
   const draf = await drafPengirim(ctx, sha)
@@ -2524,7 +2523,7 @@ async function alurMaksud(pesan, dari, sha, ctx) {
     case 'buat':
       if (LAPOR_KEJADIAN(pesan.teks)) { await ctx.balas(T_LAPOR_KEJADIAN); return { status: 'tanya lapor' } }
       return { cmd: { aksi: 'buat', jenis: m.jenis, tanggal: m.tanggal || hariIni, saja: false,
-      ...(m.jenis === 'gempa' ? { lokasi: bersihLokasi(m.lokasi), saja: true } : {}) } } // gempa tanpa bahan: langsung dibangun
+        ...(m.jenis === 'gempa' ? { lokasi: bersihLokasi(m.lokasi), saja: true } : {}) } } // gempa tanpa bahan: langsung dibangun
     case 'lanjut': case 'status': case 'bantuan': return { cmd: { aksi: m.maksud } }
     case 'batal': return { cmd: { aksi: 'batal', tanya: true } }
     case 'final': await tanyaFinal(sha, ctx); return { status: 'tanya final' }

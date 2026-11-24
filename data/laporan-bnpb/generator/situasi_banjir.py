@@ -61,9 +61,10 @@ def romawi(s):
 
 
 def kab_bersih(s):
-    # WA 20 Nov: "Kab. Lima puluh Kota" lawan "Lima Puluh Kota" jadi dua baris; kata huruf kecil (selain "dan") dikapitalkan
-    t = re.sub(r'^(kab\.?|kabupaten)\s+', '', re.sub(r'\s+', ' ', (s or '').strip()), flags=re.I)
-    return ' '.join(w if w == 'dan' or not w.islower() else w[:1].upper() + w[1:] for w in t.split(' '))
+    # WA menulis "Lima puluh Kota"; tanpa huruf kapital baku jadi dua baris dengan "Lima Puluh Kota" (22 Nov 2026)
+    s = re.sub(r'\s+', ' ', re.sub(r'^(kab\.?|kabupaten)\s+', '', (s or '').strip(), flags=re.I))
+    s = re.sub(r'^limapuluh\b', 'Lima Puluh', s, flags=re.I)   # WA 23 Nov 2026 menulis "Limapuluh Kota"
+    return ' '.join(w if w == 'dan' or w.isupper() else w[:1].upper() + w[1:] for w in s.split(' '))
 
 
 # ---------------------------------------------------------------- data
@@ -522,9 +523,9 @@ def butir_kerusakan(t):
     t = rapi(t).rstrip('.')
     if t == '–': return []
     out = []
-    # koma desimal ("494,5 ha", WA Lima Puluh Kota 20 Nov 2026) bukan pemisah butir
-    for b in re.split(r'(?:(?<!\d),|,(?!\d))\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):
+    for b in re.split(r'(?<!\d),\s*(?![^()]*\))|,(?!\d)\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):   # "494,5 ha" tidak dipecah (22 Nov 2026)
         b = re.sub(r'\s+', ' ', b).strip().rstrip('.')
+        if len(b) > 45: b = re.sub(r'\s*\([^)]*\)', '', b)   # rincian dalam kurung membuat butir dua baris dan menimpa butir berikutnya (22 Nov 2026)
         if not b: continue
         if len(b) > 48: b = re.sub(r'\s*\([^)]*\)', '', b)   # keterangan berkurung dibuang bila butir terlalu panjang untuk satu baris
         lb = b.lower()
@@ -617,8 +618,9 @@ def slide_lengkap(L):
     ungsi = sum(o['ungsi'] or 0 for o in lap); hilang = sum(o.get('hilang') or 0 for o in lap); md = sum(o.get('meninggal') or 0 for o in lap)
     kab_pr = {v['kab']: v for k, v in rk.items() if k[0] == kode}
     cS = sum(v['s'] for v in kab_pr.values()); cA = sum(v['a'] for v in kab_pr.values()); cW = sum(v['w'] for v in kab_pr.values())
-    judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota {prov} (', rb(kk), ' KK);', f' {len(belum)}', ' belum surut,',
-               f' {cA + cS}', f' kecamatan Siaga{"/Awas" if cA else ""} pada', f' {rentang}', ''])
+    surut_ = (['', ' semua sudah surut,'] if lap and not belum else [f' {len(belum)}', ' belum surut,'])   # "0 belum surut" janggal (23 Nov 2026)
+    judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota {prov} (', rb(kk), ' KK);', *surut_,
+               f' {sum(1 for v in kab_pr.values() if v["s"] or v["a"])}', f' kabupaten/kota Siaga{"/Awas" if cA else ""} pada', f' {rentang}', ''])   # pemilik 23 Nov 2026: "ubah jadi 6 kabupaten/kota" (tabel per kab/kota)
     w4 = (12.13 - 3 * .07) / 4
     ub = [(rb(len(lap)), 'Kab/kota terdampak banjir', 'EEF3F9', NAVY, 'radius-putih.png'),
           (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'banjir-putih.png'),
@@ -630,14 +632,16 @@ def slide_lengkap(L):
         ubin(sl, .6 + (i % 4) * (w4 + .07), 1.45 + (i // 4) * .66, w4, .6, n_, ket, isi, tg, ik)
     nama = list(dict.fromkeys([o['kab'] for o in lap] + [v['kab'] for v in sorted(kab_pr.values(), key=lambda v: (-v['a'], -v['s'], -v['mm'])) if v['a'] or v['s']]))
     lpk = {o['kab']: o for o in lap}
-    kol = [('Kab/Kota', 1.5, 'l'), ('Kondisi kini', 1.2, 'c'), ('KK', .68, 'c'), ('Jiwa', .72, 'c'), ('Mengungsi', .8, 'c'), ('Status darurat', 1.75, 'c'),
-           ('Berakhir', .9, 'c'), ('Prakiraan', 1.08, 'c'), ('Mulai Siaga', .8, 'c'), ('Hujan 3 hari', .85, 'c')]
+    # pemilik 22 Nov 2026: "Ini mulai banjirnya kapan masukin. Dan itu sudah surut. kapan surutnya"
+    kol = [('Kab/Kota', 1.45, 'l'), ('Kondisi kini', 1.1, 'c'), ('Mulai banjir', .72, 'c'), ('Surut', .62, 'c'), ('KK', .6, 'c'), ('Jiwa', .65, 'c'), ('Mengungsi', .75, 'c'),
+           ('Status darurat', 1.6, 'c'), ('Berakhir', .85, 'c'), ('Prakiraan', 1.0, 'c'), ('Mulai Siaga', .72, 'c'), ('Hujan 3 hari', .75, 'c')]
     br = []
     for n in nama:
         o, v = lpk.get(n), kab_pr.get(n, {'hari': [0] * n_hari, 'mm': 0, 'tgl': None})
         lv = max(v['hari']); ms = next((hari[i] for i, x in enumerate(v['hari']) if x >= 2), None)
         pd_, sd_ = pil_darurat((o.get('butir') or {}).get('Penetapan status')) if o else ('–', '–')
-        br.append([n, pil_kondisi(o['status']) if o else '–', rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
+        br.append([n, pil_kondisi(o['status']) if o else '–', tgl(o['mulai']) if o and o.get('mulai') else '–',
+                   tgl(o['surut_tgl']) if o and o.get('surut_tgl') else '–', rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
                    pd_, sd_, pil_level(lv), tgl(ms) if ms else '–', f"{round(v['mm'])} mm" if v['tgl'] else '–'])
     tabel(sl, .6, 2.86, 12.13, kol, br, .4, 6.95)
     sumber(sl, f'{sk}; {gis}')
@@ -704,7 +708,7 @@ def slide_lengkap(L):
     sumber(sl, f'BMKG prakiraan cuaca, {tgl(bmkg["dibuat"])} {bmkg["dibuat"][:4]} {bmkg["dibuat"][11:16].replace(":", ".")} WIB; GloFAS, {tgl(dibuat)} {dibuat[:4]}')
 
 
-def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=False, lengkap=False):
+def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=False, lengkap=False, surut=None):
     import wa_harian
     from wilayah import PROVINSI
     kode = {v.lower(): k for k, v in PROVINSI.items()}.get(prov.lower()) or sys.exit(f'provinsi tidak dikenal: {prov}')
@@ -717,6 +721,10 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     hari = st['hari']; n_hari = len(hari)
     rk = rekap_status(st)
     lap, wa0, wa1 = sudah_banjir(kode, tanggal, wa)
+    if surut:   # konfirmasi Koordalops di luar laporan harian: semua kab/kota provinsi ini sudah surut (Sumbar 23 Nov 2026 10.39)
+        for o in lap:
+            if o['status'] == 'Belum surut': o['status'], o['surut_tgl'] = 'Sudah surut', surut
+        wa1 = max(wa1 or surut, surut)
     if wa1 and wa1 < tanggal:
         print(f'PERINGATAN: WA Koordalops terakhir {wa1}; aturan_slide.py menuntut sampai {tanggal}. Tambahkan --wa <berkas WA terbaru>.', file=sys.stderr)
     jam = dibuat[11:16].replace(':', '.')
@@ -913,6 +921,9 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
 
 def uji():
     assert kab_bersih('Kab. Pidie Jaya') == 'Pidie Jaya' and kab_bersih('Kota Subulussalam') == 'Kota Subulussalam'
+    assert [x[1] for x in butir_kerusakan('494,5 ha lahan terdampak, 344 rumah terdampak')] == ['494,5 ha lahan terdampak', '344 rumah terdampak']
+    assert kab_bersih('Kab. Limapuluh Kota') == 'Lima Puluh Kota'
+    assert kab_bersih('Kab. Lima puluh Kota') == 'Lima Puluh Kota' and kab_bersih('Kab. Kep.  Mentawai') == 'Kep. Mentawai'
     assert rb(10089) == '10.089' and rb(None) == '–' and tgl('2026-11-09') == '9 Nov' and tgl('2026-10-24', True) == '24 Oktober'
     st = {'hari': ['2026-11-14', '2026-11-15'], 'kec': {
         '11|Pidie Jaya|A': {'b': [2, 3], 'h3d': [90, 130]}, '11|Pidie Jaya|B': {'b': [1, 2], 'h3d': [50, 85]},
@@ -928,6 +939,7 @@ if __name__ == '__main__':
     ap.add_argument('--prov', default='Aceh'); ap.add_argument('--kab', help='kab/kota fokus di slide pertama, mis. "Aceh Singkil"'); ap.add_argument('--provinsi-lain', action='store_true', help='tambah slide Awas/Siaga provinsi lain (bawaan: tidak, pemilik 15 Nov 2026)'); ap.add_argument('--hari', type=int, default=6)
     ap.add_argument('--tanggal', default=dt.date.today().isoformat()); ap.add_argument('--wa', nargs='*', default=[])
     ap.add_argument('--lengkap', action='store_true', help='paket 5 slide: ringkasan, sudah banjir, perkembangan, prakiraan, hujan dan sungai')
+    ap.add_argument('--surut', metavar='TANGGAL', help='konfirmasi Koordalops: semua kab/kota provinsi ini sudah surut pada TANGGAL (YYYY-MM-DD)')
     ap.add_argument('--keluar'); ap.add_argument('--uji', action='store_true'); ap.add_argument('--ramping', nargs=2, metavar=('ASAL', 'TUJUAN'))
     a = ap.parse_args()
     if a.uji: uji()
@@ -935,4 +947,4 @@ if __name__ == '__main__':
     else:
         if not 1 <= a.hari <= 6: sys.exit('--hari 1 sampai 6 (hujan.json memuat 6 hari ke depan)')
         nm = (a.kab + ' ' if a.kab and not a.lengkap else '') + a.prov + (' lengkap' if a.lengkap else '')
-        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.provinsi_lain, a.lengkap)
+        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.provinsi_lain, a.lengkap, a.surut)

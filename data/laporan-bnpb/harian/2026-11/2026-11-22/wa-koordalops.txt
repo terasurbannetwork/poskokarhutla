@@ -3,8 +3,8 @@ CC:
      - Sekretaris Utama BNPB
      - Unsur Pengarah BNPB
      - Ess I BNPB
-     - Ess II BNPB
-     - Tenaga Ahli Ka.BNPB
+     - Ess II BNPB 
+     - Tenaga Ahli Ka.BNPB   
 
 Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh Direktorat Koordinasi Pengendalian Operasi Darurat BNPB tanggal 21/11/2026 pkl 07.00 WIB s.d 22/11/2026 pkl 07.00 WIB adalah sejumlah 22 (dua puluh dua) kejadian. Rincian sebagai berikut:
 
@@ -12,9 +12,9 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 1. Bencana Alam Banjir di Kab. Aceh Singkil *(Pengkinian Data)*
 * Dampak: ± 3.517 KK / 13.720 jiwa terdampak (masih dalam pendataan)
 * Pengungsi: dalam pendataan
-* Kerusakan: ± 3.517 unit rumah terdampak, 1 jembatan beton amblas, 5 unit tiang listrik PLN roboh, 1 jembatan kayu rusak (dalam pendataan)
+* Kerusakan: ± 3.517 unit rumah terdampak, 1 jembatan beton amblas, 5 unit tiang listrik PLN roboh, 1 jembatan kayu rusak (dalam pendataan)  
 * Penetapan Status: Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027
-* Pendampingan BNPB: Tim BNPB
+* Pendampingan BNPB: Tim BNPB 
 * Kondisi Mutakhir: banjir belum surut
 * Detail: Entry nomor 05 laphar 21/11/2026
 
@@ -23,7 +23,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: 4 KK / 18 jiwa (pendataan)
 * Kerusakan: -± 2.010 unit rumah terdampak, jalan nasional dan jalan desa terdampak, lahan kebun dan pertanian terdampak, Fasdik, Fasdah dan Faskes Puskesdes terdampak (dalam pendataan)
 * Penetapan Status: Siaga Darurat Prov. TMT 11/11/2026 s.d. 31/01/2027
-* Pendampingan BNPB: Tim BNPB
+* Pendampingan BNPB: Tim BNPB 
 * Kondisi Mutakhir: air belum surut, masih menggenangi rumah warga di beberapa titik
 * Detail: Entry nomor 06 laphar 21/11/2026
 
@@ -33,7 +33,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: nihil
 * Kerusakan: 3 unit rumah terdampak
 * Penetapan Status: Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Banjir sudah surut, saat ini sedang dilakukan pembersihan material lumpur pasca banjir
 * Detail: Entry nomor 03 laphar 21/11/2026
 
@@ -42,7 +42,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: dalam pendataan
 * Kerusakan: ± 800 unit rumah terdampak
 * Penetapan Status: Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Masih dalam penanganan
 * Detail: Entry nomor 04 laphar 21/11/2026
 
@@ -51,7 +51,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: -
 * Kerusakan: Akses jalan terdampak, 1 unit kendaraan R4 terdampak
 * Penetapan Status: Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Masih dalam penanganan oleh Pemerintah Setempat
 * Detail: Entry nomor 15 laphar 21/11/2026
 
@@ -60,7 +60,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: dalam pendataan
 * Kerusakan:± 492 unit rumah terdampak, ± 7 akses jalur terdampak (masih dalam pendataan)
 * Penetapan Status: Transisi Darurat Prov. TMT 01/10/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: dibeberapa titik air sudah mulai surut
 * Detail: Entry nomor 17 laphar 21/11/2026
 
@@ -70,26 +70,26 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: Pendataan
 * Kerusakan: Pendataan
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Banjir belum surut dan masih dalam penanganan oleh Pemerintah Daerah setempat
 * Detail: Entry nomor 16 laphar 21/11/2026
 
 2. Bencana Alam Banjir di Kab. Rokan Hulu *(Kejadian Baru)*
 * Dampak: ± 14 KK / 56 Jiwa
 * Pengungsi: Pendataan
-* Kerusakan: ± 14 unit rumah terdampak, 2 unit fasum terdampak
+* Kerusakan: ± 14 unit rumah terdampak, 2 unit fasum terdampak 
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir:  Banjir berangsur surut
 * Detail: Entry nomor 21 laphar 21/11/2026
 
 3. Bencana Alam Banjir di Kab. Kuantan Singingi *(Kejadian Baru)*
 * Dampak: ± 233 KK / ± 932 Jiwa
 * Pengungsi: -
-* Kerusakan: ± 233 unit rumah terdampak
+* Kerusakan: ± 233 unit rumah terdampak 
 * Penetapan Status: -
-* Pendampingan BNPB: -
-* Kondisi Mutakhir:  banjir belum surut
+* Pendampingan BNPB: - 
+* Kondisi Mutakhir:  banjir belum surut 
 * Detail: Entry nomor 22 laphar 21/11/2026
 
 *D. Prov. Banten*
@@ -98,7 +98,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: -
 * Kerusakan: 1 unit pabrik terdampak
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: masih dalam penanganan dan pencarian korban terus dilakukan
 * Detail: Entry nomor 12 laphar 21/11/2026
 
@@ -108,8 +108,8 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: Nihil
 * Kerusakan: Rumah terdampak: masih pendataan , 1 akses jalan warga terputus
 * Penetapan Status: -
-* Pendampingan BNPB: -
-* Kondisi Mutakhir: BPBD Prov. DKI Jakarta melakukan assemmen, kaji cepat dan berkoordinasi dengan pihak terkait
+* Pendampingan BNPB: - 
+* Kondisi Mutakhir: BPBD Prov. DKI Jakarta melakukan assemmen, kaji cepat dan berkoordinasi dengan pihak terkait 
 * Detail: Entry nomor18 laphar 21/11/2026
 
 *F. Prov. Jawa Barat*
@@ -118,7 +118,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: -
 * Kerusakan:  1 unit rumah RR, 8 unit rumah terancam,2 unit bangunan terdampak, 1 unit lahan terdampak
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Masih dalam penanganan oleh BPBD Kabupaten Cianjur
 * Detail: Entry nomor 19 laphar 21/11/2026
 
@@ -128,7 +128,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: -
 * Kerusakan: Akses jalan Raya Kudus-Demak terdampak
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Situasi terkini sudah kondusif serta jalan sudah bisa dilalui
 * Detail: Entry nomor 01 laphar 21/11/2026
 
@@ -137,7 +137,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: 4 KK mengungsi dirumah saudara
 * Kerusakan: 1 unit rumah RB, 2 unit rumah terdampak, 3 unit rumah terancam (pendataan)
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: material longsor sudah dibersihkan, upaya penanganan darurat penguatan tebing.
 * Detail: Entry nomor 07 laphar 21/11/2026
 
@@ -147,7 +147,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: -
 * Kerusakan: 1 akses jalan terdampak; beberapa tiang listrik terdampak; PJU terdampak
 * Penetapan Status: Siaga Darurat Prov. TMT 07/10/2026 s.d 01/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Kondusif, pohon tumbang sudah dibersihkan-
 * Detail: Entry nomor 02 laphar 21/11/2026
 
@@ -157,7 +157,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: -
 * Kerusakan:±2 ha luas lahan terbakar
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: Api berhasil dipadamkan
 * Detail: Entry nomor 14  laphar 21/11/2026
 
@@ -167,8 +167,8 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: dalam pendataan
 * Kerusakan: ± 281 unit rumah terdampak
 * Penetapan Status: Siaga Darurat TMT 11/05/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
-* Kondisi Mutakhir: Tinggi Muka Air 15 - 100 cm
+* Pendampingan BNPB: - 
+* Kondisi Mutakhir: Tinggi Muka Air 15 - 100 cm 
 * Detail: Entry nomor 08 laphar 21/11/202
 
 2. Bencana Alam Cuaca Ekstrem di Kab. Sambas *(Kejadian Baru)*
@@ -176,7 +176,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: nihil
 * Kerusakan: ± 8 unit rumah terdampak
 * Penetapan Status: Siaga Darurat TMT 11/05/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: masih dalam penanganan oleh pemerintah daerah
 * Detail: Entry nomor 10 laphar 21/11/2026
 
@@ -185,7 +185,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: nihil
 * Kerusakan: ±1 unit rumah terdampak
 * Penetapan Status: Siaga Darurat TMT 11/05/2026 s.d 31/12/2026
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: dalam penanganan oleh BPBD Kab. Sambas
 * Detail: Entry nomor 11 laphar 21/11/2026
 
@@ -201,7 +201,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 1. Bencana Alam Kebakaran Hutan dan Lahan di Provinsi Kalimantan Tengah *(Pengkinian Data)*
 * Kerusakan: Luas indikatif lahan terbakar seluas 26.273,04 Ha (berdasarkan Sipongi Kemenhut + laporan BPBD + Kebakaran Taman Nasional Tanjung Puting). Semua lahan terbakar telah berhasil dipadamkan
 * Penetapan Status: Tanggap Darurat Prov. TMT 30/10/2026 s.d 30/11/2026
-* Pendampingan BNPB: Tim BNPB
+* Pendampingan BNPB: Tim BNPB 
 * Kondisi Mutakhir: Seluruh titik dan luasan kebakaran yang teridentifikasi, telah berhasil dipadamkan
 * Detail: Entry nomor 20 laphar 21/11/2026
 
@@ -211,7 +211,7 @@ Dilaporkan rekapitulasi kejadian bencana di wilayah Indonesia yang dihimpun oleh
 * Pengungsi: dalam pendataan
 * Kerusakan: dalam pendataan
 * Penetapan Status: -
-* Pendampingan BNPB: -
+* Pendampingan BNPB: - 
 * Kondisi Mutakhir: -
 * Detail: Entry nomor 09 laphar 21/11/2026
 

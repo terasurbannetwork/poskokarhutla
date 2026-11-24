@@ -89,12 +89,28 @@
       : h("p", {class: "ak-kosong", teks: D.kontak.length ? "Tidak ada kontak yang cocok." : "Belum ada kontak. Tambah satu per satu atau impor CSV."}));
   }
 
+  /* PF-09 (profil-bpbd K13): PIC BPBD yang sudah disetujui admin, nomor tersamar; nomor penuh hanya lewat meja BNPB (tercatat). */
+  function kartuPic() {
+    const hasil = h("div", {class: "ak-redup", "aria-live": "polite"}), prov = h("select", {"aria-label": "Provinsi PIC"}, ...opsi(D.provinsi, "", "Pilih provinsi"));
+    const kab = h("input", {class: "ak-cari", type: "search", placeholder: "Kab/kota (kosong = BPBD provinsi)", "aria-label": "Kabupaten atau kota", maxlength: "60"}), cari = h("button", {class: "ak-btn", type: "button", teks: "Tampilkan PIC"});
+    cari.addEventListener("click", async () => {
+      if (!prov.value) return void hasil.replaceChildren("Pilih provinsi dulu.");
+      cari.disabled = true; hasil.replaceChildren("Memuat...");
+      try {
+        const r = await fetch(`/api/kontak/admin/pic?prov=${encodeURIComponent(prov.value)}&kab=${encodeURIComponent(kab.value.trim())}`, {signal: AbortSignal.timeout(15000)});
+        if (!r.ok) return void hasil.replaceChildren("PIC belum bisa dimuat.");
+        const d = await r.json();
+        hasil.replaceChildren(d.pic.length ? h("ul", null, d.pic.map(p => h("li", {teks: `${p.nama}, ${p.jabatan}, ${p.bpbd}, ${p.wa_samar}`}))) : "Belum ada PIC aktif di BPBD ini; Pusdalops memakai kontak situs resmi.");
+      } catch (e) { hasil.replaceChildren("PIC belum bisa dimuat."); } finally { cari.disabled = false; }
+    });
+    return DB.kartu({ikon: "orang", judul: "PIC BPBD terdaftar", ey: "Profil"}, h("p", {class: "ak-redup", teks: "PIC yang disetujui admin dan sedang aktif. Nomor tersamar; nomor penuh dibuka lewat meja laporan dan tercatat."}), h("div", {class: "kt-aksi"}, prov, kab, cari), hasil);
+  }
   function gambar() {
     const filter = h("div", {class: "kt-filter"},
       h("select", {"data-saring": "prov", "aria-label": "Provinsi"}, ...opsi({nasional: "Nasional", ...D.provinsi}, saring.prov, "Semua wilayah")),
       h("select", {"data-saring": "kat", "aria-label": "Kategori"}, ...opsi(D.kategori, saring.kat, "Semua kategori")),
       h("select", {"data-saring": "status", "aria-label": "Status"}, ...opsi({menunggu: "Menunggu persetujuan", aktif: "Aktif"}, saring.status, "Semua status")));
-    app.replaceChildren(kelengkapan(),
+    app.replaceChildren(kelengkapan(), kartuPic(),
       DB.kartu({ikon: "tambah", judul: "Tambah dan impor", ey: "Kontak"},
         h("p", {class: "ak-redup"}, "Formulir registrasi untuk dibagikan ke pemangku kepentingan: ", h("a", {href: "/daftar-kontak", target: "_blank", rel: "noopener", teks: location.origin + "/daftar-kontak"}),
           ". Registrasi masuk sebagai Menunggu dan baru aktif setelah disetujui."),
@@ -123,22 +139,6 @@
     gambar();
   }
 
-  /* CSV: koma atau titik koma (Excel Indonesia), kutip ganda boleh memuat pemisah dan baris baru */
-  function uraiCsv(t) {
-    t = t.replace(/^﻿/, "");
-    const pisah = (t.split("\n")[0].match(/;/g) || []).length > (t.split("\n")[0].match(/,/g) || []).length ? ";" : ",";
-    const out = []; let row = [], sel = "", kutip = false;
-    for (let i = 0; i < t.length; i++) {
-      const c = t[i];
-      if (kutip) { if (c === '"' && t[i + 1] === '"') { sel += '"'; i++; } else if (c === '"') kutip = false; else sel += c; }
-      else if (c === '"') kutip = true;
-      else if (c === pisah) { row.push(sel); sel = ""; }
-      else if (c === "\n" || c === "\r") { if (c === "\r" && t[i + 1] === "\n") i++; row.push(sel); out.push(row); row = []; sel = ""; }
-      else sel += c;
-    }
-    if (sel || row.length) { row.push(sel); out.push(row); }
-    return out.filter(r => r.some(x => x.trim()));
-  }
   /* awalan rumus (= + - @) dinetralkan dengan ' hanya di kolom teks bebas; kolom nomor dijaga server (digit saja), jadi tidak dirusak */
   const BEBAS = new Set(["nama", "jabatan", "lembaga", "ajudan", "catatan", "kab"]);
   const selCsv = (v, c) => { v = v == null ? "" : String(v); const rumus = BEBAS.has(c) && /^[=+\-@]/.test(v); return rumus || /[",;\n\r]/.test(v) ? '"' + (rumus ? "'" : "") + v.replace(/"/g, '""') + '"' : v; };
@@ -148,6 +148,7 @@
     a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   }
   async function impor(berkas) {
+    const {uraiCsv} = await import("/inti/impor.js");   // pengurai CSV bersama (FITUR §7.5)
     const sel = uraiCsv(await berkas.text()), kepala = (sel.shift() || []).map(x => x.trim().toLowerCase());
     const hilang = ["nama", "jabatan", "kategori"].filter(c => !kepala.includes(c));
     if (hilang.length) { pesanImpor = {teks: "Judul kolom tidak ada: " + hilang.join(", ")}; return gambar(); }

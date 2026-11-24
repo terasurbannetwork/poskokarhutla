@@ -13,13 +13,15 @@ Pakai:  python3 scripts/scrape/konsesi.py           # unduh (kalau belum ada di 
 Mentah -> data/raw/konsesi/ (tidak di-commit). Sumber batas dan lisensinya lihat KONSESI.md; ringkas:
 - sawit   : GFW gfw_oil_palm v20191031 (data Kementerian Kehutanan, source_yr 2012, last_updat 2014), grup dari GFW.
             Berkasnya sama dengan yang dipakai lahan.py (data/raw/lahan/gfw_oil_palm.zip).
-- hti     : Trase "Indonesia wood pulp concessions" v3 (2020-2022, terbit 20 Feb 2026), grup dari Trase.
-- hph     : GFW gfw_logging_download v2020 (data Kementerian Kehutanan 2014), nomor SK dari kolom legal_term.
+- hti/hph : PBPH_AR_50K Mei 2026, GDB resmi Kemenhut (diterima pemilik 20 Nov 2026, boleh terbit ulang), 541 PBPH aktif.
+            FCODE ZM03040240 = hutan tanaman (hti), ZM03040160 = hutan alam (hph), ZM03040280 = restorasi ekosistem /
+            multiusaha (dimasukkan hph: areal hutan alam). Diubah ke GeoJSON oleh scripts/scrape/kemenhut_gdb.py.
+            Batas izin lama tetap dimuat sebagai riwayat (aktif=False) HANYA bila tidak ada nama pemegang yang cocok
+            dan titik wakilnya di luar semua PBPH 2026: HTI Trase v3 (2020-2022, juga sumber grup HTI) dan HPH GFW
+            gfw_logging v2020 (Kemenhut 2014).
 - tambang : Kemenhut PPKH_AR_50K Jan 2026 (persetujuan penggunaan kawasan hutan, jenis Tambang), layanan ArcGIS publik
             yang mengizinkan query geometri. Hanya bagian tambang DI DALAM kawasan hutan; WIUP di APL (ESDM MODI) butuh token.
-- atribut : daftar PBPH Kemenhut Mei 2026 (layanan ArcGIS publik; geometri sengaja tidak dilayani, atribut saja) untuk
-            nomor/tanggal SK, luas SK, status aktif HTI & HPH, dicocokkan lewat nama perusahaan.
-Batas PBPH 2026 dan peta GFW Indonesia terbaru TIDAK diunduh: pemiliknya menutup unduhan geometri (lihat KONSESI.md).
+Layanan ArcGIS PBPH tetap menutup geometri; GDB di atas diterima langsung dari kementerian.
 """
 import json, math, os, random, re, sys, time, urllib.parse, urllib.request
 
@@ -39,6 +41,9 @@ PPKH = KEMENHUT + "/PPKH_AR_50K_012026/MapServer/1"
 TRASE = "https://resources.trase.earth/data/facilities-data/indonesia_wood_pulp_concessions_2020_2022_v2026_02_20.geo.json"
 SAWIT_ZIP = os.path.join(AKAR, "data/raw/lahan/gfw_oil_palm.zip")
 HPH_ZIP = os.path.join(AKAR, "data/raw/lahan/gfw_logging_download.zip")
+PBPH_GDB = os.path.join(MENTAH, "pbph_ar_50k_052026.geojson")  # scripts/scrape/kemenhut_gdb.py
+PBPH_JENIS = {"ZM03040240": ("hti", "kayu hutan tanaman (PBPH HT)"), "ZM03040160": ("hph", "kayu hutan alam (PBPH HA)"),
+              "ZM03040280": ("hph", "restorasi ekosistem / multiusaha hutan (PBPH)")}
 JENIS = {"sawit", "hti", "hph", "tambang"}
 UA = {"User-Agent": "poskokarhutla/1.0 (+https://github.com/pangantara/poskokarhutla)"}
 
@@ -73,14 +78,33 @@ def arcgis(layanan, tujuan, where="1=1", geometri=True):
     return {"features": fitur}
 
 
+CADANGAN = os.path.join(KELUAR, "konsesi.geojson")
+PPKH_JSON = os.path.join(MENTAH, "ppkh_tambang_012026.geojson")
+
+
+def gfw_cadangan(awalan):
+    """Fitur sawit / HPH 2014 (GFW) / tambang PPKH Jan 2026 dari berkas publik yang sudah terbit, bila mentahnya tidak
+    bisa ditarik (zip GFW butuh GFW_API_KEY; layanan PPKH menutup query sejak Nov 2026).
+    ponytail: luas_ha = luas peta, nomor/tanggal SK dan status hilang (berkas publik tidak memuatnya); tarik mentahnya
+    untuk salinan lengkap. Datanya statis (versi bertanggal), jadi batas dan nama tidak berubah."""
+    for f in json.load(open(CADANGAN))["features"]:
+        if f["properties"]["id"].startswith(awalan):
+            yield f
+
+
 def unduh():
     os.makedirs(MENTAH, exist_ok=True)
     os.makedirs(os.path.dirname(SAWIT_ZIP), exist_ok=True)
-    ambil(UNDUH["gfw_oil_palm.zip"], SAWIT_ZIP)  # 6 MB; sama dengan cache lahan.py
-    ambil(UNDUH["gfw_logging_download.zip"], HPH_ZIP)  # 252 MB (global), hanya baris IDN dipakai
+    for url, z in ((UNDUH["gfw_oil_palm.zip"], SAWIT_ZIP), (UNDUH["gfw_logging_download.zip"], HPH_ZIP)):  # 6 MB, 252 MB
+        try:
+            ambil(url, z)
+        except SystemExit as e:  # tanpa GFW_API_KEY: bangun() memakai sawit & HPH lama dari konsesi.geojson terbit
+            print(f"{os.path.basename(z)} tidak diunduh ({e}); pakai cadangan dari {CADANGAN}", file=sys.stderr)
     ambil(TRASE, os.path.join(MENTAH, "trase_wood_pulp.geo.json"))
-    arcgis(PPKH, os.path.join(MENTAH, "ppkh_tambang_012026.geojson"), "JENIS_PPKH='Tambang'")
-    arcgis(PBPH, os.path.join(MENTAH, "pbph_atribut_052026.geojson"), geometri=False)
+    try:
+        arcgis(PPKH, PPKH_JSON, "JENIS_PPKH='Tambang'")
+    except AssertionError as e:  # 20 Nov 2026: layanan PPKH tinggal kapabilitas Map (query ditutup)
+        print(f"PPKH tidak bisa ditarik ({str(e)[:120]}); pakai cadangan dari {CADANGAN}", file=sys.stderr)
 
 
 def tanya(layanan, x, y, kolom):
@@ -194,8 +218,8 @@ def titik_wakil(geom):
 def bangun(tol=0.0015):
     from wilayah import Wilayah
     w = Wilayah()
-    pbph = {}
-    for f in json.load(open(os.path.join(MENTAH, "pbph_atribut_052026.geojson")))["features"]:
+    pbph, pbph_fitur = {}, json.load(open(PBPH_GDB))["features"]
+    for f in pbph_fitur:
         p = f["properties"]
         pbph.setdefault(kunci(p["NAMOBJ"]), []).append(p)
         lama = re.search(r"\bD\.?\s?H\.?\s*([^)]+)", p["NAMOBJ"] or "")  # "PT X (D.H. NAMA LAMA)"
@@ -208,16 +232,15 @@ def bangun(tol=0.0015):
         c = [p for p in c if str(p["KODE_PROV"]) == prov] or c
         return c[0] if len(c) == 1 or c and all(p["NO_SK"] == c[0]["NO_SK"] for p in c) else (c[0] if c else None)
 
-    fitur, dibuang = [], []
-    jalur_titik = os.path.join(MENTAH, "pbph_titik_052026.json")
-    titik = json.load(open(jalur_titik)) if os.path.exists(jalur_titik) else {}
+    fitur, dibuang, diganti = [], [], 0
+    kotak = []  # (xmin, ymin, xmax, ymax, fitur) PBPH 2026, untuk uji titik lokal
+    for f in pbph_fitur:
+        xy = [q for poli in (f["geometry"]["coordinates"] if f["geometry"]["type"] == "MultiPolygon" else [f["geometry"]["coordinates"]]) for q in poli[0]]
+        kotak.append((min(q[0] for q in xy), min(q[1] for q in xy), max(q[0] for q in xy), max(q[1] for q in xy), f))
 
-    def di_titik(id_, x, y):
-        if id_ not in titik:
-            titik[id_] = tanya(PBPH, x, y, "NAMOBJ,NO_SK,TGL_SK,LSSK")
-            json.dump(titik, open(jalur_titik, "w"))
-            time.sleep(.4)
-        return titik[id_]
+    def di_titik(x, y):
+        """PBPH 2026 yang memuat titik (x, y)."""
+        return [f["properties"] for a, b, c, d, f in kotak if a <= x <= c and b <= y <= d and di_dalam(x, y, f["geometry"])]
 
     def tambah(id_, jenis, nama, geom, min_luas, **p):
         g = ringkas(geom, tol / 3 if jenis == "tambang" else tol, min_luas)  # bukaan tambang kecil: ± 55 m
@@ -231,20 +254,14 @@ def bangun(tol=0.0015):
         prov = adm[0]
         if nama.lower() in ("unknown", "", "-"):
             nama = "(nama pemegang tidak tercatat)"
-        if jenis in ("hti", "hph"):
-            r = resmi(nama, prov)
-            if not r:  # nama tidak cocok: tanya PBPH aktif di titik wakil poligon (atribut saja)
-                ada = di_titik(id_, x, y)
-                r = next((a for a in ada if kunci(a["NAMOBJ"]) == kunci(nama)), None)
-                if not r and ada:
-                    p["pbph_kini"] = "; ".join(f"{rapi(a['NAMOBJ'])} ({a['NO_SK']})" for a in ada)
-            p["aktif"] = bool(r) or (None if p.get("pbph_kini") else False)  # None: lokasi kini dipegang PBPH lain
-            if r:
-                p.update(izin=r["NO_SK"], tgl_izin=tanggal(r["TGL_SK"]), luas_sk=r["LSSK"], status="aktif · daftar PBPH Kemenhut Mei 2026")
-            else:
-                p["status"] = (p.get("status") + " · " if p.get("status") else "") + (
-                    f"nama ini tidak ada di daftar PBPH Mei 2026; lokasinya kini areal {p['pbph_kini']}" if p.get("pbph_kini")
-                    else "tidak ada PBPH aktif di lokasi ini menurut daftar Kemenhut Mei 2026 (izin kemungkinan berakhir)")
+        if jenis in ("hti", "hph") and not id_.startswith("pbph-"):  # batas izin lama (Trase / GFW 2014)
+            if resmi(nama, prov) or di_titik(x, y):  # pemegangnya masih ber-PBPH atau lokasinya kini areal PBPH 2026:
+                nonlocal diganti                     # batas resmi 2026 yang dipakai
+                diganti += 1
+                return
+            p["aktif"] = False
+            p["status"] = (p.get("status") + " · " if p.get("status") else "") + \
+                "izin lama: tidak ada PBPH aktif di lokasi ini menurut PBPH_AR_50K Kemenhut Mei 2026 (izin kemungkinan berakhir)"
         fitur.append({"type": "Feature", "properties": {
             "id": id_, "jenis": jenis, "nama": nama, "pemegang": nama, "grup": p.get("grup", ""),
             "izin": p.get("izin", ""), "tgl_izin": p.get("tgl_izin", ""),
@@ -253,7 +270,12 @@ def bangun(tol=0.0015):
             "aktif": p.get("aktif"), "prov": prov, "kab": adm[1], **({"pbph_kini": p["pbph_kini"]} if p.get("pbph_kini") else {})}, "geometry": g})
 
     # sawit: GFW (Kemenhut 2012/2014). Nama blok "PT X 1/2" dipertahankan di id, perusahaan di nama.
-    for p, cincin in baca_shp(SAWIT_ZIP):
+    for f in ([] if os.path.exists(SAWIT_ZIP) else list(gfw_cadangan("sawit-gfw-"))):
+        q = f["properties"]
+        tambah(q["id"], "sawit", q["nama"], f["geometry"], 1e-5, grup=q.get("grup") or "", luas=q["luas_peta_ha"],
+               komoditas="kelapa sawit", status="", sumber="Kementerian Kehutanan via Global Forest Watch (gfw_oil_palm v20191031)",
+               tahun_data=q["tahun_data"])
+    for p, cincin in (baca_shp(SAWIT_ZIP) if os.path.exists(SAWIT_ZIP) else []):
         if p["country"] != "IDN" or not cincin:
             continue
         g = {"type": "MultiPolygon", "coordinates": [[c] for c in cincin]}
@@ -262,18 +284,25 @@ def bangun(tol=0.0015):
                grup=grup, luas=float(p["area_ha"] or 0), komoditas="kelapa sawit", status="",
                sumber="Kementerian Kehutanan via Global Forest Watch (gfw_oil_palm v20191031)", tahun_data=int(p["last_updat"] or 2014))
 
-    # HTI: Trase (2020-2022)
+    # HTI: Trase (2020-2022): riwayat + sumber grup perusahaan untuk PBPH HT 2026
+    grup_hti = {}
     for f in json.load(open(os.path.join(MENTAH, "trase_wood_pulp.geo.json")))["features"]:
         p = f["properties"]
         aktif = [t for t in ("2020", "2021", "2022") if p.get(f"active_in_{t}") == "YES"]
         grup = "" if p["wood_supplier_corporate_group"] in ("UNKNOWN", "", None) else rapi(p["wood_supplier_corporate_group"]).title()
+        if grup:
+            grup_hti.setdefault(kunci(p["wood_supplier"]), grup)
         tambah(f"hti-trase-{p['wood_supplier_trase_id']}", "hti", rapi(p["wood_supplier"]), f["geometry"], 1e-5,
                grup=grup, luas=p.get("concession_area_ha"), komoditas="kayu pulp (hutan tanaman)",
                status=f"beroperasi {aktif[-1]} (Trase)" if aktif else "tidak beroperasi 2020-2022 (Trase)",
                sumber="Trase, Indonesia wood pulp concessions v3 (2026)", tahun_data=2022)
 
     # HPH: GFW logging (Kemenhut 2014)
-    for p, cincin in baca_shp(HPH_ZIP):
+    for f in ([] if os.path.exists(HPH_ZIP) else list(gfw_cadangan("hph-gfw-"))):
+        q = f["properties"]
+        tambah(q["id"], "hph", q["nama"], f["geometry"], 1e-5, luas=q["luas_peta_ha"], komoditas="kayu hutan alam",
+               sumber="Kementerian Kehutanan via Global Forest Watch (gfw_logging v2020)", tahun_data=q["tahun_data"])
+    for p, cincin in (baca_shp(HPH_ZIP) if os.path.exists(HPH_ZIP) else []):
         if p.get("country") != "IDN" or not cincin:
             continue
         g = {"type": "MultiPolygon", "coordinates": [[c] for c in cincin]}
@@ -282,8 +311,25 @@ def bangun(tol=0.0015):
                izin=sk if re.search(r"\d", sk) else "", luas=float(p.get("area_ha") or 0), komoditas="kayu hutan alam",
                sumber="Kementerian Kehutanan via Global Forest Watch (gfw_logging v2020)", tahun_data=int(p.get("last_updat") or 2014))
 
+    # PBPH aktif Mei 2026 (GDB resmi Kemenhut): batas HTI & HPH yang berlaku
+    for i, f in enumerate(pbph_fitur):
+        p = f["properties"]
+        jenis, komoditas = PBPH_JENIS[p["FCODE"]]
+        nama = rapi(p["NAMOBJ"])
+        catatan = (p.get("REMARK") or "").strip().lower()
+        tambah(f"pbph-{p['KODE_PBPH'] or i}-{i}", jenis, nama, f["geometry"], 1e-5,
+               grup=grup_hti.get(kunci(nama), ""), izin=(p["NO_SK"] or "").strip(), tgl_izin=tanggal(p["TGL_SK"]),
+               luas=p["LSSK"], komoditas=komoditas, aktif=p["STAT_IZIN"] == "AKTIF",
+               status=f"{p['STAT_IZIN'].lower()} · {p['JENIS']} · {p['KEGIATAN']}" + (f" · {catatan}" if catatan else ""),
+               sumber="Kemenhut PBPH_AR_50K Mei 2026", tahun_data=2026)
+    print(f"batas izin lama diganti PBPH 2026: {diganti}", file=sys.stderr)
+
     # tambang: PPKH Kemenhut Jan 2026 (bagian tambang di kawasan hutan)
-    for f in json.load(open(os.path.join(MENTAH, "ppkh_tambang_012026.geojson")))["features"]:
+    for f in ([] if os.path.exists(PPKH_JSON) else list(gfw_cadangan("tambang-ppkh-"))):
+        q = f["properties"]
+        tambah(q["id"], "tambang", q["nama"], f["geometry"], 1e-6, luas=q["luas_peta_ha"],
+               komoditas="tambang (persetujuan penggunaan kawasan hutan)", sumber="Kemenhut PPKH_AR_50K Jan 2026", tahun_data=2026)
+    for f in (json.load(open(PPKH_JSON))["features"] if os.path.exists(PPKH_JSON) else []):
         p = f["properties"]
         tambah(f"tambang-ppkh-{p['ID_PPKH']}-{p['OBJECTID']}", "tambang", rapi(p["NAMA_PPKH"]), f["geometry"], 1e-6,
                izin=(p["NO_PPKH"] or "").strip(), tgl_izin=tanggal(p["TGL_PPKH"]), luas=p["LUAS_PPKH"],
@@ -345,10 +391,12 @@ def publik():
 
 SUMBER = {
     "sawit": "Kementerian Kehutanan (data 2012, diperbarui 2014) via Global Forest Watch, gfw_oil_palm v20191031",
-    "hti": "Trase (2026), Indonesia wood pulp concessions v3, doi:10.48650/EJDV-8850 (CC BY 4.0)",
-    "hph": "Kementerian Kehutanan (2014) via Global Forest Watch, gfw_logging v2020",
+    "hti": "Direktorat Bina Usaha Pemanfaatan Hutan, Ditjen PHL, Kemenhut: PBPH_AR_50K Mei 2026 (PBPH HT aktif); "
+           "izin lama: Trase (2026), Indonesia wood pulp concessions v3, doi:10.48650/EJDV-8850 (CC BY 4.0)",
+    "hph": "Direktorat Bina Usaha Pemanfaatan Hutan, Ditjen PHL, Kemenhut: PBPH_AR_50K Mei 2026 (PBPH HA/RE aktif); "
+           "izin lama: Kementerian Kehutanan (2014) via Global Forest Watch, gfw_logging v2020",
     "tambang": "Direktorat Penggunaan Kawasan Hutan, Ditjen Planologi Kehutanan, Kemenhut: PPKH_AR_50K Jan 2026",
-    "izin": "Direktorat Bina Usaha Pemanfaatan Hutan, Ditjen PHL, Kemenhut: PBPH_AR_50K Mei 2026 (atribut)",
+    "izin": "Direktorat Bina Usaha Pemanfaatan Hutan, Ditjen PHL, Kemenhut: PBPH_AR_50K Mei 2026",
 }
 
 
@@ -461,6 +509,9 @@ if __name__ == "__main__":
         periksa()
     elif perintah == "rekap":
         rekap()
+    elif not os.path.exists(PBPH_GDB):  # CI (statis.yml): GDB PBPH resmi hanya ada di mesin pemilik, tidak di-commit
+        print(f"::warning::{os.path.relpath(PBPH_GDB, AKAR)} tidak ada; konsesi.geojson terbit dibiarkan (jalankan "
+              "scripts/scrape/kemenhut_gdb.py lalu konsesi.py di mesin yang memegang GDB Kemenhut)")
     else:
         unduh()
         tulis(bangun())

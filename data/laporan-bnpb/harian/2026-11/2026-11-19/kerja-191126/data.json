@@ -1,0 +1,162 @@
+{
+ "hari": "2026-11-19",
+ "cutoff": "2026-11-19T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2756.0,
+    "mengungsi": 679.0
+   },
+   "teks": {
+    "dampak": "±  2.756 KK / 9.682 jiwa terdampak",
+    "status_darurat": "Status Siaga Darurat Prov. TMT 11 November 2026 s.d 31 Januari 2027",
+    "kondisi": "6 Kecamatan 37 gampong air sudah surut, 2 Kecamatan 25 gampong air belum surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 254.0,
+    "mengungsi": 245.0,
+    "rumah_dampak": 254.0
+   },
+   "teks": {
+    "dampak": "254 KK / 947 jiwa Warga Terdampak",
+    "status_darurat": "Siaga Darurat Prov.  TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Gp. Lhok Raya dan Gp. Padang Harapan: Air sudah surut total. Cot Bayu: Ketinggian air 5–40 cm, sedangkan genangan di rumah warga 5–20 cm.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-16",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3517.0,
+    "rumah_dampak": 3517.0
+   },
+   "teks": {
+    "dampak": "± 3.517 KK / 13.720 jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026  s.d 31/01/2027",
+    "kondisi": "Kec. Singkil: 10 Desa air belum surut dan 3 Desa air berangsur surut, Kec. Simpang Kanan, Gunung Meriah dan Kuta Baharu air berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Sebagian belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "35",
+   "lokasi": "Pamekasan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (angin kencang)",
+   "angka": {
+    "meninggal": 1.0,
+    "rumah": 10.0
+   },
+   "teks": {
+    "dampak": "1 (satu) jiwa MD, 1 (satu) jiwa LB, dan 10 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "Korban luka dirawat di Puskesmas Panaguan Kec. Proppo",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-18",
+   "kondisi_pil": [
+    "Korban dirawat",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "35",
+   "lokasi": "Banyuwangi",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 25.0,
+    "rumah_dampak": 25.0
+   },
+   "teks": {
+    "dampak": "± 25 KK terdampak",
+    "status_darurat": "Siaga Darurat TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "Air belum surut (TMA 80 cm – 100 cm)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-18",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "52",
+   "lokasi": "Kota Mataram",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 83.0,
+    "rumah": 2.0,
+    "rumah_dampak": 83.0
+   },
+   "teks": {
+    "dampak": "83  KK / 308 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Banjir telah surut dan kondisi aman terkendali.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-18",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "81",
+  "93"
+ ]
+}

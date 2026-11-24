@@ -63,3 +63,6 @@
 .ai-pesan-inline{margin:0}
 .ai-tagih a.ad-tombol{align-items:stretch;overflow:hidden;box-sizing:border-box}.ai-tagih a.ad-tombol b,.ai-tagih a.ad-tombol small{min-width:0;max-width:100%}
 .ai-tagih{min-width:0}
+/* profil PIC akun BPBD (public/admin/instansi_profil.js) */
+.ai-pic-foto{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:var(--r-pill,999px);object-fit:cover;background:var(--surface);color:var(--ink2);font-weight:700}
+.ai-profil{display:grid;gap:var(--jr-3,12px);margin-block:var(--jr-4,16px)}

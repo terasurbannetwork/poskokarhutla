@@ -65,7 +65,7 @@ const beriAmbang = h => { if (!h || S.ver?.kita?.vonis?.layak) return h; const k
 
 /* ================================================================ tab */
 const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["posko", "Posko"], ["informasi", "Informasi"], ["metode", "Metode"]];
-const TAB_SEMBUNYI = new Set(["informasi", "metode", "tentang", "posko"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir; tentang disembunyikan pemilik 29 Okt 2026 */
+const TAB_SEMBUNYI = new Set(["informasi", "tentang", "posko"]); /* ada tapi tidak di menu (A24); Metode dimunculkan pemilik 20 Nov 2026; tentang disembunyikan pemilik 29 Okt 2026 */
 const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   simulasi: '<path d="M8 5v14l11-7z"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', posko: '<path d="M3 20h18M5 20V10l7-6 7 6v10M10 20v-6h4v6"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};

@@ -1,4 +1,4 @@
-/* Layar Pimpinan (/admin/pimpinan): satu layar lintas sistem, dirakit di peramban dari API admin dan JSON yang SUDAH ada (tanpa rute data baru).
+/* Layar Pimpinan (/admin/pimpinan): satu layar lintas sistem, dirakit di peramban dari API admin dan JSON yang SUDAH ada, ditambah satu rute baru untuk kartu Respons laporan warga (GET /api/lapor/respons, profil-bpbd PF-08).
    Tiap kartu dimuat sendiri-sendiri: kartu yang gagal menjadi "belum ada data", kartu lain tetap tampil. Angka pipeline tidak dihitung ulang di sini;
    kejadian dan tingkat per bencana dibaca lewat /bnpb/ringkas_bencana.js (dipakai juga oleh /sitrep). CSP admin: tanpa skrip/gaya inline, semua teks lewat esc(). */
 (() => {
@@ -35,7 +35,7 @@
   const KARTU = [
     ["sit", "Situasi per bencana", "api", "/bnpb/sitrep", "pm-penuh"], ["pri", "Prioritas dampak hari ini", "peta", "/bnpb/risiko", "pm-4"], ["rap", "Rapor BPBD: skor terendah", "rapor", "/admin/meja", "pm-5"],
     ["bhy", "Tanda bahaya lintas meja", "bahaya", "/admin/meja", "pm-3"], ["rel", "Relawan", "orang", "/admin/relawan", "pm-b3"], ["aln", "Alun-alun: butuh bantuan", "pesan", "/admin/alun", "pm-b3"],
-    ["keb", "Kebutuhan 30 hari", "uang", "/bnpb/kebutuhan", "pm-b3"], ["png", "Pengingat terbuka", "lonceng", "/admin/pengingat", "pm-b3"]];
+    ["keb", "Kebutuhan 30 hari", "uang", "/bnpb/kebutuhan", "pm-b3"], ["png", "Pengingat terbuka", "lonceng", "/admin/pengingat", "pm-b3"], ["rsp", "Respons laporan warga", "pesan", "/lapor/meja", "pm-5"]];
   const kartuHtml = ([id, judul, ik, href, kls]) => `<section class="ex ex-std db-std pm-k ${kls}" id="k_${id}" aria-label="${esc(judul)}"><header class="ex-hd"><div class="ex-jd"><h3>${IK[ik]}${esc(judul)}</h3><a class="pm-buka" href="${esc(href)}" aria-label="Buka ${esc(judul)}">Rincian${IK.buka}</a></div></header><div class="ex-bd pm-isi"><p class="pm-kosong">Memuat…</p></div></section>`;
   const isi = (id, html) => { const e = document.querySelector(`#k_${id} .pm-isi`); if (!e) return; e.innerHTML = html; e.querySelectorAll("[data-w]").forEach(x => x.style.setProperty("--w", x.dataset.w)); };
   const tabel = (kolom, baris) => `<div class="db-tabel-wadah"><table class="ex-tabel db-tabel"><thead><tr>${kolom.map(k => `<th scope="col">${esc(k)}</th>`).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`;
@@ -64,6 +64,22 @@
     isi("pri", `<div class="db-ubin-grid db-ubin-baris">${ukur(N0.format(r.kecamatan), "kecamatan", "", "peta")}${ukur("±" + kira(r.jiwa), "jiwa", "", "orang")}</div>
       <div class="pm-pils">${pil(d.label || "indeks komposit, belum diuji balik", "info", "tunggu")}${d.usang ? pil("data lama", "waktu", "bahaya") : ""}</div>
       ${atas.length ? tabel(["Kecamatan", "Bahaya", "Jiwa"], atas.map(k => `<tr><td data-label="Kecamatan"><b>${esc(k.kec)}</b><small>${esc(k.kab)}</small></td><td data-label="Bahaya">${esc(k.utama_nama)}</td><td data-label="Jiwa" class="n">±${esc(kira(k.dampak ?? k.pend))}</td></tr>`)) : kosong("Tidak ada kecamatan yang memenuhi syarat hari ini.")}`);
+  }
+
+  /* ---------- respons laporan warga per BPBD (PF-08, K12): median dan p90 menit dari laporan masuk ke dilihat dan ditangani; tanpa peringkat; kurang dari 5 laporan = belum cukup data ---------- */
+  async function respons(bulan = "") {
+    const {j, g} = await api("/api/lapor/respons" + (bulan ? "?bulan=" + bulan : ""), "Respons laporan");
+    /* pemilih bulan bawaan peramban (LB-13, K8): kosong = 30 hari terakhir; ganti bulan hanya memuat ulang kartu ini, tanpa kerja berat di klik */
+    const pilih = `<label class="pm-bulan">Bulan <input type="month" id="rsp_bln" value="${esc(bulan)}" min="2020-01" max="${new Date().toISOString().slice(0, 7)}"></label>`, tampil = html => { isi("rsp", pilih + html); const e = document.getElementById("rsp_bln"); if (e) e.onchange = () => respons(e.value); };
+    if (g || !j) return tampil(kosong(g?.includes("belum diaktifkan") ? "Meja laporan belum diaktifkan." : "Belum ada data."));
+    if (!j.bpbd.length) return tampil(kosong(bulan ? `Belum ada laporan warga pada ${esc(bulan)}.` : `Belum ada laporan warga dalam ${N0.format(j.jendela_hari)} hari terakhir.`));
+    /* dibulatkan ke 5 menit (angka mesin, bukan janji layanan); jam bila 60 menit atau lebih; p90 hanya bila sampel paling sedikit 20 */
+    const lima = m => { const r = Math.max(5, Math.round(m / 5) * 5); return r >= 60 ? `${N0.format(Math.floor(r / 60))} jam${r % 60 ? " " + (r % 60) + " menit" : ""}` : `${r} menit`; };
+    const mp = x => x ? `${lima(x.median)} / ${x.n >= 20 ? lima(x.p90) : "sampel sedikit"}` : "–";
+    tampil(`<div class="pm-pils">${pil(j.bulan ? `bulan ${esc(j.bulan)}` : `${N0.format(j.jendela_hari)} hari terakhir`, "info", "info")}${pil(`paling sedikit ${N0.format(j.ambang)} laporan per BPBD`, "info", "tunggu")}</div>
+      ${tabel(["BPBD", "Laporan", "Dilihat (median / p90)", "Ditangani (median / p90)"], j.bpbd.map(b => b.cukup
+        ? `<tr><td data-label="BPBD"><b>${esc(b.wilayah)}</b></td><td data-label="Laporan" class="n">${N0.format(b.laporan)}</td><td data-label="Dilihat" class="n">${mp(b.dilihat)}${b.belum_dilihat ? `<small>${N0.format(b.belum_dilihat)} belum dilihat</small>` : ""}</td><td data-label="Ditangani" class="n">${mp(b.ditangani)}${b.belum_diambil ? `<small>${N0.format(b.belum_diambil)} belum diambil</small>` : ""}</td></tr>`
+        : `<tr><td data-label="BPBD"><b>${esc(b.wilayah)}</b></td><td data-label="Laporan" class="n">${N0.format(b.laporan)}</td><td colspan="2" data-label="Respons">belum cukup data</td></tr>`))}`);
   }
 
   /* ---------- 3. rapor BPBD ---------- */
@@ -161,7 +177,7 @@
     <div class="pm-bar"><p id="pmWaktu" class="pm-redup"></p>${dummy() ? pil("memuat data dummy", "info", "tunggu") : ""}<p id="pmPesan" class="pm-pesan" role="status"></p></div>`;
   document.getElementById("pmWaktu").textContent = "Diperbarui " + wib(Date.now());
   Promise.all([muatSkrip("/bnpb/ringkas_bencana.js?v=1"), muatSkrip("/inti/nanti.js")]).then(() => {
-    const kerja = {sit: situasi, pri: prioritas, rap: rapor, bhy: bahaya, rel: relawan, aln: alun, keb: kebutuhan, png: pengingat};
+    const kerja = {sit: situasi, pri: prioritas, rap: rapor, bhy: bahaya, rel: relawan, aln: alun, keb: kebutuhan, png: pengingat, rsp: respons};
     for (const [id, f] of Object.entries(kerja)) { const jalan = () => f().catch(() => isi(id, kosong())); window.nanti ? window.nanti(jalan) : jalan(); }   // kartu bermunculan satu per satu; klik tidak menunggu
   });
 })();

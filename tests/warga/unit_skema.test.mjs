@@ -94,3 +94,25 @@ test("R10: kaji_id rehab tidak bisa diubah dari NULL ke id sah (meja_catatan_uba
   const k = cat(db), r = rehab(db, null);
   assert.throws(() => db.prepare("UPDATE meja_catatan SET kaji_id = ? WHERE id = ?").run(k, r), /perubahan meja, wilayah, atau status tidak sah/);
 }));
+
+/* ---- RU-018: migrasi 0168, peran staf 'unit' (DESAIN-TEKNIS kedeputian §2.2; semula 0112, nomor itu diambil logpal, dipindah saat merge 23 Nov 2026) ---- */
+const F0168 = "0168_staf_peran_unit.sql";
+const stafDb = () => { const d = new DatabaseSync(":memory:"); for (const f of berkas) jalankan(d, f); return d; };
+let ns = 0;
+const stafBaru = (d, peran) => { ++ns; d.prepare("INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, dibuat) VALUES (?, ?, 'Cek', ?, 'BNPB', 'c@bnpb.go.id', '628123456789', ?, '[]', ?, ?, 1)")
+  .run(hex(), "unitcek" + ns, "19800101" + String(ns).padStart(4, "0"), peran, "a".repeat(32), "0".repeat(64)); };
+test("U1: peran 'unit' diterima; 'unitx' dan peran ganda ditolak trigger (INSERT dan UPDATE)", () => {
+  const d = stafDb();
+  assert.doesNotThrow(() => stafBaru(d, '["unit"]'), "peran unit ditolak");
+  assert.doesNotThrow(() => stafBaru(d, '["unit","pimpinan"]'), "unit + peran lain (set sah) ditolak");
+  assert.throws(() => stafBaru(d, '["unitx"]'), /tidak sah/, "unitx DITERIMA");
+  assert.throws(() => stafBaru(d, '["unit","unit"]'), /tidak sah/, "peran ganda DITERIMA");
+  assert.throws(() => d.prepare("UPDATE staf SET peran = '[\"unitx\"]' WHERE username = 'unitcek1'").run(), /tidak sah/, "UPDATE ke unitx DITERIMA");
+  assert.throws(() => d.prepare("UPDATE staf SET peran = '[\"unit\",\"unit\"]' WHERE username = 'unitcek1'").run(), /tidak sah/, "UPDATE peran ganda DITERIMA");
+});
+test("U2: 0168 idempoten dan peran lama tetap sah (direktori, operator_cc, irtama)", () => {
+  const d = stafDb();
+  assert.doesNotThrow(() => jalankan(d, F0168), "0168 kedua gagal");
+  assert.doesNotThrow(() => stafBaru(d, '["direktori","operator_cc","irtama"]'));
+  assert.equal(d.prepare("SELECT count(*) n FROM sqlite_master WHERE name IN ('staf_larik_sah','staf_larik_ubah')").get().n, 2, "trigger tidak tepat dua");
+});

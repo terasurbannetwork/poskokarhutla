@@ -29,7 +29,7 @@
         baris: kuat.slice(0, 10).map(g => [waktuGempa(g.waktu), wilayahPendek(g.wilayah), mTulis(g.m), mmi(g)]), kosong: "belum tersedia"},
       daftar: {judul: "IV. Kejadian gempa aktif", satuan: "kejadian", kosong: "belum tersedia", item: kejadian
         ? kejadian.filter(x => x.aktif).sort((a, b) => b.m - a.m).slice(0, 8).map(x => `${x.kode}: ${mTulis(x.m)}, ${wilayahPendek(x.nama)}, ${fmt(Math.max(0, (x.jumlah || 1) - 1))} susulan tercatat`) : []},
-      sumber: "Sumber: BMKG dan USGS (katalog gempa), status tsunami resmi BMKG; kejadian aktif dari tab Kejadian.",
+      sumber: "BMKG dan USGS (katalog gempa), status tsunami resmi BMKG; kejadian aktif dari tab Kejadian.",
       catatan: "Status tsunami hanya dari BMKG; gempa tanpa status berarti BMKG belum menerbitkan pernyataan potensi tsunami untuk gempa itu."};
   }
 

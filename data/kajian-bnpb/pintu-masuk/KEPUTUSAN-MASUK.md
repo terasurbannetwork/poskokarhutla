@@ -65,6 +65,7 @@ Penyebabnya ada di pintu, bukan di fitur (rinci di `RISET.md`):
 | K11 (Q9) | Syarat surat tugas dan kartu untuk aktivasi pertama akun instansi boleh diganti kecocokan kontak? | **"Tidak"**. Verifikasi yang ada tetap (D16). |
 | K12 (Q7) | Pemirsa ikut bisa masuk lewat kode? | **"Gas"**. Pemirsa ikut. |
 | K13 | Halaman `/bantu` (organisasi menulis 3W dan tawaran bantuan lewat tautan bertoken, paket Tiga W) boleh dibuka tanpa login? | **"Ya, izinkan /bantu"** (15 Nov 2026). Halaman tidak memuat data tanpa token; token dicek di tiap panggilan `/api/bantu`. Entrinya ada di `tests/agen/fixtures/pintu_masuk.json` (daftar beku). |
+| K14 | Halaman `/lapor` (warga melapor kejadian, paket Lapor Bencana) dan `/lapor/lacak` (pelapor melihat status lewat tautan bertoken) boleh dibuka tanpa login? | **"Ya boleh buka langsung tanpa login"** (19 Nov 2026). Halaman tidak memuat data: pelapor masuk lewat `/masuk` dan nomor dari sesi dicek di tiap `/api/lapor/*`; selama uji hanya nomor di `lapor_izin`. Lacak tanpa token kosong. `/lapor/meja` tetap tertutup (staf). Entrinya ada di `tests/agen/fixtures/pintu_masuk.json`. |
 
 Turunan rancangan dari K12 dan dari pemeriksaan PM-03 (agent, bisa dibatalkan pemilik):
 

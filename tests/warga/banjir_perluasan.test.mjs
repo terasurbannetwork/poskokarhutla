@@ -9,6 +9,7 @@ import {readFileSync, existsSync} from "node:fs";
 import vm from "node:vm";
 import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
+import {denganProfil} from "./_profil.mjs";
 import {ipHash} from "../../src/worker.js";   // worker.js dulu: push.js, instansi.js, dan worker.js saling impor
 import {siapkan, berantai, sha256} from "./_bnpb.mjs";
 
@@ -54,7 +55,7 @@ async function akun(user, {tingkat = "kab", prov = "62", kab = "Pulang Pisau", s
     VALUES (?, ?, 'pemkab', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Budi', '198001012005011001', 'Kepala', 'BPBD', 'budi@x.go.id', '6281234567890', 1, 1, 0, ?)`)
     .bind(id, user, tingkat, `pemkab ${kab}`, `${prov}|${kab}|${++nomor}`, JSON.stringify([prov]), tingkat === "kab" ? prov : null, tingkat === "kab" ? kab : null, "g".repeat(32), "a".repeat(64), st, kini).run();
   await U.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 30 * HARI).run();
-  return {id, h: {cookie: `sesi_instansi=${token}`}};
+  return {id, h: await denganProfil(U.DB, id, {cookie: `sesi_instansi=${token}`})};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const jalankan = ms => U.mf.getWorker().then(w => w.scheduled({cron: "* * * * *", scheduledTime: ms}));

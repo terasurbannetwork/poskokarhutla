@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/lapor/lambang-bnpb.png">
+<link rel="apple-touch-icon" href="/lapor/ikon/apple-180.png">
+<link rel="manifest" href="/lapor/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pantau Bencana">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<title>Pantau Bencana BNPB, Pelaporan Ancaman dan Tanggap Darurat Bencana</title>
+<meta name="description" content="Laporkan kejadian bencana ke BNPB lewat percakapan yang dipandu.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/lapor/lapor.css?v=149" rel="stylesheet">
+</head>
+<body data-tanpa-keluar>
+<svg width="0" height="0" class="lp-sr" aria-hidden="true">
+  <symbol id="i-rumah-tab" viewBox="0 0 24 24"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/></symbol>
+  <symbol id="i-pesan" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-bantuan" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></symbol>
+  <symbol id="i-kejadian" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-korban" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><path d="M16 4.6a3.2 3.2 0 0 1 0 6.3M18.2 14.8c1.6.7 2.7 2.4 3 5.2"/></symbol>
+  <symbol id="i-pengungsian" viewBox="0 0 24 24"><path d="M3 20 12 4l9 16z"/><path d="M12 20v-6"/></symbol>
+  <symbol id="i-rumah" viewBox="0 0 24 24"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-fasilitas" viewBox="0 0 24 24"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M12 7.5v3M10.5 9h3"/></symbol>
+  <symbol id="i-khusus" viewBox="0 0 24 24"><path d="M4 18c2-1.5 4-1.5 6 0s4 1.5 6 0 3-1 4-.5"/><path d="M4 13c2-1.5 4-1.5 6 0s4 1.5 6 0 3-1 4-.5"/><path d="M12 3v6"/></symbol>
+  <symbol id="i-kebutuhan" viewBox="0 0 24 24"><path d="M4 8h16v12H4z"/><path d="M4 8l2-4h12l2 4M10 12h4"/></symbol>
+  <symbol id="i-situs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a13.5 13.5 0 0 0 0 18 13.5 13.5 0 0 0 0-18"/><path d="M3 12h18"/></symbol>
+  <symbol id="i-lokasi" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-cari" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-kalender" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-orang" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></symbol>
+  <symbol id="i-kamera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-bahasa" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></symbol>
+  <symbol id="i-putar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5v5l4.5-2.5z"/></symbol>
+  <symbol id="i-status" viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M7 5.5H5v15h14v-15h-2"/><path d="m8.5 13.5 2.3 2.3 4.7-4.6"/></symbol>
+  <symbol id="i-sirene" viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 18h14v3H5zM12 3v2M4.2 6.2l1.4 1.4M19.8 6.2l-1.4 1.4M2 12h2M20 12h2"/></symbol>
+  <symbol id="i-kirim" viewBox="0 0 24 24"><path d="M4 12 20 4l-6 16-2.5-6.5z"/></symbol>
+  <symbol id="i-panah" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-kembali" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-centang" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-mik" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+  <symbol id="i-daftar" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-tutup" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-unduh" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-telepon" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-kurang" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M4.5 4.5l15 15M19.5 4.5l-15 15"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path d="M14.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.6 1.6-1.6h1.6V4.3a21 21 0 0 0-2.4-.1c-2.4 0-4 1.4-4 4.1v2.2H8.6v3h2.7V21"/></symbol>
+  <symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l4.8-2.8Z"/></symbol>
+  <symbol id="i-tt" viewBox="0 0 24 24"><path d="M14 3.5v11.2a3.3 3.3 0 1 1-3.3-3.3M14 3.5c.4 2.6 2.2 4.3 4.8 4.5"/></symbol>
+  <symbol id="b-banjir" viewBox="0 0 24 24"><path d="M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9Z"/><path d="M3 20c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 4.5 0 3-1 4.5 0"/></symbol>
+  <symbol id="b-longsor" viewBox="0 0 24 24"><path d="M3 20h18L13 6l-3 5-2-2Z"/><circle cx="16" cy="16" r="1.5"/><circle cx="12.5" cy="17.5" r="1"/></symbol>
+  <symbol id="b-gelombang" viewBox="0 0 24 24"><path d="M2 15c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/><path d="M2 19c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/><path d="M6 11c0-4 3-7 7-7 2 0 3.5 1 4 2-2 0-3.5 1.5-3.5 3.5"/></symbol>
+  <symbol id="b-angin" viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h7"/></symbol>
+  <symbol id="b-matahari" viewBox="0 0 24 24"><circle cx="12" cy="10" r="4"/><path d="M12 2v2M4.5 4.5l1.4 1.4M2 10h2M20 10h2M18.1 5.9l1.4-1.4"/><path d="M4 20l3-3 2 2 3-3 2 2 3-3 3 3"/></symbol>
+  <symbol id="b-api" viewBox="0 0 24 24"><path d="M12 21c-4 0-6.5-2.6-6.5-6 0-3.4 2.6-5.6 3.6-8.5.4 1.6 1.4 2.6 2.4 3 .3-2.6 1.8-5 3.9-6.5-.4 2.9.6 4.6 1.9 6.3a7.6 7.6 0 0 1 1.2 5.7C18 18.7 15.6 21 12 21Z"/></symbol>
+  <symbol id="b-gempa" viewBox="0 0 24 24"><path d="M2 12h4l2-6 3 12 3-9 2 6 2-3h4"/></symbol>
+  <symbol id="b-gunung" viewBox="0 0 24 24"><path d="M2 20h20L15 9h-6Z"/><path d="M9 9l1.5-2h3L15 9"/><path d="M11 4c0-1 1-2 2-1M14 3.5c.5-1 2-1 2.5 0"/></symbol>
+  <symbol id="b-gedung" viewBox="0 0 24 24"><path d="M4 21V10l8-6 8 6v11Z"/><path d="M10 21v-5h4v5"/><path d="M15 3c1 1.5 2.5 2 2.5 4a2 2 0 0 1-4 0"/></symbol>
+  <symbol id="k-makan" viewBox="0 0 24 24"><path d="M3 11h18a9 9 0 0 1-18 0Z"/><path d="M8 7c0-1.5 1-1.5 1-3M12 7c0-1.5 1-1.5 1-3M16 7c0-1.5 1-1.5 1-3"/></symbol>
+  <symbol id="k-baju" viewBox="0 0 24 24"><path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0Z"/></symbol>
+  <symbol id="k-tenda" viewBox="0 0 24 24"><path d="M12 3 2 20h20Z"/><path d="M12 3v17M9 20l3-6 3 6"/></symbol>
+  <symbol id="k-bayi" viewBox="0 0 24 24"><path d="M9 3h6M10 3v3l-2 3v11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9l-2-3V3"/><path d="M8 13h8"/></symbol>
+  <symbol id="k-perahu" viewBox="0 0 24 24"><path d="M3 15h18l-3 4H6Z"/><path d="M12 3v12M12 4l6 8h-6"/><path d="M2 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1"/></symbol>
+  <symbol id="k-alat" viewBox="0 0 24 24"><path d="M2 18h12v3H2Z"/><path d="M4 18v-5h6l2 5"/><path d="M10 13l5-6 5 3-3 4"/><path d="M17 14l2 4h3"/></symbol>
+  <symbol id="i-tambah-teks" viewBox="0 0 24 24"><path d="M4 7h10M4 12h7M4 17h6"/><path d="M18 13v8M14 17h8"/></symbol>
+  <symbol id="i-arah" viewBox="0 0 24 24"><path d="M12 2.5 21.5 12 12 21.5 2.5 12Z"/><path d="M9 14v-2.5a1.5 1.5 0 0 1 1.5-1.5H15M13 8l2 2-2 2"/></symbol>
+  <symbol id="b-hujan" viewBox="0 0 24 24"><path d="M7 15a4 4 0 1 1 .9-7.9A5 5 0 0 1 17.5 8 3.5 3.5 0 0 1 17 15Z"/><path d="M8 18l-1 2M12 18l-1 2M16 18l-1 2"/></symbol>
+  <symbol id="b-petir" viewBox="0 0 24 24"><path d="M7 14a4 4 0 1 1 .9-7.9A5 5 0 0 1 17.5 7 3.5 3.5 0 0 1 17 14"/><path d="M12 12l-2 5h3l-2 5"/></symbol>
+  <symbol id="b-es" viewBox="0 0 24 24"><path d="M7 13a4 4 0 1 1 .9-7.9A5 5 0 0 1 17.5 6 3.5 3.5 0 0 1 17 13Z"/><circle cx="8" cy="18" r="1.3"/><circle cx="12" cy="20" r="1.3"/><circle cx="16" cy="18" r="1.3"/></symbol>
+  <symbol id="k-daun" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15Z"/><path d="M5 19l8-8"/></symbol>
+  <symbol id="k-listrik" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></symbol>
+  <symbol id="k-jam" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="k-naik" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="k-turun" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="k-kasur" viewBox="0 0 24 24"><path d="M3 18V8M3 14h18v4M21 18v-4a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="11" r="1.6"/></symbol>
+  <symbol id="k-sabun" viewBox="0 0 24 24"><rect x="6" y="9" width="12" height="12" rx="3"/><path d="M10 9V6h4v3M12 3v3"/><path d="M9 14h6"/></symbol>
+  <symbol id="i-salin" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+</svg>
+
+<div class="lp-app" id="app">
+  <!-- ===== layar 1: beranda ===== -->
+  <section class="lp-layar" id="lBeranda" data-tab="beranda">
+    <header class="lp-hero" style="--foto:url(/img/foto-pasca.jpg)">
+      <div class="lp-hero-isi">
+        <p class="lp-alis"><span class="lp-titik-hidup" aria-hidden="true"></span>Selamat datang di Pantau Bencana BNPB</p>
+        <button type="button" class="lp-bahasa-menu lp-bahasa-hp" hidden aria-label="Ganti bahasa"><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span>Indonesia</span></button>
+        <h1 id="sapa">Lihat kejadian bencana? Laporkan di sini.</h1>
+        <p class="lp-hero-sub">Laporan Anda diterima petugas BNPB dan diteruskan ke BPBD setempat. Pantau tindak lanjutnya lewat nomor laporan.</p>
+        <div class="lp-hero-aksi">
+          <!-- Lapor darurat (K68, pemilik 20 Nov 2026): kejadian sedang berlangsung, beberapa ketukan saja, langsung ke meja BNPB dan BPBD -->
+          <button class="lp-tombol-besar lp-tombol-darurat" id="bDarurat" type="button"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Lapor darurat</button>
+          <button class="lp-tombol-besar" id="bLaporBaru" type="button"><svg aria-hidden="true"><use href="#i-kirim"/></svg>Lapor kejadian</button>
+          <button class="lp-tombol-kaca" id="bCekStatus" type="button"><svg aria-hidden="true"><use href="#i-status"/></svg>Cek status laporan</button>
+        </div>
+      </div>
+      <div class="lp-hero-tengah"><div class="lp-hero-gelembung lp-hg-tip" role="region" aria-roledescription="carousel" aria-label="Panduan Sigap"><span class="lp-hg-label"><i aria-hidden="true"></i>SIGAP, Super Intelligence Assistance BNPB</span><div class="lp-hg-isi" aria-live="off"><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="1 dari 7"><b>Halo, ada kejadian di sekitar Anda?</b>Saya Sigap. Saya tunjukkan cara memakai Pantau Bencana.<button type="button" class="lp-hg-buka" data-tip-aksi="tur"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#i-cari"/></svg>Lihat tur<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="2 dari 7" hidden><b>Kejadian sedang berlangsung?</b>Tekan Lapor darurat. Cukup lokasi, jenis kejadian, dan ada korban atau tidak. BNPB dan BPBD langsung menerima.<button type="button" class="lp-hg-buka" data-tip-aksi="darurat"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#i-sirene"/></svg>Lapor darurat<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="3 dari 7" hidden><b>Mau melaporkan kejadian?</b>Ceritakan lewat obrolan. Saya bertanya satu per satu, Anda cukup memilih jawaban dan memotret dari kamera.<button type="button" class="lp-hg-buka" data-tip-aksi="lapor"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#i-kirim"/></svg>Lapor kejadian<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="4 dari 7" hidden><b>Sudah melapor?</b>Simpan nomor laporan Anda, lalu tekan Cek status laporan untuk melihat tindak lanjut BPBD dan BNPB.<button type="button" class="lp-hg-buka" data-tip-aksi="status"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#i-status"/></svg>Cek status<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="5 dari 7" hidden><b>Ingin tahu prakiraan di daerah Anda?</b>Buka Info dan prediksi: kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan.<button type="button" class="lp-hg-buka" data-tip-aksi="info"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#b-hujan"/></svg>Lihat prediksi<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="6 dari 7" hidden><b>Ingin lebih siaga?</b>Buka Edukasi siaga bencana: yang perlu dilakukan sebelum, saat, dan sesudah bencana.<button type="button" class="lp-hg-buka" data-tip-aksi="edukasi"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#i-daftar"/></svg>Mulai belajar<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div><div class="lp-hg-slide" role="group" aria-roledescription="slide" aria-label="7 dari 7" hidden><b>Butuh bantuan segera?</b>Buka Nomor penting: BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat. Darurat, telepon 117.<button type="button" class="lp-hg-buka" data-tip-aksi="penting"><svg aria-hidden="true" class="lp-hg-ikon"><use href="#i-telepon"/></svg>Lihat nomor<svg aria-hidden="true"><use href="#i-panah"/></svg></button></div></div><div class="lp-hg-kendali"><button type="button" data-tip="-1" aria-label="Panduan sebelumnya"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button><span class="lp-hg-urut">1 dari 7</span><button type="button" data-tip="1" aria-label="Panduan berikutnya"><svg aria-hidden="true"><use href="#i-panah"/></svg></button></div></div><div class="lp-hero-maskot" id="maskotHero"></div></div>
+      <div class="lp-hero-kanan">
+      <section class="lp-cc2" aria-label="Kontak BNPB">
+          <div class="lp-cc2-kepala"><img src="/img/lembaga/sumber-bnpb.png" alt="" width="40" height="40"><div><b>BNPB</b><small>Badan Nasional Penanggulangan Bencana</small></div></div>
+          <a class="lp-cc2-117" href="tel:117"><span class="lp-cc2-telp"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span><span><small>Call center</small><b>117</b></span><span class="lp-cc2-tekan"><svg aria-hidden="true"><use href="#i-telepon"/></svg>Telepon</span></a>
+          <ul class="lp-cc2-daftar">
+            <li><a href="tel:+622129827793"><svg aria-hidden="true"><use href="#i-telepon"/></svg>021 2982 7793</a></li>
+            <li><a href="mailto:persuratan@bnpb.go.id"><svg aria-hidden="true"><use href="#i-pesan"/></svg>persuratan@bnpb.go.id</a></li>
+            <li><a href="https://www.bnpb.go.id" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-situs"/></svg>bnpb.go.id</a></li>
+            <li><a href="https://data.bnpb.go.id" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-daftar"/></svg>Satu Data Bencana</a></li>
+          </ul>
+          <ul class="lp-cc2-sosial" aria-label="Media sosial BNPB">
+            <li><a href="https://www.instagram.com/bnpb_indonesia" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-ig"/></svg><span class="lp-sr">Instagram </span>@bnpb_indonesia</a></li>
+            <li><a href="https://x.com/BNPB_Indonesia" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-x"/></svg><span class="lp-sr">X </span>@BNPB_Indonesia</a></li>
+            <li><a href="https://www.facebook.com/infoBencanaBNPB" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-fb"/></svg><span class="lp-sr">Facebook </span>@infoBencanaBNPB</a></li>
+            <li><a href="https://www.youtube.com/@BNPBIndonesia" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-yt"/></svg><span class="lp-sr">YouTube </span>@BNPBIndonesia</a></li>
+            <li><a href="https://www.tiktok.com/@bnpbindonesia" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-tt"/></svg><span class="lp-sr">TikTok </span>@bnpbindonesia</a></li>
+          </ul>
+          <a class="lp-cc2-alamat" href="https://www.google.com/maps/search/?api=1&amp;query=Graha+BNPB+Jl.+Pramuka+Kav.+38+Jakarta+Timur" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-lokasi"/></svg><span>Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120</span><span class="lp-cc2-peta" aria-label="Buka di Google Maps"><svg aria-hidden="true"><use href="#i-panah"/></svg></span></a>
+        </section>
+      </div>
+    </header>
+
+    <div class="lp-isi-beranda">
+      <a class="lp-kartu lp-terbaru" id="kTerbaru" href="#" hidden>
+        <span class="lp-kecil-judul">Laporan terbaru Anda</span>
+        <span class="lp-baris-kartu"><span class="lp-bulat"><svg aria-hidden="true"><use href="#i-status"/></svg></span>
+          <span class="lp-baris-teks"><b id="kTerbaruJudul"></b><small id="kTerbaruSub"></small></span><span class="lp-pil" id="kTerbaruPil"></span></span>
+      </a>
+
+      <section class="lp-kompartemen" aria-labelledby="hLayanan">
+      <h2 class="lp-kompartemen-kepala" id="hLayanan"><svg aria-hidden="true"><use href="#i-daftar"/></svg>Apa yang ingin Anda lakukan?</h2>
+      <div class="lp-kompartemen-isi lp-darurat-wadah">
+        <button class="lp-darurat-pita" type="button" data-aksi="darurat">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-sirene"/></svg></span>
+          <span><b>Lapor darurat</b><small>Kejadian sedang berlangsung? Cukup lokasi, jenis, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima.</small></span>
+          <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
+        <button class="lp-darurat-pita sekali" type="button" data-aksi="sekali">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-lokasi"/></svg></span>
+          <span><b>Darurat sekali ketuk</b><small>Tidak sempat mengetik? Satu ketukan mengirim lokasi Anda ke petugas. Tombol telepon 112 langsung muncul.</small></span>
+          <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
+      </div>
+      <div class="lp-layanan-kisi lp-kompartemen-isi">
+        <button class="lp-layanan-kartu utama" type="button" data-aksi="lapor" style="--foto:url(/img/bencana-banjir.jpg)">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-kirim"/></svg></span>
+          <b>Lapor kejadian</b><small>Ceritakan lewat obrolan. Setelah terkirim, Anda dapat nomor laporan.</small></button>
+        <button class="lp-layanan-kartu lebar" type="button" data-aksi="info" style="--foto:url(/img/bencana-cuaca.jpg)">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-lokasi"/></svg></span>
+          <b>Info dan prediksi daerah</b><small>Prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan, serta rapor bencana daerah Anda.</small></button>
+        <button class="lp-layanan-kartu" type="button" data-aksi="edukasi" style="--foto:url(/img/bencana-gempa.jpg)">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-bantuan"/></svg></span>
+          <b>Edukasi siaga bencana</b><small>Yang perlu dilakukan sebelum, saat, dan sesudah bencana.</small></button>
+        <button class="lp-layanan-kartu darurat" type="button" data-aksi="penting" style="--foto:url(/img/foto-pemadam.jpg)">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span>
+          <b>Nomor penting</b><small>BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat.</small></button>
+      </div>
+
+      </section>
+      <!-- aplikasi dan peringatan dini (paket pwa-peringatan): diisi public/lapor/peringatan.js -->
+      <section class="lp-kompartemen lp-pw" id="pwKartu" aria-labelledby="hPw" hidden>
+      <h2 class="lp-kompartemen-kepala" id="hPw"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Aplikasi dan peringatan dini</h2>
+      <div class="lp-kompartemen-isi" id="pwIsi"></div>
+      </section>
+      <section class="lp-kompartemen" aria-labelledby="hBantu">
+      <h2 class="lp-kompartemen-kepala" id="hBantu"><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Butuh bantuan?</h2>
+      <div class="lp-kompartemen-isi">
+        <div class="lp-saring lp-saring-ringkas" id="saringRingkas" role="tablist" aria-label="Kelompok bantuan"></div>
+        <div class="lp-faq-daftar" id="daftarBantuRingkas"></div>
+        <button class="lp-kedua lp-lihat-semua" id="bSemuaBantu" type="button">Lihat semua bantuan</button>
+      </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ===== layar info daerah, prediksi, nomor penting ===== -->
+  <section class="lp-layar lp-chat" id="lInfo" hidden aria-label="Info daerah">
+    <header class="lp-chat-kepala">
+      <button class="lp-ikon" id="bTutupInfo" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button>
+      <span class="lp-info-ikon" id="infoIkon" aria-hidden="true"></span>
+      <div class="lp-chat-judul"><b id="infoJudul">Info bencana di daerah</b><small id="infoSub">Asisten AI Pantau Bencana</small></div>
+    </header>
+    <div class="lp-gulir" id="gulirInfo"><ol class="lp-log" id="logInfo" role="log" aria-live="polite"></ol><div class="lp-langkah-wadah" id="kartuInfo"></div></div>
+  </section>
+
+  <!-- ===== pembuka ===== -->
+  <div class="lp-pembuka" id="pembuka" hidden aria-hidden="true">
+    <span class="lp-pb-riak" aria-hidden="true"><i></i><i></i><i></i></span>
+    <div class="lp-pb-merek"><img src="/lapor/lambang-bnpb.png" alt="" width="44" height="44"><span><b>BNPB</b><small>Badan Nasional Penanggulangan Bencana</small></span></div>
+    <div class="lp-pembuka-maskot" id="maskotPembuka"></div>
+    <p class="lp-pembuka-sapa">Selamat datang di</p>
+    <p class="lp-pembuka-judul">Pantau <em>Bencana</em></p>
+    <p class="lp-pembuka-nama">Pelaporan Ancaman dan Tanggap Darurat Bencana</p>
+    <p class="lp-pembuka-bnpb">Lihat kejadian, laporkan, kami teruskan ke BPBD setempat</p>
+    <span class="lp-pb-muat" aria-hidden="true"><i></i></span>
+  </div>
+
+  <!-- ===== layar 2: laporan saya ===== -->
+  <section class="lp-layar" id="lLaporan" data-tab="laporan" hidden>
+    <header class="lp-pita lp-pita-dua" style="--foto:url(/img/bencana-banjir.jpg)">
+      <div class="lp-pita-kiri">
+        <p class="lp-alis">Laporan saya</p>
+        <h1>Pantau laporan yang Anda kirim</h1>
+        <p class="lp-hero-sub">Tiap laporan punya nomor tiket, status penanganan, dan balasan petugas.</p>
+      </div>
+      <aside class="lp-pita-kanan lp-ringkas-laporan" id="ringkasLaporan" aria-label="Ringkasan laporan"></aside>
+    </header>
+    <div class="lp-laporan-kisi" id="daftarLaporan"></div>
+  </section>
+
+  <!-- ===== layar alun-alun: laporan warga yang sudah ditindaklanjuti (K30, Q14) ===== -->
+  <!-- peta penuh layar, saringan dan daftar kejadian di dalam peta (pemilik 20 Nov 2026: "petanya full", "header atasnya gausah", "masuk ke dalam peta") -->
+  <section class="lp-layar" id="lAlun" data-tab="alun" hidden>
+    <div class="lp-alun-peta" id="petaAlun">
+      <div class="lp-peta-alun"></div>
+      <div class="lp-saring" id="saringAlun" role="tablist" aria-label="Jenis bencana"></div>
+      <aside class="lp-alun-panel" aria-label="Daftar kejadian"><div class="lp-alun" id="daftarAlun"></div></aside>
+    </div>
+  </section>
+
+  <!-- ===== layar 3: bantuan (gaya FAQ halaman Tentang Centurisk97) ===== -->
+  <section class="lp-layar" id="lBantuan" data-tab="bantuan" hidden>
+    <header class="lp-pita lp-pita-dua" style="--foto:url(/img/bencana-banjir.jpg)">
+      <div class="lp-pita-kiri">
+        <p class="lp-alis">Bantuan</p>
+        <h1>Pertanyaan yang sering diajukan</h1>
+        <label class="lp-cari lp-cari-pita"><span class="lp-sr">Cari bantuan</span><svg aria-hidden="true"><use href="#i-cari"/></svg><input id="iCariBantu2" type="search" placeholder="Cari istilah atau pertanyaan" autocomplete="off"></label>
+      </div>
+      <aside class="lp-pita-kanan" aria-label="Butuh bantuan langsung">
+        <b>Belum menemukan jawaban?</b>
+        <a class="lp-pita-ubin darurat" href="tel:117"><span><svg aria-hidden="true"><use href="#i-telepon"/></svg></span><span><b>Telepon 117</b><small>Call center BNPB</small></span></a>
+        <button class="lp-pita-ubin" type="button" data-aksi="lapor"><span><svg aria-hidden="true"><use href="#i-kirim"/></svg></span><span><b>Lapor kejadian</b><small>Ceritakan lewat obrolan</small></span></button>
+        <button class="lp-pita-ubin" type="button" data-aksi="penting"><span><svg aria-hidden="true"><use href="#i-lokasi"/></svg></span><span><b>Nomor penting</b><small>BPBD dan rumah sakit terdekat</small></span></button>
+      </aside>
+    </header>
+    <div class="lp-saring" id="saringBantu" role="tablist" aria-label="Kelompok bantuan"></div>
+    <div class="lp-faq-daftar" id="daftarBantu"></div>
+  </section>
+
+  <!-- ===== layar kebijakan privasi (tata letak meniru halaman privasi Anthropic; isi untuk layanan BNPB) ===== -->
+  <section class="lp-layar" id="lPrivasi" hidden>
+    <header class="lp-chat-kepala"><button class="lp-ikon" id="bTutupPrivasi" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button><div class="lp-chat-judul"><b>Kebijakan privasi</b><small>Pantau Bencana BNPB</small></div></header>
+    <article class="lp-legal" id="isiPrivasi"></article>
+  </section>
+
+  <!-- ===== layar: tentang dan cara melapor (pemilik 19 Nov 2026: "halaman tentang dan cara bertanya", pola halaman Tentang ChatHPT) ===== -->
+  <section class="lp-layar" id="lTentang" data-tab="tentang" hidden>
+    <!-- kepala sama dengan beranda: maskot Sigap dan kartu kontak BNPB disalin dari beranda saat layar dibuka (pemilik 19 Nov 2026) -->
+    <header class="lp-hero" id="heroTentang" style="--foto:url(/img/bencana-banjir.jpg)">
+      <div class="lp-hero-isi">
+        <p class="lp-alis">Tentang Pantau Bencana</p>
+        <h1>Satu pintu warga melaporkan kejadian bencana ke BNPB</h1>
+        <p class="lp-hero-sub">Laporan dipandu asisten AI sampai lengkap, lalu diterima petugas BNPB dan diteruskan ke BPBD setempat.</p>
+      </div>
+    </header>
+    <div class="lp-tentang">
+      <section class="lp-tt-blok">
+        <h2><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Apa itu Pantau Bencana</h2>
+        <div class="lp-tt-kisi tiga">
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-pesan"/></svg></span><b>Dipandu, bukan formulir</b><p>Asisten bertanya satu per satu. Sebagian besar jawaban cukup dipilih, tidak perlu mengetik panjang.</p></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-status"/></svg></span><b>Bernomor tiket</b><p>Tiap laporan mendapat nomor tiket. Statusnya bisa dipantau dari diterima sampai selesai ditangani.</p></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-kirim"/></svg></span><b>Diteruskan ke daerah</b><p>Petugas BNPB menelaah laporan, lalu meneruskannya ke BPBD kabupaten/kota tempat kejadian.</p></article>
+        </div>
+      </section>
+      <section class="lp-tt-blok">
+        <h2><svg aria-hidden="true"><use href="#i-daftar"/></svg>Cara melapor</h2>
+        <ol class="lp-tt-langkah">
+          <li><span>1</span><div><b>Kenalkan diri</b><p>Pilih Warga atau Petugas BPBD, lalu tulis nama. Cukup sekali. Berikutnya nomor Anda dikenali.</p></div></li>
+          <li><span>2</span><div><b>Bagikan lokasi</b><p>Ketuk Pakai lokasi saat ini, atau cari desa dan nama jalan. Isi RT dan RW bila tahu.</p></div></li>
+          <li><span>3</span><div><b>Pilih jenis bencana</b><p>Banjir, longsor, cuaca ekstrem, karhutla, gempa, dan lainnya, lalu karakteristiknya.</p></div></li>
+          <li><span>4</span><div><b>Ceritakan lewat pilihan</b><p>Jawab pertanyaan tentang urutan kejadian: tanda awal, kejadian utama, dampak, dan keadaan sekarang. Tambahkan keterangan bila perlu.</p></div></li>
+          <li><span>5</span><div><b>Isi dampak dan kebutuhan</b><p>Jumlah korban, pengungsi, rumah dan fasilitas rusak, serta kebutuhan mendesak. Kosongkan bila belum tahu.</p></div></li>
+          <li><span>6</span><div><b>Kirim foto dan laporan</b><p>Ambil foto langsung dari kamera, paling banyak 10. Periksa ringkasan, lalu pilih Kirim. Anda mendapat nomor tiket, PDF, dan tautan lacak.</p></div></li>
+        </ol>
+      </section>
+      <section class="lp-tt-blok">
+        <h2><svg aria-hidden="true"><use href="#i-pesan"/></svg>Kata yang bisa Anda ketik</h2>
+        <div class="lp-tt-kisi empat lp-tt-kata">
+          <article><span class="lp-tt-kata-kepala"><span class="lp-tt-kata-ikon"><svg aria-hidden="true"><use href="#i-kembali"/></svg></span><code>kembali</code></span><p>Membatalkan jawaban terakhir bila salah pilih.</p></article>
+          <article><span class="lp-tt-kata-kepala"><span class="lp-tt-kata-ikon"><svg aria-hidden="true"><use href="#i-status"/></svg></span><code>status</code></span><p>Melihat status laporan yang pernah Anda kirim.</p></article>
+          <article><span class="lp-tt-kata-kepala"><span class="lp-tt-kata-ikon"><svg aria-hidden="true"><use href="#i-tutup"/></svg></span><code>batal</code></span><p>Membatalkan laporan yang sedang diisi.</p></article>
+          <article><span class="lp-tt-kata-kepala"><span class="lp-tt-kata-ikon"><svg aria-hidden="true"><use href="#i-plus"/></svg></span><code>lapor</code></span><p>Memulai laporan baru.</p></article>
+        </div>
+        <p class="lp-tt-catatan lp-tt-info"><svg aria-hidden="true"><use href="#i-pesan"/></svg><span>Di WhatsApp, pilihan tampil bernomor. Balas dengan angkanya, misalnya <b>2</b>, atau <b>1, 3</b> untuk beberapa pilihan.</span></p>
+      </section>
+      <section class="lp-tt-blok">
+        <h2><svg aria-hidden="true"><use href="#i-kejadian"/></svg>Agar laporan cepat ditangani</h2>
+        <div class="lp-tt-kisi dua">
+          <article class="baik"><b><span><svg aria-hidden="true"><use href="#i-centang"/></svg></span>Lakukan</b><ul><li><svg aria-hidden="true"><use href="#i-centang"/></svg>Melapor dari dekat lokasi supaya titiknya tepat.</li><li><svg aria-hidden="true"><use href="#i-centang"/></svg>Memotret kerusakan, genangan, atau pengungsian, bukan wajah orang.</li><li><svg aria-hidden="true"><use href="#i-centang"/></svg>Menulis angka yang Anda lihat sendiri; tulis 0 bila tidak ada.</li></ul></article>
+          <article class="hindari"><b><span><svg aria-hidden="true"><use href="#i-tutup"/></svg></span>Hindari</b><ul><li><svg aria-hidden="true"><use href="#i-tutup"/></svg>Mengirim foto dari internet atau dari kejadian lama.</li><li><svg aria-hidden="true"><use href="#i-tutup"/></svg>Menebak jumlah korban. Pilih belum tahu bila ragu.</li><li><svg aria-hidden="true"><use href="#i-tutup"/></svg>Membuat laporan palsu. Laporan palsu bisa dikenai sanksi hukum.</li></ul></article>
+        </div>
+        <div class="lp-tt-darurat"><span class="lp-tt-darurat-ikon"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span>
+          <div><b>Ada nyawa terancam?</b><span>Jangan menunggu laporan. Telepon sekarang.</span></div>
+          <a class="lp-tt-telp" href="tel:112"><b>112</b><small>Darurat terpadu</small></a><a class="lp-tt-telp" href="tel:117"><b>117</b><small>Call center BNPB</small></a></div>
+      </section>
+      <section class="lp-tt-blok">
+        <h2><svg aria-hidden="true"><use href="#i-status"/></svg>Batas pemakaian</h2>
+        <div class="lp-tt-batas">
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-pesan"/></svg></span><div><b>20 pesan</b><small>per menit per nomor</small></div></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-kalender"/></svg></span><div><b>60 pesan</b><small>per jam per nomor</small></div></article>
+          <article><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-status"/></svg></span><div><b>5 laporan</b><small>terkirim per hari per nomor</small></div></article>
+          <article class="aman"><span class="lp-tt-ikon"><svg aria-hidden="true"><use href="#i-centang"/></svg></span><div><b>Tetap tersimpan</b><small>laporan yang sedang diisi saat batas tercapai</small></div></article>
+        </div>
+        <p class="lp-tt-catatan">Batas ini menjaga layanan dari penyalahgunaan. Bila batas tercapai, asisten memberi tahu jam berapa Anda bisa melanjutkan.</p>
+      </section>
+    </div>
+  </section>
+
+  <!-- ===== layar chat ===== -->
+  <section class="lp-layar lp-chat" id="lChat" hidden aria-label="Percakapan laporan">
+    <header class="lp-chat-kepala">
+      <button class="lp-ikon" id="bKembali" type="button" aria-label="Kembali"><svg aria-hidden="true"><use href="#i-kembali"/></svg></button>
+      <img class="lp-avatar" src="/img/lembaga/sumber-bnpb.png" alt="" width="36" height="36">
+      <div class="lp-chat-judul"><b>Pantau Bencana BNPB</b><small id="langkahTeks">Asisten AI</small></div>
+      <button class="lp-ikon lp-isian-tombol" id="bIsian" type="button" aria-controls="panelIsian" aria-expanded="false"><svg aria-hidden="true"><use href="#i-daftar"/></svg><span id="lengkapKecil">0%</span></button>
+    </header>
+    <div class="lp-progres" aria-hidden="true"><span id="progres"></span></div>
+    <div class="lp-gulir" id="gulir">
+      <ol id="log" class="lp-log" role="log" aria-live="polite" aria-label="Pesan"></ol>
+      <div id="kartuLangkah" class="lp-langkah-wadah"></div>
+      <p id="mengetik" class="lp-mengetik" hidden><img src="/img/lembaga/sumber-bnpb.png" alt="" width="28" height="28"><span class="lp-gelembung-titik"><i></i><i></i><i></i></span><span class="lp-sr">Asisten sedang mengetik</span></p>
+    </div>
+    <form id="fPesan" class="lp-tulis" hidden>
+      <label class="lp-sr" for="iTeks">Tulis pesan</label>
+      <textarea id="iTeks" rows="1" maxlength="2000" placeholder="Tulis pesan" autocomplete="off"></textarea>
+      <button class="lp-mik" id="bMic" type="button" aria-label="Bicara" aria-pressed="false" hidden><svg aria-hidden="true"><use href="#i-mik"/></svg></button>
+      <button class="lp-kirim" type="submit" aria-label="Kirim"><svg aria-hidden="true"><use href="#i-kirim"/></svg></button>
+    </form>
+    <p id="status" class="lp-status" role="status"></p>
+
+    <aside id="panelIsian" class="lp-panel" aria-labelledby="judulIsian">
+      <div class="lp-panel-kepala">
+        <span class="lp-cincin-wadah"><svg class="lp-cincin" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><circle id="cincin" cx="22" cy="22" r="18" pathLength="100"/></svg><span id="persenCincin">0%</span></span>
+        <div class="lp-panel-ringkas"><h2 id="judulIsian">Isian laporan</h2><p id="ringkasIsian" class="lp-redup">Terisi otomatis dari percakapan</p><span class="lp-panel-bar" aria-hidden="true"><i id="barIsian"></i></span><p id="sisaIsian" class="lp-panel-sisa" hidden></p></div>
+        <button class="lp-ikon" id="bTutupIsian" type="button" aria-label="Tutup isian"><svg aria-hidden="true"><use href="#i-tutup"/></svg></button>
+      </div>
+      <div id="isian" class="lp-isian"></div>
+    </aside>
+  </section>
+
+  <!-- ===== masuk (uji lokal) ===== -->
+  <section class="lp-layar" id="lMasuk" hidden>
+    <div class="lp-sampul lp-sampul-penuh">
+      <div class="lp-sampul-atas"><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" width="40" height="40"><span>Pantau Bencana BNPB</span></div>
+      <h1>Laporkan kejadian bencana</h1>
+      <p>Masukkan nomor WhatsApp untuk mulai. Nomor dipakai untuk mengenali Anda dan mengirim kabar status laporan.</p>
+    </div>
+    <form id="fNomor" class="lp-tumpuk" novalidate>
+      <div class="lp-kartu lp-form-kartu">
+        <label class="lp-label" for="iNomor">Nomor WhatsApp</label>
+        <div class="lp-nomor-isi"><span class="lp-awalan" aria-hidden="true">+62</span>
+          <input id="iNomor" type="tel" inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national" maxlength="13" placeholder="812 3456 7890" required></div>
+        <button class="lp-utama" type="submit">Lanjut</button>
+        <p class="lp-redup lp-kecil">Tanpa kode dan tanpa sandi. Nomor hanya dilihat petugas BNPB dan BPBD untuk menghubungi Anda.</p>
+      </div>
+    </form>
+  </section>
+
+  <nav class="lp-tab" id="tab" aria-label="Menu">
+    <a class="lp-tab-merek" href="/lapor/"><img src="/img/lembaga/sumber-bnpb.png" alt="" width="36" height="36"><span>Pantau Bencana<small>BNPB</small></span></a>
+    <button type="button" data-ke="beranda" aria-current="page"><svg aria-hidden="true"><use href="#i-rumah-tab"/></svg>Beranda</button>
+    <button type="button" data-ke="laporan"><svg aria-hidden="true"><use href="#i-pesan"/></svg>Laporan<span class="lp-titik-baru" id="titikBaru" hidden></span><span class="lp-tab-jumlah" id="tabJumlah" hidden></span></button>
+    <button type="button" data-ke="alun"><svg aria-hidden="true"><use href="#i-pengungsian"/></svg>Alun-alun</button>
+    <button type="button" data-ke="tentang"><svg aria-hidden="true"><use href="#i-bantuan"/></svg>Cara melapor</button>
+    <button type="button" data-ke="privasi"><svg aria-hidden="true"><use href="#i-status"/></svg>Kebijakan privasi</button>
+    <button type="button" class="lp-bahasa-menu" hidden aria-label="Ganti bahasa"><svg aria-hidden="true"><use href="#i-bahasa"/></svg><span>Indonesia</span></button>
+    <!-- tur bisa diputar ulang kapan saja (pemilik 21 Nov 2026: "kenapa ga mulai tournya? ... ada mulai tour gitu") -->
+    <button type="button" class="lp-menu-tur" id="bMulaiTur"><svg aria-hidden="true"><use href="#i-bantuan"/></svg><span>Mulai tur</span></button>
+    <div class="lp-tab-profil" id="tabProfil" hidden><span class="lp-tab-avatar" id="tabAvatar"></span><span><b id="tabNama"></b><small id="tabWa"></small></span></div>
+    <!-- Sigap di ruang kosong menu samping (pemilik 19 Nov 2026: "ini agar disini") -->
+    <div class="lp-sigap" id="sigapPanel" aria-live="polite"><div class="lp-sigap-maskot" id="sigapMaskot"></div><div class="lp-sigap-gelembung" id="sigapTeks"><b>Sigap</b><span>Saya bantu sampai laporan lengkap.</span></div></div>
+    <button type="button" class="lp-tab-lapor" data-ke="lapor"><svg aria-hidden="true"><use href="#i-kirim"/></svg>Lapor kejadian</button>
+  </nav>
+</div>
+<script src="/inti/exif.js" defer></script>
+<script src="/inti/foto_kecil.js" defer></script>
+<script src="/inti/antre.js" defer></script>
+<script src="/bagi.js" defer></script>
+<script type="module" src="/lapor/lapor.js?v=129"></script>
+<script type="module" src="/lapor/peringatan.js?v=1"></script>
+<script type="module" src="/lapor/luring.js?v=1"></script>
+</body>
+</html>

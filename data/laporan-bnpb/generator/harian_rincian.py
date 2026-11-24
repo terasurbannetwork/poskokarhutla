@@ -172,7 +172,7 @@ def lok_asli(x): return x.get('lokasi_asli') or x['lokasi']
 
 def peta(isi_p, ke, nama, bbox, pw, ph, R_px):
     sp = os.path.join(ke, f'{nama}_spek.json')
-    json.dump({'ke': ke, 'nama': nama, 'pw': pw, 'ph': ph, 'bbox': bbox, 'R': R_px,
+    json.dump({'ke': os.path.relpath(ke, os.path.join(G, '..', '..', '..')), 'nama': nama, 'pw': pw, 'ph': ph, 'bbox': bbox, 'R': R_px,
                'lok': [{'no': n, 'prov': x['prov'], 'lokasi': lok_asli(x), 'jenis': x['jenis']} for n, x in isi_p]}, open(sp, 'w', encoding='utf-8'), ensure_ascii=False)
     subprocess.run(['node', os.path.join(G, 'harian_rincian_peta.mjs'), sp], check=True, stdout=subprocess.DEVNULL)
     return json.load(open(os.path.join(ke, f'{nama}.json'), encoding='utf-8'))
@@ -204,7 +204,7 @@ def judul(H, kej):
 def nama_geo(prov, lok):
     """Nama kab/kota di public/geo/kabupaten/<prov>.json untuk nama WA ("Kep. Mentawai", "Lima puluh Kota", "Kota. Bengkulu")."""
     fitur = [f['properties']['kab'] for f in json.load(open(os.path.join(GEO, 'kabupaten', f'{prov}.json'), encoding='utf-8'))['features']]
-    kunci = lambda t: re.sub(r'\s+', ' ', re.sub(r'^Kep\.\s*', 'Kepulauan ', re.sub(r'^Kota\.\s*', 'Kota ', t.strip()))).lower()
+    kunci = lambda t: re.sub(r'\s+', '', re.sub(r'^Kota Adm(?:\.|inistrasi)\s*', 'Kota Administrasi ', re.sub(r'^Kep\.\s*', 'Kepulauan ', re.sub(r'^Kota\.\s*', 'Kota ', t.strip())))).lower()   # 23 Nov: "Limapuluh Kota", "Kota Adm. Jakarta Selatan"
     cocok = [f for f in fitur if kunci(f) == kunci(lok)]
     if not cocok: raise ValueError(f'rincian: kab/kota {lok!r} tidak ada di batas wilayah provinsi {prov}')
     return cocok[0]

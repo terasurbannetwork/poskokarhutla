@@ -28,7 +28,7 @@
         baris: (uk.kab[h] || []).slice(0, 10).map(r => [r[1], namaProv(r[0]), des(r[2]), KAT[kat(r[2])].n]), kosong: "belum tersedia"},
       daftar: {judul: "IV. Kejadian asap aktif (deteksi Centurisk97, hipotesis)", satuan: "kejadian", kosong: "belum tersedia", item: aktif
         ? aktif.slice(0, 8).map(k => `${k.kode}: ${k.nama}, ${fmt(k.n_kab || 0)} kabupaten atau kota, hipotesis dari prakiraan model`) : []},
-      sumber: "Sumber: Copernicus CAMS lewat Open-Meteo (perkiraan model), WorldPop (penduduk); BMKG (PM2,5 terukur stasiun, dipisah dari model).",
+      sumber: "Copernicus CAMS lewat Open-Meteo (perkiraan model), WorldPop (penduduk); BMKG (PM2,5 terukur stasiun, dipisah dari model).",
       catatan: "Angka provinsi, kab/kota, dan jiwa adalah perkiraan model dan belum dikoreksi ke alat ukur; bukan ISPU resmi dan bukan pernyataan resmi. Pengukuran stasiun BMKG tidak dicampur ke hitungan model. Wilayah tanpa angka berarti model belum memuatnya."};
   }
 

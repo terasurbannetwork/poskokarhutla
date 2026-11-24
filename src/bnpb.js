@@ -48,7 +48,7 @@ export async function halamanBnpbPublik(env, url, berkas, {pribadi = false, turn
   const r = await env.ASSETS.fetch(new Request(new URL(`/bnpb/${berkas}.html`, url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman tidak ada"); }
   return new Response(r.body, {headers: {"content-type": "text/html; charset=utf-8", "cache-control": pribadi ? "no-store" : "public, max-age=300", "x-content-type-options": "nosniff",
-    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": pratinjau ? CSP_PRATINJAU : citra ? CSP_CITRA : turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : bingkai ? CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'").replace("img-src 'self'", gambar ? `img-src 'self' ${gambar}` : "img-src 'self'") : CSP}});   // bingkai: boleh dibingkai situs sendiri (/admin/laporan); halaman lain tetap none
+    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": pratinjau ? CSP_PRATINJAU : citra ? (gambar ? CSP_CITRA.replace("img-src 'self'", `img-src 'self' ${gambar}`) : CSP_CITRA) : turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : bingkai ? CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'").replace("img-src 'self'", gambar ? `img-src 'self' ${gambar}` : "img-src 'self'") : CSP}});   // bingkai: boleh dibingkai situs sendiri (/admin/laporan); halaman lain tetap none
 }
 
 /* cron menit 17 */
@@ -63,9 +63,11 @@ export const RUTE_BNPB = {
   "GET /bnpb/dokumen": (env, req, url) => halamanBnpbPublik(env, url, "dokumen", {pribadi: true}),   // layar staf: BAST, Laporan Menonjol, Shift, Rekap Mingguan dari logbook
   "GET /bnpb/katalog-dokumen": (env, req, url) => halamanBnpbPublik(env, url, "katalog-dokumen", {pribadi: true, pratinjau: true}),   // katalog dokumen repo, terbuka tanpa login sementara, noindex; isi lewat /api/bnpb/katalog-dokumen
   "GET /bnpb/bahan": (env, req, url) => halamanBnpbPublik(env, url, "bahan", {pribadi: true}),   // layar staf: bahan laporan harian dari logbook, kirim ke WA (menu Pusdalops)
+  "GET /bnpb/inarisk": (env, req, url) => halamanBnpbPublik(env, url, "inarisk", {pribadi: true, citra: true, gambar: "https://inarisk2.bnpb.go.id"}),   // peta InaRISK; data lewat proksi /api/inarisk/* (src/inarisk.js)
   "GET /bnpb/saham": (env, req, url) => halamanBnpbPublik(env, url, "saham", {pribadi: true, bingkai: true, gambar: "https://assets.stockbit.com"}),   // layar staf: data saham lewat proksi /api/saham/* (src/saham.js)
   "GET /bnpb/rapor-sumber": (env, req, url) => halamanBnpbPublik(env, url, "rapor-sumber", {pribadi: true}),   // layar staf
   "GET /bnpb/silang": (env, req, url) => halamanBnpbPublik(env, url, "silang", {pribadi: true}),   // layar staf
+  "GET /bnpb/data-bencana": (env, req, url) => halamanBnpbPublik(env, url, "data-bencana", {pribadi: true}),   // Data Bencana Indonesia untuk BPBD (?prov=, ?kab=); data publik dibi_kejadian.json, sama dengan tab pertama /bnpb/dalops
   "GET /bnpb/perencanaan": (env, req, url) => halamanBnpbPublik(env, url, "perencanaan", {pribadi: true}),   // layar staf: kab prioritas (beban laporan), kalender operasi, stok pra-musim
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),

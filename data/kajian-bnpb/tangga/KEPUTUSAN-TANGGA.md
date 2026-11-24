@@ -39,6 +39,6 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Keputusan pemilik dica
 | Q6 | Nowcast BMKG menyebut kecamatan; pemetaan kecamatan ke kabupaten tidak ada di berkas itu. Perlukah tabel kecamatan ke kabupaten (BIG)? | Tampil tingkat provinsi, nama kecamatan di teks. |
 | Q7 | Jadwal: `prediksi.yml` jalan sekali sehari 08.50 WIB, sedangkan nowcast dan petir berubah tiap 3 jam. Pasang langkah `tangga.py` tersendiri tiap 3 jam? | Tangga dirantai di `jalan.py giliran` (harian). Usulan workflow ada di laporan, tidak disentuh. |
 | Q8 | Anak tangga "jam" untuk ancaman kering (titik panas hari ini) dari sumber mana? | Kosong ("belum ada data"). |
-| Q10 | Prakiraan kondisi harian BMKG 10 hari memakai kosakata Berawan, Hujan Ringan, Hujan Sedang, Hujan Petir, Petir, dan seterusnya, tanpa kelas "Lebat". Mau dipetakan ke peringkat? | Tidak dipetakan: peringkat null, kondisi terberat tampil apa adanya. |
+| Q10 | Prakiraan kondisi harian BMKG 10 hari kini memuat "Hujan Lebat". Mau dipetakan ke peringkat? | Dijawab pemilik 19 Nov 2026: "petakan ke peringkat". Hujan Lebat = 2, Hujan Sangat Lebat atau Ekstrem = 3 (sama dengan sepekan BMKG); kondisi lain tetap null. |
 | Q11 | Sumber jam (nowcast, petir, Himawari) memerlukan salinan segar dari situs live; workflow belum menariknya. Setujukah usulan di DESAIN-TEKNIS? | Gagal-lunak: basi = dilewati. |
 | Q9 | Cakupan kabupaten untuk peringatan kekeringan BMKG (per kecamatan) diringkas ke tingkat tertinggi per kabupaten, dengan jumlah kecamatan di teks. Cukup? | Dipakai. |

@@ -1,0 +1,40 @@
+# TIKET: Simulasi tsunami dengan genangan darat (TS-*)
+
+Status per 23 Nov 2026. Ambil satu tiket, kerjakan hanya cakupannya. Pengulas dipilih dari kolom "bisa" katalog agent, tidak pernah pengerja yang sama (AGENTS.md 3.2). Tiket model dan uji balik memanggil `validasi-model`; tiket layar memanggil `selera-angka` dan `inp-reviewer`. Pengerja default `gempa` (wilayah `public/gempa/**`, `scripts/gempa/**`, `tests/gempa/**`). Workflow dikerjakan `mekanik-mesin`, Worker dan D1 `warga-api`. Tiket yang menunggu pertanyaan memakai bawaan sementara yang ditandai sampai pemilik menjawab.
+
+| ID | Tiket | Cakupan | Pengerja | Pengulas | Status |
+| --- | --- | --- | --- | --- | --- |
+| TS-00 | Paket dokumen `data/kajian-bnpb/tsunami-genangan/` | folder ini | gempa | pemeriksa bersih | selesai (tulis), menunggu pemeriksa |
+| TS-01 | Bagian "baca dulu, baru bangun" di AGENTS.md dan penunjuk di ilmu `gempa` | `AGENTS.md`, ilmu agent | sesi induk | higiene-repo | belum dimulai; di luar wilayah gempa |
+| TS-02 | Riset mesin: periksa lisensi, cara pasang, tolok ukur tiap mesin di RISET bagian 4, sebut sumbernya | `RISET.md` bagian 4 (perbarui) | gempa | validasi-model | belum dimulai; menjawab Q1 |
+| TS-03 | Tarik run-up historis NOAA NCEI: periksa alamat dan kolom, saring Indonesia, simpan dengan atribusi; verifikasi Banyuwangi 1994 Rajegwesi 13,9 m | `scripts/gempa/tsunami_runup.py`, `public/gempa/data/tsunami_runup.json` | gempa | validasi-model | belum dimulai; perlu izin unduh bila layanan butuh |
+| TS-04 | Sumber Okada dan padanan Python `layak`, `ukuran`, `rupture`; segmentasi untuk M besar; uji kesetaraan Python-JS | `scripts/gempa/tsunami_sumber.py`, `scripts/gempa/uji_js_tsunami.py` | gempa | validasi-model | belum dimulai |
+| TS-05 | Tetapkan batas kotak halus untuk tiga kotak K6 dan, bila Q17 disetujui, kotak uji kelas A | `scripts/gempa/tsunami_medan.py` (daftar kotak) | gempa | selera-angka | K6 menjawab kotak; batas tepatnya di tiket ini |
+| TS-06 | Siapkan DEM dan batimetri per kotak: DEMNAS lembar pesisir dari pemilik (K4; GLO-30 cadangan), datum, penutupan celah pantai; catat lisensi dan atribusi tiap berkas masuk indeks | `scripts/gempa/tsunami_medan.py` | gempa | validasi-model | menunggu lembar DEMNAS dari pemilik dan Q3; unduhan lain hanya sesudah izin pemilik |
+| TS-07 | Kekasaran Manning dari WorldCover dan jejak bangunan; tabel nilai bersumber | `tsunami_medan.py` | gempa | validasi-model | setelah TS-06 |
+| TS-10 | Pembungkus mesin: antarmuka masukan dan keluaran tunggal, uji tolok ukur lereng dan gelombang soliter | `scripts/gempa/tsunami_hitung.py` | gempa | validasi-model | setelah TS-02 |
+| TS-11 | Hitung satu skenario di satu kotak di mesin lokal, HANYA pada kejadian pengembangan (bukan kejadian uji); ukur waktu dan memori nyata; putuskan layak tidaknya Actions untuk fase 3 | `tsunami_hitung.py`, catatan di `RISET.md` | gempa | validasi-model | setelah TS-04, TS-06, TS-10 |
+| TS-12 | Kuantisasi dan format keluaran, anggaran ukuran berkas, anggaran animasi (Q5, Q12), `indeks.json` | `tsunami_hitung.py`, `public/gempa/data/tsunami_genangan/**` | gempa | validasi-model, selera-angka | setelah TS-11 |
+| TS-13 | Pustaka skenario dan pemilih terdekat, serta uji kepekaan tingkat B (skenario terdekat lawan hitungan langsung gempa buatan) yang menurunkan ambang jarak dan selisih M | `scripts/gempa/tsunami_pustaka.py` | gempa | validasi-model | setelah TS-12; Q6 terjawab (K6) |
+| TS-14 | Bekukan kriteria uji balik (kelas menurut sifat sumber dan data, pembagian pengembangan dan uji, jendela W, metrik, pasangan besaran, aturan terbit tepat satu, `n_min`, ambang, pembuangan titik, versi mesin) dan rekam hash berkas kriteria. PRASYARAT tiap hitungan kejadian uji (TS-15, TS-16); hitungan menolak jalan tanpa hash cocok | `scripts/gempa/tsunami_ujibalik.py` (kriteria), berkas kriteria | gempa | validasi-model | setelah TS-03 (ketersediaan NCEI), TS-11 (penyetelan pengembangan selesai), dan Q8 |
+| TS-15 | Uji balik kelas A pada kejadian uji: hitung sekali, K dan kappa, selisih berpasangan lawan Abe, selang hanya bila `n_min` terpenuhi; tulis `tsunami_ujibalik.json`; kejadian pengembangan dilaporkan terpisah berlabel disetel | `tsunami_ujibalik.py`, `public/gempa/data/tsunami_ujibalik.json` | gempa | validasi-model | setelah TS-14 |
+| TS-16 | Uji balik kelas B (Pangandaran 2006, Palu 2018, Selat Sunda 2018) dan uji kepekaan DEM dan sumber; dilaporkan apa adanya | `tsunami_ujibalik.py` | gempa | validasi-model | setelah TS-15 |
+| TS-17 | `genangan.js`: pembaca keluaran, peta raster, legenda, angka, titik run-up, batang historis, label tingkat dan status | `public/gempa/genangan.js`, `genangan.css` | gempa | selera-angka, inp-reviewer | setelah TS-12 dan TS-03; label membaca `tsunami_ujibalik.json` |
+| TS-18 | Pasang ke tab Simulasi: pemilih pantai, zoom, geser waktu pada kotak halus, pita resmi di atas, simulasi tetap tampil saat peringatan aktif (K7), hak tampil mengikuti tab Simulasi (K7), kalimat batas di samping legenda | `public/gempa/sim.js`, `sim.css`, `tab.js` | gempa | selera-angka, inp-reviewer | setelah TS-17; tautan tinjau `http://localhost:8800/gempa/sim` |
+| TS-19 | Animasi zoom dari rekaman kasar (Q12) | `genangan.js` | gempa | inp-reviewer | setelah TS-18 |
+| TS-20 | Bab Metode genangan: sumber, DEM, kekasaran, mesin, uji balik, batas, kelas B | `public/gempa/metode.js` | gempa | selera-angka, validasi-model | setelah TS-16 |
+| TS-21 | Uji layar dan bentuk keluaran | `tests/gempa/tsunami_genangan.test.mjs`, `tests/gempa/tsunami_okada.test.mjs` | penulis-gerbang | gempa | bersama TS-04 dan TS-17 |
+| TS-22 | Gerbang: tanpa kata aman, label wajib, pantai di luar indeks bukan 0, `dem` hanya dari daftar izin; usul daftar layar di gerbang yang ada | `tests/agen/gerbang-tsunami-genangan.test.mjs` | penulis-gerbang | validasi-model | bersama TS-17 |
+| TS-23 | Prospektif: bekukan simulasi nyata, bandingkan dengan tinggi terukur BMKG dan run-up lapangan, ambang klaim | `scripts/gempa/tsunami_ujibalik.py` (mode prospektif), `public/gempa/data/tsunami_prospektif.json` | gempa | validasi-model | setelah TS-15; bagian dari rutinitas gempa |
+| TS-24 | Hitung per gempa (tingkat A): langkah terjadwal, penyimpanan keluaran, pembaca; bila R2 dipilih (Q5), rute Worker | `.github/workflows/tsunami-genangan.yml` (usulan), `src/**` (bila R2) | mekanik-mesin, warga-api | guard-api, security-reviewer | fase 3; setelah TS-11 dan Q4, Q5 |
+| TS-25 | Tambah pantai dan skenario pustaka berikutnya | indeks dan keluaran | gempa | validasi-model | fase 2, berulang |
+| TS-26 | Paparan bangunan dan penduduk di area genangan dari jejak bangunan | `scripts/gempa/`, `scripts/umum/` (baca saja) | gempa, pipa-umum | validasi-model | fase lanjut; Q13 |
+| TS-27 | Tsunami non-gempa (gunung api, longsor bawah laut) | model sumber baru | gempa, gunungapi-kering | validasi-model | fase lanjut; Q9 |
+| TS-28 | Tombol bagikan peta genangan dengan label tertanam | `public/gempa/bagikan.js`, `genangan.js` | gempa | selera-angka | fase lanjut; Q16 |
+| TS-29 | Tutup tiket: perbarui ilmu agent `gempa` dan catat kasus | ilmu agent | gempa | higiene-repo | setelah tiket terakhir fase |
+
+Fase 1: TS-02 sampai TS-23 untuk tiga kotak pertama dan skenario pustaka. Fase 2: TS-25. Fase 3: TS-24. Fase lanjut: TS-26 sampai TS-28.
+
+Nomor TS-08 dan TS-09 sengaja kosong: nomor dikelompokkan per tahap (00 sampai 07 persiapan, 10 sampai 19 mesin dan uji, 20 sampai 29 layar, gerbang, dan lanjutan), dan celahnya tidak menyembunyikan tiket.
+
+Jumlah: 28 tiket (1 selesai tulis, sisanya belum dimulai atau menunggu pemilik).

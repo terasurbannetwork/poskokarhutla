@@ -8,6 +8,10 @@
 //  4. PROYEK (BL-09, ../arah.cjs, hanya bila BL_PROYEK=1): pesan pribadi nomor terdaftar ke ../proyek.mjs tangani(), satu per pengirim.
 //     Perintah proyek tidak diteruskan ke Worker; bahan diteruskan dulu lalu ke proyek dengan wa_id. Susulan tidak pernah ke proyek (K11),
 //     tiap nomor terdaftar yang sempat menulis saat mati dapat satu T-TERLEWAT. Balasan ke orang yang baru menulis: batas percakapan (Q1).
+// >>> lapor-ai
+//  5. LAPOR (LA-20, ../lapor_wa.mjs): pesan pribadi nomor di /api/lapor/izin diteruskan ke mesin Lapor Bencana di Worker (teks, lokasi, foto), balasan Worker dikirim apa adanya;
+//     kabar (balasan, status, PDF) ditarik tiap 1 menit; `lapor izin|cabut <nomor>` hanya dari PEMILIK. Nomor lain tidak berubah.
+// <<< lapor-ai
 // Tidak ada LLM. Ini WhatsApp Web TIDAK RESMI: baca ../../../../pangantara/wa-gateway/ANTI-BAN.md.
 const fs = require('fs')
 const path = require('path')
@@ -125,6 +129,31 @@ const DF = DAFTAR.buat({
 })
 DF.mulai()
 
+// >>> lapor-ai
+// LA-20: pintu WA Lapor Bencana BNPB (../lapor_wa.mjs). Nomor di salinan /api/lapor/izin (pesan pribadi saja) dialihkan ke mesin Lapor di Worker;
+// selain itu jalur lama tidak berubah. Mati sendiri bila WORKER_URL atau WA_MESIN kosong. Balasan dan kabar lewat sendPaced yang sama.
+const LAPOR = import('../lapor_wa.mjs').then((L) => {
+  const x = L.buat({
+    worker: WORKER, mesin: process.env.WA_MESIN, pemilik: PEMILIK, log,
+    kirim: async (wa, isi, o = {}) => {
+      if (!connected || !sock) return { tunda: true }
+      let jid = o.jid
+      if (!jid) {
+        const t = await jidDari(wa).catch((e) => ({ error: String(e?.message || e), code: 502 }))
+        if (t.error) return t.code >= 500 ? { tunda: true } : { ok: false, galat: t.error }
+        jid = t.jid
+      }
+      const r = await sendPaced(jid, isi, false, o.balasan ? { balasan: true, masuk: o.masuk } : undefined).catch((e) => ({ ok: false, code: 502, error: String(e?.message || e) }))
+      if (r.ok) return { ok: true }
+      log('[lapor] kirim ditahan', r.error)
+      return r.code === 429 || r.code >= 500 ? { tunda: true } : { ok: false, galat: r.error }
+    },
+  })
+  x.mulai()
+  return x
+}).catch((e) => { log('[lapor] gagal muat', String(e?.message || e)); return null })
+
+// <<< lapor-ai
 async function jidDari(target) {
   const mentah = String(target ?? '').trim()
   if (/@g\.us$/i.test(mentah)) return { jid: mentah, isGroup: true }
@@ -620,6 +649,26 @@ async function startSock() {
       const id = m.key.id
       const putusan = !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju <nomor> [nama] | tolak <nomor>, hanya PEMILIK
       if (putusan) { if (id) terlihat.catat(id); DF.putuskan(putusan).then((x) => log('[daftar] putusan', x)).catch((e) => log('[daftar] galat', String(e?.message || e))); continue }
+      // >>> lapor-ai
+      if (pribadi && dari) { // LA-20: Lapor Bencana (perintah PEMILIK dan nomor berizin); susulan tidak dilayani
+        const LP = await LAPOR
+        const pl = LP && !susulan ? LP.cocokPemilik(dari, isiPesan(m).teks) : null
+        if (pl) { if (id) terlihat.catat(id); LP.putuskan(pl).then((x) => log('[lapor] perintah', x)).catch((e) => log('[lapor] galat', String(e?.message || e))); continue }
+        if (LP && LP.arah(dari, pribadi) === 'lapor') {
+          if (!susulan) {
+            if (id) terlihat.catat(id)
+            const jid = m.key.remoteJid, masuk = Date.now(), { c } = isiPesan(m)
+            limiter.noteMasuk(jid) // jendela percakapan 10 menit untuk balasan
+            ANTRE.tambah('lapor:' + dari, () => LP.tangani({
+              wa: dari, jid, c, masuk, waktu: ARAH.tsMs(m.messageTimestamp) || masuk,
+              unduh: () => downloadMediaMessage(m, 'buffer', {}, { logger: pino({ level: 'silent' }), reuploadRequest: sock.updateMediaMessage }),
+            }))
+            log('[lapor] pesan', '***' + String(dari).slice(-4), c.locationMessage || c.liveLocationMessage ? 'lokasi' : c.imageMessage ? 'foto' : 'teks')
+          }
+          continue
+        }
+      }
+      // <<< lapor-ai
       const izin = IZIN.has(dari)
       const bl = !izin && pribadi && !!DF.shaTerdaftar(dari)
       if (pribadi && !izin && !bl) { // nomor asing: tidak pernah diteruskan ke Worker (D10); susulan tidak dibalas

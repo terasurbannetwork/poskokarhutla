@@ -66,6 +66,16 @@ uji("T5 token: hanya sha disimpan; organisasi A tidak membaca/mengubah baris B; 
   assert.equal((await POST(PM, `/kejadian/${KJ}/tiga-w/token`, {org_id: b})).s, 403);
 });
 
+uji("T5b token lewat 90 hari 401 walau tidak dicabut dan kejadian masih buka; terbit menyebut kedaluwarsa", async () => {
+  const o = await org("Org Lama"), r = await POST(KO, `/kejadian/${KJ}/tiga-w/token`, {org_id: o}); assert.equal(r.s, 201, r.t);
+  assert.ok(Math.abs(r.j.kedaluwarsa - Date.now() - 90 * 864e5) < 60e3, "kedaluwarsa = terbit + 90 hari");
+  assert.equal((await bantu("GET", "", r.j.token)).s, 200);
+  await DB.prepare("UPDATE tw_token SET dibuat = ? WHERE org_id = ? AND cabut IS NULL").bind(Date.now() - 90 * 864e5 + 3600e3, o).run();
+  assert.equal((await bantu("GET", "", r.j.token)).s, 200, "sejam sebelum batas masih berlaku");
+  await DB.prepare("UPDATE tw_token SET dibuat = ? WHERE org_id = ? AND cabut IS NULL").bind(Date.now() - 91 * 864e5, o).run();
+  const g = await bantu("GET", "", r.j.token); assert.equal(g.s, 401, "lewat 90 hari"); assert.match(g.t, /tautan tidak berlaku/, "jawaban sama dengan token dicabut");
+});
+
 uji("T6 tawaran: NGO internasional tanpa mitra lokal 400 (staf dan token); dengan mitra diterima; barang asing 400; nomor di syarat 400", async () => {
   const asing = await org("Aid Internasional", "ngo_internasional", {negara: "AU"}), mitra = await org("Yayasan Mitra Lokal");
   const t = {org_id: asing, barang: "tenda", jumlah: 100, satuan: "unit", syarat: "Dikirim sendiri"};

@@ -547,14 +547,33 @@ jobs:
           python3 scripts/data/keputusan.py
           python3 scripts/data/bnpb_gis.py
           # SK status keadaan darurat (CKAN data.bnpb.go.id) dan kejadian + dampak DIBI 365 hari, untuk /semua
+          # status darurat, posko pengungsian, rambu IDRIP dari DIBI; dibaca status_darurat.py sebagai sumber ketiga
+          python3 scripts/umum/dibi_lain.py uji && python3 scripts/umum/dibi_lain.py || echo "::warning title=dibi_lain::gagal; berkas lamanya dibiarkan"
           python3 scripts/umum/status_darurat.py uji && { python3 scripts/umum/status_darurat.py || { echo "::warning title=status_darurat::sumber gagal; kolom turunan dihitung ulang dari berkas lama"; python3 scripts/umum/status_darurat.py ulang; }; } || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
           python3 scripts/umum/dibi_kejadian.py uji && python3 scripts/umum/dibi_kejadian.py || echo "::warning title=dibi_kejadian::gagal; berkas lamanya dibiarkan"
+          # tren DIBI sejak 2008 (tahun x kab, bulan x prov), is_bencana saja, untuk tab Tren/Sebaran /bnpb/data-bencana
+          python3 scripts/umum/dibi_tren.py uji && python3 scripts/umum/dibi_tren.py || echo "::warning title=dibi_tren::gagal; berkas lamanya dibiarkan"
           # saran status darurat: sesudah status_darurat + dibi_kejadian; sinyal karhutla/banjir dari berkas lokal (titik.yml memperbaruinya tiap 3 jam)
           python3 scripts/umum/saran_status.py uji && python3 scripts/umum/saran_status.py || echo "::warning title=saran_status::gagal; berkas lamanya dibiarkan"
 
       # Logbook Laporan Harian Pusdalops BNPB (DOCX di Drive publik) -> katalog kejadian berkedalaman/berdurasi = label uji model.
       # Teks per hari dibawa lewat cache sendiri (~40 MB): jalan harian cuma mengunduh laporan baru. Tiap uji menilai ulang model
       # terhadap label yang bertambah dan menyimpan riwayatnya; rapor_belajar.py membacanya. Ambang tidak disetel otomatis.
+      # tabel kejadian publik gis.bnpb.go.id (tahun ini + tahun lalu) -> data/gis-bnpb, commit sendiri: jalur terbit Cloudflare tidak meng-commit apa pun
+      - name: Tabel kejadian GIS BNPB (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/umum/gis_kejadian.py uji && python3 scripts/umum/gis_kejadian.py || { echo "::warning title=gis_kejadian::gagal; berkas lamanya dibiarkan"; exit 0; }
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/gis-bnpb
+          git diff --cached --quiet -- data/gis-bnpb && { echo "tabel kejadian tidak berubah"; exit 0; }
+          git commit -q -m "data: tabel kejadian GIS BNPB $(TZ=Asia/Jakarta date +%F)" -- data/gis-bnpb
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+
       - name: Pulihkan teks logbook Pusdalops
         uses: actions/cache/restore@v4
         with:

@@ -2,6 +2,7 @@
 
 Pakai:  python3 scripts/scrape/lahan.py            # unduh (kalau belum ada) + bangun
         python3 scripts/scrape/lahan.py --uji      # cek cepat hasil di public/data/lahan
+        python3 scripts/scrape/lahan.py --kawasan  # kawasan.geojson saja (dari data/raw/lahan/kwshutan_062026.zip)
 
 Mentah  -> data/raw/lahan/   (zip shapefile + GeoJSON gambut/moratorium PRIMS; tidak di-commit)
 Hasil   -> public/data/lahan/{gambut,konsesi,kawasan}.geojson
@@ -18,8 +19,10 @@ Sumber (semua publik tanpa login):
 - Konsesi: tautan unduh resmi GFW (dicantumkan GFW di katalog ArcGIS-nya): sawit
   (v20191031, data KLHK ~2014) dan HPH/PBPH-HA. Data Indonesia berasal dari KLHK; GFW
   mengecualikan Indonesia dari CC BY 4.0. HTI belum ada (lihat konsesi()).
-- Kawasan hutan: shapefile "Kawasan hutan Indonesia" dari akun GFW di ArcGIS Online
-  (KLHK, versi 2017).
+- Kawasan hutan: KWSHUTAN_AR_250K_JUNI2026_REV1, GDB resmi Kementerian Kehutanan (pengukuhan
+  s.d. Desember 2025), diterima pemilik 20 Nov 2026 dengan izin terbit ulang. Diubah ke
+  data/raw/lahan/kwshutan_062026.zip oleh scripts/scrape/kemenhut_gdb.py (sekali, butuh uv).
+  Dulu: "Kawasan hutan Indonesia" KLHK 2017 lewat GFW.
 """
 import io, json, math, os, struct, sys, time, urllib.request, zipfile
 from concurrent.futures import ThreadPoolExecutor
@@ -36,7 +39,6 @@ UNDUH = {
     # v2025 menolak unduh shp (501); data Indonesianya sama (KLHK, source_yr 2012)
     "gfw_oil_palm.zip": GFW.format("gfw_oil_palm/v20191031"),
     "gfw_logging_download.zip": GFW.format("gfw_logging_download/latest"),
-    "idn_forest_area.zip": "https://www.arcgis.com/sharing/rest/content/items/1dd7ef31c3924d7cbcf918bd97a7f985/data",
     "gambut_250k.geojson": "https://prims.brgm.go.id/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature"
                            "&typeNames=prims:gambut_250k&outputFormat=application/json&srsName=EPSG:4326",
     # bbox lon,lat Kaltim (WFS 1.0.0, urutan seperti tarik.py); kelas MOR_GAMBUT disaring di mor_gambut()
@@ -297,33 +299,49 @@ def konsesi(tol=0.002, min_luas=1e-5):
     return fitur
 
 
-# Kode `fungsikawa` KLHK -> fungsi. Tahura dipisah (pengelola Pemda/SKPD, bukan BKSDA/BTN).
+# Kode fungsi kawasan Kemenhut -> fungsi. KWSHUTAN 2026 memakai 6 digit (100100), data 2017 memakai versi
+# tanpa nol di belakang (1001); rstrip("0") menyamakan keduanya. Tahura dipisah (pengelola Pemda/SKPD, bukan BKSDA/BTN).
 FUNGSI = {"1001": "HL", "1003": "HP", "1004": "HPT", "1005": "HPK", "1007": "APL", "10026": "THR"}
+# Awalan nama kawasan konservasi menurut kode (digit ke-6 = 1: perairan/laut)
+JENIS_HK = {"10021": "Cagar Alam", "10022": "Suaka Margasatwa", "10023": "Taman Buru", "10024": "Taman Nasional",
+            "10025": "Taman Wisata Alam", "10026": "Taman Hutan Raya"}
+SINGKAT = ("TN", "CA", "SM", "TWA", "TB", "TAHURA", "KSA", "KPA", "TAMAN", "CAGAR", "SUAKA")
 
 
 def fungsi(kode):
+    kode = str(kode).split(".")[0].rstrip("0")
     if kode in FUNGSI:
         return FUNGSI[kode]
-    if kode == "1" or kode.startswith("100"):  # 1002, 10021-10025, 1002xx laut: KSA/KPA/Taman Buru
+    if kode == "1" or kode.startswith("100"):  # 100000, 1002xx (KSA/KPA/Taman Buru, darat & laut)
         return "HK"
-    return "AIR" if kode.startswith("500") else "?"
+    return "AIR" if kode.startswith("500") else "?"  # "0": tanpa fungsi (224 serpih kecil) -> tidak dimuat
+
+
+def nama_kawasan(kode, nama):
+    """'TN Lorentz' tetap; 'Bukit Limau' + 100240 -> 'Taman Nasional (Bukit Limau)'; '-' + 100220 -> 'Suaka Margasatwa'.
+    Nama tanpa awalan sering nama kelompok hutan, bukan nama kawasan konservasinya, jadi diberi kurung."""
+    nama = " ".join((nama or "").split()).strip(" -")
+    kode = str(kode).split(".")[0]
+    jenis = JENIS_HK.get(kode[:5]) if kode.startswith("1002") and len(kode) == 6 else None
+    if not jenis or nama.upper().startswith(SINGKAT):
+        return nama
+    return f"{jenis} ({nama})" if nama else jenis
+
+
+KWSHUTAN = os.path.join(MENTAH, "kwshutan_062026.zip")  # scripts/scrape/kemenhut_gdb.py dari GDB resmi Kemenhut
 
 
 def kawasan(tol=0.001, min_luas=2e-5):
-    from wilayah import PRIORITAS, Wilayah
-    w, fitur = Wilayah(), []
-    # 9 provinsi pantauan saja (nasional = 9,4 MB). Data 2017 belum kenal Papua Selatan (93):
-    # poligon berkode Papua lama (9x) diperiksa titik pertamanya.
-    sumber = ((p, c) for p, c in baca_shp(os.path.join(MENTAH, "idn_forest_area.zip"))
-              if fungsi(p["fungsikawa"]) not in ("APL", "AIR")  # di luar semua poligon = APL/perairan
-              and (p["kodeprov"] in PRIORITAS or p["kodeprov"][:1] == "9" and c
-                   and (w.cari(*c[0][0]) or ("",))[0] == "93"))
+    """KWSHUTAN_AR_250K Juni 2026 REV1 (Kemenhut, pengukuhan s.d. Des 2025), 9 provinsi pantauan.
+    Nasional terlalu berat untuk peta (data 2017 saja 9,4 MB). Kode provinsi sudah Base Admin 2023 (ada 93)."""
+    from wilayah import PRIORITAS
+    fitur = []
+    sumber = ((p, c) for p, c in baca_shp(KWSHUTAN)
+              if fungsi(p["fungsikws"]) not in ("APL", "AIR", "?") and p["kode_prov"].split(".")[0] in PRIORITAS)
     for p, g in kumpul(sumber, tol, min_luas):
-        f = fungsi(p["fungsikawa"])
-        nama = p["namobj"].strip(" -")
-        if f in ("HK", "THR"):  # "Taman Nasional Sebangau", "Taman Hutan Raya Ir. H. Juanda"
-            nama = f"{p['desc_in']} {nama}".strip()
-        fitur.append({"type": "Feature", "properties": {"fungsi": f, "nama": nama, "prov": "93" if p["kodeprov"][:1] == "9" else p["kodeprov"]}, "geometry": g})
+        f = fungsi(p["fungsikws"])
+        nama = nama_kawasan(p["fungsikws"], p["namobj"]) if f in ("HK", "THR") else " ".join(p["namobj"].split()).strip(" -")
+        fitur.append({"type": "Feature", "properties": {"fungsi": f, "nama": nama, "prov": p["kode_prov"].split(".")[0]}, "geometry": g})
     return fitur
 
 
@@ -379,6 +397,9 @@ def uji(gambut_saja=False):
 
 if __name__ == "__main__":
     if "--uji" in sys.argv:
+        uji()
+    elif "--kawasan" in sys.argv:  # hanya kawasan.geojson dari KWSHUTAN 2026 (tanpa jaringan)
+        tulis("kawasan.geojson", kawasan())
         uji()
     elif "--gambut" in sys.argv:  # hanya gambut.geojson (tanpa zip konsesi/kawasan)
         unduh(True)

@@ -8,11 +8,14 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb, HALAMAN_STAF} from "./admin_halaman.js";
 import {stafPeran, dalamWilayahStaf, dariStaf, wilayahStaf} from "./staf.js";
 import {modOK, RE_EMAIL} from "./posko.js";
-import {emailAktif, kirimEmail} from "./ews.js";
+import {emailAktif} from "./ews.js";
+import {kirimEmail} from "./keluar.js";
+import {adaPemda} from "./profil_konst.js";
+import {bakuKab} from "./lapor_meja_hak.js";
 import {sesiUntuk as sesiInstansi, cabutSemuaSesi, PROV as PROV_INSTANSI} from "./instansi.js";
 import {mkInstansiById, mkAkunPilihan, mkUndangBerlaku, mkKontakCocok, mkAnggotaCari, mkMenungguHitung, mkAnggotaTulis, mkLogMasuk, mkJedaTerakhir, mkHanguskan, mkKodeEmailBaru,
   mkDomainCocok, mkDomainTulis, mkDomainHapus, mkAnggotaMenunggu, mkAnggotaAkun, mkAnggotaById, mkAnggotaSetujui, mkAnggotaCabut, mkAkunSaya, mkUndangHitung, mkSudahAnggota, mkUndangAda,
-  mkUndangBaru, mkUndangDaftar, mkUndangById, mkUndangCabut, mkKontakById, mkPapanHitung, mkPapanRinci, mkUndangNomorHitung, mkUndangCabutOleh} from "./hak.js";
+  mkUndangBaru, mkUndangDaftar, mkUndangById, mkUndangCabut, mkKontakById, mkPapanHitung, mkPapanRinci, mkUndangNomorHitung, mkUndangCabutOleh, pfPapanAkun, pfAkunWilayah, pfAkunPemdaById, pfProfilRinci, pfKontakBpbd, pfUndangAntre} from "./hak.js";
 import {sesiMasuk} from "./masuk_sesi.js";
 import {tandaInstansi} from "./masuk_tanda.js";
 import {tabelBelum, kunciSah, penjaga, batas, hmac, kodeAcak, galatKode, galatNomor, reKode, samar, cocokKode} from "./masuk.js";
@@ -103,6 +106,7 @@ async function mohon(env, req, url, kini) {
   if (b.o.jenis !== "instansi" || typeof b.o.akun_id !== "string" || !reId.test(b.o.akun_id)) return gagal(400, "jenis harus instansi dan akun_id 16 heks");
   const a = await mkInstansiById(env, b.o.akun_id);
   if (!a || a.status === "dicabut") return gagal(404, "akun lembaga itu tidak ada");
+  if (adaPemda(a.jenis)) return gagal(403, "akun BPBD masuk lewat halaman /instansi dengan username, sandi, profil, dan PIN");   // Q1: pintu kode WA ditutup untuk akun pemda
   if (a.status === "aktif" && a.wa === s.wa) return sesiAnggota(env, s, a, kini, {jalur: "pemilik"});   // nomor akunnya sendiri: tidak perlu baris anggota
   const ada = await mkAnggotaCari(env, s.id, a.id);
   if (ada?.status === "dicabut") return gagal(403, "keanggotaanmu di akun ini dicabut");
@@ -221,6 +225,7 @@ async function undangBuat(env, req, url, kini) {
     } else if (!id && milik.length > 1) return gagal(400, "pilih akun_id: kamu terhubung ke lebih dari satu akun");
     else return gagal(403, "kamu bukan pemilik atau anggota akun itu");
   }
+  if (adaPemda(akun?.jenis)) return gagal(409, "akun BPBD tidak memakai undangan; daftarkan PIC lewat halaman /instansi");
   if (p.s && nomor === p.s.wa) return gagal(400, "tidak bisa mengundang nomor sendiri");
   if (akun && await mkSudahAnggota(env, nomor, akun.id)) return gagal(409, "nomor itu sudah menjadi anggota akun ini");
   const tabel = ke === "pendataan" ? "pdt_akun" : "instansi_akun";
@@ -321,17 +326,26 @@ async function anggotaPutus(env, req, url, kini, ctx, id) {
 
 /* ---------------- papan aktivasi (PM-12, ALGORITMA §8) ---------------- */
 const statusPapan = (r, kini) => !r.akun_aktif ? "belum_ada" : r.terakhir_masuk && kini - r.terakhir_masuk <= K.LAMA_TIDAK_MASUK ? "aktif" : r.undangan_terkirim > 0 && !r.anggota ? "diundang" : "lama";
+/* PF-07 (profil-bpbd K11, ALGORITMA 12): baris papan = satu BPBD. 38 baris provinsi (kab null) di samping baris kab/kota; akun pemda memberi status, jumlah PIC, dan masuk terakhir
+   dari instansi_profil. Tanpa akun pemda di baris itu, status lama (aparat, undangan) tetap dipakai. Tabel profil belum ada = kolom profil kosong, papan lama tetap jalan. */
+const statusPemda = (a, kini) => a.status !== "aktif" ? a.status : a.pic_aktif < 3 ? "aktif_kurang" : a.terakhir && kini - a.terakhir <= K.LAMA_TIDAK_MASUK ? "aktif" : "lama";
 async function hitungPapan(env, kini) {
-  const [peta, d] = await Promise.all([daftarKab(env), mkPapanHitung(env, kini, K.PAPAN_JENDELA_LOG, KATEGORI_SEMUA)]);
+  const [peta, d, pf] = await Promise.all([daftarKab(env), mkPapanHitung(env, kini, K.PAPAN_JENDELA_LOG, KATEGORI_SEMUA), pfPapanAkun(env).catch(e => { if (/no such table/i.test(String(e?.message))) return []; throw e; })]);
+  const kolom = {pic: 0, pic_aktif: 0, status_akun: "belum_ada", menunggu: false, akun_id: null};
   const baris = new Map();
-  for (const [prov, kabs] of peta) for (const kab of kabs) baris.set(prov + "|" + kab, {prov, kab, akun_aktif: 0, anggota: 0, terakhir_masuk: null, undangan_terkirim: 0, undangan_diterima: 0, kontak_belum: 0});
+  for (const prov of Object.keys(PROV_INSTANSI)) baris.set(prov + "|", {prov, kab: null, tingkat: "prov", akun_aktif: 0, anggota: 0, terakhir_masuk: null, undangan_terkirim: 0, undangan_diterima: 0, kontak_belum: 0, ...kolom});
+  for (const [prov, kabs] of peta) for (const kab of kabs) baris.set(prov + "|" + kab, {prov, kab, tingkat: "kab", akun_aktif: 0, anggota: 0, terakhir_masuk: null, undangan_terkirim: 0, undangan_diterima: 0, kontak_belum: 0, ...kolom});
   const isi = (larik, f) => { for (const r of larik) { const x = baris.get(r.prov + "|" + r.kab); if (x) f(x, r); } };
   isi(d.akun, (x, r) => { x.akun_aktif = r.n; });
   isi(d.anggota, (x, r) => { x.anggota = r.n; });
   isi(d.terakhir, (x, r) => { x.terakhir_masuk = r.n; });
   isi(d.undangan, (x, r) => { x.undangan_terkirim = r.terkirim ?? 0; x.undangan_diterima = r.diterima ?? 0; });
   isi(d.kontak, (x, r) => { x.kontak_belum = r.n; });
-  const daftar = [...baris.values()].map(x => ({...x, prov_nama: PROV_INSTANSI[x.prov][1], status: statusPapan(x, kini)}));
+  const pemda = new Map();
+  for (const a of pf) { const x = baris.get(a.tingkat === "kab" ? a.prov + "|" + a.kab : a.pv + "|"); if (!x) continue;
+    pemda.set(x, a); x.akun_id = a.id; x.pic = a.pic; x.pic_aktif = a.pic_aktif; x.status_akun = a.status; x.menunggu = a.status === "menunggu" || a.pic_menunggu > 0;
+    if (a.terakhir && a.terakhir > (x.terakhir_masuk ?? 0)) x.terakhir_masuk = a.terakhir; }
+  const daftar = [...baris.values()].map(x => ({...x, prov_nama: PROV_INSTANSI[x.prov][1], status: pemda.has(x) ? statusPemda({...pemda.get(x), terakhir: x.terakhir_masuk}, kini) : statusPapan(x, kini)}));
   return {dibuat: kini, daftar};
 }
 /* cache tepi 5 menit untuk hitungan nasional. Pemeriksaan hak SELALU lebih dulu; kunci cache internal (bukan URL permintaan) dan jawaban keluar no-store,
@@ -348,18 +362,47 @@ async function aktivasi(env, req, url, kini, ctx) {
   const {mod} = await hakStaf(env, req); if (!mod) return gagal(403, "papan aktivasi hanya untuk staf berwenang dan admin");
   const prov = url.searchParams.get("prov") || "", kab = url.searchParams.get("kab") || "";
   if (prov && !Object.hasOwn(PROV_INSTANSI, prov)) return gagal(400, "provinsi tidak sah");
-  if (kab) {   // rincian satu kabupaten: kontak pemangku aktif yang belum menjadi anggota, dengan akun tujuan undangan
+  if (kab || url.searchParams.get("tingkat") === "prov") {   // rincian satu kabupaten atau satu provinsi: kontak pemangku yang belum menjadi anggota, profil PIC (tersamar, tanpa NIP, email, HP)
     if (!prov) return gagal(400, "prov wajib bersama kab");
     if (!dalamWilayahStaf(req, [prov])) return gagal(403, "provinsi di luar wilayah haknya");
-    let daftar; try { daftar = (await daftarKab(env)).get(prov) || []; } catch (e) { return wilayahGalat(); }
-    if (!daftar.includes(kab)) return gagal(400, "kabupaten atau kota tidak sah");
-    const r = await mkPapanRinci(env, prov, kab, KATEGORI_SEMUA, K.KONTAK_RINCI_MAKS);
-    return json({prov, kab, akun: r.akun.map(a => ({id: a.id, jenis: a.jenis, lembaga: a.wilayah})),
-      kontak: r.kontak.map(k => ({id: k.id, nama: k.nama, jabatan: k.jabatan, kategori: k.kategori, wa: samar(k.wa), akun_id: r.akun.find(a => K.PETA_KATEGORI[a.jenis]?.includes(k.kategori))?.id ?? null}))});
+    if (kab) { let daftar; try { daftar = (await daftarKab(env)).get(prov) || []; } catch (e) { return wilayahGalat(); }
+      if (!daftar.includes(kab)) return gagal(400, "kabupaten atau kota tidak sah"); }
+    const r = kab ? await mkPapanRinci(env, prov, kab, KATEGORI_SEMUA, K.KONTAK_RINCI_MAKS) : {kontak: [], akun: []};
+    let pemda = null, profil = [];
+    try { pemda = await pfAkunWilayah(env, prov, kab || null); if (pemda) profil = await pfProfilRinci(env, pemda.id); } catch (e) { if (!/no such table/i.test(String(e?.message))) throw e; }
+    const bpbd = (await pfKontakBpbd(env, prov, kab || null)).map(k => ({id: k.id, nama: k.nama, jabatan: k.jabatan, wa: samar(k.wa)}));
+    return json({prov, kab: kab || null, akun: r.akun.map(a => ({id: a.id, jenis: a.jenis, lembaga: a.wilayah})),
+      kontak: r.kontak.map(k => ({id: k.id, nama: k.nama, jabatan: k.jabatan, kategori: k.kategori, wa: samar(k.wa), akun_id: r.akun.find(a => K.PETA_KATEGORI[a.jenis]?.includes(k.kategori))?.id ?? null})),
+      pemda: pemda && {id: pemda.id, status: pemda.status, wilayah: pemda.wilayah}, kontak_bpbd: bpbd, profil: profil.map(p => ({id: p.id, nama: p.nama, jabatan: p.jabatan, status: p.status, terakhir_masuk: p.terakhir_masuk, terkunci: !!p.kunci_admin}))});
   }
   let d; try { d = await papanData(env, kini, ctx); } catch (e) { if (/pusat_kec/.test(String(e?.message))) return wilayahGalat(); throw e; }
   const daftar = d.daftar.filter(x => (!prov || x.prov === prov) && dalamWilayahStaf(req, [x.prov]));
   return json({dibuat: d.dibuat, daftar});
+}
+
+/* PF-07 (profil-bpbd ALGORITMA 12): kirim ulang undangan akun BPBD. Nomor tujuan selalu dari baris kontak_pemangku di wilayah akun, tidak pernah dari badan; pesan tidak pernah memuat sandi (N10). */
+async function undangUlang(env, req, url, kini) {
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.undang_ulang_ip", K.LAJU_IP_UNDANG, kini); if (ip) return ip;
+  const {mod} = await hakStaf(env, req); if (!mod) return gagal(403, "kirim ulang undangan hanya untuk staf berwenang dan admin");
+  const b = await bacaBody(req, 512); if (b.galat) return gagal(b.status || 400, b.galat);
+  if (typeof b.o.akun_id !== "string" || !reId.test(b.o.akun_id)) return gagal(400, "akun_id 16 heks wajib");
+  if (b.o.kontak_id != null && (typeof b.o.kontak_id !== "string" || !reId.test(b.o.kontak_id))) return gagal(400, "kontak_id tidak sah");
+  const a = await pfAkunPemdaById(env, b.o.akun_id);
+  if (!a || !dalamWilayahStaf(req, jsonCakupan(a.cakupan))) return gagal(a ? 403 : 404, a ? "akun itu di luar wilayah haknya" : "akun BPBD itu tidak ada");
+  if (a.status === "dicabut") return gagal(409, "akun itu sudah dicabut");
+  const pesan = `Yth. ${a.wilayah}, akun Centurisk97 untuk BPBD Anda sudah disiapkan. Username: ${a.username}. Masuk di https://centurisk97.id/instansi, buat sandi baru, lalu daftarkan 3 PIC. Sandi awal diberikan admin BNPB; bila belum menerimanya, hubungi admin.`;
+  let k = null;
+  if (b.o.kontak_id != null) {   // kontak divalidasi dulu: permintaan ditolak tidak memakai jatah per jam
+    k = await mkKontakById(env, b.o.kontak_id);
+    const wil = a.tingkat === "kab" ? {prov: a.prov, kab: a.kab} : {prov: jsonCakupan(a.cakupan)[0], kab: null};
+    if (!k || k.kategori !== "bpbd" || !k.wa || k.prov !== wil.prov || bakuKab(k.kab) !== bakuKab(wil.kab)) return gagal(400, "kontak itu bukan kontak BPBD di wilayah akun ini");
+  }
+  const lAkun = await batas(env, a.id, "masuk.undang_ulang_akun", K.LAJU_UNDANG_ULANG_AKUN, kini); if (lAkun) return lAkun;   // teks salin dan antrean WA sama-sama dibatasi per akun
+  if (!k) return json({teks_salin: pesan});
+  const l = await batas(env, "semua", "masuk.undang_ulang_hari", K.LAJU_UNDANG_ULANG_HARI, kini); if (l) return l;
+  await pfUndangAntre(env, {id: acak(8), tujuan: k.wa, pesan, rujukan: a.id, kini});
+  return json({ok: true, antre: true, kontak: samar(k.wa)}, 201);
 }
 
 export const RUTE_MASUK_UNDANG = {
@@ -377,4 +420,5 @@ export const RUTE_MASUK_UNDANG = {
   "POST /api/masuk/anggota/cabut/:id": tabelBelum(anggotaCabut),
   "POST /api/masuk/anggota/putus/:id": tabelBelum(anggotaPutus),
   "GET /api/masuk/aktivasi": tabelBelum(aktivasi),
+  "POST /api/masuk/undang-ulang": tabelBelum(undangUlang),
 };

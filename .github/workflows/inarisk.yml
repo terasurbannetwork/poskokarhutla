@@ -1,0 +1,66 @@
+name: Cermin InaRISK mingguan
+
+# IR-09 (data/kajian-bnpb/inarisk/TIKET.md): tarik ulang IRBI, IKD, jiwa terpapar, tautan, dan batas kab dari InaRISK BNPB.
+# Selasa 04.45 UTC (11.45 WIB), tidak ada cron lain di menit itu. Cache kosong di runner, jadi tarikan penuh ± 1.050 panggilan
+# berjeda 0,4 dtk x 4 jalur (± 5-15 menit). bangun menulis HANYA bila ada yang berubah, plus perubahan.json berisi kalimat
+# perubahannya; perubahan tampil di ringkasan run dan sebagai anotasi. Self-check bentuk gagal = run merah, berkas lama dibiarkan.
+# Grup concurrency sendiri (bukan `data`): tidak men-deploy, push lewat pull --rebase berulang. Tanpa secret.
+on:
+  schedule:
+    - cron: "45 4 * * 2"
+  workflow_dispatch:
+
+concurrency:
+  group: inarisk
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  inarisk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji mandiri
+        run: python3 -I scripts/bnpb/inarisk.py --cek
+
+      - name: Tarik (dilanjutkan sampai dua kali bila ada yang gagal)
+        run: |
+          python3 -I scripts/bnpb/inarisk.py tarik || python3 -I scripts/bnpb/inarisk.py tarik || python3 -I scripts/bnpb/inarisk.py tarik
+
+      - name: Bangun dan bandingkan
+        run: python3 -I scripts/bnpb/inarisk.py bangun
+
+      - name: Commit bila berubah
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          d=public/data/inarisk
+          git add -- "$d"
+          if git diff --cached --quiet -- "$d"; then
+            echo "Cermin InaRISK tidak berubah." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          python3 -I -c "
+          import json
+          p = json.load(open('$d/perubahan.json', encoding='utf-8'))
+          print('### Data InaRISK berubah (' + p['dibuat'] + ', sebelumnya ' + str(p.get('sebelumnya')) + ')')
+          for x in p['butir']: print('- ' + x)
+          " >> "$GITHUB_STEP_SUMMARY"
+          python3 -I -c "
+          import json
+          for x in json.load(open('$d/perubahan.json', encoding='utf-8'))['butir']: print('::warning title=InaRISK berubah::' + x)
+          "
+          git commit -q -m "data: cermin InaRISK $(TZ=Asia/Jakarta date +%F)" -- "$d"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push cermin InaRISK gagal::git push ke main gagal 3x"
+          exit 1

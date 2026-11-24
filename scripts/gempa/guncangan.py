@@ -21,7 +21,6 @@ import datetime as dt, json, math, os, sys
 AKAR = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
 PUSAT = os.path.join(AKAR, "public/banjir/data/pusat_kec.json")  # {"prov|kab|kec": [lat, lon]}, 7.274 titik; tidak disalin
 KELUAR = os.path.join(AKAR, "public/gempa/data/model_guncangan.json")
-PROSPEKTIF = os.path.join(AKAR, "public/gempa/data/prospektif_guncangan.json")
 G = 980.665  # cm/s^2
 R_BUMI = 6371.0088
 VS30_BAKU = 400.0
@@ -183,13 +182,10 @@ def ekspor():
                     "Zhao 2006: magnitudo intraslab dipotong 7,8 (seperti OpenQuake SSlabNSHMP2014); antarmuka tidak dipotong (perbaikan 18 Okt 2026: sebelumnya M8,5 selatan Jawa memberi MMI permukiman terkuat 5,49, kini sekitar 6,4); jarak x = sqrt(Rjb^2 + h^2) dipakai sebagai perkiraan Rrup; tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",
                     "Jendela hitung dibatasi 400 km dari pusat gempa.",
                     "Bukan prakiraan gempa utama dan tidak memuat status tsunami (kosakata terpisah, sumber BMKG/PTWC)."],
-        "prospektif": "prospektif_guncangan.json",
+        "prospektif": "prospektif_gempa.json",
     }
     json.dump(model, open(KELUAR, "w"), ensure_ascii=False, indent=1)
-    pros = {"diperbarui": kini, "dicatat": 0, "dinilai": 0, "metrik": None,
-            "catatan": "Tidak dipakai lagi: uji prospektif berjalan di prospektif_gempa.json (scripts/gempa/prospektif.py, tanpa menunggu arsip D1). Berkas ini hanya penunjuk dan tidak berisi catatan."}
-    json.dump(pros, open(PROSPEKTIF, "w"), ensure_ascii=False, indent=1)
-    print("ditulis", KELUAR, PROSPEKTIF)
+    print("ditulis", KELUAR)   # uji prospektif ada di prospektif_gempa.json (scripts/gempa/prospektif.py)
 
 
 def uji():

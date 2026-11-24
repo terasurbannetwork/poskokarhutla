@@ -876,6 +876,87 @@
       "pemakai": "Buku Besar Kejadian: scripts/siklus/bersih_dibi.py, pasang.py, arsip_kejadian.py",
       "job": "harian",
       "jeda": 2
+    },
+    {
+      "id": "gis-bnpb-tabel-kejadian",
+      "nama": "Tabel pencarian data kejadian bencana gis.bnpb.go.id (2005 sampai sekarang)",
+      "lembaga": "BNPB (Pusdatinkom)",
+      "url": "https://gis.bnpb.go.id/databencana/tabel/pencarian.php",
+      "jenis": "halaman",
+      "lisensi": "tidak dinyatakan; portal publik tanpa login, dipakai dengan atribusi BNPB",
+      "atribusi": "Sumber: BNPB, Geoportal Data Bencana",
+      "jadwal": "diperbarui per laporan kejadian",
+      "fitur": [
+        "F1"
+      ],
+      "status": "hidup",
+      "uji": "2026-11-23",
+      "catatan": "POST form (s_provinsi, s_kejadian, tgl_awal, tgl_akhir YYYY-MM-DD) membalas tabel HTML. Tiap POST butuh cookie baru dari GET halaman yang sama; cookie lama membalas tabel kosong. Satu tahun satu permintaan (~0,4 s). Data mulai 2005 (661 baris) sampai 2026 (2.414 baris per 23 Nov). Kolom: KIB (sering kosong, mis. 2025 hanya 1.693 dari 3.444), kab, tanggal, jenis, kec/desa, penyebab, tautan Drive, meninggal, hilang, luka, rumah rusak, terendam, fasum rusak. Tanpa mengungsi dan menderita (itu dari DIBI).",
+      "pemilik": "pipa-umum",
+      "pemakai": "scripts/umum/gis_kejadian.py -> data/gis-bnpb/kejadian_<tahun>.json; calon pencocokan Buku Besar Kejadian",
+      "job": "harian",
+      "jeda": 2
+    },
+    {
+      "id": "gis-bnpb-krb-gunungapi",
+      "nama": "KRB Gunungapi tematik (KRB_Gunungapi, KRB_Gunungapi_new, KRB_GUNUNGAPI_CENTER)",
+      "lembaga": "BNPB (data dasar PVMBG)",
+      "url": "https://gis.bnpb.go.id/server/rest/services/thematic/KRB_GUNUNGAPI_CENTER/MapServer/0",
+      "jenis": "arcgis",
+      "lisensi": "tidak dinyatakan; dipakai sebagai data publik dengan atribusi BNPB dan PVMBG",
+      "atribusi": "Sumber: BNPB, KRB dari PVMBG",
+      "jadwal": "statis",
+      "fitur": [
+        "F2",
+        "F6"
+      ],
+      "status": "hidup",
+      "uji": "2026-11-23",
+      "catatan": "KRB_GUNUNGAPI_CENTER layer 0 KRB_GUNUNGAPI_GAB: 113 poligon (23 Nov 2026), kueri atribut balas kosong tanpa outFields eksplisit. KRB_Gunungapi_new layer 0 lambat/timeout; KRB_Gunungapi tidak menjawab. /gunungapi sudah memakai KRB PVMBG resmi dari geoportal ESDM (scripts/gunungapi/paparan.py); sumber BNPB ini hanya calon cadangan untuk gunung tanpa KRB PVMBG.",
+      "pemilik": "gunungapi-kering",
+      "pemakai": "calon cadangan KRB di scripts/gunungapi/paparan.py (belum dipakai)",
+      "job": "bulanan",
+      "jeda": 2
+    },
+    {
+      "id": "gis-bnpb-jalan-putus",
+      "nama": "Data Jalan dan Jembatan Putus Akses (PU)",
+      "lembaga": "BNPB (data Kementerian PU)",
+      "url": "https://gis.bnpb.go.id/server/rest/services/Data_Jalan_Jembatan_Putus_Akses_PU/MapServer/13",
+      "jenis": "arcgis",
+      "lisensi": "tidak dinyatakan; dipakai sebagai data publik dengan atribusi BNPB dan PU",
+      "atribusi": "Sumber: BNPB, data Kementerian PU",
+      "jadwal": "per kejadian (operasi Sumatera 2025)",
+      "fitur": [
+        "F3"
+      ],
+      "status": "hidup",
+      "uji": "2026-11-23",
+      "catatan": "Layer 13 (satu-satunya), 341 titik (23 Nov 2026). Kolom: uid, id_desa_sdi (kode desa), desa, kecamatan, kabupaten, provinsi, dt (epoch ms), name, lat, lon, cause dan damage (HTML), modified_at, sumber ('SITABA Kementerian PU tgl 1 Desember 2025'). Potret operasi Sumatera akhir 2025, bukan pembaruan nasional.",
+      "pemilik": "siklus",
+      "pemakai": "calon lapisan akses putus di Kaji Cepat dan /banjir (belum dibangun)",
+      "job": "mingguan",
+      "jeda": 2
+    },
+    {
+      "id": "gis-bnpb-terisolir",
+      "nama": "Wilayah Terisolir (Hosted FeatureServer)",
+      "lembaga": "BNPB",
+      "url": "https://gis.bnpb.go.id/server/rest/services/Hosted/WIlayah_Terisolir/FeatureServer/0",
+      "jenis": "arcgis",
+      "lisensi": "tidak dinyatakan; dipakai sebagai data publik dengan atribusi BNPB",
+      "atribusi": "Sumber: BNPB",
+      "jadwal": "per kejadian (operasi Sumatera 2025)",
+      "fitur": [
+        "F3"
+      ],
+      "status": "hidup",
+      "uji": "2026-11-23",
+      "catatan": "Layer 0 Wilayahterisolir_XYTableToPoint, 266 titik (23 Nov 2026). Kolom: wilayah_terisolir, kecamatan, kabupaten, provinsi, lat, long, keterangan. Isi: potret operasi banjir dan longsor Sumatera akhir 2025 (Aceh dst.), bukan data nasional yang terus diperbarui. Server sempat membalas 500 beberapa menit pada 23 Nov.",
+      "pemilik": "siklus",
+      "pemakai": "calon lapisan wilayah terisolir di Kaji Cepat dan /banjir (belum dibangun)",
+      "job": "mingguan",
+      "jeda": 2
     }
   ],
   "anggaran": {

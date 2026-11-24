@@ -11,7 +11,7 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak, halamanBiayaBot} from "./admin_halaman.js";
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
@@ -39,12 +39,13 @@ import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
 import {RUTE_ORANG_TINJAU} from "./orang_tinjau.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
-import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
+import {RUTE_INSTANSI, catatKerja, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
 import {RUTE_BANTU} from "./tiga_w.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
+import {RUTE_KESEHATAN} from "./kesehatan.js";
 import {RUTE_PIPA} from "./pipa.js";
 import {RUTE_PREDIKSI} from "./prediksi.js";
 import {RUTE_LABEL} from "./label.js";
@@ -54,6 +55,7 @@ import {RUTE_WA} from "./wa.js";
 import {RUTE_WA_PROYEK} from "./wa_proyek.js";
 import {RUTE_WA_FORM} from "./wa_form.js";
 import {RUTE_SAHAM} from "./saham.js";
+import {RUTE_INARISK} from "./inarisk.js";
 import {RUTE_KATALOG_DOKUMEN} from "./katalog_dokumen.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
@@ -81,6 +83,8 @@ import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemir
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_LOGPAL} from "./logpal.js";
+import {RUTE_LAPOR, bersihkanLapor, peringatanTiapMenit, bersihPeringatanLapor} from "./lapor_ai.js";
+import {RUTE_LAPOR_DATA, tanyaHarian} from "./lapor_lanjut.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
@@ -615,6 +619,7 @@ const RUTE = {
   ...RUTE_UJI_BANJIR,   // uji lapangan banjir: POST /api/instansi/uji-banjir (akun instansi), GET /api/uji-lapangan/banjir agregat (src/uji_banjir.js)
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
+  ...RUTE_KESEHATAN,   // papan kesehatan staf: sumber basi + workflow GitHub (src/kesehatan.js, FITUR §11)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
   ...RUTE_AI,   // asisten AI internal: agen, percakapan, obrol dengan alat MCP, sesi staf saja (src/ai.js, migrasi 0107)
   ...RUTE_PREDIKSI,   // /prediksi fase 2: konfirmasi lapangan (src/prediksi.js)
@@ -623,6 +628,7 @@ const RUTE = {
   ...RUTE_WA,   // kotak masuk WA laporan harian lewat gerbang Baileys, tanpa balasan (src/wa.js)
   ...RUTE_WA_PROYEK,   // Bot Laporan WA: proyek, versi append-only, pola, daftar nomor, detak, biaya; Bearer WA_MESIN, daftar staf untuk /pelaporan (src/wa_proyek.js, BL-02)
   ...RUTE_KATALOG_DOKUMEN,   // indeks dokumen repo untuk /bnpb/katalog-dokumen, terbuka tanpa login sementara (src/katalog_dokumen.js)
+  ...RUTE_INARISK,   // proksi InaRISK untuk /bnpb/inarisk (src/inarisk.js)
   ...RUTE_SAHAM,   // proksi data saham untuk /bnpb/saham, staf saja, kunci Stellar hanya di Worker (src/saham.js)
   ...RUTE_WA_FORM,   // form Bahan Laporan Harian /bnpb/bahan: isian -> teks WA baku -> wa_masuk, staf saja (src/wa_form.js)
   ...RUTE_DRONE,   // atur drone ke gambut membara: halaman staf/instansi /admin/drone (src/drone.js, docs/bnpb/PANDUAN-DRONE-GAMBUT.md)
@@ -644,6 +650,8 @@ const RUTE = {
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
+  ...RUTE_LAPOR,   // Lapor Bencana BNPB: chatbot pelaporan kejadian, tiket, meja staf, antrean PDF dan kabar untuk mesin WA (src/lapor_ai.js, migrasi 0155)
+  ...RUTE_LAPOR_DATA,   // data lanjutan BPBD: berkas, tim, objek per rumah, pengungsi, korban (src/lapor_lanjut.js, migrasi 0161, paket lapor-lanjutan)
   ...RUTE_LOGPAL,   // Inventori LogPal: gudang, mutasi, opname, permintaan bantuan BNPB/BPBD (src/logpal.js, migrasi 0112)
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)
@@ -663,6 +671,7 @@ const RUTE = {
   ...RUTE_RUMAH_RUSAK,   // rumah rusak RB/RS/RR per rumah, akun atau regu berkode (public/rumah_rusak*)
   ...RUTE_KUNCI_API,   // penerbitan kunci API mitra (/api/v1/*, src/api_v1.js); API-nya sendiri ditangani langsung di fetch()
   "GET /admin/kunci-api": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKunciApi()),
+  "GET /admin/biaya-bot": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanBiayaBot()),
   "GET /admin/kontak": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKontak()),
   ...RUTE_BANGUNAN,   // paparan bangunan Open Buildings dari R2 MEDIA bangunan/, hanya pengguna masuk (src/bangunan.js)
   ...RUTE_RISIKO7,   // peta peluang api 7 hari (eksperimental) dari R2 MEDIA risiko/, hanya admin atau akun pemirsa (src/risiko7.js)
@@ -675,7 +684,7 @@ const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi)=/.test(req.headers.get("cookie") || "");
+  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi|sesi_profil|lapor_perangkat|lapor_data)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -683,18 +692,18 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/) || jalur.match(/^(\/api\/orang)\/([0-9a-f]{16})\/(jejak)$/), id = sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
-  const kunci = sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), ir = jalur.match(/^(\/api\/inarisk\/(?:kegiatan|ubin))\/[^/]/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/) || jalur.match(/^(\/api\/orang)\/([0-9a-f]{16})\/(jejak)$/), lp = jalur.match(/^(\/api\/lapor\/(?:meja|unduh|kabar|unggah))\/([^/]+(?:\/[^/]+)?)$/) || jalur.match(/^(\/api\/lapor\/foto)\/([0-9a-f]{16}\.(?:mp4|mov|webm))$/) || jalur.match(/^(\/api\/lapor\/pdf)\/(?!antre$)([^/]+\/\d{1,3})$/), id = lp ? lp[2] : sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const kunci = ir ? ir[1] + "/:x" : lp ? lp[1] + "/:x" : sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
-    const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
+    const ok = ["GET", "POST", "PUT"].filter(m => tabel[m + " " + kunci]);
     return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
   }
-  if (req.method === "POST" || req.method === "PATCH" || req.method === "DELETE") {   // CSRF: tulis dari origin lain ditolak (cookie sesi SameSite=Lax)
+  if (req.method === "POST" || req.method === "PUT" || req.method === "PATCH" || req.method === "DELETE") {   // CSRF: tulis dari origin lain ditolak (cookie sesi SameSite=Lax)
     const x = tolakOrigin(req, url); if (x) return x;
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }
-  try { return await f(env, req, url, Date.now(), ctx, id); }
+  try { const kini = Date.now(), r = await f(env, req, url, kini, ctx, id); await catatKerja(env, req, req.method + " " + kunci, r, kini, id); return r; }   // log kerja per profil untuk semua modul (profil-bpbd K5)
   catch (e) { console.error("rute", url.pathname, e); return gagal(500, "galat server"); }
 }
 
@@ -703,7 +712,7 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 export const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", bahan: "/bnpb/bahan", saham: "/bnpb/saham", dokumen: "/bnpb/dokumen", "katalog-dokumen": "/bnpb/katalog-dokumen", operasi: "/bnpb/operasi", operasi_lapangan: "/bnpb/operasi-lapangan", perencanaan: "/bnpb/perencanaan", "rapor-sumber": "/bnpb/rapor-sumber", silang: "/bnpb/silang", dalops: "/bnpb/dalops", pendataan: "/pendataan", siaga: "/bnpb/siaga", kontak: "/daftar-kontak"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", bahan: "/bnpb/bahan", saham: "/bnpb/saham", dokumen: "/bnpb/dokumen", "katalog-dokumen": "/bnpb/katalog-dokumen", operasi: "/bnpb/operasi", operasi_lapangan: "/bnpb/operasi-lapangan", perencanaan: "/bnpb/perencanaan", "rapor-sumber": "/bnpb/rapor-sumber", silang: "/bnpb/silang", dalops: "/bnpb/dalops", "data-bencana": "/bnpb/data-bencana", pendataan: "/pendataan", siaga: "/bnpb/siaga", kontak: "/daftar-kontak"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
    Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */
@@ -737,6 +746,9 @@ export const HTML_RUTE = [
   [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
   [/^\/ai\/?$/, "/ai/index.html", "/ai"],   // Asisten AI internal staf (public/ai/, src/ai.js); tertutup di centurisk97.id, tiap API /api/ai/* menjaga sesi staf
   [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); login hanya di hostTerkunci (seperti /monitor), TIDAK di PUBLIK_TANPA_SESI; data JSON statis publik
+  [/^\/lapor\/?$/, "/lapor/index.html", "/lapor"],   // Lapor Bencana BNPB, pintu warga (public/lapor/, src/lapor_ai.js); publik (KEPUTUSAN-MASUK K14)
+  [/^\/lapor\/lacak\/?$/, "/lapor/lacak.html", "/lapor/lacak"],   // halaman lacak bertoken ?t=, publik (K14)
+  [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
@@ -754,15 +766,19 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/siklus/kejadian", "ringkasan publik satu kejadian (/siklus/kejadian/KJ-...) dibuka tamu tanpa akun (KEPUTUSAN-AWAL U3 bawaan, DESAIN-TEKNIS siklus 7.2): cangkang publik hanya memuat ringkasan yang sudah dipublikasikan KO; halaman dan API staf Siklus tetap wajib sesi (src/siklus.js)"],
   ["/bnpb/katalog-dokumen", "katalog dokumen repo, dibuka tanpa login untuk sementara (permintaan pemilik 9 Nov 2026); hanya daftar judul dan tautan GitHub, repo-nya sendiri publik"],
   ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"],
+  ["/lapor", "Lapor Bencana BNPB: warga melapor kejadian (KEPUTUSAN-MASUK K14, pemilik 19 Nov 2026); halaman tidak memuat data, pelapor masuk lewat /masuk dan nomor dari sesi dicek di tiap /api/lapor/*"],
+  ["/lapor/lacak", "lacak laporan dengan tautan bertoken ?t= yang dikirim ke pelapor, tanpa akun (KEPUTUSAN-MASUK K14); halaman tanpa token kosong, token dicek di /api/lapor/lacak"],
   ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
+  if (/^\/lapor\/(index|lacak)\.html$/.test(url.pathname)) return false;   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
   if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
   if (/^\/command-center(\/|$)/.test(jalur)) return false;
+  if (jalur === "/instansi/data-bencana") return false;   // menjaga dirinya sendiri (src/instansi.js): staf atau akun instansi aktif, tanpa sesi 303 ke /instansi
   if (jalur === "/instansi/logpal" || jalur === "/logpal/index.html") return false;   // LogPal menjaga dirinya sendiri (src/logpal.js halaman): tanpa sesi sah 303 ke /instansi; BUKAN daftar putih (keputusan pemilik 9 Nov 2026: wajib login)   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
   return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
 }
@@ -998,6 +1014,7 @@ const W = {
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 40 && (w.getUTCHours() === 3 || w.getUTCHours() === 13)) try { console.log("pengingat lapangan", JSON.stringify(await buatPengingat(env, sekarang, {hanya: ["lapangan_absen", "lapangan_logbook"]}))); } catch (e) { console.error("pengingat lapangan", e?.message); }   // petugas belum absen (10.40 WIB) / belum isi logbook (20.40 WIB)
+      if (w.getUTCHours() === 9 && (m === 0 || m === 30)) try { const h = await tanyaHarian(env, sekarang); if (!h.lewat && h.berkas) console.log("tanya harian lanjutan", JSON.stringify(h)); } catch (e) { console.error("tanya harian lanjutan", e?.message); }   // LJ-10: 16.00 WIB (09 UTC) menit 0 dan 30; saatTanya di dalam fungsi tetap menjaga
       if (w.getUTCHours() === 9 && (m === 5 || m === 35)) try { console.log("tanya kondisi", JSON.stringify(await tanyaKondisi(env, sekarang))); } catch (e) { if (!/no such table/i.test(e?.message || "")) console.error("tanya kondisi", e?.message); }   // LP-022: 16.05 WIB (menit 35 = ulang bila gagal; idempoten per orang per hari)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
       if (m === 19) try { const h = await ringkasGranul(env, sekarang); if (!h.lewat) console.log("satelit ringkas", JSON.stringify(h)); } catch (e) { console.error("satelit ringkas", e?.message); }   // ringkasan jeda satelit 30 hari: jam 13 UTC, atau bila belum ada / > 25 jam (src/satelit.js); invokasi sendiri, tabel 0075 belum ada = dilewati
@@ -1006,6 +1023,9 @@ const W = {
       try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
       try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat
       if (m === 46) try { console.log("adsb", JSON.stringify(await panenAdsb(env, sekarang))); } catch (e) { console.error("adsb", e?.message); }   // tiap jam menit 46; 7 permintaan berjeda 1,1 dtk (adsb.fi); migrasi 0086 belum jalan = dilewati
+      /* peringatan dini warga Pantau Bencana (PW-07): menit 29 tiap jam; murah saat diam (satu baca pw_kendali + prediksi.json bertembolok); tanpa kunci VAPID warga langsung lewat */
+      if (m === 29) try { const h = await peringatanTiapMenit(env, sekarang); if (h.peristiwa || h.kirim) console.log("peringatan warga", JSON.stringify(h)); } catch (e) { console.error("peringatan warga", e?.message); }   // sekali per jam (anggaran cron akun Free); paling banyak 40 notifikasi per putaran
+      if (m === 17) try { await bersihPeringatanLapor(env, sekarang); } catch (e) { console.error("bersih peringatan", e?.message); }
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -1036,6 +1056,7 @@ export default W;
 async function bersihSemua(env, sekarang) {
     try { await bersihkan(env); } catch (e) { console.error("bersihkan", e); }
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
+    try { console.log("lapor", JSON.stringify(await bersihkanLapor(env, sekarang))); } catch (e) { console.error("lapor", e?.message); }   // multipart video Lapor yang 24 jam tanpa bagian baru (D90); migrasi 0158 belum jalan = dilewati
     try { await bersihkanStaf(env, Date.now()); await bersihkanPantau(env, Date.now()); } catch (e) { console.error("pantau", e?.message); }   // migrasi 0030 belum jalan = cron lain tetap jalan
     try { await bersihkanPemirsa(env, Date.now()); } catch (e) { console.error("pemirsa", e?.message); }
     try { await bersihkanCc(env, sekarang); } catch (e) { console.error("command center", e?.message); }   // migrasi 0099 belum jalan = cron lain tetap jalan; sekali sehari (jam 04 UTC): jejak/status > 2 tahun, kehadiran > 30 hari

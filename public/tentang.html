@@ -32,7 +32,7 @@
 <script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <script>/* tautan internal dalam mode tertanam: buka tab di aplikasi induk */ document.addEventListener("click", e => { if (!document.documentElement.classList.contains("tertanam")) return; const a = e.target.closest?.("a[href^='/']"); if (!a || a.target) return; const t = a.getAttribute("href").replace(/^\//, "").split(/[?#]/)[0]; if (parent.bukaTab && /^(peta|insight|berita|tren|dampak|sim|metode|cluster)?$/.test(t)) { e.preventDefault(); parent.bukaTab(t || "peta"); } });</script>
 <script>/* dimuat sebagai tab di aplikasi: sembunyikan header & footer sendiri, warisi tema */ if (/[?&]tertanam=1/.test(location.search)) { document.documentElement.classList.add("tertanam"); try { const t = parent.document.documentElement.dataset.theme; if (t) document.documentElement.dataset.theme = t; } catch (e) {} }</script>
-<script>/* ?bencana=<id> (PB-68.9): isi untuk bencana itu; tanpa parameter atau karhutla = tampilan lama */ (() => { const m = /[?&]bencana=([a-z0-9_-]+)/.exec(location.search); if (m && m[1] !== "karhutla") { document.documentElement.classList.add("bc-lain"); document.documentElement.dataset.bencana = m[1]; } })();</script>
+<script src="/tentang_bencana.js"></script>
 <link rel="stylesheet" href="/inti/kepala.css">
 <style>
 footer.kaki{display:none!important} /* diganti footer bersama kaki.js */
@@ -1274,21 +1274,6 @@ section[hidden],[hidden]{display:none!important}
   </div>
 </footer>
 
-<script>
-/* PB-68.9: kepala bencana + sumber data dari registri (bagikan.sumber); id tak dikenal = kembali ke tampilan karhutla */
-(() => {
-  const id = document.documentElement.dataset.bencana; if (!id) return;
-  fetch("/bencana.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : Promise.reject()).then(r => {
-    const b = (r.bencana || []).find(x => x.id === id);
-    if (!b) { document.documentElement.classList.remove("bc-lain"); return; }
-    const t = document.getElementById("bcTag"); if (!t) return;
-    if (/^#[0-9a-fA-F]{3,8}$/.test(b.warna || "")) t.style.setProperty("--bc", b.warna);
-    const nama = document.createElement("b"), dot = document.createElement("i");
-    dot.className = "bc-titik"; nama.append(dot, b.nama || id); t.append(nama);
-    const sm = b.bagikan && b.bagikan.sumber; if (sm) t.append("Sumber data: " + sm);
-  }).catch(() => {});
-})();
-</script>
 <script>
 (() => {
   const $ = s => document.querySelector(s), esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));

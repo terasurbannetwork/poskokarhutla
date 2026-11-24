@@ -8,6 +8,7 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
+import {denganProfil} from "./_profil.mjs";
 import {JENIS_GARIS, JENIS_SUMBER, KONDISI_SUMBER, STATUS_PERIODE, PRIORITAS, ALASAN_PATROLI, STATUS_PATROLI, TRANSISI, hitungEstafet, bedaTinggiM, susutBar100m, nilaiDropTertunda, luasHa, panjangKm, douglasPeucker, uraiCsv, nilaiSatuDrop} from "../../src/operasi_lapangan.js";
 import {BARANG} from "../../src/meja_spek.js";
 
@@ -44,7 +45,7 @@ async function akun(username, {jenis = "pemkab", tingkat = "kab", prov = "62", k
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aktif', 'Budi Uji', '198001012005011001', 'Kalak', 'BPBD', 'budi@uji.go.id', '628123456789', 1, 1, 1, 1, 0, 1, ?)`)
     .bind(id, username, jenis, tingkat, tingkat === "kab" ? `Pemerintah ${kab}` : `Provinsi ${prov}`, `uji|${username}`, JSON.stringify(cakupan), tingkat === "kab" ? prov : null, tingkat === "kab" ? kab : null, garam, sha256(garam + SANDI), dummy).run();
   const r = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(r.s, 200, r.t);
-  const cookie = r.h.get("set-cookie").split(",")[0].split(";")[0];
+  const {cookie} = await denganProfil(DB, id, {cookie: r.h.get("set-cookie").split(",")[0].split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
   return {id, h: {cookie, ...PB}, hg: {cookie}};
 }
 let nipN = 0;

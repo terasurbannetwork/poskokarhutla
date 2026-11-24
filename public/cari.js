@@ -277,7 +277,7 @@
     const f = kons?.features.find(x => x.properties.id === i.id); terpilih.poli = f || null; terpilih.bb = f ? bboxPoli(polys(f.geometry)) : i.b;
     const b = terpilih.bb || i.b; if (b) peta.fitBounds([[b[0], b[1]], [b[2], b[3]]], {padding: kiriPad(), maxZoom: 13, duration: 700}); else peta.flyTo({center: i.c, zoom: 10});
     const pr = f?.properties || {};
-    bukaKartu(i.n, [["Jenis", JENIS[i.t]], ["Grup", i.g || pr.grup], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")], ["Luas peta", pr.luas_peta_ha ? fmt(pr.luas_peta_ha) + " ha" : ""], ["Data tahun", pr.tahun_data]], "Batas konsesi: Kemenhut/GFW, Trase (CC BY 4.0), titik panas: NASA FIRMS");
+    bukaKartu(i.n, [["Jenis", JENIS[i.t]], ["Grup", i.g || pr.grup], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")], ["Luas peta", pr.luas_peta_ha ? fmt(pr.luas_peta_ha) + " ha" : ""], ["Data tahun", pr.tahun_data]], "Batas konsesi: Kemenhut (PBPH Mei 2026, PPKH), GFW, Trase (CC BY 4.0), titik panas: NASA FIRMS");
     gambar(); nanti(statistik); }
   /* poligon kawasan: OSM (kawasan_cari.geojson), KHG (lahan/khg.geojson), gunung = lingkaran dari puncak, metro = gabungan kab/kota */
   async function poliKawasan(i) {

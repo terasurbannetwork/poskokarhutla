@@ -43,12 +43,12 @@ const dari = j => H({cookie: "sesi_masuk=" + j.kuki.sesi_masuk});
 const bacaDari = j => ({cookie: "sesi_masuk=" + j.kuki.sesi_masuk, "cf-connecting-ip": H()["cf-connecting-ip"]});
 const mkId = async i => (await DB.prepare("SELECT id FROM mk_akun WHERE wa = ?").bind(nomor(i)).first()).id;
 let seq = 0;
-const instansi = (o = {}) => { const id = id16(); seq++; return sisip("instansi_akun", {id, username: "akun" + id.slice(0, 8), jenis: "pemkab", tingkat: "kab", wilayah: "Pemerintah Kabupaten Contoh " + seq, kunci_wilayah: "k" + id,
+const instansi = (o = {}) => { const id = id16(); seq++; return sisip("instansi_akun", {id, username: "akun" + id.slice(0, 8), jenis: "polres", tingkat: "kab", wilayah: "Pemerintah Kabupaten Contoh " + seq, kunci_wilayah: "k" + id,
   cakupan: '["62"]', prov: "62", kab: "Contoh", garam: "a".repeat(32), sandi_sha: "0".repeat(64), status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD",
   email: `b${id.slice(0, 6)}@contoh.go.id`, wa: nomor(9000 + seq), surat: 1, kartu: 1, wajib_ganti: 0, dibuat: T0, ...o}).then(() => id); };
 const pendataan = (o = {}) => { const id = id16(); return sisip("pdt_akun", {id, username: "pdt" + id.slice(0, 8), nama: "Sari", jabatan: "Analis", unit: "pusdatin", email: `p${id.slice(0, 6)}@bnpb.go.id`, wa: nomor(0),
   garam: "a".repeat(32), sandi_hash: "0".repeat(64), status: "aktif", dibuat: T0, ...o}).then(() => id); };
-const kontak = (o = {}) => { const id = id16(); return sisip("kontak_pemangku", {id, nama: "Pemangku Uji", jabatan: "Kepala", kategori: "bpbd", prov: "62", kab: "Contoh", wa: nomor(0), status: "aktif", dibuat: T0, diubah: T0, ...o}).then(() => id); };
+const kontak = (o = {}) => { const id = id16(); return sisip("kontak_pemangku", {id, nama: "Pemangku Uji", jabatan: "Kepala", kategori: "polri", prov: "62", kab: "Contoh", wa: nomor(0), status: "aktif", dibuat: T0, diubah: T0, ...o}).then(() => id); };
 const anggotaMk = (mk, akun, o = {}) => sisip("mk_anggota", {id: id16(), mk_id: mk, tabel: "instansi_akun", akun_id: akun, status: "aktif", jalur: "tinjau", rujukan: "uji", dibuat: T0, diubah: T0, ...o});
 const akunMk = async (i, o = {}) => { const id = id16(); await sisip("mk_akun", {id, wa: nomor(i), status: "aktif", dibuat: T0, ...o}); return id; };
 const snap = async t => JSON.stringify((await DB.prepare(`SELECT * FROM ${t} ORDER BY 1`).all()).results);

@@ -9,6 +9,7 @@ import path from "node:path";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
+import {denganProfil} from "./_profil.mjs";
 import {FLOW, KELOMPOK, MUTASI, TEKS_B, rumus, cekBarang} from "../../src/logpal.js";
 import {bangunSql, bangunSqlBantuan, uraiCsv, diLuarRepo, susunStatis, potongTeks, BATAS_POTONG} from "../../scripts/logpal/impor.mjs";
 import {tmpdir} from "node:os";
@@ -28,7 +29,7 @@ const akun = async (username, o = {}) => {
   await sisip("instansi_akun", {id, username, jenis: "pemkab", tingkat: "kab", wilayah: "BPBD Kabupaten " + username, kunci_wilayah: "k" + id, cakupan: '["62"]', prov: "62", kab: "Kapuas", garam, sandi_sha: sha256(garam + SANDI),
     status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD", email: "budi@contoh.go.id", wa: "628123456789", surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0, dibuat: Date.now(), ...o});
   const m = await api("POST", "/api/instansi/masuk", {username, sandi: SANDI}, {...PB, ...ipBaru()}); assert.equal(m.s, 200, m.t);
-  const cookie = m.h.get("set-cookie").split(";")[0];
+  const {cookie} = await denganProfil(DB, id, {cookie: m.h.get("set-cookie").split(";")[0]});   // akun BPBD: sesi profil (paket profil-bpbd)
   return {id, h: {cookie}, hp: {cookie, ...PB}};
 };
 let nipN = 0;

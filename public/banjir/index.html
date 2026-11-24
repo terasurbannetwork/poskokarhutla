@@ -32,9 +32,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet" integrity="sha512-qN/uDg9bS3IAldWq4lswyC+9ZSoShtfyNDp+FaJhdtXJqdgubHA+s4nB8BajW0m90Y0+RBGbqu2anzbxiQYdHA==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="pos_air.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js" integrity="sha512-dXgoFR02YHJ9Fa29P3D/1umNaZ0EXS2N0w29Lm3b/1BK8UDLMdLWDFwuujIyJJdU27/PLuk3dmS1V9NO8ABX1A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="../inti/kepala.css">
 <link rel="stylesheet" href="../inti/tema.css">
 <link rel="stylesheet" href="../inti/gaya.css">
@@ -206,9 +206,9 @@ const TABS = [["peta", "Peta"], ["insight", "Insight"], ["longsor", "Longsor"], 
   ["posko", "Posko"], ["informasi", "Informasi"], ["metode", "Metode"], ["prakiraan", "Prakiraan"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["keputusan", "Keputusan"], ["sarana", "Sarana"]];
 /* id lama -> id baru (tautan lama tetap hidup); sama dengan "alias" di public/bencana.json */
 const ALIAS = {simulasi: "sim"};
-/* tidak tampil di nav: Posko/Informasi/Metode ada tapi disembunyikan (A24); Berita/Dampak/Foto menunggu isinya (A18);
+/* tidak tampil di nav: Posko/Informasi ada tapi disembunyikan (A24); Metode tampil lagi (20 Nov 2026); Berita/Dampak/Foto menunggu isinya (A18);
    Prakiraan, Wilayah siaga, Provinsi, Rob, Sungai bukan tab lagi, isinya pindah ke Insight/Peta (L6/L7), sementara tetap bisa dibuka lewat tautan */
-const TAB_SEMBUNYI = new Set(["posko", "informasi", "metode", "prakiraan", "daftar", "provinsi", "rob", "sungai", "keputusan", "sarana", "replay", "tentang"]);   /* tentang: disembunyikan (pemilik 29 Okt 2026) */
+const TAB_SEMBUNYI = new Set(["posko", "informasi", "prakiraan", "daftar", "provinsi", "rob", "sungai", "keputusan", "sarana", "replay", "tentang"]);   /* tentang: disembunyikan (pemilik 29 Okt 2026) */
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', longsor: '<path d="M3 20 10 6l4 7 3-4 4 11z"/><path d="M12 20l1-3M16 20l1-2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>', replay: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
@@ -288,6 +288,7 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 <script src="sim_genangan.js"></script>
 <script src="sim_lahan.js"></script>
 <script src="sim_tanggap.js"></script>
+<script src="sim_hand.js"></script>
 <script src="sim_tampak.js"></script>
 <script src="sim_longsor.js"></script>
 <script src="../bagikan.js" data-halaman="banjir" defer></script>

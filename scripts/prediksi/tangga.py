@@ -23,6 +23,7 @@ BASI_BULANAN = 45     # hari: batas umur berkas bulanan peluang_bayangan.json
 BASI_SPI_HARI = 45   # SPI terbit bulanan; dihitung dari tanggal update PDF
 BASI_JAM = {"jam": 4, "harian": 48, "iklim": 14 * 24, "musim": 240 * 24}
 BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+BLN_PENUH_ID = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
 BLN_PENUH = {n.lower(): i + 1 for i, n in enumerate(["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"])}
 LEVEL = ["Normal", "Waspada", "Siaga", "Awas"]
 ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"]
@@ -281,11 +282,13 @@ def muat_h10(H, m, cari, kini):
         n = len(kond)
         nh = sum(1 for x in kond if "Hujan" in x)
         nk = sum(1 for x in kond if "Hujan" not in x and "Petir" not in x)
-        urut = ["Sangat Lebat", "Lebat", "Hujan Petir", "Hujan Sedang", "Hujan Ringan"]   # hanya urutan tampil kondisi terberat; BUKAN peringkat (tk null, Q10)
+        urut = ["Ekstrem", "Sangat Lebat", "Lebat", "Hujan Petir", "Hujan Sedang", "Hujan Ringan"]   # urutan kondisi terberat
         tb = next((x for u in urut for x in kond if u in x), None)
+        # peringkat hanya untuk kelas lebat (pemilik 19 Nov 2026, Q10): sama dengan sepekan BMKG, lebat = 2, sangat lebat/ekstrem = 3; kondisi lain tetap null
+        tk = 3 if tb and ("Sangat Lebat" in tb or "Ekstrem" in tb) else 2 if tb and "Lebat" in tb else None
         hari_tb = next((h["tgl"] for h in hr if h.get("kondisi") == tb), None) if tb else None
         p = f"{tgl(hr[0]['tgl'])} sampai {tgl(hr[-1]['tgl'])}"
-        H.taruh("kab", i, "h10", item("b", "hujan", None, tb or "Tanpa hujan", f"{nh} dari {n} hari berkondisi hujan" + (f"; kondisi terberat {tb} ({tgl(hari_tb)})." if tb else "."), "h10", "kab", p=p))
+        H.taruh("kab", i, "h10", item("b", "hujan", tk, tb or "Tanpa hujan", f"{nh} dari {n} hari berkondisi hujan" + (f"; kondisi terberat {tb} ({tgl(hari_tb)})." if tb else "."), "h10", "kab", p=p))
         H.taruh("kab", i, "h10", item("k", "hujan", None, f"Tanpa hujan {nk} dari {n} hari", "Prakiraan kondisi harian BMKG, bukan peringatan kekeringan.", "h10", "kab", p=p))
     H.tandai("h10", "kb")
 
@@ -449,6 +452,44 @@ def muat_kering_kita(H, m, kini):
             H.taruh("kab", i, "bulan", item("k", "kekeringan", None, f"Peluang {D_persen(v[ix])}", f"Prediksi model (hipotesis): peluang kekeringan bulan {bulan_id(p['bulan_t1'])} {D_persen(v[ix])}" + (f"; pada uji balik {round(far * 100)}% alarmnya keliru (FAR), jadi hanya acuan" if far else "") + ". Bukan peringatan.", "kita_bulan", "kab", p=bulan_id(p["bulan_t1"]), u="hipotesis"))
 
 
+MR_ANCAMAN = {"banjir": "b", "longsor": "b", "cuaca": "b", "karhutla": "k", "kekeringan": "k"}
+MR_NAMA = {"banjir": "banjir", "longsor": "longsor", "cuaca": "cuaca ekstrem", "karhutla": "kebakaran hutan dan lahan", "kekeringan": "kekeringan"}
+BASI_MUSIM_RAWAN = 400  # hari: pola dihitung ulang tiap tahun sesudah DIBI final
+
+
+def muat_musim_rawan(H, m, kini):
+    """Pengingat sebulan sebelum bulan puncak (scripts/prediksi/musim_rawan.py): kejadian DIBI 2008-2025 per kab per bulan.
+    Sumber 'kita', tanpa peringkat, tidak ikut sinyal; berlabel hipotesis sampai jenisnya lulus uji balik (aturan di musim_rawan.py)."""
+    mr = m.get("musim_rawan")
+    if not mr or not isinstance(mr.get("bulan"), dict):
+        H.lewat("musim_rawan.json (bulan rawan): tidak ada")
+        return
+    if not segar(mr.get("dibuat"), BASI_MUSIM_RAWAN * 24, kini):
+        H.lewat(f"musim_rawan.json dibuat {mr.get('dibuat')}, lebih dari {BASI_MUSIM_RAWAN} hari (basi)")
+        return
+    depan = kini.month % 12 + 1
+    th = kini.year + (1 if kini.month == 12 else 0)
+    th0, th1 = mr["tahun_pola"]
+    H.src("kita_musim", lembaga="Centurisk97", nama="Bulan rawan menurut pola kejadian DIBI (hipotesis)", terbit=mr.get("dibuat"), diambil=mr.get("dibuat"), cakupan="kabupaten", url=None, jenis="kita")
+    ada = {k["id"] for k in m["kab_daftar"]}
+    for j, daftar in (mr["bulan"].get(str(depan)) or {}).items():
+        a, u = MR_ANCAMAN.get(j), (mr.get("uji") or {}).get(j) or {}
+        if not a:
+            continue
+        lulus = u.get("vonis") == "lulus"
+        if lulus:
+            uji = (f"Bukan peluang: pada uji balik {mr['uji_tahun'][0]} sampai {mr['uji_tahun'][1]} ketepatannya hanya sekitar {round(u['bss_klim'] * 100)}% lebih baik dari rata-rata bulanan, "
+                   f"dan bulan puncak melewatkan sekitar {round((1 - u['recall']) * 100)}% kejadian. Dihitung dari data DIBI versi hari ini, jadi uji ini cenderung terlalu menguntungkan.")
+        else:
+            uji = f"Belum lulus uji balik ({u.get('vonis', 'belum teruji')}), jadi hanya acuan" + ("; tidak lebih baik dari rata-rata bulanan." if (u.get("bss_klim") or 0) <= 0 else ".")
+        for i, n_th in daftar:
+            if i not in ada:
+                H.tc("kita_musim")
+                continue
+            H.taruh("kab", i, "bulan", item(a, j, None, f"Bulan rawan: {MR_NAMA[j]}", f"Pola kejadian DIBI {th0} sampai {th1}{'' if lulus else ' (hipotesis)'}: {MR_NAMA[j]} tercatat pada bulan {BLN_PENUH_ID[depan - 1]} di {n_th} dari {mr['N']} tahun di kabupaten ini, bulan puncaknya. Pengingat sebulan sebelumnya. {uji} Bukan peringatan.",
+                                          "kita_musim", "kab", p=f"{BLN_PENUH_ID[depan - 1]} {th}", u="pola berulang" if lulus else "hipotesis"))
+
+
 def bulan_id(ym):
     """'2026-11' -> 'November 2026'."""
     return f"{list(BLN_PENUH)[int(ym[5:7]) - 1].capitalize()} {ym[:4]}"
@@ -565,7 +606,7 @@ def susun(m, kini):
     kab_daftar = m["kab_daftar"]
     cari = D.pencari(kab_daftar)
     for fn, args in ((muat_iklim, (H, m, cari, kini)), (muat_kekeringan, (H, m, cari, kini)), (muat_h10, (H, m, cari, kini)), (muat_sepekan, (H, m, kini)),
-                     (muat_h3_bmkg, (H, m, kini)), (muat_h3_kita, (H, m, kini)), (muat_kering_kita, (H, m, kini)), (muat_jam, (H, m, cari, kini))):
+                     (muat_h3_bmkg, (H, m, kini)), (muat_h3_kita, (H, m, kini)), (muat_kering_kita, (H, m, kini)), (muat_musim_rawan, (H, m, kini)), (muat_jam, (H, m, cari, kini))):
         try:
             fn(*args)
         except Exception as e:  # gagal-lunak: satu sumber rusak tidak menjatuhkan tangga lain
@@ -614,7 +655,8 @@ MASUKAN = {"iklim_arsip": os.path.join(BANJIR, "iklim_bmkg_arsip.json"), "pering
            "karhutla_bmkg": os.path.join(BANJIR, "karhutla_bmkg.json"), "factsheet": os.path.join(BANJIR, "cuaca_factsheet.json"),
            "peringatan": os.path.join(BANJIR, "peringatan.json"), "petir": os.path.join(BANJIR, "cuaca_petir.json"),
            "awan": os.path.join(UDARA, "awan_himawari.json"), "prediksi": os.path.join(D.DATA, "prediksi.json"),
-           "hujan_harian": os.path.join(D.DATA, "bayangan", "hujan_harian.json"), "peluang_kering": os.path.join(AKAR, "public", "kekeringan", "data", "peluang_bayangan.json")}
+           "hujan_harian": os.path.join(D.DATA, "bayangan", "hujan_harian.json"), "peluang_kering": os.path.join(AKAR, "public", "kekeringan", "data", "peluang_bayangan.json"),
+           "musim_rawan": os.path.join(D.DATA, "musim_rawan.json")}
 
 
 LIVE_REL = {"peringatan": "banjir/data/peringatan.json", "petir": "banjir/data/cuaca_petir.json", "awan": "udara/data/awan_himawari.json"}
@@ -820,6 +862,18 @@ def uji():
     assert not [e for e in tua["kab"]["1101"].get("bulan", []) if e["s"] == "kita_bulan"] and any("45 hari" in g for g in tua["gagal"]), "berkas > 45 hari = dilewati"
     bs = susun(dict(m, prediksi=kita2, hujan_harian=rw, peluang_kering=dict(pk, bulan_t1="2026-09")), kini)
     assert not [e for e in bs["kab"]["1101"].get("bulan", []) if e["s"] == "kita_bulan"] and any("sudah lewat" in g for g in bs["gagal"]), "bulan sasaran lewat = dilewati"
+    # bulan rawan (musim_rawan.py): pengingat bulan depan, sumber kita, tanpa peringkat, tidak ikut sinyal
+    mr = {"dibuat": kini.isoformat(), "tahun_pola": [2008, 2025], "uji_tahun": [2019, 2025], "N": 18,
+          "bulan": {"12": {"banjir": [["1101", 9], ["9999", 3]], "karhutla": [["1101", 5]]}, "1": {"banjir": [["1101", 8]]}},
+          "uji": {"banjir": {"vonis": "lulus", "bss_klim": 0.056, "recall": 0.23}, "karhutla": {"vonis": "tidak lulus", "bss_klim": -0.01}}}
+    t6 = susun(dict(m, musim_rawan=mr), kini)
+    mb = [e for e in t6["kab"]["1101"]["bulan"] if e["s"] == "kita_musim"]
+    assert {e["j"] for e in mb} == {"banjir", "karhutla"} and all(e["tk"] is None and e["c"] == "kab" and e["p"] == "Desember 2026" for e in mb), mb
+    bj, kh = (next(e for e in mb if e["j"] == j) for j in ("banjir", "karhutla"))
+    assert bj["a"] == "b" and kh["a"] == "k" and bj["u"] == "pola berulang" and kh["u"] == "hipotesis" and "9 dari 18 tahun" in bj["x"] and "sekitar 6%" in bj["x"] and "77%" in bj["x"] and "Bukan peluang" in bj["x"] and "Belum lulus" in kh["x"] and "rata-rata bulanan" in kh["x"] and "angkat" not in bj["x"].lower(), (bj, kh)
+    assert t6["ringkas"]["tak_cocok"].get("kita_musim") == 1 and t6["sumber"]["kita_musim"]["jenis"] == "kita"
+    assert t6["kab"]["1101"]["sg"] == t["kab"]["1101"]["sg"] and t6["kab"]["1101"]["kita"] == t["kab"]["1101"]["kita"], "bulan rawan tidak mengubah sinyal maupun peringkat kita"
+    assert not [e for e in susun(dict(m, musim_rawan=dict(mr, dibuat="2024-01-01T00:00+07:00")), kini)["kab"]["1101"].get("bulan", []) if e["s"] == "kita_musim"], "pola basi dilewati"
     # menguat basah Aceh Selatan: bulan 0, h10 2, sepekan 2, h3 2, jam 2 -> tidak menurun, >=2 skala >=1
     assert k1["sg"]["b"]["m"] is False and k1["sg"]["b"]["d"] is True and k1["sg"]["b"]["s"] is False, k1["sg"]["b"]   # 2,2,2 pada provinsi: searah, datar
     assert k1["sg"]["b"]["c"][ORDE.index("sepekan")] == "prov" and k1["sg"]["b"]["c"][ORDE.index("h10")] is None

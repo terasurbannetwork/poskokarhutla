@@ -30,7 +30,7 @@ function rencana(b, LEBAR, mz = 9) {
 /* ---------- tampilan ---------- */
 let REG = null;
 const registri = () => REG ||= typeof fetch === "function" ? fetch("/bencana.json").then(r => r.ok ? r.json() : Promise.reject(new Error("registri " + r.status))).then(j => j.bencana || [], () => []) : Promise.resolve([]);
-let A = null, IZIN = false, BYK = {}, el = null, area = null, mode = null, n = 14, gen = 0, url = null, aktif = null, pustaka = null, tombol = null;
+let A = null, IZIN = false, BYK = {}, el = null, area = null, mode = null, n = 14, gen = 0, url = null, aktif = null, tombol = null;
 const muatGambar = u => new Promise(r => { const g = new Image(); g.crossOrigin = "anonymous"; g.onload = () => r(g); g.onerror = () => r(null); g.src = u; });
 
 async function frame(L, t, P, lbl) {
@@ -46,10 +46,7 @@ async function frame(L, t, P, lbl) {
   g.fillStyle = "rgba(19,50,77,.7)"; g.fillRect(p, P.H - p * 3.2, am + p * 2, P.W / 52 + p * 1.6); g.fillStyle = "#fff"; g.fillText(lbl, p * 2, P.H - p * 2.6);
   return c;
 }
-async function siapkanGif() {
-  pustaka ||= new Promise((ok, gagal) => { const s = document.createElement("script"); s.src = "/vendor/gif/gif.js"; s.onload = ok; s.onerror = () => { pustaka = null; s.remove(); gagal(new Error("gif.js")); }; document.head.appendChild(s); });
-  await pustaka;
-}
+const siapkanGif = () => CitraAlat.siapkanGif();
 const set = (p, teks) => { el.querySelector(".ctt-bar i").style.width = Math.round(p * 100) + "%"; if (teks != null) el.querySelector(".ctt-s").textContent = teks; };
 const atribusi = () => "Citra: NASA GIBS, " + BYK[mode].atr + ", satu citra per hari (tanggal pengamatan, UTC)";
 /* satu proses = satu id; tutup() menaikkan gen sehingga proses lama berhenti diam-diam dan tak menyentuh tampilan proses baru */

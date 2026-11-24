@@ -24,7 +24,7 @@ node otomatis.mjs --kering               # uji tanpa kirim apa pun (butuh worker
 Python generator (harus 3.12 ke atas + Pillow, seluruh pohon prosesnya; `otomatis.mjs` menaruh `~/.wa-bot/py/bin` paling depan di PATH, ubah lewat `WA_PY_BIN`):
 
 ```bash
-uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow openpyxl   # openpyxl: Excel gelar udara (16 Nov 2026)
+uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow openpyxl python-pptx pymupdf   # openpyxl: Excel gelar udara (16 Nov 2026); pymupdf: gambar slide draf (21 Nov 2026)
 cp "<Laporan Kejadian Bencana Harian 221026.pptx milik pemilik>" data/laporan-bnpb/generator/cache/templat/harian-221026.pptx   # di luar git
 ```
 
@@ -132,3 +132,13 @@ Pemicu: `node scripts/wa/tarik_riwayat.mjs --sejak 2026-11-04 [--sampai 2026-11-
 
 Keterbatasan: WA meminta riwayat dari sebuah pesan jangkar, jadi gateway menyimpan pesan TERTUA yang pernah dilihat per chat relevan di `~/.wa-bot/jangkar.json` (terisi sejak versi ini hidup; chat tanpa jangkar masuk `tanpa_jangkar` dan baru bisa ditarik setelah ada satu pesan di chat itu). Ponsel utama harus online dan WA boleh tidak mengembalikan riwayat lama; foto lama bisa sudah kedaluwarsa di server WA (unduhan gagal dihitung `gagal`, tidak dicatat terlihat, bisa diulang). Susulan dan riwayat memakai `simpanKeOutbox(m, {lama:true})`: hanya disimpan ke outbox, tidak melewati pencegat logbook, perintah PEMILIK, maupun `cari` (tidak ada eksekusi atau balasan ulang). Batas beban: rentang maks 14 hari (lebih = 400), jeda 1,5 dtk antar pesan bermedia, maks 300 unduhan media per tarikan (sisanya `dilewati_batas`, bisa diulang). `jangkar.json` berisi id/ts saja, 0600. Berlaku setelah gateway dimulai ulang (belum dilakukan).
 Uji: `node --test tests/wa/riwayat.test.mjs`.
+
+## Lapor Bencana BNPB (LA-20, `lapor_wa.mjs`, `lapor_pdf.mjs`)
+
+Gateway menjadi jembatan ke mesin Lapor di Worker (`data/kajian-bnpb/lapor-ai`, K2, D1, D6). Memakai `WORKER_URL` dan `WA_MESIN` yang sama; kosong = mati.
+- Salinan `GET /api/lapor/izin` (`{wa:[...]}`) disegarkan tiap 5 menit. Pesan PRIBADI dari nomor di salinan itu tidak lagi ke jalur bahan: teks dan angka menu, lokasi WA (`locationMessage`, `liveLocationMessage`), dan foto (metadata dibuang, JPEG, jam pesan) diteruskan ke `POST /api/lapor/pesan` dan `/api/lapor/foto`; `teksWa` jawaban dikirim apa adanya lewat `sendPaced`. Grup dan nomor lain tidak berubah. Worker gagal = "Layanan lapor sedang gangguan, coba lagi beberapa menit lagi." Susulan (saat gateway mati) tidak dilayani.
+- Perintah PEMILIK (pesan pribadi, satu baris): `lapor izin <nomor> [bpbd <kab>]`, `lapor cabut <nomor>` -> `POST /api/lapor/izin`; konfirmasi (nomor disamarkan) ke PEMILIK.
+- Tiap 1 menit `GET /api/lapor/kabar`: balasan dan status dikirim sebagai teks, `pdf` diunduh lalu dikirim sebagai dokumen `Laporan <nomor>.pdf`, lalu `POST /api/lapor/kabar/:id/terkirim`. Limiter penuh = ditunda ke putaran berikut. Kabar juga memuat antrean tahap 2 (id berawalan `l`, jenis `pembuka`, `harian`, `tim`, `tutup`; teks biasa, pembuka dan tim memuat tautan bertoken): dikirim sebagai teks dan ditandai dengan jalur yang sama; teksnya tidak pernah dicetak ke log.
+- `lapor_pdf.mjs` (proses terpisah, plist `launchd/id.centurisk97.wa-lapor-pdf.plist`, tiap 60 dtk): `GET /api/lapor/pdf/antre`, foto diunduh ke folder sementara, `python3 scripts/lapor/dokumen.py` (.docx dan .pdf lewat LibreOffice), unggah `POST /api/lapor/pdf/:nomor/:versi?jenis=pdf|docx`. `LAPOR_PY` mengganti interpreter.
+- Nomor tidak ditulis utuh di log. Uji: `node --test tests/wa/lapor_arah.test.mjs` (server HTTP lokal sebagai Worker, tanpa WA sungguhan).
+- Pasang (pemilik): `git pull`, isi `.env` bila perlu (`LAPOR_PY`), pasang plist PDF seperti plist lain (`sed ... > ~/Library/LaunchAgents/...; launchctl load`), lalu mulai ulang gateway (`launchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway`); daftarkan nomor uji dengan mengirim `lapor izin <nomor>` dari WA PEMILIK.

@@ -9,7 +9,8 @@ import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: posko.js dan worker.js saling impor
 import {PUBLIK_TANPA_SESI} from "../../src/worker.js";
-import {buangExif, UNSUR, KENDALA, STATUS_LAP, SUMBER_AIR, STATUS_PANGGILAN, cekTemplat, uraiCsvKontak, titikDalamKonsesi} from "../../src/posko.js";
+import {buangExif, UNSUR, KENDALA, STATUS_LAP, SUMBER_AIR, STATUS_PANGGILAN, cekTemplat, titikDalamKonsesi} from "../../src/posko.js";
+import {uraiCsv as uraiCsvKontak} from "../../public/inti/impor.js";
 
 const JAM = 3600e3, MENIT = 60e3, ADMIN = {"x-admin-token": "rahasia-admin"};
 const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);

@@ -763,7 +763,7 @@ function kartuKonsesi() {
   const badan = (rk.length ? kep("Titik panas di areal konsesi per provinsi", "% di konsesi") + batang(rk, sKons, (o, t) => pct(Math.min(o._k, t) / (t || 1))) + leg(sKons.map(s => [s[0], s[1]])) : "")
     + (rg.length ? kep("Titik panas di lahan gambut per provinsi", "% di gambut") + batang(rg, [["Gambut", "#6b4a2b", o => o.gb, 1], ["Tanah mineral", "#d9c7a8", (o, t) => t - o.gb, 0]], (o, t) => pct(o.gb / (t || 1))) + leg([["Gambut", "#6b4a2b"], ["Tanah mineral", "#d9c7a8"]]) : "");
   return Kartu.kartu("Konsesi", `${Kartu.hl(pct(T.n ? T.konsesi / T.n : 0))} titik panas di cluster 7 hari terakhir (${fmt(T.konsesi)} dari ${fmt(T.n)}) berada di dalam areal konsesi`,
-    badan || '<div class="kosong">Data status lahan belum tersedia</div>', "NASA FIRMS VIIRS 375 m (7 hari); batas konsesi: sawit/HPH sekitar 2014, HTI 2020–2022, tambang 2026 (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH); gambut KLHK. Titik di areal konsesi bukan bukti siapa yang membakar");
+    badan || '<div class="kosong">Data status lahan belum tersedia</div>', "NASA FIRMS VIIRS 375 m (7 hari); batas konsesi: HTI/HPH PBPH Kemenhut Mei 2026, sawit sekitar 2014 (Kemenhut via Global Forest Watch), tambang Kemenhut PPKH 2026; gambut KLHK. Titik di areal konsesi bukan bukti siapa yang membakar");
 }
 
 /* ---------- muat ---------- */

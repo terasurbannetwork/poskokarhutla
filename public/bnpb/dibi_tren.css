@@ -1,0 +1,347 @@
+/* Tren, Sebaran, Tabel DIBI (public/bnpb/dibi_tren.js) di bawah peta /bnpb/data-bencana.
+   Hanya token public/inti/tema.css (warna kategori --kat-*); ukuran huruf var(--fs-*); kartu berjarak 20px. */
+.dt-wadah{margin-top:32px;display:grid;gap:20px}
+.dt-muat,.dt-galat{margin:0;padding:24px;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);color:var(--ink2);font-size:var(--fs-4)}
+.dt-galat{color:var(--bad-tx)}
+.dt-sr{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* kepala */
+.dt-kepala{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.dt-judul{display:flex;align-items:center;gap:10px;margin:0;font:800 var(--fs-7)/1.25 var(--display);color:var(--ink)}
+.dt-judul svg,.dt-k-kepala h3 svg,.dt-tabs svg,.dt-kpi-l svg,.dt-btn-teks svg,.dt-hb-nama svg{inline-size:20px;block-size:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dt-judul svg{color:var(--brand2)}
+.dt-pil{padding:3px 10px;border-radius:var(--r-pill);background:color-mix(in oklch,var(--warn) 22%,var(--card));color:var(--warn-tx);font:600 var(--fs-2)/1.4 var(--font)}
+.dt-wil{margin-inline-start:auto;font-size:var(--fs-4);font-weight:600;color:var(--ink2)}
+
+/* filter */
+.dt-filter{display:grid;gap:16px;padding:18px 20px;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow)}
+.dt-f-kepala{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.dt-f-judul{font-size:var(--fs-3);font-weight:700;color:var(--ink2)}
+.dt-f-cepat{display:flex;gap:6px}
+.dt-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:8px}
+.dt-chip{display:grid;grid-template-columns:10px 20px 1fr;align-items:center;gap:8px;min-block-size:var(--h-ctl);padding:6px 12px;border:1px solid var(--line);border-radius:var(--r-sm);
+  background:var(--card);color:var(--ink2);font:500 var(--fs-3)/1.25 var(--font);text-align:start;cursor:pointer;transition:background var(--dur-1) var(--ease),border-color var(--dur-1) var(--ease)}
+.dt-chip i{inline-size:10px;block-size:10px;border-radius:50%;opacity:.35}
+.dt-chip svg{inline-size:20px;block-size:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dt-chip:hover{background:var(--surface)}
+.dt-chip[aria-pressed="true"]{border-color:var(--brand2);background:color-mix(in srgb,var(--brand2) 9%,var(--card));color:var(--ink);font-weight:600}
+.dt-chip[aria-pressed="true"] i{opacity:1}
+.dt-chip:focus-visible,.dt-btn-teks:focus-visible,.dt-seg button:focus-visible,.dt-tabs button:focus-visible,.dt-hb-baris:focus-visible,.dt-tabel th button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.dt-f-baris{display:grid;grid-template-columns:repeat(2,minmax(110px,.6fr)) repeat(2,minmax(180px,1.2fr)) auto;gap:12px;align-items:end}
+.dt-f-isi{display:grid;gap:6px}
+.dt-f-isi label{font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.dt-f-isi select,.dt-f-isi input{block-size:var(--h-ctl);padding:0 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);color:var(--ink);font:var(--fs-4) var(--font);min-inline-size:0}
+.dt-f-isi select:focus-visible,.dt-f-isi input:focus-visible{outline:2px solid var(--brand2);outline-offset:0;border-color:var(--brand2)}
+.dt-f-isi select:disabled{opacity:.6}
+.dt-btn-teks{display:inline-flex;align-items:center;justify-content:center;gap:6px;block-size:34px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-pill);background:var(--card);
+  color:var(--brand2);font:600 var(--fs-3) var(--font);cursor:pointer;white-space:nowrap}
+.dt-btn-teks:hover{background:var(--surface)}
+.dt-btn-teks:disabled{opacity:.5;cursor:default}
+.dt-f-ulang .dt-btn-teks{block-size:var(--h-ctl)}
+
+/* angka ringkas: penuh lebar, dibagi rata */
+.dt-kpi{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.dt-kpi-kecil{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dt-kpi-k{display:grid;gap:4px;align-content:start;padding:14px 16px;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow)}
+.dt-kpi-l{display:flex;align-items:center;gap:6px;font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.dt-kpi-l svg{inline-size:16px;block-size:16px;color:var(--brand2)}
+.dt-kpi-k b{font:800 var(--fs-7)/1.15 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.dt-kpi-k small{font-size:var(--fs-2);color:var(--ink2)}
+.dt-kpi-kecil .dt-kpi-k{box-shadow:none;background:var(--surface)}
+.dt-kpi-kecil .dt-kpi-k b{font-size:var(--fs-6)}
+.dt-naik{color:var(--bad-tx)!important}
+.dt-turun{color:var(--ok-tx)!important}
+
+/* tab: penuh lebar, garis bawah pada tab terpilih (bukan warna saja) */
+.dt-tabs{display:flex;border-bottom:1px solid var(--line);overflow-x:auto}
+.dt-tabs button{position:relative;flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;block-size:46px;padding:0 18px;border:0;background:none;
+  color:var(--ink2);font:600 var(--fs-4) var(--font);cursor:pointer}
+.dt-tabs button:hover{color:var(--ink);background:var(--surface)}
+.dt-tabs [aria-selected="true"]{color:var(--brand)}
+.dt-tabs [aria-selected="true"]::after{content:"";position:absolute;inset:auto 0 0;border-block-end:3px solid var(--brand2)}
+.dt-isi{display:grid;gap:20px}
+.dt-dua{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+
+/* kartu: kepala nama seksi berikon */
+.dt-kartu{display:grid;gap:12px;align-content:start;padding:16px 18px;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);min-inline-size:0}
+.dt-k-kepala{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dt-k-kepala h3{display:flex;align-items:center;gap:8px;margin:0;font:700 var(--fs-5)/1.3 var(--display);color:var(--ink)}
+.dt-k-kepala h3 svg{color:var(--brand2)}
+.dt-sub{margin:0;font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.dt-catatan{margin:0;padding:10px 12px;border-radius:var(--r-sm);background:var(--surface);font-size:var(--fs-3);color:var(--ink2)}
+
+/* segmen pilihan: dibagi rata */
+.dt-seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:3px;border-radius:var(--r-pill);background:var(--surface);min-inline-size:min(100%,320px)}
+.dt-seg button{block-size:30px;padding:0 12px;border:0;border-radius:var(--r-pill);background:none;color:var(--ink2);font:600 var(--fs-2) var(--font);cursor:pointer;white-space:nowrap}
+.dt-seg [aria-checked="true"]{background:var(--card);color:var(--brand);box-shadow:var(--shadow)}
+
+/* grafik */
+.dt-grafik{min-block-size:280px;min-inline-size:0}
+.dt-svg{display:block;max-inline-size:100%;block-size:auto;overflow:visible}
+.dt-svg text{font-family:var(--font)}
+.dt-grid{stroke:var(--line);stroke-width:1}
+.dt-sumbu{font-size:var(--fs-1);fill:var(--ink2)}
+.dt-nilai{font-size:var(--fs-1);font-weight:700;fill:var(--ink)}
+.dt-batang{cursor:default;outline:none}
+.dt-batang .dt-sasar{fill:transparent}
+.dt-batang:hover .dt-sasar,.dt-batang:focus-visible .dt-sasar{fill:color-mix(in oklch,var(--brand2) 8%,transparent)}
+.dt-batang:focus-visible .dt-sasar{stroke:var(--brand2);stroke-width:1.5}
+.dt-luar rect:not(.dt-sasar){opacity:.28}
+.dt-sementara rect:not(.dt-sasar){opacity:.62}
+.dt-garis{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;pointer-events:none}
+.dt-titik{fill:var(--card);stroke:var(--ink);stroke-width:1.6;pointer-events:none}
+.dt-legenda{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-size:var(--fs-2);color:var(--ink2)}
+.dt-legenda>span{display:inline-flex;align-items:center;gap:6px}
+.dt-legenda>span>i{inline-size:12px;block-size:12px;border-radius:3px}
+.dt-leg-garis i{inline-size:18px!important;block-size:0!important;border-block-start:2px solid var(--ink);border-radius:0!important}
+.dt-leg-ket{margin-inline-start:auto}
+
+/* kalender bulan dan hari: 5 tingkat dari --brand2 */
+.dt-gulir{overflow-x:auto;min-inline-size:0}
+.dt-gulir:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.dt-kal{display:grid;gap:3px;min-inline-size:720px}
+.dt-kal-baris{display:grid;grid-template-columns:56px repeat(12,1fr) 72px;gap:3px;align-items:center}
+.dt-kal-kepala span{font-size:var(--fs-1);font-weight:600;color:var(--ink2);text-align:center}
+.dt-kal-th{font-size:var(--fs-2);font-weight:700;color:var(--ink)}
+.dt-kal-sel{display:grid;place-items:center;block-size:28px;border-radius:5px;font-size:var(--fs-1);font-variant-numeric:tabular-nums;outline:none}
+.dt-kal-sel:focus-visible{outline:2px solid var(--ink)}
+.dt-kal-jml{font-size:var(--fs-2);font-weight:700;color:var(--ink);text-align:end;font-variant-numeric:tabular-nums}
+.dt-legenda i.dt-kal-sel,.dt-legenda i.dt-hari-sel{display:inline-block;inline-size:14px;block-size:14px;border-radius:3px}
+[data-tingkat="0"].dt-kal-sel,i.dt-hari-sel[data-tingkat="0"]{background:var(--surface)}
+[data-tingkat="1"].dt-kal-sel,i.dt-hari-sel[data-tingkat="1"]{background:color-mix(in srgb,var(--brand2) 14%,var(--card));color:var(--ink)}
+[data-tingkat="2"].dt-kal-sel,i.dt-hari-sel[data-tingkat="2"]{background:color-mix(in srgb,var(--brand2) 32%,var(--card));color:var(--ink)}
+[data-tingkat="3"].dt-kal-sel,i.dt-hari-sel[data-tingkat="3"]{background:color-mix(in srgb,var(--brand2) 55%,var(--card));color:var(--ink)}
+[data-tingkat="4"].dt-kal-sel,i.dt-hari-sel[data-tingkat="4"]{background:color-mix(in srgb,var(--brand2) 78%,var(--card));color:var(--on-brand)}
+[data-tingkat="5"].dt-kal-sel,i.dt-hari-sel[data-tingkat="5"]{background:var(--brand);color:var(--on-brand)}
+rect.dt-hari-sel{outline:none}
+rect.dt-hari-sel[data-tingkat="0"]{fill:var(--surface)}
+rect.dt-hari-sel[data-tingkat="1"]{fill:color-mix(in srgb,var(--brand2) 14%,var(--card))}
+rect.dt-hari-sel[data-tingkat="2"]{fill:color-mix(in srgb,var(--brand2) 32%,var(--card))}
+rect.dt-hari-sel[data-tingkat="3"]{fill:color-mix(in srgb,var(--brand2) 55%,var(--card))}
+rect.dt-hari-sel[data-tingkat="4"]{fill:color-mix(in srgb,var(--brand2) 78%,var(--card))}
+rect.dt-hari-sel[data-tingkat="5"]{fill:var(--brand)}
+rect.dt-hari-sel:focus-visible,rect.dt-hari-sel:hover{stroke:var(--ink);stroke-width:1.5}
+
+/* batang mendatar (sebaran) */
+.dt-ukur{max-inline-size:360px}
+.dt-hb-daftar{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.dt-hb-baris{all:unset;box-sizing:border-box;display:grid;grid-template-columns:24px minmax(120px,1.1fr) minmax(80px,2fr) auto 52px;align-items:center;gap:10px;inline-size:100%;
+  padding:6px 8px;border-radius:var(--r-sm);font-size:var(--fs-3);color:var(--ink)}
+button.dt-hb-baris{cursor:pointer}
+.dt-hb-baris:hover{background:var(--surface)}
+.dt-hb-no{font-size:var(--fs-2);color:var(--ink2);text-align:end;font-variant-numeric:tabular-nums}
+.dt-hb-nama{display:flex;align-items:center;gap:6px;min-inline-size:0}
+.dt-hb-nama span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dt-hb-nama svg{inline-size:16px;block-size:16px;color:var(--brand2)}
+.dt-hb-jalur{display:block;block-size:12px;border-radius:var(--r-pill);background:var(--surface);overflow:hidden}
+.dt-hb-bar{display:flex;block-size:100%;border-radius:inherit;overflow:hidden}
+.dt-hb-bar i{flex:1 1 0;block-size:100%}
+.dt-hb-baris b{font-weight:700;font-variant-numeric:tabular-nums;text-align:end;white-space:nowrap}
+.dt-hb-baris small{font-size:var(--fs-2);color:var(--ink2);text-align:end;font-variant-numeric:tabular-nums}
+
+/* tabel: kepala navy, angka rata kanan */
+.dt-tabel{inline-size:100%;min-inline-size:860px;border-collapse:collapse;font-size:var(--fs-3);font-variant-numeric:tabular-nums}
+.dt-tabel caption{caption-side:top;text-align:start;padding:0 0 8px;font-size:var(--fs-3);font-weight:600;color:var(--ink2)}
+.dt-tabel thead th{position:sticky;top:0;background:var(--head-bg);color:var(--on-head);font-weight:600;text-align:center;vertical-align:bottom;padding:0}
+.dt-tabel thead th button{all:unset;box-sizing:border-box;display:block;inline-size:100%;min-block-size:36px;padding:8px 10px;cursor:pointer;text-align:center}
+.dt-tabel thead th[aria-sort] button::after{content:"";display:inline-block;margin-inline-start:6px;border:5px solid transparent;vertical-align:middle}
+.dt-tabel thead th[aria-sort="descending"] button::after{border-top-color:currentColor;margin-block-start:5px}
+.dt-tabel thead th[aria-sort="ascending"] button::after{border-bottom-color:currentColor;margin-block-end:5px}
+.dt-tabel tbody th,.dt-tabel tfoot th{font-weight:600;white-space:nowrap}
+.dt-tabel td,.dt-tabel tbody th,.dt-tabel tfoot th{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.dt-tabel tbody tr:hover{background:var(--surface)}
+.dt-tabel tfoot{font-weight:700;background:var(--surface)}
+.dt-cari{max-inline-size:420px}
+.dt-hal{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:var(--fs-3);color:var(--ink2)}
+.dt-hal>span{margin-inline-end:auto}
+
+/* tooltip */
+.dt-tip{position:fixed;z-index:60;pointer-events:none;display:grid;gap:4px;min-inline-size:180px;max-inline-size:280px;padding:10px 12px;border-radius:var(--r-sm);background:var(--head-bg);color:var(--on-head);font-size:var(--fs-2);box-shadow:var(--shadow-lg)}
+.dt-tip[hidden]{display:none}
+.dt-tip>b{font-size:var(--fs-4)}
+.dt-tip-b{display:grid;grid-template-columns:10px 1fr auto;align-items:center;gap:8px}
+.dt-tip-b i{inline-size:10px;block-size:10px;border-radius:2px}
+.dt-tip-b strong{font-variant-numeric:tabular-nums}
+.dt-tip-b span{color:var(--on-head-2)}
+
+@media (max-width:1100px){.dt-kpi{grid-template-columns:repeat(3,minmax(0,1fr))}.dt-kpi-kecil{grid-template-columns:repeat(2,minmax(0,1fr))}.dt-dua{grid-template-columns:1fr}.dt-f-baris{grid-template-columns:1fr 1fr}.dt-f-ulang{grid-column:1/-1}}
+@media (max-width:640px){.dt-kpi,.dt-kpi-kecil{grid-template-columns:repeat(2,minmax(0,1fr))}.dt-f-baris{grid-template-columns:1fr}.dt-wil{margin-inline-start:0;inline-size:100%}.dt-hb-baris{grid-template-columns:20px minmax(90px,1fr) minmax(60px,1fr) auto}.dt-hb-baris small{display:none}
+  .dt-seg{grid-auto-flow:row;border-radius:var(--r-sm)}.dt-tabs button{padding:0 12px}}
+.dt-svg-hari{inline-size:100%;max-inline-size:1100px;min-inline-size:680px}
+
+/* aksi kepala: bagikan dan cetak */
+.dt-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.dt-pil-netral{background:var(--surface);color:var(--ink2)}
+.dt-cetak-saja{display:none}
+.dt-sebar-alat{display:flex;flex-wrap:wrap;align-items:end;gap:12px 20px}
+.dt-sebar-alat .dt-seg{min-inline-size:min(100%,420px)}
+
+/* penanda di atas biasanya: segitiga di pojok sel, bentuk bukan warna saja */
+.dt-kal-sel{position:relative}
+.dt-kal-atas::after{content:"";position:absolute;inset-block-start:2px;inset-inline-end:2px;border-style:solid;border-width:0 9px 9px 0;border-color:transparent var(--bad) transparent transparent}
+.dt-leg-atas{display:inline-flex;align-items:center;gap:6px}
+.dt-legenda .dt-leg-atas i.dt-kal-sel{position:relative}
+
+/* bulan rawan */
+.dt-musim .dt-kal-baris{grid-template-columns:minmax(150px,1.6fr) repeat(12,1fr) minmax(88px,1fr)}
+.dt-musim-nama{display:flex;align-items:center;gap:8px;font-weight:600}
+.dt-musim-nama i{inline-size:10px;block-size:10px;border-radius:50%;flex:none}
+.dt-puncak{box-shadow:inset 0 0 0 2px var(--ink);font-weight:700}
+.dt-musim .dt-kal-jml{font-weight:600;color:var(--ink2);text-align:start;padding-inline-start:8px}
+
+/* cetak A4: hanya wadah statistik, semua tab berurutan, tanpa kontrol */
+@page{size:A4;margin:12mm}
+@media print{
+  html.dt-mencetak body{background:var(--card)}
+  html.dt-mencetak .dt-jalur>:not(.dt-jalur):not(.dt-jalur-akar){display:none!important}
+  html.dt-mencetak .dt-jalur{display:block!important;margin:0!important;padding:0!important;box-shadow:none!important;max-inline-size:none!important}
+  .dt-mencetak .dt-jalur-akar{display:block!important;margin:0!important}
+  .dt-mencetak .dt-jalur-akar>*+*{margin-block-start:14px}
+  .dt-mencetak .dt-filter,.dt-mencetak .dt-aksi,.dt-mencetak .dt-tabs,.dt-mencetak .dt-seg,.dt-mencetak .dt-sebar-alat,.dt-mencetak .dt-tip,.dt-mencetak #dtPanel-tren>.dt-isi>.dt-kartu:last-child,
+  .dt-mencetak #dtPanel-tabel .dt-kartu:last-child,.dt-mencetak .dt-btn-teks{display:none!important}
+  .dt-mencetak .dt-cetak-saja{display:block;margin:0;font-size:var(--fs-2);color:var(--ink2)}
+  .dt-mencetak [role="tabpanel"].dt-panel-cetak{display:block!important}
+  .dt-mencetak .dt-kartu,.dt-mencetak .dt-kpi-k{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
+  .dt-mencetak .dt-dua{grid-template-columns:1fr}
+  .dt-mencetak .dt-isi{gap:12px}
+  .dt-mencetak .dt-gulir{overflow:visible}
+  .dt-mencetak .dt-kal,.dt-mencetak .dt-tabel{min-inline-size:0}
+  .dt-mencetak .dt-tabel{font-size:var(--fs-1)}
+  .dt-mencetak .dt-tabel thead th{position:static}
+  .dt-mencetak .dt-kpi{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dt-mencetak #dtPanel-sebaran,.dt-mencetak #dtPanel-tabel{break-before:page}
+  .dt-mencetak *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ===== kerangka dasbor halaman berdiri (pemilik 23 Nov 2026: "buat kaya model dashboard kita normalnya"), meniru /lapor/meja:
+   sidebar kiri terang, bilah atas, isi, panel Ringkasan kanan. Peta penuh tinggi saat tab Peta. ===== */
+.db-halaman{display:block;margin:0;padding:0}
+.db-halaman .dt-wadah{margin:0}
+.db-app{display:grid;grid-template-columns:248px minmax(0,1fr);block-size:100dvh;gap:0}
+.db-sisi{display:flex;flex-direction:column;gap:4px;padding:14px 10px 20px;overflow:auto;background:var(--card);border-inline-end:1px solid var(--line)}
+.db-merek{display:flex;align-items:center;gap:10px;padding:2px 8px 12px;margin-bottom:6px;border-bottom:1px solid var(--line);color:var(--brand);text-decoration:none}
+.db-merek img{flex:none;border-radius:50%}
+.db-merek:focus-visible{outline:2px solid var(--brand2);outline-offset:2px;border-radius:var(--r-sm)}
+.db-merek svg{inline-size:26px;block-size:26px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-merek b{display:block;font:800 var(--fs-5)/1.2 var(--display)}
+.db-merek small{font-size:var(--fs-2);color:var(--ink2)}
+.db-segar{display:flex;align-items:center;gap:8px;margin:4px 0 6px;padding:7px 12px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:600;color:var(--ink)}
+.db-segar i{inline-size:8px;block-size:8px;border-radius:50%;background:var(--ok);flex:none}
+.db-grup{display:grid;gap:4px;margin-top:10px}
+.db-grup-j{margin:0 10px 2px;font:700 var(--fs-1)/1.4 var(--font);color:var(--ink2)}
+.db-tabs{display:grid;gap:2px}
+.db-nav,.db-jenis{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:10px;inline-size:100%;padding:8px 10px;border:0;border-radius:10px;
+  background:none;color:var(--ink);font:600 var(--fs-3)/1.3 var(--font);text-align:start;cursor:pointer}
+.db-nav svg,.db-jenis svg{inline-size:18px;block-size:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--brand2)}
+.db-nav:hover,.db-jenis:hover{background:var(--surface)}
+.db-nav:focus-visible,.db-jenis:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.db-nav[aria-selected="true"]{background:color-mix(in oklab,var(--brand2) 11%,var(--card));color:var(--brand)}
+.db-nav[aria-selected="true"]::before,.db-jenis[aria-pressed="true"]::before{content:"";position:absolute;inset-inline-start:0;inset-block:8px;inline-size:3px;border-radius:3px;background:var(--brand2)}
+.db-jenis{grid-template-columns:18px minmax(0,1fr) auto}
+.db-jenis>i{display:none}
+.db-jenis svg{color:var(--ink2)}
+.db-jenis b,.db-nav b{min-inline-size:26px;padding:1px 7px;border-radius:var(--r-pill);background:var(--surface);font-size:var(--fs-1);text-align:center;font-variant-numeric:tabular-nums;color:var(--ink)}
+.db-jenis[aria-pressed="true"]{background:color-mix(in oklab,var(--brand2) 8%,var(--card))}
+.db-jenis[aria-pressed="true"] b{background:var(--brand);color:var(--on-brand)}
+.db-jenis[aria-pressed="false"]{color:var(--ink2);font-weight:500}
+.db-jenis[aria-pressed="false"] b{opacity:.7}
+.db-jenis.dt-nol{opacity:.5}
+.db-cepat{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 4px 4px}
+.db-cepat .dt-btn-teks{block-size:30px;padding:0 8px}
+.db-sisi .dt-f-isi{padding:0 4px}
+.db-sisi .dt-f-isi select{block-size:36px;font-size:var(--fs-3)}
+.db-dua{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.db-dua .dt-f-isi{padding:0}
+.db-sisi .db-grup>.dt-btn-teks{justify-content:flex-start;margin:0 4px;border-radius:10px}
+
+.db-utama{display:grid;grid-template-rows:auto auto minmax(0,1fr);min-inline-size:0;background:var(--paper)}
+.db-atas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 20px;background:var(--card);border-block-end:1px solid var(--line)}
+.db-jejak{display:flex;align-items:center;gap:8px;font:700 var(--fs-4)/1.3 var(--display);color:var(--ink);margin-inline-end:auto}
+.db-jejak svg{inline-size:18px;block-size:18px;fill:none;stroke:var(--brand2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-jejak .dt-wil{margin:0;font:inherit;color:inherit}
+.db-periode{display:flex;padding:3px;border-radius:var(--r-pill);background:var(--surface)}
+.db-periode button{block-size:30px;padding:0 14px;border:0;border-radius:var(--r-pill);background:none;color:var(--ink2);font:600 var(--fs-3) var(--font);cursor:pointer;white-space:nowrap}
+.db-periode button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.db-periode button:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.db-isi{display:grid;grid-template-columns:minmax(0,1fr) 300px;min-block-size:0}
+.db-panel{min-inline-size:0;min-block-size:0;overflow:auto;padding:20px}
+.db-app[data-tab="peta"] .db-isi{grid-template-columns:minmax(0,1fr)}
+.db-app[data-tab="peta"] .db-ringkas{display:none}
+.db-app[data-tab="peta"] .db-panel{padding:0;overflow:auto}
+/* tinggi pasti: layar penuh dikurangi bilah atas (48px); peta tidak ikut tinggi isinya */
+.db-peta{block-size:calc(100dvh - 48px)}
+.db-app[data-tab="peta"] .db-periode{display:none}
+
+/* Ringkasan kanan */
+.db-ringkas{overflow:auto;padding:16px 16px 24px;background:var(--card);border-inline-start:1px solid var(--line)}
+.db-rk-j{display:flex;align-items:center;gap:8px;margin:0 0 10px;font:700 var(--fs-5)/1.3 var(--display);color:var(--ink)}
+.db-rk-j svg{inline-size:18px;block-size:18px;fill:none;stroke:var(--brand2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-rk-isi{display:grid;gap:2px}
+.db-rk-besar{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.db-rk-besar b{font:800 var(--fs-8)/1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.db-rk-besar span{font-size:var(--fs-3);color:var(--ink2)}
+.db-rk-label{margin:10px 0 2px;padding-block-start:8px;border-block-start:1px solid var(--line);font:700 var(--fs-1)/1.4 var(--font);color:var(--ink2)}
+.db-rk-b{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:8px;padding:4px 0;font-size:var(--fs-3);color:var(--ink)}
+.db-rk-b b{font:800 var(--fs-4)/1 var(--display);font-variant-numeric:tabular-nums}
+.db-rk-ik{display:grid;place-items:center;inline-size:26px;block-size:26px;border-radius:8px;background:var(--surface);color:var(--brand2)}
+.db-rk-ik svg{inline-size:15px;block-size:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.db-rk-kab{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.db-rk-kab li{display:grid;grid-template-columns:20px minmax(0,1fr) auto;row-gap:4px;column-gap:8px;align-items:center;padding:4px 2px;font-size:var(--fs-3)}
+.db-rk-kab li>span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-rk-kab b{font-weight:700;font-variant-numeric:tabular-nums}
+.db-rk-kab i{grid-column:2/-1;block-size:3px;border-radius:3px;background:var(--brand2)}
+.db-rk-no{display:grid;place-items:center;inline-size:20px;block-size:20px;border-radius:50%;background:var(--surface);font-size:var(--fs-1);font-weight:700;color:var(--ink2)}
+.db-rk-kab li:first-child .db-rk-no{background:var(--brand);color:var(--on-brand)}
+
+/* isi tab di dalam kerangka: kartu putih berjarak 20px, tanpa bayangan berat */
+.db-panel .dt-kartu{box-shadow:0 1px 3px color-mix(in oklab,var(--ink) 8%,transparent);border:1px solid var(--line)}
+.db-panel .dt-isi{gap:20px}
+.dt-garis{stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:4 3}
+.dt-titik{stroke:var(--ink2);stroke-width:1.4}
+
+@media (max-width:1280px){.db-isi{grid-template-columns:minmax(0,1fr) 260px}}
+@media (max-width:1024px){.db-app{grid-template-columns:1fr;block-size:auto}.db-sisi{border-inline-end:0;border-block-end:1px solid var(--line)}
+  .db-isi{grid-template-columns:1fr}.db-ringkas{border-inline-start:0;border-block-start:1px solid var(--line)}.db-app[data-tab="peta"] .db-panel{block-size:70dvh}}
+@media print{
+  .dt-mencetak .db-app{display:block;block-size:auto}
+  .dt-mencetak .db-sisi,.dt-mencetak .db-periode,.dt-mencetak #dtPanel-peta{display:none!important}
+  .dt-mencetak .db-isi{display:block}.dt-mencetak .db-panel{overflow:visible;padding:0}
+  .dt-mencetak .db-ringkas{border:1px solid var(--line);border-radius:var(--r);margin-block:12px;break-inside:avoid}
+  .dt-mencetak .db-rk-isi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:16px}
+}
+
+/* ===== Profil kab/kota untuk BPBD (satu halaman A4) ===== */
+.db-profil{display:grid;gap:20px}
+.db-profil-kosong{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:var(--fs-4)}
+.db-profil-kosong svg{inline-size:28px;block-size:28px;flex:none;fill:none;stroke:var(--brand2);stroke-width:1.8}
+.db-profil-kosong p{margin:0}
+.db-pf-kepala{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.db-pf-kepala h2{margin:0;font:800 var(--fs-8)/1.15 var(--display);color:var(--ink)}
+.db-pf-kepala p{margin:4px 0 0;font-size:var(--fs-4);color:var(--ink2)}
+.db-pf-angka{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.db-pf-angka>div{display:grid;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.db-pf-angka b{font:800 var(--fs-7)/1.1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.db-pf-angka span{font-size:var(--fs-2);color:var(--ink2)}
+.db-profil-grafik{min-block-size:240px}
+.db-pf-daftar{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.db-pf-daftar li{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:2px;padding:8px 10px;border-radius:var(--r-sm);background:var(--surface);font-size:var(--fs-3)}
+.db-pf-daftar b{font-weight:700;color:var(--ink);white-space:nowrap}
+.db-pf-daftar small{grid-column:1/-1;color:var(--ink2);font-size:var(--fs-2)}
+.db-pf-sumber{margin:0;font-size:var(--fs-2);color:var(--ink2)}
+@media (max-width:1280px){.db-pf-angka{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media print{
+  html.dt-cetak-profil .db-app>:not(.db-utama),html.dt-cetak-profil .db-atas,html.dt-cetak-profil .db-ringkas,html.dt-cetak-profil .dt-cetak-saja,
+  html.dt-cetak-profil [role="tabpanel"]:not(#dtPanel-profil),html.dt-cetak-profil .db-pf-kepala .dt-aksi{display:none!important}
+  html.dt-cetak-profil .db-isi{display:block}
+  html.dt-cetak-profil #dtPanel-profil{display:block!important}
+  html.dt-cetak-profil .db-profil{gap:8px}
+  html.dt-cetak-profil .db-pf-angka{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+  html.dt-cetak-profil .db-pf-angka>div{padding:6px 8px}
+  html.dt-cetak-profil .db-pf-angka b{font-size:var(--fs-5)}
+  html.dt-cetak-profil .dt-kartu{padding:8px 10px;gap:6px}
+  html.dt-cetak-profil .db-profil-grafik{min-block-size:0}
+  html.dt-cetak-profil .db-profil .dt-svg{max-block-size:170px}
+  html.dt-cetak-profil .dt-kal-sel{block-size:18px}
+  html.dt-cetak-profil .db-pf-daftar li{padding:3px 6px}
+  html.dt-cetak-profil .dt-dua{grid-template-columns:1fr 1fr}
+}

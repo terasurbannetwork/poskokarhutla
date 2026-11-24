@@ -11,11 +11,11 @@
   const muat = () => janji ||= muatJSON("data/kompleks_konsesi.json").then(a => { KK = a; })
     .catch(() => { KK = {kompleks: {}, jenis: [], total: {n: 0, konsesi: 0}, gagal: true}; });
   /* [label, warna, label panjang, tahun peta batas] */
-  const JN = {sawit: ["Sawit", "#c98a3c", "Konsesi sawit", "± 2014"], hti: ["HTI", "#6b8e3a", "Konsesi HTI (hutan tanaman industri)", "2020–2022"],
-    hph: ["HPH", "#2f6f8f", "Konsesi HPH (hutan alam)", "± 2014"], tambang: ["Tambang", "#7a5c99", "Izin tambang (PPKH)", "2026"]};
+  const JN = {sawit: ["Sawit", "#c98a3c", "Konsesi sawit", "± 2014"], hti: ["HTI", "#6b8e3a", "Konsesi HTI (hutan tanaman industri)", "2026"],
+    hph: ["HPH", "#2f6f8f", "Konsesi PBPH hutan alam (HPH)", "2026"], tambang: ["Tambang", "#7a5c99", "Izin tambang (PPKH)", "2026"]};
   const URUT = ["sawit", "hti", "hph", "tambang"];
   const LINDUNG = ["HK", "HL", "THR", "KSA", "KPA"];
-  const BATAS = "batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026";
+  const BATAS = "batas konsesi: HTI/HPH PBPH Kemenhut Mei 2026 (izin lama 2014–2022 bila tak ada PBPH aktif), sawit ± 2014, tambang 2026";
   const pct = p => (p < .005 && p > 0 ? "< 1" : Math.round(p * 100)) + "%";
   const jn = j => JN[j] || [j, "#888", j, ""];
   const jenisDi = id => KK?.kompleks[id]?.jenis || {};

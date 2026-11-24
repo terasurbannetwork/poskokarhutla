@@ -108,7 +108,9 @@
       const grup = (judul, xs, ik, nada) => xs.length ? h("div", {class: "dl-ga-grup"}, h("b", {class: "dl-ga-jdl", teks: judul}), h("div", {class: "dl-chips"}, xs.map(t => label(t, ik(t), nada)))) : null;
       const tengah = h("div", {class: "dl-ga-tengah"}, h("h4", {teks: namaGn(gn.nama)}),
         h("div", {class: "dl-chips"}, label(labelBerlaku(tglBerlaku(gn, d)), "kalender", "garis"), h("span", {class: "dl-tag dl-ga-pil dl-ga-l" + gn.level}, ikon("gunungapi"), `${NAMA[gn.level]} (Level ${ROMAWI[gn.level]})`)),
-        ...baris);
+        ...baris,
+        /* dampak penduduk dan sarana di sekitar puncak (data/kajian-bnpb/inarisk F-14): 1, 5, 10 km dan radius larangan PVMBG */
+        ...(g.DampakRadius && gn.lat != null && gn.lon != null ? [g.DampakRadius.tabel(gn.lat, gn.lon, [1, 5, 10, radius], {larangan: radius})] : []));
       return bagian("gunungapi-" + gn.nama.toLowerCase().replace(/[^a-z0-9]+/g, "-"), "gunungapi", namaGn(gn.nama),
         [hl(namaGn(gn.nama)), ` berstatus ${NAMA[gn.level]}`, ...radius ? [", dilarang beraktivitas dalam radius ", hl(`${F(radius)} km`)] : []],
         h("div", {class: "dl-ga-kartu"}, h("div", {class: "dl-ga-diagram"}, diagram(gn, {...u, radius})), tengah,

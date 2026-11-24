@@ -2,6 +2,7 @@
 .ad-wrap{max-width:1360px;padding-top:12px;gap:10px}
 .kj{gap:12px}
 .kj-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kj-bar[hidden]{display:none}
 .kj-seg{display:inline-flex;background:var(--soft);border-radius:999px;padding:3px}
 .kj-seg button{border:0;background:none;color:var(--ink2);font:700 12.5px var(--font);padding:7px 14px;border-radius:999px;cursor:pointer;min-height:34px}
 .kj-seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:var(--bayang)}

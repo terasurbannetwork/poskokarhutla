@@ -214,7 +214,7 @@ const {jumlah, laporan} = await r.json();</code></pre></div>
   <div class="tabel"><table>
   <tr><th>Kode</th><th>Artinya</th></tr>
   <tr><td>400</td><td>Parameter tidak sah (tanggal bukan YYYY-MM-DD, kode provinsi salah, dan sebagainya); pesannya menyebut yang salah</td></tr>
-  <tr><td>401</td><td>Header <code>X-API-Key</code> tidak ada, kunci salah, atau kunci sudah dicabut</td></tr>
+  <tr><td>401</td><td>Header <code>X-API-Key</code> tidak ada, kunci salah, kunci sudah dicabut, atau kunci lewat masa berlaku 365 hari</td></tr>
   <tr><td>403</td><td>Kunci sah, tetapi cakupannya tidak termasuk endpoint ini</td></tr>
   <tr><td>404</td><td>Rute atau nama data tidak ada, atau berkasnya belum tersedia</td></tr>
   <tr><td>405</td><td>Metode selain GET, HEAD, dan OPTIONS</td></tr>
@@ -251,7 +251,7 @@ const {jumlah, laporan} = await r.json();</code></pre></div>
 
 <section id="kunci">
   <h2>Meminta kunci</h2>
-  <p class="sub">Kunci diterbitkan admin untuk lembaga atau aplikasi tertentu dan bisa dicabut kapan saja.</p>
+  <p class="sub">Kunci diterbitkan admin untuk lembaga atau aplikasi tertentu berlaku 365 hari, dan bisa dicabut kapan saja.</p>
   <p>Hubungi pengelola dan sebutkan nama lembaga, data yang dibutuhkan, dan keperluannya. Data publik tidak perlu kunci.</p>
 </section>
 <p class="kaki"><a href="/privasi">Privasi</a>, <a href="/api/v1">Daftar endpoint (JSON)</a></p>

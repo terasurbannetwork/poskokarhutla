@@ -14,6 +14,10 @@
   /* teks status, lolos AA 4,5:1 di atas --card (hue token asal, lightness disesuaikan) */
   --ok-tx:oklch(54.5% .16 150); --warn-tx:oklch(57% .16 75); --bad-tx:oklch(57% .21 27); --info-tx:oklch(55.5% .13 235); --f2-tx:oklch(57.5% .17 58); --accent-tx:oklch(56.5% .09 252);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
+  /* warna kategori bencana untuk grafik (sama di terang dan gelap; urutan tetap, tidak dipakai untuk status) */
+  --kat-banjir:oklch(64% .13 232); --kat-cuaca:oklch(42% .1 268); --kat-longsor:oklch(66% .14 152); --kat-karhutla:oklch(70% .17 48);
+  --kat-kering:oklch(58% .06 70); --kat-gelombang:oklch(72% .1 195); --kat-gempa:oklch(80% .15 88); --kat-erupsi:oklch(55% .19 25);
+  --kat-tsunami:oklch(55% .15 305); --kat-lain:oklch(70% .02 256);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){

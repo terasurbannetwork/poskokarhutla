@@ -34,7 +34,7 @@ const namaProv = k => S.meta?.prov?.[k] ?? k;
 const hariTampil = () => [0, 1, 2, 3].map(n => Pesisir.hariKe(HARI_INI(), n));
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Lapor Warga"]];
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["metode", "Metode"], ["informasi", "Lapor Warga"]];
 /* informasi: tidak di menu tapi bisa dibuka lewat /pesisir/informasi (A24) */
 const TAB_SEMBUNYI = new Set(["informasi"]);
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
@@ -44,7 +44,7 @@ function bukaTab(id, dorong = true) {
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/pesisir/" + (id === "peta" ? "" : id) + location.search);
   nanti(() => { if (id === "peta" && typeof peta !== "undefined" && peta) peta.resize();
-    ({insight: Insight, tren: Tren, dampak: Dampak, foto: window.Foto, tentang: Tentang, informasi: window.Informasi, operasi: window.PesisirOperasi})[id]?.render(); });
+    ({insight: Insight, tren: Tren, dampak: Dampak, foto: window.Foto, metode: Metode, informasi: window.Informasi, operasi: window.PesisirOperasi})[id]?.render(); });
 }
 $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(([k, n]) => `<button data-t="${k}" aria-current="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
 { const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };

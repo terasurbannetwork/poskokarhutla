@@ -550,7 +550,8 @@ class Deck:
         titik = {}
         for p in per:
             px, py = s.TT['pusat'][p]; dx, dy = GESER.get(p, (0, 0)); titik[p] = (MX + (px + dx) / s.TT['PW'] * MW, MY + (py + dy) / s.TT['PH'] * MH)
-        besar = lambda xs: k * (lambda u: 219456 if u <= 1 else 265176 if u <= 3 else 310896)(sum(1 for x in xs if x['jenis'] == 'karhutla') or len(xs))
+        besar = lambda xs: k * (getattr(s, 'SKALA_LINGKARAN', None) or {}).get(xs[0]['prov'], 1) * (lambda u:   # 22 Nov: {prov: skala} lingkaran provinsi yang rapat (Jawa)
+ 219456 if u <= 1 else 265176 if u <= 3 else 310896)(sum(1 for x in xs if x['jenis'] == 'karhutla') or len(xs))
         # 10 Nov pemilik ("di peta, tambahin titik gunung yang lagi siaga, terus kasih icon"): penanda berikon di koordinat gunung Level III/IV PVMBG;
         # nama di bawahnya. Lingkaran provinsi yang menimpa penanda digeser ke utara, posisi gunung tidak pernah digeser
         GA_T, dg = [], int(146304 * k)
@@ -566,9 +567,24 @@ class Deck:
                 for _, gx, gy, _w in GA_T:
                     if (cx - gx) ** 2 + (cy - gy) ** 2 < perlu ** 2: cy = gy - (perlu ** 2 - (cx - gx) ** 2) ** .5
                 titik[p] = (cx, cy)
+        # 22 Nov pemilik ("jgn seolah2 ada yg di laut"): POSISI_DARAT = {prov: (lon, lat)} memasang lingkaran tepat di darat;
+        # TUNJUK_DARAT = {prov: (lon_lingkaran, lat_lingkaran, lon_darat, lat_darat)} untuk provinsi yang terlalu rapat (Banten, DKI):
+        # lingkaran di luar, garis tipis ke titik lokasinya di darat. Tanpa atribut ini perilaku lama.
+        geo_ = lambda lon_, lat_: (MX + (lon_ - 95.0) / 45.9 * MW, MY + (6.2 - lat_) / 17.2 * MH)
+        for p, (lon_, lat_) in (getattr(s, 'POSISI_DARAT', None) or {}).items():
+            if p in titik: titik[p] = geo_(lon_, lat_)
+        for p, (lc_, bc_, ld_, bd_) in (getattr(s, 'TUNJUK_DARAT', None) or {}).items():
+            if p not in titik: continue
+            (x1, y1), (x2, y2) = geo_(lc_, bc_), geo_(ld_, bd_); titik[p] = (x1, y1)
+            fl_ = ' flipH="1"' if (x2 < x1) != (y2 < y1) else ''
+            o += (f'<p:cxnSp><p:nvCxnSpPr><p:cNvPr id="{s.nid()}" name="Tunjuk"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr><p:spPr><a:xfrm{fl_}><a:off x="{int(min(x1, x2))}" y="{int(min(y1, y2))}"/>'
+                  f'<a:ext cx="{int(abs(x2 - x1))}" cy="{int(abs(y2 - y1))}"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="4B4F58"/></a:solidFill></a:ln></p:spPr></p:cxnSp>')
+            dd_ = 64008 * k; o += s.kotak(x2 - dd_ / 2, y2 - dd_ / 2, dd_, dd_, '4B4F58', 'ellipse', ln='FFFFFF', lw=6350)
         terisi = [(cx - besar(per[p]) / 2, cy - besar(per[p]) / 2, cx + besar(per[p]) / 2, cy + besar(per[p]) / 2) for p, (cx, cy) in titik.items()]
         # 14 Nov: ruang nama gunung selebar teksnya (bukan selebar segitiga); label "Jabar" sempat menimpa "Anak Krakatau"
-        terisi += [(gx - max(dg, len(nm_g) * 46000 * k) / 2, gy - dg / 2, gx + max(dg, len(nm_g) * 46000 * k) / 2, gy + dg / 2 + 137160) for nm_g, gx, gy, _w in GA_T]
+        GL_ = getattr(s, 'GUNUNG_LABEL', None) or {}   # 22 Nov: {nama: 'kiri'} label gunung di kiri segitiga (bawaan di bawah)
+        terisi += [((gx - dg / 2 - 18288 - len(nm_g) * 46000 * k, gy - dg / 2, gx + dg / 2, gy + dg / 2) if GL_.get(nm_g) == 'kiri' else
+                    (gx - max(dg, len(nm_g) * 46000 * k) / 2, gy - dg / 2, gx + max(dg, len(nm_g) * 46000 * k) / 2, gy + dg / 2 + 137160)) for nm_g, gx, gy, _w in GA_T]
         # 10 Nov pemilik: peringatan dini masuk peta, lingkaran putih bertanda seru, garis dan tanda oranye atau merah; PERINGATAN_PETA = [(lon, lat, label, 'merah'|'oranye', sisi label)]
         PD_T, dp = [], int(201168 * k)
         for lon_, lat_, lab_, wr_, sisi_ in (getattr(s, 'PERINGATAN_PETA', None) or [] if V3 else []):
@@ -603,6 +619,7 @@ class Deck:
             calon = {'kanan': (cx + d / 2 + 54864, cy - 73152, cx + d / 2 + 54864 + lw, cy + 73152), 'kiri': (cx - d / 2 - 54864 - lw, cy - 73152, cx - d / 2 - 54864, cy + 73152),
                      'bawah': (cx - lw / 2, cy + yb, cx + lw / 2, cy + yb + 146304), 'atas': (cx - lw / 2, cy - d / 2 - 173736, cx + lw / 2, cy - d / 2 - 27432)}
             urut = ['kiri', 'bawah', 'kanan'] if p in KIRI else ['bawah', 'kanan', 'kiri'] if p in BAWAH else ['kanan', 'kiri', 'bawah']
+            urut = (getattr(s, 'LABEL_URUT', None) or {}).get(p, urut)   # 22 Nov: urutan sisi label per provinsi dari jalan.py
             # 14 Nov: semua sisi menabrak -> sisi dengan tumpang tindih terkecil (dulu urut[0]: "Jabar" menimpa "Anak Krakatau")
             luas_t = lambda r: sum(max(0, min(r[2], q[2]) - max(r[0], q[0])) * max(0, min(r[3], q[3]) - max(r[1], q[1])) for q in terisi)
             sisi = next((u for u in urut + (['atas'] if V3 else []) if not tabrak(calon[u])), None if k < 1 else min(urut + (['atas'] if V3 else []), key=lambda u: (calon[u][0] < MX or calon[u][2] > MX + MW, luas_t(calon[u]))))   # 10 Nov: penanda gunung menutup sisi lain, label naik ke atas lingkaran
@@ -613,7 +630,8 @@ class Deck:
                   else s.tx(r[0], cy - 73152, 1463040, 146304, [nm], sz=int(750 * k), b=True, an='ctr'))
         for nm_g, gx, gy, w_g in GA_T:
             o += s.kotak(gx - dg / 2, gy - dg / 2, dg, dg, w_g, 'triangle', ln='FFFFFF', lw=12700)   # 10 Nov pemilik: "cukup segitiga warna oren untuk siaga dan merah untuk awas"
-            o += s.tx(gx - 457200, gy + dg / 2, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='ctr', an='ctr', wrap='none')
+            if GL_.get(nm_g) == 'kiri': o += s.tx(gx - dg / 2 - 18288 - 914400, gy - 68580, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='r', an='ctr', wrap='none')
+            else: o += s.tx(gx - 457200, gy + dg / 2, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='ctr', an='ctr', wrap='none')
         for gx, gy, lab_, c_, sisi_, lw_ in PD_T:
             ik_ = ('asapsolid' if 'PM2' in lab_ else 'anginsolid' if 'ngin' in lab_ else 'hujansolid') + ('_merah' if c_ == MERAH else '_oranye')   # 10 Nov pemilik: lingkaran besar berisi ikon bahaya, lencana kecil bertanda seru di kanan atas
             lab_ = [(lab_.split('|')[0], INK, True)]

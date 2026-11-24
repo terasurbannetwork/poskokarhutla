@@ -911,3 +911,10 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 .dl-mt .dl-ln{grid-template-columns:128px minmax(0,1fr) 88px}
 .dl-mt .dl-st-tl{justify-self:center}
 .dl-mt .dl-ln-t{line-height:1.4}
+
+/* dampak radius gunung api (public/bnpb/dampak_radius.js, data/kajian-bnpb/inarisk F-14) */
+.dr-wadah{display:grid;gap:6px;margin-top:4px}
+.dr-judul{font-size:var(--fs-2);color:var(--ink)}
+.dr-tabel th,.dr-tabel td{padding:5px 8px;font-size:var(--fs-2)}
+.dr-tabel .n{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dr-kaki{color:var(--ink2);font-size:var(--fs-1)}

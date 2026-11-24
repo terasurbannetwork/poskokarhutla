@@ -121,3 +121,4 @@ main.peta .ex-leg{background:var(--card);border:1px solid var(--line);border-rad
 .sk-pintu small{color:var(--ink2);font-weight:500;font-size:.75rem}
 .sk-sisa[data-s="kedaluwarsa"]{color:var(--bad);font-weight:800}.sk-sisa[data-s="segera_habis"]{color:var(--warn);font-weight:800}
 @media (max-width:640px){.sk-pintu{grid-template-columns:1fr}}
+.dr-tabel .n{text-align:center;font-variant-numeric:tabular-nums}

@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import {siapkan, berantai, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
+import {denganProfil, profilAktif} from "./_profil.mjs";
 
 const uji = berantai();
 const REG = JSON.stringify({pesisir: {operasi: true, renlap: {sarana: ["alat_berat", "tenda"]}}});
@@ -16,7 +17,7 @@ async function akun(kode, jenis, tingkat, prov, kab, {status = "aktif", wajib = 
     VALUES (?, ?, ?, ?, 'Wilayah uji', ?, ?, ?, ?, ?, ?, ?, 'Petugas Uji', '19800101', 'Kasi', 'BPBD', ?, ?, 1, 1, ?, 1)`)
     .bind(id, "akunuji" + u, jenis, tingkat, kab ? `${prov}|${kab}` : prov, JSON.stringify([prov]), tingkat === "kab" ? prov : null, kab, "g".repeat(32), "0".repeat(64), status, `a${u}@b.id`, WA[kode] ?? "628120009999", wajib).run();
   await DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(tok), id, Date.now() + 3600e3).run();
-  return {id, h: {cookie: "sesi_instansi=" + tok, "x-pb": "1", origin: "http://bnpb.lokal"}};
+  return {id, h: {...(await denganProfil(DB, id, {cookie: "sesi_instansi=" + tok})), "x-pb": "1", origin: "http://bnpb.lokal"}};   // akun BPBD: sesi profil (paket profil-bpbd)
 }
 const kotaBdg = await akun("a", "pemkot", "kab", "32", "Kota Bandung");
 const kabBdg = await akun("b", "pemkab", "kab", "32", "Bandung");
@@ -104,7 +105,7 @@ uji("kode.json gagal dimuat (ASSETS 500 atau JSON rusak) = 403 untuk akun tingka
     await U.DB.prepare(`INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, jabatan, unit, email, wa, surat, kartu, wajib_ganti, dibuat)
       VALUES ('0000000000000099', 'akunujix', 'pemkot', 'kab', 'Wil', '32|Kota Bandung', '["32"]', '32', 'Kota Bandung', ?, ?, 'aktif', 'P Uji', '19800101', 'Kasi', 'BPBD', 'x@b.id', '628120000077', 1, 1, 0, 1)`).bind("g".repeat(32), "0".repeat(64)).run();
     await U.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, '0000000000000099', 1, ?)").bind(sha256("b".repeat(64)), Date.now() + 3600e3).run();
-    const r = await U.api("POST", "/api/pb/titik", T(), {cookie: "sesi_instansi=" + "b".repeat(64), "x-pb": "1", origin: "http://bnpb.lokal"});
+    const r = await U.api("POST", "/api/pb/titik", T(), {cookie: "sesi_instansi=" + "b".repeat(64) + "; " + (await profilAktif(U.DB, "0000000000000099")).cookie, "x-pb": "1", origin: "http://bnpb.lokal"});
     assert.equal(r.s, 403, nama + r.t);
   }
 });

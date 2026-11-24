@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import {randomBytes} from "node:crypto";
 import {siapkan, berantai, ADMIN, GERBANG, sha256} from "./_bnpb.mjs";
+import {denganProfil} from "./_profil.mjs";
 
 const uji = berantai(), PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const U = await siapkan("uji-drone"), {api} = U;
@@ -22,7 +23,7 @@ const instansi = async status => {
     VALUES (?, ?, 'pemkab', 'kab', 'pemkab Pulang Pisau', ?, ?, '62', 'Pulang Pisau', ?, ?, ?, 'Budi', '198001012005011001', 'Kepala', 'BPBD', 'budi@x.go.id', '6281234567890', 1, 1, 0, ?)`)
     .bind(id, "drone" + (++nomor), `62|Pulang Pisau|d${nomor}`, JSON.stringify(["62"]), "g".repeat(32), "a".repeat(64), status, kini).run();
   await U.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 86400000).run();
-  return {cookie: `sesi_instansi=${token}`};
+  return denganProfil(U.DB, id, {cookie: `sesi_instansi=${token}`});   // akun BPBD: sesi profil (paket profil-bpbd)
 };
 const halamanOk = (r, sup) => {
   assert.equal(r.s, 200, r.t.slice(0, 200));

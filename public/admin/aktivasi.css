@@ -37,3 +37,8 @@
   .av-tabel td.av-a,.av-tabel td.av-n{text-align:left}
   .av-rinci>td::before{content:none}
 }
+/* PF-07: status akun BPBD, kirim ulang undangan */
+.av-pil.merah{--pil:var(--bad)}
+.av-ulang{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-block:12px}
+.av-teks{min-width:44px;padding:0 10px;font-weight:700}
+.av-salin{width:100%;min-height:96px;font:inherit;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--card);color:var(--ink)}
