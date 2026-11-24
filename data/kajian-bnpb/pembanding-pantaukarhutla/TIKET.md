@@ -109,6 +109,11 @@ Bahan kajian, bukan tiket kode:
 - K6: Kelompok G (PKH-33 sampai 45) ikut "semua gas" dengan urutan bawaan Q8 (pemilik 24 Nov 2026: "Gas semua"). Paket PKH-34 dan PKH-37 tetap lewat paket dokumen dulu.
 - K7: Kolom "pemegang saham" (`pemegang`) di laporan konsesi tetap tampil (pemilik 24 Nov 2026: "Tetap tampil"). Larangan PKH-45 hanya untuk tokoh politik dan pemilik manfaat.
 - K8: PKH-42 boleh menampilkan "setara batang rokok" (pemilik 24 Nov 2026: "Gas semua"), berlabel perkiraan kasar, rumus Berkeley Earth (22 µg/m³ PM2,5 selama 24 jam setara 1 batang).
+- K9: Penanda Himawari P-Tree boleh tampil ke publik (pemilik 24 Nov 2026: "Boleh tampil ke publik"). Berkas mentah P-Tree tetap tidak diterbitkan ulang; yang tampil hanya penanda olahan kita.
+- K10: Izin DOE Malaysia tidak diurus dulu (pemilik 24 Nov 2026: "Gausah dulu"). `stasiun_asing.json` tetap ditahan dari terbit.
+- K11: Kriteria insiden "kuat" di PKH-10 diterima apa adanya (pemilik 24 Nov 2026: "Gas").
+- K12: Kolom 7 hari ASEAN tidak dipindah ke NOAA-20 (pemilik 24 Nov 2026: "Gausah"); tetap "tidak ada data" sejak S-NPP berhenti 2 Nov 2026.
+- K13: Tabel rata tengah di 11 berkas CSS (gerbang perataan tabel) diterima (pemilik 24 Nov 2026: "Lanjut").
 
 ## Rincian kelompok F (disetujui pemilik 24 Nov 2026: "Gas")
 
