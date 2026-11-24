@@ -41,8 +41,8 @@ async function bagikan(k, tombol) {
   setTimeout(() => { info.textContent = awal; }, 2500);
 }
 function cetak(id) {
-  document.body.dataset.cetak = id;
-  addEventListener("afterprint", () => { delete document.body.dataset.cetak; }, {once: true});
+  const k = document.getElementById(`k-${id}`); k?.classList.add("cetak-ini"); document.body.dataset.cetak = id;
+  addEventListener("afterprint", () => { delete document.body.dataset.cetak; k?.classList.remove("cetak-ini"); }, {once: true});
   print();
 }
 export function kartuPublik(k) {
