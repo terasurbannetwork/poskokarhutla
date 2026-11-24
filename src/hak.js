@@ -2175,20 +2175,20 @@ export const ljObjekKlien = (env, p, klien) => sedia(env, p, "lj_objek", "baca",
 export const ljStmtObjekBaru = (env, p, o, kini) => sedia(env, p, "lj_objek", "tambah",
   `INSERT INTO lj_objek (id, berkas, jenis, urut, data, pribadi, titik_id, desa, lat, lon, klien_id, oleh, dibuat, diubah)
    SELECT ?1, ?2, ?3, coalesce(max(urut), 0) + 1, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?12 FROM lj_objek WHERE berkas = ?2 AND jenis = ?3
-   HAVING (?13 IS NULL OR EXISTS (SELECT 1 FROM lj_objek t WHERE t.berkas = ?2 AND t.jenis = 'titik' AND t.status = 'aktif' AND t.titik_id = ?13))`)
+   HAVING (?13 IS NULL OR EXISTS (SELECT 1 FROM lj_objek t WHERE t.berkas = ?2 AND t.jenis = 'titik' AND t.status = 'aktif' AND t.titik_id = ?13)) AND EXISTS (SELECT 1 FROM lj_berkas bk WHERE bk.id = ?2 AND bk.status = 'terbuka')`)
   .bind(o.id, o.berkas, o.jenis, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, o.klien_id ?? null, o.oleh, kini, o.syaratTitik ?? null);   // syaratTitik (jiwa): titik harus masih aktif saat INSERT, atomik (LJ-06)
 export const ljStmtObjekUbah = (env, p, o, rev, kini) => sedia(env, p, "lj_objek", "ubah",
   `UPDATE lj_objek SET data = ?3, pribadi = ?4, titik_id = ?5, desa = ?6, lat = ?7, lon = ?8, rev = rev + 1, diubah = ?9 WHERE id = ?1 AND berkas = ?2 AND rev = ?10 AND status = 'aktif'
-   AND (?11 IS NULL OR EXISTS (SELECT 1 FROM lj_objek t WHERE t.berkas = ?2 AND t.jenis = 'titik' AND t.status = 'aktif' AND t.titik_id = ?11))`)
+   AND (?11 IS NULL OR EXISTS (SELECT 1 FROM lj_objek t WHERE t.berkas = ?2 AND t.jenis = 'titik' AND t.status = 'aktif' AND t.titik_id = ?11)) AND EXISTS (SELECT 1 FROM lj_berkas bk WHERE bk.id = ?2 AND bk.status = 'terbuka')`)
   .bind(o.id, o.berkas, o.data, o.pribadi, o.titik_id ?? null, o.desa ?? null, o.lat ?? null, o.lon ?? null, kini, rev, o.syaratTitik ?? null);
 /* titikId (hanya saat objeknya titik): batal ditolak bila masih ada jiwa atau kebutuhan aktif di titik itu, atomik di SQL (LJ-06, LJ-08) */
 export const ljStmtObjekBatal = (env, p, id, berkas, rev, kini, titikId = null) => sedia(env, p, "lj_objek", "ubah",
   `UPDATE lj_objek SET status = 'batal', rev = rev + 1, diubah = ?4 WHERE id = ?1 AND berkas = ?2 AND rev = ?3 AND status = 'aktif'
    AND (?5 IS NULL OR NOT EXISTS (SELECT 1 FROM lj_objek j WHERE j.berkas = ?2 AND j.jenis IN ('jiwa', 'kebutuhan') AND j.status = 'aktif' AND json_extract(j.data, '$.titik') = ?5))
-   AND (?5 IS NULL OR coalesce((SELECT json_extract(b.isian, '$.posko.titik') FROM lj_berkas b WHERE b.id = ?2), '') <> ?5)`).bind(id, berkas, rev, kini, titikId);   // titik yang jadi posko tidak bisa batal
+   AND (?5 IS NULL OR coalesce((SELECT json_extract(b.isian, '$.posko.titik') FROM lj_berkas b WHERE b.id = ?2), '') <> ?5) AND EXISTS (SELECT 1 FROM lj_berkas bk WHERE bk.id = ?2 AND bk.status = 'terbuka')`).bind(id, berkas, rev, kini, titikId);   // titik yang jadi posko tidak bisa batal
 /* titik dari foto hanya mengisi objek yang belum bertitik (ALGORITMA 3: isian manual didahulukan) */
 export const ljStmtObjekTitik = (env, p, id, lat, lon, kini, g = false) => sedia(env, p, "lj_objek", "ubah",
-  `UPDATE lj_objek SET lat = ?2, lon = ?3, diubah = ?4 WHERE id = ?1 AND lat IS NULL${g ? " AND changes() > 0" : ""}`).bind(id, lat, lon, kini);
+  `UPDATE lj_objek SET lat = ?2, lon = ?3, diubah = ?4 WHERE id = ?1 AND lat IS NULL AND EXISTS (SELECT 1 FROM lj_berkas bk WHERE bk.id = lj_objek.berkas AND bk.status = 'terbuka')${g ? " AND changes() > 0" : ""}`).bind(id, lat, lon, kini);
 export const ljStmtJejak = (env, p, j, kini, g = false) => sedia(env, p, "lj_jejak", "tambah",
   g ? "INSERT INTO lj_jejak (berkas, objek, aksi, sebelum, sesudah, pribadi_sidik, oleh, waktu) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE changes() > 0"
     : "INSERT INTO lj_jejak (berkas, objek, aksi, sebelum, sesudah, pribadi_sidik, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
@@ -2206,12 +2206,38 @@ export const ljStmtNihil = (env, p, berkas, metrik, nihil, kini) => sedia(env, p
 /* objek baru atau diubah mencabut nihil metrik yang disentuhnya, di batch yang sama dengan objek; hanya bila objeknya benar tersimpan (diubah = kini), hanya yang memang bertanda */
 export const ljStmtNihilCabut = (env, p, berkas, metrik, objek, kini) => sedia(env, p, "lj_berkas", "ubah",
   `UPDATE lj_berkas SET isian = json_set(isian, '$.nihil', json(coalesce((SELECT json_group_array(value) FROM json_each(isian, '$.nihil') WHERE value NOT IN (SELECT value FROM json_each(?2))), '[]'))), diubah = ?4
-   WHERE id = ?1 AND EXISTS (SELECT 1 FROM json_each(isian, '$.nihil') WHERE value IN (SELECT value FROM json_each(?2))) AND EXISTS (SELECT 1 FROM lj_objek WHERE id = ?3 AND diubah = ?4)`)
+   WHERE id = ?1 AND status = 'terbuka' AND EXISTS (SELECT 1 FROM json_each(isian, '$.nihil') WHERE value IN (SELECT value FROM json_each(?2))) AND EXISTS (SELECT 1 FROM lj_objek WHERE id = ?3 AND diubah = ?4)`)
   .bind(berkas, JSON.stringify(metrik), objek, kini);
+/* LJ-13 penutupan (D13, D14, Q2). Tulis objek, foto, batal, nihil, dan isian di atas hanya kena berkas TERBUKA, dijaga di SQL (EXISTS lj_berkas status terbuka),
+   jadi tulis yang balapan dengan tutup kalah tanpa jendela baca-lalu-tulis. Usul tutup hanya bila berkas dan objeknya tidak berubah sejak dibaca (diubah berkas
+   dan max(diubah) objek sama), supaya versi beku sama persis dengan daftar yang dihitung. Versi beku append-only: nomor versi diambil di SQL. */
+export const ljObjekBeku = async (env, p, berkas) => (await sedia(env, p, "lj_objek", "baca",
+  "SELECT id, jenis, urut, data, pribadi, titik_id, status, diubah FROM lj_objek WHERE berkas = ?1").bind(berkas).all()).results;
+export const ljStmtUsulTutup = (env, p, berkas, penutupan, diubahBerkas, diubahObjek, kini) => sedia(env, p, "lj_berkas", "ubah",
+  `UPDATE lj_berkas SET status = 'usul_tutup', isian = json_set(isian, '$.penutupan', json(?2)), diubah = ?3 WHERE id = ?1 AND status = 'terbuka' AND diubah = ?4
+   AND coalesce((SELECT max(o.diubah) FROM lj_objek o WHERE o.berkas = ?1), 0) = ?5`).bind(berkas, penutupan, kini, diubahBerkas, diubahObjek);
+export const ljStmtBekuBaru = (env, p, berkas, isi, sidik, oleh, kini) => sedia(env, p, "lj_beku", "tambah",
+  "INSERT INTO lj_beku (berkas, versi, isi, sidik, oleh, waktu) SELECT ?1, coalesce(max(versi), 0) + 1, ?2, ?3, ?4, ?5 FROM lj_beku WHERE berkas = ?1 HAVING changes() > 0")
+  .bind(berkas, isi, sidik, oleh, kini);
+export const ljBekuTerakhir = (env, p, berkas) => sedia(env, p, "lj_beku", "baca", "SELECT versi, sidik, waktu FROM lj_beku WHERE berkas = ?1 ORDER BY versi DESC LIMIT 1").bind(berkas).first();
+/* staf menerima usul tutup: status akhir dari kondisi akhir yang dihitung saat ketua menutup (isian.penutupan.status), ditutup = awal hitungan 5 tahun (D23) */
+export const ljStmtTutupTerima = (env, p, berkas, kini) => sedia(env, p, "lj_berkas", "ubah",
+  `UPDATE lj_berkas SET status = json_extract(isian, '$.penutupan.status'), ditutup = ?2, diubah = ?2
+   WHERE id = ?1 AND status = 'usul_tutup' AND json_extract(isian, '$.penutupan.status') IN ('selesai', 'selesai_catatan')`).bind(berkas, kini);
+/* buka lagi (usul ditolak, atau perubahan sesudah ditutup): ditutup dikosongkan, jadi hitungan 5 tahun mulai lagi dari penutupan berikutnya (D23); versi lama tetap */
+export const ljStmtBukaLagi = (env, p, berkas, kini) => sedia(env, p, "lj_berkas", "ubah",
+  `UPDATE lj_berkas SET status = 'terbuka', ditutup = NULL, isian = json_remove(isian, '$.penutupan'), diubah = ?2
+   WHERE id = ?1 AND status IN ('usul_tutup', 'selesai', 'selesai_catatan')`).bind(berkas, kini);
+/* tiket LA- ke selesai hanya bila penutupan berkas ini baru saja diterima (ditutup = kini) dan tidak ada berkas lain tiket itu yang masih terbuka atau menunggu */
+export const ljStmtTiketSelesai = (env, p, nomor, dari, berkas, kini) => sedia(env, p, "lapor_tiket", "ubah",
+  `UPDATE lapor_tiket SET status = 'selesai', diubah = ?4 WHERE nomor = ?1 AND status = ?2
+   AND EXISTS (SELECT 1 FROM lj_berkas b WHERE b.id = ?3 AND b.ditutup = ?4)
+   AND NOT EXISTS (SELECT 1 FROM lj_berkas b WHERE b.induk = ?1 AND b.status IN ('terbuka', 'usul_tutup'))`).bind(nomor, dari, berkas, kini);
 export const ljMedia = async (env, p, objek) => (await sedia(env, p, "lj_media", "baca",
   "SELECT id, objek, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu FROM lj_media WHERE objek = ?1 ORDER BY waktu_terima").bind(objek).all()).results;
 export const ljWajahKunci = async (env, p, objek) => (await sedia(env, p, "lj_media", "baca", "SELECT kunci_r2 FROM lj_media WHERE objek = ?1 AND jenis = 'wajah'").bind(objek).all()).results.map(r => r.kunci_r2);
-export const ljStmtWajahHapus = (env, p, objek) => sedia(env, p, "lj_media", "hapus", "DELETE FROM lj_media WHERE objek = ?1 AND jenis = 'wajah' AND changes() > 0").bind(objek);
+export const ljStmtWajahHapus = (env, p, objek) => sedia(env, p, "lj_media", "hapus",
+  "DELETE FROM lj_media WHERE objek = ?1 AND jenis = 'wajah' AND changes() > 0 AND EXISTS (SELECT 1 FROM lj_objek o JOIN lj_berkas bk ON bk.id = o.berkas WHERE o.id = ?1 AND bk.status = 'terbuka')").bind(objek);
 export const ljMediaSatu = (env, p, id) => sedia(env, p, "lj_media", "baca",
   "SELECT m.id, m.objek, m.kunci_r2, m.jenis, o.berkas FROM lj_media m JOIN lj_objek o ON o.id = m.objek WHERE m.id = ?1").bind(id).first();
 /* batas jumlah per objek dan jenis dicek di pernyataan yang sama (atomik); objek harus masih aktif dan foto wajah hanya bila syaratnya masih terpenuhi saat tulis
@@ -2219,7 +2245,7 @@ export const ljMediaSatu = (env, p, id) => sedia(env, p, "lj_media", "baca",
 export const ljStmtMediaBaru = (env, p, m, maks) => sedia(env, p, "lj_media", "tambah",
   `INSERT INTO lj_media (id, objek, kunci_r2, jenis, lat, lon, akurasi, waktu_ambil, waktu_terima, lencana, pintu, oleh)
    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE (SELECT count(*) FROM lj_media WHERE objek = ?2 AND jenis = ?4) < ?13
-   AND EXISTS (SELECT 1 FROM lj_objek o WHERE o.id = ?2 AND o.status = 'aktif' AND (?4 <> 'wajah'
+   AND EXISTS (SELECT 1 FROM lj_objek o WHERE o.id = ?2 AND o.status = 'aktif' AND EXISTS (SELECT 1 FROM lj_berkas bk WHERE bk.id = o.berkas AND bk.status = 'terbuka') AND (?4 <> 'wajah'
      OR (o.jenis = 'jiwa' AND coalesce(json_extract(o.data, '$.umur'), -1) >= 18 AND coalesce(json_extract(o.data, '$.menolak_foto'), 0) = 0)
      OR (o.jenis = 'korban' AND json_extract(o.data, '$.status') = 'hilang' AND json_extract(o.data, '$.pencarian') = 'dicari')))`)
   .bind(m.id, m.objek, m.kunci_r2, m.jenis, m.lat ?? null, m.lon ?? null, m.akurasi ?? null, m.waktu_ambil ?? null, m.waktu_terima, m.lencana, m.pintu, m.oleh, maks);

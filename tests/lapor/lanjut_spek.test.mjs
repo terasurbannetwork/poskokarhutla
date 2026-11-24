@@ -141,15 +141,20 @@ test("kondisi akhir: selesai hanya bila hilang, mengungsi, putus semuanya 0; nul
   assert.equal(k.status, "selesai_catatan"); assert.match(k.alasan[0].teks, /belum didata/); assert.deepEqual(k.belum_didata, ["meninggal"]);
 });
 
-test("versi beku: sidik stabil terhadap urutan, berubah bila satu objek berubah, tanpa data pribadi", async () => {
-  const berkas = {id: "b".repeat(16), induk: "LA-201126-01", kab: "31.75"};
+test("versi beku: sidik stabil terhadap urutan, berubah bila satu objek berubah, tanpa data pribadi, sidik objek berkunci (LJ-13)", async () => {
+  const hmac = kunci => async s => { const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(kunci), {name: "HMAC", hash: "SHA-256"}, false, ["sign"]);
+    return [...new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join(""); };
+  const berkas = {id: "b".repeat(16), induk: "LA-201126-01", kab: "31.75"}, sk = hmac("kunci-a");
   const x = jiwa(), y = rumah("rb"); x.pribadi = {nama: "Sari Rahasia", hp: "6281234567890"};
-  const a = await L.isiBeku({berkas, semua: [x, y], rekap: {}, kondisi: {}, penutupan: {}});
-  const b = await L.isiBeku({berkas, semua: [y, x], rekap: {}, kondisi: {}, penutupan: {}});
+  const a = await L.isiBeku({berkas, semua: [x, y], rekap: {}, kondisi: {}, penutupan: {}, sidikObjek: sk});
+  const b = await L.isiBeku({berkas, semua: [y, x], rekap: {}, kondisi: {}, penutupan: {}, sidikObjek: sk});
   assert.equal(a.sidik, b.sidik); assert.match(a.sidik, /^[0-9a-f]{64}$/);
   assert.ok(!a.isi.includes("Sari Rahasia") && !a.isi.includes("6281234567890") && !a.isi.includes("pribadi"));
-  const c = await L.isiBeku({berkas, semua: [{...x, pribadi: {nama: "Sari R"}}, y], rekap: {}, kondisi: {}, penutupan: {}});
+  const c = await L.isiBeku({berkas, semua: [{...x, pribadi: {nama: "Sari R"}}, y], rekap: {}, kondisi: {}, penutupan: {}, sidikObjek: sk});
   assert.notEqual(c.sidik, a.sidik);
+  const d = await L.isiBeku({berkas, semua: [x, y], rekap: {}, kondisi: {}, penutupan: {}, sidikObjek: hmac("kunci-b")});
+  assert.notEqual(d.sidik, a.sidik, "kunci lain, sidik objek lain: tanpa kunci sidik tidak bisa dicocokkan dengan tebakan HP atau NIK");
+  await assert.rejects(L.isiBeku({berkas, semua: [x], rekap: {}, kondisi: {}, penutupan: {}}), /berkunci/, "tanpa kunci ditolak, tidak jatuh ke SHA-256 polos");
 });
 
 test("penanda: jiwa tidak pernah bertanda tanpa_titik (lokasi orang tidak disimpan, LJ-06); rumah tanpa titik tetap bertanda", () => {

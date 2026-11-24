@@ -38,7 +38,7 @@ const BAWA = {rumah: ["desa", "kec"], prasarana: ["desa", "kec"], titik: ["desa"
 let KONTEKS = {titik: [], kk: []};
 const kk = titik => KONTEKS.kk.filter(x => x.titik === titik);
 /* perintah yang membuka mode tahap 2 (dicek pemanggil sebelum daftar izin Lapor) */
-export const perintahData = teks => norm(teks) in MULAI || !!perintahStatus(teks) || !!perintahNihil(teks) || !!perintahTim(teks);
+export const perintahData = teks => norm(teks) in MULAI || !!perintahStatus(teks) || !!perintahNihil(teks) || !!perintahTim(teks) || !!perintahTutup(teks);
 /* LJ-09: "tim" (daftar), "tim tambah <nomor> [nama]", "tim cabut <nomor>", "tautan" (tautan baru untuk diri sendiri). Nomor mentah; pemanggil menormalkan. Bentuk salah -> {bantuan}; bukan perintah ini -> null */
 const BANTUAN_TIM = "Untuk mengatur tim, ketik *tim* untuk melihat anggota, *tim tambah* diikuti nomor HP dan nama (contoh: tim tambah 081234567890 Rina), atau *tim cabut* diikuti nomor HP. Hanya ketua tim yang bisa menambah dan mencabut. Untuk tautan data baru bagi Anda sendiri, ketik *tautan*.";
 export function perintahTim(teks) {
@@ -72,6 +72,11 @@ export function perintahNihil(teks) {
 export function perintahJawab(teks) {
   const m = /^(masih|selesai)(?: (\d{1,3}))?$/.exec(norm(teks));
   return m ? {jawab: m[1], nomor: m[2] ? Number(m[2]) : null} : null;
+}
+/* LJ-13: usul tutup oleh ketua: "tutup", "tutup 2" (nomor pertanyaan harian), "tutup 20-11-2026", "tutup 2 20-11-2026"; tanggal = tanggal selesai (bawaan hari ini) */
+export function perintahTutup(teks) {
+  const m = /^tutup(?: (\d{1,3}))?(?: (\d{1,2}) (\d{1,2}) (\d{4}))?$/.exec(norm(teks));
+  return m ? {nomor: m[1] ? Number(m[1]) : null, tgl: m[2] ? [Number(m[2]), Number(m[3]), Number(m[4])] : null} : null;
 }
 export const balasanStatus = p => p === "dicari" ? "masih dicari" : p === "ditemukan_hidup" ? "ditemukan hidup" : "ditemukan meninggal dunia";
 

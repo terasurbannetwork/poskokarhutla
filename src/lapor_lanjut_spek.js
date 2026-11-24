@@ -250,9 +250,11 @@ export function kondisiAkhir(r) {
 /* ---------- versi beku (D14): tanpa data pribadi, objek diwakili sidik ---------- */
 const kanonik = v => Array.isArray(v) ? `[${v.map(kanonik).join(",")}]` : v && typeof v === "object" ? `{${Object.keys(v).sort().filter(k => v[k] !== undefined).map(k => JSON.stringify(k) + ":" + kanonik(v[k])).join(",")}}` : JSON.stringify(v);
 export const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("");
-export async function isiBeku({berkas, semua, rekap: r, kondisi, penutupan}) {
+/* sidikObjek: HMAC berkunci rahasia Worker (pemanggil), bukan SHA-256 polos, supaya HP dan NIK di pribadi tidak bisa ditebak dari sidik versi (LJ-13, pola lj_jejak) */
+export async function isiBeku({berkas, semua, rekap: r, kondisi, penutupan, sidikObjek}) {
+  if (typeof sidikObjek !== "function") throw new Error("isiBeku butuh sidikObjek berkunci");
   const objek = await Promise.all(aktif(semua).slice().sort((a, b) => a.id < b.id ? -1 : 1)
-    .map(async x => ({id: x.id, jenis: x.jenis, urut: x.urut, sidik: await sha256(kanonik({data: x.data, pribadi: x.pribadi ?? null}))})));
+    .map(async x => ({id: x.id, jenis: x.jenis, urut: x.urut, sidik: await sidikObjek(kanonik({data: x.data, pribadi: x.pribadi ?? null}))})));
   const isi = kanonik({berkas: {id: berkas.id, induk: berkas.induk, kab: berkas.kab, kejadian_id: berkas.kejadian_id ?? null}, rekap: r, kondisi_akhir: kondisi, penutupan, objek});
   return {isi, sidik: await sha256(isi)};
 }

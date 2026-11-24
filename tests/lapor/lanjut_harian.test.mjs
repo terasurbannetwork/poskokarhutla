@@ -107,7 +107,7 @@ uji("jawaban WA: masih dan selesai tercatat; satu berkas tanpa nomor; bernomor b
   assert.equal((await tanya("a"))[0].jawab, null);
   const r1 = await wa(K1, "Masih"); assert.equal(r1.s, 200, r1.t); assert.equal(r1.j.status, "data_lanjutan"); assert.match(r1.j.balasan, /masih berlangsung/); assert.match(r1.j.balasan, /Bagian yang belum didata: prasarana/);
   assert.equal((await tanya("a")).find(x => x.tgl === tgl).jawab, "masih");
-  const r2 = await wa(K1, "selesai"); assert.match(r2.j.balasan, /sudah selesai/); assert.match(r2.j.balasan, /belum ditutup/);
+  const r2 = await wa(K1, "selesai"); assert.match(r2.j.balasan, /berhenti berlangsung/); assert.match(r2.j.balasan, /balas \*tutup\*/); assert.match(r2.j.balasan, /selesai dengan catatan/, "kondisi akhir belum didata: selesai dengan catatan (D13)");
   assert.equal((await tanya("a")).find(x => x.tgl === tgl).jawab, "selesai"); assert.equal((await DB.prepare("SELECT status FROM lj_berkas WHERE id = ?").bind(id("a")).first()).status, "terbuka", "tidak ada penutupan otomatis");
   // tanpa pertanyaan hari ini: bukan jawaban
   const r3 = await wa(K3, "selesai"); assert.notEqual(r3.j?.status, "data_lanjutan");
@@ -119,7 +119,7 @@ uji("ketua dengan dua berkas: tanpa nomor diminta nomor, nomor salah ditolak, no
   const baris = (await DB.prepare(`SELECT berkas FROM lj_tanya WHERE tgl = '${TGL_INI}' AND berkas IN (?, ?) ORDER BY waktu, berkas`).bind(id("a"), id("b")).all()).results.map(x => x.berkas);
   const s = await wa(K1, "masih"); assert.match(s.j.balasan, /Tulis nomor berkasnya/); assert.equal((await tanya("a")).filter(x => x.jawab).length, 0);
   assert.match((await wa(K1, "masih 3")).j.balasan, /tidak ada/);
-  assert.match((await wa(K1, "selesai 2")).j.balasan, /sudah selesai/);
+  assert.match((await wa(K1, "selesai 2")).j.balasan, /berhenti berlangsung/);
   assert.equal((await DB.prepare(`SELECT jawab FROM lj_tanya WHERE berkas = ? AND tgl = '${TGL_INI}'`).bind(baris[1]).first()).jawab, "selesai");
   assert.equal((await DB.prepare(`SELECT jawab FROM lj_tanya WHERE berkas = ? AND tgl = '${TGL_INI}'`).bind(baris[0]).first()).jawab, null);
   await DB.prepare("UPDATE lj_berkas SET status = 'selesai', ditutup = 1 WHERE id = ?").bind(baris[0]).run();

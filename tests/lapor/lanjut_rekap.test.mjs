@@ -226,7 +226,7 @@ uji("terima: tanpa x-pb, tanpa sesi, tim berkas, Koordalops, dan akun lembaga di
   assert.notEqual((await terima(b, dalam)).s, 403, "staf provinsi berkas ini lolos gerbang wilayah");
   assert.ok(!H.boleh(H.pelakuLpStaf, "sk_jitupasna_baris", "tambah") && !H.boleh(H.pelakuLpStaf, "sk_jejak", "tambah") && !H.boleh(H.pelakuLpStaf, "sk_jitupasna", "baca"), "lp_staf tidak mendapat hak sk_*");
   assert.ok(H.boleh(H.pelakuLjTerima, "sk_jitupasna_baris", "tambah") && !H.boleh(H.pelakuLjTerima, "sk_jitupasna", "ubah") && !H.boleh(H.pelakuLjTerima, "sk_kejadian", "tambah"), "lj_terima sempit");
-  assert.equal((await terima({berkas: "xx", aksi: "jitupasna"})).s, 400); assert.equal((await terima({berkas: berkasId, aksi: "tutup"})).s, 400, "penutupan menyusul di LJ-13");
+  assert.equal((await terima({berkas: "xx", aksi: "jitupasna"})).s, 400); assert.equal((await terima({berkas: berkasId, aksi: "tutup"})).s, 409, "LJ-13: belum diusulkan ketua, staf tidak bisa menutup sendiri"); assert.equal((await terima({berkas: berkasId, aksi: "hapus"})).s, 400);
   assert.equal((await terima({berkas: berkasId, aksi: "__proto__"})).s, 400); assert.equal((await terima({berkas: "f".repeat(16), aksi: "jitupasna"})).s, 404);
   assert.equal(await n("sk_jitupasna_baris"), 0);
 });

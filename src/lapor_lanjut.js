@@ -10,12 +10,12 @@ import {lajuIP, laju} from "./bnpb.js";
 import {hakMeja} from "./lapor_ai.js";
 import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
 import {bakuKab, dalamWilayah} from "./lapor_meja_hak.js";
-import {tglWib, nomorWa} from "./lapor_tampil.js";
-import {rekap, validasi, penanda, kurangFoto, fotoWajib, titikObjek, wajahBoleh, JENIS_WAJAH, TANPA_LOKASI, DEWASA, METRIK_NIHIL, metrikAda, validasiIsianBerkas} from "./lapor_lanjut_spek.js";
+import {tglWib, nomorWa, STATUS as STATUS_TIKET} from "./lapor_tampil.js";
+import {rekap, kondisiAkhir, isiBeku, validasi, penanda, kurangFoto, fotoWajib, titikObjek, wajahBoleh, JENIS_WAJAH, TANPA_LOKASI, DEWASA, METRIK_NIHIL, metrikAda, validasiIsianBerkas} from "./lapor_lanjut_spek.js";
 import {NAMA_KAB4} from "./siklus_kab.js";
 import {teksBersih} from "./meja_spek.js";
 import {kodeTp, jarakM, BOX, DEKAT_M} from "./pengungsian_titik.js";
-import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, perintahJawab, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
+import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, perintahJawab, perintahTutup, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
 import {dorongRekap, terimaJitupasna} from "./lapor_lanjut_meja.js";
 import * as H from "./hak.js";
 
@@ -27,9 +27,9 @@ const P = H.pelakuLpPelapor, STAF = H.pelakuLpStaf, TIM = H.pelakuLjTim;
 const RE_TOKEN = /^[0-9a-f]{32}$/, RE_KUKI = /(?:^|;\s*)lapor_data=([0-9a-f]{64})(?:;|$)/, RE_ID = /^[0-9a-f]{16}$/;
 const tabelBelum = e => /no such table/i.test(String(e?.message));
 /* sidik isian pribadi di lj_jejak: HMAC berkunci rahasia Worker, bukan SHA-256 polos, supaya HP dan NIK tidak bisa ditebak dari sidiknya (tinjauan keamanan LJ-04) */
-async function sidikPribadi(env, s) {
+async function sidikPribadi(env, s, awal = "lj-pribadi:") {
   if (!s || !env.SESI_KUNCI) return null;
-  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode("lj-pribadi:" + env.SESI_KUNCI), {name: "HMAC", hash: "SHA-256"}, false, ["sign"]);
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(awal + env.SESI_KUNCI), {name: "HMAC", hash: "SHA-256"}, false, ["sign"]);
   return [...new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 const kukiData = (k, umurDetik) => `lapor_data=${k}; Max-Age=${umurDetik}; Path=/api/lapor/data; HttpOnly; Secure; SameSite=Lax`;
@@ -462,8 +462,8 @@ async function nihilWa(env, t, u, kini) {
 }
 
 /* ---------- LJ-12: terima staf. Aksi tertutup pada daftar AKSI_TERIMA; penutupan berkas (LJ-13) menambah entrinya di sini, bentuk body {berkas, aksi} sama. ---------- */
-const AKSI_TERIMA = {jitupasna: (env, b, oleh, kini) => terimaJitupasna(env, b, oleh, kini)};
-/* POST /api/lapor/data/terima {berkas, aksi: "jitupasna"}: hanya staf Pusdalops BNPB (admin ikut seperti Tampilkan); akun lembaga dan tim berkas 403 */
+const AKSI_TERIMA = {jitupasna: (env, b, oleh, kini) => terimaJitupasna(env, b, oleh, kini), tutup: terimaTutup, buka: bukaLagi};
+/* POST /api/lapor/data/terima {berkas, aksi: "jitupasna" | "tutup" | "buka", alasan?}: hanya staf Pusdalops BNPB (admin ikut seperti Tampilkan); akun lembaga 403, tanpa sesi staf (termasuk kuki tim) 401 */
 async function terimaPost(env, req, url, kini) {
   const lip = await lajuIP(env, req, "lapor.data.terima", [[JAM, 120]], kini); if (lip) return lip;   // sebelum autentikasi
   if (req.headers.get("x-pb") !== "1") return galat(403, "kiriman web wajib membawa header x-pb: 1");
@@ -471,14 +471,112 @@ async function terimaPost(env, req, url, kini) {
   if (!h) return galat(401, "Masuk sebagai staf Pusdalops BNPB.");
   if (h.c.jenis !== "bnpb") return galat(403, "Hanya staf Pusdalops BNPB yang bisa menerima data berkas.");
   const oleh = String(h.oleh).slice(0, 200), lj = await laju(env, await sha(oleh), "lapor.data.terima", [[JAM, 60]], kini); if (lj) return lj;
-  const bb = await bacaBody(req, 512); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  const bb = await bacaBody(req, 2048); if (bb.galat) return galat(bb.status || 400, bb.galat);
   const id = bb.o?.berkas, aksi = bb.o?.aksi;
   if (!RE_ID.test(id || "")) return galat(400, "Berkas tidak sah.");
   if (typeof aksi !== "string" || !Object.hasOwn(AKSI_TERIMA, aksi)) return galat(400, "Aksi tidak dikenal.");
   const b = await H.ljBerkas(env, STAF, id); if (!b) return galat(404, "Berkas tidak ditemukan.");
   if (!dalamWilayahStaf(req, [b.kab.slice(0, 2)])) return galat(403, "Berkas ini di luar wilayah Anda.");   // staf berwilayah hanya provinsinya
-  const r = await AKSI_TERIMA[aksi](env, b, oleh, kini);
+  const r = await AKSI_TERIMA[aksi](env, b, oleh, kini, bb.o);
   return kirim(r.kode, r.isi);
+}
+
+/* ---------- LJ-13: penutupan (D13, D14, Q2, Q7). Ketua mengusulkan (web POST /api/lapor/data/tutup atau WA *tutup*): kondisi akhir dihitung dari daftar, berkas
+   dibekukan jadi versi baru di lj_beku (tanpa data pribadi, sidik objek HMAC berkunci), status usul_tutup dan tulis apa pun ditolak di SQL. Staf Pusdalops menerima
+   (terima aksi tutup): status jadi selesai atau selesai_catatan, ditutup = awal hitungan 5 tahun (D23), tiket LA- ke selesai bila semua berkasnya tutup. Staf bisa
+   membuka lagi (terima aksi buka, wajib alasan): versi lama tetap, penutupan berikutnya jadi versi baru. Q7: tanpa jumlah objek minimal. ---------- */
+const RE_TGL = /^\d{4}-\d{2}-\d{2}$/;
+const tglSah = (t, batas) => RE_TGL.test(t ?? "") && !Number.isNaN(Date.parse(t + "T00:00:00Z")) && new Date(t + "T00:00:00Z").toISOString().slice(0, 10) === t && t <= batas;
+const teksTutup = (x, n) => { if (x == null || x === "") return {nilai: null}; if (typeof x !== "string") return {galat: true};
+  const v = x.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim(); if (!v) return {nilai: null};
+  return v.length > n || teksBersih(v) || /\d[\d\s.-]{8,}\d/.test(v) ? {galat: true} : {nilai: v}; };
+const parseJ = s => { try { return JSON.parse(s) ?? {}; } catch { return {}; } };
+async function hitungTutup(env, b, tgl) {
+  const semua = await H.ljObjekBeku(env, TIM, b.id), isian = bacaIsian(b);
+  const r = rekap(semua.map(x => ({...x, data: parseJ(x.data)})), {nihil: new Set(Array.isArray(isian.nihil) ? isian.nihil : []), tgl});
+  return {semua, r, kondisi: kondisiAkhir(r), maks: semua.reduce((m, x) => Math.max(m, x.diubah), 0)};
+}
+/* t = {b, tim, oleh}; u = {tgl_selesai, sk_nomor?, sk_tanggal?, konfirmasi}. Tanpa catatan bebas: versi beku append-only dan tidak ikut dihapus 5 tahun (D23), nama polos lolos saringan. konfirmasi bukan true = pratinjau tanpa menulis. Keluaran {kode, isi} */
+async function usulTutup(env, t, u, kini) {
+  if (t.tim.peran !== "ketua") return tolak(403, "Hanya ketua tim yang bisa menutup berkas.");
+  const hari = tglWib(kini), salah = [];
+  if (!tglSah(u.tgl_selesai, hari)) salah.push("tgl_selesai");
+  if (u.sk_tanggal != null && !tglSah(u.sk_tanggal, hari)) salah.push("sk_tanggal");
+  const sk = teksTutup(u.sk_nomor, 80); if (sk.galat || (sk.nilai && !/^[0-9A-Za-z .\/-]+$/.test(sk.nilai))) salah.push("sk_nomor");
+  if (RE_TGL.test(u.tgl_selesai ?? "") && u.tgl_selesai < tglWib(t.b.dibuat - 30 * HARI)) salah.push("tgl_selesai");
+  if (salah.length) return tolak(400, "Isian penutupan belum lengkap atau tidak sah. Tanggal selesai wajib, tidak di masa depan; jangan tulis nomor HP atau NIK.", {isian: salah});
+  const h = await hitungTutup(env, t.b, u.tgl_selesai);
+  /* tanggal mundur tidak boleh menyembunyikan pengungsi: jiwa aktif yang masuk sesudah tanggal selesai dan belum keluar (tinjauan validasi-model LJ-13) */
+  if (h.semua.some(x => x.jenis === "jiwa" && x.status === "aktif" && (d => d.masuk > u.tgl_selesai && (!d.keluar || d.keluar > u.tgl_selesai))(parseJ(x.data))))
+    return tolak(400, "Tanggal selesai lebih awal dari tanggal masuk pengungsi yang belum keluar. Catat dulu tanggal keluarnya, atau pakai tanggal yang lebih baru.", {isian: ["tgl_selesai"]});
+  if (u.konfirmasi !== true) return {kode: 200, isi: {pratinjau: true, rekap: h.r, kondisi: h.kondisi}};
+  const penutupan = {tgl_selesai: u.tgl_selesai, sk_nomor: sk.nilai, sk_tanggal: u.sk_tanggal ?? null, status: h.kondisi.status};
+  if (!env.SESI_KUNCI) return tolak(503, "Penutupan belum bisa dipakai: kunci sidik belum dipasang.");
+  const beku = await isiBeku({berkas: t.b, semua: h.semua, rekap: h.r, kondisi: h.kondisi, penutupan, sidikObjek: s => sidikPribadi(env, s, "lj-beku:")});
+  const r = await H.ljBatch(env, TIM, [H.ljStmtUsulTutup(env, TIM, t.b.id, JSON.stringify(penutupan), t.b.diubah, h.maks, kini),
+    H.ljStmtBekuBaru(env, TIM, t.b.id, beku.isi, beku.sidik, "ketua", kini),   // oleh tanpa nomor: versi beku tidak memuat data pribadi; siapa yang menutup ada di lj_jejak
+    H.ljStmtJejak(env, TIM, {berkas: t.b.id, aksi: "usul_tutup", sesudah: JSON.stringify({status: penutupan.status, tgl_selesai: penutupan.tgl_selesai, sidik: beku.sidik}),
+      pribadi_sidik: await sidikPribadi(env, t.tim.wa), oleh: t.oleh}, kini, true)]);
+  if (!r[0].meta.changes) return tolak(409, "Data berkas berubah saat ditutup, atau berkas sudah ditutup. Muat ulang lalu coba lagi.");
+  const v = await H.ljBekuTerakhir(env, TIM, t.b.id);
+  return {kode: 200, isi: {status: "usul_tutup", status_akhir: penutupan.status, versi: v?.versi ?? null, sidik: beku.sidik, kondisi: h.kondisi}};
+}
+async function tutupPost(env, req, url, kini) {
+  const lj = await lajuIP(env, req, "lapor.data.tulis", [[JAM, 600]], kini); if (lj) return lj;
+  const t = await timTulis(env, req, kini); if (t instanceof Response) return t;
+  const lp = await laju(env, await sha(t.oleh), "lapor.data.tutup", [[JAM, 30]], kini); if (lp) return lp;
+  const bb = await bacaBody(req, 2048); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  const r = await usulTutup(env, t, bb.o || {}, kini);
+  return kirim(r.kode, r.isi);
+}
+const ketuaDari = async (env, b) => (await H.ljTim(env, STAF, b.id)).find(x => x.peran === "ketua" && !x.dicabut)?.wa ?? null;
+async function terimaTutup(env, b, oleh, kini) {
+  if (b.status !== "usul_tutup") return tolak(409, b.status === "terbuka" ? "Ketua tim belum mengusulkan penutupan berkas ini." : "Penutupan berkas ini sudah diterima.");
+  const st = bacaIsian(b).penutupan?.status, ketua = await ketuaDari(env, b), nama = namaKab(b) ?? b.kab;
+  const tk = await H.lpTiket(env, STAF, b.induk), pel = tk && !["selesai", "tidak_valid"].includes(tk.status) ? await H.lpSesiNomor(env, STAF, b.induk) : null;
+  const teks = `Penutupan berkas data ${nama} (${b.induk}) sudah diterima Pusdalops BNPB${st === "selesai_catatan" ? ", dengan catatan kondisi akhir" : ""}. Terima kasih atas pendataannya.`;
+  const r = await H.ljBatch(env, STAF, [H.ljStmtTutupTerima(env, STAF, b.id, kini),
+    ...(ketua ? [H.ljStmtKabar(env, STAF, ketua, "tutup", teks, kini, true)] : []),
+    H.ljStmtJejak(env, STAF, {berkas: b.id, aksi: "tutup_terima", sesudah: JSON.stringify({status: st}), oleh}, kini, true),
+    ...(pel ? [H.ljStmtTiketSelesai(env, STAF, b.induk, tk.status, b.id, kini), H.lpStmtRiwayatJikaBerubah(env, STAF, b.induk, tk.status, "selesai", "Penutupan data lanjutan diterima", oleh, kini),
+      H.lpStmtKabarJikaBerubah(env, STAF, pel.wa, b.induk, "status", `Status laporan ${b.induk}: ${STATUS_TIKET.selesai}.`, kini)] : [])]);
+  if (!r[0].meta.changes) return tolak(409, "Status berkas baru saja berubah. Muat ulang.");
+  return {kode: 200, isi: {status: st, ditutup: kini, tiket_selesai: !!pel && r[ketua ? 3 : 2].meta.changes > 0}};
+}
+async function bukaLagi(env, b, oleh, kini, o = {}) {
+  if (b.status === "terbuka") return tolak(409, "Berkas ini masih terbuka.");
+  const a = teksTutup(o.alasan, 400); if (a.galat || !a.nilai || a.nilai.length < 5) return tolak(400, "Tulis alasan membuka lagi, 5 sampai 400 huruf, tanpa nomor HP atau NIK.", {isian: ["alasan"]});
+  const ketua = await ketuaDari(env, b), nama = namaKab(b) ?? b.kab;
+  const teks = `Berkas data ${nama} (${b.induk}) dibuka lagi oleh Pusdalops BNPB. Alasannya: ${a.nilai}\nSilakan lengkapi datanya, lalu usulkan penutupan lagi dengan *tutup*.`;
+  const r = await H.ljBatch(env, STAF, [H.ljStmtBukaLagi(env, STAF, b.id, kini),
+    ...(ketua ? [H.ljStmtKabar(env, STAF, ketua, "tutup", teks, kini, true)] : []),
+    H.ljStmtJejak(env, STAF, {berkas: b.id, aksi: "buka_lagi", sebelum: JSON.stringify({status: b.status}), sesudah: JSON.stringify({alasan: a.nilai}), oleh}, kini, true)]);
+  if (!r[0].meta.changes) return tolak(409, "Status berkas baru saja berubah. Muat ulang.");
+  return {kode: 200, isi: {status: "terbuka"}};
+}
+/* ringkasan kondisi akhir untuk WA: hanya jumlah, tanpa nama */
+function teksKondisi(k) {   // bagian yang belum didata selalu disebut, juga saat status selesai (D15: kosong tidak terbaca nol)
+  const belum = k.belum_didata.length ? `\n${k.belum_didata.length} bagian lain belum didata, misalnya ${k.belum_didata.slice(0, 3).map(namaMetrik).join(", ")}.` : "";
+  if (k.status === "selesai") return `Kondisi akhir dari daftar: tidak ada korban hilang yang belum ditemukan, tidak ada warga yang masih mengungsi, dan tidak ada prasarana yang masih putus.${belum}`;
+  const baris = k.alasan.map(x => `- ${x.nilai == null ? x.teks : `${x.teks}: ${x.nilai}`}`);
+  return `Kondisi akhir dari daftar, jadi statusnya *selesai dengan catatan*:\n${baris.join("\n")}${belum}`;
+}
+const tglWa = (d, m, y) => `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+/* WA *tutup*, *tutup 2*, *tutup 20-11-2026*, *tutup 2 20-11-2026*: nomor = urutan pertanyaan harian hari ini; tanpa pertanyaan hari ini = berkas tim nomor ini */
+async function tutupWa(env, wa, tim, p, kini) {
+  const hari = tglWib(kini), tgl = p.tgl ? tglWa(...p.tgl) : hari;
+  let id = tim.berkas;
+  const tanya = await H.ljTanyaKetua(env, TIM, wa, hari, await sidikPribadi(env, wa));
+  if (p.nomor != null) { const x = tanya[p.nomor - 1]; if (!x) return tanya.length ? `Nomor ${p.nomor} tidak ada. Pertanyaan hari ini bernomor 1 sampai ${tanya.length}.` : "Tulis *tutup* saja, tanpa nomor."; id = x.berkas; }
+  else if (tanya.length > 1) return `Anda ketua untuk ${tanya.length} berkas. Tulis nomornya, misalnya *tutup 1*.`;
+  else if (tanya.length === 1) id = tanya[0].berkas;
+  const b = await H.ljBerkas(env, TIM, id);
+  if (!b || b.status !== "terbuka") return "Berkas ini sudah ditutup atau sedang menunggu diterima Pusdalops BNPB.";
+  if (await laju(env, await sha(`tim:${wa}`), "lapor.data.tutup", [[JAM, 30]], kini)) return "Terlalu banyak percobaan menutup berkas. Coba lagi satu jam lagi.";
+  const peran = id === tim.berkas ? tim.peran : (tanya.some(x => x.berkas === id) ? "ketua" : "anggota");
+  const r = await usulTutup(env, {b, tim: {peran, wa}, oleh: `tim:${wa}`}, {tgl_selesai: tgl, konfirmasi: true}, kini);
+  if (r.kode !== 200) return r.isi.isian?.includes("tgl_selesai") ? "Tanggal selesai tidak sah atau di masa depan. Contoh: *tutup 20-11-2026*." : r.isi.galat;
+  return `Penutupan berkas ${namaKab(b) ?? b.kab} diusulkan, tanggal selesai ${tgl.split("-").reverse().join("-")}.\n${teksKondisi(r.isi.kondisi)}\nBerkas sekarang terkunci dan menunggu diterima Pusdalops BNPB. Bila ada data yang perlu diubah, minta Pusdalops membukanya lagi.`;
 }
 
 /* ---------- LJ-09: tim (D11, D20, Q5, Q11, Q14). Satu inti untuk web (POST /api/lapor/data/tim) dan WA (tim tambah, tim cabut, tautan).
@@ -640,6 +738,8 @@ export async function pesanTim(env, wa, o, kini = Date.now(), origin = "") {
     let {tim, sesi, k, pindah} = d;
     const jw = k?.tahap === "isi" ? null : perintahJawab(teks);   // LJ-10: peran di berkas ini tidak menentukan; ljTanyaKetua hanya mengembalikan berkas yang nomor ini ketuai
     if (jw) { const t = await jawabHarian(env, wa, jw, kini); if (t) return jawabWa(t); }   // tanpa pertanyaan hari ini jatuh ke teks biasa
+    const pt = k?.tahap === "isi" ? null : perintahTutup(teks);   // LJ-13: tidak menyentuh draf yang sedang diisi
+    if (pt) return jawabWa(await tutupWa(env, wa, tim, pt, kini));
     if (k?.tahap === "nama" && tim.nama != null) { await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }   // nama sudah terisi lewat jalur lain
     const perintah = perintahData(teks);   // perintah tahap 2 dikerjakan dulu; nama ditanya di pesan bukan-perintah berikutnya
     if (k?.tahap === "nama" && perintah) { await H.ljSesiHapus(env, TIM, wa); sesi = k = null; }
@@ -739,6 +839,7 @@ export const RUTE_LAPOR_DATA = Object.fromEntries(Object.entries({
   "POST /api/lapor/data/isian": isianPost,
   "POST /api/lapor/data/nihil": nihilPost,
   "POST /api/lapor/data/tim": timPost,
+  "POST /api/lapor/data/tutup": tutupPost,
   "POST /api/lapor/data/foto": fotoPost,
   "GET /api/lapor/data/media": mediaGet,
 }).map(([k, f]) => [k, jaga(f)]));
@@ -811,7 +912,10 @@ async function jawabHarian(env, wa, jw, kini) {
   await H.ljBatch(env, TIM, [H.ljStmtTanyaJawab(env, TIM, r.berkas, tgl, jw.jawab),   // jawaban boleh ditimpa (terakhir menang); riwayatnya di lj_jejak
     H.ljStmtJejak(env, TIM, {berkas: r.berkas, aksi: "tanya_" + jw.jawab, sesudah: JSON.stringify({tgl, jawab: jw.jawab}), pribadi_sidik: sidik, oleh: `tim:${wa}`}, kini)]);
   const nama = namaKab(b) ?? b.kab;
-  if (jw.jawab === "selesai") return `Dicatat: kejadian di ${nama} sudah selesai.\nPenutupan berkas akan dipandu pada langkah berikutnya. Untuk sekarang berkas belum ditutup dan masih bisa diisi.`;
+  if (jw.jawab === "selesai") {   // LJ-13: tampilkan kondisi akhir hari ini, penutupan baru terjadi saat ketua membalas *tutup*
+    const h = await hitungTutup(env, b, tgl), no = jw.nomor != null ? ` ${jw.nomor}` : "";
+    return `Dicatat: kejadian di ${nama} sudah berhenti berlangsung.\n${teksKondisi(h.kondisi)}\nKondisi ini dihitung untuk hari ini; untuk tanggal selesai lain hasilnya bisa berbeda.\nBila datanya sudah lengkap, balas *tutup${no}* untuk mengusulkan penutupan dengan tanggal selesai hari ini, atau *tutup${no} 20-11-2026* untuk tanggal lain. Sesudah itu berkas terkunci.`;
+  }
   const n = {}; for (const x of await H.ljHitungJenis(env, TIM, [r.berkas])) n[x.jenis] = x.n;
   const belum = BAGIAN_HARIAN.filter(([j]) => !(n[j] > 0)).map(([, l]) => l);
   return `Terima kasih, dicatat: kejadian di ${nama} masih berlangsung.\n${belum.length ? `Bagian yang belum didata: ${belum.join(", ")}.` : "Semua bagian sudah ada datanya."}\nAda perubahan hari ini? Kirim lewat tautan data, atau ketik *data* untuk melihat pilihan di WhatsApp.`;
