@@ -151,7 +151,7 @@ export const BENCANA = {
         "BNPB, Buku Saku Tanggap Tangkas Tangguh (2012), hlm. 10", "BMKG, Petunjuk Keselamatan Gempabumi dan Tsunami, Perhatikan Jika Terasa Gempa Besar butir 6"],
     }},
   rob: {nama: "Banjir rob (pasang laut)", pendek: "Rob", warna: "#2b8c86", gambar: "bencana-rob.jpg",
-    sumber: "Prakiraan pasang air laut di titik pesisir dan peringatan rob BMKG",
+    sumber: "Prakiraan pasang air laut dari model Centurisk97 (hipotesis); peringatan rob dari BMKG bila ada",
     /* KI-56: Buku Saku menggolongkan banjir rob sebagai salah satu kategori banjir (hlm. 17, 2012) dan punya bab Gelombang Pasang; butir diambil dari kedua bab.
        Butir lama tanpa sumber (karung pasir, lubang saluran, parkir kendaraan, tambatkan perahu, ternak, jam pasang) dibuang. */
     tindakan: {

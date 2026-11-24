@@ -47,9 +47,9 @@ export const HIPOTESIS_EMAIL = new Set(["longsor", "rob"]);
 const LABEL_HIP = "Hipotesis, belum lolos uji balik";
 export function emailPeringatan({asal, lat, lon, wilayah, peringatan, simulasi, tautanBerhenti}) {
   const top = tertinggi(peringatan), B = BENCANA[top.bencana], w = lokasi(wilayah);
-  const hip = [...new Set(peringatan.filter(p => HIPOTESIS_EMAIL.has(p.bencana)).map(p => BENCANA[p.bencana].nama))];
+  const hip = [...new Set(peringatan.filter(p => HIPOTESIS_EMAIL.has(p.bencana) && !p.resmi).map(p => BENCANA[p.bencana].nama))];
   const catatHip = hip.length ? `${LABEL_HIP}: prakiraan ${hip.join(" dan ").toLowerCase()} adalah hitungan model yang belum lolos uji balik.` : "";
-  const kepala = `${TINGKAT[top.tingkat].nama} ${B.pendek.toLowerCase()} ${HARI_KATA[top.hari]} di ${w.split(", ").slice(0, 2).join(", ")}${HIPOTESIS_EMAIL.has(top.bencana) ? ` (${LABEL_HIP})` : ""}`;
+  const kepala = `${TINGKAT[top.tingkat].nama} ${B.pendek.toLowerCase()} ${HARI_KATA[top.hari]} di ${w.split(", ").slice(0, 2).join(", ")}${HIPOTESIS_EMAIL.has(top.bencana) && !top.resmi ? ` (${LABEL_HIP})` : ""}`;
   const subject = kepala[0].toUpperCase() + kepala.slice(1);
   const urut = [...new Set(peringatan.map(p => p.bencana))].map(b => ({b, t: Math.max(...peringatan.filter(p => p.bencana === b).map(p => p.tingkat))})).sort((a, b) => b.t - a.t);
   const sel = (b, h) => { const t = Math.max(0, ...peringatan.filter(p => p.bencana === b && p.hari === h).map(p => p.tingkat)); return t ? pil(t) : `<span style="color:#9aa5b1">&ndash;</span>`; };
@@ -74,7 +74,7 @@ ${catatHip ? `<p style="margin:0 0 14px;color:#8a4b00"><b>${esc(catatHip)}</b></
 ${rincian ? `<ul style="margin:14px 0 0;padding-left:18px;color:#34414e">${rincian}</ul>` : ""}
 ${blokSim}<h2 style="margin:22px 0 4px;font:700 17px ${FONT};color:#12202e">Yang perlu Anda lakukan</h2>${blok}
 ${tombol(peta, "Lihat peta")}
-<p style="margin:12px 0 0;color:#5b6773">Sumber: ${esc([...new Set(urut.map(x => BENCANA[x.b].sumber)), ...(sim.length ? [sim[0].sumber || "Simulasi penjalaran api Centurisk97"] : [])].join("; "))}. Prakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.</p>`,
+<p style="margin:12px 0 0;color:#5b6773">Sumber: ${esc([...new Set(peringatan.map(p => p.resmi ? `${p.sumber} (diteruskan apa adanya)` : BENCANA[p.bencana].sumber)), ...(sim.length ? [sim[0].sumber || "Simulasi penjalaran api Centurisk97"] : [])].join("; "))}. Prakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.</p>`,
   kakiUmum(wilayah, "Anda menerima email ini karena berlangganan Peringatan Dini untuk lokasi di atas dan lokasi itu sedang diprakirakan berisiko.", tautanBerhenti));
   const text = `${subject}\n\n` + (catatHip ? catatHip + "\n\n" : "") + peringatan.map(p => `- ${HARI[p.hari]}: ${BENCANA[p.bencana].nama}, ${TINGKAT[p.tingkat].nama}`).join("\n") + "\n\nYang perlu Anda lakukan:\n" +
     urut.map(({b, t}) => `${BENCANA[b].nama}\n` + tindakanUntuk(b, t).map((x, i) => `${i + 1}. ${x}`).join("\n")).join("\n\n") +

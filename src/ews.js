@@ -96,7 +96,8 @@ export async function muatData(env, kini) {
   const acuan = titik ? Date.parse(titik.acuan) : 0, pts = [];
   if (titik) for (const [la, lo, jam, , , c] of titik.baris) { const t = acuan + jam * JAM; if (c >= 1 && t >= kini - TITIK_UMUR) pts.push([la, lo, t]); }
   const jejakAcuan = jejakMentah?.acuan, jejakStatus = jejakMentah?.status, jejakBoleh = jejakMentah?.boleh_tampil === true, jejak = jejakSegar({jejakAcuan, jejakStatus, jejakBoleh}, kini) ? indeksJejak(jejakMentah) : null;
-  return DATA = {kini, jejak, jejakAcuan, jejakStatus, jejakBoleh, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat, hwBaru, hwAcuan: hw?.acuan};
+  const resmi = hanyaResmi(peringatanJenisBaru(await muatDataX(env, {status, rob}), kini));   // KI-50: hanya sumber resmi (peringatan_x) untuk email; hipotesis sudah dibuang di sini
+  return DATA = {kini, resmi, jejak, jejakAcuan, jejakStatus, jejakBoleh, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat, hwBaru, hwAcuan: hw?.acuan};
 }
 /* gagal-tertutup: boleh_tampil (jejak.py; false = model kalah dari persistensi, gerbang_model.json) harus persis true; medan hilang = diabaikan */
 export const jejakSegar = (d, kini) => d.jejakBoleh === true && d.jejakStatus === "ok" && kini - Date.parse(d.jejakAcuan) <= SIM_UMUR;
@@ -244,13 +245,13 @@ export function penilaiPesisir(data, kini) {
     if (!(dari <= kini + CUACA_DEPAN && sampai > kini) || !/^\d{2}$/.test(w.prov || "")) continue;
     const l = LABEL_GELOMBANG.find(([k]) => w[k]?.length); if (!l) continue;
     const tempat = w[l[0]].slice(0, 4).join(", ") + (w[l[0]].length > 4 ? ` dan ${w[l[0]].length - 4} perairan lain` : "");
-    out.push({nilai: nilaiX(`pesisir:${w.prov}:${l[1].toLowerCase()}:${String(w.dari).slice(0, 10)}`, "pesisir", l[1], w.prov, null, null, null, `Gelombang ${l[2]} di perairan ${w.wilayah}`,
+    out.push({sumber_jenis: "resmi", mulai: dari, nilai: nilaiX(`pesisir:${w.prov}:${l[1].toLowerCase()}:${String(w.dari).slice(0, 10)}`, "pesisir", l[1], w.prov, null, null, null, `Gelombang ${l[2]} di perairan ${w.wilayah}`,
       `Peringatan gelombang ${l[2]} dari BMKG untuk ${tempat}, berlaku sampai ${w.sampai} ${w.zona}. Diteruskan dari BMKG, bukan hitungan Centurisk97.`, "BMKG", g.url, kini, sampai)});
   }
   return out;
 }
 /* udara: PM2,5 rata-rata 24 jam terakhir per stasiun BMKG (public/udara/data/bmkg_pm25.json) terhadap batas ISPU di scripts/udara/kualitas.py::BATAS. Pemetaan tingkat BAWAAN SEMENTARA Q37 (rancangan
-   agent, bukan ketentuan resmi): Tidak sehat = 1, Sangat tidak sehat = 2, Berbahaya = 3; Baik dan Sedang tidak memicu. Tingkatnya hitungan kita, jadi sumber "Deteksi Centurisk97". Data (berkas atau
+   agent, bukan ketentuan resmi): Tidak sehat = 1, Sangat tidak sehat = 2, Berbahaya = 3; Baik dan Sedang tidak memicu. Tingkatnya hitungan kita, jadi sumber "Deteksi Centurisk97" (KI-50: bukan sumber resmi, tidak ikut email, D7). Data (berkas atau
    stasiun) lebih tua dari 6 jam (ALGORITMA 7.2, lantai per jam) tidak memicu; kurang dari 12 jam terisi dari 24 = tidak dinilai. */
 export const BATAS_PM25 = [15.5, 55.4, 150.4, 250.4], PM25_SEGAR = 6 * JAM;
 const KATEGORI_ISPU = ["Baik", "Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"], TINGKAT_X = ["", "Waspada", "Siaga", "Awas"];
@@ -275,6 +276,42 @@ export function penilaiKekeringan(data, kini) {
     out.push({sumber_jenis: "hipotesis", nilai: nilaiX(`kekeringan:${prov}:${slug(kab)}:${TINGKAT_X[lv].toLowerCase()}`, "kekeringan", TINGKAT_X[lv], /^\d{2}$/.test(prov) ? prov : null, kab, null, null,
       `Hipotesis kekeringan ${TINGKAT_X[lv].toLowerCase()} di ${kab}`, `Indeks hujan 3 bulan ${angka(v.spi3, 1)}. Hipotesis model, belum lolos uji balik.`, DETEKSI_X, null, kini, kini + HARI)});
   }
+  return [...out, ...kekeringanResmi(data.kekeringanBmkg, kini)];
+}
+/* KI-50: HANYA status resmi BMKG (public/banjir/data/peringatan_bmkg.json, scripts/kekeringan/peringatan_bmkg.py) diteruskan apa adanya, per kabupaten, tingkat tertinggi (1 Waspada, 2 Siaga, 3 Awas).
+   Kunci "kekeringan:bmkg:<dasarian>:..." beda dari kunci hipotesis. Berkas lebih tua dari 11 hari (satu dasarian) = diam. Statusnya dari BMKG, bukan hitungan kita. */
+/* BMKG menulis nama provinsi (huruf besar); kolom prov dan pelanggan memakai kode BPS (public/data/meta.json::provinsi). Nama tak dikenal = butir dilewati (gagal-tertutup, tidak dicocokkan ke provinsi lain). */
+const PROV_KODE = {aceh: "11", "sumatera utara": "12", "sumatera barat": "13", riau: "14", jambi: "15", "sumatera selatan": "16", bengkulu: "17", lampung: "18", "kepulauan bangka belitung": "19", "bangka belitung": "19", "kepulauan riau": "21",
+  "dki jakarta": "31", "jawa barat": "32", "jawa tengah": "33", "di yogyakarta": "34", "jawa timur": "35", banten: "36", bali: "51", "nusa tenggara barat": "52", "nusa tenggara timur": "53", "kalimantan barat": "61", "kalimantan tengah": "62",
+  "kalimantan selatan": "63", "kalimantan timur": "64", "kalimantan utara": "65", "sulawesi utara": "71", "sulawesi tengah": "72", "sulawesi selatan": "73", "sulawesi tenggara": "74", gorontalo: "75", "sulawesi barat": "76", maluku: "81",
+  "maluku utara": "82", papua: "91", "papua barat": "92", "papua selatan": "93", "papua tengah": "94", "papua pegunungan": "95", "papua barat daya": "96"};
+const kodeProv = t => PROV_KODE[String(t).toLowerCase().replace(/\bkep\.?(?=\s)/g, "kepulauan").replace(/daerah istimewa/, "di").replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim()] || null;
+const judulKab = t => String(t).toLowerCase().replace(/^(kabupaten|kota)\s+/, "").replace(/(^|\s)\S/g, c => c.toUpperCase());
+function kekeringanResmi(b, kini) {
+  if (!b?.data || !/^\d{4}-\d{2}-\d{2}$/.test(b.tanggal || "") || !(Date.parse(b.tanggal + "T00:00:00Z") + 11 * HARI > kini)) return [];
+  const per = new Map();
+  for (const [prov, lv] of Object.entries(b.data)) for (const [t, kabs] of Object.entries(lv || {})) for (const [kab, kec] of Object.entries(kabs || {})) {
+    const k = prov + "|" + kab, x = per.get(k) || {prov, kab, t: 0, kec: new Set()};
+    if (+t >= 1 && +t <= 3) { x.t = Math.max(x.t, +t); for (const c of kec || []) x.kec.add(c); }
+    per.set(k, x);
+  }
+  const out = [];
+  for (const x of per.values()) if (x.t) {
+    const nama = judulKab(x.kab), tk = TINGKAT_X[x.t], kode = kodeProv(x.prov); if (!kode) continue;
+    out.push({sumber_jenis: "resmi", mulai: Date.parse(b.tanggal + "T00:00:00Z"), nilai: nilaiX(`kekeringan:bmkg:${b.kunci || b.tanggal}:${slug(nama)}:${tk.toLowerCase()}`, "kekeringan", tk, kode, nama.slice(0, 80), null, null, `BMKG: kekeringan meteorologis ${tk.toLowerCase()} di ${nama}`,
+      `${b.judul || "Peringatan Dini Kekeringan Meteorologis"}: ${nama}, ${judulKab(x.prov)}, ${x.kec.size} kecamatan berstatus ${tk}. Diteruskan dari BMKG, bukan hitungan Centurisk97.`, "BMKG", b.url, kini, Date.parse(b.tanggal + "T00:00:00Z") + 11 * HARI)});
+  }
+  return out;
+}
+/* rob: peringatan dini banjir pesisir BMKG Maritim (public/banjir/data/rob.json::bmkg.rob) diteruskan apa adanya. BMKG tidak memberi tingkat: Waspada (BAWAAN SEMENTARA, "berpotensi").
+   Aktif bila periode memuat hari ini atau mulai dalam 24 jam. Prakiraan rob model kita (nilaiTitik) tetap hipotesis dan tidak lewat sini. */
+export function penilaiRob(data, kini) {
+  const b = data.rob?.bmkg, mulaiMaks = wib(kini + CUACA_DEPAN), hari = wib(kini), out = [];
+  for (const w of Array.isArray(b?.rob) ? b.rob : []) {
+    if (!/^\d{2}$/.test(w.kp || "") || !w.lokasi || !(w.tanggal_selesai >= hari) || !(w.tanggal_mulai <= mulaiMaks)) continue;
+    out.push({sumber_jenis: "resmi", mulai: Date.parse(w.tanggal_mulai + "T00:00:00Z") - 7 * JAM, nilai: nilaiX(`rob:${w.kp}:${slug(w.lokasi)}:${w.tanggal_mulai}:waspada`, "rob", "Waspada", w.kp, String(w.lokasi).slice(0, 200), null, null, `Potensi banjir rob di ${w.wilayah}`,
+      `Peringatan dini banjir pesisir (rob) dari BMKG Maritim untuk ${w.lokasi}, ${w.tanggal_mulai}${w.tanggal_selesai !== w.tanggal_mulai ? " sampai " + w.tanggal_selesai : ""}. Diteruskan dari BMKG, bukan hitungan Centurisk97.`, "BMKG", b.sumber, kini, Date.parse(w.tanggal_selesai + "T00:00:00Z") - 7 * JAM + HARI)});
+  }
   return out;
 }
 /* gunung api: HANYA kenaikan level resmi PVMBG yang memicu (Q37 BAWAAN SEMENTARA); level tetap atau turun tidak. Level 2/3/4 = Waspada/Siaga/Awas, label PVMBG. Sumber: riwayat_level.json dan
@@ -286,7 +323,7 @@ export function penilaiGunungapi(data, kini) {
     if (b?.jenis !== "perubahan" || !(b.ke > b.dari) || !(b.ke >= 2 && b.ke <= 4) || !(b.tanggal >= awal) || !(b.tanggal <= wib(kini))) continue;
     const kunci = `gunungapi:${slug(b.gunung)}:${b.tanggal}:${b.ke}`; if (lihat.has(kunci)) continue; lihat.add(kunci);
     const tingkat = TINGKAT_X[b.ke - 1], g = posisi.get(b.gunung);
-    out.push({nilai: nilaiX(kunci, "gunungapi", tingkat, null, null, g?.lat, g?.lon, `Status Gunung ${b.gunung} naik ke Level ${b.ke} (${tingkat})`,
+    out.push({sumber_jenis: "resmi", mulai: Date.parse(b.tanggal + "T00:00:00Z") - 7 * JAM, nilai: nilaiX(kunci, "gunungapi", tingkat, null, null, g?.lat, g?.lon, `Status Gunung ${b.gunung} naik ke Level ${b.ke} (${tingkat})`,
       `PVMBG menaikkan status Gunung ${b.gunung} dari Level ${b.dari} ke Level ${b.ke} (${tingkat}) pada ${b.tanggal}. Ikuti rekomendasi PVMBG dan arahan BPBD setempat.`, "PVMBG", b.sumber?.url, kini, kini + 2 * HARI)});
   }
   return out;
@@ -303,28 +340,56 @@ export function penilaiLongsor(data, kini) {
   }
   return out;
 }
+export const hanyaResmi = l => l.filter(n => n.resmi);   // KI-50 (D7): email hanya membawa butir yang DITANDAI resmi oleh penilainya; label saja tidak cukup (tingkat udara berlabel BMKG tetap hitungan kita)
 export const PENILAI_JENIS_BARU = {pesisir: penilaiPesisir, udara: penilaiUdara, kekeringan: penilaiKekeringan, gunungapi: penilaiGunungapi, longsor: penilaiLongsor};
-export function peringatanJenisBaru(data, kini, penilai = PENILAI_JENIS_BARU) {
+export const PENILAI_RESMI = {rob: penilaiRob};   // KI-50: jenis yang HANYA meneruskan status resmi (penilai menandai item sumber_jenis "resmi")
+const LABEL_RESMI = ["BMKG"];   // label lembaga yang boleh dipakai item bertanda "resmi" di jenis yang SUMBER_RESMI-nya kosong
+export function peringatanJenisBaru(data, kini, penilai = {...PENILAI_JENIS_BARU, ...PENILAI_RESMI}) {
   const out = [];
   for (const [jenis, f] of Object.entries(penilai)) {
     let hasil; try { hasil = f(data, kini) ?? []; } catch (e) { console.error("penilai", jenis, e?.message); continue; }   // berkas rusak satu jenis tidak membatalkan jenis lain
     for (const p of hasil) if (p?.sumber_jenis !== "hipotesis" && p?.nilai?.[1] === jenis) {
-      const n = [...p.nilai]; if (!(SUMBER_RESMI[jenis] || []).includes(n[9])) n[9] = DETEKSI_X;   // sumber tak dikenal = kata Deteksi
-      out.push(n);
+      const n = [...p.nilai]; if (!(SUMBER_RESMI[jenis] || []).includes(n[9]) && !(p.sumber_jenis === "resmi" && LABEL_RESMI.includes(n[9]))) n[9] = DETEKSI_X;   // sumber tak dikenal = kata Deteksi
+      /* tanda resmi dibawa eksplisit (bukan ditebak dari label); properti tak-enumerable, jadi n tetap array kolom biasa */
+      Object.defineProperties(n, {resmi: {value: p.sumber_jenis === "resmi" && n[9] !== DETEKSI_X}, mulai: {value: Number.isFinite(p.mulai) ? p.mulai : null}});
+        out.push(n);
     }
   }
   return out;
 }
 /* berkas dibaca lewat ASSETS (nol baca D1); tulis hanya yang baru (INSERT OR IGNORE). Dipanggil cron menit 21 tiap jam (worker.js, blok CRON_GEMPA). */
+const ambilAset = env => async p => { try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p), {signal: AbortSignal.timeout(5000)}); return r.ok ? await r.json() : null; } catch (e) { return null; } };
+/* awal = {status, rob} yang sudah dimuat pemanggil (muatData), supaya tidak diambil dua kali */
+export async function muatDataX(env, awal = {}) {
+  const ambil = ambilAset(env), pakai = (k, p) => k in awal ? awal[k] : ambil(p);
+  const [per, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan, status, rob, kekeringanBmkg] = await Promise.all([ambil("/data/peringatan.json"), ambil("/udara/data/bmkg_pm25.json"), ambil("/gunungapi/data/riwayat_level.json"), ambil("/gunungapi/data/perubahan_level.json"), ambil("/banjir/data/gunungapi_status.json"), ambil("/data/kekeringan_wilayah.json"), pakai("status", "/banjir/data/status.json"), pakai("rob", "/banjir/data/rob.json"), ambil("/banjir/data/peringatan_bmkg.json")]);
+  return {gelombang: {daftar: per?.gelombang, dibuat: per?.dibuat, url: per?.sumber?.gelombang}, pm25, status, riwayatLevel, perubahanLevel, gunungStatus, kekeringan, rob, kekeringanBmkg};
+}
 export async function periksaJenisBaru(env, kini = Date.now()) {
-  const ambil = async p => { try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p)); return r.ok ? await r.json() : null; } catch (e) { return null; } };
-  const [per, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan, status] = await Promise.all(["/data/peringatan.json", "/udara/data/bmkg_pm25.json", "/gunungapi/data/riwayat_level.json", "/gunungapi/data/perubahan_level.json", "/banjir/data/gunungapi_status.json", "/data/kekeringan_wilayah.json", "/banjir/data/status.json"].map(ambil));
-  const data = {gelombang: {daftar: per?.gelombang, dibuat: per?.dibuat, url: per?.sumber?.gelombang}, pm25, status, riwayatLevel, perubahanLevel, gunungStatus, kekeringan}, hasil = {tulis: 0, ganda: 0, galat: 0};
+  const data = await muatDataX(env), hasil = {tulis: 0, ganda: 0, galat: 0};
   for (const n of peringatanJenisBaru(data, kini)) {
     try { const r = await tulisPeringatan(env, n); if (r === null) return {lewat: "tabel peringatan_x belum ada (migrasi 0137)"}; r ? hasil.tulis++ : hasil.ganda++; } catch (e) { console.error("peringatan_x", e?.message); hasil.galat++; }
   }
   return hasil;
 }
+
+/* KI-50: peringatan_x resmi -> pelanggan. Pencocokan lokasi per jenis (jarak BAWAAN SEMENTARA, belum ada sumber radius): gunung api <= 100 km dari kawah, stasiun udara <= 25 km,
+   pesisir = provinsi sama, kekeringan = provinsi sama DAN nama kabupaten tak kosong sama, rob = provinsi sama dan nama kabupaten/kecamatan pelanggan ada di kolom lokasi BMKG (n[4], bukan teks baku). Sumber tampil dengan label lembaga (n[9]). */
+export const GUNUNG_KM = 100, STASIUN_UDARA_KM = 25;
+const baku = t => String(t || "").toLowerCase().replace(/\b(kabupaten|kab|kota|adm|administrasi)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+export function cocokResmi(n, s) {
+  const [, jenis, , prov, kab, lat, lon] = n;
+  if (jenis === "gunungapi") return lat != null && km(s.lat, s.lon, lat, lon) <= GUNUNG_KM;
+  if (jenis === "udara") return lat != null && km(s.lat, s.lon, lat, lon) <= STASIUN_UDARA_KM;
+  if (jenis === "pesisir") return !!prov && prov === s.prov;
+  if (jenis === "kekeringan") return !!prov && prov === s.prov && baku(kab) !== "" && baku(kab) === baku(s.kab);
+  if (jenis === "rob") { const t = " " + baku(kab) + " "; return !!prov && prov === s.prov && [s.kab, s.kec].some(x => baku(x) && t.includes(" " + baku(x) + " ")); }
+  return false;
+}
+/* Q8 (KEPUTUSAN-KEMAMPUAN, BAWAAN SEMENTARA): hanya putaran PERTAMA kanal resmi (belum ada baris ews_terkirim berkunci 'x|%') mencatat butir aktif tanpa mengirim (lonjakan deploy);
+   putaran berikutnya mengirim biasa. Butir kadaluarsa (berlaku_hingga <= kini) dibuang. Tanpa data.kini (uji murni) tidak ada yang kadaluarsa. */
+export const resmiUntuk = (data, s, pilih) => (data.resmi || []).filter(n => pilih.includes(n[1]) && !(n[12] <= data.kini) && cocokResmi(n, s))
+  .map(n => ({bencana: n[1], tingkat: TINGKAT_X.indexOf(n[2]), hari: 0, judul: n[7], rincian: n[8], sumber: n[9], kunci: "x|" + n[0], sumber_jenis: "resmi", resmi: true}));
 
 /* ---------------- gempa ---------------- */
 export const radiusGempa = m => RADIUS_GEMPA.find(([a]) => m >= a)?.[1] ?? 0;
@@ -359,6 +424,7 @@ export async function kirimEws(env, kini = Date.now()) {
   if (!rahasiaAda(env)) return {lewat: "IP_SALT belum diset"};
   const data = await muatData(env, kini), hariIni = wib(kini), maks = maksEmail(env), pn = await namaProv(env), chunk = Number(env.EWS_CHUNK) || CHUNK;   // EWS_CHUNK hanya untuk uji
   const hasil = {diperiksa: 0, dikirim: 0, tertunda: 0, gagal: 0};
+  const pertama = !(await env.DB.prepare("SELECT 1 FROM ews_terkirim WHERE kunci LIKE 'x|%' LIMIT 1").first());   // Q8: sekali per putaran, bukan per chunk
   for (let penuh = false; !penuh;) {
     const kel = (await env.DB.prepare("SELECT id, email, lat, lon, prov, kab, kec, kec_kunci, bencana, waspada, kirim_terakhir FROM ews_langganan WHERE status = 'aktif' AND diperiksa < ? ORDER BY diperiksa, id LIMIT ?").bind(kini, chunk).all()).results;
     if (!kel.length) break;
@@ -369,7 +435,9 @@ export async function kirimEws(env, kini = Date.now()) {
     for (const s of kel) {
       try {
         const pilih = JSON.parse(s.bencana), min = s.waspada ? 1 : 2;
-        const ps = nilaiTitik(data, s.lat, s.lon, s.kec_kunci, hariIni).filter(p => pilih.includes(p.bencana) && p.tingkat >= min);
+        const semua = [...nilaiTitik(data, s.lat, s.lon, s.kec_kunci, hariIni), ...resmiUntuk(data, s, pilih)].filter(p => pilih.includes(p.bencana) && p.tingkat >= min);
+        const ps = semua.filter(p => !(pertama && p.resmi)), senyap = semua.filter(p => pertama && p.resmi && !lalu.get(s.id)?.has(p.kunci));
+        if (senyap.length) await env.DB.batch(senyap.map(p => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?, ?, ?)").bind(s.id, k80(p.kunci), kini)));   // Q8: dicatat, tidak dikirim
         const baru = ps.filter(p => !lalu.get(s.id)?.has(p.kunci)).map(p => k80(p.kunci));
         if (baru.length && kini - s.kirim_terakhir >= JEDA_PRAKIRAAN) {
           if (hasil.dikirim >= maks) { hasil.tertunda++; penuh = true; continue; }   // tidak ditandai diperiksa

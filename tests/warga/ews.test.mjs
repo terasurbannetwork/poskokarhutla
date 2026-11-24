@@ -708,7 +708,7 @@ uji("PB-26 jenis baru: registri penilai kosong = tidak ada peringatan; hipotesis
 /* ---- PB-36a pesisir, PB-38a udara, PB-40 kekeringan, PB-46a gunung api: penilai F2 ---- */
 const KX = T0 + 2 * HARI, GEL = (w = {}) => ({dibuat: new Date(KX - JAM).toISOString(), url: "https://maritim.bmkg.go.id/w.json", daftar: [{wilayah: "Banten", prov: "36", dari: wib(KX) + "T07:00", sampai: wib(KX + HARI) + "T07:00", zona: "WIB", sedang: ["P1"], tinggi: ["Perairan Selatan Pandeglang"], sangat_tinggi: [], ekstrem: [], ...w}]});
 const pm = (deret, t = KX - 2 * JAM, dibuat = KX - JAM) => ({dibuat: new Date(dibuat).toISOString(), stasiun: [{nama: "Banjarbaru", lat: -3.475, lon: 114.856, t: new Date(t).toISOString(), deret}]});
-const hasilX = (data, jenis) => E.peringatanJenisBaru(data, KX, {[jenis]: E.PENILAI_JENIS_BARU[jenis]});
+const hasilX = (data, jenis) => E.peringatanJenisBaru(data, KX, {[jenis]: E.PENILAI_JENIS_BARU[jenis] ?? E.PENILAI_RESMI[jenis]});
 
 uji("PB-36a pesisir: label BMKG tinggi/sangat tinggi/ekstrem diteruskan (label BMKG), sedang dan basi tidak memicu, tanpa kata aman", () => {
   const [n] = hasilX({gelombang: GEL()}, "pesisir");
@@ -790,4 +790,117 @@ uji("KI-07: note CAP memuat tiap jenis yang diterbitkan (lama + peringatan_x), b
   for (const j of ["gempa bumi", "tsunami", "cuaca ekstrem", "kebakaran hutan dan lahan", "banjir", "aktivitas gunung api", "kualitas udara", "kekeringan", "gelombang tinggi", "tanah longsor", "banjir rob"]) assert.ok(note.toLowerCase().includes(j.toLowerCase()), `note memuat ${j}`);
   for (const j of JENIS_CAP) assert.ok(note.includes(j), `note memuat tiap jenis yang diterbitkan: ${j}`);
   assert.ok(note.includes("tanah longsor") && note.includes("kekeringan") && !note.includes("cuaca BMKG, karhutla, banjir)"), note);
+});
+
+/* ---- KI-50: peringatan sumber resmi sampai ke email dan CAP; hipotesis kita tidak ---- */
+const BM_KER = (o = {}) => ({tanggal: wib(KX), kunci: wib(KX).slice(0, 7) + "-3", judul: "Peringatan Dini Kekeringan Meteorologi Dasarian III", url: "https://www.bmkg.go.id/peringatan-dini/kekeringan-meteorologis", data: {MALUKU: {3: {"KABUPATEN SERAM BAGIAN BARAT": ["HUAMUAL BELAKANG", "KAIRATU"]}, 1: {"KOTA AMBON": ["SIRIMAU"]}}}, ...o});
+const ROB_X = (o = {}) => ({bmkg: {sumber: "https://maritim.bmkg.go.id/rob.pdf", rob: [{wilayah: "Pesisir Jawa Tengah", kp: "33", lokasi: "Pesisir Kota Semarang, Pesisir Kab. Demak", tanggal_mulai: wib(KX), tanggal_selesai: wib(KX + 2 * HARI), ...o}]}});
+const SUB = (o = {}) => ({lat: -6.97, lon: 110.42, prov: "33", kab: "Kota Semarang", kec: "Genuk", ...o});
+uji("KI-50 kekeringan: hanya status resmi BMKG yang diteruskan (label BMKG, tingkat tertinggi per kabupaten); hipotesis kita tetap dibuang", () => {
+  const data = {kekeringanBmkg: BM_KER(), kekeringan: {kab: {"11|Aceh Barat": {lv: 3, spi3: -3.7}}}};
+  const h = hasilX(data, "kekeringan");
+  assert.deepEqual(h.map(n => [n[1], n[2], n[4], n[9]]).sort(), [["kekeringan", "Awas", "Seram Bagian Barat", "BMKG"], ["kekeringan", "Waspada", "Ambon", "BMKG"]].sort(), "hipotesis Aceh Barat tidak keluar");
+  assert.ok(h.every(n => n[0].startsWith("kekeringan:bmkg:")), "kunci beda dari kunci hipotesis"); assert.match(h.find(n => n[4] === "Seram Bagian Barat")[8], /2 kecamatan.*bukan hitungan Centurisk97/);
+  assert.deepEqual(hasilX({kekeringanBmkg: BM_KER({tanggal: wib(KX - 12 * HARI)})}, "kekeringan"), [], "berkas lebih dari satu dasarian = diam");
+  assert.deepEqual(hasilX({kekeringanBmkg: {...BM_KER(), data: {X: {9: {"KAB A": ["k"]}}}}}, "kekeringan"), [], "tingkat di luar 1-3 diabaikan");
+});
+uji("KI-50 rob: peringatan BMKG Maritim diteruskan berlabel BMKG; periode lewat atau terlalu jauh tidak", () => {
+  const [n] = hasilX({rob: ROB_X()}, "rob"); assert.deepEqual([n[1], n[2], n[3], n[9], n[10]], ["rob", "Waspada", "33", "BMKG", "https://maritim.bmkg.go.id/rob.pdf"]); assert.match(n[8], /bukan hitungan Centurisk97/);
+  assert.deepEqual(hasilX({rob: ROB_X({tanggal_selesai: wib(KX - 2 * HARI), tanggal_mulai: wib(KX - 4 * HARI)})}, "rob"), []);
+  assert.deepEqual(hasilX({rob: ROB_X({tanggal_mulai: wib(KX + 5 * HARI), tanggal_selesai: wib(KX + 6 * HARI)})}, "rob"), []);
+  assert.deepEqual(hasilX({rob: {titik: [{lat: 1, lon: 100, lv: [3]}], hari: [wib(KX)]}}, "rob"), [], "prakiraan model rob kita tidak ikut");
+});
+uji("KI-50 email: item resmi sampai ke pelanggan yang memilih jenisnya dan dekat; hipotesis dan pelanggan jauh tidak; kunci stabil", () => {
+  const dx = {gelombang: GEL(), pm25: pm(Array(30).fill(300)), kekeringanBmkg: BM_KER(), rob: ROB_X(), kekeringan: {kab: {"11|Aceh Barat": {lv: 3}}},
+    riwayatLevel: {baris: [{gunung: "Lokon", jenis: "perubahan", tanggal: wib(KX), dari: 2, ke: 3, sumber: {url: "https://magma.esdm.go.id/x"}}]}, gunungStatus: {gunung: [{nama: "Lokon", lat: 1.358, lon: 124.792}]}};
+  const data = {resmi: E.hanyaResmi(E.peringatanJenisBaru(dx, KX))}, semua = ["gunungapi", "udara", "pesisir", "kekeringan", "rob"];
+  const u = (s, pilih = semua) => E.resmiUntuk(data, s, pilih);
+  const manado = SUB({lat: 1.45, lon: 124.84, prov: "71", kab: "Kota Manado", kec: "Wenang"}), semarang = SUB(), banten = SUB({lat: -6.3, lon: 106.1, prov: "36", kab: "Kabupaten Pandeglang", kec: "Labuan"}), seram = SUB({lat: -3.1, lon: 128.2, prov: "81", kab: "Kabupaten Seram Bagian Barat", kec: "Kairatu"});
+  assert.deepEqual(u(manado).map(x => x.bencana), ["gunungapi"], "dekat Lokon (+ bukan stasiun/rob/pesisir)");
+  assert.deepEqual(u(SUB({lat: -3.4, lon: 114.85, prov: "63", kab: "Kota Banjarbaru", kec: "x"})), [], "udara: tingkatnya hitungan kita (label Deteksi), bukan sumber resmi, tidak diemail (D7)");
+  assert.deepEqual(u(semarang).map(x => x.bencana), ["rob"], "kota Semarang ada di teks lokasi BMKG");
+  assert.deepEqual(u(banten).map(x => x.bencana), ["pesisir"]); assert.deepEqual(u(seram).map(x => x.bencana), ["kekeringan"], "nama kabupaten dibakukan (Kabupaten dibuang)");
+  assert.deepEqual(u(manado, ["udara"]), [], "tidak memilih jenisnya = tidak dapat");
+  assert.deepEqual(u(SUB({kab: "Kota Tegal", kec: "Margadana"})), [], "rob: provinsi sama tetapi bukan lokasi BMKG");
+  const x = u(seram)[0]; assert.deepEqual([x.tingkat, x.sumber, x.resmi, x.hari], [3, "BMKG", true, 0]); assert.ok(x.kunci.startsWith("x|kekeringan:bmkg:") && x.kunci.length <= 80, "kunci khusus jenis, muat di k80");
+  assert.deepEqual(u(seram).map(y => y.kunci), E.resmiUntuk({resmi: E.hanyaResmi(E.peringatanJenisBaru(dx, KX))}, seram, semua).map(y => y.kunci), "kunci stabil antar putaran");
+  /* email: label jelas, rob resmi TIDAK berlabel hipotesis, sumber lembaga disebut */
+  const em = emailPeringatan({asal: "https://x", lat: -6.97, lon: 110.42, wilayah: {kec: "Genuk", kab: "Kota Semarang", prov_nama: "Jawa Tengah"}, peringatan: u(semarang), simulasi: null, tautanBerhenti: "https://x/b"});
+  assert.ok(!/Hipotesis, belum lolos/.test(em.subject + em.html + em.text), "rob BMKG bukan hipotesis"); assert.match(em.html, /BMKG \(diteruskan apa adanya\)/); assert.match(em.html, /bukan hitungan Centurisk97/);
+  const hip = emailPeringatan({asal: "https://x", lat: 0, lon: 0, wilayah: {}, peringatan: [{bencana: "rob", tingkat: 2, hari: 0, judul: "j", rincian: "r", sumber: "s", kunci: "k"}], tautanBerhenti: "https://x/b"});
+  assert.match(hip.subject, /Hipotesis/, "rob model kita tetap berlabel hipotesis");
+});
+uji("KI-50 CAP: tiap jenis punya kategori OASIS benar (Geo/Met/Health), pengirim lembaga, XML ter-escape", () => {
+  const dx = {gelombang: GEL(), pm25: pm(Array(30).fill(300)), kekeringanBmkg: BM_KER({judul: "A & <b> \"x\""}), rob: ROB_X(), riwayatLevel: {baris: [{gunung: "Lokon", jenis: "perubahan", tanggal: wib(KX), dari: 2, ke: 3}]}};
+  const d = E.peringatanJenisBaru(dx, KX).map(n => ({kunci: n[0], jenis: n[1], tingkat: n[2], prov: n[3], kab: n[4], lat: n[5], lon: n[6], judul: n[7], teks: n[8], sumber: n[9], sumber_url: n[10], dibuat: new Date(n[11]).toISOString(), berlaku_hingga: new Date(n[12]).toISOString()}));
+  assert.deepEqual([...new Set(d.map(x => x.jenis))].sort(), ["gunungapi", "kekeringan", "pesisir", "rob", "udara"]);
+  const cap = bentukCap(d, KX), infoDari = j => cap.split("<info>").slice(1).find(b => b.includes(`<value>${d.find(x => x.jenis === j).kunci}</value>`));
+  const per = Object.fromEntries(["gunungapi", "kekeringan", "pesisir", "rob"].map(j => [j, [infoDari(j).match(/<category>(\w+)<\/category>/)[1], infoDari(j).match(/<senderName>([^<]*)</)[1]]]));
+  assert.deepEqual(per, {gunungapi: ["Geo", "Centurisk97, meneruskan PVMBG"], kekeringan: ["Met", "Centurisk97, meneruskan BMKG"], pesisir: ["Met", "Centurisk97, meneruskan BMKG"], rob: ["Met", "Centurisk97, meneruskan BMKG"]});
+  assert.ok(cap.includes("A &amp; &lt;b&gt; &quot;x&quot;") && !cap.includes("<b>"), "XML ter-escape");
+  assert.equal(infoDari("udara").match(/<category>(\w+)<\/category>/)[1], "Health"); assert.match(infoDari("udara"), /<senderName>Centurisk97, Deteksi Centurisk97 \(hitungan otomatis/, "udara tetap di CAP, jujur sebagai hitungan kita");
+});
+
+/* ---- KI-50 perbaikan tinjauan: kecocokan ketat, tanda resmi eksplisit, kadaluarsa, lonjakan deploy pertama (Q8), end-to-end kirimEws ---- */
+const dataResmi = (dx, kini = KX) => ({kini, resmi: E.hanyaResmi(E.peringatanJenisBaru(dx, kini))});
+uji("KI-50 kekeringan: provinsi harus sama DAN nama kabupaten tak kosong; nama 'Kabupaten' saja tidak pernah cocok", () => {
+  const seram = SUB({prov: "81", kab: "Kabupaten Seram Bagian Barat", kec: "Kairatu"});
+  assert.deepEqual(E.resmiUntuk(dataResmi({kekeringanBmkg: BM_KER()}), seram, ["kekeringan"]).map(x => x.bencana), ["kekeringan"]);
+  assert.deepEqual(E.resmiUntuk(dataResmi({kekeringanBmkg: BM_KER()}), SUB({prov: "82", kab: "Kabupaten Seram Bagian Barat"}), ["kekeringan"]), [], "kabupaten sama nama, provinsi lain");
+  const kosong = dataResmi({kekeringanBmkg: BM_KER({data: {MALUKU: {3: {KABUPATEN: ["X"]}}}})});
+  assert.equal(kosong.resmi.length, 1, "butirnya ada");
+  assert.deepEqual(E.resmiUntuk(kosong, SUB({prov: "81", kab: "Kabupaten"}), ["kekeringan"]), [], "kab 'Kabupaten' dibakukan jadi kosong = tidak cocok");
+  assert.deepEqual(E.resmiUntuk(kosong, SUB({prov: "81", kab: ""}), ["kekeringan"]), []);
+  assert.deepEqual(dataResmi({kekeringanBmkg: BM_KER({data: {"PROVINSI ASING": {3: {"KAB A": ["k"]}}}})}).resmi, [], "provinsi tak dikenal = dilewati");
+  assert.equal(hasilX({kekeringanBmkg: BM_KER({data: {"DAERAH ISTIMEWA YOGYAKARTA": {2: {"KAB BANTUL": ["x"]}}, "KEP. BANGKA BELITUNG": {1: {"KAB BANGKA": ["y"]}}}})}, "kekeringan").map(n => n[3]).sort().join(), "19,34");
+});
+uji("KI-50 rob: dicocokkan hanya ke lokasi BMKG, bukan ke kata baku di teks (banjir, rob, BMKG)", () => {
+  const d = dataResmi({rob: ROB_X()});
+  assert.deepEqual(E.resmiUntuk(d, SUB({kab: "Kota Tegal", kec: "Banjir"}), ["rob"]), [], "kecamatan bernama kata baku teks tidak cocok");
+  assert.deepEqual(E.resmiUntuk(d, SUB({kab: "Kota Tegal", kec: "Diteruskan"}), ["rob"]), []);
+  assert.equal(E.resmiUntuk(d, SUB({kab: "Kabupaten Demak", kec: "Sayung"}), ["rob"]).length, 1, "kabupaten ada di lokasi BMKG");
+  assert.equal(d.resmi[0][4], "Pesisir Kota Semarang, Pesisir Kab. Demak", "lokasi disimpan terpisah di kolom kab");
+});
+uji("KI-50 tanda resmi eksplisit: label BMKG saja tidak cukup; butir kadaluarsa dibuang", () => {
+  const nilai = ["udara:x:1", "udara", "Waspada", null, null, -3.4, 114.85, "J", "T", "BMKG", null, KX, KX + HARI];
+  assert.deepEqual(E.hanyaResmi(E.peringatanJenisBaru({}, KX, {udara: () => [{nilai}]})), [], "penilai udara berlabel BMKG tanpa tanda resmi");
+  assert.equal(E.hanyaResmi(E.peringatanJenisBaru({}, KX, {udara: () => [{nilai, sumber_jenis: "resmi"}]})).length, 1, "ditandai resmi penilainya");
+  assert.deepEqual(E.peringatanJenisBaru({}, KX, {udara: () => [{nilai}]}), [nilai], "bentuk n tetap array kolom biasa");
+  const sem = SUB(), d = {kini: KX, resmi: E.hanyaResmi(E.peringatanJenisBaru({rob: ROB_X()}, KX))};
+  assert.equal(E.resmiUntuk(d, sem, ["rob"]).length, 1);
+  assert.deepEqual(E.resmiUntuk({...d, kini: d.resmi[0][12]}, sem, ["rob"]), [], "berlaku_hingga <= kini = dibuang");
+});
+uji("KI-50 kirimEws end-to-end: butir resmi terkirim sekali, patuh maks per putaran, butir kembar tidak menggandakan, putaran pertama (Q8) mencatat tanpa kirim", async () => {
+  const TR = T0 + 6 * HARI + 5 * MENIT, id = i => (0xe000 + i).toString(16).padStart(16, "0");
+  const masuk = (i, email, kab, kec) => DB4.prepare("INSERT INTO ews_langganan (id, email, email_kunci, lat, lon, prov, kab, kec, kec_kunci, bencana, waspada, status, dibuat) VALUES (?, ?, ?, -6.97, 110.42, '33', ?, ?, ?, '[\"rob\"]', 1, 'aktif', 1)")
+    .bind(id(i), email, email, kab, kec, `33|${kab}|${kec}`);
+  await DB4.batch(["DELETE FROM ews_terkirim", "DELETE FROM ews_langganan"].map(q => DB4.prepare(q)));   // terpisah dari pelanggan uji giliran adil yang memakai DB4 yang sama
+  await DB4.batch([...Array.from({length: 5}, (_, i) => masuk(i, `resmi${i}@contoh.id`, "Kota Semarang", "Genuk")), masuk(9, "resmilama@contoh.id", "Kabupaten Demak", "Sayung")]);
+  const rob = (...w) => ({sumber: "https://maritim.bmkg.go.id/rob.pdf", rob: w.map(o => ({wilayah: "Pesisir Jawa Tengah", kp: "33", ...o}))});
+  const baru = {lokasi: "Pesisir Kota Semarang", tanggal_mulai: wib(TR), tanggal_selesai: wib(TR + HARI)};
+  muat(TR, {kecKunci}); fx.rob.bmkg = rob(baru, {...baru});   // butir kembar persis
+  const kena = () => surat.filter(s => /^resmi\d@/.test(s.to[0])), per = {};
+  /* Q8: putaran PERTAMA kanal resmi hanya mencatat (lonjakan deploy), tanpa kirim */
+  await cron(JAM_CRON, TR, mf4); assert.equal(kena().length, 0, "putaran pertama tidak mengirim");
+  assert.equal((await DB4.prepare("SELECT count(*) n FROM ews_terkirim WHERE kunci LIKE 'x|rob:%'").first()).n, 6 - 1 + 0, "dicatat: satu per pelanggan Semarang, butir kembar tidak menggandakan");
+  await cron(JAM_CRON, TR + MENIT, mf4); assert.equal(kena().length, 0, "butir lama yang masih aktif tidak dikirim ulang");
+  /* butir baru sesudahnya dikirim, patuh maks 2 per putaran */
+  const baru2 = {lokasi: "Pesisir Kota Semarang", tanggal_mulai: wib(TR + HARI), tanggal_selesai: wib(TR + 2 * HARI)};
+  const T2 = TR + 20 * MENIT; muat(T2, {kecKunci}); fx.rob.bmkg = rob(baru, {...baru}, baru2, {...baru2});
+  await cron(JAM_CRON, T2, mf4); assert.equal(kena().length, 2, "batas 2 email per putaran");
+  await cron(JAM_CRON, T2 + MENIT, mf4); assert.equal(kena().length, 4);
+  await cron(JAM_CRON, T2 + 2 * MENIT, mf4); assert.equal(kena().length, 5);
+  await cron(JAM_CRON, T2 + 3 * MENIT, mf4); assert.equal(kena().length, 5, "putaran berikut tidak mengirim ulang");
+  for (const s of kena()) per[s.to[0]] = (per[s.to[0]] || 0) + 1;
+  assert.deepEqual(Object.values(per), [1, 1, 1, 1, 1]);
+  assert.ok(kena().every(s => /Waspada rob/i.test(s.subject) && !/Hipotesis/.test(s.subject) && s.html.includes("BMKG (diteruskan apa adanya)")), kena()[0].subject);
+  const rows = (await DB4.prepare("SELECT langganan_id, kunci FROM ews_terkirim WHERE kunci LIKE 'x|rob:%' AND waktu >= ?").bind(T2).all()).results;
+  assert.equal(rows.length, 5, "butir putaran kedua: satu catatan x| per pelanggan, butir kembar tidak menggandakan"); assert.ok(rows.every(r => r.kunci.startsWith("x|rob:33:pesisir-kota-semarang:") && r.kunci.length <= 82));
+  assert.equal(rows.filter(r => r.langganan_id === id(9)).length, 0, "pelanggan Demak belum punya butir: tidak dicatat"); assert.equal(untuk("resmilama@contoh.id").length, 0, "dan tidak diemail");
+  /* butir Demak baru di putaran berikutnya (bukan putaran pertama) dikirim, dicatat sekali, tidak diulang */
+  const TL = T2 + 20 * MENIT; muat(TL, {kecKunci}); fx.rob.bmkg = rob({lokasi: "Pesisir Kab. Demak", tanggal_mulai: wib(TL), tanggal_selesai: wib(TL + HARI)});
+  await cron(JAM_CRON, TL, mf4);
+  assert.equal(untuk("resmilama@contoh.id").length, 1, "butir baru di putaran kedua dikirim");
+  assert.equal((await DB4.prepare("SELECT count(*) n FROM ews_terkirim WHERE langganan_id = ? AND kunci LIKE 'x|rob:33:pesisir-kab-demak:%'").bind(id(9)).first()).n, 1, "dicatat sekali");
+  await cron(JAM_CRON, TL + 15 * MENIT, mf4); assert.equal(untuk("resmilama@contoh.id").length, 1, "butir lama yang masih aktif tidak dikirim ulang");
 });
