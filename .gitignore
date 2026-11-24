@@ -9,6 +9,14 @@ data/raw/banjir/*
 data/raw/banjir/rob/*
 !data/raw/banjir/rob/titik.json
 !data/raw/banjir/rob/ambang.json
+# arsip faktor orografi (H20, append-only, tidak bisa dibuat ulang: ramalan lampau) dan bahan badai (H31, arsip internal, TIDAK tayang): ikut git
+!data/raw/banjir/orografi/
+!data/raw/banjir/orografi/arsip_*.jsonl
+!data/raw/cuaca/
+data/raw/cuaca/*
+!data/raw/cuaca/badai/
+data/raw/cuaca/badai/*
+!data/raw/cuaca/badai/arsip_*.json
 # berita: label tangan untuk validasi sentimen ikut di-commit; arsip.json lewat cache Actions, pusat.json dibuat ulang
 !data/raw/berita/
 data/raw/berita/*

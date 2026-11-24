@@ -1,6 +1,9 @@
 name: Titik Himawari tiap 30 menit
 
 # Himawari-9 WLF (JAXA P-Tree) -> public/data/himawari.json -> langsung ke R2, tanpa deploy penuh.
+# H90: langkah terakhir menambah awan_tumbuh.py (NOAA S3 pita 13, 2 pindaian, ±18 MB, ±90 dtk) di kadens 30 menit yang SAMA, jadi tidak ada
+# workflow baru. Keluarannya TIDAK di-commit (48 commit/hari memicu 48 terbit_antre: public/udara/data/** tidak dikecualikan) tetapi diunggah ke R2
+# data/awan_tumbuh.json seperti himawari.json; berkas tayang ini menimpa dirinya tiap 30 menit, tanpa arsip git.
 on:
   schedule:
     - cron: "7,37 * * * *"
@@ -13,7 +16,7 @@ concurrency:
 jobs:
   himawari:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 16   # 8 + awan_tumbuh (±90 dtk di Actions; uji lokal sekali 1035 dtk di jaringan lambat; batas langkah 6 mnt) + unggah
     steps:
       - uses: actions/checkout@v4
 
@@ -55,3 +58,16 @@ jobs:
           gzip -9 -c public/data/himawari.json > himawari.json.gz
           echo "arsip: $KUNCI ($(stat -c %s himawari.json.gz) B)"
           npx --yes wrangler@4.42.0 r2 object put "poskokarhutla-foto/$KUNCI" --file himawari.json.gz --content-type application/gzip --remote  # wrangler 4: bawaan LOKAL, --remote wajib
+
+      # Awan tumbuh cepat per kabupaten (H12, A2). Terpisah dari WLF: sumber NOAA, jadi gagal sendiri tanpa menahan himawari.json.
+      # `uji` sengaja TIDAK dijalankan di sini (unduh ±24 MB tambahan tiap 30 menit); ia jalan di `npm run uji:hidromet` dan arsip-bmkg.yml (awan_himawari).
+      - name: Awan tumbuh cepat Himawari (boleh gagal)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        timeout-minutes: 6
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 scripts/udara/awan_tumbuh.py || { echo "::warning title=awan_tumbuh::gagal; berkas R2 lama dibiarkan"; exit 0; }
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/data/awan_tumbuh.json --file public/udara/data/awan_tumbuh.json --content-type application/json --remote  # wrangler 4: bawaan LOKAL, --remote wajib

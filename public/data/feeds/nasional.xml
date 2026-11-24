@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Karhutla Indonesia: peringatan otomatis</title>
+  <subtitle>Otomatis dari satelit dan model, bukan peringatan resmi.</subtitle>
+  <id>tag:centurisk97.id,2026:feeds/nasional</id>
+  <updated>2026-11-23T18:45:00Z</updated>
+  <link rel="self" href="https://centurisk97.id/data/feeds/nasional.xml" />
+  <link rel="alternate" href="https://centurisk97.id/" />
+  <author>
+    <name>Centurisk97</name>
+  </author>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok di 38 kabupaten/kota</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-ID-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">38 kabupaten/kota diprakirakan berkategori Tidak sehat atau lebih buruk (PM2,5 24 jam lebih dari 55,4 µg/m3) pada 2026-11-25. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+</feed>

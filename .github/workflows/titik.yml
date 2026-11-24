@@ -44,6 +44,15 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # angka bangunan per insiden dihitung bangunan.yml harian (grup concurrency lain, tanpa commit/terbit); cache kecil ini menyerahkannya ke deploy di sini
+      - name: Pulihkan angka bangunan per insiden (boleh gagal)
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data/insiden_bangunan.json
+          key: insiden-bangunan-${{ github.run_id }}
+          restore-keys: insiden-bangunan-
+
       # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
       - name: Data tidak lebih tua dari yang tayang
         run: python3 scripts/terbit/isi_data.py perlu
@@ -167,10 +176,25 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/arsip_insiden.py --uji && python3 scripts/data/arsip_insiden.py || echo "::warning title=arsip_insiden::gagal; arsip lamanya dibiarkan"
 
+      # Progresi per insiden dari arsip di atas (ADR-2): public/data/progresi/<id>.json + indeks.json TERBIT (lewat deploy langkah ini, cache data-);
+      # progresi/arsip/ dan progresi/petak/ tidak (public/.assetsignore). Anggaran 8 MB (di luar arsip); lewat = peringatan, bukan gagal.
+      - name: Progresi api per insiden (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          python3 -I scripts/data/progresi.py --uji && python3 -I scripts/data/progresi.py || echo "::warning title=progresi::gagal; berkas lamanya dibiarkan"
+          kb=$(find public/data/progresi -type f -not -path '*/arsip/*' -not -path '*/petak/*' -print0 2>/dev/null | du -ck --files0-from=- | tail -1 | cut -f1)
+          [ "${kb:-0}" -le 8192 ] || echo "::warning title=progresi::terbit ${kb} KB melewati anggaran 8 MB"
+
       # saran status darurat dihitung ulang tiap 3 jam supaya sinyal kluster.json segar (titik.yml selalu deploy; tak commit, jadi tak bentrok push)
       - name: Saran status darurat (boleh gagal)
         continue-on-error: true
         run: python3 scripts/umum/saran_status.py uji && python3 scripts/umum/saran_status.py || echo "::warning title=saran_status::gagal; berkas lamanya dibiarkan"
+
+      # Feed Atom peringatan (kluster, peluang, prakiraan udara dari cache data-); tiap jalan dibangun ulang tanpa state, terbit lewat deploy
+      - name: Feed Atom peringatan (boleh gagal)
+        continue-on-error: true
+        run: python3 -I scripts/data/feed.py uji && python3 -I scripts/data/feed.py || echo "::warning title=feed::gagal; feed lamanya dibiarkan"
 
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan

@@ -26,12 +26,20 @@ function stasiun() {
     kolom: ["Stasiun", "PM2,5 terbaru (µg/m³)", "Kategori acuan", "Waktu"],
     baris: [...A].sort((a, b) => b.v - a.v).map(s => [s.nama, Math.round(s.v * 10) / 10, KAT[kat(s.v)].n, typeof jamWIB === "function" ? jamWIB(s.t) : s.t])} : null; }
 
+/* stasiun ISPU KLH: rata-rata 24 jam, belum divalidasi KLH */
+function stasiunIspu() {
+  const A = typeof IspuKLH !== "undefined" ? IspuKLH.segar() : [];
+  return A.length ? {nama: "Stasiun ISPU KLH (terukur)", ket: "PM2,5 rata-rata 24 jam stasiun KLH, belum divalidasi KLH; tidak dicampur dengan angka model CAMS",
+    kolom: ["Stasiun", "Provinsi", "PM2,5 rata-rata 24 jam (µg/m³)", "Kategori", "Waktu"],
+    baris: [...A].sort((a, b) => b.pm25 - a.pm25).map(s => [s.nama, s.prov || "", Math.round(s.pm25 * 10) / 10, KAT[kat(s.pm25)].n, typeof jamWIB === "function" ? jamWIB(s.t) : s.t])} : null; }
+
 const tabelHtml = window.UnduhTabel.tabelHtml;
 
 async function kumpul() {
   const tabel = [], p = provinsi(); if (p) tabel.push(p);
   const kj = tabelHtml(document.querySelector("#kejadian table"), "Kejadian", "Deteksi Centurisk97 dari prakiraan model CAMS (hipotesis), bukan pernyataan resmi"); if (kj) tabel.push(kj);
   const st = stasiun(); if (st) tabel.push(st);
+  const si = stasiunIspu(); if (si) tabel.push(si);
   return window.UnduhTabel.laporan("udara", "Laporan Kualitas Udara dan Asap", hariAktif(), tabel, "Copernicus CAMS lewat Open-Meteo (model); BMKG (pengukuran stasiun)"); }
 UnduhTabel.tema({id: "udara", label: "Unduh tabel kualitas udara", kumpul});
 

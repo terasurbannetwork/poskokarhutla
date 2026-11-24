@@ -15,6 +15,7 @@
     "GET /api/lapor/data/berkas": "berkas untuk tim: data pribadi utuh",
     "GET /api/lapor/data/daftar": "staf BNPB: pribadi dan nomor tim tersamar",
     "POST /api/lapor/data/tampil": "staf BNPB: pribadi dan nomor tim tersamar",
+    "POST /api/lapor/data/terima": "Jitupasna hanya terisi lewat Terima staf",
     "table lj_berkas": "pembukaan: BPBD di kab izinnya",
     "table lj_tim": "masuk: token sekali pakai",
     "table lj_kabar": "pembukaan: BPBD di kab izinnya",

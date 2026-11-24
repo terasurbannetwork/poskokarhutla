@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Karhutla DI Yogyakarta: peringatan otomatis</title>
+  <subtitle>Otomatis dari satelit dan model, bukan peringatan resmi.</subtitle>
+  <id>tag:centurisk97.id,2026:feeds/di-yogyakarta</id>
+  <updated>2026-11-24T01:58:56Z</updated>
+  <link rel="self" href="https://centurisk97.id/data/feeds/di-yogyakarta.xml" />
+  <link rel="alternate" href="https://centurisk97.id/" />
+  <author>
+    <name>Centurisk97</name>
+  </author>
+</feed>

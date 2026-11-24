@@ -49,7 +49,7 @@
       pop.setLngLat(e.lngLat).setHTML(kartuBMKG(x)).addTo(peta); });
     peta.on("mouseleave", "db-bmkg-fill", () => pop.remove());
   }
-  const kartuBMKG = x => `<b>${esc(x.headline || x.event)}</b><br>${esc(x.wilayah)}<br><small>${aktif(x) ? "Berlaku sampai " + jam(x.selesai) : "Sudah berakhir " + jam(x.selesai)}, tingkat ${(SEV[x.severity] || ["", x.severity])[1].toLowerCase()}</small>`;
+  const kartuBMKG = x => `<b>${esc(x.headline || x.event)}</b><br>${esc(String(x.wilayah).length > 300 ? String(x.wilayah).slice(0, 300) + "…" : x.wilayah)}<br><small>${aktif(x) ? "Berlaku sampai " + jam(x.selesai) : "Sudah berakhir " + jam(x.selesai)}, tingkat ${(SEV[x.severity] || ["", x.severity])[1].toLowerCase()}</small>`;
   /* pita kecil di kolom alat peta: hanya muncul bila ada yang berlaku. Satu daftar kartu rapat, dikelompokkan per jenis. */
   const IK = p => `<svg class="db-ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
   const JENIS = {

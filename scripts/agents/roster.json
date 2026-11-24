@@ -38,7 +38,10 @@
         "public/data/tmat.json",
         "public/data/transisi_lahan.json",
         "public/data/opera_dist.json",
-        "public/data/opera_dist_2023.json"
+        "public/data/opera_dist_2023.json",
+        "tests/insiden/**",
+        "public/data/progresi/**",
+        "public/data/feeds/**"
       ]
     },
     {
@@ -287,7 +290,8 @@
         "public/data/citra_terbuka.json",
         "public/data/nisar_katalog.json",
         "public/data/sirup_bencana.json",
-        "public/data/inaportnet.json"
+        "public/data/inaportnet.json",
+        "public/data/insiden_bangunan.json"
       ]
     },
     {

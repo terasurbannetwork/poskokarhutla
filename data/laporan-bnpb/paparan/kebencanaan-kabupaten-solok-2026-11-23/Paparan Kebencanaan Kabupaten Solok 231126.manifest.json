@@ -625,6 +625,66 @@
     "01  ",
     "02  ",
     "03  ",
+    "Siaga Darurat",
+    "Siaga Darurat",
+    "Karhutla",
+    "Karhutla",
+    "Tanggap Darurat",
+    "Tanggap Darurat",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Transisi Darurat",
+    "Transisi Darurat",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Tanggap Darurat",
+    "Tanggap Darurat",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Transisi Darurat",
+    "Transisi Darurat",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
+    "Banjir",
+    "Longsor",
+    "Cuaca ekstrem",
     "DIBI BNPB, 23 Nov 2026; Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026"
    ],
    "warna": [
@@ -653,7 +713,15 @@
      "inti"
     ],
     [
+     "C8102E",
+     "aksen"
+    ],
+    [
      "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
      "aksen"
     ],
     [
@@ -665,12 +733,24 @@
      "pil"
     ],
     [
+     "DCEBF8",
+     "pil"
+    ],
+    [
      "E6EAF0",
      "permukaan"
     ],
     [
      "EEF5FC",
      "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "pil"
+    ],
+    [
+     "FBE7D6",
+     "pil"
     ],
     [
      "FFFFFF",
@@ -691,6 +771,36 @@
     "ikon",
     "logo",
     "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon",
     "ikon",
     "ikon",
@@ -756,6 +866,14 @@
     "02  ",
     "03  ",
     "Sumber batas: Batas administrasi kecamatan dan kabupaten, data geo sistem BNPB; WGS84; Ekuirektangular",
+    "Awas",
+    "Awas",
+    "Siaga",
+    "Siaga",
+    "Waspada",
+    "Waspada",
+    "Normal",
+    "Normal",
     "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
    ],
    "warna": [
@@ -808,8 +926,24 @@
      "permukaan"
     ],
     [
+     "E6EAF0",
+     "pil"
+    ],
+    [
      "EEF5FC",
      "permukaan"
+    ],
+    [
+     "F4ECDC",
+     "pil"
+    ],
+    [
+     "F8DDE0",
+     "pil"
+    ],
+    [
+     "FBE7D6",
+     "pil"
     ],
     [
      "FFFFFF",
@@ -832,6 +966,10 @@
     "logo",
     "logo",
     "peta",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon"
    ],
    "panel": [
@@ -851,9 +989,7 @@
    "nomor": 10,
    "jenis": "temuan-visual",
    "asal": "solok#10",
-   "keluarga": [
-    "kering"
-   ],
+   "keluarga": [],
    "judul": [
     81.2,
     21.6,
@@ -867,6 +1003,46 @@
     "01  ",
     "02  ",
     "03  ",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Normal",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Normal",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Waspada",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Waspada",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
     "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
    ],
    "warna": [
@@ -891,19 +1067,7 @@
      "inti"
     ],
     [
-     "C4A262",
-     "skala.emas"
-    ],
-    [
-     "C8102E",
-     "aksen"
-    ],
-    [
      "C9D1E3",
-     "aksen"
-    ],
-    [
-     "D9600B",
      "aksen"
     ],
     [
@@ -916,6 +1080,30 @@
     ],
     [
      "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "F4ECDC",
+     "permukaan"
+    ],
+    [
+     "F4ECDC",
+     "pil"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
      "permukaan"
     ],
     [
@@ -937,6 +1125,46 @@
     "ikon",
     "logo",
     "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon"
    ],
    "panel": [
@@ -2938,8 +3166,8 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_kec.png": "bed2f10dd71d29c38e794b6a822505867b70de32274db59505f5ab364be18398",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan.csv": "c65c6ae4289a90e1fbdad19837ad44ca8ac3cb2637c401e52b5620a023b7b6e0",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan_jumlah.csv": "75158405dd7f665cf211cf4e427441764e8cee8b8a8eee55ce3b78b9ca34ae0b",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/status.csv": "837fe46429e9c903c3ca156e2495f73231e90ffc711f3ce0e0d4790d94e735bc",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "dedff3015f6ad41444aec39add5dabe810798ae2e77e79876b974751df43fdeb",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/status.csv": "cdc2cff1cc61b55a1e737059bedc7777292c13444e9a31d06eeb8ced1e51fd30",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "d748628e0b7b7036f94d6d661745ed359df4bca2551bbfbf6e5866feb5a16e0e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "c5b788ed86843a4ed57fe347a9f7e3c4b8eb0b91898594eb2abee00b814c578c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

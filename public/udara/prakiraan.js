@@ -93,6 +93,7 @@ const Prak = {
     const kom = a && a.terpercaya !== false ? M.normBagian(a.bagian || []).filter(b => b.jenis === "api" && b.id) : [];
     Laci.buka("Kota", `<span translate="no">${esc(k.nama)}</span>`, pilKor(),
       `<div class="grid g4">${hr.map((t, h) => { const s = M.statusHari(k, h), w = M.ST_WARNA[s || "normal"]; return kot(tglSing(t), `<span style="color:${w}">${fmt(k.r24[h])} µg/m³</span>`, M.labelStatus(s) + `, api ${k.asap?.[h] == null ? "–" : fmt(Math.round(k.asap[h] * 100)) + "%"}`); }).join("")}</div>
+      ${typeof Saran !== "undefined" ? Saran.blok(k.r24?.[Math.max(0, idxHariPrak())]) : ""}
       <p class="fnd">PM2,5 per jam, 72 jam ke depan${k.mentah?.some((v, j) => v !== k.pm[j]) ? " (garis tebal terkoreksi, putus-putus mentah)" : ""}:</p>${this.garis72(k, true)}
       ${a ? this.bagianAtribusi(a, kom) : ""}
       <p class="fnd">Sumber: Copernicus CAMS lewat Open-Meteo${terkoreksi() ? ", stasiun pemantau" : ""}. ${terkoreksi() ? "" : "Perkiraan model, belum dikoreksi ke alat ukur. "}Data ${jamWIB(S.prak.dibuat)}</p>`);

@@ -4,12 +4,16 @@ name: Panen data lab banjir (IMERG per kabupaten, GloFAS)
 # Keluaran HANYA ke R2 poskokarhutla-foto/arsip/lab_banjir/{imerg/<YYYY-MM>.json.gz, glofas/<KODE>.json}; tidak ada commit data, tidak menerbitkan.
 # Sengaja DI LUAR grup concurrency `data` (pola nowcast-jkt-imerg.yml): panen berjam-jam tidak boleh menahan titik.yml/data.yml.
 # GloFAS: cron tiap 4 jam memanggil `jenis=glofas`; kuota Open-Meteo harian (keluar 75) = selesai bersih untuk run itu.
+# H90 panen ulang IMERG skema 2 (kolom j per jam): gh workflow run panen-lab-banjir.yml -f jenis=imerg -f bulan_awal=2015-01 -f bulan_akhir=2026-10 -f timpa=ya
+# (`timpa=ya` melewati langkah pulihkan dari R2, jadi panen_lab.py tidak melihat "sudah ada"; objek R2 lama baru ditimpa bila hasil baru TIDAK lebih kecil,
+# yang selalu benar untuk skema 2 yang selesai karena menambah j; hasil separuh karena timeout tidak menimpa; ulangi bulan itu saja dengan timpa=ya).
+# Sesudah semua bulan selesai: -f jenis=jam_hujan (dan tiap tgl 3 otomatis).
 # Berhenti sendiri: bila semua kab sudah ada di R2, penanda glofas/_LENGKAP ditulis dan run berikutnya keluar dalam detik.
 on:
   workflow_dispatch:
     inputs:
       jenis:
-        description: "imerg atau glofas"
+        description: "imerg, glofas, atau jam_hujan (bangun public/cuaca/data/jam_hujan.json dari R2, lalu commit)"
         default: "imerg"
       bulan_awal:
         description: "imerg: bulan awal YYYY-MM"
@@ -20,11 +24,15 @@ on:
       maks_paralel:
         description: "imerg: job paralel (sopan ke GES DISC)"
         default: "4"
+      timpa:
+        description: "imerg: ya = panen ulang bulan walau sudah ada di R2 (skema 1 -> 2, kolom j). Unggah tetap hanya bila hasil >= objek R2"
+        default: "tidak"
       jumlah_kab:
         description: "glofas: jumlah kab per run"
         default: "60"
   schedule:
     - cron: "17 */4 * * *"
+    - cron: "30 3 3 * *"    # H90: jam_hujan bulanan, tgl 3 10.30 WIB (bulan lalu sudah terpanen)
 
 concurrency:
   group: panen-lab-banjir-${{ inputs.jenis || 'glofas' }}
@@ -79,6 +87,7 @@ jobs:
           python-version: "3.12"
 
       - name: Pulihkan berkas bulan dari R2 (boleh gagal)
+        if: inputs.timpa != 'ya'
         continue-on-error: true
         run: |
           mkdir -p keluar
@@ -119,7 +128,7 @@ jobs:
           exit 0
 
   glofas:
-    if: (github.event_name == 'schedule' || inputs.jenis == 'glofas')
+    if: (github.event_name == 'schedule' && github.event.schedule != '30 3 3 * *') || inputs.jenis == 'glofas'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -170,3 +179,48 @@ jobs:
             $WR r2 object put "$R2/glofas/$k.json" --file "$f" --content-type application/json --remote
           done
           [ "$rc" = 0 ] || [ "$rc" = 75 ]
+
+  # Bulanan (cron tgl 3) atau dispatch jenis=jam_hujan. Menarik semua imerg/<YYYY-MM>.json.gz dari R2 (ratusan MB; bulan tanpa objek dilewati,
+  # berkas skema 1 disaring jam_hujan.py sendiri), menjalankan uji lalu skrip, meng-commit satu berkas ke main. Skrip keluar 3 bila belum ada skema 2:
+  # run merah itu disengaja (panen ulang belum selesai), berkas tayang lama tidak disentuh.
+  jam-hujan:
+    if: github.event.schedule == '30 3 3 * *' || inputs.jenis == 'jam_hujan'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tarik IMERG per jam dari R2
+        run: |
+          mkdir -p masuk
+          y=2015; m=1; ay=$(date -u +%Y); am=$(date -u +%-m); n=0
+          while [ "$y" -lt "$ay" ] || { [ "$y" -eq "$ay" ] && [ "$m" -le "$am" ]; }; do
+            B=$(printf '%04d-%02d' "$y" "$m")
+            $WR r2 object get "$R2/imerg/$B.json.gz" --file "masuk/imerg_kab_$B.json.gz" --remote > /dev/null 2>&1 && n=$((n + 1)) || rm -f "masuk/imerg_kab_$B.json.gz"
+            m=$((m + 1)); [ "$m" -gt 12 ] && { m=1; y=$((y + 1)); }
+          done
+          echo "bulan terunduh: $n"; [ "$n" -gt 0 ] || { echo "::error title=jam_hujan::R2 tanpa imerg/*.json.gz"; exit 1; }
+
+      - name: Bangun jam_hujan.json
+        run: |
+          python3 scripts/cuaca/jam_hujan.py uji --masuk masuk
+          python3 scripts/cuaca/jam_hujan.py --masuk masuk
+
+      - name: Commit ke main
+        run: |
+          B=public/cuaca/data/jam_hujan.json
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f $B
+          git diff --cached --quiet -- $B && { echo "jam_hujan tidak berubah"; exit 0; }
+          git commit -q -m "data: jam hujan IMERG $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push jam_hujan gagal::git push ke main gagal 3x"; exit 1

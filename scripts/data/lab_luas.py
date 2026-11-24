@@ -20,6 +20,16 @@ penutup (append-only) ke public/data/lab/jalan.jsonl; luas.json mencatat kriteri
 pemilihan model memakai tahun seleksi, tahun uji akhir (daftar di berkas kriteria) dibuka sekali setelah pemenang dibekukan.
 
 URL berkunci FIRMS TIDAK pernah dicetak: semua pesan galat lewat redaksi().
+
+ARSIP ALTERNATIF (PKH-27, dicatat 24 Nov 2026, TIDAK dipakai): source.coop `portolan-mirrors/firms-catalog` (STAC
+https://data.source.coop/portolan-mirrors/firms-catalog/catalog.json, tabel `detections/`, GeoParquet satu tabel MODIS+S-NPP+NOAA-20+NOAA-21
+dipartisi per tahun, MODIS sejak Nov 2000, VIIRS sejak Jan 2012, NRT disegarkan per jam lalu diganti kualitas-sains; cermin, otoritas tetap
+NASA LANCE FIRMS; lisensi dan skema kolom ada di `AGENTS.md` katalog, belum dibaca penuh). Tidak bisa dibaca dengan stdlib: Parquet memakai
+metadata thrift + halaman terkompresi snappy/zstd + penyandian kamus/RLE, dan Python 3.12 stdlib hanya punya gzip/zlib; pyarrow/duckdb tidak
+terpasang dan aturan repo melarang pip install di Actions. Jalur bila pustaka kelak boleh (HANYA job lokal, bukan CI): DuckDB `read_parquet` dengan
+filter `year` dan bbox lalu agregasi per sel/hari, dibandingkan dulu dengan `data/raw/firms/*.csv` (jumlah per hari-sensor harus cocok sebelum
+mengganti unduhan tahunan); hambatan lain: kolom `type` dan keyakinan harus ada agar filter sel statis (`titik_palsu`) tetap jalan, dan
+arsip SP vs NRT berbeda per tanggal. Sampai ada keputusan pustaka, sumber arsip tetap unduhan FIRMS API per tahun.
 """
 import bisect, csv, datetime as dt, glob, gzip, hashlib, io, json, math, os, random, re, signal, statistics, sys, time, urllib.error, urllib.request, zipfile
 

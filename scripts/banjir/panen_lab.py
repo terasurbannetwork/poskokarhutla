@@ -9,6 +9,9 @@ Authorization: Bearer $EARTHDATA_TOKEN hanya ke host NASA (pengalih dari scripts
 Keluaran imerg: {"meta":{...},"kab":{kode:{"t":bool terdekat,"d":{"YYYY-MM-DD":[n_slot,jumlah_rerata,jumlah_maks_sel,
 h1_rerata,h1_maks,h3_rerata,h3_maks,h6_rerata,h6_maks]}}}}; mm; hari = hari WIB (slot dihitung menurut waktu mulainya);
 h* = jendela bergulir 1/3/6 jam yang berakhir pada hari itu (melewati tengah malam, perlu semua slot ada); n_slot < 48 = ada slot hilang.
+Skema 2 (H13a), kab.<kode>.j = {"YYYY-MM-DD": [24 bilangan bulat]} (tambahan; "d" tak berubah): hujan rerata-kab per JAM UTC (indeks 0-23 = jam UTC
+mulai slot, dua slot 30 menit dijumlah), satuan 0,1 mm, DALAM hari WIB kuncinya (jadi indeks 17-23 berasal dari tanggal UTC sehari sebelumnya).
+Jam lokal = (indeks + 7|8|9) % 24 untuk WIB|WITA|WIT: konsumen yang menggeser menurut zona kab. Hari tanpa hujan (semua 0 setelah pembulatan) tak ditulis.
 Kode keluar: 0 selesai, 1 ada kegagalan, 75 GloFAS 429 (berhenti bersih), 77 NASA 401/403 (berhenti).
 """
 import argparse, collections, concurrent.futures as cf, datetime as dt, gzip, json, os, re, sys, time, urllib.error, urllib.parse, urllib.request
@@ -147,9 +150,10 @@ def buat_ambil(token):
     return ambil
 
 
-def agregat(slots, pos_kab, n_sel, bulan):
+def agregat(slots, pos_kab, n_sel, bulan, jam=None):
     """slots: [(epoch_mulai_utc, [mm/jam tiap sel] atau None)] urut waktu, berjarak 1800 dtk. -> {kode: {hari: [...]}}.
-    Jendela bergulir via jumlah berjalan; slot hilang membatalkan jendela yang memuatnya."""
+    Jendela bergulir via jumlah berjalan; slot hilang membatalkan jendela yang memuatnya.
+    jam: dict kosong opsional; diisi {kode: {hari: [24 mm per jam UTC, rerata-kab]}} (belum dibulatkan). Tanpa jam, perilaku persis lama."""
     W = (2, 6, 12)
     run = [[0.0] * n_sel for _ in W]; hist = []; hilang = -10**9; out = {k: {} for k in pos_kab}
     for i, (e, v) in enumerate(slots):
@@ -174,12 +178,21 @@ def agregat(slots, pos_kab, n_sel, bulan):
             d = out[k].setdefault(hari, [0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
             vv = [x[c] for c in ids]
             d[0] += 0 if i == hilang else 1
-            d[1] += sum(vv) / len(vv); d[2] += max(vv)
+            m = sum(vv) / len(vv)
+            d[1] += m; d[2] += max(vv)
+            if jam is not None:
+                jam.setdefault(k, {}).setdefault(hari, [0.0] * 24)[(e // 3600) % 24] += m
             for j, (r, w) in enumerate(zip(run, W)):
                 if i - hilang >= w:
                     rr = [r[c] for c in ids]
                     d[3 + 2 * j] = max(d[3 + 2 * j], sum(rr) / len(rr)); d[4 + 2 * j] = max(d[4 + 2 * j], max(rr))
     return {k: {h: [d[0]] + [round(z, 2) for z in d[1:]] for h, d in sorted(v.items())} for k, v in out.items()}
+
+
+def jam_int(j):
+    """{hari: [24 mm]} -> {hari: [24 int 0,1 mm]}; hari semua-nol dibuang."""
+    o = {h: [round(z * 10) for z in v] for h, v in sorted(j.items())}
+    return {h: v for h, v in o.items() if any(v)}
 
 
 def cmd_imerg(a):
@@ -249,10 +262,11 @@ def cmd_imerg(a):
     slots = [(e, [None if x is None else x for x in ada[e]["v"]] if e in ada else None) for e in range(awal, int(dt.datetime.combine(sampai, dt.time(16, 30), dt.timezone.utc).timestamp()) + 1, 1800)]
     # sel None (di luar kisi/dilewati) -> 0 agar tak membatalkan jendela; slot utuh hilang = None
     slots = [(e, None if v is None else [0.0 if x is None else x for x in v]) for e, v in slots]
-    hasil = agregat(slots, pos_kab, len(cel), a.bulan)
-    isi = {"meta": {"bulan": a.bulan, "dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "versi_hari": versi,
+    jam = {}
+    hasil = agregat(slots, pos_kab, len(cel), a.bulan, jam)
+    isi = {"meta": {"bulan": a.bulan, "dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "versi_hari": versi, "skema": 2, "kolom_j": "indeks=jam UTC 0-23; nilai bilangan bulat 0,1 mm rerata-kab; hari WIB; lokal=(i+7|8|9)%24",
                     "kolom": ["n_slot", "jumlah_rerata", "jumlah_maks_sel", "h1_rerata", "h1_maks", "h3_rerata", "h3_maks", "h6_rerata", "h6_maks"], "satuan": "mm, hari WIB"},
-           "kab": {k: {"t": S["kab"][k]["t"], "d": hasil[k]} for k in sorted(hasil)}}
+           "kab": {k: {"t": S["kab"][k]["t"], "d": hasil[k], "j": jam_int(jam.get(k, {}))} for k in sorted(hasil)}}
     with gzip.open(akhir + ".tmp", "wt") as g:
         json.dump(isi, g, separators=(",", ":"))
     os.replace(akhir + ".tmp", akhir)
@@ -344,6 +358,12 @@ def uji():
     assert r["b"]["2026-01-02"][1] == 10.0 and r["b"]["2026-01-02"][2] == 20.0 and r["b"]["2026-01-02"][4] == 10.0, r["b"]["2026-01-02"]
     sl[5] = (sl[5][0], None)                                                       # slot hilang membatalkan jendela yang memuatnya
     assert agregat(sl, {"a": [0]}, 2, "2026-01")["a"]["2026-01-02"][0] == 47
+    # jam (H13a): 10 mm/jam di sel 0 selama slot 4-7 (02.00-04.00 WIB = 19.00-21.00 UTC): 2 jam x 10 mm di sel 0 -> kab "a" 10 mm per jam UTC; kab "b" 5
+    sl = [(e0 + 1800 * i, [10.0, 0.0] if 4 <= i < 8 else [0.0, 0.0]) for i in range(48 + 12)]
+    J = {}; agregat(sl, {"a": [0], "b": [0, 1]}, 2, "2026-01", J)
+    assert abs(sum(J["a"]["2026-01-02"]) - r["a"]["2026-01-02"][1]) < 1e-9 and J["a"]["2026-01-02"][19] == 10.0 and J["a"]["2026-01-02"][20] == 10.0 and J["b"]["2026-01-02"][19] == 5.0, J["a"]["2026-01-02"]
+    assert sum(1 for x in J["a"]["2026-01-02"] if x) == 2 and jam_int({"h": [0.04] * 24, "i": [0.26] + [0] * 23}) == {"i": [3] + [0] * 23}
+    assert agregat(sl, {"a": [0]}, 2, "2026-01") == {"a": r["a"]}                    # tanpa jam: keluaran lama tak berubah
     # urutan daftar
     assert urut_kab([["1", 2020, "banjir", 5], ["2", 2020, "banjir", 9], ["2", 2020, "longsor", 99]], ["1", "2", "3"]) == ["2", "1", "3"]
     # pilih koleksi: Final dulu, jatuh ke Late lalu Early

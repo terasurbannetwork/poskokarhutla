@@ -110,7 +110,7 @@ const Insight = {
   async render() {
     const el = $("#insight");
     if (typeof Peluang !== "undefined") [this.PL, this.AS] = await Promise.all([Peluang.muat("data/peluang.json"), fetch("data/asal.json").then(r => r.ok ? r.json() : null).catch(() => null)]); if (this.st.hari < S.h0) this.st.hari = this.st.kabHari = S.h0;
-    await Promise.all([Satelit.muatKartu(), Kualitas.muat()]);   /* TROPOMI dan rapor model: dimuat malas saat Insight dibuka; berkas hilang = kartu dibuang */
+    await Promise.all([Satelit.muatKartu(), Kualitas.muat(), typeof Lintas !== "undefined" ? Lintas.muat() : null]);   /* TROPOMI dan rapor model: dimuat malas saat Insight dibuka; berkas hilang = kartu dibuang */
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     Cerita.sisip(el, "udara");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasang(b));

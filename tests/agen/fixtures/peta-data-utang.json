@@ -18,12 +18,10 @@
   "public/data/reliefweb.json",
   "public/data/risiko_mingguan_uji.json",
   "public/data/sk_drive.json",
-  "public/data/transisi_lahan.json",
-  "public/udara/data/lintasan.json"
+  "public/data/transisi_lahan.json"
  ],
  "tanpa-jadwal": [
   "public/banjir/data/cuaca_risiko_bnpb.json",
-  "public/banjir/data/faktor_kec.json",
   "public/banjir/data/koreksi_bias.json",
   "public/banjir/data/label_kec_ringkas.json",
   "public/banjir/data/lampu_malam_validasi.json",
@@ -33,7 +31,6 @@
   "public/gempa/data/katalog_merusak.json",
   "public/gempa/data/katalog_tsunami.json",
   "public/gempa/data/vs30.json",
-  "public/prediksi/data/jalan.json",
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
@@ -56,6 +53,18 @@
   "public/data/paritas.json": {
    "alasan": "dipakai dashboard pimpinan (PB-31) dan laporan paritas; belum ada pemakai layar",
    "tanggal": "2026-11-15"
+  },
+  "public/data/feeds/**": {
+   "alasan": "Feed Atom peringatan (PKH-17) dibaca pembaca feed dan alat pihak luar lewat URL, bukan oleh layar kita; dibangun ulang tiap jalan titik.yml dan data.yml.",
+   "tanggal": "2026-11-24"
+  },
+  "public/data/mjo.json": {
+   "alasan": "Faktor model MJO (docs/hidromet-jam H21): dibaca uji beku scripts/banjir/PRAREG-MJO.md, bukan data tampil. Pemakai lewat mjo_arsip.json (nilai yang terbit D-1). Layar baru boleh dibuat sesudah vonis prospektif.",
+   "tanggal": "2026-11-24"
+  },
+  "public/banjir/data/jeda_hulu.json": {
+   "alasan": "Tabel statis waktu tempuh Kirpich per sub-DAS (docs/hidromet-jam H32), keterangan operasional. Masuk model hanya lewat amandemen PRAREG-HULU yang belum ada; dijalankan manual bila jaringan hulu.py berubah.",
+   "tanggal": "2026-11-24"
   }
  }
 }

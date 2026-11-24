@@ -8,7 +8,14 @@ acak di wilayah itu melewati ambang (pecahan sel yang diharapkan melewati). Buka
 100% bila satu sel saja) dan bukan peluang satu titik tertentu. p10/p50/p90 = median lintas sel dari p10/med/p90 tiap sel
 (FWI sel tipikal, urutannya terjaga karena median monoton).
 
+PKH-05 (laju terukur per kelas): `laju_terukur` di peluang.json = tabel "sel-hari kelas FWI X benar ditemukan titik VIIRS berapa %",
+dari hindcast ERA5 + arsip VIIRS yang sudah dipakai persentil_fwi.py (32 sel contoh, hari musim, 2019/2023/2024/2025). Dihitung LOKAL
+(`laju`, butuh data/raw) lalu dibekukan di scripts/data/peluang_laju.json; main() hanya menyalinnya (CI tak punya data/raw).
+Batas: FWI HARI YANG SAMA dari cuaca ERA5 aktual, bukan prakiraan H-1, jadi batas atas keandalan; sel contoh = sel paling sering
+terbakar per provinsi (base rate condong tinggi); sel-hari beruntun berkorelasi (selang Wilson terlalu sempit).
+
 Pakai:  python3 scripts/data/peluang_karhutla.py        tulis public/data/peluang.json
+        python3 scripts/data/peluang_karhutla.py laju  hitung ulang scripts/data/peluang_laju.json (lokal, ~menit)
         python3 scripts/data/peluang_karhutla.py uji   self-check luring
 """
 import datetime as dt, importlib.util, json, os, statistics, sys
@@ -25,6 +32,57 @@ AMBANG = [{"k": "tinggi", "label": "FWI 7 atau lebih (Tinggi)", "nilai": 7},
           {"k": "sangat_tinggi", "label": "FWI 14 atau lebih (Sangat Tinggi)", "nilai": 14}]
 NASIONAL = "ID"
 UMUR_MAKS = 2  # hari; ansambel lebih tua dari ini ditolak (berkas lama dibiarkan)
+
+
+LAJU = os.path.join(AKAR, "scripts/data/peluang_laju.json")
+KELAS_NAMA = ["Rendah (FWI < 2)", "Sedang (FWI 2-7)", "Tinggi (FWI 7-14)", "Sangat Tinggi (FWI 14+)"]
+
+
+def wilson(k, n, z=1.96):
+    """Selang kepercayaan 95% Wilson untuk proporsi k/n; None bila n = 0."""
+    if not n:
+        return None
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** .5) / d
+    return [round(max(0, c - h), 4), round(min(1, c + h), 4)]
+
+
+def laju_dari(pasang, ks=(1, 20)):
+    """pasang = [(kelas 0-3, titik_di_sel_hari)] -> baris per kelas {n, laju_<k>: {k, laju, ci}}; kelas tanpa sel-hari: laju None (bukan 0)."""
+    out = []
+    for c in range(4):
+        v = [t for k, t in pasang if k == c]
+        b = {"kelas": c, "nama": KELAS_NAMA[c], "n": len(v)}
+        for K in ks:
+            m = sum(1 for t in v if t >= K)
+            b[f"ge{K}"] = {"k": m, "laju": round(m / len(v), 4) if v else None, "ci": wilson(m, len(v))}
+        out.append(b)
+    return out
+
+
+def laju_hitung():
+    """Hindcast dari persentil_fwi (data/raw lokal): FWI siang hari-sel vs titik VIIRS hari WIB yang sama."""
+    import aturan as A
+    import persentil_fwi as PF
+    PF.TAHUN_API = [t for t in PF.TAHUN_API if t > 2015]   # 2015 hanya pemanasan FWI; arsip VIIRS-nya tak ada lokal
+    api, data = PF.api_per_sel(), PF.kumpul(0.3)
+    kel = {"semua": [], "sumatra_kalimantan": [], "lainnya": []}
+    for prov, sels in data.items():
+        for xy, s in sels:
+            for t, v in s.items():
+                if t[:4] not in map(str, PF.TAHUN_API):
+                    continue
+                pr = (A.kelas_fwi(v), api.get(xy, {}).get(t, 0))
+                kel["semua"].append(pr)
+                kel["sumatra_kalimantan" if prov in PF.KAL_SUM else "lainnya"].append(pr)
+    return {"dasar": "FWI siang ERA5 per sel 0,5 derajat vs titik VIIRS (S-NPP/NOAA, keyakinan bukan rendah, type 0) pada hari WIB yang sama",
+            "tahun_uji": [t for t in PF.TAHUN_API if t > 2015], "sel_contoh": sum(len(v) for v in data.values()),
+            "definisi": {"ge1": "sel-hari dengan >= 1 titik", "ge20": "sel-hari dengan >= 20 titik (api besar)"},
+            "dibuat": dt.date.today().isoformat(),
+            "ci": "Wilson 95%, tidak memperhitungkan korelasi sel-hari beruntun (terlalu sempit); sel contoh = sel paling sering terbakar (bias seleksi)",
+            "kelompok": {k: laju_dari(v) for k, v in kel.items() if v}}
 
 
 def rata(xs):
@@ -93,6 +151,9 @@ def bangun(ans, hari_ini=None):
                     ans["anggota"], {"label": "Indeks FWI siang hari", "satuan": "FWI", "desimal": 1}, AMBANG,
                     {k: out[k] for k in urut}, batasan)
     d["ansambel_dibuat"] = ans["dibuat"]
+    if os.path.exists(LAJU):
+        d["laju_terukur"] = json.load(open(LAJU))
+        d["batasan"].append("Tabel laju_terukur: laju terbakar per kelas FWI dari hindcast 32 sel contoh (cuaca ERA5 aktual hari itu, bukan prakiraan), batas atas keandalan prakiraan; sel contoh dipilih dari sel yang paling sering terbakar (bias seleksi, laju condong tinggi); selang `ci` (Wilson) tidak memperhitungkan korelasi sel-hari beruntun sehingga terlalu sempit.")
     return d
 
 
@@ -135,8 +196,20 @@ def uji():
     assert [x["t"] for x in d2["wilayah"]["62"]["hari"]] == ["2026-10-21"] and P.periksa(d2) == []
     assert bangun(ans, "2026-10-22") is None and d["ansambel_dibuat"] == "t"
     assert LUAS_KATA(0.99) == "hampir seluruh" and LUAS_KATA(0.7) == "sebagian besar" and LUAS_KATA(0.5) == "sekitar separuh" and LUAS_KATA(0.2) == "sebagian" and LUAS_KATA(0.05) == "sebagian kecil"
+    # laju per kelas: 4 sel-hari kelas 3 (2 api besar), kelas 0 kosong -> None bukan 0
+    lj = laju_dari([(1, 0), (2, 5), (2, 0), (3, 25), (3, 30), (3, 0), (3, 1)])
+    assert lj[0]["n"] == 0 and lj[0]["ge1"]["laju"] is None and lj[0]["ge1"]["ci"] is None
+    assert lj[3]["n"] == 4 and lj[3]["ge1"]["laju"] == 0.75 and lj[3]["ge20"]["laju"] == 0.5 and lj[2]["ge1"]["k"] == 1
+    lo, hi = lj[3]["ge20"]["ci"]
+    assert lo < 0.5 < hi and wilson(0, 10)[0] == 0 and wilson(10, 10)[1] == 1
     print("peluang_karhutla.py: uji lulus")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    if sys.argv[1:] == ["uji"]:
+        uji()
+    elif sys.argv[1:] == ["laju"]:
+        json.dump(laju_hitung(), open(LAJU, "w"), ensure_ascii=False, indent=1)
+        print("tulis", LAJU)
+    else:
+        main()

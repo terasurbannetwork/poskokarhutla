@@ -71,13 +71,41 @@ def stasiun(m):
             "tanda": ts or (gust or 0) >= ANGIN[0], "raw": m.get("rawOb")}
 
 
+def embusan_badai(laporan):
+    """A1 (H11): [(raw, waktu UTC naive)] satu ICAO -> tanda gust front. Pasangan berurutan <= 75 menit: dingin (dT <= -4) DAN (tekanan dQ >= +1 ATAU angin: arah >= 60 deg dengan >= 10 kt, G >= 20, atau lonjakan >= 10 kt)."""
+    def baca(raw):
+        x = " " + " ".join(raw.replace("=", " ").split()) + " "
+        w, s, q, a = (re.search(r, x) for r in (r" (\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?KT ", r" (M?\d\d)/(M?\d\d) ", r" Q(\d{4}) ", r" A(\d{4}) "))
+        if not (w and s and (q or a)):
+            return None
+        return (-int(s[1][1:]) if s[1][0] == "M" else int(s[1]), int(q[1]) if q else round(int(a[1]) * .338639, 1),
+                None if w[1] == "VRB" else int(w[1]), int(w[2]), int(w[3]) if w[3] else None)
+    r = sorted({w: (raw, w) for raw, w in laporan}.values(), key=lambda p: p[1])
+    out = []
+    for (ra, wa), (rb, wb) in zip(r, r[1:]):
+        a, b = baca(ra), baca(rb)
+        if not a or not b or (wb - wa).total_seconds() > 75 * 60:
+            continue
+        dT, dQ = b[0] - a[0], round(b[1] - a[1], 1)
+        beda = None if a[2] is None or b[2] is None else min(abs(b[2] - a[2]), 360 - abs(b[2] - a[2]))
+        angin = (beda is not None and beda >= 60 and b[3] >= 10) or (b[4] or 0) >= 20 or b[3] - a[3] >= 10
+        if dT > -4 or not (dQ >= 1 or angin):
+            continue
+        hujan = any(re.search(r"TS|RA", urai_vis(rx)[1] or "") for rx, wx in r if wb <= wx <= wb + dt.timedelta(minutes=60))
+        out.append({"waktu": wb.strftime("%Y-%m-%dT%H:%MZ"), "dT": dT, "dQ": dQ, "arah_sebelum": a[2], "arah_sesudah": b[2],
+                    "embusan_kmj": None if b[4] is None else round(b[4] * KT), "kuat": (dQ >= 1 and angin) or (b[4] or 0) >= 35, "hujan_sesudah": hujan})
+    return out
+
+
 def olah(data):
     """Respons -> daftar stasiun, laporan terbaru tiap ICAO Indonesia (WA*/WI*)."""
-    terbaru = {}
+    terbaru, semua = {}, {}
     for m in data:
+        if m.get("rawOb"):
+            semua.setdefault(m["icaoId"], []).append((m["rawOb"], dt.datetime.fromtimestamp(m["obsTime"], dt.timezone.utc).replace(tzinfo=None)))
         if m["icaoId"][:2] in ("WA", "WI") and (m["icaoId"] not in terbaru or m["obsTime"] > terbaru[m["icaoId"]]["obsTime"]):
             terbaru[m["icaoId"]] = m
-    return [stasiun(m) for _, m in sorted(terbaru.items())]
+    return [{**stasiun(m), "embusan_badai": embusan_badai(semua.get(i, []))} for i, m in sorted(terbaru.items())]
 
 
 def urai_vis(raw):
@@ -141,7 +169,7 @@ def noaa_baris():
 
 def olah_jam(baris, tabel, sekarang_utc):
     """[(raw, waktu)] -> (stasiun, tanpa_koordinat). Per ICAO: riwayat jam (t, vis_m, wx) menaik, satu entri per waktu; tanpa laporan = tidak ditulis; basi = laporan terbaru > BASI_JAM."""
-    per, tanpa = {}, set()
+    per, tanpa, mentah = {}, set(), {}
     for raw, w in baris:
         m = re.match(r"(?:METAR|SPECI)(?: COR)? ([A-Z]{4}) ", raw)
         if not m or m.group(1)[:2] not in ("WA", "WI"):
@@ -151,13 +179,14 @@ def olah_jam(baris, tabel, sekarang_utc):
             tanpa.add(ic)
             continue
         vis, wx = urai_vis(raw)
+        mentah.setdefault(ic, []).append((raw, w))
         per.setdefault(ic, {})[w.strftime("%Y-%m-%dT%H:%MZ")] = {"t": w.strftime("%Y-%m-%dT%H:%MZ"), "vis_m": vis, "wx": wx}
     out = []
     for ic in sorted(per):
         jam = [per[ic][k] for k in sorted(per[ic])]
         umur = (sekarang_utc - dt.datetime.strptime(jam[-1]["t"], "%Y-%m-%dT%H:%MZ")).total_seconds() / 3600
         nama, lat, lon, prov = tabel[ic]
-        out.append({"icao": ic, "nama": nama, "lat": lat, "lon": lon, "prov": prov, "basi": umur > BASI_JAM, "jam": jam})
+        out.append({"icao": ic, "nama": nama, "lat": lat, "lon": lon, "prov": prov, "basi": umur > BASI_JAM, "embusan_badai": embusan_badai(mentah[ic]), "jam": jam})
     return out, sorted(tanpa)
 
 
@@ -242,6 +271,13 @@ def uji():
     assert not st[0]["basi"] and st[1]["basi"] and st[1]["jam"][0] == {"t": "2026-11-02T05:00Z", "vis_m": 2000, "wx": "TSRA"}   # laporan 5,5 jam lalu ditandai basi
     ta = json.load(open(TABEL))["bandara"]
     assert all(k in ta for k in ("WIOO", "WIOK", "WIOS", "WIOP", "WIOD", "WIOG", "WAGG", "WAGS", "WAGF", "WAOO", "WIJJ", "WIBB", "WALL", "WIPP")) and len(ta) >= 130
+    # A1 embusan awan badai (H11): fixture nyata WIII 17 Nov 2026 04-08 UTC (IEM)
+    def fx(a, b):
+        sat = [l.split(",", 2) for l in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixture/metar_WIII_20261117.csv")).read().splitlines()[1:]]
+        return [(r, dt.datetime.strptime(w, "%Y-%m-%d %H:%M")) for _, w, r in sat if a <= w[11:] <= b]
+    e = embusan_badai(fx("04:00", "08:59"))
+    assert len(e) == 1 and e[0]["waktu"] == "2026-11-17T06:24Z" and e[0]["dT"] == -4 and e[0]["dQ"] == 0 and (e[0]["arah_sebelum"], e[0]["arah_sesudah"], e[0]["embusan_kmj"]) == (190, 220, 39) and e[0]["hujan_sesudah"] and not e[0]["kuat"], e   # 13:24 WIB
+    assert embusan_badai(fx("04:00", "05:59")) == [] and embusan_badai(fx("06:30", "08:59")) == []                       # tenang: tidak ditandai
     print("ok metar")
 
 

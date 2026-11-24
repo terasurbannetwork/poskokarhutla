@@ -53,6 +53,17 @@ test("bersih/uraiCAP meloloskan teks luar dengan aman: tag, entitas ter-escape, 
   assert.ok(!/[<>]/.test(c.p.event) && c.p.event.length <= 80); assert.ok(c.p.deskripsi.length <= 240);
 });
 
+/* CAP nyata tersimpan (fixtures/bmkg_cap_nowcast.xml, BMKG 19 Okt 2026) dengan daftar kecamatan diperpanjang secara programatik jadi ~2600 huruf (Jawa Barat 14 Nov 2026 = 587+);
+   semua tag/struktur/poligon asli. Daftar berakhir pada nama bertanda khusus supaya potongan di mana pun ketahuan. */
+const KEC = Array.from({length: 250}, (_, i) => `KECAMATAN${String(i).padStart(3, "0")}`).concat("CIWIDEY");
+const capPanjang = id => readFileSync(path.join(AKAR, "tests/warga/fixtures/bmkg_cap_nowcast.xml"), "utf8")
+  .replace(/<identifier>.*<\/identifier>/, `<identifier>${id}</identifier>`).replace(/khususnya di .+?\.\s/, `khususnya di ${KEC.join(", ")}.\n `);
+
+test("uraiCAP pada CAP nyata dengan daftar kecamatan panjang: wilayah utuh, tidak terpotong 600", () => {
+  const w = uraiCAP(capPanjang("CAP-PANJANG")).p.wilayah;
+  assert.ok(w.length > 2500, String(w.length)); assert.equal(w, KEC.join(", ")); assert.ok(w.endsWith("CIWIDEY"));
+});
+
 let mf, worker, DB;
 let rssIsi = null, rssStatus = 200, unduhan = [];   // kendali fixture
 const caps = {};
@@ -149,6 +160,12 @@ uji("teks BMKG berbahaya tersimpan sebagai teks polos terpotong", async () => {
   rssIsi = rss(["XSS1"]); await tik(T10 + 3000e3);
   const a = (await api("/api/cuaca/nowcast")).j.nowcast.find(x => x.id === "XSS1");
   assert.ok(a); assert.ok(!/[<>]/.test(JSON.stringify(a)), JSON.stringify(a));
+});
+
+uji("daftar kecamatan panjang: utuh di cuaca_nowcast.isi dan cuaca_arsip.wilayah lewat cron nyata", async () => {
+  caps.PANJANG1 = capPanjang("PANJANG1"); rssIsi = rss(["PANJANG1"]); await tik(T10 + 3000e3);
+  const a = (await baris("SELECT wilayah FROM cuaca_arsip WHERE id = 'PANJANG1'"))[0];
+  assert.ok(a, "arsip terisi"); assert.equal(a.wilayah, KEC.join(", ")); assert.ok(a.wilayah.endsWith("CIWIDEY"));
 });
 
 uji("GET/HEAD saja: POST 405; HEAD tanpa badan", async () => {

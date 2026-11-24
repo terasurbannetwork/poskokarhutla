@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Karhutla Jawa Barat: peringatan otomatis</title>
+  <subtitle>Otomatis dari satelit dan model, bukan peringatan resmi.</subtitle>
+  <id>tag:centurisk97.id,2026:feeds/jawa-barat</id>
+  <updated>2026-11-23T18:45:00Z</updated>
+  <link rel="self" href="https://centurisk97.id/data/feeds/jawa-barat.xml" />
+  <link rel="alternate" href="https://centurisk97.id/" />
+  <author>
+    <name>Centurisk97</name>
+  </author>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kab. Bogor</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3201-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 72 µg/m3 (Tidak sehat) pada 2026-11-25 di Kab. Bogor, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kab. Karawang</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3215-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 77 µg/m3 (Tidak sehat) pada 2026-11-25 di Kab. Karawang, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kab. Bekasi</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3216-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 77 µg/m3 (Tidak sehat) pada 2026-11-25 di Kab. Bekasi, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kab. Bandung Barat</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3217-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 56 µg/m3 (Tidak sehat) pada 2026-11-25 di Kab. Bandung Barat, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Bogor</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3271-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 72 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Bogor, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Bandung</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3273-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 56 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Bandung, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Bekasi</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3275-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 72 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Bekasi, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Depok</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3276-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 72 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Depok, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Cimahi</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3277-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 56 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Cimahi, Jawa Barat. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+</feed>

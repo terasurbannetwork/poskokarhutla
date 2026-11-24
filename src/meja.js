@@ -17,7 +17,8 @@ import {buatKejadian, lanjutEntri, periksaEntri} from "./logbook.js";
 import {cariKab, bangunMuatan, luarJendela, tutupKab, tanggalWib} from "./meja_terima.js";
 import {BAGIAN} from "../public/inti/kelengkapan.js";
 import {kab4Dari} from "./siklus_kab.js";
-import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya, teksBersih} from "./meja_spek.js";
+import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, KOLOM_DAMPAK, spekPublik, validasi, statusEfektif, tandaBahaya, teksBersih} from "./meja_spek.js";
+import {gabungDampak} from "./lapor_lanjut_spek.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 16384, MAKS_IMPOR = 256 * 1024, MAKS_BARIS_IMPOR = 50, MAKS_KAB_IMPOR = 8, LAJU_IMPOR = [[JAM, 5]], LAJU_TERIMA = [[JAM, 60]],   /* impor: batas CPU 10 ms akun Free */ RE_ID = /^[0-9a-f]{16}$/;
 /* Juklak 5/2025: identitas pelapor hanya untuk Inspektorat Utama dan Unit Layanan Pengaduan. Pemegangnya staf Inspektorat Utama (peran irtama, keputusan pemilik 10 Nov 2026, migrasi 0121); ulp disisakan bila kelak dipisah. */
@@ -242,7 +243,8 @@ async function ubahStok(env, p, r, o, cat, kini) {
 async function ubah(env, req, id, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const b = await bacaBody(req, MAKS_ISIAN); if (b.galat) return gagal(b.status || 400, b.galat);
-  const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah", "klien_id", "waktu_klien", "yakin", "logbook_id"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah", "klien_id", "waktu_klien", "yakin", "logbook_id", "terima_rekap"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  if (b.o.terima_rekap != null && typeof b.o.terima_rekap !== "boolean") return gagal(400, "terima_rekap harus true atau false");
   const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
   if (!["status", "ubah", "stok"].includes(b.o.aksi)) return gagal(400, "aksi harus status, ubah, atau stok");
   const r = await muatBaris(env, p, id, req); if (!r) return gagal(404, "catatan tidak ada");
@@ -282,6 +284,11 @@ async function ubah(env, req, id, kini) {
     const wl = wilayahTeks({kec: b.o.kec ?? r.kec, desa: b.o.desa ?? r.desa}, M); if (wl.galat) return gagal(400, wl.galat);
     data = v.data; ({kec, desa} = wl);
     for (const sk of M.sistem ?? []) if (lama[sk] != null) data[sk] = lama[sk];   // tautan Logbook tidak hilang saat isi diperbarui
+    if (r.meja === "dampak" && lama.lapor_berkas) {   // LJ-12: catatan milik berkas Data lanjutan BPBD; petugas yang mengetik memilih sumber (tanda beda_sumber dihitung ulang), terima_rekap menerapkan rekap_baru
+      const baru = b.o.terima_rekap === true && lama.lapor_rekap_baru ? lama.lapor_rekap_baru : {nilai: lama.lapor_daftar ?? {}, nihil: lama.lapor_nihil ?? []};
+      data = gabungDampak(data, "dilaporkan", baru, KOLOM_DAMPAK, kini).data;
+      if (lama.lapor_rekap_baru && b.o.terima_rekap !== true) data.lapor_rekap_baru = lama.lapor_rekap_baru;   // belum diterima: tanda tetap
+    }
     if (r.meja === "pengungsi" && lama.titik_id) data.titik_id = lama.titik_id;   // titik tidak dipindah sesudah dibuat
     const tt = await cekTitik(env, r.meja, data, r.prov, r.kab); if (tt) return tt;
     if (M.ubahBuka && r.status !== M.awal) ke = M.awal;   // isi berubah sesudah diverifikasi/diterima: verifikasi ulang, penerimaan berikutnya jadi pengkinian
@@ -370,9 +377,15 @@ async function terimaKeLogbook(env, req, p, r, rencana, kini) {
 
 /* ---------------------------------------------------------------- agregat (tabel meja_ringkas; rekap admin, ringkas publik, rapor) */
 const KOL_R = "SELECT meja, prov, kab, kec, desa, status, data, dibuat, diubah, stok, dummy FROM meja_catatan";
+/* Angka antarsumber tidak dijumlah (D5, AGENTS 2.9): catatan dampak milik berkas Data lanjutan (lapor_berkas) tidak ikut jumlah bila ada catatan dampak ketikan petugas
+   untuk kab dan kejadian yang sama. "Kejadian" = jenis + tanggal (nama kejadian ketikan bebas dan tak pernah sama dengan nama otomatis berkas); dua berkas atau dua kejadian
+   berbeda di kab yang sama tetap dijumlah. ponytail: dua kejadian berbeda berjenis dan bertanggal sama di satu kab dianggap satu, berkasnya tidak dijumlah (kurang, bukan lebih). */
+const kunciKejadian = (r, d) => [r.prov, r.kab, r.dummy, d.jenis, d.tanggal].join("\t");
 function kumpul(rows, kini, acc = {r: new Map(), b: new Map(), t: new Map(), k: new Map()}) {
+  const ketik = new Set(rows.filter(r => r.meja === "dampak").map(r => [r, JSON.parse(r.data)]).filter(([, d]) => !d.lapor_berkas).map(([r, d]) => kunciKejadian(r, d)));
   for (const r of rows) {
     const rec = {...recOf(r)}, M = MEJA[r.meja], se = statusEfektif(r.meja, rec, kini), kunci = [r.meja, r.prov, r.kab, se, r.dummy].join("\t");
+    const tumpang = r.meja === "dampak" && !!rec.data.lapor_berkas && ketik.has(kunciKejadian(r, rec.data));
     let a = acc.r.get(kunci); if (!a) acc.r.set(kunci, a = {meja: r.meja, prov: r.prov, kab: r.kab, status: se, dummy: r.dummy, n: 0, bahaya: 0, jumlah: Object.fromEntries(M.rekap.map(c => [c, 0])), terbaru: 0});
     const tanda = tandaBahaya(r.meja, rec, kini);
     a.n++; if (tanda.length) a.bahaya++; a.terbaru = Math.max(a.terbaru, r.diubah);
@@ -388,7 +401,7 @@ function kumpul(rows, kini, acc = {r: new Map(), b: new Map(), t: new Map(), k: 
       if (lalu) for (const c of M.rekap) lalu.a.jumlah[c] -= lalu.d[c] || 0;
       const d = !T || T.status === se ? rec.data : {};
       if (T) acc.t.set(kt, {tgl: rec.data[T.tanggal], a, d});
-      for (const c of M.rekap) a.jumlah[c] += d[c] || 0;
+      if (!tumpang) for (const c of M.rekap) a.jumlah[c] += d[c] || 0;
     }
     const bc =r.meja === "renkon" ? rec.data.bencana : r.meja === "kaji_cepat" ? rec.data.kejadian : null;
     if (bc) {

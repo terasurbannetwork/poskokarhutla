@@ -256,3 +256,76 @@ export async function isiBeku({berkas, semua, rekap: r, kondisi, penutupan}) {
   const isi = kanonik({berkas: {id: berkas.id, induk: berkas.induk, kab: berkas.kab, kejadian_id: berkas.kejadian_id ?? null}, rekap: r, kondisi_akhir: kondisi, penutupan, objek});
   return {isi, sidik: await sha256(isi)};
 }
+
+/* ---------- LJ-12: rekap ke meja dampak dan pengungsi, bahan Jitupasna (D5, D6, D8). Murni; SQL dan penulisan di src/lapor_lanjut_meja.js ---------- */
+/* jenis bencana tiket Lapor (src/lapor_spek.js JENIS) -> JENIS_DAMPAK meja dampak dan BENCANA meja pengungsi; yang tidak punya padanan jatuh ke "lainnya", tidak ditebak */
+export const DAMPAK_DARI_LAPOR = {banjir: "banjir", longsor: "longsor", abrasi: "gelombang_pasang", cuaca: "cuaca", kekeringan: "kekeringan", karhutla: "karhutla", gempa: "gempabumi",
+  tsunami: "tsunami", erupsi: "gunungapi", kebakaran_gedung: "kebakaran_permukiman", lainnya: "lainnya"};
+export const BENCANA_DARI_LAPOR = {banjir: "banjir", longsor: "longsor", karhutla: "karhutla", gempa: "gempa", tsunami: "tsunami", erupsi: "gunungapi", kekeringan: "kekeringan", cuaca: "cuaca_ekstrem", abrasi: "lainnya", kebakaran_gedung: "lainnya", lainnya: "lainnya"};
+/* pilihan "tidak ada" per bagian meja dampak hanya bila SEMUA metrik bagian itu ditandai nihil (D5, D15); bagian manusia dan layanan memuat kolom yang daftar tidak bisa isi, jadi tidak pernah */
+export const BAGIAN_NIHIL = {rumah: ["rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam"],
+  prasarana: [...Object.values(VITAL).map(v => v + "_unit"), "jalan_km", ...TINGKAT.map(t => "jembatan_" + t)]};
+
+/* rekap -> kolom meja dampak: nilai null tidak ditulis (D5); bagian yang seluruh metriknya nihil diganti pilihan "tidak ada" (kolomnya dikosongkan, bentrokNihil menolak 0 di bagian nihil).
+   kolomSah = nama kolom angka meja dampak (KOLOM_DAMPAK.sah); rekap memuat juga prasarana_putus dan sejenisnya yang bukan kolom meja. */
+export function kolomRekap(r, kolomSah) {
+  const nilai = {};
+  for (const [k, v] of Object.entries(r)) if (v != null && kolomSah.has(k)) nilai[k] = v;
+  const nihil = Object.entries(BAGIAN_NIHIL).filter(([, ms]) => ms.every(m => r[m] === 0)).map(([b]) => b);
+  for (const b of nihil) for (const m of BAGIAN_NIHIL[b]) delete nilai[m];
+  return {nilai, nihil};
+}
+export const sama = (a, b) => kanonik(a) === kanonik(b);   // urutan kunci tidak berarti
+/* Gabung rekap daftar ke isi catatan meja dampak. info = KOLOM_DAMPAK ({sah, bagian: {bagian: [kolom]}}); data memuat kunci sistem lapor_*:
+   lapor_daftar (rekap terakhir yang diterapkan), lapor_sumber ({kolom: "daftar"} = kolom diisi mesin), lapor_nihil (bagian yang pilihan "tidak ada"-nya dari mesin),
+   lapor_beda (kolom yang angka ketikannya lain dari daftar, D5: keduanya disimpan, mesin tidak memilih), lapor_rekap_baru ({nilai, nihil, waktu}).
+   Status dilaporkan: kolom kosong atau kolom bersumber daftar yang masih utuh diisi daftar; kolom ketikan tidak pernah ditimpa. diverifikasi atau masuk_logbook:
+   isi tidak berubah, hanya lapor_rekap_baru bila rekap berbeda dari yang diterapkan. Keluaran {data, ubah}. */
+export function gabungDampak(data, status, rekapBaru, info, kini) {
+  const {nilai, nihil} = rekapBaru, lamaDaftar = data.lapor_daftar ?? {}, lamaNihil = data.lapor_nihil ?? [], sumber = {...(data.lapor_sumber ?? {})}, d = {...data};
+  if (status !== "dilaporkan") {
+    if (sama(nilai, lamaDaftar) && sama([...nihil].sort(), [...lamaNihil].sort())) { if (d.lapor_rekap_baru == null) return {data, ubah: false}; delete d.lapor_rekap_baru; }
+    else if (sama(d.lapor_rekap_baru?.nilai, nilai) && sama(d.lapor_rekap_baru?.nihil, nihil)) return {data, ubah: false};
+    else d.lapor_rekap_baru = {nilai, nihil, waktu: kini};
+    return {data: d, ubah: !sama(d, data)};
+  }
+  for (const c of new Set([...Object.keys(nilai), ...Object.keys(lamaDaftar)])) {
+    const dikuasai = sumber[c] === "daftar" && d[c] === lamaDaftar[c], ada = nilai[c] !== undefined;
+    if (ada) { if (d[c] == null || dikuasai) { d[c] = nilai[c]; sumber[c] = "daftar"; } else delete sumber[c]; }
+    else { if (dikuasai) delete d[c]; delete sumber[c]; }
+  }
+  const lamaSet = new Set(lamaNihil), baruNihil = [];
+  for (const b of Object.keys(BAGIAN_NIHIL)) {
+    const bentrok = (info.bagian[b] ?? []).some(c => d[c] != null);   // isian ketikan di bagian itu: "tidak ada" tidak dipasang mesin (bentrokNihil)
+    if (nihil.includes(b) && !bentrok && (d["nihil_" + b] !== true || lamaSet.has(b))) { d["nihil_" + b] = true; baruNihil.push(b); }
+    else if (lamaSet.has(b) && d["nihil_" + b] === true) delete d["nihil_" + b];
+  }
+  d.lapor_daftar = nilai; d.lapor_nihil = baruNihil;
+  if (Object.keys(sumber).length) d.lapor_sumber = sumber; else delete d.lapor_sumber;
+  const beda = Object.keys(nilai).filter(c => d[c] != null && d[c] !== nilai[c]).sort();
+  if (beda.length) d.lapor_beda = beda; else delete d.lapor_beda;
+  delete d.lapor_rekap_baru;
+  return {data: d, ubah: !sama(d, data)};
+}
+
+/* sektor Jitupasna per jenis prasarana (D8). Nama subsektor mengikuti PETA_SEKTOR di src/siklus_hitung.js; yang tidak ada di sana (listrik, irigasi, transportasi, spbu) dilaporkan
+   Jitupasna sebagai belum_terpeta, bukan dikarang pemetaannya (menunggu U10 siklus). "lainnya" tidak dimasukkan: tanpa sektor tidak ada harga. */
+export const SEKTOR_PRASARANA = {jembatan: "jalan_jembatan", jalan: "jalan_jembatan", sinyal: "telekomunikasi", air: "air_sanitasi", sekolah: "pendidikan", faskes: "kesehatan", ibadah: "agama",
+  kantor: "sarana_pemerintahan", pasar: "perdagangan", listrik: "listrik", irigasi: "irigasi", transportasi: "transportasi", spbu: "spbu"};
+/* Terendam tanpa tingkat rusak tidak masuk (D8); prasarana dihitung per objek (unit); jalan tidak masuk sama sekali (ditahan, U10).
+   Keluaran [{sektor, tingkat, unit, unit_asal}] terurut; objek batal tidak ikut. */
+export function bahanJitupasna(semua) {
+  const n = new Map();
+  for (const x of aktif(semua)) {
+    const d = x.data, tk = d.tingkat;
+    if (!TINGKAT.includes(tk)) continue;
+    /* jalan ditahan (U10): satuan harga jalan (unit, meter, km) belum dikonfirmasi, jadi tidak dihitung per objek; dilaporkan di dilewati */
+    const sektor = x.jenis === "rumah" ? "perumahan" : x.jenis === "prasarana" && d.jenis !== "jalan" ? SEKTOR_PRASARANA[d.jenis] : null;
+    if (sektor) { const k = `${sektor}|${tk}`; n.set(k, (n.get(k) ?? 0) + 1); }
+  }
+  return [...n].sort(([a], [b]) => a < b ? -1 : 1).map(([k, unit]) => { const [sektor, tingkat] = k.split("|"); return {sektor, tingkat, unit, unit_asal: sektor === "perumahan" ? "rekap_rumah_rusak" : "isian"}; });
+}
+/* kunci idempoten baris Jitupasna dari berkas: lj<berkas 16 heks><indeks sektor><tingkat>, 21 karakter (batas 8 sampai 40). Awalan lj<berkas> menandai baris milik berkas itu. */
+const KODE_SEKTOR = ["perumahan", ...new Set(Object.values(SEKTOR_PRASARANA))];
+export const awalanBaris = berkas => "lj" + berkas;
+export const klienBaris = (berkas, sektor, tingkat) => `${awalanBaris(berkas)}${KODE_SEKTOR.indexOf(sektor).toString(36)}${tingkat}`;

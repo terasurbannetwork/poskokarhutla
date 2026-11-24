@@ -1,0 +1,485 @@
+{
+ "kelompok": "FIRMS lengkap 2019 dan 2023",
+ "per_insiden": [
+  {
+   "id": "2019@-1.72,104.12",
+   "petak_unik": 3014,
+   "sensor": {
+    "N20": 1288,
+    "N": 1726
+   },
+   "nn": {
+    "n": 602,
+    "mae_jam": 23.32,
+    "median_galat_jam": 6.43,
+    "bias_jam": 0.8,
+    "dalam12": 0.565,
+    "dalam24": 0.703
+   },
+   "median5": {
+    "n": 602,
+    "mae_jam": 18.01,
+    "median_galat_jam": 6.18,
+    "bias_jam": -1.42,
+    "dalam12": 0.636,
+    "dalam24": 0.772
+   },
+   "median9": {
+    "n": 602,
+    "mae_jam": 18.47,
+    "median_galat_jam": 6.18,
+    "bias_jam": -1.77,
+    "dalam12": 0.636,
+    "dalam24": 0.779
+   }
+  },
+  {
+   "id": "2019@-1.28,104.01",
+   "petak_unik": 1689,
+   "sensor": {
+    "N": 754,
+    "N20": 935
+   },
+   "nn": {
+    "n": 337,
+    "mae_jam": 16.23,
+    "median_galat_jam": 6.66,
+    "bias_jam": 3.59,
+    "dalam12": 0.617,
+    "dalam24": 0.774
+   },
+   "median5": {
+    "n": 337,
+    "mae_jam": 10.69,
+    "median_galat_jam": 6.16,
+    "bias_jam": -1.39,
+    "dalam12": 0.7,
+    "dalam24": 0.852
+   },
+   "median9": {
+    "n": 337,
+    "mae_jam": 10.87,
+    "median_galat_jam": 6.16,
+    "bias_jam": -1.04,
+    "dalam12": 0.694,
+    "dalam24": 0.84
+   }
+  },
+  {
+   "id": "2019@-2.44,114.63",
+   "petak_unik": 1194,
+   "sensor": {
+    "N20": 558,
+    "N": 636
+   },
+   "nn": {
+    "n": 238,
+    "mae_jam": 27.49,
+    "median_galat_jam": 11.94,
+    "bias_jam": 1.32,
+    "dalam12": 0.504,
+    "dalam24": 0.66
+   },
+   "median5": {
+    "n": 238,
+    "mae_jam": 20.18,
+    "median_galat_jam": 6.42,
+    "bias_jam": -2.87,
+    "dalam12": 0.622,
+    "dalam24": 0.756
+   },
+   "median9": {
+    "n": 238,
+    "mae_jam": 20.45,
+    "median_galat_jam": 6.42,
+    "bias_jam": -4.78,
+    "dalam12": 0.584,
+    "dalam24": 0.71
+   }
+  },
+  {
+   "id": "2019@0.04,116.11",
+   "petak_unik": 948,
+   "sensor": {
+    "N": 550,
+    "N20": 398
+   },
+   "nn": {
+    "n": 189,
+    "mae_jam": 6.51,
+    "median_galat_jam": 0.41,
+    "bias_jam": 1.28,
+    "dalam12": 0.81,
+    "dalam24": 0.899
+   },
+   "median5": {
+    "n": 189,
+    "mae_jam": 5.52,
+    "median_galat_jam": 0.41,
+    "bias_jam": 1.31,
+    "dalam12": 0.862,
+    "dalam24": 0.952
+   },
+   "median9": {
+    "n": 189,
+    "mae_jam": 6.23,
+    "median_galat_jam": 0.41,
+    "bias_jam": 0.38,
+    "dalam12": 0.836,
+    "dalam24": 0.952
+   }
+  },
+  {
+   "id": "2019@-11.40,132.50",
+   "petak_unik": 940,
+   "sensor": {
+    "N20": 444,
+    "N": 496
+   },
+   "nn": {
+    "n": 188,
+    "mae_jam": 8.85,
+    "median_galat_jam": 0.76,
+    "bias_jam": -0.81,
+    "dalam12": 0.755,
+    "dalam24": 0.899
+   },
+   "median5": {
+    "n": 188,
+    "mae_jam": 7.89,
+    "median_galat_jam": 2.95,
+    "bias_jam": -1.76,
+    "dalam12": 0.787,
+    "dalam24": 0.899
+   },
+   "median9": {
+    "n": 188,
+    "mae_jam": 7.85,
+    "median_galat_jam": 0.41,
+    "bias_jam": -3.6,
+    "dalam12": 0.755,
+    "dalam24": 0.91
+   }
+  },
+  {
+   "id": "2023@-11.50,131.36",
+   "petak_unik": 2483,
+   "sensor": {
+    "N20": 995,
+    "N21": 767,
+    "N": 721
+   },
+   "nn": {
+    "n": 496,
+    "mae_jam": 19.94,
+    "median_galat_jam": 12.28,
+    "bias_jam": -11.34,
+    "dalam12": 0.46,
+    "dalam24": 0.722
+   },
+   "median5": {
+    "n": 496,
+    "mae_jam": 14.99,
+    "median_galat_jam": 6.9,
+    "bias_jam": -6.99,
+    "dalam12": 0.575,
+    "dalam24": 0.821
+   },
+   "median9": {
+    "n": 496,
+    "mae_jam": 15.95,
+    "median_galat_jam": 11.6,
+    "bias_jam": -6.5,
+    "dalam12": 0.569,
+    "dalam24": 0.808
+   }
+  },
+  {
+   "id": "2023@-11.20,132.05",
+   "petak_unik": 798,
+   "sensor": {
+    "N21": 261,
+    "N": 253,
+    "N20": 284
+   },
+   "nn": {
+    "n": 159,
+    "mae_jam": 15.19,
+    "median_galat_jam": 11.81,
+    "bias_jam": -2.95,
+    "dalam12": 0.535,
+    "dalam24": 0.761
+   },
+   "median5": {
+    "n": 159,
+    "mae_jam": 13.22,
+    "median_galat_jam": 6.42,
+    "bias_jam": -5.82,
+    "dalam12": 0.623,
+    "dalam24": 0.818
+   },
+   "median9": {
+    "n": 159,
+    "mae_jam": 14.99,
+    "median_galat_jam": 6.68,
+    "bias_jam": -7.52,
+    "dalam12": 0.572,
+    "dalam24": 0.799
+   }
+  },
+  {
+   "id": "2023@-3.51,105.23",
+   "petak_unik": 759,
+   "sensor": {
+    "N": 298,
+    "N20": 236,
+    "N21": 225
+   },
+   "nn": {
+    "n": 151,
+    "mae_jam": 14.6,
+    "median_galat_jam": 5.71,
+    "bias_jam": -0.11,
+    "dalam12": 0.609,
+    "dalam24": 0.755
+   },
+   "median5": {
+    "n": 151,
+    "mae_jam": 12.71,
+    "median_galat_jam": 0.41,
+    "bias_jam": -1.48,
+    "dalam12": 0.709,
+    "dalam24": 0.834
+   },
+   "median9": {
+    "n": 151,
+    "mae_jam": 13.46,
+    "median_galat_jam": 6.09,
+    "bias_jam": -1.19,
+    "dalam12": 0.656,
+    "dalam24": 0.815
+   }
+  },
+  {
+   "id": "2023@-8.82,141.08",
+   "petak_unik": 613,
+   "sensor": {
+    "N20": 252,
+    "N21": 185,
+    "N": 176
+   },
+   "nn": {
+    "n": 122,
+    "mae_jam": 21.18,
+    "median_galat_jam": 6.9,
+    "bias_jam": -2.94,
+    "dalam12": 0.525,
+    "dalam24": 0.689
+   },
+   "median5": {
+    "n": 122,
+    "mae_jam": 20.79,
+    "median_galat_jam": 6.67,
+    "bias_jam": -0.73,
+    "dalam12": 0.525,
+    "dalam24": 0.68
+   },
+   "median9": {
+    "n": 122,
+    "mae_jam": 22.14,
+    "median_galat_jam": 6.77,
+    "bias_jam": 1.32,
+    "dalam12": 0.516,
+    "dalam24": 0.721
+   }
+  },
+  {
+   "id": "2023@-11.50,130.86",
+   "petak_unik": 545,
+   "sensor": {
+    "N20": 232,
+    "N": 157,
+    "N21": 156
+   },
+   "nn": {
+    "n": 109,
+    "mae_jam": 15.79,
+    "median_galat_jam": 12.16,
+    "bias_jam": -10.07,
+    "dalam12": 0.459,
+    "dalam24": 0.807
+   },
+   "median5": {
+    "n": 109,
+    "mae_jam": 11.14,
+    "median_galat_jam": 6.6,
+    "bias_jam": -4.64,
+    "dalam12": 0.615,
+    "dalam24": 0.89
+   },
+   "median9": {
+    "n": 109,
+    "mae_jam": 12.46,
+    "median_galat_jam": 11.6,
+    "bias_jam": -5.35,
+    "dalam12": 0.596,
+    "dalam24": 0.853
+   }
+  }
+ ],
+ "vonis": "belum",
+ "gabungan": {
+  "mae_jam": 14.27,
+  "dalam12": 0.656,
+  "dalam24": 0.82,
+  "metode": {
+   "nn": {
+    "n": 2591,
+    "mae_jam": 18.43,
+    "median_galat_jam": 6.67,
+    "bias_jam": -2.11,
+    "dalam12": 0.572,
+    "dalam24": 0.751
+   },
+   "median5": {
+    "n": 2591,
+    "mae_jam": 14.27,
+    "median_galat_jam": 6.18,
+    "bias_jam": -2.82,
+    "dalam12": 0.656,
+    "dalam24": 0.82
+   },
+   "median9": {
+    "n": 2591,
+    "mae_jam": 14.93,
+    "median_galat_jam": 6.41,
+    "bias_jam": -3.16,
+    "dalam12": 0.639,
+    "dalam24": 0.812
+   }
+  }
+ },
+ "dibuat": "2026-11-24T02:10Z",
+ "benih": 20261124,
+ "kriteria": {
+  "dalam24_min": 0.6,
+  "mae_tidak_lebih_buruk_dari": "tetangga_terdekat"
+ },
+ "pilihan": [
+  {
+   "id": "2019@-1.72,104.12",
+   "petak_unik": 3014
+  },
+  {
+   "id": "2019@-1.28,104.01",
+   "petak_unik": 1689
+  },
+  {
+   "id": "2019@-2.44,114.63",
+   "petak_unik": 1194
+  },
+  {
+   "id": "2019@0.04,116.11",
+   "petak_unik": 948
+  },
+  {
+   "id": "2019@-11.40,132.50",
+   "petak_unik": 940
+  },
+  {
+   "id": "2023@-11.50,131.36",
+   "petak_unik": 2483
+  },
+  {
+   "id": "2023@-11.20,132.05",
+   "petak_unik": 798
+  },
+  {
+   "id": "2023@-3.51,105.23",
+   "petak_unik": 759
+  },
+  {
+   "id": "2023@-8.82,141.08",
+   "petak_unik": 613
+  },
+  {
+   "id": "2023@-11.50,130.86",
+   "petak_unik": 545
+  }
+ ],
+ "pemilihan": "5 per tahun terbesar menurut sel unik dengan 200 <= n <= 5000; satu api = rantai sel (tetangga <= 2 sel, selisih t_pertama <= 72 jam); dikunci sebelum hasil dihitung",
+ "aturan_awal": "petak lebih awal dari awal insiden dikurangi 24 jam dibuang pada SEMUA kelompok (D20); kelompok FIRMS: awal = deteksi pertama rantai, jadi tak ada yang terbuang",
+ "jenis_uji": "interpolasi sel ditahan (20% sel disembunyikan, ditebak dari tetangga), BUKAN akurasi garis depan terhadap perimeter independen",
+ "peringatan": "uji ini mengukur seberapa baik sel yang ditahan ditebak dari tetangga, bukan akurasi terhadap perimeter independen",
+ "vonis_historis": "lulus",
+ "musim_ini": {
+  "kelompok": "arsip titik_hari musim ini (masukan produksi, Q11)",
+  "per_insiden": [
+   {
+    "id": "93-261026-024",
+    "petak_unik": 63,
+    "sensor": {
+     "N21": 39,
+     "N20": 24
+    },
+    "nn": {
+     "n": 12,
+     "mae_jam": 29.82,
+     "median_galat_jam": 19.07,
+     "bias_jam": 4.01,
+     "dalam12": 0.25,
+     "dalam24": 0.583
+    },
+    "median5": {
+     "n": 12,
+     "mae_jam": 28.61,
+     "median_galat_jam": 19.07,
+     "bias_jam": 2.8,
+     "dalam12": 0.333,
+     "dalam24": 0.583
+    },
+    "median9": {
+     "n": 12,
+     "mae_jam": 31.95,
+     "median_galat_jam": 19.07,
+     "bias_jam": 1.45,
+     "dalam12": 0.333,
+     "dalam24": 0.667
+    }
+   }
+  ],
+  "vonis": "gagal",
+  "gabungan": {
+   "mae_jam": 28.61,
+   "dalam12": 0.333,
+   "dalam24": 0.583,
+   "metode": {
+    "nn": {
+     "n": 12,
+     "mae_jam": 29.82,
+     "median_galat_jam": 19.07,
+     "bias_jam": 4.01,
+     "dalam12": 0.25,
+     "dalam24": 0.583
+    },
+    "median5": {
+     "n": 12,
+     "mae_jam": 28.61,
+     "median_galat_jam": 19.07,
+     "bias_jam": 2.8,
+     "dalam12": 0.333,
+     "dalam24": 0.583
+    },
+    "median9": {
+     "n": 12,
+     "mae_jam": 31.95,
+     "median_galat_jam": 19.07,
+     "bias_jam": 1.45,
+     "dalam12": 0.333,
+     "dalam24": 0.667
+    }
+   }
+  }
+ },
+ "alasan_vonis": "kelompok musim ini hanya 1 insiden dengan >= 50 petak (diminta 3), 12 sel ditahan: belum cukup untuk vonis"
+}

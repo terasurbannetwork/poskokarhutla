@@ -155,6 +155,33 @@ jobs:
           done
           echo "::warning title=Push prospektif cuaca gagal::git push ke main gagal 3x"
 
+      # H90 (H21, H31): MJO harian (RMM, ±100 KB) dan bahan angin kencang (Open-Meteo ECMWF, ±471 sel, kuota dihitung di scripts/cuaca/bahan_badai.py).
+      # Keduanya idempoten per hari (bahan_badai melewati terbit yang sudah diarsipkan). mjo_arsip.json dan arsip badai harus di-commit: tak bisa dibuat ulang.
+      # Arsip badai INTERNAL (data/raw/cuaca/badai, whitelist .gitignore), tidak tayang (KEPUTUSAN Q2); mjo.json ikut deploy lewat cache data-.
+      - name: MJO dan bahan badai (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          python3 scripts/cuaca/mjo.py uji && { python3 scripts/cuaca/mjo.py || echo "::warning title=mjo::gagal; berkas lama dibiarkan"; }
+          python3 scripts/cuaca/bahan_badai.py uji && { python3 scripts/cuaca/bahan_badai.py || echo "::warning title=bahan_badai::gagal; arsip lama dibiarkan"; }
+
+      - name: Commit arsip MJO dan bahan badai (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B=$(ls -d public/data/mjo.json public/data/mjo_arsip.json data/raw/cuaca/badai 2>/dev/null || true)
+          [ -n "$B" ] || { echo "belum ada arsip MJO/badai"; exit 0; }
+          git add -f $B
+          git diff --cached --quiet -- $B && { echo "MJO/badai tidak berubah"; exit 0; }
+          git commit -q -m "data: MJO dan arsip bahan badai $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push MJO/badai gagal::git push ke main gagal 3x"
+
       # magma.py merantai abu.py (angin ECMWF lapisan tekanan, ±beberapa puluh bobot kuota) lalu laporan.py. paparan.py dan citra.py: langkah sesudah peluang abu (+ statis.yml bulanan).
       - name: Gunung api (MAGMA, abu, laporan) (boleh gagal)
         continue-on-error: true

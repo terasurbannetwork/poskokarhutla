@@ -313,7 +313,7 @@ const Ringkasan = (() => {
       const tot = K.naik + K.turun, split = tot ? `<div class="rk-split" aria-hidden="true"><i style="flex:${K.naik}"></i><i style="flex:${K.turun}"></i></div><span>membesar, mengecil</span>` : "";
       const sk = L ? L[2] * 1.05 : 1, rng = L ? `<div class="rk-rng" aria-hidden="true"><i style="left:${L[0] / sk * 100}%;width:${(L[2] - L[0]) / sk * 100}%"></i><b style="left:${L[1] / sk * 100}%"></b></div><span>rentang perkiraan, bukan angka resmi</span>` : "";
       return [
-        kp("sensor", "Titik panas 24 jam", fmt(K.h24), "titik", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(", "), spark),
+        kp("sensor", "Titik panas 24 jam", fmt(K.h24), "titik", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(", "), (typeof PKH !== "undefined" ? PKH.setara() : "") + spark),
         kp("kelompok", "Cluster prioritas", fmt(K.k3), "cluster", "satelit", SUMBER.kompleks, `front membesar di ${fmt(K.naik)}, mengecil di ${fmt(K.turun)}`, split),
         kp("awan", "Terpapar asap karhutla", D.adaAsap ? rb(K.jiwaPrio) : "–", D.adaAsap ? "jiwa" : "", "model", `${SUMBER.asap}; provinsi yang sering mengalami karhutla; seluruh Indonesia ${rb(K.jiwaNas)} jiwa`,
           D.adaAsap ? `provinsi yang sering mengalami karhutla${jb != null ? `, besok ${Math.abs(jb) < .005 ? "tetap" : (jb > 0 ? "naik " : "turun ") + pct(Math.abs(jb))}` : ""}` : "data asap belum tersedia", asap),

@@ -8,6 +8,9 @@ import {json, gagal, cacheTepi} from "./worker.js";
 import {wilayah, cariWilayah} from "./titik.js";
 
 const JAM = 3600e3, RSS = "https://www.bmkg.go.id/alerts/nowcast/id", TIMEOUT_MS = 8000, MAKS_BYTE = 1e6, MAKS_CAP = 30;
+/* batas daftar kecamatan (description dan wilayah): CAP Jawa Barat memuat ratusan kecamatan; 8000 huruf (~700 nama) jauh di bawah batas baris D1 (2 MB) dan batas CAP (MAKS_BYTE).
+   Pemotongan tampilan ada di klien (public/databaru.js), BUKAN di penyimpanan: arsip harus bisa menjawab "kecamatan X pernah diperingatkan?". */
+const MAKS_WIL = 8000;
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
 const TAUTAN = /^https:\/\/www\.bmkg\.go\.id\/alerts\/nowcast\/id\/[\w.-]{1,80}_alert\.xml$/;
 const ENT = {amp: "&", lt: "<", gt: ">", quot: '"', apos: "'"};
@@ -37,16 +40,16 @@ function poligon(teks) {
   return out.length >= 3 && out.length <= 1500 ? out : null;
 }
 
-/* satu berkas CAP -> {t: ms selesai, p: peringatan tanpa prov/url/aktif} atau null bila tak sah */
+/* satu berkas CAP -> {t: ms selesai, p: peringatan tanpa prov/url/aktif} atau null bila tak sah. polygon = [[[lon,lat],...],...] (<= 20 cincin, 3 desimal); di cuaca_arsip.poligon disederhanakan lagi (ringkasArsip) */
 export function uraiCAP(xml) {
   if (xml.length > MAKS_BYTE || !/<alert[\s>]/.test(xml)) return null;
   const info = tag(xml, "info"), area = tag(info, "area"), g = (x, k, m = 200) => bersih(tag(x, k), m);
   const id = g(xml, "identifier", 120), mulai = g(info, "effective", 40) || g(xml, "sent", 40), selesai = g(info, "expires", 40), t = waktu(selesai);
   if (!/^[\w.:-]{3,120}$/.test(id) || t == null || waktu(mulai) == null) return null;
-  const desk = g(info, "description", 1500), polys = [...area.matchAll(/<polygon>([^<]*)<\/polygon>/g)].slice(0, 20).map(m => poligon(m[1])).filter(Boolean);
+  const desk = g(info, "description", MAKS_WIL), polys = [...area.matchAll(/<polygon>([^<]*)<\/polygon>/g)].slice(0, 20).map(m => poligon(m[1])).filter(Boolean);
   const web = bersih(tag(info, "web"), 300);
   return {t, p: {id, event: g(info, "event", 80), severity: g(info, "severity", 20), urgency: g(info, "urgency", 20), certainty: g(info, "certainty", 20),
-    mulai, selesai, wilayah: (desk.match(/khususnya di (.+?)\.\s/)?.[1] ?? g(area, "areaDesc")).trim().slice(0, 600), headline: g(info, "headline", 200),
+    mulai, selesai, wilayah: (desk.match(/khususnya di (.+?)\.\s/)?.[1] ?? g(area, "areaDesc", MAKS_WIL)).trim().slice(0, MAKS_WIL), headline: g(info, "headline", 200),
     deskripsi: desk.split(/(?<=\.)\s/)[0].slice(0, 240), polygon: polys.length ? polys : null, web: /^https:\/\/[\w.-]+\.bmkg\.go\.id\//.test(web) ? web : null}};
 }
 

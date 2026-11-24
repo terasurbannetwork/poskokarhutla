@@ -926,6 +926,10 @@ const W = {
     if (url.pathname === "/api/himawari" && req.method === "GET") return cacheTepi(req, ctx, 300, async () => {   // hotspot Himawari: R2 data/himawari.json (diunggah Action 30 menit); hilang = kosong, bukan 500
       return new Response(JSON.stringify(await himawariRespons(env)), {headers: {"content-type": "application/json; charset=utf-8"}});
     });
+    if (url.pathname === "/api/awan_tumbuh" && req.method === "GET") return cacheTepi(req, ctx, 300, async () => {   // awan tumbuh cepat (H12): R2 data/awan_tumbuh.json (diunggah himawari.yml tiap 30 menit); hilang = 404, kartu /cuaca dibuang
+      const o = await env.MEDIA.get("data/awan_tumbuh.json");
+      return new Response(o ? o.body : "{}", {status: o ? 200 : 404, headers: {"content-type": "application/json; charset=utf-8"}});
+    });
     if (url.pathname.startsWith("/api/cuaca/")) { const c = await layaniNowcast(req, env, ctx, url); if (c) return c; }   // nowcast BMKG D1 (src/nowcast.js)
     if (url.pathname.startsWith("/api/gunungapi/")) { const g = await layaniGunungapi(req, env, ctx, url); if (g) return g; }   // level gunung api MAGMA D1 (src/gunungapi.js)
     if (url.pathname.startsWith("/api/banjir/")) { const b = await ruteSihka(req, env, ctx, url); if (b) return b; }   // sungai terukur SIHKA D1 (src/sihka.js)

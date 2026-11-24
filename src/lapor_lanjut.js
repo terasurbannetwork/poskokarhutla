@@ -8,7 +8,7 @@ import {json, bacaBody, bacaBytes, sha, acak} from "./worker.js";
 import {bersihMedia} from "./media_bersih.js";
 import {lajuIP, laju} from "./bnpb.js";
 import {hakMeja} from "./lapor_ai.js";
-import {modAtauStaf} from "./staf.js";
+import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
 import {bakuKab, dalamWilayah} from "./lapor_meja_hak.js";
 import {tglWib, nomorWa} from "./lapor_tampil.js";
 import {rekap, validasi, penanda, kurangFoto, fotoWajib, titikObjek, wajahBoleh, JENIS_WAJAH, TANPA_LOKASI, DEWASA, METRIK_NIHIL, metrikAda, validasiIsianBerkas} from "./lapor_lanjut_spek.js";
@@ -16,6 +16,7 @@ import {NAMA_KAB4} from "./siklus_kab.js";
 import {teksBersih} from "./meja_spek.js";
 import {kodeTp, jarakM, BOX, DEKAT_M} from "./pengungsian_titik.js";
 import {putaranData, perintahData, balasanTersimpan, kunciFotoDraf, fotoMasuk, titikWa, samarPribadi, perintahStatus, balasanStatus, perintahNihil, perintahTim, perintahJawab, namaMetrik, BASI_MS} from "./lapor_lanjut_mesin.js";
+import {dorongRekap, terimaJitupasna} from "./lapor_lanjut_meja.js";
 import * as H from "./hak.js";
 
 const JAM = 3600e3, HARI = 864e5, UMUR_TOKEN = 30 * HARI;   // Q11: 30 hari
@@ -276,6 +277,7 @@ async function simpanObjek(env, t, o, kini) {
   }
   if (!r[0].meta.changes) return tolak(409, "Data ini sudah diubah orang lain, atau tempat pengungsiannya baru saja dibatalkan. Muat ulang lalu coba lagi.");
   if (kunciWajah.length && env.MEDIA) await env.MEDIA.delete(kunciWajah).catch(() => {});
+  await dorongRekap(env, t.b.id, kini);   // LJ-12: rekap ke meja dampak dan pengungsi; galat ditelan di dalamnya
   return {kode: ubah ? 200 : 201, isi: {objek: await objekLengkap(env, t.b, baris.id), ...(cabut.length && {nihil_dicabut: cabut})}};
 }
 /* POST /api/lapor/data/objek {jenis, isian, lat?, lon?, klien_id?} baru, atau {id, rev, isian, ...} ubah */
@@ -315,6 +317,7 @@ async function batalPost(env, req, url, kini) {
     ...(lama.jenis === "jiwa" || lama.jenis === "korban" ? [H.ljStmtWajahHapus(env, TIM, lama.id), H.ljStmtJejak(env, TIM, {berkas: t.b.id, objek: lama.id, aksi: "hapus_wajah", oleh: t.oleh}, kini, true)] : [])]);   // R2: TP buatan berkas ini ditutup; tautan milik pihak lain tidak disentuh
   if (!r[0].meta.changes) return galat(409, "Data ini sudah diubah atau dibatalkan. Muat ulang lalu coba lagi.");
   if (wajahKunci.length && env.MEDIA) await env.MEDIA.delete(wajahKunci).catch(() => {});
+  await dorongRekap(env, t.b.id, kini);
   return kirim(200, {objek: lama.id, status: "batal"});
 }
 
@@ -439,6 +442,7 @@ async function setNihil(env, t, metrik, nihil, kini) {
     H.ljStmtJejak(env, TIM, {berkas: t.b.id, aksi: nihil ? "nihil_tandai" : "nihil_cabut", sesudah: JSON.stringify({metrik}), oleh: t.oleh}, kini, true)]); }
   catch (e) { if (/length\(isian\)/.test(String(e?.message))) return tolak(400, "Isian berkas terlalu panjang."); throw e; }
   const b = await H.ljBerkas(env, TIM, t.b.id);
+  if (r[0].meta.changes > 0) await dorongRekap(env, t.b.id, kini);
   return {kode: 200, isi: {metrik, nihil, berubah: r[0].meta.changes > 0, daftar: bacaIsian(b).nihil || []}};
 }
 /* POST /api/lapor/data/nihil {metrik, nihil: true|false}: ketua dan anggota */
@@ -455,6 +459,26 @@ async function nihilWa(env, t, u, kini) {
   if (r.kode >= 400) return r.isi.galat;
   if (u.nihil) return r.isi.berubah ? `Dicatat: ${n} ditandai nihil (tidak ada). Di rekap angkanya 0. Bila nanti ada datanya, tanda ini hilang sendiri.` : `${n} sudah ditandai nihil. Tidak ada yang diubah.`;
   return r.isi.berubah ? `Tanda nihil untuk ${n} dicabut. Angkanya kembali "belum didata" sampai ada datanya.` : `${n} tidak sedang ditandai nihil. Tidak ada yang diubah.`;
+}
+
+/* ---------- LJ-12: terima staf. Aksi tertutup pada daftar AKSI_TERIMA; penutupan berkas (LJ-13) menambah entrinya di sini, bentuk body {berkas, aksi} sama. ---------- */
+const AKSI_TERIMA = {jitupasna: (env, b, oleh, kini) => terimaJitupasna(env, b, oleh, kini)};
+/* POST /api/lapor/data/terima {berkas, aksi: "jitupasna"}: hanya staf Pusdalops BNPB (admin ikut seperti Tampilkan); akun lembaga dan tim berkas 403 */
+async function terimaPost(env, req, url, kini) {
+  const lip = await lajuIP(env, req, "lapor.data.terima", [[JAM, 120]], kini); if (lip) return lip;   // sebelum autentikasi
+  if (req.headers.get("x-pb") !== "1") return galat(403, "kiriman web wajib membawa header x-pb: 1");
+  const h = await hakData(env, req, kini); if (h?.tolak) return h.tolak;
+  if (!h) return galat(401, "Masuk sebagai staf Pusdalops BNPB.");
+  if (h.c.jenis !== "bnpb") return galat(403, "Hanya staf Pusdalops BNPB yang bisa menerima data berkas.");
+  const oleh = String(h.oleh).slice(0, 200), lj = await laju(env, await sha(oleh), "lapor.data.terima", [[JAM, 60]], kini); if (lj) return lj;
+  const bb = await bacaBody(req, 512); if (bb.galat) return galat(bb.status || 400, bb.galat);
+  const id = bb.o?.berkas, aksi = bb.o?.aksi;
+  if (!RE_ID.test(id || "")) return galat(400, "Berkas tidak sah.");
+  if (typeof aksi !== "string" || !Object.hasOwn(AKSI_TERIMA, aksi)) return galat(400, "Aksi tidak dikenal.");
+  const b = await H.ljBerkas(env, STAF, id); if (!b) return galat(404, "Berkas tidak ditemukan.");
+  if (!dalamWilayahStaf(req, [b.kab.slice(0, 2)])) return galat(403, "Berkas ini di luar wilayah Anda.");   // staf berwilayah hanya provinsinya
+  const r = await AKSI_TERIMA[aksi](env, b, oleh, kini);
+  return kirim(r.kode, r.isi);
 }
 
 /* ---------- LJ-09: tim (D11, D20, Q5, Q11, Q14). Satu inti untuk web (POST /api/lapor/data/tim) dan WA (tim tambah, tim cabut, tautan).
@@ -709,6 +733,7 @@ export const RUTE_LAPOR_DATA = Object.fromEntries(Object.entries({
   "GET /api/lapor/data/berkas": berkasGet,
   "GET /api/lapor/data/daftar": daftarGet,
   "POST /api/lapor/data/tampil": tampilPost,
+  "POST /api/lapor/data/terima": terimaPost,
   "POST /api/lapor/data/objek": objekPost,
   "POST /api/lapor/data/batal": batalPost,
   "POST /api/lapor/data/isian": isianPost,

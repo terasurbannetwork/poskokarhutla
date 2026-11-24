@@ -1,0 +1,276 @@
+{
+ "dasar": "FWI siang ERA5 per sel 0,5 derajat vs titik VIIRS (S-NPP/NOAA, keyakinan bukan rendah, type 0) pada hari WIB yang sama",
+ "tahun_uji": [
+  2019,
+  2023,
+  2024,
+  2025
+ ],
+ "sel_contoh": 32,
+ "definisi": {
+  "ge1": "sel-hari dengan >= 1 titik",
+  "ge20": "sel-hari dengan >= 20 titik (api besar)"
+ },
+ "dibuat": "2026-11-24",
+ "kelompok": {
+  "semua": [
+   {
+    "kelas": 0,
+    "nama": "Rendah (FWI < 2)",
+    "n": 2267,
+    "ge1": {
+     "k": 631,
+     "laju": 0.2783,
+     "ci": [
+      0.2603,
+      0.2972
+     ]
+    },
+    "ge20": {
+     "k": 16,
+     "laju": 0.0071,
+     "ci": [
+      0.0043,
+      0.0114
+     ]
+    }
+   },
+   {
+    "kelas": 1,
+    "nama": "Sedang (FWI 2-7)",
+    "n": 923,
+    "ge1": {
+     "k": 526,
+     "laju": 0.5699,
+     "ci": [
+      0.5377,
+      0.6015
+     ]
+    },
+    "ge20": {
+     "k": 52,
+     "laju": 0.0563,
+     "ci": [
+      0.0432,
+      0.0731
+     ]
+    }
+   },
+   {
+    "kelas": 2,
+    "nama": "Tinggi (FWI 7-14)",
+    "n": 848,
+    "ge1": {
+     "k": 596,
+     "laju": 0.7028,
+     "ci": [
+      0.6712,
+      0.7326
+     ]
+    },
+    "ge20": {
+     "k": 91,
+     "laju": 0.1073,
+     "ci": [
+      0.0882,
+      0.1299
+     ]
+    }
+   },
+   {
+    "kelas": 3,
+    "nama": "Sangat Tinggi (FWI 14+)",
+    "n": 2882,
+    "ge1": {
+     "k": 2508,
+     "laju": 0.8702,
+     "ci": [
+      0.8575,
+      0.882
+     ]
+    },
+    "ge20": {
+     "k": 537,
+     "laju": 0.1863,
+     "ci": [
+      0.1725,
+      0.201
+     ]
+    }
+   }
+  ],
+  "sumatra_kalimantan": [
+   {
+    "kelas": 0,
+    "nama": "Rendah (FWI < 2)",
+    "n": 1220,
+    "ge1": {
+     "k": 313,
+     "laju": 0.2566,
+     "ci": [
+      0.2328,
+      0.2818
+     ]
+    },
+    "ge20": {
+     "k": 14,
+     "laju": 0.0115,
+     "ci": [
+      0.0068,
+      0.0192
+     ]
+    }
+   },
+   {
+    "kelas": 1,
+    "nama": "Sedang (FWI 2-7)",
+    "n": 445,
+    "ge1": {
+     "k": 248,
+     "laju": 0.5573,
+     "ci": [
+      0.5109,
+      0.6028
+     ]
+    },
+    "ge20": {
+     "k": 38,
+     "laju": 0.0854,
+     "ci": [
+      0.0628,
+      0.115
+     ]
+    }
+   },
+   {
+    "kelas": 2,
+    "nama": "Tinggi (FWI 7-14)",
+    "n": 372,
+    "ge1": {
+     "k": 267,
+     "laju": 0.7177,
+     "ci": [
+      0.67,
+      0.7611
+     ]
+    },
+    "ge20": {
+     "k": 73,
+     "laju": 0.1962,
+     "ci": [
+      0.1591,
+      0.2396
+     ]
+    }
+   },
+   {
+    "kelas": 3,
+    "nama": "Sangat Tinggi (FWI 14+)",
+    "n": 731,
+    "ge1": {
+     "k": 650,
+     "laju": 0.8892,
+     "ci": [
+      0.8644,
+      0.9099
+     ]
+    },
+    "ge20": {
+     "k": 347,
+     "laju": 0.4747,
+     "ci": [
+      0.4387,
+      0.5109
+     ]
+    }
+   }
+  ],
+  "lainnya": [
+   {
+    "kelas": 0,
+    "nama": "Rendah (FWI < 2)",
+    "n": 1047,
+    "ge1": {
+     "k": 318,
+     "laju": 0.3037,
+     "ci": [
+      0.2766,
+      0.3323
+     ]
+    },
+    "ge20": {
+     "k": 2,
+     "laju": 0.0019,
+     "ci": [
+      0.0005,
+      0.0069
+     ]
+    }
+   },
+   {
+    "kelas": 1,
+    "nama": "Sedang (FWI 2-7)",
+    "n": 478,
+    "ge1": {
+     "k": 278,
+     "laju": 0.5816,
+     "ci": [
+      0.5369,
+      0.625
+     ]
+    },
+    "ge20": {
+     "k": 14,
+     "laju": 0.0293,
+     "ci": [
+      0.0175,
+      0.0486
+     ]
+    }
+   },
+   {
+    "kelas": 2,
+    "nama": "Tinggi (FWI 7-14)",
+    "n": 476,
+    "ge1": {
+     "k": 329,
+     "laju": 0.6912,
+     "ci": [
+      0.6483,
+      0.731
+     ]
+    },
+    "ge20": {
+     "k": 18,
+     "laju": 0.0378,
+     "ci": [
+      0.0241,
+      0.059
+     ]
+    }
+   },
+   {
+    "kelas": 3,
+    "nama": "Sangat Tinggi (FWI 14+)",
+    "n": 2151,
+    "ge1": {
+     "k": 1858,
+     "laju": 0.8638,
+     "ci": [
+      0.8486,
+      0.8776
+     ]
+    },
+    "ge20": {
+     "k": 190,
+     "laju": 0.0883,
+     "ci": [
+      0.0771,
+      0.1011
+     ]
+    }
+   }
+  ]
+ },
+ "ci": "Wilson 95%, tidak memperhitungkan korelasi sel-hari beruntun (terlalu sempit); sel contoh = sel paling sering terbakar (bias seleksi)"
+}

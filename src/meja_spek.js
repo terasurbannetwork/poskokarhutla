@@ -111,6 +111,8 @@ const gerbangDampak = (kolom, ke, data, wilayah) => {
   return h.inti_lengkap ? "" : `verifikasi ditolak: ${h.kurang_inti.length} butir inti belum terjawab: ${h.kurang_inti.map(x => x.label).join("; ")}. Angka 0 dihitung terjawab; bagian tanpa kerusakan dipilih "tidak ada".`;
 };
 
+/* kunci sistem catatan dampak dari rekap berkas Data lanjutan BPBD (LJ-12): tidak ada di kolom, dipertahankan saat petugas mengubah isi */
+const SISTEM_LAPOR = ["lapor_berkas", "lapor_daftar", "lapor_sumber", "lapor_nihil", "lapor_beda", "lapor_rekap_baru"];
 export const MEJA = {
   kaji_cepat: {
     id: "kaji_cepat", nama: "Kaji cepat", ikon: '<path d="M9 4h6v3H9z"/><path d="M7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/>',
@@ -248,7 +250,7 @@ export const MEJA = {
   /* Juklak 9/2023 Format 1, 2, 4. AGREGAT tanpa nama atau NIK: satu catatan per tempat pengungsian per hari; kolom rekap dijumlahkan hanya dari catatan terbaru per tempat yang masih berjalan. */
   pengungsi: {
     id: "pengungsi", nama: "Pengungsi terpilah", ikon: '<path d="M3 21 12 4l9 17z"/><path d="M12 13v8M8.5 21 12 13l3.5 8"/>',
-    wilayah: {kec: true, desa: true}, adminIsi: false, rapor: false,
+    wilayah: {kec: true, desa: true}, adminIsi: false, rapor: false, sistem: ["lapor_berkas", "lapor_tutup", "lapor_rekap_baru"],   // lapor_berkas: rekap harian titik dari Data lanjutan BPBD (LJ-12)
     kolom: [
       tgl("tgl_data", "Tanggal data", {wajib: true, maks: "hariini"}), k("nama_tempat", "Nama tempat pengungsian", "teks", {wajib: true, maks: 120}), k("pos_lapangan", "Pos lapangan", "teks", {maks: 80}),
       k("jenis_tempat", "Jenis tempat", "pilih", {nilai: ["terkonsentrasi", "tidak_terkonsentrasi"], wajib: true}), k("tipe_tempat", "Tipe tempat", "pilih", {nilai: ["fasilitas_umum", "tanah_lapang", "lahan_gedung_swasta", "tempat_ibadah", "rumah_perorangan"]}),
@@ -335,7 +337,7 @@ export const MEJA = {
   /* Juklak 7/2023 Lampiran I huruf A: satu catatan per kejadian per kabupaten/kota, diperbarui di catatan yang sama. Kosong beda dari nol; bagian tanpa kerusakan dipilih nihil. Rapor BPBD tidak berubah (rapor:false, T3). */
   dampak: {
     id: "dampak", nama: "Data kejadian dan dampak", ikon: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/><path d="m14 5 2 2 4-4"/>',
-    wilayah: {kec: false, desa: false}, adminIsi: false, publik: false, rapor: false, ubahBuka: true, sistem: ["logbook_id", "logbook_kib"],
+    wilayah: {kec: false, desa: false}, adminIsi: false, publik: false, rapor: false, ubahBuka: true, sistem: ["logbook_id", "logbook_kib", ...SISTEM_LAPOR],   // lapor_*: rekap daftar Data lanjutan BPBD (LJ-12), dijaga src/lapor_lanjut_spek.js gabungDampak
     bagian: BAGIAN, kolom: kolomDampak(),
     awal: "dilaporkan", status: ["dilaporkan", "diverifikasi", "masuk_logbook"],
     transisi: {dilaporkan: {diverifikasi: "petugas"}, diverifikasi: {masuk_logbook: "pusdalops", dilaporkan: "petugas"}, masuk_logbook: {dilaporkan: "petugas", diverifikasi: "sistem"}},
@@ -346,6 +348,12 @@ export const MEJA = {
     kelengkapan(data, wilayah) { return kelengkapan(this.kolom, {...data, ...wilayah}); },
   },
 };
+/* kolom angka meja dampak yang boleh diisi rekap daftar, dan kolom per bagian (untuk pilihan "tidak ada"): dibaca src/lapor_lanjut_spek.js gabungDampak */
+export const KOLOM_DAMPAK = (() => {
+  const k = MEJA.dampak.kolom.filter(c => !c.nihil && c.tipe === "angka"), bagian = {};
+  for (const c of MEJA.dampak.kolom.filter(x => !x.nihil)) (bagian[c.bagian] ??= []).push(c.nama);
+  return {sah: new Set(k.map(c => c.nama)), bagian};
+})();
 export const DAFTAR_MEJA = Object.keys(MEJA);
 export const DAFTAR_PETUGAS = DAFTAR_MEJA.filter(m => !MEJA[m].pusat);   // sama dengan trigger meja_petugas_sah
 export const MEJA_RAPOR = DAFTAR_MEJA.filter(m => MEJA[m].rapor !== false);

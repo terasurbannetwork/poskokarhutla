@@ -595,6 +595,17 @@ Sebelum menyentuh arsip deteksi per insiden, waktu tiba dan garis depan harian, 
 
 Aturan berhentinya sama dengan §2.1. Metode progresi diambil dari repo pembanding berlisensi MIT dan ditulis ulang di stdlib dengan pemberitahuan lisensi di kepala berkas; angka perkembangan berpil hipotesis sampai uji tahan punya vonis; "belum terukur" dan "belum tercakup" tidak pernah 0; luas dijangkau bukan luas terbakar; titik awal hanya lingkaran galat tanpa sebab atau pelaku; bangunan hanya angka dibulatkan per insiden (Open Buildings, tanpa penjumlahan dengan sumber lain), tanpa koordinat sel atau bangunan di `public/` maupun lewat Worker; arsip deteksi tidak boleh terbit; tidak pernah menulis "padam" atau "aman"; tinjau di `http://localhost:8800/`.
 
+### 2.43 Desa Waspada (`/desa-waspada`: desa dengan titik panas 7 hari dan desa berulang terbakar tanpa titik minggu ini): baca dulu, baru bangun
+
+Sebelum menyentuh daftar desa dari titik panas 7 hari dan riwayat petak 2012 sampai 2025, laju hindcast per daftar, peluang kab/kota 3 hari di baris desa, porsi gambut per desa, ekspor CSV, atau pin peta desa (PKH-18 pembanding pantaukarhutla), baca dokumen di
+`data/kajian-bnpb/desa-waspada/` dengan urutan otoritas ini (kode di `scripts/data/desa_waspada.py` dan `scripts/data/desa_waspada_laju.json` milik `pipa-data`; langkah di `titik.yml` dan `statis.yml` milik `mekanik-mesin`; `public/desa-waspada/**` milik `layar-peta` dan `tests/desa-waspada/**` milik `penulis-gerbang`, didaftarkan di DW-00):
+
+1. `KEPUTUSAN-DESA.md`: keputusan pemilik K1-K5 (K1 "semua gas"), rancangan D1-D16, pertanyaan terbuka Q1-Q9 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-10), 4. `ALUR.md`, 5. `ALGORITMA.md` (definisi titik VIIRS n/h, tahun terbakar petak terbanyak, hindcast dan vonis, peluang kab/kota), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`DW-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Satu mesin desa: tidak mengubah `preventif.py`, `khg_prioritas.py`, `prioritas.js`, atau `prediksi`, dan tidak menghitung biaya, jarak posko, atau status provinsi; pencari desa dipakai ulang dari `insiden.py`, bukan disalin. Laju hindcast diukur ulang di data kita dan angka pembanding (39% dan 11,6%) tidak pernah tampil sebagai angka kita; kolom laju berpil hipotesis sampai vonis `lulus` yang hanya ditulis sesudah pemilik menjawab Q2 (ambang bawaan hanya `lulus_sementara`), dan sampai berkas laju terisi tertulis "belum terukur". Titik daftar memakai VIIRS nominal dan tinggi dan tidak dijumlah dengan angka utama atau MODIS. Peluang yang tampil adalah peluang kab/kota dan tidak pernah disebut peluang desa. Hitungan `desa_sasaran` milik `preventif.py` berbeda definisi dan tidak disamakan atau dijumlah. Sebelum Q1 dijawab keluaran publik tidak terbit (`public/.assetsignore`), `data/desa_statik.json` di-commit oleh `statis.yml` bukan cache. Tidak pernah menulis "aman", "bebas api", "pelaku", atau "penyebab"; tidak ada koordinat titik atau petak individual dan tidak ada nama orang atau lahan di keluaran publik; nol hanya bila dihitung nol; tinjau di `http://localhost:8800/desa-waspada`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

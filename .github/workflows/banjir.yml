@@ -298,6 +298,16 @@ jobs:
         continue-on-error: true
         run: python3 scripts/banjir/terdampak.py || echo "::warning::terdampak gagal, berkas lama dibiarkan"
 
+      # H90 (H20, H22): faktor model harian, arsip append-only (kunci terbit; yang sudah ada tidak ditimpa, jadi jalan ulang aman).
+      # orografi: 1-2 panggilan Open-Meteo bertumpuk per batch kab -> public/banjir/data/faktor_orografi.json + data/raw/banjir/orografi/arsip_YYYY-MM.jsonl.
+      # surut: dari laporan WA data/laporan-bnpb/harian -> public/banjir/data/faktor_surut_arsip.jsonl. Keduanya di-commit di langkah "Terbitkan" (daftar JP).
+      - name: Faktor orografi dan surut (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          python3 scripts/banjir/faktor_orografi.py uji && { python3 scripts/banjir/faktor_orografi.py || echo "::warning title=faktor_orografi::gagal; arsip lama dibiarkan"; }
+          python3 scripts/banjir/faktor_surut.py uji && { python3 scripts/banjir/faktor_surut.py || echo "::warning title=faktor_surut::gagal; arsip lama dibiarkan"; }
+
       # Arsip permanen TMA pos (D1 sihka_baca dihapus sesudah 180 hari): maks 7 hari/jalan, paling lama dulu; data/raw/banjir ikut cache.
       # Gagal-lunak: tidak pernah menggagalkan run banjir. Membaca D1 lewat PK per pos (bukan pindai tabel), ±6 ribu baris/hari.
       - name: Arsip TMA pos ke R2 (boleh gagal)
@@ -363,7 +373,7 @@ jobs:
           # vonis prospektif + arsip hari terjangkar di git tiap run, juga di jalur token (jalur ini deploy lalu keluar); sebelum checkout FETCH_HEAD yang men-stage
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          JP="public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/siaga_persentil_log.json public/banjir/data/siaga_persentil_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json data/banjir/arsip_kab2 data/banjir/arsip_debit data/banjir/arsip_bmkg_desa data/banjir/arsip_petabencana"
+          JP="public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/siaga_persentil_log.json public/banjir/data/siaga_persentil_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json data/banjir/arsip_kab2 data/banjir/arsip_debit data/banjir/arsip_bmkg_desa data/banjir/arsip_petabencana public/banjir/data/faktor_orografi.json public/banjir/data/faktor_surut_arsip.jsonl data/raw/banjir/orografi"
           for f in $JP; do [ -e "$f" ] && git add -f "$f"; done   # satu per satu: git add dengan satu path hilang tidak men-stage apa pun
           git diff --cached --quiet -- $JP 2>/dev/null || { git commit -q -m "data: prospektif dan arsip hari banjir $(TZ=Asia/Jakarta date +%F)" -- $(for f in $JP; do [ -e "$f" ] && echo "$f"; done) && { git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }; } || echo "::error::commit prospektif/arsip hari gagal (arsip KAB2 hari ini hilang bila tidak terdorong)"; }
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'

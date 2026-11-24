@@ -28,7 +28,7 @@ Metode bagian A diambil dari `progression.py` pembanding (MIT) dan ditulis ulang
 ### A1. Masukan
 
 Untuk insiden `id`, himpunan petak `D` = petak di `public/data/progresi/arsip/<id>.json` (kunci `petak: [iy, ix, t_menit, frp, sensor]`) dengan `sensor` ∈ {`N`, `N20`, `N21`}; arsip sudah hanya berisi keyakinan nominal atau tinggi dan tanpa sumber panas tetap (keyakinan rendah tidak ada di arsip dan tidak ikut epoch). `t` = menit sejak `ARSIP_DARI`, diubah ke jam UTC bila perlu. Petak bersensor `M` tidak masuk `D` (pikselnya 1 km); catatan kode: arsip menyimpan satu sensor per sel dengan waktu terawal, jadi sel yang pertama terlihat oleh MODIS memakai waktu MODIS, dan IK-01 memutuskan apakah arsip dipisah per jenis sensor.
-Sumber: arsip per insiden (F-1), bukan `hotspot24.json` langsung. Insiden dengan piksel unik < `MIN_PIKSEL` berhenti di sini: `tersedia:false`, alasan "terlalu kecil untuk dilacak". `hitung_sejak` = waktu terawal arsip insiden, tidak lebih awal dari `ARSIP_DARI`.
+**Penyaring awal insiden (D20, 24 Nov 2026):** petak dengan `t` lebih awal dari `awal` insiden (`insiden.json`) dikurangi 24 jam dibuang (bekas bakar lama di lokasi sama); aturan ini sama pada uji tahan A10. Sumber: arsip per insiden (F-1), bukan `hotspot24.json` langsung. Insiden dengan piksel unik < `MIN_PIKSEL` berhenti di sini: `tersedia:false`, alasan "terlalu kecil untuk dilacak". `hitung_sejak` = waktu terawal arsip insiden, tidak lebih awal dari `ARSIP_DARI`.
 
 Petak = kunci sel `(iy, ix) = (floor(lat / SEL_DEG), floor(lon / SEL_DEG))` (sudah menjadi kunci arsip). Satu petak = satu piksel unik. Per petak simpan `t_pertama = min t` dan `frp` (arsip menyimpan FRP dari deteksi terawal, bukan maksimum).
 
@@ -87,10 +87,10 @@ d(s) = jarak Euklid sel s ke sel terdekat di dijangkau_(k-1), km (BFS multi-sumb
 sebar_k = { s di baru_k : d(s) <= LOMPAT_MIN_KM }          // sel > 2 km adalah lompatan, bukan laju
 bila sebar_k kosong: laju tidak diisi
 median_k = median d di sebar_k;  p90_k = persentil 90 d di sebar_k
-resolved_k = (p90_k >= KM_SEL)
-laju_km_per_hari_k = p90_k         bila resolved_k, selain itu null
+terukur_k = (p90_k > KM_SEL)        // satu sel (p90 = 1 sel) = di batas resolusi, bukan terukur (D6, diubah 24 Nov 2026)
+laju_km_per_hari_k = p90_k         bila terukur_k, selain itu null dan di_batas_resolusi:true
 ```
-`resolved:false` ditulis di berkas dan tampil "belum terukur" di layar, tidak pernah 0. Langkah per 24 jam, jadi p90 jarak sama dengan km per hari.
+`terukur:false` (`p90_km:null`, `di_batas_resolusi:true`) ditulis di berkas dan tampil "di batas resolusi" di layar, tidak pernah 0 dan tidak pernah "terukur". Langkah per 24 jam, jadi p90 jarak sama dengan km per hari.
 Persentil 90: interpolasi linier (sama dengan `numpy.quantile` bawaan) supaya uji bisa dibandingkan dengan pembanding.
 
 ### A7. Lompatan
@@ -126,6 +126,7 @@ Berkas `public/data/progresi/<id>.json` dibangun ulang bila jumlah petak atau de
 ### A10. Uji tahan (kriteria dikunci sebelum dihitung, Q2)
 
 Per insiden uji: 20% petak terdeteksi dipilih acak (benih tetap `20261124`), disembunyikan, `T` dihitung dari 80% sisanya dengan A3, A4; dibandingkan dengan `t_tiba` sebenarnya petak yang ditahan.
+Ini uji interpolasi sel ditahan, BUKAN akurasi garis depan terhadap perimeter independen (ditulis di `jenis_uji` pada `hasil_uji.json`). Penyaring awal insiden (D20) berlaku sama pada kelompok FIRMS dan musim ini.
 
 ```
 MAE = rata |T_pred - t_tiba| ;  dalam12 = pecahan |selisih| <= 12 ;  dalam24 = pecahan |selisih| <= 24

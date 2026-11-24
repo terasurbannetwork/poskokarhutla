@@ -2114,7 +2114,7 @@ export const lpPdfTerakhir = async (env, p, nomor) => (await sedia(env, p, "lapo
 /* ---------- Data lanjutan BPBD (paket lapor-lanjutan, migrasi 0161, LJ-03). Pelaku: lp_pelapor membuka berkas dari tiket terkirim, lj_tim = ketua
    dan anggota lewat kuki per orang (D20), lp_staf = staf BNPB dan akun lembaga lewat hakMeja. Semua kueri memakai indeks (gerbang d1-pindai). ---------- */
 export const pelakuLjTim = {peran: "lj_tim"};
-export const ljBatch = (env, p, stmts) => { if (!/^(lp_|lj_tim$)/.test(String(p?.peran))) throw new Galat(403, "batch data lanjutan hanya untuk pelaku lp_* dan lj_tim"); return env.DB.batch(stmts); };
+export const ljBatch = (env, p, stmts) => { if (!/^(lp_|lj_tim$|lj_rekap$)/.test(String(p?.peran))) throw new Galat(403, "batch data lanjutan hanya untuk pelaku lp_*, lj_tim, dan lj_rekap"); return env.DB.batch(stmts); };
 const LJ_BERKAS = "id, induk, kab, kejadian_id, kab4, status, isian, ditutup, dibuat, diubah";
 export const ljIndukKelompok = async (env, p, nomor) => (await sedia(env, p, "lapor_kelompok", "baca", "SELECT coalesce(induk, nomor) induk FROM lapor_kelompok WHERE nomor = ?1").bind(nomor).first())?.induk ?? null;
 export const ljBerkasDari = (env, p, induk, kab) => sedia(env, p, "lj_berkas", "baca", `SELECT ${LJ_BERKAS} FROM lj_berkas WHERE induk = ?1 AND kab = ?2`).bind(induk, kab).first();
@@ -2278,6 +2278,48 @@ export const ljTanyaHitung = async (env, p, tgl, was) => (await sedia(env, p, "l
   .bind(tgl, ...was).all()).results;
 export const ljStmtTanyaJawab = (env, p, berkas, tgl, jawab) => sedia(env, p, "lj_tanya", "ubah",
   "UPDATE lj_tanya SET jawab = ?3 WHERE berkas = ?1 AND tgl = ?2").bind(berkas, tgl, jawab);
+
+/* ---------- LJ-12: rekap berkas ke meja dampak dan pengungsi, terima ke Jitupasna (D5, D6, D8). Pelaku lj_rekap = mesin rekap (dipanggil sesudah tulis objek), lp_staf = rute terima.
+   Catatan meja dampak milik berkas memakai id yang SAMA dengan id berkas (dicari lewat PK, tanpa indeks baru); catatan pengungsi lewat indeks unik meja_pengungsi_titik_hari (0135).
+   Tulis ke catatan yang sudah ada dijaga isi lama (data = ?) supaya isian petugas yang masuk di antara baca dan tulis tidak tertimpa; kalah = changes 0. ---------- */
+export const pelakuLjRekap = {peran: "lj_rekap"};
+Object.assign(MATRIKS, {meja_catatan: {lj_rekap: ["baca", "tambah", "ubah"]}, meja_jejak: {lj_rekap: ["baca", "tambah"]}});
+MATRIKS.lj_objek.lj_rekap = ["baca"]; MATRIKS.lj_berkas.lj_rekap = ["baca"]; MATRIKS.lapor_sesi.lj_rekap = ["baca"];
+/* lj_terima = HANYA terimaJitupasna (src/lapor_lanjut_meja.js); lp_staf tidak mendapat hak sk_* apa pun dari bagian ini */
+export const pelakuLjTerima = {peran: "lj_terima"};
+MATRIKS.sk_kejadian.lj_terima = ["baca"]; MATRIKS.sk_jitupasna.lj_terima = ["baca"]; MATRIKS.sk_jitupasna_baris.lj_terima = ["baca", "tambah", "ubah"]; MATRIKS.sk_jejak.lj_terima = ["tambah"];
+MATRIKS.lj_objek.lj_terima = ["baca"]; MATRIKS.lj_jejak.lj_terima = ["tambah"];
+/* objek aktif dan batal tanpa kolom pribadi: rekap hanya butuh data */
+export const ljObjekRekap = async (env, p, berkas) => (await sedia(env, p, "lj_objek", "baca",
+  "SELECT id, jenis, urut, data, titik_id, status FROM lj_objek WHERE berkas = ?1").bind(berkas).all()).results;
+export const ljIndukInfo = (env, p, nomor) => sedia(env, p, "lapor_sesi", "baca",
+  "SELECT jenis, terkirim, json_extract(kerja, '$.isian.waktu.ms') waktu FROM lapor_sesi WHERE nomor = ?1").bind(nomor).first();
+export const ljBerkasRekap = (env, p, id) => sedia(env, p, "lj_berkas", "baca", "SELECT id, induk, kab, kab4, isian FROM lj_berkas WHERE id = ?1").bind(id).first();
+export const ljDampakBaca = (env, p, id) => sedia(env, p, "meja_catatan", "baca", "SELECT id, status, data FROM meja_catatan WHERE id = ?1 AND meja = 'dampak'").bind(id).first();
+export const ljStmtDampakBaru = (env, p, b, kini) => sedia(env, p, "meja_catatan", "tambah",
+  "INSERT OR IGNORE INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh) VALUES (?1, 'dampak', ?2, ?3, NULL, NULL, ?4, 'dilaporkan', ?5, ?5, 'lapor_lanjut')").bind(b.id, b.prov, b.kab, b.data, kini);
+export const ljStmtPengungsiBaru = (env, p, b, kini) => sedia(env, p, "meja_catatan", "tambah",
+  "INSERT OR IGNORE INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh) VALUES (?1, 'pengungsi', ?2, ?3, NULL, ?4, ?5, 'tercatat', ?6, ?6, 'lapor_lanjut')").bind(b.id, b.prov, b.kab, b.desa ?? null, b.data, kini);
+/* isi lama harus masih sama (data = ?2) dan status masih yang dibaca; diubah hanya maju bila sentuh (rekap yang hanya menandai rekap_baru tidak menyentuh) */
+export const ljStmtMejaUbah = (env, p, id, lama, baru, status, kini, sentuh) => sedia(env, p, "meja_catatan", "ubah",
+  "UPDATE meja_catatan SET data = ?3, diubah = CASE WHEN ?5 = 1 THEN max(diubah, ?4) ELSE diubah END WHERE id = ?1 AND data = ?2 AND status = ?6").bind(id, lama, baru, kini, sentuh ? 1 : 0, status);
+export const ljStmtMejaJejak = (env, p, id, dari, ke, kini, catatan) => sedia(env, p, "meja_jejak", "tambah",
+  "INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan, diterima) SELECT ?1, ?2, ?3, ?4, 'lapor_lanjut', ?5, ?4 WHERE changes() > 0").bind(id, dari, ke, kini, catatan);
+/* penulis terakhir sebuah catatan (indeks meja_jejak_catatan): selain lapor_lanjut berarti petugas pernah mengubahnya */
+export const ljStmtJejakOleh = (env, p, id) => sedia(env, p, "meja_jejak", "baca", "SELECT oleh FROM meja_jejak WHERE catatan_id = ?1 ORDER BY waktu DESC, id DESC LIMIT 1").bind(id);
+/* catatan pengungsi satu titik satu tanggal (indeks parsial meja_pengungsi_titik_hari); beberapa titik = satu batch SELECT */
+export const ljStmtPengungsiBaca = (env, p, titik, tgl) => sedia(env, p, "meja_catatan", "baca",
+  "SELECT id, status, data FROM meja_catatan WHERE meja = 'pengungsi' AND json_extract(data, '$.titik_id') = ?1 AND json_extract(data, '$.tgl_data') = ?2").bind(titik, tgl);
+/* Jitupasna: baris dari berkas, upsert per (jitupasna, klien_id) dan hanya selama dibuka atau pengumpulan (trigger final menolak sisanya); unit_asal rekap_rumah_rusak untuk rumah */
+export const ljStmtBarisTerima = (env, p, jpId, b, kini, oleh, dummy) => sedia(env, p, "sk_jitupasna_baris", "tambah",
+  `INSERT INTO sk_jitupasna_baris (id, jitupasna_id, jenis, sektor, tingkat, unit, unit_asal, klien_id, dibuat, oleh, dummy)
+   SELECT ?1, ?2, 'rusak', ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10 WHERE (SELECT status FROM sk_jitupasna WHERE id = ?2) IN ('dibuka', 'pengumpulan') AND (SELECT count(*) FROM sk_jitupasna_baris WHERE jitupasna_id = ?2) < 500
+   ON CONFLICT (jitupasna_id, klien_id) DO UPDATE SET unit = excluded.unit, unit_asal = excluded.unit_asal WHERE (SELECT status FROM sk_jitupasna WHERE id = excluded.jitupasna_id) IN ('dibuka', 'pengumpulan')`)
+  .bind(b.id, jpId, b.sektor, b.tingkat, b.unit, b.unit_asal, b.klien_id, kini, String(oleh).slice(0, 64), dummy ? 1 : 0);
+/* baris berkas ini yang tidak ada lagi dalam bahan (objek dibatalkan atau tingkatnya berubah) dinolkan, bukan dibiarkan basi; baris tidak dihapus */
+export const ljStmtBarisNolkan = (env, p, jpId, awalan, tetap) => sedia(env, p, "sk_jitupasna_baris", "ubah",
+  `UPDATE sk_jitupasna_baris SET unit = 0 WHERE jitupasna_id = ?1 AND klien_id GLOB ?2 AND unit <> 0 AND klien_id NOT IN (SELECT value FROM json_each(?3))
+   AND (SELECT status FROM sk_jitupasna WHERE id = ?1) IN ('dibuka', 'pengumpulan')`).bind(jpId, awalan + "*", JSON.stringify(tetap));
 
 /* ---------- Tautan bertoken pihak luar (FITUR §6; src/token.js, migrasi 0164) ----------
    tk_terbit = rute staf yang menerbitkan atau mencabut; tk_periksa = rute publik yang menerima token. Pemeriksaan dan pencatatan pakai

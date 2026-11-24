@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Karhutla DKI Jakarta: peringatan otomatis</title>
+  <subtitle>Otomatis dari satelit dan model, bukan peringatan resmi.</subtitle>
+  <id>tag:centurisk97.id,2026:feeds/dki-jakarta</id>
+  <updated>2026-11-23T18:45:00Z</updated>
+  <link rel="self" href="https://centurisk97.id/data/feeds/dki-jakarta.xml" />
+  <link rel="alternate" href="https://centurisk97.id/" />
+  <author>
+    <name>Centurisk97</name>
+  </author>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Administrasi Jakarta Selatan</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3174-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 72 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Administrasi Jakarta Selatan, DKI Jakarta. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+  <entry>
+    <title>Udara tidak sehat diprakirakan besok: Kota Administrasi Jakarta Timur</title>
+    <id>tag:centurisk97.id,2026-11-25:udara-3175-2026-11-25</id>
+    <updated>2026-11-23T18:45:00Z</updated>
+    <link rel="alternate" href="https://centurisk97.id/" />
+    <category term="udara" />
+    <summary type="text">Prakiraan PM2,5 rata-rata 24 jam 72 µg/m3 (Tidak sehat) pada 2026-11-25 di Kota Administrasi Jakarta Timur, DKI Jakarta. Otomatis dari satelit dan model, bukan peringatan resmi.</summary>
+  </entry>
+</feed>

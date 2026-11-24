@@ -131,20 +131,22 @@ def bangun():
            if abs(v) < 50][-104:]
     status, w = status_enso(alert, o[-1]["nilai"])
     iod, dmi8 = status_iod(dmi)
+    umur = (dt.date.today() - dt.date.fromisoformat(dmi[-1]["tgl"])).days
+    basi = umur >= 45
+    if basi:   # sumber OSMC berhenti: nilai null berlabel umur, bukan data basi dan bukan henti total
+        print(f"PERINGATAN: DMI terakhir {dmi[-1]['tgl']} sudah {umur} hari; iod_status/dmi_8_minggu = null, bobot tanpa tambahan IOD", file=sys.stderr)
+        iod, dmi8 = None, None
     out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
            "status": status, "cpc_status": alert, "cpc_sinopsis": sinopsis,
            "oni_terakhir": o[-1], "roni_terakhir": r[-1] if r else None,
-           "iod_status": iod, "dmi_8_minggu": dmi8,
+           "iod_status": iod, "dmi_8_minggu": dmi8, "dmi_umur_hari": umur, "dmi_basi": basi,
            "bobot_el_nino": bobot(w, iod),
            "aturan": "peluang[d] = w[d]*p_el_nino[d] + (1-w[d])*p_biasa[d]; w = 1 El Niño Advisory, 0,5 El Niño Watch, 0 lainnya; +0,25 Jul-Des bila DMI 8 minggu >= +0,4",
            "oni": o, "roni": r, "dmi": dmi,
            "sumber": {"oni": ONI, "roni": RONI, "status": DISKUSI, "dmi": DMI + " (NOAA OSMC, OISST, mingguan)"}}
     json.dump(out, open(KELUAR, "w"), ensure_ascii=False, separators=(",", ":"))
-    print(f"iklim.json {status} ({alert}) ONI {o[-1]['musim']} {o[-1]['tahun']} {o[-1]['nilai']:+.2f} | {iod} DMI8 {dmi8:+.2f} "
+    print(f"iklim.json {status} ({alert}) ONI {o[-1]['musim']} {o[-1]['tahun']} {o[-1]['nilai']:+.2f} | {iod} DMI8 {dmi8 if dmi8 is None else format(dmi8, '+.2f')} "
           f"(minggu {dmi[-1]['tgl']}) | {os.path.getsize(KELUAR) / 1e3:.0f} KB")
-    # invarian: deret harus mutakhir; data basi lebih berbahaya dari tidak ada
-    hari = (dt.date.today() - dt.date.fromisoformat(dmi[-1]["tgl"])).days
-    assert hari < 45, f"DMI terakhir {dmi[-1]['tgl']} sudah {hari} hari: sumber OSMC berhenti diperbarui"
     assert o[-1]["tahun"] >= dt.date.today().year - 1, f"ONI terakhir {o[-1]}: sumber CPC berhenti"
 
 
@@ -342,7 +344,10 @@ def uji_prospek():
 
 if __name__ == "__main__":
     uji()
-    if sys.argv[1:2] == ["prospek"]:
+    if sys.argv[1:2] == ["uji"]:
+        uji_prospek()   # self-check murni: tanpa jaringan, tanpa menulis keluaran
+        print("iklim uji: OK")
+    elif sys.argv[1:2] == ["prospek"]:
         uji_prospek()
         prospek(sys.argv[2:3] == ["uji"])
     else:

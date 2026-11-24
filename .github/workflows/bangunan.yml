@@ -104,6 +104,7 @@ jobs:
         with:
           path: |
             data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/halus_*.json
             data/terkunci/bangunan/kec.json
           key: bangunan-grid-${{ github.run_id }}
           restore-keys: bangunan-grid-
@@ -152,6 +153,7 @@ jobs:
         with:
           path: |
             data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/halus_*.json
             data/terkunci/bangunan/kec.json
           key: bangunan-grid-${{ github.run_id }}
 
@@ -205,6 +207,7 @@ jobs:
         with:
           path: |
             data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/halus_*.json
             data/terkunci/bangunan/kec.json
           key: bangunan-grid-${{ github.run_id }}
           restore-keys: bangunan-grid-
@@ -235,6 +238,23 @@ jobs:
       - name: Hitung paparan
         if: steps.grid.outputs.ada == '1'
         run: python3 scripts/umum/paparan_bangunan.py
+
+      # Bangunan dalam 500 m dari petak api per insiden (IK-07, ADR-3): arsip petak dari cache data- (titik.yml), grid halus dari cache grid di atas.
+      # Rincian sel (data/terkunci/insiden/) TIDAK diunggah dan TIDAK di-commit: unggahan R2 hanya terpapar.json, dan gabung memakai glob
+      # data/terkunci/bangunan/*.json yang tidak masuk subfolder insiden/ (jaga tetap begitu). Angka publik dibulatkan.
+      - name: Bangunan dekat api per insiden (boleh gagal)
+        if: steps.grid.outputs.ada == '1'
+        continue-on-error: true
+        run: python3 -I scripts/umum/paparan_insiden.py --uji && python3 -I scripts/umum/paparan_insiden.py || echo "::warning title=paparan_insiden::gagal; angka lamanya dibiarkan"
+
+      # tanpa commit dan tanpa deploy di workflow ini: cache kecil ini dipulihkan titik.yml (3-jam) yang men-deploy public/
+      - name: Serahkan insiden_bangunan.json ke jalur terbit
+        if: always() && hashFiles('public/data/insiden_bangunan.json') != ''
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: public/data/insiden_bangunan.json
+          key: insiden-bangunan-${{ github.run_id }}
 
       - name: Unggah terpapar.json ke R2
         if: steps.grid.outputs.ada == '1'
