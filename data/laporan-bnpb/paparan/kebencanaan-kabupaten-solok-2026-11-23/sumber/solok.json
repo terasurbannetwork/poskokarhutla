@@ -239,12 +239,58 @@
             {
               "nama": "status",
               "kepala": "Status",
-              "bobot": 1.2
+              "bobot": 1.2,
+              "pil_daftar": {
+                "gaya": [
+                  "tint.basah.pita",
+                  null,
+                  "navy"
+                ],
+                "tengah": true,
+                "gaya_per": {
+                  "Tanggap": [
+                    "tint.bahaya.pita",
+                    null,
+                    "merah"
+                  ],
+                  "Siaga": [
+                    "tint.api.pita",
+                    null,
+                    "oranye"
+                  ]
+                },
+                "ikon": {
+                  "Tanggap": "tanggap-darurat",
+                  "Transisi": "pascabencana",
+                  "Siaga": "peringatan"
+                }
+              }
             },
             {
               "nama": "jenis",
               "kepala": "Jenis bencana",
-              "bobot": 1.9
+              "bobot": 2.4,
+              "pil_daftar": {
+                "gaya": [
+                  "tint.basah.pita",
+                  null,
+                  "navy"
+                ],
+                "tengah": true,
+                "gaya_per": {
+                  "Karhutla": [
+                    "tint.api.pita",
+                    null,
+                    "oranye"
+                  ]
+                },
+                "ikon": {
+                  "Banjir": "banjir",
+                  "Longsor": "longsor",
+                  "Cuaca": "cuaca-ekstrem",
+                  "Karhutla": "karhutla"
+                }
+              }
             },
             {
               "nama": "mulai",
@@ -315,7 +361,7 @@
         "legenda": {
           "item": [
             {
-              "warna": "tint.netral.pita",
+              "warna": "skala.netral.2",
               "label": "Normal"
             },
             {
@@ -329,6 +375,10 @@
             {
               "warna": "merah",
               "label": "Awas"
+            },
+            {
+              "warna": "tanpa-data",
+              "label": "Tanpa data prakiraan"
             }
           ]
         }
@@ -336,27 +386,38 @@
       "panel": {
         "judul": "Jumlah kecamatan per status",
         "ikon": "peringatan",
-        "peringkat": false,
-        "baris_maks_pt": 90,
-        "data": {
-          "csv": "data/sumut-aceh/sl/prakiraan_jumlah.csv",
-          "kolom": [
+        "daftar_ikon": {
+          "mode": "baris",
+          "baris": [
             {
-              "nama": "status",
-              "kepala": "Status"
+              "ikon": "peringatan",
+              "judul": "Awas",
+              "isi": "Hujan tiga hari {{angka:sl.amb.3|satuan}} atau lebih",
+              "angka": "{{angka:sl.p.n3}}",
+              "satuan": "kecamatan"
             },
             {
-              "nama": "kec",
-              "kepala": "Kecamatan",
-              "fmt": "0"
+              "ikon": "banjir",
+              "judul": "Siaga",
+              "isi": "Hujan tiga hari {{angka:sl.amb.2|satuan}} atau lebih",
+              "angka": "{{angka:sl.p.n2}}",
+              "satuan": "kecamatan"
             },
             {
-              "nama": "ambang",
-              "kepala": "Ambang utama"
+              "ikon": "cuaca-ekstrem",
+              "judul": "Waspada",
+              "isi": "Hujan tiga hari {{angka:sl.amb.1|satuan}} atau lebih",
+              "angka": "{{angka:sl.p.n1}}",
+              "satuan": "kecamatan"
+            },
+            {
+              "ikon": "prabencana",
+              "judul": "Normal",
+              "isi": "Hujan tiga hari di bawah {{angka:sl.amb.1|satuan}}",
+              "angka": "{{angka:sl.p.n0}}",
+              "satuan": "kecamatan"
             }
-          ],
-          "keyakinan": "resmi",
-          "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+          ]
         }
       }
     },
@@ -379,24 +440,33 @@
             {
               "kunci": "Normal",
               "label": "Normal",
-              "token": "tint.netral.pita"
+              "token": "tint.netral.pita",
+              "teks": "teks-3",
+              "ikon": "prabencana"
             },
             {
               "kunci": "Waspada",
               "label": "Waspada",
-              "token": "skala.emas.3"
+              "token": "skala.emas.2",
+              "teks": "teks",
+              "ikon": "cuaca-ekstrem"
             },
             {
               "kunci": "Siaga",
               "label": "Siaga",
-              "token": "oranye"
+              "token": "oranye",
+              "teks": "kertas",
+              "ikon": "banjir"
             },
             {
               "kunci": "Awas",
               "label": "Awas",
-              "token": "merah"
+              "token": "merah",
+              "teks": "kertas",
+              "ikon": "peringatan"
             }
           ],
+          "latar_sel": "tint.netral.muda",
           "data": {
             "csv": "data/sumut-aceh/sl/prakiraan.csv",
             "kolom": [

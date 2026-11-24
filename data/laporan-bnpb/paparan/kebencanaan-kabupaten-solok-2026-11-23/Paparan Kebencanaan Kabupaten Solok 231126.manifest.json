@@ -866,14 +866,6 @@
     "02  ",
     "03  ",
     "Sumber batas: Batas administrasi kecamatan dan kabupaten, data geo sistem BNPB; WGS84; Ekuirektangular",
-    "Awas",
-    "Awas",
-    "Siaga",
-    "Siaga",
-    "Waspada",
-    "Waspada",
-    "Normal",
-    "Normal",
     "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
    ],
    "warna": [
@@ -886,12 +878,20 @@
      "inti"
     ],
     [
+     "2E3440",
+     "inti"
+    ],
+    [
      "4A9BE0",
      "aksen"
     ],
     [
      "6B7280",
      "inti"
+    ],
+    [
+     "AEBBCB",
+     "skala.netral"
     ],
     [
      "BFC5CC",
@@ -926,24 +926,8 @@
      "permukaan"
     ],
     [
-     "E6EAF0",
-     "pil"
-    ],
-    [
-     "EEF5FC",
-     "permukaan"
-    ],
-    [
-     "F4ECDC",
-     "pil"
-    ],
-    [
-     "F8DDE0",
-     "pil"
-    ],
-    [
-     "FBE7D6",
-     "pil"
+     "F1F3F6",
+     "inti"
     ],
     [
      "FFFFFF",
@@ -989,7 +973,9 @@
    "nomor": 10,
    "jenis": "temuan-visual",
    "asal": "solok#10",
-   "keluarga": [],
+   "keluarga": [
+    "kering"
+   ],
    "judul": [
     81.2,
     21.6,
@@ -1067,7 +1053,15 @@
      "inti"
     ],
     [
+     "C8102E",
+     "aksen"
+    ],
+    [
      "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
      "aksen"
     ],
     [
@@ -1079,6 +1073,10 @@
      "pil"
     ],
     [
+     "DCC79C",
+     "skala.emas"
+    ],
+    [
      "E6EAF0",
      "permukaan"
     ],
@@ -1088,22 +1086,6 @@
     ],
     [
      "F3F5F8",
-     "permukaan"
-    ],
-    [
-     "F4ECDC",
-     "permukaan"
-    ],
-    [
-     "F4ECDC",
-     "pil"
-    ],
-    [
-     "F8DDE0",
-     "permukaan"
-    ],
-    [
-     "FBE7D6",
      "permukaan"
     ],
     [
@@ -2566,60 +2548,708 @@
    "naskah": "solok#9"
   },
   {
-   "kunci": "csv:data/sumut-aceh/sl/prakiraan_jumlah.csv#kec",
+   "kunci": "sl.p.n3",
+   "opsi": "|",
    "tampil": "0",
-   "nilai": 0.0,
-   "naskah": "solok#9",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
    "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
   },
   {
-   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan_jumlah.csv#ambang",
-   "tampil": "Hujan 3 hari 120 mm atau lebih",
-   "nilai": null,
-   "naskah": "solok#9",
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
-  },
-  {
-   "kunci": "csv:data/sumut-aceh/sl/prakiraan_jumlah.csv#kec",
+   "kunci": "sl.p.n2",
+   "opsi": "|",
    "tampil": "0",
-   "nilai": 0.0,
-   "naskah": "solok#9",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
    "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
   },
   {
-   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan_jumlah.csv#ambang",
-   "tampil": "Hujan 3 hari 80 mm atau lebih",
-   "nilai": null,
-   "naskah": "solok#9",
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
-  },
-  {
-   "kunci": "csv:data/sumut-aceh/sl/prakiraan_jumlah.csv#kec",
+   "kunci": "sl.p.n1",
+   "opsi": "|",
    "tampil": "6",
-   "nilai": 6.0,
-   "naskah": "solok#9",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
    "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
   },
   {
-   "kunci": "csvteks:data/sumut-aceh/sl/prakiraan_jumlah.csv#ambang",
-   "tampil": "Hujan 3 hari 40 mm atau lebih",
-   "nilai": null,
-   "naskah": "solok#9",
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
-  },
-  {
-   "kunci": "csv:data/sumut-aceh/sl/prakiraan_jumlah.csv#kec",
+   "kunci": "sl.p.n0",
+   "opsi": "|",
    "tampil": "4",
-   "nilai": 4.0,
-   "naskah": "solok#9",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
    "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.amb.3",
+   "opsi": "|satuan",
+   "tampil": "120 mm",
+   "nilai": 120,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n3",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.amb.2",
+   "opsi": "|satuan",
+   "tampil": "80 mm",
+   "nilai": 80,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n2",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.amb.1",
+   "opsi": "|satuan",
+   "tampil": "40 mm",
+   "nilai": 40,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n1",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.amb.1",
+   "opsi": "|satuan",
+   "tampil": "40 mm",
+   "nilai": 40,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
+  },
+  {
+   "kunci": "sl.p.n0",
+   "opsi": "|",
+   "tampil": "4",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
+   "naskah": "solok#9"
   },
   {
    "kunci": "sl.p.hmax",
@@ -3157,17 +3787,16 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/logo-bersama/kris-rope.pptx": "73406bfb95cd58d7879f44e969c0f7f5ea8e5a8896fa052d8a6c2045ed92071c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-australia/foto/bencana-rob.jpg": "3635f50f1523ac94bf6be84f50ab167587cdc12f482a04bb28dbfe6196573635",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "30673e49ff44f5a97e26da231f6b69cc319fd0b7628f35f51b89235677b61a58",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/angka.json": "f15bd892f60910d7b250864ee33b5148f104a0f89e95690446725cc530018a24",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/dampak.csv": "f5a1b0b9020c4e59660ad65ae84a3cfd4d667bc4a2ea555d1ca88d4bb478e0b1",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/jenis_basah.csv": "9b0e9ac9c57647fbee252a905dd0831f874739aa9c77add4deec15cf0c4b922c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/kejadian_tahun.csv": "e6623ae61e6fcb6e2d4cecad9a333c79dd652d6f46574914855f87a92f8a3c1b",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/lain.csv": "214f0a7acb23db62e7bd8955b08d9eda39031b57bd5169e02abebb5b7ac1fe24",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_kec.json": "8c9d0f3cde73a72081fc3660571a7b826513fbe4ebd5c7500f0ef9c99fbf1460",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_kec.png": "bed2f10dd71d29c38e794b6a822505867b70de32274db59505f5ab364be18398",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/peta_kec.png": "2fcc38fead186658378e4000e1e9bd3d0373b39b7d768730113751b7ff2a616c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan.csv": "c65c6ae4289a90e1fbdad19837ad44ca8ac3cb2637c401e52b5620a023b7b6e0",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/prakiraan_jumlah.csv": "75158405dd7f665cf211cf4e427441764e8cee8b8a8eee55ce3b78b9ca34ae0b",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/data/sumut-aceh/sl/status.csv": "cdc2cff1cc61b55a1e737059bedc7777292c13444e9a31d06eeb8ced1e51fd30",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "d748628e0b7b7036f94d6d661745ed359df4bca2551bbfbf6e5866feb5a16e0e",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "bd2e84a325cd894b8e92d13fa642e822807ed75b1ac94388e9c01d8b186b4c94",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "c5b788ed86843a4ed57fe347a9f7e3c4b8eb0b91898594eb2abee00b814c578c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

@@ -1,10 +1,10 @@
 status,jenis,mulai,berakhir
 Siaga Darurat,Karhutla,21 Jul 2025,3 Agu 2025
-Tanggap Darurat,"Banjir, longsor, cuaca ekstrem",25 Nov 2025,8 Des 2025
-Tanggap Darurat,"Banjir, longsor, cuaca ekstrem",9 Des 2025,15 Des 2025
-Tanggap Darurat,"Banjir, longsor, cuaca ekstrem",16 Des 2025,22 Des 2025
-Transisi Darurat,"Banjir, longsor, cuaca ekstrem",23 Des 2025,23 Jun 2026
-Transisi Darurat,"Banjir, longsor, cuaca ekstrem",23 Jun 2026,23 Jun 2028
-Tanggap Darurat,"Banjir, longsor, cuaca ekstrem",22 Sep 2026,5 Okt 2026
-Tanggap Darurat,"Banjir, longsor, cuaca ekstrem",6 Okt 2026,12 Okt 2026
-Transisi Darurat,"Banjir, longsor, cuaca ekstrem",13 Okt 2026,13 Apr 2027
+Tanggap Darurat,Banjir; Longsor; Cuaca ekstrem,25 Nov 2025,8 Des 2025
+Tanggap Darurat,Banjir; Longsor; Cuaca ekstrem,9 Des 2025,15 Des 2025
+Tanggap Darurat,Banjir; Longsor; Cuaca ekstrem,16 Des 2025,22 Des 2025
+Transisi Darurat,Banjir; Longsor; Cuaca ekstrem,23 Des 2025,23 Jun 2026
+Transisi Darurat,Banjir; Longsor; Cuaca ekstrem,23 Jun 2026,23 Jun 2028
+Tanggap Darurat,Banjir; Longsor; Cuaca ekstrem,22 Sep 2026,5 Okt 2026
+Tanggap Darurat,Banjir; Longsor; Cuaca ekstrem,6 Okt 2026,12 Okt 2026
+Transisi Darurat,Banjir; Longsor; Cuaca ekstrem,13 Okt 2026,13 Apr 2027

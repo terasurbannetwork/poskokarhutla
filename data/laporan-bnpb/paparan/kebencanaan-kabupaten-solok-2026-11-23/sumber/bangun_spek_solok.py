@@ -55,14 +55,14 @@ for k_, v_, st_ in (('mobil', 7, 'mobil'), ('motor', 7, 'sepeda motor'), ('jalan
 
 # ---------- 3. status darurat kabupaten sejak 2025 (DIBI)
 ST = [('Siaga Darurat', 'Karhutla', '21 Jul 2025', '3 Agu 2025'),
-      ('Tanggap Darurat', 'Banjir, longsor, cuaca ekstrem', '25 Nov 2025', '8 Des 2025'),
-      ('Tanggap Darurat', 'Banjir, longsor, cuaca ekstrem', '9 Des 2025', '15 Des 2025'),
-      ('Tanggap Darurat', 'Banjir, longsor, cuaca ekstrem', '16 Des 2025', '22 Des 2025'),
-      ('Transisi Darurat', 'Banjir, longsor, cuaca ekstrem', '23 Des 2025', '23 Jun 2026'),
-      ('Transisi Darurat', 'Banjir, longsor, cuaca ekstrem', '23 Jun 2026', '23 Jun 2028'),
-      ('Tanggap Darurat', 'Banjir, longsor, cuaca ekstrem', '22 Sep 2026', '5 Okt 2026'),
-      ('Tanggap Darurat', 'Banjir, longsor, cuaca ekstrem', '6 Okt 2026', '12 Okt 2026'),
-      ('Transisi Darurat', 'Banjir, longsor, cuaca ekstrem', '13 Okt 2026', '13 Apr 2027')]
+      ('Tanggap Darurat', 'Banjir; Longsor; Cuaca ekstrem', '25 Nov 2025', '8 Des 2025'),
+      ('Tanggap Darurat', 'Banjir; Longsor; Cuaca ekstrem', '9 Des 2025', '15 Des 2025'),
+      ('Tanggap Darurat', 'Banjir; Longsor; Cuaca ekstrem', '16 Des 2025', '22 Des 2025'),
+      ('Transisi Darurat', 'Banjir; Longsor; Cuaca ekstrem', '23 Des 2025', '23 Jun 2026'),
+      ('Transisi Darurat', 'Banjir; Longsor; Cuaca ekstrem', '23 Jun 2026', '23 Jun 2028'),
+      ('Tanggap Darurat', 'Banjir; Longsor; Cuaca ekstrem', '22 Sep 2026', '5 Okt 2026'),
+      ('Tanggap Darurat', 'Banjir; Longsor; Cuaca ekstrem', '6 Okt 2026', '12 Okt 2026'),
+      ('Transisi Darurat', 'Banjir; Longsor; Cuaca ekstrem', '13 Okt 2026', '13 Apr 2027')]
 tulis('status.csv', ['status', 'jenis', 'mulai', 'berakhir'], ST)
 a('sl.st.n', sum(1 for x in ST if x[1] != 'Karhutla'), 'kali')
 
@@ -75,13 +75,13 @@ import re
 kec = sorted([(re.sub(r'^(Ix|Xi|Vii|Iii|Ii|Iv|Vi)\b', lambda m: m[0].upper(), k.split('|')[2]), v) for k, v in st['kec'].items() if k.startswith('13|Solok|')], key=lambda x: (-max(x[1]['b']), -max(x[1]['h3d']), x[0]))
 tulis('prakiraan.csv', ['kec', *[f'h{i}' for i in range(len(hr))]], [[n, *[f'{LV[b]}|{round(h)} mm' for b, h in zip(v['b'], v['h3d'])]] for n, v in kec])   # nilai hujan per tanggal (pemilik 24 Nov 2026)
 w_ = sum(1 for _, v in kec if max(v['b']) == 1)
-tulis('prakiraan_jumlah.csv', ['status', 'kec', 'ambang'], [[LV[l], sum(1 for _, v in kec if max(v['b']) == l),
-      {3: 'Hujan 3 hari 120 mm atau lebih', 2: 'Hujan 3 hari 80 mm atau lebih', 1: 'Hujan 3 hari 40 mm atau lebih', 0: 'Di bawah ambang Waspada'}[l]] for l in (3, 2, 1, 0)])
+tulis('prakiraan_jumlah.csv', ['status', 'kec', 'ambang', 'ikon', 'satuan'], [[LV[l], sum(1 for _, v in kec if max(v['b']) == l),
+      {3: 'Hujan 3 hari 120 mm atau lebih', 2: 'Hujan 3 hari 80 mm atau lebih', 1: 'Hujan 3 hari 40 mm atau lebih', 0: 'Di bawah ambang Waspada'}[l], {3: 'peringatan', 2: 'banjir', 1: 'cuaca-ekstrem', 0: 'prabencana'}[l], 'kecamatan'] for l in (3, 2, 1, 0)])
 rentang = f'{hr[0][:-4]}–{hr[-1]}' if hr[0][-3:] == hr[-1][-3:] else f'{hr[0]}–{hr[-1]}'
 S_P = f'ECMWF IFS, GloFAS, InaRISK BNPB, {hr[0]} 2026'
 
 # peta kecamatan Kab Solok, warna status tertinggi empat hari (pemilik 24 Nov 2026: "ga ada peta bro? ... untuk kondisi terkini")
-TOK = {0: 'tint.netral.pita', 1: 'skala.emas.3', 2: 'oranye', 3: 'merah'}
+TOK = {-1: 'tanpa-data', 0: 'skala.netral.2', 1: 'skala.emas.3', 2: 'oranye', 3: 'merah'}
 def peta_solok(png, w_in=7.2, h_in=4.6):
     import importlib.util, os
     from PIL import Image, ImageDraw, ImageFont
@@ -106,7 +106,7 @@ def peta_solok(png, w_in=7.2, h_in=4.6):
     pus = {}
     nama = lambda n: re.sub(r'^(Ix|Xi|Vii|Iii|Ii|Iv|Vi)\b', lambda m_: m_[0].upper(), n.title())
     for f in G:
-        n = nama(f['properties']['kec']); l_ = lv.get(n, 0)
+        n = nama(f['properties']['kec']); l_ = lv.get(n, -1)   # -1: kecamatan tanpa data prakiraan, tidak pernah tampil Normal
         for q in m.cincin(f['geometry']):
             pts = [(X(c[0]), Y(c[1])) for c in q[0]]
             if len(pts) > 2: d.polygon(pts, fill=hx(TOK[l_]), outline='#FFFFFF', width=3 * SS)
@@ -126,7 +126,10 @@ def peta_solok(png, w_in=7.2, h_in=4.6):
         'sistem_referensi': 'WGS84', 'proyeksi': 'Ekuirektangular'}, 'masukan': {'prakiraan.csv': hashlib.sha256((D / 'prakiraan.csv').read_bytes()).hexdigest()}},
         ensure_ascii=False, indent=1), encoding='utf-8')
 
-a('sl.p.w', w_, 'kecamatan Waspada', P_P, S_P); a('sl.p.hmax', round(max(max(v['h3d']) for _, v in kec)), 'mm', P_P, S_P); TOPK = kec[0][0]; a('sl.p.n', len(kec), 'kecamatan', P_P, S_P)
+a('sl.p.w', w_, 'kecamatan Waspada', P_P, S_P); a('sl.p.hmax', round(max(max(v['h3d']) for _, v in kec)), 'mm', P_P, S_P); TOPK = kec[0][0];
+for l_ in (0, 1, 2, 3): a(f'sl.p.n{l_}', sum(1 for _, v in kec if max(v['b']) == l_), 'kecamatan', P_P, S_P)
+for l_, mm_ in ((1, 40), (2, 80), (3, 120)): a(f'sl.amb.{l_}', mm_, 'mm', P_P, S_P)
+a('sl.p.n', len(kec), 'kecamatan', P_P, S_P)
 
 # ---------- 5. bencana lain: cuaca ekstrem, karhutla, kekeringan, gempa (DIBI); luas 2026 (sistem); Talang (MAGMA)
 LAIN = {'cuaca_ekstrem': 'Cuaca ekstrem', 'karhutla': 'Karhutla', 'kekeringan': 'Kekeringan'}
@@ -168,7 +171,12 @@ H3 = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'tem
       'pesan': 'Status darurat', 'sumber': 'DIBI BNPB, 23 Nov 2026; Laporan Dit. Koordalops BNPB, 9 Nov s.d. 23 Nov 2026',
       'judul': f'Kabupaten Solok {t("sl.st.n", "|satuan")} Menetapkan Status Darurat Banjir sejak November 2025; Transisi Darurat Berlaku sampai April 2027',
       'tabel': {'judul_panel': 'Status darurat Kabupaten Solok sejak 2025', 'ikon': 'tanggap-darurat', 'baris_maks_pt': 40, 'total': False, 'peringkat': False,
-                'data': c('status.csv', [{'nama': 'status', 'kepala': 'Status', 'bobot': 1.2}, {'nama': 'jenis', 'kepala': 'Jenis bencana', 'bobot': 1.9},
+                'data': c('status.csv', [{'nama': 'status', 'kepala': 'Status', 'bobot': 1.2, 'pil_daftar': {'gaya': ['tint.basah.pita', None, 'navy'], 'tengah': True,
+                                                       'gaya_per': {'Tanggap': ['tint.bahaya.pita', None, 'merah'], 'Siaga': ['tint.api.pita', None, 'oranye']},
+                                                       'ikon': {'Tanggap': 'tanggap-darurat', 'Transisi': 'pascabencana', 'Siaga': 'peringatan'}}},
+                                         {'nama': 'jenis', 'kepala': 'Jenis bencana', 'bobot': 2.4, 'pil_daftar': {'gaya': ['tint.basah.pita', None, 'navy'], 'tengah': True,
+                                                       'gaya_per': {'Karhutla': ['tint.api.pita', None, 'oranye']},
+                                                       'ikon': {'Banjir': 'banjir', 'Longsor': 'longsor', 'Cuaca': 'cuaca-ekstrem', 'Karhutla': 'karhutla'}}},
                                          {'nama': 'mulai', 'kepala': 'Mulai', 'bobot': .9}, {'nama': 'berakhir', 'kepala': 'Berakhir', 'bobot': .9}])},
       'panel': {'judul': 'Penanganan terkini', 'ikon': 'ringkasan', 'daftar_ikon': {'mode': 'baris', 'baris': [
           {'ikon': 'tanggap-darurat', 'judul': 'Transisi Darurat', 'isi': 'Berlaku 13 Okt 2026 sampai 13 Apr 2027'},
@@ -177,22 +185,28 @@ H3 = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'tem
           {'ikon': 'tanggap-darurat', 'judul': 'Pendampingan BNPB', 'isi': 'Tim BNPB mendampingi administrasi bantuan logistik di BPBD'},
           {'ikon': 'wilayah', 'judul': 'Siaga Darurat provinsi', 'isi': 'Sumatera Barat, 16 Nov 2026 sampai 18 Jan 2027'}]}}}
 
+GAYA_ST = {'Awas': ['tint.bahaya.pita', None, 'merah'], 'Siaga': ['tint.api.pita', None, 'oranye'], 'Waspada': ['skala.emas.2', None, 'teks'],
+           'Normal': ['tint.netral.pita', None, 'teks-3']}
 HP = {'jenis': 'temuan-peta', 'jenis_slide': 'peta', 'judul_bentuk': 'temuan', 'judul_ikon': 'wilayah', 'rasio': .66, 'cut_off': False,
       'pesan': 'Peta prakiraan banjir', 'sumber': S_P,
       'judul': f'Peta Prakiraan Banjir {rentang}: {t("sl.p.w", "|satuan")} dari {t("sl.p.n", "|satuan")} di Kabupaten Solok',
       'peta': {'png': 'data/sumut-aceh/sl/peta_kec.png', 'unsur_tampil': False, 'keyakinan': 'resmi', 'sumber': S_P, 'penanda': [],
-               'legenda': {'item': [{'warna': TOK[l], 'label': LV[l]} for l in (0, 1, 2, 3)]}},
-      'panel': {'judul': 'Jumlah kecamatan per status', 'ikon': 'peringatan', 'peringkat': False, 'baris_maks_pt': 90,
-                'data': c('prakiraan_jumlah.csv', [{'nama': 'status', 'kepala': 'Status'}, F('kec', 'Kecamatan'), {'nama': 'ambang', 'kepala': 'Ambang utama'}], S_P)}}
+               'legenda': {'item': [{'warna': TOK[l], 'label': LV[l]} for l in (0, 1, 2, 3)] + [{'warna': 'tanpa-data', 'label': 'Tanpa data prakiraan'}]}},
+      'panel': {'judul': 'Jumlah kecamatan per status', 'ikon': 'peringatan',   # baris berikon (pemilik 24 Nov 2026: "ini rapihin, bagusin juga")
+                'daftar_ikon': {'mode': 'baris', 'baris': [
+                    {'ikon': ik, 'judul': LV[l], 'isi': f'Hujan tiga hari {t(f"sl.amb.{l}", "|satuan")} atau lebih' if l else f'Hujan tiga hari di bawah {t("sl.amb.1", "|satuan")}',
+                     'angka': t(f'sl.p.n{l}'), 'satuan': 'kecamatan'}
+                    for l, ik in ((3, 'peringatan'), (2, 'banjir'), (1, 'cuaca-ekstrem'), (0, 'prabencana'))]}}}
 
 H4 = {'jenis': 'temuan-visual', 'jenis_slide': 'tabel', 'judul_bentuk': 'temuan', 'judul_ikon': 'peringatan', 'rasio': .99, 'cut_off': False,
       'pesan': 'Prakiraan banjir', 'sumber': S_P,
       'judul': f'Hujan Tiga Hari Tertinggi {t("sl.p.hmax", "|satuan")} di {TOPK}; Status Banjir per Kecamatan Kabupaten Solok, {rentang}',
       'utama': {'judul': 'Status banjir dan hujan tiga hari per kecamatan, empat hari ke depan', 'ikon': 'peringatan',
-                'heatmap': {'mode': 'kategori', 'kelas': [{'kunci': 'Normal', 'label': 'Normal', 'token': 'tint.netral.pita'},
-                                                          {'kunci': 'Waspada', 'label': 'Waspada', 'token': 'skala.emas.3'},
-                                                          {'kunci': 'Siaga', 'label': 'Siaga', 'token': 'oranye'},
-                                                          {'kunci': 'Awas', 'label': 'Awas', 'token': 'merah'}],
+                'heatmap': {'mode': 'kategori', 'kelas': [{'kunci': 'Normal', 'label': 'Normal', 'token': 'tint.netral.pita', 'teks': 'teks-3', 'ikon': 'prabencana'},
+                                                          {'kunci': 'Waspada', 'label': 'Waspada', 'token': 'skala.emas.2', 'teks': 'teks', 'ikon': 'cuaca-ekstrem'},
+                                                          {'kunci': 'Siaga', 'label': 'Siaga', 'token': 'oranye', 'teks': 'kertas', 'ikon': 'banjir'},
+                                                          {'kunci': 'Awas', 'label': 'Awas', 'token': 'merah', 'teks': 'kertas', 'ikon': 'peringatan'}],
+                            'latar_sel': 'tint.netral.muda',
                             'data': c('prakiraan.csv', [{'nama': 'kec', 'kepala': 'Kecamatan'}, *[{'nama': f'h{i}', 'kepala': h} for i, h in enumerate(hr)]], S_P)}},
 }
 
