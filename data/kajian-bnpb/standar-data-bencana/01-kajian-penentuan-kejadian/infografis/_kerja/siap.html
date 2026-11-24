@@ -201,11 +201,11 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
     <h2>Tiga keputusan berurutan, lalu kelasnya<small>Petugas tidak perlu memutuskan apakah gempa bermagnitudo 5,8 merupakan bencana. Gempa tersebut dicatat sebagai peristiwa ancaman, lalu dampaknya diperiksa di setiap kabupaten/kota.</small></h2>
   </div>
   <div class="alur">
-    <div class="lk"><span class="no">1</span><b>Ada peristiwa ancaman?</b>Informasi BMKG, PVMBG, pemantauan <i>hotspot</i>, atau laporan lapangan menunjukkan salah satu dari sembilan jenis bencana.<div class="tidak">Tanpa dampak: dicatat sebagai peristiwa ancaman dan dipantau.</div></div>
+    <div class="lk"><span class="no">1</span><b>Ada ancaman dan dampak?</b>Informasi BMKG, PVMBG, pemantauan <i>hotspot</i>, atau laporan lapangan menunjukkan salah satu dari sembilan jenis bencana, dan paling sedikit satu angka dampak lebih dari nol.<div class="tidak">Tanpa dampak: dicatat sebagai peristiwa ancaman dan dipantau. Masih ada isian belum didata: menunggu data.</div></div>
     <div class="pn">›</div>
-    <div class="lk"><span class="no">2</span><b>Kriteria terpenuhi?</b>Paling sedikit satu dari enam kriteria kejadian bencana di bawah terpenuhi.<div class="tidak">Belum: disimpan sebagai kejadian yang belum memenuhi kriteria.</div></div>
+    <div class="lk"><span class="no">2</span><b>Kejadian yang sama?</b>Laporan sejenis di kabupaten/kota yang sama dan masih dalam batas kejadian yang sedang berlangsung digabungkan, lalu angkanya diperbarui.<div class="tidak">Di luar batas: dibuka sebagai kejadian baru.</div></div>
     <div class="pn">›</div>
-    <div class="lk"><span class="no">3</span><b>Kejadian yang sama?</b>Laporan sejenis di kabupaten/kota yang sama dan masih dalam batas kejadian yang sedang berlangsung digabungkan.<div class="tidak">Di luar batas: dibuka sebagai kejadian baru.</div></div>
+    <div class="lk"><span class="no">3</span><b>Kriteria terpenuhi?</b>Angka kumulatif kejadian, di kabupaten/kota atau dalam jumlah nasional, memenuhi paling sedikit satu dari enam kriteria di bawah.<div class="tidak">Belum: disimpan dan diperiksa ulang setiap angka bertambah.</div></div>
     <div class="pn">›</div>
     <div class="lk akhir"><span class="no">4</span><b>Intensif atau ekstensif?</b>Intensif apabila paling sedikit satu dari tujuh batas kelas tercapai (halaman 3). Selain itu, ekstensif.<div class="tidak">Kelas dihitung ulang setiap kali angka diperbarui.</div></div>
   </div>
@@ -242,7 +242,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
     <div><b>Satu hari, satu kabupaten</b>Kejadian sejenis di beberapa lokasi dalam satu kabupaten/kota pada hari yang sama dihitung satu.</div>
     <div><b>Selesai saat dampak berhenti</b>Genangan surut, api padam, atau aktivitas gunung api menurun menandai akhir kejadian.</div>
     <div><b>Pemicu dan terpicu</b>Gempa yang memicu tsunami dicatat sebagai kejadian pemicu; korban dicatat satu kali pada penyebabnya.</div>
-    <div><b>Satu kejadian, satu nomor</b>Laporan pertama memberi nomor yang dipakai setiap laporan perkembangan.</div>
+    <div><b>Satu kabupaten/kota, satu KIB</b>KIB dari laporan pertama dipakai setiap laporan perkembangan; semua KIB satu kejadian ditautkan satu nomor induk.</div>
   </div>
 
   <div>
@@ -260,8 +260,8 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
       <dt>Satu kejadian</dt><dd>Satu gempa utama. Susulan yang merusak selama masa tanggap darurat termasuk kejadian yang sama.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami<i>108</i></div><dl>
       <dt>Tanda ancaman</dt><dd>Peringatan InaTEWS: Awas (lebih dari 3 m), Siaga (0,5 sampai 3 m), Waspada (kurang dari 0,5 m).</dd>
-      <dt>Menjadi bencana apabila</dt><dd>Air laut menggenangi daratan dan menimbulkan dampak. Pengungsian sebelum gelombang tiba tetap dicatat.</dd>
-      <dt>Satu kejadian</dt><dd>Selalu menjadi kejadian terpicu dari pemicunya, misalnya gempa, longsor bawah laut, atau erupsi.</dd></dl></div>
+      <dt>Menjadi bencana apabila</dt><dd>Air laut menggenangi daratan dan menimbulkan dampak. Peringatan tanpa genangan bukan tsunami; pengungsinya dicatat pada kejadian pemicu.</dd>
+      <dt>Satu kejadian</dt><dd>Satu rangkaian gelombang dari satu sumber; dicatat sebagai kejadian terpicu bila pemicunya, misalnya gempa, tercatat.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-banjir"/></svg>Banjir<i>101</i></div><dl>
       <dt>Tanda ancaman</dt><dd>Peringatan hujan sangat lebat (100 sampai 150 mm per hari) atau ekstrem (lebih dari 150 mm), status siaga pos duga air.</dd>
       <dt>Menjadi bencana apabila</dt><dd>Genangan memenuhi kriteria di kabupaten/kota tersebut.</dd>
@@ -271,7 +271,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
       <dt>Menjadi bencana apabila</dt><dd>Gerakan massa tanah atau batuan memenuhi kriteria.</dd>
       <dt>Satu kejadian</dt><dd>Semua titik dalam satu kabupaten/kota pada hari yang sama menjadi satu kejadian. Longsor yang dipicu banjir atau gempa menjadi kejadian terpicu.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-angin"/></svg>Cuaca ekstrem<i>104</i></div><dl>
-      <dt>Tanda ancaman</dt><dd>Peringatan dini cuaca BMKG; angin kencang mulai 25 knot (sekitar 46 km per jam).</dd>
+      <dt>Tanda ancaman</dt><dd>Peringatan dini cuaca BMKG; angin kencang di atas 25 knot atau 45 km per jam (acuan BMKG 2010).</dd>
       <dt>Menjadi bencana apabila</dt><dd>Kerusakan atau korban memenuhi kriteria.</dd>
       <dt>Satu kejadian</dt><dd>Satu jalur puting beliung, atau satu kabupaten per hari. Hujan yang menggenang dicatat sebagai banjir.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-pantai"/></svg>Gelombang pasang dan abrasi<i>103</i></div><dl>
@@ -328,7 +328,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
         <tr><th>Lembaga</th><th>Batas</th></tr>
         <tr><td>UNDRR GAR 2015</td><td>Bencana intensif apabila 30 orang meninggal atau 600 rumah hancur</td></tr>
         <tr><td>Jepang</td><td>Rumah setengah hancur dihitung setengah, tidak dapat dihuni dihitung sepertiga</td></tr>
-        <tr><td>Tiongkok</td><td>Kebakaran hutan sangat besar 1.000 hektare; kekeringan ekstrem 15 persen penduduk kesulitan air minum</td></tr>
+        <tr><td>Tiongkok</td><td>Kebakaran hutan sangat besar 1.000 hektare; kekeringan sangat berat 15 persen penduduk kesulitan air minum</td></tr>
         <tr><td>India</td><td>Kekeringan berat apabila kehilangan hasil tanaman lebih dari 50 persen</td></tr>
         <tr><td>Filipina</td><td>Status bencana: 15 persen penduduk membutuhkan bantuan darurat</td></tr>
         <tr><td>UU 24/2007</td><td>Lima indikator tingkat bencana, tanpa angka</td></tr>
