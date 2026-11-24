@@ -1,0 +1,78 @@
+{
+ "dibuat": "2026-11-24",
+ "data": {
+  "dari": "2026-07-03",
+  "sampai": "2026-10-27",
+  "hari": 117,
+  "sumber": "public/data/titik_hari (FIRMS MODIS+VIIRS, lokasi unik ~375 m per hari WIB, keyakinan >= nominal)"
+ },
+ "definisi": "laju = persen pengamatan (sel 0,01 derajat terdeteksi hari d, lingkungan 3x3 kosong N hari) yang muncul lagi dalam W hari berikutnya; tersensor kanan dibuang; pengamatan berkorelasi per sel (n_sel = sel unik), maka tanpa selang kepercayaan; tak terlihat bisa awan/asap, bukan bukti padam; gambut dari public/data/lahan/gambut.geojson",
+ "hasil": {
+  "gambut": {
+   "1_7": {
+    "n": 21081,
+    "n_sel": 12192,
+    "laju_pct": 70.3
+   },
+   "1_14": {
+    "n": 18482,
+    "n_sel": 10932,
+    "laju_pct": 80.3
+   },
+   "3_7": {
+    "n": 11032,
+    "n_sel": 8258,
+    "laju_pct": 52.2
+   },
+   "3_14": {
+    "n": 9862,
+    "n_sel": 7479,
+    "laju_pct": 68.4
+   }
+  },
+  "bukan_gambut": {
+   "1_7": {
+    "n": 258901,
+    "n_sel": 168090,
+    "laju_pct": 51.6
+   },
+   "1_14": {
+    "n": 240130,
+    "n_sel": 158202,
+    "laju_pct": 66.2
+   },
+   "3_7": {
+    "n": 184151,
+    "n_sel": 139865,
+    "laju_pct": 41.0
+   },
+   "3_14": {
+    "n": 169767,
+    "n_sel": 130545,
+    "laju_pct": 57.1
+   }
+  },
+  "semua": {
+   "1_7": {
+    "n": 279982,
+    "n_sel": 180282,
+    "laju_pct": 53.1
+   },
+   "1_14": {
+    "n": 258612,
+    "n_sel": 169134,
+    "laju_pct": 67.2
+   },
+   "3_7": {
+    "n": 195183,
+    "n_sel": 148123,
+    "laju_pct": 41.6
+   },
+   "3_14": {
+    "n": 179629,
+    "n_sel": 138024,
+    "laju_pct": 57.8
+   }
+  }
+ }
+}

@@ -280,3 +280,4 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | gabungan (CAMS + GEOS-CF) | ensemble | "koreksi bias" = bias correction |
 | anomali termal satelit (VRP) | satellite thermal anomaly (VRP) | VRP = volcanic radiative power, MW; MIROVA tetap |
 | naik di atas latar sendiri | above its own baseline | "riwayat belum cukup" = not enough history |
+| ilustrasi | illustration | api dan asap 3D, cahaya matahari: gambaran visual, bukan jangkauan asap sebenarnya |

@@ -90,7 +90,7 @@ def kalimat(k, prov, komp, kena):
     return t + "."
 
 
-def bangun(kota, A, src, t, pm_maks=None):
+def bangun(kota, A, src, t, pm_maks=None, bobot=None):
     jam0 = (t - alat.dari_iso(A["jam"][0])).total_seconds() / 3600
     akhir = (len(A["jam"]) - 1) * 3
     idx = indeks_api(src)
@@ -101,9 +101,11 @@ def bangun(kota, A, src, t, pm_maks=None):
         if pm_maks is not None and pm_maks.get(k["kode"], 0) < PM_MIN:
             continue
         tot, n_kena, n, tiba_kena = {}, 0, 0, 0
-        for tiba in TIBA:
+        per_tiba = [None] * len(TIBA)   # bobot total per waktu tiba (3 lapis dijumlah); None = di luar data angin
+        for it, tiba in enumerate(TIBA):
             if tiba > akhir:
                 continue
+            per_tiba[it] = 0.0
             ada = False
             for l in range(len(A["lapis"])):
                 n += 1
@@ -112,7 +114,10 @@ def bangun(kota, A, src, t, pm_maks=None):
                 ada |= bool(p)
                 for i, v in p.items():
                     tot[i] = tot.get(i, 0.0) + v
+                    per_tiba[it] += v
             tiba_kena += ada
+        if bobot is not None:   # SEMUA kota yang lolos gerbang PM, juga yang tak melewati api (bobot 0): bahan uji balik, tanpa seleksi
+            bobot[k["kode"]] = [None if v is None else float(f"{v:.3g}") for v in per_tiba]
         s = sum(tot.values())
         if s <= 0 or tiba_kena < MIN_TIBA:
             continue
@@ -130,6 +135,26 @@ def bangun(kota, A, src, t, pm_maks=None):
     return out
 
 
+ARSIP = "asal_arsip.json"
+ARSIP_HARI = 60
+
+
+def arsipkan(arsip, mulai, jam0, bobot):
+    """Tambah satu entri per hari WIB jalan (yang pertama; append-only, tak menimpa): waktu tiba UTC per indeks TIBA dan bobot per kota.
+    Bahan uji balik asal.py terhadap AOD (uji_atribusi.py). Entri > ARSIP_HARI hari dari yang terbaru dibuang."""
+    e = arsip.setdefault("e", {})
+    hari = alat.hari_wib(alat.dari_iso(mulai))
+    if any(alat.hari_wib(alat.dari_iso(k)) == hari for k in e):
+        return arsip
+    j0 = alat.dari_iso(jam0)
+    e[mulai] = {"tiba": [alat.iso(j0 + dt.timedelta(hours=h)) for h in TIBA], "bobot": bobot}
+    batas = (alat.dari_iso(max(e)) - dt.timedelta(days=ARSIP_HARI))
+    arsip["e"] = {k: v for k, v in sorted(e.items()) if alat.dari_iso(k) >= batas}
+    arsip["v"] = 1
+    arsip["catatan"] = "bobot[kode][i] = jumlah kedekatan x emisi / jarak api yang dilewati jalur mundur ke-i (satuan relatif, 3 lapis dijumlah); null = di luar data angin"
+    return arsip
+
+
 def main():
     t = alat.sekarang()
     A = alat.keluaran("angin.json")
@@ -140,7 +165,9 @@ def main():
         s["kab"] = kab.get(s["id"])
     kota = alat.kota()
     pm_maks = {k["kode"]: max(k["r24"]) for k in alat.keluaran("prakiraan.json")["kota"]}
-    kota_asal = bangun(kota, A, src, t, pm_maks)
+    bobot = {}
+    kota_asal = bangun(kota, A, src, t, pm_maks, bobot)
+    alat.simpan(ARSIP, arsipkan(alat.keluaran(ARSIP, {}), alat.iso(t), A["jam"][0], bobot))
     if not kota_asal:
         raise RuntimeError("asal: tak ada kota yang jalurnya melewati api")
     d = {"v": 1, "dibuat": alat.iso(dt.datetime.now(dt.timezone.utc)), "mulai": alat.iso(t), "n_api": len(src),
@@ -172,6 +199,19 @@ def uji():
     r = bangun(kota, A, src, t)["1"]
     assert "1" not in bangun(kota, A, src, t, {"1": 10}), "PM < 30 tanpa atribusi"
     assert sum(x[1] for x in r["prov_asal"]) in range(98, 103) and len(r["kompleks"]) == 2
+    # arsip bobot: kota tanpa api di jalur tetap tercatat 0 (bukan dibuang), kota di bawah gerbang PM tak tercatat
+    bobot = {}
+    bangun(kota, A, src, t, {"1": 50, "2": 50}, bobot)
+    assert bobot["1"][0] > 0 and len(bobot["1"]) == 5 and bobot["2"] == [0.0] * 5 and all(v is not None for v in bobot["1"]), bobot
+    bobot2 = {}
+    bangun(kota, A, src, t, {"1": 10, "2": 50}, bobot2)
+    assert list(bobot2) == ["2"]
+    ar = arsipkan({}, "2026-10-18T03:00Z", "2026-10-18T03:00Z", bobot)
+    ar = arsipkan(ar, "2026-10-18T15:00Z", "2026-10-18T15:00Z", {"x": [1]})          # hari WIB sama: tak menimpa
+    assert list(ar["e"]) == ["2026-10-18T03:00Z"] and ar["e"]["2026-10-18T03:00Z"]["tiba"][0] == "2026-10-19T03:00Z", ar
+    ar = arsipkan(ar, "2026-10-19T03:00Z", "2026-10-19T03:00Z", bobot)
+    ar = arsipkan(ar, "2027-01-01T03:00Z", "2027-01-01T03:00Z", bobot)               # entri > 60 hari dibuang
+    assert list(ar["e"]) == ["2027-01-01T03:00Z"], list(ar["e"])
     print("asal.py: uji lulus")
 
 

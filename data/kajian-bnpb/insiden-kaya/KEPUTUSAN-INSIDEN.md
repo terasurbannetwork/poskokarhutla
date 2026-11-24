@@ -1,0 +1,70 @@
+# KEPUTUSAN-INSIDEN: Insiden Kaya (perkembangan api dan bangunan dekat api per insiden)
+
+Dokumen ini menang atas semua dokumen lain di folder ini. Paket ini memuat dua tiket pembanding pantaukarhutla.com: PKH-06 (perkembangan api per insiden) dan PKH-07 (bangunan dalam 500 m dari api per insiden).
+Keputusan pemilik ditulis dengan tanggal dan kalimat aslinya bila tersedia. Pertanyaan yang belum dijawab pemilik ditulis sebagai **Q**, dengan bawaan sementara bertanda **[SEMENTARA]**.
+Bawaan sementara boleh dipakai untuk membangun, tetapi tidak boleh tampil di layar sebagai angka pasti: layar menandainya "perkiraan" atau "hipotesis" sampai Q dijawab.
+
+## Keputusan pemilik
+
+Nomor K mengikuti `data/kajian-bnpb/pembanding-pantaukarhutla/TIKET.md` (bagian "Keputusan pemilik 24 Nov 2026") supaya rujukan silang tidak bergeser.
+
+| No | Tanggal | Keputusan | Berlaku di paket ini | Kalimat pemilik |
+| -- | ------- | --------- | -------------------- | --------------- |
+| K1 | 24 Nov 2026 | Semua tiket pembanding jalan, kecuali kelompok F yang dirinci dulu. PKH-06 dan PKH-07 termasuk yang jalan, sebagai paket dokumen dulu lalu kode (AGENTS §3.7). | ya | "semua gas" |
+| K2 | 24 Nov 2026 | Bangunan dekat api (PKH-07) boleh tampil publik per insiden. Rincian per sel tetap tidak publik. | ya, inti paket | (jawaban pemilik atas K2 di TIKET pembanding) |
+| K3 | 24 Nov 2026 | Asap lintas negara (PKH-23) boleh tampil publik. | tidak, dicatat saja | – |
+| K4 | 24 Nov 2026 | Video vertikal (PKH-31) dibatalkan. | tidak, dicatat saja | "gausah" |
+| K5 | 24 Nov 2026 | Animasi api 3D (PKH-12) disetujui. | tidak, tapi pop-up insiden dan peta tidak boleh bertabrakan dengan lapisannya (lihat DESIGN-SYSTEM §6) | – |
+
+Aturan turunan dari TIKET pembanding yang mengikat paket ini:
+
+- Kode `progression.py` pembanding (MIT) boleh dipakai ulang asal pemberitahuan lisensinya ikut. Metode dan angka yang diambil ditulis sumbernya (RISET §2).
+- Fitur besar dikerjakan lewat paket dokumen dulu; tidak ada kode sebelum paket diperiksa pemeriksa bersih (AGENTS §3.7).
+
+## Rancangan (D)
+
+| D | Keputusan rancangan | Alasan |
+| - | ------------------- | ------ |
+| D1 | Satu insiden = satu `id` stabil dari `scripts/data/insiden.py`. Paket ini tidak mengubah aturan pencocokan insiden (jarak 0,6 km, gabung ke yang tertua). | Satu mesin identitas insiden; ID dipakai tugas dan laporan lama. |
+| D2 | Perkembangan api dihitung di berkas baru `scripts/data/progresi.py` (pipa-data), bukan di `insiden.py`. `insiden.py` hanya memberi daftar insiden dan anggotanya. | `insiden.py` sudah 747 baris dan jalan 3 jam sekali; progresi memakai riwayat deteksi yang lebih panjang dan boleh jalan lebih jarang. |
+| D3 | Implementasi **stdlib Python saja**, tanpa numpy, scipy, atau duckdb. Rujukan pembanding (`progression.py`) memakai numpy, scipy, pandas, duckdb; yang diambil adalah metodenya, ditulis ulang di atas kisi dict dan penelusuran lebar (BFS). | Pipeline karhutla berjalan di Actions dengan stdlib (AGENTS §Pipeline); `titik.yml` tidak punya `pip install`. Sel per insiden paling banyak puluhan ribu, cukup untuk Python murni. Bila terlalu lambat, `pip install numpy` ditambahkan di tiket IK-05, bukan diam-diam. |
+| D4 | Waktu tiba per sel 375 m = deteksi pertama dikurangi setengah jeda lintasan sebelumnya; sel tak terdeteksi di dalam jejak diisi median 5 sel terdeteksi terdekat. Metode ini dipilih pembanding lewat uji tahan pada fire 2019 dan 2023 mereka; kita **mengulang uji itu pada data kita sebelum angka tampil** (D9). | Metode terpilih bukan bukti untuk data kita. |
+| D5 | Garis depan (isokron) tiap hari pukul 14.00 WIB (07.00 UTC). Langkah 12 jam tidak dibuat. | Kemajuan harian gambut sekitar satu sel (0,38 km); langkah 12 jam hanya bising (RISET §2). |
+| D6 | Laju = p90 jarak kemajuan sel baru dari garis hari sebelumnya, dalam km per hari, hanya sel baru dalam 2 km dari garis sebelumnya. Kemajuan p90 di bawah satu sel (0,378 km) ditulis `resolved:false` dan tampil "belum terukur", **bukan 0**. | Satu sel adalah batas resolusi; 0 menyesatkan. |
+| D7 | Lompatan = hari ini ada sel pertama-terdeteksi 2 sampai 10 km dari seluruh sel yang sudah tercapai sebelumnya dalam insiden yang sama. Arah yang ditulis adalah arah geometri dari asal ke tujuan, **bukan arah angin** dan bukan klaim sebab. | Sama dengan pembanding; kita tidak punya angin historis di titik itu pada paket ini. |
+| D8 | Titik awal = sel deteksi paling awal (dalam satu jam dari yang pertama), rata-rata berbobot FRP, dengan galat = setengah jeda lintasan sebelumnya. Tampil sebagai "perkiraan titik awal terdeteksi" berlingkar galat, tidak pernah sebagai "titik awal api" atau "penyebab". `mulai_lebih_awal:true` bila ≥ 5 sel sudah menyala saat pertama terlihat. | Satelit melihat api setelah ia menyala, bukan saat menyala. |
+| D9 | Angka perkembangan tampil sebagai fakta hanya sesudah uji tahan pada 10 insiden 2019 dan 2023 punya vonis (RENCANA-UJI §2). Sebelum itu semua angka perkembangan berpil "hipotesis". | Pola paritas: model tanpa uji balik tampil sebagai hipotesis. |
+| D10 | Bangunan dekat api memakai **Google Open Buildings v3, keyakinan ≥ 0,70**, lewat grid sel halus 110 m milik `scripts/umum/bangunan.py` (`halus_<prov>.json`), bukan OSM. Ambang 0,70 adalah satu nilai bersama (`bangunan.AMBANG_KEYAKINAN`, ditegaskan `siklus/paparan.py`); paket ini tidak punya ambang sendiri. | Lebih lengkap di Kalimantan dan Papua (RISET pembanding §3); satu mesin bangunan. |
+| D11 | Radius 500 m diukur dari **pusat petak 375 m** terdeteksi mana pun milik insiden, bukan dari tepi poligon. Satu sel halus (dan karena itu satu bangunan) dihitung sekali per insiden walau dekat banyak petak. | Menyamakan definisi pembanding ("bangunan dalam 500 m dari petak"); gabungan bukan jumlah. |
+| D12 | Dua angka per insiden: `kumulatif` (semua petak sejak awal arsip) dan `kini` (hanya petak berumur ≤ 12 jam, `SEGAR_JAM` di `insiden.py`). Kosong = tidak ada petak segar, bukan 0. | Pimpinan perlu tahu yang terancam sekarang dan yang pernah terkena. |
+| D13 | Bangunan dihitung hanya di provinsi yang grid halusnya ada. Provinsi tanpa grid: `terliput:false`, tampil "belum tercakup", **bukan 0**. Per 24 Nov 2026 grid ada untuk provinsi 13, 33, 63 (Sumatera Barat, Jawa Tengah, Kalimantan Selatan); provinsi rawan karhutla besar (Riau 14, Jambi 15, Sumatera Selatan 16, Kalimantan Barat 61, Kalimantan Tengah 62) belum. | Fakta berkas `data/terkunci/bangunan`; memperluasnya butuh izin (Q5). |
+| D14 | Yang publik per insiden hanya: jumlah bangunan (dibulatkan, lihat Q6), luas atap total, `terliput`, `kini`, `kumulatif`, jam hitung. Daftar sel, koordinat sel, dan koordinat bangunan **tidak pernah publik** dan tidak dilayani Worker. | K2 memberi angka publik, bukan rincian; privasi (KEAMANAN-PRIVASI.md). |
+| D15 | Keluaran publik: `public/data/progresi/<id>.json` dan `public/data/progresi/indeks.json` (pipa-data); `public/data/insiden_bangunan.json` (pipa-umum menghitung, pipa-data menerbitkan). Rincian sel ke `data/terkunci/insiden/` lokal atau R2, bukan `public/`. | Pola keluaran yang sudah ada (terpapar.json terkunci, ringkasan publik). |
+| D16 | Tampilan: dua kartu `.ex.ex-std` di pop-up insiden, "Perkembangan api" dan "Bangunan dekat api", kepala = nama seksi berikon, tanpa kalimat kesimpulan (AGENTS §3.5, pembaruan 11 Nov 2026). | Standar kartu. |
+| D17 | Tidak dibangun di paket ini: panah arah sebar, profil elevasi, prakiraan garis depan (sudah ada model sebaran kita), cuaca di garis depan, tingkat bukti "kuat" (PKH-10), nama desa (PKH-08). | Di luar cakupan PKH-06 dan PKH-07; tiketnya terpisah. |
+
+## Prinsip yang mengikat semua tiket
+
+1. **Tidak ada data dummy** (standar pemilik 11 Nov 2026). Angka tanpa sumber tampil "–" dengan keterangan.
+2. **Tak terlihat bukan padam.** Insiden `tak_terdeteksi` tidak pernah diberi garis depan "akhir" atau kata padam (selaras `insiden.py`).
+3. **Belum tercakup bukan nol.** Bangunan di provinsi tanpa grid, dan laju di bawah satu sel, bukan 0.
+4. **Satu sumber per angka.** Bangunan Open Buildings tidak dijumlah dengan OSM atau dengan angka paparan 1/3/5 km di `paparan_bangunan.py` (definisinya beda: poligon kompleks vs petak 375 m).
+5. **Satu mesin per fungsi.** Identitas insiden di `insiden.py`; bangunan di `scripts/umum/bangunan.py` dan `paparan_bangunan.py`; tidak ada salinan.
+6. **Tidak pernah menulis "aman".** Nol bangunan terdeteksi bukan jaminan tidak ada bangunan.
+7. **Klik tidak membekukan layar** (INP): chrome pop-up dicat dulu, isokron menyusul.
+8. Teks Indonesia di layar ditulis lewat skill `bahasa-indonesia-plain`; kode klien dirujukkan dulu ke `modern-web-guidance` (AGENTS global butir 8 dan 9).
+
+## Pertanyaan terbuka untuk pemilik
+
+| Q | Pertanyaan | Bawaan sementara |
+| - | ---------- | ---------------- |
+| Q1 | Deteksi per insiden sejak awal belum diarsipkan: `hotspot24.json` hanya 48 jam. Arsip dimulai dari sekarang (insiden lama tampil "dihitung sejak <tanggal>"), atau boleh ditarik mundur dari FIRMS (butuh kunci peta FIRMS dan kuota) untuk insiden yang sedang aktif? | [SEMENTARA] mulai dari sekarang, tanpa tarik mundur; insiden yang arsipnya < 2 hari tampil "belum cukup riwayat" |
+| Q2 | Kriteria lulus uji tahan perkembangan api (D9)? | [SEMENTARA] di data 10 insiden 2019 dan 2023 kita: ≥ 60% sel tahan-uji dalam ±24 jam, dan MAE tidak lebih buruk dari tetangga terdekat; dikunci tertulis sebelum angka dihitung |
+| Q3 | Perkiraan titik awal boleh tampil publik? Titik itu bisa jatuh di lahan konsesi atau lahan warga. | [SEMENTARA] tampil sebagai lingkaran berjari-jari galat (minimal 375 m), tanpa nama lahan, konsesi, desa pemilik, atau kata sebab; pilihan lain: hanya di balik sesi |
+| Q4 | Insiden baru ≤ 10 km dari insiden aktif ditandai "kemungkinan lompatan dari insiden lain"? (Aturan pencocokan 0,6 km membuat lompatan 2 sampai 10 km di dalam satu insiden jarang terjadi; RISET §4.) | [SEMENTARA] tidak, hanya lompatan di dalam satu insiden; tiket IK-13 menunggu |
+| Q5 [DIJAWAB 24 Nov 2026: unduh untuk semua provinsi] | Izin mengunduh Open Buildings untuk provinsi yang belum bergrid (Riau, Jambi, Sumatera Selatan, Kalimantan Barat, Kalimantan Tengah, dan lainnya)? Unduhan penuh nasional ±12,7 GB dan jalan berjam-jam di Actions. | [SEMENTARA] tidak diunduh; di provinsi tanpa grid tampil "belum tercakup" |
+| Q6 | Pembulatan dan ambang angka bangunan publik (anti-identifikasi rumah tunggal dan anti-selisih antarhari)? | [SEMENTARA] di bawah 5 tampil "kurang dari 5"; 5 ke atas dibulatkan ke kelipatan 5 dan ditulis "sekitar"; luas atap dibulatkan ke 100 m² |
+| Q7 | Tempat menghitung bangunan insiden: `bangunan.yml` harian (grid sudah ada di sana, 278 ubin hanya bulanan) atau `titik.yml` 3 jam (grid harus ditarik dari R2 tiap putaran)? | [SEMENTARA] `bangunan.yml` harian membaca daftar petak yang diterbitkan putaran 3 jam; angka bangunan diperbarui sehari sekali dan berlabel jamnya |
+| Q8 | Lisensi CC BY 4.0 Open Buildings mewajibkan atribusi, tetapi kartu standar tanpa kaki "Sumber" (AGENTS §3.5). Cukup di `title` kepala kartu dan halaman metodologi, atau perlu tulisan terlihat? | [SEMENTARA] `title` kepala kartu plus halaman metodologi yang sudah memuat atribusi bangunan; periksa dengan `selera-angka` |
+| Q9 | Insiden dengan < 20 piksel unik tidak punya isokron (pembanding juga begitu, `MIN_DETECTIONS = 20`). Ambang 20 dipakai juga di kita? | [SEMENTARA] 20 piksel unik VIIRS nominal/tinggi, tampil "terlalu kecil untuk dilacak" |
+| Q10 | Bila uji tahan gagal (Q2), perkembangan api tetap tampil berpil hipotesis, atau disembunyikan? | [SEMENTARA] tampil berpil hipotesis dan keterangan hasil uji di `title`; garis depan tanpa angka laju |

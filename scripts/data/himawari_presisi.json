@@ -1,0 +1,21 @@
+{
+ "himawari": "himawari.json",
+ "acuan": "2026-10-19T07:10:00Z",
+ "viirs": "titik_hari 2026-10-19 (15184 lokasi unik, semua satelit)",
+ "n_pengamatan_himawari": 1383,
+ "jarak_km": 3,
+ "selisih_menit": 30,
+ "per_reliability": {
+  "3": {
+   "n": 295,
+   "cocok": 197,
+   "persen": 66.8
+  },
+  "5": {
+   "n": 133,
+   "cocok": 109,
+   "persen": 82.0
+  }
+ },
+ "catatan": "Satu jendela 3 jam (satu acuan), bukan musim: angka kasar. Reliability 1 tak ada (keluaran lama membuang < 3). titik_hari menyimpan lokasi unik per hari dengan waktu deteksi PERTAMA saja dan sudah membuang sumber panas tetap, jadi cocok-waktu +-30 mnt meremehkan presisi. Sapuan VIIRS didekati 50 km dari deteksi VIIRS mana pun pada +-30 mnt. Pembanding Pantau Karhutla (47 hari): rel 1 55%, rel 3 74%, rel 5 91%."
+}

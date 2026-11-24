@@ -34,6 +34,14 @@ terverifikasi (Fase 3.5, dNBR).
 `tren` hanya N20+N21 (himpunan konstan; S-NPP berhenti tak menimbulkan \"menyusut\" palsu); "tumbuh/menyusut" hanya bila max(n24, kemarin) >= 4, selain itu "sedikit".
 Status: aktif | tak_terdeteksi (bukan "padam": tak terdeteksi satelit tidak membuktikan api padam) | gabung. Gambut dibuka kembali sampai 10 hari, lainnya 3.
 
+Nama, bukti, riwayat petak (tiket PKH-08, 09, 10; semua kunci TAMBAHAN di tiap insiden, kunci lama tak berubah):
+  `desa` {kode, nama, kec, n, dari} = desa yang memuat titik panas terbanyak (titik 48 jam semua kompleks anggota; poligon public/geo/desa, batas disederhanakan bukan SK batas desa);
+  `nama` "Desa, Kab" (cadangan "Kec, Kab" bila tak ada titik di poligon desa kab itu); `kota_terdekat` {nama, jarak_km} = pusat kab/kota terdekat dari `pusat` (scripts/udara/kota.json), kunci TERPISAH dari nama.
+  `bukti` {tingkat: kuat|tunggal|null, lintasan, piksel_maks, malam, yakin_tinggi}: kuat bila (>= 2 lintasan dari >= 2 satelit berbeda ATAU berselang >= 6 jam; jeda > 30 mnt satu satelit = lintasan baru), >= 2 piksel dalam satu lintasan, ada deteksi malam
+  (jam surya setempat < 6 atau >= 18, tebakan dari jam UTC + bujur: hotspot24.json tak membawa daynight) atau ada piksel VIIRS keyakinan tinggi (`yakin_tinggi`: proksi, BUKAN saturasi piksel). null = tak ada titik nominal+ di jendela. Kuat tak turun lagi.
+  `riwayat_api` {n_petak, pernah_pct, tahun{}} = persen petak 375 m titik 48 jam yang pernah punya api VIIRS S-NPP 2012-2025 (data/riwayat_petak.bin, riwayat_petak.py), batas bawah.
+  insiden.json juga memuat `n_bukti` {kuat, tunggal} untuk insiden aktif (angka utama `n` tidak berubah).
+
 Berkas:
   public/data/insiden.json          (status bergulir lewat cache `data-` titik.yml; hilang/rusak = mulai ulang tanpa crash)
   public/data/tugas_kompleks.json   (disisipi kunci insiden, front, masuk, radius_m, luas_aktif, luas_koreksi, tren per entri, kunci lain utuh)
@@ -42,12 +50,13 @@ Membaca: tugas_kompleks.json, kluster.json, hotspot24.json, jalan.geojson, kanal
 Pakai:  python3 scripts/data/insiden.py         # jalan sesudah harian.py/taktik.py
         python3 scripts/data/insiden.py --uji   # self-check
 """
-import collections, datetime as dt, json, math, os, statistics, sys, tempfile
+import collections, datetime as dt, json, math, os, re, statistics, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
 from firms_sumber import RASIO_N20_N_LOKAL as RASIO_N20_N, RASIO_N20_N_LOKAL_IQR, rasio_teks  # noqa: E402  (rasio terukur per satuan jendela lokal; laporan.py memakai RASIO_N20_N harian)
 from kendala import Indeks, JALAN_KELAS, km  # noqa: E402  (indeks ruang jalan/sungai/kanal yang sama dengan kendala.json)
+import riwayat_petak  # noqa: E402
 
 DATA = os.environ.get("INSIDEN_DATA") or os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -163,6 +172,142 @@ class Kisi:
         for y in range(y0, y1 + 1):
             for x in range(x0, x1 + 1):
                 yield from self.sel.get((y, x), ())
+
+
+# ---- nama desa, kota terdekat, bukti (PKH-08, PKH-10) ----
+GEO_DESA = os.path.join(AKAR, "public/geo/desa")
+KOTA_JSON = os.path.join(AKAR, "scripts/udara/kota.json")
+DESA_MAKS_TITIK = 300     # titik unik (sel 0,001 derajat) per insiden yang diuji ke poligon desa
+LINTASAN_SELANG_JAM = 6    # dua lintasan satu satelit dihitung bukti kuat bila berselang >= ini (dua satelit berbeda cukup)
+LINTASAN_JEDA_JAM = 0.5   # deteksi satu sensor berjarak > ini = lintasan lain
+MALAM_JAM = (6, 18)       # jam surya setempat < 6 atau >= 18 = malam (tebakan; hotspot24.json tanpa daynight)
+# Hasil ukur desa (python3 insiden.py ukur-desa) ditulis ke data/desa_uji.json (tanggal, n) dan dibaca main(); tak ada berkas = parameter.desa_uji null.
+DESA_UJI_JSON = os.path.join(AKAR, "data/desa_uji.json")
+
+
+def norm_kab(s):
+    return re.sub(r"[^a-z]", "", (s or "").lower().replace("kabupaten", "").replace("kab.", ""))
+
+
+class Desa:
+    """Titik -> desa lewat poligon public/geo/desa/<kode kab>.json (dimuat malas, indeks sel 0,05 derajat). cari = poligon pertama yang memuat titik."""
+    def __init__(self, cari, geo=GEO_DESA):
+        self.geo, self.desa, self.kab, self.berkas = geo, {}, {}, {}
+        for kd, d, kec in cari["baris"]:
+            self.desa[kd] = (d, kec)
+        for kk, nm in cari["kab"].items():
+            self.kab[(kk[:2], norm_kab(nm))] = kk
+
+    def kode_kab(self, prov, kab):
+        return self.kab.get((prov, norm_kab(kab)))
+
+    def muat(self, kk):
+        if kk not in self.berkas:
+            ix = collections.defaultdict(list)
+            try:
+                fs = json.load(open(os.path.join(self.geo, kk + ".json")))["features"]
+            except Exception:
+                fs = []
+            for f in fs:
+                for r in cincin(f["geometry"]):
+                    xs, ys = [p[0] for p in r], [p[1] for p in r]
+                    for gx in range(math.floor(min(xs) / 0.05), math.floor(max(xs) / 0.05) + 1):
+                        for gy in range(math.floor(min(ys) / 0.05), math.floor(max(ys) / 0.05) + 1):
+                            ix[(gx, gy)].append((min(xs), min(ys), max(xs), max(ys), r, f["properties"]["kd"]))
+            self.berkas[kk] = ix
+        return self.berkas[kk]
+
+    def cari(self, lat, lon, kk):
+        for x0, y0, x1, y1, r, kd in self.muat(kk).get((math.floor(lon / 0.05), math.floor(lat / 0.05)), ()):
+            if x0 <= lon <= x1 and y0 <= lat <= y1 and pip(lon, lat, r):
+                return kd
+        return None
+
+
+def muat_konteks():
+    """Bahan nama/riwayat dari berkas; yang tak ada = None (kuncinya tak ditulis), tidak pernah crash."""
+    ctx = {"desa": None, "kota": None, "petak": None}
+    cari = baca("desa_cari.json")
+    if cari and os.path.isdir(GEO_DESA):
+        ctx["desa"] = Desa(cari)
+    try:
+        ctx["kota"] = [(b[6], b[3], b[4]) for b in json.load(open(KOTA_JSON))["baris"]]
+    except Exception as e:
+        print("insiden: kota.json tak terbaca (%s)" % e, file=sys.stderr)
+    try:
+        ctx["petak"] = riwayat_petak.Petak()
+    except Exception as e:
+        print("insiden: riwayat_petak.bin tak terbaca (%s), riwayat_api tidak ditulis" % e, file=sys.stderr)
+    return ctx
+
+
+def kota_terdekat(kota, lat, lon):
+    n, la, lo = min(kota, key=lambda k: km(lat, lon, k[1], k[2]))
+    return {"nama": n, "jarak_km": round(km(lat, lon, la, lo), 1)}
+
+
+def beri_nama(r, hts, ctx):
+    """Isi desa, nama, kota_terdekat. hts = titik panas 48 jam semua kompleks anggota; tanpa titik/poligon kunci lama dipertahankan."""
+    if ctx.get("kota"):
+        r["kota_terdekat"] = kota_terdekat(ctx["kota"], r["pusat"][0], r["pusat"][1])
+    D = ctx.get("desa")
+    kk = D and D.kode_kab(r.get("prov"), r.get("kab"))
+    if kk and hts:
+        unik = {}
+        for h in hts:
+            unik.setdefault((round(h[0], 3), round(h[1], 3)), h)
+        hit, dari = collections.Counter(), 0
+        for h in list(unik.values())[:DESA_MAKS_TITIK]:
+            dari += 1
+            kd = D.cari(h[0], h[1], kk)
+            if kd:
+                hit[kd] += 1
+        if hit:
+            kd, n = min(hit.items(), key=lambda x: (-x[1], D.desa[x[0]][0], x[0]))
+            r["desa"] = {"kode": kd, "nama": D.desa[kd][0], "kec": D.desa[kd][1], "n": n, "dari": dari}
+    if r.get("desa"):
+        r["nama"] = "%s, %s" % (r["desa"]["nama"], r["kab"])
+    elif r.get("kec") and r.get("kab"):
+        r["nama"] = "%s, %s" % (r["kec"], r["kab"])
+
+
+def hitung_bukti(hts, acuan):
+    """Tingkat bukti dari titik panas (keyakinan nominal+): kuat bila (>= 2 lintasan dari >= 2 satelit berbeda ATAU berselang >= LINTASAN_SELANG_JAM), atau >= 2 piksel dalam satu
+    lintasan, atau ada deteksi malam, atau ada piksel VIIRS keyakinan tinggi (`yakin_tinggi`, proksi, bukan saturasi). Tanpa titik yang lolos: tingkat None."""
+    v = sorted((h for h in hts if h[5] >= 1), key=lambda h: (h[3], h[2]))
+    lint, akhir = [], {}   # lint: [sensor, jam awal, {piksel}]
+    for h in v:
+        sn = h[3]
+        if sn not in akhir or h[2] - akhir[sn] > LINTASAN_JEDA_JAM:
+            lint.append([sn, h[2], set()])
+        akhir[sn] = h[2]
+        lint[-1][2].add((round(h[0] / SEL_PIKSEL.get(sn, 0.009)), round(h[1] / SEL_PIKSEL.get(sn, 0.009))))
+    malam = False
+    for h in v:
+        t = acuan + dt.timedelta(hours=h[2])
+        jam = (t.hour + t.minute / 60 + h[1] / 15) % 24
+        malam = malam or jam < MALAM_JAM[0] or jam >= MALAM_JAM[1]
+    b = {"lintasan": len(lint), "piksel_maks": max((len(x[2]) for x in lint), default=0), "malam": malam, "yakin_tinggi": any(h[3] in VIIRS and h[5] >= 2 for h in v)}
+    if not lint:
+        b["tingkat"] = None
+        return b
+    lint_ok = len(lint) >= 2 and (len({x[0] for x in lint}) >= 2 or max(x[1] for x in lint) - min(x[1] for x in lint) >= LINTASAN_SELANG_JAM)
+    b["tingkat"] = "kuat" if lint_ok or b["piksel_maks"] >= 2 or malam or b["yakin_tinggi"] else "tunggal"
+    return b
+
+
+def isi_bukti_riwayat(r, hts, acuan, ctx):
+    if hts:
+        b = hitung_bukti(hts, acuan)
+        if (r.get("bukti") or {}).get("tingkat") == "kuat":    # kuat tidak turun walau jendela 48 jam berikutnya sepi
+            b["tingkat"] = "kuat"
+        if b["tingkat"] is not None or r.get("bukti") is None:
+            r["bukti"] = b
+        pk = ctx.get("petak")
+        t = [(h[0], h[1]) for h in hts if h[3] in VIIRS and h[5] >= 1]
+        if pk and t:
+            r["riwayat_api"] = riwayat_petak.ringkas(pk, t)
+    beri_nama(r, hts, ctx)
 
 
 # ---- kompleks ----
@@ -391,7 +536,7 @@ def terapkan(r, cs, uk, kini, fk=None):
     del rw[:-RIWAYAT_MAKS]
 
 
-def langkah(ins, ks, baris, acuan, kini, fk=None, masuk=None):
+def langkah(ins, ks, baris, acuan, kini, fk=None, masuk=None, ctx=None):
     """Satu putaran. ins diubah di tempat. Hasil {id kompleks: kunci untuk tugas_kompleks.json (termasuk 'insiden')}."""
     ks = sorted(ks, key=lambda c: c["id"])
     per = tetapkan(ks, baris)
@@ -448,6 +593,7 @@ def langkah(ins, ks, baris, acuan, kini, fk=None, masuk=None):
         r["det_t"] = fmt(max([b[0] for b in baru] + ([cut] if cut else []))) if baru or cut else None
         r["det_n20"] = pernah20 or ref == "N20"
         terapkan(r, cs, uk, kini, fk)
+        isi_bukti_riwayat(r, [h for c in cs for h in per.get(c["id"], [])], acuan, ctx or {})
         disentuh.add(menang)
         for c in cs:
             hasil[c["id"]] = dict(uk[c["id"]], insiden=menang, insiden_awal=r["awal"], insiden_awal_ms=int(baca_t(r["awal"]).timestamp() * 1000))   # deteksi pertama insiden (stabil lintas putaran) -> tugas_api.terdeteksi_awal
@@ -533,12 +679,19 @@ def main():
     masuk = indeks_masuk(baca("jalan.geojson"), baca("kanal.json"))
     path = os.path.join(DATA, "insiden.json")
     ins = muat_status(path)
-    hasil = langkah(ins, ks, baris, acuan, kini, fk, masuk)
+    hasil = langkah(ins, ks, baris, acuan, kini, fk, masuk, muat_konteks())
     n = collections.Counter(r["status"] for r in ins.values())
-    teks = serialisasi({"dibuat": fmt(kini), "versi": 1, "parameter": PARAMETER,
+    nb = collections.Counter(r["bukti"]["tingkat"] for r in ins.values() if r["status"] == "aktif" and (r.get("bukti") or {}).get("tingkat"))
+    ml = baca("lab/muncul_lagi.json")    # PKH-11: konstanta terukur lab_padam.py muncul; tak ada = kunci tak ditulis
+    muncul = ml and {"tgl_hitung": ml["dibuat"], "data": "%s s.d. %s" % (ml["data"]["dari"], ml["data"]["sampai"]), "definisi": ml["definisi"],
+                     "laju_pct": {k: {nw: v["laju_pct"] for nw, v in d.items()} for k, d in ml["hasil"].items()}, "n": {k: {nw: v["n"] for nw, v in d.items()} for k, d in ml["hasil"].items()}}
+    teks = serialisasi({"dibuat": fmt(kini), "versi": 1, "parameter": dict(PARAMETER, desa_uji=(json.load(open(DESA_UJI_JSON)) if os.path.exists(DESA_UJI_JSON) else None)), "muncul_lagi": muncul,
                         "format": {"garis": "[[lon,lat]...] maks 2 cincin ringkas", "riwayat": "[UTC MM-DDTHH:MM, n24, px24, luas_koreksi ha, luas_aktif ha]",
-                                   "api": "[[lon,lat]] sampel titik 24 jam"},
-                        "koreksi": fk and {"nasional": fk["nasional"], "prov": fk["prov"]}, "n": dict(n), "insiden": ins})
+                                   "api": "[[lon,lat]] sampel titik 24 jam",
+                                   "riwayat_api": "persen petak 375 m titik 48 jam yang pernah punya api VIIRS S-NPP 2012-2025 (nominal/tinggi, vegetasi); piksel, bukan luas terbakar; batas bawah; tahun{} hanya yang > 0",
+                                   "bukti": "kuat: >= 2 lintasan, >= 2 piksel satu lintasan, deteksi malam (tebakan jam surya), atau piksel VIIRS keyakinan tinggi; selain itu tunggal; kuat tak turun",
+                                   "desa": "desa dengan titik panas terbanyak; kota_terdekat = pusat kab/kota terdekat (kunci terpisah)"},
+                        "koreksi": fk and {"nasional": fk["nasional"], "prov": fk["prov"]}, "n": dict(n), "n_bukti": dict(nb), "insiden": ins})
     tulis(path, teks)
     sudah = {c["id"] for c in tugas["kompleks"]}
     for c in tugas["kompleks"]:
@@ -546,6 +699,43 @@ def main():
     tulis(os.path.join(DATA, "tugas_kompleks.json"), json.dumps(tugas, ensure_ascii=False, separators=(",", ":")))
     print("insiden: %s, %d cluster level>=2, %d entri tugas disisipi, insiden.json %.0f KB" %
           (dict(n), len(ks), sum(1 for i in sudah if i in hasil), len(teks.encode()) / 1e3))
+
+
+def ukur_desa(n_kab=60, per_desa=3, benih=7):
+    """Ketepatan penempatan desa. (a) titik acak DALAM poligon desa (kebenaran = poligon itu sendiri) dicari lagi lewat Desa.cari dengan kab benar: sama dengan desa asal?
+    (b) data nyata: insiden aktif di insiden.json: kab terpetakan ke kode, titik panas jatuh di salah satu poligon desa kab itu, kecamatan desa = kecamatan kompleks."""
+    import random
+    rng = random.Random(benih)
+    D = Desa(json.load(open(os.path.join(DATA, "desa_cari.json"))))
+    kabs = sorted(D.kab.values())
+    ok = n = 0
+    for kk in rng.sample(kabs, min(n_kab, len(kabs))):
+        sudah = set()
+        for lst in D.muat(kk).values():
+            for x0, y0, x1, y1, r, kd in lst:
+                if (kd, id(r)) in sudah:
+                    continue
+                sudah.add((kd, id(r)))
+                for _ in range(per_desa):
+                    for _ in range(200):
+                        lo, la = rng.uniform(x0, x1), rng.uniform(y0, y1)
+                        if pip(lo, la, r):
+                            n += 1
+                            ok += D.cari(la, lo, kk) == kd
+                            break
+    print("(a) uji indeks (titik acak dalam poligon dicari ulang): %d/%d = %.1f%% (%d kab, %d titik per poligon)" % (ok, n, 100 * ok / n, n_kab, per_desa))
+    ins = (baca("insiden.json") or {}).get("insiden", {})
+    akt = [r for r in ins.values() if r.get("status") == "aktif" and r.get("kab")]
+    kk_ok = sum(1 for r in akt if D.kode_kab(r.get("prov"), r["kab"]))
+    ada = [r for r in akt if r.get("desa")]
+    kec = sum(1 for r in ada if norm_kab(r["desa"]["kec"]) == norm_kab(r.get("kec")))
+    titik = sum(r["desa"]["n"] for r in ada), sum(r["desa"]["dari"] for r in ada)
+    hasil = {"tgl": dt.date.today().isoformat(), "uji_indeks": {"n": n, "cocok_pct": round(100 * ok / n, 1), "n_kab": n_kab, "per_desa": per_desa}}
+    print("(b) %d insiden aktif: kab terpetakan %d (%.1f%%), desa ditemukan %d (%.1f%%), kecamatan desa = kecamatan kompleks %d (%.1f%%), titik dalam poligon %d/%d (%.1f%%)" % (
+        len(akt), kk_ok, 100 * kk_ok / len(akt), len(ada), 100 * len(ada) / len(akt), kec, 100 * kec / len(ada), titik[0], titik[1], 100 * titik[0] / titik[1]))
+    hasil["nyata"] = {"n_insiden": len(akt), "kab_terpetakan_pct": round(100 * kk_ok / len(akt), 1), "desa_ditemukan_pct": round(100 * len(ada) / len(akt), 1),
+                      "kec_sama_pct": round(100 * kec / len(ada), 1), "titik_di_poligon_pct": round(100 * titik[0] / titik[1], 1), "dasar": "snapshot insiden.json yang dibaca"}
+    open(DESA_UJI_JSON, "w").write(json.dumps(hasil, ensure_ascii=False, indent=1) + "\n")
 
 
 # ---- self-check ----
@@ -737,11 +927,54 @@ def uji():
             assert s["n"] == {"aktif": 1} and len(s["insiden"][e["insiden"]]["riwayat"]) == 1 and s["koreksi"] is None
         finally:
             DATA = lama
+    # 11. bukti (PKH-10), nama desa dan kota (PKH-08), riwayat petak (PKH-09)
+    A = t0   # acuan 06:00 UTC; bujur 112 = +7,5 jam surya -> jam surya 13:30 + jam
+    P = lambda la, lo, j, sn="N", y=1: (la, lo, j, sn, 9.0, y)
+    assert hitung_bukti([P(-3.0, 112.0, -1.0)], A)["tingkat"] == "tunggal"
+    assert hitung_bukti([P(-3.0, 112.0, -1.0, y=0)], A)["lintasan"] == 0                               # keyakinan rendah tak dihitung
+    assert hitung_bukti([P(-3.0, 112.0, -1.0), P(-3.0, 112.0, -1.2)], A)["tingkat"] == "tunggal"      # piksel sama, lintasan sama
+    assert hitung_bukti([P(-3.0, 112.0, -1.0), P(-3.0, 112.0, -1.0, "N20")], A)["tingkat"] == "kuat"    # dua satelit berbeda
+    assert hitung_bukti([P(-3.0, 112.0, -1.0), P(-3.0, 112.0, -4.0)], A)["lintasan"] == 2                 # jeda > 30 menit = lintasan baru
+    assert hitung_bukti([P(-3.0, 112.0, -1.0), P(-3.0, 112.0, -4.0)], A)["tingkat"] == "tunggal"        # dua lintasan satu satelit berselang 3 jam: belum cukup
+    assert hitung_bukti([P(-3.0, 112.0, -1.0), P(-3.0, 112.0, -7.0)], A)["tingkat"] == "kuat"            # berselang >= 6 jam
+    assert hitung_bukti([P(-3.0, 112.0, -1.0, y=0)], A)["tingkat"] is None
+    assert hitung_bukti([P(-3.0, 112.0, -1.0), P(-3.0, 112.01, -1.0)], A)["piksel_maks"] == 2         # dua piksel satu lintasan
+    assert hitung_bukti([P(-3.0, 112.0, -12.0)], A) == {"lintasan": 1, "piksel_maks": 1, "malam": True, "yakin_tinggi": False, "tingkat": "kuat"}   # 18:00 UTC-12 -> 01:30 surya
+    assert hitung_bukti([P(-3.0, 112.0, -1.0, y=2)], A)["yakin_tinggi"] is True and hitung_bukti([P(-3.0, 112.0, -1.0, "M", 2)], A)["yakin_tinggi"] is False
+    with tempfile.TemporaryDirectory() as d:
+        kv = lambda x0, kd: {"type": "Feature", "properties": {"kd": kd}, "geometry": {"type": "MultiPolygon", "coordinates": [[[[x0, -3.1], [x0 + 0.1, -3.1], [x0 + 0.1, -2.9], [x0, -2.9], [x0, -3.1]]]]}}
+        json.dump({"type": "FeatureCollection", "features": [kv(111.9, "62.01.01.2001"), kv(112.0, "62.01.01.2002")]}, open(os.path.join(d, "62.01.json"), "w"))
+        D = Desa({"kab": {"62.01": "Kab. Seruyan"}, "baris": [["62.01.01.2001", "Barat", "Hilir"], ["62.01.01.2002", "Timur", "Hilir"]]}, d)
+        assert D.kode_kab("62", "Seruyan") == "62.01" and D.kode_kab("61", "Seruyan") is None and D.cari(-3.0, 112.05, "62.01") == "62.01.01.2002" and D.cari(-3.0, 111.0, "62.01") is None
+        kota = [("Seruyan", -2.5, 112.0), ("Kotawaringin", -2.0, 111.5)]
+        r = {"prov": "62", "kab": "Seruyan", "kec": "Seruyan Hilir", "pusat": [-3.0, 112.0]}
+        hs = [P(-3.0, 111.95, -1.0), P(-3.0, 111.96, -1.0), P(-3.0, 112.05, -1.0)]
+        beri_nama(r, hs, {"desa": D, "kota": kota})
+        assert r["desa"] == {"kode": "62.01.01.2001", "nama": "Barat", "kec": "Hilir", "n": 2, "dari": 3} and r["nama"] == "Barat, Seruyan", r
+        assert r["kota_terdekat"]["nama"] == "Seruyan" and abs(r["kota_terdekat"]["jarak_km"] - 55.6) < 1, r["kota_terdekat"]
+        beri_nama(r, [], {"desa": D, "kota": kota})    # tanpa titik: desa lama tetap
+        assert r["nama"] == "Barat, Seruyan"
+        r2 = {"prov": "62", "kab": "Seruyan", "kec": "Seruyan Hilir", "pusat": [-3.0, 112.0]}
+        beri_nama(r2, [P(-5.0, 100.0, -1.0)], {"desa": D})    # titik di luar poligon kab: cadangan kecamatan, tanpa kunci desa/kota
+        assert r2["nama"] == "Seruyan Hilir, Seruyan" and "desa" not in r2 and "kota_terdekat" not in r2
+    class PetakUji:
+        def cari(self, la, lo):
+            return 0b101 if lo < 112.005 else 0
+    ins = {}
+    langkah(ins, [_kotak("K1", -3.0, 112.0)], [(-3.0, 112.0, -1.0, "N", 9.0, 1), (-3.0, 112.0, -4.0, "N", 9.0, 1), (-3.0, 112.01, -1.0, "N", 9.0, 1)], t0, t0, fk, None, {"petak": PetakUji()})
+    i = list(ins.values())[0]
+    assert i["bukti"]["tingkat"] == "kuat" and i["riwayat_api"]["n_petak"] == 2 and i["riwayat_api"]["pernah_pct"] == 50.0 and i["riwayat_api"]["tahun"] == {"2012": 50.0, "2014": 50.0}, i
+    langkah(ins, [_kotak("K1", -3.0, 112.0)], [(-3.0, 112.0, -1.0, "N", 9.0, 1)], t0 + dt.timedelta(hours=3), t0 + dt.timedelta(hours=3), fk, None, {"petak": PetakUji()})
+    assert list(ins.values())[0]["bukti"]["tingkat"] == "kuat"    # kuat tak turun
+    langkah(ins, [_kotak("K1", -3.0, 112.0)], [], t0 + dt.timedelta(hours=6), t0 + dt.timedelta(hours=6), fk, None, {"petak": PetakUji()})
+    assert list(ins.values())[0]["riwayat_api"]["n_petak"] == 1    # putaran tanpa titik: riwayat lama tetap
     print("insiden uji: OK")
 
 
 if __name__ == "__main__":
     if sys.argv[1:] == ["--uji"]:
         uji()
+    elif sys.argv[1:] == ["ukur-desa"]:
+        ukur_desa()
     else:
         main()

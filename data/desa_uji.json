@@ -1,0 +1,17 @@
+{
+ "tgl": "2026-11-24",
+ "uji_indeks": {
+  "n": 28197,
+  "cocok_pct": 98.4,
+  "n_kab": 60,
+  "per_desa": 3
+ },
+ "nyata": {
+  "n_insiden": 2114,
+  "kab_terpetakan_pct": 99.6,
+  "desa_ditemukan_pct": 98.8,
+  "kec_sama_pct": 97.3,
+  "titik_di_poligon_pct": 86.7,
+  "dasar": "snapshot insiden.json yang dibaca"
+ }
+}

@@ -31,7 +31,8 @@ METODE (v2: proses pembaruan kausal; lihat scripts/data/lab_kriteria/lab_padam.j
   6. Luas: tiga angka pada beberapa snapshot, hanya memakai informasi <= waktu snapshot, hanya SEL SAMPEL (acak berstrata, benih tetap, dipilih dari tahun setel), luas piksel bukan luas terbakar.
   7. Sentinel-2 (opsional, <= 30 kejadian): dNBR antara dua citra bersih berurutan sesudah dinyatakan padam; dilewati bila STAC tak terjangkau.
 
-Pakai:  python3 scripts/data/lab_padam.py uji       self-check sintetis, tanpa jaringan
+Pakai:  python3 scripts/data/lab_padam.py muncul    laju muncul lagi 2026 dari public/data/titik_hari -> public/data/lab/muncul_lagi.json (stdlib, PKH-11; muncul-uji = self-check-nya)
+        python3 scripts/data/lab_padam.py uji       self-check sintetis, tanpa jaringan
         python3 scripts/data/lab_padam.py jalan     unduh + hitung (FIRMS_MAP_KEY; LAB_MENIT = anggaran menit, bawaan 30)
         python3 scripts/data/lab_padam.py ringkas   tulis ulang padam_ringkas.md dari padam.json
 """
@@ -1313,8 +1314,93 @@ def ringkas():
     print("\n".join(L[:40]))
 
 
+# ---------------------------------------------------------------- muncul lagi 2026 (PKH-11)
+MUNCUL_ARSIP = os.path.join(AKAR, "public/data/titik_hari")
+MUNCUL_KELUAR = os.path.join(AKAR, "public/data/lab/muncul_lagi.json")
+MUNCUL_N, MUNCUL_W, MUNCUL_YAKIN = (1, 3), (7, 14), 1
+
+
+def muncul_lagi(hari, gmb):
+    """hari: {indeks hari berurutan: set sel (iy, ix) 0,01 derajat}; gmb: sel -> True gambut. Hasil {kelas: {(N, W): [n, x, n_sel]}} kelas gambut|bukan_gambut|semua.
+    Pengamatan = sel terdeteksi hari d dan lingkungannya (3x3 sel, ~1,1-1,6 km) kosong d+1..d+N ("tak terlihat N hari"); muncul lagi = ada deteksi di lingkungan itu
+    d+N+1..d+N+W. Hanya pengamatan yang jendelanya selesai (d+N+W <= hari terakhir); sisanya tersensor kanan dan dibuang. Tak terlihat bisa awan/asap, bukan bukti padam."""
+    T = max(hari) + 1
+    tgt = {}
+    for d, cs in hari.items():
+        for c in cs:
+            tgt.setdefault(c, set()).add(d)
+    sekitar = lambda c: [(c[0] + a, c[1] + b) for a in (-1, 0, 1) for b in (-1, 0, 1)]
+    out = {k: {(n, w): [0, 0, set()] for n in MUNCUL_N for w in MUNCUL_W} for k in ("gambut", "bukan_gambut", "semua")}
+    for c, ds in tgt.items():
+        ada = set().union(*[tgt.get(t, set()) for t in sekitar(c)])
+        kls = "gambut" if gmb(c) else "bukan_gambut"
+        for d in ds:
+            for n in MUNCUL_N:
+                if any(d + i in ada for i in range(1, n + 1)):
+                    continue
+                for w in MUNCUL_W:
+                    if d + n + w > T - 1:
+                        continue
+                    x = any(d + n + i in ada for i in range(1, w + 1))
+                    for k in (kls, "semua"):
+                        o = out[k][(n, w)]
+                        o[0] += 1
+                        o[1] += x
+                        o[2].add(c)
+    return {k: {nw: [v[0], v[1], len(v[2])] for nw, v in d.items()} for k, d in out.items()}
+
+
+def muncul_dari_arsip():
+    ind = json.load(open(os.path.join(MUNCUL_ARSIP, "indeks.json")))
+    hr = sorted(h for h in ind["arsip"] if h >= "2026-07-01")
+    d0 = dt.date.fromisoformat(hr[0])
+    idx = {h: (dt.date.fromisoformat(h) - d0).days for h in hr}
+    assert max(idx.values()) == len(hr) - 1, "arsip titik_hari bolong: hari berurutan tak terpenuhi"
+    hari = {}
+    for h in hr:
+        b = json.load(open(os.path.join(MUNCUL_ARSIP, h + ".json")))
+        hari[idx[h]] = {(math.floor(r[0] * 100), math.floor(r[1] * 100)) for r in b["baris"] if r[5] >= MUNCUL_YAKIN}
+    P = Poligon(GAMBUT)
+    cache = {}
+
+    def gmb(c):
+        if c not in cache:
+            cache[c] = P.cari((c[1] + 0.5) / 100, (c[0] + 0.5) / 100) is not None
+        return cache[c]
+    return hr, muncul_lagi(hari, gmb)
+
+
+def muncul_jalan():
+    hr, h = muncul_dari_arsip()
+    isi = {"dibuat": dt.date.today().isoformat(), "data": {"dari": hr[0], "sampai": hr[-1], "hari": len(hr), "sumber": "public/data/titik_hari (FIRMS MODIS+VIIRS, lokasi unik ~375 m per hari WIB, keyakinan >= nominal)"},
+           "definisi": "laju = persen pengamatan (sel 0,01 derajat terdeteksi hari d, lingkungan 3x3 kosong N hari) yang muncul lagi dalam W hari berikutnya; tersensor kanan dibuang; "
+                       "pengamatan berkorelasi per sel (n_sel = sel unik), maka tanpa selang kepercayaan; tak terlihat bisa awan/asap, bukan bukti padam; gambut dari public/data/lahan/gambut.geojson",
+           "hasil": {k: {"%d_%d" % nw: {"n": v[0], "n_sel": v[2], "laju_pct": round(100 * v[1] / v[0], 1) if v[0] else None}
+                         for nw, v in d.items()} for k, d in h.items()}}
+    os.makedirs(os.path.dirname(MUNCUL_KELUAR), exist_ok=True)
+    open(MUNCUL_KELUAR, "w").write(json.dumps(isi, ensure_ascii=False, indent=1) + "\n")
+    for k, d in isi["hasil"].items():
+        print(k, {nw: (v["laju_pct"], v["n"]) for nw, v in d.items()})
+
+
+def muncul_uji():
+    S = lambda *a: {(0, 0)} if False else set(a)
+    # sel A (0,0) terlihat hari 0 dan 3; sel B (0,10) terlihat hari 0 saja; sel C (0,20) hari 0 dan 9; tetangga D (1,0) terlihat hari 2 (di lingkungan A)
+    hari = {0: S((0, 0), (0, 10), (0, 20)), 1: S(), 2: S((1, 0)), 3: S((0, 0)), 4: S(), 5: S(), 6: S(), 7: S(), 8: S(), 9: S((0, 20)), 10: S(), 11: S(), 12: S(), 13: S(), 14: S(), 15: S(), 16: S(), 17: S(), 18: S(), 19: S(), 20: S((0, 10))}
+    r = muncul_lagi(hari, lambda c: c == (0, 10))
+    # jendela selesai bila d+N+W <= 20. A/D saling lingkungan: ada = {0,2,3}; B ada = {0,20}; C ada = {0,9}.
+    # N=1,W=7 (d <= 12): A@0 muncul (hari 2 via D) x=1; A@3 0; C@0 0; C@9 0; D@2 bukan pengamatan (hari 3 terlihat di lingkungannya); B@0 (gambut) 0; B@20 tersensor.
+    assert r["bukan_gambut"][(1, 7)] == [4, 1, 2] and r["gambut"][(1, 7)] == [1, 0, 1], (r["bukan_gambut"][(1, 7)], r["gambut"][(1, 7)])
+    assert r["gambut"][(1, 14)] == [1, 0, 1]                                  # d <= 5: hanya B@0
+    # N=3,W=7 (d <= 10): A@0 bukan (hari 2 terlihat), A@3 0, C@0 x=1 (hari 9), C@9 0; B@0 0
+    assert r["bukan_gambut"][(3, 7)] == [3, 1, 2] and r["gambut"][(3, 7)] == [1, 0, 1], r["bukan_gambut"][(3, 7)]
+    assert r["semua"][(1, 7)][0] == 5 and r["semua"][(1, 7)][1] == 1
+    print("lab_padam muncul uji: ok")
+
+
 # ---------------------------------------------------------------- uji
 def uji():
+    muncul_uji()
     UTC_ = UTC
     # --- Wilson: tangan, x=0 n=10 -> batas atas z2/(n+z2) = 0,2775
     w = wilson(0, 10)
@@ -1767,5 +1853,9 @@ if __name__ == "__main__":
             sys.exit("lab_padam: " + FS.sensor_url(f"{type(e).__name__}: {e}"))
     elif perintah == "ringkas":
         ringkas()
+    elif perintah == "muncul":
+        muncul_jalan()
+    elif perintah == "muncul-uji":
+        muncul_uji()
     else:
-        sys.exit("pakai: lab_padam.py uji|jalan|ringkas")
+        sys.exit("pakai: lab_padam.py uji|jalan|ringkas|muncul|muncul-uji")
