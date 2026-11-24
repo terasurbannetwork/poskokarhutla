@@ -81,7 +81,7 @@ async function berkasKaji(c) {
   const kunci = `siklus/saji/kaji_berkas/${r.kejadian_id}/banjir_gfm/v${r.versi}/${c.p.nama}`;
   const o = await c.env.MEDIA.get(kunci); if (!o) return NO();
   if (o.size > BATAS_BERKAS[jenis]) { o.body?.cancel?.(); return gagal(413, "berkas melebihi batas"); }
-  return new Response(o.body, {headers: {"content-type": TIPE_BERKAS[jenis], "cache-control": "private, max-age=3600", "x-content-type-options": "nosniff"}});
+  return new Response(c.req.method === "HEAD" ? null : o.body, {headers: {"content-type": TIPE_BERKAS[jenis], "cache-control": "private, max-age=3600", "x-content-type-options": "nosniff"}});
 }
 
 async function ubahStatus(c) {

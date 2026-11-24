@@ -45,6 +45,7 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["GET /api/siklus/paparan/rinci", "/paparan/rinci?kab4=3201", "PD KO SA BP"],
   ["GET /api/siklus/kaji", `/kaji?kejadian_id=${ID}`, "PD KO PM SA MOD BP"],
   ["GET /api/siklus/kaji/:sid", `/kaji/${SID}`, "PD KO PM SA MOD BP"],
+  ["GET /api/siklus/kaji/:sid/berkas/:nama", `/kaji/${SID}/berkas/3201_sel.geojson`, "PD KO PM SA MOD BP"],
   ["POST /api/siklus/kaji/:sid/status", `/kaji/${SID}/status`, "PD KO SA"],
   ["GET /api/siklus/pulih", `/pulih?kejadian_id=${ID}`, "PD KO PM SA MOD BP"],
   ["GET /api/siklus/pulih/:sid", `/pulih/${SID}`, "PD KO PM SA MOD BP"],

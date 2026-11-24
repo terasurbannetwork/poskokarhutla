@@ -1,9 +1,13 @@
 -- 0174: GS-08 (data/kajian-bnpb/genangan-satelit/DESAIN-TEKNIS.md bagian 4). sk_kaji dibangun ulang (CHECK SQLite tidak bisa di-ALTER):
 -- model ditambah 'banjir_gfm'; hasil_r2 untuk banjir_gfm wajib tepat siklus/saji/kaji/<kejadian_id>_banjir_gfm_v<versi>.json (cocok dengan kolom baris itu); gempa dan banjir_jam1 tetap pola lama.
--- Isi, indeks, dan semua CHECK lain dipasang ulang apa adanya. Idempoten: dijalankan ulang hanya menyalin tabel ke dirinya sendiri.
+-- Isi, indeks, dan semua CHECK lain dipasang ulang apa adanya. Urutan: buang indeks, ubah nama tabel lama, buat tabel baru, salin dengan INSERT biasa, buang yang lama, pasang indeks (ALTER RENAME memeriksa seluruh skema).
+-- Baris yang gagal CHECK atau UNIQUE menghentikan migrasi dengan galat sebelum DROP, jadi sk_kaji_lama tetap utuh. Pemulihan manual bila gagal setengah jalan: DROP TABLE IF EXISTS sk_kaji; ALTER TABLE sk_kaji_lama RENAME TO sk_kaji; lalu jalankan ulang migrasi.
 -- Komentar `--` sengaja di baris sendiri (pecah() di tests/warga/_bantu.mjs memotong di baris berakhir ';').
-DROP TABLE IF EXISTS sk_kaji_baru;
-CREATE TABLE sk_kaji_baru (
+DROP INDEX IF EXISTS sk_kaji_kej;
+DROP INDEX IF EXISTS sk_kaji_status;
+DROP INDEX IF EXISTS sk_kaji_dummy;
+ALTER TABLE sk_kaji RENAME TO sk_kaji_lama;
+CREATE TABLE IF NOT EXISTS sk_kaji (
   id TEXT PRIMARY KEY CHECK (length(id) = 16 AND id NOT GLOB '*[^0-9a-f]*'),
   kejadian_id TEXT NOT NULL REFERENCES sk_kejadian(id) CHECK (length(kejadian_id) = 16 AND kejadian_id GLOB 'KJ-[0-9][0-9][0-9][0-9]-????????' AND substr(kejadian_id, 9) NOT GLOB '*[^0-9A-HJKMNP-TV-Z]*'),
   model TEXT NOT NULL CHECK (model IN ('gempa', 'banjir_jam1', 'banjir_gfm')),
@@ -22,10 +26,9 @@ CREATE TABLE sk_kaji_baru (
   UNIQUE (kejadian_id, model, versi, dummy),
   CHECK ((status = 'ditarik') = (alasan_tarik IS NOT NULL))
 );
-INSERT OR IGNORE INTO sk_kaji_baru (id, kejadian_id, model, versi, status, masukan, ringkas, hasil_r2, galat_kalibrasi, yakin, alasan_tarik, dihitung, diubah, oleh, dummy)
-  SELECT id, kejadian_id, model, versi, status, masukan, ringkas, hasil_r2, galat_kalibrasi, yakin, alasan_tarik, dihitung, diubah, oleh, dummy FROM sk_kaji;
-DROP TABLE sk_kaji;
-ALTER TABLE sk_kaji_baru RENAME TO sk_kaji;
+INSERT INTO sk_kaji (id, kejadian_id, model, versi, status, masukan, ringkas, hasil_r2, galat_kalibrasi, yakin, alasan_tarik, dihitung, diubah, oleh, dummy)
+  SELECT id, kejadian_id, model, versi, status, masukan, ringkas, hasil_r2, galat_kalibrasi, yakin, alasan_tarik, dihitung, diubah, oleh, dummy FROM sk_kaji_lama;
+DROP TABLE sk_kaji_lama;
 CREATE INDEX IF NOT EXISTS sk_kaji_kej ON sk_kaji (kejadian_id, versi DESC);
 CREATE INDEX IF NOT EXISTS sk_kaji_status ON sk_kaji (status, diubah DESC) WHERE status IN ('menunggu_data', 'dihitung', 'diperiksa');
 CREATE INDEX IF NOT EXISTS sk_kaji_dummy ON sk_kaji (id) WHERE dummy = 1;

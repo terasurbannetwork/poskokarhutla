@@ -54,7 +54,7 @@ const LOLOS = {STAF: h => h.tipe === "staf", BP: h => h.tipe === "bp", PDKO: h =
 
 /* jawaban staf tidak boleh disimpan bersama: private, no-store, bervariasi menurut cookie */
 function pribadi(r) {
-  const h = new Headers(r.headers); if (!/^private, max-age=/.test(h.get("cache-control") || "")) h.set("cache-control", "private, no-store");   // berkas kaji (bagian 5 genangan-satelit) boleh private, max-age=3600 h.append("vary", "cookie");
+  const h = new Headers(r.headers); if (h.get("cache-control") !== "private, max-age=3600") h.set("cache-control", "private, no-store"); h.append("vary", "cookie");   // berkas kaji (bagian 5 genangan-satelit) boleh private, max-age=3600
   return new Response(r.body, {status: r.status, statusText: r.statusText, headers: h});
 }
 const galatKe = (e, url) => {

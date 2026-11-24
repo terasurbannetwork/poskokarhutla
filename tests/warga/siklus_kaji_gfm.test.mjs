@@ -82,10 +82,12 @@ uji("T7 hasil: PD dan KO menerima utuh; BP disaring ke kab4 lingkupnya", async (
 uji("T7 berkas: izin nama, hak BP, 404 model lain, 413 melebihi batas, header", async () => {
   await R2.put(BER("3201_sel.geojson"), '{"type":"FeatureCollection","features":[]}'); await R2.put(BER("3205_sel.geojson"), "{}"); await R2.put(BER("3201_radar_pra.png"), new Uint8Array([137, 80, 78, 71]));
   const ok = await GET(KO, `/kaji/${SID}/berkas/3201_sel.geojson`); assert.equal(ok.s, 200, ok.t);
-  assert.equal(ok.h.get("cache-control"), "private, max-age=3600"); assert.match(ok.h.get("content-type"), /geo\+json/); assert.equal(ok.h.get("x-content-type-options"), "nosniff");
+  assert.equal(ok.h.get("cache-control"), "private, max-age=3600"); assert.match(ok.h.get("vary") || "", /cookie/i);
+  const biasa = await GET(KO, `/kaji/${SID}`); assert.match(biasa.h.get("cache-control"), /private, no-store/); assert.match(biasa.h.get("vary") || "", /cookie/i); assert.match(ok.h.get("content-type"), /geo\+json/); assert.equal(ok.h.get("x-content-type-options"), "nosniff");
   const png = await GET(KO, `/kaji/${SID}/berkas/3201_radar_pra.png`); assert.equal(png.s, 200); assert.equal(png.h.get("content-type"), "image/png");
   assert.equal((await GET(BP, `/kaji/${SID}/berkas/3201_sel.geojson`)).s, 200, "BP kab sendiri");
   assert.equal((await GET(BP, `/kaji/${SID}/berkas/3205_sel.geojson`)).s, 403, "BP kab lain");
+  assert.match((await GET(BP, `/kaji/${SID}/berkas/3205_sel.geojson`)).h.get("cache-control"), /no-store/, "403 tidak di-cache");
   assert.equal((await GET(TAMU, `/kaji/${SID}/berkas/3201_sel.geojson`)).s, 401);
   for (const nm of ["..%2F3201_sel.geojson", "%2e%2e/3201_sel.geojson", "3201_sel.json", "3201_sel.geojson%00", "320_sel.geojson", "3201_lain_pra.png", "3201_radar_pra.gif", "3201_radar_pra.png/x", "3201/sel.geojson", ""]) {
     const r = await GET(KO, `/kaji/${SID}/berkas/${nm}`); assert.ok([404, 400].includes(r.s) && r.s !== 200, nm + " " + r.s);
@@ -94,6 +96,6 @@ uji("T7 berkas: izin nama, hak BP, 404 model lain, 413 melebihi batas, header", 
   assert.equal((await GET(KO, `/kaji/${SIDJAM}/berkas/3201_sel.geojson`)).s, 404, "model bukan banjir_gfm");
   assert.equal((await GET(KO, `/kaji/0123456789abcdef/berkas/3201_sel.geojson`)).s, 404);
   await R2.put(BER("3201_sel.geojson"), "x".repeat(300 * 1024 + 1)); await R2.put(BER("3201_radar_pra.png"), new Uint8Array(120 * 1024 + 1));
-  for (const nm of ["3201_sel.geojson", "3201_radar_pra.png"]) { const r = await GET(KO, `/kaji/${SID}/berkas/${nm}`); assert.equal(r.s, 413, nm); assert.doesNotMatch(r.t, /xxxx/); }
+  for (const nm of ["3201_sel.geojson", "3201_radar_pra.png"]) { const r = await GET(KO, `/kaji/${SID}/berkas/${nm}`); assert.equal(r.s, 413, nm); assert.match(r.h.get("cache-control"), /no-store/); assert.doesNotMatch(r.t, /xxxx/); }
   await R2.put(BER("3201_sel.geojson"), "x".repeat(300 * 1024)); assert.equal((await GET(KO, `/kaji/${SID}/berkas/3201_sel.geojson`)).s, 200, "tepat di batas");
 });
