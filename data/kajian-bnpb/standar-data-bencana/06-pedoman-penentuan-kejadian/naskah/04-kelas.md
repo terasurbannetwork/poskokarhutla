@@ -8,7 +8,7 @@ Tabel 4.1. Batas kelas intensif
 
 | No | Kelompok | Jenis bencana | Indikator | Batas intensif |
 | ---: | --- | --- | --- | --- |
-| 1 | Umum | Semua jenis | Korban meninggal | 30 orang atau lebih |
+| 1 | Umum | Semua jenis | Korban meninggal dan hilang, dijumlahkan | 30 orang atau lebih |
 | 2 | Umum | Semua jenis | Rumah rusak berat terbobot (Tabel 4.2) | 600 unit atau lebih |
 | 3 | Khusus | Tanah longsor | Pengungsi karena longsor, termasuk yang dievakuasi sebelum longsor dan yang direlokasi | 1.000 orang atau lebih |
 | 4 | Khusus | Kekeringan | Penduduk yang kesulitan air minum, yaitu memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya, selama lebih dari 15 hari | 15 persen penduduk kabupaten/kota atau lebih |
@@ -18,9 +18,11 @@ Tabel 4.1. Batas kelas intensif
 
 Sumber: Rancangan Juklak Tabel 3. Batas ini akan ditinjau paling lambat satu tahun setelah petunjuk pelaksanaan berlaku.
 
+Batas nomor 1 memakai angka GAR 2015, yaitu 30 orang, dengan korban hilang ikut dihitung seperti indikator A-1 Kerangka Sendai dan EM-DAT. Dengan cara ini, kriteria a pada Tabel 1.3 dan batas nomor 1 memakai angka korban jiwa yang sama. Korban hilang yang kemudian ditemukan selamat dikeluarkan dari hitungan (Tabel 3.2).
+
 ## 4.2 Menghitung rumah rusak berat terbobot
 
-Rumah rusak berat terbobot = rumah rusak berat + ½ rumah rusak sedang + ⅓ rumah tidak dapat dihuni sementara. Setiap rumah hanya dicatat pada satu tingkat.
+Rumah rusak berat terbobot = rumah rusak berat + ½ rumah rusak sedang + ⅓ rumah tidak dapat dihuni sementara. Setiap rumah hanya dicatat pada satu tingkat. Periksa dari baris teratas Tabel 4.2 dan pakai tingkat pertama yang cocok, sehingga rumah rusak ringan yang tergenang 10 sentimeter atau lebih di atas lantai dicatat sebagai tidak dapat dihuni sementara.
 
 Tabel 4.2. Tingkat kerusakan rumah dan bobotnya
 

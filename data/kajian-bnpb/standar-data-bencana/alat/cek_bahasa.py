@@ -50,6 +50,8 @@ POLA = [
     (r'·', 'pemilik: jangan memisahkan teks dengan titik tengah', 'GALAT', True),
     # pemilik 19 Nov 2026: istilah Inggris dipakai bila lebih mudah dipahami; judul resmi Juklak 3/2022 "Pengkajian Cepat" tetap
     (r'\b[Kk]aji cepat\b|\b[Tt]inggi rayapan\b|\b[Tt]ingkat keyakinan\b', 'pemilik: pakai istilah yang lazim, yaitu rapid assessment, run-up, atau confidence', 'GALAT', False),
+    # pemilik 24 Nov 2026: "kejadian ikutan" tidak baku; pasangan istilahnya kejadian pemicu dan kejadian terpicu
+    (r'\b[Ii]kutan(nya)?\b', 'pemilik: pakai "kejadian terpicu", bukan "ikutan"', 'GALAT', False),
     (r'\b(akibat|karena|oleh)\s+(langsung\s+)?bahaya\b', '"bahaya" bukan pelaku; pakai "kejadian bencana" atau "ancaman"', 'GALAT', False),
     (r'\bjenis bahaya\b|\bsetiap bahaya\b|\bper bahaya\b', 'pakai "jenis bencana" atau "jenis ancaman"', 'GALAT', False),
     (r'\badalah merupakan\b|\bmerupakan adalah\b', 'pleonasme; pilih salah satu', 'GALAT', False),

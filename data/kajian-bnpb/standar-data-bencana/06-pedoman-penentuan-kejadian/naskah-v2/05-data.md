@@ -24,10 +24,12 @@ Sumber: Rancangan Juklak Lampiran I.
 
 Sumber: Rancangan Juklak Lampiran III, yang memuat lembar isian lengkap.
 
+Untuk karhutla, luas terbakar terverifikasi yang dipakai pada kriteria d diisi pada lembar data khusus karhutla.
+
 ## 5.4 Tenggat waktu
 
 ![Gambar 5.5. Tenggat pengumpulan data](gbr/pk-tenggat.png)
 
-Sumber: Rancangan Juklak Bab III huruf B dan huruf D.
+Sumber: Rancangan Juklak Bab III huruf B dan huruf D. Waktu diketahui adalah saat BPBD pertama kali mengetahui kejadian (Rancangan Juklak Lampiran I isian 2.3).
 
 Setelah diverifikasi, koreksi dicatat sebagai versi baru beserta alasannya dan tidak menimpa versi sebelumnya.

@@ -8,9 +8,11 @@ Kejadian bencana tergolong **intensif**, yaitu dampaknya berat dan jarang terjad
 
 Sumber: Rancangan Juklak Tabel 3. Batas ini akan ditinjau paling lambat satu tahun setelah petunjuk pelaksanaan berlaku.
 
+Batas korban jiwa memakai angka GAR 2015, yaitu 30 orang, dengan korban hilang ikut dihitung seperti indikator A-1 Kerangka Sendai dan EM-DAT, sama dengan cara menghitung kriteria a. Korban hilang yang kemudian ditemukan selamat dikeluarkan dari hitungan (Gambar 3.2).
+
 ## 4.2 Menghitung rumah rusak berat terbobot
 
-Setiap rumah hanya dicatat pada satu tingkat kerusakan.
+Setiap rumah hanya dicatat pada satu tingkat kerusakan. Periksa dari tingkat paling kiri pada Gambar 4.2 dan pakai tingkat pertama yang cocok, sehingga rumah rusak ringan yang tergenang 10 sentimeter atau lebih di atas lantai dicatat sebagai tidak dapat dihuni sementara.
 
 ![Gambar 4.2. Rumah rusak berat terbobot dan tingkat kerusakan rumah](gbr/pk-rumah.png)
 

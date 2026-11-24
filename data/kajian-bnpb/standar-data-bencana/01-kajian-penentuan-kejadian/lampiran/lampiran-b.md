@@ -45,7 +45,7 @@ Tabel B.2. Isian kelompok korban dan pengungsian
 | 5.3 | Titik pengungsian | Nama, koordinat, jenis tempat (tenda, gedung publik, rumah kerabat), jumlah jiwa | 2 |
 | 5.4 | Kelompok rentan di pengungsian | Bayi dan balita, ibu hamil dan menyusui, lansia, penyandang disabilitas | 2 |
 
-Sumber: Rancangan Juklak Bab I huruf D; Juklak 9/2023; UNDRR (2017); Washington Group on Disability Statistics; disusun dalam kajian ini. Setiap orang dicatat pada satu kategori saja dengan urutan isian 4.1, 4.2, 4.3, 4.4, 5.1, lalu 4.5.
+Sumber: Rancangan Juklak Bab I huruf D; Juklak 9/2023; UNDRR (2017b); Washington Group on Disability Statistics; disusun dalam kajian ini. Setiap orang dicatat pada satu kategori saja dengan urutan isian 4.1, 4.2, 4.3, 4.4, 5.1, lalu 4.5.
 
 ## B.3 Kerusakan, layanan dasar, dan ekonomi
 

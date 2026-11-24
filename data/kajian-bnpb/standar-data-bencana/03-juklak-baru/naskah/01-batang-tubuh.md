@@ -48,7 +48,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 13. Dampak adalah akibat kejadian bencana pada manusia, rumah, fasilitas publik, jalan dan jembatan, layanan vital, atau lahan yang ditunjukkan oleh paling sedikit satu isian dampak yang bernilai lebih dari nol sebagaimana dimaksud dalam Bab II huruf C angka 5.
 14. Kejadian yang Belum Memenuhi Kriteria adalah peristiwa ancaman yang menimbulkan dampak, tetapi belum memenuhi satu pun kriteria kejadian bencana.
 15. Kejadian Pemicu adalah kejadian atau peristiwa ancaman yang memicu kejadian bencana lain dalam satu rangkaian.
-16. Kejadian Ikutan adalah kejadian bencana yang dipicu oleh kejadian pemicu, misalnya tsunami atau tanah longsor yang dipicu oleh gempa bumi.
+16. Kejadian Terpicu adalah kejadian bencana yang dipicu oleh kejadian pemicu, misalnya tsunami atau tanah longsor yang dipicu oleh gempa bumi.
 17. Catatan Kabupaten/Kota adalah catatan satu kejadian pada satu kabupaten/kota yang terdampak, termasuk catatan yang belum diketahui memenuhi kriteria kejadian bencana.
 18. Kode Identitas Bencana yang selanjutnya disingkat KIB adalah kode referensi berupa kode unik 16 digit untuk setiap catatan kabupaten/kota.
 19. Nomor Induk Kejadian adalah nomor unik yang diterbitkan walidata bencana untuk satu kejadian bencana di tingkat nasional dan dipakai oleh semua catatan kabupaten/kota yang termasuk dalam kejadian tersebut.
@@ -65,7 +65,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 30. Rumah Rusak Sedang adalah rumah yang tingkat kerusakan fisiknya 30 sampai 70 persen dan bangunannya masih berdiri.
 31. Rumah Rusak Ringan adalah rumah yang tingkat kerusakan fisiknya kurang dari 30 persen, strukturnya masih dapat digunakan, dan bangunannya masih berdiri.
 32. Rumah Terendam adalah rumah yang tergenang air tanpa kerusakan pada komponen struktur dan tidak termasuk rumah tidak dapat dihuni sementara.
-33. Rumah Tidak Dapat Dihuni Sementara adalah rumah yang tidak rusak berat maupun rusak sedang, tetapi tergenang air paling sedikit 10 sentimeter di atas lantai atau tertutup lumpur dan material sehingga untuk sementara tidak dapat dihuni.
+33. Rumah Tidak Dapat Dihuni Sementara adalah rumah yang tidak rusak berat maupun rusak sedang, tetapi tergenang air paling sedikit 10 sentimeter di atas lantai atau tertutup lumpur dan material sehingga untuk sementara tidak dapat dihuni, termasuk rumah rusak ringan yang berada dalam keadaan tersebut.
 34. Rumah Rusak Berat Terbobot adalah jumlah rumah rusak berat ditambah setengah jumlah rumah rusak sedang dan sepertiga jumlah rumah tidak dapat dihuni sementara.
 35. Fasilitas Publik adalah bangunan satuan pendidikan, fasilitas pelayanan kesehatan, rumah ibadat, kantor pemerintah, dan pasar.
 36. Layanan Vital adalah layanan listrik, air bersih, telekomunikasi, bahan bakar, sarana transportasi umum, rumah sakit rujukan, serta jalan dan jembatan utama.
@@ -88,7 +88,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 
 1. Jenis bencana dikelompokkan menjadi tiga kelompok, yaitu bencana alam, bencana nonalam, dan bencana sosial, serta 13 jenis sebagaimana tercantum dalam Tabel 1.
 2. Setiap jenis bencana memiliki subjenis. Subjenis bersifat saling lepas, sehingga satu kejadian hanya memiliki satu subjenis untuk setiap jenis bencana.
-3. Gabungan beberapa jenis bencana dalam satu rangkaian tidak dicatat sebagai subjenis, tetapi sebagai kejadian pemicu dan kejadian ikutan.
+3. Gabungan beberapa jenis bencana dalam satu rangkaian tidak dicatat sebagai subjenis, tetapi sebagai kejadian pemicu dan kejadian terpicu.
 
 Tabel 1. Jenis bencana, kode, dan subjenis
 
@@ -123,7 +123,7 @@ Tabel 1. Jenis bencana, kode, dan subjenis
 4. Apabila titik kejadian berada di laut, kode wilayah mengikuti kabupaten/kota terdampak yang terdekat dari titik tersebut.
 5. Setiap kejadian diberi nomor induk kejadian oleh walidata bencana paling lambat pada akhir tahap *rapid assessment*. Nomor induk kejadian terdiri atas 3 angka kode jenis bencana, 4 angka tahun, dan 6 angka nomor urut, misalnya 107-2026-000015. Sebelum nomor induk terbit, Pusat Pengendalian Operasi BNPB menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa.
 6. Semua KIB dari satu kejadian bencana ditautkan dengan nomor induk kejadian yang sama.
-7. Kejadian ikutan diberi nomor induk kejadian sendiri dan ditautkan dengan nomor induk kejadian pemicunya.
+7. Kejadian terpicu diberi nomor induk kejadian sendiri dan ditautkan dengan nomor induk kejadian pemicunya.
 8. Untuk keperluan pertukaran data internasional, kejadian bencana intensif dapat diberi nomor GLIDE (*GLobal IDEntifier number*), yaitu nomor identitas bencana internasional yang dikelola Asian Disaster Reduction Center, yang diajukan oleh walidata bencana.
 
 ## C. KRITERIA KEJADIAN BENCANA
@@ -131,14 +131,14 @@ Tabel 1. Jenis bencana, kode, dan subjenis
 1. Suatu peristiwa dicatat sebagai kejadian bencana apabila penyebabnya termasuk salah satu jenis bencana dalam Tabel 1 dan memenuhi paling sedikit satu dari kriteria berikut:
    a. 1 orang meninggal atau hilang;
    b. 50 orang terdampak, luka, atau mengungsi;
-   c. 5 unit rumah dan/atau fasilitas publik rusak;
+   c. 5 unit rumah, fasilitas publik, dan/atau jembatan rusak;
    d. 1 hektare luas terbakar terverifikasi untuk kebakaran hutan dan lahan, atau 1 hektare sawah atau kebun puso untuk jenis bencana lainnya;
    e. permintaan pemerintah daerah untuk diberikan bantuan nasional; atau
    f. penetapan status keadaan darurat bencana atau status keadaan tertentu.
 2. Kriteria sebagaimana dimaksud pada angka 1 diukur dengan ketentuan:
    a. korban meninggal dan korban hilang dijumlahkan;
    b. orang terdampak, luka, dan mengungsi dijumlahkan, setiap orang hanya dihitung satu kali, dan pengungsi yang dievakuasi sebelum dampak terjadi ikut dihitung;
-   c. kerusakan rumah dan fasilitas publik dihitung untuk rusak berat, rusak sedang, dan rusak ringan; jumlah setiap tingkat dicatat terpisah; rumah terendam tidak dihitung dalam kriteria ini;
+   c. jumlah rumah, fasilitas publik, dan jembatan yang rusak dijumlahkan untuk rusak berat, rusak sedang, tidak dapat dihuni sementara, dan rusak ringan; jumlah setiap tingkat dicatat terpisah; rumah terendam dan jalan tidak dihitung dalam kriteria ini;
    d. luas terbakar dicatat dengan sumber pengukuran lapangan atau citra satelit resolusi tinggi, dan luas puso dicatat dengan sumber data dinas yang membidangi pertanian;
    e. permintaan bantuan nasional dibuktikan dengan surat yang bernomor, bertanggal, dan menyebut kejadian tersebut; dan
    f. penetapan status dibuktikan dengan surat keputusan yang mencakup jenis bencana, wilayah, dan periode kejadian tersebut, dan kejadian tersebut menimbulkan dampak yang tercatat.
@@ -146,8 +146,8 @@ Tabel 1. Jenis bencana, kode, dan subjenis
 4. Kejadian yang belum memenuhi kriteria tetap dicatat dan disimpan, tetapi tidak dihitung dalam jumlah kejadian bencana.
 5. Peristiwa ancaman dinyatakan menimbulkan dampak apabila paling sedikit satu isian berikut bernilai lebih dari nol:
    a. manusia: korban meninggal, korban hilang, korban luka berat, korban luka ringan, pengungsi termasuk orang yang dievakuasi sebelum dampak terjadi, atau terdampak;
-   b. rumah: rumah rusak berat, rusak sedang, rusak ringan, atau terendam;
-   c. fasilitas publik, jalan, atau jembatan yang rusak;
+   b. rumah: rumah rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, atau terendam;
+   c. fasilitas publik, jalan, atau jembatan yang rusak, dengan jalan diukur dalam kilometer;
    d. layanan vital yang terganggu; atau
    e. lahan: luas terbakar, sawah atau kebun yang terendam atau puso, tambak yang rusak, atau ternak yang mati.
 6. Orang terancam tidak dihitung sebagai dampak.
@@ -162,7 +162,7 @@ Tabel 1. Jenis bencana, kode, dan subjenis
    b. kejadian sejenis di beberapa lokasi dalam satu kabupaten/kota pada hari yang sama dihitung sebagai satu kejadian;
    c. kejadian dinyatakan selesai apabila dampak fisiknya sudah berhenti;
    d. peristiwa ancaman baru yang menimbulkan dampak setelah kejadian dinyatakan selesai dicatat sebagai kejadian baru; dan
-   e. kejadian ikutan dicatat terpisah dan ditautkan dengan kejadian pemicunya.
+   e. kejadian terpicu dicatat terpisah dan ditautkan dengan kejadian pemicunya.
 2. Ketentuan khusus untuk setiap jenis bencana alam tercantum dalam Tabel 2.
 
 Tabel 2. Batas satu kejadian untuk setiap jenis bencana alam
@@ -176,13 +176,13 @@ Tabel 2. Batas satu kejadian untuk setiap jenis bencana alam
 | Kekeringan | Satu kabupaten/kota dalam satu musim kemarau menurut zona musim BMKG | Musim hujan dimulai menurut BMKG atau bantuan air bersih dihentikan |
 | Kebakaran hutan dan lahan | Area terbakar yang saling bersinggungan, dengan selisih waktu antarkebakaran paling lama 5 hari | Api dinyatakan padam oleh tim lapangan dan tidak terdeteksi *hotspot* baru di area tersebut selama 5 hari |
 | Gempa bumi | Satu gempa utama; gempa susulan yang menimbulkan kerusakan baru selama masa tanggap darurat gempa utama termasuk kejadian yang sama; gempa yang sama besar atau lebih besar daripada gempa utama, atau berpusat di luar daerah sebaran gempa susulan menurut BMKG, dicatat sebagai kejadian baru | Masa tanggap darurat berakhir; apabila tidak ada penetapan status, berlaku ketentuan umum huruf c |
-| Tsunami | Satu rangkaian gelombang tsunami dari satu sumber; dicatat sebagai kejadian ikutan apabila pemicunya tercatat | BMKG mengakhiri peringatan dan pencarian korban di kawasan genangan dihentikan |
+| Tsunami | Satu rangkaian gelombang tsunami dari satu sumber; dicatat sebagai kejadian terpicu apabila pemicunya tercatat; peringatan yang tidak diikuti genangan air laut di daratan bukan kejadian tsunami, dan orang yang mengungsi karena peringatan tersebut dicatat sebagai pengungsi pada kejadian pemicunya | BMKG mengakhiri peringatan dan pencarian korban di kawasan genangan dihentikan |
 | Erupsi gunung api | Satu episode erupsi sejak erupsi pertama yang berdampak | Tingkat aktivitas gunung api diturunkan ke Level II (Waspada) atau lebih rendah; banjir lahar dicatat sebagai kejadian banjir yang ditautkan dengan erupsi sumbernya |
 
 ## E. METODE PENGHITUNGAN
 
 1. Jumlah kejadian bencana di tingkat nasional dihitung berdasarkan nomor induk kejadian. Jumlah kejadian di tingkat provinsi dihitung berdasarkan provinsi terdampak, dan jumlah kejadian di tingkat kabupaten/kota dihitung berdasarkan KIB.
-2. Korban dan kerusakan dicatat satu kali pada kejadian yang secara langsung menyebabkannya. Jumlah dampak suatu rangkaian kejadian dihitung dengan menjumlahkan kejadian pemicu dan kejadian ikutannya.
+2. Korban dan kerusakan dicatat satu kali pada kejadian yang secara langsung menyebabkannya. Jumlah dampak suatu rangkaian kejadian dihitung dengan menjumlahkan kejadian pemicu dan kejadian terpicunya.
 3. Setiap orang dicatat pada satu kategori saja dengan urutan prioritas meninggal, hilang, luka berat, luka ringan, mengungsi, lalu terdampak.
 4. Selama kejadian berlangsung, angka korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan angka korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian.
 5. Angka dari laporan harian yang berbeda tidak dijumlahkan, karena setiap laporan memuat keadaan kumulatif.
@@ -199,7 +199,7 @@ Tabel 3. Batas kelas bencana intensif
 
 | No | Kelompok | Jenis bencana | Indikator | Batas |
 | ---: | --- | --- | --- | --- |
-| 1 | Umum | Semua jenis | Korban meninggal | 30 orang atau lebih |
+| 1 | Umum | Semua jenis | Korban meninggal dan korban hilang, dijumlahkan | 30 orang atau lebih |
 | 2 | Umum | Semua jenis | Rumah rusak berat terbobot | 600 unit atau lebih |
 | 3 | Khusus | Tanah longsor | Pengungsi karena longsor, termasuk orang yang dievakuasi sebelum longsor terjadi dan orang yang direlokasi | 1.000 orang atau lebih |
 | 4 | Khusus | Kekeringan | Penduduk yang kesulitan air minum karena kekeringan, yaitu memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya selama lebih dari 15 hari, dibandingkan dengan penduduk kabupaten/kota | 15 persen atau lebih |
@@ -290,7 +290,7 @@ Tabel 5. Pemeriksaan mutu data
 | 5 | Setiap orang hanya tercatat pada satu kategori |
 | 6 | Angka tidak dijumlahkan antarhari |
 | 7 | Jumlah terdampak tidak melebihi jumlah penduduk wilayah |
-| 8 | Kejadian ikutan ditautkan dengan kejadian pemicunya |
+| 8 | Kejadian terpicu ditautkan dengan kejadian pemicunya |
 | 9 | Angka luas memiliki sumber yang jelas |
 | 10 | Kerusakan utama memiliki dokumentasi yang memuat koordinat dan waktu pengambilan |
 

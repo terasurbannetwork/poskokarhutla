@@ -10,4 +10,4 @@ Sumber: Rancangan Juklak Bab II huruf B.
 
 ![Gambar 3.2. Aturan menghitung korban dan kerusakan](gbr/pk-hitung.png)
 
-Sumber: Rancangan Juklak Bab II huruf B dan huruf E.
+Sumber: Rancangan Juklak Bab II huruf B dan huruf E; arti setiap kategori orang ada pada Rancangan Juklak Bab I huruf D angka 20 sampai 27.

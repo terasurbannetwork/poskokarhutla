@@ -359,7 +359,7 @@ KHUSUS = {
                   ('Intensitas guncangan per desa', 'Pilihan', 'MMI atau SIG-BMKG', 'Intensitas guncangan (MMI) atau dirasakan'),
                   ('Gempa susulan', 'Angka', 'kali, magnitudo terbesar', 'Gempa susulan'),
                   ('Kerusakan menurut jenis bangunan', 'Angka', 'unit per jenis struktur', None),
-                  ('Ancaman ikutan', 'Pilihan ganda', 'likuefaksi; longsor; retakan tanah; tsunami', 'Material atau tanah bergerak, retakan')],
+                  ('Ancaman terpicu', 'Pilihan ganda', 'likuefaksi; longsor; retakan tanah; tsunami', 'Material atau tanah bergerak, retakan')],
     'tsunami': [('Peristiwa pemicu', 'Pilihan', 'gempa (nomor kejadian); longsor bawah laut; erupsi', None),
                 ('Peringatan InaTEWS', 'Otomatis', 'Awas; Siaga; Waspada; waktu terbit dan berakhir', None),
                 ('Waktu tiba gelombang', 'Tanggal dan jam', 'JJ.MM', None),

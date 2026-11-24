@@ -83,7 +83,7 @@ Tabel I.4. Isian kelompok kebutuhan, penanganan, dan mutu data
 | 10.1 | Sumber data | Pilihan: pendataan lapangan, laporan perangkat daerah, laporan masyarakat, pemberitaan, atau sistem pemantauan | Laporan awal |
 | 10.2 | Pelapor | Jabatan dan instansi | Laporan awal |
 | 10.3 | Status verifikasi | Pilihan: terverifikasi atau belum terverifikasi | Laporan awal |
-| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian kelompok 4 sampai 8 bernilai lebih dari nol (orang terancam tidak dihitung); menunggu data apabila masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Laporan awal |
+| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian kelompok 4 sampai 8 bernilai lebih dari nol (orang terancam tidak dihitung); menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Laporan awal |
 | 10.5 | Kriteria kejadian bencana yang terpenuhi | Huruf a sampai d diisi otomatis dari angka dampak; huruf e dan f diisi dari surat yang tercatat pada isian 9.2 dan 9.3 | *Rapid assessment* |
 | 10.6 | Kelas dan indikator penentu | Diisi secara otomatis: intensif atau ekstensif beserta indikator penentunya, dihitung dari korban meninggal, rumah rusak berat terbobot, dan isian khusus longsor, kekeringan, dan karhutla | *Rapid assessment* |
 | 10.7 | Dokumentasi | Foto yang memuat koordinat dan waktu pengambilan | *Rapid assessment* |

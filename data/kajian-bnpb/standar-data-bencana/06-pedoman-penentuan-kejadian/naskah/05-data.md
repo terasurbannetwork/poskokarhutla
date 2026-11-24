@@ -30,9 +30,9 @@ Tabel 5.2. Sepuluh kelompok data umum
 | 3 | Lokasi | • Provinsi sampai desa dengan kode wilayah Kementerian Dalam Negeri<br>• Koordinat<br>• Ketelitian lokasi |
 | 4 | Korban | • Meninggal<br>• Hilang<br>• Luka berat<br>• Luka ringan<br>• Terdampak<br>• Terancam |
 | 5 | Pengungsian | • Jumlah pengungsi<br>• Titik dan jenis tempat pengungsian<br>• Kelompok rentan |
-| 6 | Kerusakan | • Rumah rusak berat<br>• Rumah rusak sedang<br>• Rumah rusak ringan<br>• Rumah tidak dapat dihuni sementara<br>• Rumah terendam<br>• Fasilitas pendidikan<br>• Fasilitas kesehatan<br>• Tempat ibadah<br>• Kantor<br>• Pasar<br>• Jalan dan jembatan |
-| 7 | Layanan dasar | • Listrik<br>• Air bersih<br>• Telekomunikasi<br>• Akses jalan<br>• Bahan bakar<br>• Fasilitas kesehatan |
-| 8 | Lahan dan ekonomi | • Sawah terendam dan puso<br>• Kebun<br>• Tambak<br>• Ternak<br>• Usaha kecil<br>• Taksiran kerugian |
+| 6 | Kerusakan | • Rumah rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, dan terendam<br>• Satuan pendidikan<br>• Fasilitas kesehatan<br>• Rumah ibadat, kantor, pasar, kios, dan pabrik<br>• Jalan<br>• Jembatan<br>• Jaringan irigasi |
+| 7 | Layanan dasar | • Listrik<br>• Air bersih<br>• Telekomunikasi<br>• Bahan bakar<br>• Transportasi<br>• Rumah sakit rujukan |
+| 8 | Lahan dan ekonomi | • Sawah terendam dan puso<br>• Kebun, hutan, tambak, dan kolam<br>• Ternak<br>• Usaha kecil<br>• Nilai kerusakan dan nilai kerugian |
 | 9 | Kebutuhan dan penanganan | • Kebutuhan mendesak<br>• Status keadaan darurat dan nomor surat keputusannya<br>• Pos komando<br>• Sumber daya<br>• Bantuan |
 | 10 | Mutu data | • Sumber<br>• Jabatan pelapor<br>• Status verifikasi<br>• Keadaan isian<br>• Foto bergeotag |
 
@@ -56,6 +56,8 @@ Tabel 5.3. Data khusus pokok per jenis bencana
 
 Sumber: Rancangan Juklak Lampiran III, yang memuat lembar isian lengkap.
 
+Untuk karhutla, luas terbakar terverifikasi yang dipakai pada kriteria d diisi pada lembar data khusus karhutla.
+
 ## 5.4 Tenggat waktu
 
 Tabel 5.4. Tenggat pengumpulan data
@@ -67,8 +69,9 @@ Tabel 5.4. Tenggat pengumpulan data
 | Hasil awal *rapid assessment* | Paling lambat 72 jam setelah kejadian diketahui |
 | Nomor induk kejadian | Paling lambat pada akhir *rapid assessment* |
 | Pemutakhiran | Paling sedikit satu kali sehari selama kejadian berlangsung |
+| Penutupan | Paling lambat pada verifikasi bulanan berikutnya |
 | Verifikasi, pembekuan, rilis | Setiap bulan, setiap triwulan, dan setiap tahun |
 
-Sumber: Rancangan Juklak Bab III huruf B dan huruf D.
+Sumber: Rancangan Juklak Bab III huruf B dan huruf D. Waktu diketahui adalah saat BPBD pertama kali mengetahui kejadian (Rancangan Juklak Lampiran I isian 2.3).
 
 Setelah diverifikasi, koreksi dicatat sebagai versi baru beserta alasannya dan tidak menimpa versi sebelumnya.

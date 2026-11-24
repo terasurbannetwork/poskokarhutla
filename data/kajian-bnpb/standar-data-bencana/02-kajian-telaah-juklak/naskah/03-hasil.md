@@ -94,7 +94,7 @@ Penggantian kode wilayah KIB tidak mengubah struktur 16 digit KIB, sehingga sist
 
 Tujuh hal belum diatur, padahal diperlukan untuk menghasilkan data yang andal.
 
-1. **Pengertian kunci.** Kejadian pemicu dan ikutan, nomor induk kejadian, nihil, dan belum didata belum didefinisikan. Istilah lain, seperti terdampak dan data statis, sudah didefinisikan di bagian lain tetapi belum dihimpun dalam Bab I.
+1. **Pengertian kunci.** Kejadian pemicu dan terpicu, nomor induk kejadian, nihil, dan belum didata belum didefinisikan. Istilah lain, seperti terdampak dan data statis, sudah didefinisikan di bagian lain tetapi belum dihimpun dalam Bab I.
 2. **Batas waktu kejadian lintas hari**, yaitu kejadian yang berulang pada hari berbeda, gempa susulan, waktu berakhirnya kejadian, dan batas waktu perubahan status orang hilang.
 3. **Kelas kejadian menurut besarnya dampak.** UU 24/2007 Pasal 7 ayat (2) menyebut lima indikator tingkat bencana, tetapi Juklak belum menerjemahkannya menjadi klasifikasi data. Akibatnya, pimpinan hanya memperoleh jumlah kejadian tanpa ukuran besar kecilnya.
 4. **Data khusus untuk setiap jenis bencana**, seperti intensitas guncangan gempa, kedalaman genangan banjir, dan luas terbakar karhutla. Data ini kini hanya muncul sebagai contoh dalam isian deskripsi.

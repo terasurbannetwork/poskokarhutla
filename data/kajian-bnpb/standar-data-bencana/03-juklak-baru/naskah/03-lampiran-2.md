@@ -16,7 +16,7 @@ Setiap data dalam lampiran ini memuat lima komponen standar data, yaitu konsep, 
 | 6 | Kelas kejadian | Penggolongan kejadian bencana menurut besarnya dampak | Isian: bencana intensif; bencana ekstensif; disertai indikator penentu | – | – |
 | 7 | KIB | Kode unik 16 digit untuk setiap catatan kabupaten/kota | – | – | – |
 | 8 | Nomor induk kejadian | Nomor unik satu kejadian di tingkat nasional yang diterbitkan walidata bencana | – | – | – |
-| 9 | Kejadian pemicu | Nomor induk kejadian pemicu apabila kejadian ini merupakan kejadian ikutan | – | – | – |
+| 9 | Kejadian pemicu | Nomor induk kejadian pemicu apabila kejadian ini merupakan kejadian terpicu | – | – | – |
 | 10 | Tanggal mulai | Tanggal awal kejadian di kabupaten/kota tersebut | Format: tahun-bulan-tanggal | – | – |
 | 11 | Waktu kejadian | Pukul awal kejadian | Isian zona waktu: WIB; WITA; WIT | – | pukul |
 | 12 | Tanggal selesai | Tanggal kejadian dinyatakan selesai sesuai dengan Tabel 2 | Format: tahun-bulan-tanggal | – | – |
@@ -41,7 +41,7 @@ Setiap data dalam lampiran ini memuat lima komponen standar data, yaitu konsep, 
 
 | No | Nama data | Definisi | Klasifikasi | Ukuran | Satuan |
 | ---: | --- | --- | --- | --- | --- |
-| 24 | Rumah rusak | Bangunan tempat tinggal yang rusak karena kejadian bencana | Rusak berat; rusak sedang; rusak ringan; terendam | Total | unit |
+| 24 | Rumah rusak | Bangunan tempat tinggal yang rusak karena kejadian bencana | Rusak berat; rusak sedang; tidak dapat dihuni sementara; rusak ringan; terendam | Total | unit |
 | 25 | Satuan pendidikan rusak | Bangunan satuan pendidikan formal dan nonformal pada setiap jenjang yang rusak karena kejadian bencana | Rusak berat; rusak sedang; rusak ringan; terendam | Total | unit |
 | 26 | Fasilitas pelayanan kesehatan rusak | Bangunan fasilitas pelayanan kesehatan, seperti rumah sakit, puskesmas, dan klinik, yang rusak karena kejadian bencana | Tingkat kerusakan; masih berfungsi atau tidak berfungsi | Total | unit |
 | 27 | Rumah ibadat rusak | Bangunan yang khusus dipergunakan untuk beribadat secara permanen, tidak termasuk tempat ibadat keluarga, yang rusak karena kejadian bencana | Tingkat kerusakan | Total | unit |

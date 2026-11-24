@@ -5,8 +5,8 @@ Rancangan Juklak Standar Data Kejadian dan Dampak Bencana mempertahankan kerangk
 :::
 
 :::kartu
-3 keputusan | Ada ancaman atau tidak, dampaknya memenuhi kriteria atau tidak, dan laporan termasuk kejadian lama atau kejadian baru
-7 batas | Kejadian tergolong intensif apabila satu batas saja tercapai, misalnya 30 orang meninggal atau 600 rumah rusak berat terbobot
+3 keputusan | Ada ancaman atau tidak, ada dampak atau tidak, dan laporan termasuk kejadian lama atau kejadian baru, lalu angka kumulatifnya diperiksa terhadap kriteria
+7 batas | Kejadian tergolong intensif apabila satu batas saja tercapai, misalnya 30 orang meninggal dan hilang atau 600 rumah rusak berat terbobot
 10 kelompok | Data umum yang sama untuk semua jenis bencana
 5 tahap | Pemantauan, laporan awal, *rapid assessment*, pemutakhiran harian, dan penutupan
 :::
@@ -21,11 +21,11 @@ Petunjuk Pelaksanaan (Juklak) BNPB Nomor 7 Tahun 2023 menetapkan enam kriteria k
 #### 1. Ancaman berbeda dengan bencana
 Gempa bermagnitudo 7 di laut yang tidak menimbulkan korban merupakan peristiwa ancaman, bukan bencana. Literatur dan definisi resmi sepakat bahwa bencana baru terjadi apabila ancaman mengenai manusia yang terpapar dan rentan. Rancangan Juklak mendefinisikan peristiwa ancaman dan kejadian bencana secara terpisah sehingga magnitudo, level aktivitas gunung api, curah hujan, dan jumlah *hotspot*, yaitu piksel citra satelit yang suhunya jauh lebih tinggi daripada sekitarnya, dipakai untuk memulai pemantauan, bukan untuk menetapkan bencana.
 #### 2. Kriteria tetap, cara mengukurnya diperjelas
-Rancangan Juklak tidak mengubah angka kriteria Juklak 7/2023, tetapi menetapkan cara mengukurnya. Korban meninggal dan hilang dijumlahkan, setiap orang hanya dihitung satu kali, kriteria lahan dibatasi pada luas terbakar yang terverifikasi atau sawah dan kebun yang puso, dan kejadian lintas kabupaten/kota dapat memenuhi kriteria di tingkat nasional apabila dampaknya dijumlahkan.
+Rancangan Juklak tidak mengubah angka kriteria Juklak 7/2023, tetapi menetapkan cara mengukurnya. Korban meninggal dan hilang dijumlahkan, setiap orang hanya dihitung satu kali, jembatan ikut dihitung bersama rumah dan fasilitas publik, kriteria lahan dibatasi pada luas terbakar yang terverifikasi atau sawah dan kebun yang puso, dan kejadian lintas kabupaten/kota dapat memenuhi kriteria di tingkat nasional apabila dampaknya dijumlahkan.
 #### 3. Setiap jenis bencana memiliki batas satu kejadian
-Rancangan Juklak Tabel 2 menetapkan kapan kejadian dimulai, kapan laporan digabung, dan kapan kejadian selesai untuk setiap jenis bencana alam. Sebagai contoh, banjir yang sudah surut lalu kembali menggenang karena hujan baru dicatat sebagai kejadian baru, sedangkan tsunami dicatat sebagai kejadian ikutan dengan nomor induk sendiri yang ditautkan ke gempa pemicunya.
+Rancangan Juklak Tabel 2 menetapkan kapan kejadian dimulai, kapan laporan digabung, dan kapan kejadian selesai untuk setiap jenis bencana alam. Sebagai contoh, banjir yang sudah surut lalu kembali menggenang karena hujan baru dicatat sebagai kejadian baru, sedangkan tsunami dicatat sebagai kejadian terpicu dengan nomor induk sendiri yang ditautkan ke gempa pemicunya.
 #### 4. Kelas intensif ditentukan oleh dampak
-Kelas intensif memakai dua indikator umum dari UNDRR, yaitu 30 orang meninggal atau 600 rumah rusak berat terbobot, ditambah indikator khusus untuk tanah longsor, kekeringan, dan karhutla dari standar Tiongkok dan India, karena ketiga jenis bencana tersebut jarang menewaskan banyak orang atau merobohkan rumah. Status keadaan darurat dicatat di samping kelas, tetapi tidak menentukan kelas, karena status merupakan keputusan pemerintah, sedangkan kelas merupakan ukuran besarnya dampak.
+Kelas intensif memakai dua indikator umum dengan angka dari GAR 2015, yaitu 30 orang meninggal dan hilang atau 600 rumah rusak berat terbobot, ditambah indikator khusus untuk tanah longsor, kekeringan, dan karhutla dari standar Tiongkok dan India, karena ketiga jenis bencana tersebut jarang menewaskan banyak orang atau merobohkan rumah. Status keadaan darurat dicatat di samping kelas, tetapi tidak menentukan kelas, karena status merupakan keputusan pemerintah, sedangkan kelas merupakan ukuran besarnya dampak.
 #### 5. Data umum seragam, data khusus menjelaskan ancamannya
 Sepuluh kelompok data umum diisi dengan format yang sama untuk semua jenis bencana, dan setiap isian angka membedakan tiga keadaan, yaitu ada nilai, nihil, dan belum didata. Lembar data khusus mencatat besarnya ancaman, misalnya intensitas guncangan untuk gempa, tinggi *run-up* tsunami, kedalaman dan lama genangan untuk banjir, serta luas terbakar dan jenis tanah untuk kebakaran hutan dan lahan (karhutla).
 :::

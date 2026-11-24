@@ -7,7 +7,7 @@ Tabel D.1. Glosarium
 | Abrasi | Pengikisan pantai oleh gelombang dan arus laut yang membuat garis pantai mundur. |
 | BBWS | Balai Besar Wilayah Sungai, unit Kementerian Pekerjaan Umum yang mengelola sungai dan memantau muka air. |
 | Bencana lambat (*slow onset*) | Bencana yang muncul dan berkembang dalam hitungan minggu hingga bulan, seperti kekeringan dan abrasi. |
-| Bencana intensif | Kejadian bencana yang dampaknya berat dan jarang terjadi, yaitu yang mencapai paling sedikit satu batas indikator umum atau indikator khusus dalam Rancangan Juklak Tabel 3 (Tabel 3.8 kajian ini). Istilahnya mengikuti UNDRR (2017) dan batas umumnya mengikuti GAR 2015. |
+| Bencana intensif | Kejadian bencana yang dampaknya berat dan jarang terjadi, yaitu yang mencapai paling sedikit satu batas indikator umum atau indikator khusus dalam Rancangan Juklak Tabel 3 (Tabel 3.8 kajian ini). Istilahnya mengikuti UNDRR (2017a) dan batas umumnya mengikuti GAR 2015. |
 | Bencana mendadak (*sudden onset*) | Bencana yang terjadi dalam hitungan menit hingga hari, seperti gempa dan banjir bandang. |
 | Bencana ekstensif | Kejadian bencana yang memenuhi kriteria kejadian bencana, tetapi tidak mencapai satu pun batas bencana intensif (Rancangan Juklak Tabel 3), yaitu bencana yang dampaknya ringan sampai sedang dan sering terjadi. |
 | Dampak | Akibat kejadian bencana pada manusia, rumah, fasilitas publik, jalan dan jembatan, layanan vital, atau lahan. Ada dampak apabila paling sedikit satu isian dampak bernilai lebih dari nol; orang terancam tidak dihitung; isian yang belum didata berarti menunggu data, bukan tanpa dampak (Rancangan Juklak Bab I huruf D angka 13 dan Bab II huruf C angka 5 sampai 7). |
@@ -24,7 +24,7 @@ Tabel D.1. Glosarium
 | ISPA | Infeksi saluran pernapasan akut. |
 | ISPU | Indeks Standar Pencemar Udara, yaitu ukuran mutu udara yang dipakai pemerintah. |
 | Kejadian bencana | Peristiwa ancaman yang menimbulkan dampak dan memenuhi paling sedikit satu kriteria kejadian bencana. |
-| Kejadian ikutan | Kejadian yang dipicu oleh kejadian lain, misalnya tsunami yang dipicu oleh gempa. |
+| Kejadian terpicu | Kejadian yang dipicu oleh kejadian lain, misalnya tsunami yang dipicu oleh gempa. |
 | Kejadian pemicu | Kejadian yang memicu kejadian lain dalam satu rangkaian, misalnya gempa yang memicu tsunami. |
 | Kejadian yang belum memenuhi kriteria | Peristiwa ancaman yang menimbulkan dampak, tetapi belum memenuhi satu pun kriteria Rancangan Juklak. Kejadian ini disimpan, tetapi tidak dihitung sebagai bencana. |
 | KIB | Kode Identitas Bencana, yaitu kode 16 digit menurut Rancangan Juklak; setiap catatan kabupaten/kota memiliki KIB sendiri. |
