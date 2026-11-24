@@ -206,7 +206,7 @@ def luas_rbr(rbr, mask, ring, ha_px, luas_topeng_ha):
 def banding(hasil):
     """RBR lawan dNBR pada insiden yang keduanya punya luas_ha. -> dict {n, cukup, median_rasio, spearman} (cukup = n >= UJI_MIN_BANDING). Tanpa data: n 0, angka None."""
     p = [(v["luas_ha"], v["radar"]["luas_ha"]) for v in hasil.values()
-         if isinstance(v, dict) and v.get("luas_ha") and isinstance(v.get("radar"), dict) and v["radar"].get("luas_ha")]
+         if isinstance(v, dict) and v.get("luas_ha") and isinstance(v.get("radar"), dict) and v["radar"].get("luas_ha") is not None]  # radar 0 ha adalah hasil ukur, bukan kosong
     out = {"n": len(p), "cukup": len(p) >= UJI_MIN_BANDING, "median_rasio": None, "spearman": None}
     if len(p) < 2:
         return out
@@ -239,8 +239,8 @@ def baca_nbr(J, it, lat, lon, km, awan_maks):
     return (v[0], v[2]) if v and v[2] <= awan_maks else None
 
 
-def radar_s1(r, kini):
-    """Cadangan radar untuk satu insiden -> dict luas_rbr(...) + adegan, atau None (paket tak ada / tak ada pasangan orbit / galat). Pembaca VH = s1_genangan.baca_vv (impor, bukan salinan)."""
+def radar_s1(r, kini, peta=None):
+    """(peta: list opsional; diisi (rbr, topeng, cincin, piksel_ha) untuk lab banding ambang.) Cadangan radar untuk satu insiden -> dict luas_rbr(...) + adegan, atau None (paket tak ada / tak ada pasangan orbit / galat). Pembaca VH = s1_genangan.baca_vv (impor, bukan salinan)."""
     try:
         sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "banjir"))
         import planetary_computer as pc
@@ -288,6 +288,8 @@ def radar_s1(r, kini):
         px = (kb * 1000 / n_) ** 2 / 1e4
         m, rg = topeng(lat, lon, kb, garis, api, r["pusat"]), cincin(lat, lon, kb, garis, api, r["pusat"])
         out = luas_rbr(rbr, m, rg, px, sum(m) * px)
+        if peta is not None:
+            peta.append((rbr, m, rg, px))
         out.update({"adegan_pra": pra[o].id, "adegan_pasca": pasca[o].id, "tgl_pra": pra[o].datetime.date().isoformat(), "tgl_pasca": pasca[o].datetime.date().isoformat(), "orbit": o, "piksel_ha": round(px, 2)})
         return out
     except Exception:

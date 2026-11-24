@@ -165,3 +165,10 @@ Bahan kajian, bukan tiket kode:
 - ~~Q6~~: terjawab K6.
 - ~~Q7~~: terjawab K8.
 - ~~Q8~~: terjawab K6. Urutan: PKH-41 dan PKH-40 dulu (bias luas Papua), lalu PKH-33, 35, 43, 44, 42, 38, lalu paket PKH-34 dan 37.
+
+## Status kelompok G (24 Nov 2026 malam)
+
+- PKH-33: lab ambang RBR jalan (`hasil_pkh33.md`): 30 insiden dNBR bersih, ambang **tidak tersetel** (Spearman lemah, `cukup: false`); `RBR_AMBANG_DB` tetap -1,5 hipotesis. `banding` kini menghitung radar 0 ha sebagai hasil ukur. Lanjutan bila dibuka: piksel RBR ≤ 100 m, insiden ≥ 50 ha.
+- PKH-34: lab InSAR vonis **tak terukur** (`data/kajian-bnpb/insar-gambut/hasil_lab.md`); `gambut_bara.py` tidak berubah.
+- PKH-39: parameter AFD-S2 per bioma dari Hu dkk. 2021 Tabel 3 (salinan OA Lirias); lab 9 kompleks (`hasil_pkh39.md`). Masih terbuka: cek visual 5 insiden pada citra; koefisien Penney tetap null.
+- PKH-41 menunggu akses MapBiomas; PKH-42 menunggu kunci OpenAQ.
