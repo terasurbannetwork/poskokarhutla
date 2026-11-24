@@ -1,0 +1,33 @@
+# Uji batas intensif final (24 Nov 2026)
+
+Bukti internal untuk pemilik. Tidak dikutip dalam naskah kajian (aturan tanpa DIBI).
+
+Data: salinan dasbor publik DIBI 2024 sampai 2026 (`hitung-bencana/analisis/hasil/dibi_mentah_2024_2026.json`,
+15.974 baris). Dasbor DIBI tidak dapat dijangkau pada 24 Nov 2026, sehingga tahun 2008 sampai 2023 belum diuji.
+Satuan: satu baris = satu catatan kabupaten/kota per tanggal, sama dengan satuan GAR. Hanya baris yang memenuhi
+kriteria a, b, atau c yang dihitung (7.614 baris). Kriteria d sampai f dan batas 5 sampai 7 tidak punya kolom.
+
+Perintah: `py uji_batas.py hasil_2024_2026.json <salinan lokal>` (tanpa argumen kedua menarik dari dasbor).
+
+## Hasil
+
+| Ukuran | Aturan final | Versi GAR (meninggal 30, rusak berat 600) | GAR 2015 global |
+| --- | ---: | ---: | ---: |
+| Catatan intensif | 58 (0,76%) | 36 (0,47%) | 0,86% |
+| Porsi korban jiwa di catatan intensif | 52,3% | 48,6% (meninggal) | sekitar 87% |
+| Porsi rumah rusak berat di catatan intensif | 83,3% | 82,0% | 84% (rumah hancur) |
+
+Penentu: batas 1 (meninggal dan hilang) 20 catatan, 3 di antaranya hanya karena hilang ikut dihitung; batas 2
+(rumah terbobot) 34, 4 di antaranya hanya karena bobot rusak sedang; batas 3 (pengungsi longsor) 8; batas 4
+(kekeringan, proksi "menderita" dibanding penduduk) 9. Proksi kekeringan adalah batas atas, karena syarat 20 liter
+dan 15 hari tidak terukur di DIBI.
+
+Per jenis: gempa 10,4% intensif, kekeringan 3,7%, longsor 1,7%, banjir 0,6%, cuaca ekstrem, angin, puting beliung,
+gelombang, dan kebakaran permukiman 0%. Karhutla tidak terukur (tidak ada kolom luas).
+
+## Bacaan
+
+- Porsi intensif 0,76% dekat dengan kalibrasi GAR, jadi penambahan hilang dan bobot rumah tidak menggelembungkan kelas.
+- Porsi korban jiwa (52%) jauh di bawah 87% GAR karena periode 2024 sampai 2026 tidak memuat bencana katastrofik
+  besar; kematian tersebar di banyak kejadian kecil. Perlu diulang pada 2008 sampai 2023 saat dasbor dapat dijangkau.
+- Kekeringan 9 catatan intensif dari proksi; angka sebenarnya bergantung pada isian baru lama kesulitan air.

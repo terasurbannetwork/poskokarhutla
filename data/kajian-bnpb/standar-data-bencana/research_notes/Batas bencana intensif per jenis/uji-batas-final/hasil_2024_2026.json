@@ -1,0 +1,78 @@
+{
+ "catatan": "Baris DIBI yang memenuhi kriteria a, b, atau c (d sampai f tidak terukur). Bukti internal, tidak dikutip dalam naskah.",
+ "total": {
+  "baris": 7614,
+  "intensif": 58,
+  "persen_intensif": 0.76,
+  "persen_korban_jiwa_di_intensif": 52.32,
+  "persen_rusak_berat_di_intensif": 83.34,
+  "versi_gar_baris": 36,
+  "versi_gar_persen": 0.47,
+  "versi_gar_persen_meninggal": 48.63,
+  "versi_gar_persen_rusak_berat": 81.98
+ },
+ "penentu": {
+  "b2": 34,
+  "b3": 8,
+  "b1": 20,
+  "b1_karena_hilang": 3,
+  "b4": 9,
+  "b2_karena_bobot": 4
+ },
+ "per_jenis": {
+  "Banjir": {
+   "baris": 3845,
+   "intensif": 24,
+   "persen": 0.62,
+   "versi_gar": 20
+  },
+  "Cuaca Ekstrem": {
+   "baris": 1859,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Tanah Longsor": {
+   "baris": 604,
+   "intensif": 10,
+   "persen": 1.66,
+   "versi_gar": 3
+  },
+  "Kebakaran Gedung dan Permukiman": {
+   "baris": 443,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Kekeringan": {
+   "baris": 245,
+   "intensif": 9,
+   "persen": 3.67,
+   "versi_gar": 0
+  },
+  "Angin Kencang": {
+   "baris": 167,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Gempabumi": {
+   "baris": 96,
+   "intensif": 10,
+   "persen": 10.42,
+   "versi_gar": 9
+  },
+  "Gelombang Pasang / Abrasi": {
+   "baris": 59,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Puting Beliung": {
+   "baris": 51,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  }
+ }
+}
