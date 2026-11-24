@@ -7,7 +7,7 @@ Tabel 3.1. Kode identitas kejadian
 | Identitas | Ketentuan | Penerbit |
 | --- | --- | --- |
 | Kode Identitas Bencana (KIB) | • 16 digit: 2 angka kode provinsi, 2 angka kode kabupaten/kota (kode wilayah Kementerian Dalam Negeri), 3 angka kode jenis bencana, 8 angka tanggal mulai (tahun, bulan, tanggal), dan 1 angka indeks, misalnya 3204101202611191<br>• Diberikan sejak laporan awal untuk setiap catatan kabupaten/kota, termasuk yang belum diketahui memenuhi kriteria pada Tabel 1.3<br>• Setiap kabupaten/kota memakai kode wilayahnya sendiri; titik kejadian di laut memakai kabupaten/kota terdampak yang terdekat<br>• Indeks lebih dari 1 hanya untuk kejadian yang dipisahkan walidata bencana | Pusdalops BPBD kabupaten/kota |
-| Nomor induk kejadian | Kode jenis, tahun, dan nomor urut, misalnya 107-2026-000015; diterbitkan paling lambat pada akhir *rapid assessment* dan menautkan semua KIB satu kejadian. Kejadian terpicu diberi nomor induk sendiri yang ditautkan ke nomor induk pemicunya | Walidata bencana |
+| Nomor induk kejadian | Kode jenis, tahun, dan nomor urut, misalnya 107-2026-000015; diterbitkan paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment* dan menautkan semua KIB satu kejadian. Kejadian terpicu diberi nomor induk sendiri yang ditautkan ke nomor induk pemicunya | Walidata bencana |
 | Nomor GLIDE | Nomor pengenal internasional, dapat diajukan untuk kejadian intensif menurut Tabel 4.1 | Walidata bencana |
 
 Sumber: Rancangan Juklak Bab II huruf B.

@@ -9,7 +9,7 @@ Tabel B.1. Isian kelompok identitas, waktu, dan lokasi
 | No | Isian | Isi dan format | Tahap |
 | ---: | --- | --- | ---: |
 | 1.1 | Kode Identitas Bencana (KIB) | Kode 16 digit yang terdiri atas kode provinsi, kode kabupaten/kota, kode jenis bencana, tanggal mulai, dan indeks; diberikan sejak laporan awal dan dipakai oleh semua laporan perkembangan | 1 |
-| 1.2 | Nomor induk kejadian | Diterbitkan oleh Pusdatinkom paling lambat pada akhir *rapid assessment*; satu nomor untuk semua kabupaten/kota yang terdampak | 2 |
+| 1.2 | Nomor induk kejadian | Diterbitkan oleh Pusdatinkom paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment*; satu nomor untuk semua kabupaten/kota yang terdampak | 2 |
 | 1.3 | Jenis dan subjenis bencana | Pilihan kode jenis bencana dan subjenisnya | 1 |
 | 1.4 | Nama kejadian | Jenis dan wilayah, misalnya "Banjir Kabupaten Bogor" | 1 |
 | 1.5 | Kejadian pemicu | Nomor induk kejadian pemicu apabila kejadian ini dipicu oleh kejadian lain | 2 |

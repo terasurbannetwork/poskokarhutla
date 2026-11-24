@@ -68,7 +68,7 @@ Batas waktu: 24–72 jam pertama.
 3. Tim mengambil foto bergeotag untuk setiap titik kerusakan utama, titik pengungsian, dan tanda besarnya ancaman, misalnya bekas tinggi air, bagian atas longsor, atau ketebalan abu.
 4. Tim mencatat korban dengan prinsip satu orang satu kategori dan memilahnya menurut jenis kelamin, umur, dan disabilitas. Daftar nama korban meninggal dan hilang disimpan dalam berkas terbatas.
 5. Pusdalops BPBD menentukan kriteria kejadian bencana yang terpenuhi (Tabel 3.4) dan kelas sementara (Tabel 3.8), lalu menuliskan indikator penentunya.
-6. Pusdatinkom menerbitkan nomor induk kejadian paling lambat pada akhir *rapid assessment*, sehingga catatan dari beberapa kabupaten/kota yang berasal dari satu peristiwa dapat ditautkan.
+6. Pusdatinkom menerbitkan nomor induk kejadian paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment*, sehingga catatan dari beberapa kabupaten/kota yang berasal dari satu peristiwa dapat ditautkan.
 7. Kejadian yang tidak memenuhi kriteria dicatat sebagai kejadian yang belum memenuhi kriteria.
 
 ### A.4.4 Tahap 3: pemutakhiran harian

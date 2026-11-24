@@ -1,6 +1,6 @@
 # Lampiran C. Lembar Data Khusus per Jenis Bencana
 
-Setiap lembar diisi bersama formulir umum dalam Lampiran B. Kolom "Sumber isian" menunjukkan apakah isian ditarik dari lembaga resmi atau diukur oleh petugas di lapangan. Isian yang ditarik dari lembaga resmi tetap diperiksa oleh petugas. Lembar khusus diisi pada tahap *rapid assessment* dan dilengkapi pada pemutakhiran harian; isian yang dipakai untuk kelas kejadian diisi paling lambat pada akhir *rapid assessment*.
+Setiap lembar diisi bersama formulir umum dalam Lampiran B. Kolom "Sumber isian" menunjukkan apakah isian ditarik dari lembaga resmi atau diukur oleh petugas di lapangan. Isian yang ditarik dari lembaga resmi tetap diperiksa oleh petugas. Lembar khusus diisi pada tahap *rapid assessment* dan dilengkapi pada pemutakhiran harian; isian yang dipakai untuk kelas kejadian diisi paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment*.
 
 ## C.1 Kebakaran hutan dan lahan
 

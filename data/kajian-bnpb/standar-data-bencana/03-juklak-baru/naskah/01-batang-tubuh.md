@@ -126,7 +126,7 @@ Tabel 1. Jenis bencana, kode, dan subjenis
 2. Kode provinsi dan kode kabupaten/kota mengikuti kode wilayah yang ditetapkan oleh kementerian yang menyelenggarakan urusan pemerintahan dalam negeri.
 3. Apabila satu kejadian bencana berdampak pada beberapa kabupaten/kota, setiap kabupaten/kota memakai kode wilayahnya sendiri dalam KIB.
 4. Apabila titik kejadian berada di laut, kode wilayah mengikuti kabupaten/kota terdampak yang terdekat dari titik tersebut.
-5. Setiap kejadian diberi nomor induk kejadian oleh walidata bencana paling lambat pada akhir tahap *rapid assessment*. Nomor induk kejadian terdiri atas 3 angka kode jenis bencana, 4 angka tahun tanggal mulai kejadian, dan 6 angka nomor urut, misalnya 107-2026-000015. Nomor induk kejadian hanya diterbitkan untuk kejadian bencana. Sebelum nomor induk terbit, Pusat Pengendalian Operasi BNPB menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa.
+5. Setiap kejadian diberi nomor induk kejadian oleh walidata bencana paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment*. Nomor induk kejadian terdiri atas 3 angka kode jenis bencana, 4 angka tahun tanggal mulai kejadian, dan 6 angka nomor urut, misalnya 107-2026-000015. Nomor induk kejadian hanya diterbitkan untuk kejadian bencana. Sebelum nomor induk terbit, Pusat Pengendalian Operasi BNPB menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa.
 6. Semua KIB dari satu kejadian bencana ditautkan dengan nomor induk kejadian yang sama.
 7. Kejadian terpicu diberi nomor induk kejadian sendiri dan ditautkan dengan nomor induk kejadian pemicunya.
 8. Untuk keperluan pertukaran data internasional, kejadian bencana intensif dapat diberi nomor GLIDE (*GLobal IDEntifier number*), yaitu nomor identitas bencana internasional yang dikelola Asian Disaster Reduction Center, yang diajukan oleh walidata bencana.
@@ -264,7 +264,7 @@ Tabel 4. Pembagian tugas
 | BPBD kabupaten/kota | Memverifikasi data kabupaten/kota, menyatakan kejadian selesai, dan menyampaikan data penutupan |
 | BPBD provinsi | Memeriksa kelengkapan data, menyatukan catatan lintas kabupaten/kota di provinsinya, dan memverifikasi data statis |
 | Pusat Pengendalian Operasi BNPB | Memantau peristiwa ancaman, menerima laporan BPBD, menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa, dan menyusun laporan harian nasional |
-| Pusdatinkom | Menerbitkan nomor induk kejadian pada tahap *rapid assessment*, memutuskan penggabungan atau pemisahan kejadian, melakukan verifikasi akhir, menetapkan kelas akhir, dan merilis data statis |
+| Pusdatinkom | Menerbitkan nomor induk kejadian paling lambat 72 jam setelah kejadian diketahui, memutuskan penggabungan atau pemisahan kejadian, melakukan verifikasi akhir, menetapkan kelas akhir, dan merilis data statis |
 
 ## B. TAHAPAN PENGUMPULAN DATA
 

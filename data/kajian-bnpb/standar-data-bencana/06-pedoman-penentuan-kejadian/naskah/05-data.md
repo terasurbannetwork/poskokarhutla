@@ -67,7 +67,7 @@ Tabel 5.4. Tenggat pengumpulan data
 | Laporan awal | Paling lambat 24 jam setelah kejadian diketahui |
 | Mulai *rapid assessment* | Paling lambat 24 jam setelah informasi diterima |
 | Hasil awal *rapid assessment* | Paling lambat 72 jam setelah kejadian diketahui |
-| Nomor induk kejadian | Paling lambat pada akhir *rapid assessment* |
+| Nomor induk kejadian | Paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment* |
 | Pemutakhiran | Paling sedikit satu kali sehari selama kejadian berlangsung |
 | Penutupan | Paling lambat pada verifikasi bulanan berikutnya |
 | Verifikasi, pembekuan, rilis | Setiap bulan, setiap triwulan, dan setiap tahun |
