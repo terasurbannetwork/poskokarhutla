@@ -191,6 +191,47 @@ Angka di bawah dikutip dari unggahannya, belum diperiksa ke makalah asli kecuali
   bisa dibedakan pluvial dan fluvial (misalnya dari kata kunci berita atau jarak ke sungai besar), uji model terpisah
   per jenis. Belum dikerjakan.
 
+### 2.12 Pelajar GIS: deteksi banjir dengan Sentinel-1 SAR di Google Earth Engine
+
+- Metode: Sentinel-1 GRD mode IW, polarisasi VH; citra sebelum (1–20 November 2025) dan sesudah (25–29 November
+  2025); penghalus bintik focal median; selisih sesudah dikurangi sebelum; ambang; buang air permanen (JRC GSW),
+  lereng di atas 5° (SRTM), dan piksel terpencil. Keluaran peta genangan dan luas.
+- Masalah:
+  - nilai ambang tidak disebut, dan tidak ada uji lawan genangan rujukan;
+  - radar buta di kota (pantulan ganda bangunan membuat air tampak terang) dan di bawah tajuk hutan, sehingga
+    genangan di dua tempat itu hilang dari peta;
+  - jendela sesudah 25–29 November bisa melewatkan puncak bila lintasan satelit jatuh sesudah air surut.
+- Untuk kita: keputusan sudah ada di `data/kajian-bnpb/genangan-satelit/KEPUTUSAN-GENANGAN.md` (K2, D1, D11). Kita
+  memakai Copernicus GFM, tidak membuat ambang radar sendiri, karena lab ambang radar kita di DKI gagal
+  (`public/banjir/data/lab/genangan_radar_ringkas.md`). Unggahan ini tidak memberi alasan mengubah keputusan itu.
+  Satu hal yang layak dicatat: masker lereng 5° dan masker JRC juga dipakai GFM, jadi tidak perlu ditambah.
+
+### 2.13 Morfometri DAS dan banjir bandang Sumatra November 2025
+
+- Isi: hampir semua DAS yang terkena banjir bandang di Aceh, Sumatra Utara, dan Sumatra Barat punya "paket komplit":
+  Bukit Barisan yang curam (banyak lereng di atas 40%), lembah V sempit, dan kipas aluvial atau dataran banjir yang
+  padat permukiman. Waktu konsentrasi pendek; bila hutan hilang, aliran berubah jadi aliran debris. Tabel relief
+  ratio 10 DAS terluas: Aceh (Kluet 39,7; Teunom 34,1; Peusangan 32,7; Woyla 31 disebut paling rawan) dan Sumatra
+  Utara (Singkil 16,9; Batang Serangan 9,1; Batahan 7,8; Kualuh 6,3) dan Sumatra Barat (Anai 56; Pasaman 50;
+  Indrapura 43,5; Sikilang 36). Peta dasar memakai indeks risiko banjir BNPB.
+- Enam ciri yang disebut: relief ratio tinggi, lereng panjang di atas 30–40°, lembah V di hulu dan tengah, peralihan
+  mendadak dari lembah sempit ke dataran (knickpoint), material lereng mudah lapuk, dan Sesar Besar Sumatra yang
+  membuat banyak lereng "hampir kritis", sehingga hujan ekstrem tinggal pukulan terakhir. Usulan: zona lindung di
+  lereng curam dan kepala DAS, pulihkan koridor riparian, kendalikan permukiman di kipas aluvial aktif, dan pakai peta
+  bentuklahan, lereng, dan batuan untuk prioritas rehabilitasi.
+- Masalah:
+  - nilai yang sama diberi warna berlawanan antarprovinsi. Singkil 16,9 paling aman di tabel Aceh, paling rawan di
+    tabel Sumatra Utara. Batahan 7,8 merah di tabel Sumatra Utara, hijau di tabel Sumatra Barat. Skala warna dibuat
+    per provinsi, jadi warna tidak bisa dibandingkan;
+  - rentang angka sangat berbeda: Aceh 16,9 sampai 39,7, Sumatra Utara 2,8 sampai 16,9, Sumatra Barat 6,8 sampai 56.
+    Kemungkinan satuan atau cara hitungnya tidak sama. Belum bisa dipakai sebelum rumusnya diketahui;
+  - "rawan" disimpulkan dari bentuk DAS, tanpa dicocokkan dengan DAS yang benar-benar terkena bandang.
+- Untuk kita: relief ratio per DAS (beda tinggi dibagi panjang DAS) mudah dihitung sendiri dari DEMNAS atau GLO-30 dan
+  HydroBASINS, yang sudah dipakai `scripts/air/neraca/**`. Layak diuji sebagai faktor bandang di
+  `PRAREG-BANDANG.md`, dengan label kejadian bandang DIBI, bukan dari tabel ini. Jarak ke sesar sudah ada di model
+  longsor kita (`scripts/longsor/model.py`); knickpoint (lompatan lebar lembah) bisa diturunkan dari DEM yang sama
+  dan diuji bersama relief ratio.
+
 ## 3. Bahan yang layak diambil, urut menurut manfaat
 
 1. Peta genangan DSDA dan BPBD DKI 3–4 Maret 2025 dari Zenodo 17309354 sebagai label uji simulasi genangan Jakarta.
@@ -200,6 +241,10 @@ Angka di bawah dikutip dari unggahannya, belum diperiksa ke makalah asli kecuali
 4. Hujan rencana periode ulang BRIN untuk Padang sebagai pembanding ambang persentil kita.
 5. Hipotesis "sesudah api, banjir lebih sering" per kabupaten, dengan pra-registrasi sebelum data dibuka.
 6. Pemisahan label pluvial dan fluvial, bila sumber labelnya memungkinkan.
+7. Relief ratio per DAS sebagai calon faktor banjir bandang, dihitung sendiri, diuji lewat pra-registrasi.
+
+Bahan longsor dari kiriman yang sama (RUSLE Cisarua, MaxEnt Karangkobar, DAS Kuranji) dinilai di
+`scripts/longsor/RISET-KAJIAN-LUAR.md`.
 
 ## 4. Aturan yang ditegaskan ulang oleh bahan ini
 
