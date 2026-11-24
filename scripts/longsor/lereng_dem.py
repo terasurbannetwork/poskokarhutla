@@ -50,7 +50,7 @@ def jendela(t, r0, r1, c0, c1):
 
 
 def lereng_persen(z, lat_atas, dlon, dlat):
-    """z: daftar baris (tiap baris array/daftar tinggi meter, NaN = tak ada); lat_atas = lintang PUSAT baris 0;
+    """z: daftar baris (tiap baris array/daftar tinggi meter, NaN = tak ada); lat_atas = lintang baris 0 (pusat; sudut dari buka() meleset setengah piksel, dampak ke cos(lintang) diabaikan);
     dlon, dlat = langkah piksel derajat. -> daftar baris array('f') lereng persen; tepi dan sekitar NaN = NaN."""
     h, w = len(z), len(z[0])
     keluar = [array.array("f", [NAN]) * w for _ in range(h)]
@@ -86,6 +86,8 @@ def uji():
     assert g[2][1] != g[2][1] and g[1][1] != g[1][1] and g[0][0] != g[0][0]
     z[2][2] = 1.0
     assert lereng_persen(z, 0.0, 1e-4, 1e-4)[2][2] == 0.0
+    # koefisien deret WGS84 dicek ke nilai tetap
+    assert abs(meter_per_derajat(0)[0] - 111319.5) < 1 and abs(meter_per_derajat(0)[1] - 110574.3) < 1
     # persen <-> derajat
     assert abs(math.degrees(math.atan(0.4)) - 21.8) < 0.01
     # pembaca TIFF termuat dari tiff_mini

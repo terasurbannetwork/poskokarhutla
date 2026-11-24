@@ -115,7 +115,7 @@ def glo30(langkah=0.003):
                     ada += tinggi(x, y) is not None
                 y += langkah
             x += langkah
-        keluar[k["id"]] = {"kab": k["kab"], "titik": n, "bertinggi": ada, "cakupan": round(ada / n, 4)}
+        keluar[k["id"]] = {"kab": k["kab"], "titik": n, "bertinggi": ada, "cakupan": round(ada / n, 4) if n else None}
     return keluar
 
 
@@ -145,7 +145,7 @@ def hitung():
         if n is not None:
             jml[kabs[n]["id"]] += 1
             sumber[kabs[n]["id"]][s] += 1
-    return {"baris_bbox": len(baris), "per_kab": {k["id"]: {"kab": k["kab"], "bangunan": jml[k["id"]], "sumber_pertama": dict(sumber[k["id"]])} for k in kabs},
+    return {"baris_bbox": len(baris), "per_kab": {k["id"]: {"kab": k["kab"], "bangunan": jml[k["id"]] if sumber[k["id"]] else None, "sumber_pertama": dict(sumber[k["id"]])} for k in kabs},
             "total_empat_kab": sum(jml.values())}
 
 
