@@ -16,7 +16,7 @@
 <link href="/vendor/maplibre/maplibre-gl.css" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
 <link href="/inti/kalender.css" rel="stylesheet">
-<link href="/lapor/meja.css?v=76" rel="stylesheet">
+<link href="/lapor/meja.css?v=80" rel="stylesheet">
 </head>
 <!-- Meja laporan staf BNPB (TIKET LA-15, KEPUTUSAN K7, K9, D22). Dasbor gaya Pantau Dalops (pemilik 19 Nov 2026):
      peta dengan saring jenis berikon, periode, dan panel ringkasan; tabel di bawah; rincian dalam pop-up.
@@ -97,20 +97,20 @@
   <!-- baris saring bersama peta dan tabel, tiru /bnpb/dalops (pemilik 19 Nov 2026 "ada filter-filternya juga kaya dalops") -->
   <!-- SATU baris saring penuh lebar (pemilik 19 Nov 2026 "ini agar sebaris semua"): cari, pil jenis bergulir mendatar, status, kab/kota, waktu, saring cepat.
        Berlaku sekaligus untuk peta, ringkasan, dan tabel. -->
-  <div class="mj-saring" id="saring" role="search" aria-label="Saring laporan">
+  <div class="mj-saring" id="saring" role="search" aria-label="Filter laporan">
     <!-- satu baris (pemilik 19 Nov 2026): cari, pil jenis berangka, waktu, saring cepat berangka; gaya chip /bnpb/dalops -->
     <label class="mj-cari"><svg aria-hidden="true"><use href="#m-cari"/></svg><input id="qCari" type="search" placeholder="Cari tiket, pelapor, nomor WA" aria-label="Cari laporan"></label>
     <!-- HP: tombol ciut/buka pilihan saring (pemilik 24 Nov 2026 "di hp bisa toggle minimize/max panel2 yang menutupi peta"); angka = saringan aktif -->
-    <button class="mj-saring-lipat" id="bSaringLipat" type="button" aria-expanded="false" aria-controls="saring"><svg aria-hidden="true"><use href="#m-saring"/></svg><span>Saring</span><b id="nSaringAktif" hidden></b></button>
+    <button class="mj-saring-lipat" id="bSaringLipat" type="button" aria-expanded="false" aria-controls="saring"><svg aria-hidden="true"><use href="#m-saring"/></svg><span>Filter</span><b id="nSaringAktif" hidden></b><svg class="mj-saring-panah" aria-hidden="true"><use href="#m-bawah"/></svg></button>
     <!-- pil jenis bergulir mendatar: panah dipasang meja.js pasangGeser (pemilik 24 Nov 2026 "orang biasa gaakan tau ada tombol lagi") -->
     <div class="mj-jenis-wadah" id="wadahJenis">
-      <div class="mj-chip mj-chip-jenis" id="pilihJenis" role="group" aria-label="Saring jenis bencana"></div>
+      <div class="mj-chip mj-chip-jenis" id="pilihJenis" role="group" aria-label="Filter jenis bencana"></div>
     </div>
     <div class="mj-periode" id="saringWaktu" role="group" aria-label="Periode laporan"></div>
     <!-- saring cepat dan tombol ulang satu kelompok: bila baris tak muat, turun bersama, tombol ulang tidak tertinggal sendirian (pemilik 24 Nov 2026 "nanggung") -->
     <div class="mj-saring-ujung">
-      <div class="mj-chip" id="saringCepat" role="group" aria-label="Saring cepat"></div>
-      <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua saringan" data-tip="<b>Hapus semua saringan</b>"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
+      <div class="mj-chip" id="saringCepat" role="group" aria-label="Filter cepat"></div>
+      <button class="mj-ulang" id="bUlang" type="button" aria-label="Hapus semua filter" data-tip="<b>Hapus semua filter</b>"><svg aria-hidden="true"><use href="#m-ulang"/></svg></button>
     </div>
   </div>
   <div class="mj-isi" id="isi">
@@ -123,7 +123,7 @@
         <button class="mj-ikon-peta" id="bPas" type="button" aria-label="Tampilkan semua titik" title="Tampilkan semua titik"><svg aria-hidden="true"><use href="#m-luas"/></svg></button>
       </div>
       <div class="mj-kiri-peta">
-      <aside class="mj-ringkas" id="ringkas" aria-label="Ringkasan laporan tersaring"></aside>
+      <aside class="mj-ringkas" id="ringkas" aria-label="Ringkasan laporan sesuai filter"></aside>
       </div>
       <div class="mj-legenda" id="legenda"></div>
     </section>
@@ -142,6 +142,6 @@
 <script src="/inti/format.js"></script>
 <script src="/inti/tip.js"></script>
 <script src="/inti/kalender.js"></script>
-<script type="module" src="/lapor/meja.js?v=69"></script>
+<script type="module" src="/lapor/meja.js?v=73"></script>
 </body>
 </html>

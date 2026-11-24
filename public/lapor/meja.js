@@ -165,12 +165,17 @@ $("bTema")?.addEventListener("click", () => {
   latar.addEventListener("click", () => atur(false));
   addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("mj-laci-buka")) { atur(false); bm.focus(); } });
   $("nav").addEventListener("click", e => { if (e.target.closest(".mj-nav-b") && matchMedia("(max-width:900px)").matches) atur(false); }); }
-/* tinggi baris saring di atas peta -> --tinggi-atas, supaya Ringkasan tidak tertutup saat saring bertumpuk (HP) */
-{ const atas = document.querySelector(".mj-peta-atas"), wadah = $("bagPeta");
-  if (atas && wadah && "ResizeObserver" in window) new ResizeObserver(() => wadah.style.setProperty("--tinggi-atas", `${Math.round(atas.getBoundingClientRect().height)}px`)).observe(atas); }
-/* HP: pilihan saring mulai ciut (cari tetap tampil); ketuk "Saring" untuk membuka */
-{ const sr = $("saring"), b = $("bSaringLipat"), atur = buka => { sr.classList.toggle("ciut", !buka); b.setAttribute("aria-expanded", String(buka)); b.setAttribute("aria-label", buka ? "Ciutkan pilihan saring" : "Tampilkan pilihan saring"); };
-  atur(!matchMedia("(max-width:900px)").matches); b.addEventListener("click", () => atur(sr.classList.contains("ciut"))); }
+/* tinggi kotak saring di atas peta -> --tinggi-saring (HP): Ringkasan duduk sebaris tombol peta tepat di bawah saring, tidak melayang di tengah (pemilik 24 Nov 2026 "floating gajelas") */
+{ const sr = $("saring"), wadah = $("bagPeta");
+  if (sr && wadah && "ResizeObserver" in window) new ResizeObserver(() => { if (sr.closest("#bagPeta")) wadah.style.setProperty("--tinggi-saring", `${Math.round(sr.getBoundingClientRect().height)}px`); }).observe(sr); }
+/* HP: pilihan saring mulai ciut (cari tetap tampil); ketuk "Filter" untuk membuka */
+{ const sr = $("saring"), b = $("bSaringLipat"), atur = buka => { sr.classList.toggle("ciut", !buka); b.setAttribute("aria-expanded", String(buka)); b.setAttribute("aria-label", buka ? "Ciutkan pilihan filter" : "Tampilkan pilihan filter"); };
+  const hp = matchMedia("(max-width:900px)");
+  atur(!hp.matches); b.addEventListener("click", () => atur(sr.classList.contains("ciut")));
+  /* HP: Filter, Ringkasan, legenda bawaannya ciut, juga saat layar BERUBAH jadi sempit (pemilik 24 Nov 2026 "kalau di hp ini defaultnya minimize aja");
+     kembali lebar = dibuka lagi. Pilihan pengguna di layar yang sama tidak diganggu (hanya saat ambang 900 px dilewati). */
+  hp.addEventListener("change", e => { atur(!e.matches); const det = document.querySelector("#ringkas details"); if (det) det.open = !e.matches;
+    legendaBuka = !e.matches; gambar(); gambarDarurat(); }); }   // darurat ikut ciut di HP bila pengguna belum memilih sendiri
 window.pasangTip?.();   // tooltip [data-tip] sekali per halaman
 addEventListener("hashchange", () => pindahTampil(location.hash === "#daftar" ? "daftar" : "peta"));
 
@@ -446,10 +451,10 @@ function gambarRingkas(daftar) {
   const ol = el("ol", "mj-rk-kab"); for (const [nama, {n: k, b}] of atas) { const li = el("li"), bt = el("button"), bar = el("i"); bt.type = "button"; bar.style.width = `${Math.round(k / maks * 100)}%`;
     bt.append(el("em", null, String(ol.childElementCount + 1)), el("span", null, nama.replace(/^Kota Administrasi /, "Kota ")), el("b", null, F(k)), bar);   // batang tipis di bawah nama bt.title = `Dekatkan peta ke ${nama}`;
     if (saringKab === nama) bt.setAttribute("aria-pressed", "true");
-    bt.title = saringKab === nama ? "Lepas saringan kab/kota" : `Saring ke ${nama}`;
+    bt.title = saringKab === nama ? "Lepas filter kab/kota" : `Tampilkan hanya ${nama}`;
     bt.addEventListener("click", () => { saringKab = saringKab === nama ? "" : nama; gambar(); if (saringKab) peta?.flyTo({center: [b.lon, b.lat], zoom: 10}); }); li.append(bt); ol.append(li); }
   const dib = daftar.map(b => b.tanggap?.dibuka).filter(v => v != null).sort((a, b) => a - b), med = dib.length ? (dib.length % 2 ? dib[dib.length >> 1] : (dib[dib.length / 2 - 1] + dib[dib.length / 2]) / 2) : null, ngugus = new Set(daftar.map(b => b.gugus?.kode).filter(Boolean)).size;
-  const tanpa = n(b => b.lat == null), kepala = el("div", "mj-rk-total"); kepala.append(el("b", null, F(daftar.length)), el("span", null, "laporan tersaring"));
+  const tanpa = n(b => b.lat == null), kepala = el("div", "mj-rk-total"); kepala.append(el("b", null, F(daftar.length)), el("span", null, "laporan sesuai filter"));
   const L = daftar.length;
   // dikelompokkan seperti tabel: manusia, bangunan, penanganan (pemilik 19 Nov 2026 "bagusin", "dipisahkan manusia dan bangunan")
   const sub = t => el("p", "mj-rk-label", t);
@@ -573,7 +578,7 @@ function gambarTabel(daftar) {
       const ada = g.find(b => b.kejadian)?.kejadian || g.find(b => b.gugus)?.gugus, wa = g.map(b => b.wa);
       const kepala = {kode: `${g[0].jenisId}|${g[0].wilayah?.kabKode || g[0].wilayah?.kab}|${Math.min(...g.map(b => b.terkirim))}`, n_pelapor: wa.every(Boolean) ? new Set(wa).size : null, chip: ada || null};
       return [kepalaGugus(kepala, g), ...(gugusTutup.has(kepala.kode) ? [] : g.map(b => { const tr = baris(b); tr.classList.add("mj-anggota"); return tr; }))]; }); };
-  $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : susun(xs))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan saringan."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
+  $("tbody").replaceChildren(...(daftar.length ? [...per].flatMap(([p, xs]) => [kepalaProv(p, xs), ...(provTutup.has(p) ? [] : susun(xs))]) : [(() => { const tr = el("tr"), td = el("td", "mj-kosong", "Belum ada laporan yang cocok dengan filter."); td.colSpan = KOLOM.length; tr.append(td); return tr; })()]));
 }
 const fotoLaporan = nomor => { if (!fotoCache.has(nomor)) fotoCache.set(nomor, fetch(`/api/lapor/meja/${nomor}`).then(r => r.json()).then(j => j.foto || []).catch(() => [])); return fotoCache.get(nomor); };
 

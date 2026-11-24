@@ -987,7 +987,7 @@ body{display:flex;flex-direction:column;height:100dvh}
   .mj-samping .mj-nav{display:flex!important}
   .mj-samping .mj-tarik{display:none}
   .mj-laci-latar:not([hidden]){display:block;position:fixed;inset:0;z-index:69;background:color-mix(in oklch,var(--head-bg) 55%,transparent)}
-  .mj-kiri-peta{top:calc(var(--tinggi-atas,64px) + 20px)!important;bottom:auto!important;left:12px!important;right:auto!important;width:min(248px,calc(100% - 24px))!important;max-height:calc(100% - var(--tinggi-atas,64px) - 90px)!important}
+  .mj-kiri-peta{top:calc(var(--tinggi-saring,52px) + 22px)!important;bottom:auto!important;left:12px!important;right:auto!important;width:min(248px,calc(100% - 24px))!important;max-height:calc(100% - var(--tinggi-saring,52px) - 190px)!important}
 }
 @media (max-width:900px){.mj-peta-atas #bPas{align-self:flex-end}}   /* tombol tampilkan semua titik di kanan, bukan di tengah */
 @media (prefers-reduced-motion:reduce){.mj-samping{transition:none!important}}
@@ -1067,3 +1067,20 @@ body{display:flex;flex-direction:column;height:100dvh}
 @media (max-width:900px){.mj-waktu-menu{right:auto;left:0}.mj-saring #saringWaktu.mj-periode{justify-self:start}}
 /* HP: tombol waktu rata kiri supaya menunya tidak lewat tepi layar (QA 24 Nov 2026: menu sampai 412 px di layar 375 px) */
 @media (max-width:900px){:is(.mj-peta-atas,.mj-tabel-wadah) .mj-saring #saringWaktu.mj-periode{justify-self:start!important}.mj-waktu-menu{left:0!important;right:auto!important;max-width:calc(100vw - 32px)}}
+/* HP (pemilik 24 Nov 2026 "floating gajelas", "toggle minimize itu termasuk ini"): Ringkasan = pil sebaris tombol peta, melebar saat dibuka; tombol Saring berpanah seperti panel lain */
+@media (max-width:900px){
+  .mj-kiri-peta{width:auto!important;max-width:calc(100% - 76px)!important}
+  .mj-ringkas:not(:has(details[open])){width:max-content}
+  .mj-ringkas:has(details[open]){width:min(300px,calc(100vw - 88px))}
+  .mj-saring-lipat .mj-saring-panah{width:13px;height:13px;stroke-width:2.6;transition:transform var(--dur-1)}
+  .mj-saring-lipat[aria-expanded="true"] .mj-saring-panah{transform:rotate(180deg)}
+}
+/* HP: Ringkasan terbuka berhenti di atas panel darurat dan legenda (isi bergulir), tidak menimpanya */
+@media (max-width:900px){.mj-ringkas:has(details[open]){max-height:calc(100dvh - var(--tinggi-saring,52px) - 220px);overflow:auto}}
+/* darurat ciut = pil satu baris (pemilik 24 Nov 2026 "ini jelek": di HP sempit judul patah tiga baris); lebar ikut isi */
+.mj-darurat.kecil{width:max-content!important;max-width:calc(100% - 24px)!important}
+.mj-darurat.kecil .mj-darurat-judul{display:block}
+.mj-darurat.kecil .mj-darurat-judul b{white-space:nowrap}
+.mj-darurat.kecil .mj-darurat-judul small{display:none}
+.mj-darurat.kecil .mj-darurat-sirene{width:30px;height:30px}
+.mj-darurat.kecil .mj-darurat-buka{gap:8px}
