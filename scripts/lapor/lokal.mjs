@@ -813,6 +813,9 @@ export async function tanganiLapor(req, res, url) {
     /* kabar selamat dan orang dicari (LA-80): rute yang sama dengan Worker (src/lapor_selamat.js). Lokal tanpa kode sekali pakai: nomor dari badan atau ?wa= (loopback). */
     if (j === "/api/lapor/selamat" || j === "/api/lapor/selamat/saya" || j === "/api/lapor/cari" && req.method === "POST" || j.startsWith("/api/lapor/s/")) {
       const d = baca(), kini = Date.now(), b = req.method === "POST" ? await badan(req) : {}, wa = nomorWa(b.wa || url.searchParams.get("wa")), aktif = t => !t.dicabut && t.kedaluwarsa > kini;
+      const host = String(req.headers.host || "").replace(/:\d+$/, "").toLowerCase();
+      if (!["localhost", "127.0.0.1", "[::1]"].includes(host)) return kirim([403, {galat: "Hanya dari komputer ini."}]);   // mesin lokal bukan layanan jaringan
+      if (req.method !== "GET" && req.headers["x-pb"] !== "1") return kirim([403, {galat: "kiriman wajib membawa header x-pb: 1"}]);
       d.selamat ||= []; d.cari ||= [];
       const tampil = async t => ({nama_panggil: t.nama_panggil, status: t.status, label: t.status === "selamat" ? "Selamat" : "Selamat, butuh bantuan", kab: t.kab, kab_nama: await wilayah.kabNama(t.kab), waktu: t.dibuat});
       if (j.startsWith("/api/lapor/s/")) { const h = crypto.createHash("sha256").update(j.slice(13)).digest("hex"), t = d.selamat.find(x => x.token_sha === h && aktif(x));
@@ -827,7 +830,7 @@ export async function tanganiLapor(req, res, url) {
           waktu_terakhir: b.waktu_terakhir || null, nomor_dicari: nomorDicari, hubungan: b.hubungan || null, kab: b.kab, status: "buka", dibuat: kini, riwayat: []}); simpan(d);
         return kirim([200, {id, status: "buka", pesan: "Laporan diterima petugas. Laporan ini tidak tampil di publik."}]); }
       const nama = String(b.nama_panggil || "").trim().slice(0, 40);
-      if (!nama || !["selamat", "butuh_bantuan"].includes(b.status) || !await wilayah.kabNama(b.kab)) return kirim([400, {galat: "Isian belum sah."}]);
+      if (!nama || nama.replace(/\D/g, "").length >= 6 || !["selamat", "butuh_bantuan"].includes(b.status) || !await wilayah.kabNama(b.kab)) return kirim([400, {galat: "Isian belum sah."}]);
       for (const t of d.selamat) if (t.nomor === wa && !t.dicabut) t.dicabut = kini;
       const token = crypto.randomBytes(32).toString("hex"), kedaluwarsa = kini + 7 * 864e5;
       d.selamat.push({nomor: wa, nama_panggil: nama, status: b.status, kab: b.kab, token_sha: crypto.createHash("sha256").update(token).digest("hex"), dibuat: kini, kedaluwarsa}); simpan(d);

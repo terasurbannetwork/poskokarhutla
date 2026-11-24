@@ -71,6 +71,6 @@ test("pemasangan: kartu beranda memicu dialog, halaman tautan noindex, meja memu
   const idx = baca("index.html");
   assert.match(idx, /data-buka-selamat/); assert.match(idx, /selamat\.js\?v=\d+/); assert.match(idx, /selamat\.css\?v=\d+/);
   const s = baca("s/index.html"); assert.match(s, /name="robots" content="noindex/); assert.match(s, /no-referrer/);
-  assert.match(baca("meja.js"), /from "\.\/meja_cari\.js"/); assert.match(baca("meja.js"), /Orang dicari/);
+  assert.match(baca("meja.js"), /from "\.\/meja_cari\.js(\?v=\d+)?"/); assert.match(baca("meja.js"), /Orang dicari/);
   assert.ok(!/innerHTML/.test(baca("s/s.js")) && !/innerHTML/.test(baca("meja_cari.js")) && !/innerHTML/.test(baca("selamat.js")), "teks dari server lewat textContent");
 });

@@ -1837,9 +1837,13 @@ export const pelakuLpCron = {peran: "lp_cron"}, pelakuLpPelapor = {peran: "lp_pe
 
 /* kabar selamat dan orang dicari (LA-80, migrasi 0173). Satu tanda aktif per nomor: yang lama dicabut (slCabut mengembalikan token_id-nya) sebelum yang baru ditambah.
    Token tautan di tautan_token lewat src/token.js; di sini hanya token_id. */
-export const slTambah = (env, p, b, kini) => sedia(env, p, "lapor_selamat", "tambah",
-  "INSERT INTO lapor_selamat (id, nomor, nama_panggil, status, kab, token_id, dibuat, kedaluwarsa) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
-  .bind(b.id, b.nomor, b.nama_panggil, b.status, b.kab, b.token_id, kini, b.kedaluwarsa).run();
+/* cabut tanda lama dan tambah yang baru dalam SATU batch (transaksi): gagal insert tidak menghilangkan tanda lama, dua POST serentak tidak membuat dua tanda aktif
+   (indeks unik lapor_selamat_aktif). Mengembalikan token_id tanda yang dicabut. */
+export const slGanti = async (env, p, nomor, b, kini) => { izin(p, "lapor_selamat", "ubah"); izin(p, "lapor_selamat", "tambah");
+  const [lama] = await env.DB.batch([env.DB.prepare("UPDATE lapor_selamat SET dicabut = ?2 WHERE nomor = ?1 AND dicabut IS NULL RETURNING token_id").bind(nomor, kini),
+    env.DB.prepare("INSERT INTO lapor_selamat (id, nomor, nama_panggil, status, kab, token_id, dibuat, kedaluwarsa) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+      .bind(b.id, nomor, b.nama_panggil, b.status, b.kab, b.token_id, kini, b.kedaluwarsa)]);
+  return lama.results.map(r => r.token_id); };
 export const slCabut = async (env, p, nomor, kini) => (await sedia(env, p, "lapor_selamat", "ubah",
   "UPDATE lapor_selamat SET dicabut = ?2 WHERE nomor = ?1 AND dicabut IS NULL RETURNING token_id").bind(nomor, kini).all()).results.map(r => r.token_id);
 export const slAktif = (env, p, nomor, kini) => sedia(env, p, "lapor_selamat", "baca",
@@ -1853,8 +1857,9 @@ export const slBersih = (env, p, batas) => sedia(env, p, "lapor_selamat", "hapus
 export const crTambah = (env, p, b, kini) => sedia(env, p, "lapor_cari", "tambah",
   "INSERT INTO lapor_cari (id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)")
   .bind(b.id, b.nomor_pencari, b.nama_dicari, b.ciri, b.lokasi_terakhir, b.waktu_terakhir, b.nomor_dicari, b.hubungan, b.kab, kini).run();
-export const crDaftar = async (env, p) => (await sedia(env, p, "lapor_cari", "baca",
-  "SELECT id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup_oleh, ditutup FROM lapor_cari ORDER BY dibuat DESC LIMIT 500").all()).results;
+/* wilayah disaring di SQL (awalan kode kab/prov) supaya LIMIT 500 global tidak menyembunyikan laporan wilayah akun; prefiks null = semua (BNPB) */
+export const crDaftar = async (env, p, prefiks = null) => (await sedia(env, p, "lapor_cari", "baca",
+  "SELECT id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup_oleh, ditutup FROM lapor_cari WHERE (?1 IS NULL OR substr(kab, 1, length(?1)) = ?1) ORDER BY dibuat DESC LIMIT 500").bind(prefiks).all()).results;
 export const crById = (env, p, id) => sedia(env, p, "lapor_cari", "baca", "SELECT id, kab, status FROM lapor_cari WHERE id = ?1").bind(id).first();
 /* status baru + baris riwayat dalam satu batch; status selain buka mengisi ditutup dan ditutup_oleh */
 export const crStatus = (env, p, id, status, catatan, oleh, kini) => { izin(p, "lapor_cari", "ubah"); izin(p, "lapor_cari_riwayat", "tambah");

@@ -42,7 +42,7 @@ uji("tanpa sesi kode sekali pakai: ditolak 401 yang menyuruh minta kode; nomor k
 uji("dengan sesi: x-pb wajib, isian divalidasi, tanda dibuat dengan tautan 7 hari", async () => {
   H1 = await sesi(WA, 1); H2 = await sesi(WA2, 2);
   assert.equal((await tanda({cookie: H1.cookie, origin: H1.origin})).s, 403, "tanpa x-pb");
-  for (const b of [{nama_panggil: ""}, {nama_panggil: "Budi 081234567890"}, {status: "aman"}, {kab: "99.99"}, {kab: "Bogor"}]) assert.equal((await tanda(H1, b)).s, 400, JSON.stringify(b));
+  for (const b of [{nama_panggil: ""}, {nama_panggil: "Budi 081234567890"}, {nama_panggil: "0812 3456 7890"}, {nama_panggil: "0812-3456-7890"}, {status: "aman"}, {kab: "99.99"}, {kab: "Bogor"}]) assert.equal((await tanda(H1, b)).s, 400, JSON.stringify(b));
   const r = await tanda(H1); assert.equal(r.s, 200, r.t);
   assert.match(r.j.tautan, /^\/lapor\/s\/[A-Za-z0-9_-]{43}$/); tautan = r.j.tautan; token = tautan.split("/").pop();
   assert.ok(Math.abs(r.j.kedaluwarsa - Date.now() - 7 * 864e5) < 60e3, "berlaku 7 hari");
@@ -150,4 +150,27 @@ uji("gerbang teks: kata \"aman\" tidak ada di berkas rute dan pesan fitur ini", 
   assert.doesNotMatch(readFileSync(new URL("../../src/lapor_selamat.js", import.meta.url), "utf8"), /\baman\b/i);
   const semua = [await tanda(H2, {kab: "99.99"}), await tanda(H2, {nama_panggil: ""}), await api("POST", "/api/lapor/selamat", {}), await api("GET", `/api/lapor/s/${"B".repeat(43)}`)];
   for (const r of semua) assert.doesNotMatch(r.t, /\baman\b/i);
+});
+
+uji("basis data: satu tanda aktif per nomor (indeks unik) dan riwayat orang dicari tak bisa diubah atau dihapus", async () => {
+  await tanda(H2);
+  await assert.rejects(DB.prepare("INSERT INTO lapor_selamat (id, nomor, nama_panggil, status, kab, token_id, dibuat, kedaluwarsa) VALUES ('cccccccccccccccc', ?, 'X', 'selamat', ?, 'dddddddddddddddd', 1, 2)").bind(WA2, KAB).run(), /UNIQUE/i);
+  await assert.rejects(DB.prepare("UPDATE lapor_cari_riwayat SET catatan = 'ubah'").run(), /append-only/);
+  await assert.rejects(DB.prepare("DELETE FROM lapor_cari_riwayat").run(), /append-only/);
+});
+
+uji("kunci laju per nomor bukan nomor mentah", async () => {
+  assert.ok(await n("laju_bnpb", "aksi LIKE 'lapor.selamat%' OR aksi LIKE 'lapor.cari.baru%'") > 0);
+  assert.equal(await n("laju_bnpb", "kunci GLOB '*62[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'"), 0);
+});
+
+uji("metode lain: 405 dengan Allow memuat DELETE", async () => {
+  const r = await api("PUT", "/api/lapor/selamat", {}, H1); assert.equal(r.s, 405);
+  assert.match(r.h.get("allow"), /DELETE/); assert.match(r.h.get("allow"), /POST/);
+});
+
+uji("halaman /lapor/s/<token> tamu: melayani halaman tautan dengan noindex dan tanpa referrer", async () => {
+  const r = await api("GET", `/lapor/s/${"A".repeat(43)}`);
+  assert.equal(r.s, 200); assert.match(r.t, /Kabar selamat/);
+  assert.match(r.h.get("x-robots-tag"), /noindex/); assert.equal(r.h.get("referrer-policy"), "no-referrer"); assert.match(r.h.get("cache-control"), /no-store/);
 });

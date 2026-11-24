@@ -1,7 +1,7 @@
 -- 0173: Kabar selamat dan orang dicari (paket data/kajian-bnpb/lapor-ai/, K91, D126-D130, tiket LA-80).
 -- lapor_selamat: satu tanda aktif per nomor terbukti (sesi /masuk); tautan bertokennya lahir di tautan_token (0164, src/token.js) dan di sini hanya token_id; berlaku 7 hari, bisa dicabut.
 -- lapor_cari: laporan orang belum ditemukan, hanya untuk meja BNPB dan BPBD wilayahnya; lapor_cari_riwayat: riwayat status, append-only.
--- Hanya CREATE ... IF NOT EXISTS; tanpa trigger dan tanpa data contoh. Pemilik yang menerapkan ke D1 produksi (wrangler d1 migrations apply).
+-- Hanya CREATE ... IF NOT EXISTS; tanpa data contoh. Satu tanda aktif per nomor dijaga indeks unik sebagian; lapor_cari_riwayat dikunci trigger (tanpa UPDATE dan DELETE). Pemilik yang menerapkan ke D1 produksi (wrangler d1 migrations apply).
 
 CREATE TABLE IF NOT EXISTS lapor_selamat (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS lapor_selamat (
   dicabut INTEGER
 );
 CREATE INDEX IF NOT EXISTS lapor_selamat_nomor ON lapor_selamat (nomor, dibuat);
+CREATE UNIQUE INDEX IF NOT EXISTS lapor_selamat_aktif ON lapor_selamat (nomor) WHERE dicabut IS NULL;
 CREATE INDEX IF NOT EXISTS lapor_selamat_dibuat ON lapor_selamat (dibuat);
 
 CREATE TABLE IF NOT EXISTS lapor_cari (
@@ -44,3 +45,12 @@ CREATE TABLE IF NOT EXISTS lapor_cari_riwayat (
   waktu INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS lapor_cari_riwayat_cari ON lapor_cari_riwayat (cari_id, waktu);
+
+CREATE TRIGGER IF NOT EXISTS lapor_cari_riwayat_tanpa_ubah BEFORE UPDATE ON lapor_cari_riwayat
+BEGIN
+  SELECT RAISE(ABORT, 'lapor_cari_riwayat append-only');
+END;
+CREATE TRIGGER IF NOT EXISTS lapor_cari_riwayat_tanpa_hapus BEFORE DELETE ON lapor_cari_riwayat
+BEGIN
+  SELECT RAISE(ABORT, 'lapor_cari_riwayat append-only');
+END;

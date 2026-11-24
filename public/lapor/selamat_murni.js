@@ -24,13 +24,15 @@ export function tokenDariJalur(pathname, search = "") {
 }
 
 const WIB = "Asia/Jakarta";
+const FMT_TGL = new Intl.DateTimeFormat("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: WIB});   // dibuat sekali, dipakai ulang tiap baris
+const FMT_JAM = new Intl.DateTimeFormat("id-ID", {hour: "2-digit", minute: "2-digit", timeZone: WIB});
 /* "24 November 2026, 14.05 WIB"; menerima ms epoch, detik epoch, atau teks tanggal ISO */
 export function waktuWib(t) {
   if (t == null || t === "") return "";
   const n = typeof t === "number" ? (t < 1e11 ? t * 1000 : t) : Date.parse(t);
   if (!Number.isFinite(n)) return "";
   const d = new Date(n);
-  return `${d.toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: WIB})}, ${d.toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit", timeZone: WIB})} WIB`;
+  return `${FMT_TGL.format(d)}, ${FMT_JAM.format(d)} WIB`;
 }
 
 export const tautanUtuh = (origin, tautan) => String(origin).replace(/\/+$/, "") + tautan;
