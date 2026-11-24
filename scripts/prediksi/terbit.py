@@ -134,7 +134,37 @@ def paparan(akar, daftar, cari, aturan):
                     out[k["id"]].setdefault(p["bahaya"], {})["jiwa"] = zona[k["geo"]][0]
                 else:                  # kab tak ada di paparan: jangan tampilkan angka metode lama berlabel zona
                     out[k["id"]].pop(p["bahaya"], None)
+    # KI-65: porsi banjir (zona tinggi, bahaya_kelas.json) dan longsor (kec >= ambang) per kecamatan, untuk gabungan tanpa hitung ganda
+    pb = {a["paparan"]["bahaya"]: a["paparan"] for a in aturan if (a.get("paparan") or {}).get("jenis") == "kec_bahaya"}
+    if "banjir" in pb and "longsor" in pb:
+        kelas = D.baca(os.path.join(akar, "public", "banjir", "data", "bahaya_kelas.json"), {}).get("kec", {})
+        per = {}
+        for kec, j in pend.items():
+            if kec_kab.get(kec):
+                bj = (kelas.get(kec) or {}).get("banjir")
+                per.setdefault(kec_kab[kec], []).append((j, bj[2] / 100 if bj else 0.0, 1.0 if (bah.get(kec, {}).get("longsor") or 0) >= pb["longsor"]["ambang"] else 0.0))
+        for kab, o in out.items():
+            if "banjir" in o and "longsor" in o:
+                v, jp = _gabung(per.get(kab, []), o["banjir"].get("jiwa", 0), o["longsor"].get("jiwa", 0))
+                o["gabungan"] = {"jiwa": v, "dijepit": jp}
     return out
+
+
+def gabung_jiwa(per_kec, b, l):
+    return _gabung(per_kec, b, l)[0]
+
+
+def _gabung(per_kec, b, l):
+    """KI-65. per_kec = [(jiwa kec, porsi banjir 0..1, porsi longsor 0..1)]; b, l = jiwa per bahaya yang SUDAH tampil (tak diubah).
+    Satu orang dihitung sekali: gabungan per kec = jiwa x (1 - (1-pb)(1-pl)) (porsi luas bebas satu sama lain, pola sim_tanggap.js);
+    longsor berporsi 1 (seluruh kec = batas atas) menelan banjir. Dijepit ke [max(b, l), b + l].
+    Independensi porsi hanya ASUMSI (label GABUNGAN_CATATAN). -> (jiwa, apakah jepitan mengubah nilai)."""
+    u = sum(j * (1 - (1 - pb) * (1 - pl)) for j, pb, pl in per_kec)
+    v = round(min(max(u, b, l), b + l))
+    return v, v != round(u)
+
+
+GABUNGAN_CATATAN = "perkiraan; independensi diasumsikan"
 
 
 def laju_ungsi(akar, cari, jenis):
@@ -217,6 +247,7 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
             if e and x.get(kode):
                 bantu[kode] = [r + [dict(zip(e["kol"], a or [])).get(kol)] if r else None for r, a in zip(x[kode], e["kab"].get(k["id"]) or [None] * 3)]
         xv = {**x, **bantu}
+        awal = len(waspada)
         for a in aturan:
             for n in (1, 2, 3):
                 if evaluasi(a, xv, n):
@@ -232,6 +263,13 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
                         d["laju_ungsi"] = round(f(k["id"]), 4)
                         d["kebutuhan"] = kebutuhan(round(d["jiwa"] * d["laju_ungsi"]), at["sphere"])
                     waspada.append({"kab": k["id"], "tenggang": n, "aturan": a["id"], "maka": a["maka"], "dampak": d})
+        for n in (1, 2, 3):   # KI-65: banjir dan longsor menyala bersama di kab+tenggang yang sama -> jiwa gabungan di kedua dampak
+            dua = [w for w in waspada[awal:] if w["kab"] == k["id"] and w["tenggang"] == n and w["aturan"] in ("banjir", "longsor")]
+            g = pap[k["id"]].get("gabungan")
+            if len(dua) == 2 and g:
+                for w in dua:
+                    w["dampak"]["gabungan_jiwa"] = g["jiwa"]
+                    w["dampak"]["gabungan_catatan"] = GABUNGAN_CATATAN
         kabs.append(x)
     kode = {}
     for kd, e in akhir.items():
@@ -245,7 +283,8 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
                     "kol": TAMPIL[kd], "vonis": vn, "status": (skor.get("kode", {}).get(kd) or {}).get("status", "menunggu")}
     out = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "kode": kode, "kab": kabs,
            "waspada": waspada, "aturan": [{k: a[k] for k in ("id", "maka", "semua", "salah_satu", "paparan", "catatan", "aktif", "alasan") if k in a} for a in at["aturan"]],
-           "sphere": at["sphere"], "kalibrasi": kal.get("ringkas", {}), "batasan": BATASAN}
+           "sphere": at["sphere"], "kalibrasi": kal.get("ringkas", {}), "batasan": BATASAN,
+           "gabungan_dijepit": sum(1 for v in pap.values() if (v.get("gabungan") or {}).get("dijepit"))}
     galat = periksa(out)
     if galat:
         raise ValueError("prediksi.json tidak sah: " + "; ".join(galat[:5]))
@@ -314,6 +353,15 @@ def periksa(d):
                     g.append(f"{k['id']} HJN tot {v['tot']} mustahil")
                 if kode in ("BNJ", "LSR", "GEL", "CEX") and v["lv"] not in (0, 1, 2, 3):
                     g.append(f"{k['id']} {kode} level {v['lv']}")
+    sb = {}
+    for w in d["waspada"]:
+        if w["aturan"] in ("banjir", "longsor") and "gabungan_jiwa" in w["dampak"]:
+            sb.setdefault((w["kab"], w["tenggang"]), {})[w["aturan"]] = w["dampak"]
+    for (kb_, n_), x in sb.items():
+        if len(x) == 2:
+            a_, b_, g_ = x["banjir"].get("jiwa", 0), x["longsor"].get("jiwa", 0), x["banjir"]["gabungan_jiwa"]
+            if not max(a_, b_) <= g_ <= a_ + b_ or g_ != x["longsor"]["gabungan_jiwa"]:
+                g.append(f"{kb_} +{n_}: gabungan {g_} di luar [max({a_}, {b_}), {a_ + b_}]")
     for w in d["waspada"]:
         kb = w["dampak"].get("kebutuhan")
         if kb and (kb["mengungsi"] < 0 or kb["jamban"] < 0):
@@ -379,6 +427,31 @@ def uji():
         bad = json.loads(json.dumps(o))
         bad["kab"][0]["HJN"][0][0] = 1.4
         assert periksa(bad), "peluang > 1 ditolak"
+    # KI-65: gabungan tanpa hitung ganda
+    assert gabung_jiwa([(1000, 0.2, 1.0)], 200, 1000) == 1000, "longsor seluruh kec menelan banjir"
+    assert gabung_jiwa([(1000, 0.2, 0.0), (500, 0.0, 1.0)], 200, 500) == 700, "tanpa irisan = jumlah"
+    assert gabung_jiwa([(1000, 0.5, 0.5)], 500, 500) == 750, "irisan bebas 0,5 x 0,5"
+    assert gabung_jiwa([(1000, 0.0, 0.0)], 300, 400) == 400, "dijepit ke atas oleh yang terbesar"
+    assert gabung_jiwa([(1000, 1.0, 1.0), (1000, 1.0, 0.0)], 100, 100) == 200, "dijepit ke jumlah"
+    assert _gabung([(1000, 0.0, 0.0)], 300, 400) == (400, True) and _gabung([(1000, 0.5, 0.5)], 500, 500) == (750, False), "hitungan jepitan"
+    with tempfile.TemporaryDirectory() as tmp:
+        o = terbit(data=tmp, entri=ent)
+        assert isinstance(o["gabungan_dijepit"], int) and o["gabungan_dijepit"] >= 0, "gabungan_dijepit int"
+        assert all(w["dampak"].get("gabungan_catatan") == GABUNGAN_CATATAN for w in o["waspada"] if "gabungan_jiwa" in w["dampak"]), "label independensi"
+        ba = {(w["kab"], w["tenggang"]): w["dampak"] for w in o["waspada"] if w["aturan"] == "banjir"}
+        ls = {(w["kab"], w["tenggang"]): w["dampak"] for w in o["waspada"] if w["aturan"] == "longsor"}
+        dua = [k for k in ba if k in ls and "gabungan_jiwa" in ba[k]]
+        assert dua, "kab yang kena banjir dan longsor punya gabungan"
+        for k in dua:
+            a, b, g = ba[k].get("jiwa", 0), ls[k].get("jiwa", 0), ba[k]["gabungan_jiwa"]
+            assert max(a, b) <= g <= a + b and ls[k]["gabungan_jiwa"] == g, (k, a, b, g)
+        assert any(max(ba[k]["jiwa"], ls[k]["jiwa"]) < ba[k]["gabungan_jiwa"] < ba[k]["jiwa"] + ls[k]["jiwa"] for k in dua if ba[k].get("jiwa") and ls[k].get("jiwa"))
+        bad = json.loads(json.dumps(o))
+        k0 = dua[0]
+        for w in bad["waspada"]:
+            if (w["kab"], w["tenggang"]) == k0 and w["aturan"] in ("banjir", "longsor"):
+                w["dampak"]["gabungan_jiwa"] = 10 ** 12
+        assert periksa(bad), "gabungan di atas jumlah ditolak"
     # aturan melaut dan angin: GEL/CEX sintetis; melaut tanpa jiwa, angin seluruh penduduk kab
     kolg, kolc = ["hs", "lv"], ["emb", "lv"]
     ent2 = ent + [{"t": t, "k": "GEL", "dibuat": "x", "sumber": "uji", "hari": ent[0]["hari"], "kol": kolg,

@@ -611,6 +611,12 @@ jobs:
             rm -f "$f.lama"
           }
           python3 scripts/data/senyap.py uji && stabil public/data/senyap.json python3 scripts/data/senyap.py || echo "::warning title=senyap::gagal"
+          # KI-53: senyap lintas bencana (banjir, longsor, kekeringan); sekali jalan, tiga berkas. Yang beda HANYA di cap "dibuat" dipulihkan.
+          if python3 -I scripts/umum/senyap.py uji && mkdir -p public/data/senyap && cp -R public/data/senyap /tmp/senyap.lama && python3 -I scripts/umum/senyap.py jalan; then
+            for j in banjir longsor kekeringan; do
+              [ -f public/data/senyap/$j.json ] && [ -f /tmp/senyap.lama/$j.json ] && python3 -c "import json,sys; g=lambda p:{k:v for k,v in json.load(open(p)).items() if k!='dibuat'}; sys.exit(0 if g(sys.argv[1])==g(sys.argv[2]) else 1)" public/data/senyap/$j.json /tmp/senyap.lama/$j.json && cp /tmp/senyap.lama/$j.json public/data/senyap/$j.json
+            done
+          else echo "::warning title=senyap_lintas::gagal; berkas lamanya dibiarkan"; fi
           python3 scripts/prediksi/kalender.py uji && stabil public/prediksi/data/kalender_risiko.json python3 scripts/prediksi/kalender.py || echo "::warning title=kalender::gagal"
           python3 scripts/bnpb/siaga.py --cek && stabil public/data/bnpb/siaga.json python3 scripts/bnpb/siaga.py || echo "::warning title=siaga::gagal"
 

@@ -57,6 +57,13 @@ def entri_metar(metrik, blok, sumber):
                            rincian={k: v["csi"] for k, v in cand.items()})
 
 
+def entri_koreksi(blok, sumber):
+    """Koreksi PM2,5 CAMS ke stasiun BMKG (prakiraan.json `koreksi`): MAE uji koreksi vs pembanding terkuat di antara CAMS mentah, persistensi 24 j, klimatologi stasiun."""
+    blok = blok or {}
+    mae = {"koreksi": blok.get("mae_model"), "cams_mentah": blok.get("mae_mentah"), "persistensi_24j": blok.get("mae_persistensi"), "klimatologi_stasiun": blok.get("mae_klimatologi")}
+    return entri_mae("MAE uji koreksi PM2,5 CAMS ke stasiun BMKG (µg/m³)", mae, "koreksi", (), blok.get("n_uji"), blok.get("selang"), blok.get("selang_vs"), sumber)
+
+
 def bangun(data=DATA):
     P, U, O, GC = baca("prakiraan", data), baca("uji_panen_pm25", data), baca("openaq_mos", data), baca("geoscf", data)
     galat = P.get("galat") or {}
@@ -73,6 +80,7 @@ def bangun(data=DATA):
     k["ensambel_cams_geoscf_bmkg"] = entri_mae("MAE uji ensambel CAMS+GEOS-CF koreksi bias (µg/m³), stasiun BMKG", gu.get("mae_uji"), "ensambel_koreksi_bias", ("ensambel",),
                                                gu.get("n_uji"), gu.get("selisih_mae_ensambel_koreksi_vs_terbaik_ci95"), gu.get("anggota_terbaik"), s_g)
     st = galat.get("stasiun")
+    k["koreksi_pm25_bmkg"] = entri_koreksi(P.get("koreksi"), s_p)
     k["prakiraan_pm25_stasiun"] = G.kosong("galat prakiraan PM2,5 kota vs stasiun", "belum ada galat prakiraan terhadap stasiun" if not st
                                            else "pembanding persistensi stasiun belum dihitung", s_p)
     k["prakiraan_metar_analisis"] = entri_metar("CSI kejadian asap METAR (analisis CAMS hari lampau) vs pembanding", galat.get("metar"), s_p)
@@ -99,6 +107,12 @@ def uji():
     b["persistensi"]["csi"] = .25
     b["selisih_csi"]["persistensi"]["ci"] = [.01, .09]
     assert entri_metar("c", b, [])["boleh_tampil"] is True
+    # koreksi: tanpa angka uji = kosong; model kalah dari klimatologi = false; menang atas semua dengan selang vs terkuat = true
+    assert entri_koreksi({}, [])["boleh_tampil"] is False
+    kb = {"mae_model": 9.0, "mae_mentah": 14.0, "mae_persistensi": 12.0, "mae_klimatologi": 10.0, "n_uji": 500, "selang": [-2.0, -0.2], "selang_vs": "klimatologi_stasiun"}
+    assert entri_koreksi(kb, [])["boleh_tampil"] is True
+    assert entri_koreksi(dict(kb, selang_vs="persistensi_24j"), [])["alasan"] == "belum ada selang"
+    assert entri_koreksi(dict(kb, mae_model=10.5), [])["boleh_tampil"] is False
     # data nyata: semua entri punya kunci kontrak dan berkas < 100 KB
     k = bangun()
     assert k and all({"boleh_tampil", "alasan", "metrik", "selang95", "vonis_prospektif"} <= set(v) for v in k.values()), list(k)

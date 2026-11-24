@@ -76,7 +76,7 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
 | M11 | Mutu label: cakupan sumber, tak teramati, buang laporan latihan, validasi silang logbook (kekeringan `ujilabel`, banjir label bersatu, karhutla logbook 94%) | ✓ | ✓ | ½ | ½ | ½ | ✗ | ½ | ½ | – | ½ | ✓ | KI-16 (Lsr, Cca) |
 | M12 | Label bebas pelapor (satelit, sensor, katalog) | ✓ | ½ | ½ | ½ | ✓ | ½ | ✓ | ✓ | ✓ | ½ | ½ | LS-* (Lsr) |
 | M13 | Klimatologi kebiasaan lapor sebagai offset (banjir CAMPUR, kekeringan bayangan) | – | ½ | ✗ | ½ | – | ✗ | – | – | – | – | ✓ | - |
-| M14 | Model bayangan dinilai berdampingan (/prediksi, kekeringan) | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✗ | – | ✗ | ✓ | KI-21 (Udr) |
+| M14 | Model bayangan dinilai berdampingan (/prediksi, kekeringan) | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✗ | – | ✗ | ✓ | - |
 | M15 | Pembanding produk luar (banjir GloFAS/GEOGLOWS/FloodHub/AIFS, kekeringan GDO kappa, gempa MAGMA) | ½ | ✓ | ½ | ½ | ✗ | ½ | ½ | ✓ | ½ | ½ | ✓ | KI-26 (Lsr), KI-04 (Gmp) |
 | M16 | Hindcast atau replay kejadian historis (karhutla 123 kasus, gunung api Merapi 2010, banjir Maret 2025) | ✓ | ✓ | ✗ | ✗ | – | ✗ | ½ | ✓ | ✓ | ✓ | ✓ | - |
 | M17 | Koreksi bias/MOS ke pengamatan (udara MOS arsip, rob offset IOC) | – | ½ | ✓ | ✗ | – | ½ | ✓ | ½ | – | – | ✗ | KI-24 (Udr) |
@@ -86,7 +86,7 @@ Kode kolom: Krh karhutla, Bnj banjir, Rob rob, Lsr longsor, Pss pesisir (gelomba
 
 | Kode | Teknik (asal terbaik) | Krh | Bnj | Rob | Lsr | Pss | Cca | Udr | Gmp | Tsn | Gna | Kkr | Tiket |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P1 | Ansambel 51 anggota, peluang melewati ambang | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | – | – | – | ✓ | ✓ | KI-31 (Rob, Pss) |
+| P1 | Ansambel 51 anggota, peluang melewati ambang | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | – | – | – | ✓ | ✓ | - |
 | P2 | Prakiraan +1..+3 per kab dibekukan dan dinilai di /prediksi | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | – | ✗ | ✗ | PB-51 (Gna, Kkr) |
 | P3 | Model eskalasi kejadian berjalan + ramal ulang sesudah pengamatan kedua (karhutla `lolos`) | ✓ | ✗ | – | – | – | – | ✗ | ✓ | – | ✗ | – | KI-30 (Bnj) |
 | P4 | Peluang tahunan sesudah declustering + backtest selang Poisson (gempa) | ½ | ✗ | – | ✗ | – | ✗ | – | ✓ | – | ✗ | – | - |
@@ -145,11 +145,12 @@ Kanal per bencana diambil dari `riset/R4` bagian CAKUPAN EWS, dikoreksi pemeriks
 | M7 | Rob, Cca, Kkr | Kejadian per wilayah terlalu sedikit. Audit banjir bagian 5: per kab kalah karena n kecil. |
 | M8 | Rob, Lsr, Pss, Cca | Selang dipasang di keluaran yang punya pasangan kalibrasi. Mesinnya lahir di KI-60. Keempat jenis ini belum punya keluaran besaran yang dinilai. |
 | M13 | Rob, Cca | Cca: `CEX_B` sudah memakai koefisien kab. Rob: label 565 kejadian baru dipakai di KI-06, dan offset baru masuk akal sesudah vonis itu. |
-| M14 | Rob, Pss, Gmp, Gna | Rob dan Pss belum punya model calon. Gmp: pemilihan generik lawan disesuaikan sudah setara dengan bayangan. Gna: peluang letusan GAGAL. |
+| M14 | Rob, Pss, Udr, Gmp, Gna | Udr: KI-21 DITUTUP, koreksi MOS kalah dari persistensi 24 jam (KI-24). Rob dan Pss belum punya model calon. Gmp: pemilihan generik lawan disesuaikan sudah setara dengan bayangan. Gna: peluang letusan GAGAL. |
 | M15 | Pss | Tidak ada produk luar abrasi tahunan selain metode DEA Coastlines yang sudah dipakai. |
 | M16 | Rob, Lsr, Cca | Satu kejadian per replay tidak memberi vonis (KI-45 DITUTUP). Replay Tapanuli ada di paket LS. |
 | M17 | Lsr, Kkr | Tidak ada pengamatan stasiun tanah terjangkau yang bisa dipakai untuk koreksi. |
 | M18 | Bnj, Lsr, Cca | Tidak ada deret harian bebas pelapor yang bisa dipakai untuk lonjakan. |
+| P1 | Rob, Pss | KI-31 DITUTUP: ensambel gelombang WAM ECMWF kosong untuk perairan Indonesia lewat Open-Meteo; GRIB ECMWF butuh eccodes di luar stdlib. |
 | P2 | Gmp | KI-32 DITUTUP: BSS susulan 0,0021. |
 | P3 | Udr, Gna | Udr: episode asap mengikuti titik api, dan eskalasi karhutla sudah meliputinya. Gna: peluang letusan GAGAL. |
 | P4 | Bnj, Lsr, Cca, Gna | Laju dari DIBI mencerminkan kebiasaan lapor. Gunung api n kecil (KI-33 DITUTUP). |

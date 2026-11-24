@@ -57,6 +57,36 @@ function tabel(m, a = ASUMSI) { const t = new Float32Array(2 * a.BETA_MAKS + 1);
 function peta(lr, m, a = ASUMSI) { const t = tabel(m, a), o = new Float32Array(lr.length);
   for (let k = 0; k < lr.length; k++) o[k] = t[Math.min(t.length - 1, Math.round(lr[k] * 2))]; return o; }
 
-const API = {ASUMSI, peluang, kejenuhan, lereng, tabel, peta};
+/* RUN-OUT (jangkauan luncur) dari sel tidak stabil: garis energi / sudut jangkauan (angle of reach, H/L). Sel dicapai bila
+   (z_sumber - z) / jarak >= HL dan alirannya hanya menurun atau mendatar (tetangga tak lebih tinggi, 8 arah). Logika kerucut energi yang sama dengan
+   awanPanasAlur() di public/gunungapi/sim_lahar.js (Heim 1932; Malin & Sheridan 1982), tetapi di sini merambat menurun dari
+   BANYAK sumber sekaligus, jadi tidak melompati punggungan. HL TIDAK diambil dari angka bersumber: rentang H/L longsor dalam
+   literatur (mis. Corominas 1996 menghubungkannya dengan volume) tidak bisa diverifikasi dari repo ini. Maka HL berupa ASUMSI
+   (bawaan 0,3 ~ 17 derajat; rentang geser 0,1-0,6) dan zona ini HIPOTESIS, belum divalidasi terhadap kejadian. */
+const HL = {BAWAAN: 0.3, MIN: 0.1, MAKS: 0.6};
+/* urutan indeks sel dari tertinggi ke terendah; dihitung sekali per DEM */
+function urutan(z) { const u = new Uint32Array(z.length); for (let i = 0; i < u.length; i++) u[i] = i; return u.sort((a, b) => z[b] - z[a]); }
+/* sumber: Uint8Array/boolean per sel (1 = tidak stabil); laut: Uint8Array opsional (1 = laut, tak pernah dimasuki zona).
+   Tetangga setinggi sel ini (dataran) ikut dilalui selama energi masih cukup: ditelusuri lewat tumpukan, bukan urutan tinggi.
+   Hasil {zona, panjang: panjang lintasan terjauh (m), n: sel zona termasuk sumber, nBaru: sel zona di luar sumber} */
+function runout(z, nx, ny, dx, sumber, hl = HL.BAWAAN, urut = urutan(z), laut = null) {
+  (Number.isFinite(hl) && hl >= HL.MIN && hl <= HL.MAKS) || salah(`H/L ${hl} di luar ${HL.MIN}-${HL.MAKS}`);
+  (z && z.length === nx * ny && sumber.length === z.length && dx > 0) || salah("kisi run-out tidak sah");
+  const N = z.length, e = new Float32Array(N).fill(-Infinity), d = new Float32Array(N), zona = new Uint8Array(N); let panjang = 0, n = 0, nBaru = 0;
+  for (let k = 0; k < N; k++) if (sumber[k] && !(laut && laut[k])) e[k] = z[k];
+  for (let q = 0; q < N; q++) { const k0 = urut[q]; if (e[k0] === -Infinity || zona[k0]) continue;
+    const st = [k0];
+    while (st.length) { const k = st.pop();
+      if (!zona[k]) { zona[k] = 1; n++; if (!sumber[k]) nBaru++; } if (d[k] > panjang) panjang = d[k];
+      const i = k % nx, j = (k / nx) | 0;
+      for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) { if (!di && !dj) continue;
+        const a = i + di, b = j + dj; if (a < 0 || b < 0 || a >= nx || b >= ny) continue;
+        const t = b * nx + a; if (z[t] > z[k] || (laut && laut[t])) continue;
+        const s = dx * (di && dj ? Math.SQRT2 : 1), e2 = e[k] - hl * s;
+        if (e2 >= z[t] && e2 > e[t]) { e[t] = e2; d[t] = d[k] + s; if (z[t] === z[k]) st.push(t); } } } }
+  return {zona, panjang, n, nBaru};
+}
+
+const API = {ASUMSI, HL, peluang, kejenuhan, lereng, tabel, peta, urutan, runout};
 if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.SimLongsor = API;
 })(typeof self !== "undefined" ? self : globalThis);

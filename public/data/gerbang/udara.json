@@ -108,6 +108,34 @@
     "selang_dihitung_untuk": "cams"
    }
   },
+  "koreksi_pm25_bmkg": {
+   "metrik": "MAE uji koreksi PM2,5 CAMS ke stasiun BMKG (µg/m³)",
+   "arah": "rendah",
+   "pembanding": "persistensi_24j (pembanding sederhana terkuat di berkas)",
+   "n": 3430,
+   "skor_model": 12.434,
+   "skor_pembanding": 10.548,
+   "selisih": -1.886,
+   "selang95": [
+    -2.809,
+    -1.021
+   ],
+   "boleh_tampil": false,
+   "alasan": "selisih -1.886 <= 0: pembanding sederhana menang atau seri",
+   "vonis_prospektif": null,
+   "sumber_berkas": [
+    "public/udara/data/prakiraan.json"
+   ],
+   "rincian": {
+    "mae_uji": {
+     "koreksi": 12.434,
+     "cams_mentah": 13.682,
+     "persistensi_24j": 10.548,
+     "klimatologi_stasiun": 48.676
+    },
+    "selang_dihitung_untuk": "persistensi_24j"
+   }
+  },
   "prakiraan_pm25_stasiun": {
    "metrik": "galat prakiraan PM2,5 kota vs stasiun",
    "arah": "rendah",

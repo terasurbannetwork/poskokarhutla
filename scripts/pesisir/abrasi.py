@@ -30,7 +30,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import citra as C  # COG, ambil, ke_utm, buka_ubin  # noqa: E402
+import abrasi_prospektif as AP  # noqa: E402  (KI-25: bekukan ramalan tahun depan, skor lawan persistensi)
 
 KELUAR = os.path.join(AKAR, "public/pesisir/data/abrasi.json")
 CACHE = os.path.join(AKAR, "data/raw/pesisir/adegan")
@@ -599,6 +601,8 @@ def main(pilih=None):
     with open(KELUAR + ".tmp", "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     os.replace(KELUAR + ".tmp", KELUAR)
+    h = AP.jalan(out)   # arsip prospektif append-only menolak menyusut; gagal di sini = berhenti dengan jelas
+    print(f"prospektif: {h['n']} baris teruji, vonis {h['vonis']}")
     for x in situs_out:
         print(f"{x['id']}: {x['terbaca']}/{x['transek']} transek terbaca, median {x['laju_median']} m/th, "
               f"{x['abrasi_nyata']} abrasi nyata, {x['akresi_nyata']} akresi nyata, {len(x['tahun'])} tahun")
@@ -756,6 +760,7 @@ def uji():
     # lompatan di tahun terakhir: belum cukup pengamatan sesudahnya
     assert [x["jenis"] for x in jenis_lompatan(sr[:9])] == ["belum pasti"]
     assert laju([]) is None and laju([[2000, 1], [2000, 2], [2000, 3]]) is None and tkrit(11) == 2.23 and tkrit(500) == 2.00
+    AP.uji()   # append-only (menyusut/berubah ditolak) dan persistensi-menang
     print("abrasi.py uji: lolos")
 
 

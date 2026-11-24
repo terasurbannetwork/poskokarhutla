@@ -18,7 +18,7 @@ const SKN = [{id: "dasar", n: "Prakiraan", w: "#5f6fb0"}, {id: "ansambel", n: "A
 const T = {k: null, titik: null, sisi: 6000, n: 100, sk: "dasar", op: {ekstrem: 250, sungai: 3, pasang: .5}, cn: SG.ASUMSI.CN,
   tanggul: [], pompa: [], pintu: false, tinggi: 2, laju: .5, alat: null, draf: [],
   dem: null, demKunci: "", prep: null, hasil: null, lihat: "dengan", t: 0, main: false, basi: false,
-  lapis: {air: true, longsor: true, citra: true}, kanvas: {}, peta: null, sibuk: false, kerja: undefined, tanpaWorker: false, ex: 1.5, pend: undefined, raf: 0,
+  lapis: {air: true, longsor: true, runout: false, citra: true}, hl: 0.3, kanvas: {}, peta: null, sibuk: false, kerja: undefined, tanpaWorker: false, ex: 1.5, pend: undefined, raf: 0,
   alatVer: 0, tampil: "72", hm: 2, hdQ: null, hdQp: null, hd: null, hdV: null, hdAkses: null, cache: {}, lahan: undefined, lahanKunci: "", dcn: 0, tg: null, tgCtx: null, pm: null, pita: null, vek: null, unitDaftar: undefined, awalJalan: false, mob: 2};
 const SLh = () => window.SimLahan, STg = () => window.SimTanggap, SHd = () => window.SimHand;
 const ik = d => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -261,7 +261,7 @@ function dataAlat() {
 }
 function terapkanLapis() { const m = T.peta; if (!m?.getLayer("gn-sat")) return;
   const v = (id, on) => m.getLayer(id) && m.setLayoutProperty(id, "visibility", on ? "visible" : "none");
-  const hd = T.tampil === "hand"; v("gn-sat", T.lapis.citra); v("gn-air", T.lapis.air); v("gn-longsor", T.lapis.longsor && !hd); v("gn-bgn", hd);
+  const hd = T.tampil === "hand"; v("gn-sat", T.lapis.citra); v("gn-air", T.lapis.air); v("gn-longsor", (T.lapis.longsor || T.lapis.runout) && !hd); v("gn-bgn", hd);
   m.setPaintProperty("gn-kotak", "line-color", T.lapis.citra || gelap() ? "#ffffff" : "#0b2545"); }
 const hasilLihat = () => T.hasil && (T.lihat === "dengan" && T.hasil.dengan ? T.hasil.dengan : T.hasil.dasar);
 /* warna kedalaman (m) dan indeks kerawanan longsor */
@@ -272,6 +272,9 @@ const warnaLongsor = p => p < .05 ? null : p < .2 ? [242, 200, 75, 120] : p < .4
 const basahStatus = M => M.sm != null ? M.sm >= .45 && M.a7 >= 25 : M.a7 >= 150;
 const mJam = t => { const X = T.hasil.X; return SL.kejenuhan(X.M.a7, X.resap[Math.min(J, Math.round(t))], basahStatus(X.M)); };
 const petaLongsor = t => SL.peta(T.prep.lr, mJam(t));
+/* jangkauan luncur (hipotesis): sel tak stabil = indeks >= 0,4; urutan tinggi dihitung sekali per DEM, bukan di jalur klik */
+const LABEL_RUNOUT = "hipotesis, belum divalidasi: H/L asumsi, bukan angka teruji";
+function zonaRunout(L) { const P = T.prep, D = T.dem; if (!P.urut) P.urut = SL.urutan(P.z); const src = new Uint8Array(L.length); for (let k = 0; k < L.length; k++) src[k] = L[k] >= .4 && !P.laut[k] ? 1 : 0; return SL.runout(P.z, D.nx, D.ny, D.dx, src, T.hl, P.urut, P.laut); }
 /* kanvas berubah -> unggah tekstur: sumber kanvas MapLibre hanya mengunggah ulang saat "play"; jeda lagi sesudahnya */
 function segarKanvas(id) { const s = T.peta.getSource(id); if (!s) return; s.play(); clearTimeout(T.jedaK?.[id]); (T.jedaK ||= {})[id] = setTimeout(() => s.pause(), 120); }
 function lukis(id, N, warna) { const c = T.kanvas[id]; if (!c) return; const px = c.img.data; px.fill(0);
@@ -285,7 +288,8 @@ function gambar(paksa) {
   if (!paksa && kunci === T.lukisKunci) return 0; T.lukisKunci = kunci;
   const N = R.nx * R.ny, a = Math.floor(t), b = Math.min(J, a + 1), f = t - a, K = R.kedalaman;
   lukis("gn-air", N, k => warnaAir(K[a * N + k] * (1 - f) + K[b * N + k] * f));
-  const lk = Math.round(t) + "|" + T.nJalan; if (T.lapis.longsor && (paksa || lk !== T.lsKunci)) { T.lsKunci = lk; const L = petaLongsor(t); lukis("gn-longsor", N, k => warnaLongsor(L[k])); }
+  const lk = Math.round(t) + "|" + T.nJalan + "|" + T.lapis.runout + "|" + T.hl; if ((T.lapis.longsor || T.lapis.runout) && (paksa || lk !== T.lsKunci)) { T.lsKunci = lk; const L = petaLongsor(t), Z = T.lapis.runout ? zonaRunout(L) : null; T.runout = Z;
+    lukis("gn-longsor", N, k => (T.lapis.longsor && warnaLongsor(L[k])) || (Z && Z.zona[k] ? [11, 37, 69, 95] : null)); const lr = $("#gnRunH"); if (lr && Z) lr.textContent = `Panjang lintasan terjauh ${bulat(Z.panjang)} m dari sel tak stabil, ${bulat(ha(Z.nBaru * T.dem.dx ** 2))} ha di luar sel sumber`; }
   const lb = $("#gnJam"); if (lb) lb.textContent = `+${a} j, ${pukul(a)}`;
   const lu = $("#gnLuasT"); if (lu) lu.textContent = `${bulat(ha(R.luas[a]))} ha tergenang`;
   const g = $("#gnT"); if (g && +g.value !== a) g.value = a;
@@ -405,6 +409,7 @@ function pasangGeser() {
   gs("gnSisi", v => { T.sisi = v * 1000; T.sisiManual = true; }, v => fmt(v) + " km"); gs("gnE", v => T.op.ekstrem = v, v => fmt(v) + " mm");
   gs("gnS", v => T.op.sungai = v, tampilQ, () => { const p = $("#gnSK"); if (p) p.textContent = `${T.op.sungai === 3 ? "Q20 (sekali dalam 20 tahun)" : "Q5 (sekali dalam 5 tahun)"}, puncak jam +30`; });
   gs("gnP", v => T.op.pasang = v, v => angka1(v) + " m"); gs("gnTg", v => T.tinggi = v, v => angka1(v) + " m"); gs("gnPq", v => T.laju = v, v => angka1(v) + " m³/dtk"); gs("gnCN", v => { if (T.lahan) T.dcn = v; else T.cn = v; }, tampilCN);
+  const hl = $("#gnHL"); if (hl) hl.oninput = () => { T.hl = +hl.value; $("#gnHLV").textContent = T.hl.toLocaleString("id-ID", {minimumFractionDigits: 2}); T.lukisKunci = null; jadwal(); }; /* gambar() menghitung di rAF, bukan di handler */
 }
 /* fragmen kecil, bukan panel penuh */
 function segarPerlakuan() {
@@ -424,7 +429,7 @@ function klikPanel(e) {
   if ("pintu" in d) { T.pintu = !T.pintu; tandaiBasi(); return segarPerlakuan(); }
   if ("hapus" in d) { T.tanggul = []; T.pompa = []; T.pintu = false; T.draf = []; tandaiBasi(); segarPerlakuan(); return nanti(segarAlat); }
   if (d.glihat) { if (T.lihat === d.glihat) return; T.lihat = d.glihat; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); return nanti(() => { segarHasil(); jadwal(); }); }
-  if (d.glapis) { const k = d.glapis; T.lapis[k] = !T.lapis[k]; b.setAttribute("aria-pressed", T.lapis[k]); return nanti(() => { terapkanLapis(); if (k === "longsor" && T.lapis.longsor) { T.lsKunci = null; T.lukisKunci = null; jadwal(); } }); }
+  if (d.glapis) { const k = d.glapis; T.lapis[k] = !T.lapis[k]; b.setAttribute("aria-pressed", T.lapis[k]); return nanti(() => { terapkanLapis(); if ((k === "longsor" || k === "runout") && T.lapis[k]) { T.lsKunci = null; T.lukisKunci = null; jadwal(); } }); }
   if (b.id === "gnJalan") { b.textContent = "Menghitung…"; return nanti(jalan); }
   if (d.gq) return nanti(() => pakaiDebit(d.gq));
   if (b.id === "gnHand") { if (T.tampil === "hand") return nanti(keluarHand); if (T.sibuk || !T.prep) return toast("Tunggu simulasi selesai dulu"); b.textContent = "Menghitung…"; return nanti(hand); }
@@ -465,8 +470,11 @@ function hasilHtml() {
       <tr><td>Rumah terendam <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span> (jiwa ÷ ${angka1(STg().ASUMSI.JIWA_RUMAH)} per rumah)</td><td class="n">${rumah(r)}</td></tr>
       <tr><td>Lereng dengan indeks kerawanan longsor ≥ 0,4 di jam +72</td><td class="n">${bulat(ha(nL))} ha</td></tr></tbody></table>
     <p class="fnd" style="margin-top:4px">Indeks longsor: ${LABEL_LONGSOR}.</p>
-    <div class="simchips" role="group" aria-label="Lapisan peta" style="margin-top:10px">${[["air", "Genangan"], ["longsor", "Kerawanan longsor"], ["citra", "Citra satelit"]].map(([k, nm]) => `<button type="button" data-glapis="${k}" aria-pressed="${T.lapis[k]}">${nm}</button>`).join("")}
+    <div class="simchips" role="group" aria-label="Lapisan peta" style="margin-top:10px">${[["air", "Genangan"], ["longsor", "Kerawanan longsor"], ["runout", "Jangkauan longsor (hipotesis)"], ["citra", "Citra satelit"]].map(([k, nm]) => `<button type="button" data-glapis="${k}" aria-pressed="${T.lapis[k]}">${nm}</button>`).join("")}
       <button type="button" id="gnKamera">Putar kamera</button></div>
+    ${T.lapis.runout ? `<div class="lbl" style="margin-top:10px">Jangkauan luncur longsor <span class="pill l3" style="height:17px;font-size:9.5px">hipotesis, belum divalidasi</span></div>
+    ${geser("gnHL", "H/L (tinggi jatuh ÷ jarak luncur, asumsi)", SL.HL.MIN, SL.HL.MAKS, .05, T.hl, v => Number(v).toLocaleString("id-ID", {minimumFractionDigits: 2}))}
+    <p class="fnd" id="gnRunH"></p><p class="fnd">Dari sel indeks ≥ 0,4 merambat menurun sampai garis energi H/L habis. H/L bukan angka teruji (rentang literatur tidak diverifikasi di sini): geser sendiri, makin kecil makin jauh.</p>` : ""}
     ${b ? `<div class="simchips" role="group" aria-label="Hasil yang dilihat" style="margin-top:6px"><button type="button" data-glihat="dasar" aria-pressed="${T.lihat === "dasar"}">Tanpa perlakuan</button><button type="button" data-glihat="dengan" aria-pressed="${T.lihat === "dengan"}">Dengan perlakuan</button></div>
     <div class="lbl" style="margin-top:12px">Sebelum dan sesudah perlakuan</div>
     <table class="tb3" style="margin-top:4px"><thead><tr><th></th><th class="n">Tanpa</th><th class="n">Dengan</th><th class="n">Selisih</th></tr></thead><tbody>
@@ -667,12 +675,13 @@ function peringkatHtml() {
 /* dok jam + legenda: dibangun sekali per hasil; #gnMain/#gnT tidak diganti (fokus tetap) */
 function dok() {
   const el = $("#simLegenda"); if (!el) return; if (T.tampil === "hand" && T.hd) return dokHand(el);
-  const R = hasilLihat(), kunci = R ? "h" + T.nJalan + T.lapis.longsor : "kosong";
+  const R = hasilLihat(), kunci = R ? "h" + T.nJalan + T.lapis.longsor + T.lapis.runout : "kosong";
   if (T.dokKunci === kunci && el.querySelector(R ? "#gnT" : ".fnd")) return jadwal(); T.dokKunci = kunci;
   el.innerHTML = R ? `<div class="gn-waktu"><button type="button" class="gn-ib" id="gnMain" aria-label="Putar 72 jam">${ik(IK.main)}</button>
       <input type="range" id="gnT" min="0" max="${J}" step="1" value="${Math.floor(T.t)}" aria-label="Jam simulasi"><b id="gnJam" class="num"></b></div>
     <div class="leg row"><span id="gnLuasT" class="num"></span>${[[.1, "10 cm"], [.5, "50 cm"], [1, "1 m"], [2, "2 m"], [4, "≥ 4 m"]].map(([d, n]) => `<span><i class="sw" style="background:rgba(${warnaAir(d).slice(0, 3).join(",")},.9)"></i>${n}</span>`).join("")}
-      ${T.lapis.longsor ? `<span><i class="sw" style="background:#c9503a"></i>indeks longsor ≥ 0,4 (relatif)</span>` : ""}</div>`
+      ${T.lapis.longsor ? `<span><i class="sw" style="background:#c9503a"></i>indeks longsor ≥ 0,4 (relatif)</span>` : ""}
+      ${T.lapis.runout ? `<span><i class="sw" style="background:rgba(11,37,69,.4)"></i>jangkauan luncur longsor (${LABEL_RUNOUT})</span>` : ""}</div>`
     : `<div class="lbl" style="margin:0">Genangan 72 jam</div><div class="fnd">Pilih area lalu jalankan simulasi.</div>`;
   if (!R) return;
   ikonMain(); $("#gnMain").onclick = putar;

@@ -1,0 +1,17 @@
+{
+  "unit": "kab-hari; semua kab/kota 38 provinsi (public/geo/kecamatan)",
+  "ramalan": "level status taktis kab pada hari d = maksimum level kluster aktif (aturan.py + gerbang firespot harian.py) di kab itu",
+  "label": "y(d+1) = ada >= 1 kluster berpola firespot 'ya' dengan deteksi terakhir tepat di hari d+1 pada kab itu (FIRMS saja)",
+  "tingkat": {"Waspada": 1, "Siaga": 2, "Awas": 3},
+  "sensor": ["S-NPP", "NOAA-20"],
+  "latih": ["2019-01-01", "2022-12-31"],
+  "uji": ["2023-01-01", "2025-12-31"],
+  "cuaca": "FWI harian MERRA-2 (risiko_mingguan.deret_cuaca, sel 0,5 derajat) sebagai pengganti FWI Open-Meteo operasional; tanpa cuaca -> None seperti produksi",
+  "pembanding": ["persistensi asli", "persistensi alarm disamakan", "klimatologi kab x bulan alarm disamakan"],
+  "pembanding_terbaik": "ETS tertinggi di himpunan uji",
+  "imbang_skor": "jitter berbenih tetap 1e-9",
+  "bootstrap": {"B": 300, "seed": 7, "blok": "provinsi x minggu ISO hari target"},
+  "min_alarm": 20,
+  "min_positif": 20,
+  "vonis": "TAK TERUKUR bila alarm model < min_alarm atau positif < min_positif; TIDAK LULUS bila ETS(status)-ETS(pembanding terbaik) <= 0; LULUS bila batas bawah CI95 > 0; selain itu TIDAK MEYAKINKAN"
+}

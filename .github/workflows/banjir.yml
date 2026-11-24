@@ -15,6 +15,10 @@ on:
         description: "Panen GSMaP per jam (JAXA) untuk jendela kejadian genangan Jakarta (gsmap.py; ratusan berkas, puluhan menit) lalu commit public/banjir/data/genangan/gsmap.json"
         type: boolean
         default: false
+      rob_uji:
+        description: "Uji balik rob KI-06 (rob_uji.py kunci + jalan, SEKALI: dilewati selamanya setelah scripts/banjir/rob_uji.buka ada di repo)"
+        type: boolean
+        default: false
 
 concurrency:
   group: data
@@ -177,6 +181,25 @@ jobs:
         run: |
           command -v pdftotext >/dev/null || sudo apt-get install -y -qq poppler-utils >/dev/null || true
           python3 scripts/banjir/rob.py
+
+      # KI-06, SEKALI SEUMUR HIDUP: uji balik ambang rob dibuka satu kali (rob_uji.buka dibuat O_EXCL). Lewat jadwal bila belum dibuka,
+      # atau dispatch dengan input rob_uji. Urutan WAJIB: uji, kunci (sidik), jalan (membuka). Commit hanya bila SEMUA berhasil, jadi gagal
+      # di tengah tidak meninggalkan .buka (tree runner dibuang); sesudah .buka ter-commit langkah ini dilewati selamanya.
+      - name: Uji balik rob KI-06 (sekali, boleh gagal)
+        if: github.event_name != 'workflow_dispatch' || inputs.rob_uji
+        continue-on-error: true
+        run: |
+          [ -e scripts/banjir/rob_uji.buka ] && { echo "rob_uji sudah dibuka, dilewati"; exit 0; }
+          set -e
+          python3 -I scripts/banjir/rob_uji.py uji
+          python3 -I scripts/banjir/rob_uji.py kunci
+          python3 -I scripts/banjir/rob_uji.py jalan
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          RU="scripts/banjir/rob_uji.sidik scripts/banjir/rob_uji.buka scripts/banjir/rob_uji.jejak.jsonl public/banjir/data/rob_uji.json"
+          git add -f $RU
+          git commit -q -m "data: uji balik rob KI-06 dibuka (sekali) $(TZ=Asia/Jakarta date +%F)" -- $RU
+          git pull -q --rebase --autostash && git push -q || { sleep 20; git pull -q --rebase --autostash && git push -q; }
 
       - name: InaRISK dan riwayat BNPB (bila belum ada)
         continue-on-error: true

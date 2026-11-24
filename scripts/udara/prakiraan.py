@@ -4,9 +4,10 @@ Masukan : scripts/udara/kota.json (514 kab/kota, titik berbobot penduduk), Open-
           env WAQI_TOKEN (opsional) untuk stasiun terukur, Iowa Environmental Mesonet (arsip METAR, network ID__ASOS) + public/data/metar.json.
 Keluaran: public/udara/data/prakiraan.json (kontrak udara-kontrak.md), data/raw/udara/r24_kota.json (riwayat r24 per kota, untuk laporan),
           data/raw/udara/stasiun_arsip.json (pengukuran WAQI, bila ada token).
-Koreksi : per stasiun, regresi lewat titik nol obs = f x CAMS pada pasangan jam 30 hari, f disusutkan ke 1:
-          f* = (n f + K) / (n + K), K = 48 jam. Kota dalam 50 km: rata-rata f* berbobot 1/d^2, lalu dilemahkan linier ke 1 sampai 50 km.
-          Galat out-of-sample: f dari pasangan > 7 hari lalu, diuji pada rata-rata harian 7 hari terakhir.
+Koreksi : faktor dari koreksi_bmkg.py (stasiun PM2,5 BMKG, regresi lewat titik nol obs = f x CAMS, f* = (n f + K) / (n + K), K = 48 jam,
+          nasional atau per stasiun menurut validasi MAE + log-likelihood). Dipakai HANYA bila gerbang_udara.entri_koreksi boleh_tampil (diuji sekali,
+          dikunci sidik); selain itu angka CAMS mentah dan label "belum dikoreksi". Jalur WAQI lama (WAQI_TOKEN) tak lagi dipakai di main.
+          Kota dalam 50 km stasiun: rata-rata f* berbobot 1/d^2, dilemahkan linier ke 1 sampai 50 km (faktor_kota).
 Galat METAR: kejadian teramati = hari WIB dengan >= 3 laporan HZ/FU dan jarak pandang < 5 km (>= 12 laporan sehari),
           kejadian model = r24 >= 55,5 di kota terdekat bandara (<= 50 km). Hari lampau saja (CAMS 31 hari lalu).
 """
@@ -24,6 +25,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "umum"))
 import alat
 import pembanding as pb
+import importlib.util
+_sp = importlib.util.spec_from_file_location("gerbang_udara", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gerbang_udara.py"))
+GU = importlib.util.module_from_spec(_sp)
+sys.modules["gerbang_udara"] = GU
+_sp.loader.exec_module(GU)
 
 URL_AQ = "https://air-quality-api.open-meteo.com/v1/air-quality"
 URL_META = "https://air-quality-api.open-meteo.com/data/cams_global/static/meta.json"
@@ -106,6 +112,30 @@ def faktor_kota(kota, stasiun):
     fw = sum(wi * s["f"] for wi, (_, s) in zip(w, dk)) / sum(w)
     dmin, sdek = min(dk, key=lambda x: x[0])
     return round(1 + (fw - 1) * (1 - dmin / R_KOTA), 3), sdek["id"]
+
+
+def koreksi_bmkg(kota, k, stasiun_bmkg):
+    """k = isi koreksi_bmkg.json, stasiun_bmkg = bmkg_pm25.json['stasiun'] -> (blok `koreksi` prakiraan.json, f_kota {kode: (f, id)}).
+    Faktor dipakai hanya bila gerbang_udara.entri_koreksi boleh_tampil; hasil uji tetap dicatat di blok meski tidak dipakai."""
+    k = k or {}
+    blok = {"status": "belum", "vonis": k.get("vonis", "BELUM DIUJI"), "n_stasiun": 0, "faktor_median": 1.0,
+            "mae_model": k.get("mae_model"), "mae_mentah": k.get("mae_mentah"), "mae_persistensi": k.get("mae_persistensi"),
+            "mae_klimatologi": k.get("mae_klimatologi"), "selang": k.get("selang"), "selang_vs": k.get("selang_vs"), "n_uji": k.get("n_uji"),
+            "metode": f"koreksi ke stasiun PM2,5 BMKG diuji satu kali ({k.get('vonis', 'belum diuji')}): {k.get('alasan', 'belum ada hasil uji')}; angka mentah CAMS dipakai"}
+    if not GU.entri_koreksi(blok, [])["boleh_tampil"]:
+        return blok, {}
+    if (k.get("pilih") or {}).get("pilih") == "nasional":
+        f_kota = {c["kode"]: (round(k["f_nasional"], 3), "nasional") for c in kota}
+    else:
+        pos = {s["nama"].upper(): s for s in stasiun_bmkg}
+        st = [{"id": x["id"], "lat": pos[x["id"]]["lat"], "lon": pos[x["id"]]["lon"], "f": x["f"]} for x in k["faktor_stasiun"] if x["id"] in pos]
+        f_kota = {c["kode"]: faktor_kota(c, st) for c in kota}
+    fm = sorted(v[0] for v in f_kota.values() if v[1])
+    if not fm:
+        return blok, {}
+    blok.update(status="terkoreksi", n_stasiun=k.get("n_stasiun", 0), faktor_median=fm[len(fm) // 2],
+                metode=f"faktor koreksi ke stasiun PM2,5 BMKG ({(k.get('pilih') or {}).get('pilih')}), lolos gerbang: MAE {k['mae_model']} vs pembanding terkuat {k.get('pembanding_terkuat')}")
+    return blok, f_kota
 
 
 def arsip_waqi(token, arsip, t):
@@ -355,21 +385,10 @@ def hitung(kota, waktu, seri, t, f_kota):
 def main():
     t = alat.sekarang()
     kota = alat.kota()
-    token = os.environ.get("WAQI_TOKEN", "").strip()
-    arsip_p = os.path.join(alat.RAW, "stasiun_arsip.json")
-    arsip = {}
-    if token:
-        try:
-            arsip = arsip_waqi(token, alat.muat(arsip_p, {}), t)
-            alat.simpan(arsip_p, arsip)
-        except Exception as e:
-            alat.log(f"::warning title=udara WAQI::{str(e).replace(token, '***')}")
-            arsip = {}
-    titik = [(k["lat"], k["lon"]) for k in kota] + [(a["lat"], a["lon"]) for a in arsip.values()]
+    titik = [(k["lat"], k["lon"]) for k in kota]
     waktu, seri = cams(titik)
-    st, galat_st = nilai_stasiun(arsip, waktu, [s[0] for s in seri[len(kota):]], t) if arsip else ([], None)
-    st = [s for s in st if s["n"]]
-    f_kota = {k["kode"]: faktor_kota(k, st) for k in kota} if st else {}
+    blok_kor, f_kota = koreksi_bmkg(kota, alat.keluaran("koreksi_bmkg.json", {}), alat.keluaran("bmkg_pm25.json", {}).get("stasiun", []))
+    galat_st = None
     baris, hari, jam, rw = hitung(kota, waktu, seri[:len(kota)], t, f_kota)
 
     # riwayat r24 kota (untuk laporan): hari lampau ditimpa analisis terbaru, simpan 120 hari
@@ -444,12 +463,8 @@ def main():
         jalan_model = alat.iso(run)
     except Exception:
         jalan_model = None
-    fm = sorted(v[0] for v in f_kota.values() if v[1])
     d = {"v": 1, "dibuat": alat.iso(dt.datetime.now(dt.timezone.utc)), "jalan_model": jalan_model, "jam": jam, "hari": hari, "kota": baris,
-         "koreksi": {"status": "terkoreksi" if fm else "belum",
-                     "metode": ("regresi lewat nol per stasiun WAQI 30 hari, susut ke 1 (K=48 jam), kota <=50 km berbobot 1/d^2" if fm
-                                else "tanpa stasiun terukur (WAQI_TOKEN tak ada); angka mentah CAMS"),
-                     "n_stasiun": len(st), "faktor_median": fm[len(fm) // 2] if fm else 1.0},
+         "koreksi": blok_kor,
          "galat": {"stasiun": galat_st, "metar": galat_metar, "metar_prakiraan": galat_pr},
          "sumber": "CAMS (Copernicus) via Open-Meteo; METAR via Iowa Environmental Mesonet"}
     lama_p = alat.keluaran("prakiraan.json", {})
@@ -557,6 +572,15 @@ def uji():
     assert len(b2) == 2
     b3 = arsip_jalan(b2, "2027-02-01T03:00Z", ["2027-02-01", "2027-02-02", "2027-02-03"], brs)
     assert list(b3) == ["2027-02-01T03:00Z"], b3
+    # koreksi BMKG: hasil gagal / tak ada = blok "belum" tanpa faktor; lolos gerbang = faktor nasional dipakai
+    kt = [{"kode": "1", "lat": 0, "lon": 0}]
+    b0, f0 = koreksi_bmkg(kt, {"vonis": "GAGAL", "alasan": "kalah", "mae_model": 10, "mae_mentah": 14, "mae_persistensi": 12, "mae_klimatologi": 9, "n_uji": 100, "selang": [0.1, 1.0], "selang_vs": "klimatologi_stasiun", "f_nasional": .7}, [])
+    assert b0["status"] == "belum" and f0 == {} and b0["vonis"] == "GAGAL" and "angka mentah CAMS" in b0["metode"], b0
+    assert koreksi_bmkg(kt, None, [])[0]["vonis"] == "BELUM DIUJI"
+    lolos = {"vonis": "LOLOS", "alasan": "x", "mae_model": 8, "mae_mentah": 14, "mae_persistensi": 12, "mae_klimatologi": 10, "n_uji": 100, "selang": [-3.0, -1.0], "selang_vs": "klimatologi_stasiun",
+             "pilih": {"pilih": "nasional"}, "f_nasional": .7, "faktor_stasiun": [], "pembanding_terkuat": "klimatologi_stasiun"}
+    b1, f1 = koreksi_bmkg(kt, lolos, [])
+    assert b1["status"] == "terkoreksi" and f1 == {"1": (.7, "nasional")}, (b1, f1)
     print("prakiraan uji: lulus")
 
 

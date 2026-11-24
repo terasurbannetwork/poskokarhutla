@@ -91,11 +91,18 @@
       if (m < 1) continue; const o = K[t.prov + "|" + t.kab] ||= {prov: t.prov, kab: t.kab, lv: 0, titik: 0, hari: null}; o.titik++; if (m > o.lv) { o.lv = m; o.hari = hm; } }
     const L = Object.values(K).map(o => ({...o, jiwa: jiwaKab(pk, o.prov, o.kab, kodeProv)})).sort((a, b) => b.lv - a.lv || (b.jiwa ?? -1) - (a.jiwa ?? -1) || b.titik - a.titik);
     return {sampai: rob.hari[n - 1], daftar: L, jiwa: L.reduce((a, x) => a + (x.jiwa || 0), 0), tanpaJiwa: L.filter(x => x.jiwa == null).length}; }
+  /* KI-67: pelabuhan (pelabuhan_kab.json) di kab/kota berstatus rob >= Waspada atau yang titik gelombangnya >= kelas Tinggi (2,5 m) pada hari tgl.
+     D = hasil dampakRob (null bila data rob tak mencakup hari itu: status rob tak dikarang, lv 0). Titik gelombang dipasang lewat koordinat tepat. */
+  function pelabuhanZona(pel, D, gel, tgl) {
+    const rob = new Map((D?.daftar || []).map(x => [x.prov + "|" + x.kab, x])), gi = new Map((gel?.titik || []).map(r => [r[0] + "|" + r[1], r]));
+    return (pel?.pelabuhan || []).map(([nama, , , jenis, prov, kab, , gl, go]) => { const g = gl == null ? null : gi.get(gl + "|" + go), hs = g ? hsHari(gel, g, tgl) : null;
+      return {nama, jenis, prov, kab, lv: rob.get(prov + "|" + kab)?.lv || 0, hs, kelas: hs == null ? null : kelasGel(hs)[1]}; })
+      .filter(x => x.lv >= 1 || (x.hs != null && x.hs >= KELAS_GEL[2][0])).sort((x, y) => y.lv - x.lv || (y.hs ?? -1) - (x.hs ?? -1) || x.nama.localeCompare(y.nama, "id")); }
   /* dampak tercatat kejadian Banjir Rob (DIBI) per kab/kota, seluruh tahun */
   function dampakRiwayat(rob) { const P = {};
     for (const k of rob?.kejadian || []) { const o = P[k.prov + "|" + k.kab] ||= {prov: k.prov, kab: k.kab, n: 0, terdampak: 0, mengungsi: 0, rumah: 0, rusak: 0, meninggal: 0, akhir: ""};
       o.n++; o.terdampak += k.terdampak || 0; o.mengungsi += k.mengungsi || 0; o.rumah += k.rumah_terendam || 0; o.rusak += k.rumah_rusak || 0; o.meninggal += k.meninggal || 0; if (k.tanggal > o.akhir) o.akhir = k.tanggal; }
     return Object.values(P).sort((a, b) => b.terdampak - a.terdampak || b.rumah - a.rumah || b.n - a.n); }
 
-  g.Pesisir = {dampakRob, dampakRiwayat, jiwaKab, ketLompatan, med, KELAS_GEL, kelasGel, tglWIB, hariKe, abrasiTercepat, abrasiBersih, abrasiSitus, tinjau, bersih, BASE, perSitus, seriSitus, robHari, robSeri, robBmkg, robTahun, pasutPekan, hsHari, gelHari, gelBmkg, idxHari};
+  g.Pesisir = {dampakRob, pelabuhanZona, dampakRiwayat, jiwaKab, ketLompatan, med, KELAS_GEL, kelasGel, tglWIB, hariKe, abrasiTercepat, abrasiBersih, abrasiSitus, tinjau, bersih, BASE, perSitus, seriSitus, robHari, robSeri, robBmkg, robTahun, pasutPekan, hsHari, gelHari, gelBmkg, idxHari};
 })(typeof globalThis !== "undefined" ? globalThis : window);
