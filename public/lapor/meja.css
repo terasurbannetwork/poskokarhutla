@@ -899,3 +899,28 @@ body{display:flex;flex-direction:column;height:100dvh}
 .mj-dr .dr-tabel tbody tr:hover{background:none}
 .mj-dr .dr-tabel tbody th{padding:10px 12px;border-top:1px solid var(--line);background:none;color:var(--ink);font-weight:600}
 .mj-dr .dr-tabel .n{text-align:center;font-variant-numeric:tabular-nums}
+/* tombol tema di baris merek: kunci "pk-tema" bersama /prediksi, anti kedip lewat /halaman_awal.js; ikon polos tanpa kotak */
+.mj-tema{display:inline-grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:999px;background:none;color:var(--ink2);cursor:pointer;flex:none}
+.mj-tema:hover{color:var(--brand2)}
+.mj-tema svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-tema .mj-matahari{display:none}
+:root[data-theme="dark"] .mj-tema .mj-bulan{display:none}
+:root[data-theme="dark"] .mj-tema .mj-matahari{display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mj-tema .mj-bulan{display:none}:root:not([data-theme="light"]) .mj-tema .mj-matahari{display:block}}
+/* pil jenis kepotong (pemilik 24 Nov 2026): wadah dengan panah geser dan pinggir memudar; tetap satu baris */
+.mj-jenis-wadah{position:relative;display:flex;flex:1 1 auto;min-width:0}
+.mj-jenis-wadah .mj-chip-jenis{flex:1 1 auto;scroll-behavior:smooth}
+.mj-jenis-wadah.ada-kanan .mj-chip-jenis{-webkit-mask-image:linear-gradient(to right,var(--card) calc(100% - 56px),transparent);mask-image:linear-gradient(to right,var(--card) calc(100% - 56px),transparent)}
+.mj-jenis-wadah.ada-kiri .mj-chip-jenis{-webkit-mask-image:linear-gradient(to left,var(--card) calc(100% - 56px),transparent);mask-image:linear-gradient(to left,var(--card) calc(100% - 56px),transparent)}
+.mj-jenis-wadah.ada-kiri.ada-kanan .mj-chip-jenis{-webkit-mask-image:linear-gradient(to right,transparent,var(--card) 56px,var(--card) calc(100% - 56px),transparent);mask-image:linear-gradient(to right,transparent,var(--card) 56px,var(--card) calc(100% - 56px),transparent)}
+.mj-geser{position:absolute;top:50%;z-index:1;display:grid;place-items:center;width:26px;height:26px;padding:0;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);box-shadow:var(--mj-bayang);cursor:pointer;transform:translateY(-50%)}
+.mj-geser[hidden]{display:none}
+.mj-geser:hover{color:var(--brand2);border-color:var(--brand2)}
+.mj-geser svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.mj-geser-kiri{left:2px}.mj-geser-kiri svg{transform:rotate(90deg)}
+.mj-geser-kanan{right:2px}.mj-geser-kanan svg{transform:rotate(-90deg)}
+/* baris saring tidak memotong: pil jenis minimal ~3 pil + panah; kelompok yang tak muat turun ke baris kedua, bukan terpotong di tepi */
+.mj-peta-atas .mj-saring,.mj-tabel-wadah .mj-saring{flex-wrap:wrap}
+.mj-jenis-wadah{flex:1 1 260px;min-width:220px}
+.mj-saring-ujung{display:flex;flex:none;align-items:center;gap:8px;margin-left:auto}
+.mj-jenis-wadah{flex-basis:180px;min-width:180px}

@@ -133,6 +133,11 @@ function pindahTampil(v) {
 // baris saring mengambang di dalam peta (pemilik 19 Nov 2026 "ini agar di dalam peta"); di Daftar pindah ke atas tabel. Satu elemen, tidak disalin.
 function letakSaring() { const sr = $("saring"); if (tampil === "peta") document.querySelector(".mj-peta-atas").prepend(sr); else $("kepalaDaftar").after(sr); }
 $("isi").dataset.tampil = tampil; letakSaring();
+/* tombol tema: simpan di "pk-tema" (kunci bersama /prediksi), dibaca anti kedip oleh /halaman_awal.js di <head> */
+$("bTema")?.addEventListener("click", () => {
+  const akar = document.documentElement, gelap = akar.dataset.theme ? akar.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches, t = gelap ? "light" : "dark";
+  akar.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {}
+});
 addEventListener("hashchange", () => pindahTampil(location.hash === "#daftar" ? "daftar" : "peta"));
 
 /* ---------- menu samping: tampilan, antrean kerja (= saring status), pintu lain ---------- */
@@ -186,6 +191,20 @@ function gambarJenis(daftar) {
     b.disabled = !!id && !k && !saringJenis.has(id); b.append(ikon(ik), ...(k || !id || saringJenis.has(id) ? [el("span", null, t), el("b", null, F(k))] : []));
     b.addEventListener("click", () => { if (!id) saringJenis.clear(); else saringJenis.has(id) ? saringJenis.delete(id) : saringJenis.add(id); gambar(); }); return b; };
   $("pilihJenis").replaceChildren(tb(null, "Semua", "m-semua", daftar.length), ...Object.entries(JENIS).map(([id, [t, ik]]) => tb(id, t, ik, n(id))));
+  tandaGeserJenis();
+}
+/* panah geser pil jenis: tampil hanya bila masih ada pil tersembunyi di sisi itu; roda mouse menggeser mendatar */
+function tandaGeserJenis() {
+  const w = $("wadahJenis"), r = $("pilihJenis"); if (!w || !r) return;
+  const kiri = r.scrollLeft > 2, kanan = r.scrollLeft + r.clientWidth < r.scrollWidth - 2;
+  w.classList.toggle("ada-kiri", kiri); w.classList.toggle("ada-kanan", kanan); $("geserKiri").hidden = !kiri; $("geserKanan").hidden = !kanan;
+}
+{
+  const r = $("pilihJenis"), geser = arah => r.scrollBy({left: arah * Math.max(120, r.clientWidth * .7)});
+  $("geserKiri")?.addEventListener("click", () => geser(-1)); $("geserKanan")?.addEventListener("click", () => geser(1));
+  r?.addEventListener("scroll", tandaGeserJenis, {passive: true});
+  r?.addEventListener("wheel", e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && r.scrollWidth > r.clientWidth) { e.preventDefault(); r.scrollLeft += e.deltaY; } }, {passive: false});
+  if (r && "ResizeObserver" in window) new ResizeObserver(tandaGeserJenis).observe(r);
 }
 const CEPAT = [["korban", "m-korban", "Ada korban"], ["foto", "m-foto", "Ada foto"], ["gugus", "m-gugus", "Bergugus"]];
 /* waktu: tombol, semua pilihan tampil (pemilik 19 Nov 2026 "tampilin aja semua pilihan ini") */
