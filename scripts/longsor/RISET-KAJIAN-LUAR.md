@@ -68,6 +68,36 @@ tidak mengubah arah model kita.
 - Untuk kita: Padang (Kuranji) muncul juga di kajian banjir BRIN dan kejadian November 2025. Layak jadi wilayah uji
   bersama banjir dan longsor bila kita punya label titik untuk Sumatra Barat.
 
+### 2.4 Spasia Geosolutions: MaxEnt longsor Kabupaten Garut
+
+- Metode sama dengan MaxEnt banjir Garut mereka: jalan, sungai, lereng, DEM, penggunaan lahan, tekstur tanah.
+  AUC latih 0,770, tanpa AUC uji.
+- Masalah: sama dengan §2.2. Kurva respons jalan turun tajam menjauhi jalan, jadi model terutama belajar di mana titik
+  longsor dicatat. Peta prediksi tampak seperti peta lereng dan jaringan sungai. Kabupaten dipilih karena "sudah
+  dikenal rawan", jadi kesimpulannya melingkar.
+- Untuk kita: tidak dipakai.
+
+### 2.5 CSLE dan inventaris longsor, Loess Plateau (Tiongkok)
+
+- Metode: longsor dipetakan dari citra Google Earth resolusi tinggi di Dongzhiyuan Tableland, lalu erosi dihitung
+  dengan CSLE (R, K, LS, B, E, T) di 15 sub-DAS. Erosi rata-rata sekitar 50 ton/ha/tahun. Regresi luas dan volume
+  longsor terhadap erosi: R² 0,68 pada kelas erosi di atas 10 ton/ha/tahun.
+- Penilaian: ini bukan peta kerawanan, tetapi hubungan antara jumlah longsor dan laju erosi per sub-DAS. R² 0,68 dari
+  15 sub-DAS adalah sampel kecil, dan keduanya dipengaruhi lereng yang sama, jadi sebagian hubungan bisa berasal dari
+  lereng, bukan dari longsor itu sendiri. Tanah loess tebal 100 sampai 300 m tidak mirip lereng vulkanik Indonesia.
+- Untuk kita: satu pelajaran yang berlaku: inventaris longsor dari citra resolusi tinggi (poligon bekas longsor) jauh
+  lebih baik sebagai label daripada titik laporan. Bila ada inventaris poligon untuk wilayah Indonesia (misalnya dari
+  pemetaan pasca-kejadian), itu calon label uji pertama untuk LHASA2.
+
+### 2.6 RUSLE dan SEDD, Karimpuzha (India)
+
+- Isi: erosi bisa mencapai ratusan ton/ha/tahun, tetapi hasil sedimen yang sampai ke sungai rata-rata hanya sekitar
+  6,3 ton/ha/tahun. Dari 355 unit respons hidrologi (HRU), 71 ditetapkan sebagai prioritas konservasi.
+  Sumber: ScienceDirect S2772809923000497.
+- Penilaian: pelajaran pentingnya benar: erosi di lereng tidak sama dengan sedimen di sungai. Angka Cisarua (§2.1)
+  dalam ton/ha/tahun karena itu tidak bisa dibaca sebagai material yang akan menimbun hilir.
+- Untuk kita: relevan bagi neraca air dan pendangkalan sungai, bukan peringatan longsor. Tidak ada tindakan.
+
 ## 3. Aturan yang ditegaskan ulang
 
 - Peta kerawanan longsor diuji lawan kejadian di blok wilayah atau waktu yang ditahan, dan harus mengalahkan
