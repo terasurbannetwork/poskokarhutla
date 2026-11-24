@@ -178,3 +178,21 @@ Validasi ALGORITMA 6:
 - 6.3 (GNSS atau levelling) belum ada data (Q11).
 
 Karena 6.2 belum ada vonis, `subsiden.json` dan `proyeksi_tanah.json` hasil putaran ini TIDAK ditaruh di `public/` dan tidak tayang. Berkasnya disimpan di luar repo di mesin pemilik (`~/licsbas/keluaran/`), bersama skrip pengunduh `~/licsbas/ambil.py` dan `~/licsbas/gacos.py` serta `~/licsbas/jalan2.sh`. Semua angka di bagian ini berlabel hipotesis (D4).
+
+### 6.9 Uji tahan-waktu ALGORITMA 6.2, putaran kedua Jakarta (24 Nov 2026)
+
+Cara: deret `cum_filt.h5` tiap frame (filter bawaan langkah 16, sama dengan `vel.filt.mskd` putaran 6.8) dibelah di 1 Juni 2021. Laju tiap piksel dicocokkan garis lurus pada tiap separuh, piksel yang dimasker di putaran 6.8 tetap dimasker, lalu kedua laju separuh diolah dengan `subsiden.hitung` yang sama (acuan lintang -6,30, tanpa mengubah kode). Skrip di luar repo: `~/licsbas/tahan.py`. Swa-ujinya: laju seluruh deret dari rumus yang sama sama dengan `vel` LiCSBAS (median selisih 0,0 mm/tahun).
+
+| Separuh | Frame turun | Frame naik | Gerbang pola (Utara, Selatan, cm/tahun) | Galat acuan |
+| --- | --- | --- | --- | --- |
+| Awal | 10 Jan 2020 sampai 16 Mei 2021, 33 citra | 2 Jan 2020 sampai 20 Mei 2021, 39 citra | lolos (-1,05; +0,1) | 0,89 |
+| Akhir | 8 Agu 2021 sampai 31 Mar 2023, 40 citra | 13 Jun 2021 sampai 31 Agu 2022, 33 citra | lolos (-1,35; -0,05) | 0,45 |
+
+Galat prediksi pergeseran separuh akhir dari laju separuh awal sama dengan selisih laju dikali lama separuh akhir, jadi syarat "galat kurang dari 2 s" setara dengan selisih laju per kecamatan kurang dari 2 s (s dari putaran 6.8: akar galat piksel kuadrat ditambah galat acuan kuadrat). Hasil di 42 kecamatan bercakupan minimal 30%: median selisih 0,2 cm/tahun lawan median 2 s 1,1 cm/tahun. **Vonis 6.2: lolos**, 42 dari 42 kecamatan di bawah 2 s. Selisih terbesar 0,5 (Taman Sari), lalu 0,4 (Tambora, Grogol Petamburan, Pasar Minggu, Gambir, Tanjung Priok, Pademangan).
+
+Catatan jujur:
+- Uji ini menguji kestabilan laju di dalam deret yang sama, bukan ketepatannya terhadap kebenaran (ALGORITMA 6.2).
+- s didominasi galat acuan (0,55) yang masih batas bawah, karena piksel dianggap bebas (ALGORITMA 4, butir terbuka n_efektif). Dengan n_efektif yang lebih jujur, ambang 2 s melebar dan uji ini makin mudah lolos.
+- Di pesisir utara separuh akhir sedikit lebih dalam dari separuh awal (Koja -1,6 lalu -1,9; Tanjung Priok -1,0 lalu -1,4; Pademangan -0,4 lalu -0,8). Itu masih di dalam 2 s, jadi belum bisa disebut percepatan.
+
+Status tayang: 6.1 dan 6.2 lolos, 6.3 (GNSS atau levelling) belum ada data (Q11), jadi semua angka tetap hipotesis (D4). Sebelum tayang masih ada dua hal: (1) pilihan n_efektif (a) variogram atau (b) bootstrap blok, yang menurut ALGORITMA 4 dipilih pemilik atau pemeriksa sebelum angka tayang; (2) tinjauan `validasi-model` untuk PT-06. Sampai itu `subsiden.json` tetap di luar `public/`.
