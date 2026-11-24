@@ -82,6 +82,10 @@ uji("bekukan: R2 tulis sekali; beku tak bisa dibekukan lagi; pimpinan boleh beku
   const obj = await R2.get("dokumen/sitrep/pesisir/2026-11-15/32/v1.json"); assert.ok(obj);
   const dok = JSON.parse(await obj.text()); assert.equal(dok.versi, 1); assert.equal(dok.bagian.find(b => b.kunci === "ringkasan").kalimat_staf, PANJANG);
   const b1 = await DB.prepare("SELECT ukuran, sha FROM pb_dokumen WHERE id = ?").bind(id1).first(); assert.equal(b1.sha.length, 64); assert.ok(b1.ukuran > 0);
+  /* T4 segel-dokumen: segel pb, sidik = pb_dokumen.sha, sampul tanpa nama orang; verifikasi publik menghitung ulang dari R2 */
+  const sg = await DB.prepare("SELECT * FROM segel WHERE jenis = 'pb' AND rujukan = ?").bind(id1).first(); assert.ok(sg, "bekukan menulis segel");
+  assert.deepEqual([sg.sidik, sg.versi, sg.periode, sg.penerbit, sg.wilayah], [b1.sha, 1, "2026-11-15", "BNPB", "Jawa Barat"]); assert.match(sg.judul, /^Laporan situasi /);
+  const v = await api("GET", "/api/verifikasi/" + sg.kode, undefined, {"cf-connecting-ip": "203.0.113.9"}); assert.equal(v.s, 200, v.t); assert.equal(v.j.status, "berlaku");
   await R2.put("dokumen/sitrep/pesisir/2026-11-15/32/v2.json", "{\"asli\":1}");   // kunci versi 2 sudah terisi
   assert.equal((await beku({id: id2, kalimat: {kebijakan: "arahan"}}, H("pim"))).s, 409);
   assert.equal(await (await R2.get("dokumen/sitrep/pesisir/2026-11-15/32/v2.json")).text(), "{\"asli\":1}");   // tidak ditimpa

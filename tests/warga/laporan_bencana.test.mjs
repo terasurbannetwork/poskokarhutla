@@ -260,6 +260,11 @@ uji("banjir: kunci dengan 'lanjut tanpa' beralasan menghasilkan snapshot beku, t
   assert.equal((await kunci("banjir", T, [{sumber: "prov:62", alasan: "pendek"}])).s, 400, "alasan minimal 10 huruf"); assert.equal((await kunci("banjir", T, [{sumber: "prov:99", alasan: "bukan provinsi wajib hari itu"}])).s, 400);
   assert.equal((await POST(A72, `${P}kunci?${q("banjir")}`, {tanggal: T})).s, 404, "pemprov tidak mengunci");
   const r = await kunci("banjir", T, [{sumber: "prov:62", alasan: "Kalteng belum mengirim, data terakhir belum ada"}]); assert.equal(r.s, 201, r.t); assert.equal(r.j.status, "dikunci_pengecualian"); assert.equal(r.j.hash.length, 64);
+  /* T3 segel-dokumen: segel lkb, sidik = hash lkb_snapshot, kode di jawaban kunci, verifikasi Berlaku */
+  const sg = await DB.prepare("SELECT * FROM segel WHERE kode = ?").bind(r.j.segel ?? "").first(); assert.ok(sg, "kunci banjir menulis segel");
+  assert.deepEqual([sg.jenis, sg.rujukan, sg.dasar, sg.versi, sg.judul, sg.penerbit], ["lkb", `banjir/${T}#0`, `banjir/${T}`, 0, "Laporan Harian Banjir & Longsor", "BNPB"]);
+  assert.equal(sg.sidik, (await DB.prepare("SELECT hash FROM lkb_snapshot WHERE bencana = 'banjir' AND tanggal_laporan = ? AND ralat = 0").bind(T).first()).hash);
+  assert.equal((await api("GET", "/api/verifikasi/" + r.j.segel, undefined, ipBaru())).j.status, "berlaku");
   assert.equal((await draf(A72, "banjir", T, "prov:72", SULTENG, 3)).s, 409, "hari terkunci"); assert.equal((await kunci("banjir", T)).s, 409, "tidak dikunci dua kali");
   assert.equal(await n("lk_hari", "tanggal_laporan = ?", T), 0, "karhutla tidak tersentuh"); assert.equal(await n("lkb_snapshot", "bencana = 'banjir' AND tanggal_laporan = ?", T), 1);
   const s = await snap("banjir", T); assert.equal(s.s, 200, s.t); assert.equal(s.j.utuh, true); assert.equal(s.j.terbaru, true); const sn = s.j.snapshot;
@@ -310,6 +315,10 @@ uji("ralat banjir: snapshot baru, lama utuh, bagian otomatis tetap beku walau be
   /* kiriman hidup prov:72 diubah diam-diam sesudah kunci (UPDATE langsung ke D1): ralat tidak boleh menyerapnya, sumber yang tak dikoreksi dibaca dari snapshot sebelumnya */
   await DB.prepare("UPDATE lkb_kiriman SET isi = json_set(isi, '$.ringkasan', 'DIUBAH DIAM-DIAM', '$.dampak.meninggal', 999) WHERE bencana = 'banjir' AND tanggal_laporan = ? AND sumber = 'prov:72'").bind(T).run();
   const r = await POST(AD, `${P}ralat?${q("banjir")}`, {tanggal: T, alasan: "Kalteng mengirim terlambat lewat telepon", ganti: {"prov:62": {ringkasan: "Banjir ringan di dua kecamatan", dampak: {terdampak: 400, mengungsi: 50}}}});
+  /* ralat banjir: segel kedua versi 1; segel kunci berstatus Ada versi lebih baru */
+  assert.match(r.j.segel, /^[0-9A-HJKMNP-TV-Z]{10}$/);
+  const lamaSg = (await DB.prepare("SELECT kode FROM segel WHERE jenis = 'lkb' AND rujukan = ?").bind(`banjir/${T}#0`).first()).kode;
+  const vl = (await api("GET", "/api/verifikasi/" + lamaSg, undefined, ipBaru())).j; assert.equal(vl.status, "lebih_baru"); assert.equal(vl.terbaru, r.j.segel);
   assert.equal(r.s, 201, r.t); assert.equal(r.j.ralat, 1); assert.ok(r.j.perubahan.some(x => x.jalur.startsWith("provinsi.1.kiriman")), "perubahan tercatat per jalur");
   const baru = (await snap("banjir", T)).j; assert.equal(baru.ralat, 1); assert.equal(baru.terbaru, true); assert.equal(baru.snapshot.nasional[0].nilai, 5, "bagian otomatis tetap 5, bukan 77 dari berkas yang kini berubah"); assert.equal(baru.snapshot.provinsi[1].kiriman.dampak.terdampak, 400); assert.equal(baru.snapshot.provinsi[0].kiriman.ringkasan, SULTENG.ringkasan, "prov:72 tetap dari snapshot lama"); assert.equal(baru.snapshot.provinsi[0].kiriman.dampak.meninggal, 3); assert.ok(!JSON.stringify(baru.snapshot).includes("DIUBAH DIAM-DIAM"));
   assert.equal(baru.snapshot.status, "dikunci", "pengecualian Kalteng gugur karena kini dikoreksi"); assert.equal(baru.snapshot.dampak_provinsi.provinsi, 2); assert.equal(baru.snapshot.dampak_provinsi.terdampak, 1900); assert.ok(baru.teks_wa.laporan.includes("Ralat-1"));
