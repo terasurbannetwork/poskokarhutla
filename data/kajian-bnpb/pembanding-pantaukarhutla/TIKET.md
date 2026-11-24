@@ -106,6 +106,8 @@ Bahan kajian, bukan tiket kode:
 - K3: Asap lintas negara (PKH-23) boleh tampil publik, termasuk provinsi asal untuk kota di negara tetangga.
 - K4: PKH-31 video vertikal **dibatalkan** ("gausah").
 - K5: Animasi api 3D (PKH-12) disetujui.
+- K6: Kelompok G (PKH-33 sampai 45) ikut "semua gas" dengan urutan bawaan Q8 (pemilik 24 Nov 2026: "Gas semua"). Paket PKH-34 dan PKH-37 tetap lewat paket dokumen dulu.
+- Bawaan sementara Q7 (belum dijawab): PKH-42 tampil angka hari saja, tanpa "setara rokok".
 
 ## Rincian kelompok F (disetujui pemilik 24 Nov 2026: "Gas")
 
@@ -154,6 +156,6 @@ Bahan kajian, bukan tiket kode:
 
 - Q4: Rincian kelompok F di atas sudah sesuai, atau ada yang diubah?
 - Q5: PKH-32: apakah istilah resmi "titik api" di laporan BNPB memang dibiarkan?
-- Q6: Kelompok G (PKH-33 sampai 45) ikut "semua gas", atau dipilih dulu?
+- ~~Q6~~: terjawab K6.
 - Q7: PKH-42: hitungan "setara batang rokok" boleh tampil, atau angka hari saja?
-- Q8: Urutan kelompok G. Bawaan sementara: PKH-41 dan PKH-40 dulu (bias luas Papua), lalu PKH-33, 35, 43, 44, 42, 38, lalu paket PKH-34 dan 37.
+- ~~Q8~~: terjawab K6. Urutan: PKH-41 dan PKH-40 dulu (bias luas Papua), lalu PKH-33, 35, 43, 44, 42, 38, lalu paket PKH-34 dan 37.
