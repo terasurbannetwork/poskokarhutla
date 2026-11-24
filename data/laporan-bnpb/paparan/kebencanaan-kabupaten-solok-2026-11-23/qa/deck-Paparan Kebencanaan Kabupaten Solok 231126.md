@@ -1,6 +1,6 @@
 # Laporan QA deck Paparan Kebencanaan Kabupaten Solok 231126
 
-Berkas `Paparan Kebencanaan Kabupaten Solok 231126.pptx` dan `Paparan Kebencanaan Kabupaten Solok 231126.pdf`, spek `solok`, diperiksa 24-11-2026 10.45 WIB.
+Berkas `Paparan Kebencanaan Kabupaten Solok 231126.pptx` dan `Paparan Kebencanaan Kabupaten Solok 231126.pdf`, spek `solok`, diperiksa 24-11-2026 10.49 WIB.
 Vonis: **LOLOS**. Kosakata vonis LOLOS dan GAGAL mengikuti qa/periksa.py (Buku Pegangan S39); LULUS, GAGAL RINGAN, dan GAGAL BERAT hanya untuk pindaian anti-AI per bab naskah.
 
 Pesan kunci: Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan masih berstatus Transisi Darurat sampai April 2027.
@@ -12,7 +12,7 @@ Pesan kunci: Kabupaten Solok dua kali dilanda banjir besar dalam setahun dan mas
 | Font | qa/periksa.py D-5 Huruf terkecil | LOLOS | – |
 | Font | qa/periksa.py D-23 Glif di luar Roboto nol | LOLOS | – |
 | Ikon | Gambar raster hanya logo, foto Commons, peta dasar, dan ikon (S37) | LOLOS | – |
-| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 140 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
+| Ikon | Ikon garis dari registri tema.json ikon dalam lingkaran (B5.14; konsep asing ditolak saat membangun) | LOLOS | 150 ikon; D-25 asal ikon per berkas masih antre di qa/cakupan.json |
 | Tata letak | Gerbang mesin deck scripts/periksa.py (footer, nomor, garis bingkai, batas 6 pt, D-17 PDF, D-22, D-24, D-8) | LOLOS | 13 slide, huruf terkecil 6.5 pt, 221 angka, judul PDF [3, 2, 2, 2, 2, 2, 2, 1] baris |
 | Tata letak | qa/periksa.py T-2 Jumlah halaman PDF = dokumen asal | LOLOS | – |
 | Tata letak | qa/periksa.py D-17 Judul paling banyak 2 baris, tanpa teks terpotong | LOLOS | – |

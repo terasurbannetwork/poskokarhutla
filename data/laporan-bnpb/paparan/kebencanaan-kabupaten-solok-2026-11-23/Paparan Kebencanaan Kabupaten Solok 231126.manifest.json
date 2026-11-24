@@ -834,7 +834,8 @@
    "jenis": "temuan-visual",
    "asal": "solok#9",
    "keluarga": [
-    "basah"
+    "basah",
+    "kering"
    ],
    "judul": [
     81.2,
@@ -852,9 +853,9 @@
     },
     "resmi": false,
     "batas": [
-     190.74984374999997,
+     254.89049990625,
      145.0,
-     446.05090625,
+     451.79825009374997,
      435.87
     ],
     "label": [],
@@ -865,6 +866,56 @@
     "01  ",
     "02  ",
     "03  ",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Normal",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
+    "Waspada",
     "Sumber batas: olahan BNPB; WGS84; batas wilayah ilustratif dan tidak resmi",
     "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026"
    ],
@@ -926,12 +977,20 @@
      "pil"
     ],
     [
+     "DCC79C",
+     "skala.emas"
+    ],
+    [
      "DCEBF8",
      "skala.air"
     ],
     [
      "E6EAF0",
      "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
     ],
     [
      "F1F3F6",
@@ -977,30 +1036,40 @@
     "ikon",
     "ikon",
     "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon"
    ],
    "panel": [
     [
      43.2,
      137,
-     541.6,
+     611.5,
      363,
      "Hujan tiga hari tertinggi per kecamatan, empat hari ke depan",
      "grafik"
     ],
     [
-     595.6,
+     665.5,
      137,
-     321.2,
+     251.3,
      363,
-     "Jumlah kecamatan per status"
+     "Kecamatan per status"
     ]
    ],
    "terisi": [
     [
      53.2,
      145.0,
-     521.6,
+     591.5,
      345.0
     ]
    ],
@@ -2844,314 +2913,6 @@
    "naskah": "solok#9"
   },
   {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n3",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n2",
-   "opsi": "|",
-   "tampil": "0",
-   "nilai": 0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n1",
-   "opsi": "|",
-   "tampil": "6",
-   "nilai": 6,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
-   "kunci": "sl.p.n0",
-   "opsi": "|",
-   "tampil": "4",
-   "nilai": 4,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
-   "naskah": "solok#9"
-  },
-  {
    "kunci": "sl.amb.3",
    "opsi": "|satuan",
    "tampil": "120 mm",
@@ -3786,8 +3547,8 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kabupaten/13.json": "de5012a3e1aa157176ba1b587baa47b0842b14f3fca80a47027ce209d2537d73",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/kecamatan/13.json": "5f982ceb9c8c97c06312c66c8376e4b9852403ffbf4915f74e106104c37ee3af",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/geo/provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-98b685222076.png": "42545123b55ca820bed776f0c07c4e25ba466aa023b36f2513433a517cb34747",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "d6207238fffcc7ca9eca0e0f9586b11a5817b4b83fa0c46ea5c4a31ce58dc2c6",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-b8af4ded5baf.png": "8157783ec248d93574354d4993e6758b2fa874371a95d67a32ccc005c2aa006e",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/spek/solok.json": "5e8841009e6055478e6e9e983c6148c7d6e540afa04f89c927fcc59843e0551d",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-wilayah/tema.json": "c5b788ed86843a4ed57fe347a9f7e3c4b8eb0b91898594eb2abee00b814c578c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

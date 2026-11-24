@@ -189,17 +189,19 @@ H3 = {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'tem
 
 GAYA_ST = {'Awas': ['tint.bahaya.pita', None, 'merah'], 'Siaga': ['tint.api.pita', None, 'oranye'], 'Waspada': ['skala.emas.2', None, 'teks'],
            'Normal': ['tint.netral.pita', None, 'teks-3']}
-HP = {'ulang_angka_boleh': 'batas kelas legenda peta sama dengan ambang status di panel', 'jenis': 'temuan-visual', 'jenis_slide': 'peta', 'judul_bentuk': 'temuan', 'judul_ikon': 'wilayah', 'rasio': .62, 'cut_off': False,
+HP = {'ulang_angka_boleh': 'batas kelas legenda peta sama dengan ambang status di panel', 'jenis': 'temuan-visual', 'jenis_slide': 'peta', 'judul_bentuk': 'temuan', 'judul_ikon': 'wilayah', 'rasio': .7, 'cut_off': False,
       'pesan': 'Peta prakiraan banjir', 'sumber': S_P,
       'judul': f'Peta Prakiraan Banjir {rentang}: {t("sl.p.w", "|satuan")} dari {t("sl.p.n", "|satuan")} di Kabupaten Solok',
       'utama': {'judul': 'Hujan tiga hari tertinggi per kecamatan, empat hari ke depan', 'ikon': 'banjir',   # modul peta standar (pemilik 24 Nov 2026: "standar map kita kan ga gini")
                 'peta': {'mode': 'koroplet', 'tingkat': 'kecamatan', 'wilayah': ['13'], 'kab': 'Solok', 'ambang': [20, 40, 80, 120], 'skala': 'air',
                          'satuan': 'Hujan tiga hari tertinggi, mm', 'label': 10, 'label_gaya': 'samping', 'label_ikon': 'banjir',
+                         'label_status': {re.sub(r'^IX\b', 'Ix', n): {'teks': LV[max(v['b'])], 'warna': GAYA_ST[LV[max(v['b'])]][0], 'teks_warna': GAYA_ST[LV[max(v['b'])]][2],
+                                                                     'ikon': {3: 'peringatan', 2: 'banjir', 1: 'cuaca-ekstrem', 0: 'prabencana'}[max(v['b'])]} for n, v in kec},
                          'unsur_tampil': False, 'data': c('peta_hujan.csv', [{'nama': 'kec'}, F('hujan', 'Hujan')], S_P)}},
-      'panel': {'judul': 'Jumlah kecamatan per status', 'ikon': 'peringatan',   # baris berikon (pemilik 24 Nov 2026: "ini rapihin, bagusin juga")
+      'panel': {'judul': 'Kecamatan per status', 'ikon': 'peringatan',   # baris berikon (pemilik 24 Nov 2026: "ini rapihin, bagusin juga")
                 'daftar_ikon': {'mode': 'baris', 'baris': [
-                    {'ikon': ik, 'judul': LV[l], 'isi': f'Hujan tiga hari {t(f"sl.amb.{l}", "|satuan")} atau lebih' if l else f'Hujan tiga hari di bawah {t("sl.amb.1", "|satuan")}',
-                     'angka': t(f'sl.p.n{l}'), 'satuan': 'kecamatan'}
+                    {'ikon': ik, 'judul': LV[l], 'isi': f'{t(f"sl.amb.{l}", "|satuan")} ke atas' if l else f'Di bawah {t("sl.amb.1", "|satuan")}',
+                     'angka': t(f'sl.p.n{l}')}
                     for l, ik in ((3, 'peringatan'), (2, 'banjir'), (1, 'cuaca-ekstrem'), (0, 'prabencana'))]}}}
 
 H4 = {'jenis': 'temuan-visual', 'jenis_slide': 'tabel', 'judul_bentuk': 'temuan', 'judul_ikon': 'peringatan', 'rasio': .99, 'cut_off': False,

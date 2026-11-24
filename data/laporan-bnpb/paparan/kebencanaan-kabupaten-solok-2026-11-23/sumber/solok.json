@@ -348,7 +348,7 @@
       "jenis_slide": "peta",
       "judul_bentuk": "temuan",
       "judul_ikon": "wilayah",
-      "rasio": 0.62,
+      "rasio": 0.7,
       "cut_off": false,
       "pesan": "Peta prakiraan banjir",
       "sumber": "ECMWF IFS, GloFAS, InaRISK BNPB, 24 Nov 2026",
@@ -374,6 +374,68 @@
           "label": 10,
           "label_gaya": "samping",
           "label_ikon": "banjir",
+          "label_status": {
+            "Danau Kembar": {
+              "teks": "Waspada",
+              "warna": "skala.emas.2",
+              "teks_warna": "teks",
+              "ikon": "cuaca-ekstrem"
+            },
+            "Ix Koto Sungai Lasi": {
+              "teks": "Waspada",
+              "warna": "skala.emas.2",
+              "teks_warna": "teks",
+              "ikon": "cuaca-ekstrem"
+            },
+            "Payung Sekaki": {
+              "teks": "Waspada",
+              "warna": "skala.emas.2",
+              "teks_warna": "teks",
+              "ikon": "cuaca-ekstrem"
+            },
+            "Hiliran Gumanti": {
+              "teks": "Waspada",
+              "warna": "skala.emas.2",
+              "teks_warna": "teks",
+              "ikon": "cuaca-ekstrem"
+            },
+            "Lembah Gumanti": {
+              "teks": "Waspada",
+              "warna": "skala.emas.2",
+              "teks_warna": "teks",
+              "ikon": "cuaca-ekstrem"
+            },
+            "Pantai Cermin": {
+              "teks": "Waspada",
+              "warna": "skala.emas.2",
+              "teks_warna": "teks",
+              "ikon": "cuaca-ekstrem"
+            },
+            "Tigo Lurah": {
+              "teks": "Normal",
+              "warna": "tint.netral.pita",
+              "teks_warna": "teks-3",
+              "ikon": "prabencana"
+            },
+            "Junjung Sirih": {
+              "teks": "Normal",
+              "warna": "tint.netral.pita",
+              "teks_warna": "teks-3",
+              "ikon": "prabencana"
+            },
+            "X Koto Diatas": {
+              "teks": "Normal",
+              "warna": "tint.netral.pita",
+              "teks_warna": "teks-3",
+              "ikon": "prabencana"
+            },
+            "X Koto Singkarak": {
+              "teks": "Normal",
+              "warna": "tint.netral.pita",
+              "teks_warna": "teks-3",
+              "ikon": "prabencana"
+            }
+          },
           "unsur_tampil": false,
           "data": {
             "csv": "data/sumut-aceh/sl/peta_hujan.csv",
@@ -393,7 +455,7 @@
         }
       },
       "panel": {
-        "judul": "Jumlah kecamatan per status",
+        "judul": "Kecamatan per status",
         "ikon": "peringatan",
         "daftar_ikon": {
           "mode": "baris",
@@ -401,30 +463,26 @@
             {
               "ikon": "peringatan",
               "judul": "Awas",
-              "isi": "Hujan tiga hari {{angka:sl.amb.3|satuan}} atau lebih",
-              "angka": "{{angka:sl.p.n3}}",
-              "satuan": "kecamatan"
+              "isi": "{{angka:sl.amb.3|satuan}} ke atas",
+              "angka": "{{angka:sl.p.n3}}"
             },
             {
               "ikon": "banjir",
               "judul": "Siaga",
-              "isi": "Hujan tiga hari {{angka:sl.amb.2|satuan}} atau lebih",
-              "angka": "{{angka:sl.p.n2}}",
-              "satuan": "kecamatan"
+              "isi": "{{angka:sl.amb.2|satuan}} ke atas",
+              "angka": "{{angka:sl.p.n2}}"
             },
             {
               "ikon": "cuaca-ekstrem",
               "judul": "Waspada",
-              "isi": "Hujan tiga hari {{angka:sl.amb.1|satuan}} atau lebih",
-              "angka": "{{angka:sl.p.n1}}",
-              "satuan": "kecamatan"
+              "isi": "{{angka:sl.amb.1|satuan}} ke atas",
+              "angka": "{{angka:sl.p.n1}}"
             },
             {
               "ikon": "prabencana",
               "judul": "Normal",
-              "isi": "Hujan tiga hari di bawah {{angka:sl.amb.1|satuan}}",
-              "angka": "{{angka:sl.p.n0}}",
-              "satuan": "kecamatan"
+              "isi": "Di bawah {{angka:sl.amb.1|satuan}}",
+              "angka": "{{angka:sl.p.n0}}"
             }
           ]
         }
