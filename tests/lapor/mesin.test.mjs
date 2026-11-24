@@ -309,3 +309,32 @@ test("cerita pertama yang tidak dipakai tetap memakai kronologi berpandu, bukan 
   assert.equal(h.sesi.status, "kronologi", "langsung ke langkah kronologi berpilihan");
   assert.ok(h.pilihan?.length > 1, "kronologi dijawab dengan memilih");
 });
+
+/* pemilik 24 Nov 2026: cerita bencana dibalas "Layanan ini hanya untuk melaporkan kejadian bencana", lalu kronologi jatuh ke ketik bebas */
+const modelBukan = async () => ({isian: [], jenis_tebak: [{jenis: "abrasi", subjenis: "Gelombang pasang", yakin: 0.9}], darurat_jiwa: false, tanggapan: "terima_kasih", topik: "bukan_bencana"});
+const wilayahUtan = async () => ({desa: "Utan Kayu Utara", kec: "Matraman", kab: "Kota Administrasi Jakarta Timur", prov: "DKI Jakarta", kode: "3172021003", sekitar: []});
+async function obrolW(langkah, model) {
+  let sesi = null, pelapor = {wa: "6280000000000", nama: "Budi", peran: "warga"}, hasil;
+  for (const p of langkah) { hasil = await putaran({sesi, pelapor, pesan: typeof p === "string" ? {teks: p, wa: "6280000000000"} : p, model, wilayah: wilayahUtan, kini: ++jam}); sesi = hasil.sesi; pelapor = hasil.pelapor; }
+  return hasil;
+}
+const GPS = {lokasi: {lat: -6.193411, lon: 106.868136, akurasi: 55, sumber: "gps"}}, TT = {form: {kosong: true}};
+const ABRASI = "1";   // tebakan model (abrasi) ada di urutan teratas daftar jenis
+
+test("cerita yang menyebut jenis bencana tidak pernah luar topik walau model menilai bukan_bencana", async () => {
+  const h = await obrolW(["ada gelombang pasang tinggi di pantai dekat rumah", "1", GPS, "1", TT], modelBukan);
+  assert.doesNotMatch(h.balasan, /hanya untuk melaporkan kejadian bencana/);
+  assert.ok(!h.sesi.luar, "tidak dihitung luar topik");
+});
+
+test("cerita awal panjang tidak melewati kronologi berpandu; cerita ditempel di belakang kalimat pilihan", async () => {
+  const awal = ["ada gelombang pasang tinggi di pantai dekat rumah", "1", GPS, "1", TT, ABRASI, "1"];
+  const h = await obrolW(awal, modelBukan);
+  assert.equal(h.sesi.status, "kronologi", "sesudah karakteristik: kronologi berpandu, bukan kotak ketik");
+  assert.ok(h.pilihan.length >= 2);
+  const n = langkahKronologi("abrasi").length;
+  const selesai = await obrolW([...awal, ...Array(n).fill("1"), "2"], modelBukan);
+  assert.match(selesai.sesi.isian.kronologi.nilai, /gelombang pasang tinggi di pantai dekat rumah/, "cerita awal ikut");
+  assert.ok(selesai.sesi.krSelesai, "panduan sekali per sesi");
+  assert.notEqual(selesai.sesi.status, "kronologi");
+});

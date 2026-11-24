@@ -44,7 +44,8 @@
     const j = await r.json().catch(() => ({}));
     if (r.status === 401 && saya && j.profil_perlu) { saya.profil = null; tampil(); pesan("Pilih profil dan isi PIN dulu.", "galat"); return {ok: false, status: r.status, j}; }   // akun BPBD: sesi akun masih hidup, sesi profil tidak
     if (r.status === 403 && j.pin_wajib_ganti && window.InstansiProfil) { window.InstansiProfil.wajibGanti(); return {ok: false, status: r.status, j}; }   // PIN sementara dari admin: PIN baru wajib dulu
-    if (r.status === 401 && saya) { saya = null; statusSaya = 401; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
+    /* PIN salah juga 401 (src/profil.js), tapi sesi akun masih hidup: jangan dianggap keluar, cukup pesan di dialog PIN */
+    if (r.status === 401 && saya && !/\/profil\/(pin|gantipin)\//.test(url)) { saya = null; statusSaya = 401; bersihkanAkun(); tampil(); pesan(GALAT[401], "galat"); }
     if (r.status === 403 && j.wajib_ganti && saya && !saya.akun.wajib_ganti) { saya.akun.wajib_ganti = true; tampil(); }   // sandi awal masih diketahui admin: wajib dibuat baru
     return {ok: r.ok, status: r.status, j};
   }

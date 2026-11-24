@@ -684,9 +684,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (!kr.tulis && p === 0) { kr.tulis = true; const h = jawab("*Keterangan tambahan*\nTulis di kotak pesan, lalu kirim."); sesi.isiAwal = h.isiAwal = "Keterangan: "; return h; }
     const tambah = (p === 1 && !kr.tulis) ? "" : samarkan(String(teks || "").replace(/^keterangan:\s*/i, "")).trim().slice(0, 300);
     // K72: keterangan tambahan baru ditempel sesudah lolos gerbang topik di bawah (bukan di sini), supaya pesan luar topik tidak masuk laporan
-    setIsian(sesi, "kronologi", {nilai: rangkaiKronologi(kr.frasa)}, {sumber: "pilihan", waktu: kini});
+    setIsian(sesi, "kronologi", {nilai: [rangkaiKronologi(kr.frasa), sesi.krCerita ? sesi.isian.kronologi?.nilai : null].filter(Boolean).join(" ")}, {sumber: "pilihan", waktu: kini}); delete sesi.krCerita;
     tambahKr = tambah;
-    sesi.status = "melengkapi"; sesi.tanya = null; delete sesi.kr;
+    sesi.status = "melengkapi"; sesi.tanya = null; delete sesi.kr; sesi.krSelesai = true;   // panduan sekali per sesi, juga bila semua dijawab Tidak tahu
     if (!tambah) return putaranInti({sesi, pelapor, pesan: {saluran: pesan?.saluran}, model, wilayah, kini}); // langsung ke pertanyaan berikutnya
     // keterangan tambahan ikut diurai di bawah (angka korban dan lain-lain yang disebut tertangkap berkutipan)
   }
@@ -784,7 +784,10 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     }
     if (!hasil) hasil = saring ? {isian: {}, jenisTebak: [], darurat: false, tanggapan: "", topik: saring} : uraiSederhana(masukan, ditanya, sesi);
     /* K72: luar topik = saringan kode, atau model menilai bukan bencana DAN tidak ada isian sah. Tidak masuk laporan, tidak jadi kronologi. */
-    const luar = saring || (hasil.topik && hasil.topik !== "bencana" && (hasil.topik === "minta_data" || !Object.keys(hasil.isian).length)) ? (saring || hasil.topik) : null;
+    /* kalimat yang menyebut jenis atau subjenis bencana (tebakan model atau kata kunci kode) tidak pernah luar topik walau model menilai bukan_bencana
+       (pemilik 24 Nov 2026: "gelombang pasang ..." dibalas "Layanan ini hanya untuk melaporkan kejadian bencana") */
+    const sebutBencana = hasil.jenisTebak?.length > 0 || uraiSederhana(masukan, null, sesi).jenisTebak.length > 0;
+    const luar = saring || (hasil.topik && hasil.topik !== "bencana" && (hasil.topik === "minta_data" || (!Object.keys(hasil.isian).length && !sebutBencana))) ? (saring || hasil.topik) : null;
     if (luar) {
       sesi.luar = (sesi.luar || 0) + 1;
       if (sesi.luar >= BATAS_LUAR) sesi.tanpaModel = true;
@@ -807,7 +810,8 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       const w = uraiWaktu(masukan, kini, sesi.isian.lokasi?.nilai?.wilayah?.provKode);
       if (w.galat) keluhan = KELUH_WAKTU[w.galat]; else setIsian(sesi, "waktu", {nilai: w.tampil, ms: w.ms}, {...asal, kutipan: kecil(masukan)});
     }
-    if (!luar && !terjawab(sesi, "kronologi") && masukan.length > 30) setIsian(sesi, "kronologi", {nilai: samarkan(masukan).slice(0, 500)}, asal);
+    // cerita bebas tetap dicatat, tapi kronologi berpandu tetap ditanya sesudahnya dan cerita ini ditempel di belakangnya (pemilik 24 Nov 2026)
+    if (!luar && !terjawab(sesi, "kronologi") && masukan.length > 30) { setIsian(sesi, "kronologi", {nilai: samarkan(masukan).slice(0, 500)}, asal); if (!sesi.krSelesai) sesi.krCerita = true; }
     tanggapan = hasil.tanggapan; darurat = hasil.darurat; tebak = hasil.jenisTebak; // jenis selalu dikonfirmasi lewat pilihan (D6)
     // kelompok yang baru ditanya: isian kelompok yang tidak disebut jadi "belum didata" (A2)
     if (ditanya?.startsWith("kelompok:")) tandai(sesi, ditanya, "belum", asal);
@@ -827,7 +831,9 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   const sambung = s => kepala ? `${kepala}\n\n${s}` : s;
   /* kronologi berpandu: pilihan per jenis, bukan ketik panjang. Berlaku juga untuk jalur cerita tertunda (pesan pertama panjang) yang tidak lewat
      kartu jenis: tanpa ini kronologi jatuh ke kotak ketik bebas (pemilik 23 Nov 2026: "harusnya cukup pilih-pilih aja"). */
-  if (!sesi.ceritaDiminta && !sesi.kejadian?.ya && !terjawab(sesi, "kronologi") && terjawab(sesi, "jenis") && terjawab(sesi, "subjenis") && KRONOLOGI[sesi.isian.jenis.nilai]) {
+  /* syarat: kronologi belum terjawab dan panduan belum pernah selesai; tidak bergantung pada ceritaDiminta, yang bisa sudah menyala dari jalur lain
+     sehingga kronologi jatuh ke kotak ketik bebas (pemilik 24 Nov 2026: "kenapa kronologinya bukan pilihan?") */
+  if (!sesi.krSelesai && !sesi.kejadian?.ya && (!terjawab(sesi, "kronologi") || sesi.krCerita) && terjawab(sesi, "jenis") && terjawab(sesi, "subjenis") && KRONOLOGI[sesi.isian.jenis.nilai]) {
     sesi.ceritaDiminta = true; sesi.tanya = null; sesi.status = "kronologi"; sesi.kr = {i: 0, frasa: []};
     return langkahKr(sambung, 0);
   }

@@ -315,9 +315,14 @@ function isiLokasi(wadahIsi, {judul, ket, pakaiPosisi, pilihCari, kabupatenCukup
 /* GPS: akurasi tinggi dulu, bila gagal coba sekali lagi dengan akurasi biasa (laptop tanpa GPS sering gagal di mode tinggi) */
 function bacaPosisi(ok, gagal) {
   if (!("geolocation" in navigator)) return gagal("Peramban ini tidak bisa membaca lokasi. Cari nama tempat di bawah.");
-  const pesan = e => e.code === 1
-    ? "Izin lokasi ditolak. Izinkan lokasi untuk situs ini di peramban, lalu tekan Coba lagi."
-    : "Lokasi belum terbaca. Di laptop: buka Pengaturan Sistem, Privasi dan Keamanan, Layanan Lokasi, lalu nyalakan untuk peramban ini. Di HP: nyalakan GPS. Atau cari nama tempat di bawah.";
+  /* tiga sebab dibedakan (pemilik 24 Nov 2026: "padahal udah diizinkan kenapa ga bisa?"): izin situs di peramban sudah ada tapi sistem operasi belum memberi
+     izin lokasi ke aplikasi perambannya memberi kode 2, bukan 1 */
+  const mac = /Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints < 2, hp = /Android|iPhone|iPad/.test(navigator.userAgent) || navigator.maxTouchPoints > 1;
+  const pesan = e => e.code === 1 ? "Izin lokasi untuk situs ini ditolak. Izinkan lokasi lewat ikon di kolom alamat peramban, lalu tekan Coba lagi."
+    : e.code === 3 ? "Lokasi terlalu lama terbaca. Pindah ke tempat terbuka atau dekat jendela, lalu tekan Coba lagi. Atau cari nama tempat di bawah."
+    : mac ? "Peramban sudah diizinkan, tapi Mac belum memberi izin lokasi ke aplikasi peramban ini. Buka Pengaturan Sistem, Privasi dan Keamanan, Layanan Lokasi, nyalakan untuk peramban ini, lalu buka ulang perambannya. Atau cari nama tempat di bawah."
+    : hp ? "Lokasi belum terbaca. Nyalakan GPS atau Lokasi di HP, lalu tekan Coba lagi. Atau cari nama tempat di bawah."
+    : "Lokasi belum terbaca. Nyalakan layanan lokasi di pengaturan perangkat untuk peramban ini, lalu tekan Coba lagi. Atau cari nama tempat di bawah.";
   navigator.geolocation.getCurrentPosition(ok, e => {
     if (e.code === 1) return gagal(pesan(e));
     navigator.geolocation.getCurrentPosition(ok, e2 => gagal(pesan(e2)), {enableHighAccuracy: false, maximumAge: 300000, timeout: 15000});
@@ -769,9 +774,12 @@ function tampilIsian(isian, lengkap) {
   if (!isian.length) { $("ringkasIsian").textContent = "Terisi otomatis dari percakapan"; $("isian").replaceChildren(el("p", "lp-redup lp-kecil", "Isian muncul begitu Anda mulai melapor.")); return; }
   const jawab = x => !["kosong", "belum"].includes(x.status);
   const belum = isian.filter(x => !jawab(x));
-  const pk = perkiraan(isian); $("ringkasIsian").textContent = `${isian.filter(jawab).length} dari ${isian.length} terjawab${pk.teks ? `, ${pk.teks}` : ""}`;
+  // 24 Nov 2026 (pemilik: "bagusin"): hitungan dan perkiraan waktu jadi dua keping, isian berikutnya jadi pil, bukan satu kalimat padat
+  const pk = perkiraan(isian), rk = $("ringkasIsian"); rk.replaceChildren(el("b", null, `${isian.filter(jawab).length} dari ${isian.length}`), " terjawab");
+  if (pk.teks && belum.length) { const w = el("span", "lp-panel-waktu"); w.append(ikon("k-jam"), pk.teks); rk.append(w); }
   $("sisaIsian").hidden = false;
-  $("sisaIsian").textContent = belum.length ? `Belum: ${belum.slice(0, 3).map(x => x.label).join(", ")}${belum.length > 3 ? `, dan ${belum.length - 3} lagi` : ""}` : "Semua terjawab, laporan siap dikirim";
+  if (belum.length) { const pil = belum.slice(0, 3).map(x => el("span", "lp-panel-pil", x.label)); $("sisaIsian").replaceChildren(el("small", null, "Berikutnya"), ...pil, ...(belum.length > 3 ? [el("span", "lp-panel-pil lain", `${belum.length - 3} lagi`)] : [])); }
+  else $("sisaIsian").replaceChildren(ikon("i-centang"), "Semua terjawab, laporan siap dikirim");
   $("sisaIsian").classList.toggle("selesai", !belum.length);
   const per = new Map(); for (const x of isian) per.set(x.kelompok, [...(per.get(x.kelompok) || []), x]);
   const frag = document.createDocumentFragment();
@@ -1205,7 +1213,7 @@ async function tarikKotak() {
 }
 
 /* ============ info daerah, prediksi 3 hari, nomor penting: ringkasan langsung di chat (pemilik 19 Nov 2026) ============ */
-const INFO = {info: ["Info dan prediksi daerah", "Hari ini, 3 hari ke depan, dan rapor daerah", "i-lokasi"], prediksi: ["Prediksi 3 hari", "Hujan, banjir, longsor, asap, angin", "i-kalender"], penting: ["Nomor penting", "BPBD, rumah sakit, polisi, pemadam", "i-telepon"]};
+const INFO = {info: ["Info dan prediksi daerah", "Hari ini, 3 hari ke depan, dan analisis daerah", "i-lokasi"], prediksi: ["Prediksi 3 hari", "Hujan, banjir, longsor, asap, angin", "i-kalender"], penting: ["Nomor penting", "BPBD, rumah sakit, polisi, pemadam", "i-telepon"]};
 let infoMode = "info";
 function tambahInfo(dari, teks) {
   const li = el("li", `${dari} baru`);
@@ -1252,29 +1260,40 @@ async function ambilDaerah(q, tampil) {
     }
   } catch (e) { tambahInfo("bot", `${e.message || "Data belum bisa dimuat"}. Coba lagi.`); kartuLokasiInfo(); }
 }
-/* rapor daerah (pemilik 22 Nov 2026, KEPUTUSAN-LAPOR-AI K89): angka sama dengan tab Wilayah /akademisi; data kosong tidak ditulis 0 */
+/* analisis daerah (pemilik 22 Nov 2026, KEPUTUSAN-LAPOR-AI K89; nama "Analisis daerah" 24 Nov 2026): angka sama dengan tab Wilayah /akademisi; data kosong tidak ditulis 0.
+   24 Nov 2026 (pemilik: "jelek banget"): status darurat jadi spanduk dengan daftar ancaman, risiko dan kejadian jadi ubin selebar kartu */
 const KELAS_LV = {"Rendah": 0, "Sedang": 1, "Tinggi": 2, "Sangat tinggi": 3};
 function kartuRapor(j) {
-  const li = el("li", "bot baru lp-pred-li"), w = el("div", "lp-pred"), kp = el("div", "lp-pred-kepala"), angka = v => v.toLocaleString("id-ID");
+  const li = el("li", "bot baru lp-pred-li"), w = el("div", "lp-pred lp-an"), kp = el("div", "lp-pred-kepala"), angka = v => v.toLocaleString("id-ID");
   const tgl = t => new Date(`${t}T00:00:00Z`).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});
   const kpIk = el("span", "lp-pred-ik"); kpIk.append(ikon("i-kejadian"));
-  const kpT = el("span", "lp-pred-judul"); kpT.append(el("b", null, "Rapor daerah"), el("small", null, `${j.kab}, ${j.prov}`)); kp.append(kpIk, kpT); w.append(kp);
-  const kisi = el("div", "lp-pred-kisi"), kotak = (judul, sub) => { const c = el("section", "lp-pred-hari"), h4 = el("h4"); h4.append(el("b", null, judul), ...(sub ? [el("small", null, sub)] : [])); c.append(h4); kisi.append(c); return c; };
-  const besar = (c, ik, nilai, ket, kelas = "") => { const d = el("div", `lp-pred-hujan ${kelas}`), t = el("span"); d.append(ikon(ik)); t.append(el("b", null, nilai), el("small", null, ket)); d.append(t); c.append(d); };
-  const chips = (c, xs) => { const a = el("div", "lp-pred-ancaman"); for (const [teks, lv, ik] of xs) { const ch = el("span", `lp-pred-chip ${lv}`); ch.append(ikon(ik), el("span", null, teks)); a.append(ch); } c.append(a); };
-  const r = j.risiko, c1 = kotak("Tingkat risiko");
-  if (r) { const lv = KELAS_LV[r.kelas] ?? 0; besar(c1, "i-kejadian", r.kelas, `${angka(r.kecamatan)} kecamatan${r.kecTinggi ? `, ${angka(r.kecTinggi)} berisiko tinggi` : ""}`, lv >= 2 ? "tinggi" : lv === 1 ? "sedang" : "");
-    if (r.contohTinggi?.length) chips(c1, r.contohTinggi.map(n => [`Kec. ${n}`, "lv1", "i-lokasi"])); }
-  else c1.append(el("small", null, "Belum ada data"));
+  const kpT = el("span", "lp-pred-judul"); kpT.append(el("b", null, "Analisis daerah"), el("small", null, `${j.kab}, ${j.prov}`)); kp.append(kpIk, kpT); w.append(kp);
+  // kondisi sekarang: satu spanduk per status darurat, gunung api, dan titik panas
+  for (const x of j.darurat || []) {
+    const sp = el("section", "lp-an-status"), ik = el("span", "lp-an-status-ik"); ik.append(ikon("i-sirene"));
+    const t = el("div", "lp-an-status-isi"), kep = el("div", "lp-an-status-kep"); kep.append(el("b", null, x.status), ...(x.berakhir ? [el("small", null, `berlaku sampai ${tgl(x.berakhir)}`)] : []));
+    const daftar = el("ul", "lp-an-jenis"); for (const jn of String(x.jenis).split(/,\s*/).filter(Boolean)) { const l = el("li"); l.append(ikon(IKON_ANCAMAN(jn)), jn); daftar.append(l); }
+    t.append(kep, daftar); sp.append(ik, t); w.append(sp);
+  }
+  const lain = [];
+  for (const g of j.gunung || []) lain.push([`Gunung ${g.nama}`, `${g.tingkat}, ${angka(g.jarakKm)} km`, `lv${g.level - 1}`, "b-gunung"]);
+  if (j.titik) lain.push(["Titik panas 24 jam", angka(j.titik.n), j.titik.n ? "lv1" : "", "b-api"]);
+  if (lain.length) { const d = el("div", "lp-an-lain"); for (const [nm, nilai, lv, ik] of lain) { const r = el("div", `lp-an-lain-baris ${lv}`); r.append(ikon(ik), el("span", null, nm), el("b", null, nilai)); d.append(r); } w.append(d); }
+  // ubin angka: tingkat risiko dan kejadian setahun, mengisi selebar kartu
+  const kisi = el("div", "lp-an-kisi"), ubin = (judul, ik) => { const c = el("section", "lp-an-ubin"), h = el("h4"); h.append(ikon(ik), judul); c.append(h); kisi.append(c); return c; };
+  const r = j.risiko, c1 = ubin("Tingkat risiko", "i-kejadian");
+  if (r) {
+    const lv = KELAS_LV[r.kelas] ?? 0, n = el("div", `lp-an-nilai lv${lv}`); n.append(el("b", null, r.kelas), el("small", null, `${angka(r.kecamatan)} kecamatan dinilai`)); c1.append(n);
+    const meter = el("div", "lp-an-meter"); meter.setAttribute("aria-hidden", "true"); for (let i = 0; i < 4; i++) meter.append(el("i", i <= lv ? `isi lv${lv}` : "")); c1.append(meter);
+    if (r.kecTinggi) { const d = el("p", "lp-an-ket"); d.append(el("b", null, `${angka(r.kecTinggi)} kecamatan berisiko tinggi`), ...(r.contohTinggi?.length ? [el("span", null, r.contohTinggi.join(", "))] : [])); c1.append(d); }
+  } else c1.append(el("p", "lp-an-kosong", "Belum ada data"));
   const k = j.kejadian;
-  if (k) { const c2 = kotak("Kejadian setahun terakhir");
-    besar(c2, "i-kalender", angka(k.total), `${k.total ? "kejadian" : "tidak ada kejadian"} tercatat di DIBI BNPB, ${tgl(k.dari)} sampai ${tgl(k.sampai)}`);
-    if (k.jenis.length) chips(c2, k.jenis.map(x => [`${x.jenis} ${angka(x.n)}`, "", IKON_ANCAMAN(x.jenis)])); }
-  const kini = [];
-  for (const x of j.darurat || []) kini.push([`${x.status}: ${x.jenis}${x.berakhir ? ` sampai ${tgl(x.berakhir)}` : ""}`, "lv3", "i-kejadian"]);
-  for (const g of j.gunung || []) kini.push([`Gunung ${g.nama} ${g.tingkat}, ${angka(g.jarakKm)} km`, `lv${g.level - 1}`, "i-kejadian"]);
-  if (j.titik) kini.push([`Titik panas 24 jam: ${angka(j.titik.n)}`, j.titik.n ? "lv1" : "aman", "b-api"]);
-  if (kini.length) { const c = kotak("Kondisi sekarang"); c.style.gridColumn = "1 / -1"; kisi.prepend(c); chips(c, kini); }   // paling mendesak di atas, selebar kartu (tanpa ruang kosong)
+  if (k) {
+    const c2 = ubin("Kejadian setahun terakhir", "i-kalender"), n = el("div", "lp-an-nilai"); n.append(el("b", null, angka(k.total)), el("small", null, `kejadian di DIBI BNPB, ${tgl(k.dari)} sampai ${tgl(k.sampai)}`)); c2.append(n);
+    if (k.jenis.length) { const maks = Math.max(...k.jenis.map(x => x.n)), ul = el("ul", "lp-an-batang");
+      for (const x of k.jenis) { const l = el("li"), bar = el("i"); bar.style.inlineSize = `${Math.max(6, x.n / maks * 100)}%`; l.append(ikon(IKON_ANCAMAN(x.jenis)), el("span", null, x.jenis), el("span", "lp-an-batang-jalur", null), el("b", null, angka(x.n))); l.querySelector(".lp-an-batang-jalur").append(bar); ul.append(l); }
+      c2.append(ul); }
+  }
   w.append(kisi); li.append(w); $("logInfo").append(li);
   requestAnimationFrame(() => $("gulirInfo").scrollTo({top: $("gulirInfo").scrollHeight, behavior: "smooth"}));
 }
@@ -1297,13 +1316,14 @@ function kartuPrediksi(j, hariIni = false) { // hariIni: format yang sama untuk 
     const mm = h.hujanMm, kat = mm == null ? null : mm < 1 ? "Tidak hujan" : mm > 150 ? "Ekstrem" : mm > 100 ? "Sangat lebat" : mm > 50 ? "Lebat" : mm > 20 ? "Sedang" : "Ringan";
     const hj = el("div", `lp-pred-hujan ${mm > 50 ? "tinggi" : mm > 20 ? "sedang" : ""}`); hj.append(ikon(mm > 50 ? "b-petir" : "b-hujan"));
     const ht = el("span"); ht.append(el("b", null, mm == null ? "Tidak ada data" : `${mm.toLocaleString("id-ID")} mm`), el("small", null, kat ? `Hujan ${kat.toLowerCase()}${mm >= 5 && h.puncak != null ? `, puncak pukul ${String(h.puncak).padStart(2, "0")}.00` : ""}` : "")); hj.append(ht); c.append(hj);
-    const an = el("div", "lp-pred-ancaman");
-    if (!h.ancaman.length) an.append(el("span", "lp-pred-chip aman", "Semua ancaman normal"));
-    for (const a of h.ancaman) { const ch = el("span", `lp-pred-chip lv${a.lv}`); ch.append(ikon(IKON_ANCAMAN(a.label)), el("span", null, a.label), el("b", null, a.tingkat)); an.append(ch); }
-    c.append(an); kisi.append(c);
+    // ancaman sebagai baris berlabel tingkat, tingkat tertinggi memberi garis warna di kartu hari (pemilik 24 Nov 2026: "bagusin")
+    const an = el("ul", "lp-pr-ancaman"), lvMaks = Math.max(0, ...h.ancaman.map(a => a.lv));
+    if (!h.ancaman.length) an.append(el("li", "lp-pr-normal", "Semua ancaman di tingkat Normal"));
+    for (const a of h.ancaman) { const r = el("li"); r.append(ikon(IKON_ANCAMAN(a.label)), el("span", null, a.label), el("b", `lp-pr-tingkat lv${a.lv}`, a.tingkat)); an.append(r); }
+    c.classList.add(`lv${lvMaks}`); c.append(an); kisi.append(c);
   }
-  if (hariIni) { // imbauan dari aturan dampak /prediksi
-    const im = el("section", "lp-pred-hari lp-pred-imbauan"); im.append(el("h4", null, "Imbauan"));
+  if (hariIni) { // imbauan dari aturan dampak /prediksi, satu kartu dengan cuaca hari ini (pemilik 24 Nov 2026: "bagusin")
+    const im = el("section", "lp-pred-imbauan"), h4 = el("h4"); h4.append(ikon("i-sirene"), "Imbauan"); im.append(h4);
     if (!j.waspada?.length) im.append(el("p", "lp-redup", "Belum ada imbauan khusus untuk daerah ini."));
     // imbauan sama di beberapa hari digabung jadi satu baris, imbauan berbeda berjajar sebaris (pemilik 19 Nov 2026: "agar dibuat sebaris")
     const per = new Map(); for (const x of j.waspada || []) per.set(x.maka, [...(per.get(x.maka) || []), x.hari]);
@@ -1348,7 +1368,7 @@ function kartuPenting(j) {
   k.classList.add("lp-langkah-penting");
   kolom.style.setProperty("--kol", kolom.childElementCount);
   const nas = el("section", "lp-kontak-grup nasional"), hn = el("h3"); hn.append(ikon("i-telepon"), "Nomor darurat nasional"); nas.append(hn, kisi);
-  isi.append(nas, kolom, el("p", "lp-catatan-kecil", "Lokasi fasilitas dari OpenStreetMap; nomor BPBD dari peta BPBD BNPB. Pemadam kebakaran: 113."));
+  isi.append(nas, kolom);
   k.append(kp, isi); $("kartuInfo").replaceChildren(k);
 }
 $("bTutupInfo").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });

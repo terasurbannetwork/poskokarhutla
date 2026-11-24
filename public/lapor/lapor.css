@@ -2442,3 +2442,93 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-pw-qr{align-self:stretch;align-content:center}
 /* 24 Nov 2026 (pemilik): di obrolan lapor kejadian tombol "Lapor kejadian" di menu samping tidak perlu lagi */
 .lp-app.di-lapor .lp-tab .lp-tab-lapor{display:none!important}
+/* 24 Nov 2026 (pemilik: mode gelap "ditaruh di kanan atas, atau di sini" samping Beranda): tombol tema bulat di ujung kanan tiap kepala dan di pojok hero; tidak lagi di menu samping */
+.lp-tema-atas{order:10;flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;margin-left:8px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--brand2);cursor:pointer}
+.lp-tema-atas:hover{border-color:var(--brand2)}
+.lp-tema-atas svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-chat-kepala:not(:has(#bKembali)) .lp-tema-atas{margin-left:auto}
+@media (max-width:899px){.lp-chat-kepala .lp-tema-atas{margin-left:auto}.lp-chat-kepala:has(.lp-isian-tombol) .lp-tema-atas{margin-left:8px}}
+.lp-tema-hp{display:grid!important}
+/* 24 Nov 2026 (pemilik: "biar natural jadi bubble chat, keterangannya di atas orangnya"): di menu samping gelembung Sigap di atas maskot, berekor ke bawah */
+@media (min-width:900px){
+  .lp-tab .lp-sigap{gap:14px!important}
+  .lp-tab .lp-sigap-gelembung{order:-1;position:relative;border:1px solid var(--line)!important;border-left-width:1px!important;border-radius:16px!important;box-shadow:0 10px 24px -16px color-mix(in oklab,var(--head-bg) 60%,transparent)}
+  .lp-tab .lp-sigap-gelembung::after{content:"";position:absolute;left:50%;bottom:-8px;width:14px;height:14px;translate:-50% 0;rotate:45deg;background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+}
+/* ===== 24 Nov 2026 (pemilik: "bagusin", "jelek banget"): kartu Analisis daerah, prediksi 3 hari, info hari ini ===== */
+/* tingkat: lv1 Waspada (warn), lv2 Siaga (brand-accent), lv3 Awas (bad) */
+.lp-an{gap:16px!important}
+.lp-an-status{display:flex;gap:14px;padding:14px 16px;border-radius:16px;border:1px solid color-mix(in oklab,var(--bad) 35%,var(--line));background:color-mix(in oklab,var(--bad) 7%,var(--card))}
+.lp-an-status-ik{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--bad);color:var(--on-pekat)}
+.lp-an-status-ik svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-an-status-isi{display:grid;gap:10px;min-width:0;flex:1}
+.lp-an-status-kep{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.lp-an-status-kep b{font:800 1rem/1.3 var(--display);color:var(--bad)}
+.lp-an-status-kep small{font:600 .8125rem var(--font);color:var(--ink2)}
+.lp-an-jenis{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.lp-an-jenis li{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 8px;border-radius:10px;background:var(--card);border:1px solid var(--line);font:600 .8125rem var(--font);color:var(--ink)}
+.lp-an-jenis svg,.lp-an-lain svg,.lp-an-ubin h4 svg,.lp-an-batang svg,.lp-pr-ancaman svg,.lp-pred-imbauan h4 svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.lp-an-jenis svg{color:var(--bad)}
+.lp-an-lain{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px}
+.lp-an-lain-baris{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--surface);font:600 .8125rem var(--font);color:var(--ink2)}
+.lp-an-lain-baris b{margin-left:auto;font:800 .875rem var(--font);color:var(--ink)}
+.lp-an-lain-baris.lv1 svg{color:var(--warn)}.lp-an-lain-baris.lv2 svg{color:var(--brand-accent)}.lp-an-lain-baris.lv3 svg{color:var(--bad)}
+.lp-an-kisi{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
+.lp-an-ubin{display:grid;gap:12px;align-content:start;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.lp-an-ubin h4{display:flex;align-items:center;gap:8px;margin:0;font:700 .8125rem var(--font);color:var(--ink2)}
+.lp-an-nilai{display:grid;gap:2px}
+.lp-an-nilai b{font:800 2rem/1.05 var(--display);letter-spacing:-.02em;color:var(--ink)}
+.lp-an-nilai.lv1 b{color:color-mix(in oklab,var(--warn) 70%,var(--ink))}.lp-an-nilai.lv2 b{color:var(--brand-accent)}.lp-an-nilai.lv3 b{color:var(--bad)}
+.lp-an-nilai small{font:500 .8125rem/1.45 var(--font);color:var(--ink2)}
+.lp-an-meter{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.lp-an-meter i{height:6px;border-radius:99px;background:var(--surface)}
+.lp-an-meter i.isi.lv0{background:var(--ok)}.lp-an-meter i.isi.lv1{background:var(--warn)}.lp-an-meter i.isi.lv2{background:var(--brand-accent)}.lp-an-meter i.isi.lv3{background:var(--bad)}
+.lp-an-ket{display:grid;gap:2px;margin:0;padding-top:10px;border-top:1px solid var(--line);font-size:.8125rem;line-height:1.45}
+.lp-an-ket b{font-weight:700;color:var(--ink)}.lp-an-ket span{color:var(--ink2)}
+.lp-an-kosong{margin:0;color:var(--ink2);font-size:.875rem}
+.lp-an-batang{margin:0;padding:10px 0 0;list-style:none;display:grid;gap:8px;border-top:1px solid var(--line)}
+.lp-an-batang li{display:grid;grid-template-columns:16px minmax(90px,auto) 1fr auto;align-items:center;gap:8px;font:600 .8125rem var(--font);color:var(--ink)}
+.lp-an-batang svg{color:var(--brand2)}
+.lp-an-batang-jalur{height:6px;border-radius:99px;background:var(--surface);overflow:hidden}
+.lp-an-batang-jalur i{display:block;height:100%;border-radius:inherit;background:var(--brand2)}
+.lp-an-batang b{font-weight:800;font-variant-numeric:tabular-nums}
+/* prediksi: ancaman sebagai baris, garis warna di kiri kartu hari menurut tingkat tertinggi */
+.lp-pred-hari{position:relative;overflow:hidden}
+.lp-pred-hari.lv1,.lp-pred-hari.lv2,.lp-pred-hari.lv3{border-left-width:4px!important}
+.lp-pred-hari.lv1{border-left-color:var(--warn)!important}.lp-pred-hari.lv2{border-left-color:var(--brand-accent)!important}.lp-pred-hari.lv3{border-left-color:var(--bad)!important}
+.lp-pr-ancaman{margin:0;padding:10px 0 0;list-style:none;display:grid;gap:6px;border-top:1px solid var(--line)}
+.lp-pr-ancaman li{display:flex;align-items:center;gap:8px;font:600 .8125rem var(--font);color:var(--ink)}
+.lp-pr-ancaman li svg{color:var(--ink2)}
+.lp-pr-normal{color:var(--ink2)!important;font-weight:500!important}
+.lp-pr-tingkat{margin-left:auto;padding:3px 10px;border-radius:99px;font:700 .75rem var(--font)}
+.lp-pr-tingkat.lv1{background:color-mix(in oklab,var(--warn) 28%,var(--card));color:var(--ink)}
+.lp-pr-tingkat.lv2{background:color-mix(in oklab,var(--brand-accent) 22%,var(--card));color:color-mix(in oklab,var(--brand-accent) 60%,var(--ink))}
+.lp-pr-tingkat.lv3{background:var(--bad);color:var(--on-pekat)}
+/* info hari ini: cuaca dan imbauan satu kartu, dipisah garis */
+.lp-pred-kisi.hari-ini{grid-template-columns:minmax(0,1fr)!important;gap:0!important;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lp-pred-kisi.hari-ini>.lp-pred-hari{border:0!important;border-radius:0!important}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv1,.lp-pred-kisi.hari-ini>.lp-pred-hari.lv2,.lp-pred-kisi.hari-ini>.lp-pred-hari.lv3{border-left:4px solid!important}
+.lp-pred-imbauan{display:grid;gap:10px;align-content:start;padding:16px;border-top:1px solid var(--line);background:var(--card)}
+.lp-pred-imbauan h4{display:flex;align-items:center;gap:8px;margin:0;font:700 .875rem var(--font);color:var(--ink)}
+.lp-pred-imbauan h4 svg{color:var(--brand2)}
+.lp-pred-imbauan p{margin:0;font-size:.875rem}
+@container (width > 640px){.lp-pred-kisi.hari-ini{grid-template-columns:minmax(260px,1fr) minmax(0,1.6fr)!important}.lp-pred-imbauan{border-top:0;border-left:1px solid var(--line)}}
+.lp-pred{container-type:inline-size}
+/* kepala Isian laporan (24 Nov 2026, pemilik: "bagusin"): cincin saja tanpa bilah kembar, hitungan dan waktu berkeping, isian berikutnya berpil */
+#panelIsian .lp-panel-kepala{flex-wrap:wrap;align-items:center}
+#panelIsian .lp-panel-bar{display:none}
+#ringkasIsian{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0;font:500 .8125rem var(--font)!important;color:var(--ink2)}
+#ringkasIsian b{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.lp-panel-waktu{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;background:var(--surface);font:600 .75rem var(--font);color:var(--ink2)}
+.lp-panel-waktu svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+#panelIsian .lp-panel-sisa{order:9;flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 0!important;padding:10px 12px;border-radius:12px;background:var(--surface);font-size:.75rem!important}
+.lp-panel-sisa small{flex-basis:100%;font:700 .6875rem var(--font);color:var(--ink2)}
+.lp-panel-pil{padding:3px 9px;border-radius:99px;background:var(--card);border:1px solid var(--line);font:600 .75rem var(--font);color:var(--ink)}
+.lp-panel-pil.lain{color:var(--ink2);border-style:dashed}
+.lp-panel-sisa.selesai{background:color-mix(in oklab,var(--ok) 12%,var(--card));color:var(--ok)!important;font-weight:700!important}
+.lp-panel-sisa svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2}
+.lp-pr-ancaman li>span{flex:1;min-width:0}
+.lp-pr-ancaman li>.lp-pr-tingkat{flex:none;margin-left:0}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv1{border-left-color:var(--warn)!important}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv2{border-left-color:var(--brand-accent)!important}
+.lp-pred-kisi.hari-ini>.lp-pred-hari.lv3{border-left-color:var(--bad)!important}
