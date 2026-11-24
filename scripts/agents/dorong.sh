@@ -30,8 +30,13 @@ while [ "$percobaan" -le 5 ]; do
   if ! git merge-base --is-ancestor origin/main HEAD; then
     if ! git pull -q --rebase --autostash origin main; then
       git rebase --abort 2>/dev/null
-      echo "dorong: gagal menyusul origin/main karena bentrok. Commit lokal utuh, belum ada yang didorong."
-      exit 1
+      # 24 Nov 2026: rebase meratakan commit gabung lokal dan bentrok saat memutar ulang commit "gas" yang sudah tergabung,
+      # padahal gabung biasa bersih. Coba gabung dulu sebelum menyerah.
+      if ! git merge -q --no-edit origin/main; then
+        git merge --abort 2>/dev/null
+        echo "dorong: gagal menyusul origin/main karena bentrok. Commit lokal utuh, belum ada yang didorong."
+        exit 1
+      fi
     fi
   fi
   didorong=$(git rev-parse HEAD)
