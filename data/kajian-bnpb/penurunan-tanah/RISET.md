@@ -216,3 +216,27 @@ Tinjauan `validasi-model` (konteks bersih), vonis **BELUM layak tayang**. Temuan
 4. Periode dua geometri berbeda (naik berakhir 31 Agustus 2022, turun 31 Maret 2023); dekomposisi vertikal mencampur periode itu.
 
 Status: angka Jakarta tetap tidak tayang dan tetap hipotesis (D4); kata "terukur" tidak dipakai sampai validasi GNSS atau levelling (6.3, Q11). Swa-uji `~/licsbas/tahan.py` diperketat ke selisih di bawah 0,5 mm/tahun (nilai sebenarnya 0,0). Langkah yang tersisa: variogram residu untuk menentukan ukuran blok (mengganti bawaan D9), uji tahan-waktu independen dengan dua inversi LiCSBAS terpisah per separuh, dan menyamakan periode kedua geometri.
+
+### 6.11 Variogram derau laju Jakarta untuk ukuran blok D9 (24 Nov 2026)
+
+Skrip lab di luar repo: `~/licsbas/variogram.py`. Variogram empiris (selang 1 km sampai 20 km, 4.000 piksel acak, model eksponensial) pada dua medan derau per frame, dalam laju searah pandang (LOS, mm/tahun):
+- **acuan**: `vel.filt.mskd` putaran 6.8 di area acuan (lintang di bawah -6,30), dianggap tanpa deformasi;
+- **selisih**: laju separuh akhir dikurangi separuh awal (bagian 6.9), sehingga laju yang tetap hilang dan yang tersisa derau.
+
+Swa-uji skrip: medan acak bebas memberi jarak korelasi 0 km, medan halus buatan memberi sekitar 15 km.
+
+| Medan | γ 1,5 km | γ 5,5 km | γ 10,5 km | γ 15,5 km | γ 19,5 km | Plafon (sill) sampai 20 km |
+| --- | --- | --- | --- | --- | --- | --- |
+| Turun, acuan | 1,8 | 4,3 | 6,6 | 9,7 | 11,4 | tidak ada |
+| Turun, selisih | 0,2 | 0,7 | 1,1 | 1,4 | 1,4 | hampir rata sesudah 15 km |
+| Naik, acuan | 30,9 | 88,5 | 146,0 | 169,6 | 213,3 | tidak ada |
+| Naik, selisih | 1,1 | 5,4 | 11,4 | 14,3 | 14,5 | hampir rata sesudah 15 km |
+
+(γ dalam (mm/tahun)², semivarians.)
+
+Bacaan:
+1. Derau tidak punya jarak korelasi pendek. γ terus naik sampai 15 sampai 20 km, artinya derau didominasi komponen panjang gelombang besar (sisa atmosfer atau orbit berbentuk kemiringan bidang) yang selebar kota. Tidak ada ukuran blok di dalam satu kecamatan yang bisa menangkapnya. Bootstrap blok di `subsiden.py` (K3, D9) tetap benar untuk derau pendek, tetapi galat kecamatannya tetap batas bawah untuk galat antar-kecamatan yang berjauhan.
+2. Besarnya untuk perbandingan Jakarta Utara lawan Selatan (pusat berjarak sekitar 15 km): simpangan baku beda dua titik = akar(2γ). Frame turun 4,4 mm/tahun LOS, kira-kira 0,5 cm/tahun vertikal (U 0,81). Frame naik 18,4 mm/tahun LOS, kira-kira 2,4 cm/tahun vertikal (U 0,78). Selisih Utara lawan Selatan di 6.8 hanya 1,4 cm/tahun. Kalau variogram acuan frame naik memang derau, selisih itu **tidak bermakna secara statistik**, dan lolosnya gerbang pola bisa kebetulan.
+3. Catatan batas: area acuan (Jagakarsa sampai Depok utara) mungkin tidak benar-benar diam, jadi variogram acuan bisa memuat sinyal asli dan menjadi batas atas derau. Medan selisih lebih bersih tetapi hanya mengukur derau yang berubah antarseparuh, bukan kemiringan tetap yang sama di kedua separuh, jadi medan itu batas bawah. Derau sesungguhnya ada di antara keduanya. Frame naik jauh lebih berderau daripada frame turun di kedua ukuran.
+
+Akibat: D9 (blok 0,01 derajat) tidak bisa diganti dengan angka dari variogram, karena variogram tidak punya plafon di dalam jendela. Yang dibutuhkan bukan blok lebih besar, melainkan suku galat jarak: galat beda laju antara kecamatan dan area acuan = akar(2γ(h)) pada jarak h, ditambahkan ke s. Itu perubahan rumus yang perlu keputusan pemilik. Sebelum itu angka Jakarta tetap tidak tayang.
