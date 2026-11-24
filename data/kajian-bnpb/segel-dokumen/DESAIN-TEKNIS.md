@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS segel (
   wilayah TEXT CHECK (wilayah IS NULL OR length(wilayah) <= 80),
   periode TEXT NOT NULL CHECK (length(periode) BETWEEN 4 AND 23),
   penerbit TEXT NOT NULL CHECK (length(penerbit) BETWEEN 1 AND 80),
-  terbit INTEGER NOT NULL,
+  terbit INTEGER NOT NULL CHECK (terbit > 0),
   UNIQUE (jenis, rujukan)
 );
 CREATE INDEX IF NOT EXISTS segel_dasar ON segel (jenis, dasar, versi);
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS segel_cabut (
   kode TEXT PRIMARY KEY REFERENCES segel(kode),
   alasan TEXT NOT NULL CHECK (length(alasan) BETWEEN 5 AND 500),
   oleh TEXT NOT NULL CHECK (length(oleh) BETWEEN 1 AND 80),
-  waktu INTEGER NOT NULL
+  waktu INTEGER NOT NULL CHECK (waktu > 0)
 );
 ```
 

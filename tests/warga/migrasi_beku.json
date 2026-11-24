@@ -171,5 +171,6 @@
   "0167_lapor_ambil.sql": "4d81507f77246995fc7e6eef1a34d21f39eb0dfd3f0598af5ed529b632c246e7",
   "0168_staf_peran_unit.sql": "367d356bf0f8119849320132c259c0b0fdbd10ec6ebe788376db32775c077640",
   "0169_lk_periksa_akun.sql": "de168a909c69e845f88cd5f568a449c4907dba1c6abaf2e19b45be35b6c1918a",
-  "0170_lk_tarik_usulan.sql": "63e99fb6e70603eb4fa6493d4c33a984c4cf64b7e6cfcbf6126ba877ece2f567"
+  "0170_lk_tarik_usulan.sql": "63e99fb6e70603eb4fa6493d4c33a984c4cf64b7e6cfcbf6126ba877ece2f567",
+  "0171_segel.sql": "2e49895d9fe68707428ec8dc3792dd9a4d36be05ae092b7fc5b8b6b6d5927f7a"
 }
