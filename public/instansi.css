@@ -239,3 +239,15 @@
 .in-bc{display:inline-flex!important;align-items:center;gap:5px;font-weight:700}
 .in-bc .in-bc-ik{width:15px;height:15px}
 .in-undang{margin:20px 0}   /* Pintu Masuk PM-11: jarak 20px dari kartu tetangga */
+
+/* Layar masuk belah dua seperti /admin/masuk (pemilik 24 Nov 2026): kartu masuk di kiri, galeri jenis bencana di kanan.
+   Galeri memakai .ad-galeri dan .ad-pita dari admin.css (diimpor bnpb.css); di sini hanya kerangka dan latar sisi kiri. */
+body.in-layar-masuk .bn-judul{display:none}
+body.in-layar-masuk .in-wrap{max-width:none;padding:0}
+body.in-layar-masuk .lp-pesan{position:fixed;top:72px;left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 32px));z-index:20}
+.in-belah-masuk{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);height:calc(100dvh - 58px);overflow:hidden}
+.in-belah-masuk[hidden]{display:none}
+.in-sisi-masuk{display:grid;place-items:center;padding:32px 24px;overflow:auto;background:radial-gradient(90% 60% at 8% 0%,color-mix(in srgb,var(--c5) 30%,transparent),transparent 70%),radial-gradient(95% 60% at 88% 100%,color-mix(in srgb,var(--c5) 36%,transparent),transparent 72%),var(--paper)}
+.in-sisi-masuk .in-masuk{margin:0;width:min(440px,100%);box-sizing:border-box}
+.in-galeri-masuk{height:100%}
+@media (max-width:860px){.in-belah-masuk{display:block;height:auto;overflow:visible}.in-sisi-masuk{padding:24px 16px}.in-galeri-masuk .ad-pita,.in-galeri-masuk .ad-pita:hover,.in-galeri-masuk .ad-pita:focus-within{flex:none;height:92px}.in-galeri-masuk .ad-pita figcaption span{display:none}}

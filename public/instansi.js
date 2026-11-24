@@ -76,6 +76,7 @@
     for (const v of ["vMasuk", "vVerif", "vUtama", "vGanti", "vProfil", "vDaftarPic"]) $(v).hidden = true;
     $("profilKepala").hidden = true;
     $("keluar").hidden = !saya; $("akun").hidden = !saya;
+    document.body.classList.toggle("in-layar-masuk", !saya);   // layar masuk belah dua seperti /admin/masuk
     if (!saya) { undangAkun = null; $("vMasuk").hidden = false; return; }
     $("akun").textContent = saya.akun.wilayah;
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
