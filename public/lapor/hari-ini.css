@@ -14,12 +14,16 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);p
 :focus-visible{outline:3px solid var(--brand2);outline-offset:2px}
 .hi-grid{display:grid;gap:20px;margin-top:20px;grid-template-columns:minmax(0,1fr);align-items:stretch}
 .hi-daftar{display:grid;gap:20px;align-content:start;min-width:0}
-.hi-peta{min-width:0}
-.hi-peta-isi{height:320px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.hi-peta{min-width:0;display:flex}
+.hi-peta-isi{flex:1}
+header.top .mark{display:flex;align-items:center;gap:12px;min-width:0}
+.top .logo img{width:30px;height:30px}
+.bencana .menu{display:none}.bencana[open] .menu{display:block}
+.bencana summary{color:var(--on-head)}
+.hi-peta-isi{min-height:320px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
 @media (min-width:900px){
   .hi-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .hi-peta{min-height:440px}
-  .hi-peta-isi{position:sticky;top:calc(var(--top) + 16px);height:min(calc(100dvh - var(--top) - 32px),100%);min-height:440px}
+  .hi-peta-isi{min-height:440px}
 }
 .hi-kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 320px;position:relative}
 .hi-kartu.sorot{animation:hi-sorot 1.4s ease-out}
@@ -33,13 +37,13 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);p
 .hi-bd{padding:14px 20px 8px;display:grid;gap:12px;min-width:0}
 .hi-bd p{margin:0}
 .hi-warga,.hi-verif{display:flex;align-items:center;gap:8px;font-size:.8125rem;font-weight:700}
-.hi-verif{width:fit-content;max-width:100%;padding:5px 12px 5px 8px;border-radius:var(--r-pill);background:color-mix(in oklch,var(--ok) 16%,var(--card));color:var(--ok-tx)}
+.hi-verif{width:fit-content;max-width:100%;padding:5px 12px 5px 8px;border-radius:var(--r-pill);background:color-mix(in oklab,var(--ok) 16%,var(--card));color:var(--ok-tx)}
 .hi-kecil{font-size:.75rem;color:var(--ink2)}
 .hi-gulung{margin:0 -20px;overflow-x:auto}
 .hi-tabel{width:100%;border-collapse:collapse;font-size:.8125rem}
-.hi-tabel thead th{background:var(--head-bg);color:var(--on-head);text-align:left;padding:10px 20px;font-weight:700}
-.hi-tabel tbody th{text-align:left;font-weight:600;padding:9px 20px}
-.hi-tabel td{padding:9px 20px;font-variant-numeric:tabular-nums;font-weight:700}
+.hi-tabel thead th{background:var(--head-bg);color:var(--on-head);text-align:center;padding:10px 20px;font-weight:700}
+.hi-tabel td{padding:9px 20px;font-variant-numeric:tabular-nums;font-weight:700;text-align:center}
+.hi-tabel td.hi-label{text-align:left;font-weight:600}   /* kolom label kiri, kepala dan angka tengah (gerbang-tabel-rata, pemilik 30 Okt 2026) */
 .hi-tabel tbody tr+tr>*{border-top:1px solid var(--line)}
 .hi-aksi{display:flex;gap:4px;padding:4px 12px 12px}
 .hi-ikbtn{all:unset;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink2);cursor:pointer;position:relative}

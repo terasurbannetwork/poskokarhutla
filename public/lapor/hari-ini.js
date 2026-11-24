@@ -65,29 +65,30 @@ function muatMaplibre() {
 const tok = v => { const c = document.createElement("canvas").getContext("2d"); c.fillStyle = getComputedStyle(document.body).getPropertyValue(v).trim() || "gray"; c.fillRect(0, 0, 1, 1);
   const [r, g, b] = c.getImageData(0, 0, 1, 1).data; return `rgb(${r},${g},${b})`; };
 const fc = t => ({type: "FeatureCollection", features: t.filter(b => b.titik).map(b => ({type: "Feature", geometry: {type: "Point", coordinates: [b.titik.lon, b.titik.lat]},
-  properties: {id: b.id, judul: b.jenis, tempat: [b.lokasi.desa && `Desa ${b.lokasi.desa}`, b.lokasi.kab].filter(Boolean).join(", ")}}))});
+  properties: {id: b.id, judul: b.jenis, tempat: [b.lokasi.desa && `Desa/Kel. ${b.lokasi.desa}`, b.lokasi.kab].filter(Boolean).join(", ")}}))});
 function pas(data) {
   if (!data.features.length) return peta.jumpTo({center: [118, -2], zoom: 3.6});
   const b = new maplibregl.LngLatBounds(); for (const f of data.features) b.extend(f.geometry.coordinates);
   peta.fitBounds(b, {padding: 48, maxZoom: 11, duration: 0});
 }
 function gambarPeta(t) {
-  const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
+  const idle = window.requestIdleCallback ? f => requestIdleCallback(f, {timeout: 3000}) : f => setTimeout(f, 200);
   idle(async () => {
     try { await muatMaplibre(); } catch { return; }
     const data = fc(t);
     if (peta) { await petaSiap; peta.getSource("hi")?.setData(data); pas(data); return; }
-    peta = new maplibregl.Map({container: $("peta"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 3.6, attributionControl: {compact: true}});
+    try { peta = new maplibregl.Map({container: $("peta"), style: "https://tiles.openfreemap.org/styles/positron", center: [118, -2], zoom: 3.6, attributionControl: {compact: true}}); }
+    catch { $("kolomPeta").hidden = true; return; }   // tanpa WebGL: daftar kartu tetap lengkap
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
     petaSiap = new Promise(ok => peta.on("load", () => {
       peta.addSource("hi", {type: "geojson", data, cluster: true, clusterRadius: 40, clusterMaxZoom: 10});
       peta.addLayer({id: "kelompok", type: "circle", source: "hi", filter: ["has", "point_count"], paint: {"circle-color": tok("--head-bg"), "circle-radius": ["step", ["get", "point_count"], 16, 10, 22, 50, 28], "circle-stroke-width": 3, "circle-stroke-color": tok("--card")}});
-      peta.addLayer({id: "kelompok-n", type: "symbol", source: "hi", filter: ["has", "point_count"], layout: {"text-field": ["get", "point_count_abbreviated"], "text-size": 13, "text-font": ["Noto Sans Bold"]}, paint: {"text-color": tok("--on-head")}});
+      peta.addLayer({id: "kelompok-n", type: "symbol", source: "hi", filter: ["has", "point_count"], layout: {"text-field": ["get", "point_count"], "text-size": 13, "text-font": ["Noto Sans Bold"]}, paint: {"text-color": tok("--on-head")}});
       peta.addLayer({id: "titik", type: "circle", source: "hi", filter: ["!", ["has", "point_count"]], paint: {"circle-color": tok("--warn"), "circle-radius": 8, "circle-stroke-width": 2, "circle-stroke-color": tok("--card")}});
       peta.on("click", "kelompok", e => { const f = e.features[0]; peta.getSource("hi").getClusterExpansionZoom(f.properties.cluster_id).then(z => peta.easeTo({center: f.geometry.coordinates, zoom: z})); });
       peta.on("click", "titik", e => { const p = e.features[0].properties, box = el("div", "hi-pop"); box.append(el("b", null, p.judul), el("small", null, p.tempat));
         const l = el("button", "hi-tombol", "Lihat kartu"); l.type = "button";
-        l.addEventListener("click", () => { const k = document.getElementById(`k-${p.id}`); if (!k) return; k.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth", block: "nearest"}); k.focus({preventScroll: true}); k.classList.remove("sorot"); void k.offsetWidth; k.classList.add("sorot"); });
+        l.addEventListener("click", () => { const k = document.getElementById(`k-${p.id}`); if (!k) return; k.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth", block: "nearest"}); k.focus({preventScroll: true}); k.classList.remove("sorot"); requestAnimationFrame(() => requestAnimationFrame(() => k.classList.add("sorot"))); });
         box.append(l); new maplibregl.Popup({offset: 10, closeButton: false}).setLngLat(e.features[0].geometry.coordinates).setDOMContent(box).addTo(peta); });
       for (const l of ["kelompok", "titik"]) { peta.on("mouseenter", l, () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", l, () => { peta.getCanvas().style.cursor = ""; }); }
       pas(data); ok(); }));

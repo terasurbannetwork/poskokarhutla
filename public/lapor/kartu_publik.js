@@ -32,7 +32,7 @@ function tombolIkon(nama, label, aksi) {
   b.append(ikon(nama), el("span", "hi-sr", label)); b.addEventListener("click", aksi); return b;
 }
 async function bagikan(k, tombol) {
-  const url = `${location.origin}/lapor/hari-ini#k-${k.id}`, judul = `${k.jenis}, ${k.lokasi.kab || k.lokasi.prov || ""}`;
+  const url = `${location.origin}/lapor/hari-ini#k-${k.id}`, judul = [k.jenis, k.lokasi.kab || k.lokasi.prov].filter(Boolean).join(", ");
   const info = tombol.querySelector(".hi-sr"), awal = info.textContent;
   try {
     if (navigator.share) { await navigator.share({title: judul, text: "Laporan warga yang sudah diverifikasi BPBD", url}); return; }
@@ -43,7 +43,7 @@ async function bagikan(k, tombol) {
 function cetak(id) {
   const k = document.getElementById(`k-${id}`); k?.classList.add("cetak-ini"); document.body.dataset.cetak = id;
   addEventListener("afterprint", () => { delete document.body.dataset.cetak; k?.classList.remove("cetak-ini"); }, {once: true});
-  print();
+  requestAnimationFrame(() => setTimeout(print));   // kelas cetak tercat dulu; print() memblokir sampai dialog ditutup (inp-reviewer LK-06)
 }
 export function kartuPublik(k) {
   const a = el("article", "hi-kartu"); a.id = `k-${k.id}`; a.tabIndex = -1;
@@ -60,7 +60,7 @@ export function kartuPublik(k) {
   else {
     const t = el("table", "ex-tabel hi-tabel"), cap = el("caption", "hi-sr", "Dampak menurut laporan warga");
     const h = el("tr"); for (const x of ["Isian", "Menurut laporan warga"]) { const th = el("th", null, x); th.scope = "col"; h.append(th); }
-    const tb = el("tbody"); for (const [x, label] of baris) { const r = el("tr"); r.append(el("th", null, label), el("td", null, rentang(k.dampak[x]))); r.firstChild.scope = "row"; tb.append(r); }
+    const tb = el("tbody"); for (const [x, label] of baris) { const r = el("tr"); r.append(el("td", "hi-label", label), el("td", null, rentang(k.dampak[x]))); tb.append(r); }
     const th = el("thead"); th.append(h); t.append(cap, th, tb);
     const gulung = el("div", "hi-gulung"); gulung.append(t); isi.append(gulung, el("p", "hi-kecil", "Menurut laporan warga, tidak dijumlah dan bukan data resmi korban."));
   }
