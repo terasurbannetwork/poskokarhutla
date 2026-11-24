@@ -10,7 +10,7 @@
 6. Peraturan Menteri Energi dan Sumber Daya Mineral Nomor 15 Tahun 2011 tentang Pedoman Mitigasi Bencana Gunungapi, Gerakan Tanah, Gempa Bumi, dan Tsunami.
 7. Peraturan Menteri Lingkungan Hidup dan Kehutanan Nomor P.32/MENLHK/SETJEN/KUM.1/3/2016 tentang Pengendalian Kebakaran Hutan dan Lahan.
 8. Peraturan Kepala BNPB Nomor 8 Tahun 2011 tentang Standardisasi Data Kebencanaan (sudah tidak berlaku; dirujuk untuk definisi).
-9. Peraturan Kepala BNPB Nomor 15 Tahun 2011 tentang Pedoman Pengkajian Kebutuhan Pascabencana.
+9. Peraturan Kepala BNPB Nomor 15 Tahun 2011 tentang Pedoman Pengkajian Kebutuhan Pascabencana, Formulir 05. Berstatus berlaku dalam basis data peraturan BPK (diperiksa 24 November 2026); Peraturan BNPB 5/2017 dan 6/2017 tidak mencabutnya. https://bnpb.go.id/storage/app/media/uploads/migration/pubs/27.pdf
 10. Peraturan Kepala BNPB Nomor 3 Tahun 2016 tentang Sistem Komando Penanganan Darurat Bencana.
 11. Peraturan BNPB Nomor 1 Tahun 2023 tentang Satu Data Bencana.
 12. Petunjuk Pelaksanaan BNPB Nomor 3 Tahun 2022 tentang Pengkajian Cepat.
@@ -31,6 +31,7 @@
 27. Peraturan Gubernur Kalimantan Tengah Nomor 24 Tahun 2017 tentang Penyelenggaraan Penanganan Darurat Bencana Kebakaran Hutan dan Lahan. https://peraturan.bpk.go.id/Download/82954/Pergub%2024%20Tahun%202017.pdf
 28. Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 29 Tahun 2018 tentang Standar Teknis Standar Pelayanan Minimal Pekerjaan Umum dan Perumahan Rakyat (sudah dicabut oleh Peraturan Menteri PUPR Nomor 13 Tahun 2023).
 29. Kementerian Pertanian. (2019). Keterangan Direktur Perlindungan Tanaman Pangan tentang tanaman puso akibat kekeringan, dimuat Industry.co.id. https://www.industry.co.id/read/52384/kementan-tinjau-dampak-kemarau-di-provinsi-yogyakarta
+30. Direktorat Jenderal Tanaman Pangan, Kementerian Pertanian. Petunjuk Teknis Pengamatan dan Pelaporan Organisme Pengganggu Tumbuhan dan Dampak Perubahan Iklim, tabel intensitas kerusakan. Dibaca melalui salinan bahan ajar Politeknik Pertanian Negeri Kupang. https://mplk.politanikoe.ac.id/index.php/penilaian-intensitas-serangan-opt/tipe-kerusakan-rumus-dan-metode
 
 ## B. Standar, kerangka, dan basis data internasional
 
@@ -59,7 +60,7 @@
 23. Dewan Negara Tiongkok. (2003). 地质灾害防治条例 (Peraturan Pencegahan Bencana Geologi), Perintah Nomor 394, Pasal 4.
 24. Dewan Negara Tiongkok. (2008). 森林防火条例 (Peraturan Pencegahan Kebakaran Hutan), Perintah Nomor 541, Pasal 40. https://faolex.fao.org/docs/pdf/chn149759.pdf
 25. Dewan Negara Tiongkok. (2025). 森林草原防灭火条例 (Peraturan Pencegahan dan Pemadaman Kebakaran Hutan dan Padang Rumput), Pasal 45. https://www.news.cn/20251121/8932d88fefdf4f3d97e32d9dc88ef4aa/c.html
-26. Dewan Negara Tiongkok. 国家突发地质灾害应急预案 (Rencana Darurat Bencana Geologi Nasional), bagian 4, dibaca dari salinan lengkap. https://www.fadada.com/article/Basics-002492
+26. Dewan Negara Tiongkok. (2006). 国家突发地质灾害应急预案 (Rencana Darurat Bencana Geologi Nasional), bagian 4 huruf (1). https://www.mem.gov.cn/xw/jyll/200602/t20060220_230268.shtml
 27. Provinsi Liaoning. (2022). DB21/T 3579-2022, standar tingkat kekeringan wilayah, Tabel 18 dan 19, dengan definisi dari GB/T 32135-2015 (区域旱情等级). https://dbba.sacinfo.org.cn
 28. Ministry of Agriculture and Farmers Welfare India. (2016). Manual for Drought Management, edisi revisi Desember 2016, butir 3.2. https://ksndmc.org/Content/Documents/General/Revised%20Drought%20Management%20Manual-Dec%202016.pdf
 29. NDRRMC. (2019). Memorandum Order Nomor 60 Tahun 2019, Revised Guidelines for the Declaration of a State of Calamity, Pasal 3; dibaca dari salinannya dalam Resolusi Kota Pasay Nomor 7076 Tahun 2024. https://pasaycitysecretariat.com/_Attachments/Resolutions/2024725222021_RESO-7076-S2024.pdf

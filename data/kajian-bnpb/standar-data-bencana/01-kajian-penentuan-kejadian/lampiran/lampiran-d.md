@@ -34,7 +34,7 @@ Tabel D.1. Glosarium
 | Nomor induk kejadian | Nomor untuk satu kejadian di tingkat nasional yang diterbitkan oleh Pusdatinkom dan dipakai oleh semua catatan kabupaten/kota yang terkait. |
 | Peristiwa ancaman | Wujud ancaman bencana menurut UU 24/2007, yaitu suatu kejadian atau peristiwa yang bisa menimbulkan bencana, di tempat dan waktu tertentu. Peristiwa ini sudah terdeteksi atau dilaporkan, tetapi belum tentu menimbulkan dampak. |
 | PM2,5 | Partikel halus di udara yang berukuran 2,5 mikrometer atau kurang, yaitu komponen utama asap karhutla. |
-| Puso | Keadaan tanaman yang rusak sangat berat sehingga gagal panen. |
+| Puso | Keadaan tanaman yang rusak dengan intensitas lebih dari 85 persen sehingga gagal panen. |
 | Rumah rusak berat | Rumah yang roboh, hanyut, terbakar habis, tertimbun material setinggi 1 meter atau lebih di atas lantai, atau tingkat kerusakan fisiknya lebih dari 70 persen (Rancangan Juklak Bab I huruf D angka 29; Perka BNPB 15/2011). |
 | Rumah rusak berat terbobot | Jumlah rumah rusak berat ditambah setengah jumlah rumah rusak sedang dan sepertiga jumlah rumah tidak dapat dihuni sementara (Rancangan Juklak Bab I huruf D angka 34). |
 | Rumah rusak ringan | Rumah yang tingkat kerusakan fisiknya kurang dari 30 persen, strukturnya masih dapat digunakan, dan bangunannya masih berdiri (Rancangan Juklak Bab I huruf D angka 31). |

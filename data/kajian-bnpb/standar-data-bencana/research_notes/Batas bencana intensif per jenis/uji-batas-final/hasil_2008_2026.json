@@ -1,0 +1,114 @@
+{
+ "catatan": "Baris DIBI yang memenuhi kriteria a, b, atau c (d sampai f tidak terukur). Bukti internal, tidak dikutip dalam naskah.",
+ "total": {
+  "baris": 26503,
+  "intensif": 290,
+  "persen_intensif": 1.09,
+  "persen_korban_jiwa_di_intensif": 63.84,
+  "persen_rusak_berat_di_intensif": 80.13,
+  "versi_gar_baris": 138,
+  "versi_gar_persen": 0.52,
+  "versi_gar_persen_meninggal": 62.26,
+  "versi_gar_persen_rusak_berat": 78.83
+ },
+ "penentu": {
+  "b2": 136,
+  "b2_karena_bobot": 21,
+  "b4": 71,
+  "b1": 61,
+  "b3": 63,
+  "b1_karena_hilang": 7
+ },
+ "per_jenis": {
+  "Banjir": {
+   "baris": 12141,
+   "intensif": 57,
+   "persen": 0.47,
+   "versi_gar": 47
+  },
+  "Cuaca Ekstrem": {
+   "baris": 4896,
+   "intensif": 4,
+   "persen": 0.08,
+   "versi_gar": 2
+  },
+  "Tanah Longsor": {
+   "baris": 2921,
+   "intensif": 40,
+   "persen": 1.37,
+   "versi_gar": 10
+  },
+  "Puting Beliung": {
+   "baris": 2669,
+   "intensif": 3,
+   "persen": 0.11,
+   "versi_gar": 0
+  },
+  "Kekeringan": {
+   "baris": 739,
+   "intensif": 71,
+   "persen": 9.61,
+   "versi_gar": 0
+  },
+  "Angin Kencang": {
+   "baris": 645,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Gempabumi": {
+   "baris": 462,
+   "intensif": 63,
+   "persen": 13.64,
+   "versi_gar": 58
+  },
+  "Kebakaran Gedung dan Permukiman": {
+   "baris": 455,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Banjir dan Tanah Longsor": {
+   "baris": 429,
+   "intensif": 30,
+   "persen": 6.99,
+   "versi_gar": 3
+  },
+  "Gelombang Pasang / Abrasi": {
+   "baris": 351,
+   "intensif": 1,
+   "persen": 0.28,
+   "versi_gar": 0
+  },
+  "Banjir Bandang": {
+   "baris": 222,
+   "intensif": 3,
+   "persen": 1.35,
+   "versi_gar": 1
+  },
+  "Banjir Rob": {
+   "baris": 186,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Kebakaran Hutan dan Lahan": {
+   "baris": 88,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  },
+  "Erupsi Gunung Api": {
+   "baris": 88,
+   "intensif": 8,
+   "persen": 9.09,
+   "versi_gar": 8
+  },
+  "Gerakan Tanah": {
+   "baris": 74,
+   "intensif": 0,
+   "persen": 0.0,
+   "versi_gar": 0
+  }
+ }
+}

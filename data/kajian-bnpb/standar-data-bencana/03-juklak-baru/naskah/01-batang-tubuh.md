@@ -69,7 +69,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 34. Rumah Rusak Berat Terbobot adalah jumlah rumah rusak berat ditambah setengah jumlah rumah rusak sedang dan sepertiga jumlah rumah tidak dapat dihuni sementara.
 35. Fasilitas Publik adalah bangunan satuan pendidikan, fasilitas pelayanan kesehatan, rumah ibadat, kantor pemerintah, dan pasar.
 36. Layanan Vital adalah layanan listrik, air bersih, telekomunikasi, bahan bakar, sarana transportasi umum, rumah sakit rujukan, serta jalan dan jembatan utama.
-37. Puso adalah keadaan tanaman yang rusak sangat berat sehingga gagal panen.
+37. Puso adalah keadaan tanaman yang rusak dengan intensitas lebih dari 85 persen sehingga gagal panen.
 38. Luas Terbakar Terverifikasi adalah luas area yang terbakar menurut pengukuran lapangan atau citra satelit resolusi tinggi, bukan menurut jumlah *hotspot*, yaitu piksel citra satelit yang suhunya jauh lebih tinggi daripada sekitarnya.
 39. Kerusakan adalah perubahan bentuk pada aset fisik dan infrastruktur sehingga fungsinya terganggu sebagian atau seluruhnya sebagai akibat langsung kejadian bencana.
 40. Kerugian adalah meningkatnya biaya atau hilangnya kesempatan memperoleh pendapatan karena kerusakan aset sebagai akibat tidak langsung kejadian bencana.
@@ -84,7 +84,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 49. *Rapid Assessment* adalah pengkajian cepat sebagaimana dimaksud dalam Petunjuk Pelaksanaan BNPB Nomor 3 Tahun 2022 tentang Pengkajian Cepat.
 50. Status Keadaan Tertentu adalah status yang ditetapkan sebagaimana dimaksud dalam Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu.
 51. Relokasi adalah pemindahan penduduk secara tetap dari lokasi yang tidak dapat dihuni lagi karena kejadian bencana atau ancaman lanjutannya.
-52. Tanaman Rusak Berat adalah tanaman yang menurut laporan dinas yang membidangi pertanian tergolong terkena dengan intensitas berat, tetapi belum puso.
+52. Tanaman Rusak Berat adalah tanaman yang menurut laporan dinas yang membidangi pertanian mengalami kerusakan dengan intensitas 50 sampai 85 persen, sehingga belum puso.
 53. Hari yang Sama adalah tanggal kalender menurut waktu setempat di kabupaten/kota tersebut.
 
 # BAB II | STANDAR DATA KEJADIAN DAN DAMPAK BENCANA
