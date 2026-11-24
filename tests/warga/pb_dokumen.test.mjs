@@ -73,7 +73,8 @@ uji("bekukan: hak, validasi kalimat, hanya draf; kalimat dibersihkan dan batas 1
   assert.equal((await beku({id: "salah"})).s, 400);
   for (const kalimat of [{ringkasan: "lorem ipsum ".repeat(130)}, {ringkasan: "hubungi 081234567890"}, {ringkasan: "lihat https://contoh.id"}, {lain: "x"}, "teks", {ringkasan: 5}])
     assert.equal((await beku({id: id1, kalimat})).s, 400, JSON.stringify(kalimat).slice(0, 40));
-  assert.equal((await beku({id: id1, kalimat: {ringkasan: PANJANG}}, H("jabar"))).s, 200);   // staf wilayah 32 membekukan wilayahnya
+  const bk = await beku({id: id1, kalimat: {ringkasan: PANJANG}}, H("jabar")); assert.equal(bk.s, 200);   // staf wilayah 32 membekukan wilayahnya
+  assert.match(bk.j.segel, /^[0-9A-HJKMNP-TV-Z]{10}$/, "SG-09: jawaban bekukan membawa kode segel untuk QR cetak"); assert.match(bk.j.sidik12, /^[0-9a-f]{12}$/);
   assert.equal(await n("pb_dokumen", "status = 'beku'"), 1);
 });
 

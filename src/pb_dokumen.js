@@ -158,7 +158,7 @@ const bekukan = rute(async (env, req, url, kini) => {
   if (!await pbDokBeku(env, pelakuPbTulis, id, ukuran, sidik, kini)) return gagal(409, "dokumen sudah dibekukan");
   // segel menyusul pbDokBeku dalam batch log terbit (KEPUTUSAN-SEGEL D3): gagal di antara keduanya menyisakan dokumen beku tanpa segel
   const {kode: segel} = await batchBersegel(env, [pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_dokumen", id, "terbit", {status: "draf"}, {status: "beku", versi: d.versi, ukuran})], sampulPb(d, sidik, kini));
-  return json({id, versi: d.versi, status: "beku", ukuran, segel});
+  return json({id, versi: d.versi, status: "beku", ukuran, segel, sidik12: segel ? sidik.slice(0, 12) : null});
 });
 
 const daftar = rute(async (env, req, url) => {

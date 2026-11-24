@@ -98,9 +98,14 @@
         isi.push(bag);
       }
       prat.replaceChildren(...isi);
+      if (beku && d.segel) pasangSegel(prat, d.segel, d.sidik12);   // SG-09: QR di kaki halaman pertama lembar cetak
       const bB = tombol("beku", "Bekukan versi ini", "pb-utama"), cB = tombol("cetak", "Cetak", "pb-sekunder"); bB.dataset.aksi = "beku"; cB.dataset.aksi = "cetak";
       alat.replaceChildren(...(beku ? [cB] : [bB, cB]));
     }
+    /* segel-dokumen SG-09: skrip QR dimuat malas; gagal muat tidak menahan cetak, kode tetap tertulis di layar staf */
+    let janjiSegel = null;
+    const muatSegel = () => g.SegelDok ? Promise.resolve() : (janjiSegel ??= new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/inti/segel.js?v=1"; s.onload = ok; s.onerror = () => { janjiSegel = null; no(); }; document.head.append(s); }));
+    const pasangSegel = (wadah, kode, sidik12) => muatSegel().then(() => g.SegelDok.blok(kode, sidik12)).then(b => { if (b && wadah.isConnected) wadah.append(b); }).catch(() => wadah.append(el("p", "pb-ket", "Kode segel " + kode)));
     const kalimatDariIsian = () => { const k = {}; for (const t of prat.querySelectorAll("textarea[data-kunci]")) k[t.dataset.kunci] = t.value; return k; };
 
     function gambarDaftar() {
@@ -151,7 +156,7 @@
           ya.disabled = true; const r = await kirim("/api/pb/dokumen/bekukan", badanBekukan(S.draf.id, k));
           if (!r.ok) { ya.disabled = false; pesan.textContent = galatRamah(r.status, r.j); return; }
           for (const bg of S.draf.dokumen.bagian) if (Object.hasOwn(k, bg.kunci)) bg.kalimat_staf = String(k[bg.kunci]).trim();
-          S.draf.status = "beku"; pesan.textContent = "Versi " + r.j.versi + " dibekukan."; nanti(gambarPrat); muat();
+          S.draf.status = "beku"; S.draf.segel = r.j.segel ?? null; S.draf.sidik12 = r.j.sidik12 ?? null; pesan.textContent = "Versi " + r.j.versi + " dibekukan."; nanti(gambarPrat); muat();
         });
         alat.replaceChildren(ya, tdk);
       }
