@@ -423,7 +423,7 @@ async function daruratCepat(env, req, url, kini) {
   if (lokasi) { try { const w = await wilayahDari(env)(lokasi.lat, lokasi.lon); if (w) { const {sekitar, ...x} = w; wil = x; } } catch { wil = null; } }
   const hb = await sesiAktif(env, id), hidup = hb ? dariBaris(hb) : null, lanjut = !!hidup && !SELESAI.has(hidup.status) && !hidup.susulanDari;
   const pel = await profil(env, id, null); naikBpbd(pel, id.ketik ? null : id.izin);
-  const sesi = sesiSekaliKetuk({pelapor: pel, lokasi, wil, kini});
+  const sesi = sesiSekaliKetuk({pelapor: pel, lokasi, wil, kini, waktu: angka(o.waktu_klien) ? o.waktu_klien : null});
   sesi.id = lanjut ? hidup.id : `${kini.toString(36)}${acak(3)}`; sesi.wa = id.wa;
   if (id.ketik) { sesi.verifikasi = "ketik"; if (pel) sesi.pelaporKetik = pel; }
   const h = {sesi, pelapor: pel, kirim: true, inti: "", balasan: ""};
@@ -805,7 +805,7 @@ async function mejaDaftar(env, req, url, kini) {
   for (const b of lihat) { const k = kj.get(b.nomor); if (k) { const x = hit.get(k) || {n: 0, wa: new Set()}; x.n++; x.wa.add(b.wa); hit.set(k, x); } }
   const cek = new Map((await bacaTabel(() => H.lpPeriksaTerakhirSemua(env, STAF), [])).map(x => [x.nomor, x.hasil]));   // hasil pengecekan terakhir (K69, D108)
   const baris = lihat.map(b => { const k = kj.get(b.nomor), x = k && hit.get(k); return {...b, periksa: cek.get(b.nomor) || null, kejadian: x && x.n >= 2 ? {kode: k, n_laporan: x.n, n_pelapor: x.wa.size} : null}; })
-    .map(b => c.jenis === "bnpb" ? b : {...b, wa: null, nama: null});   // BPBD: identitas pelapor hanya lewat POST lihat yang tercatat (D95)
+    .map(b => ({...b, dikenal: !!b.nama})).map(b => c.jenis === "bnpb" ? b : {...b, wa: null, nama: null});   // dikenal: chip "Pelapor belum dikenal" (K90)   // BPBD: identitas pelapor hanya lewat POST lihat yang tercatat (D95)
   const ambil = new Map((await bacaTabel(() => H.lpAmbilDaftar(env, baris.map(b => b.nomor)), [])).map(x => [x.nomor, x.label]));   // PF-08: penangan; sebelum migrasi 0167 kosong
   for (const b of baris) b.ditangani = ambil.get(b.nomor) ?? null;
   return kirim(200, {akun: {jenis: c.jenis, label: c.label}, baris});

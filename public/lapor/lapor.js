@@ -1005,7 +1005,13 @@ function tampilDaftarLaporan() {
 }
 /* Darurat sekali ketuk (K90, D122-D125): telepon tampil seketika (jalan tanpa data seluler), lokasi terbaik dalam 15 detik dikirim ke petugas,
    lalu Lengkapi laporan membuka Tambah kabar di langkah jenis darurat. Nomor tetap wajib (Q65 belum dijawab).
-   ponytail: tanpa sinyal dicoba lagi saat "online" selama halaman terbuka; antrean IndexedDB bila laporan harus bertahan saat halaman ditutup. */
+   Tanpa sinyal (D125): titik dan jam ketukan masuk antrean bersama public/inti/antre.js (saluran "lapor-sekali", IndexedDB) dan terkirim
+   otomatis saat tersambung atau saat halaman dibuka lagi; server memakai jam ketukan sebagai waktu kejadian. */
+const salSekali = window.PbAntre?.saluran("lapor-sekali", {umurMs: 24 * 3600e3, langsung: true,
+  kirim: async badan => { const b = badan[0], r = await fetch("/api/lapor/darurat/cepat", {method: "POST", headers: {"content-type": "application/json"},
+    body: JSON.stringify({wa: b.wa, lokasi: b.lokasi, waktu_klien: b.waktu_klien}), signal: AbortSignal.timeout(20000)}), j = await jsonAman(r);
+    if (r.ok) { tambah("bot", `*Laporan darurat terkirim*\nLokasi yang Anda kirim saat tanpa sinyal sudah diterima petugas. Nomor laporan ${j.nomor}.`, {simpanKe: false}); segarkanLaporan().then(tampilBeranda).catch(() => {}); }
+    return {s: r.status, j}; }});
 function sekaliKetuk() {
   if (!wa) { ke("chat"); hangatkanTerima(); return tanyaNomor(() => { ke("beranda"); sekaliKetuk(); }); }
   const d = el("dialog", "lp-sekali"), h = el("h1", null, "Darurat sekali ketuk"); h.id = "lpSekaliJudul"; d.setAttribute("aria-labelledby", h.id);
@@ -1019,8 +1025,10 @@ function sekaliKetuk() {
   let terbaik = posisi && Date.now() - posisi.waktu < 120000 ? {lat: posisi.lat, lon: posisi.lon, akurasi: posisi.akurasi} : null, jalan = false, jaga = null;
   const kirimSekarang = async () => {
     if (jalan) return; jalan = true; clearTimeout(batas); if (jaga != null) navigator.geolocation.clearWatch(jaga);
-    const ulang = teks => { jalan = false; st.textContent = teks; addEventListener("online", kirimSekarang, {once: true}); };
-    if (!navigator.onLine) return ulang("Belum ada sinyal. Telepon tetap bisa. Lokasi dikirim otomatis begitu ada sinyal, selama halaman ini tetap terbuka.");
+    const simpanHp = async () => {   // antrean luring: bertahan walau halaman ditutup; tanpa antrean (peramban lama) dicoba lagi saat online selama halaman terbuka
+      if (salSekali) { try { await salSekali.tambah({wa, lokasi: terbaik}); st.textContent = "Belum ada sinyal. Lokasi tersimpan di HP dan dikirim otomatis begitu ada sinyal. Telepon tetap bisa."; return; } catch { /* penyimpanan HP penuh atau mode privat: cara lama di bawah */ } }
+      jalan = false; st.textContent = "Belum ada sinyal. Telepon tetap bisa. Lokasi dikirim otomatis begitu ada sinyal, selama halaman ini tetap terbuka."; addEventListener("online", kirimSekarang, {once: true}); };
+    if (!navigator.onLine) return simpanHp();
     st.textContent = "Mengirim lokasi ke petugas.";
     try {
       const r = await fetch("/api/lapor/darurat/cepat", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({wa, lokasi: terbaik}), signal: AbortSignal.timeout(20000)}), j = await r.json();
@@ -1029,7 +1037,7 @@ function sekaliKetuk() {
       if (j.bpbd?.nomor && j.bpbd.nomor !== "117") telp.append(tel(j.bpbd.nomor.replace(/[^\d+]/g, ""), `Telepon ${j.bpbd.nama}`, j.bpbd.nomor));
       lengkapi.hidden = false; lengkapi.addEventListener("click", () => { d.close(); mulaiSusulan(j.nomor); }, {once: true});
       segarkanLaporan().then(tampilBeranda).catch(() => {});
-    } catch { ulang("Jaringan bermasalah. Dicoba lagi saat ada sinyal. Telepon tetap bisa."); }
+    } catch { await simpanHp(); }
   };
   const batas = setTimeout(kirimSekarang, 15000);
   d.addEventListener("close", () => { if (jaga != null) navigator.geolocation.clearWatch(jaga); d.remove(); });

@@ -1,0 +1,50 @@
+/* Poster QR desa (TIKET LA-84). Warna hanya dari token public/inti/tema.css. Layar: formulir di kiri, pratinjau lembar A4 di kanan.
+   Cetak: hanya lembar, satu desa satu halaman A4 tegak. */
+body{margin:0;background:var(--surface);color:var(--ink);font:400 1rem/1.5 var(--font)}
+.ps-kepala{display:flex;align-items:center;gap:16px;padding:16px 24px;background:var(--head-bg);color:var(--on-head)}
+.ps-kepala h1{margin:0;font:800 1.25rem/1.3 var(--display)}
+.ps-kepala p{margin:2px 0 0;color:var(--on-head-2);font-size:.875rem}
+.ps-kembali{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;color:var(--on-head);text-decoration:none;font-size:1.25rem}
+.ps-kembali:hover{background:color-mix(in oklab,var(--on-head) 12%,transparent)}
+.ps-isi{display:grid;gap:20px;padding:20px 16px;max-width:1280px;margin:0 auto}
+@media (min-width:900px){.ps-isi{grid-template-columns:340px 1fr;align-items:start;padding:24px}}
+.ps-pilih{display:grid;gap:14px;padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+@media (min-width:900px){.ps-pilih{position:sticky;top:20px}}
+.ps-pilih label{display:grid;gap:6px;font-weight:600;font-size:.875rem}
+.ps-pilih select{min-height:44px;padding:0 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
+.ps-pilih fieldset{margin:0;padding:0;border:0;display:grid;gap:8px}
+.ps-pilih legend{font-weight:600;font-size:.875rem;margin-bottom:6px}
+.ps-desa-alat{display:flex;gap:8px}
+.ps-desa-alat button{min-height:36px;padding:0 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:600 .8125rem var(--font);cursor:pointer}
+.ps-desa{display:grid;gap:2px;max-height:320px;overflow:auto;padding:6px;border:1px solid var(--line);border-radius:12px;overscroll-behavior:contain}
+.ps-desa label{display:flex;align-items:center;gap:10px;min-height:36px;padding:0 8px;border-radius:8px;font-weight:500;cursor:pointer}
+.ps-desa label:hover{background:color-mix(in oklab,var(--brand2) 8%,transparent)}
+.ps-cetak{min-height:48px;border:0;border-radius:12px;background:var(--head-bg);color:var(--on-head);font:700 1rem var(--display);cursor:pointer}
+.ps-cetak:disabled{opacity:.45;cursor:not-allowed}
+.ps-catatan{margin:0;min-height:1.5em;color:var(--bad);font-size:.875rem}
+.ps-pratinjau{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px}
+
+/* lembar: ukuran nyata A4 diatur saat cetak; di layar mengikuti lebar kolom dengan rasio A4 */
+.ps-lembar{display:flex;flex-direction:column;align-items:center;gap:2.2cqi;aspect-ratio:210/297;container-type:inline-size;padding:6cqi 7cqi;box-sizing:border-box;background:var(--card);border:1px solid var(--line);border-radius:8px;text-align:center;overflow:hidden}
+.ps-l-kepala{display:flex;align-items:center;justify-content:space-between;gap:3cqi;width:100%;padding-bottom:3cqi;border-bottom:.6cqi solid var(--head-bg);color:var(--head-bg);font:700 3cqi/1.3 var(--display)}
+.ps-l-kepala img{width:11cqi;height:11cqi;object-fit:contain}
+.ps-lembar h2{margin:2cqi 0 0;font:700 5.4cqi/1.25 var(--display);color:var(--ink)}
+.ps-lembar h2 b{display:block;color:var(--head-bg);font-weight:800;font-size:7cqi}
+.ps-l-sub{margin:0;color:var(--ink2);font-size:3.4cqi}
+.ps-l-qr canvas{display:block;width:44cqi;height:auto;image-rendering:pixelated}
+.ps-l-url{margin:0;font:600 3.2cqi/1.3 var(--font);color:var(--ink);overflow-wrap:anywhere}
+.ps-l-langkah{display:grid;gap:1.4cqi;margin:1cqi 0 0;padding-left:6cqi;text-align:left;font-size:3.6cqi;width:100%;box-sizing:border-box}
+.ps-l-nyawa{margin:auto 0 0;font:700 3.4cqi/1.3 var(--display);color:var(--bad)}
+.ps-l-telp{display:flex;gap:2cqi;width:100%}
+.ps-l-telp div{flex:1 1 auto;display:grid;padding:2cqi 1cqi;border-radius:2cqi;background:color-mix(in oklab,var(--bad) 10%,var(--card))}
+.ps-l-telp b{font:800 4.6cqi/1.2 var(--display);color:var(--bad);white-space:nowrap}
+.ps-l-telp small{font-size:2.6cqi;color:var(--ink2)}
+
+@media print{
+  @page{size:A4 portrait;margin:0}
+  body{background:var(--card)}
+  .ps-kepala,.ps-pilih{display:none}
+  .ps-isi{display:block;padding:0;max-width:none}
+  .ps-pratinjau{display:block}
+  .ps-lembar{width:210mm;height:297mm;aspect-ratio:auto;border:0;border-radius:0;break-after:page;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}

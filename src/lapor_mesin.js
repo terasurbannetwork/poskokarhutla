@@ -409,11 +409,13 @@ function terimaLokasi(sesi, lokasi, kini) { // galat teks atau null
 /* Darurat sekali ketuk (K90, D122-D125): laporan darurat langsung terkirim berisi titik GPS, tanpa percakapan lebih dulu. Jenis dibiarkan kosong
    (belum didata, bukan tebakan) dan korban "belum tahu"; pelapor melengkapinya lewat Tambah kabar yang dimulai di langkah jenis darurat.
    wil = wilayah dari titik (tanpa daftar sekitar) atau null. Penyimpanan (nomor tiket, token, PDF) tetap milik pemanggil, sama dengan laporan biasa. */
-export function sesiSekaliKetuk({pelapor = null, lokasi = null, wil = null, kini}) {
+export function sesiSekaliKetuk({pelapor = null, lokasi = null, wil = null, kini, waktu = null}) {   // waktu: jam perangkat saat diketuk (kiriman tertunda tanpa sinyal, D125)
   const sesi = {status: "terkirim", tingkat: pelapor?.peran || "warga", isian: {}, ditanya: [], dibuat: kini, diubah: kini, terkirim: kini, transkrip: [], foto: [], fotoSelesai: true,
     darurat: {korban: "belum_tahu", cara: "sekali_ketuk"}};
   if (lokasi && !terimaLokasi(sesi, {...lokasi, sumber: "gps"}, kini) && wil) sesi.isian.lokasi.nilai.wilayah = wil;
-  sesi.isian.waktu = {nilai: `Sedang berlangsung saat dilaporkan, ${waktuLapor(kini, wil?.provKode)}`, ms: kini, sumber: "darurat", waktu: kini};
+  const t = Number.isFinite(waktu) && waktu <= kini && kini - waktu < 864e5 ? waktu : kini;
+  sesi.isian.waktu = {nilai: `Sedang berlangsung saat ${t < kini - 6e4 ? "diketuk" : "dilaporkan"}, ${waktuLapor(t, wil?.provKode)}`, ms: t, sumber: "darurat", waktu: kini};
+  if (t < kini - 6e4) sesi.darurat.tertunda = true;
   sesi.transkrip.push({dari: "pelapor", teks: "Darurat sekali ketuk", lokasi: !!sesi.isian.lokasi, waktu: kini}, {dari: "bot", teks: T.terkirim(pelapor?.nama, "(nomor menyusul)"), waktu: kini});
   return sesi;
 }

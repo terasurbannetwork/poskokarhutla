@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/png" href="/lapor/lambang-bnpb.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Poster QR desa, Pantau Bencana BNPB</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/inti/tema.css" rel="stylesheet">
+<link href="/lapor/poster.css?v=2" rel="stylesheet">
+</head>
+<!-- Pembuat poster QR per desa (KEPUTUSAN-LAPOR-AI K92, D131-D133; TIKET LA-84). Data publik saja: desa_cari.json dan bpbd_kontak.json (K88).
+     Tanpa rute Worker dan tanpa nama orang; dicetak lewat CSS cetak peramban, satu desa satu halaman A4 tegak. -->
+<body>
+<header class="ps-kepala">
+  <a class="ps-kembali" href="/lapor/meja.html" aria-label="Kembali ke meja laporan">&larr;</a>
+  <div><h1>Poster QR desa</h1><p>Pilih kabupaten/kota dan kecamatan, lalu cetak. Satu desa satu halaman A4. Pindaian membuka lapor dengan desa sudah ditawarkan.</p></div>
+</header>
+<main class="ps-isi">
+  <form class="ps-pilih" id="pilih">
+    <label>Kabupaten/kota<select id="kab" required><option value="">Memuat daftar...</option></select></label>
+    <label>Kecamatan<select id="kec" disabled><option value="">Pilih kab/kota dulu</option></select></label>
+    <fieldset id="desaWadah" hidden><legend>Desa/kelurahan <span id="nDesa"></span></legend>
+      <div class="ps-desa-alat"><button type="button" id="semua">Pilih semua</button><button type="button" id="kosongkan">Kosongkan</button></div>
+      <div class="ps-desa" id="desa"></div>
+    </fieldset>
+    <button class="ps-cetak" type="button" id="cetak" disabled>Cetak poster</button>
+    <p class="ps-catatan" id="catatan" role="status"></p>
+  </form>
+  <section class="ps-pratinjau" id="pratinjau" aria-label="Pratinjau poster"></section>
+</main>
+<script src="/bagi.js"></script>
+<script type="module" src="/lapor/poster.js?v=3"></script>
+</body>
+</html>

@@ -86,6 +86,18 @@ uji("satu nomor ketikan dari perangkat berganti: paling banyak 1 per 30 menit", 
   assert.equal(r.s, 429);
 });
 
+uji("kiriman tertunda dari antrean luring: jam ketukan jadi waktu kejadian, meja menandai tertunda dan pelapor belum dikenal", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb").run();
+  const t = Date.now() - 3 * 3600e3, r = await cepat("6281200000031", {lokasi: LOK, waktu_klien: t}, {"x-pb": "1"});
+  assert.equal(r.s, 200, r.t.slice(0, 300));
+  const s = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE nomor = ?").bind(r.j.nomor).first()).kerja);
+  assert.equal(s.isian.waktu.ms, t); assert.match(s.isian.waktu.nilai, /saat diketuk/);
+  const b = await baris(r.j.nomor); assert.equal(b.darurat.tertunda, true); assert.equal(b.dikenal, false);
+  const lama = await cepat("6281200000032", {lokasi: LOK, waktu_klien: Date.now() - 3 * 864e5}, {"x-pb": "1"});
+  const s2 = JSON.parse((await DB.prepare("SELECT kerja FROM lapor_sesi WHERE nomor = ?").bind(lama.j.nomor).first()).kerja);
+  assert.ok(Date.now() - s2.isian.waktu.ms < 60e3, "jam perangkat lebih dari 24 jam lalu tidak dipercaya");
+});
+
 uji("lokasi dari poster desa: sumber poster tercatat dan tampil sebagai ketelitian", async () => {
   await DB.prepare("DELETE FROM laju_bnpb").run();
   let r = await pesan(WA3, {teks: "lapor"});

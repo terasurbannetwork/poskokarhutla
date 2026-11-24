@@ -148,7 +148,7 @@ function gambarNav(daftar) {
     grup("Tampilan"), item("m-lokasi", "Peta laporan", ke("peta"), {aktif: tampil === "peta"}), item("m-daftar", "Daftar laporan", ke("daftar"), {aktif: tampil === "daftar", n: daftar.filter(cocokJenis).filter(cocokStatus).length}),
     grup("Antrean kerja"), ...ANTREAN.map(([t, st, ik]) => item(ik, t, () => { saringStatus = st; gambar(); },
       {n: st ? daftar.filter(b => st.includes(b.status)).length : daftar.length, aktif: String(saringStatus) === String(st), st: st ? WARNA[st[0]] : null})),
-    grup("Pintu lain"), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}),
+    grup("Pintu lain"), item("m-pesan", "Form lapor warga", null, {href: "/lapor/"}), item("m-daftar", "Poster QR desa", null, {href: "/lapor/poster.html"}),   // K92, LA-84
     // Pantau Dalops halaman internal BNPB: tidak untuk akun BPBD (pemilik 20 Nov 2026 "ya sembunyikan")
     ...(akunBpbd() ? [] : [item("m-ringkas", "Pantau Dalops", null, {href: "/bnpb/dalops"})]));
 }
@@ -430,7 +430,9 @@ function gambarTabel(daftar) {
     const ft = el("span", "mj-mini"); ft.textContent = b.foto ? "" : "Tanpa foto";
     if (b.foto) fotoLaporan(b.nomor).then(fs => { if (fs[0]) { const im = el("img"); im.src = fs[0].sampul || fs[0].url; im.alt = ""; im.loading = "lazy"; ft.append(im); if (fs.length > 1) ft.append(el("small", null, `+${fs.length - 1}`)); } });
     const jn = el("div", "mj-sel-jenis"), ik = el("span", "mj-jenis-ikon kecil"); ik.style.setProperty("--jn", warnaJenis(b.jenisId)); ik.append(ikon(ikonJenis(b.jenisId)));
-    const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); } jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.bahasa ? [el("span", "mj-pil-bahasa", b.bahasa)] : []), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
+    const jt = el("div"); if (b.darurat) { tr.classList.add("mj-baris-darurat"); jt.append(el("span", "mj-chip-darurat", "Darurat")); if (b.darurat.cara === "sekali_ketuk") jt.append(el("span", "mj-chip-sekali", "Sekali ketuk")); if (b.darurat.tertunda) jt.append(Object.assign(el("span", "mj-chip-sekali", "Tertunda"), {title: "Dikirim dari antrean HP sesudah sinyal kembali; waktu kejadian = jam ketukan"})); }
+    if (b.dikenal === false) jt.append(Object.assign(el("span", "mj-chip-sekali", "Belum dikenal"), {title: "Pelapor belum mengisi nama"}));   // K90, D124
+    jt.append(el("b", null, b.jenis || "Belum dipilih"), el("small", null, b.subjenis || ""), ...(b.bahasa ? [el("span", "mj-pil-bahasa", b.bahasa)] : []), ...(b.gugus ? [chipGugus(b.gugus)] : [])); jn.append(ik, jt);
     const lok = el("div"); lok.append(el("b", null, b.wilayah?.kab || "Tanpa lokasi"), el("small", null, [b.wilayah?.desa && `Desa/Kel. ${b.wilayah.desa}`, b.wilayah?.prov].filter(Boolean).join(", "))); if (b.ditangani) lok.append(el("small", "mj-ditangani-kecil", b.ditangani));   // PF-08
     const aksi = el("div", "mj-aksi-baris");
     // verifikasi (pemilik 20 Nov 2026: "di kanan ada aksinya untuk memverifikasi"): membuka rincian langsung di kartu Pengecekan lapangan

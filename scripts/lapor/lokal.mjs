@@ -155,7 +155,7 @@ async function daruratCepat(body) {
   const lokasi = ok ? {lat: L.lat, lon: L.lon, ...(Number.isFinite(L.akurasi) && L.akurasi >= 0 ? {akurasi: L.akurasi} : {})} : null;
   let wil = null; if (lokasi) { try { const w = await wilayah(lokasi.lat, lokasi.lon); if (w) { const {sekitar, ...x} = w; wil = x; } } catch {} }
   const d = baca(), pel = d.pelapor[wa] || null, hidup = d.sesi[d.aktif[wa]];
-  const sesi = sesiSekaliKetuk({pelapor: pel, lokasi, wil, kini});
+  const sesi = sesiSekaliKetuk({pelapor: pel, lokasi, wil, kini, waktu: Number.isFinite(body.waktu_klien) ? body.waktu_klien : null});
   sesi.id = hidup && !["terkirim", "batal"].includes(hidup.status) && !hidup.susulanDari ? hidup.id : `${kini.toString(36)}${crypto.randomBytes(3).toString("hex")}`;   // draf biasa diganti (K68)
   sesi.wa = wa;
   const h = {sesi, pelapor: pel, kirim: true, inti: ""};
@@ -584,7 +584,7 @@ function meja(c) {
     return {nomor: s.nomor, status: s.tiket.status, statusLabel: STATUS[s.tiket.status], waktuLapor: waktuLapor(s.terkirim, w?.wilayah?.provKode), terkirim: s.terkirim,
       waktuKejadian: s.isian.waktu?.nilai || null, wa: s.wa, nama: p.nama || null, peran: PERAN[p.peran] || null, instansi: p.kab ? `BPBD ${p.kab}` : null,
       jenis: JENIS.find(j => j.id === s.isian.jenis?.nilai)?.label || null, jenisId: s.isian.jenis?.nilai || null, subjenis: s.isian.subjenis?.nilai || null,
-      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tempat: tempatRusak(s), tanggap: tanggap(s), darurat: s.darurat ? {korban: s.darurat.korban || null} : null, periksa: s.periksa?.at(-1)?.hasil || null,
+      lat: w?.lat ?? null, lon: w?.lon ?? null, wilayah: w?.wilayah || null, lengkap: lengkap(s), foto: (s.foto || []).length, balasan: (s.balasan || []).length, versi: (s.versi || []).length, adaSusulan: !!s.susulanBaru, dampak: dampakRingkas(s), tempat: tempatRusak(s), tanggap: tanggap(s), darurat: s.darurat ? {korban: s.darurat.korban || null, ...(s.darurat.cara ? {cara: s.darurat.cara} : {}), ...(s.darurat.tertunda ? {tertunda: true} : {})} : null, dikenal: !!p.nama, periksa: s.periksa?.at(-1)?.hasil || null,
       gugus: G.per[s.nomor] ? {kode: G.per[s.nomor], label: gk[G.per[s.nomor]].label, n_laporan: gk[G.per[s.nomor]].n_laporan, n_pelapor: gk[G.per[s.nomor]].n_pelapor} : null, kejadian: kejadianTampil(d, s)};
   })}];
 }
