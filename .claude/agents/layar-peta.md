@@ -65,6 +65,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/situs/**`
 - `scripts/terbit/**`
 - `public/lapor/**`
+- `public/desa-waspada/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

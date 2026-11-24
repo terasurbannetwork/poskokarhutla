@@ -44,7 +44,8 @@
         "public/data/feeds/**",
         "public/data/luas_pembanding.json",
         "public/data/tanah_gambut_bulanan.json",
-        "tests/insar-gambut/**"
+        "tests/insar-gambut/**",
+        "public/data/desa_waspada.json"
       ]
     },
     {
@@ -235,7 +236,8 @@
         "scripts/og/**",
         "scripts/situs/**",
         "scripts/terbit/**",
-        "public/lapor/**"
+        "public/lapor/**",
+        "public/desa-waspada/**"
       ]
     },
     {
@@ -383,7 +385,8 @@
       "tidak": "memperbaiki kode domain yang digerbang",
       "milik": [
         "tests/agen/**",
-        "tests/beban/**"
+        "tests/beban/**",
+        "tests/desa-waspada/**"
       ]
     },
     {
