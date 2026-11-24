@@ -100,7 +100,25 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
 @media (max-width:600px){.al-bar{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;max-height:52px;scrollbar-width:none}.al-bar>:first-child{margin-left:auto}.al-pl{min-height:44px}}
 .al-isi p{margin:0;color:var(--ink2,#4a5568);font-size:13px}
 .al-aksi{display:flex;gap:8px;padding:12px 16px 14px}
-.al-aksi a{flex:1;display:inline-flex;justify-content:center;align-items:center;min-height:40px;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none}
+.al-aksi a,.al-aksi button{flex:1;display:inline-flex;justify-content:center;align-items:center;min-height:40px;border-radius:999px;font-weight:700;font-size:13px;text-decoration:none}
+.al-aksi button{background:transparent;font-family:inherit;cursor:pointer}
+/* daftar semua peringatan satu pil (pemilik 24 Nov 2026: "kalau banyak bisa milih untuk nampilin semua listnya") */
+.al-semua{justify-self:start;min-height:32px;padding:0;border:0;background:none;color:inherit;font:700 12.5px/1.4 var(--font,system-ui);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.al-ls{list-style:none;margin:0;padding:0;max-height:min(52dvh,440px);overflow-y:auto;overscroll-behavior:contain;border-bottom:1px solid var(--line,#d5dbe3)}
+.al-ls li{display:flex;align-items:center;gap:2px;padding:8px 4px 8px 14px;border-top:1px solid var(--line,#d5dbe3)}
+.al-ls li:first-child{border-top:0}
+.al-ls li{align-items:flex-start}
+.al-r{flex:1;min-width:0;display:grid;gap:3px;padding:2px 0}
+.al-r .al-p{justify-self:start}
+.al-r b{font-size:13px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.al-r small{font-size:12px;color:var(--ink2,#4a5568)}
+/* tombol per baris (pemilik 24 Nov 2026: tombol buka jelas, bukan hanya klik judul; plus aksi peta, email, WA seperti kartu) */
+.al-ra{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.al-ra a,.al-ra button{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border:1px solid var(--line,#d5dbe3);border-radius:999px;background:transparent;color:inherit;font:700 12px/1.2 var(--font,system-ui);text-decoration:none;cursor:pointer;white-space:nowrap}
+.al-ra .al-pri{background:#0b2545;border-color:transparent;color:#fff}
+.al-ra a.al-wa{width:32px;padding:0;background:#1f8f4e;border-color:transparent;color:#fff}.al-ra .al-wa svg{width:17px;height:17px}
+.al-rx{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--ink2,#4a5568);font-size:18px;line-height:1;cursor:pointer}
+.al-rx:hover{background:color-mix(in oklab,var(--ink,#0b2545) 8%,transparent)}
 .al-pri{background:#0b2545;color:#fff}.al-sek{border:1px solid var(--line,#d5dbe3);color:inherit}
 .al-aksi a.al-wa{flex:none;width:40px;padding:0;background:#1f8f4e;color:#fff}.al-wa svg{width:20px;height:20px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .al-pri,:root:not([data-theme="light"]) .al-bt-p{background:#e8743b}}
@@ -166,6 +184,7 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
   const LONCENG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
   let bar = null;
   function gambarPil() {
+    if (el?.classList.contains("al-dft")) gambarDaftar();   // daftar terbuka ikut diperbarui (peringatan baru masuk, kedaluwarsa, atau ditutup)
     if (!ringkas.length) { bar?.remove(); bar = null; return; }
     if (!bar) { bar = document.createElement("div"); bar.className = "al-bar"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "Peringatan dini yang dikecilkan atau jenis lain");
       bar.addEventListener("click", e => { const b = e.target.closest("[data-pl]"); if (b) bukaPil(b.dataset.pl); }); document.body.append(bar); }
@@ -182,14 +201,58 @@ body:has(#laci.on) .al{right:414px;width:min(420px,calc(100vw - 430px))}
   const taruh = () => { if (!bar) return; bar.style.bottom = (el && el.isConnected ? el.offsetHeight + 24 : 16) + "px"; bar.style.right = geserLaci();
     bar.hidden = innerWidth <= 600 && !!document.querySelector?.("#laci.on"); };   /* layar sempit: laci selebar layar, pil disembunyikan selama laci terbuka */
   let amati = null;
+  const tutupEl = () => { el?.remove(); el = null; tampil = false; amati?.disconnect(); };
+  const pasangEl = node => { el = node; tampil = true; document.body.append(el); taruh();
+    if (window.ResizeObserver) { amati?.disconnect(); amati = new ResizeObserver(taruh); amati.observe(el); } };
+  /* pil berisi satu peringatan: langsung kartunya; lebih dari satu: daftar semua (bukaDaftar) */
   function bukaPil(jenis) {
     const k = kelompokPil(ringkas.filter(a => a.jenis === jenis))[0]; if (!k) return;
-    const a = k.items[0]; ringkas = ringkas.filter(x => x.kunci !== a.kunci);
-    if (kecil) { setKecil(false); const balik = ringkas.filter(x => x.jenis === "lapor" || modeTampil(x.jenis, location.pathname) !== "pil"); ringkas = ringkas.filter(x => !balik.includes(x)); antre.push(...balik); }
+    if (k.items.length > 1) return bukaDaftar(jenis);
+    bukaItem(k.items[0], true);
+  }
+  /* pulih = keluar dari mode kecil (klik pil tunggal, perilaku lama). Dari daftar: mode kecil tetap, sisanya tetap di pil. */
+  function bukaItem(a, pulih) {
+    ringkas = ringkas.filter(x => x.kunci !== a.kunci);
+    if (kecil && pulih) { setKecil(false); const balik = ringkas.filter(x => x.jenis === "lapor" || modeTampil(x.jenis, location.pathname) !== "pil"); ringkas = ringkas.filter(x => !balik.includes(x)); antre.push(...balik); }
     gambarPil();
     antre.unshift({...a, _bunyi: false});
-    if (tampil && el) { el.remove(); el = null; tampil = false; amati?.disconnect(); }   // satu kartu pada satu waktu: kartu yang sedang terbuka ditutup seperti tombol x
-    berikut();
+    if (tampil && el) tutupEl();   // satu kartu pada satu waktu: kartu yang sedang terbuka ditutup seperti tombol x
+    berikut(true);
+  }
+
+  /* ---------------- daftar semua peringatan (pemilik 24 Nov 2026: "repot banget harus liat dan close 1 1") ----------------
+     dJenis = jenis pil yang dibuka, null = semua pil. Baris: klik membuka kartu penuh, × menutup satu; "Tutup semua" menutup seluruh isi daftar. */
+  let dJenis = null;
+  const isiDaftar = () => (dJenis ? ringkas.filter(a => a.jenis === dJenis) : ringkas.slice());
+  function barisDaftar(a) {
+    if (a.jenis === "lapor") { const b = a._b || {}, w = b.wilayah || {};
+      return `<div class="al-r"><em class="al-p" style="--w:${b.darurat ? WARNA.Awas : "#1d4e89"}">${b.darurat ? "Darurat" : esc(b.statusLabel || "Baru")}</em><b>${esc(b.jenis || "Kejadian")}${w.kab ? ` di ${esc(w.desa || w.kab)}${w.desa ? `, ${esc(w.kab)}` : ""}` : ""}</b><small>${esc(jam(b.terkirim))}</small>
+<div class="al-ra"><button type="button" class="al-pri" data-rb="${esc(a.kunci)}">Buka</button><a href="/lapor/meja#daftar">Buka laporan</a><a href="/lapor/meja#peta">Lihat di peta</a></div></div>`; }
+    const wil = [a.kab, a.prov && window.namaProv ? namaProv(a.prov) : ""].filter(Boolean).join(", ");
+    const rute = RUTE[a.jenis] || "/";
+    return `<div class="al-r"><em class="al-p" style="--w:${WARNA[a.tingkat] || WARNA.Waspada}">${esc(a.tingkat)}</em><b>${esc(a.judul)}</b><small translate="no">${esc([wil, a.sumber, jam(a.dibuat)].filter(Boolean).join(", "))}</small>
+<div class="al-ra"><button type="button" class="al-pri" data-rb="${esc(a.kunci)}">Buka</button><a href="${esc(rute)}">Lihat di peta</a><a href="/peringatan">Dapatkan lewat email</a><a class="al-wa" href="https://wa.me/?text=${encodeURIComponent([a.judul, a.teks, location.origin + rute].filter(Boolean).join("\n\n"))}" target="_blank" rel="noopener" aria-label="Bagikan lewat WhatsApp">${WA}</a></div></div>`;
+  }
+  function gambarDaftar() {
+    const items = isiDaftar(); if (!items.length) { tutupEl(); gambarPil(); taruh(); setTimeout(berikut, 400); return; }
+    const ls = el.querySelector(".al-ls"), gulir = ls ? ls.scrollTop : 0, rute = RUTE[dJenis];
+    el.innerHTML = `<div class="al-hd"><div><span class="al-ey">Semua peringatan</span><h3>${esc(kelompokPil(items).map(k => k.label).join("; "))}</h3></div>${MIN}</div>
+  <ul class="al-ls">${items.map(a => `<li>${barisDaftar(a)}<button type="button" class="al-rx" data-rx="${esc(a.kunci)}" aria-label="Tutup peringatan ini" title="Tutup peringatan ini">×</button></li>`).join("")}</ul>
+  <div class="al-aksi">${dJenis === "lapor" ? `<a class="al-pri" href="/lapor/meja#daftar">Buka meja laporan</a>` : rute ? `<a class="al-pri" href="${esc(rute)}">Lihat di peta</a>` : ""}<button type="button" class="al-sek" data-tutup-semua>Tutup semua (${items.length})</button></div>`;
+    const ls2 = el.querySelector(".al-ls"); if (ls2) ls2.scrollTop = gulir;
+  }
+  const buang = kunci => { tandai(kunci); lihat.add(kunci); ringkas = ringkas.filter(x => x.kunci !== kunci); antre = antre.filter(x => x.kunci !== kunci); };
+  function bukaDaftar(jenis) {
+    if (tampil && el) tutupEl();
+    dJenis = jenis;
+    const d = document.createElement("div"); d.className = "al al-ada al-dft"; d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Daftar peringatan");
+    pasangEl(d); gambarDaftar();
+    d.addEventListener("click", e => {
+      if (e.target.closest("[data-kecil]")) { tutupEl(); taruh(); setTimeout(berikut, 400); return; }
+      if (e.target.closest("[data-tutup-semua]")) { for (const a of isiDaftar()) buang(a.kunci); tutupEl(); gambarPil(); taruh(); setTimeout(berikut, 400); return; }
+      const x = e.target.closest("[data-rx]"); if (x) { buang(x.dataset.rx); gambarPil(); return; }
+      const b = e.target.closest("[data-rb]"); if (b) { const a = ringkas.find(y => y.kunci === b.dataset.rb); if (a) { tutupEl(); bukaItem(a, false); } }
+    });
   }
 
   function kartu(a) {
@@ -258,18 +321,23 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
     sibukkan(w, false); pesan(w, typeof r.j?.galat === "string" && r.j.galat ? r.j.galat.slice(0, 140) : "Aksi gagal; coba lagi.");
   }
 
-  function berikut() {
+  function berikut(paksa) {
     if (tampil || !antre.length) return;
-    if (kecil) { for (const x of antre) if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false});
+    if (kecil && paksa !== true) { for (const x of antre) if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false});
       antre = []; ringkas.sort(urutAlarm); gambarPil(); return; }
     const [a] = antre.splice(0, 1); tampil = true; lihat.add(a.kunci);
     if (a.jenis !== "karhutla" || opr === false) tandai(a.kunci);   // karhutla: operatorCc yang menentukan (operator belum final tidak ditandai)
     if (BERBUNYI.has(a.jenis) && a._bunyi) bunyi();
-    const t = document.createElement("div"); t.innerHTML = kartu(a); el = t.firstElementChild; document.body.append(el);
-    const k = el; taruh();
-    if (window.ResizeObserver) { amati?.disconnect(); amati = new ResizeObserver(taruh); amati.observe(k); }
+    const t = document.createElement("div"); t.innerHTML = kartu(a); const k = t.firstElementChild;
+    /* masih ada peringatan lain yang mengantre: tawarkan daftar semua supaya tidak ditutup satu per satu */
+    if (antre.length) k.querySelector(".al-isi")?.insertAdjacentHTML("beforeend", `<button type="button" class="al-semua" data-semua>Lihat semua ${antre.length + 1} peringatan</button>`);
+    pasangEl(k);
     k.addEventListener("click", e => {
-      if (e.target.closest("[data-tutup]")) { el.remove(); el = null; tampil = false; amati?.disconnect(); taruh(); setTimeout(berikut, 400); return; }
+      if (e.target.closest("[data-tutup]")) { tutupEl(); taruh(); setTimeout(berikut, 400); return; }
+      /* lihat semua: kartu ini dan antreannya pindah ke pil (mode kecil, seperti kecilkan), lalu daftar semua dibuka */
+      if (e.target.closest("[data-semua]")) { tutupEl(); setKecil(true);
+        for (const x of [a, ...antre]) { lupakan(x.kunci); if (!ringkas.some(y => y.kunci === x.kunci)) ringkas.push({...x, _bunyi: false}); }
+        antre = []; ringkas.sort(urutAlarm); gambarPil(); bukaDaftar(null); return; }
       /* kecilkan: kartu yang sama pindah ke deretan pil kanan bawah; klik pilnya membuka kartu ini lagi (bukaPil). Peringatan berikutnya di antrean tetap muncul. */
       if (e.target.closest("[data-kecil]")) { el.remove(); el = null; tampil = false; amati?.disconnect(); setKecil(true); lupakan(a.kunci);
         if (!ringkas.some(x => x.kunci === a.kunci)) ringkas.push({...a, _bunyi: false});
