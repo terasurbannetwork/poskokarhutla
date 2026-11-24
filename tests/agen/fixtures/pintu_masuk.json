@@ -15,8 +15,9 @@
     "/pendataan",
     "/lapor",
     "/lapor/lacak",
+    "/lapor/s",
     "/lapor/data",
-    "/lapor/hari-ini", "/lapor/s",
+    "/lapor/hari-ini",
     "/verifikasi"
   ],
   "boleh_tambah_k8": [

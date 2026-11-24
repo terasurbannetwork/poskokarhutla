@@ -778,8 +778,8 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/lapor/s", "tautan kabar selamat yang dibagikan penanda sendiri kepada keluarga, tanpa akun (KEPUTUSAN-LAPOR-AI K91, D128); halaman tidak memuat data, token di jalur dicek di /api/lapor/s/:token"],
   ["/lapor/data", "layar tim pendataan BPBD dari tautan WA (lapor-lanjutan LJ-15, KEPUTUSAN-MASUK K17); halaman tidak memuat data, token ?t= ditukar kuki tim lewat /api/lapor/data/masuk dan tiap API menjaga kuki tim atau sesi staf"],
   ["/lapor/hari-ini", "kejadian hari ini dari laporan warga terverifikasi BPBD untuk wartawan dan warga (lapor-kejadian K86, KEPUTUSAN-MASUK K15); halaman tidak memuat data, kartu dari /api/lapor/hari-ini berdaftar putih kolom dan di balik saklar LAPOR_HARI_INI"],
-  ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
   ["/verifikasi", "pemeriksaan keaslian dokumen bersegel lewat kode di bawah QR, terbuka tanpa akun (KEPUTUSAN-SEGEL K3, Q2); halaman tidak memuat data, sampul dokumen dari /api/verifikasi/<kode> yang berlaju dan tanpa angka isi"],
+  ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
