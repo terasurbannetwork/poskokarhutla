@@ -22,7 +22,7 @@ jobs:
   terbit:
     runs-on: ubuntu-latest
     # 25 menit memotong run 42062436264 (5 Nov 2026) tepat sesudah wrangler deploy: uji node kini memakan sebagian besar job.
-    timeout-minutes: 60   # langkah uji 8 + 36 + 5 = 49 menit, ditambah 10 menit sisa untuk deploy (gerbang-uji-sebelum-push)
+    timeout-minutes: 65   # langkah uji 12 + 36 + 5 = 53 menit, ditambah 10 menit sisa untuk deploy (gerbang-uji-sebelum-push)
     steps:
       - uses: actions/checkout@v4
 
@@ -40,7 +40,7 @@ jobs:
       # Batas waktu PER LANGKAH (4 Nov 2026): uji yang macet (Chrome yatim memegang pipa) dulu menghabiskan 25 menit job lalu
       # berakhir "cancelled", sehingga pemberitahuan failure() tidak menyala. Langkah yang lewat batasnya berstatus gagal.
       - name: Uji agen (gerbang)
-        timeout-minutes: 8
+        timeout-minutes: 12   # 475-493 dtk pada 23-24 Nov, berkali-kali lewat batas 8 menit tanpa uji gagal
         run: npm run uji:agen
       - name: Uji worker (D1, route, foto)
         timeout-minutes: 36   # 16 mnt 21 dtk pada 10 Nov; uji Siklus G2-G4 (11 Nov) melewati 18; 24 mnt 24 dtk pada 23 Nov (223 berkas), tiga run lewat 26 menit tanpa satu pun uji gagal
