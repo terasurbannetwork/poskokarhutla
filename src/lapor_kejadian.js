@@ -25,15 +25,16 @@ export function pemeriksaBpbdWilayah(akun, wilayah) {
    periksa = [{id, hasil, waktu, akun: {jenis, tingkat, prov, kab, kabNama} | null}];
    versi = [{waktu}] baris lapor_versi; tarikan = [{id, aktif, waktu}] baris lk_tarik untuk kejadian laporannya.
    Benar hanya bila lima syarat A3 semuanya benar. */
-export function terverifikasiBpbd(laporan, periksa, versi = [], tarikan = []) {
-  const p = terakhir(periksa);
-  if (!p || p.hasil !== "valid") return false;                                    // 1: terakhir Valid; sebagian dan tidak_valid salah
-  if (!pemeriksaBpbdWilayah(p.akun, laporan?.wilayah)) return false;             // 2: BPBD wilayah laporan
-  if (!laporan || laporan.status === "tidak_valid") return false;                 // 3: tiket bukan Tidak valid
-  if ((versi || []).some(v => v.waktu > p.waktu)) return false;                  // 4: tidak ada versi sesudah pengecekan
-  if (terakhir(tarikan)?.aktif) return false;                                     // 5: tarikan terakhir aktif = ditarik
-  return true;
+export function syaratPublik(laporan, periksa, versi = [], tarikan = []) {   // lima syarat A3 satu per satu, untuk daftar centang meja (LK-07, DESIGN-SYSTEM 3)
+  const p = terakhir(periksa), valid = !!p && p.hasil === "valid";
+  return [
+    {id: "valid", label: "Pengecekan terakhir Valid", ok: valid},                                                  // 1: sebagian dan tidak_valid salah
+    {id: "bpbd", label: "Dicek BPBD wilayah laporan", ok: valid && pemeriksaBpbdWilayah(p.akun, laporan?.wilayah)},  // 2
+    {id: "tiket", label: "Tiket bukan Tidak valid", ok: !!laporan && laporan.status !== "tidak_valid"},               // 3
+    {id: "versi", label: "Tidak ada perubahan sesudah pengecekan", ok: !(versi || []).some(v => v.waktu > (p?.waktu ?? Infinity))},   // 4: tanpa pengecekan tidak ada "sesudah"; syarat 1 yang menahan
+    {id: "tarik", label: "Tidak ditarik dari halaman publik", ok: !terakhir(tarikan)?.aktif}];                      // 5: tarikan terakhir aktif = ditarik
 }
+export const terverifikasiBpbd = (laporan, periksa, versi = [], tarikan = []) => syaratPublik(laporan, periksa, versi, tarikan).every(x => x.ok);
 
 /* waktu verifikasi laporan = waktu pengecekan Valid terakhirnya; null bila belum terverifikasi */
 export const waktuVerifikasi = (laporan, periksa, versi, tarikan) => terverifikasiBpbd(laporan, periksa, versi, tarikan) ? terakhir(periksa).waktu : null;

@@ -31,7 +31,7 @@ const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
-import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir} from "../../src/lapor_kejadian.js";
+import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "../../src/lapor_kejadian.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "../../src/lapor_periksa.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
@@ -563,7 +563,9 @@ async function alun(q) {
 }
 
 /* ---------- kejadian hari ini (lapor-kejadian LK-05, LK-06): mesin yang sama dengan Worker (kejadianTerverifikasi, kartuPublik), data dari ~/.lapor-lokal ----------
-   Hanya kejadian laporan dengan pengecekan Valid terakhir oleh BPBD wilayahnya dalam 24 jam; tarikan belum ada di lokal (LK-07). Saklar LAPOR_HARI_INI tidak dibaca di lokal. */
+   Hanya kejadian laporan dengan pengecekan Valid terakhir oleh BPBD wilayahnya dalam 24 jam; tarikan d.tarik per nomor anggota (LK-07). Saklar LAPOR_HARI_INI tidak dibaca di lokal. */
+const tarikNomor = (d, n) => (d.tarik || []).filter(x => x.kode === n);
+const periksaAkun = s => (s.periksa || []).map((p, i) => ({id: i + 1, hasil: p.hasil, waktu: p.waktu, akun: p.akun || null}));
 const JENDELA_HARI = 24 * 3600e3;
 async function hariIni(q, kini = Date.now()) {
   const d = baca(), G = gugusSemua(d), gk = new Map(G.gugus.map(g => [g.kode, g])), sesi = new Map(Object.values(d.sesi).filter(s => s.nomor).map(s => [s.nomor, s]));
@@ -574,9 +576,9 @@ async function hariIni(q, kini = Date.now()) {
     const isi = anggota.map(n => { const s = sesi.get(n), w = s.isian.lokasi?.nilai?.wilayah || null;
       const r = {id: s.id, jenis: s.isian.jenis?.nilai || null, wa: s.wa, terkirim: s.terkirim,
         ringkas: JSON.stringify({waktuMs: s.isian.waktu?.ms ?? null, subjenis: s.isian.subjenis?.nilai || null, wilayah: w, dampakMeja: dampakRingkas(s)})};
-      return {nomor: n, r, w, laporan: {status: s.tiket.status, wilayah: w}, periksa: (s.periksa || []).map((p, i) => ({id: i + 1, hasil: p.hasil, waktu: p.waktu, akun: p.akun || null})),
+      return {nomor: n, r, w, laporan: {status: s.tiket.status, wilayah: w}, periksa: periksaAkun(s),
         versi: (s.versi || []).map(v => ({waktu: v.waktu}))}; });
-    const kj = kejadianTerverifikasi(isi);
+    const kj = kejadianTerverifikasi(isi, anggota.flatMap(n => tarikNomor(d, n)));
     if (!kj.terverifikasi || kj.waktu <= kini - JENDELA_HARI) continue;
     const sah = isi.filter(a => kj.anggota.includes(a.nomor)), akhir = sah.reduce((m, a) => (JSON.parse(a.r.ringkas).waktuMs || 0) > (JSON.parse(m.r.ringkas).waktuMs || 0) ? a : m);
     if (q.prov && akhir.w?.provKode !== q.prov || q.jenis && akhir.r.jenis !== q.jenis) continue;
@@ -635,6 +637,9 @@ function mejaRinci(c, nomor, lihat = false) {
     periksa: (s.periksa || []).map(x => ({...x, label: HASIL_PERIKSA[x.hasil], waktu: waktuLapor(x.waktu, prov)})),
     tindakan: (s.tindakan || []).map(x => ({...x, waktu: waktuLapor(x.waktu, prov)})),
     tindakanPilihan: tindakanUntuk(s.isian.jenis?.nilai, registri()),
+    publik: (() => { const P = periksaAkun(s), T = tarikNomor(d, nomor), sy = syaratPublik({status: s.tiket.status, wilayah: s.isian.lokasi?.nilai?.wilayah || null}, P, (s.versi || []).map(v => ({waktu: v.waktu})), T);
+      const segar = (terakhir(P)?.waktu || 0) > Date.now() - JENDELA_HARI;   // sama dengan statusPublik di Worker (LK-07); halaman lokal selalu buka
+      return {syarat: sy, ditarik: !!terakhir(T)?.aktif, tayang: sy.every(x => x.ok) && segar, dalam24jam: segar, halamanBuka: true}; })(),
     revisi: revisiTampil(s),
     gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
@@ -652,6 +657,14 @@ function mejaUbah(c, nomor, aksi, body) {
   if (!s || !dalamWilayah(c, s.isian.lokasi?.nilai?.wilayah)) return [404, {galat: "Laporan tidak ditemukan."}];
   if (!bolehAksi(c, aksi, s.tiket.status, body.ke)) return [403, {galat: "Membuka kembali tiket hanya oleh BNPB."}]; // D96
   const catatan = String(body.catatan || body.teks || "").replace(/\s+/g, " ").trim().slice(0, 1000);
+  if (aksi === "tarik") { // LK-07, sama dengan tarikPublik di Worker: satu baris per anggota gugus, tanpa riwayat tiket (catatannya tampil di lacak)
+    if (typeof body.aktif !== "boolean") return [400, {galat: "aktif harus true (tarik) atau false (tampilkan lagi)."}];
+    if (!!terakhir(tarikNomor(d, nomor))?.aktif === body.aktif) return [409, {galat: body.aktif ? "Laporan ini sudah ditarik dari halaman publik." : "Laporan ini tidak sedang ditarik."}];
+    const alasan = String(body.alasan ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300) || null;
+    const G = gugusSemua(d), anggota = G.gugus.find(x => x.kode === G.per[nomor])?.anggota || [nomor];
+    for (const n of anggota) (d.tarik ||= []).push({id: (d.tarik || []).length + 1, kode: n, aktif: body.aktif ? 1 : 0, alasan, oleh: c.pelaku, waktu: kini});
+    simpan(d); return [200, {ok: true, ditarik: body.aktif, anggota: anggota.length}];
+  }
   if (aksi === "balas") {
     if (catatan.length < 2) return [400, {galat: "Balasan kosong."}];
     (s.balasan ||= []).push({teks: catatan, waktu: kini, oleh: c.pelaku});
@@ -800,7 +813,7 @@ export async function tanganiLapor(req, res, url) {
       if (mj) { const s = Object.values(baca().sesi).find(x => x.nomor === mj[1]), w = s?.isian.lokasi?.nilai;
         if (!s || !dalamWilayah(c, w?.wilayah)) return kirim([404, {galat: "Laporan tidak ditemukan."}]);
         return kirim([200, await jalanOsm(w?.lat, w?.lon, tempatRusak(s)?.jalan || [])]); }
-      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan))?$/.exec(j);
+      const m = /^\/api\/lapor\/meja\/(LA-\d{6}-\d{2,3})(?:\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|tarik))?$/.exec(j);
       // sama dengan Worker: GET rincian tidak pernah menulis; tanda "dilihat" lewat POST .../lihat (guard-api 19 Nov 2026). ?lihat=1 lama tetap dilayani sementara
       if (m && m[2] === "lihat" && req.method === "POST") return kirim(mejaRinci(c, m[1], true));
       if (m && !m[2]) return kirim(mejaRinci(c, m[1], url.searchParams.get("lihat") === "1"));

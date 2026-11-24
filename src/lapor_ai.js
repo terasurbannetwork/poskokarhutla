@@ -30,7 +30,7 @@ import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_per
 import * as H from "./hak.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
-import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir} from "./lapor_kejadian.js";
+import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "./lapor_kejadian.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 60], [HARI, 120]], BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
@@ -825,8 +825,30 @@ async function rincianObj(env, c, baris, identitas = c.jenis === "bnpb") {   // 
   o.tindakan = tindakan.map(x => ({kode: x.kode, label: x.label, oleh: x.oleh, waktu: waktuLapor(x.waktu, prov)}));
   o.ditangani = (await bacaTabel(() => H.lpAmbilNomor(env, nomor), null))?.label ?? null;   // PF-08: tidak pernah ke jawaban publik atau halaman lacak (N12)
   o.tindakanPilihan = reg ? tindakanUntuk(s.isian.jenis?.nilai, reg) : []; o.revisi = revisiTampil(s);
+  o.publik = await bacaTabel(() => statusPublik(env, baris, s.tiket.status), null);   // LK-07: daftar centang lima syarat dan status tarikan; sebelum migrasi 0170 kosong
   if (!identitas) { o.pelapor = {peran: o.pelapor?.peran ?? null, tersembunyi: true}; o.transkrip = []; }
   return {...o, akun: {jenis: c.jenis, label: c.label}, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status])};
+}
+/* kartu "Halaman publik" di rincian meja (lapor-kejadian LK-07, DESIGN-SYSTEM 3): lima syarat A3 untuk laporan ini, apakah ditarik, dan apakah tayang sekarang.
+   Halaman publik menghitung per kejadian laporan (cukup satu anggota terverifikasi), jadi "tayang" di sini berarti laporan ini sendiri yang membuat kartunya tayang. */
+async function statusPublik(env, baris, status) {
+  const nomor = baris.nomor, [periksa, versi, tarik] = await Promise.all([H.lpPeriksaAkunNomor(env, STAF, [nomor]), H.lpVersiTerakhir(env, STAF, [nomor]), H.lpTarikKode(env, STAF, [nomor])]);
+  const P = periksa.map(r => ({id: r.id, hasil: r.hasil, waktu: r.waktu, akun: r.jenis ? {jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, kab_nama: r.kab_nama} : null}));
+  const syarat = syaratPublik({status, wilayah: wilayahBaris(baris)}, P, versi.map(v => ({waktu: v.waktu})), tarik), t = terakhir(tarik);
+  const segar = (terakhir(P)?.waktu || 0) > Date.now() - JENDELA_HARI_INI;
+  return {syarat: syarat.map(({id, label, ok}) => ({id, label, ok})), ditarik: !!t?.aktif, tayang: syarat.every(x => x.ok) && segar, dalam24jam: segar, halamanBuka: env.LAPOR_HARI_INI === "1"};
+}
+/* tarik dari halaman publik atau tampilkan lagi (D8, A8, F-6, Q18): satu baris lk_tarik per anggota kejadian laporan (gugus satu desa), dikunci ke nomor tiket LA-,
+   bukan kode GL- yang dihitung ulang tiap muat (tinjauan keamanan LK-05). Append-only; tidak mengubah tiket, pengecekan, atau usulan. Jejaknya lk_tarik sendiri (pelaku, alasan, waktu) dan log profil hakMeja;
+   sengaja TIDAK ke riwayat tiket, karena catatan riwayat tampil ke pelapor di halaman lacak (lacakTampil) dan alasan tarikan bersifat internal. */
+async function tarikPublik(env, h, nomor, o, kini) {
+  if (typeof o.aktif !== "boolean") return galat(400, "aktif harus true (tarik) atau false (tampilkan lagi).");
+  const alasan = String(o.alasan ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 300) || null;
+  const kini0 = terakhir(await H.lpTarikKode(env, STAF, [nomor]));
+  if (!!kini0?.aktif === o.aktif) return galat(409, o.aktif ? "Laporan ini sudah ditarik dari halaman publik." : "Laporan ini tidak sedang ditarik.");
+  const {G, gk} = await gugusDasar(env, kini), anggota = gk.get(G.per[nomor])?.anggota || [nomor];
+  await H.lpBatch(env, STAF, anggota.map(n => H.lpStmtTarik(env, STAF, n, o.aktif, alasan, h.oleh, kini)));
+  return kirim(200, {ok: true, ditarik: o.aktif, anggota: anggota.length});
 }
 async function mejaRinci(env, c, nomor) {
   const baris = await H.lpSesiNomor(env, STAF, nomor);
@@ -848,6 +870,7 @@ async function mejaUbah(env, req, url, nomor, aksi, kini) {
   const t = await H.lpTiket(env, STAF, nomor); if (!t) return galat(404, "Tiket laporan tidak ditemukan.");
   if (!bolehAksi(c, aksi, t.status, b.o.ke)) return galat(403, "Aksi ini hanya untuk BNPB (membuka kembali tiket, meneruskan ke BPBD).");   // D96
   if (aksi === "ambil") return ambilLaporan(env, h, nomor, t, kini);
+  if (aksi === "tarik") return tarikPublik(env, h, nomor, b.o, kini);
   const catatan = String(b.o.catatan || b.o.teks || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 1000);
   let tambahan = {};
   if (aksi === "lihat") {   // petugas membuka laporan baru = "Sudah dilihat petugas" (POST, bukan GET); akun BPBD tiap kali tercatat di lapor_akses (D95)
@@ -1055,7 +1078,7 @@ async function mejaGet(env, req, url, kini, ctx, x) {
 }
 async function mejaPost(env, req, url, kini, ctx, x) {
   const pc = /^(LA-\d{6}-\d{2,3})\/pic$/.exec(x); if (pc) return picPost(env, req, url, kini, pc[1]);
-  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|ambil)$/.exec(x);
+  const m = /^(LA-\d{6}-\d{2,3})\/(balas|status|lihat|bukti|bukti-publik|teruskan|lepas|periksa|tindakan|ambil|tarik)$/.exec(x);
   return m ? mejaUbah(env, req, url, m[1], m[2], kini) : galat(404, "rute lapor tidak ada");
 }
 

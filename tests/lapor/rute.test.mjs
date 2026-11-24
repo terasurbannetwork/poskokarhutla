@@ -616,6 +616,32 @@ uji("hari ini: hanya Valid oleh BPBD wilayah, kartu daftar putih tanpa identitas
   assert.equal(await n("lk_tarik"), 0, "halaman publik tidak menulis D1 selain batas laju (D7)");
 });
 
+uji("tarik: staf dan BPBD wilayah menarik dan menampilkan lagi, wilayah lain tidak, rincian meja memuat lima syarat (LK-07)", async () => {
+  const longsor = async () => (await api("GET", "/api/lapor/hari-ini")).j.baris.filter(x => x.jenis === "Tanah longsor").length;
+  const awal = await longsor(), nomor = await laporanBaru("6281200000036");
+  const rinci = async () => (await api("GET", `/api/lapor/meja/${nomor}`, undefined, ADMIN)).j.publik;
+  let p = await rinci(); assert.equal(p.tayang, false); assert.deepEqual(p.syarat.map(x => x.id), ["valid", "bpbd", "tiket", "versi", "tarik"]); assert.equal(p.syarat[0].ok, false);
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/periksa`, {hasil: "valid", catatan: "Dicek di lokasi"}, bogor.h)).s, 200);
+  p = await rinci(); assert.equal(p.tayang, true, JSON.stringify(p)); assert.equal(p.ditarik, false); assert.equal(p.halamanBuka, true);
+  assert.equal(await longsor(), awal + 1, "tayang sesudah dicek BPBD wilayah");
+  const tarik = (aktif, h = ADMIN, alasan) => api("POST", `/api/lapor/meja/${nomor}/tarik`, {aktif, ...(alasan ? {alasan} : {})}, h);
+  assert.equal((await tarik(true, bandung.h)).s, 404, "BPBD wilayah lain: laporan tidak ada baginya (D95)");
+  for (const aktif of ["ya", 1, null]) assert.equal((await tarik(aktif)).s, 400, String(aktif));
+  assert.equal((await api("POST", `/api/lapor/meja/${nomor}/tarik`, {aktif: true})).s, 403, "tanpa sesi");
+  const n0 = await n("lk_tarik"), r = await tarik(true, ADMIN, "Nama korban\u0007 tertulis di subjenis");
+  assert.equal(r.s, 200, r.t.slice(0, 200)); assert.equal(r.j.ditarik, true); assert.ok(r.j.anggota >= 1);
+  assert.equal(await n("lk_tarik"), n0 + r.j.anggota, "satu baris per anggota kejadian laporan");
+  assert.equal((await DB.prepare("SELECT alasan FROM lk_tarik WHERE kode = ? ORDER BY id DESC").bind(nomor).first()).alasan, "Nama korban tertulis di subjenis");
+  assert.equal(await longsor(), awal, "ditarik: kartu hilang pada muat berikut");
+  assert.equal((await tarik(true)).s, 409, "sudah ditarik");
+  p = await rinci(); assert.equal(p.ditarik, true); assert.equal(p.tayang, false); assert.equal(p.syarat.find(x => x.id === "tarik").ok, false);
+  assert.equal(await n("lapor_tiket_riwayat", "catatan LIKE '%Nama korban%'"), 0, "alasan tidak masuk riwayat tiket (catatannya tampil di lacak)");
+  const b = await tarik(false, bogor.h); assert.equal(b.s, 200, b.t.slice(0, 200));
+  assert.equal(await longsor(), awal + 1, "BPBD wilayah menampilkan lagi");
+  assert.equal((await tarik(false)).s, 409, "tidak sedang ditarik");
+  assert.equal(await n("lk_tarik", "aktif NOT IN (0, 1)"), 0);
+});
+
 uji("video bersambung: tiga bagian, satu terpotong ditolak lalu dilanjutkan, status bagian, selesai masuk laporan sebagai video", async () => {
   for (const wa of [WV, WV2, WV3]) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
   assert.equal((await mulai(WV3, {ukuran: 5000})).s, 409, "belum ada laporan yang diisi");
