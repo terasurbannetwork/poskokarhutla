@@ -5,6 +5,9 @@
 // Halaman: /lapor/ (chat pelapor), /lapor/lacak.html?t=<token> (lacak laporan tanpa login), /lapor/meja.html (monitoring petugas).
 // Model = Claude API bila ANTHROPIC_API_KEY ada di env atau scripts/wa/.env (tidak pernah dicetak); tanpa kunci = pertanyaan templat.
 // Data uji di ~/.lapor-lokal (di luar repo: nomor WA, nama, dan foto pelapor tidak boleh masuk repo publik). Hanya 127.0.0.1.
+// Data lanjutan BPBD (/api/lapor/data/*, /lapor/data/): dilayani Worker ASLI di Miniflare (lokal_data.mjs), D1+R2 di ~/.lapor-lokal/miniflare.
+//   node scripts/lapor/lokal.mjs berkas-uji  -> buat tiket induk bpbd + berkas (nomor WA rekaan), cetak tautan ketua http://localhost:8800/lapor/data/?t=...
+//   Tautan sekali pakai (ditukar kuki); jalankan lagi untuk tautan baru. Meja staf: lokal_data menitipkan token admin lokal bila tanpa kuki tim.
 // ponytail: monitoring lokal tanpa login (hanya loopback). Di Worker rute /api/lapor/meja* wajib sesi staf (KEPUTUSAN Q12, DESAIN-TEKNIS).
 import http from "node:http";
 import fs from "node:fs";
@@ -757,6 +760,7 @@ export async function tanganiLapor(req, res, url) {
   const kirim = ([kode, isi]) => { res.writeHead(kode, {"content-type": "application/json; charset=utf-8", "cache-control": "no-store"}); res.end(JSON.stringify(isi)); return true; };
   const j = url.pathname;
   if (!j.startsWith("/api/lapor/")) return false;
+  if (j.startsWith("/api/lapor/data/")) return (await import("./lokal_data.mjs")).layani(req, res, url).catch(e => kirim([500, {galat: String(e?.message || e)}]));   // Worker asli di Miniflare
   try {
     if (req.method === "POST" && j === "/api/lapor/pesan") return kirim(await pesan(await badan(req)));
     if (req.method === "POST" && j === "/api/lapor/foto") return kirim(await foto(await badan(req)));
@@ -869,7 +873,9 @@ function statis(res, url) {
   fs.createReadStream(f).pipe(res);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) http.createServer(async (req, res) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && process.argv[2] === "berkas-uji") {
+  const r = await (await import("./lokal_data.mjs")).berkasUji(); console.log(r.buka === false ? "berkas sudah ada: " + r.sebab : r.tautan); process.exit(0);
+} else if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   if (await tanganiLapor(req, res, url)) return;
   if (req.method === "GET") return statis(res, url);

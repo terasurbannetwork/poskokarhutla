@@ -71,3 +71,8 @@
 .mj-tp .ex-jd h3{display:flex;align-items:center;gap:8px;font-size:1.0625rem}.mj-tp .ex-jd h3 svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mj-tp .mj-tp-form{display:grid;gap:10px}.mj-tp .mj-tabel{min-width:640px}.mj-tp td small{font-size:0.7rem}
 .mj-tp input[type=date]{font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--line)}
+/* LJ-16 catatan dari daftar Data lanjutan */
+.mj-kecil{font-size:0.6875rem;margin-left:6px;vertical-align:middle}
+.mj-pita,.mj-beda{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:color-mix(in srgb,var(--c3) 12%,transparent);font-size:0.8125rem;margin:6px 0}
+.mj-pita b,.mj-beda>b{display:inline-flex;align-items:center;gap:6px}.mj-pita svg,.mj-beda svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-beda{display:grid}.mj-beda-baris{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}.mj-beda-baris>span:first-child{font-weight:700;min-width:8rem}

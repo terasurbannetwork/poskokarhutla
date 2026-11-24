@@ -83,9 +83,6 @@ terakhir dikurangi 14). Pembanding M0 dan aturan embusan >= 54 km/jam dari arsip
 - Hari lokal 00-24 menyembunyikan jam kejadian: faktor jam 12-17 hanya dinilai lewat jam skor maks, bukan jam kejadian (label DIBI harian).
 - Peubah dan ambang A9 dari literatur lintang menengah; penerapan di tropis belum teruji di sini.
 - Penyebut tanpa cakupan hari dapat memuat hari "tak teramati" sebagai negatif.
-- Label "Cuaca Ekstrem" tercemar kejadian hujan: sinyal "angin" bisa sebenarnya sinyal hujan lebat. Jenis tak bisa dipisah di sumber ini; hasil dibaca sebagai "cuaca ekstrem gabungan", bukan angin murni.
-- Pembanding (b) memakai embusan ERA5 (`instantaneous_10m_wind_gust`), bukan embusan Open-Meteo yang dipakai aturan hidup. Menang/kalah terhadap (b) tidak otomatis berlaku terhadap aturan hidup.
-- DIBI 2025-01 s.d. 2026-03 bisa belum lengkap (jeda isian susulan) dan menggembungkan negatif palsu. Kriteria kelengkapan yang mengeluarkan 2024 belum diperiksa pada 2025 dan 2026.
 
 ## 8. Kode dan sidik
 
@@ -95,12 +92,4 @@ terakhir dikurangi 14). Pembanding M0 dan aturan embusan >= 54 km/jam dari arsip
 
 ## 9. Amandemen
 
-### Amandemen sebelum data dibuka (24 Nov 2026)
-
-Dibuat dari tinjauan konteks bersih (validasi-model) SEBELUM `latih` dan sebelum label 2025-2026 dilihat; tidak mengubah ambang, model, atau ukuran utama.
-
-- B1. Kriteria kelengkapan tahun yang mengeluarkan 2024 (jumlah kab-hari positif jauh di bawah tahun sekitar; jenis puting beliung nol) DIPAKAI JUGA pada 2025 dan 2026. Tahun uji yang gagal dikeluarkan dan dicatat, bukan dinilai.
-- B2. SEBELUM `uji` dijalankan, wajib dilaporkan jumlah kab-hari positif per tahun uji (2025 dan 2026 sampai 27 Mar) di berkas hasil `latih`, berdampingan dengan 2022 dan 2023. Laporan tanpa angka ini = `uji` tidak boleh jalan.
-- B3. Tiga batas baru dicatat di bagian 7 (label tercemar hujan, pembanding (b) ERA5, DIBI 2025-26 mungkin belum lengkap).
-
-(Lanjutan: belum ada. A1 wajib: pengikatan nama kabupaten DIBI dan komposisi jenis, sebelum `latih`. P1 menunggu pemilik: sumber ERA5.)
+(belum ada. A1 wajib: pengikatan nama kabupaten DIBI dan komposisi jenis, sebelum `latih`. P1 menunggu pemilik: sumber ERA5.)

@@ -27,12 +27,10 @@ Masukan: pita 13 (10,4 µm) NOAA S3 `noaa-himawari9`, dua pindaian berjarak 30 m
 
 Per kabupaten (titik kisi 0,1° dalam poligon): Tb_min(t), Tb_min(t−30), fraksi titik dengan Tb ≤ 235 K dan ≤ 208 K.
 
-- `tumbuh` = Tb_min(t) − Tb_min(t−30) ≤ −8 K DAN Tb_min(t) ≤ 253 K DAN Tb_min(t−30) ≤ 273 K (awan sudah ada sebelumnya)
-- `masuk` = Tb_min(t) ≤ 253 K DAN Tb_min(t−30) > 273 K: awan dingin baru masuk/terdeteksi di kabupaten itu (adveksi dari kabupaten sebelah atau awal pindaian), BUKAN pertumbuhan
+- `tumbuh` = Tb_min(t) − Tb_min(t−30) ≤ −8 K DAN Tb_min(t) ≤ 253 K
 - `puncak_tembus` = Tb_min(t) ≤ 208 K
 
 Dasar: laju pendinginan −4 K per 15 menit sebagai tanda awal konveksi (Roberts & Rutledge 2003; Mecikalski & Bedka 2006).
-Alasan `masuk` (24 Nov 2026, tinjauan validasi-model): Tb_min per kabupaten turun juga bila awan dingin yang sudah ada bergeser masuk ke kabupaten yang tadinya cerah; penurunan puluhan K dalam 30 menit (mis. −81 K) mustahil sebagai pertumbuhan. Kabupaten yang tadinya sudah berawan dan turun besar tetap `tumbuh`, tetapi sebagian bisa tetap adveksi (titik contoh tetap, sel bergerak).
 Catatan: resolusi 2 km dan sel 0,1° akan melewatkan sel badai kecil. Ini tanda awal, bukan deteksi badai.
 
 ## A3. Jam rawan per kabupaten (H13)

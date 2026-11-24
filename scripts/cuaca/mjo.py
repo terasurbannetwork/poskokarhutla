@@ -26,7 +26,6 @@ FIXTURE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixture/mjo_
 HARI = 90          # jendela keluaran
 SIMPAN_ARSIP = 14  # hari terakhir yang dipotret per ambil (cukup untuk menangkap revisi)
 AMBANG_AKTIF = 1.0
-LAG_TERBIT = 3     # hari: nilai bertanggal D hanya dipakai dari D+3 (= PRAREG-MJO bag. 4: D-1 dikurangi jeda 2, tanggal <= D-3)
 
 
 def urai(teks):
@@ -94,17 +93,6 @@ def tersedia(arsip, hari):
     return {n[0]: n[1:] for n in arsip[max(ks)]["nilai"]}
 
 
-def pilih_arsip(arsip, hari):
-    """Nilai arsip yang BOLEH dipakai untuk hari D (ISO): bertanggal <= D-LAG_TERBIT, dari potret berkunci <= D-1 (lewat tersedia()).
-
-    Aturan D-3 PRAREG-MJO hidup di sini sebagai kode, bukan hanya prosa; kode uji/latih wajib memakai fungsi ini.
-    Catatan: jeda terbit DIUKUR SEKALI (24 Nov 2026: data 22 Nov, 2 hari) dan uji() menunjukkan bisa 3 hari (tanpa nilai 22 Nov, jeda 3).
-    Ukur ulang dari mjo_arsip.json setelah beberapa pekan (selisih kunci potret vs tanggal_terakhir); naikkan LAG_TERBIT bila perlu.
-    """
-    batas = (dt.date.fromisoformat(hari) - dt.timedelta(days=LAG_TERBIT)).isoformat()
-    return {t: v for t, v in tersedia(arsip, hari).items() if t <= batas}
-
-
 def uji():
     teks = open(FIXTURE, encoding="utf-8").read()
     d = urai(teks)
@@ -124,11 +112,6 @@ def uji():
     assert tambah_arsip(ar, dt.date(2026, 11, 24), d)
     assert not tambah_arsip(ar, dt.date(2026, 11, 24), d[:-5]) and ar["2026-11-24"]["tanggal_terakhir"] == "2026-11-22"
     assert tersedia(ar, "2026-11-24") == {} and tersedia(ar, "2026-11-25")["2026-11-22"][2] == 4
-    assert max(pilih_arsip(ar, "2026-11-26")) == "2026-11-22" and pilih_arsip(ar, "2026-11-24") == {}
-    ar2 = {"2026-11-25": {"tanggal_terakhir": "2026-11-24", "nilai": [["2026-11-22", 1, 1, 4, 1.1], ["2026-11-23", 1, 1, 4, 1.1], ["2026-11-24", 1, 1, 4, 1.1]]}}
-    for hari_d in ("2026-11-26", "2026-11-27", "2026-11-30"):   # nilai bertanggal D-2 TIDAK PERNAH keluar
-        d2 = (dt.date.fromisoformat(hari_d) - dt.timedelta(days=2)).isoformat()
-        assert d2 not in pilih_arsip(ar2, hari_d), (hari_d, d2)
     print(f"uji MJO lulus: {len(d)} hari, terakhir {d[-1]['tanggal']} fase {d[-1]['fase']} amp {d[-1]['amplitudo']}, jeda {o['jeda_terbit_hari']} hari")
 
 

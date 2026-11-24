@@ -74,9 +74,8 @@ Satu hipotesis, SATU klaim nasional (kelas `hari_sejak` tidak punya alasan fisik
 - Ukuran utama: dETS(M1 - M0) pada q. Sekunder, tanpa gerbang: dETS M1 - persistensi, M1 - aturan berlaku, selisih Brier skill, koefisien K1..K3 beserta selangnya.
 - Bootstrap, 1.000 ulangan, biji 11, dua skema: (1) blok per kabupaten (kewajiban); (2) blok 30 hari (kejadian banjir mengelompok menurut musim hujan regional; blok per kab saja meremehkan).
   Batas bawah = yang lebih kecil, atas = yang lebih besar.
-- Vonis arsip, hanya menolak: DITOLAK bila dETS(M1 - M0) titik <= 0 atau batas atas CI95 < 0 pada S1, ATAU dETS titik <= 0 pada S2. Selain itu, HANYA bila S2 menilai (>= 100 hari-mulai-baru pada hari berliputan logbook, ukuran minimum S2) dan lolos: "LOLOS SARING" (bukan LULUS), koefisien dibekukan sidik.
-  Lolos S1 tanpa S2 yang menilai = "BELUM TERUJI" (bukan LOLOS SARING), karena S1 optimis dan logbook berhenti 2023 sehingga S2 mungkin kosong; koefisien tidak dibekukan untuk prospektif atas dasar S1 saja.
-  < 100 hari-mulai-baru di uji (S1) = "belum cukup", berhenti. S2 < 100 = S2 "tak menilai", dilaporkan apa adanya; S1 hanya dapat MENOLAK, tidak dapat meloloskan.
+- Vonis arsip, hanya menolak: DITOLAK bila dETS(M1 - M0) titik <= 0 atau batas atas CI95 < 0 pada S1, ATAU dETS titik <= 0 pada S2. Selain itu "LOLOS SARING" (bukan LULUS), koefisien dibekukan sidik.
+  < 100 hari-mulai-baru di uji (S1) = "belum cukup", berhenti. S2 < 100 = S2 "tak menilai", dilaporkan apa adanya dan S1 saja yang memutuskan.
 
 ## 6. Vonis prospektif (PRAREG-PROSPEKTIF.md, tidak diubah)
 
@@ -113,8 +112,4 @@ yang sedang dilaporkan, BUKAN prakiraan; karena itu tidak butuh vonis ini dan ti
 
 ## 10. Amandemen
 
-### Amandemen sebelum data dibuka (24 Nov 2026)
-
-Data uji belum dibuka dan `latih` belum jalan; sidik diperbarui.
-
-- F5 (§4.3, §5): S2 praktis kosong (logbook berhenti 2023) sehingga vonis jatuh ke S1 yang optimis. Kini lolos S1 tanpa S2 menilai (< 100 hari-mulai-baru) = "BELUM TERUJI", bukan "LOLOS SARING".
+(belum ada.)

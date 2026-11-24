@@ -38,11 +38,8 @@
    "alasan": "Pemilik 22 Nov 2026: pengecualian bertanggal. Nomor BPBD dan damkar dipanen tangan dari situs .go.id, tiap nomor dicek tertulis di halaman sumbernya (data/kajian-bnpb/lapor-ai/riset/kontak-bpbd, K88, Q64). Pengecek otomatis tidak dipakai karena banyak situs BPBD menolak bot dan akan membuang nomor yang masih benar. Panen diulang manual berkala. Dipakai src/lapor_info.js dan src/lapor_ai.js lewat src/lapor_kontak.js.",
    "tanggal": "2026-11-22"
   },
-  "public/banjir/data/faktor_orografi.json": {
-   "alasan": "Faktor orografi 850 hPa pra-registrasi H20 (scripts/banjir/PRAREG-OROGRAFI.md, 24 Nov 2026): dihitung banjir.yml dan dibekukan sebelum dipakai; pemakainya skor prospektif M1 lawan M0, belum ada layar sebelum vonis (K3). Dicatat sesi LK-06 supaya push tidak tertahan; pengerja model-banjir menyambungkan pemakai atau menghapus pengecualian ini.",
-   "tanggal": "2026-11-24"
-  },
-  "public/banjir/data/uji_aifs.json": {
+  "public/banjir/data/faktor_orografi.json": {"alasan": "Faktor orografi 850 hPa pra-registrasi H20 (scripts/banjir/PRAREG-OROGRAFI.md, 24 Nov 2026): dihitung banjir.yml dan dibekukan sebelum dipakai; pemakainya skor prospektif M1 lawan M0, belum ada layar sebelum vonis (K3). Dicatat sesi LK-06 supaya push tidak tertahan; pengerja model-banjir menyambungkan pemakai atau menghapus pengecualian ini.", "tanggal": "2026-11-24"},
+    "public/banjir/data/uji_aifs.json": {
    "alasan": "Sakelar vonis uji balik AIFS yang dibaca ansambel_hujan.py (aifs_lolos, lewat path UJI_AIFS); bukan data tampil.",
    "tanggal": "2026-11-11"
   },
@@ -72,14 +69,6 @@
   },
   "public/data/kemitraan/masalah_ikd.json": {
    "alasan": "Bahan antara pipeline Kemitraan Kampus: dibaca scripts/kemitraan/cocok_pakar.py (ikd.muat) lalu butirnya masuk keluaran pencocokan bulanan di R2 (KM-I01). Tidak dibaca layar langsung; dijadwalkan lewat kemitraan-pakar.yml bulanan.",
-   "tanggal": "2026-11-24"
-  },
-  "public/cuaca/data/zom.json": {
-   "alasan": "Zona musim BMKG 2026/27 (docs/hidromet-jam H24), diurai sekali per musim dari buku Prediksi Musim Hujan BMKG lewat scripts/cuaca/zom.py urai (manual). Faktor fase musim untuk lab (A8), belum ada layar; layar menyusul sesudah validasi pemetaan nama.",
-   "tanggal": "2026-11-24"
-  },
-  "public/cuaca/data/zom_fase.json": {
-   "alasan": "Fase musim per kab (A8, docs/hidromet-jam H24) turunan zom.json; faktor lab, belum dijadwalkan dan belum tayang sampai validasi-model memeriksa pemetaan nama ZOM ke kab.",
    "tanggal": "2026-11-24"
   }
  }

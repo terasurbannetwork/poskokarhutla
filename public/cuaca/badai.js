@@ -1,8 +1,8 @@
 "use strict";
 /* ================================================================ badai: dua kartu pengamatan di Insight /cuaca (H91)
-   1. Suhu turun mendadak di bandara: kunci embusan_badai per stasiun di ../banjir/data/cuaca_metar.json (scripts/cuaca/metar.py, A1). Hanya enam jam terakhir.
+   1. Embusan awan badai terekam: kunci embusan_badai per stasiun di ../banjir/data/cuaca_metar.json (scripts/cuaca/metar.py, A1). Hanya enam jam terakhir.
       Stasiun tanpa kunci itu = pipeline belum menghitung, kartu dibuang (bukan "tidak ada embusan").
-   2. Awan makin dingin (indikasi): /api/awan_tumbuh (Worker membaca R2 data/awan_tumbuh.json seperti /api/himawari; TIDAK ada di public/; scripts/udara/awan_tumbuh.py, A2), Himawari-9 pita 13, dua pindaian berjarak 30 menit.
+   2. Awan tumbuh cepat: /api/awan_tumbuh (Worker membaca R2 data/awan_tumbuh.json seperti /api/himawari; TIDAK ada di public/; scripts/udara/awan_tumbuh.py, A2), Himawari-9 pita 13, dua pindaian berjarak 30 menit.
    3. Jam rawan hujan (H13, A3): data/jam_hujan.json (scripts/cuaca/jam_hujan.py, IMERG per jam), kab.<kode>.{semua|DJF|MAM|JJA|SON}.{jam_puncak, jendela_70, peluang_jam, merata, n_hari}, jam lokal.
    4. Bibit siklon (H91, A6): kunci bibit dan pasangan_pusaran di ../banjir/data/cuaca_siklon.json (siklon.py, JTWC abio10/abpw10). Kunci bibit tidak ada = kartu dibuang.
    Semuanya pengamatan atau catatan, bukan peringatan resmi BMKG. Indeks badai (CAPE, geseran angin) tidak ditampilkan (KEPUTUSAN Q2). Berkas hilang = kartu dibuang (A18). */
@@ -22,8 +22,8 @@ const Badai = (() => {
     if (mt?.stasiun?.some(s => "embusan_badai" in s))
       D.emb = mt.stasiun.flatMap(s => (s.embusan_badai || []).map(e => ({...e, t: Date.parse(e.waktu), s}))).filter(e => t - e.t <= JAM6 && e.t <= t + 36e5);
     if (at?.kab && Date.parse(at.jam_pengamatan_utc)) {
-      D.tt = {t: Date.parse(at.jam_pengamatan_utc), sumber: at.sumber, baris: Object.entries(at.kab).filter(([, v]) => v.tumbuh || v.masuk || v.puncak_tembus)
-        .map(([kode, v]) => ({kode, nama: v.kab, prov: kode.slice(0, 2), dT: v.tumbuh && v.delta_k < 0 ? -v.delta_k : 0, tb: v.tb_min_k - K, tumbuh: !!v.tumbuh, masuk: !v.tumbuh && !!v.masuk}))};
+      D.tt = {t: Date.parse(at.jam_pengamatan_utc), sumber: at.sumber, baris: Object.entries(at.kab).filter(([, v]) => v.tumbuh || v.puncak_tembus)
+        .map(([kode, v]) => ({kode, nama: v.kab, prov: kode.slice(0, 2), dT: v.delta_k < 0 ? -v.delta_k : 0, tb: v.tb_min_k - K, tumbuh: v.tumbuh}))};
     }
     if (jh?.kab && wl?.kab) {
       const ms = ["DJF", "DJF", "MAM", "MAM", "MAM", "JJA", "JJA", "JJA", "SON", "SON", "SON", "DJF"][new Date(t + 7 * 36e5).getUTCMonth()], nm = Object.fromEntries(wl.kab.map(w => [w.kode, w]));
@@ -44,7 +44,7 @@ Insight.T.tumbuh = {urut: "dT", turun: true, hal: 0};
 Insight.T.jam = {urut: "p", turun: true, hal: 0};
 Insight.T.bibit = {urut: "w", turun: true, hal: 0};
 Insight.EX.splice(Insight.EX.indexOf("awan") + 1, 0, "embusan", "tumbuh", "jam", "bibit");
-Object.assign(Insight.LABEL, {embusan: "Suhu turun mendadak di bandara", tumbuh: "Awan makin dingin (indikasi)", jam: "Jam rawan hujan", bibit: "Bibit siklon"});
+Object.assign(Insight.LABEL, {embusan: "Embusan awan badai terekam", tumbuh: "Awan tumbuh cepat", jam: "Jam rawan hujan", bibit: "Bibit siklon"});
 IK.jam = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
 IK.bibit = '<path d="M12 12a2 2 0 1 0 0 .01M12 6a6 6 0 0 1 6 6M12 2a10 10 0 0 1 10 10M12 18a6 6 0 0 1-6-6M12 22A10 10 0 0 1 2 12"/>';
 IK.embusan = '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>';
@@ -52,28 +52,28 @@ IK.tumbuh = '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z
 const BADAI_DIAM = () => 'style="cursor:default"';   /* baris tabel tidak punya aksi: kursor biasa */
 Object.assign(Insight, {
   exEmbusan() { const E = Badai.D.emb; if (!E) return "";
-    const ket = `<p class="fnd">${Badai.pil("Pengamatan", "#2b8c86")} Suhu turun cepat, tekanan naik, atau arah angin berbalik di satu bandara. Mirip embusan dingin dari awan badai (gust front), tetapi belum dipastikan sebagai itu. Dari arsip METAR IEM September sampai 23 November 2026: 103 tanda di 39 bandara, 80 di antaranya disusul hujan atau badai dalam 60 menit. Ini bukan peringatan resmi BMKG.</p>`;
-    if (!E.length) return this.ex("Suhu turun mendadak di bandara", "", "", `${ket}<p class="fnd">Tidak ada bandara yang mencatat tanda itu dalam 6 jam terakhir. Bandara hanya mewakili satu titik, jadi angin kencang di tempat lain bisa tidak terekam.</p>`, "");
+    const ket = `<p class="fnd">${Badai.pil("Pengamatan", "#2b8c86")} Tanda gelombang angin dari awan badai di satu titik bandara: suhu turun cepat, tekanan naik, atau arah angin berbalik. Ini bukan peringatan resmi BMKG.</p>`;
+    if (!E.length) return this.ex("Embusan awan badai terekam", "", "", `${ket}<p class="fnd">Tidak ada bandara yang mencatat tanda itu dalam 6 jam terakhir. Bandara hanya mewakili satu titik, jadi angin kencang di tempat lain bisa tidak terekam.</p>`, "");
     const kol = [{k: "t", n: "Waktu", t: "Asal data: BMKG Aviation dan aviationweather.gov (NOAA), METAR/SPECI bandara", num: 1, v: r => r.t, h: r => Badai.jam(r.t, r.s.lon)},
       {k: "b", n: "Bandara", v: r => r.s.nama, h: r => `<span translate="no">${esc(r.s.nama)}</span> <small translate="no">${esc(r.s.icao)}</small>`},
       {k: "u", n: "Yang terekam", v: r => r.dT, h: r => esc(Badai.kalimat(r))},
       {k: "g", n: "Embusan", num: 1, v: r => r.embusan_kmj ?? -1, h: r => r.embusan_kmj != null ? fmt(r.embusan_kmj) + " km/jam" : "–"}];
     const kuat = E.filter(e => e.kuat).length;
     const ring = `<p class="fnd">${Badai.pil(fmt(E.length) + " embusan", "#c9503a")} ${Badai.pil(fmt(new Set(E.map(e => e.s.icao)).size) + " bandara", "#2b8c86")}${kuat ? " " + Badai.pil(fmt(kuat) + " kuat", "#7a1f2b") : ""}</p>`;
-    return this.ex("Suhu turun mendadak di bandara", "", "", ket + ring + this.tabel("embusan", kol, E, 5, "embusan", BADAI_DIAM), ""); },
+    return this.ex("Embusan awan badai terekam", "", "", ket + ring + this.tabel("embusan", kol, E, 5, "embusan", BADAI_DIAM), ""); },
   exTumbuh() { const A = Badai.D.tt; if (!A) return "";
     const R = A.baris, basi = SEKARANG() - A.t > 6 * 36e5;
     const tg = `<span title="Citra satelit, bukan pengukuran di lokasi">${Badai.tgl(A.t)}</span>`;
-    const ket = `<p class="fnd">${Badai.pil("Pengamatan, uji", "#7a4fc4")} Tanda awal, bukan peringatan resmi BMKG. Suhu puncak awan dibandingkan dua citra berjarak 30 menit di titik contoh sekitar 11 km, jadi sel kecil bisa terlewat. Awan yang makin dingin bisa tumbuh di tempat, tetapi bisa juga awan dingin yang bergeser masuk dari wilayah lain. Belum terbukti berkaitan dengan hujan lebat atau angin kencang.</p>`
+    const ket = `<p class="fnd">${Badai.pil("Pengamatan, uji", "#7a4fc4")} Tanda awal, bukan peringatan resmi BMKG. Suhu puncak awan dibandingkan dua pindaian citra berjarak 30 menit di titik contoh sekitar 11 km, jadi sel kecil bisa terlewat. Belum terbukti berkaitan dengan hujan lebat atau angin kencang.</p>`
       + (basi ? `<p class="fnd">Citra terakhir ini dari ${tg}, bukan kondisi terkini.</p>` : "");
-    if (!R.length) return this.ex("Awan makin dingin (indikasi)", "", "", ket + `<p class="fnd">Tidak ada awan yang makin dingin pada citra ${Badai.tgl(A.t)}.</p>`, "");
-    const nT = R.filter(r => r.tumbuh).length, nM = R.filter(r => r.masuk).length, nP = R.length - nT - nM;
+    if (!R.length) return this.ex("Awan tumbuh cepat", "", "", ket + `<p class="fnd">Tidak ada awan yang tumbuh cepat pada citra ${Badai.tgl(A.t)}.</p>`, "");
+    const nT = R.filter(r => r.tumbuh).length;
     const kol = [{k: "kab", n: "Kabupaten/kota", t: `Asal data: Himawari-9 pita 13 (inframerah 10,4 mikron), NOAA open data; analisis Centurisk97, citra ${Badai.tgl(A.t)}`, v: r => r.nama, h: r => `<span translate="no">${esc(r.nama)}</span>, ${esc(namaProv(r.prov))}`},
-      {k: "dT", n: "Puncak mendingin", t: "Penurunan suhu puncak awan terdingin dalam 30 menit; tanda – bila awan baru masuk (tidak ada pembanding)", num: 1, v: r => r.dT, h: r => r.dT ? `turun ${fmt(Math.round(r.dT))} °C` : "–"},
+      {k: "dT", n: "Puncak mendingin", t: "Penurunan suhu puncak awan terdingin dalam 30 menit", num: 1, v: r => r.dT, h: r => r.dT ? `turun ${fmt(Math.round(r.dT))} °C` : "–"},
       {k: "tb", n: "Suhu puncak", t: "Perkiraan satelit: suhu puncak awan terdingin di kabupaten pada citra ini", num: 1, v: r => -r.tb, h: r => `${fmt(Math.round(r.tb)).replace("-", "−")} °C`},
-      {k: "tanda", n: "Tanda", v: r => r.tumbuh ? 2 : r.masuk ? 1 : 0, h: r => r.tumbuh ? Badai.pil("Makin dingin", "#7a4fc4") : r.masuk ? Badai.pil("Awan dingin baru masuk", "#5f7fb8") : Badai.pil("Puncak sangat dingin", "#a98bd6")}];
-    const ring = `<p class="fnd">${Badai.pil(fmt(nT) + " makin dingin", "#7a4fc4")} ${Badai.pil(fmt(nM) + " awan dingin baru masuk", "#5f7fb8")} ${Badai.pil(fmt(nP) + " puncak sangat dingin", "#a98bd6")}</p>`;
-    return this.ex("Awan makin dingin (indikasi)", "", "", ket + ring + this.tabel("tumbuh", kol, R, 10, "kabupaten/kota", BADAI_DIAM), ""); },
+      {k: "tanda", n: "Tanda", v: r => +r.tumbuh, h: r => r.tumbuh ? Badai.pil("Tumbuh cepat", "#7a4fc4") : Badai.pil("Puncak sangat dingin", "#a98bd6")}];
+    const ring = `<p class="fnd">${Badai.pil(fmt(nT) + " tumbuh cepat", "#7a4fc4")} ${Badai.pil(fmt(R.length - nT) + " puncak sangat dingin", "#a98bd6")}</p>`;
+    return this.ex("Awan tumbuh cepat", "", "", ket + ring + this.tabel("tumbuh", kol, R, 10, "kabupaten/kota", BADAI_DIAM), ""); },
   exJam() { const J = Badai.D.jh; if (!J) return "";
     const R = J.baris.filter(r => !r.m.merata), ms = {DJF: "Des sampai Feb", MAM: "Mar sampai Mei", JJA: "Jun sampai Agu", SON: "Sep sampai Nov"}[J.ms];
     const ket = `<p class="fnd">${Badai.pil("Pengamatan", "#2b8c86")} Jam hujan paling sering di tiap kabupaten/kota pada musim berjalan (${ms}), dari hujan satelit IMERG per jam. Hujan lokal yang deras bisa tidak terukur, dan fasenya bisa bergeser sekitar 1 jam, jadi baca sebagai ±. Ini pola lama, bukan peringatan dan bukan prakiraan hari ini.</p>`;

@@ -44,26 +44,3 @@ Turunan `PRD.md` dan `ALGORITMA.md` (24 Nov 2026). Ambil satu tiket, kerjakan ha
 | H90 | Workflow: jadwalkan H11 (ikut `jarak_pandang.yml`), H12 (tiap 30 menit), H13 (bulanan), H20, H21, H22, H31 (harian) | mekanik-mesin | Fase 1-3 | `npm run uji:agen` lulus |
 | H91 | Layar `/cuaca`: kartu "Embusan awan badai terekam", "Awan tumbuh cepat", "Jam rawan hujan", "Bibit siklon" berlabel pengamatan | layar-peta → selera-angka + inp-reviewer | H11-H13, H22 | uji layar + server lokal menyajikan data asli |
 | H92 | Uji integrasi: daftarkan semua mode `uji` baru ke `package.json` dan `tests/e2e/cakupan.json` bila ada | penulis-gerbang | semua | `npm run uji` lulus |
-
-## Status per 24 Nov 2026
-
-| Tiket | Status | Catatan |
-| --- | --- | --- |
-| H10 | Selesai | `AUDIT-14-17NOV.md`, `scripts/cuaca/kronologi.py`. Peringatan BMKG yang menyebut Ciwidey terbit 15.20, sesudah kerusakan ±14.30 |
-| H11 | Selesai | A1 di `metar.py`; laju tanda di `LAJU-TANDA-METAR.md` (103 tanda Sep-23 Nov, 78% disusul TS/RA ≤60 menit) |
-| H12 | Selesai | `awan_tumbuh.py`; aturan diperketat (F6): `tumbuh` hanya bila awan sudah ada, kolom baru `masuk` untuk adveksi |
-| H13 | Kode siap, data belum | `panen_lab.py` skema 2 (kolom `j`) + `jam_hujan.py`; menunggu push lalu panen ulang `panen-lab-banjir.yml -f timpa=ya` |
-| H20 | Selesai, PRAREG beku | `faktor_orografi.py`, `PRAREG-OROGRAFI.md` (amandemen F1/F2) |
-| H21 | Selesai, PRAREG beku | `mjo.py` (`pilih_arsip`, LAG_TERBIT), `PRAREG-MJO.md` |
-| H22 | Selesai (sesi lain, commit a39cbdd16) | `siklon.py` membaca `abio10/abpw10` dengan fixture JTWC asli 24 Nov. Dari mesin ini JTWC sempat menjawab 403; gagal tarik ditulis null, bukan nol. GDACS + TCWC tetap sumber utama bila JTWC menolak |
-| H23 | Selesai, PRAREG beku | `faktor_surut.py`, `PRAREG-SURUT.md` (amandemen F5) |
-| H24 | Selesai | `zom.py` dari buku PMH 2026/27 BMKG: 699 ZOM, 512/515 kab. Pemetaan nama ke kab perlu diperiksa validasi-model sebelum tayang |
-| H30 | Tertahan | Radar dijaga Cloudflare (`RISET-RADAR.md`); perlu izin tertulis dan spesifikasi dari BMKG |
-| H31 | Selesai, PRAREG beku, internal | `bahan_badai.py`, `PRAREG-ANGIN.md` (amandemen F4). Data latih ERA5 butuh kunci CDS atau ARCO-ERA5 |
-| H32 | Selesai, operasional | `jeda_hulu.py`; masuk model hanya lewat amandemen PRAREG-HULU |
-| H33 | Tertahan | Tidak ada daftar RW tergenang resmi 1 Jan 2020 (`SKENARIO-JAKARTA-2020.md`); perlu permintaan data ke BPBD DKI |
-| H34 | Selesai | `KASUS-CIWIDEY.md` (dilunakkan, N5) |
-| H90 | Selesai, belum di-push | himawari.yml, banjir.yml, lintas.yml, panen-lab-banjir.yml |
-| H91 | Selesai | `public/cuaca/badai.js`, rute Worker `/api/awan_tumbuh` |
-| H92 | Selesai | `npm run uji:hidromet`, `uji:hidromet:jaringan` |
-| Lain | Selesai | `src/nowcast.js`: teks wilayah tidak lagi dipotong 600 karakter |
