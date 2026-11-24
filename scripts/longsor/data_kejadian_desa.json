@@ -1,0 +1,336 @@
+{
+ "aturan_inklusi": "Satu desa positif bila ada >=1 kejadian: (1) jenis longsor atau gerakan tanah, bukan banjir bandang atau banjir yang menyebut longsor sampingan; (2) tanggal kejadian 1 Jan 2025 sampai 31 Jan 2026; (3) sumber minimum satu laporan resmi (BPBD, Badan Geologi) atau dua liputan media independen yang menyebut desa itu; (4) lokasi menyebut desa atau dapat dipetakan ke satu kd tanpa ambiguitas. Gagal cocok masuk gagal_cocok dan dikeluarkan, bukan negatif. Angka 21 bukan aturan. (Salinan ALGORITMA.md bagian 8.)",
+ "disusun": "2026-11-24",
+ "jumlah": 16,
+ "wilayah": "Kab Bandung Barat (32.17), Kab Bandung (32.04), Kota Bandung (32.73), Kota Cimahi (32.77); Kota Cimahi tanpa desa yang lolos aturan",
+ "sumber_kd": "desa_cari.json repo (cahyadsn/wilayah_boundaries, MIT; Kepmendagri 300.2.2-2430/2025); kd tidak dibuka ulang di Kepmendagri aslinya",
+ "catatan": "Disusun buta terhadap bangunan dan lereng. Pencarian web satu putaran, bukan sapuan lengkap arsip BPBD: daftar kemungkinan tidak lengkap (batas bawah). Tanggal kejadian dari liputan.",
+ "desa": [
+  {
+   "kd": "32.17.01.2016",
+   "desa": "Wangunsari",
+   "kecamatan": "Lembang",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-05-16",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.detik.com/jabar/berita/d-7917557/2-warga-luka-4-rumah-tertimbun-longsor-di-lembang-bandung-barat",
+     "terbit": "2025-05-16",
+     "penerbit": "detikJabar"
+    },
+    {
+     "url": "https://platye.org/2025/05/16/longsor-terjang-lembang-3-rumah-tertimbun-dan-puluhan-warga-mengungsi/",
+     "terbit": "2025-05-16",
+     "penerbit": "PLATYE"
+    }
+   ],
+   "catatan": "dua liputan; Kepala Pelaksana BPBD KBB dikutip di liputan lain (Republika)"
+  },
+  {
+   "kd": "32.17.01.2011",
+   "desa": "Mekarwangi",
+   "kecamatan": "Lembang",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-05-22",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://rmol.id/nusantara/read/2025/05/23/667494/lembang-kembali-alami-longsor-satu-rumah-tertimbun",
+     "terbit": "2025-05-23",
+     "penerbit": "RMOL"
+    }
+   ],
+   "catatan": "petugas lapangan BPBD KBB dikutip; satu liputan, tanpa rilis BPBD sendiri: lemah terhadap aturan (3)"
+  },
+  {
+   "kd": "32.17.01.2008",
+   "desa": "Jayagiri",
+   "kecamatan": "Lembang",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-10-24",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.cnbcindonesia.com/news/20251025001922-4-679111/longsor-hantam-rumah-warga-di-bandung-bandung-barat-bogor",
+     "terbit": "2025-10-25",
+     "penerbit": "CNBC Indonesia (data BPBD Jawa Barat via CNN Indonesia)"
+    }
+   ],
+   "catatan": "data BPBD Jabar"
+  },
+  {
+   "kd": "32.17.01.2002",
+   "desa": "Kayuambon",
+   "kecamatan": "Lembang",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-10-24",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.cnbcindonesia.com/news/20251025001922-4-679111/longsor-hantam-rumah-warga-di-bandung-bandung-barat-bogor",
+     "terbit": "2025-10-25",
+     "penerbit": "CNBC Indonesia (data BPBD Jawa Barat via CNN Indonesia)"
+    }
+   ],
+   "catatan": "data BPBD Jabar"
+  },
+  {
+   "kd": "32.17.12.2006",
+   "desa": "Cibenda",
+   "kecamatan": "Cipongkor",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-10-24",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.cnbcindonesia.com/news/20251025001922-4-679111/longsor-hantam-rumah-warga-di-bandung-bandung-barat-bogor",
+     "terbit": "2025-10-25",
+     "penerbit": "CNBC Indonesia (data BPBD Jawa Barat via CNN Indonesia)"
+    }
+   ],
+   "catatan": "data BPBD Jabar"
+  },
+  {
+   "kd": "32.17.11.2010",
+   "desa": "Nanggerang",
+   "kecamatan": "Cililin",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-12-04",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://jabarekspres.com/berita/2025/12/11/terkait-bencana-longsor-di-cililin-bpbd-kbb-ini-akibat-pergerakan-tanah/",
+     "terbit": "2025-12-11",
+     "penerbit": "Jabar Ekspres (Kepala BPBD KBB)"
+    },
+    {
+     "url": "https://katadata.co.id/amp/berita/nasional/693220bbbd50a/bandung-barat-diterjang-banjir-bandang-dan-longsor/",
+     "terbit": "2025-12-05",
+     "penerbit": "Katadata (Antara)"
+    }
+   ],
+   "catatan": "pergerakan tanah memutus akses; tanggal kejadian puncak 4 Des"
+  },
+  {
+   "kd": "32.17.14.2003",
+   "desa": "Buninagara",
+   "kecamatan": "Sindangkerta",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-12-04",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://katadata.co.id/amp/berita/nasional/693220bbbd50a/bandung-barat-diterjang-banjir-bandang-dan-longsor/",
+     "terbit": "2025-12-05",
+     "penerbit": "Katadata (Antara)"
+    },
+    {
+     "url": "https://rri.co.id/en/archipelago/2022497/about.html",
+     "terbit": "tidak terverifikasi",
+     "penerbit": "RRI"
+    }
+   ],
+   "catatan": "Kampung Cigagak, menutup jalan; tanpa rilis BPBD; independensi Katadata dan RRI belum pasti (Katadata mengutip Antara); tanggal terbit RRI tidak terverifikasi"
+  },
+  {
+   "kd": "32.17.14.2011",
+   "desa": "Wangunsari",
+   "kecamatan": "Sindangkerta",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2025-12-05",
+   "jenis": "pergerakan tanah",
+   "sumber": [
+    {
+     "url": "https://www.detik.com/jabar/berita/d-8249197/nelangsa-sekeluarga-di-kbb-rumah-rusak-berat-gegara-pergerakan-tanah",
+     "terbit": "2025-12-08",
+     "penerbit": "detikJabar (Kepala BPBD KBB)"
+    }
+   ],
+   "catatan": "satu rumah rusak berat"
+  },
+  {
+   "kd": "32.17.03.2004",
+   "desa": "Pasirlangu",
+   "kecamatan": "Cisarua",
+   "kab": "Kab Bandung Barat",
+   "tanggal": "2026-01-24",
+   "jenis": "longsor (aliran bahan rombakan)",
+   "sumber": [
+    {
+     "url": "https://www.esdm.go.id/id/media-center/arsip-berita/longsor-terjang-desa-pasirlangu-badan-geologi-ingatkan-ancaman-longsor-susulan",
+     "terbit": "2026-01-25",
+     "penerbit": "Kementerian ESDM / Badan Geologi"
+    }
+   ],
+   "catatan": "kasus perintis, dilaporkan terpisah (ALGORITMA 8)"
+  },
+  {
+   "kd": "32.04.16.2011",
+   "desa": "Wargaluyu",
+   "kecamatan": "Arjasari",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-12-05",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.liputan6.com/regional/read/6230048/longsor-landa-arjasari-bandung-3-warga-hilang",
+     "terbit": "2025-12-05",
+     "penerbit": "Liputan6 (BPBD Kab Bandung, BPBD Jabar)"
+    },
+    {
+     "url": "https://www.detik.com/jabar/berita/d-8245792/longsor-arjasari-bandung-3-orang-tertimbun-di-lereng-sinapeul",
+     "terbit": "tidak terverifikasi",
+     "penerbit": "detikJabar"
+    }
+   ],
+   "catatan": "Kampung Condong"
+  },
+  {
+   "kd": "32.04.15.2007",
+   "desa": "Margamulya",
+   "kecamatan": "Pangalengan",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-12-03",
+   "jenis": "pergerakan tanah",
+   "sumber": [
+    {
+     "url": "https://www.cnnindonesia.com/nasional/20251205104716-20-1303129/daftar-lokasi-banjir-longsor-di-kabupaten-bandung",
+     "terbit": "2025-12-05",
+     "penerbit": "CNN Indonesia (laporan Kalak BPBD Kab Bandung)"
+    }
+   ],
+   "catatan": "Kampung Pasir Mulya; Margamulya Pangalengan, bukan Margamulya Pasirjambu"
+  },
+  {
+   "kd": "32.04.37.2004",
+   "desa": "Panyirapan",
+   "kecamatan": "Soreang",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-12-04",
+   "jenis": "pergerakan tanah",
+   "sumber": [
+    {
+     "url": "https://www.cnnindonesia.com/nasional/20251205104716-20-1303129/daftar-lokasi-banjir-longsor-di-kabupaten-bandung",
+     "terbit": "2025-12-05",
+     "penerbit": "CNN Indonesia (laporan Kalak BPBD Kab Bandung)"
+    }
+   ],
+   "catatan": "Kampung Pasir Kaliki"
+  },
+  {
+   "kd": "32.04.37.2010",
+   "desa": "Sukajadi",
+   "kecamatan": "Soreang",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-12-04",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.cnnindonesia.com/nasional/20251205104716-20-1303129/daftar-lokasi-banjir-longsor-di-kabupaten-bandung",
+     "terbit": "2025-12-05",
+     "penerbit": "CNN Indonesia (laporan Kalak BPBD Kab Bandung)"
+    }
+   ],
+   "catatan": "Kampung Cimonce; tanggal tersirat"
+  },
+  {
+   "kd": "32.04.35.2007",
+   "desa": "Drawati",
+   "kecamatan": "Paseh",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-10-30",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.detik.com/jabar/berita/d-8187542/longsor-terjadi-di-dua-kecamatan-di-kabupaten-bandung",
+     "terbit": "2025-10-31",
+     "penerbit": "detikJabar (Kalak BPBD Kab Bandung)"
+    },
+    {
+     "url": "https://www.detik.com/jabar/berita/d-8188151/6-fakta-longsor-di-pangalengan-dan-paseh-bandung/amp",
+     "terbit": "2025-11-01",
+     "penerbit": "detikJabar"
+    }
+   ],
+   "catatan": "Kampung Paderek; dua rumah rusak"
+  },
+  {
+   "kd": "32.73.08.1002",
+   "desa": "Ciumbuleuit",
+   "kecamatan": "Cidadap",
+   "kab": "Kota Bandung",
+   "tanggal": "2025-10-24",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.cnbcindonesia.com/news/20251025001922-4-679111/longsor-hantam-rumah-warga-di-bandung-bandung-barat-bogor",
+     "terbit": "2025-10-25",
+     "penerbit": "CNBC Indonesia (data BPBD Jawa Barat via CNN Indonesia)"
+    }
+   ],
+   "catatan": "sumber tidak menyebut kecamatan; kecamatan disimpulkan dari nama kelurahan yang unik dalam Kota Bandung (desa_cari.json); jenis 'longsor' dari judul liputan"
+  },
+  {
+   "kd": "32.73.10.1005",
+   "desa": "Cibadak",
+   "kecamatan": "Astanaanyar",
+   "kab": "Kota Bandung",
+   "tanggal": "2025-10-24",
+   "jenis": "longsor",
+   "sumber": [
+    {
+     "url": "https://www.cnbcindonesia.com/news/20251025001922-4-679111/longsor-hantam-rumah-warga-di-bandung-bandung-barat-bogor",
+     "terbit": "2025-10-25",
+     "penerbit": "CNBC Indonesia (data BPBD Jawa Barat via CNN Indonesia)"
+    }
+   ],
+   "catatan": "sama seperti Ciumbuleuit"
+  }
+ ],
+ "gagal_cocok": [
+  {
+   "nama": "Jatisari (Kota Bandung)",
+   "kab": "Kota Bandung",
+   "tanggal": "2025-10-24",
+   "alasan": "tidak ada kelurahan bernama Jatisari di Kota Bandung pada desa_cari.json (Kepmendagri 300.2.2-2430/2025); sumber tidak menyebut kecamatan"
+  },
+  {
+   "nama": "Pasir Kaliki (Kota Bandung)",
+   "kab": "Kota Bandung",
+   "tanggal": "2025-10-24",
+   "alasan": "ambigu: kelurahan Pasirkaliki (Cicendo) ada, tetapi CNN menyebut Kampung Pasir Kaliki di Desa Panyirapan, Soreang pada hari yang sama; tidak dapat dipastikan satu kd"
+  },
+  {
+   "nama": "Cisuruli (Pangalengan)",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-10-30",
+   "alasan": "hanya nama kampung; desa tidak disebut; sumber Tagana bukan BPBD"
+  },
+  {
+   "nama": "Kertasari, Kampung Puncak Mulya",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-12",
+   "alasan": "desa tidak disebut di sumber yang dibuka (Cihawuk hanya tercantum di hasil pencarian, tidak dibuka)"
+  },
+  {
+   "nama": "Cangkuang (Kawung Luwuk, Leuweung Datar), Cimaung (Ci Seeng), Pasirjambu",
+   "kab": "Kab Bandung",
+   "tanggal": "2025-12",
+   "alasan": "desa tidak disebut"
+  }
+ ],
+ "tidak_dimasukkan": {
+  "di_luar_rentang": [
+   "Cimahi Selatan, Cibeber, Okt 2026",
+   "Pangalengan, 1 Feb 2026 (CNN 2026-02-01)"
+  ],
+  "tidak_terverifikasi": [
+   "Kampung Barujumaah, Desa Cipada, Cisarua, 31 Okt 2025 (satu hasil pencarian, tidak ditemukan sumber)",
+   "Desa Bumiwangi, Ciparay, 10 Des 2025 (tidak ditemukan sumber)",
+   "Cimahi, Jl Kebon Manggu, Sep 2025 (satu liputan, tanpa kelurahan)",
+   "Maret 2025 Kab Bandung enam kecamatan longsor (lokasi tidak tercantum di teks yang dibuka)"
+  ],
+  "banjir_dikecualikan": "Desa banjir di liputan yang sama (Baleendah, Dayeuhkolot, Margaasih, Bojongsoang, dll.) tidak dimasukkan"
+ }
+}
