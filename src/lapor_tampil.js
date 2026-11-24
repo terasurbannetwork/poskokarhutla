@@ -97,7 +97,7 @@ export function lacakTampil(s, p, t) {
 }
 
 /* angka dampak ringkas untuk peta dan kepala rincian; null = belum didata (kosong tidak pernah jadi nol); sama dengan lokal.mjs */
-export const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : Number(x.nilai) || 0; };
+export const dampakRingkas = s => { const a = n => { const x = s.isian[n]; return !x || x.belum ? null : x.nihil ? 0 : x.nilai != null && x.nilai !== "" && Number.isFinite(Number(x.nilai)) ? Number(x.nilai) : null; };   // isian tanpa angka = kosong, bukan 0
   const rumah = ["rumah_berat", "rumah_sedang", "rumah_ringan"].map(a), adaRumah = rumah.some(v => v != null);
   return {meninggal: a("meninggal"), hilang: a("hilang"), luka: a("luka"), mengungsi: a("mengungsi_jiwa"), rumah: adaRumah ? rumah.reduce((t, v) => t + (v || 0), 0) : null}; };
 
@@ -126,10 +126,16 @@ export function barisMeja(r) {
     lengkap: k.lengkap ?? 0, foto: k.foto || 0, darurat: k.darurat || null, balasan: r.balasan || 0, versi: r.versi || 1, adaSusulan: !!r.ada_susulan, dampak: k.dampakMeja || null, tempat: k.tempat || null,
     bahasa: k.bahasa ? BAHASA.find(([kd]) => kd === k.bahasa)?.[1] || null : null};
 }
+/* pembentuk bersama kartu publik (Alun-alun dan halaman hari ini, lapor-kejadian LK-04): jenis, subjenis, dan nama wilayah dari ringkasan
+   yang sudah di-parse (k), dibangun dari nol supaya kolom baru di ringkas tidak ikut keluar. Tidak mengembalikan k. */
+export function dasarPublik(r, k) {
+  const w = k.wilayah || {};
+  return {jenisId: r.jenis || null, jenis: labelJenis(r.jenis) || "Kejadian", subjenis: k.subjenis && k.subjenis !== "Belum diketahui" ? k.subjenis : null,
+    lokasi: {desa: w.desa || null, kec: w.kec || null, kab: w.kab || null, prov: w.prov || null, provKode: w.provKode || null}};
+}
 export function barisAlun(r) {
-  const k = r.ringkas ? JSON.parse(r.ringkas) : {}, w = k.wilayah || {};
-  return {ms: k.waktuMs || r.terkirim, id: r.id, jenisId: r.jenis || null, jenis: labelJenis(r.jenis) || "Kejadian", subjenis: k.subjenis && k.subjenis !== "Belum diketahui" ? k.subjenis : null, waktu: k.waktuKejadian || null,
-    lokasi: {desa: w.desa || null, kec: w.kec || null, kab: w.kab || null, prov: w.prov || null, provKode: w.provKode || null}, dampak: k.dampak || {},
+  const k = r.ringkas ? JSON.parse(r.ringkas) : {}, {jenisId, jenis, subjenis, lokasi} = dasarPublik(r, k);
+  return {ms: k.waktuMs || r.terkirim, id: r.id, jenisId, jenis, subjenis, waktu: k.waktuKejadian || null, lokasi, dampak: k.dampak || {},
     status: r.status, statusLabel: STATUS[r.status], tingkat: r.tingkat === "bpbd" ? "Petugas BPBD" : "Warga"};
 }
 

@@ -7,6 +7,7 @@
    dan wilayah pemeriksa TIDAK bisa diturunkan dengan pasti dari teks. Karena itu rute periksa menulis tabel samping lk_periksa_akun
    (migrasi 0169) dari cakupan sesi, dan pengecekan lama tanpa baris samping dihitung belum terverifikasi (aman: tidak pernah tayang). */
 import {dalamWilayah} from "./lapor_meja_hak.js";
+import {dasarPublik} from "./lapor_tampil.js";
 
 /* urutan "terakhir": waktu menurun, id menurun bila waktu sama (A3 butir 1) */
 const lebihBaru = (a, b) => a.waktu !== b.waktu ? a.waktu > b.waktu : a.id > b.id;
@@ -48,3 +49,29 @@ export function kejadianTerverifikasi(anggota, tarikan = []) {
 export const penandaPemeriksa = c => c?.jenis === "bpbd"
   ? {jenis: "bpbd", tingkat: c.tingkat, prov: c.prov, kab: c.kab || null, kab_nama: c.kabNama ? String(c.kabNama).slice(0, 100) : null}
   : {jenis: "bnpb", tingkat: null, prov: null, kab: null, kab_nama: null};
+
+/* ---------- kartu publik halaman hari ini (LK-04, DESAIN-TEKNIS bagian 5, ALGORITMA A5) ----------
+   Dibangun dari NOL dengan daftar putih, bukan baris D1 dikurangi kolom. Masukan:
+   id = hash 10 karakter dari id laporan paling awal kejadian (dihitung pemanggil, pola alunBuat);
+   anggota = HANYA anggota terverifikasi BPBD (A3), tiap {r: baris lapor_sesi (jenis, ringkas, wa, terkirim), verifikasi: {waktu, tingkat, kab_nama}}
+   (kab_nama dari lk_periksa_akun pemeriksa);
+   pusat = pusat desa dari register wilayah ({lat, lon}) atau null. Koordinat laporan tidak pernah dipakai. */
+export const DAMPAK_PUBLIK = ["meninggal", "hilang", "luka", "mengungsi", "rumah"];
+const JAM_MS = 3600e3, empat = x => Math.round(x * 1e4) / 1e4, angka = x => typeof x === "number" && Number.isFinite(x) && x >= 0;
+export function kartuPublik({id, anggota, pusat}) {
+  const sah = (anggota || []).filter(a => a?.r && angka(a.verifikasi?.waktu));
+  if (!sah.length || !/^[0-9a-f]{10}$/.test(String(id || ""))) return null;
+  const dasar = sah.map(a => { const k = a.r.ringkas ? JSON.parse(a.r.ringkas) : {}; return {...dasarPublik(a.r, k), k, wa: a.r.wa, v: a.verifikasi}; });
+  const terbaru = dasar.reduce((m, x) => (x.k.waktuMs || 0) > (m.k.waktuMs || 0) ? x : m), nWarga = new Set(dasar.map(x => x.wa).filter(Boolean)).size;
+  const mulai = dasar.map(x => x.k.waktuMs).filter(angka), w0 = mulai.length ? Math.min(...mulai) : null;
+  const v = dasar.reduce((m, x) => x.v.waktu > m.v.waktu ? x : m).v, L = terbaru.lokasi;
+  const dampak = {};   // Q6: rentang per isian antarlaporan terverifikasi; isian kosong (null) dilewati, tidak pernah jadi 0; tidak dijumlah
+  for (const n of DAMPAK_PUBLIK) { const xs = dasar.map(x => x.k.dampakMeja?.[n]).filter(angka); if (xs.length) dampak[n] = {min: Math.min(...xs), max: Math.max(...xs)}; }
+  return {id, jenis: terbaru.jenis, subjenis: terbaru.subjenis,
+    waktu: w0 == null ? null : Math.round(w0 / JAM_MS) * JAM_MS,   // Q19 diperketat: selalu ke jam terdekat, supaya pelapor kedua tidak membuka menit asli pelapor pertama
+    lokasi: {desa: L.desa, kec: L.kec, kab: L.kab, prov: L.prov},
+    titik: pusat && Number.isFinite(pusat.lat) && Number.isFinite(pusat.lon) ? {lat: empat(pusat.lat), lon: empat(pusat.lon)} : null,
+    ...(nWarga >= 2 ? {nWarga} : {}),
+    verifikasi: {oleh: v.tingkat === "prov" ? (L.prov ? `BPBD Provinsi ${L.prov}` : "BPBD Provinsi") : (v.kab_nama || L.kab ? `BPBD ${v.kab_nama || L.kab}` : "BPBD"), waktu: v.waktu},
+    dampak};
+}
