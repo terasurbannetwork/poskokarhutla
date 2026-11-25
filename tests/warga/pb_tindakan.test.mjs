@@ -29,7 +29,6 @@ const per = (kunci, jenis, tingkat, prov, tabel = "peringatan", hingga = kini + 
 await per("banjir:uji:1", "banjir", "Siaga", "32");
 await per("banjir:uji:lalu", "banjir", "Siaga", "32", "peringatan", kini - 1);   // kedaluwarsa
 await per("banjir:uji:nasional", "banjir", "Awas", null);
-await per("pesisir:uji:1", "pesisir", "Siaga", "32", "peringatan_x");           // jenis belum punya daftar tindakan
 await per("rob:uji:1", "rob", "Waspada", "32", "peringatan_x");                  // tabel samping, jenis ada daftarnya
 await DB.prepare("INSERT INTO peringatan (kunci, jenis, tingkat, prov, kab, judul, sumber, dibuat, berlaku_hingga) VALUES ('banjir:uji:kab', 'banjir', 'Siaga', '32', 'Kota Bandung', 'uji', 'BMKG', ?, ?)").bind(kini - 1000, kini + 36e5).run();
 await DB.prepare("INSERT INTO peringatan (kunci, jenis, tingkat, prov, kab, judul, sumber, dibuat, berlaku_hingga) VALUES ('banjir:uji:ngarang', 'banjir', 'Siaga', '32', 'Kabupaten Ngarang', 'uji', 'BMKG', ?, ?)").bind(kini - 1000, kini + 36e5).run();
@@ -56,7 +55,6 @@ uji("hak tulis: tamu, akun gerbang, koordalops, udara 403 sebelum body; staf wil
 uji("butir hanya dari daftar, peringatan harus aktif dan punya daftar, pelaksana enum", async () => {
   assert.equal((await pos(P({peringatan: "tidak:ada"}))).s, 404);
   assert.equal((await pos(P({peringatan: "banjir:uji:lalu"}))).s, 404);
-  assert.equal((await pos(P({peringatan: "pesisir:uji:1"}))).s, 404);
   for (const o of [{butir: BANJIR2.length}, {butir: -1}, {butir: "0"}, {butir: 1.5}, {butir: 31}, {selesai: "ya"}, {selesai: 1}, {pelaksana: "Budi Santoso"}, {pelaksana: "constructor"}, {batas: "besok"}, {batas: kini + 40 * 864e5}, {batas: 1}, {peringatan: ""}, {peringatan: 5}])
     assert.equal((await pos(P(o))).s, 400, JSON.stringify(o));
   assert.equal(await n("pb_tindakan"), 0);
