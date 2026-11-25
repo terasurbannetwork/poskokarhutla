@@ -343,6 +343,7 @@ json.dump({**D, 'kejadian': [{**x, 'perhatian': False} for x in D['kejadian']]},
 # pemilik 5 Nov 2026: kondisi banjir WA laporan harian ini ikut memperbarui Pantau Banjir /bnpb/dalops (R2). Mesin dengan arsip logbook:
 # rakit ulang logbook + WA; tanpa arsip: tempel WA ke berkas yang tayang. Gagal unggah (wrangler belum login) tidak menghentikan laporan.
 subprocess.run([sys.executable, 'scripts/data/dalops_banjir.py', '--unggah'], cwd=os.path.normpath(os.path.join(S, '..', '..', '..', '..', '..')))   # 10 Nov: banjir baru Pidie Jaya
+subprocess.run([sys.executable, '-I', 'scripts/data/alun_kabar.py', '--hari', os.path.basename(S)], cwd=os.path.normpath(os.path.join(S, '..', '..', '..', '..', '..')))   # kabar Alun-alun, tanggal dari nama folder hari (kabar-alun KA-04), gagal tidak menghentikan laporan
 import shutil, zipfile
 tpl = os.path.join(G, 'cache', 'templat', 'harian-221026.pptx')
 if os.path.isdir(os.path.join(ke, 'tpl')): shutil.rmtree(os.path.join(ke, 'tpl'))
