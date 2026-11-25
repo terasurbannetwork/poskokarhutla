@@ -2886,7 +2886,7 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-tab:has(.lp-sigap[style*="none"]) .lp-tab-aksi,.lp-app:not(.di-chat) .lp-tab .lp-tab-aksi{margin-top:auto!important}
   .lp-tab-aksi .lp-tab-lapor{margin:0!important}
   .lp-tab-aksi,.lp-tab-aksi .lp-tab-lapor{width:100%;box-sizing:border-box}
-  .lp-tab-aksi .lp-tab-lapor{justify-content:flex-start!important;padding-inline:16px!important}
+  .lp-tab-aksi .lp-tab-lapor{justify-content:center!important;padding-inline:16px!important}
   /* warna sama dengan tombol hero (pemilik 25 Nov 2026: "samain warnanya") */
   .lp-tab-aksi .lp-tab-lapor.darurat{background:var(--bad)!important;color:var(--on-pekat)!important}
   .lp-tab-aksi .lp-tab-lapor.kejadian{background:var(--brand-accent)!important;color:var(--on-pekat)!important}
