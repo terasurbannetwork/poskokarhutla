@@ -57,7 +57,7 @@ export async function buka(isi, sk) {
 }
 
 async function daftar(isi, sk) {
-  const S = {kel: "semua", fase: [], prov: "", rentang: "30", cari: "", hal: 0, baris: [], berikut: null, tahun: String(new Date().getFullYear() - 1), arsip: null}, pj = penjaga();
+  const S = {kel: "semua", fase: [], prov: "", rentang: "30", cari: "", hal: 0, baris: [], berikut: null, tahun: String(new Date().getFullYear() - 1), arsip: null, kasus: null}, pj = penjaga();
   const P = await peran();
   sk.periode = () => { const sampai = tglWib(); return {dari: geser(sampai, -(S.rentang === "7" ? 7 : S.rentang === "365" ? 365 : 30)), sampai}; };
   const hasil = h("div", {}), ctl = h("div", {class: "sk-ctl"});
@@ -73,15 +73,30 @@ async function daftar(isi, sk) {
     cari.addEventListener("input", () => G.nanti(() => { S.cari = cari.value.trim().toLowerCase(); S.hal = 0; gambar(); }));
     ctl.replaceChildren(
       seg(KEL(), S.kel, v => { S.kel = v; S.hal = 0; gambar(); }, "Kelompok bencana"),
-      h("div", {class: "sk-baris"},
+      S.rentang === "kasus" ? "" : h("div", {class: "sk-baris"},
         S.rentang === "arsip" ? [pilihan(optTahun, S.tahun, v => { S.tahun = v; muat(); }, "Tahun arsip"), pilihan([["", "Pilih provinsi"], ...optProv.slice(1)], S.prov, v => { S.prov = v; muat(); }, "Provinsi arsip")]
           : [pilihan(optFase, S.fase[0] ?? "", v => { S.fase = v ? [v] : []; S.hal = 0; muat(); }, "Fase"), pilihan(optProv, S.prov, v => { S.prov = v; muat(); }, "Wilayah"), cari]),
       S.rentang === "arsip" ? h("div", {class: "sk-baris"}, cari) : "",
-      seg([["7", "7 hari", "bolak"], ["30", "30 hari", "bolak"], ["365", "1 tahun", "bolak"], ["arsip", "Arsip", "bangunan"]], S.rentang, v => { S.rentang = v; S.hal = 0; S.baris = []; S.berikut = null; S.arsip = null; kontrol(); muat(); }, "Rentang waktu"));
+      seg([["7", "7 hari", "bolak"], ["30", "30 hari", "bolak"], ["365", "1 tahun", "bolak"], ["arsip", "Arsip", "bangunan"], ["kasus", "Kasus historis", "bangunan"]], S.rentang, v => { S.rentang = v; S.hal = 0; S.baris = []; S.berikut = null; S.arsip = null; S.kasus = null; kontrol(); muat(); }, "Rentang waktu"));
   };
 
   const lolos = r => jenisDalam(r.jenis, S.kel) && (!S.fase.length || S.fase.includes(r.fase)) && (!S.cari || `${r.id} ${r.nama ?? ""} ${namaJenis(r.jenis)} ${wilayah(r.kab4) ?? ""}`.toLowerCase().includes(S.cari));
+  /* PB-52 (F-26): sepuluh kasus teratas per jenis dari arsip beku (kasus.json, R2 di balik sesi); sinyal dan peringatan "tidak ada arsip" ditulis apa adanya */
+  function gambarKasus() {
+    const per = Object.entries(S.kasus?.kasus ?? {}).filter(([j]) => jenisDalam(j, S.kel));
+    judul.replaceChildren("Kasus ", hl("historis"), ` ${S.kasus.tahun_awal} sampai ${S.kasus.tahun_akhir}`);
+    if (!per.length) return kosongkan(hasil).append(kead("kosong", {teks: "Belum ada kasus untuk jenis ini. Kasus hanya dari kejadian yang tercatat di Logbook Pusdalops dan punya angka DIBI."}));
+    const th = (a, d) => h("th", {title: d}, a), kolom = ["terdampak", "mengungsi", "meninggal"];
+    kosongkan(hasil).append(h("p", {class: "sk-cat"}, "Kandidat: kejadian yang tercatat di Logbook Pusdalops, tanpa ambang baru. Diurut menurut DIBI saja; angka antarsumber tidak dijumlah."), ...per.map(([j, rs]) => wadah(namaJenis(j),
+      h("div", {class: "tw kecil ex-tabel"}, h("table", {}, h("thead", {}, h("tr", {}, th("KJ", "Nomor kejadian arsip"), th("Wilayah", "Kabupaten atau kota"), th("Mulai", "Tanggal mulai, WIB"),
+        kolom.map(k => th(namaMetrik(k) + " (DIBI)", "Menurut DIBI, berdiri sendiri")), th("Meninggal (Logbook)", "Menurut Logbook Pusdalops, berdiri sendiri"), th("Sinyal", "Sinyal yang ada saat itu"), th("Peringatan", "Peringatan yang terbit"))),
+        h("tbody", {}, rs.map(r => { const d = r.dampak || {}, lb = d.logbook?.meninggal; return h("tr", {}, h("td", {}, r.id), h("td", {}, selWilayah(r.kab4)), h("td", {class: "t"}, tgl(r.mulai)),
+          kolom.map(k => { const x = d.dibi?.[k]; return h("td", {class: "t"}, x ? nilai(x.n, x.y, {sumber: "DIBI", waktu: x.t}) : "tidak ada data"); }),
+          h("td", {class: "t"}, lb ? nilai(lb.n, lb.y, {sumber: "Logbook Pusdalops", waktu: lb.t}) : "tidak ada data"), h("td", {}, r.sinyal), h("td", {}, r.peringatan)); })))),
+      S.kasus.tanpa_dampak_dibi?.[j] ? h("p", {class: "sk-cat"}, `${S.kasus.tanpa_dampak_dibi[j].toLocaleString("id-ID")} kejadian lain tercatat di Logbook tetapi tidak punya angka DIBI, jadi tidak ikut diurutkan.`) : null)));
+  }
   function gambar() {   // isi berat: tabel per halaman 50 baris
+    if (S.rentang === "kasus") return S.kasus ? gambarKasus() : undefined;
     const semua = S.rentang === "arsip" ? (S.arsip ?? []) : S.baris, rows = semua.filter(lolos);
     if (S.rentang === "arsip" && !S.prov) { kosongkan(hasil).append(kead("kosong", {teks: "Pilih provinsi untuk membuka arsip kejadian pada tahun itu"})); setJudul(null); return; }
     setJudul(semua.length, semua.filter(r => !r.kab4).length, S.rentang === "arsip");
@@ -135,6 +150,12 @@ async function daftar(isi, sk) {
   async function muat(tambah = false) {
     const n = pj.baru();
     if (!tambah) kosongkan(hasil).append(kead("memuat"));
+    if (S.rentang === "kasus") {   // rute /api/siklus/kejadian/kasus milik warga-api (menyajikan R2 kejadian/arsip/kasus.json); sebelum ada, 404 jadi pesan belum dibangun
+      const r = await api("/api/siklus/kejadian/kasus");
+      if (!pj.terbaru(n)) return;
+      if (!r.ok) { setJudul(null); return kosongkan(hasil).append(kead_dari(r, () => muat(), "Kasus historis belum dibangun")); }
+      S.kasus = r.j; return gambar();
+    }
     if (S.rentang === "arsip") {
       if (!S.prov) return gambar();
       const r = await api(`/api/siklus/kejadian/arsip?tahun=${encodeURIComponent(S.tahun)}&prov=${encodeURIComponent(S.prov)}`);

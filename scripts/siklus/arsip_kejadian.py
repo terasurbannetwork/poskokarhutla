@@ -5,7 +5,7 @@ baris tanpa wilayah hanya di `tanpa_wilayah` (tidak punya kab4, tidak ada di k<k
 Keluaran ke data/raw/siklus (git-ignored) atau --keluar; tidak mengunggah (gudang.py yang mengunggah).
 Pakai: python3 -I scripts/siklus/arsip_kejadian.py bangun [--bersih DIR] [--keluar DIR] | uji
 """
-import collections, hashlib, importlib.util, json, os, re, sys, tempfile
+import collections, datetime as dt, hashlib, importlib.util, json, os, re, sys, tempfile
 
 AB = os.path.dirname(os.path.abspath(__file__))
 KOLOM = ["id", "jenis", "kab4", "mulai", "akhir", "nama", "sumber", "dampak"]
@@ -91,6 +91,40 @@ def bangun_arsip(per_sumber, bersih_dir=None, lama=None, alias=None, sisa=None):
             nl["n"] = len(d["lepas"])
     return keluar
 
+TAHUN_KASUS, TOP_KASUS = 10, 10
+URUT_DAMPAK = ("terdampak", "mengungsi", "meninggal")   # ALGORITMA PB 5.2 butir 2; diurut menurut DIBI saja (satu sumber, tanpa dijumlah)
+TIDAK_ADA = "tidak ada arsip"
+
+
+def kasus_historis(keluar, tahun_akhir, tanda_staf=()):
+    """PB-52 (F-26, Q23): {jenis: [kasus]} dari baris arsip hasil bangun_arsip, 10 tahun terakhir, sepuluh teratas per jenis.
+    Kandidat = kejadian yang tercatat di Logbook Pusdalops (aktivasi = dilaporkan ke Pusdalops; TIDAK ada ambang angka di repo dan tidak dibuat baru,
+    lihat scripts/umum/laporan_kejadian.py) ditambah id di tanda_staf (belum ada sumbernya: kosong). Diurut menurut DIBI (terdampak, mengungsi, meninggal);
+    baris tanpa angka DIBI dihitung di `tanpa_dampak_dibi`, tidak dianggap 0. Sinyal dan peringatan: 'tidak ada arsip' (arsipnya belum ada), bukan dugaan."""
+    per, tanpa = collections.defaultdict(list), collections.Counter()
+    for rel, isi in keluar.items():
+        if isi.get("jenis") != "kejadian_arsip" or not isi["tahun"] > tahun_akhir - TAHUN_KASUS:
+            continue
+        for r in isi["baris"]:
+            b = dict(zip(KOLOM, r))
+            if not b["kab4"] or not ("logbook" in b["sumber"] or b["id"] in tanda_staf):
+                continue
+            dibi = b["dampak"].get("dibi", {})
+            kunci = tuple(dibi[k]["n"] if k in dibi else None for k in URUT_DAMPAK)
+            for j in b["jenis"].split("+"):
+                if all(v is None for v in kunci):
+                    tanpa[j] += 1
+                else:
+                    per[j].append((kunci, b))
+    hasil = {}
+    for j, rs in sorted(per.items()):
+        rs.sort(key=lambda x: (tuple(-1 if v is None else v for v in x[0]), x[1]["mulai"], x[1]["id"]), reverse=True)
+        hasil[j] = [{"id": b["id"], "jenis": b["jenis"], "kab4": b["kab4"], "mulai": b["mulai"], "akhir": b["akhir"], "sumber": b["sumber"], "dampak": b["dampak"],
+                     "sinyal": TIDAK_ADA, "peringatan": TIDAK_ADA} for _, b in rs[:TOP_KASUS]]
+    return {"v": 1, "jenis": "kasus_historis", "tahun_akhir": tahun_akhir, "tahun_awal": tahun_akhir - TAHUN_KASUS + 1, "top": TOP_KASUS,
+            "aturan": "kandidat = tercatat di Logbook Pusdalops; tanpa ambang angka baru (Q23)", "tanda_staf": len(tanda_staf), "tanda_staf_catatan": "" if tanda_staf else "belum ada sumber",
+            "tanpa_dampak_dibi": dict(sorted(tanpa.items())), "kasus": hasil}
+
 
 def tulis(keluar, dasar):
     """Hanya berkas baru atau berubah ditulis; JSON kanonik (kunci terurut) supaya sidik stabil antar jalan."""
@@ -160,6 +194,15 @@ def _uji():
     assert {"B", "P", "C", "U", "V", "D"} <= set(pa) and not set(pa) & set(SUDAH_ADA), pa
     assert jenis_dari_kode("B0012", pa) == "banjir" and jenis_dari_kode("P0003", pa) == "gelombang"
     assert jenis_dari_kode("K0001", pa) is None and jenis_dari_kode("Z0001", pa) is None and jenis_dari_kode("KJ-2019-AAAA", pa) is None
+    # PB-52: kasus historis
+    kh = bangun_arsip({"dibi": [R("dibi", ("banjir",), ("3201",), "2019-02-12", terdampak=500, meninggal=2), R("dibi", ("banjir",), ("3217",), "2019-03-01", terdampak=9000),
+                                R("dibi", ("banjir",), ("3301",), "2012-01-01", terdampak=99999), R("dibi", ("banjir",), ("3302",), "2019-05-01", meninggal=1)],
+                       "logbook": [R("logbook", ("banjir",), ("3201",), "2019-02-13", meninggal=1), R("logbook", ("banjir",), ("3301",), "2012-01-01"),
+                                   R("logbook", ("banjir",), ("3302",), "2019-05-01"), R("logbook", ("banjir",), ("3303",), "2019-06-01", meninggal=3)]})
+    ks = kasus_historis(kh, 2026)
+    assert [k["kab4"] for k in ks["kasus"]["banjir"]] == ["3201", "3302"], ks      # 3217 tanpa Logbook, 3301 di luar 10 tahun, 3303 tanpa DIBI
+    assert ks["tanpa_dampak_dibi"] == {"banjir": 1} and ks["kasus"]["banjir"][0]["sinyal"] == TIDAK_ADA and "total" not in json.dumps(ks)
+    assert [k["kab4"] for k in kasus_historis(kh, 2026, {P.id_kj("banjir|3217|2019-03-01")})["kasus"]["banjir"]] == ["3217", "3201", "3302"]
     print("arsip_kejadian: uji hijau")
 
 
@@ -189,8 +232,9 @@ if __name__ == "__main__":
         os.makedirs(pdir, exist_ok=True)
         json.dump({"v": 1, "pemetaan": {"%s|%s" % k: v for k, v in sorted(baru.items())}}, open(fm, "w"), sort_keys=True, separators=(",", ":"))
         json.dump({"v": 1, "alias": dict(sorted(alias.items()))}, open(fa, "w"), sort_keys=True, indent=1)
+        out["kejadian/arsip/kasus.json"] = kasus_historis(out, dt.date.today().year)
         n = tulis(out, dasar)
-        tahun = collections.Counter(r.split("/")[2] for r in out)
+        tahun = collections.Counter(r.split("/")[2] for r in out if not r.endswith("/kasus.json"))
         print(json.dumps({"alias": len(alias), "berkas": len(out), "ditulis": n, "jenis_tak_dibandingkan": tak, "berkas_per_tahun": dict(sorted(tahun.items()))}, indent=1))
     else:
         sys.exit("pakai: arsip_kejadian.py bangun [--bersih DIR] [--keluar DIR] | uji")
