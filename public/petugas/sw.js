@@ -1,5 +1,5 @@
 /* Cangkang halaman /petugas saja. Data API TIDAK pernah disimpan (isinya pribadi). Naikkan VERSI bila berkas cangkang berubah. */
-const VERSI = "petugas-cangkang-v6";
+const VERSI = "petugas-cangkang-v7";
 // Nama dirangkai dari awalan supaya versi.py tidak menganggap berkas ini dimuat tanpa ?v (mereka diberi ?v oleh HTML,
 // jadi tetap immutable); tanpa itu aturan _headers membengkak melewati gerbang 80.
 const P = "/petugas/", I = "/inti/";

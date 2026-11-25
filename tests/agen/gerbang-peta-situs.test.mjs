@@ -53,7 +53,7 @@ test("akses tamu sama persis dengan kunci PUBLIK_TANPA_SESI", () => {
 });
 test("peta_situs_publik.json segar terhadap generatornya", async () => {
   const json = join(AKAR, "public/inti/peta_situs_publik.json"), gen = join(AKAR, "scripts/agents/peta_situs_publik.mjs");
-  if (!existsSync(json) || !existsSync(gen)) { console.log("TODO PS-11: peta_situs_publik.json/generator belum ada; pemeriksaan kesegaran jadi wajib di PS-11"); return; }
+  assert.ok(existsSync(json) && existsSync(gen), "public/inti/peta_situs_publik.json dan scripts/agents/peta_situs_publik.mjs wajib ada (PS-11)");
   const m = await import(gen);
   const bangun = m.bangun || m.buat || m.bangunPublik || m.hasil || m.default;
   assert.equal(typeof bangun, "function", "generator scripts/agents/peta_situs_publik.mjs harus mengekspor fungsi bangun()/buat()/bangunPublik()");
@@ -72,4 +72,13 @@ test("mode gagal: gerbang menangkap yatim, hantu, entri tanpa menu, dan selisih 
   assert.deepEqual(h.tamuBeda, ["/lupa", "/tamu-salah"]);
   const bersih = periksa({halaman: palsu.slice(0, 1), nyataSet: new Set(["/ada"]), adaTab: () => false, menuRute: new Set(["/ada"]), tamuKunci: ["/ada"]});
   assert.deepEqual(bersih, {yatim: [], hantu: [], tanpaMenu: [], tamuBeda: []});
+});
+
+/* PS-09/PS-11: menu tidak ditulis tangan lagi (KEPUTUSAN K2). Daftar menu lama tidak boleh kembali. */
+const MENU_LAMA = [["src/admin_halaman.js", /\b(GRUP_ADMIN|GRUP_STAF)\b|^const SUB\s*=/m], ["public/inti/dasbor_admin.js", /\bconst GRUP\s*=/],
+  ["public/bnpb/menu_pusdalops.js", /\bCADANGAN\b/], ["public/petugas/menu.js", /\bCADANGAN\s*=/], ["public/kemitraan/menu.js", /\bCADANGAN\s*=/]];
+test("menu dari registri: daftar menu tulisan tangan lama tidak kembali", () => {
+  const kembali = MENU_LAMA.filter(([b, re]) => existsSync(join(AKAR, b)) && re.test(readFileSync(join(AKAR, b), "utf8"))).map(([b]) => b);
+  assert.deepEqual(kembali, [], f("Daftar menu tulisan tangan muncul lagi", kembali) +
+    "\nAkibat: menu berbeda dengan registri dan halaman baru tak muncul.\nPerbaiki: ambil menu dari /api/peta-situs atau public/inti/peta_situs_publik.json (src/peta_situs.js).");
 });

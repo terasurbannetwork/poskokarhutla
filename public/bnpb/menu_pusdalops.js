@@ -1,5 +1,6 @@
 /* Menu staf bersama halaman Pusdalops: delapan grup pintu Staf BNPB dari GET /api/peta-situs (paket data/kajian-bnpb/peta-situs, D4, D7, D8),
-   sudah disaring Worker per peran; plus deretan sub-halaman per grup. Sebelum jawaban API tiba, menu digambar dari CADANGAN (tidak menunggu jaringan).
+   sudah disaring Worker per peran; plus deretan sub-halaman per grup. Sebelum jawaban API tiba, menu digambar dari jawaban terakhir
+   yang disimpan per tab (sessionStorage "mp-peta"), jadi tanpa daftar tulisan tangan (PS-09); tab baru tanpa simpanan menunggu API.
    Satu sumber supaya kepala halaman sama persis di semua halaman; yang berganti hanya isi di bawahnya (permintaan pemilik 3 Nov 2026).
    Dipasang ke <header class="ad-top"> yang sudah ada: label .ad-sep dibuang, menu disisipkan sesudah logo. Ikon garis disalin dari
    public/bnpb/wilayah.js supaya berkas ini mandiri (halaman Kontak tidak memuat wilayah.js). Tanpa gaya inline (CSP). */
@@ -11,20 +12,18 @@
   if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=28"; document.head.append(l); }
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "luar": "M7 17L17 7|M9 7h8v8", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z", "atur": "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z|M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"};
   /* peta situs diminta SEKALI per muat halaman, sedini mungkin; pintu.js memakai janji yang sama (MenuPusdalops.peta) */
-  const peta = fetch("/api/peta-situs", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}).then(r => r.ok ? r.json() : null).catch(() => null);
-  /* CADANGAN: menu lama 6 grup, dipakai hanya sampai /api/peta-situs menjawab (atau bila API gagal). Tanpa daftar turun (pemilik 4 Nov 2026):
-     grup berisi lebih dari satu halaman menampilkan deretan sub-halaman di bawah kepala; tautan grup membuka halaman pertamanya. */
-  const CADANGAN = [
-    ["Pantau", "banjir", [["/bnpb/dalops", "Pantau kejadian", "banjir"], ["/admin/pantau", "Meja Pantau", "meja"], ["/lapor/meja", "Laporan warga", "daftar"]]],
-    ["Logbook", "daftar", [["/bnpb/logbook", "Logbook", "daftar"]]],
-    ["Laporan", "simpan", [["/bnpb/bahan", "Bahan laporan", "daftar"], ["/admin/laporan-karhutla", "Laporan Bencana", "simpan"]   /* nama dari pemilik 25 Nov 2026; halaman memuat karhutla, banjir, gempa, dan jenis lain */, ["/laporan-bnpb", "Laporan Koordalops", "simpan"], ["/bnpb/dokumen", "Dokumen", "simpan"]]],
-    ["Operasi", "personel", [["/bnpb/operasi", "Operasi", "personel"], ["/?operasi", "Operasi lapangan", "pin"], ["/admin/omc", "Sortie OMC", "awan"]]],
-    ["Perencanaan", "kalender", [["/bnpb/perencanaan", "Perencanaan", "kalender"], ["/bnpb/siaga", "Siaga", "peringatan"]]],
-    ["Kontak", "sinyal", [["/daftar-kontak", "Kontak", "sinyal"]]]];
+  let statusPeta = 0;   // jawaban HTTP tanpa butir staf (401, 403, 2xx kosong): simpanan menu tab ini dibuang
+  const peta = fetch("/api/peta-situs", {credentials: "same-origin", signal: AbortSignal.timeout(9000)}).then(r => { statusPeta = r.status; return r.ok ? r.json() : null; }).catch(() => null);
   /* ikon grup registri (registri tidak menyimpan ikon grup); ikon butir = kunci IKON yang sama dengan src/peta_situs.js */
   const IKON_GRUP = {pantau: "banjir", kejadian: "daftar", operasi: "pin", laporan: "simpan", risiko: "peringatan", pimpinan: "grafik", jejaring: "personel", pengaturan: "atur"};
-  const dariPeta = m => (m.find(p => p.pintu === "staf")?.grup || []).map(g => [g.nama, IKON_GRUP[g.id] || "daftar",
-    g.butir.map(b => [b.rute, b.nama, IKON[b.ikon] ? b.ikon : "daftar"])]);
+  /* satu saringan untuk jawaban API DAN simpanan sessionStorage sebelum gambar: rute jalur sendiri (bukan //host, /\\host, skema, atau :pola),
+     nama teks, ikon kunci IKON; grup tanpa butir sah dibuang */
+  const ruteAman = r => typeof r === "string" && /^\/(?![\/\\])[^\s"'<>\\:]*$/.test(r);
+  const ikonAman = k => typeof k === "string" && Object.hasOwn(IKON, k);
+  const saring = G => (Array.isArray(G) ? G : []).filter(g => Array.isArray(g) && typeof g[0] === "string" && ikonAman(g[1]) && Array.isArray(g[2]))
+    .map(g => [g[0], g[1], g[2].filter(b => Array.isArray(b) && ruteAman(b[0]) && typeof b[1] === "string" && ikonAman(b[2])).map(b => [b[0], b[1], b[2]])]).filter(g => g[2].length);
+  const dariPeta = m => saring((m.find(p => p && p.pintu === "staf")?.grup || []).map(g => [g?.nama, IKON_GRUP[g?.id] || "daftar",
+    (Array.isArray(g?.butir) ? g.butir : []).map(b => [b?.rute, b?.nama, ikonAman(b?.ikon) ? b.ikon : "daftar"])]));
   /* halaman yang memuat menu ini; tautan lain membuka dashboard lain (kerangka sendiri) dan diberi ikon panah keluar (pemilik 25 Nov 2026) */
   const DALAM = h => /^\/bnpb(\/|$)/.test(h) && !/^\/bnpb\/(inarisk|data-bencana)$/.test(h) || ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/daftar-kontak", "/risiko", "/risiko-kebakaran", "/kebutuhan", "/sitrep",
     "/kinerja-bnpb", "/relawan", "/relawan/saya", "/riset", "/riset/mitra"].includes(h);
@@ -115,12 +114,24 @@
   samping.append(merek, isi, kaki);
   /* halaman aktif navy selama seksinya kosong; bila seksi terisi, seksi yang navy dan halaman ditebalkan saja */
   const tandai = () => { const kosong = !slot.childElementCount; for (const [a, href] of daun) { a.setAttribute("aria-current", String(kosong && href === kini)); a.hidden = false; } };   /* butir halaman tidak pernah disembunyikan (pemilik 25 Nov 2026: "tombol logbook malah jadi gaada") */   /* seksi terisi: butir halaman itu sendiri tidak ditampilkan (pemilik 11 Nov 2026 "ngapain ada Pantau kejadian"), seksinya langsung di bawah grup */
-  /* satu titik gambar: cadangan dulu, lalu menu peta situs begitu API menjawab. Beranda di merek = /bnpb bila peran ini boleh membukanya */
+  /* satu titik gambar: jawaban peta situs terakhir di tab ini dulu, lalu jawaban baru begitu API menjawab. Beranda di merek = /bnpb bila peran ini boleh membukanya */
   const gambar = G => { const grup = G.find(g => g[2].some(m => m[0] === kini)), rute = G.flatMap(g => g[2].map(m => m[0]));
     gambarAtas(G, grup); gambarSamping(G, grup); tandai(); merekA.href = rute.includes("/bnpb") || !rute.length ? "/bnpb" : rute[0]; };
-  gambar(CADANGAN);
+  /* simpanan = menu staf hasil dariPeta (bukan seluruh jawaban API). Gagal tanpa simpanan: satu pesan polos + tautan ke pintu /bnpb, bukan menu kosong */
+  const simpanan = saring(bacaSesi("mp-peta", null)), adaSimpan = simpanan.length > 0;
+  /* keluar (tombol #keluar dari /inti/keluar.js, data-staf-keluar, atau form /admin/keluar): simpanan menu tab ini dibuang sebelum sesi dicabut */
+  const buangKeluar = e => { if (e.target.closest?.('#keluar, [data-staf-keluar], .ad-keluar, form[action="/admin/keluar"]')) try { sessionStorage.removeItem("mp-peta"); } catch (x) {} };
+  document.addEventListener("click", buangKeluar, true); document.addEventListener("submit", buangKeluar, true);
+  const gagal = () => { gambar([]); const t = "Menu belum bisa dimuat. Muat ulang halaman.";
+    isi.replaceChildren(el("p", "db-nav-sub", t), butir("/bnpb", "Pintu staf BNPB", "daftar", false)); nav.replaceChildren(el("span", null, t), tautan("/bnpb", "Pintu staf BNPB", "daftar", false)); };
+  gambar(adaSimpan ? simpanan : []);
   new MutationObserver(tandai).observe(slot, {childList: true});
-  peta.then(m => { if (Array.isArray(m)) { gambar(dariPeta(m)); pulihGulir(); } });
+  peta.then(m => { const G = Array.isArray(m) ? dariPeta(m) : [];
+    const buang = !G.length && (statusPeta === 401 || statusPeta === 403 || (statusPeta >= 200 && statusPeta < 300));   // jawaban tanpa butir staf: simpanan dibuang (privasi); jaringan putus atau 5xx: simpanan tetap
+    if (buang) { try { sessionStorage.removeItem("mp-peta"); } catch (e) {} }
+    if (!G.length) { if (!adaSimpan || buang) gagal(); return; }
+    if (adaSimpan && JSON.stringify(G) === JSON.stringify(simpanan)) return;   // sama dengan yang sudah tergambar: tanpa gambar ulang
+    simpanSesi("mp-peta", G); gambar(G); pulihGulir(); });
   /* catatan kaki panjang dilipat jadi "Catatan" (dulu fungsi ini juga menyalin tab dan seksi halaman ke panel kiri; dicabut pilihan A pemilik 25 Nov 2026) */
   const seksiOtomatis = () => {
     if (slot.dataset.halaman) return;

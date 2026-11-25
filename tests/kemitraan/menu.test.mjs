@@ -14,9 +14,15 @@ const KAMPUS = HALAMAN.filter(e => e.pintu === "kampus" && e.akses !== "token" &
 const ruteKampus = KAMPUS.map(e => e.rute);
 const HTML = ["public/kemitraan.html", "public/kemitraan/buku.html", "public/kemitraan/panduan.html", "public/kemitraan/daftar.html", "public/kemitraan/masuk.html"];
 
-test("menu kampus: cadangan sama dengan butir non-token pintu kampus registri", () => {
-  const {CADANGAN} = muat();
-  assert.deepEqual(lewatJson(CADANGAN), KAMPUS.map(({rute, nama, ikon}) => ({rute, nama, ikon})), "perbarui CADANGAN di public/kemitraan/menu.js mengikuti src/peta_situs.js");
+test("menu kampus: tanpa daftar tulisan tangan (PS-09); simpanan tab dan berkas publik jadi cadangan", () => {
+  const js = baca("public/kemitraan/menu.js");
+  assert.equal(muat().CADANGAN, undefined);
+  assert.doesNotMatch(js, /CADANGAN|rute: "\/kemitraan\/buku"/, "butir kampus hanya dari API, berkas publik, atau simpanan");
+  assert.match(js, /sessionStorage\.getItem\("km-menu"\)/);
+  assert.match(js, /peta_situs_publik\.json/);
+  assert.equal(muat().pilihButir([{pintu: "kampus", grup: [{butir: ["//x", "/\\evil.com", "javascript:x", "/a b"].map(rute => ({rute, nama: "x"}))}]}]), null, "rute tak aman dibuang");
+  assert.match(js, /if \(!b\) \{ try \{ sessionStorage\.removeItem\("km-menu"\)/, "jawaban tanpa butir membuang simpanan");
+  assert.match(js, /#keluar[^\n]*removeItem\("km-menu"\)/, "tombol Keluar membuang simpanan");
 });
 
 test("menu kampus: tiap halaman non-token kampus punya halaman yang memasang menu", () => {

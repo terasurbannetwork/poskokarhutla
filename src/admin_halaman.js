@@ -19,7 +19,7 @@ const kepala = judul => `<!doctype html>
 <link href="/admin/admin.css?v=14" rel="stylesheet">
 <link href="/inti/kartu.css?v=2" rel="stylesheet">
 <link href="/inti/dasbor.css?v=24" rel="stylesheet">
-<script src="/inti/dasbor_admin.js?v=1" defer></script>
+<script src="/inti/dasbor_admin.js?v=2" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {segel: ["🔏", "Segel dokumen"], statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
@@ -79,7 +79,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
    supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
 const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=14" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=23"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=14" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=25"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>

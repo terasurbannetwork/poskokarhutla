@@ -190,8 +190,8 @@ const panduan = id => {
   return baris(`<b>Yang harus dilakukan: ${esc(p.nama)}</b>`) + daftar("Sebelum", p.sebelum) + daftar("Saat kejadian", p.saat) + daftar("Sesudah", p.sesudah) +
     baris("Panduan lengkap: " + `<a href="https://bnpb.go.id" target="_blank" rel="noopener">bnpb.go.id</a>, <a href="https://www.bmkg.go.id" target="_blank" rel="noopener">bmkg.go.id</a>`) + sumber(SUMBER_PANDUAN);
 };
-const caraLapor = () => baris("<b>Cara melapor</b>", `Kondisi di sekitarmu (listrik, sinyal, BBM atau LPG, kebutuhan atau tawaran bantuan, karhutla, banjir, longsor, rob) bisa kamu laporkan di ${tautan("/warga", "halaman Lapor Warga")}. Buka halamannya, pilih jenis laporan, tandai lokasi, dan kirim.`,
-  "Bila ada korban atau nyawa terancam, telepon 112 atau 117 lebih dulu.") + sumber("halaman Lapor Warga situs ini");
+const caraLapor = () => baris("<b>Cara melapor</b>", `Kondisi di sekitarmu (listrik, sinyal, BBM atau LPG, kebutuhan atau tawaran bantuan, karhutla, banjir, longsor, rob) bisa kamu laporkan di ${tautan("/lapor", "halaman Lapor Bencana")}. Buka halamannya, ceritakan kejadiannya, tandai lokasi, lalu kirim.`,
+  "Bila ada korban atau nyawa terancam, telepon 112 atau 117 lebih dulu.") + sumber("halaman Lapor Bencana situs ini");
 
 /* ===== Penafsir pertanyaan ===== */
 const kata = (t, re) => re.test(t);

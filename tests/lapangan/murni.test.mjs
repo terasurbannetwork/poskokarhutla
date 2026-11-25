@@ -60,7 +60,7 @@ test("pesanGps, jarakM, teksJarak", () => {
 test("tautanAman: https atau jalur sendiri; skema berbahaya dan //host ditolak", () => {
   assert.equal(tautanAman("https://renlap.example/a?b=1"), "https://renlap.example/a?b=1");
   assert.equal(tautanAman("/renlap/abc"), "/renlap/abc");
-  for (const u of ["javascript:alert(1)", "data:text/html,x", "http://x.id", "//evil.example", "https://a b", 'https://x"y', null, undefined, 5, ""]) assert.equal(tautanAman(u), null, String(u));
+  for (const u of ["javascript:alert(1)", "data:text/html,x", "http://x.id", "//evil.example", "/\\evil.com", "/\\/evil.com", "https://a b", 'https://x"y', null, undefined, 5, ""]) assert.equal(tautanAman(u), null, String(u));
 });
 
 test("teksAlasan dan hasilAbsen: teks baku, jarak di luar radius, tanpa titik tengah", () => {
