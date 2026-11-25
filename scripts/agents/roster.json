@@ -48,7 +48,8 @@
         "public/data/luas_pembanding.json",
         "public/data/tanah_gambut_bulanan.json",
         "tests/insar-gambut/**",
-        "public/data/desa_waspada.json"
+        "public/data/desa_waspada.json",
+        "public/data/alun/**"
       ]
     },
     {
@@ -395,7 +396,8 @@
         "tests/agen/**",
         "tests/beban/**",
         "tests/e2e/**",
-        "tests/desa-waspada/**"
+        "tests/desa-waspada/**",
+        "tests/alun-kabar/**"
       ]
     },
     {

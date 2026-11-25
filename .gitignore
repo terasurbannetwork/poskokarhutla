@@ -130,3 +130,6 @@ public/udara/data/stasiun_asing.json
 
 # desa-waspada (24 Nov 2026): dibuat titik.yml lewat cache data-, tidak di-commit (DESAIN-TEKNIS §5)
 public/data/desa_waspada/
+
+# Kabar Alun-alun: kabar resmi harian belum boleh publik sampai pemilik menjawab Q2 (data/kajian-bnpb/kabar-alun)
+public/data/alun/

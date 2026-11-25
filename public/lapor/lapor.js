@@ -48,6 +48,7 @@ function ke(tab) {
   if (tab === "alun") tampilAlun();
   if (tab === "tentang" && !$("heroTentang").querySelector(".lp-hero-tengah")) { // salin maskot dan kartu kontak beranda tanpa id ganda
     for (const k of [".lp-hero-tengah", ".lp-hero-kanan"]) { const c = document.querySelector(`#lBeranda ${k}`)?.cloneNode(true); if (!c) continue; c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); c.querySelectorAll("svg.sg").forEach(s => { s.outerHTML = maskot(s.dataset.pose); }); /* gradien salinan merujuk id beranda yang tersembunyi: gambar ulang */ $("heroTentang").append(c); } }
+  if (tab === "tentang") panduTentang();
   if (tab === "chat") requestAnimationFrame(() => gulir.scrollTo({top: gulir.scrollHeight}));
   sigapLayar(tab);
 }
@@ -65,6 +66,23 @@ const tipGerak = matchMedia("(prefers-reduced-motion: no-preference)").matches;
 for (const w of document.querySelectorAll(".lp-hg-tip")) {   // titik kemajuan menggantikan "1 dari 7" yang tampil (teksnya tetap untuk pembaca layar)
   const n = w.querySelectorAll(".lp-hg-slide").length, t = el("span", "lp-hg-titik"); t.setAttribute("aria-hidden", "true");
   for (let i = 0; i < n; i++) t.append(el("i", i ? null : "aktif")); w.querySelector(".lp-hg-urut").after(t); }
+/* gelembung Sigap di Cara melapor berisi panduan halaman itu sendiri, bukan salinan panduan beranda (pemilik 25 Nov 2026: "harus disesuaikan saat itu di halaman apa dia") */
+const TIP_TENTANG = [["edukasi", "Mau tahu cara melapor?", "Ikuti enam langkah di bawah. Sebagian besar jawaban cukup dipilih, tidak perlu mengetik panjang.", "#ttCara", "Lihat langkah"],
+  ["bahasa", "Melapor lewat WhatsApp?", "Ketik kembali, status, batal, atau lapor kapan saja di tengah percakapan.", "#ttKata", "Lihat kata"],
+  ["status", "Ingin laporan cepat ditangani?", "Lapor dari dekat lokasi dan potret kerusakannya, bukan wajah orang.", "#ttCepat", "Lihat caranya"],
+  ["penting", "Ada nyawa terancam?", "Jangan menunggu laporan. Telepon 112 sekarang.", "tel:112", "Telepon 112"]];
+function panduTentang() {
+  const w = $("heroTentang").querySelector(".lp-hg-tip"); if (!w || w.dataset.tentang) return; w.dataset.tentang = "1";
+  const isi = w.querySelector(".lp-hg-isi");
+  isi.replaceChildren(...TIP_TENTANG.map(([aksi, judul, teks, ke, label], i) => {
+    const s = el("div", "lp-hg-slide"); s.setAttribute("role", "group"); s.setAttribute("aria-roledescription", "slide"); s.setAttribute("aria-label", `${i + 1} dari ${TIP_TENTANG.length}`); s.hidden = i > 0; s.dataset.maskot = aksi;
+    const b = ke.startsWith("tel:") ? Object.assign(el("a", "lp-hg-buka"), {href: ke}) : el("button", "lp-hg-buka"); if (b.tagName === "BUTTON") { b.type = "button"; b.dataset.tipGulir = ke; }
+    b.append(ikon(ke.startsWith("tel:") ? "i-telepon" : "i-daftar", "lp-hg-ikon"), label, ikon("i-panah")); s.append(el("b", null, judul), teks, b); return s; }));
+  const titik = w.querySelector(".lp-hg-titik"); titik?.replaceChildren(...TIP_TENTANG.map((_, i) => el("i", i ? null : "aktif")));
+  w.querySelector(".lp-hg-urut").textContent = `1 dari ${TIP_TENTANG.length}`;
+  const m = w.parentElement.querySelector(".lp-hero-maskot"); if (m) m.innerHTML = maskot("semangat", "", TIP_TENTANG[0][0]);
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-tip-gulir]"); if (b) document.querySelector(b.dataset.tipGulir)?.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"}); });
 function tipKe(w, arah, pengguna) {
   const sl = [...w.querySelectorAll(".lp-hg-slide")], i = sl.findIndex(x => !x.hidden), j = (i + arah + sl.length) % sl.length;
   sl[i].hidden = true; sl[j].hidden = false;
@@ -72,10 +90,10 @@ function tipKe(w, arah, pengguna) {
   w.querySelectorAll(".lp-hg-titik i").forEach((t, k) => t.classList.toggle("aktif", k === j));
   w.querySelector(".lp-hg-isi").setAttribute("aria-live", pengguna ? "polite" : "off");
   // maskot di bawah gelembung memegang papan sesuai panduan yang tampil (pemilik 25 Nov 2026)
-  const m = w.parentElement.querySelector(".lp-hero-maskot"), aksi = sl[j].querySelector("[data-tip-aksi]")?.dataset.tipAksi;
+  const m = w.parentElement.querySelector(".lp-hero-maskot"), aksi = sl[j].dataset.maskot || sl[j].querySelector("[data-tip-aksi]")?.dataset.tipAksi;
   if (m) m.innerHTML = AKSI_MASKOT[aksi] ? maskot("semangat", "", aksi) : maskot("sapa");
 }
-const AKSI_MASKOT = {darurat: 1, lapor: 1, status: 1, info: 1, edukasi: 1, penting: 1};
+const AKSI_MASKOT = {darurat: 1, lapor: 1, status: 1, info: 1, edukasi: 1, penting: 1, bahasa: 1};
 document.addEventListener("click", e => {
   const b = e.target.closest(".lp-hg-tip button"); if (!b) return;
   const w = b.closest(".lp-hg-tip");
@@ -1325,7 +1343,7 @@ const IK_BUTIR = [[/^Identitas|^Petugas|^Pemegang/, "i-orang"], [/^Isi laporan|^
 function bukaPrivasi() {
   const w = $("isiPrivasi");
   if (!w.childElementCount) {
-    const kp = el("header", "lp-legal-kepala"), mk = el("div", "lp-pita-maskot"); mk.setAttribute("aria-hidden", "true"); mk.innerHTML = maskot("semangat", "", "status"); kp.append(mk,el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
+    const kp = el("header", "lp-legal-kepala"), mk = el("div", "lp-pita-maskot"); mk.setAttribute("aria-hidden", "true"); pasangMaskot(mk, "status"); kp.append(mk,el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
     const daftar = el("ol", "lp-legal-daftar"), isi = el("div", "lp-legal-isi"), meta = el("dl", "lp-legal-meta");
     isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Pantau Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
     const IK_LEGAL = PRIVASI.map(x => x[2] || "i-daftar");
@@ -1813,7 +1831,12 @@ const tersimpan = simpan.baca("lapor-wa");
 /* pembuka: maskot dan sapaan tiap halaman dibuka (pemilik 20 Nov 2026 "animasinya mana yang di awal"); ketuk untuk melewati */
 $("maskotHero").innerHTML = maskot("sapa");
 // maskot di kepala halaman Laporan, Bantuan, dan Kebijakan privasi, beraksi sesuai halamannya (pemilik 25 Nov 2026)
-for (const m of document.querySelectorAll("[data-maskot]")) m.innerHTML = maskot("semangat", "", m.dataset.maskot);
+// gelembung omongan Sigap di kepala halaman (pemilik 25 Nov 2026: "kenapa dia ga ada ngomong?")
+const UCAP_MASKOT = {laporan: ["Saya pantau laporan Anda", "Bila petugas mengubah status atau membalas, kabarnya masuk ke WhatsApp Anda."],
+  edukasi: ["Cari jawabannya di sini", "Belum ketemu? Telepon 117, call center BNPB."], status: ["Data Anda kami jaga", "Hanya petugas BNPB dan BPBD yang menangani yang bisa membacanya."]};
+const pasangMaskot = (m, aksi) => { m.innerHTML = maskot("semangat", "", aksi); const u = UCAP_MASKOT[aksi]; if (!u) return;
+  const g = el("div", "lp-pita-ucap"); g.append(el("b", null, u[0]), el("span", null, u[1])); m.prepend(g); };
+for (const m of document.querySelectorAll("[data-maskot]")) pasangMaskot(m, m.dataset.maskot);
 if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
 const pernah = false;
 if (!pernah) {

@@ -688,6 +688,17 @@ Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sum
 
 Aturan berhentinya sama dengan §2.1. Satu pemindai, tanpa pembaca HSD atau GFM kedua; kriteria dikunci sebelum diuji; tanpa vonis lolos tetap hipotesis dan tidak dikirim ke luar; status BMKG, PVMBG, VAAC terpisah; sumber putus tidak pernah 0 dan tidak pernah diam; titik Himawari tidak dijumlah dengan VIIRS; tidak pernah menulis "aman" atau "padam".
 
+### 2.52 Kabar Alun-alun (`/lapor` tab Alun-alun: laporan harian BNPB, laporan warga, berita, media sosial per kejadian di peta): baca dulu, baru bangun
+
+Sebelum menyentuh kabar resmi harian di Alun-alun, penempel berita atau laporan warga ke kejadian, pita media sosial, atau berkas `public/data/alun/kabar.json`, baca dokumen di
+`data/kajian-bnpb/kabar-alun/` dengan urutan otoritas ini (pengekspor `scripts/data/alun_kabar.py` milik `pipa-data`; layar dan `public/lapor/alun_kabar.js` milik `layar-peta`; `tests/alun-kabar/**` milik `penulis-gerbang`; pencocok berita tetap `scripts/data/dalops_kabar.py` `cocok()`):
+
+1. `KEPUTUSAN-KABAR-ALUN.md`: keputusan pemilik K1-K4, rancangan D1-D15, pertanyaan terbuka Q1-Q7 dengan bawaan sementara; menang atas semuanya. Menggantikan `lapor-kejadian` D5 dan Q15 untuk tab ini.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KA-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Angka antarsumber tidak pernah dijumlah atau tampak setara; status hanya dari laporan resmi; berita hanya judul, media, jam, tautan; medsos belum tersambung sampai Q1 dan sesudahnya hanya jumlah dan tautan tanpa nama akun; kabar resmi hanya localhost (tidak di-commit, tidak terbit) sampai Q2; tidak pernah menulis "aman"; tinjau di `http://localhost:8800/lapor/`.
+
 ### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
 
 Sebelum menyentuh sumber isi Docs, generator halamannya, tampilan `/docs`, indeks cari, rute Worker `/docs`, atau alias `docs.centurisk97.id`, baca dokumen di

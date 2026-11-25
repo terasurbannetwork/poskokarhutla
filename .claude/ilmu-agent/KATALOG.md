@@ -17,7 +17,7 @@ Cara memakai katalog ini:
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
-| `pipa-data` | sonnet | membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya | model ML sebaran; tampilan layar; worker Cloudflare | `scripts/data/**`, `scripts/berkala/**`, `tests/berkala/kontrak.test.mjs` +28 |
+| `pipa-data` | sonnet | membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya | model ML sebaran; tampilan layar; worker Cloudflare | `scripts/data/**`, `scripts/berkala/**`, `tests/berkala/kontrak.test.mjs` +29 |
 | `model-sebaran` | sonnet | membangun, melatih ulang, dan menguji model sebaran/eskalasi serta evaluator JS-nya | pipeline data mentah; worker; memverifikasi kejujuran uji baliknya sendiri (itu validasi-model) | `scripts/sebaran/**`, `public/sebaran_model.js`, `public/insight_sebaran*.js` +4 |
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `tests/banjir/**` +1 |
 | `model-banjir` | sonnet | membangun & membetulkan model statistik banjir kab-hari, label, koreksi bias, uji balik, dan dokumen pra-registrasinya | pipeline operasional & layar banjir; workflow; worker; membuka uji yang belum boleh dibuka | `scripts/banjir/model_kab*`, `scripts/banjir/model_dampak*`, `scripts/banjir/model_bahaya.py` +20 |
@@ -47,7 +47,7 @@ Cara memakai katalog ini:
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
 | `mekanik-mesin` | sonnet | merawat workflow, skrip npm, settings, mesin agent | logika domain di skrip yang dipanggil workflow | `.github/workflows/**`, `package.json`, `package-lock.json` +6 |
-| `penulis-gerbang` | sonnet | menulis gerbang dan uji integrasi lintas modul | memperbaiki kode domain yang digerbang | `tests/agen/**`, `tests/beban/**`, `tests/e2e/**` +1 |
+| `penulis-gerbang` | sonnet | menulis gerbang dan uji integrasi lintas modul | memperbaiki kode domain yang digerbang | `tests/agen/**`, `tests/beban/**`, `tests/e2e/**` +2 |
 
 ## Pemeriksa — read-only, verifier berkonteks bersih (AGENTS.md §3.2) (7)
 
