@@ -112,6 +112,7 @@ ulang yang berubah.
 | Siklus Bencana `/siklus` | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**`, `data/kajian-bnpb/siklus/**`; `src/siklus*.js`, migrasi `sk_*` (warga-api) | D1 `sk_*`, R2 `siklus/`; `siklus.yml` | `siklus` |
 | Inventori LogPal `/logpal` | `public/logpal/**`, `public/data/logpal/**`, `scripts/logpal/**`, `data/kajian-bnpb/logpal/**`; `src/logpal.js`, `migrations/0112` (warga-api) | D1 `logpal_*`; rute `/api/instansi/logpal/*` | `warga-api` |
 | Lab InSAR gambut | `scripts/data/insar_gambut.py`, `tests/insar-gambut/**`, `data/kajian-bnpb/insar-gambut/**` | lab lokal, tanpa keluaran publik sebelum vonis | `pipa-data` |
+| Laporan Berkala `/laporan-bnpb` | `scripts/berkala/**`, `tests/berkala/kontrak.test.mjs`, `tests/berkala/fixtures/**` (pipa-data); `public/laporan_berkala*`, `tests/berkala/**` (layar-peta); `src/laporan_berkala.js` dan migrasinya (warga-api) | R2 privat `berkala/`, D1 `laporan_berkala*`; `npm run uji:berkala`; `berkala.yml` belum ada (LB-10) | `pipa-data` |
 | Alat gambar wilayah | `public/alat_gambar*.js`, `tests/gambar/**`, `data/kajian-bnpb/alat-gambar/**` | hitung di peramban dari JSON publik | `layar-peta` |
 | Docs Centurisk97 `/docs` | `docs/centurisk97/**`, `scripts/docs/**`, `public/docs/**`, `tests/docs/**` (docs-situs); `src/docs_rute.js` (warga-api) | `public/docs/*.html` dan `cari.json` di-commit; langkah `bangun.py --cek` di `terbit.yml` | `docs-situs` |
 

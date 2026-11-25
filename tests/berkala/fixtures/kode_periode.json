@@ -1,0 +1,23 @@
+{
+ "catatan": "Fixture bersama hitung.py (H15, H16) dan public/laporan_berkala_hitung.js (LB-05): keduanya harus memberi sah dan rentang yang sama.",
+ "kasus": [
+  {"periode": "mingguan", "kode": "2026-W54", "sah": false},
+  {"periode": "bulanan", "kode": "2026-13", "sah": false},
+  {"periode": "harian", "kode": "2026-02-30", "sah": false},
+  {"periode": "mingguan", "kode": "2025-W53", "sah": false},
+  {"periode": "mingguan", "kode": "2026-W53", "sah": true, "rentang": ["2026-12-28", "2027-01-03"]},
+  {"periode": "mingguan", "kode": "2026-W01", "sah": true, "rentang": ["2025-12-29", "2026-01-04"]},
+  {"periode": "mingguan", "kode": "2026-W00", "sah": false},
+  {"periode": "mingguan", "kode": "2026-w05", "sah": false},
+  {"periode": "harian", "kode": "2024-02-29", "sah": true, "rentang": ["2024-02-29", "2024-02-29"]},
+  {"periode": "harian", "kode": "2026-1-05", "sah": false},
+  {"periode": "bulanan", "kode": "2026-00", "sah": false},
+  {"periode": "bulanan", "kode": "2026-1x", "sah": false},
+  {"periode": "bulanan", "kode": "2026-02", "sah": true, "rentang": ["2026-02-01", "2026-02-28"]},
+  {"periode": "bulanan", "kode": "2026-10", "sah": true, "rentang": ["2026-10-01", "2026-10-31"]},
+  {"periode": "tahunan", "kode": "2025", "sah": true, "rentang": ["2025-01-01", "2025-12-31"]},
+  {"periode": "tahunan", "kode": "25", "sah": false},
+  {"periode": "semesteran", "kode": "2026-1", "sah": false},
+  {"periode": "bulanan", "kode": "../../dalops/banjir", "sah": false}
+ ]
+}

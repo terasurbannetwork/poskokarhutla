@@ -4,9 +4,9 @@ Kerjakan urut. Satu tiket = satu cakupan; yang di luar cakupan tidak disentuh. T
 
 | Kode | Judul | Pengerja | Pemeriksa | Bergantung | Status |
 | --- | --- | --- | --- | --- | --- |
-| LB-00 | Daftarkan modul: baris peta modul di AGENTS.md (bagian 2.12 sudah ada), roster wilayah `scripts/berkala/**` dan `tests/berkala/**`, skrip `uji:berkala` di `package.json` dan masuk `npm run uji`, `npm run agents:build` | `mekanik-mesin` | `higiene-repo` | | belum |
-| LB-01 | `hitung.py` validasi kode periode dan rentang (D11, H15, H16), Bab 1, perbandingan tahun lalu dan bulan sebelumnya, Lampiran (ALGORITMA 1, 2, 3); bentuk berkas angka dan uji kontrak | `pipa-data` | `validasi-model` | LB-00, Q19, Q20 | belum |
-| LB-02 | `hitung.py` Bab 2 sampai 5 dan usulan temuan (ALGORITMA 4 sampai 7, 9) | `pipa-data` | `validasi-model` | LB-01 | belum |
+| LB-00 | Daftarkan modul: baris peta modul di AGENTS.md (bagian 2.12 sudah ada), roster wilayah `scripts/berkala/**` dan `tests/berkala/**`, skrip `uji:berkala` di `package.json` dan masuk `npm run uji`, `npm run agents:build` | `mekanik-mesin` | `higiene-repo` | | dikerjakan (25 Nov 2026, pipa-data atas permintaan orkestrator) |
+| LB-01 | `hitung.py` validasi kode periode dan rentang (D11, H15, H16), Bab 1, perbandingan tahun lalu dan bulan sebelumnya, Lampiran (ALGORITMA 1, 2, 3); bentuk berkas angka dan uji kontrak | `pipa-data` | `validasi-model` | LB-00, Q19, Q20 | dikerjakan (25 Nov 2026) |
+| LB-02 | `hitung.py` Bab 2 sampai 5 dan usulan temuan (ALGORITMA 4 sampai 7, 9) | `pipa-data` | `validasi-model` | LB-01 | dikerjakan (25 Nov 2026; Bab 4.4 hujan dan Bab 7.1 tetap LB-04, T6 dan T7 menunggu masukan LB-04) |
 | LB-03 | `rakit.py --potong` dan `--periode bulanan` (baca produksi, lapis Siklus tahun lalu, unggah R2), uji data nyata Oktober 2026 (RENCANA-UJI 5) | `pipa-data` | `validasi-model` | LB-02, Q3 | belum |
 | LB-04 | Bab 7.1 peluang dan indeks ENSO, Bab 4.4 hujan ke depan (ALGORITMA 6, 8), banding dengan contoh Oktober | `pipa-data` | `validasi-model` | LB-03, Q12, Q14 | belum |
 | LB-05 | Halaman cetak A4 bulanan dari fixture: CSS token dan komponen, sampul sampai lampiran, tanda air draf; modul `laporan_berkala_hitung.js` (format, ALGORITMA 10, 11) | `layar-peta` | `selera-angka`, `inp-reviewer` | LB-01, Q4, Q5, Q6, Q13, Q17, Q21 | belum |
