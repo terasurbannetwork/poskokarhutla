@@ -10,7 +10,7 @@ Masukan: data/raw/semai/<putaran>/<langkah>.npz (semai_ifs.py), public/data/klus
          public/udara/data/awan_himawari.json (bila ada), <keluar>/asap_beban.npz (bila ada; diisi SA-05).
 Keluaran: <keluar>/semai.json, awan_<langkah>.png (DESAIN-TEKNIS §3). `jalan` butuh numpy (hanya di semai.yml).
 """
-import datetime as dt, json, os, re, sys, time
+import datetime as dt, json, math, os, re, sys, time
 
 AKAR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AKAR)
@@ -193,6 +193,7 @@ def uji():
     uji_banjir_murni(b, ok, dekat)
     uji_fixture(b, ok)
     uji_banjir_fixture(b, ok)
+    uji_refaktor(ok)
     print(f"semai uji: {n[0]} kasus lolos")
 
 
@@ -1219,11 +1220,14 @@ def uji_golden():
 # hanya untuk menyiapkan medan). Jalur karhutla tidak menyentuh blok ini.
 # =====================================================================================================================
 MAKS_SASARAN_KAND, MAKS_KAND_PER_SASARAN, MAKS_BYTE_BANJIR = 60, 40, 300 * 1024
+RADIUS_TAK_PETA_KM = 50.0       # ponytail: radius tetap dari pusat kab tanpa poligon; ukuran kab sebenarnya tak diketahui, ganti poligon bila ada
 KALIMAT_BANJIR = {
     "tidak_ada_sasaran": "Tidak ada sasaran banjir untuk {d} dari prakiraan kita, BMKG, daftar tetap, atau Pusdalops.",
     "angin_lemah": "Angin pengarah di sasaran terlalu lemah untuk mencegat awan dari hulu.",
     "tidak_ada_awan_hulu": "Tidak ada awan layak semai di hulu sasaran dalam 24 jam ke depan. Hujan sasaran bisa tumbuh di tempat.",
-    "tanpa_prakiraan": "Prakiraan belum tersedia."}
+    "tanpa_prakiraan": "Prakiraan belum tersedia.",
+    "semua_pantau": "Semua sasaran banjir untuk {d} baru jatuh di hari yang belum tercakup putaran ini; zona menyusul di putaran berikutnya.",
+    "di_luar_kisi": "Sasaran berada di luar kisi angin putaran ini, jadi lintasan hulu tidak bisa dihitung."}
 
 
 def _lintasan():
@@ -1332,9 +1336,11 @@ def _hari(init, jam, off):
     return (init + dt.timedelta(hours=jam + off)).strftime("%Y-%m-%d")
 
 
-def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, prov_nama_zona=None):
+def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, tak_peta=()):
     """Inti §3 sampai §8. sasaran = hasil M.pilih_sasaran()['sasaran'] dengan kunci kab (kode) sudah punya geometri di `kabs`.
-    -> dict (zona, sasaran, kandidat_sasaran, alasan_kosong, ...). Tanpa IO; mengembalikan juga 'n_dievaluasi' untuk uji."""
+    tak_peta = [(lat, lon)] pusat kab yang geometrinya tidak ada: titik hujan di luar poligon dalam RADIUS_TAK_PETA_KM darinya "tak terpetakan"
+    (bukan laut), ditolak seperti GB2. -> dict (zona, sasaran, kandidat_sasaran, alasan_kosong, ...). Tanpa IO; `ditolak` = hitungan
+    penolakan per gerbang (untuk uji)."""
     L = _lintasan()
     n = lambda j: n_(b, j)
     kab_by = {k["kode"]: k for k in kabs}
@@ -1346,6 +1352,8 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
     aktif = [i for i, s in enumerate(sas) if not s["pantau"]]
     terlarang = {s["kode"] for s in sas}
     lemah = {i: True for i in aktif}                         # i -> semua langkah angin lemah
+    luar = {i: True for i in aktif}                          # i -> pusat di luar kisi pada semua langkah
+    ditolak = dict(GB1=0, GB2=0, GB2_titik_terancam=0, tak_terpetakan=0, GB3=0, GB4=0)
     cand = {}                                                # (s, i, j) -> {idx sasaran}
     cache_e = {}
     for si in aktif:
@@ -1354,6 +1362,8 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
         mulai = [(pusat[1], pusat[0])] + [(x, y) for y, x in s_["tepi"][::max(1, len(s_["tepi"]) // 24)]]   # ponytail: <= 24 titik tepi
         for s in med.tampil:
             a = L.angin_di(A, 0, pusat[1], pusat[0], s - l0)
+            if a is not None:
+                luar[si] = False
             if a is None or M.angin_lemah((a[0] ** 2 + a[1] ** 2) ** 0.5, b):
                 continue
             lemah[si] = False
@@ -1370,7 +1380,9 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
                             if e is None:
                                 e = cache_e[(si, i, j)] = jarak_tepi(cy, cx, s_["tepi"])
                             if M.di_koridor(e, dl, b):
-                                cand.setdefault((s, i, j), set()).add(si)
+                                # sel dinilai pada langkah terdekat ke waktu ia dilewati lintasan mundur (s - jam mundur)
+                                se = min(med.tampil, key=lambda x: abs(x - (s - p[2])))
+                                cand.setdefault((se, i, j), set()).add(si)
     hasil, n_gerbang = [], 0
     for (s, i, j), ks in sorted(cand.items()):
         sel = med.sel(s, i, j)
@@ -1379,18 +1391,28 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
         n_gerbang += 1
         cy, cx = med.lat0 - 0.1 * i, med.lon0 + 0.1 * j
         hy, hx = M.titik_hujan(cy, cx, sel["u_pengarah"], sel["v_pengarah"], tau)
-        di = any(dalam_kab(x["k"], hy, hx) for x in sas)
-        jt = min(jarak_tepi(hy, hx, x["tepi"]) for x in sas) if not di else 0.0
-        if not M.lolos_gb("GB1", b, dalam=di, jarak_km=jt):
-            continue
         tk, sk = kab_di(kabs, hy, hx), kab_di(kabs, cy, cx)
         if not M.lolos_gb("GB2", b, titik_kab=tk, sel_kab=sk, terlarang=terlarang):
+            ditolak["GB2"] += 1
+            ditolak["GB2_titik_terancam"] += tk in terlarang
+            continue
+        di = any(dalam_kab(x["k"], hy, hx) for x in sas)       # tersisa: di luar daratan kab terlarang, tapi bisa di kab tak berpoligon sasaran
+        jt = min(jarak_tepi(hy, hx, x["tepi"]) for x in sas) if not di else 0.0
+        if not M.lolos_gb("GB1", b, dalam=di, jarak_km=jt):
+            ditolak["GB1"] += 1
+            continue
+        if tk is None and any(M.haversine(hy, hx, y, x) <= RADIUS_TAK_PETA_KM for y, x in tak_peta):
+            ditolak["tak_terpetakan"] += 1               # bukan laut: geometri kab hilang, tolak konservatif
             continue
         tj = maju_tiba(A, hy, hx, s - l0 + tau / 60.0, [(k, sas[k]["k"], sas[k]["tepi"]) for k in sorted(ks)], b)
         cegat = []
         for k, (tiba, ly, lx) in sorted(tj.items()):
             zt = M.zona_waktu_prov(sas[k]["k"]["prov"], pz)
-            if M.lolos_gb("GB3", b, tiba=tiba) and M.lolos_gb("GB4", b, hari_tiba=_hari(med.init, s + tau / 60.0 + tiba, off_z[zt]), d=d):
+            if not M.lolos_gb("GB3", b, tiba=tiba):
+                ditolak["GB3"] += 1
+            elif not M.lolos_gb("GB4", b, hari_tiba=_hari(med.init, s + tau / 60.0 + tiba, off_z[zt]), d=d):
+                ditolak["GB4"] += 1
+            else:
                 cegat.append((k, tiba, ly, lx))
         if not cegat:
             continue
@@ -1405,13 +1427,14 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
             P = M.faktor_t(dm, n("t.dekat_km"), n("t.jauh_km"))
         sk_ = M.skor(Q, H, P, w) if Q > 0 else 0.0
         hasil.append(dict(s=s, i=i, j=j, lat=cy, lon=cx, hy=hy, hx=hx, Q=Q, H=H, P=P, skor=sk_, komp=komp, sel=sel, laut=tk is None,
-                          dm=dm, cegat=[(sas[k_]["kode"], t_, la_, lo_) for k_, t_, la_, lo_ in cegat], k=k))
+                          dm=dm, tiba_h=tiba, cegat=[(sas[k_]["kode"], t_, la_, lo_) for k_, t_, la_, lo_ in cegat], k=k))
     # zona (§6): terbaik per sel, NMS 40 km, <= 5, skor >= 0,35
     per_sel = {}
     for r in hasil:
         per_sel.setdefault((r["i"], r["j"]), {})[r["s"]] = r
     cells = [dict(lat=v[max(v, key=lambda s: v[s]["skor"])]["lat"], lon=v[max(v, key=lambda s: v[s]["skor"])]["lon"],
                   skor=max(x["skor"] for x in v.values()), ij=ij) for ij, v in per_sel.items()]
+    belum = {x["kode"]: x["belum_teruji"] for x in sas}
     zn, zona = M.zona_nms(cells, n("zona.jarak_min_km"), n("zona.maks"), n("zona.skor_min")), []
     lang = med.tampil
     for c in zn:
@@ -1440,8 +1463,9 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
             "cegat": [{"kab": q[0], "tiba_jam": round(q[1], 2), "masuk": {"lat": round(q[2], 2), "lon": round(q[3], 2)}} for q in r["cegat"]],
             "ketinggian": {"kaki": kaki, "teks": "dasar awan tidak terbaca model" if kaki is None else f"sekitar {kaki:,} kaki (dasar awan perkiraan)".replace(",", ".")},
             "base": {"id": bid, "icao": bd["icao"], "nama": bd["nama"], "km": int(round(km)), "menit": menit, "perkiraan": True, "terdaftar": bd["terdaftar"]},
+            "belum_teruji": all(belum.get(q, False) for q in kd),
             "alasan": {"sasaran": kd, "C": f"awan layak semai, kualitas {r['Q']:.2f}".replace(".", ","),
-                       "H": f"awan tiba di sasaran sekitar {r['cegat'][0][1]:.1f} jam sesudah semai".replace(".", ","),
+                       "H": f"awan tiba di sasaran sekitar {r['tiba_h']:.1f} jam sesudah semai".replace(".", ","),
                        "P": "titik hujan di laut" if r["laut"] else f"titik hujan {r['dm']:.0f} km dari kota terdekat",
                        "B": f"base {bd['nama']}, sekitar {menit} menit terbang"}})
     # sasaran keluar
@@ -1456,7 +1480,7 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
         elif zs.get(s_["kode"]):
             ak = None
         else:
-            ak = "angin_lemah" if lemah.get(si) else "tidak_ada_awan_hulu"
+            ak = "di_luar_kisi" if luar.get(si) else "angin_lemah" if lemah.get(si) else "tidak_ada_awan_hulu"
         sas_out.append(dict(kab=s_["kode"], nama=s_["k"]["nama"], prov=s_["k"]["prov"], asal=s_["asal"], pantau=s_["pantau"], belum_teruji=s_["belum_teruji"],
                             cakupan="kab", zona=zs.get(s_["kode"], []), alasan_kosong=ak))
     # kandidat_sasaran (§8): <= 40 terbaik per sasaran, <= 60 sasaran, urut tetap, manual, bmkg, prakiraan
@@ -1471,21 +1495,28 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
             kand.append([round(r["lat"], 1), round(r["lon"], 1), r["s"], round(r["Q"], 3), round(r["H"], 3), round(r["P"], 3), idx_out[r["k"]],
                          int(r["laut"]), round(c_["cape"], 2), round(c_["air"], 2), round(c_["rh"], 2), round(c_["geser"], 2), round(c_["naik"], 2)])
     semua_lemah = bool(aktif) and all(lemah[q] for q in aktif)
-    alasan = M.alasan_kosong_banjir(len(aktif), semua_lemah, len(zona))
+    if sas and not aktif:
+        alasan = "semua_pantau"
+    elif aktif and all(luar[q] for q in aktif):
+        alasan = "di_luar_kisi"
+    else:
+        alasan = M.alasan_kosong_banjir(len(aktif), semua_lemah, len(zona))
     return dict(zona=zona, sasaran=sas_out, urut_sasaran=[sas[q]["kode"] for q in urut], kandidat_kolom=["lat", "lon", "langkah", "Q", "H", "P", "sasaran_idx", "laut", "cape", "air", "rh", "geser", "naik"],
                 kandidat_sasaran=kand, alasan_kosong=alasan, kalimat_kosong=KALIMAT_BANJIR[alasan].format(d=d) if alasan else None,
-                n_kandidat=len(cand), n_lolos_gerbang=n_gerbang, n_evaluasi=len(hasil), _hasil=hasil, _sas=sas)
+                n_kandidat=len(cand), n_lolos_gerbang=n_gerbang, n_evaluasi=len(hasil), ditolak=ditolak, _hasil=hasil, _sas=sas)
 
 def muat_kab_repo():
     """Semua kab/kota daratan: kota.json (kode, pusat) + public/geo/kabupaten/<prov>.json (nama -> geometri)."""
-    kabs, geo = [], {}
+    kabs, geo, hilang = [], {}, []
     for r in muat_json("scripts/udara/kota.json")["baris"]:
         if r[2] not in geo:
             f = os.path.join(REPO, "public/geo/kabupaten", f"{r[2]}.json")
             geo[r[2]] = {x["properties"]["kab"]: x["geometry"] for x in json.load(open(f, encoding="utf-8"))["features"]} if os.path.exists(f) else {}
         if r[6] in geo[r[2]]:
             kabs.append(siapkan_kab(r[0], r[6], r[2], r[3], r[4], geo[r[2]][r[6]]))
-    return kabs
+        else:
+            hilang.append(r)
+    return kabs, hilang
 
 
 def jalan_banjir(args, b, dibuat, keluar, c):
@@ -1500,9 +1531,15 @@ def jalan_banjir(args, b, dibuat, keluar, c):
     umur = max(0.0, (dibuat - dt.datetime.fromisoformat(pred["dibuat"])).total_seconds() / 3600) if pred else 0.0
     tercakup = d in {_hari(c.init, s, off) for s in c.tampil}
     ps = M.pilih_sasaran(d, pred, bm, b, umur_prediksi_jam=umur, tercakup=tercakup)
-    kabs = muat_kab_repo()
+    kabs, hilang = muat_kab_repo()
     ada = {k["kode"] for k in kabs}
     sasaran = [s for s in ps["sasaran"] if s["kode"] in ada]
+    ps["sumber"] = list(ps["sumber"])
+    if hilang:
+        ps["sumber"].append(f"geometri kab tak ditemukan untuk {len(hilang)} kab/kota ({', '.join(r[0] for r in hilang[:10])}"
+                            + (", dst" if len(hilang) > 10 else "") + "): titik hujan di dekatnya ditolak sebagai tak terpetakan, bukan dihitung laut")
+    if len(sasaran) < len(ps["sasaran"]):
+        ps["sumber"].append("sasaran tanpa geometri dilewati: " + ", ".join(s["kode"] for s in ps["sasaran"] if s["kode"] not in ada))
     out = {"dibuat": dibuat.strftime("%Y-%m-%dT%H:%M:%SZ"), "tujuan": "banjir", "versi_bobot": b["versi"], "versi_banjir": b["banjir"]["versi_banjir"],
            "status_bobot": b["banjir"]["status"],
            "putaran": {"model": "ECMWF IFS", "res": 0.1, "init": c.init.strftime("%Y-%m-%dT%H:%M:%SZ"), "lisensi": "CC BY 4.0"},
@@ -1531,8 +1568,8 @@ def jalan_banjir(args, b, dibuat, keluar, c):
             return r
         med = Medan(LAT0 - RES * i0, LON0 + RES * j0, i1 - i0, j1 - j0, sorted(c.P), c.tampil, c.init, A, sel)
         tempat, kota = tempat_py()
-        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran)
-        for k in ("_hasil", "_sas", "n_kandidat", "n_lolos_gerbang", "n_evaluasi"):
+        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran, [(x[3], x[4]) for x in hilang])
+        for k in ("_hasil", "_sas", "n_kandidat", "n_lolos_gerbang", "n_evaluasi", "ditolak"):
             r.pop(k)
         urut = r.pop("urut_sasaran")
         r["sasaran"] = sorted(r["sasaran"], key=lambda s: urut.index(s["kab"]) if s["kab"] in urut else len(urut))
@@ -1636,6 +1673,25 @@ def _sel_fixture(F, b, s, i, j):
     return r
 
 
+def uji_refaktor(ok):
+    """Refaktor tempat_py/bandara_gabung harus sama dengan kode sebelum SB-04 (ce80ba9ba). Snapshot bandara: base sintetis (aktif, tak aktif,
+    tanpa ICAO) + bandara.json -> 137 id, sha1 id terurut, diambil dari kode lama; WIHH (base aktif) tak digandakan, WAAA (base mati) tetap bandara BMKG."""
+    import hashlib
+    base = {"b1": {"nama": "X", "lat": 1, "lon": 2, "icao": "WIHH", "aktif": 1}, "b2": {"nama": "Y", "lat": 1, "lon": 2, "icao": "WAAA", "aktif": 0},
+            "b3": {"nama": "Z", "lat": 3, "lon": 4, "icao": None, "aktif": 1}}
+    bg = bandara_gabung(base)
+    sha = hashlib.sha1("|".join(sorted(bg)).encode()).hexdigest()
+    ok(len(bg) == 137 and sha == "ae201b0439ce7a6d08b881e80340c4089184f9d0" and "WIHH" not in bg and "WAAA" in bg and bg["b1"]["terdaftar"], f"bandara_gabung beda dari kode lama: {len(bg)} {sha}")
+    try:
+        import numpy as np
+    except ImportError:
+        print("semai uji: numpy tidak ada, silang tempat_np lawan tempat_py dilewati")
+        return
+    tp = tempat_py()[0]
+    tn = tempat_np()[0]
+    ok(tn.shape == (len(tp), 2) and bool(np.array_equal(tn, np.array(tp))), "tempat_np()[0] harus sama dengan tempat_py()[0]")
+
+
 def uji_banjir_fixture(b, ok):
     """SB-04: ujung ke ujung stdlib pada potongan Kendari. Invarian: tak ada zona di daratan kab terlarang, tak ada titik hujan di
     sasaran, tiap zona lolos GB1 sampai GB4, skor = Q^wQ H^wH P^wP, kalimat kosong cocok alasan."""
@@ -1668,14 +1724,17 @@ def uji_banjir_fixture(b, ok):
         ok(0 <= h["H"] <= 1 and 0 <= h["P"] <= 1 and 0 <= h["Q"] <= 1 and h["cegat"], "faktor 0..1 dan ada sasaran dicegat")
         for kd, tiba, _, _ in h["cegat"]:
             ok(1 <= tiba <= 4, f"GB3 tiba {tiba} jam di luar 1..4")
+        # hulu angin: dari titik hujan ke titik masuk sasaran searah angin pengarah (dot > 0), bukan melawan angin
+        u_, v_ = h["sel"]["u_pengarah"], h["sel"]["v_pengarah"]
+        for kd, _, ly, lx in h["cegat"]:
+            ok((lx - h["hx"]) * math.cos(math.radians(h["hy"])) * u_ + (ly - h["hy"]) * v_ > 0,
+               f"titik hujan ({h['hy']:.2f},{h['hx']:.2f}) tidak di hulu angin masuk {kd} ({ly:.2f},{lx:.2f}): angin {u_:.1f},{v_:.1f}")
     for z in r["zona"]:
         ok(z["tujuan"] == "banjir" and re.fullmatch(r"\d{10}-B[A-E]", z["id"]) and z["skor"] >= 0.35, f"zona {z['id']}")
         ok(all(not dalam_kab(k, z["lat"], z["lon"]) for k in kabs if k["kode"] in terlarang), f"zona {z['id']} tidak di daratan kab sasaran/terancam")
         ok(all(not dalam_kab(k, z["hujan"]["lat"], z["hujan"]["lon"]) for k in sasaran_k.values()), f"titik hujan zona {z['id']} di luar sasaran")
         ok(z["alasan"]["sasaran"] and set(z["alasan"]["sasaran"]) <= terlarang, "alasan.sasaran wajib dan berasal dari S(d)")
-        w = (M.nilai(bb, "banjir.skor.wq"), M.nilai(bb, "banjir.skor.wh"), M.nilai(bb, "banjir.skor.wp"))
-        dekat_e = abs(M.skor(z["Q"], z["H"], z["P"], w) - z["skor"])
-        ok(dekat_e < 0.01, f"zona {z['id']} skor {z['skor']} != Q^wQ H^wH P^wP ({dekat_e})")
+        ok(z["belum_teruji"] is all(x["belum_teruji"] for x in r["_sas"] if x["kode"] in z["alasan"]["sasaran"]), "zona belum_teruji dari sasarannya")
         ok(re.fullmatch(r"\d\d\.00 sampai \d\d\.00 WITA", z["jendela_teks"]), z["jendela_teks"])
     for a in range(len(r["zona"])):
         for c2 in range(a):
@@ -1684,6 +1743,25 @@ def uji_banjir_fixture(b, ok):
     ok(all(s["alasan_kosong"] is None for s in r["sasaran"] if s["zona"]), "sasaran bernas zona tanpa alasan kosong")
     ok(all(len([x for x in r["kandidat_sasaran"] if x[6] == u]) <= 40 for u in range(len(r["sasaran"]))), "kandidat <= 40 per sasaran")
     ok(all(len(x) == len(r["kandidat_kolom"]) for x in r["kandidat_sasaran"]), "lebar baris kandidat sesuai kolom")
+    ok(r["ditolak"]["GB1"] > 0, f"GB1 menolak titik hujan dekat/di sasaran ({r['ditolak']})")
+    # GB4 ujung ke ujung: hari sasaran digeser sehari -> semua tiba jatuh di hari lain, tak ada zona
+    r4 = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, ps["sasaran"], "2026-11-16", F["putaran"])
+    ok(r4["ditolak"]["GB4"] > 0 and not r4["zona"] and r4["n_evaluasi"] == 0, f"GB4 menolak hari tiba lain ({r4['ditolak']})")
+    # GB2 ujung ke ujung: semua kab lain di fixture jadi terancam (pantau) -> sel dan titik hujan di sana ditolak
+    ekstra = [dict(kode=k["kode"], asal=["prakiraan"], pantau=True, belum_teruji=True) for k in kabs if k["kode"] not in terlarang]
+    r2b = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, ps["sasaran"] + ekstra, d, F["putaran"])
+    ok(r2b["ditolak"]["GB2"] > 0 and r2b["ditolak"]["GB2_titik_terancam"] > 0, f"GB2 menolak titik hujan di kab terancam ({r2b['ditolak']})")
+    ok(all(not dalam_kab(k, h["hy"], h["hx"]) for k in kabs for h in r2b["_hasil"]), "sisa hasil: titik hujan di laut, tak ada di daratan kab terancam")
+    # kab tanpa geometri: titik hujan di luar poligon dekat pusatnya bukan laut, ditolak
+    kd0 = next((kab_di(kabs, h["hy"], h["hx"]) for h in r["_hasil"] if kab_di(kabs, h["hy"], h["hx"])), None)
+    ok(kd0 is not None, "fixture memuat hasil dengan titik hujan di daratan kab tak terlarang")
+    sisa = [k for k in kabs if k["kode"] != kd0]
+    hil = next(k for k in kabs if k["kode"] == kd0)
+    r3a = hitung_banjir(med, sisa, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"])
+    ok(any(h["laut"] and h["P"] == 1.0 for h in r3a["_hasil"]), "tanpa tahu geometri hilang, daratan salah dihitung laut (P = 1): bug yang dijaga")
+    r3 = hitung_banjir(med, sisa, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"], tak_peta=[(hil["lat"], hil["lon"])])
+    ok(r3["ditolak"]["tak_terpetakan"] > 0 and sum(h["laut"] for h in r3["_hasil"]) < sum(h["laut"] for h in r3a["_hasil"]),
+       f"tak terpetakan ditolak, bukan laut ({r3['ditolak']})")
     # label belum teruji dari vonis: asal prakiraan saja
     ok(_vonis_bnj(F["prediksi"]) == "belum teruji" and _vonis_bnj(None) == "belum teruji", "vonis BNJ belum teruji")
     # angin lemah: kisi diam -> tidak ada kandidat, alasan angin_lemah
@@ -1693,6 +1771,14 @@ def uji_banjir_fixture(b, ok):
     _, _, mk2 = medan_fixture(mati)
     r2 = hitung_banjir(mk2(bb), kabs, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"])
     ok(r2["alasan_kosong"] == "angin_lemah" and not r2["zona"] and r2["n_kandidat"] == 0, f"angin 0 -> angin_lemah, bukan {r2['alasan_kosong']}")
+    pantau = [dict(s_, pantau=True) for s_ in ps["sasaran"]]
+    rp = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, pantau, d, F["putaran"])
+    ok(rp["alasan_kosong"] == "semua_pantau" and rp["kalimat_kosong"], f"semua pantau -> semua_pantau, bukan {rp['alasan_kosong']}")
+    geser_f = dict(F, lat0=F["lat0"] + 30)                                                                      # kisi digeser: sasaran di luar
+    _, _, mk3 = medan_fixture(geser_f)
+    med_l = mk3(bb)
+    rl = hitung_banjir(med_l, kabs, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"])
+    ok(rl["alasan_kosong"] == "di_luar_kisi", f"sasaran di luar kisi -> di_luar_kisi, bukan {rl['alasan_kosong']}")
     sasaran_tanpa = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, [], d, F["putaran"])
     ok(sasaran_tanpa["alasan_kosong"] == "tidak_ada_sasaran" and "banjir" in (sasaran_tanpa["kalimat_kosong"] or ""), "tanpa sasaran")
     print(f"semai uji banjir fixture: {len(r['zona'])} zona, {r['n_kandidat']} sel koridor, {r['n_lolos_gerbang']} lolos G1-G9, {r['n_evaluasi']} lolos GB1-GB4")
