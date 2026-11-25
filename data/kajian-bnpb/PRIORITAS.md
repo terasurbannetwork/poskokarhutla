@@ -12,8 +12,8 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 - [x] PB-49 uji balik longsor: GAGAL, tetap hipotesis (f8c4cca7b)
 - [x] PB-50 uji balik hujan 50 mm: GAGAL, hanya musim kemarau (aaa2db9fd)
 - [x] Paket `peta-situs` (73f2495c6)
-- [ ] Peta situs PS-01 sampai PS-11 (selesai: PS-01..PS-08, PS-05b, PS-05c, PS-10 4b4f15d10; PS-09 tinggal perbaikan keamanan; PS-11 gerbang dikunci, tinggal tinjau lokal sesudah terbit)
-- [ ] Paritas PB-51 sampai PB-67 (PB-51 cfb73c8b9; PB-52 5b7bbb479, rute Worker /api/siklus/kejadian/kasus dan unggah R2 menyusul; PB-53 6b4a64c15; PB-54a 0efb77dd2)
+- [x] Peta situs PS-00 sampai PS-11 selesai 25 Nov (474ac23c0, 4b4f15d10, 05a870e59); tinjau lokal sesudah terbit
+- [ ] Paritas PB-51 sampai PB-67 (selesai 25 Nov: PB-51..PB-54b, PB-59, PB-60 K17 tanpa naskah penerbit, PB-62, PB-63, PB-64, PB-65 (PB-65.3, PB-65.4 menunggu), PB-66; berjalan: PB-61; sisa: PB-67 penutup; rute Worker PB-52 dan unggah R2 menyusul)
 - [ ] Lapor Bencana sisa (LK-9..LK-13, sisa LA-*); cek dulu apakah sesi lain sedang memegang
 - [ ] Genangan GS-12, GS-13 (GS-09 migrasi menunggu pemilik)
 
