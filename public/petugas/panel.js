@@ -5,8 +5,10 @@ import {ik} from "./ikon.js";
 import {opsKerangka, pasangOps} from "./panel_ops.js";
 import {panggilKerangka, pasangPanggil, deretKeahlian, kelolaBaris, ubahKeahlian} from "./panel_panggil.js";
 import {daftarKeahlian, queryOrang, barisOrang, keahlianOrang, keahlianItem} from "./panggil_murni.js";
+import {pasangMenu} from "./menu.js";
 
 const akar = $("lpPanel");
+pasangMenu($("lpMenu"));
 let csvAman = null;            // teks CSV yang sudah dipratinjau tanpa galat; Simpan hanya untuk teks ini
 let punyaSuper = false, keahlianPilih = "";
 let q = "", jenis = "", hal = 1, ukuran = 0, tunda = 0, tokenMuat = 0;
