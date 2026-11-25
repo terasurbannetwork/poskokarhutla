@@ -7,6 +7,9 @@ Memakai ulang scripts/banjir/genangan_nasional.py (Katalog, pilih_pra, Titik/GRI
 
 Pakai:  python3 -I scripts/siklus/genangan_kriteria.py uji          self-check tanpa jaringan
         python3 -I scripts/siklus/genangan_kriteria.py layak        tarik metadata STAC bulanan (cache), tulis kriteria + sidik
+        python3 -I scripts/siklus/genangan_kriteria.py layak --luring   sama, tanpa jaringan: pakai cache bulanan apa adanya (juga bulan berjalan)
+        python3 -I scripts/siklus/genangan_kriteria.py versi-baru --alasan "..."   kunci ulang (versi naik, riwayat mencatat sidik + jangkar lama);
+                                                                    hanya bila versi lama berjangkar & utuh dan genangan_vonis.json belum ada
         python3 -I scripts/siklus/genangan_kriteria.py prasyarat    tolak bila sidik hilang, jangkar kosong, sidik beda, atau jangkar bukan leluhur HEAD
 Langkah CI yang menjalankan `prasyarat` butuh checkout `fetch-depth: 0` (git show dan merge-base atas commit jangkar).
 """
@@ -20,6 +23,8 @@ SID = os.path.join(AB, "genangan_sidik.json")
 KERUSAKAN = os.path.join(AB, "kerusakan_kriteria.json")
 CACHE = os.path.join(AKAR, "data/raw/banjir/gfm_nasional/layak")   # gitignored (data/raw/banjir/*)
 BATAS_UJI = "2024-01-01"
+VONIS = os.path.join(AB, "genangan_vonis.json")   # ditulis GS-13; adanya berkas ini menutup jalan versi-baru
+MARGIN_PRA = 7         # hari (K6, pemilik 25 Nov 2026): pra paling lambat tanggal DIBI - 7, SAMA DENGAN itu diterima (pra <= DIBI - 7)
 JENDELA = 6            # hari sesudah tanggal DIBI (genangan_nasional.JENDELA["dibi"])
 JARAK_EPISODE = 30     # hari: pasangan uji harus lebih jauh dari ini dari episode terlihat di provinsi yang sama
 EPISODE = [            # (provinsi, mulai, akhir, kode): episode yang sudah terlihat
@@ -109,25 +114,29 @@ def urut_sampel(prov, kab, tgl):
 
 
 # ---------------------------------------------------------------- kelayakan dari metadata
-def pra_sebelum_acuan(kat, ubin, awal):
-    """lintasan ubin yang jatuh sebelum tanggal acuan DIBI (opsi --pra-sebelum-acuan, ALGORITMA 1)."""
-    return [k for k in kat.ub.get(ubin, []) if k["t"] < awal.isoformat()]
+def pra_sebelum_acuan(kat, ubin, awal, margin=MARGIN_PRA):
+    """lintasan ubin yang jatuh paling lambat awal - margin hari (K6; batas inklusif: pra tepat di awal - margin diterima)."""
+    batas = (awal - dt.timedelta(days=margin)).isoformat()
+    return [k for k in kat.ub.get(ubin, []) if k["t"][:10] <= batas]
 
 
-def layak_satu(gn, kat, frak, awal):
+def layak_satu(gn, kat, frak, awal, margin=MARGIN_PRA):
     """-> (n_kandidat, tanggal_pra) bila ada lintasan 0-6 hari sesudah awal dengan pra sah; selain itu None."""
     cand = kat.kandidat(frak, awal, awal + dt.timedelta(days=JENDELA))[:gn.MAKS_KANDIDAT]
     for n, l in cand:
-        pra = gn.pilih_pra(pra_sebelum_acuan(kat, n, awal), l)
+        pra = gn.pilih_pra(pra_sebelum_acuan(kat, n, awal, margin), l)
         if pra:
             return len(cand), pra["t"][:10]
     return None
 
 
 # ---------------------------------------------------------------- metadata STAC (bulanan, cache; tanpa raster)
+LURING = False   # True: cache dipakai walau bulan berjalan; bulan yang belum di-cache tetap menarik
+
+
 def bulan_cache(gn, ym):
     f = os.path.join(CACHE, ym + ".json")
-    if os.path.exists(f) and ym < dt.date.today().strftime("%Y-%m"):
+    if os.path.exists(f) and (LURING or ym < dt.date.today().strftime("%Y-%m")):
         return json.load(open(f))
     akhir = gn.bulan_berikut(ym)
     badan = {"collections": ["GFM"], "bbox": gn.KOTAK, "limit": 500, "datetime": f"{ym}-01T00:00:00Z/{akhir}-01T00:00:00Z",
@@ -186,12 +195,12 @@ def frak_kab(gn, prov, kab, ada, n=60):
 
 
 # ---------------------------------------------------------------- kriteria
-def dasar():
+def dasar(versi=1):
     return {
-        "versi": 1, "tiket": "GS-02", "paket": "data/kajian-bnpb/genangan-satelit",
+        "versi": versi, "margin_pra_hari": MARGIN_PRA if versi >= 2 else 0, "tiket": "GS-02", "paket": "data/kajian-bnpb/genangan-satelit",
         "rujukan": "ALGORITMA.md bagian 7 dan 2; KEPUTUSAN-GENANGAN.md Q4 dan Q5 (bawaan sementara)",
         "satuan": "pasangan kab-hari DIBI banjir atau banjir bandang dengan terdampak > 0; lintasan GFM 0 sampai 6 hari sesudah tanggal DIBI; "
-                  "kandidat pra 8 sampai 45 hari sebelum lintasan dan sebelum tanggal DIBI (--pra-sebelum-acuan); cakupan sah",
+                  "kandidat pra 8 sampai 45 hari sebelum lintasan dan paling lambat tanggal DIBI dikurangi margin_pra_hari (--pra-sebelum-acuan; v1 tanpa margin, v2 N = 7 hari, pemilik 25 Nov 2026; sama dengan batas diterima); cakupan sah",
         "x": "WorldPop tengah = (bawah + atas) / 2, penduduk di area genangan (mesin paparan F2)",
         "y": "DIBI terdampak kab-hari itu",
         "statistik": "Spearman(x, y)",
@@ -222,12 +231,13 @@ def dasar():
     }
 
 
-def tulis(K):
+def tulis(K, riwayat=None, alasan=None):
     ph = dict(K, pasangan="@@")
     teks = json.dumps(ph, indent=1, ensure_ascii=False).replace('"@@"', "[\n" + ",\n".join(json.dumps(r, ensure_ascii=False) for r in K["pasangan"]) + "\n]")
     open(KRI, "w").write(teks + "\n")
     s = {"berkas": "scripts/siklus/genangan_kriteria.json", "sidik": sidik_isi(open(KRI, "rb").read()),
-         "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)", "ditulis": "2026-11-24", "versi": 1,
+         "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)", "ditulis": dt.date.today().isoformat(), "versi": K["versi"],
+         **({"riwayat": riwayat, "alasan_versi": alasan} if riwayat else {}),
          "jangkar_commit": "",
          "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. "
                     "prasyarat menolak selama kosong."}
@@ -235,9 +245,32 @@ def tulis(K):
     return s
 
 
-def layak():
-    if os.path.exists(SID) and json.load(open(SID)).get("jangkar_commit"):
-        raise Tolak("kriteria sudah dijangkar: tidak boleh ditulis ulang")
+def versi_baru_syarat(sid=SID, kri=KRI, vonis=VONIS, git=True):
+    """-> (versi_lama, riwayat_baru). Tolak bila versi lama belum berjangkar/utuh atau uji balik sudah dijalankan (vonis ada).
+    Satu-satunya pintu kunci ulang; tidak bisa dipakai menyetel ulang sesudah melihat hasil."""
+    if os.path.exists(vonis):
+        raise Tolak("genangan_vonis.json ada: uji balik GS-13 sudah dijalankan, kunci ulang ditutup")
+    K = periksa_kunci(kri, sid, git=git)          # versi lama wajib berjangkar dan utuh
+    s = json.load(open(sid))
+    if s.get("vonis"):
+        raise Tolak("sidik memuat vonis: kunci ulang ditutup")
+    return K["versi"], list(s.get("riwayat", [])) + [{"versi": K["versi"], "sidik": s["sidik"], "jangkar_commit": s["jangkar_commit"]}]
+
+
+def layak(luring=False, baru=None):
+    """baru = alasan (str) bila dipanggil dari versi-baru: versi naik, riwayat bertambah. Tanpa itu: tolak bila sudah berjangkar."""
+    global LURING
+    LURING = luring
+    versi, riwayat, alasan = 1, None, None
+    if baru:
+        lama, riwayat = versi_baru_syarat()
+        versi, alasan = lama + 1, baru
+    else:
+        if os.path.exists(SID):
+            s = json.load(open(SID))
+            if s.get("jangkar_commit"):
+                raise Tolak("kriteria sudah dijangkar: tidak boleh ditulis ulang (pakai versi-baru --alasan)")
+            versi, riwayat, alasan = s.get("versi", 1), s.get("riwayat"), s.get("alasan_versi")   # lanjutkan versi yang belum dijangkar
     gn = _gn()
     t0 = time.time()
     kat = muat_katalog(gn)
@@ -259,11 +292,11 @@ def layak():
         if frak[(p, n)] is None:
             tanpa_poligon.add((p, n))
             continue
-        r = layak_satu(gn, kat, frak[(p, n)], dt.date.fromisoformat(t))
+        r = layak_satu(gn, kat, frak[(p, n)], dt.date.fromisoformat(t), MARGIN_PRA if versi >= 2 else 0)
         if r:
             b, c = bagian(p, t, epi)
             hasil.append([p, n, t, td, b, c, r[0], r[1]])
-    K = dasar()
+    K = dasar(versi)
     K["pasangan"] = hasil
     assert all(len(h) == len(K["pasangan_kolom"]) for h in hasil)
     cnt = lambda b, c=None: sum(1 for h in hasil if h[4] == b and (c is None or h[5] == c))
@@ -285,7 +318,7 @@ def layak():
         "riwayat terhitung saat ini hanya 10 sah dari 21 pasangan (hasil.jsonl). Populasi uji layak jauh lebih besar dari yang dibaca: GS-13 hanya membaca sampel_uji.")
     K["hasil_diharapkan"] = ("n sah ditentukan GS-13 dari 300 sampel; riwayat lama hanya 10 dari 21 sah; "
                              "tak_dapat_dinilai bila sah/dipilih < 0,30 atau blok sah < 20")
-    tulis(K)
+    tulis(K, riwayat, alasan)
     print(json.dumps(K["jumlah"], ensure_ascii=False, indent=1))
     print("hasil_diharapkan:", K["hasil_diharapkan"])
 
@@ -306,9 +339,16 @@ def uji():
     assert layak_satu(gn, kat("2024-02-20T23:05:00Z", "2024-02-01T20:00:00Z"), fr, dd("2024-02-18")) is None   # orbit beda > 90 menit
     assert layak_satu(gn, kat("2024-02-27T23:05:00Z", "2024-02-01T23:00:00Z"), fr, dd("2024-02-18")) is None   # post di luar 0-6 hari
     assert layak_satu(gn, kat("2024-02-17T23:05:00Z", "2024-02-01T23:00:00Z"), fr, dd("2024-02-18")) is None   # post sebelum tanggal DIBI
-    # syarat pra < tanggal acuan
-    k2 = kat("2024-02-12T23:00:00Z", "2024-02-01T23:00:00Z")
-    assert [x["t"][:10] for x in pra_sebelum_acuan(k2, "OC020M_E000N000T3", dd("2024-02-10"))] == ["2024-02-01"]
+    # margin 7 hari (K6): pra paling lambat acuan - 7, inklusif
+    assert MARGIN_PRA == 7
+    u = "OC020M_E000N000T3"
+    acuan = dd("2024-02-18")
+    k2 = kat("2024-02-12T23:00:00Z", "2024-02-11T23:00:00Z", "2024-02-10T23:00:00Z", "2024-02-01T23:00:00Z")
+    ok = [x["t"][:10] for x in pra_sebelum_acuan(k2, u, acuan)]
+    assert "2024-02-12" not in ok and "2024-02-11" in ok and "2024-02-10" in ok       # acuan-6 ditolak, acuan-7 diterima
+    assert layak_satu(gn, kat("2024-02-20T23:05:00Z", "2024-02-12T23:00:00Z"), fr, acuan) is None
+    assert layak_satu(gn, kat("2024-02-19T23:05:00Z", "2024-02-11T23:00:00Z"), fr, acuan) == (1, "2024-02-11")
+    assert layak_satu(gn, kat("2024-02-20T23:05:00Z", "2024-02-12T23:00:00Z"), fr, acuan, 0) == (1, "2024-02-12")   # margin 0 = tanpa margin
     # pembagian waktu dan pasangan terlarang
     epi = episode_kerusakan()
     assert len(epi) == len(EPISODE) + 4
@@ -335,6 +375,34 @@ def uji():
             assert J["pasangan"] == K["pasangan"] and all(len(r) == len(J["pasangan_kolom"]) for r in J["pasangan"])
         finally:
             KRI, SID = KRI0, SID0
+    # kunci ulang: hanya bila versi lama berjangkar+utuh dan vonis belum ada
+    def tolak(fn, pesan):
+        try:
+            fn()
+        except Tolak as e:
+            return str(e)
+        raise SystemExit(pesan)
+    with tempfile.TemporaryDirectory() as d:
+        kri, sid, von = (os.path.join(d, n) for n in ("k.json", "s.json", "v.json"))
+        open(kri, "w").write('{"versi":1}\n')
+        sj = lambda **k: json.dump({"sidik": sidik_isi(open(kri, "rb").read()), "jangkar_commit": "abc", **k}, open(sid, "w"))
+        vb = lambda: versi_baru_syarat(sid, kri, von, git=False)
+        sj()
+        assert vb() == (1, [{"versi": 1, "sidik": sidik_isi(open(kri, "rb").read()), "jangkar_commit": "abc"}])
+        sj(riwayat=[{"versi": 0, "sidik": "x", "jangkar_commit": "y"}])           # riwayat lama utuh, versi lama ditambahkan di belakang
+        assert [r["versi"] for r in vb()[1]] == [0, 1]
+        sj(vonis={"label": "lulus"})
+        tolak(vb, "vonis di sidik harus menutup versi-baru")
+        sj()
+        open(von, "w").write("{}")
+        assert "GS-13" in tolak(vb, "berkas vonis harus menutup versi-baru")
+        os.remove(von)
+        json.dump({"sidik": sidik_isi(open(kri, "rb").read()), "jangkar_commit": ""}, open(sid, "w"))
+        tolak(vb, "versi lama tanpa jangkar harus ditolak")
+        sj()
+        open(kri, "w").write('{"versi":9}\n')
+        tolak(vb, "kriteria lama yang berubah harus ditolak")
+    assert dasar(2)["margin_pra_hari"] == 7 and dasar(1)["margin_pra_hari"] == 0
     # kunci: jangkar kosong ditolak, sidik salah ditolak
     with tempfile.TemporaryDirectory() as d:
         kri, sid = os.path.join(d, "k.json"), os.path.join(d, "s.json")
@@ -401,7 +469,12 @@ if __name__ == "__main__":
         if mode == "uji":
             uji()
         elif mode == "layak":
-            layak()
+            layak(luring="--luring" in sys.argv)
+        elif mode == "versi-baru":
+            a = sys.argv[2:]
+            if "--alasan" not in a or not a[a.index("--alasan") + 1:][:1] or not a[a.index("--alasan") + 1].strip():
+                sys.exit('versi-baru butuh --alasan "..."')
+            layak(luring="--luring" in a, baru=a[a.index("--alasan") + 1])
         elif mode == "prasyarat":
             periksa_kunci()
             print("prasyarat lulus: kriteria terkunci")

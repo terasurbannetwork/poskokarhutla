@@ -1,9 +1,17 @@
 {
  "berkas": "scripts/siklus/genangan_kriteria.json",
- "sidik": "1d8e07a5c2765ebc6d6778f5b90ef01c15fca29c04325278e0a0dbf848eddea1",
+ "sidik": "b48651fd48e21cfc4a71a2149b1c626d978730eece2f36cb0c8222a36548aace",
  "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
- "ditulis": "2026-11-24",
- "versi": 1,
- "jangkar_commit": "408f10b5a1dd649932c01c273dced546d8f08f10",
+ "ditulis": "2026-11-25",
+ "versi": 2,
+ "riwayat": [
+  {
+   "versi": 1,
+   "sidik": "1d8e07a5c2765ebc6d6778f5b90ef01c15fca29c04325278e0a0dbf848eddea1",
+   "jangkar_commit": "408f10b5a1dd649932c01c273dced546d8f08f10"
+  }
+ ],
+ "alasan_versi": "K6 pemilik 25 Nov 2026: margin pra N = 7 hari (pra paling lambat tanggal DIBI dikurangi 7); belum ada vonis GS-13",
+ "jangkar_commit": "",
  "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. prasyarat menolak selama kosong."
 }
