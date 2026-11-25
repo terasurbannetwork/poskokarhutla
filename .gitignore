@@ -129,4 +129,4 @@ public/data/progresi/arsip/
 public/udara/data/stasiun_asing.json
 
 # desa-waspada (24 Nov 2026): dibuat titik.yml lewat cache data-, tidak di-commit (DESAIN-TEKNIS §5)
-public/data/desa_waspada.json
+public/data/desa_waspada/

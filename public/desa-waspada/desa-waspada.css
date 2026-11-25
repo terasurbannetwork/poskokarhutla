@@ -77,3 +77,5 @@ tr.dw-pilih{background:color-mix(in oklch,var(--info) 18%,transparent)!important
 .pager button:disabled{opacity:.5;cursor:default}
 .dw-bt{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:var(--fs-3);text-align:justify}
 .ex-std .ex-tabel{overflow:auto}
+.dw-sibuk { opacity: .55; }
+.dw-sibuk::before { content: "Memuat daftar pulau…"; display: block; padding: 4px 0; }

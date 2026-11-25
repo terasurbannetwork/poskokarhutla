@@ -19,4 +19,6 @@
 .ik-dua div{display:grid;gap:2px;min-width:0}
 .ik-dua b{font-size:var(--fs-8);font-variant-numeric:tabular-nums;line-height:1.15}
 .ik-dua small{font-size:var(--fs-2);color:var(--ink2)}
+.ik-lompat-btn{padding:4px 10px;border:1px solid var(--line);border-radius:var(--r-pill);background:var(--card);color:var(--brand2);font:inherit;font-size:var(--fs-2);font-weight:700;cursor:pointer;text-align:left}
+.ik-lompat-btn:hover{border-color:var(--brand2)}
 @media (max-width:640px){.ik-dua b{font-size:var(--fs-7)}}

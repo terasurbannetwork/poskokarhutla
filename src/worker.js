@@ -755,6 +755,7 @@ export const HTML_RUTE = [
   [/^\/lapor\/hari-ini\/?$/, "/lapor/hari-ini.html", "/lapor/hari-ini"],   // kejadian hari ini dari laporan terverifikasi BPBD (lapor-kejadian K86, LK-06); publik, data dari /api/lapor/hari-ini di balik saklar LAPOR_HARI_INI
   [/^\/lapor\/data\/?$/, "/lapor/data/index.html", "/lapor/data"],   // data lanjutan BPBD (LJ-16): token tim di URL ditukar kuki; halaman tidak memuat data, API menjaga kuki tim atau sesi staf
   [/^\/lapor\/meja\/?$/, "/lapor/meja.html", "/lapor/meja"],   // meja laporan staf; tertutup di centurisk97.id, /api/lapor/meja* menjaga sesi staf
+  [/^\/desa-waspada\/?$/, "/desa-waspada/index.html", "/desa-waspada"],   // Desa Waspada (public/desa-waspada/, data/kajian-bnpb/desa-waspada); publik (KEPUTUSAN-DESA K6)
   [/^\/verifikasi(?:\/[^/]{1,40})?\/?$/, "/verifikasi.html", "/verifikasi"],   // segel dokumen (segel-dokumen SG-08, K3 Q2): publik tanpa akun, kode di jalur; data hanya dari /api/verifikasi/<kode>
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -779,12 +780,14 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/lapor/data", "layar tim pendataan BPBD dari tautan WA (lapor-lanjutan LJ-15, KEPUTUSAN-MASUK K17); halaman tidak memuat data, token ?t= ditukar kuki tim lewat /api/lapor/data/masuk dan tiap API menjaga kuki tim atau sesi staf"],
   ["/lapor/hari-ini", "kejadian hari ini dari laporan warga terverifikasi BPBD untuk wartawan dan warga (lapor-kejadian K86, KEPUTUSAN-MASUK K15); halaman tidak memuat data, kartu dari /api/lapor/hari-ini berdaftar putih kolom dan di balik saklar LAPOR_HARI_INI"],
   ["/verifikasi", "pemeriksaan keaslian dokumen bersegel lewat kode di bawah QR, terbuka tanpa akun (KEPUTUSAN-SEGEL K3, Q2); halaman tidak memuat data, sampul dokumen dari /api/verifikasi/<kode> yang berlaju dan tanpa angka isi"],
+  ["/desa-waspada", "daftar desa dengan titik panas 7 hari dan desa berulang terbakar, publik (KEPUTUSAN-DESA K6, pemilik 25 Nov 2026, KEPUTUSAN-MASUK K20); halaman tidak memuat data, JSON statis tanpa koordinat titik dan tanpa nama orang"],
   ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
-  if (/^\/lapor\/(index|lacak|s\/index|data\/index)\.html$/.test(url.pathname) || /^\/lapor\/s\/[^/]+$/.test(jalur)) return false;
-  if (url.pathname === "/verifikasi.html" || /^\/verifikasi\/[^/]{1,40}$/.test(jalur)) return false;   // halaman segel publik: kode di jalur (KEPUTUSAN-SEGEL K3)   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
+  if (url.pathname === "/desa-waspada/index.html") return false;   // alamat langsung berkas, sama dengan jalur bersih (K6)
+  if (/^\/lapor\/(index|lacak|s\/index|data\/index)\.html$/.test(url.pathname) || /^\/lapor\/s\/[^/]+$/.test(jalur)) return false;   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
+  if (url.pathname === "/verifikasi.html" || /^\/verifikasi\/[^/]{1,40}$/.test(jalur)) return false;   // halaman segel publik: kode di jalur (KEPUTUSAN-SEGEL K3)
   if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;

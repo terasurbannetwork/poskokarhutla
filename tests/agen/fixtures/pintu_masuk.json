@@ -18,7 +18,8 @@
     "/lapor/s",
     "/lapor/data",
     "/lapor/hari-ini",
-    "/verifikasi"
+    "/verifikasi",
+    "/desa-waspada"
   ],
   "boleh_tambah_k8": [
     "/masuk",

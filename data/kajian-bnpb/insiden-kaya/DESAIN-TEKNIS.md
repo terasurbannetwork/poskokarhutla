@@ -94,6 +94,7 @@ Kepala `progresi.py` memuat: sumber metode, repo, tahun, lisensi MIT, dan teks p
 ```
 
 Aturan kunci:
+- IK-13 (K8): `insiden.json` per insiden baru boleh memuat `lompat_dari: {"id": "<insiden aktif lain>", "km": 5.8}` bila titik terdekatnya <= 10 km dari insiden aktif lain saat dibuat (jarak, bukan sebab; tidak dihapus sesudahnya).
 - Kunci Indonesia; tidak memakai kunci `lat`/`lon` untuk bangunan di berkas ini (hanya untuk petak api, titik awal, lompatan).
 - `laju[].p90_km` bernilai `null` dan `terukur:false` bila di bawah satu sel; tidak pernah 0.
 - Ukuran ≤ 150 KB per berkas; geometri disederhanakan ≤ 0,0004 derajat, koordinat 4 desimal; isokron ≤ 30 langkah terbaru.

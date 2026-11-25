@@ -36,8 +36,10 @@ async function gambar(d) {
   const lokasi = rata(location.pathname);
   const tanpaSegera = "tanpaSegera" in d.dataset;
   const butirSemua = TAMPIL.size ? "" : `<a href="/semua"${lokasi === "/semua" ? ' aria-current="page"' : ""}>${SEMUA}Semua bencana</a>`;
+  /* DW-08: satu tautan di bawah Karhutla (Q6 bawaan), tanpa kartu baru di index.html */
+  const desaWaspada = `<a href="/desa-waspada"${lokasi.startsWith("/desa-waspada") ? ' aria-current="page"' : ""} style="padding-left:36px">${svg('<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Desa waspada</a>`;
   const butir = butirSemua + daftar.map(b => {
-    if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>`;
+    if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>` + (b.id === "karhutla" ? desaWaspada : "");
     return tanpaSegera && !TAMPIL.size ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">${TAMPIL.size ? "Soon" : "Segera"}</em></a>`;
   }).join("");
   const sr = d.querySelector("summary .sr")?.outerHTML || "";

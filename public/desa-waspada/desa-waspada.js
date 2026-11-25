@@ -1,7 +1,7 @@
 "use strict";
-/* Desa Waspada (DW-07): dua daftar desa dari public/data/desa_waspada.json, dibaca apa adanya.
+/* Desa Waspada (DW-07): dua daftar desa dari public/data/desa_waspada/ (indeks.json + satu berkas per pulau), dibaca apa adanya.
    Metode daftar dan hindcast diadaptasi dari Pantau Karhutla (MIT, Copyright (c) 2026 Pantau Karhutla), ditulis ulang dan diukur ulang di data kita.
-   Teks dari data masuk DOM lewat textContent. Satu-satunya fetch: berkas data itu sendiri (peta mini memuat ubin dasar). */
+   Teks dari data masuk DOM lewat textContent. Fetch hanya berkas data itu sendiri (peta mini memuat ubin dasar). */
 (() => {
   const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
   const fmt = n => n == null ? "–" : Number(n).toLocaleString("id-ID");
@@ -36,7 +36,7 @@
     "peluang kab/kota hari ke-3 (%)", "bujur", "lintang", "daftar"];
   window.DesaWaspadaCsv = { netral, sel, KOLOM_CSV };   /* dipakai uji murni */
 
-  let D = null, K = {}, TAHUN_INI = new Date().getFullYear(), N_TAHUN = 14;
+  let D = null, P = null, PULAU = "", TAMPIL = "", sPul = null, cache = {}, tokenPulau = 0, K = {}, TAHUN_INI = new Date().getFullYear(), N_TAHUN = 14;
   const peta = {};   /* id daftar -> {map, ...} */
 
   /* ---------- definisi kolom per daftar ---------- */
@@ -76,13 +76,15 @@
     hd.append(el("span", "ex-ey"), jd); const bd = el("div", "ex-bd"); a.append(hd, bd); host.replaceChildren(a); return { a, hd, jd, bd, h3 }; };
   const pil = t => el("span", "dw-pil", t);
 
+  const sibuk = ya => ["dwA", "dwB"].forEach(id => { const h = document.getElementById(id); h.classList.toggle("dw-sibuk", ya); if (ya) h.setAttribute("aria-busy", "true"); else h.removeAttribute("aria-busy"); });
   const hipotesis = () => D.laju?.status !== "lulus";
+  const jumlah = k => { const v = Object.values(D.pulau).map(p => p[k]); return v.some(x => x == null) ? null : v.reduce((s, x) => s + x, 0); };
 
   function ringkasan() {
     const host = document.getElementById("dwRingkas"), k = kotak(host, "ringkas", "Ringkasan", "Dua daftar desa dari titik panas VIIRS 7 hari dan riwayat petak 2012 sampai 2025.");
     const dl = el("dl", "dw-ring");
     const baris = (n, v) => { const d = el("div"); d.append(el("dt", null, n), el("dd", null, v)); dl.append(d); };
-    baris("Desa dengan titik panas 7 hari", fmt(D.a.total)); baris("Desa pernah terbakar berulang, tanpa titik minggu ini", fmt(D.b.total));
+    baris("Desa dengan titik panas 7 hari", fmt(jumlah("a_total"))); baris("Desa pernah terbakar berulang, tanpa titik minggu ini", fmt(jumlah("b_total")));
     const dibuat = Date.parse(D.dibuat), acuan = Date.parse(D.acuan);
     baris("Daftar dibuat", isNaN(dibuat) ? "–" : tglWib(dibuat, true)); baris("Titik panas terakhir diperbarui", isNaN(acuan) ? "–" : tglWib(acuan, true));
     k.bd.append(dl);
@@ -90,11 +92,19 @@
     const def = D.definisi || {};
     k.bd.append(el("p", "dw-def", `Titik panas: satelit VIIRS, keyakinan nominal dan tinggi, ${Math.round((def.jendela_jam || 168) / 24)} hari terakhir. Pernah terbakar berulang: sedikitnya ${def.min_tahun || 3} tahun terbakar pada satu petak, ${(def.tahun_riwayat || [])[0]} sampai ${(def.tahun_riwayat || [])[1]}, dan tanpa titik panas 7 hari. Peluang yang ditampilkan adalah peluang kab/kota, bukan peluang desa.`));
     if (hipotesis()) k.jd.append(pil("hipotesis")), k.h3.title += " Laju terukur belum lolos ambang pengesahan, jadi berlabel hipotesis.";
+    sPul = el("select"); sPul.setAttribute("aria-label", "Pulau");
+    Object.entries(D.pulau).forEach(([n, v]) => sPul.append(new Option(`${n} (${fmt(v.a_total)} desa dengan titik, ${fmt(v.b_total)} desa berulang)`, n)));
+    sPul.value = PULAU; sPul.addEventListener("change", () => { PULAU = sPul.value; sibuk(true); nanti(() => muatPulau(PULAU)); });   /* chrome langsung, muat menyusul */
+    const w = el("div", "dw-ctl"); w.append(sPul); k.jd.append(w);
   }
 
   /* ---------- daftar ---------- */
+  /* satu pendengar untuk semua daftar: layar lebar membuka peta yang ada */
+  const mq = matchMedia("(min-width: 640px)");
+  mq.addEventListener("change", () => { if (mq.matches) [DAFTAR.a, DAFTAR.b].forEach(d => { if (d.kanPeta) d.kanPeta.open = true; }); });
   function bangun(d) {
     const host = document.getElementById(d.id === "a" ? "dwA" : "dwB");
+    /* ganti pulau: peta MapLibre dipakai ulang (elemen d.mpEl dipindah ke kartu baru), hanya sumbernya diisi ulang */
     const kanan = el("div", "dw-ctl");
     const sProv = el("select"), sKab = el("select"), cari = el("input"), unduh = el("button", "dw-unduh", "Unduh CSV");
     sProv.setAttribute("aria-label", "Provinsi"); sKab.setAttribute("aria-label", "Kabupaten/kota"); sKab.disabled = true;
@@ -102,14 +112,15 @@
     unduh.type = "button"; unduh.title = "Mengunduh daftar yang sedang disaring, semua halaman.";
     kanan.append(sProv, sKab, cari, unduh);
     const k = kotak(host, d.id, d.judul, d.id === "a" ? "Desa dengan sedikitnya satu titik panas VIIRS dalam 7 hari. Desa di lereng gunung api aktif bisa masuk karena titik gunung, bukan kebakaran lahan." : "Desa tanpa titik panas 7 hari yang sedikitnya 3 tahun terbakar pada satu petak, 2012 sampai 2025. Riwayat bukan penilaian atas desa.", kanan);
-    if (d.id === "b" && D.laju?.status === "belum") k.jd.append(pil("hipotesis"));
+    if (d.id === "b" && hipotesis()) k.jd.append(pil("hipotesis"));
+    k.jd.append(pil(PULAU));
     const ket = el("p", "dw-ket"), grid = el("div", "dw-grid"), kiri = el("div", "dw-kiri"), tw = el("div", "tw ex-tabel"), pager = el("div", "pager");
-    const kanPeta = el("details", "dw-peta"), sum = el("summary", null, "Peta"), mp = el("div", "dw-mp");
+    const kanPeta = el("details", "dw-peta"), sum = el("summary", null, "Peta"), mp = d.mpEl || (d.mpEl = el("div", "dw-mp"));
     kanPeta.append(sum, mp);
     kiri.append(tw, pager); grid.append(kiri, kanPeta); k.bd.append(ket, grid);
-    Object.assign(d, { k, sProv, sKab, cari, tw, pager, ket, mp, kanPeta, hal: 0, pilih: null, prov: "", kab: "", q: "", gen: 0 });
+    Object.assign(d, { k, sProv, sKab, cari, tw, pager, ket, mp, kanPeta, hal: 0, pilih: null, pulauBaru: true, prov: "", kab: "", q: "", gen: 0 });
     /* ponsel: peta dilipat; layar lebar: selalu terbuka */
-    const mq = matchMedia("(min-width: 640px)"), atur = () => { if (mq.matches) kanPeta.open = true; }; atur(); mq.addEventListener("change", atur);
+    if (mq.matches) kanPeta.open = true;
     kanPeta.addEventListener("toggle", () => { if (!kanPeta.open) return; nanti(() => { if (peta[d.id]) peta[d.id].map.resize(); else bukaPeta(d); }); });
 
     const provs = new Map();
@@ -135,8 +146,8 @@
       pager.querySelector("span").textContent = `Halaman ${fmt(d.hal + 1)} dari ${fmt(hl)}`;
       pager.querySelector('button[data-h="-1"]').disabled = d.hal === 0; pager.querySelector('button[data-h="1"]').disabled = d.hal >= hl - 1;
       nanti(() => gambarTabel(d)); });
-    terapkan(d, false);
-    if (!kanPeta.hidden && kanPeta.open) bukaPeta(d);
+    terapkan(d, !!peta[d.id]);
+    if (!kanPeta.hidden && kanPeta.open) { if (peta[d.id]) nanti(() => peta[d.id].map.resize()); else bukaPeta(d); }
   }
 
   function isiKab(d) {
@@ -175,19 +186,14 @@
     W.slice(hal * HAL, hal * HAL + HAL).forEach(r => {
       const tr = el("tr"); tr.dataset.kd = r[K.kd]; if (r[K.kd] === d.pilih) tr.className = "dw-pilih";
       kolom.forEach(c => { const td = el("td", (KOL[c].num ? "n" : "") + (KOL[c].ponsel ? " dw-p" : "")); ISI[c](r, td); tr.append(td); });
-      P_KUNCI.forEach(p => { const v = r[K[p]], td = el("td", "n dw-p", v == null ? "–" : v + "%"); tr.append(td); });
+      P_KUNCI.forEach(p => { const v = r[K[p]], td = el("td", "n dw-p", v == null ? "–" : fmt(v) + "%"); tr.append(td); });
       f.append(tr); });
     tb.append(f); t.append(tb);
     if (!W.length) tw.replaceChildren(el("p", "dw-kosong", d.kosong)); else tw.replaceChildren(t);
     /* keterangan potongan (jujur, tidak diam-diam) */
-    const baris = D[d.id], hasil = [];
-    if (d.id === "a" && baris.terpotong) { const per = baris.terpotong_per_prov;
-      if (!d.prov) hasil.push(`Menampilkan ${fmt(baris.baris.length)} dari ${fmt(baris.total)} desa dengan titik panas terbanyak; sisanya tidak dimuat di daftar ini.`);
-      else if (per) { const n = per[d.prov]; if (n) hasil.push(`Daftar provinsi ini dipotong: ${fmt(n)} desa lain dengan titik panas tidak ditampilkan.`); }
-      else hasil.push("Angka saringan hanya dari 2.000 desa yang dimuat."); }
-    if (d.id === "b") { const per = baris.terpotong_per_prov || {};
-      if (d.prov) { const n = per[d.prov]; if (n) hasil.push(`Daftar provinsi ini dipotong: ${fmt(n)} desa lain yang memenuhi riwayat tidak ditampilkan.`); }
-      else { const n = Object.values(per).reduce((s, v) => s + v, 0); if (n) hasil.push(`Menampilkan ${fmt(baris.baris.length)} dari ${fmt(baris.total)} desa; daftar dipotong per provinsi, ${fmt(n)} desa tidak ditampilkan.`); } }
+    const baris = P[d.id], hasil = [], per = baris.terpotong_per_prov || {}, apa = d.id === "a" ? "dengan titik panas" : "yang memenuhi riwayat";
+    if (d.prov) { const n = per[d.prov]; if (n) hasil.push(`Daftar provinsi ini dipotong: ${fmt(n)} desa lain ${apa} tidak ditampilkan.`); }
+    else { const n = Object.values(per).reduce((s, v) => s + v, 0) || baris.terpotong || 0; if (n) hasil.push(`Menampilkan ${fmt(baris.baris.length)} dari ${fmt(baris.total)} desa di ${PULAU}; daftar dipotong per provinsi, ${fmt(n)} desa tidak ditampilkan.`); }
     hasil.push(`${fmt(W.length)} desa sesuai saringan.`);
     d.ket.textContent = hasil.join(" ");
     const hl = Math.max(1, Math.ceil(W.length / HAL)); d.pager.replaceChildren();
@@ -201,14 +207,14 @@
     const baris = a => L.push(a.map(sel).join(","));
     const tgl = (D.dibuat || "").slice(0, 10);
     /* baris keterangan tanpa koma supaya benar-benar diawali "#" tanpa kutip */
-    const ac = Date.parse(D.acuan); L.push(`# Desa Waspada daftar ${sebut} dibuat ${tgl}; titik panas terakhir diperbarui ${isNaN(ac) ? "" : tglWib(ac, true)}`);
+    const ac = Date.parse(D.acuan); L.push(`# Desa Waspada daftar ${sebut}, pulau ${PULAU}, dibuat ${tgl}; titik panas terakhir diperbarui ${isNaN(ac) ? "" : tglWib(ac, true)}`);
     L.push("# Koordinat (bujur dan lintang) memakai titik sebagai pemisah desimal.");
     L.push("# Titik panas: VIIRS keyakinan nominal dan tinggi; tidak sama dengan angka utama. Tahun terbakar: batas bawah 2012 sampai 2025. Bagian di gambut: persen perkiraan. Sel kosong berarti tidak ada data; bukan 0.");
     L.push("# Peluang kab/kota: peluang kabupaten/kota dari model prakiraan; sama untuk semua desa di kab/kota itu; bukan peluang desa.");
     baris(KOLOM_CSV);
     (d.urutan || d.sel).forEach(r => baris([r[K.kd], r[K.desa], r[K.kec], r[K.kab], r[K.prov], r[K.titik7], r[K.titik24], r[K.terakhir] ? terakhir(r[K.terakhir], 0) : null, r[K.tahun], gambutAng(r[K.gambut]), r[K.p1], r[K.p2], r[K.p3], r[K.lon], r[K.lat], sebut]));
     const u = URL.createObjectURL(new Blob(["﻿" + L.join("\r\n") + "\r\n"], { type: "text/csv;charset=utf-8" }));
-    const a = el("a"); a.href = u; a.download = `desa-waspada-${sebut}-${tgl}.csv`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+    const a = el("a"); a.href = u; a.download = `desa-waspada-${PULAU.toLowerCase().replace(/\s+/g, "-")}-${sebut}-${tgl}.csv`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
   }
 
   /* ---------- peta mini ---------- */
@@ -242,7 +248,7 @@
   function perbaruiPeta(d, geser) {
     const p = peta[d.id]; if (!p?.siap) return;
     p.map.getSource("pin").setData(fitur(d)); p.map.getSource("pilih").setData(kosongFc); p.pop.remove();
-    if (geser && d.sel.length && (d.prov || d.kab || d.q)) {
+    if (geser && d.sel.length && (d.prov || d.kab || d.q || d.pulauBaru)) { d.pulauBaru = false;
       const b = new maplibregl.LngLatBounds(); d.sel.forEach(r => b.extend([r[K.lon], r[K.lat]]));
       p.map.fitBounds(b, { padding: 40, maxZoom: 11, duration: 0 });
     } else if (geser && !d.sel.length) p.map.jumpTo({ center: [118, -2.4], zoom: 3.6 });
@@ -284,19 +290,34 @@
   function batasan() {
     const host = document.getElementById("dwBatas"), k = kotak(host, "batas", "Batasan data", "Cara membaca dua daftar di atas.");
     const ul = el("ul", "dw-bt"); (D.batasan || []).forEach(s => ul.append(el("li", null, s)));
-    if (D.a?.tanpa_desa) ul.append(el("li", null, `${fmt(D.a.tanpa_desa)} titik panas jatuh di kab/kota tanpa poligon desa dan tidak masuk daftar.`));
+    if (D.tanpa_desa) ul.append(el("li", null, `${fmt(D.tanpa_desa)} titik panas jatuh di kab/kota tanpa poligon desa dan tidak masuk daftar.`));
     k.bd.append(ul);
   }
 
   /* ---------- mulai ---------- */
+  const galat = (id, jd) => { const k = kotak(document.getElementById(id), "ringkas", jd, ""); k.bd.append(el("p", "dw-kosong", "Daftar belum tersedia. Coba lagi nanti.")); };
+  async function ambil(url) { const res = await fetch(url, { cache: "no-cache" }); if (!res.ok) throw new Error(res.status); return res.json(); }
+  async function muatPulau(n) {
+    const t = ++tokenPulau;
+    try { cache[n] = cache[n] || await ambil("/data/desa_waspada/" + D.pulau[n].berkas); }
+    catch (e) {
+      if (t !== tokenPulau) return;
+      sibuk(false); PULAU = TAMPIL; if (sPul) sPul.value = TAMPIL;   /* kembali ke pulau yang tampil */
+      if (!TAMPIL) { ["dwA", "dwB"].forEach(id => document.getElementById(id).replaceChildren()); galat("dwA", "Titik panas 7 hari"); }
+      else { const k = document.querySelector("#dwA .dw-ket"); if (k) k.textContent = "Pulau itu belum bisa dimuat. Coba lagi nanti."; }
+      return; }
+    if (t !== tokenPulau) return;   /* pilihan sudah berganti selagi memuat; yang terbaru yang melepas sibuk */
+    P = cache[n]; K = Object.fromEntries(P.kolom.map((c, i) => [c, i])); TAMPIL = n;
+    for (const c of ["a", "b"]) { const d = DAFTAR[c]; d.baris = P[c].baris; d.urut = c === "a" ? ["titik7", -1] : ["tahun", -1]; d.hal = 0; }
+    bangun(DAFTAR.a); sibuk(false); nanti(() => bangun(DAFTAR.b));
+  }
   async function mulai() {
-    let res; try { res = await fetch("/data/desa_waspada.json", { cache: "no-cache" }); if (!res.ok) throw new Error(res.status); D = await res.json(); }
-    catch (e) { const h = document.getElementById("dwRingkas"); const k = kotak(h, "ringkas", "Ringkasan", ""); k.bd.append(el("p", "dw-kosong", "Daftar belum tersedia. Coba lagi nanti.")); return; }
-    K = Object.fromEntries(D.kolom.map((c, i) => [c, i]));
+    try { D = await ambil("/data/desa_waspada/indeks.json"); } catch (e) { galat("dwRingkas", "Ringkasan"); return; }
     const ry = D.definisi?.tahun_riwayat; if (ry) N_TAHUN = ry[1] - ry[0] + 1;
     TAHUN_INI = wibDari(Date.now()).y;
+    PULAU = Object.entries(D.pulau).sort((x, y) => y[1].a_total - x[1].a_total)[0][0];
     ringkasan();
-    for (const [i, c] of ["a", "b"].entries()) { const d = DAFTAR[c]; d.baris = D[c].baris; d.urut = d.urut.slice(); nanti(() => bangun(d)); }
+    nanti(() => muatPulau(PULAU));
     nanti(() => { laju(); batasan(); });
   }
   mulai();

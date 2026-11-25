@@ -57,7 +57,7 @@ Dua daftar desa yang membantu pimpinan, BPBD, dan relawan memilih desa untuk dic
 
 1. `scripts/data/desa_waspada_laju.json` memuat laju hindcast 2023 untuk empat kelompok (A, B, semua lainnya, tak pernah terbakar), dengan jumlah desa-minggu dan selang Wilson, dihitung dari data lokal dan dibekukan.
 2. Hasil diulang dengan NOAA-20 2023 (Q4) dan ditulis berdampingan; selisih besar dilaporkan jujur.
-3. Vonis `belum|lulus_sementara|lulus|gagal` terhadap ambang Q2 tertulis di keluaran; layar memakai pil hipotesis kecuali `lulus`, yang hanya ditulis sesudah pemilik menjawab Q2.
-4. Dua daftar terbit di `public/data/desa_waspada.json` ≤ 450 KB dan lolos gerbang.
+3. Vonis `belum|lulus|gagal` terhadap ambang Q2 (disahkan K7) tertulis di keluaran; layar memakai pil hipotesis kecuali `lulus`.
+4. Dua daftar terbit per pulau di `public/data/desa_waspada/<pulau>.json` ≤ 450 KB per berkas dan lolos gerbang.
 5. Tiga desa di tiga provinsi diperiksa manual pada citra dan peta batas; hasil di `tests/desa-waspada/hasil_manual.md`.
 6. Halaman memakai kartu standar tanpa kalimat kesimpulan; pemilik meninjau di `http://localhost:8800/desa-waspada`.

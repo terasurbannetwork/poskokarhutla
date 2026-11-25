@@ -18,7 +18,7 @@ Subagen tidak commit dan tidak push; sesi induk yang melakukannya (AGENTS §9). 
 | IK-10 | F-11 kartu "Bangunan dekat api" | dua angka, luas atap, lingkaran 500 m di sekitar petak segar, "belum tercakup", `title` metodologi dan atribusi | `layar-peta` → `selera-angka`, `security-reviewer` | tinjau di lokal, gerbang kartu | IK-07, Q8 (bawaan dipakai) | **Sisa (layar sudah ada di `public/insiden_kaya.js`): lingkaran 500 m belum digambar, menunggu keputusan sumber petak segar (`insiden_bangunan.json` tanpa koordinat; `petak/<id>.json` belum pasti terbit).**
 | IK-11 | F-13 gerbang | `tests/agen/gerbang-insiden-kaya.test.mjs` (RENCANA-UJI §5), daftar `LAYAR` kartu dan tanpa-kesimpulan | `penulis-gerbang` | gerbang merah pada pelanggaran contoh, hijau pada keluaran asli | IK-05, IK-07 |
 | IK-12 | Terbit dan pemantauan | verifikasi tayang: tunggu `terbit.yml` sukses, cek berkas langsung dan `/api/status`; halaman metodologi memuat atribusi MIT dan CC BY | `mekanik-mesin` + `layar-peta` | berkas tayang, ukuran terbit | semua |
-| IK-13 | Tanda lompatan antar-insiden | insiden baru ≤ 10 km dari insiden aktif ditandai "kemungkinan lompatan" | `pipa-data` → `validasi-model` | – | **Q4, tidak dikerjakan sebelum dijawab** |
+| IK-13 | Tanda lompatan antar-insiden | insiden baru ≤ 10 km dari insiden aktif ditandai "kemungkinan lompatan" | `pipa-data` → `validasi-model` | – | Q4 dijawab K8 (25 Nov 2026); **SELESAI 25 Nov 2026**: `lompat_dari` di `insiden.py`, tanda di laci insiden |
 
 ## Urutan usulan
 
