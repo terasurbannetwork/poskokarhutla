@@ -2762,9 +2762,14 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-db-kisi button b{overflow:hidden;text-overflow:ellipsis}
 @media (max-width:560px){.lp-db-isi{gap:14px!important;padding:14px 16px 16px!important}.lp-db-kisi button{white-space:normal}}
 /* tombol putih di hero berwarna sendiri-sendiri (pemilik 25 Nov 2026: "warnanya agar beda-beda"): warna ikon dan garis bawah dari token status, teks tetap gelap */
-.lp-tombol-kaca{--kc:var(--brand2);box-shadow:inset 0 -3px 0 var(--kc)!important}
-.lp-tombol-kaca svg{background:color-mix(in oklab,var(--kc) 16%,var(--card))!important;color:var(--kc)!important}
-.lp-tombol-kaca:hover{background:color-mix(in oklab,var(--kc) 8%,var(--card))!important}
-.lp-kaca-pasang{--kc:var(--ok-tx)}
-.lp-kaca-peringatan{--kc:var(--warn-tx)}
-.lp-kaca-hilang{--kc:var(--info-tx)}
+/* 25 Nov 2026 malam (pemilik: "bagusin"): dua tingkat. Merah dan oranye hanya untuk dua tombol lapor; empat tombol putih seragam tanpa garis bawah, beda warnanya cukup di ubin ikon pekat */
+.lp-tombol-kaca{--kc:var(--brand2);box-shadow:0 8px 20px -14px color-mix(in oklab,var(--head-bg) 90%,transparent)!important}
+.lp-tombol-kaca svg{background:var(--kc)!important;color:var(--on-pekat)!important}
+.lp-tombol-kaca:hover{background:color-mix(in oklab,var(--kc) 7%,var(--card))!important}
+/* baris atas berwarna semua, baris bawah putih semua (pemilik 25 Nov 2026): Cek status ikut pekat seperti dua tombol lapor */
+.lp-tombol-kaca.lp-kaca-status{--kc:var(--info-tx);background:var(--kc)!important;color:var(--on-pekat)!important}
+.lp-tombol-kaca.lp-kaca-status:hover{background:color-mix(in oklab,var(--kc) 86%,var(--head-bg))!important}
+.lp-tombol-kaca.lp-kaca-status svg{background:color-mix(in oklab,var(--head-bg) 18%,transparent)!important;color:var(--on-pekat)!important}
+.lp-kaca-pasang,.lp-kaca-peringatan,.lp-kaca-hilang{--kc:var(--brand2)}
+/* label Sigap satu baris, tidak patah dua */
+.lp-hg-tip .lp-hg-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lp-hg-tip .lp-hg-label i{flex:none}
