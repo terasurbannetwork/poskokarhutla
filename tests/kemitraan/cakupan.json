@@ -11,6 +11,7 @@
     "hitung.UJI_BAHAYA": "hitung statusModel dan UJI_BAHAYA",
     "js:panduan.js": "cangkang KM L2b",
     "js:buku.js": "cangkang KM L3",
+    "js:menu.js": "menu kampus: cadangan sama dengan butir non-token",
     "py:konst.py": "uji:konst",
     "py:kode.py": "uji:kode",
     "js:konst.js": "konst.py dan konst.js identik",
