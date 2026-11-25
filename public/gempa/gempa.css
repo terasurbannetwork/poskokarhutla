@@ -146,3 +146,9 @@ main .ex>.ex-hd>.ctl>.seg>button{flex:1 1 0;min-width:0;text-align:center}
 .gk-x:empty{display:none}
 .gk-sub{font-size:var(--fs-1);color:var(--ink2)}
 .gk-x .lc-pil,.gk-x .lc-mmi{font-size:.625rem;padding:1px 7px}
+/* PB-54b: paragraf dan butir bab Metode di dalam Cerita.metode (span blok, karena komponen membungkus isi dengan <p>) */
+#metode .mt-p{display:block}
+#metode .mt-p+.mt-p{margin-top:6px}
+#metode .mt-b{padding-left:14px;position:relative}
+#metode .mt-b::before{content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:2px;background:var(--ink2)}
+#metode .ex-std+details.mt-sek{margin-top:20px}#metode details.mt-sek+.ex-std{margin-top:8px}

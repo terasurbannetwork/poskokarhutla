@@ -1,22 +1,16 @@
 "use strict";
 /* ================================================================ metode gempa dan tsunami
-   Satu-satunya tempat rumus (selera pemilik: kartu dan laci tanpa rumus). Gaya dan markup dari public/inti/metode.css (kembaran banjir/metode.js).
+   Satu-satunya tempat rumus (selera pemilik: kartu dan laci tanpa rumus). Kartu dari Cerita.metode (public/inti/cerita.js, PB-54b); bab Peluang.batasan tetap bergaya inti/metode.css.
    Bab yang belum berisi DISEMBUNYIKAN, tidak pernah menampilkan teks "menunggu". Bab Susulan, Tsunami, Evakuasi, dan Bukti muncul hanya bila modulnya
    (susulan.js, tsunami.js, data/bukti.json) ada; parameter diambil dari modulnya, bukan ditulis tangan.
    Bab Susulan dan Bukti diisi dari model_susulan.json dan bukti.json (pengerja pipa). Bab Tsunami dan Evakuasi sudah terisi (konstanta dari Tsunami.KALIBRASI dan SISI_AMAN). */
 const Metode = (() => {
-  const IK = {
-    getar: '<path d="M2 12h4l2-6 4 12 3-9 2 3h5"/>', susulan: '<path d="M3 17l5-5 3 3 6-8"/><circle cx="19" cy="7" r="2"/>', ombak: '<path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 3.5-4 6-3"/><path d="M2 19h20"/>',
-    evak: '<path d="M4 20h16M6 20V9l6-5 6 5v11M12 20v-6"/>', gedung: '<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>', orang: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>',
-    berkas: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>', batas: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sumber: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'};
-  const ik = n => `<svg class="mt-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[n] || ""}</svg>`;
   const a = (x, d = 2) => x == null || isNaN(x) ? "–" : Number(x).toLocaleString("id-ID", {maximumFractionDigits: d});
-  const li = L => `<ul>${L.filter(Boolean).map(x => `<li><span>${x}</span></li>`).join("")}</ul>`;
-  const bab = (n, ikon, judul, sub, singkat, teknis, batas) => `<details class="mt-sek"><summary><span class="mt-nom">${ik(ikon)}</span><span class="mt-jd"><b>${n}. ${judul}</b><small>${sub}</small></span></summary>
-    <div class="mt-isi"><div class="mt-singkat"><span class="mt-lbl">Singkatnya</span><p>${singkat}</p></div>
-      ${teknis ? `<details class="mt-tek"><summary>Rumus, konstanta, dan sumber</summary><div class="mt-tekisi">${teknis}</div></details>` : ""}
-      ${batas && batas.length ? `<div class="mt-batas"><span class="mt-lbl">Batasan</span>${li(batas)}</div>` : ""}</div></details>`;
-  const ptg = x => `<p>${x}</p>`;
+  /* PB-54b (F-28): tiap bab = Cerita.metode (inti/cerita.js): kepala nama seksi berikon, tanpa kalimat temuan; anak judul ke title kepala.
+     Isi bab dibungkus <p> oleh komponen, jadi paragraf dan butir di sini span blok (.mt-p, gempa.css), bukan <p>/<ul> bersarang. */
+  const li = L => L.filter(Boolean).map(x => `<span class="mt-p mt-b">${x}</span>`).join("");
+  const bab = (n, ikon, judul, sub, singkat, teknis, batas) => Cerita.metode(judul, {singkatnya: singkat, rincian: teknis, batasan: batas?.length ? li(batas) : ""}, {sumber: sub});
+  const ptg = x => `<span class="mt-p">${x}</span>`;
 
   /* ---- bab-bab; tiap fungsi mengembalikan HTML atau "" (bab disembunyikan) ---- */
   function guncangan(M, E, EP, PG) {
@@ -157,7 +151,8 @@ const Metode = (() => {
       "NOAA NCEI: batimetri ETOPO 2022; AWS Terrain Tiles: ketinggian dan proksi Vs30",
       "BNPB: tempat evakuasi tsunami; PVMBG MAGMA: level dan kegempaan gunung api; Sentinel-2 (Copernicus/ESA): citra sebelum dan sesudah gempa",
       "Penduduk: WorldPop 2026, disesuaikan dengan total PBB (CC BY 4.0)"];
-    return bab(0, "sumber", "Sumber data", "dari mana data dan model berasal", "Semua data berasal dari penyedia resmi dan terbuka; atribusi lengkap ada di bawah.", "", L);
+    /* daftar atribusi, bukan metode: kartu standar polos tanpa baris Batasan */
+    return Cerita._std("Sumber data", `<div class="cr"><div><span class="pl" style="--w:var(--brand2)">Atribusi</span><p>${li(L)}</p></div></div>`, {sumber: "dari mana data dan model berasal"});
   }
 
   async function render() {
@@ -166,9 +161,8 @@ const Metode = (() => {
     const j = u => muatJSON(u).catch(() => null);
     const [M, MS, meta, bm, B, PL, E, EP, PG, PS, BR, Z, D, EV] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null, typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, j("data/emsc_residu.json"), j("data/emsc_prospektif.json"), j("data/prospektif_gempa.json"), j("data/prospektif_susulan.json"), j("data/beruntun.json"), j("data/tsunami_zona.json"), j("data/dart.json"), typeof Evakuasi !== "undefined" ? Evakuasi.muat() : null]);
     const bagian = [guncangan(M, E, EP, PG), susulan(MS, PS), simulasi(), tsunami(), evakuasi(EV), zonaTsunami(Z, D), bukti(B), beruntun(BR), paparan(), dataHidup(), laporan(), typeof Peluang !== "undefined" ? Peluang.batasan(PL) : "", batas(), sumber(meta, bm)].filter(Boolean);
-    let n = 0; el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div>
-      ${bagian.map(h => h.replace(/<b>0\. /, `<b>${++n}. `)).join("")}`;
-    el.querySelector("details.mt-sek")?.setAttribute("open", "");
+    el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div>
+      ${bagian.map(h => h.replace(/<b>0\. /, "<b>")).join("")}`;
   }
   return {render};
 })();
