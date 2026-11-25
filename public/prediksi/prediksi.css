@@ -60,11 +60,14 @@
 /* model A (sistem desain dashboard, pemilik 11 Nov 2026): panel seksi kiri menggantikan tab atas, kepala halaman navy, kartu berlabel lurus */
 /* aside.pr-nav: lebih spesifik dari .db-nav{display:flex} di dasbor.css (dimuat sesudahnya); di <= 900 px seksi dipilih dari tab kepala (burger) */
 aside.pr-nav{display:none}
+/* body jadi .db-a hanya supaya --db-w (pegangan tarik inti/dasbor.js) diwarisi panel dan main; bukan grid */
+body.pr-a{display:block;max-width:none}
 main>.db-l1{display:none}
 @media (min-width:901px){
   aside.pr-nav{display:flex}
   #tabs{display:none!important}
-  main{left:272px;right:8px}
+  main{left:calc(var(--db-w,236px) + 36px);right:8px}
+  aside.pr-nav.db-nav{width:var(--db-w,236px)}
   .pr-nav{display:flex;position:fixed;top:calc(var(--top) + 8px);left:8px;bottom:8px;width:256px;height:auto;z-index:3}
   .pr-nav .db-nav-pb{--w:var(--ink2)}.pr-nav .db-nav-pb[data-umur="ok"]{--w:var(--ok)}.pr-nav .db-nav-pb[data-umur="lama"]{--w:var(--warn)}.pr-nav .db-nav-pb[data-umur="basi"]{--w:var(--bad)}
   .pr-nav .db-nav-pb b{color:var(--ink2);font-weight:700}

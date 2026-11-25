@@ -540,6 +540,8 @@ function panelKiri() {
     <nav class="db-nav-isi">${tabs.map(b => `<button type="button" class="db-nav-b" data-tab="${b.dataset.tab}" aria-current="${b.hasAttribute("aria-current")}"><i class="db-nav-ik">${svgD(IK_TAB[b.dataset.tab] || IK_TAB.besok)}</i><span class="db-nav-t">${esc(b.textContent.trim())}</span></button>`).join("")}</nav>
     <div class="db-nav-kaki"><p class="db-nav-g"><i>${svgD("M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 7v5l3 2")}</i><span>Pembaruan data</span></p>${kaki}</div></aside>`);
   $(".pr-nav").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) pilihTab(b.dataset.tab); });
+  /* panel bisa ditarik 200-320 px: pegangan .db-tarik dan kunci db_nav_lebar milik inti/dasbor.js (DasborA.tarik); lebar = --db-w di .db-a (body) */
+  document.body.classList.add("db-a", "pr-a"); window.DasborA?.tarik?.($(".pr-nav"));
   document.querySelector("main").insertAdjacentHTML("afterbegin", `<h1 class="db-l1" id="prJudul">${esc(document.querySelector("#tabs button[aria-current]")?.textContent || "Prakiraan 3 hari")}</h1>`);
 }
 
