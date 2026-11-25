@@ -13,7 +13,7 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 - [x] PB-50 uji balik hujan 50 mm: GAGAL, hanya musim kemarau (aaa2db9fd)
 - [x] Paket `peta-situs` (73f2495c6)
 - [ ] Peta situs PS-01 sampai PS-11 (PS-01 registri selesai cfdc34819)
-- [ ] Paritas PB-51 sampai PB-67 (PB-51 selesai cfb73c8b9: GNA/KEK jalur kosong jujur)
+- [ ] Paritas PB-51 sampai PB-67 (PB-51 cfb73c8b9; PB-52 5b7bbb479, rute Worker /api/siklus/kejadian/kasus dan unggah R2 menyusul)
 - [ ] Lapor Bencana sisa (LK-9..LK-13, sisa LA-*); cek dulu apakah sesi lain sedang memegang
 - [ ] Genangan GS-12, GS-13 (GS-09 migrasi menunggu pemilik)
 
@@ -47,4 +47,6 @@ Dasar urutan: musim hujan (banjir, longsor, cuaca dipakai tiap hari), modul hamp
 
 - Migrasi D1 produksi: GS-09 (genangan), SG-14 (segel 0171, 0172), dan migrasi baru yang dibuat tiket berikutnya.
 - Pertanyaan tanpa bawaan: LogPal 14, Rantai 12, cek-kabar Q6.
-- Peta situs Q1-Q5 (bawaan sementara dipakai).
+- Peta situs Q1-Q8 (bawaan sementara dipakai).
+- Paritas Q23: angka ambang aktivasi Pusdalops tidak ada di repo; sementara kandidat = tercatat di Logbook.
+- Batas pemakaian Sonnet habis sampai 29 Nov 23.00 WIB; pemilik memilih lanjut pakai Opus (25 Nov).
