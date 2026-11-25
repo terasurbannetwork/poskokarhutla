@@ -50,7 +50,7 @@ ditulis dengan bawaan sementara bertanda **[bawaan]**, tidak dikarang.
 
 | Kode | Pertanyaan | Bawaan sementara |
 | --- | --- | --- |
-| Q1 | Apakah bagian Referensi teknis dibuka untuk umum atau di balik sesi? | **[bawaan]** publik, karena repo publik dan Docs tidak memuat rahasia. Dibuka di `PUBLIK_TANPA_SESI` sebagai awalan `/docs`. Belum diputuskan pemilik |
+| Q1 | Apakah bagian Referensi teknis dibuka untuk umum atau di balik sesi? | **[bawaan]** publik, karena repo publik dan Docs tidak memuat rahasia. Dibuka di `PUBLIK_TANPA_SESI` sebagai awalan `/docs`. **Diputuskan pemilik 25 Nov 2026: "Ya, publik"** (KEPUTUSAN-MASUK K23) |
 | Q2 | Apakah angka pengaman penyalahgunaan (batas laju, panjang kode sekali pakai) ikut ditulis? | **[bawaan]** tidak ditulis nilainya; tertulis ada pembatasnya dan rujukan berkasnya |
 | Q3 | Apakah Docs memakai pencarian di peramban atau layanan pencarian? | **[bawaan]** indeks JSON statis di peramban |
 | Q4 | Apakah Docs juga tersedia dalam bahasa Inggris? | **[bawaan]** Indonesia dulu; versi Inggris menunggu pemilik (tiket DC-10) |
