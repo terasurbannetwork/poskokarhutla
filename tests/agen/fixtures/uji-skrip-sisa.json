@@ -1,0 +1,16 @@
+{
+ "_catatan": "Utang ratchet gerbang-uji-skrip (PB-62, 25 Nov 2026): hanya boleh MENYUSUT. 'tanpa-uji' = skrip scripts/umum/*.py tanpa subperintah `uji` (tidak dijalankan gerbang, sebab argumen asing bisa memicu kerja sungguhan). 'gagal' = punya `uji` tetapi `python3 -I <skrip> uji` belum lulus. Skrip yang sudah beres wajib dihapus dari sini; pemiliknya pipa-umum.",
+ "tanpa-uji": {
+  "bangunan.py": "hanya punya --uji (argparse), `uji` ditolak sebagai argumen asing",
+  "jaring.py": "self-check jalan di __main__ tanpa melihat argumen; belum ada subperintah uji",
+  "label_lapangan.py": "self-check di __main__ tetapi argparse menolak argumen `uji`",
+  "laporan.py": "uji() jadi bawaan tanpa argumen; tidak ada cabang `uji` eksplisit",
+  "nama_wilayah.py": "modul pustaka tanpa blok __main__ sama sekali",
+  "paparan_bangunan.py": "hanya --uji; `uji` jatuh ke jalur kerja penuh yang butuh public/data/jejak_api.json",
+  "profil_wilayah.py": "tanpa blok __main__; argumen `uji` dibaca sebagai folder sumber",
+  "sosmed.py": "hanya --uji; `uji` menjalankan panen sungguhan dan menimpa public/data/sosmed.json"
+ },
+ "gagal": {
+  "berita.py": "self-check jalan tanpa argumen; `uji` dibaca sebagai id bencana lalu mencari scripts/berita/uji.py"
+ }
+}
