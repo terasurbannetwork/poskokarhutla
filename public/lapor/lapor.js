@@ -1017,7 +1017,7 @@ async function segarkanLaporan() {
 /* sidebar: profil pelapor dan jumlah laporan (pemilik 19 Nov 2026: "bagusin") */
 function tampilProfil() {
   const p = cache.pelapor, n = (cache.laporan || []).length;
-  $("tabProfil").hidden = !p; if (p) { $("tabNama").textContent = p; $("tabAvatar").textContent = p.trim().split(/\s+/).slice(0, 2).map(x => x[0]).join("").toUpperCase(); $("tabWa").textContent = wa && /^62\d+$/.test(wa) ? `0${wa.slice(2, 5)}****${wa.slice(-4)}${n ? `, ${n} laporan` : ""}` : (n ? `${n} laporan` : ""); }
+  $("tabProfil").hidden = !p; if (p) { $("tabNama").textContent = p; $("tabAvatar").textContent = p.trim().split(/\s+/).slice(0, 2).map(x => x[0]).join("").toUpperCase(); $("tabWa").textContent = wa && /^62\d+$/.test(wa) ? `+62 ${wa.slice(2, 5)}****${wa.slice(-4)}${n ? `, ${n} laporan` : ""}` : (n ? `${n} laporan` : ""); }
   $("tabJumlah").hidden = !n; $("tabJumlah").textContent = String(n);
 }
 function tampilBeranda() {
