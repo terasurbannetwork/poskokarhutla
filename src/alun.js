@@ -350,7 +350,11 @@ async function adminAksi(env, req, id, kini) {
 
 const T = tabelBelum;
 export const RUTE_ALUN = {
-  "GET /alun-alun": (env, req, url) => halamanBnpbPublik(env, url, "alun-alun", {turnstile: true}),
+  /* forum utas pensiun dari publik (KEPUTUSAN-LAPOR-AI K94-K95, pemilik 25 Nov 2026): buka langsung di peramban dialihkan ke peta Alun-alun Pantau Bencana.
+     Klien tanpa Sec-Fetch-Dest (uji, curl) tetap dilayani; API /api/alun* tetap untuk kotak masuk instansi dan rekap pimpinan. */
+  "GET /alun-alun": (env, req, url) => req.headers.get("sec-fetch-dest") === "document"
+    ? new Response(null, {status: 302, headers: {location: "/lapor/?alun", "cache-control": "no-store"}})
+    : halamanBnpbPublik(env, url, "alun-alun", {turnstile: true}),
   "GET /admin/alun": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("alun")),
   "GET /api/alun": T((env, req, url, kini, ctx) => daftar(env, req, url, kini, ctx)),
   "GET /api/alun/admin": T((env, req, url, kini) => adminDaftar(env, req, url, kini)),

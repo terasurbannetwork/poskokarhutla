@@ -1455,6 +1455,9 @@ async function gambarPetaAlun(daftar) {
     pas();
   });
 }
+/* /lapor/?alun: tujuan /alun-alun lama (dialihkan Worker, KEPUTUSAN-LAPOR-AI K94); langsung ke peta Alun-alun tanpa animasi pembuka */
+const BUKA_ALUN = new URLSearchParams(location.search).has("alun");
+const layarAwal = () => ke(BUKA_ALUN ? "alun" : "beranda");
 async function tampilAlun() {
   const w = $("daftarAlun");
   if (!alunData.length) w.replaceChildren(el("p", "lp-redup", "Memuat laporan..."));
@@ -1622,7 +1625,7 @@ async function mulai(nomor, {diChat = false} = {}) {
   cache = simpan.baca(kunciCache()) || {transkrip: [], laporan: []};
   // dari chat (nomor baru diisi): riwayat lama tidak ditampilkan, supaya tidak tercampur dengan percakapan baru yang bisa berbahasa lain
   if (!diChat) { for (const t of cache.transkrip) tambah(t.dari, t.teks, {foto: t.foto, berkas: t.berkas, simpanKe: false}); if (cache.keadaan) terapkan(cache.keadaan, {dariCache: true}); }
-  tampilBantu(); tampilBeranda(); if (!diChat) ke("beranda");
+  tampilBantu(); tampilBeranda(); if (!diChat) layarAwal();
   try {
     const j = await (await fetch(`/api/lapor/sesi?wa=${nomor}`, {signal: AbortSignal.timeout(15000)})).json();
     if (!diChat && j.status && !["terkirim", "batal"].includes(j.status)) {
@@ -1646,7 +1649,7 @@ const tersimpan = simpan.baca("lapor-wa");
 /* pembuka: maskot dan sapaan tiap halaman dibuka (pemilik 20 Nov 2026 "animasinya mana yang di awal"); ketuk untuk melewati */
 $("maskotHero").innerHTML = maskot("sapa");
 if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
-const pernah = false;
+const pernah = BUKA_ALUN;   // tautan langsung ke Alun-alun: tanpa animasi pembuka
 if (!pernah) {
   const pb = $("pembuka"); $("maskotPembuka").innerHTML = maskot("sapa", "Sigap, maskot Pantau Bencana"); pb.hidden = false;
   // tampil lebih lama (pemilik 19 Nov 2026: "agak lamain"); ketuk atau tekan tombol apa saja untuk melewati
@@ -1655,7 +1658,7 @@ if (!pernah) {
   pb.addEventListener("click", tutup); addEventListener("keydown", tutup, {once: true});
 } else $("pembuka").remove();
 /* tanpa nomor: langsung beranda (pemilik 20 Nov 2026 "masuknya kaya langsung halaman utama"); nomor ditanya bot di chat, seperti bot WA */
-function mulaiTamu() { tampilBantu(); tampilBeranda(); ke("beranda"); }
+function mulaiTamu() { tampilBantu(); tampilBeranda(); layarAwal(); }
 if (LOKAL) { if (tersimpan) mulai(tersimpan); else mulaiTamu(); }
 else (async () => { // produksi: sesi /masuk; nomor tampil tersamar dari server, tidak pernah diketik ulang di sini
   let j = null; try { j = await (await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"})).json(); } catch {}

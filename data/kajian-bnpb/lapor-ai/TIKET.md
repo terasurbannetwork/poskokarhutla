@@ -195,3 +195,13 @@ Urutan: LA-78 dan LA-83 bebas satu sama lain; LA-80 sebelum LA-81 dan LA-82; LA-
 | LA-82 | Selesai lokal (24 Nov 2026): menu meja "Orang dicari" membuka daftar wilayah akun (`public/lapor/meja_cari.js`), chip Terbuka, Ada kabar selamat, Semua, pil "Ada kabar selamat dari nomor ini", ubah status (ditemukan selamat, ditemukan meninggal, ke SAR, tutup, buka lagi) dengan catatan opsional, daftar dimuat ulang sesudahnya | `layar-peta` | `selera-angka` | |
 | LA-83 | Selesai lokal dan Worker (23 Nov 2026, lihat catatan pelaksanaan di KEPUTUSAN): `/lapor/?d=<kode desa>`: isi usulan lokasi, pertanyaan bila GPS bertentangan, `sumber_lokasi = poster`, lencana di meja; uji §23 bagian tautan | `layar-peta`, `warga-api` | `inp-reviewer` | |
 | LA-84 | Selesai (24 Nov 2026): halaman statis `/lapor/poster.html` (tautan dari menu meja), pilih kab, kecamatan, desa, cetak A4 per desa lewat `poster.css`; data publik saja (`desa_cari.json`, `bpbd_kontak.json` lewat `public/lapor/kontak.js`, modul K88 dipindah dari `src/` supaya satu sumber untuk Worker dan peramban); uji `tests/lapor/poster.test.mjs`. Belum: hitungan laporan poster per desa di meja (laporan poster sudah berketelitian "lokasi dari poster desa") | `layar-peta` | `selera-angka` | Q69 |
+
+## Komentar warga di kartu Alun-alun (K94-K95, D135-D140)
+
+| Tiket | Cakupan | Bukti siap |
+| --- | --- | --- |
+| LA-85 | Migrasi `lp_komen` dan `lp_komen_usul` (idempoten), rute `GET /api/lapor/alun/:id/komen` dan `POST` tulis (nomor wajib, saringan D136, batas D139), `POST` laporkan; aduan tiga perangkat menyembunyikan. | Uji rute di workerd: tanpa nomor 401, kata kasar 400, nomor HP dan RT/RW terbuang, laju 429, kartu yang tidak tampil 404, nomor penulis tidak pernah ada di jawaban publik. |
+| LA-86 | Urai komentar lewat `src/lapor_model.js` jadi `lp_komen_usul`; angka tanpa kutipan dibuang. | Uji dengan model tiruan: angka berkutipan tersimpan, tanpa kutipan dibuang, kolom di luar daftar ditolak, kartu tidak berubah. |
+| LA-87 | Layar `/lapor` tab Alun-alun: daftar komentar dan kotak tulis di tiap kartu, minta nomor bila belum terikat, tombol Laporkan. | Tinjau `http://localhost:8800/lapor/?alun`; `inp-reviewer` dan `selera-angka`. |
+| LA-88 | Meja: komentar dan usulan per kejadian; Terima lewat `simpanSusulan`, Tolak, sembunyikan dan tampilkan komentar; riwayat append-only. | Uji ujung ke ujung: komentar, usulan, terima, angka kartu Alun-alun berubah dan tercatat atas nama petugas. |
+

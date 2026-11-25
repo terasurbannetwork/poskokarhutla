@@ -47,8 +47,10 @@ const CSP_CITRA = CSP.replace("img-src 'self' data: blob: https://*.openfreemap.
 export async function halamanBnpbPublik(env, url, berkas, {pribadi = false, turnstile = false, bingkai = false, citra = false, gambar = "", pratinjau = false} = {}) {
   const r = await env.ASSETS.fetch(new Request(new URL(`/bnpb/${berkas}.html`, url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman tidak ada"); }
+  const csp = pratinjau ? CSP_PRATINJAU : citra ? (gambar ? CSP_CITRA.replace("img-src 'self'", `img-src 'self' ${gambar}`) : CSP_CITRA) : turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : bingkai && gambar ? CSP.replace("img-src 'self'", `img-src 'self' ${gambar}`) : CSP;
   return new Response(r.body, {headers: {"content-type": "text/html; charset=utf-8", "cache-control": pribadi ? "no-store" : "public, max-age=300", "x-content-type-options": "nosniff",
-    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": pratinjau ? CSP_PRATINJAU : citra ? (gambar ? CSP_CITRA.replace("img-src 'self'", `img-src 'self' ${gambar}`) : CSP_CITRA) : turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : bingkai ? CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'").replace("img-src 'self'", gambar ? `img-src 'self' ${gambar}` : "img-src 'self'") : CSP}});   // bingkai: boleh dibingkai situs sendiri (/admin/laporan); halaman lain tetap none
+    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}),
+    "content-security-policy": bingkai ? csp.replace("frame-ancestors 'none'", "frame-ancestors 'self'") : csp}});   // bingkai: boleh dibingkai situs sendiri (/admin/laporan, /lapor Alun-alun); halaman lain tetap none
 }
 
 /* cron menit 17 */

@@ -594,3 +594,29 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 | No | Pertanyaan | Bawaan sementara |
 | --- | --- | --- |
 | Q71 | Nomor yang belum berizin menulis ke nomor Lapor Bencana: dibalas (misalnya "layanan lapor belum dibuka untuk nomor ini, hubungi BPBD setempat") atau diam? | **[BAWAAN SEMENTARA]** Diam, sampai pintu publik F2 dibuka atau pemilik memberi kalimatnya. |
+
+## Keputusan pemilik (25 Nov 2026): Alun-alun satu, komentar warga dibaca mesin
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K94 | 25 Nov 2026 | Pemilik: "Karena udah ada Pantau Bencana gausah ada Alun-Alun lagi dong. Dihapus saja", lalu "Yang alun-alun ini dipindahkan semua ke alun-alun di pantau bencana". Halaman forum `/alun-alun` Centurisk97 tidak lagi untuk publik; Alun-alun hanya satu, tab Alun-alun di `/lapor`. |
+| K95 | 25 Nov 2026 | Pemilik: "gausah ada dibagi gitu kejadian dan diskusi warga. Cukup kaya satu kejadian setiap orang bisa menambahkan data ya", "kaya mereka komen secara biasa maka langsung bisa dibaca oleh sistem". Tiap kartu kejadian Alun-alun punya kolom komentar biasa. Jawaban pemilik atas empat pertanyaan sesi: (1) komentar tampil publik sesudah disaring mesin, dengan tombol Laporkan; Q14 dilonggarkan khusus komentar; (2) angka yang dibaca mesin dari komentar menjadi usulan di meja, angka kartu berubah hanya sesudah petugas menerima; (3) berkomentar wajib nomor WhatsApp, sama dengan alur melapor; (4) forum utas lama pensiun dari publik, data dan API tetap untuk kotak masuk instansi dan rekap pimpinan. |
+
+## Keputusan rancangan (pelaksanaan K94-K95, agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D135 | `GET /alun-alun` yang dibuka langsung di peramban (`Sec-Fetch-Dest: document`) dialihkan 302 ke `/lapor/?alun`, yang membuka tab Alun-alun tanpa animasi pembuka. Klien tanpa kepala itu (uji, curl) tetap dilayani supaya uji lama tidak berubah. `/api/alun*`, kotak masuk alun-alun instansi, `/admin/alun`, dan rekap pimpinan tidak disentuh. Tab terpisah Kejadian/Diskusi warga yang sempat dibuat sore itu dibongkar (K95). | Tautan lama (pintu `/bnpb`, `/masuk`, pesan WA) tetap sampai; tidak ada mesin forum kedua. |
+| D136 | Komentar disimpan di tabel baru `lp_komen`: kartu (id laporan paling awal di gugus, kunci yang sama dengan id kartu Alun-alun), nomor WA penulis (hanya untuk meja, tidak pernah ke publik), teks bersih, status `tampil`, `dilaporkan`, `tersembunyi`, waktu. Di layar publik penulis tampil "Warga" dan waktu relatif, tanpa nama dan nomor. Komentar hanya bisa ditulis di kartu yang sedang tampil di Alun-alun (ditindaklanjuti atau selesai). | Satu kunci kartu dengan Alun-alun; identitas tetap seperti laporan (K65). |
+| D137 | Saringan mesin sebelum simpan memakai saringan forum yang sudah ada (`src/alun.js`: kata kasar ditolak, URL dan nomor HP dibuang), ditambah email, RT/RW, dan nomor rumah dibuang (Q14 membatasi lokasi sampai desa). Teks paling panjang 500 huruf. Tombol Laporkan: tiga aduan dari perangkat berbeda menyembunyikan komentar sampai petugas meja memutuskan. | Pelonggaran Q14 (K95) dijaga saringan yang sudah teruji, bukan aturan baru. |
+| D138 | Mesin urai `src/lapor_model.js` membaca tiap komentar dan mengambil angka dampak yang sama dengan isian laporan (meninggal, hilang, luka, mengungsi, rumah rusak, rumah terendam) beserta kutipannya. Angka tanpa kutipan dibuang; kosong tidak pernah nol (D1 paket ini). Hasilnya baris `lp_komen_usul` (komentar, kolom, nilai, kutipan, status `usul`, `terima`, `tolak`). Usulan tidak mengubah kartu. | Kode memegang alur, AI hanya mengurai berkutipan (aturan §2.30). |
+| D139 | Meja: rincian kejadian menampilkan komentar dan usulan angkanya. Terima menulis angka itu lewat mesin susulan yang sudah ada (`simpanSusulan`), sehingga kartu berubah lewat jalur biasa dan tercatat atas nama petugas; Tolak menutup usulan. Riwayat keputusan append-only. Petugas juga bisa menyembunyikan dan menampilkan lagi komentar. | Angka resmi tetap dari petugas (K95 butir 2); tanpa jalur angka kedua. |
+| D140 | Batas laju: 10 komentar per nomor per jam dan 30 per IP per jam, di luar kuota laporan. Komentar ikut kuki ikatan perangkat (D100); tanpa nomor, layar meminta nomor seperti saat melapor. | Wajib nomor (K95 butir 3) menggantikan Turnstile. |
+
+## Pertanyaan terbuka (K95)
+
+| No | Pertanyaan | Bawaan sementara | Tiket |
+| --- | --- | --- | --- |
+| Q72 | Berapa lama komentar tampil? | **[BAWAAN SEMENTARA]** Selama kartunya tampil di Alun-alun (gugus 30 hari). | LA-85 |
+| Q73 | Komentar diterjemahkan ke bahasa pilihan pembaca (K58)? | **[BAWAAN SEMENTARA]** Tidak; komentar tampil dalam bahasa aslinya. | LA-87 |
+| Q74 | Penulis yang komentarnya berkali-kali disembunyikan diblokir? | **[BAWAAN SEMENTARA]** Tidak otomatis; meja melihat jumlah komentar tersembunyi per nomor. | LA-88 |
