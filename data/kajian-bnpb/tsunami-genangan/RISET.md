@@ -90,6 +90,56 @@ Putusan pemeriksa 24 Nov 2026: BP01 analitik lulus dan kondisi awal soliter bena
 
 Tafsir (belum diuji lebih lanjut): (1) mesin cocok dengan analitik 1,5%, jadi selisih lawan lab di H/d 0,0185 bukan kesalahan mesin; data lab sendiri 12% di bawah hukum Synolakis pada H/d itu (0,0758 lawan 0,0861), jadi toleransi 10% lawan lab mungkin salah dirancang untuk SWE tanpa gesekan; (2) kasus pecah H/d 0,3 tidak dijelaskan: kandidat penyebab adalah batas basah 1 mm yang menangkap lidah air tipis (lab mengukur tepi air terlihat), kondisi awal linier u = -sqrt(g/d) eta yang tak tepat untuk H/d 0,3, tanpa gesekan, tanpa dispersi. Tidak ada yang disetel. Keputusan: BP01, air tenang, dan massa menjadi gerbang `uji`; BP04 dipisah ke mode `uji lab` yang gagal apa adanya sampai pemilik dan `validasi-model` memutuskan kriteria lab. Catatan teknis: fgmax satu baris sel (ny = 1) di GeoClaw 5.14.0 mengisi NaN semua, harus dua baris; tingkat dasar butuh paling sedikit 4 sel di tiap arah.
 
+#### 4.2.1 Penyelidikan lanjutan BP04 (25 Nov 2026): satu variabel per kali, semua percobaan dicatat
+
+Kriteria tidak diubah (PMEL-135: tak pecah 5%, pecah 10%). Run-up: 2D = `tsunami_hitung.py` (GeoClaw 2D AMR, d/10 dengan d/40 di pantai); 1D = `scripts/gempa/tsunami_lab1d.py` (GeoClaw 1D classic, uniform d/40, SWE atau Boussinesq SGN tanpa PETSc, dibangun dari submodul `classic` yang baru diunduh). Hasil mentah di `data/raw/tsunami/run/*.exp.json`. Pembanding lab = rerata titik `Lab_runup.txt` di jendela H/d tertulis.
+
+**1. Data lab.** Satuan R/d dan H/d tak berdimensi, kemiringan 1:19,85, definisi H/d sama dengan model (H amplitudo soliter, d kedalaman datar); lab ditulis d 6,25 sampai 38,3 cm (BP04: tak pecah d ~30 cm, pecah d ~15 cm), jadi tak ada salah satuan. Lab lawan hukum Synolakis 1987 (R/d = 2,831 sqrt(cot) (H/d)^1,25), 29 titik H/d < 0,045: rasio lab/hukum rata-rata 0,855; per kelas H/d: <0,01 = 1,06 (7 titik), 0,01 sampai 0,02 = 0,87 (8), 0,02 sampai 0,03 = 0,82 (6), 0,03 sampai 0,045 = 0,69 (8). Jadi lab sendiri turun jauh di bawah teori analitik bila H/d naik; selisih 12% di H/d 0,0185 bukan satu titik buruk melainkan tren. Penyebab yang masuk akal (belum dibuktikan terpisah): disipasi di lab (PMEL-135 3.1 sendiri menulis "even solitary waves can dissipate"), mulai pecah di ujung (kriteria pecah Synolakis untuk lereng ini H/d = 0,029, jauh di bawah 0,045 yang tertulis), dan ujung air tipis yang tak terlihat.
+
+| H/d | lab (n) | hukum | 1D SWE tanpa gesekan | 1D Boussinesq SGN tanpa gesekan |
+| --- | --- | --- | --- | --- |
+| 0,005 | 0,0205 (2) | 0,0168 | 0,0175 (-15%) | 0,0173 (-15%) |
+| 0,01 | 0,038 (5) | 0,0399 | 0,0408 (+7%) | 0,0399 (+5%) |
+| 0,02 | 0,082 (4) | 0,0949 | 0,0908 (+11%) | 0,0882 (+8%) |
+| 0,03 | 0,1155 (2) | 0,1575 | 0,1393 (+21%) | 0,1353 (+17%) |
+| 0,04 | 0,1596 (5) | 0,2256 | 0,1846 (+16%) | 0,1794 (+12%) |
+
+Tanpa gesekan, mesin melampaui lab makin besar dengan H/d (di atas 0,01) dan hanya Boussinesq mengurangi sedikit. Catatan: sapuan 2D lama di H/d 0,005 dan 0,01 (0,0119 dan 0,0403) TIDAK sah: gelombang kecil tiba di pantai pada 70 dan 61 tau, sesudah `tfinal` 60 tau; 1D memakai 90 tau.
+
+**2. Kondisi awal dan posisi (BP04 tak pecah H/d 0,0185 dan 2D, tanpa gesekan).** u linier (deskripsi NTHMP) 0,0850 d; soliter SWE eksak u = c eta/(d+eta): 0,0848 d (-0,3%). Pada H/d 0,3: linier 0,842 d, eksak 0,826 d (-2%). Kondisi awal bukan penyebab. Posisi awal soliter sudah sesuai PMEL-135 (5% gelombang di atas lereng).
+
+**3. Ambang basah dan definisi run-up (tak pecah, 2D).** dry_tol 1e-3 d: 0,0850; 1e-4 d: 0,0876 (+3%); bila "basah" dihitung h > 1e-2 d: 0,0754 (hampir sama dengan lab 0,0758, tetapi ini setelan definisi, TIDAK dipakai sebagai bukti lulus; lab mengukur ujung air yang terlihat dan tebal ambangnya tak diketahui). Pada H/d 0,3 definisi sangat peka: h > 1e-3 d 0,842, > 1e-2 d 0,773, > 3e-2 d 0,441. Run-up gelombang pecah tanpa gesekan karena itu tak punya nilai tunggal. Definisi elevasi ujung genangan (B + h di sel terjauh) kini tertulis di kode; definisi lama (puncak muka air di darat) memberi angka sama untuk semua kasus ini.
+
+**4. Resolusi dan gesekan.** Tak pecah: konvergensi grid 2D tak pecah TIDAK diulang (waktu); 1D uniform d/40 lawan d/20 dan d/80 pada H/d 0,3 diuji di bawah, 2D tak pecah hanya diuji dry_tol. Pecah, 2D tanpa gesekan: tingkat halus di seluruh domain 0,845; tanpa AMR seragam d/40 0,836; CFL 0,25 (bukan 0,75) 0,788 (turun 7%, jadi run-up pecah tanpa gesekan belum konvergen waktu). 1D tanpa gesekan, domain darat cukup tinggi (percobaan pertama dengan darat hanya sampai 0,4 d GAGAL: run-up menabrak dinding ujung, hasil 0,586 dibuang): dx d/80 0,735, d/40 0,722, eksak 0,703; Boussinesq SGN 0,767. Selisih 1D (0,72) lawan 2D (0,84) pada kasus pecah tanpa gesekan tidak diselesaikan; dengan gesekan keduanya cocok.
+
+Gesekan Manning, n dari sumber, bukan disetel: dasar tangki "lembar baja nirkarat dicat" (PMEL-135 3.1); untuk logam halus Chow (1959, Table 5-6, dari ingatan, **[periksa nilai pada buku]**) memberi n 0,010 sampai 0,013 (kaca/baja halus 0,010 sampai 0,012, baja dicat sampai 0,013 menurut ingatan). Dijalankan pada d lab karena Manning tidak bebas skala (tak pecah d = 0,30 m, pecah d = 0,15 m):
+
+| Kasus | n = 0 | n = 0,010 | n = 0,013 | lab | batas |
+| --- | --- | --- | --- | --- |
+| Tak pecah H/d 0,0185, 2D | 0,0850 (+12,2%) | 0,0786 (+3,7%) | 0,0760 (+0,2%) | 0,0758 | 5% |
+| Tak pecah, 1D SWE | 0,0833 | 0,0776 (+2,4%) | 0,0750 (-1,1%) | | |
+| Tak pecah, 1D Boussinesq | 0,0810 | 0,0762 (+0,5%) | 0,0739 (-2,5%) | | |
+| Pecah H/d 0,3, 2D | 0,842 (+54%) | 0,484 (-11,5%) | 0,436 (-20%) | 0,547 | 10% |
+| Pecah, 1D SWE | 0,722 (+32%) | 0,482 (-12%) | 0,435 (-20%) | | |
+| Pecah, 1D Boussinesq | 0,767 | | 0,415 | | |
+
+**5. Dispersi.** Boussinesq 2D GeoClaw 5.14 butuh PETSc 3.23 dan MPI (tidak terpasang; memasangnya perubahan mesin yang belum diizinkan, jadi TIDAK dicoba). Sebagai gantinya penyelesai 1D classic SGN (tanpa PETSc, `bouss_min_depth` 0,05 d) dipakai pada flume 1D yang setara BP04. Hasil di tabel: dispersi hanya menggeser run-up tak pecah 2 sampai 3% ke bawah dan pecah ke atas; BUKAN penyebab selisih.
+
+**Kesimpulan penyelidikan.**
+1. Tak pecah: selisih 12% tanpa gesekan bukan salah mesin, salah satuan, kondisi awal, ambang basah, atau resolusi (semuanya dalam 3%), melainkan disipasi yang tak ada di SWE nondisipasi tanpa gesekan. Dengan Manning n 0,010 sampai 0,013 (rentang sumber, BELUM diverifikasi ke buku) run-up 2D jatuh 0,2 sampai 3,7% dari lab, di dalam batas 5%. Ini lulus BERSYARAT: lawan satu jendela H/d (0,0185, 4 titik), satu nilai gesekan yang sumbernya perlu diverifikasi, dan bergantung skala (Manning tidak bebas skala, jadi hasil tak otomatis berlaku untuk laut sungguhan). Sapuan beberapa H/d dengan gesekan belum dijalankan (hanya tanpa gesekan, di tabel atas).
+2. Pecah: TIDAK lulus lawan 10% dengan apa pun yang bersumber. Tanpa gesekan +32 sampai +54% (dan tak konvergen waktu: CFL 0,25 turunkan 7%, ambang basah 1e-3 ke 3e-2 d turunkan 48%); dengan n 0,010 -11,5% dan n 0,013 -20%; n yang menjatuhkan hasil tepat di lab ada di antara 0 dan 0,010, tetapi memilihnya berarti menyetel ke data lab, dilarang. Penyebab fisiknya jelas: SWE bore tanpa model pecah tidak punya disipasi turbulen dan gesekan dinding-lab, sedangkan lab pecah menghilangkan banyak energi, jadi kasus pecah adalah batas fisik mesin SWE yang didukung bukti (Boussinesq tidak memperbaikinya). Putusan metode: kasus pecah BP04 tak dipakai sebagai syarat validasi mesin untuk skenario tsunami pantai; keputusan memakai gesekan Manning di lab dan kriteria pecah ada di pemilik dan `validasi-model`.
+3. Tidak ada yang diubah di kriteria; `uji lab` tetap gagal apa adanya (gesekan belum dipasang ke gerbang).
+
+**Koreksi pemeriksa validasi-model 25 Nov 2026 (menang atas butir 1 dan 2 di atas).**
+- `uji` biasa dijalankan ulang sesudah perubahan kode: lulus (BP01 1,5%, massa 3,3e-4, air tenang 0 sel), tetap mencetak "TS-10 BELUM LULUS".
+- Butir 1 bukan "lulus bersyarat". Hasil tak pecah dengan Manning rapuh terhadap ambang basah: n 0,013 memberi +0,2% pada ambang 1e-3 d tetapi -7,3% pada 1e-2 d (gagal 5%); n 0,010 +3,7% lalu -4,4%. Tebal air yang diukur lab tidak diketahui, jadi lulus-tidaknya bergantung definisi "basah".
+- Nilai n: Chow 1959 Tabel 5-6 belum dibuka. Sumber terbuka sementara https://www.engineeringtoolbox.com/mannings-roughness-d_799.html (kaca 0,010; baja halus 0,012; plastik 0,009). Dasar BP04 baja nirkarat dicat; rentang yang jujur 0,010 sampai 0,017 **[periksa Chow]**, bukan 0,010 sampai 0,013.
+- PMEL-135 memakai gesekan terutama untuk menstabilkan, menyebut faktor gesekan ad hoc, dan menutup selisih disipasi lab lewat penempatan awal Xs, bukan lewat Manning. Gesekan menggeser run-up 9 sampai 12% di sini, jadi menutup selisih 12% dengan satu parameter bebas adalah pola menyetel ke lab (AGENTS §9). Manning tidak masuk gerbang `uji lab`; boleh tampil sebagai diagnostik berlabel. Sapuan n baru dihentikan sampai pemilik memutuskan.
+- Butir 2: "batas fisik SWE" terlalu kuat. Run-up pecah tanpa gesekan belum konvergen (CFL, ambang basah, 1D lawan 2D tak terjelaskan), dan SGN juga tanpa model pecah. Rumusan yang sah: tidak terselesaikan; tanpa model pecah, sebagian numerik belum konvergen. Bila kasus pecah dikeluarkan, itu pembatasan cakupan: mesin hanya diuji untuk gelombang tak pecah (H/d < 0,045 pada lereng 1:19,85), tanpa kata "tervalidasi NOAA".
+- Ambang pecah lereng ini: rumus PMEL-135 `H < 0,479 (cot b)^(-10/9)` memberi 0,0173; angka 0,029 di atas belum terverifikasi.
+- Definisi run-up ujung genangan sesuai PMEL A2.1.4; BP01 tidak berubah (0,0876 d). `tsunami_lab1d.py` memakai basah h > 2 dry_tol, 2D memakai 1 dry_tol; belum diselaraskan.
+- Ringkasan semua percobaan (termasuk yang dibuang) disimpan di `bp04_percobaan.json` di folder ini agar klaim bisa dibaca tanpa data/raw.
+
 ## 5. Sumber data: bahan dan syarat
 
 | Data | Sumber | Syarat atau catatan |
