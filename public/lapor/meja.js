@@ -114,7 +114,8 @@ function gambarDarurat() {
   lipat.append(sirene, judul, aksi);
   lipat.addEventListener("click", () => { try { localStorage.setItem("meja-darurat-kecil", kecil ? "0" : "1"); } catch {} gambarDarurat(); });
   kepala.append(lipat);
-  if ("Notification" in window && Notification.permission === "default") { const izin = el("button", "mj-darurat-izin", "Nyalakan notifikasi"); izin.type = "button"; izin.addEventListener("click", () => Notification.requestPermission().then(() => gambarDarurat())); kepala.append(izin); }
+  /* izin notifikasi = ikon lonceng polos sebaris kepala (pemilik 25 Nov 2026 "ini juga jelek": tombol pil merah sebaris sendiri) */
+  if ("Notification" in window && Notification.permission === "default") { const izin = el("button", "mj-darurat-izin"); izin.type = "button"; izin.append(ikon("m-lonceng")); izin.dataset.tip = "Nyalakan notifikasi laporan darurat"; izin.setAttribute("aria-label", "Nyalakan notifikasi laporan darurat"); izin.addEventListener("click", () => Notification.requestPermission().then(() => gambarDarurat())); kepala.append(izin); }
   const daftar = el("div", "mj-darurat-daftar"); daftar.id = "daftarDarurat";
   const PIL_KORBAN = {ya: ["bahaya", "Ada korban atau terjebak"], tidak: ["netral", "Tanpa korban"], belum_tahu: ["waspada", "Korban belum diketahui"]};
   for (const b of xs.slice(0, 8)) { const k = el("button", `mj-darurat-kartu${baru.includes(b) ? " baru" : ""}`); k.type = "button"; k.setAttribute("aria-label", `Buka ${b.nomor}, ${b.jenis || "kejadian"}`);
@@ -759,7 +760,17 @@ function kartuPic(nomor) {
         } catch { nomorEl.textContent = "Gagal membuka nomor."; tb.disabled = false; } });
       baris.append(t, tb); w.append(baris);
     }
-    if (d.kontak_situs) w.append(el("p", "mj-redup", `Belum ada PIC aktif. Kontak situs resmi: ${d.kontak_situs.nama}${d.kontak_situs.nomor ? ", " + d.kontak_situs.nomor : ""}.`));
+    /* tanpa PIC (pemilik 25 Nov 2026 "itu jelek"): baris kontak berikon, nama lembaga, asal nomor, tombol hubungi; bukan kalimat polos */
+    if (d.kontak_situs) { const ks = d.kontak_situs, baris = el("div", "mj-pic-situs"), av = el("span", "mj-pic-av"), t = el("div", "mj-pic-teks");
+      av.append(ikon("m-telepon"));
+      const JENIS = {call_center: "Call center", pusdalops: "Pusdalops", wa: "WhatsApp", kantor: "Telepon kantor"};
+      t.append(el("b", null, ks.nama), el("small", null, [JENIS[ks.jenis], "dari situs resmi"].filter(Boolean).join(", ")));
+      baris.append(av, t);
+      if (ks.nomor) { const digit = ks.nomor.replace(/[^\d+]/g, ""), a = el("a", "mj-tombol mj-pic-hub");
+        if (ks.jenis === "wa") { a.href = `https://wa.me/${digit.replace(/^\+/, "").replace(/^0/, "62")}`; a.target = "_blank"; a.rel = "noopener"; a.append(ikon("m-wa"), ks.nomor); }
+        else { a.href = `tel:${digit}`; a.append(ikon("m-telepon"), ks.nomor); }
+        baris.append(a); }
+      w.append(el("p", "mj-pic-catatan", "Belum ada PIC aktif di BPBD ini."), baris); }
   }).catch(() => { w.replaceChildren(el("p", "mj-redup", "PIC belum bisa dimuat.")); });
   return w;
 }
@@ -863,7 +874,7 @@ async function bukaRinci(nomor, lihat = true, fokus = null) {
   tk.append(...(pegang ? [pegang] : []), ...(ambilTb ? [ambilTb] : []), catatan, balas, ...(st.childElementCount ? [lbl("Pindahkan status ke"), st] : []), ...(pmTindak ? [pmTindak.el] : []), galat, lbl("Dokumen"), dok);
   const kTiket = kartu("Tindak lanjut", "m-tiket", tk);
   const kPeriksa = kartuPeriksa(j, kirim);
-  const kPic = !akunBpbd() ? kartu("PIC BPBD setempat", "m-tiket", kartuPic(nomor)) : null;   // PF-09: hanya staf BNPB; nomor tersamar sampai dibuka (tercatat)
+  const kPic = !akunBpbd() ? kartu("PIC BPBD setempat", "m-orang", kartuPic(nomor)) : null;   // PF-09: hanya staf BNPB; nomor tersamar sampai dibuka (tercatat)
   // tindakan tercatat; saat Ditindaklanjuti bisa ditambah (D111)
   const kTindakan = j.tindakan?.length || j.status === "ditindaklanjuti" ? kartu(`Tindakan${j.tindakan?.length ? ` (${j.tindakan.length})` : ""}`, "m-tangan", (() => { const wt = wadah();
     if (j.tindakan?.length) wt.append(daftarTindakan(j.tindakan));
