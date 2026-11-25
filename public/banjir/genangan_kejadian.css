@@ -17,10 +17,10 @@
 .gk-tw{max-height:420px;overflow:auto;max-inline-size:100%}
 .gk-tw:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .gk-tb{border-collapse:separate;border-spacing:0;width:100%}
-.gk-tb th[scope=row]{text-align:left;font-weight:600;white-space:nowrap;position:sticky;inset-inline-start:0;background:var(--card)}
+.gk-tb td.gk-lbl{text-align:left;font-weight:600;white-space:nowrap;position:sticky;inset-inline-start:0;background:var(--card)}
 .gk-tb th{white-space:normal;padding:8px 6px}
 .gk-tb td{padding:7px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
-.gk-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gk-tb td.n{text-align:center;font-variant-numeric:tabular-nums}
 .gk-tb tbody tr[data-kab4]{cursor:pointer}
 .gk-tb tbody tr[data-kab4]:hover th,.gk-tb tbody tr[data-kab4]:hover td{background:var(--surface)}
 .gk-tb tbody tr[aria-current=true] th,.gk-tb tbody tr[aria-current=true] td{background:color-mix(in srgb,var(--brand2) 12%,var(--card))}

@@ -71,7 +71,7 @@ export function kartuRingkas(kej, pilih = "") {
 
 export function kartuTabel(kab) {
   const baris = urutKab(kab), tidak = baris.filter(b => !b.sah).length;
-  const tr = b => `<tr data-kab4="${esc(b.kab4)}" tabindex="0"><th scope="row">${esc(b.nama)}</th><td>${esc(b.lintasan ?? "tidak ada")}</td>${b.sah
+  const tr = b => `<tr data-kab4="${esc(b.kab4)}" tabindex="0"><td class="gk-lbl">${esc(b.nama)}</td><td>${esc(b.lintasan ?? "tidak ada")}</td>${b.sah
     ? `<td class="n">${esc(fmtAngka(b.baru) ?? "belum dihitung")}</td><td class="n">${esc(fmtPersen(b.teramati) ?? "belum dihitung")}</td><td class="n">${esc(fmtPersen(b.persenDari) ?? "belum dihitung")}</td><td class="n"${b.kisiKasar ? ' title="Batas atas dari sampel, bisa lebih besar"' : ""}>${rentangTulis(b.pend) ? esc(rentangTulis(b.pend)) + (b.kisiKasar ? " (batas atas dari sampel)" : "") : '<span class="gk-abu">belum tersedia</span>'}</td>`
     : `<td class="gk-abu" colspan="4">${esc(b.teks)}</td>`}</tr>`;
   return kartu("Wilayah", "Per kabupaten", baris.length ? `<div class="tw gk-tw" role="region" tabindex="0" aria-label="Genangan radar per kabupaten"><table class="gk-tb"><thead><tr>${th("Kabupaten atau kota", "Klik baris untuk membuka kabupaten di peta dan citra")}${th("Lintasan", "Tanggal lintasan radar, UTC")}${th("Tergenang baru (ha)", "Luas yang tergenang pada lintasan dan tidak ada pada citra pembanding")}${th("Teramati (persen)", "Bagian luas kabupaten yang teramati radar")}${th("Persen dari teramati", "Tergenang baru dibagi luas teramati")}${th("Penduduk di area genangan", "Rentang bawah sampai atas, WorldPop; bukan korban")}</tr></thead><tbody>${baris.map(tr).join("")}</tbody></table></div>
@@ -82,7 +82,7 @@ export function kartuLahan(kab) {
   const lg = lahanGabung(kab);
   if (!lg.kelas.length) return kartu("Dampak", "Lahan tergenang", kosong("Lahan tergenang belum terbaca untuk kabupaten teramati."));
   const bar = lg.kelas.map(e => `<i data-kode="${esc(e.kode)}" style="flex-grow:${e.ha}" title="${esc(e.nama)}: ${esc(fmtAngka(e.ha))} ha, ${esc(fmtPersen(e.persen))} persen"></i>`).join("");
-  const tr = e => `<tr><th scope="row"><span class="gk-sw" data-kode="${esc(e.kode)}" aria-hidden="true"></span>${esc(e.nama)}</th><td class="n">${esc(fmtAngka(e.ha))}</td><td class="n">${esc(fmtPersen(e.persen))}</td></tr>`;
+  const tr = e => `<tr><td class="gk-lbl"><span class="gk-sw" data-kode="${esc(e.kode)}" aria-hidden="true"></span>${esc(e.nama)}</td><td class="n">${esc(fmtAngka(e.ha))}</td><td class="n">${esc(fmtPersen(e.persen))}</td></tr>`;
   return kartu("Dampak", "Lahan tergenang", `<div class="gk-lahan" role="img" aria-label="Lahan tergenang per kelas: ${esc(lg.kelas.map(e => `${e.nama} ${fmtAngka(e.ha)} ha`).join(", "))}">${bar}</div>
     <div class="tw gk-tw"><table class="gk-tb"><thead><tr>${th("Kelas lahan", "Kelas ESA WorldCover 2021")}${th("Luas (ha)", "Hektare titik tergenang di kelas ini")}${th("Persen", "Bagian dari seluruh lahan tergenang")}</tr></thead><tbody>${lg.kelas.map(tr).join("")}</tbody></table></div>
     ${para(`Dijumlah dari ${lg.kabAda} kabupaten teramati, satu sumber (ESA WorldCover 2021). Kelas terbangun yang kecil bukan bukti permukiman tidak tergenang: radar buta di kota padat.`)}`);
