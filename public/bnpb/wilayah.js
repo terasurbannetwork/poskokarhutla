@@ -49,7 +49,7 @@
     simpan: "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", cetak: "M7 9V3h10v6|M7 17H4v-7h16v7h-3|M7 14h10v7H7z", unduh: "M12 3v12M7 10l5 5 5-5M4 21h16",
     kurang: "M9 3h6v3H9z|M9 4.500H6.500A1.500 1.500 0 0 0 5 6v13.500A1.500 1.500 0 0 0 6.500 21h11a1.500 1.500 0 0 0 1.500-1.500V6a1.500 1.500 0 0 0-1.500-1.500H15|M12 10v4.500|M12 17.500h.01",   // papan catatan bertanda seru: data belum lengkap (pemilik 12 Nov 2026)
     daftar: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", lanjut: "M5 12h14M13 6l6 6-6 6", pin: "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z",
-    kalender: "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", senyap: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M9 9l6 6M15 9l-6 6", tunggu: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z|M12 7v5l3 2",
+    kalender: "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", peringkat: "M4 4v16h16|M8 8h10M8 12h7M8 16h4", grafik: "M4 4v16h16|M7 15l4-4 3 3 5-6", salin: "M9 9h11v11H9z|M5 15H4V4h11v1", centang: "M5 12.5l4.5 4.5L19 7", cari: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z|M20 20l-4-4", tabel: "M4 5h16v14H4z|M4 10h16M4 15h16M10 5v14", bagikan: "M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6z|M8.6 13.5l6.8 4M15.4 6.5l-6.8 4", senyap: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M9 9l6 6M15 9l-6 6", tunggu: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z|M12 7v5l3 2",
     /* ubin ringkasan Dalops (pemilik 13 Nov 2026 "iconnya dibagus-bagusin") */
     wilayah: "M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z|M9 3v15M15 6v15", kecamatan: "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M9 10h6M12 7v6",
     rumah: "M3 11l9-7 9 7|M5 10v10h14V10|M10 20v-5h4v5", huntara: "M2 20h20|M12 4 3 20|M12 4l9 16|M9.5 20 12 15l2.5 5",

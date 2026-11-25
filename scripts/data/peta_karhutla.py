@@ -101,7 +101,7 @@ UKUR = {"hari": 264, "porsi_median": 0.5, "porsi_agregat": 0.5085, "snpp_n21_har
 # titik_palsu.sel_industri() ("statis"); "bertahan" = yang terdeteksi lagi 12-36 jam sebelumnya (dasar "belum"). Dipakai teks metode; uji_deck membuktikannya.
 # Uji Jan-Jul 2026 (25 Okt 2026): jumlah luas nasional hari WIB 1 Jan-31 Jul 2026 vs SiPongi; "lama" = selisih cara lama (titik x PORSI x 4,3). Diisi dari hasil bangun ulang penuh.
 UJI_SIPONGI = {"sipongi": 202011, "kita": 219174, "selisih": "8,5", "lama": 20}   # kita = jumlah nasional luas 1 Jan-31 Jul 2026, bangun --penuh 25 Okt 2026 15.34 (+8,5%)
-STATIS = {"hari": "2026-10-20", "titik": 12516, "statis": 130, "bertahan": 6158, "bertahan_statis": 117}
+STATIS = {"hari": "2026-10-20", "titik": 12516, "statis": 131, "bertahan": 6158, "bertahan_statis": 117}
 JENDELA = 4                               # hari terakhir yang dihitung ulang tiap jalan harian
 WARM = HRN.JENDELA_HARI - 1                # hari UTC sebelum hari hitung yang dibutuhkan: jendela cluster firespot 7 hari (fs_hari, UTC d-7); belum 36 jam dan padam d-2 lebih pendek
 LATENSI = dt.timedelta(hours=4)            # NRT terlambat; hari WIB d dianggap lengkap bila sudah (now - 4 jam) > d
