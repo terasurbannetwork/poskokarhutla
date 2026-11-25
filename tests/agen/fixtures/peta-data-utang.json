@@ -83,6 +83,10 @@
   "public/data/peluang_api_uji.json": {
    "alasan": "Vonis uji pra-registrasi KI-72 (sidik d5c5cffd413ed332), dibuka satu kali 25 Nov 2026 dan dibekukan; dibaca kartu Metode karhutla. Sengaja tanpa jadwal: menjalankan ulang berarti membuka uji kedua. Pengecualian dicabut saat fase bayangan harian (cuaca waktu-nyata) dipasang dengan keluaran sendiri.",
    "tanggal": "2026-11-25"
+  },
+  "public/data/usgs_produk.json": {
+   "alasan": "Produk USGS per gempa (ground failure, moment tensor; PB-61.2, PB-61.10) dipanen data.yml, model USGS bukan pengamatan. Pemakai layar gempa dan longsor belum dipasang; pengecualian dicabut saat pemakainya ada.",
+   "tanggal": "2026-11-25"
   }
  }
 }

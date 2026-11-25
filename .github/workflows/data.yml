@@ -324,6 +324,12 @@ jobs:
         timeout-minutes: 25
         run: python3 scripts/umum/internet_padam.py uji && python3 scripts/umum/internet_padam.py
 
+      # PB-61.2, PB-61.10: USGS ground-failure dan moment-tensor per gempa M5+ (tanpa kunci, ~10 permintaan); bergulir di public/data (cache data-)
+      - name: Panen produk USGS per gempa (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 -I scripts/umum/usgs_produk.py uji && python3 -I scripts/umum/usgs_produk.py
+
       - name: Simpan cache mentah sinyal dan IODA
         if: always()
         uses: actions/cache/save@v4
