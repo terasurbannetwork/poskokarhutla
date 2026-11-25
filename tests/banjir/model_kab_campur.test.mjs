@@ -15,9 +15,9 @@ test("model_kab_campur_nilai.py uji lulus", () => {
   assert.match(r.stdout, /ok model_kab_campur_nilai/);
 });
 
-test("model_kab_campur.py latih nyata ditolak rapi saat pemblokir 6a-A belum beres (bukan crash)", () => {
+test("model_kab_campur.py latih nyata ditolak rapi (pemblokir 6a-A, atau kandidat sudah dibekukan: butuh --ulang), bukan crash dan bukan menimpa", () => {
   const r = spawnSync("python3", ["scripts/banjir/model_kab_campur.py", "latih"], {encoding: "utf8"});
   assert.notEqual(r.status, 0);
   assert.doesNotMatch(r.stderr, /Traceback/, r.stderr);
-  assert.match(r.stderr, /ditolak/);
+  assert.match(r.stderr, /ditolak|kandidat\.json sudah ada: latih ulang butuh --ulang/);
 });

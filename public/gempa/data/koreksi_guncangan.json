@@ -1,0 +1,175 @@
+{
+ "v": 1,
+ "sidik": "6b310f5bc509cec6",
+ "tgl_belah": "2020-11-18",
+ "koreksi": {
+  "mu": 0.21839884144507493,
+  "a": {
+   "kurang dari 25 km": 0.6525212970112665,
+   "25 sampai 50 km": 0.26213426936817985,
+   "50 sampai 100 km": 0.03264481426215673,
+   "100 sampai 200 km": -0.3366407668731912,
+   "lebih dari 200 km": -0.698966402735486
+  },
+  "b": {
+   "dangkal (kurang dari 60 km)": 0.31010100789702205,
+   "menengah (60 sampai 300 km)": 0.35263850372957134,
+   "dalam (lebih dari 300 km)": -0.9505835499360534
+  }
+ },
+ "uji": {
+  "vonis": "lolos",
+  "n": 707,
+  "kejadian": 246,
+  "mae": {
+   "lama": 0.701,
+   "hanya_vs30": 0.683,
+   "baru": 0.597
+  },
+  "benar_1": {
+   "lama": 0.765,
+   "site": 0.779,
+   "baru": 0.815
+  },
+  "selang_selisih_mae_lama_minus_baru": {
+   "est": 0.10346164907340905,
+   "lo": 0.05268925484770148,
+   "hi": 0.1540264299122862,
+   "B": 1000,
+   "n_blok": 246
+  },
+  "bias_dekat_lama_baru": [
+   1.19,
+   -0.12
+  ],
+  "per_kelas": {
+   "lama": {
+    "kurang dari 25 km": {
+     "n": 60,
+     "bias": 1.19,
+     "mae": 1.34
+    },
+    "25 sampai 50 km": {
+     "n": 78,
+     "bias": 0.61,
+     "mae": 0.74
+    },
+    "50 sampai 100 km": {
+     "n": 154,
+     "bias": 0.5,
+     "mae": 0.64
+    },
+    "100 sampai 200 km": {
+     "n": 271,
+     "bias": 0.16,
+     "mae": 0.58
+    },
+    "lebih dari 200 km": {
+     "n": 144,
+     "bias": -0.48,
+     "mae": 0.7
+    },
+    "dangkal (kurang dari 60 km)": {
+     "n": 574,
+     "bias": 0.24,
+     "mae": 0.66
+    },
+    "menengah (60 sampai 300 km)": {
+     "n": 127,
+     "bias": 0.35,
+     "mae": 0.82
+    },
+    "dalam (lebih dari 300 km)": {
+     "n": 6,
+     "bias": -1.96,
+     "mae": 1.96
+    }
+   },
+   "hanya_vs30": {
+    "kurang dari 25 km": {
+     "n": 60,
+     "bias": 1.06,
+     "mae": 1.27
+    },
+    "25 sampai 50 km": {
+     "n": 78,
+     "bias": 0.52,
+     "mae": 0.67
+    },
+    "50 sampai 100 km": {
+     "n": 154,
+     "bias": 0.44,
+     "mae": 0.61
+    },
+    "100 sampai 200 km": {
+     "n": 271,
+     "bias": 0.12,
+     "mae": 0.58
+    },
+    "lebih dari 200 km": {
+     "n": 144,
+     "bias": -0.52,
+     "mae": 0.72
+    },
+    "dangkal (kurang dari 60 km)": {
+     "n": 574,
+     "bias": 0.18,
+     "mae": 0.64
+    },
+    "menengah (60 sampai 300 km)": {
+     "n": 127,
+     "bias": 0.3,
+     "mae": 0.8
+    },
+    "dalam (lebih dari 300 km)": {
+     "n": 6,
+     "bias": -1.96,
+     "mae": 1.96
+    }
+   },
+   "baru": {
+    "kurang dari 25 km": {
+     "n": 60,
+     "bias": -0.12,
+     "mae": 0.99
+    },
+    "25 sampai 50 km": {
+     "n": 78,
+     "bias": -0.27,
+     "mae": 0.53
+    },
+    "50 sampai 100 km": {
+     "n": 154,
+     "bias": -0.13,
+     "mae": 0.51
+    },
+    "100 sampai 200 km": {
+     "n": 271,
+     "bias": -0.08,
+     "mae": 0.57
+    },
+    "lebih dari 200 km": {
+     "n": 144,
+     "bias": -0.32,
+     "mae": 0.62
+    },
+    "dangkal (kurang dari 60 km)": {
+     "n": 574,
+     "bias": -0.2,
+     "mae": 0.59
+    },
+    "menengah (60 sampai 300 km)": {
+     "n": 127,
+     "bias": 0.05,
+     "mae": 0.64
+    },
+    "dalam (lebih dari 300 km)": {
+     "n": 6,
+     "bias": -0.59,
+     "mae": 0.9
+    }
+   }
+  }
+ },
+ "catatan": "Vonis hanya untuk UJI (separuh akhir waktu). Bias seleksi MAGMA (tempat yang merasakan, kajian gempa merusak) tidak hilang. Tampil di layar tidak berubah."
+}

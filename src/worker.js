@@ -100,7 +100,7 @@ import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.j
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
 import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
-import {himawariDibuat} from "./himawari.js";
+import {himawariDibuat, statusHimawari} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
 import {panenAdsb, bersihkanAdsb} from "./adsb.js";
@@ -538,7 +538,9 @@ async function dibuatAset(env, asal, jalur, kunci = "dibuat") {
 async function umurSumber(env, url, kini, [jalur, ambang]) {
   if (jalur === "/api/himawari" && !env.MEDIA) return {dibuat: null, umur_jam: null, ambang_jam: ambang, basi: false};   // R2 tidak terpasang (uji/dev): tidak dinilai
   const w = jalur === "/api/himawari" ? await himawariDibuat(env) : jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
-  return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
+  const o = {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
+  if (jalur === "/api/himawari") { const {status, terputus_sejak, kelas_galat} = await statusHimawari(env, kini); if (status === "terputus") Object.assign(o, {status, terputus_sejak, kelas_galat}); else o.status = status; }   // alasan, bukan hanya "basi" (ST-01 D16)
+  return o;
 }
 export async function periksaStatus(env, url, kini) {   // diekspor untuk uji dengan jam buatan (tests/warga/jeda_sensor.test.mjs)
   const sumber = {}, uji = {}, basi = [];

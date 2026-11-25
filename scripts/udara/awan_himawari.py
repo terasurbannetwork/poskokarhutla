@@ -53,8 +53,9 @@ def proyeksi(lat, lon, p):
     return round(p["coff"] + x * 2 ** -16 * p["cfac"]), round(p["loff"] + y * 2 ** -16 * p["lfac"])
 
 
-def baca_segmen(b):
-    """Bytes HSD terdekompresi -> (param proyeksi, kalibrasi, garis_pertama, ncols, nlines, array uint16)."""
+def baca_segmen(b, pita=13):
+    """Bytes HSD terdekompresi -> (param proyeksi, kalibrasi, garis_pertama, ncols, nlines, array uint16).
+    pita: nomor pita yang diharapkan (13 bawaan; pita IR 7-16 berbagi tata letak blok kalibrasi)."""
     pos, blok = 0, {}
     while len(blok) < 11:
         n, ln = b[pos], struct.unpack("<H", b[pos + 1:pos + 3])[0]
@@ -66,7 +67,7 @@ def baca_segmen(b):
     band, lam, _, _, _, gain, const = struct.unpack("<HdHHHdd", b[o:o + 35 - 3])
     c0, c1, c2 = struct.unpack("<3d", b[o + 32:o + 56])
     g1 = struct.unpack("<H", b[blok[7] + 5:blok[7] + 7])[0]
-    assert (nbit, band) == (16, 13), (nbit, band)
+    assert (nbit, band) == (16, pita), (nbit, band)
     d = array("H")
     d.frombytes(b[pos:pos + ncol * nlin * 2])
     if sys.byteorder == "big":

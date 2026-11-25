@@ -208,7 +208,8 @@ def banding(kajian, G, idx):
                 continue
             d = G.jarak_km(b["lat"], b["lon"], c[0], c[1])
             mod = G.mmi_perkiraan(b["m"], d, b["dalam"], jenis)
-            ps.append({"id": k["id"], "tempat": t["tempat"], "lapor": t["mmi"], "model": round(mod, 2), "jarak": round(d), "dalam": b["dalam"], "m": b["m"], "cocok": c[2]})
+            ps.append({"id": k["id"], "tempat": t["tempat"], "lapor": t["mmi"], "model": round(mod, 2), "jarak": round(d), "dalam": b["dalam"], "m": b["m"], "cocok": c[2],
+                       "d": d, "jenis": jenis, "lat": c[0], "lon": c[1], "tgl": k.get("tanggal")})  # medan tambahan untuk koreksi_guncangan.py; tidak ditulis ke JSON
     buang["sebaran jarak tempat bernama ganda ke kandidat terdekat"] = jarak_ambigu
     buang["catatan jarak"] = "Tempat tak dikenali tidak punya koordinat, jadi jaraknya tidak bisa disebar."
     return ps, buang

@@ -20,7 +20,7 @@ Tabel I.1. Isian kelompok identitas, waktu, dan lokasi
 | 2.2 | Zona waktu | Pilihan: WIB, WITA, WIT | Laporan awal |
 | 2.3 | Waktu diketahui | Tanggal dan jam BPBD pertama kali mengetahui | Laporan awal |
 | 2.4 | Waktu laporan | Diisi otomatis oleh sistem | Laporan awal |
-| 2.5 | Waktu selesai | Tanggal kejadian dinyatakan selesai | Penutupan |
+| 2.5 | Waktu selesai | Tanggal kejadian dinyatakan selesai; dikosongkan dengan tanda ditutup walidata apabila kejadian ditutup oleh walidata bencana dan belum dikonfirmasi BPBD kabupaten/kota | Penutupan |
 | 3.1 | Provinsi, kabupaten/kota, kecamatan, desa/kelurahan | Pilihan dari kode wilayah Kementerian Dalam Negeri; boleh lebih dari satu desa | Laporan awal |
 | 3.2 | Koordinat | Lintang dan bujur desimal dengan sistem koordinat World Geodetic System 1984 (WGS 84), paling sedikit enam angka di belakang koma | Laporan awal |
 | 3.3 | Ketelitian lokasi | Pilihan: titik yang diukur dengan GPS, perkiraan tingkat desa, atau perkiraan tingkat kecamatan | Laporan awal |
@@ -38,7 +38,7 @@ Tabel I.2. Isian kelompok korban dan pengungsian
 | 4.7 | Pemilahan korban dan pengungsi | Jenis kelamin; umur 0 sampai 17, 18 sampai 59, 60 ke atas; disabilitas menurut pertanyaan singkat Washington Group, yaitu enam pertanyaan baku tentang kesulitan fungsional | *Rapid assessment* |
 | 4.8 | Kematian tidak langsung | Jumlah dan penyebabnya, misalnya penyakit di pengungsian; dicatat terpisah | Penutupan |
 | 5.1 | Pengungsi | Jumlah orang yang meninggalkan tempat tinggalnya karena bencana; dipilah menurut isian 4.7 | Laporan awal |
-| 5.2 | Pengungsian sebelum dampak | Ya atau tidak; jumlah orang yang dievakuasi sebelum dampak terjadi | Laporan awal |
+| 5.2 | Evakuasi pencegahan | Jumlah orang yang dievakuasi karena peringatan dini atau perintah evakuasi sebelum dampak terjadi; dicatat terpisah dan tidak dihitung dalam kriteria maupun kelas, kecuali evakuasi dari radius bahaya gunung api yang dicatat pada isian 5.1 | Laporan awal |
 | 5.3 | Titik pengungsian | Nama, koordinat, jenis tempat (tenda, gedung publik, rumah kerabat), jumlah jiwa | *Rapid assessment* |
 | 5.4 | Kelompok rentan di pengungsian | Bayi dan balita, ibu hamil dan menyusui, lansia, penyandang disabilitas | *Rapid assessment* |
 Tabel I.3. Isian kelompok kerusakan, layanan vital, dan ekonomi
@@ -77,7 +77,7 @@ Tabel I.4. Isian kelompok kebutuhan, penanganan, dan mutu data
 | 10.1 | Sumber data | Pilihan: pendataan lapangan, laporan perangkat daerah, laporan masyarakat, pemberitaan, atau sistem pemantauan | Laporan awal |
 | 10.2 | Pelapor | Jabatan dan instansi | Laporan awal |
 | 10.3 | Status verifikasi | Pilihan: terverifikasi atau belum terverifikasi | Laporan awal |
-| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian 4.1 sampai 4.5, 5.1, 5.2, 6.1 sampai 6.6, 8.1 sampai 8.3, atau 8.6 bernilai lebih dari nol, atau isian 7.1 sampai 7.6 berstatus selain normal (orang terancam, kematian tidak langsung, irigasi, usaha, dan nilai rupiah tidak dihitung); menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Laporan awal |
+| 10.4 | Status dampak | Diisi secara otomatis: ada dampak apabila paling sedikit satu isian 4.1 sampai 4.5, 5.1, 6.1 sampai 6.6, 8.1 sampai 8.3, atau 8.6 bernilai lebih dari nol, atau isian 7.1 sampai 7.6 berstatus selain normal (orang terancam, evakuasi pencegahan, kematian tidak langsung, irigasi, usaha, dan nilai rupiah tidak dihitung); menunggu data apabila belum ada isian yang lebih dari nol, tetapi masih ada isian yang belum didata; tanpa dampak apabila semua isian nihil | Laporan awal |
 | 10.5 | Kriteria kejadian bencana yang terpenuhi | Huruf a sampai d diisi otomatis dari angka dampak, termasuk luas puso (8.1 dan 8.2) dan luas terbakar terverifikasi (8.6); huruf e dan f diisi dari surat yang tercatat pada isian 9.2 dan 9.3; untuk bencana nonalam dan sosial juga dari isian 9.6 | *Rapid assessment* |
 | 10.6 | Kelas dan indikator penentu | Diisi secara otomatis: intensif atau ekstensif beserta indikator penentunya, dihitung dari korban meninggal dan hilang, rumah rusak berat terbobot, dan isian khusus longsor, kekeringan, dan karhutla | *Rapid assessment* |
 | 10.7 | Dokumentasi | Foto yang memuat koordinat dan waktu pengambilan | *Rapid assessment* |
@@ -91,11 +91,13 @@ Tabel I.5. Angka yang dipakai untuk setiap data
 | --- | --- |
 | Korban meninggal | Angka terakhir |
 | Korban hilang | Angka terakhir |
-| Korban luka berat dan luka ringan | Angka terbanyak selama kejadian |
-| Terdampak | Angka terbanyak selama kejadian |
-| Pengungsi | Angka terbanyak selama kejadian |
+| Korban luka berat dan luka ringan | Angka terbanyak selama kejadian dari laporan terverifikasi |
+| Terdampak | Angka terbanyak selama kejadian dari laporan terverifikasi |
+| Pengungsi | Angka terbanyak selama kejadian dari laporan terverifikasi |
 | Kerusakan rumah, fasilitas, prasarana, dan lahan | Angka terakhir |
 | Nilai kerusakan dan nilai kerugian | Hasil pengkajian kebutuhan pascabencana; tidak diisi selama kejadian berlangsung |
+
+Angka terbanyak dapat diturunkan melalui koreksi apabila angka sebelumnya ternyata keliru, dan alasan koreksi dicatat dalam riwayat perubahan.
 
 ## C. TINGKAT KERUSAKAN DAN KEADAAN TERENDAM BANGUNAN
 

@@ -57,7 +57,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 22. Korban Hilang adalah orang yang tidak ditemukan atau tidak diketahui keberadaannya setelah kejadian bencana.
 23. Korban Luka Berat adalah orang yang mengalami luka atau sakit karena kejadian bencana dan memerlukan rawat inap.
 24. Korban Luka Ringan adalah orang yang mengalami luka atau sakit karena kejadian bencana dan cukup memperoleh rawat jalan.
-25. Pengungsi adalah orang atau kelompok orang yang terpaksa atau dipaksa keluar dari tempat tinggalnya untuk jangka waktu yang belum pasti sebagai akibat dampak buruk bencana, termasuk orang yang dievakuasi sebelum dampak terjadi.
+25. Pengungsi adalah orang atau kelompok orang yang terpaksa atau dipaksa keluar dari tempat tinggalnya untuk jangka waktu yang belum pasti sebagai akibat dampak buruk bencana. Evakuasi pencegahan tidak termasuk pengungsi, kecuali sebagaimana dimaksud pada angka 54.
 26. Terdampak adalah orang yang menderita akibat dampak buruk bencana, seperti kerusakan atau kerugian harta benda atau hilangnya sumber penghidupan, tetapi masih dapat menempati tempat tinggalnya. Untuk kekeringan, terdampak adalah orang yang membutuhkan bantuan air bersih.
 27. Terancam adalah orang yang berada di wilayah yang terancam tetapi belum terkena dampak.
 28. Rumah adalah bangunan yang dihuni sebagai tempat tinggal.
@@ -86,6 +86,7 @@ Dalam petunjuk pelaksanaan ini yang dimaksud dengan:
 51. Relokasi adalah pemindahan penduduk secara tetap dari lokasi yang tidak dapat dihuni lagi karena kejadian bencana atau ancaman lanjutannya.
 52. Tanaman Rusak Berat adalah tanaman yang menurut laporan dinas yang membidangi pertanian mengalami kerusakan dengan intensitas 50 sampai 85 persen, sehingga belum puso.
 53. Hari yang Sama adalah tanggal kalender menurut waktu setempat di kabupaten/kota tersebut.
+54. Evakuasi Pencegahan adalah pemindahan orang dari tempat tinggalnya karena peringatan dini atau perintah evakuasi sebelum dampak terjadi. Orang yang dievakuasi dari radius bahaya atau kawasan rawan bencana gunung api yang ditetapkan oleh Pusat Vulkanologi dan Mitigasi Bencana Geologi karena kenaikan tingkat aktivitas dicatat sebagai pengungsi pada kejadian erupsi gunung api tersebut.
 
 # BAB II | STANDAR DATA KEJADIAN DAN DAMPAK BENCANA
 
@@ -142,7 +143,7 @@ Tabel 1. Jenis bencana, kode, dan subjenis
    f. penetapan status keadaan darurat bencana atau status keadaan tertentu.
 2. Kriteria sebagaimana dimaksud pada angka 1 diukur dengan ketentuan:
    a. korban meninggal dan korban hilang dijumlahkan;
-   b. orang terdampak, luka, dan mengungsi dijumlahkan, setiap orang hanya dihitung satu kali, dan pengungsi yang dievakuasi sebelum dampak terjadi ikut dihitung;
+   b. orang terdampak, luka, dan mengungsi dijumlahkan, setiap orang hanya dihitung satu kali, dan evakuasi pencegahan tidak dihitung, kecuali evakuasi dari radius bahaya gunung api sebagaimana dimaksud dalam Bab I huruf D angka 54;
    c. jumlah rumah, fasilitas publik, dan jembatan yang rusak dijumlahkan untuk rusak berat, rusak sedang, tidak dapat dihuni sementara, dan rusak ringan; jumlah setiap tingkat dicatat terpisah; rumah terendam dan jalan tidak dihitung dalam kriteria ini;
    d. luas terbakar dicatat dengan sumber pengukuran lapangan atau citra satelit resolusi tinggi, dan luas puso dicatat dengan sumber data dinas yang membidangi pertanian;
    e. permintaan bantuan nasional dibuktikan dengan surat yang bernomor, bertanggal, dan menyebut kejadian tersebut; dan
@@ -150,12 +151,12 @@ Tabel 1. Jenis bencana, kode, dan subjenis
 3. Kriteria diterapkan pada setiap catatan kabupaten/kota dan pada kejadian di tingkat nasional, dengan memakai angka kumulatif setelah laporan digabungkan menurut huruf D dan dihitung menurut huruf E. Kejadian lintas kabupaten/kota yang baru memenuhi kriteria apabila dampaknya dijumlahkan dicatat sebagai kejadian bencana di tingkat nasional. Catatan kabupaten/kota yang tidak memenuhi kriteria secara sendiri tetap dicatat sebagai bagian dari kejadian nasional tersebut, tetapi tidak dihitung dalam jumlah kejadian bencana kabupaten/kota.
 4. Kejadian yang belum memenuhi kriteria tetap dicatat dan disimpan, tetapi tidak dihitung dalam jumlah kejadian bencana. Pemenuhan kriteria diperiksa ulang setiap kali angka dampak diperbarui.
 5. Peristiwa ancaman dinyatakan menimbulkan dampak apabila paling sedikit satu isian berikut bernilai lebih dari nol atau, untuk layanan vital, berstatus selain normal:
-   a. manusia: korban meninggal, korban hilang, korban luka berat, korban luka ringan, pengungsi termasuk orang yang dievakuasi sebelum dampak terjadi, atau terdampak;
+   a. manusia: korban meninggal, korban hilang, korban luka berat, korban luka ringan, pengungsi, atau terdampak;
    b. rumah: rumah rusak berat, rusak sedang, tidak dapat dihuni sementara, rusak ringan, atau terendam;
    c. fasilitas publik, jalan, atau jembatan yang rusak, dengan jalan diukur dalam kilometer;
    d. layanan vital yang terganggu; atau
    e. lahan, tambak, dan ternak: luas terbakar, sawah atau kebun yang terendam atau puso, tambak yang rusak, atau ternak yang mati.
-   Isian lain, seperti kematian tidak langsung, jaringan irigasi, usaha, dan nilai kerusakan, dicatat tetapi tidak menentukan adanya dampak.
+   Isian lain, seperti evakuasi pencegahan, kematian tidak langsung, jaringan irigasi, usaha, dan nilai kerusakan, dicatat tetapi tidak menentukan adanya dampak.
 6. Orang terancam tidak dihitung sebagai dampak.
 7. Satu isian dampak yang bernilai lebih dari nol sudah cukup untuk menyatakan adanya dampak, walaupun isian dampak lainnya belum didata. Apabila belum ada isian dampak yang bernilai lebih dari nol, tetapi masih ada isian dampak yang berstatus belum didata, peristiwa ancaman dicatat dengan keterangan menunggu data. Peristiwa ancaman dinyatakan tidak menimbulkan dampak apabila semua isian dampak berstatus nihil.
 8. Peristiwa ancaman yang tidak menimbulkan dampak dicatat dalam catatan pemantauan dan tidak dilaporkan sebagai kejadian bencana.
@@ -166,11 +167,11 @@ Tabel 1. Jenis bencana, kode, dan subjenis
 1. Batas satu kejadian ditentukan dengan ketentuan umum sebagai berikut, sepanjang Tabel 2 tidak mengatur lain:
    a. kejadian yang berdampak pada beberapa kabupaten/kota dihitung sebagai satu kejadian di tingkat nasional dan satu kejadian di setiap kabupaten/kota terdampak yang memenuhi kriteria kejadian bencana;
    b. kejadian sejenis di beberapa lokasi dalam satu kabupaten/kota pada hari yang sama dihitung sebagai satu kejadian;
-   c. kejadian dinyatakan selesai oleh BPBD kabupaten/kota apabila dampak fisiknya sudah berhenti;
+   c. kejadian dinyatakan selesai oleh BPBD kabupaten/kota apabila dampak fisiknya sudah berhenti, atau ditutup oleh walidata bencana sebagaimana dimaksud dalam Bab III huruf B angka 2;
    d. peristiwa ancaman baru yang menimbulkan dampak setelah kejadian dinyatakan selesai dicatat sebagai kejadian baru; dan
    e. kejadian terpicu dicatat terpisah dan ditautkan dengan kejadian pemicunya.
 2. Ketentuan khusus untuk setiap jenis bencana alam tercantum dalam Tabel 2. Satuan dalam Tabel 2 adalah catatan kabupaten/kota, kecuali disebut lain.
-3. Peringatan tsunami yang tidak diikuti genangan air laut di daratan tidak dicatat sebagai kejadian bencana tsunami. Orang yang mengungsi karena peringatan tersebut dicatat sebagai pengungsi pada kejadian pemicunya di kabupaten/kota tersebut. Apabila kejadian pemicu tidak mempunyai catatan kabupaten/kota di kabupaten/kota tersebut karena dampak lainnya, pengungsian dicatat dalam catatan pemantauan peristiwa ancaman tsunami dan tidak membuka catatan kejadian pemicu yang baru.
+3. Peringatan tsunami yang tidak diikuti genangan air laut di daratan tidak dicatat sebagai kejadian bencana tsunami. Orang yang mengungsi karena peringatan tersebut dicatat sebagai evakuasi pencegahan dalam catatan pemantauan peristiwa ancaman tsunami dan tidak dihitung dalam kriteria maupun kelas kejadian pemicunya.
 
 Tabel 2. Batas satu kejadian untuk setiap jenis bencana alam
 
@@ -191,11 +192,11 @@ Tabel 2. Batas satu kejadian untuk setiap jenis bencana alam
 1. Jumlah kejadian bencana di tingkat nasional dihitung berdasarkan nomor induk kejadian. Jumlah kejadian di tingkat provinsi dihitung satu kali untuk setiap kejadian bencana yang mempunyai paling sedikit satu catatan kabupaten/kota yang memenuhi kriteria di provinsi tersebut, dan jumlah kejadian di tingkat kabupaten/kota dihitung berdasarkan KIB yang memenuhi kriteria. Ketiga jumlah tersebut merupakan ukuran yang berbeda dan tidak dijumlahkan atau dibandingkan satu sama lain dalam satu penyajian.
 2. Korban dan kerusakan dicatat satu kali pada kejadian yang secara langsung menyebabkannya. Jumlah dampak suatu rangkaian kejadian dihitung dengan menjumlahkan kejadian pemicu dan kejadian terpicunya untuk keperluan penyajian, dan tidak menentukan kriteria maupun kelas setiap kejadian.
 3. Setiap orang dicatat pada satu kategori saja dengan urutan prioritas meninggal, hilang, luka berat, luka ringan, mengungsi, lalu terdampak.
-4. Selama kejadian berlangsung, angka korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan angka korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian. Untuk kriteria sebagaimana dimaksud dalam huruf C angka 1 huruf b, angka korban luka, terdampak, dan pengungsi yang dijumlahkan diambil dari laporan yang sama, yaitu laporan dengan jumlah ketiganya terbanyak, agar setiap orang hanya dihitung satu kali.
+4. Selama kejadian berlangsung, angka korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan angka korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian dari laporan yang terverifikasi. Angka terbanyak dapat diturunkan melalui koreksi apabila angka sebelumnya ternyata keliru, dan alasan koreksi dicatat dalam riwayat perubahan. Untuk kriteria sebagaimana dimaksud dalam huruf C angka 1 huruf b, angka korban luka, terdampak, dan pengungsi yang dijumlahkan diambil dari laporan yang sama, yaitu laporan dengan jumlah ketiganya terbanyak, agar setiap orang hanya dihitung satu kali.
 5. Angka dari laporan harian yang berbeda tidak dijumlahkan, karena setiap laporan memuat keadaan kumulatif.
 6. Korban hilang yang kemudian ditemukan meninggal dipindahkan ke kategori meninggal. Korban hilang yang ditemukan selamat dikeluarkan dari kategori hilang, dan alasan penurunan angka dicatat.
 7. Kematian tidak langsung dicatat terpisah dan tidak dihitung dalam kriteria maupun kelas kejadian.
-8. Kejadian yang berlangsung melewati akhir tahun dicatat pada tahun tanggal mulai kejadian.
+8. Kejadian yang berlangsung melewati akhir tahun dihitung pada tahun tanggal mulai kejadian di tingkat nasional, termasuk semua KIB-nya. Untuk pelaporan capaian Kerangka Sendai, korban meninggal dan korban hilang juga dicatat menurut tahun terjadinya.
 
 ## F. KELAS KEJADIAN
 
@@ -208,7 +209,7 @@ Tabel 3. Batas kelas bencana intensif
 | ---: | --- | --- | --- | --- |
 | 1 | Umum | Semua jenis | Korban meninggal dan korban hilang, dijumlahkan | 30 orang atau lebih |
 | 2 | Umum | Semua jenis | Rumah rusak berat terbobot | 600 unit atau lebih |
-| 3 | Khusus | Tanah longsor | Pengungsi karena longsor, termasuk orang yang dievakuasi sebelum longsor terjadi dan orang yang direlokasi; setiap orang dihitung satu kali | 1.000 orang atau lebih |
+| 3 | Khusus | Tanah longsor | Pengungsi karena longsor dan orang yang direlokasi; setiap orang dihitung satu kali; evakuasi pencegahan tidak dihitung | 1.000 orang atau lebih |
 | 4 | Khusus | Kekeringan | Penduduk yang kesulitan air minum karena kekeringan, yang merupakan bagian dari terdampak kekeringan, yaitu memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya selama lebih dari 15 hari, dibandingkan dengan penduduk kabupaten/kota | 15 persen atau lebih |
 | 5 | Khusus | Kekeringan | Luas tanaman pangan yang puso atau rusak berat dibandingkan dengan luas tanam pada musim tanam tersebut di kabupaten/kota | lebih dari 50 persen |
 | 6 | Khusus | Kebakaran hutan dan lahan | Luas terbakar terverifikasi pada hutan dan lahan selain savana, semak, dan padang rumput dalam satu kejadian | 1.000 hektare atau lebih |
@@ -217,8 +218,8 @@ Tabel 3. Batas kelas bencana intensif
 3. Kelas ditetapkan untuk setiap catatan kabupaten/kota dan untuk kejadian di tingkat nasional. Kejadian di tingkat nasional tergolong bencana intensif apabila jumlah dampak di semua kabupaten/kota yang terdampak mencapai salah satu batas nomor 1, 2, 3, 6, atau 7 dalam Tabel 3, atau apabila salah satu catatan kabupaten/kotanya tergolong bencana intensif. Batas nomor 4 dan 5 hanya diterapkan pada catatan kabupaten/kota.
 4. Untuk kebakaran hutan dan lahan, luas terbakar pada setiap kelompok tutupan dalam nomor 6 dan 7 Tabel 3 dinilai terpisah. Jumlah hari dengan Indeks Standar Pencemar Udara kategori berbahaya dicatat sebagai keterangan dan tidak menentukan kelas.
 5. Indikator yang menentukan kelas dicatat di samping kelas.
-6. Kelas dihitung ulang setiap kali angka dampak diperbarui. Kelas akhir ditetapkan oleh walidata bencana tingkat pusat setelah data diverifikasi.
-7. Kelas kejadian merupakan klasifikasi data dan tidak menggantikan penetapan status keadaan darurat maupun penetapan tingkat bencana sebagaimana dimaksud dalam peraturan perundang-undangan.
+6. Kelas dihitung ulang setiap kali angka dampak diperbarui. Kelas akhir ditetapkan oleh walidata bencana tingkat pusat setelah data diverifikasi. Nilai indikator yang selisihnya dengan batas dalam Tabel 3 tidak lebih dari 10 persen, baik di bawah maupun di atas batas, diperiksa ulang oleh walidata bencana tingkat pusat sebelum kelas akhir ditetapkan.
+7. Kelas kejadian merupakan klasifikasi data dan tidak menggantikan penetapan status keadaan darurat maupun penetapan tingkat bencana sebagaimana dimaksud dalam peraturan perundang-undangan. Kelas kejadian tidak menjadi syarat, penentu, atau dasar penyaluran dana maupun bantuan.
 8. Status keadaan darurat dicatat sebagai keterangan di samping kelas dan tidak menentukan kelas.
 9. Batas dalam Tabel 3 ditinjau kembali oleh walidata bencana paling lambat satu tahun setelah petunjuk pelaksanaan ini berlaku.
 
@@ -264,7 +265,7 @@ Tabel 4. Pembagian tugas
 | BPBD kabupaten/kota | Memverifikasi data kabupaten/kota, menyatakan kejadian selesai, dan menyampaikan data penutupan |
 | BPBD provinsi | Memeriksa kelengkapan data, menyatukan catatan lintas kabupaten/kota di provinsinya, dan memverifikasi data statis |
 | Pusat Pengendalian Operasi BNPB | Memantau peristiwa ancaman, menerima laporan BPBD, menautkan sementara catatan kabupaten/kota yang berasal dari satu peristiwa, dan menyusun laporan harian nasional |
-| Pusdatinkom | Menerbitkan nomor induk kejadian paling lambat 72 jam setelah kejadian diketahui, memutuskan penggabungan atau pemisahan kejadian, melakukan verifikasi akhir, menetapkan kelas akhir, dan merilis data statis |
+| Pusdatinkom | Menerbitkan nomor induk kejadian paling lambat 72 jam setelah kejadian diketahui, memutuskan penggabungan atau pemisahan kejadian, melakukan verifikasi akhir, menetapkan kelas akhir, menutup kejadian yang tidak dinyatakan selesai, dan merilis data statis |
 
 ## B. TAHAPAN PENGUMPULAN DATA
 
@@ -274,7 +275,8 @@ Tabel 4. Pembagian tugas
    c. *rapid assessment*, yaitu pengisian data umum dan lembar data khusus, yang dimulai paling lambat 24 jam setelah informasi diterima sesuai dengan petunjuk pelaksanaan pengkajian cepat, dan hasil awalnya disampaikan paling lambat 72 jam setelah kejadian diketahui;
    d. pemutakhiran, yaitu pembaruan data dinamis paling sedikit satu kali sehari selama kejadian berlangsung atau sesuai dengan kesepakatan pos komando; dan
    e. penutupan, yaitu pernyataan selesainya kejadian, pelengkapan isian, dan verifikasi berjenjang, yang diselesaikan paling lambat pada verifikasi bulanan berikutnya.
-2. Alur penentuan kejadian bencana tercantum dalam Gambar 1, dan alur kerja pengumpulan data menurut pelaksana tercantum dalam Gambar 2.
+2. Apabila sampai verifikasi bulanan BPBD kabupaten/kota belum menyatakan kejadian selesai, tidak ada pemutakhiran selama bulan tersebut, dan hasil pemantauan menunjukkan dampak fisik sudah berhenti, walidata bencana tingkat pusat menutup kejadian dengan tanda ditutup walidata. Tanggal selesai dikosongkan sampai dikonfirmasi oleh BPBD kabupaten/kota.
+3. Alur penentuan kejadian bencana tercantum dalam Gambar 1, dan alur kerja pengumpulan data menurut pelaksana tercantum dalam Gambar 2.
 
 ![Gambar 1. Alur penentuan kejadian bencana dan kelasnya](../../01-kajian-penentuan-kejadian/gbr/pk-alur.png)
 
@@ -331,6 +333,8 @@ Tabel 5. Pemeriksaan mutu data
 2. Pada saat petunjuk pelaksanaan ini mulai berlaku, Petunjuk Pelaksanaan Standar Data Kejadian dan Dampak Bencana Nomor 7 Tahun 2023 dicabut dan dinyatakan tidak berlaku.
 3. Data kejadian bencana yang tercatat sebelum petunjuk pelaksanaan ini berlaku tetap berlaku sesuai dengan ketentuan pada saat data tersebut dicatat.
 4. Kejadian bencana yang masih berlangsung pada saat petunjuk pelaksanaan ini mulai berlaku dicatat sesuai dengan petunjuk pelaksanaan ini sejak tanggal berlakunya. KIB yang sudah diberikan tetap dipakai, dan angka yang sudah tercatat menjadi angka awal yang diperbarui menurut Bab II huruf E angka 4.
-5. Tahun mulai berlakunya petunjuk pelaksanaan ini dicatat dalam metadata data kejadian bencana sebagai titik perubahan metode.
+5. Walidata bencana menghitung ulang data kejadian bencana sejak tahun 2023 sampai tanggal berlakunya petunjuk pelaksanaan ini menurut ketentuan dalam petunjuk pelaksanaan ini, sepanjang isian yang diperlukan tersedia. Hasil penghitungan ulang disimpan sebagai versi tersendiri dan tidak mengubah data sebagaimana dimaksud pada angka 3.
+6. Selama 12 bulan pertama sejak petunjuk pelaksanaan ini berlaku, jumlah kejadian bencana dan kelasnya disajikan berdampingan menurut ketentuan lama dan ketentuan dalam petunjuk pelaksanaan ini.
+7. Tahun mulai berlakunya petunjuk pelaksanaan ini dicatat dalam metadata data kejadian bencana sebagai titik perubahan metode. Deret waktu yang melewati titik tersebut diberi keterangan tidak sepenuhnya sebanding.
 
 ::: ttd

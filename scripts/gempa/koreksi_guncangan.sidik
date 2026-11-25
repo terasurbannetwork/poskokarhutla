@@ -1,0 +1,14 @@
+{
+ "sidik": "6b310f5bc509cec6",
+ "berkas": {
+  "scripts/gempa/kajian_magma.py": "e375d5d8ee3bb5fce227a35399035bd75dc5fa7621164e2b3d0927f6119ca6be",
+  "scripts/gempa/koreksi_guncangan.kriteria.json": "a61c87dd0086ddb4de3f751860b736892ddd292898e3615d2a00b2b942aaeea9",
+  "scripts/gempa/koreksi_guncangan.py": "0be214e4fd83b1db8a86dce3d5ae897f06b96c81de07ddd6fd09dfd70b5f9190"
+ },
+ "masukan": [
+  "42598218a5dda93f",
+  "8d2deeb33c81243a",
+  "59b00a60bd58fe30"
+ ],
+ "dibuat": "2026-11-25T02:04:18Z"
+}

@@ -1,0 +1,25 @@
+{
+ "sidik": "d735acbfc4995bf7",
+ "berkas": {
+  "public/data/titik_palsu.json": "ce7a376f0475ee42d6d0070fdb832a04b052d347b0a67434806700b48c8fc39c",
+  "public/udara/data/pltu.json": "46258defea2185e904c3423d314f0c717981957d8f4f142082b2d83c92e21eac",
+  "scripts/data/api_himawari.kriteria.json": "775a06ab4d9f5831f99fee9dd947830db993a1dd18c20e5aa9fa96b192cfb7c5",
+  "scripts/data/api_himawari.py": "7d4f2352875f2316963507964e363826e88e683d4a957a24789e96aa67e0773e",
+  "scripts/data/aturan.py": "30229559faeed1009e8fb034b4189d2a0099c699337267e202d67e7c25a4592a",
+  "scripts/data/himawari.py": "a55efd17296dbc041d14cdbc75641a1cc32c1084760e3bfeb2e204d589626530",
+  "scripts/data/himawari_alarm_palsu.csv": "7989f20ce2c050094d63380caa5b6b0f360f899bce028fa1e6fa2c6037462450",
+  "scripts/data/suar_gas_ggfr.csv": "524b0948463403859f8e0d0a4bf9985732f591bae15bbe36ba431b7a09dea12d",
+  "scripts/udara/awan_himawari.py": "d8cbbdddf5f26fc20c6428c6476995b798415d3bf620caa466864c3523bc93ab",
+  "scripts/umum/gerbang.py": "dd91a597e7d074df79831a8222569fdd3b82892d33dc5789e9a62d3735a5a143",
+  "scripts/umum/himawari_pindai.py": "65d8cc605446d91a1231ca455226224be0ffd0b40faa9b8cf552477ec631c4fe",
+  "scripts/umum/pembanding.py": "cf97cf5d63016caefec1ddeacba7f93ca84a02ab1413f0426db00551cb6741bb",
+  "scripts/umum/sidik.py": "c613720315aac18541c2436d774901b056f4f840fd94ff8850df895860537013"
+ },
+ "masukan": [
+  "2c9d5ce65f3ba14e9e64d65d9c70aacc5783c10987aa8c858fa7214706764256",
+  "viirs.csv:266888787",
+  "viirs_noaa20.csv:175421560",
+  "viirs_noaa21.csv:101098426"
+ ],
+ "dibuat": "2026-11-25T03:08:44Z"
+}

@@ -64,6 +64,17 @@ def entri_koreksi(blok, sumber):
     return entri_mae("MAE uji koreksi PM2,5 CAMS ke stasiun BMKG (µg/m³)", mae, "koreksi", (), blok.get("n_uji"), blok.get("selang"), blok.get("selang_vs"), sumber)
 
 
+def entri_mos_ridge(blok, sumber):
+    """KI-74 MOS ridge PM2,5 (mos_ridge.json, hanya ada sesudah uji prospektif dibuka). Tanpa berkas = tertutup; wajib vonis == 'lolos' (prospektif)."""
+    blok = blok or {}
+    mae, ci = blok.get("mae") or {}, blok.get("selang") or {}
+    kuat = blok.get("selang_vs")
+    if not isinstance(mae.get("model"), (int, float)) or kuat not in mae or _ci(ci.get(kuat)) is None:
+        return G.kosong("MAE uji prospektif MOS ridge PM2,5 ke stasiun BMKG (µg/m³)", "uji prospektif MOS ridge belum dibuka (butuh >= 28 hari sesudah kunci); angka CAMS mentah, belum dikoreksi", sumber)
+    return G.entri_ringkas("MAE uji prospektif MOS ridge PM2,5 ke stasiun BMKG (µg/m³)", "rendah", blok.get("pembanding_terkuat", kuat), blok.get("n"), mae["model"], mae[kuat],
+                           _ci(ci[kuat]), sumber, vonis=blok.get("vonis"), prospektif=True)
+
+
 def bangun(data=DATA):
     P, U, O, GC = baca("prakiraan", data), baca("uji_panen_pm25", data), baca("openaq_mos", data), baca("geoscf", data)
     galat = P.get("galat") or {}
@@ -80,6 +91,7 @@ def bangun(data=DATA):
     k["ensambel_cams_geoscf_bmkg"] = entri_mae("MAE uji ensambel CAMS+GEOS-CF koreksi bias (µg/m³), stasiun BMKG", gu.get("mae_uji"), "ensambel_koreksi_bias", ("ensambel",),
                                                gu.get("n_uji"), gu.get("selisih_mae_ensambel_koreksi_vs_terbaik_ci95"), gu.get("anggota_terbaik"), s_g)
     st = galat.get("stasiun")
+    k["mos_ridge_pm25_bmkg"] = entri_mos_ridge(baca("mos_ridge2", data), ["public/udara/data/mos_ridge2.json"])
     k["koreksi_pm25_bmkg"] = entri_koreksi(P.get("koreksi"), s_p)
     k["prakiraan_pm25_stasiun"] = G.kosong("galat prakiraan PM2,5 kota vs stasiun", "belum ada galat prakiraan terhadap stasiun" if not st
                                            else "pembanding persistensi stasiun belum dihitung", s_p)
@@ -113,6 +125,11 @@ def uji():
     assert entri_koreksi(kb, [])["boleh_tampil"] is True
     assert entri_koreksi(dict(kb, selang_vs="persistensi_24j"), [])["alasan"] == "belum ada selang"
     assert entri_koreksi(dict(kb, mae_model=10.5), [])["boleh_tampil"] is False
+    # MOS ridge: tanpa berkas = tertutup; vonis gagal walau angka bagus = tertutup; lolos + selang > 0 = terbuka
+    assert entri_mos_ridge({}, [])["boleh_tampil"] is False
+    mr = {"mae": {"model": 8.0, "pers": 10.0, "teredam": 9.0}, "selang": {"pers": [0.5, 3.0], "teredam": [0.2, 1.8]}, "selang_vs": "teredam", "n": 300, "vonis": "gagal"}
+    assert entri_mos_ridge(mr, [])["boleh_tampil"] is False
+    assert entri_mos_ridge(dict(mr, vonis="lolos"), [])["boleh_tampil"] is True
     # data nyata: semua entri punya kunci kontrak dan berkas < 100 KB
     k = bangun()
     assert k and all({"boleh_tampil", "alasan", "metrik", "selang95", "vonis_prospektif"} <= set(v) for v in k.values()), list(k)

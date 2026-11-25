@@ -1,0 +1,16 @@
+{
+ "id": "PRAREG-ESKALASI2",
+ "mengamandemen": "PRAREG-ESKALASI (eskalasi.sidik d5405318adc604ce, vonis TIDAK LOLOS 25 Nov 2026); tidak mengubah berkas itu",
+ "fitur": ["lq", "fase", "lh13", "tumbuh", "lap_d", "sinm", "cosm"],
+ "latih": [2016, 2023],
+ "ridge": 1.0,
+ "alarm_fraksi": 0.25,
+ "min_n": 150,
+ "min_y1": 40,
+ "min_prov": 4,
+ "boot": 2000,
+ "biji": 7,
+ "prospektif_awal": "2026-12-01",
+ "prospektif_akhir": "2027-05-31",
+ "jeda_lapor_hari": 14
+}

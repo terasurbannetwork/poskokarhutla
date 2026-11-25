@@ -77,6 +77,9 @@ jobs:
         run: |
           python3 scripts/udara/openaq_mos.py || echo "::warning title=openaq_mos::gagal; berkas lamanya dibiarkan"
           python3 scripts/udara/geoscf.py || echo "::warning title=geoscf::gagal; berkas lamanya dibiarkan"
+          # KI-74: arsip prospektif append-only di data/raw/udara (ikut cache udara-). Hilang sesudah tgl 27 = cache terbuang: kerasan, jangan diam.
+          [ -s data/raw/udara/mos_ridge2_arsip.jsonl ] || [ "$(date -u +%F)" \< "2026-11-28" ] || echo "::error title=mos_ridge2::arsip prospektif HILANG (cache udara- luput); uji 28 hari mulai ulang, catat di KI-74"
+          python3 -I scripts/udara/mos_ridge2.py bayangan || echo "::warning title=mos_ridge2::gagal"
           python3 scripts/udara/gerbang_udara.py || echo "::warning title=gerbang_udara::gagal; berkas lamanya dibiarkan"
 
       - name: Simpan arsip udara untuk jalan berikutnya

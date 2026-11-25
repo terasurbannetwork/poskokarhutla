@@ -24,6 +24,17 @@ jobs:
         with:
           python-version: "3.12"
 
+      # ST-01: himawari.py membaca keluaran lama untuk mempertahankan status_sumber.terputus_sejak (awal galat PERTAMA) dan data lama.
+      # Pulihkan dari R2 (berkas tayang); belum ada / gagal = mulai kosong, himawari.py menangani.
+      - name: Pulihkan keluaran lama dari R2 (boleh gagal)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p public/data
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/data/himawari.json --file public/data/himawari.json --remote || { rm -f public/data/himawari.json; echo "::warning title=himawari::keluaran lama R2 tidak terpulihkan; terputus_sejak mulai dari sekarang"; }  # wrangler 4: --remote wajib
+
+      # Sumber terputus = himawari.py keluar 0 dan tetap menulis himawari.json bersetatus terputus; langkah unggah di bawah SENGAJA jalan.
       - name: Tarik titik Himawari
         env:
           PTREE_USER: ${{ secrets.PTREE_USER }}

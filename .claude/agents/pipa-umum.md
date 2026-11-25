@@ -45,6 +45,7 @@ Berkas milikmu (glob paling spesifik menang):
 
 - `scripts/umum/**`
 - `scripts/berita/**`
+- `public/data/gerbang/**`
 - `public/data/foto_dasar.json`
 - `public/data/gdelt.json`
 - `public/data/internet_padam.json`

@@ -7,7 +7,7 @@
   var G = 980.665, R_BUMI = 6371.0088, VS30 = 400, JENIS = ["kerak", "antarmuka", "intraslab"];
 
   function pasang(model) {
-    var P = model.param, vs0 = model.vs30_baku || VS30;
+    var P = model.param, vs0 = model.vs30_baku || VS30, K = model.koreksi_mmi && model.koreksi_mmi.vonis === "lolos" ? model.koreksi_mmi : null;
 
     function kelasZhao(v) { return v >= 600 ? "I" : v >= 300 ? "II" : v >= 200 ? "III" : "IV"; }
     function jarakSegmen(lat, lon, a, b) {
@@ -92,12 +92,21 @@
       return 2 * R_BUMI * Math.asin(Math.min(1, Math.sqrt(a)));
     }
 
+    /* Koreksi KI-81 (tabel beku dari model JSON, hanya bila lolos uji): kembaran koreksi_mmi di guncangan.py */
+    function koreksiMmi(v, repi, dalam) {
+      var r = Math.floor(repi + 0.5), i = 0, j = (dalam >= 60 ? 1 : 0) + (dalam > 300 ? 1 : 0), a = Object.keys(K.a), b = Object.keys(K.b);
+      K.batas_jarak_km.forEach(function (x) { if (r >= x) i++; });
+      return Math.min(10, Math.max(1, v - (K.mu + K.a[a[i]] + K.b[b[j]])));
+    }
+
     /* pusat = {kunci: [lat, lon]} (public/banjir/data/pusat_kec.json); hasil hanya kecamatan di dalam jendelaKm */
+    /* vs30 = angka (seragam) atau fungsi (lat, lon) -> Vs30 (vs30Grid); dengan fungsi, jendela dihitung pada Vs30 terlunak (P.logic_tree.vs30_min) dan MMI dikoreksi KI-81 bila ada di model */
     function kecamatan(gm, pusat, vs30) {
-      var jenis = gm.jenis || tebakJenis(gm.dalam, gm.m, gm.lat, gm.lon), win = jendelaKm(gm.m, gm.dalam, jenis, vs30), out = {};
+      var fn = typeof vs30 === "function" ? vs30 : null;
+      var jenis = gm.jenis || tebakJenis(gm.dalam, gm.m, gm.lat, gm.lon), win = jendelaKm(gm.m, gm.dalam, jenis, fn ? P.logic_tree.vs30_min : vs30), out = {};
       for (var k in pusat) {
         var d = jarakKm(gm.lat, gm.lon, pusat[k][0], pusat[k][1]);
-        if (d <= win) { var v = mmi(gm.m, d, gm.dalam, jenis, vs30); out[k] = { mmi: v, ekstrapolasi: ekstrapolasi(v) }; }
+        if (d <= win) { var v = mmi(gm.m, d, gm.dalam, jenis, fn ? fn(pusat[k][0], pusat[k][1]) : vs30); if (fn && K) v = koreksiMmi(v, d, gm.dalam); out[k] = { mmi: v, ekstrapolasi: ekstrapolasi(v) }; }
       }
       return out;
     }

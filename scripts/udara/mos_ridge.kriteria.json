@@ -1,0 +1,15 @@
+{
+ "id": "KI-74-mos-ridge-v1",
+ "tujuan": "MOS ridge per stasiun untuk PM2,5 hari+1..+3 menggantikan faktor stasiun (koreksi_bmkg, GAGAL)",
+ "tgl_kunci": "2026-11-25",
+ "model": "z=ln(PM+1) rata-rata harian UTC; z_obs[t+h]=a+b1 z_cams[t+h]+b2 z_obs[t]+b3(z_cams[t+h]-z_cams[t])+b4 sin/cos hari-tahun; ridge lambda 1 dengan intersep bebas; satu model per stasiun per h; asal bergulir; stasiun <120 hari latih = kemiringan gabungan efek tetap + intersep stasiun; balik transformasi median exp(z)-1",
+ "fitur_api_hulu": "ditulis tetapi MATI (FITUR_API=False): arsip angin 850 hPa periode latih tidak ada; alasan dicatat di mos_ridge.py ALASAN_API",
+ "data_setelan": "hanya 16 Okt - 6 Nov 2026 (pasangan sesudah 2026-11-07T03 terbakar oleh koreksi_bmkg.buka); angka eksplorasi bukan vonis",
+ "data_uji": "hanya tanggal target SESUDAH tgl_kunci, prakiraan dibuat sebelum hari target (arsip mos_ridge_arsip.jsonl append-only), obs hari target dari bmkg_pm25.json; minimal 28 hari target berbeda",
+ "pembanding": ["persistensi_24j (rata-rata obs hari asal)", "persistensi_teredam mu + rho (z_obs[t]-mu), mu dan rho dari data <= hari asal"],
+ "metrik": "MAE ug/m3 pada semua stasiun dan tenggang h=1..3 digabung; per tenggang hanya dilaporkan",
+ "selang": "pembanding.bootstrap_blok, blok = hari target, B=500, benih 3, selisih = MAE_pembanding - MAE_model",
+ "vonis_lolos": "MAE model < persistensi_24j DAN < persistensi_teredam, DAN batas bawah selang untuk KEDUA selisih > 0; selain itu gagal",
+ "gerbang": "gerbang_udara.entri_mos_ridge: boleh_tampil hanya bila berkas mos_ridge.json ada, vonis == 'lolos' dan putusan selang lolos; tanpa berkas = tertutup",
+ "buka_sekali": "uji dibuka sekali lewat sidik.buka sesudah syarat 28 hari terpenuhi; diulang = ditolak"
+}

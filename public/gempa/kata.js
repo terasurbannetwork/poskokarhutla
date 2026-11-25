@@ -94,11 +94,14 @@ const Guncang = {
     c = new Promise(res => nanti(async () => { const P = await this.paparan(g); await new Promise(r => nanti(r));
       const b = typeof Bukti !== "undefined" ? await Bukti.muat().catch(() => null) : null; res({P, F: b ? await this.fasilitas(g, b) : null}); }));
     this._c.set(g.id, c); if (this._c.size > 30) this._c.delete(this._c.keys().next().value); return c; },
-  muat() { return this._p ||= Promise.all([muatJSON("data/model_guncangan.json"), muatJSON("../banjir/data/pusat_kec.json"), muatJSON("../data/penduduk.json")])
-    .then(([m, pusat, d]) => ({M: GempaGuncangan.pasang(m), pusat, pend: d.kec})).catch(() => { this._p = null; return null; }); },
+  muat() { return this._p ||= Promise.all([muatJSON("data/model_guncangan.json"), muatJSON("../banjir/data/pusat_kec.json"), muatJSON("../data/penduduk.json"), this.vs30()])
+    .then(([m, pusat, d, v]) => ({M: GempaGuncangan.pasang(m), pusat, pend: d.kec, vs30: v})).catch(() => { this._p = null; return null; }); },
+  /* Vs30 per sel (sama dengan Simulasi); gagal muat = seragam 400 m/s tanpa koreksi KI-81 */
+  async vs30() { try { const meta = await muatJSON("data/vs30.json"), r = await fetch(new URL("data/vs30.bin", document.baseURI)); if (!r.ok) throw new Error("vs30.bin " + r.status);
+    return GempaGuncangan.vs30Grid(meta, new Uint8Array(await r.arrayBuffer()), 400); } catch (e) { console.warn("Vs30 tidak tersedia", e); return null; } },
   /* {per: {kelasMMI: jiwa}, total, tanpa} untuk satu gempa */
   async paparan(g) { const X = await this.muat(); if (!X) return null;
-    try { return GempaGuncangan.paparan(X.M.kecamatan({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, X.pusat), X.pend); } catch (e) { console.error(e); return null; } },
+    try { return GempaGuncangan.paparan(X.M.kecamatan({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, X.pusat, X.vs30 || undefined), X.pend); } catch (e) { console.error(e); return null; } },
   async fasilitas(g, bukti) { const X = await this.muat(); if (!X || !bukti?.fasilitas?.length) return null;
     try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, bukti, 6); } catch (e) { console.error(e); return null; } },
 };

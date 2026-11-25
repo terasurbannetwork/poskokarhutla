@@ -14,7 +14,7 @@ import {nilaiGps, jaringanRelay} from "./gps.js";
 import {jaringanHosting} from "./publik.js";
 import {jenisBerkas, durasiMP4, ATURAN_MEDIA, jarakM} from "./foto.js";
 import {km} from "./titik.js";
-import {muatHimawari, BARU_N_MIN, BARU_U_MAKS, BARU_LEVEL_MIN, BARU_ACUAN_MAKS} from "./himawari.js";
+import {muatHimawari, statusSumber, BARU_N_MIN, BARU_U_MAKS, BARU_LEVEL_MIN, BARU_ACUAN_MAKS} from "./himawari.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanInstansi, HALAMAN_STAF} from "./admin_halaman.js";
 import {gudangTerdekat, siapkanKerahkan, lepasDariTugas} from "./inventaris.js";
@@ -1053,7 +1053,7 @@ async function bukaKembali(env, kejadian, kini) {
 const KET_HIMAWARI = "Himawari-9 beresolusi sekitar 2 km: lokasinya perkiraan, bukan kepastian. Minta regu mengecek lapangan.";
 async function himawariPemicu(env, kini) {
   const hw = await muatHimawari(env), ac = Date.parse(hw?.acuan);
-  if (!Array.isArray(hw?.baris) || !Number.isFinite(ac) || kini - ac > BARU_ACUAN_MAKS) return [];
+  if (!statusSumber(hw).alarm_tersedia || !Array.isArray(hw?.baris) || !Number.isFinite(ac) || kini - ac > BARU_ACUAN_MAKS) return [];
   return hw.baris.filter(r => (r[7] ?? 1) >= BARU_N_MIN && r[2] <= BARU_U_MAKS && r[4] >= BARU_LEVEL_MIN).map(r => ({lat: r[0], lon: r[1], t: ac - r[2] * MENIT}));
 }
 const terdekat = (titik, t) => { let d = Infinity; for (const b of titik) if (b.t > t.padam_pada) { const x = km(b.lat, b.lon, t.lat, t.lon); if (x <= RADIUS_PADAM_KM && x < d) d = x; } return d === Infinity ? null : d; };

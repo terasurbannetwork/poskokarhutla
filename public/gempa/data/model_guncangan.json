@@ -1,6 +1,6 @@
 {
  "versi": 1,
- "dibuat": "2026-11-24T18:03Z",
+ "dibuat": "2026-11-25T02:07Z",
  "jenis": "guncangan_gmpe_gmice",
  "param": {
   "bssa14_pga": {
@@ -65,6 +65,43 @@
   "jendela_maks_km": 400.0,
   "mmi_valid_min": 3.0,
   "mmi_valid_maks": 8.0,
+  "logic_tree": {
+   "bobot_gem": {
+    "kerak": {
+     "bssa14": 0.34,
+     "cb14": 0.33,
+     "cy14": 0.33
+    },
+    "antarmuka": {
+     "ag20": 0.34,
+     "zhao06": 0.33,
+     "kuehn20": 0.33
+    },
+    "intraslab": {
+     "ag20": 0.34,
+     "zhao06": 0.33,
+     "kuehn20": 0.33
+    }
+   },
+   "bobot_pakai": {
+    "kerak": {
+     "bssa14": 1.0
+    },
+    "antarmuka": {
+     "zhao06": 1.0
+    },
+    "intraslab": {
+     "zhao06": 1.0
+    }
+   },
+   "tak_ada": [
+    "cb14",
+    "cy14",
+    "ag20",
+    "kuehn20"
+   ],
+   "vs30_min": 180.0
+  },
   "radius_palung_km": 200.0,
   "palung": [
    [
@@ -876,6 +913,44 @@
   ]
  },
  "vs30_baku": 400.0,
+ "koreksi_mmi": {
+  "sidik": "6b310f5bc509cec6",
+  "vonis": "lolos",
+  "tgl_belah": "2020-11-18",
+  "n_uji": 707,
+  "kejadian_uji": 246,
+  "mae_lama": 0.701,
+  "mae_baru": 0.597,
+  "selang_lo": 0.05268925484770148,
+  "bias_dekat_lama_baru": [
+   1.19,
+   -0.12
+  ],
+  "mu": 0.21839884144507493,
+  "a": {
+   "kurang dari 25 km": 0.6525212970112665,
+   "25 sampai 50 km": 0.26213426936817985,
+   "50 sampai 100 km": 0.03264481426215673,
+   "100 sampai 200 km": -0.3366407668731912,
+   "lebih dari 200 km": -0.698966402735486
+  },
+  "b": {
+   "dangkal (kurang dari 60 km)": 0.31010100789702205,
+   "menengah (60 sampai 300 km)": 0.35263850372957134,
+   "dalam (lebih dari 300 km)": -0.9505835499360534
+  },
+  "batas_jarak_km": [
+   25,
+   50,
+   100,
+   200
+  ],
+  "batas_dalam_km": [
+   60,
+   300
+  ],
+  "sha": "4888f1f9c7f444d8"
+ },
  "jenis_tektonik": [
   "kerak",
   "antarmuka",
@@ -912,7 +987,8 @@
  },
  "catatan": [
   "BSSA14 dan Zhao dicocokkan ke OpenQuake 16 Okt 2026; Worden 2012 dicocokkan manual.",
-  "Hanya nilai rata-rata, tanpa sigma; Vs30 seragam 400 m/s karena belum ada peta Vs30 di repo (efek tapak diabaikan).",
+  "Koreksi MMI KI-81 (koreksi_mmi) berlaku hanya bersama Vs30 per tapak; tabel disalin dari koreksi_guncangan.json hasil uji dan tidak dilatih ulang.",
+  "Hanya nilai rata-rata, tanpa sigma; Vs30 baku 400 m/s; per tapak tersedia dari vs30.bin (proksi kemiringan, galat tipikal sekitar 30%) lewat vs30_grid. Logic tree GEM hanya BSSA14 dan Zhao 2006 yang ada, CB14, CY14, AG20, Kuehn 2020 belum.",
   "Jenis tektonik ditebak dari kedalaman (>= 50 km intraslab, selain itu kerak); gempa dangkal 15-50 km M>=7 butuh jenis eksplisit atau ditebak antarmuka bila <= 200 km dari segmen subduksi PB2002.",
   "Gempa titik diubah ke Rjb lewat Rjb = max(0, Repi - L/4), L Wells & Coppersmith: tanpa arah patahan, mengabaikan efek direktivitas.",
   "Zhao 2006: magnitudo intraslab dipotong 7,8 (seperti OpenQuake SSlabNSHMP2014); antarmuka tidak dipotong (perbaikan 18 Okt 2026: sebelumnya M8,5 selatan Jawa memberi MMI permukiman terkuat 5,49, kini sekitar 6,4); jarak x = sqrt(Rjb^2 + h^2) dipakai sebagai perkiraan Rrup; tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",

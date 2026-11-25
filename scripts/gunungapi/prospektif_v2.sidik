@@ -1,0 +1,19 @@
+{
+ "sidik": "aa910350a296a25e",
+ "berkas": {
+  "scripts/gunungapi/abu.py": "9b35cfd1e201159c80538cdea87447e5819fb4bc739ac45bce89b7c4cb581962",
+  "scripts/gunungapi/prospektif.py": "bf66a53776fce06a59822104c9c4c256655044f2e88dc5e15ed09a04ad493539",
+  "scripts/gunungapi/prospektif_v2_kriteria.md": "ec989762634255ee31d5fc1c5ac2ce043b312190294eb1c0d97cc24ec65e57ec",
+  "scripts/gunungapi/uji_abu.py": "07a60dd7ac2b4d8c5ebb3f6196b1b47328d90191a182f4298f492c150961e421",
+  "scripts/umum/pembanding.py": "cf97cf5d63016caefec1ddeacba7f93ca84a02ab1413f0426db00551cb6741bb",
+  "scripts/umum/sidik.py": "c613720315aac18541c2436d774901b056f4f840fd94ff8850df895860537013"
+ },
+ "masukan": [
+  "beku 2026-11-25",
+  "jam 3",
+  "offset 0-12",
+  "campuran 45deg 5ms",
+  "vonis n>=60 gunung>=4 bootstrap blok gunung"
+ ],
+ "dibuat": "2026-11-25T02:11:52Z"
+}

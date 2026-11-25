@@ -1,0 +1,20 @@
+{
+ "id": "KI-74-mos-ridge-v2",
+ "tujuan": "MOS ridge per stasiun untuk PM2,5 hari+1..+3 menggantikan faktor stasiun (koreksi_bmkg, GAGAL)",
+ "tgl_kunci": "2026-11-26",
+ "model": "z=ln(PM+1) rata-rata harian UTC; z_obs[t+h]=a+b1 z_cams[t+h]+b2 z_obs[t]+b3(z_cams[t+h]-z_cams[t]) TANPA musim; ridge lambda 1 intersep bebas; satu model per stasiun per h; asal bergulir; <120 hari latih = kemiringan gabungan efek tetap + intersep stasiun; z prediksi dijepit ke [min,maks] z_obs latih; minimal 40 contoh; balik transformasi median",
+ "fitur_api_hulu": "ditulis tetapi MATI (FITUR_API=False): arsip angin 850 hPa periode latih tidak ada; alasan dicatat di mos_ridge.py ALASAN_API",
+ "data_setelan": "hanya 16 Okt - 6 Nov 2026 (pasangan sesudah 2026-11-07T03 terbakar oleh koreksi_bmkg.buka); angka eksplorasi bukan vonis",
+ "data_uji": "hanya tanggal target SESUDAH tgl_kunci, prakiraan dibuat sebelum hari target (arsip mos_ridge2_arsip.jsonl append-only), obs hari target dari bmkg_pm25.json; minimal 28 hari target berbeda",
+ "pembanding": [
+  "persistensi_24j (rata-rata obs hari asal)",
+  "persistensi_teredam mu + rho (z_obs[t]-mu), mu dan rho dari data <= hari asal"
+ ],
+ "metrik": "MAE ug/m3 pada semua stasiun dan tenggang h=1..3 digabung; per tenggang hanya dilaporkan",
+ "selang": "pembanding.bootstrap_blok, blok = hari target, B=500, benih 3, selisih = MAE_pembanding - MAE_model",
+ "vonis_lolos": "MAE model < persistensi_24j DAN < persistensi_teredam, DAN batas bawah selang untuk KEDUA selisih > 0; selain itu gagal",
+ "gerbang": "gerbang_udara.entri_mos_ridge (membaca mos_ridge2.json): boleh_tampil hanya bila berkas mos_ridge2.json ada, vonis == 'lolos' dan putusan selang lolos; tanpa berkas = tertutup",
+ "buka_sekali": "uji dibuka sekali lewat sidik.buka sesudah syarat 28 hari terpenuhi; diulang = ditolak",
+ "menggantikan": "KI-74-mos-ridge-v1 (mos_ridge.py/.kriteria.json/.sidik dipertahankan sebagai catatan, tidak pernah dibuka): DIGANTI sebelum ada skor uji karena eksplorasi setelan meledak (MAE h3 43,2 vs persistensi 12,3).",
+ "alasan_amandemen": "Prakiraan meledak (600 ug/m3 lawan obs 50-130) di stasiun yang rezim asapnya berbalik (Palangkaraya obs 500 -> 50 sementara CAMS tetap 400-800) dengan latih hanya ~3 minggu. Bukan bug aljabar. Musim sin/cos tak dapat diestimasi < 365 hari (bertindak sebagai tren), maka dimatikan; z prediksi dijepit ke rentang z_obs latih; minimal 40 contoh per latihan. Eksplorasi v2 (setelan saja) tetap kalah dari persistensi di semua h dan dilaporkan apa adanya."
+}

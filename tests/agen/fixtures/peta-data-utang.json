@@ -30,7 +30,6 @@
   "public/gempa/data/batimetri.json",
   "public/gempa/data/katalog_merusak.json",
   "public/gempa/data/katalog_tsunami.json",
-  "public/gempa/data/vs30.json",
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
@@ -74,6 +73,7 @@
    "alasan": "Bahan antara pipeline Kemitraan Kampus: dibaca scripts/kemitraan/cocok_pakar.py (ikd.muat) lalu butirnya masuk keluaran pencocokan bulanan di R2 (KM-I01). Tidak dibaca layar langsung; dijadwalkan lewat kemitraan-pakar.yml bulanan.",
    "tanggal": "2026-11-24"
   },
+<<<<<<< HEAD
   "public/cuaca/data/zom.json": {
    "alasan": "Zona musim BMKG 2026/27 (docs/hidromet-jam H24), diurai sekali per musim dari buku Prediksi Musim Hujan BMKG lewat scripts/cuaca/zom.py urai (manual). Faktor fase musim untuk lab (A8), belum ada layar; layar menyusul sesudah validasi pemetaan nama.",
    "tanggal": "2026-11-24"
@@ -81,6 +81,11 @@
   "public/cuaca/data/zom_fase.json": {
    "alasan": "Fase musim per kab (A8, docs/hidromet-jam H24) turunan zom.json; faktor lab, belum dijadwalkan dan belum tayang sampai validasi-model memeriksa pemetaan nama ZOM ke kab.",
    "tanggal": "2026-11-24"
+=======
+  "public/data/peluang_api_uji.json": {
+   "alasan": "Vonis uji pra-registrasi KI-72 (sidik d5c5cffd413ed332), dibuka satu kali 25 Nov 2026 dan dibekukan; dibaca kartu Metode karhutla. Sengaja tanpa jadwal: menjalankan ulang berarti membuka uji kedua. Pengecualian dicabut saat fase bayangan harian (cuaca waktu-nyata) dipasang dengan keluaran sendiri.",
+   "tanggal": "2026-11-25"
+>>>>>>> origin/main
   }
  }
 }
