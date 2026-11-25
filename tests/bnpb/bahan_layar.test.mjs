@@ -7,6 +7,7 @@ import http from "node:http";
 import {readFileSync, existsSync, statSync} from "node:fs";
 import path from "node:path";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
+import {petaSitus} from "./_peta.mjs";
 
 const CSP = readFileSync(new URL("../../src/bnpb.js", import.meta.url), "utf8").match(/export const CSP = "([^"]+)"/)[1];
 const PUB = path.resolve(new URL("../../public", import.meta.url).pathname), CHROME = cariChrome();
@@ -18,6 +19,7 @@ test("layar /bnpb/bahan: empat tab, dummy, pratinjau, kirim, logbook, konsol ber
   const srv = http.createServer((q, r) => {
     const [u0, qs] = q.url.split("?"); let u = decodeURIComponent(u0);
     const js = (o, s = 200) => { r.writeHead(s, {"content-type": "application/json"}); r.end(JSON.stringify(o)); };
+    if (u === "/api/peta-situs") { r.writeHead(200, {"content-type": "application/json"}); return r.end(JSON.stringify(petaSitus())); }
     if (u === "/api/akademisi/saya") return js({super: true});
     if (u === "/api/wa/form/terakhir") return js({isi: null});
     if (u === "/api/logbook/sk/aktif") return js({sk: []});

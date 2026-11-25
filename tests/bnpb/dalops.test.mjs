@@ -407,13 +407,18 @@ test("layar Laporan Masuk: kartu standar, tanpa teks dampak, tanpa titik tengah,
   assert.match(readFileSync("public/bnpb/dalops.html", "utf8"), /dalops_laporan_masuk\.js/);
 });
 
-test("menu Pusdalops: 6 grup di navbar, 13 halaman lama tetap terjangkau lewat deretan sub-halaman, tanpa daftar turun (pemilik 11 Nov 2026)", () => {
+test("menu Pusdalops: delapan grup pintu Staf dari /api/peta-situs (PS-06, D4 D7), cadangan 6 grup lama sampai API menjawab, tanpa daftar turun", async () => {
   const js = readFileSync("public/bnpb/menu_pusdalops.js", "utf8");
-  const grup = js.match(/const GRUP = \[([\s\S]*?)\]\]\];/)[1];
-  assert.deepEqual([...grup.matchAll(/^\s*\["(\w+)", "\w+", \[/gm)].map(m => m[1]), ["Pantau", "Logbook", "Laporan", "Operasi", "Perencanaan", "Kontak"]);
-  const rute = [...grup.matchAll(/\["(\/[^"]*)", "/g)].map(m => m[1]);
+  assert.equal(js.match(/fetch\("\/api\/peta-situs"/g)?.length, 1, "peta situs diminta sekali per muat halaman");
+  assert.match(js, /p\.pintu === "staf"/, "menu memakai pintu Staf dari jawaban API");
+  const {GRUP} = await import("../../src/peta_situs.js");
+  const ikonGrup = Object.keys(Function(`return ${js.match(/const IKON_GRUP = (\{[^}]*\})/)[1]}`)());
+  assert.deepEqual(ikonGrup, GRUP.staf.map(g => g.id), "tiap grup staf registri punya ikon, urutan sama");
+  const cad = js.match(/const CADANGAN = \[([\s\S]*?)\]\]\];/)[1];
+  assert.deepEqual([...cad.matchAll(/^\s*\["(\w+)", "\w+", \[/gm)].map(m => m[1]), ["Pantau", "Logbook", "Laporan", "Operasi", "Perencanaan", "Kontak"]);
+  const rute = [...cad.matchAll(/\["(\/[^"]*)", "/g)].map(m => m[1]);
   for (const r of ["/bnpb/dalops", "/admin/pantau", "/bnpb/logbook", "/bnpb/bahan", "/admin/laporan-karhutla", "/admin/omc", "/laporan-bnpb", "/bnpb/dokumen",
-    "/bnpb/operasi", "/?operasi", "/bnpb/perencanaan", "/bnpb/siaga", "/daftar-kontak"]) assert.ok(rute.includes(r), r + " hilang dari menu");
+    "/bnpb/operasi", "/?operasi", "/bnpb/perencanaan", "/bnpb/siaga", "/daftar-kontak"]) assert.ok(rute.includes(r), r + " hilang dari menu cadangan");
   assert.doesNotMatch(js, /<details|<select|dropdown/i, "tanpa daftar turun");
 });
 

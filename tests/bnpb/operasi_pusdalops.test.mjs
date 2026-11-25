@@ -97,6 +97,7 @@ import {existsSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {before, after} from "node:test";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
+import {petaSitus} from "./_peta.mjs";
 const PUB = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../public"), CHROME = cariChrome();
 
 test("operasi.html/js: CSP bersih, kepala situs bersama, tanpa innerHTML, titik tengah, em dash, atau nama lama", () => {
@@ -142,6 +143,7 @@ let server, base;
 const jalankan = () => new Promise(ok => {
   server = http.createServer(async (req, res) => {
     const u = new URL(req.url, "http://x"), p = u.pathname, json = (s, o) => { res.writeHead(s, {"content-type": "application/json"}); res.end(JSON.stringify(o)); };
+    if (p === "/api/peta-situs") return json(200, petaSitus());   // menu staf, di luar log panggilan API halaman
     if (p.startsWith("/api/")) {
       const c = []; for await (const x of req) c.push(x); let body = null; try { body = JSON.parse(Buffer.concat(c).toString()); } catch (e) {}
       S.log.push({m: req.method, p, q: u.search, body});

@@ -5,7 +5,8 @@
 .mp-menu a:hover,.mp-menu a:focus-visible{color:#fff;background:rgb(255 255 255 / .1)}
 .mp-menu a[aria-current="page"]{color:#fff;background:rgb(255 255 255 / .14);box-shadow:inset 0 -2px 0 var(--emas,#c9a227)}
 .mp-menu svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.9}
-@media (max-width:560px){.mp-menu,.ad-top .mp-menu{order:3;width:100%;margin-left:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}.mp-menu a,.ad-top .mp-menu a{justify-content:center;padding:7px 6px}}   /* 6 grup: 2 baris x 3, rata, tanpa geser */
+@media (max-width:560px){.mp-menu,.ad-top .mp-menu{order:3;width:100%;margin-left:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}.mp-menu a,.ad-top .mp-menu a{flex-direction:column;justify-content:center;gap:3px;padding:6px 4px;font-size:var(--fs-1);line-height:1.2;white-space:normal;text-align:center}}
+@media (max-width:560px){.mp-menu .mp-luar-ik{display:none}}   /* 8 grup peta situs: 2 baris x 4, ikon di atas nama, rata, tanpa geser */
 
 /* menu mengisi sisa kepala; turun ke baris kedua hanya bila layar terlalu sempit, bukan tersembunyi di kanan */
 @media (min-width:561px){
@@ -22,6 +23,18 @@
 .mp-sub svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 @media (max-width:600px){.mp-sub{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}.mp-sub a{font-size:.8125rem;padding:8px 10px;white-space:normal;text-align:center;line-height:1.2}.mp-sub a:last-child:nth-child(odd){grid-column:1/-1}}
 @media print{.mp-sub{display:none}}
+
+/* halaman berpanel seksi sendiri (dasbor.js .db-nav di /bnpb/silang dan /bnpb/pimpinan, .sr-nav di /sitrep) di bawah menu Pusdalops, layar lebar:
+   panel kiri Pusdalops tetap satu-satunya panel (pilihan A pemilik 25 Nov 2026, panel tidak diisi halaman); daftar seksi halaman tampil sebagai deretan tab
+   di puncak isi, memakai bentuk deretan yang sudah dipakai halaman itu di layar sempit (dasbor.css dan sitrep.css @media max-width:900px). Kop, judul grup,
+   dan pegangan tarik panel halaman disembunyikan; baris Pembaruan data ikut berderet. Layar sempit tidak diubah. */
+@media (min-width:901px){
+  body.mp-model-a .mp-a>main.db-a,body.mp-model-a .mp-a>main.sr-a{grid-template-columns:minmax(0,1fr)}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav,body.mp-model-a .mp-a>main.sr-a>aside.sr-nav{position:static;width:auto;height:auto;max-height:none;overflow:visible}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-id,.db-nav-g,.db-tarik),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-id,.sr-nav-g,.sr-nav-kk){display:none}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-isi,.db-nav-kaki),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-isi,.sr-nav-kaki){flex:none;flex-direction:row;flex-wrap:wrap;min-height:0;overflow:visible}
+  body.mp-model-a .mp-a>main.db-a>aside.db-nav :is(.db-nav-b,.db-nav-pb),body.mp-model-a .mp-a>main.sr-a>aside.sr-nav :is(.sr-nav-b,.sr-nav-pb){width:auto;flex:0 0 auto}
+}
 
 /* Akun pemirsa bertab 'pusdalops' = baca saja. Worker menulis <html data-baca-saja> (src/worker.js bacaSaja); satu blok ini menyembunyikan kontrol tulis
    di semua halaman menu Pusdalops. Selektor harus kelas/id nyata di sumber layar (dijaga tests/warga/pemirsa_pusdalops.test.mjs). Filter, tab, tanggal, ekspor, Buka rincian tetap tampil.
@@ -111,3 +124,6 @@ aside.db-nav .db-nav-b.mp-luar .db-nav-t{flex:0 1 auto}
 /* tanpa aksen emas atau oranye di halaman Pusdalops (pemilik 25 Nov 2026 "jgn ada oren2nya"): token --emas dari admin.css dinetralkan jadi garis putih samar.
    Berkas ini dimuat sesudah admin.css di semua halaman menu, jadi satu baris ini menghapus ring dan garis emas di tab, chip, sub-menu, kepala kartu, dan panah urut */
 :root{--emas:color-mix(in srgb,var(--on-head) 35%,transparent)}
+
+/* panel kiri bisa ditarik (menu_pusdalops.js tarik(), D7 paket peta-situs): kolom panel mengikuti --db-w di .mp-a; pegangan .db-tarik bergaya dasbor.css */
+@media (min-width:901px){body.mp-model-a .mp-a{grid-template-columns:var(--db-w,284px) minmax(0,1fr)}}

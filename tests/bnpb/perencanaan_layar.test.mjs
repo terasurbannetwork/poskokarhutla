@@ -7,6 +7,7 @@ import http from "node:http";
 import {readFileSync, existsSync, statSync} from "node:fs";
 import path from "node:path";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
+import {petaSitus} from "./_peta.mjs";
 
 /* CSP dibaca dari src/bnpb.js (mengimpornya langsung memicu siklus impor worker) */
 const CSP = readFileSync(new URL("../../src/bnpb.js", import.meta.url), "utf8").match(/export const CSP = "([^"]+)"/)[1];
@@ -16,7 +17,7 @@ const bukanSisi = g => !/favicon\.ico|fonts\.g(oogleapis|static)\.com|ERR_(INTER
 
 test("layar /bnpb/perencanaan: tiga tab, daftar, jenis, konsol bersih, tanpa gulir mendatar", {skip: CHROME ? false : "Chrome tidak ada"}, async () => {
   const srv = http.createServer((q, r) => {
-    let u = decodeURIComponent(q.url.split("?")[0]); if (u === "/bnpb/perencanaan") u = "/bnpb/perencanaan.html";
+    let u = decodeURIComponent(q.url.split("?")[0]); if (u === "/api/peta-situs") { r.writeHead(200, {"content-type": "application/json"}); return r.end(JSON.stringify(petaSitus())); } if (u === "/bnpb/perencanaan") u = "/bnpb/perencanaan.html";
     const f = path.join(PUB, u);
     if (!f.startsWith(PUB) || !existsSync(f) || !statSync(f).isFile()) { r.writeHead(404); return r.end(); }
     r.writeHead(200, {"content-type": TIPE[path.extname(f)] || "application/octet-stream", "content-security-policy": CSP}); r.end(readFileSync(f));

@@ -6,6 +6,7 @@ import http from "node:http";
 import {readFileSync, existsSync, statSync} from "node:fs";
 import path from "node:path";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
+import {petaSitus} from "./_peta.mjs";
 
 const CSP = readFileSync(new URL("../../src/bnpb.js", import.meta.url), "utf8").match(/export const CSP = "([^"]+)"/)[1];
 const PUB = path.resolve(new URL("../../public", import.meta.url).pathname), CHROME = cariChrome();
@@ -22,6 +23,7 @@ const API = {
 test("pil dicabut menurut teks: hanya saat BERLAKU dan dicabut_oleh terisi; tautan ke pencabut; aman tanpa field", {skip: CHROME ? false : "Chrome tidak ada"}, async () => {
   const srv = http.createServer((q, r) => {
     const [u0, qs] = q.url.split("?"); let u = decodeURIComponent(u0);
+    if (u === "/api/peta-situs") { r.writeHead(200, {"content-type": "application/json"}); return r.end(JSON.stringify(petaSitus())); }
     if (u === "/api/hukum/dok") { const b = API[new URLSearchParams(qs).get("id")]; r.writeHead(b ? 200 : 404, {"content-type": "application/json"}); return r.end(JSON.stringify(b || {galat: "tidak ada"})); }
     if (u === "/api/hukum/cari") { r.writeHead(200, {"content-type": "application/json"}); return r.end(JSON.stringify({total: 3, hal: 1, per_hal: 20, per_jenis: {}, hasil: [hit("perban-6-2021", "BERLAKU", ["perban-4-2025"]), hit("perban-6-2025", "BERLAKU"), hit("perban-1-2000", "DICABUT", ["perban-4-2025"])]})); }
     if (u === "/bnpb/hukum") u = "/bnpb/hukum.html";

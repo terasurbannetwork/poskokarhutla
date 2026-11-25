@@ -1,7 +1,8 @@
 /* Pintu /bnpb. Token dan kartu dari bnpb.css. Tanpa gaya inline (CSP). */
-.pt-grid{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
-.pt-kartu{display:grid;align-content:start;gap:10px;color:var(--ink);text-decoration:none;min-height:132px;transition:box-shadow .15s}
-.pt-kartu h2{margin:0;font-size:16px}
+.pt-daftar{display:grid;gap:20px}
+.pt-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.pt-kartu{display:grid;align-content:start;gap:10px;color:var(--ink);text-decoration:none;transition:box-shadow .15s}
+.pt-kartu h2{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-4)}
 .pt-kartu svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .pt-kartu h2>svg{width:20px;height:20px;color:var(--navy2)}
 .pt-panah{margin-left:auto;display:inline-flex;color:var(--ink3)}
@@ -14,6 +15,9 @@
 .pt-kartu .bn-pil{justify-self:start}
 @media (max-width:420px){.pt-grid{grid-template-columns:minmax(0,1fr)}}
 .pt-admin{margin:18px 0 0;text-align:right}
-.pt-admin a{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink3);text-decoration:none}
+.pt-admin a{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-3);font-weight:600;color:var(--ink3);text-decoration:none}
 .pt-admin a:hover{color:var(--ink)}
 .pt-admin svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* kartu halaman tanpa angka hidup: hanya bilah judul, tanpa isi kosong di bawahnya */
+.pt-grid{align-items:start}
+.pt-kartu.pt-polos>h2:first-child{margin-bottom:-16px;border-bottom:0}
