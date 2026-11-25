@@ -665,7 +665,6 @@ Sebelum menyentuh mesin bersama pemodelan (`scripts/umum/pembanding.py`, `sidik.
 
 Aturan berhentinya sama dengan §2.1. Tiket hanya dikerjakan bila berguna menurut D1; model baru tanpa lolos gerbang tampil sebagai hipotesis dan tidak dikirim keluar; pembanding wajib persistensi dan klimatologi pada jumlah alarm sama; satu mesin inti per kemampuan; tiket paket Paritas, LS, KS, PT tidak digandakan.
 
-<<<<<<< HEAD
 ### 2.49 Peta Situs (satu alur: registri halaman, lima pintu, menu dari satu sumber, `/masuk` satu pintu, tanpa halaman yatim): baca dulu, baru bangun
 
 Sebelum menambah halaman baru, menyentuh menu atau kepala halaman mana pun, atau mengubah arah sesudah masuk, baca dokumen di
@@ -676,8 +675,8 @@ Sebelum menambah halaman baru, menyentuh menu atau kepala halaman mana pun, atau
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PS-*`), `GLOSARIUM.md`.
 
 Aturan berhentinya sama dengan §2.1. Tiap halaman baru wajib punya entri registri di commit yang sama; menu tidak ditulis tangan lagi, semuanya dari registri; peta halaman staf tidak pernah jadi berkas statis publik; menu bukan penjaga hak (hak tetap di Worker); alamat lama tidak dipindah; tautan bertoken tidak tampil di menu.
-=======
-### 2.49 Pemantauan Satelit (Himawari 10 menit: titik panas, abu, konveksi; panas kawah, SO2, genangan harian, VHI, asap): baca dulu, baru bangun
+
+### 2.51 Pemantauan Satelit (Himawari 10 menit: titik panas, abu, konveksi; panas kawah, SO2, genangan harian, VHI, asap): baca dulu, baru bangun
 
 Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sumber satelit, atau pemicu 10 menit, baca dokumen di
 `data/kajian-bnpb/satelit/` dengan urutan otoritas ini (`scripts/umum/himawari_pindai.py` milik `pipa-umum`; `scripts/data/himawari.py`, `api_himawari.py` milik `pipa-data`; `abu_satelit.py`, `kawah.py`, `so2.py`, `vhi.py` milik `gunungapi-kering`; `awan_tumbuh.py`, `asap_aod.py` milik `cuaca-udara`; `genangan_harian.py` milik `banjir`; `src/satelit_picu.js`, `src/alarm_himawari.js` milik `warga-api`; `public/inti/satelit.*` milik `inti-layar`; `satelit.yml` milik `mekanik-mesin`):
@@ -687,7 +686,6 @@ Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sum
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`ST-*`), `GLOSARIUM.md`.
 
 Aturan berhentinya sama dengan §2.1. Satu pemindai, tanpa pembaca HSD atau GFM kedua; kriteria dikunci sebelum diuji; tanpa vonis lolos tetap hipotesis dan tidak dikirim ke luar; status BMKG, PVMBG, VAAC terpisah; sumber putus tidak pernah 0 dan tidak pernah diam; titik Himawari tidak dijumlah dengan VIIRS; tidak pernah menulis "aman" atau "padam".
->>>>>>> origin/main
 
 ### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
 

@@ -37,7 +37,9 @@ while [ "$percobaan" -le 5 ]; do
         # 25 Nov 2026: index bersama memuat suntingan sesi lain yang di-stage, jadi git merge menolak walau gabungnya bersih.
         # Gabung tanpa menyentuh index: merge-tree, commit-tree, update-ref; berkas yang diubah origin dan bersih di folder kerja disegarkan.
         lama=$(git rev-parse HEAD)
-        if pohon=$(git merge-tree --write-tree HEAD origin/main 2>/dev/null | head -n 1) && [ -n "$pohon" ] \
+        # merge-tree keluar 1 bila bentrok dan pohonnya memuat penanda <<<<<<<; status harus dibaca langsung, bukan lewat pipa (25 Nov 2026)
+        if keluaran=$(git merge-tree --write-tree HEAD origin/main 2>/dev/null) && pohon=${keluaran%%"
+"*} && [ -n "$pohon" ] \
           && baru=$(git commit-tree "$pohon" -p "$lama" -p origin/main -m "Merge remote-tracking branch 'origin/main'") \
           && git update-ref refs/heads/main "$baru" "$lama"; then
           git diff --name-only "$(git merge-base "$lama" origin/main)" origin/main | while IFS= read -r f; do

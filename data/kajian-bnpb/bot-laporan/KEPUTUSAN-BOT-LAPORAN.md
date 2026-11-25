@@ -202,13 +202,11 @@ Berlaku untuk V1 dan V2. Keputusan di atas tetap berlaku; yang berubah hanya car
 | --- | --- |
 | K47 | (24 Nov) "gas lanjut semua yang tadi berhenti", menerima bawaan sementara untuk infografis DIBI di bot. Perintah `infografis <periode>` (`2025`, `2026-10`, atau `2026-t3`) membangun infografis tahunan, bulanan, atau triwulanan lewat `scripts/bnpb/infografis_tahunan.py` dan mengirim PPTX serta PDF hanya ke pengirim. Hanya nomor terdaftar (K6, K14); satu pembuatan dalam satu waktu; periode yang belum genap atau tidak ada di DIBI ditolak dengan pesan. Hanya lewat perintah: tidak terjadwal (K12) dan tidak diunggah ke Drive. Bot v2.7 (`scripts/wa/infografis.mjs`, uji `tests/wa/infografis.test.mjs`). |
 
-<<<<<<< HEAD
 
 ## Jawaban pemilik 25 Nov 2026
 
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
-=======
 ## Dua bot, dua nomor (24 Nov 2026)
 
 | No | Keputusan pemilik |
@@ -219,4 +217,3 @@ Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya b
 | --- | --- | --- |
 | D41 | Satu kode gateway dipasang dua kali dengan saklar `WA_PERAN` (`scripts/wa/peran.cjs`): `laporan` untuk nomor baru, `lapor` untuk nomor lama; kosong = keduanya seperti sebelum dipisah, dipakai sampai nomor baru terpasang. Tiap proses punya rumah (`WA_RUMAH`), sesi WA, PORT, dan jatah limiter sendiri, diisi di plist launchd. | Tanpa salinan kode gateway; satu perbaikan berlaku untuk dua bot. Jatah terpisah adalah satu-satunya cara supaya percakapan Lapor tidak menahan draf dan final. |
 | D42 | Peran `laporan` tetap di `~/.wa-bot` dan 127.0.0.1:3101, dengan sesi baru `~/.wa-bot/auth-laporan`. Peran `lapor` pindah ke `~/.wa-lapor` dan 3102, membawa sesi dan `limit-state.json` nomor lama. | Proyek, state, keluaran, venv tidak pindah; `otomatis.mjs`, `logbook_wa.mjs`, `tarik_riwayat.mjs` tidak berubah. Nomor baru mulai pemanasan 7 hari, nomor lama tidak. |
->>>>>>> origin/main
