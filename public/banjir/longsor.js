@@ -27,9 +27,7 @@ const Longsor = (() => {
     for (const [k, v] of Object.entries(kec)) { const l = v.l?.[S.hari] || 0; n[l]++; if (l) { const p = k.split("|")[0]; (prov[p] ||= [0, 0, 0, 0])[l]++; } }
     const rows = Object.entries(prov).map(([p, a]) => ({n: namaProv(p), v: a[1] + a[2] + a[3], a})).sort((a, b) => b.v - a.v).slice(0, 10)
       .map(r => ({n: r.n, v: r.v, tip: `<b>${esc(r.n)}</b><br>Waspada: ${fmt(r.a[1])}<br>Siaga: ${fmt(r.a[2])}<br>Awas: ${fmt(r.a[3])}`}));
-    const ring = n[1] + n[2] + n[3], data = S.st.hari?.[0] ? ` Data sampai ${tgl(S.st.hari[0])}.` : "";
-    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">${ring ? `Awas ${fmt(n[3])}, Siaga ${fmt(n[2])}, Waspada ${fmt(n[1])} dari ${fmt(ring)} kecamatan, ${kapan}.` : `Tidak ada kecamatan berstatus longsor ${kapan}.`}${data}</p>`
-      + (rows.length ? Kartu.hbar(rows, W) : "");
+    const isi = (rows.length ? Kartu.hbar(rows, W) : `<p style="margin:0 0 10px">Tidak ada kecamatan berstatus longsor ${kapan}.</p>`);
     return Kartu.kartu(EY.status, "Status longsor kecamatan", isi + '<p style="margin:10px 0 0"><a href="/banjir/metode#metode-longsor" data-metode-longsor>Metode longsor</a></p>', "");
   }
   async function nowcast() {
@@ -43,8 +41,7 @@ const Longsor = (() => {
     const ok = uj.vonis && a.model != null && a.klim != null, kalah = ok && a.model < a.klim;
     const vonis = ok ? `<p style="margin:0 0 10px;line-height:1.5;text-align:justify"><b>Uji balik: ${esc(uj.vonis)}.</b> AUC model ${f2(a.model)}, hujan saja ${f2(a.hujan)}, klimatologi musiman ${f2(a.klim)}. `
       + (kalah ? "Model belum mengalahkan pola musim, jadi pakai sebagai petunjuk awal, bukan peringatan." : "Model mengungguli pola musim pada uji balik.") + "</p>" : "";
-    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">Hujan 7 hari sampai ${tgl(nc.jendela_akhir)}: ${Kartu.hl(fmt(r.tinggi))} kecamatan berbahaya tinggi dan ${fmt(r.sedang)} sedang dari ${fmt(r.kec)}.</p>`
-      + vonis + nama + (riw.length ? batang(riw) : "");
+    const isi = vonis + nama + (riw.length ? batang(riw) : "");
     return Kartu.kartu(EY.nowcast, "Nowcast longsor", isi, "");
   }
   const riwayat = () => D.lb ? LogbookTren.kartu(D.lb, "longsor", "longsor", W) : "";
