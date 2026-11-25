@@ -32,7 +32,7 @@ a{color:var(--brand)}
 .pilar b{display:block;font-size:15px;margin:8px 0 2px}
 .pilar span{color:var(--ink2);font-size:13.5px}
 /* tata letak */
-.badan{max-width:1160px;margin:0 auto;padding:20px 16px 56px;display:grid;grid-template-columns:200px 1fr;gap:28px}
+.badan{max-width:1160px;margin:0 auto;padding:20px 16px 56px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px}
 nav.daftar{position:sticky;top:76px;align-self:start;font-size:13.5px}
 nav.daftar a{display:block;padding:6px 10px;border-radius:8px;color:var(--ink2);text-decoration:none}
 nav.daftar a:hover,nav.daftar a.aktif{background:var(--soft);color:var(--ink)}
@@ -62,7 +62,7 @@ code{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;backgrou
 .catatan{background:var(--soft);border-left:4px solid var(--brand);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:14px}
 ul{padding-left:20px;margin:6px 0}li{margin:3px 0}
 .kaki{color:var(--ink2);font-size:13px;text-align:center;padding:8px 0 0}
-@media (max-width:900px){.badan{grid-template-columns:1fr}nav.daftar{display:none}.pilar{grid-template-columns:1fr}.pembuka h1{font-size:25px}td:first-child{white-space:normal}}
+@media (max-width:900px){.badan{grid-template-columns:minmax(0,1fr)}nav.daftar{display:none}.pilar{grid-template-columns:1fr}.pembuka h1{font-size:25px}td:first-child{white-space:normal}}
 @media (max-width:520px){section{padding:18px 14px}.kepala .tombol span{display:none}}
 </style>
 </head>

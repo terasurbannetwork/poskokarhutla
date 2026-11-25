@@ -283,3 +283,5 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | ilustrasi | illustration | api dan asap 3D, cahaya matahari: gambaran visual, bukan jangkauan asap sebenarnya |
 | poligon / kotak / buffer | polygon / box / buffer | alat gambar wilayah di peta utama; "luas wilayah digambar" = area drawn, tidak pernah luas terbakar |
 | sel berdeteksi / jejak sel | detected cells / cell footprint | petak 375 m; bukan luas bakar |
+| lisensi | licence | ejaan Inggris Britania, mengikuti en-GB situs; kolom lisensi kredit data /tentang menunggu PB-65.4 |
+| penyedia data | data provider | bukan "mitra" atau "pendukung" |

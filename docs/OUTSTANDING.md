@@ -122,3 +122,39 @@ Diukur dengan `npx wrangler d1 insights poskowarga --timePeriod 1d --sort-by rea
 | Perkiraan per muat dingin `/api/pb/ringkas` atau papan SK | sampai sekitar 1.500 baris; cache isolate 5 menit, hangat 0 baris |
 
 Belum terukur dengan pemakai nyata, karena migrasi 0131 (`pb_dokumen`, `pb_tindakan`) dan 0137 (`peringatan_x`) belum diterapkan pemilik dan semua `kemampuan` masih mati. Aturan DESAIN-TEKNIS 9 tetap: cache naik ke 15 menit bila dashboard dan renlap melewati 1 juta baris sehari. Sisa ruang sekarang sekitar 1,86 juta baris sehari; ukur ulang sesudah bencana pertama dinyalakan (PB-33) dan sebelum PB-48.
+
+## P2. Paritas Bencana: ukur lebar 375 px halaman publik (PB-65, 25 Nov 2026)
+
+Cara ukur: Chromium (Playwright 1.49) dengan layar 375 x 812 px mode ponsel, tunggu 3,5 detik sesudah halaman termuat,
+lalu bandingkan lebar gulir halaman (`scrollWidth` dari `html` dan `body`) dengan lebar layar. Halaman gagal bila lebar
+gulirnya lebih dari 375 px. Daftar halaman diambil dari semua rute berpintu publik di `public/inti/peta_situs_publik.json`
+(42 rute) ditambah `/tentang` dengan semua lipatan dibuka dan `/tentang.html?tertanam=1`.
+
+Server: berkas `public/` disajikan langsung oleh server statis lokal (data dari `public/data` di folder kerja, `/api/*`
+menjawab 404), karena server tinjau `http://localhost:8800` mengalihkan hampir semua halaman ke `/admin/masuk` saat
+diukur tanpa sesi. `/alun-alun` dan `/daftar-kontak` tidak punya berkas statis dan diukur lewat localhost:8800.
+
+| Rute | Lebar gulir (px) | Hasil |
+|---|---|---|
+| `/semua`, `/`, `/desa-waspada` | 375 | lolos |
+| `/banjir`, `/banjir/replay`, `/banjir/laporan.html`, `/banjir/laporan-das.html` | 375 | lolos |
+| `/cuaca`, `/cuaca/simulasi`, `/cuaca/laporan.html`, `/pesisir` | 375 | lolos |
+| `/gempa`, `/gempa/laporan.html`, `/gunungapi`, `/gunungapi/simulasi.html`, `/gunungapi/laporan.html` | 375 | lolos |
+| `/kekeringan`, `/kekeringan/simulasi`, `/kekeringan/laporan.html`, `/udara`, `/udara/laporan.html` | 375 | lolos |
+| `/prediksi`, `/prediksi/ringkas`, `/peringatan`, `/monitor` | 375 | lolos |
+| `/lapor`, `/lapor/hari-ini`, `/kabar`, `/masuk`, `/alun-alun`, `/daftar-kontak` | 375 | lolos |
+| `/tentang` (lipatan tertutup dan semua dibuka), `/tentang.html?tertanam=1` | 375 | lolos |
+| `/docs`, `/privasi`, `/syarat`, `/verifikasi`, `/laporan`, `/paparan` | 375 | lolos |
+| `/lapor/poster.html` | 472, sesudah PB-65.1: 375 | lolos sesudah perbaikan |
+| `/api` (juga dengan semua lipatan dibuka) | 798, sesudah PB-65.2: 375 | lolos sesudah perbaikan; tabel lebar tetap bergulir di dalam `.tabel` |
+| `/laporan-konsesi`, `/statistik` | belum terukur | halaman dibangun Worker (`src/worker.js`), tanpa berkas statis; di localhost:8800 dialihkan ke `/admin/masuk` |
+
+`/peringatan`, `/monitor`, dan `/syarat` memakai `overflow-x: hidden` di `body`; pada ketiganya tidak ada unsur yang
+melewati tepi kanan layar, jadi tidak ada isi yang terpotong.
+
+| # | Pekerjaan | Status / menunggu | Rujukan |
+|---|---|---|---|
+| PB-65.1 | ~~`/lapor/poster.html` melebar ke 472 px~~ SELESAI 25 Nov 2026, ukur ulang 375 px. Asal: kotak pilih kab/kota (`select`) di formulir `#pilih.ps-pilih` selebar 417 px mengikuti teks pilihan terpanjang, lalu menarik formulir dan `#pratinjau` ikut melebar. Dugaan: lajur grid `.ps-isi` tanpa `minmax(0,1fr)` dan `select` tanpa `max-width:100%`. Perbaikan: `.ps-isi` memakai `minmax(0,1fr)` di layar sempit dan lebar, `select` `width:100%; max-width:100%; min-width:0` | Selesai |  `public/lapor/poster.css` (baris 10-14), `public/lapor/poster.html` |
+| PB-65.2 | ~~`/api` melebar ke 798 px~~ SELESAI 25 Nov 2026, ukur ulang 375 px. Asal: lajur `.badan` di bawah 900 px memakai `grid-template-columns:1fr`, sehingga blok kode `pre` (white-space pre) menarik `main` dan semua seksi selebar 752 px. Perbaikan: `.badan` memakai `minmax(0,1fr)` (lebar dan di bawah 900 px); `pre` sudah `overflow-x:auto` | Selesai | `public/api.html` (baris 35, 58, 65) |
+| PB-65.3 | Ukur ulang `/laporan-konsesi` dan `/statistik` di localhost:8800 dengan sesi masuk | Terbuka, butuh pemilik masuk dulu | `src/worker.js` |
+| PB-65.4 | Kolom lisensi di bagian Kredit data `/tentang` menunggu lisensi tiap sumber tercatat di `docs/multi-bencana/DATA-PUBLIK.md` (bagian C belum punya kolom atau catatan lisensi untuk 116 baris). Sesudah tercatat, tabel `#kredit-data` dibangun ulang dengan kolom Lisensi | Terbuka, pemilik daftar sumber | `public/tentang.html` `#kredit-data` |
