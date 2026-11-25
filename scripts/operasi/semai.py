@@ -10,7 +10,7 @@ Masukan: data/raw/semai/<putaran>/<langkah>.npz (semai_ifs.py), public/data/klus
          public/udara/data/awan_himawari.json (bila ada), <keluar>/asap_beban.npz (bila ada; diisi SA-05).
 Keluaran: <keluar>/semai.json, awan_<langkah>.png (DESAIN-TEKNIS §3). `jalan` butuh numpy (hanya di semai.yml).
 """
-import datetime as dt, json, math, os, re, sys, time
+import datetime as dt, json, math, os, re, sys, time, types
 
 AKAR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AKAR)
@@ -1336,10 +1336,10 @@ def _hari(init, jam, off):
     return (init + dt.timedelta(hours=jam + off)).strftime("%Y-%m-%d")
 
 
-def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, tak_peta=()):
+def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, putaran, tak_peta=(), base=None):
     """Inti §3 sampai §8. sasaran = hasil M.pilih_sasaran()['sasaran'] dengan kunci kab (kode) sudah punya geometri di `kabs`.
     tak_peta = [(lat, lon)] pusat kab yang geometrinya tidak ada: titik hujan di luar poligon dalam RADIUS_TAK_PETA_KM darinya "tak terpetakan"
-    (bukan laut), ditolak seperti GB2. -> dict (zona, sasaran, kandidat_sasaran, alasan_kosong, ...). Tanpa IO; `ditolak` = hitungan
+    (bukan laut), ditolak seperti GB2. base = renlap.muat_base() untuk rute OMC (VOR); None -> rute tanpa radial. -> dict (zona, sasaran, kandidat_sasaran, alasan_kosong, ...). Tanpa IO; `ditolak` = hitungan
     penolakan per gerbang (untuk uji)."""
     L = _lintasan()
     n = lambda j: n_(b, j)
@@ -1453,6 +1453,8 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
         kaki = M.ketinggian_kaki(r["sel"]["lcl"], r["sel"]["elev"], n("ketinggian.lcl_min_m"), n("ketinggian.lcl_maks_m"), n("ketinggian.bulat_kaki"), n("ketinggian.m_ke_kaki"))
         kd = [x[0] for x in r["cegat"]]
         zid = M.zona_id_banjir(putaran, len(zona))
+        rute = rute_omc(types.SimpleNamespace(b=b, bandara=bandara, base=base or {}), bid, r["lat"], r["lon"],
+                        r["sel"]["u_pengarah"], r["sel"]["v_pengarah"], kaki)   # angin pengarah sel zona, mesin rute sama dgn karhutla (§7c)
         zona.append({
             "id": zid, "huruf": zid[-1], "tujuan": "banjir", "lat": round(r["lat"], 1), "lon": round(r["lon"], 1), "skor": round(r["skor"], 2),
             "langkah": int(lang[ib]), "jendela": [(med.init.replace(hour=0) + dt.timedelta(hours=x)).strftime("%Y-%m-%dT%H:%MZ") for x in (jr["utc_mulai"], jr["utc_akhir"])],
@@ -1467,7 +1469,8 @@ def hitung_banjir(med, kabs, kota, bandara, tempat, prov_nm, b, sasaran, d, puta
             "alasan": {"sasaran": kd, "C": f"awan layak semai, kualitas {r['Q']:.2f}".replace(".", ","),
                        "H": f"awan tiba di sasaran sekitar {r['tiba_h']:.1f} jam sesudah semai".replace(".", ","),
                        "P": "titik hujan di laut" if r["laut"] else f"titik hujan {r['dm']:.0f} km dari kota terdekat",
-                       "B": f"base {bd['nama']}, sekitar {menit} menit terbang"}})
+                       "B": f"base {bd['nama']}, sekitar {menit} menit terbang"},
+            "rute": rute})
     # sasaran keluar
     zs = {}
     for z in zona:
@@ -1568,7 +1571,7 @@ def jalan_banjir(args, b, dibuat, keluar, c):
             return r
         med = Medan(LAT0 - RES * i0, LON0 + RES * j0, i1 - i0, j1 - j0, sorted(c.P), c.tampil, c.init, A, sel)
         tempat, kota = tempat_py()
-        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran, [(x[3], x[4]) for x in hilang])
+        r = hitung_banjir(med, kabs, kota, c.bandara, tempat, c.prov_nm, b, sasaran, d, c.putaran, [(x[3], x[4]) for x in hilang], base=c.base)
         for k in ("_hasil", "_sas", "n_kandidat", "n_lolos_gerbang", "n_evaluasi", "ditolak"):
             r.pop(k)
         urut = r.pop("urut_sasaran")
@@ -1712,8 +1715,9 @@ def uji_banjir_fixture(b, ok):
     ok({s["kode"] for s in ps["sasaran"]} == {"7471", "7405", "7402"}, f"sasaran fixture {[s['kode'] for s in ps['sasaran']]}")
     tempat, _ = tempat_py()
     pn = prov_nama()
-    base = bandara_gabung(__import__("renlap").muat_base())
-    r = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"])
+    base_vor = __import__("renlap").muat_base()
+    base = bandara_gabung(base_vor)
+    r = hitung_banjir(med, kabs, kota, base, tempat, pn, bb, ps["sasaran"], d, F["putaran"], base=base_vor)
     terlarang = {s["kode"] for s in ps["sasaran"]}
     sasaran_k = {s["kode"]: s["k"] for s in r["_sas"]}
     ok(r["n_kandidat"] > 0 and r["n_lolos_gerbang"] > 0, f"fixture memuat kandidat koridor ({r['n_kandidat']}) dan sel lolos G1-G9 ({r['n_lolos_gerbang']})")
@@ -1736,6 +1740,7 @@ def uji_banjir_fixture(b, ok):
         ok(z["alasan"]["sasaran"] and set(z["alasan"]["sasaran"]) <= terlarang, "alasan.sasaran wajib dan berasal dari S(d)")
         ok(z["belum_teruji"] is all(x["belum_teruji"] for x in r["_sas"] if x["kode"] in z["alasan"]["sasaran"]), "zona belum_teruji dari sasarannya")
         ok(re.fullmatch(r"\d\d\.00 sampai \d\d\.00 WITA", z["jendela_teks"]), z["jendela_teks"])
+        ok(len(z["rute"]["cp"]) == 7 and len(z["rute"]["leg"]) == 6, f"zona {z['id']} punya rute 7 CP dan 6 kaki")
     for a in range(len(r["zona"])):
         for c2 in range(a):
             ok(M.haversine(r["zona"][a]["lat"], r["zona"][a]["lon"], r["zona"][c2]["lat"], r["zona"][c2]["lon"]) > 40, "zona berjarak > 40 km")
