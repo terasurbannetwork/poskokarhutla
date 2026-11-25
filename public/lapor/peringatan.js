@@ -27,9 +27,12 @@ function gambar() {
   const w = $("pwIsi"), sek = $("pwKartu"); if (!w || !sek) return;
   sek.hidden = false;
   const kisi = el("div", "lp-pw-kisi");
-  kisi.append(kartuPasang(), kartuPeringatan());
+  kisi.append(kartuPasang());   // kartu peringatan pindah ke layar Info (pemilik 25 Nov 2026: "hilangkan, masukkan kesini")
   w.replaceChildren(kisi);
+  if (wadahInfo?.isConnected) wadahInfo.replaceChildren(kartuPeringatan());
 }
+let wadahInfo = null;
+window.pbKartuPeringatan = w => { wadahInfo = w; w.replaceChildren(kartuPeringatan()); };
 
 /* ---- kartu pasang aplikasi: satu baris per perangkat, QR untuk membuka di HP (pemilik 24 Nov 2026, pola halaman unduh) ---- */
 const ANDROID = /Android/.test(navigator.userAgent), HP = iPhone || ANDROID;

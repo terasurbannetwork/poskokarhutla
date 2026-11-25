@@ -13,9 +13,14 @@ const MULUT = {
   semangat: '<path d="M104 126c4 15 28 15 32 0Z" class="sg-mulut"/><path d="M111 134c5 5 13 5 18 0" class="sg-lidah" stroke-width="4" stroke-linecap="round" fill="none"/>',
   senang: '<path d="M102 125c5 18 31 18 36 0Z" class="sg-mulut"/><path d="M110 135c6 6 14 6 20 0" class="sg-lidah" stroke-width="4" stroke-linecap="round" fill="none"/>',
   sedih: '<path d="M108 136c6-7 18-7 24 0" class="sg-alis" stroke-width="4" stroke-linecap="round" fill="none"/>'};
-export function maskot(pose = "sapa", judul = "") {
+/* aksi: maskot memegang papan berikon sesuai yang sedang dijelaskan, geraknya beda per aksi (pemilik 25 Nov 2026: "kalo lapor kejadian tindakannya mungkin berbeda").
+   Ikon dari sprite halaman (#i-*), jadi hanya dipakai di halaman yang memuat sprite itu. */
+const AKSI = {darurat: "i-sirene", lapor: "i-kirim", status: "i-status", pasang: "i-unduh", peringatan: "i-sirene", hilang: "i-cari",
+  info: "i-lokasi", edukasi: "i-daftar", penting: "i-telepon", bahasa: "i-bahasa", laporan: "i-pesan"};
+export function maskot(pose = "sapa", judul = "", aksi = "") {
+  const ik = AKSI[aksi];
   const i = `sg${++n}`, u = x => `url(#${i}${x})`;
-  return `<svg class="mk sg" data-pose="${pose}" viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
+  return `<svg class="mk sg" data-pose="${pose}"${ik ? ` data-aksi="${aksi}"` : ""} viewBox="0 0 240 280" ${judul ? `role="img" aria-label="${judul}"` : 'aria-hidden="true"'}>
   <defs>
     <radialGradient id="${i}kulit" cx=".4" cy=".35" r=".75"><stop offset="0" class="sg-g-kulit-a" stop-color="#fde4cf"/><stop offset="1" class="sg-g-kulit-b" stop-color="#f6c79f"/></radialGradient>
     <linearGradient id="${i}helm" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" class="sg-g-helm-a" stop-color="#f39a4e"/><stop offset="1" class="sg-g-helm-b" stop-color="#e0662f"/></linearGradient>
@@ -91,5 +96,6 @@ export function maskot(pose = "sapa", judul = "") {
       <path d="M78 50c6-11 15-18 26-21" class="sg-helm-kilau" stroke-width="5" stroke-linecap="round" fill="none"/>
     </g>
   </g>
+  ${ik ? `<g class="mk-properti"><circle cx="206" cy="84" r="21" class="sg-papan"/><use href="#${ik}" x="193" y="71" width="26" height="26" class="sg-papan-ik"/></g>` : ""}
 </svg>`;
 }

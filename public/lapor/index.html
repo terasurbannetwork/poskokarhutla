@@ -125,7 +125,7 @@
           <button class="lp-tombol-kaca lp-kaca-status" id="bCekStatus" type="button"><svg aria-hidden="true"><use href="#i-status"/></svg>Cek status laporan</button>
           <!-- tiga pintu tambahan (pemilik 25 Nov 2026): pasang aplikasi, peringatan dini, lapor orang hilang -->
           <button class="lp-tombol-kaca lp-kaca-pasang" type="button" data-ke-pw=".lp-pw-pasang"><svg aria-hidden="true"><use href="#i-unduh"/></svg>Pasang aplikasi</button>
-          <button class="lp-tombol-kaca lp-kaca-peringatan" type="button" data-ke-pw=".lp-pw-kartu:not(.lp-pw-pasang)"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Peringatan dini</button>
+          <button class="lp-tombol-kaca lp-kaca-peringatan" type="button" data-aksi="info"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Peringatan dini</button>
           <button class="lp-tombol-kaca lp-kaca-hilang" type="button" data-buka-selamat="cari"><svg aria-hidden="true"><use href="#i-cari"/></svg>Lapor orang hilang</button>
         </div>
       </div>
@@ -161,36 +161,30 @@
 
       <section class="lp-kompartemen" aria-labelledby="hLayanan">
       <h2 class="lp-kompartemen-kepala" id="hLayanan"><svg aria-hidden="true"><use href="#i-daftar"/></svg>Apa yang ingin Anda lakukan?</h2>
-      <div class="lp-kompartemen-isi lp-darurat-wadah">
-        <button class="lp-darurat-pita" type="button" data-aksi="darurat">
-          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-sirene"/></svg></span>
-          <span><b>Lapor darurat</b><small>Kejadian sedang berlangsung? Cukup lokasi, jenis, dan ada korban atau tidak. Petugas BNPB dan BPBD langsung menerima.</small></span>
-          <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
-        <button class="lp-darurat-pita sekali" type="button" data-aksi="sekali">
-          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-lokasi"/></svg></span>
-          <span><b>Darurat sekali ketuk</b><small>Tidak sempat mengetik? Satu ketukan mengirim lokasi Anda ke petugas. Tombol telepon 112 langsung muncul.</small></span>
-          <svg class="lp-darurat-panah" aria-hidden="true"><use href="#i-panah"/></svg></button>
-      </div>
+      <!-- Lapor darurat masuk kisi layanan, Darurat sekali ketuk dihapus dari beranda (pemilik 25 Nov 2026) -->
       <div class="lp-layanan-kisi lp-kompartemen-isi">
         <button class="lp-layanan-kartu utama" type="button" data-aksi="lapor" style="--foto:url(/img/bencana-banjir.jpg)">
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-kirim"/></svg></span>
           <b>Lapor kejadian</b><small>Ceritakan lewat obrolan. Setelah terkirim, Anda dapat nomor laporan.</small></button>
-        <button class="lp-layanan-kartu lebar" type="button" data-aksi="info" style="--foto:url(/img/bencana-cuaca.jpg)">
+        <button class="lp-layanan-kartu darurat" type="button" data-aksi="darurat" style="--foto:url(/img/foto-pemadam.jpg)">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-sirene"/></svg></span>
+          <b>Lapor darurat</b><small>Kejadian sedang berlangsung? Cukup lokasi, jenis, dan ada korban atau tidak.</small></button>
+        <button class="lp-layanan-kartu hilang" type="button" data-buka-selamat="cari" style="--foto:url(/img/foto-pasca.jpg)">
+          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-cari"/></svg></span>
+          <b>Lapor orang hilang</b><small>Kabarkan keluarga atau kerabat yang belum ditemukan sesudah bencana.</small></button>
+        <button class="lp-layanan-kartu" type="button" data-aksi="info" style="--foto:url(/img/bencana-cuaca.jpg)">
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-lokasi"/></svg></span>
-          <b>Info dan prediksi daerah</b><small>Prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan, serta rapor bencana daerah Anda.</small></button>
+          <b>Info bencana, prediksi, dan sistem peringatan dini daerah</b><small>Prakiraan 3 hari, peringatan dini kecamatan, dan nomor penting.</small></button>
         <button class="lp-layanan-kartu" type="button" data-aksi="edukasi" style="--foto:url(/img/bencana-gempa.jpg)">
           <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-bantuan"/></svg></span>
           <b>Edukasi siaga bencana</b><small>Yang perlu dilakukan sebelum, saat, dan sesudah bencana.</small></button>
-        <button class="lp-layanan-kartu darurat" type="button" data-aksi="penting" style="--foto:url(/img/foto-pemadam.jpg)">
-          <span class="lp-lk-ikon"><svg aria-hidden="true"><use href="#i-telepon"/></svg></span>
-          <b>Nomor penting</b><small>BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat.</small></button>
       </div>
       <!-- Kabar selamat dan kartu ajakan darurat dihapus dari beranda (pemilik 25 Nov 2026: "hilangkan") -->
 
       </section>
       <!-- aplikasi dan peringatan dini (paket pwa-peringatan): diisi public/lapor/peringatan.js -->
       <section class="lp-kompartemen lp-pw" id="pwKartu" aria-labelledby="hPw" hidden>
-      <h2 class="lp-kompartemen-kepala" id="hPw"><svg aria-hidden="true"><use href="#i-sirene"/></svg>Aplikasi dan peringatan dini</h2>
+      <h2 class="lp-kompartemen-kepala" id="hPw"><svg aria-hidden="true"><use href="#i-unduh"/></svg>Pasang aplikasi</h2>
       <div class="lp-kompartemen-isi" id="pwIsi"></div>
       </section>
       <section class="lp-kompartemen" aria-labelledby="hBantu">
@@ -223,7 +217,7 @@
     <p class="lp-pembuka-sapa">Selamat datang di</p>
     <p class="lp-pembuka-judul">Pantau <em>Bencana</em></p>
     <p class="lp-pembuka-nama">Pelaporan Ancaman dan Tanggap Darurat Bencana</p>
-    <p class="lp-pembuka-bnpb">Lihat kejadian, laporkan, kami teruskan ke BPBD setempat</p>
+    <p class="lp-pembuka-bnpb">Lihat kejadian bencana, laporkan, dan kami akan menindaklanjuti laporan tersebut.</p>
     <span class="lp-pb-muat" aria-hidden="true"><i></i></span>
   </div>
 
@@ -409,8 +403,8 @@
 <script src="/inti/foto_kecil.js" defer></script>
 <script src="/inti/antre.js" defer></script>
 <script src="/bagi.js" defer></script>
-<script type="module" src="/lapor/lapor.js?v=149"></script>
-<script type="module" src="/lapor/peringatan.js?v=4"></script>
+<script type="module" src="/lapor/lapor.js?v=151"></script>
+<script type="module" src="/lapor/peringatan.js?v=5"></script>
 <script type="module" src="/lapor/luring.js?v=1"></script>
 <script src="/bnpb/turnstile.js" defer></script>
 <script type="module" src="/lapor/selamat.js?v=4"></script>

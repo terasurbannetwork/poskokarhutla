@@ -4,7 +4,7 @@
    - Kartu langkah mengikuti keadaan mesin: minta (setuju, identitas, lokasi, jenis, sub, foto), form (angka, waktu, RT/RW), pilihan, banyak.
    - Cache: percakapan dan daftar laporan disimpan di localStorage per nomor supaya muat ulang langsung tampil.
    - Suara (id-ID) bila peramban mendukung; foto dikecilkan di peramban (foto_kecil.js), EXIF dibaca dulu (exif.js). */
-import {maskot} from "/lapor/maskot.js?v=19"; // bervesi: berkas .js disajikan immutable
+import {maskot} from "/lapor/maskot.js?v=20"; // bervesi: berkas .js disajikan immutable
 import {ilustrasi, adaIlustrasi} from "/lapor/ilustrasi.js?v=3";
 /* Pelapor mengetik nomor WhatsApp tanpa kode (KEPUTUSAN-LAPOR-AI K65, D99-D102); di situs, nomor ketikan diikat ke perangkat lewat kuki HttpOnly
    dari Worker. Sesi /masuk yang sudah ada tetap dipakai bila ada. Kiriman POST wajib x-pb: 1. */
@@ -71,13 +71,17 @@ function tipKe(w, arah, pengguna) {
   w.querySelector(".lp-hg-urut").textContent = `${j + 1} dari ${sl.length}`;
   w.querySelectorAll(".lp-hg-titik i").forEach((t, k) => t.classList.toggle("aktif", k === j));
   w.querySelector(".lp-hg-isi").setAttribute("aria-live", pengguna ? "polite" : "off");
+  // maskot di bawah gelembung memegang papan sesuai panduan yang tampil (pemilik 25 Nov 2026)
+  const m = w.parentElement.querySelector(".lp-hero-maskot"), aksi = sl[j].querySelector("[data-tip-aksi]")?.dataset.tipAksi;
+  if (m) m.innerHTML = AKSI_MASKOT[aksi] ? maskot("semangat", "", aksi) : maskot("sapa");
 }
+const AKSI_MASKOT = {darurat: 1, lapor: 1, status: 1, info: 1, edukasi: 1, penting: 1};
 document.addEventListener("click", e => {
   const b = e.target.closest(".lp-hg-tip button"); if (!b) return;
   const w = b.closest(".lp-hg-tip");
   if (b.dataset.tip) { tipKe(w, +b.dataset.tip, true); return; }   // gilir tetap jalan (pemilik 21 Nov 2026: "jalan aja terus")
   const x = b.dataset.tipAksi;
-  if (x === "tur") mulaiTur(); else if (x === "status") $("bCekStatus").click(); else document.querySelector(`#lBeranda [data-aksi="${x}"]`)?.click();
+  if (x === "tur") mulaiTur(); else if (x === "penting") bukaInfo("penting"); else if (x === "status") $("bCekStatus").click(); else document.querySelector(`#lBeranda [data-aksi="${x}"]`)?.click();
 });
 for (const ev of ["pointerenter", "focusin"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w) w.dataset.tahan = "1"; }, true);
 for (const ev of ["pointerleave", "focusout"]) document.addEventListener(ev, e => { const w = e.target.closest?.(".lp-hg-tip"); if (w && !w.matches(":hover, :focus-within")) w.dataset.tahan = ""; }, true);
@@ -187,8 +191,11 @@ function kartuPilihan(j) {
     const nodes = [...(kp?.childNodes || [])].filter(n => n.nodeType === 3); const judulT = nodes.map(n => n.textContent).join(""); nodes.forEach(n => n.remove());
     const sub = tanyaT.replace(/\*/g, ""), lk = sub.match(/^(.+?),\s*langkah (\d+) dari (\d+)\.?$/i);   // "Cerita kejadian, langkah 7 dari 8." jadi label (pemilik 25 Nov 2026)
     let bawah = el("small", null, sub);
-    if (lk) { bawah = el("span", "lp-langkah-label"); const t = el("b", null, `${lk[2]} dari ${lk[3]}`), r = el("span", "lp-langkah-rantai"); r.setAttribute("aria-hidden", "true");
-      for (let x = 1; x <= Number(lk[3]); x++) r.append(el("i", x <= Number(lk[2]) ? "isi" : "")); bawah.append(lk[1], t, r); }
+    if (lk) { bawah = el("span", "lp-langkah-label"); const t = el("b", null, `${lk[2]}/${lk[3]}`), r = el("span", "lp-langkah-rantai"); r.setAttribute("aria-hidden", "true");
+      t.setAttribute("aria-label", `langkah ${lk[2]} dari ${lk[3]}`);
+      for (let x = 1; x <= Number(lk[3]); x++) r.append(el("i", x <= Number(lk[2]) ? "isi" : ""));
+      // sebaris dengan judul, "Cerita kejadian" jadi "Kronologis", "4 dari 8" jadi "4/8" (pemilik 25 Nov 2026)
+      bawah.append(el("span", "lp-langkah-nama", lk[1].replace(/^cerita kejadian$/i, "Kronologis")), t, r); jd.classList.add("sebaris"); }
     jd.append(el("b", null, judulT), bawah); kp?.querySelector("svg")?.after(jd); } // judul = judul pertanyaan, di baris mana pun
   if (j.minta === "jenis" && j.kunci) { // kartu bergambar
     const g = el("div", "lp-jenis");
@@ -1247,7 +1254,7 @@ fetch("/lapor/edukasi.json", {signal: AbortSignal.timeout(10000)}).then(r => r.o
 const PRIVASI = [
   ["Data yang kami kumpulkan", [["p", "Saat Anda melapor lewat Pantau Bencana BNPB, kami mencatat:"], ["ul", ["Identitas pelapor: nama, nomor WhatsApp, dan peran (warga atau petugas BPBD beserta kabupaten/kota dan jabatan).",
     "Isi laporan: jenis dan karakteristik kejadian, waktu kejadian, lokasi (titik GPS atau desa yang Anda pilih, RT dan RW), jumlah korban, pengungsi, dan kerusakan dalam bentuk angka, serta kebutuhan.",
-    "Foto yang Anda kirim beserta waktu dan lokasi pengambilannya.", "Percakapan dengan asisten AI, waktu pesan, dan nilai yang Anda berikan untuk percakapan."]],
+    "Foto: gambar yang Anda kirim beserta waktu dan lokasi pengambilannya.", "Percakapan: pesan dengan asisten AI, waktunya, dan nilai yang Anda berikan."]],
     ["p", "Kami tidak meminta nama korban atau Nomor Induk Kependudukan. Nomor telepon, NIK, dan alamat surel yang tertulis di pesan disamarkan sebelum diproses asisten AI."]]],
   ["Untuk apa data dipakai", [["ul", ["Menyusun laporan kejadian bencana dan meneruskannya ke petugas BNPB dan BPBD yang menangani.", "Memeriksa kebenaran laporan dan menghubungi Anda bila perlu konfirmasi.",
     "Mengirim kabar status laporan ke Anda.", "Menyusun statistik kejadian tanpa identitas pelapor untuk perencanaan penanggulangan bencana."]]]],
@@ -1265,16 +1272,20 @@ function bukaPrivasi() {
     const kp = el("header", "lp-legal-kepala"); kp.append(el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
     const daftar = el("ol", "lp-legal-daftar"), isi = el("div", "lp-legal-isi"), meta = el("dl", "lp-legal-meta");
     isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Pantau Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
-    PRIVASI.forEach(([judul, blok], i) => {
-      const id = `privasi-${i + 1}`, a = Object.assign(el("a"), {href: `#${id}`}); a.append(el("span", null, String(i + 1).padStart(2, "0")), judul);
+    const IK_LEGAL = ["i-daftar", "i-status", "i-pesan", "i-orang", "i-kebutuhan", "i-centang", "i-kejadian", "i-kalender", "i-telepon"];
+    PRIVASI.forEach(([judul, blok], i) => {   // daftar isi berikon sama dengan kartunya (pemilik 25 Nov 2026: "kasih icon")
+      const id = `privasi-${i + 1}`, a = Object.assign(el("a"), {href: `#${id}`}), u = el("span"); u.append(ikon(IK_LEGAL[i % IK_LEGAL.length])); a.append(u, judul);
       a.addEventListener("click", e => { e.preventDefault(); $(id).scrollIntoView({behavior: "smooth", block: "start"}); });
       const li = el("li"); li.append(a); daftar.append(li);
       isi.append(Object.assign(el("h2", null, `${i + 1}. ${judul}`), {id}));
-      for (const [jenis, x] of blok) { if (jenis === "p") isi.append(el("p", null, x)); else { const ul = el("ul"); x.forEach(b => ul.append(el("li", null, b))); isi.append(ul); } }
+      // butir "Label: isi" jadi ubin berlabel, kalimat "Kami tidak ..." jadi catatan tegas (pemilik 25 Nov 2026: "terlalu kata-kata banget")
+      for (const [jenis, x] of blok) { if (jenis === "p") isi.append(el("p", /^Kami tidak/.test(x) ? "lp-legal-tegas" : null, x));
+        else { const ul = el("ul", "lp-legal-butir"); x.forEach(b => { const m = b.match(/^([^:]{2,24}):\s*(.+)$/), li = el("li");
+          li.append(ikon("i-centang")); if (m) { const t = el("span"); t.append(el("b", null, m[1]), el("small", null, m[2].replace(/^./, c => c.toUpperCase()))); li.append(t); } else li.append(el("span", null, b));
+          ul.append(li); }); isi.append(ul); } }
     });
     for (const [k, v] of [["Berlaku", "19 November 2026"], ["Jenis", "Kebijakan"], ["Untuk", "Pelapor"], ["Bahasa", "Indonesia"]]) meta.append(el("dt", null, k), el("dd", null, v));
     // bagian per h2 jadi kartu berikon (pemilik 19 Nov 2026: "bagusin"); pembuka tetap di atas kartu
-    const IK_LEGAL = ["i-daftar", "i-status", "i-pesan", "i-orang", "i-kebutuhan", "i-centang", "i-kejadian", "i-kalender", "i-telepon"];
     const anak = [...isi.children], kartuL = []; let kini = null, n = 0;
     for (const e of anak) { if (e.tagName === "H2") { kini = el("section", "lp-legal-kartu"); const h = el("h2"), u = el("span"); u.append(ikon(IK_LEGAL[n++ % IK_LEGAL.length])); h.id = e.id; h.append(u, e.textContent); kini.append(h); kartuL.push(kini); } else (kini || (kartuL.pembuka ||= el("div", "lp-legal-pembuka"))).append(e); }
     isi.replaceChildren(...(kartuL.pembuka ? [kartuL.pembuka] : []), ...kartuL);
@@ -1296,7 +1307,7 @@ async function tarikKotak() {
 }
 
 /* ============ info daerah, prediksi 3 hari, nomor penting: ringkasan langsung di chat (pemilik 19 Nov 2026) ============ */
-const INFO = {info: ["Info dan prediksi daerah", "Hari ini, 3 hari ke depan, dan analisis daerah", "i-lokasi"], prediksi: ["Prediksi 3 hari", "Hujan, banjir, longsor, asap, angin", "i-kalender"], penting: ["Nomor penting", "BPBD, rumah sakit, polisi, pemadam", "i-telepon"]};
+const INFO = {info: ["Info bencana dan prediksi daerah", "Prakiraan, analisis daerah, dan peringatan dini", "i-lokasi"], prediksi: ["Prediksi 3 hari", "Hujan, banjir, longsor, asap, angin", "i-kalender"], penting: ["Nomor penting", "BPBD, rumah sakit, polisi, pemadam", "i-telepon"]};
 let infoMode = "info";
 function tambahInfo(dari, teks) {
   const li = el("li", `${dari} baru`);
@@ -1339,6 +1350,8 @@ async function ambilDaerah(q, tampil) {
       // info dan prediksi digabung (pemilik 19 Nov 2026): hari ini dengan imbauan, lalu prakiraan 3 hari
       if (j.perHari?.length) { if (infoMode !== "prediksi") kartuPrediksi(j, true); kartuPrediksi(j); } else tambahInfo("bot", infoMode === "prediksi" ? j.prediksi : j.info);
       const jr = await rap; if (jr) kartuRapor(jr);
+      // peringatan dini kecamatan ikut di Info (pemilik 25 Nov 2026), diisi peringatan.js
+      if (infoMode === "info" && window.pbKartuPeringatan) { const li = el("li", "bot baru lp-pred-li"), w = el("div", "lp-pw-info"); li.append(w); $("logInfo").append(li); window.pbKartuPeringatan(w); }
       $("kartuInfo").replaceChildren(opsiLanjut(q));
     }
   } catch (e) { tambahInfo("bot", `${e.message || "Data belum bisa dimuat"}. Coba lagi.`); kartuLokasiInfo(); }
@@ -1772,14 +1785,15 @@ const TUR = [
   ["#bCekStatus", "Cek status laporan", "Simpan nomor laporan Anda. Dari sini Anda bisa melihat tindak lanjut BPBD dan BNPB."],
   // tiga pintu tambahan di hero ikut dijelaskan (pemilik 25 Nov 2026: "ini kenapa ga ada di tur?")
   [".lp-kaca-pasang", "Pasang aplikasi", "Pasang Pantau Bencana di layar utama HP Anda. Bisa dibuka cepat tanpa mengetik alamat."],
-  [".lp-kaca-peringatan", "Peringatan dini", "Pilih kecamatan Anda, lalu terima notifikasi saat prakiraan banjir, longsor, asap, atau angin naik ke Waspada, Siaga, atau Awas."],
+  [".lp-kaca-peringatan", "Peringatan dini", "Buka Info, pilih kecamatan Anda, lalu terima notifikasi saat prakiraan banjir, longsor, asap, atau angin naik ke Waspada, Siaga, atau Awas."],
   [".lp-kaca-hilang", "Lapor orang hilang", "Laporkan keluarga atau kerabat yang belum ditemukan. Isi nama, ciri, dan tempat terakhir terlihat, lalu kirim ke petugas."],
-  ['#lBeranda [data-aksi="info"]', "Info dan prediksi", "Kejadian hari ini serta prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan di daerah Anda."],
+  ['#lBeranda .lp-layanan-kartu[data-aksi="info"]', "Info bencana dan prediksi", "Prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan, peringatan dini kecamatan, dan nomor penting terdekat."],
   ['#lBeranda [data-aksi="edukasi"]', "Edukasi siaga bencana", "Yang perlu dilakukan sebelum, saat, dan sesudah bencana."],
-  ['#lBeranda [data-aksi="penting"]', "Nomor penting", "BPBD, rumah sakit, polisi, dan pemadam kebakaran terdekat dari lokasi Anda."],
   [".lp-bahasa-menu", "Pilih bahasa", "Saya bisa bertanya dalam bahasa daerah Anda. Laporan tetap diterima petugas dalam bahasa Indonesia."],
   ['#tab [data-ke="laporan"]', "Laporan Anda", "Semua laporan yang pernah Anda kirim dan statusnya ada di sini."],
 ];
+const TUR_AKSI = {"#bDarurat": "darurat", "#bLaporBaru": "lapor", "#bCekStatus": "status", ".lp-kaca-pasang": "pasang", ".lp-kaca-peringatan": "peringatan",
+  ".lp-kaca-hilang": "hilang", '#lBeranda .lp-layanan-kartu[data-aksi="info"]': "info", '#lBeranda [data-aksi="edukasi"]': "edukasi", ".lp-bahasa-menu": "bahasa", '#tab [data-ke="laporan"]': "laporan"};
 const turTampak = sel => [...document.querySelectorAll(sel)].find(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; });
 try { if (!localStorage.getItem("lapor-tur")) document.body.classList.add("lp-tur-nanti"); } catch {}   // kunjungan pertama: gelembung Sigap menunggu tur selesai
 function turPertama() { let sudah = true; try { sudah = !!localStorage.getItem("lapor-tur"); } catch {} if (!sudah && !$("lBeranda").hidden) mulaiTur(); else document.body.classList.remove("lp-tur-nanti"); }
@@ -1873,7 +1887,8 @@ function mulaiTur() {
   };
   const tampil = n => {
     i = n; digulir = false; const [sel, judul, isi] = langkah[i]; sasaran = sel ? turTampak(sel) : null;
-    ke.textContent = `${i + 1} dari ${N}`; h.textContent = judul; p.textContent = isi;
+    ke.textContent = `${i + 1}/${N}`; h.textContent = judul; p.textContent = isi;
+    const aksi = TUR_AKSI[sel]; m.innerHTML = aksi ? maskot("semangat", "", aksi) : maskot(i === N - 1 ? "senang" : "sapa");   // gerak maskot ikut langkah (pemilik 25 Nov 2026)
     [...titik.children].forEach((t, j) => t.classList.toggle("aktif", j === i));
     mundur.hidden = i === 0; maju.textContent = i === 0 ? "Mulai" : i === N - 1 ? "Selesai" : "Lanjut";
     if (sasaran) sasaran.style.scrollMarginTop = "16px";   // HP: sasaran di atas agar kartu muat di bawahnya, tidak menutupinya

@@ -2773,3 +2773,37 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-kaca-pasang,.lp-kaca-peringatan,.lp-kaca-hilang{--kc:var(--brand2)}
 /* label Sigap satu baris, tidak patah dua */
 .lp-hg-tip .lp-hg-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lp-hg-tip .lp-hg-label i{flex:none}
+/* FAQ (pemilik 25 Nov 2026: "bagusin"): tanda buka navy senada ikon, baris naik saat disorot, yang terbuka diberi garis kiri */
+.lp-faq2{transition:border-color .2s,box-shadow .2s,transform .2s}
+.lp-faq2:not([open]):hover{border-color:color-mix(in oklab,var(--brand2) 40%,var(--line));transform:translateY(-1px)}
+.lp-faq2 summary::after{background:color-mix(in oklab,var(--brand2) 10%,var(--card))!important;color:var(--brand2)!important;font-weight:600!important}
+.lp-faq2[open] summary::after{background:var(--brand2)!important;color:var(--on-pekat)!important}
+.lp-faq2[open]{border-color:color-mix(in oklab,var(--brand2) 45%,var(--line))!important;box-shadow:inset 4px 0 0 var(--brand2),var(--shadow-lg)!important}
+.lp-faq2 summary .lp-faq-ikon{transition:background .2s,color .2s}
+.lp-faq2[open] summary .lp-faq-ikon,.lp-faq2 summary:hover .lp-faq-ikon{background:var(--brand2);color:var(--on-pekat)}
+/* kebijakan privasi (pemilik 25 Nov 2026: "terlalu banyak white space"): kepala pendek rata kiri, isi selebar layar, kartu dua kolom di layar lebar, daftar isi berikon */
+.lp-legal-daftar a span{display:grid!important;place-items:center;width:26px!important;height:26px!important;border-radius:8px!important;background:color-mix(in oklab,var(--brand2) 12%,var(--card))!important;color:var(--brand2)!important}
+.lp-legal-daftar a span svg{width:15px;height:15px}
+.lp-legal-daftar a:hover span{background:var(--brand2)!important;color:var(--on-pekat)!important}
+@media (min-width:900px){
+  .lp-legal{max-width:1480px!important;padding:24px 32px 40px!important;row-gap:20px!important}
+  .lp-legal-kepala{display:grid!important;grid-template-columns:1fr auto;align-items:center;justify-items:start;text-align:left!important;gap:6px 24px!important;padding:22px 28px!important}
+  .lp-legal-kepala .lp-alis{grid-column:1}
+  .lp-legal-kepala h1{grid-column:1;font-size:clamp(1.75rem,3vw,2.25rem)!important}
+  .lp-legal-kepala .lp-legal-catatan{grid-column:2;grid-row:1 / span 2;max-width:42ch;margin:0}
+}
+@media (min-width:1280px){
+  .lp-legal-isi{display:block!important;column-count:2!important;column-gap:16px!important}
+  .lp-legal-isi > *{break-inside:avoid;margin:0 0 16px!important;display:grid}
+  .lp-legal-pembuka{column-span:all}
+}
+/* butir kebijakan berikon dan berlabel, catatan tegas berlatar (pemilik 25 Nov 2026) */
+.lp-legal-kartu ul.lp-legal-butir{list-style:none;padding:0!important;display:grid;gap:8px}
+.lp-legal-butir li{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface)}
+.lp-legal-butir li > svg{flex:none;width:18px;height:18px;margin-top:2px;padding:3px;box-sizing:content-box;border-radius:50%;background:color-mix(in oklab,var(--ok-tx) 14%,var(--card));color:var(--ok-tx)}
+.lp-legal-butir li span{display:grid;gap:2px;font-size:.9375rem;line-height:1.5}
+.lp-legal-butir li b{font:700 .9375rem var(--display);color:var(--ink)}
+.lp-legal-butir li small{font-size:.875rem;line-height:1.5;color:var(--ink2)}
+.lp-legal-tegas{padding:12px 14px;border-radius:12px;border-inline-start:4px solid var(--brand2);background:color-mix(in oklab,var(--brand2) 7%,var(--card));font-weight:600}
+/* ekor gelembung Sigap menunjuk kepala maskot di bawahnya (pemilik 25 Nov 2026: "harusnya ke dia") */
+.lp-hero-tengah .lp-hero-gelembung::after{left:calc(50% - 9px)!important}
