@@ -108,7 +108,7 @@ else {
     await tab.tungguFungsi("!/Memuat daftar wilayah/.test(document.body.innerText)", 20000);
     assert.equal(await tab.eval("document.querySelectorAll('input[name=jenis]').length"), 14)   // = JENIS di src/logbook.js;
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kendala]').length"), 14);
-    assert.equal(await tab.eval("document.querySelectorAll('input[name=kebutuhan]').length"), 10);
+    assert.equal(await tab.eval("document.querySelectorAll('input[name=kebutuhan]').length"), 11);   // = KEBUTUHAN di src/logbook.js (bantuan_nasional sejak 713e8ae76, Juklak 7/2023)
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kendala]')[0].closest('label').querySelector('svg path') !== null"), true);
     await isi("select[name=prov]", "33"); await tab.tungguFungsi("document.querySelector('select[name=kab]').options.length > 20");
     await isi("select[name=kab]", "3301"); await tab.tungguFungsi("document.querySelector('select[name=kec]').options.length > 5");
@@ -183,6 +183,8 @@ else {
     assert.equal(await tab.eval("document.querySelector('.lb-tutup').hidden"), false, "formulir tetap terbuka saat galat");
     S.tutup = 200; S.log.length = 0; await kirimTutup(); await tab.tungguFungsi("/Kejadian ditutup/.test(document.body.innerText)");
     const p = tutupPost().pop(); assert.equal(p.m, "POST"); assert.equal(p.p, "/api/logbook/kejadian/K1/tutup"); assert.equal(p.h["x-pb"], "1"); assert.deepEqual(p.body, {tgl_tuntas: hari, kondisi_akhir: "Air surut, warga kembali ke rumah"});
+    /* "Kejadian ditutup" masih tertulis dari tutup lewat Enter di atas, jadi tunggu di atas bisa lolos sebelum muatBuka() jalan: tunggu GET-nya sampai 5 dtk */
+    for (let i = 0; i < 50 && !S.log.some(x => x.p === "/api/logbook/buka"); i++) await new Promise(r => setTimeout(r, 100));
     assert.ok(S.log.some(x => x.p === "/api/logbook/buka"), "daftar terbuka dimuat ulang sesudah tutup");
     tab.kosongkanGalat(); await tab.tunggu("[data-buka]"); await tab.klik("[data-tutup=K1]"); S.tutup = 200;
     await bersih("tutup"); await tanpaGulir("tutup");
@@ -297,7 +299,8 @@ else {
     const t = await tab.eval(`${blok}.innerText`);
     assert.match(t, /tercatat 1–3 hari kemudian pada [\d,]+ dari 100 kejadian/);
     assert.match(t, /Tercatat di hari yang sama: [\d,]+ dari 100 .*sebagian satu laporan gabungan/);
-    assert.match(t, /bootstrap blok kab-tahun/); assert.doesNotMatch(t, /peringkat|tertinggi|terbanyak/i);
+    const semua = await tab.eval(`${blok}.textContent`);   // catatan kaki panjang dilipat jadi <details> "Catatan" (menu_pusdalops.js, f8d1c1176): innerText tidak memuatnya
+    assert.match(semua, /bootstrap blok kab-tahun/); assert.doesNotMatch(semua, /peringkat|tertinggi|terbanyak/i);
     const nol = Object.values(SU.pasangan).some(p => p.nasional.ci95 && p.nasional.ci95[0] <= 1 && p.nasional.ci95[1] >= 1);
     if (nol) assert.match(t, /tidak berbeda dari kebetulan/);
     await bersih("susulan");
@@ -309,7 +312,7 @@ else {
     let t = await tab.eval("document.querySelector('.lb-turunan').textContent");   // catatan dilipat
     assert.match(t, /Median 1 hari/); assert.match(t, /median dari kejadian yang dilaporkan selesai/); assert.match(t, /batas bawah yang bias/);
     assert.match(t, /Cilacap/); assert.doesNotMatch(t, /Banyumas/, "kab tidak layak_median masuk peringkat");
-    await tab.klik("input[name=lblama][value=karhutla]"); await tab.tungguFungsi("/Karhutla: hanya jumlah/.test(document.querySelector('.lb-turunan').innerText)");
+    await tab.klik("input[name=lblama][value=karhutla]"); await tab.tungguFungsi("/Karhutla: hanya jumlah/.test(document.querySelector('.lb-turunan').textContent)");   // kaki = <details> Catatan metode (f5549c6ed)
     t = await tab.eval("document.querySelector('.lb-turunan').innerText");
     assert.match(t, /200 dari 500 dilaporkan selesai/); assert.doesNotMatch(t, /Median \d+ hari di|persentil 75|median dari kejadian/);
     assert.equal(await tab.eval("document.querySelectorAll('.lb-turunan .lb-svg').length"), 0);

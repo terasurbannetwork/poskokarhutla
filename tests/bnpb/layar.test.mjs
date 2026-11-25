@@ -50,18 +50,21 @@ const HALAMAN = [
     aksi: async t => { await t.klikTeks("button", tab); await t.tungguFungsi("document.querySelectorAll('table tr, .ad-kosong, .ad-kartu').length >= 1 || document.body.innerText.length > 200"); },
     harus: "document.body.innerText.length > 200"})),
   /* Layar Pimpinan: pemilik 11 Nov 2026 "ga ada data dummy": kartu tidak lagi membaca ?dummy=1 dan dunia uji tidak punya baris nyata,
-     jadi yang dibuktikan: 8 kartu tampil, tiap kartu berangka ATAU berkeadaan kosong yang rapi (.pm-kosong), plus galat/scroll/bocor di atas. */
+     jadi yang dibuktikan: 9 kartu tampil (kartu ke-9 "Respons laporan warga" sejak a23cb0af9, LB-13), tiap kartu berangka ATAU berkeadaan kosong yang rapi (.pm-kosong), plus galat/scroll/bocor di atas. */
   {nama: "/admin/pimpinan", admin: true, modul: /./, url: d => "/admin/pimpinan",
-    isi: "document.querySelectorAll('.pm-k').length === 8 && [...document.querySelectorAll('.pm-k')].every(k => /\\d/.test(k.innerText) || k.querySelector('.pm-kosong'))",
+    isi: "document.querySelectorAll('.pm-k').length === 9 && [...document.querySelectorAll('.pm-k')].every(k => /\\d/.test(k.innerText) || k.querySelector('.pm-kosong'))",
     aksi: async t => { await t.eval("window.__cetak = 0; window.print = () => { window.__cetak++; }"); await t.klik("[data-cetak]"); }, harus: "window.__cetak === 1"},
   {nama: "/admin/pengingat", admin: true, modul: /^(pengingat|alun|meja|relawan)/, url: d => "/admin/pengingat", isi: "document.querySelectorAll('tbody tr[data-id]').length >= 1 || document.querySelector('.pg-kosong') !== null",  /* tanpa ?dummy=1 sejak 11 Nov 2026: dunia uji hanya punya baris dummy */
     aksi: async t => { await t.klikTeks("button", "^Periksa sekarang$"); await t.tungguFungsi("/Diperiksa:/.test(document.querySelector('#pgPesan').innerText)"); }, harus: "document.querySelector('#pgPesan').className.includes('ok')"},
   {nama: "/riset/mitra (kode mitra)", url: d => "/riset/mitra#k=" + d.kode.mitra, isi: "document.querySelectorAll('.mt-blok').length >= 1 && document.querySelector('#app').innerText.length > 80",
     aksi: async t => { await t.eval("document.querySelector('.mt-blok').scrollIntoView()"); }, harus: "document.querySelectorAll('.mt-blok').length >= 1 && !/Kode tidak berlaku/.test(document.body.innerText)"},
-  {nama: "/sitrep (arsip)", url: d => "/sitrep?tgl=" + d.tglArsip, isi: "document.querySelectorAll('#lap tr').length >= 3 && /Arsip/.test(document.querySelector('#lap').innerText) && /Logbook petugas lapangan/.test(document.querySelector('#lap').innerText)",
+  {nama: "/sitrep (arsip)", url: d => "/sitrep?tgl=" + d.tglArsip, /* sejak model A (1e90f7d18) pil "Arsip" tidak lagi di #lap; identitas laporan pindah ke panel kiri. Bukti arsip termuat: pemilih #tgl memegang tanggalnya,
+     tidak ada pesan "Arsip tanggal itu tidak ada", dan logbook terisi dari masukan arsip (layar langsung hanya menulis "tampil pada arsip") */
+    isi: "document.querySelectorAll('#lap tr').length >= 3 && document.querySelector('#tgl').value === new URLSearchParams(location.search).get('tgl') && !document.querySelector('#lap [role=alert]') && /Logbook petugas\\s+Hari ini,/.test(document.querySelector('#lap').innerText)",
     aksi: async t => { await t.pilih("#prov", "64"); }, harus: "document.querySelector('#prov').value === '64'"},
   {nama: "/admin/gakkum", admin: true, url: d => "/admin/gakkum", isi: "document.querySelectorAll('table tr').length >= 5",
-    aksi: async t => { await t.klikTeks("button", "^Sawit$"); }, harus: "document.querySelectorAll('table tr').length >= 2"},
+    /* penyaring jenis jadi ubin berangka sejak 83cf13fc5 (teks tombol "Sawit 12 konsesi"), jadi diklik lewat data-saring */
+    aksi: async t => { await t.klik("button[data-saring=sawit]"); }, harus: "document.querySelector('button[data-saring=sawit]').getAttribute('aria-pressed') === 'true' && document.querySelectorAll('table tr').length >= 2"},
 ];
 /* Bug layar yang ditemukan uji ini: kunci "<halaman>|<bagian>" -> alasan. Pemilik halamannya memperbaiki, lalu baris ini dihapus. */
 const TODO = {};   // kosong: semua halaman wajib lulus

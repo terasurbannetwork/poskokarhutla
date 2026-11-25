@@ -13,7 +13,8 @@ import {badanPanjang} from "../warga/_bantu.mjs";
 
 const AKAR = new URL("../../", import.meta.url).pathname;
 const baca = p => readFileSync(AKAR + p, "utf8");
-const TAMPILAN = ["daerah", "masalah", "riset", "dana", "satgas", "talenta", "kampus", "dasbor"];
+/* 8 tampilan DS §3 + "data" (Data lapor, agregat Lapor Bencana, KEPUTUSAN-LAPOR-AI K62 dan D93, 8c15499e0) */
+const TAMPILAN = ["daerah", "masalah", "riset", "dana", "satgas", "talenta", "kampus", "dasbor", "data"];
 const UKURAN = [[1440, 900], [390, 844]];
 const TERLARANG = /\bNaN\b|\bundefined\b|\bnull\b|\[object|—|\bAnda\b/g;
 /* bukan galat halaman: favicon, dan 401 dari /api/kemitraan/saya saat tanpa sesi (itu memang jawabannya) */
@@ -49,13 +50,13 @@ test("cangkang KM statis: tiap .km-w-<kunci> di kemitraan.css cocok KM.RUMPUN da
 });
 
 test("cangkang KM tampilan: tiap berkas mendaftar KM.tampilan dengan bangun dan angka (4 butir) dan menampilkan kosongHtml", () => {
-  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js", "daftar.js", "masuk.js", "menu.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
+  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js", "daftar.js", "masuk.js", "menu.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3 + Data lapor");
   for (const t of TAMPILAN) {
     const s = baca(`public/kemitraan/${t}.js`);
     assert.match(s, new RegExp(`KM\\.tampilan\\.${t}\\s*=\\s*\\{`), `${t}.js tidak mendaftar KM.tampilan.${t}`);
     assert.match(s, /bangun\(el\)/, `${t}.js tanpa bangun(el)`);
     assert.match(s, /kosongHtml\(/, `${t}.js tidak menampilkan kosongHtml()`);
-    const a = /const angka = \(\) => \[(.*)\];/.exec(s);
+    const a = /const angka = \(\) => \[([\s\S]*?)\];/.exec(s);   // boleh beberapa baris (data.js)
     assert.ok(a && (a[1].match(/\[IK\./g) || []).length === 4, `${t}.js: angka() harus 4 butir [ikon, nilai, label] (DS §3), dapat ${a ? (a[1].match(/\[IK\./g) || []).length : "tidak ada"}`);
   }
 });
@@ -97,7 +98,7 @@ if (!CHROME) {
     for (const uk of UKURAN) {
       await buka("/kemitraan", uk);
       const k = await tab.eval(`({masuk: !document.querySelector('#kmMasuk').hidden, galat: !document.querySelector('#kmGalat').hidden, muat: !document.querySelector('#kmMuat').hidden, seg: !document.querySelector('#kmTampil').hidden,
-        tombol: !!document.querySelector('#kmMasuk a[href*="/admin"]') && !!document.querySelector('#kmMasuk a[href="/kemitraan/masuk"]'), panel: document.querySelectorAll('.ak-tampilan:not([hidden])').length})`);
+        tombol: !!document.querySelector('#kmMasuk a[href^="/masuk?ke=%2Fkemitraan"]') && !!document.querySelector('#kmMasuk a[href="/kemitraan/masuk"]'), panel: document.querySelectorAll('.ak-tampilan:not([hidden])').length})`);
       assert.deepEqual(k, {masuk: true, galat: false, muat: false, seg: false, tombol: true, panel: 0}, `${uk[0]}: layar masuk salah: ${JSON.stringify(k)}`);
       assert.deepEqual(tab.galat().filter(wajar), [], `${uk[0]}: tanpa sesi tidak boleh ada galat konsol/CSP`);
       assert.ok(!TERLARANG.test(await tab.teks()), `${uk[0]}: teks terlarang di layar masuk`);
@@ -128,7 +129,7 @@ if (!CHROME) {
       assert.ok(s.pita && s.isi > 0, `klik ${t}: pita atau isi kosong ${JSON.stringify(s)}`);
     }
     await buka("/kemitraan", UKURAN[0]);   // tampilan terakhir diingat
-    assert.equal(await tab.eval("document.querySelector('#kmTampil [aria-pressed=true]').dataset.t"), "dasbor", "localStorage km-tampil tidak dipakai saat buka tanpa ?tampil=");
+    assert.equal(await tab.eval("document.querySelector('#kmTampil [aria-pressed=true]').dataset.t"), TAMPILAN.at(-1), "localStorage km-tampil tidak dipakai saat buka tanpa ?tampil=");
     await buka("/kemitraan?tampil=riset", UKURAN[0]);
     assert.equal(await tab.eval("document.querySelector('#kmTampil [aria-pressed=true]').dataset.t"), "riset", "?tampil= harus menang atas ingatan");
     /* helper angka: tahun kosong tidak jadi nol, seri nol semua tidak meledak, desimal maks 1 */
