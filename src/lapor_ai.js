@@ -29,6 +29,7 @@ import {jalanOsm} from "./lapor_jalan.js";
 import {buatRutePeringatan, jalankanPeringatan, bersihPeringatan} from "./pw_peringatan.js";
 import * as H from "./hak.js";
 import {buatSelamat} from "./lapor_selamat.js";
+import {buatKomen} from "./lapor_komen.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
 import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik} from "./lapor_kejadian.js";
@@ -177,7 +178,8 @@ async function tokenLacak(env, nomor) {   // kunci turunan berlabel domain "lapo
 let WIL, INFO, REG;
 const muatAset = env => async jalur => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); throw new Error(`aset ${jalur} ${r.status}`); } return r.json(); };
 const wilayahDari = env => WIL ||= buatWilayah(muatAset(env));
-const SEL = buatSelamat(wilayahDari);   // kabar selamat dan orang dicari (LA-80)
+const SEL = buatSelamat(wilayahDari);
+const KOMEN = buatKomen({pelapor: (...a) => pelapor(...a), kartuTampil: (...a) => kartuTampil(...a)});   // komentar kartu Alun-alun (LA-85); fungsi dibungkus karena didefinisikan di bawah   // kabar selamat dan orang dicari (LA-80)
 const registriDari = env => REG ||= muatAset(env)("/bencana.json").catch(e => { REG = null; throw e; });   // katalog tindakan (AGENTS 2.28, D112)
 // nomor BPBD dari panen situs resmi (K88); gagal muat = 117, laporan tetap tersimpan
 let KONTAK;
@@ -1126,6 +1128,16 @@ async function gugusDasar(env, kini) {
     return {nomor: r.nomor, jenis: r.jenis, lat: r.lat ?? null, lon: r.lon ?? null, kab: w.kab || null, desa: w.kode || null, t: k.waktuMs || r.terkirim, wa: r.wa, fotoSah: !!r.foto_sah, status: r.status}; }));
   return {per, G, gk: new Map(G.gugus.map(g => [g.kode, g]))};
 }
+/* id kartu Alun-alun yang bisa tampil -> id laporan jangkar (rumus id sama dengan alunBuat, tanpa saringan jenis dan provinsi); dipakai komentar (LA-85).
+   ponytail: membaca ulang gugus 30 hari tiap komentar ditulis; komentar dibatasi 10 per nomor per jam, tambahkan cache bila baca D1 jadi masalah */
+async function kartuTampil(env, kini) {
+  const [tampil, {per, G, gk}] = await Promise.all([H.lpAlunBaris(env, PUBLIK, null, null), gugusDasar(env, kini)]), peta = new Map();
+  for (const r of tampil.filter(x => TAMPIL_ALUN.has(x.status))) {
+    const kunci = G.per[r.nomor] || r.nomor, g = gk.get(kunci), jangkar = (g ? per.get(g.anggota[0]) : null)?.id || r.id;
+    if (!g || !peta.has(kunci)) peta.set(kunci, jangkar);
+  }
+  return new Map(await Promise.all([...peta.values()].map(async j => [(await sha(j)).slice(0, 10), j])));
+}
 async function alunBuat(env, req, url, kini) {
   const batas = await lajuIP(env, req, "lapor.alun", [[JAM, 120]], kini); if (batas) return batas;
   const q = url.searchParams, prov = /^\d{2}$/.test(q.get("prov") || "") ? q.get("prov") : null, jenis = /^[a-z_]{1,40}$/.test(q.get("jenis") || "") ? q.get("jenis") : null;
@@ -1260,6 +1272,7 @@ const RUTE = {
   "GET /api/lapor/lacak": lacak,
   "GET /api/lapor/unduh/:x": unduh,
   "GET /api/lapor/alun": alun,
+  ...KOMEN.rute,   // komentar warga per kartu Alun-alun (src/lapor_komen.js, migrasi 0175)
   "GET /api/lapor/hari-ini": hariIni,
   "GET /api/lapor/bukti/:id": buktiGet,
   "GET /api/lapor/agregat": agregatGet,

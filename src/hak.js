@@ -1786,6 +1786,9 @@ Object.assign(MATRIKS, {
   lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
   lapor_cari:          {lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129)
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
+  lp_komen:            {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca", "ubah"]},   // migrasi 0175: komentar kartu Alun-alun (K95, D136); publik hanya kolom id, teks, dibuat
+  lp_komen_aduan:      {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca"]},
+  lp_komen_usul:       {lp_mesin: ["tambah"], lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"]},   // LA-86 menulis, LA-88 memutus
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -1858,6 +1861,17 @@ export const crTambah = (env, p, b, kini) => sedia(env, p, "lapor_cari", "tambah
   "INSERT INTO lapor_cari (id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)")
   .bind(b.id, b.nomor_pencari, b.nama_dicari, b.ciri, b.lokasi_terakhir, b.waktu_terakhir, b.nomor_dicari, b.hubungan, b.kab, kini).run();
 /* wilayah disaring di SQL (awalan kode kab/prov) supaya LIMIT 500 global tidak menyembunyikan laporan wilayah akun; prefiks null = semua (BNPB) */
+/* komentar kartu Alun-alun (migrasi 0175, LA-85). Jawaban publik hanya id, teks, dibuat; nomor penulis tidak pernah dibaca jalur publik. */
+export const kmDaftarPublik = async (env, p, kartu) => (await sedia(env, p, "lp_komen", "baca",
+  "SELECT id, teks, dibuat FROM lp_komen WHERE kartu = ?1 AND status = 'tampil' ORDER BY dibuat LIMIT 200").bind(kartu).all()).results;
+export const kmTambah = (env, p, b) => sedia(env, p, "lp_komen", "tambah",
+  "INSERT INTO lp_komen (id, kartu, sesi, wa, teks, dibuat) VALUES (?1, ?2, ?3, ?4, ?5, ?6)").bind(b.id, b.kartu, b.sesi, b.wa, b.teks, b.dibuat).run();
+export const kmById = (env, p, id) => sedia(env, p, "lp_komen", "baca", "SELECT id, kartu, wa, status, aduan FROM lp_komen WHERE id = ?1").bind(id).first();
+/* aduan: satu per pengadu (PK; sidik nomor atau IP, src/lapor_komen.js); hitungan naik hanya bila aduan baru tersimpan, dan aduan ke-ambang mengubah tampil -> dilaporkan, dalam satu batch */
+export const kmAdu = async (env, p, id, pengadu, kini, ambang) => { izin(p, "lp_komen_aduan", "tambah"); izin(p, "lp_komen", "ubah");
+  const [a] = await env.DB.batch([env.DB.prepare("INSERT OR IGNORE INTO lp_komen_aduan (komen, pengadu, waktu) VALUES (?1, ?2, ?3)").bind(id, pengadu, kini),
+    env.DB.prepare("UPDATE lp_komen SET aduan = aduan + 1, status = CASE WHEN status = 'tampil' AND aduan + 1 >= ?2 THEN 'dilaporkan' ELSE status END WHERE id = ?1 AND changes() > 0").bind(id, ambang)]);
+  return a.meta.changes > 0; };
 export const crDaftar = async (env, p, prefiks = null) => (await sedia(env, p, "lapor_cari", "baca",
   "SELECT id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup_oleh, ditutup FROM lapor_cari WHERE (?1 IS NULL OR substr(kab, 1, length(?1)) = ?1) ORDER BY dibuat DESC LIMIT 500").bind(prefiks).all()).results;
 export const crById = (env, p, id) => sedia(env, p, "lapor_cari", "baca", "SELECT id, kab, status FROM lapor_cari WHERE id = ?1").bind(id).first();

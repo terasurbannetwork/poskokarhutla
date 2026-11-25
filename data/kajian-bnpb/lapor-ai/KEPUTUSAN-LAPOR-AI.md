@@ -620,3 +620,15 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 | Q72 | Berapa lama komentar tampil? | **[BAWAAN SEMENTARA]** Selama kartunya tampil di Alun-alun (gugus 30 hari). | LA-85 |
 | Q73 | Komentar diterjemahkan ke bahasa pilihan pembaca (K58)? | **[BAWAAN SEMENTARA]** Tidak; komentar tampil dalam bahasa aslinya. | LA-87 |
 | Q74 | Penulis yang komentarnya berkali-kali disembunyikan diblokir? | **[BAWAAN SEMENTARA]** Tidak otomatis; meja melihat jumlah komentar tersembunyi per nomor. | LA-88 |
+
+### Catatan pelaksanaan LA-85 (25 Nov 2026)
+
+- Migrasi 0175 (`lp_komen`, `lp_komen_aduan`, `lp_komen_usul`), rute `GET` dan `POST /api/lapor/komen/:x` di `src/lapor_komen.js`, uji `tests/lapor/komen.test.mjs`.
+- Saringan D137 diperluas sesudah ulasan keamanan: teks dinormalkan NFKC dan karakter tak terlihat dibuang; nomor seluler dengan pemisah apa pun, email (termasuk "(at)"), akun `@`, tautan berjalur, RT/RW dalam berbagai tulisan, singkatan Jl/Gg/Blok/Perum, dan "Jalan/Gang Nama" berhuruf besar dibuang. Batas yang diterima: nomor yang ditulis dengan kata, nama orang, dan tanggal berawalan 08 (ikut terbuang sebagai nomor). Meja (LA-88) tetap jaring terakhir.
+- Aduan D137 dihitung per pengadu, bukan per nomor: sesi `/masuk` dan mesin WA = sidik nomor, nomor ketikan = sidik alamat IP, karena satu perangkat bisa mengetik banyak nomor. Penulis tidak bisa mengadu komentarnya sendiri. Batas aduan 30 per IP dan 20 per nomor per jam.
+- Penulis lewat nomor ketikan tidak terbukti pemilik nomornya, sama dengan laporan (K65, K67). Nomor itu hanya dibaca meja.
+- Biaya baca D1: daftar kartu tampil disimpan 60 detik per isolat; `GET` komentar di-cache tepi 30 detik, jadi komentar baru muncul untuk pembaca lain paling lambat 30 detik (layar LA-87 menampilkan komentar sendiri dari jawaban `POST`). Waktu publik dibulatkan ke menit.
+
+| No | Pertanyaan | Bawaan sementara | Tiket |
+| --- | --- | --- | --- |
+| Q75 | Berapa lama `lp_komen` (termasuk nomor penulis) disimpan? | **[BAWAAN SEMENTARA]** Mengikuti masa simpan laporan Lapor Bencana; bersih-bersihnya belum dipasang dan menunggu keputusan pemilik. | LA-88 |
