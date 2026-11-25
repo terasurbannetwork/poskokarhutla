@@ -8,7 +8,7 @@ const py = (...a) => execFileSync("python3", a, { encoding: "utf8", stdio: ["ign
 const D = "public/longsor/data/";
 const baca = (n) => JSON.parse(readFileSync(D + n, "utf8"));
 
-for (const [berkas, arg] of [["dasar.py"], ["rumus.py"], ["model.py", "diri"], ["kejadian.py", "uji"], ["hujan_riwayat.py", "uji"], ["pvmbg.py", "uji"], ["tanggapan_pvmbg.py", "uji"]]) {
+for (const [berkas, arg] of [["dasar.py"], ["rumus.py"], ["model.py", "diri"], ["kejadian.py", "uji"], ["hujan_riwayat.py", "uji"], ["pvmbg.py", "uji"], ["tanggapan_pvmbg.py", "uji"], ["uji_inti.py", "diri"]]) {
   test(`self-check ${berkas}`, () => {
     assert.ok(py(`scripts/longsor/${berkas}`, ...(arg ? [arg] : [])).includes("uji lolos"));
   });
@@ -69,4 +69,13 @@ test("kejadian.json pvmbg: baris sah, tanggal kejadian, koordinat di daratan, ti
     assert.ok(lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5, `koordinat ${lat},${lon}`);
     assert.ok(mati >= 0 && rumah >= 0 && kab >= 0 && kab < j.kab.length && typeof kec === "string");
   }
+});
+
+test("uji_inti.json (PB-49): vonis konsisten dengan aturan F-24, tanpa bocor", { skip: !existsSync(D + "uji_inti.json") }, () => {
+  const u = baca("uji_inti.json");
+  const p = u.pembanding_alarm_sama.persistensi;
+  const lolos = u.auc.model > u.auc.klimatologi && (u.model.pod ?? 0) >= (p?.pod ?? 0);
+  assert.equal(u.vonis === "LOLOS", lolos);
+  assert.equal(u.lolos, lolos);
+  assert.ok(u.pembagian_waktu.includes("latih 2017-2021"));
 });
