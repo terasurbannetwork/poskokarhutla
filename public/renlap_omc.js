@@ -4,6 +4,13 @@
    Layar tidak menghitung ulang rute; KML dan GPX dibangun dari titik yang sama. Usulan model, bukan perintah terbang (KEPUTUSAN D8). */
 (() => {
   "use strict";
+  /* SB-10: zona banjir ber-id berakhiran -B<huruf>; judul, alasan sasaran, dan nama berkas dari sini. Rute terbang tidak disentuh. */
+  const banjir = z => /^\d{10}-B[A-E]$/.test(z.id);
+  const namaSasaran = (d, z) => (z.alasan?.sasaran || []).map(k => (d?.sasaran || []).find(s => s.kab === k)?.nama || k);
+  const judulRute = (d, z) => banjir(z) ? `Rute OMC banjir zona ${z.huruf}: cegat awan di hulu angin, sasaran ${namaSasaran(d, z).join(", ") || "belum tercatat"}`
+    : `Rute OMC zona ${z.huruf}: ${[z.kota, z.prov].filter(Boolean).join(", ")}`;
+  const namaBerkas = z => `Renlap OMC${banjir(z) ? " banjir" : ""} zona ${z.huruf} ${z.id.slice(0, 10)}`;
+  if (typeof document === "undefined") { globalThis.RenlapOmcMurni = {banjir, namaSasaran, judulRute, namaBerkas}; return; }
   const {gpx, bingkai} = window.CitraUbin;
   const $ = s => document.querySelector(s), esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
   const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -31,7 +38,7 @@
   }
 
   function halaman(d, z) {
-    const r = z.rute, ey = `BNPB, rencana operasi modifikasi cuaca, zona semai ${z.huruf}, putaran ECMWF ${putaranTeks(z.id)}`;
+    const r = z.rute, ey = `BNPB, rencana operasi modifikasi cuaca${banjir(z) ? " tujuan banjir (redistribusi awan)" : ""}, zona semai ${z.huruf}, putaran ECMWF ${putaranTeks(z.id)}`;
     const kepala = judul => `<div class="kepala"><div><div class="ey">${esc(ey)}</div><h1>${esc(judul)}</h1></div><div class="per">Jendela terbang<b>${esc(tglPanjang(z.jendela[0]))}, ${esc(z.jendela_teks)}</b></div></div>`;
     const j = z.jumlah || {}, bh = z.bahan || {}, base = z.base || {};
     const kpi = `<div class="kpi"><div class="o"><b>${esc(z.ketinggian?.kaki ? `${ang(z.ketinggian.kaki)} kaki` : "–")}</b><span>ketinggian semai, ${esc(z.ketinggian?.kaki ? "dasar awan perkiraan" : z.ketinggian?.teks || "belum tersedia")}</span></div>`
@@ -45,9 +52,12 @@
       ["Base", `${esc(base.nama || "–")}${base.icao ? ` (${esc(base.icao)})` : ""}, ${ang(base.km || 0)} km${base.terdaftar ? "" : ", bandara terdekat, belum terdaftar sebagai base"}`],
       ["Angin pengarah", z.masukan ? `dari ${esc(z.masukan.angin_dari)}, ${ang(z.masukan.angin_kmj)} km/j; kaki tabur melintang angin` : "–"],
       ["Awan", z.masukan ? `tutupan awan rendah ${ang(z.masukan.lcc * 100)}%, MUCAPE ${ang(z.masukan.mucape)} J/kg, cairan awan ${ang(z.masukan.tclw, 2)} kg/m², suhu dasar awan ${ang(z.masukan.tdasar, 1)} °C` : "–"],
-      ["Skor zona", `${ang(z.skor, 2)} (awan ${ang(z.Q, 2)}, api ${ang(z.D, 2)}, jarak kota ${ang(z.T, 2)})`],
+      ...(banjir(z) ? [["Sasaran yang dilindungi", esc(namaSasaran(d, z).join(", ") || "belum tercatat")],
+        ...["C", "H", "P", "B"].filter(k => typeof z.alasan?.[k] === "string" && z.alasan[k]).map(k => [`Alasan ${k}`, esc(z.alasan[k])]),
+        ["Skor zona", `${ang(z.skor, 2)} (awan ${ang(z.Q, 2)}, hanyut ke sasaran ${ang(z.H, 2)}, paparan ${ang(z.P, 2)})`]]
+        : [["Skor zona", `${ang(z.skor, 2)} (awan ${ang(z.Q, 2)}, api ${ang(z.D, 2)}, jarak kota ${ang(z.T, 2)})`]]),
     ].map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join("");
-    const h1 = `<section class="hal">${kepala(`Rute OMC zona ${z.huruf}: ${[z.kota, z.prov].filter(Boolean).join(", ")}`)}${kpi}<div class="dua"><div><div class="peta tinggi">${peta(z)}</div>`
+    const h1 = `<section class="hal">${kepala(judulRute(d, z))}${kpi}<div class="dua"><div><div class="peta tinggi">${peta(z)}</div>`
       + `<div class="leg"><span><i class="n"></i>Base</span><span><i class="o"></i>Check point</span><span style="color:#f97316">━ kaki tabur</span><span class="biru">━ jalur terbang</span><span class="biru">◆ titik hujan perkiraan</span><span>◌ zona semai</span></div></div>`
       + `<div class="tumpuk"><div class="kartu"><h3>Sasaran dan muatan</h3><dl class="sasaran">${sasaran}</dl></div>`
       + `<div class="kartu"><h3>Pola tabur di tempat semai</h3><div class="peta sisip">${peta(z, true, 1100, 520)}</div></div>`
@@ -57,7 +67,7 @@
     let kum = 0;
     const tLeg = r.leg.map((g, i) => { kum += g.menit; return `<tr class="${g.tabur ? "tabur" : ""}"><td>${i + 1}</td><td class="nw"><b>${esc(g.dari)}</b> ke <b>${esc(g.ke)}</b></td><td>${g.tabur ? "tabur bahan" : i === 0 ? "berangkat" : i === r.leg.length - 1 ? "kembali" : "pindah"}</td><td class="n"><b>${hal3(g.haluan_benar)}</b></td><td class="n">${hal3(g.haluan_magnet)}</td><td class="n">${ang(g.nm, 1)}</td><td class="n">${ang(g.menit)} mnt</td><td class="n">+${ang(kum)} mnt</td><td class="n">${g.kaki ? `${ang(g.kaki)} kaki` : "–"}</td></tr>`; }).join("")
       + `<tr><td></td><td><b>Total</b></td><td></td><td></td><td></td><td class="n"><b>${ang(r.nm, 1)}</b></td><td class="n"><b>${ang(r.menit)} mnt</b></td><td></td><td></td></tr>`;
-    const h2 = `<section class="hal">${kepala(`Flight plan OMC zona ${z.huruf}: leg, haluan, dan jarak`)}<div class="tumpuk"><div class="kartu"><h3>Tabel leg untuk pilot</h3><table><thead><tr><th>Leg</th><th>Dari ke</th><th>Kegiatan</th><th>Haluan sejati</th><th>Haluan magnet</th><th>NM</th><th>Waktu</th><th>Kumulatif</th><th>Ketinggian</th></tr></thead><tbody>${tLeg}</tbody></table></div>`
+    const h2 = `<section class="hal">${kepala(`Flight plan OMC${banjir(z) ? " banjir" : ""} zona ${z.huruf}: leg, haluan, dan jarak`)}<div class="tumpuk"><div class="kartu"><h3>Tabel leg untuk pilot</h3><table><thead><tr><th>Leg</th><th>Dari ke</th><th>Kegiatan</th><th>Haluan sejati</th><th>Haluan magnet</th><th>NM</th><th>Waktu</th><th>Kumulatif</th><th>Ketinggian</th></tr></thead><tbody>${tLeg}</tbody></table></div>`
       + `<div class="kartu"><h3>Check point</h3><table><thead><tr><th></th><th>Check point</th><th>Koordinat (DMS)</th><th>Google Maps</th><th>Radial/jarak VOR</th></tr></thead><tbody>${tCp}</tbody></table></div><div class="kartu"><h3>Catatan</h3><ul><li>Usulan dari model prakiraan ECMWF IFS 0,1 derajat, bukan perintah terbang; keputusan pada posko TMC dan BMKG.</li>`
       + `<li>Semai higroskopis di dasar awan dekat arus naik. Peluang hujan bergantung pada awan nyata saat terbang; periksa citra Himawari sebelum berangkat.</li>`
       + `<li>Pola tabur dua kaki ${ang(r.leg[2].nm)} NM berjarak ${ang(r.leg[3].nm)} NM adalah bawaan sementara sampai BMKG memberi pola baku.</li></ul></div></div>`
@@ -66,7 +76,7 @@
   }
 
   function unduh(z, f) {
-    const t = z.rute.cp, nama = `Renlap OMC zona ${z.huruf} ${z.id.slice(0, 10)}`, x = s => esc(s);
+    const t = z.rute.cp, nama = namaBerkas(z), x = s => esc(s);
     const isi = f === "gpx"
       ? `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Centurisk97" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${x(nama)}</name></metadata>\n${t.slice(0, -1).map(c => `<wpt lat="${c.lat}" lon="${c.lon}"><name>${x(c.kode)} ${x(c.nama)}</name></wpt>`).join("\n")}\n<rte><name>${x(nama)}</name>${t.map(c => `<rtept lat="${c.lat}" lon="${c.lon}"><name>${x(c.kode)}</name></rtept>`).join("")}</rte></gpx>`
       : `<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${x(nama)}</name>\n${t.slice(0, -1).map(c => `<Placemark><name>${x(c.kode)} ${x(c.nama)}</name><Point><coordinates>${c.lon},${c.lat},0</coordinates></Point></Placemark>`).join("\n")}\n<Placemark><name>Rute</name><LineString><coordinates>${t.map(c => `${c.lon},${c.lat},0`).join(" ")}</coordinates></LineString></Placemark></Document></kml>`;
@@ -76,9 +86,9 @@
 
   async function mulai() {
     const q = new URLSearchParams(location.search), minta = q.get("zona") || "";
-    const putaran = /^\d{10}-[A-E]$/.test(minta) ? minta.slice(0, 10) : null;
+    const putaran = /^\d{10}-B?[A-E]$/.test(minta) ? minta.slice(0, 10) : null, sfx = /^\d{10}-B/.test(minta) ? "_banjir" : "";
     let d = null;
-    for (const u of [putaran && `/api/operasi/semai/berkas/arsip/${putaran}.json`, "/api/operasi/semai/berkas/semai.json"].filter(Boolean)) {
+    for (const u of [putaran && `/api/operasi/semai/berkas/arsip/${putaran}${sfx}.json`, `/api/operasi/semai/berkas/semai${sfx}.json`].filter(Boolean)) {
       const r = await fetch(u, {credentials: "same-origin", cache: "no-cache"}).catch(() => null);
       if (r?.ok) { d = await r.json(); break; }
       if (r?.status === 403) { $("#pesan").textContent = "Renlap OMC hanya untuk akun Centurisk97, staf berperan, atau moderator. Masuk dulu lewat /admin/masuk."; return; }
@@ -88,7 +98,7 @@
     const sel = $("#zona");
     sel.innerHTML = zs.map(z => `<option value="${esc(z.id)}">${esc(z.huruf)}, ${esc(z.prov || "")}, skor ${ang(z.skor, 2)}</option>`).join("");
     const tampil = id => { const z = zs.find(x => x.id === id) || zs[0]; sel.value = z.id; history.replaceState(null, "", `?zona=${encodeURIComponent(z.id)}`);
-      $("#info").textContent = `${putaranTeks(z.id)}, ${z.jendela_teks}`; $("#isi").innerHTML = halaman(d, z); $("#pesan").hidden = true; document.title = `Renlap OMC zona ${z.huruf}, Centurisk97`; return z; };
+      $("#info").textContent = `${putaranTeks(z.id)}, ${z.jendela_teks}`; $("#isi").innerHTML = halaman(d, z); $("#pesan").hidden = true; document.title = `Renlap OMC${banjir(z) ? " banjir" : ""} zona ${z.huruf}, Centurisk97`; return z; };
     let z = tampil(minta);
     sel.addEventListener("change", () => { z = tampil(sel.value); });
     $("#kml").addEventListener("click", () => unduh(z, "kml"));
