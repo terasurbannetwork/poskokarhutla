@@ -14,7 +14,7 @@ Tabel 1.1. Indikator ada atau tidaknya dampak (langkah 2 pada Gambar 1.1)
 
 | Dampak pada | Isian yang diperiksa | Ada dampak apabila |
 | --- | --- | --- |
-| Manusia | • Meninggal<br>• Hilang<br>• Luka berat<br>• Luka ringan<br>• Mengungsi, termasuk yang dievakuasi sebelum dampak terjadi<br>• Terdampak | Paling sedikit satu orang |
+| Manusia | • Meninggal<br>• Hilang<br>• Luka berat<br>• Luka ringan<br>• Mengungsi, tanpa evakuasi pencegahan<br>• Terdampak | Paling sedikit satu orang |
 | Rumah | • Rusak berat<br>• Rusak sedang<br>• Tidak dapat dihuni sementara<br>• Rusak ringan<br>• Terendam | Paling sedikit satu unit |
 | Fasilitas | • Fasilitas publik rusak<br>• Jalan rusak<br>• Jembatan rusak | Paling sedikit satu unit, atau jalan rusak lebih dari nol kilometer |
 | Layanan vital | • Listrik<br>• Air bersih<br>• Telekomunikasi<br>• Bahan bakar<br>• Transportasi umum<br>• Rumah sakit rujukan<br>• Jalan dan jembatan utama | Paling sedikit satu layanan terganggu |
@@ -43,7 +43,7 @@ Tabel 1.3. Kriteria kejadian bencana
 | Huruf | Kriteria | Cara mengukur |
 | --- | --- | --- |
 | a | 1 orang meninggal atau hilang | Meninggal dan hilang dijumlahkan; cara yang sama dipakai pada batas kelas intensif nomor 1 (Tabel 4.1) |
-| b | 50 orang terdampak, luka, atau mengungsi | Ketiganya dijumlahkan dari laporan yang sama, setiap orang dihitung satu kali; pengungsi yang dievakuasi sebelum dampak terjadi ikut dihitung |
+| b | 50 orang terdampak, luka, atau mengungsi | Ketiganya dijumlahkan dari laporan yang sama, setiap orang dihitung satu kali; evakuasi pencegahan tidak dihitung, kecuali evakuasi dari radius bahaya gunung api |
 | c | 5 unit rumah, fasilitas publik, dan/atau jembatan rusak | • Rumah, fasilitas publik, dan jembatan dijumlahkan<br>• Dihitung: rusak berat, rusak sedang, tidak dapat dihuni sementara, dan rusak ringan, setiap tingkat dicatat terpisah<br>• Tidak dihitung: rumah terendam dan jalan, karena jalan diukur dalam kilometer<br>• Fasilitas publik: satuan pendidikan, fasilitas pelayanan kesehatan, rumah ibadat, kantor pemerintah, dan pasar |
 | d | 1 hektare luas terbakar terverifikasi (karhutla), atau 1 hektare sawah atau kebun puso (jenis lain) | Luas terbakar dari pengukuran lapangan atau citra resolusi tinggi, bukan dari jumlah *hotspot*; luas puso dari dinas pertanian |
 | e | Permintaan bantuan nasional oleh pemerintah daerah | Surat bernomor dan bertanggal yang menyebut kejadian tersebut |

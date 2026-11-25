@@ -198,10 +198,10 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
 
   <div>
     <div class="pil">Cara menentukan</div>
-    <h2>Tiga keputusan berurutan, lalu kelasnya<small>Petugas tidak perlu memutuskan apakah gempa bermagnitudo 5,8 merupakan bencana. Gempa tersebut dicatat sebagai peristiwa ancaman, lalu dampaknya diperiksa di setiap kabupaten/kota.</small></h2>
+    <h2>Tiga keputusan berurutan, lalu kelasnya<small>Gempa bermagnitudo 5,8 dicatat dulu sebagai peristiwa ancaman, lalu dampaknya diperiksa di setiap kabupaten/kota.</small></h2>
   </div>
   <div class="alur">
-    <div class="lk"><span class="no">1</span><b>Ada ancaman dan dampak?</b>Informasi BMKG, PVMBG, pemantauan <i>hotspot</i>, atau laporan lapangan menunjukkan salah satu dari sembilan jenis bencana, dan paling sedikit satu angka dampak lebih dari nol.<div class="tidak">Tanpa dampak: dicatat sebagai peristiwa ancaman dan dipantau. Masih ada isian belum didata: menunggu data.</div></div>
+    <div class="lk"><span class="no">1</span><b>Ada ancaman dan dampak?</b>Salah satu dari sembilan jenis bencana terjadi dan paling sedikit satu angka dampak lebih dari nol.<div class="tidak">Tanpa dampak: dipantau sebagai peristiwa ancaman.</div></div>
     <div class="pn">›</div>
     <div class="lk"><span class="no">2</span><b>Kejadian yang sama?</b>Laporan sejenis di kabupaten/kota yang sama dan masih dalam batas kejadian yang sedang berlangsung digabungkan, lalu angkanya diperbarui.<div class="tidak">Di luar batas: dibuka sebagai kejadian baru.</div></div>
     <div class="pn">›</div>
@@ -216,7 +216,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
   </div>
   <div class="g3">
     <div class="syarat"><span class="n">a</span><div><b>1 orang meninggal atau hilang.</b> Korban meninggal dan korban hilang dijumlahkan.</div></div>
-    <div class="syarat"><span class="n">b</span><div><b>50 orang terdampak, luka, atau mengungsi.</b> Setiap orang dihitung satu kali; evakuasi sebelum dampak ikut dihitung.</div></div>
+    <div class="syarat"><span class="n">b</span><div><b>50 orang terdampak, luka, atau mengungsi.</b> Setiap orang dihitung satu kali; evakuasi pencegahan tidak dihitung.</div></div>
     <div class="syarat"><span class="n">c</span><div><b>5 rumah, fasilitas publik, atau jembatan rusak.</b> Semua tingkat kerusakan dihitung dan dicatat terpisah; rumah terendam dan jalan tidak dihitung.</div></div>
     <div class="syarat"><span class="n">d</span><div><b>1 hektare.</b> Luas terbakar terverifikasi untuk karhutla; sawah atau kebun puso untuk bencana lain.</div></div>
     <div class="syarat"><span class="n">e</span><div><b>Permintaan bantuan nasional.</b> Dibuktikan dengan surat yang menyebut kejadian tersebut.</div></div>
@@ -260,7 +260,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
       <dt>Satu kejadian</dt><dd>Satu gempa utama. Susulan yang merusak selama masa tanggap darurat termasuk kejadian yang sama.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-tsunami"/></svg>Tsunami<i>108</i></div><dl>
       <dt>Tanda ancaman</dt><dd>Peringatan InaTEWS: Awas (lebih dari 3 m), Siaga (0,5 sampai 3 m), Waspada (kurang dari 0,5 m).</dd>
-      <dt>Menjadi bencana apabila</dt><dd>Air laut menggenangi daratan dan menimbulkan dampak. Peringatan tanpa genangan bukan tsunami; pengungsinya dicatat pada catatan kejadian pemicu, atau sebagai pemantauan bila pemicu tidak berdampak lain di kabupaten itu.</dd>
+      <dt>Menjadi bencana apabila</dt><dd>Air laut menggenangi daratan dan menimbulkan dampak. Peringatan tanpa genangan bukan tsunami; pengungsinya dicatat sebagai evakuasi pencegahan, tidak dihitung.</dd>
       <dt>Satu kejadian</dt><dd>Satu rangkaian gelombang dari satu sumber; dicatat sebagai kejadian terpicu bila pemicunya, misalnya gempa, tercatat.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-banjir"/></svg>Banjir<i>101</i></div><dl>
       <dt>Tanda ancaman</dt><dd>Peringatan hujan sangat lebat (100 sampai 150 mm per hari) atau ekstrem (lebih dari 150 mm), status siaga pos duga air.</dd>
@@ -280,7 +280,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
       <dt>Satu kejadian</dt><dd>Gelombang tinggi dicatat per episode. Abrasi bertahap dicatat per kabupaten/kota per tahun. Banjir rob dicatat sebagai banjir.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-gunung"/></svg>Erupsi gunung api<i>109</i></div><dl>
       <dt>Tanda ancaman</dt><dd>Kenaikan level PVMBG (I Normal, II Waspada, III Siaga, IV Awas) dan VONA untuk penerbangan.</dd>
-      <dt>Menjadi bencana apabila</dt><dd>Erupsi, hujan abu, awan panas, atau lahar berdampak. Pengungsian sebelum dampak sebanyak 50 orang juga memenuhi kriteria.</dd>
+      <dt>Menjadi bencana apabila</dt><dd>Erupsi, hujan abu, awan panas, atau lahar berdampak. Evakuasi 50 orang dari radius bahaya PVMBG juga memenuhi kriteria.</dd>
       <dt>Satu kejadian</dt><dd>Satu episode sejak erupsi berdampak pertama sampai level turun ke Waspada. Lahar sesudahnya menjadi kejadian baru yang ditautkan.</dd></dl></div>
     <div class="bh"><div class="kp"><svg class="ik"><use href="#i-kering"/></svg>Kekeringan<i>105</i></div><dl>
       <dt>Tanda ancaman</dt><dd>Peringatan dini kekeringan BMKG tingkat Waspada atau lebih tinggi, yaitu hari tanpa hujan 21 hari atau lebih atau SPI -1,0 atau kurang.</dd>
@@ -303,7 +303,7 @@ ol.cek li::before{content:counter(c);flex:none;width:4.6mm;height:4.6mm;border-r
   <div class="g2" style="gap:2.4mm">
     <div class="batas"><div class="bn">30<small>orang</small></div><div><b>Korban meninggal dan hilang</b><span class="kecil">Batas umum untuk semua jenis bencana; angka UNDRR GAR 2015, hilang ikut dihitung.</span></div></div>
     <div class="batas"><div class="bn">600<small>unit</small></div><div><b>Rumah rusak berat terbobot</b><span class="kecil">Rusak berat ditambah setengah rusak sedang dan sepertiga rumah yang untuk sementara tidak dapat dihuni.</span></div></div>
-    <div class="batas"><div class="bn">1.000<small>orang</small></div><div><b>Pengungsi karena longsor</b><span class="kecil">Termasuk evakuasi sebelum longsor dan relokasi.</span></div></div>
+    <div class="batas"><div class="bn">1.000<small>orang</small></div><div><b>Pengungsi karena longsor</b><span class="kecil">Termasuk relokasi; evakuasi pencegahan tidak dihitung.</span></div></div>
     <div class="batas"><div class="bn">15%<small>penduduk</small></div><div><b>Kesulitan air minum</b><span class="kecil">Kekeringan; kurang dari 20 liter per orang per hari selama lebih dari 15 hari.</span></div></div>
     <div class="batas"><div class="bn">50%<small>luas tanam</small></div><div><b>Tanaman pangan puso atau rusak berat</b><span class="kecil">Kekeringan; lebih dari 50 persen luas tanam.</span></div></div>
     <div class="batas"><div class="bn">1.000<small>hektare</small></div><div><b>Hutan dan lahan terbakar</b><span class="kecil">Karhutla, satu kejadian, terverifikasi; untuk savana, semak, dan padang rumput 8.000 hektare.</span></div></div>
