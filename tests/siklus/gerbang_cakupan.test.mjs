@@ -21,6 +21,7 @@ test('uji server dan layar yang didaftarkan ada dan menyebut rutenya', () => {
   for (const [k, v] of Object.entries(C.rute)) {
     assert.ok(v.server && existsSync(join(ROOT, v.server)), `${k}: uji server tidak ada`);
     assert.ok(baca(v.server).includes(statis(k)), `${k}: ${v.server} tidak menyebut rutenya`);
+    for (const f of v.server_tambahan ?? []) assert.ok(existsSync(join(ROOT, f)) && baca(f).includes(statis(k)), `${k}: uji server tambahan ${f} tidak ada atau tidak menyebut rutenya`);
     for (const f of v.klien) assert.ok(existsSync(join(ROOT, f)) && baca(f).includes(statis(k)), `${k}: ${f} tidak menyebut rutenya`);
   }
 });
