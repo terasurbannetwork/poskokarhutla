@@ -428,6 +428,9 @@ def uji_tolok_ukur(lab=False):
         gal = abs(R - rata_lab) / rata_lab if rata_lab else None
         lap[kunci] = {"H_d": H, "runup_model_d": R, "runup_lab_rerata_d": rata_lab, "n_titik_lab": n, "jendela_H_d": lebar,
                       "galat_relatif": gal, "toleransi": tol, "waktu_detik": o["waktu_detik"], "memori_mb": o["memori_mb_puncak"]}
+        if kunci == "bp04_pecah":   # K9 (pemilik 25 Nov 2026): gelombang pecah di luar cakupan validasi; dilaporkan, bukan gerbang
+            lap[kunci]["cakupan"] = "di luar cakupan (K9): mesin tanpa model pecah"
+            continue
         if gal is None or gal > tol:
             gagal.append("%s run-up %.4f vs lab %s galat %s" % (kunci, R, rata_lab, gal))
     return lap, gagal
