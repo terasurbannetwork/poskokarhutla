@@ -8,7 +8,7 @@
 
 1. 30 orang meninggal dan hilang;
 2. 600 rumah rusak berat terbobot, yaitu rumah rusak berat ditambah setengah rumah rusak sedang dan sepertiga rumah yang untuk sementara tidak dapat dihuni;
-3. untuk tanah longsor, 1.000 orang mengungsi, termasuk yang dievakuasi sebelum longsor dan yang direlokasi;
+3. untuk tanah longsor, 1.000 orang mengungsi atau direlokasi, tanpa evakuasi pencegahan;
 4. untuk kekeringan, 15 persen penduduk kabupaten/kota kesulitan air minum selama lebih dari 15 hari;
 5. untuk kekeringan, lebih dari 50 persen luas tanaman pangan puso atau rusak berat;
 6. untuk karhutla, 1.000 hektare hutan dan lahan selain savana, semak, dan padang rumput terbakar dalam satu kejadian; atau
@@ -23,7 +23,7 @@ Kejadian bencana lainnya tergolong bencana ekstensif. Di tingkat nasional, batas
 1. **Menetapkan Rancangan Juklak sebagai pengganti Juklak 7/2023 setelah uji coba.** Ketentuan Rancangan Juklak tentang definisi, cara mengukur kriteria, batas satu kejadian, identitas kejadian, kelas, daftar data, dan tata kelola data didukung oleh literatur dan praktik internasional sebagaimana diuraikan dalam Bab 3. Ketentuan yang disusun dalam kajian ini tanpa padanan langsung, seperti tanda selesainya kejadian, batas waktu karhutla, dan batas kelas di tingkat nasional, ditandai dalam Bab 3 dan belum diuji dengan data Indonesia, sehingga perlu diuji pada uji coba.
 2. **Menghitung kelas intensif dan ekstensif secara otomatis.** Kelas dihitung dari angka dampak dalam sistem pendataan kejadian bencana, indikator penentunya ditulis di samping kelas, dan batasnya ditinjau paling lambat satu tahun setelah Rancangan Juklak berlaku.
 3. **Memakai formulir umum dan lembar khusus.** Formulir dalam Lampiran B dan Lampiran C, yang menjadi Lampiran I dan Lampiran III Rancangan Juklak, dipasang pada formulir daring BPBD. Formulir ditambah isian rumah yang untuk sementara tidak dapat dihuni, lama kesulitan air minum, dan luas terbakar menurut tutupan lahan, karena ketiganya diperlukan untuk menghitung kelas. Isian yang tersedia di sumber resmi, seperti magnitudo, *hotspot*, curah hujan, dan level aktivitas gunung api, ditarik secara otomatis.
-4. **Menerapkan standar ini pada seluruh pencatatan kejadian baru.** Data kejadian dikumpulkan dengan standar ini sejak Rancangan Juklak berlaku, dan tahun mulai berlakunya dicatat dalam metadata sebagai titik perubahan metode, sehingga data sebelum dan sesudahnya tidak dibandingkan begitu saja.
+4. **Menerapkan standar ini pada seluruh pencatatan kejadian baru.** Data kejadian dikumpulkan dengan standar ini sejak Rancangan Juklak berlaku, dan tahun mulai berlakunya dicatat dalam metadata sebagai titik perubahan metode, sehingga data sebelum dan sesudahnya tidak dibandingkan begitu saja. Data sejak 2023 dihitung ulang dengan standar ini sepanjang isiannya tersedia, dan selama 12 bulan pertama angka menurut aturan lama dan aturan baru disajikan berdampingan.
 5. **Melatih petugas.** BNPB menyusun modul pelatihan singkat bagi Pusdalops dan Tim Reaksi Cepat BPBD tentang tiga keputusan penentuan kejadian, pengisian formulir, dan pemeriksaan mutu data.
 
 ## 5.3 Tahapan penerapan

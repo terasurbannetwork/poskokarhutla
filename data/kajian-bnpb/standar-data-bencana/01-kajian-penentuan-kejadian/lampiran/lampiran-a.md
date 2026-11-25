@@ -75,7 +75,7 @@ Batas waktu: 24–72 jam pertama.
 
 Batas waktu: paling sedikit satu kali sehari selama kejadian berlangsung, atau sesuai dengan kesepakatan pos komando.
 
-1. Pos komando atau Pusdalops BPBD memperbarui angka dampak tanpa menjumlahkan angka antarhari. Korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian.
+1. Pos komando atau Pusdalops BPBD memperbarui angka dampak tanpa menjumlahkan angka antarhari. Korban meninggal, korban hilang, dan kerusakan memakai angka terakhir, sedangkan korban luka, terdampak, dan pengungsi memakai angka terbanyak selama kejadian dari laporan terverifikasi. Angka terbanyak dapat diturunkan melalui koreksi, dan alasannya dicatat.
 2. Angka dari hari yang berbeda tidak dijumlahkan.
 3. Apabila angka turun, misalnya karena orang hilang ditemukan selamat, alasan penurunannya dicatat.
 4. Kelas dihitung ulang. Apabila kelas naik menjadi intensif, Pusdalops BPBD memberi tahu Pusdalops BNPB pada hari yang sama.
@@ -89,7 +89,8 @@ Batas waktu: paling lambat pada verifikasi bulanan berikutnya setelah kejadian s
 2. BPBD kabupaten/kota melengkapi isian yang masih berstatus "belum didata" serta lembar khusus dengan berkoordinasi bersama perangkat daerah terkait.
 3. BPBD provinsi memeriksa kelengkapan, kelogisan, dan kemungkinan penghitungan ganda, termasuk untuk kejadian lintas kabupaten/kota di provinsinya.
 4. Pusdatinkom memastikan tautan nomor induk kejadian, memutuskan penggabungan atau pemisahan yang masih diragukan, dan mengesahkan kelas akhir.
-5. Data dinyatakan statis setelah diverifikasi, dibekukan setiap triwulan, dan dirilis setiap tahun dengan nomor versi dan tanggal rilis. Koreksi setelah itu dicatat sebagai versi baru dan tidak menimpa angka lama.
+5. Pusdatinkom menutup kejadian yang belum dinyatakan selesai oleh BPBD kabupaten/kota apabila tidak ada pemutakhiran selama satu bulan dan hasil pemantauan menunjukkan dampak fisik sudah berhenti. Kejadian tersebut diberi tanda ditutup walidata, dan tanggal selesai dikosongkan sampai dikonfirmasi BPBD kabupaten/kota (Rancangan Juklak Bab III huruf B angka 2).
+6. Data dinyatakan statis setelah diverifikasi, dibekukan setiap triwulan, dan dirilis setiap tahun dengan nomor versi dan tanggal rilis. Koreksi setelah itu dicatat sebagai versi baru dan tidak menimpa angka lama.
 
 ## A.5 Pemeriksaan mutu data
 

@@ -69,7 +69,7 @@ Tabel 5.4. Tenggat pengumpulan data
 | Hasil awal *rapid assessment* | Paling lambat 72 jam setelah kejadian diketahui |
 | Nomor induk kejadian | Paling lambat 72 jam setelah kejadian diketahui, bersamaan dengan hasil awal *rapid assessment* |
 | Pemutakhiran | Paling sedikit satu kali sehari selama kejadian berlangsung |
-| Penutupan | Paling lambat pada verifikasi bulanan berikutnya |
+| Penutupan | Paling lambat pada verifikasi bulanan berikutnya; apabila BPBD belum menyatakan selesai, tidak ada pemutakhiran sebulan, dan dampak fisik sudah berhenti, walidata menutupnya dengan tanda ditutup walidata |
 | Verifikasi, pembekuan, rilis | Setiap bulan, setiap triwulan, dan setiap tahun |
 
 Sumber: Rancangan Juklak Bab III huruf B dan huruf D. Waktu diketahui adalah saat BPBD pertama kali mengetahui kejadian (Rancangan Juklak Lampiran I isian 2.3).

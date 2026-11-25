@@ -21,11 +21,11 @@ Tabel 3.2. Aturan menghitung kejadian, korban, dan kerusakan
 | Jumlah kejadian | Nasional dari nomor induk kejadian; provinsi dari provinsi yang punya catatan kabupaten/kota memenuhi kriteria; kabupaten/kota dari KIB yang memenuhi kriteria pada Tabel 1.3. Ketiganya ukuran berbeda, jangan dijumlahkan atau dibandingkan |
 | Satu orang, satu kategori | Urutan prioritas: meninggal, hilang, luka berat, luka ringan, mengungsi, terdampak |
 | Angka terakhir | Meninggal, hilang, dan kerusakan |
-| Angka terbanyak selama kejadian | Luka, terdampak, dan pengungsi |
+| Angka terbanyak selama kejadian | Luka, terdampak, dan pengungsi, hanya dari laporan terverifikasi; boleh diturunkan lewat koreksi yang alasannya dicatat |
 | Antarhari | Laporan harian untuk kabupaten/kota yang sama tidak dijumlahkan, karena setiap laporan memuat keadaan kumulatif. Contoh: 120 pengungsi hari pertama dan 90 hari kedua dicatat 120, bukan 210. Yang dijumlahkan hanya catatan kabupaten/kota yang berbeda untuk angka nasional |
 | Korban hilang ditemukan | Pindah ke meninggal apabila ditemukan meninggal; keluar dari hilang apabila selamat, alasannya dicatat |
 | Kematian tidak langsung | Dicatat terpisah, tidak dihitung dalam kriteria pada Tabel 1.3 maupun batas kelas pada Tabel 4.1 |
-| Kejadian lintas tahun | Dicatat pada tahun tanggal mulai |
+| Kejadian lintas tahun | Dihitung pada tahun tanggal mulai kejadian nasional, termasuk semua KIB-nya; untuk laporan Kerangka Sendai, korban meninggal dan hilang juga dicatat menurut tahun terjadinya |
 
 Sumber: Rancangan Juklak Bab II huruf B dan huruf E.
 
@@ -37,7 +37,8 @@ Tabel 3.3. Kategori orang menurut urutan prioritas
 | Hilang | Tidak ditemukan atau tidak diketahui keberadaannya setelah kejadian |
 | Luka berat | Luka atau sakit karena kejadian dan memerlukan rawat inap |
 | Luka ringan | Luka atau sakit karena kejadian dan cukup rawat jalan |
-| Mengungsi | Keluar dari tempat tinggalnya untuk waktu yang belum pasti, termasuk yang dievakuasi sebelum dampak terjadi |
+| Mengungsi | Keluar dari tempat tinggalnya untuk waktu yang belum pasti karena dampak bencana |
+| Evakuasi pencegahan | Dipindahkan karena peringatan sebelum dampak terjadi; dicatat terpisah dan tidak dihitung dalam kriteria maupun kelas, kecuali evakuasi dari radius bahaya gunung api |
 | Terdampak | Menderita kerusakan harta benda atau kehilangan penghidupan, tetapi masih menempati tempat tinggalnya; untuk kekeringan, yang membutuhkan bantuan air bersih |
 | Terancam | Berada di wilayah terancam tetapi belum terkena dampak; tidak dihitung sebagai dampak |
 

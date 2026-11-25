@@ -15,7 +15,7 @@ Tabel 6.1. Daftar periksa petugas
 | Pemeriksaan kriteria | 9 | Mengenai beberapa kabupaten/kota: periksa juga jumlah nasional | Tabel 1.4 |
 | Pemeriksaan kriteria | 10 | Setiap orang dihitung satu kali pada satu kategori | Tabel 3.2 dan Tabel 3.3 |
 | Pemutakhiran harian | 11 | Pakai KIB yang sama untuk kabupaten/kota yang sama | Tabel 1.5 nomor 5 |
-| Pemutakhiran harian | 12 | Angka terakhir untuk meninggal, hilang, kerusakan; angka terbanyak untuk luka, terdampak, pengungsi; jangan dijumlahkan antarhari | Tabel 3.2 |
+| Pemutakhiran harian | 12 | Angka terakhir untuk meninggal, hilang, kerusakan; angka terbanyak terverifikasi untuk luka, terdampak, pengungsi; jangan dijumlahkan antarhari | Tabel 3.2 |
 | Pemutakhiran harian | 13 | Bedakan nilai, nihil, dan belum didata | Tabel 5.1 nomor 2 |
 | Pemutakhiran harian | 14 | Isi lembar data khusus | Tabel 5.3 |
 | Pemutakhiran harian | 15 | Periksa ulang kriteria dan kelas setiap kali angka berubah, lalu tulis indikator penentunya | Tabel 1.3, Tabel 4.1, Tabel 4.2, dan Tabel 4.3 |

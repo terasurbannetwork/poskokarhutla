@@ -10,7 +10,7 @@ Tabel 4.1. Batas kelas intensif
 | ---: | --- | --- | --- | --- |
 | 1 | Umum | Semua jenis | Korban meninggal dan hilang, dijumlahkan | 30 orang atau lebih |
 | 2 | Umum | Semua jenis | Rumah rusak berat terbobot (Tabel 4.2) | 600 unit atau lebih |
-| 3 | Khusus | Tanah longsor | Pengungsi karena longsor, termasuk yang dievakuasi sebelum longsor dan yang direlokasi | 1.000 orang atau lebih |
+| 3 | Khusus | Tanah longsor | Pengungsi karena longsor dan yang direlokasi; evakuasi pencegahan tidak dihitung | 1.000 orang atau lebih |
 | 4 | Khusus | Kekeringan | Penduduk yang kesulitan air minum, yaitu memakai air kurang dari 20 liter per orang per hari atau harus mengambil air jauh lebih jauh daripada biasanya, selama lebih dari 15 hari | 15 persen penduduk kabupaten/kota atau lebih |
 | 5 | Khusus | Kekeringan | Luas tanaman pangan puso atau rusak berat dibandingkan dengan luas tanam musim tersebut | lebih dari 50 persen |
 | 6 | Khusus | Karhutla | Luas terbakar terverifikasi pada hutan dan lahan selain savana, semak, dan padang rumput, dalam satu kejadian | 1.000 hektare atau lebih |
@@ -51,10 +51,11 @@ Tabel 4.3. Aturan menetapkan kelas
 | 1 | Tingkat penetapan | Kelas ditetapkan untuk setiap catatan kabupaten/kota dan untuk kejadian nasional |
 | 2 | Kelas nasional | Intensif apabila jumlah dampak semua kabupaten/kota mencapai batas nomor 1, 2, 3, 6, atau 7 pada Tabel 4.1, atau salah satu kabupaten/kotanya intensif. Batas nomor 4 dan 5 hanya untuk kabupaten/kota |
 | 3 | Indikator penentu | Ditulis di samping kelas, misalnya "intensif (rumah rusak berat terbobot 690 unit)" |
-| 4 | Hitung ulang | Setiap kali angka diperbarui sesuai dengan aturan angka pada Tabel 3.2; kelas akhir ditetapkan walidata bencana setelah verifikasi |
+| 4 | Hitung ulang | Setiap kali angka diperbarui sesuai dengan aturan angka pada Tabel 3.2; kelas akhir ditetapkan walidata bencana setelah verifikasi; nilai yang selisihnya dengan batas tidak lebih dari 10 persen diperiksa ulang dulu |
 | 5 | Kerugian rupiah | Tidak dipakai untuk menentukan kelas |
 | 6 | Status keadaan darurat | Bukan penentu kelas; dicatat sebagai keterangan di samping kelas |
 | 7 | Asap karhutla | Jumlah hari dengan ISPU kategori berbahaya (301 atau lebih) dicatat sebagai keterangan, bukan penentu kelas |
+| 8 | Bukan dasar dana | Kelas tidak menjadi syarat, penentu, atau dasar penyaluran dana maupun bantuan |
 
 Sumber: Rancangan Juklak Bab II huruf F.
 
