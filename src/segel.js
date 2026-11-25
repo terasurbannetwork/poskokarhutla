@@ -5,7 +5,7 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanSegel} from "./admin_halaman.js";
 import {stafPeran} from "./staf.js";
 import {laju} from "./bnpb.js";
-import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelUntuk, segelIsiLk, segelIsiLkb, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
+import {adaTabelSegel, segelCari, segelDaftar, segelCabut, segelUntuk, segelIsiLk, segelIsiLkb, segelIsiLj, pbDokById, pelakuPbBaca, stmtSegel, batchTulis} from "./hak.js";
 import {kunciBeku} from "./pb_dokumen.js";
 
 export const ABJAD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";   // Crockford base32: tanpa I, L, O, U
@@ -34,12 +34,13 @@ export const statusSegel = ({dicabut, cocok, terbaru}) =>
 /* ---------- SG-05 sampai SG-07: segel ikut batch pembeku (ALUR A1, KEPUTUSAN D3, D13) ----------
    st = pernyataan pembeku; s = sampul {jenis, rujukan, versi, sidik, judul, wilayah, periode, penerbit} (penerbit = nama lembaga, tidak pernah nama staf).
    Baris dummy dan tabel segel yang belum ada: batch berjalan tanpa segel. Segel selalu pernyataan TERAKHIR, jadi indeks hasil pembeku tidak bergeser.
-   Bentrok kode (peluang sangat kecil) = batch gagal utuh; diulang dengan kode baru paling banyak 3 kali (Q9). Kembalian {r: hasil batch, kode | null}. */
-export async function batchBersegel(env, st, s, dummy = 0) {
-  if (dummy || !await adaTabelSegel(env)) return {r: await batchTulis(env, st), kode: null};
+   Bentrok kode (peluang sangat kecil) = batch gagal utuh; diulang dengan kode baru paling banyak 3 kali (Q9). Kembalian {r: hasil batch, kode | null}.
+   o.batch = pengirim batch (bawaan batchTulis; lj memakai ljBatch berpelaku), o.stmt = pembuat pernyataan segel (bawaan stmtSegel; lj memakai stmtSegelLj). */
+export async function batchBersegel(env, st, s, dummy = 0, {batch = x => batchTulis(env, x), stmt = stmtSegel} = {}) {
+  if (dummy || !await adaTabelSegel(env)) return {r: await batch(st), kode: null};
   for (let i = 0; ; i++) {
     const kode = buatKode();
-    try { return {r: await batchTulis(env, [...st, stmtSegel(env, {...s, kode, dasar: dasarRujukan(s.rujukan)})]), kode}; }
+    try { return {r: await batch([...st, stmt(env, {...s, kode, dasar: dasarRujukan(s.rujukan)})]), kode}; }
     catch (e) { if (i < 2 && /segel\.kode/.test(String(e?.message))) continue; throw e; }
   }
 }
@@ -65,7 +66,11 @@ async function isiSumber(env, s) {
     const o = d?.status === "beku" ? await env.MEDIA?.get(kunciBeku(d, "json")) : null;
     return o ? o.text() : null;
   }
-  return null;   // lj: fase 2 (Q1), belum ada pembacanya; segel lj tidak boleh disisipkan sebelum cabang ini ada (TIKET SG-13), atau publik melihat Tidak cocok
+  if (s.jenis === "lj") {   // SG-13: <berkas>#<versi>, sidik = sha256 isi lj_beku (isiBeku, src/lapor_lanjut_spek.js)
+    const j = s.rujukan.match(/^([^#]{16})#(\d+)$/);
+    return j ? (await segelIsiLj(env, j[1], Number(j[2])))?.isi ?? null : null;
+  }
+  return null;
 }
 
 async function periksa(env, req, url, kini) {

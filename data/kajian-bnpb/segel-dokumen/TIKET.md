@@ -31,3 +31,10 @@ Catatan dari pemeriksaan SG-02 (24 Nov 2026), wajib dikerjakan di rutenya:
 
 - Selesai di kode: SG-01 sampai SG-11. SG-09 mencakup lembar cetak dokumen PB (`public/inti/segel.js` di `public/inti/dokumen.js`) dan slide akhir "Keaslian dokumen" di deck laporan harian karhutla dan bencana (`public/laporan_karhutla_deck.js` `tambahSegel`, KEPUTUSAN K5); rute snapshot lk dan lkb membawa `segel {kode, sidik12}`.
 - SG-12 (deck Python) tetap di luar fase 1 (Q4). SG-13 menunggu LJ dan LB. SG-14 menunggu pemilik menerapkan migrasi 0171 dan 0172 di D1 produksi.
+
+## Status 26 Nov 2026
+
+- SG-13 bagian `lj_beku` selesai di kode: `usulTutup` di `src/lapor_lanjut.js` menyegel tiap versi beku lewat `batchBersegel` di batch `ljBatch` yang sama (pernyataan terakhir `stmtSegelLj` di `src/hak.js` mengambil versi dan sidik dari baris `lj_beku` yang baru tertulis, jadi usul yang kalah tidak meninggalkan segel). Rujukan `<berkas>#<versi>`, penerbit `BPBD <kab/kota>`, periode `<tanggal buka>/<tanggal selesai>`. Pembaca `lj` di `isiSumber` (`segelIsiLj`). Jawaban usul tutup membawa `segel {kode, sidik12}`. Uji: `tests/lapor/lanjut_tutup.test.mjs` "SG-13 segel lj".
+- SG-13 bagian Laporan Berkala tetap ditahan: titik beku LB-07 belum dibangun, dan CHECK `segel.jenis` belum memuat jenis Laporan Berkala (butuh migrasi segel baru saat LB-07 dikerjakan).
+- SG-12 tetap tidak dikerjakan: bawaan Q4 yang disetujui pemilik 25 Nov 2026 adalah "belum di fase 1".
+- Sisa: `tests/agen/gerbang-segel.test.mjs` (penulis-gerbang) belum menghitung `ljStmtBekuBaru(` sebagai titik beku; layar meja `/lapor` belum menampilkan kode segel lj (layar-peta).

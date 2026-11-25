@@ -2669,6 +2669,13 @@ export const segelCabut = async (env, kode, alasan, oleh, kini) => (await env.DB
 /* SG-04: teks sumber yang dibekukan untuk hitung ulang sidik saat kode dibuka (lewat PK, satu baca). Baris dummy tidak pernah disegel, jadi tidak dibaca. */
 export const segelIsiLk = (env, tanggal, ralat) => env.DB.prepare("SELECT isi FROM lk_snapshot WHERE tanggal_laporan = ?1 AND ralat = ?2 AND dummy = 0").bind(tanggal, ralat).first();
 export const segelIsiLkb = (env, bencana, tanggal, ralat) => env.DB.prepare("SELECT isi FROM lkb_snapshot WHERE bencana = ?1 AND tanggal_laporan = ?2 AND ralat = ?3 AND dummy = 0").bind(bencana, tanggal, ralat).first();
+/* SG-13: segel lj_beku (fase 2, Q1). Versi beku lj dihitung di SQL (max + 1), jadi segel mengambil versi dan sidik dari baris lj_beku yang baru tertulis
+   di batch yang sama (berkas + waktu = kini + sidik, lewat PK berkas). Usul tutup yang kalah (changes 0) tidak menulis lj_beku, jadi segel pun tidak tertulis.
+   rujukan = <berkas>#<versi>, dasar = berkas. s.rujukan = id berkas. */
+export const stmtSegelLj = (env, s) => env.DB.prepare(`INSERT INTO segel (kode, jenis, rujukan, dasar, versi, sidik, sidik_berkas, judul, wilayah, periode, penerbit, terbit)
+    SELECT ?1, 'lj', berkas || '#' || versi, berkas, versi, sidik, NULL, ?3, ?4, ?5, ?6, ?7 FROM lj_beku WHERE berkas = ?2 AND waktu = ?7 AND sidik = ?8 ORDER BY versi DESC LIMIT 1`)
+  .bind(s.kode, s.rujukan, s.judul, s.wilayah ?? null, s.periode, s.penerbit, s.terbit, s.sidik);
+export const segelIsiLj = (env, berkas, versi) => env.DB.prepare("SELECT isi FROM lj_beku WHERE berkas = ?1 AND versi = ?2").bind(berkas, versi).first();
 
 /* ---------- ews: kanal resmi (KI-50, Q8) ---------- */
 /* Penanda "putaran resmi pertama sudah lewat": satu baris ews_terkirim dengan langganan_id tetap (bukan id pelanggan; id asli 16 hex dari acak, tak pernah semua nol) dan kunci 'x|awal'.
