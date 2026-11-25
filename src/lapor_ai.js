@@ -31,7 +31,7 @@ import * as H from "./hak.js";
 import {buatSelamat} from "./lapor_selamat.js";
 import {bukaBerkas, pesanTim, fotoTim, bersihSesiLanjut, sapuDrafYatim, hapusPribadiLama} from "./lapor_lanjut.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "./lapor_periksa.js";
-import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari} from "./lapor_kejadian.js";
+import {penandaPemeriksa, waktuVerifikasi, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari, usulanTerakhir, statusUsulan} from "./lapor_kejadian.js";
 import {hakSk} from "./siklus.js";
 
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
@@ -841,7 +841,7 @@ async function rincianObj(env, c, baris, identitas = c.jenis === "bnpb") {   // 
   /* LK-09: kartu Buku Besar hanya untuk BNPB dan hanya bila saklar LAPOR_USUL menyala. ponytail: membaca laporan 30 hari (gugusDasar) per buka rincian BNPB,
      sama dengan daftar meja; pindah ke tabel hasil cron bila laporan 30 hari mendekati ribuan */
   o.usulan = c.jenis === "bnpb" && env.LAPOR_USUL === "1" ? await bacaTabel(async () => { const r = await kejadianUsulan(env, baris, s.tiket.status, Date.now());
-    return r.usulan ? {siap: true, ada: null, alasan: null} : {siap: false, ada: r.ada || null, alasan: r.ada ? null : r.galat}; }, null) : null;
+    return {...(r.usulan ? {siap: true, ada: null, alasan: null} : {siap: false, ada: r.ada || null, alasan: r.ada ? null : r.galat}), status: r.statusUsulan}; }, null) : null;   // LK-11 status dari sk_kejadian_sumber
   if (!identitas) { o.pelapor = {peran: o.pelapor?.peran ?? null, tersembunyi: true}; o.transkrip = []; }
   return {...o, akun: {jenis: c.jenis, label: c.label}, pindah: pindahUntuk(c, s.tiket.status, PINDAH[s.tiket.status])};
 }
@@ -883,8 +883,10 @@ async function kejadianUsulan(env, baris, status, kini) {
   const [periksa, versi, lama] = await Promise.all([semua(xs => H.lpPeriksaAkunNomor(env, STAF, xs)), semua(xs => H.lpVersiTerakhir(env, STAF, xs)), semua(xs => H.lpUsulanKejadian(env, STAF, xs))]);
   const P = new Map(), V = new Map(versi.map(v => [v.nomor, v.waktu]));
   for (const r of periksa) (P.get(r.nomor) || P.set(r.nomor, []).get(r.nomor)).push({id: r.id, hasil: r.hasil, waktu: r.waktu, akun: r.jenis ? {jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, kab_nama: r.kab_nama} : null});
-  const ditolak = new Set(lama.length ? await bacaTabel(() => H.lpUsulanDitolak(env, STAF, lama.map(u => u.kode)), []) : []);   // sebelum migrasi 0120: tidak ada yang ditolak
-  return usulanDari(dasar.map(a => ({...a, periksa: P.get(a.nomor) || [], versi: V.get(a.nomor) ? [{waktu: V.get(a.nomor)}] : []})), lama, ditolak);
+  /* LK-11: satu bacaan berindeks untuk usulan terakhir saja (hanya itu yang menentukan putaran berikut dan status di meja); sebelum migrasi 0120 dianggap menunggu */
+  const akhir = usulanTerakhir(lama), sumber = akhir ? await bacaTabel(() => H.lpUsulanSumber(env, STAF, akhir.kode), null) : null;
+  const r = usulanDari(dasar.map(a => ({...a, periksa: P.get(a.nomor) || [], versi: V.get(a.nomor) ? [{waktu: V.get(a.nomor)}] : []})), lama, new Set(sumber?.status === "ditolak" ? [akhir.kode] : []));
+  return {...r, statusUsulan: statusUsulan(akhir, sumber)};
 }
 const TOLAK_USUL = "Mengusulkan ke Buku Besar hanya untuk staf Pusdalops atau Koordalops BNPB dan Super Admin.";
 async function usulkan(env, req, h, baris, t, kini) {

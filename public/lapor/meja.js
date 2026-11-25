@@ -703,7 +703,15 @@ function kartuPublik(j, nomor, kartu) {
    Tampil hanya bila Worker mengirim j.usulan (akun BNPB, saklar LAPOR_USUL menyala); hak peran diperiksa Worker */
 function kartuUsulan(j, nomor, kartu) {
   const u = j.usulan; if (!u) return null;
-  const w = el("div", "mj-isi-kartu");
+  const w = el("div", "mj-isi-kartu"), st = u.status;
+  /* LK-11 (A7, D11): status dari sk_kejadian_sumber lewat Worker; tanpa usulan (st null) tidak pernah "Diusulkan" */
+  if (st && st.keadaan !== "ditolak") {
+    w.append(el("p", "mj-pub-status", st.keadaan === "terpasang" ? `Terpasang ke ${st.kejadian_id}` : st.keadaan === "tinjau" ? "Menunggu staf Siklus memilih kejadian" : "Diusulkan, menunggu pencocokan"),
+      el("p", "mj-pub-kecil", st.keadaan === "terpasang" ? `Usulan ${st.kode} sudah masuk Buku Besar Kejadian.` : st.keadaan === "tinjau" ? `Usulan ${st.kode} cocok dengan lebih dari satu kejadian atau belum berwilayah. Staf Siklus yang memutuskan.` : `Usulan ${st.kode} dicocokkan pada jalan terjadwal berikutnya, tiap 3 jam.`));
+    if (st.keadaan === "terpasang") { const a = el("a", "mj-tombol"); a.href = `/siklus/kejadian/${encodeURIComponent(st.kejadian_id)}`; a.append(ikon("m-buka"), "Buka kejadian"); w.append(a); }
+    return kartu("Buku Besar", "m-kejadian", w);
+  }
+  if (st) w.append(el("p", "mj-pub-status", "Ditolak staf Siklus"), el("p", "mj-pub-kecil", u.siap ? `Usulan ${st.kode} ditolak. Kejadian ini boleh diusulkan lagi.` : `Usulan ${st.kode} ditolak.`));
   if (u.ada) { w.append(el("p", "mj-pub-status", "Diusulkan, menunggu pencocokan")); return kartu("Buku Besar", "m-kejadian", w); }
   if (!u.siap) { w.append(el("p", "mj-label", u.alasan || "Belum bisa diusulkan.")); return kartu("Buku Besar", "m-kejadian", w); }
   w.append(el("p", "mj-label", "Usulan masuk antrean pencocokan Buku Besar Kejadian. Staf Siklus yang memutuskan."));

@@ -34,7 +34,7 @@ const kamusTr = b => { try { return JSON.parse(fs.readFileSync(path.join(AKAR, `
 import {samarkan} from "../../src/samarkan.js";
 import {cakupanMeja, dalamWilayah, bolehAksi, pindahUntuk} from "../../src/lapor_meja_hak.js";
 import {agregat, keCsv, KOLOM as KOLOM_AGREGAT, BATAS_SEL} from "../../src/lapor_agregat.js";
-import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari} from "../../src/lapor_kejadian.js";
+import {penandaPemeriksa, kejadianTerverifikasi, kartuPublik, terakhir, syaratPublik, usulanDari, usulanTerakhir, statusUsulan} from "../../src/lapor_kejadian.js";
 import {HASIL_PERIKSA, revisiTampil, tindakanUntuk, sahkanTindakan, sahkanPeriksa, terapkanRevisi, statusDariHasil} from "../../src/lapor_periksa.js";
 const KATA_UMUM = new Set(["rusak", "roboh", "putus", "ambruk", "terendam", "longsor", "banjir", "yang", "di", "dan", "atau", "dekat", "sekitar", "kena", "terdampak"]);
 
@@ -575,7 +575,8 @@ function usulanLokal(d, nomor) {
   const G = gugusSemua(d), sesi = Object.values(d.sesi), daftar = G.gugus.find(x => x.kode === G.per[nomor])?.anggota || [nomor];
   const anggota = daftar.map(n => { const s = sesi.find(x => x.nomor === n), w = s.isian.lokasi?.nilai?.wilayah || null;
     return {nomor: n, jenis: s.isian.jenis?.nilai || null, laporan: {status: s.tiket.status, wilayah: w}, periksa: periksaAkun(s), versi: (s.versi || []).map(v => ({waktu: v.waktu}))}; });
-  return usulanDari(anggota, (d.usulan || []).filter(u => daftar.includes(u.kejadian_laporan)));
+  const lama = (d.usulan || []).filter(u => daftar.includes(u.kejadian_laporan));
+  return {...usulanDari(anggota, lama), statusUsulan: statusUsulan(usulanTerakhir(lama), null)};   // LK-11: tanpa Siklus lokal, usulan selalu menunggu pencocokan
 }
 async function hariIni(q, kini = Date.now()) {
   const d = baca(), G = gugusSemua(d), gk = new Map(G.gugus.map(g => [g.kode, g])), sesi = new Map(Object.values(d.sesi).filter(s => s.nomor).map(s => [s.nomor, s]));
@@ -651,7 +652,7 @@ function mejaRinci(c, nomor, lihat = false) {
       const segar = (terakhir(P)?.waktu || 0) > Date.now() - JENDELA_HARI;   // sama dengan statusPublik di Worker (LK-07); halaman lokal selalu buka
       return {syarat: sy, ditarik: !!terakhir(T)?.aktif, tayang: sy.every(x => x.ok) && segar, dalam24jam: segar, halamanBuka: true}; })(),
     revisi: revisiTampil(s),
-    usulan: c.jenis === "bnpb" ? (() => { const r = usulanLokal(d, nomor); return r.usulan ? {siap: true, ada: null, alasan: null} : {siap: false, ada: r.ada || null, alasan: r.ada ? null : r.galat}; })() : null,   // saklar LAPOR_USUL tidak dibaca di lokal
+    usulan: c.jenis === "bnpb" ? (() => { const r = usulanLokal(d, nomor); return {...(r.usulan ? {siap: true, ada: null, alasan: null} : {siap: false, ada: r.ada || null, alasan: r.ada ? null : r.galat}), status: r.statusUsulan}; })() : null,   // saklar LAPOR_USUL tidak dibaca di lokal
     gugus: (() => { const G = gugusSemua(d), g = G.gugus.find(x => x.anggota.includes(nomor)); if (!g) return null;
       const sesi = Object.values(d.sesi); return {...g, anggota: g.anggota.map(n => { const a = sesi.find(x => x.nomor === n);
         return {nomor: n, waktuLapor: waktuLapor(a.terkirim, a.isian.lokasi?.nilai?.wilayah?.provKode), desa: a.isian.lokasi?.nilai?.wilayah?.desa || null, status: a.tiket.status, dampak: dampakRingkas(a), saya: n === nomor}; })}; })(), jenisId: s.isian.jenis?.nilai || null, wilayah: s.isian.lokasi?.nilai?.wilayah || null,

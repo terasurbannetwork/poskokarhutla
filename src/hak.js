@@ -117,7 +117,7 @@ export const MATRIKS_SK = {
   sk_kejadian:        {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
   sk_kejadian_kab:    {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "hapus"]},
   sk_kejadian_alias:  {sistem: ["baca"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "hapus"]},
-  sk_kejadian_sumber: {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca"]},   // lp_staf: hanya lpUsulanDitolak (LK-09)
+  sk_kejadian_sumber: {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"], lp_staf: ["baca"]},   // lp_staf: hanya lpUsulanSumber (LK-09, LK-11)
   sk_kaji:            {sistem: ["baca", "tambah"], sk_staf: ["baca", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
   sk_harga:           {sk_staf: ["baca", "tambah"], admin: ["baca", "tambah", "hapus"]},
   sk_jitupasna:       {sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
@@ -2168,10 +2168,10 @@ export const lpStmtUsulanHari = (env, p, u, hari) => sedia(env, p, "lk_usulan", 
   `INSERT INTO lk_usulan (kode, kejadian_laporan, putaran, anggota, jenis, kab4, oleh, waktu)
    SELECT 'LU-' || ?1 || '-' || printf('%02d', count(*) + 1), ?2, ?3, ?4, ?5, ?6, ?7, ?8 FROM lk_usulan WHERE kode >= 'LU-' || ?1 || '-' AND kode < 'LU-' || ?1 || '.'
    RETURNING kode, putaran`).bind(hari, u.kejadian_laporan, u.putaran, JSON.stringify(u.anggota), u.jenis, u.kab4, u.oleh, u.waktu);
-/* usulan yang ditolak staf Siklus (A7): satu-satunya bacaan lp_staf atas sk_kejadian_sumber; menentukan boleh tidaknya putaran berikut */
-export const lpUsulanDitolak = async (env, p, kode) => kode.length ? (await sedia(env, p, "sk_kejadian_sumber", "baca",
-  `SELECT kode FROM sk_kejadian_sumber WHERE sumber = 'lapor_ai' AND status = 'ditolak' AND dummy = 0 AND kode IN (${kode.map((_, i) => "?" + (i + 1)).join(", ")})`)
-  .bind(...kode).all()).results.map(r => r.kode) : [];
+/* status usulan terakhir di meja (A7, D11, LK-11): satu-satunya bacaan lp_staf atas sk_kejadian_sumber; satu baris lewat UNIQUE (sumber, kode, dummy).
+   Tidak ada baris = belum dicocokkan pasang.py (menunggu pencocokan); ditolak menentukan boleh tidaknya putaran berikut */
+export const lpUsulanSumber = (env, p, kode) => sedia(env, p, "sk_kejadian_sumber", "baca",
+  "SELECT status, kejadian_id FROM sk_kejadian_sumber WHERE sumber = 'lapor_ai' AND kode = ?1 AND dummy = 0").bind(kode).first();
 export const lpTindakanDaftar = async (env, p, nomor) => (await sedia(env, p, "lapor_tindakan", "baca",
   "SELECT kode, label, oleh, waktu FROM lapor_tindakan WHERE nomor = ?1 ORDER BY waktu, id LIMIT 100").bind(nomor).all()).results;
 export const lpStmtTindakan = (env, p, nomor, kode, label, oleh, kini, g = false) => sedia(env, p, "lapor_tindakan", "tambah",

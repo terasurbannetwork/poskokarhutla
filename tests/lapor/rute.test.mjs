@@ -708,6 +708,34 @@ uji("usulkan: hanya staf PDKO, hanya bila ada laporan terverifikasi BPBD, satu b
   assert.equal(await n("lk_usulan", "kode NOT GLOB 'LU-[0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9]*'"), 0);
 });
 
+/* LK-11 (U7 bagian status, A7, D11): status usulan di kartu Buku Besar dibaca dari sk_kejadian_sumber (sumber lapor_ai, kode LU-), tidak disalin.
+   Baris sumber disisipkan langsung, seperti hasil ingest pasang.py; ujung ke ujung dengan pasang.py masuk ada di LK-12. */
+uji("status usulan: belum diusulkan tanpa status, tanpa baris sumber menunggu, ambigu menunggu staf Siklus, terpasang ber-KJ-, ditolak boleh ulang (LK-11)", async () => {
+  const g = await sisipLaporan({wa: "6281200000811", lat: -6.6, lon: 111.3}), rinci = async () => (await api("GET", `/api/lapor/meja/${g}`, undefined, ADMIN)).j.usulan;
+  let u = await rinci(); assert.equal(u.status, null, "belum pernah diusulkan: tidak pernah Diusulkan");
+  await validBpbd(g);
+  // tiket LA- otomatis yang terpasang lewat ingest tidak menjadi status usulan (hanya kode LU-)
+  const kini = Date.now(), KJ = "KJ-2026-KM110001", sumber = (id, kode, st, kj = null, dummy = 0) => DB.prepare("INSERT INTO sk_kejadian_sumber (id, sumber, kode, status, kejadian_id, jenis, kab4, mulai, diambil, dibuat, diubah, dummy) VALUES (?, 'lapor_ai', ?, ?, ?, 'banjir', '3374', '2026-11-01', ?, ?, ?, ?)").bind(id, kode, st, kj, kini, kini, kini, dummy).run();
+  await DB.prepare("INSERT INTO sk_kejadian (id, jenis, nama, kab4, mulai, fase_diubah, asal, dibuat, diubah, oleh) VALUES (?, 'banjir', 'Banjir uji', '3374', '2026-11-01', ?, 'manual', ?, ?, 'uji')").bind(KJ, kini, kini, kini).run();
+  await sumber("00000000000000b0", g, "terpasang", KJ);
+  u = await rinci(); assert.equal(u.status, null); assert.equal(u.siap, true, JSON.stringify(u));
+  const r = await api("POST", `/api/lapor/meja/${g}/usulkan`, {}, ADMIN); assert.equal(r.s, 200, r.t.slice(0, 200)); const K = r.j.usulan.kode;
+  u = await rinci(); assert.deepEqual(u.status, {kode: K, putaran: 1, keadaan: "menunggu", kejadian_id: null}, "tanpa baris sumber = menunggu pencocokan"); assert.equal(u.siap, false);
+  await sumber("00000000000000b1", K, "ambigu");
+  u = await rinci(); assert.equal(u.status.keadaan, "tinjau"); assert.equal(u.status.kejadian_id, null);
+  await DB.prepare("UPDATE sk_kejadian_sumber SET status = 'tanpa_wilayah' WHERE id = '00000000000000b1'").run();
+  assert.equal((await rinci()).status.keadaan, "tinjau");
+  await DB.prepare("UPDATE sk_kejadian_sumber SET status = 'terpasang', kejadian_id = ? WHERE id = '00000000000000b1'").bind(KJ).run();
+  u = await rinci(); assert.deepEqual(u.status, {kode: K, putaran: 1, keadaan: "terpasang", kejadian_id: KJ}); assert.equal(u.siap, false);
+  assert.equal((await api("POST", `/api/lapor/meja/${g}/usulkan`, {}, ADMIN)).s, 409, "terpasang tidak diusulkan ulang");
+  await DB.prepare("UPDATE sk_kejadian_sumber SET status = 'ditolak', kejadian_id = NULL WHERE id = '00000000000000b1'").run();
+  u = await rinci(); assert.equal(u.status.keadaan, "ditolak"); assert.equal(u.siap, true, "ditolak: boleh diusulkan lagi");
+  const r2 = await api("POST", `/api/lapor/meja/${g}/usulkan`, {}, ADMIN); assert.equal(r2.s, 200, r2.t.slice(0, 200));
+  u = await rinci(); assert.deepEqual(u.status, {kode: r2.j.usulan.kode, putaran: 2, keadaan: "menunggu", kejadian_id: null}, "putaran 2 menunggu");
+  await sumber("00000000000000b2", r2.j.usulan.kode, "ditolak", null, 1);
+  assert.equal((await rinci()).status.keadaan, "menunggu", "baris dummy tidak dihitung");
+});
+
 uji("video bersambung: tiga bagian, satu terpotong ditolak lalu dilanjutkan, status bagian, selesai masuk laporan sebagai video", async () => {
   for (const wa of [WV, WV2, WV3]) assert.equal((await api("POST", "/api/lapor/izin", {wa}, MESIN)).s, 200);
   assert.equal((await mulai(WV3, {ukuran: 5000})).s, 409, "belum ada laporan yang diisi");
