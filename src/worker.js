@@ -939,7 +939,10 @@ const W = {
     if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});
     if (url.pathname === "/renlap.html") return new Response(null, {status: 303, headers: {location: "/renlap", "cache-control": "no-store"}});   // satu pintu ber-CSP ketat (fragmen #t= ikut dibawa peramban)   // satu pintu: /instansi (CSP ketat)
     if (url.pathname === "/instansi_uji.html") return new Response(null, {status: 303, headers: {location: "/uji-lapangan", "cache-control": "no-store"}});   // satu pintu: /uji-lapangan
-    if (/^\/warga(\/(index\.html)?)?$/.test(url.pathname)) return new Response(null, {status: 301, headers: {location: "/lapor", "cache-control": "no-store"}});   // Lapor Warga lama pensiun ke /lapor (PETA-SITUS Q1); tujuan tetap, query dibuang: bukan pengalih terbuka
+    if (/^\/warga(\/(index\.html)?)?$/.test(url.pathname)) return new Response(null, {status: 301, headers: {location: "/lapor/", "cache-control": "no-store"}});   // Lapor Warga lama pensiun ke /lapor/ (PETA-SITUS Q1); tujuan tetap, query dibuang: bukan pengalih terbuka
+    /* /lapor tanpa garis miring di luar cakupan service worker /lapor/ (LR-01, lapor-luring RISET 1.1): halaman yang dibuka di sini tidak pernah jalan luring.
+       Jalur tujuan tetap di asal yang sama, query dibawa apa adanya (?ke=, ?t=): bukan pengalih terbuka. */
+    if (url.pathname === "/lapor" && (req.method === "GET" || req.method === "HEAD")) return new Response(null, {status: 301, headers: {location: "/lapor/" + url.search, "cache-control": "no-store"}});
     if (url.pathname === "/presiden.html") return new Response(null, {status: 303, headers: {location: "/presiden" + url.search, "cache-control": "no-store"}});   // satu pintu: /presiden (publik, bisa di-iframe)
     if (url.pathname === "/rumah_rusak.html") return new Response(null, {status: 303, headers: {location: "/rumah-rusak", "cache-control": "no-store"}});   // satu pintu: /rumah-rusak (CSP ketat, 404 di luar Centurisk97)
     /* /uji-lapangan (evaluasi internal): admin ATAU pemirsa di SEMUA host; pemirsa tidak dialihkan ke tab pertamanya oleh gerbang di bawah */
