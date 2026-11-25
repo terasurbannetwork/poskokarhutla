@@ -1251,28 +1251,63 @@ $("iCariBantu2").addEventListener("input", e => tampilBantu(e.target.value));
 fetch("/lapor/edukasi.json", {signal: AbortSignal.timeout(10000)}).then(r => r.ok ? r.json() : null).then(j => { if (j?.topik?.length) { EDU = j; tampilBantu(); } }).catch(() => {});
 
 /* ============ kebijakan privasi di dalam aplikasi (tata letak halaman legal; isi untuk layanan BNPB, draf menunggu tinjauan hukum) ============ */
+/* isi kebijakan privasi (pemilik 25 Nov 2026: "lu riset lah gimana kebijakan privasi yang lengkap dan relevan"): urutan unsur pemberitahuan
+   UU 27/2022 PDP (identitas pengendali, dasar, tujuan, jenis data, lama simpan, penerima, transfer, hak, kegagalan pelindungan), isi diambil dari
+   data/kajian-bnpb/lapor-ai/KEAMANAN-PRIVASI.md. Butir "Label: isi" tampil sebagai ubin berlabel; elemen ketiga = ikon bagian. */
 const PRIVASI = [
-  ["Data yang kami kumpulkan", [["p", "Saat Anda melapor lewat Pantau Bencana BNPB, kami mencatat:"], ["ul", ["Identitas pelapor: nama, nomor WhatsApp, dan peran (warga atau petugas BPBD beserta kabupaten/kota dan jabatan).",
+  ["Siapa kami", [["p", "Pantau Bencana adalah layanan pelaporan kejadian bencana milik Badan Nasional Penanggulangan Bencana (BNPB). BNPB adalah pengendali data pribadi yang Anda kirim lewat layanan ini, sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi dan Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana."]], "i-situs"],
+  ["Data yang kami kumpulkan", [["p", "Saat Anda memakai Pantau Bencana BNPB, kami mencatat:"], ["ul", ["Identitas pelapor: nama, nomor WhatsApp, dan peran (warga atau petugas BPBD beserta kabupaten/kota dan jabatan).",
     "Isi laporan: jenis dan karakteristik kejadian, waktu kejadian, lokasi (titik GPS atau desa yang Anda pilih, RT dan RW), jumlah korban, pengungsi, dan kerusakan dalam bentuk angka, serta kebutuhan.",
-    "Foto: gambar yang Anda kirim beserta waktu dan lokasi pengambilannya.", "Percakapan: pesan dengan asisten AI, waktunya, dan nilai yang Anda berikan."]],
-    ["p", "Kami tidak meminta nama korban atau Nomor Induk Kependudukan. Nomor telepon, NIK, dan alamat surel yang tertulis di pesan disamarkan sebelum diproses asisten AI."]]],
+    "Foto: gambar yang Anda ambil dari kamera beserta waktu dan lokasi pengambilannya.", "Percakapan: pesan dengan asisten AI, waktunya, dan nilai yang Anda berikan.",
+    "Pesan suara: diubah menjadi teks di mesin BNPB. Rekaman suaranya tidak disimpan.",
+    "Orang hilang dan kabar selamat: nama, ciri, tempat terakhir terlihat, dan nomor yang Anda isi sendiri.",
+    "Peringatan dini: kode kecamatan yang Anda pilih dan alamat notifikasi perangkat."]],
+    ["p", "Kami tidak meminta nama korban atau Nomor Induk Kependudukan. Nomor telepon, NIK, dan alamat surel yang tertulis di pesan disamarkan sebelum diproses asisten AI."]], "i-daftar"],
+  ["Data di perangkat Anda", [["ul", ["Pilihan tampilan: bahasa, tema terang atau gelap, dan tanda tur sudah dilihat disimpan di peramban Anda.",
+    "Laporan tanpa sinyal: lokasi, kronologi, dan foto disimpan sementara di HP sampai terkirim, paling lama 14 hari, tanpa nama dan nomor.",
+    "Berkas aplikasi: hanya halaman dan gambar layanan yang disimpan supaya bisa dibuka cepat, bukan isi laporan."]],
+    ["p", "Anda bisa menghapusnya kapan saja lewat pengaturan peramban atau tombol Buang pada laporan yang belum terkirim."]], "i-unduh"],
+  ["Dasar pemrosesan", [["ul", ["Persetujuan: Anda setuju saat mulai melapor. Persetujuan dikabari dan peringatan dini diminta terpisah dan bisa dicabut.",
+    "Tugas pelayanan publik: BNPB menjalankan penanggulangan bencana sesuai undang-undang.",
+    "Kepentingan vital: menyelamatkan nyawa dan menolong korban saat keadaan darurat."]]], "i-status"],
   ["Untuk apa data dipakai", [["ul", ["Menyusun laporan kejadian bencana dan meneruskannya ke petugas BNPB dan BPBD yang menangani.", "Memeriksa kebenaran laporan dan menghubungi Anda bila perlu konfirmasi.",
-    "Mengirim kabar status laporan ke Anda.", "Menyusun statistik kejadian tanpa identitas pelapor untuk perencanaan penanggulangan bencana."]]]],
-  ["Asisten AI", [["p", "Pesan Anda diproses asisten AI untuk menangkap isian laporan. Hanya teks pesan yang sudah disamarkan yang dikirim ke penyedia layanan AI; identitas, foto, dan koordinat Anda tidak dikirim. Asisten AI tidak memutuskan status kejadian. Petugas yang memutuskan."]]],
-  ["Siapa yang dapat melihat", [["p", "Hanya petugas BNPB dan BPBD yang menangani kejadian yang bisa membaca laporan dan identitas Anda. Laporan tidak tampil di halaman publik. Halaman lacak hanya terbuka bagi pemegang tautan yang kami kirim kepada Anda."]]],
-  ["Penyimpanan dan keamanan", [["p", "Data disimpan di layanan yang dikelola untuk BNPB. Aksesnya terbatas dan tercatat. Riwayat status laporan tidak bisa diubah, hanya ditambah. Untuk sementara, data disimpan 2 tahun sesudah laporan selesai ditangani, sampai BNPB menetapkan aturan resmi."]]],
-  ["Hak Anda", [["p", "Sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi, Anda bisa meminta salinan data, perbaikan data, atau penghapusan identitas Anda dengan mengetik \"hapus data\" di percakapan. Isian kejadian yang tidak memuat data pribadi tetap disimpan untuk penanganan bencana."]]],
-  ["Laporan palsu", [["p", "Laporan yang sengaja dibuat tidak benar menghambat penanganan bencana. Laporan yang terbukti tidak benar kami tandai tidak bisa ditindaklanjuti."]]],
-  ["Perubahan kebijakan", [["p", "Kami bisa memperbarui kebijakan ini. Tanggal berlaku ada di bagian atas halaman."]]],
-  ["Kontak", [["p", "Ada pertanyaan tentang data Anda? Hubungi BNPB lewat call center 117 atau persuratan@bnpb.go.id."]]],
+    "Mengirim kabar status laporan ke Anda.", "Mengirim peringatan dini ke kecamatan yang Anda pilih.", "Mencocokkan kabar selamat dengan laporan orang dicari.",
+    "Menyusun statistik kejadian tanpa identitas pelapor untuk perencanaan penanggulangan bencana."]], ["p", "Data tidak dijual dan tidak dipakai untuk iklan."]], "i-kirim"],
+  ["Asisten AI", [["p", "Pesan Anda diproses asisten AI untuk menangkap isian laporan. Hanya teks pesan yang sudah disamarkan yang dikirim ke penyedia layanan AI; identitas, foto, dan koordinat Anda tidak dikirim. Angka hanya diterima bila tertulis di pesan Anda. Asisten AI tidak memutuskan status kejadian. Petugas yang memutuskan."]], "i-pesan"],
+  ["Siapa yang dapat melihat", [["ul", ["Petugas: hanya petugas BNPB dan BPBD yang menangani kejadian di wilayah itu yang bisa membaca laporan dan identitas Anda.",
+    "Publik: laporan tidak tampil di halaman publik. Laporan orang dicari juga tidak pernah publik.",
+    "Pemegang tautan: halaman lacak hanya terbuka bagi pemegang tautan yang kami kirim kepada Anda. Jangan bagikan tautan itu."]]], "i-orang"],
+  ["Layanan pihak lain", [["ul", ["Penyimpanan: data disimpan di layanan awan yang dikelola untuk BNPB.", "Pesan: kabar status dikirim lewat WhatsApp ke nomor Anda sendiri.",
+    "Asisten AI: penyedia model bahasa menerima teks pesan yang sudah disamarkan."]],
+    ["p", "Server penyedia ini bisa berada di luar Indonesia. Kami hanya mengirim data yang perlu untuk tiap layanan."]], "i-situs"],
+  ["Penyimpanan dan keamanan", [["ul", ["Akses: terbatas pada petugas yang berwenang dan tercatat.", "Riwayat: status laporan tidak bisa diubah, hanya ditambah.",
+    "Foto: data tersembunyi di dalam berkas dibersihkan sebelum disimpan.", "Tautan: kode di tautan disimpan dalam bentuk acak dan punya masa berlaku."]]], "i-kebutuhan"],
+  ["Lama penyimpanan", [["ul", ["Laporan: 2 tahun sesudah selesai ditangani, sampai BNPB menetapkan aturan resmi.", "Kabar selamat: 30 hari.",
+    "Langganan kabar: dihapus bila 90 hari tanpa laporan atau saat Anda berhenti.", "Teks pesan suara yang belum dikonfirmasi: paling lama 24 jam."]]], "i-kalender"],
+  ["Hak Anda", [["p", "Sesuai Undang-Undang Nomor 27 Tahun 2022, Anda berhak:"], ["ul", ["Mendapat informasi: tentang data apa yang dipakai dan untuk apa, seperti di halaman ini.",
+    "Melihat dan mendapat salinan: data yang kami simpan tentang Anda.", "Memperbaiki: data yang salah atau tidak lengkap.",
+    "Menghapus: ketik \"hapus data\" di percakapan. Identitas dan percakapan Anda dihapus, isian kejadian tanpa data pribadi tetap disimpan untuk penanganan bencana.",
+    "Menarik persetujuan: ketik \"berhenti kabar\" atau matikan peringatan dini kapan saja.",
+    "Keberatan atas keputusan otomatis: keputusan atas laporan selalu dibuat petugas, bukan mesin."]]], "i-centang"],
+  ["Bila terjadi kebocoran", [["p", "Bila data pribadi Anda bocor atau gagal dilindungi, BNPB memberi tahu Anda paling lambat 3 x 24 jam sesudah mengetahuinya, sesuai Undang-Undang Nomor 27 Tahun 2022, beserta data yang terdampak dan langkah yang diambil."]], "i-sirene"],
+  ["Laporan palsu", [["p", "Laporan yang sengaja dibuat tidak benar menghambat penanganan bencana. Laporan yang terbukti tidak benar kami tandai tidak bisa ditindaklanjuti."]], "i-kejadian"],
+  ["Perubahan kebijakan", [["p", "Kami bisa memperbarui kebijakan ini. Tanggal berlaku ada di bagian atas halaman."]], "i-putar"],
+  ["Kontak", [["p", "Ada pertanyaan atau ingin memakai hak Anda? Hubungi BNPB lewat call center 117 atau persuratan@bnpb.go.id."]], "i-telepon"],
 ];
+// ikon tiap butir menurut isinya (pemilik 25 Nov 2026: "kasih icon")
+const IK_BUTIR = [[/^Identitas|^Petugas|^Pemegang/, "i-orang"], [/^Isi laporan|^Laporan:|^Menyusun laporan/, "i-daftar"], [/^Foto/, "i-kamera"], [/^Percakapan|^Asisten|^Pesan:/, "i-pesan"],
+  [/^Pesan suara|^Teks pesan suara/, "i-mik"], [/^Orang hilang|^Mencocokkan/, "i-cari"], [/^Peringatan|^Mengirim peringatan/, "i-sirene"], [/^Pilihan tampilan/, "i-bahasa"],
+  [/^Laporan tanpa sinyal|^Berkas aplikasi/, "i-unduh"], [/^Persetujuan|^Menarik/, "i-centang"], [/^Tugas pelayanan/, "i-situs"], [/^Kepentingan vital/, "i-sirene"],
+  [/^Memeriksa/, "i-cari"], [/^Mengirim kabar|^Langganan|^Kabar/, "i-kirim"], [/^Menyusun statistik/, "i-kejadian"], [/^Publik/, "i-situs"], [/^Penyimpanan/, "i-kebutuhan"],
+  [/^Akses|^Tautan/, "i-status"], [/^Riwayat/, "i-kalender"], [/^Mendapat informasi/, "i-bantuan"], [/^Melihat/, "i-salin"], [/^Memperbaiki/, "i-tambah-teks"],
+  [/^Menghapus/, "i-tutup"], [/^Keberatan/, "i-orang"]];
 function bukaPrivasi() {
   const w = $("isiPrivasi");
   if (!w.childElementCount) {
     const kp = el("header", "lp-legal-kepala"), mk = el("div", "lp-pita-maskot"); mk.setAttribute("aria-hidden", "true"); mk.innerHTML = maskot("semangat", "", "status"); kp.append(mk,el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
     const daftar = el("ol", "lp-legal-daftar"), isi = el("div", "lp-legal-isi"), meta = el("dl", "lp-legal-meta");
     isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Pantau Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
-    const IK_LEGAL = ["i-daftar", "i-status", "i-pesan", "i-orang", "i-kebutuhan", "i-centang", "i-kejadian", "i-kalender", "i-telepon"];
+    const IK_LEGAL = PRIVASI.map(x => x[2] || "i-daftar");
     PRIVASI.forEach(([judul, blok], i) => {   // daftar isi berikon sama dengan kartunya (pemilik 25 Nov 2026: "kasih icon")
       const id = `privasi-${i + 1}`, a = Object.assign(el("a"), {href: `#${id}`}), u = el("span"); u.append(ikon(IK_LEGAL[i % IK_LEGAL.length])); a.append(u, judul);
       a.addEventListener("click", e => { e.preventDefault(); $(id).scrollIntoView({behavior: "smooth", block: "start"}); });
@@ -1281,10 +1316,10 @@ function bukaPrivasi() {
       // butir "Label: isi" jadi ubin berlabel, kalimat "Kami tidak ..." jadi catatan tegas (pemilik 25 Nov 2026: "terlalu kata-kata banget")
       for (const [jenis, x] of blok) { if (jenis === "p") isi.append(el("p", /^Kami tidak/.test(x) ? "lp-legal-tegas" : null, x));
         else { const ul = el("ul", "lp-legal-butir"); x.forEach(b => { const m = b.match(/^([^:]{2,24}):\s*(.+)$/), li = el("li");
-          li.append(ikon("i-centang")); if (m) { const t = el("span"); t.append(el("b", null, m[1]), el("small", null, m[2].replace(/^./, c => c.toUpperCase()))); li.append(t); } else li.append(el("span", null, b));
+          li.append(ikon(IK_BUTIR.find(([r]) => r.test(b))?.[1] || "i-centang")); if (m) { const t = el("span"); t.append(el("b", null, m[1]), el("small", null, m[2].replace(/^./, c => c.toUpperCase()))); li.append(t); } else li.append(el("span", null, b));
           ul.append(li); }); isi.append(ul); } }
     });
-    for (const [k, v] of [["Berlaku", "19 November 2026"], ["Jenis", "Kebijakan"], ["Untuk", "Pelapor"], ["Bahasa", "Indonesia"]]) meta.append(el("dt", null, k), el("dd", null, v));
+    for (const [k, v] of [["Berlaku", "25 November 2026"], ["Jenis", "Kebijakan"], ["Untuk", "Pelapor"], ["Bahasa", "Indonesia"]]) meta.append(el("dt", null, k), el("dd", null, v));
     // bagian per h2 jadi kartu berikon (pemilik 19 Nov 2026: "bagusin"); pembuka tetap di atas kartu
     const anak = [...isi.children], kartuL = []; let kini = null, n = 0;
     for (const e of anak) { if (e.tagName === "H2") { kini = el("section", "lp-legal-kartu"); const h = el("h2"), u = el("span"); u.append(ikon(IK_LEGAL[n++ % IK_LEGAL.length])); h.id = e.id; h.append(u, e.textContent); kini.append(h); kartuL.push(kini); } else (kini || (kartuL.pembuka ||= el("div", "lp-legal-pembuka"))).append(e); }

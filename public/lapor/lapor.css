@@ -2935,3 +2935,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
   .lp-legal-kepala{position:relative;overflow:hidden}
   .lp-legal-kepala .lp-pita-maskot{position:absolute;right:max(24px,calc(42ch + 60px));bottom:-18px;width:120px;margin:0}
 }
+/* kebijakan privasi: rata kanan-kiri, ikon butir berwarna merek (pemilik 25 Nov 2026: "justify ya", "kasih icon") */
+.lp-legal-kartu p,.lp-legal-butir li small,.lp-legal-butir li > span:only-of-type{text-align:justify!important;hyphens:auto}
+.lp-legal-butir li > svg{background:color-mix(in oklab,var(--brand2) 12%,var(--card))!important;color:var(--brand2)!important;width:16px!important;height:16px!important;padding:6px!important;border-radius:9px!important}
+.lp-legal-kartu{box-shadow:0 1px 2px color-mix(in oklab,var(--head-bg) 6%,transparent)}
+.lp-legal-kartu h2{background:var(--card)!important}
+.lp-legal-kartu h2 span{border-radius:11px}
