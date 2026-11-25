@@ -203,10 +203,10 @@ async function renderMetode() {
       const b = (await mtBahaya())[k] || {}, kl = v => v >= .66 ? "tinggi" : v >= .33 ? "sedang" : v > 0 ? "rendah" : "di luar zona";
       return mtTangga(mtNamaKec(k), "Kecamatan yang sama dengan contoh hujan. Nilai tertinggi dari titik-titik cuplikan di dalam kecamatan.", [
         ...[["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["gelombang", "Gelombang ekstrem & abrasi"], ["kering", "Kekeringan"]]
-          .map(([z, n]) => ["in", n, kl(b[z] || 0), mtA(b[z] || 0, 2)]),
-        mtCek((b.banjir || 0) >= .33, "Bahaya banjir minimal sedang (≥ 0,33)?", "syarat jalur Siaga dari hujan, hujan per jam, dan ansambel"),
-        mtCek((b.banjir || 0) >= .66, "Bahaya banjir tinggi (≥ 0,66)?", "syarat jalur Awas dari hujan"),
-        ["hasil", "Kelas bahaya banjir", "dipakai di bagian 4", kl(b.banjir || 0)]]);
+          .map(([z, n]) => ["in", n, b[z] == null ? "" : kl(b[z]), b[z] == null ? "data tidak ada" : mtA(b[z], 2)]),
+        b.banjir != null && mtCek(b.banjir >= .33, "Bahaya banjir minimal sedang (≥ 0,33)?", "syarat jalur Siaga dari hujan, hujan per jam, dan ansambel"),
+        b.banjir != null && mtCek(b.banjir >= .66, "Bahaya banjir tinggi (≥ 0,66)?", "syarat jalur Awas dari hujan"),
+        ["hasil", "Kelas bahaya banjir", b.banjir == null ? "tidak ada di bahaya.json, syarat tidak dicek" : "dipakai di bagian 4", b.banjir == null ? "data tidak ada" : kl(b.banjir)]]);
     },
     teknis: `<p><code>scripts/banjir/bahaya.py</code>. Layanan ImageServer <code>gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_*</code>, operasi getSamples. Raster hanya bernilai di zona bahaya; di luar zona dicatat 0. Titik cuplik per kecamatan: titik berat luas cincin terbesar (rumus shoelace) ditambah titik kisi 3 × 3 di kotak batasnya yang jatuh di dalam poligon. Yang disimpan nilai <b>tertinggi</b>.</p>
     ${tb(["Ambang", "Dipakai di"], [["≥ 0,33", "Siaga banjir (hujan 3 hari ≥ 80 mm, hujan per jam ≥ 30 mm, P3 ≥ 0,5); Waspada & Siaga longsor"], ["≥ 0,66", "Awas banjir dari hujan; Awas & Siaga longsor"], ["rata-rata kecamatan", "20 poin skor risiko riwayat (bagian 15)"]])}`,
@@ -536,7 +536,9 @@ skor_j   = Σ w_k × (x_jk − min_k) ÷ (max_k − min_k);   w ~ Dirichlet(20 �
     alur: [["d", "berkas", "Masukan hari ini", "sama dengan status harian"], ["o", "alat", "Ubah masukan", "bukan aturannya"], ["o", "centang", "Jalankan aturan", "bagian 4 dan 5"], ["h", "grafik", "Bandingkan", "status baru vs prakiraan"]],
     contoh: async () => {
       const k = mtKec("b"); if (!k) throw new Error("status.json kosong");
-      const m = await mtMasukan(k), st = S.st.kec[k], d = st.b.indexOf(Math.max(...st.b)), x = mtHari(m, d), y = mtHari(m, d, 1.5), bh = m.b.banjir || 0;
+      const m = await mtMasukan(k), st = S.st.kec[k], d = st.b.indexOf(Math.max(...st.b)), x = mtHari(m, d), y = mtHari(m, d, 1.5), bh = m.b.banjir;
+      if (bh == null) return mtTangga(`${mtNamaKec(k)}, ${tglPendek(S.st.hari[d])}, hujan × 1,5`, "Kecamatan yang sama dengan contoh bagian 4.", [
+        ["in", "Kerawanan banjir InaRISK", "tidak ada di bahaya.json", "data tidak ada"], ["hasil", "Status skenario", "aturan tidak dijalankan tanpa kerawanan", "tidak dihitung"]]);
       const l0 = levelBanjir(x.h3, bh, x.rk, x.im, x.cape, x.p3), l1 = levelBanjir(y.h3, bh, y.rk, y.im, y.cape, y.p3);
       return mtTangga(`${mtNamaKec(k)}, ${tglPendek(S.st.hari[d])}, hujan × 1,5`, "Kecamatan yang sama dengan contoh bagian 4.", [
         ["in", "Hujan 3 hari prakiraan", "", mtA(x.h3) + " mm"],
@@ -718,7 +720,9 @@ gelap baru S1 = persen sel sah yang sesudahnya < −17 dB tetapi sebelumnya ≥ 
       ["u", "ukur", "Hitung aliran 72 jam", "inersia lokal, neraca massa dicek"], ["h", "mata", "Genangan 3D", "kedalaman, luas, penduduk"]],
     contoh: async () => {
       const k = mtKec("b"); if (!k) throw new Error("status.json kosong");
-      const m = await mtMasukan(k), P = [0, 1, 2].reduce((s, d) => s + (m.g.h[m.i0 + d] || 0), 0), a7 = m.g.a7 || 0, sm = m.g.sm?.[m.i0];
+      const m = await mtMasukan(k), P = [0, 1, 2].reduce((s, d) => s + (m.g.h[m.i0 + d] || 0), 0), a7 = m.g.a7, sm = m.g.sm?.[m.i0];
+      if (a7 == null) return mtTangga(mtNamaKec(k), "Kecamatan berstatus banjir tertinggi, hujan 3 hari dari prakiraan.", [["in", "Hujan 7 hari lalu", "dasar kelembapan awal tanah", "data tidak ada"],
+        ["hasil", "Air limpasan di kotak 36 km²", "kelembapan awal tidak ditentukan tanpa hujan 7 hari", "tidak dihitung"]]);
       const amc = (sm != null ? sm >= .45 && a7 >= 25 : a7 >= 150) ? 3 : a7 < 36 ? 1 : 2, cn0 = 80, cn = Math.min(100, amc === 1 ? 4.2 * cn0 / (10 - .058 * cn0) : amc === 3 ? 23 * cn0 / (10 + .13 * cn0) : cn0);
       const S0 = 25400 / cn - 254, Ia = .2 * S0, Q = P > Ia ? (P - Ia) ** 2 / (P + .8 * S0) : 0, vol = Q / 1000 * 36e6;
       return mtTangga(mtNamaKec(k), "Kecamatan berstatus banjir tertinggi, hujan 3 hari dari prakiraan. Kotak simulasi 6 × 6 km, CN bawaan 80.", [
