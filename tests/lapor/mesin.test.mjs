@@ -356,3 +356,31 @@ test("cerita awal panjang tidak melewati kronologi berpandu; cerita ditempel di 
   assert.ok(selesai.sesi.krSelesai, "panduan sekali per sesi");
   assert.notEqual(selesai.sesi.status, "kronologi");
 });
+
+test("lapor orang hilang lewat obrolan (pemilik 25 Nov 2026): identitas, lokasi terakhir, nama, hubungan, ciri, waktu, nomor, ringkasan, kirim", async () => {
+  const W = async () => ({desa: "Sukamaju", kec: "Cibinong", kab: "Kab. Bogor", kabKode: "32.01", provKode: "32", kode: "32.01.01.2001", sekitar: []});
+  let sesi = null, pelapor = null, h;
+  const kirim = async teks => { h = await putaran({sesi, pelapor, pesan: typeof teks === "string" ? {teks, wa: "6280000000000"} : {...teks, wa: "6280000000000"}, wilayah: W, kini: ++jam}); sesi = h.sesi; pelapor = h.pelapor; return h; };
+  for (const t of ["orang hilang", "1", "1", "Budi Santoso"]) await kirim(t);
+  assert.ok(sesi.cari); assert.equal(sesi.status, "lokasi"); assert.match(h.balasan, /terakhir terlihat/);
+  await kirim({lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}}); assert.equal(sesi.status, "wilayah");
+  await kirim("1"); assert.equal(sesi.status, "cari_nama", "tanpa RT/RW");
+  assert.equal((await kirim("A1")).sesi.status, "cari_nama", "nama berangka ditolak");
+  await kirim("Siti Aminah"); assert.equal(sesi.status, "cari_hubungan"); assert.ok(h.pilihan.includes("Anak"));
+  await kirim("1"); assert.equal(sesi.cari.hubungan, "Anak");
+  await kirim("umur 9 tahun, kaos merah"); assert.equal(sesi.status, "cari_waktu");
+  await kirim("2"); assert.equal(sesi.cari.waktu, "Kemarin");
+  assert.equal((await kirim("123")).sesi.status, "cari_nomor", "nomor tidak sah ditanya ulang");
+  await kirim("0812 3456 7890"); assert.equal(sesi.cari.nomor, "6281234567890"); assert.equal(sesi.status, "cari_konfirm"); assert.match(h.balasan, /Ringkasan laporan orang dicari/);
+  await kirim("1");
+  assert.equal(sesi.status, "cari_terkirim"); assert.ok(!h.kirim, "bukan laporan bertiket");
+  assert.deepEqual(sesi.cari, {nama: "Siti Aminah"}, "ciri, nomor, hubungan tidak tertinggal di salinan sesi");
+  assert.deepEqual(h.kirimCari, {nama_dicari: "Siti Aminah", ciri: "umur 9 tahun, kaos merah", lokasi_terakhir: "Desa/Kel. Sukamaju, Kec. Cibinong", waktu_terakhir: "Kemarin", nomor_dicari: "6281234567890", hubungan: "Anak", kab: "32.01"});
+  const baru = await kirim("halo"); assert.equal(baru.sesi.cari, undefined, "sesudah terkirim, pesan berikutnya membuka laporan biasa");
+  assert.deepEqual(sesi.cari ?? {}, {}, "sesi baru tanpa rincian orang dicari");
+  const L = {lokasi: {lat: -6.6, lon: 106.8, akurasi: 12, sumber: "gps"}};
+  const draf = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "orang hilang"]);
+  assert.equal(draf.sesi.cari, undefined, "jawaban 'orang hilang' di tengah laporan lain tidak menimpa draf"); assert.equal(draf.sesi.status, "darurat_korban");
+  const tombol = await obrol(["darurat", "1", "1", "Budi Santoso", L, "1", "lapor orang hilang"]);
+  assert.ok(tombol.sesi.cari, "tombol Lapor orang hilang membuka obrolan baru");
+});

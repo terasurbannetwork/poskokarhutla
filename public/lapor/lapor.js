@@ -56,7 +56,7 @@ document.querySelectorAll("#tab button[data-ke]").forEach(b => b.addEventListene
 $("bKembali").addEventListener("click", () => { ke("beranda"); tampilBeranda(); });
 $("bLaporBaru").addEventListener("click", () => bukaChat()); $("bDarurat")?.addEventListener("click", () => bukaChat(true));
 $("bCekStatus").addEventListener("click", () => { ke("chat"); kirim({teks: "status", tampil: "Cek status laporan"}); });
-document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
+document.querySelectorAll("[data-aksi]").forEach(b => b.addEventListener("click", () => ({lapor: () => bukaChat(), darurat: () => bukaChat(true), hilang: () => bukaChat("cari"), sekali: () => sekaliKetuk(), info: () => bukaInfo("info"), prediksi: () => bukaInfo("prediksi"),
   penting: () => bukaInfo("penting"), edukasi: () => { ke("bantuan"); pilihGrup("Edukasi siaga"); }})[b.dataset.aksi]()));
 $("bSemuaBantu").addEventListener("click", () => ke("bantuan"));
 /* Sigap memandu fitur beranda (pemilik 21 Nov 2026): gelembung bergilir 8 detik, berhenti saat disentuh atau difokus,
@@ -784,6 +784,7 @@ function perkiraan(isian) {
 function kalimatSigap(j) {
   const L = j.lengkap || 0, {sisa, teks} = perkiraan(j.isian || []);
   if (j.status === "terkirim") return [["senang", "Terima kasih banyak!", "Laporan Anda sudah sampai ke petugas BNPB dan BPBD setempat."]];
+  if (j.status === "cari_terkirim") { muatCari(); return [["senang", "Laporan diterima", "Petugas BNPB dan BPBD wilayah itu ikut mencari. Kabar dikirim lewat WhatsApp."]]; }
   const awal = [["sapa", "Halo, saya Sigap", "Saya bantu sampai laporan lengkap."],
     ["sapa", "Pelan-pelan saja", "Jawab yang Anda tahu. Kalau tidak tahu, pilih Tidak tahu."],
     ["sapa", "Data Anda terlindungi", "Nomor WhatsApp dan identitas Anda tidak tampil ke publik."]];
@@ -1064,7 +1065,7 @@ async function muatCari() {   // gagal atau belum masuk (401) = daftar kosong, t
 }
 function tampilDaftarLaporan() {
   const w = $("daftarLaporan"), daftar = cache.laporan || [];
-  const aktif = cache.keadaan && !["terkirim", "batal"].includes(cache.keadaan.status) && cache.transkrip.length;
+  const aktif = cache.keadaan && !["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan.status) && cache.transkrip.length;
   const selesai = daftar.filter(l => l.status === "selesai").length;
   const ring = $("ringkasLaporan"); ring.replaceChildren(el("b", null, "Ringkasan"));
   for (const [t, n, ik] of [["Laporan terkirim", daftar.length, "i-kirim"], ["Sedang ditangani", daftar.length - selesai, "i-status"], ["Selesai", selesai, "i-centang"]]) {
@@ -1102,12 +1103,12 @@ function tampilDaftarLaporan() {
   }
   // laporan orang dicari milik nomor ini (pemilik 25 Nov 2026: "disini agar ada masuk juga"), dari /api/lapor/selamat/saya
   for (const c of cache.cari || []) {
-    const b = el("button", "lp-lap-kartu lp-lap-cari"), g = el("div", "lp-lap-gambar"); b.type = "button"; g.style.backgroundImage = "url(/img/foto-pasca.jpg)";
+    const b = el("div", "lp-lap-kartu lp-lap-cari"), g = el("div", "lp-lap-gambar"); g.style.backgroundImage = "url(/img/foto-pasca.jpg)";
     const ic = el("span", "lp-lap-ikon"); ic.append(ikon("i-cari")); g.append(ic, el("span", `lp-pil ${c.status === "buka" ? "ditelaah" : "selesai"}`, LABEL_CARI[c.status] || c.status));
     const tx = el("div", "lp-lap-isi"), meta = el("span", "lp-lap-meta"), m1 = el("span"), m2 = el("span"); m1.append(ikon("i-lokasi"), c.kab_nama || "");
     m2.append(ikon("i-kalender"), new Date(c.dibuat).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(":", ".")); meta.append(m1, m2);
     tx.append(el("b", null, `Orang dicari: ${c.nama_dicari}`), meta, el("small", "lp-lap-cari-ket", c.status === "buka" ? "Petugas BNPB dan BPBD wilayah ini menerima laporan Anda. Kabar dikirim lewat WhatsApp." : "Laporan ini sudah ditutup petugas."));
-    b.append(g, tx); b.addEventListener("click", () => document.querySelector("[data-buka-selamat]")?.click()); isi.push(b);
+    b.append(g, tx); isi.push(b);
   }
   if (!isi.length) {
     const k = el("div", "lp-kosong-besar"), m = el("div", "lp-kosong-maskot"); m.innerHTML = maskot("berpikir");
@@ -1162,6 +1163,12 @@ function sekaliKetuk() {
     if (terbaik.akurasi <= 50) kirimSekarang(); }, () => kirimSekarang(), {enableHighAccuracy: true, maximumAge: 60000, timeout: 15000});
 }
 async function bukaChat(darurat = false) {
+  if (darurat === "cari") {   // lapor orang hilang lewat obrolan, tanpa kode WA (pemilik 25 Nov 2026)
+    ke("chat"); hangatkanTerima();
+    if (log.children.length) log.append(el("li", "tengah", "Lapor orang hilang"));
+    const mulaiCari = () => kirim({teks: "lapor orang hilang", tampil: false});
+    return tanyaBahasa(() => wa ? mulaiCari() : tanyaNomor(mulaiCari));
+  }
   if (darurat === true) {   // K68: laporan darurat selalu dimulai baru; draf laporan biasa yang belum terkirim diganti
     ke("chat"); hangatkanTerima();
     if (log.children.length) log.append(el("li", "tengah", "Laporan darurat"));
@@ -1169,7 +1176,7 @@ async function bukaChat(darurat = false) {
     return tanyaBahasa(() => wa ? mulaiDarurat() : tanyaNomor(mulaiDarurat));
   }
   ke("chat"); hangatkanTerima();
-  if (!log.children.length || ["terkirim", "batal"].includes(cache.keadaan?.status)) { if (cache.keadaan?.status === "terkirim" || cache.keadaan?.status === "batal") { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
+  if (!log.children.length || ["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { if (["terkirim", "batal", "cari_terkirim"].includes(cache.keadaan?.status)) { log.append(el("li", "tengah", "Laporan baru")); } const mulaiLapor = () => kirim({teks: "lapor", tampil: false});
     tanyaBahasa(() => wa ? mulaiLapor() : tanyaNomor(mulaiLapor)); }   // bahasa dipilih di jendela awal; di chat ditanya hanya bila belum
 }
 
@@ -1785,7 +1792,7 @@ async function mulai(nomor, {diChat = false} = {}) {
   tampilBantu(); tampilBeranda(); if (!diChat) ke("beranda");
   try {
     const j = await (await fetch(`/api/lapor/sesi?wa=${nomor}`, {signal: AbortSignal.timeout(15000)})).json();
-    if (!diChat && j.status && !["terkirim", "batal"].includes(j.status)) {
+    if (!diChat && j.status && !["terkirim", "batal", "cari_terkirim"].includes(j.status)) {
       if (!cache.transkrip.length) for (const t of j.transkrip || []) tambah(t.dari === "pelapor" ? "saya" : t.dari, t.teks || (t.lokasi ? "Lokasi dibagikan" : ""));
       terapkan(j);
     }
@@ -1837,7 +1844,7 @@ const TUR = [
   // tiga pintu tambahan di hero ikut dijelaskan (pemilik 25 Nov 2026: "ini kenapa ga ada di tur?")
   [".lp-kaca-pasang", "Pasang aplikasi", "Pasang Pantau Bencana di layar utama HP Anda. Bisa dibuka cepat tanpa mengetik alamat."],
   [".lp-kaca-peringatan", "Peringatan dini", "Buka Info, pilih kecamatan Anda, lalu terima notifikasi saat prakiraan banjir, longsor, asap, atau angin naik ke Waspada, Siaga, atau Awas."],
-  [".lp-kaca-hilang", "Lapor orang hilang", "Laporkan keluarga atau kerabat yang belum ditemukan. Isi nama, ciri, dan tempat terakhir terlihat, lalu kirim ke petugas."],
+  [".lp-kaca-hilang", "Lapor orang hilang", "Laporkan keluarga atau kerabat yang belum ditemukan lewat obrolan. Saya tanyakan nama, ciri, dan tempat terakhir terlihat, lalu laporan dikirim ke petugas."],
   ['#lBeranda .lp-layanan-kartu[data-aksi="info"]', "Info bencana dan prediksi", "Prakiraan hujan, banjir, longsor, asap, dan angin 3 hari ke depan, peringatan dini kecamatan, dan nomor penting terdekat."],
   ['#lBeranda [data-aksi="edukasi"]', "Edukasi siaga bencana", "Yang perlu dilakukan sebelum, saat, dan sesudah bencana."],
   [".lp-bahasa-menu", "Pilih bahasa", "Saya bisa bertanya dalam bahasa daerah Anda. Laporan tetap diterima petugas dalam bahasa Indonesia."],

@@ -1877,6 +1877,10 @@ export const CARI_SIMPAN_HARI = 730, CARI_NOMOR_ANONIM = "62000000000", CARI_NAM
 export const crAnonimkan = (env, p, batas) => sedia(env, p, "lapor_cari", "ubah",
   "UPDATE lapor_cari SET nomor_pencari = ?2, nama_dicari = ?3, ciri = NULL, lokasi_terakhir = NULL, nomor_dicari = NULL, hubungan = NULL WHERE status <> 'buka' AND ditutup < ?1 AND nomor_pencari <> ?2")
   .bind(batas, CARI_NOMOR_ANONIM, CARI_NAMA_ANONIM).run();
+/* orang dicari lewat obrolan (K105): satu pernyataan di batch sesi supaya sesi "cari_terkirim" dan baris lapor_cari tersimpan bersama (g = hanya bila pernyataan sebelumnya mengubah baris) */
+export const crStmtTambah = (env, p, b, kini, g = false) => sedia(env, p, "lapor_cari", "tambah",
+  lpIns(g, "", "lapor_cari", "id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, dibuat"))
+  .bind(b.id, b.nomor_pencari, b.nama_dicari, b.ciri, b.lokasi_terakhir, b.waktu_terakhir, b.nomor_dicari, b.hubungan, b.kab, kini);
 /* laporan orang dicari milik satu pencari untuk daftar Laporan saya (pemilik 25 Nov 2026): tanpa nomor siapa pun, tanpa ciri */
 export const crMilik = async (env, p, nomor) => (await sedia(env, p, "lapor_cari", "baca",
   "SELECT id, nama_dicari, kab, status, dibuat FROM lapor_cari WHERE nomor_pencari = ?1 ORDER BY dibuat DESC LIMIT 20").bind(nomor).all()).results;

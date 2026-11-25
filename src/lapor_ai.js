@@ -37,7 +37,7 @@ import {hakSk} from "./siklus.js";
 const MENIT = 60e3, HARI = 864e5, JAM = 3600e3, VERSI = 1, MAKS_TERKIRIM_HARI = 5, MAKS_FOTO = 10, MAKS_BERKAS = 20;   // D79: foto dan video dihitung bersama, paling banyak 20, video paling banyak 3
 const BATAS_PESAN = [[MENIT, 20], [JAM, 120], [HARI, 300]],   // K104 (pemilik 25 Nov 2026): 120 per jam per orang karena pertanyaannya banyak; harian ikut naik supaya tidak lebih ketat dari jam
   BATAS_IP_JAM = [[JAM, 300]], BATAS_PERANGKAT_JAM = [[JAM, 120]];   // per nomor; per alamat IP /64 hanya pintu web
-const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa"]);
+const SELESAI = new Set(["terkirim", "batal", "kedaluwarsa", "cari_terkirim"]);
 const HDR = {"cache-control": "private, no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer"};
 const kirim = (kode, isi) => json(isi, kode, HDR);
 const galat = (kode, pesan, tambah = {}) => kirim(kode, {galat: pesan, ...tambah});
@@ -277,6 +277,8 @@ async function simpanSusulan(env, url, {wa, saluran, perangkat}, {h, baris, awal
 async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama, lanjut, pel, awal}, kini, tambahStmt = []) {
   if (h.kirim && h.sesi.susulanDari) return simpanSusulan(env, url, {wa, saluran, perangkat}, {h, baris, awal}, kini);
   const s = h.sesi, pesanBaru = s.transkrip.slice(lanjut ? awal : 0), g = [], kj = [], tambahan = {};
+  // orang dicari lewat obrolan (pemilik 25 Nov 2026): batas 5 per nomor per hari sama dengan POST /api/lapor/cari, dicek sebelum sesi disimpan
+  if (h.kirimCari && await laju(env, await sha(wa), "lapor.cari.baru", [[HARI, 5]], kini)) return {batas: true, teks: "Batas laporan orang dicari hari ini sudah tercapai (5 laporan per nomor). Coba lagi besok, atau hubungi 112 bila orang itu dalam bahaya sekarang."};
   let nomor = null, tokenSha = null, ringkas = null, token = null;
   if (h.kirim) {   // nomor tiket, token lacak, PDF dan Word (ALGORITMA A6, A8)
     if (await H.lpHitungTerkirim(env, P, wa, kini - HARI) >= MAKS_TERKIRIM_HARI) return {batas: true, teks: BATAS_KIRIM_TEKS};
@@ -306,6 +308,7 @@ async function simpanPutaran(env, url, {wa, saluran, perangkat}, {h, baris, lama
   const w = s.isian.lokasi?.nilai, baru = {id: s.id, wa, status: s.status, tingkat: s.tingkat, jenis: s.isian.jenis?.nilai ?? null, kab: w?.wilayah?.kabKode ?? null,
     lat: w?.lat ?? null, lon: w?.lon ?? null, kerja: JSON.stringify(s), nomor, token_sha: tokenSha, terkirim: nomor ? s.terkirim : null, ringkas};
   for (const t of pesanBaru) g.push(H.lpStmtPesan(env, P, s.id, t.dari, saluran === "wa" ? "wa" : "web", t.teks, t.waktu, true));
+  if (h.kirimCari) { const id = acak(8); g.push(H.crStmtTambah(env, P, {id, nomor_pencari: wa, ...h.kirimCari}, kini, true)); tambahan.cari = {id, status: "buka"}; }   // satu batch dengan sesi (tinjauan keamanan 25 Nov 2026)
   const p = h.pelapor;
   if (s.verifikasi !== "ketik" && p?.nama && (!pel || pel.nama !== p.nama || pel.peran !== p.peran || pel.kab !== (p.kab ?? null) || pel.jabatan !== (p.jabatan ?? null))) g.push(H.lpStmtPelapor(env, P, wa, p, kini, true));
   g.push(...tambahStmt, ...kj);
@@ -442,7 +445,7 @@ async function statusLaporan(env, id) {
   const {wa} = id, baris = await (id.perangkat ? H.lpSesiMilikPerangkat(env, P, wa, id.perangkat) : H.lpSesiMilik(env, P, wa)), milik = [];
   for (const b of baris) { const s = JSON.parse(b.kerja); milik.push({nomor: b.nomor, token: await tokenLacak(env, b.nomor), jenisLabel: labelJenis(s.isian.jenis?.nilai), terkirim: b.terkirim, provKode: provDari(s), status: b.tiket}); }
   const j = jawabStatus(milik), a = await sesiAktif(env, id), aktif = a ? dariBaris(a) : null;
-  const lanjut = aktif && !["terkirim", "batal"].includes(aktif.status) ? aktif : null;
+  const lanjut = aktif && !["terkirim", "batal", "cari_terkirim"].includes(aktif.status) ? aktif : null;
   return kirim(200, {...j, teksWa: j.balasan, ...(lanjut ? lanjutan(lanjut) : {})});
 }
 
