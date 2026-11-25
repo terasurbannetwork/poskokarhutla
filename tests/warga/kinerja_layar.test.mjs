@@ -26,8 +26,11 @@ const KES = m => ({kini: "2026-11-23T04:00:00.000Z", status: {ok: false, basi: [
   d1: m === "tanpa_token" ? {tersedia: false, alasan: "tanpa token"} : {tersedia: true, batas: {baca: 5e6, tulis: 1e5},
     hari: [...Array.from({length: 5}, (_, i) => ({tanggal: `2026-11-${17 + i}`, baca: 3143797, tulis: 12000, kueri_baca: 900000, kueri_tulis: 4000})), {tanggal: "2026-11-22", baca: null, tulis: null, kueri_baca: null, kueri_tulis: null},
       {tanggal: "2026-11-23", baca: 4200000, tulis: 23456, kueri_baca: 1000000, kueri_tulis: 5000}]}});
-const BERKAS = {dibuat: "2026-11-23T11:22+07:00", ringkas: {segar: 1, telat: 1}, berkas: [{modul: "karhutla", berkas: "public/data/meta.json", batas_jam: 8, sumber: "titik.yml", umur_jam: 0.1, status: "segar"},
-  {modul: "banjir", berkas: "public/banjir/data/meta.json", batas_jam: 30, sumber: "banjir.yml", umur_jam: 41, status: "telat"}]};
+const BERKAS = {dibuat: "2026-11-23T11:22+07:00", ringkas: {segar: 1, telat: 3, hilang: 1}, ringkas_kesegaran: {segar: 1, basi: 1, mati: 3}, berkas: [{modul: "karhutla", berkas: "public/data/meta.json", batas_jam: 8, sumber: "titik.yml", umur_jam: 0.1, status: "segar", kesegaran: "segar"},
+  {modul: "banjir", berkas: "public/banjir/data/meta.json", batas_jam: 30, sumber: "banjir.yml", umur_jam: 41, status: "telat", kesegaran: "basi"},
+  {modul: "gempa", berkas: "public/gempa/data/meta.json", batas_jam: 6, sumber: "gempa.yml", stempel: "2026-11-20T08:05+07:00", umur_jam: 75.3, status: "telat", kesegaran: "mati"},
+  {modul: "longsor", berkas: "public/longsor/data/meta.json", batas_jam: 24, sumber: "longsor.yml", stempel: null, umur_jam: null, status: "hilang", kesegaran: "mati"},
+  {modul: "lama", berkas: "public/lama/data/meta.json", batas_jam: 24, sumber: "lama.yml", umur_jam: 30, status: "telat"}]};   // tanpa kunci kesegaran: status lama jadi cadangan
 
 if (!CHROME) test("uji layar kinerja DILEWATI: Chrome tidak ditemukan", {skip: "tidak ada Chrome/Chromium (set CHROME_BIN)"}, () => {});
 else {
@@ -129,8 +132,12 @@ else {
     await tab.tungguFungsi("document.querySelectorAll('.ex-tabel tbody tr').length >= 7");
     assert.match(await tab.eval("document.querySelector('.ex-tabel tbody tr')?.innerText"), /Himawari[\s\S]*gagal[\s\S]*3/);
     const t = await tab.teks();
-    for (const re of [/workflow gagal terakhir/, /sedang jalan/, /nonaktif/, /basi/, /telat/, /41 jam lalu/, /kuota baca D1 hari ini[\s\S]*84%|84%[\s\S]*kuota baca D1 hari ini/, /4\.200\.000/, /Kuota D1/]) assert.match(t, re);
+    for (const re of [/workflow gagal terakhir/, /sedang jalan/, /nonaktif/, /basi/, /telat/, /41 jam lalu/, /data tidak tersedia sejak 20-11-2026 08\.05 WIB/, /longsor[\s\S]*mati[\s\S]*data tidak tersedia\b/, /berkas data basi atau mati/, /kuota baca D1 hari ini[\s\S]*84%|84%[\s\S]*kuota baca D1 hari ini/, /4\.200\.000/, /Kuota D1/]) assert.match(t, re);
     assert.deepEqual([...new Set(t.match(TERLARANG) || [])], []);
+    assert.doesNotMatch(t, /75,3 jam lalu|SEGAR|BASI|MATI/, "berkas mati tanpa umur; label tanpa kapital");
+    const ber = await tab.eval("[...document.querySelectorAll('.ex-tabel')].at(-1).innerText");
+    assert.match(ber, /banjir[\s\S]*basi/); assert.match(ber, /lama[\s\S]*telat/);
+    assert.equal(await tab.eval("[...document.querySelectorAll('.kj-pil.t-basi')].length >= 1"), true);
     assert.equal(await tab.eval("getComputedStyle(document.querySelector('.kj-bar')).display"), "none", "filter periode dan wilayah tidak berlaku di tab ini");
     assert.ok((await tab.lebihLebar()).sw <= w + 1, "scroll horizontal");
     await tab.klikTeks("[data-tab]", "^Data$"); await tab.tungguFungsi("document.querySelectorAll('.kj-s').length === 3 && !location.search.includes('tab=')");
