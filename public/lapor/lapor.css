@@ -2881,7 +2881,9 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 .lp-tab-aksi{display:none}
 @media (min-width:900px){
   .lp-tab-aksi{display:grid;gap:8px;margin-top:auto;align-self:stretch;padding-top:8px}
-  .lp-tab .lp-sigap ~ .lp-tab-aksi{margin-top:0}
+  .lp-tab-aksi{margin-top:auto!important}
+  .lp-tab .lp-sigap ~ .lp-tab-aksi{margin-top:0!important}
+  .lp-tab:has(.lp-sigap[style*="none"]) .lp-tab-aksi,.lp-app:not(.di-chat) .lp-tab .lp-tab-aksi{margin-top:auto!important}
   .lp-tab-aksi .lp-tab-lapor{margin:0!important}
   .lp-tab-aksi,.lp-tab-aksi .lp-tab-lapor{width:100%;box-sizing:border-box}
   .lp-tab-aksi .lp-tab-lapor{justify-content:flex-start!important;padding-inline:16px!important}
@@ -2925,3 +2927,11 @@ body:has(.lp-tur) .lp-hg-tip{visibility:hidden}
 @keyframes mk-sapu{0%,100%{transform:rotate(0)}30%{transform:rotate(-12deg)}70%{transform:rotate(6deg)}}
 @keyframes mk-kedip{0%{opacity:1}100%{opacity:.25}}
 @keyframes mk-ucap{0%,100%{opacity:0;transform:translateY(4px)}20%,60%{opacity:1;transform:translateY(0)}}
+/* maskot di kepala halaman Laporan, Bantuan, Kebijakan privasi (pemilik 25 Nov 2026: "agar disini ada si maskot juga") */
+.lp-pita-maskot{display:none}
+@media (min-width:900px){
+  .lp-pita-dua:has(.lp-pita-maskot){grid-template-columns:minmax(0,1fr) 170px minmax(380px,520px)!important;gap:24px!important}
+  .lp-pita-maskot{display:block;width:170px;align-self:end;margin-bottom:-40px}
+  .lp-legal-kepala{position:relative;overflow:hidden}
+  .lp-legal-kepala .lp-pita-maskot{position:absolute;right:max(24px,calc(42ch + 60px));bottom:-18px;width:120px;margin:0}
+}

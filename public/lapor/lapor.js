@@ -1269,7 +1269,7 @@ const PRIVASI = [
 function bukaPrivasi() {
   const w = $("isiPrivasi");
   if (!w.childElementCount) {
-    const kp = el("header", "lp-legal-kepala"); kp.append(el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
+    const kp = el("header", "lp-legal-kepala"), mk = el("div", "lp-pita-maskot"); mk.setAttribute("aria-hidden", "true"); mk.innerHTML = maskot("semangat", "", "status"); kp.append(mk,el("p", "lp-alis lp-alis-terang", "Pantau Bencana BNPB"), el("h1", null, "Kebijakan privasi"), el("p", "lp-legal-catatan", "Ini draf uji coba. Bagian hukum BNPB akan meninjau isinya sebelum layanan dibuka untuk umum."));
     const daftar = el("ol", "lp-legal-daftar"), isi = el("div", "lp-legal-isi"), meta = el("dl", "lp-legal-meta");
     isi.append(el("p", null, "Kebijakan ini menjelaskan data apa yang dikumpulkan layanan Pantau Bencana BNPB, untuk apa data itu dipakai, siapa yang dapat melihatnya, dan hak Anda atas data tersebut."));
     const IK_LEGAL = ["i-daftar", "i-status", "i-pesan", "i-orang", "i-kebutuhan", "i-centang", "i-kejadian", "i-kalender", "i-telepon"];
@@ -1756,6 +1756,8 @@ $("fNomor").addEventListener("submit", e => {
 const tersimpan = simpan.baca("lapor-wa");
 /* pembuka: maskot dan sapaan tiap halaman dibuka (pemilik 20 Nov 2026 "animasinya mana yang di awal"); ketuk untuk melewati */
 $("maskotHero").innerHTML = maskot("sapa");
+// maskot di kepala halaman Laporan, Bantuan, dan Kebijakan privasi, beraksi sesuai halamannya (pemilik 25 Nov 2026)
+for (const m of document.querySelectorAll("[data-maskot]")) m.innerHTML = maskot("semangat", "", m.dataset.maskot);
 if (!$("sigapMaskot").childElementCount) { $("sigapMaskot").innerHTML = maskot("sapa"); poseSigap = "sapa"; }   // Sigap di menu samping tampil sejak awal, bukan setelah chat jalan
 const pernah = false;
 if (!pernah) {
