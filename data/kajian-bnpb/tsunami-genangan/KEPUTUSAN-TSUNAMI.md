@@ -19,6 +19,7 @@ Video rujukan pemilik (akun @arvindvazza: simulasi tsunami Anak Krakatau 2018 ke
 | K5 | 23 Nov 2026 (menjawab Q4 dan Q5): "Yes", hitung di mesin lokal pemilik dulu, pustaka skenario di repo dengan anggaran ukuran. GitHub Actions dan R2 hanya fase 3, setelah waktu hitung terukur nyata. |
 | K6 | 23 Nov 2026 (menjawab Q6 dan Q7): "Yes", tiga kotak pertama: Ujung Kulon, Pangandaran sampai Cilacap, Banyuwangi sampai Rajegwesi; pembagian kejadian kelas A dan kelas B diterima. Aturan kelasnya ditegaskan agent: kelas ditentukan dari sifat sumber dan ketersediaan data, tidak dari hasil hitungan (ALGORITMA 8.1). Akibatnya ditulis terbuka di Q17: ketiga kotak itu belum punya kejadian uji kelas A. |
 | K7 | 23 Nov 2026 (menjawab Q14 dan Q15): pemilik menjawab "Yes" atas pertanyaan pilihan, jadi yang diterima adalah bawaan sementara: saat BMKG memberi peringatan aktif, simulasi tetap tampil di bawah pita resmi dengan label; peta genangan berhipotesis mengikuti hak tab Simulasi sekarang (publik), dengan label hipotesis dan kalimat batas. |
+| K8 | 25 Nov 2026: "Tetap wajib lulus". Pemilik menolak mengeluarkan BP04 gelombang pecah dari syarat validasi; TS-10 baru lulus bila tak pecah dalam 5% dan pecah dalam 10% dari data lab (PMEL-135), tanpa menyetel parameter ke data lab. Manning tetap di luar gerbang sampai ada keputusan lain. |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
