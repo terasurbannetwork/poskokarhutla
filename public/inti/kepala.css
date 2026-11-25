@@ -12,11 +12,17 @@
 .bencana .menu a.segera:hover{background:none}
 .bencana .menu a:hover,.bencana .menu a[aria-current="page"]{background:var(--surface)}
 .bencana .menu hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
+/* butir anak (induk di peta_situs_publik.json): menjorok di bawah bencananya; menu bisa digulir bila lebih tinggi dari layar */
+.bencana .menu{max-height:calc(100dvh - var(--top, 56px) - 20px);overflow-y:auto}
+.bencana .menu a.bc-anak{padding-left:36px;font-weight:600}
+.bencana .menu a.bc-anak .bc-ik{width:15px;height:15px;opacity:.75}
 .bc-segera{margin-left:auto;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.01em;padding:2px 8px;border-radius:999px;background:color-mix(in oklch,#4f9be0 16%,transparent);color:#2f6fb0;white-space:nowrap}
 .bc-pred{display:flex;align-items:center;gap:6px;flex:none;padding:6px 11px;border-radius:10px;background:oklch(100% 0 0 / .12);color:#fff;text-decoration:none;font-family:var(--display);font-weight:800;font-size:13.5px;white-space:nowrap}
 .bc-pred:hover,.bc-pred[aria-current="page"]{background:oklch(100% 0 0 / .22)}
 .bc-pred .bc-ik{width:16px;height:16px}
 @media(max-width:560px){.bc-pred span{display:none}.bc-pred{padding:7px}}
+/* layar sempit: tiga tombol ikon saja, rapat (lebar 24px, sela 2px; sasaran sentuh minimum 24px WCAG 2.5.8), temuan inp-reviewer PS-05 */
+@media(max-width:640px){.bc-pred{padding:7px 4px}.bc-pred+.bc-pred{margin-left:-4px}}
 html[data-situs=w] [data-t=tentang],html[data-situs=w] a[href="/tentang"]{display:none} /* situs Centurisk97: tanpa Tentang di bencana mana pun (pemilik, 19 Okt 2026); URL-nya dialihkan worker */
 /* kepala halaman: bilah atas dan tombol ikon (dulu disalin di gaya.css, semua.css, peringatan.css) */
 header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 14px;

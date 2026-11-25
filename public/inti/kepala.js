@@ -1,4 +1,4 @@
-/* Menu pilihan bencana di kepala, digambar dari /bencana.json (registry).
+/* Menu pilihan bencana di kepala, digambar dari /bencana.json (registry) plus butir anak dari /inti/peta_situs_publik.json.
    Pasang: <details class="bencana" data-bencana="<id halaman>" [data-tanpa-segera]> dengan markup cadangan statis di dalamnya.
    Bila registry gagal dimuat, markup cadangan dibiarkan apa adanya. Bencana tanpa ikon di IKON tidak ditampilkan. */
 export const IKON = {
@@ -16,11 +16,38 @@ const SEMUA = svg('<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x=
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const rata = p => p.replace(/\.html$/, "").replace(/(.)\/$/, "$1");
 
+/* ikon garis butir anak (Desa waspada, laporan, simulasi), kunci = medan ikon di peta_situs_publik.json; tanpa kotak atau latar */
+const GARIS = {
+  pin: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  peringatan: '<path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17v.01"/>',
+  daftar: '<path d="M8 6h12M8 12h12M8 18h12M4 6v.01M4 12v.01M4 18v.01"/>',
+  grafik: '<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>',
+  simpan: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 13h7M9 17h7"/>',
+  kalender: '<path d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5"/>',
+};
+const garis = k => svg(GARIS[k] || GARIS.daftar, ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"');
+const kini = (rute, lokasi) => rata(rute) === lokasi ? ' aria-current="page"' : "";
+
+/* Tombol kepala sesudah menu bencana: Prediksi, Lapor, Masuk (D6 peta-situs). Tautan polos, tanpa JS klik; dipasang tanpa menunggu fetch. */
+const TOMBOL = [
+  ["/prediksi", "Prediksi", '<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>'],
+  ["/lapor", "Lapor", '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><path d="M12 7v4M12 13.5v.01"/>'],
+  ["/masuk", "Masuk", '<path d="M14 4h5v16h-5M10 8l4 4-4 4M14 12H3"/>'],
+];
+function tombol(d) {
+  if (d.nextElementSibling?.classList.contains("bc-pred")) return;
+  const p = location.pathname;
+  d.insertAdjacentHTML("afterend", TOMBOL.map(([r, n, ik]) =>
+    `<a class="bc-pred" href="${r}"${p === r || (p.startsWith(r + "/") && !p.startsWith("/lapor/meja")) ? ' aria-current="page"' : ""}>${svg(ik, ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}<span>${n}</span></a>`).join(""));
+}
+
 async function gambar(d) {
+  /* registri bencana wajib (urutan, ikon, status); peta situs publik boleh gagal: menu tetap jalan tanpa butir anak */
+  const peta = fetch("/inti/peta_situs_publik.json").then(r => r.ok ? r.json() : null).catch(() => null);
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
   /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
-     terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026), gunung api (10 Nov 2026), serta gempa dan kekeringan (11 Nov 2026: "semua coming soon dibuka aja"). */
+     terbuka. Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026), gunung api (10 Nov 2026), serta gempa dan kekeringan (11 Nov 2026: "semua coming soon dibuka aja"). */
   const TAMPIL = new Set(["karhutla", "banjir", "pesisir", "cuaca", "gunungapi", "gempa", "kekeringan"]);
   const reg = (await r.json()).bencana;
   /* urutan menu (pemilik, 1 Nov 2026, dikonfirmasi ulang): Karhutla, Banjir, Cuaca Ekstrem tepat di bawah Banjir, lalu Pesisir,
@@ -35,23 +62,27 @@ async function gambar(d) {
   if (!ini) return;
   const lokasi = rata(location.pathname);
   const tanpaSegera = "tanpaSegera" in d.dataset;
-  const butirSemua = TAMPIL.size ? "" : `<a href="/semua"${lokasi === "/semua" ? ' aria-current="page"' : ""}>${SEMUA}Semua bencana</a>`;
-  /* DW-08: satu tautan di bawah Karhutla (Q6 bawaan), tanpa kartu baru di index.html */
-  const desaWaspada = `<a href="/desa-waspada"${lokasi.startsWith("/desa-waspada") ? ' aria-current="page"' : ""} style="padding-left:36px">${svg('<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Desa waspada</a>`;
-  const butir = butirSemua + daftar.map(b => {
-    if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>` + (b.id === "karhutla" ? desaWaspada : "");
-    return tanpaSegera && !TAMPIL.size ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">${TAMPIL.size ? "Soon" : "Segera"}</em></a>`;
-  }).join("");
+  /* "Semua bencana" dan butir anak (induk = rute bencana) dari peta situs publik. Gambar pertama segera dari registri saja;
+     butir anak menyusul saat peta situs datang (tanpa saling tunggu, temuan inp-reviewer PS-05) */
+  const menu = hal => {
+    const atas = hal.find(h => h.rute === "/semua");
+    const butirSemua = `<a href="/semua"${kini("/semua", lokasi)}>${SEMUA}${esc(atas?.nama || "Semua bencana")}</a>`;
+    const anak = b => hal.filter(h => h.induk && rata(h.induk) === rata(b.rute))
+      .map(h => `<a class="bc-anak" href="${esc(h.rute)}"${kini(h.rute, lokasi)}>${garis(h.ikon)}${esc(h.nama)}</a>`).join("");
+    const butir = butirSemua + daftar.map(b => {
+      if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${kini(b.rute, lokasi)}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>` + anak(b);
+      return tanpaSegera && !TAMPIL.size ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">${TAMPIL.size ? "Soon" : "Segera"}</em></a>`;
+    }).join("");
+    d.querySelector(".menu").innerHTML = butir;
+  };
+  menu([]);
+  peta.then(p => { const hal = (p?.halaman || []).filter(h => h.pintu === "publik" && h.grup === "bencana"); if (hal.length) menu(hal); });
   const sr = d.querySelector("summary .sr")?.outerHTML || "";
   if (!semua) d.querySelector("summary").innerHTML = svg(IKON[ini.ikon]) + sr + esc(ini.nama);
-  /* Prediksi bukan jenis bencana: tombol sendiri di kepala, tepat sesudah menu bencana (tautan polos, tanpa JS klik). */
-  if (!d.nextElementSibling?.classList.contains("bc-pred"))
-    d.insertAdjacentHTML("afterend", `<a class="bc-pred" href="/prediksi"${location.pathname.startsWith("/prediksi") ? ' aria-current="page"' : ""}>${svg('<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}<span>Prediksi</span></a>`);
-  const kemitraan = `<hr><a href="/kemitraan"${location.pathname.startsWith("/kemitraan") ? ' aria-current="page"' : ""}>${svg('<path d="M3 10l9-5 9 5-9 5zM7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Kemitraan</a>`;
-  d.querySelector(".menu").innerHTML = butir + kemitraan;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
+  /* Kemitraan pindah ke kaki situs (PS-05); "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026) */
   d.classList.toggle("ada-segera", (!tanpaSegera || TAMPIL.size > 0) && daftar.some(b => !buka(b)));
 }
 
-document.querySelectorAll("details.bencana").forEach(d => gambar(d).catch(() => {}));
+document.querySelectorAll("details.bencana").forEach(d => { tombol(d); gambar(d).catch(() => {}); });
 /* deretan tab kepala: tab yang tidak muat masuk menu "Lainnya" (inti/tab_lainnya.js), semua laman bencana */
 import("./tab_lainnya.js").then(m => m.pasangLainnya(document.querySelector("nav.tabs"))).catch(() => {});
