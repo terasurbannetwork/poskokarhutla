@@ -687,6 +687,17 @@ Sebelum menyentuh sumber isi Docs, generator halamannya, tampilan `/docs`, indek
 
 Aturan berhentinya sama dengan §2.1. Sumber isi satu (Markdown di `docs/centurisk97/`), halaman HTML adalah keluaran yang tidak disunting tangan dan harus segar (`python3 -I scripts/docs/bangun.py --cek`). Struktur halaman dari `docs/centurisk97/peta.json` (dua bagian Panduan dan Pengembang, satu metode satu halaman; Panduan tanpa nama berkas atau kode, K6-K8); angka, rumus, ambang, jadwal, rute, dan hak akses hanya dari kode atau dokumen repo dengan rujukan `berkas:baris`, bila tidak ketemu ditulis "belum terdokumentasi di kode". Model yang belum lulus uji balik ditulis hipotesis; kosong tidak ditulis nol. Tanpa nama orang, nomor, surel, kunci, atau data nyata (repo publik); angka pengaman penyalahgunaan tidak ditulis (Q2). Pertanyaan pemilik yang terbuka ditulis "belum diputuskan (bawaan sementara: ...)". Tampilan memakai token `tema.css` dan kartu standar, tanpa palet sendiri; tidak ada rute API baru; tidak ada salinan docs di modul lain; tinjau di `http://localhost:8800/docs`.
 
+### 2.51 Semai Redistribusi Banjir (`/operasi`, seksi Peluang semai tujuan Banjir: sasaran kab/kota, zona cegat di hulu angin, renlap OMC `-B`, penguji efektivitas): baca dulu, baru bangun
+
+Sebelum menyentuh tujuan banjir di mesin semai (sasaran, koridor lintasan mundur, gerbang GB, zona `-B`), sasaran manual Pusdalops, atau penguji efektivitas OMC banjir, baca dokumen di
+`data/kajian-bnpb/semai-banjir/` dengan urutan otoritas ini (kode di `scripts/operasi/semai*` milik `pipa-data`; `scripts/udara/lintasan.py` dan `scripts/omc/**` milik `cuaca-udara`; `public/operasi_semai*` dan `public/renlap_omc*` milik `layar-peta`; `src/operasi_semai.js` dan migrasi `op_semai_sasaran` milik `warga-api`; `semai.yml` milik `mekanik-mesin`). Paket induk `data/kajian-bnpb/semai-awan/` tetap berlaku:
+
+1. `KEPUTUSAN-SEMAI-BANJIR.md`: keputusan pemilik K1-K4, rancangan D1-D10, pertanyaan terbuka Q1-Q12 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (sasaran, koridor, GB1-GB4, penguji Lapis A dan B), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md` (kriteria vonis penguji dikunci sebelum data hasil ditarik), 10. `TIKET.md` (`SB-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Satu mesin semai dengan sumbu `tujuan` (karhutla atau banjir), tanpa `semai_banjir.py` salinan; mesin lintasan tetap satu (`lintasan.py`); zona usulan, tidak pernah masuk renlap sendiri; zona cegat tidak boleh di daratan kab/kota sasaran atau kab yang sendiri terancam banjir; karhutla tidak mundur (uji golden); penguji hanya melaporkan kesesuaian, bukan sebab-akibat, dan hasilnya hanya untuk staf (Q4); tidak pernah menulis "aman", "akan hujan", atau "mencegah banjir".
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

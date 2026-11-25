@@ -1029,17 +1029,99 @@ def buat_fixture(putaran, jalur_kluster):
     print(f"fixture {os.path.getsize(p) / 1024:.0f} KB; cluster: " + ", ".join(f"{k}={len(v['cluster'])}" for k, v in out["lokasi"].items()))
 
 
+def hitung_golden(b):
+    """Potret karhutla (stdlib) dari fixture_semai.json: lolos gerbang, skor sel > 0 (skor 6 desimal), zona berurutan. SB-01."""
+    with open(os.path.join(AKAR, "fixture_semai.json"), encoding="utf-8") as f:
+        F = json.load(f)
+    off = b["zona_waktu"]["offset_jam"]
+    w = (M.nilai(b, "skor.wq"), M.nilai(b, "skor.wd"), M.nilai(b, "skor.wt"))
+    F0, rad, tau = M.nilai(b, "d.f0_mw"), M.nilai(b, "d.radius_api_km"), M.nilai(b, "d.tau_menit")
+    ih = int(F["putaran"][8:10])
+    langkah = F["langkah"]
+    tampil = [s for s in langkah if s >= 12]
+    out = {}
+    for nm, L in F["lokasi"].items():
+        n = L["n"]
+        zt = M.zona_waktu_prov(L["prov_kode"], b["zona_waktu"]["provinsi"])
+        cls = [(c["lat"], c["lon"], c["frp24"] * (M.nilai(b, "d.pengali_gambut") if c["gambut"] else 1.0)) for c in L["cluster"]]
+        skor_cs, sel_nol, lolos = {}, [], 0
+        for s in tampil:
+            k = langkah.index(s)
+            for i in range(n):
+                for j in range(n):
+                    c = {key: arr[k][i][j] for key, arr in L["medan"].items()}
+                    tp_n = L["medan"]["sfc_tp"][k + 1][i][j] if k + 1 < len(langkah) else None
+                    sel = M.turunan_sel(c, tp_n, (ih + s + off[zt]) % 24)
+                    hl, ho = M.titik_hujan(L["lat0"] - 0.1 * i, L["lon0"] + 0.1 * j, sel["u_pengarah"], sel["v_pengarah"], tau)
+                    Fk = sum(e for y, x, e in cls if M.haversine(hl, ho, y, x) <= rad)
+                    dm = min(M.haversine(hl, ho, y, x) for y, x in L["tempat"])
+                    sk = M.skor_sel(sel, M.faktor_d(Fk, F0), M.faktor_t(dm, M.nilai(b, "t.dekat_km"), M.nilai(b, "t.jauh_km")), b)[0]
+                    lolos += M.gerbang(sel, b)[0]
+                    skor_cs.setdefault((i, j), {})[s] = sk
+                    if sk > 0:
+                        sel_nol.append([s, i, j, round(sk, 6)])
+        cells = [dict(lat=L["lat0"] - 0.1 * i, lon=L["lon0"] + 0.1 * j, skor=max(v.values()), ij=(i, j)) for (i, j), v in skor_cs.items()]
+        zn = M.zona_nms(cells, M.nilai(b, "zona.jarak_min_km"), M.nilai(b, "zona.maks"), M.nilai(b, "zona.skor_min"))
+        out[nm] = {"lolos_gerbang": lolos, "sel_skor_positif": len(sel_nol), "sel": sel_nol,
+                   "zona": [[round(z["lat"], 4), round(z["lon"], 4), round(z["skor"], 6), list(z["ij"])] for z in zn]}
+    return out
+
+
+def uji_golden():
+    """`semai.py uji golden`: bandingkan persis dengan fixture_semai_golden.json (tulis ulang: tambah `--tulis`)."""
+    import subprocess
+    b = muat_bobot()
+    now = hitung_golden(b)
+    gp = os.path.join(AKAR, "fixture_semai_golden.json")
+    if "--tulis" in sys.argv:
+        try:
+            sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=AKAR, text=True).strip()
+        except Exception:
+            sha = "tidak diketahui"
+        with open(gp, "w", encoding="utf-8") as f:
+            json.dump({"dibuat": "2026-11-25", "sumber_commit": sha, "fixture": "fixture_semai.json", "lokasi": now}, f, ensure_ascii=False, separators=(",", ":"))
+        print(f"golden ditulis {os.path.getsize(gp) / 1024:.0f} KB @ {sha[:9]}")
+        return
+    with open(gp, encoding="utf-8") as f:
+        G = json.load(f)["lokasi"]
+
+    def beda(a, e, jalur):
+        if isinstance(e, dict) and isinstance(a, dict):
+            for k in sorted(set(e) | set(a)):
+                r = beda(a.get(k), e.get(k), f"{jalur}.{k}")
+                if r:
+                    return r
+        elif isinstance(e, list) and isinstance(a, list):
+            if len(a) != len(e):
+                return f"{jalur}: panjang {len(a)} != golden {len(e)}"
+            for i, (x, y) in enumerate(zip(a, e)):
+                r = beda(x, y, f"{jalur}[{i}]")
+                if r:
+                    return r
+        elif a != e:
+            return f"{jalur}: {a} != golden {e}"
+    r = beda(now, G, "lokasi")
+    if r:
+        print("semai uji golden GAGAL, beda pertama " + r)
+        sys.exit(1)
+    print(f"semai uji golden: {len(G)} lokasi, {sum(v['sel_skor_positif'] for v in G.values())} sel skor>0, {sum(len(v['zona']) for v in G.values())} zona identik")
+
+
 def main():
     import argparse
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["uji", "jalan", "fixture", "ukurw"])
+    ap.add_argument("sub", nargs="?")
+    ap.add_argument("--tulis", action="store_true")
     ap.add_argument("--putaran", default="auto")
     ap.add_argument("--keluar")
     ap.add_argument("--sekarang")
     ap.add_argument("--kluster")
     ap.add_argument("--hotspot24")
     a = ap.parse_args()
-    if a.cmd == "uji":
+    if a.cmd == "uji" and a.sub == "golden":
+        uji_golden()
+    elif a.cmd == "uji":
         uji()
     elif a.cmd == "jalan":
         o = jalan(a)

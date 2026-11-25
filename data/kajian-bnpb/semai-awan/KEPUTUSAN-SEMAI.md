@@ -75,3 +75,7 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | Q15 | Muatan bahan per sortie per jenis armada OMC (CASA 212, Caravan 208B, C-130, lainnya), untuk NaCl dan dry ice. Sumber: BMKG, BRIN, atau operator? | [SEMENTARA] kosong; layar menulis "muatan armada belum diisi", tanpa angka |
 | Q16 | Lama penaburan per sortie di area semai (menit), untuk menghitung jumlah sortie dalam jendela terbang. | [SEMENTARA] 30 menit, berlabel perkiraan |
 | Q17 | Peringatan subuh lewat bot WA: ke grup mana saja (Pusdalops, posko TMC per provinsi, pimpinan)? | [SEMENTARA] satu grup Pusdalops yang sudah dipakai bot renlap; grup lain menunggu jawaban |
+
+## Paket turunan
+
+Tujuan banjir (semai redistribusi di hulu angin kab/kota sasaran) diputuskan pemilik 25 Nov 2026 di `data/kajian-bnpb/semai-banjir/KEPUTUSAN-SEMAI-BANJIR.md` (K1-K4). Paket ini tetap berlaku untuk tujuan karhutla dan untuk mesin bersama.
