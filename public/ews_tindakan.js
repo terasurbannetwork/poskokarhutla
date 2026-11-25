@@ -167,6 +167,39 @@ export const BENCANA = {
       2: [b12(32), b12(33), b19(36)],
       3: [b12(33), b12(18), b12(19), b19(37)],
     }},
+  /* Pesisir (gelombang tinggi/pasang) dan kekeringan: butir dari Buku Saku BNPB. pesisir = bab Gelombang Pasang edisi 2012 (hlm. 31-34); kekeringan = bab Kekeringan cetakan 4 (2019) hlm. 49-52.
+     Butir mitigasi struktural (tembok penahan, mangrove, pemecah ombak, waduk, sumur resapan, perda, pokja) bukan tindakan warga per peringatan dan tidak ditulis; hujan buatan/TMC tindakan pemerintah, dibuang.
+     Buku Saku tidak memberi tingkat: tiga tingkat di sini hanya mengurutkan butir dari persiapan ke saat kejadian. Gambar memakai berkas yang sudah punya kredit di public/img/kredit.json. */
+  pesisir: {nama: "Gelombang tinggi di pesisir", pendek: "Gelombang", warna: "#1a6f9c", gambar: "bencana-rob.jpg",
+    sumber: "Peringatan gelombang tinggi BMKG Maritim per perairan",
+    tindakan: {
+      1: ["Ikuti pemberitahuan dini dari prakiraan cuaca lewat radio dan alat komunikasi.", "Bila sedang berlayar, hindari daerah laut yang sedang dilanda cuaca buruk.",
+        "Rencanakan tempat pengungsian bila terjadi gelombang pasang di pinggir pantai."],
+      2: ["Perhatikan tanda: angin kencang, badai di tengah laut, atau cuaca yang tiba-tiba menjadi gelap.", "Lengkapi diri dengan alat komunikasi.",
+        "Laporkan secepatnya tanda-tanda akan terjadinya gelombang pasang kepada Kepala Desa, Polisi, Stasiun Radio, atau SATLAK PB."],
+      3: ["Saat gelombang pasang terjadi, jauhi pantai dan berlarilah ke dataran yang lebih tinggi.", "Bila sedang berlayar, hindari daerah laut yang sedang dilanda cuaca buruk.",
+        "Laporkan secepatnya kepada petugas yang berwenang bila melihat tanda-tanda gelombang pasang."],
+    },
+    rujukan: {
+      1: [b12(33), b12(33), b12(33)],
+      2: [b12(32), b12(34), b12(34)],
+      3: [b12(33), b12(33), b12(34)],
+    }},
+  kekeringan: {nama: "Kekeringan", pendek: "Kekeringan", warna: "#b8860b", gambar: "bencana-karhutla.jpg",
+    sumber: "BMKG peringatan dini kekeringan meteorologis dan indeks hujan 3 bulan (hipotesis)",
+    tindakan: {
+      1: ["Gunakan air dengan bijak dan jaga sumber atau mata air.", "Buat tandon air di sekitar pekarangan rumah untuk menampung air hujan.",
+        "Jangan merusak hutan atau kawasan cagar alam."],
+      2: ["Kurangi pemakaian air yang berlebih dan matikan keran bila tidak digunakan.", "Atur jadwal penggunaan air yang masih ada.",
+        "Simak informasi terkini dari radio, televisi, media online, dan sumber informasi resmi pemerintah."],
+      3: ["Laporkan dan minta bantuan air bersih kepada pihak yang berwenang.", "Atur jadwal penggunaan air yang masih ada.",
+        "Kurangi pemakaian air yang berlebih dan matikan keran bila tidak digunakan."],
+    },
+    rujukan: {
+      1: [b19(50), b19(50), b19(50)],
+      2: [b19(51), b19(51), b19(51)],
+      3: [b19(51), b19(51), b19(51)],
+    }},
   /* Udara (PB-38a). Tingkat BAWAAN SEMENTARA Q37 (rancangan agent): 1 = ISPU PM2,5 Tidak sehat (Permen LHK P.14/2020), 2 = Sangat tidak sehat, 3 = Berbahaya; label resmi kategori tampil di samping tingkat.
      Hanya anjuran warga dari siaran resmi Kemenkes; tiap butir punya rujukan paralel (dijaga tests/layar/ews_tindakan.test.mjs). Anjuran khusus tingkat ISPU, tindakan sekolah, dan tindakan dinas
      tidak ada dalam sumber yang dibaca, jadi tidak ditulis; "Kemenkes" di bawah = tiga halaman siaran Kemenkes di rujukan, bukan Permenkes. Dua siaran bertentangan soal N95 untuk kelompok rentan
