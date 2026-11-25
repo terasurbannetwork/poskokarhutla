@@ -3,12 +3,12 @@
    Butir disimpan di HP lewat antrean bersama public/inti/antre.js (saluran "lapor-luring", 14 hari, Q4) dan dikirim otomatis begitu sinyal kembali.
    Pengiriman memutar ulang alur Lapor darurat di /api/lapor/pesan langkah demi langkah, jadi mesin percakapan tetap satu (src/lapor_mesin.js) dan meja menerima laporan biasa.
    Hanya untuk perangkat yang sudah pernah melapor (nomor tersimpan, Q2). Foto luring belum ikut di versi ini (dilengkapi lewat Tambah kabar sesudah terkirim). */
+import {JENIS as JENIS_SPEK, KORBAN} from "../inti/luring_spek.js";
 const $ = id => document.getElementById(id);
 const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
 const ikon = id => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"), u = document.createElementNS("http://www.w3.org/2000/svg", "use"); s.setAttribute("aria-hidden", "true"); u.setAttribute("href", `#${id}`); s.append(u); return s; };
-// sama dengan pilihan jenis Lapor darurat (src/lapor_spek.js JENIS tanpa Lainnya); dicocokkan ke label pilihan server saat dikirim
-const JENIS = ["Banjir", "Tanah longsor", "Gelombang pasang dan abrasi", "Cuaca ekstrem", "Kekeringan", "Kebakaran hutan dan lahan", "Gempa bumi", "Tsunami", "Erupsi gunung api", "Kebakaran gedung dan permukiman"];
-const KORBAN = [["ya", "Ada orang terluka, hilang, atau terjebak"], ["tidak", "Tidak ada korban"], ["belum_tahu", "Belum tahu"]];
+// jenis dan korban dari spek luring bersama (public/inti/luring_spek.js); label jenis dicocokkan ke label pilihan server saat dikirim
+const JENIS = JENIS_SPEK.map(x => x[1]);
 const nomor = () => { try { const v = JSON.parse(localStorage.getItem("lapor-wa") || "null"); return v ? String(v) : null; } catch { return null; } };
 const luring = () => navigator.onLine === false;
 
@@ -21,7 +21,7 @@ async function pesan(body) {
 export async function putarUlang(d) {
   if (!nomor()) return {s: 401, j: {galat: "Nomor pelapor belum tersimpan di perangkat ini."}};
   let r = await pesan({teks: "darurat"});
-  for (let langkah = 0; langkah < 14; langkah++) {
+  for (let langkah = 0; langkah < 16; langkah++) {
     if (r.s !== 200) return r;
     const j = r.j, pil = j.pilihanAsli || j.pilihan || [];
     if (j.nomor) { catatTerkirim(j); return {s: 200, j: {nomor: j.nomor}}; }
@@ -30,6 +30,8 @@ export async function putarUlang(d) {
     if (j.minta === "foto") { r = await pesan({teks: "1"}); continue; }   // lewati foto; dilengkapi lewat Tambah kabar
     if (j.status === "darurat_jenis") { const i = pil.findIndex(x => x === d.jenis); if (i < 0) return {s: 422, j: {galat: `Jenis "${d.jenis}" tidak ada di pilihan.`}}; r = await pesan({teks: String(i + 1)}); continue; }
     if (j.status === "darurat_korban") { r = await pesan({teks: String(KORBAN.findIndex(x => x[0] === d.korban) + 1 || 3)}); continue; }
+    // K98: korban "ya" membuka pertanyaan orang terjebak dan butuh medis; formulir luring tidak menanyakannya, jadi dijawab "Tidak tahu" (bukan "Tidak ada"), petugas menanyakan lewat tindak lanjut
+    if (j.status === "darurat_isi") { const i = pil.findIndex(x => /^tidak tahu$/i.test(x)); if (i < 0) return {s: 409, j: {galat: "Pertanyaan korban berubah; buka chat untuk melanjutkan.", keadaan: "darurat_isi"}}; r = await pesan({teks: String(i + 1)}); continue; }
     if (j.status === "ringkasan") { r = await pesan({teks: "kirim"}); continue; }
     if (pil[0] === "Benar" || pil.join("|") === "Ya|Ganti" || j.minta === "setuju") { r = await pesan({teks: "1"}); continue; }   // lokasi benar, identitas sama, persetujuan sudah diberikan di formulir
     return {s: 409, j: {galat: "Alur laporan berubah; buka chat untuk melanjutkan.", keadaan: j.status || j.minta || "tidak dikenal"}};
