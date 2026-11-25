@@ -64,7 +64,7 @@
 .lbk-t{width:100%;border-collapse:collapse;font-size:7.8pt;line-height:1.3;font-variant-numeric:tabular-nums}
 .lbk-t thead th,.lbk-t th{position:static;white-space:normal;letter-spacing:0;font-size:inherit;background:var(--lb-navy);color:var(--lb-kertas);font-weight:700;text-align:center;vertical-align:middle;padding:1.3mm 1.5mm;border:.2mm solid var(--lb-navy)}
 .lbk-t tbody td,.lbk-t td{white-space:normal;padding:1mm 1.5mm;border-bottom:.2mm solid var(--lb-garis);text-align:left;vertical-align:top}
-.lbk-t td.n{text-align:right;white-space:nowrap}
+.lbk-t td.n{text-align:center;white-space:nowrap}
 .lbk-t tbody tr:nth-child(even),.lbk-t tbody tr:hover{background:none}
 .lbk-t tr.jml td{background:var(--lb-navy);color:var(--lb-kertas);font-weight:700;border-color:var(--lb-navy)}
 .lbk-t td.p1{background:color-mix(in oklab,var(--lb-navy) 6%,var(--lb-kertas))}
