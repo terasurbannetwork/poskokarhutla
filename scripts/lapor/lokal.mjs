@@ -797,6 +797,20 @@ export async function tanganiLapor(req, res, url) {
     if (j === "/api/lapor/daerah") return kirim(await daerah(Object.fromEntries(url.searchParams)));
     if (j === "/api/lapor/rapor") return kirim(await info.rapor(Object.fromEntries(url.searchParams)));   // satu mesin dengan Worker (src/lapor_info.js)
     if (j === "/api/lapor/alun") return kirim(await alun(Object.fromEntries(url.searchParams)));
+    /* kabar warga per kartu (LA-85, LA-87): saringan sama dengan Worker (bersihKomen), data di ~/.lapor-lokal; aduan lokal dihitung per nomor (tanpa IP) */
+    const km = /^\/api\/lapor\/komen\/(?:([0-9a-f]{10})|([0-9a-f]{16})\/laporkan)$/.exec(j);
+    if (km && req.method === "GET" && km[1]) return kirim([200, {komen: (baca().komen || []).filter(k => k.kartu === km[1] && k.status === "tampil").map(k => ({id: k.id, teks: k.teks, waktu: Math.floor(k.dibuat / 60e3) * 60e3}))}]);
+    if (km && req.method === "POST") {
+      const b = await badan(req), wa = nomorWa(b.wa); if (!wa) return kirim([401, {galat: "Masuk dulu dengan nomor WhatsApp Anda."}]);
+      const d = baca(); d.komen ||= [];
+      if (km[2]) { const k = d.komen.find(x => x.id === km[2]); if (!k) return kirim([404, {galat: "Komentar tidak ada."}]); if (k.wa === wa) return kirim([400, {galat: "Komentar sendiri tidak bisa dilaporkan."}]);
+        k.aduan ||= []; const baru = !k.aduan.includes(wa); if (baru) k.aduan.push(wa); if (k.aduan.length >= 3 && k.status === "tampil") k.status = "dilaporkan"; simpan(d); return kirim([200, {ok: true, baru}]); }
+      if (typeof b.teks !== "string") return kirim([400, {galat: "Komentar harus berupa teks."}]);
+      const r = (await import("../../src/lapor_komen.js")).bersihKomen(b.teks); if (r.galat) return kirim([400, {galat: r.galat}]);
+      if (!(await alun({}))[1].baris.some(x => x.id === km[1])) return kirim([404, {galat: "Kejadian ini tidak sedang tampil di Alun-alun."}]);
+      const k = {id: crypto.randomBytes(8).toString("hex"), kartu: km[1], wa, teks: r.teks, status: "tampil", dibuat: Date.now()}; d.komen.push(k); simpan(d);
+      return kirim([200, {komen: {id: k.id, teks: k.teks, waktu: Math.floor(k.dibuat / 60e3) * 60e3}}]);
+    }
     if (j === "/api/lapor/hari-ini") { const q = url.searchParams, ks = [...q.keys()], jn = q.get("jenis") || "", pv = q.get("prov") || "";   // saringan sama dengan Worker
       if (ks.some(k => k !== "jenis" && k !== "prov") || new Set(ks).size !== ks.length || jn && !JENIS.some(x => x.id === jn) || pv && !/^\d{2}$/.test(pv)) return kirim([400, {galat: "Saringan tidak dikenal."}]);
       return kirim(await hariIni({jenis: jn, prov: pv})); }

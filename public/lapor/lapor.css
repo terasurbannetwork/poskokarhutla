@@ -663,6 +663,39 @@ a.lp-kartu:active,button.lp-kartu:active{transform:scale(.99)}
 .lp-alun-ikuti svg{width:16px;height:16px}
 .lp-alun-ikuti.aktif{background:color-mix(in oklab,var(--ok) 14%,var(--card));color:var(--ok);border-color:var(--ok)}
 .lp-alun-pop{display:grid;gap:2px;font:600 .8125rem/1.35 var(--font)}
+/* Kabar warga di kartu (K95, LA-87): selebar kartu di bawah gambar dan isi; tombol buka bergaya baris, isi dimuat saat dibuka */
+.lp-kabar{grid-column:1/-1;border-top:1px solid var(--line)}
+.lp-kabar-buka{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 14px;border:0;background:none;color:var(--ink);font:700 .8125rem var(--font);text-align:left;cursor:pointer}
+.lp-kabar-buka svg{width:16px;height:16px;flex:none;color:var(--brand2)}
+.lp-kabar-buka span:not(.lp-kabar-n){flex:1}
+.lp-kabar-n{padding:1px 8px;border-radius:999px;background:var(--surface);color:var(--ink2);font:800 .6875rem var(--font)}
+.lp-kabar-n:empty{display:none}
+.lp-kabar-lagi{background:none!important;padding:0!important;justify-items:center}
+.lp-kabar-buka .lp-kabar-panah{color:var(--ink2);transition:transform var(--dur-1,.15s) ease}
+.lp-kabar-buka[aria-expanded="true"] .lp-kabar-panah{transform:rotate(90deg)}
+.lp-kabar-buka:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+.lp-kabar-isi{display:grid;gap:10px;padding:0 14px 14px}
+.lp-kabar-isi[hidden]{display:none}
+.lp-kabar-daftar{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-height:260px;overflow-y:auto;overscroll-behavior:contain}
+.lp-kabar-daftar li{display:grid;gap:2px;padding:8px 10px;border-radius:10px;background:var(--surface)}
+.lp-kabar-kepala{display:flex;align-items:baseline;gap:8px;font-size:.75rem}
+.lp-kabar-kepala b{font:800 .75rem var(--font)}
+.lp-kabar-adu{margin-left:auto;font-size:.6875rem;min-height:28px}
+.lp-kabar-teks{margin:0;font-size:.8125rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.lp-kabar-tulis{display:grid;gap:8px}
+.lp-kabar-tulis textarea{width:100%;min-height:64px;resize:vertical;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:500 .875rem/1.45 var(--font)}
+.lp-kabar-tulis textarea:focus-visible,.lp-kabar-nomor input:focus-visible{outline:2px solid var(--brand2);outline-offset:1px;border-color:transparent}
+.lp-kabar-nomor{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:4px 8px;font-size:.75rem;font-weight:700;color:var(--ink2)}
+.lp-kabar-nomor[hidden]{display:none}
+.lp-kabar-nomor > span:first-child{grid-column:1/-1}
+.lp-kabar-62{padding:0 4px;color:var(--ink);font-weight:800}
+.lp-kabar-nomor input{min-height:40px;padding:0 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:600 .875rem var(--font)}
+.lp-kabar-bawah{display:flex;align-items:center;gap:10px}
+.lp-kabar-bawah small{flex:1;font-size:.6875rem;line-height:1.35}
+.lp-kabar-bawah .lp-utama{min-height:40px;padding:0 16px;font-size:.8125rem}
+.lp-kabar-pesan{margin:0;font-size:.75rem;font-weight:700;color:var(--ink2)}
+.lp-kabar-pesan:empty{display:none}
+@media (prefers-reduced-motion:reduce){.lp-kabar-buka .lp-kabar-panah{transition:none}}
 .lp-alun-pop small{color:var(--ink2)}
 @media (min-width:900px){.lp-alun{grid-template-columns:repeat(auto-fill,minmax(380px,1fr));padding:16px 48px 48px}.lp-alun-kartu{grid-template-columns:150px minmax(0,1fr)}}
 

@@ -1408,7 +1408,81 @@ function kartuAlun(x, ikut) {
   ik.title = "Disimpan di perangkat ini. Kartu ditandai saat statusnya berubah.";
   ik.addEventListener("click", () => { const m = ikutiBaca(); if (m[x.id]) delete m[x.id]; else m[x.id] = x.status; ikutiTulis(m); gambarAlun(); });
   isi.append(ik);
-  a.append(g, isi); return a;
+  a.append(g, isi, kabarWarga(x.id)); return a;
+}
+/* Kabar warga (K95, LA-87): komentar biasa di tiap kartu, dibaca mesin dan diperiksa petugas. Komentar dimuat saat bagian dibuka, bukan saat peta dimuat
+   (GET di-cache tepi 30 detik; komentar sendiri tampil dari jawaban POST). Teks warga selalu lewat textContent.
+   Satu node per kartu dibuat sekali lalu dipakai ulang saat daftar digambar ulang (Ikuti kejadian, saringan): draf dan keadaan buka tidak hilang,
+   dan kartu yang belum dibuka hanya membawa tombolnya (form dibuat saat pertama dibuka). Daftar menampilkan 30 kabar terbaru; sisanya lewat tombol. */
+const kabarNode = new Map(), kabarIsi = new Map(), KABAR_AWAL = 30;
+const kapan = ms => { const d = (Date.now() - ms) / 60e3; if (d < 2) return "baru saja"; if (d < 60) return `${Math.floor(d)} menit lalu`; if (d < 1440) return `${Math.floor(d / 60)} jam lalu`;
+  const t = new Date(ms); return `${t.getDate()} ${BULAN[t.getMonth()]} ${String(t.getHours()).padStart(2, "0")}.${String(t.getMinutes()).padStart(2, "0")}`; };
+const nomorKetik = () => wa && !String(wa).startsWith("sesi-") ? {wa} : {};   // sesi /masuk: nomor dari sesi di server
+function kabarWarga(kartu) {
+  if (kabarNode.has(kartu)) return kabarNode.get(kartu);
+  const w = el("section", "lp-kabar"), buka = el("button", "lp-kabar-buka"), isi = el("div", "lp-kabar-isi"), jumlah = el("span", "lp-kabar-n");
+  buka.type = "button"; isi.id = `kabar-${kartu}`; isi.hidden = true; buka.setAttribute("aria-controls", isi.id); buka.setAttribute("aria-expanded", "false");
+  buka.append(ikon("i-pesan"), el("span", null, "Kabar warga"), jumlah, ikon("i-panah", "lp-kabar-panah"));   // angka di span sendiri: label tetap diterjemahkan, angka tidak dikirim ke penerjemah
+  const hitung = () => { const n = kabarIsi.get(kartu)?.length; jumlah.textContent = n ? n.toLocaleString("id-ID") : ""; };
+  let daftar = null, pesan = null, semua = false, memuat = false;
+  const gambar = () => { const k = kabarIsi.get(kartu); hitung();
+    if (!k) return daftar.replaceChildren(el("li", "lp-redup", "Memuat kabar warga..."));
+    if (!k.length) return daftar.replaceChildren(el("li", "lp-redup", "Belum ada kabar. Ceritakan kondisi terbaru di lokasi ini."));
+    const tampil = semua ? k : k.slice(-KABAR_AWAL), baris = [];
+    if (tampil.length < k.length) { const li = el("li", "lp-kabar-lagi"), lb = el("button", "lp-teks-tombol", `Tampilkan ${(k.length - tampil.length).toLocaleString("id-ID")} kabar sebelumnya`);
+      lb.type = "button"; lb.dataset.aksi = "lagi"; li.append(lb); baris.push(li); }
+    for (const c of tampil) { const li = el("li"), kp = el("div", "lp-kabar-kepala"), ad = el("button", "lp-teks-tombol lp-kabar-adu", "Laporkan");
+      ad.type = "button"; ad.dataset.aksi = "adu"; ad.dataset.id = c.id; ad.title = "Laporkan kabar yang kasar, bohong, atau memuat data pribadi";
+      kp.append(el("b", null, "Warga"), el("small", "lp-redup lp-kabar-kapan", kapan(c.waktu)), ad); li.append(kp, el("p", "lp-kabar-teks", c.teks)); baris.push(li); }
+    daftar.replaceChildren(...baris); };
+  const muat = async () => { if (kabarIsi.has(kartu)) return gambar(); if (memuat) return; memuat = true; gambar();
+    try { const j = await (await fetch(`/api/lapor/komen/${kartu}`, {signal: AbortSignal.timeout(10000)})).json(); kabarIsi.set(kartu, j.komen || []); gambar(); }
+    catch { daftar.replaceChildren(el("li", "lp-redup", "Kabar warga belum bisa dimuat. Tutup lalu buka lagi.")); }
+    finally { memuat = false; } };
+  /* isi bagian dibuat saat pertama dibuka; satu pendengar untuk Laporkan dan Tampilkan lagi (delegasi) */
+  const bangun = () => {
+    daftar = el("ul", "lp-kabar-daftar"); pesan = el("p", "lp-kabar-pesan"); pesan.setAttribute("role", "status");
+    daftar.addEventListener("click", e => { const t = e.target.closest("button[data-aksi]"); if (!t) return;
+      if (t.dataset.aksi === "lagi") { semua = true; gambar(); } else laporkanKabar(t.dataset.id, t); });
+    const f = el("form", "lp-kabar-tulis"), ta = el("textarea"), kirimB = el("button", "lp-utama");
+    ta.name = "teks"; ta.maxLength = 500; ta.rows = 2; ta.required = true; ta.placeholder = "Kondisi terbaru di lokasi, misalnya air mulai surut atau jalan masih tertutup";
+    ta.setAttribute("aria-label", "Tulis kabar warga");
+    /* nomor WA wajib seperti saat melapor (K95); tanpa nomor tersimpan, kolom nomor tampil di atas tombol Kirim */
+    const nomor = el("label", "lp-kabar-nomor"), iN = el("input"); iN.type = "tel"; iN.inputMode = "numeric"; iN.autocomplete = "tel-national"; iN.placeholder = "812 3456 7890";
+    nomor.append(el("span", null, "Nomor WhatsApp Anda"), el("span", "lp-kabar-62", "+62"), iN); nomor.hidden = !!wa;
+    iN.addEventListener("input", () => { let v = iN.value.replace(/\D/g, ""); if (v.startsWith("62")) v = v.slice(2); if (v.startsWith("0")) v = v.slice(1); iN.value = v.slice(0, 13); });
+    kirimB.type = "submit"; kirimB.append(ikon("i-kirim"), "Kirim");
+    const bawah = el("div", "lp-kabar-bawah"); bawah.append(el("small", "lp-redup", "Nomor HP dan alamat rinci dihapus otomatis. Nomor WhatsApp Anda tidak ditampilkan."), kirimB);
+    f.append(ta, nomor, bawah, pesan);
+    f.addEventListener("submit", async e => {
+      e.preventDefault(); pesan.textContent = "";
+      if (!wa && !/^8\d{8,12}$/.test(iN.value)) { pesan.textContent = "Isi nomor WhatsApp yang dimulai dengan 8, misalnya 812 3456 7890."; return iN.focus(); }
+      const pakai = wa ? nomorKetik() : {wa: `62${iN.value}`};
+      kirimB.disabled = true;
+      try {
+        const r = await fetch(`/api/lapor/komen/${kartu}`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({teks: ta.value, ...pakai}), signal: AbortSignal.timeout(15000)});
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) { pesan.textContent = j.galat || "Kabar belum terkirim. Coba lagi."; return; }
+        if (!wa) { wa = pakai.wa; simpan.tulis("lapor-wa", wa); for (const n of document.querySelectorAll(".lp-kabar-nomor")) n.hidden = true; }   // nomor dipakai lagi untuk kabar dan laporan berikutnya
+        kabarIsi.set(kartu, [...(kabarIsi.get(kartu) || []), j.komen]); ta.value = ""; gambar();
+        pesan.textContent = /dihapus\]/.test(j.komen.teks) ? "Terkirim. Nomor atau alamat rinci di kabar Anda sudah dihapus." : "Terkirim.";
+      } catch { pesan.textContent = "Kabar belum terkirim. Periksa sinyal lalu coba lagi."; }
+      finally { kirimB.disabled = false; }
+    });
+    isi.append(daftar, f);
+  };
+  buka.addEventListener("click", () => { const b = isi.hidden; isi.hidden = !b; buka.setAttribute("aria-expanded", String(b)); if (b) { if (!daftar) bangun(); muat(); } });
+  w.append(buka, isi); kabarNode.set(kartu, w);
+  return w;
+}
+/* Laporkan: ketuk dua kali (konfirmasi di tombol yang sama), tanpa jendela konfirmasi peramban */
+async function laporkanKabar(id, b) {
+  if (!b.dataset.yakin) { b.dataset.yakin = "1"; b.textContent = "Yakin laporkan?"; return; }
+  if (!wa) { b.textContent = "Isi nomor WhatsApp di kolom kabar dulu"; delete b.dataset.yakin; return; }
+  b.disabled = true;
+  try { const r = await fetch(`/api/lapor/komen/${id}/laporkan`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(nomorKetik()), signal: AbortSignal.timeout(10000)});
+    const j = await r.json().catch(() => ({})); b.textContent = r.ok ? "Dilaporkan, terima kasih" : j.galat || "Belum terkirim"; }
+  catch { b.textContent = "Belum terkirim"; b.disabled = false; delete b.dataset.yakin; }
 }
 function gambarAlun() {
   const w = $("daftarAlun"), ikut = ikutiBaca();
@@ -1431,10 +1505,10 @@ function gambarAlun() {
   if (alunPeta) requestAnimationFrame(() => alunPeta.resize());
 }
 async function gambarPetaAlun(daftar) {
-  const wp = $("petaAlun"), titik = daftar.filter(x => x.titik);   // peta selalu tampil penuh; tanpa titik = seluruh Indonesia
+  const wp = $("petaAlun"), titik = daftar.filter(x => x.titik), warnaOk = tok("--ok"), warnaWarn = tok("--warn");   // peta selalu tampil penuh; tanpa titik = seluruh Indonesia. tok() membaca piksel kanvas: sekali per gambar, bukan per titik
   try { await muatMaplibre(); } catch { return; }
   const fc = {type: "FeatureCollection", features: titik.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.titik.lon, x.titik.lat]},
-    properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: tok(x.status === "selesai" ? "--ok" : "--warn")}}))};
+    properties: {id: x.id, judul: x.jenis, tempat: [x.lokasi.desa && `Desa ${x.lokasi.desa}`, x.lokasi.kab].filter(Boolean).join(", "), status: x.statusLabel, warna: x.status === "selesai" ? warnaOk : warnaWarn}}))};
   const pas = () => { if (!fc.features.length) return alunPeta.jumpTo({center: [118, -2], zoom: 4});
     const b = new maplibregl.LngLatBounds(); for (const f of fc.features) b.extend(f.geometry.coordinates);
     const lebar = matchMedia("(min-width:900px)").matches;   // ruang untuk panel daftar (kiri di layar lebar, bawah di HP) dan saringan di atas
@@ -1475,7 +1549,7 @@ const bahasaKini = () => { try { return localStorage.getItem("lapor-bahasa") || 
    diterjemahkan sekali jalan lewat /api/lapor/terjemah, disimpan per bahasa di perangkat. Nama bahasa tidak diterjemahkan. */
 // seluruh halaman ikut bahasa pilihan (pemilik 20 Nov 2026: "bahasa itu dari awal, langsung pop up pilih bahasa"), termasuk layar terima kasih di akhir;
 // yang dilewati: nama bahasa, isian, balon pesan (bot dari server, pelapor kata-katanya sendiri), nama pelapor, nomor tiket, maskot, animasi pembuka
-const sudahTr = new WeakSet(), LEWATI_TR = ".lp-bahasa-kisi, .lp-dialog-bahasa, .lp-nama-orang, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
+const sudahTr = new WeakSet(), LEWATI_TR = ".lp-kabar-teks, .lp-kabar-n, .lp-kabar-kapan, .lp-kabar-adu, .lp-kabar-pesan, .lp-bahasa-kisi, .lp-dialog-bahasa, .lp-nama-orang, input, textarea, select, .lp-nomor-chat, #log li:not(.tengah), .lp-tab-profil, .lp-tk-nomor, svg, script, style, noscript, #pembuka";
 const trBaca = b => { try { return JSON.parse(localStorage.getItem(`lapor-tr2-${b}`) || "{}"); } catch { return {}; } };
 try { for (const k of Object.keys(localStorage)) if (k.startsWith("lapor-tr-")) localStorage.removeItem(k); } catch {}   // cache lama bisa berisi teks asli dari terjemahan gagal
 const trTulis = (b, m) => { try { localStorage.setItem(`lapor-tr2-${b}`, JSON.stringify(m)); } catch {} };

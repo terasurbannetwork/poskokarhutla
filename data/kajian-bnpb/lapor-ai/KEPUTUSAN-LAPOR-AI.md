@@ -632,3 +632,11 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 | No | Pertanyaan | Bawaan sementara | Tiket |
 | --- | --- | --- | --- |
 | Q75 | Berapa lama `lp_komen` (termasuk nomor penulis) disimpan? | **[BAWAAN SEMENTARA]** Mengikuti masa simpan laporan Lapor Bencana; bersih-bersihnya belum dipasang dan menunggu keputusan pemilik. | LA-88 |
+
+### Catatan pelaksanaan LA-87 (25 Nov 2026)
+
+- Tiap kartu Alun-alun punya baris **Kabar warga** (dengan jumlah) yang dibuka di tempat. Kabar dimuat saat dibuka; 30 terbaru tampil, sisanya lewat "Tampilkan N kabar sebelumnya". Penulis tampil "Warga" dengan waktu relatif.
+- Tanpa nomor tersimpan, kolom nomor WhatsApp (+62) tampil di atas Kirim; sesudah terkirim nomor itu disimpan di perangkat seperti saat melapor. Laporkan memakai ketuk dua kali ("Yakin laporkan?"), tanpa jendela konfirmasi peramban.
+- Teks warga, waktu, jumlah, dan pesan status tidak dikirim ke penerjemah halaman (Q73); label tetap diterjemahkan.
+- Ulasan `inp-reviewer`: bagian kabar dibuat sekali per kartu dan dipakai ulang saat daftar digambar ulang (draf dan keadaan buka tidak hilang), form dibuat saat pertama dibuka, Laporkan memakai satu pendengar per daftar, warna titik peta dihitung sekali per gambar. Sisa yang belum: Ikuti kejadian masih menggambar ulang seluruh daftar (perilaku lama).
+- Server tinjau `scripts/lapor/lokal.mjs` ikut melayani `/api/lapor/komen/*` dengan saringan yang sama, supaya bisa ditinjau di `http://localhost:8800/lapor/?alun` (server perlu dimulai ulang untuk memuat rute ini).
