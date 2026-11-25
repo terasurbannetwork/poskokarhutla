@@ -133,3 +133,7 @@ Added 11 Nov 2026:
 
 Added 20 Nov 2026:
 - Header pill "El Niño <kekuatan>" / "La Niña" / "ENSO netral" (lencanaIklim in public/lapisan5.js): `SEMBUNYI = true` skips inserting it before #upd. window.ENSO_STATUS still set. Restore: set SEMBUNYI to false.
+
+Added 25 Nov 2026:
+- /prediksi and /prediksi/ringkas: "perkiraan mengungsi", Sphere needs derived from it, and the summed evacuee total are hidden (`MENGUNGSI_TAMPIL = false` in public/prediksi/prediksi.js and ringkas.js); a hold sentence shows instead. Reason: validasi-model found the DIBI evacuation rate biased (Aceh Nov 2025 = 90% of evacuees) and rate × exposed zone is a scenario. JSON still carries laju_ungsi, n_kejadian, laju_asal. Restore: backtest forecast evacuees vs DIBI per kab per event passes, then set the flag true.
+- /bnpb ekonomi card (public/inti/ekonomi.js, scripts/umum/ekonomi.py): evacuees, rice kg and rupiah withheld (`RUPIAH_NYALA = False`); only people exposed shown. Restore: same backtest, then flip the flag.

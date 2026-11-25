@@ -12,6 +12,8 @@
   const VONIS_KOL = {HJN: "p20", API: "p", BNJ: "ps", LSR: "ps"};   // sama dengan prediksi.js
   const PIL_URUT = ["HJN", "BNJ", "LSR", "API", "ASP", "LAUT", "CEX"];
   const WIB_ = {timeZone: "Asia/Jakarta"};
+  // sama dengan prediksi.js: perkiraan mengungsi ditahan sampai uji balik lawan DIBI lulus; JSON tetap membawanya untuk uji balik
+  const MENGUNGSI_TAMPIL = false, TAHAN_UNGSI = "Perkiraan mengungsi ditahan sampai uji balik lawan DIBI lulus";
 
   const ribu = v => rb(v).replace(/ rb$/, " ribu").replace(/ jt$/, " juta");
   /* tanpa pembulatan ke 5%: p 0,48 harus terbaca di bawah ambang Siaga 50%, bukan "sekitar 50%" */
@@ -100,12 +102,13 @@
     for (const x of S.d.waspada.filter(x => x.tenggang === n && ids.has(x.kab))) { x.dampak ||= {}; (per[x.aturan] ||= []).push(x); }
     const isi = Object.entries(per).map(([id, xs]) => {
       const a = atr[id] || {maka: id}, ada = xs.some(x => x.dampak.jiwa != null), jiwa = xs.reduce((s, x) => s + (x.dampak.jiwa || 0), 0);
-      const ungsi = xs.reduce((s, x) => s + (x.dampak.kebutuhan?.mengungsi || 0), 0);
+      const ungsi = MENGUNGSI_TAMPIL ? xs.reduce((s, x) => s + (x.dampak.kebutuhan?.mengungsi || 0), 0) : 0;
       xs.sort((p, q) => (q.dampak.jiwa || 0) - (p.dampak.jiwa || 0));
       const rinci = xs.slice(0, 30).map(x => { const d = x.dampak;
-        return `<tr><td>${esc(kb[x.kab]?.nama)}<small>${esc(kb[x.kab]?.pn)}</small></td><td class="n">${d.jiwa != null ? ribu(d.jiwa) : "–"}</td><td class="n">${d.sekolah != null ? fmt(d.sekolah) : "–"}</td><td class="n">${d.faskes != null ? fmt(d.faskes) : "–"}</td><td class="n">${d.kebutuhan ? ribu(d.kebutuhan.mengungsi) : "–"}</td></tr>`; }).join("");
-      return `<details class="pr-w rk-w"><summary><b>${esc(a.maka)}</b><span>${fmt(xs.length)} kab/kota${ada ? `, ${ribu(jiwa)} jiwa tinggal di wilayah yang terpapar` : ""}${ungsi ? `, perkiraan ${ribu(ungsi)} orang mengungsi` : ""}</span></summary>
-        <div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th title="Penduduk di wilayah yang terpapar (perkiraan)">Jiwa terpapar</th><th>Sekolah</th><th title="Fasilitas kesehatan">Faskes</th><th title="Perkiraan">Mengungsi</th></tr></thead><tbody>${rinci}</tbody></table></div>
+        return `<tr><td>${esc(kb[x.kab]?.nama)}<small>${esc(kb[x.kab]?.pn)}</small></td><td class="n">${d.jiwa != null ? ribu(d.jiwa) : "–"}</td><td class="n">${d.sekolah != null ? fmt(d.sekolah) : "–"}</td><td class="n">${d.faskes != null ? fmt(d.faskes) : "–"}</td>${MENGUNGSI_TAMPIL ? `<td class="n">${d.kebutuhan ? ribu(d.kebutuhan.mengungsi) : "–"}</td>` : ""}</tr>`; }).join("");
+      return `<details class="pr-w rk-w"><summary><b>${esc(a.maka)}</b><span>${fmt(xs.length)} kab/kota${ada ? `, ${ribu(jiwa)} jiwa tinggal di wilayah yang terpapar` : ""}${ungsi ? `, perkiraan ${ribu(ungsi)} orang mengungsi dari jiwa terpapar di zona prakiraan (hipotesis)` : ""}</span></summary>
+        <div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th title="Penduduk di wilayah yang terpapar (perkiraan)">Jiwa terpapar</th><th>Sekolah</th><th title="Fasilitas kesehatan">Faskes</th>${MENGUNGSI_TAMPIL ? '<th title="Perkiraan dari jiwa terpapar di zona prakiraan x laju DIBI 12 bulan; hipotesis, belum diuji balik">Mengungsi</th>' : ""}</tr></thead><tbody>${rinci}</tbody></table></div>${MENGUNGSI_TAMPIL || !xs.some(x => x.dampak.kebutuhan) ? "" : `
+        <p class="pr-kecil rk-sisa">${TAHAN_UNGSI}.</p>`}
         ${xs.length > 30 ? `<p class="pr-kecil rk-sisa">dan ${fmt(xs.length - 30)} kab/kota lain. Persempit dengan pilihan provinsi.</p>` : ""}</details>`;
     }).join("");
     $("#waspada").innerHTML = `<section class="ex ex-std"><header class="ex-hd"><div class="ex-jd"><h3 class="pr-h">${svg("M12 3l9 16H3z|M12 10v4|M12 17v.5")}Perlu tindakan</h3><span class="pr-jml">semua angka perkiraan</span></div></header>
@@ -148,7 +151,7 @@
     }).join("");
     const atr = Object.fromEntries((S.d.aturan || []).map(x => [x.id, x]));
     const tindakan = (S.d.waspada || []).filter(x => x.kab === id && x.tenggang === n).map(x => { const d = x.dampak || {};
-      return `<li><b>${esc(atr[x.aturan]?.maka || x.aturan)}</b>${d.jiwa != null ? `: sekitar ${ribu(d.jiwa)} jiwa terpapar` : ""}${d.kebutuhan ? `, perkiraan ${ribu(d.kebutuhan.mengungsi)} mengungsi` : ""}</li>`; }).join("");
+      return `<li><b>${esc(atr[x.aturan]?.maka || x.aturan)}</b>${d.jiwa != null ? `: sekitar ${ribu(d.jiwa)} jiwa terpapar` : ""}${d.kebutuhan ? (MENGUNGSI_TAMPIL ? `, perkiraan ${ribu(d.kebutuhan.mengungsi)} mengungsi dari jiwa terpapar di zona prakiraan (hipotesis)` : `; ${TAHAN_UNGSI}`) : ""}</li>`; }).join("");
     const dlg = $("#rincian");
     dlg.innerHTML = `<article class="ex ex-std"><header class="ex-hd"><div class="ex-jd"><h3>${esc(k.nama)} <small>${esc(k.pn)}, ${ribu(k.jiwa)} jiwa${hari ? `, ${esc(tgl(hari))}` : ""}</small></h3>
       <button type="button" class="pr-tutup" aria-label="Tutup" data-tutup>${svg("M6 6l12 12|M18 6L6 18")}</button></div></header>
