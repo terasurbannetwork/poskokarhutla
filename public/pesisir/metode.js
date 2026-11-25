@@ -26,7 +26,7 @@ const Metode = (() => {
       + blk("<b>Garis.</b> Di sepanjang transek, garis adalah penyeberangan pertama dari air ke darat mulai dari ujung laut, dengan darat bersambung sedikitnya 60 m, dihitung subpiksel dengan interpolasi linear antar-sampel."),
     batasan: brs(["Tambak yang tanggulnya jebol terbaca laut, tambak utuh di belakang tanggul terbaca darat.", "Pulau mangrove atau tanggul lepas pantai lebih lebar dari 60 m terbaca sebagai garis pantai.", "Ambang dipilih sesudah melihat data Sayung, jadi Sayung bukan uji bebas untuk ambang."])});
   const transek = (m, A) => !m ? "" : kartu("Transek tetap", "Garis tegak lurus pantai tempat posisi diukur", {
-    singkatnya: `Posisi pantai diukur di sepanjang transek yang letaknya tetap dari tahun ke tahun, jadi perubahan antartahun benar-benar dibandingkan di tempat yang sama. Saat ini ${fmt(A?.transek?.length ?? 0)} transek di ${fmt(A?.situs?.length ?? 0)} situs pantura Jawa.`,
+    singkatnya: `Posisi pantai diukur di sepanjang transek yang letaknya tetap dari tahun ke tahun, jadi perubahan antartahun benar-benar dibandingkan di tempat yang sama.${A?.transek?.length ? ` Saat ini ${fmt(A.transek.length)} transek di ${fmt(A.situs?.length)} situs pantura Jawa.` : ""}`,
     rincian: blk(`<b>Letak.</b> Satu transek tiap ${fmt(m.jarak_transek_m)} m, tegak lurus garis pantai OpenStreetMap, ${fmt(m.darat_m / 1000)} km ke darat dan ${fmt(m.laut_m / 1000)} km ke laut, sampel tiap ${fmt(m.langkah_m)} m. OpenStreetMap hanya dipakai saat situs pertama kali dibuat; sesudahnya transek dibaca dari keluaran lama supaya ID dan letaknya tidak berubah diam-diam.`)
       + blk("<b>Situs.</b> " + (A?.situs || []).map(s => `${esc(s.nama)} (${esc(s.kab)}), ${fmt(s.transek)} transek`).join("; ") + "."),
     batasan: brs(["Situs berupa kotak yang ditentukan tangan, bukan seluruh pesisir Indonesia.", "Garis dasar OpenStreetMap bisa meleset dari pantai nyata; jarak diukur dari garis dasar itu."])});
@@ -47,11 +47,10 @@ const Metode = (() => {
       + blk("<b>Pasang surut.</b> Prediksi astronomis BMKG Maritim terhadap MSL; puncak harian per stasiun, dengan p50, p75, dan p90 dari puncak harian stasiun itu sendiri.")
       + blk("<b>Gelombang.</b> Tinggi tertinggi sehari di titik pelabuhan dan pesisir dari model Open-Meteo, kelas mengikuti ambang BMKG Maritim. Peringatan BMKG digabung per provinsi untuk kelas tinggi sampai ekstrem; kelas sedang tidak dihitung."),
     batasan: brs(["Muka laut model bukan datum lokal dan tidak memasukkan penurunan tanah atau tanggul.", "Pasang surut, rob, dan gelombang ditampilkan terpisah; tidak ada skor gabungan yang diuji."])});
-  const uji = (R, K) => { const v = R?.validasi; if (!v?.kejadian_diuji) return ""; const p = v.persentil || {}, baris = Object.entries(p).map(([k, x]) => [k, a(x.pod, 2), a(x.pofd, 2), a(x.pss, 2), fmt(x.hari_terpicu)]);
+  const uji = (R, K) => { const v = R?.validasi; if (!v?.kejadian_diuji) return ""; const p = v.persentil || {}, baris = Object.entries(p).map(([k, x]) => [k, a(x.pod, 1), a(x.pofd, 1), a(x.pss, 1), fmt(x.hari_terpicu)]);
     return kartu("Uji terhadap kejadian rob", "Ambang dibandingkan kejadian yang tercatat", {
       singkatnya: `Ambang Waspada diuji mundur terhadap ${fmt(v.kejadian_diuji)} kejadian DIBI di ${fmt(v.kab_berkejadian)} kabupaten dan kota (${esc(v.periode?.[0] || "")} sampai ${esc(v.periode?.[1] || "")}). Persentil 95 dipertahankan.`,
-      rincian: blk("Kemampuan membedakan (PSS) persentil 90 sampai 97 hampir sama, selisihnya kurang dari satu galat baku. Persentil 90 menggandakan jumlah hari terpicu, jadi persentil 95 dipilih.")
-        + tempat("uji", tabel(["Persentil", "POD", "POFD", "PSS", "Hari terpicu"], baris))
+      rincian: tempat("uji", tabel(["Persentil", "POD", "POFD", "PSS", "Hari terpicu"], baris))
         + (K?.fase ? blk(`<b>Fase bulan.</b> ${fmt(K.n_kejadian)} kejadian rob dari ${fmt(K.n_kab)} kabupaten dan kota (Pusdalops, logbook, DIBI). Porsi kejadian dalam 2 hari dari bulan baru atau purnama ${a(K.fase.porsi_dalam_2_hari * 100, 0)} persen, lawan ${a(K.fase.porsi_acak * 100, 0)} persen pada pengacakan. Sinyal ini lemah dan ditentukan beberapa episode, jadi tidak ditampilkan sebagai temuan.`) : ""),
       batasan: brs(["Sebagian besar hari terpicu tidak bertepatan dengan kejadian tercatat, dan DIBI tidak mencatat semua rob."])}); };
   /* daftar sumber bukan kartu metode: kartu standar tanpa bab dan tanpa isian Batasan */
