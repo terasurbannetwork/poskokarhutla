@@ -55,3 +55,9 @@ Inventaris 24 Nov 2026 (`riset/R1` sampai `riset/R4`, sekitar 330 teknik dengan 
 | Q6 | Model eskalasi kejadian berjalan untuk banjir (kejadian aktif akan meluas dalam 48 jam) dibangun? Labelnya dari status kita sendiri, jadi berisiko melingkar. | **[BAWAAN SEMENTARA]** dibangun sebagai riset dengan label dari logbook dan DIBI (bukan status kita) dan pra-registrasi. Bila label bebasnya kurang dari 200 kejadian, tiket ditutup sebagai "data tidak cukup" tanpa model. | KI-30 |
 | Q7 | Persentase dan ambang mutu label di ALGORITMA 5 (klimatologi + 0,05, cakupan ≥ 80% bulan) tanpa sumber. | **[BAWAAN SEMENTARA]** dipakai sebagai ambang awal berlabel bawaan, dilaporkan bersama angka mentahnya supaya bisa diubah pemilik. | KI-16 |
 | Q8 | Putaran email pertama sesudah deploy KI-50 akan mengirim semua peringatan resmi yang masih berlaku (rob sampai 24 jam, kekeringan sampai 11 hari, kenaikan gunung api 2 hari) ke semua pelanggan yang cocok. | **[BAWAAN SEMENTARA]** hanya pada putaran pertama kanal resmi (belum ada satu pun kunci `x|` di `ews_terkirim`): semua peringatan resmi yang sedang berlaku dicatat sebagai terkirim tanpa email. Sesudah itu peringatan resmi dikirim normal (dedupe, batas per putaran, kedaluwarsa disaring). | KI-50 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

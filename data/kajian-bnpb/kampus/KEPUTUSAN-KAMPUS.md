@@ -120,3 +120,9 @@ Sumber: paparan "Grand Design Kemitraan BNPB dan Perguruan Tinggi 2027–2029"
     `public/data/inarisk/ikd.json`. Prioritas bernilai terendah per kab (1-2, tahun analisa terbaru) menjadi butir masalah
     berlabel "IKD InaRISK <tahun>" dan ikut pencocokan pakar BM25. Butir ini terpisah dari masalah otomatis §3.3 (tanpa
     skor S_auto, tanpa kelas P1-P3), disimpan di `public/data/kemitraan/masalah_ikd.json`. Kab tanpa analisa tak punya butir.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

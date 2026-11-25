@@ -57,3 +57,9 @@ Pemilik belum memutuskan apa pun yang khusus tentang alat gambar selain K1. Semu
 | Q6 | Buffer luar dari poligon (offset) diperlukan, atau cukup lingkaran dan kapsul? | [SEMENTARA] lingkaran dan kapsul saja |
 | Q7 | Luas dNBR insiden dalam gambar boleh tampil walau tidak dijumlah? | [SEMENTARA] boleh, per insiden, dengan label batas bawah |
 | Q8 | Letak tombol alat di peta utama dan bagi pengguna ponsel? | [SEMENTARA] satu tombol "Gambar wilayah" di kontrol peta yang ada; dipasang sesudah tinjau lokal |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

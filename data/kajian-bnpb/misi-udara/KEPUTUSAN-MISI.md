@@ -72,3 +72,9 @@ peringatan tsunami menutup pesisir.
 | Q16 | Tiga jarak pemeriksaan tanpa sumber resmi: gunung Level II ke atas tanpa radius diperiksa dalam 30 km dari rute, gunung Level I dicatat dalam 15 km, siklon aktif dicatat dalam 300 km. Angkanya pas? | [SEMENTARA] 30 km, 15 km, 300 km, berlabel sementara | MU-05, MU-07 |
 | Q17 | Angka kerja mesin yang tidak punya sumber resmi: batas basi data (gunung api 48 jam, abu 12 jam, tsunami 6 jam, siklon 12 jam, banjir dan longsor 24 jam, METAR 3 jam), kelonggaran belokan 5 persen di luar jari-jari, saran isi ulang dalam 30 km dari rute, titik acuan plus code pendek dalam 50 km, 2 menit per titik untuk dropping lempar rendah, dan 2 menit orbit per titik pantau (mengikuti `ORBIT_MNT` renlap karhutla). Angkanya pas? | [SEMENTARA] seperti tertulis, semuanya di `batas_terbang.json` berkeyakinan S | tidak menahan |
 | Q18 | [TERJAWAB 24 Nov 2026, K8] Raster InaRISK dipakai sebagai catatan **perhatian** saja, tidak pernah larangan atau pembelok rute. **Bagian token tetap terbuka**: adakah token resmi untuk layanan "Token Required" (KRB vektor, MapServer tsunami)? Sampai ada, layanan itu dilewati; tidak ada token di repo. Kelas dari legenda belum bisa karena legenda Stretched tanpa batas kelas (D11). | [SEMENTARA, bagian token] tidak ada token; hanya ImageServer terbuka | tidak menahan |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

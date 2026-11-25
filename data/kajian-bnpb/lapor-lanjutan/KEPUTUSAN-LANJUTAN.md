@@ -77,3 +77,9 @@ Laporan awal Lapor Bencana (tahap 1) hanya memuat angka ringkas dan beberapa fot
 | --- | --- | --- |
 | F0 Uji | Nomor uji dan PEMILIK; semua jenis objek, WA dan web, penutupan | RENCANA-UJI bagian 3 hijau |
 | F1 Rintisan | Beberapa BPBD terpilih dari F1 paket induk | Q2, Q3 dijawab; LJ-17 selesai |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

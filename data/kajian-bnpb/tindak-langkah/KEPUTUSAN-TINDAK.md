@@ -37,3 +37,9 @@ Seksi "Usulan langkah" di `/bnpb/dalops` (tab Banjir, menu Penanganan) menghitun
 | Q6 | Perlu bukti foto atau tautan dokumen? | **[BAWAAN SEMENTARA]** belum (D6); catatan teks 300 karakter. | TL-08 |
 
 Migrasi `0128_dl_tindak.sql` harus diterapkan pemilik di D1 produksi sebelum fitur ini jalan; tanpa migrasi, rute menjawab 503 dan layar tetap tampil tanpa kolom status.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

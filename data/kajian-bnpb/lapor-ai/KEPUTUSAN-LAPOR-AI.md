@@ -576,3 +576,10 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 - D127 dijalankan tanpa "tujuan `selamat`" di kode `/masuk`: cukup sesi `sesi_masuk` yang hidup (nomor sudah terbukti lewat kode sekali pakai); tanpa sesi, rute menjawab 401 dan menyuruh minta kode, nomor ketikan dan kunci mesin tidak cukup. `DESAIN-TEKNIS.md` baris rute "kode sekali pakai tujuan `selamat`" dibaca sebagai sesi `/masuk`.
 - Migrasi nomor 0173. Kolom `lapor_cari_riwayat` hanya mencatat perubahan status oleh meja; laporan baru tidak punya baris riwayat awal (status `buka` ada di `lapor_cari`).
 - Laporan orang dicari tidak ikut bersih-bersih 30 hari (Q67: mengikuti masa simpan laporan Lapor Bencana, ditutup petugas); sesudah ditutup petugas lebih dari 2 tahun (`CARI_SIMPAN_HARI` di `src/hak.js`, **[BAWAAN SEMENTARA]** Q67) cron menit 17 menganonimkannya lewat `bersihkanLapor`: nama, ciri, lokasi, nomor, dan hubungan dikosongkan, id, kab, status, dan waktu tetap; laporan "buka" tidak pernah dianonimkan otomatis dan riwayat status (append-only) tidak disentuh.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q40: batas waktu respons per status **1 minggu**; lewat itu tampil terlambat.

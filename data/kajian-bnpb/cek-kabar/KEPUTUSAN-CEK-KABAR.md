@@ -40,3 +40,11 @@ Sekarang kejadian seperti itu hanya masuk daftar "Perlu ditanya", lalu hilang se
 | Q4 | Tombol WA ke BPBD untuk "Kemungkinan selesai": teks baru "mohon konfirmasi apakah sudah selesai"? | **[BAWAAN SEMENTARA]** ya, memakai tombol WA yang sudah ada, teksnya diganti sesuai label. | tidak menahan |
 | Q5 | Pemirsa baca-saja tab `pusdalops` boleh melihat label ini? | **[BAWAAN SEMENTARA]** ya, sama dengan isi tab lain. Tombol WA `.dl-wa` di tab jenis **belum** disembunyikan untuk baca-saja hari ini; aturannya ditambahkan di CK-06. | tidak menahan |
 | Q6 | Sesudah 60 hari arsip beku, bila ketepatan "Kemungkinan selesai" rendah, label itu dicabut atau ambangnya diubah? | Diputuskan pemilik saat rapor CK-07 keluar. | CK-07 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+
+Masih terbuka karena tidak punya bawaan: Q6. Jangan dijawab dengan karangan.

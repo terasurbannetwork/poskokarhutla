@@ -47,3 +47,10 @@ Bahan yang sudah ada di repo tetapi belum tampil sebagai panel EWS:
 | Q8 | Interval kirim alat sendiri per jenis? Belum tertulis di firmware atau README sensor (hanya batas laju `LAJU_ALAT`). | **[BAWAAN SEMENTARA, HIPOTESIS]** 5 menit untuk tma dan hujan, 1 menit ringkasan geofon; dipakai untuk jumlah titik grafik dan deteksi celah. | tidak menahan |
 | Q5 | Kotak "Langkah cepat" (pemantauan, peringatan, keadaan siaga) seperti dasbor rujukan ikut? | **[BAWAAN SEMENTARA]** ya, isinya diambil dari tangga tindakan yang sudah ada (`public/ews_tindakan.js`, entri banjir dan gunung api), tanpa teks baru karangan. | EW-09 |
 | Q6 | Grafik getaran geofon perlu seri penuh (puluhan ribu titik) atau ringkasan per menit? | **[BAWAAN SEMENTARA]** ringkasan per menit (maks, rata-rata) 24 jam terakhir. | EW-08 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q2: bacaan sensor sendiri **boleh tampil publik** (bukan hanya tiga peran staf).

@@ -78,3 +78,9 @@ rancangan agent dan bisa dibatalkan pemilik.
 | F0 | Aturan satu desa dihitung kode dan tampil di meja (LK-01, LK-08). Tanpa halaman publik dan tanpa usulan | Q1, Q2 hanya mengubah angka bawaan |
 | F1 | Halaman publik `/lapor/hari-ini` di balik saklar; dinyalakan sesudah pemilik meninjau di lokal dan menjawab Q4, Q5, Q6, Q10 | Pemilik |
 | F2 | Usulan ke Buku Besar (LK-09 sampai LK-11), butuh `lapor_ai` terpasang di `pasang.py` (belum ada per `pasang.py:17`, tiket LA-25) | Q11, Q12, Q13 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

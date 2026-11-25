@@ -55,3 +55,9 @@ Peta fitur 21 Nov 2026 (`docs/peta-fitur/PETA-2026-11-21.md`) mencatat dua butir
 | Q11 | Di mana QR segel ditaruh pada slide laporan harian karhutla dan bencana? Slide 1 penuh sampai batas kaki. | **[DIJAWAB K5]** slide tambahan di akhir. Pilihan semula: pilihan (a) slide Keterangan, (b) slide tambahan di akhir, (c) QR 15 mm di kaki slide 1. Lembar cetak dokumen PB sudah ber-QR. | SG-09 bagian slide |
 
 Migrasi segel harus diterapkan pemilik di D1 produksi. Sebelum itu rute verifikasi menjawab 503 dan pembeku tetap jalan tanpa segel (D3 memakai pemeriksa tabel seperti `tanpaTabelPb`).
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

@@ -76,3 +76,9 @@ Contoh Oktober 2026 adalah **acuan bentuk** laporan bulanan, dan sumber gaya unt
 | Q25 | Laporan Berkala Harian dan Mingguan menggantikan deck Laporan Kejadian Bencana Harian dan Rekap Mingguan logbook, atau berdampingan? | **[BAWAAN SEMENTARA]** berdampingan (D12). | tidak menahan |
 | Q26 | Laporan harian ditarik jam berapa? DIBI hari kemarin baru sebagian terisi pada pagi hari. | **[BAWAAN SEMENTARA]** rakit 10.10 WIB untuk hari kemarin; halaman "Tentang laporan ini" menulis bahwa angka DIBI masih bertambah, dan versi baru bisa dibekukan kapan saja. | LB-11 |
 | Q27 | Bagian kebijakan (dukungan yang dimohon, arahan) juga ada di harian dan mingguan, atau hanya bulanan dan tahunan? | **[BAWAAN SEMENTARA]** hanya bulanan dan tahunan; harian dan mingguan cukup action plan singkat. | LB-11 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

@@ -76,3 +76,10 @@ Q1, Q2, Q11, dan Q12 menentukan siapa di luar pelaksana yang melihat data ini. Q
 - "Data tambahan untuk stakeholder" (K2) baru terjawab untuk pimpinan internal. Untuk pihak luar dan Presiden, jawabannya menunggu Q1, Q2, Q11, dan Q12.
 - BPBD yang akunnya belum aktif tidak menerima kotak masuk. Itu bergantung pada aktivasi akun di paket Satu Pintu Masuk.
 - Menjawab atas nama lembaga dari halaman publik ditunda (D6).
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q1: rekap alun-alun per provinsi **boleh publik**.

@@ -77,3 +77,9 @@ Q16 sampai Q21 dijawab pemilik 12 Nov 2026, lihat K14 sampai K19.
 | Q24 | Panjang lintasan lurus dihitung dari apa? | [SEMENTARA] sisi panjang dan sisi pendek kotak batas badan air di OpenStreetMap, berlabel perkiraan; sungai tidak dihitung kandidat dan tampil sebagai "belum dinilai" |
 | Q25 | Tipe mana yang ditampilkan? Indonesia belum mengoperasikan pesawat amfibi pemadam. | [SEMENTARA] enam tipe di laporan K21, sebagai bahan kajian, bukan data armada |
 
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

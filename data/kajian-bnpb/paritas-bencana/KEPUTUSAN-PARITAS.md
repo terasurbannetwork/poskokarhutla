@@ -113,3 +113,9 @@ Aturan pemilik yang sudah berlaku dan mengikat paket ini: tanpa data dummy dan t
 | Q35 | `npm run uji` tidak menjalankan `uji:layar`, `uji:gempa`, dan sejenisnya; uji layar baru paket ini (`tests/layar/pb_*.test.mjs`) masuk rangkaian `uji` atau jalan sendiri? | **[BAWAAN SEMENTARA]** masuk lewat satu skrip baru `uji:paritas` yang dipanggil dari `npm run uji` oleh `mekanik-mesin` di PB-01; tidak melonggarkan hook pre-push | PB-01 |
 | Q36 | Nomor migrasi D13 belum ditetapkan di DESAIN-TEKNIS; 0130 dan 0131 sudah dipakai paket ini. Cukup nomor berikutnya yang kosong saat tiket PB-21? | **[BAWAAN SEMENTARA]** ya, dicek ulang dengan `ls migrations` saat tiket | PB-21 |
 | Q37 | Pemetaan tingkat udara dari kategori ISPU PM2,5 (Tidak sehat = 1, Sangat tidak sehat = 2, Berbahaya = 3) dan aturan gunung api bahwa hanya kenaikan level PVMBG yang memicu peringatan baru (penurunan hanya menurunkan tampilan). Keduanya rancangan agent, bukan ketentuan resmi. | **[BAWAAN SEMENTARA]** dipakai seperti tertulis di ALGORITMA 2.3, bisa diubah pemilik atau staf per daerah; label resmi sumber tetap tampil di samping tingkat. | PB-38, PB-46 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

@@ -104,3 +104,12 @@ Tidak ada pertanyaan terbuka yang menahan tiket. Bawaan sementara yang tersisa: 
 - K1 ("semua orang bisa input") baru terjawab sebagian: orang bisa masuk dan menulis di alun-alun. Isian modul lembaga tetap butuh akun lembaga yang aktif.
 - K3 (data tambahan untuk stakeholder, BNPB, dan Kepala) belum disentuh; itu isi paket lanjutan D14.
 - Daerah yang akun instansinya belum pernah aktif tetap menunggu verifikasi pertama (D16, K11). Paket ini mempercepat anggota kedua dan seterusnya, bukan yang pertama.
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q2: **tidak ada** peran staf yang boleh masuk hanya dengan kode.
+- K17 (pemilik, 25 Nov 2026): "BNPB dan BPBD dan petugas lapangan dan kampus dan mitra loginnya sama aja via centurisk97.id/masuk". Satu halaman masuk untuk semua peran adalah `/masuk`: kode WA dan sandi (staf, admin, pemirsa, instansi) di halaman yang sama. Ini memindahkan alamat layar sandi K16 dari `/admin/masuk` ke `/masuk`; `/admin/masuk` dan layar masuk modul lain dialihkan ke `/masuk` dengan `?ke=` dipertahankan. Staf tetap wajib sandi (Q2). Pengerjaan lewat paket `data/kajian-bnpb/peta-situs/`.
+

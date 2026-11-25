@@ -47,3 +47,9 @@ Kolom "Menahan" menyebut tiket yang tidak boleh jalan sebelum dijawab.
 | Q6 | F2: sumber penduduk, sekolah, dan faskes per kabupaten pesisir sudah ada di repo (dicek di SS-11). Bila kabupaten tertentu tidak punya, tertulis "belum ada data". Cukup? | Dipakai. | tidak menahan |
 | Q7 | F6: boleh prediksi bulanan BMKG dan laju kejadian ditampilkan berdampingan, tanpa skor gabungan, sampai ada uji balik? | Dipakai (K3, K5). | tidak menahan |
 | Q8 | F1: arsip dimulai dari tanggal berapa untuk tiap sumber? Dibaca dari berkas arsip di SS-02; tidak dikarang di dokumen. | Dibaca saat SS-02. | tidak menahan |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

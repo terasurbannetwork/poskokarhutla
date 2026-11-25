@@ -75,3 +75,9 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | Q15 | Muatan bahan per sortie per jenis armada OMC (CASA 212, Caravan 208B, C-130, lainnya), untuk NaCl dan dry ice. Sumber: BMKG, BRIN, atau operator? | [SEMENTARA] kosong; layar menulis "muatan armada belum diisi", tanpa angka |
 | Q16 | Lama penaburan per sortie di area semai (menit), untuk menghitung jumlah sortie dalam jendela terbang. | [SEMENTARA] 30 menit, berlabel perkiraan |
 | Q17 | Peringatan subuh lewat bot WA: ke grup mana saja (Pusdalops, posko TMC per provinsi, pimpinan)? | [SEMENTARA] satu grup Pusdalops yang sudah dipakai bot renlap; grup lain menunggu jawaban |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

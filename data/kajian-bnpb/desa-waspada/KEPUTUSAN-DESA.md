@@ -72,3 +72,11 @@ Aturan turunan dari TIKET pembanding yang mengikat paket ini:
 | Q7 | Poligon `gambut.geojson` (1,7 MB, persegi umum BBSDLP) cukup untuk porsi gambut per desa? KHG 2017 (pembanding) tidak dipakai karena lisensi PRIMS. | [SEMENTARA] `gambut.geojson` berpil perkiraan; lisensinya diperiksa di DW-02 (kalau lisensinya melarang turunan per desa, kolom gambut dicabut, bukan diganti KHG) |
 | Q8 | Ekspor CSV boleh memuat kolom peluang kab/kota (D9) yang bukan peluang desa? | [SEMENTARA] boleh, bernama "peluang kab/kota hari ke-N (%)" dengan baris keterangan di kepala berkas |
 | Q9 | Titik gunung api (kawah) ikut terhitung di daftar A (seperti angka utama dan SiPongi), padahal riwayat petak membuangnya. Disaring atau dibiarkan? | [SEMENTARA] dibiarkan sama dengan angka utama; `batasan` di berkas publik menulis bahwa desa di lereng gunung api aktif bisa masuk karena titik gunung, bukan kebakaran lahan |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q1: halaman /desa-waspada **publik** (bawaan "publik tanpa peringkat") dan boleh terbit sekarang; tidak lagi ditahan `.assetsignore`.
+- Q2: ambang lulus bawaan (A ≥3x, B ≥2x, ≥200 desa-minggu, Wilson 95%) dikunci.

@@ -78,3 +78,10 @@ Aturan turunan dari TIKET pembanding yang mengikat paket ini:
 | Q9 | Insiden dengan < 20 piksel unik tidak punya isokron (pembanding juga begitu, `MIN_DETECTIONS = 20`). Ambang 20 dipakai juga di kita? | [SEMENTARA] 20 piksel unik VIIRS nominal/tinggi, tampil "terlalu kecil untuk dilacak" |
 | Q10 | Bila uji tahan gagal (Q2), perkembangan api tetap tampil berpil hipotesis, atau disembunyikan? | [SEMENTARA] tampil berpil hipotesis dan keterangan hasil uji di `title`; garis depan tanpa angka laju |
 | Q11 | Uji tahan memakai FIRMS lengkap 2019 dan 2023, sedangkan produksi memakai `titik_hari` yang hanya menyimpan deteksi pertama per lokasi per hari (D18 butir a). Vonis dari uji historis boleh berlaku untuk angka produksi? | [SEMENTARA] tidak otomatis: uji dijalankan juga pada 3 insiden musim ini dari arsip `titik_hari` dan hasilnya dicatat berdampingan; pil hipotesis dilepas hanya bila keduanya melewati ambang Q2 (ambang yang sama) |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q3: perkiraan titik awal api **boleh publik** (lingkaran galat ≥375 m, tanpa nama lahan).

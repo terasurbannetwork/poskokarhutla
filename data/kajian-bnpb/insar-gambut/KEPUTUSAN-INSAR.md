@@ -56,3 +56,10 @@ Aturan turunan dari TIKET pembanding yang mengikat paket ini:
 | Q4 | L-band ALOS-2: sumber data, lisensi, dan siapa yang memprosesnya di luar repo? | [SEMENTARA] tidak dikerjakan; hanya dicatat di laporan lab sebagai kandidat sesudah C-band punya penjelasan; jangan mengunduh sebelum jawaban |
 | Q5 | Satu wilayah lab (Palangka Raya) cukup, atau perlu satu wilayah kedua (mis. Sumatra Selatan) sebelum vonis? | [SEMENTARA] satu wilayah; vonis berlaku hanya untuk wilayah itu dan musim itu |
 | Q6 | Ambang koherensi dan jumlah piksel minimum di RENCANA-UJI §2 diterima? | [SEMENTARA] angka di RENCANA-UJI §2 adalah tebakan perancang, bukan hasil pengukuran; dikunci sebelum lab jalan, diubah hanya oleh pemilik |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q1: unduhan LiCSAR/LiCSBAS Palangka Raya **diizinkan**.

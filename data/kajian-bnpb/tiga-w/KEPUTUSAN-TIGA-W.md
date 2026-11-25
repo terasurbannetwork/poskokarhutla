@@ -39,3 +39,9 @@ Saat bencana besar, kementerian, TNI dan Polri, NGO, dunia usaha, kampus, dan le
 | Q5 | Nilai rupiah tawaran dicatat? | **[BAWAAN SEMENTARA]** tidak; jumlah dan satuan saja. | tidak menahan |
 | Q6 | Siapa yang membuat tautan token untuk organisasi? | **[BAWAAN SEMENTARA]** staf Pusdalops, per organisasi per kejadian, berlaku sampai kejadian selesai atau dicabut, paling lama 90 hari sejak terbit (23 Nov 2026, sama dengan batas `src/token.js`; kejadian panjang = terbitkan token baru). | TW-05 |
 | Q7 | Alasan penolakan atau pengalihan untuk organisasi dipisah dari catatan internal staf? | **[BAWAAN SEMENTARA]** ya: `alasan_organisasi` tampil ke organisasi, `alasan_internal` hanya staf. | TW-07 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

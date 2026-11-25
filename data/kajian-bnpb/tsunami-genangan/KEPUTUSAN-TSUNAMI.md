@@ -64,3 +64,10 @@ Video rujukan pemilik (akun @arvindvazza: simulasi tsunami Anak Krakatau 2018 ke
 | Q15 | Siapa boleh melihat peta genangan: publik atau staf? | **Terjawab K7** (bawaan sementara diterima): mengikuti hak tab Simulasi yang berlaku sekarang (publik), dengan label hipotesis dan kalimat batas di tiap tampilan. | TS-18 |
 | Q16 | Tombol bagikan untuk peta genangan? | **[BAWAAN SEMENTARA]** Tidak ada di fase 1. Bila nanti ada, gambar yang dibagikan memuat label simulasi, tingkat (A atau B), dan jam hitung di dalam gambarnya. | TS-22 |
 | Q17 | Tiga kotak pertama (K6) tidak punya kejadian uji kelas A, sehingga label "teruji" tidak berlaku di sana. Tambah kotak untuk kejadian kelas A (usulan: Aceh Besar untuk Aceh 2004, pesisir utara Flores untuk Flores 1992)? | **[BAWAAN SEMENTARA]** Ya, sebagai kotak uji dengan DEM yang tersedia (GLO-30 bila lembar DEMNAS belum ada); tidak ditampilkan di pemilih publik sampai hasilnya ada. | TS-05, TS-14 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q8: ambang Aida K dan kappa (JSCE), n_min 8, dikunci.

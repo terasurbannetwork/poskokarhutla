@@ -57,3 +57,10 @@ Pasangan KALIBRASI yang sudah dilihat sebelum v2 dikunci (indeks di `kerusakan_k
 
 Uji asap v2 (3 pasangan kalibrasi, belum vonis kelayakan karena n < 20): 209 satelit 0 lawan plasebo 0 (-16), 1 lawan 0 (-17); 212 8 lawan 76 (-16), 6 lawan 64 (-17); 218 34 lawan 0 (-16), 0 lawan 0 (-17). Unduhan per pasangan 36,5 MB (218), 107 MB (209), 118 MB (212) pada k=4.
 
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
+- Q4: ambang lulus angka ALGORITMA 3, dikunci sebelum dihitung.

@@ -42,3 +42,9 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Keputusan pemilik dica
 | Q10 | Prakiraan kondisi harian BMKG 10 hari kini memuat "Hujan Lebat". Mau dipetakan ke peringkat? | Dijawab pemilik 19 Nov 2026: "petakan ke peringkat". Hujan Lebat = 2, Hujan Sangat Lebat atau Ekstrem = 3 (sama dengan sepekan BMKG); kondisi lain tetap null. |
 | Q11 | Sumber jam (nowcast, petir, Himawari) memerlukan salinan segar dari situs live; workflow belum menariknya. Setujukah usulan di DESAIN-TEKNIS? | Gagal-lunak: basi = dilewati. |
 | Q9 | Cakupan kabupaten untuk peringatan kekeringan BMKG (per kecamatan) diringkas ke tingkat tertinggi per kabupaten, dengan jumlah kecamatan di teks. Cukup? | Dipakai. |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+

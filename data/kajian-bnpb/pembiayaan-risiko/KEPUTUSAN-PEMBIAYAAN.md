@@ -39,3 +39,9 @@ Pimpinan bertanya dua hal sesudah kejadian besar: "kira-kira kerugiannya berapa?
 | Q7 | Perlu koordinasi dengan Kemenkeu (DJPPR) atau BPDLH untuk memakai istilah dan angka PFB? | **[BAWAAN SEMENTARA]** ya, lewat pemilik; sistem tidak mengutip angka PFB yang belum diberikan resmi. | PR-04 |
 | Q8 | Satuan dan tahun harga: rupiah berjalan tahun kejadian, atau konstan? | **[BAWAAN SEMENTARA]** rupiah berjalan, tahun harga ditulis di tiap angka. | catatan tahun harga di ALGORITMA 4 |
 | Q9 | Peran apa yang membaca dan menulis? (siklus/KEPUTUSAN-AWAL.md butir 27a melarang peran baru) | **[BAWAAN SEMENTARA]** baca: pimpinan, Pusdalops, Koordalops; tulis saldo dan skema: Super Admin; BPBD tidak melihat saldo pusat. Tanpa peran baru. | PR-02 |
+
+
+## Jawaban pemilik 25 Nov 2026
+
+Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
+
