@@ -1,0 +1,669 @@
+{
+ "hari": "2026-11-25",
+ "cutoff": "2026-11-25T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2659.0,
+    "mengungsi": 18.0,
+    "rumah_dampak": 2010.0
+   },
+   "teks": {
+    "dampak": "2.659 KK / 10.999 jiwa terdampak",
+    "status_darurat": "Tanggap Darurat TMT 6/11/2026 s.d 19/11/2026",
+    "kondisi": "Masih terdapat genangan air dengan tinggi muka air (TMA) berkisar 10–40 cm.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 3517.0,
+    "rumah_dampak": 3517.0
+   },
+   "teks": {
+    "dampak": "±3.517 KK / 13.720 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Banjir di sebagian wilayah telah surut, namun beberapa desa masih tergenang dengan TMA berkisar 5–40 cm.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Sebagian tergenang",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 8.0,
+    "rumah": 8.0
+   },
+   "teks": {
+    "dampak": "±8 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Genangan air masih belum surut, sementara jalan lintas Blangkejeren–Kutacane sudah dapat dilalui kendaraan roda dua maupun roda empat.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Barat Daya",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "Dalam pendataan",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Air belum surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "11",
+   "lokasi": "Aceh Tenggara",
+   "status": "belum",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Puting Beliung)",
+   "angka": {
+    "kk": 30.0,
+    "rumah_dampak": 30.0
+   },
+   "teks": {
+    "dampak": "30 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Hujan dan angin kencang telah berhenti, pembersihan material rumah rusak masih berlangsung, sebagian wilayah Kec. Darul Hasanah masih mengalami pemadaman listrik, dan BPBD Kab. Aceh Tenggara terus melakukan pendataan lanjutan.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Labuhanbatu Selatan",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 446.0,
+    "rumah_dampak": 284.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "±446 KK/ 162 jiwa terdampak",
+    "status_darurat": "Transisi Darurat Prov. TMT 1/10/2026 s.d 31/12/2026",
+    "kondisi": "BPBD menyiagakan personel, sarana evakuasi, dan perahu fiber untuk membantu warga. Kondisi banjir berangsur surut, sementara penanganan masih dilakukan oleh pemerintah setempat bersama masyarakat.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-23",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "12",
+   "lokasi": "Nias Selatan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {
+    "kk": 2.0,
+    "rumah": 2.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "2 KK Terdampak",
+    "status_darurat": "Transisi Darurat TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "BPBD masih melakukan asesmen di lokasi kejadian.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Asesmen",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Nias Selatan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 36.0
+   },
+   "teks": {
+    "dampak": "36 KK terdampak",
+    "status_darurat": "",
+    "kondisi": "BPBD Kab. Nias Selatan masih melakukan pendataan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Pendataan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "13",
+   "lokasi": "Kota Padang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "rumah": 1.0,
+    "rumah_dampak": 1.0
+   },
+   "teks": {
+    "dampak": "dalam pendataan",
+    "status_darurat": "Siaga Darurat Prov. TMT 16/11/2026 s.d 18/01/2027",
+    "kondisi": "BPBD melakukan evakuasi terhadap warga terdampak serta pembersihan material pohon tumbang.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "13",
+   "lokasi": "Padang Pariaman",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 150.0,
+    "rumah_dampak": 139.0
+   },
+   "teks": {
+    "dampak": "±150 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 16/11/2026 s.d. 18/01/2027",
+    "kondisi": "BPBD Kab. Padang Pariaman melalui Pusdalops-PB terus melakukan pemantauan, koordinasi, dan pendataan dampak banjir seiring kondisi cuaca dan genangan yang mulai membaik, sementara masyarakat bergotong royong membersihkan lingkungan serta diimbau tetap waspada terhadap potensi bencana susulan.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Mulai membaik",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "14",
+   "lokasi": "Rokan Hilir",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4403.0,
+    "rumah_dampak": 4403.0
+   },
+   "teks": {
+    "dampak": "±4.403 KK / 17.612 jiwa terdampak",
+    "status_darurat": "Siaga Darurat TMT 16/11/2026 s.d. 15/12/2026",
+    "kondisi": "Banjir berangsur surut dengan TMA berkisar 5–40 cm.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-15",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "14",
+   "lokasi": "Rokan Hulu",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 55.0,
+    "rumah": 55.0
+   },
+   "teks": {
+    "dampak": "55 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-21",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "16",
+   "lokasi": "Musi Banyuasin",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Puting Beliung)",
+   "angka": {
+    "kk": 74.0,
+    "rumah": 75.0
+   },
+   "teks": {
+    "dampak": "±74 KK / 222 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Warga melakukan evakuasi secara mandiri. BPBD mendirikan tenda pengungsian dan menyalurkan bantuan logistik.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Bantuan logistik",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "18",
+   "lokasi": "Lampung Selatan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 67.0,
+    "rumah": 67.0
+   },
+   "teks": {
+    "dampak": "± 67 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 06/09/2026 s.d. 31/08/2027",
+    "kondisi": "Situasi di lokasi terpantau aman dan kondusif. Pohon yang menghalangi jalan sudah dibersihkan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Kondusif",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "18",
+   "lokasi": "Mesuji",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 4.0,
+    "rumah": 4.0
+   },
+   "teks": {
+    "dampak": "± 4 KK terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 6/09/2026 s.d. 31/08/2027",
+    "kondisi": "BPBD Provinsi Lampung telah menyalurkan bantuan logistik berupa makanan siap saji, material asbes, dan kasur.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Bantuan logistik",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "32",
+   "lokasi": "Tasikmalaya",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "Pendataan",
+    "status_darurat": "Tanggap Darurat Kab. 16/11/2026 s.d. 29/11/2026",
+    "kondisi": "Ruas jalan menuju Pondok Pesantren Nurul Hikmah masih tergenang banjir.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "32",
+   "lokasi": "Bogor",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 18.0,
+    "rumah": 15.0
+   },
+   "teks": {
+    "dampak": "±18 KK / 60 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 1/11/2026 s.d. 30/04/2027",
+    "kondisi": "Sudah kondusif",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Kondusif",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "32",
+   "lokasi": "Bogor",
+   "status": "belum",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {},
+   "teks": {
+    "dampak": "Dalam Pendataan",
+    "status_darurat": "Siaga Darurat Prov. TMT 1/11/2026 s.d. 30/04/2027",
+    "kondisi": "Laporan masih menunggu, sementara proses penanganan di lokasi kejadian masih berlangsung",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "33",
+   "lokasi": "Grobogan",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "Dalam pendataan",
+    "status_darurat": "-",
+    "kondisi": "Situasi secara umum berangsur kondusif dan genangan banjir di seluruh lokasi terdampak telah berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "35",
+   "lokasi": "Pacitan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {},
+   "teks": {
+    "dampak": "Dalam Pendataan",
+    "status_darurat": "-",
+    "kondisi": "Tembok belakang rumah warga jebol dan ruang kamar tidur mengalami kerusakan.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Pendataan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Kapuas Hulu",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 11494.0,
+    "rumah_dampak": 11494.0
+   },
+   "teks": {
+    "dampak": "±11.494 KK / 37.238 jiwa terdampak",
+    "status_darurat": "Siaga Darurat Prov. TMT 19/10/2026 s.d. 31/01/2027",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-19",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Melawi",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 100.0,
+    "rumah_dampak": 100.0
+   },
+   "teks": {
+    "dampak": "100 KK Terdampak (dalam pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 19/10/2026 s.d. 31/01/2027",
+    "kondisi": "Warga masih bertahan di rumah masing-masing atau mengungsi mandiri ke rumah kerabat yang lebih tinggi sambil bersiaga evakuasi, sementara bantuan beras dari Dinas Sosial telah disalurkan oleh Camat Tanah Pinoh",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Siaga evakuasi",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Sintang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 390.0,
+    "rumah_dampak": 390.0
+   },
+   "teks": {
+    "dampak": "390 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 19/10/2026 s.d. 31/01/2027",
+    "kondisi": "BPBD Kab. Sintang masih melakukan pendataan di lokasi kejadian",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Pendataan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "61",
+   "lokasi": "Sambas",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 145.0,
+    "rumah_dampak": 145.0
+   },
+   "teks": {
+    "dampak": "145 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Prov. TMT 19/10/2026 s.d. 31/01/2027",
+    "kondisi": "Sebagian warga masih bertahan di rumah dalam kondisi terisolasi akibat akses jalan yang tidak dapat dilalui kendaraan sehingga aktivitas bekerja dan sekolah terganggu. Pemeriksaan kesehatan telah dilakukan oleh puskesmas bersama unsur terkait di posko sementara. Ketinggian air masih berpotensi meningkat.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Air berpotensi naik",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "64",
+   "lokasi": "Mahakam Ulu",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "(dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Masih dalam penanganan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Penanganan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "73",
+   "lokasi": "Jeneponto",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 14.0,
+    "rumah_dampak": 14.0
+   },
+   "teks": {
+    "dampak": "14 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Pembersihan material dampak angin kencang dilakukan secara bergotong royong",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "72",
+   "lokasi": "Morowali Utara",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 1.0,
+    "rumah": 1.0
+   },
+   "teks": {
+    "dampak": "1 KK terdampak (dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "BPBD masih melakukan asesmen dan koordinasi perbaikan rumah yang rusak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-24",
+   "kondisi_pil": [
+    "Asesmen",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "74"
+ ]
+}
