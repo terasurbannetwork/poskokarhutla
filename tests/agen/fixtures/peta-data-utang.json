@@ -32,6 +32,10 @@
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
+  "public/data/alun/**": {
+   "alasan": "Kabar Alun-alun KA-01..KA-04 (data/kajian-bnpb/kabar-alun/ALUR.md langkah 2, Q3 bawaan sementara): kabar.json ditulis scripts/data/alun_kabar.py yang dipanggil langkah ekspor jalan.py laporan harian di mesin lokal, bukan workflow GitHub. Pemakai layar public/lapor/alun_kabar.js menyusul di KA-05. Dicatat sesi lapor supaya push tidak tertahan; pengerja pipa-data menghapus pengecualian ini bila penjadwalnya pindah ke workflow.",
+   "tanggal": "2026-11-25"
+  },
   "public/data/bpbd_kontak.json": {
    "alasan": "Pemilik 22 Nov 2026: pengecualian bertanggal. Nomor BPBD dan damkar dipanen tangan dari situs .go.id, tiap nomor dicek tertulis di halaman sumbernya (data/kajian-bnpb/lapor-ai/riset/kontak-bpbd, K88, Q64). Pengecek otomatis tidak dipakai karena banyak situs BPBD menolak bot dan akan membuang nomor yang masih benar. Panen diulang manual berkala. Dipakai src/lapor_info.js dan src/lapor_ai.js lewat src/lapor_kontak.js.",
    "tanggal": "2026-11-22"

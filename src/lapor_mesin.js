@@ -504,13 +504,16 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
   const CARI_HUB = ["Anak", "Orang tua", "Suami atau istri", "Saudara", "Teman atau tetangga", "Lainnya"], CARI_WAKTU = ["Hari ini", "Kemarin", "2 sampai 3 hari lalu", "Lebih dari 3 hari lalu"];
   const tanyaCari = (langkah, kepala = "") => {
     sesi.status = `cari_${langkah}`; const k = kepala ? `${kepala}\n\n` : "";
-    if (langkah === "nama") return jawab(`${k}*Siapa nama orang yang Anda cari?*\nTulis nama lengkap atau nama panggilannya.`);
+    if (langkah === "nama") return jawab(`${k}*Siapa nama lengkap orang yang Anda cari?*\nTulis sesuai KTP atau kartu keluarga bila tahu.`);
+    if (langkah === "panggilan") return jawab(`${k}*Nama panggilan ${sesi.cari.nama}*\nNama yang biasa dipakai keluarga atau tetangga.`, ["Lewati"], false, null, ["Tidak ada nama panggilan"]);   // pemilik 25 Nov 2026: "Nama lengkap dulu... baru nama panggilan"
     if (langkah === "hubungan") return jawab(`${k}*Apa hubungan Anda dengan ${sesi.cari.nama}?*`, CARI_HUB);
     if (langkah === "ciri") return jawab(`${k}*Ciri-ciri ${sesi.cari.nama}*\nTulis umur, pakaian terakhir, tinggi badan, atau tanda lain yang mudah dikenali.`, ["Lewati"]);
     if (langkah === "waktu") return jawab(`${k}*Kapan terakhir terlihat?*`, CARI_WAKTU);
     if (langkah === "nomor") return jawab(`${k}*Nomor WhatsApp ${sesi.cari.nama}*\nBila tahu, tulis nomornya. Petugas memakainya untuk mencocokkan dengan kabar selamat.`, ["Tidak tahu"]);
+    if (langkah === "kontak") return jawab(`${k}*Nomor yang dihubungi bila ${sesi.cari.nama} ditemukan*\nPetugas menelepon atau mengirim WhatsApp ke nomor ini.`, ["Pakai nomor saya"], false, null, ["Nomor WhatsApp yang Anda pakai sekarang"]);
+    if (langkah === "tempat") return jawab(`${k}*Ke mana ${sesi.cari.nama} diantar bila ditemukan?*\nTulis tempat Anda menunggu: nama posko pengungsian, atau alamat lengkap dengan nama jalan, RT/RW, dan patokan.`);
     const w = sesi.isian.lokasi?.nilai?.wilayah, c = sesi.cari;
-    return jawab(`${k}*Ringkasan laporan orang dicari*\nNama: ${c.nama}\nHubungan: ${c.hubungan}\nCiri: ${c.ciri || "tidak diisi"}\nTerakhir terlihat: ${w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : "lokasi belum terbaca"}, ${c.waktu.toLowerCase()}\nNomor WhatsApp: ${c.nomor ? "diisi" : "tidak tahu"}\n\nLaporan ini hanya dilihat petugas BNPB dan BPBD, tidak tampil di publik.`,
+    return jawab(`${k}*Ringkasan laporan orang dicari*\nNama: ${c.nama}${c.panggilan ? ` (panggilan ${c.panggilan})` : ""}\nHubungan: ${c.hubungan}\nCiri: ${c.ciri || "tidak diisi"}\nTerakhir terlihat: ${w ? `Desa/Kel. ${w.desa}, Kec. ${w.kec}, ${w.kab}` : "lokasi belum terbaca"}, ${c.waktu.toLowerCase()}\nNomor WhatsApp: ${c.nomor ? "diisi" : "tidak tahu"}\nDihubungi bila ditemukan: ${c.kontak === pesan?.wa ? "nomor Anda" : "nomor lain yang Anda tulis"}\nDiantar ke: ${c.tempat}\n\nLaporan ini hanya dilihat petugas BNPB dan BPBD, tidak tampil di publik.`,
       ["Kirim", "Batal"], false, null, ["Kirim ke petugas BNPB dan BPBD", "Tidak jadi melapor"]);
   };
   const tanyaKorban = (kepala = "") => jawab(`${kepala}*Ada korban?*\nAda orang terluka, hilang, atau terjebak?`, ["Ya, ada", "Tidak ada", "Belum tahu"]);
@@ -596,7 +599,12 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
     if (sesi.status === "cari_nama") {
       const nama = samarkan(teks).replace(/\[[^\]]*\]/g, "").trim().slice(0, 80);
       if (nama.length < 2 || /\d/.test(nama)) return tanyaCari("nama", "Tulis namanya tanpa angka.");
-      c.nama = nama; return tanyaCari("hubungan");
+      c.nama = nama; return tanyaCari("panggilan");
+    }
+    if (sesi.status === "cari_panggilan") {
+      const pg = p === 0 || KATA_BELUM.test(teks) ? "" : samarkan(teks).replace(/\[[^\]]*\]/g, "").trim().slice(0, 40);
+      if (pg && (pg.length < 2 || /\d/.test(pg))) return tanyaCari("panggilan", "Tulis nama panggilannya tanpa angka, atau pilih *Lewati*.");
+      c.panggilan = pg && pg.toLowerCase() !== c.nama.toLowerCase() ? pg : null; return tanyaCari("hubungan");
     }
     if (sesi.status === "cari_hubungan") {
       const h = p >= 0 ? CARI_HUB[p] : teks.trim().slice(0, 60); if (h.length < 2) return tanyaCari("hubungan", "Pilih salah satu.");
@@ -608,21 +616,33 @@ async function putaranInti({sesi, pelapor, pesan, model = null, wilayah = null, 
       c.waktu = w; return tanyaCari("nomor");
     }
     if (sesi.status === "cari_nomor") {
-      if (p === 0 || KATA_BELUM.test(teks)) { c.nomor = null; return tanyaCari("konfirm"); }
+      if (p === 0 || KATA_BELUM.test(teks)) { c.nomor = null; return tanyaCari("kontak"); }
       const d = teks.replace(/\D/g, ""), n = d.startsWith("62") ? d : d.startsWith("0") ? `62${d.slice(1)}` : d.startsWith("8") ? `62${d}` : "";
       if (!/^628\d{7,12}$/.test(n)) return tanyaCari("nomor", "Nomor belum sah. Contoh 0812 3456 7890, atau pilih *Tidak tahu*.");
-      c.nomor = n; return tanyaCari("konfirm");
+      c.nomor = n; return tanyaCari("kontak");
+    }
+    if (sesi.status === "cari_kontak") {
+      if ((p === 0 || /^(pakai )?nomor saya$/i.test(teks.trim())) && /^628\d{7,12}$/.test(String(pesan?.wa || ""))) { c.kontak = pesan.wa; return tanyaCari("tempat"); }
+      const d = teks.replace(/\D/g, ""), n = d.startsWith("62") ? d : d.startsWith("0") ? `62${d.slice(1)}` : d.startsWith("8") ? `62${d}` : "";
+      if (!/^628\d{7,12}$/.test(n)) return tanyaCari("kontak", "Nomor belum sah. Contoh 0812 3456 7890, atau pilih *Pakai nomor saya*.");
+      c.kontak = n; return tanyaCari("tempat");
+    }
+    if (sesi.status === "cari_tempat") {
+      const t = samarkan(teks).trim().slice(0, 200);
+      if (t.length < 5) return tanyaCari("tempat", "Tulis nama posko atau alamatnya, paling tidak nama jalan.");
+      c.tempat = t; return tanyaCari("konfirm");
     }
     if (sesi.status === "cari_konfirm") {
       if (p === 1) { sesi.status = "batal"; return jawab("*Laporan tidak dibuat*\nBila orang itu dalam bahaya sekarang, hubungi 112 atau BPBD setempat."); }
       if (p !== 0 && !KATA_KIRIM.test(teks)) return tanyaCari("konfirm");
       const w = sesi.isian.lokasi?.nilai?.wilayah;
       if (!w?.kabKode) { sesi.status = "lokasi"; delete sesi.isian.lokasi; return jawab("Lokasi terakhir terlihat belum terbaca. Bagikan lokasi atau cari nama desa/kelurahannya.", null, false, "lokasi"); }
+      if (!c.kontak || !c.tempat) return tanyaCari(!c.kontak ? "kontak" : "tempat");   // sesi lama dari sebelum langkah ini ada
       sesi.status = "cari_terkirim";
       const kirimCari = {nama_dicari: c.nama, ciri: c.ciri, lokasi_terakhir: `Desa/Kel. ${w.desa}, Kec. ${w.kec}`.slice(0, 200), waktu_terakhir: c.waktu, nomor_dicari: c.nomor, hubungan: c.hubungan, kab: w.kabKode};
       sesi.cari = {nama: c.nama};   // rincian hanya di lapor_cari (ikut aturan simpan dan anonim Q67), tidak tertinggal di salinan sesi
-      const h = jawab(`*Laporan orang dicari diterima*\nPetugas BNPB dan BPBD wilayah ${w.kab} menerima laporan tentang ${c.nama}. Kabar dikirim lewat WhatsApp ke nomor Anda. Bila orang itu dalam bahaya sekarang, hubungi 112.`);
-      h.kirimCari = kirimCari;
+      const h = jawab(`*Laporan orang dicari diterima*\nPetugas BNPB dan BPBD wilayah ${w.kab} menerima laporan tentang ${c.nama}. Bila ditemukan, petugas menghubungi nomor yang Anda berikan dan mengantar ke ${c.tempat}. Bila orang itu dalam bahaya sekarang, hubungi 112.`);
+      h.kirimCari = kirimCari; h.kirimTemu = {panggilan: c.panggilan || null, nomor_kontak: c.kontak, tempat_tunggu: c.tempat};
       return h;
     }
   }

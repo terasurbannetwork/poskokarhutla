@@ -1538,6 +1538,7 @@
     "table lapor_selamat": "tanda baru mengganti yang lama",
     "table lapor_cari": "orang dicari: validasi",
     "table lapor_cari_riwayat": "status: tulis riwayat append-only",
+    "table lapor_cari_temu": "orang dicari lewat obrolan",
     "trigger lapor_cari_riwayat_tanpa_ubah": "basis data: satu tanda aktif per nomor",
     "trigger lapor_cari_riwayat_tanpa_hapus": "basis data: satu tanda aktif per nomor",
     "table lapor_kelompok_urut": "kejadian yang sama",

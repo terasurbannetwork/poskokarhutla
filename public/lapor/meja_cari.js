@@ -41,9 +41,11 @@ function dialogStatus(r, sesudah) {
 
 function baris(r, muatUlang) {
   const tr = el("tr"), nama = el("td"), lok = el("td"), pen = el("td"), st = el("td"), kabar = el("td"), ak = el("td");
-  nama.append(el("b", null, r.nama_dicari)); if (r.ciri) nama.append(el("small", "mj-cari-ciri", r.ciri));
+  nama.append(el("b", null, r.nama_dicari)); if (r.panggilan) nama.append(el("small", "mj-cari-ciri", `Panggilan ${r.panggilan}`)); if (r.ciri) nama.append(el("small", "mj-cari-ciri", r.ciri));
   lok.append(r.lokasi_terakhir || "belum diisi"); if (r.waktu_terakhir) lok.append(el("small", "mj-cari-ciri", `Terakhir terlihat ${waktuWib(r.waktu_terakhir) || r.waktu_terakhir}`));
   pen.append(sebut(r.nomor_pencari)); if (r.hubungan) pen.append(el("small", "mj-cari-ciri", r.hubungan)); if (r.nomor_dicari) pen.append(el("small", "mj-cari-ciri", `Nomor yang dicari ${sebut(r.nomor_dicari)}`));
+  if (r.nomor_kontak && r.nomor_kontak !== r.nomor_pencari) pen.append(el("small", "mj-cari-ciri", `Hubungi bila ditemukan ${sebut(r.nomor_kontak)}`));
+  if (r.tempat_tunggu) pen.append(el("small", "mj-cari-ciri", `Antar ke ${r.tempat_tunggu}`));
   st.append(pil(r.status));
   if (r.cocok) { const c = el("span", "mj-cari-cocok"); c.append(ikon("m-orang"), "Ada kabar selamat dari nomor ini"); c.title = r.tanda ? `${r.tanda.label || ""} ${waktuWib(r.tanda.waktu)}`.trim() : ""; kabar.append(c); if (r.tanda) kabar.append(el("small", "mj-cari-ciri", `${r.tanda.label || ""}, ${waktuWib(r.tanda.waktu)}`)); }
   const u = el("button", "mj-tombol", "Ubah status"); u.type = "button"; u.addEventListener("click", () => dialogStatus(r, muatUlang)); ak.append(u);

@@ -1798,6 +1798,7 @@ Object.assign(MATRIKS, {
   lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
   lapor_cari:          {lp_pelapor: ["baca", "tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129); pelapor baca hanya miliknya (crMilik)
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
+  lapor_cari_temu:     {lp_pelapor: ["tambah"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0177: panggilan, nomor kontak, tempat tunggu (pemilik 25 Nov 2026); dihapus bersama anonim Q67
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
    pw_cron = pemicu dan pengirim tiap menit plus bersih-bersih; lp_staf = ringkasan staf. Tidak ada data orang selain endpoint push dan kode kecamatan. */
@@ -1877,6 +1878,13 @@ export const CARI_SIMPAN_HARI = 730, CARI_NOMOR_ANONIM = "62000000000", CARI_NAM
 export const crAnonimkan = (env, p, batas) => sedia(env, p, "lapor_cari", "ubah",
   "UPDATE lapor_cari SET nomor_pencari = ?2, nama_dicari = ?3, ciri = NULL, lokasi_terakhir = NULL, nomor_dicari = NULL, hubungan = NULL WHERE status <> 'buka' AND ditutup < ?1 AND nomor_pencari <> ?2")
   .bind(batas, CARI_NOMOR_ANONIM, CARI_NAMA_ANONIM).run();
+/* tambahan 0177 ditulis sesudah batch sesi (bukan di dalamnya) supaya laporan tetap masuk selama migrasi belum diterapkan di produksi */
+export const ctTambah = (env, p, b) => sedia(env, p, "lapor_cari_temu", "tambah",
+  "INSERT OR IGNORE INTO lapor_cari_temu (cari_id, panggilan, nomor_kontak, tempat_tunggu) VALUES (?1, ?2, ?3, ?4)").bind(b.cari_id, b.panggilan, b.nomor_kontak, b.tempat_tunggu).run();
+export const ctBaca = async (env, p, ids) => ids.length ? (await sedia(env, p, "lapor_cari_temu", "baca",
+  "SELECT cari_id, panggilan, nomor_kontak, tempat_tunggu FROM lapor_cari_temu WHERE cari_id IN (SELECT value FROM json_each(?1))").bind(JSON.stringify(ids)).all()).results : [];
+export const ctAnonim = (env, p) => sedia(env, p, "lapor_cari_temu", "hapus",
+  "DELETE FROM lapor_cari_temu WHERE cari_id IN (SELECT id FROM lapor_cari WHERE nomor_pencari = ?1)").bind(CARI_NOMOR_ANONIM).run();
 /* orang dicari lewat obrolan (K105): satu pernyataan di batch sesi supaya sesi "cari_terkirim" dan baris lapor_cari tersimpan bersama (g = hanya bila pernyataan sebelumnya mengubah baris) */
 export const crStmtTambah = (env, p, b, kini, g = false) => sedia(env, p, "lapor_cari", "tambah",
   lpIns(g, "", "lapor_cari", "id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, dibuat"))
