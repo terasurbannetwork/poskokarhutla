@@ -65,6 +65,7 @@ const _HALAMAN = [
     ["/bantu", "Tawaran bantuan organisasi", "personel", L, "tamu", null, null, true],
     ["/masuk", "Masuk", "personel", "masuk", "tamu"],
     ["/tentang", "Tentang", "daftar", K],
+    ["/docs", "Dokumentasi", "daftar", K, "tamu"],
     ["/privasi", "Privasi", "daftar", K],
     ["/syarat", "Syarat penggunaan", "daftar", K],
     ["/statistik", "Statistik", "grafik", K],

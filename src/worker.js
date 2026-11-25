@@ -790,15 +790,10 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
-<<<<<<< HEAD
   if (url.pathname === "/desa-waspada/index.html") return false;   // alamat langsung berkas, sama dengan jalur bersih (K6)
   if (/^\/lapor\/(index|lacak|s\/index|data\/index)\.html$/.test(url.pathname) || /^\/lapor\/s\/[^/]+$/.test(jalur)) return false;   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
   if (url.pathname === "/verifikasi.html" || /^\/verifikasi\/[^/]{1,40}$/.test(jalur)) return false;   // halaman segel publik: kode di jalur (KEPUTUSAN-SEGEL K3)
-=======
-  if (/^\/lapor\/(index|lacak|s\/index|data\/index)\.html$/.test(url.pathname) || /^\/lapor\/s\/[^/]+$/.test(jalur)) return false;
-  if (url.pathname === "/verifikasi.html" || /^\/verifikasi\/[^/]{1,40}$/.test(jalur)) return false;   // halaman segel publik: kode di jalur (KEPUTUSAN-SEGEL K3)   // alamat langsung pintu Lapor dan tautan lacak lama (/lapor/lacak.html?t=), sama dengan K14
   if (DOCS_HTML_LANGSUNG.test(url.pathname)) return false;   // alamat langsung berkas Docs (keluaran generator), publik seperti /docs (DC-03)
->>>>>>> origin/main
   if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
   if (PUBLIK_TANPA_SESI.has(jalur) || jalurDocs(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;

@@ -38,6 +38,7 @@ const targetHtmlRute = new Set(HTML_RUTE.map(([, b]) => b));
     let r = base.endsWith("/index") ? "/" + base.slice(0, -6) : "/" + base.replace(/_/g, "-");
     if (d === "bnpb" && Object.hasOwn(BNPB_BERSIH, n.replace(/\.html$/, "").replace(/_/g, "-"))) r = BNPB_BERSIH[n.replace(/\.html$/, "").replace(/_/g, "-")];
     else if (/^\/(banjir|cuaca|gempa|gunungapi|kekeringan|udara)\/(laporan|laporan-das|simulasi)$/.test(r)) r += ".html";
+    if (r.startsWith("/docs/")) r = "/docs";   // halaman Docs hasil generator punya navigasi sendiri; satu entri /docs di registri
     nyata.add(ALIAS[r] || r);
   }
 })("");
