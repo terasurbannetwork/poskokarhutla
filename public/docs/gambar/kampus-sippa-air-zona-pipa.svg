@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330">
+<text x="415" y="22" text-anchor="middle" font-size="15" class="dg-teks">Jarak ke air</text>
+<text x="265" y="50" text-anchor="middle" font-size="14" class="dg-teks-lemah">dekat (kurang dari 2,5 km)</text>
+<text x="565" y="50" text-anchor="middle" font-size="14" class="dg-teks-lemah">jauh (2,5 km atau lebih)</text>
+<text x="26" y="180" text-anchor="middle" font-size="15" class="dg-teks" transform="rotate(-90 26 180)">Jarak ke jalan</text>
+<text x="105" y="110" text-anchor="end" font-size="14" class="dg-teks-lemah">dekat</text>
+<text x="105" y="128" text-anchor="end" font-size="14" class="dg-teks-lemah">(kurang dari</text>
+<text x="105" y="146" text-anchor="end" font-size="14" class="dg-teks-lemah">5 km)</text>
+<text x="105" y="230" text-anchor="end" font-size="14" class="dg-teks-lemah">jauh</text>
+<text x="105" y="248" text-anchor="end" font-size="14" class="dg-teks-lemah">(5 km atau</text>
+<text x="105" y="266" text-anchor="end" font-size="14" class="dg-teks-lemah">lebih)</text>
+<rect x="120" y="62" width="290" height="110" rx="8" class="dg-ok"/>
+<text x="140" y="95" font-size="26" class="dg-teks">A</text>
+<text x="140" y="125" font-size="14" class="dg-teks">Kit relay atau pompa jinjing,</text>
+<text x="140" y="145" font-size="14" class="dg-teks">sesuai jarak air</text>
+<rect x="420" y="62" width="290" height="110" rx="8" class="dg-waspada"/>
+<text x="440" y="95" font-size="26" class="dg-teks">C</text>
+<text x="440" y="125" font-size="14" class="dg-teks">Sumur bor dangkal dan pompa</text>
+<text x="440" y="145" font-size="14" class="dg-teks">jinjing, mobil tangki cadangan</text>
+<rect x="120" y="182" width="290" height="110" rx="8" class="dg-waspada"/>
+<text x="140" y="215" font-size="26" class="dg-teks">B</text>
+<text x="140" y="245" font-size="14" class="dg-teks">Kit lewat perahu dan portage</text>
+<text x="140" y="265" font-size="14" class="dg-teks">(paling berat 30 kg per orang)</text>
+<rect x="420" y="182" width="290" height="110" rx="8" class="dg-bahaya"/>
+<text x="440" y="215" font-size="26" class="dg-teks">D</text>
+<text x="440" y="245" font-size="14" class="dg-teks">Pencegahan dan drone termal,</text>
+<text x="440" y="265" font-size="14" class="dg-teks">kit tidak dipra-posisikan</text>
+<text x="120" y="315" font-size="13" class="dg-teks-lemah">Jarak tepat di ambang masuk kelas jauh; jarak kosong dianggap jauh.</text>
+</svg>

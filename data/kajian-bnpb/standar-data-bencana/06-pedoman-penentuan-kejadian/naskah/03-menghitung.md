@@ -12,6 +12,10 @@ Tabel 3.1. Kode identitas kejadian
 
 Sumber: Rancangan Juklak Bab II huruf B.
 
+![Gambar 3.1. Susunan Kode Identitas Bencana, nomor induk kejadian, dan nomor GLIDE pada Tabel 3.1](gbr/pk-identitas.png)
+
+Sumber: Rancangan Juklak Bab II huruf B.
+
 ## 3.2 Aturan menghitung
 
 Tabel 3.2. Aturan menghitung kejadian, korban, dan kerusakan

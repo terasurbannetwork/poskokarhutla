@@ -1,0 +1,30 @@
+/* Docs Centurisk97: gambar (figure), diagram SVG bergaya kelas dg-*, perbesar raster, garis muat navigasi mulus.
+   Hanya var(--token) dari /inti/tema.css. Kelas dg-* adalah satu-satunya jalan warna masuk ke SVG (generator menolak warna literal). */
+.dk-gbr{margin:var(--jr-6) 0;padding:var(--jr-4);border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.dk-gbr svg{display:block;width:100%;height:auto;max-width:100%}
+.dk-gbr img{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:var(--r-sm)}
+.dk-gbr figcaption{margin-top:var(--jr-3);padding-top:var(--jr-3);border-top:1px solid var(--line);font-size:var(--fs-3);line-height:1.5;color:var(--ink2)}
+.dk-zum{display:block;cursor:zoom-in;border-radius:var(--r-sm)}
+.dk-zoom{max-width:96vw;max-height:94vh;padding:var(--jr-3);border:0;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow-lg)}
+.dk-zoom::backdrop{background:color-mix(in oklch,var(--head-bg) 72%,transparent)}
+.dk-zoom img{display:block;max-width:calc(96vw - 2 * var(--jr-3));max-height:calc(94vh - 2 * var(--jr-3));width:auto;height:auto}
+
+.dg-svg text{fill:var(--ink);stroke:none}
+.dg-kotak{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.dg-kotak-aksen{fill:color-mix(in oklch,var(--brand2) 14%,var(--card));stroke:var(--brand2);stroke-width:2}
+.dg-garis{stroke:var(--ink2);fill:none;stroke-width:1.5}
+.dg-svg marker .dg-garis{fill:var(--ink2);stroke-width:1}
+.dg-teks{fill:var(--ink);stroke:none}
+.dg-teks-lemah{fill:var(--ink2);stroke:none}
+.dg-aksen{fill:color-mix(in oklch,var(--brand2) 85%,var(--card));stroke:var(--brand2)}
+.dg-ok{fill:color-mix(in oklch,var(--ok) 22%,var(--card));stroke:var(--ok)}
+.dg-waspada{fill:color-mix(in oklch,var(--warn) 24%,var(--card));stroke:var(--warn)}
+.dg-bahaya{fill:color-mix(in oklch,var(--bad) 20%,var(--card));stroke:var(--bad)}
+.dg-lemah{fill:var(--surface);stroke:var(--line)}
+.dg-grid{stroke:var(--line);fill:none;stroke-width:1}
+
+.dk-muat{position:fixed;inset:0 0 auto 0;z-index:90;height:3px;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--brand2),transparent);
+  background-size:40% 100%;background-repeat:no-repeat;transition:opacity var(--dur-2) var(--ease)}
+.dk-muat.aktif{opacity:1;animation:dk-geser 1s linear infinite}
+@keyframes dk-geser{from{background-position:-40% 0}to{background-position:140% 0}}
+@media (prefers-reduced-motion:reduce){.dk-muat.aktif{animation:none;background-size:100% 100%}}

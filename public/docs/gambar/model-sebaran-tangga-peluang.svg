@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200">
+<title id="t3">Tangga kelas peluang api 7 hari</title>
+<g font-size="12">
+<text class="dg-teks" x="20" y="26" font-size="15">Kelas peluang sel berapi dalam 7 hari (eksperimental)</text>
+<rect class="dg-kotak" x="20" y="50" width="105" height="60"/><text class="dg-teks" x="72" y="86" text-anchor="middle">di bawah 1%</text>
+<rect class="dg-lemah" x="125" y="50" width="105" height="60"/><text class="dg-teks" x="177" y="86" text-anchor="middle">1 sampai 5%</text>
+<rect class="dg-aksen" x="230" y="50" width="105" height="60" fill-opacity="0.3"/><text class="dg-teks" x="282" y="86" text-anchor="middle">5 sampai 10%</text>
+<rect class="dg-aksen" x="335" y="50" width="105" height="60" fill-opacity="0.5"/><text class="dg-teks" x="387" y="86" text-anchor="middle">10 sampai 20%</text>
+<rect class="dg-aksen" x="440" y="50" width="105" height="60" fill-opacity="0.75"/><text class="dg-teks" x="492" y="86" text-anchor="middle">20 sampai 40%</text>
+<rect class="dg-aksen" x="545" y="50" width="105" height="60"/><text class="dg-teks" x="597" y="86" text-anchor="middle">40% atau lebih</text>
+<text class="dg-teks-lemah" x="20" y="130" font-size="12">kelas di bawah 1% tidak diberi warna di peta</text>
+</g>
+<text class="dg-teks-lemah" x="20" y="165" font-size="13">Kelas tetap antar provinsi dan antar minggu; di peta warnanya ungu makin tua.</text>
+<text class="dg-teks-lemah" x="20" y="186" font-size="12">Sumber: KELAS di public/risiko7.js.</text>
+</svg>

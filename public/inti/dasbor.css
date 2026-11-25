@@ -65,7 +65,7 @@ body .ad-tabel thead tr{background:var(--db-navy)}
 .db-nav-isi{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0;overflow:auto}
 .db-nav-b{flex:1 1 0;max-height:42px;min-height:34px;display:flex;align-items:center;gap:10px;width:100%;padding:4px 8px;border:0;border-radius:10px;background:none;color:var(--ink);font:600 .84375rem/1.25 var(--font,inherit);text-align:left;cursor:pointer}
 .db-nav-b:hover{background:var(--db-h2)}
-.db-nav-ik{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,#2f6fd6 9%,#fff)}
+.db-nav-ik{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,#2f6fd6 9%,var(--card))}
 .db-nav-ik svg{width:14px;height:14px;color:var(--db-biru)}
 .db-nav-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .db-nav-b[aria-current="true"]{background:var(--db-navy);color:#fff}
@@ -121,7 +121,7 @@ thead th{text-transform:none!important;letter-spacing:0!important}
 .db-kanan .kj-k{border:1px solid var(--db-h2-garis);overflow:hidden;padding:0 0 12px}
 .db-kanan .kj-k>h2:first-child{margin:0 0 2px;padding:10px 14px;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy);border-bottom:1px solid var(--db-h2-garis);font-size:.9375rem;color:var(--db-tx)}
 .db-kanan .kj-k>:not(h2:first-child){margin-left:14px;margin-right:14px}
-.db-kanan .kj-s{background:#fff;border:1px solid var(--db-h2-garis)}
+.db-kanan .kj-s{background:var(--card);border:1px solid var(--db-h2-garis)}
 /* menu atas rata kiri langsung sesudah logo, bukan di tengah (pemilik 11 Nov 2026 "harusnya di kiri") */
 @media (min-width:561px){.ad-top nav,.ad-top .mp-menu{position:static!important;left:auto!important;transform:none!important;max-width:none!important;margin:0 0 0 20px!important;flex:0 1 auto!important;justify-content:flex-start!important}}
 
@@ -182,13 +182,13 @@ aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik,aside.db-nav .db-nav-b[ar
 aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik svg,aside.db-nav .db-nav-b[aria-current="page"] .db-nav-ik svg{color:var(--on-brand)}
 aside.db-nav .db-nav-b>b{flex:none;margin-left:auto;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 9%,var(--card));color:var(--ink);font:800 .6875rem/1.5 var(--font,inherit)}
 aside.db-nav .db-nav-b>b.merah{background:#c9503a;color:#fff}
-aside.db-nav .db-nav-b>b.oranye{background:color-mix(in srgb,#e08a3a 18%,#fff);color:#a35512}
+aside.db-nav .db-nav-b>b.oranye{background:color-mix(in srgb,#e08a3a 18%,var(--card));color:var(--f2-tx)}
 aside.db-nav .mp-slot{display:flex}aside.db-nav .mp-slot:empty{display:none}
 aside.db-nav .db-nav-kaki{flex:none;display:grid;gap:4px;margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
 aside.db-nav .db-nav-pb{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px;border:0;border-radius:10px;box-shadow:inset 0 0 0 1px var(--line);background:var(--card);font-size:.75rem}
 /* ubin Angka utama bersama (rujukan /operasi .ops-lap-angka): kepala ikon navy + nama, angka besar, keterangan pil */
 .db-ubin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
-.db-ubin{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 0 12px;border:1px solid var(--db-h2-garis);border-radius:14px;background:#fff;overflow:hidden;text-align:center}
+.db-ubin{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 0 12px;border:1px solid var(--db-h2-garis);border-radius:14px;background:var(--card);overflow:hidden;text-align:center}
 .db-ubin>header{align-self:stretch;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;background:var(--db-h2);border-bottom:1px solid var(--db-h2-garis);font-size:.8125rem;font-weight:800;color:var(--db-tx)}
 .db-ubin>header>i{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--db-navy)}
 .db-ubin>header>i svg{width:14px;height:14px;color:#fff;fill:none;stroke:currentColor;stroke-width:2}
@@ -203,14 +203,14 @@ aside.db-nav .db-nav-isi{overflow-y:auto;scrollbar-width:none}aside.db-nav .db-n
 @media (max-width:900px){.db-ubin-grid.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 aside.db-nav .db-nav-kaki:empty{display:none}
 /* seksi otomatis (bukan pilihan utama halaman): tanda biru muda, supaya hanya satu baris navy seperti /operasi */
-aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,#fff);color:#0b2545}
-aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav-ik{background:#fff}
-aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav-ik svg{color:#0b2545}
+aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,var(--card));color:var(--ink)}
+aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav-ik{background:var(--card)}
+aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav-ik svg{color:var(--ink)}
 @media (min-width:901px){.mp-model-a .mp-tersembunyi{display:none!important}}
 /* bagian halaman jadi pilihan utama (navy); butir halaman di grupnya cukup biru muda */
-aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,#fff);color:#0b2545}
-aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik{background:#fff}
-aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik svg{color:#0b2545}
+aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,var(--card));color:var(--ink)}
+aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik{background:var(--card)}
+aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik svg{color:var(--ink)}
 
 /* ---- mode otomatis dasbor.js (data-oto): layar mana pun jadi model A ---- */
 .db-oto{padding:12px 16px;max-width:none}
@@ -223,7 +223,7 @@ aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true
 .db-oto .ak-kepala-isi{padding:0;max-width:none}
 .db-oto .ak-kepala h1{margin:0;font-size:1.25rem;text-align:center;color:#fff}
 .db-oto>.db-kanan>.ak-ringkas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0;padding:0;background:none}
-.db-oto>.db-kanan>.ak-ringkas>div{display:grid;grid-template-columns:30px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;padding:10px 14px;border:1px solid var(--db-h2-garis);border-radius:14px;background:#fff;box-shadow:inset 4px 0 0 var(--db-navy)}
+.db-oto>.db-kanan>.ak-ringkas>div{display:grid;grid-template-columns:30px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;padding:10px 14px;border:1px solid var(--db-h2-garis);border-radius:14px;background:var(--card);box-shadow:inset 4px 0 0 var(--db-navy)}
 .db-oto>.db-kanan>.ak-ringkas>div>svg{grid-row:1/3;width:30px;height:30px;padding:6px;border-radius:8px;background:var(--db-navy);color:#fff;fill:none;stroke:currentColor;stroke-width:2;box-sizing:border-box}
 .db-oto>.db-kanan>.ak-ringkas>div>b{font:800 1.5rem/1.1 var(--display,inherit);color:var(--db-tx)}
 .db-oto>.db-kanan>.ak-ringkas>div>span{font-size:.71875rem;font-weight:600;color:var(--ink2)}

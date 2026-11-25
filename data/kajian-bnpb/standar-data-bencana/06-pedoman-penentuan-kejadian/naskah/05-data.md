@@ -74,4 +74,8 @@ Tabel 5.4. Tenggat pengumpulan data
 
 Sumber: Rancangan Juklak Bab III huruf B dan huruf D. Waktu diketahui adalah saat BPBD pertama kali mengetahui kejadian (Rancangan Juklak Lampiran I isian 2.3).
 
+![Gambar 5.2. Linimasa tenggat pengumpulan data pada Tabel 5.4](gbr/pk-tenggat.png)
+
+Sumber: Rancangan Juklak Bab III huruf B dan huruf D.
+
 Setelah diverifikasi, koreksi dicatat sebagai versi baru beserta alasannya dan tidak menimpa versi sebelumnya.

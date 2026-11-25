@@ -49,8 +49,8 @@
    "perhatian": false,
    "mulai": "2026-11-14",
    "kondisi_pil": [
-    "Sebagian surut",
-    "surut"
+    "Sebagian tergenang",
+    "waspada"
    ]
   },
   {
@@ -145,7 +145,7 @@
    },
    "tangani": true,
    "perhatian": false,
-   "mulai": "2026-11-24",
+   "mulai": "2026-11-23",
    "kondisi_pil": [
     "Berangsur surut",
     "surut"
@@ -247,7 +247,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Mulai surut",
+    "Mulai membaik",
     "surut"
    ]
   },
@@ -270,7 +270,7 @@
    },
    "tangani": true,
    "perhatian": false,
-   "mulai": "2026-11-24",
+   "mulai": "2026-11-15",
    "kondisi_pil": [
     "Berangsur surut",
     "surut"
@@ -307,7 +307,7 @@
    "lokasi": "Musi Banyuasin",
    "status": "berjalan",
    "baru": true,
-   "label": "Cuaca ekstrem (Angin Puting Beliung)",
+   "label": "Cuaca Ekstrem (Angin Puting Beliung)",
    "angka": {
     "kk": 74.0,
     "rumah": 75.0
@@ -347,7 +347,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Sudah kondusif",
+    "Kondusif",
     "selesai"
    ]
   },
@@ -419,7 +419,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Sudah kondusif",
+    "Kondusif",
     "selesai"
    ]
   },
@@ -441,7 +441,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Dalam penanganan",
+    "Penanganan",
     "tangani"
    ]
   },
@@ -535,7 +535,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Belum surut",
+    "Siaga evakuasi",
     "waspada"
    ]
   },
@@ -585,7 +585,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Belum surut",
+    "Air berpotensi naik",
     "waspada"
    ]
   },
@@ -607,7 +607,7 @@
    "perhatian": false,
    "mulai": "2026-11-24",
    "kondisi_pil": [
-    "Dalam penanganan",
+    "Penanganan",
     "tangani"
    ]
   },

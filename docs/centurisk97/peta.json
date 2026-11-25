@@ -1,0 +1,2470 @@
+{
+ "versi": 1,
+ "catatan": "Sumber kebenaran struktur Docs (K7, K8). Dibaca bangun.py. Kelompok per bagian lewat field bagian; modul.kelompok berupa objek {panduan, pengembang}. Halaman pertama modul: id sekilas (panduan) atau ikhtisar (pengembang); halaman terakhir: id batasan.",
+ "bagian": [
+  {
+   "id": "panduan",
+   "judul": "Panduan",
+   "awalan": "/docs"
+  },
+  {
+   "id": "pengembang",
+   "judul": "Pengembang",
+   "awalan": "/docs/pengembang"
+  }
+ ],
+ "kelompok": [
+  {
+   "id": "mulai",
+   "judul": "Mulai",
+   "bagian": "panduan"
+  },
+  {
+   "id": "bahaya",
+   "judul": "Pantau bahaya",
+   "bagian": "panduan"
+  },
+  {
+   "id": "prediksi",
+   "judul": "Prediksi dan model",
+   "bagian": "panduan"
+  },
+  {
+   "id": "lapangan",
+   "judul": "Kerja lapangan",
+   "bagian": "panduan"
+  },
+  {
+   "id": "staf",
+   "judul": "Ruang staf dan akun",
+   "bagian": "panduan"
+  },
+  {
+   "id": "fondasi",
+   "judul": "Mulai dan arsitektur",
+   "bagian": "pengembang"
+  },
+  {
+   "id": "karhutla",
+   "judul": "Karhutla dan udara",
+   "bagian": "pengembang"
+  },
+  {
+   "id": "bencana",
+   "judul": "Bencana lain dan prediksi",
+   "bagian": "pengembang"
+  },
+  {
+   "id": "aplikasi",
+   "judul": "Aplikasi dan akses",
+   "bagian": "pengembang"
+  }
+ ],
+ "mulai": {
+  "panduan": [
+   {
+    "peran": "warga",
+    "judul": "Saya warga atau pelapor",
+    "ringkas": "Melapor kejadian dan menerima peringatan dini.",
+    "tautan": [
+     [
+      "lapor",
+      "sekilas"
+     ],
+     [
+      "lapor",
+      "peringatan"
+     ],
+     [
+      "arsitektur",
+      "sekilas"
+     ]
+    ]
+   },
+   {
+    "peran": "bpbd",
+    "judul": "Saya petugas BPBD atau lapangan",
+    "ringkas": "Masuk, memantau banjir dan karhutla, dan menerima laporan.",
+    "tautan": [
+     [
+      "akses",
+      "sekilas"
+     ],
+     [
+      "lapor",
+      "meja-lanjutan"
+     ],
+     [
+      "banjir",
+      "sekilas"
+     ],
+     [
+      "peta-karhutla",
+      "sekilas"
+     ]
+    ]
+   },
+   {
+    "peran": "staf",
+    "judul": "Saya staf BNPB",
+    "ringkas": "Meja kerja, operasi, siklus kejadian, dan prediksi.",
+    "tautan": [
+     [
+      "ruang-bnpb",
+      "sekilas"
+     ],
+     [
+      "operasi",
+      "sekilas"
+     ],
+     [
+      "siklus",
+      "sekilas"
+     ],
+     [
+      "prediksi",
+      "sekilas"
+     ]
+    ]
+   },
+   {
+    "peran": "mitra",
+    "judul": "Saya mitra kampus atau peneliti",
+    "ringkas": "Kemitraan kampus, metode model, dan data terbuka.",
+    "tautan": [
+     [
+      "kampus-sippa",
+      "sekilas"
+     ],
+     [
+      "model-sebaran",
+      "sekilas"
+     ],
+     [
+      "arsitektur",
+      "data-terbuka"
+     ]
+    ]
+   }
+  ],
+  "pengembang": [
+   {
+    "peran": "kontributor",
+    "judul": "Saya pengembang baru",
+    "ringkas": "Arsitektur, cara berkontribusi, dan peta karhutla sebagai contoh.",
+    "tautan": [
+     [
+      "arsitektur",
+      "ikhtisar"
+     ],
+     [
+      "arsitektur",
+      "kontribusi"
+     ],
+     [
+      "peta-karhutla",
+      "ikhtisar"
+     ]
+    ]
+   },
+   {
+    "peran": "data",
+    "judul": "Saya pemakai API dan data",
+    "ringkas": "API v1, MCP, batas laju, dan berkas JSON.",
+    "tautan": [
+     [
+      "arsitektur",
+      "api-data"
+     ],
+     [
+      "arsitektur",
+      "api-lain"
+     ],
+     [
+      "data-karhutla",
+      "ikhtisar"
+     ]
+    ]
+   },
+   {
+    "peran": "peneliti",
+    "judul": "Saya peneliti model",
+    "ringkas": "Metode, uji balik, dan uji prospektif.",
+    "tautan": [
+     [
+      "model-sebaran",
+      "ikhtisar"
+     ],
+     [
+      "model-sebaran",
+      "uji"
+     ],
+     [
+      "prediksi",
+      "penilaian"
+     ]
+    ]
+   },
+   {
+    "peran": "operator",
+    "judul": "Saya operator sistem",
+    "ringkas": "Jadwal, gerbang akses, dan akun.",
+    "tautan": [
+     [
+      "arsitektur",
+      "penjadwalan"
+     ],
+     [
+      "arsitektur",
+      "akses-privasi"
+     ],
+     [
+      "akses",
+      "ikhtisar"
+     ]
+    ]
+   }
+  ]
+ },
+ "modul": [
+  {
+   "id": "arsitektur",
+   "kelompok": {
+    "panduan": "mulai",
+    "pengembang": "fondasi"
+   },
+   "ikon": "basisdata",
+   "judul": {
+    "panduan": "Tentang Centurisk97 dan sumber data",
+    "pengembang": "Arsitektur, API, dan operasional"
+   },
+   "ringkas": {
+    "panduan": "Dari mana data berasal, seberapa baru, siapa boleh membuka, dan cara mengambil data terbuka.",
+    "pengembang": "Pembagian beban GitHub Actions dan Worker, jadwal, gerbang akses, API v1, MCP, bot WhatsApp, dan cara berkontribusi."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan istilah",
+      "berkas": "panduan/arsitektur/01-sekilas.md",
+      "isi": "panduan/14-arsitektur.md: Sekilas; Istilah"
+     },
+     {
+      "id": "kesegaran-akses",
+      "judul": "Seberapa baru data dan siapa boleh buka",
+      "berkas": "panduan/arsitektur/02-kesegaran-akses.md",
+      "isi": "panduan/14-arsitektur.md: Membaca seberapa baru data; Siapa yang boleh membuka halaman apa"
+     },
+     {
+      "id": "data-terbuka",
+      "judul": "Mengambil data terbuka",
+      "berkas": "panduan/arsitektur/03-data-terbuka.md",
+      "isi": "panduan/14-arsitektur.md: Mengambil data terbuka"
+     },
+     {
+      "id": "mitra-bot",
+      "judul": "Data mitra dan bot WhatsApp",
+      "berkas": "panduan/arsitektur/04-mitra-bot.md",
+      "isi": "panduan/14-arsitektur.md: Data berkunci untuk mitra; Bot WhatsApp Laporan BNPB"
+     },
+     {
+      "id": "asal-angka",
+      "judul": "Dari mana angka berasal sampai ke layar",
+      "berkas": "panduan/arsitektur/05-asal-angka.md",
+      "isi": "panduan/14-arsitektur.md: Cara menghitung; Dari mana angka berasal dan bagaimana sampai ke layar; Cara menghitung titik panas sebagai angka utama; Cara menentukan data masih segar; Cara melindungi privasi pengunjung; Batas pemakaian untuk mencegah penyalahgunaan; Seberapa bisa dipercaya"
+     },
+     {
+      "id": "istilah",
+      "judul": "Istilah yang sering muncul",
+      "berkas": "panduan/arsitektur/06-istilah.md",
+      "isi": "glosarium awam"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/arsitektur/07-batasan.md",
+      "isi": "panduan/14-arsitektur.md: Batasan; Pertanyaan umum; Apa bedanya Centurisk97 dengan sistem resmi BNPB lain?; Mengapa angka di layar berbeda dari angka di paparan atau berita?; Mengapa halaman tertentu meminta saya masuk?; Apakah data terbuka boleh dipakai aplikasi lain?; Bagaimana cara tahu data sudah diperbarui?; Apakah laporan WhatsApp bisa mengubah angka sistem?; Apakah alamat saya tercatat bila membuka situs?; Siapa yang bisa saya hubungi bila ada angka yang tampak keliru?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar arsitektur",
+      "berkas": "pengembang/arsitektur/01-ikhtisar.md",
+      "isi": "14-arsitektur.md: Ringkasan"
+     },
+     {
+      "id": "api-data",
+      "judul": "API data terbuka v1",
+      "berkas": "pengembang/arsitektur/02-api-data.md",
+      "isi": "14-arsitektur.md: Halaman dokumentasi API (/api); Data JSON terbuka lewat /api/v1/data/<nama>; Berkas JSON langsung di /data/*.json; Riwayat titik panas satu lokasi (/api/v1/riwayat); Firespot per wilayah (/api/v1/firespot)"
+     },
+     {
+      "id": "api-lain",
+      "judul": "Titik waktu nyata, MCP, Atom, status",
+      "berkas": "pengembang/arsitektur/03-api-lain.md",
+      "isi": "14-arsitektur.md: Titik panas hampir waktu nyata (/api/titik) dan sumber status lain; Data mitra berkunci; Server MCP untuk asisten AI (/mcp); Feed Atom peringatan; Membaca status kesegaran data (/api/status); Kode galat dan batas laju API"
+     },
+     {
+      "id": "alur-data",
+      "judul": "Alur data dan pembagian beban",
+      "berkas": "pengembang/arsitektur/04-alur-data.md",
+      "isi": "14-arsitektur.md: 1. Pembagian beban: GitHub Actions menghitung, Worker melayani; 2. Alur data dari sumber sampai pengguna; 8. Cache; 9. Status kesegaran dan registri bencana"
+     },
+     {
+      "id": "penjadwalan",
+      "judul": "Penjadwalan cron dan penjaga",
+      "berkas": "pengembang/arsitektur/05-penjadwalan.md",
+      "isi": "14-arsitektur.md: 3. Penjadwalan: satu cron Worker per menit; 4. Penjaga jadwal GitHub"
+     },
+     {
+      "id": "akses-privasi",
+      "judul": "Gerbang akses, autentikasi, privasi",
+      "berkas": "pengembang/arsitektur/06-akses-privasi.md",
+      "isi": "14-arsitektur.md: 5. Gerbang akses halaman; 6. Autentikasi dan batas laju API v1 dan MCP; 7. Perlindungan privasi pada batas laju dan statistik"
+     },
+     {
+      "id": "bot-wa",
+      "judul": "Bot WhatsApp: pemakaian",
+      "berkas": "pengembang/arsitektur/07-bot-wa.md",
+      "isi": "14-arsitektur.md: Bot WhatsApp Laporan BNPB (untuk nomor terdaftar); 12. Bot WhatsApp: pipeline dan pagar angka"
+     },
+     {
+      "id": "bot-wa-pipeline",
+      "judul": "Bot WhatsApp: pipeline",
+      "berkas": "pengembang/arsitektur/08-bot-wa-pipeline.md",
+      "isi": "14-arsitektur.md: 12. Bot WhatsApp: pipeline dan pagar angka"
+     },
+     {
+      "id": "kontribusi",
+      "judul": "Kontribusi, mutu, dan tinjau lokal",
+      "berkas": "pengembang/arsitektur/09-kontribusi.md",
+      "isi": "14-arsitektur.md: Cara berkontribusi; 10. Mutu: gerbang, ratchet, dan pemeriksa; 11. Tinjau lokal"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/arsitektur/10-ref-kode.md",
+      "isi": "14-arsitektur.md: Berkas utama; Rute inti dan hak; Tabel D1 dan migrasi; Prefiks R2 (bucket poskokarhutla-foto, binding MEDIA)"
+     },
+     {
+      "id": "ref-workflow",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/arsitektur/11-ref-workflow.md",
+      "isi": "14-arsitektur.md: Workflow GitHub Actions; Berkas keluaran data; Uji dan perintah"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan pertanyaan terbuka",
+      "berkas": "pengembang/arsitektur/12-batasan.md",
+      "isi": "14-arsitektur.md: Batasan dan pertanyaan terbuka"
+     }
+    ]
+   }
+  },
+  {
+   "id": "metode",
+   "kelompok": {
+    "pengembang": "fondasi"
+   },
+   "ikon": "basisdata",
+   "judul": {
+    "pengembang": "Metode dan status uji"
+   },
+   "ringkas": {
+    "pengembang": "Daftar seluruh metode per modul dengan status uji baliknya, ditambah glosarium teknis."
+   },
+   "halaman": {
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Daftar metode dan status uji",
+      "berkas": "pengembang/metode/01-ikhtisar.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "karhutla",
+      "judul": "Metode karhutla",
+      "berkas": "pengembang/metode/02-karhutla.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "banjir-gempa",
+      "judul": "Metode banjir, gempa, longsor",
+      "berkas": "pengembang/metode/03-banjir-gempa.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "cuaca-prediksi",
+      "judul": "Metode cuaca, udara, prediksi",
+      "berkas": "pengembang/metode/04-cuaca-prediksi.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "lapor-siklus",
+      "judul": "Metode lapor dan siklus",
+      "berkas": "pengembang/metode/05-lapor-siklus.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "staf-akses",
+      "judul": "Metode ruang staf, operasi, akses",
+      "berkas": "pengembang/metode/06-staf-akses.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "kampus-arsitektur",
+      "judul": "Metode kampus, air, arsitektur",
+      "berkas": "pengembang/metode/07-kampus-arsitektur.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "glosarium",
+      "judul": "Glosarium teknis",
+      "berkas": "pengembang/metode/08-glosarium.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     },
+     {
+      "id": "batasan",
+      "judul": "Cara membaca status",
+      "berkas": "pengembang/metode/09-batasan.md",
+      "isi": "README.md lama: daftar metode dan status uji balik"
+     }
+    ]
+   }
+  },
+  {
+   "id": "peta-karhutla",
+   "kelompok": {
+    "panduan": "bahaya",
+    "pengembang": "karhutla"
+   },
+   "ikon": "peta",
+   "judul": {
+    "panduan": "Peta karhutla",
+    "pengembang": "Peta utama karhutla"
+   },
+   "ringkas": {
+    "panduan": "Cara membaca peta titik panas, status cluster, dan prioritas penanganan.",
+    "pengembang": "Layar peta utama, laci cluster, dan metode titik panas, cluster, luas, insiden, dan prioritas provinsi."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan cara masuk",
+      "berkas": "panduan/peta-karhutla/01-sekilas.md",
+      "isi": "panduan/01-peta-karhutla.md: [intro] Sekilas; Masuk ke halaman; Istilah yang dipakai di halaman ini; Menu tab di bagian atas"
+     },
+     {
+      "id": "membaca-peta",
+      "judul": "Membaca peta, status, dan warna",
+      "berkas": "panduan/peta-karhutla/02-membaca-peta.md",
+      "isi": "panduan/01-peta-karhutla.md: Tab Peta; Membaca status dan warna cluster; Laci cluster"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Dashboard, Insight, Tren, dan Dampak",
+      "berkas": "panduan/peta-karhutla/03-layar-lain.md",
+      "isi": "panduan/01-peta-karhutla.md: Dashboard untuk pimpinan; Insight; Tren; Dampak; Tab lain; Yang masih direncanakan"
+     },
+     {
+      "id": "titik-panas",
+      "judul": "Titik panas dan cluster dihitung",
+      "berkas": "panduan/peta-karhutla/04-titik-panas.md",
+      "isi": "panduan/01-peta-karhutla.md: 1. Titik panas yang dihitung; 2. Cluster atau kompleks api"
+     },
+     {
+      "id": "status-cluster",
+      "judul": "Status cluster dihitung bagaimana",
+      "berkas": "panduan/peta-karhutla/05-status-cluster.md",
+      "isi": "panduan/01-peta-karhutla.md: 3. Status cluster; 4. Urutan prioritas cluster"
+     },
+     {
+      "id": "firespot-luas",
+      "judul": "Firespot dan luas terbakar",
+      "berkas": "panduan/peta-karhutla/06-firespot-luas.md",
+      "isi": "panduan/01-peta-karhutla.md: 5. Firespot ala Kemenhut; 6. Luas terbakar, api belum padam, dan padam"
+     },
+     {
+      "id": "prioritas-insiden",
+      "judul": "Prioritas provinsi dan insiden api",
+      "berkas": "panduan/peta-karhutla/07-prioritas-insiden.md",
+      "isi": "panduan/01-peta-karhutla.md: Prioritas provinsi; 7. Prioritas provinsi; 8. Insiden api; 9. Perkembangan api per insiden (hipotesis, belum tampil di layar); 10. Bangunan dekat api per insiden (belum tampil di layar)"
+     },
+     {
+      "id": "risiko-model",
+      "judul": "Indeks risiko dan model lain",
+      "berkas": "panduan/peta-karhutla/08-risiko-model.md",
+      "isi": "panduan/01-peta-karhutla.md: 11. Indeks risiko historis, musim, dan peluang api besar; 12. Model lain yang tampil di peta"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/peta-karhutla/09-batasan.md",
+      "isi": "panduan/01-peta-karhutla.md: Batasan; Pertanyaan umum; Mengapa jumlah titik panas di sini berbeda dengan SiPongi?; Apakah luas terbakar di peta sama dengan luas resmi?; Kalau sebuah cluster berstatus \"tidak terdeteksi\", apakah apinya sudah padam?; Mengapa ada cluster yang berlabel \"Mungkin firespot, perlu dicek\"?; Apa arti tanda \"hipotesis\"?; Mengapa angka belum padam tidak boleh dijumlahkan antarhari?; Apa bedanya cluster dan insiden?; Mengapa kartu perkembangan api dan bangunan dekat api belum muncul?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar peta karhutla",
+      "berkas": "pengembang/peta-karhutla/01-ikhtisar.md",
+      "isi": "01-peta-karhutla.md: Ringkasan; Akses dan hak membuka; Menu tab"
+     },
+     {
+      "id": "layar-peta",
+      "judul": "Layar peta dan laci cluster",
+      "berkas": "pengembang/peta-karhutla/02-layar-peta.md",
+      "isi": "01-peta-karhutla.md: Peta (tab Peta); Laci cluster (pop-up insiden)"
+     },
+     {
+      "id": "layar-tab",
+      "judul": "Dashboard, Insight, Tren, Dampak",
+      "berkas": "pengembang/peta-karhutla/03-layar-tab.md",
+      "isi": "01-peta-karhutla.md: Prioritas provinsi; Dashboard (Ringkasan); Insight; Tren; Dampak; Tab lain di peta"
+     },
+     {
+      "id": "layar-rencana",
+      "judul": "Fitur yang belum ada di layar",
+      "berkas": "pengembang/peta-karhutla/04-layar-rencana.md",
+      "isi": "01-peta-karhutla.md: Perkembangan api per insiden (belum ada di layar); Desa Waspada (belum ada); Alat gambar wilayah (belum ada)"
+     },
+     {
+      "id": "titik-panas",
+      "judul": "Titik panas yang dihitung",
+      "berkas": "pengembang/peta-karhutla/05-titik-panas.md",
+      "isi": "01-peta-karhutla.md: [intro] Metode; 1. Titik panas yang dihitung (angka utama)"
+     },
+     {
+      "id": "cluster",
+      "judul": "Cluster atau kompleks api",
+      "berkas": "pengembang/peta-karhutla/06-cluster.md",
+      "isi": "01-peta-karhutla.md: 2. Cluster atau kompleks api"
+     },
+     {
+      "id": "luas-prioritas",
+      "judul": "Luas terbakar dan Prioritas provinsi",
+      "berkas": "pengembang/peta-karhutla/07-luas-prioritas.md",
+      "isi": "01-peta-karhutla.md: 3. Luas terbakar, belum padam, dan padam; 4. Prioritas provinsi (ambang masuk dan keluar)"
+     },
+     {
+      "id": "insiden",
+      "judul": "Insiden, perkembangan, bangunan dekat",
+      "berkas": "pengembang/peta-karhutla/08-insiden.md",
+      "isi": "01-peta-karhutla.md: 5. Insiden api; 6. Perkembangan api per insiden (HIPOTESIS); 7. Bangunan dekat api per insiden"
+     },
+     {
+      "id": "rancangan-risiko",
+      "judul": "Desa Waspada, alat gambar, risiko",
+      "berkas": "pengembang/peta-karhutla/09-rancangan-risiko.md",
+      "isi": "01-peta-karhutla.md: 8. Desa Waspada (rancangan, belum dibangun); 9. Alat gambar wilayah (rancangan, belum dibangun); 10. Indeks risiko historis, musim, dan peluang api besar; 11. Model lain yang tampil di peta (HIPOTESIS)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/peta-karhutla/10-ref-kode.md",
+      "isi": "01-peta-karhutla.md: Berkas utama; Rute; Tabel D1 dan R2"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/peta-karhutla/11-ref-alur.md",
+      "isi": "01-peta-karhutla.md: Workflow GitHub Actions; Keluaran di public/data; Uji dan gerbang; Dokumen paket"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Pertanyaan pemilik yang terbuka",
+      "berkas": "pengembang/peta-karhutla/12-pertanyaan-terbuka.md",
+      "isi": "01-peta-karhutla.md: Pertanyaan pemilik yang belum diputuskan"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan perbedaan dokumen",
+      "berkas": "pengembang/peta-karhutla/13-batasan.md",
+      "isi": "01-peta-karhutla.md: Batasan data dan metode; Perbedaan dokumen dan kode; Hal yang belum terdokumentasi di kode yang dibaca"
+     }
+    ]
+   }
+  },
+  {
+   "id": "data-karhutla",
+   "kelompok": {
+    "panduan": "bahaya",
+    "pengembang": "karhutla"
+   },
+   "ikon": "lapisan",
+   "judul": {
+    "panduan": "Data karhutla dari satelit",
+    "pengembang": "Pipeline data karhutla"
+   },
+   "ringkas": {
+    "panduan": "Bagaimana titik panas diambil dari satelit, dihitung, dikelompokkan, dan sampai ke layar.",
+    "pengembang": "Sumber deteksi, angka utama, kompleks, insiden, luas terbakar, gambut, konsesi, jadwal, dan keluaran data."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan aturan waktu",
+      "berkas": "panduan/data-karhutla/01-sekilas.md",
+      "isi": "panduan/02-pipeline-karhutla.md: Sekilas; Aturan waktu"
+     },
+     {
+      "id": "membaca-layar",
+      "judul": "Peta, tanggal, kelompok api, insiden",
+      "berkas": "panduan/data-karhutla/02-membaca-layar.md",
+      "isi": "panduan/02-pipeline-karhutla.md: [intro] Cara memakai; Peta utama dan angka titik panas; Pilih tanggal; Kelompok api dan firespot; Insiden api"
+     },
+     {
+      "id": "layar-prioritas",
+      "judul": "Prioritas, luas, satelit, konsesi",
+      "berkas": "panduan/data-karhutla/03-layar-prioritas.md",
+      "isi": "panduan/02-pipeline-karhutla.md: Prioritas provinsi; Peta provinsi dan kabupaten: luas terbakar dan belum padam; Data satelit; Lapisan konsesi, gambut, dan KHG"
+     },
+     {
+      "id": "titik-kelompok",
+      "judul": "Dari titik panas ke kelompok api",
+      "berkas": "panduan/data-karhutla/04-titik-kelompok.md",
+      "isi": "panduan/02-pipeline-karhutla.md: [intro] Cara menghitung; 1. Dari mana titik panas berasal; 2. Satu angka titik panas: lokasi unik; 3. Sumber panas tetap dan gunung api; 4. Pengelompokan titik menjadi satu api"
+     },
+     {
+      "id": "keparahan-firespot",
+      "judul": "Keparahan, FWI, dan firespot",
+      "berkas": "panduan/data-karhutla/05-keparahan-firespot.md",
+      "isi": "panduan/02-pipeline-karhutla.md: 5. Keparahan dan status tindakan; 6. Indeks cuaca kebakaran (FWI); 7. Penilaian firespot: \"ya\" atau \"mungkin\""
+     },
+     {
+      "id": "insiden-luas",
+      "judul": "Insiden dan luas terbakar",
+      "berkas": "panduan/data-karhutla/06-insiden-luas.md",
+      "isi": "panduan/02-pipeline-karhutla.md: 8. Insiden: melacak api dari hari ke hari; 9. Luas terbakar, belum padam, dan padam per hari; 10. Luas dari foto satelit Sentinel-2"
+     },
+     {
+      "id": "gambut-konsesi",
+      "judul": "Gambut, konsesi, dan prioritas",
+      "berkas": "panduan/data-karhutla/07-gambut-konsesi.md",
+      "isi": "panduan/02-pipeline-karhutla.md: 11. Gambut: perkiraan bara dan emisi; 12. Titik panas di dalam areal konsesi; 13. Aturan Prioritas provinsi"
+     },
+     {
+      "id": "peluang-lain",
+      "judul": "Peluang api 7 hari dan lainnya",
+      "berkas": "panduan/data-karhutla/08-peluang-lain.md",
+      "isi": "panduan/02-pipeline-karhutla.md: 14. Peluang api 7 hari ke depan; 15. Perhitungan pendukung lainnya; Status ringkas"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/data-karhutla/09-batasan.md",
+      "isi": "panduan/02-pipeline-karhutla.md: Batasan; Pertanyaan umum; Mengapa angka titik panas di Centurisk97 berbeda dengan SiPongi atau GIS BNPB?; Apakah satu titik panas berarti satu hektare terbakar?; Hari ini tidak ada titik panas di wilayah saya. Apakah berarti tidak ada api?; Mengapa angka sesudah 2 November 2026 sedikit berbeda dari sebelumnya?; Apa bedanya kelompok api dan insiden?; Apakah daftar Prioritas provinsi sama dengan status darurat?; Mengapa titik yang berada di areal konsesi tidak berarti perusahaan membakar?; Seberapa dapat dipercaya perkiraan titik awal api dan kecepatan api?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar pipeline karhutla",
+      "berkas": "pengembang/data-karhutla/01-ikhtisar.md",
+      "isi": "02-pipeline-karhutla.md: Ringkasan; [intro] Panduan pengguna; Peta utama karhutla (/) dan angka titik panas; Pilih tanggal (arsip titik per hari); Kompleks api dan firespot (pop-up kompleks, tautan /k/K0001); Insiden api (pop-up insiden)"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar prioritas, provinsi, satelit",
+      "berkas": "pengembang/data-karhutla/02-layar-lain.md",
+      "isi": "02-pipeline-karhutla.md: Prioritas provinsi (ikon di kepala halaman); Peta provinsi dan overlay kabupaten (luas terbakar, belum padam); Data satelit (/satelit, tersembunyi); Lapisan konsesi, gambut, dan KHG; Kedalaman gambut hilang dari InSAR (lab, belum ada layar); Berkas dan API data untuk pengembang"
+     },
+     {
+      "id": "sumber-titik",
+      "judul": "Sumber deteksi dan angka utama",
+      "berkas": "pengembang/data-karhutla/03-sumber-titik.md",
+      "isi": "02-pipeline-karhutla.md: 1. Sumber deteksi dan pengambilan; 2. Definisi angka utama: lokasi unik; 3. Sumber panas tetap dan gunung api; 4. Berhentinya S-NPP dan rasio NOAA-20 per S-NPP"
+     },
+     {
+      "id": "kompleks-firespot",
+      "judul": "Kompleks api, keparahan, firespot, FWI",
+      "berkas": "pengembang/data-karhutla/04-kompleks-firespot.md",
+      "isi": "02-pipeline-karhutla.md: 5. Kompleks api (ST-DBSCAN); 6. Keparahan, status taktis, dan prioritas pemadaman; 7. Klasifikasi firespot; 8. Indeks cuaca kebakaran (FWI)"
+     },
+     {
+      "id": "insiden-luas",
+      "judul": "Insiden dan luas terbakar",
+      "berkas": "pengembang/data-karhutla/05-insiden-luas.md",
+      "isi": "02-pipeline-karhutla.md: 9. Insiden api; 10. Luas terbakar harian, belum padam, dan padam; 11. Luas terbakar dari citra Sentinel-2 (dNBR)"
+     },
+     {
+      "id": "gambut-konsesi",
+      "judul": "Gambut, konsesi, dan InSAR gambut",
+      "berkas": "pengembang/data-karhutla/06-gambut-konsesi.md",
+      "isi": "02-pipeline-karhutla.md: 12. Gambut: estimasi bara, KHG, kelembapan tanah; 13. Konsesi; 15. Lab InSAR gambut (rancangan)"
+     },
+     {
+      "id": "prioritas",
+      "judul": "Aturan Prioritas provinsi",
+      "berkas": "pengembang/data-karhutla/07-prioritas.md",
+      "isi": "02-pipeline-karhutla.md: 14. Aturan Prioritas provinsi (kajian ambang hotspot)"
+     },
+     {
+      "id": "kesegaran-mesin",
+      "judul": "Kesegaran dan mesin pendukung",
+      "berkas": "pengembang/data-karhutla/08-kesegaran-mesin.md",
+      "isi": "02-pipeline-karhutla.md: 16. Kesegaran dan keterbatasan satelit; 17. Mesin pendukung lain di scripts/data"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/data-karhutla/09-ref-kode.md",
+      "isi": "02-pipeline-karhutla.md: Berkas utama; Rute API (Worker); Tabel D1 dan migrasi; Prefiks R2"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/data-karhutla/10-ref-alur.md",
+      "isi": "02-pipeline-karhutla.md: Workflow GitHub Actions dan jadwal; Berkas keluaran di public/data/; Uji dan gerbang"
+     },
+     {
+      "id": "insar-gambut",
+      "judul": "Lab InSAR gambut (rancangan)",
+      "berkas": "pengembang/data-karhutla/11-insar-gambut.md",
+      "isi": "rancangan lab InSAR gambut, belum ada kode"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan pertanyaan terbuka",
+      "berkas": "pengembang/data-karhutla/12-batasan.md",
+      "isi": "02-pipeline-karhutla.md: Batasan dan pertanyaan terbuka"
+     }
+    ]
+   }
+  },
+  {
+   "id": "banjir",
+   "kelompok": {
+    "panduan": "bahaya",
+    "pengembang": "bencana"
+   },
+   "ikon": "air",
+   "judul": {
+    "panduan": "Banjir, rob, dan penurunan tanah",
+    "pengembang": "Banjir, rob, dan penurunan tanah"
+   },
+   "ringkas": {
+    "panduan": "Cara membaca status banjir dan rob per kecamatan dan bagaimana angkanya dihitung.",
+    "pengembang": "Pipeline banjir: hujan, debit, status, uji balik, rob, genangan GFM, InSAR, simulasi, SIHKA, sensor, dan EWS."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan peta banjir",
+      "berkas": "panduan/banjir/01-sekilas.md",
+      "isi": "panduan/04-banjir.md: [intro] Sekilas; [intro] Cara memakai; Peta banjir; Insight; Tren dan Dampak"
+     },
+     {
+      "id": "layar-rob-simulasi",
+      "judul": "Rob, simulasi, dan penurunan tanah",
+      "berkas": "panduan/banjir/02-layar-rob-simulasi.md",
+      "isi": "panduan/04-banjir.md: Rob dan kalender rob; Simulasi skenario dan genangan 3D; Penurunan tanah; Tab Metode"
+     },
+     {
+      "id": "layar-kejadian",
+      "judul": "Kejadian, DAS, pos sungai, Kaji Cepat",
+      "berkas": "panduan/banjir/03-layar-kejadian.md",
+      "isi": "panduan/04-banjir.md: Kejadian banjir aktif; Bukti daerah aliran sungai hulu; Replay banjir Jabodetabek; Laporan harian; Pos tinggi air sungai; Kaji Cepat banjir per kejadian"
+     },
+     {
+      "id": "status-banjir",
+      "judul": "Status banjir per kecamatan dihitung",
+      "berkas": "panduan/banjir/04-status-banjir.md",
+      "isi": "panduan/04-banjir.md: [intro] Cara menghitung; Status banjir per kecamatan (Normal, Waspada, Siaga, Awas)"
+     },
+     {
+      "id": "hujan-sungai",
+      "judul": "Hujan lebat, debit, dan pos sungai",
+      "berkas": "panduan/banjir/05-hujan-sungai.md",
+      "isi": "panduan/04-banjir.md: Peluang hujan lebat dari ansambel; Debit sungai dan batas banjir berulang; Waktu tempuh air dari hulu ke hilir; Status pos tinggi air sungai"
+     },
+     {
+      "id": "kejadian-dampak",
+      "judul": "Skor kejadian dan perkiraan dampak",
+      "berkas": "panduan/banjir/06-kejadian-dampak.md",
+      "isi": "panduan/04-banjir.md: Skor kejadian aktif; Perkiraan dampak; Genangan historis"
+     },
+     {
+      "id": "rob",
+      "judul": "Status rob dan kalender pasang",
+      "berkas": "panduan/banjir/07-rob.md",
+      "isi": "panduan/04-banjir.md: Status rob; Kekuatan pasang astronomis (kalender rob); Prediksi pasang surut BMKG; Peringatan BMKG dan hujan sedang berlangsung"
+     },
+     {
+      "id": "dikembangkan",
+      "judul": "Fitur banjir yang masih dikembangkan",
+      "berkas": "panduan/banjir/08-dikembangkan.md",
+      "isi": "panduan/04-banjir.md: [intro] Dalam pengembangan, belum tampil; Genangan satelit radar (sudah dihitung, belum tampil di layar banjir); Genangan satelit per kejadian di Kaji Cepat (rancangan); Penurunan tanah dari radar satelit dan proyeksinya (belum tampil); Simulasi genangan 3D: bahan uji; Alat pemantau lapangan; Model lain yang masih diuji"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/banjir/09-batasan.md",
+      "isi": "panduan/04-banjir.md: Batasan; Pertanyaan umum; Apakah status Siaga berarti banjir pasti terjadi?; Apa yang harus saya lakukan saat Siaga atau Awas?; Apakah status Normal berarti wilayah itu tidak akan banjir?; Apa bedanya peluang hujan lebat dengan status banjir?; Mengapa tidak ada angka luas genangan di layar banjir?; Apakah rob sama dengan pasang astronomis yang di kalender?; Bagaimana status sebuah model menjadi \"teruji\"?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar banjir dan layar peta",
+      "berkas": "pengembang/banjir/01-ikhtisar.md",
+      "isi": "04-banjir.md: Ringkasan; [intro] Panduan pengguna; Peta banjir (/banjir/ atau /banjir/peta); Insight (/banjir/insight)"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar tren, rob, simulasi, metode",
+      "berkas": "pengembang/banjir/02-layar-lain.md",
+      "isi": "04-banjir.md: Tren dan Dampak (/banjir/tren, /banjir/dampak); Rob (kartu pasang, kalender rob, tab /banjir/rob); Simulasi skenario dan genangan 3D (/banjir/sim, langsung ke genangan: /banjir/sim?sim=genangan); Penurunan tanah (lapisan \"Penurunan tanah di bawah rob\"); Panel pemantauan alat (sensor dan CCTV); Tab Metode (/banjir/metode)"
+     },
+     {
+      "id": "layar-kejadian",
+      "judul": "Layar kejadian, DAS, pos, Kaji Cepat",
+      "berkas": "pengembang/banjir/03-layar-kejadian.md",
+      "isi": "04-banjir.md: Kejadian banjir aktif (/banjir/k/B0007, contoh kode); Bukti DAS hulu (/banjir/laporan-das.html); Replay banjir Jabodetabek (/banjir/replay.html); Laporan harian (/banjir/laporan.html); Pos tinggi air sungai (lapisan \"Pos tinggi air\"); Kaji Cepat banjir per kejadian (/siklus/kaji/:id)"
+     },
+     {
+      "id": "hujan-debit",
+      "judul": "Hujan, ansambel, debit, dan bahaya",
+      "berkas": "pengembang/banjir/04-hujan-debit.md",
+      "isi": "04-banjir.md: [intro] Metode; 1. Prakiraan hujan harian (scripts/banjir/hujan.py); 2. Peluang hujan lebat dari ansambel (ansambel_hujan.py, peluang_banjir.py); 3. Debit sungai besar GloFAS (scripts/banjir/sungai.py); 4. Indeks bahaya InaRISK (scripts/banjir/bahaya.py)"
+     },
+     {
+      "id": "status-banjir",
+      "judul": "Status banjir, uji balik, prospektif",
+      "berkas": "pengembang/banjir/05-status-banjir.md",
+      "isi": "04-banjir.md: 5. Status banjir per kecamatan (scripts/banjir/status.py); 6. Uji balik status terhadap DIBI (scripts/banjir/uji_balik.py, validasi.json); 7. Catatan prospektif (prospektif.py, siaga_persentil.py, prediksi_kab2.py)"
+     },
+     {
+      "id": "kejadian-dampak",
+      "judul": "Kejadian aktif, dampak, peringatan",
+      "berkas": "pengembang/banjir/06-kejadian-dampak.md",
+      "isi": "04-banjir.md: 8. Kejadian aktif dan skor (scripts/banjir/kejadian_aktif.py); 9. Dampak (dampak.py, dampak_kab.py); 11. Peringatan resmi dan nowcast BMKG (peringatan.py, lapisan \"Sedang hujan\"); 12. Telusur hulu dan jeda hulu ke hilir (hulu.py, jeda_hulu.py); 13. Bukti DAS dan citra (bukti_das.py, citra_banjir.py)"
+     },
+     {
+      "id": "rob",
+      "judul": "Metode rob",
+      "berkas": "pengembang/banjir/07-rob.md",
+      "isi": "04-banjir.md: 10. Rob (rob.py, pasang_astro.py, pasut.py)"
+     },
+     {
+      "id": "gfm",
+      "judul": "Genangan satelit GFM dan Kaji Cepat",
+      "berkas": "pengembang/banjir/08-gfm.md",
+      "isi": "04-banjir.md: 14. Genangan satelit Copernicus GFM se-Indonesia (scripts/banjir/genangan_nasional.py); 15. Genangan satelit per kejadian di Kaji Cepat (paket genangan-satelit, RANCANGAN, belum dikodekan)"
+     },
+     {
+      "id": "insar",
+      "judul": "Penurunan tanah InSAR dan proyeksi",
+      "berkas": "pengembang/banjir/09-insar.md",
+      "isi": "04-banjir.md: 16. Penurunan tanah dari InSAR (paket penurunan-tanah, lab, belum tayang); 17. Proyeksi penurunan tanah 10 dan 20 tahun (scripts/banjir/proyeksi_tanah.py)"
+     },
+     {
+      "id": "simulasi-genangan",
+      "judul": "Mesin simulasi genangan",
+      "berkas": "pengembang/banjir/10-simulasi-genangan.md",
+      "isi": "04-banjir.md: 18. Mesin simulasi genangan (tab Simulasi, genangan Jakarta J1 sampai J4)"
+     },
+     {
+      "id": "sihka-sensor",
+      "judul": "Pos SIHKA, sensor, dan panel EWS",
+      "berkas": "pengembang/banjir/11-sihka-sensor.md",
+      "isi": "04-banjir.md: 19. Pos tinggi air SIHKA (src/sihka.js); 20. Sensor milik sendiri (src/sensor.js, sensor/); 21. Panel EWS sensor dan CCTV (paket ews, RANCANGAN, belum dikodekan)"
+     },
+     {
+      "id": "keluarga-model",
+      "judul": "Keluarga model kabupaten-hari dan lab",
+      "berkas": "pengembang/banjir/12-keluarga-model.md",
+      "isi": "04-banjir.md: 22. Keluarga model kabupaten-hari, nowcast, dan jalur lab (status uji, tanpa dipasang ke status resmi)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/banjir/13-ref-kode.md",
+      "isi": "04-banjir.md: Berkas utama; Rute API; Tabel D1 dan migrasi; Penyimpanan R2"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/banjir/14-ref-alur.md",
+      "isi": "04-banjir.md: Workflow dan jadwal; Berkas keluaran di public/banjir/data/ (pilihan); Uji dan gerbang"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan pertanyaan terbuka",
+      "berkas": "pengembang/banjir/15-batasan.md",
+      "isi": "04-banjir.md: Batasan dan pertanyaan terbuka"
+     }
+    ]
+   }
+  },
+  {
+   "id": "gempa-gunungapi",
+   "kelompok": {
+    "panduan": "bahaya",
+    "pengembang": "bencana"
+   },
+   "ikon": "denyut",
+   "judul": {
+    "panduan": "Gempa, gunung api, longsor",
+    "pengembang": "Gempa, gunung api, longsor"
+   },
+   "ringkas": {
+    "panduan": "Cara membaca halaman gempa dan tsunami, gunung api, longsor, kekeringan, dan pesisir, serta bagaimana angkanya dihitung.",
+    "pengembang": "Metode gempa dan tsunami, gunung api, longsor, kekeringan, dan pesisir, termasuk model yang gagal uji dan rencana belum dibangun."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan layar gempa",
+      "berkas": "panduan/gempa-gunungapi/01-sekilas.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: [intro] Sekilas; [intro] Cara memakai; Gempa dan Tsunami (centurisk97.id/gempa)"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar gunung api, longsor, kekeringan",
+      "berkas": "panduan/gempa-gunungapi/02-layar-lain.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Letusan Gunung Api (centurisk97.id/gunungapi); Tanah Longsor (tab Longsor di centurisk97.id/banjir); Kekeringan (centurisk97.id/kekeringan); Gelombang Pasang dan Abrasi (centurisk97.id/pesisir)"
+     },
+     {
+      "id": "gempa-data",
+      "judul": "Data gempa dan cara membaca angka",
+      "berkas": "panduan/gempa-gunungapi/03-gempa-data.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Cara membaca bagian ini; Dari mana data gempa berasal dan bagaimana kejadian dikelompokkan"
+     },
+     {
+      "id": "gempa-guncangan",
+      "judul": "Guncangan, susulan, dan gempa 12 bulan",
+      "berkas": "panduan/gempa-gunungapi/04-gempa-guncangan.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Perkiraan guncangan satu gempa; Peluang gempa susulan; Peluang gempa dalam 12 bulan"
+     },
+     {
+      "id": "tsunami",
+      "judul": "Tsunami, kerusakan, dan korban",
+      "berkas": "panduan/gempa-gunungapi/05-tsunami.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Perkiraan tsunami: waktu tiba, tinggi, dan evakuasi; Perkiraan kerusakan dan korban dalam simulasi; Angka korban dari model resmi USGS (PAGER)"
+     },
+     {
+      "id": "gunungapi",
+      "judul": "Level, paparan, dan gempa beruntun",
+      "berkas": "panduan/gempa-gunungapi/06-gunungapi.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Gempa beruntun di sekitar gunung api; Level gunung api dan data pendukung; Paparan penduduk di sekitar gunung api"
+     },
+     {
+      "id": "abu-lahar",
+      "judul": "Sebaran abu, lahar, peluang letusan",
+      "berkas": "panduan/gempa-gunungapi/07-abu-lahar.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Sebaran abu letusan (skenario); Lahar dan awan panas (simulasi); Peluang letusan 7 hari"
+     },
+     {
+      "id": "longsor",
+      "judul": "Status dan peluang longsor",
+      "berkas": "panduan/gempa-gunungapi/08-longsor.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Status longsor harian per kecamatan; Nowcast kerentanan longsor; Simulasi peluang longsor dangkal"
+     },
+     {
+      "id": "kekeringan",
+      "judul": "Status dan prakiraan kekeringan",
+      "berkas": "panduan/gempa-gunungapi/09-kekeringan.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Status kekeringan; Prakiraan kekeringan 1 sampai 3 bulan, padi, dan model bayangan; Simulasi air tanah dan posko kekeringan"
+     },
+     {
+      "id": "pesisir",
+      "judul": "Abrasi, rob, dan rencana lanjutan",
+      "berkas": "panduan/gempa-gunungapi/10-pesisir.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Abrasi garis pantai dari citra satelit; Rob, pasang surut, dan gelombang; Rencana yang belum menjadi layar"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/gempa-gunungapi/11-batasan.md",
+      "isi": "panduan/05-gempa-gunungapi-longsor.md: Batasan; Pertanyaan umum; Apakah Centurisk97 bisa memberi tahu kapan gempa besar akan terjadi?; Mana yang saya ikuti kalau angka kita berbeda dengan BMKG atau PVMBG?; Apa artinya \"Hipotesis\" di layar?; Apa itu uji balik?; Mengapa ada angka yang tertulis \"belum terukur\" atau tanda strip, bukan 0?; Mengapa kekeringan banyak yang diberi tanda hipotesis padahal ada angkanya?; Apakah simulasi tsunami, letusan, dan longsor bisa dipakai untuk memerintahkan evakuasi?; Mengapa longsor tidak punya halaman sendiri?; Siapa yang bisa melihat tab Operasi?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar bencana geologi dan pesisir",
+      "berkas": "pengembang/gempa-gunungapi/01-ikhtisar.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Ringkasan; [intro] Panduan pengguna; Paket yang belum menjadi layar; [intro] Metode"
+     },
+     {
+      "id": "layar-gempa",
+      "judul": "Layar Gempa dan Tsunami",
+      "berkas": "pengembang/gempa-gunungapi/02-layar-gempa.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Gempa dan Tsunami: /gempa/"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar gunung api, longsor, kekeringan",
+      "berkas": "pengembang/gempa-gunungapi/03-layar-lain.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Letusan Gunung Api: /gunungapi/; Tanah Longsor: tab Longsor di /banjir/; Kekeringan: /kekeringan/; Gelombang Pasang dan Abrasi: /pesisir/"
+     },
+     {
+      "id": "gempa-guncangan",
+      "judul": "Gempa: katalog, guncangan, susulan",
+      "berkas": "pengembang/gempa-gunungapi/04-gempa-guncangan.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Gempa: katalog, penggabungan, dan kejadian; Gempa: guncangan satu gempa (GMPE dan GMICE); Gempa: peluang susulan; Gempa: laju 12 bulan"
+     },
+     {
+      "id": "tsunami",
+      "judul": "Gempa: tsunami, kerusakan, PAGER",
+      "berkas": "pengembang/gempa-gunungapi/05-tsunami.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Gempa: tsunami (waktu tiba, tinggi indikatif, evakuasi); Gempa: kerusakan dan perkiraan korban (simulasi); Gempa: PAGER, uji prospektif guncangan, dan beruntun"
+     },
+     {
+      "id": "gunungapi",
+      "judul": "Metode gunung api",
+      "berkas": "pengembang/gempa-gunungapi/06-gunungapi.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Gunung api: level resmi, letusan, dan kegempaan; Gunung api: paparan, KRB, dan penduduk; Gunung api: sebaran abu (skenario, bukan prakiraan letusan); Gunung api: lahar dan awan panas; Gunung api: rezim letusan, uji kegempaan, dan MIROVA"
+     },
+     {
+      "id": "longsor",
+      "judul": "Metode longsor",
+      "berkas": "pengembang/gempa-gunungapi/07-longsor.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Longsor: status harian per kecamatan (aturan produksi); Longsor: nowcast kerentanan dikali hujan (model gagal uji); Longsor: simulasi peluang longsor dangkal"
+     },
+     {
+      "id": "kekeringan",
+      "judul": "Metode kekeringan",
+      "berkas": "pengembang/gempa-gunungapi/08-kekeringan.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Kekeringan: status \"Deteksi Centurisk97\"; Kekeringan: prakiraan 1 sampai 3 bulan, padi, dan model bayangan; Kekeringan: simulasi neraca air dan posko"
+     },
+     {
+      "id": "pesisir-tsunami",
+      "judul": "Pesisir dan genangan tsunami",
+      "berkas": "pengembang/gempa-gunungapi/09-pesisir-tsunami.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Pesisir: abrasi garis pantai (Landsat); Pesisir: rob, pasang surut, dan gelombang; Genangan tsunami (rencana, belum dibangun)"
+     },
+     {
+      "id": "rencana",
+      "judul": "Rencana: lereng dan panel EWS",
+      "berkas": "pengembang/gempa-gunungapi/10-rencana.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Bangunan di lereng terjal (rencana, sebagian pondasi sudah ada); Panel EWS sensor dan CCTV (rencana, belum dibangun)"
+     },
+     {
+      "id": "ref-gempa-gunung",
+      "judul": "Referensi: gempa, gunung api, longsor",
+      "berkas": "pengembang/gempa-gunungapi/11-ref-gempa-gunung.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Gempa dan tsunami; Gunung api; Longsor"
+     },
+     {
+      "id": "ref-lain",
+      "judul": "Referensi: kekeringan, pesisir, sensor",
+      "berkas": "pengembang/gempa-gunungapi/12-ref-lain.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Kekeringan; Pesisir; Sensor milik sendiri (fondasi panel EWS); Gerbang dan agent"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Pertanyaan pemilik yang terbuka",
+      "berkas": "pengembang/gempa-gunungapi/13-pertanyaan-terbuka.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Pertanyaan pemilik yang masih terbuka"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan perbedaan dokumen",
+      "berkas": "pengembang/gempa-gunungapi/14-batasan.md",
+      "isi": "05-gempa-gunungapi-longsor.md: Perbedaan dokumen dan kode (kode menang); Batasan model; Hal yang sengaja tidak dibahas"
+     }
+    ]
+   }
+  },
+  {
+   "id": "cuaca-udara",
+   "kelompok": {
+    "panduan": "bahaya",
+    "pengembang": "karhutla"
+   },
+   "ikon": "awan",
+   "judul": {
+    "panduan": "Cuaca, udara, dan semai awan",
+    "pengembang": "Cuaca, udara, dan semai awan"
+   },
+   "ringkas": {
+    "panduan": "Cara membaca cuaca ekstrem, kualitas udara, asap, dan peluang semai awan.",
+    "pengembang": "Status cuaca, PM2,5, telusur asap, Himawari, modifikasi cuaca, dan peluang semai awan beserta gerbang dan skornya."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas, cuaca ekstrem, kualitas udara",
+      "berkas": "panduan/cuaca-udara/01-sekilas.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: [intro] Sekilas; Halaman Cuaca Ekstrem; Halaman Kualitas Udara"
+     },
+     {
+      "id": "layar-semai",
+      "judul": "Layar peluang semai dan catatan terbang",
+      "berkas": "panduan/cuaca-udara/02-layar-semai.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Halaman Peluang Semai (khusus staf); Catatan penerbangan semai modifikasi cuaca (khusus staf)"
+     },
+     {
+      "id": "status-cuaca",
+      "judul": "Cuaca 72 jam dan pantauan Himawari",
+      "berkas": "panduan/cuaca-udara/03-status-cuaca.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Status cuaca 72 jam per kecamatan; Peringatan dini jangka sangat pendek dari BMKG; Titik api Himawari dan peringatan api baru; Awan dingin dan awan tumbuh cepat"
+     },
+     {
+      "id": "pm25",
+      "judul": "Prakiraan PM2,5 dan kelompok rentan",
+      "berkas": "panduan/cuaca-udara/04-pm25.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Prakiraan PM2,5 72 jam; Kelompok rentan dan tambahan kasus ISPA; Peluang kadar PM2,5 melewati batas"
+     },
+     {
+      "id": "asal-asap",
+      "judul": "Asal asap dan tutupan asap",
+      "berkas": "panduan/cuaca-udara/05-asal-asap.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Asal asap: telusur mundur; Persentase sumber asap (api, pembangkit, latar); Tutupan asap, musim asap, dan hari tinggi; Asap lintas negara; Jarak pandang bandara"
+     },
+     {
+      "id": "modifikasi",
+      "judul": "Penilaian modifikasi cuaca",
+      "berkas": "panduan/cuaca-udara/06-modifikasi.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Penilaian modifikasi cuaca"
+     },
+     {
+      "id": "semai-dihitung",
+      "judul": "Peluang semai: awan mana yang layak",
+      "berkas": "panduan/cuaca-udara/07-semai-dihitung.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Peluang semai awan: awan mana yang layak"
+     },
+     {
+      "id": "asap-24",
+      "judul": "Prakiraan asap 24 jam dan data basi",
+      "berkas": "panduan/cuaca-udara/08-asap-24.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Prakiraan asap 24 jam dan peringatan lintas batas; Satelit hilang dan data basi"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/cuaca-udara/09-batasan.md",
+      "isi": "panduan/06-cuaca-udara-semai.md: Batasan; Pertanyaan umum; Apakah status Waspada, Siaga, dan Awas di halaman cuaca sama dengan peringatan resmi BMKG?; Kenapa panel peringatan dini kosong padahal cuaca terasa buruk?; Apa bedanya angka PM2,5 di peta dengan angka dari stasiun ukur?; Kenapa jumlah jiwa terpapar ditulis \"sekitar\"?; Apakah zona semai yang diusulkan berarti akan hujan dan api akan padam?; Mengapa skor zona di bawah 0,35 tidak muncul?; Apa itu uji balik, dan kenapa banyak model di sini disebut hipotesis?; Kalau hasil penilaian penerbangan semai tertulis \"tak terbedakan\", apakah penaburan gagal?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar cuaca, udara, dan semai",
+      "berkas": "pengembang/cuaca-udara/01-ikhtisar.md",
+      "isi": "06-cuaca-udara-semai.md: Ringkasan; Halaman Cuaca Ekstrem (/cuaca/)"
+     },
+     {
+      "id": "layar-udara",
+      "judul": "Layar udara, sortie OMC, renlap OMC",
+      "berkas": "pengembang/cuaca-udara/02-layar-udara.md",
+      "isi": "06-cuaca-udara-semai.md: Halaman Kualitas Udara (/udara/); Tab Operasi di /udara (kondisional); Halaman admin sortie OMC (/admin/omc); Halaman Renlap OMC (/renlap-omc?zona=YYYYMMDDHH-X)"
+     },
+     {
+      "id": "layar-semai",
+      "judul": "Layar peluang semai",
+      "berkas": "pengembang/cuaca-udara/03-layar-semai.md",
+      "isi": "06-cuaca-udara-semai.md: Seksi Peluang semai (/operasi#semai)"
+     },
+     {
+      "id": "cuaca-status",
+      "judul": "Status cuaca dan nowcast CAP",
+      "berkas": "pengembang/cuaca-udara/04-cuaca-status.md",
+      "isi": "06-cuaca-udara-semai.md: M1. Status cuaca 72 jam per kecamatan; M2. Nowcast peringatan dini BMKG (CAP)"
+     },
+     {
+      "id": "pm25",
+      "judul": "PM2,5, jiwa terpapar, peluang",
+      "berkas": "pengembang/cuaca-udara/05-pm25.md",
+      "isi": "06-cuaca-udara-semai.md: M3. Prakiraan PM2,5 72 jam per kabupaten/kota; M4. Jiwa terpapar, kelompok rentan, dan ISPA; M7. Peluang PM2,5 melewati batas status"
+     },
+     {
+      "id": "asal-asap",
+      "judul": "Atribusi, telusur, lintasan, tutupan",
+      "berkas": "pengembang/cuaca-udara/06-asal-asap.md",
+      "isi": "06-cuaca-udara-semai.md: M5. Atribusi sumber PM2,5 (api, PLTU, latar); M6. Telusur asal asap (lintasan mundur); M8. Lintasan asap 72 jam dan asap lintas batas; M9. Tutupan asap kabupaten, musim asap, dan hari tinggi"
+     },
+     {
+      "id": "pengukuran-himawari",
+      "judul": "Stasiun, satelit, dan Himawari",
+      "berkas": "pengembang/cuaca-udara/07-pengukuran-himawari.md",
+      "isi": "06-cuaca-udara-semai.md: M10. Pengukuran stasiun dan satelit pembanding; M11. Himawari: titik api, alarm, dan awan"
+     },
+     {
+      "id": "modifikasi",
+      "judul": "Modifikasi cuaca dan evaluasi sortie",
+      "berkas": "pengembang/cuaca-udara/08-modifikasi.md",
+      "isi": "06-cuaca-udara-semai.md: M12. Modifikasi cuaca: jadwal resmi BMKG dan evaluasi sortie"
+     },
+     {
+      "id": "semai-data",
+      "judul": "Peluang semai: masukan dan skor",
+      "berkas": "pengembang/cuaca-udara/09-semai-data.md",
+      "isi": "06-cuaca-udara-semai.md: M13. Peluang semai awan: data masukan; M14. Peluang semai awan: turunan, gerbang, faktor, skor"
+     },
+     {
+      "id": "semai-asap",
+      "judul": "Asap 24 jam, data basi, uji prospektif",
+      "berkas": "pengembang/cuaca-udara/10-semai-asap.md",
+      "isi": "06-cuaca-udara-semai.md: M15. Prakiraan asap 24 jam dan peringatan lintas batas (mode semai); M16. Satelit hilang, data basi, dan ringkasan teks; M17. Uji prospektif peluang semai (terdaftar, belum berjalan)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/cuaca-udara/11-ref-kode.md",
+      "isi": "06-cuaca-udara-semai.md: Berkas utama; Rute API; Tabel D1 dan migrasi; Prefiks R2"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow dan uji",
+      "berkas": "pengembang/cuaca-udara/12-ref-alur.md",
+      "isi": "06-cuaca-udara-semai.md: Workflow GitHub Actions; Uji dan gerbang"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Pertanyaan terbuka",
+      "berkas": "pengembang/cuaca-udara/13-pertanyaan-terbuka.md",
+      "isi": "06-cuaca-udara-semai.md: Pertanyaan terbuka (belum diputuskan, bawaan sementara)"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan perbedaan dokumen",
+      "berkas": "pengembang/cuaca-udara/14-batasan.md",
+      "isi": "06-cuaca-udara-semai.md: Perbedaan dokumen dan kode (kode menang); Batasan ilmiah dan data"
+     }
+    ]
+   }
+  },
+  {
+   "id": "model-sebaran",
+   "kelompok": {
+    "panduan": "prediksi",
+    "pengembang": "karhutla"
+   },
+   "ikon": "model",
+   "judul": {
+    "panduan": "Model sebaran api",
+    "pengembang": "Model sebaran dan indeks risiko"
+   },
+   "ringkas": {
+    "panduan": "Cara kerja perkiraan penjalaran api dan peluang kebakaran, serta seberapa jauh bisa dipercaya.",
+    "pengembang": "Mesin simulasi, model sel dan model membesar, uji balik dan prospektif, peluang 7 hari, dan gerbang pembanding."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas model sebaran",
+      "berkas": "panduan/model-sebaran/01-sekilas.md",
+      "isi": "panduan/03-model-sebaran.md: Sekilas"
+     },
+     {
+      "id": "simulasi",
+      "judul": "Memakai simulasi penjalaran 72 jam",
+      "berkas": "panduan/model-sebaran/02-simulasi.md",
+      "isi": "panduan/03-model-sebaran.md: Simulasi penjalaran api 72 jam; Kartu Model data (dilatih); Fitur tambahan Simulasi"
+     },
+     {
+      "id": "peluang-layar",
+      "judul": "Peluang 7 hari, cerita musim, kartu",
+      "berkas": "panduan/model-sebaran/03-peluang-layar.md",
+      "isi": "panduan/03-model-sebaran.md: Peluang api 7 hari (lapisan peta, eksperimental); Cerita musim dan pendorong (tab Insight dan Tren); Kartu Model sebaran dan peluang api membesar (tab Metode); Peringatan email berdasarkan jejak api"
+     },
+     {
+      "id": "cara-belajar",
+      "judul": "Cara model belajar dan diuji",
+      "berkas": "panduan/model-sebaran/04-cara-belajar.md",
+      "isi": "panduan/03-model-sebaran.md: [intro] Cara menghitung; Dari mana datanya; Cara kerja umum: belajar dari masa lalu, lalu diuji pada tahun yang disembunyikan; Syarat kelayakan tampil: mengalahkan pembanding sederhana"
+     },
+     {
+      "id": "peluang-membesar",
+      "judul": "Peluang api membesar dan WASPADA",
+      "berkas": "panduan/model-sebaran/05-peluang-membesar.md",
+      "isi": "panduan/03-model-sebaran.md: Peluang titik api baru membesar (tanda WASPADA); Jejak api kompleks aktif"
+     },
+     {
+      "id": "peluang-kotak",
+      "judul": "Peluang terbakar per kotak",
+      "berkas": "panduan/model-sebaran/06-peluang-kotak.md",
+      "isi": "panduan/03-model-sebaran.md: Peluang tiap kotak 375 meter ikut terbakar (model data per kotak); Peluang api 7 hari per kotak 5,5 km"
+     },
+     {
+      "id": "fisika",
+      "judul": "Mesin fisika penjalaran api",
+      "berkas": "panduan/model-sebaran/07-fisika.md",
+      "isi": "panduan/03-model-sebaran.md: Mesin fisika penjalaran api (skenario di tab Simulasi)"
+     },
+     {
+      "id": "pendorong",
+      "judul": "Pendorong api dan skor prioritas",
+      "berkas": "panduan/model-sebaran/08-pendorong.md",
+      "isi": "panduan/03-model-sebaran.md: Pendorong api, awal musim, dan tren; Skor prioritas penempatan sumber daya"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/model-sebaran/09-batasan.md",
+      "isi": "panduan/03-model-sebaran.md: Batasan; Pertanyaan umum; Apakah tanda WASPADA berarti api pasti membesar?; Mengapa angka luas di Simulasi tidak boleh dikutip sebagai luas kebakaran?; Apa arti label Model, belum divalidasi atau eksperimental?; Mengapa kartu tidak menampilkan angka sama sekali?; Apakah peluang api 7 hari bisa dilihat publik?; Mengapa angka ketepatan di dokumen lain berbeda dengan di sini?; Apa itu uji balik dan mengapa belum cukup?; Apakah catatan yang saya tulis di mode forensik tersimpan di sistem pusat?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar model sebaran",
+      "berkas": "pengembang/model-sebaran/01-ikhtisar.md",
+      "isi": "03-model-sebaran.md: Ringkasan; Hal yang sering disalahpahami"
+     },
+     {
+      "id": "layar-simulasi",
+      "judul": "Layar Simulasi",
+      "berkas": "pengembang/model-sebaran/02-layar-simulasi.md",
+      "isi": "03-model-sebaran.md: Simulasi penjalaran api 72 jam (tab Simulasi, jalur /sim dan /sim/<id kompleks>); Kartu \"Model data (dilatih)\" di tab Simulasi; Mode lanjutan Simulasi (insiden, 3D, drone, sumber daya, adegan, perlakuan)"
+     },
+     {
+      "id": "layar-peluang",
+      "judul": "Peluang 7 hari, cerita musim, kartu",
+      "berkas": "pengembang/model-sebaran/03-layar-peluang.md",
+      "isi": "03-model-sebaran.md: Peluang api 7 hari (lapisan peta, eksperimental); Cerita musim dan pendorong (Insight dan Tren); Kartu \"Model sebaran dan peluang api membesar\" (tab Metode); Peringatan email berdasarkan jejak api (tanpa halaman)"
+     },
+     {
+      "id": "data-fitur",
+      "judul": "Data, grid, pelacak, dan fitur",
+      "berkas": "pengembang/model-sebaran/04-data-fitur.md",
+      "isi": "03-model-sebaran.md: Data, grid, dan pembagian waktu; Pelacak peristiwa (lacak.py); Fitur dan indeks cuaca kebakaran (fitur.py, cuaca.py, sebaran_model.js)"
+     },
+     {
+      "id": "model-sel",
+      "judul": "Model sel dan gerbang pembanding",
+      "berkas": "pengembang/model-sebaran/05-model-sel.md",
+      "isi": "03-model-sebaran.md: Model sel: peluang tiap sel terbakar, Monte Carlo, kalibrasi (gbdt.py, latih_jalan.py, sebaran_model.js); Gerbang pembanding sederhana (gerbang.py)"
+     },
+     {
+      "id": "membesar",
+      "judul": "Model akan membesar dan WASPADA",
+      "berkas": "pengembang/model-sebaran/06-membesar.md",
+      "isi": "03-model-sebaran.md: Model \"akan membesar\" dan tanda WASPADA (lolos.py)"
+     },
+     {
+      "id": "uji",
+      "judul": "Uji balik, galat, prospektif, PFVI",
+      "berkas": "pengembang/model-sebaran/07-uji.md",
+      "isi": "03-model-sebaran.md: Uji balik 123 kejadian lalu (kasus.py); Analisis kesalahan dan kalibrasi per strata (galat.py); Uji prospektif pra-registrasi (prospektif.py); Uji PFVI lawan FWI di sel gambut (pfvi_balik.py, scripts/data/pfvi.py)"
+     },
+     {
+      "id": "fisika",
+      "judul": "Mesin fisika Simulasi",
+      "berkas": "pengembang/model-sebaran/08-fisika.md",
+      "isi": "03-model-sebaran.md: Mesin fisika Simulasi (public/index.html:6706 sampai 6830, port simfisika.py); Jejak api kompleks aktif (jejak.py)"
+     },
+     {
+      "id": "peluang-mingguan",
+      "judul": "Peluang 7 hari, pendorong, prioritas",
+      "berkas": "pengembang/model-sebaran/09-peluang-mingguan.md",
+      "isi": "03-model-sebaran.md: Peluang api 7 hari per sel (indeks risiko mingguan): uji balik dan model produksi P1; Pendorong, awal musim, dan tren (pendorong.py, musim_awal.py); Skor prioritas dan kalibrasi wilayah (prioritas.py, kalibrasi_wilayah.py)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/model-sebaran/10-ref-kode.md",
+      "isi": "03-model-sebaran.md: Berkas utama; Rute API; Tabel D1 dan migrasi; Prefiks R2 (bucket poskokarhutla-foto)"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/model-sebaran/11-ref-alur.md",
+      "isi": "03-model-sebaran.md: Workflow GitHub Actions; Berkas keluaran di public/data/; Uji dan gerbang yang menjaga modul"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan pertanyaan terbuka",
+      "berkas": "pengembang/model-sebaran/12-batasan.md",
+      "isi": "03-model-sebaran.md: Batasan dan pertanyaan terbuka"
+     }
+    ]
+   }
+  },
+  {
+   "id": "prediksi",
+   "kelompok": {
+    "panduan": "prediksi",
+    "pengembang": "bencana"
+   },
+   "ikon": "grafik",
+   "judul": {
+    "panduan": "Prediksi bencana 3 hari",
+    "pengembang": "Prediksi dan tangga peringatan"
+   },
+   "ringkas": {
+    "panduan": "Cara membaca prakiraan 3 hari per kabupaten/kota, tangga peringatan, dan seberapa bisa dipercaya.",
+    "pengembang": "Pembekuan prakiraan, penilaian prospektif, kalibrasi, aturan Perlu tindakan, Tangga, dan kalender risiko."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan contoh membaca satu baris",
+      "berkas": "panduan/prediksi/01-sekilas.md",
+      "isi": "panduan/07-prediksi.md: [intro] Sekilas; [intro] Cara memakai; Contoh membaca satu baris, dari angka sampai tindakan"
+     },
+     {
+      "id": "tab-besok",
+      "judul": "Tab Prakiraan 3 hari",
+      "berkas": "panduan/prediksi/02-tab-besok.md",
+      "isi": "panduan/07-prediksi.md: Tab Prakiraan 3 hari (Besok)"
+     },
+     {
+      "id": "tab-lain",
+      "judul": "Ketepatan, tangga, paparan, laporan",
+      "berkas": "panduan/prediksi/03-tab-lain.md",
+      "isi": "panduan/07-prediksi.md: Tab Ketepatan prakiraan; Tab Tangga peringatan; Tab Paparan dampak; Tab Laporan provinsi; Tab Konfirmasi lapangan; Halaman ringkas"
+     },
+     {
+      "id": "level-3-hari",
+      "judul": "Dari data mentah ke level 3 hari",
+      "berkas": "panduan/prediksi/04-level-3-hari.md",
+      "isi": "panduan/07-prediksi.md: [intro] Cara menghitung; Prakiraan 3 hari: dari data mentah ke level"
+     },
+     {
+      "id": "perlu-tindakan",
+      "judul": "Aturan Perlu tindakan",
+      "berkas": "panduan/prediksi/05-perlu-tindakan.md",
+      "isi": "panduan/07-prediksi.md: Aturan \"Perlu tindakan\"; Penyesuaian peluang otomatis"
+     },
+     {
+      "id": "teruji",
+      "judul": "Seberapa bisa dipercaya",
+      "berkas": "panduan/prediksi/06-teruji.md",
+      "isi": "panduan/07-prediksi.md: Seberapa bisa dipercaya, dan cara memberi label teruji"
+     },
+     {
+      "id": "tangga",
+      "judul": "Tangga peringatan: membaca sinyal",
+      "berkas": "panduan/prediksi/07-tangga.md",
+      "isi": "panduan/07-prediksi.md: Tangga peringatan: cara membaca sinyal"
+     },
+     {
+      "id": "kekeringan",
+      "judul": "Prediksi kekeringan dan bulan rawan",
+      "berkas": "panduan/prediksi/08-kekeringan.md",
+      "isi": "panduan/07-prediksi.md: Prediksi kekeringan dan bulan rawan; Model percobaan"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/prediksi/09-batasan.md",
+      "isi": "panduan/07-prediksi.md: Batasan; Pertanyaan umum; Mengapa banyak kolom berlabel \"belum teruji\"?; Apa bedanya tab Besok dan tab Tangga?; Kolom saya kosong atau bertanda \"–\". Apakah itu berarti wilayah saya terbebas dari ancaman itu?; Mengapa angka di tombol bencana lebih kecil dari daftar di bawahnya?; Bisakah prakiraan yang sudah tampil diubah?; Apa arti \"perkiraan, belum diuji balik\" pada angka pengungsi?; Apakah laporan warga ikut menilai prakiraan?; Peluang 60% itu artinya apa?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar prediksi dan tab Besok",
+      "berkas": "pengembang/prediksi/01-ikhtisar.md",
+      "isi": "07-prediksi.md: Ringkasan; [intro] Panduan pengguna; Tab Prakiraan 3 hari (Besok)"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar ketepatan, tangga, paparan",
+      "berkas": "pengembang/prediksi/02-layar-lain.md",
+      "isi": "07-prediksi.md: Tab Ketepatan prakiraan (rapor); Tab Tangga peringatan; Tab Paparan dampak; Tab Laporan provinsi; Tab Konfirmasi lapangan; Halaman ringkas /prediksi/ringkas"
+     },
+     {
+      "id": "pembekuan",
+      "judul": "Pembekuan prakiraan",
+      "berkas": "pengembang/prediksi/03-pembekuan.md",
+      "isi": "07-prediksi.md: [intro] Metode; Pembekuan prakiraan (catat.py)"
+     },
+     {
+      "id": "penilaian",
+      "judul": "Penilaian, kalibrasi, koreksi bulanan",
+      "berkas": "pengembang/prediksi/04-penilaian.md",
+      "isi": "07-prediksi.md: Penilaian prospektif (nilai.py); Kalibrasi peluang (kalibrasi.py); Koreksi bulanan banjir (koreksi.py)"
+     },
+     {
+      "id": "terbit",
+      "judul": "Penerbitan dan level sel",
+      "berkas": "pengembang/prediksi/05-terbit.md",
+      "isi": "07-prediksi.md: Penerbitan dan aturan \"perlu tindakan\" (terbit.py, aturan.json); Level sel tampilan (besok_inti.js)"
+     },
+     {
+      "id": "tangga",
+      "judul": "Metode Tangga",
+      "berkas": "pengembang/prediksi/06-tangga.md",
+      "isi": "07-prediksi.md: Metode Tangga (tangga.py)"
+     },
+     {
+      "id": "kalender-bayangan",
+      "judul": "Kalender risiko dan model bayangan",
+      "berkas": "pengembang/prediksi/07-kalender-bayangan.md",
+      "isi": "07-prediksi.md: Kalender risiko dan bulan rawan; Model bayangan (scripts/prediksi/bayangan/model.py)"
+     },
+     {
+      "id": "lawan-kejadian",
+      "judul": "Prakiraan lawan Kejadian (rancangan)",
+      "berkas": "pengembang/prediksi/08-lawan-kejadian.md",
+      "isi": "07-prediksi.md: Prakiraan lawan Kejadian di /bnpb/dalops (rencana, belum tersedia); Metode Prakiraan lawan Kejadian (rancangan, belum dikode)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/prediksi/09-ref-kode.md",
+      "isi": "07-prediksi.md: Berkas utama; Pemakai data di luar /prediksi; Rute API; Tabel D1 dan migrasi; R2"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/prediksi/10-ref-alur.md",
+      "isi": "07-prediksi.md: Workflow dan jadwal; Berkas keluaran di public/prediksi/data; Uji dan gerbang"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Pertanyaan pemilik yang terbuka",
+      "berkas": "pengembang/prediksi/11-pertanyaan-terbuka.md",
+      "isi": "07-prediksi.md: Pertanyaan pemilik yang masih terbuka"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan perbedaan dokumen",
+      "berkas": "pengembang/prediksi/12-batasan.md",
+      "isi": "07-prediksi.md: Batasan metode; Selisih antara dokumen dan kode (kode menang); Hal yang sengaja dibatasi"
+     }
+    ]
+   }
+  },
+  {
+   "id": "lapor",
+   "kelompok": {
+    "panduan": "lapangan",
+    "pengembang": "aplikasi"
+   },
+   "ikon": "pesan",
+   "judul": {
+    "panduan": "Lapor Bencana",
+    "pengembang": "Lapor Bencana"
+   },
+   "ringkas": {
+    "panduan": "Cara melapor kejadian lewat obrolan, memantau laporan, dan menerima peringatan dini kecamatan.",
+    "pengembang": "Mesin percakapan, gugus laporan, verifikasi BPBD, data lanjutan, luring, PWA, dan peringatan dini."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan melapor lewat obrolan",
+      "berkas": "panduan/lapor/01-sekilas.md",
+      "isi": "panduan/08-lapor.md: [intro] Sekilas; Beranda Lapor; Lapor kejadian lewat obrolan"
+     },
+     {
+      "id": "darurat-foto",
+      "judul": "Lapor darurat, foto, dan melacak laporan",
+      "berkas": "panduan/lapor/02-darurat-foto.md",
+      "isi": "panduan/08-lapor.md: Lapor darurat dan Darurat sekali ketuk; Foto dan video; Menambah kabar susulan; Melacak laporan"
+     },
+     {
+      "id": "luring-aplikasi",
+      "judul": "Tanpa sinyal, aplikasi, dan info daerah",
+      "berkas": "panduan/lapor/03-luring-aplikasi.md",
+      "isi": "panduan/08-lapor.md: Info daerah, Nomor penting, Edukasi, dan Alun-alun; Poster QR desa; Lapor tanpa sinyal; Pasang aplikasi dan peringatan dini kecamatan"
+     },
+     {
+      "id": "meja-lanjutan",
+      "judul": "Meja Laporan dan data lanjutan BPBD",
+      "berkas": "panduan/lapor/04-meja-lanjutan.md",
+      "isi": "panduan/08-lapor.md: Meja Laporan untuk petugas; Data lanjutan BPBD"
+     },
+     {
+      "id": "cerita-gugus",
+      "judul": "Cerita pelapor dan kelompok laporan",
+      "berkas": "panduan/lapor/05-cerita-gugus.md",
+      "isi": "panduan/08-lapor.md: Cara sistem memahami cerita pelapor; Kelompok laporan serupa (gugus)"
+     },
+     {
+      "id": "verifikasi-rekap",
+      "judul": "Verifikasi, kartu kejadian, dan rekap",
+      "berkas": "panduan/lapor/06-verifikasi-rekap.md",
+      "isi": "panduan/08-lapor.md: Laporan terverifikasi BPBD; Kartu kejadian hari ini; Rekap data lanjutan; Waktu respons BPBD"
+     },
+     {
+      "id": "peringatan",
+      "judul": "Peringatan dini kecamatan",
+      "berkas": "panduan/lapor/07-peringatan.md",
+      "isi": "panduan/08-lapor.md: Peringatan dini kecamatan"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/lapor/08-batasan.md",
+      "isi": "panduan/08-lapor.md: Batasan; Pertanyaan umum; Apakah laporan saya langsung menjadi data resmi BNPB?; Perlu akun untuk melapor?; Mengapa foto saya ditolak?; Mengapa isian saya tertulis \"belum didata\" dan bukan 0?; Bagaimana bila tidak ada sinyal?; Apakah notifikasi peringatan dini sama dengan peringatan resmi?; Mengapa peringatan untuk kecamatan saya tingkatnya mengikuti kabupaten?; Siapa yang bisa melihat nomor WhatsApp dan identitas saya?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar Lapor Bencana",
+      "berkas": "pengembang/lapor/01-ikhtisar.md",
+      "isi": "08-lapor.md: Ringkasan; [intro] Panduan pengguna; Beranda /lapor; Lapor kejadian (obrolan)"
+     },
+     {
+      "id": "layar-laporan",
+      "judul": "Layar darurat, foto, lacak, info",
+      "berkas": "pengembang/lapor/02-layar-laporan.md",
+      "isi": "08-lapor.md: Lapor darurat dan Darurat sekali ketuk; Foto dan video; Tambah kabar (laporan susulan); Lacak laporan; Info dan prediksi, Edukasi, Nomor penting, Alun-alun; Poster QR desa"
+     },
+     {
+      "id": "layar-meja",
+      "judul": "Layar luring, aplikasi, meja, lanjutan",
+      "berkas": "pengembang/lapor/03-layar-meja.md",
+      "isi": "08-lapor.md: Lapor tanpa sinyal; Pasang aplikasi dan peringatan dini; Meja Laporan /lapor/meja; Data lanjutan BPBD (tahap 2)"
+     },
+     {
+      "id": "mesin",
+      "judul": "Mesin percakapan, tiket, dan susulan",
+      "berkas": "pengembang/lapor/04-mesin.md",
+      "isi": "08-lapor.md: Mesin percakapan: kode memegang alur, AI hanya mengurai; Identitas pelapor dan tingkat sumber; Lokasi dan wilayah; Tiket, status, dan dokumen; Susulan"
+     },
+     {
+      "id": "gugus-verifikasi",
+      "judul": "Gugus, verifikasi, kartu publik",
+      "berkas": "pengembang/lapor/05-gugus-verifikasi.md",
+      "isi": "08-lapor.md: Gugus laporan; Terverifikasi BPBD; Kartu publik kejadian hari ini; Alun-alun; Data agregat; Waktu respons BPBD"
+     },
+     {
+      "id": "luring-pwa",
+      "judul": "Luring, peringatan dini PWA, bahasa",
+      "berkas": "pengembang/lapor/06-luring-pwa.md",
+      "isi": "08-lapor.md: Lapor tanpa sinyal: pemutaran ulang alur darurat; Peringatan dini PWA; Terjemahan antarmuka"
+     },
+     {
+      "id": "data-lanjutan",
+      "judul": "Data lanjutan BPBD: spek dan rekap",
+      "berkas": "pengembang/lapor/07-data-lanjutan.md",
+      "isi": "08-lapor.md: Data lanjutan BPBD: spek, rekap, kondisi akhir"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/lapor/08-ref-kode.md",
+      "isi": "08-lapor.md: Berkas utama; Rute API; Tabel D1 dan migrasi; R2 (binding MEDIA)"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: cron, keluaran, uji",
+      "berkas": "pengembang/lapor/09-ref-alur.md",
+      "isi": "08-lapor.md: Cron dan workflow; Berkas keluaran di public/data; Uji dan gerbang"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Pertanyaan pemilik yang terbuka",
+      "berkas": "pengembang/lapor/10-pertanyaan-terbuka.md",
+      "isi": "08-lapor.md: Pertanyaan pemilik yang belum diputuskan (bawaan sementara)"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan perbedaan dokumen",
+      "berkas": "pengembang/lapor/11-batasan.md",
+      "isi": "08-lapor.md: Perbedaan kode dan dokumen paket (kode menang); Batasan"
+     }
+    ]
+   }
+  },
+  {
+   "id": "siklus",
+   "kelompok": {
+    "panduan": "lapangan",
+    "pengembang": "aplikasi"
+   },
+   "ikon": "siklus",
+   "judul": {
+    "panduan": "Siklus Bencana",
+    "pengembang": "Siklus Bencana"
+   },
+   "ringkas": {
+    "panduan": "Satu nomor dan satu halaman untuk setiap kejadian, dari kaji cepat sampai pemulihan.",
+    "pengembang": "Buku Besar Kejadian, paparan, kaji cepat, Jitupasna, renkon, risiko masa depan, Lifeline, 3W, dan kaji ulang."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas, pintu tunggal, daftar kejadian",
+      "berkas": "panduan/siklus/01-sekilas.md",
+      "isi": "panduan/09-siklus.md: [intro] Sekilas; [intro] Cara memakai; Pintu tunggal: centurisk97.id/siklus; Daftar kejadian: centurisk97.id/siklus/kejadian"
+     },
+     {
+      "id": "halaman-kejadian",
+      "judul": "Halaman satu kejadian",
+      "berkas": "panduan/siklus/02-halaman-kejadian.md",
+      "isi": "panduan/09-siklus.md: Halaman satu kejadian: centurisk97.id/siklus/kejadian/KJ-...; Ringkasan untuk umum; Antrean dan nomor GLIDE"
+     },
+     {
+      "id": "layar-analisis",
+      "judul": "Layar paparan, kaji cepat, pemulihan",
+      "berkas": "panduan/siklus/03-layar-analisis.md",
+      "isi": "panduan/09-siklus.md: Peta paparan: centurisk97.id/siklus/paparan; Kaji cepat: centurisk97.id/siklus/kaji; Jitupasna dan rencana pemulihan: centurisk97.id/siklus/pulih; Rencana kontinjensi dan gladi: centurisk97.id/siklus/renkon dan /siklus/gladi; Risiko masa depan: centurisk97.id/siklus/masa-depan"
+     },
+     {
+      "id": "layar-layanan",
+      "judul": "Layar Lifeline, 3W, kaji ulang",
+      "berkas": "panduan/siklus/04-layar-layanan.md",
+      "isi": "panduan/09-siklus.md: Status layanan dasar (Lifeline); Siapa mengerjakan apa (3W) dan tawaran bantuan; Kaji ulang pasca-kejadian"
+     },
+     {
+      "id": "nomor-kejadian",
+      "judul": "Nomor kejadian dan penautan laporan",
+      "berkas": "panduan/siklus/05-nomor-kejadian.md",
+      "isi": "panduan/09-siklus.md: Nomor kejadian KJ; Mengaitkan laporan dari banyak sumber ke satu kejadian; Membersihkan Logbook; Titik perkiraan dari nama desa; Angka berdampingan dan selisih"
+     },
+     {
+      "id": "paparan",
+      "judul": "Paparan di zona bahaya",
+      "berkas": "panduan/siklus/06-paparan.md",
+      "isi": "panduan/09-siklus.md: Paparan: bangunan, fasilitas, dan jiwa di dalam zona bahaya; Perkiraan kerusakan bangunan dari satelit"
+     },
+     {
+      "id": "kaji-cepat",
+      "judul": "Kaji cepat: gempa, banjir, karhutla",
+      "berkas": "panduan/siklus/07-kaji-cepat.md",
+      "isi": "panduan/09-siklus.md: Kaji cepat gempa; Kaji cepat banjir, karhutla, dan gunung api; Uji balik kaji cepat"
+     },
+     {
+      "id": "jitupasna-renkon",
+      "judul": "Jitupasna dan rencana kontinjensi",
+      "berkas": "panduan/siklus/08-jitupasna-renkon.md",
+      "isi": "panduan/09-siklus.md: Klasifikasi kerusakan, harga, dan bantuan (Jitupasna ke R3P); Rencana kontinjensi: kebutuhan dasar dan kesegaran"
+     },
+     {
+      "id": "masa-depan-lifeline",
+      "judul": "Risiko masa depan dan Lifeline",
+      "berkas": "panduan/siklus/09-masa-depan-lifeline.md",
+      "isi": "panduan/09-siklus.md: Risiko masa depan; Usulan status layanan dasar"
+     },
+     {
+      "id": "celah-kaji-ulang",
+      "judul": "Celah 3W dan draf kaji ulang",
+      "berkas": "panduan/siklus/10-celah-kaji-ulang.md",
+      "isi": "panduan/09-siklus.md: Celah, tumpang tindih, dan pencocokan tawaran; Draf kaji ulang"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/siklus/11-batasan.md",
+      "isi": "panduan/09-siklus.md: Batasan; Pertanyaan umum; Mengapa angka DIBI dan Logbook berbeda dan tidak dijumlahkan?; Apa arti label \"perkiraan model\" dan \"hipotesis\"?; Mengapa kaji cepat selalu berupa rentang, bukan satu angka?; Mengapa kejadian saya tidak punya titik di peta?; Kejadian yang sama muncul dua kali. Apa yang harus dilakukan?; Siapa yang bisa melihat halaman kejadian saya?; Mengapa sel layanan dasar saya abu padahal ada laporan warga?; Mengapa nilai kerusakan Jitupasna tertulis \"menunggu\"?; Bagaimana organisasi mitra bisa ikut mengisi data?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar Siklus Bencana",
+      "berkas": "pengembang/siklus/01-ikhtisar.md",
+      "isi": "09-siklus.md: Ringkasan; [intro] Panduan pengguna; Pintu tunggal, /siklus"
+     },
+     {
+      "id": "layar-kejadian",
+      "judul": "Layar daftar dan halaman kejadian",
+      "berkas": "pengembang/siklus/02-layar-kejadian.md",
+      "isi": "09-siklus.md: Daftar Buku Besar, /siklus/kejadian; Halaman satu kejadian, /siklus/kejadian/KJ-tahun-kode; Ringkasan publik satu kejadian; Antrean dan nomor GLIDE"
+     },
+     {
+      "id": "layar-analisis",
+      "judul": "Layar paparan, kaji cepat, pemulihan",
+      "berkas": "pengembang/siklus/03-layar-analisis.md",
+      "isi": "09-siklus.md: Peta Paparan, /siklus/paparan; Kaji Cepat, /siklus/kaji dan /siklus/kaji/<id>; Jitupasna dan R3P, /siklus/pulih dan /siklus/pulih/<id>; Renkon dan Gladi, /siklus/renkon dan /siklus/gladi; Risiko Masa Depan, /siklus/masa-depan; Registri sumber, /siklus (kartu registri)"
+     },
+     {
+      "id": "layar-layanan",
+      "judul": "Layar Lifeline, 3W, kaji ulang",
+      "berkas": "pengembang/siklus/04-layar-layanan.md",
+      "isi": "09-siklus.md: Status Lifeline (kisi pada halaman kejadian); 3W dan tawaran bantuan (kartu pada halaman kejadian, dan /bantu); Kaji ulang pasca-kejadian"
+     },
+     {
+      "id": "nomor-pemasangan",
+      "judul": "Nomor kejadian dan pemasangan sumber",
+      "berkas": "pengembang/siklus/05-nomor-pemasangan.md",
+      "isi": "09-siklus.md: Nomor kejadian KJ- (F1.2); Pemasangan antarsumber (F1.4); Pembersihan Logbook (F1.6); Titik perkiraan dari nama desa (F1.6b); Angka berdampingan dan selisih (F1.7); Gabung, alias, dan koreksi (F1.5)"
+     },
+     {
+      "id": "paparan",
+      "judul": "Paparan, fasilitas, dan satelit",
+      "berkas": "pengembang/siklus/06-paparan.md",
+      "isi": "09-siklus.md: Agregasi bangunan dan paparan (F2.1, F2.2); Kelas bahaya InaRISK per sel (F2.3); Fasilitas vital (F2.4); Pembagian jiwa (F2.5); Perkiraan kerusakan bangunan dari satelit (hanya tahap uji); Genangan satelit per kejadian banjir (pendukung kaji banjir)"
+     },
+     {
+      "id": "kaji-cepat",
+      "judul": "Kaji cepat gempa, banjir, uji balik",
+      "berkas": "pengembang/siklus/07-kaji-cepat.md",
+      "isi": "09-siklus.md: Kaji cepat gempa (F3.1, F3.2); Kaji cepat banjir, karhutla, gunung api (F3.3, F3.4); Uji balik kaji cepat (F3.5)"
+     },
+     {
+      "id": "jitupasna-renkon",
+      "judul": "Jitupasna ke R3P, renkon, gladi",
+      "berkas": "pengembang/siklus/08-jitupasna-renkon.md",
+      "isi": "09-siklus.md: Jitupasna ke R3P (F4); Renkon dan gladi (F5)"
+     },
+     {
+      "id": "risiko-lifeline",
+      "judul": "Risiko masa depan dan Lifeline",
+      "berkas": "pengembang/siklus/09-risiko-lifeline.md",
+      "isi": "09-siklus.md: Risiko masa depan (F6); Prioritas kartu pintu (F7); Usulan Status Lifeline"
+     },
+     {
+      "id": "celah-kaji-ulang",
+      "judul": "Celah 3W, kaji ulang, keterpaduan",
+      "berkas": "pengembang/siklus/10-celah-kaji-ulang.md",
+      "isi": "09-siklus.md: Celah dan tumpang tindih 3W, pencocokan tawaran; Kaji ulang pasca-kejadian; Keterpaduan (nomor kejadian dipakai bersama); Rantai, Kalender Kewajiban, Rapor SPM, dan Pembiayaan risiko (rancangan)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, hak, rute",
+      "berkas": "pengembang/siklus/11-ref-kode.md",
+      "isi": "09-siklus.md: Berkas utama; Hak akses; Rute API; Halaman dan aset"
+     },
+     {
+      "id": "ref-data",
+      "judul": "Referensi: tabel, workflow, uji",
+      "berkas": "pengembang/siklus/12-ref-data.md",
+      "isi": "09-siklus.md: Tabel D1 dan migrasi; R2; Workflow dan jadwal; Berkas keluaran di public; Uji dan gerbang"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan pertanyaan terbuka",
+      "berkas": "pengembang/siklus/13-batasan.md",
+      "isi": "09-siklus.md: Batasan dan pertanyaan terbuka"
+     }
+    ]
+   }
+  },
+  {
+   "id": "operasi",
+   "kelompok": {
+    "panduan": "lapangan",
+    "pengembang": "karhutla"
+   },
+   "ikon": "pesawat",
+   "judul": {
+    "panduan": "Operasi udara dan lapangan",
+    "pengembang": "Operasi udara dan lapangan"
+   },
+   "ringkas": {
+    "panduan": "Cara membaca armada udara, rencana lapangan, dan tindakan lapangan di semua jenis bencana.",
+    "pengembang": "Gelar armada, water bombing, renlap, efektivitas, operasi generik semua bencana, dan misi udara."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan ringkasan operasi",
+      "berkas": "panduan/operasi/01-sekilas.md",
+      "isi": "panduan/11-operasi.md: [intro] Sekilas; Membuka layar dan siapa yang boleh melihat; Memilih periode; Ringkasan dan daftar \"Perlu tindakan\""
+     },
+     {
+      "id": "armada-peta",
+      "judul": "Base, armada, dan peta operasi",
+      "berkas": "panduan/operasi/02-armada-peta.md",
+      "isi": "panduan/11-operasi.md: Tindak lanjut; Base dan armada; Peta operasi dan badan air untuk serok; Peluang semai"
+     },
+     {
+      "id": "renlap-kinerja",
+      "judul": "Renlap, kinerja, dan kontrak",
+      "berkas": "panduan/operasi/03-renlap-kinerja.md",
+      "isi": "panduan/11-operasi.md: Renlap dan sortie; Kinerja: tren, efektivitas, operator, dokumentasi; Kontrak dan modifikasi cuaca"
+     },
+     {
+      "id": "bencana-lain",
+      "judul": "Sarana, tindakan, misi udara, darat",
+      "berkas": "panduan/operasi/04-bencana-lain.md",
+      "isi": "panduan/11-operasi.md: Sarana dan fasilitas (bencana selain karhutla); Tindakan lapangan per target; Misi udara (rencana terbang helikopter); Operasi Darat; Tab Operasi di peta utama"
+     },
+     {
+      "id": "status-armada",
+      "judul": "Status armada, kelayakan, jangkauan",
+      "berkas": "panduan/operasi/05-status-armada.md",
+      "isi": "panduan/11-operasi.md: [intro] Cara menghitung; Status armada dari laporan grup satgas; Kelayakan terbang pangkalan; Jangkauan pangkalan dan celah"
+     },
+     {
+      "id": "penyiraman-efektivitas",
+      "judul": "Hasil penyiraman dan efektivitas",
+      "berkas": "panduan/operasi/06-penyiraman-efektivitas.md",
+      "isi": "panduan/11-operasi.md: Hasil penyiraman air dari satelit; Ukuran efektivitas operasi"
+     },
+     {
+      "id": "target-renlap",
+      "judul": "Usulan target renlap",
+      "berkas": "panduan/operasi/07-target-renlap.md",
+      "isi": "panduan/11-operasi.md: Usulan target renlap karhutla; Usulan target renlap untuk bencana lain"
+     },
+     {
+      "id": "tindakan-misi",
+      "judul": "Persen tindakan dan rute misi udara",
+      "berkas": "panduan/operasi/08-tindakan-misi.md",
+      "isi": "panduan/11-operasi.md: Persentase tindakan dari catatan harian Pusdalops; Batas waktu tindakan peringatan dini; Rute misi udara"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/operasi/09-batasan.md",
+      "isi": "panduan/11-operasi.md: Batasan; Yang belum ada; Keterbatasan data dan model; Aturan privasi; Pertanyaan umum; Kenapa pangkalan kami tertulis \"Belum lapor\" padahal armadanya ada?; Apakah renlap harus diikuti?; Apa arti \"target didatangi\"?; Apakah \"padam\" berarti api sudah mati?; Kenapa ubin efektivitas kosong?; Kenapa penanda layak terbang menunjukkan tanda tanya?; Apakah persentase tindakan di catatan harian pasti benar?; Bisakah warga memakai halaman ini?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar layar Operasi",
+      "berkas": "pengembang/operasi/01-ikhtisar.md",
+      "isi": "11-operasi.md: Ringkasan; Membuka layar dan hak akses; Kerangka layar; Pemilih periode; Ringkasan dan \"Perlu tindakan\""
+     },
+     {
+      "id": "layar-armada",
+      "judul": "Layar armada, peta, renlap, kinerja",
+      "berkas": "pengembang/operasi/02-layar-armada.md",
+      "isi": "11-operasi.md: Tindak lanjut; Base dan armada; Peta operasi dan badan air kandidat serok; Peluang semai; Renlap dan sortie; Kinerja: Tren, Efektivitas, Operator, Dokumentasi"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar kontrak, sarana, misi udara",
+      "berkas": "pengembang/operasi/03-layar-lain.md",
+      "isi": "11-operasi.md: Kontrak dan modifikasi cuaca; Sarana dan fasilitas (operasi untuk bencana selain karhutla); Tindakan lapangan per target; Misi Udara (flight plan helikopter); Operasi Darat; Tab Operasi di peta utama"
+     },
+     {
+      "id": "armada-metode",
+      "judul": "Gelar armada, water bombing, kelayakan",
+      "berkas": "pengembang/operasi/04-armada-metode.md",
+      "isi": "11-operasi.md: Gelar armada dan status harian; Hasil aksi water bombing dari satelit; Kelayakan terbang base; Jangkauan base dan celah"
+     },
+     {
+      "id": "renlap-karhutla",
+      "judul": "Renlap karhutla dan efektivitas",
+      "berkas": "pengembang/operasi/05-renlap-karhutla.md",
+      "isi": "11-operasi.md: Renlap udara karhutla (target patroli dan water bombing); Efektivitas M1 sampai M11"
+     },
+     {
+      "id": "generik",
+      "judul": "Operasi generik semua bencana",
+      "berkas": "pengembang/operasi/06-generik.md",
+      "isi": "11-operasi.md: Operasi generik semua bencana (Paritas): penilai target renlap; Tindakan lapangan dan persen logbook; Tangga tindakan peringatan dini; Dokumen sitrep, renops, laporan per KIB, renkon"
+     },
+     {
+      "id": "misi-udara",
+      "judul": "Misi Udara dan pemicu data",
+      "berkas": "pengembang/operasi/07-misi-udara.md",
+      "isi": "11-operasi.md: Misi Udara: rute urut tetap; Pemicu dan alur data"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas dan rute",
+      "berkas": "pengembang/operasi/08-ref-kode.md",
+      "isi": "11-operasi.md: Berkas utama; Rute API"
+     },
+     {
+      "id": "ref-data",
+      "judul": "Referensi: tabel, workflow, uji",
+      "berkas": "pengembang/operasi/09-ref-data.md",
+      "isi": "11-operasi.md: Tabel D1 dan migrasi; Penyimpanan R2; Workflow dan jadwal; Berkas keluaran di public/data; Uji dan gerbang"
+     },
+     {
+      "id": "perbedaan-kode",
+      "judul": "Kode lebih sempit dari dokumen",
+      "berkas": "pengembang/operasi/10-perbedaan-kode.md",
+      "isi": "11-operasi.md: Kode lebih sempit daripada dokumen perencanaan"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Pertanyaan pemilik yang terbuka",
+      "berkas": "pengembang/operasi/11-pertanyaan-terbuka.md",
+      "isi": "11-operasi.md: Pertanyaan pemilik yang belum diputuskan"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan teknis",
+      "berkas": "pengembang/operasi/12-batasan.md",
+      "isi": "11-operasi.md: Batasan teknis yang perlu diketahui"
+     }
+    ]
+   }
+  },
+  {
+   "id": "kampus-sippa",
+   "kelompok": {
+    "panduan": "lapangan",
+    "pengembang": "aplikasi"
+   },
+   "ikon": "topi",
+   "judul": {
+    "panduan": "Kampus, SIPPA, dan neraca air",
+    "pengembang": "Kampus, SIPPA, dan neraca air"
+   },
+   "ringkas": {
+    "panduan": "Cara memakai Kemitraan Kampus, direktori pakar, pipa portabel SIPPA, dan neraca air Jawa.",
+    "pengembang": "Metode masalah dan pakar, pemetaan relawan, hidraulika SIPPA, vonis uji lapangan, dan neraca air Jawa."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas dan layar Kemitraan Kampus",
+      "berkas": "panduan/kampus-sippa/01-sekilas.md",
+      "isi": "panduan/13-kampus-sippa-air.md: [intro] Sekilas; Kemitraan Kampus: halaman utama; Kemitraan Kampus: tampilan Daerah; Kemitraan Kampus: Data lapor"
+     },
+     {
+      "id": "kemitraan-akun",
+      "judul": "Pendaftaran, buku profil, direktori",
+      "berkas": "panduan/kampus-sippa/02-kemitraan-akun.md",
+      "isi": "panduan/13-kampus-sippa-air.md: Kemitraan Kampus: pendaftaran kampus dan anggota; Kemitraan Kampus: buku profil daerah dan panduan wawancara; Direktori pakar; Pemetaan bangunan oleh relawan"
+     },
+     {
+      "id": "masalah-skor",
+      "judul": "Masalah dan skor prioritas dihitung",
+      "berkas": "panduan/kampus-sippa/03-masalah-skor.md",
+      "isi": "panduan/13-kampus-sippa-air.md: Menyamakan kode daerah dan menyusun profil; Skor prioritas masalah otomatis; Masalah dari prioritas indeks ketahanan daerah (IKD) terlemah"
+     },
+     {
+      "id": "pakar",
+      "judul": "Pencocokan pakar dan alur kunjungan",
+      "berkas": "panduan/kampus-sippa/04-pakar.md",
+      "isi": "panduan/13-kampus-sippa-air.md: Pencocokan masalah dengan pakar; Kecocokan donor, keaktifan kampus, dan urutan panggil satgas; Alur status masalah dan kunjungan; Kelengkapan peta bangunan relawan (rancangan)"
+     },
+     {
+      "id": "sippa-layar",
+      "judul": "SIPPA: pipa portabel dan uji pilot",
+      "berkas": "panduan/kampus-sippa/05-sippa-layar.md",
+      "isi": "panduan/13-kampus-sippa-air.md: SIPPA: pipa portabel di centurisk97.id/pipa; Halaman uji pilot tanpa masuk akun"
+     },
+     {
+      "id": "sippa-aliran",
+      "judul": "SIPPA: aliran air dan tekanan",
+      "berkas": "panduan/kampus-sippa/06-sippa-aliran.md",
+      "isi": "panduan/13-kampus-sippa-air.md: SIPPA: perhitungan aliran air dan tekanan"
+     },
+     {
+      "id": "sippa-zona-vonis",
+      "judul": "SIPPA: zona, pemicu, dan vonis",
+      "berkas": "panduan/kampus-sippa/07-sippa-zona-vonis.md",
+      "isi": "panduan/13-kampus-sippa-air.md: SIPPA: zona, saran sarana, dan tingkat respons; SIPPA: tingkat pemicu harian; SIPPA: vonis uji lapangan"
+     },
+     {
+      "id": "neraca-air",
+      "judul": "Neraca air Jawa dihitung bagaimana",
+      "berkas": "panduan/kampus-sippa/08-neraca-air.md",
+      "isi": "panduan/13-kampus-sippa-air.md: Neraca air Jawa; Neraca air Jawa; Simpanan air tanah (GRACE) dan proyeksi iklim"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/kampus-sippa/09-batasan.md",
+      "isi": "panduan/13-kampus-sippa-air.md: Batasan; Pertanyaan umum; Mengapa halaman Kemitraan terbuka tetapi isinya kosong untuk saya?; Bagaimana cara meminta akses?; Mengapa kabupaten saya tidak punya masalah otomatis?; Bagaimana cara melihat zona SIPPA kabupaten saya?; Apa arti label \"Belum diuji\" pada skor?; Mengapa pakar yang direkomendasikan tidak ada di daftar saya?; Mengapa kalkulator pipa tidak pernah memberi GO?; Mengapa data uji pilot tidak diberi vonis LULUS atau TIDAK LULUS?; Bolehkah menjumlahkan angka neraca air beberapa kabupaten/kota?; Apakah neraca air bisa dipakai sebagai peringatan kekeringan?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar kampus, SIPPA, neraca air",
+      "berkas": "pengembang/kampus-sippa/01-ikhtisar.md",
+      "isi": "13-kampus-sippa-air.md: Ringkasan; Kemitraan Kampus: halaman utama /kemitraan"
+     },
+     {
+      "id": "layar-kemitraan",
+      "judul": "Layar pendaftaran, direktori, pemetaan",
+      "berkas": "pengembang/kampus-sippa/02-layar-kemitraan.md",
+      "isi": "13-kampus-sippa-air.md: Kemitraan Kampus: pendaftaran dan masuk; Kemitraan Kampus: buku profil daerah; Kemitraan Kampus: panduan wawancara; Direktori akademisi: /direktori; Pemetaan relawan (belum punya layar)"
+     },
+     {
+      "id": "layar-sippa-air",
+      "judul": "Layar SIPPA dan neraca air",
+      "berkas": "pengembang/kampus-sippa/03-layar-sippa-air.md",
+      "isi": "13-kampus-sippa-air.md: SIPPA: /pipa; Neraca air Jawa"
+     },
+     {
+      "id": "kemitraan-profil",
+      "judul": "Kemitraan: profil dan masalah otomatis",
+      "berkas": "pengembang/kampus-sippa/04-kemitraan-profil.md",
+      "isi": "13-kampus-sippa-air.md: Kemitraan Kampus: kunci wilayah dan profil daerah; Kemitraan Kampus: masalah otomatis dan skor prioritas; Kemitraan Kampus: masalah dari prioritas IKD terlemah"
+     },
+     {
+      "id": "kemitraan-pakar",
+      "judul": "Kemitraan: pakar, pertanyaan, kunjungan",
+      "berkas": "pengembang/kampus-sippa/05-kemitraan-pakar.md",
+      "isi": "13-kampus-sippa-air.md: Kemitraan Kampus: pencocokan pakar; Kemitraan Kampus: generator pertanyaan; Kemitraan Kampus: keaktifan kampus, kecocokan donor, urutan panggil satgas (rumus rencana); Kemitraan Kampus: alur masalah dan kunjungan"
+     },
+     {
+      "id": "pemetaan-direktori",
+      "judul": "Pemetaan relawan dan direktori",
+      "berkas": "pengembang/kampus-sippa/06-pemetaan-direktori.md",
+      "isi": "13-kampus-sippa-air.md: Pemetaan relawan: rasio kelengkapan dan prioritas; Direktori akademisi: sumber dan metode"
+     },
+     {
+      "id": "sippa-metode",
+      "judul": "SIPPA: hidraulika dan pipeline data",
+      "berkas": "pengembang/kampus-sippa/07-sippa-metode.md",
+      "isi": "13-kampus-sippa-air.md: SIPPA: hidraulika dan gerbang kalkulator; SIPPA: pipeline data"
+     },
+     {
+      "id": "sippa-zona-vonis",
+      "judul": "SIPPA: zona, pembanding, vonis",
+      "berkas": "pengembang/kampus-sippa/08-sippa-zona-vonis.md",
+      "isi": "13-kampus-sippa-air.md: SIPPA: zona, saran sarana, matriks respons, dan pemicu; SIPPA: pembanding lengan uji (G4) dan vonis pilot"
+     },
+     {
+      "id": "neraca-air",
+      "judul": "Neraca air Jawa: metode",
+      "berkas": "pengembang/kampus-sippa/09-neraca-air.md",
+      "isi": "13-kampus-sippa-air.md: Neraca air Jawa: metode"
+     },
+     {
+      "id": "ref-kemitraan",
+      "judul": "Referensi: kemitraan dan direktori",
+      "berkas": "pengembang/kampus-sippa/10-ref-kemitraan.md",
+      "isi": "13-kampus-sippa-air.md: Kemitraan Kampus; Pemetaan relawan; Direktori akademisi"
+     },
+     {
+      "id": "ref-sippa-air",
+      "judul": "Referensi: SIPPA dan neraca air",
+      "berkas": "pengembang/kampus-sippa/11-ref-sippa-air.md",
+      "isi": "13-kampus-sippa-air.md: SIPPA; Neraca air Jawa"
+     },
+     {
+      "id": "batasan-kemitraan",
+      "judul": "Batasan kemitraan, pemetaan, direktori",
+      "berkas": "pengembang/kampus-sippa/12-batasan-kemitraan.md",
+      "isi": "13-kampus-sippa-air.md: Perbedaan dokumen dan kode yang ditemukan; Kemitraan Kampus; Pemetaan relawan; Direktori akademisi"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan SIPPA dan neraca air",
+      "berkas": "pengembang/kampus-sippa/13-batasan.md",
+      "isi": "13-kampus-sippa-air.md: SIPPA; Neraca air Jawa"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ruang-bnpb",
+   "kelompok": {
+    "panduan": "staf",
+    "pengembang": "aplikasi"
+   },
+   "ikon": "gedung",
+   "judul": {
+    "panduan": "Ruang BNPB",
+    "pengembang": "Ruang BNPB"
+   },
+   "ringkas": {
+    "panduan": "Meja kerja staf untuk memantau kejadian, risiko, kebutuhan, dan sumber data.",
+    "pengembang": "Pantau Dalops, cek kabar luar, indeks risiko, kebutuhan musim, cermin InaRISK, silang sumber, dan Alun-alun."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas Ruang BNPB",
+      "berkas": "panduan/ruang-bnpb/01-sekilas.md",
+      "isi": "panduan/10-ruang-bnpb.md: [intro] Sekilas; Pintu Ruang Koordinasi: centurisk97.id/bnpb"
+     },
+     {
+      "id": "dalops",
+      "judul": "Memakai Pantau Dalops",
+      "berkas": "panduan/ruang-bnpb/02-dalops.md",
+      "isi": "panduan/10-ruang-bnpb.md: Pantau Dalops: centurisk97.id/bnpb/dalops"
+     },
+     {
+      "id": "pusdalops",
+      "judul": "Logbook, dokumen, bahan, dan operasi",
+      "berkas": "panduan/ruang-bnpb/03-pusdalops.md",
+      "isi": "panduan/10-ruang-bnpb.md: Logbook Pusdalops: centurisk97.id/bnpb/logbook; Dokumen Pusdalops: centurisk97.id/bnpb/dokumen; Bahan Laporan Harian: centurisk97.id/bnpb/bahan; Operasi Pusdalops: centurisk97.id/bnpb/operasi; Perencanaan Pusdalops: centurisk97.id/bnpb/perencanaan"
+     },
+     {
+      "id": "data-risiko",
+      "judul": "Data bencana, sitrep, dan risiko",
+      "berkas": "panduan/ruang-bnpb/04-data-risiko.md",
+      "isi": "panduan/10-ruang-bnpb.md: Siaga pra-musim: centurisk97.id/bnpb/siaga; Data Bencana Indonesia: centurisk97.id/bnpb/data-bencana; Laporan Situasi: centurisk97.id/sitrep; Risiko kecamatan: centurisk97.id/risiko; Perkiraan kebutuhan musim: centurisk97.id/kebutuhan; Risiko kebakaran permukiman: centurisk97.id/risiko-kebakaran"
+     },
+     {
+      "id": "kinerja-hukum",
+      "judul": "Kinerja, hukum, katalog, meja kerja",
+      "berkas": "panduan/ruang-bnpb/05-kinerja-hukum.md",
+      "isi": "panduan/10-ruang-bnpb.md: Kinerja BNPB: centurisk97.id/kinerja-bnpb; Pustaka Hukum BNPB: centurisk97.id/bnpb/hukum; Katalog Dokumen: centurisk97.id/bnpb/katalog-dokumen; Laporan BNPB: centurisk97.id/laporan-bnpb; Meja Kerja dan halaman terkait"
+     },
+     {
+      "id": "pimpinan-alun",
+      "judul": "Dashboard pimpinan dan Alun-alun",
+      "berkas": "panduan/ruang-bnpb/06-pimpinan-alun.md",
+      "isi": "panduan/10-ruang-bnpb.md: Dashboard pimpinan: centurisk97.id/bnpb/pimpinan dan centurisk97.id/admin/pimpinan; Alun-alun: centurisk97.id/alun-alun"
+     },
+     {
+      "id": "inarisk-silang",
+      "judul": "InaRISK, silang sumber, rapor sumber",
+      "berkas": "panduan/ruang-bnpb/07-inarisk-silang.md",
+      "isi": "panduan/10-ruang-bnpb.md: Cermin InaRISK: centurisk97.id/bnpb/inarisk; Silang sumber: centurisk97.id/bnpb/silang; Rapor sumber: centurisk97.id/bnpb/rapor-sumber"
+     },
+     {
+      "id": "kejadian-langkah",
+      "judul": "Kejadian, cek kabar, usulan langkah",
+      "berkas": "panduan/ruang-bnpb/08-kejadian-langkah.md",
+      "isi": "panduan/10-ruang-bnpb.md: [intro] Cara menghitung; Menentukan kejadian yang tampil dan status selesainya; Cek kabar luar; Menentukan siapa yang perlu ditanya; Peringatan dini per kabupaten/kota; Usulan langkah dan pencatatan tindak lanjut"
+     },
+     {
+      "id": "indeks-risiko",
+      "judul": "Indeks risiko kecamatan dan kabupaten",
+      "berkas": "panduan/ruang-bnpb/09-indeks-risiko.md",
+      "isi": "panduan/10-ruang-bnpb.md: Indeks risiko kecamatan; Risiko kabupaten: bahaya, kerentanan, dan kapasitas"
+     },
+     {
+      "id": "kebutuhan-siaga",
+      "judul": "Kebutuhan, siaga, kebakaran, kinerja",
+      "berkas": "panduan/ruang-bnpb/10-kebutuhan-siaga.md",
+      "isi": "panduan/10-ruang-bnpb.md: Perkiraan kebutuhan musim; Perencanaan dan siaga pra-musim; Risiko kebakaran permukiman; Kinerja BNPB"
+     },
+     {
+      "id": "inarisk-sumber",
+      "judul": "InaRISK, rapor sumber, beda sumber",
+      "berkas": "panduan/ruang-bnpb/11-inarisk-sumber.md",
+      "isi": "panduan/10-ruang-bnpb.md: Kelas risiko dan IKD di cermin InaRISK; Rapor sumber: seberapa cocok prakiraan dengan kejadian; Beda sumber: BMKG dibandingkan dengan model Centurisk97"
+     },
+     {
+      "id": "beruntun-kalender",
+      "judul": "Gempa beruntun, kalender, pimpinan",
+      "berkas": "panduan/ruang-bnpb/12-beruntun-kalender.md",
+      "isi": "panduan/10-ruang-bnpb.md: Gempa beruntun di sekitar gunung api; Kalender ancaman; Dashboard pimpinan lintas bencana"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/ruang-bnpb/13-batasan.md",
+      "isi": "panduan/10-ruang-bnpb.md: Batasan; Pertanyaan umum; Mengapa angka luas karhutla di sini berbeda dengan teks laporan WhatsApp?; Mengapa sebuah kolom hanya berisi strip?; Apa arti label \"hipotesis\" atau \"belum diuji balik\"?; Mengapa rapor sumber masih \"belum cukup data\"?; Bolehkah tamu membaca halaman Ruang BNPB?; Siapa yang bisa mengubah status langkah tindak lanjut?; Apakah pesan WhatsApp dikirim otomatis?; Mengapa IRBI tidak dipakai untuk meramalkan kejadian tahun depan?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar Ruang BNPB dan Pantau Dalops",
+      "berkas": "pengembang/ruang-bnpb/01-ikhtisar.md",
+      "isi": "10-ruang-bnpb.md: Ringkasan; Pintu Ruang Koordinasi, /bnpb; Pantau Dalops, /bnpb/dalops"
+     },
+     {
+      "id": "layar-pusdalops",
+      "judul": "Layar Pusdalops: logbook sampai siaga",
+      "berkas": "pengembang/ruang-bnpb/02-layar-pusdalops.md",
+      "isi": "10-ruang-bnpb.md: Logbook Pusdalops, /bnpb/logbook; Dokumen Pusdalops, /bnpb/dokumen; Bahan Laporan Harian, /bnpb/bahan; Operasi Pusdalops, /bnpb/operasi; Perencanaan Pusdalops, /bnpb/perencanaan; Siaga pra-musim, /bnpb/siaga"
+     },
+     {
+      "id": "layar-risiko",
+      "judul": "Layar data bencana dan risiko",
+      "berkas": "pengembang/ruang-bnpb/03-layar-risiko.md",
+      "isi": "10-ruang-bnpb.md: Data Bencana Indonesia, /bnpb/data-bencana; Dashboard pimpinan, /bnpb/pimpinan dan /admin/pimpinan; Laporan Situasi, /sitrep; Risiko kecamatan, /risiko; Perkiraan kebutuhan musim, /kebutuhan; Risiko kebakaran permukiman, /risiko-kebakaran"
+     },
+     {
+      "id": "layar-lain",
+      "judul": "Layar kinerja, hukum, meja kerja",
+      "berkas": "pengembang/ruang-bnpb/04-layar-lain.md",
+      "isi": "10-ruang-bnpb.md: Kinerja BNPB, /kinerja-bnpb dan /admin/kinerja; Pustaka Hukum BNPB, /bnpb/hukum; Katalog Dokumen, /bnpb/katalog-dokumen; Laporan BNPB, /laporan-bnpb; Meja Kerja, /meja, dan halaman lain di folder yang sama; Ruang Unit, /bnpb/unit"
+     },
+     {
+      "id": "layar-silang-alun",
+      "judul": "Layar InaRISK, silang sumber, Alun-alun",
+      "berkas": "pengembang/ruang-bnpb/05-layar-silang-alun.md",
+      "isi": "10-ruang-bnpb.md: Cermin InaRISK, /bnpb/inarisk; Silang sumber, /bnpb/silang; Rapor sumber, /bnpb/rapor-sumber; Alun-alun, /alun-alun dan /admin/alun"
+     },
+     {
+      "id": "kejadian-dalops",
+      "judul": "Kejadian Dalops dan cek kabar luar",
+      "berkas": "pengembang/ruang-bnpb/06-kejadian-dalops.md",
+      "isi": "10-ruang-bnpb.md: Pemilihan kejadian dan status selesai (Pantau Dalops); Cek kabar luar; Perlu ditanya, kelompok, dan pesan WA"
+     },
+     {
+      "id": "langkah-rekap",
+      "judul": "Peringatan, usulan langkah, rekap",
+      "berkas": "pengembang/ruang-bnpb/07-langkah-rekap.md",
+      "isi": "10-ruang-bnpb.md: Status peringatan dini per kab; Usulan langkah dan log tindak lanjut; Rekap WA harian dan Laporan Masuk; Rekonsiliasi Dalops lawan DIBI"
+     },
+     {
+      "id": "risiko-kebutuhan",
+      "judul": "Risiko operasional, kebutuhan, siaga",
+      "berkas": "pengembang/ruang-bnpb/08-risiko-kebutuhan.md",
+      "isi": "10-ruang-bnpb.md: Indeks risiko operasional per kecamatan; Risiko kabupaten R = H x V / C dan uji korban jiwa; Perkiraan kebutuhan musim; Perencanaan dan siaga pra-musim"
+     },
+     {
+      "id": "kebakaran-kinerja",
+      "judul": "Kebakaran, kinerja, hukum, prioritas",
+      "berkas": "pengembang/ruang-bnpb/09-kebakaran-kinerja.md",
+      "isi": "10-ruang-bnpb.md: Risiko kebakaran permukiman; Kinerja IKU; Pustaka hukum; Skor prioritas daerah (MB-4, Ruang Unit); Laporan berkala (rancangan)"
+     },
+     {
+      "id": "inarisk",
+      "judul": "Cermin InaRISK",
+      "berkas": "pengembang/ruang-bnpb/10-inarisk.md",
+      "isi": "10-ruang-bnpb.md: Cermin InaRISK"
+     },
+     {
+      "id": "silang-alun",
+      "judul": "Silang sumber, beruntun, Alun-alun",
+      "berkas": "pengembang/ruang-bnpb/11-silang-alun.md",
+      "isi": "10-ruang-bnpb.md: Rapor sumber (silang sumber F1); Beda sumber (silang sumber F3); Deteksi gempa beruntun dan kalender ancaman (silang sumber F5 dan F6); Alun-alun: moderasi dan tautan; Dashboard pimpinan lintas bencana"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas, rute, tabel",
+      "berkas": "pengembang/ruang-bnpb/12-ref-kode.md",
+      "isi": "10-ruang-bnpb.md: Berkas utama; Rute API dan hak; Tabel D1 dan migrasi; Penyimpanan R2"
+     },
+     {
+      "id": "ref-alur",
+      "judul": "Referensi: workflow, keluaran, uji",
+      "berkas": "pengembang/ruang-bnpb/13-ref-alur.md",
+      "isi": "10-ruang-bnpb.md: Workflow dan jadwal; Berkas keluaran public/data; Uji dan gerbang"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan pertanyaan terbuka",
+      "berkas": "pengembang/ruang-bnpb/14-batasan.md",
+      "isi": "10-ruang-bnpb.md: Batasan dan pertanyaan terbuka"
+     }
+    ]
+   }
+  },
+  {
+   "id": "akses",
+   "kelompok": {
+    "panduan": "staf",
+    "pengembang": "aplikasi"
+   },
+   "ikon": "kunci",
+   "judul": {
+    "panduan": "Masuk, akun, dan petugas lapangan",
+    "pengembang": "Akun dan akses"
+   },
+   "ringkas": {
+    "panduan": "Cara masuk lewat WhatsApp, siapa boleh membuka apa, akun lembaga, petugas lapangan, dan stok logistik.",
+    "pengembang": "Kode sekali pakai, ruang akses, sandi dan PIN, pencocokan wajah, stok LogPal, dan segel dokumen."
+   },
+   "halaman": {
+    "panduan": [
+     {
+      "id": "sekilas",
+      "judul": "Sekilas, masuk, dan hak membuka",
+      "berkas": "panduan/akses/01-sekilas.md",
+      "isi": "panduan/12-akses-instansi.md: [intro] Sekilas; Masuk lewat nomor WhatsApp (centurisk97.id/masuk); Siapa boleh membuka apa"
+     },
+     {
+      "id": "aktivasi-instansi",
+      "judul": "Aktivasi, Ruang Instansi, profil BPBD",
+      "berkas": "panduan/akses/02-aktivasi-instansi.md",
+      "isi": "panduan/12-akses-instansi.md: Papan aktivasi dan undangan (centurisk97.id/admin/aktivasi); Ruang Instansi (centurisk97.id/instansi); Profil BPBD: pilih profil, lalu PIN"
+     },
+     {
+      "id": "lapangan-logpal",
+      "judul": "Petugas lapangan dan LogPal",
+      "berkas": "panduan/akses/03-lapangan-logpal.md",
+      "isi": "panduan/12-akses-instansi.md: Petugas lapangan (centurisk97.id/petugas); Inventori LogPal (centurisk97.id/instansi/logpal); Keaslian dokumen (centurisk97.id/verifikasi): masih rencana"
+     },
+     {
+      "id": "kode-masuk",
+      "judul": "Kode masuk dan ruang yang boleh dibuka",
+      "berkas": "panduan/akses/04-kode-masuk.md",
+      "isi": "panduan/12-akses-instansi.md: [intro] Cara menghitung; Kode masuk sekali pakai; Menentukan ruang yang boleh dimasuki; Aktif otomatis sebagai anggota lembaga"
+     },
+     {
+      "id": "sandi-pin",
+      "judul": "Sandi, penguncian, dan PIN profil",
+      "berkas": "panduan/akses/05-sandi-pin.md",
+      "isi": "panduan/12-akses-instansi.md: Sandi dan penguncian; PIN profil BPBD"
+     },
+     {
+      "id": "wajah",
+      "judul": "Pencocokan wajah dan status absen",
+      "berkas": "panduan/akses/06-wajah.md",
+      "isi": "panduan/12-akses-instansi.md: Pencocokan wajah, GPS, dan status absen"
+     },
+     {
+      "id": "stok-segel",
+      "judul": "Stok gudang dan keaslian dokumen",
+      "berkas": "panduan/akses/07-stok-segel.md",
+      "isi": "panduan/12-akses-instansi.md: Perhitungan stok gudang; Keaslian dokumen (rancangan, belum berjalan)"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan tanya jawab",
+      "berkas": "panduan/akses/08-batasan.md",
+      "isi": "panduan/12-akses-instansi.md: Batasan; Pertanyaan umum; Saya tidak menerima kode WhatsApp. Apa yang harus dilakukan?; Mengapa pesan salahnya selalu sama, tidak menyebut apa yang sebenarnya salah?; Mengapa akun BPBD tidak bisa masuk dengan kode WhatsApp?; Saya lupa PIN profil. Bagaimana?; Absen saya berstatus \"tinjau\". Apakah saya dianggap tidak hadir?; Bisakah saya mengisi catatan harian untuk kemarin?; Mengapa stok tidak bisa saya keluarkan?; Apakah segel dokumen sama dengan tanda tangan elektronik?"
+     }
+    ],
+    "pengembang": [
+     {
+      "id": "ikhtisar",
+      "judul": "Ikhtisar akun, akses, dan peran",
+      "berkas": "pengembang/akses/01-ikhtisar.md",
+      "isi": "12-akses-instansi.md: Ringkasan; Peran dan siapa boleh membuka apa"
+     },
+     {
+      "id": "matriks-hak",
+      "judul": "Matriks hak per fitur",
+      "berkas": "pengembang/akses/02-matriks-hak.md",
+      "isi": "12-akses-instansi.md: Matriks hak per fitur"
+     },
+     {
+      "id": "layar-masuk",
+      "judul": "Layar masuk, aktivasi, keaslian",
+      "berkas": "pengembang/akses/03-layar-masuk.md",
+      "isi": "12-akses-instansi.md: Halaman /masuk: satu pintu untuk semua peran; Papan aktivasi dan undangan berantai (/admin/aktivasi); /verifikasi/<kode>: halaman keaslian dokumen (rancangan)"
+     },
+     {
+      "id": "layar-instansi",
+      "judul": "Layar Ruang Instansi dan profil BPBD",
+      "berkas": "pengembang/akses/04-layar-instansi.md",
+      "isi": "12-akses-instansi.md: /instansi: Ruang Instansi (akun lembaga); Profil BPBD: pilih profil, lalu PIN"
+     },
+     {
+      "id": "layar-lapangan",
+      "judul": "Layar petugas lapangan dan LogPal",
+      "berkas": "pengembang/akses/05-layar-lapangan.md",
+      "isi": "12-akses-instansi.md: /petugas: pegawai dan relawan lapangan; /instansi/logpal: Inventori LogPal"
+     },
+     {
+      "id": "kode-akses",
+      "judul": "Kode sekali pakai, ruang, anggota",
+      "berkas": "pengembang/akses/06-kode-akses.md",
+      "isi": "12-akses-instansi.md: M1. Kode sekali pakai lewat WhatsApp; M2. Menentukan ruang yang boleh dimasuki; M3. Aktif otomatis sebagai anggota lembaga"
+     },
+     {
+      "id": "sandi-pin",
+      "judul": "Sandi, sesi, dan PIN profil",
+      "berkas": "pengembang/akses/07-sandi-pin.md",
+      "isi": "12-akses-instansi.md: M4. Sandi, penguncian, dan sesi; M5. PIN profil BPBD"
+     },
+     {
+      "id": "wajah",
+      "judul": "Pencocokan wajah, GPS, status absen",
+      "berkas": "pengembang/akses/08-wajah.md",
+      "isi": "12-akses-instansi.md: M6. Pencocokan wajah, GPS, dan keputusan status absen"
+     },
+     {
+      "id": "stok-segel",
+      "judul": "Stok LogPal dan segel dokumen",
+      "berkas": "pengembang/akses/09-stok-segel.md",
+      "isi": "12-akses-instansi.md: M7. Stok LogPal dan alur permintaan; M8. Segel dokumen (rancangan, belum diimplementasi)"
+     },
+     {
+      "id": "ref-kode",
+      "judul": "Referensi: berkas dan rute",
+      "berkas": "pengembang/akses/10-ref-kode.md",
+      "isi": "12-akses-instansi.md: Berkas utama; Rute API"
+     },
+     {
+      "id": "ref-data",
+      "judul": "Referensi: tabel, R2, uji",
+      "berkas": "pengembang/akses/11-ref-data.md",
+      "isi": "12-akses-instansi.md: Tabel D1 dan migrasi; Penyimpanan R2, rahasia, dan cron; Uji dan gerbang"
+     },
+     {
+      "id": "pertanyaan-terbuka",
+      "judul": "Keputusan pemilik yang terbuka",
+      "berkas": "pengembang/akses/12-pertanyaan-terbuka.md",
+      "isi": "12-akses-instansi.md: Keputusan pemilik yang masih berstatus bawaan sementara"
+     },
+     {
+      "id": "batasan",
+      "judul": "Batasan dan beda dokumen",
+      "berkas": "pengembang/akses/13-batasan.md",
+      "isi": "12-akses-instansi.md: Beda antara dokumen dan kode (kode menang); Batasan teknis dan risiko yang diterima"
+     }
+    ]
+   }
+  }
+ ]
+}

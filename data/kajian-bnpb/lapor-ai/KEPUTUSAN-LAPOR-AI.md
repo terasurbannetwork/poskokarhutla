@@ -575,6 +575,7 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 
 - D127 dijalankan tanpa "tujuan `selamat`" di kode `/masuk`: cukup sesi `sesi_masuk` yang hidup (nomor sudah terbukti lewat kode sekali pakai); tanpa sesi, rute menjawab 401 dan menyuruh minta kode, nomor ketikan dan kunci mesin tidak cukup. `DESAIN-TEKNIS.md` baris rute "kode sekali pakai tujuan `selamat`" dibaca sebagai sesi `/masuk`.
 - Migrasi nomor 0173. Kolom `lapor_cari_riwayat` hanya mencatat perubahan status oleh meja; laporan baru tidak punya baris riwayat awal (status `buka` ada di `lapor_cari`).
+<<<<<<< HEAD
 - Laporan orang dicari tidak ikut bersih-bersih 30 hari (Q67: mengikuti masa simpan laporan Lapor Bencana, ditutup petugas); sesudah ditutup petugas lebih dari 2 tahun (`CARI_SIMPAN_HARI` di `src/hak.js`, **[BAWAAN SEMENTARA]** Q67) cron menit 17 menganonimkannya lewat `bersihkanLapor`: nama, ciri, lokasi, nomor, dan hubungan dikosongkan, id, kab, status, dan waktu tetap; laporan "buka" tidak pernah dianonimkan otomatis dan riwayat status (append-only) tidak disentuh.
 
 
@@ -583,3 +584,24 @@ Catatan pelaksanaan LA-78 dan LA-83 (23 Nov 2026), mengoreksi rancangan di atas:
 Pemilik: "gas semua bawaan". Semua pertanyaan terbuka di berkas ini yang punya bawaan sementara kini **diputuskan sesuai bawaannya**, kecuali yang tertulis di bawah. Rekap pertanyaan: `data/kajian-bnpb/PERTANYAAN-TERBUKA.md`.
 
 - Q40: batas waktu respons per status **1 minggu**; lewat itu tampil terlambat.
+=======
+- Laporan orang dicari tidak ikut bersih-bersih 30 hari (Q67: mengikuti masa simpan laporan Lapor Bencana, ditutup petugas); batas simpannya belum dipasang dan menunggu keputusan pemilik.
+
+## Keputusan pemilik (nomor WA sendiri, 24 Nov 2026)
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K93 | 24 Nov 2026 | Lapor Bencana dan Bot Laporan BNPB dipisah jadi dua bot. Pemilik: "untuk lapor bencana pakai nomor WA sekarang, yang pembuatan laporan pakai nomor WA baru". Nomor lama juga tetap mengirim kode `/masuk` dan panggilan relawan `/petugas` (pembagian disetujui pemilik: "Sudah benar"). Rincian pelaksanaan: `data/kajian-bnpb/bot-laporan/KEPUTUSAN-BOT-LAPORAN.md` K47, D41, D42. |
+
+## Keputusan rancangan (nomor WA sendiri, agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D134 | Gateway peran `lapor` hanya melayani nomor berizin lapor dan perintah `lapor izin/cabut` dari PEMILIK; pesan lain (grup, nomor asing, nomor tim laporan) dibuang tanpa balasan. | Nomor lama tidak membalas orang tak dikenal (risiko blokir), dan pesan bot laporan "nomor belum terdaftar" tidak cocok untuk calon pelapor. Lihat Q71. |
+
+## Pertanyaan terbuka (nomor WA sendiri)
+
+| No | Pertanyaan | Bawaan sementara |
+| --- | --- | --- |
+| Q71 | Nomor yang belum berizin menulis ke nomor Lapor Bencana: dibalas (misalnya "layanan lapor belum dibuka untuk nomor ini, hubungi BPBD setempat") atau diam? | **[BAWAAN SEMENTARA]** Diam, sampai pintu publik F2 dibuka atau pemilik memberi kalimatnya. |
+>>>>>>> origin/main

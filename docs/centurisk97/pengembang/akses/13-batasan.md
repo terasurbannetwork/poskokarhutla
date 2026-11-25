@@ -1,0 +1,28 @@
+# Batasan dan beda dokumen
+
+Halaman ini mencatat beda antara dokumen dan kode, serta batasan teknis dan risiko yang diterima.
+
+## Beda antara dokumen dan kode (kode menang)
+
+1. Segel dokumen: `AGENTS.md` bagian 2.39 menyebut `src/segel.js`, `public/verifikasi.*`, dan `public/inti/segel.js` sebagai lokasi kode. Berkas itu tidak ada di repo. Yang ada hanya `migrations/0171_segel.sql` (tiket SG-01) dan entri cakupan di `tests/warga/cakupan.json` yang mengecualikan kedua tabel dengan alasan "kode menyusul". Tiket SG-02 sampai SG-13 belum dikerjakan, dan SG-14 (menerapkan migrasi di D1 produksi) adalah tugas pemilik. Seluruh uraian segel di dokumen ini adalah rancangan.
+2. Pintu Masuk dan akun BPBD: `ALGORITMA.md` pintu-masuk bagian 3 menyebut `instansi_akun` dengan `status = aktif` tanpa membedakan jenis. Kode mengecualikan jenis pemprov, pemkab, dan pemkot dari semua pencarian ruang dan sesi (`src/hak.js:696`, `:709`, `:792`) dan menolak mereka di `/api/masuk/mohon` serta undangan (`src/masuk_undang.js:109`, `:228`). Dokumen profil-bpbd bawaan Q1 yang berlaku. Dokumen pintu-masuk belum memuat pengecualian ini.
+3. `src/instansi.js` (komentar kepala berkas) masih menulis "Tidak ada ganti sandi oleh pengguna", padahal `POST /api/instansi/gantisandi` dan atur sandi lewat `/masuk` ada dan memakai sandi acak dari server. Komentar itu usang.
+4. `PRD.md` LogPal menyebut sebelas tab; layar memuat dua belas tombol halaman (Pengantaran dan Bantuan ditambahkan kemudian). `AGENTS.md` menyebut jalur `/logpal`, sedangkan halaman dilayani di `/instansi/logpal` (T1: kuki `sesi_instansi` hanya berlaku di Path `/instansi` dan `/api/instansi`); `/logpal/index.html` hanya alias dengan gerbang sama.
+5. KEPUTUSAN-LOGPAL D13 (LogPal Siap Audit: kartu persediaan, BAST dan SPPB bernomor, laporan pertanggungjawaban baku, jadwal pemeliharaan alat, kesenjangan stok) menyebut `src/logpal_audit.js` dan dua tabel baru. Berkas dan tabel itu tidak ada di repo. Yang ada baru tab Kesiapan audit (sebelas uji) dan Pembuat laporan (delapan jenis) di layar.
+6. `DESAIN-TEKNIS.md` segel menulis `laporan_karhutla.js` baris 419 dan 462 sebagai titik sambung; baris itu memang titik INSERT `lk_snapshot` saat ini, tetapi belum ada pemanggilan `stmtSegel` di sana.
+7. Lapangan: KEPUTUSAN-LAPANGAN K11 merencanakan penggabungan regu Posko, `/lacak`, dan relawan ke `/petugas`, tetapi hasil cek LP-048 (2 November 2026) menyatakan tidak ada halaman lama yang dialihkan; `/relawan/saya`, `/lacak`, dan `/lapangan` tetap berdiri sendiri.
+8. Umur sesi kampus: dokumen menulis 12 jam; konstanta ada di modul kemitraan (`src/kemitraan_akun.js`), di luar berkas yang dibaca untuk dokumen ini, sehingga angka itu belum diverifikasi ulang di sini.
+
+## Batasan teknis dan risiko yang diterima
+
+1. Satu titik gagal: gerbang WhatsApp berjalan pada satu mesin dan memakai pustaka tidak resmi. Bila nomor diblokir, kode masuk dan laporan harian mati bersamaan (K9). Cadangan: kode ke email (hanya akun berisi email) dan sandi.
+2. Perbandingan sandi instansi dan staf memakai `===` pada hash; sandi acak 93 bit sehingga risiko pengukuran waktu dianggap dapat diterima. Batas laju memakai pola baca lalu tulis, sehingga permintaan serentak dapat melampaui batas satu atau dua kali.
+3. Tebakan sandi dari IP yang dipakai bersama (jaringan seluler, IPv6 per /64) berbagi satu hitungan; satu penebak dapat mengunci pengguna sah dari IP yang sama selama satu jam. Pengguna sah dapat masuk lewat IP lain atau lewat formulir yang punya batas sendiri.
+4. Kunci harian profil BPBD dapat disalahgunakan pemegang sandi lembaga untuk mengunci rekannya sampai admin membuka (terlihat di log).
+5. Daftar putih `PUBLIK_TANPA_SESI` dibekukan oleh gerbang G-4; penambahan entri butuh keputusan pemilik tertulis di KEPUTUSAN-MASUK. Jalur `/bantu` dan `/lapor` masuk lewat K13 dan K14 (D24 untuk `/bantu` adalah turunan rancangan, bukan keputusan pemilik baru).
+6. Data lapangan: wajah, GPS, dan antispoof hanyalah penanda; tidak ada vonis otomatis. Foto wajah acuan dan vektor tidak pernah masuk ekspor atau layar publik. Foto absen dan logbook disimpan 2 tahun lalu dihapus. Foto logbook hanya muncul di overlay peta utama untuk staf login, tanpa nama atau kontak.
+7. Ukuran data: impor CSV pegawai paling banyak 5.000 baris per impor dan 1,5 MB; di paket Workers Free (CPU 10 ms) impor sebesar itu butuh paket berbayar atau dipecah per unit.
+8. LogPal: baca dibatasi 20.000 barang, 2.000 mutasi, 200 opname per panggilan; paling banyak 3.000 barang per gudang dan 50 gudang per akun. Data gudang asli tidak pernah masuk repo; impor memakai skrip lokal yang menulis SQL ke luar repo.
+9. Migrasi harus diterapkan pemilik di D1 produksi. Sebelum itu rute terkait menjawab 503 dan pintu lama tetap jalan: `/masuk` tanpa `mk_*` atau tanpa `MASUK_KUNCI`, profil tanpa 0166 atau `PROFIL_KUNCI`, LogPal tanpa 0112, lapangan tanpa 0095, 0097, dan 0101, dan segel tanpa 0171.
+10. Kondisi produksi menurut dokumen paket (diukur 15 dan 23 November 2026, bukan dari kode): akun instansi nol, sekitar 553 BPBD (38 provinsi dan sisanya kabupaten dan kota; dokumen paket saling berbeda soal rincian kabupaten dan kota, 514 atau 515, dan jumlah pastinya mengikuti daftar wilayah, belum terdokumentasi di kode) yang perlu akun, akun staf dan pemirsa hanya segelintir. Angka ini berubah cepat dan perlu diperiksa ulang di D1 sebelum dijadikan rujukan.
+11. Meja `/lapor/meja` bagi BNPB (staf, Q12 paket Lapor AI) dan nomor PIC untuk buku kontak darurat (paket profil-bpbd K13) memiliki rancangan sendiri; hanya sebagian kodenya yang telah dibaca untuk dokumen ini. Rincian meja ada di dokumen modul Lapor Bencana.

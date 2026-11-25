@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 356">
+<text x="10" y="24" class="dg-teks" font-size="16">Ambang level sel di tab Besok (satu baris per kolom)</text>
+<rect x="150" y="38" width="14" height="14" class="dg-lemah"/><text x="170" y="50" class="dg-teks-lemah" font-size="13">0 Normal</text>
+<rect x="260" y="38" width="14" height="14" class="dg-waspada"/><text x="280" y="50" class="dg-teks-lemah" font-size="13">1 Waspada</text>
+<rect x="380" y="38" width="14" height="14" class="dg-aksen"/><text x="400" y="50" class="dg-teks-lemah" font-size="13">2 Siaga</text>
+<rect x="490" y="38" width="14" height="14" class="dg-bahaya"/><text x="510" y="50" class="dg-teks-lemah" font-size="13">3 Awas</text>
+<text x="10" y="102" class="dg-teks" font-size="14">Hujan (mm/24 jam)</text>
+<rect x="190" y="80" width="130" height="34" class="dg-lemah"/><rect x="320" y="80" width="130" height="34" class="dg-waspada"/><rect x="450" y="80" width="130" height="34" class="dg-aksen"/><rect x="580" y="80" width="130" height="34" class="dg-bahaya"/>
+<text x="320" y="134" text-anchor="middle" class="dg-teks-lemah" font-size="13">20</text><text x="450" y="134" text-anchor="middle" class="dg-teks-lemah" font-size="13">50</text><text x="580" y="134" text-anchor="middle" class="dg-teks-lemah" font-size="13">100</text>
+<text x="10" y="172" class="dg-teks" font-size="14">Titik panas (peluang)</text>
+<rect x="190" y="150" width="130" height="34" class="dg-lemah"/><rect x="320" y="150" width="130" height="34" class="dg-waspada"/><rect x="450" y="150" width="130" height="34" class="dg-aksen"/><rect x="580" y="150" width="130" height="34" class="dg-bahaya"/>
+<text x="320" y="204" text-anchor="middle" class="dg-teks-lemah" font-size="13">0,2</text><text x="450" y="204" text-anchor="middle" class="dg-teks-lemah" font-size="13">0,5</text><text x="580" y="204" text-anchor="middle" class="dg-teks-lemah" font-size="13">0,8</text>
+<text x="10" y="242" class="dg-teks" font-size="14">Angin (embusan km/jam)</text>
+<rect x="190" y="220" width="130" height="34" class="dg-lemah"/><rect x="320" y="220" width="130" height="34" class="dg-waspada"/><rect x="450" y="220" width="130" height="34" class="dg-aksen"/><rect x="580" y="220" width="130" height="34" class="dg-bahaya"/>
+<text x="320" y="274" text-anchor="middle" class="dg-teks-lemah" font-size="13">46</text><text x="450" y="274" text-anchor="middle" class="dg-teks-lemah" font-size="13">63</text><text x="580" y="274" text-anchor="middle" class="dg-teks-lemah" font-size="13">89</text>
+<text x="10" y="312" class="dg-teks" font-size="14">Gelombang (m)</text>
+<rect x="190" y="290" width="130" height="34" class="dg-lemah"/><rect x="320" y="290" width="130" height="34" class="dg-waspada"/><rect x="450" y="290" width="130" height="34" class="dg-aksen"/><rect x="580" y="290" width="130" height="34" class="dg-bahaya"/>
+<text x="320" y="338" text-anchor="middle" class="dg-teks-lemah" font-size="13">1,25</text><text x="450" y="338" text-anchor="middle" class="dg-teks-lemah" font-size="13">2,5</text><text x="580" y="338" text-anchor="middle" class="dg-teks-lemah" font-size="13">4,0</text>
+</svg>

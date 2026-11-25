@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330">
+  <defs>
+    <marker id="p" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="dg-garis" d="M0 0L9 4.5L0 9z"/></marker>
+  </defs>
+  <rect class="dg-kotak" x="10" y="10" width="170" height="70" rx="8"/>
+  <text class="dg-teks" x="95" y="34" text-anchor="middle" font-size="14" font-weight="600">Lahan statis</text>
+  <text class="dg-teks-lemah" x="95" y="53" text-anchor="middle" font-size="13">gambut, KHG, konsesi,</text>
+  <text class="dg-teks-lemah" x="95" y="70" text-anchor="middle" font-size="13">peta OSM</text>
+
+  <rect class="dg-kotak" x="10" y="100" width="170" height="70" rx="8"/>
+  <text class="dg-teks" x="95" y="124" text-anchor="middle" font-size="14" font-weight="600">Data cuaca</text>
+  <text class="dg-teks-lemah" x="95" y="143" text-anchor="middle" font-size="13">ERA5 dan Open-Meteo</text>
+  <text class="dg-teks-lemah" x="95" y="160" text-anchor="middle" font-size="13">untuk indeks FWI</text>
+
+  <rect class="dg-kotak-aksen" x="10" y="190" width="170" height="80" rx="8"/>
+  <text class="dg-teks" x="95" y="213" text-anchor="middle" font-size="14" font-weight="600">NASA FIRMS</text>
+  <text class="dg-teks-lemah" x="95" y="232" text-anchor="middle" font-size="12">MODIS, NOAA-20, NOAA-21,</text>
+  <text class="dg-teks-lemah" x="95" y="249" text-anchor="middle" font-size="12">S-NPP (sampai 1 Nov 2026)</text>
+
+  <rect class="dg-kotak-aksen" x="270" y="60" width="180" height="150" rx="8"/>
+  <text class="dg-teks" x="360" y="86" text-anchor="middle" font-size="14" font-weight="600">Pipeline Python</text>
+  <text class="dg-teks-lemah" x="360" y="108" text-anchor="middle" font-size="13">harian.py: titik panas,</text>
+  <text class="dg-teks-lemah" x="360" y="125" text-anchor="middle" font-size="13">kompleks api, FWI</text>
+  <text class="dg-teks-lemah" x="360" y="152" text-anchor="middle" font-size="13">turunan: insiden, luas,</text>
+  <text class="dg-teks-lemah" x="360" y="169" text-anchor="middle" font-size="13">belum padam, konsesi,</text>
+  <text class="dg-teks-lemah" x="360" y="186" text-anchor="middle" font-size="13">Prioritas provinsi</text>
+
+  <rect class="dg-kotak" x="270" y="250" width="180" height="70" rx="8"/>
+  <text class="dg-teks" x="360" y="274" text-anchor="middle" font-size="14" font-weight="600">Worker dan D1</text>
+  <text class="dg-teks-lemah" x="360" y="293" text-anchor="middle" font-size="13">cron tarik FIRMS tiap 3 jam,</text>
+  <text class="dg-teks-lemah" x="360" y="310" text-anchor="middle" font-size="13">jawaban /api/titik</text>
+
+  <rect class="dg-ok" x="540" y="20" width="170" height="90" rx="8"/>
+  <text class="dg-teks" x="625" y="46" text-anchor="middle" font-size="14" font-weight="600">public/data/*.json</text>
+  <text class="dg-teks-lemah" x="625" y="67" text-anchor="middle" font-size="13">berkas hasil, terbit</text>
+  <text class="dg-teks-lemah" x="625" y="84" text-anchor="middle" font-size="13">lewat static assets</text>
+
+  <rect class="dg-kotak" x="540" y="190" width="170" height="100" rx="8"/>
+  <text class="dg-teks" x="625" y="216" text-anchor="middle" font-size="14" font-weight="600">Pembaca</text>
+  <text class="dg-teks-lemah" x="625" y="237" text-anchor="middle" font-size="13">peta utama, laporan,</text>
+  <text class="dg-teks-lemah" x="625" y="254" text-anchor="middle" font-size="13">Prioritas provinsi,</text>
+  <text class="dg-teks-lemah" x="625" y="271" text-anchor="middle" font-size="13">Worker dan API</text>
+
+  <line class="dg-garis" x1="180" y1="48" x2="268" y2="100" marker-end="url(#p)"/>
+  <line class="dg-garis" x1="180" y1="136" x2="268" y2="136" marker-end="url(#p)"/>
+  <line class="dg-garis" x1="180" y1="215" x2="268" y2="170" marker-end="url(#p)"/>
+  <line class="dg-garis" x1="180" y1="250" x2="268" y2="280" marker-end="url(#p)"/>
+  <line class="dg-garis" x1="450" y1="100" x2="538" y2="75" marker-end="url(#p)"/>
+  <line class="dg-garis" x1="625" y1="110" x2="625" y2="188" marker-end="url(#p)"/>
+  <line class="dg-garis" stroke-dasharray="6 5" x1="450" y1="285" x2="538" y2="262" marker-end="url(#p)"/>
+</svg>

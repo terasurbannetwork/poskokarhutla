@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260">
+  <line class="dg-grid" x1="200" y1="30" x2="200" y2="200"/>
+  <line class="dg-grid" x1="344" y1="30" x2="344" y2="200"/>
+  <line class="dg-grid" x1="488" y1="30" x2="488" y2="200"/>
+  <line class="dg-grid" x1="632" y1="30" x2="632" y2="200"/>
+  <text class="dg-teks-lemah" x="200" y="220" text-anchor="middle" font-size="13">0</text>
+  <text class="dg-teks-lemah" x="344" y="220" text-anchor="middle" font-size="13">60</text>
+  <text class="dg-teks-lemah" x="488" y="220" text-anchor="middle" font-size="13">120</text>
+  <text class="dg-teks-lemah" x="632" y="220" text-anchor="middle" font-size="13">180</text>
+  <text class="dg-teks-lemah" x="416" y="245" text-anchor="middle" font-size="13">rata-rata titik panas per hari selama 3 hari (H3)</text>
+
+  <text class="dg-teks" x="10" y="64" font-size="14" font-weight="600">Sampai 2 Nov 2026</text>
+  <text class="dg-teks-lemah" x="10" y="82" font-size="13">rasio satelit 3,0</text>
+  <rect class="dg-waspada" x="200" y="42" width="432" height="26"/>
+  <text class="dg-teks" x="640" y="60" font-size="13" font-weight="600">masuk 180</text>
+  <rect class="dg-ok" x="200" y="74" width="216" height="26"/>
+  <text class="dg-teks" x="424" y="92" font-size="13" font-weight="600">keluar 90</text>
+
+  <text class="dg-teks" x="10" y="144" font-size="14" font-weight="600">Sesudah 2 Nov 2026</text>
+  <text class="dg-teks-lemah" x="10" y="162" font-size="13">rasio satelit 2,4</text>
+  <rect class="dg-waspada" x="200" y="122" width="346" height="26"/>
+  <text class="dg-teks" x="554" y="140" font-size="13" font-weight="600">masuk 144</text>
+  <rect class="dg-ok" x="200" y="154" width="173" height="26"/>
+  <text class="dg-teks" x="381" y="172" font-size="13" font-weight="600">keluar 72</text>
+</svg>

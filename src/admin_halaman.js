@@ -21,7 +21,7 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {segel: ["🔏", "Segel dokumen"], statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], aktivasi: ["🗺️", "Aktivasi daerah"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], "biaya-bot": ["💵", "Biaya bot WA"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], aktivasi: ["🗺️", "Aktivasi daerah"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Bencana"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], "biaya-bot": ["💵", "Biaya bot WA"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
 const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
@@ -64,7 +64,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
    supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
 const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=10" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=18"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=13" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=22"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
@@ -193,7 +193,7 @@ export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link h
 const IK = d => `<svg class="rl-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 export const RUANG_LAPORAN = [
   {item: [["pantau", "Meja Pantau", "/admin/pantau", IK('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h3"/>')]]},
-  {kel: "Bahan laporan", item: [["karhutla", "Laporan Karhutla", "/admin/laporan-karhutla", IK('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>')],
+  {kel: "Bahan laporan", item: [["karhutla", "Laporan Bencana", "/admin/laporan-karhutla", IK('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>')],
     ["omc", "Sortie OMC", "/admin/omc", IK('<path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/><path d="M9 21l1-2M13 21l1-2"/>')],
     ["logbook", "Logbook Pusdalops", "/bnpb/logbook", IK('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>')],
     ["dalops", "Pantau Banjir Dalops", "/bnpb/dalops", IK('<path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15M3 19c2 0 2-1.5 4.5-1.5S9.5 19 12 19s2.5-1.5 4.5-1.5S19 19 21 19"/><path d="M12 3v8M9 8l3 3 3-3"/>')]]},

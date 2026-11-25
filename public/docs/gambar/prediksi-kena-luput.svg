@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300">
+<text x="10" y="24" class="dg-teks" font-size="16">Empat kotak per kab/kota (rancangan, belum dibangun)</text>
+<text x="415" y="62" text-anchor="middle" class="dg-teks" font-size="14">Terjadi: kejadian Dalops atau laporan warga dalam plus minus satu hari</text>
+<text x="280" y="92" text-anchor="middle" class="dg-teks-lemah" font-size="13">Ya, terjadi</text>
+<text x="580" y="92" text-anchor="middle" class="dg-teks-lemah" font-size="13">Tidak terjadi</text>
+<text x="60" y="140" text-anchor="middle" class="dg-teks-lemah" font-size="13">Diprakirakan</text>
+<text x="60" y="158" text-anchor="middle" class="dg-teks-lemah" font-size="13">(level 2 ke atas)</text>
+<text x="60" y="236" text-anchor="middle" class="dg-teks-lemah" font-size="13">Tidak</text>
+<text x="60" y="254" text-anchor="middle" class="dg-teks-lemah" font-size="13">diprakirakan</text>
+<rect x="120" y="102" width="320" height="88" rx="8" class="dg-ok"/><text x="280" y="152" text-anchor="middle" class="dg-teks" font-size="16">Kena</text>
+<rect x="450" y="102" width="260" height="88" rx="8" class="dg-lemah"/><text x="580" y="140" text-anchor="middle" class="dg-teks" font-size="16">Belum ada laporan</text><text x="580" y="162" text-anchor="middle" class="dg-teks-lemah" font-size="13">menunggu laporan bila belum 3 hari</text>
+<rect x="120" y="200" width="320" height="88" rx="8" class="dg-waspada"/><text x="280" y="250" text-anchor="middle" class="dg-teks" font-size="16">Luput</text>
+<rect x="450" y="200" width="260" height="88" rx="8" class="dg-lemah"/><text x="580" y="250" text-anchor="middle" class="dg-teks" font-size="16">Tenang</text>
+</svg>

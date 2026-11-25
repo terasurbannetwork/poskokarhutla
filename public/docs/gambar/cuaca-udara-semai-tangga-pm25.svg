@@ -1,0 +1,28 @@
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+<line class="dg-grid" x1="260" y1="20" x2="260" y2="250"/>
+<line class="dg-grid" x1="360" y1="20" x2="360" y2="250"/>
+<line class="dg-grid" x1="460" y1="20" x2="460" y2="250"/>
+<line class="dg-grid" x1="560" y1="20" x2="560" y2="250"/>
+<line class="dg-grid" x1="660" y1="20" x2="660" y2="250"/>
+<text class="dg-teks-lemah" x="260" y="268" font-size="13" text-anchor="middle">0</text>
+<text class="dg-teks-lemah" x="360" y="268" font-size="13" text-anchor="middle">100</text>
+<text class="dg-teks-lemah" x="460" y="268" font-size="13" text-anchor="middle">200</text>
+<text class="dg-teks-lemah" x="560" y="268" font-size="13" text-anchor="middle">300</text>
+<text class="dg-teks-lemah" x="660" y="268" font-size="13" text-anchor="middle">400</text>
+<text class="dg-teks-lemah" x="460" y="290" font-size="13" text-anchor="middle">batas atas kategori PM2,5 rata-rata 24 jam (µg/m³)</text>
+<text class="dg-teks" x="10" y="48" font-size="14">Baik</text>
+<rect class="dg-ok" x="260" y="30" width="15.5" height="28"/>
+<text class="dg-teks-lemah" x="284" y="49" font-size="13">sampai 15,5</text>
+<text class="dg-teks" x="10" y="94" font-size="14">Sedang</text>
+<rect class="dg-ok" x="260" y="76" width="55.4" height="28"/>
+<text class="dg-teks-lemah" x="324" y="95" font-size="13">sampai 55,4</text>
+<text class="dg-teks" x="10" y="140" font-size="14">Tidak sehat</text>
+<rect class="dg-waspada" x="260" y="122" width="150.4" height="28"/>
+<text class="dg-teks-lemah" x="419" y="141" font-size="13">sampai 150,4 (status Waspada)</text>
+<text class="dg-teks" x="10" y="186" font-size="14">Sangat tidak sehat</text>
+<rect class="dg-waspada" x="260" y="168" width="250.4" height="28"/>
+<text class="dg-teks-lemah" x="519" y="187" font-size="13">sampai 250,4 (Siaga)</text>
+<text class="dg-teks" x="10" y="232" font-size="14">Berbahaya</text>
+<rect class="dg-bahaya" x="260" y="214" width="400" height="28"/>
+<text class="dg-teks" x="266" y="233" font-size="13">di atas 250,4 (Awas), batang dipotong</text>
+</svg>

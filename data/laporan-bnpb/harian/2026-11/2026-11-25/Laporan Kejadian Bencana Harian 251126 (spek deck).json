@@ -7,30 +7,30 @@
  "slide": [
   {
    "jenis": "impor",
-   "pptx": "data/laporan-bnpb/harian/2026-11/2026-11-25/Laporan Kejadian Bencana Harian 251126 (isi).pptx",
+   "pptx": "data\\laporan-bnpb\\harian\\2026-11\\2026-11-25\\Laporan Kejadian Bencana Harian 251126 (isi).pptx",
    "sumber": "Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; PVMBG, 25 Nov 2026 06.00 WIB",
    "halaman": 2,
    "bagian": 1
   },
   {
    "jenis": "impor",
-   "pptx": "data/laporan-bnpb/harian/2026-11/2026-11-25/Laporan Kejadian Bencana Harian 251126 (isi).pptx",
+   "pptx": "data\\laporan-bnpb\\harian\\2026-11\\2026-11-25\\Laporan Kejadian Bencana Harian 251126 (isi).pptx",
    "sumber": "Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "halaman": 7,
    "bagian": 2
   },
   {
    "jenis": "impor",
-   "pptx": "data/laporan-bnpb/harian/2026-11/2026-11-25/Laporan Kejadian Bencana Harian 251126 (isi).pptx",
-   "sumber": "PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; definisi status Permen ESDM 15/2011",
-   "halaman": 5,
+   "pptx": "data\\laporan-bnpb\\harian\\2026-11\\2026-11-25\\Laporan Kejadian Bencana Harian 251126 (isi).pptx",
+   "sumber": "Tim Pendampingan OMC Aceh, 24 Nov 2026; infografis OMC Aceh, 24 Nov 2026; hujan satelit NASA GPM IMERG Early",
+   "halaman": 8,
    "bagian": 3
   },
   {
    "jenis": "impor",
-   "pptx": "data/laporan-bnpb/harian/2026-11/2026-11-25/Laporan Kejadian Bencana Harian 251126 (isi).pptx",
-   "sumber": "Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; rekap OMC Aceh, 24 Nov 2026",
-   "halaman": 8,
+   "pptx": "data\\laporan-bnpb\\harian\\2026-11\\2026-11-25\\Laporan Kejadian Bencana Harian 251126 (isi).pptx",
+   "sumber": "PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; definisi status Permen ESDM 15/2011",
+   "halaman": 5,
    "bagian": 4
   }
  ],
@@ -50,15 +50,15 @@
    ]
   },
   {
-   "judul": "Status Siaga Bencana",
-   "label": "Status siaga",
+   "judul": "Operasi Modifikasi Cuaca Aceh",
+   "label": "OMC Aceh",
    "halaman_tetap": [
     3
    ]
   },
   {
-   "judul": "Operasi Modifikasi Cuaca",
-   "label": "OMC Aceh",
+   "judul": "Status Siaga Bencana",
+   "label": "Status siaga",
    "halaman_tetap": [
     4
    ]

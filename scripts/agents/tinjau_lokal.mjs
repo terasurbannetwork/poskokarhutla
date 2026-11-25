@@ -108,9 +108,11 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
       const dataBaru = r.status === 404 && req.method === "GET" && jalurData(jalur) && await berkas(publik, jalur);
       if (dataBaru) { res.writeHead(200, {"content-type": JENIS[path.extname(dataBaru).toLowerCase()] || "application/octet-stream", "cache-control": "no-store", "x-tinjau": "lokal-data-baru"}); return res.end(await fs.readFile(dataBaru)); }
       /* rute HTML baru yang belum terbit di produksi (hulu 404) tetap disajikan dari folder kerja */
-      const baru = r.status === 404 && ruteHtml && await berkas(publik, ruteHtml[1]);
+      /* rute yang memetakan jalur ke berkas sendiri (elemen ke-4, mis. Docs bertingkat) dipakai seperti di Worker */
+      const fileRute = ruteHtml && (ruteHtml[3] ? ruteHtml[3](jalur) : ruteHtml[1]);
+      const baru = r.status === 404 && ruteHtml && await berkas(publik, fileRute);
       const htmlLokal = baru || (r.ok && (r.headers.get("content-type") || "").includes("text/html") &&
-        (ruteHtml ? await berkas(publik, ruteHtml[1]) : jalur.endsWith(".html") && await berkas(publik, jalur)));
+        (ruteHtml ? await berkas(publik, fileRute) : jalur.endsWith(".html") && await berkas(publik, jalur)));
       let status = r.status;
       if (baru) { status = 200; keluar["content-type"] = "text/html; charset=utf-8"; }
       if (htmlLokal) {

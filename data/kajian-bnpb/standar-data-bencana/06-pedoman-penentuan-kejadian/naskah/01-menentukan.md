@@ -62,6 +62,10 @@ Tabel 1.4. Ketentuan tambahan kriteria
 
 Sumber: Rancangan Juklak Bab II huruf C angka 3 dan 4.
 
+![Gambar 1.2. Contoh penerapan ketentuan tambahan pada Tabel 1.4](gbr/pk-tambahan.png)
+
+Sumber: Rancangan Juklak Bab II huruf C angka 3 dan 4.
+
 ## 1.3 Aturan batas satu kejadian
 
 Tabel 1.5. Aturan batas satu kejadian
@@ -76,8 +80,12 @@ Tabel 1.5. Aturan batas satu kejadian
 
 Sumber: Rancangan Juklak Bab II huruf B dan huruf D.
 
+![Gambar 1.3. Ringkasan lima aturan batas satu kejadian pada Tabel 1.5](gbr/pk-aturan.png)
+
+Sumber: Rancangan Juklak Bab II huruf B dan huruf D.
+
 Ketentuan per jenis bencana pada Tabel 2.1 dan Tabel 2.2 berlaku lebih dulu daripada aturan umum dalam Tabel 1.5. Contohnya, banjir baru menjadi kejadian baru apabila genangan sudah surut di semua desa terdampak, bukan ketika satu desa surut.
 
-![Gambar 1.2. Contoh penerapan aturan batas satu kejadian pada Tabel 1.5](gbr/pk-batas.png)
+![Gambar 1.4. Contoh penerapan aturan batas satu kejadian pada Tabel 1.5](gbr/pk-batas.png)
 
 Sumber: Rancangan Juklak Bab II huruf D.

@@ -12,6 +12,8 @@
 //  5. LAPOR (LA-20, ../lapor_wa.mjs): pesan pribadi nomor di /api/lapor/izin diteruskan ke mesin Lapor Bencana di Worker (teks, lokasi, foto), balasan Worker dikirim apa adanya;
 //     kabar (balasan, status, PDF) ditarik tiap 1 menit; `lapor izin|cabut <nomor>` hanya dari PEMILIK. Nomor lain tidak berubah.
 // <<< lapor-ai
+//  6. PERAN (../peran.cjs, pemilik 24 Nov 2026): WA_PERAN=lapor (nomor lama: butir 5 + antrean /masuk dan /petugas) atau laporan
+//     (nomor baru: butir 1-4, grup, logbook, Drive, OCR). Kosong = semua, seperti sebelum dipisah. Rumah dan PORT per peran dari plist.
 // Tidak ada LLM. Ini WhatsApp Web TIDAK RESMI: baca ../../../../pangantara/wa-gateway/ANTI-BAN.md.
 const fs = require('fs')
 const path = require('path')
@@ -33,6 +35,7 @@ const DAFTAR = require('../daftar.cjs')
 const ARAH = require('../arah.cjs')
 const HIAS = require('../hias.cjs')
 
+const PERAN = require('../peran.cjs').bacaPeran(process.env) // galat = berhenti: lebih baik mati daripada memegang dua bot diam-diam
 const PORT = Number(process.env.PORT) || 3101
 const TOKEN = process.env.GATEWAY_TOKEN || ''
 const WORKER = (process.env.WORKER_URL || 'https://centurisk97.id').replace(/\/$/, '')
@@ -42,7 +45,7 @@ const IZIN = new Set(daftar(process.env.WA_IZIN).map(normalWa).filter(Boolean))
 // Worker hanya menyimpan pesan yang dikenali (pengurai operasi / jenis laporan) dan mengganti pengirim dengan id grup; tanpa salinan Drive.
 const GRUP_OPS = new Set(daftar(process.env.OPERASI_GRUP).filter((j) => /@g\.us$/.test(j)))
 const PEMILIK = normalWa(daftar(process.env.PEMILIK)[0])
-const BL = process.env.BL_PROYEK === '1' // bot laporan (BL-09); kosong = perilaku lama utuh
+const BL = PERAN.laporan && process.env.BL_PROYEK === '1' // bot laporan (BL-09); kosong = perilaku lama utuh
 const AUTH_DIR = rumah(process.env.WA_AUTH_DIR) || path.join(RUMAH, 'auth')
 const OUTBOX = path.join(RUMAH, 'outbox')
 const TERKIRIM = path.join(RUMAH, 'terkirim') // salinan pesan keluar untuk getMessage (kirim ulang bila penerima gagal dekripsi)
@@ -127,12 +130,12 @@ const DF = DAFTAR.buat({
     if (!x.ok) log('[daftar] balasan ditahan', x.error)
   },
 })
-DF.mulai()
+if (PERAN.laporan) DF.mulai() // peran lapor: setuju/tolak dan nomor asing bukan urusannya
 
 // >>> lapor-ai
 // LA-20: pintu WA Lapor Bencana BNPB (../lapor_wa.mjs). Nomor di salinan /api/lapor/izin (pesan pribadi saja) dialihkan ke mesin Lapor di Worker;
 // selain itu jalur lama tidak berubah. Mati sendiri bila WORKER_URL atau WA_MESIN kosong. Balasan dan kabar lewat sendPaced yang sama.
-const LAPOR = import('../lapor_wa.mjs').then((L) => {
+const LAPOR = !PERAN.lapor ? Promise.resolve(null) : import('../lapor_wa.mjs').then((L) => {
   const x = L.buat({
     worker: WORKER, mesin: process.env.WA_MESIN, pemilik: PEMILIK, log,
     kirim: async (wa, isi, o = {}) => {
@@ -208,7 +211,7 @@ app.post('/send-file', (req, res) => layani(req, res, (b) => {
 // LP-021: antrean WA modul /petugas ditarik tiap 60 dtk, dikirim lewat limiter yang sama. Mati bila WA_KUNCI kosong.
 let lapanganJalan = false
 function mulaiLapangan() {
-  if (lapanganJalan || !KUNCI) return
+  if (lapanganJalan || !KUNCI || !PERAN.lapor) return // kode /masuk dan relawan /petugas tetap dari nomor lama
   lapanganJalan = true
   import('../lapangan_tarik.mjs').then((L) => L.mulai({
     worker: WORKER, kunci: KUNCI, log,
@@ -272,11 +275,11 @@ async function tarikRiwayat(jids, r) {
     return ring
   } finally { riwayatJalan = false }
 }
-app.post('/riwayat', RW.buatRute({
+if (PERAN.laporan) app.post('/riwayat', RW.buatRute({ // riwayat = bahan laporan; di nomor lama akan memicu otomatis.mjs dari nomor yang salah
   token: TOKEN, jalankan: tarikRiwayat,
   pilih: (jid) => RW.pilihJid({ jid, grupOps: GRUP_OPS, dikenal: Object.keys(jangkar), terdaftar: new Set(Object.keys(jangkar)), izin: IZIN, nomorDari: (j) => normalWa(String(j).split('@')[0].split(':')[0]) }),
 }))
-app.listen(PORT, '127.0.0.1', () => log('API lokal di 127.0.0.1:' + PORT))
+app.listen(PORT, '127.0.0.1', () => log('API lokal di 127.0.0.1:' + PORT, 'peran ' + PERAN.peran, 'rumah ' + RUMAH))
 
 // ── MASUK ───────────────────────────────────────────────────────────────
 function isiPesan(m) {
@@ -318,7 +321,7 @@ async function stempelFoto(buf) {
   try { tulis(f, buf); return (await OCR.bacaStempel(f)) || undefined } catch { return undefined } finally { fs.rmSync(f, { force: true }) }
 }
 // Pemanasan: panggilan Vision pertama sesudah start/kompilasi bisa > 20 dtk dan kena batas waktu; foto grup pertama jangan jadi korbannya.
-OCR.bacaStempel(path.join(__dirname, '../../../tests/wa/bahan/stempel-contoh.jpg'), 120000)
+if (PERAN.laporan) OCR.bacaStempel(path.join(__dirname, '../../../tests/wa/bahan/stempel-contoh.jpg'), 120000)
   .then((t) => log('[ocr] siap', t ? 'ok' : 'kosong')).catch(() => {})
 
 // Video grup operasi: unduh (<= 20 MB), ambil satu frame (ffmpeg), OCR. Video asli dihapus, tidak pernah dikirim. Tanpa ffmpeg = dilewati.
@@ -537,8 +540,7 @@ async function masukDariDrive({ id, nama, tipe, buf, waktu }) {
   tulis(path.join(OUTBOX, id + '.json'), JSON.stringify({ id, dari, nama: 'Google Drive', teks: '', waktu, berkas: { nama, tipe } }))
 }
 const tickDrive = () => drive.tick(masukDariDrive).then(() => flushOutbox()).catch(() => {})
-setInterval(tickDrive, 5 * 60 * 1000)
-setTimeout(tickDrive, 30000)
+if (PERAN.laporan) { setInterval(tickDrive, 5 * 60 * 1000); setTimeout(tickDrive, 30000) } // Drive/Masuk = bahan laporan
 
 async function kirimSatu(e) {
   const f = new FormData()
@@ -602,7 +604,8 @@ function sapu() {
     if (f.endsWith('.bin') && !fs.existsSync(path.join(OUTBOX, f.replace(/\.bin$/, '.json'))) && lama(OUTBOX, f)) fs.rmSync(path.join(OUTBOX, f), { force: true })
   }
 }
-sapu(); setInterval(() => drive.sapu(), 6 * 3600e3); drive.sapu(); setInterval(sapu, 6 * 3600e3)
+sapu(); setInterval(sapu, 6 * 3600e3)
+if (PERAN.laporan) { setInterval(() => drive.sapu(), 6 * 3600e3); drive.sapu() }
 
 // 10 Nov 2026: gateway hidup berhari-hari; import biasa membekukan otomatis.mjs versi saat start, sehingga tiap bahan baru membangun ulang laporan dengan format lama.
 // ponytail: hanya otomatis.mjs yang disegarkan; impor di dalamnya tetap versi saat pertama dimuat, ubah salah satunya = mulai ulang gateway.
@@ -644,10 +647,10 @@ async function startSock() {
       catatJangkar(m)
       if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue
       const susulan = ev.type === 'append'
-      if (!susulan && await logbookCegat(m)) continue
+      if (PERAN.laporan && !susulan && await logbookCegat(m)) continue
       const dari = pengirim(m.key), pribadi = !m.key.remoteJid.endsWith('@g.us')
       const id = m.key.id
-      const putusan = !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju <nomor> [nama] | tolak <nomor>, hanya PEMILIK
+      const putusan = PERAN.laporan && !susulan && pribadi ? DF.cocokPemilik(dari, isiPesan(m).teks) : null // setuju <nomor> [nama] | tolak <nomor>, hanya PEMILIK
       if (putusan) { if (id) terlihat.catat(id); DF.putuskan(putusan).then((x) => log('[daftar] putusan', x)).catch((e) => log('[daftar] galat', String(e?.message || e))); continue }
       // >>> lapor-ai
       if (pribadi && dari) { // LA-20: Lapor Bencana (perintah PEMILIK dan nomor berizin); susulan tidak dilayani
@@ -669,6 +672,8 @@ async function startSock() {
         }
       }
       // <<< lapor-ai
+      // Peran lapor: selain nomor berizin dan perintah lapor, tidak ada yang dilayani (grup, WA_IZIN, nomor asing dibuang tanpa balasan).
+      if (!PERAN.laporan) continue
       const izin = IZIN.has(dari)
       const bl = !izin && pribadi && !!DF.shaTerdaftar(dari)
       if (pribadi && !izin && !bl) { // nomor asing: tidak pernah diteruskan ke Worker (D10); susulan tidak dibalas

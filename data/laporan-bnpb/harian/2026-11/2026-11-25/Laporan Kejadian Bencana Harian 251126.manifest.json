@@ -1,11 +1,11 @@
 {
- "spek": "Laporan Kejadian Bencana Harian 251126 (spek deck)",
+ "spek": "spek",
  "pesan_kunci": "Laporan Kejadian Bencana Harian, 25-11-2026.",
  "slide": [
   {
    "nomor": 1,
    "jenis": "impor",
-   "asal": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "asal": "spek#1",
    "keluarga": [],
    "judul": null,
    "peta": null,
@@ -215,6 +215,12 @@
     "ikon",
     "ikon",
     "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon"
    ],
    "panel": [],
@@ -225,7 +231,7 @@
   {
    "nomor": 2,
    "jenis": "impor",
-   "asal": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "asal": "spek#2",
    "keluarga": [],
    "judul": null,
    "peta": null,
@@ -457,6 +463,11 @@
     "ikon",
     "ikon",
     "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon"
    ],
    "panel": [],
@@ -467,12 +478,87 @@
   {
    "nomor": 3,
    "jenis": "impor",
-   "asal": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "asal": "spek#3",
    "keluarga": [],
    "judul": null,
    "peta": null,
    "struktur": [
     "3",
+    "Tim Pendampingan OMC Aceh, 24 Nov 2026; infografis OMC Aceh, 24 Nov 2026; hujan satelit NASA GPM IMERG Early",
+    "01  ",
+    "02  ",
+    "03  ",
+    "04  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "peta"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "impor",
+   "asal": "spek#4",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "4",
     "PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; definisi status Permen ESDM 15/2011",
     "01  ",
     "02  ",
@@ -650,123 +736,11 @@
     "ikon",
     "ikon",
     "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
     "ikon"
-   ],
-   "panel": [],
-   "terisi": [],
-   "naik": 0,
-   "subjudul": null
-  },
-  {
-   "nomor": 4,
-   "jenis": "impor",
-   "asal": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keluarga": [],
-   "judul": null,
-   "peta": null,
-   "struktur": [
-    "4",
-    "Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; rekap OMC Aceh, 24 Nov 2026",
-    "01  ",
-    "02  ",
-    "03  ",
-    "04  "
-   ],
-   "warna": [
-    [
-     "051C2C",
-     "impor"
-    ],
-    [
-     "051C2C",
-     "inti"
-    ],
-    [
-     "1A1A1A",
-     "impor"
-    ],
-    [
-     "1A1A1A",
-     "inti"
-    ],
-    [
-     "24384F",
-     "impor"
-    ],
-    [
-     "2E3440",
-     "impor"
-    ],
-    [
-     "4A9BE0",
-     "aksen"
-    ],
-    [
-     "6B7280",
-     "inti"
-    ],
-    [
-     "BFC5CC",
-     "impor"
-    ],
-    [
-     "BFC5CC",
-     "inti"
-    ],
-    [
-     "C9D1E3",
-     "aksen"
-    ],
-    [
-     "C9D1E3",
-     "impor"
-    ],
-    [
-     "D9600B",
-     "impor"
-    ],
-    [
-     "D9600B",
-     "pil"
-    ],
-    [
-     "DCE3EB",
-     "impor"
-    ],
-    [
-     "E6EAF0",
-     "impor"
-    ],
-    [
-     "F1F3F6",
-     "impor"
-    ],
-    [
-     "F3F5F8",
-     "impor"
-    ],
-    [
-     "FFFFFF",
-     "impor"
-    ],
-    [
-     "FFFFFF",
-     "inti"
-    ]
-   ],
-   "judul_spek": "",
-   "pesan": null,
-   "pembatas": false,
-   "kontras": null,
-   "jenis_slide": null,
-   "judul_bentuk": null,
-   "seri": null,
-   "visual": [],
-   "gambar": [
-    "ikon",
-    "ikon",
-    "peta",
-    "peta"
    ],
    "panel": [],
    "terisi": [],
@@ -776,2701 +750,2251 @@
  ],
  "angka": [
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor0.8",
+   "kunci": "turunan:spek#1#impor0.8",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor0.11",
+   "kunci": "turunan:spek#1#impor0.11",
    "tampil": "25",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor0.23",
+   "kunci": "turunan:spek#1#impor0.23",
    "tampil": "2026",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor1.0",
+   "kunci": "turunan:spek#1#impor1.0",
    "tampil": "27",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor3.0",
+   "kunci": "turunan:spek#1#impor3.0",
    "tampil": "16",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor6.0",
+   "kunci": "turunan:spek#1#impor6.0",
    "tampil": "8",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor9.0",
+   "kunci": "turunan:spek#1#impor9.0",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor12.0",
+   "kunci": "turunan:spek#1#impor12.0",
    "tampil": "27",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor14.0",
+   "kunci": "turunan:spek#1#impor14.0",
    "tampil": "16",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor16.0",
+   "kunci": "turunan:spek#1#impor16.0",
    "tampil": "8",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor18.0",
+   "kunci": "turunan:spek#1#impor18.0",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor20.0",
+   "kunci": "turunan:spek#1#impor20.0",
    "tampil": "4",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor21.0",
+   "kunci": "turunan:spek#1#impor21.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor23.0",
+   "kunci": "turunan:spek#1#impor23.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor24.0",
+   "kunci": "turunan:spek#1#impor24.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor26.0",
+   "kunci": "turunan:spek#1#impor26.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor27.0",
+   "kunci": "turunan:spek#1#impor27.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor29.0",
+   "kunci": "turunan:spek#1#impor29.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor31.0",
+   "kunci": "turunan:spek#1#impor31.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor33.0",
+   "kunci": "turunan:spek#1#impor33.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor35.0",
+   "kunci": "turunan:spek#1#impor35.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor36.0",
+   "kunci": "turunan:spek#1#impor36.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor37.0",
+   "kunci": "turunan:spek#1#impor37.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor39.0",
+   "kunci": "turunan:spek#1#impor39.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor41.0",
+   "kunci": "turunan:spek#1#impor41.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor43.0",
+   "kunci": "turunan:spek#1#impor43.0",
    "tampil": "4",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor45.0",
+   "kunci": "turunan:spek#1#impor45.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor47.0",
+   "kunci": "turunan:spek#1#impor47.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor49.0",
+   "kunci": "turunan:spek#1#impor49.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor76.1",
-   "tampil": "2.659",
+   "kunci": "turunan:spek#1#impor85.0",
+   "tampil": "4",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor78.1",
-   "tampil": "3.517",
+   "kunci": "turunan:spek#1#impor86.1",
+   "tampil": "6.184",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor79.0",
+   "kunci": "turunan:spek#1#impor88.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor80.1",
-   "tampil": "8",
+   "kunci": "turunan:spek#1#impor89.1",
+   "tampil": "482",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor83.1",
-   "tampil": "446",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor85.1",
-   "tampil": "36",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor88.1",
+   "kunci": "turunan:spek#1#impor92.1",
    "tampil": "150",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor91.1",
-   "tampil": "4.403",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor93.1",
-   "tampil": "55",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor102.1",
-   "tampil": "11.494",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor103.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor104.1",
-   "tampil": "635",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor111.1",
-   "tampil": "30",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor117.1",
-   "tampil": "74",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor119.0",
+   "kunci": "turunan:spek#1#impor94.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor120.1",
+   "kunci": "turunan:spek#1#impor95.1",
+   "tampil": "4.458",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor103.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor104.1",
+   "tampil": "12.129",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor111.1",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor117.1",
+   "tampil": "74",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor119.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor120.1",
    "tampil": "71",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor123.1",
+   "kunci": "turunan:spek#1#impor123.1",
    "tampil": "18",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor126.1",
+   "kunci": "turunan:spek#1#impor126.1",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor129.1",
+   "kunci": "turunan:spek#1#impor129.1",
    "tampil": "14",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor133.1",
+   "kunci": "turunan:spek#1#impor133.1",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor142.0",
+   "kunci": "turunan:spek#1#impor142.0",
    "tampil": "0",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor144.0",
+   "kunci": "turunan:spek#1#impor144.0",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor146.0",
+   "kunci": "turunan:spek#1#impor146.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor148.0",
+   "kunci": "turunan:spek#1#impor148.0",
    "tampil": "42",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor151.7",
+   "kunci": "turunan:spek#1#impor151.7",
    "tampil": "5",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor153.7",
+   "kunci": "turunan:spek#1#impor153.7",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor154.7",
+   "kunci": "turunan:spek#1#impor154.7",
    "tampil": "7",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor156.7",
+   "kunci": "turunan:spek#1#impor156.7",
    "tampil": "5",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor157.7",
+   "kunci": "turunan:spek#1#impor157.7",
    "tampil": "13",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor165.0",
+   "kunci": "turunan:spek#1#impor165.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor165.3",
+   "kunci": "turunan:spek#1#impor165.3",
    "tampil": "26",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor169.0",
+   "kunci": "turunan:spek#1#impor169.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor169.3",
+   "kunci": "turunan:spek#1#impor169.3",
    "tampil": "26",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor173.57",
+   "kunci": "turunan:spek#1#impor173.57",
    "tampil": "23.403",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor177.16",
+   "kunci": "turunan:spek#1#impor177.16",
    "tampil": "207",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor178.2",
+   "kunci": "turunan:spek#1#impor178.2",
    "tampil": "2026",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#1#impor179.0",
+   "kunci": "turunan:spek#1#impor179.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "naskah": "spek#1",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari PVMBG, 25 Nov 2026 06.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor1.0",
+   "kunci": "turunan:spek#2#impor1.0",
    "tampil": "27",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor3.0",
+   "kunci": "turunan:spek#2#impor3.0",
    "tampil": "25",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor5.0",
+   "kunci": "turunan:spek#2#impor5.0",
    "tampil": "13",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor8.0",
+   "kunci": "turunan:spek#2#impor8.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor9.0",
+   "kunci": "turunan:spek#2#impor9.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor10.0",
+   "kunci": "turunan:spek#2#impor10.0",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor11.0",
+   "kunci": "turunan:spek#2#impor12.0",
    "tampil": "4",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor12.0",
+   "kunci": "turunan:spek#2#impor14.0",
    "tampil": "5",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor13.0",
+   "kunci": "turunan:spek#2#impor15.0",
    "tampil": "6",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor14.0",
+   "kunci": "turunan:spek#2#impor17.0",
    "tampil": "8",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor15.0",
+   "kunci": "turunan:spek#2#impor18.0",
    "tampil": "9",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor16.0",
+   "kunci": "turunan:spek#2#impor19.0",
    "tampil": "17",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor17.0",
+   "kunci": "turunan:spek#2#impor20.0",
    "tampil": "25",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor19.0",
+   "kunci": "turunan:spek#2#impor22.0",
    "tampil": "7",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor20.0",
+   "kunci": "turunan:spek#2#impor24.0",
    "tampil": "18",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor21.0",
+   "kunci": "turunan:spek#2#impor25.0",
    "tampil": "19",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor22.0",
+   "kunci": "turunan:spek#2#impor26.0",
    "tampil": "20",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor23.0",
+   "kunci": "turunan:spek#2#impor27.0",
    "tampil": "21",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor25.0",
+   "kunci": "turunan:spek#2#impor29.0",
    "tampil": "23",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor26.0",
+   "kunci": "turunan:spek#2#impor30.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor27.0",
+   "kunci": "turunan:spek#2#impor31.0",
    "tampil": "100",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor29.0",
+   "kunci": "turunan:spek#2#impor33.0",
    "tampil": "10",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor30.0",
+   "kunci": "turunan:spek#2#impor35.0",
    "tampil": "11",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor31.0",
+   "kunci": "turunan:spek#2#impor37.0",
    "tampil": "22",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor32.0",
+   "kunci": "turunan:spek#2#impor38.0",
    "tampil": "26",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor33.0",
+   "kunci": "turunan:spek#2#impor39.0",
    "tampil": "27",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor35.0",
+   "kunci": "turunan:spek#2#impor41.0",
    "tampil": "12",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor36.0",
+   "kunci": "turunan:spek#2#impor42.0",
    "tampil": "13",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor37.0",
+   "kunci": "turunan:spek#2#impor44.0",
    "tampil": "14",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor38.0",
+   "kunci": "turunan:spek#2#impor46.0",
    "tampil": "15",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor39.0",
+   "kunci": "turunan:spek#2#impor48.0",
    "tampil": "16",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor54.0",
+   "kunci": "turunan:spek#2#impor66.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor56.0",
+   "kunci": "turunan:spek#2#impor68.0",
    "tampil": "2.659",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor57.1",
+   "kunci": "turunan:spek#2#impor69.1",
    "tampil": "2.010",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor60.0",
+   "kunci": "turunan:spek#2#impor72.0",
    "tampil": "19",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor61.0",
+   "kunci": "turunan:spek#2#impor73.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor63.1",
+   "kunci": "turunan:spek#2#impor75.1",
    "tampil": "3.517",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor64.1",
+   "kunci": "turunan:spek#2#impor76.1",
    "tampil": "3.517",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor65.0",
-   "tampil": "14",
+   "kunci": "turunan:spek#2#impor77.0",
+   "tampil": "15",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor66.0",
+   "kunci": "turunan:spek#2#impor78.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor67.0",
+   "kunci": "turunan:spek#2#impor79.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor80.0",
    "tampil": "14",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor68.0",
+   "kunci": "turunan:spek#2#impor81.0",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor70.1",
+   "kunci": "turunan:spek#2#impor83.1",
    "tampil": "8",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor71.0",
-   "tampil": "3",
+   "kunci": "turunan:spek#2#impor84.0",
+   "tampil": "8",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor73.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor74.0",
+   "kunci": "turunan:spek#2#impor85.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor75.0",
+   "kunci": "turunan:spek#2#impor86.0",
    "tampil": "4",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor78.0",
+   "kunci": "turunan:spek#2#impor89.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor79.0",
+   "kunci": "turunan:spek#2#impor90.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor81.0",
+   "kunci": "turunan:spek#2#impor92.0",
    "tampil": "5",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor83.1",
+   "kunci": "turunan:spek#2#impor94.1",
    "tampil": "446",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor84.0",
+   "kunci": "turunan:spek#2#impor95.0",
    "tampil": "284",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor85.0",
+   "kunci": "turunan:spek#2#impor96.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor86.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor87.0",
-   "tampil": "6",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor89.0",
-   "tampil": "36",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor90.0",
-   "tampil": "36",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor92.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor94.0",
-   "tampil": "7",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor96.1",
-   "tampil": "150",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor97.1",
-   "tampil": "139",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor98.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor99.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor100.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor102.0",
-   "tampil": "8",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor104.1",
-   "tampil": "4.403",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor105.1",
-   "tampil": "4.403",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor106.1",
-   "tampil": "5,5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor107.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor108.0",
-   "tampil": "9",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor110.0",
-   "tampil": "55",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor111.0",
-   "tampil": "55",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor112.0",
-   "tampil": "2",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor113.0",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor115.0",
-   "tampil": "10",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor118.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor119.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor120.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor122.0",
-   "tampil": "11",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor125.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor126.0",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor127.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor129.0",
-   "tampil": "12",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor131.1",
-   "tampil": "11.494",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor132.0",
-   "tampil": "11.494",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor134.0",
-   "tampil": "19",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor135.0",
-   "tampil": "13",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor137.0",
-   "tampil": "100",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor138.0",
-   "tampil": "100",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor139.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor140.0",
-   "tampil": "14",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor142.0",
-   "tampil": "390",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor143.0",
-   "tampil": "390",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor145.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor146.0",
-   "tampil": "15",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor148.0",
-   "tampil": "145",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor149.0",
-   "tampil": "145",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor150.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor152.0",
-   "tampil": "16",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor155.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor156.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor157.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor158.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor159.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor162.0",
-   "tampil": "17",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor164.0",
-   "tampil": "30",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor165.0",
-   "tampil": "30",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor166.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor168.0",
-   "tampil": "18",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor171.0",
-   "tampil": "7",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor172.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor173.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor174.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor176.0",
-   "tampil": "19",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor178.1",
-   "tampil": "74",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor179.0",
-   "tampil": "75",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor180.0",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor181.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor183.0",
-   "tampil": "20",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor185.1",
-   "tampil": "67",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor186.1",
-   "tampil": "67",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor187.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor188.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor189.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor190.0",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor192.1",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor193.0",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor194.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor195.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor197.0",
-   "tampil": "22",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor199.1",
-   "tampil": "18",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor200.1",
-   "tampil": "15",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor202.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor204.0",
+   "kunci": "turunan:spek#2#impor97.0",
    "tampil": "23",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor206.0",
-   "tampil": "1",
+   "kunci": "turunan:spek#2#impor98.0",
+   "tampil": "6",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor207.0",
-   "tampil": "1",
+   "kunci": "turunan:spek#2#impor100.0",
+   "tampil": "36",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor209.0",
+   "kunci": "turunan:spek#2#impor101.0",
+   "tampil": "36",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor102.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor211.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor213.0",
-   "tampil": "14",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor214.0",
-   "tampil": "14",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor215.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor218.0",
-   "tampil": "25",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor220.0",
-   "tampil": "2",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor221.0",
-   "tampil": "2",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor223.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor225.0",
-   "tampil": "26",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor229.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor231.0",
-   "tampil": "27",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor235.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor236.2",
-   "tampil": "2026",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#2#impor237.0",
-   "tampil": "2",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor1.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor3.2",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor3.14",
-   "tampil": "42",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor5.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor6.0",
-   "tampil": "0",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor9.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor12.0",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor15.0",
-   "tampil": "42",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor33.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor34.0",
-   "tampil": "10",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor35.0",
-   "tampil": "15",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor37.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor47.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor55.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor56.0",
-   "tampil": "10",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor57.0",
-   "tampil": "15",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor59.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor63.0",
+   "kunci": "turunan:spek#2#impor104.0",
    "tampil": "7",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor78.0",
+   "kunci": "turunan:spek#2#impor106.1",
+   "tampil": "150",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor107.1",
+   "tampil": "139",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor108.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor109.0",
    "tampil": "5",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor79.0",
-   "tampil": "10",
+   "kunci": "turunan:spek#2#impor110.0",
+   "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor80.0",
+   "kunci": "turunan:spek#2#impor112.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor114.1",
+   "tampil": "4.403",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor115.1",
+   "tampil": "4.403",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor116.1",
+   "tampil": "5,5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor117.0",
    "tampil": "15",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor82.0",
-   "tampil": "5",
+   "kunci": "turunan:spek#2#impor118.0",
+   "tampil": "9",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor86.0",
-   "tampil": "13",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor98.2",
-   "tampil": "2026",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#3#impor99.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor1.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor3.0",
-   "tampil": "2.600",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor4.6",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor5.0",
-   "tampil": "13",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor8.15",
-   "tampil": "208",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor9.29",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor9.36",
-   "tampil": "2026",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor11.0",
-   "tampil": "28",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor11.7",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor12.13",
-   "tampil": "18",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor12.16",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor13.0",
-   "tampil": "11",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor14.13",
-   "tampil": "18",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor14.16",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor15.0",
-   "tampil": "10.000",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor16.18",
-   "tampil": "18",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor16.21",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor18.5",
-   "tampil": "212",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor18.9",
-   "tampil": "200",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor18.15",
-   "tampil": "2103,",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor19.24",
-   "tampil": "2103,",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor19.30",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor19.37",
-   "tampil": "2026",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor21.0",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor21.6",
+   "kunci": "turunan:spek#2#impor120.0",
    "tampil": "55",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor22.13",
-   "tampil": "21",
+   "kunci": "turunan:spek#2#impor121.0",
+   "tampil": "55",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor22.16",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor23.0",
+   "kunci": "turunan:spek#2#impor122.0",
    "tampil": "2",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor24.13",
+   "kunci": "turunan:spek#2#impor123.0",
    "tampil": "21",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor24.16",
-   "tampil": "24",
+   "kunci": "turunan:spek#2#impor125.0",
+   "tampil": "10",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor25.0",
-   "tampil": "1.600",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor26.18",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor26.21",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor27.6",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor27.18",
-   "tampil": "2026",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor37.0",
+   "kunci": "turunan:spek#2#impor128.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor38.0",
-   "tampil": "07.09",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor38.6",
-   "tampil": "10.05",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor40.0",
-   "tampil": "11.000",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor41.0",
-   "tampil": "800",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor44.0",
-   "tampil": "2",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor45.0",
-   "tampil": "22.32",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor45.6",
-   "tampil": "01.10",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor47.0",
-   "tampil": "10.000",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor48.0",
-   "tampil": "1.000",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor50.2",
-   "tampil": "2103",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor51.0",
+   "kunci": "turunan:spek#2#impor129.0",
    "tampil": "1",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor52.0",
-   "tampil": "07.34",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor52.6",
-   "tampil": "10.14",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor54.0",
-   "tampil": "10.000",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor55.0",
-   "tampil": "800",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor56.7",
+   "kunci": "turunan:spek#2#impor130.0",
    "tampil": "24",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor58.0",
+   "kunci": "turunan:spek#2#impor132.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor135.0",
    "tampil": "3",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
    "dari": []
   },
   {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor62.0",
-   "tampil": "2.600",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor63.2",
-   "tampil": "2026",
-   "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:Laporan Kejadian Bencana Harian 251126 (spek deck)#4#impor64.0",
+   "kunci": "turunan:spek#2#impor136.0",
    "tampil": "4",
    "nilai": null,
-   "naskah": "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
+   "naskah": "spek#2",
    "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC BNPB Provinsi Aceh, 25 Nov 2026 07.07 WIB; Pengolahan data sistem BNPB dari rekap OMC Aceh, 24 Nov 2026",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor137.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor139.0",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor141.1",
+   "tampil": "11.494",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor142.0",
+   "tampil": "11.494",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor144.0",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor145.0",
+   "tampil": "13",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor147.0",
+   "tampil": "100",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor148.0",
+   "tampil": "100",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor149.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor150.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor152.0",
+   "tampil": "390",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor153.0",
+   "tampil": "390",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor155.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor156.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor158.0",
+   "tampil": "145",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor159.0",
+   "tampil": "145",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor160.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor162.0",
+   "tampil": "16",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor165.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor166.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor167.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor168.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor169.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor172.0",
+   "tampil": "17",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor174.0",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor175.0",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor176.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor178.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor181.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor182.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor183.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor184.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor185.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor187.0",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor189.1",
+   "tampil": "74",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor190.0",
+   "tampil": "75",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor191.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor192.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor194.0",
+   "tampil": "20",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor196.1",
+   "tampil": "67",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor197.1",
+   "tampil": "67",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor198.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor199.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor200.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor201.0",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor203.1",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor204.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor205.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor206.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor208.0",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor210.1",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor211.1",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor212.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor214.0",
+   "tampil": "23",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor216.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor217.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor218.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor220.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor222.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor223.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor224.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor227.0",
+   "tampil": "25",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor229.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor230.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor231.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor233.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor237.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor239.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor243.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor244.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor245.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 24 Nov 2026 07.00 s.d. 25 Nov 2026 07.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor1.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari infografis OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari hujan satelit NASA GPM IMERG Early",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor3.0",
+   "tampil": "2.600",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari infografis OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari hujan satelit NASA GPM IMERG Early",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor4.6",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari infografis OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari hujan satelit NASA GPM IMERG Early",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor5.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari infografis OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari hujan satelit NASA GPM IMERG Early",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor6.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Tim Pendampingan OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari infografis OMC Aceh, 24 Nov 2026; Pengolahan data sistem BNPB dari hujan satelit NASA GPM IMERG Early",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor1.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor3.2",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor3.14",
+   "tampil": "42",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor5.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor6.0",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor9.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor12.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor15.0",
+   "tampil": "42",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor32.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor35.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor36.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor37.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor39.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor49.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor55.8",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor58.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor59.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor60.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor62.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor66.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor79.8",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor82.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor83.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor84.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor86.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor90.0",
+   "tampil": "13",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor102.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor103.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 25 Nov 2026 06.00 WIB; Pengolahan data sistem BNPB dari definisi status Permen ESDM 15/2011",
    "dari": []
   }
  ],
  "catatan": [
   [
-   "Laporan Kejadian Bencana Harian 251126 (spek deck)#1",
+   "spek#1",
    "impor_warna",
    {
-    "F1F2F4": "F1F3F6",
     "E5E7EB": "E6EAF0",
     "D1D5DB": "C9D1E3",
+    "F1F2F4": "F1F3F6",
     "F2D3BA": "F4C3A0"
    }
   ],
   [
-   "Laporan Kejadian Bencana Harian 251126 (spek deck)#2",
+   "spek#2",
    "impor_warna",
    {
     "F6F8FA": "F3F5F8",
@@ -3483,7 +3007,7 @@
    }
   ],
   [
-   "Laporan Kejadian Bencana Harian 251126 (spek deck)#3",
+   "spek#4",
    "impor_warna",
    {
     "FBE7DC": "FBE7D6",
@@ -3496,29 +3020,16 @@
     "F6C9A7": "F4C3A0",
     "F2A672": "F6B26B"
    }
-  ],
-  [
-   "Laporan Kejadian Bencana Harian 251126 (spek deck)#4",
-   "impor_warna",
-   {
-    "E8EEF6": "E6EAF0",
-    "1B2A47": "24384F",
-    "DCE3EE": "DCE3EB",
-    "F6F8FA": "F3F5F8",
-    "D1D5DB": "C9D1E3",
-    "F8FAFC": "F3F5F8",
-    "EEF2F7": "F1F3F6"
-   }
   ]
  ],
  "keputusan": [],
  "peringatan": [],
  "masukan": {
-  "../../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/angka.json": "36c0a4ac63f498a6f37ca2509922fc595457433a319cd8d16c1617d90bffbc69",
-  "../../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
-  "../../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/tema.json": "e6594fae0cc2d74401922f76d2a2cb9e86f7203bc87a46248837217bc9c6c546",
-  "../../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
-  "Laporan Kejadian Bencana Harian 251126 (isi).pptx": "1c26d2f29b8758378c63f04274bc0bf93be406b2db37eaa3c6d4fad6f5bcf9c4",
-  "Laporan Kejadian Bencana Harian 251126 (spek deck).json": "f31e722b9a0e9d865c37fa41b500c04ec5178833676b3ad32f45db9604644399"
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\data\\angka.json": "f07d7e3ced9d03ddd72354b534f786e93a3519fc6c3b3317f424f30fd6a72158",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e01beb88bdb9217a75fcde1568ad206fcd48c6e18589e5a06fa067b73e706255",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
+  "isi.pptx": "9c5da74828144ea475aaae34fa13860a138edc3c31c4d8c3f56697988db4c729",
+  "spek.json": "ecff232a226494756c5acfddd27a488089572ae86441a03d456a0d9366aee373"
  }
 }

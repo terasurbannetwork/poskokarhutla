@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330">
+<defs><marker id="pc" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="dg-garis"/></marker></defs>
+<text x="360" y="22" text-anchor="middle" font-size="15" font-weight="700" class="dg-teks">Empat tingkat status cluster, dari bawah ke atas</text>
+<rect x="20" y="250" width="680" height="56" rx="8" class="dg-lemah"/>
+<text x="40" y="274" font-size="15" font-weight="700" class="dg-teks">Tingkat 0: Pencegahan rutin</text>
+<text x="40" y="294" font-size="13" class="dg-teks-lemah">Api kecil (S1) dan FWI di bawah 7</text>
+<rect x="60" y="184" width="640" height="56" rx="8" class="dg-ok"/>
+<text x="80" y="208" font-size="15" font-weight="700" class="dg-teks">Tingkat 1: Patroli terpadu</text>
+<text x="80" y="228" font-size="13" class="dg-teks-lemah">Api kecil dengan FWI 7 ke atas, atau api sedang dan besar dengan FWI di bawah 7</text>
+<rect x="100" y="118" width="600" height="56" rx="8" class="dg-waspada"/>
+<text x="120" y="142" font-size="15" font-weight="700" class="dg-teks">Tingkat 2: Siaga pemadaman awal</text>
+<text x="120" y="162" font-size="13" class="dg-teks-lemah">Api sedang atau besar dengan FWI 7 ke atas; api besar (S3) selalu minimal tingkat 2</text>
+<rect x="140" y="52" width="560" height="56" rx="8" class="dg-bahaya"/>
+<text x="160" y="76" font-size="15" font-weight="700" class="dg-teks">Tingkat 3: Prioritas pemadaman</text>
+<text x="160" y="96" font-size="13" class="dg-teks-lemah">Piksel aktif 24 jam sedikitnya 15 dan FWI 7 ke atas (atau FWI tidak ada)</text>
+<line x1="10" y1="300" x2="10" y2="58" class="dg-garis" marker-end="url(#pc)"/>
+<text x="360" y="324" text-anchor="middle" font-size="13" class="dg-teks-lemah">Cluster berlabel mungkin firespot yang teramati 24 jam diturunkan ke tingkat 1</text>
+</svg>

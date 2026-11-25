@@ -1,0 +1,44 @@
+<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="dg-garis" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+<rect class="dg-waspada" x="560" y="8" width="150" height="26" rx="13"/>
+<text class="dg-teks" x="635" y="26" font-size="13" text-anchor="middle">hipotesis, belum diuji</text>
+<rect class="dg-kotak" x="10" y="50" width="150" height="86" rx="8"/>
+<text class="dg-teks" x="85" y="76" font-size="14" font-weight="bold" text-anchor="middle">Masukan</text>
+<text class="dg-teks-lemah" x="85" y="98" font-size="13" text-anchor="middle">ECMWF IFS, cluster</text>
+<text class="dg-teks-lemah" x="85" y="116" font-size="13" text-anchor="middle">api besar, kota</text>
+<rect class="dg-kotak-aksen" x="200" y="50" width="150" height="86" rx="8"/>
+<text class="dg-teks" x="275" y="76" font-size="14" font-weight="bold" text-anchor="middle">Gerbang G1 sampai G9</text>
+<text class="dg-teks-lemah" x="275" y="98" font-size="13" text-anchor="middle">satu gagal atau</text>
+<text class="dg-teks-lemah" x="275" y="116" font-size="13" text-anchor="middle">hilang: sel dibuang</text>
+<rect class="dg-kotak-aksen" x="390" y="50" width="150" height="86" rx="8"/>
+<text class="dg-teks" x="465" y="76" font-size="14" font-weight="bold" text-anchor="middle">Skor</text>
+<text class="dg-teks-lemah" x="465" y="98" font-size="13" text-anchor="middle">gerbang x Q^0,45</text>
+<text class="dg-teks-lemah" x="465" y="116" font-size="13" text-anchor="middle">x D^0,40 x T^0,15</text>
+<rect class="dg-kotak" x="580" y="50" width="130" height="86" rx="8"/>
+<text class="dg-teks" x="645" y="76" font-size="14" font-weight="bold" text-anchor="middle">Zona</text>
+<text class="dg-teks-lemah" x="645" y="98" font-size="13" text-anchor="middle">skor 0,35 atau</text>
+<text class="dg-teks-lemah" x="645" y="116" font-size="13" text-anchor="middle">lebih, maks 5</text>
+<line class="dg-garis" x1="160" y1="93" x2="198" y2="93" marker-end="url(#p)"/>
+<line class="dg-garis" x1="350" y1="93" x2="388" y2="93" marker-end="url(#p)"/>
+<line class="dg-garis" x1="540" y1="93" x2="578" y2="93" marker-end="url(#p)"/>
+<rect class="dg-lemah" x="10" y="170" width="220" height="110" rx="8"/>
+<text class="dg-teks" x="120" y="194" font-size="14" font-weight="bold" text-anchor="middle">Q: kualitas awan</text>
+<text class="dg-teks-lemah" x="120" y="216" font-size="13" text-anchor="middle">MUCAPE, cairan awan,</text>
+<text class="dg-teks-lemah" x="120" y="234" font-size="13" text-anchor="middle">RH 850, geseran,</text>
+<text class="dg-teks-lemah" x="120" y="252" font-size="13" text-anchor="middle">updraf: dirata-rata</text>
+<rect class="dg-lemah" x="250" y="170" width="220" height="110" rx="8"/>
+<text class="dg-teks" x="360" y="194" font-size="14" font-weight="bold" text-anchor="middle">D: daya api</text>
+<text class="dg-teks-lemah" x="360" y="216" font-size="13" text-anchor="middle">FRP 24 jam dalam 25 km</text>
+<text class="dg-teks-lemah" x="360" y="234" font-size="13" text-anchor="middle">titik hujan, gambut</text>
+<text class="dg-teks-lemah" x="360" y="252" font-size="13" text-anchor="middle">dikali 1,5</text>
+<rect class="dg-lemah" x="490" y="170" width="220" height="110" rx="8"/>
+<text class="dg-teks" x="600" y="194" font-size="14" font-weight="bold" text-anchor="middle">T: jarak kota</text>
+<text class="dg-teks-lemah" x="600" y="216" font-size="13" text-anchor="middle">naik landai dari</text>
+<text class="dg-teks-lemah" x="600" y="234" font-size="13" text-anchor="middle">10 km sampai 50 km</text>
+<text class="dg-teks-lemah" x="600" y="252" font-size="13" text-anchor="middle">ke kota atau bandara</text>
+<line class="dg-garis" x1="465" y1="136" x2="465" y2="150"/>
+<line class="dg-garis" x1="120" y1="150" x2="600" y2="150"/>
+<line class="dg-garis" x1="120" y1="150" x2="120" y2="168" marker-end="url(#p)"/>
+<line class="dg-garis" x1="360" y1="150" x2="360" y2="168" marker-end="url(#p)"/>
+<line class="dg-garis" x1="600" y1="150" x2="600" y2="168" marker-end="url(#p)"/>
+</svg>

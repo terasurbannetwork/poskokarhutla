@@ -27,6 +27,7 @@ tidak) · BUKTI SIAP (perintah yang membuktikan selesai).
 | Slide, PPT, deck, paparan, presentasi              | Skill `ppt-konsultan` (`~/.claude/skills/ppt-konsultan`, mesin `bnpb/scripts/deck.py`): sampul + penyaji, daftar isi, pembatas seksi, logo KRIS di tiap slide; PPTX apa pun wajib lolos `bnpb/scripts/aturan_slide.py` sebelum dikirim. Skill `deck-bnpb` dan `ppt-format-bnpb` PENSIUN; bukan HTML |
 | Surat dinas BNPB (audiensi, undangan, permohonan)  | Skill `surat-bnpb` (`data/kajian-bnpb/skill/surat-bnpb`, mesin `scripts/buat_surat.py`): Word berkop, tujuan ke unit kerja sama bukan Rektor, nomor HP tidak masuk repo |
 | Aturan baru butuh gerbang / uji integrasi          | `penulis-gerbang`                           |
+| Dokumentasi situs, halaman `/docs`, metode untuk pembaca | `docs-situs` → `inp-reviewer` + `selera-angka` |
 | Workflow, package.json, settings, mesin agent      | `mekanik-mesin`                             |
 | Sebelum commit besar                               | `higiene-repo`                              |
 
@@ -112,6 +113,7 @@ ulang yang berubah.
 | Inventori LogPal `/logpal` | `public/logpal/**`, `public/data/logpal/**`, `scripts/logpal/**`, `data/kajian-bnpb/logpal/**`; `src/logpal.js`, `migrations/0112` (warga-api) | D1 `logpal_*`; rute `/api/instansi/logpal/*` | `warga-api` |
 | Lab InSAR gambut | `scripts/data/insar_gambut.py`, `tests/insar-gambut/**`, `data/kajian-bnpb/insar-gambut/**` | lab lokal, tanpa keluaran publik sebelum vonis | `pipa-data` |
 | Alat gambar wilayah | `public/alat_gambar*.js`, `tests/gambar/**`, `data/kajian-bnpb/alat-gambar/**` | hitung di peramban dari JSON publik | `layar-peta` |
+| Docs Centurisk97 `/docs` | `docs/centurisk97/**`, `scripts/docs/**`, `public/docs/**`, `tests/docs/**` (docs-situs); `src/docs_rute.js` (warga-api) | `public/docs/*.html` dan `cari.json` di-commit; langkah `bangun.py --cek` di `terbit.yml` | `docs-situs` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
 
@@ -686,6 +688,17 @@ Sebelum menyentuh pemindai Himawari L1b, detektor api, abu, konveksi, status sum
 
 Aturan berhentinya sama dengan §2.1. Satu pemindai, tanpa pembaca HSD atau GFM kedua; kriteria dikunci sebelum diuji; tanpa vonis lolos tetap hipotesis dan tidak dikirim ke luar; status BMKG, PVMBG, VAAC terpisah; sumber putus tidak pernah 0 dan tidak pernah diam; titik Himawari tidak dijumlah dengan VIIRS; tidak pernah menulis "aman" atau "padam".
 >>>>>>> origin/main
+
+### 2.50 Docs Centurisk97 (`/docs`, panduan pengguna dan pengembang, metode di dalam sistem): baca dulu, baru bangun
+
+Sebelum menyentuh sumber isi Docs, generator halamannya, tampilan `/docs`, indeks cari, rute Worker `/docs`, atau alias `docs.centurisk97.id`, baca dokumen di
+`data/kajian-bnpb/docs-situs/` dengan urutan otoritas ini (kode di `scripts/docs/**`, `public/docs/**`, `tests/docs/**`, `docs/centurisk97/**` milik `docs-situs`; `src/docs_rute.js` dan penyesuaian `src/worker.js` milik `warga-api`; langkah `bangun.py --cek` di `terbit.yml` milik `mekanik-mesin`):
+
+1. `KEPUTUSAN-DOCS.md`: keputusan pemilik K1-K4, rancangan D1-D10, pertanyaan terbuka Q1-Q8 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-13), 4. `ALUR.md`, 5. `ALGORITMA.md` (subset Markdown, pemeriksaan sumber, indeks cari), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`DC-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Sumber isi satu (Markdown di `docs/centurisk97/`), halaman HTML adalah keluaran yang tidak disunting tangan dan harus segar (`python3 -I scripts/docs/bangun.py --cek`). Struktur halaman dari `docs/centurisk97/peta.json` (dua bagian Panduan dan Pengembang, satu metode satu halaman; Panduan tanpa nama berkas atau kode, K6-K8); angka, rumus, ambang, jadwal, rute, dan hak akses hanya dari kode atau dokumen repo dengan rujukan `berkas:baris`, bila tidak ketemu ditulis "belum terdokumentasi di kode". Model yang belum lulus uji balik ditulis hipotesis; kosong tidak ditulis nol. Tanpa nama orang, nomor, surel, kunci, atau data nyata (repo publik); angka pengaman penyalahgunaan tidak ditulis (Q2). Pertanyaan pemilik yang terbuka ditulis "belum diputuskan (bawaan sementara: ...)". Tampilan memakai token `tema.css` dan kartu standar, tanpa palet sendiri; tidak ada rute API baru; tidak ada salinan docs di modul lain; tinjau di `http://localhost:8800/docs`.
 
 ## 3. Bentuk kerja
 

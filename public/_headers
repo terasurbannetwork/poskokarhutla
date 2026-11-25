@@ -20,6 +20,8 @@
 /bantu.html
   Referrer-Policy: no-referrer
   Content-Security-Policy: script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+/docs/*
+  Content-Security-Policy: script-src 'self'
 /dokumen.html
   Content-Security-Policy: script-src 'self' https://static.cloudflareinsights.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://challenges.cloudflare.com
 /kejadian.html

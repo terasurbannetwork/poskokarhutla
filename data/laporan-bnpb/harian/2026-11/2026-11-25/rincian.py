@@ -19,6 +19,7 @@ def urai_wa(teks):
 
 
 def bersih(t):
+    if re.fullmatch(r'\s*\(?\s*(masih )?dalam pendataan\s*\)?\s*\.?\s*', t, re.I): return 'Pendataan'   # 25 Nov: Mahakam Ulu "Dampak: (dalam pendataan)" sempat jadi strip
     t = re.sub(r'(?<![\d.,/])(?!(?:19|20)\d\d\b)(\d{1,3})(\d{3})(?![\d.,/])', r'\1.\2', t)   # 1147 -> 1.147 (ejaan angka laporan); tahun 19xx/20xx tidak
     t = re.sub(r'\s+-\s+', '–', t).replace('TMA ', 'tinggi air ')   # "Bayang - Solok", "TMA 30 - 50 cm"
     t = re.sub(r'(?<=\S )(Unit )?Rumah\b', 'rumah', t)   # "15 Unit Rumah Terdampak\"
@@ -168,6 +169,8 @@ def gambar(dk, H, isi):
                 d0 = 36576; o += s.kotak(px0 + ax * k - d0 / 2, my0 + ay * k - d0 / 2, d0, d0, '1F2937', 'ellipse')   # titik pusat kab/kota
             cx, cy = px0 + qx * k - d_no / 2, my0 + qy * k - d_no / 2
             o += s.kotak(cx, cy, d_no, d_no, warna_j(x['jenis']), 'ellipse', ln='FFFFFF', lw=9525) + s.tx(cx - 30000, cy, d_no + 60000, d_no, [str(n_)], sz=700, b=True, c='FFFFFF', al='ctr', an='ctr', wrap='none')
+            if x['jenis'] == 'banjir' and x.get('baru'):   # 25 Nov atasan ("kalo kejadian baru pake seru", "terutama untuk banjir"): lencana ! di kanan atas nomor
+                db = 86868; o += s.kotak(cx + d_no - db * .6, cy - db * .4, db, db, H.ORG, 'ellipse', ln='FFFFFF', lw=6350) + s.tx(cx + d_no - db * .6 - 20000, cy - db * .4, db + 40000, db, ['!'], sz=700, b=True, c='FFFFFF', al='ctr', an='ctr', wrap='none')
         if i == I_SKALA:   # pemilik 20 Nov ("ini pindahin"): skala 100 km dan arah utara di pita judul panel yang paling longgar (skala sama untuk semua panel), rata kanan
             lb = 100 / 111 * S * E; yc = py0 + PITA * E / 2; tw_ = s.lebar_runs([('100 km', H.NAVY, False)], 700)
             xu = px0 + pw_e - 54864 - 82296; xt = xu - 73152 - tw_; xs = xt - 45720 - lb
@@ -180,11 +183,19 @@ def gambar(dk, H, isi):
     yl = YB - 91440 - LEG + 45720; xl = MX
     # 22 Nov: lima jenis tidak muat selebar panel peta -> jarak antarlegenda dipersempit secukupnya
     _lw = sum(128016 + 45720 + s.lebar_runs([(nama_j(j), H.TEKS, False)], 700) for j in jenis); gap_ = 164592
-    while gap_ > 45720 and _lw + gap_ * (len(jenis) - 1) > XT - 91440 - MX: gap_ -= 18288
+    _ada_baru = any(x['jenis'] == 'banjir' and x.get('baru') for x in baris)
+    if _ada_baru: _lw += 128016 + 45720 + s.lebar_runs([('banjir baru', H.TEKS, False)], 700)
+    _nl = len(jenis) + (1 if _ada_baru else 0)
+    while gap_ > 45720 and _lw + gap_ * (_nl - 1) > MW: gap_ -= 18288
+    xl = MX + (MW - _lw - gap_ * (_nl - 1)) / 2   # 25 Nov pemilik: legenda "rata tengah"
     for j in jenis:
         d = 128016; t_ = nama_j(j); lw_ = s.lebar_runs([(t_, H.TEKS, False)], 700)
         o += s.kotak(xl, yl + (LEG - 45720 - d) // 2, d, d, warna_j(j), 'ellipse') + s.tx(xl + d + 45720, yl, lw_ + 18288, LEG - 45720, [t_], sz=700, c=H.TEKS, an='ctr', wrap='none')
         xl += d + 45720 + lw_ + gap_
+    if any(x['jenis'] == 'banjir' and x.get('baru') for x in baris):   # legenda lencana !
+        d = 128016; t_ = 'banjir baru'; lw_ = s.lebar_runs([(t_, H.TEKS, False)], 700)
+        o += s.kotak(xl, yl + (LEG - 45720 - d) // 2, d, d, H.ORG, 'ellipse') + s.tx(xl - 20000, yl, d + 40000, LEG - 45720, ['!'], sz=700, b=True, c='FFFFFF', al='ctr', an='ctr', wrap='none')
+        o += s.tx(xl + d + 45720, yl, lw_ + 18288, LEG - 45720, [t_], sz=700, c=H.TEKS, an='ctr', wrap='none')
     # ---- kanan: tabel
     o += s.kotak(XT, Y0, WT, YB - Y0, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=2500)
     o += s.tx(XT + 164592, Y0 + 91440, 4000000, 182880, ['RINCIAN LOKASI KEJADIAN'], sz=750, b=True, c=H.NAVY, spc=100)
@@ -230,6 +241,7 @@ def gambar(dk, H, isi):
         return kk, rumah, lain
 
     def pil_abu(x_, y_, w_, h_, t_):
+        if t_ == 'Pendataan': return s.pil(x_, y_, t_, 'E6EAF0', H.TEKS, 'jam_navy', sz=620, h=h_, w=w_)[0]   # 25 Nov pemilik: "yang pendataan, pillnya pake icon juga"
         t = s.tx(x_, y_, w_, h_, [t_], sz=sz, c=H.TEKS, al='ctr', an='ctr', wrap='none')
         if t_ == 'Pendataan': t = t.replace('<a:rPr lang="id-ID"', '<a:rPr lang="id-ID" i="1"')   # pemilik 20 Nov: "yang pendataan bikin italic"
         return s.kotak(x_, y_, w_, h_, 'E6EAF0', 'roundRect', adj=50000) + t

@@ -18,6 +18,10 @@ Tabel 2.1. Penentuan kejadian untuk setiap jenis bencana
 
 Sumber: batas satu kejadian dan saat selesai dari Rancangan Juklak Tabel 2; tanda peristiwa ancaman dan syarat menjadi kejadian bencana disusun dalam kajian ini. Aturan umum batas satu kejadian ada pada Tabel 1.5.
 
+![Gambar 2.1. Ringkasan penentuan kejadian pada Tabel 2.1 untuk setiap jenis bencana](gbr/pk-jenis.png)
+
+Sumber: sama dengan Tabel 2.1.
+
 ## 2.2 Catatan khusus
 
 Tabel 2.2. Catatan khusus untuk setiap jenis bencana

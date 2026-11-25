@@ -1,0 +1,15 @@
+# Keputusan pemilik yang terbuka
+
+Halaman ini mencatat keputusan pemilik yang masih berstatus bawaan sementara.
+
+## Keputusan pemilik yang masih berstatus bawaan sementara
+
+Pintu Masuk (KEPUTUSAN-MASUK): belum diputuskan (bawaan sementara: tidak ada peran staf yang masuk hanya dengan kode, semua staf wajib sandi) untuk Q2; Q3 (bawaan: admin mengisi peta domain satu per satu, tabel mulai kosong); Q4 (bawaan: tulisan akun belum terverifikasi tampil berlabel "belum terverifikasi", isian modul instansi ditahan sampai akun aktif); Q6 (bawaan: umur sesi seperti sesi tiap peran, akun umum 30 hari); Q11 (bawaan: kode ikut pembatas kirim gerbang WhatsApp yang sama dengan pesan lain).
+
+Profil BPBD (KEPUTUSAN-PROFIL): belum diputuskan (bawaan sementara) untuk Q1 (kode WhatsApp tidak menerbitkan sesi akun pemda), Q2 (PIN 6 angka, kunci 15 menit setelah 5 salah, kunci admin setelah 10 salah sehari), Q3 (admin BNPB mengatur ulang PIN), Q4 (surat tugas dan kartu pegawai tetap wajib, satu kali per akun, di samping 3 PIC), Q5 (sandi lembaga dipegang semua PIC), Q6 (akun Polda, Polres, Kodam, Kodim tidak dibuat dengan model profil), Q7 (log disimpan 2 tahun), Q8 (sesi profil 12 jam), Q9 (PIC yang sedang jaga: semua PIC aktif, yang terakhir aktif lebih dulu), Q10 (waktu respons per BPBD tanpa peringkat, hanya BPBD dengan paling sedikit 5 laporan dalam 30 hari).
+
+Lapangan (KEPUTUSAN-LAPANGAN): U1 ambang wajah final menunggu 200 pasang absen sah; U2 aplikasi Android native untuk deteksi lokasi tiruan belum diputuskan; U3 siapa melihat foto wajah acuan (usulan: Super Admin dan peninjau yang ditunjuk); U4 aturan sertifikat relawan; U5 asuransi relawan dan penyedianya; U6 nama resmi program relawan (usulan: Sayap BNPB, Korps Relawan Gerak Cepat); U7 impor data induk pegawai dari Biro SDM; U8 penerapan migrasi D1 produksi.
+
+LogPal (KEPUTUSAN-LOGPAL): Q2 peran staf penyetuju tahap (sementara pusdalops, koordalops, pimpinan); Q4 rumus standar minimal resmi (Juklak 1/2024 belum didapat, tab Standar memakai draf); Q5 apakah pemprov boleh menulis gudang milik kabupaten; Q6 koreksi stok lewat Ubah barang tanpa jejak mutasi; Q7 kapan impor data asli dijalankan pemilik; Q8 apakah akun BPBD boleh melihat data statis nasional atau dibatasi ke provinsinya; Q9 arti status bantuan; Q10 ambang layak berangkat per moda (layar hanya menampilkan status BMKG tanpa vonis); Q11 sampai Q17 syarat audit (kartu persediaan untuk gudang BPBD, periode laporan pertanggungjawaban, penomoran BAST dan SPPB, FEFO per batch, interval pemeliharaan alat).
+
+Segel dokumen (KEPUTUSAN-SEGEL): Q1 dokumen yang disegel lebih dulu (bawaan fase 1: lk, lkb, dan dokumen PB beku); Q2 halaman publik tanpa akun; Q3 isi halaman verifikasi (jenis, wilayah, periode, versi, penerbit, waktu, status, 12 huruf sidik); Q4 deck generator Python belum diberi QR; Q5 pencabut adalah moderator dan staf pimpinan, alasan hanya untuk staf; Q6 domain `centurisk97.id`; Q7 segel tidak ditambahkan untuk snapshot lama; Q8 retensi selamanya; Q9 60 pencarian per 10 menit, 10 huruf, 3 kali ulang; Q10 kalimat batas klaim hukum menunggu tinjauan bagian hukum BNPB.

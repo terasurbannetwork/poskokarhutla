@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300">
+<defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" class="dg-garis dg-aksen"/></marker></defs>
+<text x="110" y="24" text-anchor="middle" font-size="14" font-weight="bold" class="dg-teks">Sumber</text>
+<text x="360" y="24" text-anchor="middle" font-size="14" font-weight="bold" class="dg-teks">Pengolahan</text>
+<text x="610" y="24" text-anchor="middle" font-size="14" font-weight="bold" class="dg-teks">Layar</text>
+<rect x="10" y="40" width="200" height="70" rx="8" class="dg-kotak"/>
+<text x="110" y="70" text-anchor="middle" font-size="14" class="dg-teks">BMKG dan USGS</text>
+<text x="110" y="92" text-anchor="middle" font-size="13" class="dg-teks-lemah">buletin gempa</text>
+<rect x="260" y="40" width="200" height="70" rx="8" class="dg-kotak"/>
+<text x="360" y="70" text-anchor="middle" font-size="14" class="dg-teks">Cron Worker tiap menit</text>
+<text x="360" y="92" text-anchor="middle" font-size="13" class="dg-teks-lemah">gabung, kelompokkan kejadian</text>
+<rect x="510" y="40" width="200" height="70" rx="8" class="dg-kotak-aksen"/>
+<text x="610" y="70" text-anchor="middle" font-size="14" class="dg-teks">/gempa/</text>
+<text x="610" y="92" text-anchor="middle" font-size="13" class="dg-teks-lemah">status tsunami apa adanya</text>
+<rect x="10" y="130" width="200" height="70" rx="8" class="dg-kotak"/>
+<text x="110" y="160" text-anchor="middle" font-size="14" class="dg-teks">MAGMA PVMBG</text>
+<text x="110" y="182" text-anchor="middle" font-size="13" class="dg-teks-lemah">level, letusan, kegempaan</text>
+<rect x="260" y="130" width="200" height="70" rx="8" class="dg-kotak"/>
+<text x="360" y="160" text-anchor="middle" font-size="14" class="dg-teks">Worker tiap 30 menit</text>
+<text x="360" y="182" text-anchor="middle" font-size="13" class="dg-teks-lemah">dan pipeline harian</text>
+<rect x="510" y="130" width="200" height="70" rx="8" class="dg-kotak-aksen"/>
+<text x="610" y="160" text-anchor="middle" font-size="14" class="dg-teks">/gunungapi/</text>
+<text x="610" y="182" text-anchor="middle" font-size="13" class="dg-teks-lemah">level resmi apa adanya</text>
+<rect x="10" y="220" width="200" height="70" rx="8" class="dg-kotak"/>
+<text x="110" y="250" text-anchor="middle" font-size="14" class="dg-teks">Hujan 7 hari, lereng,</text>
+<text x="110" y="272" text-anchor="middle" font-size="13" class="dg-teks-lemah">tanah, sesar</text>
+<rect x="260" y="220" width="200" height="70" rx="8" class="dg-kotak"/>
+<text x="360" y="250" text-anchor="middle" font-size="14" class="dg-teks">Pipeline banjir dan</text>
+<text x="360" y="272" text-anchor="middle" font-size="13" class="dg-teks-lemah">model longsor, harian</text>
+<rect x="510" y="220" width="200" height="70" rx="8" class="dg-kotak-aksen"/>
+<text x="610" y="250" text-anchor="middle" font-size="14" class="dg-teks">Tab Longsor di /banjir/</text>
+<text x="610" y="272" text-anchor="middle" font-size="13" class="dg-waspada">nowcast: hipotesis</text>
+<line x1="212" y1="75" x2="256" y2="75" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<line x1="462" y1="75" x2="506" y2="75" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<line x1="212" y1="165" x2="256" y2="165" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<line x1="462" y1="165" x2="506" y2="165" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<line x1="212" y1="255" x2="256" y2="255" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+<line x1="462" y1="255" x2="506" y2="255" class="dg-garis" stroke-width="2" marker-end="url(#p)"/>
+</svg>

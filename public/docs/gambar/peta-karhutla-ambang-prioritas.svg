@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300">
+<text x="360" y="22" text-anchor="middle" font-size="15" font-weight="700" class="dg-teks">Garis masuk dan keluar Prioritas provinsi (hotspot per hari)</text>
+<line x1="90" y1="250" x2="690" y2="250" class="dg-garis"/>
+<line x1="90" y1="50" x2="90" y2="250" class="dg-garis"/>
+<line x1="90" y1="210" x2="690" y2="210" class="dg-grid"/>
+<line x1="90" y1="170" x2="690" y2="170" class="dg-grid"/>
+<line x1="90" y1="130" x2="690" y2="130" class="dg-grid"/>
+<line x1="90" y1="90" x2="690" y2="90" class="dg-grid"/>
+<text x="82" y="254" text-anchor="end" font-size="13" class="dg-teks-lemah">0</text>
+<text x="82" y="214" text-anchor="end" font-size="13" class="dg-teks-lemah">50</text>
+<text x="82" y="174" text-anchor="end" font-size="13" class="dg-teks-lemah">100</text>
+<text x="82" y="134" text-anchor="end" font-size="13" class="dg-teks-lemah">150</text>
+<text x="82" y="94" text-anchor="end" font-size="13" class="dg-teks-lemah">200</text>
+<rect x="130" y="70" width="70" height="180" class="dg-bahaya"/>
+<rect x="210" y="160" width="70" height="90" class="dg-waspada"/>
+<rect x="400" y="106" width="70" height="144" class="dg-bahaya"/>
+<rect x="480" y="178" width="70" height="72" class="dg-waspada"/>
+<text x="165" y="62" text-anchor="middle" font-size="14" class="dg-teks">180</text>
+<text x="245" y="152" text-anchor="middle" font-size="14" class="dg-teks">90</text>
+<text x="435" y="98" text-anchor="middle" font-size="14" class="dg-teks">144</text>
+<text x="515" y="170" text-anchor="middle" font-size="14" class="dg-teks">72</text>
+<text x="165" y="268" text-anchor="middle" font-size="13" class="dg-teks">masuk</text>
+<text x="245" y="268" text-anchor="middle" font-size="13" class="dg-teks">keluar</text>
+<text x="435" y="268" text-anchor="middle" font-size="13" class="dg-teks">masuk</text>
+<text x="515" y="268" text-anchor="middle" font-size="13" class="dg-teks">keluar</text>
+<text x="205" y="288" text-anchor="middle" font-size="13" class="dg-teks-lemah">Sampai 2 Nov 2026 (rasio 3,0)</text>
+<text x="475" y="288" text-anchor="middle" font-size="13" class="dg-teks-lemah">Sesudahnya (rasio 2,4)</text>
+<text x="630" y="150" text-anchor="middle" font-size="13" class="dg-teks-lemah">Keluar bila di bawah</text>
+<text x="630" y="168" text-anchor="middle" font-size="13" class="dg-teks-lemah">garis 3 hari berturut</text>
+</svg>

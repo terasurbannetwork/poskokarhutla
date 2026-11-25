@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250"><defs><marker id="p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 Z" class="dg-garis dg-aksen"/></marker></defs>
+<text x="360" y="24" text-anchor="middle" font-size="14" class="dg-teks">Skor kemiripan wajah saat absen (kosinus, 0 sampai 1)</text>
+<rect x="40" y="50" width="288" height="46" class="dg-kotak dg-bahaya"/>
+<rect x="328" y="50" width="96" height="46" class="dg-kotak dg-waspada"/>
+<rect x="424" y="50" width="256" height="46" class="dg-kotak dg-ok"/>
+<text x="184.0" y="78" text-anchor="middle" font-size="13" class="dg-teks">wajah_berbeda</text>
+<text x="376.0" y="78" text-anchor="middle" font-size="13" class="dg-teks">wajah_rendah</text>
+<text x="552.0" y="78" text-anchor="middle" font-size="13" class="dg-teks">cocok</text>
+<line x1="40" y1="96" x2="40" y2="108" class="dg-garis" stroke-width="2"/>
+<text x="40" y="126" text-anchor="middle" font-size="13" class="dg-teks">0</text>
+<line x1="328" y1="96" x2="328" y2="108" class="dg-garis" stroke-width="2"/>
+<text x="328.0" y="126" text-anchor="middle" font-size="13" class="dg-teks">0,45</text>
+<line x1="424" y1="96" x2="424" y2="108" class="dg-garis" stroke-width="2"/>
+<text x="424.0" y="126" text-anchor="middle" font-size="13" class="dg-teks">0,6</text>
+<line x1="680" y1="96" x2="680" y2="108" class="dg-garis" stroke-width="2"/>
+<text x="680" y="126" text-anchor="middle" font-size="13" class="dg-teks">1</text>
+<text x="328.0" y="148" text-anchor="middle" font-size="13" class="dg-teks-lemah">AMBANG_TINJAU</text>
+<text x="424.0" y="168" text-anchor="middle" font-size="13" class="dg-teks-lemah">AMBANG_LOLOS</text>
+<rect x="40" y="188" width="640" height="44" rx="8" class="dg-kotak"/>
+<text x="360.0" y="206.1" text-anchor="middle" font-size="13" class="dg-teks">Di bawah 0,60 absen masuk antrean tinjau manusia, tidak pernah ditolak otomatis</text>
+<text x="360.0" y="223.1" text-anchor="middle" font-size="13" class="dg-teks">Semua ambang berstatus hipotesis sampai 200 pasang absen sah terkumpul</text>
+</svg>
