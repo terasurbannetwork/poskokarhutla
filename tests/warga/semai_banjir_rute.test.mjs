@@ -115,6 +115,35 @@ uji("secret Worker kosong: jalur token mati 401, tanpa nilai cadangan", async ()
   assert.equal((await V.api("GET", "/api/operasi/semai/target", undefined, {})).s, 403);
 });
 
+uji("secret pendek (< 32): jalur token mati 401 walau tokennya cocok", async () => {
+  const V = await siapkan("uji-semai-banjir-pendek", {r2: true, ikat: {SEMAI_TOKEN: "pendek"}});
+  assert.equal((await V.api("GET", "/api/operasi/semai/sasaran", undefined, bear("pendek"))).s, 401);
+  assert.equal((await V.api("GET", "/api/operasi/semai/target", undefined, bear("pendek"))).s, 401);
+});
+
+uji("token sah ditolak 403 di semua rute selain dua GET: POST sasaran, target, hapus sasaran, GET berkas", async () => {
+  const h = bear(TOKEN);
+  assert.equal((await sas({kab: "3175", tanggal: hari}, h)).s, 403);
+  assert.equal((await pos({zona_id: `${P}-BB`, putaran: P, base_id: "PKY", tanggal: hari}, h)).s, 403);
+  assert.equal((await hps({id: "x", alasan: "coba pakai token"}, h)).s, 403);
+  assert.equal((await api("GET", "/api/operasi/semai/berkas/semai_banjir.json", undefined, h)).s, 403);
+  assert.equal(await n("op_semai_sasaran", "kab = '3175'"), 0);
+});
+
+uji("laju dicek sebelum duplikat: akun di batas dapat 429, bukan 409, pada kab yang sudah aktif", async () => {
+  const w = await bikin("Pusdalops Laju C", ["pusdalops"]), kabs = Object.keys(NAMA_KAB4).filter(k => !["3172", "3173", "3174", "3175"].includes(k)).slice(100, 130);
+  for (const k of kabs) assert.equal((await sas({kab: k, tanggal: besok}, w.hp)).s, 201);
+  assert.equal((await sas({kab: kabs[0], tanggal: besok}, w.hp)).s, 429, "duplikat tetap dihitung kuota");
+  assert.equal((await sas({kab: kabs[0], tanggal: besok}, pusdalops.hp)).s, 409);
+});
+
+uji("tabel sasaran belum ada: 503 dengan pesan sendiri tanpa menyebut migrasi 0103", async () => {
+  const V = await siapkan("uji-semai-banjir-lama", {r2: true, ikat: {SEMAI_TOKEN: TOKEN}, sampai: "0176_"});
+  for (const [m, j, b] of [["POST", "/api/operasi/semai/sasaran", {kab: "3172", tanggal: hari}], ["POST", "/api/operasi/semai/sasaran/hapus", {id: "x", alasan: "uji tabel hilang"}], ["GET", "/api/operasi/semai/sasaran", undefined]]) {
+    const r = await V.api(m, j, b, m === "GET" ? bear(TOKEN) : MOD2); assert.equal(r.s, 503, j); assert.doesNotMatch(r.t, /0103/);
+  }
+});
+
 uji("GET target ?sejak=: rentang urut tanggal, tanpa sejak satu hari, validasi", async () => {
   const w = await bikin("Pusdalops Sejak", ["pusdalops"]);
   assert.equal((await pos({zona_id: `${P}-BB`, putaran: P, base_id: "PKY", tanggal: hari}, w.hp)).s, 201);

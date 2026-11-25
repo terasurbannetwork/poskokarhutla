@@ -19,15 +19,19 @@ const sha = async s => new Uint8Array(await crypto.subtle.digest("SHA-256", new 
    Rahasia kosong = jalur mati. Dicek SEBELUM adminOK supaya token pipeline tidak masuk hitungan gagal-admin per IP. */
 async function tokenOK(env, req) {
   const t = (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)$/i)?.[1];
-  if (!t || typeof env.SEMAI_TOKEN !== "string" || !env.SEMAI_TOKEN) return false;
+  if (!t || typeof env.SEMAI_TOKEN !== "string" || env.SEMAI_TOKEN.length < 32) return false;   // < 32 = jalur mati (§4.1)
   const [a, b] = await Promise.all([sha(t), sha(env.SEMAI_TOKEN)]); let d = 0;
   for (let i = 0; i < 32; i++) d |= a[i] ^ b[i];
   return d === 0;
 }
 /* null = boleh; selain itu Response: 401 bila ada Bearer yang tidak sah, 403 bila tanpa kredensial */
 async function bacaAtauToken(env, req, pesan) {
-  if (await tokenOK(env, req) || await bacaOK(env, req)) return null;
-  return gagal(/^Bearer\s/i.test(req.headers.get("authorization") || "") ? 401 : 403, pesan);
+  const bearer = /^Bearer\s/i.test(req.headers.get("authorization") || "");
+  if (await tokenOK(env, req)) return null;
+  // rahasia terpasang + Bearer salah: 401 langsung, tidak lewat adminOK (hitungan gagal-admin per IP bisa mengunci runner pipeline)
+  if (bearer && env.SEMAI_TOKEN) return gagal(401, pesan);
+  if (await bacaOK(env, req)) return null;
+  return gagal(bearer ? 401 : 403, pesan);
 }
 
 async function berkas(env, req, url, kini, ctx, nama) {
@@ -118,10 +122,10 @@ async function sasaranBuat(env, req, url, kini) {
   if (typeof tanggal !== "string" || ![wib(kini), wib(kini + HARI)].includes(tanggal)) return gagal(400, "tanggal harus hari ini atau besok (WIB)");
   if (o.catatan != null && (typeof o.catatan !== "string" || o.catatan.length > 300)) return gagal(400, "catatan maksimal 300 huruf");
   const catatan = o.catatan == null ? null : teks(o.catatan, 300) || null;
-  if (await ssAktif(env, kab, tanggal)) return gagal(409, "kab itu sudah jadi sasaran untuk tanggal itu");
   const awal = new Date(Date.parse(wib(kini) + "T00:00:00+07:00")).toISOString();
-  // ponytail: baca-lalu-tulis tanpa kunci, seperti target; duplikat tetap dijaga indeks unik
+  // laju dulu: pencarian duplikat (409) ikut dihitung. ponytail: baca-lalu-tulis tanpa kunci; duplikat tetap dijaga indeks unik
   if (await ssLajuBuat(env, oleh, awal) >= MAKS_HARI) return gagal(429, `maksimal ${MAKS_HARI} sasaran per hari per akun`);
+  if (await ssAktif(env, kab, tanggal)) return gagal(409, "kab itu sudah jadi sasaran untuk tanggal itu");
   const id = crypto.randomUUID();
   try { await ssSisip(env, id, kab, tanggal, catatan, oleh, new Date(kini).toISOString()); }
   catch (e) { if (/UNIQUE/i.test(String(e?.message || e))) return gagal(409, "kab itu sudah jadi sasaran untuk tanggal itu"); throw e; }
@@ -138,12 +142,16 @@ async function sasaranHapus(env, req, url, kini) {
   return await ssHapus(env, new Date(kini).toISOString(), alasan, oleh, o.id) ? json({ok: true}) : gagal(404, "sasaran tidak ada atau sudah dihapus");
 }
 
+const bungkusSasaran = fn => async (...a) => {
+  try { return await fn(...a); }
+  catch (e) { if (/no such table: op_semai_sasaran/i.test(String(e?.message || e))) return gagal(503, "fitur sasaran semai banjir belum diaktifkan (tabel sasaran belum ada)"); throw e; }
+};
 export const RUTE_SEMAI = Object.fromEntries(Object.entries({
   "GET /api/operasi/semai/berkas/:nama": berkas,
   "GET /api/operasi/semai/target": daftar,
   "POST /api/operasi/semai/target": buat,
   "POST /api/operasi/semai/target/hapus": hapus,
-  "GET /api/operasi/semai/sasaran": sasaranDaftar,
-  "POST /api/operasi/semai/sasaran": sasaranBuat,
-  "POST /api/operasi/semai/sasaran/hapus": sasaranHapus,
+  "GET /api/operasi/semai/sasaran": bungkusSasaran(sasaranDaftar),
+  "POST /api/operasi/semai/sasaran": bungkusSasaran(sasaranBuat),
+  "POST /api/operasi/semai/sasaran/hapus": bungkusSasaran(sasaranHapus),
 }).map(([k, f]) => [k, bungkus(f)]));
