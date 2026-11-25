@@ -12,6 +12,6 @@
   }
  ],
  "alasan_versi": "K6 pemilik 25 Nov 2026: margin pra N = 7 hari (pra paling lambat tanggal DIBI dikurangi 7); belum ada vonis GS-13",
- "jangkar_commit": "401bb6ff4c5a1d0eab16ca0f993c9f418b3ff367",
+ "jangkar_commit": "f5331633ff21784e489d41d8e74001aadccdbbda",
  "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah commit, SEBELUM GS-03 atau GS-13 memulai. prasyarat menolak selama kosong."
 }
