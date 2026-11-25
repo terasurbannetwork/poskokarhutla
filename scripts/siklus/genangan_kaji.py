@@ -6,8 +6,12 @@ lalu paparan (paparan.zona_gfm + hitung_kab), lalu menyusun kaji_banjir.banjir_g
 Versi v<n> naik hanya bila lintasan satu kab berubah; versi lama tidak ditimpa. Tidak mengunggah ke R2 atau D1 (rute Worker dan migrasi = GS-08).
 Provinsi tanpa data/terkunci/bangunan/halus_<prov>.json: penduduk "data bangunan belum tersedia", kab itu keluar dari jiwa_kab_sah, tidak pernah 0.
 Pakai: python3 scripts/siklus/genangan_kaji.py jalan --kj KJ --mulai TGL --kab 1116 1201 [--kering] [--ulang] [--keluar DIR] | prasyarat | uji | vonis
+       python3 scripts/siklus/genangan_kaji.py kirim --keluar AKAR_SAJI [--kj KJ] [--wrangler W] [--basis URL] [--kirim]   (GS-12, siklus.yml; env PIPA_TOKEN)
+  kirim: kejadian Q2 dari Buku Besar (banjir, fase tanggap, mulai <= JENDELA_HARI hari lalu; atau --kj yang dibuka staf), versi terakhir ditarik dari R2,
+  langkah banjir dijalankan ulang, versi baru dikirim ke /api/siklus/ingest/kaji; berkasnya disalin ke --keluar (diunggah gudang.py) HANYA bila D1 menerima
+  versi yang sama, jadi versi di R2 dan baris D1 tetap selangkah.
 """
-import argparse, glob, hashlib, importlib.util, json, math, os, re, shutil, subprocess, sys, tempfile
+import argparse, datetime as dt, glob, hashlib, importlib.util, json, math, os, re, shutil, subprocess, sys, tempfile
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.normpath(os.path.join(AB, "../.."))
@@ -173,6 +177,112 @@ def kirim(muatan, basis, http=None, sungguhan=False):
             (http("POST", basis.rstrip("/") + "/api/siklus/ingest/kaji", b) if sungguhan else "dry-run: rentang %s" % b["ringkas"]["rentang"])) for b in muatan]
 
 
+JENDELA_HARI = 14   # lintasan GFM 0-12 hari sesudah mulai (genangan_nasional.JENDELA_KEJADIAN) + 2 hari jeda terbit GFM; sesudahnya versi tak berubah
+BUCKET = "poskokarhutla-foto"
+
+
+def _gfm(kj, n, hasil, kab):
+    return {"kj": kj, "versi": n, "hasil": hasil, "masukan": {"kj": kj, "kab": kab if len(kab) <= 40 else len(kab),
+                                                               "kriteria_sidik": hasil["kriteria_sidik"], "versi_pipeline": "GS-07"}}
+
+
+def pilih(jendela, sumber, kini, kj=None):
+    """Q2 (bawaan sementara): kejadian banjir berfase tanggap dengan mulai paling lama JENDELA_HARI hari lalu; --kj = kejadian yang dibuka staf
+    (fase apa pun, Worker menolak yang digabung atau dibatalkan). Kab = kab4 kejadian + kab4 baris sumber terpasang. -> [(kj, mulai, [kab4])]"""
+    out = []
+    for e in jendela:
+        if kj:
+            if e["id"] != kj:
+                continue
+        elif not (e.get("jenis") == "banjir" and e.get("fase") == "tanggap" and 0 <= (kini - dt.date.fromisoformat(e["mulai"])).days <= JENDELA_HARI):
+            continue
+        kab = sorted(({e.get("kab4")} | {s.get("kab4") for s in sumber if s.get("kejadian_id") == e["id"] and s.get("status") == "terpasang"}) - {None, ""})
+        if kab:
+            out.append((e["id"], e["mulai"], kab))
+    return out
+
+
+def tarik_r2(wrangler, akar, kj):
+    """Versi yang sudah terbit (v1, v2, ...) dari R2 ke akar lokal supaya versi() melanjutkan nomornya; -> jumlah versi."""
+    n = 0
+    while n < 99:
+        kunci = f"siklus/saji/kaji/{kj}_banjir_gfm_v{n + 1}.json"
+        j = os.path.join(akar, *kunci.split("/"))
+        os.makedirs(os.path.dirname(j), exist_ok=True)
+        if subprocess.run([wrangler, "r2", "object", "get", f"{BUCKET}/{kunci}", "--file", j, "--remote"], capture_output=True).returncode:
+            if os.path.exists(j):
+                os.remove(j)
+            return n
+        n += 1
+    return n
+
+
+def satu(a, http, kj, mulai, kab):
+    """Satu kejadian -> 0 lancar atau dilewati, 1 gagal."""
+    KB = _muat("scripts/siklus/kaji_banjir.py")
+    with tempfile.TemporaryDirectory() as t:
+        ada = tarik_r2(a.wrangler, t, kj) if a.wrangler else 0
+        jalankan_langkah(kj, mulai, kab, ulang=True)
+        n, baru, hasil, masalah, berkas = rakit(kj, kab, t)
+        if masalah:
+            print("MASALAH", kj, "; ".join(masalah))
+            return 1
+        if not baru:
+            print("LEWATI", kj, f"v{n} lintasan tak berubah (R2 {ada} versi)")
+            return 0
+        mu, lw = KB.rencana([], [], None, None, gfm=[_gfm(kj, n, hasil, kab)])
+        for x in lw:
+            print("LEWATI", *x)
+        if not mu:
+            return 0
+        if not a.kirim:
+            print("KERING", kj, f"v{n}", "rentang", mu[0]["ringkas"]["rentang"])
+            return 0
+        r = http("POST", a.basis.rstrip("/") + "/api/siklus/ingest/kaji", mu[0])
+        if r.get("versi") != n:
+            print("GAGAL", kj, f"D1 memberi versi {r.get('versi')}, berkas v{n}; berkas tidak diunggah")
+            return 1
+        # Unggah langsung sesudah D1 menerima (bukan menunggu langkah sinkron di akhir job): baris D1 tanpa berkas R2 membuat jalan berikut
+        # menghitung n lagi sementara D1 memberi n+1 dan CHECK hasil_r2 menolak. Salinan di --keluar tetap ada supaya sinkron mencatat manifest.
+        # ponytail: unggah gagal dua kali = selisih D1 dan R2 yang dirapikan manual (tarik baris D1 itu atau unggah ulang berkasnya)
+        W = _muat("scripts/siklus/gudang.py").Wrangler(a.wrangler) if a.wrangler else None
+        for k in [*(k for k, _ in berkas), hasil["kunci"]]:   # hasil terakhir: berkas yang dirujuk sudah ada saat hasil tampil
+            j = os.path.join(a.keluar, *k.split("/"))
+            os.makedirs(os.path.dirname(j), exist_ok=True)
+            shutil.copyfile(os.path.join(t, *k.split("/")), j)
+            for coba in (1, 2):
+                try:
+                    W and W.put(k, j)
+                    break
+                except RuntimeError as e:
+                    if coba == 2:
+                        print("GAGAL", kj, f"v{n} sudah di D1 tetapi unggah R2 gagal: {e}")
+                        return 1
+        print("KIRIM", kj, f"v{n}", r)
+        return 0
+
+
+def _kirim(a):
+    tk = os.environ.get("PIPA_TOKEN") or sys.exit("butuh env PIPA_TOKEN")
+    P = _muat("scripts/siklus/pasang.py")
+    http, kini = P._http(tk), dt.date.today()
+    dari, sampai = (kini - dt.timedelta(days=365 if a.kj else JENDELA_HARI)).isoformat(), kini.isoformat()
+    daftar = pilih(P._tarik(http, a.basis, "jendela", dari, sampai), P._tarik(http, a.basis, "sumber", dari, sampai), kini, a.kj)
+    if a.kj and not daftar:
+        sys.exit(f"{a.kj} tidak ada di Buku Besar 365 hari terakhir atau tanpa kab")
+    if not a.wrangler:
+        print("PERINGATAN tanpa --wrangler: versi R2 tidak ditarik, penomoran mulai v1")
+    print(f"{len(daftar)} kejadian:", " ".join(kj for kj, _, _ in daftar) or "-")
+    gagal = 0
+    for kj, mulai, kab in daftar:
+        try:
+            gagal += satu(a, http, kj, mulai, kab)
+        except (SystemExit, Exception) as e:   # langkah banjir, HTTP, atau jaringan gagal: kejadian lain tetap jalan
+            print("GAGAL", kj, repr(e))
+            gagal += 1
+    return 1 if gagal else 0
+
+
 def _jalan(a):
     jalankan_langkah(a.kj, a.mulai, a.kab, a.ulang, a.kering)
     KB = _muat("scripts/siklus/kaji_banjir.py")
@@ -188,8 +298,7 @@ def _jalan(a):
         print("  hasil", hasil["kunci"], os.path.getsize(os.path.join(a.keluar, *hasil["kunci"].split("/"))), "B")
     for m in masalah:
         print("MASALAH", m)
-    mu, lw = KB.rencana([], [], None, None, gfm=[{"kj": a.kj, "versi": n, "hasil": hasil, "masukan": {"kj": a.kj, "kab": a.kab if len(a.kab) <= 40 else len(a.kab),
-                                                                                                         "kriteria_sidik": hasil["kriteria_sidik"], "versi_pipeline": "GS-07"}}])
+    mu, lw = KB.rencana([], [], None, None, gfm=[_gfm(a.kj, n, hasil, a.kab)])
     for x in lw:
         print("LEWATI", *x)
     for kj, hs in kirim(mu, "https://centurisk97.id"):
@@ -255,12 +364,26 @@ def _uji():
         gf2 = {**gf, "lintasan": "2025-12-10T23:00:00Z"}
         json.dump({"kj": "KJ-UJI", "mulai": "2025-11-26", "ambang": {}, "sumber": "GFM", "kab": [gf2, tak]}, open(os.path.join(kej, "KJ-UJI.json"), "w"))
         assert rakit("KJ-UJI", ["0001", "0002"], keluar, kej, aceh, "sidik-uji")[:2] == (4, True) and os.path.exists(os.path.join(keluar, "siklus/saji/kaji/KJ-UJI_banjir_gfm_v1.json"))
+    # GS-12 pilih: hanya banjir fase tanggap dalam jendela; --kj melewati saringan; kab = kejadian + sumber terpasang
+    kini = dt.date(2025, 12, 1)
+    jd = [{"id": "KJ-A", "jenis": "banjir", "fase": "tanggap", "mulai": "2025-11-26", "kab4": "1116"},
+          {"id": "KJ-B", "jenis": "banjir", "fase": "terverifikasi", "mulai": "2025-11-26", "kab4": "1201"},
+          {"id": "KJ-C", "jenis": "gempa", "fase": "tanggap", "mulai": "2025-11-26", "kab4": "1201"},
+          {"id": "KJ-D", "jenis": "banjir", "fase": "tanggap", "mulai": "2025-11-01", "kab4": "1201"},
+          {"id": "KJ-E", "jenis": "banjir", "fase": "tanggap", "mulai": "2025-11-27", "kab4": None}]
+    sb = [{"kejadian_id": "KJ-A", "status": "terpasang", "kab4": "1108"}, {"kejadian_id": "KJ-A", "status": "ditolak", "kab4": "1109"},
+          {"kejadian_id": "KJ-A", "status": "terpasang", "kab4": "1116"}]
+    assert pilih(jd, sb, kini) == [("KJ-A", "2025-11-26", ["1108", "1116"])]
+    assert pilih(jd, sb, kini, "KJ-D") == [("KJ-D", "2025-11-01", ["1201"])] and pilih(jd, sb, kini, "KJ-X") == []
     print("uji genangan_kaji: lulus")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("mode", choices=["jalan", "prasyarat", "uji", "vonis"])
+    ap.add_argument("mode", choices=["jalan", "kirim", "prasyarat", "uji", "vonis"])
+    ap.add_argument("--basis", default="https://centurisk97.id")
+    ap.add_argument("--wrangler")
+    ap.add_argument("--kirim", action="store_true", help="kirim: kirim sungguhan ke Worker (tanpa ini kering)")
     ap.add_argument("--kj")
     ap.add_argument("--mulai")
     ap.add_argument("--kab", nargs="*")
@@ -272,6 +395,8 @@ if __name__ == "__main__":
         _uji()
     elif a.mode == "prasyarat":
         sys.exit(subprocess.run([sys.executable, os.path.join(AB, "genangan_kriteria.py"), "prasyarat"]).returncode)
+    elif a.mode == "kirim":
+        sys.exit(_kirim(a))
     elif a.mode == "vonis":
         print("vonis: belum dijalankan (GS-13)")
     else:
