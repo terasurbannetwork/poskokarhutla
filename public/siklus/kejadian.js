@@ -94,7 +94,7 @@ async function daftar(isi, sk) {
         h("tbody", {}, rs.map(r => { const d = r.dampak || {}, lb = d.logbook?.meninggal; return h("tr", {}, h("td", {}, r.id), h("td", {}, selWilayah(r.kab4)), h("td", {class: "t"}, tgl(r.mulai)),
           kolom.map(k => { const x = d.dibi?.[k]; return h("td", {class: "t"}, x ? nilai(x.n, x.y, {sumber: "DIBI", waktu: x.t}) : "tidak ada data"); }),
           h("td", {class: "t"}, lb ? nilai(lb.n, lb.y, {sumber: "Logbook Pusdalops", waktu: lb.t}) : "tidak ada data"), h("td", {}, r.sinyal), h("td", {}, r.peringatan)); })))),
-      S.kasus.tanpa_dampak_dibi?.[j] ? h("p", {class: "sk-cat"}, `${S.kasus.tanpa_dampak_dibi[j].toLocaleString("id-ID")} kejadian lain tercatat di Logbook tetapi tidak punya angka DIBI, jadi tidak ikut diurutkan.`) : null)));
+      S.kasus.tanpa_dampak_dibi?.[j] ? h("p", {class: "sk-cat"}, `${angka(S.kasus.tanpa_dampak_dibi[j])} kejadian lain tercatat di Logbook tetapi tidak punya angka DIBI, jadi tidak ikut diurutkan.`) : null)));
   }
   function gambar() {   // isi berat: tabel per halaman 50 baris
     if (S.rentang === "kasus") return S.kasus ? gambarKasus() : undefined;

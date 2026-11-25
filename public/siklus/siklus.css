@@ -159,3 +159,6 @@ main.peta .ex-leg{background:var(--card);border:1px solid var(--line);border-rad
   .sk-detail[data-m="gfm"] #kj-peta{order:2}
   .sk-peta{height:220px}
 }
+/* judul kartu Siklus berupa kalimat dengan angka .hl; dasbor.css (kepala seksi pola /operasi) membuat h3 flex, sehingga tiap .hl dan potongan teks jadi butir flex,
+   spasi di tepinya hilang dan kalimat pecah. Spesifisitas (1,4,2) menang atas aturan dasbor (1,4,1) walau dasbor.css dimuat sesudahnya. */
+:is(html,#_) body .ex.ex-std>.ex-hd .ex-jd>h3{display:block}
