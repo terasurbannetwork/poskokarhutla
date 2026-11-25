@@ -1,4 +1,4 @@
-/* Admin foto lapangan (/admin/foto): antrean persetujuan, yang tayang, yang ditolak, komentar, dan tombol dummy 🧪/🧹.
+/* Admin foto lapangan (/admin/foto): antrean persetujuan, yang tayang, yang ditolak, dan komentar. Tombol dummy 🧪/🧹 disembunyikan (pemilik 11 Nov 2026); baris dummy lama yang tersisa ditandai pil "Contoh".
    CSP admin: tanpa skrip/gaya inline, jadi semua gaya lewat kelas di foto.css. Data dari /api/foto/admin (sesi admin). */
 (() => {
   const app = document.getElementById("app"), API = "/api/foto";
@@ -18,7 +18,7 @@
       [f.exif_jarak == null ? "Tanpa GPS EXIF" : `GPS EXIF ${f.exif_jarak} m dari perangkat`, f.exif_jarak == null ? "sedang" : "baik"]];
     for (const c of (f.gps_curiga || "").split(" · ").filter(Boolean)) L.push([`Curiga GPS palsu: ${c}`, "buruk"]);
     if (f.aduan) L.push([`${f.aduan} aduan`, "buruk"]);
-    if (f.dummy) L.push(["DUMMY", "dummy"]);
+    if (f.dummy) L.push(["Contoh", "dummy"]);
     return L.map(([t, k]) => `<span class="af-l ${k}">${esc(t)}</span>`).join("");
   }
   const kartu = f => `<article class="af-k" data-id="${f.id}">
@@ -42,7 +42,7 @@
   }
   /* table-app: kepala kolom tetap tergambar walau kosong (selera #94); di HP jadi kartu lewat data-label. */
   const komentar = xs => `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr><th>Waktu</th><th>Komentar</th><th>Foto</th><th>Aduan</th><th>Aksi</th></tr></thead><tbody>${xs.length ? xs.map(k => `<tr class="${k.disembunyikan ? "af-sembunyi" : ""}">
-    <td class="w" data-label="Waktu">${jam(k.dibuat)}</td><td data-label="Komentar"><span><b>${esc(k.nama || "Warga")}</b> ${esc(k.teks)}${k.dummy ? ' <span class="af-l dummy">DUMMY</span>' : ""}</span></td><td data-label="Foto"><a href="/f/${k.foto_id}" target="_blank" rel="noopener">${esc(k.kab)}</a></td><td class="n" data-label="Aduan">${k.aduan}</td>
+    <td class="w" data-label="Waktu">${jam(k.dibuat)}</td><td data-label="Komentar"><span><b>${esc(k.nama || "Warga")}</b> ${esc(k.teks)}${k.dummy ? ' <span class="af-l dummy">Contoh</span>' : ""}</span></td><td data-label="Foto"><a href="/f/${k.foto_id}" target="_blank" rel="noopener">${esc(k.kab)}</a></td><td class="n" data-label="Aduan">${k.aduan}</td>
     <td class="a"><button class="ad-tombol kecil" data-k="${k.id}" data-a="${k.disembunyikan ? "tampilkan_komentar" : "sembunyikan_komentar"}">${k.disembunyikan ? "👁️ Tampilkan" : "🙈 Sembunyikan"}</button></td></tr>`).join("") : '<tr><td colspan="5" class="af-kosong-baris">Belum ada komentar.</td></tr>'}</tbody></table></div>`;
 
   /* tombol dummy 🧪/🧹 (DUMMY.md) tinggal di slot kanan judul halaman, di luar #app yang dirender ulang tiap ganti tab */
