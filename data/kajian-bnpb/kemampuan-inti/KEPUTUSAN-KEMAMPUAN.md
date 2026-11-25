@@ -25,6 +25,10 @@ Inventaris 24 Nov 2026 (`riset/R1` sampai `riset/R4`, sekitar 330 teknik dengan 
 | K4 | 24 Nov 2026 | Kerjakan semuanya sampai selesai, dan yang dikerjakan harus berguna. Pemilik: "setelah selesai gas kerjain semuanya. Pastikan tapi berguna ya. Gw ga mau tau harus sampai selesai." |
 | K5 | 10 Nov 2026 | Paket dokumen dulu, baru kode (AGENTS.md 3.7). |
 | K6 | 15 Nov 2026 | Kerja jalan terus dengan bawaan sementara untuk hal yang bisa diputuskan (dari KEPUTUSAN-PARITAS K10). |
+| K7 | 25 Nov 2026 | Riset model terbaik, ambisius, dan pensiunkan komponen yang tidak berguna. Pemilik: "Lakukan riset untuk bisa memberikan model terbaik. Riset mendalam. Be ambitious. Kemudian jika ada yang menuh\"in modelnya menurut lu ga guna lagi ya pensiunkan aja", "Gw mau sempurna". Hasil riset di `riset/R5-model-terbaik.md`. |
+| K8 | 25 Nov 2026 | Laporan harian Dirdalops dipakai sebagai label uji. Pemilik: "Lu bisa gunakan juga kan laporan\" harian dari dirdalops", "Ya uji dengan dalops". |
+| K9 | 25 Nov 2026 | Semua bencana yang bisa dideteksi satelit dirakit, terutama Himawari (per 10 menit). Pemilik: "Terapkan yang satelit", "Gas kan semua yang bisa dideteksi satelit gas. Terutama Himawari lagi soalnya data nya per 10 menit", "Oke tolong dirakit". |
+| K10 | 25 Nov 2026 | Prioritas penanganan lintas bencana = peluang dari model teruji x paparan / kapasitas; AHP hanya untuk bobot paparan (menjawab Q9). Pemilik: "Gas gw sepakat sama lu". |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -55,3 +59,4 @@ Inventaris 24 Nov 2026 (`riset/R1` sampai `riset/R4`, sekitar 330 teknik dengan 
 | Q6 | Model eskalasi kejadian berjalan untuk banjir (kejadian aktif akan meluas dalam 48 jam) dibangun? Labelnya dari status kita sendiri, jadi berisiko melingkar. | **[BAWAAN SEMENTARA]** dibangun sebagai riset dengan label dari logbook dan DIBI (bukan status kita) dan pra-registrasi. Bila label bebasnya kurang dari 200 kejadian, tiket ditutup sebagai "data tidak cukup" tanpa model. | KI-30 |
 | Q7 | Persentase dan ambang mutu label di ALGORITMA 5 (klimatologi + 0,05, cakupan ≥ 80% bulan) tanpa sumber. | **[BAWAAN SEMENTARA]** dipakai sebagai ambang awal berlabel bawaan, dilaporkan bersama angka mentahnya supaya bisa diubah pemilik. | KI-16 |
 | Q8 | Putaran email pertama sesudah deploy KI-50 akan mengirim semua peringatan resmi yang masih berlaku (rob sampai 24 jam, kekeringan sampai 11 hari, kenaikan gunung api 2 hari) ke semua pelanggan yang cocok. | **[BAWAAN SEMENTARA]** hanya pada putaran pertama kanal resmi (belum ada satu pun kunci `x|` di `ews_terkirim`): semua peringatan resmi yang sedang berlaku dicatat sebagai terkirim tanpa email. Sesudah itu peringatan resmi dikirim normal (dedupe, batas per putaran, kedaluwarsa disaring). | KI-50 |
+| Q9 | Prioritas penanganan memakai AHP? | **DIJAWAB K10**: AHP hanya untuk bobot paparan (rasio konsistensi < 0,1), peluang dari model teruji. | KI-89 |

@@ -388,6 +388,10 @@ def main():
     titik = [(k["lat"], k["lon"]) for k in kota]
     waktu, seri = cams(titik)
     blok_kor, f_kota = koreksi_bmkg(kota, alat.keluaran("koreksi_bmkg.json", {}), alat.keluaran("bmkg_pm25.json", {}).get("stasiun", []))
+    # KI-74: faktor stasiun dipensiunkan dari keluaran; angka mentah CAMS tetap tampil "belum dikoreksi" sampai gerbang mos_ridge_pm25_bmkg lolos.
+    # koreksi_bmkg() dan koreksi_bmkg.json tetap sebagai catatan uji; hasilnya tidak lagi dipakai menampilkan.
+    blok_kor.update(status="belum", metode="angka mentah CAMS, belum dikoreksi (faktor stasiun dipensiunkan; MOS ridge KI-74 menunggu uji prospektif)")
+    f_kota = {}
     galat_st = None
     baris, hari, jam, rw = hitung(kota, waktu, seri[:len(kota)], t, f_kota)
 

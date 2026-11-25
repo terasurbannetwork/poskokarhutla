@@ -30,7 +30,6 @@
   "public/gempa/data/batimetri.json",
   "public/gempa/data/katalog_merusak.json",
   "public/gempa/data/katalog_tsunami.json",
-  "public/gempa/data/vs30.json",
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
@@ -38,8 +37,11 @@
    "alasan": "Pemilik 22 Nov 2026: pengecualian bertanggal. Nomor BPBD dan damkar dipanen tangan dari situs .go.id, tiap nomor dicek tertulis di halaman sumbernya (data/kajian-bnpb/lapor-ai/riset/kontak-bpbd, K88, Q64). Pengecek otomatis tidak dipakai karena banyak situs BPBD menolak bot dan akan membuang nomor yang masih benar. Panen diulang manual berkala. Dipakai src/lapor_info.js dan src/lapor_ai.js lewat src/lapor_kontak.js.",
    "tanggal": "2026-11-22"
   },
-  "public/banjir/data/faktor_orografi.json": {"alasan": "Faktor orografi 850 hPa pra-registrasi H20 (scripts/banjir/PRAREG-OROGRAFI.md, 24 Nov 2026): dihitung banjir.yml dan dibekukan sebelum dipakai; pemakainya skor prospektif M1 lawan M0, belum ada layar sebelum vonis (K3). Dicatat sesi LK-06 supaya push tidak tertahan; pengerja model-banjir menyambungkan pemakai atau menghapus pengecualian ini.", "tanggal": "2026-11-24"},
-    "public/banjir/data/uji_aifs.json": {
+  "public/banjir/data/faktor_orografi.json": {
+   "alasan": "Faktor orografi 850 hPa pra-registrasi H20 (scripts/banjir/PRAREG-OROGRAFI.md, 24 Nov 2026): dihitung banjir.yml dan dibekukan sebelum dipakai; pemakainya skor prospektif M1 lawan M0, belum ada layar sebelum vonis (K3). Dicatat sesi LK-06 supaya push tidak tertahan; pengerja model-banjir menyambungkan pemakai atau menghapus pengecualian ini.",
+   "tanggal": "2026-11-24"
+  },
+  "public/banjir/data/uji_aifs.json": {
    "alasan": "Sakelar vonis uji balik AIFS yang dibaca ansambel_hujan.py (aifs_lolos, lewat path UJI_AIFS); bukan data tampil.",
    "tanggal": "2026-11-11"
   },

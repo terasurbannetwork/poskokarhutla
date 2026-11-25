@@ -1,0 +1,13 @@
+{
+ "sidik": "23052cf6162522d8",
+ "berkas": {
+  "scripts/udara/mos_ridge.kriteria.json": "2d0190d4d71b807b8bcf300fc84e2cbeb78d2a6eeaaeff5f2987390fd0e00b17",
+  "scripts/udara/mos_ridge.py": "d20e7b02b00f0d33a9d277b2b50c0d6a1253df85bcbe2e3cb93865f526995a78"
+ },
+ "masukan": [
+  "d72938be9cafd3a1034cd90c47c9f9608558dc12cde1caf1f11712122d8b8b4f",
+  "n=14035",
+  "tgl_kunci=2026-11-25"
+ ],
+ "dibuat": "2026-11-25T01:59:05Z"
+}
