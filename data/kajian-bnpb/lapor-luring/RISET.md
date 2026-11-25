@@ -18,6 +18,24 @@ Tiga bagian: apa yang sudah ada di repo (diukur 21 Nov 2026), fakta platform den
 | Ukuran halaman | `lapor.js` 163 KB, `lapor.css` 188 KB, `index.html` 37 KB, `edukasi.json` 46 KB. Cangkang luring harus memuat semuanya. | `public/lapor/` |
 | CSP | `worker-src 'self' blob: https://cdnjs.cloudflare.com`; service worker dari asal sendiri diizinkan. | `public/_headers` |
 
+### 1.1 Pengukuran LR-01 (25 Nov 2026)
+
+Diukur di produksi `https://centurisk97.id` dengan curl dan Chrome lewat Playwright (`context.setOffline`), sesudah `public/sw-lapor.js` (VERSI `pb-lapor-1`, 21 Nov 2026) terbit. Baris "Service worker: tidak ada" di tabel atas sudah tidak berlaku.
+
+| Hal | Temuan | Rujukan |
+| --- | --- | --- |
+| URL kanonik | `/lapor` dan `/lapor/` sama-sama menjawab 200 langsung (`private, no-store`), **tanpa pengalihan**. Rute `^/lapor/?$` menyajikan `/lapor/index.html`. Registri peta situs, menu, pengalihan `/warga`, bot WA, dan poster memakai `/lapor` tanpa garis miring (23 rujukan `"/lapor"` lawan 26 `"/lapor/"` di `public`, `src`, `scripts/wa`). | `src/gerbang_halaman.js:63`, `src/peta_situs.js:57`, `src/worker.js:942` |
+| Pendaftaran SW | Didaftarkan `public/lapor/peringatan.js:22` dengan scope `/lapor/`, di tiap halaman `/lapor/index.html`. `luring.js` tidak mendaftarkan apa pun. | `public/lapor/peringatan.js` |
+| Scope lawan URL | Halaman yang dibuka lewat `/lapor` **tidak dikendalikan** SW (`navigator.serviceWorker.controller` kosong; registrasi ada). Dalam mode luring `/lapor` gagal `ERR_INTERNET_DISCONNECTED`. `/lapor/`, `/lapor/?dari=pwa` (start_url manifest), dan `/lapor/?aksi=darurat` terbuka dari simpanan, tombol darurat dan `PbAntre` ada. Artinya warga yang memakai tautan biasa tidak mendapat cangkang luring; aplikasi terpasang dapat. | uji Playwright |
+| Jangan perlebar scope | Scope `/lapor` (tanpa garis miring) juga menjangkau `/laporan`, `/laporan-bnpb`, `/laporan.html`. Tetap `/lapor/`. Perbaikan yang disarankan: Worker mengalihkan `GET /lapor` ke `/lapor/` dengan query tetap (milik `warga-api`, `src/gerbang_halaman.js`), atau semua tautan diganti `/lapor/`. Pengalihan lebih murah dan menjangkau tautan lama di poster dan WA. | `DESAIN-TEKNIS.md` 2.1 |
+| Cangkang terpasang | 28 berkas, 2.426.570 byte (2,43 MB) di simpanan `pb-lapor-1-cangkang`. Di atas batas ukur HIPOTESIS 2 MB; terbesar `lapor.css` 248 KB, `lapor.js` 198 KB, lima foto `/img/*.jpg` dari CSS. Daftar aset dibaca SW dari halamannya sendiri (`asetHalaman`), jadi semua `src` dan `href` lokal di `index.html` ikut, termasuk impor modul yang dimuat saat halaman pertama dibuka. | `public/sw-lapor.js` |
+| Berkas dimuat `index.html` | 17 berkas lokal: `/halaman_awal.js`, `/bnpb/bnpb.css`, `/inti/kartu.css`, `/lapor/lapor.css`, `/lapor/selamat.css`, `/inti/exif.js`, `/inti/foto_kecil.js`, `/inti/antre.js`, `/bagi.js`, `/lapor/lapor.js`, `/lapor/peringatan.js`, `/lapor/luring.js`, `/bnpb/turnstile.js`, `/lapor/selamat.js`, ikon, lambang, manifest; impor modul `maskot.js`, `ilustrasi.js`, `alun_kabar.js`, `selamat_murni.js`. | `public/lapor/index.html` |
+| Gagal saat luring | `/admin/admin.css`, `/bagi.css`, `/bencana.json` (di luar awalan yang dilayani SW: `/lapor/`, `/inti/`, `/img/`, `/bnpb/`, `/bagi.js`), `/api/lapor/bahasa`, `/api/masuk/saya`. Halaman tetap terbuka; `bencana.json` dan dua CSS perlu masuk daftar SW di LR-03. `GET /api/lapor/penting` (nomor penting) belum disimpan SW, padahal `DESAIN-TEKNIS.md` 2.1 memintanya. | uji Playwright |
+| Berkas tanpa `?v=` | SW menyajikan semua aset statis simpanan-dulu, termasuk yang tanpa `?v=` (`/inti/tema.css`, `/lapor/edukasi.json`, impor modul tanpa versi). `DESAIN-TEKNIS.md` 2.1 meminta stale-while-revalidate untuk itu; kini berkas tersebut baru diperbarui saat `VERSI` SW naik. | `public/sw-lapor.js` |
+| Berkas terjemahan | `/lapor/tr/<bahasa>.json` sekitar 200 KB per bahasa, disimpan SW hanya sesudah bahasa itu pernah dipakai saat ada sinyal. | `public/lapor/lapor.js:1749` |
+| Putar ulang dengan korban "ya" | `luring.js` memutar ulang Lapor darurat; bila korban "ya", mesin masuk langkah `darurat_isi` (K98: terjebak, butuh medis) yang tidak dikenali `putarUlang`, sehingga butir dijawab 409 dan ditandai ditolak. Laporan luring yang paling penting tidak terkirim. Perlu dibetulkan di LR-04 (milik `layar-peta`). | `src/lapor_mesin.js:659`, `public/lapor/luring.js` |
+| Produksi lawan folder kerja | `lapor.css` produksi 248 KB, folder kerja 275 KB; ukuran di atas adalah produksi. | |
+
 ## 2. Fakta platform
 
 | Fakta | Sumber | Status |
