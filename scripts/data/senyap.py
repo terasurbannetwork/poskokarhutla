@@ -13,11 +13,16 @@ BATASAN  : laporan WARGA/BPBD yang baru masuk D1 tidak terjangkau dari pipeline 
 Konteks  : "N dari M tahun" = logbook_riwayat.json kab.tahun_ada[jenis][bulan sinyal], M = len(tahun_penuh) data (bukan angka tetap).
 Pakai: python3 scripts/data/senyap.py      python3 scripts/data/senyap.py uji
 """
-import collections, datetime as dt, json, os, sys
+import collections, datetime as dt, importlib.util, json, os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from wilayah import AKAR  # noqa: E402
 import belum_lapor as BL  # noqa: E402
+
+# inti lintas bencana (KI-53); nama "umum_senyap" supaya tak bentrok dengan modul ini
+_s = importlib.util.spec_from_file_location("umum_senyap", os.path.join(AKAR, "scripts/umum/senyap.py"))
+INTI = importlib.util.module_from_spec(_s)
+_s.loader.exec_module(INTI)
 
 AMBANG_TITIK, KUAT_TITIK, JENDELA, RENGGANG, BASI_HARI, LEVEL_MIN = 10, 50, 3, 2, 3, 2
 STATUS = os.path.join(AKAR, "public/banjir/data/status.json")
@@ -38,7 +43,7 @@ def laporan_terakhir(episode):
 
 
 def tanpa_laporan(lap, jenis, kab, awal):
-    return not any(b >= awal - dt.timedelta(days=RENGGANG) for _, b in lap.get((jenis, kab), []))
+    return INTI.tanpa_laporan(lap, jenis, kab, awal, RENGGANG)
 
 
 def sinyal_karhutla(titik, akhir):
@@ -55,16 +60,7 @@ def sinyal_karhutla(titik, akhir):
 
 def sinyal_status(status):
     """status.json -> {(jenis, 'prov|kab'): (level maks, hari pertama level >= LEVEL_MIN, n kec)} untuk hari ke-0 dan ke-1."""
-    hari, o = status["hari"], {}
-    for kk, v in status["kec"].items():
-        kab = "|".join(kk.split("|")[:2])
-        for jenis, arr in (("banjir", v["b"]), ("longsor", v["l"])):
-            idx = [i for i in range(min(2, len(arr))) if arr[i] >= LEVEL_MIN]
-            if not idx:
-                continue
-            lv, sejak, n = o.get((jenis, kab), (0, hari[idx[0]], 0))
-            o[(jenis, kab)] = (max(lv, max(arr[:2])), min(sejak, hari[idx[0]]), n + 1)
-    return o
+    return INTI.sinyal_status(status)
 
 
 def konteks(riwayat, kab, jenis, bulan):

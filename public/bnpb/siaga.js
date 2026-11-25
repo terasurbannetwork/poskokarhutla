@@ -20,7 +20,10 @@
   const blnTh = d => `${BLN[d.getUTCMonth()].slice(0, 3)} ${d.getUTCFullYear()}`;
   const wibKini = () => new Date(Date.now() + 7 * 36e5);
 
-  let D, SEN, KB, SU, kode, bulan, ref, boxIsi, sedangDummy = false;
+  const SENYAP_LAIN = ["banjir", "longsor", "kekeringan"];   // berkas public/data/senyap/<jenis>.json (KI-53); hilang atau rusak = jenis itu absen
+  const LONJ_BERKAS = ["karhutla", "udara"];   // berkas public/data/lonjakan/<sumber>.json (KI-52)
+  let BATAS = [];
+  let D, SEN, KB, SU, BER, LONJ, kode, bulan, ref, boxIsi, sedangDummy = false;
 
   /* ---------- tanggal SOP: awal musim terdekat yang belum berakhir terhadap acuan ---------- */
   /* ponytail: musim bimodal memakai bulan 'mulai' pertama saja; pecah per runtun bila ada kab yang perlu */
@@ -168,6 +171,32 @@
     return blok("logistik", judul, seg, kotak);
   }
 
+  /* ---------- pasangan berantai KI-51 (berantai_lift.json): nasional, hanya Pusdalops; buka=false tidak pernah jadi peringatan ---------- */
+  function berantaiBaris() {
+    const P = BER?.pasangan; if (!P || typeof P !== "object") return [];
+    return Object.entries(P).map(([kunci, x]) => {
+      if (!x || typeof x !== "object") return null;
+      const a = kunci.split(">"), nama = `${label(a[0]).replace("Gempabumi", "Gempa bumi")}${x.pemicu ? ` (${x.pemicu})` : ""}, lalu ${namaJenis(a[1].split("_")[0]).toLowerCase()}${a[1].includes("_") ? " " + a[1].split("_")[1] : ""}`;
+      const tersedia = x.tersedia !== false && Number.isFinite(x.n);
+      const buka = tersedia && x.buka === true && Array.isArray(x.ci95);
+      const status = !tersedia ? pil("data tidak tersedia", "tunggu", "senyap") : buka ? pil(`${F(x.lift)} kali hari biasa`, "bahaya", "peringatan") : pil("belum terbukti", "info", "senyap");
+      const rinci = !tersedia ? (x.alasan || "") : `${F(x.k)} dari ${F(x.n)} kejadian pemicu disusul dalam ${x.radius_km ? F(x.radius_km) + " km dan " : ""}${F(x.jendela_hari)} hari; hari biasa ${F(Math.round(x.dasar * 100))} dari 100; lift ${F(x.lift)}, selang ${F(x.ci95[0])} sampai ${F(x.ci95[1])}.`;
+      return h("div", {class: "sg-sop"}, h("h3", null, ikon(a[0]), nama, tersedia ? pil(`${F(x.n)} kejadian nasional`, "info", "daftar") : null, status), rinci ? h("p", {class: "lb-p lb-pudar", teks: rinci}) : null);
+    }).filter(Boolean);
+  }
+
+  /* ---------- lonjakan KI-52 (lonjakan/*.json): deteksi, bukan prakiraan; berkas hilang = sumber itu absen ---------- */
+  function lonjakan() {
+    const sumber = (LONJ || []).filter(x => x && Array.isArray(x.lonjakan));
+    const kepala = sumber.map(x => `${x.label || "deteksi lonjakan, bukan prakiraan"}. ${x.sumber || ""}. ${x.aturan || ""} Backtest: menyala ${F(x.backtest?.n_menyala ?? 0)} dari ${F(x.backtest?.n_pasang ?? 0)} pasangan sasaran-hari (${F(Math.round((x.backtest?.tingkat_menyala ?? 0) * 10000) / 100)} persen).`).join("\n\n");
+    const rows = sumber.flatMap(x => x.lonjakan.map(l => ({...l, satuan: x.satuan, tanggal: x.tanggal})));
+    const isi = !sumber.length ? kosong("senyap", "Berkas lonjakan belum terbit.") : !rows.length ? kosong("senyap", "Belum ada lonjakan.")
+      : h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Sasaran", "Hitungan", "Biasanya", "Tanggal"].map(t => h("th", {teks: t})))), h("tbody", null, ...rows.slice(0, 15).map(r => h("tr", null, h("td", {teks: String(r.nama || r.id)}), h("td", {class: "n", teks: F(r.n)}), h("td", {class: "n", teks: F(r.rerata)}), h("td", {teks: r.tanggal ? tglF(new Date(r.tanggal)) : "–"}))))));
+    /* bagian di dalam kartu Daerah senyap (sinyal kuat yang belum dilaporkan), bukan kartu sendiri */
+    const sub = h("h3", {teks: "Lonjakan"}); sub.title = kepala || "Deteksi lonjakan, bukan prakiraan.";
+    return h("div", {class: "lb-lonjakan"}, sub, isi);
+  }
+
   /* ---------- bencana susulan (logbook_susulan.json), deskriptif ---------- */
   function susulan() {
     const v = D.kab[kode], kk = `${kode.slice(0, 2)}|${v.nama}`, judul = `Bencana susulan ${v.nama}`;
@@ -187,7 +216,7 @@
     const isi = baris.map(({a, c, nas, kal, hari0, nol}) => h("div", {class: "sg-sop"}, h("h3", null, ikon(a[0]), `${label(a[0]).replace("Gempabumi", "Gempa bumi")}, lalu ${NJ(a[1])}`, c ? pil(`${F(c.n)} kejadian di kab/kota`, "info", "daftar") : pil("kab/kota ini belum cukup kejadian (minimal 10 pemicu, 5 disusul)", "tunggu", "senyap"), c && (!c.ci95 || nol(c)) ? pil(c.ci95 ? "tidak berbeda dari kebetulan" : "tanpa klaim lift", "info", "senyap") : c ? pil(`${F(c.lift)} kali hari biasa`, "bahaya", "peringatan") : null),
       c ? h("p", {class: "lb-p", teks: kal(c, v.nama)}) : null, c && hari0(c, v.nama) ? h("p", {class: "lb-p lb-pudar", teks: hari0(c, v.nama)}) : null,
       nas ? h("p", {class: "lb-p lb-pudar", teks: kal(nas, "seluruh Indonesia")}) : null, nas && hari0(nas, "seluruh Indonesia") ? h("p", {class: "lb-p lb-pudar", teks: hari0(nas, "seluruh Indonesia")}) : null));
-    return blok("peringatan", judul, ...isi, kaki(`Menghitung seberapa sering jenis kedua tercatat di kab/kota yang sama setelah jenis pertama, dibanding peluang jendela yang sama di hari acak (kab/kota dan bulan-dalam-tahun sama). Selang yang mencakup 1 = tidak bisa dibedakan dari kebetulan, jadi tidak ada klaim. Deskriptif dari laporan Pusdalops, bukan ramalan; satu kejadian yang dilaporkan sebagai dua jenis ikut terhitung. Kab/kota tampil bila minimal 10 kejadian pemicu dan 5 yang disusul; kab/kota tidak diurutkan menurut kenaikan karena perbandingan berganda membuat sebagian angka tinggi muncul kebetulan. Selang: ${SU.ci_metode || "bootstrap"}. Tahun dasar ${thRingkas(SU.tahun_dasar)}.`));
+    return blok("peringatan", judul, ...isi, ...berantaiBaris(), kaki(`Menghitung seberapa sering jenis kedua tercatat di kab/kota yang sama setelah jenis pertama, dibanding peluang jendela yang sama di hari acak (kab/kota dan bulan-dalam-tahun sama). Selang yang mencakup 1 = tidak bisa dibedakan dari kebetulan, jadi tidak ada klaim. Deskriptif dari laporan Pusdalops, bukan ramalan; satu kejadian yang dilaporkan sebagai dua jenis ikut terhitung. Kab/kota tampil bila minimal 10 kejadian pemicu dan 5 yang disusul; kab/kota tidak diurutkan menurut kenaikan karena perbandingan berganda membuat sebagian angka tinggi muncul kebetulan. Selang: ${SU.ci_metode || "bootstrap"}. Tahun dasar ${thRingkas(SU.tahun_dasar)}.`));
   }
 
   const DUM_DESA = ["Desa Contoh Hulu", "Desa Contoh Tengah", "Desa Contoh Hilir", "Desa Contoh Seberang"];
@@ -224,7 +253,10 @@
     };
     for (const [n, t, ik] of [["kab", "Kab/kota ini", "pin"], ["semua", "Semua daerah", "daftar"]]) { const i = h("input", {type: "radio", name: "sgsen", value: n, checked: n === "kab"}); i.addEventListener("change", () => { semua = n === "semua"; gambar(); }); toggle.append(h("label", null, i, ikon(ik), t)); }
     gambar();
-    return blok("senyap", SEN?.acuan ? `Daerah senyap per ${tglF(new Date(SEN.acuan))}` : "Daerah senyap", toggle, box, kaki(SEN?.batasan || "Sinyal satelit atau cuaca yang belum disertai laporan. Daftar tanya, bukan vonis."));
+    const b = blok("senyap", SEN?.acuan ? `Daerah senyap per ${tglF(new Date(SEN.acuan))}` : "Daerah senyap", toggle, box);
+    b.querySelector("h2").title = BATAS.join("\n\n") || "Sinyal satelit atau cuaca yang belum disertai laporan. Daftar tanya, bukan vonis.";   // batasan tiap berkas di kepala, tanpa kaki (AGENTS 3.5)
+    b.append(lonjakan());
+    return b;
   }
 
   /* ---------- susunan halaman ---------- */
@@ -239,7 +271,7 @@
       ubin("kalender", `Masuk musim ${BLN[bulan - 1]}`, F(musim.length), musim.length ? musim.map(namaJenis).join(", ") : "tidak ada", musim.length ? "oranye" : ""),
       ubin("peringatan", "Tugas SOP segera", F(segera), "30 hari ke depan", segera ? "oranye" : ""),
       ubin("peringatan", "Tugas terlewat", F(lewat), "belum dikerjakan", lewat ? "merah" : ""),
-      ubin("senyap", "Daerah senyap", F(sen), "sinyal tanpa laporan", sen ? "oranye" : ""));
+      ubin("senyap", "Daerah senyap", sen ? F(sen) : "belum ada", "sinyal tanpa laporan", sen ? "oranye" : ""));
   }
   const isiSemua = () => { const T = tugasKab(); boxIsi.replaceChildren(angkaUtama(T), kalender(), sop(T), stok(T), kebutuhanBiasa(), perkiraanStok(), susulan(), terisolir(), senyap()); };
   let rafId = 0;
@@ -262,7 +294,11 @@
   }
 
   async function mulai() {
-    [D, SEN, KB, SU] = await Promise.all([ambil("/data/bnpb/siaga.json"), ambil("/data/senyap.json"), ambil("/data/bnpb/logbook_kebutuhan.json"), ambil("/data/bnpb/logbook_susulan.json")]);
+    let lain;
+    [D, SEN, KB, SU, BER, ...lain] = await Promise.all([ambil("/data/bnpb/siaga.json"), ambil("/data/senyap.json"), ambil("/data/bnpb/logbook_kebutuhan.json"), ambil("/data/bnpb/logbook_susulan.json"), ambil("/data/berantai_lift.json"), ...LONJ_BERKAS.map(j => ambil(`/data/lonjakan/${j}.json`)), ...SENYAP_LAIN.map(j => ambil(`/data/senyap/${j}.json`))]);
+    LONJ = lain.splice(0, LONJ_BERKAS.length);
+    BATAS = SEN?.batasan ? [SEN.batasan] : [];
+    SENYAP_LAIN.forEach((j, i) => { const x = lain[i]; if (!x || !Array.isArray(x.baris)) return; SEN = {...SEN, baris: [...(SEN?.baris || []), ...x.baris]}; if (x.batasan) BATAS.push(`${namaJenis(j)}: ${x.batasan}`); });
     if (!D) return app.replaceChildren(kosong("peringatan", "Data siaga belum terbit. Jalankan scripts/bnpb/siaga.py."));
     sedangDummy = false;  // tanpa data dummy, pemilik 11 Nov 2026; dulu lokal(DUMMY) === 1
     const kini = wibKini(); bulan = kini.getUTCMonth() + 1; ref = new Date(Date.UTC(kini.getUTCFullYear(), kini.getUTCMonth(), kini.getUTCDate()));

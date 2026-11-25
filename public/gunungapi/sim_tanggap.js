@@ -19,6 +19,11 @@ const BAWAAN = {
   maks_rit: 50000,        /* batas rit armada per simulasi (penjaga waktu hitung); bila tercapai hasil memberi terpotong: true */
   masker_per_orang_hari: 2, masker_hari_ekstra: 2, biaya_masker: 3500,
 };
+/* kebutuhan minimum Sphere 2018 per hari = salinan scripts/prediksi/aturan.json "sphere" (satu sumber; sim.js menimpanya dari prediksi.json saat jalan, uji menjaga salinan = aturan.json) */
+const SPHERE = {air_l: 15, hunian_m2: 3.5, jamban_per: 20, kkal: 2100};
+const kebutuhanSphere = jiwa => ({jiwa, air_l: jiwa * SPHERE.air_l, hunian_m2: jiwa * SPHERE.hunian_m2, jamban: Math.ceil(jiwa / SPHERE.jamban_per), kkal: jiwa * SPHERE.kkal});
+/* mesin pareto bersama dimuat lebih dulu (script/importScripts inti/perlakuan.js); dicari saat dipakai supaya urutan muat tak menentukan */
+const PK = () => { if (!globalThis.Perlakuan) throw new Error("inti/perlakuan.js belum dimuat"); return globalThis.Perlakuan; };
 const R_BUMI = 6371;
 const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, h = Math.sin(y / 2) ** 2 + Math.cos(b * r) * Math.cos(d * r) * Math.sin(x / 2) ** 2; return 2 * R_BUMI * Math.asin(Math.sqrt(h)); };
 const slug = n => String(n).toLowerCase().replace(/[^\p{L}\p{N} -]/gu, "").split(/\s+/).filter(Boolean).join("-");
@@ -134,13 +139,10 @@ function peringkat(dasar, desa, pilihan) {
     const ka = km !== dasar.radius_km, kb = j !== dasar.mulai_jam, kc = a !== A0; if (!ka && !kb && !kc) continue;
     jalan([ka ? `Radius ${km} km` : "", kb ? `mulai ${nm(j)}` : "", kc ? `armada ${a}` : ""].filter(Boolean).join(", ").replace(/^./, c => c.toUpperCase()), {radius_km: km, mulai_jam: j, armada: {n: a}}); }
   const dr = baris[0];
-  baris.forEach(b => { b.pareto = !baris.some(c => c !== b && c.selamat >= b.selamat && c.biaya <= b.biaya && (c.selamat > b.selamat || c.biaya < b.biaya)); b.tambah_selamat = b.selamat - dr.selamat; b.tambah_biaya = b.biaya - dr.biaya; });
+  PK().tandaiPareto(baris); baris.forEach(b => { b.tambah_selamat = b.selamat - dr.selamat; b.tambah_biaya = b.biaya - dr.biaya; });   /* mesin pareto bersama: public/inti/perlakuan.js (KI-40) */
   baris.forEach(b => { if (!b.pareto) return; const pm = {...BAWAAN, ...b.o.param}, sulit = [{kap_jalan: pm.kap_jalan / 2}, {mandiri: Math.min(pm.mandiri, 0.4)}];   /* sisi buruk relatif terhadap nilai pemanggil */
     const m = Math.min(b.selamat, ...sulit.map(p => evakuasi({...b.o, desa, dalam: b.dalam, param: {...b.o.param, ...p}}).terselamatkan)); b.peka = b.selamat > 0 && (b.selamat - m) / b.selamat > 0.2; });
-  const lihat = new Set(), par = baris.filter(b => b.pareto && b !== dr && b.selamat > dr.selamat + 0.5).sort((a, b) => a.biaya - b.biaya || b.selamat - a.selamat)
-    .filter(b => { const k = Math.round(b.selamat) + "|" + Math.round(b.biaya / 1e5); return lihat.has(k) ? false : (lihat.add(k), true); });   /* paket kembar (hasil sama) hanya dihitung sekali */
-  /* manfaat marginal terhadap pareto sebelumnya (jiwa per Rp miliar) */
-  par.forEach((b, i) => { const p = i ? par[i - 1] : dr, db = b.biaya - p.biaya, ds = b.selamat - p.selamat; b.per_miliar = db > 0 && ds > 0 ? ds / (db / 1e9) : null; });
+  const par = PK().front(baris, dr);   /* paket kembar dibuang, per_miliar = manfaat marginal terhadap pareto sebelumnya (jiwa per Rp miliar) */
   return {dasar: dr, pareto: par, semua: baris.length};
 }
 const dalamRadius = (desa, km) => new Set(desa.map((d, i) => d.km <= km ? i : -1).filter(i => i >= 0));
@@ -160,5 +162,5 @@ function bandaraTutup(bandara, jejak) {
   return out.sort((a, b) => a.jam - b.jam);
 }
 
-return {BAWAAN, jarakKm, slug, gunungBawaan, bangunGraf, dijkstra, kecepatanRute, median, evakuasi, peringkat, dalamRadius, paparPiksel, paparanUnit, tujuanTerdekat, kunciTitik, jiwaDalamRadius, ruasBahaya, masker, dalamPoligon, bandaraTutup};
+return {BAWAAN, SPHERE, kebutuhanSphere, jarakKm, slug, gunungBawaan, bangunGraf, dijkstra, kecepatanRute, median, evakuasi, peringkat, dalamRadius, paparPiksel, paparanUnit, tujuanTerdekat, kunciTitik, jiwaDalamRadius, ruasBahaya, masker, dalamPoligon, bandaraTutup};
 });

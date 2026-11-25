@@ -110,24 +110,30 @@ const Prak = {
   },
 
   /* ---------- kartu Insight ---------- */
-  ex(id, nama, judul, isi, catatan, ctl = "") { return Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk(id, nama)}</span>${pilKor()}`); },
+  ex(id, nama, judul, isi, catatan, ctl = "", gerbang = "") { return Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk(id, nama)}</span>${pilKor()}${gerbang ? Gerbang.pil(Satelit._g, gerbang) : ""}`); },   /* gerbang = kunci entri di /data/gerbang/udara.json; pil bila belum lolos uji */
   segHariPrak(key) { return Kartu.seg(key, S.prak.hari.map((t, h) => [h, tglSing(t)]), Insight.st); },
   exPrak() { if (!S.prak) return ""; const h = Math.min(+Insight.st.prakHari || 0, S.prak.hari.length - 1), k = M.terburuk(S.prak.kota, h); if (!k) return "";
     const st = M.statusHari(k, h), c = M.hitungStatus(S.prak.kota, h), parah = c.awas + c.siaga;
     Kartu.leg(["normal", "waspada", "siaga", "awas"].map(s => [M.ST_WARNA[s], `${M.labelStatus(s)} ${fmt(c[s])} kota`]));
     return this.ex("prak", "Prakiraan 72 jam", `${Kartu.hl(esc(k.nama))} paling tercemar pada ${tglSing(S.prak.hari[h])}: PM2,5 ${Kartu.hl(fmt(k.r24[h]) + " µg/m³")}, status ${M.labelStatus(st)}${parah ? `; ${Kartu.hl(fmt(parah) + " kota")} siaga atau awas` : ""}`,
-      this.garis72(k), `${terkoreksi() ? "" : "Belum dikoreksi ke alat ukur. "}Sumber: Copernicus CAMS lewat Open-Meteo; status dari rata-rata 24 jam`, this.segHariPrak("prakHari")); },
+      this.garis72(k), `${terkoreksi() ? "" : "Belum dikoreksi ke alat ukur. "}Sumber: Copernicus CAMS lewat Open-Meteo; status dari rata-rata 24 jam`, this.segHariPrak("prakHari"), "prakiraan_pm25_stasiun"); },
   exGalat() { const g = S.prak?.galat, kr_ = S.prak?.koreksi; if (!g || (!g.metar && !g.stasiun)) return "";
     const me = g.metar, ci = k => { const c = me?.ci?.[k]; return Array.isArray(c) && c.length === 2 ? ` (${M.persen(c[0])} sampai ${M.persen(c[1])})` : ""; };
     const hb = me ? `${fmt(me.n)} hari-bandara${me.n_bandara ? ` dari ${fmt(me.n_bandara)} bandara` : ""}` : "";
     const baris = [];
     if (me) baris.push(["Kejadian asap tertangkap (hit)", M.persen(me.hit) + ci("hit"), hb], ["Peringatan keliru (FAR)", M.persen(me.far) + ci("far"), ""], ["Skor gabungan (CSI)", M.persen(me.csi) + ci("csi"), ""]);
     if (me?.tabel) baris.push(["Hit, luput, alarm palsu, benar negatif", `${fmt(me.tabel.hit)}, ${fmt(me.tabel.luput)}, ${fmt(me.tabel.alarm_palsu)}, ${fmt(me.tabel.benar_negatif)}`, "hari-bandara"]);
-    if (g.stasiun) baris.push(["Stasiun: bias rata-rata", M.desimal(g.stasiun.bias, 1) + " µg/m³", `${fmt(g.stasiun.n)} stasiun`], ["Stasiun: galat kuadrat (RMSE)", M.desimal(g.stasiun.rmse, 1) + " µg/m³", ""], ["Stasiun: kategori tepat", M.persen(g.stasiun.tepat_kategori), ""]);
-    const kata = me ? `Uji analisis terhadap METAR: ${Kartu.hl(M.persen(me.hit))} kejadian asap tertangkap, ${Kartu.hl(M.persen(me.far))} peringatannya keliru` : `Galat model terhadap stasiun: bias ${Kartu.hl(M.desimal(g.stasiun.bias, 1) + " µg/m³")}`;
-    const tab = `<div class="tw"><table><thead><tr><th>Ukuran</th><th class="n">Nilai</th><th class="n">Jumlah</th></tr></thead><tbody>${baris.map(b => `<tr><td>${b[0]}</td><td class="n"><b>${b[1]}</b></td><td class="n">${b[2]}</td></tr>`).join("")}</tbody></table></div>`;
-    const pr = me && g.metar_prakiraan == null ? "Uji prakiraan 24 sampai 72 jam sedang mengumpulkan data. " : "";
-    return this.ex("galat", "Galat model", kata, tab, `${pr}${kr_?.status === "terkoreksi" ? "" : "Angka PM2,5 belum dikoreksi ke stasiun. "}${me?.periode ? "Periode " + esc(me.periode) + ". " : ""}${me?.ci && me.ci_metode ? "Rentang: " + esc(me.ci_metode) + ". " : ""}Sumber: NOAA METAR${g.stasiun ? ", stasiun pemantau" : ""}`); },
+    if (g.stasiun) baris.push([`Stasiun${kr_?.status === "terkoreksi" ? "" : " (belum dikoreksi)"}: bias rata-rata`, M.desimal(g.stasiun.bias, 1) + " µg/m³", `${fmt(g.stasiun.n)} stasiun`], ["Stasiun: galat kuadrat (RMSE)", M.desimal(g.stasiun.rmse, 1) + " µg/m³", ""], ["Stasiun: kategori tepat", M.persen(g.stasiun.tepat_kategori), ""]);
+    const poin = v => v == null ? "–" : (v < 0 ? "−" : v > 0 ? "+" : "") + fmt(Math.abs(Math.round(v * 100))) + " poin";
+    const pembanding = (m, judul) => { if (!m?.persistensi) return ""; const P = m.persistensi, K = m.klimatologi, Mo = m.model_baris_sama, sc = m.selisih_csi || {}, sel = x => { const c = sc[x]; return c ? `${poin(c.est)}${c.ci?.[0] != null ? ` (${poin(c.ci[0])} sampai ${poin(c.ci[1])})` : ""}` : "–"; }, kl = K?.alarm_sama ? K : null;
+      const r = [["Alarm", fmt(Mo.n_alarm), fmt(P.n_alarm), kl ? fmt(kl.n_alarm) : "–"], ["Kejadian tertangkap (hit)", M.persen(Mo.pod), M.persen(P.pod), kl ? M.persen(kl.pod) : "–"], ["Peringatan keliru (FAR)", M.persen(Mo.far), M.persen(P.far), kl ? M.persen(kl.far) : "–"], ["Skor gabungan (CSI)", M.persen(Mo.csi), M.persen(P.csi), kl ? M.persen(kl.csi) : "–"], ["Selisih CSI model dibanding cara ini", "–", sel("persistensi"), sel("klimatologi")]];
+      const tk = K && !K.alarm_sama && K.alasan ? ` title="${esc(K.alasan)}"` : "";
+      return `<div class="tw"><table><thead><tr><th>${judul}</th><th class="n">Model</th><th class="n" title="${esc(m.catatan || "Asap di bandara sama kemarin dianggap terulang hari ini")}">Sama seperti kemarin</th><th class="n" title="Laju asap bandara itu pada bulan yang sama, dari 365 hari sebelum periode uji; jumlah alarmnya disamakan dengan model">Rata-rata bandara per bulan</th></tr></thead><tbody>${r.map(b => `<tr><td>${b[0]}</td>${b.slice(1).map((x, i) => `<td class="n"${i === 2 ? tk : ""}><b>${x}</b></td>`).join("")}</tr>`).join("")}</tbody></table></div>`; };
+    const def = [me?.periode ? "Periode " + me.periode : "", me?.ci_metode ? "Rentang: " + me.ci_metode : ""].filter(Boolean).join(". ");
+    const tab = `<div class="tw"><table><thead><tr><th${def ? ` title="${esc(def)}"` : ""}>Ukuran</th><th class="n">Nilai</th><th class="n">Jumlah</th></tr></thead><tbody>${baris.map(b => `<tr><td>${b[0]}</td><td class="n"><b>${b[1]}</b></td><td class="n">${b[2]}</td></tr>`).join("")}</tbody></table></div>`
+      + pembanding(me, "Analisis model")
+      + (g.metar_prakiraan?.persistensi ? pembanding(g.metar_prakiraan, "Prakiraan 1 hari ke depan") : me ? `<div class="tw"><table><tbody><tr><td>Prakiraan 1 hari ke depan</td><td class="n">belum tersedia</td></tr></tbody></table></div>` : "");
+    return this.ex("galat", "Galat model", "Galat model", tab, "", "", "prakiraan_metar_h1"); },
   exAtribusi() { const A = S.atr?.kota?.filter(k => k.terpercaya === false || k.bagian?.some(x => x.persen > 0)); if (!A?.length) return "";
     const ok = A.filter(k => k.terpercaya !== false).sort((a, b) => b.pm - a.pm), tk = A.filter(k => k.terpercaya === false).sort((a, b) => (b.model || 0) - (a.model || 0));
     const top = [...ok.slice(0, tk.length ? 7 : 10), ...tk.slice(0, 3)], t0 = top.find(k => k.terpercaya !== false), api0 = t0 && M.normBagian(t0.bagian).find(b => b.jenis === "api");

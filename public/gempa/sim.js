@@ -90,6 +90,8 @@ const Sim = (() => {
     const M = GempaGuncangan.pasang(model), cari = Tsunami.pencariKec(pusat, 60);
     /* Vs30 per sel (proksi kemiringan DEM, vs30.py); gagal dimuat = jatuh ke 400 m/s seragam dan panel mengatakannya */
     try { GempaKerusakan.atur(await muatJSON("data/kalibrasi_kerusakan.json")); } catch (e) { console.warn("kalibrasi kerusakan tidak termuat", e); }
+    /* kebutuhan Sphere: dari aturan.json lewat prediksi.json (satu sumber); gagal = salinan di tanggap.js yang diuji sama dengan aturan.json */
+    try { const sp = (await muatJSON("../prediksi/data/prediksi.json")).sphere; if (sp?.air_l) Object.assign(GempaTanggap.SPHERE, sp); } catch (e) { console.warn("Sphere dari prediksi.json tak termuat, dipakai salinan", e); }
     let vs30 = null;
     try { const meta = await muatJSON("data/vs30.json"), r = await fetch(new URL("data/vs30.bin", document.baseURI)); if (!r.ok) throw new Error("vs30.bin " + r.status);
       vs30 = GempaGuncangan.vs30Grid(meta, new Uint8Array(await r.arrayBuffer()), model.vs30_baku); } catch (e) { console.warn("Vs30 tidak tersedia, dipakai 400 m/s seragam", e); }
@@ -234,6 +236,7 @@ self.onmessage = async e => { const d = e.data;
     [["smM", sk.m, mT(sk.m)], ["smH", sk.dalam, fmt(sk.dalam) + " km"]].forEach(([id, v, t]) => { const i = $("#" + id); if (document.activeElement !== i) i.value = v; $("#" + id + "V").textContent = t; });
     $("#smJalan").textContent = H ? (S.basi ? "Jalankan ulang" : "Ulang dari awal") : "Jalankan simulasi";
     $("#smHasil").innerHTML = H && !S.basi ? hasilHtml() : "";
+    $("#smHasil").querySelectorAll("[data-asumsi]").forEach(i => i.onchange = () => { const v = +i.value.trim().replace(/\./g, "").replace(",", "."); if (!(v >= 0)) { i.setAttribute("aria-invalid", "true"); return; } i.removeAttribute("aria-invalid"); (S.tParam ||= {})[i.dataset.asumsi] = v; const h = S.hasil; nanti(() => { if (S.hasil === h) { hitungTanggap(h); panel(); } }); });
     $("#smHasil").querySelectorAll("[data-ke]").forEach(b => b.onclick = () => { const [la, lo] = b.dataset.ke.split(",").map(Number); S.peta.easeTo({center: [lo, la], zoom: Math.max(S.peta.getZoom(), 8)}); });
   }
   function kontrol(el) {
@@ -259,6 +262,17 @@ self.onmessage = async e => { const d = e.data;
   }
   const kartu = (pil, judul, isi, kaki) => `<section class="sm-kartu"><div class="sm-pil">${pil}</div><h3>${judul}</h3>${isi || ""}${kaki ? `<p class="sm-kaki">${kaki}</p>` : ""}</section>`;
   const pil = (t, w) => `<span class="pill sm-p" style="--w:${w}">${t}</span>`;
+  const rp = v => v >= 1e9 ? `Rp ${des(v / 1e9)} miliar` : `Rp ${fmt(Math.round(v / 1e6))} juta`;
+  function tanggapHtml(TG, kartu, pil, hl) {
+    const st = Object.fromEntries(TG.stabilitas.map(x => [x.nama, x])), A = GempaTanggap.ASUMSI, P = TG.param, B = TG.kebutuhan, SP = GempaTanggap.SPHERE;
+    const baris = TG.pareto.map(b => { const k = st[b.nama]; return `<tr><td>${esc(b.nama)}</td><td class="n num">${fmt(r2(b.selamat))}</td><td class="n num">${rp(b.biaya)}</td><td class="n num">${b.per_juta ? des(b.per_juta, 2) : "–"}</td><td class="n num">${k ? `${des(k.rank_rata)} (teratas ${fmt(Math.round(k.p_teratas * 100))}%)` : "–"}</td></tr>`; }).join("");
+    const edit = ["biaya_tim_hari", "biaya_orang_hari", "kap_tim"].map(k => `<label class="fld"><span class="lbl">${A[k].label} <i class="pill sm-p" style="--w:#a8780c">asumsi</i></span><input type="text" inputmode="decimal" data-asumsi="${k}" value="${Number(P[k]).toLocaleString("id-ID", {maximumFractionDigits: 2})}" aria-label="${esc(A[k].label)}"></label>`).join("");
+    const lain = Object.keys(A).filter(k => !["biaya_tim_hari", "biaya_orang_hari", "kap_tim"].includes(k)).map(k => `${A[k].label} ${des(P[k])}${A[k].bersumber ? "" : " (asumsi)"}`).join("; ");
+    return kartu(pil("Perlakuan tanggap, simulasi", "#2f7d6b"), `Paling hemat per rupiah di antara pilihan terdaftar: ${hl(esc(TG.pareto.slice().sort((a, b) => (b.per_juta || 0) - (a.per_juta || 0))[0].nama.toLowerCase()))}`,
+      `<table class="tb3"><thead><tr><th>Pilihan (front Pareto)</th><th class="n" title="orang yang diselamatkan dari runtuhan atau dilayani pengungsian, dikali hari layanan">Orang-hari terbantu</th><th class="n">Biaya</th><th class="n" title="orang-hari per Rp juta">Per Rp juta</th><th class="n" title="peringkat rata-rata manfaat per Rp dari ${GempaTanggap.TIM.length * GempaTanggap.COVER.length - 1} pilihan, 200 undian kerusakan dan produktivitas tim yang sama untuk semua pilihan">Peringkat rata-rata</th></tr></thead><tbody>${baris}</tbody></table>
+      <p class="sm-1">Kebutuhan pengungsi (Sphere): sekitar ${hl(fmt(r2(B.mengungsi)) + " jiwa")} mengungsi, ${fmt(r2(B.air_l_hari))} liter air per hari (${SP.air_l} L/orang/hari), ${fmt(r2(B.hunian_m2))} m2 hunian (${des(SP.hunian_m2)} m2/orang), ${fmt(Math.ceil(B.mengungsi / SP.jamban_per))} jamban (1 per ${SP.jamban_per} orang), ${des(Math.round(B.kkal_hari / 1e5) / 10)} juta kkal pangan per hari (${fmt(SP.kkal)} kkal/orang/hari). Kebutuhan minimum Sphere, bukan stok.</p>${edit}`,
+      `Simulasi, bukan prakiraan. Jumlah rumah dan korban dari model kerusakan di atas; biaya dan kapasitas tim adalah asumsi yang bisa kamu ganti (tanpa sumber resmi di repo). Lainnya: ${esc(lain)}. Koefisien Sphere dari aturan.json (dasar Perka BNPB 7/2008). Terselamatkan dari runtuhan dihitung sebagai terbantu sepanjang hari layanan, jadi ukuran orang-hari tidak menimbang nyawa lebih dari satu hari tenda: tim SAR tampak mahal per rupiah padahal menyangkut jiwa; baca kolom manfaat dan biayanya, jangan hanya peringkatnya.`);
+  }
   function hasilHtml() {
     const sk = S.sk, H = S.hasil, hl = x => `<b class="hl">${x}</b>`, out = [];
     /* 1. penduduk per kelas MMI */
@@ -272,6 +286,8 @@ self.onmessage = async e => { const d = e.data;
     if (K.rumah > 0) out.push(kartu(pil("Kerusakan bangunan", "#8f2a1e"), K.rb[1] >= 1 || K.jiwa[1] >= 1 ? `Sekitar ${hl(fmt(r2(K.rb[1])) + " rumah")} rusak berat dan ${hl(fmt(r2(K.jiwa[1])) + " orang")} meninggal` : "Model tidak memperkirakan rumah rusak berat",
       `<table class="tb3"><thead><tr><th>Perkiraan</th><th class="n">Tengah</th><th class="n">Rentang</th></tr></thead><tbody>${[["Rusak berat", K.rb], ["Rusak sedang", K.rs], ["Rusak ringan", K.rr], ["Korban jiwa", K.jiwa]].map(([n, a]) => `<tr><td>${n}</td><td class="n num">${fmt(r2(a[1]))}</td><td class="n num">${rent(a)}</td></tr>`).join("")}</tbody></table>`,
       `Hasil model. Disetel ke 8 gempa kerak 2006 sampai 2022; pada uji leave-one-out korban jiwa meleset rata-rata ${des(GempaKerusakan.kal.faktorLoo)} kali lipat atau sepersekian. Sumber: WorldPop 2026, BPS, kurva HAZUS. ${H.vs30Ada ? "Tanah per sel dari kemiringan DEM." : "Tanah dianggap seragam (data Vs30 tidak termuat)."}`));
+    /* 1c. perlakuan tanggap: SAR runtuhan, tenda dan air */
+    const TG = H.tanggap; if (TG && K.rumah > 0 && TG.pareto.length) out.push(tanggapHtml(TG, kartu, pil, hl));
     /* 2. sekolah & RS di MMI VII+ */
     const ns = H.sekolah ? H.sekolah.length : null;
     if (H.provAda.length) out.push(kartu(pil("Fasilitas", "#a8780c"), ns == null ? `${hl(fmt(H.rs.length))} rumah sakit dan puskesmas di guncangan VII atau lebih; sekolah sedang dimuat` :
@@ -469,12 +485,15 @@ self.onmessage = async e => { const d = e.data;
     pasangSkenario(sk); if (!diam) toast("Pusat gempa dipindah. Tekan Jalankan simulasi.");
   }
   /* penjaga balapan: tiap await diperiksa apakah skenario masih sama; yang kalah membuang hasilnya */
+  /* perlakuan tanggap (KI-40): mesin inti/perlakuan.js lewat gempa/tanggap.js; param = asumsi yang diubah pemakai, bertahan antar skenario */
+  function hitungTanggap(H) { try { H.tanggap = GempaTanggap.analisis(H.kerusakan, S.tParam); } catch (e) { console.warn("peringkat perlakuan gagal", e); H.tanggap = null; } }
   async function jalankan() {
     const sk = S.sk, basi = () => S.sk !== sk, st = () => $("#smStatus"); jeda(); st().textContent = "Menghitung guncangan…";
     await lepas(); if (basi()) return;
     const t0 = performance.now(), H = hitung(sk);
     st().textContent = "Menghitung tsunami…"; await lepas(); if (basi()) return;
     await hitungTsunami(sk, H, basi); if (basi()) return;
+    await lepas(); if (basi()) return; hitungTanggap(H);   /* peringkat perlakuan: kerja ~puluhan ms, di luar jalur klik */
     S.hasil = H; S.basi = false; S.waktuHitung = performance.now() - t0;
     panel(); pasangHasilPeta(); $("#simWaktu").hidden = false; S.t = 0; keWaktu(0);
     st().textContent = `Dihitung ${des(S.waktuHitung / 1000)} detik`;

@@ -67,3 +67,11 @@ test("id langganan tetap untuk endpoint dan kecamatan yang sama", async () => {
   assert.equal(a, b); assert.equal(a.length, 16);
   assert.notEqual(a, await idLangganan("https://fcm.googleapis.com/x", "31.75.07"));
 });
+
+test("KI-01: push LSR, CEX, ASP berlabel Hipotesis; BNJ tidak", () => {
+  const ev = jenis => [{jenis, lv: 2, tanggal: "2026-11-25", teruji: false}];
+  for (const j of ["LSR", "CEX", "ASP"]) { const t = teksNotif("Kab. A", ev(j), ""); assert.ok(/Hipotesis/.test(t.judul) && /Hipotesis/.test(t.isi) && /belum lolos uji balik/.test(t.isi), j); }
+  const b = teksNotif("Kab. A", ev("BNJ"), ""); assert.ok(!/Hipotesis|belum lolos/.test(b.judul + b.isi), "BNJ tanpa label");
+  const campur = teksNotif("Kab. A", [{jenis: "BNJ", lv: 3, tanggal: "2026-11-25", teruji: true}, ...ev("LSR")], "");
+  assert.ok(!campur.judul.includes("Hipotesis") && campur.isi.includes("Hipotesis"), "judul BNJ bersih, isi menandai LSR");
+});

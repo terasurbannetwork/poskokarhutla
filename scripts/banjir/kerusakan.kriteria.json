@@ -1,0 +1,15 @@
+{
+ "ticket": "KI-60",
+ "dikunci": "2026-11-25, sebelum satu pun galat model dihitung (jumlah peristiwa GFM sudah dilihat: 21 peristiwa, 15 punya hitungan bangunan; rumah rusak DIBI belum dibandingkan dengan model)",
+ "model": "rusak_rumah = c * N_bangunan_tergenang_tengah * f_JRC(kedalaman); c = satu pengali, geometris rata-rata obs/(N*f) di peristiwa kalibrasi",
+ "kedalaman": "kedalaman per sel dari FwDET (scripts/banjir/kedalaman_genangan.py) TIDAK ada di disk; dipakai ASUMSI satu kedalaman untuk semua bangunan tergenang, berlabel",
+ "kedalaman_asumsi_m": 1.0,
+ "jendela_hari": 1,
+ "peristiwa_sah": "ada hitungan bangunan GFM (bangunan tidak null) DAN rumah rusak DIBI banjir/bandang kab itu dalam +-1 hari dari tanggal acuan > 0. DIBI tidak membedakan nol dari tak tercatat (Demak 14 Mar 2024: 131.703 terdampak, rumah rusak 0), jadi 0 dianggap TAK TERAMATI, bukan negatif.",
+ "pembanding": "rumah rusak = rho * penduduk_terpapar, penduduk_terpapar = jumlah penduduk kecamatan (WorldPop) x bagian luas kecamatan yang tergenang baru; satu pengali rho, kalibrasi sama",
+ "galat": "leave-one-out: galat_i = |ln(obs_i / pred_-i,i)|; galat_loo = exp(median galat_i) (faktor geometris median)",
+ "selang": {"alfa": 0.2, "metode": "split conformal pada |ln(obs/pred_LOO)| (selang.py), pita = pred * exp(+-q), dilabel P10-P90", "gerbang_lebar": "pita hanya bila N peristiwa baru berada di [min, max] N peristiwa kalibrasi"},
+ "n_min_peristiwa": 8,
+ "gerbang": "scripts/umum/gerbang.py: arah rendah, selisih = galat pembanding - galat model per peristiwa (bootstrap berpasangan); boleh_tampil hanya bila n >= n_min DAN selisih > 0 DAN batas bawah selang 95% > 0; kurang dari n_min = vonis 'tak dapat dinilai'",
+ "label_layar": "perkiraan, kurva Asia JRC, belum kurva Indonesia"
+}

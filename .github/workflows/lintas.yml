@@ -356,7 +356,7 @@ jobs:
       # dan DIBI (dibi_kejadian.json dari isi_data.py, dibi_kab_tahun.json dari repo). Keluaran public/data/bnpb/*.json dan kalender_ancaman.json
       # ikut cache data- (dibaca terbit.yml). Arsip bulanan append-only TIDAK boleh hilang (data tak bisa dinilai tanpanya): digabung dari git
       # (baris yang belum ada ditambah, yang sudah ada tidak ditimpa) sebelum jalan, lalu di-commit ke main di langkah berikutnya.
-      # beruntun.py (F5) belum dirantai: belum selesai.
+      # beruntun.py (F5) dirantai di langkah ini (bersama tsunami_zona.py).
       - name: Silang sumber (rapor, beda, kalender ancaman) (boleh gagal)
         continue-on-error: true
         timeout-minutes: 10

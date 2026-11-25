@@ -1,0 +1,47 @@
+{
+ "dibuat": "2026-11-25",
+ "versi": 1,
+ "keluaran": {
+  "longsor_peluang_kejadian": {
+   "metrik": "Brier peluang longsor kab-hari",
+   "arah": "rendah",
+   "pembanding": "klimatologi kab x bulan",
+   "n": 18615,
+   "skor_model": 0.0304,
+   "skor_pembanding": 0.0304,
+   "selisih": -0.0001,
+   "selang95": [
+    -0.0004,
+    0.0003
+   ],
+   "boleh_tampil": false,
+   "alasan": "selisih -0.0001 <= 0: pembanding sederhana menang atau seri",
+   "vonis_prospektif": null,
+   "sumber_berkas": [
+    "public/longsor/data/model_dampak.json",
+    "public/data/label_mutu/longsor.json"
+   ],
+   "catatan": "600 hari kejadian uji; AUC model 0.8055 vs klim 0.7913; uji 2022/2023/2025 bukan lembar buta"
+  },
+  "longsor_rumah_rusak": {
+   "metrik": "galat |log1p rumah rusak| per hari kejadian",
+   "arah": "rendah",
+   "pembanding": "median latih",
+   "n": 600,
+   "skor_model": 0.6877,
+   "skor_pembanding": 0.6526,
+   "selisih": -0.0351,
+   "selang95": [
+    -0.0561,
+    -0.0135
+   ],
+   "boleh_tampil": false,
+   "alasan": "selisih -0.0351 <= 0: pembanding sederhana menang atau seri",
+   "sumber_berkas": [
+    "public/longsor/data/model_dampak.json",
+    "public/data/label_mutu/longsor.json"
+   ],
+   "catatan": "rumah rusak DIBI 0 mungkin tak tercatat; uji 2022/2023/2025 bukan lembar buta"
+  }
+ }
+}

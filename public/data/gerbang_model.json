@@ -1,5 +1,5 @@
 {
- "dibuat": "2026-10-23",
+ "dibuat": "2026-11-25",
  "versi": 1,
  "aturan": "boleh_tampil hanya bila selisih > 0 (model lebih baik dari pembanding sederhana) DAN batas bawah selang 95% bootstrap berpasangan > 0; tanpa selang = false ('belum ada selang'). lolos juga wajib vonis prospektif = 'lolos'. Pembaca gagal-tertutup: berkas hilang/rusak = sembunyikan.",
  "pembanding": "persistensi: hanya sel/luas awal kasus yang dianggap terbakar (tanpa sel baru); lolos: laju dasar himpunan yang sama (klimatologi).",
@@ -190,10 +190,10 @@
     "laju_dasar": 0.0043
    },
    "kasus_123": {
-    "brier_skill": -0.1287,
+    "brier_skill": -0.1216,
     "selang95": [
-     -0.4234,
-     0.1178
+     -0.4139,
+     0.1258
     ],
     "n": 123,
     "catatan": "123 kasus dipilih dari api besar (laju lolos ~47%) sedangkan model dikalibrasi pada laju ~3%: populasi tidak sesuai, hanya sebagai peringatan"

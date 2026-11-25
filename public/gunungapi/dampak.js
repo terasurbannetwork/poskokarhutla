@@ -9,8 +9,9 @@ const Dampak = (() => {
   const W = {bata: "#b5523b", oranye: "#e58a45"};
   const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8", hist: "M12 3 2 20h20zM12 10v4M12 17v.5",
     krb: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z", fas: "M3 10l9-5 9 5-9 5zM7 12v5c3 2 7 2 10 0v-5", evak: "M6 19a2 2 0 1 0 0-.01M18 5a2 2 0 1 0 0-.01M8 19h5a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h5",
+    rentan: "M12 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM6 21v-4a6 6 0 0 1 12 0v4",
     band: "M2 14l8-2.5V5.5a2 2 0 0 1 4 0v6.5l8 2.5v2.5l-8-2v4l2.5 1.5V22L12 21l-4.5 1v-1.5L10 19v-4l-8 2z"};
-  const BAG = {pend: ["Penduduk terpapar", W.bata], krb: ["Penduduk per zona", "#d64545"], fas: ["Sekolah dan fasilitas kesehatan", "#3b82f6"], evak: ["Jalur evakuasi", "#2fb36a"], band: ["Bandara terdampak", "#6d7b91"], hist: ["Korban dan kerugian", W.oranye]};
+  const BAG = {pend: ["Penduduk terpapar", W.bata], krb: ["Penduduk per zona", "#d64545"], fas: ["Sekolah dan fasilitas kesehatan", "#3b82f6"], evak: ["Jalur evakuasi", "#2fb36a"], rentan: ["Balita dan lansia", "#8a5cc2"], band: ["Bandara terdampak", "#6d7b91"], hist: ["Korban dan kerugian", W.oranye]};
   const KUNCI = {kejadian: ["Kejadian", "kejadian"], mengungsi: ["Mengungsi", "jiwa"], terdampak: ["Terdampak", "jiwa"], rumah_rusak: ["Rumah rusak", "rumah"]};
   let D = null, P = null, A = null; const st = {k: "mengungsi", sk: "zona", gn: ""};
   const lv = id => S.st.gunung.find(g => idGn(g.nama) === id)?.level || 1, KRB = () => (P?.gunung || []).filter(g => g.zona_sumber === "KRB PVMBG");
@@ -80,6 +81,13 @@ const Dampak = (() => {
     return bag("evak", `${Kartu.hl(fmt(n) + " desa")} di KRB III dan II ${fmt(L.length)} gunung api punya rute evakuasi; waktu tempuh arus bebas terlama ${Kartu.hl(mnt5(R[0].r.maks_menit))}${tl ? ` dari ${esc(tl.desa)}` : ""} (${esc(R[0].g.nama)})`,
       hbar(R.slice(0, 12).map(x => ({n: x.g.nama, v: x.r.maks_menit, txt: "terlama " + mnt5(x.r.maks_menit), w: "#2fb36a", tip: `<b>${esc(x.g.nama)}</b><br>${fmt(x.r.n)} desa KRB III dan II<br>Median ${mnt5(x.r.median_menit)}, terlama ${mnt5(x.r.maks_menit)}`})), 190),
       "Hanya desa di KRB III dan II. Waktu tempuh arus bebas kendaraan di jalan OpenStreetMap (tanpa antrean evakuasi massal), dibulatkan ke 5 menit, bukan jalan kaki. Sumber: OpenStreetMap, perhitungan Centurisk97"); }
+  /* balita dan lansia dalam jejak abu skenario 72 jam; kosong = "belum tersedia" */
+  function rentan() {
+    const T = D?.rentan_abu, kat = "Sumber: model abu Centurisk97, WorldPop 2026 (sel 0,25 derajat), porsi umur nasional BPS";
+    if (!T?.gunung?.length) return bag("rentan", "Balita dan lansia dalam jejak abu", `<div class="kosong">Belum tersedia: tidak ada jejak abu berambang penerbangan pada skenario saat ini.</div>`, kat);
+    const R = T.gunung.flatMap(g => [{n: `${g.nama}, balita`, v: g.balita, txt: fmt(g.balita) + " jiwa", w: "#8a5cc2", tip: `<b>${esc(g.nama)}</b><br>Balita (0-4 tahun): ${fmt(g.balita)} jiwa`},
+      {n: `${g.nama}, lansia`, v: g.lansia, txt: fmt(g.lansia) + " jiwa", w: "#c9503a", tip: `<b>${esc(g.nama)}</b><br>Lansia (60+ tahun): ${fmt(g.lansia)} jiwa`}]);
+    return bag("rentan", "Balita dan lansia dalam jejak abu", hbar(R), `${esc(T.dasar)} Total ${fmt(T.balita)} balita dan ${fmt(T.lansia)} lansia dari ${fmt(T.jiwa)} jiwa; ${kat}`); }
   /* bandara di jalur abu skenario */
   function band() {
     const B = (A?.bandara_terdampak || []).filter(b => b.jam_tiba != null).sort((a, b) => a.jam_tiba - b.jam_tiba); if (!B.length) return "";
@@ -87,7 +95,7 @@ const Dampak = (() => {
     return bag("band", `${Kartu.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam; tercepat ${esc(B[0].iata || B[0].icao)} dalam ${Kartu.hl(fmt(B[0].jam_tiba) + " jam")}`,
       hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao}, ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
       "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan peringatan resmi Volcanic Ash Advisory Centre (VAAC). Sumber: model abu Centurisk97, OurAirports"); }
-  const gambar = () => [terpapar(), krb(), fas(), evak(), band(), hist()].filter(Boolean).join("");
+  const gambar = () => [terpapar(), krb(), fas(), evak(), rentan(), band(), hist()].filter(Boolean).join("");
   const BAGIAN = {krb, hist};
   /* kontrol (segmen, pilihan gunung) tetap di tempat: hanya judul, isi, dan kaki yang diganti; pekerjaan berat sesudah paint */
   const ulang = id => { const b = $("#dampak")?.querySelector("#dk-" + id); if (!b) return;

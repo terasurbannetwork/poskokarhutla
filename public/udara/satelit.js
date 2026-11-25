@@ -32,8 +32,8 @@ const Satelit = {
     return `<div class="lbl">Kolom CO satelit <span style="text-transform:none">(mol/m²)</span></div><div class="leg" style="margin:4px 0 8px">${this.WARNA.map(([v, w]) => `<span><i class="sw" style="background:${w}"></i>${dec(v, 2)}${v === this.WARNA.at(-1)[0] ? " ke atas" : ""}</span>`).join("")}</div>
       <div class="fnd" style="margin:0 0 8px">Pengamatan ${tglS(K.hari)}, bukan prakiraan. ${SUMBER_TROPOMI}. ${this._s?.model?.status ? `Model ${esc(this._s.model.status)}.` : ""}</div>`; },
   /* ---------- kartu seri per provinsi ---------- */
-  async muatKartu() { const [S5, U, O] = await Promise.all([this.muatBerkas("tropomi_seri"), this.muatBerkas("uji_panen_pm25"), this.muatBerkas("openaq_mos")]);
-    this._s = S5; this._u = U; this._o = O; },
+  async muatKartu() { const [S5, U, O, G] = await Promise.all([this.muatBerkas("tropomi_seri"), this.muatBerkas("uji_panen_pm25"), this.muatBerkas("openaq_mos"), Gerbang.muat("udara")]);
+    this._s = S5; this._u = U; this._o = O; this._g = G; },   /* _g: gerbang tampil (KI-12), gagal-tertutup; dibaca juga prakiraan.js */
   deret(k) { const S5 = this._s, ko = S5.kolom, i = n => ko.indexOf(n), mn = this.mn();
     return Object.entries(S5.prov[k] || {}).sort((a, b) => a[0].localeCompare(b[0])).map(([t, r]) => ({t, co: r[i("n_co")] >= mn ? r[i("co")] * K_CO : null, ai: r[i("n_ai")] >= mn ? r[i("ai")] : null, an: r[i("anom")]})); },
   exTropo() {
@@ -77,5 +77,5 @@ const Satelit = {
       + `<p class="fnd">Galat rata-rata mutlak, MAE (µg/m³; makin kecil makin baik), ${fmt(m.n_uji)} jam uji di ${fmt(m.n_stasiun)} stasiun, ${esc(this.bln((m.rentang?.[0] || "").slice(0, 7)))} s.d. ${esc(this.bln((m.rentang?.[1] || "").slice(0, 7)))}.${ci ? ` Selisih terhadap CAMS mentah ${dec(ci[0], 1)} sampai ${dec(ci[1], 1)} µg/m³ (selang 95%; negatif = galat MOS lebih kecil).` : ""}</p>`
       + bagE + bagO
       + `<details class="lipat ud-lipat"><summary>Batas uji dan istilah</summary><div class="isi"><p class="fnd"><b>Batas:</b> ${lokal && nst ? `${fmt(lokal)} dari ${fmt(nst)} stasiun ada di Jabodetabek dan Bali` : "stasiun tidak tersebar merata"}, jadi angka ini belum mewakili wilayah asap karhutla di Sumatera dan Kalimantan. Hasil di sini tidak boleh dibaca sebagai ketepatan di sana. MOS (model output statistics) = koreksi statistik keluaran CAMS terhadap stasiun; MAE = galat rata-rata mutlak. Data ${jamWIB(U.dibuat)}.</p></div></details>`,
-      "Sumber: OpenAQ dan penyedia asalnya, CAMS lewat Open-Meteo, NASA GMAO GEOS-CF; uji Centurisk97").replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk("pel", "Rapor model")}</span>`); },
+      "Sumber: OpenAQ dan penyedia asalnya, CAMS lewat Open-Meteo, NASA GMAO GEOS-CF; uji Centurisk97").replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk("pel", "Rapor model")}</span>${Gerbang.pil(this._g, "mos_pm25_arsip_openaq")}`); },
 };

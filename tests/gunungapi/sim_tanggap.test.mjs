@@ -3,6 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const muat = f => { const m = {exports: {}}; new Function("module", readFileSync(new URL("../../public/gunungapi/" + f, import.meta.url), "utf8"))(m); return m.exports; };
+globalThis.Perlakuan = muat("../inti/perlakuan.js");   /* mesin pareto bersama (KI-40) dimuat peramban lebih dulu */
 const T = muat("sim_tanggap.js"), L = muat("sim_lahar.js");
 const status = JSON.parse(readFileSync(new URL("../../public/banjir/data/gunungapi_status.json", import.meta.url), "utf8"));
 
@@ -100,6 +101,22 @@ test("waktu tiba awan panas (garis energi) dan lahar (Manning): terurut, kecepat
   const curam = L.simulasi({dem, n: N, m: N, z: 12, lat: 0, pusat: [C, C], V: 1e5, hl: 0.3, maxJalur: 1, proksimal: 0.5, ambangHulu: 0}).info[0];
   assert.equal(curam.pdc_menit, i.pdc_menit, "hasil harus deterministik");
   for (const k of ["lahar", "pdc"]) assert.ok(r[k].t.every(Number.isFinite), `${k}: waktu tiba harus terhingga (NaN dari penampang kosong membuat sel hilang dari paparan)`);
+});
+
+test("KI-43: waktu tiba lahar sisi aman (keputusan evakuasi) <= waktu tiba perkiraan, di tiap sel dan tiap alur", () => {
+  for (const V of [1e5, 1e6, 1e7]) {
+    const r = L.simulasi({dem, n: N, m: N, z: 12, lat: 0, pusat: [C, C], V, hl: 0.3, maxJalur: 1, proksimal: 0.5, ambangHulu: 0}), i = r.info[0];
+    assert.ok(r.lahar.idx.length > 50 && r.lahar.ta.length === r.lahar.t.length, `V ${V}: sel lahar harus ada dan punya ta`);
+    r.lahar.t.forEach((t, q) => assert.ok(r.lahar.ta[q] <= t, `V ${V} sel ${q}: aman ${r.lahar.ta[q]} dtk > tampil ${t} dtk`));
+    assert.ok(i.lahar_menit_aman <= i.lahar_menit && i.lahar_menit_aman > 0, `V ${V}: aman ${i.lahar_menit_aman} menit vs tampil ${i.lahar_menit}`);
+  }
+});
+
+test("KI-66: salinan Sphere di sim_tanggap.js sama dengan scripts/prediksi/aturan.json; kebutuhan = jiwa x koefisien", () => {
+  const aturan = JSON.parse(readFileSync(new URL("../../scripts/prediksi/aturan.json", import.meta.url), "utf8"));
+  for (const k of ["air_l", "hunian_m2", "jamban_per", "kkal"]) assert.equal(T.SPHERE[k], aturan.sphere[k], `${k}: ${T.SPHERE[k]} vs aturan.json ${aturan.sphere[k]}`);
+  const b = T.kebutuhanSphere(4000);
+  assert.equal(b.air_l, 4000 * aturan.sphere.air_l); assert.equal(b.hunian_m2, 4000 * aturan.sphere.hunian_m2); assert.equal(b.jamban, Math.ceil(4000 / aturan.sphere.jamban_per)); assert.equal(b.kkal, 4000 * aturan.sphere.kkal);
 });
 
 test("aman: berangkat dari desa sebelum bahaya (bukan selesai antre); titik kumpul kena memakai jam bahaya titik; hitungan tangan", () => {

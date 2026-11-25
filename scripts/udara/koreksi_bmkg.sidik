@@ -1,0 +1,13 @@
+{
+ "sidik": "8444bd3677ea7806",
+ "berkas": {
+  "scripts/udara/koreksi_bmkg.kriteria.json": "234e1d3ea6a7e94bae079d9ffbf711a5ee78f462a4fbf9ea19a8b98707631fcd",
+  "scripts/udara/koreksi_bmkg.py": "a128266840f2827e1dfa0e3ebd790cb2b57018003c870de79ec0f1b24d06c26e",
+  "scripts/udara/pm25_mos.py": "5bde12912eae86d2bff4dfcab4676b0b26b4ecb3716534c72150bc2b5b7b1bc3"
+ },
+ "masukan": [
+  "d72938be9cafd3a1034cd90c47c9f9608558dc12cde1caf1f11712122d8b8b4f",
+  "n=14035"
+ ],
+ "dibuat": "2026-11-24T18:43:10Z"
+}

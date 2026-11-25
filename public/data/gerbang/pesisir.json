@@ -1,0 +1,22 @@
+{
+ "dibuat": "2026-11-25",
+ "versi": 1,
+ "keluaran": {
+  "abrasi_prakiraan_setahun": {
+   "metrik": "MAE perubahan garis pantai setahun (m)",
+   "arah": "rendah",
+   "pembanding": "persistensi (perubahan teramati tahun dasar)",
+   "n": null,
+   "skor_model": null,
+   "skor_pembanding": null,
+   "selisih": null,
+   "selang95": null,
+   "vonis_prospektif": null,
+   "boleh_tampil": false,
+   "alasan": "belum ada tahun ramalan yang citranya tersedia; baris beku menunggu komposit tahun berikutnya",
+   "sumber_berkas": [
+    "public/pesisir/data/abrasi_prospektif.json"
+   ]
+  }
+ }
+}

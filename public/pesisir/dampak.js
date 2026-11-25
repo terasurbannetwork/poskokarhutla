@@ -7,7 +7,7 @@
    Kartu standar .ex-std (AGENTS.md 3.5): kepala = nama seksi, tanpa kalimat temuan, tanpa kaki sumber (sumber di title kepala tabel). */
 const Dampak = (() => {
   const W = "#2f7fb8", HIP = "#e58a45";
-  const IK = {rob: '<path d="M12 3s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/>', riwayat: '<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>', abrasi: '<path d="M2 18c3-3 5-3 8 0s5 3 8 0M3 8l5 3 4-6 4 8 5-3"/>'};
+  const IK = {rob: '<path d="M12 3s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/>', riwayat: '<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>', pelabuhan: '<circle cx="12" cy="5" r="2"/><path d="M12 7v13M6 12H4a8 8 0 0 0 16 0h-2M8 10h8"/>', abrasi: '<path d="M2 18c3-3 5-3 8 0s5 3 8 0M3 8l5 3 4-6 4 8 5-3"/>'};
   const svg = (k, u = 15) => `<svg viewBox="0 0 24 24" width="${u}" height="${u}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[k]}</svg>`;
   const pita = (id, nama, ik, isi) => `<section class="dk-bag" id="dk-${id}"><header class="dk-sh" style="--w:${W}"><span class="dk-sn"></span>${svg(ik, 18)}<h2>${nama}</h2></header><div class="dk-kartu">${isi}</div></section>`;
   /* cat = catatan batas data, di DALAM kartu di bawah tabel (bukan paragraf lepas di antara kartu) */
@@ -16,7 +16,7 @@ const Dampak = (() => {
   const pil = (t, w) => `<span class="pl" style="--w:${w}">${t}</span>`;
   const jt = v => v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " juta" : v >= 1e3 ? fmt(Math.round(v / 100) / 10) + " ribu" : fmt(v);
   const nm = (a, b) => `<td translate="no">${esc(a)}<small class="dk-s">${esc(b)}</small></td>`;
-  let PK = null;
+  let PK = null, PEL = null;
 
   function kartuRob() {
     const SUMBER = "Status: muka laut model Open-Meteo Marine (SMOC) terhadap ambang persentil 95 dan 99 tiap titik, olahan Centurisk97, belum lolos uji balik. Penduduk: WorldPop 2026 dijumlah per kab/kota (paparan_kab.json), seluruh kab/kota, bukan area genangan.";
@@ -36,6 +36,18 @@ const Dampak = (() => {
     const baris = R.map(x => `<tr>${nm(x.kab, x.prov)}<td class="n">${fmt(x.n)}</td><td class="n">${fmt(x.terdampak)}</td><td class="n">${fmt(x.mengungsi)}</td><td class="n">${fmt(x.rumah)}</td><td class="n">${fmt(x.rusak)}</td><td class="n">${fmt(x.meninggal)}</td><td class="c">${tglTahun(x.akhir)}</td></tr>`);
     return kartu(ey, "Dampak rob tercatat per kab/kota", tabel(["Kab/kota|" + SUMBER, "Kejadian|Jumlah kejadian Banjir Rob yang tercatat di DIBI (Data dan Informasi Bencana Indonesia) untuk kab/kota itu.", "Terdampak (jiwa)|Jumlah jiwa terdampak, dijumlah dari semua kejadian tercatat.", "Mengungsi (jiwa)|Jumlah jiwa mengungsi, dijumlah dari semua kejadian tercatat.", "Rumah terendam|Jumlah rumah terendam, dijumlah dari semua kejadian tercatat.", "Rumah rusak|Jumlah rumah rusak menurut DIBI, dijumlah dari semua kejadian tercatat.", "Meninggal (jiwa)|Jumlah korban meninggal, dijumlah dari semua kejadian tercatat.", "Terakhir|Tanggal kejadian tercatat terakhir."], baris), `Angka tercatat, bukan perkiraan model. Kab/kota tanpa baris belum tentu tanpa rob: hanya yang dilaporkan.`); }
 
+  function kartuPelabuhan() {
+    const ey = svg("pelabuhan", 12) + "Pelabuhan " + pil("Hipotesis", HIP), JUDUL = "Pelabuhan di zona rob dan gelombang";
+    if (!PEL?.pelabuhan?.length) return kartu(ey, JUDUL, `<p class="kosong">Data pelabuhan belum tersedia.</p>`);
+    const kode = {}; Object.entries(S.meta?.prov || {}).forEach(([k, n]) => kode[n] = k);
+    const D = S.rob ? Pesisir.dampakRob(S.rob, null, HARI_INI(), kode) : null, G = S.gel && Pesisir.gelHari(S.gel, HARI_INI()).length ? S.gel : null;
+    const L = Pesisir.pelabuhanZona(PEL, D, G, HARI_INI());
+    const tak = [D ? "" : "status rob", G ? "" : "gelombang"].filter(Boolean).join(" dan ");
+    if (!L.length) return kartu(ey, JUDUL, `<p class="kosong">${tak ? `Data ${tak} belum tersedia untuk ${tglSgk(HARI_INI())}.` : `Tidak ada pelabuhan di kab/kota berstatus rob Waspada atau lebih, atau di titik gelombang kelas Tinggi atau lebih, pada ${tglSgk(HARI_INI())}.`} Ini hasil model, bukan penilaian kelayakan pelabuhan; status pelabuhan dari syahbandar.</p>`);
+    const baris = L.map(x => `<tr>${nm(x.nama, x.kab + ", " + x.prov)}<td class="c">${x.lv ? pilT(x.lv) : "–"}</td><td class="n">${x.hs == null ? "belum tersedia" : fmt(Math.round(x.hs * 10) / 10) + " m"}</td><td class="c">${x.kelas ? pilGel(x.hs) : "–"}</td></tr>`);
+    return kartu(ey, JUDUL, tabel(["Pelabuhan|Pelabuhan OpenStreetMap yang dipasang ke titik rob terdekat dalam 25 km (pelabuhan_kab.json). Hanya pelabuhan yang punya titik rob dalam jarak itu.", "Status rob kab/kota|Status tertinggi titik rob di kab/kota itu dari hari ini sampai akhir data model (Waspada, Siaga, Awas). – = tidak Waspada atau data tak mencakup hari ini.", "Gelombang model|Tinggi gelombang signifikan tertinggi hari ini di titik model pelabuhan itu (Open-Meteo Marine). belum tersedia = pelabuhan tanpa titik model.", "Kelas gelombang|Ambang BMKG: Tinggi 2,5 m, Sangat tinggi 4 m, Ekstrem 6 m."], baris))
+      + `<p class="gp-cat">Rob dan gelombang adalah keluaran model, belum lolos uji balik. Status rob berlaku untuk kab/kota, bukan untuk dermaga tertentu.${tak ? ` Data ${tak} belum tersedia hari ini.` : ""}</p>`; }
+
   function kartuAbrasi() {
     if (!S.abr) return "";
     const D = Pesisir.seriSitus(S.abr).filter(s => s.arah), ey = svg("abrasi", 12) + "Abrasi " + pil("Perkiraan satelit", HIP);
@@ -48,9 +60,9 @@ const Dampak = (() => {
   function render() {
     const el = $("#dampak"); if (!el || el._ok) return; el._ok = 1;
     el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak pesisir…</div>`;
-    opsi("../banjir/data/paparan_kab.json").then(pk => { PK = pk?.kab ? pk : null;
+    Promise.all([opsi("../banjir/data/paparan_kab.json"), opsi("data/pelabuhan_kab.json")]).then(([pk, pel]) => { PK = pk?.kab ? pk : null; PEL = pel;
       const aman = f => { try { return f() || ""; } catch (e) { console.error(e); return ""; } };
-      const h = [pita("rob", "Rob dan penduduk", "rob", aman(kartuRob) + aman(kartuRiwayat)), pita("abrasi", "Abrasi pantai", "abrasi", aman(kartuAbrasi))].filter(x => x.includes("ex-std"));
+      const h = [pita("rob", "Rob dan penduduk", "rob", aman(kartuRob) + aman(kartuRiwayat) + aman(kartuPelabuhan)), pita("abrasi", "Abrasi pantai", "abrasi", aman(kartuAbrasi))].filter(x => x.includes("ex-std"));
       el.innerHTML = h.length ? h.join("") : `<p class="kosong">Data dampak pesisir belum tersedia.</p>`;
       unduh(); sinyal(el); }); }
   /* tombol unduh tabel (F-34): hanya bila registri menyalakan kemampuan.layar.unduh_tabel; digambar ulang saat registri selesai terbaca */

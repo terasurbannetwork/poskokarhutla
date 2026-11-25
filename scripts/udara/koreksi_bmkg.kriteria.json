@@ -1,0 +1,12 @@
+{
+ "tujuan": "Faktor koreksi PM2,5 CAMS ke stasiun BMKG (obs = f x CAMS lewat nol), tampil hanya bila menang atas pembanding terkuat",
+ "masukan": "omc_arsip.json pm25 (stasiun BMKG per jam) + CAMS pm2_5 Open-Meteo di titik stasiun, pasangan jam yang keduanya ada",
+ "pembagian_waktu": {"lama": 0.7, "baru": 0.3, "dalam_lama_latih": 0.7, "dalam_lama_validasi": 0.3, "dasar": "persentil jam unik terurut, tanpa melihat galat"},
+ "faktor": {"bentuk": "f* = (n f + K)/(n + K), f = sum(o m)/sum(m^2) dijepit 0,2..3", "K": 48},
+ "pilih_wilayah": "faktor per stasiun dipakai HANYA bila MAE DAN log-likelihood Gaussian (sigma MLE) validasi keduanya lebih baik daripada faktor nasional; selain itu nasional",
+ "pembanding": ["cams_mentah", "persistensi_24j (obs stasiun 24 j sebelumnya)", "klimatologi_stasiun (rata-rata stasiun x jam-hari UTC dari bagian lama, <3 contoh = rata-rata stasiun)"],
+ "baris_uji": "bagian baru, hanya baris yang punya SEMUA pembanding; sama untuk model dan pembanding",
+ "selang": "bootstrap resampel per tanggal, 500 ulangan benih 3 (pm25_mos.bootstrap_selisih), melawan pembanding terkuat (MAE terkecil)",
+ "gerbang": "gerbang_udara.entri_koreksi: boleh_tampil bila MAE model < pembanding terkuat DAN batas bawah selang > 0; selain itu angka CAMS mentah tetap tampil",
+ "buka_sekali": "uji bagian baru dibuka sekali (sidik.buka); diulang = ditolak"
+}

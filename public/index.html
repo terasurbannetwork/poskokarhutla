@@ -5774,6 +5774,26 @@ function mtProspektif(pr, gb) {
   if (el("sensor") && pr.peralihan?.beralih) el("sensor").textContent = `sejak ${tgl(pr.peralihan.beralih)}, sensor utama sekarang ${({N20: "NOAA-20", N21: "NOAA-21", N: "S-NPP"})[pr.sensor] || pr.sensor || "NOAA-20"}`;
 }
 
+/* Uji balik status 4 tingkat (ujibalik_status.json, KI-27): dibaca apa adanya; tanpa berkas = kartu tidak tampil */
+function mtUjiStatus() {
+  const wadah = $("#metode"); if (!wadah || wadah.querySelector("[data-mt-ujistatus]")) return;
+  muatJSON("data/ujibalik_status.json").then(U => {
+    const T = U?.tingkat; if (!T || !Object.keys(T).length || wadah.querySelector("[data-mt-ujistatus]")) return;
+    const e3 = v => typeof v === "number" ? v.toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}) : "–";
+    const pr = v => typeof v === "number" ? (v * 100).toLocaleString("id-ID", {maximumFractionDigits: 1}) + "%" : "–";
+    const sel = o => o && typeof o.est === "number" ? `${o.est > 0 ? "+" : ""}${e3(o.est)} (${e3(o.lo)} sampai ${e3(o.hi)})` : "–";
+    const th = (t, ket, n) => `<th${n ? ' class="n"' : ""} title="${esc(ket)}">${t}</th>`;
+    const td = (v, n) => `<td${n ? ' class="n num"' : ""}>${v}</td>`;
+    const D = U.deskriptif || {}, DT = D.tingkat || {};
+    const t1 = Object.entries(T).map(([k, v]) => `<tr>${td(esc(k))}${td(fmt(v.n_alarm), 1)}${td(pr(v.pod), 1)}${td(pr(v.far), 1)}${td(e3(v.ets), 1)}${td(e3(v.pembanding_ets?.persistensi_asli), 1)}${td(esc(v.vonis || "–"))}</tr>`).join("");
+    const t2 = Object.entries(DT).map(([k, v]) => `<tr>${td(esc(k))}${td(fmt(v.n_alarm), 1)}${td(sel(v.persistensi_disamakan?.selisih_ets), 1)}${td(sel(v.klimatologi_disamakan?.selisih_ets), 1)}</tr>`).join("");
+    const lbl = D.label || "deskriptif, bukan vonis";
+    wadah.insertAdjacentHTML("beforeend", `<article class="ex ex-std" data-mt-ujistatus><header class="ex-hd"><span class="ex-ey">Metode</span><div class="ex-jd"><h3>Uji balik status</h3></div></header><div class="ex-bd">
+      <div class="ex-tabel"><table><thead><tr>${th("Tingkat", "Tingkat status kab/kota")}${th("Alarm", "Jumlah kab-hari yang diberi status setingkat ini atau lebih tinggi pada periode uji", 1)}${th("POD", "Peluang terdeteksi: bagian kab-hari ber-firespot esok hari yang didahului alarm", 1)}${th("FAR", "Rasio alarm palsu: bagian alarm yang tidak diikuti firespot esok hari", 1)}${th("ETS status", "Equitable threat score status kita, skor 0 sampai 1 setelah dikoreksi kebetulan", 1)}${th("ETS persistensi asli", "ETS pembanding persistensi (status hari ini dianggap berlaku esok hari), jumlah alarm dibiarkan bebas", 1)}${th("Vonis", "Vonis terkunci: selisih ETS lawan pembanding terbaik, batas bawah CI95")}</tr></thead><tbody>${t1}</tbody></table></div>
+      ${t2 ? `<div class="ex-tabel"><table><thead><tr>${th("Tingkat", lbl)}${th("Alarm", lbl, 1)}${th("Selisih ETS lawan persistensi disamakan", lbl + ". Selisih ETS status dikurangi persistensi dengan jumlah alarm sama, CI95 bootstrap blok provinsi x minggu", 1)}${th("Selisih ETS lawan klimatologi disamakan", lbl + ". Selisih ETS status dikurangi klimatologi kab x bulan dengan jumlah alarm sama, CI95 bootstrap blok provinsi x minggu", 1)}</tr></thead><tbody>${t2}</tbody></table></div>` : ""}
+    </div></article>`);
+  }).catch(() => {});
+}
 function renderMetode() {
   const M = S.meta || {}, d = M.dbscan || {};
   /* pembantu untuk rincian teknis (isi versi lama, tetap utuh) */
@@ -6664,6 +6684,7 @@ rasio   = 3,0 untuk jendela yang berakhir sampai 2 Nov 2026 (masuk 180, keluar 9
     </div></details>`).join("")}</div></article>`;
 
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
+  mtUjiStatus();
   /* bab tambahan: batasan peluang (inti/peluang.js), catatan sensor kumulatif, dan titik industri yang dibuang */
   Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null), muatJSON("data/prospektif.json").catch(() => null), muatJSON("data/gerbang_model.json").catch(() => null)]).then(([pl, kum, pr, gb]) => {
     mtProspektif(pr, gb);

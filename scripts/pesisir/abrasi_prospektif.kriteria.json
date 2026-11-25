@@ -1,0 +1,15 @@
+{
+  "versi": 2,
+  "metrik": "MAE perubahan jarak garis pantai setahun ke depan (m), model = laju regresi x 1 tahun, pembanding = persistensi (perubahan teramati tahun dasar) DAN tanpa perubahan (delta 0); amandemen sebelum skor pertama 25 Nov 2026",
+  "satuan_baris": "transek x tahun_dasar; hanya transek tanpa gangguan, tahun ramalan tidak bertanda tinjau/artefak",
+  "blok": "situs|desa",
+  "selisih": "MAE_persistensi - MAE_model dan MAE_tanpa_perubahan - MAE_model per baris (positif = model lebih baik); dua selang dihitung terpisah",
+  "bootstrap": {"B": 2000, "biji": 7},
+  "n_min": 30,
+  "blok_min": 5,
+  "vonis": {
+    "belum_cukup_data": "baris teruji < n_min atau blok < blok_min",
+    "lolos": "batas bawah selang95 KEDUA selisih (lawan persistensi dan lawan tanpa perubahan) > 0",
+    "gagal": "selain itu (selisih rata-rata <= 0 atau selang memuat nol): salah satu pembanding menang atau seri"
+  }
+}

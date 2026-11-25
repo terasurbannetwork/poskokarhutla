@@ -13,6 +13,9 @@ Sinyal (hanya JSON hasil pipeline di repo, tanpa jaringan; tiap entri memuat tan
   longsor     public/banjir/data/status.json (l = level longsor kecamatan, hari pertama; scripts/banjir/status.py)
   kekeringan  public/data/kekeringan_wilayah.json (lv kabupaten; scripts/kekeringan/status.py; AMBANG HIPOTESIS, gagal uji balik)
   gunungapi   public/banjir/data/kejadian_gunungapi_awal.json (level PVMBG)
+  rob         public/banjir/data/rob.json bmkg.rob (peringatan dini banjir pesisir BMKG Maritim: lokasi teks dipetakan ke kab; berlaku hari ini sampai 2 hari ke depan)
+  pesisir     public/banjir/data/cuaca_maritim.json (prakiraan gelombang pelabuhan BMKG Maritim kelas Tinggi atau lebih; kab = poligon kab yang memuat pelabuhan; cadangan berlabel pusat kab terdekat <= 40 km). AMBANG HIPOTESIS
+  udara       public/udara/data/bmkg_pm25.json (PM2,5 stasiun BMKG, rata-rata 24 jam >= batas atas "tidak sehat" ISPU; kab = poligon kab yang memuat stasiun; cadangan berlabel pusat kab terdekat <= 50 km). AMBANG HIPOTESIS
   cuaca       DILEWATI: peringatan CAP BMKG hanya membawa provinsi/poligon, tak ada tingkat per kabupaten.
 Kenaikan ke Tanggap (termasuk karhutla; level kompleks 2 dan 3 sama-sama Siaga) hanya bila DIBI (dibi_kejadian.json) mencatat kejadian sejenis di kab itu dalam DIBI_HARI hari
 terakhir cakupannya dengan dampak (korban, pengungsi, rumah rusak/terendam, fasilitas rusak): itu "fakta lapangan" pedoman.
@@ -29,7 +32,10 @@ from nama_wilayah import nk  # noqa: E402
 KELUAR = os.path.join(AKAR, "public/data/saran_status.json")
 WIB = dt.timezone(dt.timedelta(hours=7))
 SIAGA, TANGGAP = "Siaga Darurat", "Tanggap Darurat"
-URUT = ["karhutla", "banjir", "kekeringan", "cuaca", "gunungapi", "longsor"]
+CADANGAN = "; kabupaten diperkirakan dari pusat kabupaten terdekat karena titik berada di luar poligon"
+URUT = ["karhutla", "banjir", "kekeringan", "cuaca", "gunungapi", "longsor", "rob", "pesisir", "udara"]
+PM25_SIAGA = 150.5  # ug/m3 rata 24 jam: di atas batas atas "tidak sehat" ISPU (Permen LHK P.14/2020, 150,4); pemetaan ke Siaga = hipotesis kita
+GEL_SIAGA = ("Tinggi", "Sangat Tinggi", "Ekstrem", "Luar Biasa")   # kelas gelombang BMKG Maritim
 DIBI_HARI = 7  # jendela "kejadian baru" pada cakupan DIBI; bukan ambang bahaya
 DAMPAK = ("meninggal", "hilang", "luka", "terdampak", "mengungsi", "rr_berat", "rr_sedang", "rr_ringan", "terendam", "f_pendidikan", "f_kantor", "jembatan", "f_umum")
 ATURAN = {
@@ -41,6 +47,9 @@ ATURAN = {
     "kekeringan": "AMBANG HIPOTESIS (gagal uji balik): tingkat kabupaten Siaga atau Awas (>= 30% penduduk) -> Siaga Darurat; naik ke Tanggap Darurat bila DIBI mencatat kekeringan berdampak dalam 7 hari terakhir. "
                   "OMC tidak ditandai untuk kekeringan.",
     "gunungapi": "Level PVMBG III (Siaga) -> Siaga Darurat; level IV (Awas) -> Tanggap Darurat.",
+    "rob": "Peringatan dini banjir pesisir (rob) BMKG Maritim yang berlaku untuk pesisir kabupaten itu dalam 2 hari ke depan -> Siaga Darurat; naik ke Tanggap Darurat bila DIBI mencatat banjir rob berdampak dalam 7 hari terakhir.",
+    "pesisir": "AMBANG HIPOTESIS: prakiraan gelombang BMKG Maritim kelas Tinggi atau lebih di pelabuhan dalam kabupaten (atau pusat kabupaten terdekat 40 km) -> Siaga Darurat; naik ke Tanggap Darurat bila DIBI mencatat gelombang pasang atau abrasi berdampak dalam 7 hari terakhir.",
+    "udara": "AMBANG HIPOTESIS: rata-rata PM2,5 24 jam di stasiun BMKG di atas batas atas kategori tidak sehat ISPU (150,4 ug/m3) -> Siaga Darurat; naik ke Tanggap Darurat bila DIBI mencatat kabut asap berdampak dalam 7 hari terakhir. OMC tidak ditandai.",
     "cuaca": "Tidak dikeluarkan: peringatan cuaca ekstrem BMKG tak membawa tingkat per kabupaten.",
 }
 
@@ -74,15 +83,16 @@ def tgl(s):
     return str(s or "")[:10]
 
 
-def dampak_dibi(dibi, kelas, kem_ke_irbi):
-    """{IRBI: (tanggal terakhir, n kejadian)} untuk kejadian DIBI kelas ini berdampak dalam DIBI_HARI hari terakhir cakupan."""
+def dampak_dibi(dibi, kelas, kem_ke_irbi, jenis_dibi=None):
+    """{IRBI: (tanggal terakhir, n kejadian)} untuk kejadian DIBI kelas ini berdampak dalam DIBI_HARI hari terakhir cakupan.
+    jenis_dibi (himpunan nama jenis DIBI persis) menggantikan kelas bila kelasnya terlalu lebar (rob termasuk kelas banjir) atau tak ada."""
     sd = _muat("umum_status_darurat", "scripts/umum/status_darurat.py")
     if not dibi:
         return {}
     batas = (dt.date.fromisoformat(dibi["sampai"]) - dt.timedelta(days=DIBI_HARI)).isoformat()
     out = {}
     for k in dibi["kejadian"]:
-        if k["tanggal"] >= batas and kelas in sd.kelas_jenis(k["jenis"]) and any(k.get(c) for c in DAMPAK) and k["kab_kode"] in kem_ke_irbi:
+        if k["tanggal"] >= batas and (k["jenis"] in jenis_dibi if jenis_dibi else kelas in sd.kelas_jenis(k["jenis"])) and any(k.get(c) for c in DAMPAK) and k["kab_kode"] in kem_ke_irbi:
             i = kem_ke_irbi[k["kab_kode"]]
             t, n = out.get(i, ("", 0))
             out[i] = (max(t, k["tanggal"]), n + 1)
@@ -170,6 +180,110 @@ def sinyal_gunungapi(kej, nama, nk_idx):
     return out, tak
 
 
+def _inti_kab(v):
+    """'Kab. Padang Pariaman' -> ('padang pariaman', kota?)."""
+    n = str(v.get("nama", "")).lower().strip()
+    return re.sub(r"^(kab\.|kabupaten|kota)\s*", "", n).strip(), n.startswith("kota")
+
+
+def kab_dari_teks(kp, teks, kode):
+    """Teks lokasi BMKG ('Pesisir Kota Padang, Pesisir Kab. Agam') -> {IRBI} di provinsi kp. Nama terpanjang dulu dan dihapus setelah cocok
+    (Padang tak boleh menelan Padang Pariaman); bila Kota X dan Kab X kembar: 'kab' di depannya = Kab, selain itu Kota."""
+    s = re.sub(r"\bkep\.\s*", "kepulauan ", teks.lower())
+    di_prov = {i: _inti_kab(v) for i, v in kode.items() if v.get("prov") == kp}
+    out = set()
+    for i, (inti, kota) in sorted(di_prov.items(), key=lambda x: -len(x[1][0])):
+        m = re.search(r"(kab\.|kabupaten|kota)?\s*\b" + re.escape(inti) + r"\b", s) if inti else None
+        if not m:
+            continue
+        kembar = any(n == inti and k != kota for n, k in di_prov.values())
+        if kembar and kota != (m.group(1) in (None, "kota")):   # tanpa awalan = Kota; 'kab.'/'kabupaten' = Kab
+            continue
+        out.add(i)
+        s = s[:m.start()] + " " * (m.end() - m.start()) + s[m.end():]
+    return out
+
+
+def km(a, b):
+    import math
+    p = math.pi / 180
+    h = math.sin((b[0] - a[0]) * p / 2) ** 2 + math.cos(a[0] * p) * math.cos(b[0] * p) * math.sin((b[1] - a[1]) * p / 2) ** 2
+    return 12742 * math.asin(math.sqrt(h))
+
+
+def kab_terdekat(lat, lon, kode, maks_km):
+    """IRBI dengan pusat terdekat bila <= maks_km, selain itu None."""
+    best = min(((km((lat, lon), v["pusat"]), i) for i, v in kode.items() if v.get("pusat")), default=None)
+    return best[1] if best and best[0] <= maks_km else None
+
+
+def kab_titik(lat, lon, kode, maks_km, cari=None):
+    """-> (IRBI, via). via 'poligon' = titik jatuh di poligon kabupaten (cari(lat, lon) -> IRBI|None); 'terdekat' = cadangan berlabel: pusat kab terdekat <= maks_km."""
+    i = cari(lat, lon) if cari else None
+    return (i, "poligon") if i else (kab_terdekat(lat, lon, kode, maks_km), "terdekat")
+
+
+def cari_poligon(nama, nk_idx):
+    """Pencari titik-dalam-poligon dari Wilayah repo (public/geo/kecamatan) -> fungsi (lat, lon) -> IRBI|None."""
+    w = _muat("umum_wilayah_data", "scripts/data/wilayah.py").Wilayah()
+
+    def cari(lat, lon):
+        h = w.cari(lon, lat)
+        return cari_kab(h[0], h[1], nama, nk_idx) if h else None
+    return cari
+
+
+def sinyal_rob(bmkg, hari, kode):
+    """-> ({IRBI: [lokasi...]}, tak) untuk peringatan yang berlaku dari hari sampai hari+2 (selesai >= hari, mulai <= hari+2); tak = peringatan yang lokasinya tak terpetakan."""
+    h, out, tak = dt.date.fromisoformat(hari), {}, 0
+    for e in bmkg["rob"]:
+        if dt.date.fromisoformat(e["tanggal_selesai"]) < h or dt.date.fromisoformat(e["tanggal_mulai"]) > h + dt.timedelta(days=2):
+            continue
+        ks = kab_dari_teks(e["kp"], e["lokasi"], kode)
+        tak += 0 if ks else 1
+        for i in ks:
+            out.setdefault(i, []).append(e["lokasi"])
+    return out, tak
+
+
+def sinyal_pesisir(maritim, kode, cari=None):
+    """-> ({IRBI: (kelas tertinggi, [nama pelabuhan])}, tak, dekat): dekat = IRBI yang hanya terpetakan lewat cadangan pusat terdekat. Pelabuhan berkelas gelombang >= Tinggi pada salah satu hari prakiraan."""
+    out, tak, dekat = {}, 0, set()
+    for p in maritim["pelabuhan"]:
+        ks = [k for k in p[6] if k in GEL_SIAGA]
+        if not ks:
+            continue
+        i, via = kab_titik(p[3], p[4], kode, 40, cari)
+        if not i:
+            tak += 1
+            continue
+        if via == "poligon":
+            dekat.discard(i)
+        elif i not in out:
+            dekat.add(i)
+        k0, ns = out.get(i, ("", []))
+        out[i] = (max(ks + ([k0] if k0 else []), key=GEL_SIAGA.index), ns + [p[1]])
+    return out, tak, dekat
+
+
+def sinyal_udara(pm25, kode, cari=None):
+    """-> ({IRBI: (PM2,5 rata 24 jam tertinggi, nama stasiun)}, tak, dekat): dekat seperti sinyal_pesisir. Rata 24 nilai terakhir deret per jam (minimal 18 terisi) >= PM25_SIAGA."""
+    out, tak, dekat = {}, 0, set()
+    for s in pm25["stasiun"]:
+        w = [x for x in s["deret"][-24:] if x is not None]
+        if len(w) < 18 or sum(w) / len(w) < PM25_SIAGA:
+            continue
+        i, via = kab_titik(s["lat"], s["lon"], kode, 50, cari)
+        if not i:
+            tak += 1
+            continue
+        r = sum(w) / len(w)
+        if i not in out or r > out[i][0]:
+            out[i] = (r, s["nama"])
+            (dekat.add if via == "terdekat" else dekat.discard)(i)
+    return out, tak, dekat
+
+
 def sk_berlaku(sk, jenis, hari, sd, kem_ke_irbi):
     """{IRBI: {'nomor','status','berakhir'}} untuk SK kabupaten sedang berlaku (berakhir null dianggap masih berlaku) dan jenisnya memuat `jenis`."""
     out = {}
@@ -202,11 +316,13 @@ def tgl_wib(iso):
     return dt.datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(WIB).strftime("%Y-%m-%d")
 
 
-BATAS_BASI = {"karhutla": 2}  # umur sinyal (hari) di atas ini = basi; jenis lain 3
+BATAS_BASI = {"karhutla": 2, "udara": 2}  # umur sinyal (hari) di atas ini = basi; jenis lain 3
 BERKAS = {"karhutla": "public/data/kluster.json", "banjir": "public/banjir/data/kejadian_aktif_awal.json", "longsor": "public/banjir/data/status.json",
-          "kekeringan": "public/data/kekeringan_wilayah.json", "gunungapi": "public/banjir/data/kejadian_gunungapi_awal.json"}
+          "kekeringan": "public/data/kekeringan_wilayah.json", "gunungapi": "public/banjir/data/kejadian_gunungapi_awal.json",
+          "rob": "public/banjir/data/rob.json", "pesisir": "public/banjir/data/cuaca_maritim.json", "udara": "public/udara/data/bmkg_pm25.json"}
 LABEL = {"karhutla": "Data kompleks api aktif dari satelit", "banjir": "Kejadian banjir aktif", "longsor": "Status longsor kecamatan",
-         "kekeringan": "Kekeringan per kabupaten", "gunungapi": "Status gunung api PVMBG"}
+         "kekeringan": "Kekeringan per kabupaten", "gunungapi": "Status gunung api PVMBG",
+         "rob": "Peringatan dini rob BMKG Maritim", "pesisir": "Prakiraan gelombang pelabuhan BMKG Maritim", "udara": "PM2,5 stasiun BMKG"}
 
 
 def entri(jenis, saran, alasan, sk, tanggal_sinyal, hari, cakupan_sk):
@@ -215,7 +331,7 @@ def entri(jenis, saran, alasan, sk, tanggal_sinyal, hari, cakupan_sk):
     umur = (dt.date.fromisoformat(hari) - dt.date.fromisoformat(tanggal_sinyal)).days
     e = {"jenis": jenis, "saran": saran, "alasan": alasan, "sk": sk,
          "omc": jenis == "karhutla" and saran == SIAGA and sk is None and cakupan_sk is not None and cakupan_sk >= tanggal_sinyal}
-    if jenis == "kekeringan":
+    if jenis in ("kekeringan", "pesisir", "udara"):
         e["hipotesis"] = True
     e.update({"tanggal_sinyal": tanggal_sinyal, "umur_hari": umur, "basi": umur > BATAS_BASI.get(jenis, 3), "berkas": BERKAS[jenis]})
     return e
@@ -274,6 +390,28 @@ def bangun(d, hari):
         lv = max(g[1] for g in gs)
         pasang("gunungapi", i, TANGGAP if lv >= 4 else SIAGA,
                f"Gunung api {', '.join(sorted({g[0] for g in gs}))} berlevel {'IV (Awas)' if lv >= 4 else 'III (Siaga)'} menurut PVMBG per {tgl_id(tg_sinyal['gunungapi'])}.")
+    # rob, pesisir (gelombang), udara: hanya bila masukannya diberikan (sumber resmi BMKG)
+    if d.get("rob"):
+        s, tak["rob"] = sinyal_rob(d["rob"], hari, d["kode"])
+        tg_sinyal["rob"] = tgl(d["rob"]["diambil"])
+        dm = dampak_dibi(dib, "banjir", kem, {"Banjir Rob"})
+        for i, ls in s.items():
+            tg, kal = dampak("rob", i, dm, "; DIBI mencatat {n} kejadian banjir rob berdampak, terakhir {t}.", "; belum ada banjir rob berdampak di DIBI 7 hari terakhir, jadi masih ancaman.")
+            pasang("rob", i, TANGGAP if tg else SIAGA, f"BMKG Maritim memperingatkan potensi banjir pesisir (rob) di {idn(len(ls))} lokasi pesisir kabupaten ini per {tgl_id(tg_sinyal['rob'])}; peringatan BMKG itu kami petakan ke saran {SIAGA}, bukan istilah atau penetapan BMKG" + kal)
+    if d.get("maritim"):
+        s, tak["pesisir"], dekat = sinyal_pesisir(d["maritim"], d["kode"], d.get("titik_kab"))
+        tg_sinyal["pesisir"] = tgl(d["maritim"]["hari"][0])
+        dm = dampak_dibi(dib, "pesisir", kem, {"Gelombang Pasang / Abrasi", "Gelombang Pasang", "Abrasi Pantai"})
+        for i, (kl, ns) in s.items():
+            tg, kal = dampak("pesisir", i, dm, "; DIBI mencatat {n} kejadian gelombang pasang atau abrasi berdampak, terakhir {t}.", "; belum ada gelombang pasang atau abrasi berdampak di DIBI 7 hari terakhir, jadi masih ancaman.")
+            pasang("pesisir", i, TANGGAP if tg else SIAGA, f"Prakiraan gelombang kelas {kl} di {idn(len(set(ns)))} pelabuhan kabupaten ini menurut BMKG Maritim per {tgl_id(tg_sinyal['pesisir'])}; ambang hipotesis, belum diuji balik" + (CADANGAN if i in dekat else "") + kal)
+    if d.get("pm25"):
+        s, tak["udara"], dekat = sinyal_udara(d["pm25"], d["kode"], d.get("titik_kab"))
+        tg_sinyal["udara"] = tgl(d["pm25"]["terbit"])
+        dm = dampak_dibi(dib, "udara", kem)
+        for i, (r, nama_s) in s.items():
+            tg, kal = dampak("udara", i, dm, "; DIBI mencatat {n} kejadian kabut asap berdampak, terakhir {t}.", "; belum ada kabut asap berdampak di DIBI 7 hari terakhir, jadi masih ancaman.")
+            pasang("udara", i, TANGGAP if tg else SIAGA, f"Rata-rata PM2,5 24 jam di stasiun BMKG {nama_s} {idn(r, 1)} mikrogram per meter kubik, di atas batas atas kategori tidak sehat, per {tgl_id(tg_sinyal['udara'])}; ambang hipotesis, belum diuji balik" + (CADANGAN if i in dekat else "") + kal)
     for v in kab.values():
         v.sort(key=lambda e: URUT.index(e["jenis"]))
     es = [e for v in kab.values() for e in v]
@@ -293,6 +431,7 @@ def catatan(o, hari):
     mati = o["ringkas"]["sk_cakupan_sampai"] is None or o["ringkas"]["sk_cakupan_sampai"] < hari
     return ("Ini SARAN untuk dibahas di rapat koordinasi, bukan penetapan status. Yang menetapkan adalah Bupati/Walikota, Gubernur, atau Presiden setelah kaji cepat dan rapat koordinasi. "
             "Gempa bumi dan tsunami tidak pernah disarankan Siaga karena terjadi mendadak dan tidak bisa diamati peringatan dini, jadi tidak dikeluarkan. Cuaca ekstrem belum punya sinyal per kabupaten. "
+            "Rob mengikuti peringatan dini BMKG Maritim; ambang gelombang dan PM2,5 adalah hipotesis kita, belum diuji balik. "
             "Transisi Darurat ke Pemulihan tidak disarankan otomatis. "
             "Cek tanggal sinyal tiap saran: yang bertanda basi sudah lewat beberapa hari. Ambang kekeringan masih hipotesis dan ambang karhutla belum diuji balik pada konfigurasi produksi."
             + (" Data SK 2026 belum termuat, penanda OMC dimatikan." if mati else ""))
@@ -306,6 +445,7 @@ def catatan_teknis(o):
             "sk = SK berlaku dari status_darurat.json (berakhir kosong dianggap masih berlaku, jenis cocok lewat kelas_jenis). "
             "omc true = karhutla Siaga tanpa SK berlaku DAN max(mulai) di status_darurat.json >= tanggal_sinyal; SK hanya sampai ringkas.sk_cakupan_sampai sehingga 'tanpa SK' di luar cakupan itu artefak, omc dimatikan. "
             "Kunci kab = kode IRBI lewat public/data/kemitraan/kode.json. tanggal_sinyal/umur_hari terhadap tanggal WIB saat jalan; basi bila umur > 2 hari (karhutla) atau > 3 hari (lainnya), entri tidak dibuang. "
+            "Rob: lokasi teks BMKG dicocokkan ke nama kab/kota se-provinsi (lokasi yang tak cocok, mis. nama kecamatan atau pulau, dibuang dan dihitung di tak); pesisir: pelabuhan kelas gelombang >= Tinggi ke kab lewat titik-dalam-poligon (cadangan berlabel: pusat kab terdekat <= 40 km); udara: rata 24 nilai per jam terakhir (minimal 18) >= 150,5 ug/m3, stasiun ke kab lewat titik-dalam-poligon (cadangan berlabel: pusat terdekat <= 50 km); ketiganya tanpa SK/OMC. "
             "Cuaca dilewati: CAP BMKG hanya membawa provinsi/poligon. Kata 'siaga'/'tanggap' dipetakan, bukan ditetapkan."
             + (f" Sinyal yang namanya tak terpetakan ke kode kabupaten dan dibuang: {t}." if t else ""))
 
@@ -316,8 +456,11 @@ def jalan():
     d = {"kode": J("public/data/kemitraan/kode.json"), "kluster": J("public/data/kluster.json"), "meta": J("public/data/meta.json"),
          "aktif": J("public/banjir/data/kejadian_aktif_awal.json"), "status": J("public/banjir/data/status.json"),
          "kering": J("public/data/kekeringan_wilayah.json"), "kering_meta": J("public/data/kekeringan_meta.json"),
-         "gunung": J("public/banjir/data/kejadian_gunungapi_awal.json"), "dibi": J("public/data/dibi_kejadian.json"), "sk": J("public/data/status_darurat.json")["sk"]}
+         "gunung": J("public/banjir/data/kejadian_gunungapi_awal.json"), "rob": J("public/banjir/data/rob.json")["bmkg"],
+         "maritim": J("public/banjir/data/cuaca_maritim.json"), "pm25": J("public/udara/data/bmkg_pm25.json"), "dibi": J("public/data/dibi_kejadian.json"), "sk": J("public/data/status_darurat.json")["sk"]}
     hari = dt.datetime.now(WIB).strftime("%Y-%m-%d")
+    nama, nk_idx, _ = peta_kode(d["kode"])
+    d["titik_kab"] = cari_poligon(nama, nk_idx)
     o = bangun(d, hari)
     _muat("umum_kejadian", "scripts/umum/kejadian.py").simpan(KELUAR, {
         "sumber": o["sumber"], "sumber_berkas": o["sumber_berkas"], "catatan": catatan(o, hari), "catatan_teknis": catatan_teknis(o), "aturan": ATURAN,
@@ -388,6 +531,56 @@ def uji():
     assert o["ringkas"]["kab_dengan_saran"] == 3
     assert idn(53071) == "53.071" and idn(1269) == "1.269" and idn(-1.51, 2) == "-1,51" and idn(0) == "0" and idn(1234567.5, 1) == "1.234.567,5"
     assert tgl_id("2026-10-12") == "12 Okt 2026" and tgl_wib("2026-10-12T20:00:00+00:00") == "2026-10-13"
+    # rob, pesisir (gelombang), udara: sumber resmi BMKG; masukan opsional (d tanpa kuncinya = perilaku lama, sudah diuji di atas)
+    kode2 = dict(kode, **{
+        "1301": {"kunci_nama": "13|Padang", "kemendagri": "13.71", "nama": "Kota Padang", "prov": "13", "pusat": [-0.95, 100.35]},
+        "1302": {"kunci_nama": "13|Padang Pariaman", "kemendagri": "13.05", "nama": "Kab. Padang Pariaman", "prov": "13", "pusat": [-0.6, 100.2]},
+        "1303": {"kunci_nama": "13|Agam", "kemendagri": "13.06", "nama": "Kab. Agam", "prov": "13", "pusat": [-0.2, 100.1]},
+        "1371": {"kunci_nama": "13|Solok", "kemendagri": "13.72", "nama": "Kota Solok", "prov": "13", "pusat": [-0.8, 100.65]},
+        "1372": {"kunci_nama": "13|Solok", "kemendagri": "13.02", "nama": "Kab. Solok", "prov": "13", "pusat": [-0.95, 100.8]}})
+    assert kab_dari_teks("13", "Pesisir Kota Padang, Pesisir Kab. Padang Pariaman,Pesisir Kab. Agam", kode2) == {"1301", "1302", "1303"}
+    assert kab_dari_teks("13", "Pesisir Padang Pariaman", kode2) == {"1302"}                   # Padang tak menelan Padang Pariaman
+    assert kab_dari_teks("13", "Pesisir Kab. Solok", kode2) == {"1372"} and kab_dari_teks("13", "Pesisir Solok", kode2) == {"1371"}
+    assert kab_dari_teks("13", "Pesisir Dabo Singkep", kode2) == set()                        # tak terpetakan = kosong, bukan tebakan
+    rob = {"diambil": "2026-10-19T08:00+07:00", "rob": [
+        {"kp": "13", "lokasi": "Pesisir Kota Padang", "tanggal_mulai": "2026-10-18", "tanggal_selesai": "2026-10-20"},
+        {"kp": "13", "lokasi": "Pesisir Kab. Agam", "tanggal_mulai": "2026-10-25", "tanggal_selesai": "2026-10-26"},      # >2 hari lagi
+        {"kp": "13", "lokasi": "Pesisir Kab. Agam", "tanggal_mulai": "2026-10-01", "tanggal_selesai": "2026-10-02"}]}      # sudah lewat
+    mar = lambda *kl: {"hari": ["2026-10-19"], "pelabuhan": [["X1", "Pelabuhan Teluk Bayur", "13", -0.95, 100.36, [20, 20, 20], list(kl), [], [], [], [], [], []]]}
+    pm = lambda v, n=24: {"terbit": "2026-10-19T10:00+07:00", "stasiun": [{"nama": "Padang", "lat": -0.95, "lon": 100.36, "deret": [v] * n},
+                                                                          {"nama": "Terpencil", "lat": 5.0, "lon": 120.0, "deret": [400] * 24}]}
+    d5 = dict(d, kode=kode2, rob=rob, maritim=mar("Rendah", "Tinggi", "Sedang"), pm25=pm(160.0))
+    o5 = bangun(d5, H)
+    k5 = ada(o5["kab"], "1301")
+    assert k5["rob"]["saran"] == SIAGA and "hipotesis" not in k5["rob"]      # rob = peringatan resmi BMKG, bukan ambang kita
+    assert "rob" in k5 and "1303" not in o5["kab"]                                              # Agam: lewat / jauh ke depan
+    assert k5["pesisir"]["saran"] == SIAGA and k5["pesisir"]["hipotesis"] is True and "kelas Tinggi" in k5["pesisir"]["alasan"]
+    assert k5["udara"]["saran"] == SIAGA and k5["udara"]["hipotesis"] is True and "160,0" in k5["udara"]["alasan"] and k5["udara"]["omc"] is False
+    assert o5["tak"]["udara"] == 1                                                              # stasiun >50 km dari pusat kab mana pun
+    # titik-dalam-poligon menang atas pusat terdekat; tanpa poligon -> cadangan berlabel; rob = pemetaan kami
+    cari = lambda lat, lon: "1303" if lat > -0.5 else None          # titik utara jatuh di Agam walau pusat terdekat Kota Padang
+    pm_u = {"terbit": "2026-10-19T10:00+07:00", "stasiun": [{"nama": "Utara", "lat": -0.4, "lon": 100.3, "deret": [160.0] * 24}]}
+    ku = bangun(dict(d5, pm25=pm_u, titik_kab=cari), H)["kab"]
+    assert "1303" in ku and "pusat kabupaten terdekat" not in ada(ku, "1303")["udara"]["alasan"]
+    kc = bangun(dict(d5, pm25=pm_u), H)["kab"]
+    assert "pusat kabupaten terdekat" in ada(kc, "1302")["udara"]["alasan"]
+    pu, _, dk = sinyal_udara(pm_u, kode2, cari); assert list(pu) == ["1303"] and dk == set()
+    pu, _, dk = sinyal_udara(pm_u, kode2); assert dk == set(pu) and pu
+    ps, _, dk = sinyal_pesisir(mar("Tinggi"), kode2, lambda la, lo: "1302"); assert list(ps) == ["1302"] and dk == set()
+    assert "bukan istilah atau penetapan BMKG" in k5["rob"]["alasan"] and "kami petakan" in k5["rob"]["alasan"]
+    # di bawah ambang / data bolong / kelas rendah: tidak keluar
+    k6 = bangun(dict(d5, maritim=mar("Rendah", "Sedang", "Sedang"), pm25=pm(150.0), rob={"diambil": "2026-10-19", "rob": []}), H)["kab"].get("1301", [])
+    assert not [e for e in k6 if e["jenis"] in ("rob", "pesisir", "udara")]
+    assert "udara" not in ada(bangun(dict(d5, pm25=pm(400.0, 10)), H)["kab"], "1301")           # hanya 10 jam terisi: tidak dinilai
+    # Tanggap hanya dengan DIBI persis jenisnya: Banjir Rob berdampak -> rob Tanggap; Banjir biasa tidak mengubah rob
+    dr = lambda jenis: dict(d5["dibi"], kejadian=[{"tanggal": "2026-10-27", "jenis": jenis, "kab_kode": "13.71", "terdampak": 5}])
+    assert ada(bangun(dict(d5, dibi=dr("Banjir Rob")), H)["kab"], "1301")["rob"]["saran"] == TANGGAP
+    assert ada(bangun(dict(d5, dibi=dr("Banjir")), H)["kab"], "1301")["rob"]["saran"] == SIAGA
+    assert ada(bangun(dict(d5, dibi=dr("Abrasi Pantai")), H)["kab"], "1301")["pesisir"]["saran"] == TANGGAP
+    assert ada(bangun(dict(d5, dibi=dr("Kabut Asap")), H)["kab"], "1301")["udara"]["saran"] == TANGGAP
+    for e in (e for v in o5["kab"].values() for e in v):                                        # kata aman tak pernah muncul; teks publik bersih
+        assert not re.search(r"\baman\b", e["alasan"].lower()) and not re.search(r"\.json|\d{4}-\d{2}-\d{2}|\d\.\d{1,2}(?!\d)", e["alasan"]), e["alasan"]
+    assert o5["ringkas"]["per_jenis"]["rob"] == 1 and o5["ringkas"]["hipotesis"] == 3
     print("uji saran_status: ok")
 
 

@@ -4,7 +4,7 @@
 import {TINGKAT, HARI, BENCANA, tindakanUntuk} from "/ews_tindakan.js";
 
 const API = "/api/ews";
-const URUT = ["karhutla", "banjir", "longsor", "cuaca", "rob", "gempa", "tsunami"];
+const URUT = ["karhutla", "banjir", "longsor", "cuaca", "rob", "pesisir", "kekeringan", "gempa", "tsunami", "gunungapi"];   // gunungapi: kenaikan level PVMBG dikirim resmi (KI-50)
 const LEBAR = new Set(["karhutla", "gempa", "tsunami"]);
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
