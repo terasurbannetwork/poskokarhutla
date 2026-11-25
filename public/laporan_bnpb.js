@@ -1,5 +1,5 @@
 /* laporan_bnpb.js: halaman /laporan-bnpb. Tim mengetik angka laporan -> pratinjau slide langsung -> Simpan (D1, /api/laporan-bnpb) -> Unduh PPTX/PDF.
-   Dua jenis: "harian" (Laporan Kejadian Bencana Harian) dan "presiden" (Paparan Kepala BNPB kepada Presiden, karhutla).
+   Dua jenis di sini (jenis ketiga "berkala" dibuka di layar public/laporan_berkala.js): "harian" (Laporan Kejadian Bencana Harian) dan "presiden" (Paparan Kepala BNPB kepada Presiden, karhutla).
    Jenis harian punya empat keluaran dari isian yang sama (S.out): laporan harian, konferensi pers, Matador (layar besar), naskah juru bicara (+ teleprompter).
    Isian = satu objek JSON per (jenis, tanggal); bentuknya ditentukan BENTUK di bawah dan digambar laporan_bnpb_slide.js.
    Draf yang belum disimpan ditahan di localStorage peramban ini (per jenis+tanggal). Klik tidak membekukan layar: pratinjau ditunda. */
@@ -621,6 +621,7 @@ window.addEventListener("resize", () => requestAnimationFrame(() => { if (Layar.
 /* ---------------------------------------------------------------- kontrol */
 document.querySelectorAll("#lbJenis button").forEach(b => b.onclick = async () => {
   if (b.dataset.j === S.jenis) return;
+  if (b.dataset.j === "berkala") { tulisDraf(); location.href = "/laporan-bnpb?jenis=berkala"; return; }   // layar sendiri: public/laporan_berkala.js
   document.querySelectorAll("#lbJenis button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
   tulisDraf(); S.jenis = b.dataset.j; aturOut(); await muatDaftar(); await buka(S.daftar[0]?.tanggal || kini());
 });
@@ -675,6 +676,7 @@ $("#tema").onclick = () => { const t = document.documentElement.dataset.theme ==
   const q = new URLSearchParams(location.search);
   const tglQ = q.get("tanggal"), outQ = q.get("out"), unduhQ = q.get("unduh");
   if (outQ && [...$("#lbOut").children].some(b => b.dataset.o === outQ)) S.out = outQ;
+  if (q.get("jenis") === "presiden") { S.jenis = "presiden"; document.querySelectorAll("#lbJenis button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.j === "presiden"))); }   // tautan balik dari Laporan Berkala
   aturOut(); await muatDaftar();
   await buka(/^\d{4}-\d\d-\d\d$/.test(tglQ || "") ? tglQ : S.daftar[0]?.tanggal || kini());
   if (unduhQ === "pptx" || unduhQ === "pdf") { await pratinjau(); unduh(unduhQ); }

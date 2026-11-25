@@ -1,4 +1,4 @@
-/* laporan_berkala.js: Laporan Berkala di /laporan-bnpb?jenis=berkala&periode=bulanan&kode=2026-10 (LB-05: halaman cetak A4).
+/* laporan_berkala.js: Laporan Berkala di /laporan-bnpb?jenis=berkala&periode=bulanan&kode=2026-10 (LB-05 halaman cetak A4, LB-06 layar isian).
    Membaca berkas angka hitung.py apa adanya (kontrak tests/berkala/kontrak.test.mjs) dan isian staf, lalu menyusun kertas A4 per halaman:
    sampul, daftar isi dan "Tentang laporan ini", Ringkasan Eksekutif, Bab 1 sampai 7, Lampiran. Blok dialirkan ke kertas berikutnya bila
    kertas penuh (diukur di DOM), jadi tidak ada isi yang terpotong dan nomor daftar isi sama dengan nomor halaman cetak.
@@ -438,56 +438,297 @@ export async function susun(akar, A, I = {}, {versi = 0, periode = "bulanan", ko
   return hal.length;
 }
 
-/* ---------------------------------------------------------------- layar */
+/* ---------------------------------------------------------------- layar isian (LB-06)
+   Kiri: kartu per bab berisi angka mesin (baca saja) dan kolom staf. Kanan: pratinjau A4. Ketik langsung mengubah isian di memori;
+   pratinjau digambar ulang tertunda (jadwal) supaya ketik dan klik tidak tertahan. Isian TIDAK pernah ditulis ke localStorage
+   (KEAMANAN-PRIVASI 4, L12): sampai rute LB-07 ada, isian hanya di memori halaman, ditandai "Belum tersimpan di server", dan
+   staf diingatkan sebelum meninggalkan halaman. */
 async function ambil(url) { try { const r = await fetch(url, {credentials: "same-origin", cache: "no-store"}); return r.ok ? await r.json() : null; } catch (e) { return null; } }
+const kiniWib = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+const IK = {hari: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M11 14h2v2h-2z", minggu: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M7 14h10", bulan: "M4 5h16v15H4zM4 10h16M9 3v4M15 3v4M7 14h3M14 14h3M7 17h3",
+  tahun: "M4 7h16v13H4zM7 4h10M9 11h6M9 15h6", ringkas: "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5", umum: "M4 20V10M10 20V4M16 20v-7M22 20H2", api: "M12 3c2 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3 0-5 1-8z",
+  air: "M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z", awan: "M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11 2 3 3 0 0 0 1 6z", gunung: "M3 20l6-10 4 6 2-3 6 7z", program: "M9 4h6v3H9zM6 5h3M15 5h3v16H6V5M9 12h6M9 16h4",
+  prediksi: "M3 17l5-5 4 4 8-8M15 8h5v5", sampul: "M4 20h4L19 9l-4-4L4 16zM13 7l4 4", tambah: "M12 5v14M5 12h14", hapus: "M6 6l12 12M18 6L6 18"};
+const ikon = d => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const PERIODE = [["harian", "Harian", IK.hari], ["mingguan", "Mingguan", IK.minggu], ["bulanan", "Bulanan", IK.bulan], ["tahunan", "Tahunan", IK.tahun]];
+const MASUKAN = {harian: {label: "Tanggal", type: "date", pola: "\\d{4}-\\d{2}-\\d{2}", contoh: "2026-11-11"}, mingguan: {label: "Minggu", type: "week", pola: "\\d{4}-W\\d{2}", contoh: "2026-W46"},
+  bulanan: {label: "Bulan", type: "month", pola: "\\d{4}-\\d{2}", contoh: "2026-10"}, tahunan: {label: "Tahun", type: "text", pola: "\\d{4}", contoh: "2025"}};
+const didukung = t => { const i = document.createElement("input"); i.type = t; return i.type === t; };   // week dan month belum ada di Firefox dan Safari desktop: jatuh ke teks berpola
+const PIL = ["karhutla", "data", "banjir", "iklim", "prediksi", "vulkanologi"];
+const PELAKSANA = ["Kepala BNPB", "Pusdatinkom", "Satgas operasi"];
+const DAFTAR = {
+  dukungan: {maks: 30, baru: "Tambah dukungan", kolom: [["langkah", "Langkah", "a"], ["rincian", "Rincian", "a"], ["pj", "Penanggung jawab"], ["waktu", "Waktu"]]},
+  kegiatan: {maks: 200, baru: "Tambah kegiatan", kolom: [["tanggal", "Tanggal", "date"], ["kegiatan", "Kegiatan", "a"], ["lokasi", "Lokasi"], ["pelaksana", "Pelaksana", "pilih"], ["tautan", "Tautan sumber", "url"]]}};
+
+/* jalur "action.bab1.sudah", "dukungan.0.langkah" */
+const dapat = (o, p) => p.split(".").reduce((x, k) => x == null ? undefined : x[k], o);
+function tulis(o, p, v) {
+  const k = p.split("."), akhir = k.pop();
+  const wadah = k.reduce((x, s, i) => x[s] ??= (/^\d+$/.test(k[i + 1] ?? akhir) ? [] : {}), o);
+  if (v === undefined) delete wadah[akhir]; else wadah[akhir] = v;
+}
+const nid = p => "lbkf-" + p.replace(/[^a-z0-9]+/gi, "-");
+function teks(I, p, label, {baris = 3, bantu = "", jenis = "a", wajibIsi = true} = {}) {
+  const id = nid(p), v = dapat(I, p) ?? "", h = bantu ? ` aria-describedby="${id}-h"` : "";
+  const pil = wajibIsi ? `<span class="lbk-kosong">belum diisi</span>` : "";
+  let ctl;
+  if (jenis === "a") ctl = `<textarea id="${id}" data-p="${p}" rows="${baris}" maxlength="2000" placeholder=" "${h}>${esc(v)}</textarea>`;
+  else if (jenis === "pilih") ctl = `<select id="${id}" data-p="${p}"${h}><option value="">pilih</option>${PELAKSANA.map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>`;
+  else if (jenis === "pil") ctl = `<select id="${id}" data-p="${p}"${h}>${PIL.map(x => `<option${x === v ? " selected" : ""}>${x}</option>`).join("")}</select>`;
+  else ctl = `<input id="${id}" data-p="${p}" type="${jenis === "angka" ? "number" : jenis}"${jenis === "angka" ? ' min="0" step="1" inputmode="numeric"' : ""}${jenis === "date" ? " required" : ""} maxlength="2000" placeholder=" " value="${esc(v)}"${h}>`;
+  return `<div class="lbk-f"><label for="${id}">${esc(label)}${pil}</label>${ctl}${bantu ? `<small id="${id}-h" class="lbk-h">${esc(bantu)}</small>` : ""}</div>`;
+}
+const mesin = daftar => `<dl class="lbk-mesin" aria-label="Angka dari mesin, baca saja">${daftar.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>`;
+const apIsian = (I, bab) => `<fieldset class="lbk-ap3"><legend>Action plan</legend>${[["sudah", "Sudah dilakukan"], ["sedang", "Sedang berjalan"], ["akan", "Akan dilakukan"]]
+  .map(([k, l]) => teks(I, `action.${bab}.${k}`, l, {baris: 4})).join("")}</fieldset>`;
+const catatanIsian = (I, bab) => teks(I, `catatan.${bab}`, "Catatan bab (pilihan)", {baris: 2, wajibIsi: false, bantu: "Tampil sebagai kotak catatan di bab ini. Boleh dikosongkan."});
+
+function daftarIsian(I, nama) {
+  const D = DAFTAR[nama], xs = Array.isArray(I[nama]) ? I[nama] : [];
+  return `<div class="lbk-daftar" data-daftar="${nama}">${xs.map((_, i) => `<div class="lbk-baris"><div class="lbk-baris-k"><b>Baris ${i + 1}</b>
+    <button type="button" class="lbk-ik" data-hapus="${nama}.${i}" aria-label="Hapus baris ${i + 1}" title="Hapus baris">${ikon(IK.hapus)}</button></div>
+    <div class="lbk-baris-g">${D.kolom.map(([k, l, j]) => teks(I, `${nama}.${i}.${k}`, l, {jenis: j || "text", baris: 2})).join("")}</div></div>`).join("")}
+    <button type="button" class="lbk-tambah" data-tambah="${nama}"${xs.length >= D.maks ? " disabled" : ""}>${ikon(IK.tambah)}${D.baru}</button></div>`;
+}
+function temuanIsian(A, I, nama) {
+  const maks = H.MAKS_TEMUAN[nama], xs = Array.isArray(I[nama]) ? I[nama] : [], usul = A.usulan_temuan || [], penuhT = xs.length >= maks;
+  const dipilih = new Set(xs.map(t => t?.kode).filter(Boolean));
+  return `<div class="lbk-daftar" data-daftar="${nama}"><p class="lbk-h">Pilih paling banyak ${maks}. Usulan mesin memakai angka dari berkas angka; kalimatnya boleh disunting. Temuan yang ditulis sendiri wajib berangka dan bersumber.</p>
+    <fieldset class="lbk-usul"><legend>Usulan mesin</legend>${usul.length ? usul.map(u => { const on = dipilih.has(u.kode);
+      return `<label class="lbk-u"><input type="checkbox" data-usul="${nama}" value="${esc(u.kode)}"${on ? " checked" : ""}${penuhT && !on ? " disabled" : ""}>
+        <span><span class="lbk-tg" style="${w(u.pil)}">${esc(u.pil || "temuan")}</span>${esc(u.kalimat || "")}</span><small>Sumber: ${esc(u.sumber || "tidak diketahui")}</small></label>`; }).join("")
+      : `<p class="lbk-h">Berkas angka ini tidak memuat usulan temuan.</p>`}</fieldset>
+    <p class="lbk-lbl">Dipilih: ${xs.length} dari ${maks}</p>
+    ${xs.map((t, i) => `<div class="lbk-baris"><div class="lbk-baris-k"><b>Temuan ${i + 1}</b><span>${t?.kode ? `usulan mesin ${esc(t.kode)}` : "ditulis staf"}</span>
+      <button type="button" class="lbk-ik" data-hapus="${nama}.${i}" aria-label="Hapus temuan ${i + 1}" title="Hapus temuan">${ikon(IK.hapus)}</button></div>
+      <div class="lbk-baris-g">${teks(I, `${nama}.${i}.pil`, "Pil", {jenis: "pil", wajibIsi: false})}${teks(I, `${nama}.${i}.judul`, "Judul", {jenis: "text", wajibIsi: false})}</div>
+      ${teks(I, `${nama}.${i}.kalimat`, "Kalimat berangka", {baris: 3})}${teks(I, `${nama}.${i}.sumber`, "Sumber", {jenis: "text"})}</div>`).join("")}
+    <button type="button" class="lbk-tambah" data-tambah="${nama}"${penuhT ? " disabled" : ""}>${ikon(IK.tambah)}Tambah temuan sendiri</button></div>`;
+}
+
+function kartuIsian(A, I) {
+  const b1 = A.bab1 || {}, b2 = A.bab2 || {}, b3 = A.bab3 || {}, b4 = A.bab4 || {}, b5 = A.bab5 || {}, en = A.bab7?.enso, d = b1.alam?.dampak || {};
+  const st = b3.banjir?.status || {}, pl = b5.gunungapi?.per_level || {}, kel = b1.kelompok || {};
+  const K = (ik, ey, judul, isi, buka = false) => `<details class="ex ex-std lbk-k"${buka ? " open" : ""}><summary class="ex-hd"><span class="ex-ey">${ikon(ik)}${esc(ey)}</span>
+    <div class="ex-jd"><h3>${esc(judul)}</h3></div></summary><div class="ex-bd">${isi}</div></details>`;
+  return [
+    K(IK.ringkas, "Ringkasan", "Ringkasan Eksekutif", mesin([["Kejadian, semua laporan", n(b1.alam?.kejadian)], ["Kejadian, resmi DIBI", n(b1.resmi?.alam?.kejadian)],
+      ["Meninggal dan hilang", n(d.meninggal_hilang)], ["Terdampak dan mengungsi", n(d.terdampak_mengungsi)], ["Rumah rusak", n(d.rumah_rusak)]]) +
+      teks(I, "pembuka", "Kalimat pembuka", {baris: 4, bantu: "Ditulis staf. Angka tidak perlu diketik ulang; paragraf fakta berangka sudah disusun mesin."}) +
+      `<p class="lbk-lbl">Temuan utama</p>` + temuanIsian(A, I, "temuan_ringkas"), true),
+    K(IK.umum, "Bab 1", "Gambaran umum", mesin([["Kelompok kering", n(kel.kering?.kejadian)], ["Kelompok basah", n(kel.basah?.kejadian)], ["Kelompok geologi", n(kel.geologi?.kejadian)],
+      ["Provinsi", n(b1.alam?.prov)], ["Kab/kota", n(b1.alam?.kab)]]) + apIsian(I, "bab1") + catatanIsian(I, "bab1")),
+    K(IK.api, "Bab 2", "Karhutla", mesin([["Hotspot", n(b2.hot)], ["Puncak harian", n(b2.puncak?.hot)], ["Luas terbakar perkiraan (ha)", H.luas(b2.luas)], ["Belum padam (ha)", H.luas(b2.belum)]]) +
+      teks(I, "operasi", "Angka operasi", {baris: 3, bantu: "Personel darat, armada udara, sorti OMC, garam, dan lainnya, masing-masing dengan sumbernya. Hotspot dan luas tidak diketik; angkanya dari sistem."}) +
+      apIsian(I, "bab2") + catatanIsian(I, "bab2")),
+    K(IK.air, "Bab 3", "Banjir dan tanah longsor", mesin([["Kejadian banjir", n(b3.banjir?.ringkas?.kejadian)], ["Kab/kota sudah surut", n(st.sudah)], ["Kab/kota belum surut", n(st.belum)],
+      ["Kab/kota belum dilaporkan", n(st.belum_dilaporkan)], ["Kejadian tanah longsor", n(b3.longsor?.ringkas?.kejadian)]]) + apIsian(I, "bab3") + catatanIsian(I, "bab3")),
+    K(IK.awan, "Bab 4", "Cuaca ekstrem dan kekeringan", mesin([["Kejadian cuaca ekstrem", n(b4.cuaca_ekstrem?.ringkas?.kejadian)], ["Kejadian kekeringan", n(b4.kekeringan?.ringkas?.kejadian)]]) +
+      apIsian(I, "bab4") + catatanIsian(I, "bab4")),
+    K(IK.gunung, "Bab 5", "Geologi dan vulkanologi", mesin([["Peristiwa gempa", n(b5.peristiwa?.gempa)], ["Peristiwa erupsi", n(b5.peristiwa?.erupsi)], ["Gunung api Level III", n(pl["3"])], ["Gunung api Level IV", n(pl["4"])]]) +
+      apIsian(I, "bab5") + catatanIsian(I, "bab5")),
+    K(IK.program, "Bab 6", "Program kerja", `<p class="lbk-h">Daftar calon dari siaran pers belum tersedia, jadi kegiatan ditulis staf. Tautan sumber tampil di Lampiran sebagai teks.</p>` +
+      daftarIsian(I, "kegiatan") + teks(I, "laporan_situasi", "Laporan situasi harian yang terbit", {jenis: "angka", bantu: "Banyaknya laporan situasi harian pada periode ini. Kosong tetap tertulis belum diisi, bukan 0."})),
+    K(IK.prediksi, "Bab 7", "Prediksi dan dukungan", mesin([["Indeks RONI", en?.status === "ok" ? H.angka(en.nilai, 2) : "tidak diketahui"], ["Usulan temuan mesin", n((A.usulan_temuan || []).length)]]) +
+      `<p class="lbk-lbl">Dukungan yang dimohon</p>` + daftarIsian(I, "dukungan") +
+      `<p class="lbk-lbl">Temuan untuk musim berikutnya</p>` + temuanIsian(A, I, "temuan_bab7") +
+      teks(I, "arahan", "Arahan yang dimohon", {baris: 3}) + teks(I, "penutup", "Penutup", {baris: 3})),
+    K(IK.sampul, "Sampul", "Sampul dan tanda tangan", teks(I, "kota", "Kota", {jenis: "text"}) + teks(I, "tanggal", "Tanggal surat", {jenis: "date"}) +
+      `<p class="lbk-h">Nama dan gelar Kepala BNPB diisi mesin. Foto sampul dan dokumentasi menyusul bersama unggah foto.</p>`),
+  ].join("");
+}
 
 async function mulai() {
-  const q = new URLSearchParams(location.search), periode = q.get("periode") || "bulanan", kode = q.get("kode") || "";
+  const q = new URLSearchParams(location.search), hariIni = kiniWib();
+  const periode = H.NAMA_PERIODE[q.get("periode")] ? q.get("periode") : "bulanan";
+  let kode = q.get("kode") || "";
+  if (!kode) { kode = H.kodeTerakhir(periode, hariIni); history.replaceState(null, "", `${location.pathname}?jenis=berkala&periode=${periode}&kode=${kode}`); }
   const link = document.createElement("link"); link.rel = "stylesheet"; link.href = "/laporan_berkala_cetak.css"; document.head.append(link);
   const wadah = document.querySelector("#p-paparan"), lama = wadah?.querySelector(".pp");
   if (!wadah) return;
   if (lama) lama.hidden = true;
   const sek = document.createElement("div"); sek.className = "pp lbk";
-  sek.innerHTML = `<section class="pp-kep lbk-alat"><div class="pp-jd"><h1>Laporan Berkala</h1><p id="lbkJudul"></p></div>
-    <div class="pp-ctl"><label class="pp-btn ke2 lbk-buka" style="display:inline-flex;align-items:center">Buka berkas angka<input type="file" id="lbkBerkas" accept="application/json,.json" hidden></label>
-    <button type="button" class="pp-btn" id="lbkCetak" disabled>Cetak PDF</button></div>
-    <div class="pp-st" id="lbkSt" role="status" aria-live="polite">Memuat berkas angka…</div><ul class="lbk-kurang" id="lbkKurang" hidden></ul></section>
-    <div class="lbk-w" tabindex="0" role="region" aria-label="Pratinjau cetak A4"><div id="lbkKertas"></div></div>`;
+  sek.innerHTML = `<section class="pp-kep lbk-alat"><div class="pp-jd"><h1>Laporan BNPB</h1><p id="lbkJudul"></p></div>
+    <form class="lbk-pilih" id="lbkPilih" novalidate aria-label="Pilih periode laporan">
+      <fieldset class="lbk-seg"><legend class="lbk-sr">Periode</legend>${PERIODE.map(([v, l, ik]) => `<label><input type="radio" name="periode" value="${v}"${v === periode ? " checked" : ""}>${ikon(ik)}<span>${l}</span></label>`).join("")}</fieldset>
+      <div class="lbk-kode"><label for="lbkKode" id="lbkKodeL"></label><div class="lbk-kode-b"><input id="lbkKode" name="kode" required autocomplete="off" spellcheck="false" aria-describedby="lbkKodeH">
+        <button type="submit" class="pp-btn">Buka</button></div><small id="lbkKodeH" class="lbk-h"></small></div>
+    </form>
+    <div class="pp-ctl"><button type="button" class="pp-btn ke2" id="lbkSimpan" hidden>Simpan draf</button><button type="button" class="pp-btn" id="lbkBekukan" hidden>Bekukan</button>
+      <button type="button" class="pp-btn" id="lbkVersi" hidden>Buat versi baru</button><button type="button" class="pp-btn" id="lbkCetak" disabled>Cetak PDF</button>
+      <label class="pp-btn ke2 lbk-buka">Buka berkas angka<input type="file" id="lbkBerkas" accept="application/json,.json" hidden></label>
+      <span class="lbk-pil-st" id="lbkServer" hidden title="Isian hanya ada di halaman ini sampai tersimpan di server. Isian tidak disimpan di peramban.">Belum tersimpan di server</span></div>
+    <div class="pp-st" id="lbkSt" role="status" aria-live="polite">Memuat berkas angka…</div>
+    <div class="lbk-kurang-w" id="lbkKurangW" tabindex="-1" hidden><b>Yang masih kurang sebelum Bekukan</b><ul class="lbk-kurang" id="lbkKurang"></ul></div></section>
+    <div class="lbk-tata"><aside class="pp-atur lbk-isian" aria-label="Isian staf" hidden><form id="lbkIsian" novalidate><fieldset class="lbk-fs" id="lbkIsianFs"><legend class="lbk-sr">Isian staf</legend></fieldset></form></aside>
+    <div class="lbk-w" tabindex="0" role="region" aria-label="Pratinjau cetak A4"><div id="lbkKertas"></div></div></div>`;
+  const jenis = lama?.querySelector("#lbJenis")?.cloneNode(true);   // deretan jenis yang sama dengan dua jenis lain, ikon ikut
+  if (jenis) {
+    jenis.removeAttribute("id");
+    jenis.querySelectorAll("button").forEach(b => { b.setAttribute("aria-pressed", String(b.dataset.j === "berkala"));
+      b.onclick = () => { if (b.dataset.j !== "berkala") location.href = b.dataset.j === "presiden" ? "/laporan-bnpb?jenis=presiden" : "/laporan-bnpb"; }; });
+    sek.querySelector(".pp-jd").after(jenis);
+  }
   wadah.append(sek);
   const $ = s => sek.querySelector(s), st = t => { $("#lbkSt").textContent = t; };
   const upd = document.querySelector("#upd"); if (upd) upd.textContent = "Laporan Berkala";
-  $("#lbkJudul").textContent = periode === "bulanan" && /^\d{4}-(0[1-9]|1[0-2])$/.test(kode) ? `Laporan bulanan ${tgl(kode)}` : "Periode belum dipilih";
-  if (periode !== "bulanan" || !/^\d{4}-(0[1-9]|1[0-2])$/.test(kode)) { st("Halaman cetak baru tersedia untuk laporan bulanan, misalnya ?jenis=berkala&periode=bulanan&kode=2026-10."); return; }
 
-  const geoJanji = ambil("/geo/provinsi.json");
-  let S = {A: null, I: {}, versi: 0};
+  /* pemilih periode dan kode: chrome langsung, buka = muat ulang halaman (beforeunload menjaga isian yang belum tersimpan) */
+  const inp = $("#lbkKode");
+  const aturKode = (p, nilai) => {
+    const m = MASUKAN[p], asli = m.type !== "text" && didukung(m.type), maks = H.kodeTerakhir(p, hariIni);
+    inp.type = asli ? m.type : "text";
+    if (asli) { inp.max = maks; inp.removeAttribute("pattern"); inp.removeAttribute("inputmode"); }
+    else { inp.removeAttribute("max"); inp.pattern = m.pola; if (p === "tahunan") inp.inputMode = "numeric"; else inp.removeAttribute("inputmode"); }
+    inp.value = H.kodeSah(p, nilai) ? nilai : maks;
+    inp.setCustomValidity(""); inp.removeAttribute("aria-invalid");
+    $("#lbkKodeL").textContent = m.label;
+    $("#lbkKodeH").textContent = `${asli ? "" : `Tulis dengan bentuk ${m.contoh}. `}Paling akhir ${maks}; periode yang masih berjalan belum bisa dipilih.`;
+  };
+  aturKode(periode, kode);
+  $("#lbkPilih").addEventListener("change", e => { if (e.target.name === "periode") aturKode(e.target.value, ""); });
+  inp.addEventListener("input", () => { inp.setCustomValidity(""); inp.removeAttribute("aria-invalid"); });
+  $("#lbkPilih").addEventListener("submit", e => {
+    e.preventDefault();
+    const p = new FormData(e.target).get("periode"), k = inp.value.trim(), m = MASUKAN[p];
+    const pesan = !H.kodeSah(p, k) ? `${m.label} belum sah. Tulis dengan bentuk ${m.contoh}.` : !H.selesai(p, k, hariIni) ? "Periode ini belum selesai. Pilih periode yang sudah lewat." : "";
+    if (pesan) { inp.setCustomValidity(pesan); inp.setAttribute("aria-invalid", "true"); inp.reportValidity(); st(pesan); return; }
+    if (S.kotor && !confirm("Isian belum tersimpan di server dan akan hilang. Tetap buka periode lain?")) return;
+    S.kotor = false; location.search = `?jenis=berkala&periode=${p}&kode=${encodeURIComponent(k)}`;
+  });
+
+  const judul = H.judulPeriode(periode, kode);
+  $("#lbkJudul").textContent = judul || "Periode belum dipilih";
+  const S = {A: null, I: {}, versi: 0, versiBeku: 0, diubah: null, tarik: "terbaru", kotor: false};
+  if (!H.kodeSah(periode, kode)) { st(`Kode periode tidak sah. Pilih periode lalu tekan Buka.`); return; }
+  if (!H.selesai(periode, kode, hariIni)) { st("Periode ini belum selesai. Pilih periode yang sudah lewat."); return; }
+  if (periode !== "bulanan") { st("Isian dan halaman cetak laporan harian, mingguan, dan tahunan menyusul. Saat ini baru laporan bulanan."); return; }
+
+  const geoJanji = ambil("/geo/provinsi.json"), fs = $("#lbkIsianFs"), form = $("#lbkIsian");
+  const tandaServer = () => { $("#lbkServer").hidden = !(S.kotor && S.versi === 0); };
+  const daftarKurang = () => {
+    if (!S.A) return ["Berkas angka belum ada"];
+    const k = H.kelengkapan(S.A, S.I, periode), ukuran = JSON.stringify(S.I).length;
+    if (ukuran > 98304) k.push(`Isian ${n(Math.ceil(ukuran / 1024))} KB, paling besar 96 KB`);   // MAKS_ISI src/laporan_bnpb.js
+    return k;
+  };
+  const tampilKurang = k => { $("#lbkKurangW").hidden = !k.length || S.versi > 0; $("#lbkKurang").replaceChildren(...k.map(x => Object.assign(document.createElement("li"), {textContent: x}))); };
+  const aturMode = () => {
+    const beku = S.versi > 0;
+    fs.disabled = beku; $("#lbkSimpan").hidden = beku; $("#lbkBekukan").hidden = beku; $("#lbkVersi").hidden = !beku;
+    tandaServer();
+  };
+  const hariSejak = () => { const t = S.A?.sumber?.dibi?.tarik, a = S.A?.rentang?.[1]; return t && a ? Math.round((Date.parse(t) - Date.parse(a)) / 864e5) : null; };
+  let sedang = false, lagi = false, tunda = 0;
   const gambarUlang = async () => {
     const A = S.A; if (!A) return;
-    $("#lbkCetak").disabled = true;
-    st("Menyusun pratinjau…");
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));   // pesan tampil dulu, kerja berat sesudahnya
-    await document.fonts?.ready;
-    const jml = await susun($("#lbkKertas"), A, S.I, {versi: S.versi, periode, kode, geo: await geoJanji});
-    const kurang = H.kelengkapan(A, S.I, periode);
-    st(`${S.versi > 0 ? `Versi ${S.versi}, dibekukan` : "Draf"}, angka DIBI tarik ${tgl(A.sumber?.dibi?.tarik) || "tidak diketahui"}, dirakit ${waktu(A.dirakit)}. ${jml} halaman A4.` +
-      (kurang.length ? " Belum bisa dibekukan, masih kurang:" : ""));
-    $("#lbkKurang").hidden = !kurang.length; $("#lbkKurang").innerHTML = kurang.map(k => `<li>${esc(k)}</li>`).join("");
-    $("#lbkCetak").disabled = false;
+    if (sedang) { lagi = true; return; }
+    sedang = true;
+    try {
+      $("#lbkCetak").disabled = true;
+      await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));   // chrome tampil dulu, kerja berat sesudahnya
+      await document.fonts?.ready;
+      const jml = await susun($("#lbkKertas"), A, S.I, {versi: S.versi, periode, kode, geo: await geoJanji});
+      const kurang = daftarKurang(), hs = hariSejak();
+      tampilKurang(kurang);
+      st(`${S.versi > 0 ? `Beku versi ${S.versi}` : "Draf"}, angka DIBI tarik ${tgl(A.sumber?.dibi?.tarik) || "tidak diketahui"}${hs != null ? ` (${n(hs)} hari sesudah akhir bulan)` : ""}, dirakit ${waktu(A.dirakit)}. ${jml} halaman A4.` +
+        (S.versi === 0 && hs != null && hs < 7 ? " DIBI ditarik kurang dari 7 hari sesudah akhir bulan, jadi angkanya masih bisa bertambah." : ""));
+      $("#lbkCetak").disabled = false;
+    } finally { sedang = false; if (lagi) { lagi = false; gambarUlang(); } }
   };
+  const jadwal = () => { clearTimeout(tunda); tunda = setTimeout(gambarUlang, 700); };
+  const ubah = () => { S.kotor = true; tandaServer(); jadwal(); };
+  const gambarIsian = () => { fs.querySelectorAll(":scope > :not(legend)").forEach(x => x.remove()); fs.insertAdjacentHTML("beforeend", kartuIsian(S.A, S.I)); $(".lbk-isian").hidden = false; aturMode(); };
+  const gambarDaftar = nama => {
+    const lamaEl = fs.querySelector(`[data-daftar="${nama}"]`); if (!lamaEl) return;
+    const t = document.createElement("template"); t.innerHTML = nama.startsWith("temuan") ? temuanIsian(S.A, S.I, nama) : daftarIsian(S.I, nama);
+    const baru = t.content.firstElementChild; lamaEl.replaceWith(baru); return baru;
+  };
+
+  /* isian: satu pendengar per jenis peristiwa (delegasi); hanya mengubah memori dan bagian kecil, pratinjau lewat jadwal() */
+  form.addEventListener("input", e => {
+    const el = e.target, p = el.dataset?.p; if (!p) return;
+    tulis(S.I, p, el.type === "number" ? (el.value === "" || !Number.isFinite(+el.value) ? undefined : +el.value) : el.value);
+    ubah();
+  });
+  form.addEventListener("change", e => {
+    const el = e.target, nama = el.dataset?.usul; if (!nama) return;
+    const u = (S.A.usulan_temuan || []).find(x => x.kode === el.value); if (!u) return;
+    const xs = Array.isArray(S.I[nama]) ? S.I[nama] : (S.I[nama] = []);
+    if (el.checked) { if (xs.length < H.MAKS_TEMUAN[nama]) xs.push({kode: u.kode, pil: u.pil || "data", judul: "", kalimat: u.kalimat || "", sumber: u.sumber || ""}); }
+    else S.I[nama] = xs.filter(t => t?.kode !== u.kode);
+    gambarDaftar(nama)?.querySelector(`[data-usul][value="${CSS.escape(u.kode)}"]`)?.focus();
+    ubah();
+  });
+  form.addEventListener("click", e => {
+    const b = e.target.closest("button[data-tambah],button[data-hapus]"); if (!b) return;
+    if (b.dataset.tambah) {
+      const nama = b.dataset.tambah, xs = Array.isArray(S.I[nama]) ? S.I[nama] : (S.I[nama] = []);
+      xs.push(nama.startsWith("temuan") ? {pil: "data", judul: "", kalimat: "", sumber: ""} : {});
+      const el = gambarDaftar(nama), baris = el?.querySelectorAll(".lbk-baris");
+      baris?.[baris.length - 1]?.querySelector("input:not([type=checkbox]),textarea,select")?.focus();
+    } else {
+      const [nama, i] = b.dataset.hapus.split(".");
+      S.I[nama] = (S.I[nama] || []).filter((_, j) => j !== +i);
+      gambarDaftar(nama)?.querySelector(".lbk-tambah")?.focus();
+    }
+    ubah();
+  });
+
+  const kirim = (url, isi) => fetch(url, {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json"}, body: JSON.stringify(isi)})
+    .then(async r => ({r, j: await r.json().catch(() => ({}))}));
+  const belumAda = r => r.status === 404 || r.status === 405;
+  async function simpan() {
+    const b = $("#lbkSimpan"); b.disabled = true; st("Menyimpan draf…");
+    try {
+      const {r, j} = await kirim("/api/laporan-berkala", {periode, kode, isian: S.I, tarik: S.tarik, diubah: S.diubah});
+      if (r.ok) { S.diubah = j.diubah ?? S.diubah; S.kotor = false; tandaServer(); st("Draf tersimpan di server."); return true; }
+      st(belumAda(r) ? "Penyimpanan draf di server belum tersedia. Isian hanya ada di halaman ini dan hilang bila halaman ditutup."
+        : r.status === 403 ? "Simpan draf dan Bekukan hanya untuk admin."
+        : r.status === 409 ? "Draf ini baru diubah orang lain. Isian di halaman ini belum tersimpan; salin dulu isian yang penting, lalu muat ulang halaman."
+        : `Draf belum tersimpan: ${j.galat || "galat " + r.status}.`);
+    } catch (x) { st("Draf belum tersimpan: koneksi ke server gagal."); }
+    finally { b.disabled = false; }
+    return false;
+  }
+  async function bekukan() {
+    const kurang = daftarKurang(); tampilKurang(kurang);
+    if (kurang.length) { st(`Belum bisa dibekukan, ${kurang.length} bagian masih kurang.`); $("#lbkKurangW").focus(); return; }
+    const v = S.versiBeku + 1;
+    if (!confirm(`Bekukan ${judul} (${kode}) sebagai versi ${v}? Versi beku tidak bisa diubah lagi.`)) return;
+    if (S.kotor && !await simpan()) return;
+    const b = $("#lbkBekukan"); b.disabled = true; st("Membekukan…");
+    try {
+      const {r, j} = await kirim("/api/laporan-berkala/bekukan", {periode, kode, diubah: S.diubah});
+      if (r.ok) { S.versi = S.versiBeku = Number.isInteger(j.versi) ? j.versi : v; S.kotor = false; aturMode(); await gambarUlang(); return; }
+      if (r.status === 422 && Array.isArray(j.kurang)) { tampilKurang(j.kurang.map(String)); st("Server menolak Bekukan karena isian belum lengkap."); return; }
+      st(belumAda(r) ? "Bekukan di server belum tersedia, jadi belum ada versi yang dibekukan." : r.status === 403 ? "Bekukan hanya untuk admin." : `Belum dibekukan: ${j.galat || "galat " + r.status}.`);
+    } catch (x) { st("Belum dibekukan: koneksi ke server gagal."); }
+    finally { b.disabled = false; }
+  }
+  $("#lbkSimpan").onclick = simpan;
+  $("#lbkBekukan").onclick = bekukan;
+  $("#lbkVersi").onclick = () => { S.versi = 0; S.kotor = true; aturMode(); st("Draf baru dari versi beku. Isian dan angka disalin; versi beku tetap utuh."); jadwal(); };
   $("#lbkCetak").onclick = () => window.print();
+  window.addEventListener("beforeunload", e => { if (S.kotor) e.preventDefault(); });
   $("#lbkBerkas").onchange = async e => {
-    const f = e.target.files?.[0]; if (!f) return;
+    const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
     st("Membaca berkas…");
     try {
       const A = JSON.parse(await f.text());
       if (A?.periode !== periode || A?.kode !== kode || !A.bab1) { st(`Berkas ini bukan berkas angka ${periode} ${kode}. Pilih berkas hasil rakit.py untuk periode yang sama.`); return; }
-      S.A = A; await gambarUlang();
+      S.A = A; gambarIsian(); await gambarUlang();
     } catch (x) { st("Berkas tidak bisa dibaca sebagai JSON. Pilih berkas angka hasil rakit.py."); }
   };
   const [A, baris] = await Promise.all([ambil(`/api/laporan-berkala/angka?periode=${periode}&kode=${kode}`), ambil(`/api/laporan-berkala?periode=${periode}&kode=${kode}`)]);
-  if (baris) { S.I = baris.isian && typeof baris.isian === "object" ? baris.isian : {}; S.versi = Number.isInteger(baris.versi) ? baris.versi : 0; }
+  if (baris) {
+    S.I = baris.isian && typeof baris.isian === "object" && !Array.isArray(baris.isian) ? baris.isian : {};
+    S.versi = Number.isInteger(baris.versi) ? baris.versi : 0; S.versiBeku = Number.isInteger(baris.versi_beku) ? baris.versi_beku : S.versi;
+    S.diubah = Number.isSafeInteger(baris.diubah) ? baris.diubah : null; if (typeof baris.tarik === "string") S.tarik = baris.tarik;
+  }
   if (!A) { st("Berkas angka untuk periode ini belum tersedia di server. Untuk meninjau, buka berkas angka hasil rakit.py lewat tombol Buka berkas angka."); return; }
-  S.A = A; await gambarUlang();
+  S.A = A; gambarIsian(); await gambarUlang();
+  window.__lbk = S;   // uji layar membaca keadaan memori
 }
 
 window.LaporanBerkala = {susun, mulai};

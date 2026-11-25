@@ -1,5 +1,6 @@
 /* Uji layar murni Laporan Berkala (RENCANA-UJI 2): modul public/laporan_berkala_hitung.js dan berkas cetak, tanpa peramban.
-   L1 format, L2/L4/L4b kelengkapan, L7 gelar, L8 tanpa kapital, L10 beda versi. L9, L11, L12 diuji di Chrome (cetak_layar.test.mjs). */
+   L1 format, L2/L4/L4b kelengkapan, L7 gelar, L8 tanpa kapital, L10 beda versi, H15/H16 kode periode sisi JS.
+   L9, L11, L12, L13 diuji di Chrome (cetak_layar.test.mjs, isian_layar.test.mjs). */
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
@@ -47,7 +48,7 @@ test("L4 bab tanpa kejadian dan action plan kosong tidak menahan; isian lengkap 
   const a = salin(angka);
   for (const j of ["gempa", "erupsi"]) a.bab1.jenis[j].kejadian = 0;
   const ap = {sudah: "x", sedang: "", akan: ""};
-  const isian = {pembuka: "Pembuka.", temuan_ringkas: [{pil: "data", kalimat: "x"}], dukungan: [{langkah: "x"}], action: {bab1: ap, bab2: ap, bab3: ap, bab4: ap}};
+  const isian = {pembuka: "Pembuka.", temuan_ringkas: [{pil: "data", kalimat: "x", sumber: "DIBI"}], dukungan: [{langkah: "x"}], action: {bab1: ap, bab2: ap, bab3: ap, bab4: ap}};
   assert.deepEqual(H.kelengkapan(a, isian), []);
   assert.ok(H.kelengkapan(angka, isian).includes("Bab 5 Geologi: action plan"), "fixture asli punya gempa, jadi bab 5 tetap wajib");
   assert.deepEqual(H.kelengkapan(a, {...isian, foto: [{kredit: "BNPB"}, {kredit: "Media", media: true, izin: true}]}), []);
@@ -75,4 +76,36 @@ test("L10 beda versi: hanya jalur yang berubah, urut perubahan relatif", () => {
   assert.deepEqual(H.beda(angka, salin(angka)), []);
   assert.equal(H.ratakan({a: [{b: 1}], s: "x".repeat(81)})["a[0].b"], 1);
   assert.ok(!("s" in H.ratakan({s: "x".repeat(81)})), "teks panjang tidak dibandingkan");
+});
+
+test("kelengkapan temuan: batas 4 dan 8, temuan tanpa kalimat atau sumber menahan (ALGORITMA 9)", () => {
+  const t = {pil: "data", kalimat: "4 provinsi", sumber: "DIBI"};
+  const dasar = {pembuka: "x", dukungan: [{langkah: "x"}]};
+  const k = isian => H.kelengkapan(angka, {...dasar, ...isian}).filter(x => /temuan/.test(x));
+  assert.deepEqual(k({temuan_ringkas: [t, t, t, t], temuan_bab7: Array(8).fill(t)}), []);
+  assert.deepEqual(k({temuan_ringkas: [t, t, t, t, t]}), ["Ringkasan Eksekutif: paling banyak 4 temuan"]);
+  assert.deepEqual(k({temuan_ringkas: [t], temuan_bab7: Array(9).fill(t)}), ["Bab 7.3: paling banyak 8 temuan"]);
+  assert.deepEqual(k({temuan_ringkas: [{...t, sumber: " "}]}), ["Ringkasan Eksekutif: temuan tanpa kalimat atau sumber"]);
+  assert.deepEqual(k({temuan_ringkas: [t], temuan_bab7: [{pil: "iklim", kalimat: "", sumber: "x"}]}), ["Bab 7.3: temuan tanpa kalimat atau sumber"]);
+});
+
+test("H15 dan H16 sisi JS: kode periode sama dengan hitung.py (fixture bersama)", () => {
+  const fx = JSON.parse(baca("tests/berkala/fixtures/kode_periode.json"));
+  for (const c of fx.kasus) {
+    assert.equal(H.kodeSah(c.periode, c.kode), c.sah, `${c.periode} ${c.kode}`);
+    if (c.rentang) assert.deepEqual(H.rentang(c.periode, c.kode), c.rentang, `${c.periode} ${c.kode}`);
+  }
+  assert.equal(H.mingguIso("2025-12-31"), "2026-W01");
+});
+
+test("periode berjalan tidak selesai; kode terakhir = periode lengkap sebelum hari ini (H13, L13)", () => {
+  const kini = "2026-11-26";   // Kamis, minggu ISO 2026-W48
+  assert.deepEqual(["harian", "mingguan", "bulanan", "tahunan"].map(p => H.kodeTerakhir(p, kini)), ["2026-11-25", "2026-W47", "2026-10", "2025"]);
+  for (const [p, k] of [["harian", "2026-11-26"], ["mingguan", "2026-W48"], ["bulanan", "2026-11"], ["tahunan", "2026"], ["bulanan", "2027-01"]]) assert.equal(H.selesai(p, k, kini), false, `${p} ${k}`);
+  for (const p of ["harian", "mingguan", "bulanan", "tahunan"]) assert.equal(H.selesai(p, H.kodeTerakhir(p, kini), kini), true, p);
+  assert.equal(H.kodeTerakhir("bulanan", "2026-01-05"), "2025-12");
+  assert.equal(H.kodeTerakhir("mingguan", "2027-01-04"), "2026-W53");
+  assert.equal(H.judulPeriode("bulanan", "2026-10"), "Laporan Bulanan Oktober 2026");
+  assert.equal(H.judulPeriode("mingguan", "2026-W46"), "Laporan Mingguan 2026-W46 (9 November 2026 sampai 15 November 2026)");
+  assert.equal(H.judulPeriode("bulanan", "2026-13"), "");
 });
