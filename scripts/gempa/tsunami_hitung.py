@@ -43,6 +43,8 @@ TOL_LAB_PECAH = 0.10       # Appendix A3.1: gelombang pecah, dalam 10% dari teru
 # keduanya ambang kita sendiri, kini diganti kriteria NOAA. Nilai terukur 3,3e-4 dilaporkan apa adanya.
 # Batas uji ini: tanpa AMR dan berhenti di 60 tau tanpa memeriksa pantulan penuh (lihat RISET 4.2).
 TOL_MASSA = 0.05
+# K10: galat BP04 tak pecah tanpa gesekan tercatat 12,2% (2D, 24-25 Nov 2026); gerbang menjaga agar tidak memburuk.
+BATAS_K10 = 0.13
 
 MAKEFILE = """CLAWMAKE = $(CLAW)/clawutil/src/Makefile.common
 CLAW_PKG = geoclaw
@@ -431,8 +433,14 @@ def uji_tolok_ukur(lab=False):
         if kunci == "bp04_pecah":   # K9 (pemilik 25 Nov 2026): gelombang pecah di luar cakupan validasi; dilaporkan, bukan gerbang
             lap[kunci]["cakupan"] = "di luar cakupan (K9): mesin tanpa model pecah"
             continue
-        if gal is None or gal > tol:
-            gagal.append("%s run-up %.4f vs lab %s galat %s" % (kunci, R, rata_lab, gal))
+        if gal is None:
+            gagal.append("%s tanpa data lab" % kunci)
+        elif gal > tol:
+            # K10 (pemilik 25 Nov 2026): galat tak pecah lawan lab diterima sebagai batas mesin tanpa disipasi, dilaporkan
+            # terbuka; TIDAK disebut lulus 5%. Gerbang tetap gagal bila galat melampaui batas tertulis 12,2% + sedikit ruang.
+            lap[kunci]["status"] = "tidak lulus 5%%; diterima sebagai batas mesin (K10), galat %.1f%%" % (100 * gal)
+            if gal > BATAS_K10:
+                gagal.append("%s run-up %.4f vs lab %s galat %.1f%% melampaui batas tertulis K10 %.0f%%" % (kunci, R, rata_lab, 100 * gal, 100 * BATAS_K10))
     return lap, gagal
 
 
@@ -455,9 +463,9 @@ def uji():
         print("GAGAL:\n  " + "\n  ".join(gagal))
         sys.exit(1)
     if "lab" in sys.argv:
-        print("uji tsunami_hitung: lulus (termasuk BP04 lab)")
+        print("uji tsunami_hitung: lulus dengan batas tertulis. BP04 tak pecah TIDAK lulus 5% (galat lihat status, diterima K10); BP04 pecah di luar cakupan (K9)")
     else:
-        print("uji tsunami_hitung: verifikasi analitik lulus. TS-10 BELUM LULUS: BP04 lab gagal (24 Nov 2026) dan tidak dijalankan di mode ini")
+        print("uji tsunami_hitung: verifikasi analitik lulus. BP04 lab tidak dijalankan di mode ini; tak pecah +12,2% lawan lab diterima sebagai batas mesin (K10), bukan lulus 5%")
 
 
 if __name__ == "__main__":
