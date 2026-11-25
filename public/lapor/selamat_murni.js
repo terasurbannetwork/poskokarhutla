@@ -56,3 +56,18 @@ export function teksGalat(status, galat, tunggu = 0) {
   if (status === 503) return "Masuk dengan nomor WhatsApp belum aktif. Hubungi 117 bila butuh bantuan segera.";
   return galat || "Belum berhasil. Coba lagi.";
 }
+
+/* Kartu ajakan di beranda (Q68, bawaan sementara): hanya bila kab pengguna sudah diketahui dari lokasi yang pernah diberikan
+   DAN rapor daerah (/api/lapor/rapor, status_darurat.json) memuat status keadaan darurat yang masih berlaku. Tanpa sinyal, tanpa kartu. */
+export function daerahTersimpan(entri) {   // entri: pasangan [kunci, teks JSON] dari localStorage; kembalian: kueri daerah terakhir atau null
+  for (const [k, v] of entri) {
+    if (!String(k).startsWith("lapor-cache-")) continue;
+    try { const q = JSON.parse(v)?.daerah?.q; if (q && typeof q === "object" && (q.kode || (q.lat != null && q.lon != null))) return q; } catch { /* abaikan */ }
+  }
+  return null;
+}
+export function ajakanDari(rapor, ditutup = "") {   // rapor: badan /api/lapor/rapor; ditutup: kab yang sudah ditutup di sesi ini
+  const kab = String(rapor?.kab || "").trim();
+  if (!kab || !Array.isArray(rapor?.darurat) || !rapor.darurat.length || kab === ditutup) return null;
+  return {kab, teks: `Ada status keadaan darurat di ${kab}. Bila Anda berada di sana, kabari keluarga bahwa Anda selamat.`};
+}

@@ -27,7 +27,7 @@ Nomor uji pertama dan nomor mana pun tidak pernah ditulis di repo (repo publik).
 
 ## Persetujuan (UU 27/2022 PDP)
 
-Pesan L-SAPA pertama memuat satu kalimat: "Data laporan dan nomor Anda dipakai BNPB untuk penanganan bencana." Pelapor yang mengetik `hapus data` mendapat konfirmasi; identitasnya diganti "dihapus atas permintaan" dan transkripnya dikosongkan, isian kejadian tetap (bukan data pribadi). Lama simpan transkrip dan foto: menunggu pemilik; **[BAWAAN SEMENTARA]** 2 tahun.
+Pesan L-SAPA pertama memuat satu kalimat: "Data laporan dan nomor Anda dipakai BNPB untuk penanganan bencana." Pelapor yang mengetik `hapus data` mendapat konfirmasi; identitasnya diganti "dihapus atas permintaan" dan transkripnya dikosongkan, isian kejadian tetap (bukan data pribadi). Lama simpan transkrip dan foto: menunggu pemilik; **[BAWAAN SEMENTARA]** 2 tahun. Laporan orang dicari yang ditutup petugas dianonimkan cron sesudah 2 tahun (data pribadi dikosongkan; id, kab, status, waktu tetap; Q67).
 
 ## Penyalahgunaan
 

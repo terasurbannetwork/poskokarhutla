@@ -1,7 +1,7 @@
 /* Kabar selamat dan laporan orang belum ditemukan di /lapor (KEPUTUSAN-LAPOR-AI K91, D126-D130; TIKET LA-81).
    Satu <dialog> bawaan peramban, dibuat saat pertama dibuka. Nomor dibuktikan lewat kode sekali pakai WhatsApp (/api/masuk/kode, /api/masuk/periksa),
    nomor hanya di variabel, kode tidak disimpan. Kata larangan D126 tidak dipakai. Klik: tombol berganti keadaan seketika, jaringan menyusul (INP). */
-import {LABEL_STATUS, nomorSah, nomor62, namaPanggilSah, namaDicariSah, badanKabar, badanCari, teksGalat, waktuWib, tautanUtuh, tautanWa} from "./selamat_murni.js";
+import {daerahTersimpan, ajakanDari, LABEL_STATUS, nomorSah, nomor62, namaPanggilSah, namaDicariSah, badanKabar, badanCari, teksGalat, waktuWib, tautanUtuh, tautanWa} from "./selamat_murni.js";
 
 const el = (t, k, x) => { const e = document.createElement(t); if (k) e.className = k; if (x != null) e.textContent = x; return e; };
 const NS = "http://www.w3.org/2000/svg";
@@ -203,3 +203,17 @@ export function bukaKabarSelamat() {
   pilih(); if (!dlg.open) dlg.showModal();
 }
 for (const b of document.querySelectorAll("[data-buka-selamat]")) b.addEventListener("click", bukaKabarSelamat);
+
+/* ---------- kartu ajakan (Q68): hanya bila lokasi sudah diketahui dan kab itu punya status darurat berlaku; tidak meminta izin lokasi baru ---------- */
+async function ajak() {
+  const pita = document.querySelector(".sl-pita"), q = daerahTersimpan(Object.entries(localStorage));
+  if (!pita || !q) return;
+  const r = await api("GET", `/api/lapor/rapor?${new URLSearchParams(q)}`), a = r.s === 200 ? ajakanDari(r.j, sessionStorage.getItem("sl-ajak-tutup") || "") : null;
+  if (!a) return;
+  const k = el("div", "sl-ajak"), b = tombol("Saya selamat", "sl-utama", "i-centang"), x = el("button", "sl-x"); x.type = "button"; x.setAttribute("aria-label", "Tutup ajakan"); x.append(ikon("i-tutup"));
+  k.setAttribute("role", "status"); k.append(el("p", null, a.teks), b, x);
+  b.addEventListener("click", bukaKabarSelamat);
+  x.addEventListener("click", () => { k.remove(); try { sessionStorage.setItem("sl-ajak-tutup", a.kab); } catch { /* tanpa simpanan */ } });
+  pita.before(k);
+}
+(window.requestIdleCallback || (f => setTimeout(f, 1500)))(() => ajak().catch(() => {}));

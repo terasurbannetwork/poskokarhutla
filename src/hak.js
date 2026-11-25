@@ -1784,7 +1784,7 @@ Object.assign(MATRIKS, {
   lk_tarik:            {lp_staf: ["baca", "tambah"], lp_hari: ["baca"]},   // migrasi 0170: tarikan dari halaman publik, append-only (LK-03, D8); lp_hari membaca untuk menyaring kartu
   lk_usulan:           {lp_staf: ["baca", "tambah"]},   // migrasi 0170: usulan ke Buku Besar, append-only (LK-03, D9); status dari sk_kejadian_sumber (A7)
   lapor_selamat:       {lp_pelapor: ["baca", "tambah", "ubah"], lp_publik: ["baca"], lp_staf: ["baca"], lp_cron: ["hapus"]},   // migrasi 0173: kabar selamat (K91, D126-D130); publik hanya lewat token
-  lapor_cari:          {lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129)
+  lapor_cari:          {lp_pelapor: ["tambah"], lp_staf: ["baca", "ubah"], lp_cron: ["ubah"]},   // migrasi 0173: orang dicari, tidak pernah publik (D129)
   lapor_cari_riwayat:  {lp_staf: ["baca", "tambah"]},   // migrasi 0173: append-only
 });
 /* peringatan dini warga Pantau Bencana (migrasi 0163, paket pwa-peringatan PW-01). pw_publik = rute langganan tanpa akun (endpoint push = rahasia pemegangnya);
@@ -1860,6 +1860,11 @@ export const crTambah = (env, p, b, kini) => sedia(env, p, "lapor_cari", "tambah
 /* wilayah disaring di SQL (awalan kode kab/prov) supaya LIMIT 500 global tidak menyembunyikan laporan wilayah akun; prefiks null = semua (BNPB) */
 export const crDaftar = async (env, p, prefiks = null) => (await sedia(env, p, "lapor_cari", "baca",
   "SELECT id, nomor_pencari, nama_dicari, ciri, lokasi_terakhir, waktu_terakhir, nomor_dicari, hubungan, kab, status, dibuat, ditutup_oleh, ditutup FROM lapor_cari WHERE (?1 IS NULL OR substr(kab, 1, length(?1)) = ?1) ORDER BY dibuat DESC LIMIT 500").bind(prefiks).all()).results;
+/* Q67 (BAWAAN SEMENTARA): masa simpan 2 tahun sejak ditutup. Anonim, bukan hapus: id, kab, status, waktu tetap; kolom pribadi diganti nilai yang lolos CHECK 0173 (nomor_pencari NOT NULL, nama_dicari NOT NULL). Laporan "buka" tidak pernah tersentuh; riwayat append-only tidak disentuh. */
+export const CARI_SIMPAN_HARI = 730, CARI_NOMOR_ANONIM = "62000000000", CARI_NAMA_ANONIM = "dihapus";
+export const crAnonimkan = (env, p, batas) => sedia(env, p, "lapor_cari", "ubah",
+  "UPDATE lapor_cari SET nomor_pencari = ?2, nama_dicari = ?3, ciri = NULL, lokasi_terakhir = NULL, nomor_dicari = NULL, hubungan = NULL WHERE status <> 'buka' AND ditutup < ?1 AND nomor_pencari <> ?2")
+  .bind(batas, CARI_NOMOR_ANONIM, CARI_NAMA_ANONIM).run();
 export const crById = (env, p, id) => sedia(env, p, "lapor_cari", "baca", "SELECT id, kab, status FROM lapor_cari WHERE id = ?1").bind(id).first();
 /* status baru + baris riwayat dalam satu batch; status selain buka mengisi ditutup dan ditutup_oleh */
 export const crStatus = (env, p, id, status, catatan, oleh, kini) => { izin(p, "lapor_cari", "ubah"); izin(p, "lapor_cari_riwayat", "tambah");

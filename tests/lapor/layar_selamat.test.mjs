@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import {tokenDariJalur, tautanWa, pesanBagikan, badanKabar, badanCari, namaPanggilSah, namaDicariSah, nomorSah, nomor62, waktuWib, aksiCari, labelCari, teksGalat, LABEL_STATUS, TIDAK_BERLAKU} from "../../public/lapor/selamat_murni.js";
+import {daerahTersimpan, ajakanDari, tokenDariJalur, tautanWa, pesanBagikan, badanKabar, badanCari, namaPanggilSah, namaDicariSah, nomorSah, nomor62, waktuWib, aksiCari, labelCari, teksGalat, LABEL_STATUS, TIDAK_BERLAKU} from "../../public/lapor/selamat_murni.js";
 
 const baca = p => fs.readFileSync(new URL(`../../public/lapor/${p}`, import.meta.url), "utf8");
 const TOKEN = "a".repeat(64);
@@ -73,4 +73,18 @@ test("pemasangan: kartu beranda memicu dialog, halaman tautan noindex, meja memu
   const s = baca("s/index.html"); assert.match(s, /name="robots" content="noindex/); assert.match(s, /no-referrer/);
   assert.match(baca("meja.js"), /from "\.\/meja_cari\.js(\?v=\d+)?"/); assert.match(baca("meja.js"), /Orang dicari/);
   assert.ok(!/innerHTML/.test(baca("s/s.js")) && !/innerHTML/.test(baca("meja_cari.js")) && !/innerHTML/.test(baca("selamat.js")), "teks dari server lewat textContent");
+});
+test("kartu ajakan Q68: tampil hanya bila kab diketahui DAN ada status darurat berlaku, bisa ditutup, teks lolos D126", () => {
+  const dar = [{status: "Siaga Darurat", jenis: "Banjir"}];
+  assert.equal(ajakanDari({kab: "Kab. Bogor", darurat: []}), null);
+  assert.equal(ajakanDari({kab: "Kab. Bogor"}), null);
+  assert.equal(ajakanDari({darurat: dar}), null);
+  assert.equal(ajakanDari(null), null);
+  assert.equal(ajakanDari({kab: "Kab. Bogor", darurat: dar}, "Kab. Bogor"), null);
+  const a = ajakanDari({kab: "Kab. Bogor", darurat: dar}, "Kab. Cianjur");
+  assert.equal(a.kab, "Kab. Bogor"); assert.ok(!/\baman\b/i.test(a.teks) && !a.teks.includes("·") && a.teks !== a.teks.toUpperCase());
+  const kunci = "lapor-cache-6281", q = {lat: 1, lon: 2};
+  assert.deepEqual(daerahTersimpan([["x", "{}"], [kunci, JSON.stringify({daerah: {q}})]]), q);
+  assert.equal(daerahTersimpan([[kunci, "bukan json"], [kunci, JSON.stringify({daerah: {q: {}}})], [kunci, "{}"], ["lain", JSON.stringify({daerah: {q}})]]), null);
+  assert.match(baca("selamat.js"), /data-buka-selamat|bukaKabarSelamat/); assert.ok(!/geolocation/.test(baca("selamat.js").split("async function ajak")[1]), "ajakan tanpa izin lokasi baru");
 });
