@@ -84,5 +84,20 @@ async function gambar(d) {
 }
 
 document.querySelectorAll("details.bencana").forEach(d => { tombol(d); gambar(d).catch(() => {}); });
+/* PS-05c: di <= 640 px isi .stat (ID/EN, jam data, tombol ikon kanan) jadi satu menu "Lainnya" di balik tombol titik tiga, supaya kepala
+   tidak meluber. Elemen tidak dipindah (id, pendengar, selektor tur dan pemirsa tetap); CSS di kepala.css menjadikan .stat lembar turun. */
+function lebih(h) {
+  const st = h?.querySelector(":scope > .stat");
+  if (!st || h.querySelector(".kp-lebih")) return;
+  st.id ||= "kepalaLain";
+  h.insertAdjacentHTML("beforeend", `<button type="button" class="kp-lebih" aria-label="Menu lainnya" title="Menu lainnya" aria-expanded="false" aria-controls="${st.id}">${svg('<circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/>', ' fill="currentColor"')}</button>`);
+  const b = h.lastElementChild;
+  const atur = buka => { h.classList.toggle("lebih-buka", buka); b.setAttribute("aria-expanded", String(buka));
+    document[buka ? "addEventListener" : "removeEventListener"]("click", luar, true); document[buka ? "addEventListener" : "removeEventListener"]("keydown", esc_); };
+  const luar = e => { if (!b.contains(e.target) && (!st.contains(e.target) || e.target.closest("a,button:not(.bhs button)"))) atur(false); };
+  const esc_ = e => { if (e.key === "Escape") { atur(false); b.focus(); } };
+  b.addEventListener("click", () => atur(!h.classList.contains("lebih-buka")));
+}
+lebih(document.querySelector("header.top"));
 /* deretan tab kepala: tab yang tidak muat masuk menu "Lainnya" (inti/tab_lainnya.js), semua laman bencana */
 import("./tab_lainnya.js").then(m => m.pasangLainnya(document.querySelector("nav.tabs"))).catch(() => {});
