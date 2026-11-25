@@ -95,7 +95,7 @@ async function layaniApi(env, req, url, ctx, jalur, viaInstansi) {
 }
 
 /* ================================================================ halaman dan aset */
-const RE_HAL = new RegExp(`^/siklus(/(kejadian|paparan|kaji|pulih|renkon|gladi|masa-depan|index\\.html)|/(kejadian)/${ID_KJ}|/(kaji|pulih|renkon)/${ID16})?$`);
+const RE_HAL = new RegExp(`^/siklus(/(kejadian|paparan|kaji|kaji-ulang|pulih|renkon|gladi|masa-depan|index\\.html)|/(kejadian)/${ID_KJ}|/(kaji|pulih|renkon)/${ID16})?$`);
 const RE_ASET = /^\/siklus\/[\w-]+(\/[\w-]+)*\.(js|css|json|svg|png|webp|woff2)$/;
 const PUBLIK_ASET = new Set(["/siklus/publik.js", "/siklus/publik.css", "/siklus/data/atribusi.json", "/siklus/data/kamus.json", "/siklus/data/masa_depan_ringkas.json"]);
 const TIPE = {js: "text/javascript; charset=utf-8", css: "text/css; charset=utf-8", json: "application/json; charset=utf-8", svg: "image/svg+xml", png: "image/png", webp: "image/webp", woff2: "font/woff2"};

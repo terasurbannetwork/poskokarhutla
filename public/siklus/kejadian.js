@@ -6,6 +6,7 @@ import {h, ik, K, api, kartu, hl, wadah, para, kead, kead_dari, kosongkan, seg, 
 import {FASE, RE_KJ, faseSah} from "./hitung.js";
 import {kartuLifeline} from "./lifeline.js";
 import {kartuTigaW} from "./tiga_w.js";
+import {kartuKajiUlang} from "./kaji_ulang.js";
 
 const G = globalThis, HALAMAN = 50, BATAS_MUAT = 100;
 const KEL = () => (K.kelompok || [["semua", "Semua", "semua"]]).map(([v, t, i]) => [v, t, i]);
@@ -302,7 +303,7 @@ function detailHidup(id, d, P, ulang) {
       if (!x.ok) return toast(x.j?.galat || "Status publik belum bisa diubah"); toast(r.publik ? "Ringkasan ditarik dari publik" : "Ringkasan dibuka untuk publik"); G.nanti(ulang);
     }, "terbit"));
   }
-  const bagian = [["ringkasan", "Ringkasan", "mata"], ["waktu", "Waktu", "bolak"], ["dampak", "Dampak", "jiwa"], ["paparan", "Paparan", "bangunan"], ["kaji", "Kaji", "gelombang"], ["pulih", "Pulih", "palu"]];
+  const bagian = [["ringkasan", "Ringkasan", "mata"], ["waktu", "Waktu", "bolak"], ["dampak", "Dampak", "jiwa"], ["paparan", "Paparan", "bangunan"], ["kaji", "Kaji", "gelombang"], ["pulih", "Pulih", "palu"], ["kajiulang", "Kaji ulang", "timbangan"]];
   const lompat = seg(bagian, "", v => document.getElementById("k-" + v)?.scrollIntoView({block: "start"}), "Loncat ke bagian");
   const kepala = kartu({ey: [ik("bolak", 12), id], judul, id: "k-kepala", isi: [h("div", {class: "sk-baris"}, barisFase, aksi), lompat]});
 
@@ -354,5 +355,5 @@ function detailHidup(id, d, P, ulang) {
   const dariDesa = r.pusat_dasar === "pusat_desa";
   const sekitar = r.pusat_lat != null && r.pusat_lon != null && globalThis.DampakRadius ? kartu({ey: [ik("jiwa", 12), dariDesa ? "Sekitar pusat desa (perkiraan)" : "Sekitar titik pusat"], id: "k-sekitar", judul: ["Penduduk dan sarana dalam ", hl("1, 5, dan 10 km"), ...(dariDesa ? [" dari pusat desa"] : [])],
     isi: [DampakRadius.tabel(r.pusat_lat, r.pusat_lon, [1, 5, 10], {judul: false, kaki: false, kelasTabel: "", kelasWadah: "tw"})]}) : null;
-  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, sekitar, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih), h("div", {}, terpasang))];
+  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, sekitar, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih, kartuKajiUlang(id, P)), h("div", {}, terpasang))];
 }

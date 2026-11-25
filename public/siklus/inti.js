@@ -180,6 +180,7 @@ const LAYAR = [
   [/^\/siklus\/renkon(\/[0-9a-f]{16})?$/, () => import("./renkon.js"), "renkon"],
   [/^\/siklus\/gladi(\/[0-9a-f]{16})?$/, () => import("./gladi.js"), "renkon"],   // halaman dummy renkon mengisi renkon dan gladi
   [/^\/siklus\/masa-depan$/, () => import("./masadepan.js"), "masadepan"],
+  [/^\/siklus\/kaji-ulang$/, () => import("./kaji_ulang.js"), "kejadian"],
   [/^\/siklus\/registri$/, () => import("./registri.js"), "pintu"],
   [/^\/siklus$/, () => import("./pintu.js"), "pintu"],
   [/^\/siklus\/kejadian(\/.*)?$/, () => import("./kejadian.js"), "kejadian"],

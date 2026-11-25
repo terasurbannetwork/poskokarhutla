@@ -25,3 +25,16 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya. Nomor migrasi diambi
 - Batas laju 120 tulis per 10 menit per pengisi (`dlTindakLaju`) dicek di rute sebelum fungsi tulis; rentang tenggat 7..365 hari dan aturan penulis tunggal Q3 juga di rute.
 - `kuMulai` mengembalikan false untuk kejadian tak ada DAN kaji ulang yang sudah dimulai; rute membedakannya lewat `kuBaca` (404 vs 200/409) sebelum memanggil.
 - Fungsi tulis `ku*` yang memakai `dlStmtTindak*` memeriksa hak sendiri (tidak lewat `sedia`); fungsi baru yang sama wajib begitu.
+
+## Status (26 Nov 2026)
+
+| Tiket | Status | Bukti |
+| --- | --- | --- |
+| KU-01, KU-02, KU-03 | selesai (migrasi 0147, `src/hak.js` bagian Kaji ulang, `src/kaji_ulang_rakit.js`) | `tests/warga/kaji_ulang.test.mjs`, `kaji_ulang_rakit.test.mjs` |
+| KU-04, KU-05, KU-06 | selesai di kode (`src/kaji_ulang.js`, digabung ke `RUTE_SIKLUS`) | `node --test tests/warga/kaji_ulang_rute.test.mjs` hijau |
+| KU-07 | selesai di layar: kartu Kaji ulang, Linimasa (saring tahap, 100 baris per muat), Durasi tahap, Celah data, Layanan dasar, Koordinasi, Catatan lapangan (`public/siklus/kaji_ulang.js`, dipasang di `kejadian.js`) | `node --test tests/siklus/layar_kaji_ulang.test.mjs` |
+| KU-08 | selesai di layar: Pelajaran dua kolom, angkat catatan lapangan, Rekomendasi dengan laci riwayat dan status. Baca BPBD: modul mencoba `/api/instansi/siklus/...` bila rute staf 401, tetapi halaman `/siklus/kejadian/<KJ>` belum terbuka bagi sesi instansi (cookie berpath `/api/instansi`), jadi pemasangan di layar instansi menunggu warga-api | sama |
+| KU-09 | selesai di layar: cetak A4 dari potret beku bernomor versi (draf dicetak bertanda belum disahkan), lampiran setelah versi n, halaman `/siklus/kaji-ulang` (kandidat F-1, rekomendasi terbuka F-7, per unit). Menunggu warga-api: `kaji-ulang` di `RE_HAL` `src/siklus.js` dan entri `/siklus/kaji-ulang` di `src/peta_situs.js` | sama |
+| KU-10 | menunggu paket Laporan Berkala (Q9) | - |
+| KU-11 | menunggu pemilik: `wrangler d1 migrations apply` untuk 0147 di produksi | - |
+| KU-12 | menunggu 10 kejadian disahkan | - |
