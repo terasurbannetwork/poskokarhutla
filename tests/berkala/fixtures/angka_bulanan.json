@@ -267,6 +267,26 @@
     }
    }
   },
+  "di_bawah_ambang": {
+   "alam": 1,
+   "bukan_alam": 0,
+   "jenis": {
+    "banjir": 1,
+    "cuaca_ekstrem": 0,
+    "epidemi": 0,
+    "erupsi": 0,
+    "gagal_teknologi": 0,
+    "gelombang": 0,
+    "gempa": 0,
+    "karhutla": 0,
+    "kebakaran_permukiman": 0,
+    "kecelakaan_industri": 0,
+    "kekeringan": 0,
+    "konflik_sosial": 0,
+    "lainnya": 0,
+    "longsor": 0
+   }
+  },
   "jenis": {
    "banjir": {
     "dampak": {
@@ -535,6 +555,10 @@
     "prov": 3
    }
   },
+  "label_angka": {
+   "alam": "Semua laporan DIBI, termasuk di bawah ambang bencana (cara laporan Oktober 2026 kepada Presiden)",
+   "resmi": "Resmi DIBI, tanpa laporan di bawah ambang bencana (Juklak BNPB 7/2023)"
+  },
   "prov": [
    {
     "dampak": {
@@ -774,6 +798,49 @@
    "11",
    "16"
   ],
+  "resmi": {
+   "alam": {
+    "dampak": {
+     "f_kantor": 0,
+     "f_pendidikan": 0,
+     "f_umum": 0,
+     "fasum_rusak": 0,
+     "hilang": 0,
+     "jembatan": 0,
+     "luka": 4,
+     "mengungsi": 400,
+     "meninggal": 3,
+     "meninggal_hilang": 3,
+     "rr_berat": 4,
+     "rr_ringan": 43,
+     "rr_sedang": 5,
+     "rumah_rusak": 52,
+     "terdampak": 3600,
+     "terdampak_mengungsi": 4000,
+     "terendam": 0
+    },
+    "kab": 24,
+    "kejadian": 57,
+    "prov": 7
+   },
+   "jenis": {
+    "banjir": 7,
+    "cuaca_ekstrem": 3,
+    "epidemi": 0,
+    "erupsi": 1,
+    "gagal_teknologi": 0,
+    "gelombang": 1,
+    "gempa": 2,
+    "karhutla": 41,
+    "kebakaran_permukiman": 2,
+    "kecelakaan_industri": 0,
+    "kekeringan": 1,
+    "konflik_sosial": 1,
+    "lainnya": 0,
+    "longsor": 1
+   },
+   "prov": 7
+  },
   "riwayat": [
    {
     "kejadian": null,
@@ -782,6 +849,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -802,6 +870,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -822,6 +891,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -842,6 +912,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -862,6 +933,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -882,6 +954,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -902,6 +975,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -922,6 +996,7 @@
    {
     "kejadian": {
      "alam": 1,
+     "alam_resmi": 1,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -942,6 +1017,7 @@
    {
     "kejadian": {
      "alam": 31,
+     "alam_resmi": 31,
      "banjir": 1,
      "cuaca_ekstrem": 0,
      "epidemi": 0,
@@ -962,6 +1038,7 @@
    {
     "kejadian": {
      "alam": 58,
+     "alam_resmi": 57,
      "banjir": 8,
      "cuaca_ekstrem": 3,
      "epidemi": 0,
@@ -983,6 +1060,7 @@
   "sebelumnya": {
    "kejadian": {
     "alam": 31,
+    "alam_resmi": 31,
     "banjir": 1,
     "cuaca_ekstrem": 0,
     "epidemi": 0,
@@ -1059,6 +1137,12 @@
      "lalu": 3,
      "persen": 1833.3
     },
+    "kejadian_resmi": {
+     "arah": "naik",
+     "kini": 57,
+     "lalu": 3,
+     "persen": 1800.0
+    },
     "luka": {
      "arah": "baru",
      "kini": 4,
@@ -1105,6 +1189,7 @@
    },
    "kejadian": {
     "alam": 3,
+    "alam_resmi": 3,
     "banjir": 2,
     "cuaca_ekstrem": 0,
     "epidemi": 0,
@@ -1129,6 +1214,10 @@
    "tanggal": "2026-10-31"
   },
   "belum": 9.0,
+  "cakupan": {
+   "hari": 31,
+   "hari_rentang": 31
+  },
   "harian": [
    {
     "hot": 1278,
@@ -1273,42 +1362,62 @@
   "luas": 33290.4,
   "per_bulan": [
    {
+    "hari": 0,
+    "hari_rentang": 31,
     "hot": null,
     "kode": "2026-01"
    },
    {
+    "hari": 0,
+    "hari_rentang": 28,
     "hot": null,
     "kode": "2026-02"
    },
    {
+    "hari": 0,
+    "hari_rentang": 31,
     "hot": null,
     "kode": "2026-03"
    },
    {
+    "hari": 0,
+    "hari_rentang": 30,
     "hot": null,
     "kode": "2026-04"
    },
    {
+    "hari": 0,
+    "hari_rentang": 31,
     "hot": null,
     "kode": "2026-05"
    },
    {
+    "hari": 0,
+    "hari_rentang": 30,
     "hot": null,
     "kode": "2026-06"
    },
    {
+    "hari": 0,
+    "hari_rentang": 31,
     "hot": null,
     "kode": "2026-07"
    },
    {
+    "hari": 0,
+    "hari_rentang": 31,
     "hot": null,
     "kode": "2026-08"
    },
    {
+    "hari": 30,
+    "hari_rentang": 30,
     "hot": 3465,
     "kode": "2026-09"
    },
    {
+    "hari": 31,
+    "hari_rentang": 31,
     "hot": 41613,
     "kode": "2026-10"
    }
@@ -1418,6 +1527,8 @@
     "lalu": 3465,
     "persen": 1101.0
    },
+   "hari": 30,
+   "hari_rentang": 30,
    "hot": 3465,
    "kode": "2026-09"
   },
@@ -2110,7 +2221,31 @@
  },
  "lampiran": {
   "metode": {
-   "di_bawah_ambang": 1,
+   "catatan": [
+    "Satu peristiwa gempa dicocokkan per provinsi; gempa yang dirasakan dan dilaporkan di beberapa provinsi terhitung lebih dari satu peristiwa.",
+    "Dampak baris kembar dihitung sekali hanya bila paling sedikit dua kolom dampak sama dan lebih dari 0 di provinsi yang sama (Q20).",
+    "Dampak yang tidak tercatat di sumber ditulis tidak diketahui, bukan 0."
+   ],
+   "di_bawah_ambang": {
+    "alam": 1,
+    "bukan_alam": 0,
+    "jenis": {
+     "banjir": 1,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    }
+   },
    "duplikat_dampak": 1,
    "gabung_banjir_longsor": 2
   },
@@ -2196,9 +2331,29 @@
     "Kebakaran Gedung dan Permukiman": 2,
     "Konflik Sosial": 1
    },
-   "di_bawah_ambang": 1,
+   "di_bawah_ambang": {
+    "alam": 1,
+    "bukan_alam": 0,
+    "jenis": {
+     "banjir": 1,
+     "cuaca_ekstrem": 0,
+     "epidemi": 0,
+     "erupsi": 0,
+     "gagal_teknologi": 0,
+     "gelombang": 0,
+     "gempa": 0,
+     "karhutla": 0,
+     "kebakaran_permukiman": 0,
+     "kecelakaan_industri": 0,
+     "kekeringan": 0,
+     "konflik_sosial": 0,
+     "lainnya": 0,
+     "longsor": 0
+    }
+   },
    "duplikat_dampak": 1,
    "kejadian": 58,
+   "kejadian_resmi": 57,
    "status": "ok",
    "tarik": "2026-11-21"
   },

@@ -31,7 +31,7 @@ test("kepala berkas: periode, kode, rentang", () => {
 test("tiap sumber punya tarik dan status", () => {
   for (const [nama, s] of Object.entries(angka.sumber)) {
     assert.ok("tarik" in s, `sumber ${nama} tanpa tarik`);
-    assert.ok(["ok", "sebagian", "belum_ada"].includes(s.status), `sumber ${nama} status ${s.status}`);
+    assert.ok(["ok", "sebagian", "belum_ada", "gagal"].includes(s.status), `sumber ${nama} status ${s.status}`);
   }
 });
 
@@ -71,4 +71,9 @@ test("usulan temuan: angka dan sumber, tanpa kata aman", () => {
 
 test("fixture angka_bulanan.json segar (python3 -I scripts/berkala/hitung.py fixture)", () => {
   assert.deepEqual(JSON.parse(readFileSync(fx("angka_bulanan.json"), "utf8")), angka);
+});
+
+test("rakit.py uji (normalisasi, R2 lokal, potongan, tanpa jaringan)", () => {
+  const keluar = execFileSync("python3", ["-I", akar + "scripts/berkala/rakit.py", "uji"], { encoding: "utf8" });
+  assert.match(keluar, /rakit\.py uji: \d+ pemeriksaan lulus/);
 });
