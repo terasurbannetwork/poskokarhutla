@@ -1413,6 +1413,7 @@
     "table op_isian_log": "riwayat: hak baca, per butir dan per tanggal",
     "table op_isian_kejadian": "sortie: isi, kembar 409, ubah",
     "table op_semai_target": "migrasi 0129 dijalankan dua kali tanpa galat",
+    "table op_semai_sasaran": "migrasi 0176 dua kali; kab bukan 4 huruf, catatan >300, kolom wajib kosong, kembar aktif ditolak",
     "table tugas_bencana_x": "pb_skema tugas_bencana_x menolak karhutla",
     "table pb_titik": "pb_skema CHECK titik",
     "table pb_renlap": "pb_skema CHECK renlap",
